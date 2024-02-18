@@ -1,0 +1,18 @@
+
+declare type TKeyName = 'L' | 'R' | 'U' | 'D' | 'a' | 'j' | 'd'
+declare interface IController<Entity> {
+  holding: Record<TKeyName, 0 | 1 | 2>
+  get LR(): -2 | -1 | 0 | 1 | 2;
+  get UD(): -2 | -1 | 0 | 1 | 2;
+  get LRUD(): boolean;
+  get LR1(): -1 | 0 | 1;
+  get UD1(): -1 | 0 | 1;
+
+  _need_punch: number;
+  _next_punch_ready: number;
+
+  character: Entity;
+
+  dispose(): void;
+  update(): TNextFrame | undefined;
+}
