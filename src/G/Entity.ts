@@ -57,9 +57,12 @@ export default class Entity<D extends IGameObjData = IGameObjData> extends GameO
     const geometry = new THREE.PlaneGeometry(30, 15);
     const shadow_material = new THREE.MeshBasicMaterial({
       map: this.pictures.get('shadow')?.texture!,
-      transparent: true
+      transparent: true,
+      depthTest: false,
+      depthWrite: false,
     });
     this.shadow = new THREE.Mesh(geometry, shadow_material);
+    this.shadow.renderOrder = 0
     this.shadow.rotation.x = Math.PI * -0.5;
   }
 
@@ -135,7 +138,7 @@ export default class Entity<D extends IGameObjData = IGameObjData> extends GameO
     const y = Math.floor(this.position.y)
     const z = Math.floor(this.position.z)
     this.sprite.position.set(x, y, z)
-    this.shadow.position.set(x, -1, z);
+    this.shadow.position.set(x, 1, z);
     if (this._motionless > 0) {
       --this._motionless;
     } else if (this._shaking > 0) {

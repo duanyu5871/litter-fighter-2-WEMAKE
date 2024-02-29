@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 import { Defines } from '../defines';
+import Character from './Character';
+import PlayerController from './Controller/PlayerController';
 import Entity from './Entity';
 import GameObj, { GONE_FRAME_INFO } from './GameObj';
 import { Grand } from './Grand';
@@ -23,15 +25,16 @@ export default class World {
 
   scene: THREE.Scene = new THREE.Scene();
   camera: THREE.Camera = new THREE.OrthographicCamera();
-  grand: Grand = new Grand(this.scene);
+  grand: Grand = new Grand(this);
 
   entities = new Set<Entity>();
   game_objs = new Set<GameObj>();
 
   renderer: THREE.WebGLRenderer;
   disposed = false;
-  width = 794;
-  length = 300;
+  protected _players = new Set<Character>();
+  get width() { return this.grand.boundarys.right - this.grand.boundarys.left }
+  get depth() { return this.grand.boundarys.far - this.grand.boundarys.near };
 
   constructor(canvas: HTMLCanvasElement) {
     this.renderer = new THREE.WebGLRenderer({ canvas });
@@ -63,12 +66,14 @@ export default class World {
       }
     })
   }
-
   add_entities(...entities: Entity[]) {
     entities.forEach(e => {
       this.scene.add(e.sprite);
       this.scene.add(e.shadow);
       e.show_indicators = this._show_indicators;
+      if (e instanceof Character && e.controller instanceof PlayerController) {
+        this._players.add(e);
+      }
       this.entities.add(e)
     })
   }
@@ -78,6 +83,9 @@ export default class World {
       this.scene.remove(e.sprite);
       this.scene.remove(e.shadow);
       this.entities.delete(e)
+      if (e instanceof Character && e.controller instanceof PlayerController) {
+        this._players.delete(e);
+      }
     })
   }
 
@@ -106,18 +114,20 @@ export default class World {
   }
   update_once() {
     if (this.disposed) return;
+
+    const { left, right, near, far } = this.grand.boundarys;
     for (const e of this.entities) {
       e.update();
       const { x, z } = e.sprite.position;
-      if (x < 0)
-        e.position.x = e.sprite.position.x = 0;
-      else if (x > this.width)
-        e.position.x = e.sprite.position.x = this.width;
+      if (x < left)
+        e.position.x = e.sprite.position.x = left;
+      else if (x > right)
+        e.position.x = e.sprite.position.x = right;
 
-      if (z < -this.length)
-        e.position.z = e.sprite.position.z = -this.length;
-      else if (z > 0)
-        e.position.z = e.sprite.position.z = 0;
+      if (z < far)
+        e.position.z = e.sprite.position.z = far;
+      else if (z > near)
+        e.position.z = e.sprite.position.z = near;
 
       if (e.get_frame().id === GONE_FRAME_INFO.id)
         this.remove_entities(e);
@@ -130,7 +140,25 @@ export default class World {
     }
 
     this.collision_detections();
+    this.update_camera();
+    this.grand.update();
   }
+  private update_camera() {
+    const player_count = this._players.size;
+    let new_x = 0;
+    for (const player of this._players) {
+      new_x += player.sprite.position.x - 794 / 2 + player.face * 794 / 6;
+    }
+    new_x /= player_count;
+    const { left, right } = this.grand.boundarys;
+    if (new_x < left) new_x = left;
+    if (new_x > right - 794) new_x = right - 794;
+    let cur_x = this.camera.position.x;
+
+    this.camera.position.x += (new_x - cur_x) * 0.1;
+  }
+  cam_speed_x: number = 0;
+
   collision_detections() {
     const bs = new Set<Entity>();
     for (const a of this.entities) {

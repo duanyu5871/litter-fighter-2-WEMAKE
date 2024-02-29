@@ -1,11 +1,9 @@
 import Character from './G/Character';
-import DDDController from './G/Controller/DDDController';
 import PlayerController from "./G/Controller/PlayerController";
 import { TData } from './G/Entity';
-import GameObj from './G/GameObj';
 import World from './G/World';
 import { load_sound } from './G/loader/loader';
-import preprocess_data, { data_map } from './G/loader/preprocess_data';
+import preprocess_data from './G/loader/preprocess_data';
 import random_get from './Utils/random_get';
 import { arithmetic_progression } from './js_utils/arithmetic_progression';
 
@@ -13,35 +11,6 @@ import { arithmetic_progression } from './js_utils/arithmetic_progression';
 let character_id = 1;
 export default function run(canvas: HTMLCanvasElement) {
   let disposed = false;
-
-  // import('./G/data/spark.json')
-  // .then(v => {
-  //   return preprocess_data(v)
-  // }).then(v => {
-  //   const e = new GameObj(world, v);
-  //   e.enter_frame({ id: 0 });
-  //   e.position.x = 50;
-  //   world.add_entities(e);
-  //   return v;
-  // }).then(v => {
-  //   const e = new GameObj(world, v);
-  //   e.enter_frame({ id: 10 });
-  //   e.position.x = 100;
-  //   world.add_entities(e);
-  //   return v;
-  // }).then(v => {
-  //   const e = new GameObj(world, v);
-  //   e.enter_frame({ id: 20 });
-  //   e.position.x = 200;
-  //   world.add_entities(e);
-  //   return v;
-  // }).then(v => {
-  //   const e = new GameObj(world, v);
-  //   e.enter_frame({ id: 30 });
-  //   e.position.x = 300;
-  //   world.add_entities(e);
-  //   return v;
-  // })
 
   const characters = [
     import('./G/data/template.json'),
@@ -97,7 +66,7 @@ export default function run(canvas: HTMLCanvasElement) {
       const e = new Character(world, d as ICharacterData)
       e.id = '' + character_id;
       e.position.x = Math.random() * world.width;
-      e.position.z = Math.random() * -world.length;
+      e.position.z = Math.random() * world.depth;
       e.attach();
     }
 

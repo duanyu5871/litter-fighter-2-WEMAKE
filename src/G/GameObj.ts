@@ -63,10 +63,13 @@ export default class GameObj<D extends IGameObjData = IGameObjData> {
 
     const material = new THREE.SpriteMaterial({
       map: this.pictures.get('0')?.texture,
+      depthWrite: false,
+      depthTest: false
     });
     const sprite = this.sprite = new THREE.Sprite(material);
     sprite.userData.owner = this;
     sprite.material = material;
+    sprite.renderOrder = 1;
   }
   attach() {
     this.sprite.position.set(
