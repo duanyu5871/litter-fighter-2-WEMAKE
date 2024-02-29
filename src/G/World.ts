@@ -145,6 +145,7 @@ export default class World {
   }
   private update_camera() {
     const player_count = this._players.size;
+    if (!player_count) return;
     let new_x = 0;
     for (const player of this._players) {
       new_x += player.sprite.position.x - 794 / 2 + player.face * 794 / 6;
