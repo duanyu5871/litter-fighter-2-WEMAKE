@@ -12,7 +12,7 @@ export class Grand {
     left: 0,
     right: data.base.width,
     near: -60,
-    far: -180,
+    far: -250,
   }
   object_3d: THREE.Object3D<THREE.Object3DEventMap>;
   world: World;

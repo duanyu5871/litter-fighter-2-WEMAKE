@@ -129,7 +129,7 @@ export class Character extends Entity<ICharacterData> {
       if (this.defend_value <= 0) { // 破防
         this.defend_value = 0;
         this._shaking = V_SHAKE;
-        this.world.spark(spark_x, spark_y, spark_z, "critical_hit")
+        this.world.spark(spark_x, spark_y, spark_z, "broken_defend")
         this.enter_frame({ id: indexes.broken_defend })
         this._next_frame = void 0;
         return;
@@ -137,7 +137,7 @@ export class Character extends Entity<ICharacterData> {
 
       if (itr.dvx) this.velocity.x = itr.dvx * aface / 2;
       this._shaking = V_SHAKE;
-      this.world.spark(spark_x, spark_y, spark_z, "hit")
+      this.world.spark(spark_x, spark_y, spark_z, "defend_hit")
       this.enter_frame({ id: indexes.defend_hit })
       this._next_frame = void 0;
       return;

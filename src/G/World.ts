@@ -222,11 +222,7 @@ export class World {
     const data = dat_mgr.find("spark");
     if (!data || !('frames' in data)) return;
     const e = new FrameAnimater(this, data)
-    e.position.set(
-      Math.floor(x),
-      Math.floor(y - z / 2),
-      Math.floor(z)
-    )
+    e.position.set(x, y, z)
     e.enter_frame(f)
     e.attach()
   }
