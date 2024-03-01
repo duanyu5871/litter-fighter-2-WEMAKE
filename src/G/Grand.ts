@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import data from './bg/sys/cuhk/bg.json';
 import { texture_loader } from './loader/loader';
 import World from './World';
-import { IBgLayerInfo } from '../js_utils/lf2_type';
+import { IBgLayerInfo } from "../js_utils/lf2_type/IBgLayerInfo";
 export class Grand {
 
   private _disposers: (() => void)[] = [];

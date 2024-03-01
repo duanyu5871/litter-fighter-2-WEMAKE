@@ -1,13 +1,16 @@
 import * as THREE from 'three';
 import { get_blob } from '../../Utils/get_blob';
-import { get_img } from '../../Utils/get_img';
+import { create_img_ele } from '../../Utils/create_img_ele';
 import { IEntityPictureInfo } from '../../js_utils/lf2_type';
+import { IPictureInfo } from '../../types/IPictureInfo';
+
+export type TPictureInfo = IPictureInfo<THREE.Texture>;
+export type TDataPromise<T> = Promise<T> & { data: T }
 
 const temp_canvas = document.createElement('canvas');
 const temp_canvas_ctx = temp_canvas.getContext('2d', { willReadFrequently: true });
 
-export type TImageInfo = { url: string; w: number; h: number; }
-const image_info_pool = new Map<string, TImageInfo>();
+
 
 export const texture_loader = new THREE.TextureLoader();
 export const simple_picture_info = (path: string): IEntityPictureInfo => ({
@@ -20,13 +23,19 @@ export const simple_picture_info = (path: string): IEntityPictureInfo => ({
   row: 0,
   col: 0
 })
-export const load_image = async (f: IEntityPictureInfo, get_src: (f: IEntityPictureInfo) => string): Promise<TImageInfo> => {
+
+export type TImageInfo = { url: string; w: number; h: number; }
+const image_info_pool = new Map<string, TImageInfo>();
+export const load_image = async (
+  f: IEntityPictureInfo,
+  get_src: (f: IEntityPictureInfo) => string
+): Promise<TImageInfo> => {
   if (!temp_canvas_ctx) throw new Error("can not get context from canvas");
   const key = get_image_key(f);
   let info = image_info_pool.get(key);
   if (info) return info;
   const { path, w, h } = f;
-  const img_ele = await get_img(get_src(f));
+  const img_ele = await create_img_ele(get_src(f));
   temp_canvas.width = img_ele.width;
   temp_canvas.height = img_ele.height;
   temp_canvas_ctx.drawImage(img_ele, 0, 0);
@@ -47,12 +56,10 @@ export const load_image = async (f: IEntityPictureInfo, get_src: (f: IEntityPict
         img_data.data[i + 3] = 0;
       }
     }
-
     temp_canvas_ctx.putImageData(img_data, 0, 0);
   }
   const blob = await get_blob(temp_canvas);
   const url = URL.createObjectURL(blob);
-
   image_info_pool.set(key, info = { url, w: img_ele.width, h: img_ele.height });
   return info
 }
@@ -60,13 +67,13 @@ export const get_image_key = (f: IEntityPictureInfo) => `${f.path}_${f.w}_${f.h}
 export const find_image_info = (key: string) => image_info_pool.get(key);
 
 export const find_image_info_by_pic_info = (f: IEntityPictureInfo) => image_info_pool.get(get_image_key(f))
-export type TPromise = Promise<IPictureInfo<THREE.Texture>> & { picture: IPictureInfo<THREE.Texture> }
 
-export const create_picture = (id: string, pic_info: IEntityPictureInfo) => {
-  let _resolve: (info: IPictureInfo<THREE.Texture>) => void;
+
+export const create_picture = (id: string, pic_info: IEntityPictureInfo): TDataPromise<TPictureInfo> => {
+  let _resolve: (info: TPictureInfo) => void;
   let _reject: (reason: any) => void;
   const { url, w: i_w, h: i_h } = find_image_info_by_pic_info(pic_info)!
-  let picture: IPictureInfo<THREE.Texture>;
+  let picture: TPictureInfo;
   const on_load = (t: THREE.Texture) => {
     picture.i_w = t.image.width;
     picture.i_h = t.image.height;
@@ -78,20 +85,16 @@ export const create_picture = (id: string, pic_info: IEntityPictureInfo) => {
   texture.minFilter = THREE.NearestFilter;
   texture.magFilter = THREE.NearestFilter
   texture.wrapS = THREE.MirroredRepeatWrapping;
-
   const { w: cell_w, h: cell_h, row, col } = pic_info;
-  const ret: TPromise = new Promise((a, b) => { _resolve = a; _reject = b; }) as TPromise
-  ret.picture = picture = {
+  picture = {
     id,
-    texture: texture,
-    i_w,
-    i_h,
-    cell_w: cell_w + 1,
-    cell_h: cell_h + 1,
-    row,
-    col,
+    texture,
+    i_w, i_h,
+    cell_w: cell_w + 1, cell_h: cell_h + 1,
+    row, col,
   }
-  return ret;
+  const p = new Promise<TPictureInfo>((a, b) => { _resolve = a; _reject = b; });
+  return Object.assign(p, { data: picture })
 }
 
 

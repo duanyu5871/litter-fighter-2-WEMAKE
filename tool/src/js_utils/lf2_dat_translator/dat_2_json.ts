@@ -1,4 +1,5 @@
-import { IBackgroundData, IBaseData, IBgLayerInfo, ICharacterInfo, IDatIndex, IGameObjInfo, IProjecttileInfo, IWeaponInfo } from '../lf2_type';
+import { IBgData, IBaseData, ICharacterInfo, IDatIndex, IGameObjInfo, IProjecttileInfo, IWeaponInfo } from '../lf2_type';
+import { IBgLayerInfo } from "../lf2_type/IBgLayerInfo";
 import { match_block_once } from '../match_block';
 import { match_colon_value } from '../match_colon_value';
 import { set_obj_field } from "../set_obj_field";
@@ -12,7 +13,7 @@ import { make_projecttile_data } from './make_projecttile_data';
 import { make_weapon_data } from './make_weapon_data';
 import { take } from './take';
 
-function read_bg(full_str: string, datIndex?: IDatIndex): IBackgroundData | void {
+function read_bg(full_str: string, datIndex?: IDatIndex): IBgData | void {
   const fields = new ColonValueReader()
     .str('name')
     .num('width')
@@ -20,7 +21,7 @@ function read_bg(full_str: string, datIndex?: IDatIndex): IBackgroundData | void
     .str('shadow')
     .num_2('shadowsize')
     .read(full_str);
-  const ret: IBackgroundData = {
+  const ret: IBgData = {
     type: 'background',
     id: '',
     base: fields,

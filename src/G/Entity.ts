@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import BaseState from "../BaseState";
 import { Defines } from '../defines';
 import { EntityIndicators } from './EntityIndicators';
-import GameObj from './GameObj';
+import FrameAnimater from './FrameAnimater';
 import type World from './World';
 import { create_picture, simple_picture_info } from './loader/loader';
 import { ICube } from './World';
@@ -12,7 +12,7 @@ export type TData = IBaseData | ICharacterData | IWeaponData | IEntityData | IPr
 
 export const V_SHAKE = 4;
 export const A_SHAKE = 4;
-export default class Entity<D extends IGameObjData = IGameObjData> extends GameObj<D> {
+export default class Entity<D extends IGameObjData = IGameObjData> extends FrameAnimater<D> {
   readonly shadow: THREE.Object3D;
   readonly velocity = new THREE.Vector3(0, 0, 0);
   readonly team: number = 0;
@@ -53,7 +53,7 @@ export default class Entity<D extends IGameObjData = IGameObjData> extends GameO
   constructor(world: World, data: D, states: Map<number, BaseState>) {
     super(world, data)
 
-    this.pictures.set('shadow', create_picture('shadow', simple_picture_info('shadow.png')).picture);
+    this.pictures.set('shadow', create_picture('shadow', simple_picture_info('shadow.png')).data);
     this.states = states;
     const geometry = new THREE.PlaneGeometry(30, 15);
     const shadow_material = new THREE.MeshBasicMaterial({

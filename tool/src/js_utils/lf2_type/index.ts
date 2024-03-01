@@ -1,3 +1,6 @@
+import { IBgInfo } from "./IBgInfo";
+import { IBgLayerInfo } from "./IBgLayerInfo";
+
 export type TFrameId = string | number
 export type TTODO = any;
 export type TFace = -1 | 1;
@@ -289,34 +292,14 @@ export interface IBaseData<I = any> {
   base: I;
 }
 export interface IDataMap {
-  'background': IBackgroundData;
+  'background': IBgData;
   'entity': IEntityData;
   'character': ICharacterData;
   'weapon': IWeaponData;
   'projecttile': IProjecttileData;
 }
 
-export interface IBackgroundInfo {
-  name: string;
-  width: number;
-  zboundary: [number, number];
-  shadow: string;
-  shadowsize: [number, number];
-}
-export interface IBgLayerInfo {
-  file: string;
-  transparency: 1 | 0;
-  width: number;
-  height: number;
-  x: number;
-  y: number;
-  color: number;
-  loop?: number;
-  cc?: number;
-  c1?: number;
-  c2?: number;
-}
-export interface IBackgroundData extends IBaseData<IBackgroundInfo> {
+export interface IBgData extends IBaseData<IBgInfo> {
   type: 'background';
   layers: IBgLayerInfo[];
 }

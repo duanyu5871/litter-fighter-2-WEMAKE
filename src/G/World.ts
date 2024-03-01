@@ -3,7 +3,7 @@ import { Defines } from '../defines';
 import Character from './Character';
 import PlayerController from './Controller/PlayerController';
 import Entity from './Entity';
-import GameObj, { GONE_FRAME_INFO } from './GameObj';
+import FrameAnimater, { GONE_FRAME_INFO } from './FrameAnimater';
 import { Grand } from './Grand';
 import { data_map } from './loader/preprocess_data';
 import { IItrInfo, IBdyInfo, IFrameInfo } from '../js_utils/lf2_type';
@@ -29,7 +29,7 @@ export default class World {
   grand: Grand = new Grand(this);
 
   entities = new Set<Entity>();
-  game_objs = new Set<GameObj>();
+  game_objs = new Set<FrameAnimater>();
 
   renderer: THREE.WebGLRenderer;
   disposed = false;
@@ -45,7 +45,7 @@ export default class World {
     this.camera.rotateX(-Math.PI / 4);
   }
 
-  add_game_objs(...objs: GameObj[]) {
+  add_game_objs(...objs: FrameAnimater[]) {
     objs.forEach(e => {
       if (e instanceof Entity) {
         this.add_entities(e);
@@ -57,7 +57,7 @@ export default class World {
 
   }
 
-  remove_game_objs(...game_objs: GameObj[]) {
+  remove_game_objs(...game_objs: FrameAnimater[]) {
     game_objs.forEach(e => {
       if (e instanceof Entity) {
         this.add_entities(e);
@@ -226,7 +226,7 @@ export default class World {
   spark(x: number, y: number, z: number, f: number | string) {
     const data = data_map.get("spark");
     if (!data || !('frames' in data)) return;
-    const e = new GameObj(this, data)
+    const e = new FrameAnimater(this, data)
     e.position.set(x, y, z)
     e.enter_frame(f)
     e.attach()
@@ -239,7 +239,7 @@ export default class World {
     attacker.on_collision(victim, itr, bdy, a_cube, b_cube);
     victim.on_be_collided(attacker, itr, bdy, a_cube, b_cube);
   }
-  get_cube(e: GameObj, f: IFrameInfo, i: IItrInfo | IBdyInfo): ICube {
+  get_cube(e: FrameAnimater, f: IFrameInfo, i: IItrInfo | IBdyInfo): ICube {
     const left = e.face > 0 ?
       e.position.x - f.centerx + i.x :
       e.position.x + f.centerx - i.x - i.w;

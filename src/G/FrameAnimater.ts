@@ -4,6 +4,7 @@ import type World from './World';
 import { play_sound } from './loader/loader';
 import create_pictures from './loader/create_pictures';
 import { IFrameInfo, INextFrameFlags, ITexturePieceInfo, IGameObjData, TFace, TFrameId, TNextFrame, INextFrame } from '../js_utils/lf2_type';
+import { IPictureInfo } from '../types/IPictureInfo';
 export type T_NEXT_FRAME = readonly [IFrameInfo, INextFrameFlags | undefined]
 export type T_VOID_NEXT_FRAME = readonly [undefined, undefined]
 export const NO_NEXT_FRAME: T_VOID_NEXT_FRAME = [undefined, undefined];
@@ -23,15 +24,15 @@ export const EMPTY_FRAME_INFO: IFrameInfo = {
 };
 export const GONE_FRAME_INFO: IFrameInfo = {
   id: 'gone',
-  name: '',
+  name: 'GONE_FRAME_INFO',
   pic: 0,
-  state: NaN,
+  state: 0,
   wait: 0,
   next: { id: '' },
   centerx: 0,
   centery: 0
 };
-export default class GameObj<D extends IGameObjData = IGameObjData> {
+export default class FrameAnimater<D extends IGameObjData = IGameObjData> {
   id: string = '';
   wait: number = 0;
 
