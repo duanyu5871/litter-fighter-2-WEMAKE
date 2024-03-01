@@ -182,7 +182,12 @@ export interface IFrameInfo {
   cpoint?: TTODO;
 }
 
-export interface IProjecttileFrameInfo extends IFrameInfo {
+export interface IBallFrameInfo extends IFrameInfo {
+  no_shadow?: number;
+  on_disappearing?: TNextFrame;
+  on_rebounding?: TNextFrame;
+  on_be_hit?: TNextFrame;
+  on_hitting?: TNextFrame;
   speedz?: number;
 }
 
@@ -285,7 +290,7 @@ export interface IWeaponInfo extends IGameObjInfo {
   weapon_drop_sound: string;
   weapon_broken_sound: string;
 }
-export interface IProjecttileInfo extends IGameObjInfo {
+export interface IBallInfo extends IGameObjInfo {
   weapon_hit_sound: string;
   weapon_drop_sound: string;
   weapon_broken_sound: string;
@@ -300,7 +305,7 @@ export interface IDataMap {
   'entity': IEntityData;
   'character': ICharacterData;
   'weapon': IWeaponData;
-  'projecttile': IProjecttileData;
+  'ball': IBallData;
 }
 
 export interface IBgData extends IBaseData<IBgInfo> {
@@ -325,8 +330,8 @@ export interface IWeaponData extends IGameObjData<IWeaponInfo, IFrameInfo> {
   type: 'weapon';
   weapon_strength?: TTODO;
 }
-export interface IProjecttileData extends IGameObjData<IProjecttileInfo, IProjecttileFrameInfo> {
-  type: 'projecttile';
+export interface IBallData extends IGameObjData<IBallInfo, IBallFrameInfo> {
+  type: 'ball';
 }
 export interface ICharacterFrameIndexes {
   landing_2: number;

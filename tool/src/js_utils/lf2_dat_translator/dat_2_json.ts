@@ -1,4 +1,4 @@
-import { IBaseData, IBgData, ICharacterInfo, IDatIndex, IGameObjInfo, IProjecttileFrameInfo, IProjecttileInfo, IWeaponInfo } from '../lf2_type';
+import { IBaseData, IBgData, ICharacterInfo, IDatIndex, IGameObjInfo, IBallFrameInfo, IBallInfo, IWeaponInfo } from '../lf2_type';
 import { IBgLayerInfo } from "../lf2_type/IBgLayerInfo";
 import { match_block_once } from '../match_block';
 import { match_colon_value } from '../match_colon_value';
@@ -9,7 +9,7 @@ import { ColonValueReader } from './ColonValueReader';
 import { make_character_data } from './make_character_data';
 import { make_entity_data } from './make_entity_data';
 import { make_frames } from './make_frames';
-import { make_projecttile_data } from './make_projecttile_data';
+import { make_ball_data } from './make_ball_data';
 import { make_weapon_data } from './make_weapon_data';
 import { take } from './take';
 
@@ -110,7 +110,7 @@ export default function dat_to_json(full_str: string, datIndex?: IDatIndex): IBa
         ret = make_weapon_data(base as IWeaponInfo, full_str, make_frames(full_str));
         break;
       case 0: ret = make_character_data(base as ICharacterInfo, make_frames(full_str)); break;
-      case 3: ret = make_projecttile_data(base as IProjecttileInfo, make_frames<IProjecttileFrameInfo>(full_str)); break;
+      case 3: ret = make_ball_data(base as IBallInfo, make_frames<IBallFrameInfo>(full_str),datIndex); break;
       case 5: ret = make_entity_data(base as IGameObjInfo, make_frames(full_str)); break;
       default:
         console.log('[dat_to_json] unknow dat type:', datIndex.type)
@@ -120,13 +120,12 @@ export default function dat_to_json(full_str: string, datIndex?: IDatIndex): IBa
     if (ret) ret.id = datIndex.id;
     return ret;
   } else {
-    const frames = make_frames(full_str)
     if ('small' in base && 'name' in base && 'head' in base)
-      return make_character_data(base as ICharacterInfo, frames)
+      return make_character_data(base as ICharacterInfo, make_frames(full_str))
     if ('weapon_hp' in base)
-      return make_weapon_data(base as IWeaponInfo, full_str, frames);
+      return make_weapon_data(base as IWeaponInfo, full_str, make_frames(full_str));
     if ('weapon_hit_sound' in base)
-      return make_projecttile_data(base as IProjecttileInfo, frames);
-    return make_entity_data(base as IGameObjInfo, frames);
+      return make_ball_data(base as IBallInfo, make_frames<IBallFrameInfo>(full_str));
+    return make_entity_data(base as IGameObjInfo, make_frames(full_str));
   }
 }

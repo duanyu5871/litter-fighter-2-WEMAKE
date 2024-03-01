@@ -78,9 +78,9 @@ export class FrameAnimater<D extends IGameObjData = IGameObjData> {
   update_sprite_position() {
     const { x, y, z } = this.position;
     this.sprite.position.set(
-      Math.floor(x),
-      Math.floor(y - z / 2),
-      Math.floor(z),
+      x,
+      y - z / 2,
+      z,
     );
   }
   attach() {
@@ -202,10 +202,7 @@ export class FrameAnimater<D extends IGameObjData = IGameObjData> {
 
   update() {
     this.goto_next_frame_when_need();
-    const x = Math.floor(this.position.x);
-    const y = Math.floor(this.position.y);
-    const z = Math.floor(this.position.z);
-    this.sprite.position.set(x, y, z);
+    this.update_sprite_position();
     if (this.wait > 0) --this.wait;
   }
 

@@ -3,7 +3,7 @@ import { TData } from './G/Entity';
 import { sound_mgr } from './G/loader/SoundMgr';
 import { image_pool } from './G/loader/loader';
 import { cook_frame } from './G/preprocess_frame';
-import { IBgData, ICharacterData, IDataMap, IEntityData, IProjecttileData, IWeaponData } from './js_utils/lf2_type';
+import { IBgData, ICharacterData, IDataMap, IEntityData, IBallData, IWeaponData } from './js_utils/lf2_type';
 import { map, traversal } from './js_utils/traversal';
 
 const Log = Info.Clone({ showArgs: true, showRet: true, disabled: true });
@@ -13,7 +13,7 @@ export interface IDataListMap {
   'entity': IEntityData[];
   'character': ICharacterData[];
   'weapon': IWeaponData[];
-  'projecttile': IProjecttileData[];
+  'ball': IBallData[];
   'all': TData[]
 }
 
@@ -22,7 +22,7 @@ const create_data_list_map = (): IDataListMap => ({
   entity: [],
   character: [],
   weapon: [],
-  projecttile: [],
+  ball: [],
   all: []
 })
 
@@ -111,7 +111,7 @@ export class DataMgr {
   get characters() { return this._data_list_map.character; }
   get weapons() { return this._data_list_map.weapon; }
   get backgrounds() { return this._data_list_map.background; }
-  get projecttiles() { return this._data_list_map.projecttile; }
+  get balls() { return this._data_list_map.ball; }
   get entity() { return this._data_list_map.entity; }
   get all() { return this._data_list_map.all; }
 

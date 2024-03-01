@@ -114,7 +114,10 @@ export class Character extends Entity<ICharacterData> {
 
     const spark_x = (Math.max(r0.left, r1.left) + Math.min(r0.right, r1.right)) / 2;
     const spark_y = (Math.min(r0.top, r1.top) + Math.max(r0.bottom, r1.bottom)) / 2;
-    const spark_z = (Math.min(r0.near, r1.near) + Math.max(r0.far, r1.far)) / 2;
+    // const spark_z = (Math.min(r0.near, r1.near) + Math.max(r0.far, r1.far)) / 2;
+    const spark_z = Math.max(r0.far, r1.far);
+
+    // console.log(spark_x, spark_y, spark_z)
     const { indexes } = this.data.base;
 
     /** 攻击者朝向 */

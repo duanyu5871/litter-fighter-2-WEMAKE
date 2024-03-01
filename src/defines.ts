@@ -29,10 +29,11 @@ export namespace Defines {
     SturdyBall = 3005,
     PunchThroughBall = 3006,
   }
-  export enum PState {
-
+  export enum EntityEnum {
+    Character = 'character',
+    Weapon = 'weapon',
+    Ball = 'ball',
   }
-
   export enum ItrKind {
     Normal = 0,       // 特殊特技
     Catch = 1,        // 捉住暈眩(state 16) |的人

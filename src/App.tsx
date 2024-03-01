@@ -105,7 +105,7 @@ function App() {
           zIndex: 1,
           width: '100vw',
           height: '100vh',
-          display: 'flex',
+          display: 'none',
           flexDirection: 'column'
         }}>
           <div>

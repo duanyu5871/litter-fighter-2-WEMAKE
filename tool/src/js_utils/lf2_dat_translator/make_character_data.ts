@@ -36,7 +36,7 @@ export function make_character_data(info: ICharacterInfo, frames: Record<TFrameI
   for (const [frame_id, frame] of traversal(frames)) {
 
     if (frame.dvx) frame.dvx /= 2
-    if (frame.dvy) frame.dvy /= 2
+    if (frame.dvy) frame.dvy /= 4
     if (frame.dvz) frame.dvz /= 2
 
     const hit_a = take(frame, 'hit_a');

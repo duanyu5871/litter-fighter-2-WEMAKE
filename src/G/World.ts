@@ -7,6 +7,7 @@ import { PlayerController } from './Controller/PlayerController';
 import { Entity } from './Entity';
 import { GONE_FRAME_INFO, FrameAnimater } from './FrameAnimater';
 import { Grand } from './Grand';
+import { Ball } from './Ball';
 export interface ICube {
   left: number;
   right: number;
@@ -16,9 +17,9 @@ export interface ICube {
   far: number;
 }
 export class World {
-  static readonly DEFAULT_GRAVITY = 0.9;
+  static readonly DEFAULT_GRAVITY = 0.4;
   static readonly DEFAULT_FRICTION_FACTOR = 0.95//0.894427191;
-  static readonly DEFAULT_FRICTION = 0.1;
+  static readonly DEFAULT_FRICTION = 0.2;
 
   gravity = World.DEFAULT_GRAVITY;
   friction_factor = World.DEFAULT_FRICTION_FACTOR;
@@ -36,7 +37,12 @@ export class World {
   protected _players = new Set<Character>();
   get width() { return this.grand.boundarys.right - this.grand.boundarys.left }
   get depth() { return this.grand.boundarys.far - this.grand.boundarys.near };
-
+  get middle() {
+    return ({
+      x: (this.grand.boundarys.right + this.grand.boundarys.left) / 2,
+      z: (this.grand.boundarys.far + this.grand.boundarys.near) / 2,
+    })
+  }
   constructor(canvas: HTMLCanvasElement) {
     this.renderer = new THREE.WebGLRenderer({ canvas });
     this.camera.position.z = 0;
@@ -116,17 +122,28 @@ export class World {
     const { left, right, near, far } = this.grand.boundarys;
     for (const e of this.entities) {
       e.update();
-      const { x, z } = e.position;
-      if (x < left)
-        e.position.x = e.position.x = left;
-      else if (x > right)
-        e.position.x = e.position.x = right;
+      if (e instanceof Character) {
+        const { x, z } = e.position;
+        if (x < left)
+          e.position.x = e.position.x = left;
+        else if (x > right)
+          e.position.x = e.position.x = right;
+        if (z < far)
+          e.position.z = e.position.z = far;
+        else if (z > near)
+          e.position.z = e.position.z = near;
+      } else if (e instanceof Ball) {
+        const { x, z } = e.position;
+        if (x < left - 800)
+          e.enter_frame({ id: 'gone' })
+        else if (x > right + 800)
+          e.enter_frame({ id: 'gone' })
+        if (z < far)
+          e.position.z = e.position.z = far;
+        else if (z > near)
+          e.position.z = e.position.z = near;
 
-      if (z < far)
-        e.position.z = e.position.z = far;
-      else if (z > near)
-        e.position.z = e.position.z = near;
-
+      }
       if (e.get_frame().id === GONE_FRAME_INFO.id)
         this.remove_entities(e);
     }
@@ -223,6 +240,9 @@ export class World {
     if (!data || !('frames' in data)) return;
     const e = new FrameAnimater(this, data)
     e.position.set(x, y, z)
+    e.sprite.material.depthTest = false;
+    e.sprite.material.depthWrite = false;
+    e.sprite.renderOrder = 2
     e.enter_frame(f)
     e.attach()
   }

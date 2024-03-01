@@ -1,7 +1,7 @@
-import type { Projecttile } from "./Projecttile";
+import type { Ball } from "./Ball";
 
 export interface Creators {
-  'projecttile': (...args: ConstructorParameters<typeof Projecttile>) => Projecttile;
+  'ball': (...args: ConstructorParameters<typeof Ball>) => Ball;
 }
 
 export class Factory {

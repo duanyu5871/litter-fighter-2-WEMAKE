@@ -17,7 +17,7 @@ export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string): Re
       delete_val_equal_keys(v, ['dvx', 'dvy', 'dvz'], [0, void 0]);
       if (typeof v.dvx === 'number') v.dvx /= 2;
       if (typeof v.dvz === 'number') v.dvz /= 2;
-      if (typeof v.dvy === 'number') v.dvy *= -1.1;
+      if (typeof v.dvy === 'number') v.dvy *= -0.5;
     });
     const opoint = take_sections(_content, 'opoint:', 'opoint_end:', r => _content = r);
     opoint?.forEach(v => {

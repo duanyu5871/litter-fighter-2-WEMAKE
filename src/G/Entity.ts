@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import BaseState from "../BaseState";
 import { dat_mgr } from '../DatLoader';
 import { Defines } from '../defines';
-import { IBaseData, IBdyInfo, ICharacterData, IEntityData, IFrameInfo, IGameObjData, IItrInfo, IProjecttileData, IWeaponData, TNextFrame } from '../js_utils/lf2_type';
+import { IBaseData, IBdyInfo, ICharacterData, IEntityData, IFrameInfo, IGameObjData, IItrInfo, IBallData, IWeaponData, TNextFrame } from '../js_utils/lf2_type';
 import { EntityIndicators } from './EntityIndicators';
 import { factory } from './Factory';
 import { FrameAnimater } from './FrameAnimater';
@@ -10,11 +10,14 @@ import type { World } from './World';
 import { ICube } from './World';
 import { create_picture_by_img_key } from './loader/loader';
 
-export type TData = IBaseData | ICharacterData | IWeaponData | IEntityData | IProjecttileData
+export type TData = IBaseData | ICharacterData | IWeaponData | IEntityData | IBallData
 export const V_SHAKE = 4;
 export const A_SHAKE = 4;
 let __team__ = 4;
-export class Entity<D extends IGameObjData = IGameObjData> extends FrameAnimater<D> {
+export class Entity<
+  D extends IGameObjData = IGameObjData,
+  F extends IFrameInfo = IFrameInfo
+> extends FrameAnimater<D> {
   readonly shadow: THREE.Object3D;
   readonly velocity = new THREE.Vector3(0, 0, 0);
   team: number = ++__team__;
@@ -36,7 +39,7 @@ export class Entity<D extends IGameObjData = IGameObjData> extends FrameAnimater
     this._indicators.show = v;
   }
 
-  override set_frame(v: IFrameInfo) {
+  override set_frame(v: F) {
     const prev_state = this.get_frame().state;
     super.set_frame(v);
     const next_state = this.get_frame().state;
@@ -46,15 +49,18 @@ export class Entity<D extends IGameObjData = IGameObjData> extends FrameAnimater
 
     if (v.opoint) {
       for (const o of v.opoint) {
-        const d = dat_mgr.find(o.oid) as IProjecttileData;
+        const d = dat_mgr.find(o.oid) as IBallData;
         if (!d) {
           console.warn('data not found! id:', o.oid)
           continue;
         }
-        if (d.type !== 'projecttile') continue;
-        const create = factory.get('projecttile');
+        if (d.type !== 'ball') {
+          console.warn('support type:', d.type)
+          continue;
+        }
+        const create = factory.get('ball');
         if (!create) {
-          console.warn('creator not found! ', 'projecttile')
+          console.warn('creator not found! ', 'ball')
           continue;
         }
         create?.(this.world, d).setup(this, o).attach()

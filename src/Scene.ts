@@ -5,7 +5,7 @@ import { World } from './G/World';
 import random_get from './Utils/random_get';
 import { TFace, TFrameId } from './js_utils/lf2_type';
 
-import './G/Projecttile';
+import './G/Ball';
 import { DDDController } from './G/Controller/DDDController';
 let character_id = 1;
 
@@ -18,10 +18,11 @@ export default function run(canvas: HTMLCanvasElement) {
     if (disposed) return;
 
     play_character(_character_idx);
-    for (let i = 0; i < 1; ++i) {
+    for (let i = 0; i < 10; ++i) {
       const d = random_get(dat_mgr.characters);
       const e = new Character(world, d)
-      e.controller = new DDDController(e);
+      if (i === 0)
+        e.controller = new DDDController(e);
       e.id = '' + character_id;
       e.position.x = Math.random() * world.width;
       e.position.z = Math.random() * world.depth;
@@ -77,19 +78,24 @@ export default function run(canvas: HTMLCanvasElement) {
       e.stopImmediatePropagation();
     }
     switch (e.key?.toUpperCase()) {
-      case 'ARROWUP':
-        if (!e.shiftKey) break;
-        interrupt();
-        _character_idx = (_character_idx + 1) % dat_mgr.characters.length;
-        play_character(_character_idx)
-        break;
-      case 'ARROWDOWN':
+      case 'ARROWUP': {
         if (!e.shiftKey) break;
         interrupt();
         const l = dat_mgr.characters.length;
+        if (!l) break;
+        _character_idx = (_character_idx + 1) % l;
+        play_character(_character_idx)
+        break;
+      }
+      case 'ARROWDOWN': {
+        if (!e.shiftKey) break;
+        interrupt();
+        const l = dat_mgr.characters.length;
+        if (!l) break;
         _character_idx = (_character_idx + l - 1) % l;
         play_character(_character_idx)
         break;
+      }
       case 'F2':
         interrupt();
         if (!world.paused) world.paused = true;
