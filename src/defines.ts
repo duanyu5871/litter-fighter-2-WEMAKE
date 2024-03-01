@@ -16,9 +16,23 @@ export namespace Defines {
     Injured = 11,
     Falling = 12,
     Lying = 14,
-    Ice = 15,
+    Frozen = 15,
     Tired = 16,
+
+    // 15,
+    Flame = 18,
+    NormalBall = 3000,
+    BallHitting = 3001,
+    BallFlying4 = 3002,
+    BallRebounding = 3003,
+    BallDisappear = 3004,
+    SturdyBall = 3005,
+    PunchThroughBall = 3006,
   }
+  export enum PState {
+
+  }
+
   export enum ItrKind {
     Normal = 0,       // 特殊特技
     Catch = 1,        // 捉住暈眩(state 16) |的人

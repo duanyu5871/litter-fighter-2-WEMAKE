@@ -1,4 +1,4 @@
-import { IWeaponInfo, TFrameId, IFrameInfo, IWeaponData } from '../lf2_type';
+import { IFrameInfo, IWeaponData, IWeaponInfo, TFrameId } from '../lf2_type';
 import { match_all } from '../match_all';
 import { match_block_once } from '../match_block';
 import { match_colon_value } from '../match_colon_value';
@@ -18,6 +18,8 @@ export function make_weapon_data(info: IWeaponInfo, full_str: string, frames: Re
       weapon_strength = set_obj_field(weapon_strength, id, entry);
     }
   }
+
+
 
   return {
     id: '',
