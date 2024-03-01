@@ -20,6 +20,8 @@ export class Entity<
 > extends FrameAnimater<D> {
   readonly shadow: THREE.Object3D;
   readonly velocity = new THREE.Vector3(0, 0, 0);
+  
+  hp: number = 0;
   team: number = ++__team__;
   readonly states: Map<number, BaseState>;
 

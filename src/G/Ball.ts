@@ -25,6 +25,7 @@ export class Ball extends Entity<IBallData, IBallFrameInfo> {
   }
 
   setup(shotter: Entity, o: IOpointInfo) {
+    this.hp = this.data.base.hp;
     const shotter_frame = shotter.get_frame();
     this.team = shotter.team;
     this.face = (o.facing === 1 ? -shotter.face : shotter.face) as TFace;
@@ -34,7 +35,6 @@ export class Ball extends Entity<IBallData, IBallFrameInfo> {
     x = x - this._face * (shotter_frame.centerx - o.x);
     this.position.set(x, y, z);
     this.enter_frame(o.action ?? 0);
-    console.log(this.get_frame())
     return this;
   }
   set_frame(v: IBallFrameInfo): void {
@@ -53,6 +53,13 @@ export class Ball extends Entity<IBallData, IBallFrameInfo> {
       this.data.base.weapon_hit_sound && sound_mgr.play(this.data.base.weapon_hit_sound,
         this.position.x, this.position.y, this.position.z)
     }
+  }
+  update(): void {
+    super.update();
+
+    const f = this.get_frame();
+    if (f.hp) this.hp -= f.hp;
+    if (!this.hp) f.on_dead && this.enter_frame(f.on_dead);
   }
 }
 

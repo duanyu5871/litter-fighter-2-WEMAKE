@@ -188,6 +188,7 @@ export interface IBallFrameInfo extends IFrameInfo {
   on_rebounding?: TNextFrame;
   on_be_hit?: TNextFrame;
   on_hitting?: TNextFrame;
+  on_dead?: TNextFrame;
   speedz?: number;
 }
 
@@ -291,6 +292,7 @@ export interface IWeaponInfo extends IGameObjInfo {
   weapon_broken_sound: string;
 }
 export interface IBallInfo extends IGameObjInfo {
+  hp: number;
   weapon_hit_sound: string;
   weapon_drop_sound: string;
   weapon_broken_sound: string;
