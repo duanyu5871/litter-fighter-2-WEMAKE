@@ -1,7 +1,7 @@
-import Character from '../Character';
-import BaseController, { KEY_CODE_LIST } from "./BaseController";
+import { Character } from '../Character';
+import { KEY_CODE_LIST, BaseController } from "./BaseController";
 
-export default class PlayerController extends BaseController {
+export class PlayerController extends BaseController {
   kc: Record<TKeyName, string> = {
     L: 'a',
     R: 'd',

@@ -178,8 +178,12 @@ export interface IFrameInfo {
   itr?: IItrInfo[];
   wpoint?: IWpointInfo;
   bpoint?: IBpointInfo;
-  opoint?: IOpointInfo;
+  opoint?: IOpointInfo[];
   cpoint?: TTODO;
+}
+
+export interface IProjecttileFrameInfo extends IFrameInfo {
+  speedz?: number;
 }
 
 export interface ICpointInfo {
@@ -304,21 +308,24 @@ export interface IBgData extends IBaseData<IBgInfo> {
   layers: IBgLayerInfo[];
 }
 
-export interface IGameObjData<I extends IGameObjInfo = IGameObjInfo> extends IBaseData<I> {
-  frames: Record<TFrameId, IFrameInfo>;
+export interface IGameObjData<
+  I extends IGameObjInfo = IGameObjInfo,
+  F extends IFrameInfo = IFrameInfo,
+> extends IBaseData<I> {
+  frames: Record<TFrameId, F>;
 }
 
-export interface IEntityData extends IGameObjData<IGameObjInfo> {
+export interface IEntityData extends IGameObjData<IGameObjInfo, IFrameInfo> {
   type: 'entity';
 }
-export interface ICharacterData extends IGameObjData<ICharacterInfo> {
+export interface ICharacterData extends IGameObjData<ICharacterInfo, IFrameInfo> {
   type: 'character';
 }
-export interface IWeaponData extends IGameObjData<IWeaponInfo> {
+export interface IWeaponData extends IGameObjData<IWeaponInfo, IFrameInfo> {
   type: 'weapon';
   weapon_strength?: TTODO;
 }
-export interface IProjecttileData extends IGameObjData<IProjecttileInfo> {
+export interface IProjecttileData extends IGameObjData<IProjecttileInfo, IProjecttileFrameInfo> {
   type: 'projecttile';
 }
 export interface ICharacterFrameIndexes {

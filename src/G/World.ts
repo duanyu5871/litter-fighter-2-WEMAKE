@@ -2,10 +2,10 @@ import * as THREE from 'three';
 import { dat_mgr } from '../DatLoader';
 import { Defines } from '../defines';
 import { IBdyInfo, IFrameInfo, IItrInfo } from '../js_utils/lf2_type';
-import Character from './Character';
-import PlayerController from './Controller/PlayerController';
-import Entity from './Entity';
-import FrameAnimater, { GONE_FRAME_INFO } from './FrameAnimater';
+import { Character } from './Character';
+import { PlayerController } from './Controller/PlayerController';
+import { Entity } from './Entity';
+import { GONE_FRAME_INFO, FrameAnimater } from './FrameAnimater';
 import { Grand } from './Grand';
 export interface ICube {
   left: number;
@@ -15,7 +15,7 @@ export interface ICube {
   near: number;
   far: number;
 }
-export default class World {
+export class World {
   static readonly DEFAULT_GRAVITY = 0.9;
   static readonly DEFAULT_FRICTION_FACTOR = 0.95//0.894427191;
   static readonly DEFAULT_FRICTION = 0.1;
@@ -39,10 +39,7 @@ export default class World {
 
   constructor(canvas: HTMLCanvasElement) {
     this.renderer = new THREE.WebGLRenderer({ canvas });
-    const wtf = Math.sqrt(2 * Math.pow(550, 2)) / 4;
-    this.camera.position.y = Math.floor(wtf * 3);
-    this.camera.position.z = Math.floor(wtf * 3);
-    this.camera.rotateX(-Math.PI / 4);
+    this.camera.position.z = 0;
   }
 
   add_game_objs(...objs: FrameAnimater[]) {
@@ -119,16 +116,16 @@ export default class World {
     const { left, right, near, far } = this.grand.boundarys;
     for (const e of this.entities) {
       e.update();
-      const { x, z } = e.sprite.position;
+      const { x, z } = e.position;
       if (x < left)
-        e.position.x = e.sprite.position.x = left;
+        e.position.x = e.position.x = left;
       else if (x > right)
-        e.position.x = e.sprite.position.x = right;
+        e.position.x = e.position.x = right;
 
       if (z < far)
-        e.position.z = e.sprite.position.z = far;
+        e.position.z = e.position.z = far;
       else if (z > near)
-        e.position.z = e.sprite.position.z = near;
+        e.position.z = e.position.z = near;
 
       if (e.get_frame().id === GONE_FRAME_INFO.id)
         this.remove_entities(e);
@@ -149,7 +146,7 @@ export default class World {
     if (!player_count) return;
     let new_x = 0;
     for (const player of this._players) {
-      new_x += player.sprite.position.x - 794 / 2 + player.face * 794 / 6;
+      new_x += player.position.x - 794 / 2 + player.face * 794 / 6;
     }
     new_x /= player_count;
     const { left, right } = this.grand.boundarys;
@@ -187,10 +184,8 @@ export default class World {
       for (let j = 0; j < l1; ++j) {
         const itr = af.itr[i];
         const bdy = bf.bdy[j];
-
-
+        if (a.team === b.team) continue;
         if (itr.kind === 0 && bdy.kind === 0) {
-
           if (itr.vrest) {
             if (b.v_rests.has(a.id)) {
               if (this._show_indicators) console.log(b.v_rests);
@@ -227,7 +222,11 @@ export default class World {
     const data = dat_mgr.find("spark");
     if (!data || !('frames' in data)) return;
     const e = new FrameAnimater(this, data)
-    e.position.set(x, y, z)
+    e.position.set(
+      Math.floor(x),
+      Math.floor(y - z / 2),
+      Math.floor(z)
+    )
     e.enter_frame(f)
     e.attach()
   }

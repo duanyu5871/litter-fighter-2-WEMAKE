@@ -1,10 +1,12 @@
 import { dat_mgr } from './DatLoader';
-import Character from './G/Character';
-import PlayerController from "./G/Controller/PlayerController";
-import World from './G/World';
+import { Character } from './G/Character';
+import { PlayerController } from "./G/Controller/PlayerController";
+import { World } from './G/World';
 import random_get from './Utils/random_get';
-import { ICharacterData, TFace, TFrameId } from './js_utils/lf2_type';
+import { TFace, TFrameId } from './js_utils/lf2_type';
 
+import './G/Projecttile';
+import { DDDController } from './G/Controller/DDDController';
 let character_id = 1;
 
 export default function run(canvas: HTMLCanvasElement) {
@@ -14,11 +16,12 @@ export default function run(canvas: HTMLCanvasElement) {
   let _character: Character | undefined;
   dat_mgr.load().then(() => {
     if (disposed) return;
+
     play_character(_character_idx);
-    for (let i = 0; i < 100; ++i) {
+    for (let i = 0; i < 1; ++i) {
       const d = random_get(dat_mgr.characters);
-      if (!d || d.type !== 'character') { continue; }
-      const e = new Character(world, d as ICharacterData)
+      const e = new Character(world, d)
+      e.controller = new DDDController(e);
       e.id = '' + character_id;
       e.position.x = Math.random() * world.width;
       e.position.z = Math.random() * world.depth;
@@ -50,7 +53,7 @@ export default function run(canvas: HTMLCanvasElement) {
     }
     const data = dat_mgr.characters[idx];
     if (!data) return;
-    _character = new Character(world, data as ICharacterData)
+    _character = new Character(world, data)
     _character.id = '' + (++character_id)
     _character.position.x = x;
     _character.position.y = y;

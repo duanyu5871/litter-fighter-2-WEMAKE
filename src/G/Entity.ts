@@ -1,21 +1,23 @@
 import * as THREE from 'three';
 import BaseState from "../BaseState";
+import { dat_mgr } from '../DatLoader';
 import { Defines } from '../defines';
 import { IBaseData, IBdyInfo, ICharacterData, IEntityData, IFrameInfo, IGameObjData, IItrInfo, IProjecttileData, IWeaponData, TNextFrame } from '../js_utils/lf2_type';
 import { EntityIndicators } from './EntityIndicators';
-import FrameAnimater from './FrameAnimater';
-import type World from './World';
+import { factory } from './Factory';
+import { FrameAnimater } from './FrameAnimater';
+import type { World } from './World';
 import { ICube } from './World';
-import { create_picture_by_img_key, create_picture_by_pic_info } from './loader/loader';
+import { create_picture_by_img_key } from './loader/loader';
 
 export type TData = IBaseData | ICharacterData | IWeaponData | IEntityData | IProjecttileData
-
 export const V_SHAKE = 4;
 export const A_SHAKE = 4;
-export default class Entity<D extends IGameObjData = IGameObjData> extends FrameAnimater<D> {
+let __team__ = 4;
+export class Entity<D extends IGameObjData = IGameObjData> extends FrameAnimater<D> {
   readonly shadow: THREE.Object3D;
   readonly velocity = new THREE.Vector3(0, 0, 0);
-  readonly team: number = 0;
+  team: number = ++__team__;
   readonly states: Map<number, BaseState>;
 
   v_rests = new Map<string, number>();
@@ -35,11 +37,28 @@ export default class Entity<D extends IGameObjData = IGameObjData> extends Frame
   }
 
   override set_frame(v: IFrameInfo) {
-    const prev_state = this._frame?.state;
+    const prev_state = this.get_frame().state;
     super.set_frame(v);
-    const next_state = this._frame?.state;
+    const next_state = this.get_frame().state;
     if (prev_state !== next_state && next_state !== void 0) {
       this.state = this.states.get(next_state) || this.states.get(Defines.State.Any);
+    }
+
+    if (v.opoint) {
+      for (const o of v.opoint) {
+        const d = dat_mgr.find(o.oid) as IProjecttileData;
+        if (!d) {
+          console.warn('data not found! id:', o.oid)
+          continue;
+        }
+        if (d.type !== 'projecttile') continue;
+        const create = factory.get('projecttile');
+        if (!create) {
+          console.warn('creator not found! ', 'projecttile')
+          continue;
+        }
+        create?.(this.world, d).setup(this, o).attach()
+      }
     }
   }
 
@@ -64,7 +83,7 @@ export default class Entity<D extends IGameObjData = IGameObjData> extends Frame
     });
     this.shadow = new THREE.Mesh(geometry, shadow_material);
     this.shadow.renderOrder = 0
-    this.shadow.rotation.x = Math.PI * -0.5;
+    // this.shadow.rotation.x = Math.PI * -0.5;
   }
 
   velocity_decay() {
@@ -135,11 +154,8 @@ export default class Entity<D extends IGameObjData = IGameObjData> extends Frame
         this.on_after_landing();
       }
     }
-    const x = Math.floor(this.position.x)
-    const y = Math.floor(this.position.y)
-    const z = Math.floor(this.position.z)
-    this.sprite.position.set(x, y, z)
-    this.shadow.position.set(x, 1, z);
+
+    this.update_sprite_position();
     if (this._motionless > 0) {
       --this._motionless;
     } else if (this._shaking > 0) {
@@ -150,11 +166,15 @@ export default class Entity<D extends IGameObjData = IGameObjData> extends Frame
       this.v_rests.forEach((v, k, m) => { v > 1 ? m.set(k, v - 1) : m.delete(k) });
       this.a_rest > 1 ? this.a_rest-- : this.a_rest = 0;
     };
-
-
-
     this.on_after_update();
   }
+
+  override update_sprite_position(): void {
+    super.update_sprite_position();
+    const { x, z } = this.position;
+    this.shadow.position.set(x, - z / 2, z);
+  }
+
   on_after_state_update(): void { }
   on_after_landing(): void { }
   on_after_update(): void { }
@@ -169,4 +189,3 @@ export default class Entity<D extends IGameObjData = IGameObjData> extends Frame
   }
   dispose(): void { }
 }
-

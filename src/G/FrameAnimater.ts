@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import random_get from '../Utils/random_get';
-import type World from './World';
+import type { World } from './World';
 import create_pictures from './loader/create_pictures';
 import { IFrameInfo, INextFrameFlags, ITexturePieceInfo, IGameObjData, TFace, TFrameId, TNextFrame, INextFrame } from '../js_utils/lf2_type';
 import { IPictureInfo } from '../types/IPictureInfo';
@@ -32,7 +32,9 @@ export const GONE_FRAME_INFO: IFrameInfo = {
   centerx: 0,
   centery: 0
 };
-export default class FrameAnimater<D extends IGameObjData = IGameObjData> {
+
+
+export class FrameAnimater<D extends IGameObjData = IGameObjData> {
   id: string = '';
   wait: number = 0;
 
@@ -44,7 +46,7 @@ export default class FrameAnimater<D extends IGameObjData = IGameObjData> {
 
   protected _piece: ITexturePieceInfo = EMPTY_PIECE;
   protected _face: TFace = 1;
-  protected _frame = EMPTY_FRAME_INFO;
+  private _frame: D['frames'][0] = EMPTY_FRAME_INFO;
 
   get face() { return this._face; }
   set face(v: TFace) {
@@ -53,7 +55,7 @@ export default class FrameAnimater<D extends IGameObjData = IGameObjData> {
     this.update_sprite();
   }
 
-  set_frame(v: IFrameInfo) {
+  set_frame(v: D['frames'][0]) {
     this._frame = v;
   }
   get_frame() { return this._frame; }
@@ -65,26 +67,30 @@ export default class FrameAnimater<D extends IGameObjData = IGameObjData> {
 
     const material = new THREE.SpriteMaterial({
       map: this.pictures.get('0')?.texture,
-      depthWrite: false,
-      depthTest: false
+      // depthWrite: false,
+      // depthTest: false
     });
     const sprite = this.sprite = new THREE.Sprite(material);
     sprite.userData.owner = this;
     sprite.material = material;
     sprite.renderOrder = 1;
   }
-  attach() {
+  update_sprite_position() {
+    const { x, y, z } = this.position;
     this.sprite.position.set(
-      Math.floor(this.position.x),
-      Math.floor(this.position.y),
-      Math.floor(this.position.z),
+      Math.floor(x),
+      Math.floor(y - z / 2),
+      Math.floor(z),
     );
+  }
+  attach() {
+    this.update_sprite_position();
     this.update_sprite();
     this.world.add_game_objs(this);
   }
   private _previous = {
     face: (void 0) as TFace | undefined,
-    frame: (void 0) as IFrameInfo | undefined,
+    frame: (void 0) as D['frames'][0] | undefined,
   }
   protected update_sprite() {
     const frame = this.get_frame();
@@ -119,12 +125,12 @@ export default class FrameAnimater<D extends IGameObjData = IGameObjData> {
 
   }
 
-  find_auto_frame(): IFrameInfo {
+  find_auto_frame(): D['frames'][0] {
     console.warn('[FrameAnimater] find_auto_frame(): auto frame not set!');
     return this.get_frame();
   }
 
-  find_frame_by_id(id: TFrameId): IFrameInfo {
+  find_frame_by_id(id: TFrameId): D['frames'][0] {
     if (id === 'self' || id === '') return this.get_frame();
     else if (id === 'auto') return this.find_auto_frame();
     else if (id === 'gone') return GONE_FRAME_INFO
@@ -175,7 +181,7 @@ export default class FrameAnimater<D extends IGameObjData = IGameObjData> {
     const { x, y, z } = this.position;
     sound && sound_mgr.play(sound, x, y, z);
     this.set_frame(frame);
-    
+
     const next_wait = flags?.wait;
     if (next_wait === 'i') { // 不必做什么，继承上一帧的wait
     } else if (typeof next_wait === 'number') {

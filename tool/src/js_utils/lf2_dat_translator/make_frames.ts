@@ -1,32 +1,40 @@
 import { delete_val_equal_keys } from '../delete_val_equal_keys';
-import { TFrameId, IFrameInfo } from '../lf2_type';
+import { IFrameInfo, TFrameId } from '../lf2_type';
 import { match_all } from '../match_all';
 import { match_colon_value } from '../match_colon_value';
 import { to_num } from '../to_num';
 import { get_next_frame_by_id } from './get_the_next';
 import take_sections from './take_sections';
 
-export function make_frames(text: string): Record<TFrameId, IFrameInfo> {
-  const frames: Record<TFrameId, IFrameInfo> = {};
+export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string): Record<TFrameId, F> {
+  const frames: Record<TFrameId, F> = {};
   const frame_regexp = /<frame>\s+(.*?)\s+(.*)((.|\n)+?)<frame_end>/g;
   for (const [, frame_id, frame_name, content] of match_all(text, frame_regexp)) {
     let _content = content;
     const bdy = take_sections(_content, 'bdy:', 'bdy_end:', r => _content = r);
     const itr = take_sections(_content, 'itr:', 'itr_end:', r => _content = r);
     itr?.forEach(v => {
+      delete_val_equal_keys(v, ['dvx', 'dvy', 'dvz'], [0, void 0]);
       if (typeof v.dvx === 'number') v.dvx /= 2;
       if (typeof v.dvz === 'number') v.dvz /= 2;
       if (typeof v.dvy === 'number') v.dvy *= -1.1;
     });
+    const opoint = take_sections(_content, 'opoint:', 'opoint_end:', r => _content = r);
+    opoint?.forEach(v => {
+      delete_val_equal_keys(v, ['dvx', 'dvy', 'dvz'], [0, void 0]);
+      if (typeof v.dvx === 'number') v.dvx /= 2;
+      if (typeof v.dvz === 'number') v.dvz /= 2;
+      if (typeof v.dvy === 'number') v.dvy *= -1.1;
+    });
+
     const wpoint = take_sections(_content, 'wpoint:', 'wpoint_end:', r => _content = r)[0];
     const bpoint = take_sections(_content, 'bpoint:', 'bpoint_end:', r => _content = r)[0];
-    const opoint = take_sections(_content, 'opoint:', 'opoint_end:', r => _content = r)[0];
     const cpoint = take_sections(_content, 'cpoint:', 'cpoint_end:', r => _content = r)[0];
 
     const fields: any = {};
     for (const [name, value] of match_colon_value(_content)) fields[name] = to_num(value);
 
-    const frame: IFrameInfo = {
+    const frame: F = {
       ...fields,
       id: frame_id,
       name: frame_name,
@@ -42,13 +50,13 @@ export function make_frames(text: string): Record<TFrameId, IFrameInfo> {
 
     if (!bdy?.length) delete frame.bdy;
     if (!itr?.length) delete frame.itr;
+    if (!opoint?.length) delete frame.opoint;
     delete_val_equal_keys(frame, ['dvx', 'dvy', 'dvz'], [0, void 0]);
     delete_val_equal_keys(frame, ['mp', 'hp'], [0, void 0]);
     delete_val_equal_keys(frame, ['sound'], ['', void 0]);
     delete_val_equal_keys(frame, ['sound'], ['', void 0]);
-    delete_val_equal_keys(frame, ['wpoint', 'bpoint', 'opoint', 'cpoint', 'bdy', 'itr'], [null, void 0]);
+    delete_val_equal_keys(frame, ['wpoint', 'bpoint', 'cpoint', 'bdy', 'itr'], [null, void 0]);
     delete_val_equal_keys(frame.wpoint, ['dvx', 'dvy', 'dvz'], [0, void 0]);
-    delete_val_equal_keys(frame.opoint, ['dvx', 'dvy', 'dvz'], [0, void 0]);
     delete_val_equal_keys(frame.cpoint, ['throwvx', 'throwvy', 'throwvz', 'throwinjury'], [0, void 0, -842150451]);
 
     if (frame.mp && frame.mp > 1000) {

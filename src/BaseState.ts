@@ -1,4 +1,4 @@
-import Entity from "./G/Entity";
+import { Entity } from "./G/Entity";
 
 
 export default abstract class BaseState<E extends Entity = Entity> {

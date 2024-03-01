@@ -1,6 +1,6 @@
-import BaseController from "./BaseController";
+import { BaseController } from "./BaseController";
 
-export default class DDDController extends BaseController {
+export class DDDController extends BaseController {
   update() {
     const s = this.character.position.x - this.character.world.width / 2;
     if (s < -30) {

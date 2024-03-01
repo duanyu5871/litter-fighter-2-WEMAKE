@@ -1,5 +1,5 @@
 import { TNextFrame } from '../../js_utils/lf2_type';
-import Character from '../Character';
+import { Character } from '../Character';
 
 export const KEY_CODE_LIST = ['d', 'L', 'R', 'U', 'D', 'j', 'a'] as const;
 export const CONFLICTS_KEY_CODE_LIST: Record<TKeyName, TKeyName | undefined> = {
@@ -12,7 +12,7 @@ export const CONFLICTS_KEY_CODE_LIST: Record<TKeyName, TKeyName | undefined> = {
   D: "U",
 }
 export const DOUBLE_CLICK_INTERVAL = 40
-export default class BaseController implements IController<Character> {
+export class BaseController implements IController<Character> {
   _need_punch: number = 0;
   _next_punch_ready: number = 0;
   _update_count = 0;

@@ -2,10 +2,10 @@ import fs from 'fs/promises';
 import path from 'path';
 import dat_to_json from './js_utils/lf2_dat_translator/dat_2_json';
 import { read_indexes } from './js_utils/lf2_dat_translator/read_indexes';
+import { ICharacterData, IDataLists } from './js_utils/lf2_type';
 import { read_lf2_dat_file } from './read_old_lf2_dat_file';
 import { copy_dir } from './utils/copy_dir';
 import { read_text_file } from './utils/read_text_file';
-import { IDataLists } from './js_utils/lf2_type';
 
 async function parse_indexes(src_path: string): Promise<IDataLists | undefined> {
   const text = await read_text_file(src_path)
@@ -29,6 +29,10 @@ async function parse_under_dir(src_dir_path: string, dst_dir_path: string, index
         indexes?.backgrounds.find(v => src_path.endsWith(v.file))
       console.log(src_path, index)
       const json = dat_to_json(buff.toString().replace(/\\/g, '/').replace(/\r/g, ''), index);
+      {
+        let dirty = json as Partial<ICharacterData>
+        if (dirty?.frames?.[3]?.opoint) delete dirty.frames[3].opoint
+      }
       if (!json) {
         await fs.copyFile(src_path, dst_path);
         continue;

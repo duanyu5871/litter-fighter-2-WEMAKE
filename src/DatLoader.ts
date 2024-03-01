@@ -1,5 +1,6 @@
 import { Info } from '@fimagine/logger';
 import { TData } from './G/Entity';
+import { sound_mgr } from './G/loader/SoundMgr';
 import { image_pool } from './G/loader/loader';
 import { cook_frame } from './G/preprocess_frame';
 import { IBgData, ICharacterData, IDataMap, IEntityData, IProjecttileData, IWeaponData } from './js_utils/lf2_type';
@@ -37,6 +38,19 @@ export class DataMgr {
     this.clear();
   }
   private async _cook_data(data: TData): Promise<TData> {
+    {
+      let {
+        weapon_broken_sound: a,
+        weapon_drop_sound: b,
+        weapon_hit_sound: c,
+      } = (data as Partial<IWeaponData>).base ?? {}
+
+      a && sound_mgr.load(a, require('./G/' + a));
+      b && sound_mgr.load(b, require('./G/' + b));
+      c && sound_mgr.load(c, require('./G/' + c));
+    }
+
+
     if (!('frames' in data)) return data;
     const { frames, base: { files } } = data;
     const jobs = map(files, (_, v) => image_pool.load_by_pic_info(v, _ => require('./G/' + v.path)))
@@ -52,14 +66,14 @@ export class DataMgr {
     const _data_id = '' + data.id;
     if (_data_id !== _index_id) {
       console.warn(
-        `[DatLoader] index_id not equal to data_id,`,
+        `[DatLoader] _add_data(), index_id not equal to data_id,`,
         `index_id: ${_index_id}, data_id: ${_data_id},`,
         `will use index_id as data key.`
       );
     }
     if (data_map.has(_index_id)) {
       console.warn(
-        "[preprocess_data] id duplicated, old data will be overwritten!",
+        "[DatLoader] _add_data(), id duplicated, old data will be overwritten!",
         "old data:", data_map.get(_index_id),
         "new data:", data
       )
@@ -72,11 +86,14 @@ export class DataMgr {
     const data_list_map = create_data_list_map();
     try {
       const { objects, backgrounds } = await import(`./G/data/data.json`);
+      console.log('[DatLoader] loading: spark.json')
       await this._add_data("spark", await import('./G/spark.json'), data_map)
       for (const { id, file } of objects) {
+        console.log('[DatLoader] loading:', file)
         await this._add_data(id, await import(`./G/${file}`), data_map);
       }
       for (const { id, file } of backgrounds) {
+        console.log('[DatLoader] loading:', file)
         await this._add_data(id, await import(`./G/${file}`), data_map);
       }
       for (const [, v] of data_map) {
@@ -102,5 +119,5 @@ export class DataMgr {
     return this._data_map.get('' + id)
   }
 }
-export const dat_mgr = new DataMgr();
+export const dat_mgr = (window as any).dat_mgr = new DataMgr();
 

@@ -1,12 +1,12 @@
 import { CHARACTER_STATES } from '../State';
 import { Defines } from '../defines';
 import { IBdyInfo, ICharacterData, IFrameInfo, IItrInfo, INextFrameFlags } from '../js_utils/lf2_type';
-import Entity, { A_SHAKE, V_SHAKE } from './Entity';
+import { A_SHAKE, V_SHAKE, Entity } from './Entity';
 import { InvalidController } from './InvalidController';
-import type World from './World';
+import type { World } from './World';
 import { ICube } from './World';
 
-export default class Character extends Entity<ICharacterData> {
+export class Character extends Entity<ICharacterData> {
   protected _disposers: (() => void)[] = [];
   controller: IController<Character> = new InvalidController(this);
   protected _resting = 0;

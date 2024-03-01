@@ -1,4 +1,4 @@
-export default class ColonValueReader {
+export class ColonValueReader {
   private _cells: [string, 'str' | 'num' | 'num_2'][] = [];
   str(name: string): this { this._cells.push([name, 'str']); return this; }
   num(name: string): this { this._cells.push([name, 'num']); return this; }

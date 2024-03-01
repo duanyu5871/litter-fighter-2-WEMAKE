@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import Entity from './Entity';
+import { Entity } from './Entity';
 export const EMPTY_ARR = [] as const;
 export const INDICATORS_MATERIAL = {
   bdy: new THREE.SpriteMaterial({ color: 0x00ff00, transparent: true, opacity: 0.3, }),

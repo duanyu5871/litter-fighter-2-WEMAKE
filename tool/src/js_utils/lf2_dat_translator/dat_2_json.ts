@@ -1,11 +1,11 @@
-import { IBgData, IBaseData, ICharacterInfo, IDatIndex, IGameObjInfo, IProjecttileInfo, IWeaponInfo } from '../lf2_type';
+import { IBaseData, IBgData, ICharacterInfo, IDatIndex, IGameObjInfo, IProjecttileFrameInfo, IProjecttileInfo, IWeaponInfo } from '../lf2_type';
 import { IBgLayerInfo } from "../lf2_type/IBgLayerInfo";
 import { match_block_once } from '../match_block';
 import { match_colon_value } from '../match_colon_value';
 import { set_obj_field } from "../set_obj_field";
 import { take_blocks } from '../take_blocks';
 import { to_num } from '../to_num';
-import ColonValueReader from './ColonValueReader';
+import { ColonValueReader } from './ColonValueReader';
 import { make_character_data } from './make_character_data';
 import { make_entity_data } from './make_entity_data';
 import { make_frames } from './make_frames';
@@ -100,25 +100,27 @@ export default function dat_to_json(full_str: string, datIndex?: IDatIndex): IBa
     }
   }
 
-  const frames = make_frames(full_str)
   if (datIndex) {
     let ret: IBaseData | undefined = void 0;
     switch (datIndex.type) {
       case 1:
       case 2:
       case 4:
-      case 6: ret = make_weapon_data(base as IWeaponInfo, full_str, frames); break;
-      case 0: ret = make_character_data(base as ICharacterInfo, frames); break;
-      case 3: ret = make_projecttile_data(base as IProjecttileInfo, frames); break;
-      case 5: ret = make_entity_data(base as IGameObjInfo, frames); break;
+      case 6:
+        ret = make_weapon_data(base as IWeaponInfo, full_str, make_frames(full_str));
+        break;
+      case 0: ret = make_character_data(base as ICharacterInfo, make_frames(full_str)); break;
+      case 3: ret = make_projecttile_data(base as IProjecttileInfo, make_frames<IProjecttileFrameInfo>(full_str)); break;
+      case 5: ret = make_entity_data(base as IGameObjInfo, make_frames(full_str)); break;
       default:
         console.log('[dat_to_json] unknow dat type:', datIndex.type)
-        ret = make_entity_data(base as IGameObjInfo, frames);
+        ret = make_entity_data(base as IGameObjInfo, make_frames(full_str));
         break;
     }
     if (ret) ret.id = datIndex.id;
     return ret;
   } else {
+    const frames = make_frames(full_str)
     if ('small' in base && 'name' in base && 'head' in base)
       return make_character_data(base as ICharacterInfo, frames)
     if ('weapon_hp' in base)
