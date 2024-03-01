@@ -13,7 +13,7 @@ export function read_indexes(text: string | undefined | null): IDataLists | unde
       switch (name) {
         case 'id':
         case 'type': item[name] = to_num(value); break;
-        case 'file': item[name] = value; break;
+        case 'file': item[name] = value.replace(/\\/g, '/'); break;
       }
     }
     return item;
@@ -23,8 +23,8 @@ export function read_indexes(text: string | undefined | null): IDataLists | unde
     const item: IDatIndex = { id: '', type: 'bg', file: '' };
     for (const [name, value] of match_colon_value(line)) {
       switch (name) {
-        case 'id': item[name] = to_num(value); break;
-        case 'file': item[name] = value; break;
+        case 'id': item[name] = 'bg_' + value; break;
+        case 'file': item[name] = value.replace(/\\/g, '/'); break;
       }
     }
     return item;

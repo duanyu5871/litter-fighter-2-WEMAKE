@@ -13,5 +13,5 @@ export class SoundMgr {
     audio.play();
   }
 }
-export const sound_mgr = new SoundMgr();
+export const sound_mgr = (window as any).sound_mgr = new SoundMgr();
 

@@ -175,6 +175,7 @@ export default class FrameAnimater<D extends IGameObjData = IGameObjData> {
     const { x, y, z } = this.position;
     sound && sound_mgr.play(sound, x, y, z);
     this.set_frame(frame);
+    
     const next_wait = flags?.wait;
     if (next_wait === 'i') { // 不必做什么，继承上一帧的wait
     } else if (typeof next_wait === 'number') {

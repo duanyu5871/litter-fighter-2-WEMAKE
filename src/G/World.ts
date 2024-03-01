@@ -1,12 +1,12 @@
 import * as THREE from 'three';
+import { dat_mgr } from '../DatLoader';
 import { Defines } from '../defines';
+import { IBdyInfo, IFrameInfo, IItrInfo } from '../js_utils/lf2_type';
 import Character from './Character';
 import PlayerController from './Controller/PlayerController';
 import Entity from './Entity';
 import FrameAnimater, { GONE_FRAME_INFO } from './FrameAnimater';
 import { Grand } from './Grand';
-import { data_map } from './loader/preprocess_data';
-import { IItrInfo, IBdyInfo, IFrameInfo } from '../js_utils/lf2_type';
 export interface ICube {
   left: number;
   right: number;
@@ -224,7 +224,7 @@ export default class World {
     return false;
   }
   spark(x: number, y: number, z: number, f: number | string) {
-    const data = data_map.get("spark");
+    const data = dat_mgr.find("spark");
     if (!data || !('frames' in data)) return;
     const e = new FrameAnimater(this, data)
     e.position.set(x, y, z)

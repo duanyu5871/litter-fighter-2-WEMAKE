@@ -1,17 +1,18 @@
-import { IGameObjData, IFrameInfo, IEntityPictureInfo, ITexturePieceInfo } from '../js_utils/lf2_type';
+import { IEntityPictureInfo, IFrameInfo, IGameObjData, ITexturePieceInfo } from '../js_utils/lf2_type';
 import { traversal } from '../js_utils/traversal';
+import { sound_mgr } from './loader/SoundMgr';
 import { image_pool } from './loader/loader';
 import { preprocess_next_frame } from './preprocess_next_frame';
 const get_keys = <V extends {}>(v: V): (keyof V)[] => {
   return Object.keys(v) as (keyof V)[]
 }
-export const preprocess_frame = (data: IGameObjData, frame: IFrameInfo) => {
-  
+export const cook_frame = (data: IGameObjData, frame: IFrameInfo) => {
+
   let pic = frame.pic;
   let info: IEntityPictureInfo | undefined = void 0;
-
-  preprocess_frame_hit(frame);
-  preprocess_frame_hold(frame);
+  if (frame.sound) sound_mgr.load(frame.sound, require('./' + frame.sound));
+  cook_frame_hit(frame);
+  cook_frame_hold(frame);
 
   if (typeof pic === 'number') {
     for (const key in data.base.files) {
@@ -97,7 +98,7 @@ export const preprocess_frame = (data: IGameObjData, frame: IFrameInfo) => {
 
 };
 
-const preprocess_frame_hit = (frame: IFrameInfo) => {
+const cook_frame_hit = (frame: IFrameInfo) => {
   const hit = frame.hit;
   if (!hit) return;
 
@@ -111,7 +112,7 @@ const preprocess_frame_hit = (frame: IFrameInfo) => {
 }
 
 
-function preprocess_frame_hold(frame: IFrameInfo) {
+function cook_frame_hold(frame: IFrameInfo) {
   const hold = frame.hold;
   hold && get_keys(hold).forEach(k => {
     const v = hold[k];

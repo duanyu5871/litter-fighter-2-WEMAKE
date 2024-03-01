@@ -15,16 +15,19 @@ async function parse_indexes(src_path: string): Promise<IDataLists | undefined> 
 async function parse_under_dir(src_dir_path: string, dst_dir_path: string, indexes: IDataLists | undefined) {
   await fs.mkdir(dst_dir_path, { recursive: true }).catch(_ => void 0)
   for (const filename of await fs.readdir(src_dir_path)) {
-    const src_path = path.join(src_dir_path, filename)
+    const src_path = path.join(src_dir_path, filename).replace(/\\/g, '/')
     const stat = await fs.stat(src_path);
-    const dst_path = path.join(dst_dir_path, filename)
+    const dst_path = path.join(dst_dir_path, filename).replace(/\\/g, '/')
     if (stat.isDirectory()) {
       await parse_under_dir(src_path, dst_path, indexes)
       continue;
     }
     if (stat.isFile() && filename.endsWith('.dat')) {
       const buff = await read_lf2_dat_file(src_path);
-      const index = indexes?.objects.find(v => v.file.indexOf(filename) >= 0)
+      const index =
+        indexes?.objects.find(v => src_path.endsWith(v.file)) ||
+        indexes?.backgrounds.find(v => src_path.endsWith(v.file))
+      console.log(src_path, index)
       const json = dat_to_json(buff.toString().replace(/\\/g, '/').replace(/\r/g, ''), index);
       if (!json) {
         await fs.copyFile(src_path, dst_path);
@@ -43,6 +46,7 @@ async function parse_under_dir(src_dir_path: string, dst_dir_path: string, index
 async function main() {
   const indexes = await parse_indexes('./LittleFighter/data/data.txt');
   await parse_under_dir('./LittleFighter', './json', indexes);
+  await fs.writeFile('./json/data/data.json', JSON.stringify(indexes, null, 2).replace(/\.dat"/g, ".json\""))
   await copy_dir("./json", "../src/G");
   await copy_dir("./src/js_utils", "../src/js_utils");
 }

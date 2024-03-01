@@ -23,7 +23,6 @@ export default class PlayerController extends BaseController {
     keycode_defense = 'l'
   ) {
     super(character);
-    (window as any).sss = this;
     this.kc.L = keycode_left.toLowerCase();
     this.kc.R = keycode_right.toLowerCase();
     this.kc.U = keycode_up.toLowerCase();

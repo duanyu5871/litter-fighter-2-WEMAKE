@@ -1,67 +1,22 @@
+import { dat_mgr } from './DatLoader';
 import Character from './G/Character';
 import PlayerController from "./G/Controller/PlayerController";
-import { TData } from './G/Entity';
 import World from './G/World';
-import { sound_mgr } from './G/loader/SoundMgr';
-import preprocess_data from './G/loader/preprocess_data';
 import random_get from './Utils/random_get';
-import { arithmetic_progression } from './js_utils/arithmetic_progression';
 import { ICharacterData, TFace, TFrameId } from './js_utils/lf2_type';
 
 let character_id = 1;
+
 export default function run(canvas: HTMLCanvasElement) {
   let disposed = false;
 
-  const characters = [
-    import('./G/data/template.json'),
-    import('./G/data/julian.json'),
-    import('./G/data/firzen.json'),
-    import('./G/data/louisEX.json'),
-    import('./G/data/bat.json'),
-    import('./G/data/justin.json'),
-    import('./G/data/knight.json'),
-    import('./G/data/jan.json'),
-    import('./G/data/monk.json'),
-    import('./G/data/sorcerer.json'),
-    import('./G/data/jack.json'),
-    import('./G/data/mark.json'),
-    import('./G/data/hunter.json'),
-    import('./G/data/bandit.json'),
-    import('./G/data/deep.json'),
-    import('./G/data/john.json'),
-    import('./G/data/henry.json'),
-    import('./G/data/rudolf.json'),
-    import('./G/data/louis.json'),
-    import('./G/data/firen.json'),
-    import('./G/data/freeze.json'),
-    import('./G/data/dennis.json'),
-    import('./G/data/woody.json'),
-    import('./G/data/davis.json')
-  ]
-  let character_idx = 0;
-  let _datas: TData[] | undefined;
+  let _character_idx = 0;
   let _character: Character | undefined;
-  Promise.all([
-    import('./G/spark.json'),
-    import('./G/data/etc.json'),
-    ...characters
-  ]).then(arr => {
-    arithmetic_progression(1, 102).forEach(n => {
-      const p = n < 10 ?
-        `data/00${n}.wav` :
-        n < 100 ?
-          `data/0${n}.wav` :
-          `data/${n}.wav`;
-      sound_mgr.load(p, require(`./G/${p}`))
-    })
-    return Promise.all(arr.map(v => preprocess_data(v)))
-  }).then((datas) => {
+  dat_mgr.load().then(() => {
     if (disposed) return;
-    _datas = datas.filter(v => v.type === 'character');
-    play_character(character_idx);
-
+    play_character(_character_idx);
     for (let i = 0; i < 100; ++i) {
-      const d = random_get(_datas);
+      const d = random_get(dat_mgr.characters);
       if (!d || d.type !== 'character') { continue; }
       const e = new Character(world, d as ICharacterData)
       e.id = '' + character_id;
@@ -69,12 +24,11 @@ export default function run(canvas: HTMLCanvasElement) {
       e.position.z = Math.random() * world.depth;
       e.attach();
     }
-
   })
 
-  const world = new World(canvas);
+  const world = (window as any).world = new World(canvas);
   const play_character = (idx: number) => {
-    if (!_datas || disposed) return;
+    if (disposed) return;
     let x = 0;
     let y = 0;
     let z = 0;
@@ -94,11 +48,9 @@ export default function run(canvas: HTMLCanvasElement) {
       frame_id = _character.get_frame().id;
       _character.dispose()
     }
-    const d = _datas[idx];
-    if (d.type !== 'character') {
-      return;
-    }
-    _character = new Character(world, d as ICharacterData)
+    const data = dat_mgr.characters[idx];
+    if (!data) return;
+    _character = new Character(world, data as ICharacterData)
     _character.id = '' + (++character_id)
     _character.position.x = x;
     _character.position.y = y;
@@ -125,14 +77,15 @@ export default function run(canvas: HTMLCanvasElement) {
       case 'ARROWUP':
         if (!e.shiftKey) break;
         interrupt();
-        character_idx = (character_idx + 1) % characters.length;
-        play_character(character_idx)
+        _character_idx = (_character_idx + 1) % dat_mgr.characters.length;
+        play_character(_character_idx)
         break;
       case 'ARROWDOWN':
         if (!e.shiftKey) break;
         interrupt();
-        character_idx = (character_idx + characters.length - 1) % characters.length;
-        play_character(character_idx)
+        const l = dat_mgr.characters.length;
+        _character_idx = (_character_idx + l - 1) % l;
+        play_character(_character_idx)
         break;
       case 'F2':
         interrupt();
@@ -160,6 +113,7 @@ export default function run(canvas: HTMLCanvasElement) {
     release() {
       window.removeEventListener('keydown', eee)
       world.dispose()
+      dat_mgr.clear();
     }
   }
 }
