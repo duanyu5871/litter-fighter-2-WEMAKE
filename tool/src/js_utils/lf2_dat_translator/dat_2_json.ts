@@ -1,3 +1,4 @@
+import { IBackgroundData, IBaseData, IBgLayerInfo, ICharacterInfo, IDatIndex, IGameObjInfo, IProjecttileInfo, IWeaponInfo } from '../lf2_type';
 import { match_block_once } from '../match_block';
 import { match_colon_value } from '../match_colon_value';
 import { set_obj_field } from "../set_obj_field";

@@ -1,12 +1,11 @@
-declare type TFrameId = string | number
-declare type TTODO = any;
-
-declare type TFace = -1 | 1;
-declare type TTrend = -1 | 0 | 1;
-declare type BOOL = 1 | 0;
-interface IDataLists { objects: IDatIndex[], backgrounds: IDatIndex[] }
-interface IDatIndex { id: string | number; type: string | number; file: string; }
-declare interface IEntityPictureInfo {
+export type TFrameId = string | number
+export type TTODO = any;
+export type TFace = -1 | 1;
+export type TTrend = -1 | 0 | 1;
+export type BOOL = 1 | 0;
+export interface IDataLists { objects: IDatIndex[], backgrounds: IDatIndex[] }
+export interface IDatIndex { id: string | number; type: string | number; file: string; }
+export interface IEntityPictureInfo {
   id: string | number;
   begin: number;
   end: number;
@@ -16,7 +15,7 @@ declare interface IEntityPictureInfo {
   row: number;
   col: number;
 }
-declare interface INextFrameFlags {
+export interface INextFrameFlags {
 
   /**
    * 下一帧的持续时间策略
@@ -35,7 +34,7 @@ declare interface INextFrameFlags {
   turn?: number;
 }
 
-declare interface IHoldKeyCollection {
+export interface IHoldKeyCollection {
   a?: TNextFrame;
   d?: TNextFrame;
   j?: TNextFrame;
@@ -46,7 +45,7 @@ declare interface IHoldKeyCollection {
   B?: TNextFrame;
   F?: TNextFrame;
 }
-declare interface IHitKeyCollection {
+export interface IHitKeyCollection {
   sequences?: {
     [x in string]?: TNextFrame;
   }
@@ -96,14 +95,14 @@ declare interface IHitKeyCollection {
   /** 双击下方向键 */
   DD?: TNextFrame;
 }
-declare interface INextFrame {
+export interface INextFrame {
   id: TFrameId | TFrameId[];
   flags?: INextFrameFlags;
   condition?: string | ((e: any) => boolean);
 }
-declare type TNextFrame = INextFrame | INextFrame[]
+export type TNextFrame = INextFrame | INextFrame[]
 
-declare interface ITexturePieceInfo {
+export interface ITexturePieceInfo {
   /** 纹理ID */
   tex: number | string;
 
@@ -136,13 +135,13 @@ declare interface ITexturePieceInfo {
    */
   cy: number;
 }
-declare interface ITexturePieceInfos {
+export interface ITexturePieceInfos {
   /** 纹理数据 */
   1: ITexturePieceInfo;
   /** 纹理数据（镜像） */
   [-1]: ITexturePieceInfo;
 }
-declare interface IFramePictureInfo {
+export interface IFramePictureInfo {
   /** 纹理ID */
   tex: number | string;
   /** 精灵图裁剪起点X坐标（像素） */
@@ -155,7 +154,7 @@ declare interface IFramePictureInfo {
   h: number;
 }
 
-declare interface IFrameInfo {
+export interface IFrameInfo {
   id: TFrameId;
   name: string;
   pic: number | IFramePictureInfo | ITexturePieceInfos;
@@ -180,7 +179,7 @@ declare interface IFrameInfo {
   cpoint?: TTODO;
 }
 
-declare interface ICpointInfo {
+export interface ICpointInfo {
   kind: 1 | 2;
   x: number;
   y: number;
@@ -198,7 +197,7 @@ declare interface ICpointInfo {
   backhurtact: TFrameId
   dircontrol: TFace;
 }
-declare interface IOpointInfo {
+export interface IOpointInfo {
   kind: number;
   x: number;
   y: number;
@@ -209,11 +208,11 @@ declare interface IOpointInfo {
   oid: number;
   facing: number;
 }
-declare interface IBpointInfo {
+export interface IBpointInfo {
   x: number;
   y: number;
 }
-declare interface IWpointInfo {
+export interface IWpointInfo {
   kind: number;
   x: number;
   y: number;
@@ -224,7 +223,7 @@ declare interface IWpointInfo {
   dvy?: number;
   dvz?: number;
 }
-declare interface IBdyInfo {
+export interface IBdyInfo {
   kind: number
   x: number
   y: number
@@ -236,7 +235,7 @@ declare interface IBdyInfo {
   }
 }
 
-declare interface IItrInfo {
+export interface IItrInfo {
   kind: number
   x: number
   y: number
@@ -255,10 +254,10 @@ declare interface IItrInfo {
     [-1]: ITexturePieceInfo
   }
 }
-declare interface IGameObjInfo {
+export interface IGameObjInfo {
   files: Record<TFrameId, IEntityPictureInfo>;
 }
-declare interface ICharacterInfo extends IGameObjInfo {
+export interface ICharacterInfo extends IGameObjInfo {
   name: string;
   head: string;
   small: string;
@@ -272,24 +271,24 @@ declare interface ICharacterInfo extends IGameObjInfo {
   rowing_height: number;
   rowing_distance: number;
 }
-declare interface IWeaponInfo extends IGameObjInfo {
+export interface IWeaponInfo extends IGameObjInfo {
   weapon_hp: number;
   weapon_drop_hurt: number,
   weapon_hit_sound: string;
   weapon_drop_sound: string;
   weapon_broken_sound: string;
 }
-declare interface IProjecttileInfo extends IGameObjInfo {
+export interface IProjecttileInfo extends IGameObjInfo {
   weapon_hit_sound: string;
   weapon_drop_sound: string;
   weapon_broken_sound: string;
 }
-declare interface IBaseData<I = any> {
+export interface IBaseData<I = any> {
   id: string | number;
   type: string;
   base: I;
 }
-declare interface IDataMap {
+export interface IDataMap {
   'background': IBackgroundData;
   'entity': IEntityData;
   'character': ICharacterData;
@@ -297,14 +296,14 @@ declare interface IDataMap {
   'projecttile': IProjecttileData;
 }
 
-declare interface IBackgroundInfo {
+export interface IBackgroundInfo {
   name: string;
   width: number;
   zboundary: [number, number];
   shadow: string;
   shadowsize: [number, number];
 }
-declare interface IBgLayerInfo {
+export interface IBgLayerInfo {
   file: string;
   transparency: 1 | 0;
   width: number;
@@ -317,29 +316,29 @@ declare interface IBgLayerInfo {
   c1?: number;
   c2?: number;
 }
-declare interface IBackgroundData extends IBaseData<IBackgroundInfo> {
+export interface IBackgroundData extends IBaseData<IBackgroundInfo> {
   type: 'background';
   layers: IBgLayerInfo[];
 }
 
-declare interface IGameObjData<I extends IGameObjInfo = IGameObjInfo> extends IBaseData<I> {
+export interface IGameObjData<I extends IGameObjInfo = IGameObjInfo> extends IBaseData<I> {
   frames: Record<TFrameId, IFrameInfo>;
 }
 
-declare interface IEntityData extends IGameObjData<IGameObjInfo> {
+export interface IEntityData extends IGameObjData<IGameObjInfo> {
   type: 'entity';
 }
-declare interface ICharacterData extends IGameObjData<ICharacterInfo> {
+export interface ICharacterData extends IGameObjData<ICharacterInfo> {
   type: 'character';
 }
-declare interface IWeaponData extends IGameObjData<IWeaponInfo> {
+export interface IWeaponData extends IGameObjData<IWeaponInfo> {
   type: 'weapon';
   weapon_strength?: TTODO;
 }
-declare interface IProjecttileData extends IGameObjData<IProjecttileInfo> {
+export interface IProjecttileData extends IGameObjData<IProjecttileInfo> {
   type: 'projecttile';
 }
-declare interface ICharacterFrameIndexes {
+export interface ICharacterFrameIndexes {
   landing_2: number;
   standing: TFrameId;
   running: TFrameId;
@@ -358,7 +357,6 @@ declare interface ICharacterFrameIndexes {
   dizzy: TFrameId;
   dash_weapen_atk: TFrameId;
   run_weapen_atk: TFrameId;
-  jump_weapen_atk: TFrameId;
   weapen_atk: TFrameId[];
   picking_heavy: TFrameId;
   picking_light: TFrameId;

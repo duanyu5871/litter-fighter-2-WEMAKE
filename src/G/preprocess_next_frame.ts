@@ -1,3 +1,4 @@
+import { TNextFrame } from '../js_utils/lf2_type';
 import Character from './Character';
 import { get_number_predicate } from './loader/get_number_predicate';
 

@@ -1,3 +1,4 @@
+import { TNextFrame } from '../../js_utils/lf2_type';
 import Character from '../Character';
 
 export const KEY_CODE_LIST = ['d', 'L', 'R', 'U', 'D', 'j', 'a'] as const;

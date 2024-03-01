@@ -6,6 +6,7 @@ import { load_sound } from './G/loader/loader';
 import preprocess_data from './G/loader/preprocess_data';
 import random_get from './Utils/random_get';
 import { arithmetic_progression } from './js_utils/arithmetic_progression';
+import { ICharacterData, TFace, TFrameId } from './js_utils/lf2_type';
 
 
 let character_id = 1;

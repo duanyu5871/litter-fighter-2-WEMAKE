@@ -3,6 +3,7 @@ import random_get from '../Utils/random_get';
 import type World from './World';
 import { play_sound } from './loader/loader';
 import create_pictures from './loader/create_pictures';
+import { IFrameInfo, INextFrameFlags, ITexturePieceInfo, IGameObjData, TFace, TFrameId, TNextFrame, INextFrame } from '../js_utils/lf2_type';
 export type T_NEXT_FRAME = readonly [IFrameInfo, INextFrameFlags | undefined]
 export type T_VOID_NEXT_FRAME = readonly [undefined, undefined]
 export const NO_NEXT_FRAME: T_VOID_NEXT_FRAME = [undefined, undefined];

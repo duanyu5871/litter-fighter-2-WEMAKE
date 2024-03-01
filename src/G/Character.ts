@@ -1,5 +1,6 @@
 import { CHARACTER_STATES } from '../State';
 import { Defines } from '../defines';
+import { IBdyInfo, ICharacterData, IFrameInfo, IItrInfo, INextFrameFlags } from '../js_utils/lf2_type';
 import Entity, { A_SHAKE, V_SHAKE } from './Entity';
 import { InvalidController } from './InvalidController';
 import type World from './World';
@@ -168,7 +169,6 @@ export default class Character extends Entity<ICharacterData> {
         this.world.spark(spark_x, spark_y, spark_z, "critical_bleed");
       } else {
         this.world.spark(spark_x, spark_y, spark_z, "critical_hit")
-
       }
       this.enter_frame({ id: indexes.falling[aface][0] })
       this._next_frame = void 0;

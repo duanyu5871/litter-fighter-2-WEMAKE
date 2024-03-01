@@ -6,6 +6,7 @@ import GameObj from './GameObj';
 import type World from './World';
 import { create_picture, simple_picture_info } from './loader/loader';
 import { ICube } from './World';
+import { IBaseData, IBdyInfo, ICharacterData, IEntityData, IFrameInfo, IGameObjData, IItrInfo, IProjecttileData, IWeaponData, TNextFrame } from '../js_utils/lf2_type';
 
 export type TData = IBaseData | ICharacterData | IWeaponData | IEntityData | IProjecttileData
 

@@ -1,5 +1,6 @@
 import { arithmetic_progression } from '../arithmetic_progression';
 import { take_number } from '../as_number';
+import { IFrameInfo, ICharacterInfo, TFrameId, ICharacterData, TNextFrame } from '../lf2_type';
 import { set_obj_field } from '../set_obj_field';
 import { traversal } from '../traversal';
 import { get_next_frame_by_id } from './get_the_next';

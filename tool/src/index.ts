@@ -5,6 +5,7 @@ import { read_indexes } from './js_utils/lf2_dat_translator/read_indexes';
 import { read_lf2_dat_file } from './read_old_lf2_dat_file';
 import { copy_dir } from './utils/copy_dir';
 import { read_text_file } from './utils/read_text_file';
+import { IDataLists } from './js_utils/lf2_type';
 
 async function parse_indexes(src_path: string): Promise<IDataLists | undefined> {
   const text = await read_text_file(src_path)
@@ -43,8 +44,6 @@ async function main() {
   const indexes = await parse_indexes('./LittleFighter/data/data.txt');
   await parse_under_dir('./LittleFighter', './json', indexes);
   await copy_dir("./json", "../src/G");
-
-  await copy_dir("./src/types", "../src/types");
   await copy_dir("./src/js_utils", "../src/js_utils");
 }
 

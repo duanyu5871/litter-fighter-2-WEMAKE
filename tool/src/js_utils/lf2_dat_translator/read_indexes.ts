@@ -1,3 +1,4 @@
+import { IDataLists, IDatIndex } from '../lf2_type';
 import { match_block_once } from '../match_block';
 import { match_colon_value } from '../match_colon_value';
 import { to_num } from '../to_num';

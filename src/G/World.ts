@@ -6,6 +6,7 @@ import Entity from './Entity';
 import GameObj, { GONE_FRAME_INFO } from './GameObj';
 import { Grand } from './Grand';
 import { data_map } from './loader/preprocess_data';
+import { IItrInfo, IBdyInfo, IFrameInfo } from '../js_utils/lf2_type';
 export interface ICube {
   left: number;
   right: number;

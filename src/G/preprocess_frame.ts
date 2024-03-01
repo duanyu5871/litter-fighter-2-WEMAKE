@@ -1,3 +1,4 @@
+import { IGameObjData, IFrameInfo, IEntityPictureInfo, ITexturePieceInfo } from '../js_utils/lf2_type';
 import { traversal } from '../js_utils/traversal';
 import { find_image_info_by_pic_info } from './loader/loader';
 import { preprocess_next_frame } from './preprocess_next_frame';

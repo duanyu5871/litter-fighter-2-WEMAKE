@@ -1,4 +1,5 @@
 import { delete_val_equal_keys } from '../delete_val_equal_keys';
+import { TFrameId, IFrameInfo } from '../lf2_type';
 import { match_all } from '../match_all';
 import { match_colon_value } from '../match_colon_value';
 import { to_num } from '../to_num';

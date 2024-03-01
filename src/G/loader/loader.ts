@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { get_blob } from '../../Utils/get_blob';
 import { get_img } from '../../Utils/get_img';
+import { IEntityPictureInfo } from '../../js_utils/lf2_type';
 
 const temp_canvas = document.createElement('canvas');
 const temp_canvas_ctx = temp_canvas.getContext('2d', { willReadFrequently: true });
