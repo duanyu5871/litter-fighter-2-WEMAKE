@@ -30,3 +30,4 @@ src/G/data
 src/G/bg
 src/G/sprite
 tool/json
+tool/dist
