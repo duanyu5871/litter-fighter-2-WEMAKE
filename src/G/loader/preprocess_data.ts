@@ -1,5 +1,5 @@
-import { traversal } from '../../js_utils/traversal';
-import { load_image, simple_picture_info } from './loader';
+import { map, traversal } from '../../js_utils/traversal';
+import { image_pool } from './loader';
 import { preprocess_frame } from '../preprocess_frame';
 import { TData } from '../Entity';
 
@@ -9,10 +9,9 @@ export default async function preprocess_data(data: TData, new_id?: string | num
   if (!('frames' in data)) return data;
 
   const { frames, base: { files } } = data;
-  const jobs = [
-    ...Object.keys(files).map(k => load_image(files[k], f => require('../' + f.path))),
-    load_image(simple_picture_info('shadow.png'), f => require('../' + f.path))
-  ];
+  const jobs = map(files, (_, v) => image_pool.load_by_pic_info(v, _ => require('../' + v.path)))
+  jobs.push(image_pool.load('shadow', require('../shadow.png')))
+
   await Promise.all(jobs);
 
   traversal(frames, (_, frame) => preprocess_frame(data, frame));

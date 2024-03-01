@@ -1,6 +1,6 @@
 import { IGameObjData, IFrameInfo, IEntityPictureInfo, ITexturePieceInfo } from '../js_utils/lf2_type';
 import { traversal } from '../js_utils/traversal';
-import { find_image_info_by_pic_info } from './loader/loader';
+import { image_pool } from './loader/loader';
 import { preprocess_next_frame } from './preprocess_next_frame';
 const get_keys = <V extends {}>(v: V): (keyof V)[] => {
   return Object.keys(v) as (keyof V)[]
@@ -22,7 +22,7 @@ export const preprocess_frame = (data: IGameObjData, frame: IFrameInfo) => {
     if (info === void 0) return console.log('NOT FOUND');
 
     const { id, row, w: cell_w, h: cell_h } = info;
-    const p = find_image_info_by_pic_info(info);
+    const p = image_pool.find_by_pic_info(info);
     if (!p) return console.log('[preprocess_frame] image_info not found,', info);
     const x = (cell_w + 1) * (pic % row);
     const y = (cell_h + 1) * Math.floor(pic / row);
@@ -37,7 +37,7 @@ export const preprocess_frame = (data: IGameObjData, frame: IFrameInfo) => {
       }
     }
     if (info === void 0) return console.warn('NOT FOUND');
-    const p = find_image_info_by_pic_info(info);
+    const p = image_pool.find_by_pic_info(info);
     if (!p) return console.warn('[preprocess_frame] image_info not found', info);
 
     const f_i_1: ITexturePieceInfo = {

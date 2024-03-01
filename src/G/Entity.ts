@@ -1,12 +1,12 @@
 import * as THREE from 'three';
 import BaseState from "../BaseState";
 import { Defines } from '../defines';
+import { IBaseData, IBdyInfo, ICharacterData, IEntityData, IFrameInfo, IGameObjData, IItrInfo, IProjecttileData, IWeaponData, TNextFrame } from '../js_utils/lf2_type';
 import { EntityIndicators } from './EntityIndicators';
 import FrameAnimater from './FrameAnimater';
 import type World from './World';
-import { create_picture, simple_picture_info } from './loader/loader';
 import { ICube } from './World';
-import { IBaseData, IBdyInfo, ICharacterData, IEntityData, IFrameInfo, IGameObjData, IItrInfo, IProjecttileData, IWeaponData, TNextFrame } from '../js_utils/lf2_type';
+import { create_picture_by_img_key, create_picture_by_pic_info } from './loader/loader';
 
 export type TData = IBaseData | ICharacterData | IWeaponData | IEntityData | IProjecttileData
 
@@ -53,7 +53,7 @@ export default class Entity<D extends IGameObjData = IGameObjData> extends Frame
   constructor(world: World, data: D, states: Map<number, BaseState>) {
     super(world, data)
 
-    this.pictures.set('shadow', create_picture('shadow', simple_picture_info('shadow.png')).data);
+    this.pictures.set('shadow', create_picture_by_img_key('shadow', 'shadow').data);
     this.states = states;
     const geometry = new THREE.PlaneGeometry(30, 15);
     const shadow_material = new THREE.MeshBasicMaterial({

@@ -2,12 +2,11 @@ import Character from './G/Character';
 import PlayerController from "./G/Controller/PlayerController";
 import { TData } from './G/Entity';
 import World from './G/World';
-import { load_sound } from './G/loader/loader';
+import { sound_mgr } from './G/loader/SoundMgr';
 import preprocess_data from './G/loader/preprocess_data';
 import random_get from './Utils/random_get';
 import { arithmetic_progression } from './js_utils/arithmetic_progression';
 import { ICharacterData, TFace, TFrameId } from './js_utils/lf2_type';
-
 
 let character_id = 1;
 export default function run(canvas: HTMLCanvasElement) {
@@ -53,7 +52,7 @@ export default function run(canvas: HTMLCanvasElement) {
         n < 100 ?
           `data/0${n}.wav` :
           `data/${n}.wav`;
-      load_sound(p, require(`./G/${p}`))
+      sound_mgr.load(p, require(`./G/${p}`))
     })
     return Promise.all(arr.map(v => preprocess_data(v)))
   }).then((datas) => {

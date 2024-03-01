@@ -1,10 +1,10 @@
 import * as THREE from 'three';
 import random_get from '../Utils/random_get';
 import type World from './World';
-import { play_sound } from './loader/loader';
 import create_pictures from './loader/create_pictures';
 import { IFrameInfo, INextFrameFlags, ITexturePieceInfo, IGameObjData, TFace, TFrameId, TNextFrame, INextFrame } from '../js_utils/lf2_type';
 import { IPictureInfo } from '../types/IPictureInfo';
+import { sound_mgr } from './loader/SoundMgr';
 export type T_NEXT_FRAME = readonly [IFrameInfo, INextFrameFlags | undefined]
 export type T_VOID_NEXT_FRAME = readonly [undefined, undefined]
 export const NO_NEXT_FRAME: T_VOID_NEXT_FRAME = [undefined, undefined];
@@ -120,7 +120,7 @@ export default class FrameAnimater<D extends IGameObjData = IGameObjData> {
   }
 
   find_auto_frame(): IFrameInfo {
-    console.warn('[GameObj] find_auto_frame(): auto frame not set!');
+    console.warn('[FrameAnimater] find_auto_frame(): auto frame not set!');
     return this.get_frame();
   }
 
@@ -170,9 +170,10 @@ export default class FrameAnimater<D extends IGameObjData = IGameObjData> {
 
   enter_frame(which: TNextFrame | TFrameId): void {
     const [frame, flags] = this.get_next_frame(which);
-    if (!frame) return console.warn('[GameObj] frame not found! which:', which);
+    if (!frame) return console.warn('[FrameAnimater] frame not found! which:', which);
     const { sound, wait } = frame;
-    sound && play_sound(sound);
+    const { x, y, z } = this.position;
+    sound && sound_mgr.play(sound, x, y, z);
     this.set_frame(frame);
     const next_wait = flags?.wait;
     if (next_wait === 'i') { // 不必做什么，继承上一帧的wait
