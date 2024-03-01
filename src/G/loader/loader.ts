@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import { get_blob } from '../../Utils/get_blob';
 import { create_img_ele } from '../../Utils/create_img_ele';
+import { get_blob } from '../../Utils/get_blob';
 import { IEntityPictureInfo } from '../../js_utils/lf2_type';
 import { IPictureInfo } from '../../types/IPictureInfo';
 
@@ -13,11 +13,6 @@ export function make_data_promise_resolve<T>(data: T): TDataPromise<T> {
 export function make_data_promise_reject<T>(data: T, reason: any): TDataPromise<T> {
   return Object.assign(Promise.reject(reason), { data })
 }
-
-const temp_canvas = document.createElement('canvas');
-const temp_canvas_ctx = temp_canvas.getContext('2d', { willReadFrequently: true });
-
-
 
 export const texture_loader = new THREE.TextureLoader();
 export type TImageInfo = { url: string; w: number; h: number; }
@@ -34,13 +29,14 @@ class ImagePool {
     ctx.drawImage(img, 0, 0);
   }
 
-
   protected async _make_info(src: string, paint?: typeof this._paint): Promise<TImageInfo> {
-    if (!temp_canvas_ctx) throw new Error("can not get context from canvas");
+    const cvs = document.createElement('canvas');
+    const ctx = cvs.getContext('2d', { willReadFrequently: true });
+    if (!ctx) throw new Error("can not get context from canvas");
     const img_ele = await create_img_ele(src);
-    if (paint) paint(img_ele, temp_canvas, temp_canvas_ctx)
-    else this._paint(img_ele, temp_canvas, temp_canvas_ctx);
-    const blob = await get_blob(temp_canvas);
+    if (paint) paint(img_ele, cvs, ctx)
+    else this._paint(img_ele, cvs, ctx);
+    const blob = await get_blob(cvs);
     const url = URL.createObjectURL(blob);
     return { url, w: img_ele.width, h: img_ele.height }
   }
