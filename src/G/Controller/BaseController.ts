@@ -1,4 +1,5 @@
 import { TNextFrame } from '../../js_utils/lf2_type';
+import { Defines } from '../../js_utils/lf2_type/defines';
 import { Character } from '../Character';
 
 export const KEY_CODE_LIST = ['d', 'L', 'R', 'U', 'D', 'j', 'a'] as const;
@@ -96,7 +97,16 @@ export class BaseController implements IController<Character> {
 
 
     switch (state) {
-      case 3: {
+      case Defines.State.Standing:
+      case Defines.State.Walking:
+        for (const [, { itr }] of this.character.v_rests) {
+          if (itr.kind === Defines.ItrKind.SuperPunchMe) {
+            nf = { id: this.character.data.base.indexes.super_punch }
+            break;
+          }
+        }
+        break;
+      case Defines.State.Attacking: {
         if (this.holding.a === 1 && this._next_punch_ready)
           this._need_punch = 1
         break;

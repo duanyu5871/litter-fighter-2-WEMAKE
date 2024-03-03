@@ -1,5 +1,9 @@
 import { IBgInfo } from "./IBgInfo";
 import { IBgLayerInfo } from "./IBgLayerInfo";
+import { IFramePictureInfo } from "./IFramePictureInfo";
+import { IItrInfo } from "./IItrInfo";
+import { ITexturePieceInfo } from "./ITexturePieceInfo";
+import { ITexturePieceInfos } from "./ITexturePieceInfos";
 
 export type TFrameId = string | number
 export type TTODO = any;
@@ -105,57 +109,11 @@ export interface INextFrame {
 }
 export type TNextFrame = INextFrame | INextFrame[]
 
-export interface ITexturePieceInfo {
-  /** 纹理ID */
-  tex: number | string;
-
-  pw: number;
-
-  ph: number;
-
-  /** 纹理裁剪起点（x），-1 ~ 1 */
-  x: number;
-
-  /** 纹理裁剪起点（y），0 ~ 1 */
-  y: number;
-
-  /** 纹理裁剪宽度比，0 ~ 1 */
-  w: number;
-
-  /** 
-   * 纹理裁剪高度比
-   * 正常范围：0 ~ 1
-   */
-  h: number;
-
-  /**
-   * 纹理中心点（x）
-   */
-  cx: number;
-
-  /**
-   * 纹理中心点（y）
-   */
-  cy: number;
-}
-export interface ITexturePieceInfos {
-  /** 纹理数据 */
-  1: ITexturePieceInfo;
-  /** 纹理数据（镜像） */
-  [-1]: ITexturePieceInfo;
-}
-export interface IFramePictureInfo {
-  /** 纹理ID */
-  tex: number | string;
-  /** 精灵图裁剪起点X坐标（像素） */
-  x: number;
-  /** 精灵图裁剪起点Y坐标（像素） */
-  y: number;
-  /** 精灵图宽度（像素） */
-  w: number;
-  /** 精灵图高度（像素） */
-  h: number;
-}
+export * from './IBgInfo';
+export * from './IBgLayerInfo';
+export * from './ITexturePieceInfo';
+export * from './ITexturePieceInfos';
+export * from './IFramePictureInfo';
 
 export interface IFrameInfo {
   id: TFrameId;
@@ -237,7 +195,7 @@ export interface IWpointInfo {
   dvz?: number;
 }
 export interface IBdyInfo {
-  friendly_fire ?: number;
+  friendly_fire?: number;
   kind: number
   x: number
   y: number
@@ -248,27 +206,7 @@ export interface IBdyInfo {
     [-1]: ITexturePieceInfo
   }
 }
-
-export interface IItrInfo {
-  friendly_fire ?: number;
-  kind: number
-  x: number
-  y: number
-  w: number
-  h: number
-  dvx?: number
-  dvy?: number
-  fall?: number
-  vrest?: number
-  arest?: number
-  bdefend?: number
-  injury?: number
-  effect?: number
-  indicator_info?: {
-    1: ITexturePieceInfo;
-    [-1]: ITexturePieceInfo
-  }
-}
+export * from './IItrInfo'
 export interface IGameObjInfo {
   files: Record<TFrameId, IEntityPictureInfo>;
 }

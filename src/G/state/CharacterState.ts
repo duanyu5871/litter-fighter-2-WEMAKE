@@ -1,13 +1,13 @@
 /* eslint-disable new-parens */
 import BaseState from "./BaseState";
-import type { Character } from './G/Character';
-import { Entity } from "./G/Entity";
-import { World } from "./G/World";
-import { Defines } from "./defines";
+import type { Character } from '../Character';
+import { Entity } from "../Entity";
+import { World } from "../World";
+import { Defines } from "../../js_utils/lf2_type/defines";
 
 export const CHARACTER_STATES = new Map<number, BaseState<Character>>()
 
-class CharacterState<E extends Entity = Entity> extends BaseState<E> {
+class BaseCharacterState<E extends Entity = Entity> extends BaseState<E> {
   update(e: E): void {
     this.begin(e);
     this.end(e);
@@ -23,15 +23,15 @@ class CharacterState<E extends Entity = Entity> extends BaseState<E> {
 }
 
 
-CHARACTER_STATES.set(Defines.State.Any, new CharacterState)
-CHARACTER_STATES.set(Defines.State.Standing, new class extends CharacterState<Character> {
+CHARACTER_STATES.set(Defines.State.Any, new BaseCharacterState)
+CHARACTER_STATES.set(Defines.State.Standing, new class extends BaseCharacterState<Character> {
   update(e: Character): void {
     super.begin(e);
     e.check_leniency_hit_a();
     super.end(e)
   }
 })
-CHARACTER_STATES.set(Defines.State.Walking, new class extends CharacterState<Character> {
+CHARACTER_STATES.set(Defines.State.Walking, new class extends BaseCharacterState<Character> {
   update(e: Character): void {
     e.on_gravity();
     e.velocity_decay();
@@ -48,7 +48,7 @@ CHARACTER_STATES.set(Defines.State.Walking, new class extends CharacterState<Cha
     super.end(e)
   }
 })
-CHARACTER_STATES.set(Defines.State.Running, new class extends CharacterState<Character> {
+CHARACTER_STATES.set(Defines.State.Running, new class extends BaseCharacterState<Character> {
   update(e: Character): void {
     e.on_gravity();
     e.velocity_decay();
@@ -61,14 +61,14 @@ CHARACTER_STATES.set(Defines.State.Running, new class extends CharacterState<Cha
     super.end(e)
   }
 })
-CHARACTER_STATES.set(Defines.State.Attacking, new class extends CharacterState<Character> {
+CHARACTER_STATES.set(Defines.State.Attacking, new class extends BaseCharacterState<Character> {
   update(e: Character): void {
     super.begin(e);
     const [prev, curr] = e.goto_next_frame_when_need();
     e.setup_leniency_hit_a(prev, curr)
   }
 })
-CHARACTER_STATES.set(Defines.State.Jump, new class extends CharacterState<Character> {
+CHARACTER_STATES.set(Defines.State.Jump, new class extends BaseCharacterState<Character> {
   update(e: Character): void {
     super.begin(e);
     const [prev, curr] = e.goto_next_frame_when_need();
@@ -84,7 +84,7 @@ CHARACTER_STATES.set(Defines.State.Jump, new class extends CharacterState<Charac
     }
   }
 })
-CHARACTER_STATES.set(Defines.State.Dash, new class extends CharacterState<Character> {
+CHARACTER_STATES.set(Defines.State.Dash, new class extends BaseCharacterState<Character> {
   enter(e: Character): void {
     if (e.position.y > 0 && e.velocity.y !== 0) return;
     const { dash_distance: dx, dash_distancez: dz, dash_height: h } = e.data.base;
@@ -98,4 +98,4 @@ CHARACTER_STATES.set(Defines.State.Dash, new class extends CharacterState<Charac
     else if (e.velocity.x < 0) e.velocity.x = -dx;
   }
 })
-CHARACTER_STATES.set(Defines.State.Defend, new CharacterState)
+CHARACTER_STATES.set(Defines.State.Defend, new BaseCharacterState)

@@ -1,12 +1,11 @@
 /* eslint-disable new-parens */
 import BaseState from "./BaseState";
-import { Entity } from "./G/Entity";
-import { Defines } from "./defines";
-
+import { Entity } from "../Entity";
+import { Defines } from "../../js_utils/lf2_type/defines";
 
 export const BALL_STATES = new Map<number, BaseState>();
 
-class BallState<E extends Entity = Entity> extends BaseState<E> {
+class BaseBallState<E extends Entity = Entity> extends BaseState<E> {
   update(e: E): void {
     this.begin(e);
     this.end(e);
@@ -20,4 +19,4 @@ class BallState<E extends Entity = Entity> extends BaseState<E> {
   }
 }
 
-BALL_STATES.set(Defines.State.Any, new BallState)
+BALL_STATES.set(Defines.State.Any, new BaseBallState)

@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { dat_mgr } from '../DatLoader';
-import { Defines } from '../defines';
+import { Defines } from '.././js_utils/lf2_type/defines';
 import { IBdyInfo, IFrameInfo, IItrInfo } from '../js_utils/lf2_type';
 import { Ball } from './Ball';
 import { Character } from './Character';
@@ -202,11 +202,25 @@ export class World {
         const itr = af.itr[i];
         const bdy = bf.bdy[j];
 
-        if (itr.kind === Defines.ItrKind.CharacterThrew) {
-          continue; // todo
+        switch (itr.kind as Defines.ItrKind) {
+          case Defines.ItrKind.CharacterThrew:
+          case Defines.ItrKind.MagicFlute:
+          case Defines.ItrKind.ForceCatch:
+          case Defines.ItrKind.Catch:
+            continue; // todo
+          case Defines.ItrKind.Pick:
+          case Defines.ItrKind.PickSecretly:
+            continue;
+          case Defines.ItrKind.SuperPunchMe:
+            if (b instanceof Character) break;
+            continue;
+          case Defines.ItrKind.Normal:
+          case Defines.ItrKind.Heal:
+          case Defines.ItrKind.DeadWhenHit:
+          case Defines.ItrKind.Block:
+          case Defines.ItrKind.Fly:
+          case Defines.ItrKind.Ice:
         }
-        if (itr.kind === Defines.ItrKind.Normal) { }
-        if (itr.kind === Defines.ItrKind.SuperPunchMe) { }
         if (
           (itr.effect === 4) || // todo
           (a.team === b.team && !itr.friendly_fire && !bdy.friendly_fire) ||

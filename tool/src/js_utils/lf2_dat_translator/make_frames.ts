@@ -1,5 +1,6 @@
 import { delete_val_equal_keys } from '../delete_val_equal_keys';
-import { IFrameInfo, TFrameId } from '../lf2_type';
+import { IFrameInfo, IItrInfo, TFrameId } from '../lf2_type';
+import { Defines } from '../lf2_type/defines';
 import { match_all } from '../match_all';
 import { match_colon_value } from '../match_colon_value';
 import { to_num } from '../to_num';
@@ -12,12 +13,17 @@ export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string): Re
   for (const [, frame_id, frame_name, content] of match_all(text, frame_regexp)) {
     let _content = content;
     const bdy = take_sections(_content, 'bdy:', 'bdy_end:', r => _content = r);
-    const itr = take_sections(_content, 'itr:', 'itr_end:', r => _content = r);
+    const itr = take_sections<IItrInfo>(_content, 'itr:', 'itr_end:', r => _content = r);
     itr?.forEach(v => {
       delete_val_equal_keys(v, ['dvx', 'dvy', 'dvz'], [0, void 0]);
       if (typeof v.dvx === 'number') v.dvx /= 2;
       if (typeof v.dvz === 'number') v.dvz /= 2;
       if (typeof v.dvy === 'number') v.dvy *= -0.5;
+
+      if (v.kind === Defines.ItrKind.SuperPunchMe) {
+        v.motionless = 0;
+        v.shaking = 0;
+      }
     });
     const opoint = take_sections(_content, 'opoint:', 'opoint_end:', r => _content = r);
     opoint?.forEach(v => {

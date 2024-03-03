@@ -1,5 +1,3 @@
-
-
 export namespace Defines {
   export enum State {
     Any = -1,
@@ -35,13 +33,26 @@ export namespace Defines {
     Ball = 'ball',
   }
   export enum ItrKind {
-    Normal = 0,       // 特殊特技
-    Catch = 1,        // 捉住暈眩(state 16) |的人
-    Pick = 2,         // 撿武器
-    ForceCatch = 3,   // 強迫抓人a
-    CharacterThrew = 4,   // 強迫抓人a
+    /** */
+    Normal = 0,
+
+    /** 捉住暈眩(state 16) 的人 */
+    Catch = 1,
+
+    /** 捡起武器 */
+    Pick = 2,
+
+    /** 强行抓人 */
+    ForceCatch = 3,
+
+    /** 被丢出时，此itr才生效 */
+    CharacterThrew = 4,
+
     SuperPunchMe = 6, // 敵人靠近按A時是重击
-    PickWith = 7,     // 撿武器不影響动作
+
+    /** 捡起武器，但动作不变 */
+    PickSecretly = 7,
+
     Heal = 8,         // injury数值变成治療多少hp，动作跳至dvx ?
     DeadWhenHit = 9,  // 打中敵人自己hp歸0(如John的防護罩) |
     MagicFlute = 10,  // henry魔王之樂章效果
@@ -50,6 +61,7 @@ export namespace Defines {
     Ice = 16,         // 結冰
     // 1???=被你打到會跳到第???个frame(如人質的kind)
   }
+  
   export enum ItrEffect {
     Normal = 0,   // 拳击
     Sharp = 1,    // 利器攻击

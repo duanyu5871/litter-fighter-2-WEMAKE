@@ -1,5 +1,5 @@
-import { BALL_STATES } from '../ENTITY_STATES';
-import { Defines } from '../defines';
+import { BALL_STATES } from './state/BallState';
+import { Defines } from '.././js_utils/lf2_type/defines';
 import { IBallData, IBallFrameInfo, IBdyInfo, IItrInfo, IOpointInfo, TFace } from '../js_utils/lf2_type';
 import { Entity } from './Entity';
 import { factory } from './Factory';

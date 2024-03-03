@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-import BaseState from "../BaseState";
+import { Defines } from '.././js_utils/lf2_type/defines';
+import BaseState from "./state/BaseState";
 import { dat_mgr } from '../DatLoader';
-import { Defines } from '../defines';
 import { IBallData, IBaseData, IBdyInfo, ICharacterData, IEntityData, IFrameInfo, IGameObjData, IItrInfo, IOpointInfo, IWeaponData, TFace, TNextFrame } from '../js_utils/lf2_type';
 import { EntityIndicators } from './EntityIndicators';
 import { factory } from './Factory';
@@ -25,12 +25,21 @@ export class Entity<
   team: number = ++__team__;
   readonly states: Map<number, BaseState>;
 
-  v_rests = new Map<string, number>();
+  v_rests = new Map<string, {
+    remain: number,
+    itr: IItrInfo,
+    bdy: IBdyInfo,
+    attacker: Entity,
+    a_cube: ICube,
+    b_cube: ICube,
+    a_frame: IFrameInfo,
+    b_frame: IFrameInfo
+  }>();
   a_rest: number = 0;
 
   protected _motionless: number = 0
   protected _shaking: number = 0;
-  protected _next_frame: TNextFrame | undefined = void 0;
+  protected _next_frame?: TNextFrame;
   protected _indicators: EntityIndicators | undefined = new EntityIndicators(this);
   protected _state: BaseState | undefined;
 
@@ -41,7 +50,7 @@ export class Entity<
     this._indicators.show = v;
   }
 
-  setup(shotter: Entity, o: IOpointInfo) { 
+  setup(shotter: Entity, o: IOpointInfo) {
     const shotter_frame = shotter.get_frame();
     this.team = shotter.team;
     this.face = (o.facing === 1 ? -shotter.face : shotter.face) as TFace;
@@ -50,7 +59,7 @@ export class Entity<
     x = x - shotter.face * (shotter_frame.centerx - o.x);
     this.position.set(x, y, z);
     this.enter_frame(o.action ?? 0);
-    return this; 
+    return this;
   }
   override set_frame(v: F) {
     const prev_state = this.get_frame().state;
@@ -153,12 +162,14 @@ export class Entity<
   }
 
   update() {
+    this.on_before_update?.();
+    this.on_before_state_update?.();
     this.state?.update(this);
-    this.on_after_state_update();
+    this.on_after_state_update?.();
 
     if (this._next_frame) {
       this.enter_frame(this._next_frame);
-      this._next_frame = void 0
+      delete this._next_frame;
     }
     if (!this._shaking && !this._motionless) this.position.add(this.velocity);
 
@@ -166,7 +177,7 @@ export class Entity<
       this.position.y = 0;
       if (this.velocity.y < 0) {
         this.velocity.y = 0;
-        this.on_landing();
+        this.on_landing?.();
       }
     }
     if (this._motionless > 0) {
@@ -176,11 +187,11 @@ export class Entity<
       --this._shaking;
     } else if (this.wait > 0) {
       --this.wait;
-      this.v_rests.forEach((v, k, m) => { v > 1 ? m.set(k, v - 1) : m.delete(k) });
+      this.v_rests.forEach((v, k, m) => { v.remain > 1 ? v.remain-- : m.delete(k) });
       this.a_rest > 1 ? this.a_rest-- : this.a_rest = 0;
     };
     this.update_sprite_position();
-    this.on_after_update();
+    this.on_after_update?.();
   }
 
   override update_sprite_position(): void {
@@ -188,19 +199,26 @@ export class Entity<
     const { x, z } = this.position;
     this.shadow.position.set(x, - z / 2, z);
   }
-
-  on_after_state_update(): void { }
-  on_landing(): void { }
-  on_after_update(): void { }
+  on_before_state_update?(): void;
+  on_after_state_update?(): void;
+  on_landing?(): void;
+  on_before_update?(): void;
+  on_after_update?(): void;
 
 
   on_collision(target: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
     if (itr.arest) this.a_rest = itr.arest;
     else if (!itr.vrest) this.a_rest = this.wait + A_SHAKE + 2;
-    if (this._motionless <= 0) this._motionless += A_SHAKE;
+    this._motionless = itr.motionless ?? A_SHAKE;
   }
   on_be_collided(attacker: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
-    if (!itr.arest && itr.vrest) this.v_rests.set(attacker.id, itr.vrest);
+    if (!itr.arest && itr.vrest) this.v_rests.set(attacker.id, {
+      remain: itr.vrest,
+      itr, bdy, attacker, a_cube, b_cube,
+      a_frame: attacker.get_frame(),
+      b_frame: this.get_frame()
+    });
+    this._shaking = itr.shaking ?? V_SHAKE;
   }
   dispose(): void { }
 }

@@ -1,7 +1,7 @@
-import { CHARACTER_STATES } from '../State';
-import { Defines } from '../defines';
+import { Defines } from '.././js_utils/lf2_type/defines';
+import { CHARACTER_STATES } from './state/CharacterState';
 import { IBdyInfo, ICharacterData, IFrameInfo, IItrInfo, INextFrameFlags } from '../js_utils/lf2_type';
-import { A_SHAKE, V_SHAKE, Entity } from './Entity';
+import { Entity } from './Entity';
 import { factory } from './Factory';
 import { InvalidController } from './InvalidController';
 import type { World } from './World';
@@ -96,8 +96,7 @@ export class Character extends Entity<ICharacterData> {
     }
   }
   override on_after_state_update(): void {
-    const nf = this.controller.update();
-    if (nf) this.enter_frame(nf);
+    this._next_frame = this.controller.update();
   }
   override handle_frame_velocity() {
     super.handle_frame_velocity();
@@ -108,7 +107,7 @@ export class Character extends Entity<ICharacterData> {
 
   override on_be_collided(attacker: Entity, itr: IItrInfo, bdy: IBdyInfo, r0: ICube, r1: ICube): void {
     super.on_be_collided(attacker, itr, bdy, r0, r1);
-
+    if (itr.kind === Defines.ItrKind.SuperPunchMe) return;
     const spark_x = (Math.max(r0.left, r1.left) + Math.min(r0.right, r1.right)) / 2;
     const spark_y = (Math.min(r0.top, r1.top) + Math.max(r0.bottom, r1.bottom)) / 2;
     // const spark_z = (Math.min(r0.near, r1.near) + Math.max(r0.far, r1.far)) / 2;
@@ -125,10 +124,8 @@ export class Character extends Entity<ICharacterData> {
 
     if (this.get_frame().state === Defines.State.Defend && aface !== this.face && bdefend < 100) {
       this.defend_value -= bdefend;
-
       if (this.defend_value <= 0) { // 破防
         this.defend_value = 0;
-        this._shaking = V_SHAKE;
         this.world.spark(spark_x, spark_y, spark_z, "broken_defend")
         this.enter_frame({ id: indexes.broken_defend })
         this._next_frame = void 0;
@@ -136,7 +133,6 @@ export class Character extends Entity<ICharacterData> {
       }
 
       if (itr.dvx) this.velocity.x = itr.dvx * aface / 2;
-      this._shaking = V_SHAKE;
       this.world.spark(spark_x, spark_y, spark_z, "defend_hit")
       this.enter_frame({ id: indexes.defend_hit })
       this._next_frame = void 0;
@@ -164,7 +160,6 @@ export class Character extends Entity<ICharacterData> {
           this.velocity.x += dvx / 2;
       }
 
-      this._shaking = V_SHAKE * 2;
       if (itr.effect === 1) {
         this.world.spark(spark_x, spark_y, spark_z, "critical_bleed");
       } else {
@@ -175,7 +170,6 @@ export class Character extends Entity<ICharacterData> {
       return;
     }
 
-    this._shaking = V_SHAKE;
     if (itr.effect === 1) {
       this.world.spark(spark_x, spark_y, spark_z, "bleed")
     } else {
