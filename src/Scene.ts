@@ -6,7 +6,7 @@ import random_get from './Utils/random_get';
 import { TFace, TFrameId } from './js_utils/lf2_type';
 
 import './G/entity/Ball';
-import { DDDController } from './G/controller/DDDController';
+import { TestController } from './G/controller/TestController';
 let character_id = 1;
 
 export default function run(canvas: HTMLCanvasElement) {
@@ -22,7 +22,7 @@ export default function run(canvas: HTMLCanvasElement) {
       const d = random_get(dat_mgr.characters);
       const e = new Character(world, d)
       if (i === 0)
-        e.controller = new DDDController(e);
+        e.controller = new TestController(e);
       e.id = '' + character_id;
       e.position.x = Math.random() * world.width;
       e.position.z = Math.random() * world.depth;

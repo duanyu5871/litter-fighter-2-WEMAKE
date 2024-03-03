@@ -2,8 +2,9 @@ import { TNextFrame } from '../../js_utils/lf2_type';
 import { Defines } from '../../js_utils/lf2_type/defines';
 import { Character } from '../entity/Character';
 import { IController, TKeyName } from './IController';
+import { PlayerController } from './PlayerController';
 
-export const KEY_CODE_LIST = ['d', 'L', 'R', 'U', 'D', 'j', 'a'] as const;
+export const KEY_NAME_LIST = ['d', 'L', 'R', 'U', 'D', 'j', 'a'] as const;
 export const CONFLICTS_KEY_CODE_LIST: Record<TKeyName, TKeyName | undefined> = {
   a: void 0,
   j: void 0,
@@ -19,7 +20,7 @@ export class BaseController implements IController<Character> {
   _next_punch_ready: number = 0;
   _update_count = 0;
   character: Character;
-  holding: Record<TKeyName, 0 | 1 | 2> = {
+  holding: Record<TKeyName, number> = {
     L: 0,
     R: 0,
     U: 0,
@@ -28,7 +29,7 @@ export class BaseController implements IController<Character> {
     j: 0,
     d: 0
   };
-  releases: Record<TKeyName, 0 | 1> = {
+  releases: Record<TKeyName, number> = {
     a: 0,
     d: 0,
     j: 0,
@@ -36,6 +37,27 @@ export class BaseController implements IController<Character> {
     R: 0,
     U: 0,
     D: 0
+  }
+  release_keys(...keys: TKeyName[]) {
+    for (const k of keys) {
+      if (this.releases[k]) continue;
+      this.releases[k] = 1;
+    }
+    return this;
+  }
+  press_keys(...keys: TKeyName[]) {
+    for (const k of keys) {
+      if (this.holding[k]) continue;
+      this.holding[k] = 1;
+    }
+    return this;
+  }
+  is_hold(k: TKeyName) {
+    return this.holding[k] >= 2;
+  }
+  is_hit(k: TKeyName) {
+    const v = this.holding[k];
+    return v > 0 && !this.is_hold(k);
   }
   double_clicks: Record<TKeyName, number[] | undefined> = {
     d: undefined,
@@ -46,8 +68,8 @@ export class BaseController implements IController<Character> {
     U: undefined,
     D: undefined
   };
-  get LR() { return (this.holding.R - this.holding.L) as 0 | 1 | 2 | -1 | -2; }
-  get UD() { return (this.holding.D - this.holding.U) as 0 | 1 | 2 | -1 | -2; }
+  get LR() { return (Math.floor(this.holding.R) - Math.floor(this.holding.L)) as 0 | 1 | 2 | -1 | -2; }
+  get UD() { return (Math.floor(this.holding.D) - Math.floor(this.holding.U)) as 0 | 1 | 2 | -1 | -2; }
   get LRUD() { return !!(this.LR || this.UD); }
   get LR1(): 0 | 1 | -1 { const v = this.LR; return v > 0 ? 1 : v < 0 ? -1 : 0; }
   get UD1(): 0 | 1 | -1 { const v = this.UD; return v > 0 ? 1 : v < 0 ? -1 : 0; }
@@ -58,7 +80,7 @@ export class BaseController implements IController<Character> {
   }
   dispose(): void { }
   update(): TNextFrame | undefined {
-    const k_len = KEY_CODE_LIST.length;
+    const k_len = KEY_NAME_LIST.length;
     this._update_count++;
     const character = this.character;
     const { face } = character;
@@ -70,7 +92,7 @@ export class BaseController implements IController<Character> {
     }
     if (this._kc_list !== void 0) {
       for (let i = 1; i < k_len; ++i) {
-        const k = KEY_CODE_LIST[i];
+        const k = KEY_NAME_LIST[i];
         if (this.holding[k] !== 1) continue;
         this._kc_list += k;
       }
@@ -82,11 +104,11 @@ export class BaseController implements IController<Character> {
       case -2: if (hold?.B) nf = hold.B; break;
     }
     for (let i = 0; i < k_len; ++i) {
-      const k = KEY_CODE_LIST[i];
+      const k = KEY_NAME_LIST[i];
       const ck = CONFLICTS_KEY_CODE_LIST[k];
       if (ck && this.holding[ck]) continue;
-      if (this.holding[k] === 1 && hit?.[k]) { nf = hit[k]; break; }
-      if (this.holding[k] === 2 && hold?.[k]) { nf = hold[k]; break; }
+      if (this.is_hit(k) && hit?.[k]) { nf = hit[k]; break; }
+      if (this.is_hold(k) && hold?.[k]) { nf = hold[k]; break; }
     }
     if (hit?.FF && face < 0 && this.check_double_click('L')) nf = hit.FF;
     if (hit?.BB && face > 0 && this.check_double_click('L')) nf = hit.BB;
@@ -97,7 +119,6 @@ export class BaseController implements IController<Character> {
     if (hit?.aa && this.check_double_click('a')) nf = hit.aa;
     if (hit?.jj && this.check_double_click('j')) nf = hit.jj;
     if (hit?.dd && this.check_double_click('d')) nf = hit.dd;
-
 
     switch (state) {
       case Defines.State.Standing:
@@ -112,7 +133,6 @@ export class BaseController implements IController<Character> {
             break;
           }
         }
-
         break;
       case Defines.State.Attacking: {
         if (this.holding.a === 1 && this._next_punch_ready)
@@ -163,9 +183,11 @@ export class BaseController implements IController<Character> {
     } while (0)
 
     for (let i = 0; i < k_len; ++i) {
-      const k = KEY_CODE_LIST[i];
-      if (this.holding[k] === 1) this.holding[k] = 2
-      if (this.releases[k] === 1) { this.releases[k] = this.holding[k] = 0 }
+      const k = KEY_NAME_LIST[i];
+      if (this.is_hit(k)) this.holding[k] += 0.25;
+
+      if (this.releases[k] >= 2) this.releases[k] = this.holding[k] = 0
+      if (this.releases[k] === 1) this.releases[k] = 2;
     }
     return nf
   }

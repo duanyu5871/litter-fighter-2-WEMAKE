@@ -1,5 +1,5 @@
 import { Character } from '../entity/Character';
-import { KEY_CODE_LIST, BaseController } from "./BaseController";
+import { BaseController, KEY_NAME_LIST } from "./BaseController";
 import { TKeyName } from './IController';
 
 export class PlayerController extends BaseController {
@@ -34,25 +34,24 @@ export class PlayerController extends BaseController {
 
     const on_key_up = (e: KeyboardEvent) => {
       const e_key = e.key?.toLowerCase();
-      switch (e_key) {
-        case this.kc.R: this.releases.R = 1; break;
-        case this.kc.L: this.releases.L = 1; break;
-        case this.kc.U: this.releases.U = 1; break;
-        case this.kc.D: this.releases.D = 1; break;
-        case this.kc.a: this.releases.a = 1; break;
-        case this.kc.j: this.releases.j = 1; break;
-        case this.kc.d: this.releases.d = 1; break;
+      const k_len = KEY_NAME_LIST.length;
+      for (let i = 0; i < k_len; ++i) {
+        const k = KEY_NAME_LIST[i];
+        if (this.kc[k] === e_key) {
+          this.release_keys(k);
+          return;
+        }
       }
     };
     const on_key_down = (e: KeyboardEvent) => {
       const e_key = e.key?.toLowerCase();
-      const k_len = KEY_CODE_LIST.length;
+      const k_len = KEY_NAME_LIST.length;
       for (let i = 0; i < k_len; ++i) {
-        const k = KEY_CODE_LIST[i];
-        if (e_key !== this.kc[k]) continue;
-        if (this.holding[k]) return;
-        this.holding[k] = 1;
-        break;
+        const k = KEY_NAME_LIST[i];
+        if (e_key === this.kc[k]) {
+          this.press_keys(k)
+          return;
+        }
       }
     };
     window.addEventListener('keydown', on_key_down);
