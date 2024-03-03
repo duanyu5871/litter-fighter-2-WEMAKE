@@ -237,6 +237,7 @@ export interface IWpointInfo {
   dvz?: number;
 }
 export interface IBdyInfo {
+  friendly_fire ?: number;
   kind: number
   x: number
   y: number
@@ -249,6 +250,7 @@ export interface IBdyInfo {
 }
 
 export interface IItrInfo {
+  friendly_fire ?: number;
   kind: number
   x: number
   y: number

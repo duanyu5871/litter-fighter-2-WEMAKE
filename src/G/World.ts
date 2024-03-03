@@ -2,12 +2,12 @@ import * as THREE from 'three';
 import { dat_mgr } from '../DatLoader';
 import { Defines } from '../defines';
 import { IBdyInfo, IFrameInfo, IItrInfo } from '../js_utils/lf2_type';
+import { Ball } from './Ball';
 import { Character } from './Character';
 import { PlayerController } from './Controller/PlayerController';
 import { Entity } from './Entity';
-import { GONE_FRAME_INFO, FrameAnimater } from './FrameAnimater';
+import { FrameAnimater, GONE_FRAME_INFO } from './FrameAnimater';
 import { Grand } from './Grand';
-import { Ball } from './Ball';
 export interface ICube {
   left: number;
   right: number;
@@ -201,35 +201,33 @@ export class World {
       for (let j = 0; j < l1; ++j) {
         const itr = af.itr[i];
         const bdy = bf.bdy[j];
-        if (a.team === b.team) continue;
-        if (itr.kind === 0 && bdy.kind === 0) {
-          if (itr.vrest) {
-            if (b.v_rests.has(a.id)) {
-              if (this._show_indicators) console.log(b.v_rests);
-              continue;
-            }
-          }
-          else if (a.a_rest) continue;
 
-          const r0 = this.get_cube(a, af, itr);
-          const r1 = this.get_cube(b, bf, bdy);
-          if (this._show_indicators) console.log(itr, bdy, r0, r1)
-          if (
-            r0.left <= r1.right &&
-            r0.right >= r1.left &&
-            r0.bottom <= r1.top &&
-            r0.top >= r1.bottom &&
-            r0.far <= r1.near &&
-            r0.near >= r1.far
-          ) {
-            if (itr.effect === 4) continue; // todo
-            if (
-              (!itr.fall || itr.fall < 60) &&
-              (b.get_frame().state === Defines.State.Falling)
-            ) continue; // todo
-            this.handle_collision(a, itr, r0, b, bdy, r1);
-            return true;
-          }
+        if (itr.kind === Defines.ItrKind.CharacterThrew) {
+          continue; // todo
+        }
+        if (itr.kind === Defines.ItrKind.Normal) { }
+        if (itr.kind === Defines.ItrKind.SuperPunchMe) { }
+        if (
+          (itr.effect === 4) || // todo
+          (a.team === b.team && !itr.friendly_fire && !bdy.friendly_fire) ||
+          (!itr.vrest && a.a_rest) ||
+          (itr.vrest && b.v_rests.has(a.id)) ||
+          ((!itr.fall || itr.fall < 60) && (b.get_frame().state === Defines.State.Falling))
+        ) continue;
+
+        const r0 = this.get_cube(a, af, itr);
+        const r1 = this.get_cube(b, bf, bdy);
+        if (
+          r0.left <= r1.right &&
+          r0.right >= r1.left &&
+          r0.bottom <= r1.top &&
+          r0.top >= r1.bottom &&
+          r0.far <= r1.near &&
+          r0.near >= r1.far
+        ) {
+
+          this.handle_collision(a, itr, r0, b, bdy, r1);
+          return true;
         }
       }
     }
@@ -251,6 +249,9 @@ export class World {
     attacker: Entity, itr: IItrInfo, a_cube: ICube,
     victim: Entity, bdy: IBdyInfo, b_cube: ICube,
   ) {
+    if (victim instanceof Character && victim.controller instanceof PlayerController) {
+      console.log(attacker.get_frame())
+    }
     attacker.on_collision(victim, itr, bdy, a_cube, b_cube);
     victim.on_be_collided(attacker, itr, bdy, a_cube, b_cube);
   }

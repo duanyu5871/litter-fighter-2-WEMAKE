@@ -2,6 +2,7 @@ import { CHARACTER_STATES } from '../State';
 import { Defines } from '../defines';
 import { IBdyInfo, ICharacterData, IFrameInfo, IItrInfo, INextFrameFlags } from '../js_utils/lf2_type';
 import { A_SHAKE, V_SHAKE, Entity } from './Entity';
+import { factory } from './Factory';
 import { InvalidController } from './InvalidController';
 import type { World } from './World';
 import { ICube } from './World';
@@ -56,7 +57,7 @@ export class Character extends Entity<ICharacterData> {
     if (f.hit?.a) this.enter_frame(f.hit?.a);
 
   }
-  override on_after_landing() {
+  override on_landing() {
     const { indexes } = this.data.base;
     const f = this.get_frame();
     switch (f.state) {
@@ -103,10 +104,6 @@ export class Character extends Entity<ICharacterData> {
     const { dvz } = this.get_frame();
     const { UD1 } = this.controller;
     if (dvz !== void 0 && dvz !== 0) this.velocity.z = UD1 * dvz;
-  }
-  override on_collision(target: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
-    super.on_collision(target, itr, bdy, a_cube, b_cube);
-    if (!this._motionless) this._motionless += A_SHAKE;
   }
 
   override on_be_collided(attacker: Entity, itr: IItrInfo, bdy: IBdyInfo, r0: ICube, r1: ICube): void {
@@ -200,3 +197,5 @@ export class Character extends Entity<ICharacterData> {
     this._next_frame = void 0;
   }
 }
+
+factory.set('character', (...args) => new Character(...args))

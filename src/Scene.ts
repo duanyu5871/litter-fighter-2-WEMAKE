@@ -18,7 +18,7 @@ export default function run(canvas: HTMLCanvasElement) {
     if (disposed) return;
 
     play_character(_character_idx);
-    for (let i = 0; i < 10; ++i) {
+    for (let i = 0; i < 1; ++i) {
       const d = random_get(dat_mgr.characters);
       const e = new Character(world, d)
       if (i === 0)

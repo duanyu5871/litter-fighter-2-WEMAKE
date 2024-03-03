@@ -27,8 +27,8 @@ export function make_character_data(info: ICharacterInfo, frames: Record<TFrameI
   const running_speed = take_number(info, 'running_speed', 0);
   const running_speedz = take_number(info, 'running_speedz', 0);
 
-  info.jump_height = info.jump_height * info.jump_height / 2;
-  info.dash_height = info.dash_height * info.dash_height / 1.8;
+  info.jump_height = info.jump_height * info.jump_height / 4;
+  info.dash_height = info.dash_height * info.dash_height / 4;
   info.dash_distance /= 2;
   info.jump_distance /= 2;
 

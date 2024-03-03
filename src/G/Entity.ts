@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import BaseState from "../BaseState";
 import { dat_mgr } from '../DatLoader';
 import { Defines } from '../defines';
-import { IBaseData, IBdyInfo, ICharacterData, IEntityData, IFrameInfo, IGameObjData, IItrInfo, IBallData, IWeaponData, TNextFrame } from '../js_utils/lf2_type';
+import { IBallData, IBaseData, IBdyInfo, ICharacterData, IEntityData, IFrameInfo, IGameObjData, IItrInfo, IOpointInfo, IWeaponData, TFace, TNextFrame } from '../js_utils/lf2_type';
 import { EntityIndicators } from './EntityIndicators';
 import { factory } from './Factory';
 import { FrameAnimater } from './FrameAnimater';
@@ -20,7 +20,7 @@ export class Entity<
 > extends FrameAnimater<D> {
   readonly shadow: THREE.Object3D;
   readonly velocity = new THREE.Vector3(0, 0, 0);
-  
+
   hp: number = 0;
   team: number = ++__team__;
   readonly states: Map<number, BaseState>;
@@ -41,6 +41,17 @@ export class Entity<
     this._indicators.show = v;
   }
 
+  setup(shotter: Entity, o: IOpointInfo) { 
+    const shotter_frame = shotter.get_frame();
+    this.team = shotter.team;
+    this.face = (o.facing === 1 ? -shotter.face : shotter.face) as TFace;
+    let { x, y, z } = shotter.position;
+    y = y + shotter_frame.centery - o.y;
+    x = x - shotter.face * (shotter_frame.centerx - o.x);
+    this.position.set(x, y, z);
+    this.enter_frame(o.action ?? 0);
+    return this; 
+  }
   override set_frame(v: F) {
     const prev_state = this.get_frame().state;
     super.set_frame(v);
@@ -51,18 +62,14 @@ export class Entity<
 
     if (v.opoint) {
       for (const o of v.opoint) {
-        const d = dat_mgr.find(o.oid) as IBallData;
+        const d = dat_mgr.find(o.oid);
         if (!d) {
           console.warn('data not found! id:', o.oid)
           continue;
         }
-        if (d.type !== 'ball') {
-          console.warn('support type:', d.type)
-          continue;
-        }
-        const create = factory.get('ball');
+        const create = factory.get(d.type);
         if (!create) {
-          console.warn('creator not found! ', 'ball')
+          console.warn('creator not found! ', d)
           continue;
         }
         create?.(this.world, d).setup(this, o).attach()
@@ -77,7 +84,7 @@ export class Entity<
     this._state?.enter(this)
   }
   get state() { return this._state; }
-  constructor(world: World, data: D, states: Map<number, BaseState>) {
+  constructor(world: World, data: D, states: Map<number, BaseState> = new Map()) {
     super(world, data)
 
     this.pictures.set('shadow', create_picture_by_img_key('shadow', 'shadow').data);
@@ -159,11 +166,9 @@ export class Entity<
       this.position.y = 0;
       if (this.velocity.y < 0) {
         this.velocity.y = 0;
-        this.on_after_landing();
+        this.on_landing();
       }
     }
-
-    this.update_sprite_position();
     if (this._motionless > 0) {
       --this._motionless;
     } else if (this._shaking > 0) {
@@ -174,6 +179,7 @@ export class Entity<
       this.v_rests.forEach((v, k, m) => { v > 1 ? m.set(k, v - 1) : m.delete(k) });
       this.a_rest > 1 ? this.a_rest-- : this.a_rest = 0;
     };
+    this.update_sprite_position();
     this.on_after_update();
   }
 
@@ -184,13 +190,14 @@ export class Entity<
   }
 
   on_after_state_update(): void { }
-  on_after_landing(): void { }
+  on_landing(): void { }
   on_after_update(): void { }
 
 
   on_collision(target: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
     if (itr.arest) this.a_rest = itr.arest;
     else if (!itr.vrest) this.a_rest = this.wait + A_SHAKE + 2;
+    if (this._motionless <= 0) this._motionless += A_SHAKE;
   }
   on_be_collided(attacker: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
     if (!itr.arest && itr.vrest) this.v_rests.set(attacker.id, itr.vrest);

@@ -3,7 +3,7 @@ import { TData } from './G/Entity';
 import { sound_mgr } from './G/loader/SoundMgr';
 import { image_pool } from './G/loader/loader';
 import { cook_frame } from './G/preprocess_frame';
-import { IBgData, ICharacterData, IDataMap, IEntityData, IBallData, IWeaponData } from './js_utils/lf2_type';
+import { IBallData, IBgData, ICharacterData, IDataMap, IEntityData, IGameObjData, IWeaponData } from './js_utils/lf2_type';
 import { map, traversal } from './js_utils/traversal';
 
 const Log = Info.Clone({ showArgs: true, showRet: true, disabled: true });
@@ -28,11 +28,11 @@ const create_data_list_map = (): IDataListMap => ({
 
 export class DataMgr {
   private _data_list_map = create_data_list_map();
-  private _data_map = new Map<string, TData>();
+  private _data_map = new Map<string, IGameObjData>();
 
   clear() {
     this._data_list_map = (window as any)._data_list_map = create_data_list_map();
-    this._data_map = (window as any)._data_map = new Map<string, TData>();
+    this._data_map = (window as any)._data_map = new Map<string, IGameObjData>();
   }
   constructor() {
     this.clear();
@@ -82,19 +82,19 @@ export class DataMgr {
   }
 
   async load() {
-    const data_map = new Map<string, TData>();
+    const data_map = new Map<string, IGameObjData>();
     const data_list_map = create_data_list_map();
     try {
-      const { objects, backgrounds } = await import(`./G/data/data.json`);
+      const { objects, backgrounds } = await import(`./G/data/data.json`).then(v => v.default);
       console.log('[DatLoader] loading: spark.json')
-      await this._add_data("spark", await import('./G/spark.json'), data_map)
+      await this._add_data("spark", await import('./G/spark.json').then(v => v.default), data_map)
       for (const { id, file } of objects) {
         console.log('[DatLoader] loading:', file)
-        await this._add_data(id, await import(`./G/${file}`), data_map);
+        await this._add_data(id, await import(`./G/${file}`).then(v => v.default), data_map);
       }
       for (const { id, file } of backgrounds) {
         console.log('[DatLoader] loading:', file)
-        await this._add_data(id, await import(`./G/${file}`), data_map);
+        await this._add_data(id, await import(`./G/${file}`).then(v => v.default), data_map);
       }
       for (const [, v] of data_map) {
         const t = v.type as keyof IDataMap;
@@ -115,7 +115,7 @@ export class DataMgr {
   get entity() { return this._data_list_map.entity; }
   get all() { return this._data_list_map.all; }
 
-  find(id: number | string): TData | undefined {
+  find(id: number | string): IGameObjData | undefined {
     return this._data_map.get('' + id)
   }
 }

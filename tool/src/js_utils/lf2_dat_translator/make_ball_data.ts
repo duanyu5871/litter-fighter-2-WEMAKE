@@ -8,7 +8,7 @@ export function make_ball_data(info: IBallInfo, frames: Record<TFrameId, IBallFr
 
   for (const [, frame] of traversal(frames)) {
     const hit_j = take(frame, 'hit_j');
-    if (hit_j !== 0) frame.speedz = (50 - to_num(hit_j, 50));
+    if (hit_j !== 0) frame.speedz = to_num(hit_j, 50) - 50;
 
     const hit_a = take(frame, 'hit_a');
     const hit_d = take(frame, 'hit_d');
@@ -24,6 +24,13 @@ export function make_ball_data(info: IBallInfo, frames: Record<TFrameId, IBallFr
       if (frames[40]) frame.on_disappearing = { id: 40 }
     } else if (frame.state === 3005) {
       frame.no_shadow = 1;
+    } else if (frame.state === 18) {
+      if (frame.itr && Number(datIndex?.id) === 229) {
+        // julian ball 2 explosion
+        for (const itr of frame.itr) {
+          itr.friendly_fire = 1;
+        }
+      }
     }
 
     switch ('' + datIndex?.id) {

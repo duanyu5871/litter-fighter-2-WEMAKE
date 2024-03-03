@@ -1,7 +1,7 @@
 import { BALL_STATES } from '../ENTITY_STATES';
 import { Defines } from '../defines';
-import { IBallData, IBallFrameInfo, IBdyInfo, IFrameInfo, IGameObjData, IGameObjInfo, IItrInfo, IOpointInfo, TFace } from '../js_utils/lf2_type';
-import { A_SHAKE, Entity } from './Entity';
+import { IBallData, IBallFrameInfo, IBdyInfo, IItrInfo, IOpointInfo, TFace } from '../js_utils/lf2_type';
+import { Entity } from './Entity';
 import { factory } from './Factory';
 import { EMPTY_FRAME_INFO } from './FrameAnimater';
 import type { ICube, World } from './World';
@@ -11,6 +11,7 @@ import { sound_mgr } from './loader/SoundMgr';
 export class Ball extends Entity<IBallData, IBallFrameInfo> {
   constructor(world: World, data: IBallData) {
     super(world, data, BALL_STATES);
+    this.hp = this.data.base.hp;
   }
   override find_auto_frame() {
     return this.data.frames[0] ?? EMPTY_FRAME_INFO;
@@ -24,27 +25,16 @@ export class Ball extends Entity<IBallData, IBallFrameInfo> {
     }
   }
 
-  setup(shotter: Entity, o: IOpointInfo) {
-    this.hp = this.data.base.hp;
-    const shotter_frame = shotter.get_frame();
-    this.team = shotter.team;
-    this.face = (o.facing === 1 ? -shotter.face : shotter.face) as TFace;
-    let { x, y, z } = shotter.position;
-
-    y = y + shotter_frame.centery - o.y;
-    x = x - this._face * (shotter_frame.centerx - o.x);
-    this.position.set(x, y, z);
-    this.enter_frame(o.action ?? 0);
-    return this;
+  override setup(shotter: Entity, o: IOpointInfo) {
+    return super.setup(shotter, o);
   }
   set_frame(v: IBallFrameInfo): void {
     super.set_frame(v);
     this.shadow.visible = !v.no_shadow;
   }
-  on_collision(target: Entity<IGameObjData<IGameObjInfo, IFrameInfo>>, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
+  on_collision(target: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
+    super.on_collision(target, itr, bdy, a_cube, b_cube);
     if (target.data.type === Defines.EntityEnum.Character) {
-      // const t = target as Character;
-      this._motionless = A_SHAKE;
       const f = this.get_frame();
       f.on_hitting && this.enter_frame(f.on_hitting);
       this.velocity.x = 0;
@@ -54,12 +44,20 @@ export class Ball extends Entity<IBallData, IBallFrameInfo> {
         this.position.x, this.position.y, this.position.z)
     }
   }
+  on_be_collided(attacker: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
+    super.on_be_collided(attacker, itr, bdy, a_cube, b_cube);
+  }
   update(): void {
     super.update();
 
     const f = this.get_frame();
-    if (f.hp) this.hp -= f.hp;
-    if (!this.hp) f.on_dead && this.enter_frame(f.on_dead);
+
+    if (this.hp <= 0) {
+      console.log(f)
+      f.on_dead && this.enter_frame(f.on_dead)
+    } else if (f.hp) {
+      this.hp -= f.hp;
+    }
   }
 }
 

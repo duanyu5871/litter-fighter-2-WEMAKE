@@ -39,6 +39,7 @@ export namespace Defines {
     Catch = 1,        // 捉住暈眩(state 16) |的人
     Pick = 2,         // 撿武器
     ForceCatch = 3,   // 強迫抓人a
+    CharacterThrew = 4,   // 強迫抓人a
     SuperPunchMe = 6, // 敵人靠近按A時是重击
     PickWith = 7,     // 撿武器不影響动作
     Heal = 8,         // injury数值变成治療多少hp，动作跳至dvx ?
