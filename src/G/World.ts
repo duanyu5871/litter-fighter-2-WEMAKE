@@ -205,12 +205,14 @@ export class World {
         switch (itr.kind as Defines.ItrKind) {
           case Defines.ItrKind.CharacterThrew:
           case Defines.ItrKind.MagicFlute:
-          case Defines.ItrKind.ForceCatch:
-          case Defines.ItrKind.Catch:
             continue; // todo
           case Defines.ItrKind.Pick:
           case Defines.ItrKind.PickSecretly:
             continue;
+          case Defines.ItrKind.Catch:
+            if (b instanceof Character && bf.state === Defines.State.Tired) break;
+            continue;
+          case Defines.ItrKind.ForceCatch:
           case Defines.ItrKind.SuperPunchMe:
             if (b instanceof Character) break;
             continue;

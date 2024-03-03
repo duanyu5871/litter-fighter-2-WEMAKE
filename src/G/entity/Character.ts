@@ -41,22 +41,13 @@ export class Character extends Entity<ICharacterData> {
   }
 
   setup_leniency_hit_a(prev: IFrameInfo | void, curr: IFrameInfo | void) {
-    if (!prev) return;
-    if (!curr) return;
-    if (this.position.y !== 0) return;
+    if (!prev || !curr || this.position.y !== 0) return;
     if (!Array.isArray(prev.next) && prev.next.id === 'auto') {
       this.controller._next_punch_ready = 1;
     }
-    if (curr.state !== 3) {
+    if (curr.state !== Defines.State.Attacking) {
       this.controller._next_punch_ready = 0;
     }
-  }
-  check_leniency_hit_a() {
-    if (!this.controller._need_punch) return;
-    this.controller._need_punch = 0;
-    const f = this.get_frame();
-    if (f.hit?.a) this.enter_frame(f.hit?.a);
-
   }
   override on_landing() {
     const { indexes } = this.data.base;

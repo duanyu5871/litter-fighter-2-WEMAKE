@@ -60,8 +60,10 @@ export class BaseController implements IController<Character> {
   update(): TNextFrame | undefined {
     const k_len = KEY_CODE_LIST.length;
     this._update_count++;
-    const { hold, hit, state } = this.character.get_frame();
-    const { face } = this.character;
+    const character = this.character;
+    const { face } = character;
+    const frame = character.get_frame();
+    const { hold, hit, state } = frame;
     let nf: TNextFrame | undefined;
     if (this.holding.d === 1) {
       this._kc_list = '';
@@ -100,12 +102,17 @@ export class BaseController implements IController<Character> {
     switch (state) {
       case Defines.State.Standing:
       case Defines.State.Walking:
-        for (const [, { itr }] of this.character.v_rests) {
-          if (itr.kind === Defines.ItrKind.SuperPunchMe) {
-            nf = { id: this.character.data.base.indexes.super_punch }
+        if (this._need_punch) {
+          this._need_punch = 0;
+          if (frame.hit?.a) nf = frame;
+        }
+        for (const [, { itr }] of character.v_rests) {
+          if (itr.kind === Defines.ItrKind.SuperPunchMe && this.holding.a === 1) {
+            nf = { id: character.data.base.indexes.super_punch }
             break;
           }
         }
+
         break;
       case Defines.State.Attacking: {
         if (this.holding.a === 1 && this._next_punch_ready)
