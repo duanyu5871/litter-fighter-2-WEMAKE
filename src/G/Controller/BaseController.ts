@@ -49,15 +49,26 @@ export class BaseController implements IController<Character> {
     for (const k of keys) {
       if (this.holding[k]) continue;
       this.holding[k] = 1;
+      this.releases[k] = 0;
     }
     return this;
   }
+  is_hold(k: string): boolean;
+  is_hold(k: TKeyName): boolean;
   is_hold(k: TKeyName) {
     return this.holding[k] >= 2;
   }
+  is_hit(k: string): boolean;
+  is_hit(k: TKeyName): boolean;
   is_hit(k: TKeyName) {
     const v = this.holding[k];
     return v > 0 && !this.is_hold(k);
+  }
+  is_release(k: string): boolean;
+  is_release(k: TKeyName): boolean;
+  is_release(k: TKeyName) {
+    const v = this.releases[k];
+    return v > 0;
   }
   double_clicks: Record<TKeyName, number[] | undefined> = {
     d: undefined,
@@ -143,24 +154,22 @@ export class BaseController implements IController<Character> {
     const seqs = hit?.sequences
     if (seqs) do {
       let found = false;
-      if (this.holding.d) {
+      if (this.is_hit('d')) {
         // 同时按键的检查
         const strs = Object.keys(seqs)
         for (let i = 0; i < strs.length; ++i) {
           const str = strs[i];
-          let total = this.holding.d;
           let need_continue = false;
           for (let j = 0; j < str.length; ++j) {
-            const v = (this.holding as any)[str[j]];
-            if (v) { need_continue = true; break; }
-            total += v;
+            if (!this.is_hit(str[j])) {
+              need_continue = true;
+              break;
+            }
           }
           if (need_continue) continue;
-          if (total === str.length + 1) {
-            nf = seqs[str];
-            found = true;
-            break;
-          }
+          nf = seqs[str];
+          found = true;
+          break;
         }
       }
       if (found) {
@@ -184,30 +193,31 @@ export class BaseController implements IController<Character> {
 
     for (let i = 0; i < k_len; ++i) {
       const k = KEY_NAME_LIST[i];
-      if (this.is_hit(k)) this.holding[k] += 0.25;
+      if (this.is_hit(k)) this.holding[k] += 0.5;
 
       if (this.releases[k] >= 2) this.releases[k] = this.holding[k] = 0
-      if (this.releases[k] === 1) this.releases[k] = 2;
+      else if (this.releases[k] > 0) this.releases[k] += 0.5;
     }
     return nf
   }
 
-  check_double_click(target: TKeyName) {
-    const kc = CONFLICTS_KEY_CODE_LIST[target];
+  check_double_click(k: TKeyName) {
+    const kc = CONFLICTS_KEY_CODE_LIST[k];
     if (kc && this.holding[kc]) {
-      this.double_clicks[target] = void 0;
+      this.double_clicks[k] = void 0;
       return false;
     }
-    const h = this.holding[target];
-    const a = this.double_clicks[target];
-    if (h && !a) {
-      this.double_clicks[target] = [this._update_count];
-    } else if (!h && a && a?.[1] === void 0) {
+    const is_hit = this.is_hit(k);
+    const is_release = this.is_release(k);
+    const a = this.double_clicks[k];
+    if (is_hit && !a) {
+      this.double_clicks[k] = [this._update_count];
+    } else if (is_release && a && a?.[1] === void 0) {
       a[1] = this._update_count;
-    } else if (h && a && a?.[1] !== void 0 && a?.[2] === void 0) {
+    } else if (is_hit && a && a?.[1] !== void 0 && a?.[2] === void 0) {
       a[2] = this._update_count;
       const ret = a[2] - a[1] < DOUBLE_CLICK_INTERVAL && a[1] - a[0] < DOUBLE_CLICK_INTERVAL;
-      this.double_clicks[target] = void 0;
+      this.double_clicks[k] = void 0;
       return ret;
     }
     return false;

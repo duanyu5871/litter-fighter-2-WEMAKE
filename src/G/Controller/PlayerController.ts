@@ -49,7 +49,7 @@ export class PlayerController extends BaseController {
       for (let i = 0; i < k_len; ++i) {
         const k = KEY_NAME_LIST[i];
         if (e_key === this.kc[k]) {
-          this.press_keys(k)
+          this.press_keys(k);
           return;
         }
       }
