@@ -1,4 +1,5 @@
 /* eslint-disable new-parens */
+import { TFrameId } from "../../js_utils/lf2_type";
 import { Defines } from "../../js_utils/lf2_type/defines";
 import { World } from "../World";
 import type { Character } from '../entity/Character';
@@ -91,3 +92,24 @@ CHARACTER_STATES.set(Defines.State.Dash, new class extends BaseCharacterState {
   }
 })
 CHARACTER_STATES.set(Defines.State.Defend, new BaseCharacterState)
+CHARACTER_STATES.set(Defines.State.Falling, new class extends BaseCharacterState {
+  _direction: -1 | 1 = 1;
+  enter(e: Character): void {
+    super.enter(e);
+    const { id } = e.get_frame();
+    // eslint-disable-next-line eqeqeq
+    this._direction = e.data.base.indexes.critical_hit[1].find(v => v == id) === void 0 ? -1 : 1;
+  }
+  update(e: Character): void {
+    super.update(e);
+    if (e.shaking > 0) {
+      return;
+    } else if (e.velocity.y < -1) {
+      e.enter_frame({ id: e.data.base.indexes.falling[this._direction][3] })
+    } else if (e.velocity.y > 1) {
+      e.enter_frame({ id: e.data.base.indexes.falling[this._direction][1] })
+    } else {
+      e.enter_frame({ id: e.data.base.indexes.falling[this._direction][2] })
+    }
+  }
+})

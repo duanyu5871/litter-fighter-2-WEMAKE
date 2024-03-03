@@ -305,6 +305,14 @@ export interface ICharacterFrameIndexes {
     [-1]: TFrameId[],
     [1]: TFrameId[],
   },
+  bouncing: {
+    [-1]: TFrameId[],
+    [1]: TFrameId[],
+  },
+  critical_hit: {
+    [-1]: TFrameId[],
+    [1]: TFrameId[],
+  }
   injured: {
     [-1]: TFrameId,
     [1]: TFrameId,

@@ -1,5 +1,5 @@
 import { Defines } from '../../js_utils/lf2_type/defines';
-import { IBdyInfo, ICharacterData, IFrameInfo, IItrInfo, INextFrameFlags } from '../../js_utils/lf2_type';
+import { IBdyInfo, ICharacterData, IFrameInfo, IItrInfo, INextFrameFlags, TFace } from '../../js_utils/lf2_type';
 import { IController } from '../controller/IController';
 import { InvalidController } from '../controller/InvalidController';
 import { Entity } from './Entity';
@@ -151,13 +151,15 @@ export class Character extends Entity<ICharacterData> {
         else
           this.velocity.x += dvx / 2;
       }
-
       if (itr.effect === 1) {
         this.world.spark(spark_x, spark_y, spark_z, "critical_bleed");
       } else {
         this.world.spark(spark_x, spark_y, spark_z, "critical_hit")
       }
-      this.enter_frame({ id: indexes.falling[aface][0] })
+
+      let f = this.face * aface as TFace;
+      if (itr?.dvx && itr.dvx < 0) f = -f as TFace;
+      this.enter_frame({ id: indexes.critical_hit[f][0] })
       this._next_frame = void 0;
       return;
     }

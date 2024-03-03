@@ -42,7 +42,7 @@ export class Entity<
   protected _next_frame?: TNextFrame;
   protected _indicators: EntityIndicators | undefined = new EntityIndicators(this);
   protected _state: BaseState | undefined;
-
+  get shaking() { return this._shaking; }
   get show_indicators() { return !!this._indicators?.show }
   set show_indicators(v: boolean) {
     if (!this._indicators)

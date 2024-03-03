@@ -236,10 +236,17 @@ export function make_character_data(info: ICharacterInfo, frames: Record<TFrameI
   info.indexes.catch = [120];
   info.indexes.catch_atk = 121;
   info.indexes.caughts = arithmetic_progression(130, 144);
+  info.indexes.critical_hit = {
+    [-1]: [180], 1: [186]
+  }
   info.indexes.falling = {
-    [-1]: arithmetic_progression(180, 185),
-    1: arithmetic_progression(186, 191),
+    [-1]: arithmetic_progression(180, 183),
+    1: arithmetic_progression(186, 189),
   };
+  info.indexes.bouncing = {
+    [-1]: arithmetic_progression(184, 185),
+    1: arithmetic_progression(190, 191)
+  }
   info.indexes.landing_1 = 215;
   info.indexes.landing_2 = 219;
 
