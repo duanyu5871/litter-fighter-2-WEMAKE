@@ -203,6 +203,7 @@ export class World {
         const bdy = bf.bdy[j];
 
         switch (itr.kind as Defines.ItrKind) {
+          case Defines.ItrKind.Block:
           case Defines.ItrKind.CharacterThrew:
           case Defines.ItrKind.MagicFlute:
             continue; // todo
@@ -219,7 +220,6 @@ export class World {
           case Defines.ItrKind.Normal:
           case Defines.ItrKind.Heal:
           case Defines.ItrKind.DeadWhenHit:
-          case Defines.ItrKind.Block:
           case Defines.ItrKind.Fly:
           case Defines.ItrKind.Ice:
         }
@@ -241,7 +241,6 @@ export class World {
           r0.far <= r1.near &&
           r0.near >= r1.far
         ) {
-
           this.handle_collision(a, itr, r0, b, bdy, r1);
           return true;
         }

@@ -93,23 +93,52 @@ CHARACTER_STATES.set(Defines.State.Dash, new class extends BaseCharacterState {
 })
 CHARACTER_STATES.set(Defines.State.Defend, new BaseCharacterState)
 CHARACTER_STATES.set(Defines.State.Falling, new class extends BaseCharacterState {
-  _direction: -1 | 1 = 1;
+  _directions = new Map<string | number, 1 | -1>();
+  _ignore_frames = new Map<string | number, Set<TFrameId>>();
   enter(e: Character): void {
     super.enter(e);
-    const { id } = e.get_frame();
+    const { id: entity_id } = e;
+    const { id: data_id, base: { indexes: { critical_hit, bouncing } } } = e.data;
+    const { id: frame_id } = e.get_frame();
+
     // eslint-disable-next-line eqeqeq
-    this._direction = e.data.base.indexes.critical_hit[1].find(v => v == id) === void 0 ? -1 : 1;
+    this._directions.set(entity_id, critical_hit[1].find(v => v == frame_id) === void 0 ? -1 : 1);
+    if (!this._ignore_frames.has(data_id)) {
+      this._ignore_frames.set(data_id, new Set(
+        [
+          ...bouncing[1].map(v => v.toString()),
+          ...bouncing[-1].map(v => v.toString()),
+          // ...critical_hit[-1].map(v => v.toString()),
+          // ...critical_hit[1].map(v => v.toString())
+        ]
+      ))
+    }
+
   }
   update(e: Character): void {
     super.update(e);
     if (e.shaking > 0) {
       return;
-    } else if (e.velocity.y < -1) {
-      e.enter_frame({ id: e.data.base.indexes.falling[this._direction][3] })
-    } else if (e.velocity.y > 1) {
-      e.enter_frame({ id: e.data.base.indexes.falling[this._direction][1] })
     } else {
-      e.enter_frame({ id: e.data.base.indexes.falling[this._direction][2] })
+      const { id: entity_id, data: { id: data_id, base: { indexes: { falling } } } } = e;
+      const { id: frame_id } = e.get_frame();
+      const direction = this._directions.get(entity_id);
+      if (!direction) return
+      const ignore_frames = this._ignore_frames.get(data_id)
+      if (ignore_frames && ignore_frames.has('' + frame_id)) return;
+
+      if (e.velocity.y < -1) {
+        e.enter_frame({ id: falling[direction][3] })
+      } else if (e.velocity.y > 1) {
+        e.enter_frame({ id: falling[direction][1] })
+      } else {
+        e.enter_frame({ id: e.data.base.indexes.falling[direction][2] })
+      }
     }
   }
+  leave(e: Character): void {
+    const { id: entity_id } = e;
+    this._directions.delete(entity_id);
+  }
 })
+CHARACTER_STATES.set(Defines.State.Lying, new class extends BaseCharacterState {})

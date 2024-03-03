@@ -111,9 +111,10 @@ export type TNextFrame = INextFrame | INextFrame[]
 
 export * from './IBgInfo';
 export * from './IBgLayerInfo';
+export * from './IFramePictureInfo';
+export * from './IItrInfo';
 export * from './ITexturePieceInfo';
 export * from './ITexturePieceInfos';
-export * from './IFramePictureInfo';
 
 export interface IFrameInfo {
   id: TFrameId;
@@ -206,7 +207,6 @@ export interface IBdyInfo {
     [-1]: ITexturePieceInfo
   }
 }
-export * from './IItrInfo'
 export interface IGameObjInfo {
   files: Record<TFrameId, IEntityPictureInfo>;
 }
@@ -301,29 +301,20 @@ export interface ICharacterFrameIndexes {
   defend_hit: TFrameId;
   in_the_air: TFrameId[];
   super_punch: TFrameId;
-  falling: {
-    [-1]: TFrameId[],
-    [1]: TFrameId[],
-  },
-  bouncing: {
-    [-1]: TFrameId[],
-    [1]: TFrameId[],
-  },
-  critical_hit: {
-    [-1]: TFrameId[],
-    [1]: TFrameId[],
-  }
-  injured: {
-    [-1]: TFrameId,
-    [1]: TFrameId,
-  },
-  grand_injured: {
-    [-1]: TFrameId[],
-    [1]: TFrameId[],
-  },
-  lying: {
-    [-1]: TFrameId,
-    [1]: TFrameId,
-  }
+  falling: TFrameIdListPair,
+  bouncing: TFrameIdListPair,
+  critical_hit: TFrameIdListPair
+  injured: TFrameIdPair,
+  grand_injured: TFrameIdListPair,
+  lying: TFrameIdPair,
+  fire: TFrameId[],
+  ice: TFrameId,
 }
-
+export type TFrameIdPair = {
+  [-1]: TFrameId,
+  1: TFrameId,
+}
+export type TFrameIdListPair = {
+  [-1]: TFrameId[],
+  1: TFrameId[],
+}

@@ -216,7 +216,8 @@ export function make_character_data(info: ICharacterInfo, frames: Record<TFrameI
   info.indexes.h_weapen_thw = 50;
   info.indexes.air_weapon_thw = 52;
   info.indexes.drink = 55;
-
+  info.indexes.ice = 200;
+  info.indexes.fire = [203, 205];
   info.indexes.air_quick_rise = [100, 108];
   info.indexes.injured = {
     [-1]: 220,

@@ -176,8 +176,7 @@ export class Entity<
     if (this.position.y <= 0) {
       this.position.y = 0;
       if (this.velocity.y < 0) {
-        this.velocity.y = 0;
-        this.on_landing?.();
+        this.velocity.y = this.on_landing?.() ?? 0;
       }
     }
     if (this._motionless > 0) {
@@ -201,7 +200,7 @@ export class Entity<
   }
   on_before_state_update?(): void;
   on_after_state_update?(): void;
-  on_landing?(): void;
+  on_landing?(): number | void | undefined;
   on_before_update?(): void;
   on_after_update?(): void;
 

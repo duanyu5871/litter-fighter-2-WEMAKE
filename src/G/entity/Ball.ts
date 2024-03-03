@@ -53,7 +53,6 @@ export class Ball extends Entity<IBallData, IBallFrameInfo> {
     const f = this.get_frame();
 
     if (this.hp <= 0) {
-      console.log(f)
       f.on_dead && this.enter_frame(f.on_dead)
     } else if (f.hp) {
       this.hp -= f.hp;

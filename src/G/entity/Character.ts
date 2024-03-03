@@ -7,6 +7,7 @@ import { factory } from '../Factory';
 import type { World } from '../World';
 import { ICube } from '../World';
 import { CHARACTER_STATES } from '../state/CharacterState';
+import find_direction from './find_frame_direction';
 
 export class Character extends Entity<ICharacterData> {
   protected _disposers: (() => void)[] = [];
@@ -59,10 +60,24 @@ export class Character extends Entity<ICharacterData> {
       case Defines.State.Jump:
         this.enter_frame({ id: indexes.landing_1 });
         break;
+      case Defines.State.Flame:
       case Defines.State.Falling:
         // eslint-disable-next-line eqeqeq
-        const a = indexes.falling[-1].find(v => v == f.id);
-        this.enter_frame({ id: indexes.lying[a !== void 0 ? -1 : 1] });
+        const d =
+          find_direction(f, indexes.bouncing) ||
+          find_direction(f, indexes.falling) ||
+          find_direction(f, indexes.critical_hit) || this.face
+        if (this.velocity.y <= -4) {
+          this.enter_frame({ id: indexes.bouncing[d] });
+          return 2;
+        }
+        this.enter_frame({ id: indexes.lying[d] });
+        break;
+      case Defines.State.Frozen:
+        if (this.velocity.y <= -4) {
+          this.enter_frame({ id: indexes.bouncing[this.face] });
+          return 2;
+        }
         break;
       default:
         this.enter_frame({ id: indexes.landing_2 });
@@ -100,6 +115,7 @@ export class Character extends Entity<ICharacterData> {
   override on_be_collided(attacker: Entity, itr: IItrInfo, bdy: IBdyInfo, r0: ICube, r1: ICube): void {
     super.on_be_collided(attacker, itr, bdy, r0, r1);
     if (itr.kind === Defines.ItrKind.SuperPunchMe) return;
+    console.log("on_be_collided, itr:", itr, bdy, this.get_frame());
     const spark_x = (Math.max(r0.left, r1.left) + Math.min(r0.right, r1.right)) / 2;
     const spark_y = (Math.min(r0.top, r1.top) + Math.max(r0.bottom, r1.bottom)) / 2;
     // const spark_z = (Math.min(r0.near, r1.near) + Math.max(r0.far, r1.far)) / 2;
@@ -151,26 +167,57 @@ export class Character extends Entity<ICharacterData> {
         else
           this.velocity.x += dvx / 2;
       }
-      if (itr.effect === 1) {
+
+      let f = this.face * aface as TFace;
+      if (itr?.dvx && itr.dvx < 0) f = -f as TFace;
+
+      if (
+        itr.effect === Defines.ItrEffect.Fire ||
+        itr.effect === Defines.ItrEffect.MFire1 ||
+        itr.effect === Defines.ItrEffect.MFire2 ||
+        itr.effect === Defines.ItrEffect.MFire3
+      ) {
+        // TODO: SOUND
+        this.enter_frame({ id: indexes.fire[0], flags: { turn: aface === 1 ? 3 : 4 } })
+        this._next_frame = void 0;
+        return;
+      } else if (itr.effect === Defines.ItrEffect.Ice) {
+        // TODO: SOUND
+        this.enter_frame({ id: indexes.ice, flags: { turn: aface === 1 ? 3 : 4 } })
+        this._next_frame = void 0;
+        return;
+      } else if (itr.effect === Defines.ItrEffect.Sharp) {
         this.world.spark(spark_x, spark_y, spark_z, "critical_bleed");
       } else {
         this.world.spark(spark_x, spark_y, spark_z, "critical_hit")
       }
-
-      let f = this.face * aface as TFace;
-      if (itr?.dvx && itr.dvx < 0) f = -f as TFace;
       this.enter_frame({ id: indexes.critical_hit[f][0] })
       this._next_frame = void 0;
       return;
     }
 
-    if (itr.effect === 1) {
+    if (itr.dvx) this.velocity.x = itr.dvx * aface;
+
+    if (
+      itr.effect === Defines.ItrEffect.Fire ||
+      itr.effect === Defines.ItrEffect.MFire1 ||
+      itr.effect === Defines.ItrEffect.MFire2 ||
+      itr.effect === Defines.ItrEffect.MFire3
+    ) {
+      // TODO: SOUND
+      this.enter_frame({ id: indexes.fire[0], flags: { turn: aface === 1 ? 3 : 4 } })
+      this._next_frame = void 0;
+      return;
+    } else if (itr.effect === Defines.ItrEffect.Ice) {
+      // TODO: SOUND
+      this.enter_frame({ id: indexes.ice, flags: { turn: aface === 1 ? 3 : 4 } })
+      this._next_frame = void 0;
+      return;
+    } else if (itr.effect === Defines.ItrEffect.Sharp) {
       this.world.spark(spark_x, spark_y, spark_z, "bleed")
     } else {
       this.world.spark(spark_x, spark_y, spark_z, "hit")
     }
-
-    if (itr.dvx) this.velocity.x = itr.dvx * aface;
 
     /* 击晕 */
     if (this.fall_value <= 20) {
@@ -178,8 +225,6 @@ export class Character extends Entity<ICharacterData> {
       this._next_frame = void 0;
       return;
     }
-
-
     /* 击中 */
     this.enter_frame({ id: indexes.grand_injured[this.face * aface as -1 | 1][0] })
     this._next_frame = void 0;
