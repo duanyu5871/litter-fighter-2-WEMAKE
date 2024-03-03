@@ -1,14 +1,14 @@
 import * as THREE from 'three';
-import { Defines } from '.././js_utils/lf2_type/defines';
-import BaseState from "./state/BaseState";
-import { dat_mgr } from '../DatLoader';
-import { IBallData, IBaseData, IBdyInfo, ICharacterData, IEntityData, IFrameInfo, IGameObjData, IItrInfo, IOpointInfo, IWeaponData, TFace, TNextFrame } from '../js_utils/lf2_type';
+import { Defines } from '../../js_utils/lf2_type/defines';
+import BaseState from "../state/BaseState";
+import { dat_mgr } from '../loader/DatLoader';
+import { IBallData, IBaseData, IBdyInfo, ICharacterData, IEntityData, IFrameInfo, IGameObjData, IItrInfo, IOpointInfo, IWeaponData, TFace, TNextFrame } from '../../js_utils/lf2_type';
 import { EntityIndicators } from './EntityIndicators';
-import { factory } from './Factory';
-import { FrameAnimater } from './FrameAnimater';
-import type { World } from './World';
-import { ICube } from './World';
-import { create_picture_by_img_key } from './loader/loader';
+import { factory } from '../Factory';
+import { FrameAnimater } from '../FrameAnimater';
+import type { World } from '../World';
+import { ICube } from '../World';
+import { create_picture_by_img_key } from '../loader/loader';
 
 export type TData = IBaseData | ICharacterData | IWeaponData | IEntityData | IBallData
 export const V_SHAKE = 4;

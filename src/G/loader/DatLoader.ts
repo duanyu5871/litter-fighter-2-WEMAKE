@@ -1,10 +1,10 @@
 import { Info } from '@fimagine/logger';
-import { TData } from './G/Entity';
-import { sound_mgr } from './G/loader/SoundMgr';
-import { image_pool } from './G/loader/loader';
-import { cook_frame } from './G/preprocess_frame';
-import { IBallData, IBgData, ICharacterData, IDataMap, IEntityData, IGameObjData, IWeaponData } from './js_utils/lf2_type';
-import { map, traversal } from './js_utils/traversal';
+import { IBallData, IBgData, ICharacterData, IDataMap, IEntityData, IGameObjData, IWeaponData } from '../../js_utils/lf2_type';
+import { map, traversal } from '../../js_utils/traversal';
+import { TData } from '../entity/Entity';
+import { sound_mgr } from './SoundMgr';
+import { image_pool } from './loader';
+import { cook_frame } from './preprocess_frame';
 
 const Log = Info.Clone({ showArgs: true, showRet: true, disabled: true });
 
@@ -25,6 +25,8 @@ const create_data_list_map = (): IDataListMap => ({
   ball: [],
   all: []
 })
+const make_require = (p: string) => require('../' + p);
+const make_import = (p: string) => import('../' + p).then(v => v.default);
 
 export class DataMgr {
   private _data_list_map = create_data_list_map();
@@ -45,16 +47,16 @@ export class DataMgr {
         weapon_hit_sound: c,
       } = (data as Partial<IWeaponData>).base ?? {}
 
-      a && sound_mgr.load(a, require('./G/' + a));
-      b && sound_mgr.load(b, require('./G/' + b));
-      c && sound_mgr.load(c, require('./G/' + c));
+      a && sound_mgr.load(a, make_require(a));
+      b && sound_mgr.load(b, make_require(b));
+      c && sound_mgr.load(c, make_require(c));
     }
 
 
     if (!('frames' in data)) return data;
     const { frames, base: { files } } = data;
-    const jobs = map(files, (_, v) => image_pool.load_by_pic_info(v, _ => require('./G/' + v.path)))
-    jobs.push(image_pool.load('shadow', require('./G/shadow.png')))
+    const jobs = map(files, (_, v) => image_pool.load_by_pic_info(v, _ => make_require(v.path)))
+    jobs.push(image_pool.load('shadow', make_require('shadow.png')))
     await Promise.all(jobs);
     traversal(frames, (_, frame) => cook_frame(data, frame));
     return data;
@@ -85,16 +87,16 @@ export class DataMgr {
     const data_map = new Map<string, IGameObjData>();
     const data_list_map = create_data_list_map();
     try {
-      const { objects, backgrounds } = await import(`./G/data/data.json`).then(v => v.default);
+      const { objects, backgrounds } = await make_import('data/data.json');
       console.log('[DatLoader] loading: spark.json')
-      await this._add_data("spark", await import('./G/spark.json').then(v => v.default), data_map)
+      await this._add_data("spark", await make_import('spark.json'), data_map)
       for (const { id, file } of objects) {
         console.log('[DatLoader] loading:', file)
-        await this._add_data(id, await import(`./G/${file}`).then(v => v.default), data_map);
+        await this._add_data(id, await make_import(file), data_map);
       }
       for (const { id, file } of backgrounds) {
         console.log('[DatLoader] loading:', file)
-        await this._add_data(id, await import(`./G/${file}`).then(v => v.default), data_map);
+        await this._add_data(id, await make_import(file), data_map);
       }
       for (const [, v] of data_map) {
         const t = v.type as keyof IDataMap;

@@ -1,6 +1,7 @@
 import { TNextFrame } from '../../js_utils/lf2_type';
 import { Defines } from '../../js_utils/lf2_type/defines';
-import { Character } from '../Character';
+import { Character } from '../entity/Character';
+import { IController, TKeyName } from './IController';
 
 export const KEY_CODE_LIST = ['d', 'L', 'R', 'U', 'D', 'j', 'a'] as const;
 export const CONFLICTS_KEY_CODE_LIST: Record<TKeyName, TKeyName | undefined> = {

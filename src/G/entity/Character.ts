@@ -1,11 +1,12 @@
-import { Defines } from '.././js_utils/lf2_type/defines';
-import { CHARACTER_STATES } from './state/CharacterState';
-import { IBdyInfo, ICharacterData, IFrameInfo, IItrInfo, INextFrameFlags } from '../js_utils/lf2_type';
+import { Defines } from '../../js_utils/lf2_type/defines';
+import { IBdyInfo, ICharacterData, IFrameInfo, IItrInfo, INextFrameFlags } from '../../js_utils/lf2_type';
+import { IController } from '../controller/IController';
+import { InvalidController } from '../controller/InvalidController';
 import { Entity } from './Entity';
-import { factory } from './Factory';
-import { InvalidController } from './InvalidController';
-import type { World } from './World';
-import { ICube } from './World';
+import { factory } from '../Factory';
+import type { World } from '../World';
+import { ICube } from '../World';
+import { CHARACTER_STATES } from '../state/CharacterState';
 
 export class Character extends Entity<ICharacterData> {
   protected _disposers: (() => void)[] = [];

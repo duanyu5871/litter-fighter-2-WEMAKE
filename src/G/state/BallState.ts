@@ -1,6 +1,6 @@
 /* eslint-disable new-parens */
 import BaseState from "./BaseState";
-import { Entity } from "../Entity";
+import { Entity } from "../entity/Entity";
 import { Defines } from "../../js_utils/lf2_type/defines";
 
 export const BALL_STATES = new Map<number, BaseState>();

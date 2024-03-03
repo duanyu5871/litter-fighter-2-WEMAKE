@@ -1,4 +1,4 @@
-import { Entity } from "../Entity";
+import { Entity } from "../entity/Entity";
 
 export default abstract class BaseState<E extends Entity = Entity> {
   abstract update(e: E): void;

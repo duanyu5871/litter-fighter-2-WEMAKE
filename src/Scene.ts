@@ -1,12 +1,12 @@
-import { dat_mgr } from './DatLoader';
-import { Character } from './G/Character';
-import { PlayerController } from "./G/Controller/PlayerController";
+import { dat_mgr } from './G/loader/DatLoader';
+import { Character } from './G/entity/Character';
+import { PlayerController } from "./G/controller/PlayerController";
 import { World } from './G/World';
 import random_get from './Utils/random_get';
 import { TFace, TFrameId } from './js_utils/lf2_type';
 
-import './G/Ball';
-import { DDDController } from './G/Controller/DDDController';
+import './G/entity/Ball';
+import { DDDController } from './G/controller/DDDController';
 let character_id = 1;
 
 export default function run(canvas: HTMLCanvasElement) {

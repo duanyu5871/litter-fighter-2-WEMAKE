@@ -1,5 +1,6 @@
-import { Character } from '../Character';
+import { Character } from '../entity/Character';
 import { KEY_CODE_LIST, BaseController } from "./BaseController";
+import { TKeyName } from './IController';
 
 export class PlayerController extends BaseController {
   kc: Record<TKeyName, string> = {

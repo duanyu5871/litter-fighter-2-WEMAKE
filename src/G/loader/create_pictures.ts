@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { IPictureInfo } from '../../types/IPictureInfo';
-import { TData } from '../Entity';
+import { TData } from '../entity/Entity';
 import { create_picture_by_pic_info } from './loader';
 
 

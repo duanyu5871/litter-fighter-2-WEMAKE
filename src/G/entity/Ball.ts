@@ -1,11 +1,11 @@
-import { BALL_STATES } from './state/BallState';
-import { Defines } from '.././js_utils/lf2_type/defines';
-import { IBallData, IBallFrameInfo, IBdyInfo, IItrInfo, IOpointInfo, TFace } from '../js_utils/lf2_type';
+import { Defines } from '../../js_utils/lf2_type/defines';
+import { IBallData, IBallFrameInfo, IBdyInfo, IItrInfo, IOpointInfo } from '../../js_utils/lf2_type';
 import { Entity } from './Entity';
-import { factory } from './Factory';
-import { EMPTY_FRAME_INFO } from './FrameAnimater';
-import type { ICube, World } from './World';
-import { sound_mgr } from './loader/SoundMgr';
+import { factory } from '../Factory';
+import { EMPTY_FRAME_INFO } from '../FrameAnimater';
+import type { ICube, World } from '../World';
+import { sound_mgr } from '../loader/SoundMgr';
+import { BALL_STATES } from '../state/BallState';
 
 
 export class Ball extends Entity<IBallData, IBallFrameInfo> {

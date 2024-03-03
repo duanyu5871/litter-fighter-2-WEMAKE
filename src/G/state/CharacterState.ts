@@ -1,7 +1,7 @@
 /* eslint-disable new-parens */
 import BaseState from "./BaseState";
-import type { Character } from '../Character';
-import { Entity } from "../Entity";
+import type { Character } from '../entity/Character';
+import { Entity } from "../entity/Entity";
 import { World } from "../World";
 import { Defines } from "../../js_utils/lf2_type/defines";
 

@@ -1,11 +1,11 @@
 import * as THREE from 'three';
-import { dat_mgr } from '../DatLoader';
+import { dat_mgr } from './loader/DatLoader';
 import { Defines } from '.././js_utils/lf2_type/defines';
 import { IBdyInfo, IFrameInfo, IItrInfo } from '../js_utils/lf2_type';
-import { Ball } from './Ball';
-import { Character } from './Character';
-import { PlayerController } from './Controller/PlayerController';
-import { Entity } from './Entity';
+import { Ball } from './entity/Ball';
+import { Character } from './entity/Character';
+import { PlayerController } from './controller/PlayerController';
+import { Entity } from './entity/Entity';
 import { FrameAnimater, GONE_FRAME_INFO } from './FrameAnimater';
 import { Grand } from './Grand';
 export interface ICube {

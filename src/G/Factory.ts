@@ -1,6 +1,6 @@
-import type { Ball } from "./Ball";
-import type { Character } from "./Character";
-import type { Entity } from "./Entity";
+import type { Ball } from "./entity/Ball";
+import type { Character } from "./entity/Character";
+import type { Entity } from "./entity/Entity";
 
 export interface ICreator<C, T extends new (...args: any[]) => C> {
   (...args: ConstructorParameters<T>): C
