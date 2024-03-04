@@ -1,6 +1,6 @@
 import { arithmetic_progression } from '../arithmetic_progression';
 import { take_number } from '../as_number';
-import { IFrameInfo, ICharacterInfo, TFrameId, ICharacterData, TNextFrame } from '../lf2_type';
+import { IFrameInfo, ICharacterInfo, TFrameId, ICharacterData, TNextFrame, INextFrame } from '../lf2_type';
 import { set_obj_field } from '../set_obj_field';
 import { traversal } from '../traversal';
 import { get_next_frame_by_id } from './get_the_next';
@@ -31,9 +31,41 @@ export function make_character_data(info: ICharacterInfo, frames: Record<TFrameI
   info.dash_height = info.dash_height * info.dash_height / 4;
   info.dash_distance /= 2;
   info.jump_distance /= 2;
-
   const round_trip_frames_map: any = {};
   for (const [frame_id, frame] of traversal(frames)) {
+
+    if (frame.cpoint) {
+      const a_action = take(frame.cpoint, 'aaction');
+      const t_action = take(frame.cpoint, 'taction');
+      const s_hit_a = frame.hit?.a;
+      let t_hit_a: INextFrame | undefined;
+      let a_hit_a: INextFrame | undefined;
+      if (t_action)
+        t_hit_a = { id: t_action, flags: { turn: 2 }, condition: 'press_F_B == 1' };
+      if (a_action)
+        a_hit_a = { id: a_action }
+
+      if (Array.isArray(s_hit_a)) {
+        t_hit_a && s_hit_a.unshift(t_hit_a);
+        a_hit_a && s_hit_a.unshift(a_hit_a);
+      } else {
+        let c = 0;
+        if (s_hit_a) ++c;
+        if (t_hit_a) ++c;
+        if (a_hit_a) ++c;
+        if (c >= 2) {
+          const hit_a: INextFrame[] = [];
+          s_hit_a && hit_a.push(s_hit_a);
+          t_hit_a && hit_a.push(t_hit_a);
+          a_hit_a && hit_a.push(a_hit_a);
+          frame.hit = frame.hit || {};
+          frame.hit.a = hit_a;
+        } else if (c === 1) {
+          frame.hit = frame.hit || {};
+          frame.hit.a = s_hit_a || t_hit_a || a_hit_a;
+        }
+      }
+    }
 
     if (frame.dvx) frame.dvx /= 2
     if (frame.dvy) frame.dvy /= 4
@@ -128,12 +160,6 @@ export function make_character_data(info: ICharacterInfo, frames: Record<TFrameI
         set_hold_turn_back(frame);
         break;
       }
-      /** catching */
-      case 121: {
-        frame.hit = frame.hit || {};
-        frame.hit.a = { id: 122 };
-        break;
-      }
       /** jump */
       case 210: case 211: case 212: {
         set_hit_turn_back(frame);
@@ -141,7 +167,7 @@ export function make_character_data(info: ICharacterInfo, frames: Record<TFrameI
         frame.hit = frame.hit || {};
         frame.hold = frame.hold || {};
         if (frame_id === '212') {
-          frame.hit.a = { id: 80, flags: { turn: 2 }}; // jump_atk
+          frame.hit.a = { id: 80, flags: { turn: 2 } }; // jump_atk
           frame.hold.a = { id: 80, flags: { turn: 2 } }; // jump_atk
         }
         frame.hit.B = { id: '', flags: { turn: 2 } };

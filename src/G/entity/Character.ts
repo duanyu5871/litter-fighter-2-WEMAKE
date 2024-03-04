@@ -1,5 +1,5 @@
 import { Defines } from '../../js_utils/lf2_type/defines';
-import { IBdyInfo, ICharacterData, IFrameInfo, IItrInfo, INextFrameFlags, TFace } from '../../js_utils/lf2_type';
+import { IBdyInfo, ICharacterData, ICpointInfo, IFrameInfo, IItrInfo, INextFrameFlags, TFace } from '../../js_utils/lf2_type';
 import { IController } from '../controller/IController';
 import { InvalidController } from '../controller/InvalidController';
 import { Entity } from './Entity';
@@ -16,6 +16,7 @@ export class Character extends Entity<ICharacterData> {
   protected _resting = 0;
   protected fall_value = 70;
   protected defend_value = 60;
+  protected _catching?: Entity
 
   override handle_next_frame_flags(flags: INextFrameFlags | undefined): void {
     switch (flags?.turn) {
@@ -85,7 +86,11 @@ export class Character extends Entity<ICharacterData> {
     }
   }
   override on_after_update() {
-    switch (this.get_frame().state) {
+    const { state, cpoint } = this.get_frame();
+    if (cpoint && cpoint.kind === Defines.CPointKind.Attacker) {
+      console.log(cpoint);
+    }
+    switch (state) {
       case Defines.State.Defend:
       case Defines.State.Injured:
         this._resting = 20;
@@ -112,14 +117,22 @@ export class Character extends Entity<ICharacterData> {
     const { UD1 } = this.controller;
     if (dvz !== void 0 && dvz !== 0) this.velocity.z = UD1 * dvz;
   }
+
+  follow(cpoint: ICpointInfo): void {
+
+  }
+
   override on_collision(target: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
     super.on_collision(target, itr, bdy, a_cube, b_cube);
     if (itr.kind === Defines.ItrKind.Catch) {
       if (itr.catchingact !== void 0) {
-        this.enter_frame({ id: itr.catchingact })
+        this.enter_frame({ id: itr.catchingact });
+        this._catching = target;
+        delete this._next_frame;
       }
     }
   }
+
   override on_be_collided(attacker: Entity, itr: IItrInfo, bdy: IBdyInfo, r0: ICube, r1: ICube): void {
     super.on_be_collided(attacker, itr, bdy, r0, r1);
     if (itr.kind === Defines.ItrKind.SuperPunchMe) return;
@@ -127,6 +140,7 @@ export class Character extends Entity<ICharacterData> {
     if (itr.kind === Defines.ItrKind.Catch) {
       if (itr.caughtact !== void 0) {
         this.enter_frame({ id: itr.caughtact, flags: different_face_flags(attacker, this) })
+        delete this._next_frame;
       }
       return;
     }

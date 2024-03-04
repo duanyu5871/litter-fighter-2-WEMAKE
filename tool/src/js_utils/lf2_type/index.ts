@@ -156,8 +156,6 @@ export interface ICpointInfo {
   x: number;
   y: number;
   vaction: number;
-  aaction: TFrameId;
-  taction: TFrameId;
   injury: number;
   hurtable: 0 | 1;
   decrease: number;

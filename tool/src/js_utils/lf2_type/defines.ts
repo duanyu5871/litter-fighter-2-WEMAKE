@@ -61,7 +61,7 @@ export namespace Defines {
     Ice = 16,         // 結冰
     // 1???=被你打到會跳到第???个frame(如人質的kind)
   }
-  
+
   export enum ItrEffect {
     Normal = 0,   // 拳击
     Sharp = 1,    // 利器攻击
@@ -73,5 +73,9 @@ export namespace Defines {
     MFire2 = 21,  // 定身火 ??
     MFire3 = 22,  // 定身火 ??
     MIce = 30,    // 定身冰 ??
+  }
+  export enum CPointKind {
+    Attacker = 1,
+    Victim = 2,
   }
 }
