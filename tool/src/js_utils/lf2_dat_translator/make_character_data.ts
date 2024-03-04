@@ -128,6 +128,12 @@ export function make_character_data(info: ICharacterInfo, frames: Record<TFrameI
         set_hold_turn_back(frame);
         break;
       }
+      /** catching */
+      case 121: {
+        frame.hit = frame.hit || {};
+        frame.hit.a = { id: 122 };
+        break;
+      }
       /** jump */
       case 210: case 211: case 212: {
         set_hit_turn_back(frame);
@@ -135,7 +141,7 @@ export function make_character_data(info: ICharacterInfo, frames: Record<TFrameI
         frame.hit = frame.hit || {};
         frame.hold = frame.hold || {};
         if (frame_id === '212') {
-          frame.hit.a = { id: 80, flags: { turn: 2 } }; // jump_atk
+          frame.hit.a = { id: 80, flags: { turn: 2 }}; // jump_atk
           frame.hold.a = { id: 80, flags: { turn: 2 } }; // jump_atk
         }
         frame.hit.B = { id: '', flags: { turn: 2 } };

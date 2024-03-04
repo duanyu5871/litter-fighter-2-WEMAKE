@@ -1,3 +1,4 @@
+import { TFrameId } from ".";
 import { ITexturePieceInfos } from "./ITexturePieceInfos";
 
 
@@ -23,4 +24,6 @@ export interface IItrInfo {
   injury?: number;
   effect?: number;
   indicator_info?: ITexturePieceInfos;
+  catchingact?: TFrameId,
+  caughtact?: TFrameId
 }

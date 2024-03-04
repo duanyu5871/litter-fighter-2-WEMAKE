@@ -17,6 +17,7 @@ export function make_data_promise_reject<T>(data: T, reason: any): TDataPromise<
 export const texture_loader = new THREE.TextureLoader();
 export type TImageInfo = { url: string; w: number; h: number; }
 
+export type PaintFunc = (img: HTMLImageElement, cvs: HTMLCanvasElement, ctx: CanvasRenderingContext2D) => void;
 class ImagePool {
   protected _map = new Map<string, TImageInfo>();
   protected _paint(
@@ -44,7 +45,7 @@ class ImagePool {
   find(key: string) {
     return this._map.get(key)
   }
-  async load(key: string, src: string, paint?: typeof this._paint): Promise<TImageInfo> {
+  async load(key: string, src: string, paint?: PaintFunc): Promise<TImageInfo> {
     let info = this._map.get(key);
     if (info) return info;
     info = await this._make_info(src, paint);

@@ -8,6 +8,7 @@ import type { World } from '../World';
 import { ICube } from '../World';
 import { CHARACTER_STATES } from '../state/CharacterState';
 import find_direction from './find_frame_direction';
+import { different_face_flags, same_face } from './new_frame_flags';
 
 export class Character extends Entity<ICharacterData> {
   protected _disposers: (() => void)[] = [];
@@ -111,10 +112,25 @@ export class Character extends Entity<ICharacterData> {
     const { UD1 } = this.controller;
     if (dvz !== void 0 && dvz !== 0) this.velocity.z = UD1 * dvz;
   }
-
+  override on_collision(target: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
+    super.on_collision(target, itr, bdy, a_cube, b_cube);
+    if (itr.kind === Defines.ItrKind.Catch) {
+      if (itr.catchingact !== void 0) {
+        this.enter_frame({ id: itr.catchingact })
+      }
+    }
+  }
   override on_be_collided(attacker: Entity, itr: IItrInfo, bdy: IBdyInfo, r0: ICube, r1: ICube): void {
     super.on_be_collided(attacker, itr, bdy, r0, r1);
     if (itr.kind === Defines.ItrKind.SuperPunchMe) return;
+
+    if (itr.kind === Defines.ItrKind.Catch) {
+      if (itr.caughtact !== void 0) {
+        this.enter_frame({ id: itr.caughtact, flags: different_face_flags(attacker, this) })
+      }
+      return;
+    }
+
     console.log("on_be_collided, itr:", itr, bdy, this.get_frame());
     const spark_x = (Math.max(r0.left, r1.left) + Math.min(r0.right, r1.right)) / 2;
     const spark_y = (Math.min(r0.top, r1.top) + Math.max(r0.bottom, r1.bottom)) / 2;
@@ -178,12 +194,12 @@ export class Character extends Entity<ICharacterData> {
         itr.effect === Defines.ItrEffect.MFire3
       ) {
         // TODO: SOUND
-        this.enter_frame({ id: indexes.fire[0], flags: { turn: aface === 1 ? 3 : 4 } })
+        this.enter_frame({ id: indexes.fire[0], flags: different_face_flags(attacker, this) })
         this._next_frame = void 0;
         return;
       } else if (itr.effect === Defines.ItrEffect.Ice) {
         // TODO: SOUND
-        this.enter_frame({ id: indexes.ice, flags: { turn: aface === 1 ? 3 : 4 } })
+        this.enter_frame({ id: indexes.ice, flags: different_face_flags(attacker, this) })
         this._next_frame = void 0;
         return;
       } else if (itr.effect === Defines.ItrEffect.Sharp) {
@@ -205,12 +221,12 @@ export class Character extends Entity<ICharacterData> {
       itr.effect === Defines.ItrEffect.MFire3
     ) {
       // TODO: SOUND
-      this.enter_frame({ id: indexes.fire[0], flags: { turn: aface === 1 ? 3 : 4 } })
+      this.enter_frame({ id: indexes.fire[0], flags: different_face_flags(attacker, this) })
       this._next_frame = void 0;
       return;
     } else if (itr.effect === Defines.ItrEffect.Ice) {
       // TODO: SOUND
-      this.enter_frame({ id: indexes.ice, flags: { turn: aface === 1 ? 3 : 4 } })
+      this.enter_frame({ id: indexes.ice, flags: different_face_flags(attacker, this) })
       this._next_frame = void 0;
       return;
     } else if (itr.effect === Defines.ItrEffect.Sharp) {
@@ -226,7 +242,7 @@ export class Character extends Entity<ICharacterData> {
       return;
     }
     /* 击中 */
-    this.enter_frame({ id: indexes.grand_injured[this.face * aface as -1 | 1][0] })
+    this.enter_frame({ id: indexes.grand_injured[same_face(this, attacker)][0] })
     this._next_frame = void 0;
   }
 }
