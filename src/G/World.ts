@@ -24,24 +24,34 @@ export class World {
   gravity = World.DEFAULT_GRAVITY;
   friction_factor = World.DEFAULT_FRICTION_FACTOR;
   friction = World.DEFAULT_FRICTION;
-
   scene: THREE.Scene = new THREE.Scene();
   camera: THREE.Camera = new THREE.OrthographicCamera();
-  grand: Background = new Background(this);
+  private _bg: Background | undefined;
 
   entities = new Set<Entity>();
   game_objs = new Set<FrameAnimater>();
-
   renderer: THREE.WebGLRenderer;
   disposed = false;
   protected _players = new Set<Character>();
   private _update_count: number = 0;
-  get width() { return this.grand.boundarys.right - this.grand.boundarys.left }
-  get depth() { return this.grand.boundarys.far - this.grand.boundarys.near };
+
+  get bg() { return this._bg }
+  set bg(v) {
+    if (v === this._bg) return;
+    this._bg?.dispose();
+    this._bg = v;
+  }
+
+  get left() { return this.bg?.boundarys.left || 0 }
+  get right() { return this.bg?.boundarys.right || 0 }
+  get near() { return this.bg?.boundarys.near || 0 }
+  get far() { return this.bg?.boundarys.far || 0 }
+  get width() { return this.right - this.left }
+  get depth() { return this.far - this.near };
   get middle() {
     return ({
-      x: (this.grand.boundarys.right + this.grand.boundarys.left) / 2,
-      z: (this.grand.boundarys.far + this.grand.boundarys.near) / 2,
+      x: (this.right + this.left) / 2,
+      z: (this.far + this.near) / 2,
     })
   }
   constructor(canvas: HTMLCanvasElement) {
@@ -119,8 +129,8 @@ export class World {
   }
   update_once() {
     if (this.disposed) return;
-
-    const { left, right, near, far } = this.grand.boundarys;
+    if (!this.bg) return;
+    const { left, right, near, far } = this.bg.boundarys;
     for (const e of this.entities) {
       e.update();
       if (e instanceof Character) {
@@ -161,9 +171,10 @@ export class World {
       this._update_count = 0;
     }
     this.update_camera();
-    this.grand.update();
+    this.bg.update();
   }
   private update_camera() {
+    if (!this.bg) return;
     const player_count = this._players.size;
     if (!player_count) return;
     let new_x = 0;
@@ -171,7 +182,7 @@ export class World {
       new_x += player.position.x - 794 / 2 + player.face * 794 / 6;
     }
     new_x /= player_count;
-    const { left, right } = this.grand.boundarys;
+    const { left, right } = this.bg.boundarys;
     if (new_x < left) new_x = left;
     if (new_x > right - 794) new_x = right - 794;
     let cur_x = this.camera.position.x;
@@ -321,7 +332,7 @@ export class World {
     })
   }
   dispose() {
-    this.grand.dispose();
+    this.bg?.dispose();
     this.stop_update();
     this.stop_render();
     this.renderer.dispose();

@@ -1,12 +1,12 @@
 
 export interface IBgLayerInfo {
-  file: string;
-  transparency: 1 | 0;
+  file?: string;
+  color?: number;
+  transparency?: number;
   width: number;
   height: number;
   x: number;
   y: number;
-  color: number;
   loop?: number;
   cc?: number;
   c1?: number;

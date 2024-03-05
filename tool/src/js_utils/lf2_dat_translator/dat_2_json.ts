@@ -13,6 +13,17 @@ import { make_ball_data } from './make_ball_data';
 import { make_weapon_data } from './make_weapon_data';
 import { take } from './take';
 
+const bg_color_translate = function (c: number) {
+  let b = ((c & 0xff0000) >> 16).toString(16);
+  let r = ((c & 0xff00) >> 8).toString(16);
+  let g = ((c & 0xff)).toString(16);
+  let ret = '0x';
+  ret += r.length === 1 ? ('0' + r) : r.length === 0 ? '00' : r;
+  ret += g.length === 1 ? ('0' + g) : g.length === 0 ? '00' : g;
+  ret += b.length === 1 ? ('0' + b) : b.length === 0 ? '00' : b;
+  return Number(ret);
+}
+
 function read_bg(full_str: string, datIndex?: IDatIndex): IBgData | void {
   const fields = new ColonValueReader()
     .str('name')
@@ -35,7 +46,8 @@ function read_bg(full_str: string, datIndex?: IDatIndex): IBgData | void {
     }
     const color = take(fields, 'rect')
     const layer: IBgLayerInfo = { file, ...fields };
-    if (color !== void 0) layer.color = color;
+    if (layer.file === ret.base.shadow) delete layer.file;
+    if (typeof color === 'number') layer.color = bg_color_translate(color);
     ret.layers.push(layer)
   }
   if (datIndex?.id) ret.id = datIndex?.id
@@ -110,7 +122,7 @@ export default function dat_to_json(full_str: string, datIndex?: IDatIndex): IBa
         ret = make_weapon_data(base as IWeaponInfo, full_str, make_frames(full_str));
         break;
       case 0: ret = make_character_data(base as ICharacterInfo, make_frames(full_str)); break;
-      case 3: ret = make_ball_data(base as IBallInfo, make_frames<IBallFrameInfo>(full_str),datIndex); break;
+      case 3: ret = make_ball_data(base as IBallInfo, make_frames<IBallFrameInfo>(full_str), datIndex); break;
       case 5: ret = make_entity_data(base as IGameObjInfo, make_frames(full_str)); break;
       default:
         console.log('[dat_to_json] unknow dat type:', datIndex.type)

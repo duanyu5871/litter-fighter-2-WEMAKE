@@ -9,6 +9,7 @@ import './G/entity/Ball';
 import { OutlineEffect } from 'three/examples/jsm/effects/OutlineEffect'
 import { TestController } from './G/controller/TestController';
 import { Entity } from './G/entity/Entity';
+import { Background } from './G/Background';
 let character_id = 1;
 
 export default function run(canvas: HTMLCanvasElement) {
@@ -22,6 +23,8 @@ export default function run(canvas: HTMLCanvasElement) {
 
     const lf2: any = (window as any).lf2 = {};
 
+    change_bg()
+
     for (const d of dat_mgr.characters) {
       lf2['add_' + d.base.name.toLowerCase()] = () => {
         const e = new Character(world, d);
@@ -30,8 +33,7 @@ export default function run(canvas: HTMLCanvasElement) {
         e.attach();
       }
     }
-
-    play_character(_character_idx);
+    play_character();
     for (let i = 0; i < 1; ++i) {
       const d = random_get(dat_mgr.characters);
       const e = new Character(world, d)
@@ -45,7 +47,7 @@ export default function run(canvas: HTMLCanvasElement) {
   })
 
   const world = (window as any).world = new World(canvas);
-  const play_character = (idx: number) => {
+  const play_character = (next: boolean = true) => {
     if (disposed) return;
     let x = 0;
     let y = 0;
@@ -66,7 +68,8 @@ export default function run(canvas: HTMLCanvasElement) {
       frame_id = _character.get_frame().id;
       _character.dispose()
     }
-    const data = dat_mgr.characters[idx];
+    const idx = dat_mgr.characters.findIndex(v => v === _character?.data) + (next ? 1 : (dat_mgr.characters.length - 1));
+    const data = dat_mgr.characters[idx % dat_mgr.characters.length];
     if (!data) return;
     _character = new Character(world, data)
     _character.id = '' + (++character_id)
@@ -81,7 +84,15 @@ export default function run(canvas: HTMLCanvasElement) {
     _character.controller = new PlayerController(_character)
     _character.attach();
   }
-
+  const change_bg = (next: boolean = true) => {
+    const list = dat_mgr.backgrounds
+    const curr_data = world.bg?.data
+    const len = list.length;
+    const idx = list.findIndex(v => v === curr_data) + (next ? 1 : (len - 1));
+    const data = list[idx % len];
+    if (!data) return;
+    world.bg = new Background(world, data)
+  }
 
   world.start_update();
   world.start_render();
@@ -93,21 +104,17 @@ export default function run(canvas: HTMLCanvasElement) {
     }
     switch (e.key?.toUpperCase()) {
       case 'ARROWUP': {
-        if (!e.shiftKey) break;
+        if (e.shiftKey) play_character(false);
+        else if (e.altKey) change_bg(false);
+        else break;
         interrupt();
-        const l = dat_mgr.characters.length;
-        if (!l) break;
-        _character_idx = (_character_idx + 1) % l;
-        play_character(_character_idx)
         break;
       }
       case 'ARROWDOWN': {
-        if (!e.shiftKey) break;
+        if (e.shiftKey) play_character(true);
+        else if (e.altKey) change_bg(true);
+        else break;
         interrupt();
-        const l = dat_mgr.characters.length;
-        if (!l) break;
-        _character_idx = (_character_idx + l - 1) % l;
-        play_character(_character_idx)
         break;
       }
       case 'F2':
@@ -129,7 +136,6 @@ export default function run(canvas: HTMLCanvasElement) {
         break;
     }
   }
-
   window.addEventListener('keydown', on_key_down)
   disposers.push(() => window.removeEventListener('keydown', on_key_down))
 
@@ -175,7 +181,7 @@ export default function run(canvas: HTMLCanvasElement) {
       if (intersection) {
         const idx = intersections.findIndex(v => v.object === intersection?.object);
         const iii = intersections.find((v, i) => i > idx && v.object.userData.owner);
-        if(iii === intersection) alert('wtf?')
+        if (iii === intersection) alert('wtf?')
         pick_intersection(iii)
       } else {
         const iii = intersections.find(v => v.object.userData.owner)
