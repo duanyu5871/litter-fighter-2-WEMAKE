@@ -1,4 +1,4 @@
-import { IBaseData, IBgData, ICharacterInfo, IDatIndex, IGameObjInfo, IBallFrameInfo, IBallInfo, IWeaponInfo } from '../lf2_type';
+import { IBallFrameInfo, IBallInfo, IBaseData, IBgData, ICharacterInfo, IDatIndex, IGameObjInfo, IWeaponInfo } from '../lf2_type';
 import { IBgLayerInfo } from "../lf2_type/IBgLayerInfo";
 import { match_block_once } from '../match_block';
 import { match_colon_value } from '../match_colon_value';
@@ -6,10 +6,10 @@ import { set_obj_field } from "../set_obj_field";
 import { take_blocks } from '../take_blocks';
 import { to_num } from '../to_num';
 import { ColonValueReader } from './ColonValueReader';
+import { make_ball_data } from './make_ball_data';
 import { make_character_data } from './make_character_data';
 import { make_entity_data } from './make_entity_data';
 import { make_frames } from './make_frames';
-import { make_ball_data } from './make_ball_data';
 import { make_weapon_data } from './make_weapon_data';
 import { take } from './take';
 
@@ -32,9 +32,16 @@ function read_bg(full_str: string, datIndex?: IDatIndex): IBgData | void {
     .str('shadow')
     .num_2('shadowsize')
     .read(full_str);
+
+  const width = take(fields, 'width');
+  const [a, b] = take(fields, 'zboundary');
+  fields.left = 0;
+  fields.right = width
+  fields.far = -b;
+  fields.near = -b + a;
   const ret: IBgData = {
     type: 'background',
-    id: '',
+    id: datIndex?.id ?? fields.name,
     base: fields,
     layers: []
   }
@@ -50,14 +57,12 @@ function read_bg(full_str: string, datIndex?: IDatIndex): IBgData | void {
     if (typeof color === 'number') layer.color = bg_color_translate(color);
     ret.layers.push(layer)
   }
-  if (datIndex?.id) ret.id = datIndex?.id
   return ret;
 }
 export default function dat_to_json(full_str: string, datIndex?: IDatIndex): IBaseData | void {
+  if (full_str.startsWith('name:')) return read_bg(full_str, datIndex);
   const infos_str = match_block_once(full_str, '<bmp_begin>', '<bmp_end>');
-  if (!infos_str) {
-    return read_bg(full_str, datIndex);
-  }
+  if (!infos_str) { return; }
   const base: any = {};
   for (const info_str of infos_str.trim().split('\n')) {
     let reg_result;

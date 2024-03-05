@@ -13,8 +13,9 @@ export namespace Defines {
     Caught = 10,
     Injured = 11,
     Falling = 12,
+    Frozen = 13,
     Lying = 14,
-    Frozen = 15,
+    Normal = 15,
     Tired = 16,
 
     // 15,

@@ -14,25 +14,16 @@ interface ILayerUserData {
   owner: Background;
 }
 
-@Log
 export class Background {
   private _disposers: (() => void)[] = [];
   readonly data: IBgData;
   object_3d: THREE.Object3D;
   world: World;
-  readonly depth: number;
-  readonly boundarys: { left: number; right: number; near: number; far: number; };
   private _z_order = 0
   constructor(world: World, data: IBgData) {
     this.data = data;
     this.world = world;
-    this.depth = data.base.zboundary[1] - data.base.zboundary[0];
-    this.boundarys = {
-      left: 0,
-      right: data.base.width,
-      near: -60,
-      far: -250,
-    }
+
     const node = this.object_3d = new THREE.Object3D();
     this.object_3d.position.y = -this.world.camera.position.y
     this.object_3d.position.z = -1000
@@ -72,7 +63,7 @@ export class Background {
       else layer.scale.set(info.width, info.height, 1);
       layer.position.x = x;
       layer.position.y = 550 - y;
-      layer.position.z = z - 2 * this.depth;
+      layer.position.z = z - 2 * (data.base.near - data.base.far);
       const user_data: ILayerUserData = {
         x: layer.position.x,
         y: layer.position.y,
@@ -85,7 +76,7 @@ export class Background {
       layer.userData = user_data;
       node.add(layer);
       ++count;
-      if (x > data.base.width) break;
+      if (x > data.base.right - data.base.left) break;
     } while (info.loop);
   }
 
@@ -117,7 +108,7 @@ export class Background {
       const user_data = child.userData as ILayerUserData;
       const { inner_w: img_w, inner_h: img_h, layer: { width }, x } = user_data;
       if (!img_w || !img_h) continue;
-      const bg_width = this.boundarys.right - this.boundarys.left;
+      const bg_width = this.data.base.right - this.data.base.left;
       if (bg_width <= this._screen_width) continue;
       child.position.x = x + (bg_width - width) * camera.position.x / (bg_width - this._screen_width);
     }

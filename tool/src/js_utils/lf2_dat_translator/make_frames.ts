@@ -5,6 +5,7 @@ import { match_all } from '../match_all';
 import { match_colon_value } from '../match_colon_value';
 import { to_num } from '../to_num';
 import { get_next_frame_by_id } from './get_the_next';
+import { take } from './take';
 import take_sections from './take_sections';
 
 export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string): Record<TFrameId, F> {
@@ -12,23 +13,27 @@ export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string): Re
   const frame_regexp = /<frame>\s+(.*?)\s+(.*)((.|\n)+?)<frame_end>/g;
   for (const [, frame_id, frame_name, content] of match_all(text, frame_regexp)) {
     let _content = content;
-    const bdy = take_sections(_content, 'bdy:', 'bdy_end:', r => _content = r);
-    const itr = take_sections<IItrInfo>(_content, 'itr:', 'itr_end:', r => _content = r);
-    itr?.forEach(v => {
-      delete_val_equal_keys(v, ['dvx', 'dvy', 'dvz'], [0, void 0]);
-      if (typeof v.dvx === 'number') v.dvx *= 0.5;
-      if (typeof v.dvz === 'number') v.dvz *= 0.5;
-      if (typeof v.dvy === 'number') v.dvy *= -0.5;
-      switch (v.kind) {
+    const bdy_list = take_sections(_content, 'bdy:', 'bdy_end:', r => _content = r);
+    const itr_list = take_sections<IItrInfo>(_content, 'itr:', 'itr_end:', r => _content = r);
+    itr_list?.forEach(itr => {
+      delete_val_equal_keys(itr, ['dvx', 'dvy', 'dvz'], [0, void 0]);
+      const vrest = take(itr, 'vrest')
+      const arest = take(itr, 'arest')
+      if (typeof vrest === 'number') { itr.vrest = 2 * (vrest - 1); }
+      if (typeof arest === 'number') { itr.arest = 2 * (arest - 1); }
+      if (typeof itr.dvx === 'number') itr.dvx *= 0.5;
+      if (typeof itr.dvz === 'number') itr.dvz *= 0.5;
+      if (typeof itr.dvy === 'number') itr.dvy *= -0.5;
+      switch (itr.kind) {
         case Defines.ItrKind.SuperPunchMe:
         case Defines.ItrKind.ForceCatch:
         case Defines.ItrKind.Catch:
-          v.motionless = 0;
-          v.shaking = 0;
+          itr.motionless = 0;
+          itr.shaking = 0;
       }
     });
-    const opoint = take_sections(_content, 'opoint:', 'opoint_end:', r => _content = r);
-    opoint?.forEach(v => {
+    const opoint_list = take_sections(_content, 'opoint:', 'opoint_end:', r => _content = r);
+    opoint_list?.forEach(v => {
       delete_val_equal_keys(v, ['dvx', 'dvy', 'dvz'], [0, void 0]);
       if (typeof v.dvx === 'number') v.dvx *= 0.5;
       if (typeof v.dvz === 'number') v.dvz *= 0.5;
@@ -40,10 +45,9 @@ export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string): Re
     const cpoint = take_sections(_content, 'cpoint:', 'cpoint_end:', r => _content = r)[0];
     if (cpoint) {
       delete_val_equal_keys(cpoint, ['throwvx', 'throwvy', 'throwvz', 'throwinjury'], [0, void 0, -842150451]);
-      if (typeof cpoint.throwvz === 'number') cpoint.throwvz *= 0.5;
+      // if (typeof cpoint.throwvz === 'number') cpoint.throwvz *= 0.5;
       if (typeof cpoint.throwvx === 'number') cpoint.throwvx *= 0.5;
-      if (typeof cpoint.throwvy === 'number') cpoint.throwvy *= -0.5;
-
+      if (typeof cpoint.throwvy === 'number') { cpoint.throwvy *= -0.5; }
     }
 
 
@@ -56,17 +60,17 @@ export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string): Re
       name: frame_name,
       wait: fields.wait * 2 + 2,
       next: get_next_frame_by_id(fields.next),
-      bdy,
-      itr,
+      bdy: bdy_list,
+      itr: itr_list,
       wpoint,
       bpoint,
-      opoint,
+      opoint: opoint_list,
       cpoint,
     };
 
-    if (!bdy?.length) delete frame.bdy;
-    if (!itr?.length) delete frame.itr;
-    if (!opoint?.length) delete frame.opoint;
+    if (!bdy_list?.length) delete frame.bdy;
+    if (!itr_list?.length) delete frame.itr;
+    if (!opoint_list?.length) delete frame.opoint;
     delete_val_equal_keys(frame, ['dvx', 'dvy', 'dvz'], [0, void 0]);
     delete_val_equal_keys(frame, ['mp', 'hp'], [0, void 0]);
     delete_val_equal_keys(frame, ['sound'], ['', void 0]);

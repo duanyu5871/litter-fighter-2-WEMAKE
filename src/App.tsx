@@ -1,10 +1,11 @@
 import JSZIP from 'jszip';
-import './init';
 import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import './App.css';
+import { dat_mgr } from './G/loader/DatLoader';
 import Scene from './Scene';
 import open_file, { read_file } from './Utils/open_file';
+import './init';
 import lf2_dat_str_to_json from './js_utils/lf2_dat_translator/dat_2_json';
 import read_lf2_dat from './read_lf2_dat';
 
@@ -12,11 +13,11 @@ function App() {
   const _canvas_ref = useRef<HTMLCanvasElement>(null)
   const _text_area_dat_ref = useRef<HTMLTextAreaElement>(null);
   const _text_area_json_ref = useRef<HTMLTextAreaElement>(null);
-
+  const [scene, set_scene] = useState<ReturnType<typeof Scene>>()
   useEffect(() => {
     const canvas = _canvas_ref.current;
     if (!canvas) return;
-    const scene = Scene(canvas);
+    const scene = Scene(canvas, () => set_scene(scene));
     const on_resize = () => {
       if (scene.camera instanceof THREE.PerspectiveCamera) {
         scene.camera.aspect = 794 / 550
@@ -99,6 +100,12 @@ function App() {
   const [closed, set_closed] = useState(false);
   return (
     <div className="App">
+      <select onChange={e => scene?.play_character(e.target.value)}>
+        {dat_mgr.characters.map(v => <option value={'' + v.id} key={v.id}>{v.base.name}</option>)}
+      </select>
+      <select onChange={e => scene?.change_bg(e.target.value)}>
+        {dat_mgr.backgrounds.map(v => <option value={'' + v.id} key={v.id}>{v.base.name}</option>)}
+      </select>
       <canvas ref={_canvas_ref} className='renderer_canvas' />
       {closed ? null :
         <div style={{

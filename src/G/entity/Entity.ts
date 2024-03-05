@@ -21,7 +21,7 @@ export class Entity<
   readonly shadow: THREE.Object3D;
   readonly velocity = new THREE.Vector3(0, 0, 0);
 
-  hp: number = 0;
+  hp: number = 500;
   team: number = ++__team__;
   readonly states: Map<number, BaseState>;
 
@@ -98,7 +98,8 @@ export class Entity<
 
     this.pictures.set('shadow', create_picture_by_img_key('shadow', 'shadow').data);
     this.states = states;
-    const geometry = new THREE.PlaneGeometry(30, 15);
+    const [sw, sh] = this.world.bg?.data.base.shadowsize || [30, 30]
+    const geometry = new THREE.PlaneGeometry(sw, 2 * sh);
     const shadow_material = new THREE.MeshBasicMaterial({
       map: this.pictures.get('shadow')?.texture!,
       transparent: true,
@@ -107,7 +108,6 @@ export class Entity<
     });
     this.shadow = new THREE.Mesh(geometry, shadow_material);
     this.shadow.renderOrder = 0
-    // this.shadow.rotation.x = Math.PI * -0.5;
   }
 
   velocity_decay() {
@@ -160,8 +160,13 @@ export class Entity<
     if (dvy !== void 0 && dvy !== 0) this.velocity.y += -dvy;
     if (dvz !== void 0 && dvz !== 0) this.velocity.z = dvz;
   }
-
+  _s = [1, -1]
+  _i = 0;
   update() {
+    if (this._next_frame) {
+      this.enter_frame(this._next_frame);
+      delete this._next_frame;
+    }
     this.on_before_update?.();
     this.on_before_state_update?.();
     this.state?.update(this);
@@ -171,7 +176,22 @@ export class Entity<
       this.enter_frame(this._next_frame);
       delete this._next_frame;
     }
-    if (!this._shaking && !this._motionless) this.position.add(this.velocity);
+    if (!this._shaking && !this._motionless)
+      this.position.add(this.velocity);
+
+    if (this._motionless > 0) {
+      --this._motionless;
+    } else if (this._shaking > 0) {
+      const wf = this._s[this._i = (this._i + 1) % 2] * 2 / this._piece.pw
+      this.sprite.center.x += 4 * wf;
+      --this._shaking;
+    } else if (this.wait > 0) {
+      --this.wait;
+    };
+    this.v_rests.forEach((v, k, m) => { v.remain > 1 ? v.remain-- : m.delete(k) });
+    this.a_rest > 1 ? this.a_rest-- : this.a_rest = 0;
+
+    this.on_after_update?.();
 
     if (this.position.y <= 0) {
       this.position.y = 0;
@@ -179,21 +199,11 @@ export class Entity<
         this.velocity.y = this.on_landing?.() ?? 0;
       }
     }
-    if (this._motionless > 0) {
-      --this._motionless;
-    } else if (this._shaking > 0) {
-      this.sprite.center.x += 4 * (this._shaking % 2 * 2 - 1) / this._piece.pw;
-      --this._shaking;
-    } else if (this.wait > 0) {
-      --this.wait;
-      this.v_rests.forEach((v, k, m) => { v.remain > 1 ? v.remain-- : m.delete(k) });
-      this.a_rest > 1 ? this.a_rest-- : this.a_rest = 0;
-    };
     this.update_sprite_position();
-    this.on_after_update?.();
   }
 
   override update_sprite_position(): void {
+    this.world.restrict(this);
     super.update_sprite_position();
     const { x, z } = this.position;
     this.shadow.position.set(x, - z / 2, z);

@@ -1,30 +1,26 @@
-import { dat_mgr } from './G/loader/DatLoader';
-import { Character } from './G/entity/Character';
-import { PlayerController } from "./G/controller/PlayerController";
-import { World } from './G/World';
-import random_get from './Utils/random_get';
-import { TFace, TFrameId } from './js_utils/lf2_type';
 import * as THREE from 'three';
-import './G/entity/Ball';
-import { OutlineEffect } from 'three/examples/jsm/effects/OutlineEffect'
-import { TestController } from './G/controller/TestController';
-import { Entity } from './G/entity/Entity';
 import { Background } from './G/Background';
+import { World } from './G/World';
+import { PlayerController } from "./G/controller/PlayerController";
+import { TestController } from './G/controller/TestController';
+import './G/entity/Ball';
+import { Character } from './G/entity/Character';
+import { Entity } from './G/entity/Entity';
+import { dat_mgr } from './G/loader/DatLoader';
+import random_get from './Utils/random_get';
+import { IBgData, ICharacterData, TFace, TFrameId } from './js_utils/lf2_type';
 let character_id = 1;
 
-export default function run(canvas: HTMLCanvasElement) {
+export default function run(canvas: HTMLCanvasElement, on_load?: () => void) {
   let disposed = false;
   const disposers: (() => void)[] = []
 
-  let _character_idx = 0;
   let _character: Character | undefined;
   dat_mgr.load().then(() => {
     if (disposed) return;
-
+    on_load?.()
     const lf2: any = (window as any).lf2 = {};
-
     change_bg()
-
     for (const d of dat_mgr.characters) {
       lf2['add_' + d.base.name.toLowerCase()] = () => {
         const e = new Character(world, d);
@@ -47,8 +43,16 @@ export default function run(canvas: HTMLCanvasElement) {
   })
 
   const world = (window as any).world = new World(canvas);
-  const play_character = (next: boolean = true) => {
+  const play_character = (next: boolean | string = true) => {
     if (disposed) return;
+    let data: ICharacterData | undefined = void 0;
+    if (typeof next === 'boolean') {
+      const idx = dat_mgr.characters.findIndex(v => v === _character?.data) + (next ? 1 : (dat_mgr.characters.length - 1));
+      data = dat_mgr.characters[idx % dat_mgr.characters.length];
+    } else {
+      data = dat_mgr.characters.find(v => v.id == next)
+    }
+    if (!data) return;
     let x = 0;
     let y = 0;
     let z = 0;
@@ -68,9 +72,8 @@ export default function run(canvas: HTMLCanvasElement) {
       frame_id = _character.get_frame().id;
       _character.dispose()
     }
-    const idx = dat_mgr.characters.findIndex(v => v === _character?.data) + (next ? 1 : (dat_mgr.characters.length - 1));
-    const data = dat_mgr.characters[idx % dat_mgr.characters.length];
-    if (!data) return;
+
+
     _character = new Character(world, data)
     _character.id = '' + (++character_id)
     _character.position.x = x;
@@ -84,12 +87,17 @@ export default function run(canvas: HTMLCanvasElement) {
     _character.controller = new PlayerController(_character)
     _character.attach();
   }
-  const change_bg = (next: boolean = true) => {
+  const change_bg = (next: boolean|string = true) => {
+    let data: IBgData | undefined;
     const list = dat_mgr.backgrounds
-    const curr_data = world.bg?.data
-    const len = list.length;
-    const idx = list.findIndex(v => v === curr_data) + (next ? 1 : (len - 1));
-    const data = list[idx % len];
+    if (typeof next === 'boolean') {
+      const curr_data = world.bg?.data
+      const len = list.length;
+      const idx = list.findIndex(v => v === curr_data) + (next ? 1 : (len - 1));
+      data = list[idx % len];
+    } else {
+      data = list.find(v => v.id == next);
+    }
     if (!data) return;
     world.bg = new Background(world, data)
   }
@@ -203,6 +211,8 @@ export default function run(canvas: HTMLCanvasElement) {
 
 
   return {
+    play_character,
+    change_bg,
     renderer: world.renderer,
     camera: world.camera,
     release() {

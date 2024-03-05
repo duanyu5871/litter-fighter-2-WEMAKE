@@ -45,8 +45,23 @@ export const preprocess_next_frame = (i: TNextFrame) => {
     }
     delete i.condition;
     i.condition = (e: Character) => {
-      const lr = e.controller.LR > 0 ? 1 : e.controller.LR < 0 ? -1 : 0;
+      const lr = e.controller.LR1;
       return predicate(lr * e.face);
+    };
+  } else if (what === 'press_U_D') {
+    const value = Number(raw_value);
+    if (Number.isNaN(value)) {
+      i.condition = () => false;
+      return;
+    }
+    let predicate = get_number_predicate(operator, value);
+    if (!predicate) {
+      console.log('wrong condition', i.condition);
+      predicate = (_v: number) => false;
+    }
+    delete i.condition;
+    i.condition = (e: Character) => {
+      return predicate(e.controller.UD1);
     };
   } else {
     i.condition = () => false;

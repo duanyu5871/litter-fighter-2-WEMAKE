@@ -102,7 +102,7 @@ CHARACTER_STATES.set(Defines.State.Falling, new class extends BaseCharacterState
     const { id: frame_id } = e.get_frame();
 
     // eslint-disable-next-line eqeqeq
-    this._directions.set(entity_id, critical_hit[1].find(v => v == frame_id) === void 0 ? -1 : 1);
+    this._directions.set(entity_id, critical_hit[1].find(v => v == frame_id) === void 0 ? 1 : -1);
     if (!this._ignore_frames.has(data_id)) {
       this._ignore_frames.set(data_id, new Set(
         [

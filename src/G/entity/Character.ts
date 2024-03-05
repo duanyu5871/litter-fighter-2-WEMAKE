@@ -57,10 +57,10 @@ export class Character extends Entity<ICharacterData> {
     const f = this.get_frame();
     switch (f.state) {
       case 100: // 落雷霸
-        this.enter_frame(f.next);
+        this._next_frame = (f.next);
         break;
       case Defines.State.Jump:
-        this.enter_frame({ id: indexes.landing_1 });
+        this._next_frame = ({ id: indexes.landing_1 });
         break;
       case Defines.State.Flame:
       case Defines.State.Falling:
@@ -70,19 +70,20 @@ export class Character extends Entity<ICharacterData> {
           find_direction(f, indexes.falling) ||
           find_direction(f, indexes.critical_hit) || this.face
         if (this.velocity.y <= -4) {
-          this.enter_frame({ id: indexes.bouncing[d] });
+          this._next_frame = ({ id: indexes.bouncing[d] });
           return 2;
         }
-        this.enter_frame({ id: indexes.lying[d] });
+        this._next_frame = ({ id: indexes.lying[d] });
         break;
       case Defines.State.Frozen:
         if (this.velocity.y <= -4) {
-          this.enter_frame({ id: indexes.bouncing[this.face] });
+          this._next_frame = ({ id: indexes.bouncing[this.face] });
           return 2;
         }
         break;
       default:
-        this.enter_frame({ id: indexes.landing_2 });
+        this._next_frame = ({ id: indexes.landing_2 });
+        break;
     }
   }
   override on_after_update() {
@@ -130,7 +131,7 @@ export class Character extends Entity<ICharacterData> {
     if (!cpoint_a || !cpoint_b) { delete this._catching; return; }
 
     if (cpoint_a.vaction) {
-      this._catching.face = cpoint_a.dircontrol === -1 ? turn_face(this.face) : this.face;
+      this._catching.face = cpoint_a.dircontrol === -1 ? this.face : turn_face(this.face);
       this._catching.enter_frame({ id: cpoint_a.vaction });
     }
     if (cpoint_a.injury) {
@@ -143,12 +144,15 @@ export class Character extends Entity<ICharacterData> {
     if (throwvy) this._catching.velocity.y = throwvy;
     if (throwvz) this._catching.velocity.z = throwvz * this.controller.UD1;
 
+    if (throwvx || throwvy || throwvz) return;
+
     const face_a = this.face;
     const face_b = this._catching.face;
     const { x: px, y: py, z: pz } = this.position;
     this._catching.position.x = px - face_a * (centerx_a - catch_x) + face_b * (centerx_b - caught_x);
     this._catching.position.y = py + centery_a - catch_y - centery_b + caught_y;
     this._catching.position.z = pz;
+
     if (cover === 11) this._catching.position.z += 1;
     else if (cover === 10) this._catching.position.z -= 1;
     this._catching.update_sprite_position();

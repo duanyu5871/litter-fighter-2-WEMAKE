@@ -42,10 +42,10 @@ export class World {
     this._bg = v;
   }
 
-  get left() { return this.bg?.boundarys.left || 0 }
-  get right() { return this.bg?.boundarys.right || 0 }
-  get near() { return this.bg?.boundarys.near || 0 }
-  get far() { return this.bg?.boundarys.far || 0 }
+  get left() { return this.bg?.data.base.left || 0 }
+  get right() { return this.bg?.data.base.right || 0 }
+  get near() { return this.bg?.data.base.near || 0 }
+  get far() { return this.bg?.data.base.far || 0 }
   get width() { return this.right - this.left }
   get depth() { return this.far - this.near };
   get middle() {
@@ -127,34 +127,46 @@ export class World {
     const dt = Math.max((1000 / 60) / this._playrate, 1);
     this._update_timer_id = setInterval(this.update_once.bind(this), dt);
   }
+  restrict_character(e: Character) {
+    if (this.disposed) return;
+    if (!this.bg) return;
+    const { left, right, near, far } = this.bg.data.base;
+    const { x, z } = e.position;
+    if (x < left)
+      e.position.x = e.position.x = left;
+    else if (x > right)
+      e.position.x = e.position.x = right;
+    if (z < far)
+      e.position.z = e.position.z = far;
+    else if (z > near)
+      e.position.z = e.position.z = near;
+  }
+  restrict_ball(e: Ball) {
+    if (this.disposed) return;
+    if (!this.bg) return;
+    const { left, right, near, far } = this.bg.data.base;
+    const { x, z } = e.position;
+    if (x < left - 800)
+      e.enter_frame({ id: 'gone' })
+    else if (x > right + 800)
+      e.enter_frame({ id: 'gone' })
+    if (z < far)
+      e.position.z = e.position.z = far;
+    else if (z > near)
+      e.position.z = e.position.z = near;
+  }
+  restrict(e: Entity) {
+    if (e instanceof Character) {
+      this.restrict_character(e);
+    } else if (e instanceof Ball) {
+      this.restrict_ball(e)
+    }
+  }
   update_once() {
     if (this.disposed) return;
     if (!this.bg) return;
-    const { left, right, near, far } = this.bg.boundarys;
     for (const e of this.entities) {
       e.update();
-      if (e instanceof Character) {
-        const { x, z } = e.position;
-        if (x < left)
-          e.position.x = e.position.x = left;
-        else if (x > right)
-          e.position.x = e.position.x = right;
-        if (z < far)
-          e.position.z = e.position.z = far;
-        else if (z > near)
-          e.position.z = e.position.z = near;
-      } else if (e instanceof Ball) {
-        const { x, z } = e.position;
-        if (x < left - 800)
-          e.enter_frame({ id: 'gone' })
-        else if (x > right + 800)
-          e.enter_frame({ id: 'gone' })
-        if (z < far)
-          e.position.z = e.position.z = far;
-        else if (z > near)
-          e.position.z = e.position.z = near;
-
-      }
       if (e.get_frame().id === GONE_FRAME_INFO.id)
         this.remove_entities(e);
     }
@@ -164,12 +176,8 @@ export class World {
       if (e.get_frame().id === GONE_FRAME_INFO.id)
         this.remove_game_objs(e);
     }
-    if (this._update_count === 0) {
-      this._update_count = 1
-      this.collision_detections();
-    } else {
-      this._update_count = 0;
-    }
+    
+    this.collision_detections();
     this.update_camera();
     this.bg.update();
   }
@@ -182,7 +190,7 @@ export class World {
       new_x += player.position.x - 794 / 2 + player.face * 794 / 6;
     }
     new_x /= player_count;
-    const { left, right } = this.bg.boundarys;
+    const { left, right } = this.bg.data.base;
     if (new_x < left) new_x = left;
     if (new_x > right - 794) new_x = right - 794;
     let cur_x = this.camera.position.x;
@@ -243,11 +251,14 @@ export class World {
         }
         if (
           (itr.effect === 4) || // todo
-          (a.team === b.team && !itr.friendly_fire && !bdy.friendly_fire) ||
-          (!itr.vrest && a.a_rest) ||
-          (itr.vrest && b.v_rests.has(a.id)) ||
-          ((!itr.fall || itr.fall < 60) && (b.get_frame().state === Defines.State.Falling))
+          (a.team === b.team && !itr.friendly_fire && !bdy.friendly_fire)
         ) continue;
+
+        if (!itr.vrest && a.a_rest) { Log.print(af.name, 0); continue; }
+        if (itr.vrest && b.v_rests.has(a.id)) { Log.print(af.name, 1, b.v_rests.get(a.id)?.remain); continue; }
+        if ((!itr.fall || itr.fall < 60) && b.get_frame().state === Defines.State.Falling) {
+          Log.print(af.name, 2); continue;
+        }
 
         const r0 = this.get_cube(a, af, itr);
         const r1 = this.get_cube(b, bf, bdy);

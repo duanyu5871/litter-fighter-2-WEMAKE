@@ -77,11 +77,7 @@ export class FrameAnimater<D extends IGameObjData = IGameObjData> {
   }
   update_sprite_position() {
     const { x, y, z } = this.position;
-    this.sprite.position.set(
-      x,
-      y - z / 2,
-      z,
-    );
+    this.sprite.position.set(x, y - z / 2, z,);
   }
   attach() {
     this.update_sprite_position();

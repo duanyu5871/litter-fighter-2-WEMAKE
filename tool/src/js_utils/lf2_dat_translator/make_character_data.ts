@@ -27,8 +27,8 @@ export function make_character_data(info: ICharacterInfo, frames: Record<TFrameI
   const running_speed = take_number(info, 'running_speed', 0);
   const running_speedz = take_number(info, 'running_speedz', 0);
 
-  info.jump_height = info.jump_height * info.jump_height / 4;
-  info.dash_height = info.dash_height * info.dash_height / 4;
+  info.jump_height = info.jump_height * info.jump_height / 3.5;
+  info.dash_height = info.dash_height * info.dash_height / 3.5;
   info.dash_distance /= 2;
   info.jump_distance /= 2;
   const round_trip_frames_map: any = {};
@@ -42,8 +42,8 @@ export function make_character_data(info: ICharacterInfo, frames: Record<TFrameI
       let a_hit_a: INextFrame | undefined;
       if (t_action) {
         t_hit_a = [
-          { ...get_next_frame_by_id(t_action), flags: { turn: 2 }, condition: 'press_F_B == 1' },
-          { ...get_next_frame_by_id(t_action), flags: { turn: 2 }, condition: 'press_F_B == -1' }
+          { ...get_next_frame_by_id(t_action), flags: { turn: 2 }, condition: 'press_F_B != 0' },
+          { ...get_next_frame_by_id(t_action), flags: { turn: 2 }, condition: 'press_U_D != 0' },
         ]
       }
       if (a_action)
