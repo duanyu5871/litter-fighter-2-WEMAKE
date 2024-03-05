@@ -1,4 +1,5 @@
 import JSZIP from 'jszip';
+import './init';
 import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import './App.css';
@@ -51,9 +52,9 @@ function App() {
       if (!file) return;
       set_loading(true);
       JSZIP.loadAsync(file).then(zip => {
-        console.log(zip)
+        Log.print('App', zip)
       }).catch(e => {
-        console.error(e)
+        Warn.print('App', e)
       }).finally(() => {
         set_loading(false)
       })
@@ -64,7 +65,7 @@ function App() {
     open_dat().then((str) => {
       return lf2_dat_str_to_json(str);
     }).then((str) => {
-      console.log(str)
+      Log.print('App', str)
     }).catch(e => {
       console.error(e)
     }).finally(() => {
@@ -81,12 +82,12 @@ function App() {
     open_dat().then((str) => {
       if (_text_area_dat_ref.current)
         _text_area_dat_ref.current.value = str
-      console.log("dat length", str.length);
+      Log.print('App', "dat length", str.length);
       return str;
     }).then((str) => {
       return lf2_dat_str_to_json(str);
     }).then((data) => {
-      console.log("json length", JSON.stringify(data).replace(/\\\\/g, '/').length);
+      Log.print('App', "json length", JSON.stringify(data).replace(/\\\\/g, '/').length);
       if (_text_area_json_ref.current)
         _text_area_json_ref.current.value = JSON.stringify(data, null, 2).replace(/\\\\/g, '/')
     }).catch(e => {
@@ -105,7 +106,7 @@ function App() {
           zIndex: 1,
           width: '100vw',
           height: '100vh',
-          display: 'none',
+          display: 'flex',
           flexDirection: 'column'
         }}>
           <div>

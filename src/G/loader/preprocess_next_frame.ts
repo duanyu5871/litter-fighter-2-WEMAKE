@@ -32,7 +32,7 @@ export const preprocess_next_frame = (i: TNextFrame) => {
       else if (e.velocity.x > 0) v = e.face;
       return predicate(v);
     };
-  } else if (what === 'presss_F_B') {
+  } else if (what === 'press_F_B') {
     const value = Number(raw_value);
     if (Number.isNaN(value)) {
       i.condition = () => false;

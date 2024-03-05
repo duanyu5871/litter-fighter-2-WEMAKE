@@ -13,3 +13,7 @@ export function different_face_flags(ref: Entity, target: Entity): INextFrameFla
 export function same_face(ref: Entity, target: Entity): TFace {
   return ref.face === target.face ? 1 : -1;
 }
+
+export function turn_face(face: TFace): TFace {
+  return face === 1 ? -1 : 1;
+}

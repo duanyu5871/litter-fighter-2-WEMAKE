@@ -1,6 +1,6 @@
 import { arithmetic_progression } from '../arithmetic_progression';
 import { take_number } from '../as_number';
-import { IFrameInfo, ICharacterInfo, TFrameId, ICharacterData, TNextFrame, INextFrame } from '../lf2_type';
+import { ICharacterData, ICharacterInfo, IFrameInfo, INextFrame, TFrameId, TNextFrame } from '../lf2_type';
 import { set_obj_field } from '../set_obj_field';
 import { traversal } from '../traversal';
 import { get_next_frame_by_id } from './get_the_next';
@@ -38,15 +38,19 @@ export function make_character_data(info: ICharacterInfo, frames: Record<TFrameI
       const a_action = take(frame.cpoint, 'aaction');
       const t_action = take(frame.cpoint, 'taction');
       const s_hit_a = frame.hit?.a;
-      let t_hit_a: INextFrame | undefined;
+      let t_hit_a: INextFrame[] | undefined;
       let a_hit_a: INextFrame | undefined;
-      if (t_action)
-        t_hit_a = { id: t_action, flags: { turn: 2 }, condition: 'press_F_B == 1' };
+      if (t_action) {
+        t_hit_a = [
+          { ...get_next_frame_by_id(t_action), flags: { turn: 2 }, condition: 'press_F_B == 1' },
+          { ...get_next_frame_by_id(t_action), flags: { turn: 2 }, condition: 'press_F_B == -1' }
+        ]
+      }
       if (a_action)
-        a_hit_a = { id: a_action }
+        a_hit_a = get_next_frame_by_id(a_action)
 
       if (Array.isArray(s_hit_a)) {
-        t_hit_a && s_hit_a.unshift(t_hit_a);
+        t_hit_a && s_hit_a.unshift(...t_hit_a);
         a_hit_a && s_hit_a.unshift(a_hit_a);
       } else {
         let c = 0;
@@ -56,7 +60,7 @@ export function make_character_data(info: ICharacterInfo, frames: Record<TFrameI
         if (c >= 2) {
           const hit_a: INextFrame[] = [];
           s_hit_a && hit_a.push(s_hit_a);
-          t_hit_a && hit_a.push(t_hit_a);
+          t_hit_a && hit_a.push(...t_hit_a);
           a_hit_a && hit_a.push(a_hit_a);
           frame.hit = frame.hit || {};
           frame.hit.a = hit_a;
@@ -192,8 +196,8 @@ export function make_character_data(info: ICharacterInfo, frames: Record<TFrameI
       /** crouch */
       case 215:
         const to_dash_frame: TNextFrame = [
-          { id: 213, condition: 'presss_F_B == 1', flags: { turn: 2 } },
-          { id: 213, condition: 'presss_F_B == -1', flags: { turn: 2 } },
+          { id: 213, condition: 'press_F_B == 1', flags: { turn: 2 } },
+          { id: 213, condition: 'press_F_B == -1', flags: { turn: 2 } },
           { id: 213, condition: 'trend_x == 1', flags: { turn: 2 } },
           { id: 214, condition: 'trend_x == -1' }
         ]; // dash

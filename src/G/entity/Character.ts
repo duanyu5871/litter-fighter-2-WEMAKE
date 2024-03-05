@@ -1,22 +1,22 @@
+import { IBdyInfo, ICharacterData, IFrameInfo, IItrInfo, INextFrameFlags, TFace } from '../../js_utils/lf2_type';
 import { Defines } from '../../js_utils/lf2_type/defines';
-import { IBdyInfo, ICharacterData, ICpointInfo, IFrameInfo, IItrInfo, INextFrameFlags, TFace } from '../../js_utils/lf2_type';
-import { IController } from '../controller/IController';
-import { InvalidController } from '../controller/InvalidController';
-import { Entity } from './Entity';
 import { factory } from '../Factory';
 import type { World } from '../World';
 import { ICube } from '../World';
+import { IController } from '../controller/IController';
+import { InvalidController } from '../controller/InvalidController';
 import { CHARACTER_STATES } from '../state/CharacterState';
+import { Entity } from './Entity';
 import find_direction from './find_frame_direction';
-import { different_face_flags, same_face } from './new_frame_flags';
+import { different_face_flags, same_face, same_face_flags, turn_face } from './new_frame_flags';
 
 export class Character extends Entity<ICharacterData> {
   protected _disposers: (() => void)[] = [];
   controller: IController<Character> = new InvalidController(this);
   protected _resting = 0;
-  protected fall_value = 70;
-  protected defend_value = 60;
-  protected _catching?: Entity
+  protected _fall_value = 70;
+  protected _defend_value = 60;
+  protected _catching?: Character
 
   override handle_next_frame_flags(flags: INextFrameFlags | undefined): void {
     switch (flags?.turn) {
@@ -88,27 +88,30 @@ export class Character extends Entity<ICharacterData> {
   override on_after_update() {
     const { state, cpoint } = this.get_frame();
     if (cpoint && cpoint.kind === Defines.CPointKind.Attacker) {
-      console.log(cpoint);
+      Log.print('App', cpoint);
     }
     switch (state) {
       case Defines.State.Defend:
       case Defines.State.Injured:
-        this._resting = 20;
+        this._resting = 10;
         break;
       case Defines.State.Tired:
+        this._resting = 0;
         break;
       case Defines.State.Falling:
-        this.fall_value = 70;
-        this.defend_value = 60;
+        this._resting = 0;
+        this._fall_value = 70;
+        this._defend_value = 60;
         break;
       default: {
         if (this._resting > 0) { this._resting--; break; }
-        if (this.fall_value < 70) { this.fall_value += 1; }
-        if (this.defend_value < 60) { this.defend_value += 1; }
+        if (this._fall_value < 70) { this._fall_value += 1; }
+        if (this._defend_value < 60) { this._defend_value += 1; }
       }
     }
   }
   override on_after_state_update(): void {
+    this.update_catching();
     this._next_frame = this.controller.update();
   }
   override handle_frame_velocity() {
@@ -118,17 +121,52 @@ export class Character extends Entity<ICharacterData> {
     if (dvz !== void 0 && dvz !== 0) this.velocity.z = UD1 * dvz;
   }
 
-  follow(cpoint: ICpointInfo): void {
+  update_catching(): void {
+    if (!this._catching) return;
+    const { cpoint: cpoint_a, pic, centerx: centerx_a, centery: centery_a } = this.get_frame();
+    if (typeof pic === 'number') return;
 
+    const { cpoint: cpoint_b, centerx: centerx_b, centery: centery_b } = this._catching.get_frame();
+    if (!cpoint_a || !cpoint_b) { delete this._catching; return; }
+
+    if (cpoint_a.vaction) {
+      this._catching.face = cpoint_a.dircontrol === -1 ? turn_face(this.face) : this.face;
+      this._catching.enter_frame({ id: cpoint_a.vaction });
+    }
+    if (cpoint_a.injury) {
+      this._catching.hp += cpoint_a.injury;
+    }
+    const { throwvx, throwvy, throwvz, x: catch_x, y: catch_y, cover } = cpoint_a;
+    const { x: caught_x, y: caught_y } = cpoint_b;
+
+    if (throwvx) this._catching.velocity.x = throwvx * this.face;
+    if (throwvy) this._catching.velocity.y = throwvy;
+    if (throwvz) this._catching.velocity.z = throwvz * this.controller.UD1;
+
+    const face_a = this.face;
+    const face_b = this._catching.face;
+    const { x: px, y: py, z: pz } = this.position;
+    this._catching.position.x = px - face_a * (centerx_a - catch_x) + face_b * (centerx_b - caught_x);
+    this._catching.position.y = py + centery_a - catch_y - centery_b + caught_y;
+    this._catching.position.z = pz;
+    if (cover === 11) this._catching.position.z += 1;
+    else if (cover === 10) this._catching.position.z -= 1;
+    this._catching.update_sprite_position();
+    Log.print('Charactor', 'update_catching(),', cpoint_a);
   }
 
   override on_collision(target: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
     super.on_collision(target, itr, bdy, a_cube, b_cube);
-    if (itr.kind === Defines.ItrKind.Catch) {
-      if (itr.catchingact !== void 0) {
-        this.enter_frame({ id: itr.catchingact });
-        this._catching = target;
-        delete this._next_frame;
+
+    switch (itr.kind) {
+      case Defines.ItrKind.Catch:
+      case Defines.ItrKind.ForceCatch: {
+        if (target instanceof Character && itr.catchingact !== void 0) {
+          delete this._next_frame;
+          this.enter_frame({ id: itr.catchingact });
+          this._catching = target;
+        }
+        return;
       }
     }
   }
@@ -137,21 +175,23 @@ export class Character extends Entity<ICharacterData> {
     super.on_be_collided(attacker, itr, bdy, r0, r1);
     if (itr.kind === Defines.ItrKind.SuperPunchMe) return;
 
-    if (itr.kind === Defines.ItrKind.Catch) {
-      if (itr.caughtact !== void 0) {
-        this.enter_frame({ id: itr.caughtact, flags: different_face_flags(attacker, this) })
-        delete this._next_frame;
+    switch (itr.kind) {
+      case Defines.ItrKind.Catch:
+      case Defines.ItrKind.ForceCatch: {
+        if (itr.caughtact !== void 0) {
+          this.enter_frame({ id: itr.caughtact, flags: same_face_flags(attacker, this) })
+          delete this._next_frame;
+        }
+        return;
       }
-      return;
     }
 
-    console.log("on_be_collided, itr:", itr, bdy, this.get_frame());
+    Log.print('App', "on_be_collided, itr:", itr, bdy, this.get_frame());
     const spark_x = (Math.max(r0.left, r1.left) + Math.min(r0.right, r1.right)) / 2;
     const spark_y = (Math.min(r0.top, r1.top) + Math.max(r0.bottom, r1.bottom)) / 2;
     // const spark_z = (Math.min(r0.near, r1.near) + Math.max(r0.far, r1.far)) / 2;
     const spark_z = Math.max(r0.far, r1.far);
 
-    // console.log(spark_x, spark_y, spark_z)
     const { indexes } = this.data.base;
 
     /** 攻击者朝向 */
@@ -161,9 +201,9 @@ export class Character extends Entity<ICharacterData> {
     const bdefend = itr.bdefend || 0;
 
     if (this.get_frame().state === Defines.State.Defend && aface !== this.face && bdefend < 100) {
-      this.defend_value -= bdefend;
-      if (this.defend_value <= 0) { // 破防
-        this.defend_value = 0;
+      this._defend_value -= bdefend;
+      if (this._defend_value <= 0) { // 破防
+        this._defend_value = 0;
         this.world.spark(spark_x, spark_y, spark_z, "broken_defend")
         this.enter_frame({ id: indexes.broken_defend })
         this._next_frame = void 0;
@@ -177,29 +217,16 @@ export class Character extends Entity<ICharacterData> {
       return;
     }
 
-    this.defend_value = 0;
-    this.fall_value -= itr.fall || 20;
+    this._defend_value = 0;
+    this._fall_value -= itr.fall || 20;
     /* 击倒 */
-    if (this.fall_value <= 0) {
-      this.fall_value = 0;
-
-      const { x: vx, y: vy } = this.velocity;
-      const dvy = itr.dvy ?? 5;
-      if ((dvy < 0 && vy > dvy) || (dvy > 0 && vy < dvy))
-        this.velocity.y = dvy;
-      else
-        this.velocity.y += dvy;
-
-      if (itr.dvx) {
-        const dvx = itr.dvx * aface
-        if ((dvx < 0 && vx > dvx) || (dvx > 0 && vx < dvx))
-          this.velocity.x = dvx;
-        else
-          this.velocity.x += dvx / 2;
-      }
+    if (this._fall_value <= 0) {
+      this._fall_value = 0;
+      this.velocity.y = itr.dvy || 3;
+      this.velocity.x = (itr.dvx || 0) * aface;
 
       let f = this.face * aface as TFace;
-      if (itr?.dvx && itr.dvx < 0) f = -f as TFace;
+      if (itr?.dvx && itr.dvx < 0) f = turn_face(f);
 
       if (
         itr.effect === Defines.ItrEffect.Fire ||
@@ -250,7 +277,7 @@ export class Character extends Entity<ICharacterData> {
     }
 
     /* 击晕 */
-    if (this.fall_value <= 20) {
+    if (this._fall_value <= 20) {
       this.enter_frame({ id: indexes.dizzy });
       this._next_frame = void 0;
       return;

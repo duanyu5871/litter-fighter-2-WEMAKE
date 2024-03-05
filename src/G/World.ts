@@ -7,7 +7,7 @@ import { Character } from './entity/Character';
 import { PlayerController } from './controller/PlayerController';
 import { Entity } from './entity/Entity';
 import { FrameAnimater, GONE_FRAME_INFO } from './FrameAnimater';
-import { Grand } from './Grand';
+import { Background } from './Background';
 export interface ICube {
   left: number;
   right: number;
@@ -27,7 +27,7 @@ export class World {
 
   scene: THREE.Scene = new THREE.Scene();
   camera: THREE.Camera = new THREE.OrthographicCamera();
-  grand: Grand = new Grand(this);
+  grand: Background = new Background(this);
 
   entities = new Set<Entity>();
   game_objs = new Set<FrameAnimater>();
@@ -35,6 +35,7 @@ export class World {
   renderer: THREE.WebGLRenderer;
   disposed = false;
   protected _players = new Set<Character>();
+  private _update_count: number = 0;
   get width() { return this.grand.boundarys.right - this.grand.boundarys.left }
   get depth() { return this.grand.boundarys.far - this.grand.boundarys.near };
   get middle() {
@@ -153,8 +154,12 @@ export class World {
       if (e.get_frame().id === GONE_FRAME_INFO.id)
         this.remove_game_objs(e);
     }
-
-    this.collision_detections();
+    if (this._update_count === 0) {
+      this._update_count = 1
+      this.collision_detections();
+    } else {
+      this._update_count = 0;
+    }
     this.update_camera();
     this.grand.update();
   }
@@ -210,10 +215,12 @@ export class World {
           case Defines.ItrKind.Pick:
           case Defines.ItrKind.PickSecretly:
             continue;
+          case Defines.ItrKind.ForceCatch:
+            if (b instanceof Character) break;
+            continue;
           case Defines.ItrKind.Catch:
             if (b instanceof Character && bf.state === Defines.State.Tired) break;
             continue;
-          case Defines.ItrKind.ForceCatch:
           case Defines.ItrKind.SuperPunchMe:
             if (b instanceof Character) break;
             continue;
@@ -265,7 +272,7 @@ export class World {
     victim: Entity, bdy: IBdyInfo, b_cube: ICube,
   ) {
     if (victim instanceof Character && victim.controller instanceof PlayerController) {
-      console.log(attacker.get_frame())
+      Log.print('World', 'handle_collision()', attacker.get_frame())
     }
     attacker.on_collision(victim, itr, bdy, a_cube, b_cube);
     victim.on_be_collided(attacker, itr, bdy, a_cube, b_cube);

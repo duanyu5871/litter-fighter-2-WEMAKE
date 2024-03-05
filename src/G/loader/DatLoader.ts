@@ -1,4 +1,3 @@
-import { Info } from '@fimagine/logger';
 import { IBallData, IBgData, ICharacterData, IDataMap, IEntityData, IGameObjData, IWeaponData } from '../../js_utils/lf2_type';
 import { map, traversal } from '../../js_utils/traversal';
 import { TData } from '../entity/Entity';
@@ -6,7 +5,6 @@ import { sound_mgr } from './SoundMgr';
 import { image_pool } from './loader';
 import { cook_frame } from './preprocess_frame';
 
-const Log = Info.Clone({ showArgs: true, showRet: true, disabled: true });
 
 export interface IDataListMap {
   'background': IBgData[];
@@ -67,15 +65,15 @@ export class DataMgr {
     const _index_id = '' + index_id;
     const _data_id = '' + data.id;
     if (_data_id !== _index_id) {
-      console.warn(
-        `[DatLoader] _add_data(), index_id not equal to data_id,`,
+      Warn.print('DatLoader',
+        `_add_data(), index_id not equal to data_id,`,
         `index_id: ${_index_id}, data_id: ${_data_id},`,
         `will use index_id as data key.`
       );
     }
     if (data_map.has(_index_id)) {
-      console.warn(
-        "[DatLoader] _add_data(), id duplicated, old data will be overwritten!",
+      Warn.print('DatLoader',
+        " _add_data(), id duplicated, old data will be overwritten!",
         "old data:", data_map.get(_index_id),
         "new data:", data
       )
@@ -88,14 +86,14 @@ export class DataMgr {
     const data_list_map = create_data_list_map();
     try {
       const { objects, backgrounds } = await make_import('data/data.json');
-      console.log('[DatLoader] loading: spark.json')
+      Log.print('DatLoader', 'loading: spark.json')
       await this._add_data("spark", await make_import('spark.json'), data_map)
       for (const { id, file } of objects) {
-        console.log('[DatLoader] loading:', file)
+        Log.print('DatLoader', 'loading:', file)
         await this._add_data(id, await make_import(file), data_map);
       }
       for (const { id, file } of backgrounds) {
-        console.log('[DatLoader] loading:', file)
+        Log.print('DatLoader', 'loading:', file)
         await this._add_data(id, await make_import(file), data_map);
       }
       for (const [, v] of data_map) {
@@ -106,7 +104,7 @@ export class DataMgr {
       this._data_list_map = (window as any)._data_list_map = data_list_map;
       this._data_map = (window as any)._data_map = data_map;
     } catch (e) {
-      console.warn(`[DatLoader] load(), failed. reason:`, e);
+      Warn.print('DatLoader', `load(), failed. reason:`, e);
     }
   }
 

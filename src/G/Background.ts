@@ -3,10 +3,9 @@ import data from './bg/sys/cuhk/bg.json';
 import { texture_loader } from './loader/loader';
 import { World } from './World';
 import { IBgLayerInfo } from "../js_utils/lf2_type/IBgLayerInfo";
-export class Grand {
+export class Background {
 
   private _disposers: (() => void)[] = [];
-
   depth = data.base.zboundary[1] - data.base.zboundary[0];
   boundarys = {
     left: 0,
@@ -46,6 +45,7 @@ export class Grand {
       layer.userData.layer = info;
       layer.userData.width = 0;
       layer.userData.height = 0;
+      layer.userData.owner = this;
       // sprite.rotation.x = Math.PI * -0.5;
       i += 1
       node.add(layer)

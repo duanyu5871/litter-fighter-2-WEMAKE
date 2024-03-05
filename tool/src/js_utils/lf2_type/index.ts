@@ -138,7 +138,7 @@ export interface IFrameInfo {
   wpoint?: IWpointInfo;
   bpoint?: IBpointInfo;
   opoint?: IOpointInfo[];
-  cpoint?: TTODO;
+  cpoint?: ICpointInfo;
 }
 
 export interface IBallFrameInfo extends IFrameInfo {
@@ -166,6 +166,7 @@ export interface ICpointInfo {
   fronthurtact: TFrameId
   backhurtact: TFrameId
   dircontrol: TFace;
+  cover: number;
 }
 export interface IOpointInfo {
   kind: number;

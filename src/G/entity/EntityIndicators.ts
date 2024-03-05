@@ -1,9 +1,13 @@
 import * as THREE from 'three';
 import { Entity } from './Entity';
 export const EMPTY_ARR = [] as const;
+export const INDICATORS_MATERIAL_COLOR = {
+  bdy: 0x00ff00,
+  itr: 0xff0000
+}
 export const INDICATORS_MATERIAL = {
-  bdy: new THREE.SpriteMaterial({ color: 0x00ff00, transparent: true, opacity: 0.3, }),
-  itr: new THREE.SpriteMaterial({ color: 0xff0000, transparent: true, opacity: 0.3, })
+  bdy: new THREE.SpriteMaterial({ color: 0x00ff00, transparent: true, opacity: 0.5, depthTest: false, depthWrite: false }),
+  itr: new THREE.SpriteMaterial({ color: 0xff0000, transparent: true, opacity: 0.5, depthTest: false, depthWrite: false })
 }
 export class EntityIndicators {
   protected _entity: Entity;
@@ -26,9 +30,10 @@ export class EntityIndicators {
   constructor(e: Entity) {
     this._entity = e;
   }
-  protected _get_indicator(k: keyof typeof this._indicators, idx: number, color: number) {
+  protected _get_indicator(k: keyof typeof this._indicators, idx: number) {
     if (this._indicators[k][idx]) return this._indicators[k][idx];
     const sp = this._indicators[k][idx] = new THREE.Sprite(INDICATORS_MATERIAL[k]);
+    sp.renderOrder = 3
     this.sprite.add(sp);
     return sp;
   }
@@ -60,7 +65,8 @@ export class EntityIndicators {
         continue;
       }
       const { x, y, w, h, cx, cy } = info;
-      const sp = this._get_indicator(name, i, 65280);
+      const sp = this._get_indicator(name, i);
+      sp.material.color.set(INDICATORS_MATERIAL_COLOR[name])
       sp.center.set(cx, cy);
       sp.position.set(x, y, 2);
       sp.scale.set(w, h, 1);

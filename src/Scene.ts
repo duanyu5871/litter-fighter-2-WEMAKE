@@ -4,18 +4,32 @@ import { PlayerController } from "./G/controller/PlayerController";
 import { World } from './G/World';
 import random_get from './Utils/random_get';
 import { TFace, TFrameId } from './js_utils/lf2_type';
-
+import * as THREE from 'three';
 import './G/entity/Ball';
+import { OutlineEffect } from 'three/examples/jsm/effects/OutlineEffect'
 import { TestController } from './G/controller/TestController';
+import { Entity } from './G/entity/Entity';
 let character_id = 1;
 
 export default function run(canvas: HTMLCanvasElement) {
   let disposed = false;
+  const disposers: (() => void)[] = []
 
   let _character_idx = 0;
   let _character: Character | undefined;
   dat_mgr.load().then(() => {
     if (disposed) return;
+
+    const lf2: any = (window as any).lf2 = {};
+
+    for (const d of dat_mgr.characters) {
+      lf2['add_' + d.base.name.toLowerCase()] = () => {
+        const e = new Character(world, d);
+        e.position.x = Math.random() * world.width;
+        e.position.z = Math.random() * world.depth;
+        e.attach();
+      }
+    }
 
     play_character(_character_idx);
     for (let i = 0; i < 1; ++i) {
@@ -71,7 +85,7 @@ export default function run(canvas: HTMLCanvasElement) {
 
   world.start_update();
   world.start_render();
-  const eee = (e: KeyboardEvent) => {
+  const on_key_down = (e: KeyboardEvent) => {
     const interrupt = () => {
       e.stopPropagation();
       e.preventDefault();
@@ -115,12 +129,79 @@ export default function run(canvas: HTMLCanvasElement) {
         break;
     }
   }
-  window.addEventListener('keydown', eee)
+
+  window.addEventListener('keydown', on_key_down)
+  disposers.push(() => window.removeEventListener('keydown', on_key_down))
+
+  let intersection: THREE.Intersection | undefined = void 0;
+  const pick_intersection = (next: THREE.Intersection | undefined) => {
+    console.log(next);
+    const old = intersection;
+    if (old) {
+      const o = old.object;
+      if (o instanceof THREE.Mesh)
+        o.material.color.set(0xffffff)
+      else if (o instanceof THREE.Sprite)
+        o.material.color.set(0xffffff)
+      if (o.userData.owner instanceof Entity)
+        o.userData.owner.show_indicators = false;
+    }
+    intersection = next;
+
+    if (!next) return;
+    const o = next.object;
+    if (o instanceof THREE.Mesh)
+      o.material.color.set(0xff0000)
+    else if (o instanceof THREE.Sprite)
+      o.material.color.set(0xff0000)
+
+    if (o.userData.owner instanceof Entity)
+      o.userData.owner.show_indicators = true;
+
+  }
+
+  const on_pointer_down = (e: PointerEvent) => {
+    const { offsetX: x, offsetY: y } = e;
+    const coords = new THREE.Vector2(
+      (x / canvas.width) * 2 - 1,
+      -(y / canvas.height) * 2 + 1
+    )
+    const raycaster = new THREE.Raycaster()
+    raycaster.setFromCamera(coords, world.camera)
+    const intersections = raycaster.intersectObjects(world.scene.children);
+    if (!intersections.length) {
+      pick_intersection(void 0)
+    } else {
+      if (intersection) {
+        const idx = intersections.findIndex(v => v.object === intersection?.object);
+        const iii = intersections.find((v, i) => i > idx && v.object.userData.owner);
+        if(iii === intersection) alert('wtf?')
+        pick_intersection(iii)
+      } else {
+        const iii = intersections.find(v => v.object.userData.owner)
+        pick_intersection(iii)
+      }
+    }
+  }
+  canvas.addEventListener('pointerdown', on_pointer_down)
+  disposers.push(() => canvas.removeEventListener('pointerdown', on_pointer_down))
+
+  const on_pointer_up = (e: PointerEvent) => {
+    // if (intersection) {
+    //   if (intersection.object instanceof THREE.Mesh)
+    //     intersection.object.material.color.set(0xffffff)
+    // }
+  }
+  canvas.addEventListener('pointerup', on_pointer_up)
+  disposers.push(() => canvas.removeEventListener('pointerup', on_pointer_up))
+
+
   return {
     renderer: world.renderer,
     camera: world.camera,
     release() {
-      window.removeEventListener('keydown', eee)
+      canvas.removeEventListener('pointerdown', on_pointer_down)
+      window.removeEventListener('keydown', on_key_down)
       world.dispose()
       dat_mgr.clear();
     }

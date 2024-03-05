@@ -108,12 +108,9 @@ CHARACTER_STATES.set(Defines.State.Falling, new class extends BaseCharacterState
         [
           ...bouncing[1].map(v => v.toString()),
           ...bouncing[-1].map(v => v.toString()),
-          // ...critical_hit[-1].map(v => v.toString()),
-          // ...critical_hit[1].map(v => v.toString())
         ]
       ))
     }
-
   }
   update(e: Character): void {
     super.update(e);
@@ -141,4 +138,9 @@ CHARACTER_STATES.set(Defines.State.Falling, new class extends BaseCharacterState
     this._directions.delete(entity_id);
   }
 })
-CHARACTER_STATES.set(Defines.State.Lying, new class extends BaseCharacterState {})
+CHARACTER_STATES.set(Defines.State.Lying, new class extends BaseCharacterState { })
+CHARACTER_STATES.set(Defines.State.Caught, new class extends BaseState<Character>{
+  enter(_e: Character): void {
+    _e.velocity.set(0, 0, 0);
+  }
+})

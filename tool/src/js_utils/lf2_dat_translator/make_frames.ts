@@ -16,26 +16,36 @@ export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string): Re
     const itr = take_sections<IItrInfo>(_content, 'itr:', 'itr_end:', r => _content = r);
     itr?.forEach(v => {
       delete_val_equal_keys(v, ['dvx', 'dvy', 'dvz'], [0, void 0]);
-      if (typeof v.dvx === 'number') v.dvx /= 2;
-      if (typeof v.dvz === 'number') v.dvz /= 2;
+      if (typeof v.dvx === 'number') v.dvx *= 0.5;
+      if (typeof v.dvz === 'number') v.dvz *= 0.5;
       if (typeof v.dvy === 'number') v.dvy *= -0.5;
-
-      if (v.kind === Defines.ItrKind.SuperPunchMe) {
-        v.motionless = 0;
-        v.shaking = 0;
+      switch (v.kind) {
+        case Defines.ItrKind.SuperPunchMe:
+        case Defines.ItrKind.ForceCatch:
+        case Defines.ItrKind.Catch:
+          v.motionless = 0;
+          v.shaking = 0;
       }
     });
     const opoint = take_sections(_content, 'opoint:', 'opoint_end:', r => _content = r);
     opoint?.forEach(v => {
       delete_val_equal_keys(v, ['dvx', 'dvy', 'dvz'], [0, void 0]);
-      if (typeof v.dvx === 'number') v.dvx /= 2;
-      if (typeof v.dvz === 'number') v.dvz /= 2;
-      if (typeof v.dvy === 'number') v.dvy *= -1.1;
+      if (typeof v.dvx === 'number') v.dvx *= 0.5;
+      if (typeof v.dvz === 'number') v.dvz *= 0.5;
+      if (typeof v.dvy === 'number') v.dvy *= -0.5;
     });
 
     const wpoint = take_sections(_content, 'wpoint:', 'wpoint_end:', r => _content = r)[0];
     const bpoint = take_sections(_content, 'bpoint:', 'bpoint_end:', r => _content = r)[0];
     const cpoint = take_sections(_content, 'cpoint:', 'cpoint_end:', r => _content = r)[0];
+    if (cpoint) {
+      delete_val_equal_keys(cpoint, ['throwvx', 'throwvy', 'throwvz', 'throwinjury'], [0, void 0, -842150451]);
+      if (typeof cpoint.throwvz === 'number') cpoint.throwvz *= 0.5;
+      if (typeof cpoint.throwvx === 'number') cpoint.throwvx *= 0.5;
+      if (typeof cpoint.throwvy === 'number') cpoint.throwvy *= -0.5;
+
+    }
+
 
     const fields: any = {};
     for (const [name, value] of match_colon_value(_content)) fields[name] = to_num(value);
@@ -63,7 +73,6 @@ export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string): Re
     delete_val_equal_keys(frame, ['sound'], ['', void 0]);
     delete_val_equal_keys(frame, ['wpoint', 'bpoint', 'cpoint', 'bdy', 'itr'], [null, void 0]);
     delete_val_equal_keys(frame.wpoint, ['dvx', 'dvy', 'dvz'], [0, void 0]);
-    delete_val_equal_keys(frame.cpoint, ['throwvx', 'throwvy', 'throwvz', 'throwinjury'], [0, void 0, -842150451]);
 
     if (frame.mp && frame.mp > 1000) {
       const raw = frame.mp;
