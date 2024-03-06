@@ -1,4 +1,7 @@
 export namespace Defines {
+  export const OLD_SCREEN_WIDTH = 795;
+  export const OLD_SCREEN_HEIGHT = 550;
+
   export enum State {
     Any = -1,
     Standing = 0,

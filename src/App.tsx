@@ -8,6 +8,7 @@ import open_file, { read_file } from './Utils/open_file';
 import './init';
 import lf2_dat_str_to_json from './js_utils/lf2_dat_translator/dat_2_json';
 import read_lf2_dat from './read_lf2_dat';
+import { Defines } from './js_utils/lf2_type/defines';
 
 function App() {
   const _canvas_ref = useRef<HTMLCanvasElement>(null)
@@ -18,21 +19,20 @@ function App() {
     const canvas = _canvas_ref.current;
     if (!canvas) return;
     const scene = Scene(canvas, () => set_scene(scene));
+    const w = Defines.OLD_SCREEN_WIDTH;
+    const h = Defines.OLD_SCREEN_HEIGHT;
     const on_resize = () => {
       if (scene.camera instanceof THREE.PerspectiveCamera) {
-        scene.camera.aspect = 794 / 550
+        scene.camera.aspect = w / h
         scene.camera.updateProjectionMatrix()
       } else if (scene.camera instanceof THREE.OrthographicCamera) {
         scene.camera.left = 0
-        scene.camera.right = 794
-        scene.camera.top = 550
+        scene.camera.right = w
+        scene.camera.top = h
         scene.camera.bottom = 0
         scene.camera.updateProjectionMatrix()
       }
-      scene.renderer.setSize(
-        794,
-        550
-      );
+      scene.renderer.setSize(w, h);
     }
     on_resize();
     window.addEventListener('resize', on_resize)
@@ -106,28 +106,27 @@ function App() {
       <select onChange={e => scene?.change_bg(e.target.value)}>
         {dat_mgr.backgrounds.map(v => <option value={'' + v.id} key={v.id}>{v.base.name}</option>)}
       </select>
+      <input type='checkbox' onChange={(e) => set_closed(!e.target.checked)} checked={!closed} />
       <canvas ref={_canvas_ref} className='renderer_canvas' />
-      {closed ? null :
-        <div style={{
-          position: 'fixed',
-          zIndex: 1,
-          width: '100vw',
-          height: '100vh',
-          display: 'flex',
-          flexDirection: 'column'
-        }}>
-          <div>
-            <button onClick={() => set_closed(true)}>close</button>
-            <button onClick={on_click_add_pack} disabled={loading}>add_pack</button>
-            <button onClick={on_click_read_dat} disabled={loading}>read_dat</button>
-            <button onClick={on_click_add_pack_2} disabled={loading}>add_c</button>
-          </div>
-          <div style={{ display: 'flex', flex: 1, alignSelf: 'stretch' }}>
-            <textarea style={{ flex: 1, alignSelf: 'stretch' }} ref={_text_area_dat_ref} />
-            <textarea style={{ flex: 1, alignSelf: 'stretch' }} ref={_text_area_json_ref} />
-          </div>
+
+      <div style={{
+        position: 'fixed',
+        zIndex: 1,
+        width: '100vw',
+        height: '100vh',
+        display: closed ? 'none' : 'flex',
+        flexDirection: 'column'
+      }}>
+        <div>
+          <button onClick={on_click_add_pack} disabled={loading}>add_pack</button>
+          <button onClick={on_click_read_dat} disabled={loading}>read_dat</button>
+          <button onClick={on_click_add_pack_2} disabled={loading}>add_c</button>
         </div>
-      }
+        <div style={{ display: 'flex', flex: 1, alignSelf: 'stretch' }}>
+          <textarea style={{ flex: 1, alignSelf: 'stretch' }} ref={_text_area_dat_ref} />
+          <textarea style={{ flex: 1, alignSelf: 'stretch' }} ref={_text_area_json_ref} />
+        </div>
+      </div>
     </div>
   );
 }

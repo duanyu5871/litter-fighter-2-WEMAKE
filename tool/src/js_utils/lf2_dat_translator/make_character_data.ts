@@ -33,48 +33,6 @@ export function make_character_data(info: ICharacterInfo, frames: Record<TFrameI
   info.jump_distance /= 2;
   const round_trip_frames_map: any = {};
   for (const [frame_id, frame] of traversal(frames)) {
-
-    if (frame.cpoint) {
-      const a_action = take(frame.cpoint, 'aaction');
-      const t_action = take(frame.cpoint, 'taction');
-      const s_hit_a = frame.hit?.a;
-      let t_hit_a: INextFrame[] | undefined;
-      let a_hit_a: INextFrame | undefined;
-      if (t_action) {
-        t_hit_a = [
-          { ...get_next_frame_by_id(t_action), flags: { turn: 2 }, condition: 'press_F_B != 0' },
-          { ...get_next_frame_by_id(t_action), flags: { turn: 2 }, condition: 'press_U_D != 0' },
-        ]
-      }
-      if (a_action)
-        a_hit_a = get_next_frame_by_id(a_action)
-
-      if (Array.isArray(s_hit_a)) {
-        t_hit_a && s_hit_a.unshift(...t_hit_a);
-        a_hit_a && s_hit_a.unshift(a_hit_a);
-      } else {
-        let c = 0;
-        if (s_hit_a) ++c;
-        if (t_hit_a) ++c;
-        if (a_hit_a) ++c;
-        if (c >= 2) {
-          const hit_a: INextFrame[] = [];
-          s_hit_a && hit_a.push(s_hit_a);
-          t_hit_a && hit_a.push(...t_hit_a);
-          a_hit_a && hit_a.push(a_hit_a);
-          frame.hit = frame.hit || {};
-          frame.hit.a = hit_a;
-        } else if (c === 1) {
-          frame.hit = frame.hit || {};
-          frame.hit.a = s_hit_a || t_hit_a || a_hit_a;
-        }
-      }
-    }
-
-    if (frame.dvx) frame.dvx /= 2
-    if (frame.dvy) frame.dvy /= 4
-    if (frame.dvz) frame.dvz /= 2
-
     const hit_a = take(frame, 'hit_a');
     if (hit_a) frame.hit = set_obj_field(frame.hit, 'a', { id: hit_a });
     const hit_j = take(frame, 'hit_j');
@@ -193,6 +151,51 @@ export function make_character_data(info: ICharacterInfo, frames: Record<TFrameI
         }
         break;
       }
+      case 120: case 121: case 122: case 123: /** catching */
+        if (frame.cpoint) {
+          if (frame.cpoint.vaction) (frame.cpoint?.vaction as INextFrame).flags!.turn = 6;
+          if (frame.cpoint.injury) frame.cpoint!.shaking = 1;
+          const a_action = take(frame.cpoint, 'aaction');
+          const t_action = take(frame.cpoint, 'taction');
+          const s_hit_a = frame.hit?.a;
+          let t_hit_a: INextFrame[] | undefined;
+          let a_hit_a: INextFrame | undefined;
+          if (t_action) {
+            t_hit_a = [
+              { ...get_next_frame_by_id(t_action), flags: { turn: 2 }, condition: 'press_F_B != 0' },
+              { ...get_next_frame_by_id(t_action), flags: { turn: 2 }, condition: 'press_U_D != 0' },
+            ]
+          }
+          if (a_action)
+            a_hit_a = get_next_frame_by_id(a_action)
+    
+          if (Array.isArray(s_hit_a)) {
+            t_hit_a && s_hit_a.unshift(...t_hit_a);
+            a_hit_a && s_hit_a.unshift(a_hit_a);
+          } else {
+            let c = 0;
+            if (s_hit_a) ++c;
+            if (t_hit_a) ++c;
+            if (a_hit_a) ++c;
+            if (c >= 2) {
+              const hit_a: INextFrame[] = [];
+              s_hit_a && hit_a.push(s_hit_a);
+              t_hit_a && hit_a.push(...t_hit_a);
+              a_hit_a && hit_a.push(a_hit_a);
+              frame.hit = frame.hit || {};
+              frame.hit.a = hit_a;
+            } else if (c === 1) {
+              frame.hit = frame.hit || {};
+              frame.hit.a = s_hit_a || t_hit_a || a_hit_a;
+            }
+          }
+        }
+    
+        break;
+      case 232: case 233: case 234:  /** throw_lying_man */
+        if (frame.cpoint?.vaction) (frame.cpoint?.vaction as INextFrame).flags!.turn = 6;
+        break;
+
       /** crouch */
       case 215:
         const to_dash_frame: TNextFrame = [

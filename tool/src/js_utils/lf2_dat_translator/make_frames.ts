@@ -19,11 +19,11 @@ export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string): Re
       delete_val_equal_keys(itr, ['dvx', 'dvy', 'dvz'], [0, void 0]);
       const vrest = take(itr, 'vrest')
       const arest = take(itr, 'arest')
-      if (typeof vrest === 'number') { itr.vrest = 2 * (vrest - 1); }
-      if (typeof arest === 'number') { itr.arest = 2 * (arest - 1); }
-      if (typeof itr.dvx === 'number') itr.dvx *= 0.5;
-      if (typeof itr.dvz === 'number') itr.dvz *= 0.5;
-      if (typeof itr.dvy === 'number') itr.dvy *= -0.5;
+      if (typeof vrest === 'number') { itr.vrest = Math.max(1, 2 * (vrest - 1)); }
+      if (typeof arest === 'number') { itr.arest = Math.max(1, 2 * (arest - 1)); }
+      if (typeof itr.dvx === 'number') itr.dvx *= 0.52;
+      if (typeof itr.dvz === 'number') itr.dvz *= 0.52;
+      if (typeof itr.dvy === 'number') itr.dvy *= -0.52;
       switch (itr.kind) {
         case Defines.ItrKind.SuperPunchMe:
         case Defines.ItrKind.ForceCatch:
@@ -45,9 +45,14 @@ export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string): Re
     const cpoint = take_sections(_content, 'cpoint:', 'cpoint_end:', r => _content = r)[0];
     if (cpoint) {
       delete_val_equal_keys(cpoint, ['throwvx', 'throwvy', 'throwvz', 'throwinjury'], [0, void 0, -842150451]);
-      // if (typeof cpoint.throwvz === 'number') cpoint.throwvz *= 0.5;
       if (typeof cpoint.throwvx === 'number') cpoint.throwvx *= 0.5;
       if (typeof cpoint.throwvy === 'number') { cpoint.throwvy *= -0.5; }
+
+      if (cpoint.vaction) {
+        const vaction = get_next_frame_by_id(cpoint.vaction);
+        vaction.flags = { turn: 5 };
+        cpoint.vaction = vaction;
+      }
     }
 
 
@@ -84,6 +89,15 @@ export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string): Re
       frame.hp = (raw - frame.mp) / 100;
     }
     frames[frame_id] = frame;
+
+    const dircontrol = take(cpoint, 'dircontrol');
+    if (dircontrol) {
+      frame.hold = frame.hold || {}
+      frame.hold.B = { id: '', flags: { turn: 1, wait: 'i' } }
+    }
+    if (frame.dvx) frame.dvx /= 2
+    if (frame.dvy) frame.dvy /= 4
+    if (frame.dvz) frame.dvz /= 2
   }
   return frames;
 }

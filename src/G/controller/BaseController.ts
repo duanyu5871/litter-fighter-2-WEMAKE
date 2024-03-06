@@ -134,15 +134,17 @@ export class BaseController implements IController<Character> {
       case Defines.State.Standing:
       case Defines.State.Walking:
         if (this._need_punch) {
-          this._need_punch = 0;
           if (frame.hit?.a) nf = frame;
         }
         for (const [, { itr }] of character.v_rests) {
-          if (itr.kind === Defines.ItrKind.SuperPunchMe && this.holding.a === 1) {
-            nf = { id: character.data.base.indexes.super_punch }
+          if (itr.kind === Defines.ItrKind.SuperPunchMe) {
+            if ((this.holding.a >= 1 || this._need_punch)) {
+              nf = { id: character.data.base.indexes.super_punch }
+            }
             break;
           }
         }
+        this._need_punch = 0
         break;
       case Defines.State.Attacking: {
         if (this.holding.a === 1 && this._next_punch_ready)

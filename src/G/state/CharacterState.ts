@@ -1,5 +1,5 @@
 /* eslint-disable new-parens */
-import { TFrameId } from "../../js_utils/lf2_type";
+import { IFrameInfo, TFrameId } from "../../js_utils/lf2_type";
 import { Defines } from "../../js_utils/lf2_type/defines";
 import { World } from "../World";
 import type { Character } from '../entity/Character';
@@ -78,31 +78,35 @@ CHARACTER_STATES.set(Defines.State.Jump, new class extends BaseCharacterState {
   }
 })
 CHARACTER_STATES.set(Defines.State.Dash, new class extends BaseCharacterState {
-  enter(e: Character): void {
+  enter(e: Character, prev_frame: IFrameInfo): void {
     if (e.position.y > 0 && e.velocity.y !== 0) return;
     const { dash_distance: dx, dash_distancez: dz, dash_height: h } = e.data.base;
-    const { UD, LR } = e.controller
     e.velocity.y = World.DEFAULT_GRAVITY * Math.sqrt(2 * h / World.DEFAULT_GRAVITY);
-    if (UD > 0) e.velocity.z = dz;
-    else if (UD < 0) e.velocity.z = -dz;
-    if (LR < 0) e.velocity.x = -dx;
-    else if (LR > 0) e.velocity.x = dx;
+    const { UD1, LR1 } = e.controller
+    e.velocity.z = UD1 * dz;
+    if (prev_frame.state === Defines.State.Running) {
+      e.velocity.x = e.face * dx;
+    }
+    else if (LR1) e.velocity.x = LR1 * dx;
     else if (e.velocity.x > 0) e.velocity.x = dx;
     else if (e.velocity.x < 0) e.velocity.x = -dx;
+    else e.velocity.x = e.face * dx;
   }
 })
 CHARACTER_STATES.set(Defines.State.Defend, new BaseCharacterState)
 CHARACTER_STATES.set(Defines.State.Falling, new class extends BaseCharacterState {
   _directions = new Map<string | number, 1 | -1>();
   _ignore_frames = new Map<string | number, Set<TFrameId>>();
-  enter(e: Character): void {
-    super.enter(e);
-    const { id: entity_id } = e;
-    const { id: data_id, base: { indexes: { critical_hit, bouncing } } } = e.data;
-    const { id: frame_id } = e.get_frame();
+  enter(e: Character, prev_frame: IFrameInfo): void {
+    super.enter(e, prev_frame);
+    const { id: entity_id, velocity: { x: vx }, face } = e;
+    const { id: data_id, base: { indexes: { bouncing } } } = e.data;
+
+    let dd: 1 | -1 = -1;
+    if ((vx < 0 && face < 0) || (vx > 0 && face > 0)) dd = 1;
 
     // eslint-disable-next-line eqeqeq
-    this._directions.set(entity_id, critical_hit[1].find(v => v == frame_id) === void 0 ? 1 : -1);
+    this._directions.set(entity_id, dd);
     if (!this._ignore_frames.has(data_id)) {
       this._ignore_frames.set(data_id, new Set(
         [

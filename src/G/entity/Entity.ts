@@ -68,7 +68,6 @@ export class Entity<
     if (prev_state !== next_state && next_state !== void 0) {
       this.state = this.states.get(next_state) || this.states.get(Defines.State.Any);
     }
-
     if (v.opoint) {
       for (const o of v.opoint) {
         const d = dat_mgr.find(o.oid);
@@ -88,9 +87,9 @@ export class Entity<
 
   set state(v: BaseState | undefined) {
     if (this._state === v) return;
-    this._state?.leave(this)
+    this._state?.leave(this, this.get_frame())
     this._state = v;
-    this._state?.enter(this)
+    this._state?.enter(this, this.get_prev_frame())
   }
   get state() { return this._state; }
   constructor(world: World, data: D, states: Map<number, BaseState> = new Map()) {
@@ -140,9 +139,15 @@ export class Entity<
     if (this.position.y <= 0 || this._shaking || this._motionless) return;
     this.velocity.y -= this.world.gravity;
   }
+  _s = [1, -1]
+  _i = 0;
   protected override update_sprite() {
     super.update_sprite();
     if (this._indicators?.show) this._indicators.update()
+    if (this._shaking) {
+      const wf = this._s[this._i = (this._i + 1) % 2] * 2 / this._piece.pw
+      this.sprite.center.x += 4 * wf;
+    }
   }
 
   handle_frame_velocity() {
@@ -160,8 +165,6 @@ export class Entity<
     if (dvy !== void 0 && dvy !== 0) this.velocity.y += -dvy;
     if (dvz !== void 0 && dvz !== 0) this.velocity.z = dvz;
   }
-  _s = [1, -1]
-  _i = 0;
   update() {
     if (this._next_frame) {
       this.enter_frame(this._next_frame);
@@ -178,13 +181,11 @@ export class Entity<
     }
     if (!this._shaking && !this._motionless)
       this.position.add(this.velocity);
-
     if (this._motionless > 0) {
       --this._motionless;
     } else if (this._shaking > 0) {
-      const wf = this._s[this._i = (this._i + 1) % 2] * 2 / this._piece.pw
-      this.sprite.center.x += 4 * wf;
       --this._shaking;
+      this.update_sprite();
     } else if (this.wait > 0) {
       --this.wait;
     };

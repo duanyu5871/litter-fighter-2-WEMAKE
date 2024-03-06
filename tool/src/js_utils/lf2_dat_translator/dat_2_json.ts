@@ -1,66 +1,18 @@
-import { IBallFrameInfo, IBallInfo, IBaseData, IBgData, ICharacterInfo, IDatIndex, IGameObjInfo, IWeaponInfo } from '../lf2_type';
-import { IBgLayerInfo } from "../lf2_type/IBgLayerInfo";
+import { IBallFrameInfo, IBallInfo, IBaseData, ICharacterInfo, IDatIndex, IGameObjInfo, IWeaponInfo } from '../lf2_type';
 import { match_block_once } from '../match_block';
 import { match_colon_value } from '../match_colon_value';
 import { set_obj_field } from "../set_obj_field";
-import { take_blocks } from '../take_blocks';
-import { to_num } from '../to_num';
-import { ColonValueReader } from './ColonValueReader';
 import { make_ball_data } from './make_ball_data';
+import { make_bg_data } from './make_bg_data';
 import { make_character_data } from './make_character_data';
 import { make_entity_data } from './make_entity_data';
 import { make_frames } from './make_frames';
 import { make_weapon_data } from './make_weapon_data';
-import { take } from './take';
 
-const bg_color_translate = function (c: number) {
-  let b = ((c & 0xff0000) >> 16).toString(16);
-  let r = ((c & 0xff00) >> 8).toString(16);
-  let g = ((c & 0xff)).toString(16);
-  let ret = '0x';
-  ret += r.length === 1 ? ('0' + r) : r.length === 0 ? '00' : r;
-  ret += g.length === 1 ? ('0' + g) : g.length === 0 ? '00' : g;
-  ret += b.length === 1 ? ('0' + b) : b.length === 0 ? '00' : b;
-  return Number(ret);
-}
 
-function read_bg(full_str: string, datIndex?: IDatIndex): IBgData | void {
-  const fields = new ColonValueReader()
-    .str('name')
-    .num('width')
-    .num_2('zboundary')
-    .str('shadow')
-    .num_2('shadowsize')
-    .read(full_str);
 
-  const width = take(fields, 'width');
-  const [a, b] = take(fields, 'zboundary');
-  fields.left = 0;
-  fields.right = width
-  fields.far = -b;
-  fields.near = -b + a;
-  const ret: IBgData = {
-    type: 'background',
-    id: datIndex?.id ?? fields.name,
-    base: fields,
-    layers: []
-  }
-  for (const block_str of take_blocks(full_str, 'layer:', 'layer_end', v => full_str = v)) {
-    const [file, remains] = block_str.trim().split(/\n|\r/g).filter(v => v).map(v => v.trim());
-    const fields: any = {};
-    for (const [key, value] of match_colon_value(remains)) {
-      fields[key] = to_num(value);
-    }
-    const color = take(fields, 'rect')
-    const layer: IBgLayerInfo = { file, ...fields };
-    if (layer.file === ret.base.shadow) delete layer.file;
-    if (typeof color === 'number') layer.color = bg_color_translate(color);
-    ret.layers.push(layer)
-  }
-  return ret;
-}
 export default function dat_to_json(full_str: string, datIndex?: IDatIndex): IBaseData | void {
-  if (full_str.startsWith('name:')) return read_bg(full_str, datIndex);
+  if (full_str.startsWith('name:')) return make_bg_data(full_str, datIndex);
   const infos_str = match_block_once(full_str, '<bmp_begin>', '<bmp_end>');
   if (!infos_str) { return; }
   const base: any = {};

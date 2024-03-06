@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { IBgData } from '../js_utils/lf2_type';
 import { IBgLayerInfo } from "../js_utils/lf2_type/IBgLayerInfo";
+import { Defines } from '../js_utils/lf2_type/defines';
 import { World } from './World';
 import { texture_loader } from './loader/loader';
 
@@ -15,18 +16,29 @@ interface ILayerUserData {
 }
 
 export class Background {
-  private _disposers: (() => void)[] = [];
   readonly data: IBgData;
-  object_3d: THREE.Object3D;
-  world: World;
+  private _disposers: (() => void)[] = [];
+  private _obj_3d: THREE.Object3D;
+  private _world: World;
   private _z_order = 0
+  get left() { return this.data.base.left; }
+  get right() { return this.data.base.right; }
+  get near() { return this.data.base.near; }
+  get far() { return this.data.base.far; }
+  get width() { return this.right - this.left; }
+  get depth() { return this.near - this.far; };
+  get middle() {
+    return {
+      x: (this.right + this.left) / 2,
+      z: (this.far + this.near) / 2,
+    }
+  }
   constructor(world: World, data: IBgData) {
     this.data = data;
-    this.world = world;
+    this._world = world;
 
-    const node = this.object_3d = new THREE.Object3D();
-    this.object_3d.position.y = -this.world.camera.position.y
-    this.object_3d.position.z = -1000
+    const node = this._obj_3d = new THREE.Object3D();
+    this._obj_3d.position.z = -2 * Defines.OLD_SCREEN_HEIGHT;
     world.scene.add(node);
 
     for (const info of data.layers) {
@@ -48,7 +60,7 @@ export class Background {
 
   private add_layer(info: IBgLayerInfo, z: number, t?: THREE.Texture) {
     const data = this.data;
-    const node = this.object_3d
+    const node = this._obj_3d
     let count = 0;
     do {
       let { x, y, loop } = info;
@@ -62,7 +74,7 @@ export class Background {
       if (t) layer.scale.set(t.image.width, t.image.height, 1)
       else layer.scale.set(info.width, info.height, 1);
       layer.position.x = x;
-      layer.position.y = 550 - y;
+      layer.position.y = Defines.OLD_SCREEN_HEIGHT - y;
       layer.position.z = z - 2 * (data.base.near - data.base.far);
       const user_data: ILayerUserData = {
         x: layer.position.x,
@@ -101,19 +113,17 @@ export class Background {
   }
 
   private _q = new THREE.Quaternion()
-  private _screen_width = 794;
   update() {
-    const { camera } = this.world;
-    for (const child of this.object_3d.children) {
+    const { camera } = this._world;
+    for (const child of this._obj_3d.children) {
       const user_data = child.userData as ILayerUserData;
       const { inner_w: img_w, inner_h: img_h, layer: { width }, x } = user_data;
       if (!img_w || !img_h) continue;
       const bg_width = this.data.base.right - this.data.base.left;
-      if (bg_width <= this._screen_width) continue;
-      child.position.x = x + (bg_width - width) * camera.position.x / (bg_width - this._screen_width);
+      if (bg_width <= Defines.OLD_SCREEN_WIDTH) continue;
+      child.position.x = x + (bg_width - width) * camera.position.x / (bg_width - Defines.OLD_SCREEN_WIDTH);
     }
     camera.getWorldQuaternion(this._q)
-    this.object_3d.rotation.setFromQuaternion(this._q);
+    this._obj_3d.rotation.setFromQuaternion(this._q);
   }
 }
-

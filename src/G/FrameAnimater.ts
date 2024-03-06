@@ -41,12 +41,13 @@ export class FrameAnimater<D extends IGameObjData = IGameObjData> {
   readonly data: D;
   readonly world: World;
   readonly pictures: Map<string, IPictureInfo<THREE.Texture>>;
-  readonly sprite: THREE.Sprite<THREE.Object3DEventMap>;
+  readonly sprite: THREE.Sprite;
   readonly position = new THREE.Vector3(0, 0, 0);
 
   protected _piece: ITexturePieceInfo = EMPTY_PIECE;
   protected _face: TFace = 1;
   private _frame: D['frames'][0] = EMPTY_FRAME_INFO;
+  private _prev_frame: D['frames'][0] = EMPTY_FRAME_INFO;
 
   get face() { return this._face; }
   set face(v: TFace) {
@@ -56,9 +57,11 @@ export class FrameAnimater<D extends IGameObjData = IGameObjData> {
   }
 
   set_frame(v: D['frames'][0]) {
+    this._prev_frame = this._frame
     this._frame = v;
   }
   get_frame() { return this._frame; }
+  get_prev_frame() { return this._frame; }
 
   constructor(world: World, data: D) {
     this.data = data;
@@ -67,8 +70,6 @@ export class FrameAnimater<D extends IGameObjData = IGameObjData> {
 
     const material = new THREE.SpriteMaterial({
       map: this.pictures.get('0')?.texture,
-      // depthWrite: false,
-      // depthTest: false
     });
     const sprite = this.sprite = new THREE.Sprite(material);
     sprite.userData.owner = this;

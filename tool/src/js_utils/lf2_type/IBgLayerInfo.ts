@@ -1,7 +1,8 @@
 
 export interface IBgLayerInfo {
   file?: string;
-  color?: number;
+  absolute?: number;
+  color?: number | string;
   transparency?: number;
   width: number;
   height: number;

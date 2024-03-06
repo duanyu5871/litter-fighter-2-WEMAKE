@@ -56,12 +56,12 @@ export class EntityIndicators {
     const l2 = Math.max(this._indicators[name].length, l1);
     for (let i = 0; i < l2; ++i) {
       if (i >= l1) {
-        this._hide_indicator(name, l1);
+        this._hide_indicator(name, i);
         continue;
       }
       const info = data[i].indicator_info?.[this.face];
       if (!info) {
-        this._hide_indicator(name, l1);
+        this._hide_indicator(name, i);
         continue;
       }
       const { x, y, w, h, cx, cy } = info;

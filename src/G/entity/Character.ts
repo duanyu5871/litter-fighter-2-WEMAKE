@@ -6,7 +6,7 @@ import { ICube } from '../World';
 import { IController } from '../controller/IController';
 import { InvalidController } from '../controller/InvalidController';
 import { CHARACTER_STATES } from '../state/CharacterState';
-import { Entity } from './Entity';
+import { Entity, V_SHAKE } from './Entity';
 import find_direction from './find_frame_direction';
 import { different_face_flags, same_face, same_face_flags, turn_face } from './new_frame_flags';
 
@@ -17,11 +17,20 @@ export class Character extends Entity<ICharacterData> {
   protected _fall_value = 70;
   protected _defend_value = 60;
   protected _catching?: Character
+  protected _catcher?: Character
 
   override handle_next_frame_flags(flags: INextFrameFlags | undefined): void {
     switch (flags?.turn) {
       case 2:
         this._face = this.controller.LR1 || this._face;
+        break;
+      case 5:
+        if (this._catcher)
+          this._face = this._catcher._face;
+        break;
+      case 6:
+        if (this._catcher)
+          this._face = turn_face(this._catcher._face);
         break;
       default: super.handle_next_frame_flags(flags);
     }
@@ -40,7 +49,7 @@ export class Character extends Entity<ICharacterData> {
   override dispose() {
     this.controller.dispose();
     this._disposers.forEach(f => f());
-    this.world.remove_entities(this);
+    this.world.del_entities(this);
   }
 
   setup_leniency_hit_a(prev: IFrameInfo | void, curr: IFrameInfo | void) {
@@ -128,14 +137,20 @@ export class Character extends Entity<ICharacterData> {
     if (typeof pic === 'number') return;
 
     const { cpoint: cpoint_b, centerx: centerx_b, centery: centery_b } = this._catching.get_frame();
-    if (!cpoint_a || !cpoint_b) { delete this._catching; return; }
+    if (!cpoint_a || !cpoint_b) {
+      delete this._catching._catcher;
+      delete this._catching;
+      return;
+    }
 
     if (cpoint_a.vaction) {
-      this._catching.face = cpoint_a.dircontrol === -1 ? this.face : turn_face(this.face);
-      this._catching.enter_frame({ id: cpoint_a.vaction });
+      this._catching.enter_frame(cpoint_a.vaction);
     }
     if (cpoint_a.injury) {
       this._catching.hp += cpoint_a.injury;
+    }
+    if (cpoint_a.shaking) {
+      this._catching._shaking = V_SHAKE;
     }
     const { throwvx, throwvy, throwvz, x: catch_x, y: catch_y, cover } = cpoint_a;
     const { x: caught_x, y: caught_y } = cpoint_b;
@@ -182,7 +197,8 @@ export class Character extends Entity<ICharacterData> {
     switch (itr.kind) {
       case Defines.ItrKind.Catch:
       case Defines.ItrKind.ForceCatch: {
-        if (itr.caughtact !== void 0) {
+        if (attacker instanceof Character && itr.caughtact !== void 0) {
+          this._catcher = attacker;
           this.enter_frame({ id: itr.caughtact, flags: same_face_flags(attacker, this) })
           delete this._next_frame;
         }

@@ -36,7 +36,13 @@ export interface INextFrameFlags {
    * 下帧转向
    * @date 2/23/2024 - 1:37:05 PM
    *
-   * @type {?number} 1=向后转, 2=按键控制转向, 3=固定向左，4=固定向右
+   * @type {?number} 
+   *        1 = 向后转, 
+   *        2 = 按键控制转向, // character only
+   *        3 = 固定向左，
+   *        4 = 固定向右, 
+   *        5 = 与抓自己的人方向相同 // character only
+   *        6 = 与抓自己的人方向相反 // character only
    */
   turn?: number;
 }
@@ -155,7 +161,7 @@ export interface ICpointInfo {
   kind: 1 | 2;
   x: number;
   y: number;
-  vaction: number;
+  vaction: TNextFrame;
   injury: number;
   hurtable: 0 | 1;
   decrease: number;
@@ -165,8 +171,8 @@ export interface ICpointInfo {
   throwinjury?: number
   fronthurtact: TFrameId
   backhurtact: TFrameId
-  dircontrol: TFace;
   cover: number;
+  shaking?: number;
 }
 export interface IOpointInfo {
   kind: number;

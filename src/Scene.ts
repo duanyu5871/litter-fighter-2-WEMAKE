@@ -22,11 +22,14 @@ export default function run(canvas: HTMLCanvasElement, on_load?: () => void) {
     const lf2: any = (window as any).lf2 = {};
     change_bg()
     for (const d of dat_mgr.characters) {
-      lf2['add_' + d.base.name.toLowerCase()] = () => {
-        const e = new Character(world, d);
-        e.position.x = Math.random() * world.width;
-        e.position.z = Math.random() * world.depth;
-        e.attach();
+      lf2['add_' + d.base.name.toLowerCase()] = (v = 1) => {
+        while (v) {
+          const e = new Character(world, d);
+          e.position.x = world.left + Math.random() * (world.right - world.left);
+          e.position.z = world.far + Math.random() * (world.near - world.far);
+          e.attach();
+          --v
+        }
       }
     }
     play_character();
@@ -36,8 +39,8 @@ export default function run(canvas: HTMLCanvasElement, on_load?: () => void) {
       if (i === 0)
         e.controller = new TestController(e);
       e.id = '' + character_id;
-      e.position.x = Math.random() * world.width;
-      e.position.z = Math.random() * world.depth;
+      e.position.x = world.left + Math.random() * (world.right - world.left);
+      e.position.z = world.far + Math.random() * (world.near - world.far);
       e.attach();
     }
   })
@@ -87,7 +90,7 @@ export default function run(canvas: HTMLCanvasElement, on_load?: () => void) {
     _character.controller = new PlayerController(_character)
     _character.attach();
   }
-  const change_bg = (next: boolean|string = true) => {
+  const change_bg = (next: boolean | string = true) => {
     let data: IBgData | undefined;
     const list = dat_mgr.backgrounds
     if (typeof next === 'boolean') {
@@ -149,7 +152,6 @@ export default function run(canvas: HTMLCanvasElement, on_load?: () => void) {
 
   let intersection: THREE.Intersection | undefined = void 0;
   const pick_intersection = (next: THREE.Intersection | undefined) => {
-    console.log(next);
     const old = intersection;
     if (old) {
       const o = old.object;
@@ -189,7 +191,6 @@ export default function run(canvas: HTMLCanvasElement, on_load?: () => void) {
       if (intersection) {
         const idx = intersections.findIndex(v => v.object === intersection?.object);
         const iii = intersections.find((v, i) => i > idx && v.object.userData.owner);
-        if (iii === intersection) alert('wtf?')
         pick_intersection(iii)
       } else {
         const iii = intersections.find(v => v.object.userData.owner)

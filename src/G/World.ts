@@ -1,13 +1,13 @@
 import * as THREE from 'three';
-import { dat_mgr } from './loader/DatLoader';
 import { Defines } from '.././js_utils/lf2_type/defines';
 import { IBdyInfo, IFrameInfo, IItrInfo } from '../js_utils/lf2_type';
+import { Background } from './Background';
+import { FrameAnimater, GONE_FRAME_INFO } from './FrameAnimater';
+import { PlayerController } from './controller/PlayerController';
 import { Ball } from './entity/Ball';
 import { Character } from './entity/Character';
-import { PlayerController } from './controller/PlayerController';
 import { Entity } from './entity/Entity';
-import { FrameAnimater, GONE_FRAME_INFO } from './FrameAnimater';
-import { Background } from './Background';
+import { dat_mgr } from './loader/DatLoader';
 export interface ICube {
   left: number;
   right: number;
@@ -26,7 +26,7 @@ export class World {
   friction = World.DEFAULT_FRICTION;
   scene: THREE.Scene = new THREE.Scene();
   camera: THREE.Camera = new THREE.OrthographicCamera();
-  private _bg: Background | undefined;
+  private _bg?: Background;
 
   entities = new Set<Entity>();
   game_objs = new Set<FrameAnimater>();
@@ -42,47 +42,42 @@ export class World {
     this._bg = v;
   }
 
-  get left() { return this.bg?.data.base.left || 0 }
-  get right() { return this.bg?.data.base.right || 0 }
-  get near() { return this.bg?.data.base.near || 0 }
-  get far() { return this.bg?.data.base.far || 0 }
-  get width() { return this.right - this.left }
-  get depth() { return this.far - this.near };
-  get middle() {
-    return ({
-      x: (this.right + this.left) / 2,
-      z: (this.far + this.near) / 2,
-    })
-  }
+  get left() { return this.bg?.left || 0 }
+  get right() { return this.bg?.right || 0 }
+  get near() { return this.bg?.near || 0 }
+  get far() { return this.bg?.far || 0 }
+  get width() { return this.bg?.width || 0 }
+  get depth() { return this.bg?.depth || 0 };
+  get middle() { return this.bg?.middle || { x: 0, z: 0 } }
   constructor(canvas: HTMLCanvasElement) {
     this.renderer = new THREE.WebGLRenderer({ canvas });
     this.camera.position.z = 0;
   }
 
   add_game_objs(...objs: FrameAnimater[]) {
-    objs.forEach(e => {
+    for (const e of objs) {
       if (e instanceof Entity) {
         this.add_entities(e);
       } else {
         this.scene.add(e.sprite)
         this.game_objs.add(e)
       }
-    })
-
+    }
   }
 
-  remove_game_objs(...game_objs: FrameAnimater[]) {
-    game_objs.forEach(e => {
+  del_game_objs(...objs: FrameAnimater[]) {
+    for (const e of objs) {
       if (e instanceof Entity) {
         this.add_entities(e);
       } else {
         this.scene.remove(e.sprite);
         this.game_objs.delete(e);
       }
-    })
+    }
   }
+
   add_entities(...entities: Entity[]) {
-    entities.forEach(e => {
+    for (const e of entities) {
       this.scene.add(e.sprite);
       this.scene.add(e.shadow);
       e.show_indicators = this._show_indicators;
@@ -90,57 +85,65 @@ export class World {
         this._players.add(e);
       }
       this.entities.add(e)
-    })
+    }
   }
 
-  remove_entities(...entities: Entity[]) {
-    entities.forEach(e => {
+  del_entities(...entities: Entity[]) {
+    for (const e of entities) {
       this.scene.remove(e.sprite);
       this.scene.remove(e.shadow);
       this.entities.delete(e)
       if (e instanceof Character && e.controller instanceof PlayerController) {
         this._players.delete(e);
       }
-    })
+    }
   }
 
   private _render_request_id?: ReturnType<typeof requestAnimationFrame>;
   private _update_timer_id?: ReturnType<typeof setInterval>;
 
-  private _on_render = () => {
+  render_once() {
     if (this.disposed) return;
     this.renderer.render(this.scene, this.camera);
-    this._render_request_id = requestAnimationFrame(this._on_render)
   }
+
   start_render() {
     if (this.disposed) return;
+    const on_render = () => {
+      this.render_once()
+      this._render_request_id = requestAnimationFrame(on_render)
+    }
     this._render_request_id && cancelAnimationFrame(this._render_request_id);
-    this._render_request_id = requestAnimationFrame(this._on_render);
+    this._render_request_id = requestAnimationFrame(on_render);
   }
+
   stop_render() {
     this._render_request_id && cancelAnimationFrame(this._render_request_id);
     this._render_request_id = 0;
   }
+
   start_update() {
     if (this.disposed) return;
     if (this._update_timer_id) clearInterval(this._update_timer_id);
     const dt = Math.max((1000 / 60) / this._playrate, 1);
     this._update_timer_id = setInterval(this.update_once.bind(this), dt);
   }
+
   restrict_character(e: Character) {
     if (this.disposed) return;
     if (!this.bg) return;
     const { left, right, near, far } = this.bg.data.base;
     const { x, z } = e.position;
     if (x < left)
-      e.position.x = e.position.x = left;
+      e.position.x = left;
     else if (x > right)
-      e.position.x = e.position.x = right;
+      e.position.x = right;
     if (z < far)
-      e.position.z = e.position.z = far;
+      e.position.z = far;
     else if (z > near)
-      e.position.z = e.position.z = near;
+      e.position.z = near;
   }
+
   restrict_ball(e: Ball) {
     if (this.disposed) return;
     if (!this.bg) return;
@@ -151,10 +154,11 @@ export class World {
     else if (x > right + 800)
       e.enter_frame({ id: 'gone' })
     if (z < far)
-      e.position.z = e.position.z = far;
+      e.position.z = far;
     else if (z > near)
-      e.position.z = e.position.z = near;
+      e.position.z = near;
   }
+
   restrict(e: Entity) {
     if (e instanceof Character) {
       this.restrict_character(e);
@@ -162,25 +166,27 @@ export class World {
       this.restrict_ball(e)
     }
   }
+
   update_once() {
     if (this.disposed) return;
     if (!this.bg) return;
     for (const e of this.entities) {
       e.update();
       if (e.get_frame().id === GONE_FRAME_INFO.id)
-        this.remove_entities(e);
+        this.del_entities(e);
     }
 
     for (const e of this.game_objs) {
       e.update();
       if (e.get_frame().id === GONE_FRAME_INFO.id)
-        this.remove_game_objs(e);
+        this.del_game_objs(e);
     }
-    
+
     this.collision_detections();
     this.update_camera();
     this.bg.update();
   }
+
   private update_camera() {
     if (!this.bg) return;
     const player_count = this._players.size;
