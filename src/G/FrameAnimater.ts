@@ -79,10 +79,11 @@ export class FrameAnimater<D extends IGameObjData = IGameObjData> {
     const { x, y, z } = this.position;
     this.sprite.position.set(x, y - z / 2, z,);
   }
-  attach() {
+  attach(): this {
     this.update_sprite_position();
     this.update_sprite();
     this.world.add_game_objs(this);
+    return this;
   }
   private _previous = {
     face: (void 0) as TFace | undefined,

@@ -9,6 +9,7 @@ import { BALL_STATES } from '../state/BallState';
 
 
 export class Ball extends Entity<IBallData, IBallFrameInfo> {
+  ud = 0;
   constructor(world: World, data: IBallData) {
     super(world, data, BALL_STATES);
     this.hp = this.data.base.hp;
@@ -18,15 +19,14 @@ export class Ball extends Entity<IBallData, IBallFrameInfo> {
   }
   override handle_frame_velocity(): void {
     super.handle_frame_velocity();
-    const f = this.get_frame();
-
-    if (f.speedz || f.dvz) {
-      this.velocity.z = (f.speedz || 0) + (f.dvz || 0);
-    }
+    const { speedz = 0, dvz = 0 } = this.get_frame();
+    this.velocity.z = this.ud * speedz + dvz;
   }
 
-  override setup(shotter: Entity, o: IOpointInfo) {
-    return super.setup(shotter, o);
+  override setup(shotter: Entity, o: IOpointInfo, speed_z: number) {
+    const ret = super.setup(shotter, o);
+    this.ud = speed_z;
+    return ret;
   }
   set_frame(v: IBallFrameInfo): void {
     super.set_frame(v);

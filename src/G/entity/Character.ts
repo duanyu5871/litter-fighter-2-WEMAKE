@@ -1,4 +1,4 @@
-import { IBdyInfo, ICharacterData, IFrameInfo, IItrInfo, INextFrameFlags, TFace, TNextFrame } from '../../js_utils/lf2_type';
+import { IBdyInfo, ICharacterData, IFrameInfo, IGameObjData, IGameObjInfo, IItrInfo, INextFrameFlags, IOpointInfo, TFace, TNextFrame } from '../../js_utils/lf2_type';
 import { Defines } from '../../js_utils/lf2_type/defines';
 import { factory } from '../Factory';
 import type { World } from '../World';
@@ -7,6 +7,7 @@ import { IController } from '../controller/IController';
 import { InvalidController } from '../controller/InvalidController';
 import { create_picture_by_img_key, image_pool } from '../loader/loader';
 import { CHARACTER_STATES } from '../state/CharacterState';
+import { Ball } from './Ball';
 import { Entity, V_SHAKE } from './Entity';
 import find_direction from './find_frame_direction';
 import { different_face_flags, same_face, same_face_flags, turn_face } from './new_frame_flags';
@@ -20,8 +21,8 @@ export class Character extends Entity<ICharacterData> {
   protected _catching_value = 602;
   protected _catching?: Character;
   protected _catcher?: Character;
-  protected _name?: THREE.Sprite;
-
+  protected _name_sprite?: THREE.Sprite;
+  get name_sprite() { return this._name_sprite }
   override handle_next_frame_flags(flags: INextFrameFlags | undefined): void {
     switch (flags?.turn) {
       case 2:
@@ -52,7 +53,7 @@ export class Character extends Entity<ICharacterData> {
       return create_picture_by_img_key('', i.key)
     }).then((p) => {
       const material = new THREE.SpriteMaterial({ map: p.texture });
-      const text_sprite = this._name = new THREE.Sprite(material);
+      const text_sprite = this._name_sprite = new THREE.Sprite(material);
       text_sprite.scale.set(p.i_w, p.i_h, 1)
       text_sprite.center.set(0.5, 1.5);
       world.scene.add(text_sprite);
@@ -187,9 +188,10 @@ export class Character extends Entity<ICharacterData> {
   override update_sprite_position() {
     super.update_sprite_position();
 
-    if (this._name) {
+    if (this._name_sprite) {
       const { x, z } = this.position;
-      this._name.position.set(x, - z / 2, z)
+      this._name_sprite.position.set(x, - z / 2, z)
+      this.world.restrict(this._name_sprite);
     }
   }
 
@@ -210,6 +212,11 @@ export class Character extends Entity<ICharacterData> {
     }
   }
 
+  override spawn_object(opoint: IOpointInfo) {
+    const ret = super.spawn_object(opoint);
+    if (ret instanceof Ball) { ret.ud = this.controller.UD1; }
+    return ret;
+  }
   override on_be_collided(attacker: Entity, itr: IItrInfo, bdy: IBdyInfo, r0: ICube, r1: ICube): void {
     super.on_be_collided(attacker, itr, bdy, r0, r1);
     if (itr.kind === Defines.ItrKind.SuperPunchMe) return;

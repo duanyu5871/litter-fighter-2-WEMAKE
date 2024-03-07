@@ -68,7 +68,7 @@ export class World {
   del_game_objs(...objs: FrameAnimater[]) {
     for (const e of objs) {
       if (e instanceof Entity) {
-        this.add_entities(e);
+        this.del_entities(e);
       } else {
         this.scene.remove(e.sprite);
         this.game_objs.delete(e);
@@ -93,8 +93,12 @@ export class World {
       this.scene.remove(e.sprite);
       this.scene.remove(e.shadow);
       this.entities.delete(e)
-      if (e instanceof Character && e.controller instanceof PlayerController) {
-        this._players.delete(e);
+
+      if (e instanceof Character) {
+        if (e.controller instanceof PlayerController)
+          this._players.delete(e);
+        const ns = e.name_sprite
+        if (ns) this.scene.remove(ns)
       }
     }
   }
@@ -159,14 +163,23 @@ export class World {
       e.position.z = near;
   }
 
-  restrict(e: Entity) {
+  restrict(e: Entity | THREE.Sprite) {
     if (e instanceof Character) {
       this.restrict_character(e);
     } else if (e instanceof Ball) {
-      this.restrict_ball(e)
+      this.restrict_ball(e);
+    } else if (e instanceof THREE.Sprite) {
+      this.restrict_name_sprite(e);
     }
   }
-
+  restrict_name_sprite(e: THREE.Sprite) {
+    const { x } = e.position;
+    const hw = (e.scale.x + 10) / 2
+    const { x: cam_l } = this.camera.position;
+    const cam_r = cam_l + Defines.OLD_SCREEN_WIDTH;
+    if (x + hw > cam_r) e.position.x = cam_r - hw;
+    else if (x - hw < cam_l) e.position.x = cam_l + hw;
+  }
   update_once() {
     if (this.disposed) return;
     if (!this.bg) return;

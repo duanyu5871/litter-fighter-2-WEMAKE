@@ -1,14 +1,14 @@
 import * as THREE from 'three';
-import { Defines } from '../../js_utils/lf2_type/defines';
-import BaseState from "../state/BaseState";
-import { dat_mgr } from '../loader/DatLoader';
 import { IBallData, IBaseData, IBdyInfo, ICharacterData, IEntityData, IFrameInfo, IGameObjData, IItrInfo, IOpointInfo, IWeaponData, TFace, TNextFrame } from '../../js_utils/lf2_type';
-import { EntityIndicators } from './EntityIndicators';
+import { Defines } from '../../js_utils/lf2_type/defines';
 import { factory } from '../Factory';
 import { FrameAnimater } from '../FrameAnimater';
 import type { World } from '../World';
 import { ICube } from '../World';
+import { dat_mgr } from '../loader/DatLoader';
 import { create_picture_by_img_key } from '../loader/loader';
+import BaseState from "../state/BaseState";
+import { EntityIndicators } from './EntityIndicators';
 export type TData = IBaseData | ICharacterData | IWeaponData | IEntityData | IBallData
 export const V_SHAKE = 4;
 export const A_SHAKE = 4;
@@ -49,7 +49,7 @@ export class Entity<
     this._indicators.show = v;
   }
 
-  setup(shotter: Entity, o: IOpointInfo) {
+  setup(shotter: Entity, o: IOpointInfo, speed_z: number = 0) {
     const shotter_frame = shotter.get_frame();
     this.team = shotter.team;
     this.face = (o.facing === 1 ? -shotter.face : shotter.face) as TFace;
@@ -68,22 +68,24 @@ export class Entity<
       this.state = this.states.get(next_state) || this.states.get(Defines.State.Any);
     }
     if (v.opoint) {
-      for (const o of v.opoint) {
-        const d = dat_mgr.find(o.oid);
-        if (!d) {
-          console.warn('data not found! id:', o.oid)
-          continue;
-        }
-        const create = factory.get(d.type);
-        if (!create) {
-          console.warn('creator not found! ', d)
-          continue;
-        }
-        create?.(this.world, d).setup(this, o).attach()
+      for (const opoint of v.opoint) {
+        this.spawn_object(opoint)
       }
     }
   }
-
+  spawn_object(opoint: IOpointInfo): Entity | undefined {
+    const d = dat_mgr.find(opoint.oid);
+    if (!d) {
+      console.warn('data not found! id:', opoint.oid)
+      return;
+    }
+    const create = factory.get(d.type);
+    if (!create) {
+      console.warn('creator not found! ', d)
+      return;
+    }
+    return create(this.world, d).setup(this, opoint).attach()
+  }
   set state(v: BaseState | undefined) {
     if (this._state === v) return;
     this._state?.leave(this, this.get_frame())
@@ -152,7 +154,7 @@ export class Entity<
   handle_frame_velocity() {
     if (this._shaking || this._motionless) return;
     const { dvx, dvy, dvz } = this.get_frame();
-    if (dvx !== void 0 && dvx !== 0) {
+    if (dvx !== void 0) {
       const next_speed = this._face * dvx;
       const curr_speed = this.velocity.x;
       if (
@@ -161,8 +163,8 @@ export class Entity<
       )
         this.velocity.x = next_speed;
     };
-    if (dvy !== void 0 && dvy !== 0) this.velocity.y += -dvy;
-    if (dvz !== void 0 && dvz !== 0) this.velocity.z = dvz;
+    if (dvy !== void 0) this.velocity.y += -dvy;
+    if (dvz !== void 0) this.velocity.z = dvz;
   }
   update() {
     if (this._next_frame) {
@@ -207,6 +209,7 @@ export class Entity<
     super.update_sprite_position();
     const { x, z } = this.position;
     this.shadow.position.set(x, - z / 2, z);
+
   }
   on_before_state_update?(): void;
   on_after_state_update?(): void;

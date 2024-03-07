@@ -13,7 +13,6 @@ export function make_data_promise_resolve<T>(data: T): TDataPromise<T> {
 export function make_data_promise_reject<T>(data: T, reason: any): TDataPromise<T> {
   return Object.assign(Promise.reject(reason), { data })
 }
-
 export const texture_loader = new THREE.TextureLoader();
 export type TImageInfo = {
   key: string,
@@ -72,7 +71,6 @@ class ImagePool {
     cvs.style.width = (cvs.width = w) + 'px'
     cvs.style.height = (cvs.height = h) + 'px';
     apply_test_style();
-    console.log(ctx.lineWidth)
     for (const { x, y, t } of lines) {
       ctx.fillText(t, x, y);
       ctx.lineWidth && ctx.strokeText(t, x, y);

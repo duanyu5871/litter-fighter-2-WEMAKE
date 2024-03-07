@@ -14,10 +14,8 @@ export function make_ball_data(info: IBallInfo, frames: Record<TFrameId, IBallFr
     const hit_d = take(frame, 'hit_d');
     if (hit_a) frame.hp = hit_a / 2;
     if (hit_d) frame.on_dead = get_next_frame_by_id(hit_d);
-    if (frame.dvx) frame.dvx /= 2
-    if (frame.dvy) frame.dvy /= 2
-    if (frame.dvz) frame.dvz /= 2
     if (frame.state === 3000) {
+      frame.speedz = 2;
       if (frames[10]) frame.on_hitting = { id: 10 }
       if (frames[20]) frame.on_be_hit = { id: 20 }
       if (frames[30]) frame.on_rebounding = { id: 30 }
