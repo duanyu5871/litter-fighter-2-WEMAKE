@@ -5,11 +5,12 @@ import type { World } from '../World';
 import { ICube } from '../World';
 import { IController } from '../controller/IController';
 import { InvalidController } from '../controller/InvalidController';
+import { create_picture_by_img_key, image_pool } from '../loader/loader';
 import { CHARACTER_STATES } from '../state/CharacterState';
 import { Entity, V_SHAKE } from './Entity';
 import find_direction from './find_frame_direction';
 import { different_face_flags, same_face, same_face_flags, turn_face } from './new_frame_flags';
-
+import * as THREE from 'three';
 export class Character extends Entity<ICharacterData> {
   protected _disposers: (() => void)[] = [];
   controller: IController<Character> = new InvalidController(this);
@@ -17,8 +18,9 @@ export class Character extends Entity<ICharacterData> {
   protected _fall_value = 70;
   protected _defend_value = 60;
   protected _catching_value = 602;
-  protected _catching?: Character
-  protected _catcher?: Character
+  protected _catching?: Character;
+  protected _catcher?: Character;
+  protected _name?: THREE.Sprite;
 
   override handle_next_frame_flags(flags: INextFrameFlags | undefined): void {
     switch (flags?.turn) {
@@ -45,6 +47,16 @@ export class Character extends Entity<ICharacterData> {
   constructor(world: World, data: ICharacterData) {
     super(world, data, CHARACTER_STATES);
     this.enter_frame({ id: 'auto' });
+
+    image_pool.load_text(data.base.name, data.base.name).then((i) => {
+      return create_picture_by_img_key('', i.key)
+    }).then((p) => {
+      const material = new THREE.SpriteMaterial({ map: p.texture });
+      const text_sprite = this._name = new THREE.Sprite(material);
+      text_sprite.scale.set(p.i_w, p.i_h, 1)
+      text_sprite.center.set(0.5, 1.5);
+      world.scene.add(text_sprite);
+    })
   }
 
   override dispose() {
@@ -170,7 +182,15 @@ export class Character extends Entity<ICharacterData> {
     if (cover === 11) this._catching.position.z += 1;
     else if (cover === 10) this._catching.position.z -= 1;
     this._catching.update_sprite_position();
+  }
 
+  override update_sprite_position() {
+    super.update_sprite_position();
+
+    if (this._name) {
+      const { x, z } = this.position;
+      this._name.position.set(x, - z / 2, z)
+    }
   }
 
   override on_collision(target: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {

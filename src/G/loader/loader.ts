@@ -15,7 +15,14 @@ export function make_data_promise_reject<T>(data: T, reason: any): TDataPromise<
 }
 
 export const texture_loader = new THREE.TextureLoader();
-export type TImageInfo = { url: string; w: number; h: number; }
+export type TImageInfo = {
+  key: string,
+  url: string;
+  w: number;
+  h: number;
+  minFilter?: THREE.MinificationTextureFilter;
+  magFilter?: THREE.MagnificationTextureFilter ;
+}
 
 export type PaintFunc = (img: HTMLImageElement, cvs: HTMLCanvasElement, ctx: CanvasRenderingContext2D) => void;
 class ImagePool {
@@ -30,7 +37,7 @@ class ImagePool {
     ctx.drawImage(img, 0, 0);
   }
 
-  protected async _make_info(src: string, paint?: typeof this._paint): Promise<TImageInfo> {
+  protected async _make_info(key: string, src: string, paint?: typeof this._paint): Promise<TImageInfo> {
     const cvs = document.createElement('canvas');
     const ctx = cvs.getContext('2d', { willReadFrequently: true });
     if (!ctx) throw new Error("can not get context from canvas");
@@ -39,16 +46,60 @@ class ImagePool {
     else this._paint(img_ele, cvs, ctx);
     const blob = await get_blob(cvs);
     const url = URL.createObjectURL(blob);
-    return { url, w: img_ele.width, h: img_ele.height }
+    return { key, url, w: img_ele.width, h: img_ele.height }
   }
-
+  protected async _make_text_info(key: string, text: string): Promise<TImageInfo> {
+    const cvs = document.createElement('canvas');
+    const ctx = cvs.getContext('2d');
+    if (!ctx) throw new Error("can not get context from canvas");
+    const apply_test_style = () => {
+      ctx.font = 'normal 12px Arial, Helvetica, Sans-Serif';
+      ctx.fillStyle = 'white';
+      ctx.strokeStyle = 'black';
+      ctx.lineWidth = 0.1;
+    }
+    apply_test_style();
+    let w = 0;
+    let h = 0;
+    let lines = text.split('\n').map((line, idx, arr) => {
+      const t = idx === arr.length ? (line + '\n') : line;
+      const { width, fontBoundingBoxAscent: a, fontBoundingBoxDescent: d } = ctx.measureText(t);
+      const ret = { x: 0, y: h + a, t }
+      w = Math.max(w, width);
+      h += a + d;
+      return ret;
+    })
+    cvs.style.width = (cvs.width = w) + 'px'
+    cvs.style.height = (cvs.height = h) + 'px';
+    apply_test_style();
+    console.log(ctx.lineWidth)
+    for (const { x, y, t } of lines) {
+      ctx.fillText(t, x, y);
+      ctx.lineWidth && ctx.strokeText(t, x, y);
+    }
+    const blob = await get_blob(cvs);
+    const url = URL.createObjectURL(blob);
+    return {
+      key, url, w, h,
+      // minFilter: THREE.LinearMipmapLinearFilter,
+      // magFilter: THREE.LinearFilter
+    }
+  }
   find(key: string) {
     return this._map.get(key)
+  }
+  async load_text(text: string, key: string = text): Promise<TImageInfo> {
+    let info = this._map.get(key);
+    if (info) return info;
+    info = await this._make_text_info(key, text);
+    this._map.set(key, info);
+    return info
+
   }
   async load(key: string, src: string, paint?: PaintFunc): Promise<TImageInfo> {
     let info = this._map.get(key);
     if (info) return info;
-    info = await this._make_info(src, paint);
+    info = await this._make_info(key, src, paint);
     this._map.set(key, info);
     return info
   }
@@ -111,16 +162,16 @@ const error_texture = () => {
 export function create_picture(id: string, img_info: TImageInfo, picture: TPictureInfo): TDataPromise<TPictureInfo> {
   let ok: (_: TPictureInfo) => void;
   let bad: (_: any) => void;
-  const { url, w: i_w, h: i_h } = img_info;
+  const { url, w: i_w, h: i_h, minFilter, magFilter } = img_info;
   const on_progress = (e: ProgressEvent) => console.log(`[create_picture] loading texture, id: ${id}, progress: ${Math.floor(100 * e.loaded / e.total)}%`);
   const on_load = () => ok(picture);
   const texture = texture_loader.load(url, on_load, on_progress, e => bad(e));
   texture.colorSpace = THREE.SRGBColorSpace;
-  texture.minFilter = THREE.NearestFilter;
-  texture.magFilter = THREE.NearestFilter;
+  texture.minFilter = minFilter ?? THREE.NearestFilter;
+  texture.magFilter = magFilter ?? THREE.NearestFilter; 
   texture.wrapS = THREE.MirroredRepeatWrapping;
   picture.i_w = i_w;
-  picture.i_w = i_h;
+  picture.i_h = i_h;
   picture.texture = texture;
   const p = new Promise<TPictureInfo>((a, b) => { ok = a; bad = b; });
   return Object.assign(p, { data: picture });
@@ -135,6 +186,8 @@ export function create_picture_by_img_key(id: string, img_key: string) {
   if (!img_info) {
     return make_data_promise_reject(picture, new Error("[create_picture_by_img_key] failed, image info not found in image pool."));
   }
+  picture.cell_w = picture.i_w = img_info.w
+  picture.cell_h = picture.i_h = img_info.h
   return create_picture(id, img_info, picture);
 }
 

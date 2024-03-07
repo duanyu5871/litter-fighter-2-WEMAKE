@@ -7,8 +7,10 @@ import './G/entity/Ball';
 import { Character } from './G/entity/Character';
 import { Entity } from './G/entity/Entity';
 import { dat_mgr } from './G/loader/DatLoader';
+import { create_picture_by_img_key, image_pool } from './G/loader/loader';
 import random_get from './Utils/random_get';
 import { IBgData, ICharacterData, TFace, TFrameId } from './js_utils/lf2_type';
+import { Defines } from './js_utils/lf2_type/defines';
 let character_id = 1;
 
 export default function run(canvas: HTMLCanvasElement, on_load?: () => void) {
@@ -18,6 +20,7 @@ export default function run(canvas: HTMLCanvasElement, on_load?: () => void) {
   let _character: Character | undefined;
   dat_mgr.load().then(() => {
     if (disposed) return;
+
     on_load?.()
     const lf2: any = (window as any).lf2 = {};
     change_bg()

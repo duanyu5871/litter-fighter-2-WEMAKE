@@ -73,7 +73,6 @@ export class FrameAnimater<D extends IGameObjData = IGameObjData> {
     });
     const sprite = this.sprite = new THREE.Sprite(material);
     sprite.userData.owner = this;
-    sprite.material = material;
     sprite.renderOrder = 1;
   }
   update_sprite_position() {
