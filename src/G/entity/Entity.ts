@@ -110,11 +110,11 @@ export class Entity<
     this.shadow.renderOrder = 0
   }
 
-  velocity_decay() {
+  velocity_decay(factor: number = 1) {
     if (this.position.y > 0 || this._shaking || this._motionless) return;
     let { x, z } = this.velocity;
-    x *= this.world.friction_factor;
-    this.velocity.z = z *= this.world.friction_factor;
+    x *= this.world.friction_factor * factor;
+    this.velocity.z = z *= this.world.friction_factor * factor;
 
     if (x > 0) {
       x -= this.world.friction

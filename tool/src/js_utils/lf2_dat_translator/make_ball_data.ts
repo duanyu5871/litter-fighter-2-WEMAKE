@@ -34,6 +34,7 @@ export function make_ball_data(info: IBallInfo, frames: Record<TFrameId, IBallFr
     switch ('' + datIndex?.id) {
       case '223':
       case '224':
+        frame.speedz = 0;
         frame.no_shadow = 1;
         break;
     }

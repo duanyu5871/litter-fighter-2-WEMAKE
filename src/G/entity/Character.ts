@@ -93,7 +93,7 @@ export class Character extends Entity<ICharacterData> {
           find_direction(f, indexes.falling) ||
           find_direction(f, indexes.critical_hit) || this.face
         if (this.velocity.y <= -4) {
-          this._next_frame = ({ id: indexes.bouncing[d] });
+          this._next_frame = ({ id: indexes.bouncing[d][1] });
           return 2;
         }
         this._next_frame = ({ id: indexes.lying[d] });
@@ -118,9 +118,11 @@ export class Character extends Entity<ICharacterData> {
         this._defend_value = 60;
         break;
       default: {
-        if (this._resting > 0) { this._resting--; break; }
-        if (this._fall_value < 70) { this._fall_value += 0.5; }
-        if (this._defend_value < 60) { this._defend_value += 0.5; }
+        if (this._resting > 0) { this._resting--; }
+        else {
+          if (this._fall_value < 70) { this._fall_value += 0.5; }
+          if (this._defend_value < 60) { this._defend_value += 0.5; }
+        }
       }
     }
   }
@@ -206,6 +208,9 @@ export class Character extends Entity<ICharacterData> {
           delete this._next_frame;
           this.enter_frame({ id: itr.catchingact });
           this._catching = target;
+          this._resting = 0;
+          this._fall_value = 70;
+          this._defend_value =  50;
         }
         return;
       }
@@ -232,7 +237,6 @@ export class Character extends Entity<ICharacterData> {
         return;
       }
     }
-
     const spark_x = (Math.max(r0.left, r1.left) + Math.min(r0.right, r1.right)) / 2;
     const spark_y = (Math.min(r0.top, r1.top) + Math.max(r0.bottom, r1.bottom)) / 2;
     // const spark_z = (Math.min(r0.near, r1.near) + Math.max(r0.far, r1.far)) / 2;
@@ -246,6 +250,7 @@ export class Character extends Entity<ICharacterData> {
     /** 破防系数 */
     const bdefend = itr.bdefend || 0;
 
+    this._resting = 30
     if (this.get_frame().state === Defines.State.Defend && aface !== this.face && bdefend < 100) {
       this._defend_value -= bdefend;
       if (this._defend_value <= 0) { // 破防

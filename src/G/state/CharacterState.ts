@@ -98,6 +98,7 @@ CHARACTER_STATES.set(Defines.State.Falling, new class extends BaseCharacterState
   _directions = new Map<string | number, 1 | -1>();
   _ignore_frames = new Map<string | number, Set<TFrameId>>();
   enter(e: Character, prev_frame: IFrameInfo): void {
+    console.log('Lying Falling enter')
     super.enter(e, prev_frame);
     const { id: entity_id, velocity: { x: vx }, face } = e;
     const { id: data_id, base: { indexes: { bouncing } } } = e.data;
@@ -115,6 +116,21 @@ CHARACTER_STATES.set(Defines.State.Falling, new class extends BaseCharacterState
         ]
       ))
     }
+  }
+  begin(e: Character): void {
+    e.on_gravity();
+
+    const { data: { id: data_id } } = e;
+    const ignore_frames = this._ignore_frames.get(data_id)
+    const { id: frame_id } = e.get_frame();
+    if (ignore_frames && ignore_frames.has('' + frame_id)) {
+      e.velocity_decay(0.5);
+    } else {
+      e.velocity_decay();
+    }
+
+
+    e.handle_frame_velocity();
   }
   update(e: Character): void {
     super.update(e);
@@ -138,11 +154,25 @@ CHARACTER_STATES.set(Defines.State.Falling, new class extends BaseCharacterState
     }
   }
   leave(e: Character): void {
+    console.log('Lying Falling leave')
     const { id: entity_id } = e;
     this._directions.delete(entity_id);
   }
 })
-CHARACTER_STATES.set(Defines.State.Lying, new class extends BaseCharacterState { })
+CHARACTER_STATES.set(Defines.State.Lying, new class extends BaseCharacterState {
+
+  begin(e: Character) {
+    e.on_gravity();
+    e.velocity_decay();
+    e.handle_frame_velocity();
+  }
+  enter(e: Character, prev_frame: IFrameInfo): void {
+    console.log('Lying enter')
+  }
+  leave(e: Character, next_frame: IFrameInfo): void {
+    console.log('Lying leave')
+  }
+})
 CHARACTER_STATES.set(Defines.State.Caught, new class extends BaseState<Character>{
   enter(_e: Character): void {
     _e.velocity.set(0, 0, 0);
