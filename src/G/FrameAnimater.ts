@@ -61,7 +61,7 @@ export class FrameAnimater<D extends IGameObjData = IGameObjData> {
     this._frame = v;
   }
   get_frame() { return this._frame; }
-  get_prev_frame() { return this._frame; }
+  get_prev_frame() { return this._prev_frame; }
 
   constructor(world: World, data: D) {
     this.data = data;
