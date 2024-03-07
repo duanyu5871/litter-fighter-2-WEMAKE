@@ -5,7 +5,6 @@ import type { World } from '../World';
 import { ICube } from '../World';
 import { IController } from '../controller/IController';
 import { InvalidController } from '../controller/InvalidController';
-import { PlayerController } from '../controller/PlayerController';
 import { CHARACTER_STATES } from '../state/CharacterState';
 import { Entity, V_SHAKE } from './Entity';
 import find_direction from './find_frame_direction';
