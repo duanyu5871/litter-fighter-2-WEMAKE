@@ -142,7 +142,7 @@ export class Entity<
   _i = 0;
   protected override update_sprite() {
     super.update_sprite();
-    if (this._indicators?.show) this._indicators.update()
+    this._indicators?.update()
     if (this._shaking) {
       const wf = this._s[this._i = (this._i + 1) % 2] * 2 / this._piece.pw
       this.sprite.center.x += 4 * wf;
