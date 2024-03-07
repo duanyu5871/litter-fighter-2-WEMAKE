@@ -194,7 +194,7 @@ export class BaseController implements IController<Character> {
 
     for (let i = 0; i < k_len; ++i) {
       const k = KEY_NAME_LIST[i];
-      if (this.is_hit(k)) this.holding[k] += 0.5;
+      if (this.is_hit(k)) this.holding[k] += 0.20;
 
       if (this.releases[k] >= 2) this.releases[k] = this.holding[k] = 0
       else if (this.releases[k] > 0) this.releases[k] += 0.5;

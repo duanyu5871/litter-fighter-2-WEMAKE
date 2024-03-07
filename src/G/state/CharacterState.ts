@@ -123,7 +123,7 @@ CHARACTER_STATES.set(Defines.State.Falling, new class extends BaseCharacterState
     const { data: { id: data_id } } = e;
     const ignore_frames = this._ignore_frames.get(data_id)
     const { id: frame_id } = e.get_frame();
-    if (ignore_frames && ignore_frames.has('' + frame_id)) {
+    if (ignore_frames?.has('' + frame_id)) {
       e.velocity_decay(0.5);
     } else {
       e.velocity_decay();

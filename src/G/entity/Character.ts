@@ -1,4 +1,5 @@
-import { IBdyInfo, ICharacterData, IFrameInfo, IGameObjData, IGameObjInfo, IItrInfo, INextFrameFlags, IOpointInfo, TFace, TNextFrame } from '../../js_utils/lf2_type';
+import * as THREE from 'three';
+import { IBdyInfo, ICharacterData, IFrameInfo, IItrInfo, INextFrameFlags, IOpointInfo, TFace, TNextFrame } from '../../js_utils/lf2_type';
 import { Defines } from '../../js_utils/lf2_type/defines';
 import { factory } from '../Factory';
 import type { World } from '../World';
@@ -11,7 +12,6 @@ import { Ball } from './Ball';
 import { Entity, V_SHAKE } from './Entity';
 import find_direction from './find_frame_direction';
 import { different_face_flags, same_face, same_face_flags, turn_face } from './new_frame_flags';
-import * as THREE from 'three';
 export class Character extends Entity<ICharacterData> {
   protected _disposers: (() => void)[] = [];
   controller: IController<Character> = new InvalidController(this);
@@ -171,20 +171,27 @@ export class Character extends Entity<ICharacterData> {
 
     const { throwvx, throwvy, throwvz, x: catch_x, y: catch_y, cover } = cpoint_a;
     const { x: caught_x, y: caught_y } = cpoint_b;
+
     if (throwvx) this._catching.velocity.x = throwvx * this.face;
     if (throwvy) this._catching.velocity.y = throwvy;
     if (throwvz) this._catching.velocity.z = throwvz * this.controller.UD1;
-    if (throwvx || throwvy || throwvz) return;
+    if (throwvx || throwvy || throwvz) {
+      delete this._catching._catcher;
+      delete this._catching;
+    } else {
+      const face_a = this.face;
+      const face_b = this._catching.face;
+      const { x: px, y: py, z: pz } = this.position;
+      this._catching.position.x = px - face_a * (centerx_a - catch_x) + face_b * (centerx_b - caught_x);
+      this._catching.position.y = py + centery_a - catch_y - centery_b + caught_y;
+      this._catching.position.z = pz;
+      if (cover === 11) this._catching.position.z += 1;
+      else if (cover === 10) this._catching.position.z -= 1;
+      this._catching.update_sprite_position();
+    }
 
-    const face_a = this.face;
-    const face_b = this._catching.face;
-    const { x: px, y: py, z: pz } = this.position;
-    this._catching.position.x = px - face_a * (centerx_a - catch_x) + face_b * (centerx_b - caught_x);
-    this._catching.position.y = py + centery_a - catch_y - centery_b + caught_y;
-    this._catching.position.z = pz;
-    if (cover === 11) this._catching.position.z += 1;
-    else if (cover === 10) this._catching.position.z -= 1;
-    this._catching.update_sprite_position();
+
+
   }
 
   override update_sprite_position() {
@@ -196,31 +203,40 @@ export class Character extends Entity<ICharacterData> {
       this.world.restrict(this._name_sprite);
     }
   }
-
+  private catch_test(target: Entity) {
+    return (this.velocity.x > 0 && target.position.x > this.position.x) ||
+      (this.velocity.x < 0 && target.position.x < this.position.x)
+  }
+  private start_catch(target: Entity, itr: IItrInfo) {
+    if (!(target instanceof Character)) return;
+    if (itr.catchingact === void 0) return;
+    this._catching_value = 602;
+    delete this._next_frame;
+    this.enter_frame({ id: itr.catchingact });
+    this._catching = target;
+    this._resting = 0;
+    this._fall_value = 70;
+    this._defend_value = 50;
+  }
+  private start_caught(attacker: Entity, itr: IItrInfo) {
+    if (!(attacker instanceof Character)) return;
+    if (itr.caughtact === void 0) return;
+    this._catcher = attacker;
+    this.enter_frame({ id: itr.caughtact, flags: same_face_flags(attacker, this) })
+    delete this._next_frame;
+  }
   override on_collision(target: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
     super.on_collision(target, itr, bdy, a_cube, b_cube);
-
     switch (itr.kind) {
       case Defines.ItrKind.Catch:
+        if (this.catch_test(target))
+          this.start_catch(target, itr);
+        break;
       case Defines.ItrKind.ForceCatch: {
-        if (target instanceof Character && itr.catchingact !== void 0) {
-          this._catching_value = 602;
-          delete this._next_frame;
-          this.enter_frame({ id: itr.catchingact });
-          this._catching = target;
-          this._resting = 0;
-          this._fall_value = 70;
-          this._defend_value =  50;
-        }
-        return;
+        this.start_catch(target, itr);
+        break;
       }
     }
-  }
-
-  override spawn_object(opoint: IOpointInfo) {
-    const ret = super.spawn_object(opoint);
-    if (ret instanceof Ball) { ret.ud = this.controller.UD1; }
-    return ret;
   }
   override on_be_collided(attacker: Entity, itr: IItrInfo, bdy: IBdyInfo, r0: ICube, r1: ICube): void {
     super.on_be_collided(attacker, itr, bdy, r0, r1);
@@ -228,12 +244,11 @@ export class Character extends Entity<ICharacterData> {
 
     switch (itr.kind) {
       case Defines.ItrKind.Catch:
+        if (attacker instanceof Character && attacker.catch_test(this))
+          this.start_caught(attacker, itr)
+        return;
       case Defines.ItrKind.ForceCatch: {
-        if (attacker instanceof Character && itr.caughtact !== void 0) {
-          this._catcher = attacker;
-          this.enter_frame({ id: itr.caughtact, flags: same_face_flags(attacker, this) })
-          delete this._next_frame;
-        }
+        this.start_caught(attacker, itr)
         return;
       }
     }
@@ -336,6 +351,12 @@ export class Character extends Entity<ICharacterData> {
     /* 击中 */
     this.enter_frame({ id: indexes.grand_injured[same_face(this, attacker)][0] })
     this._next_frame = void 0;
+  }
+
+  override spawn_object(opoint: IOpointInfo) {
+    const ret = super.spawn_object(opoint);
+    if (ret instanceof Ball) { ret.ud = this.controller.UD1; }
+    return ret;
   }
 }
 

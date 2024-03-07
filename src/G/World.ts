@@ -273,7 +273,7 @@ export class World {
           (a.team === b.team && !itr.friendly_fire && !bdy.friendly_fire)
         ) continue;
 
-        if (!itr.vrest && a.a_rest) { Log.print(af.name, 0); continue; }
+        if (!itr.vrest && a.a_rest) { Log.print(af.name, 'a.a_rest = ', a.a_rest); continue; }
         if (itr.vrest && b.v_rests.has(a.id)) { Log.print(af.name, 1, b.v_rests.get(a.id)?.remain); continue; }
         if ((!itr.fall || itr.fall < 60) && b.get_frame().state === Defines.State.Falling) {
           Log.print(af.name, 2); continue;

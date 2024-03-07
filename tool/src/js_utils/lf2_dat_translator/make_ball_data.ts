@@ -9,7 +9,7 @@ export function make_ball_data(info: IBallInfo, frames: Record<TFrameId, IBallFr
 
   for (const [, frame] of traversal(frames)) {
     const hit_j = take(frame, 'hit_j');
-    if (hit_j !== 0) frame.speedz = to_num(hit_j, 50) - 50;
+    if (hit_j !== 0) frame.dvz = to_num(hit_j, 50) - 50;
 
     const hit_a = take(frame, 'hit_a');
     const hit_d = take(frame, 'hit_d');

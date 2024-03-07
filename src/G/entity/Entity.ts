@@ -11,7 +11,7 @@ import BaseState from "../state/BaseState";
 import { EntityIndicators } from './EntityIndicators';
 export type TData = IBaseData | ICharacterData | IWeaponData | IEntityData | IBallData
 export const V_SHAKE = 4;
-export const A_SHAKE = 4;
+export const A_SHAKE = 6;
 let __team__ = 4;
 export class Entity<
   D extends IGameObjData = IGameObjData,
@@ -58,6 +58,7 @@ export class Entity<
     x = x - shotter.face * (shotter_frame.centerx - o.x);
     this.position.set(x, y, z);
     this.enter_frame(o.action ?? 0);
+    console.log(this.get_frame())
     return this;
   }
   override set_frame(v: F) {
@@ -219,18 +220,23 @@ export class Entity<
 
 
   on_collision(target: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
-    if (itr.arest) this.a_rest = itr.arest;
-    else if (!itr.vrest) this.a_rest = this.wait + A_SHAKE + 2;
-    this._motionless = itr.motionless ?? A_SHAKE;
+    this._motionless = itr.motionless ?? 4;
+    if (itr.arest) {
+      this.a_rest = itr.arest;
+      Log.print('on_collision', '1, this.a_rest =', this.a_rest)
+    } else if (!itr.vrest) {
+      this.a_rest = this.wait + A_SHAKE + this._motionless;
+      Log.print('on_collision', '2, this.a_rest =', this.a_rest)
+    }
   }
   on_be_collided(attacker: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
+    this._shaking = itr.shaking ?? V_SHAKE;
     if (!itr.arest && itr.vrest) this.v_rests.set(attacker.id, {
-      remain: itr.vrest,
+      remain: itr.vrest - this._shaking,
       itr, bdy, attacker, a_cube, b_cube,
       a_frame: attacker.get_frame(),
       b_frame: this.get_frame()
     });
-    this._shaking = itr.shaking ?? V_SHAKE;
   }
   dispose(): void { }
 }
