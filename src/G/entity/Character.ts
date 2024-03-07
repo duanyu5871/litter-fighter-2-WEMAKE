@@ -1,10 +1,11 @@
-import { IBdyInfo, ICharacterData, IFrameInfo, IItrInfo, INextFrameFlags, TFace } from '../../js_utils/lf2_type';
+import { IBdyInfo, ICharacterData, IFrameInfo, IItrInfo, INextFrameFlags, TFace, TNextFrame } from '../../js_utils/lf2_type';
 import { Defines } from '../../js_utils/lf2_type/defines';
 import { factory } from '../Factory';
 import type { World } from '../World';
 import { ICube } from '../World';
 import { IController } from '../controller/IController';
 import { InvalidController } from '../controller/InvalidController';
+import { PlayerController } from '../controller/PlayerController';
 import { CHARACTER_STATES } from '../state/CharacterState';
 import { Entity, V_SHAKE } from './Entity';
 import find_direction from './find_frame_direction';
@@ -16,6 +17,7 @@ export class Character extends Entity<ICharacterData> {
   protected _resting = 0;
   protected _fall_value = 70;
   protected _defend_value = 60;
+  protected _catching_value = 602;
   protected _catching?: Character
   protected _catcher?: Character
 
@@ -96,18 +98,8 @@ export class Character extends Entity<ICharacterData> {
     }
   }
   override on_after_update() {
-    const { state, cpoint } = this.get_frame();
-    if (cpoint && cpoint.kind === Defines.CPointKind.Attacker) {
-      Log.print('App', cpoint);
-    }
+    const { state } = this.get_frame();
     switch (state) {
-      case Defines.State.Defend:
-      case Defines.State.Injured:
-        this._resting = 10;
-        break;
-      case Defines.State.Tired:
-        this._resting = 0;
-        break;
       case Defines.State.Falling:
         this._resting = 0;
         this._fall_value = 70;
@@ -115,14 +107,15 @@ export class Character extends Entity<ICharacterData> {
         break;
       default: {
         if (this._resting > 0) { this._resting--; break; }
-        if (this._fall_value < 70) { this._fall_value += 1; }
-        if (this._defend_value < 60) { this._defend_value += 1; }
+        if (this._fall_value < 70) { this._fall_value += 0.5; }
+        if (this._defend_value < 60) { this._defend_value += 0.5; }
       }
     }
   }
   override on_after_state_update(): void {
-    this.update_catching();
-    this._next_frame = this.controller.update();
+    const nf_1 = this.controller.update();
+    const nf_0 = this.update_catching();
+    this._next_frame = nf_1 || nf_0;
   }
   override handle_frame_velocity() {
     super.handle_frame_velocity();
@@ -131,18 +124,26 @@ export class Character extends Entity<ICharacterData> {
     if (dvz !== void 0 && dvz !== 0) this.velocity.z = UD1 * dvz;
   }
 
-  update_catching(): void {
+  update_catching(): TNextFrame | undefined {
     if (!this._catching) return;
     const { cpoint: cpoint_a, pic, centerx: centerx_a, centery: centery_a } = this.get_frame();
     if (typeof pic === 'number') return;
 
     const { cpoint: cpoint_b, centerx: centerx_b, centery: centery_b } = this._catching.get_frame();
-    if (!cpoint_a || !cpoint_b) {
+    if (!cpoint_a || !cpoint_b) return;
+
+    if (cpoint_a.decrease < 0) {
+      this._catching_value += cpoint_a.decrease;
+      if (this._catching_value < 0) this._catching_value = 0;
+    }
+    if (!this._catching_value) {
+      this._catching._next_frame = { id: this._catching.data.base.indexes.falling[-1] }
+      this._catching.velocity.y = 3;
+      this._catching.velocity.x = this.face * 2;
       delete this._catching._catcher;
       delete this._catching;
-      return;
+      return { id: 'auto' };
     }
-
     if (cpoint_a.vaction) {
       this._catching.enter_frame(cpoint_a.vaction);
     }
@@ -152,13 +153,13 @@ export class Character extends Entity<ICharacterData> {
     if (cpoint_a.shaking) {
       this._catching._shaking = V_SHAKE;
     }
+
+
     const { throwvx, throwvy, throwvz, x: catch_x, y: catch_y, cover } = cpoint_a;
     const { x: caught_x, y: caught_y } = cpoint_b;
-
     if (throwvx) this._catching.velocity.x = throwvx * this.face;
     if (throwvy) this._catching.velocity.y = throwvy;
     if (throwvz) this._catching.velocity.z = throwvz * this.controller.UD1;
-
     if (throwvx || throwvy || throwvz) return;
 
     const face_a = this.face;
@@ -167,11 +168,10 @@ export class Character extends Entity<ICharacterData> {
     this._catching.position.x = px - face_a * (centerx_a - catch_x) + face_b * (centerx_b - caught_x);
     this._catching.position.y = py + centery_a - catch_y - centery_b + caught_y;
     this._catching.position.z = pz;
-
     if (cover === 11) this._catching.position.z += 1;
     else if (cover === 10) this._catching.position.z -= 1;
     this._catching.update_sprite_position();
-    Log.print('Charactor', 'update_catching(),', cpoint_a);
+
   }
 
   override on_collision(target: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
@@ -181,6 +181,7 @@ export class Character extends Entity<ICharacterData> {
       case Defines.ItrKind.Catch:
       case Defines.ItrKind.ForceCatch: {
         if (target instanceof Character && itr.catchingact !== void 0) {
+          this._catching_value = 602;
           delete this._next_frame;
           this.enter_frame({ id: itr.catchingact });
           this._catching = target;
@@ -206,7 +207,6 @@ export class Character extends Entity<ICharacterData> {
       }
     }
 
-    Log.print('App', "on_be_collided, itr:", itr, bdy, this.get_frame());
     const spark_x = (Math.max(r0.left, r1.left) + Math.min(r0.right, r1.right)) / 2;
     const spark_y = (Math.min(r0.top, r1.top) + Math.max(r0.bottom, r1.bottom)) / 2;
     // const spark_z = (Math.min(r0.near, r1.near) + Math.max(r0.far, r1.far)) / 2;
