@@ -9,10 +9,38 @@ interface ILayerUserData {
   x: number;
   y: number;
   z: number;
-  layer: IBgLayerInfo;
+  info: IBgLayerInfo;
   inner_w?: number;
   inner_h?: number;
-  owner: Background;
+  owner: BgLayer;
+}
+export class BgLayer {
+  private _obj_3d: THREE.Object3D;
+  get obj_3d() { return this._obj_3d; }
+
+  private _show_indicators = false
+  get show_indicators() { return this._show_indicators; }
+  set show_indicators(v: boolean) { this._show_indicators = v; }
+
+  constructor(info: IBgLayerInfo, x: number, y: number, z: number, texture?: THREE.Texture) {
+    const geo = new THREE.PlaneGeometry(1, 1).translate(0.5, -0.5, 0);
+    const material = new THREE.MeshBasicMaterial(
+      texture ? { map: texture, transparent: true } : { color: info.color }
+    );
+    const layer = this._obj_3d = new THREE.Mesh(geo, material);
+    const { width, height } = texture ? texture.image : info;
+    if (texture) layer.scale.set(width, height, 1)
+    else layer.scale.set(width, height, 1);
+    layer.position.set(x, y, z);
+    const user_data: ILayerUserData = {
+      x, y, z,
+      info,
+      inner_w: width,
+      inner_h: height,
+      owner: this
+    }
+    layer.userData = user_data;
+  }
 }
 
 export class Background {
@@ -38,6 +66,7 @@ export class Background {
     this._world = world;
 
     const node = this._obj_3d = new THREE.Object3D();
+    node.visible = false
     this._obj_3d.position.z = -2 * Defines.OLD_SCREEN_HEIGHT;
     world.scene.add(node);
 
@@ -58,35 +87,20 @@ export class Background {
     );
   }
 
-  private add_layer(info: IBgLayerInfo, z: number, t?: THREE.Texture) {
+  private add_layer(info: IBgLayerInfo, z: number, texture?: THREE.Texture) {
     const data = this.data;
     const node = this._obj_3d
     let count = 0;
     do {
-      let { x, y, loop } = info;
-      if (loop) x += count * loop;
-      const geo = new THREE.PlaneGeometry(1, 1);
-      geo.translate(0.5, -0.5, 0);
-      const material = new THREE.MeshBasicMaterial(
-        t ? { map: t, transparent: true } : { color: info.color }
-      );
-      const layer = new THREE.Mesh(geo, material);
-      if (t) layer.scale.set(t.image.width, t.image.height, 1)
-      else layer.scale.set(info.width, info.height, 1);
-      layer.position.x = x;
-      layer.position.y = Defines.OLD_SCREEN_HEIGHT - y;
-      layer.position.z = z - 2 * (data.base.near - data.base.far);
-      const user_data: ILayerUserData = {
-        x: layer.position.x,
-        y: layer.position.y,
-        z: layer.position.z,
-        layer: info,
-        inner_w: t?.image.width ?? info.width,
-        inner_h: t?.image.height ?? info.width,
-        owner: this
-      }
-      layer.userData = user_data;
-      node.add(layer);
+      let { x, y, loop = 0 } = info;
+      const layer = new BgLayer(
+        info,
+        x + count * loop,
+        Defines.OLD_SCREEN_HEIGHT - y,
+        z - data.layers.length,
+        texture
+      )
+      node.add(layer.obj_3d);
       ++count;
       if (x > data.base.right - data.base.left) break;
     } while (info.loop);
@@ -113,21 +127,25 @@ export class Background {
   }
 
   private _q = new THREE.Quaternion()
-  private _count = 0;
+  private _update_times = 0;
   update() {
-    this._count++;
+    this._update_times++;
     const { camera } = this._world;
     for (const child of this._obj_3d.children) {
       const user_data = child.userData as ILayerUserData;
-      const { inner_w: img_w, inner_h: img_h, layer: { width, c1, c2, cc }, x } = user_data;
+      const { inner_w: img_w, inner_h: img_h, info: { width, c1, c2, cc, absolute }, x } = user_data;
       if (cc !== void 0 && c1 !== void 0 && c2 !== void 0) {
-        const now = this._count % cc;
+        const now = this._update_times % cc;
         child.visible = now >= c1 && now <= c2;
       }
       if (!img_w || !img_h) continue;
       const bg_width = this.data.base.right - this.data.base.left;
       if (bg_width <= Defines.OLD_SCREEN_WIDTH) continue;
-      child.position.x = x + (bg_width - width) * camera.position.x / (bg_width - Defines.OLD_SCREEN_WIDTH);
+
+      if (absolute)
+        child.position.x = x + camera.position.x;
+      else
+        child.position.x = x + (bg_width - width) * camera.position.x / (bg_width - Defines.OLD_SCREEN_WIDTH);
 
     }
     camera.getWorldQuaternion(this._q)

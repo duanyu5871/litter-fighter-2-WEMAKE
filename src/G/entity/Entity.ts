@@ -9,7 +9,6 @@ import { FrameAnimater } from '../FrameAnimater';
 import type { World } from '../World';
 import { ICube } from '../World';
 import { create_picture_by_img_key } from '../loader/loader';
-
 export type TData = IBaseData | ICharacterData | IWeaponData | IEntityData | IBallData
 export const V_SHAKE = 4;
 export const A_SHAKE = 4;

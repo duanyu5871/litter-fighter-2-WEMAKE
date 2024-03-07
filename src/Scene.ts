@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { Background } from './G/Background';
+import { Background, BgLayer } from './G/Background';
 import { World } from './G/World';
 import { PlayerController } from "./G/controller/PlayerController";
 import { TestController } from './G/controller/TestController';
@@ -155,25 +155,28 @@ export default function run(canvas: HTMLCanvasElement, on_load?: () => void) {
     const old = intersection;
     if (old) {
       const o = old.object;
-      if (o instanceof THREE.Mesh)
+      if (o.userData.owner instanceof BgLayer)
+        o.userData.owner.show_indicators = false;
+      else if (o.userData.owner instanceof Entity)
+        o.userData.owner.show_indicators = false;
+      else if (o instanceof THREE.Mesh)
         o.material.color.set(0xffffff)
       else if (o instanceof THREE.Sprite)
         o.material.color.set(0xffffff)
-      if (o.userData.owner instanceof Entity)
-        o.userData.owner.show_indicators = false;
     }
     intersection = next;
 
     if (!next) return;
     const o = next.object;
-    if (o instanceof THREE.Mesh)
+
+    if (o.userData.owner instanceof BgLayer)
+      o.userData.owner.show_indicators = true;
+    else if (o.userData.owner instanceof Entity)
+      o.userData.owner.show_indicators = true;
+    else if (o instanceof THREE.Mesh)
       o.material.color.set(0xff0000)
     else if (o instanceof THREE.Sprite)
       o.material.color.set(0xff0000)
-
-    if (o.userData.owner instanceof Entity)
-      o.userData.owner.show_indicators = true;
-
   }
 
   const on_pointer_down = (e: PointerEvent) => {
