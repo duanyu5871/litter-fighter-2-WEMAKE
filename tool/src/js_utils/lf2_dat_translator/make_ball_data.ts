@@ -1,4 +1,5 @@
 import { IBallData, IBallFrameInfo, IBallInfo, IDatIndex, TFrameId } from "../lf2_type";
+import { Defines } from "../lf2_type/defines";
 import { to_num } from "../to_num";
 import { traversal } from "../traversal";
 import { get_next_frame_by_id } from "./get_the_next";
@@ -14,14 +15,17 @@ export function make_ball_data(info: IBallInfo, frames: Record<TFrameId, IBallFr
     const hit_d = take(frame, 'hit_d');
     if (hit_a) frame.hp = hit_a / 2;
     if (hit_d) frame.on_dead = get_next_frame_by_id(hit_d);
-    if (frame.state === 3000) {
+    if (frame.state === Defines.State.NormalBall) {
       frame.speedz = 2;
       if (frames[10]) frame.on_hitting = { id: 10 }
       if (frames[20]) frame.on_be_hit = { id: 20 }
       if (frames[30]) frame.on_rebounding = { id: 30 }
       if (frames[40]) frame.on_disappearing = { id: 40 }
-    } else if (frame.state === 3005) {
+    } else if (frame.state === Defines.State.SturdyBall) {
+      frame.speedz = 0;
       frame.no_shadow = 1;
+    } else if (frame.state === Defines.State.PunchThroughBall) {
+      frame.speedz = 2;
     } else if (frame.state === 18) {
       if (frame.itr && Number(datIndex?.id) === 229) {
         // julian ball 2 explosion
