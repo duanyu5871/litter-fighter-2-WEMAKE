@@ -48,6 +48,7 @@ export class Background {
   private _obj_3d: THREE.Object3D;
   private _world: World;
   private _z_order = 0
+  private _layers: BgLayer[] = [];
   get left() { return this.data.base.left; }
   get right() { return this.data.base.right; }
   get near() { return this.data.base.near; }
@@ -88,17 +89,15 @@ export class Background {
   private add_layer(info: IBgLayerInfo, z: number, texture?: THREE.Texture) {
     const data = this.data;
     const node = this._obj_3d
-    let count = 0;
+    let { x, y, loop = 0 } = info;
+    z = z - data.layers.length;
+    y = Defines.OLD_SCREEN_HEIGHT - y;
     do {
-      let { x, y, loop = 0 } = info;
-      x = x + count * loop;
-      y = Defines.OLD_SCREEN_HEIGHT - y;
-      z = z - data.layers.length;
       const layer = new BgLayer(info, x, y, z, texture)
       node.add(layer.obj_3d);
-      ++count;
-      if (x > data.base.right - data.base.left) break;
-    } while (info.loop);
+      this._layers.push(layer)
+      x += loop;
+    } while (loop > 0 && x < data.base.right - data.base.left);
   }
 
   private get_texture(p: any) {
