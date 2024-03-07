@@ -53,18 +53,26 @@ export function make_bg_data(full_str: string, datIndex?: IDatIndex): IBgData | 
     base: fields,
     layers: []
   };
-  for (const block_str of take_blocks(full_str, 'layer:', 'layer_end', v => full_str = v)) {
+  const blocks = take_blocks(full_str, 'layer:', 'layer_end', v => full_str = v);
+  for (const block_str of blocks) {
     const [file, remains] = block_str.trim().split(/\n|\r/g).filter(v => v).map(v => v.trim());
     const fields: any = {};
     for (const [key, value] of match_colon_value(remains)) {
       fields[key] = to_num(value);
     }
     take(fields, 'transparency')
+    const y = take(fields, 'y')
     const cc = take(fields, 'cc');
     const c1 = take(fields, 'c1');
     const c2 = take(fields, 'c2');
     const color = take(fields, 'rect')
-    const layer: IBgLayerInfo = { file, ...fields };
+    const layer: IBgLayerInfo = {
+      ...fields,
+      file,
+      y: Defines.OLD_SCREEN_HEIGHT - y,
+      z: ret.layers.length - blocks.length,
+    };
+
     if (color) {
       layer.absolute = 1;
       layer.color = bg_color_translate(color);

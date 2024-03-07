@@ -7,6 +7,7 @@ export interface IBgLayerInfo {
   height: number;
   x: number;
   y: number;
+  z: number;
   loop?: number;
   cc?: number;
   c1?: number;

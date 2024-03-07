@@ -47,7 +47,6 @@ export class Background {
   private _disposers: (() => void)[] = [];
   private _obj_3d: THREE.Object3D;
   private _world: World;
-  private _z_order = 0
   private _layers: BgLayer[] = [];
   get left() { return this.data.base.left; }
   get right() { return this.data.base.right; }
@@ -67,53 +66,41 @@ export class Background {
 
     const node = this._obj_3d = new THREE.Object3D();
     this._obj_3d.position.z = -2 * Defines.OLD_SCREEN_HEIGHT;
-    world.scene.add(node);
 
     for (const info of data.layers) {
-      const z = this._z_order;
-      if ('color' in info) this.add_layer(info, z);
+      if ('color' in info) this.add_layer(info);
       let path: any;
       if (!info.file) continue;
       if (!path) try { path = require('./' + info.file.replace(/.bmp$/g, '.png')); } catch (e) { }
       if (!path) try { path = require('./' + info.file + '.png'); } catch (e) { }
       if (!path) try { path = require('./' + info.file); } catch (e) { }
       if (!path) { continue; }
-      this.get_texture(path).then(t => this.add_layer(info, z, t))
-      this._z_order += 1
+      this.get_texture(path).then(t => this.add_layer(info, t))
     }
     this._disposers.push(
       () => world.scene.remove(node)
     );
+    world.scene.add(node);
   }
 
-  private add_layer(info: IBgLayerInfo, z: number, texture?: THREE.Texture) {
-    const data = this.data;
-    const node = this._obj_3d
-    let { x, y, loop = 0 } = info;
-    z = z - data.layers.length;
-    y = Defines.OLD_SCREEN_HEIGHT - y;
+  private add_layer(info: IBgLayerInfo, texture?: THREE.Texture) {
+    let { x, y, z, loop = 0 } = info;
     do {
       const layer = new BgLayer(info, x, y, z, texture)
-      node.add(layer.obj_3d);
+      this._obj_3d.add(layer.obj_3d);
       this._layers.push(layer)
       x += loop;
-    } while (loop > 0 && x < data.base.right - data.base.left);
+    } while (loop > 0 && x < this.width);
   }
 
   private get_texture(p: any) {
-    let _resolve = (data: THREE.Texture) => { }
-    let _reject = (err: unknown) => { }
-    const _on_load = (data: THREE.Texture) => { _resolve(data) }
-    const _on_error = (err: unknown) => { _reject(err) }
-    const texture = texture_loader.load(p, _on_load, void 0, _on_error);
-    texture.wrapS = THREE.RepeatWrapping;
-    texture.wrapT = THREE.RepeatWrapping;
-    texture.magFilter = THREE.NearestFilter;
-    texture.colorSpace = THREE.SRGBColorSpace;
-    const ret: Promise<THREE.Texture> & { texture?: THREE.Texture } =
-      new Promise((a, b) => { _resolve = a; _reject = b; });
-    ret.texture = texture
-    return ret
+    return new Promise<THREE.Texture>((resolve, reject) => {
+      const texture = texture_loader.load(p, resolve, void 0, reject);
+      texture.wrapS = THREE.RepeatWrapping;
+      texture.wrapT = THREE.RepeatWrapping;
+      texture.magFilter = THREE.NearestFilter;
+      texture.colorSpace = THREE.SRGBColorSpace;
+    })
   }
 
   dispose() {
