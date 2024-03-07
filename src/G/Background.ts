@@ -114,15 +114,15 @@ export class Background {
     const { camera } = this._world;
     for (const child of this._obj_3d.children) {
       const user_data = child.userData as ILayerUserData;
-      const { inner_w: img_w, inner_h: img_h, info: { width, c1, c2, cc, absolute }, x } = user_data;
+      const { inner_w, inner_h, info: { width, c1, c2, cc, absolute }, x } = user_data;
       if (cc !== void 0 && c1 !== void 0 && c2 !== void 0) {
         const now = this._update_times % cc;
         child.visible = now >= c1 && now <= c2;
       }
-      if (!img_w || !img_h) continue;
-      const bg_width = this.data.base.right - this.data.base.left;
-      if (bg_width <= Defines.OLD_SCREEN_WIDTH) continue;
-
+      if (!inner_w || !inner_h) continue;
+      const bg_width = this.width;
+      if (bg_width <= Defines.OLD_SCREEN_WIDTH)
+        continue;
       if (absolute)
         child.position.x = x + camera.position.x;
       else
