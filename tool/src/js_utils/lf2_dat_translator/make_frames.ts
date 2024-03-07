@@ -20,7 +20,7 @@ export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string): Re
       const vrest = take(itr, 'vrest')
       const arest = take(itr, 'arest')
       if (typeof vrest === 'number') { itr.vrest = Math.max(1, 2 * (vrest - 1)); }
-      if (typeof arest === 'number') { itr.arest = Math.max(1, 2 * (arest - 1)); }
+      if (typeof arest === 'number') { itr.arest = Math.max(1, 2 * arest); }
       if (typeof itr.dvx === 'number') itr.dvx *= 0.52;
       if (typeof itr.dvz === 'number') itr.dvz *= 0.52;
       if (typeof itr.dvy === 'number') itr.dvy *= -0.52;
