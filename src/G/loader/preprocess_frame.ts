@@ -67,7 +67,9 @@ export const cook_frame = (data: IGameObjData, frame: IFrameInfo) => {
   const { pw: cell_w, ph: cell_h } = f_i_1;
   frame.bdy?.forEach(bdy => {
     const face_1 = {
-      tex: 0, pw: 0, ph: 0,
+      tex: 0,
+      pw: cell_w,
+      ph: cell_h,
       cx: 0, cy: 0,
       w: bdy.w / cell_w,
       h: bdy.h / cell_h,
@@ -75,14 +77,17 @@ export const cook_frame = (data: IGameObjData, frame: IFrameInfo) => {
       y: 1 - (bdy.y + bdy.h) / cell_h,
     };
     const face_2 = {
-      ...face_1, cx: 1, x: -face_1.x,
+      ...face_1,
+      x: -bdy.x / cell_w + f_i_1.cx - face_1.w,
     };
     bdy.indicator_info = { 1: face_1, [-1]: face_2 };
   });
 
   frame.itr?.forEach(itr => {
     const face_1 = {
-      tex: 0, pw: 0, ph: 0,
+      tex: 0,
+      pw: cell_w,
+      ph: cell_h,
       cx: 0, cy: 0,
       w: itr.w / cell_w,
       h: itr.h / cell_h,
@@ -90,8 +95,8 @@ export const cook_frame = (data: IGameObjData, frame: IFrameInfo) => {
       y: 1 - (itr.y + itr.h) / cell_h,
     };
     const face_2 = {
-      ...face_1, cx: 1,
-      x: -itr.x / cell_w + f_i_1.cx,
+      ...face_1,
+      x: -itr.x / cell_w + f_i_1.cx - face_1.w,
     };
     itr.indicator_info = { 1: face_1, [-1]: face_2 };
   });
