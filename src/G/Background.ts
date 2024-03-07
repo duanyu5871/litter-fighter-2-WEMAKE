@@ -113,15 +113,22 @@ export class Background {
   }
 
   private _q = new THREE.Quaternion()
+  private _count = 0;
   update() {
+    this._count++;
     const { camera } = this._world;
     for (const child of this._obj_3d.children) {
       const user_data = child.userData as ILayerUserData;
-      const { inner_w: img_w, inner_h: img_h, layer: { width }, x } = user_data;
+      const { inner_w: img_w, inner_h: img_h, layer: { width, c1, c2, cc }, x } = user_data;
+      if (cc !== void 0 && c1 !== void 0 && c2 !== void 0) {
+        const now = this._count % cc;
+        child.visible = now >= c1 && now <= c2;
+      }
       if (!img_w || !img_h) continue;
       const bg_width = this.data.base.right - this.data.base.left;
       if (bg_width <= Defines.OLD_SCREEN_WIDTH) continue;
       child.position.x = x + (bg_width - width) * camera.position.x / (bg_width - Defines.OLD_SCREEN_WIDTH);
+
     }
     camera.getWorldQuaternion(this._q)
     this._obj_3d.rotation.setFromQuaternion(this._q);

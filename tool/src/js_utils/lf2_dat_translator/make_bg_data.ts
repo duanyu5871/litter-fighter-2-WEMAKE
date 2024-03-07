@@ -47,27 +47,43 @@ export function make_bg_data(full_str: string, datIndex?: IDatIndex): IBgData | 
   fields.right = width;
   fields.far = 2 * (a - Defines.OLD_SCREEN_HEIGHT);
   fields.near = 2 * (b - Defines.OLD_SCREEN_HEIGHT);
+
+
+
   const ret: IBgData = {
     type: 'background',
     id: datIndex?.id ?? fields.name,
     base: fields,
     layers: []
   };
+
+
+
   for (const block_str of take_blocks(full_str, 'layer:', 'layer_end', v => full_str = v)) {
     const [file, remains] = block_str.trim().split(/\n|\r/g).filter(v => v).map(v => v.trim());
     const fields: any = {};
     for (const [key, value] of match_colon_value(remains)) {
       fields[key] = to_num(value);
     }
+    const cc = take(fields, 'cc');
+    const c1 = take(fields, 'c1');
+    const c2 = take(fields, 'c2');
     const color = take(fields, 'rect')
     const layer: IBgLayerInfo = { file, ...fields };
-
     if (color) {
       layer.color = bg_color_translate(color);
       layer.absolute = 1;
       delete layer.file;
     }
-
+    if (
+      typeof cc === 'number' &&
+      typeof c1 === 'number' &&
+      typeof c2 === 'number'
+    ) {
+      layer.cc = cc * 2;
+      layer.c1 = c1 * 2;
+      layer.c2 = c2 * 2 + 1;
+    }
     ret.layers.push(layer);
   }
   return ret;
