@@ -29,8 +29,7 @@ export class BgLayer {
     );
     const layer = this._obj_3d = new THREE.Mesh(geo, material);
     const { width, height } = texture ? texture.image : info;
-    if (texture) layer.scale.set(width, height, 1)
-    else layer.scale.set(width, height, 1);
+    layer.scale.set(width, height, 1);
     layer.position.set(x, y, z);
     const user_data: ILayerUserData = {
       x, y, z,
@@ -66,7 +65,6 @@ export class Background {
     this._world = world;
 
     const node = this._obj_3d = new THREE.Object3D();
-    node.visible = false
     this._obj_3d.position.z = -2 * Defines.OLD_SCREEN_HEIGHT;
     world.scene.add(node);
 
@@ -93,13 +91,10 @@ export class Background {
     let count = 0;
     do {
       let { x, y, loop = 0 } = info;
-      const layer = new BgLayer(
-        info,
-        x + count * loop,
-        Defines.OLD_SCREEN_HEIGHT - y,
-        z - data.layers.length,
-        texture
-      )
+      x = x + count * loop;
+      y = Defines.OLD_SCREEN_HEIGHT - y;
+      z = z - data.layers.length;
+      const layer = new BgLayer(info, x, y, z, texture)
       node.add(layer.obj_3d);
       ++count;
       if (x > data.base.right - data.base.left) break;
