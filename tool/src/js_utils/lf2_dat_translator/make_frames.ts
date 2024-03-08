@@ -1,5 +1,5 @@
 import { delete_val_equal_keys } from '../delete_val_equal_keys';
-import { IFrameInfo, IItrInfo, TFrameId } from '../lf2_type';
+import { IFrameInfo, IItrInfo } from '../lf2_type';
 import { Defines } from '../lf2_type/defines';
 import { match_all } from '../match_all';
 import { match_colon_value } from '../match_colon_value';
@@ -8,8 +8,8 @@ import { get_next_frame_by_id } from './get_the_next';
 import { take } from './take';
 import take_sections from './take_sections';
 
-export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string): Record<TFrameId, F> {
-  const frames: Record<TFrameId, F> = {};
+export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string): Record<string, F> {
+  const frames: Record<string, F> = {};
   const frame_regexp = /<frame>\s+(.*?)\s+(.*)((.|\n)+?)<frame_end>/g;
   for (const [, frame_id, frame_name, content] of match_all(text, frame_regexp)) {
     let _content = content;
@@ -50,7 +50,7 @@ export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string): Re
 
       if (cpoint.vaction) {
         const vaction = get_next_frame_by_id(cpoint.vaction);
-        vaction.flags = { turn: 5 };
+        vaction.turn = Defines.TurnFlag.SameAsCatcher;
         cpoint.vaction = vaction;
       }
     }
@@ -93,7 +93,7 @@ export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string): Re
     const dircontrol = take(cpoint, 'dircontrol');
     if (dircontrol) {
       frame.hold = frame.hold || {}
-      frame.hold.B = { id: '', flags: { turn: 1, wait: 'i' } }
+      frame.hold.B = { turn: Defines.TurnFlag.Backward, wait: 'i' }
     }
     if (frame.dvx) frame.dvx /= 2
     if (frame.dvy) frame.dvy /= 4

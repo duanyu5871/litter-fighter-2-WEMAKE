@@ -9,22 +9,22 @@ const get_keys = <V extends {}>(v: V): (keyof V)[] => {
 export const cook_frame = (data: IGameObjData, frame: IFrameInfo) => {
 
   let pic = frame.pic;
-  let info: IEntityPictureInfo | undefined = void 0;
+  let pic_info: IEntityPictureInfo | undefined = void 0;
   if (frame.sound) sound_mgr.load(frame.sound, require('../' + frame.sound));
   cook_frame_hit(frame);
   cook_frame_hold(frame);
 
   if (typeof pic === 'number') {
     for (const key in data.base.files) {
-      info = data.base.files[key];
-      const ret = pic >= info.begin && pic <= info.end;
-      if (ret) { pic -= info.begin; break; }
+      pic_info = data.base.files[key];
+      const ret = pic >= pic_info.begin && pic <= pic_info.end;
+      if (ret) { pic -= pic_info.begin; break; }
     }
-    if (info === void 0) return console.log('NOT FOUND');
+    if (pic_info === void 0) return Warn.print(cook_frame.name, 'file info not found, pic number:', pic);
 
-    const { id, row, w: cell_w, h: cell_h } = info;
-    const p = image_pool.find_by_pic_info(info);
-    if (!p) return console.log('[preprocess_frame] image_info not found,', info);
+    const { id, row, w: cell_w, h: cell_h } = pic_info;
+    const img_info = image_pool.find_by_pic_info(pic_info);
+    if (!img_info) return Warn.print(cook_frame.name, 'image_info not found, pic_info:', pic_info);
     const x = (cell_w + 1) * (pic % row);
     const y = (cell_h + 1) * Math.floor(pic / row);
     pic = frame.pic = { tex: id!, x, y, w: cell_w, h: cell_h }
@@ -33,13 +33,13 @@ export const cook_frame = (data: IGameObjData, frame: IFrameInfo) => {
   if ('x' in pic) {
     for (const key in data.base.files) {
       if (data.base.files[key].id === pic.tex) {
-        info = data.base.files[key];
+        pic_info = data.base.files[key];
         break;
       }
     }
-    if (info === void 0) return console.warn('NOT FOUND');
-    const p = image_pool.find_by_pic_info(info);
-    if (!p) return console.warn('[preprocess_frame] image_info not found', info);
+    if (pic_info === void 0) return Warn.print(cook_frame.name, 'file info not found, pic number:', pic);
+    const p = image_pool.find_by_pic_info(pic_info);
+    if (!p) return Warn.print(cook_frame.name, 'image_info not found', pic_info);
 
     const f_i_1: ITexturePieceInfo = {
       tex: pic.tex!,

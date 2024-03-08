@@ -1,6 +1,4 @@
-import { TFrameId } from ".";
 import { ITexturePieceInfos } from "./ITexturePieceInfos";
-
 
 export interface IItrInfo {
   /** 友军伤害：0=关闭（默认），1=开启，*/
@@ -24,6 +22,6 @@ export interface IItrInfo {
   injury?: number;
   effect?: number;
   indicator_info?: ITexturePieceInfos;
-  catchingact?: TFrameId,
-  caughtact?: TFrameId
+  catchingact?: string,
+  caughtact?: string
 }

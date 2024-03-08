@@ -1,11 +1,11 @@
-import { IBallData, IBallFrameInfo, IBallInfo, IDatIndex, TFrameId } from "../lf2_type";
+import { IBallData, IBallFrameInfo, IBallInfo, IDatIndex } from "../lf2_type";
 import { Defines } from "../lf2_type/defines";
 import { to_num } from "../to_num";
 import { traversal } from "../traversal";
 import { get_next_frame_by_id } from "./get_the_next";
 import { take } from "./take";
 
-export function make_ball_data(info: IBallInfo, frames: Record<TFrameId, IBallFrameInfo>, datIndex?: IDatIndex): IBallData {
+export function make_ball_data(info: IBallInfo, frames: Record<string, IBallFrameInfo>, datIndex?: IDatIndex): IBallData {
 
   for (const [, frame] of traversal(frames)) {
     const hit_j = take(frame, 'hit_j');
@@ -17,10 +17,10 @@ export function make_ball_data(info: IBallInfo, frames: Record<TFrameId, IBallFr
     if (hit_d) frame.on_dead = get_next_frame_by_id(hit_d);
     if (frame.state === Defines.State.NormalBall) {
       frame.speedz = 2;
-      if (frames[10]) frame.on_hitting = { id: 10 }
-      if (frames[20]) frame.on_be_hit = { id: 20 }
-      if (frames[30]) frame.on_rebounding = { id: 30 }
-      if (frames[40]) frame.on_disappearing = { id: 40 }
+      if (frames[10]) frame.on_hitting = { id: '10' }
+      if (frames[20]) frame.on_be_hit = { id: '20' }
+      if (frames[30]) frame.on_rebounding = { id: '30' }
+      if (frames[40]) frame.on_disappearing = { id: '40' }
     } else if (frame.state === Defines.State.SturdyBall) {
       frame.speedz = 0;
       frame.no_shadow = 1;

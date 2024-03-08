@@ -3,4 +3,4 @@ import fs from 'fs/promises';
 export const read_text_file = (path: string) => fs.readFile(path)
   .then(v => v.toString())
   .then(v => v?.replace(/\r/g, '').replace(/\\/g, '/'))
-  .catch(e => { console.log(e); return null; });
+  .catch(e => { console.error(e); return null; });

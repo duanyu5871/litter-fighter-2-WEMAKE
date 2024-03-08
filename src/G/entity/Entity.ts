@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import { IBallData, IBaseData, IBdyInfo, ICharacterData, IEntityData, IFrameInfo, IGameObjData, IItrInfo, IOpointInfo, IWeaponData, TFace, TNextFrame } from '../../js_utils/lf2_type';
+import { constructor_name } from '../../js_utils/constructor_name';
+import { IBallData, IBaseData, IBdyInfo, ICharacterData, IEntityData, IFrameInfo, IGameObjData, IGameObjInfo, IItrInfo, IOpointInfo, IWeaponData, TFace, TNextFrame } from '../../js_utils/lf2_type';
 import { Defines } from '../../js_utils/lf2_type/defines';
 import { factory } from '../Factory';
 import { FrameAnimater } from '../FrameAnimater';
@@ -14,9 +15,10 @@ export const V_SHAKE = 4;
 export const A_SHAKE = 6;
 let __team__ = 4;
 export class Entity<
-  D extends IGameObjData = IGameObjData,
-  F extends IFrameInfo = IFrameInfo
-> extends FrameAnimater<D> {
+  F extends IFrameInfo = IFrameInfo,
+  I extends IGameObjInfo = IGameObjInfo,
+  D extends IGameObjData<I, F> = IGameObjData<I, F>
+> extends FrameAnimater<F, I, D> {
   readonly shadow: THREE.Object3D;
   readonly velocity = new THREE.Vector3(0, 0, 0);
 
@@ -57,8 +59,7 @@ export class Entity<
     y = y + shotter_frame.centery - o.y;
     x = x - shotter.face * (shotter_frame.centerx - o.x);
     this.position.set(x, y, z);
-    this.enter_frame(o.action ?? 0);
-    console.log(this.get_frame())
+    this.enter_frame(o.action ?? 'auto');
     return this;
   }
   override set_frame(v: F) {
@@ -77,12 +78,12 @@ export class Entity<
   spawn_object(opoint: IOpointInfo): Entity | undefined {
     const d = dat_mgr.find(opoint.oid);
     if (!d) {
-      console.warn('data not found! id:', opoint.oid)
+      Warn.print(constructor_name(this), 'spawn_object(), data not found! opoint:', opoint);
       return;
     }
     const create = factory.get(d.type);
     if (!create) {
-      console.warn('creator not found! ', d)
+      Warn.print(constructor_name(this), `spawn_object(), creator of "${d.type}" not found! opoint:`, opoint);
       return;
     }
     return create(this.world, d).setup(this, opoint).attach()

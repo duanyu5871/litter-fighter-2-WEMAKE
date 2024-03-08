@@ -33,7 +33,6 @@ export class World {
   renderer: THREE.WebGLRenderer;
   disposed = false;
   protected _players = new Set<Character>();
-  private _update_count: number = 0;
 
   get bg() { return this._bg }
   set bg(v) {
@@ -154,9 +153,9 @@ export class World {
     const { left, right, near, far } = this.bg.data.base;
     const { x, z } = e.position;
     if (x < left - 800)
-      e.enter_frame({ id: 'gone' })
+      e.enter_frame(Defines.ReservedFrameId.Gone)
     else if (x > right + 800)
-      e.enter_frame({ id: 'gone' })
+      e.enter_frame(Defines.ReservedFrameId.Gone)
     if (z < far)
       e.position.z = far;
     else if (z > near)
@@ -296,7 +295,7 @@ export class World {
     }
     return false;
   }
-  spark(x: number, y: number, z: number, f: number | string) {
+  spark(x: number, y: number, z: number, f: string) {
     const data = dat_mgr.find("spark");
     if (!data || !('frames' in data)) return;
     const e = new FrameAnimater(this, data)

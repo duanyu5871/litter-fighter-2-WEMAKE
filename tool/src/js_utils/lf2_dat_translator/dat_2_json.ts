@@ -82,7 +82,7 @@ export default function dat_to_json(full_str: string, datIndex?: IDatIndex): IBa
       case 3: ret = make_ball_data(base as IBallInfo, make_frames<IBallFrameInfo>(full_str), datIndex); break;
       case 5: ret = make_entity_data(base as IGameObjInfo, make_frames(full_str)); break;
       default:
-        console.log('[dat_to_json] unknow dat type:', datIndex.type)
+        console.warn('[dat_to_json] unknow dat type:', datIndex.type)
         ret = make_entity_data(base as IGameObjInfo, make_frames(full_str));
         break;
     }

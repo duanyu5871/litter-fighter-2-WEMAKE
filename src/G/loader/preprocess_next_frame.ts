@@ -22,7 +22,7 @@ export const preprocess_next_frame = (i: TNextFrame) => {
     }
     let predicate = get_number_predicate(operator, value);
     if (!predicate) {
-      console.log('wrong condition', i.condition);
+      Warn.print('wrong condition', i.condition);
       predicate = (_v: number) => false;
     }
     delete i.condition;
@@ -40,7 +40,7 @@ export const preprocess_next_frame = (i: TNextFrame) => {
     }
     let predicate = get_number_predicate(operator, value);
     if (!predicate) {
-      console.log('wrong condition', i.condition);
+      Warn.print('wrong condition', i.condition);
       predicate = (_v: number) => false;
     }
     delete i.condition;
@@ -56,7 +56,7 @@ export const preprocess_next_frame = (i: TNextFrame) => {
     }
     let predicate = get_number_predicate(operator, value);
     if (!predicate) {
-      console.log('wrong condition', i.condition);
+      Warn.print('wrong condition', i.condition);
       predicate = (_v: number) => false;
     }
     delete i.condition;

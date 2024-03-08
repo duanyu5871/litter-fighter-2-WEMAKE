@@ -9,7 +9,6 @@ export async function copy_dir(src_dir_path: string, dst_dir_path: string) {
     const dst_path = path.join(dst_dir_path, file_name);
     const stat = await fs.stat(src_path);
     if (stat.isFile()) {
-      console.log("copy", src_path, "to", dst_path)
       fs.copyFile(src_path, dst_path).catch(e => console.error(e));
     } else if (stat.isDirectory()) {
       copy_dir(src_path, dst_path);

@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { IBdyInfo, ICharacterData, IFrameInfo, IItrInfo, INextFrameFlags, IOpointInfo, TFace, TNextFrame } from '../../js_utils/lf2_type';
+import { IBdyInfo, ICharacterData, ICharacterInfo, IFrameInfo, IItrInfo, INextFrame, IOpointInfo, TFace, TNextFrame } from '../../js_utils/lf2_type';
 import { Defines } from '../../js_utils/lf2_type/defines';
 import { factory } from '../Factory';
 import type { World } from '../World';
@@ -11,8 +11,8 @@ import { CHARACTER_STATES } from '../state/CharacterState';
 import { Ball } from './Ball';
 import { Entity, V_SHAKE } from './Entity';
 import find_direction from './find_frame_direction';
-import { different_face_flags, same_face, same_face_flags, turn_face } from './new_frame_flags';
-export class Character extends Entity<ICharacterData> {
+import { same_face, turn_face } from './face_helper';
+export class Character extends Entity<IFrameInfo, ICharacterInfo, ICharacterData> {
   protected _disposers: (() => void)[] = [];
   controller: IController<Character> = new InvalidController(this);
   protected _resting = 0;
@@ -23,31 +23,10 @@ export class Character extends Entity<ICharacterData> {
   protected _catcher?: Character;
   protected _name_sprite?: THREE.Sprite;
   get name_sprite() { return this._name_sprite }
-  override handle_next_frame_flags(flags: INextFrameFlags | undefined): void {
-    switch (flags?.turn) {
-      case 2:
-        this._face = this.controller.LR1 || this._face;
-        break;
-      case 5:
-        if (this._catcher)
-          this._face = this._catcher._face;
-        break;
-      case 6:
-        if (this._catcher)
-          this._face = turn_face(this._catcher._face);
-        break;
-      default: super.handle_next_frame_flags(flags);
-    }
-  }
-  override find_auto_frame(): IFrameInfo {
-    const { in_the_air, standing } = this.data.base.indexes;
-    const fid = this.position.y ? in_the_air[0] : standing;
-    return this.data.frames[fid] ?? super.find_auto_frame();
-  }
 
   constructor(world: World, data: ICharacterData) {
     super(world, data, CHARACTER_STATES);
-    this.enter_frame({ id: 'auto' });
+    this.enter_frame({ id: Defines.ReservedFrameId.Auto });
 
     image_pool.load_text(data.base.name, data.base.name).then((i) => {
       return create_picture_by_img_key('', i.key)
@@ -58,6 +37,29 @@ export class Character extends Entity<ICharacterData> {
       text_sprite.center.set(0.5, 1.5);
       world.scene.add(text_sprite);
     })
+  }
+
+
+  override handle_turn_flag(turn: number, frame: IFrameInfo, flags: INextFrame): void {
+    switch (turn) {
+      case Defines.TurnFlag.ByController:
+        this._face = this.controller.LR1 || this._face;
+        break;
+      case Defines.TurnFlag.SameAsCatcher:
+        this._face = this._catcher?._face || this._face;
+        break;
+      case Defines.TurnFlag.OpposingCatcher:
+        this._face = turn_face(this._catcher?._face) || this._face;
+        break;
+      default:
+        super.handle_turn_flag(turn, frame, flags);
+        break;
+    }
+  }
+  override find_auto_frame(): IFrameInfo {
+    const { in_the_air, standing } = this.data.base.indexes;
+    const fid = this.position.y ? in_the_air[0] : standing;
+    return this.data.frames[fid] ?? super.find_auto_frame();
   }
 
   override dispose() {
@@ -222,7 +224,7 @@ export class Character extends Entity<ICharacterData> {
     if (!(attacker instanceof Character)) return;
     if (itr.caughtact === void 0) return;
     this._catcher = attacker;
-    this.enter_frame({ id: itr.caughtact, flags: same_face_flags(attacker, this) })
+    this.enter_frame({ id: itr.caughtact, turn: attacker.face })
     delete this._next_frame;
   }
   override on_collision(target: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
@@ -301,12 +303,12 @@ export class Character extends Entity<ICharacterData> {
         itr.effect === Defines.ItrEffect.MFire3
       ) {
         // TODO: SOUND
-        this.enter_frame({ id: indexes.fire[0], flags: different_face_flags(attacker, this) })
+        this.enter_frame({ id: indexes.fire[0], turn: turn_face(attacker.face) })
         this._next_frame = void 0;
         return;
       } else if (itr.effect === Defines.ItrEffect.Ice) {
         // TODO: SOUND
-        this.enter_frame({ id: indexes.ice, flags: different_face_flags(attacker, this) })
+        this.enter_frame({ id: indexes.ice, turn: turn_face(attacker.face) })
         this._next_frame = void 0;
         return;
       } else if (itr.effect === Defines.ItrEffect.Sharp) {
@@ -328,12 +330,12 @@ export class Character extends Entity<ICharacterData> {
       itr.effect === Defines.ItrEffect.MFire3
     ) {
       // TODO: SOUND
-      this.enter_frame({ id: indexes.fire[0], flags: different_face_flags(attacker, this) })
+      this.enter_frame({ id: indexes.fire[0], turn: turn_face(attacker.face) })
       this._next_frame = void 0;
       return;
     } else if (itr.effect === Defines.ItrEffect.Ice) {
       // TODO: SOUND
-      this.enter_frame({ id: indexes.ice, flags: different_face_flags(attacker, this) })
+      this.enter_frame({ id: indexes.ice, turn: turn_face(attacker.face) })
       this._next_frame = void 0;
       return;
     } else if (itr.effect === Defines.ItrEffect.Sharp) {

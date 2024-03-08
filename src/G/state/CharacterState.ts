@@ -1,5 +1,5 @@
 /* eslint-disable new-parens */
-import { IFrameInfo, TFrameId } from "../../js_utils/lf2_type";
+import { IFrameInfo } from "../../js_utils/lf2_type";
 import { Defines } from "../../js_utils/lf2_type/defines";
 import { World } from "../World";
 import type { Character } from '../entity/Character';
@@ -96,9 +96,8 @@ CHARACTER_STATES.set(Defines.State.Dash, new class extends BaseCharacterState {
 CHARACTER_STATES.set(Defines.State.Defend, new BaseCharacterState)
 CHARACTER_STATES.set(Defines.State.Falling, new class extends BaseCharacterState {
   _directions = new Map<string | number, 1 | -1>();
-  _ignore_frames = new Map<string | number, Set<TFrameId>>();
+  _ignore_frames = new Map<string | number, Set<string>>();
   enter(e: Character, prev_frame: IFrameInfo): void {
-    console.log('Lying Falling enter')
     super.enter(e, prev_frame);
     const { id: entity_id, velocity: { x: vx }, face } = e;
     const { id: data_id, base: { indexes: { bouncing } } } = e.data;
@@ -154,7 +153,6 @@ CHARACTER_STATES.set(Defines.State.Falling, new class extends BaseCharacterState
     }
   }
   leave(e: Character): void {
-    console.log('Lying Falling leave')
     const { id: entity_id } = e;
     this._directions.delete(entity_id);
   }
@@ -167,10 +165,8 @@ CHARACTER_STATES.set(Defines.State.Lying, new class extends BaseCharacterState {
     e.handle_frame_velocity();
   }
   enter(e: Character, prev_frame: IFrameInfo): void {
-    console.log('Lying enter')
   }
   leave(e: Character, next_frame: IFrameInfo): void {
-    console.log('Lying leave')
   }
 })
 CHARACTER_STATES.set(Defines.State.Caught, new class extends BaseState<Character>{

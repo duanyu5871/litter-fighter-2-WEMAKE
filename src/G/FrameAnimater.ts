@@ -1,40 +1,48 @@
 import * as THREE from 'three';
 import random_get from '../Utils/random_get';
-import type { World } from './World';
-import create_pictures from './loader/create_pictures';
-import { IFrameInfo, INextFrameFlags, ITexturePieceInfo, IGameObjData, TFace, TFrameId, TNextFrame, INextFrame } from '../js_utils/lf2_type';
+import { constructor_name } from '../js_utils/constructor_name';
+import { is_num } from '../js_utils/is_num';
+import { is_positive_num } from '../js_utils/is_positive_num';
+import { is_str } from '../js_utils/is_str';
+import { IFrameInfo, IGameObjData, IGameObjInfo, INextFrame, ITexturePieceInfo, TFace, TNextFrame } from '../js_utils/lf2_type';
+import { Defines } from '../js_utils/lf2_type/defines';
 import { IPictureInfo } from '../types/IPictureInfo';
+import type { World } from './World';
 import { sound_mgr } from './loader/SoundMgr';
-export type T_NEXT_FRAME = readonly [IFrameInfo, INextFrameFlags | undefined]
-export type T_VOID_NEXT_FRAME = readonly [undefined, undefined]
-export const NO_NEXT_FRAME: T_VOID_NEXT_FRAME = [undefined, undefined];
+import create_pictures from './loader/create_pictures';
+import { Warn } from '@fimagine/logger';
+
 export const EMPTY_PIECE: ITexturePieceInfo = {
   tex: 0, x: 0, y: 0, w: 0, h: 0, cx: 0, cy: 0,
   ph: 0, pw: 0,
 }
 export const EMPTY_FRAME_INFO: IFrameInfo = {
-  id: '',
+  id: Defines.ReservedFrameId.None,
   name: '',
   pic: 0,
   state: NaN,
   wait: 0,
-  next: { id: '' },
+  next: { id: Defines.ReservedFrameId.Auto },
   centerx: 0,
   centery: 0
 };
 export const GONE_FRAME_INFO: IFrameInfo = {
-  id: 'gone',
+  id: Defines.ReservedFrameId.Gone,
   name: 'GONE_FRAME_INFO',
   pic: 0,
-  state: 0,
+  state: NaN,
   wait: 0,
-  next: { id: '' },
+  next: { id: Defines.ReservedFrameId.Gone },
   centerx: 0,
   centery: 0
 };
 
 
-export class FrameAnimater<D extends IGameObjData = IGameObjData> {
+export class FrameAnimater<
+  F extends IFrameInfo = IFrameInfo,
+  I extends IGameObjInfo = IGameObjInfo,
+  D extends IGameObjData<I, F> = IGameObjData<I, F>
+> {
   id: string = '';
   wait: number = 0;
 
@@ -46,8 +54,8 @@ export class FrameAnimater<D extends IGameObjData = IGameObjData> {
 
   protected _piece: ITexturePieceInfo = EMPTY_PIECE;
   protected _face: TFace = 1;
-  private _frame: D['frames'][0] = EMPTY_FRAME_INFO;
-  private _prev_frame: D['frames'][0] = EMPTY_FRAME_INFO;
+  private _frame: F = EMPTY_FRAME_INFO as F;
+  private _prev_frame: F = EMPTY_FRAME_INFO as F;
 
   get face() { return this._face; }
   set face(v: TFace) {
@@ -56,7 +64,7 @@ export class FrameAnimater<D extends IGameObjData = IGameObjData> {
     this.update_sprite();
   }
 
-  set_frame(v: D['frames'][0]) {
+  set_frame(v: F) {
     this._prev_frame = this._frame
     this._frame = v;
   }
@@ -87,7 +95,7 @@ export class FrameAnimater<D extends IGameObjData = IGameObjData> {
   }
   private _previous = {
     face: (void 0) as TFace | undefined,
-    frame: (void 0) as D['frames'][0] | undefined,
+    frame: (void 0) as F | undefined,
   }
   protected update_sprite() {
     const frame = this.get_frame();
@@ -122,20 +130,28 @@ export class FrameAnimater<D extends IGameObjData = IGameObjData> {
 
   }
 
-  find_auto_frame(): D['frames'][0] {
-    console.warn('[FrameAnimater] find_auto_frame(): auto frame not set!');
+  find_auto_frame(): F {
+    Warn.print(constructor_name(this), 'find_auto_frame(), not implemented! will return current frame.');
     return this.get_frame();
   }
 
-  find_frame_by_id(id: TFrameId): D['frames'][0] {
-    if (id === 'self' || id === '') return this.get_frame();
-    else if (id === 'auto') return this.find_auto_frame();
-    else if (id === 'gone') return GONE_FRAME_INFO
-    else return this.data.frames[id] ?? EMPTY_FRAME_INFO;
+  find_frame_by_id(id: string | undefined): F {
+    switch (id) {
+      case void 0:
+      case Defines.ReservedFrameId.None:
+      case Defines.ReservedFrameId.Self: return this.get_frame();
+      case Defines.ReservedFrameId.Auto: return this.find_auto_frame();
+      case Defines.ReservedFrameId.Gone: return GONE_FRAME_INFO as F;
+    }
+    if (!this.data.frames[id]) {
+      Warn.print(constructor_name(this), 'find_frame_by_id(id), frame not find! id:', id);
+      return EMPTY_FRAME_INFO as F;
+    }
+    return this.data.frames[id];
   }
 
-  get_next_frame(which: TNextFrame | TFrameId): T_NEXT_FRAME | T_VOID_NEXT_FRAME {
-    if (typeof which === 'string' || typeof which === 'number') {
+  get_next_frame(which: TNextFrame | string): [F | undefined, INextFrame | undefined] {
+    if (is_str(which)) {
       const frame = this.find_frame_by_id(which);
       return [frame, void 0];
     }
@@ -153,40 +169,40 @@ export class FrameAnimater<D extends IGameObjData = IGameObjData> {
           return this.get_next_frame(w);
         }
       }
-      if (!remains.length) return NO_NEXT_FRAME;
+      if (!remains.length) return [void 0, void 0];
       which = random_get(remains);
       return this.get_next_frame(which);
     }
     let { id } = which;
     if (Array.isArray(id)) id = random_get(id);
     const frame = this.find_frame_by_id(id);
-    return [frame, which.flags];
+    return [frame, which];
   }
 
-  handle_next_frame_flags(flags: INextFrameFlags | undefined) {
-    switch (flags?.turn) {
-      case 1: this._face *= -1; break;
-      case 3: this._face = -1; break;
-      case 4: this._face = 1; break;
+  handle_turn_flag(turn: number, frame: IFrameInfo, flags: INextFrame) {
+    switch (turn) {
+      case Defines.TurnFlag.Backward: this._face *= -1; break;
+      case Defines.TurnFlag.Left: this._face = -1; break;
+      case Defines.TurnFlag.Right: this._face = 1; break;
     }
   }
+  handle_wait_flag(wait: string | number, frame: IFrameInfo, flags: INextFrame) {
+    if (wait === 'i') return // 不必做什么，继承上一帧的wait
 
-  enter_frame(which: TNextFrame | TFrameId): void {
+    if (is_positive_num(wait)) { this.wait = wait; return }
+    this.wait = frame.wait;
+  }
+  enter_frame(which: TNextFrame | string): void {
     const [frame, flags] = this.get_next_frame(which);
-    if (!frame) return console.warn('[FrameAnimater] frame not found! which:', which);
-    const { sound, wait } = frame;
+    if (!frame) return Warn.print(constructor_name(this), 'enter_frame(which), next frame not found! which:', which);
+    const { sound } = frame;
     const { x, y, z } = this.position;
     sound && sound_mgr.play(sound, x, y, z);
     this.set_frame(frame);
 
-    const next_wait = flags?.wait;
-    if (next_wait === 'i') { // 不必做什么，继承上一帧的wait
-    } else if (typeof next_wait === 'number') {
-      this.wait = next_wait;
-    } else if (!next_wait) {
-      this.wait = wait;
-    }
-    this.handle_next_frame_flags(flags);
+    if (flags?.turn !== void 0) this.handle_turn_flag(flags.turn, frame, flags);
+    if (flags?.wait !== void 0) this.handle_wait_flag(flags.wait, frame, flags);
+    else this.wait = frame.wait;
     this.update_sprite();
   }
 
@@ -205,3 +221,4 @@ export class FrameAnimater<D extends IGameObjData = IGameObjData> {
 
   dispose(): void { }
 }
+

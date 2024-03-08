@@ -27,7 +27,6 @@ async function parse_under_dir(src_dir_path: string, dst_dir_path: string, index
       const index =
         indexes?.objects.find(v => src_path.endsWith(v.file)) ||
         indexes?.backgrounds.find(v => src_path.endsWith(v.file))
-      console.log(src_path, index)
       const json = dat_to_json(buff.toString().replace(/\\/g, '/').replace(/\r/g, ''), index);
       {
         let dirty = json as Partial<ICharacterData>

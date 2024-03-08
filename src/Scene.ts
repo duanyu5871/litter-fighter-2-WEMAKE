@@ -8,7 +8,7 @@ import { Character } from './G/entity/Character';
 import { Entity } from './G/entity/Entity';
 import { dat_mgr } from './G/loader/DatLoader';
 import random_get from './Utils/random_get';
-import { IBgData, ICharacterData, TFace, TFrameId } from './js_utils/lf2_type';
+import { IBgData, ICharacterData, TFace } from './js_utils/lf2_type';
 let character_id = 1;
 
 export default function run(canvas: HTMLCanvasElement, on_load?: () => void) {
@@ -64,7 +64,7 @@ export default function run(canvas: HTMLCanvasElement, on_load?: () => void) {
     let vy = 0;
     let vz = 0;
     let face: TFace = 1;
-    let frame_id: TFrameId = 0;
+    let frame_id = '0';
     if (_character) {
       x = _character.position.x;
       y = _character.position.y;

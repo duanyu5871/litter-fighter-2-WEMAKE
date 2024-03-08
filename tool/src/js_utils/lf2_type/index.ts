@@ -1,11 +1,14 @@
+import { IBdyInfo } from "./IBdyInfo";
 import { IBgInfo } from "./IBgInfo";
 import { IBgLayerInfo } from "./IBgLayerInfo";
+import { IBpointInfo } from "./IBpointInfo";
+import { ICpointInfo } from "./ICpointInfo";
 import { IFramePictureInfo } from "./IFramePictureInfo";
 import { IItrInfo } from "./IItrInfo";
-import { ITexturePieceInfo } from "./ITexturePieceInfo";
+import { IOpointInfo } from "./IOpointInfo";
 import { ITexturePieceInfos } from "./ITexturePieceInfos";
+import { IWpointInfo } from "./IWpointInfo";
 
-export type TFrameId = string | number
 export type TTODO = any;
 export type TFace = -1 | 1;
 export type TTrend = -1 | 0 | 1;
@@ -21,30 +24,6 @@ export interface IEntityPictureInfo {
   h: number;
   row: number;
   col: number;
-}
-export interface INextFrameFlags {
-
-  /**
-   * 下一帧的持续时间策略
-   * @date 2/23/2024 - 1:38:03 PM
-   *
-   * @type {?(string | number)} 'i': 继承上一帧剩余事件; number: 将会覆盖下一帧自带的wait
-   */
-  wait?: string | number;
-
-  /**
-   * 下帧转向
-   * @date 2/23/2024 - 1:37:05 PM
-   *
-   * @type {?number} 
-   *        1 = 向后转, 
-   *        2 = 按键控制转向, // character only
-   *        3 = 固定向左，
-   *        4 = 固定向右, 
-   *        5 = 与抓自己的人方向相同 // character only
-   *        6 = 与抓自己的人方向相反 // character only
-   */
-  turn?: number;
 }
 
 export interface IHoldKeyCollection {
@@ -109,8 +88,28 @@ export interface IHitKeyCollection {
   DD?: TNextFrame;
 }
 export interface INextFrame {
-  id: TFrameId | TFrameId[];
-  flags?: INextFrameFlags;
+  id?: string | string[];
+  /**
+ * 下一帧的持续时间策略
+ * @date 2/23/2024 - 1:38:03 PM
+ *
+ * @type {?(string | number)} 'i': 继承上一帧剩余事件; number: 将会覆盖下一帧自带的wait
+ */
+  wait?: string | number;
+
+  /**
+   * 下帧转向
+   * @date 2/23/2024 - 1:37:05 PM
+   *
+   * @type {?number} 
+   *        1 = 向后转, 
+   *        2 = 按键控制转向, // character only
+   *        3 = 固定向左，
+   *        4 = 固定向右, 
+   *        5 = 与抓自己的人方向相同 // character only
+   *        6 = 与抓自己的人方向相反 // character only
+   */
+  turn?: number;
   condition?: string | ((e: any) => boolean);
 }
 export type TNextFrame = INextFrame | INextFrame[]
@@ -121,9 +120,14 @@ export * from './IFramePictureInfo';
 export * from './IItrInfo';
 export * from './ITexturePieceInfo';
 export * from './ITexturePieceInfos';
+export * from './IBdyInfo';
+export * from './IBpointInfo';
+export * from './ICpointInfo';
+export * from './IOpointInfo';
+export * from './IWpointInfo';
 
 export interface IFrameInfo {
-  id: TFrameId;
+  id: string;
   name: string;
   pic: number | IFramePictureInfo | ITexturePieceInfos;
   state: number;
@@ -157,63 +161,8 @@ export interface IBallFrameInfo extends IFrameInfo {
   speedz?: number;
 }
 
-export interface ICpointInfo {
-  kind: 1 | 2;
-  x: number;
-  y: number;
-  vaction: TNextFrame;
-  injury: number;
-  hurtable: 0 | 1;
-  decrease: number;
-  throwvx?: number
-  throwvy?: number
-  throwvz?: number
-  throwinjury?: number
-  fronthurtact: TFrameId
-  backhurtact: TFrameId
-  cover: number;
-  shaking?: number;
-}
-export interface IOpointInfo {
-  kind: number;
-  x: number;
-  y: number;
-  action: number;
-  dvx?: number;
-  dvy?: number;
-  dvz?: number;
-  oid: number;
-  facing: number;
-}
-export interface IBpointInfo {
-  x: number;
-  y: number;
-}
-export interface IWpointInfo {
-  kind: number;
-  x: number;
-  y: number;
-  weaponact: number;
-  attacking: number;
-  cover: number;
-  dvx?: number;
-  dvy?: number;
-  dvz?: number;
-}
-export interface IBdyInfo {
-  friendly_fire?: number;
-  kind: number
-  x: number
-  y: number
-  w: number
-  h: number
-  indicator_info?: {
-    1: ITexturePieceInfo;
-    [-1]: ITexturePieceInfo
-  }
-}
 export interface IGameObjInfo {
-  files: Record<TFrameId, IEntityPictureInfo>;
+  files: Record<string, IEntityPictureInfo>;
 }
 export interface ICharacterInfo extends IGameObjInfo {
   name: string;
@@ -264,7 +213,7 @@ export interface IGameObjData<
   I extends IGameObjInfo = IGameObjInfo,
   F extends IFrameInfo = IFrameInfo,
 > extends IBaseData<I> {
-  frames: Record<TFrameId, F>;
+  frames: Record<string, F>;
 }
 
 export interface IEntityData extends IGameObjData<IGameObjInfo, IFrameInfo> {
@@ -281,45 +230,45 @@ export interface IBallData extends IGameObjData<IBallInfo, IBallFrameInfo> {
   type: 'ball';
 }
 export interface ICharacterFrameIndexes {
-  landing_2: number;
-  standing: TFrameId;
-  running: TFrameId;
-  heavy_obj_run: TFrameId;
-  landing_1: TFrameId;
-  caughts: TFrameId[];
-  catch_atk: TFrameId;
-  catch: TFrameId[];
-  throw_enemy: TFrameId;
-  drink: TFrameId;
-  l_weapen_thw: TFrameId;
-  jump_weapen_atk: TFrameId;
-  h_weapen_thw: TFrameId;
-  air_weapon_thw: TFrameId;
-  air_quick_rise: TFrameId[];
-  dizzy: TFrameId;
-  dash_weapen_atk: TFrameId;
-  run_weapen_atk: TFrameId;
-  weapen_atk: TFrameId[];
-  picking_heavy: TFrameId;
-  picking_light: TFrameId;
-  broken_defend: TFrameId;
-  defend_hit: TFrameId;
-  in_the_air: TFrameId[];
-  super_punch: TFrameId;
+  landing_2: string;
+  standing: string;
+  running: string;
+  heavy_obj_run: string;
+  landing_1: string;
+  caughts: string[];
+  catch_atk: string;
+  catch: string[];
+  throw_enemy: string;
+  drink: string;
+  l_weapen_thw: string;
+  jump_weapen_atk: string;
+  h_weapen_thw: string;
+  air_weapon_thw: string;
+  air_quick_rise: string[];
+  dizzy: string;
+  dash_weapen_atk: string;
+  run_weapen_atk: string;
+  weapen_atk: string[];
+  picking_heavy: string;
+  picking_light: string;
+  broken_defend: string;
+  defend_hit: string;
+  in_the_air: string[];
+  super_punch: string;
   falling: TFrameIdListPair,
   bouncing: TFrameIdListPair,
   critical_hit: TFrameIdListPair
   injured: TFrameIdPair,
   grand_injured: TFrameIdListPair,
   lying: TFrameIdPair,
-  fire: TFrameId[],
-  ice: TFrameId,
+  fire: string[],
+  ice: string,
 }
 export type TFrameIdPair = {
-  [-1]: TFrameId,
-  1: TFrameId,
+  [-1]: string,
+  1: string,
 }
 export type TFrameIdListPair = {
-  [-1]: TFrameId[],
-  1: TFrameId[],
+  [-1]: string[],
+  1: string[],
 }

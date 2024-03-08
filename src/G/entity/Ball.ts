@@ -1,14 +1,14 @@
+import { IBallData, IBallFrameInfo, IBallInfo, IBdyInfo, IItrInfo, IOpointInfo } from '../../js_utils/lf2_type';
 import { Defines } from '../../js_utils/lf2_type/defines';
-import { IBallData, IBallFrameInfo, IBdyInfo, IItrInfo, IOpointInfo } from '../../js_utils/lf2_type';
-import { Entity } from './Entity';
 import { factory } from '../Factory';
 import { EMPTY_FRAME_INFO } from '../FrameAnimater';
 import type { ICube, World } from '../World';
 import { sound_mgr } from '../loader/SoundMgr';
 import { BALL_STATES } from '../state/BallState';
+import { Entity } from './Entity';
 
 
-export class Ball extends Entity<IBallData, IBallFrameInfo> {
+export class Ball extends Entity<IBallFrameInfo, IBallInfo, IBallData> {
   ud = 0;
   constructor(world: World, data: IBallData) {
     super(world, data, BALL_STATES);
@@ -49,9 +49,7 @@ export class Ball extends Entity<IBallData, IBallFrameInfo> {
   }
   update(): void {
     super.update();
-
     const f = this.get_frame();
-
     if (this.hp <= 0) {
       f.on_dead && this.enter_frame(f.on_dead)
     } else if (f.hp) {

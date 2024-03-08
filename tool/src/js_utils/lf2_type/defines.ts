@@ -1,7 +1,21 @@
 export namespace Defines {
   export const OLD_SCREEN_WIDTH = 795;
   export const OLD_SCREEN_HEIGHT = 550;
-
+  export enum ReservedFrameId {
+    None = "",
+    Auto = "auto",
+    Self = "self",
+    Gone = "gone",
+  }
+  export enum TurnFlag {
+    Left = -1,
+    None = 0,
+    Right = 1,
+    Backward = 2,
+    ByController = 3,
+    SameAsCatcher = 4,
+    OpposingCatcher = 5,
+  }
   export enum State {
     Any = -1,
     Standing = 0,

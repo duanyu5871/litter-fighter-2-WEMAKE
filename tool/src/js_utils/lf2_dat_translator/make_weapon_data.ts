@@ -1,11 +1,11 @@
-import { IFrameInfo, IWeaponData, IWeaponInfo, TFrameId } from '../lf2_type';
+import { IFrameInfo, IWeaponData, IWeaponInfo } from '../lf2_type';
 import { match_all } from '../match_all';
 import { match_block_once } from '../match_block';
 import { match_colon_value } from '../match_colon_value';
 import { set_obj_field } from "../set_obj_field";
 import { to_num } from '../to_num';
 
-export function make_weapon_data(info: IWeaponInfo, full_str: string, frames: Record<TFrameId, IFrameInfo>): IWeaponData {
+export function make_weapon_data(info: IWeaponInfo, full_str: string, frames: Record<string, IFrameInfo>): IWeaponData {
   let weapon_strength: any;
   const weapon_strength_str = match_block_once(full_str, '<weapon_strength_list>', '<weapon_strength_list_end>')?.trim();
 
@@ -18,9 +18,6 @@ export function make_weapon_data(info: IWeaponInfo, full_str: string, frames: Re
       weapon_strength = set_obj_field(weapon_strength, id, entry);
     }
   }
-
-
-
   return {
     id: '',
     type: 'weapon',
