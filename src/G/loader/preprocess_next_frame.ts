@@ -28,8 +28,8 @@ export const preprocess_next_frame = (i: TNextFrame) => {
     delete i.condition;
     i.condition = (e: Character) => {
       let v: number = 0;
-      if (e.velocity.x < 0) v = -e.face;
-      else if (e.velocity.x > 0) v = e.face;
+      if (e.velocity.x < 0) v = -e.facing;
+      else if (e.velocity.x > 0) v = e.facing;
       return predicate(v);
     };
   } else if (what === 'press_F_B') {
@@ -46,7 +46,7 @@ export const preprocess_next_frame = (i: TNextFrame) => {
     delete i.condition;
     i.condition = (e: Character) => {
       const lr = e.controller.LR1;
-      return predicate(lr * e.face);
+      return predicate(lr * e.facing);
     };
   } else if (what === 'press_U_D') {
     const value = Number(raw_value);

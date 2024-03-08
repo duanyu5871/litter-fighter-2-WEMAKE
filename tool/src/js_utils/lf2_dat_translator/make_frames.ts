@@ -68,7 +68,7 @@ export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string): Re
     const dircontrol = take(cpoint, 'dircontrol');
     if (dircontrol) {
       frame.hold = frame.hold || {}
-      frame.hold.B = { turn: Defines.TurnFlag.Backward, wait: 'i' }
+      frame.hold.B = { facing: Defines.FacingFlag.Backward, wait: 'i' }
     }
 
     const dvx = take(frame, 'dvx');
@@ -99,10 +99,10 @@ function cook_cpoint(unsure_cpoint: ICpointInfo) {
 
   const vaction = take(unsure_cpoint as any, 'vaction');
 
-  if (is_str(vaction)) {
+  if (is_str(vaction) || is_num(vaction)) {
     unsure_cpoint.vaction = {
       ...get_next_frame_by_id(vaction),
-      turn: Defines.TurnFlag.SameAsCatcher
+      facing: Defines.FacingFlag.SameAsCatcher
     };
   }
 }
@@ -141,11 +141,25 @@ function cook_itr_list(unsure_itr_list: IItrInfo[]) {
     if (not_zero(dvy)) item.dvy = dvy * -0.5;
 
     switch (item.kind) {
-      case Defines.ItrKind.SuperPunchMe:
-      case Defines.ItrKind.ForceCatch:
-      case Defines.ItrKind.Catch:
+      case Defines.ItrKind.SuperPunchMe: {
         item.motionless = 0;
         item.shaking = 0;
+        break;
+      }
+      case Defines.ItrKind.ForceCatch:
+      case Defines.ItrKind.Catch: {
+        item.motionless = 0;
+        item.shaking = 0;
+      }
+    }
+
+    const catchingact = take(item as any, 'catchingact')
+    if (is_num(catchingact)) item.catchingact = get_next_frame_by_id(catchingact)
+
+    const caughtact = take(item as any, 'caughtact')
+    if (is_num(caughtact)) item.caughtact = { 
+      ...get_next_frame_by_id(caughtact),
+      facing: Defines.FacingFlag.OpposingCatcher,
     }
   }
 }

@@ -1,0 +1,34 @@
+import { World } from "../../World";
+import type { Character } from '../../entity/Character';
+import { BaseCharacterState } from "./Base";
+
+export default class Jump extends BaseCharacterState {
+  private _jump_flags = new Set<string>();
+  update(character: Character): void {
+    character.on_gravity();
+    character.velocity_decay();
+    character.handle_frame_velocity();
+
+    const { jump_flag } = character.get_prev_frame();
+    if (!jump_flag) {
+      this._jump_flags.delete(character.id);
+      return;
+    }
+    if (this._jump_flags.has(character.id))
+      return;
+
+    const { LR1, UD1 } = character.controller;
+    const { jump_height: h, jump_distance: dx, jump_distancez: dz } = character.data.base;
+    const g_acc = World.DEFAULT_GRAVITY
+    const vz = UD1 * dz;
+    character.velocity.set(
+      LR1 * (dx - Math.abs(vz / 4)),
+      g_acc * Math.sqrt(2 * h / g_acc),
+      vz
+    )
+    this._jump_flags.add(character.id);
+  }
+  on_landing(character: Character, vx: number, vy: number, vz: number): void {
+    character.enter_frame({ id: character.data.base.indexes.landing_1 });
+  }
+}

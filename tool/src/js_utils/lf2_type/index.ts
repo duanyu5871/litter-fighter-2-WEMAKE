@@ -3,7 +3,7 @@ import { IBgInfo } from "./IBgInfo";
 import { IBgLayerInfo } from "./IBgLayerInfo";
 import { ICharacterFrameInfo } from "./ICharacterFrameInfo";
 import { IFrameInfo } from "./IFrameInfo";
-
+import type { Defines } from "./defines";
 export type TTODO = any;
 export type TFace = -1 | 1;
 export type TTrend = -1 | 0 | 1;
@@ -96,33 +96,27 @@ export interface INextFrame {
    * 下帧转向
    * @date 2/23/2024 - 1:37:05 PM
    *
-   * @type {?number} 
-   *        1 = 向后转, 
-   *        2 = 按键控制转向, // character only
-   *        3 = 固定向左，
-   *        4 = 固定向右, 
-   *        5 = 与抓自己的人方向相同 // character only
-   *        6 = 与抓自己的人方向相反 // character only
+   * @type {Defines.FacingFlag} 
    */
-  turn?: number;
+  facing?: number;
   condition?: string | ((e: any) => boolean);
 }
 export type TNextFrame = INextFrame | INextFrame[]
 
+export * from './IBallFrameInfo';
+export * from './IBdyInfo';
 export * from './IBgInfo';
 export * from './IBgLayerInfo';
+export * from './IBpointInfo';
+export * from './ICharacterFrameInfo';
+export * from './ICpointInfo';
+export * from './IFrameInfo';
 export * from './IFramePictureInfo';
 export * from './IItrInfo';
+export * from './IOpointInfo';
 export * from './ITexturePieceInfo';
 export * from './ITexturePieceInfos';
-export * from './IBdyInfo';
-export * from './IBpointInfo';
-export * from './ICpointInfo';
-export * from './IOpointInfo';
 export * from './IWpointInfo';
-export * from './IFrameInfo';
-export * from './ICharacterFrameInfo';
-export * from './IBallFrameInfo';
 
 export interface IGameObjInfo {
   files: Record<string, IEntityPictureInfo>;

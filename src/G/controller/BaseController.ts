@@ -93,7 +93,7 @@ export class BaseController implements IController<Character> {
     const k_len = KEY_NAME_LIST.length;
     this._update_count++;
     const character = this.character;
-    const { face } = character;
+    const { facing: face } = character;
     const frame = character.get_frame();
     const { hold, hit, state } = frame;
     let nf: TNextFrame | undefined;

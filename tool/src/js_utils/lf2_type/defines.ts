@@ -7,7 +7,7 @@ export namespace Defines {
     Self = "self",
     Gone = "gone",
   }
-  export enum TurnFlag {
+  export enum FacingFlag {
     Left = -1,
     None = 0,
     Right = 1,

@@ -72,7 +72,7 @@ export default function run(canvas: HTMLCanvasElement, on_load?: () => void) {
       vx = _character.velocity.x;
       vy = _character.velocity.y;
       vz = _character.velocity.z;
-      face = _character.face;
+      face = _character.facing;
       frame_id = _character.get_frame().id;
       _character.dispose()
     }
@@ -86,7 +86,7 @@ export default function run(canvas: HTMLCanvasElement, on_load?: () => void) {
     _character.velocity.x = vx;
     _character.velocity.y = vy;
     _character.velocity.z = vz;
-    _character.face = face;
+    _character.facing = face;
     _character.enter_frame(frame_id)
     _character.controller = new PlayerController(_character)
     _character.attach();

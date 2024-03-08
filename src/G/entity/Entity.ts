@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { constructor_name } from '../../js_utils/constructor_name';
-import { IBallData, IBaseData, IBdyInfo, ICharacterData, IEntityData, IFrameInfo, IGameObjData, IGameObjInfo, IItrInfo, IOpointInfo, IWeaponData, TFace, TNextFrame } from '../../js_utils/lf2_type';
+import { IBallData, IBaseData, IBdyInfo, ICharacterData, IEntityData, IFrameInfo, IGameObjData, IGameObjInfo, IItrInfo, IOpointInfo, IWeaponData, TFace } from '../../js_utils/lf2_type';
 import { Defines } from '../../js_utils/lf2_type/defines';
 import { factory } from '../Factory';
 import { FrameAnimater } from '../FrameAnimater';
@@ -53,12 +53,13 @@ export class Entity<
   setup(shotter: Entity, o: IOpointInfo, speed_z: number = 0) {
     const shotter_frame = shotter.get_frame();
     this.team = shotter.team;
-    this.face = (o.facing === 1 ? -shotter.face : shotter.face) as TFace;
+    this.facing = (o.facing === 1 ? -shotter.facing : shotter.facing) as TFace;
     let { x, y, z } = shotter.position;
     y = y + shotter_frame.centery - o.y;
-    x = x - shotter.face * (shotter_frame.centerx - o.x);
+    x = x - shotter.facing * (shotter_frame.centerx - o.x);
     this.position.set(x, y, z);
     this.enter_frame(o.action);
+    console.log(this._frame)
     return this;
   }
   override set_frame(v: F) {
@@ -156,7 +157,7 @@ export class Entity<
     if (this._shaking || this._motionless) return;
     const { dvx, dvy, dvz } = this.get_frame();
     if (dvx !== void 0) {
-      const next_speed = this._face * dvx;
+      const next_speed = this._facing * dvx;
       const curr_speed = this.velocity.x;
       if (
         (next_speed > 0 && curr_speed <= next_speed) ||
@@ -167,6 +168,7 @@ export class Entity<
     if (dvy !== void 0) this.velocity.y += dvy;
     if (dvz !== void 0) this.velocity.z = dvz;
   }
+
   update() {
     super.update();
     this.state?.update(this);
@@ -186,7 +188,9 @@ export class Entity<
     this.on_after_update?.();
     if (this.position.y <= 0 && this.velocity.y < 0) {
       this.position.y = 0;
-      this.velocity.y = this.on_landing?.() ?? 0;
+      const { x, y, z } = this.velocity;
+      this.velocity.y = 0;
+      this.state?.on_landing(this, x, y, z);
     }
   }
 
@@ -197,7 +201,6 @@ export class Entity<
     this.shadow.position.set(x, - z / 2, z);
 
   }
-  on_landing?(): number | void | undefined;
   on_after_update?(): void;
 
 

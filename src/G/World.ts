@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { Defines } from '.././js_utils/lf2_type/defines';
 import { IBdyInfo, IFrameInfo, IItrInfo } from '../js_utils/lf2_type';
 import { Background } from './Background';
-import { FrameAnimater, GONE_FRAME_INFO } from './FrameAnimater';
+import { FrameAnimater } from './FrameAnimater';
 import { PlayerController } from './controller/PlayerController';
 import { Ball } from './entity/Ball';
 import { Character } from './entity/Character';
@@ -183,17 +183,19 @@ export class World {
     if (this.disposed) return;
     if (!this.bg) return;
     this.collision_detections();
-    for (const e of this.entities) {
-      e.update();
-      if (e.get_frame().id === GONE_FRAME_INFO.id)
+    for (const e of this.entities) e.self_update();
+    for (const e of this.entities) e.update();
+    for (const e of this.entities)
+      if (e.get_frame().id === Defines.ReservedFrameId.Gone)
         this.del_entities(e);
-    }
 
-    for (const e of this.game_objs) {
-      e.update();
-      if (e.get_frame().id === GONE_FRAME_INFO.id)
+
+    for (const e of this.game_objs) e.self_update();
+    for (const e of this.game_objs) e.update();
+    for (const e of this.game_objs)
+      if (e.get_frame().id === Defines.ReservedFrameId.Gone)
         this.del_game_objs(e);
-    }
+
 
     this.update_camera();
     this.bg.update();
@@ -205,7 +207,7 @@ export class World {
     if (!player_count) return;
     let new_x = 0;
     for (const player of this._players) {
-      new_x += player.position.x - 794 / 2 + player.face * 794 / 6;
+      new_x += player.position.x - 794 / 2 + player.facing * 794 / 6;
     }
     new_x /= player_count;
     const { left, right } = this.bg.data.base;
@@ -318,7 +320,7 @@ export class World {
     victim.on_be_collided(attacker, itr, bdy, a_cube, b_cube);
   }
   get_cube(e: FrameAnimater, f: IFrameInfo, i: IItrInfo | IBdyInfo): ICube {
-    const left = e.face > 0 ?
+    const left = e.facing > 0 ?
       e.position.x - f.centerx + i.x :
       e.position.x + f.centerx - i.x - i.w;
     const top = e.position.y + f.centery - i.y;

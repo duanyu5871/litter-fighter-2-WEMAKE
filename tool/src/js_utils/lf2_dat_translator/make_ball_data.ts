@@ -24,7 +24,7 @@ export function make_ball_data(info: IBallInfo, frames: Record<string, IBallFram
       if (frames[40]) frame.on_disappearing = { id: '40' }
     } else if (frame.state === Defines.State.SturdyBall) {
       frame.speedz = 0;
-      frame.no_shadow = 1;
+      // frame.no_shadow = 1;
     } else if (frame.state === Defines.State.PunchThroughBall) {
       frame.speedz = 2;
     } else if (frame.state === 18) {

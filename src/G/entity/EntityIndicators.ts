@@ -31,7 +31,7 @@ export class EntityIndicators {
   protected get scene() { return this._entity.world.scene; };
   protected _box?: THREE.Object3D;
   protected get frame() { return this._entity.get_frame(); }
-  protected get face() { return this._entity.face; }
+  protected get face() { return this._entity.facing; }
   get show() { return this._show; }
   set show(v: boolean) {
     if (this._show === v) return;

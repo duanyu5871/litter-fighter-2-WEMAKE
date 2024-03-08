@@ -17,11 +17,11 @@ const k_9 = [
 
 const set_hit_turn_back = (frame: IFrameInfo, back_frame_id: string = '') => {
   frame.hit = frame.hit || {}
-  frame.hit.B = { id: back_frame_id, wait: 'i', turn: Defines.TurnFlag.Backward }
+  frame.hit.B = { id: back_frame_id, wait: 'i', facing: Defines.FacingFlag.Backward }
 }
 const set_hold_turn_back = (frame: IFrameInfo, back_frame_id: string = '') => {
   frame.hold = frame.hold || {}
-  frame.hold.B = { id: back_frame_id, wait: 'i', turn: Defines.TurnFlag.Backward }
+  frame.hold.B = { id: back_frame_id, wait: 'i', facing: Defines.FacingFlag.Backward }
 }
 export function make_character_data(info: ICharacterInfo, frames: Record<string, ICharacterFrameInfo>): ICharacterData {
   const walking_frame_rate = take_number(info, 'walking_frame_rate', 3);
@@ -55,8 +55,8 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
       if (!frame.hit.sequences) frame.hit.sequences = {};
       const nf = get_next_frame_by_id(next);
       if (k === 'Fa' || k === 'Fj') {
-        frame.hit.sequences['L' + k[1]] = { ...nf, turn: nf.turn === Defines.TurnFlag.Backward ? Defines.TurnFlag.Right : Defines.TurnFlag.Left };
-        frame.hit.sequences['R' + k[1]] = { ...nf, turn: nf.turn === Defines.TurnFlag.Backward ? Defines.TurnFlag.Right : Defines.TurnFlag.Right };
+        frame.hit.sequences['L' + k[1]] = { ...nf, facing: nf.facing === Defines.FacingFlag.Backward ? Defines.FacingFlag.Right : Defines.FacingFlag.Left };
+        frame.hit.sequences['R' + k[1]] = { ...nf, facing: nf.facing === Defines.FacingFlag.Backward ? Defines.FacingFlag.Right : Defines.FacingFlag.Right };
       } else {
         frame.hit.sequences[k] = nf;
       }
@@ -71,7 +71,7 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
         frame.hit.a = { id: ['60', '65'] }; // punch
         frame.hit.j = { id: '210' }; // jump
         frame.hit.d = { id: '110' }; // defend
-        frame.hit.B = frame.hold.B = { id: 'walking_0', turn: Defines.TurnFlag.Backward }; // walking
+        frame.hit.B = frame.hold.B = { id: 'walking_0', facing: Defines.FacingFlag.Backward }; // walking
         frame.hit.F = frame.hit.U = frame.hit.D =
           frame.hold.F = frame.hold.U = frame.hold.D = { id: 'walking_0' }; // walking
         frame.hit.FF = frame.hit.FF = { id: 'running_0' };
@@ -134,11 +134,11 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
 
         if (frame_id === '211') frame.jump_flag = 1;
         if (frame_id === '212') {
-          frame.hit.a = { id: '80', turn: Defines.TurnFlag.ByController }; // jump_atk
-          frame.hold.a = { id: '80', turn: Defines.TurnFlag.ByController }; // jump_atk
+          frame.hit.a = { id: '80', facing: Defines.FacingFlag.ByController }; // jump_atk
+          frame.hold.a = { id: '80', facing: Defines.FacingFlag.ByController }; // jump_atk
         }
-        frame.hit.B = { turn: Defines.TurnFlag.ByController };
-        frame.hold.B = { turn: Defines.TurnFlag.ByController };
+        frame.hit.B = { facing: Defines.FacingFlag.ByController };
+        frame.hold.B = { facing: Defines.FacingFlag.ByController };
         break;
       }
       /** dash */
@@ -159,7 +159,7 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
       }
       case 120: case 121: case 122: case 123: /** catching */
         if (frame.cpoint) {
-          if (frame.cpoint.vaction) (frame.cpoint?.vaction as INextFrame).turn = Defines.TurnFlag.SameAsCatcher;
+          if (frame.cpoint.vaction) (frame.cpoint?.vaction as INextFrame).facing = Defines.FacingFlag.OpposingCatcher;
           if (frame.cpoint.injury) frame.cpoint!.shaking = 1;
           const a_action = take(frame.cpoint, 'aaction');
           const t_action = take(frame.cpoint, 'taction');
@@ -168,8 +168,8 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
           let a_hit_a: INextFrame | undefined;
           if (t_action) {
             t_hit_a = [
-              { ...get_next_frame_by_id(t_action), turn: Defines.TurnFlag.ByController, condition: 'press_F_B != 0' },
-              { ...get_next_frame_by_id(t_action), turn: Defines.TurnFlag.ByController, condition: 'press_U_D != 0' },
+              { ...get_next_frame_by_id(t_action), facing: Defines.FacingFlag.ByController, condition: 'press_F_B != 0' },
+              { ...get_next_frame_by_id(t_action), facing: Defines.FacingFlag.ByController, condition: 'press_U_D != 0' },
             ]
           }
           if (a_action)
@@ -199,22 +199,22 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
 
         break;
       case 232: case 233: case 234:  /** throw_lying_man */
-        if (frame.cpoint?.vaction) (frame.cpoint?.vaction as INextFrame).turn = Defines.TurnFlag.SameAsCatcher;
+        if (frame.cpoint?.vaction) (frame.cpoint?.vaction as INextFrame).facing = Defines.FacingFlag.SameAsCatcher;
         break;
 
       /** crouch */
       case 215:
         const to_dash_frame: TNextFrame = [
-          { id: '213', condition: 'press_F_B == 1', turn: Defines.TurnFlag.ByController },
-          { id: '213', condition: 'press_F_B == -1', turn: Defines.TurnFlag.ByController },
-          { id: '213', condition: 'trend_x == 1', turn: Defines.TurnFlag.ByController },
+          { id: '213', condition: 'press_F_B == 1', facing: Defines.FacingFlag.ByController },
+          { id: '213', condition: 'press_F_B == -1', facing: Defines.FacingFlag.ByController },
+          { id: '213', condition: 'trend_x == 1', facing: Defines.FacingFlag.ByController },
           { id: '214', condition: 'trend_x == -1' }
         ]; // dash
         frame.hit = frame.hit || {};
-        frame.hit.d = { id: '102', turn: Defines.TurnFlag.ByController };
+        frame.hit.d = { id: '102', facing: Defines.FacingFlag.ByController };
         frame.hit.j = to_dash_frame;
         frame.hold = frame.hold || {};
-        frame.hold.d = { id: '102', turn: Defines.TurnFlag.ByController };
+        frame.hold.d = { id: '102', facing: Defines.FacingFlag.ByController };
         frame.hold.j = to_dash_frame;
         break;
     }
@@ -286,12 +286,12 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
     [-1]: ['180'], 1: ['186']
   }
   info.indexes.falling = {
-    [-1]: ['180', '181', '182', '183'],
-    1: ['186', '187', '188', '189'],
+    [-1]: ['181', '182', '183'],
+    1: ['187', '188', '189'],
   };
   info.indexes.bouncing = {
-    [-1]: arithmetic_progression(184, 185).map(v => '' + v),
-    1: arithmetic_progression(190, 191).map(v => '' + v)
+    [-1]: ['184', '185'],
+    1: ['190', '191'],
   }
   info.indexes.landing_1 = '215';
   info.indexes.landing_2 = '219';

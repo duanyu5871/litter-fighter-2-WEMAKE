@@ -1,3 +1,4 @@
+import { TNextFrame } from ".";
 import { ITexturePieceInfos } from "./ITexturePieceInfos";
 
 export interface IItrInfo {
@@ -22,6 +23,6 @@ export interface IItrInfo {
   injury?: number;
   effect?: number;
   indicator_info?: ITexturePieceInfos;
-  catchingact?: string,
-  caughtact?: string
+  catchingact?: TNextFrame,
+  caughtact?: TNextFrame
 }

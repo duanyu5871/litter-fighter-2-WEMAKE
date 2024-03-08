@@ -1,4 +1,4 @@
-import { Warn } from '@fimagine/logger';
+import { Log, Warn } from '@fimagine/logger';
 import * as THREE from 'three';
 import random_get from '../Utils/random_get';
 import { constructor_name } from '../js_utils/constructor_name';
@@ -52,15 +52,16 @@ export class FrameAnimater<
   readonly position = new THREE.Vector3(0, 0, 0);
 
   protected _piece: ITexturePieceInfo = EMPTY_PIECE;
-  protected _face: TFace = 1;
+  protected _facing: TFace = 1;
   protected _frame: F = EMPTY_FRAME_INFO as F;
   protected _next_frame: TNextFrame | undefined = void 0;
   protected _prev_frame: F = EMPTY_FRAME_INFO as F;
 
-  get face() { return this._face; }
-  set face(v: TFace) {
-    if (this._face === v) { return; }
-    this._face = v;
+  get facing() { return this._facing; }
+  set facing(v: TFace) {
+    Log.print(constructor_name(this), 'set face(v), v=', v)
+    if (this._facing === v) { return; }
+    this._facing = v;
     this.update_sprite();
   }
 
@@ -99,12 +100,12 @@ export class FrameAnimater<
   protected update_sprite() {
     const frame = this.get_frame();
     if (
-      this._previous.face === this._face &&
+      this._previous.face === this._facing &&
       this._previous.frame === this._frame
     ) {
       return;
     }
-    this._previous.face = this._face;
+    this._previous.face = this._facing;
     this._previous.frame = this._frame;
 
     const sprite = this.sprite;
@@ -112,9 +113,9 @@ export class FrameAnimater<
     if (typeof piece === 'number' || !('1' in piece)) {
       return;
     }
-    const { cx, cy } = piece[this._face];
-    if (this._piece !== piece[this._face]) {
-      const { x, y, w, h, tex, pw, ph } = this._piece = piece[this._face];
+    const { cx, cy } = piece[this._facing];
+    if (this._piece !== piece[this._facing]) {
+      const { x, y, w, h, tex, pw, ph } = this._piece = piece[this._facing];
       const pic = this.pictures.get('' + tex);
       if (pic) {
         pic.texture.offset.set(x, y);
@@ -181,11 +182,11 @@ export class FrameAnimater<
     return [frame, which];
   }
 
-  handle_turn_flag(turn: number, frame: IFrameInfo, flags: INextFrame) {
+  handle_facing_flag(turn: number, frame: IFrameInfo, flags: INextFrame) {
     switch (turn) {
-      case Defines.TurnFlag.Backward: this._face *= -1; break;
-      case Defines.TurnFlag.Left: this._face = -1; break;
-      case Defines.TurnFlag.Right: this._face = 1; break;
+      case Defines.FacingFlag.Backward: this.facing *= -1; break;
+      case Defines.FacingFlag.Left: this.facing = -1; break;
+      case Defines.FacingFlag.Right: this.facing = 1; break;
     }
   }
   handle_wait_flag(wait: string | number, frame: IFrameInfo, flags: INextFrame) {
@@ -206,15 +207,17 @@ export class FrameAnimater<
     sound && sound_mgr.play(sound, x, y, z);
     this.set_frame(frame);
 
-    if (flags?.turn !== void 0) this.handle_turn_flag(flags.turn, frame, flags);
+    if (flags?.facing !== void 0) this.handle_facing_flag(flags.facing, frame, flags);
     if (flags?.wait !== void 0) this.handle_wait_flag(flags.wait, frame, flags);
     else this.wait = frame.wait;
     this.update_sprite();
     this._next_frame = void 0;
   }
 
-  update() {
+  self_update() {
     if (this._next_frame) this.enter_frame(this._next_frame);
+  }
+  update() {
 
     if (this.wait > 0) { --this.wait; }
     else { this._next_frame = this._frame.next; }
