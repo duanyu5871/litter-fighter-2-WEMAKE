@@ -39,7 +39,7 @@ export namespace Defines {
     Burning = 18,
 
     BurnRun = 19,
-
+    NextAsLanding = 100,
     Z_Moveable = 301,
 
     NormalBall = 3000,

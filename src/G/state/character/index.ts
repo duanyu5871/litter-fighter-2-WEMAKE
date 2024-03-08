@@ -51,3 +51,9 @@ CHARACTER_STATES.set(Defines.State.Z_Moveable, new class extends BaseCharacterSt
     e.handle_frame_velocity();
   }
 }())
+
+CHARACTER_STATES.set(Defines.State.NextAsLanding, new class extends BaseCharacterState {
+  on_landing(e: Character, vx: number, vy: number, vz: number): void {
+    e.enter_frame(e.get_frame().next)
+  }
+}())
