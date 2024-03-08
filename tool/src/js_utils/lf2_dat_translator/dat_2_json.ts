@@ -1,4 +1,5 @@
-import { IBallFrameInfo, IBallInfo, IBaseData, ICharacterInfo, IDatIndex, IGameObjInfo, IWeaponInfo } from '../lf2_type';
+import { IBallInfo, IBaseData, ICharacterInfo, IDatIndex, IGameObjInfo, IWeaponInfo } from '../lf2_type';
+import { IBallFrameInfo } from "../lf2_type/IBallFrameInfo";
 import { match_block_once } from '../match_block';
 import { match_colon_value } from '../match_colon_value';
 import { set_obj_field } from "../set_obj_field";

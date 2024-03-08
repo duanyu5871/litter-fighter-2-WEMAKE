@@ -34,7 +34,7 @@ export default function run(canvas: HTMLCanvasElement, on_load?: () => void) {
       }
     }
     play_character();
-    for (let i = 0; i < 1; ++i) {
+    for (let i = 0; i < 0; ++i) {
       const d = random_get(dat_mgr.characters);
       const e = new Character(world, d)
       if (i === 0)

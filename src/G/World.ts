@@ -182,6 +182,7 @@ export class World {
   update_once() {
     if (this.disposed) return;
     if (!this.bg) return;
+    this.collision_detections();
     for (const e of this.entities) {
       e.update();
       if (e.get_frame().id === GONE_FRAME_INFO.id)
@@ -194,7 +195,6 @@ export class World {
         this.del_game_objs(e);
     }
 
-    this.collision_detections();
     this.update_camera();
     this.bg.update();
   }

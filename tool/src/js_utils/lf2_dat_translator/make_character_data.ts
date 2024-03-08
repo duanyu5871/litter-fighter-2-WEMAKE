@@ -2,7 +2,7 @@ import { arithmetic_progression } from '../arithmetic_progression';
 import { take_number } from '../as_number';
 import { is_num } from '../is_num';
 import { is_str } from '../is_str';
-import { ICharacterData, ICharacterInfo, INextFrame, TNextFrame } from '../lf2_type';
+import { ICharacterData, ICharacterFrameInfo, ICharacterInfo, INextFrame, TNextFrame } from '../lf2_type';
 import { IFrameInfo } from "../lf2_type/IFrameInfo";
 import { Defines } from '../lf2_type/defines';
 import { set_obj_field } from '../set_obj_field';
@@ -23,7 +23,7 @@ const set_hold_turn_back = (frame: IFrameInfo, back_frame_id: string = '') => {
   frame.hold = frame.hold || {}
   frame.hold.B = { id: back_frame_id, wait: 'i', turn: Defines.TurnFlag.Backward }
 }
-export function make_character_data(info: ICharacterInfo, frames: Record<string, IFrameInfo>): ICharacterData {
+export function make_character_data(info: ICharacterInfo, frames: Record<string, ICharacterFrameInfo>): ICharacterData {
   const walking_frame_rate = take_number(info, 'walking_frame_rate', 3);
   const running_frame_rate = take_number(info, 'running_frame_rate', 3);
   const walking_speed = take_number(info, 'walking_speed', 0);
@@ -131,6 +131,8 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
         set_hold_turn_back(frame);
         frame.hit = frame.hit || {};
         frame.hold = frame.hold || {};
+
+        if (frame_id === '211') frame.jump_flag = 1;
         if (frame_id === '212') {
           frame.hit.a = { id: '80', turn: Defines.TurnFlag.ByController }; // jump_atk
           frame.hold.a = { id: '80', turn: Defines.TurnFlag.ByController }; // jump_atk
@@ -142,6 +144,7 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
       /** dash */
       case 213: case 214: case 216: case 217: {
         frame.state = 5;
+        if (frame_id === '213') frame.dash_flag = 1;
         if (frame_id === '213' && frames[214]) set_hit_turn_back(frame, '214'); // turn back;
         if (frame_id === '216' && frames[217]) set_hit_turn_back(frame, '217'); // turn back;
         if (frame_id === '214' && frames[213]) set_hit_turn_back(frame, '213'); // turn back;

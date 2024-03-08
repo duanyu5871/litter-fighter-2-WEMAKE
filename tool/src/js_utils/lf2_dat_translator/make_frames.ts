@@ -1,4 +1,5 @@
 import { delete_val_equal_keys } from '../delete_val_equal_keys';
+import { is_num } from '../is_num';
 import { is_positive_num } from '../is_positive_num';
 import { is_str } from '../is_str';
 import { IBdyInfo, ICpointInfo, IItrInfo, IOpointInfo } from '../lf2_type';
@@ -26,20 +27,20 @@ export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string): Re
     cook_opoint_list(opoint_list);
 
     const wpoint = take_sections(_content, 'wpoint:', 'wpoint_end:', r => _content = r)[0];
-
     const bpoint = take_sections(_content, 'bpoint:', 'bpoint_end:', r => _content = r)[0];
-
     const cpoint = take_sections<ICpointInfo>(_content, 'cpoint:', 'cpoint_end:', r => _content = r)[0];
     cpoint && cook_cpoint(cpoint);
 
     const fields: any = {};
     for (const [name, value] of match_colon_value(_content)) fields[name] = to_num(value);
 
+    const next = get_next_frame_by_id(take(fields, 'next'));
+    const wait = take(fields, 'wait') * 2 + 1;
     const frame: F = {
       id: frame_id,
       name: frame_name,
-      wait: fields.wait * 2 + 2,
-      next: get_next_frame_by_id(fields.next),
+      wait,
+      next,
       bdy: bdy_list,
       itr: itr_list,
       wpoint,
@@ -108,6 +109,9 @@ function cook_cpoint(unsure_cpoint: ICpointInfo) {
 
 function cook_opoint_list(unsure_opoint_list: IOpointInfo[]) {
   for (const item of unsure_opoint_list) {
+    const action = take(item, 'action')
+    if (is_num(action)) item.action = get_next_frame_by_id(action);
+
     const dvx = take(item, 'dvx');
     if (not_zero(dvx)) item.dvx = dvx * 0.5;
 

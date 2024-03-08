@@ -1,9 +1,10 @@
+import { TNextFrame } from ".";
 
 export interface IOpointInfo {
   kind: number;
   x: number;
   y: number;
-  action: string;
+  action: TNextFrame;
   dvx?: number;
   dvy?: number;
   dvz?: number;

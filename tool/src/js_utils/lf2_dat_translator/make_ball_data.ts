@@ -1,4 +1,5 @@
-import { IBallData, IBallFrameInfo, IBallInfo, IDatIndex } from "../lf2_type";
+import { IBallData, IBallInfo, IDatIndex } from "../lf2_type";
+import { IBallFrameInfo } from "../lf2_type/IBallFrameInfo";
 import { Defines } from "../lf2_type/defines";
 import { to_num } from "../to_num";
 import { traversal } from "../traversal";

@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { IBdyInfo, ICharacterData, ICharacterInfo, IFrameInfo, IItrInfo, INextFrame, IOpointInfo, TFace, TNextFrame } from '../../js_utils/lf2_type';
+import { IBdyInfo, ICharacterData, ICharacterFrameInfo, ICharacterInfo, IFrameInfo, IItrInfo, INextFrame, IOpointInfo, TFace, TNextFrame } from '../../js_utils/lf2_type';
 import { Defines } from '../../js_utils/lf2_type/defines';
 import { factory } from '../Factory';
 import type { World } from '../World';
@@ -10,9 +10,9 @@ import { create_picture_by_img_key, image_pool } from '../loader/loader';
 import { CHARACTER_STATES } from '../state/CharacterState';
 import { Ball } from './Ball';
 import { Entity, V_SHAKE } from './Entity';
-import find_direction from './find_frame_direction';
 import { same_face, turn_face } from './face_helper';
-export class Character extends Entity<IFrameInfo, ICharacterInfo, ICharacterData> {
+import find_direction from './find_frame_direction';
+export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, ICharacterData> {
   protected _disposers: (() => void)[] = [];
   controller: IController<Character> = new InvalidController(this);
   protected _resting = 0;
@@ -68,15 +68,6 @@ export class Character extends Entity<IFrameInfo, ICharacterInfo, ICharacterData
     this.world.del_entities(this);
   }
 
-  setup_leniency_hit_a(prev: IFrameInfo | void, curr: IFrameInfo | void) {
-    if (!prev || !curr || this.position.y !== 0) return;
-    if (!Array.isArray(prev.next) && prev.next.id === 'auto') {
-      this.controller._next_punch_ready = 1;
-    }
-    if (curr.state !== Defines.State.Attacking) {
-      this.controller._next_punch_ready = 0;
-    }
-  }
   override on_landing() {
     const { indexes } = this.data.base;
     const f = this.get_frame();
@@ -111,7 +102,18 @@ export class Character extends Entity<IFrameInfo, ICharacterInfo, ICharacterData
         break;
     }
   }
+  override handle_frame_velocity() {
+    super.handle_frame_velocity();
+    const { dvz } = this.get_frame();
+    const { UD1 } = this.controller;
+    if (dvz !== void 0 && dvz !== 0) this.velocity.z = UD1 * dvz;
+  }
   override on_after_update() {
+    const next_frame_0 = this.controller.update();
+    const next_frame_1 = this.update_catching();
+    if (next_frame_1) this._next_frame = next_frame_1;
+    else if (next_frame_0) this._next_frame = next_frame_0;
+
     const { state } = this.get_frame();
     switch (state) {
       case Defines.State.Falling:
@@ -128,18 +130,6 @@ export class Character extends Entity<IFrameInfo, ICharacterInfo, ICharacterData
       }
     }
   }
-  override on_after_state_update(): void {
-    const nf_1 = this.controller.update();
-    const nf_0 = this.update_catching();
-    this._next_frame = nf_1 || nf_0;
-  }
-  override handle_frame_velocity() {
-    super.handle_frame_velocity();
-    const { dvz } = this.get_frame();
-    const { UD1 } = this.controller;
-    if (dvz !== void 0 && dvz !== 0) this.velocity.z = UD1 * dvz;
-  }
-
   update_catching(): TNextFrame | undefined {
     if (!this._catching) return;
     const { cpoint: cpoint_a, pic, centerx: centerx_a, centery: centery_a } = this.get_frame();
@@ -148,7 +138,7 @@ export class Character extends Entity<IFrameInfo, ICharacterInfo, ICharacterData
     const { cpoint: cpoint_b, centerx: centerx_b, centery: centery_b } = this._catching.get_frame();
     if (!cpoint_a || !cpoint_b) return;
 
-    if (cpoint_a.decrease < 0) {
+    if (cpoint_a.decrease && cpoint_a.decrease < 0) {
       this._catching_value += cpoint_a.decrease;
       if (this._catching_value < 0) this._catching_value = 0;
     }
@@ -169,8 +159,6 @@ export class Character extends Entity<IFrameInfo, ICharacterInfo, ICharacterData
     if (cpoint_a.shaking) {
       this._catching._shaking = V_SHAKE;
     }
-
-
     const { throwvx, throwvy, throwvz, x: catch_x, y: catch_y, cover } = cpoint_a;
     const { x: caught_x, y: caught_y } = cpoint_b;
 
@@ -191,9 +179,6 @@ export class Character extends Entity<IFrameInfo, ICharacterInfo, ICharacterData
       else if (cover === 10) this._catching.position.z -= 1;
       this._catching.update_sprite_position();
     }
-
-
-
   }
 
   override update_sprite_position() {
@@ -213,19 +198,17 @@ export class Character extends Entity<IFrameInfo, ICharacterInfo, ICharacterData
     if (!(target instanceof Character)) return;
     if (itr.catchingact === void 0) return;
     this._catching_value = 602;
-    delete this._next_frame;
-    this.enter_frame({ id: itr.catchingact });
     this._catching = target;
     this._resting = 0;
     this._fall_value = 70;
     this._defend_value = 50;
+    this._next_frame = { id: itr.catchingact }
   }
   private start_caught(attacker: Entity, itr: IItrInfo) {
     if (!(attacker instanceof Character)) return;
     if (itr.caughtact === void 0) return;
     this._catcher = attacker;
-    this.enter_frame({ id: itr.caughtact, turn: attacker.face })
-    delete this._next_frame;
+    this._next_frame = { id: itr.caughtact, turn: attacker.face };
   }
   override on_collision(target: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
     super.on_collision(target, itr, bdy, a_cube, b_cube);
@@ -273,15 +256,13 @@ export class Character extends Entity<IFrameInfo, ICharacterInfo, ICharacterData
       if (this._defend_value <= 0) { // 破防
         this._defend_value = 0;
         this.world.spark(spark_x, spark_y, spark_z, "broken_defend")
-        this.enter_frame({ id: indexes.broken_defend })
-        this._next_frame = void 0;
+        this._next_frame = { id: indexes.broken_defend }
         return;
       }
 
       if (itr.dvx) this.velocity.x = itr.dvx * aface / 2;
       this.world.spark(spark_x, spark_y, spark_z, "defend_hit")
-      this.enter_frame({ id: indexes.defend_hit })
-      this._next_frame = void 0;
+      this._next_frame = { id: indexes.defend_hit }
       return;
     }
 
@@ -303,21 +284,18 @@ export class Character extends Entity<IFrameInfo, ICharacterInfo, ICharacterData
         itr.effect === Defines.ItrEffect.MFire3
       ) {
         // TODO: SOUND
-        this.enter_frame({ id: indexes.fire[0], turn: turn_face(attacker.face) })
-        this._next_frame = void 0;
+        this._next_frame = { id: indexes.fire[0], turn: turn_face(attacker.face) }
         return;
       } else if (itr.effect === Defines.ItrEffect.Ice) {
         // TODO: SOUND
-        this.enter_frame({ id: indexes.ice, turn: turn_face(attacker.face) })
-        this._next_frame = void 0;
-        return;
+        this._next_frame = { id: indexes.ice, turn: turn_face(attacker.face) }
+        return
       } else if (itr.effect === Defines.ItrEffect.Sharp) {
         this.world.spark(spark_x, spark_y, spark_z, "critical_bleed");
       } else {
         this.world.spark(spark_x, spark_y, spark_z, "critical_hit")
       }
-      this.enter_frame({ id: indexes.critical_hit[f][0] })
-      this._next_frame = void 0;
+      this._next_frame = { id: indexes.critical_hit[f][0] }
       return;
     }
 
@@ -330,13 +308,11 @@ export class Character extends Entity<IFrameInfo, ICharacterInfo, ICharacterData
       itr.effect === Defines.ItrEffect.MFire3
     ) {
       // TODO: SOUND
-      this.enter_frame({ id: indexes.fire[0], turn: turn_face(attacker.face) })
-      this._next_frame = void 0;
+      this._next_frame = { id: indexes.fire[0], turn: turn_face(attacker.face) }
       return;
     } else if (itr.effect === Defines.ItrEffect.Ice) {
       // TODO: SOUND
-      this.enter_frame({ id: indexes.ice, turn: turn_face(attacker.face) })
-      this._next_frame = void 0;
+      this._next_frame = { id: indexes.ice, turn: turn_face(attacker.face) }
       return;
     } else if (itr.effect === Defines.ItrEffect.Sharp) {
       this.world.spark(spark_x, spark_y, spark_z, "bleed")
@@ -346,13 +322,11 @@ export class Character extends Entity<IFrameInfo, ICharacterInfo, ICharacterData
 
     /* 击晕 */
     if (this._fall_value <= 20) {
-      this.enter_frame({ id: indexes.dizzy });
-      this._next_frame = void 0;
+      this._next_frame = { id: indexes.dizzy };
       return;
     }
     /* 击中 */
-    this.enter_frame({ id: indexes.grand_injured[same_face(this, attacker)][0] })
-    this._next_frame = void 0;
+    this._next_frame = { id: indexes.grand_injured[same_face(this, attacker)][0] }
   }
 
   override spawn_object(opoint: IOpointInfo) {

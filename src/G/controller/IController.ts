@@ -9,9 +9,6 @@ export interface IController<Entity> {
   get LR1(): -1 | 0 | 1;
   get UD1(): -1 | 0 | 1;
 
-  _need_punch: number;
-  _next_punch_ready: number;
-
   character: Entity;
 
   dispose(): void;

@@ -1,5 +1,7 @@
+import { IBallFrameInfo } from "./IBallFrameInfo";
 import { IBgInfo } from "./IBgInfo";
 import { IBgLayerInfo } from "./IBgLayerInfo";
+import { ICharacterFrameInfo } from "./ICharacterFrameInfo";
 import { IFrameInfo } from "./IFrameInfo";
 
 export type TTODO = any;
@@ -119,16 +121,8 @@ export * from './ICpointInfo';
 export * from './IOpointInfo';
 export * from './IWpointInfo';
 export * from './IFrameInfo';
-
-export interface IBallFrameInfo extends IFrameInfo {
-  no_shadow?: number;
-  on_disappearing?: TNextFrame;
-  on_rebounding?: TNextFrame;
-  on_be_hit?: TNextFrame;
-  on_hitting?: TNextFrame;
-  on_dead?: TNextFrame;
-  speedz?: number;
-}
+export * from './ICharacterFrameInfo';
+export * from './IBallFrameInfo';
 
 export interface IGameObjInfo {
   files: Record<string, IEntityPictureInfo>;
@@ -188,7 +182,7 @@ export interface IGameObjData<
 export interface IEntityData extends IGameObjData<IGameObjInfo, IFrameInfo> {
   type: 'entity';
 }
-export interface ICharacterData extends IGameObjData<ICharacterInfo, IFrameInfo> {
+export interface ICharacterData extends IGameObjData<ICharacterInfo, ICharacterFrameInfo> {
   type: 'character';
 }
 export interface IWeaponData extends IGameObjData<IWeaponInfo, IFrameInfo> {

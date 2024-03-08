@@ -40,7 +40,6 @@ export class Entity<
 
   protected _motionless: number = 0
   protected _shaking: number = 0;
-  protected _next_frame?: TNextFrame;
   protected _indicators: EntityIndicators | undefined = new EntityIndicators(this);
   protected _state: BaseState | undefined;
   get shaking() { return this._shaking; }
@@ -59,14 +58,14 @@ export class Entity<
     y = y + shotter_frame.centery - o.y;
     x = x - shotter.face * (shotter_frame.centerx - o.x);
     this.position.set(x, y, z);
-    this.enter_frame(o.action ?? 'auto');
+    this.enter_frame(o.action);
     return this;
   }
   override set_frame(v: F) {
-    const prev_state = this.get_frame().state;
     super.set_frame(v);
-    const next_state = this.get_frame().state;
-    if (prev_state !== next_state && next_state !== void 0) {
+    const prev_state = this._prev_frame.state;
+    const next_state = this._frame.state;
+    if (prev_state !== next_state) {
       this.state = this.states.get(next_state) || this.states.get(Defines.State.Any);
     }
     if (v.opoint) {
@@ -165,45 +164,30 @@ export class Entity<
       )
         this.velocity.x = next_speed;
     };
-    if (dvy !== void 0) this.velocity.y += -dvy;
+    if (dvy !== void 0) this.velocity.y += dvy;
     if (dvz !== void 0) this.velocity.z = dvz;
   }
   update() {
-    if (this._next_frame) {
-      this.enter_frame(this._next_frame);
-      delete this._next_frame;
-    }
-    this.on_before_update?.();
-    this.on_before_state_update?.();
+    super.update();
     this.state?.update(this);
-    this.on_after_state_update?.();
-
-    if (this._next_frame) {
-      this.enter_frame(this._next_frame);
-      delete this._next_frame;
-    }
     if (!this._shaking && !this._motionless)
       this.position.add(this.velocity);
     if (this._motionless > 0) {
+      ++this.wait;
       --this._motionless;
     } else if (this._shaking > 0) {
+      ++this.wait;
       --this._shaking;
       this.update_sprite();
-    } else if (this.wait > 0) {
-      --this.wait;
-    };
+    }
     this.v_rests.forEach((v, k, m) => { v.remain > 1 ? v.remain-- : m.delete(k) });
     this.a_rest > 1 ? this.a_rest-- : this.a_rest = 0;
 
     this.on_after_update?.();
-
-    if (this.position.y <= 0) {
+    if (this.position.y <= 0 && this.velocity.y < 0) {
       this.position.y = 0;
-      if (this.velocity.y < 0) {
-        this.velocity.y = this.on_landing?.() ?? 0;
-      }
+      this.velocity.y = this.on_landing?.() ?? 0;
     }
-    this.update_sprite_position();
   }
 
   override update_sprite_position(): void {
@@ -213,10 +197,7 @@ export class Entity<
     this.shadow.position.set(x, - z / 2, z);
 
   }
-  on_before_state_update?(): void;
-  on_after_state_update?(): void;
   on_landing?(): number | void | undefined;
-  on_before_update?(): void;
   on_after_update?(): void;
 
 

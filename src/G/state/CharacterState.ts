@@ -10,15 +10,11 @@ export const CHARACTER_STATES = new Map<number, BaseState<Character>>()
 class BaseCharacterState extends BaseState<Character> {
   update(e: Character): void {
     this.begin(e);
-    this.end(e);
   }
   begin(e: Character) {
     e.on_gravity();
     e.velocity_decay();
     e.handle_frame_velocity();
-  }
-  end(e: Character) {
-    e.goto_next_frame_when_need();
   }
 }
 
@@ -38,7 +34,6 @@ CHARACTER_STATES.set(Defines.State.Walking, new class extends BaseCharacterState
     if (!LRUD && !e.wait) {
       e.enter_frame({ id: e.data.base.indexes.standing });
     }
-    super.end(e)
   }
 })
 CHARACTER_STATES.set(Defines.State.Running, new class extends BaseCharacterState {
@@ -51,29 +46,23 @@ CHARACTER_STATES.set(Defines.State.Running, new class extends BaseCharacterState
     const speed_x = e.face * (dvx - Math.abs(speed_z))
     e.velocity.x = speed_x;
     e.velocity.z = speed_z;
-    super.end(e)
   }
 })
-CHARACTER_STATES.set(Defines.State.Attacking, new class extends BaseCharacterState {
-  update(e: Character): void {
-    super.begin(e);
-    const [prev, curr] = e.goto_next_frame_when_need();
-    e.setup_leniency_hit_a(prev, curr)
-  }
-})
+CHARACTER_STATES.set(Defines.State.Attacking, new class extends BaseCharacterState { })
 CHARACTER_STATES.set(Defines.State.Jump, new class extends BaseCharacterState {
+  _jump_flags = new Map<string, 1>();
   update(e: Character): void {
     super.begin(e);
-    const [prev, curr] = e.goto_next_frame_when_need();
-    if (prev !== curr && !Array.isArray(curr?.next) && curr?.next.id === 'self') {
+    const { jump_flag } = e.get_prev_frame();
+    if (jump_flag && !this._jump_flags.has(e.id)) {
       const { jump_height: h, jump_distance: dx, jump_distancez: dz } = e.data.base;
-
       e.velocity.y = World.DEFAULT_GRAVITY * Math.sqrt(2 * h / World.DEFAULT_GRAVITY);
-      const { LR, UD } = e.controller;
-      if (LR < 0) e.velocity.x = -dx;
-      else if (LR > 0) e.velocity.x = dx;
-      if (UD < 0) e.velocity.z = -dz;
-      else if (UD > 0) e.velocity.z = dz;
+      const { LR1, UD1 } = e.controller;
+      e.velocity.x = LR1 * dx;
+      e.velocity.z = UD1 * dz;
+      this._jump_flags.set(e.id, 1)
+    } else if (!jump_flag) {
+      this._jump_flags.delete(e.id)
     }
   }
 })
@@ -127,8 +116,6 @@ CHARACTER_STATES.set(Defines.State.Falling, new class extends BaseCharacterState
     } else {
       e.velocity_decay();
     }
-
-
     e.handle_frame_velocity();
   }
   update(e: Character): void {

@@ -1,7 +1,7 @@
+import { Warn } from '@fimagine/logger';
 import * as THREE from 'three';
 import random_get from '../Utils/random_get';
 import { constructor_name } from '../js_utils/constructor_name';
-import { is_num } from '../js_utils/is_num';
 import { is_positive_num } from '../js_utils/is_positive_num';
 import { is_str } from '../js_utils/is_str';
 import { IFrameInfo, IGameObjData, IGameObjInfo, INextFrame, ITexturePieceInfo, TFace, TNextFrame } from '../js_utils/lf2_type';
@@ -10,7 +10,6 @@ import { IPictureInfo } from '../types/IPictureInfo';
 import type { World } from './World';
 import { sound_mgr } from './loader/SoundMgr';
 import create_pictures from './loader/create_pictures';
-import { Warn } from '@fimagine/logger';
 
 export const EMPTY_PIECE: ITexturePieceInfo = {
   tex: 0, x: 0, y: 0, w: 0, h: 0, cx: 0, cy: 0,
@@ -54,8 +53,9 @@ export class FrameAnimater<
 
   protected _piece: ITexturePieceInfo = EMPTY_PIECE;
   protected _face: TFace = 1;
-  private _frame: F = EMPTY_FRAME_INFO as F;
-  private _prev_frame: F = EMPTY_FRAME_INFO as F;
+  protected _frame: F = EMPTY_FRAME_INFO as F;
+  protected _next_frame: TNextFrame | undefined = void 0;
+  protected _prev_frame: F = EMPTY_FRAME_INFO as F;
 
   get face() { return this._face; }
   set face(v: TFace) {
@@ -88,7 +88,6 @@ export class FrameAnimater<
     this.sprite.position.set(x, y - z / 2, z,);
   }
   attach(): this {
-    this.update_sprite_position();
     this.update_sprite();
     this.world.add_game_objs(this);
     return this;
@@ -127,7 +126,7 @@ export class FrameAnimater<
       sprite.scale.set(pw, ph, 1);
     }
     sprite.center.set(cx, cy);
-
+    this.update_sprite_position();
   }
 
   find_auto_frame(): F {
@@ -135,7 +134,10 @@ export class FrameAnimater<
     return this.get_frame();
   }
 
-  find_frame_by_id(id: string | undefined): F {
+  find_frame_by_id(id: string | undefined): F;
+  find_frame_by_id(id: string | undefined, exact: true): F | undefined;
+  find_frame_by_id(id: string | undefined, exact: boolean = false): F | undefined {
+    if (exact) return id ? this.data.frames[id] : void 0;
     switch (id) {
       case void 0:
       case Defines.ReservedFrameId.None:
@@ -194,7 +196,11 @@ export class FrameAnimater<
   }
   enter_frame(which: TNextFrame | string): void {
     const [frame, flags] = this.get_next_frame(which);
-    if (!frame) return Warn.print(constructor_name(this), 'enter_frame(which), next frame not found! which:', which);
+    if (!frame) {
+      this._next_frame = void 0;
+      Warn.print(constructor_name(this), 'enter_frame(which), next frame not found! which:', which);
+      return
+    }
     const { sound } = frame;
     const { x, y, z } = this.position;
     sound && sound_mgr.play(sound, x, y, z);
@@ -204,19 +210,15 @@ export class FrameAnimater<
     if (flags?.wait !== void 0) this.handle_wait_flag(flags.wait, frame, flags);
     else this.wait = frame.wait;
     this.update_sprite();
-  }
-
-  goto_next_frame_when_need() {
-    const old = this.get_frame();
-    if (old && !this.wait)
-      this.enter_frame(old.next);
-    return [old, this.get_frame()] as const;
+    this._next_frame = void 0;
   }
 
   update() {
-    this.goto_next_frame_when_need();
+    if (this._next_frame) this.enter_frame(this._next_frame);
+
+    if (this.wait > 0) { --this.wait; }
+    else { this._next_frame = this._frame.next; }
     this.update_sprite_position();
-    if (this.wait > 0) --this.wait;
   }
 
   dispose(): void { }
