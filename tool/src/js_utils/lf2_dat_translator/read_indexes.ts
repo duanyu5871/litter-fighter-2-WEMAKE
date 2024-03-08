@@ -3,7 +3,6 @@ import { match_block_once } from '../match_block';
 import { match_colon_value } from '../match_colon_value';
 import { to_num } from '../to_num';
 
-
 export function read_indexes(text: string | undefined | null): IDataLists | undefined {
   if (!text) return void 0;
 

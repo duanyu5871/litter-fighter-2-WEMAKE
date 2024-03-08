@@ -1,4 +1,5 @@
-import { IFrameInfo, IWeaponData, IWeaponInfo } from '../lf2_type';
+import { IWeaponData, IWeaponInfo } from '../lf2_type';
+import { IFrameInfo } from "../lf2_type/IFrameInfo";
 import { match_all } from '../match_all';
 import { match_block_once } from '../match_block';
 import { match_colon_value } from '../match_colon_value';

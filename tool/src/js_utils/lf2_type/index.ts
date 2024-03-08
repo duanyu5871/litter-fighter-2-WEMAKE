@@ -1,13 +1,6 @@
-import { IBdyInfo } from "./IBdyInfo";
 import { IBgInfo } from "./IBgInfo";
 import { IBgLayerInfo } from "./IBgLayerInfo";
-import { IBpointInfo } from "./IBpointInfo";
-import { ICpointInfo } from "./ICpointInfo";
-import { IFramePictureInfo } from "./IFramePictureInfo";
-import { IItrInfo } from "./IItrInfo";
-import { IOpointInfo } from "./IOpointInfo";
-import { ITexturePieceInfos } from "./ITexturePieceInfos";
-import { IWpointInfo } from "./IWpointInfo";
+import { IFrameInfo } from "./IFrameInfo";
 
 export type TTODO = any;
 export type TFace = -1 | 1;
@@ -125,31 +118,7 @@ export * from './IBpointInfo';
 export * from './ICpointInfo';
 export * from './IOpointInfo';
 export * from './IWpointInfo';
-
-export interface IFrameInfo {
-  id: string;
-  name: string;
-  pic: number | IFramePictureInfo | ITexturePieceInfos;
-  state: number;
-  wait: number;
-  next: TNextFrame;
-  dvx?: number;
-  dvy?: number;
-  dvz?: number;
-  centerx: number;
-  centery: number;
-  sound?: string;
-  mp?: number;
-  hp?: number;
-  hold?: IHoldKeyCollection;
-  hit?: IHitKeyCollection;
-  bdy?: IBdyInfo[];
-  itr?: IItrInfo[];
-  wpoint?: IWpointInfo;
-  bpoint?: IBpointInfo;
-  opoint?: IOpointInfo[];
-  cpoint?: ICpointInfo;
-}
+export * from './IFrameInfo';
 
 export interface IBallFrameInfo extends IFrameInfo {
   no_shadow?: number;
