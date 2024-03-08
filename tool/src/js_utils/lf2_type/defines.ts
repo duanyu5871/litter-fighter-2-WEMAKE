@@ -36,7 +36,12 @@ export namespace Defines {
     Tired = 16,
 
     // 15,
-    Flame = 18,
+    Burning = 18,
+
+    BurnRun = 19,
+
+    Z_Moveable = 301,
+
     NormalBall = 3000,
     BallHitting = 3001,
     BallFlying4 = 3002,

@@ -87,7 +87,7 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
         frame.hit.d = { id: '110' }; // defend
         frame.hit.FF = { id: 'running_0' };
         frame.dvx = walking_speed / 2;
-        frame.dvz = walking_speedz / 2;
+        frame.dvz = walking_speedz;
         break;
       }
       /** running */
@@ -219,6 +219,10 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
         break;
     }
     switch (frame.state) {
+      case Defines.State.BurnRun:
+      case Defines.State.Z_Moveable:
+        frame.dvz = running_speedz;
+        break;
       case 1: case 2: {
         if (frame.state === 1) frame.wait = walking_frame_rate * 2;
         if (frame.state === 2) frame.wait = running_frame_rate * 2;

@@ -6,9 +6,9 @@ export default class Walking extends BaseCharacterState {
     e.on_gravity();
     e.velocity_decay();
     const { dvx = 0, dvz = 0 } = e.get_frame();
-    const { UD, LR, LRUD } = e.controller;
-    const speed_z = UD * dvz;
-    const speed_x = (LR / 2) * (dvx - Math.abs(speed_z / 4));
+    const { UD1, LR1, LRUD } = e.controller;
+    const speed_z = UD1 * dvz;
+    const speed_x = LR1 * (dvx - Math.abs(speed_z / 4));
     if (speed_x) e.velocity.x = speed_x;
     if (speed_z) e.velocity.z = speed_z;
     if (!LRUD && !e.wait) {

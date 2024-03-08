@@ -269,8 +269,26 @@ export class World {
           case Defines.ItrKind.Fly:
           case Defines.ItrKind.Ice:
         }
+        if (bf.state === Defines.State.BurnRun) {
+          switch (itr.effect) {
+            case Defines.ItrEffect.MFire1:
+            case Defines.ItrEffect.MFire2:
+              continue;
+          }
+        }
+        if (bf.state === Defines.State.Burning) {
+          switch (itr.effect) {
+            case Defines.ItrEffect.MFire1:
+            case Defines.ItrEffect.MFire2:
+              continue;
+            case Defines.ItrEffect.Fire:
+              if (af.state === Defines.State.BurnRun)
+                continue;
+          }
+        }
+
+        if (itr.effect === Defines.ItrEffect.Through) continue;
         if (
-          (itr.effect === 4) || // todo
           (a.team === b.team && !itr.friendly_fire && !bdy.friendly_fire)
         ) continue;
 
