@@ -1,3 +1,4 @@
+import { Warn } from '../../Log';
 import { IEntityPictureInfo, IFrameInfo, IGameObjData, ITexturePieceInfo } from '../../js_utils/lf2_type';
 import { IRect } from '../../js_utils/lf2_type/IRect';
 import { traversal } from '../../js_utils/traversal';

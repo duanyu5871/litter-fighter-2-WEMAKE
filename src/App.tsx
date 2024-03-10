@@ -9,6 +9,7 @@ import './init';
 import lf2_dat_str_to_json from './js_utils/lf2_dat_translator/dat_2_json';
 import read_lf2_dat from './read_lf2_dat';
 import { Defines } from './js_utils/lf2_type/defines';
+import { Log, Warn } from './Log';
 
 function App() {
   const _canvas_ref = useRef<HTMLCanvasElement>(null)

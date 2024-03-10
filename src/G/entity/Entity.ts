@@ -11,6 +11,7 @@ import { dat_mgr } from '../loader/DatLoader';
 import { create_picture_by_img_key } from '../loader/loader';
 import BaseState from "../state/BaseState";
 import { EntityIndicators } from './EntityIndicators';
+import { Log, Warn } from '../../Log';
 export type TData = IBaseData | ICharacterData | IWeaponData | IEntityData | IBallData
 export const V_SHAKE = 4;
 export const A_SHAKE = 6;

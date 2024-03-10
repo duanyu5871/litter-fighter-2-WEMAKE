@@ -1,3 +1,4 @@
+import { Warn } from '../../Log';
 import { TNextFrame } from '../../js_utils/lf2_type';
 import { Character } from '../entity/Character';
 import { get_number_predicate } from './get_number_predicate';

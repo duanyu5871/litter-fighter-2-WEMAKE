@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { Defines } from '.././js_utils/lf2_type/defines';
+import { Log } from '../Log';
 import { IBdyInfo, IFrameInfo, IItrInfo } from '../js_utils/lf2_type';
 import { Background } from './Background';
 import { FrameAnimater } from './FrameAnimater';

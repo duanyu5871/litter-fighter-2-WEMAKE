@@ -1,3 +1,4 @@
+import { Log, Warn } from '../../Log';
 import { IBallData, IBgData, ICharacterData, IDataMap, IEntityData, IGameObjData, IWeaponData } from '../../js_utils/lf2_type';
 import { map, traversal } from '../../js_utils/traversal';
 import { TData } from '../entity/Entity';

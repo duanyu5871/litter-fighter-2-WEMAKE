@@ -13,6 +13,7 @@ import { Ball } from './Ball';
 import { Entity } from './Entity';
 import { same_face, turn_face } from './face_helper';
 import { PlayerController } from '../controller/PlayerController';
+import { Log, Warn } from '../../Log';
 export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, ICharacterData> {
   protected _disposers: (() => void)[] = [];
   controller: IController<Character> = new InvalidController(this);
