@@ -10,6 +10,7 @@ import './entity/Weapon';
 import { Character } from './entity/Character';
 import { Entity } from './entity/Entity';
 import { dat_mgr } from './loader/DatLoader';
+import { Weapon } from './entity/Weapon';
 export interface ICube {
   left: number;
   right: number;
@@ -301,10 +302,12 @@ export class World {
 
         if (!itr.vrest && a.a_rest) { Log.print(af.name, 'a.a_rest = ', a.a_rest); continue; }
         if (itr.vrest && b.v_rests.has(a.id)) { Log.print(af.name, 1, b.v_rests.get(a.id)?.remain); continue; }
-        if ((!itr.fall || itr.fall < 60) && b.get_frame().state === Defines.State.Falling) {
+        if ((!itr.fall || itr.fall < 60) && bf.state === Defines.State.Falling) {
           Log.print(af.name, 2); continue;
         }
-
+        if (af.state === Defines.State.Weapon_OnHand && a instanceof Weapon) {
+          if (!a.holder?.get_frame().wpoint?.attacking) continue;
+        }
         const r0 = this.get_cube(a, af, itr);
         const r1 = this.get_cube(b, bf, bdy);
         if (

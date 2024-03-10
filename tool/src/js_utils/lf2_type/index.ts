@@ -6,6 +6,7 @@ import { ICharacterFrameIndexes } from "./ICharacterFrameIndexes";
 import { ICharacterFrameInfo } from "./ICharacterFrameInfo";
 import { ICharacterInfo } from "./ICharacterInfo";
 import { IFrameInfo } from "./IFrameInfo";
+import { IItrInfo } from "./IItrInfo";
 import { IWeaponFrameIndexes } from "./IWeaponFrameIndexes";
 import { IWeaponInfo } from "./IWeaponInfo";
 import type { Defines } from "./defines";
@@ -163,7 +164,7 @@ export interface ICharacterData extends IGameObjData<ICharacterInfo, ICharacterF
 }
 export interface IWeaponData extends IGameObjData<IWeaponInfo, IFrameInfo> {
   type: 'weapon';
-  weapon_strength?: TTODO;
+  weapon_strength?: { [x in string]: Partial<IItrInfo> & { id: string, name: string } };
   indexes: IWeaponFrameIndexes;
 }
 export interface IBallData extends IGameObjData<IBallInfo, IBallFrameInfo> {

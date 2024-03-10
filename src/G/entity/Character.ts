@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { Log, Warn } from '../../Log';
 import { constructor_name } from '../../js_utils/constructor_name';
 import { IBdyInfo, ICharacterData, ICharacterFrameInfo, ICharacterInfo, IFrameInfo, IItrInfo, INextFrame, IOpointInfo, TNextFrame } from '../../js_utils/lf2_type';
 import { Defines } from '../../js_utils/lf2_type/defines';
@@ -12,8 +13,6 @@ import { CHARACTER_STATES } from '../state/character';
 import { Ball } from './Ball';
 import { Entity } from './Entity';
 import { same_face, turn_face } from './face_helper';
-import { PlayerController } from '../controller/PlayerController';
-import { Log, Warn } from '../../Log';
 export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, ICharacterData> {
   protected _disposers: (() => void)[] = [];
   controller: IController<Character> = new InvalidController(this);

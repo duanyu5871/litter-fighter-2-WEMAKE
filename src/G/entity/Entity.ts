@@ -1,7 +1,8 @@
 import * as THREE from 'three';
+import { Log, Warn } from '../../Log';
 import { constructor_name } from '../../js_utils/constructor_name';
 import { is_nagtive_num } from '../../js_utils/is_nagtive_num';
-import { IBallData, IBaseData, IBdyInfo, ICharacterData, IEntityData, IFrameInfo, IGameObjData, IGameObjInfo, IItrInfo, IOpointInfo, IWeaponData, TFace, TNextFrame } from '../../js_utils/lf2_type';
+import { IBallData, IBaseData, IBdyInfo, ICharacterData, IEntityData, IFrameInfo, IGameObjData, IGameObjInfo, IItrInfo, IOpointInfo, IWeaponData, TNextFrame } from '../../js_utils/lf2_type';
 import { Defines } from '../../js_utils/lf2_type/defines';
 import { factory } from '../Factory';
 import { FrameAnimater } from '../FrameAnimater';
@@ -11,7 +12,7 @@ import { dat_mgr } from '../loader/DatLoader';
 import { create_picture_by_img_key } from '../loader/loader';
 import BaseState from "../state/BaseState";
 import { EntityIndicators } from './EntityIndicators';
-import { Log, Warn } from '../../Log';
+import type { Weapon } from './Weapon';
 import { turn_face } from './face_helper';
 export type TData = IBaseData | ICharacterData | IWeaponData | IEntityData | IBallData
 export const V_SHAKE = 4;
@@ -75,6 +76,7 @@ export class Entity<
 
     return this;
   }
+
   override set_frame(v: F) {
     super.set_frame(v);
     const prev_state = this._prev_frame.state;
@@ -91,6 +93,7 @@ export class Entity<
       }
     }
   }
+  
   spawn_object(opoint: IOpointInfo, speed_z: number = 0): Entity | undefined {
     const d = dat_mgr.find(opoint.oid);
     if (!d) {
@@ -185,6 +188,7 @@ export class Entity<
   }
   override self_update(): void {
     super.self_update();
+    this.weapon?.follow_holder();
     const { cpoint } = this._frame;
     if (cpoint && is_nagtive_num(cpoint.decrease)) {
       this._catching_value += cpoint.decrease;
@@ -221,6 +225,7 @@ export class Entity<
     }
   }
 
+  weapon?: Weapon;
 
   protected _catching?: Entity;
   protected _catcher?: Entity;

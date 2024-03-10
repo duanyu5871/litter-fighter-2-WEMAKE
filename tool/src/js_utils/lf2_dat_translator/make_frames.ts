@@ -129,7 +129,7 @@ function cook_opoint_list(unsure_opoint_list: IOpointInfo[]) {
         Defines.FacingFlag.Backward :
         Defines.FacingFlag.None;
       if (Math.abs(facing) >= 10) {
-        item.multi = Math.floor(facing / 10);
+        item.multi = Math.floor(facing /  10);
       }
     } else {
       item.facing = Defines.FacingFlag.None;
