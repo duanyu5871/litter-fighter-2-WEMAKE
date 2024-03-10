@@ -2,7 +2,8 @@ import { arithmetic_progression } from '../arithmetic_progression';
 import { take_number } from '../as_number';
 import { is_num } from '../is_num';
 import { is_str } from '../is_str';
-import { ICharacterData, ICharacterFrameInfo, ICharacterInfo, INextFrame, TNextFrame } from '../lf2_type';
+import { ICharacterData, ICharacterFrameIndexes, ICharacterFrameInfo, INextFrame, TNextFrame } from '../lf2_type';
+import { ICharacterInfo } from "../lf2_type/ICharacterInfo";
 import { IFrameInfo } from "../lf2_type/IFrameInfo";
 import { Defines } from '../lf2_type/defines';
 import { set_obj_field } from '../set_obj_field';
@@ -248,62 +249,65 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
   for (const key in round_trip_frames_map)
     make_round_trip_frames(key, round_trip_frames_map[key]);
 
-  info.indexes = {} as any;
-  info.indexes.standing = '0';
-  info.indexes.running = "running_0";
-  info.indexes.heavy_obj_run = "heavy_obj_run_0";
-  info.indexes.super_punch = '70';
-  info.indexes.defend_hit = '111';
-  info.indexes.broken_defend = '112';
-  info.indexes.picking_light = '115';
-  info.indexes.picking_heavy = '117';
-  info.indexes.weapen_atk = ['20', '25'];
-  info.indexes.jump_weapen_atk = '30';
-  info.indexes.run_weapen_atk = '35';
-  info.indexes.dash_weapen_atk = '40';
-  info.indexes.l_weapen_thw = '45';
-  info.indexes.h_weapen_thw = '50';
-  info.indexes.air_weapon_thw = '52';
-  info.indexes.drink = '55';
-  info.indexes.ice = '200';
-  info.indexes.fire = ['203', '205'];
-  info.indexes.air_quick_rise = ['100', '108'];
-  info.indexes.injured = {
-    [-1]: '220',
-    1: '222',
+  const indexes: ICharacterFrameIndexes = {
+    standing: '0',
+    running: "running_0",
+    heavy_obj_run: "heavy_obj_run_0",
+    super_punch: '70',
+    defend_hit: '111',
+    broken_defend: '112',
+    picking_light: '115',
+    picking_heavy: '117',
+    weapen_atk: ['20', '25'],
+    jump_weapen_atk: '30',
+    run_weapen_atk: '35',
+    dash_weapen_atk: '40',
+    l_weapen_thw: '45',
+    h_weapen_thw: '50',
+    air_weapon_thw: '52',
+    drink: '55',
+    ice: '200',
+    fire: ['203', '205'],
+    air_quick_rise: ['100', '108'],
+    injured: {
+      [-1]: '220',
+      1: '222',
+    },
+    dizzy: '226',
+    lying: {
+      [-1]: '230',
+      1: '231',
+    },
+    grand_injured: {
+      [-1]: ['220'],
+      1: ['222']
+    },
+    in_the_air: ['212'],
+    throw_enemy: '232',
+    catch: ['120'],
+    catch_atk: '121',
+    caughts: arithmetic_progression(130, 144).map(v => '' + v),
+    critical_hit: {
+      [-1]: ['180'], 1: ['186']
+    },
+    falling: {
+      [-1]: ['181', '182', '183'],
+      1: ['187', '188', '189'],
+    },
+    bouncing: {
+      [-1]: ['184', '185'],
+      1: ['190', '191'],
+    },
+    landing_1: '215',
+    landing_2: '219',
   };
-  info.indexes.dizzy = '226';
-  info.indexes.lying = {
-    [-1]: '230',
-    1: '231',
-  };
-  info.indexes.grand_injured = {
-    [-1]: ['220'],
-    1: ['222']
-  };
-  info.indexes.in_the_air = ['212'];
-  info.indexes.throw_enemy = '232';
-  info.indexes.catch = ['120'];
-  info.indexes.catch_atk = '121';
-  info.indexes.caughts = arithmetic_progression(130, 144).map(v => '' + v);
-  info.indexes.critical_hit = {
-    [-1]: ['180'], 1: ['186']
-  }
-  info.indexes.falling = {
-    [-1]: ['181', '182', '183'],
-    1: ['187', '188', '189'],
-  };
-  info.indexes.bouncing = {
-    [-1]: ['184', '185'],
-    1: ['190', '191'],
-  }
-  info.indexes.landing_1 = '215';
-  info.indexes.landing_2 = '219';
+
 
   return {
     id: '',
     type: 'character',
     base: info,
-    frames
+    indexes,
+    frames,
   };
 }

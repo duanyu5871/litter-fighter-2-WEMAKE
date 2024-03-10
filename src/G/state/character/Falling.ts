@@ -7,7 +7,7 @@ export default class Falling extends BaseCharacterState {
   _ignore_frames = new Map<string | number, Set<string>>();
   enter(e: Character, prev_frame: IFrameInfo): void {
     super.enter(e, prev_frame);
-    const { id: data_id, base: { indexes: { bouncing } } } = e.data;
+    const { id: data_id, indexes: { bouncing } } = e.data;
     if (!this._ignore_frames.has(data_id)) {
       this._ignore_frames.set(data_id, new Set([...bouncing[1], ...bouncing[-1]]));
     }
@@ -27,7 +27,7 @@ export default class Falling extends BaseCharacterState {
   update(e: Character): void {
     super.update(e);
     if (e.shaking > 0) return;
-    const { data: { id: data_id, base: { indexes: { falling } } } } = e;
+    const { data: { id: data_id, indexes: { falling } } } = e;
     const { id: frame_id } = e.get_frame();
 
     if (this._ignore_frames.get(data_id)?.has(frame_id)) return;
@@ -41,7 +41,7 @@ export default class Falling extends BaseCharacterState {
     e.enter_frame({ id: falling[direction][falling_frame_idx] });
   }
   on_landing(e: Character, vx: number, vy: number, vz: number): void {
-    const { facing, data: { base: { indexes } } } = e;
+    const { facing, data: { indexes } } = e;
     const f = e.get_frame();
     const d = find_direction(f, indexes.bouncing) ||
       find_direction(f, indexes.falling) ||

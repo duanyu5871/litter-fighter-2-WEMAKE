@@ -11,6 +11,6 @@ export class BaseCharacterState extends BaseState<Character> {
     e.handle_frame_velocity();
   }
   on_landing(e: Character, vx: number, vy: number, vz: number): void {
-    e.enter_frame({ id: e.data.base.indexes.landing_2 });
+    e.enter_frame({ id: e.data.indexes.landing_2 });
   }
 }

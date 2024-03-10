@@ -29,6 +29,6 @@ export default class Jump extends BaseCharacterState {
     this._jump_flags.add(character.id);
   }
   on_landing(character: Character, vx: number, vy: number, vz: number): void {
-    character.enter_frame({ id: character.data.base.indexes.landing_1 });
+    character.enter_frame({ id: character.data.indexes.landing_1 });
   }
 }

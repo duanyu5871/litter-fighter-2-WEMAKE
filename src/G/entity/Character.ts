@@ -12,6 +12,7 @@ import { CHARACTER_STATES } from '../state/character';
 import { Ball } from './Ball';
 import { Entity } from './Entity';
 import { same_face, turn_face } from './face_helper';
+import { PlayerController } from '../controller/PlayerController';
 export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, ICharacterData> {
   protected _disposers: (() => void)[] = [];
   controller: IController<Character> = new InvalidController(this);
@@ -55,7 +56,7 @@ export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, IChar
   }
 
   override find_auto_frame(): IFrameInfo {
-    const { in_the_air, standing } = this.data.base.indexes;
+    const { in_the_air, standing } = this.data.indexes;
     let fid: string;
     if (this.position.y > 0) fid = in_the_air[0]
     else if (this.hp > 0) fid = standing;
@@ -66,7 +67,7 @@ export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, IChar
   override find_frame_by_id(id: string | undefined, exact: true): ICharacterFrameInfo | undefined;
   override find_frame_by_id(id: string | undefined, exact?: boolean): IFrameInfo | undefined {
     if (this.hp <= 0 && this.position.y <= 0 && this._frame.state === Defines.State.Lying) {
-      const { lying } = this.data.base.indexes;
+      const { lying } = this.data.indexes;
       const fid = this._frame.id;
       if (lying[-1] === fid) return super.find_frame_by_id(lying[-1])
       if (lying[1] === fid) return super.find_frame_by_id(lying[1])
@@ -81,7 +82,7 @@ export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, IChar
   }
 
   on_landing() {
-    const { indexes } = this.data.base;
+    const { indexes } = this.data;
     const f = this.get_frame();
     switch (f.state) {
       case 100: // 落雷霸
@@ -106,7 +107,6 @@ export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, IChar
   }
   override self_update(): void {
     super.self_update();
-
     switch (this._frame.state) {
       case Defines.State.Falling:
         this._resting = 0;
@@ -122,10 +122,13 @@ export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, IChar
       }
     }
   }
-  override get_end_caught_frame(): TNextFrame | undefined {
+  override get_caught_end_frame(): TNextFrame | undefined {
     this.velocity.y = 2;
     this.velocity.x = -2 * this._facing;
-    return { id: this.data.base.indexes.falling[-1][1] }
+    return { id: this.data.indexes.falling[-1][1] }
+  }
+  override get_catching_cancel_frame(): TNextFrame | undefined {
+    return undefined;
   }
   override on_after_update() {
     const next_frame_0 = this.controller.update();
@@ -203,7 +206,7 @@ export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, IChar
     // const spark_z = (Math.min(r0.near, r1.near) + Math.max(r0.far, r1.far)) / 2;
     const spark_z = Math.max(r0.far, r1.far);
 
-    const { indexes } = this.data.base;
+    const { indexes } = this.data;
 
     /** 攻击者朝向 */
     const aface = attacker.facing;

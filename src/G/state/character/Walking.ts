@@ -12,7 +12,7 @@ export default class Walking extends BaseCharacterState {
     if (speed_x) e.velocity.x = speed_x;
     if (speed_z) e.velocity.z = speed_z;
     if (!LRUD && !e.wait) {
-      e.enter_frame({ id: e.data.base.indexes.standing });
+      e.enter_frame({ id: e.data.indexes.standing });
     }
   }
 }

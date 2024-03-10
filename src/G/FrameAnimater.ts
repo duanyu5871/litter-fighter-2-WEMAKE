@@ -217,7 +217,6 @@ export class FrameAnimater<
     if (this._next_frame) this.enter_frame(this._next_frame);
   }
   update() {
-
     if (this.wait > 0) { --this.wait; }
     else { this._next_frame = this._frame.next; }
     this.update_sprite_position();

@@ -21,7 +21,7 @@ CHARACTER_STATES.set(Defines.State.Burning, new class extends BaseCharacterState
     e.facing = e.velocity.x >= 0 ? -1 : 1;
   }
   on_landing(e: Character, vx: number, vy: number, vz: number): void {
-    const { data: { base: { indexes } } } = e;
+    const { data: { indexes } } = e;
     if (vy <= -4) {
       e.enter_frame({ id: indexes.bouncing[-1][1] });
       e.velocity.y = 2;

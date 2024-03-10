@@ -2,6 +2,7 @@ import { IBallFrameInfo } from "./IBallFrameInfo";
 import { IBgInfo } from "./IBgInfo";
 import { IBgLayerInfo } from "./IBgLayerInfo";
 import { ICharacterFrameInfo } from "./ICharacterFrameInfo";
+import { ICharacterInfo } from "./ICharacterInfo";
 import { IFrameInfo } from "./IFrameInfo";
 import type { Defines } from "./defines";
 export type TTODO = any;
@@ -117,23 +118,10 @@ export * from './IOpointInfo';
 export * from './ITexturePieceInfo';
 export * from './ITexturePieceInfos';
 export * from './IWpointInfo';
+export * from './ICharacterInfo';
 
 export interface IGameObjInfo {
   files: Record<string, IEntityPictureInfo>;
-}
-export interface ICharacterInfo extends IGameObjInfo {
-  name: string;
-  head: string;
-  small: string;
-  indexes: ICharacterFrameIndexes;
-  jump_height: number;
-  jump_distance: number;
-  jump_distancez: number;
-  dash_height: number;
-  dash_distance: number;
-  dash_distancez: number;
-  rowing_height: number;
-  rowing_distance: number;
 }
 export interface IWeaponInfo extends IGameObjInfo {
   weapon_hp: number;
@@ -178,6 +166,7 @@ export interface IEntityData extends IGameObjData<IGameObjInfo, IFrameInfo> {
 }
 export interface ICharacterData extends IGameObjData<ICharacterInfo, ICharacterFrameInfo> {
   type: 'character';
+  indexes: ICharacterFrameIndexes;
 }
 export interface IWeaponData extends IGameObjData<IWeaponInfo, IFrameInfo> {
   type: 'weapon';

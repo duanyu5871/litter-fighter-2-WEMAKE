@@ -207,24 +207,36 @@ export class Entity<
       this.state?.on_landing(this, x, y, z);
     }
   }
-  get_end_caught_frame(): TNextFrame | undefined {
+
+
+  protected _catching?: Entity;
+  protected _catcher?: Entity;
+  get catcher() { return this._catcher }
+
+  @Log.Clone({ disabled: true, showRet: true, showArgs: false })
+  get_caught_end_frame(): TNextFrame | undefined {
     return { id: Defines.ReservedFrameId.Auto }
   }
+
+  @Log.Clone({ disabled: true, showRet: true, showArgs: false })
+  get_caught_cancel_frame(): TNextFrame | undefined {
+    if (this.position.y < 1) this.position.y = 1;
+    return { id: Defines.ReservedFrameId.Auto }
+  }
+
   update_caught(): TNextFrame | undefined {
     if (!this._catcher) return;
 
     if (!this._catcher._catching_value) {
       delete this._catcher;
-      return this.get_end_caught_frame();
+      return this.get_caught_end_frame();
     }
 
     const { cpoint: cpoint_a } = this._catcher.get_frame();
     const { cpoint: cpoint_b } = this._frame;
     if (!cpoint_a || !cpoint_b) {
       delete this._catcher;
-      Log.print(constructor_name(this), 'update_caught(), loose!')
-      if (this.position.y < 1) this.position.y = 1;
-      return { id: 'auto' }
+      return this.get_caught_cancel_frame()
     }
     if (cpoint_a.injury) this.hp += cpoint_a.injury;
     if (cpoint_a.shaking) this._shaking = V_SHAKE;
@@ -241,23 +253,29 @@ export class Entity<
     if (cpoint_a.vaction) return cpoint_a.vaction;
   }
 
-  protected _catching?: Entity;
-  protected _catcher?: Entity;
-  get catcher() { return this._catcher }
+  @Log.Clone({ disabled: true, showRet: true, showArgs: false })
+  get_catching_end_frame(): TNextFrame | undefined {
+    return { id: Defines.ReservedFrameId.Auto }
+  }
+
+  @Log.Clone({ disabled: true, showRet: true, showArgs: false })
+  get_catching_cancel_frame(): TNextFrame | undefined {
+    return { id: Defines.ReservedFrameId.Auto }
+  }
+
   update_catching(): TNextFrame | undefined {
     if (!this._catching) return;
 
     if (!this._catching_value) {
       delete this._catching;
-      return { id: 'auto' };
+      return this.get_catching_end_frame();
     }
 
     const { cpoint: cpoint_a } = this._frame;
     const { cpoint: cpoint_b } = this._catching._frame;
     if (!cpoint_a || !cpoint_b) {
-      if (this.position.y < 0) this.position.y = 0;
       delete this._catching;
-      return { id: 'auto' };
+      return this.get_catching_cancel_frame();
     }
 
     const { centerx: centerx_a, centery: centery_a } = this._frame;
