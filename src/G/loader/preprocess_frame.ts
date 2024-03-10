@@ -1,4 +1,5 @@
 import { IEntityPictureInfo, IFrameInfo, IGameObjData, ITexturePieceInfo } from '../../js_utils/lf2_type';
+import { IRect } from '../../js_utils/lf2_type/IRect';
 import { traversal } from '../../js_utils/traversal';
 import { sound_mgr } from './SoundMgr';
 import { image_pool } from './loader';
@@ -55,7 +56,7 @@ export const cook_frame = (data: IGameObjData, frame: IFrameInfo) => {
     const f_i_2: ITexturePieceInfo = {
       ...f_i_1,
       x: -f_i_1.x - f_i_1.w,
-      cx: 1 - frame.centerx / pic.w,
+      cx: 1 - f_i_1.cx,
     };
     pic = frame.pic = {
       1: f_i_1,
@@ -64,41 +65,44 @@ export const cook_frame = (data: IGameObjData, frame: IFrameInfo) => {
 
   }
   const f_i_1 = pic[1];
-  const { pw: cell_w, ph: cell_h } = f_i_1;
+  const ii: IRect = {
+    x: -frame.centerx,
+    y: frame.centery - f_i_1.ph,
+    w: f_i_1.pw,
+    h: f_i_1.ph
+  }
+  const ii_1: IRect = {
+    ...ii,
+    x: frame.centerx - ii.w
+  }
+  frame.indicator_info = { 1: ii, [-1]: ii_1 }
+
   frame.bdy?.forEach(bdy => {
-    const face_1 = {
-      tex: 0,
-      pw: cell_w,
-      ph: cell_h,
-      cx: 0, cy: 0,
-      w: bdy.w / cell_w,
-      h: bdy.h / cell_h,
-      x: bdy.x / cell_w - f_i_1.cx,
-      y: 1 - (bdy.y + bdy.h) / cell_h,
+    const b_ii: IRect = {
+      w: bdy.w,
+      h: bdy.h,
+      x: ii.x + bdy.x,
+      y: ii.y + ii.h - bdy.y - bdy.h,
     };
-    const face_2 = {
-      ...face_1,
-      x: -bdy.x / cell_w + f_i_1.cx - face_1.w,
+    const b_ii_1 = {
+      ...b_ii,
+      x: ii_1.x + ii.w - bdy.w - bdy.x,
     };
-    bdy.indicator_info = { 1: face_1, [-1]: face_2 };
+    bdy.indicator_info = { 1: b_ii, [-1]: b_ii_1 };
   });
 
   frame.itr?.forEach(itr => {
-    const face_1 = {
-      tex: 0,
-      pw: cell_w,
-      ph: cell_h,
-      cx: 0, cy: 0,
-      w: itr.w / cell_w,
-      h: itr.h / cell_h,
-      x: itr.x / cell_w - f_i_1.cx,
-      y: 1 - (itr.y + itr.h) / cell_h,
+    const i_ii: IRect = {
+      w: itr.w,
+      h: itr.h,
+      x: ii.x + itr.x,
+      y: ii.y + ii.h - itr.y - itr.h,
     };
-    const face_2 = {
-      ...face_1,
-      x: -itr.x / cell_w + f_i_1.cx - face_1.w,
+    const i_ii_1 = {
+      ...i_ii,
+      x: ii_1.x + ii.w - itr.w - itr.x,
     };
-    itr.indicator_info = { 1: face_1, [-1]: face_2 };
+    itr.indicator_info = { 1: i_ii, [-1]: i_ii_1 };
   });
 
 };

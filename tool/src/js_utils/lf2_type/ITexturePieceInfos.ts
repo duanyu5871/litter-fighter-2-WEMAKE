@@ -1,6 +1,5 @@
 import { ITexturePieceInfo } from "./ITexturePieceInfo";
 
-
 export interface ITexturePieceInfos {
   /** 纹理数据 */
   1: ITexturePieceInfo;

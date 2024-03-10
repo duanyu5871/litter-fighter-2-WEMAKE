@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { ITexturePieceInfo } from '../../js_utils/lf2_type/ITexturePieceInfo';
+import { IRect } from '../../js_utils/lf2_type/IRect';
 import { Entity } from './Entity';
 export const EMPTY_ARR = [] as const;
 export const INDICATORS_COLOR = {
@@ -27,7 +27,9 @@ export class EntityIndicators {
     bdy: new Array<THREE.Object3D>(),
     itr: new Array<THREE.Object3D>(),
   };
-  protected get sprite() { return this._entity.sprite; };
+  private _x: number = 0;
+  private _y: number = 0;
+  private _z: number = 0;
   protected get scene() { return this._entity.world.scene; };
   protected _box?: THREE.Object3D;
   protected get frame() { return this._entity.get_frame(); }
@@ -52,25 +54,31 @@ export class EntityIndicators {
   protected _new_indicator(k: keyof typeof this._indicators_map, idx: number) {
     const material = new THREE.LineBasicMaterial({ color: INDICATORS_COLOR[k] });
     const ret = this._indicators_map[k][idx] = new THREE.LineSegments(geometry, material);
-    this.sprite.add(ret);
+    this.scene.add(ret);
     return ret;
   }
 
-  protected _update_indicator(k: keyof typeof this._indicators_map, idx: number, info: ITexturePieceInfo) {
+  protected _update_indicator(k: keyof typeof this._indicators_map, idx: number, ii: IRect) {
     const indicator = this._indicators_map[k][idx] ?? this._new_indicator(k, idx);
-    const { x, y, w, h } = info;
-    indicator.position.set(x, y, 0);
-    indicator.scale.set(w, h, 1);
+    const y = this._y + ii.y;
+    const x = this._x + ii.x;
+    indicator.position.set(x, y, this._z)
+    indicator.scale.set(ii.w, ii.h, 1);
   }
 
   protected _del_indicator(k: keyof typeof this._indicators_map, idx: number) {
     const [indicator] = this._indicators_map[k].splice(idx, 1);
-    indicator && this.sprite.remove(indicator)
+    indicator && this.scene.remove(indicator)
   }
 
   private _unsafe_update_box() {
-    const { x: cx, y: cy } = this.sprite.center;
-    this._box!.position.set(0.5 - cx, 0.5 - cy, 0)
+    const { indicator_info } = this._entity.get_frame();
+    if (!indicator_info) return;
+    const ii = indicator_info[this._entity.facing];
+    const y = this._y + ii.y;
+    const x = this._x + ii.x;
+    this._box!.position.set(x, y, this._z)
+    this._box!.scale.set(ii.w, ii.h, 1);
   }
 
   private _update_indicators(name: keyof typeof this._indicators_map) {
@@ -100,26 +108,31 @@ export class EntityIndicators {
   }
   hide_indicators(k: keyof typeof this._indicators_map) {
     for (const i of this._indicators_map[k])
-      this.sprite.remove(i)
+      this.scene.remove(i)
     this._indicators_map[k].length = 0
   }
   show_box() {
     if (this._box) return;
-    const edges = new THREE.EdgesGeometry(this._entity.sprite.geometry);
     const material = new THREE.LineBasicMaterial({ color: INDICATORS_COLOR.main })
-    this._box = new THREE.LineSegments(edges, material);
-    this.sprite.add(this._box);
-    this._unsafe_update_box()
+    this._box = new THREE.LineSegments(geometry, material);
+    this.scene.add(this._box);
   }
   hide_box() {
     if (!this._box) return;
-    this.sprite.remove(this._box);
+    this.scene.remove(this._box);
     delete this._box;
   }
   update() {
     if (!this._show) return;
+    const { x: game_x, y: game_y, z: game_z } = this._entity.position;
+    this._x = game_x;
+    this._y = game_y - game_z / 2;
+    this._z = game_z;
     this._box && this._unsafe_update_box();
     this._update_indicators('bdy');
     this._update_indicators('itr');
+  }
+  dispose() {
+    
   }
 }

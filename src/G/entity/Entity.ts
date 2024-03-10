@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { constructor_name } from '../../js_utils/constructor_name';
-import { IBallData, IBaseData, IBdyInfo, ICharacterData, IEntityData, IFrameInfo, IGameObjData, IGameObjInfo, IItrInfo, IOpointInfo, IWeaponData, TFace } from '../../js_utils/lf2_type';
+import { is_nagtive_num } from '../../js_utils/is_nagtive_num';
+import { IBallData, IBaseData, IBdyInfo, ICharacterData, IEntityData, IFrameInfo, IGameObjData, IGameObjInfo, IItrInfo, IOpointInfo, IWeaponData, TFace, TNextFrame } from '../../js_utils/lf2_type';
 import { Defines } from '../../js_utils/lf2_type/defines';
 import { factory } from '../Factory';
 import { FrameAnimater } from '../FrameAnimater';
@@ -22,7 +23,7 @@ export class Entity<
   readonly shadow: THREE.Object3D;
   readonly velocity = new THREE.Vector3(0, 0, 0);
 
-  hp: number = 500;
+  hp: number = 50000000000;
   team: number = ++__team__;
   readonly states: Map<number, BaseState>;
 
@@ -40,15 +41,18 @@ export class Entity<
 
   protected _motionless: number = 0
   protected _shaking: number = 0;
-  protected _indicators: EntityIndicators | undefined = new EntityIndicators(this);
+  readonly indicators: EntityIndicators = new EntityIndicators(this);
   protected _state: BaseState | undefined;
   get shaking() { return this._shaking; }
-  get show_indicators() { return !!this._indicators?.show }
-  set show_indicators(v: boolean) {
-    if (!this._indicators)
-      this._indicators = new EntityIndicators(this);
-    this._indicators.show = v;
-  }
+  get show_indicators() { return !!this.indicators?.show }
+  set show_indicators(v: boolean) { this.indicators.show = v; }
+
+  /** 
+   * 抓人剩余值
+   * 
+   * 当抓住一个被击晕的人时，此值充满。
+   */
+  protected _catching_value = 602;
 
   setup(shotter: Entity, o: IOpointInfo, speed_z: number = 0) {
     const shotter_frame = shotter.get_frame();
@@ -59,7 +63,6 @@ export class Entity<
     x = x - shotter.facing * (shotter_frame.centerx - o.x);
     this.position.set(x, y, z);
     this.enter_frame(o.action);
-    console.log(this._frame)
     return this;
   }
   override set_frame(v: F) {
@@ -146,7 +149,6 @@ export class Entity<
   _i = 0;
   protected override update_sprite() {
     super.update_sprite();
-    this._indicators?.update()
     if (this._shaking) {
       const wf = this._s[this._i = (this._i + 1) % 2] * 2 / this._piece.pw
       this.sprite.center.x += 4 * wf;
@@ -168,8 +170,18 @@ export class Entity<
     if (dvy !== void 0) this.velocity.y += dvy;
     if (dvz !== void 0) this.velocity.z = dvz;
   }
-
-  update() {
+  override self_update(): void {
+    super.self_update();
+    const { cpoint } = this._frame;
+    if (cpoint && is_nagtive_num(cpoint.decrease)) {
+      this._catching_value += cpoint.decrease;
+      if (this._catching_value < 0) this._catching_value = 0;
+    }
+    if (this._shaking <= 0)
+      this.v_rests.forEach((v, k, m) => { v.remain > 1 ? v.remain-- : m.delete(k) });
+    this.a_rest > 1 ? this.a_rest-- : this.a_rest = 0;
+  }
+  override update(): void {
     super.update();
     this.state?.update(this);
     if (!this._shaking && !this._motionless)
@@ -182,8 +194,10 @@ export class Entity<
       --this._shaking;
       this.update_sprite();
     }
-    this.v_rests.forEach((v, k, m) => { v.remain > 1 ? v.remain-- : m.delete(k) });
-    this.a_rest > 1 ? this.a_rest-- : this.a_rest = 0;
+
+    const next_frame_1 = this.update_catching();
+    const next_frame_2 = this.update_caught();
+    this._next_frame = next_frame_2 || next_frame_1 || this._next_frame;
 
     this.on_after_update?.();
     if (this.position.y <= 0 && this.velocity.y < 0) {
@@ -193,16 +207,84 @@ export class Entity<
       this.state?.on_landing(this, x, y, z);
     }
   }
+  get_end_caught_frame(): TNextFrame | undefined {
+    return { id: Defines.ReservedFrameId.Auto }
+  }
+  update_caught(): TNextFrame | undefined {
+    if (!this._catcher) return;
 
+    if (!this._catcher._catching_value) {
+      delete this._catcher;
+      return this.get_end_caught_frame();
+    }
+
+    const { cpoint: cpoint_a } = this._catcher.get_frame();
+    const { cpoint: cpoint_b } = this._frame;
+    if (!cpoint_a || !cpoint_b) {
+      delete this._catcher;
+      Log.print(constructor_name(this), 'update_caught(), loose!')
+      if (this.position.y < 1) this.position.y = 1;
+      return { id: 'auto' }
+    }
+    if (cpoint_a.injury) this.hp += cpoint_a.injury;
+    if (cpoint_a.shaking) this._shaking = V_SHAKE;
+
+    const { throwvx, throwvy, throwvz } = cpoint_a;
+    if (throwvx) this.velocity.x = throwvx * this.facing;
+    if (throwvy) this.velocity.y = throwvy;
+    if (throwvz) this.velocity.z = throwvz;
+    // this.velocity.z = throwvz * this._catcher.controller.UD1;
+
+    if (throwvx || throwvy || throwvz) {
+      delete this._catcher;
+    }
+    if (cpoint_a.vaction) return cpoint_a.vaction;
+  }
+
+  protected _catching?: Entity;
+  protected _catcher?: Entity;
+  get catcher() { return this._catcher }
+  update_catching(): TNextFrame | undefined {
+    if (!this._catching) return;
+
+    if (!this._catching_value) {
+      delete this._catching;
+      return { id: 'auto' };
+    }
+
+    const { cpoint: cpoint_a } = this._frame;
+    const { cpoint: cpoint_b } = this._catching._frame;
+    if (!cpoint_a || !cpoint_b) {
+      if (this.position.y < 0) this.position.y = 0;
+      delete this._catching;
+      return { id: 'auto' };
+    }
+
+    const { centerx: centerx_a, centery: centery_a } = this._frame;
+    const { centerx: centerx_b, centery: centery_b } = this._catching._frame;
+    const { throwvx, throwvy, throwvz, x: catch_x, y: catch_y, cover } = cpoint_a;
+    if (throwvx || throwvy || throwvz) {
+      delete this._catching;
+      return void 0;
+    }
+
+    const { x: caught_x, y: caught_y } = cpoint_b;
+    const face_a = this.facing;
+    const face_b = this._catching.facing;
+    const { x: px, y: py, z: pz } = this.position;
+    this._catching.position.x = px - face_a * (centerx_a - catch_x) + face_b * (centerx_b - caught_x);
+    this._catching.position.y = py + centery_a - catch_y + caught_y - centery_b;
+    this._catching.position.z = pz;
+    if (cover === 11) this._catching.position.z += 1;
+    else if (cover === 10) this._catching.position.z -= 1;
+  }
   override update_sprite_position(): void {
     this.world.restrict(this);
     super.update_sprite_position();
     const { x, z } = this.position;
     this.shadow.position.set(x, - z / 2, z);
-
   }
   on_after_update?(): void;
-
 
   on_collision(target: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
     this._motionless = itr.motionless ?? 4;
@@ -223,5 +305,5 @@ export class Entity<
       b_frame: this.get_frame()
     });
   }
-  dispose(): void { }
+  dispose(): void { this.indicators.dispose() }
 }

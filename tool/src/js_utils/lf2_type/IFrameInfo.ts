@@ -7,6 +7,7 @@ import { IOpointInfo } from "./IOpointInfo";
 import { ITexturePieceInfos } from "./ITexturePieceInfos";
 import { IWpointInfo } from "./IWpointInfo";
 import { TNextFrame, IHoldKeyCollection, IHitKeyCollection } from ".";
+import { IRectPair } from "./IRectPair";
 
 export interface IFrameInfo {
   id: string;
@@ -31,4 +32,5 @@ export interface IFrameInfo {
   bpoint?: IBpointInfo;
   opoint?: IOpointInfo[];
   cpoint?: ICpointInfo;
+  indicator_info?: IRectPair;
 }

@@ -89,6 +89,7 @@ export class World {
 
   del_entities(...entities: Entity[]) {
     for (const e of entities) {
+      e.indicators.show = false;
       this.scene.remove(e.sprite);
       this.scene.remove(e.shadow);
       this.entities.delete(e)
@@ -107,6 +108,9 @@ export class World {
 
   render_once() {
     if (this.disposed) return;
+    for (const e of this.entities) {
+      e.indicators.update();
+    }
     this.renderer.render(this.scene, this.camera);
   }
 
@@ -196,7 +200,6 @@ export class World {
       if (e.get_frame().id === Defines.ReservedFrameId.Gone)
         this.del_game_objs(e);
 
-
     this.update_camera();
     this.bg.update();
   }
@@ -233,11 +236,11 @@ export class World {
   collision_detection(a: Entity, b: Entity) {
     const af = a.get_frame();
     const bf = b.get_frame();
-    const ap = af.pic;
-    const bp = bf.pic;
-    if (typeof ap === 'number' || typeof bp === 'number') return;
-
     if (!af.itr?.length || !bf.bdy?.length) return;
+    
+    const b_catcher = b.catcher;
+    if (b_catcher && b_catcher.get_frame().cpoint?.hurtable !== 1)
+      return;
 
     const l0 = af.itr.length;
     const l1 = bf.bdy.length;
@@ -331,9 +334,6 @@ export class World {
     attacker: Entity, itr: IItrInfo, a_cube: ICube,
     victim: Entity, bdy: IBdyInfo, b_cube: ICube,
   ) {
-    if (victim instanceof Character && victim.controller instanceof PlayerController) {
-      Log.print('World', 'handle_collision()', attacker.get_frame())
-    }
     attacker.on_collision(victim, itr, bdy, a_cube, b_cube);
     victim.on_be_collided(attacker, itr, bdy, a_cube, b_cube);
   }

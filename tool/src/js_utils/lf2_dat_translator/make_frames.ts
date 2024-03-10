@@ -126,19 +126,19 @@ function cook_opoint_list(unsure_opoint_list: IOpointInfo[]) {
 function cook_itr_list(unsure_itr_list: IItrInfo[]) {
   for (const item of unsure_itr_list) {
     const vrest = take(item, 'vrest');
-    if (is_positive_num(vrest)) { item.vrest = Math.max(1, 2 * vrest); }
+    if (is_positive_num(vrest)) { item.vrest = Math.max(1, 2 * vrest - 2); }
 
     const arest = take(item, 'arest');
-    if (is_positive_num(arest)) { item.arest = Math.max(1, 2 * arest); }
+    if (is_positive_num(arest)) { item.arest = Math.max(1, 2 * arest - 2); }
 
     const dvx = take(item, 'dvx');
-    if (not_zero(dvx)) item.dvx = dvx * 0.5;
+    if (not_zero(dvx)) item.dvx = dvx * 0.55;
 
     const dvz = take(item, 'dvz');
     if (not_zero(dvz)) item.dvz = dvz * 0.5;
 
     const dvy = take(item, 'dvy');
-    if (not_zero(dvy)) item.dvy = dvy * -0.5;
+    if (not_zero(dvy)) item.dvy = dvy * -0.55;//??
 
     switch (item.kind) {
       case Defines.ItrKind.SuperPunchMe: {
@@ -150,6 +150,10 @@ function cook_itr_list(unsure_itr_list: IItrInfo[]) {
       case Defines.ItrKind.Catch: {
         item.motionless = 0;
         item.shaking = 0;
+        if (item.vrest) {
+          item.arest = item.vrest;
+          delete item.vrest;
+        }
       }
     }
 
@@ -157,7 +161,7 @@ function cook_itr_list(unsure_itr_list: IItrInfo[]) {
     if (is_num(catchingact)) item.catchingact = get_next_frame_by_id(catchingact)
 
     const caughtact = take(item as any, 'caughtact')
-    if (is_num(caughtact)) item.caughtact = { 
+    if (is_num(caughtact)) item.caughtact = {
       ...get_next_frame_by_id(caughtact),
       facing: Defines.FacingFlag.OpposingCatcher,
     }

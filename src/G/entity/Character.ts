@@ -1,6 +1,5 @@
 import * as THREE from 'three';
 import { constructor_name } from '../../js_utils/constructor_name';
-import { is_nagtive_num } from '../../js_utils/is_nagtive_num';
 import { IBdyInfo, ICharacterData, ICharacterFrameInfo, ICharacterInfo, IFrameInfo, IItrInfo, INextFrame, IOpointInfo, TNextFrame } from '../../js_utils/lf2_type';
 import { Defines } from '../../js_utils/lf2_type/defines';
 import { factory } from '../Factory';
@@ -11,7 +10,7 @@ import { InvalidController } from '../controller/InvalidController';
 import { create_picture_by_img_key, image_pool } from '../loader/loader';
 import { CHARACTER_STATES } from '../state/character';
 import { Ball } from './Ball';
-import { Entity, V_SHAKE } from './Entity';
+import { Entity } from './Entity';
 import { same_face, turn_face } from './face_helper';
 export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, ICharacterData> {
   protected _disposers: (() => void)[] = [];
@@ -19,16 +18,6 @@ export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, IChar
   protected _resting = 0;
   protected _fall_value = 70;
   protected _defend_value = 60;
-
-  /** 
-   * 抓人剩余值
-   * 
-   * 当抓住一个被击晕的人时，此值充满。
-   */
-  protected _catching_value = 602;
-
-  protected _catching?: Character;
-  protected _catcher?: Character;
   protected _name_sprite?: THREE.Sprite;
   get name_sprite() { return this._name_sprite }
 
@@ -54,24 +43,38 @@ export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, IChar
         this.facing = this.controller.LR1 || this.facing;
         break;
       case Defines.FacingFlag.SameAsCatcher:
-        this.facing = this._catcher?._facing || this.facing;
+        this.facing = this._catcher?.facing || this.facing;
         break;
       case Defines.FacingFlag.OpposingCatcher:
-        this.facing = turn_face(this._catcher?._facing) || this.facing;
+        this.facing = turn_face(this._catcher?.facing) || this.facing;
         break;
       default:
         super.handle_facing_flag(facing, frame, flags);
         break;
     }
   }
+
   override find_auto_frame(): IFrameInfo {
     const { in_the_air, standing } = this.data.base.indexes;
-    const fid = this.position.y ? in_the_air[0] : standing;
-    // Log.print(constructor_name(this), 'find_auto_frame(), this.position.y:', this.position.y)
+    let fid: string;
+    if (this.position.y > 0) fid = in_the_air[0]
+    else if (this.hp > 0) fid = standing;
+    else fid = standing; // TODO
     return this.data.frames[fid] ?? super.find_auto_frame();
   }
-
+  override find_frame_by_id(id: string | undefined): ICharacterFrameInfo;
+  override find_frame_by_id(id: string | undefined, exact: true): ICharacterFrameInfo | undefined;
+  override find_frame_by_id(id: string | undefined, exact?: boolean): IFrameInfo | undefined {
+    if (this.hp <= 0 && this.position.y <= 0 && this._frame.state === Defines.State.Lying) {
+      const { lying } = this.data.base.indexes;
+      const fid = this._frame.id;
+      if (lying[-1] === fid) return super.find_frame_by_id(lying[-1])
+      if (lying[1] === fid) return super.find_frame_by_id(lying[1])
+    }
+    return super.find_frame_by_id(id, exact as true);
+  }
   override dispose() {
+    super.dispose()
     this.controller.dispose();
     this._disposers.forEach(f => f());
     this.world.del_entities(this);
@@ -104,12 +107,6 @@ export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, IChar
   override self_update(): void {
     super.self_update();
 
-    const { cpoint } = this._frame;
-    if (cpoint && is_nagtive_num(cpoint.decrease)) {
-      this._catching_value += cpoint.decrease;
-      if (this._catching_value < 0) this._catching_value = 0;
-    }
-
     switch (this._frame.state) {
       case Defines.State.Falling:
         this._resting = 0;
@@ -125,79 +122,15 @@ export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, IChar
       }
     }
   }
+  override get_end_caught_frame(): TNextFrame | undefined {
+    this.velocity.y = 2;
+    this.velocity.x = -2 * this._facing;
+    return { id: this.data.base.indexes.falling[-1][1] }
+  }
   override on_after_update() {
     const next_frame_0 = this.controller.update();
-    const next_frame_1 = this.update_catching();
-    const next_frame_2 = this.update_caught();
-    this._next_frame = next_frame_2 || next_frame_1 || next_frame_0 || this._next_frame;
+    this._next_frame = next_frame_0 || this._next_frame;
   }
-  update_caught(): TNextFrame | undefined {
-    if (!this._catcher) return;
-
-    if (!this._catcher._catching_value) {
-      delete this._catcher;
-      this.velocity.y = 3;
-      this.velocity.x = -2 * this._facing;
-      return { id: this.data.base.indexes.falling[-1] }
-    }
-
-    const { cpoint: cpoint_a } = this._catcher._frame;
-    const { cpoint: cpoint_b } = this._frame;
-
-    if (!cpoint_a || !cpoint_b) {
-      delete this._catcher;
-      Log.print(constructor_name(this), 'update_caught(), loose!')
-      if (this.position.y < 1) this.position.y = 1;
-      return { id: 'auto' }
-    }
-    if (cpoint_a.injury) this.hp += cpoint_a.injury;
-    if (cpoint_a.shaking) this._shaking = V_SHAKE;
-
-    const { throwvx, throwvy, throwvz } = cpoint_a;
-    if (throwvx) this.velocity.x = throwvx * this.facing;
-    if (throwvy) this.velocity.y = throwvy;
-    if (throwvz) this.velocity.z = throwvz * this._catcher.controller.UD1;
-    if (throwvx || throwvy || throwvz) {
-      delete this._catcher;
-    }
-    if (cpoint_a.vaction) return cpoint_a.vaction;
-  }
-
-  update_catching(): TNextFrame | undefined {
-    if (!this._catching) return;
-
-    if (!this._catching_value) {
-      delete this._catching;
-      return { id: 'auto' };
-    }
-
-    const { cpoint: cpoint_a } = this._frame;
-    const { cpoint: cpoint_b } = this._catching._frame;
-    if (!cpoint_a || !cpoint_b) {
-      if (this.position.y < 0) this.position.y = 0;
-      delete this._catching;
-      return { id: 'auto' };
-    }
-
-    const { centerx: centerx_a, centery: centery_a } = this._frame;
-    const { centerx: centerx_b, centery: centery_b } = this._catching._frame;
-    const { throwvx, throwvy, throwvz, x: catch_x, y: catch_y, cover } = cpoint_a;
-    if (throwvx || throwvy || throwvz) {
-      delete this._catching;
-      return void 0;
-    }
-
-    const { x: caught_x, y: caught_y } = cpoint_b;
-    const face_a = this.facing;
-    const face_b = this._catching.facing;
-    const { x: px, y: py, z: pz } = this.position;
-    this._catching.position.x = px - face_a * (centerx_a - catch_x) + face_b * (centerx_b - caught_x);
-    this._catching.position.y = py + centery_a - catch_y + caught_y - centery_b;
-    this._catching.position.z = pz;
-    if (cover === 11) this._catching.position.z += 1;
-    else if (cover === 10) this._catching.position.z -= 1;
-  }
-
   override update_sprite_position() {
     super.update_sprite_position();
     if (this._name_sprite) {
@@ -239,9 +172,6 @@ export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, IChar
     this._next_frame = itr.caughtact;
   }
   override on_collision(target: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
-    if (target instanceof Character) {
-      if (target._catcher?.get_frame().cpoint?.hurtable === 0) return;
-    }
     super.on_collision(target, itr, bdy, a_cube, b_cube);
     switch (itr.kind) {
       case Defines.ItrKind.Catch:
@@ -256,7 +186,6 @@ export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, IChar
   }
   override on_be_collided(attacker: Entity, itr: IItrInfo, bdy: IBdyInfo, r0: ICube, r1: ICube): void {
     Log.print(constructor_name(this), 'on_be_collided()', attacker, itr, bdy)
-    if (this._catcher?.get_frame().cpoint?.hurtable === 0) return;
     super.on_be_collided(attacker, itr, bdy, r0, r1);
     if (itr.kind === Defines.ItrKind.SuperPunchMe) return;
     switch (itr.kind) {
@@ -297,7 +226,7 @@ export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, IChar
       this._next_frame = { id: indexes.defend_hit }
       return;
     }
-
+    if (itr.injury) this.hp -= itr.injury
     this._defend_value = 0;
     this._fall_value -= itr.fall || 20;
     /* 击倒 */

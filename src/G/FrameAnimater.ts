@@ -1,4 +1,4 @@
-import { Log, Warn } from '@fimagine/logger';
+import { Warn } from '@fimagine/logger';
 import * as THREE from 'three';
 import random_get from '../Utils/random_get';
 import { constructor_name } from '../js_utils/constructor_name';
@@ -59,7 +59,6 @@ export class FrameAnimater<
 
   get facing() { return this._facing; }
   set facing(v: TFace) {
-    Log.print(constructor_name(this), 'set face(v), v=', v)
     if (this._facing === v) { return; }
     this._facing = v;
     this.update_sprite();

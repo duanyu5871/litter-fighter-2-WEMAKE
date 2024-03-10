@@ -1,14 +1,8 @@
-import { ITexturePieceInfo } from "./ITexturePieceInfo";
+import { IRect } from "./IRect";
+import { IRectPair } from "./IRectPair";
 
-export interface IBdyInfo {
+export interface IBdyInfo extends IRect{
   friendly_fire?: number;
   kind: number;
-  x: number;
-  y: number;
-  w: number;
-  h: number;
-  indicator_info?: {
-    1: ITexturePieceInfo;
-    [-1]: ITexturePieceInfo;
-  };
+  indicator_info?: IRectPair;
 }
