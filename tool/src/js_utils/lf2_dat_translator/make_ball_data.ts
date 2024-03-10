@@ -1,4 +1,5 @@
-import { IBallData, IBallInfo, IDatIndex } from "../lf2_type";
+import { IBallData, IDatIndex } from "../lf2_type";
+import { IBallInfo } from "../lf2_type/IBallInfo";
 import { IBallFrameInfo } from "../lf2_type/IBallFrameInfo";
 import { Defines } from "../lf2_type/defines";
 import { to_num } from "../to_num";
@@ -16,16 +17,16 @@ export function make_ball_data(info: IBallInfo, frames: Record<string, IBallFram
     const hit_d = take(frame, 'hit_d');
     if (hit_a) frame.hp = hit_a / 2;
     if (hit_d) frame.on_dead = get_next_frame_by_id(hit_d);
-    if (frame.state === Defines.State.NormalBall) {
+    if (frame.state === Defines.State.Ball_Flying) {
       frame.speedz = 2;
       if (frames[10]) frame.on_hitting = { id: '10' }
       if (frames[20]) frame.on_be_hit = { id: '20' }
       if (frames[30]) frame.on_rebounding = { id: '30' }
       if (frames[40]) frame.on_disappearing = { id: '40' }
-    } else if (frame.state === Defines.State.SturdyBall) {
+    } else if (frame.state === Defines.State.Ball_Sturdy) {
       frame.speedz = 0;
       // frame.no_shadow = 1;
-    } else if (frame.state === Defines.State.PunchThroughBall) {
+    } else if (frame.state === Defines.State.Ball_PunchThrough) {
       frame.speedz = 2;
     } else if (frame.state === 18) {
       if (frame.itr && Number(datIndex?.id) === 229) {

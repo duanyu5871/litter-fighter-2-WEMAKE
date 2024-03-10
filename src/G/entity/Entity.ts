@@ -12,6 +12,7 @@ import { create_picture_by_img_key } from '../loader/loader';
 import BaseState from "../state/BaseState";
 import { EntityIndicators } from './EntityIndicators';
 import { Log, Warn } from '../../Log';
+import { turn_face } from './face_helper';
 export type TData = IBaseData | ICharacterData | IWeaponData | IEntityData | IBallData
 export const V_SHAKE = 4;
 export const A_SHAKE = 6;
@@ -58,12 +59,20 @@ export class Entity<
   setup(shotter: Entity, o: IOpointInfo, speed_z: number = 0) {
     const shotter_frame = shotter.get_frame();
     this.team = shotter.team;
-    this.facing = (o.facing === 1 ? -shotter.facing : shotter.facing) as TFace;
+    this.facing = o.facing === Defines.FacingFlag.Backward ? turn_face(shotter.facing) : shotter.facing;
+
     let { x, y, z } = shotter.position;
     y = y + shotter_frame.centery - o.y;
     x = x - shotter.facing * (shotter_frame.centerx - o.x);
     this.position.set(x, y, z);
     this.enter_frame(o.action);
+
+    this.velocity.z = speed_z
+
+    if (o.dvx) this.velocity.x = (o.dvx - Math.abs(speed_z / 2)) * this.facing;
+    if (o.dvy) this.velocity.y = 2 * o.dvy;
+    if (o.dvz) this.velocity.z += o.dvz;
+
     return this;
   }
   override set_frame(v: F) {
@@ -75,11 +84,14 @@ export class Entity<
     }
     if (v.opoint) {
       for (const opoint of v.opoint) {
-        this.spawn_object(opoint)
+        for (let i = 0; i < opoint.multi; ++i) {
+          const s = 2 * (i - (opoint.multi - 1) / 2);
+          this.spawn_object(opoint, s)
+        }
       }
     }
   }
-  spawn_object(opoint: IOpointInfo): Entity | undefined {
+  spawn_object(opoint: IOpointInfo, speed_z: number = 0): Entity | undefined {
     const d = dat_mgr.find(opoint.oid);
     if (!d) {
       Warn.print(constructor_name(this), 'spawn_object(), data not found! opoint:', opoint);
@@ -90,7 +102,7 @@ export class Entity<
       Warn.print(constructor_name(this), `spawn_object(), creator of "${d.type}" not found! opoint:`, opoint);
       return;
     }
-    return create(this.world, d).setup(this, opoint).attach()
+    return create(this.world, d).setup(this, opoint, speed_z).attach()
   }
   set state(v: BaseState | undefined) {
     if (this._state === v) return;

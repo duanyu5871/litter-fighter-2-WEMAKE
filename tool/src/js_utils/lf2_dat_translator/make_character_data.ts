@@ -2,7 +2,8 @@ import { arithmetic_progression } from '../arithmetic_progression';
 import { take_number } from '../as_number';
 import { is_num } from '../is_num';
 import { is_str } from '../is_str';
-import { ICharacterData, ICharacterFrameIndexes, ICharacterFrameInfo, INextFrame, TNextFrame } from '../lf2_type';
+import { ICharacterData, ICharacterFrameInfo, INextFrame, TNextFrame } from '../lf2_type';
+import { ICharacterFrameIndexes } from "../lf2_type/ICharacterFrameIndexes";
 import { ICharacterInfo } from "../lf2_type/ICharacterInfo";
 import { IFrameInfo } from "../lf2_type/IFrameInfo";
 import { Defines } from '../lf2_type/defines';
@@ -282,7 +283,7 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
       [-1]: ['220'],
       1: ['222']
     },
-    in_the_air: ['212'],
+    in_the_sky: ['212'],
     throw_enemy: '232',
     catch: ['120'],
     catch_atk: '121',

@@ -1,5 +1,5 @@
 import { TNextFrame } from ".";
-
+import type { Defines } from "./defines";
 export interface IOpointInfo {
   kind: number;
   x: number;
@@ -9,5 +9,9 @@ export interface IOpointInfo {
   dvy?: number;
   dvz?: number;
   oid: number;
+
+  /** @type {Defines.FacingFlag} */
   facing: number;
+
+  multi: number;
 }

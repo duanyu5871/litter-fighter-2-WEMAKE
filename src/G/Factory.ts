@@ -1,6 +1,7 @@
 import type { Ball } from "./entity/Ball";
 import type { Character } from "./entity/Character";
 import type { Entity } from "./entity/Entity";
+import type { Weapon } from "./entity/Weapon";
 
 export interface ICreator<C, T extends new (...args: any[]) => C> {
   (...args: ConstructorParameters<T>): C
@@ -9,6 +10,7 @@ export interface ICreator<C, T extends new (...args: any[]) => C> {
 export interface Creators {
   'ball': ICreator<Ball, typeof Ball>;
   'character': ICreator<Character, typeof Character>;
+  'weapon': ICreator<Weapon, typeof Weapon>;
 }
 export class Factory {
   private _creators: Partial<Creators> = {}

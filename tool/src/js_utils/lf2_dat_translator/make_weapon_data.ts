@@ -1,10 +1,12 @@
-import { IWeaponData, IWeaponInfo } from '../lf2_type';
+import { IWeaponData } from '../lf2_type';
+import { IWeaponInfo } from "../lf2_type/IWeaponInfo";
 import { IFrameInfo } from "../lf2_type/IFrameInfo";
 import { match_all } from '../match_all';
 import { match_block_once } from '../match_block';
 import { match_colon_value } from '../match_colon_value';
 import { set_obj_field } from "../set_obj_field";
 import { to_num } from '../to_num';
+import { IWeaponFrameIndexes } from '../lf2_type/IWeaponFrameIndexes';
 
 export function make_weapon_data(info: IWeaponInfo, full_str: string, frames: Record<string, IFrameInfo>): IWeaponData {
   let weapon_strength: any;
@@ -19,11 +21,16 @@ export function make_weapon_data(info: IWeaponInfo, full_str: string, frames: Re
       weapon_strength = set_obj_field(weapon_strength, id, entry);
     }
   }
+  const indexes: IWeaponFrameIndexes = {
+    in_the_sky: '0',
+    just_on_ground: '70'
+  }
   return {
     id: '',
     type: 'weapon',
     base: info,
     weapon_strength,
-    frames: frames
+    frames,
+    indexes
   };
 }

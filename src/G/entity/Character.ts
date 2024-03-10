@@ -57,9 +57,9 @@ export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, IChar
   }
 
   override find_auto_frame(): IFrameInfo {
-    const { in_the_air, standing } = this.data.indexes;
+    const { in_the_sky, standing } = this.data.indexes;
     let fid: string;
-    if (this.position.y > 0) fid = in_the_air[0]
+    if (this.position.y > 0) fid = in_the_sky[0]
     else if (this.hp > 0) fid = standing;
     else fid = standing; // TODO
     return this.data.frames[fid] ?? super.find_auto_frame();
@@ -291,8 +291,8 @@ export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, IChar
     this._next_frame = { id: indexes.grand_injured[same_face(this, attacker)][0] }
   }
 
-  override spawn_object(opoint: IOpointInfo) {
-    const ret = super.spawn_object(opoint);
+  override spawn_object(opoint: IOpointInfo, speed_z: number = 0) {
+    const ret = super.spawn_object(opoint, speed_z);
     if (ret instanceof Ball) { ret.ud = this.controller.UD1; }
     return ret;
   }

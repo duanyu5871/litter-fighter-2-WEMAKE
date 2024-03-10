@@ -42,13 +42,26 @@ export namespace Defines {
     NextAsLanding = 100,
     Z_Moveable = 301,
 
-    NormalBall = 3000,
-    BallHitting = 3001,
-    BallFlying4 = 3002,
-    BallRebounding = 3003,
-    BallDisappear = 3004,
-    SturdyBall = 3005,
-    PunchThroughBall = 3006,
+    Weapon_InTheSky = 1000,
+    Weapon_OnHand   = 1001,
+    Weapon_Throwing = 1002,
+    Weapon_Rebounding = 1003,
+    Weapon_OnGround = 1004,
+
+    HeavyWeapon_InTheSky = 2000,//= 重型武器在空中(heavy weapon-in the sky))
+    HeavyWeapon_OnHand   = 2001,//= 重型武器在手中
+    HeavyWeapon_Throwing = 2002,//= 重型武器在地上
+    HeavyWeapon_OnGround = 2004,//= 與itr kind2作用
+
+    Ball_Flying = 3000,
+    Ball_Hitting = 3001,
+    Ball_Flying4 = 3002,
+    Ball_Rebounding = 3003,
+    Ball_Disappear = 3004,
+    Ball_Sturdy = 3005,
+    Ball_PunchThrough = 3006,
+
+    Gone = 9998,
   }
   export enum EntityEnum {
     Character = 'character',

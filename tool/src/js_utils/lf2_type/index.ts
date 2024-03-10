@@ -1,9 +1,13 @@
 import { IBallFrameInfo } from "./IBallFrameInfo";
+import { IBallInfo } from "./IBallInfo";
 import { IBgInfo } from "./IBgInfo";
 import { IBgLayerInfo } from "./IBgLayerInfo";
+import { ICharacterFrameIndexes } from "./ICharacterFrameIndexes";
 import { ICharacterFrameInfo } from "./ICharacterFrameInfo";
 import { ICharacterInfo } from "./ICharacterInfo";
 import { IFrameInfo } from "./IFrameInfo";
+import { IWeaponFrameIndexes } from "./IWeaponFrameIndexes";
+import { IWeaponInfo } from "./IWeaponInfo";
 import type { Defines } from "./defines";
 export type TTODO = any;
 export type TFace = -1 | 1;
@@ -119,22 +123,11 @@ export * from './ITexturePieceInfo';
 export * from './ITexturePieceInfos';
 export * from './IWpointInfo';
 export * from './ICharacterInfo';
+export * from './IWeaponInfo';
+export * from './IBallInfo';
 
 export interface IGameObjInfo {
   files: Record<string, IEntityPictureInfo>;
-}
-export interface IWeaponInfo extends IGameObjInfo {
-  weapon_hp: number;
-  weapon_drop_hurt: number,
-  weapon_hit_sound: string;
-  weapon_drop_sound: string;
-  weapon_broken_sound: string;
-}
-export interface IBallInfo extends IGameObjInfo {
-  hp: number;
-  weapon_hit_sound: string;
-  weapon_drop_sound: string;
-  weapon_broken_sound: string;
 }
 export interface IBaseData<I = any> {
   id: string | number;
@@ -171,44 +164,10 @@ export interface ICharacterData extends IGameObjData<ICharacterInfo, ICharacterF
 export interface IWeaponData extends IGameObjData<IWeaponInfo, IFrameInfo> {
   type: 'weapon';
   weapon_strength?: TTODO;
+  indexes: IWeaponFrameIndexes;
 }
 export interface IBallData extends IGameObjData<IBallInfo, IBallFrameInfo> {
   type: 'ball';
-}
-export interface ICharacterFrameIndexes {
-  landing_2: string;
-  standing: string;
-  running: string;
-  heavy_obj_run: string;
-  landing_1: string;
-  caughts: string[];
-  catch_atk: string;
-  catch: string[];
-  throw_enemy: string;
-  drink: string;
-  l_weapen_thw: string;
-  jump_weapen_atk: string;
-  h_weapen_thw: string;
-  air_weapon_thw: string;
-  air_quick_rise: string[];
-  dizzy: string;
-  dash_weapen_atk: string;
-  run_weapen_atk: string;
-  weapen_atk: string[];
-  picking_heavy: string;
-  picking_light: string;
-  broken_defend: string;
-  defend_hit: string;
-  in_the_air: string[];
-  super_punch: string;
-  falling: TFrameIdListPair,
-  bouncing: TFrameIdListPair,
-  critical_hit: TFrameIdListPair
-  injured: TFrameIdPair,
-  grand_injured: TFrameIdListPair,
-  lying: TFrameIdPair,
-  fire: string[],
-  ice: string,
 }
 export type TFrameIdPair = {
   [-1]: string,

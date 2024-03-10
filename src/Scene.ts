@@ -169,7 +169,7 @@ export default function run(canvas: HTMLCanvasElement, on_load?: () => void) {
 
     if (!next) return;
     const o = next.object;
-
+    console.log(o.userData.owner)
     if (o.userData.owner instanceof BgLayer)
       o.userData.owner.show_indicators = true;
     else if (o.userData.owner instanceof Entity)

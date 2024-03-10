@@ -6,6 +6,7 @@ import { Background } from './Background';
 import { FrameAnimater } from './FrameAnimater';
 import { PlayerController } from './controller/PlayerController';
 import { Ball } from './entity/Ball';
+import './entity/Weapon';
 import { Character } from './entity/Character';
 import { Entity } from './entity/Entity';
 import { dat_mgr } from './loader/DatLoader';
@@ -193,6 +194,8 @@ export class World {
     for (const e of this.entities)
       if (e.get_frame().id === Defines.ReservedFrameId.Gone)
         this.del_entities(e);
+      else if (e.get_frame().state === Defines.State.Gone)
+        this.del_entities(e);
 
 
     for (const e of this.game_objs) e.self_update();
@@ -238,7 +241,7 @@ export class World {
     const af = a.get_frame();
     const bf = b.get_frame();
     if (!af.itr?.length || !bf.bdy?.length) return;
-    
+
     const b_catcher = b.catcher;
     if (b_catcher && b_catcher.get_frame().cpoint?.hurtable !== 1)
       return;

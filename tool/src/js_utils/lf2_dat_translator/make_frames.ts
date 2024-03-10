@@ -120,6 +120,21 @@ function cook_opoint_list(unsure_opoint_list: IOpointInfo[]) {
 
     const dvy = take(item, 'dvy');
     if (not_zero(dvy)) item.dvy = dvy * -0.5;
+
+
+    const facing = take(item, 'facing')
+    item.multi = 1;
+    if (is_num(facing)) {
+      item.facing = facing % 2 ?
+        Defines.FacingFlag.Backward :
+        Defines.FacingFlag.None;
+      if (Math.abs(facing) >= 10) {
+        item.multi = Math.floor(facing / 10);
+      }
+    } else {
+      item.facing = Defines.FacingFlag.None;
+      item.multi = 1;
+    }
   }
 }
 
