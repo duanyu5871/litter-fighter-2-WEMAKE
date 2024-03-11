@@ -48,9 +48,8 @@ function get_val(word: string): (e: FrameAnimater) => any {
   }
   if (word === 'weapon_type') {
     return e => {
-      if (!(e instanceof Entity)) return;
-      console.log(e.weapon?.data.base.type)
-      return e.weapon?.data.base.type;
+      if (!(e instanceof Entity)) return 0;
+      return e.weapon?.data.base.type || 0;
     }
   }
   return e => word

@@ -169,11 +169,27 @@ export class World {
       e.position.z = near;
   }
 
+  restrict_weapon(e: Weapon) {
+    if (this.disposed) return;
+    if (!this.bg) return;
+    const { left, right, near, far } = this.bg.data.base;
+    const { x, z } = e.position;
+    if (x < left - 100d)
+      e.enter_frame(Defines.ReservedFrameId.Gone)
+    else if (x > right + 100)
+      e.enter_frame(Defines.ReservedFrameId.Gone)
+    if (z < far)
+      e.position.z = far;
+    else if (z > near)
+      e.position.z = near;
+  }
   restrict(e: Entity | THREE.Sprite) {
     if (e instanceof Character) {
       this.restrict_character(e);
     } else if (e instanceof Ball) {
       this.restrict_ball(e);
+    } else if (e instanceof Weapon) {
+      this.restrict_weapon(e);
     } else if (e instanceof THREE.Sprite) {
       this.restrict_name_sprite(e);
     }

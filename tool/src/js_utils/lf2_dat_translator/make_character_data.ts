@@ -17,7 +17,68 @@ const k_9 = [
   'Ua', 'Uj', 'ja'
 ] as const;
 
-const CONDITION_HOLDING_WEAPON_1 = 'weapon_type == 1';
+// const CONDITION_HOLDING_WEAPON_STICK = `weapon_type == ${Defines.WeaponType.Stick}`;
+// const CONDITION_PRESS_F = 'press_F_B == 1'
+
+class Cond {
+  static readonly get = () => new Cond();
+  static readonly bracket: Cond['bracket'] = (...args) => this.get().bracket(...args);
+  static readonly weapon_is: Cond['weapon_is'] = (...args) => this.get().weapon_is(...args);
+  static readonly weapon_not: Cond['weapon_not'] = (...args) => this.get().weapon_not(...args);
+  static readonly press_F_B: Cond['press_F_B'] = (...args) => this.get().press_F_B(...args);
+  static readonly press_F: Cond['press_F'] = (...args) => this.get().press_F(...args);
+  static readonly press_B: Cond['press_B'] = (...args) => this.get().press_B(...args);
+  static readonly press_F_B_not: Cond['press_F_B_not'] = (...args) => this.get().press_F_B_not(...args);
+  static readonly not_press_F: Cond['not_press_F'] = (...args) => this.get().not_press_F(...args);
+  static readonly not_press_B: Cond['not_press_B'] = (...args) => this.get().not_press_B(...args);
+  static readonly press_U_D: Cond['press_U_D'] = (...args) => this.get().press_U_D(...args);
+  static readonly press_U: Cond['press_U'] = (...args) => this.get().press_U(...args);
+  static readonly press_D: Cond['press_D'] = (...args) => this.get().press_D(...args);
+  static readonly press_U_D_not: Cond['press_U_D_not'] = (...args) => this.get().press_U_D_not(...args);
+  static readonly not_press_U: Cond['not_press_U'] = (...args) => this.get().not_press_U(...args);
+  static readonly not_press_D: Cond['not_press_D'] = (...args) => this.get().not_press_D(...args);
+
+  private _parts: (string | Cond)[] = [];
+  or(): this {
+    this._parts.push('|')
+    return this;
+  }
+  and(): this {
+    this._parts.push('&')
+    return this;
+  }
+  bracket(func: (c: Cond) => Cond): this {
+    this._parts.push(func(Cond.get()))
+    return this;
+  }
+  weapon_is(v: Defines.WeaponType): this {
+    this._parts.push(`weapon_type==${v}`)
+    return this;
+  }
+  weapon_not(v: Defines.WeaponType): this {
+    this._parts.push(`weapon_type!=${v}`)
+    return this;
+  }
+  press_F_B(v: -1 | 0 | 1 = 0): this { this._parts.push(`press_F_B == ${v}`); return this; }
+  readonly press_F = () => this.press_F_B(1);
+  readonly press_B = () => this.press_F_B(-1);
+
+  press_F_B_not(v: -1 | 0 | 1 = 0): this { this._parts.push(`press_F_B != ${v}`); return this; }
+  readonly not_press_F = () => this.press_F_B_not(1);
+  readonly not_press_B = () => this.press_F_B_not(-1);
+
+  press_U_D(v: -1 | 0 | 1 = 0): this { this._parts.push(`press_U_D == ${v}`); return this; }
+  readonly press_U = () => this.press_U_D(1);
+  readonly press_D = () => this.press_U_D(-1);
+
+  press_U_D_not(v: -1 | 0 | 1 = 0): this { this._parts.push(`press_U_D != ${v}`); return this; }
+  readonly not_press_U = () => this.press_U_D_not(1);
+  readonly not_press_D = () => this.press_U_D_not(-1);
+
+  done(): string {
+    return this._parts.map(v => is_str(v) ? v : `(${v.done()})`).join('').replace(/\s/g, '');
+  }
+}
 
 const set_hit_turn_back = (frame: IFrameInfo, back_frame_id: string = '') => {
   frame.hit = frame.hit || {}
@@ -73,7 +134,23 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
         frame.hit = frame.hit || {};
         frame.hold = frame.hold || {};
         frame.hit.a = [
-          { id: ['20', '25'], condition: CONDITION_HOLDING_WEAPON_1 },
+          {
+            id: ['45'],
+            facing: Defines.FacingFlag.ByController,
+            condition: Cond
+              .weapon_is(Defines.WeaponType.Baseball).or()
+              .bracket(v =>
+                v.weapon_is(Defines.WeaponType.Knife)
+                  .and().press_F_B_not(0)
+              ).done(),
+          },
+          {
+            id: ['20', '25'],
+            facing: Defines.FacingFlag.ByController,
+            condition: Cond
+              .weapon_is(Defines.WeaponType.Knife).or()
+              .weapon_is(Defines.WeaponType.Stick).done()
+          },
           { id: ['60', '65'] }
         ]; // punch
         frame.hit.j = { id: '210' }; // jump
@@ -90,7 +167,23 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
         set_hold_turn_back(frame);
         frame.hit = frame.hit || {};
         frame.hit.a = [
-          { id: ['20', '25'], condition: CONDITION_HOLDING_WEAPON_1 },
+          {
+            id: ['45'],
+            facing: Defines.FacingFlag.ByController,
+            condition: Cond
+              .weapon_is(Defines.WeaponType.Baseball).or()
+              .bracket(v =>
+                v.weapon_is(Defines.WeaponType.Knife).and()
+                  .press_F_B_not(0)
+              ).done(),
+          },
+          {
+            id: ['20', '25'],
+            facing: Defines.FacingFlag.ByController,
+            condition: Cond
+              .weapon_is(Defines.WeaponType.Knife).or()
+              .weapon_is(Defines.WeaponType.Stick).done()
+          },
           { id: ['60', '65'] }
         ]; // punch
         frame.hit.j = { id: '210' }; // jump
@@ -103,7 +196,22 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
       /** running */
       case 9: case 10: case 11: {
         frame.hit = frame.hit || {};
-        frame.hit.a = [{ id: '35', condition: CONDITION_HOLDING_WEAPON_1 }, { id: '85' }]; // run_atk
+        frame.hit.a = [
+          {
+            id: ['45'],
+            condition: Cond
+              .weapon_is(Defines.WeaponType.Baseball).or().bracket(v => v
+                .press_F().and().weapon_not(Defines.WeaponType.None)
+              )
+              .done(),
+          }, // 丢出武器
+          {
+            id: '35', condition: Cond
+              .weapon_is(Defines.WeaponType.Knife).or()
+              .weapon_is(Defines.WeaponType.Stick).done()
+          },
+          { id: '85' }
+        ]; // run_atk
         frame.hit.j = { id: '213' }; // dash
         frame.hit.d = { id: '102' }; // rowing
         frame.hold = frame.hold || {};
@@ -145,7 +253,24 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
         if (frame_id === '211') frame.jump_flag = 1;
         if (frame_id === '212') {
           frame.hit.a = [
-            { id: '30', facing: Defines.FacingFlag.ByController, condition: CONDITION_HOLDING_WEAPON_1 },
+            {
+              id: ['52'],
+              facing: Defines.FacingFlag.ByController,
+              condition: Cond
+                .weapon_is(Defines.WeaponType.Baseball).or()
+                .weapon_is(Defines.WeaponType.Drink).or().bracket(v => v
+                  .press_F_B_not(0).and()
+                  .weapon_not(Defines.WeaponType.None)
+                )
+                .done(),
+            },
+            {
+              id: '30',
+              facing: Defines.FacingFlag.ByController,
+              condition: Cond
+                .weapon_is(Defines.WeaponType.Knife).or()
+                .weapon_is(Defines.WeaponType.Stick).done()
+            },
             { id: '80', facing: Defines.FacingFlag.ByController }
           ]; // jump_atk
         }
@@ -165,7 +290,23 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
         if (frame_id === '217' && frames[216]) set_hit_turn_back(frame, '216'); // turn back;
         if (frame_id === '213' || frame_id === '216') {
           frame.hit = frame.hit || {};
-          frame.hit.a = [{ id: '40', condition: CONDITION_HOLDING_WEAPON_1 }, { id: '90' }]; // dash_atk
+          frame.hit.a = [
+            {
+              id: '52',
+              facing: Defines.FacingFlag.ByController,
+              condition: Cond
+                .weapon_is(Defines.WeaponType.Baseball).or()
+                .weapon_is(Defines.WeaponType.Drink)
+                .done(),
+            },
+            {
+              id: '40',
+              facing: Defines.FacingFlag.ByController,
+              condition: Cond
+                .weapon_is(Defines.WeaponType.Knife).or()
+                .weapon_is(Defines.WeaponType.Stick).done()
+            },
+            { id: '90' }]; // dash_atk
         }
         break;
       }
@@ -180,8 +321,13 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
           let a_hit_a: INextFrame | undefined;
           if (t_action) {
             t_hit_a = [
-              { ...get_next_frame_by_id(t_action), facing: Defines.FacingFlag.ByController, condition: 'press_F_B != 0' },
-              { ...get_next_frame_by_id(t_action), facing: Defines.FacingFlag.ByController, condition: 'press_U_D != 0' },
+              {
+                ...get_next_frame_by_id(t_action),
+                facing: Defines.FacingFlag.ByController,
+                condition: Cond
+                  .press_F_B_not(0).or()
+                  .press_U_D_not(0).done()
+              }
             ]
           }
           if (a_action)

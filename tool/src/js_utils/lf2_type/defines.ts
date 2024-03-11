@@ -8,11 +8,12 @@ export namespace Defines {
     Gone = "gone",
   }
   export enum WeaponType {
-    Stick    = 1,  // 棍棒类。
-    Heavy    = 2, // 重物类，双手举起丢出
-    Knife    = 3, // 小刀类，与棍棒类几乎一致，但站立时前A会丢出。
-    Baseball = 4, // 棒球类，只能丢。
-    Drink    = 5, // 喝的。
+    None = 0,
+    Stick = 1,// 棍棒类。
+    Heavy = 2,// 重物类，双手举起丢出
+    Knife = 3,// 小刀类，与棍棒类几乎一致，但站立时前A会丢出。
+    Baseball = 4,// 棒球类，只能丢。
+    Drink = 5,
   }
   export enum FacingFlag {
     Left = -1,

@@ -2,7 +2,7 @@ import { delete_val_equal_keys } from '../delete_val_equal_keys';
 import { is_num } from '../is_num';
 import { is_positive_num } from '../is_positive_num';
 import { is_str } from '../is_str';
-import { IBdyInfo, ICpointInfo, IItrInfo, IOpointInfo } from '../lf2_type';
+import { IBdyInfo, ICpointInfo, IItrInfo, IOpointInfo, IWpointInfo } from '../lf2_type';
 import { IFrameInfo } from "../lf2_type/IFrameInfo";
 import { Defines } from '../lf2_type/defines';
 import { match_all } from '../match_all';
@@ -26,7 +26,9 @@ export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string): Re
     const opoint_list = take_sections<IOpointInfo>(_content, 'opoint:', 'opoint_end:', r => _content = r);
     cook_opoint_list(opoint_list);
 
-    const wpoint = take_sections(_content, 'wpoint:', 'wpoint_end:', r => _content = r)[0];
+    const wpoint = take_sections<IWpointInfo>(_content, 'wpoint:', 'wpoint_end:', r => _content = r)[0];
+    wpoint && cook_wpoint(wpoint);
+
     const bpoint = take_sections(_content, 'bpoint:', 'bpoint_end:', r => _content = r)[0];
     const cpoint = take_sections<ICpointInfo>(_content, 'cpoint:', 'cpoint_end:', r => _content = r)[0];
     cpoint && cook_cpoint(cpoint);
@@ -82,6 +84,18 @@ export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string): Re
 
   }
   return frames;
+}
+
+
+function cook_wpoint(unsure_wpoint: IWpointInfo) {
+  const dvx = take(unsure_wpoint, 'dvx');
+  if (not_zero(dvx)) unsure_wpoint.dvx = dvx * 0.5;
+
+  const dvz = take(unsure_wpoint, 'dvz');
+  if (not_zero(dvz)) unsure_wpoint.dvz = dvz;
+
+  const dvy = take(unsure_wpoint, 'dvy');
+  if (not_zero(dvy)) unsure_wpoint.dvy = dvy * -0.5;
 }
 
 function cook_cpoint(unsure_cpoint: ICpointInfo) {

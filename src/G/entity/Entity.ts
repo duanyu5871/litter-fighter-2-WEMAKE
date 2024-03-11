@@ -18,6 +18,7 @@ export type TData = IBaseData | ICharacterData | IWeaponData | IEntityData | IBa
 export const V_SHAKE = 4;
 export const A_SHAKE = 6;
 let __team__ = 4;
+
 export class Entity<
   F extends IFrameInfo = IFrameInfo,
   I extends IGameObjInfo = IGameObjInfo,

@@ -3,6 +3,7 @@ import { Defines } from "../../js_utils/lf2_type/defines";
 import { factory } from "../Factory";
 import { ICube, World } from "../World";
 import { WEAPON_STATES } from "../state/weapon";
+import { Character } from "./Character";
 import { Entity } from "./Entity";
 export class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData> {
   holder?: Entity;
@@ -11,6 +12,25 @@ export class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData> {
   }
   override find_auto_frame(): IFrameInfo {
     return this.data.frames['0'];
+  }
+  override self_update(): void {
+    super.self_update();
+
+    const holder = this.holder
+    if (!holder) return;
+    const { wpoint: wpoint_a } = holder.get_frame();
+    if (!wpoint_a) return;
+    const { dvx, dvy, dvz } = wpoint_a;
+
+    if (dvx || dvy || dvz) {
+      this.enter_frame('40');
+      const vz = (holder instanceof Character) ? holder.controller.UD1 * (dvz || 0) : 0;
+      const vx = (dvx || 0 - Math.abs(vz / 2)) * this.facing
+      this.velocity.set(vx, dvy || 0, vz)
+      console.log(dvx, dvy, dvz)
+      delete this.holder?.weapon;
+      delete this.holder;
+    }
   }
   override setup(shotter: Entity, o: IOpointInfo, speed_z?: number): this {
     super.setup(shotter, o, speed_z);
