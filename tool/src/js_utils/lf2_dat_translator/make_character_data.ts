@@ -17,6 +17,8 @@ const k_9 = [
   'Ua', 'Uj', 'ja'
 ] as const;
 
+const CONDITION_HOLDING_WEAPON_1 = 'weapon_type == 1';
+
 const set_hit_turn_back = (frame: IFrameInfo, back_frame_id: string = '') => {
   frame.hit = frame.hit || {}
   frame.hit.B = { id: back_frame_id, wait: 'i', facing: Defines.FacingFlag.Backward }
@@ -70,7 +72,10 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
       case 0: case 1: case 2: case 3: case 4: {
         frame.hit = frame.hit || {};
         frame.hold = frame.hold || {};
-        frame.hit.a = { id: ['60', '65'] }; // punch
+        frame.hit.a = [
+          { id: ['20', '25'], condition: CONDITION_HOLDING_WEAPON_1 },
+          { id: ['60', '65'] }
+        ]; // punch
         frame.hit.j = { id: '210' }; // jump
         frame.hit.d = { id: '110' }; // defend
         frame.hit.B = frame.hold.B = { id: 'walking_0', facing: Defines.FacingFlag.Backward }; // walking
@@ -84,7 +89,10 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
         set_hit_turn_back(frame);
         set_hold_turn_back(frame);
         frame.hit = frame.hit || {};
-        frame.hit.a = { id: ['60', '65'] }; // punch
+        frame.hit.a = [
+          { id: ['20', '25'], condition: CONDITION_HOLDING_WEAPON_1 },
+          { id: ['60', '65'] }
+        ]; // punch
         frame.hit.j = { id: '210' }; // jump
         frame.hit.d = { id: '110' }; // defend
         frame.hit.FF = { id: 'running_0' };
@@ -95,7 +103,7 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
       /** running */
       case 9: case 10: case 11: {
         frame.hit = frame.hit || {};
-        frame.hit.a = { id: '85' }; // run_atk
+        frame.hit.a = [{ id: '35', condition: CONDITION_HOLDING_WEAPON_1 }, { id: '85' }]; // run_atk
         frame.hit.j = { id: '213' }; // dash
         frame.hit.d = { id: '102' }; // rowing
         frame.hold = frame.hold || {};
@@ -136,8 +144,10 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
 
         if (frame_id === '211') frame.jump_flag = 1;
         if (frame_id === '212') {
-          frame.hit.a = { id: '80', facing: Defines.FacingFlag.ByController }; // jump_atk
-          frame.hold.a = { id: '80', facing: Defines.FacingFlag.ByController }; // jump_atk
+          frame.hit.a = [
+            { id: '30', facing: Defines.FacingFlag.ByController, condition: CONDITION_HOLDING_WEAPON_1 },
+            { id: '80', facing: Defines.FacingFlag.ByController }
+          ]; // jump_atk
         }
         frame.hit.B = { facing: Defines.FacingFlag.ByController };
         frame.hold.B = { facing: Defines.FacingFlag.ByController };
@@ -146,16 +156,16 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
       /** dash */
       case 213: case 214: case 216: case 217: {
         frame.state = 5;
-        if (frame_id === '213') frame.dash_flag = 1;
+        if (frame_id === '213' || frame_id === '214') {
+          frame.dash_flag = 1;
+        }
         if (frame_id === '213' && frames[214]) set_hit_turn_back(frame, '214'); // turn back;
         if (frame_id === '216' && frames[217]) set_hit_turn_back(frame, '217'); // turn back;
         if (frame_id === '214' && frames[213]) set_hit_turn_back(frame, '213'); // turn back;
         if (frame_id === '217' && frames[216]) set_hit_turn_back(frame, '216'); // turn back;
         if (frame_id === '213' || frame_id === '216') {
           frame.hit = frame.hit || {};
-          frame.hit.a = { id: '90' }; // dash_atk
-          frame.hold = frame.hold || {};
-          frame.hold.a = { id: '90' }; // dash_atk
+          frame.hit.a = [{ id: '40', condition: CONDITION_HOLDING_WEAPON_1 }, { id: '90' }]; // dash_atk
         }
         break;
       }

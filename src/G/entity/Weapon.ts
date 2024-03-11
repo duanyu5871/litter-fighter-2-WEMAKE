@@ -22,10 +22,15 @@ export class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData> {
   }
   override on_collision(target: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
     super.on_collision(target, itr, bdy, a_cube, b_cube);
+
+    if (this._frame.state === Defines.State.Weapon_OnHand) {
+      return;
+    }
     this.velocity.x = -0.3 * this.velocity.x
     this.velocity.y = -0.3 * this.velocity.y
     this.enter_frame(this.find_auto_frame())
   }
+
   follow_holder() {
     const holder = this.holder
     if (!holder) return;
@@ -33,6 +38,9 @@ export class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData> {
     const { wpoint: wpoint_b, centerx: centerx_b, centery: centery_b } = this.get_frame();
     if (!wpoint_a || !wpoint_b) return;
 
+    if (wpoint_a.weaponact !== this._frame.id) {
+      this.enter_frame({ id: wpoint_a.weaponact })
+    }
     const { x, y, z } = holder.position;
     this.facing = holder.facing;
     this.position.set(
@@ -41,7 +49,6 @@ export class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData> {
       z
     );
     this.update_sprite_position()
-    this.enter_frame({ id: wpoint_a.weaponact })
   }
 }
 factory.set('weapon', (...args) => new Weapon(...args))

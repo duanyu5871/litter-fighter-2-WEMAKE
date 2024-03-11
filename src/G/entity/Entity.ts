@@ -169,6 +169,7 @@ export class Entity<
       const wf = this._s[this._i = (this._i + 1) % 2] * 2 / this._piece.pw
       this.sprite.center.x += 4 * wf;
     }
+    this.weapon?.follow_holder();
   }
 
   handle_frame_velocity() {
@@ -188,7 +189,6 @@ export class Entity<
   }
   override self_update(): void {
     super.self_update();
-    this.weapon?.follow_holder();
     const { cpoint } = this._frame;
     if (cpoint && is_nagtive_num(cpoint.decrease)) {
       this._catching_value += cpoint.decrease;
@@ -319,6 +319,7 @@ export class Entity<
     super.update_sprite_position();
     const { x, z } = this.position;
     this.shadow.position.set(x, - z / 2, z);
+    this.weapon?.follow_holder();
   }
   on_after_update?(): void;
 

@@ -1,11 +1,17 @@
-export const get_number_predicate = (operator: string, value: number) => {
+/* eslint-disable eqeqeq */
+import { Warn } from "../../Log";
+
+export const get_predicate = (operator: string) => {
   const map: {
-    [x in string]?: (v: number) => boolean;
+    [x in string]?: (v1: any, v2: any) => boolean;
   } = {
-    '==': v => v === value,
-    '!=': v => v !== value,
-    '>=': v => v >= value,
-    '<=': v => v <= value,
+    '==': (v1, v2) => v1 == v2,
+    '!=': (v1, v2) => v1 != v2,
+    '>=': (v1, v2) => v1 >= v2,
+    '<=': (v1, v2) => v1 <= v2,
   };
-  return map[operator] || ((_v: number) => false);
+  if (!map[operator]) Warn.print('get_predicate', 'wrong operator:', operator);
+  return map[operator] || (() => false);
 };
+
+
