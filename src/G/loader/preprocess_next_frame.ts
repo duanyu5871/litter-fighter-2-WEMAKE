@@ -11,7 +11,8 @@ export const preprocess_next_frame = (i: TNextFrame) => {
   }
   if (typeof i.condition !== 'string') return;
 
-  const lll = make_condition_list(i.condition)
+  const lll = make_condition_list(i.condition);
+  (i as any).lll = lll;
   i.condition = make_condition_func(lll[0])
 };
 

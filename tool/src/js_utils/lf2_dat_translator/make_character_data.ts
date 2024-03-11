@@ -363,10 +363,8 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
       /** crouch */
       case 215:
         const to_dash_frame: TNextFrame = [
-          { id: '213', condition: 'press_F_B == 1', facing: Defines.FacingFlag.ByController },
-          { id: '213', condition: 'press_F_B == -1', facing: Defines.FacingFlag.ByController },
-          { id: '213', condition: 'trend_x == 1', facing: Defines.FacingFlag.ByController },
-          { id: '214', condition: 'trend_x == -1' }
+          { id: '213', condition: 'press_F_B != 0|trend_x == 1', facing: Defines.FacingFlag.ByController },
+          { id: '214', condition: 'trend_x == -1' },
         ]; // dash
         frame.hit = frame.hit || {};
         frame.hit.d = { id: '102', facing: Defines.FacingFlag.ByController };
