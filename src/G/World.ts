@@ -174,7 +174,7 @@ export class World {
     if (!this.bg) return;
     const { left, right, near, far } = this.bg.data.base;
     const { x, z } = e.position;
-    if (x < left - 100d)
+    if (x < left - 100)
       e.enter_frame(Defines.ReservedFrameId.Gone)
     else if (x > right + 100)
       e.enter_frame(Defines.ReservedFrameId.Gone)
