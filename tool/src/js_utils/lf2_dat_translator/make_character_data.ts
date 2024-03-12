@@ -17,76 +17,79 @@ const k_9 = [
   'Ua', 'Uj', 'ja'
 ] as const;
 
-// const CONDITION_HOLDING_WEAPON_STICK = `weapon_type == ${Defines.WeaponType.Stick}`;
-// const CONDITION_PRESS_F = 'press_F_B == 1'
-
+type TValWord = Defines.ValWord;
+const { FacingFlag, ValWord, WeaponType, State } = Defines
 class Cond {
   static readonly get = () => new Cond();
+  static readonly add: Cond['add'] = (...args) => this.get().add(...args);
+  static readonly one_of: Cond['one_of'] = (...args) => this.get().one_of(...args);
+  static readonly not_in: Cond['not_in'] = (...args) => this.get().not_in(...args);
   static readonly bracket: Cond['bracket'] = (...args) => this.get().bracket(...args);
-  static readonly weapon_is: Cond['weapon_is'] = (...args) => this.get().weapon_is(...args);
-  static readonly weapon_not: Cond['weapon_not'] = (...args) => this.get().weapon_not(...args);
-  static readonly press_F_B: Cond['press_F_B'] = (...args) => this.get().press_F_B(...args);
-  static readonly press_F: Cond['press_F'] = (...args) => this.get().press_F(...args);
-  static readonly press_B: Cond['press_B'] = (...args) => this.get().press_B(...args);
-  static readonly press_F_B_not: Cond['press_F_B_not'] = (...args) => this.get().press_F_B_not(...args);
-  static readonly not_press_F: Cond['not_press_F'] = (...args) => this.get().not_press_F(...args);
-  static readonly not_press_B: Cond['not_press_B'] = (...args) => this.get().not_press_B(...args);
-  static readonly press_U_D: Cond['press_U_D'] = (...args) => this.get().press_U_D(...args);
-  static readonly press_U: Cond['press_U'] = (...args) => this.get().press_U(...args);
-  static readonly press_D: Cond['press_D'] = (...args) => this.get().press_D(...args);
-  static readonly press_U_D_not: Cond['press_U_D_not'] = (...args) => this.get().press_U_D_not(...args);
-  static readonly not_press_U: Cond['not_press_U'] = (...args) => this.get().not_press_U(...args);
-  static readonly not_press_D: Cond['not_press_D'] = (...args) => this.get().not_press_D(...args);
-
   private _parts: (string | Cond)[] = [];
-  or(): this {
-    this._parts.push('|')
-    return this;
-  }
-  and(): this {
-    this._parts.push('&')
+  add(word: TValWord, op: '==' | '>=' | '<=' | '!=', value: any): this {
+    this._parts.push(`${word}${op}${value}`);
     return this;
   }
   bracket(func: (c: Cond) => Cond): this {
     this._parts.push(func(Cond.get()))
     return this;
   }
-  weapon_is(v: Defines.WeaponType): this {
-    this._parts.push(`weapon_type==${v}`)
+  one_of(word: TValWord, ...values: (string | number)[]): this {
+    return this.bracket(c => {
+      for (const v of values) c = c.or(word, '==', v)
+      return c;
+    });
+  }
+  not_in(word: TValWord, ...values: (string | number)[]): this {
+    return this.bracket(c => {
+      for (const v of values) c.add(word, '!=', v)
+      return c
+    });
+  }
+  private _any(word?: TValWord | ((c: Cond) => Cond), op?: '==' | '>=' | '<=' | '!=' | (string | number)[], value?: any): this {
+    if (typeof word === 'function')
+      return this.bracket(word);
+    else if (word !== void 0)
+      if (Array.isArray(op))
+        return this.one_of(word, ...op)
+      else if (op !== void 0 && value !== void 0)
+        return this.add(word, op, value)
     return this;
   }
-  weapon_not(v: Defines.WeaponType): this {
-    this._parts.push(`weapon_type!=${v}`)
-    return this;
+  or(): this;
+  or(func: (c: Cond) => Cond): this;
+  or(word: TValWord, op: '==' | '>=' | '<=' | '!=', value: any): this;
+  or(word?: TValWord | ((c: Cond) => Cond), op?: '==' | '>=' | '<=' | '!=' | (string | number)[], value?: any): this {
+    this._parts.length && this._parts.push('|');
+    return this._any(word, op, value);
   }
-  press_F_B(v: -1 | 0 | 1 = 0): this { this._parts.push(`press_F_B == ${v}`); return this; }
-  readonly press_F = () => this.press_F_B(1);
-  readonly press_B = () => this.press_F_B(-1);
 
-  press_F_B_not(v: -1 | 0 | 1 = 0): this { this._parts.push(`press_F_B != ${v}`); return this; }
-  readonly not_press_F = () => this.press_F_B_not(1);
-  readonly not_press_B = () => this.press_F_B_not(-1);
-
-  press_U_D(v: -1 | 0 | 1 = 0): this { this._parts.push(`press_U_D == ${v}`); return this; }
-  readonly press_U = () => this.press_U_D(1);
-  readonly press_D = () => this.press_U_D(-1);
-
-  press_U_D_not(v: -1 | 0 | 1 = 0): this { this._parts.push(`press_U_D != ${v}`); return this; }
-  readonly not_press_U = () => this.press_U_D_not(1);
-  readonly not_press_D = () => this.press_U_D_not(-1);
-
+  and(): this;
+  and(func: (c: Cond) => Cond): this;
+  and(word: TValWord, op: '==' | '>=' | '<=' | '!=', value: any): this;
+  and(word?: TValWord | ((c: Cond) => Cond), op?: '==' | '>=' | '<=' | '!=', value?: any): this {
+    this._parts.length && this._parts.push('&');
+    return this._any(word, op, value);
+  }
   done(): string {
-    return this._parts.map(v => is_str(v) ? v : `(${v.done()})`).join('').replace(/\s/g, '');
+    let ret = this._parts.map(v => is_str(v) ? v : `(${v.done()})`).join('')
+    ret = ret.replace(/\s|\n|\r/g, ''); // remove empty char;
+
+    const p = this._parts[0];
+    if (this._parts.length === 1 && p instanceof Cond) {
+      ret = ret.replace(/^\(|\)$/g, '')
+    }
+    return ret;
   }
 }
 
 const set_hit_turn_back = (frame: IFrameInfo, back_frame_id: string = '') => {
   frame.hit = frame.hit || {}
-  frame.hit.B = { id: back_frame_id, wait: 'i', facing: Defines.FacingFlag.Backward }
+  frame.hit.B = { id: back_frame_id, wait: 'i', facing: FacingFlag.Backward }
 }
 const set_hold_turn_back = (frame: IFrameInfo, back_frame_id: string = '') => {
   frame.hold = frame.hold || {}
-  frame.hold.B = { id: back_frame_id, wait: 'i', facing: Defines.FacingFlag.Backward }
+  frame.hold.B = { id: back_frame_id, wait: 'i', facing: FacingFlag.Backward }
 }
 export function make_character_data(info: ICharacterInfo, frames: Record<string, ICharacterFrameInfo>): ICharacterData {
   const walking_frame_rate = take_number(info, 'walking_frame_rate', 3);
@@ -120,8 +123,8 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
       if (!frame.hit.sequences) frame.hit.sequences = {};
       const nf = get_next_frame_by_id(next);
       if (k === 'Fa' || k === 'Fj') {
-        frame.hit.sequences['L' + k[1]] = { ...nf, facing: nf.facing === Defines.FacingFlag.Backward ? Defines.FacingFlag.Right : Defines.FacingFlag.Left };
-        frame.hit.sequences['R' + k[1]] = { ...nf, facing: nf.facing === Defines.FacingFlag.Backward ? Defines.FacingFlag.Right : Defines.FacingFlag.Right };
+        frame.hit.sequences['L' + k[1]] = { ...nf, facing: nf.facing === FacingFlag.Backward ? FacingFlag.Right : FacingFlag.Left };
+        frame.hit.sequences['R' + k[1]] = { ...nf, facing: nf.facing === FacingFlag.Backward ? FacingFlag.Right : FacingFlag.Right };
       } else {
         frame.hit.sequences[k] = nf;
       }
@@ -136,26 +139,24 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
         frame.hit.a = [
           {
             id: ['45'],
-            facing: Defines.FacingFlag.ByController,
+            facing: FacingFlag.ByController,
             condition: Cond
-              .weapon_is(Defines.WeaponType.Baseball).or()
-              .bracket(v =>
-                v.weapon_is(Defines.WeaponType.Knife)
-                  .and().press_F_B_not(0)
+              .add(ValWord.WeaponType, '==', WeaponType.Baseball)
+              .or(v => v
+                .add(ValWord.WeaponType, '==', WeaponType.Knife)
+                .and(ValWord.PressFB, '!=', 0)
               ).done(),
           },
           {
             id: ['20', '25'],
-            facing: Defines.FacingFlag.ByController,
-            condition: Cond
-              .weapon_is(Defines.WeaponType.Knife).or()
-              .weapon_is(Defines.WeaponType.Stick).done()
+            facing: FacingFlag.ByController,
+            condition: Cond.one_of(ValWord.WeaponType, WeaponType.Knife, WeaponType.Stick).done()
           },
           { id: ['60', '65'] }
         ]; // punch
         frame.hit.j = { id: '210' }; // jump
         frame.hit.d = { id: '110' }; // defend
-        frame.hit.B = frame.hold.B = { id: 'walking_0', facing: Defines.FacingFlag.Backward }; // walking
+        frame.hit.B = frame.hold.B = { id: 'walking_0', facing: FacingFlag.Backward }; // walking
         frame.hit.F = frame.hit.U = frame.hit.D =
           frame.hold.F = frame.hold.U = frame.hold.D = { id: 'walking_0' }; // walking
         frame.hit.FF = frame.hit.FF = { id: 'running_0' };
@@ -169,20 +170,18 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
         frame.hit.a = [
           {
             id: ['45'],
-            facing: Defines.FacingFlag.ByController,
+            facing: FacingFlag.ByController,
             condition: Cond
-              .weapon_is(Defines.WeaponType.Baseball).or()
-              .bracket(v =>
-                v.weapon_is(Defines.WeaponType.Knife).and()
-                  .press_F_B_not(0)
+              .add(ValWord.WeaponType, '==', WeaponType.Baseball)
+              .or(v => v
+                .add(ValWord.WeaponType, '==', WeaponType.Knife)
+                .and(ValWord.PressFB, '!=', 0)
               ).done(),
           },
           {
             id: ['20', '25'],
-            facing: Defines.FacingFlag.ByController,
-            condition: Cond
-              .weapon_is(Defines.WeaponType.Knife).or()
-              .weapon_is(Defines.WeaponType.Stick).done()
+            facing: FacingFlag.ByController,
+            condition: Cond.one_of(ValWord.WeaponType, WeaponType.Knife, WeaponType.Stick).done()
           },
           { id: ['60', '65'] }
         ]; // punch
@@ -199,16 +198,15 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
         frame.hit.a = [
           {
             id: ['45'],
-            condition: Cond
-              .weapon_is(Defines.WeaponType.Baseball).or().bracket(v => v
-                .press_F().and().weapon_not(Defines.WeaponType.None)
+            condition: Cond.add(ValWord.WeaponType, '==', WeaponType.Baseball)
+              .or(v => v
+                .add(ValWord.PressFB, '==', 1)
+                .and(ValWord.WeaponType, '!=', WeaponType.None)
               )
               .done(),
           }, // 丢出武器
           {
-            id: '35', condition: Cond
-              .weapon_is(Defines.WeaponType.Knife).or()
-              .weapon_is(Defines.WeaponType.Stick).done()
+            id: '35', condition: Cond.one_of(ValWord.WeaponType, WeaponType.Knife, WeaponType.Stick).done()
           },
           { id: '85' }
         ]; // run_atk
@@ -255,27 +253,24 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
           frame.hit.a = [
             {
               id: ['52'],
-              facing: Defines.FacingFlag.ByController,
-              condition: Cond
-                .weapon_is(Defines.WeaponType.Baseball).or()
-                .weapon_is(Defines.WeaponType.Drink).or().bracket(v => v
-                  .press_F_B_not(0).and()
-                  .weapon_not(Defines.WeaponType.None)
-                )
-                .done(),
+              facing: FacingFlag.ByController,
+              condition: Cond.one_of(
+                ValWord.WeaponType, WeaponType.Baseball, WeaponType.Drink
+              ).or(v => v
+                .add(ValWord.PressFB, '!=', 0)
+                .and(ValWord.WeaponType, '!=', WeaponType.None)
+              ).done(),
             },
             {
               id: '30',
-              facing: Defines.FacingFlag.ByController,
-              condition: Cond
-                .weapon_is(Defines.WeaponType.Knife).or()
-                .weapon_is(Defines.WeaponType.Stick).done()
+              facing: FacingFlag.ByController,
+              condition: Cond.one_of(ValWord.WeaponType, WeaponType.Knife, WeaponType.Stick).done()
             },
-            { id: '80', facing: Defines.FacingFlag.ByController }
+            { id: '80', facing: FacingFlag.ByController }
           ]; // jump_atk
         }
-        frame.hit.B = { facing: Defines.FacingFlag.ByController };
-        frame.hold.B = { facing: Defines.FacingFlag.ByController };
+        frame.hit.B = { facing: FacingFlag.ByController };
+        frame.hold.B = { facing: FacingFlag.ByController };
         break;
       }
       /** dash */
@@ -293,18 +288,13 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
           frame.hit.a = [
             {
               id: '52',
-              facing: Defines.FacingFlag.ByController,
-              condition: Cond
-                .weapon_is(Defines.WeaponType.Baseball).or()
-                .weapon_is(Defines.WeaponType.Drink)
-                .done(),
+              facing: FacingFlag.ByController,
+              condition: Cond.one_of(ValWord.WeaponType, WeaponType.Baseball, WeaponType.Drink).done(),
             },
             {
               id: '40',
-              facing: Defines.FacingFlag.ByController,
-              condition: Cond
-                .weapon_is(Defines.WeaponType.Knife).or()
-                .weapon_is(Defines.WeaponType.Stick).done()
+              facing: FacingFlag.ByController,
+              condition: Cond.one_of(ValWord.WeaponType, WeaponType.Knife, WeaponType.Stick).done()
             },
             { id: '90' }]; // dash_atk
         }
@@ -312,7 +302,7 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
       }
       case 120: case 121: case 122: case 123: /** catching */
         if (frame.cpoint) {
-          if (frame.cpoint.vaction) (frame.cpoint?.vaction as INextFrame).facing = Defines.FacingFlag.OpposingCatcher;
+          if (frame.cpoint.vaction) (frame.cpoint?.vaction as INextFrame).facing = FacingFlag.OpposingCatcher;
           if (frame.cpoint.injury) frame.cpoint!.shaking = 1;
           const a_action = take(frame.cpoint, 'aaction');
           const t_action = take(frame.cpoint, 'taction');
@@ -323,10 +313,11 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
             t_hit_a = [
               {
                 ...get_next_frame_by_id(t_action),
-                facing: Defines.FacingFlag.ByController,
+                facing: FacingFlag.ByController,
                 condition: Cond
-                  .press_F_B_not(0).or()
-                  .press_U_D_not(0).done()
+                  .add(ValWord.PressFB, '!=', 0)
+                  .or(ValWord.PressUD, '!=', 0)
+                  .done()
               }
             ]
           }
@@ -357,26 +348,33 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
 
         break;
       case 232: case 233: case 234:  /** throw_lying_man */
-        if (frame.cpoint?.vaction) (frame.cpoint?.vaction as INextFrame).facing = Defines.FacingFlag.SameAsCatcher;
+        if (frame.cpoint?.vaction) (frame.cpoint?.vaction as INextFrame).facing = FacingFlag.SameAsCatcher;
         break;
 
       /** crouch */
       case 215:
         const to_dash_frame: TNextFrame = [
-          { id: '213', condition: 'press_F_B != 0|trend_x == 1', facing: Defines.FacingFlag.ByController },
-          { id: '214', condition: 'trend_x == -1' },
+          {
+            id: '213',
+            condition: Cond
+              .add(ValWord.PressFB, '!=', 0)
+              .or(ValWord.TrendX, '==', 1)
+              .done(),
+            facing: FacingFlag.ByController
+          },
+          { id: '214', condition: Cond.add(ValWord.TrendX, '==', -1).done() },
         ]; // dash
         frame.hit = frame.hit || {};
-        frame.hit.d = { id: '102', facing: Defines.FacingFlag.ByController };
+        frame.hit.d = { id: '102', facing: FacingFlag.ByController };
         frame.hit.j = to_dash_frame;
         frame.hold = frame.hold || {};
-        frame.hold.d = { id: '102', facing: Defines.FacingFlag.ByController };
+        frame.hold.d = { id: '102', facing: FacingFlag.ByController };
         frame.hold.j = to_dash_frame;
         break;
     }
     switch (frame.state) {
-      case Defines.State.BurnRun:
-      case Defines.State.Z_Moveable:
+      case State.BurnRun:
+      case State.Z_Moveable:
         frame.dvz = running_speedz;
         break;
       case 1: case 2: {

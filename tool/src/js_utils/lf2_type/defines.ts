@@ -1,6 +1,12 @@
 export namespace Defines {
   export const OLD_SCREEN_WIDTH = 795;
   export const OLD_SCREEN_HEIGHT = 550;
+  export enum ValWord {
+    TrendX = 'trend_x',
+    PressFB = 'press_F_B',
+    PressUD = 'press_U_D',
+    WeaponType = 'weapon_type',
+  }
   export enum ReservedFrameId {
     None = "",
     Auto = "auto",
@@ -51,13 +57,13 @@ export namespace Defines {
     Z_Moveable = 301,
 
     Weapon_InTheSky = 1000,
-    Weapon_OnHand   = 1001,
+    Weapon_OnHand = 1001,
     Weapon_Throwing = 1002,
     Weapon_Rebounding = 1003,
     Weapon_OnGround = 1004,
 
     HeavyWeapon_InTheSky = 2000,//= 重型武器在空中(heavy weapon-in the sky))
-    HeavyWeapon_OnHand   = 2001,//= 重型武器在手中
+    HeavyWeapon_OnHand = 2001,//= 重型武器在手中
     HeavyWeapon_Throwing = 2002,//= 重型武器在地上
     HeavyWeapon_OnGround = 2004,//= 與itr kind2作用
 
