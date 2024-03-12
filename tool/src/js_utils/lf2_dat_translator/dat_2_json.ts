@@ -1,20 +1,21 @@
 import { IBaseData, IDatIndex, IGameObjInfo } from '../lf2_type';
-import { IBallInfo } from "../lf2_type/IBallInfo";
-import { IWeaponInfo } from "../lf2_type/IWeaponInfo";
-import { ICharacterInfo } from "../lf2_type/ICharacterInfo";
 import { IBallFrameInfo } from "../lf2_type/IBallFrameInfo";
+import { IBallInfo } from "../lf2_type/IBallInfo";
+import { ICharacterInfo } from "../lf2_type/ICharacterInfo";
+import { IWeaponInfo } from "../lf2_type/IWeaponInfo";
+import { Defines } from '../lf2_type/defines';
 import { match_block_once } from '../match_block';
 import { match_colon_value } from '../match_colon_value';
 import { set_obj_field } from "../set_obj_field";
+import { data_to_stage_jsons as make_stage_infos } from './data_to_stage_jsons';
 import { make_ball_data } from './make_ball_data';
 import { make_bg_data } from './make_bg_data';
 import { make_character_data } from './make_character_data';
 import { make_entity_data } from './make_entity_data';
 import { make_frames } from './make_frames';
 import { make_weapon_data } from './make_weapon_data';
-import { Defines } from '../lf2_type/defines';
-
-export default function dat_to_json(full_str: string, datIndex?: IDatIndex): IBaseData | void {
+export default function dat_to_json(full_str: string, datIndex?: IDatIndex): any | void {
+  if (full_str.startsWith('<stage>')) return make_stage_infos(full_str);
   if (full_str.startsWith('name:')) return make_bg_data(full_str, datIndex);
   const infos_str = match_block_once(full_str, '<bmp_begin>', '<bmp_end>');
   if (!infos_str) { return; }
