@@ -24,11 +24,14 @@ export class Entity<
   I extends IGameObjInfo = IGameObjInfo,
   D extends IGameObjData<I, F> = IGameObjData<I, F>
 > extends FrameAnimater<F, I, D> {
+  static new_team() {
+    return ++__team__;
+  }
   readonly shadow: THREE.Object3D;
   readonly velocity = new THREE.Vector3(0, 0, 0);
 
   hp: number = 50000000000;
-  team: number = ++__team__;
+  team: number = Entity.new_team();
   readonly states: Map<number, BaseState>;
 
   v_rests = new Map<string, {
@@ -94,7 +97,7 @@ export class Entity<
       }
     }
   }
-  
+
   spawn_object(opoint: IOpointInfo, speed_z: number = 0): Entity | undefined {
     const d = dat_mgr.find(opoint.oid);
     if (!d) {

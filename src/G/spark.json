@@ -54,6 +54,24 @@
       "centerx": 50,
       "centery": 36
     },
+    "slient_critical_hit": {
+      "id": "slient_critical_hit",
+      "name": "critical_hit",
+      "pic": {
+        "tex": 0,
+        "x": 1,
+        "y": 1,
+        "w": 100,
+        "h": 73
+      },
+      "state": 9997,
+      "wait": 2,
+      "next": {
+        "id": 1
+      },
+      "centerx": 50,
+      "centery": 36
+    },
     "1": {
       "id": "1",
       "name": "critical_hit",
@@ -167,6 +185,24 @@
       "id": "hit",
       "name": "hit",
       "sound": "data/001.wav",
+      "pic": {
+        "tex": 0,
+        "x": 1,
+        "y": 76,
+        "w": 59,
+        "h": 51
+      },
+      "state": 9997,
+      "wait": 2,
+      "next": {
+        "id": 11
+      },
+      "centerx": 30,
+      "centery": 25
+    },
+    "slient_hit": {
+      "id": "slient_hit",
+      "name": "slient_hit",
       "pic": {
         "tex": 0,
         "x": 1,

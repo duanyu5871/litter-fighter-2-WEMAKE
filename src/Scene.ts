@@ -51,13 +51,13 @@ export default function run(canvas: HTMLCanvasElement, on_load?: () => void) {
       e.position.x = world.left + Math.random() * (world.right - world.left);
       e.position.z = world.far + Math.random() * (world.near - world.far);
       e.position.y = 550;
+      return e;
     }
     for (const d of dat_mgr.characters) {
       lf2['add_' + d.base.name.toLowerCase()] = (v = 1) => {
         while (--v >= 0) {
           const e = new Character(world, d);
-          random_entity_info(e);
-          e.attach();
+          random_entity_info(e).attach();
         }
       }
     }
@@ -65,13 +65,10 @@ export default function run(canvas: HTMLCanvasElement, on_load?: () => void) {
       lf2['add_' + d.base.name.toLowerCase()] = (v = 1) => {
         while (--v >= 0) {
           const e = new Weapon(world, d);
-          random_entity_info(e);
-          e.attach();
+          random_entity_info(e).attach();
         }
       }
     }
-
-    play_character();
   })
 
   const world = (window as any).world = new World(canvas);

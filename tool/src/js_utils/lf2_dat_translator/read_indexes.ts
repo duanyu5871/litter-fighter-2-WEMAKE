@@ -17,8 +17,12 @@ export function read_indexes(text: string | undefined | null): IDataLists | unde
       }
     }
     const hash = match_hash_end(line);
-    if(hash) item.hash = hash
-    
+    if (hash) item.hash = hash;
+    if (item.id === 217) item.hash = 'louis_limbs_armour';
+    if (item.id === 216) item.hash = 'louis_body_armour';
+    if (item.id === 124) item.hash = 'boomerang';
+    if (item.id === 201) item.hash = 'henry_arrow';
+    if (item.id === 202) item.hash = 'rudolf_weapon';
     return item;
   });
 

@@ -1,14 +1,4 @@
-import { Weapon } from "../../entity/Weapon";
-import { BaseWeaponState } from "./Base";
+import { InTheSky } from "./InTheSky";
 
-export class Throwing extends BaseWeaponState {
-  update(e: Weapon): void {
-    e.on_gravity();
-    e.velocity_decay();
-    e.handle_frame_velocity();
-  }
-  on_landing(e: Weapon, vx: number, vy: number, vz: number): void {
-    e.enter_frame(e.data.indexes.just_on_ground)
-    e.hp -= e.data.base.weapon_drop_hurt;
-  }
+export class Throwing extends InTheSky {
 }
