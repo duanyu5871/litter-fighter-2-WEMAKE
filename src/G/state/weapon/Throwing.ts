@@ -9,5 +9,6 @@ export class Throwing extends BaseWeaponState {
   }
   on_landing(e: Weapon, vx: number, vy: number, vz: number): void {
     e.enter_frame(e.data.indexes.just_on_ground)
+    e.hp -= e.data.base.weapon_drop_hurt;
   }
 }

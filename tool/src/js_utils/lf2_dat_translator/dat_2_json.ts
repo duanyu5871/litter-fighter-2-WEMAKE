@@ -80,18 +80,29 @@ export default function dat_to_json(full_str: string, datIndex?: IDatIndex): IBa
           '120': Defines.WeaponType.Stick, // Knife
           '124': Defines.WeaponType.Stick, // Boomerang
         }['' + datIndex.id] ?? Defines.WeaponType.Stick
+        base.bounce = 0.2;
+        base.name = datIndex.hash ?? datIndex.file.replace(/[^a-z|A-Z|0-9|_]/g, '')
         ret = make_weapon_data(base, full_str, make_frames(full_str));
         break;
       case 2:
-        base.type = Defines.WeaponType.Heavy
+        base.type = Defines.WeaponType.Heavy;
+        switch (datIndex.id) {
+          case 150: base.bounce = 0.2; break;
+          default: base.bounce = 0.1; break;
+        }
+        base.name = datIndex.hash ?? datIndex.file.replace(/[^a-z|A-Z|0-9|_]/g, '')
         ret = make_weapon_data(base, full_str, make_frames(full_str));
         break;
       case 4:
         base.type = Defines.WeaponType.Baseball;
+        base.bounce = 0.45;
+        base.name = datIndex.hash ?? datIndex.file.replace(/[^a-z|A-Z|0-9|_]/g, '')
         ret = make_weapon_data(base, full_str, make_frames(full_str));
         break;
       case 6: {
         base.type = Defines.WeaponType.Drink;
+        base.bounce = 0.4;
+        base.name = datIndex.hash ?? datIndex.file.replace(/[^a-z|A-Z|0-9|_]/g, '')
         ret = make_weapon_data(base, full_str, make_frames(full_str));
         break;
       }

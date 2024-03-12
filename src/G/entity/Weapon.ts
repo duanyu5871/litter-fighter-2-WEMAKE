@@ -9,9 +9,12 @@ export class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData> {
   holder?: Entity;
   constructor(world: World, data: IWeaponData) {
     super(world, data, WEAPON_STATES);
+    this.hp = data.base.weapon_hp;
   }
   override find_auto_frame(): IFrameInfo {
-    return this.data.frames['0'];
+    const { frames, indexes } = this.data;
+    if (this.position.y > 0) return frames[indexes.in_the_sky];
+    return frames[indexes.on_ground];
   }
   override self_update(): void {
     super.self_update();
@@ -23,11 +26,10 @@ export class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData> {
     const { dvx, dvy, dvz } = wpoint_a;
 
     if (dvx || dvy || dvz) {
-      this.enter_frame('40');
+      this.enter_frame(this.data.indexes.throwing);
       const vz = (holder instanceof Character) ? holder.controller.UD1 * (dvz || 0) : 0;
       const vx = (dvx || 0 - Math.abs(vz / 2)) * this.facing
       this.velocity.set(vx, dvy || 0, vz)
-      console.log(dvx, dvy, dvz)
       delete this.holder?.weapon;
       delete this.holder;
     }

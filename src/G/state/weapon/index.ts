@@ -13,3 +13,8 @@ WEAPON_STATES.set(Defines.State.Weapon_InTheSky, new InTheSky())
 WEAPON_STATES.set(Defines.State.Weapon_OnGround, new OnGround())
 WEAPON_STATES.set(Defines.State.Weapon_OnHand, new OnHand())
 WEAPON_STATES.set(Defines.State.Weapon_Throwing, new Throwing())
+
+WEAPON_STATES.set(Defines.State.HeavyWeapon_InTheSky, new InTheSky())
+WEAPON_STATES.set(Defines.State.HeavyWeapon_OnGround, new OnGround())
+WEAPON_STATES.set(Defines.State.HeavyWeapon_OnHand, new OnHand())
+WEAPON_STATES.set(Defines.State.HeavyWeapon_Throwing, new Throwing())

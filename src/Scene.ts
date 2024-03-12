@@ -2,14 +2,16 @@ import * as THREE from 'three';
 import { Background, BgLayer } from './G/Background';
 import { World } from './G/World';
 import { PlayerController } from "./G/controller/PlayerController";
-import { TestController } from './G/controller/TestController';
 import './G/entity/Ball';
 import { Character } from './G/entity/Character';
 import { Entity } from './G/entity/Entity';
+import { Weapon } from './G/entity/Weapon';
 import { dat_mgr } from './G/loader/DatLoader';
+import { Log } from './Log';
 import random_get from './Utils/random_get';
 import { IBgData, ICharacterData, TFace } from './js_utils/lf2_type';
-let character_id = 1;
+let _new_id = 0;
+const new_id = () => '' + (++_new_id);
 
 export default function run(canvas: HTMLCanvasElement, on_load?: () => void) {
   let disposed = false;
@@ -18,32 +20,58 @@ export default function run(canvas: HTMLCanvasElement, on_load?: () => void) {
   let _character: Character | undefined;
   dat_mgr.load().then(() => {
     if (disposed) return;
-
     on_load?.()
-    const lf2: any = (window as any).lf2 = {};
     change_bg()
+    const lf2: any = (window as any).lf2 = {
+      clear() {
+        world.del_entities(...world.entities)
+      },
+      play_character,
+      change_bg: change_bg,
+      add_random_weapons(count = 10) {
+        while (--count >= 0) {
+          const d = random_get(dat_mgr.weapons);
+          const e = new Weapon(world, d)
+          random_entity_info(e);
+          e.attach();
+        }
+      },
+      add_random_characters(count = 10) {
+        while (--count >= 0) {
+          const d = random_get(dat_mgr.characters);
+          const e = new Character(world, d);
+          random_entity_info(e);
+          e.attach();
+        }
+      }
+    };
+    const random_entity_info = (e: Entity) => {
+      e.id = new_id();
+      e.facing = Math.floor(Math.random() * 100) % 2 ? -1 : 1
+      e.position.x = world.left + Math.random() * (world.right - world.left);
+      e.position.z = world.far + Math.random() * (world.near - world.far);
+      e.position.y = 550;
+    }
     for (const d of dat_mgr.characters) {
       lf2['add_' + d.base.name.toLowerCase()] = (v = 1) => {
-        while (v) {
+        while (--v >= 0) {
           const e = new Character(world, d);
-          e.position.x = world.left + Math.random() * (world.right - world.left);
-          e.position.z = world.far + Math.random() * (world.near - world.far);
+          random_entity_info(e);
           e.attach();
-          --v
         }
       }
     }
-    play_character();
-    for (let i = 0; i < 10; ++i) {
-      const d = random_get(dat_mgr.characters);
-      const e = new Character(world, d)
-      if (i === 0)
-        e.controller = new TestController(e);
-      e.id = '' + character_id;
-      e.position.x = world.left + Math.random() * (world.right - world.left);
-      e.position.z = world.far + Math.random() * (world.near - world.far);
-      e.attach();
+    for (const d of dat_mgr.weapons) {
+      lf2['add_' + d.base.name.toLowerCase()] = (v = 1) => {
+        while (--v >= 0) {
+          const e = new Weapon(world, d);
+          random_entity_info(e);
+          e.attach();
+        }
+      }
     }
+
+    play_character();
   })
 
   const world = (window as any).world = new World(canvas);
@@ -79,7 +107,7 @@ export default function run(canvas: HTMLCanvasElement, on_load?: () => void) {
 
 
     _character = new Character(world, data)
-    _character.id = '' + (++character_id)
+    _character.id = new_id();
     _character.position.x = x;
     _character.position.y = y;
     _character.position.z = z;
@@ -169,7 +197,7 @@ export default function run(canvas: HTMLCanvasElement, on_load?: () => void) {
 
     if (!next) return;
     const o = next.object;
-    console.log(o.userData.owner)
+    Log.print("click", o.userData.owner ?? o.userData)
     if (o.userData.owner instanceof BgLayer)
       o.userData.owner.show_indicators = true;
     else if (o.userData.owner instanceof Entity)

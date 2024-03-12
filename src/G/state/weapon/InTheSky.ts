@@ -6,12 +6,15 @@ export class InTheSky extends BaseWeaponState {
     e.on_gravity();
     e.velocity_decay();
     e.handle_frame_velocity();
-    if (e.position.y <= 0) {
-      e.enter_frame(e.data.indexes.just_on_ground)
-    }
   }
   on_landing(e: Weapon, vx: number, vy: number, vz: number): void {
-    e.enter_frame(e.data.indexes.just_on_ground)
+    vy = Math.floor(-vy * e.data.base.bounce ?? 0);
+    if (vy <= 0) {
+      e.enter_frame(e.data.indexes.just_on_ground)
+    } else {
+      e.velocity.y = vy;
+    }
+    e.hp -= e.data.base.weapon_drop_hurt;
   }
 }
 

@@ -15,7 +15,7 @@ export type TFace = -1 | 1;
 export type TTrend = -1 | 0 | 1;
 export type BOOL = 1 | 0;
 export interface IDataLists { objects: IDatIndex[], backgrounds: IDatIndex[] }
-export interface IDatIndex { id: string | number; type: string | number; file: string; }
+export interface IDatIndex { id: string | number; type: string | number; file: string; hash?: string }
 export interface IEntityPictureInfo {
   id: string | number;
   begin: number;

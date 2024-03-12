@@ -1,6 +1,7 @@
 import { IDataLists, IDatIndex } from '../lf2_type';
 import { match_block_once } from '../match_block';
 import { match_colon_value } from '../match_colon_value';
+import { match_hash_end } from '../match_hash_end';
 import { to_num } from '../to_num';
 
 export function read_indexes(text: string | undefined | null): IDataLists | undefined {
@@ -15,6 +16,9 @@ export function read_indexes(text: string | undefined | null): IDataLists | unde
         case 'file': item[name] = value.replace(/\\/g, '/'); break;
       }
     }
+    const hash = match_hash_end(line);
+    if(hash) item.hash = hash
+    
     return item;
   });
 
