@@ -74,11 +74,9 @@ class Cond {
   done(): string {
     let ret = this._parts.map(v => is_str(v) ? v : `(${v.done()})`).join('')
     ret = ret.replace(/\s|\n|\r/g, ''); // remove empty char;
-
-    const p = this._parts[0];
-    if (this._parts.length === 1 && p instanceof Cond) {
+    // remove redundant bracket;
+    if (this._parts.length === 1 && this._parts[0] instanceof Cond) 
       ret = ret.replace(/^\(|\)$/g, '')
-    }
     return ret;
   }
 }
