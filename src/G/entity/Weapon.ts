@@ -1,4 +1,4 @@
-import { IBdyInfo, IFrameInfo, IGameObjData, IGameObjInfo, IItrInfo, IOpointInfo, IWeaponData, IWeaponInfo } from "../../js_utils/lf2_type";
+import { IBdyInfo, IFrameInfo, IItrInfo, IOpointInfo, IWeaponData, IWeaponInfo } from "../../js_utils/lf2_type";
 import { Defines } from "../../js_utils/lf2_type/defines";
 import { factory } from "../Factory";
 import { GONE_FRAME_INFO } from "../FrameAnimater";
@@ -64,14 +64,14 @@ export class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData> {
     // const spark_z = (Math.min(r0.near, r1.near) + Math.max(r0.far, r1.far)) / 2;
     const spark_z = Math.max(r0.far, r1.far);
     if (itr.injury) this.hp -= itr.injury;
-    if (this.hp <= 0)
-      sound_mgr.play(this.data.base.weapon_broken_sound, spark_x, spark_y, spark_z)
-    else
-      sound_mgr.play(this.data.base.weapon_hit_sound, spark_x, spark_y, spark_z)
-    if (itr.fall && itr.fall >= 60)
-      this.world.spark(spark_x, spark_y, spark_z, "slient_critical_hit")
-    else
-      this.world.spark(spark_x, spark_y, spark_z, "slient_hit")
+
+    const { base } = this.data
+    const sound_name = this.hp <= 0 ? base.weapon_broken_sound : base.weapon_hit_sound
+    sound_mgr.play(sound_name, spark_x, spark_y, spark_z)
+
+    const spark_frame_name = (itr.fall && itr.fall >= 60) ? 'slient_critical_hit' : 'slient_hit';
+    this.world.spark(spark_x, spark_y, spark_z, spark_frame_name)
+
     if (this.data.base.type === Defines.WeaponType.Heavy) {
       if (itr.fall && itr.fall >= 60) {
         const vx = itr.dvx ? itr.dvx * attacker.facing : 0;
