@@ -5,7 +5,7 @@ import { BaseWeaponState } from "./Base";
 
 export class OnGround extends BaseWeaponState {
   enter(e: Weapon, prev_frame: IFrameInfo): void {
-    e.team = Entity.new_team();
+    e.team = 0;
   }
   update(e: Weapon): void {
     e.on_gravity();

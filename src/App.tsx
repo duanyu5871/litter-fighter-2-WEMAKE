@@ -162,7 +162,7 @@ function PlayerRow(props: { which: number, lf2?: LF2 | undefined }) {
     const lp = lf2.get_local_player(which)
     if (!lp) return;
     lp.name = player_name.trim() || '' + which;
-    lp.team = team ? Number(team) : Entity.new_team();
+    lp.team = Number(team);
   }, [which, player_name, team, lf2])
 
   if (!lf2) return null;
@@ -203,7 +203,7 @@ function PlayerRow(props: { which: number, lf2?: LF2 | undefined }) {
         {lf2.dat_mgr.characters.map(v => <option key={v.id} value={v.id}>{v.base.name}</option>)}
       </select>
       <select value={team} onChange={e => set_team(e.target.value)}>
-        <option value=''>independent</option>
+        <option value='0'>independent</option>
         <option value='1'>team 1</option>
         <option value='2'>team 2</option>
         <option value='3'>team 3</option>

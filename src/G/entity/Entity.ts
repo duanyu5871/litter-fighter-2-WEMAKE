@@ -55,7 +55,7 @@ export class Entity<
     return ++__team__;
   }
   private _name: string = '';
-  private _team: number = Entity.new_team();
+  private _team: number = 0;
 
   readonly shadow: THREE.Object3D;
   readonly velocity = new THREE.Vector3(0, 0, 0);

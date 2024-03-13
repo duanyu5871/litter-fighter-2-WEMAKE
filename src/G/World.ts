@@ -352,7 +352,7 @@ export class World {
 
         if (itr.effect === Defines.ItrEffect.Through) continue;
         if (
-          (a.team === b.team && !itr.friendly_fire && !bdy.friendly_fire)
+          (a.team && a.team === b.team && !itr.friendly_fire && !bdy.friendly_fire)
         ) continue;
 
         if (!itr.vrest && a.a_rest) { Log.print(af.name, 'a.a_rest = ', a.a_rest); continue; }

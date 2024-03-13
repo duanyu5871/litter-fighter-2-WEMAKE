@@ -21,20 +21,19 @@ export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, IChar
   protected _defend_value = 60;
   protected _name_sprite?: THREE.Sprite;
   get name_sprite() {
-
     return this._name_sprite
   }
 
   constructor(world: World, data: ICharacterData) {
     super(world, data, CHARACTER_STATES);
     this.enter_frame({ id: Defines.ReservedFrameId.Auto });
-    this.name = data.base.name;
   }
 
   private update_name_sprite() {
     const name = this.name;
-    const fillStyle = get_team_text_color(this.team)
-    const strokeStyle = get_team_shadow_color(this.team)
+    const team = this.team
+    const fillStyle = get_team_text_color(team)
+    const strokeStyle = get_team_shadow_color(team)
     image_pool.load_text(name, { strokeStyle, fillStyle })
       .then((i) => create_picture_by_img_key('', i.key))
       .then((p) => {
