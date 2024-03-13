@@ -1,6 +1,31 @@
+import { IStageInfo } from ".";
+import { IBgData } from "./IBgData";
+
 export namespace Defines {
   export const OLD_SCREEN_WIDTH = 795;
   export const OLD_SCREEN_HEIGHT = 550;
+
+  export const THE_VOID_STAGE: IStageInfo = {
+    bg: "THE_VOID",
+    id: "THE_VOID_STAGE",
+    name: "THE_VOID_STAGE",
+    phases: []
+  }
+  export const THE_VOID_BG: IBgData = {
+    type: 'background',
+    layers: [],
+    id: 'THE_VOID_BG',
+    base: {
+      name: 'THE_VOID_BG',
+      shadow: '',
+      shadowsize: [0, 0],
+      left: 0,
+      right: 794,
+      far: -468,
+      near: -216,
+    }
+  }
+
   export enum ValWord {
     TrendX = 'trend_x',
     PressFB = 'press_F_B',

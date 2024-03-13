@@ -12,26 +12,17 @@ export class PlayerController extends BaseController {
     j: 'k',
     d: 'l',
   }
-  _disposers: (() => void)[] = [];
-  constructor(
-    character: Character,
-    keycode_left = 'a',
-    keycode_right = 'd',
-    keycode_up = 'w',
-    keycode_down = 's',
-    keycode_attack = 'j',
-    keycode_jump = 'k',
-    keycode_defense = 'l'
-  ) {
-    super(character);
-    this.kc.L = keycode_left.toLowerCase();
-    this.kc.R = keycode_right.toLowerCase();
-    this.kc.U = keycode_up.toLowerCase();
-    this.kc.D = keycode_down.toLowerCase();
-    this.kc.a = keycode_attack.toLowerCase();
-    this.kc.j = keycode_jump.toLowerCase();
-    this.kc.d = keycode_defense.toLowerCase();
+  protected _disposers: (() => void)[] = [];
 
+  set_key_codes(kc: Record<TKeyName, string>) {
+    Object.keys(kc).forEach(_k => {
+      const k = _k as TKeyName;
+      this.kc[k] = kc[k].toLowerCase();
+    })
+  }
+  constructor(character: Character, kc?: Record<TKeyName, string>) {
+    super(character);
+    if (kc) this.set_key_codes(kc);
     const on_key_up = (e: KeyboardEvent) => {
       const e_key = e.key?.toLowerCase();
       const k_len = KEY_NAME_LIST.length;

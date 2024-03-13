@@ -1,7 +1,6 @@
 import { IBallFrameInfo } from "./IBallFrameInfo";
 import { IBallInfo } from "./IBallInfo";
-import { IBgInfo } from "./IBgInfo";
-import { IBgLayerInfo } from "./IBgLayerInfo";
+import { IBgData } from "./IBgData";
 import { ICharacterFrameIndexes } from "./ICharacterFrameIndexes";
 import { ICharacterFrameInfo } from "./ICharacterFrameInfo";
 import { ICharacterInfo } from "./ICharacterInfo";
@@ -15,9 +14,9 @@ export type TFace = -1 | 1;
 export type TTrend = -1 | 0 | 1;
 export type BOOL = 1 | 0;
 export interface IDataLists { objects: IDatIndex[], backgrounds: IDatIndex[] }
-export interface IDatIndex { id: string | number; type: string | number; file: string; hash?: string }
+export interface IDatIndex { id: string; type: string | number; file: string; hash?: string }
 export interface IEntityPictureInfo {
-  id: string | number;
+  id: string;
   begin: number;
   end: number;
   path: string;
@@ -47,12 +46,13 @@ export * from './ITexturePieceInfo';
 export * from './ITexturePieceInfos';
 export * from './IWeaponInfo';
 export * from './IWpointInfo';
+export * from './IBgData';
 
 export interface IGameObjInfo {
   files: Record<string, IEntityPictureInfo>;
 }
 export interface IBaseData<I = any> {
-  id: string | number;
+  id: string;
   type: string;
   base: I;
 }
@@ -62,11 +62,6 @@ export interface IDataMap {
   'character': ICharacterData;
   'weapon': IWeaponData;
   'ball': IBallData;
-}
-
-export interface IBgData extends IBaseData<IBgInfo> {
-  type: 'background';
-  layers: IBgLayerInfo[];
 }
 
 export interface IGameObjData<

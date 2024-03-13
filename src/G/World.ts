@@ -1,15 +1,15 @@
 import * as THREE from 'three';
 import { Defines } from '.././js_utils/lf2_type/defines';
+import LF2 from '../LF2';
 import { Log } from '../Log';
 import { IBdyInfo, IFrameInfo, IItrInfo } from '../js_utils/lf2_type';
-import { Background } from './Background';
 import { FrameAnimater } from './FrameAnimater';
+import Stage from './Stage';
 import { PlayerController } from './controller/PlayerController';
 import { Ball } from './entity/Ball';
-import './entity/Weapon';
 import { Character } from './entity/Character';
 import { Entity } from './entity/Entity';
-import { dat_mgr } from './loader/DatLoader';
+import './entity/Weapon';
 import { Weapon } from './entity/Weapon';
 export interface ICube {
   left: number;
@@ -24,36 +24,51 @@ export class World {
   static readonly DEFAULT_FRICTION_FACTOR = 0.95//0.894427191;
   static readonly DEFAULT_FRICTION = 0.2;
 
+  on_stage_change?: (curr: Stage, prev: Stage) => void;
+
+  readonly lf2: LF2
   gravity = World.DEFAULT_GRAVITY;
   friction_factor = World.DEFAULT_FRICTION_FACTOR;
   friction = World.DEFAULT_FRICTION;
   scene: THREE.Scene = new THREE.Scene();
-  camera: THREE.Camera = new THREE.OrthographicCamera();
-  private _bg?: Background;
+  camera: THREE.OrthographicCamera = new THREE.OrthographicCamera();
 
+  private _stage = new Stage(this, Defines.THE_VOID_BG);
   entities = new Set<Entity>();
   game_objs = new Set<FrameAnimater>();
   renderer: THREE.WebGLRenderer;
   disposed = false;
   protected _players = new Set<Character>();
 
-  get bg() { return this._bg }
-  set bg(v) {
-    if (v === this._bg) return;
-    this._bg?.dispose();
-    this._bg = v;
+  get stage() { return this._stage }
+  set stage(v) {
+    if (v === this._stage) return;
+    const old = this._stage;
+    this._stage = v;
+    this.on_stage_change?.(v, old)
+    old.dispose();
   }
 
-  get left() { return this.bg?.left || 0 }
-  get right() { return this.bg?.right || 0 }
-  get near() { return this.bg?.near || 0 }
-  get far() { return this.bg?.far || 0 }
-  get width() { return this.bg?.width || 0 }
-  get depth() { return this.bg?.depth || 0 };
-  get middle() { return this.bg?.middle || { x: 0, z: 0 } }
-  constructor(canvas: HTMLCanvasElement) {
+  get bg() { return this._stage.bg }
+
+  get left() { return this.bg.left || 0 }
+  get right() { return this.bg.right || 0 }
+  get near() { return this.bg.near || 0 }
+  get far() { return this.bg.far || 0 }
+  get width() { return this.bg.width || 0 }
+  get depth() { return this.bg.depth || 0 };
+  get middle() { return this.bg.middle || { x: 0, z: 0 } }
+  constructor(lf2: LF2, canvas: HTMLCanvasElement) {
+    this.lf2 = lf2;
     this.renderer = new THREE.WebGLRenderer({ canvas });
-    this.camera.position.z = 0;
+    const w = Defines.OLD_SCREEN_WIDTH;
+    const h = 450;//Defines.OLD_SCREEN_HEIGHT;
+    this.camera.left = 0;
+    this.camera.right = w;
+    this.camera.bottom = 0;
+    this.camera.top = h;
+    this.camera.updateProjectionMatrix()
+    this.renderer.setSize(w, h)
   }
 
   add_game_objs(...objs: FrameAnimater[]) {
@@ -224,25 +239,49 @@ export class World {
     this.update_camera();
     this.bg.update();
   }
-
+  cam_speed = 0;
   private update_camera() {
-    if (!this.bg) return;
+    const { left, right } = this.stage;
     const player_count = this._players.size;
-    if (!player_count) return;
-    let new_x = 0;
-    for (const player of this._players) {
-      new_x += player.position.x - 794 / 2 + player.facing * 794 / 6;
+    if (player_count) {
+      let new_x = 0;
+      for (const player of this._players) {
+        new_x += player.position.x - 794 / 2 + player.facing * 794 / 6;
+      }
+      new_x /= player_count;
+      new_x = Math.floor(new_x);
+      if (new_x < left) new_x = left;
+      if (new_x > right - 794) new_x = right - 794;
+
+      let cur_x = this.camera.position.x;
+
+      const acc = Math.min(1, Math.abs(cur_x - new_x) / Defines.OLD_SCREEN_WIDTH);
+      const max_speed = 50 * acc
+      if (cur_x > new_x) {
+        if (this.cam_speed > 0) this.cam_speed = 0;
+        else if (this.cam_speed > -max_speed) this.cam_speed -= acc;
+        else this.cam_speed = -max_speed;
+        this.camera.position.x += this.cam_speed;
+        if (this.camera.position.x < new_x)
+          this.camera.position.x = new_x
+      }
+      else if (cur_x < new_x) {
+        if (this.cam_speed < 0) this.cam_speed = 0;
+        else if (this.cam_speed < max_speed) this.cam_speed += acc;
+        else this.cam_speed = max_speed;
+        this.camera.position.x += this.cam_speed;
+        if (this.camera.position.x > new_x)
+          this.camera.position.x = new_x
+      }
+    } else {
+      let new_x = this.camera.position.x;
+      if (new_x < left) new_x = left;
+      if (new_x > right - 794) new_x = right - 794;
+      this.camera.position.x = new_x;
     }
-    new_x /= player_count;
-    const { left, right } = this.bg.data.base;
-    if (new_x < left) new_x = left;
-    if (new_x > right - 794) new_x = right - 794;
-    let cur_x = this.camera.position.x;
-
-    this.camera.position.x += (new_x - cur_x) * 0.1;
   }
-  cam_speed_x: number = 0;
 
+  cam_speed_x: number = 0;
   collision_detections() {
     const bs = new Set<Entity>();
     for (const a of this.entities) {
@@ -342,7 +381,7 @@ export class World {
     return false;
   }
   spark(x: number, y: number, z: number, f: string) {
-    const data = dat_mgr.find("spark");
+    const data = this.lf2.dat_mgr.find("spark");
     if (!data || !('frames' in data)) return;
     const e = new FrameAnimater(this, data)
     e.position.set(x, y, z)
@@ -404,10 +443,11 @@ export class World {
     })
   }
   dispose() {
-    this.bg?.dispose();
+    delete this.on_stage_change;
+    this.bg.dispose();
     this.stop_update();
     this.stop_render();
     this.renderer.dispose();
-    this.entities.forEach(e => e.dispose())
+    this.entities.forEach(e => e.dispose());
   }
 }

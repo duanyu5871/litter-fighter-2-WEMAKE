@@ -8,7 +8,7 @@ import { factory } from '../Factory';
 import { FrameAnimater } from '../FrameAnimater';
 import type { World } from '../World';
 import { ICube } from '../World';
-import { dat_mgr } from '../loader/DatLoader';
+import DatMgr from '../loader/DatMgr';
 import { create_picture_by_img_key } from '../loader/loader';
 import BaseState from "../state/BaseState";
 import { EntityIndicators } from './EntityIndicators';
@@ -67,7 +67,7 @@ export class Entity<
     this.on_name_changed?.(prev, v);
   }
 
-  hp: number = 50000000000;
+  hp: number = 500;
 
   get team() { return this._team }
   set team(v) {
@@ -136,7 +136,7 @@ export class Entity<
   }
 
   spawn_object(opoint: IOpointInfo, speed_z: number = 0): Entity | undefined {
-    const d = dat_mgr.find(opoint.oid);
+    const d = this.world.lf2.dat_mgr.find(opoint.oid);
     if (!d) {
       Warn.print(constructor_name(this), 'spawn_object(), data not found! opoint:', opoint);
       return;

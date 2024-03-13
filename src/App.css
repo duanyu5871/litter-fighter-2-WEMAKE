@@ -17,10 +17,10 @@
   position: fixed;
   left: 0px;
   width: 794px;
-  height: 550px;
+  height: 450px;
   margin: 0 auto;
   left: calc(50% - 794px / 2);
-  top: calc(50% - 550px / 2);
+  top: calc(50% - 450px / 2);
 }
 
 .App-header {

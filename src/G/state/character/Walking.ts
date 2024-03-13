@@ -14,5 +14,8 @@ export default class Walking extends BaseCharacterState {
     if (!LRUD && !e.wait) {
       e.enter_frame({ id: e.data.indexes.standing });
     }
+    if (e.position.y > 0) {
+      e.enter_frame({ id: e.data.indexes.in_the_sky })
+    }
   }
 }

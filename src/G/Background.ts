@@ -48,6 +48,7 @@ export class Background {
   private _obj_3d: THREE.Object3D;
   private _world: World;
   private _layers: BgLayer[] = [];
+  get id() { return this.data.id; }
   get left() { return this.data.base.left; }
   get right() { return this.data.base.right; }
   get near() { return this.data.base.near; }

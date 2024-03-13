@@ -27,16 +27,14 @@ const create_data_list_map = (): IDataListMap => ({
 const make_require = (p: string) => require('../' + p);
 const make_import = (p: string) => import('../' + p).then(v => v.default);
 
-export class DataMgr {
+export default class DatMgr {
+  get cancelled() { return this._cancelled; }
   private _data_list_map = create_data_list_map();
   private _data_map = new Map<string, IGameObjData>();
-
-  clear() {
+  private _cancelled = false;
+  constructor() {
     this._data_list_map = (window as any)._data_list_map = create_data_list_map();
     this._data_map = (window as any)._data_map = new Map<string, IGameObjData>();
-  }
-  constructor() {
-    this.clear();
   }
   private async _cook_data(data: TData): Promise<TData> {
     {
@@ -61,8 +59,8 @@ export class DataMgr {
     return data;
   }
 
-  private async _add_data(index_id: string | number, raw_data: TData, data_map: Map<string, TData>) {
-    const data = await this._cook_data(raw_data);
+  private async _add_data(index_id: string | number, raw_data: TData) {
+    const data = await this._cook_data(raw_data) as IGameObjData; // fixme
     const _index_id = '' + index_id;
     const _data_id = '' + data.id;
     if (_data_id !== _index_id) {
@@ -72,43 +70,43 @@ export class DataMgr {
         `will use index_id as data key.`
       );
     }
-    if (data_map.has(_index_id)) {
+    if (this._data_map.has(_index_id)) {
       Warn.print('DatLoader',
         " _add_data(), id duplicated, old data will be overwritten!",
-        "old data:", data_map.get(_index_id),
+        "old data:", this._data_map.get(_index_id),
         "new data:", data
       )
     }
-    data_map.set(_index_id, data);
+    this._data_map.set(_index_id, data);
   }
 
   async load() {
-    const data_map = new Map<string, IGameObjData>();
-    const data_list_map = create_data_list_map();
-    try {
-      const { objects, backgrounds } = await make_import('data/data.json');
-      Log.print('DatLoader', 'loading: spark.json')
-      await this._add_data("spark", await make_import('spark.json'), data_map)
-      for (const { id, file } of objects) {
-        Log.print('DatLoader', 'loading:', file)
-        await this._add_data(id, await make_import(file), data_map);
-      }
-      for (const { id, file } of backgrounds) {
-        Log.print('DatLoader', 'loading:', file)
-        await this._add_data(id, await make_import(file), data_map);
-      }
-      for (const [, v] of data_map) {
-        const t = v.type as keyof IDataMap;
-        data_list_map[t]?.push(v as any);
-        data_list_map.all.push(v as any);
-      }
-      this._data_list_map = (window as any)._data_list_map = data_list_map;
-      this._data_map = (window as any)._data_map = data_map;
-    } catch (e) {
-      Warn.print('DatLoader', `load(), failed. reason:`, e);
+    this._cancelled = false;
+    const { objects, backgrounds } = await make_import('data/data.json');
+    if (this._cancelled) throw new Error('cancelled')
+    Log.print('DatLoader', 'loading: spark.json')
+    await this._add_data("spark", await make_import('spark.json'))
+    if (this._cancelled) throw new Error('cancelled')
+    for (const { id, file } of objects) {
+      if (this._cancelled) throw new Error('cancelled')
+      Log.print('DatLoader', 'loading:', file)
+      await this._add_data(id, await make_import(file));
+    }
+    for (const { id, file } of backgrounds) {
+      if (this._cancelled) throw new Error('cancelled')
+      Log.print('DatLoader', 'loading:', file)
+      await this._add_data(id, await make_import(file));
+    }
+    for (const [, v] of this._data_map) {
+      if (this._cancelled) throw new Error('cancelled')
+      const t = v.type as keyof IDataMap;
+      this._data_list_map[t]?.push(v as any);
+      this._data_list_map.all.push(v as any);
     }
   }
-
+  cancel() {
+    this._cancelled = true;
+  }
   get characters() { return this._data_list_map.character; }
   get weapons() { return this._data_list_map.weapon; }
   get backgrounds() { return this._data_list_map.background; }
@@ -120,5 +118,5 @@ export class DataMgr {
     return this._data_map.get('' + id)
   }
 }
-export const dat_mgr = (window as any).dat_mgr = new DataMgr();
 
+(window as any).DatMgr = DatMgr;

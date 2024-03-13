@@ -88,7 +88,7 @@ export default function dat_to_json(full_str: string, datIndex?: IDatIndex): any
       case 2:
         base.type = Defines.WeaponType.Heavy;
         switch (datIndex.id) {
-          case 150: base.bounce = 0.2; break;
+          case '150': base.bounce = 0.2; break;
           default: base.bounce = 0.1; break;
         }
         base.name = datIndex.hash ?? datIndex.file.replace(/[^a-z|A-Z|0-9|_]/g, '')

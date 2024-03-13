@@ -1,5 +1,6 @@
 import { is_str } from '../is_str';
-import { IBgData, IDatIndex } from '../lf2_type';
+import { IDatIndex } from '../lf2_type';
+import { IBgData } from "../lf2_type/IBgData";
 import { IBgLayerInfo } from "../lf2_type/IBgLayerInfo";
 import { Defines } from '../lf2_type/defines';
 import { match_colon_value } from '../match_colon_value';

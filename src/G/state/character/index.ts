@@ -6,10 +6,12 @@ import Dash from "./Dash";
 import Falling from "./Falling";
 import Jump from "./Jump";
 import Running from "./Running";
+import Standing from "./Standing";
 import Walking from "./Walking";
 
 export const CHARACTER_STATES = new Map<number, BaseState<Character>>()
 CHARACTER_STATES.set(Defines.State.Any, new BaseCharacterState())
+CHARACTER_STATES.set(Defines.State.Standing, new Standing());
 CHARACTER_STATES.set(Defines.State.Walking, new Walking());
 CHARACTER_STATES.set(Defines.State.Running, new Running());
 CHARACTER_STATES.set(Defines.State.Jump, new Jump());
