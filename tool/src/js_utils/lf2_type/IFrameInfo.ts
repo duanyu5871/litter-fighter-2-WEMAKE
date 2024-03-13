@@ -6,7 +6,9 @@ import { IItrInfo } from "./IItrInfo";
 import { IOpointInfo } from "./IOpointInfo";
 import { ITexturePieceInfos } from "./ITexturePieceInfos";
 import { IWpointInfo } from "./IWpointInfo";
-import { TNextFrame, IHoldKeyCollection, IHitKeyCollection } from ".";
+import { TNextFrame } from ".";
+import { IHitKeyCollection } from "./IHitKeyCollection";
+import { IHoldKeyCollection } from "./IHoldKeyCollection";
 import { IRectPair } from "./IRectPair";
 
 export interface IFrameInfo {

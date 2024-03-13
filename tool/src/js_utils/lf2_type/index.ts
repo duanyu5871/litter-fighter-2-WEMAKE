@@ -7,9 +7,9 @@ import { ICharacterFrameInfo } from "./ICharacterFrameInfo";
 import { ICharacterInfo } from "./ICharacterInfo";
 import { IFrameInfo } from "./IFrameInfo";
 import { IItrInfo } from "./IItrInfo";
+import { INextFrame } from "./INextFrame";
 import { IWeaponFrameIndexes } from "./IWeaponFrameIndexes";
 import { IWeaponInfo } from "./IWeaponInfo";
-import type { Defines } from "./defines";
 export type TTODO = any;
 export type TFace = -1 | 1;
 export type TTrend = -1 | 0 | 1;
@@ -27,105 +27,26 @@ export interface IEntityPictureInfo {
   col: number;
 }
 
-export interface IHoldKeyCollection {
-  a?: TNextFrame;
-  d?: TNextFrame;
-  j?: TNextFrame;
-  U?: TNextFrame;
-  D?: TNextFrame;
-  L?: TNextFrame;
-  R?: TNextFrame;
-  B?: TNextFrame;
-  F?: TNextFrame;
-}
-export interface IHitKeyCollection {
-  sequences?: {
-    [x in string]?: TNextFrame;
-  }
-
-  /** 攻击键 */
-  a?: TNextFrame;
-
-  /** 跳跃键 */
-  j?: TNextFrame;
-
-  /** 防御键 */
-  d?: TNextFrame;
-
-  /** 正向键 */
-  F?: TNextFrame;
-
-  /** 反向键 */
-  B?: TNextFrame;
-
-  /** 上方向键 */
-  U?: TNextFrame;
-
-  /** 下方向键 */
-  D?: TNextFrame;
-
-  L?: TNextFrame;
-  R?: TNextFrame;
-
-  /** 双击跳跃键 */
-  aa?: TNextFrame
-
-  /** 双击跳跃键 */
-  jj?: TNextFrame;
-
-  /** 双击防御键 */
-  dd?: TNextFrame;
-
-  /** 双击正向键 */
-  FF?: TNextFrame;
-
-  /** 双击反向键 */
-  BB?: TNextFrame;
-
-  /** 双击上方向键 */
-  UU?: TNextFrame;
-
-  /** 双击下方向键 */
-  DD?: TNextFrame;
-}
-export interface INextFrame {
-  id?: string | string[];
-  /**
- * 下一帧的持续时间策略
- * @date 2/23/2024 - 1:38:03 PM
- *
- * @type {?(string | number)} 'i': 继承上一帧剩余事件; number: 将会覆盖下一帧自带的wait
- */
-  wait?: string | number;
-
-  /**
-   * 下帧转向
-   * @date 2/23/2024 - 1:37:05 PM
-   *
-   * @type {Defines.FacingFlag} 
-   */
-  facing?: number;
-  condition?: string | ((e: any) => boolean);
-}
 export type TNextFrame = INextFrame | INextFrame[]
 
 export * from './IBallFrameInfo';
+export * from './IBallInfo';
 export * from './IBdyInfo';
 export * from './IBgInfo';
 export * from './IBgLayerInfo';
 export * from './IBpointInfo';
 export * from './ICharacterFrameInfo';
+export * from './ICharacterInfo';
 export * from './ICpointInfo';
 export * from './IFrameInfo';
 export * from './IFramePictureInfo';
 export * from './IItrInfo';
+export * from './INextFrame';
 export * from './IOpointInfo';
 export * from './ITexturePieceInfo';
 export * from './ITexturePieceInfos';
-export * from './IWpointInfo';
-export * from './ICharacterInfo';
 export * from './IWeaponInfo';
-export * from './IBallInfo';
+export * from './IWpointInfo';
 
 export interface IGameObjInfo {
   files: Record<string, IEntityPictureInfo>;
@@ -178,8 +99,6 @@ export type TFrameIdListPair = {
   [-1]: string[],
   1: string[],
 }
-
-
 export interface IStageObjectInfo {
   id: string[];
   x: number;

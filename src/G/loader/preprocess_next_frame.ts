@@ -1,4 +1,4 @@
-import { INextFrame } from '../../js_utils/lf2_type';
+import { INextFrame } from "../../js_utils/lf2_type";
 import { Defines } from '../../js_utils/lf2_type/defines';
 import { FrameAnimater } from '../FrameAnimater';
 import { Character } from '../entity/Character';

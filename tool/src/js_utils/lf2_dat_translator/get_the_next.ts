@@ -1,4 +1,4 @@
-import { INextFrame } from "../lf2_type";
+import { INextFrame } from "../lf2_type/INextFrame";
 import { Defines } from "../lf2_type/defines";
 
 export const get_next_frame_by_id = (id: number | string): INextFrame => {
