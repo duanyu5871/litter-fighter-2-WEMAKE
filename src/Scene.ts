@@ -9,69 +9,70 @@ import { Weapon } from './G/entity/Weapon';
 import { dat_mgr } from './G/loader/DatLoader';
 import { Log } from './Log';
 import random_get from './Utils/random_get';
-import { IBgData, ICharacterData, TFace } from './js_utils/lf2_type';
+import { IBgData, ICharacterData, IWeaponData, TFace } from './js_utils/lf2_type';
+import { is_num } from './js_utils/is_num';
 let _new_id = 0;
 const new_id = () => '' + (++_new_id);
 
 export default function run(canvas: HTMLCanvasElement, on_load?: () => void) {
   let disposed = false;
   const disposers: (() => void)[] = []
+  const world = (window as any).world = new World(canvas);
+
+  const random_entity_info = (e: Entity) => {
+    e.id = new_id();
+    e.facing = Math.floor(Math.random() * 100) % 2 ? -1 : 1
+    e.position.x = world.left + Math.random() * (world.right - world.left);
+    e.position.z = world.far + Math.random() * (world.near - world.far);
+    e.position.y = 550;
+    return e;
+  }
+
+  const add_character = (d: ICharacterData, team = void 0) => {
+    const e = new Character(world, d);
+    if (is_num(team)) e.team = team;
+    random_entity_info(e).attach();
+  }
+  const add_weapon = (d: IWeaponData, team = void 0) => {
+    const e = new Weapon(world, d);
+    if (is_num(team)) e.team = team;
+    random_entity_info(e).attach();
+  }
 
   let _character: Character | undefined;
   dat_mgr.load().then(() => {
     if (disposed) return;
     on_load?.()
-    change_bg()
+    change_bg();
     const lf2: any = (window as any).lf2 = {
       clear() {
         world.del_entities(...world.entities)
       },
       play_character,
-      change_bg: change_bg,
+      change_bg,
       add_random_weapons(count = 10) {
         while (--count >= 0) {
           const d = random_get(dat_mgr.weapons);
           const e = new Weapon(world, d)
-          random_entity_info(e);
-          e.attach();
-        }
-      },
-      add_random_characters(count = 10) {
-        while (--count >= 0) {
-          const d = random_get(dat_mgr.characters);
-          const e = new Character(world, d);
-          random_entity_info(e);
-          e.attach();
-        }
-      }
-    };
-    const random_entity_info = (e: Entity) => {
-      e.id = new_id();
-      e.facing = Math.floor(Math.random() * 100) % 2 ? -1 : 1
-      e.position.x = world.left + Math.random() * (world.right - world.left);
-      e.position.z = world.far + Math.random() * (world.near - world.far);
-      e.position.y = 550;
-      return e;
-    }
-    for (const d of dat_mgr.characters) {
-      lf2['add_' + d.base.name.toLowerCase()] = (v = 1) => {
-        while (--v >= 0) {
-          const e = new Character(world, d);
           random_entity_info(e).attach();
         }
+      },
+      add_random_characters(count = 10, team = void 0) {
+        while (--count >= 0) add_character(random_get(dat_mgr.characters), team)
+      }
+    };
+    for (const d of dat_mgr.characters) {
+      lf2['add_character_' + d.base.name.toLowerCase()] = (num = 1, team = void 0) => {
+        while (--num >= 0) add_character(d, team);
       }
     }
     for (const d of dat_mgr.weapons) {
-      lf2['add_' + d.base.name.toLowerCase()] = (v = 1) => {
-        while (--v >= 0) {
-          const e = new Weapon(world, d);
-          random_entity_info(e).attach();
-        }
+      lf2['add_weapon_' + d.base.name.toLowerCase()] = (num = 1, team = void 0) => {
+        while (--num >= 0) add_weapon(d, team)
       }
     }
   })
 
-  const world = (window as any).world = new World(canvas);
   const play_character = (next: boolean | string = true) => {
     if (disposed) return;
     let data: ICharacterData | undefined = void 0;
@@ -122,7 +123,7 @@ export default function run(canvas: HTMLCanvasElement, on_load?: () => void) {
     if (typeof next === 'boolean') {
       const curr_data = world.bg?.data
       const len = list.length;
-      const idx = list.findIndex(v => v === curr_data) + (next ? 1 : (len - 1));
+      const idx = list.findIndex(v => v === curr_data) + (next ? (len - 1) : 1);
       data = list[idx % len];
     } else {
       data = list.find(v => v.id == next);
@@ -191,9 +192,10 @@ export default function run(canvas: HTMLCanvasElement, on_load?: () => void) {
         o.material.color.set(0xffffff)
     }
     intersection = next;
-
+    (window as any).pick_0 = void 0
     if (!next) return;
     const o = next.object;
+    (window as any).pick_0 = o.userData.owner ?? o.userData
     Log.print("click", o.userData.owner ?? o.userData)
     if (o.userData.owner instanceof BgLayer)
       o.userData.owner.show_indicators = true;

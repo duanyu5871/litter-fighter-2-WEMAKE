@@ -3,6 +3,7 @@ import { create_img_ele } from '../../Utils/create_img_ele';
 import { get_blob } from '../../Utils/get_blob';
 import { IEntityPictureInfo } from '../../js_utils/lf2_type';
 import { IPictureInfo } from '../../types/IPictureInfo';
+import SparkMD5 from "spark-md5";
 
 export type TPictureInfo = IPictureInfo<THREE.Texture>;
 export type TDataPromise<T> = Promise<T> & { data: T }
@@ -20,10 +21,16 @@ export type TImageInfo = {
   w: number;
   h: number;
   minFilter?: THREE.MinificationTextureFilter;
-  magFilter?: THREE.MagnificationTextureFilter ;
+  magFilter?: THREE.MagnificationTextureFilter;
 }
 
 export type PaintFunc = (img: HTMLImageElement, cvs: HTMLCanvasElement, ctx: CanvasRenderingContext2D) => void;
+export interface TxtStyle {
+  font?: string;
+  fillStyle?: string;
+  strokeStyle?: string;
+  lineWidth?: number;
+}
 class ImagePool {
   protected _map = new Map<string, TImageInfo>();
   protected _paint(
@@ -47,15 +54,18 @@ class ImagePool {
     const url = URL.createObjectURL(blob);
     return { key, url, w: img_ele.width, h: img_ele.height }
   }
-  protected async _make_text_info(key: string, text: string): Promise<TImageInfo> {
+
+  protected async _make_text_info(key: string, text: string, style?: TxtStyle): Promise<TImageInfo> {
     const cvs = document.createElement('canvas');
     const ctx = cvs.getContext('2d');
     if (!ctx) throw new Error("can not get context from canvas");
+
     const apply_test_style = () => {
-      ctx.font = 'normal 12px Arial, Helvetica, Sans-Serif';
-      ctx.fillStyle = 'white';
-      ctx.strokeStyle = 'black';
-      ctx.lineWidth = 0.1;
+      ctx.font = style?.font ?? 'normal 9px system-ui';
+      ctx.fillStyle = style?.fillStyle ?? 'white';
+      ctx.shadowColor = style?.strokeStyle ?? 'black';
+      ctx.lineWidth = style?.lineWidth ?? 1;
+      ctx.shadowBlur = 5;
     }
     apply_test_style();
     let w = 0;
@@ -73,7 +83,6 @@ class ImagePool {
     apply_test_style();
     for (const { x, y, t } of lines) {
       ctx.fillText(t, x, y);
-      ctx.lineWidth && ctx.strokeText(t, x, y);
     }
     const blob = await get_blob(cvs);
     const url = URL.createObjectURL(blob);
@@ -86,10 +95,12 @@ class ImagePool {
   find(key: string) {
     return this._map.get(key)
   }
-  async load_text(text: string, key: string = text): Promise<TImageInfo> {
+  async load_text(text: string, style?: TxtStyle): Promise<TImageInfo> {
+    const key = new SparkMD5().append(text).append(JSON.stringify(style)).end()
+    console.log(key)
     let info = this._map.get(key);
     if (info) return info;
-    info = await this._make_text_info(key, text);
+    info = await this._make_text_info(key, text, style);
     this._map.set(key, info);
     return info
 
@@ -166,7 +177,7 @@ export function create_picture(id: string, img_info: TImageInfo, picture: TPictu
   const texture = texture_loader.load(url, on_load, on_progress, e => bad(e));
   texture.colorSpace = THREE.SRGBColorSpace;
   texture.minFilter = minFilter ?? THREE.NearestFilter;
-  texture.magFilter = magFilter ?? THREE.NearestFilter; 
+  texture.magFilter = magFilter ?? THREE.NearestFilter;
   texture.wrapS = THREE.MirroredRepeatWrapping;
   picture.i_w = i_w;
   picture.i_h = i_h;

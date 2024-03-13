@@ -18,7 +18,24 @@ export type TData = IBaseData | ICharacterData | IWeaponData | IEntityData | IBa
 export const V_SHAKE = 4;
 export const A_SHAKE = 6;
 let __team__ = 4;
-
+export const get_team_shadow_color = (team: any) => {
+  switch (team) {
+    case 1: return 'blue';
+    case 2: return 'red';
+    case 3: return 'green';
+    case 4: return 'yellow';
+    default: return 'black';
+  }
+}
+export const get_team_text_color = (team: any) => {
+  switch (team) {
+    case 1: return '#CCCCFF';
+    case 2: return '#FFCCCC';
+    case 3: return '#CCFFCC';
+    case 4: return '#FFFFCC';
+    default: return 'white';
+  }
+}
 export interface IVictimRest {
   remain: number,
   itr: IItrInfo,
@@ -37,12 +54,31 @@ export class Entity<
   static new_team() {
     return ++__team__;
   }
+  private _name: string = '';
+  private _team: number = Entity.new_team();
+
   readonly shadow: THREE.Object3D;
   readonly velocity = new THREE.Vector3(0, 0, 0);
 
+  get name() { return this._name; }
+  set name(v: string) {
+    const prev = this._name;
+    this._name = v;
+    this.on_name_changed?.(prev, v);
+  }
+
   hp: number = 50000000000;
-  team: number = Entity.new_team();
+
+  get team() { return this._team }
+  set team(v) {
+    const prev = this._team;
+    this._team = v;
+    this.on_team_changed?.(prev, v);
+  }
   readonly states: Map<number, BaseState>;
+
+  protected on_name_changed?(prev: string, curr: string): void;
+  protected on_team_changed?(prev: number, curr: number): void;
 
   v_rests = new Map<string, IVictimRest>();
   a_rest: number = 0;
@@ -124,7 +160,6 @@ export class Entity<
 
   constructor(world: World, data: D, states: Map<number, BaseState> = new Map()) {
     super(world, data)
-
     this.pictures.set('shadow', create_picture_by_img_key('shadow', 'shadow').data);
     this.states = states;
     const [sw, sh] = this.world.bg?.data.base.shadowsize || [30, 30]

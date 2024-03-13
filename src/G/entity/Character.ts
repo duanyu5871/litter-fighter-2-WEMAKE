@@ -11,7 +11,7 @@ import { InvalidController } from '../controller/InvalidController';
 import { create_picture_by_img_key, image_pool } from '../loader/loader';
 import { CHARACTER_STATES } from '../state/character';
 import { Ball } from './Ball';
-import { Entity } from './Entity';
+import { Entity, get_team_shadow_color, get_team_text_color } from './Entity';
 import { same_face, turn_face } from './face_helper';
 export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, ICharacterData> {
   protected _disposers: (() => void)[] = [];
@@ -20,23 +20,40 @@ export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, IChar
   protected _fall_value = 70;
   protected _defend_value = 60;
   protected _name_sprite?: THREE.Sprite;
-  get name_sprite() { return this._name_sprite }
+  get name_sprite() {
+
+    return this._name_sprite
+  }
 
   constructor(world: World, data: ICharacterData) {
     super(world, data, CHARACTER_STATES);
     this.enter_frame({ id: Defines.ReservedFrameId.Auto });
-
-    image_pool.load_text(data.base.name, data.base.name).then((i) => {
-      return create_picture_by_img_key('', i.key)
-    }).then((p) => {
-      const material = new THREE.SpriteMaterial({ map: p.texture });
-      const text_sprite = this._name_sprite = new THREE.Sprite(material);
-      text_sprite.scale.set(p.i_w, p.i_h, 1)
-      text_sprite.center.set(0.5, 1.5);
-      world.scene.add(text_sprite);
-    })
+    this.name = data.base.name;
   }
 
+  private update_name_sprite() {
+    const name = this.name;
+    const fillStyle = get_team_text_color(this.team)
+    const strokeStyle = get_team_shadow_color(this.team)
+    image_pool.load_text(name, { strokeStyle, fillStyle })
+      .then((i) => create_picture_by_img_key('', i.key))
+      .then((p) => {
+        const material = new THREE.SpriteMaterial({ map: p.texture });
+        if (!this._name_sprite) this._name_sprite = new THREE.Sprite(material);
+        else this._name_sprite.material = material;
+        this._name_sprite.scale.set(p.i_w, p.i_h, 1);
+        this._name_sprite.center.set(0.5, 1.5);
+        this.world.scene.add(this._name_sprite);
+      });
+  }
+
+  protected override on_name_changed(prev: string, curr: string): void {
+    this.update_name_sprite();
+  }
+
+  protected override on_team_changed(prev: number, curr: number): void {
+    this.update_name_sprite();
+  }
 
   override handle_facing_flag(facing: number, frame: IFrameInfo, flags: INextFrame): TFace {
     switch (facing) {
