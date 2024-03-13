@@ -19,6 +19,16 @@ export const V_SHAKE = 4;
 export const A_SHAKE = 6;
 let __team__ = 4;
 
+export interface IVictimRest {
+  remain: number,
+  itr: IItrInfo,
+  bdy: IBdyInfo,
+  attacker: Entity,
+  a_cube: ICube,
+  b_cube: ICube,
+  a_frame: IFrameInfo,
+  b_frame: IFrameInfo
+}
 export class Entity<
   F extends IFrameInfo = IFrameInfo,
   I extends IGameObjInfo = IGameObjInfo,
@@ -34,16 +44,7 @@ export class Entity<
   team: number = Entity.new_team();
   readonly states: Map<number, BaseState>;
 
-  v_rests = new Map<string, {
-    remain: number,
-    itr: IItrInfo,
-    bdy: IBdyInfo,
-    attacker: Entity,
-    a_cube: ICube,
-    b_cube: ICube,
-    a_frame: IFrameInfo,
-    b_frame: IFrameInfo
-  }>();
+  v_rests = new Map<string, IVictimRest>();
   a_rest: number = 0;
 
   protected _motionless: number = 0
@@ -111,13 +112,16 @@ export class Entity<
     }
     return create(this.world, d).setup(this, opoint, speed_z).attach()
   }
+
   set state(v: BaseState | undefined) {
     if (this._state === v) return;
     this._state?.leave(this, this.get_frame())
     this._state = v;
     this._state?.enter(this, this.get_prev_frame())
   }
+
   get state() { return this._state; }
+
   constructor(world: World, data: D, states: Map<number, BaseState> = new Map()) {
     super(world, data)
 
@@ -161,12 +165,15 @@ export class Entity<
       this.velocity.z = z;
     }
   }
+
   on_gravity() {
     if (this.position.y <= 0 || this._shaking || this._motionless) return;
     this.velocity.y -= this.world.gravity;
   }
+
   _s = [1, -1]
   _i = 0;
+
   protected override update_sprite() {
     super.update_sprite();
     if (this._shaking) {
@@ -191,6 +198,7 @@ export class Entity<
     if (dvy !== void 0) this.velocity.y += dvy;
     if (dvz !== void 0) this.velocity.z = dvz;
   }
+
   override self_update(): void {
     super.self_update();
     const { cpoint } = this._frame;
@@ -235,16 +243,31 @@ export class Entity<
   protected _catcher?: Entity;
   get catcher() { return this._catcher }
 
-  @Log.Clone({ disabled: true, showRet: true, showArgs: false })
-  get_caught_end_frame(): TNextFrame | undefined {
+  /**
+   * 获取“被抓结束”帧
+   * 
+   * 被抓后，抓人者的“抓取值”降至0时，视为“被抓结束”，
+   * 此时被抓者跳去的帧即为“被抓结束”帧
+   * 
+   * @returns 下帧信息 
+   */
+  get_caught_end_frame(): TNextFrame {
     return { id: Defines.ReservedFrameId.Auto }
   }
 
-  @Log.Clone({ disabled: true, showRet: true, showArgs: false })
-  get_caught_cancel_frame(): TNextFrame | undefined {
+  /**
+   * 获取“被抓取消”帧
+   * 
+   * 被抓后，抓人者的“抓取值”未降至0，且任意一方的帧缺少cpoint时，视为“被抓取消”，
+   * 此时跳去的帧即为“被抓结束”帧
+   * 
+   * @returns 下帧信息 
+   */
+  get_caught_cancel_frame(): TNextFrame {
     if (this.position.y < 1) this.position.y = 1;
     return { id: Defines.ReservedFrameId.Auto }
   }
+
 
   update_caught(): TNextFrame | undefined {
     if (!this._catcher) return;
@@ -275,13 +298,29 @@ export class Entity<
     if (cpoint_a.vaction) return cpoint_a.vaction;
   }
 
-  @Log.Clone({ disabled: true, showRet: true, showArgs: false })
-  get_catching_end_frame(): TNextFrame | undefined {
+  /**
+   * 获取“抓人结束”帧
+   * 
+   * 抓人后，“抓取值”降至0时，视为“抓人结束”，
+   * 
+   * 此时跳去的帧即为“抓人结束”帧
+   * 
+   * @returns 下帧信息 
+   */
+  get_catching_end_frame(): TNextFrame {
     return { id: Defines.ReservedFrameId.Auto }
   }
 
-  @Log.Clone({ disabled: true, showRet: true, showArgs: false })
-  get_catching_cancel_frame(): TNextFrame | undefined {
+  /**
+   * 获取“抓人取消”帧
+   * 
+   * 抓人后，“抓取值”未降至0，且任意一方的帧缺少cpoint时，视为“抓人取消”，
+   * 
+   * 此时跳去的帧即为“抓人取消”帧
+   * 
+   * @returns 下帧信息 
+   */
+  get_catching_cancel_frame(): TNextFrame {
     return { id: Defines.ReservedFrameId.Auto }
   }
 
@@ -318,6 +357,7 @@ export class Entity<
     if (cover === 11) this._catching.position.z += 1;
     else if (cover === 10) this._catching.position.z -= 1;
   }
+
   override update_sprite_position(): void {
     this.world.restrict(this);
     super.update_sprite_position();
@@ -325,6 +365,7 @@ export class Entity<
     this.shadow.position.set(x, - z / 2, z);
     this.weapon?.follow_holder();
   }
+  
   on_after_update?(): void;
 
   on_collision(target: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {

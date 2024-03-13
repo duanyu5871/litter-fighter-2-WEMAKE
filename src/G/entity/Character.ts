@@ -122,13 +122,10 @@ export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, IChar
       }
     }
   }
-  override get_caught_end_frame(): TNextFrame | undefined {
+  override get_caught_end_frame(): TNextFrame {
     this.velocity.y = 2;
     this.velocity.x = -2 * this._facing;
     return { id: this.data.indexes.falling[-1][1] }
-  }
-  override get_catching_cancel_frame(): TNextFrame | undefined {
-    return undefined;
   }
   override on_after_update() {
     const next_frame_0 = this.controller.update();
