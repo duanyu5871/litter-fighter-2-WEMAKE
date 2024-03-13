@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { Log, Warn } from '../../Log';
 import { constructor_name } from '../../js_utils/constructor_name';
-import { IBdyInfo, ICharacterData, ICharacterFrameInfo, ICharacterInfo, IFrameInfo, IItrInfo, INextFrame, IOpointInfo, TNextFrame } from '../../js_utils/lf2_type';
+import { IBdyInfo, ICharacterData, ICharacterFrameInfo, ICharacterInfo, IFrameInfo, IItrInfo, INextFrame, IOpointInfo, TFace, TNextFrame } from '../../js_utils/lf2_type';
 import { Defines } from '../../js_utils/lf2_type/defines';
 import { factory } from '../Factory';
 import type { World } from '../World';
@@ -38,20 +38,16 @@ export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, IChar
   }
 
 
-  override handle_facing_flag(facing: number, frame: IFrameInfo, flags: INextFrame): void {
+  override handle_facing_flag(facing: number, frame: IFrameInfo, flags: INextFrame): TFace {
     switch (facing) {
       case Defines.FacingFlag.ByController:
-        this.facing = this.controller.LR1 || this.facing;
-        break;
+        return this.controller.LR1 || this.facing;
       case Defines.FacingFlag.SameAsCatcher:
-        this.facing = this._catcher?.facing || this.facing;
-        break;
+        return this._catcher?.facing || this.facing;
       case Defines.FacingFlag.OpposingCatcher:
-        this.facing = turn_face(this._catcher?.facing) || this.facing;
-        break;
+        return turn_face(this._catcher?.facing) || this.facing;
       default:
-        super.handle_facing_flag(facing, frame, flags);
-        break;
+        return super.handle_facing_flag(facing, frame, flags);
     }
   }
 

@@ -10,6 +10,7 @@ import { IPictureInfo } from '../types/IPictureInfo';
 import type { World } from './World';
 import { sound_mgr } from './loader/SoundMgr';
 import create_pictures from './loader/create_pictures';
+import { turn_face } from './entity/face_helper';
 
 export const EMPTY_PIECE: ITexturePieceInfo = {
   tex: 0, x: 0, y: 0, w: 0, h: 0, cx: 0, cy: 0,
@@ -65,7 +66,7 @@ export class FrameAnimater<
   }
 
   set_frame(v: F) {
-    this._prev_frame = this._frame
+    this._prev_frame = this._frame;
     this._frame = v;
   }
   get_frame() { return this._frame; }
@@ -181,19 +182,33 @@ export class FrameAnimater<
     return [frame, which];
   }
 
-  handle_facing_flag(turn: number, frame: IFrameInfo, flags: INextFrame) {
-    switch (turn) {
-      case Defines.FacingFlag.Backward: this.facing *= -1; break;
-      case Defines.FacingFlag.Left: this.facing = -1; break;
-      case Defines.FacingFlag.Right: this.facing = 1; break;
+  /**
+   * 进入下一帧时，需要处理朝向
+   * 
+   * @see {Defines.FacingFlag}
+   * @param facing 目标朝向, 可参考Defines.FacingFlag
+   * @param frame 帧
+   * @param flags 
+   * @returns 返回新的朝向
+   */
+  handle_facing_flag(facing: number, frame: IFrameInfo, flags: INextFrame): -1 | 1 {
+    switch (facing) {
+      case Defines.FacingFlag.Backward:
+        return turn_face(this.facing);
+      case Defines.FacingFlag.Left:
+      case Defines.FacingFlag.Right:
+        return facing;
+      default:
+        return this.facing;
     }
   }
-  handle_wait_flag(wait: string | number, frame: IFrameInfo, flags: INextFrame) {
-    if (wait === 'i') return // 不必做什么，继承上一帧的wait
 
-    if (is_positive_num(wait)) { this.wait = wait; return }
-    this.wait = frame.wait;
+  handle_wait_flag(wait: string | number, frame: IFrameInfo, flags: INextFrame): number {
+    if (wait === 'i') return this.wait;
+    if (is_positive_num(wait)) return this.wait;
+    return frame.wait;
   }
+
   enter_frame(which: TNextFrame | string): void {
     const [frame, flags] = this.get_next_frame(which);
     if (!frame) {
@@ -206,8 +221,8 @@ export class FrameAnimater<
     sound && sound_mgr.play(sound, x, y, z);
     this.set_frame(frame);
 
-    if (flags?.facing !== void 0) this.handle_facing_flag(flags.facing, frame, flags);
-    if (flags?.wait !== void 0) this.handle_wait_flag(flags.wait, frame, flags);
+    if (flags?.facing !== void 0) this.facing = this.handle_facing_flag(flags.facing, frame, flags);
+    if (flags?.wait !== void 0) this.wait = this.handle_wait_flag(flags.wait, frame, flags);
     else this.wait = frame.wait;
     this.update_sprite();
     this._next_frame = void 0;

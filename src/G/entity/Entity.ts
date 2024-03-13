@@ -365,7 +365,7 @@ export class Entity<
     this.shadow.position.set(x, - z / 2, z);
     this.weapon?.follow_holder();
   }
-  
+
   on_after_update?(): void;
 
   on_collision(target: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
