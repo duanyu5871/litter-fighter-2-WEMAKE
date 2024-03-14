@@ -1,14 +1,18 @@
 import { useEffect, useState } from 'react';
 import LF2 from './G/LF2';
 import { Entity } from './G/entity/Entity';
+import { sound_mgr } from './G/loader/SoundMgr';
 
 export function BlackgroundRow(props: { lf2?: LF2; }) {
   const { lf2 } = props;
   const [bg, set_bg] = useState<string>();
-
+  const [bgm, set_bgm] = useState<string>('');
+  useEffect(() => {
+    if (!bgm) sound_mgr.stop_bgm()
+    else sound_mgr.play_bgm(bgm)
+  }, [bgm]);
   useEffect(() => {
     if (!lf2) return;
-    set_bg(lf2.dat_mgr.backgrounds[0].id);
   }, [lf2]);
 
   useEffect(() => {
@@ -55,6 +59,18 @@ export function BlackgroundRow(props: { lf2?: LF2; }) {
           {lf2.dat_mgr.backgrounds.map(v => <option value={v.id} key={v.id}>{v.base.name}</option>)}
         </select>
         <button onClick={v => lf2.clear()}>clear</button>
+        music:
+        <select onChange={e => set_bgm(e.target.value)} value={bgm}>
+          <option value=''> OFF </option>
+          <option value={require('./G/bgm/boss1.mp3')}> boss1 </option>
+          <option value={require('./G/bgm/boss2.mp3')}> boss2 </option>
+          <option value={require('./G/bgm/main.mp3')}> main </option>
+          <option value={require('./G/bgm/stage1.mp3')} >stage1 </option>
+          <option value={require('./G/bgm/stage2.mp3')} >stage2 </option>
+          <option value={require('./G/bgm/stage3.mp3')} >stage3 </option>
+          <option value={require('./G/bgm/stage4.mp3')} >stage4 </option>
+          <option value={require('./G/bgm/stage5.mp3')} >stage5 </option>
+        </select>
       </div>
 
       <div className='background_settings_row'>
