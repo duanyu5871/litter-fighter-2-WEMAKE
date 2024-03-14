@@ -15,7 +15,13 @@ import { Entity, get_team_shadow_color, get_team_text_color } from './Entity';
 import { same_face, turn_face } from './face_helper';
 export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, ICharacterData> {
   protected _disposers: (() => void)[] = [];
-  controller: IController<Character> = new InvalidController(this);
+  protected _controller: IController<Character> = new InvalidController(this);
+  get controller() { return this._controller; }
+  set controller(v) {
+    if (this._controller === v) return;
+    this._controller.dispose();
+    this._controller = v;
+  }
   protected _resting = 0;
   protected _fall_value = 70;
   protected _defend_value = 60;
@@ -29,14 +35,15 @@ export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, IChar
     this.enter_frame({ id: Defines.ReservedFrameId.Auto });
   }
 
-  private update_name_sprite() {
-    const name = this.name;
-    const team = this.team
+  private update_name_sprite(name: string, team: number) {
     const fillStyle = get_team_text_color(team)
-    const strokeStyle = get_team_shadow_color(team)
+    const strokeStyle = get_team_shadow_color(team);
+    if (!name) return;
     image_pool.load_text(name, { strokeStyle, fillStyle })
       .then((i) => create_picture_by_img_key('', i.key))
       .then((p) => {
+        if (name !== this._name) return;
+        if (team !== this._team) return;
         const material = new THREE.SpriteMaterial({ map: p.texture });
         if (!this._name_sprite) this._name_sprite = new THREE.Sprite(material);
         else this._name_sprite.material = material;
@@ -46,12 +53,11 @@ export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, IChar
       });
   }
 
-  protected override on_name_changed(prev: string, curr: string): void {
-    this.update_name_sprite();
+  protected override on_name_changed(value: string, prev: string): void {
+    this.update_name_sprite(value, this._team);
   }
-
-  protected override on_team_changed(prev: number, curr: number): void {
-    this.update_name_sprite();
+  protected override on_team_changed(value: number, prev: number): void {
+    this.update_name_sprite(this._name, value);
   }
 
   override handle_facing_flag(facing: number, frame: IFrameInfo, flags: INextFrame): TFace {

@@ -1,9 +1,12 @@
 .App {
-  text-align: center;
+  padding: 5px;
+  display: flex;
+  gap: 5px;
+  flex-direction: column;
 }
 
 .game_contiainer {
-  position: absolute;
+  position: relative;
 }
 
 .game_canvas {
@@ -13,6 +16,7 @@
   */
   width: 795px;
   height: 450px;
+  resize: both;
 }
 
 .game_overlay {
@@ -23,4 +27,59 @@
   bottom: 0px;
   color: white;
   text-align: start;
+  pointer-events: none;
+  user-select: none;
+}
+
+.editor_view {
+  position: fixed;
+  z-index: 1;
+  left: 0px;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  display: flex;
+  flex-direction: column;
+  background-color: gray;
+  padding: 5px;
+  gap: 5px
+}
+
+.editor_view .top {
+  display: flex;
+  gap: 5px;
+}
+
+.editor_view .main {
+  flex: 1;
+  align-self: stretch;
+  display: flex;
+  gap: 5px;
+}
+
+.editor_view .main textarea {
+  flex: 1;
+  align-self: stretch;
+  resize: none;
+}
+
+.top_row {
+  display: flex;
+  gap: 5px;
+  word-break: keep-all;
+  white-space: nowrap;
+}
+
+.player_row {
+  display: flex;
+  gap: 5px;
+  word-break: keep-all;
+  white-space: nowrap;
+}
+
+.background_settings_row {
+  display: flex;
+  gap: 5px;
+  word-break: keep-all;
+  white-space: nowrap;
 }

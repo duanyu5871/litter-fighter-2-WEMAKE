@@ -50,7 +50,7 @@ class ImagePool {
     const img_ele = await create_img_ele(src);
     if (paint) paint(img_ele, cvs, ctx)
     else this._paint(img_ele, cvs, ctx);
-    const blob = await get_blob(cvs);
+    const blob = await get_blob(cvs).catch(e => { throw new Error(e.message + ' key:' + key, { cause: e.cause }) });
     const url = URL.createObjectURL(blob);
     return { key, url, w: img_ele.width, h: img_ele.height }
   }
@@ -84,20 +84,16 @@ class ImagePool {
     for (const { x, y, t } of lines) {
       ctx.fillText(t, x, y);
     }
-    const blob = await get_blob(cvs);
+    const blob = await get_blob(cvs).catch(e => { throw new Error(e.message + ' key:' + key, { cause: e.cause }) });
     const url = URL.createObjectURL(blob);
-    return {
-      key, url, w, h,
-      // minFilter: THREE.LinearMipmapLinearFilter,
-      // magFilter: THREE.LinearFilter
-    }
+    return { key, url, w, h }
   }
   find(key: string) {
     return this._map.get(key)
   }
   async load_text(text: string, style?: TxtStyle): Promise<TImageInfo> {
     const key = new SparkMD5().append(text).append(JSON.stringify(style)).end()
-    console.log(key)
+
     let info = this._map.get(key);
     if (info) return info;
     info = await this._make_text_info(key, text, style);

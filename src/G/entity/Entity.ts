@@ -44,6 +44,10 @@ export interface IVictimRest {
   a_frame: IFrameInfo,
   b_frame: IFrameInfo
 }
+export interface IEntityCallbacks {
+  on_hp_changed?(value: number, prev: number): void;
+  on_mp_changed?(value: number, prev: number): void;
+}
 export class Entity<
   F extends IFrameInfo = IFrameInfo,
   I extends IGameObjInfo = IGameObjInfo,
@@ -52,8 +56,11 @@ export class Entity<
   static new_team() {
     return ++__team__;
   }
-  private _name: string = '';
-  private _team: number = 0;
+  callbacks = new Set<IEntityCallbacks>()
+  protected _name: string = '';
+  protected _team: number = 0;
+  protected _mp: number = 500;
+  protected _hp: number = 500;
 
   readonly shadow_material: THREE.MeshBasicMaterial;
   readonly shadow: THREE.Mesh;
@@ -61,18 +68,29 @@ export class Entity<
 
   get name() { return this._name; }
   set name(v: string) {
-    const prev = this._name;
+    const old = this._name;
     this._name = v;
-    this.on_name_changed?.(prev, v);
+    this.on_name_changed?.(v, old);
+  }
+  get mp() { return this._mp; }
+  set mp(v) {
+    const old = this._mp;
+    this._mp = v
+    for (const cb of this.callbacks) cb.on_mp_changed?.(v, old);
   }
 
-  hp: number = 500;
+  get hp() { return this._hp; }
+  set hp(v) {
+    const old = this._hp;
+    this._hp = v
+    for (const cb of this.callbacks) cb.on_hp_changed?.(v, old);
+  }
 
   get team() { return this._team }
   set team(v) {
-    const prev = this._team;
+    const old = this._team;
     this._team = v;
-    this.on_team_changed?.(prev, v);
+    this.on_team_changed?.(v, old);
   }
   readonly states: Map<number, BaseState>;
 

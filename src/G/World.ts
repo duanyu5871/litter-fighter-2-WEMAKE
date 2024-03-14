@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { Defines } from '.././js_utils/lf2_type/defines';
-import LF2 from '../LF2';
+import LF2 from './LF2';
 import { Log } from '../Log';
 import { IBdyInfo, IFrameInfo, IItrInfo } from '../js_utils/lf2_type';
 import { FPS } from './FPS';

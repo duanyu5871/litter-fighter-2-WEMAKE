@@ -1,18 +1,19 @@
 import * as THREE from 'three';
-import { BgLayer } from './G/BgLayer';
-import Stage from './G/Stage';
-import { World } from './G/World';
-import { PlayerController } from "./G/controller/PlayerController";
-import './G/entity/Ball';
-import { Character } from './G/entity/Character';
-import { Entity } from './G/entity/Entity';
-import { Weapon } from './G/entity/Weapon';
-import DatMgr from './G/loader/DatMgr';
-import { Log } from './Log';
-import random_get from './Utils/random_get';
-import { is_num } from './js_utils/is_num';
-import { ICharacterData, IWeaponData, TFace } from './js_utils/lf2_type';
-import { Defines } from './js_utils/lf2_type/defines';
+import { Log } from '../Log';
+import random_get from '../Utils/random_get';
+import { is_num } from '../js_utils/is_num';
+import { ICharacterData, IWeaponData, TFace } from '../js_utils/lf2_type';
+import { Defines } from '../js_utils/lf2_type/defines';
+import { BgLayer } from './BgLayer';
+import Stage from './Stage';
+import { World } from './World';
+import { TKeyName } from './controller/IController';
+import { PlayerController } from "./controller/PlayerController";
+import './entity/Ball';
+import { Character } from './entity/Character';
+import { Entity } from './entity/Entity';
+import { Weapon } from './entity/Weapon';
+import DatMgr from './loader/DatMgr';
 let _new_id = 0;
 const new_id = () => '' + (++_new_id);
 
@@ -49,15 +50,40 @@ export default class LF2 {
     e.position.y = 550;
     return e;
   }
-  add_character(d: ICharacterData, team?: number) {
-    const e = new Character(this.world, d);
-    if (is_num(team)) e.team = team;
-    this.random_entity_info(e).attach();
+  add_character(data: ICharacterData, num: number, team?: number): Character[];
+  add_character(id: string, num: number, team?: number): Character[];
+  add_character(data: ICharacterData | string, num: number, team?: number): Character[] {
+    if (typeof data === 'string') {
+      let d = this.dat_mgr.characters.find(v => v.id === data)
+      if (!d) return [];
+      data = d
+    }
+    const ret: Character[] = []
+    while (--num >= 0) {
+      const e = new Character(this.world, data);
+      if (is_num(team)) e.team = team;
+      this.random_entity_info(e).attach();
+      ret.push(e)
+    }
+    return ret;
   }
-  add_weapon(d: IWeaponData, team?: number) {
-    const e = new Weapon(this.world, d);
-    if (is_num(team)) e.team = team;
-    this.random_entity_info(e).attach();
+
+  add_weapon(data: IWeaponData, num: number, team?: number): Weapon[];
+  add_weapon(id: string, num: number, team?: number): Weapon[];
+  add_weapon(data: IWeaponData | string, num: number, team?: number): Weapon[] {
+    if (typeof data === 'string') {
+      let d = this.dat_mgr.weapons.find(v => v.id === data)
+      if (!d) return [];
+      data = d
+    }
+    const ret: Weapon[] = []
+    while (--num >= 0) {
+      const e = new Weapon(this.world, data);
+      if (is_num(team)) e.team = team;
+      this.random_entity_info(e).attach();
+      ret.push(e);
+    }
+    return ret;
   }
   on_key_down = (e: KeyboardEvent) => {
     const interrupt = () => {
@@ -149,28 +175,36 @@ export default class LF2 {
   clear() {
     this.world.del_entities(...this.world.entities)
   }
-  add_random_weapon(num = 1) {
+  add_random_weapon(num = 1): Weapon[] {
+    const ret: Weapon[] = []
     while (--num >= 0) {
-      const d = random_get(this.dat_mgr.weapons);
-      const e = new Weapon(this.world, d)
-      this.random_entity_info(e).attach();
+      ret.push(
+        ...this.add_weapon(random_get(this.dat_mgr.weapons), 1)
+      )
     }
+    return ret;
   }
-  add_random_character(count = 1, team = void 0) {
-    while (--count >= 0) this.add_character(random_get(this.dat_mgr.characters), team)
+  add_random_character(num = 1, team?: number): Character[] {
+    const ret: Character[] = []
+    while (--num >= 0) {
+      ret.push(
+        ...this.add_character(random_get(this.dat_mgr.characters), 1, team)
+      )
+    }
+    return ret;
   }
   async start() {
     await this.dat_mgr.load();
     for (const d of this.dat_mgr.characters) {
       const name = d.base.name.toLowerCase();
       this.characters[`add_${name}`] = (num = 1, team = void 0) => {
-        while (--num >= 0) this.add_character(d, team);
+        this.add_character(d, num, team);
       }
     }
     for (const d of this.dat_mgr.weapons) {
       const name = d.base.name.toLowerCase();
       this.weapons[`add_${name}`] = (num = 1, team = void 0) => {
-        while (--num >= 0) this.add_weapon(d, team)
+        this.add_weapon(d, num, team)
       }
     }
     this.world.start_update();
@@ -189,7 +223,7 @@ export default class LF2 {
     this.world.dispose()
     this.dat_mgr.cancel();
   }
-  add_player = (which: string, character_id: string) => {
+  add_player = (which: string, character_id: string, kc?: Record<TKeyName, string>) => {
     const data = this.dat_mgr.characters.find(v => v.id === character_id)
     if (!data) return;
     let x = 0;
@@ -230,7 +264,7 @@ export default class LF2 {
     if (!old) {
       this.random_entity_info(player)
     }
-    player.controller = new PlayerController(player)
+    player.controller = new PlayerController(player, kc)
     player.attach();
 
     this._local_players.set(which, player)
