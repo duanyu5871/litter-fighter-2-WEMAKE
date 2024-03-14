@@ -55,6 +55,7 @@ export function make_bg_data(full_str: string, datIndex?: IDatIndex): IBgData | 
     layers: []
   };
   const blocks = take_blocks(full_str, 'layer:', 'layer_end', v => full_str = v);
+  let min_y = Defines.OLD_SCREEN_HEIGHT;
   for (const block_str of blocks) {
     const [file, remains] = block_str.trim().split(/\n|\r/g).filter(v => v).map(v => v.trim());
     const fields: any = {};
@@ -73,7 +74,7 @@ export function make_bg_data(full_str: string, datIndex?: IDatIndex): IBgData | 
       y: Defines.OLD_SCREEN_HEIGHT - y,
       z: ret.layers.length - blocks.length,
     };
-
+    min_y = Math.min(layer.y, min_y)
     if (color) {
       layer.absolute = 1;
       layer.color = bg_color_translate(color);

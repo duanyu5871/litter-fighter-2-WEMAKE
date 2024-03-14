@@ -67,6 +67,8 @@ export class World {
     this.camera.right = w;
     this.camera.bottom = 0;
     this.camera.top = h;
+    this.camera.position.z = 10
+    this.camera.near = 1;
     this.camera.updateProjectionMatrix()
     this.renderer.setSize(w, h)
   }

@@ -4,44 +4,17 @@ import { IBgLayerInfo } from "../js_utils/lf2_type/IBgLayerInfo";
 import { Defines } from '../js_utils/lf2_type/defines';
 import { World } from './World';
 import { texture_loader } from './loader/loader';
+import { BgLayer } from './BgLayer';
 
-interface ILayerUserData {
+export interface ILayerUserData {
   x: number;
   y: number;
   z: number;
   info: IBgLayerInfo;
-  inner_w?: number;
-  inner_h?: number;
+  w: number;
+  h: number;
   owner: BgLayer;
 }
-export class BgLayer {
-  private _obj_3d: THREE.Object3D;
-  get obj_3d() { return this._obj_3d; }
-
-  private _show_indicators = false
-  get show_indicators() { return this._show_indicators; }
-  set show_indicators(v: boolean) { this._show_indicators = v; }
-
-  constructor(info: IBgLayerInfo, x: number, y: number, z: number, texture?: THREE.Texture) {
-    const geo = new THREE.PlaneGeometry(1, 1).translate(0.5, -0.5, 0);
-    const material = new THREE.MeshBasicMaterial(
-      texture ? { map: texture, transparent: true } : { color: info.color }
-    );
-    const layer = this._obj_3d = new THREE.Mesh(geo, material);
-    const { width, height } = texture ? texture.image : info;
-    layer.scale.set(width, height, 1);
-    layer.position.set(x, y, z);
-    const user_data: ILayerUserData = {
-      x, y, z,
-      info,
-      inner_w: width,
-      inner_h: height,
-      owner: this
-    }
-    layer.userData = user_data;
-  }
-}
-
 export class Background {
   readonly data: IBgData;
   private _disposers: (() => void)[] = [];
@@ -68,6 +41,7 @@ export class Background {
     const node = this._obj_3d = new THREE.Object3D();
     this._obj_3d.position.z = -2 * Defines.OLD_SCREEN_HEIGHT;
 
+    const jobs: Promise<any>[] = []
     for (const info of data.layers) {
       if ('color' in info) this.add_layer(info);
       let path: any;
@@ -76,8 +50,18 @@ export class Background {
       if (!path) try { path = require('./' + info.file + '.png'); } catch (e) { }
       if (!path) try { path = require('./' + info.file); } catch (e) { }
       if (!path) { continue; }
-      this.get_texture(path).then(t => this.add_layer(info, t))
+      jobs.push(this.get_texture(path).then(t => this.add_layer(info, t)))
     }
+    Promise.all(jobs).then(() => {
+      // let min = 9999;
+      // let max = 0;
+      // for (const l of this._layers) {
+      //   min = Math.min(min, l.user_data.y - l.user_data.h)
+      //   max = Math.max(max, l.user_data.y)
+      // }
+      // for (const l of this._layers)
+      //   l.obj_3d.position.y -= min;
+    })
     this._disposers.push(
       () => world.scene.remove(node)
     );
@@ -115,7 +99,7 @@ export class Background {
     const { camera } = this._world;
     for (const child of this._obj_3d.children) {
       const user_data = child.userData as ILayerUserData;
-      const { inner_w, inner_h, info: { width, c1, c2, cc, absolute }, x } = user_data;
+      const { w: inner_w, h: inner_h, info: { width, c1, c2, cc, absolute }, x } = user_data;
       if (cc !== void 0 && c1 !== void 0 && c2 !== void 0) {
         const now = this._update_times % cc;
         child.visible = now >= c1 && now <= c2;
@@ -128,9 +112,7 @@ export class Background {
         child.position.x = x + camera.position.x;
       else
         child.position.x = x + (bg_width - width) * camera.position.x / (bg_width - Defines.OLD_SCREEN_WIDTH);
-
     }
     camera.getWorldQuaternion(this._q)
-    this._obj_3d.rotation.setFromQuaternion(this._q);
   }
 }

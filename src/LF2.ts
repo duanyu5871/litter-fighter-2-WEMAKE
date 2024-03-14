@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { BgLayer } from './G/Background';
+import { BgLayer } from './G/BgLayer';
 import Stage from './G/Stage';
 import { World } from './G/World';
 import { PlayerController } from "./G/controller/PlayerController";
@@ -58,7 +58,6 @@ export default class LF2 {
     this.random_entity_info(e).attach();
   }
   on_key_down = (e: KeyboardEvent) => {
-    console.log(e.key.toLowerCase)
     const interrupt = () => {
       e.stopPropagation();
       e.preventDefault();
