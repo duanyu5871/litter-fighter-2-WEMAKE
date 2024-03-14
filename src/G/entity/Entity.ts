@@ -57,7 +57,8 @@ export class Entity<
   private _name: string = '';
   private _team: number = 0;
 
-  readonly shadow: THREE.Object3D;
+  readonly shadow_material: THREE.MeshBasicMaterial;
+  readonly shadow: THREE.Mesh;
   readonly velocity = new THREE.Vector3(0, 0, 0);
 
   get name() { return this._name; }
@@ -160,17 +161,16 @@ export class Entity<
 
   constructor(world: World, data: D, states: Map<number, BaseState> = new Map()) {
     super(world, data)
-    this.pictures.set('shadow', create_picture_by_img_key('shadow', 'shadow').data);
+    this.world.bg.get_shadow().then(pic_info => {
+      this.shadow_material.map = pic_info.texture;
+      this.shadow_material.opacity = 1;
+      this.shadow_material.needsUpdate = true;
+    })
     this.states = states;
-    const [sw, sh] = this.world.bg?.data.base.shadowsize || [30, 30]
-    const geometry = new THREE.PlaneGeometry(sw, 2 * sh);
-    const shadow_material = new THREE.MeshBasicMaterial({
-      map: this.pictures.get('shadow')?.texture!,
-      transparent: true,
-      depthTest: false,
-      depthWrite: false,
-    });
-    this.shadow = new THREE.Mesh(geometry, shadow_material);
+    const [sw, sh] = this.world.bg.data.base.shadowsize || [30, 30]
+    const geometry = new THREE.PlaneGeometry(sw, sh).translate(0, 0, 0);
+    this.shadow_material = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0 });
+    this.shadow = new THREE.Mesh(geometry, this.shadow_material);
     this.shadow.renderOrder = 0
   }
 
@@ -398,7 +398,7 @@ export class Entity<
     super.update_sprite_position();
     const { x, z } = this.position;
     this.shadow.position.set(x, - z / 2, z);
-    this.weapon?.follow_holder();
+    if (this.weapon) this.weapon.follow_holder();
   }
 
   on_after_update?(): void;

@@ -103,8 +103,8 @@ class ImagePool {
     info = await this._make_text_info(key, text, style);
     this._map.set(key, info);
     return info
-
   }
+
   async load(key: string, src: string, paint?: PaintFunc): Promise<TImageInfo> {
     let info = this._map.get(key);
     if (info) return info;
@@ -112,6 +112,7 @@ class ImagePool {
     this._map.set(key, info);
     return info
   }
+
   protected _gen_key = (f: IEntityPictureInfo) => `${f.path}_${f.w}_${f.h}_${f.row}_${f.col}`;
   async load_by_pic_info(f: IEntityPictureInfo, get_src: (f: IEntityPictureInfo) => string): Promise<TImageInfo> {
     const key = this._gen_key(f);
@@ -168,7 +169,11 @@ const error_texture = () => {
   return texture;
 }
 
-export function create_picture(id: string, img_info: TImageInfo, picture: TPictureInfo): TDataPromise<TPictureInfo> {
+export function create_picture(
+  id: string,
+  img_info: TImageInfo,
+  picture: TPictureInfo = error_picture_info(id),
+): TDataPromise<TPictureInfo> {
   let ok: (_: TPictureInfo) => void;
   let bad: (_: any) => void;
   const { url, w: i_w, h: i_h, minFilter, magFilter } = img_info;
@@ -186,12 +191,15 @@ export function create_picture(id: string, img_info: TImageInfo, picture: TPictu
   return Object.assign(p, { data: picture });
 }
 
-export function create_picture_by_img_key(id: string, img_key: string) {
-  const img_info = image_pool.find(img_key);
-  const picture: TPictureInfo = {
+export function error_picture_info(id: string): TPictureInfo {
+  return {
     id, i_w: 0, i_h: 0, cell_w: 0, cell_h: 0, row: 1, col: 1,
     texture: error_texture()
-  };
+  }
+}
+export function create_picture_by_img_key(id: string, img_key: string) {
+  const img_info = image_pool.find(img_key);
+  const picture = error_picture_info(id);
   if (!img_info) {
     return make_data_promise_reject(picture, new Error("[create_picture_by_img_key] failed, image info not found in image pool."));
   }

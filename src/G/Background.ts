@@ -4,7 +4,7 @@ import { IBgLayerInfo } from "../js_utils/lf2_type/IBgLayerInfo";
 import { Defines } from '../js_utils/lf2_type/defines';
 import { BgLayer } from './BgLayer';
 import { World } from './World';
-import { texture_loader } from './loader/loader';
+import { TDataPromise, TPictureInfo, create_picture, error_picture_info, image_pool, make_data_promise_reject } from './loader/loader';
 
 export interface ILayerUserData {
   x: number;
@@ -47,34 +47,28 @@ export class Background {
     }
     const node = this.obj_3d = new THREE.Object3D();
     this.obj_3d.position.z = -2 * Defines.OLD_SCREEN_HEIGHT;
-
     const jobs: Promise<any>[] = []
+
     for (const info of data.layers) {
       if ('color' in info) this.add_layer(info);
-      let path: any;
       if (!info.file) continue;
-      if (!path) try { path = require('./' + info.file.replace(/.bmp$/g, '.png')); } catch (e) { }
-      if (!path) try { path = require('./' + info.file + '.png'); } catch (e) { }
-      if (!path) try { path = require('./' + info.file); } catch (e) { }
-      if (!path) { continue; }
-      jobs.push(this.get_texture(path).then(t => this.add_layer(info, t)))
+      const path = this.get_path(info.file);
+      if (!path) continue;
+      jobs.push(this.get_texture(info.file, path).then(t => this.add_layer(info, t)))
     }
-    Promise.all(jobs).then(() => {
-      // let min = 9999;
-      // let max = 0;
-      // for (const l of this._layers) {
-      //   min = Math.min(min, l.user_data.y - l.user_data.h)
-      //   max = Math.max(max, l.user_data.y)
-      // }
-      // for (const l of this._layers)
-      //   l.obj_3d.position.y -= min;
-    })
     this._disposers.push(
       () => world.scene.remove(node)
     );
     world.scene.add(node);
   }
 
+  private get_path(file: string): string | undefined {
+    let path: string | undefined;
+    if (!path) try { path = require('./' + file.replace(/.bmp$/g, '.png')); } catch (e) { }
+    if (!path) try { path = require('./' + file + '.png'); } catch (e) { }
+    if (!path) try { path = require('./' + file); } catch (e) { }
+    return path
+  }
   private add_layer(info: IBgLayerInfo, texture?: THREE.Texture) {
     let { x, y, z, loop = 0 } = info;
     do {
@@ -85,14 +79,18 @@ export class Background {
     } while (loop > 0 && x < this.width);
   }
 
-  private get_texture(p: any) {
-    return new Promise<THREE.Texture>((resolve, reject) => {
-      const texture = texture_loader.load(p, resolve, void 0, reject);
-      texture.wrapS = THREE.RepeatWrapping;
-      texture.wrapT = THREE.RepeatWrapping;
-      texture.magFilter = THREE.NearestFilter;
-      texture.colorSpace = THREE.SRGBColorSpace;
-    })
+  private async get_texture(key: string, path: string): Promise<THREE.Texture> {
+    const img_info = await image_pool.load(key, path);
+    const pic_info = await create_picture(key, img_info);
+    return pic_info.texture;
+  }
+
+  async get_shadow(): Promise<TPictureInfo> {
+    const key = this.data.base.shadow;
+    if (!key) return error_picture_info(key)
+    const path = this.get_path(key);
+    if (!path) return error_picture_info(key)
+    return image_pool.load(key, path).then(v => create_picture(key, v))
   }
 
   dispose() {

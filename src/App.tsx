@@ -5,7 +5,6 @@ import Stage from './G/Stage';
 import { TKeyName } from './G/controller/IController';
 import { PlayerController } from './G/controller/PlayerController';
 import { Character } from './G/entity/Character';
-import { Entity } from './G/entity/Entity';
 import LF2 from './LF2';
 import { Log, Warn } from './Log';
 import open_file, { read_file } from './Utils/open_file';

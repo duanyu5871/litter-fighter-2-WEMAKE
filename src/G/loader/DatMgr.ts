@@ -49,11 +49,9 @@ export default class DatMgr {
       c && sound_mgr.load(c, make_require(c));
     }
 
-
     if (!('frames' in data)) return data;
     const { frames, base: { files } } = data;
     const jobs = map(files, (_, v) => image_pool.load_by_pic_info(v, _ => make_require(v.path)))
-    jobs.push(image_pool.load('shadow', make_require('shadow.png')))
     await Promise.all(jobs);
     traversal(frames, (_, frame) => cook_frame(data, frame));
     return data;
