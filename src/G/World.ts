@@ -3,6 +3,7 @@ import { Defines } from '.././js_utils/lf2_type/defines';
 import LF2 from '../LF2';
 import { Log } from '../Log';
 import { IBdyInfo, IFrameInfo, IItrInfo } from '../js_utils/lf2_type';
+import { FPS } from './FPS';
 import { FrameAnimater } from './FrameAnimater';
 import Stage from './Stage';
 import { PlayerController } from './controller/PlayerController';
@@ -11,6 +12,7 @@ import { Character } from './entity/Character';
 import { Entity } from './entity/Entity';
 import './entity/Weapon';
 import { Weapon } from './entity/Weapon';
+import { GameOverlay } from './GameOverlay';
 export interface ICube {
   left: number;
   right: number;
@@ -27,6 +29,7 @@ export class World {
   on_stage_change?: (curr: Stage, prev: Stage) => void;
 
   readonly lf2: LF2
+
   gravity = World.DEFAULT_GRAVITY;
   friction_factor = World.DEFAULT_FRICTION_FACTOR;
   friction = World.DEFAULT_FRICTION;
@@ -39,6 +42,7 @@ export class World {
   renderer: THREE.WebGLRenderer;
   disposed = false;
   protected _players = new Set<Character>();
+  readonly overlay: GameOverlay;
 
   get stage() { return this._stage }
   set stage(v) {
@@ -58,7 +62,7 @@ export class World {
   get width() { return this.bg.width || 0 }
   get depth() { return this.bg.depth || 0 };
   get middle() { return this.bg.middle || { x: 0, z: 0 } }
-  constructor(lf2: LF2, canvas: HTMLCanvasElement) {
+  constructor(lf2: LF2, canvas: HTMLCanvasElement, overlay?: HTMLDivElement | null) {
     this.lf2 = lf2;
     this.renderer = new THREE.WebGLRenderer({ canvas });
     const w = Defines.OLD_SCREEN_WIDTH;
@@ -70,7 +74,8 @@ export class World {
     this.camera.position.z = 10
     this.camera.near = 1;
     this.camera.updateProjectionMatrix()
-    this.renderer.setSize(w, h, false)
+    this.renderer.setSize(w, h, false);
+    this.overlay = new GameOverlay(overlay);
   }
 
   add_game_objs(...objs: FrameAnimater[]) {
@@ -126,6 +131,11 @@ export class World {
   private _render_request_id?: ReturnType<typeof requestAnimationFrame>;
   private _update_timer_id?: ReturnType<typeof setInterval>;
 
+
+  private _r_prev_time = 0;
+  private _r_fps = new FPS()
+  private _u_prev_time = 0;
+  private _u_fps = new FPS()
   render_once() {
     if (this.disposed) return;
     for (const e of this.entities) {
@@ -136,9 +146,14 @@ export class World {
 
   start_render() {
     if (this.disposed) return;
-    const on_render = () => {
-      this.render_once()
+    const on_render = (time: number) => {
+      if (this._r_prev_time !== 0) {
+        this.render_once()
+        this._r_fps.update(time - this._r_prev_time);
+        this.overlay.FPS = this._r_fps.value
+      }
       this._render_request_id = requestAnimationFrame(on_render)
+      this._r_prev_time = time
     }
     this._render_request_id && cancelAnimationFrame(this._render_request_id);
     this._render_request_id = requestAnimationFrame(on_render);
@@ -153,7 +168,16 @@ export class World {
     if (this.disposed) return;
     if (this._update_timer_id) clearInterval(this._update_timer_id);
     const dt = Math.max((1000 / 60) / this._playrate, 1);
-    this._update_timer_id = setInterval(this.update_once.bind(this), dt);
+    const on_update = () => {
+      const time = Date.now()
+      if (this._u_prev_time !== 0) {
+        this.update_once()
+        this._u_fps.update(time - this._u_prev_time)
+        this.overlay.UPS = this._u_fps.value
+      }
+      this._u_prev_time = time
+    }
+    this._update_timer_id = setInterval(on_update, dt);
   }
 
   restrict_character(e: Character) {
@@ -230,8 +254,6 @@ export class World {
         this.del_entities(e);
       else if (e.get_frame().state === Defines.State.Gone)
         this.del_entities(e);
-
-
     for (const e of this.game_objs) e.self_update();
     for (const e of this.game_objs) e.update();
     for (const e of this.game_objs)

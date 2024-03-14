@@ -14,6 +14,7 @@ import lf2_dat_str_to_json from './js_utils/lf2_dat_translator/dat_2_json';
 import read_lf2_dat from './read_lf2_dat';
 
 function App() {
+  const _overlay_ref = useRef<HTMLDivElement>(null)
   const _canvas_ref = useRef<HTMLCanvasElement>(null)
   const _text_area_dat_ref = useRef<HTMLTextAreaElement>(null);
   const _text_area_json_ref = useRef<HTMLTextAreaElement>(null);
@@ -24,8 +25,9 @@ function App() {
 
   useEffect(() => {
     const canvas = _canvas_ref.current;
+    const overlay = _overlay_ref.current;
     if (!canvas) return;
-    const lf2 = new LF2(canvas);
+    const lf2 = new LF2(canvas, overlay);
     Object.defineProperty(window, 'lf2', { value: lf2, configurable: true })
     lf2.start().then(() => {
       set_lf2(lf2);
@@ -106,7 +108,10 @@ function App() {
         </select>
       </div>
       <input type='checkbox' onChange={(e) => set_closed(!e.target.checked)} checked={!closed} />
-      <canvas ref={_canvas_ref} className='renderer_canvas' width={795} height={450} />
+      <div className='game_contiainer'>
+        <canvas ref={_canvas_ref} className='game_canvas' width={795} height={450} />
+        <div className='game_overlay' ref={_overlay_ref} />
+      </div>
       <div style={{
         position: 'fixed',
         zIndex: 1,

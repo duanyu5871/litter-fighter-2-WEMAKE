@@ -77,7 +77,6 @@ export default class DatMgr {
     }
     this._data_map.set(_index_id, data);
   }
-
   async load() {
     this._cancelled = false;
     const { objects, backgrounds } = await make_import('data/data.json');
@@ -87,12 +86,12 @@ export default class DatMgr {
     if (this._cancelled) throw new Error('cancelled')
     for (const { id, file } of objects) {
       if (this._cancelled) throw new Error('cancelled')
-      Log.print('DatLoader', 'loading:', file)
+      Log.print('DatLoader', 'loading object:', file)
       await this._add_data(id, await make_import(file));
     }
     for (const { id, file } of backgrounds) {
       if (this._cancelled) throw new Error('cancelled')
-      Log.print('DatLoader', 'loading:', file)
+      Log.print('DatLoader', 'loading background:', file)
       await this._add_data(id, await make_import(file));
     }
     for (const [, v] of this._data_map) {
@@ -116,5 +115,3 @@ export default class DatMgr {
     return this._data_map.get('' + id)
   }
 }
-
-(window as any).DatMgr = DatMgr;

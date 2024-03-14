@@ -34,13 +34,11 @@ export class BgLayer {
     layer.userData = this.user_data;
   }
 
-  private _update_times = 0;
-  update() {
-    this._update_times++;
+  update(count: number) {
     this.material.opacity += 0.1
     const { w: inner_w, h: inner_h, info: { width, c1, c2, cc, absolute }, x, z } = this.user_data;
     if (cc !== void 0 && c1 !== void 0 && c2 !== void 0) {
-      const now = this._update_times % cc;
+      const now = count % cc;
       this.obj_3d.visible = now >= c1 && now <= c2;
     }
     if (!inner_w || !inner_h) return;

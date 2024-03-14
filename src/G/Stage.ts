@@ -2,7 +2,6 @@ import { IBgData, IStageInfo } from "../js_utils/lf2_type";
 import { Defines } from "../js_utils/lf2_type/defines";
 import { Background } from "./Background";
 import type { World } from "./World";
-import DatMgr from "./loader/DatMgr";
 
 export default class Stage {
   readonly world: World;

@@ -97,9 +97,11 @@ export class Background {
     this._disposers.forEach(f => f());
   }
 
+  private _update_times = 0;
   private _q = new THREE.Quaternion()
   update() {
-    for (const layer of this._layers) layer.update()
+    this._update_times++;
+    for (const layer of this._layers) layer.update(this._update_times)
     this.world.camera.getWorldQuaternion(this._q);
     this.obj_3d.rotation.setFromQuaternion(this._q);
   }

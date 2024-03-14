@@ -20,6 +20,7 @@ export default class LF2 {
   private readonly _disposers: (() => void)[] = []
   readonly canvas: HTMLCanvasElement;
   readonly world: World;
+  readonly overlay: HTMLDivElement | null | undefined;
   set on_stage_change(v: World['on_stage_change']) { this.world.on_stage_change = v }
 
   private _local_players = new Map<string, Character>();
@@ -32,10 +33,11 @@ export default class LF2 {
   readonly weapons: Record<string, (num: number, team?: number) => void> = {}
   readonly dat_mgr: DatMgr;
 
-  constructor(canvas: HTMLCanvasElement) {
+  constructor(canvas: HTMLCanvasElement, overlay?: HTMLDivElement | null) {
     this.canvas = canvas;
-    this.world = new World(this, canvas);
+    this.world = new World(this, canvas, overlay);
     this.dat_mgr = new DatMgr();
+    this.overlay = overlay
   }
   random_entity_info(e: Entity) {
     const { left: l, right: r, near: n, far: f } = this.world;

@@ -8,8 +8,6 @@ import { factory } from '../Factory';
 import { FrameAnimater } from '../FrameAnimater';
 import type { World } from '../World';
 import { ICube } from '../World';
-import DatMgr from '../loader/DatMgr';
-import { create_picture_by_img_key } from '../loader/loader';
 import BaseState from "../state/BaseState";
 import { EntityIndicators } from './EntityIndicators';
 import type { Weapon } from './Weapon';
