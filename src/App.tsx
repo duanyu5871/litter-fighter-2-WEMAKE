@@ -107,7 +107,7 @@ function App() {
         </select>
       </div>
       <input type='checkbox' onChange={(e) => set_closed(!e.target.checked)} checked={!closed} />
-      <canvas ref={_canvas_ref} className='renderer_canvas' height={450} />
+      <canvas ref={_canvas_ref} className='renderer_canvas' width={795} height={450} />
       <div style={{
         position: 'fixed',
         zIndex: 1,

@@ -70,7 +70,7 @@ export class World {
     this.camera.position.z = 10
     this.camera.near = 1;
     this.camera.updateProjectionMatrix()
-    this.renderer.setSize(w, h)
+    this.renderer.setSize(w, h, false)
   }
 
   add_game_objs(...objs: FrameAnimater[]) {
