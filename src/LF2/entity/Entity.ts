@@ -413,7 +413,7 @@ export class Entity<
     this.world.restrict(this);
     super.update_sprite_position();
     const { x, z } = this.position;
-    this.shadow.position.set(x, - z / 2, z);
+    this.shadow.position.set(x, - z / 2, z - 550);
     if (this.weapon) this.weapon.follow_holder();
   }
 

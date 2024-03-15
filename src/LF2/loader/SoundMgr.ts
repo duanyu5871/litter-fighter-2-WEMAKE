@@ -25,6 +25,7 @@ export class SoundMgr {
     const audio = document.createElement('audio');
     audio.src = src_audio;
     audio.controls = false;
+    audio.onerror = e => console.log('failed:', key)
     return audio;
   }
   play(key: string, x?: number, y?: number, z?: number) {

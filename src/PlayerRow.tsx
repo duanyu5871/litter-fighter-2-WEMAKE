@@ -94,7 +94,7 @@ export function PlayerRow(props: { which: number; lf2?: LF2; }) {
     lp.callbacks.add(callbacks.current)
     callbacks.current.on_hp_changed?.(lp.hp, lp.hp)
     lp.name = player_name.trim() || '' + which;
-    lp.team = Number(team) ?? Entity.new_team();
+    lp.team = team ? Number(team) : Entity.new_team();
     lp.controller = new PlayerController(lp, keys)
   }, [which, player_name, team, lf2, c_id, added, keys]);
 

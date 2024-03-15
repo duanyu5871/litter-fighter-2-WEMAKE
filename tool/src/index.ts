@@ -14,7 +14,7 @@ async function parse_indexes(src_path: string): Promise<IDataLists | undefined> 
 }
 
 async function parse_under_dir(src_dir_path: string, dst_dir_path: string, indexes: IDataLists | undefined) {
-  
+
   await fs.mkdir(dst_dir_path, { recursive: true }).catch(_ => void 0)
   for (const filename of await fs.readdir(src_dir_path)) {
     const src_path = path.join(src_dir_path, filename).replace(/\\/g, '/')
@@ -57,7 +57,7 @@ async function parse_under_dir(src_dir_path: string, dst_dir_path: string, index
       if (dst_stat?.isFile() || dst_stat?.isDirectory())
         await fs.rm(_dst_path, { recursive: true, force: true })
 
-      const args = ['-i', src_path, '-codec:a', 'libvorbis', '-b:a', '64k', _dst_path];
+      const args = ['-i', src_path, '-codec:a', 'libvorbis', '-b:a', '64k', '-ar', '44100', _dst_path];
       await new Promise((a, b) => {
         console.log('convert', src_path, '=>', _dst_path)
         spawn('./ffmpeg', args).on('exit', a).on('error', b)

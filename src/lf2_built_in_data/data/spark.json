@@ -19,7 +19,7 @@
     "broken_defend": {
       "id": "broken_defend",
       "name": "broken_defend",
-      "sound": "data/002.wav",
+      "sound": "data/002.wav.ogg",
       "pic": {
         "tex": 0,
         "x": 1,
@@ -38,7 +38,7 @@
     "critical_hit": {
       "id": "critical_hit",
       "name": "critical_hit",
-      "sound": "data/006.wav",
+      "sound": "data/006.wav.ogg",
       "pic": {
         "tex": 0,
         "x": 1,
@@ -165,7 +165,7 @@
     "defend_hit": {
       "id": "defend_hit",
       "name": "defend_hit",
-      "sound": "data/002.wav",
+      "sound": "data/002.wav.ogg",
       "pic": {
         "tex": 0,
         "x": 1,
@@ -184,7 +184,7 @@
     "hit": {
       "id": "hit",
       "name": "hit",
-      "sound": "data/001.wav",
+      "sound": "data/001.wav.ogg",
       "pic": {
         "tex": 0,
         "x": 1,
@@ -311,7 +311,7 @@
     "bleed": {
       "id": "bleed",
       "name": "bleed",
-      "sound": "data/032.wav",
+      "sound": "data/032.wav.ogg",
       "pic": {
         "tex": 0,
         "x": 1,
@@ -420,7 +420,7 @@
     "critical_bleed": {
       "id": "critical_bleed",
       "name": "critical_bleed",
-      "sound": "data/033.wav",
+      "sound": "data/033.wav.ogg",
       "pic": {
         "tex": 0,
         "x": 1,

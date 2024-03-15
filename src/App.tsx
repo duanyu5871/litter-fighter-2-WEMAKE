@@ -109,12 +109,7 @@ function App() {
       {[1, 2, 3, 4].map(v => <PlayerRow key={v} which={v} lf2={lf2} />)}
       <BlackgroundRow lf2={lf2} />
       <div className='game_contiainer'>
-        <canvas tabIndex={-1} ref={_canvas_ref} className='game_canvas' width={795} height={450}
-          onPointerDown={e => {
-            e.stopPropagation();
-            e.preventDefault();
-          }}
-        />
+        <canvas tabIndex={-1} ref={_canvas_ref} className='game_canvas' width={795} height={450} />
         <div className='game_overlay' ref={_overlay_ref} style={{ display: !game_overlay_closed ? 'none' : void 0 }} />
       </div>
       <div className='editor_view' style={{ display: editor_closed ? 'none' : void 0 }}>

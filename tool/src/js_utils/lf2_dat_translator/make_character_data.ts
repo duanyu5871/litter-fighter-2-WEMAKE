@@ -366,9 +366,9 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
         frame.hit = frame.hit || {};
         frame.hit.d = { id: '102', facing: FacingFlag.ByController };
         frame.hit.j = to_dash_frame;
-        frame.hold = frame.hold || {};
-        frame.hold.d = { id: '102', facing: FacingFlag.ByController };
-        frame.hold.j = to_dash_frame;
+        // frame.hold = frame.hold || {};
+        // frame.hold.d = { id: '102', facing: FacingFlag.ByController };
+        // frame.hold.j = to_dash_frame;
         break;
     }
     switch (frame.state) {
