@@ -1,7 +1,14 @@
 import { useEffect, useState } from 'react';
 import LF2 from './LF2/LF2';
+import { SimpleFollowController } from './LF2/controller/SimpleFollowController';
+import { Character } from './LF2/entity/Character';
 import { Entity } from './LF2/entity/Entity';
 import { sound_mgr } from './LF2/loader/SoundMgr';
+import { IController } from './LF2/controller/IController';
+
+const bot_controllers: { [x in string]?: (e: Character) => IController<Character> } = {
+  'SimpleFollow': (e: Character) => new SimpleFollowController(e)
+}
 
 export function BlackgroundRow(props: { lf2?: LF2; }) {
   const { lf2 } = props;
@@ -31,6 +38,7 @@ export function BlackgroundRow(props: { lf2?: LF2; }) {
   const [weapon_id, set_weapon_id] = useState<string>('');
   const [c_id, set_character_id] = useState<string>('');
   const [team, set_team] = useState<string>('');
+  const [controller, set_controller] = useState<string>('');
 
   if (!lf2) return <></>;
 
@@ -49,6 +57,9 @@ export function BlackgroundRow(props: { lf2?: LF2; }) {
         lf2.add_random_character(rcn, r_team)
     ).forEach(e => {
       e.name = 'bot';
+
+      const controller_creator = bot_controllers[controller];
+      if (controller_creator) e.controller = controller_creator(e);
     })
   }
   return (
@@ -94,18 +105,26 @@ export function BlackgroundRow(props: { lf2?: LF2; }) {
           min={min_rcn} max={max_rcn} step={1} value={rcn}
           onChange={e => set_rcn(Number(e.target.value))}
           onBlur={() => set_rcn(v => Math.min(Math.max(Math.floor(v), min_rcn), max_rcn))} />
+        character:
         <select
           value={c_id}
           onChange={e => set_character_id(e.target.value)}>
           <option value=''>Random</option>
           {lf2.dat_mgr.characters.map(v => <option key={v.id} value={v.id}>{v.base.name}</option>)}
         </select>
+        team:
         <select value={team} onChange={e => set_team(e.target.value)}>
           <option value=''>independent</option>
           <option value='1'>team 1</option>
           <option value='2'>team 2</option>
           <option value='3'>team 3</option>
           <option value='4'>team 4</option>
+        </select>
+
+        controller:
+        <select value={controller} onChange={e => set_controller(e.target.value)}>
+          <option value=''>OFF</option>
+          {Object.keys(bot_controllers).map(v => <option value={v}>{v}</option>)}
         </select>
         <button onClick={on_click_add_character}>add</button>
       </div>

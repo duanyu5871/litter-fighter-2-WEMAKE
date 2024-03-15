@@ -69,14 +69,14 @@ export class BaseController implements IController<Character> {
     const v = this.releases[k];
     return v > 0;
   }
-  double_clicks: Record<TKeyName, number[] | undefined> = {
-    d: undefined,
-    a: undefined,
-    j: undefined,
-    L: undefined,
-    R: undefined,
-    U: undefined,
-    D: undefined
+  double_clicks: Record<TKeyName, [number, number]> = {
+    d: [0, 0],
+    a: [0, 0],
+    j: [0, 0],
+    L: [0, 0],
+    R: [0, 0],
+    U: [0, 0],
+    D: [0, 0]
   };
   get LR() { return (Math.floor(this.holding.R) - Math.floor(this.holding.L)) as 0 | 1 | 2 | -1 | -2; }
   get UD() { return (Math.floor(this.holding.D) - Math.floor(this.holding.U)) as 0 | 1 | 2 | -1 | -2; }
@@ -205,21 +205,31 @@ export class BaseController implements IController<Character> {
   check_double_click(k: TKeyName) {
     const kc = CONFLICTS_KEY_CODE_LIST[k];
     if (kc && this.holding[kc]) {
-      this.double_clicks[k] = void 0;
+      this.double_clicks[k][0] = 0;
       return false;
     }
-    const is_hit = this.is_hit(k);
+    const is_press = this.is_hit(k);
     const is_release = this.is_release(k);
-    const a = this.double_clicks[k];
-    if (is_hit && !a) {
-      this.double_clicks[k] = [this._update_count];
-    } else if (is_release && a && a?.[1] === void 0) {
-      a[1] = this._update_count;
-    } else if (is_hit && a && a?.[1] !== void 0 && a?.[2] === void 0) {
-      a[2] = this._update_count;
-      const ret = a[2] - a[1] < DOUBLE_CLICK_INTERVAL && a[1] - a[0] < DOUBLE_CLICK_INTERVAL;
-      this.double_clicks[k] = void 0;
-      return ret;
+    const vals = this.double_clicks[k];
+
+    if (is_press && !vals[0]) {
+      this.double_clicks[k] = [this._update_count, 0];
+      return false;
+    }
+    if (is_release && !vals[1]) {
+      if (this._update_count - vals[0] <= DOUBLE_CLICK_INTERVAL) {
+        vals[1] = this._update_count;
+      } else {
+        this.double_clicks[k] = [0, 0];
+      }
+      return false;
+    }
+    if (is_press && vals[1]) {
+      if (this._update_count - vals[1] <= DOUBLE_CLICK_INTERVAL) {
+        const ret = this._update_count - vals[1] <= DOUBLE_CLICK_INTERVAL;
+        this.double_clicks[k] = [0, 0];
+        return ret;
+      }
     }
     return false;
   }
