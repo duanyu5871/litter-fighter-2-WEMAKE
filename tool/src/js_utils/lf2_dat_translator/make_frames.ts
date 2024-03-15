@@ -56,7 +56,10 @@ export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string): Re
     if (!itr_list?.length) delete frame.itr;
     if (!opoint_list?.length) delete frame.opoint;
     delete_val_equal_keys(frame, ['mp', 'hp'], [0, void 0]);
-    delete_val_equal_keys(frame, ['sound'], ['', void 0]);
+
+    const sound = take(frame, 'sound');
+    if (sound) frame.sound = sound + '.ogg';
+
     delete_val_equal_keys(frame, ['wpoint', 'bpoint', 'cpoint', 'bdy', 'itr'], [null, void 0]);
     delete_val_equal_keys(frame.wpoint, ['dvx', 'dvy', 'dvz'], [0, void 0]);
 
@@ -143,7 +146,7 @@ function cook_opoint_list(unsure_opoint_list: IOpointInfo[]) {
         Defines.FacingFlag.Backward :
         Defines.FacingFlag.None;
       if (Math.abs(facing) >= 10) {
-        item.multi = Math.floor(facing /  10);
+        item.multi = Math.floor(facing / 10);
       }
     } else {
       item.facing = Defines.FacingFlag.None;

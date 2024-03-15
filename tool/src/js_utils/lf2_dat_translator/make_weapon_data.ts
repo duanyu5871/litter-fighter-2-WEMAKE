@@ -1,13 +1,14 @@
 import { IWeaponData } from '../lf2_type';
-import { IWeaponInfo } from "../lf2_type/IWeaponInfo";
 import { IFrameInfo } from "../lf2_type/IFrameInfo";
+import { IWeaponFrameIndexes } from '../lf2_type/IWeaponFrameIndexes';
+import { IWeaponInfo } from "../lf2_type/IWeaponInfo";
+import { Defines } from '../lf2_type/defines';
 import { match_all } from '../match_all';
 import { match_block_once } from '../match_block';
 import { match_colon_value } from '../match_colon_value';
 import { set_obj_field } from "../set_obj_field";
 import { to_num } from '../to_num';
-import { IWeaponFrameIndexes } from '../lf2_type/IWeaponFrameIndexes';
-import { Defines } from '../lf2_type/defines';
+import { take } from './take';
 
 const indexes_map: Record<Defines.WeaponType, IWeaponFrameIndexes> = {
   [Defines.WeaponType.None]: {
@@ -64,6 +65,16 @@ export function make_weapon_data(info: IWeaponInfo, full_str: string, frames: Re
   const indexes =
     indexes_map[info.type as Defines.WeaponType] ??
     indexes_map[Defines.WeaponType.None]
+
+
+  const sound_1 = take(info, 'weapon_broken_sound')
+  if (sound_1) info.weapon_broken_sound = sound_1 + '.ogg'
+
+  const sound_2 = take(info, 'weapon_drop_sound')
+  if (sound_2) info.weapon_drop_sound = sound_2 + '.ogg'
+
+  const sound_3 = take(info, 'weapon_hit_sound')
+  if (sound_3) info.weapon_hit_sound = sound_3 + '.ogg'
 
   return {
     id: '',

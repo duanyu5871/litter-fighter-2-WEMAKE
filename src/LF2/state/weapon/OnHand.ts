@@ -1,0 +1,13 @@
+import { IFrameInfo } from "../../../js_utils/lf2_type";
+import { Weapon } from "../../entity/Weapon";
+import { BaseWeaponState } from "./Base";
+
+export class OnHand extends BaseWeaponState {
+  enter(e: Weapon, prev_frame: IFrameInfo): void {
+    e.shadow.visible = false;
+  }
+  update(e: Weapon): void { }
+  leave(e: Weapon, next_frame: IFrameInfo): void {
+    e.shadow.visible = true;
+  }
+}

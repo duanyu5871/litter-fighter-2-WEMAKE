@@ -25,9 +25,6 @@ yarn-error.log*
 src/types/lf2.d.ts
 src/js_utils
 
-src/G/bgm
-src/G/data
-src/G/bg
-src/G/sprite
+src/lf2_data
 tool/json
 tool/dist

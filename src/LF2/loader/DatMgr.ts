@@ -4,6 +4,8 @@ import { map, traversal } from '../../js_utils/traversal';
 import { TData } from '../entity/Entity';
 import { sound_mgr } from './SoundMgr';
 import { image_pool } from './loader';
+import { make_import } from './make_import';
+import { make_require } from './make_require';
 import { cook_frame } from './preprocess_frame';
 
 
@@ -24,9 +26,6 @@ const create_data_list_map = (): IDataListMap => ({
   ball: [],
   all: []
 })
-const make_require = (p: string) => require('../' + p);
-const make_import = (p: string) => import('../' + p).then(v => v.default);
-
 export default class DatMgr {
   get cancelled() { return this._cancelled; }
   private _data_list_map = create_data_list_map();
@@ -82,7 +81,7 @@ export default class DatMgr {
     const { objects, backgrounds } = await make_import('data/data.json');
     if (this._cancelled) throw new Error('cancelled')
     Log.print('DatLoader', 'loading: spark.json')
-    await this._add_data("spark", await make_import('spark.json'))
+    await this._add_data("spark", await make_import('data/spark.json'))
     if (this._cancelled) throw new Error('cancelled')
     for (const { id, file } of objects) {
       if (this._cancelled) throw new Error('cancelled')

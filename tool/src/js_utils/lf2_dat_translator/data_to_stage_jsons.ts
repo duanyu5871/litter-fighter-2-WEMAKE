@@ -26,7 +26,7 @@ export function data_to_stage_jsons(full_str: string): IStageInfo[] | void {
         if (line.startsWith('bound')) {
           for (const [key, value] of match_colon_value(line)) {
             if (key === 'bound') phase_info.bound = to_num(value, phase_info.bound);
-            if (key === 'music') phase_info.music = value;
+            if (key === 'music') phase_info.music = value + '.ogg';
           }
           phase_info.desc = match_hash_end(line)?.trim() ?? '';
 

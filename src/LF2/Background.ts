@@ -4,7 +4,8 @@ import { IBgLayerInfo } from "../js_utils/lf2_type/IBgLayerInfo";
 import { Defines } from '../js_utils/lf2_type/defines';
 import { BgLayer } from './BgLayer';
 import { World } from './World';
-import { TDataPromise, TPictureInfo, create_picture, error_picture_info, image_pool, make_data_promise_reject } from './loader/loader';
+import { TPictureInfo, create_picture, error_picture_info, image_pool } from './loader/loader';
+import { make_require } from './loader/make_require';
 
 export interface ILayerUserData {
   x: number;
@@ -52,7 +53,7 @@ export class Background {
     for (const info of data.layers) {
       if ('color' in info) this.add_layer(info);
       if (!info.file) continue;
-      const path = this.get_path(info.file);
+      const path = make_require(info.file);
       if (!path) continue;
       jobs.push(this.get_texture(info.file, path).then(t => this.add_layer(info, t)))
     }
@@ -62,13 +63,7 @@ export class Background {
     world.scene.add(node);
   }
 
-  private get_path(file: string): string | undefined {
-    let path: string | undefined;
-    if (!path) try { path = require('./' + file.replace(/.bmp$/g, '.png')); } catch (e) { }
-    if (!path) try { path = require('./' + file + '.png'); } catch (e) { }
-    if (!path) try { path = require('./' + file); } catch (e) { }
-    return path
-  }
+
   private add_layer(info: IBgLayerInfo, texture?: THREE.Texture) {
     let { x, y, z, loop = 0 } = info;
     do {
@@ -88,7 +83,7 @@ export class Background {
   async get_shadow(): Promise<TPictureInfo> {
     const key = this.data.base.shadow;
     if (!key) return error_picture_info(key)
-    const path = this.get_path(key);
+    const path = make_require(key);
     if (!path) return error_picture_info(key)
     return image_pool.load(key, path).then(v => create_picture(key, v))
   }

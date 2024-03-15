@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import LF2 from './G/LF2';
-import { Entity } from './G/entity/Entity';
-import { sound_mgr } from './G/loader/SoundMgr';
+import LF2 from './LF2/LF2';
+import { Entity } from './LF2/entity/Entity';
+import { sound_mgr } from './LF2/loader/SoundMgr';
 
 export function BlackgroundRow(props: { lf2?: LF2; }) {
   const { lf2 } = props;
@@ -62,14 +62,14 @@ export function BlackgroundRow(props: { lf2?: LF2; }) {
         music:
         <select onChange={e => set_bgm(e.target.value)} value={bgm}>
           <option value=''> OFF </option>
-          <option value={require('./G/bgm/boss1.mp3')}> boss1 </option>
-          <option value={require('./G/bgm/boss2.mp3')}> boss2 </option>
-          <option value={require('./G/bgm/main.mp3')}> main </option>
-          <option value={require('./G/bgm/stage1.mp3')} >stage1 </option>
-          <option value={require('./G/bgm/stage2.mp3')} >stage2 </option>
-          <option value={require('./G/bgm/stage3.mp3')} >stage3 </option>
-          <option value={require('./G/bgm/stage4.mp3')} >stage4 </option>
-          <option value={require('./G/bgm/stage5.mp3')} >stage5 </option>
+          <option value={require('./lf2_data/bgm/boss1.wma.ogg')}> boss1 </option>
+          <option value={require('./lf2_data/bgm/boss2.wma.ogg')}> boss2 </option>
+          <option value={require('./lf2_data/bgm/main.wma.ogg')}> main </option>
+          <option value={require('./lf2_data/bgm/stage1.wma.ogg')} >stage1 </option>
+          <option value={require('./lf2_data/bgm/stage2.wma.ogg')} >stage2 </option>
+          <option value={require('./lf2_data/bgm/stage3.wma.ogg')} >stage3 </option>
+          <option value={require('./lf2_data/bgm/stage4.wma.ogg')} >stage4 </option>
+          <option value={require('./lf2_data/bgm/stage5.wma.ogg')} >stage5 </option>
         </select>
       </div>
 

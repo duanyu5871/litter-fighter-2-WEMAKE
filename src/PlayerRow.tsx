@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
-import LF2 from './G/LF2';
-import { TKeyName } from './G/controller/IController';
-import { Entity, IEntityCallbacks } from './G/entity/Entity';
+import LF2 from './LF2/LF2';
+import { TKeyName } from './LF2/controller/IController';
+import { Entity, IEntityCallbacks } from './LF2/entity/Entity';
 import random_get from './Utils/random_get';
-import { PlayerController } from './G/controller/PlayerController';
+import { PlayerController } from './LF2/controller/PlayerController';
 
 export const keys_map: { [x in string]?: Record<TKeyName, string> } = {
   '1': {
