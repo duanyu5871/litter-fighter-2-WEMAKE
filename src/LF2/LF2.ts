@@ -1,3 +1,4 @@
+import JSZIP from 'jszip';
 import * as THREE from 'three';
 import { Log } from '../Log';
 import random_get from '../Utils/random_get';
@@ -14,6 +15,9 @@ import { Character } from './entity/Character';
 import { Entity } from './entity/Entity';
 import { Weapon } from './entity/Weapon';
 import DatMgr from './loader/DatMgr';
+import { SoundMgr } from './loader/SoundMgr';
+import { get_import_fallbacks as get_import_fallback_names, import_builtin } from './loader/make_import';
+
 let _new_id = 0;
 const new_id = () => '' + (++_new_id);
 
@@ -22,6 +26,7 @@ export default class LF2 {
   readonly canvas: HTMLCanvasElement;
   readonly world: World;
   readonly overlay: HTMLDivElement | null | undefined;
+  zip: JSZIP | undefined;
   set on_stage_change(v: World['on_stage_change']) { this.world.on_stage_change = v }
 
   private _local_players = new Map<string, Character>();
@@ -30,16 +35,47 @@ export default class LF2 {
   }
   on_click_character?: (c: Character) => void;
 
+  @Log.Clone({ showArgs: true, showRet: false, disabled: true })
+  async import(path: string) {
+    const fallback_paths = get_import_fallback_names(path);
+    if (this.zip) {
+      for (const fallback_path of fallback_paths) {
+        const zip_obj = this.zip.file(fallback_path);
+        if (!zip_obj) continue;
+        if (fallback_path.endsWith('.json'))
+          return await zip_obj.async('text').then(JSON.parse)
+        if (fallback_path.endsWith('.txt'))
+          return await zip_obj.async('text');
+        return await zip_obj.async('blob')
+      }
+    }
+
+    for (const fallback_path of fallback_paths) {
+      try { return await import_builtin(fallback_path) } catch { }
+    }
+    throw new Error(`resource not found, path: ${path}, fallbacks: ${fallback_paths.join(';')}!`)
+  }
   readonly characters: Record<string, (num: number, team?: number) => void> = {}
   readonly weapons: Record<string, (num: number, team?: number) => void> = {}
   readonly dat_mgr: DatMgr;
-
+  readonly sound_mgr: SoundMgr;
   constructor(canvas: HTMLCanvasElement, overlay?: HTMLDivElement | null) {
     this.canvas = canvas;
     this.world = new World(this, canvas, overlay);
-    this.dat_mgr = new DatMgr();
+    this.dat_mgr = new DatMgr(this);
+    this.sound_mgr = new SoundMgr(this);
     this.overlay = overlay
   }
+
+  async bgms(): Promise<string[]> {
+    if (!this.zip) return [];
+    return this.zip.file(/^bgm\//).map(file => {
+      console.log(file)
+      this.sound_mgr.load(file.name, file.async('blob'))
+      return file.name
+    })
+  }
+
   random_entity_info(e: Entity) {
     const { left: l, right: r, near: n, far: f } = this.world;
     const rand = () => Math.random();
@@ -84,32 +120,6 @@ export default class LF2 {
       ret.push(e);
     }
     return ret;
-  }
-  on_key_down = (e: KeyboardEvent) => {
-    const interrupt = () => {
-      e.stopPropagation();
-      e.preventDefault();
-      e.stopImmediatePropagation();
-    }
-    switch (e.key?.toUpperCase()) {
-      case 'F2':
-        interrupt();
-        if (!this.world.paused) this.world.paused = true;
-        else this.world.update_once()
-        break;
-      case 'F1':
-        interrupt();
-        this.world.paused = !this.world.paused;
-        break;
-      case 'F5':
-        interrupt();
-        this.world.playrate = this.world.playrate === 100 ? 1 : 100;
-        break;
-      case 'F6':
-        interrupt();
-        this.world.show_indicators = !this.world.show_indicators;
-        break;
-    }
   }
 
   private _intersection: THREE.Intersection | undefined = void 0;
@@ -193,7 +203,8 @@ export default class LF2 {
     }
     return ret;
   }
-  async start() {
+  async start(zip?: JSZIP) {
+    this.zip = zip
     await this.dat_mgr.load();
     for (const d of this.dat_mgr.characters) {
       const name = d.base.name.toLowerCase();
@@ -211,11 +222,9 @@ export default class LF2 {
     this.world.start_render();
     this.canvas.addEventListener('pointerdown', this.on_pointer_down);
     this.canvas.addEventListener('pointerup', this.on_pointer_up);
-    window.addEventListener('keydown', this.on_key_down);
     this._disposers.push(
       () => this.canvas.removeEventListener('pointerdown', this.on_pointer_down),
       () => this.canvas.removeEventListener('pointerup', this.on_pointer_up),
-      () => window.removeEventListener('keydown', this.on_key_down)
     )
   }
   dispose() {
@@ -279,5 +288,8 @@ export default class LF2 {
     const data = this.dat_mgr.backgrounds.find(v => v.id == bg_id);
     if (!data) return;
     this.world.stage = new Stage(this.world, data)
+  }
+  remove_bg() {
+    this.world.stage = new Stage(this.world, Defines.THE_VOID_STAGE)
   }
 }

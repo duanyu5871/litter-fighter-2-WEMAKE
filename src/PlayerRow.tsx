@@ -63,9 +63,13 @@ const key_names: Record<TKeyName, string> = {
   d: '防'
 }
 const key_name_arr = Object.keys(key_names) as TKeyName[];
-
-export function PlayerRow(props: { which: number; lf2?: LF2; }) {
-  const { lf2 } = props;
+interface Props {
+  which: number;
+  lf2?: LF2;
+  visible?: boolean;
+}
+export function PlayerRow(props: Props) {
+  const { lf2, visible } = props;
   const which = '' + props.which;
   const [editing_key, set_editing_key] = useState<TKeyName | undefined>();
   const [keys, set_keys] = useState<Record<TKeyName, string>>(keys_map[which] ?? invalid_keys)
@@ -115,20 +119,19 @@ export function PlayerRow(props: { which: number; lf2?: LF2; }) {
 
   }, [editing_key])
 
-  if (!lf2) return null;
+  if (!lf2 || visible === false) return null;
   const on_name_edit: React.ChangeEventHandler<HTMLInputElement> = e => {
     set_player_name(e.target.value);
   };
   const on_name_blur: React.FocusEventHandler<HTMLInputElement> = e => {
     set_player_name(e.target.value.trim() || which);
   };
-
   return (
     <div key={which} className='player_row'>
       <span> player { }
         <input
           type='text'
-          maxLength={5}
+          maxLength={50}
           style={{ width: 75 }}
           placeholder='enter player name'
           value={player_name}
@@ -138,12 +141,12 @@ export function PlayerRow(props: { which: number; lf2?: LF2; }) {
       <span>character:</span>
       <select
         value={c_id}
-        onChange={e => set_character_id(e.target.value)}>
+        onChange={e => { set_character_id(e.target.value); e.target.blur() }}>
         <option value=''>Random</option>
         {lf2.dat_mgr.characters.map(v => <option key={v.id} value={v.id}>{v.base.name}</option>)}
       </select>
       <span>team:</span>
-      <select value={team} onChange={e => set_team(e.target.value)}>
+      <select value={team} onChange={e => { set_team(e.target.value); e.target.blur() }}>
         <option value=''>independent</option>
         <option value='1'>team 1</option>
         <option value='2'>team 2</option>
@@ -153,7 +156,7 @@ export function PlayerRow(props: { which: number; lf2?: LF2; }) {
 
       <button onClick={() => set_added(v => !v)}>{added ? 'del' : 'add'}</button>
       <span style={{ display: !added ? 'none' : void 0 }}>hp:<span ref={hp_ref} /></span>
-      <button onClick={() => set_key_settings_show(v => !v)}>按键</button>
+      <button onClick={() => set_key_settings_show(v => !v)}>keyboard settings</button>
       {!key_settings_show ? null :
         key_name_arr.map(k => {
           const on_click = () => set_editing_key(v => v === k ? void 0 : k);

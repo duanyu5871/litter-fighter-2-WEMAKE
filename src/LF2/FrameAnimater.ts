@@ -8,7 +8,6 @@ import { IFrameInfo, IGameObjData, IGameObjInfo, INextFrame, ITexturePieceInfo, 
 import { Defines } from '../js_utils/lf2_type/defines';
 import { IPictureInfo } from '../types/IPictureInfo';
 import type { World } from './World';
-import { sound_mgr } from './loader/SoundMgr';
 import create_pictures from './loader/create_pictures';
 import { turn_face } from './entity/face_helper';
 
@@ -218,7 +217,7 @@ export class FrameAnimater<
     }
     const { sound } = frame;
     const { x, y, z } = this.position;
-    sound && sound_mgr.play(sound, x, y, z);
+    sound && this.world.lf2.sound_mgr.play(sound, x, y, z);
     this.set_frame(frame);
 
     if (flags?.facing !== void 0) this.facing = this.handle_facing_flag(flags.facing, frame, flags);

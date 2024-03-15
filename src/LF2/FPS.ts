@@ -18,4 +18,5 @@ export class FPS {
     this._value = 0;
     this._avg_duration = 0;
   }
+  dispose() { }
 }

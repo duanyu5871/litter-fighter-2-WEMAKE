@@ -2,18 +2,17 @@ import { Warn } from '../../Log';
 import { IEntityPictureInfo, IFrameInfo, IGameObjData, ITexturePieceInfo } from '../../js_utils/lf2_type';
 import { IRect } from '../../js_utils/lf2_type/IRect';
 import { traversal } from '../../js_utils/traversal';
-import { sound_mgr } from './SoundMgr';
+import LF2 from '../LF2';
 import { image_pool } from './loader';
-import { make_require } from './make_require';
 import { preprocess_next_frame } from './preprocess_next_frame';
 const get_keys = <V extends {}>(v: V): (keyof V)[] => {
   return Object.keys(v) as (keyof V)[]
 }
-export const cook_frame = (data: IGameObjData, frame: IFrameInfo) => {
+export const cook_frame = (lf2: LF2, data: IGameObjData, frame: IFrameInfo) => {
 
   let pic = frame.pic;
   let pic_info: IEntityPictureInfo | undefined = void 0;
-  if (frame.sound) sound_mgr.load(frame.sound, make_require(frame.sound));
+  if (frame.sound) lf2.sound_mgr.load(frame.sound, lf2.import(frame.sound));
   cook_frame_hit(frame);
   cook_frame_hold(frame);
 

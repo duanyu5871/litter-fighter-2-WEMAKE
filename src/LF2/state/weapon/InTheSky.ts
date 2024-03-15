@@ -1,5 +1,4 @@
 import { Weapon } from "../../entity/Weapon";
-import { sound_mgr } from "../../loader/SoundMgr";
 import { BaseWeaponState } from "./Base";
 
 export class InTheSky extends BaseWeaponState {
@@ -24,7 +23,7 @@ export class InTheSky extends BaseWeaponState {
 
     if (sound_name) {
       const { x, y, z } = e.position;
-      sound_mgr.play(sound_name, x, y, z);
+      e.world.lf2.sound_mgr.play(sound_name, x, y, z);
     }
   }
 }

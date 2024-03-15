@@ -5,7 +5,6 @@ import { Defines } from '../js_utils/lf2_type/defines';
 import { BgLayer } from './BgLayer';
 import { World } from './World';
 import { TPictureInfo, create_picture, error_picture_info, image_pool } from './loader/loader';
-import { make_require } from './loader/make_require';
 
 export interface ILayerUserData {
   x: number;
@@ -53,9 +52,11 @@ export class Background {
     for (const info of data.layers) {
       if ('color' in info) this.add_layer(info);
       if (!info.file) continue;
-      const path = make_require(info.file);
-      if (!path) continue;
-      jobs.push(this.get_texture(info.file, path).then(t => this.add_layer(info, t)))
+      const f = info.file;
+      this.world.lf2.import(f).then(b => {
+        if (!b) return;
+        jobs.push(this.get_texture(f, b).then(t => this.add_layer(info, t)))
+      });
     }
     this._disposers.push(
       () => world.scene.remove(node)
@@ -83,9 +84,15 @@ export class Background {
   async get_shadow(): Promise<TPictureInfo> {
     const key = this.data.base.shadow;
     if (!key) return error_picture_info(key)
-    const path = make_require(key);
-    if (!path) return error_picture_info(key)
-    return image_pool.load(key, path).then(v => create_picture(key, v))
+    try {
+      const path = await this.world.lf2.import(key);
+      if (!path) return error_picture_info(key);
+      const img_info = await image_pool.load(key, path)
+      const pic_info = await create_picture(key, img_info)
+      return pic_info;
+    } catch (e) {
+      return error_picture_info(key);
+    }
   }
 
   dispose() {

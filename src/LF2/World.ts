@@ -471,7 +471,10 @@ export class World {
     this.bg.dispose();
     this.stop_update();
     this.stop_render();
-    this.renderer.dispose();
     this.entities.forEach(e => e.dispose());
+    this.renderer.clear()
+    this.renderer.dispose();
+    this._r_fps.dispose();
+    this._u_fps.dispose();
   }
 }

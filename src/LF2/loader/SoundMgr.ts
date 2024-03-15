@@ -1,6 +1,12 @@
+import LF2 from "../LF2";
 
 export class SoundMgr {
+  protected _map = new Map<string, string>();
   private _bgm?: HTMLAudioElement;
+  readonly lf2: LF2;
+  constructor(lf2: LF2) {
+    this.lf2 = lf2;
+  }
   stop_bgm() {
     this._bgm?.pause()
   }
@@ -8,16 +14,16 @@ export class SoundMgr {
     if (!this._bgm) {
       this._bgm = document.createElement('audio');
     }
-    this._bgm.src = bgm;
-    console.log(bgm)
+    this._bgm.src = this._map.get(bgm) || bgm;
     this._bgm.controls = false;
     this._bgm.loop = true
     this._bgm.play()
     return this._bgm;
   }
-  protected _map = new Map<string, string>();
-  load(key: string, src: string) {
-    return this._map.set(key, src);
+  async load(key: string, src: string | Blob | Promise<string | Blob>) {
+    const s = await src;
+    const url = typeof s === 'string' ? s : URL.createObjectURL(s)
+    this._map.set(key, url);
   }
   get(key: string, x?: number, y?: number, z?: number) {
     const src_audio = this._map.get(key);
@@ -32,5 +38,4 @@ export class SoundMgr {
     return this.get(key, x, y, z)?.play();
   }
 }
-export const sound_mgr = (window as any).sound_mgr = new SoundMgr();
 

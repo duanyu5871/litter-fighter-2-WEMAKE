@@ -7,28 +7,34 @@
 
 .game_contiainer {
   position: relative;
+  min-width: 796px;
+  min-height: 450px;
+  align-self: center;
 }
 
 .game_canvas {
-  /* 
-  width: 1280px;
-  height: 720px;
-  */
-  width: 795px;
-  height: 450px;
-  resize: both;
+  position: absolute;
+  width: calc(100% - 1px);
+  outline: none;
+  left: 50%;
+  top: 50%;
+  transform: translate(calc(-50% - 0.5px), -50%);
 }
 
 .game_overlay {
   position: absolute;
+  padding: 2px 5px;
   left: 0px;
   right: 0px;
   top: 0px;
   bottom: 0px;
   color: white;
+  font-weight: bold;
   text-align: start;
   pointer-events: none;
   user-select: none;
+  text-stroke: 0.5px black;
+  -webkit-text-stroke: 0.5px black;
 }
 
 .editor_view {

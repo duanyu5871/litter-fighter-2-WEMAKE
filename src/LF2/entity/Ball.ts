@@ -3,7 +3,6 @@ import { Defines } from '../../js_utils/lf2_type/defines';
 import { factory } from '../Factory';
 import { EMPTY_FRAME_INFO } from '../FrameAnimater';
 import type { ICube, World } from '../World';
-import { sound_mgr } from '../loader/SoundMgr';
 import { BALL_STATES } from '../state/BallState';
 import { Entity } from './Entity';
 
@@ -40,8 +39,10 @@ export class Ball extends Entity<IBallFrameInfo, IBallInfo, IBallData> {
       this.velocity.x = 0;
       this.velocity.z = 0;
       this.velocity.y = 0;
-      this.data.base.weapon_hit_sound && sound_mgr.play(this.data.base.weapon_hit_sound,
-        this.position.x, this.position.y, this.position.z)
+      this.data.base.weapon_hit_sound && this.world.lf2.sound_mgr.play(
+        this.data.base.weapon_hit_sound,
+        this.position.x, this.position.y, this.position.z
+      )
     }
   }
   on_be_collided(attacker: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {

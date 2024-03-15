@@ -43,11 +43,12 @@ class ImagePool {
     ctx.drawImage(img, 0, 0);
   }
 
-  protected async _make_info(key: string, src: string, paint?: typeof this._paint): Promise<TImageInfo> {
+  protected async _make_info(key: string, src: string | Blob | Promise<string | Blob>, paint?: typeof this._paint): Promise<TImageInfo> {
     const cvs = document.createElement('canvas');
     const ctx = cvs.getContext('2d', { willReadFrequently: true });
     if (!ctx) throw new Error("can not get context from canvas");
-    const img_ele = await create_img_ele(src);
+    const s = await src;
+    const img_ele = await create_img_ele(s);
     if (paint) paint(img_ele, cvs, ctx)
     else this._paint(img_ele, cvs, ctx);
     const blob = await get_blob(cvs).catch(e => { throw new Error(e.message + ' key:' + key, { cause: e.cause }) });
@@ -101,7 +102,7 @@ class ImagePool {
     return info
   }
 
-  async load(key: string, src: string, paint?: PaintFunc): Promise<TImageInfo> {
+  async load(key: string, src: string | Blob | Promise<string | Blob>, paint?: PaintFunc): Promise<TImageInfo> {
     let info = this._map.get(key);
     if (info) return info;
     info = await this._make_info(key, src, paint);
@@ -110,7 +111,8 @@ class ImagePool {
   }
 
   protected _gen_key = (f: IEntityPictureInfo) => `${f.path}_${f.w}_${f.h}_${f.row}_${f.col}`;
-  async load_by_pic_info(f: IEntityPictureInfo, get_src: (f: IEntityPictureInfo) => string): Promise<TImageInfo> {
+
+  async load_by_pic_info(f: IEntityPictureInfo, get_src: (f: IEntityPictureInfo) => string | Blob | Promise<string | Blob>): Promise<TImageInfo> {
     const key = this._gen_key(f);
     const src = get_src(f);
     const { path, w: cell_w, h: cell_h } = f;

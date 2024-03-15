@@ -3,7 +3,6 @@ import { Defines } from "../../js_utils/lf2_type/defines";
 import { factory } from "../Factory";
 import { GONE_FRAME_INFO } from "../FrameAnimater";
 import { ICube, World } from "../World";
-import { sound_mgr } from "../loader/SoundMgr";
 import { WEAPON_STATES } from "../state/weapon";
 import { Character } from "./Character";
 import { Entity } from "./Entity";
@@ -67,7 +66,7 @@ export class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData> {
 
     const { base } = this.data
     const sound_name = this.hp <= 0 ? base.weapon_broken_sound : base.weapon_hit_sound
-    if (sound_name) sound_mgr.play(sound_name, spark_x, spark_y, spark_z)
+    if (sound_name) this.world.lf2.sound_mgr.play(sound_name, spark_x, spark_y, spark_z)
 
     const spark_frame_name = (itr.fall && itr.fall >= 60) ? 'slient_critical_hit' : 'slient_hit';
     this.world.spark(spark_x, spark_y, spark_z, spark_frame_name)

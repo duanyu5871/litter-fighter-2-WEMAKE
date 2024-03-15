@@ -1,11 +1,10 @@
-import { Log, Warn } from '../../Log';
+import { Warn } from '../../Log';
 import { IBallData, IBgData, ICharacterData, IDataMap, IEntityData, IGameObjData, IWeaponData } from '../../js_utils/lf2_type';
 import { map, traversal } from '../../js_utils/traversal';
+import LF2 from '../LF2';
 import { TData } from '../entity/Entity';
-import { sound_mgr } from './SoundMgr';
 import { image_pool } from './loader';
-import { make_import } from './make_import';
-import { make_require } from './make_require';
+// import { make_require } from './make_require';
 import { cook_frame } from './preprocess_frame';
 
 
@@ -31,7 +30,9 @@ export default class DatMgr {
   private _data_list_map = create_data_list_map();
   private _data_map = new Map<string, IGameObjData>();
   private _cancelled = false;
-  constructor() {
+  readonly lf2: LF2;
+  constructor(lf2: LF2) {
+    this.lf2 = lf2;
     this._data_list_map = (window as any)._data_list_map = create_data_list_map();
     this._data_map = (window as any)._data_map = new Map<string, IGameObjData>();
   }
@@ -43,16 +44,16 @@ export default class DatMgr {
         weapon_hit_sound: c,
       } = (data as Partial<IWeaponData>).base ?? {}
 
-      a && sound_mgr.load(a, make_require(a));
-      b && sound_mgr.load(b, make_require(b));
-      c && sound_mgr.load(c, make_require(c));
+      a && this.lf2.sound_mgr.load(a, this.lf2.import(a));
+      b && this.lf2.sound_mgr.load(b, this.lf2.import(b));
+      c && this.lf2.sound_mgr.load(c, this.lf2.import(c));
     }
 
     if (!('frames' in data)) return data;
     const { frames, base: { files } } = data;
-    const jobs = map(files, (_, v) => image_pool.load_by_pic_info(v, _ => make_require(v.path)))
+    const jobs = map(files, (_, v) => image_pool.load_by_pic_info(v, _ => this.lf2.import(v.path)))
     await Promise.all(jobs);
-    traversal(frames, (_, frame) => cook_frame(data, frame));
+    traversal(frames, (_, frame) => cook_frame(this.lf2, data, frame));
     return data;
   }
 
@@ -78,20 +79,20 @@ export default class DatMgr {
   }
   async load() {
     this._cancelled = false;
-    const { objects, backgrounds } = await make_import('data/data.json');
+    const { objects, backgrounds } = await this.lf2.import('data/data.json');
     if (this._cancelled) throw new Error('cancelled')
-    Log.print('DatLoader', 'loading: spark.json')
-    await this._add_data("spark", await make_import('data/spark.json'))
+    this.lf2.world.overlay.show_loading('loading: spark.json')
+    await this._add_data("spark", await this.lf2.import('data/spark.json'))
     if (this._cancelled) throw new Error('cancelled')
     for (const { id, file } of objects) {
       if (this._cancelled) throw new Error('cancelled')
-      Log.print('DatLoader', 'loading object:', file)
-      await this._add_data(id, await make_import(file));
+      this.lf2.world.overlay.show_loading(`loading object: ${file}`)
+      await this._add_data(id, await this.lf2.import(file));
     }
     for (const { id, file } of backgrounds) {
       if (this._cancelled) throw new Error('cancelled')
-      Log.print('DatLoader', 'loading background:', file)
-      await this._add_data(id, await make_import(file));
+      this.lf2.world.overlay.show_loading(`loading background: ${file}`)
+      await this._add_data(id, await this.lf2.import(file));
     }
     for (const [, v] of this._data_map) {
       if (this._cancelled) throw new Error('cancelled')
@@ -99,6 +100,7 @@ export default class DatMgr {
       this._data_list_map[t]?.push(v as any);
       this._data_list_map.all.push(v as any);
     }
+    this.lf2.world.overlay.show_loading('')
   }
   cancel() {
     this._cancelled = true;
