@@ -2,8 +2,10 @@ import { Defines } from "../../../js_utils/lf2_type/defines";
 import type { Character } from '../../entity/Character';
 import BaseState from "../BaseState";
 import { BaseCharacterState } from "./Base";
+import Burning from "./Burning";
 import Dash from "./Dash";
 import Falling from "./Falling";
+import Frozen from "./Frozen";
 import Jump from "./Jump";
 import Running from "./Running";
 import Standing from "./Standing";
@@ -17,21 +19,8 @@ CHARACTER_STATES.set(Defines.State.Running, new Running());
 CHARACTER_STATES.set(Defines.State.Jump, new Jump());
 CHARACTER_STATES.set(Defines.State.Dash, new Dash());
 CHARACTER_STATES.set(Defines.State.Falling, new Falling());
-CHARACTER_STATES.set(Defines.State.Burning, new class extends BaseCharacterState {
-  update(e: Character): void {
-    super.update(e);
-    e.facing = e.velocity.x >= 0 ? -1 : 1;
-  }
-  on_landing(e: Character, vx: number, vy: number, vz: number): void {
-    const { data: { indexes } } = e;
-    if (vy <= -4) {
-      e.enter_frame({ id: indexes.bouncing[-1][1] });
-      e.velocity.y = 2;
-    } else {
-      e.enter_frame({ id: indexes.lying[-1] });
-    }
-  }
-}());
+CHARACTER_STATES.set(Defines.State.Burning, new Burning());
+CHARACTER_STATES.set(Defines.State.Frozen, new Frozen());
 CHARACTER_STATES.set(Defines.State.Lying, new class extends BaseCharacterState {
   begin(e: Character) {
     e.on_gravity();

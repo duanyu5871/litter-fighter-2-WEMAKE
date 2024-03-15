@@ -332,8 +332,16 @@ export class World {
       for (let j = 0; j < l1; ++j) {
         const itr = af.itr[i];
         const bdy = bf.bdy[j];
-
-        switch (itr.kind as Defines.ItrKind) {
+        let o_itr = itr
+        if (af.state === Defines.State.Weapon_OnHand) {
+          if (!(a instanceof Weapon)) continue;
+          const atk = a.holder?.get_frame().wpoint?.attacking;
+          if (!atk) continue;
+          const ooo = a.data.weapon_strength?.[atk];
+          if (!ooo) continue;
+          o_itr = { ...o_itr, ...ooo }
+        }
+        switch (o_itr.kind as Defines.ItrKind) {
           case Defines.ItrKind.Block:
           case Defines.ItrKind.CharacterThrew:
           case Defines.ItrKind.MagicFlute:
@@ -357,14 +365,14 @@ export class World {
           case Defines.ItrKind.Ice:
         }
         if (bf.state === Defines.State.BurnRun) {
-          switch (itr.effect) {
+          switch (o_itr.effect) {
             case Defines.ItrEffect.MFire1:
             case Defines.ItrEffect.MFire2:
               continue;
           }
         }
         if (bf.state === Defines.State.Burning) {
-          switch (itr.effect) {
+          switch (o_itr.effect) {
             case Defines.ItrEffect.MFire1:
             case Defines.ItrEffect.MFire2:
               continue;
@@ -374,21 +382,19 @@ export class World {
           }
         }
 
-        if (itr.effect === Defines.ItrEffect.Through) continue;
+        if (o_itr.effect === Defines.ItrEffect.Through) continue;
         if (
-          (a.team && a.team === b.team && !itr.friendly_fire && !bdy.friendly_fire)
+          (a.team && a.team === b.team && !o_itr.friendly_fire && !bdy.friendly_fire)
         ) continue;
 
-        if (!itr.vrest && a.a_rest) { Log.print(af.name, 'a.a_rest = ', a.a_rest); continue; }
-        if (itr.vrest && b.v_rests.has(a.id)) { Log.print(af.name, 1, b.v_rests.get(a.id)?.remain); continue; }
-        if ((!itr.fall || itr.fall < 60) && bf.state === Defines.State.Falling) {
+        if (!o_itr.vrest && a.a_rest) { Log.print(af.name, 'a.a_rest = ', a.a_rest); continue; }
+        if (o_itr.vrest && b.v_rests.has(a.id)) { Log.print(af.name, 1, b.v_rests.get(a.id)?.remain); continue; }
+        if ((!o_itr.fall || o_itr.fall < 60) && bf.state === Defines.State.Falling) {
           Log.print(af.name, 2); continue;
         }
-        if (af.state === Defines.State.Weapon_OnHand && a instanceof Weapon) {
-          if (!a.holder?.get_frame().wpoint?.attacking) continue;
-        }
-        const r0 = this.get_cube(a, af, itr);
-        const r1 = this.get_cube(b, bf, bdy);
+
+        const r0 = this.get_cube(a, af, o_itr);
+        const r1 = this.get_cube(b, bf, o_itr);
         if (
           r0.left <= r1.right &&
           r0.right >= r1.left &&
@@ -397,7 +403,7 @@ export class World {
           r0.far <= r1.near &&
           r0.near >= r1.far
         ) {
-          this.handle_collision(a, itr, r0, b, bdy, r1);
+          this.handle_collision(a, o_itr, r0, b, bdy, r1);
           return true;
         }
       }

@@ -1,6 +1,5 @@
 import { delete_val_equal_keys } from '../delete_val_equal_keys';
 import { is_num } from '../is_num';
-import { is_positive_num } from '../is_positive_num';
 import { is_str } from '../is_str';
 import { IBdyInfo, ICpointInfo, IItrInfo, IOpointInfo, IWpointInfo } from '../lf2_type';
 import { IFrameInfo } from "../lf2_type/IFrameInfo";
@@ -9,6 +8,7 @@ import { match_all } from '../match_all';
 import { match_colon_value } from '../match_colon_value';
 import { not_zero } from '../not_zero';
 import { to_num } from '../to_num';
+import cook_itr from './cook_itr';
 import { get_next_frame_by_id } from './get_the_next';
 import { take } from './take';
 import take_sections from './take_sections';
@@ -99,6 +99,9 @@ function cook_wpoint(unsure_wpoint: IWpointInfo) {
 
   const dvy = take(unsure_wpoint, 'dvy');
   if (not_zero(dvy)) unsure_wpoint.dvy = dvy * -0.5;
+
+  const attacking = take(unsure_wpoint, 'attacking');
+  if (attacking) unsure_wpoint.attacking = '' + attacking;
 }
 
 function cook_cpoint(unsure_cpoint: ICpointInfo) {
@@ -157,46 +160,6 @@ function cook_opoint_list(unsure_opoint_list: IOpointInfo[]) {
 
 function cook_itr_list(unsure_itr_list: IItrInfo[]) {
   for (const item of unsure_itr_list) {
-    const vrest = take(item, 'vrest');
-    if (is_positive_num(vrest)) { item.vrest = Math.max(2, 2 * vrest - 2); }
-
-    const arest = take(item, 'arest');
-    if (is_positive_num(arest)) { item.arest = Math.max(2, 2 * arest - 2); }
-
-    const dvx = take(item, 'dvx');
-    if (not_zero(dvx)) item.dvx = dvx * 0.55;
-
-    const dvz = take(item, 'dvz');
-    if (not_zero(dvz)) item.dvz = dvz * 0.5;
-
-    const dvy = take(item, 'dvy');
-    if (not_zero(dvy)) item.dvy = dvy * -0.55;//??
-
-    switch (item.kind) {
-      case Defines.ItrKind.SuperPunchMe: {
-        item.motionless = 0;
-        item.shaking = 0;
-        break;
-      }
-      case Defines.ItrKind.ForceCatch:
-      case Defines.ItrKind.Catch: {
-        item.motionless = 0;
-        item.shaking = 0;
-        if (item.vrest) {
-          item.arest = item.vrest;
-          delete item.vrest;
-        }
-      }
-    }
-
-    const catchingact = take(item as any, 'catchingact')
-    if (is_num(catchingact)) item.catchingact = get_next_frame_by_id(catchingact)
-
-    const caughtact = take(item as any, 'caughtact')
-    if (is_num(caughtact)) item.caughtact = {
-      ...get_next_frame_by_id(caughtact),
-      facing: Defines.FacingFlag.OpposingCatcher,
-    }
+    cook_itr(item);
   }
 }
-

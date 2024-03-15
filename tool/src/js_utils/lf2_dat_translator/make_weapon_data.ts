@@ -1,4 +1,4 @@
-import { IWeaponData } from '../lf2_type';
+import { IWeaponData, IWeaponStrengthInfo } from '../lf2_type';
 import { IFrameInfo } from "../lf2_type/IFrameInfo";
 import { IWeaponFrameIndexes } from '../lf2_type/IWeaponFrameIndexes';
 import { IWeaponInfo } from "../lf2_type/IWeaponInfo";
@@ -8,6 +8,7 @@ import { match_block_once } from '../match_block';
 import { match_colon_value } from '../match_colon_value';
 import { set_obj_field } from "../set_obj_field";
 import { to_num } from '../to_num';
+import cook_itr from './cook_itr';
 import { take } from './take';
 
 const indexes_map: Record<Defines.WeaponType, IWeaponFrameIndexes> = {
@@ -54,10 +55,11 @@ export function make_weapon_data(info: IWeaponInfo, full_str: string, frames: Re
 
   if (weapon_strength_str) {
     for (const [, id, name, remain] of match_all(weapon_strength_str, /entry:\s*(\d+)\s*(\S+)\s*\n?(.*)\n?/g)) {
-      const entry: any = { id, name };
+      const entry: IWeaponStrengthInfo = { id, name };
       for (const [key, value] of match_colon_value(remain)) {
-        entry[key] = to_num(value);
+        (entry as any)[key] = to_num(value);
       }
+      cook_itr(entry)
       weapon_strength = set_obj_field(weapon_strength, id, entry);
     }
   }

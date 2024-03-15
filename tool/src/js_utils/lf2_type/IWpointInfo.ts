@@ -3,7 +3,7 @@ export interface IWpointInfo {
   x: number;
   y: number;
   weaponact: string;
-  attacking: number;
+  attacking?: string;
   cover: number;
   dvx?: number;
   dvy?: number;

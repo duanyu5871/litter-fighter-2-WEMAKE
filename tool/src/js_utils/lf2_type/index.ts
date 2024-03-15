@@ -78,9 +78,13 @@ export interface ICharacterData extends IGameObjData<ICharacterInfo, ICharacterF
   type: 'character';
   indexes: ICharacterFrameIndexes;
 }
+export interface IWeaponStrengthInfo extends Partial<IItrInfo> {
+  id: string;
+  name: string;
+}
 export interface IWeaponData extends IGameObjData<IWeaponInfo, IFrameInfo> {
   type: 'weapon';
-  weapon_strength?: { [x in string]: Partial<IItrInfo> & { id: string, name: string } };
+  weapon_strength?: { [x in string]?: IWeaponStrengthInfo };
   indexes: IWeaponFrameIndexes;
 }
 export interface IBallData extends IGameObjData<IBallInfo, IBallFrameInfo> {
