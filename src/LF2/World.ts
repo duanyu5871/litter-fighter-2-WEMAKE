@@ -348,7 +348,7 @@ export class World {
             if (b instanceof Character && bf.state === Defines.State.Tired) break;
             continue;
           case Defines.ItrKind.SuperPunchMe:
-            if (b instanceof Character) break;
+            if (b instanceof Character && !b.weapon && (b.get_frame().state === Defines.State.Standing || b.get_frame().state === Defines.State.Walking)) break;
             continue;
           case Defines.ItrKind.Normal:
           case Defines.ItrKind.Heal:

@@ -60,7 +60,7 @@ async function parse_under_dir(src_dir_path: string, dst_dir_path: string, index
       const args = ['-i', src_path, '-codec:a', 'libvorbis', '-b:a', '64k', '-ar', '44100', _dst_path];
       await new Promise((a, b) => {
         console.log('convert', src_path, '=>', _dst_path)
-        spawn('./ffmpeg', args).on('exit', a).on('error', b)
+        spawn('ffmpeg', args).on('exit', a).on('error', b)
       })
     } else {
       await fs.copyFile(src_path, dst_path);

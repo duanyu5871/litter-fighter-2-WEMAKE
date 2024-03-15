@@ -138,7 +138,7 @@ export class BaseController implements IController<Character> {
         }
         for (const [, { itr }] of character.v_rests) {
           if (itr.kind === Defines.ItrKind.SuperPunchMe) {
-            if ((this.holding.a >= 1 || this._need_punch)) {
+            if ((this.is_hit('a') || this._need_punch)) {
               nf = { id: character.data.indexes.super_punch }
             }
             break;

@@ -158,10 +158,10 @@ function cook_opoint_list(unsure_opoint_list: IOpointInfo[]) {
 function cook_itr_list(unsure_itr_list: IItrInfo[]) {
   for (const item of unsure_itr_list) {
     const vrest = take(item, 'vrest');
-    if (is_positive_num(vrest)) { item.vrest = Math.max(1, 2 * vrest - 2); }
+    if (is_positive_num(vrest)) { item.vrest = Math.max(2, 2 * vrest - 2); }
 
     const arest = take(item, 'arest');
-    if (is_positive_num(arest)) { item.arest = Math.max(1, 2 * arest - 2); }
+    if (is_positive_num(arest)) { item.arest = Math.max(2, 2 * arest - 2); }
 
     const dvx = take(item, 'dvx');
     if (not_zero(dvx)) item.dvx = dvx * 0.55;

@@ -150,6 +150,9 @@ export class Entity<
         }
       }
     }
+    if (!v.cpoint) {
+      delete this._catching;
+    }
   }
 
   spawn_object(opoint: IOpointInfo, speed_z: number = 0): Entity | undefined {
