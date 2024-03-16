@@ -5,6 +5,7 @@ export interface ICharacterFrameIndexes {
   standing: string;
   running: string;
   heavy_obj_run: string;
+  heavy_obj_walk: string[],
   landing_1: string;
   caughts: string[];
   catch_atk: string;

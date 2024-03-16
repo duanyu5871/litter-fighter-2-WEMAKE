@@ -34,16 +34,15 @@ export class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData> {
         delete this.holder;
       }
     }
-
     if (this.hp <= 0)
       this._next_frame = GONE_FRAME_INFO;
-
   }
   override setup(shotter: Entity, o: IOpointInfo, speed_z?: number): this {
     super.setup(shotter, o, speed_z);
     if (this._frame.state === Defines.State.Weapon_OnHand) {
       this.holder = shotter
       this.holder.weapon = this
+      this.team = shotter.team;
     }
     return this;
   }
@@ -57,7 +56,14 @@ export class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData> {
     this.enter_frame(this.find_auto_frame())
   }
   override on_be_collided(attacker: Entity, itr: IItrInfo, bdy: IBdyInfo, r0: ICube, r1: ICube): void {
+    if (itr.kind === Defines.ItrKind.Pick || itr.kind === Defines.ItrKind.PickSecretly) {
+      this.holder = attacker;
+      this.holder.weapon = this;
+      this.team = attacker.team;
+      return;
+    }
     super.on_be_collided(attacker, itr, bdy, r0, r1);
+
     const spark_x = (Math.max(r0.left, r1.left) + Math.min(r0.right, r1.right)) / 2;
     const spark_y = (Math.min(r0.top, r1.top) + Math.max(r0.bottom, r1.bottom)) / 2;
     // const spark_z = (Math.min(r0.near, r1.near) + Math.max(r0.far, r1.far)) / 2;
@@ -91,15 +97,18 @@ export class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData> {
 
   }
   follow_holder() {
-    const holder = this.holder
+    const holder = this.holder;
     if (!holder) return;
     const { wpoint: wpoint_a, centerx: centerx_a, centery: centery_a } = holder.get_frame();
-    const { wpoint: wpoint_b, centerx: centerx_b, centery: centery_b } = this.get_frame();
-    if (!wpoint_a || !wpoint_b) return;
+
+    if (!wpoint_a) return;
 
     if (wpoint_a.weaponact !== this._frame.id) {
       this.enter_frame({ id: wpoint_a.weaponact })
     }
+    const { wpoint: wpoint_b, centerx: centerx_b, centery: centery_b } = this.get_frame();
+    if (!wpoint_b) return;
+
     const { x, y, z } = holder.position;
     this.facing = holder.facing;
     this.position.set(

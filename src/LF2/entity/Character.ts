@@ -13,6 +13,7 @@ import { CHARACTER_STATES } from '../state/character';
 import { Ball } from './Ball';
 import { Entity, get_team_shadow_color, get_team_text_color } from './Entity';
 import { same_face, turn_face } from './face_helper';
+import { Weapon } from './Weapon';
 export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, ICharacterData> {
   protected _disposers: (() => void)[] = [];
   protected _controller: IController<Character> = new InvalidController(this);
@@ -74,11 +75,15 @@ export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, IChar
   }
 
   override find_auto_frame(): IFrameInfo {
-    const { in_the_sky, standing } = this.data.indexes;
+    const { in_the_sky, standing, heavy_obj_walk } = this.data.indexes;
     let fid: string;
-    if (this.position.y > 0) fid = in_the_sky[0]
+
+    if (this.weapon?.data.base.type === Defines.WeaponType.Heavy) fid = heavy_obj_walk[0]
+    else if (this.position.y > 0) fid = in_the_sky[0]
     else if (this.hp > 0) fid = standing;
     else fid = standing; // TODO
+
+
     return this.data.frames[fid] ?? super.find_auto_frame();
   }
   override find_frame_by_id(id: string | undefined): ICharacterFrameInfo;
@@ -198,6 +203,16 @@ export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, IChar
         break;
       case Defines.ItrKind.ForceCatch: {
         this.start_catch(target, itr);
+        break;
+      }
+      case Defines.ItrKind.Pick: {
+        if (target instanceof Weapon) {
+          if (target.data.base.type === Defines.WeaponType.Heavy) {
+            this._next_frame = { id: this.data.indexes.picking_heavy }
+          } else {
+            this._next_frame = { id: this.data.indexes.picking_light }
+          }
+        }
         break;
       }
     }

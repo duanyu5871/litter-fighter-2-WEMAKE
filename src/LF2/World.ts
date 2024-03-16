@@ -1,10 +1,11 @@
 import * as THREE from 'three';
-import { Defines } from '../js_utils/lf2_type/defines';
-import LF2 from './LF2';
 import { Log } from '../Log';
 import { IBdyInfo, IFrameInfo, IItrInfo } from '../js_utils/lf2_type';
+import { Defines } from '../js_utils/lf2_type/defines';
 import { FPS } from './FPS';
 import { FrameAnimater } from './FrameAnimater';
+import { GameOverlay } from './GameOverlay';
+import LF2 from './LF2';
 import Stage from './Stage';
 import { PlayerController } from './controller/PlayerController';
 import { Ball } from './entity/Ball';
@@ -12,7 +13,6 @@ import { Character } from './entity/Character';
 import { Entity } from './entity/Entity';
 import './entity/Weapon';
 import { Weapon } from './entity/Weapon';
-import { GameOverlay } from './GameOverlay';
 export interface ICube {
   left: number;
   right: number;
@@ -254,6 +254,7 @@ export class World {
         this.del_entities(e);
       else if (e.get_frame().state === Defines.State.Gone)
         this.del_entities(e);
+
     for (const e of this.game_objs) e.self_update();
     for (const e of this.game_objs) e.update();
     for (const e of this.game_objs)
@@ -305,7 +306,6 @@ export class World {
     }
   }
 
-  cam_speed_x: number = 0;
   collision_detections() {
     const bs = new Set<Entity>();
     for (const a of this.entities) {
@@ -316,6 +316,12 @@ export class World {
       }
       bs.add(a);
     }
+  }
+
+  itr_log = Log.Clone().print.bind({}, 'collision_detection');
+  itr_pick_weapon_log = (itr: IItrInfo, ...args: any[]) => {
+    if (itr.kind !== Defines.ItrKind.Pick) return
+    return this.itr_log(itr, ...args);
   }
   collision_detection(a: Entity, b: Entity) {
     const af = a.get_frame();
@@ -330,24 +336,36 @@ export class World {
     const l1 = bf.bdy.length;
     for (let i = 0; i < l0; ++i) {
       for (let j = 0; j < l1; ++j) {
-        const itr = af.itr[i];
+        let itr = af.itr[i];
         const bdy = bf.bdy[j];
-        let o_itr = itr
-        if (af.state === Defines.State.Weapon_OnHand) {
-          if (!(a instanceof Weapon)) continue;
-          const atk = a.holder?.get_frame().wpoint?.attacking;
-          if (!atk) continue;
-          const ooo = a.data.weapon_strength?.[atk];
-          if (!ooo) continue;
-          o_itr = { ...o_itr, ...ooo }
+        switch (af.state) {
+          case Defines.State.Weapon_OnHand: {
+            if (!(a instanceof Weapon)) continue;
+            const atk = a.holder?.get_frame().wpoint?.attacking;
+            if (!atk) continue;
+            const ooo = a.data.weapon_strength?.[atk];
+            if (!ooo) continue;
+            itr = { ...itr, ...ooo }
+            break;
+          }
+          case Defines.State.BurnRun: {
+            if (bf.state === Defines.State.Burning) continue;
+            break;
+          }
         }
-        switch (o_itr.kind as Defines.ItrKind) {
+        switch (itr.kind) {
           case Defines.ItrKind.Block:
           case Defines.ItrKind.CharacterThrew:
           case Defines.ItrKind.MagicFlute:
             continue; // todo
           case Defines.ItrKind.Pick:
+            if (!(b instanceof Weapon)) continue;
+            if (bf.state === Defines.State.Weapon_OnGround) break;
+            if (bf.state === Defines.State.HeavyWeapon_OnGround) break;
+            continue;
           case Defines.ItrKind.PickSecretly:
+            if (!(b instanceof Weapon) || b.data.base.type === Defines.WeaponType.Heavy) continue;
+            if (bf.state === Defines.State.Weapon_OnGround) break;
             continue;
           case Defines.ItrKind.ForceCatch:
             if (b instanceof Character) break;
@@ -364,37 +382,33 @@ export class World {
           case Defines.ItrKind.Fly:
           case Defines.ItrKind.Ice:
         }
-        if (bf.state === Defines.State.BurnRun) {
-          switch (o_itr.effect) {
-            case Defines.ItrEffect.MFire1:
-            case Defines.ItrEffect.MFire2:
-              continue;
-          }
-        }
-        if (bf.state === Defines.State.Burning) {
-          switch (o_itr.effect) {
-            case Defines.ItrEffect.MFire1:
-            case Defines.ItrEffect.MFire2:
-              continue;
-            case Defines.ItrEffect.Fire:
-              if (af.state === Defines.State.BurnRun)
-                continue;
-          }
-        }
 
-        if (o_itr.effect === Defines.ItrEffect.Through) continue;
+        switch (itr.effect) {
+          case Defines.ItrEffect.MFire1:
+          case Defines.ItrEffect.MFire2:
+            if (bf.state === Defines.State.BurnRun) continue;
+            if (bf.state === Defines.State.Burning) continue;
+            break;
+          case Defines.ItrEffect.Fire:
+            if (af.state === Defines.State.BurnRun) continue;
+            break;
+          case Defines.ItrEffect.Through: continue; // TODO
+        }
         if (
-          (a.team && a.team === b.team && !o_itr.friendly_fire && !bdy.friendly_fire)
+          (a.team && a.team === b.team && !itr.friendly_fire && !bdy.friendly_fire)
         ) continue;
 
-        if (!o_itr.vrest && a.a_rest) { Log.print(af.name, 'a.a_rest = ', a.a_rest); continue; }
-        if (o_itr.vrest && b.v_rests.has(a.id)) { Log.print(af.name, 1, b.v_rests.get(a.id)?.remain); continue; }
-        if ((!o_itr.fall || o_itr.fall < 60) && bf.state === Defines.State.Falling) {
-          Log.print(af.name, 2); continue;
+        switch (bf.state) {
+          case Defines.State.Falling: {
+            if (!itr.fall || itr.fall < 60) continue;
+            break;
+          }
         }
+        if (itr.arest && a.a_rest) continue;
+        if (itr.vrest && b.v_rests.has(a.id)) continue;
 
-        const r0 = this.get_cube(a, af, o_itr);
-        const r1 = this.get_cube(b, bf, o_itr);
+        const r0 = this.get_cube(a, af, itr);
+        const r1 = this.get_cube(b, bf, bdy);
         if (
           r0.left <= r1.right &&
           r0.right >= r1.left &&
@@ -403,7 +417,7 @@ export class World {
           r0.far <= r1.near &&
           r0.near >= r1.far
         ) {
-          this.handle_collision(a, o_itr, r0, b, bdy, r1);
+          this.handle_collision(a, itr, r0, b, bdy, r1);
           return true;
         }
       }

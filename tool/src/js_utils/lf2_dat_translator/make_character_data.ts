@@ -76,7 +76,7 @@ class Cond {
     let ret = this._parts.map(v => is_str(v) ? v : `(${v.done()})`).join('')
     ret = ret.replace(/\s|\n|\r/g, ''); // remove empty char;
     // remove redundant bracket;
-    if (this._parts.length === 1 && this._parts[0] instanceof Cond) 
+    if (this._parts.length === 1 && this._parts[0] instanceof Cond)
       ret = ret.replace(/^\(|\)$/g, '')
     return ret;
   }
@@ -405,6 +405,7 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
     standing: '0',
     running: "running_0",
     heavy_obj_run: "heavy_obj_run_0",
+    heavy_obj_walk: ['heavy_obj_walk_0'],
     super_punch: '70',
     defend_hit: '111',
     broken_defend: '112',

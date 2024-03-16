@@ -25,6 +25,8 @@ export default function cook_itr(unsafe_itr?: Partial<IItrInfo>) {
   if (not_zero(dvy)) unsafe_itr.dvy = dvy * -0.55; //??
 
   switch (unsafe_itr.kind) {
+    case Defines.ItrKind.Pick:
+    case Defines.ItrKind.PickSecretly:
     case Defines.ItrKind.SuperPunchMe: {
       unsafe_itr.motionless = 0;
       unsafe_itr.shaking = 0;
