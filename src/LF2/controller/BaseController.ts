@@ -15,7 +15,6 @@ export const CONFLICTS_KEY_CODE_LIST: Record<TKeyName, TKeyName | undefined> = {
 }
 export const DOUBLE_CLICK_INTERVAL = 40
 export class BaseController implements IController<Character> {
-  _need_punch: number = 0;
   _next_punch_ready: number = 0;
   _update_count = 0;
   character: Character;
@@ -113,13 +112,6 @@ export class BaseController implements IController<Character> {
       case 2: if (hold?.F) nf = hold.F; break;
       case -2: if (hold?.B) nf = hold.B; break;
     }
-    for (let i = 0; i < k_len; ++i) {
-      const k = KEY_NAME_LIST[i];
-      const ck = CONFLICTS_KEY_CODE_LIST[k];
-      if (ck && this.holding[ck]) continue;
-      if (this.is_hit(k) && hit?.[k]) { nf = hit[k]; break; }
-      if (this.is_hold(k) && hold?.[k]) { nf = hold[k]; break; }
-    }
     if (hit?.FF && face < 0 && this.check_double_click('L')) nf = hit.FF;
     if (hit?.BB && face > 0 && this.check_double_click('L')) nf = hit.BB;
     if (hit?.BB && face < 0 && this.check_double_click('R')) nf = hit.BB;
@@ -130,27 +122,29 @@ export class BaseController implements IController<Character> {
     if (hit?.jj && this.check_double_click('j')) nf = hit.jj;
     if (hit?.dd && this.check_double_click('d')) nf = hit.dd;
 
+    for (let i = 0; i < k_len; ++i) {
+      const k = KEY_NAME_LIST[i];
+      const ck = CONFLICTS_KEY_CODE_LIST[k];
+      if (ck && this.holding[ck]) continue;
+      if (this.is_hold(k) && hold?.[k]) { nf = hold[k]; break; }
+      if (this.is_hit(k) && hit?.[k]) {
+        nf = hit[k];
+        break;
+      }
+    }
+
     switch (state) {
       case Defines.State.Standing:
       case Defines.State.Walking:
-        if (this._need_punch) {
-          if (frame.hit?.a) nf = frame;
-        }
         for (const [, { itr }] of character.v_rests) {
           if (itr.kind === Defines.ItrKind.SuperPunchMe) {
-            if ((this.is_hit('a') || this._need_punch)) {
+            if (this.is_hit('a')) {
               nf = { id: character.data.indexes.super_punch }
             }
             break;
           }
         }
-        this._need_punch = 0
         break;
-      case Defines.State.Attacking: {
-        if (this.holding.a === 1 && this._next_punch_ready)
-          this._need_punch = 1
-        break;
-      }
     }
     const seqs = hit?.sequences
     if (seqs) do {

@@ -404,7 +404,7 @@ export class World {
             break;
           }
         }
-        if (itr.arest && a.a_rest) continue;
+        if (!itr.vrest && a.a_rest) continue;
         if (itr.vrest && b.v_rests.has(a.id)) continue;
 
         const r0 = this.get_cube(a, af, itr);

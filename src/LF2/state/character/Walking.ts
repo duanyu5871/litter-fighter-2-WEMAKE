@@ -1,3 +1,4 @@
+import { Defines } from '../../../js_utils/lf2_type/defines';
 import type { Character } from '../../entity/Character';
 import { BaseCharacterState } from "./Base";
 
@@ -12,7 +13,11 @@ export default class Walking extends BaseCharacterState {
     if (speed_x) e.velocity.x = speed_x;
     if (speed_z) e.velocity.z = speed_z;
     if (!LRUD && !e.wait) {
-      e.enter_frame({ id: e.data.indexes.standing });
+      if (e.weapon?.data.base.type === Defines.WeaponType.Heavy) {
+        e.wait = e.get_frame().wait
+      } else {
+        e.enter_frame(e.data.indexes.standing);
+      }
     }
     if (e.position.y > 0) {
       e.enter_frame({ id: e.data.indexes.in_the_sky })

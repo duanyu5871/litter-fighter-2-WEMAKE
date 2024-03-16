@@ -97,6 +97,11 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
   const walking_speedz = take_number(info, 'walking_speedz', 0);
   const running_speed = take_number(info, 'running_speed', 0);
   const running_speedz = take_number(info, 'running_speedz', 0);
+  const heavy_walking_speed = take_number(info, 'heavy_walking_speed', 0);
+  const heavy_walking_speedz = take_number(info, 'heavy_walking_speedz', 0);
+  const heavy_running_speed = take_number(info, 'heavy_running_speed', 0);
+  const heavy_running_speedz = take_number(info, 'heavy_running_speedz', 0);
+
 
   info.jump_height = info.jump_height * info.jump_height / 3.5;
   info.dash_height = info.dash_height * info.dash_height / 3.5;
@@ -137,7 +142,7 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
         frame.hold = frame.hold || {};
         frame.hit.a = [
           {
-            id: ['45'],
+            id: '45',
             facing: FacingFlag.ByController,
             condition: Cond
               .add(ValWord.WeaponType, '==', WeaponType.Baseball)
@@ -150,6 +155,10 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
             id: ['20', '25'],
             facing: FacingFlag.ByController,
             condition: Cond.one_of(ValWord.WeaponType, WeaponType.Knife, WeaponType.Stick).done()
+          },
+          {
+            id: '55', condition: Cond.one_of(ValWord.WeaponType, WeaponType.Drink).done(),
+            facing: FacingFlag.ByController,
           },
           { id: ['60', '65'] }
         ]; // punch
@@ -181,6 +190,10 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
             id: ['20', '25'],
             facing: FacingFlag.ByController,
             condition: Cond.one_of(ValWord.WeaponType, WeaponType.Knife, WeaponType.Stick).done()
+          }, // drink
+          {
+            id: '55', condition: Cond.one_of(ValWord.WeaponType, WeaponType.Drink).done(),
+            facing: FacingFlag.ByController,
           },
           { id: ['60', '65'] }
         ]; // punch
@@ -195,7 +208,7 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
       case 9: case 10: case 11: {
         frame.hit = frame.hit || {};
         frame.hit.a = [
-          {
+          { // 丢出武器
             id: ['45'],
             condition: Cond.add(ValWord.WeaponType, '==', WeaponType.Baseball)
               .or(v => v
@@ -203,9 +216,13 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
                 .and(ValWord.WeaponType, '!=', WeaponType.None)
               )
               .done(),
-          }, // 丢出武器
+          }, // drink
           {
-            id: '35', condition: Cond.one_of(ValWord.WeaponType, WeaponType.Knife, WeaponType.Stick).done()
+            id: '55', condition: Cond.one_of(ValWord.WeaponType, WeaponType.Drink).done()
+          },
+          {
+            id: '35', condition: Cond.one_of(ValWord.WeaponType, WeaponType.Knife, WeaponType.Stick).done(),
+            facing: FacingFlag.ByController,
           },
           { id: '85' }
         ]; // run_atk
@@ -219,9 +236,13 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
       }
       /** heavy_obj_walk */
       case 12: case 13: case 14: case 15: {
+        set_hit_turn_back(frame);
+        set_hold_turn_back(frame);
         frame.hit = frame.hit || {};
         frame.hit.FF = { id: 'heavy_obj_run_0' };
-        // TODO
+        frame.hit.a = { id: '50', facing: FacingFlag.ByController }; // running_stop
+        frame.dvx = heavy_walking_speed / 2;
+        frame.dvz = heavy_walking_speedz;
         break;
       }
       /** heavy_obj_run */
@@ -229,6 +250,10 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
         frame.hit = frame.hit || {};
         frame.hold = frame.hold || {};
         frame.hit.B = frame.hold.B = { id: '19' }; // running_stop
+        frame.hit.a = { id: '50' }; // running_stop
+        frame.dvx = heavy_running_speed / 2;
+        frame.dvz = heavy_running_speedz / 2;
+
         break;
       }
       /** defend */
