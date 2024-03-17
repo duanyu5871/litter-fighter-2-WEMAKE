@@ -4,10 +4,10 @@ import { IController } from './LF2/controller/IController';
 import { SimpleFollowController } from './LF2/controller/SimpleFollowController';
 import { Character } from './LF2/entity/Character';
 import { Entity } from './LF2/entity/Entity';
-import Select, { ISelectProps } from './LF2/ui/Select';
-import TeamSelect from './LF2/ui/TeamSelect';
-import { ICharacterData, IStageInfo } from './js_utils/lf2_type';
 import CharacterSelect from './LF2/ui/CharacterSelect';
+import Select from './LF2/ui/Select';
+import TeamSelect from './LF2/ui/TeamSelect';
+import { IStageInfo, IStagePhaseInfo } from './js_utils/lf2_type';
 
 const bot_controllers: { [x in string]?: (e: Character) => IController<Character> } = {
   'SimpleFollow': (e: Character) => new SimpleFollowController(e)
@@ -19,8 +19,23 @@ export function BlackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
   const [bgm, set_bgm] = useState<string>('');
   const [bgm_list, set_bgm_list] = useState<string[]>([]);
 
+
   const [stage, set_stage] = useState<string>('');
+  const [stage_bgm, set_stage_bgm] = useState<boolean>(false);
   const [stage_list, set_stage_list] = useState<IStageInfo[]>([]);
+  const [stage_phase_list, set_stage_phases] = useState<IStagePhaseInfo[]>([]);
+  const [stage_phase_idx, set_stage_phase_idx] = useState<number>(-1);
+
+  useEffect(() => {
+    if (!lf2) return;
+    lf2.set_stage_bgm_enable(stage_bgm)
+  }, [stage_bgm, lf2]);
+
+  useEffect(() => {
+    if (!lf2) return;
+    if (!bgm) lf2.sound_mgr.stop_bgm()
+    else lf2.sound_mgr.play_bgm(bgm)
+  }, [bgm, lf2]);
 
   useEffect(() => {
     if (!lf2) return;
@@ -32,6 +47,12 @@ export function BlackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
     if (!lf2) return;
     lf2.bgms().then(v => set_bgm_list(['', ...v]));
     lf2.stages().then(v => set_stage_list([{ id: '', name: 'OFF' }, ...v]))
+    lf2.world.callbacks.add({
+      on_stage_change: (_world, curr, _prev) => {
+        set_stage_phase_idx(0);
+        set_stage_phases(curr.data.phases)
+      },
+    })
   }, [lf2]);
 
   useEffect(() => {
@@ -83,11 +104,21 @@ export function BlackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
       if (controller_creator) e.controller = controller_creator(e);
     })
   }
+  const phase_desc = stage_phase_list[stage_phase_idx]?.desc
   return (
     <>
       <div className='background_settings_row'>
         stage:
         <Select on_changed={set_stage} value={stage} items={stage_list} option={i => [i.id, i.name]} />
+        bgm:
+        <input type='checkbox' checked={stage_bgm} onChange={e => set_stage_bgm(e.target.checked)} />
+        {
+          !stage_phase_list.length ? null : <>
+            phases:
+            <Select on_changed={set_stage_phase_idx} value={stage_phase_idx} items={stage_phase_list} option={(i, idx) => [idx, [`No.${1 + idx}, bound: ${i.bound}`].filter(v => v).join(' ')]} />
+          </>
+        }
+        {phase_desc ? `# ${phase_desc}` : void 0}
       </div>
 
       <div className='background_settings_row'>
@@ -134,7 +165,6 @@ export function BlackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
         <CharacterSelect lf2={lf2} value={c_id} on_changed={set_character_id} />
         team:
         <TeamSelect value={team} on_changed={set_team} />
-
         controller:
         <select value={controller} onChange={e => { set_controller(e.target.value); e.target.blur() }}>
           <option value=''>OFF</option>

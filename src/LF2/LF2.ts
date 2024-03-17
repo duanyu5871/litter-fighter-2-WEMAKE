@@ -22,6 +22,7 @@ let _new_id = 0;
 const new_id = () => '' + (++_new_id);
 
 export default class LF2 {
+
   private _disposers = new Set<() => void>();
   set disposer(f: (() => void)[] | (() => void)) {
     if (Array.isArray(f))
@@ -37,6 +38,14 @@ export default class LF2 {
 
   get players() { return this.world.players }
 
+  private _stage_bgm_enable = false;
+  
+  get stage_bgm_enable() { return this._stage_bgm_enable; }
+
+  set_stage_bgm_enable(enabled: boolean): void {
+    this._stage_bgm_enable = enabled;
+    this.world.stage.set_bgm_enable(enabled);
+  }
   get_local_player(which: string) {
     for (const [id, player] of this.players)
       if (id === which) return player;

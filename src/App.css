@@ -5,6 +5,10 @@
   flex-direction: column;
 }
 
+.App * {
+  font-size: 14px;
+}
+
 .game_contiainer {
   position: relative;
   min-width: 796px;
@@ -82,4 +86,5 @@
   gap: 5px;
   word-break: keep-all;
   white-space: nowrap;
+  align-items: center;
 }

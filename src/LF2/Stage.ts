@@ -18,18 +18,19 @@ export default class Stage {
   readonly enemy_team: number;
   private _disposed: boolean = false;
   private _disposers: (() => void)[] = [];
+  private _bgm_enable: boolean;
+  private _cur_phase?: IStagePhaseInfo;
   get left() { return this.bg.left }
   get right() { return this.bg.right }
   get near() { return this.bg.near }
   get far() { return this.bg.far }
   get width() { return this.bg.width }
-  get depth() { return this.bg.depth };
+  get depth() { return this.bg.depth }
   get middle() { return this.bg.middle }
-
   get lf2() { return this.world.lf2 }
-
   constructor(world: World, data: IStageInfo | IBgData) {
     this.world = world;
+    this._bgm_enable = this.world.lf2.stage_bgm_enable;
     if ('type' in data && data.type === 'background') {
       this.data = Defines.THE_VOID_STAGE;
       this.bg = new Background(world, data);
@@ -41,26 +42,40 @@ export default class Stage {
       this.data = Defines.THE_VOID_STAGE;
       this.bg = new Background(world, Defines.THE_VOID_BG);
     }
-
     this.enemy_team = Entity.new_team()
     if (this.data.phases.length) {
       const phase = this.data.phases[0]
       if (phase) this.enter_phase(phase);
     }
   }
-  async enter_phase(phase_info: IStagePhaseInfo) {
+  private _stop_bgm?: () => void;
+  private async try_play_phase_bgm(phase_info: IStagePhaseInfo | undefined = this._cur_phase) {
+    if (!phase_info) return;
+    if (!this._bgm_enable) return;
     const { lf2 } = this;
-    const { music, objects } = phase_info;
-    if (music) {
-      await lf2.sound_mgr.load(music, lf2.import(music))
-      if (this._disposed) return;
-      this._disposers.push(lf2.sound_mgr.play_bgm(music));
-    }
+    const { music } = phase_info;
+    if (!music) return;
+    await lf2.sound_mgr.load(music, lf2.import(music))
+    if (this._disposed) return;
+    this._stop_bgm = lf2.sound_mgr.play_bgm(music)
+    this._disposers.push(this._stop_bgm);
+
+  }
+
+  async enter_phase(phase_info: IStagePhaseInfo) {
+    this._cur_phase = phase_info;
+    const { objects } = phase_info;
+    this.try_play_phase_bgm(phase_info)
     for (const object of objects) {
       this.spawn_object(object);
     }
   }
 
+  set_bgm_enable(enabled: boolean) {
+    this._bgm_enable = enabled;
+    if (enabled) this.try_play_phase_bgm();
+    else if (this._stop_bgm) this._stop_bgm();
+  }
   async spawn_object(obj_info: IStageObjectInfo) {
     const { lf2 } = this;
     const oid = random_get(obj_info.id);

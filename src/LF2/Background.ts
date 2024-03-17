@@ -4,7 +4,6 @@ import { IBgLayerInfo } from "../js_utils/lf2_type/IBgLayerInfo";
 import { Defines } from '../js_utils/lf2_type/defines';
 import { BgLayer } from './BgLayer';
 import { World } from './World';
-import { ease_in_out_quint } from './ease_in_out_quint';
 import { TPictureInfo, create_picture, error_picture_info, image_pool } from './loader/loader';
 
 export interface ILayerUserData {

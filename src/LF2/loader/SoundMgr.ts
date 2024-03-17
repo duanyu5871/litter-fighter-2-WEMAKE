@@ -5,23 +5,31 @@ export class SoundMgr {
   protected _map = new Map<string, string>();
   private _req_id: number = 0;
   private _bgm?: HTMLAudioElement;
+  private _prev_bgm_src?: string;
   readonly lf2: LF2;
   constructor(lf2: LF2) {
     this.lf2 = lf2;
   }
   stop_bgm() {
-    this._bgm?.pause()
+    if (!this._bgm) return;
+    this._bgm.pause();
+    delete this._bgm;
+    this._prev_bgm_src = void 0;
   }
   play_bgm(bgm: string): () => void {
-    if (!this._bgm) this._bgm = document.createElement('audio');
-    this._bgm.src = this._map.get(bgm) || bgm;
+    const src = this._map.get(bgm) || bgm
+    if (this._prev_bgm_src === src) return () => { };
+    if (this._bgm) this.stop_bgm()
+    this._bgm = document.createElement('audio');
+    this._bgm.src = src;
     this._bgm.controls = false;
     this._bgm.loop = true
     this._bgm.play();
     ++this._req_id;
     const req_id = this._req_id;
+    this._prev_bgm_src = src;
     return () => {
-      if (req_id === this._req_id) this._bgm?.pause()
+      if (req_id === this._req_id) this.stop_bgm()
     };
   }
   async load(key: string, src: Src) {

@@ -42,7 +42,7 @@ export class World {
   scene: THREE.Scene = new THREE.Scene();
   camera: THREE.OrthographicCamera = new THREE.OrthographicCamera();
 
-  private _stage = new Stage(this, Defines.THE_VOID_BG);
+  private _stage: Stage;
   entities = new Set<Entity>();
   game_objs = new Set<FrameAnimater>();
   renderer: THREE.WebGLRenderer;
@@ -84,6 +84,7 @@ export class World {
     this.camera.updateProjectionMatrix()
     this.renderer.setSize(w, h, false);
     this.overlay = new GameOverlay(this, overlay);
+    this._stage = new Stage(this, Defines.THE_VOID_BG);
   }
 
   add_game_objs(...objs: FrameAnimater[]) {
