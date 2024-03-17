@@ -6,6 +6,7 @@ import { Defines } from "../js_utils/lf2_type/defines";
 import { Background } from "./Background";
 import { factory } from "./Factory";
 import type { World } from "./World";
+import { SimpleFollowController } from "./controller/SimpleFollowController";
 import { Character } from "./entity/Character";
 import { Entity, IEntityCallbacks } from "./entity/Entity";
 import { Weapon } from "./entity/Weapon";
@@ -61,6 +62,7 @@ class StageObject implements IEntityCallbacks {
     if (e instanceof Character) {
       e.team = this.stage.enemy_team;
       e.name = e.data.base.name;
+      e.controller = new SimpleFollowController(e)
     } else if (e instanceof Weapon && !is_num(y)) {
       e.position.y = 450;
     }
@@ -86,6 +88,7 @@ export default class Stage {
   private _disposers: (() => void)[] = [];
   private _bgm_enable: boolean;
   private _cur_phase_idx = -1;
+
   get left() { return this.bg.left }
   get right() { return this.bg.right }
   get near() { return this.bg.near }
@@ -94,6 +97,10 @@ export default class Stage {
   get depth() { return this.bg.depth }
   get middle() { return this.bg.middle }
   get lf2() { return this.world.lf2 }
+
+  get player_left() { return this.bg.left }
+  get player_right() { return this.data.phases[this._cur_phase_idx]?.bound ?? this.bg.right }
+
   constructor(world: World, data: IStageInfo | IBgData) {
     this.world = world;
     this._bgm_enable = this.world.lf2.stage_bgm_enable;

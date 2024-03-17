@@ -186,12 +186,18 @@ export class World {
   restrict_character(e: Character) {
     if (this.disposed) return;
     if (!this.bg) return;
-    const { left, right, near, far } = this.bg.data.base;
+    const { left, right, near, far, player_left, player_right } = this.stage;
+
+    const is_player = e.controller instanceof PlayerController;
+    const l = is_player ? player_left : left;
+    const r = is_player ? player_right : right;
+
     const { x, z } = e.position;
-    if (x < left)
-      e.position.x = left;
-    else if (x > right)
-      e.position.x = right;
+    if (x < l)
+      e.position.x = l;
+    else if (x > r)
+      e.position.x = r;
+
     if (z < far)
       e.position.z = far;
     else if (z > near)
@@ -272,7 +278,7 @@ export class World {
 
   update_camera() {
     const old_cam_x = Math.floor(this.camera.position.x)
-    const { left, right } = this.stage;
+    const { player_left: left, player_right: right } = this.stage;
     let new_x = this.camera.position.x;
     let max_speed_ratio = 50;
     let acc_ratio = 1;
