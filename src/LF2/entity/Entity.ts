@@ -45,8 +45,11 @@ export interface IVictimRest {
   b_frame: IFrameInfo
 }
 export interface IEntityCallbacks {
-  on_hp_changed?(value: number, prev: number): void;
-  on_mp_changed?(value: number, prev: number): void;
+  on_hp_changed?(e: Entity, value: number, prev: number): void;
+  on_mp_changed?(e: Entity, value: number, prev: number): void;
+  on_team_changed?(e: Entity, value: number, prev: number): void;
+  on_name_changed?(e: Entity, value: string, prev: string): void;
+  on_disposed?(e: Entity): void;
 }
 export class Entity<
   F extends IFrameInfo = IFrameInfo,
@@ -71,25 +74,27 @@ export class Entity<
     const old = this._name;
     this._name = v;
     this.on_name_changed?.(v, old);
+    for (const cb of this.callbacks) cb.on_name_changed?.(this, v, old);
   }
   get mp() { return this._mp; }
   set mp(v) {
     const old = this._mp;
     this._mp = v
-    for (const cb of this.callbacks) cb.on_mp_changed?.(v, old);
+    for (const cb of this.callbacks) cb.on_mp_changed?.(this, v, old);
   }
 
   get hp() { return this._hp; }
   set hp(v) {
     const old = this._hp;
     this._hp = v
-    for (const cb of this.callbacks) cb.on_hp_changed?.(v, old);
+    for (const cb of this.callbacks) cb.on_hp_changed?.(this, v, old);
   }
 
   get team() { return this._team }
   set team(v) {
     const old = this._team;
     this._team = v;
+    for (const cb of this.callbacks) cb.on_team_changed?.(this, v, old);
     this.on_team_changed?.(v, old);
   }
   readonly states: Map<number, BaseState>;
@@ -441,10 +446,12 @@ export class Entity<
       b_frame: this.get_frame()
     });
   }
-  dispose(): void { 
+  dispose(): void {
     super.dispose();
     this.shadow.removeFromParent();
-    this.indicators.dispose() 
-
+    this.indicators.dispose();
+    for (const cb of this.callbacks) cb.on_disposed?.(this);
   }
 }
+
+factory.set('entity', (...args) => new Entity(...args))

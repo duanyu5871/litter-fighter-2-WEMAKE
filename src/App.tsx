@@ -115,7 +115,9 @@ function App() {
       const lf2 = new LF2(canvas, overlay);
       Object.defineProperty(window, 'lf2', { value: lf2, configurable: true })
       set_lf2(lf2);
-      lf2.on_stage_change = s => set_cur_stage(s)
+      lf2.world.callbacks.add({
+        on_stage_change: (_, s) => set_cur_stage(s)
+      })
       lf2.on_click_character = c => set_cur_character(c)
       return () => { lf2.dispose() }
     }

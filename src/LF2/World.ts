@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { Log } from '../Log';
+import { is_num } from '../js_utils/is_num';
 import { IBdyInfo, IFrameInfo, IItrInfo } from '../js_utils/lf2_type';
 import { Defines } from '../js_utils/lf2_type/defines';
 import { FPS } from './FPS';
@@ -21,15 +22,20 @@ export interface ICube {
   near: number;
   far: number;
 }
+export interface IWorldCallbacks {
+  on_disposed?(world: World): void;
+  on_stage_change?(world: World, curr: Stage, prev: Stage): void;
+  on_cam_move?(world: World, x: number): void;
+  on_pause_change?(world: World, pause: boolean): void;
+}
+
 export class World {
   static readonly DEFAULT_GRAVITY = 0.4;
   static readonly DEFAULT_FRICTION_FACTOR = 0.95//0.894427191;
   static readonly DEFAULT_FRICTION = 0.2;
 
-  on_stage_change?: (curr: Stage, prev: Stage) => void;
-
   readonly lf2: LF2
-
+  readonly callbacks = new Set<IWorldCallbacks>()
   gravity = World.DEFAULT_GRAVITY;
   friction_factor = World.DEFAULT_FRICTION_FACTOR;
   friction = World.DEFAULT_FRICTION;
@@ -51,7 +57,7 @@ export class World {
     if (v === this._stage) return;
     const old = this._stage;
     this._stage = v;
-    this.on_stage_change?.(v, old)
+    for (const i of this.callbacks) i.on_stage_change?.(this, v, old)
     old.dispose();
   }
 
@@ -77,7 +83,7 @@ export class World {
     this.camera.near = 1;
     this.camera.updateProjectionMatrix()
     this.renderer.setSize(w, h, false);
-    this.overlay = new GameOverlay(overlay);
+    this.overlay = new GameOverlay(this, overlay);
   }
 
   add_game_objs(...objs: FrameAnimater[]) {
@@ -261,44 +267,51 @@ export class World {
     this.bg.update();
   }
   cam_speed = 0;
-  private update_camera() {
+  lock_cam_x: number | undefined = void 0;
+
+  update_camera() {
+    const old_cam_x = Math.floor(this.camera.position.x)
     const { left, right } = this.stage;
-    const player_count = this.players.size;
-    if (player_count) {
-      let new_x = 0;
-      for (const [, player] of this.players) {
+    let new_x = this.camera.position.x;
+    let max_speed_ratio = 50;
+    let acc_ratio = 1;
+    if (is_num(this.lock_cam_x)) {
+      new_x = this.lock_cam_x;
+      max_speed_ratio = 1000;
+      acc_ratio = 10;
+    } else if (this.players.size) {
+      new_x = 0;
+      for (const [, player] of this.players)
         new_x += player.position.x - 794 / 2 + player.facing * 794 / 6;
-      }
-      new_x /= player_count;
-      new_x = Math.floor(new_x);
-      if (new_x < left) new_x = left;
-      if (new_x > right - 794) new_x = right - 794;
+      new_x = Math.floor(new_x / this.players.size);
+    }
+    if (new_x < left) new_x = left;
+    if (new_x > right - 794) new_x = right - 794;
 
-      let cur_x = this.camera.position.x;
+    let cur_x = this.camera.position.x;
+    const acc = Math.min(acc_ratio, acc_ratio * Math.abs(cur_x - new_x) / Defines.OLD_SCREEN_WIDTH);
+    const max_speed = max_speed_ratio * acc
 
-      const acc = Math.min(1, Math.abs(cur_x - new_x) / Defines.OLD_SCREEN_WIDTH);
-      const max_speed = 50 * acc
-      if (cur_x > new_x) {
-        if (this.cam_speed > 0) this.cam_speed = 0;
-        else if (this.cam_speed > -max_speed) this.cam_speed -= acc;
-        else this.cam_speed = -max_speed;
-        this.camera.position.x += this.cam_speed;
-        if (this.camera.position.x < new_x)
-          this.camera.position.x = new_x
-      }
-      else if (cur_x < new_x) {
-        if (this.cam_speed < 0) this.cam_speed = 0;
-        else if (this.cam_speed < max_speed) this.cam_speed += acc;
-        else this.cam_speed = max_speed;
-        this.camera.position.x += this.cam_speed;
-        if (this.camera.position.x > new_x)
-          this.camera.position.x = new_x
-      }
-    } else {
-      let new_x = this.camera.position.x;
-      if (new_x < left) new_x = left;
-      if (new_x > right - 794) new_x = right - 794;
-      this.camera.position.x = new_x;
+    if (cur_x > new_x) {
+      if (this.cam_speed > 0) this.cam_speed = 0;
+      else if (this.cam_speed > -max_speed) this.cam_speed -= acc;
+      else this.cam_speed = -max_speed;
+      this.camera.position.x += this.cam_speed;
+      if (this.camera.position.x < new_x)
+        this.camera.position.x = new_x;
+    }
+    else if (cur_x < new_x) {
+      if (this.cam_speed < 0) this.cam_speed = 0;
+      else if (this.cam_speed < max_speed) this.cam_speed += acc;
+      else this.cam_speed = max_speed;
+      this.camera.position.x += this.cam_speed;
+      if (this.camera.position.x > new_x)
+        this.camera.position.x = new_x;
+    }
+
+    const new_cam_x = Math.floor(this.camera.position.x)
+    if (old_cam_x !== new_cam_x) {
+      for (const i of this.callbacks) i.on_cam_move?.(this, new_cam_x)
     }
   }
 
@@ -470,6 +483,7 @@ export class World {
       this.stop_update();
     else if (!this._update_timer_id)
       this.start_update();
+    for (const i of this.callbacks) i.on_pause_change?.(this, v);
   }
 
   private _show_indicators = false;
@@ -483,7 +497,7 @@ export class World {
     })
   }
   dispose() {
-    delete this.on_stage_change;
+    for (const i of this.callbacks) i.on_disposed?.(this);
     this.bg.dispose();
     this.stop_update();
     this.stop_render();

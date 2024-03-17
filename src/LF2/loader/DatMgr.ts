@@ -81,17 +81,17 @@ export default class DatMgr {
     this._cancelled = false;
     const { objects, backgrounds } = await this.lf2.import('data/data.json');
     if (this._cancelled) throw new Error('cancelled')
-    this.lf2.world.overlay.show_loading('loading: spark.json')
+    this.lf2.world.overlay.loading = 'loading: spark.json'
     await this._add_data("spark", await this.lf2.import('data/spark.json'))
     if (this._cancelled) throw new Error('cancelled')
     for (const { id, file } of objects) {
       if (this._cancelled) throw new Error('cancelled')
-      this.lf2.world.overlay.show_loading(`loading object: ${file}`)
+      this.lf2.world.overlay.loading = `loading object: ${file}`
       await this._add_data(id, await this.lf2.import(file));
     }
     for (const { id, file } of backgrounds) {
       if (this._cancelled) throw new Error('cancelled')
-      this.lf2.world.overlay.show_loading(`loading background: ${file}`)
+      this.lf2.world.overlay.loading = `loading background: ${file}`
       await this._add_data(id, await this.lf2.import(file));
     }
     for (const [, v] of this._data_map) {
@@ -100,7 +100,7 @@ export default class DatMgr {
       this._data_list_map[t]?.push(v as any);
       this._data_list_map.all.push(v as any);
     }
-    this.lf2.world.overlay.show_loading('')
+    this.lf2.world.overlay.loading = ''
   }
   cancel() {
     this._cancelled = true;

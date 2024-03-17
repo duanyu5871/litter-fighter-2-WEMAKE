@@ -34,7 +34,6 @@ export default class LF2 {
   readonly world: World;
   readonly overlay: HTMLDivElement | null | undefined;
   zip: JSZIP | undefined;
-  set on_stage_change(v: World['on_stage_change']) { this.world.on_stage_change = v }
 
   get players() { return this.world.players }
 

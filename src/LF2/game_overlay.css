@@ -1,0 +1,47 @@
+.fps_txt {
+  color: white;
+  font-weight: bold;
+  text-align: start;
+  text-stroke: 0.5px black;
+  -webkit-text-stroke: 0.5px black;
+}
+
+.camera_ctrl {
+  position: absolute;
+  pointer-events: all;
+  display: block;
+  left: 1px;
+  bottom: 1px;
+  height: 20px;
+  box-sizing: border-box;
+  width: calc(100% - 2px - 75px);
+  border: 1px gray solid;
+  outline: none;
+  transition: background-color 200ms;
+}
+
+.camera_ctrl:hover {
+  background-color: #55555555;
+}
+
+.btn_free_cam {
+  background-color: black;
+  color: white;
+  outline: none;
+  border: none;
+  height: 20px;
+  pointer-events: all;
+  position: absolute;
+  right: 1px;
+  bottom: 1px;
+  width: 75px;
+  transition: all 200ms;
+}
+
+.btn_free_cam:hover {
+  background-color: #FFFFFF55;
+}
+
+.btn_free_cam:active {
+  background-color: #FFFFFF22;
+}

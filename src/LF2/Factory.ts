@@ -8,6 +8,7 @@ export interface ICreator<C, T extends new (...args: any[]) => C> {
 }
 
 export interface Creators {
+  'entity': ICreator<Entity, typeof Entity>;
   'ball': ICreator<Ball, typeof Ball>;
   'character': ICreator<Character, typeof Character>;
   'weapon': ICreator<Weapon, typeof Weapon>;

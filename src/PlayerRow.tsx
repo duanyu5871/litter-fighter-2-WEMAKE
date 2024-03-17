@@ -83,8 +83,10 @@ export function PlayerRow(props: Props) {
   const [key_settings_show, set_key_settings_show] = useState(false);
   const hp_ref = useRef<HTMLSpanElement>(null)
   const callbacks = useRef<IEntityCallbacks>({
-    on_hp_changed: v => { if (hp_ref.current) hp_ref.current.innerText = ('' + v) },
-    on_mp_changed: v => { }
+    on_hp_changed: (_, hp) => { if (hp_ref.current) hp_ref.current.innerText = ('' + hp) },
+    on_mp_changed: (_, mp) => { },
+    on_disposed: () => set_added(false),
+    on_team_changed: (_, team) => set_team('' + team)
   })
   useEffect(() => {
     if (!lf2) return;
@@ -99,7 +101,6 @@ export function PlayerRow(props: Props) {
     }
     if (!lp) return;
     lp.callbacks.add(callbacks.current)
-    callbacks.current.on_hp_changed?.(lp.hp, lp.hp)
     lp.name = player_name.trim() || '' + which;
     lp.team = team ? Number(team) : Entity.new_team();
     lp.controller = new PlayerController(which, lp, keys)
