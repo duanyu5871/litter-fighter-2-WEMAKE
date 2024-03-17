@@ -8,6 +8,7 @@ import CharacterSelect from './LF2/ui/CharacterSelect';
 import Select from './LF2/ui/Select';
 import TeamSelect from './LF2/ui/TeamSelect';
 import { IStageInfo, IStagePhaseInfo } from './js_utils/lf2_type';
+import { Defines } from './js_utils/lf2_type/defines';
 
 const bot_controllers: { [x in string]?: (e: Character) => IController<Character> } = {
   'SimpleFollow': (e: Character) => new SimpleFollowController(e)
@@ -18,9 +19,7 @@ export function BlackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
   const [bg, set_bg] = useState<string>();
   const [bgm, set_bgm] = useState<string>('');
   const [bgm_list, set_bgm_list] = useState<string[]>([]);
-
-
-  const [stage, set_stage] = useState<string>('');
+  const [stage_id, set_stage_id] = useState<string>('');
   const [stage_bgm, set_stage_bgm] = useState<boolean>(false);
   const [stage_list, set_stage_list] = useState<IStageInfo[]>([]);
   const [stage_phase_list, set_stage_phases] = useState<IStagePhaseInfo[]>([]);
@@ -46,11 +45,18 @@ export function BlackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
   useEffect(() => {
     if (!lf2) return;
     lf2.bgms().then(v => set_bgm_list(['', ...v]));
-    lf2.stages().then(v => set_stage_list([{ id: '', name: 'OFF' }, ...v]))
+
+    set_stage_list([Defines.THE_VOID_STAGE, ...lf2.stage_infos])
     lf2.world.callbacks.add({
       on_stage_change: (_world, curr, _prev) => {
+        set_stage_id(curr.data.id)
         set_stage_phase_idx(0);
-        set_stage_phases(curr.data.phases)
+        set_stage_phases(curr.data.phases);
+        curr.callbacks.add({
+          on_phase_changed(stage, curr, prev) {
+            set_stage_phase_idx(curr ? stage.data.phases.indexOf(curr) : -1)
+          },
+        })
       },
     })
   }, [lf2]);
@@ -63,10 +69,10 @@ export function BlackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
 
   useEffect(() => {
     if (!lf2) return;
-    const data = stage_list.find(v => v.id === stage);
+    const data = stage_list.find(v => v.id === stage_id);
     if (data) lf2.change_stage(data);
     else lf2.remove_stage();
-  }, [lf2, stage, stage_list]);
+  }, [lf2, stage_id, stage_list]);
 
 
   const min_rwn = 1;
@@ -109,9 +115,13 @@ export function BlackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
     <>
       <div className='background_settings_row'>
         stage:
-        <Select on_changed={set_stage} value={stage} items={stage_list} option={i => [i.id, i.name]} />
+        <Select on_changed={set_stage_id} value={stage_id} items={stage_list} option={i => [i.id, i.name]} />
         bgm:
         <input type='checkbox' checked={stage_bgm} onChange={e => set_stage_bgm(e.target.checked)} />
+        <button onClick={() => lf2.world.stage.kill_all_enemies()}>kill enemies</button>
+        <button onClick={() => lf2.world.stage.kill_boss()}>kill boss</button>
+        <button onClick={() => lf2.world.stage.kill_soliders()}>kill soliders</button>
+        <button onClick={() => lf2.world.stage.kill_others()}>kill others</button>
         {
           !stage_phase_list.length ? null : <>
             phases:

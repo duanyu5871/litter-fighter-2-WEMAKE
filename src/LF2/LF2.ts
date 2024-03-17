@@ -17,13 +17,13 @@ import { Weapon } from './entity/Weapon';
 import DatMgr from './loader/DatMgr';
 import { SoundMgr } from './loader/SoundMgr';
 import { get_import_fallbacks as get_import_fallback_names, import_builtin } from './loader/make_import';
-
-let _new_id = 0;
-const new_id = () => '' + (++_new_id);
+import { new_id } from './new_id';
 
 export default class LF2 {
 
   private _disposers = new Set<() => void>();
+  private _stage_infos: IStageInfo[] = [];
+
   set disposer(f: (() => void)[] | (() => void)) {
     if (Array.isArray(f))
       for (const i of f) this._disposers.add(i);
@@ -39,7 +39,9 @@ export default class LF2 {
   get players() { return this.world.players }
 
   private _stage_bgm_enable = false;
-  
+
+
+  get stage_infos() { return this._stage_infos }
   get stage_bgm_enable() { return this._stage_bgm_enable; }
 
   set_stage_bgm_enable(enabled: boolean): void {
@@ -83,8 +85,16 @@ export default class LF2 {
     this.overlay = overlay
   }
 
-  async stages(): Promise<any> {
-    return import_builtin('data/stage.json')
+  async stages(): Promise<IStageInfo[]> {
+    const ret: IStageInfo[] = await import_builtin('data/stage.json');
+    for (const a of ret) {
+      for (const b of a.phases) {
+        for (const c of b.objects) {
+
+        }
+      }
+    }
+    return ret;
   }
   async bgms(): Promise<string[]> {
     if (!this.zip) return Promise.all([
@@ -241,6 +251,17 @@ export default class LF2 {
   async start(zip?: JSZIP) {
     this.zip = zip
     await this.dat_mgr.load();
+
+    const stage_infos: IStageInfo[] = await import_builtin('data/stage.json');
+    for (const a of stage_infos) {
+      for (const b of a.phases) {
+        for (const c of b.objects) {
+          c.id = c.id.filter(v => this.dat_mgr.find(v))
+        }
+      }
+    }
+    this._stage_infos = stage_infos;
+
     for (const d of this.dat_mgr.characters) {
       const name = d.base.name.toLowerCase();
       this.characters[`add_${name}`] = (num = 1, team = void 0) => {

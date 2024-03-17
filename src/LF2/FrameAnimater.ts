@@ -8,8 +8,9 @@ import { IFrameInfo, IGameObjData, IGameObjInfo, INextFrame, ITexturePieceInfo, 
 import { Defines } from '../js_utils/lf2_type/defines';
 import { IPictureInfo } from '../types/IPictureInfo';
 import type { World } from './World';
-import create_pictures from './loader/create_pictures';
 import { turn_face } from './entity/face_helper';
+import create_pictures from './loader/create_pictures';
+import { new_id } from './new_id';
 
 export const EMPTY_PIECE: ITexturePieceInfo = {
   tex: 0, x: 0, y: 0, w: 0, h: 0, cx: 0, cy: 0,
@@ -42,7 +43,7 @@ export class FrameAnimater<
   I extends IGameObjInfo = IGameObjInfo,
   D extends IGameObjData<I, F> = IGameObjData<I, F>
 > {
-  id: string = '';
+  id: string = new_id();
   wait: number = 0;
 
   private _disposers: (() => void)[] = [];
@@ -240,8 +241,7 @@ export class FrameAnimater<
   }
 
   dispose(): void {
-    for (const f of this._disposers) f();
+    for(const f of this._disposers) f();
     this.sprite.removeFromParent();
   }
 }
-

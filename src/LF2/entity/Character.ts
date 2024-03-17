@@ -140,6 +140,13 @@ export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, IChar
       }
     }
   }
+
+  override get_sudden_death_frame(): TNextFrame {
+    this.velocity.y = 2;
+    this.velocity.x = 2 * this._facing;
+    return { id: this.data.indexes.falling[1][1] }
+  }
+
   override get_caught_end_frame(): TNextFrame {
     this.velocity.y = 2;
     this.velocity.x = -2 * this._facing;

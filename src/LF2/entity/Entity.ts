@@ -302,6 +302,10 @@ export class Entity<
   protected _catcher?: Entity;
   get catcher() { return this._catcher }
 
+  get_sudden_death_frame(): TNextFrame {
+    return { id: Defines.ReservedFrameId.Auto }
+  }
+
   /**
    * 获取“被抓结束”帧
    * 

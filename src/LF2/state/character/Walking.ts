@@ -19,8 +19,10 @@ export default class Walking extends BaseCharacterState {
         e.enter_frame(e.data.indexes.standing);
       }
     }
-    if (e.position.y > 0) {
-      e.enter_frame({ id: e.data.indexes.in_the_sky })
+    if (e.hp <= 0) {
+      e.enter_frame(e.get_sudden_death_frame());
+    } else if (e.position.y > 0) {
+      e.enter_frame({ id: e.data.indexes.in_the_sky });
     }
   }
 }
