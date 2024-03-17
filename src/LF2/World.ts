@@ -41,8 +41,10 @@ export class World {
   game_objs = new Set<FrameAnimater>();
   renderer: THREE.WebGLRenderer;
   disposed = false;
-  protected _players = new Set<Character>();
+
+  readonly players = new Map<string, Character>();
   readonly overlay: GameOverlay;
+  private _player: any;
 
   get stage() { return this._stage }
   set stage(v) {
@@ -94,8 +96,8 @@ export class World {
       if (e instanceof Entity) {
         this.del_entities(e);
       } else {
-        this.scene.remove(e.sprite);
         this.game_objs.delete(e);
+        e.dispose();
       }
     }
   }
@@ -106,7 +108,7 @@ export class World {
       this.scene.add(e.shadow);
       e.show_indicators = this._show_indicators;
       if (e instanceof Character && e.controller instanceof PlayerController) {
-        this._players.add(e);
+        this.players.set(e.controller.which, e);
       }
       this.entities.add(e)
     }
@@ -114,16 +116,10 @@ export class World {
 
   del_entities(...entities: Entity[]) {
     for (const e of entities) {
-      e.indicators.show = false;
-      this.scene.remove(e.sprite);
-      this.scene.remove(e.shadow);
       this.entities.delete(e)
-
-      if (e instanceof Character) {
-        if (e.controller instanceof PlayerController)
-          this._players.delete(e);
-        const ns = e.name_sprite
-        if (ns) this.scene.remove(ns)
+      e.dispose();
+      if (e instanceof Character && e.controller instanceof PlayerController) {
+        this.players.delete(e.controller.which);
       }
     }
   }
@@ -267,10 +263,10 @@ export class World {
   cam_speed = 0;
   private update_camera() {
     const { left, right } = this.stage;
-    const player_count = this._players.size;
+    const player_count = this.players.size;
     if (player_count) {
       let new_x = 0;
-      for (const player of this._players) {
+      for (const [, player] of this.players) {
         new_x += player.position.x - 794 / 2 + player.facing * 794 / 6;
       }
       new_x /= player_count;
@@ -491,7 +487,8 @@ export class World {
     this.bg.dispose();
     this.stop_update();
     this.stop_render();
-    this.entities.forEach(e => e.dispose());
+    this.del_entities(...this.entities);
+    this.del_game_objs(...this.game_objs);
     this.renderer.clear()
     this.renderer.dispose();
     this._r_fps.dispose();

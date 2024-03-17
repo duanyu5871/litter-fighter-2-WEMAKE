@@ -1,12 +1,20 @@
-import { IBgData, IStageInfo } from "../js_utils/lf2_type";
+import random_get from "../Utils/random_get";
+import { IBgData, IStageInfo, IStageObjectInfo, IStagePhaseInfo } from "../js_utils/lf2_type";
 import { Defines } from "../js_utils/lf2_type/defines";
 import { Background } from "./Background";
+import { factory } from "./Factory";
 import type { World } from "./World";
+import { Character } from "./entity/Character";
+import { Entity } from "./entity/Entity";
+import { random_in_range } from "./random_in_range";
 
 export default class Stage {
   readonly world: World;
   readonly data: IStageInfo;
   readonly bg: Background;
+  readonly enemy_team: number;
+  private _disposed: boolean = false;
+  private _disposers: (() => void)[] = [];
   get left() { return this.bg.left }
   get right() { return this.bg.right }
   get near() { return this.bg.near }
@@ -14,6 +22,8 @@ export default class Stage {
   get width() { return this.bg.width }
   get depth() { return this.bg.depth };
   get middle() { return this.bg.middle }
+
+  get lf2() { return this.world.lf2 }
 
   constructor(world: World, data: IStageInfo | IBgData) {
     this.world = world;
@@ -28,8 +38,50 @@ export default class Stage {
       this.data = Defines.THE_VOID_STAGE;
       this.bg = new Background(world, Defines.THE_VOID_BG);
     }
+
+    this.enemy_team = Entity.new_team()
+    if (this.data.phases.length) {
+      const phase = this.data.phases[0]
+      if (phase) this.enter_phase(phase);
+    }
   }
+  async enter_phase(phase_info: IStagePhaseInfo) {
+    const { lf2 } = this;
+    const { music, objects } = phase_info;
+    if (music) {
+      await lf2.sound_mgr.load(music, lf2.import(music))
+      if (this._disposed) return;
+      this._disposers.push(lf2.sound_mgr.play_bgm(music));
+    }
+    for (const object of objects) {
+      this.spawn_object(object);
+    }
+  }
+
+  async spawn_object(obj_info: IStageObjectInfo) {
+    const { lf2 } = this;
+    const oid = random_get(obj_info.id);
+    if (!oid) { debugger; return; }
+
+    const data = lf2.dat_mgr.find(oid)
+    if (!data) { debugger; return; }
+
+    const creator = factory.get(data.type)
+    if (!creator) { debugger; return; }
+
+    const e = creator(this.world, data);
+    e.position.x = random_in_range(obj_info.x - 100, obj_info.x + 100);
+    e.position.z = random_in_range(this.near, this.far)
+    if (e instanceof Character) {
+      e.team = this.enemy_team;
+      e.name = e.data.base.name;
+    }
+    e.attach();
+  }
+
   dispose() {
+    this._disposed = true;
+    for (const f of this._disposers) f();
     this.bg.dispose()
   }
 }

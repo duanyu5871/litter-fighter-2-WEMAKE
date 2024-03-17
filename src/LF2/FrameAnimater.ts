@@ -45,17 +45,20 @@ export class FrameAnimater<
   id: string = '';
   wait: number = 0;
 
+  private _disposers: (() => void)[] = [];
+
   readonly data: D;
   readonly world: World;
   readonly pictures: Map<string, IPictureInfo<THREE.Texture>>;
   readonly sprite: THREE.Sprite;
   readonly position = new THREE.Vector3(0, 0, 0);
-
   protected _piece: ITexturePieceInfo = EMPTY_PIECE;
   protected _facing: TFace = 1;
   protected _frame: F = EMPTY_FRAME_INFO as F;
   protected _next_frame: TNextFrame | undefined = void 0;
   protected _prev_frame: F = EMPTY_FRAME_INFO as F;
+
+  set disposer(func: () => void) { this._disposers.push(func) }
 
   get facing() { return this._facing; }
   set facing(v: TFace) {
@@ -236,6 +239,9 @@ export class FrameAnimater<
     this.update_sprite_position();
   }
 
-  dispose(): void { }
+  dispose(): void {
+    for (const f of this._disposers) f();
+    this.sprite.removeFromParent();
+  }
 }
 

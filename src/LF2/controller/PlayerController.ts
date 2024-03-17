@@ -12,16 +12,10 @@ export class PlayerController extends BaseController {
     j: 'k',
     d: 'l',
   }
-  protected _disposers: (() => void)[] = [];
-
-  set_key_codes(kc: Record<TKeyName, string>) {
-    Object.keys(kc).forEach(_k => {
-      const k = _k as TKeyName;
-      this.kc[k] = kc[k].toLowerCase();
-    })
-  }
-  constructor(character: Character, kc?: Record<TKeyName, string>) {
+  readonly which: string;
+  constructor(which: string, character: Character, kc?: Record<TKeyName, string>) {
     super(character);
+    this.which = which;
     if (kc) this.set_key_codes(kc);
     const on_key_up = (e: KeyboardEvent) => {
       const e_key = e.key?.toLowerCase();
@@ -47,12 +41,15 @@ export class PlayerController extends BaseController {
     };
     window.addEventListener('keydown', on_key_down);
     window.addEventListener('keyup', on_key_up);
-    this._disposers.push(
+    this.disposer = [
       () => window.removeEventListener('keydown', on_key_down),
       () => window.removeEventListener('keyup', on_key_up)
-    );
+    ]
   }
-  dispose() {
-    this._disposers.forEach(f => f());
+  set_key_codes(kc: Record<TKeyName, string>) {
+    Object.keys(kc).forEach(_k => {
+      const k = _k as TKeyName;
+      this.kc[k] = kc[k].toLowerCase();
+    })
   }
 }

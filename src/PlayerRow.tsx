@@ -102,7 +102,7 @@ export function PlayerRow(props: Props) {
     callbacks.current.on_hp_changed?.(lp.hp, lp.hp)
     lp.name = player_name.trim() || '' + which;
     lp.team = team ? Number(team) : Entity.new_team();
-    lp.controller = new PlayerController(lp, keys)
+    lp.controller = new PlayerController(which, lp, keys)
   }, [which, player_name, team, lf2, c_id, added, keys]);
 
   useEffect(() => {

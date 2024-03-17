@@ -441,5 +441,10 @@ export class Entity<
       b_frame: this.get_frame()
     });
   }
-  dispose(): void { this.indicators.dispose() }
+  dispose(): void { 
+    super.dispose();
+    this.shadow.removeFromParent();
+    this.indicators.dispose() 
+
+  }
 }

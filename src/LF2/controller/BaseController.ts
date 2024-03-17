@@ -15,6 +15,14 @@ export const CONFLICTS_KEY_CODE_LIST: Record<TKeyName, TKeyName | undefined> = {
 }
 export const DOUBLE_CLICK_INTERVAL = 40
 export class BaseController implements IController<Character> {
+  private _disposers = new Set<() => void>();
+  set disposer(f: (() => void)[] | (() => void)) {
+    if (Array.isArray(f))
+      for (const i of f) this._disposers.add(i);
+    else
+      this._disposers.add(f);
+  }
+
   _next_punch_ready: number = 0;
   _update_count = 0;
   character: Character;
@@ -87,7 +95,10 @@ export class BaseController implements IController<Character> {
   constructor(character: Character) {
     this.character = character;
   }
-  dispose(): void { }
+
+  dispose(): void {
+    for (const f of this._disposers) f();
+  }
   update(): TNextFrame | undefined {
     const k_len = KEY_NAME_LIST.length;
     this._update_count++;

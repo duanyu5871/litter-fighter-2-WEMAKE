@@ -22,16 +22,25 @@ let _new_id = 0;
 const new_id = () => '' + (++_new_id);
 
 export default class LF2 {
-  private readonly _disposers: (() => void)[] = []
+  private _disposers = new Set<() => void>();
+  set disposer(f: (() => void)[] | (() => void)) {
+    if (Array.isArray(f))
+      for (const i of f) this._disposers.add(i);
+    else
+      this._disposers.add(f);
+  }
+
   readonly canvas: HTMLCanvasElement;
   readonly world: World;
   readonly overlay: HTMLDivElement | null | undefined;
   zip: JSZIP | undefined;
   set on_stage_change(v: World['on_stage_change']) { this.world.on_stage_change = v }
 
-  private _local_players = new Map<string, Character>();
+  get players() { return this.world.players }
+
   get_local_player(which: string) {
-    return this._local_players.get(which)
+    for (const [id, player] of this.players)
+      if (id === which) return player;
   }
   on_click_character?: (c: Character) => void;
 
@@ -240,10 +249,9 @@ export default class LF2 {
     this.world.start_render();
     this.canvas.addEventListener('pointerdown', this.on_pointer_down);
     this.canvas.addEventListener('pointerup', this.on_pointer_up);
-    this._disposers.push(
-      () => this.canvas.removeEventListener('pointerdown', this.on_pointer_down),
-      () => this.canvas.removeEventListener('pointerup', this.on_pointer_up),
-    )
+    this.disposer = () => this.canvas.removeEventListener('pointerdown', this.on_pointer_down)
+    this.disposer = () => this.canvas.removeEventListener('pointerup', this.on_pointer_up)
+
   }
   dispose() {
     for (const f of this._disposers) f();
@@ -262,7 +270,7 @@ export default class LF2 {
     let face: TFace = 1;
     let frame_id: string | undefined;
     let player_name: string | undefined;
-    const old = this._local_players.get(which);
+    const old = this.players.get(which);
     if (old) {
       x = old.position.x;
       y = old.position.y;
@@ -273,12 +281,11 @@ export default class LF2 {
       face = old.facing;
       player_name = old.name;
       frame_id = old.get_frame().id;
-      old.dispose()
+      this.world.del_entities(old);
     }
 
     const player = new Character(this.world, data)
     player.id = old?.id ?? new_id();
-
     player.position.x = x;
     player.position.y = y;
     player.position.z = z;
@@ -291,16 +298,13 @@ export default class LF2 {
     if (!old) {
       this.random_entity_info(player)
     }
-    player.controller = new PlayerController(player, kc)
+    player.controller = new PlayerController(which, player, kc)
     player.attach();
-
-    this._local_players.set(which, player)
     return player
   }
   remove_player = (which: string) => {
-    const old = this._local_players.get(which);
-    if (old) old.dispose();
-    this._local_players.delete(which);
+    const old = this.players.get(which);
+    if (old) this.world.del_entities(old)
   }
   change_bg = (bg_id: string) => {
     const data = this.dat_mgr.backgrounds.find(v => v.id == bg_id);

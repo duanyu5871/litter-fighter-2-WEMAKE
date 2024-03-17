@@ -15,7 +15,6 @@ import { Entity, get_team_shadow_color, get_team_text_color } from './Entity';
 import { same_face, turn_face } from './face_helper';
 import { Weapon } from './Weapon';
 export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, ICharacterData> {
-  protected _disposers: (() => void)[] = [];
   protected _controller: IController<Character> = new InvalidController(this);
   get controller() { return this._controller; }
   set controller(v) {
@@ -95,10 +94,9 @@ export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, IChar
     return super.find_frame_by_id(id, exact as true);
   }
   override dispose() {
-    super.dispose()
     this.controller.dispose();
-    this._disposers.forEach(f => f());
-    this.world.del_entities(this);
+    this.name_sprite?.removeFromParent()
+    super.dispose()
   }
 
   on_landing() {
