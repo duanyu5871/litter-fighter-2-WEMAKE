@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import { Log } from '../Log';
 import random_get from '../Utils/random_get';
 import { is_num } from '../js_utils/is_num';
-import { ICharacterData, IWeaponData, TFace } from '../js_utils/lf2_type';
+import { ICharacterData, IStageInfo, IWeaponData, TFace } from '../js_utils/lf2_type';
 import { Defines } from '../js_utils/lf2_type/defines';
 import { BgLayer } from './BgLayer';
 import Stage from './Stage';
@@ -307,7 +307,12 @@ export default class LF2 {
     if (!data) return;
     this.world.stage = new Stage(this.world, data)
   }
-  remove_bg() {
+  remove_bg = () => this.remove_stage();
+  change_stage = (stage_info: IStageInfo) => {
+    this.world.stage = new Stage(this.world, stage_info)
+  }
+  remove_stage() {
     this.world.stage = new Stage(this.world, Defines.THE_VOID_STAGE)
   }
 }
+

@@ -4,6 +4,7 @@ import { IBgLayerInfo } from "../js_utils/lf2_type/IBgLayerInfo";
 import { Defines } from '../js_utils/lf2_type/defines';
 import { BgLayer } from './BgLayer';
 import { World } from './World';
+import { ease_in_out_quint } from './ease_in_out_quint';
 import { TPictureInfo, create_picture, error_picture_info, image_pool } from './loader/loader';
 
 export interface ILayerUserData {
@@ -58,12 +59,20 @@ export class Background {
         jobs.push(this.get_texture(f, b).then(t => this.add_layer(info, t)))
       });
     }
-    this._disposers.push(
-      () => world.scene.remove(node)
-    );
+    this._disposers.push(() => this.fade_out());
     world.scene.add(node);
   }
+  fade_out(): void {
+    const max_delay = 50;
+    const duration = 120;
+    for (const layer of this._layers) {
+      layer.fade_out(250, Math.random() * max_delay)
+    }
+    setTimeout(() => {
+      this.obj_3d.removeFromParent()
+    }, duration + max_delay)
 
+  }
 
   private add_layer(info: IBgLayerInfo, texture?: THREE.Texture) {
     let { x, y, z, loop = 0 } = info;
@@ -108,3 +117,4 @@ export class Background {
     this.obj_3d.rotation.setFromQuaternion(this._q);
   }
 }
+

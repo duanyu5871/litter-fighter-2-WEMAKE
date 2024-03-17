@@ -6,7 +6,7 @@ import { Character } from './LF2/entity/Character';
 import { Entity } from './LF2/entity/Entity';
 import Select, { ISelectProps } from './LF2/ui/Select';
 import TeamSelect from './LF2/ui/TeamSelect';
-import { ICharacterData } from './js_utils/lf2_type';
+import { ICharacterData, IStageInfo } from './js_utils/lf2_type';
 import CharacterSelect from './LF2/ui/CharacterSelect';
 
 const bot_controllers: { [x in string]?: (e: Character) => IController<Character> } = {
@@ -19,6 +19,9 @@ export function BlackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
   const [bgm, set_bgm] = useState<string>('');
   const [bgm_list, set_bgm_list] = useState<string[]>([]);
 
+  const [stage, set_stage] = useState<string>('');
+  const [stage_list, set_stage_list] = useState<IStageInfo[]>([]);
+
   useEffect(() => {
     if (!lf2) return;
     if (!bgm) lf2.sound_mgr.stop_bgm()
@@ -28,7 +31,7 @@ export function BlackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
   useEffect(() => {
     if (!lf2) return;
     lf2.bgms().then(v => set_bgm_list(['', ...v]));
-    lf2.stages().then(console.log)
+    lf2.stages().then(v => set_stage_list([{ id: '', name: 'OFF' }, ...v]))
   }, [lf2]);
 
   useEffect(() => {
@@ -36,6 +39,14 @@ export function BlackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
     if (bg) lf2.change_bg(bg);
     else lf2.remove_bg();
   }, [lf2, bg]);
+
+  useEffect(() => {
+    if (!lf2) return;
+    const data = stage_list.find(v => v.id === stage);
+    if (data) lf2.change_stage(data);
+    else lf2.remove_stage();
+  }, [lf2, stage, stage_list]);
+
 
   const min_rwn = 1;
   const max_rwn = 100;
@@ -74,13 +85,10 @@ export function BlackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
   }
   return (
     <>
-      {/* <div className='background_settings_row'>
+      <div className='background_settings_row'>
         stage:
-        <select onChange={e => { set_bg(e.target.value); e.target.blur() }} value={bg}>
-          <option value=''>OFF</option>
-          {lf2.dat_mgr.backgrounds.map(v => <option value={v.id} key={v.id}>{v.base.name}</option>)}
-        </select>
-      </div> */}
+        <Select on_changed={set_stage} value={stage} items={stage_list} option={i => [i.id, i.name]} />
+      </div>
 
       <div className='background_settings_row'>
         background:

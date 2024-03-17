@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { IBgLayerInfo } from "../js_utils/lf2_type/IBgLayerInfo";
 import { Defines } from '../js_utils/lf2_type/defines';
 import { Background, ILayerUserData } from './Background';
+import fade_out from './fade_out';
 
 export class BgLayer {
   readonly obj_3d: THREE.Mesh;
@@ -49,5 +50,9 @@ export class BgLayer {
       this.obj_3d.position.x = x + cam_x;
     else
       this.obj_3d.position.x = x + (bg_width - width) * cam_x / (bg_width - Defines.OLD_SCREEN_WIDTH);
+  }
+
+  fade_out(duration: number, delay: number = 0): void {
+    fade_out(o => this.material.opacity = o, duration, delay)
   }
 }
