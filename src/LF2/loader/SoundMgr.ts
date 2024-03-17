@@ -1,5 +1,6 @@
+import { is_str } from "../../js_utils/is_str";
 import LF2 from "../LF2";
-
+type Src = string | Blob | Promise<string | Blob>;
 export class SoundMgr {
   protected _map = new Map<string, string>();
   private _bgm?: HTMLAudioElement;
@@ -11,18 +12,16 @@ export class SoundMgr {
     this._bgm?.pause()
   }
   play_bgm(bgm: string) {
-    if (!this._bgm) {
-      this._bgm = document.createElement('audio');
-    }
+    if (!this._bgm) this._bgm = document.createElement('audio');
     this._bgm.src = this._map.get(bgm) || bgm;
     this._bgm.controls = false;
     this._bgm.loop = true
     this._bgm.play()
     return this._bgm;
   }
-  async load(key: string, src: string | Blob | Promise<string | Blob>) {
+  async load(key: string, src: Src) {
     const s = await src;
-    const url = typeof s === 'string' ? s : URL.createObjectURL(s)
+    const url = is_str(s) ? s : URL.createObjectURL(s)
     this._map.set(key, url);
   }
   get(key: string, x?: number, y?: number, z?: number) {

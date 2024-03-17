@@ -11,7 +11,7 @@ export function get_import_fallbacks(name: string): string[] {
   }
   return fallbacks
 }
-export async function import_builtin(path: string): Promise<any> {
+export async function import_builtin<T = any>(path: string): Promise<T> {
   try { return await import('../../lf2_data/' + path).then(v => v.default) } catch { }
   try { return await import('../../lf2_built_in_data/' + path).then(v => v.default) } catch { }
   throw new Error(`import_builtin(path), failed to import resource, path: ${path}`)

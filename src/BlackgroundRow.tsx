@@ -4,6 +4,10 @@ import { IController } from './LF2/controller/IController';
 import { SimpleFollowController } from './LF2/controller/SimpleFollowController';
 import { Character } from './LF2/entity/Character';
 import { Entity } from './LF2/entity/Entity';
+import Select, { ISelectProps } from './LF2/ui/Select';
+import TeamSelect from './LF2/ui/TeamSelect';
+import { ICharacterData } from './js_utils/lf2_type';
+import CharacterSelect from './LF2/ui/CharacterSelect';
 
 const bot_controllers: { [x in string]?: (e: Character) => IController<Character> } = {
   'SimpleFollow': (e: Character) => new SimpleFollowController(e)
@@ -14,14 +18,17 @@ export function BlackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
   const [bg, set_bg] = useState<string>();
   const [bgm, set_bgm] = useState<string>('');
   const [bgm_list, set_bgm_list] = useState<string[]>([]);
+
   useEffect(() => {
     if (!lf2) return;
     if (!bgm) lf2.sound_mgr.stop_bgm()
     else lf2.sound_mgr.play_bgm(bgm)
   }, [bgm, lf2]);
+
   useEffect(() => {
     if (!lf2) return;
-    lf2.bgms().then(set_bgm_list)
+    lf2.bgms().then(v => set_bgm_list(['', ...v]));
+    lf2.stages().then(console.log)
   }, [lf2]);
 
   useEffect(() => {
@@ -67,31 +74,45 @@ export function BlackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
   }
   return (
     <>
-      <div className='background_settings_row'>
-        background:
+      {/* <div className='background_settings_row'>
+        stage:
         <select onChange={e => { set_bg(e.target.value); e.target.blur() }} value={bg}>
           <option value=''>OFF</option>
           {lf2.dat_mgr.backgrounds.map(v => <option value={v.id} key={v.id}>{v.base.name}</option>)}
         </select>
+      </div> */}
+
+      <div className='background_settings_row'>
+        background:
+        <Select
+          value={bg}
+          on_changed={set_bg}
+          items={lf2.dat_mgr.backgrounds}
+          option={i => [i.id, i.base.name]}>
+          <option value=''>OFF</option>
+        </Select>
         <button onClick={v => lf2.clear()}>clear</button>
         music:
-        <select onChange={e => { set_bgm(e.target.value); e.target.blur() }} value={bgm}>
-          <option value=''>OFF</option>
-          {bgm_list.map(v => <option key={v} value={v}>{v}</option>)}
-        </select>
+        <Select
+          value={bgm}
+          on_changed={set_bgm}
+          items={bgm_list}
+          option={i => [i, i || 'OFF']} />
       </div>
+
       <div className='background_settings_row'>
         weapon:
         <input type='number' style={{ width: 40 }}
           min={min_rwn} max={max_rwn} step={1} value={rwn}
           onChange={e => set_rwn(Number(e.target.value))}
           onBlur={() => set_rwn(v => Math.min(Math.max(Math.floor(v), min_rwn), max_rwn))} />
-        <select
+        <Select
           value={weapon_id}
-          onChange={e => { set_weapon_id(e.target.value); e.target.blur() }}>
+          on_changed={set_weapon_id}
+          items={lf2.dat_mgr.weapons}
+          option={i => [i.id, i.base.name]}>
           <option value=''>Random</option>
-          {lf2.dat_mgr.weapons.map(v => <option key={v.id} value={v.id}>{v.base.name}</option>)}
-        </select>
+        </Select>
         <button onClick={on_click_add_weapon}>add</button>
       </div>
 
@@ -102,20 +123,9 @@ export function BlackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
           onChange={e => set_rcn(Number(e.target.value))}
           onBlur={() => set_rcn(v => Math.min(Math.max(Math.floor(v), min_rcn), max_rcn))} />
         character:
-        <select
-          value={c_id}
-          onChange={e => { set_character_id(e.target.value); e.target.blur() }}>
-          <option value=''>Random</option>
-          {lf2.dat_mgr.characters.map(v => <option key={v.id} value={v.id}>{v.base.name}</option>)}
-        </select>
+        <CharacterSelect lf2={lf2} value={c_id} on_changed={set_character_id} />
         team:
-        <select value={team} onChange={e => { set_team(e.target.value); e.target.blur() }}>
-          <option value=''>independent</option>
-          <option value='1'>team 1</option>
-          <option value='2'>team 2</option>
-          <option value='3'>team 3</option>
-          <option value='4'>team 4</option>
-        </select>
+        <TeamSelect value={team} on_changed={set_team} />
 
         controller:
         <select value={controller} onChange={e => { set_controller(e.target.value); e.target.blur() }}>

@@ -4,6 +4,9 @@ import { TKeyName } from './LF2/controller/IController';
 import { Entity, IEntityCallbacks } from './LF2/entity/Entity';
 import random_get from './Utils/random_get';
 import { PlayerController } from './LF2/controller/PlayerController';
+import Select, { ISelectProps } from './LF2/ui/Select';
+import TeamSelect from './LF2/ui/TeamSelect';
+import CharacterSelect from './LF2/ui/CharacterSelect';
 
 export const keys_map: { [x in string]?: Record<TKeyName, string> } = {
   '1': {
@@ -139,21 +142,9 @@ export function PlayerRow(props: Props) {
           onBlur={on_name_blur} />
       </span>
       <span>character:</span>
-      <select
-        value={c_id}
-        onChange={e => { set_character_id(e.target.value); e.target.blur() }}>
-        <option value=''>Random</option>
-        {lf2.dat_mgr.characters.map(v => <option key={v.id} value={v.id}>{v.base.name}</option>)}
-      </select>
+      <CharacterSelect lf2={lf2} value={c_id} on_changed={set_character_id} />
       <span>team:</span>
-      <select value={team} onChange={e => { set_team(e.target.value); e.target.blur() }}>
-        <option value=''>independent</option>
-        <option value='1'>team 1</option>
-        <option value='2'>team 2</option>
-        <option value='3'>team 3</option>
-        <option value='4'>team 4</option>
-      </select>
-
+      <TeamSelect value={team} on_changed={set_team} />
       <button onClick={() => set_added(v => !v)}>{added ? 'del' : 'add'}</button>
       <span style={{ display: !added ? 'none' : void 0 }}>hp:<span ref={hp_ref} /></span>
       <button onClick={() => set_key_settings_show(v => !v)}>keyboard settings</button>

@@ -49,7 +49,6 @@ export default class LF2 {
         return await zip_obj.async('blob')
       }
     }
-
     for (const fallback_path of fallback_paths) {
       try { return await import_builtin(fallback_path) } catch { }
     }
@@ -67,13 +66,32 @@ export default class LF2 {
     this.overlay = overlay
   }
 
+  async stages(): Promise<any> {
+    return import_builtin('data/stage.json')
+  }
   async bgms(): Promise<string[]> {
-    if (!this.zip) return [];
-    return this.zip.file(/^bgm\//).map(file => {
-      console.log(file)
-      this.sound_mgr.load(file.name, file.async('blob'))
-      return file.name
-    })
+    if (!this.zip) return Promise.all([
+      "boss1.wma.ogg",
+      "boss2.wma.ogg",
+      "main.wma.ogg",
+      "stage1.wma.ogg",
+      "stage2.wma.ogg",
+      "stage3.wma.ogg",
+      "stage4.wma.ogg",
+      "stage5.wma.ogg",
+    ].map(async name => {
+      const src = import_builtin('bgm/' + name)
+      await this.sound_mgr.load(name, src);
+      return name;
+    }))
+
+    return Promise.all(
+      this.zip.file(/^bgm\//).map(async file => {
+        const src = file.async('blob');
+        await this.sound_mgr.load(file.name, src)
+        return file.name
+      })
+    )
   }
 
   random_entity_info(e: Entity) {
