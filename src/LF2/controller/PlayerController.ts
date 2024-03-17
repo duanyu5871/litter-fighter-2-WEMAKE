@@ -1,55 +1,46 @@
 import { Character } from '../entity/Character';
-import { BaseController, KEY_NAME_LIST } from "./BaseController";
+import { BaseController } from "./BaseController";
 import { TKeyName } from './IController';
 
+type TKeyCodeMap = { [x in TKeyName]?: string };
+type TCodeKeyMap = { [x in string]?: TKeyName };
 export class PlayerController extends BaseController {
-  kc: Record<TKeyName, string> = {
-    L: 'a',
-    R: 'd',
-    U: 'w',
-    D: 's',
-    a: 'j',
-    j: 'k',
-    d: 'l',
-  }
   readonly which: string;
-  constructor(which: string, character: Character, kc?: Record<TKeyName, string>) {
+  private _key_code_map: TKeyCodeMap = {};
+  private _code_key_map: TCodeKeyMap = {};
+  private _on_key_up = (e: KeyboardEvent) => {
+    const code = e.key?.toLowerCase();
+    if (!code) return;
+    const key = this._code_key_map[code];
+    if (!key) return;
+    this.release_keys(key);
+  };
+  private _on_key_down = (e: KeyboardEvent) => {
+    const code = e.key?.toLowerCase();
+    if (!code) return;
+    const key = this._code_key_map[code];
+    if (!key) return;
+    this.press_keys(key);
+  };
+  constructor(which: string, character: Character, kc: TKeyCodeMap) {
     super(character);
     this.which = which;
-    if (kc) this.set_key_codes(kc);
-    const on_key_up = (e: KeyboardEvent) => {
-      const e_key = e.key?.toLowerCase();
-      const k_len = KEY_NAME_LIST.length;
-      for (let i = 0; i < k_len; ++i) {
-        const k = KEY_NAME_LIST[i];
-        if (this.kc[k] === e_key) {
-          this.release_keys(k);
-          return;
-        }
-      }
-    };
-    const on_key_down = (e: KeyboardEvent) => {
-      const e_key = e.key?.toLowerCase();
-      const k_len = KEY_NAME_LIST.length;
-      for (let i = 0; i < k_len; ++i) {
-        const k = KEY_NAME_LIST[i];
-        if (e_key === this.kc[k]) {
-          this.press_keys(k);
-          return;
-        }
-      }
-    };
-    window.addEventListener('keydown', on_key_down);
-    window.addEventListener('keyup', on_key_up);
+    this.set_key_code_map(kc);
+    window.addEventListener('keydown', this._on_key_down);
+    window.addEventListener('keyup', this._on_key_up);
     this.disposer = [
-      () => window.removeEventListener('keydown', on_key_down),
-      () => window.removeEventListener('keyup', on_key_up)
+      () => window.removeEventListener('keydown', this._on_key_down),
+      () => window.removeEventListener('keyup', this._on_key_up)
     ]
   }
-  set_key_codes(kc: Record<TKeyName, string>) {
-    Object.keys(kc).forEach(_k => {
-      const k = _k as TKeyName;
-      this.kc[k] = kc[k].toLowerCase();
-    })
-  }
+  set_key_code_map(key_code_map: TKeyCodeMap) {
+    this._key_code_map = {};
+    this._code_key_map = {};
+    for (const key of Object.keys(key_code_map) as TKeyName[]) {
+      const code = key_code_map[key]?.toLowerCase()
+      if(!code) continue;
+      this._key_code_map[key] = code;
+      this._code_key_map[code] = key
+    }
+  };
 }
