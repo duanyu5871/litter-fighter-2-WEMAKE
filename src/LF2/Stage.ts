@@ -225,7 +225,7 @@ export default class Stage {
       so.dispose();
     }
   }
-  all _boss_dead(): boolean {
+  all_boss_dead(): boolean {
     return !find_in_set(this.stage_objects, i => i.info.is_boss)
   }
   all_enemies_dead(): boolean {
