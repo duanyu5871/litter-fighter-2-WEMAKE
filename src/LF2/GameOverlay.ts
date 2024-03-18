@@ -1,3 +1,4 @@
+import { is_num } from '../js_utils/is_num';
 import { Defines } from '../js_utils/lf2_type/defines';
 import Stage from './Stage';
 import type { IWorldCallbacks, World } from './World';
@@ -62,7 +63,10 @@ export class GameOverlay implements IWorldCallbacks {
     this.btn_free_cam.innerText = 'free cam';
     this.btn_free_cam.addEventListener('click', () => {
       this.cam_locked = false;
-      this.world.lock_cam_x = void 0;
+      if (is_num(this.world.lock_cam_x)) {
+        this.draw_cam_bar(this.world.lock_cam_x)
+        this.world.lock_cam_x = void 0;
+      }
     })
   }
   init_camera_ctrl() {
@@ -74,25 +78,43 @@ export class GameOverlay implements IWorldCallbacks {
     window.addEventListener('pointercancel', this._pointer_up);
 
   }
+
+  cam_bar_handle_padding = 2.5;
   handle_cam_ctrl_pointer_event(e: PointerEvent) {
     if (!this.cam_bar_ctx) return;
     const { left, width } = this.cam_bar.getBoundingClientRect();
     const s_width = this.world.stage.width;
-    const w = Math.floor(width * Defines.OLD_SCREEN_WIDTH / s_width)
+    const w = Math.floor(width * Defines.OLD_SCREEN_WIDTH / s_width);
     const x = Math.min(width - w - 3, Math.max(0, Math.floor(e.pageX - left - w / 2)));
     this.world.lock_cam_x = s_width * x / width;
   }
 
   draw_cam_bar(x: number) {
     if (!this.cam_bar_ctx) return;
-    const { width, height } = this.cam_bar;
-    const s_width = this.world.stage.width;
-    const w = Math.floor(width * Defines.OLD_SCREEN_WIDTH / s_width)
-    const h = height - 3;
+    const background_w = this.world.stage.width;
+    const screen_w = Defines.OLD_SCREEN_WIDTH;
+
+    const { width: bar_width, height } = this.cam_bar;
+    const { player_left, player_right } = this.world.stage;
+
+    const x_l = Math.floor(bar_width * player_left / background_w);
+    const x_r = Math.floor(bar_width * player_right / background_w);
+    const hh = this.cam_bar_handle_padding;
+    const w = Math.floor(bar_width * screen_w / background_w) - hh
+    const h = height - hh * 2;
+
+    this.cam_bar_ctx.fillStyle = this.cam_bar_ctx.strokeStyle = '#FF000055'
+    this.cam_bar_ctx.fillRect(0, 0, x_l, height);
+    this.cam_bar_ctx.fillRect(x_r, 0, bar_width - x_r, height);
+
+
     this.cam_bar_ctx.lineWidth = 1;
-    this.cam_bar_ctx.fillStyle = this.cam_bar_ctx.strokeStyle = '#FFFFFF55'
-    this.cam_bar_ctx.strokeRect(x + 1.5, 1.5, w, h);
-    if (this.cam_locked) this.cam_bar_ctx.fillRect(x + 1.5, 1.5, w, h);
+    this.cam_bar_ctx.strokeStyle = '#FFFFFF55'
+    this.cam_bar_ctx.strokeRect(x + hh, hh, w, h);
+    if (this.cam_locked) {
+      this.cam_bar_ctx.fillStyle = '#FFFFFF88';
+      this.cam_bar_ctx.fillRect(x + hh, hh, w, h);
+    }
   }
 
   set FPS(v: number) {
@@ -112,14 +134,9 @@ export class GameOverlay implements IWorldCallbacks {
     const x = cam_x * width / s_width;
     this.draw_cam_bar(x)
   }
+
   on_stage_change(_world: World, _curr: Stage, _prev: Stage): void {
-    const { width, height } = this.cam_bar.getBoundingClientRect();
-    this.cam_bar.width = width;
-    this.cam_bar.height = height;
-    const cam_x = this.world.camera.position.x;
-    const s_width = this.world.stage.width;
-    const x = cam_x * width / s_width;
-    this.draw_cam_bar(x)
+    this.on_cam_move(_world, this.world.camera.position.x)
   }
 
   private update_timer: ReturnType<typeof setInterval> | undefined;

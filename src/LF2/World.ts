@@ -278,7 +278,9 @@ export class World {
 
   update_camera() {
     const old_cam_x = Math.floor(this.camera.position.x)
-    const { player_left: left, player_right: right } = this.stage;
+    const { player_left, left, player_right, right } = this.stage;
+    const max_cam_left = is_num(this.lock_cam_x) ? left : player_left;
+    const max_cam_right = is_num(this.lock_cam_x) ? right : player_right;
     let new_x = this.camera.position.x;
     let max_speed_ratio = 50;
     let acc_ratio = 1;
@@ -292,8 +294,8 @@ export class World {
         new_x += player.position.x - 794 / 2 + player.facing * 794 / 6;
       new_x = Math.floor(new_x / this.players.size);
     }
-    if (new_x < left) new_x = left;
-    if (new_x > right - 794) new_x = right - 794;
+    if (new_x < max_cam_left) new_x = max_cam_left;
+    if (new_x > max_cam_right - 794) new_x = max_cam_right - 794;
 
     let cur_x = this.camera.position.x;
     const acc = Math.min(acc_ratio, acc_ratio * Math.abs(cur_x - new_x) / Defines.OLD_SCREEN_WIDTH);
