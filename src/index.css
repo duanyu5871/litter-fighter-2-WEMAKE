@@ -5,9 +5,46 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #10206C;
+  color: white;
+  border: white;
+  color: #5A73D6;
+  font-weight: bold;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+button,
+input,
+select {
+  color: #5A73D6;
+  border: 2px #5A73D6 solid;
+  border-radius: 3px;
+  padding: 2px 4px;
+  background-color: transparent;
+  font-weight: bold;
+  outline: none;
+  transition:
+    color 200ms,
+    border-color 200ms,
+    background-color 200ms,
+    border-radius 500ms;
+}
+
+button:hover,
+input:hover {
+  color: #FFFFFF;
+  border-color: #FFFFFF;
+}
+
+button:active,
+input:active {
+  color: #FFFFFF;
+  border-color: #FFFFFF;
+  background-color: #5A73D655;
+}
+
+button:focus-within,
+input:focus-within,
+input:active {
+  border: solid 2px white;
+  border-radius: 10 px;
 }
