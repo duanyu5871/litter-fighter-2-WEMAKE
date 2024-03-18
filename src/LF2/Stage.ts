@@ -38,6 +38,7 @@ class StageObject implements IEntityCallbacks {
   }
   on_disposed(e: Entity): void {
     this.entities.delete(e);
+    e.callbacks.delete(this);
     if (!this.entities.size) this.stage.handle_empty_stage_object(this)
   }
   spawn() {
@@ -68,6 +69,9 @@ class StageObject implements IEntityCallbacks {
     }
     this.add_entity(e);
     e.attach();
+  }
+  dispose() {
+    for (const e of this.entities) e.callbacks.delete(this);
   }
 }
 
@@ -165,7 +169,6 @@ export default class Stage {
   }
 
   stage_objects = new Set<StageObject>();
-
   async spawn_object(obj_info: IStageObjectInfo) {
     const player_count = Math.max(1, this.world.players.size);
     const { ratio = 1, times = 1 } = obj_info;
@@ -217,9 +220,12 @@ export default class Stage {
   dispose() {
     this._disposed = true;
     for (const f of this._disposers) f();
-    this.bg.dispose()
+    this.bg.dispose();
+    for (const so of this.stage_objects) {
+      so.dispose();
+    }
   }
-  all_boss_dead(): boolean {
+  all _boss_dead(): boolean {
     return !find_in_set(this.stage_objects, i => i.info.is_boss)
   }
   all_enemies_dead(): boolean {
@@ -233,6 +239,7 @@ export default class Stage {
     if (is_soldier) {
       if (this.all_boss_dead()) {
         this.stage_objects.delete(stage_object);
+        stage_object.dispose();
       } else if (!is_num(times) || times > 0) {
         stage_object.spawn();
       }
@@ -240,6 +247,7 @@ export default class Stage {
       stage_object.spawn();
     } else {
       this.stage_objects.delete(stage_object);
+      stage_object.dispose();
     }
     if (this.all_enemies_dead()) {
       this.enter_phase(this._cur_phase_idx + 1);
