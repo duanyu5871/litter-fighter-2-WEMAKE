@@ -101,8 +101,6 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
   const heavy_walking_speedz = take_number(info, 'heavy_walking_speedz', 0);
   const heavy_running_speed = take_number(info, 'heavy_running_speed', 0);
   const heavy_running_speedz = take_number(info, 'heavy_running_speedz', 0);
-
-
   info.jump_height = info.jump_height * info.jump_height / 3.5;
   info.dash_height = info.dash_height * info.dash_height / 3.5;
   info.dash_distance /= 2;
@@ -479,8 +477,7 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
     landing_1: '215',
     landing_2: '219',
   };
-
-
+  
   return {
     id: '',
     type: 'character',

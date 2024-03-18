@@ -107,7 +107,36 @@ export default function dat_to_json(full_str: string, datIndex?: IDatIndex): any
         ret = make_weapon_data(base, full_str, make_frames(full_str));
         break;
       }
-      case 0: ret = make_character_data(base as ICharacterInfo, make_frames(full_str)); break;
+      case 0: {
+        const info = base as ICharacterInfo;
+        if (datIndex.id === '52') {
+          info.ce = 3;
+          info.armor = {
+            fireproof: 1,
+            antifreeze: 1,
+            hit_sound: 'data/002.wav.ogg',
+            type: 'times',
+            toughness: 3,
+          }
+        } else if (datIndex.id === '51') {
+          info.ce = 2;
+        } else if (datIndex.id === '37') {
+          info.armor = {
+            hit_sound: 'data/085.wav.ogg',
+            type: 'times',
+            toughness: 3,
+          }
+        } else if (datIndex.id === '6') {
+          info.armor = {
+            hit_sound: 'data/085.wav.ogg',
+            type: 'times',
+            toughness: 1,
+          }
+        }
+        ret = make_character_data(info, make_frames(full_str));
+
+        break;
+      }
       case 3: ret = make_ball_data(base as IBallInfo, make_frames<IBallFrameInfo>(full_str), datIndex); break;
       case 5: ret = make_entity_data(base as IGameObjInfo, make_frames(full_str)); break;
       default:

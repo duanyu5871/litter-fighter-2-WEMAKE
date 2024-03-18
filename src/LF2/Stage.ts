@@ -170,9 +170,13 @@ export default class Stage {
 
   stage_objects = new Set<StageObject>();
   async spawn_object(obj_info: IStageObjectInfo) {
-    const player_count = Math.max(1, this.world.players.size);
+    let count = 0;
+    for (const [, c] of this.world.players) {
+      count += c.data.base.ce ?? 1;
+    }
+
     const { ratio = 1, times = 1 } = obj_info;
-    let spawn_count = Math.floor(player_count * ratio);
+    let spawn_count = Math.floor(count * ratio);
     if (spawn_count <= 0 || !times) return;
 
     while ((--spawn_count) >= 0) {
