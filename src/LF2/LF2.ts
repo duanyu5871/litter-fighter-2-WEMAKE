@@ -8,7 +8,7 @@ import { Defines } from '../js_utils/lf2_type/defines';
 import { BgLayer } from './BgLayer';
 import Stage from './Stage';
 import { World } from './World';
-import { PlayerController } from "./controller/PlayerController";
+import { PlayerController } from "./controller/LocalHuman";
 import './entity/Ball';
 import { Character } from './entity/Character';
 import { Entity } from './entity/Entity';
@@ -142,7 +142,7 @@ export default class LF2 {
     const ret: Character[] = []
     while (--num >= 0) {
       const e = new Character(this.world, data);
-      if (is_num(team)) e.team = team;
+      e.team = team ?? Entity.new_team();
       this.random_entity_info(e).attach();
       ret.push(e)
     }

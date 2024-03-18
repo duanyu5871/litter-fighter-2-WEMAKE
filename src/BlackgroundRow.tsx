@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import LF2 from './LF2/LF2';
 import { BaseController } from './LF2/controller/BaseController';
-import { SimpleFollowController } from './LF2/controller/SimpleFollowController';
+import { BotEnemyChaser } from './LF2/controller/BotEnemyChaser';
+import { InvalidController } from './LF2/controller/InvalidController';
 import { Character } from './LF2/entity/Character';
 import { Entity } from './LF2/entity/Entity';
 import CharacterSelect from './LF2/ui/CharacterSelect';
@@ -11,7 +12,8 @@ import { IStageInfo, IStagePhaseInfo } from './js_utils/lf2_type';
 import { Defines } from './js_utils/lf2_type/defines';
 
 const bot_controllers: { [x in string]?: (e: Character) => BaseController } = {
-  'SimpleFollow': (e: Character) => new SimpleFollowController(e)
+  'OFF': (e: Character) => new InvalidController(e),
+  'enemy chaser': (e: Character) => new BotEnemyChaser(e)
 }
 
 export function BlackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
@@ -86,7 +88,7 @@ export function BlackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
   const [weapon_id, set_weapon_id] = useState<string>('');
   const [c_id, set_character_id] = useState<string>('');
   const [team, set_team] = useState<string>('');
-  const [controller, set_controller] = useState<string>('');
+  const [bot_ctrl, set_bot_ctrl] = useState<string>('');
 
   if (!lf2 || visible === false) return <></>;
 
@@ -97,16 +99,14 @@ export function BlackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
         lf2.add_random_weapon(rwn)
     )
   }
-  const on_click_add_character = () => {
-    const r_team = team ? Number(team) : Entity.new_team();
+  const on_click_add_bot = () => {
     (
       c_id ?
-        lf2.add_character(c_id, rcn, r_team) :
-        lf2.add_random_character(rcn, r_team)
+        lf2.add_character(c_id, rcn, Number(team)) :
+        lf2.add_random_character(rcn, Number(team))
     ).forEach(e => {
       e.name = 'bot';
-
-      const controller_creator = bot_controllers[controller];
+      const controller_creator = bot_controllers[bot_ctrl];
       if (controller_creator) e.controller = controller_creator(e);
     })
   }
@@ -176,11 +176,12 @@ export function BlackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
         team:
         <TeamSelect value={team} on_changed={set_team} />
         controller:
-        <select value={controller} onChange={e => { set_controller(e.target.value); e.target.blur() }}>
-          <option value=''>OFF</option>
-          {Object.keys(bot_controllers).map(v => <option value={v} key={v}>{v}</option>)}
-        </select>
-        <button onClick={on_click_add_character}>add</button>
+        <Select value={bot_ctrl}
+          on_changed={set_bot_ctrl}
+          items={Object.keys(bot_controllers)}
+          option={i => [i, i]}
+        />
+        <button onClick={on_click_add_bot}>add</button>
       </div>
     </>
   );

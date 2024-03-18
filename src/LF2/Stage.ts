@@ -6,7 +6,7 @@ import { Defines } from "../js_utils/lf2_type/defines";
 import { Background } from "./Background";
 import { factory } from "./Factory";
 import type { World } from "./World";
-import { SimpleFollowController } from "./controller/SimpleFollowController";
+import { BotEnemyChaser } from "./controller/BotEnemyChaser";
 import { Character } from "./entity/Character";
 import { Entity, IEntityCallbacks } from "./entity/Entity";
 import { Weapon } from "./entity/Weapon";
@@ -62,7 +62,7 @@ class StageObject implements IEntityCallbacks {
     if (e instanceof Character) {
       e.team = this.stage.enemy_team;
       e.name = e.data.base.name;
-      e.controller = new SimpleFollowController(e)
+      e.controller = new BotEnemyChaser(e)
     } else if (e instanceof Weapon && !is_num(y)) {
       e.position.y = 450;
     }

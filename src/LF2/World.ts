@@ -8,7 +8,7 @@ import { FrameAnimater } from './FrameAnimater';
 import { GameOverlay } from './GameOverlay';
 import LF2 from './LF2';
 import Stage from './Stage';
-import { PlayerController } from './controller/PlayerController';
+import { PlayerController } from './controller/LocalHuman';
 import { Ball } from './entity/Ball';
 import { Character } from './entity/Character';
 import { Entity } from './entity/Entity';
