@@ -8,6 +8,7 @@ export class PlayerController extends BaseController {
   readonly which: string;
   private _key_code_map: TKeyCodeMap = {};
   private _code_key_map: TCodeKeyMap = {};
+
   private _on_key_up = (e: KeyboardEvent) => {
     const code = e.key?.toLowerCase();
     if (!code) return;
@@ -22,10 +23,10 @@ export class PlayerController extends BaseController {
     if (!key) return;
     this.press_keys(key);
   };
-  constructor(which: string, character: Character, kc: TKeyCodeMap) {
+  constructor(which: string, character: Character, kc?: TKeyCodeMap) {
     super(character);
     this.which = which;
-    this.set_key_code_map(kc);
+    if (kc) this.set_key_code_map(kc);
     window.addEventListener('keydown', this._on_key_down);
     window.addEventListener('keyup', this._on_key_up);
     this.disposer = [
@@ -38,7 +39,7 @@ export class PlayerController extends BaseController {
     this._code_key_map = {};
     for (const key of Object.keys(key_code_map) as TKeyName[]) {
       const code = key_code_map[key]?.toLowerCase()
-      if(!code) continue;
+      if (!code) continue;
       this._key_code_map[key] = code;
       this._code_key_map[code] = key
     }
