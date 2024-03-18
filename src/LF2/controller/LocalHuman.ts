@@ -20,6 +20,9 @@ export class PlayerController extends BaseController {
     if (!code) return;
     const key = this._code_key_map[code];
     if (!key) return;
+
+    /** 键盘长按时，_on_key_down会被重复触发，此时不应该调用start */
+    if (!this.is_end(key)) return;
     this.start(key);
   };
   constructor(which: string, character: Character, kc?: TKeyCodeMap) {

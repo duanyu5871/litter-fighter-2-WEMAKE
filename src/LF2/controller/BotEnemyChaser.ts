@@ -53,8 +53,8 @@ export class BotEnemyChaser extends BaseController {
     else this.end('L', 'R') // reach x
 
     // too far, run.
-    if (end_x - x > RUN_ZONE && !is_running) this.db_time_map.R = this.time;
-    else if (x - end_x > RUN_ZONE && !is_running) this.db_time_map.L = this.time;
+    if (end_x - x > RUN_ZONE && !is_running) this.db_hit('R');
+    else if (x - end_x > RUN_ZONE && !is_running) this.db_hit('L');
 
     if (z < end_z - DEAD_ZONE) this.start('D').end('U')
     else if (z > end_z + DEAD_ZONE) this.start('U').end('D')

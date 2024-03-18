@@ -14,13 +14,6 @@ export const CONFLICTS_KEY_MAP: Record<TKeyName, TKeyName | undefined> = {
   D: "U",
 }
 
-/**
- * 双击判定间隔，单位（帧数）
- * 
- * 当同个按键在“双击判定间隔”之内按下两次，且中途未按下其对应冲突按键，视为双击。
- */
-export const DOUBLE_CLICK_INTERVAL = 30;
-export const KEY_HIT_DURATION = 10
 export class BaseController {
   private _time = 1;
   private _disposers = new Set<() => void>();
@@ -33,25 +26,60 @@ export class BaseController {
   }
   character: Character;
   key_time_maps: Record<TKeyName, number> = { L: 0, R: 0, U: 0, D: 0, a: 0, j: 0, d: 0 };
-  end(...keys: TKeyName[]): this {
-    for (const k of keys) this.key_time_maps[k] = 0;
-    return this;
-  }
+
+  /**
+   * 指定按键进入start状态（按下）
+   * @param keys 指定按键
+   * @returns {this}
+   */
   start(...keys: TKeyName[]): this {
     for (const k of keys) {
-      if (this.key_time_maps[k]) continue;
       this.key_time_maps[k] = this._time;
       const ck = CONFLICTS_KEY_MAP[k];
       if (ck) { this.db_time_map[ck] = 0; }
       if (this.db_time_map[k] === 0)
         this.db_time_map[k] = -this._time;
-      else if (this.db_time_map[k] + this._time < DOUBLE_CLICK_INTERVAL)
+      else if (this.db_time_map[k] + this._time < this.character.world.double_click_interval)
         this.db_time_map[k] = this._time
       else
         this.db_time_map[k] = 0;
     };
     return this;
   }
+
+  /**
+   * 指定按键进入hold状态
+   * @param keys 指定按键
+   * @returns {this}
+   */
+  hold(...keys: TKeyName[]): this {
+    for (const k of keys)
+      this.key_time_maps[k] = this._time - this.character.world.key_hit_duration;
+    return this;
+  }
+
+  /**
+   * 指定按键进入end状态（松开）
+   * @param keys 指定按键
+   * @returns {this}
+   */
+  end(...keys: TKeyName[]): this {
+    for (const k of keys) this.key_time_maps[k] = 0;
+    return this;
+  }
+
+  /**
+   * 指定按键直接进入"双击"状态
+   * @param keys 指定按键
+   * @returns {this}
+   */
+  db_hit = (...keys: TKeyName[]): this => {
+    for (const k of keys)
+      this.key_time_maps[k] = this._time;
+    return this;
+  }
+
+
   is_hold(k: string): boolean;
   is_hold(k: TKeyName): boolean;
   is_hold(k: TKeyName): boolean {
@@ -62,11 +90,11 @@ export class BaseController {
   is_hit(k: TKeyName): boolean;
   is_hit(k: TKeyName): boolean {
     const v = this.key_time_maps[k];
-    return !!v && this._time - v <= KEY_HIT_DURATION;
+    return !!v && this._time - v <= this.character.world.key_hit_duration;
   }
-  db_hit(k: TKeyName) {
+  is_db_hit(k: TKeyName): boolean {
     const v = this.db_time_map[k];
-    const ret = v > 0 && this._time - v <= KEY_HIT_DURATION;
+    const ret = v > 0 && this._time - v <= this.character.world.key_hit_duration;
     if (!ret && v > 0) this.db_time_map[k] = -v;
     return ret;
   }
@@ -147,10 +175,10 @@ export class BaseController {
       if (hold?.B && hold_R && end_L && nf[1] < this.key_time_maps.R) nf = [hold.B, this.key_time_maps.R, 'R'];
     }
     /** 相对方向的双击判定 */
-    if (hit?.FF && facing < 0 && this.db_hit('L') && nf[1] < this.db_time_map.L) nf = [hit.FF, this.db_time_map.L, void 0];
-    if (hit?.BB && facing > 0 && this.db_hit('L') && nf[1] < this.db_time_map.L) nf = [hit.BB, this.db_time_map.L, void 0];
-    if (hit?.BB && facing < 0 && this.db_hit('R') && nf[1] < this.db_time_map.R) nf = [hit.BB, this.db_time_map.R, void 0];
-    if (hit?.FF && facing > 0 && this.db_hit('R') && nf[1] < this.db_time_map.R) nf = [hit.FF, this.db_time_map.R, void 0];
+    if (hit?.FF && facing < 0 && this.is_db_hit('L') && nf[1] < this.db_time_map.L) nf = [hit.FF, this.db_time_map.L, void 0];
+    if (hit?.BB && facing > 0 && this.is_db_hit('L') && nf[1] < this.db_time_map.L) nf = [hit.BB, this.db_time_map.L, void 0];
+    if (hit?.BB && facing < 0 && this.is_db_hit('R') && nf[1] < this.db_time_map.R) nf = [hit.BB, this.db_time_map.R, void 0];
+    if (hit?.FF && facing > 0 && this.is_db_hit('R') && nf[1] < this.db_time_map.R) nf = [hit.FF, this.db_time_map.R, void 0];
 
     for (const key of KEY_NAME_LIST) {
       /** 加入按键序列，但d除外，因为d是按键序列的开始 */
@@ -174,7 +202,7 @@ export class BaseController {
       const key_key = `${key}${key}` as keyof IHitKeyCollection;
       act = hit?.[key_key]
       press_time = this.db_time_map[key];
-      if (act && this.db_hit(key) && nf[1] < press_time) {
+      if (act && this.is_db_hit(key) && nf[1] < press_time) {
         nf = [act, press_time, void 0];
       }
     }
