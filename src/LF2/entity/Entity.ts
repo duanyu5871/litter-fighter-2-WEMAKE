@@ -265,8 +265,13 @@ export class Entity<
       this._catching_value += cpoint.decrease;
       if (this._catching_value < 0) this._catching_value = 0;
     }
-    if (this._shaking <= 0)
-      this.v_rests.forEach((v, k, m) => { v.remain > 1 ? v.remain-- : m.delete(k) });
+    if (this._shaking <= 0) {
+      for (const [k, v] of this.v_rests) {
+        if (v.remain >= 0) --v.remain;
+        else this.v_rests.delete(k);
+      }
+    }
+    this.v_rests.forEach((v, k, m) => { });
     this.a_rest > 1 ? this.a_rest-- : this.a_rest = 0;
   }
   override update(): void {

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import LF2 from './LF2/LF2';
-import { IController } from './LF2/controller/IController';
+import { BaseController } from './LF2/controller/BaseController';
 import { SimpleFollowController } from './LF2/controller/SimpleFollowController';
 import { Character } from './LF2/entity/Character';
 import { Entity } from './LF2/entity/Entity';
@@ -10,7 +10,7 @@ import TeamSelect from './LF2/ui/TeamSelect';
 import { IStageInfo, IStagePhaseInfo } from './js_utils/lf2_type';
 import { Defines } from './js_utils/lf2_type/defines';
 
-const bot_controllers: { [x in string]?: (e: Character) => IController<Character> } = {
+const bot_controllers: { [x in string]?: (e: Character) => BaseController } = {
   'SimpleFollow': (e: Character) => new SimpleFollowController(e)
 }
 

@@ -7,24 +7,24 @@ export class TestController extends BaseController {
     const { x: end_x, z: end_z } = c.world.middle;
     const DEAD_ZONE = 10
     if (x < end_x - DEAD_ZONE) {
-      this.press_keys('R').release_keys('L')
+      this.start('R').end('L')
     } else if (x > DEAD_ZONE + end_x) {
-      this.press_keys('L').release_keys('R')
+      this.start('L').end('R')
     } else {
-      this.release_keys('L', 'R')
+      this.end('L', 'R')
     }
     if (z < end_z - DEAD_ZONE) {
-      this.press_keys('D').release_keys('U')
+      this.start('D').end('U')
     } else if (z > end_z + DEAD_ZONE) {
-      this.press_keys('U').release_keys('D')
+      this.start('U').end('D')
     } else {
-      this.release_keys('D', 'U')
+      this.end('D', 'U')
     }
-    if (!this.holding.U && !this.holding.D && !this.holding.L && !this.holding.R) {
-      this.holding.d = 1;
-      this.press_keys('d')
+    if (!this.key_time_maps.U && !this.key_time_maps.D && !this.key_time_maps.L && !this.key_time_maps.R) {
+      this.key_time_maps.d = 1;
+      this.start('d')
     } else {
-      this.release_keys('d')
+      this.end('d')
     }
     return super.update();
   }

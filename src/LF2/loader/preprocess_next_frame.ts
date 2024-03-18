@@ -26,9 +26,9 @@ function get_val(word: string): (e: FrameAnimater) => any {
         return 0
       }
     case Defines.ValWord.PressFB:
-      return e => e instanceof Character ? e.controller.LR1 * e.facing : 0;
+      return e => e instanceof Character ? e.controller.LR * e.facing : 0;
     case Defines.ValWord.PressUD:
-      return e => e instanceof Character ? e.controller.UD1 : 0;
+      return e => e instanceof Character ? e.controller.UD : 0;
     case Defines.ValWord.WeaponType:
       return e => e instanceof Entity ? e.weapon?.data.base.type || 0 : 0;
   }

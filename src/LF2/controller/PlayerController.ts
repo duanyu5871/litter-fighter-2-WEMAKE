@@ -1,6 +1,5 @@
 import { Character } from '../entity/Character';
-import { BaseController } from "./BaseController";
-import { TKeyName } from './IController';
+import { BaseController, TKeyName } from "./BaseController";
 
 type TKeyCodeMap = { [x in TKeyName]?: string };
 type TCodeKeyMap = { [x in string]?: TKeyName };
@@ -14,14 +13,14 @@ export class PlayerController extends BaseController {
     if (!code) return;
     const key = this._code_key_map[code];
     if (!key) return;
-    this.release_keys(key);
+    this.end(key);
   };
   private _on_key_down = (e: KeyboardEvent) => {
     const code = e.key?.toLowerCase();
     if (!code) return;
     const key = this._code_key_map[code];
     if (!key) return;
-    this.press_keys(key);
+    this.start(key);
   };
   constructor(which: string, character: Character, kc?: TKeyCodeMap) {
     super(character);

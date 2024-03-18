@@ -1,6 +1,6 @@
 import { Defines } from "../../js_utils/lf2_type/defines";
 import { Character } from "../entity/Character";
-import { BaseController, DOUBLE_CLICK_INTERVAL } from "./BaseController";
+import { BaseController } from "./BaseController";
 
 export class SimpleFollowController extends BaseController {
   _count = 0;
@@ -27,42 +27,31 @@ export class SimpleFollowController extends BaseController {
       }
     }
     const { x: end_x, z: end_z } = this._nearest_enemy?.position || c.position;
-
     const DEAD_ZONE = 50;
     const RUN_ZONE = 100;
-    if (end_x - x > RUN_ZONE) {
-      if (c.get_frame().state !== Defines.State.Running && !this.double_clicks.R) {
-        const v2 = this._update_count;
-        const v1 = v2 - DOUBLE_CLICK_INTERVAL + 10;
-        const v0 = v1 - DOUBLE_CLICK_INTERVAL + 10;
-        this.double_clicks.R = [v0, v1]
-        this.press_keys('R');
-        this.release_keys('L');
-        console.log('try_run r!')
-      }
-    } else if (x - end_x > RUN_ZONE) {
-      if (c.get_frame().state !== Defines.State.Running && !this.double_clicks.L) {
-        const v2 = this._update_count;
-        const v1 = v2 - DOUBLE_CLICK_INTERVAL + 10;
-        const v0 = v1 - DOUBLE_CLICK_INTERVAL + 10;
-        this.double_clicks.L = [v0, v1]
-        this.press_keys('L')
-        this.release_keys('R')
-        console.log('try_run l!')
-      }
-    } else if (end_x - x > DEAD_ZONE) {
-      this.press_keys('R').release_keys('L')
+    const { facing } = c;
+    const { state } = c.get_frame();
+    const is_running = state === Defines.State.Running
+    if (end_x - x > DEAD_ZONE) {
+      this.start('R').end('L')
     } else if (x - end_x > DEAD_ZONE) {
-      this.press_keys('L').release_keys('R')
+      this.start('L').end('R')
     } else {
-      this.release_keys('L', 'R')
+      if (is_running && facing > 0) this.start('L').end('R')
+      else if (is_running && facing < 0) this.start('R').end('L')
+      else this.end('L', 'R')
+    }
+    if (end_x - x > RUN_ZONE) {
+      if (!is_running) this.db_time_map.R = this.time;
+    } else if (x - end_x > RUN_ZONE) {
+      if (!is_running) this.db_time_map.L = this.time;
     }
     if (z < end_z - DEAD_ZONE) {
-      this.press_keys('D').release_keys('U')
+      this.start('D').end('U')
     } else if (z > end_z + DEAD_ZONE) {
-      this.press_keys('U').release_keys('D')
+      this.start('U').end('D')
     } else {
-      this.release_keys('D', 'U')
+      this.end('D', 'U')
     }
     return super.update();
   }

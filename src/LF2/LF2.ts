@@ -8,7 +8,6 @@ import { Defines } from '../js_utils/lf2_type/defines';
 import { BgLayer } from './BgLayer';
 import Stage from './Stage';
 import { World } from './World';
-import { TKeyName } from './controller/IController';
 import { PlayerController } from "./controller/PlayerController";
 import './entity/Ball';
 import { Character } from './entity/Character';
@@ -18,6 +17,7 @@ import DatMgr from './loader/DatMgr';
 import { SoundMgr } from './loader/SoundMgr';
 import { get_import_fallbacks as get_import_fallback_names, import_builtin } from './loader/make_import';
 import { new_id } from './new_id';
+import { TKeyName } from './controller/BaseController';
 
 export default class LF2 {
 

@@ -6,16 +6,17 @@ import { Defines } from '../../js_utils/lf2_type/defines';
 import { factory } from '../Factory';
 import type { World } from '../World';
 import { ICube } from '../World';
-import { IController } from '../controller/IController';
+import { BaseController } from '../controller/BaseController';
 import { InvalidController } from '../controller/InvalidController';
 import { create_picture_by_img_key, image_pool } from '../loader/loader';
 import { CHARACTER_STATES } from '../state/character';
 import { Ball } from './Ball';
 import { Entity, get_team_shadow_color, get_team_text_color } from './Entity';
-import { same_face, turn_face } from './face_helper';
 import { Weapon } from './Weapon';
+import { same_face, turn_face } from './face_helper';
+
 export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, ICharacterData> {
-  protected _controller: IController<Character> = new InvalidController(this);
+  protected _controller: BaseController = new InvalidController(this);
   get controller() { return this._controller; }
   set controller(v) {
     if (this._controller === v) return;
@@ -63,7 +64,7 @@ export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, IChar
   override handle_facing_flag(facing: number, frame: IFrameInfo, flags: INextFrame): TFace {
     switch (facing) {
       case Defines.FacingFlag.ByController:
-        return this.controller.LR1 || this.facing;
+        return this.controller.LR || this.facing;
       case Defines.FacingFlag.SameAsCatcher:
         return this._catcher?.facing || this.facing;
       case Defines.FacingFlag.OpposingCatcher:
@@ -120,7 +121,7 @@ export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, IChar
   override handle_frame_velocity() {
     super.handle_frame_velocity();
     const { dvz } = this.get_frame();
-    const { UD1 } = this.controller;
+    const { UD: UD1 } = this.controller;
     if (dvz !== void 0 && dvz !== 0) this.velocity.z = UD1 * dvz;
   }
   override self_update(): void {
@@ -324,7 +325,7 @@ export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, IChar
 
   override spawn_object(opoint: IOpointInfo, speed_z: number = 0) {
     const ret = super.spawn_object(opoint, speed_z);
-    if (ret instanceof Ball) { ret.ud = this.controller.UD1; }
+    if (ret instanceof Ball) { ret.ud = this.controller.UD; }
     return ret;
   }
 }

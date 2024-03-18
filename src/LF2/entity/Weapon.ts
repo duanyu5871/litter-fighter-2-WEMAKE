@@ -27,7 +27,7 @@ export class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData> {
       const { dvx, dvy, dvz } = wpoint_a;
       if (dvx || dvy || dvz) {
         this.enter_frame(this.data.indexes.throwing);
-        const vz = (holder instanceof Character) ? holder.controller.UD1 * (dvz || 0) : 0;
+        const vz = (holder instanceof Character) ? holder.controller.UD * (dvz || 0) : 0;
         const vx = (dvx || 0 - Math.abs(vz / 2)) * this.facing
         this.velocity.set(vx, dvy || 0, vz)
         delete this.holder?.weapon;

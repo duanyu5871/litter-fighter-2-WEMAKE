@@ -421,7 +421,7 @@ export class World {
           }
         }
         if (!itr.vrest && a.a_rest) continue;
-        if (itr.vrest && b.v_rests.has(a.id)) continue;
+        if (itr.vrest && b.v_rests.has(a.id) && b.v_rests.get(a.id)!.remain > 0) continue;
 
         const r0 = this.get_cube(a, af, itr);
         const r1 = this.get_cube(b, bf, bdy);

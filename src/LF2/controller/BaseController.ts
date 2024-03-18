@@ -1,7 +1,8 @@
 import { TNextFrame } from '../../js_utils/lf2_type';
+import { IHitKeyCollection } from '../../js_utils/lf2_type/IHitKeyCollection';
+import { Defines } from '../../js_utils/lf2_type/defines';
 import { Character } from '../entity/Character';
-import { IController, TKeyName } from './IController';
-
+export type TKeyName = 'L' | 'R' | 'U' | 'D' | 'a' | 'j' | 'd'
 export const KEY_NAME_LIST = ['d', 'L', 'R', 'U', 'D', 'j', 'a'] as const;
 export const CONFLICTS_KEY_MAP: Record<TKeyName, TKeyName | undefined> = {
   a: void 0,
@@ -12,69 +13,74 @@ export const CONFLICTS_KEY_MAP: Record<TKeyName, TKeyName | undefined> = {
   U: "D",
   D: "U",
 }
-export const DOUBLE_CLICK_INTERVAL = 40
-export class BaseController implements IController<Character> {
+
+/**
+ * 双击判定间隔，单位（帧数）
+ * 
+ * 当同个按键在“双击判定间隔”之内按下两次，且中途未按下其对应冲突按键，视为双击。
+ */
+export const DOUBLE_CLICK_INTERVAL = 30;
+export const KEY_HIT_DURATION = 10
+export class BaseController {
+  private _time = 1;
   private _disposers = new Set<() => void>();
+  get time() { return this._time }
   set disposer(f: (() => void)[] | (() => void)) {
     if (Array.isArray(f))
       for (const i of f) this._disposers.add(i);
     else
       this._disposers.add(f);
   }
-
-  _next_punch_ready: number = 0;
-  _update_count = 0;
   character: Character;
-  holding: Record<TKeyName, number> = {
-    L: 0,
-    R: 0,
-    U: 0,
-    D: 0,
-    a: 0,
-    j: 0,
-    d: 0
-  };
-  releases: Record<TKeyName, number> = {
-    a: 0,
-    d: 0,
-    j: 0,
-    L: 0,
-    R: 0,
-    U: 0,
-    D: 0
-  }
-  release_keys(...keys: TKeyName[]): this {
-    for (const k of keys) this.holding[k] = 0;
+  key_time_maps: Record<TKeyName, number> = { L: 0, R: 0, U: 0, D: 0, a: 0, j: 0, d: 0 };
+  end(...keys: TKeyName[]): this {
+    for (const k of keys) this.key_time_maps[k] = 0;
     return this;
   }
-  press_keys(...keys: TKeyName[]): this {
+  start(...keys: TKeyName[]): this {
     for (const k of keys) {
-      if (this.holding[k]) continue;
-      this.holding[k] = this._update_count;
-      // this.double_clicks[k] = this._update_count;
+      if (this.key_time_maps[k]) continue;
+      this.key_time_maps[k] = this._time;
+      const ck = CONFLICTS_KEY_MAP[k];
+      if (ck) { this.db_time_map[ck] = 0; }
+      if (this.db_time_map[k] === 0)
+        this.db_time_map[k] = -this._time;
+      else if (this.db_time_map[k] + this._time < DOUBLE_CLICK_INTERVAL)
+        this.db_time_map[k] = this._time
+      else
+        this.db_time_map[k] = 0;
     };
     return this;
   }
   is_hold(k: string): boolean;
   is_hold(k: TKeyName): boolean;
   is_hold(k: TKeyName): boolean {
-    const v = this.holding[k]
-    if (!v) return false;
-    return !this.is_hit(k) && !!v;
+    return !this.is_hit(k) && !!this.key_time_maps[k];
   }
+
   is_hit(k: string): boolean;
   is_hit(k: TKeyName): boolean;
   is_hit(k: TKeyName): boolean {
-    const v = this.holding[k]
-    if (!v) return false;
-    return this._update_count - v <= 10;
+    const v = this.key_time_maps[k];
+    return !!v && this._time - v <= KEY_HIT_DURATION;
+  }
+  db_hit(k: TKeyName) {
+    const v = this.db_time_map[k];
+    const ret = v > 0 && this._time - v <= KEY_HIT_DURATION;
+    if (!ret && v > 0) this.db_time_map[k] = -v;
+    return ret;
   }
   is_end(k: string): boolean;
   is_end(k: TKeyName): boolean;
   is_end(k: TKeyName): boolean {
-    return !this.holding[k];
+    return !this.key_time_maps[k];
   }
-  double_clicks: Record<TKeyName, number> = {
+  is_start(k: string): boolean;
+  is_start(k: TKeyName): boolean;
+  is_start(k: TKeyName): boolean {
+    return this.key_time_maps[k] === this._time - 1;
+  }
+  db_time_map: Record<TKeyName, number> = {
     d: 0,
     a: 0,
     j: 0,
@@ -83,21 +89,18 @@ export class BaseController implements IController<Character> {
     U: 0,
     D: 0
   };
-  get LRUD() { return !!(this.LR1 || this.UD1); }
-  get LR1(): 0 | 1 | -1 {
-    const L = !!this.holding.L;
-    const R = !!this.holding.R;
+  get LR(): 0 | 1 | -1 {
+    const L = !!this.key_time_maps.L;
+    const R = !!this.key_time_maps.R;
     return L === R ? 0 : R ? 1 : -1;
   }
-  get UD1(): 0 | 1 | -1 {
-    const U = !!this.holding.U;
-    const D = !!this.holding.D;
+  get UD(): 0 | 1 | -1 {
+    const U = !!this.key_time_maps.U;
+    const D = !!this.key_time_maps.D;
     return U === D ? 0 : D ? 1 : -1;
   }
-  get LR() { return this.LR1 }
-  get UD() { return this.UD1 }
 
-  private _kc_list: string | undefined = void 0;
+  private _key_list: string | undefined = void 0;
   constructor(character: Character) {
     this.character = character;
   }
@@ -105,145 +108,120 @@ export class BaseController implements IController<Character> {
   dispose(): void {
     for (const f of this._disposers) f();
   }
+
+  _key_test(type: 'hit' | 'hold', key: TKeyName) {
+    const conflict_key = CONFLICTS_KEY_MAP[key];
+    if (conflict_key && !this.is_end(conflict_key))
+      return false;
+    return this[`is_${type}`](key);
+  }
+
   update(): TNextFrame | undefined {
-    ++this._update_count;
-    const k_len = KEY_NAME_LIST.length;
+    ++this._time;
     const character = this.character;
     const { facing } = character;
     const frame = character.get_frame();
     const { hold, hit, state } = frame;
-    let next_frame: [TNextFrame | undefined, number, TKeyName | undefined] = [void 0, 0, void 0];
+    let nf: [TNextFrame | undefined, number, TKeyName | undefined] = [void 0, 0, void 0];
 
-    if (this.holding.d === this._update_count - 1) {
-      this._kc_list = '';
-    }
-    if (this._kc_list !== void 0) {
-      for (let i = 1; i < k_len; ++i) {
-        const k = KEY_NAME_LIST[i];
-        if (this.is_hit(k)) continue;
-        this._kc_list += k;
-      }
-    }
+    // 按键序列初始化
+    if (this.is_start('d')) this._key_list = '';
+
     const hit_L = this.is_hit('L');
     const hit_R = this.is_hit('R');
     const hold_L = this.is_hold('L');
     const hold_R = this.is_hold('R');
     const end_L = this.is_end('L');
     const end_R = this.is_end('R');
+
+    /** 相对方向的按钮判定 */
     if (facing === 1) {
-      if (hit?.F && hit_R && end_L && next_frame[1] < this.holding.R) next_frame = [hit.F, this.holding.R, 'R'];
-      if (hit?.B && hit_L && end_R && next_frame[1] < this.holding.L) next_frame = [hit.B, this.holding.L, 'L'];
-      if (hold?.F && hold_R && end_L && next_frame[1] < this.holding.R) next_frame = [hold.F, this.holding.R, 'R'];
-      if (hold?.B && hold_L && end_R && next_frame[1] < this.holding.L) next_frame = [hold.B, this.holding.L, 'L'];
+      if (hit?.F && hit_R && end_L && nf[1] < this.key_time_maps.R) nf = [hit.F, this.key_time_maps.R, 'R'];
+      if (hit?.B && hit_L && end_R && nf[1] < this.key_time_maps.L) nf = [hit.B, this.key_time_maps.L, 'L'];
+      if (hold?.F && hold_R && end_L && nf[1] < this.key_time_maps.R) nf = [hold.F, this.key_time_maps.R, 'R'];
+      if (hold?.B && hold_L && end_R && nf[1] < this.key_time_maps.L) nf = [hold.B, this.key_time_maps.L, 'L'];
     } else {
-      if (hit?.F && hit_L && end_R && next_frame[1] < this.holding.L) next_frame = [hit.F, this.holding.L, 'L'];
-      if (hit?.B && hit_R && end_L && next_frame[1] < this.holding.R) next_frame = [hit.B, this.holding.R, 'R'];
-      if (hold?.F && hold_L && end_R && next_frame[1] < this.holding.L) next_frame = [hold.F, this.holding.L, 'L'];
-      if (hold?.B && hold_R && end_L && next_frame[1] < this.holding.R) next_frame = [hold.B, this.holding.R, 'R'];
+      if (hit?.F && hit_L && end_R && nf[1] < this.key_time_maps.L) nf = [hit.F, this.key_time_maps.L, 'L'];
+      if (hit?.B && hit_R && end_L && nf[1] < this.key_time_maps.R) nf = [hit.B, this.key_time_maps.R, 'R'];
+      if (hold?.F && hold_L && end_R && nf[1] < this.key_time_maps.L) nf = [hold.F, this.key_time_maps.L, 'L'];
+      if (hold?.B && hold_R && end_L && nf[1] < this.key_time_maps.R) nf = [hold.B, this.key_time_maps.R, 'R'];
     }
+    /** 相对方向的双击判定 */
+    if (hit?.FF && facing < 0 && this.db_hit('L') && nf[1] < this.db_time_map.L) nf = [hit.FF, this.db_time_map.L, void 0];
+    if (hit?.BB && facing > 0 && this.db_hit('L') && nf[1] < this.db_time_map.L) nf = [hit.BB, this.db_time_map.L, void 0];
+    if (hit?.BB && facing < 0 && this.db_hit('R') && nf[1] < this.db_time_map.R) nf = [hit.BB, this.db_time_map.R, void 0];
+    if (hit?.FF && facing > 0 && this.db_hit('R') && nf[1] < this.db_time_map.R) nf = [hit.FF, this.db_time_map.R, void 0];
+
     for (const key of KEY_NAME_LIST) {
-      const conflict_key = CONFLICTS_KEY_MAP[key];
-      if (conflict_key && !this.is_end(conflict_key)) continue;
-      if (hit?.[key] && this.is_hit(key) && next_frame[1] < this.holding[key])
-        next_frame = [hit?.[key], this.holding[key], key];
-      if (hold?.[key] && this.is_hold(key) && next_frame[1] < this.holding[key])
-        next_frame = [hold?.[key], this.holding[key], key];
+      /** 加入按键序列，但d除外，因为d是按键序列的开始 */
+      if (this._key_list !== void 0 && key !== 'd' && this.is_start(key))
+        this._key_list += key;
+
+      /** 按键判定 */
+      let act = hit?.[key];
+      let press_time = this.key_time_maps[key];
+      if (act && this._key_test('hit', key) && nf[1] < press_time) {
+        nf = [act, press_time, key];
+      }
+
+      /** 长按判定 */
+      act = hold?.[key]
+      if (act && this._key_test('hold', key) && nf[1] < press_time) {
+        nf = [act, press_time, key];
+      }
+
+      /** 双击判定 */
+      const key_key = `${key}${key}` as keyof IHitKeyCollection;
+      act = hit?.[key_key]
+      press_time = this.db_time_map[key];
+      if (act && this.db_hit(key) && nf[1] < press_time) {
+        nf = [act, press_time, void 0];
+      }
     }
 
-    // if (hit?.FF && facing < 0 && this.check_double_click('L')) nf = hit.FF;
-    // if (hit?.BB && facing > 0 && this.check_double_click('L')) nf = hit.BB;
-    // if (hit?.BB && facing < 0 && this.check_double_click('R')) nf = hit.BB;
-    // if (hit?.FF && facing > 0 && this.check_double_click('R')) nf = hit.FF;
-    // if (hit?.UU && this.check_double_click('U')) nf = hit.UU;
-    // if (hit?.DD && this.check_double_click('D')) nf = hit.DD;
-    // if (hit?.aa && this.check_double_click('a')) nf = hit.aa;
-    // if (hit?.jj && this.check_double_click('j')) nf = hit.jj;
-    // if (hit?.dd && this.check_double_click('d')) nf = hit.dd;
-    // switch (state) {
-    //   case Defines.State.Standing:
-    //   case Defines.State.Walking:
-    //     for (const [, { itr }] of character.v_rests) {
-    //       if (itr.kind === Defines.ItrKind.SuperPunchMe) {
-    //         if (this.is_hit('a')) {
-    //           nf = { id: character.data.indexes.super_punch }
-    //         }
-    //         break;
-    //       }
-    //     }
-    //     break;
-    // }
-    // const seqs = hit?.sequences
-    // if (seqs) do {
-    //   let found = false;
-    //   if (this.is_hit('d')) {
-    //     // 同时按键的检查
-    //     const strs = Object.keys(seqs)
-    //     for (let i = 0; i < strs.length; ++i) {
-    //       const str = strs[i];
-    //       let need_continue = false;
-    //       for (let j = 0; j < str.length; ++j) {
-    //         if (!this.is_hit(str[j])) {
-    //           need_continue = true;
-    //           break;
-    //         }
-    //       }
-    //       if (need_continue) continue;
-    //       nf = seqs[str];
-    //       found = true;
-    //       break;
-    //     }
-    //   }
-    //   if (found) {
-    //     this._kc_list = void 0;
-    //     break;
-    //   }
-    //   if (!this._kc_list || this._kc_list.length < 2)
-    //     break;
+    switch (state) {
+      case Defines.State.Standing:
+      case Defines.State.Walking:
+        /** 重击判定 */
+        for (const [, { itr }] of character.v_rests) {
+          if (itr.kind === Defines.ItrKind.SuperPunchMe) {
+            if (this.is_hit('a')) {
+              nf = [{ id: character.data.indexes.super_punch }, this.key_time_maps.a, 'a']
+            }
+            break;
+          }
+        }
+        break;
+    }
+    const seqs = hit?.sequences
+    if (seqs) do {
+      /** 同时按键 判定 */
+      if (this.is_hit('d')) {
+        const seq = Object.keys(seqs).find(v => this.same_time_seq_test(v));
+        if (seq && seqs[seq]) {
+          nf = [seqs[seq], this._time, void 0];
+          this._key_list = void 0;
+          break;
+        }
+      }
 
-    //   // 序列按键的检查
-    //   if (seqs[this._kc_list]) {
-    //     nf = seqs[this._kc_list]
-    //     this._kc_list = void 0;
-    //     break;
-    //   }
-    //   if (this._kc_list.length >= 6) {
-    //     this._kc_list = void 0;
-    //     break;
-    //   }
-    // } while (0)
-    // if (next_frame[2]) this.release_keys(next_frame[2])
-    return next_frame[0]
+      /** 顺序按键 判定 */
+      if (this._key_list && this._key_list.length >= 2 && seqs[this._key_list]) {
+        nf = [seqs[this._key_list], this._time, void 0]
+        this._key_list = void 0;
+        break;
+      }
+    } while (0)
+
+    /** 这里不想支持过长的指令 */
+    if (this._key_list && this._key_list.length >= 10) this._key_list = void 0;
+
+    return nf[0]
   }
 
-  // check_double_click(k: TKeyName) {
-  //   const kc = CONFLICTS_KEY_MAP[k];
-  //   if (kc && this.holding[kc]) {
-  //     this.double_clicks[k][0] = 0;
-  //     return false;
-  //   }
-  //   const is_press = this.is_hit(k);
-  //   const is_release = this.is_end(k);
-  //   const vals = this.double_clicks[k];
+  private same_time_seq_test(str: string): boolean {
+    for (const key of str) if (!this.is_hit(key)) return false;
 
-  //   if (is_press && !vals[0]) {
-  //     this.double_clicks[k] = [this._update_count, 0];
-  //     return false;
-  //   }
-  //   if (is_release && !vals[1]) {
-  //     if (this._update_count - vals[0] <= DOUBLE_CLICK_INTERVAL) {
-  //       vals[1] = this._update_count;
-  //     } else {
-  //       this.double_clicks[k] = [0, 0];
-  //     }
-  //     return false;
-  //   }
-  //   if (is_press && vals[1]) {
-  //     if (this._update_count - vals[1] <= DOUBLE_CLICK_INTERVAL) {
-  //       const ret = this._update_count - vals[1] <= DOUBLE_CLICK_INTERVAL;
-  //       this.double_clicks[k] = [0, 0];
-  //       return ret;
-  //     }
-  //   }
-  //   return false;
-  // }
+    return true;
+  }
 }
