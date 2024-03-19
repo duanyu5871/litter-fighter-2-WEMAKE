@@ -7,6 +7,7 @@ import { arithmetic_progression } from './js_utils/arithmetic_progression';
 import { is_bool } from './js_utils/is_bool';
 import { is_num } from './js_utils/is_num';
 import { is_str } from './js_utils/is_str';
+import { KEY_NAME_LIST } from './LF2/controller/BaseController';
 export interface ILayoutItem {
   key: string;
   img?: string[] | string;
@@ -20,6 +21,7 @@ export interface ILayoutItem {
   flip_x?: boolean;
   flip_y?: boolean
   bg_color?: string;
+  component?: string;
 
   txt?: string;
   txt_fill?: string;
@@ -183,40 +185,45 @@ const raw_layouts: ILayoutData[] = [
         on_click: 'goto(entry)'
       }, {
         visible: 'mouse_on_me==0',
-        key: 'move_table_normal',
+        key: 'btn_move_table_normal',
         img: 'sprite/MENU_CLIP2.png',
         s_rect: [0, 354, 494, 23],
         center: [0, 1],
         pos: [0, 450],
       }, {
         visible: 'mouse_on_me==1',
-        key: 'move_table_hover',
+        key: 'btn_move_table_hover',
         img: 'sprite/MENU_CLIP2.png',
         s_rect: [0, 379, 494, 23],
         center: [0, 1],
         pos: [0, 450],
         on_click: 'link_to(https://lf2.net/control.html)'
-      }, {
-        key: 'move_table_hover',
-        img: ['sprite/CS6.png', 'sprite/CS2.png', 'sprite/CS3.png', 'sprite/CS4.png', 'sprite/CS5.png'],
-        pos: [193, 155 - 15],
-        on_click: 'loop_img'
-      }, {
-        key: 'move_table_hover',
-        img: ['sprite/CS6.png', 'sprite/CS2.png', 'sprite/CS3.png', 'sprite/CS4.png', 'sprite/CS5.png'],
-        pos: [193 + 139, 155 - 15],
-        on_click: 'loop_img'
-      }, {
-        key: 'move_table_hover',
-        img: ['sprite/CS6.png', 'sprite/CS2.png', 'sprite/CS3.png', 'sprite/CS4.png', 'sprite/CS5.png'],
-        pos: [193 + 139 * 2, 155 - 15],
-        on_click: 'loop_img'
-      }, {
-        key: 'move_table_hover',
-        img: ['sprite/CS6.png', 'sprite/CS2.png', 'sprite/CS3.png', 'sprite/CS4.png', 'sprite/CS5.png'],
-        pos: [193 + 139 * 3, 155 - 15],
-        on_click: 'loop_img'
-      }]
+      },
+      ...[1, 2, 3, 4].map((play_id, idx) => [
+        {
+          key: `btn_ctrl_type_${play_id}`,
+          img: ['sprite/CS6.png', 'sprite/CS2.png', 'sprite/CS3.png', 'sprite/CS4.png', 'sprite/CS5.png'],
+          pos: [193 + 139 * idx, 155 - 15],
+          on_click: 'loop_img'
+        }, {
+          key: `btn_player_name_${play_id}`,
+          component: `player_name_input(${play_id})`,
+          get txt() { return this.component },
+          font: ['12px','normal'],
+          pos: [193 + 139 * idx, 129 - 15],
+          size: [106, 19],
+          on_click: 'loop_img'
+        }, ...KEY_NAME_LIST.map<ILayoutItem>((key, jdx) => ({
+          key: `btn_key_set_${play_id}_${key}`,
+          component: `key_set(${play_id},${key})`,
+          get txt() { return this.component },
+          font: ['12px','normal'],
+          pos: [193 + 139 * idx, 253 - 15 + 22 * jdx],
+          size: [106, 19],
+          on_click: 'loop_img'
+        }))
+      ]).flat(2)
+    ]
   }
 ]
 export function GameUI(props: { lf2?: LF2; }) {
@@ -431,10 +438,8 @@ export function GameUI(props: { lf2?: LF2; }) {
   };
   const onKeyDown = (e: React.KeyboardEvent) => {
     if (!layout) return;
-    console.log(layout, e.key.toLowerCase())
     const { key_press_events = [] } = layout;
     for (const [key, action] of key_press_events) {
-      console.log(key, e.key.toLowerCase())
       if (e.key.toLowerCase() !== key) continue
       handle_layout_action(layout, action)
     }
