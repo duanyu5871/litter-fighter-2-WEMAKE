@@ -8,6 +8,7 @@ import { is_bool } from './js_utils/is_bool';
 import { is_num } from './js_utils/is_num';
 import { is_str } from './js_utils/is_str';
 import { KEY_NAME_LIST } from './LF2/controller/BaseController';
+import { random_in_range } from './LF2/random_in_range';
 export interface ILayoutItem {
   key: string;
   img?: string[] | string;
@@ -46,6 +47,7 @@ export interface ICookedLayoutItem extends ILayoutItem {
   _layout: ICookedLayoutData;
 }
 export interface ICookedLayoutData extends ILayoutData {
+  arithmetic_progression_map: Map<string, number[]>;
   items: ICookedLayoutItem[]
 }
 const pos_on_me = (item: ICookedLayoutItem, x: number, y: number) => {
@@ -209,7 +211,7 @@ const raw_layouts: ILayoutData[] = [
           key: `btn_player_name_${play_id}`,
           component: `player_name_input(${play_id})`,
           get txt() { return this.component },
-          font: ['12px','normal'],
+          font: ['12px', 'normal'],
           pos: [193 + 139 * idx, 129 - 15],
           size: [106, 19],
           on_click: 'loop_img'
@@ -217,7 +219,7 @@ const raw_layouts: ILayoutData[] = [
           key: `btn_key_set_${play_id}_${key}`,
           component: `key_set(${play_id},${key})`,
           get txt() { return this.component },
-          font: ['12px','normal'],
+          font: ['12px', 'normal'],
           pos: [193 + 139 * idx, 253 - 15 + 22 * jdx],
           size: [106, 19],
           on_click: 'loop_img'
@@ -321,8 +323,11 @@ export function GameUI(props: { lf2?: LF2; }) {
 
     const cooked_layouts: ICookedLayoutData[] = [];
     for (const raw_layout of raw_layouts) {
-      const cooked_layout: ICookedLayoutData = { ...raw_layout, items: [] }
-      const arithmetic_progression_map = new Map<string, number[]>();
+      const cooked_layout: ICookedLayoutData = {
+        ...raw_layout,
+        items: [],
+        arithmetic_progression_map: new Map()
+      }
       for (const raw_items of raw_layout.items) {
         const { visible, img, which } = raw_items;
         const img_paths = !is_arr(img) ? [img] : img;
@@ -333,7 +338,8 @@ export function GameUI(props: { lf2?: LF2; }) {
           const img_url = await lf2.import(img_path);
           return await image_pool.load(img_path, img_url);
         };
-        let img_idx: number = 0;
+        let _img_idx = () => 0;
+
         if (is_str(which)) {
           const trimed = which.trim().replace(/\s/g, '')
           const result = trimed.match(/random_int_in_range\((\d+),(\d+)(,\d+)?\)/);
@@ -342,21 +348,18 @@ export function GameUI(props: { lf2?: LF2; }) {
             const begin = Number(a);
             const end = Number(b);
             if (begin < end) {
-              let arr: number[] = [];
               if (is_str(group_id)) {
-                const r = arithmetic_progression_map.get(trimed)
-                if (r?.length) arr = r;
-                else arithmetic_progression_map.set(trimed, arr = arithmetic_progression(begin, end, 1))
+                const w = Math.floor(random_in_range(begin, end) % (end + 1))
+                _img_idx = () => w
               } else {
-                arr = arithmetic_progression(begin, end, 1)
+                const w = Math.floor(random_in_range(begin, end) % (end + 1))
+                _img_idx = () => w
               }
-              img_idx = random_take(arr);
             }
           }
         } else if (is_num(which)) {
-          img_idx = which % (img?.length || 0);
+          _img_idx = () => which % (img?.length || 0);
         }
-        const _img_idx = () => img_idx;
         for (const p of img_paths) {
           if (!p) continue
           _img.push(await preload(p))
@@ -378,7 +381,6 @@ export function GameUI(props: { lf2?: LF2; }) {
           const cond = new Condition<ICookedLayoutItem>(visible, get_val);
           _visible = cond.make();
         }
-
         const cooked_item: ICookedLayoutItem = {
           ...raw_items,
           _visible,
@@ -447,17 +449,16 @@ export function GameUI(props: { lf2?: LF2; }) {
   const handle_layout_action = (layout: ICookedLayoutData, action: string) => {
     const [, next_layout_id] = action.match(/goto\((.+)\)/) ?? []
     if (next_layout_id) {
+      const prev_layout = layout;
+      prev_layout.arithmetic_progression_map.clear();
       const next_layout = cooked_layouts.find(v => v.id === next_layout_id)
-      set_layout(next_layout)
-      return;
+      return set_layout(next_layout)
     }
     const [, alert_msg] = action.match(/alert\((.+)\)/) ?? []
-    if (alert_msg) {
-      alert(alert_msg);
-      return;
-    }
+    if (alert_msg) return alert(alert_msg);
+
     const [, url] = action.match(/link_to\((.+)\)/) ?? [];
-    if (url) window.open(url)
+    if (url) return window.open(url)
   }
   const handle_item_action = (item: ICookedLayoutItem, action: string) => {
     if (action === 'loop_img') {
