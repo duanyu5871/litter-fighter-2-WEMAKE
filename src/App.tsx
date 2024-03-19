@@ -6,12 +6,17 @@ import Fullsreen from './Fullsreen';
 import LF2 from './LF2/LF2';
 import Stage from './LF2/Stage';
 import { Character } from './LF2/entity/Character';
-import { random_in_range } from './LF2/random_in_range';
+import { Condition } from './LF2/loader/Condition';
+import { TImageInfo, image_pool } from './LF2/loader/loader';
 import { Log } from './Log';
 import { PlayerRow } from './PlayerRow';
 import open_file, { read_file } from './Utils/open_file';
+import random_get from './Utils/random_get';
 import './game_ui.css';
 import './init';
+import { arithmetic_progression } from './js_utils/arithmetic_progression';
+import { is_bool } from './js_utils/is_bool';
+import { is_str } from './js_utils/is_str';
 import lf2_dat_str_to_json from './js_utils/lf2_dat_translator/dat_2_json';
 import read_lf2_dat from './read_lf2_dat';
 
@@ -184,14 +189,6 @@ function App() {
       set_loading(false)
     })
   }
-  const [bg_left, set_bg_left] = useState<string>();
-  const [menu_clip, set_menu_clip] = useState<string>();
-  useEffect(() => {
-    if (!lf2) return;
-    const n = Math.round(random_in_range(1, 13));
-    lf2.import(`sprite/MENU_BACK${n}.png`).then(set_bg_left)
-    lf2.import(`sprite/MENU_CLIP.png`).then(set_menu_clip)
-  }, [lf2])
 
   return (
     <div className="App">
@@ -222,8 +219,7 @@ function App() {
         <canvas tabIndex={-1} ref={_canvas_ref} className='game_canvas' width={795} height={450} />
         <div className='game_overlay' ref={_overlay_ref} style={{ display: !game_overlay ? 'none' : void 0 }} />
         <div className='game_ui'>
-          <img draggable='false' className='bg_left' src={bg_left} alt='' />
-          <img draggable='false' className='main_title' src={menu_clip} alt='' />
+          <GameUI lf2={lf2} />
         </div>
       </div>
       <div className='editor_view' style={{ display: editor_closed ? 'none' : void 0 }}>
@@ -232,12 +228,259 @@ function App() {
           <button onClick={on_click_read_dat} disabled={loading}>read_dat</button>
         </div>
         <div className='main'>
-          <textarea ref={_text_area_dat_ref} />
-          <textarea ref={_text_area_json_ref} />
+          <textarea ref={_text_area_dat_ref} wrap="off" />
+          <textarea ref={_text_area_json_ref} wrap="off" />
         </div>
       </div>
     </div >
   );
 }
 
+
+interface ILayoutInfo {
+  key: string;
+  img: string[] | string;
+  s_rect?: number[];
+  center?: number[];
+  pos?: number[];
+  size?: number[];
+  visible?: boolean | string;
+}
+interface ICookedLayoutInfo extends ILayoutInfo {
+  _img: TImageInfo;
+  _visible: (layout: ICookedLayoutInfo) => boolean;
+  _left_top: [number, number];
+  _size: [number, number];
+  _s_rect: [number, number, number, number];
+}
+
+
+function GameUI(props: { lf2?: LF2 }) {
+  const { lf2 } = props;
+  const canvas_ref = useRef<HTMLCanvasElement>(null);
+  const offscreen_ref = useRef<HTMLCanvasElement | null>(null);
+  const mem = useRef({
+    pointer_down: false,
+    mouse_x: NaN,
+    mouse_y: NaN,
+  });
+  const f_w = 796;
+  const f_h = 450;
+  const menu_w = 282
+  const menu_h = 119
+  const menu_x = Math.floor(f_w / 2);
+  const menu_y = Math.floor(f_h / 2);
+  const menu_cx = Math.floor(menu_w / 2);
+  const menu_cy = Math.floor(menu_h / 2);
+
+  const [raw_layouts, set_raw_layouts] = useState<ILayoutInfo[]>([{
+    // visible: false,
+    key: 'bg_left',
+    img: arithmetic_progression(1, 13, 1).map(n => `sprite/MENU_BACK${n}.png`),
+    s_rect: [0, 0, 378, 546],
+    size: [0, 450],
+  }, {
+    // visible: false,
+    key: 'main_title',
+    img: 'sprite/MENU_CLIP.png',
+    s_rect: [0, 41, 496, 80],
+    center: [496 / 2, 0],
+    size: [496, 80],
+    pos: [796 / 2, 0]
+  }, {
+    key: 'main_menu',
+    img: 'sprite/MENU_CLIP.png',
+    s_rect: [0, 125, 282, 119],
+    center: [menu_cx, menu_cy],
+    size: [menu_w, menu_h],
+    pos: [menu_x, menu_y]
+  }, {
+    visible: 'mouse_on_me==1',
+    key: 'start_local_game',
+    img: 'sprite/MENU_CLIP.png',
+    s_rect: [535, 105, 256, 26],
+    center: [256 / 2 - 1, 0],
+    size: [256, 26],
+    pos: [796 / 2, menu_y - menu_cy + 13]
+  }, {
+    visible: 'mouse_on_me==1',
+    key: 'network_game',
+    img: 'sprite/MENU_CLIP.png',
+    s_rect: [535, 137, 256, 26],
+    center: [256 / 2 - 1, 0],
+    size: [256, 26],
+    pos: [796 / 2, menu_y - menu_cy + 45]
+  }, {
+    visible: 'mouse_on_me==1',
+    key: 'ctrl_settings',
+    img: 'sprite/MENU_CLIP.png',
+    s_rect: [535, 168, 256, 26],
+    center: [256 / 2 - 1, 0],
+    size: [256, 26],
+    pos: [796 / 2, menu_y - menu_cy + 76]
+  }])
+  const [layouts, set_layouts] = useState<ICookedLayoutInfo[]>([])
+
+  const draw_ui = useCallback(async () => {
+    const canvas = canvas_ref.current;
+    const onscreen_ctx = canvas?.getContext('2d');
+
+    const offscreen = offscreen_ref.current;
+    const offscreen_ctx = offscreen?.getContext('2d');
+    if (!canvas || !offscreen || !offscreen_ctx || !onscreen_ctx || !lf2) return;
+
+    const { width, height } = canvas.getBoundingClientRect();
+    const screen_w = Math.floor(width);
+    const screen_h = Math.floor(height);
+
+    if (canvas.width !== screen_w || canvas.height !== screen_h) {
+      canvas.width = screen_w;
+      canvas.height = screen_h;
+    }
+    if (offscreen.width !== screen_w || offscreen.height !== screen_h) {
+      offscreen.width = screen_w;
+      offscreen.height = screen_h;
+    } else {
+      offscreen_ctx.fillStyle = 'rgb(16, 32, 108)';
+      offscreen_ctx.fillRect(0, 0, screen_w, screen_h)
+    }
+
+    for (const layout of layouts) {
+      let { _visible, _img } = layout;
+      if (!_visible(layout)) continue;
+      const [w, h] = layout._size;
+      const [l, t] = layout._left_top
+      offscreen_ctx.drawImage(_img.img_ele, ...layout._s_rect,
+        screen_w * l / f_w,
+        screen_h * t / f_h,
+        screen_w * w / f_w,
+        screen_h * h / f_h
+      );
+    }
+    onscreen_ctx.drawImage(offscreen, 0, 0);
+  }, [layouts, lf2])
+
+  useEffect(() => {
+    offscreen_ref.current = document.createElement('canvas');
+  }, []);
+
+  const cook_layouts = useCallback(async () => {
+    if (!lf2) return;
+
+    const get_val = (word: string) => (layout: ICookedLayoutInfo) => {
+      if (word === 'mouse_on_me') {
+        const [x, y] = layout._left_top;
+        const [w, h] = layout._size;
+        if (x > mem.current.mouse_x) return '0';
+        if (y > mem.current.mouse_y) return '0';
+        if (x + w < mem.current.mouse_x) return '0';
+        if (y + h < mem.current.mouse_y) return '0';
+        return '1'
+      }
+      return word
+    }
+
+    const layouts: ICookedLayoutInfo[] = [];
+    for (const raw_layout of raw_layouts) {
+      const { visible, img } = raw_layout;
+      const img_path = Array.isArray(img) ? random_get(img) : img;
+      const preload = async (img_path: string) => {
+        const img_info = image_pool.find(img_path);
+        if (img_info) return img_info;
+        const img_url = await lf2.import(img_path)
+        return await image_pool.load(img_path, img_url)
+      }
+      const _img = await preload(img_path);
+
+      const [sx = 0, sy = 0, sw = 0, sh = 0] = raw_layout.s_rect ?? [0, 0, _img.w, _img.h]
+      let [w, h] = raw_layout.size ?? [0, 0];
+      const [cx, cy] = raw_layout.center ?? [0, 0];
+      const [x, y] = raw_layout.pos ?? [0, 0];
+      w = (w === 0) ? h * sw / sh : w;
+      h = (h === 0) ? w * sh / sw : h;
+
+      const cooked: ICookedLayoutInfo = {
+        ...raw_layout,
+        _visible: () => true,
+        _img,
+        _left_top: [x - cx, y - cy],
+        _size: [w, h],
+        _s_rect: [sx, sy, sw, sh],
+      };
+      if (is_bool(visible)) {
+        cooked._visible = () => visible;
+      } else if (is_str(visible)) {
+        const cond = new Condition<ICookedLayoutInfo>(visible, get_val);
+        cooked._visible = cond.make()
+      }
+      layouts.push(cooked)
+    }
+    set_layouts(layouts);
+  }, [raw_layouts, lf2])
+
+  useEffect(() => {
+    cook_layouts();
+  }, [cook_layouts])
+
+  useEffect(() => {
+    if (!lf2) return;
+    const render_once = () => {
+      draw_ui();
+      requestAnimationFrame(render_once)
+    }
+    requestAnimationFrame(render_once)
+  }, [lf2, draw_ui]);
+
+  const onPointerDown = (e: React.PointerEvent) => {
+    if (e.isPrimary) mem.current.pointer_down = true;
+  }
+  const onPointerMove = (e: React.PointerEvent) => {
+    if (!e.isPrimary) return;
+
+    const canvas = canvas_ref.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    ctx.getTransform();
+    const { x, y, width, height } = canvas.getBoundingClientRect();
+    const p = screen_2_canvas(ctx, { x: e.pageX - x, y: e.pageY - y });
+    mem.current.mouse_x = p.x * f_w / width;
+    mem.current.mouse_y = p.y * f_h / height;
+  }
+  const onPointerUp = (e: React.PointerEvent) => {
+    if (e.isPrimary) mem.current.pointer_down = false;
+  }
+  return (
+    <canvas ref={canvas_ref} className='game_ui_canvas'
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={onPointerUp}
+      onPointerCancel={onPointerUp}
+    />
+  )
+}
+
+
+
+export const canvas_2_screen = (ctx: CanvasRenderingContext2D, { x, y }: { x: number, y: number }) => {
+  const matrix = ctx.getTransform().invertSelf()
+  if (!matrix.is2D) return { x: NaN, y: NaN }
+  const { a, b, c, d, e, f } = matrix
+  const screenX = (c * y - d * x + d * e - c * f) / (b * c - a * d)
+  const screenY = (y - screenX * b - f) / d
+  return {
+    x: Math.round(screenX),
+    y: Math.round(screenY),
+  }
+}
+
+export const screen_2_canvas = (ctx: CanvasRenderingContext2D, { x, y }: { x: number, y: number }) => {
+  const matrix = ctx.getTransform().invertSelf()
+  if (!matrix.is2D) return { x: NaN, y: NaN }
+  const { a, b, c, d, e, f } = matrix
+  return {
+    x: Math.round(x * a + y * c + e),
+    y: Math.round(x * b + y * d + f)
+  };
+}
 export default App;

@@ -3,13 +3,14 @@ import { take_number } from '../as_number';
 import { is_num } from '../is_num';
 import { is_str } from '../is_str';
 import { ICharacterData, ICharacterFrameInfo, TNextFrame } from '../lf2_type';
-import { INextFrame } from "../lf2_type/INextFrame";
 import { ICharacterFrameIndexes } from "../lf2_type/ICharacterFrameIndexes";
 import { ICharacterInfo } from "../lf2_type/ICharacterInfo";
 import { IFrameInfo } from "../lf2_type/IFrameInfo";
+import { INextFrame } from "../lf2_type/INextFrame";
 import { Defines } from '../lf2_type/defines';
 import { set_obj_field } from '../set_obj_field';
 import { traversal } from '../traversal';
+import { Cond } from './Cond';
 import { get_next_frame_by_id } from './get_the_next';
 import { take } from './take';
 const k_9 = [
@@ -18,70 +19,8 @@ const k_9 = [
   'Ua', 'Uj', 'ja'
 ] as const;
 
-type TValWord = Defines.ValWord;
+
 const { FacingFlag, ValWord, WeaponType, State } = Defines
-class Cond {
-  static readonly get = () => new Cond();
-  static readonly add: Cond['add'] = (...args) => this.get().add(...args);
-  static readonly one_of: Cond['one_of'] = (...args) => this.get().one_of(...args);
-  static readonly not_in: Cond['not_in'] = (...args) => this.get().not_in(...args);
-  static readonly bracket: Cond['bracket'] = (...args) => this.get().bracket(...args);
-  private _parts: (string | Cond)[] = [];
-  add(word: TValWord, op: '==' | '>=' | '<=' | '!=', value: any): this {
-    this._parts.push(`${word}${op}${value}`);
-    return this;
-  }
-  bracket(func: (c: Cond) => Cond): this {
-    this._parts.push(func(Cond.get()))
-    return this;
-  }
-  one_of(word: TValWord, ...values: (string | number)[]): this {
-    return this.bracket(c => {
-      for (const v of values) c = c.or(word, '==', v)
-      return c;
-    });
-  }
-  not_in(word: TValWord, ...values: (string | number)[]): this {
-    return this.bracket(c => {
-      for (const v of values) c.add(word, '!=', v)
-      return c
-    });
-  }
-  private _any(word?: TValWord | ((c: Cond) => Cond), op?: '==' | '>=' | '<=' | '!=' | (string | number)[], value?: any): this {
-    if (typeof word === 'function')
-      return this.bracket(word);
-    else if (word !== void 0)
-      if (Array.isArray(op))
-        return this.one_of(word, ...op)
-      else if (op !== void 0 && value !== void 0)
-        return this.add(word, op, value)
-    return this;
-  }
-  or(): this;
-  or(func: (c: Cond) => Cond): this;
-  or(word: TValWord, op: '==' | '>=' | '<=' | '!=', value: any): this;
-  or(word?: TValWord | ((c: Cond) => Cond), op?: '==' | '>=' | '<=' | '!=' | (string | number)[], value?: any): this {
-    this._parts.length && this._parts.push('|');
-    return this._any(word, op, value);
-  }
-
-  and(): this;
-  and(func: (c: Cond) => Cond): this;
-  and(word: TValWord, op: '==' | '>=' | '<=' | '!=', value: any): this;
-  and(word?: TValWord | ((c: Cond) => Cond), op?: '==' | '>=' | '<=' | '!=', value?: any): this {
-    this._parts.length && this._parts.push('&');
-    return this._any(word, op, value);
-  }
-  done(): string {
-    let ret = this._parts.map(v => is_str(v) ? v : `(${v.done()})`).join('')
-    ret = ret.replace(/\s|\n|\r/g, ''); // remove empty char;
-    // remove redundant bracket;
-    if (this._parts.length === 1 && this._parts[0] instanceof Cond)
-      ret = ret.replace(/^\(|\)$/g, '')
-    return ret;
-  }
-}
-
 const set_hit_turn_back = (frame: IFrameInfo, back_frame_id: string = '') => {
   frame.hit = frame.hit || {}
   frame.hit.B = { id: back_frame_id, wait: 'i', facing: FacingFlag.Backward }
@@ -337,7 +276,7 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
                 ...get_next_frame_by_id(t_action),
                 facing: FacingFlag.ByController,
                 condition: Cond
-                  .add(ValWord.PressFB, '!=', 0)
+                  .add<Defines.ValWord>(ValWord.PressFB, '!=', 0)
                   .or(ValWord.PressUD, '!=', 0)
                   .done()
               }
@@ -379,7 +318,7 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
           {
             id: '213',
             condition: Cond
-              .add(ValWord.PressFB, '!=', 0)
+              .add<Defines.ValWord>(ValWord.PressFB, '!=', 0)
               .or(ValWord.TrendX, '==', 1)
               .done(),
             facing: FacingFlag.ByController
@@ -477,7 +416,7 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
     landing_1: '215',
     landing_2: '219',
   };
-  
+
   return {
     id: '',
     type: 'character',

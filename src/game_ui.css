@@ -9,13 +9,8 @@
   background-color: #10206C;
 }
 
-.game_ui .bg_left {
+.game_ui_canvas{
+  width: 100%;
   height: 100%;
-}
-
-.game_ui .main_title {
-  position: absolute;
-  object-fit: cover;
-  width: 496px;
-  height: 80px;
+  display: block;
 }

@@ -44,7 +44,7 @@
   bottom: 0px;
   display: flex;
   flex-direction: column;
-  background-color: gray;
+  background-color: #10206C;
   padding: 5px;
   gap: 5px
 }
@@ -62,8 +62,18 @@
 }
 
 .editor_view .main textarea {
-  flex: 1;
+  min-width: 100px;
   align-self: stretch;
+  resize: none;
+}
+
+.editor_view .main textarea:first-child {
+  width: 50%;
+  resize: horizontal;
+}
+
+.editor_view .main textarea:not(:first-child) {
+  flex: 1;
   resize: none;
 }
 

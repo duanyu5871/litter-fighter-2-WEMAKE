@@ -90,7 +90,6 @@ export default class LF2 {
     for (const a of ret) {
       for (const b of a.phases) {
         for (const c of b.objects) {
-
         }
       }
     }

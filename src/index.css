@@ -12,9 +12,48 @@ body {
   font-weight: bold;
 }
 
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+  cursor: default;
+}
+
+*::-webkit-scrollbar-thumb {
+  cursor: default;
+  border-radius: 10px;
+  background-color: #5A73D655;
+  transition: background-color 200ms;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: #5A73D6;
+}
+
+*::-webkit-scrollbar-track {
+  cursor: default;
+  background-color: transparent;
+}
+
+*::-webkit-scrollbar-track:hover {
+  background-color: #5A73D655;
+}
+
+*::-webkit-scrollbar-corner {
+  border: none;
+  outline: none;
+  background-color: transparent;
+}
+
+*::-webkit-resizer {
+  width: 8px;
+  height: 8px;
+  background-color: #5A73D6;
+}
+
 button,
 input,
-select {
+select,
+textarea {
   color: #5A73D6;
   border: 2px #5A73D6 solid;
   border-radius: 3px;
@@ -27,6 +66,22 @@ select {
     border-color 200ms,
     background-color 200ms,
     border-radius 500ms;
+}
+
+textarea {
+  color: #9AB3F6;
+  font-weight: normal;
+  font-size: 12px;
+}
+
+
+textarea::selection {
+  color: #10206C;
+  background-color: white;
+}
+
+textarea:hover {
+  border-color: #FFFFFF;
 }
 
 button:hover,

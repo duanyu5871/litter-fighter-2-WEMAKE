@@ -1,9 +1,9 @@
+import SparkMD5 from "spark-md5";
 import * as THREE from 'three';
 import { create_img_ele } from '../../Utils/create_img_ele';
 import { get_blob } from '../../Utils/get_blob';
 import { IEntityPictureInfo } from '../../js_utils/lf2_type';
 import { IPictureInfo } from '../../types/IPictureInfo';
-import SparkMD5 from "spark-md5";
 
 export type TPictureInfo = IPictureInfo<THREE.Texture>;
 export type TDataPromise<T> = Promise<T> & { data: T }
@@ -22,6 +22,7 @@ export type TImageInfo = {
   h: number;
   minFilter?: THREE.MinificationTextureFilter;
   magFilter?: THREE.MagnificationTextureFilter;
+  img_ele: CanvasImageSource;
 }
 
 export type PaintFunc = (img: HTMLImageElement, cvs: HTMLCanvasElement, ctx: CanvasRenderingContext2D) => void;
@@ -53,7 +54,7 @@ class ImagePool {
     else this._paint(img_ele, cvs, ctx);
     const blob = await get_blob(cvs).catch(e => { throw new Error(e.message + ' key:' + key, { cause: e.cause }) });
     const url = URL.createObjectURL(blob);
-    return { key, url, w: img_ele.width, h: img_ele.height }
+    return { key, url, w: img_ele.width, h: img_ele.height, img_ele }
   }
 
   protected async _make_text_info(key: string, text: string, style?: TxtStyle): Promise<TImageInfo> {
@@ -87,7 +88,7 @@ class ImagePool {
     }
     const blob = await get_blob(cvs).catch(e => { throw new Error(e.message + ' key:' + key, { cause: e.cause }) });
     const url = URL.createObjectURL(blob);
-    return { key, url, w, h }
+    return { key, url, w, h, img_ele: cvs }
   }
   find(key: string) {
     return this._map.get(key)
