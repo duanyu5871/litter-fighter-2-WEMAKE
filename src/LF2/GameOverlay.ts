@@ -61,6 +61,7 @@ export class GameOverlay implements IWorldCallbacks {
   init_btn_free_cam() {
     this.btn_free_cam.className = 'btn_free_cam';
     this.btn_free_cam.innerText = 'free cam';
+    this.btn_free_cam.type = 'button';
     this.btn_free_cam.addEventListener('click', () => {
       this.cam_locked = false;
       if (is_num(this.world.lock_cam_x)) {

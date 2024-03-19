@@ -7,6 +7,8 @@ import Select, { ISelectProps } from './LF2/ui/Select';
 import TeamSelect from './LF2/ui/TeamSelect';
 import CharacterSelect from './LF2/ui/CharacterSelect';
 import { TKeyName } from './LF2/controller/BaseController';
+import { Input } from './LF2/ui/Select/Input';
+import { Button } from './LF2/ui/Select/Button';
 
 export const keys_map: { [x in string]?: Record<TKeyName, string> } = {
   '1': {
@@ -133,7 +135,7 @@ export function PlayerRow(props: Props) {
   return (
     <div key={which} className='player_row'>
       <span> player { }
-        <input
+        <Input
           type='text'
           maxLength={50}
           style={{ width: 75 }}
@@ -146,15 +148,15 @@ export function PlayerRow(props: Props) {
       <CharacterSelect lf2={lf2} value={c_id} on_changed={set_character_id} />
       <span>team:</span>
       <TeamSelect value={team} on_changed={set_team} />
-      <button onClick={() => set_added(v => !v)}>{added ? 'del' : 'add'}</button>
+      <Button onClick={() => set_added(v => !v)}>{added ? 'del' : 'add'}</Button>
       <span style={{ display: !added ? 'none' : void 0 }}>hp:<span ref={hp_ref} /></span>
-      <button onClick={() => set_key_settings_show(v => !v)}>keyboard settings</button>
+      <Button onClick={() => set_key_settings_show(v => !v)}>keyboard settings</Button>
       {!key_settings_show ? null :
         key_name_arr.map(k => {
           const on_click = () => set_editing_key(v => v === k ? void 0 : k);
           const name = key_names[k]
           const value = editing_key === k ? 'editing...' : keys[k]
-          return <button key={k} onClick={on_click}>{name} = {value}</button>
+          return <Button key={k} onClick={on_click}>{name} = {value}</Button>
         })
       }
     </div >

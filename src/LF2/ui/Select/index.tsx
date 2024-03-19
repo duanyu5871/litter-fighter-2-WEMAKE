@@ -1,11 +1,14 @@
+import { useMemo } from "react";
 import { is_num } from "../../../js_utils/is_num";
+import { WTF } from "./_no_id";
 
 export interface ISelectProps<T, V> extends React.SelectHTMLAttributes<HTMLSelectElement> {
-  items?: T[];
+  items?: readonly T[];
   auto_blur?: boolean;
   on_changed?: (value: V) => void;
-  option?: (item: T, idx: number, items: T[]) => [V, React.ReactNode];
+  option?: (item: T, idx: number, items: readonly T[]) => [V, React.ReactNode];
 }
+
 export default function Select<T, V>(props: ISelectProps<T, V>) {
   const {
     items,
@@ -16,7 +19,7 @@ export default function Select<T, V>(props: ISelectProps<T, V>) {
     on_changed: onChanged,
     ...remain_props
   } = props;
-
+  const default_id = useMemo(() => 'no_id_select_' + WTF.new_id(), [])
   const is_num_value = is_num(items?.length && option?.(items[0], 0, items)?.[0]);
   const on_change: React.ChangeEventHandler<HTMLSelectElement> = e => {
     onChange?.(e);
@@ -30,5 +33,5 @@ export default function Select<T, V>(props: ISelectProps<T, V>) {
     const [v, n] = option?.(item, idx, items) || ['' + item, '' + item]
     return (<option key={idx} value={'' + v}> {n} </option>)
   })
-  return <select {...remain_props} onChange={on_change}>{children}{options_children}</select>
+  return <select id={default_id} title={default_id} {...remain_props} onChange={on_change}>{children}{options_children}</select>
 }

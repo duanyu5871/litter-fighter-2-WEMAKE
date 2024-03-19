@@ -10,6 +10,8 @@ import Select from './LF2/ui/Select';
 import TeamSelect from './LF2/ui/TeamSelect';
 import { IStageInfo, IStagePhaseInfo } from './js_utils/lf2_type';
 import { Defines } from './js_utils/lf2_type/defines';
+import { Input } from './LF2/ui/Select/Input';
+import { Button } from './LF2/ui/Select/Button';
 
 const bot_controllers: { [x in string]?: (e: Character) => BaseController } = {
   'OFF': (e: Character) => new InvalidController(e),
@@ -117,11 +119,11 @@ export function BlackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
         stage:
         <Select on_changed={set_stage_id} value={stage_id} items={stage_list} option={i => [i.id, i.name]} />
         bgm:
-        <input type='checkbox' checked={stage_bgm} onChange={e => set_stage_bgm(e.target.checked)} />
-        <button onClick={() => lf2.world.stage.kill_all_enemies()}>kill enemies</button>
-        <button onClick={() => lf2.world.stage.kill_boss()}>kill boss</button>
-        <button onClick={() => lf2.world.stage.kill_soliders()}>kill soliders</button>
-        <button onClick={() => lf2.world.stage.kill_others()}>kill others</button>
+        <Input type='checkbox' checked={stage_bgm} onChange={e => set_stage_bgm(e.target.checked)} />
+        <Button onClick={() => lf2.world.stage.kill_all_enemies()}>kill enemies</Button>
+        <Button onClick={() => lf2.world.stage.kill_boss()}>kill boss</Button>
+        <Button onClick={() => lf2.world.stage.kill_soliders()}>kill soliders</Button>
+        <Button onClick={() => lf2.world.stage.kill_others()}>kill others</Button>
         {
           !stage_phase_list.length ? null : <>
             phases:
@@ -140,7 +142,7 @@ export function BlackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
           option={i => [i.id, i.base.name]}>
           <option value=''>OFF</option>
         </Select>
-        <button onClick={v => lf2.clear()}>clear</button>
+        <Button onClick={v => lf2.clear()}>clear</Button>
         music:
         <Select
           value={bgm}
@@ -151,7 +153,7 @@ export function BlackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
 
       <div className='background_settings_row'>
         weapon:
-        <input type='number' style={{ width: 40 }}
+        <Input type='number' style={{ width: 40 }}
           min={min_rwn} max={max_rwn} step={1} value={rwn}
           onChange={e => set_rwn(Number(e.target.value))}
           onBlur={() => set_rwn(v => Math.min(Math.max(Math.floor(v), min_rwn), max_rwn))} />
@@ -162,12 +164,12 @@ export function BlackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
           option={i => [i.id, i.base.name]}>
           <option value=''>Random</option>
         </Select>
-        <button onClick={on_click_add_weapon}>add</button>
+        <Button onClick={on_click_add_weapon}>add</Button>
       </div>
 
       <div className='background_settings_row'>
         bot:
-        <input type='number' style={{ width: 40 }}
+        <Input type='number' style={{ width: 40 }}
           min={min_rcn} max={max_rcn} step={1} value={rcn}
           onChange={e => set_rcn(Number(e.target.value))}
           onBlur={() => set_rcn(v => Math.min(Math.max(Math.floor(v), min_rcn), max_rcn))} />
@@ -181,7 +183,7 @@ export function BlackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
           items={Object.keys(bot_controllers)}
           option={i => [i, i]}
         />
-        <button onClick={on_click_add_bot}>add</button>
+        <Button onClick={on_click_add_bot}>add</Button>
       </div>
     </>
   );
