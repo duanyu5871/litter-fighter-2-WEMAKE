@@ -99,6 +99,7 @@ export type TFrameIdListPair = {
   1: string[],
 }
 export interface IStageObjectInfo {
+  id_method?: string;
   id: string[];
   x: number;
   y?: number;

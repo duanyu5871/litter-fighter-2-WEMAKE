@@ -5,8 +5,8 @@ import { BlackgroundRow } from './BlackgroundRow';
 import Fullsreen from './Fullsreen';
 import { GameUI } from './GameUI';
 import LF2 from './LF2/LF2';
-import { TImageInfo } from './LF2/loader/loader';
 import Select from './LF2/ui/Select';
+import { Button } from './LF2/ui/Select/Button';
 import { Input } from './LF2/ui/Select/Input';
 import { TextArea } from './LF2/ui/Select/TextArea';
 import { Log } from './Log';
@@ -17,7 +17,6 @@ import './init';
 import { arithmetic_progression } from './js_utils/arithmetic_progression';
 import lf2_dat_str_to_json from './js_utils/lf2_dat_translator/dat_2_json';
 import read_lf2_dat from './read_lf2_dat';
-import { Button } from './LF2/ui/Select/Button';
 
 const fullsreen = new Fullsreen();
 function App() {
@@ -189,7 +188,7 @@ function App() {
 
   const [render_size_mode, set_render_size_mode] = useState<'fixed' | 'fill' | 'cover' | 'contain'>('fixed');
   const [render_fixed_scale, set_render_fixed_scale] = useState<number>(0);
-  const [custom_render_fixed_scale, set_custom_render_fixed_scale] = useState<number>(0.5);
+  const [custom_render_fixed_scale, set_custom_render_fixed_scale] = useState<number>(0.25);
   const [v_align, set_v_align] = useState<number>(0.5);
   const [h_align, set_h_align] = useState<number>(0.5);
   const [custom_h_align, set_custom_h_align] = useState<number>(0.5);
@@ -349,50 +348,4 @@ function App() {
   );
 }
 
-
-export interface ILayoutInfo {
-  key: string;
-  img?: string[] | string;
-  s_rect?: number[];
-  center?: number[];
-  pos?: number[];
-  size?: number[];
-  visible?: boolean | string;
-
-  txt?: string;
-  txt_fill?: string;
-  txt_stroke?: string;
-  font?: string[];
-
-}
-export interface ICookedLayoutInfo extends ILayoutInfo {
-  _img?: TImageInfo;
-  _s_rect: [number, number, number, number];
-  _visible: (layout: ICookedLayoutInfo) => boolean;
-  _left_top: [number, number];
-  _size: [number, number];
-}
-
-
-export const canvas_2_screen = (ctx: CanvasRenderingContext2D, { x, y }: { x: number, y: number }) => {
-  const matrix = ctx.getTransform().invertSelf()
-  if (!matrix.is2D) return { x: NaN, y: NaN }
-  const { a, b, c, d, e, f } = matrix
-  const screenX = (c * y - d * x + d * e - c * f) / (b * c - a * d)
-  const screenY = (y - screenX * b - f) / d
-  return {
-    x: Math.round(screenX),
-    y: Math.round(screenY),
-  }
-}
-
-export const screen_2_canvas = (ctx: CanvasRenderingContext2D, { x, y }: { x: number, y: number }) => {
-  const matrix = ctx.getTransform().invertSelf()
-  if (!matrix.is2D) return { x: NaN, y: NaN }
-  const { a, b, c, d, e, f } = matrix
-  return {
-    x: Math.round(x * a + y * c + e),
-    y: Math.round(x * b + y * d + f)
-  };
-}
 export default App;

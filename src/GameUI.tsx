@@ -1,12 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import LF2 from './LF2/LF2';
 import { Condition } from './LF2/loader/Condition';
-import { image_pool } from './LF2/loader/loader';
+import { TImageInfo, image_pool } from './LF2/loader/loader';
 import random_get from './Utils/random_get';
 import { arithmetic_progression } from './js_utils/arithmetic_progression';
 import { is_bool } from './js_utils/is_bool';
+import { is_num } from './js_utils/is_num';
 import { is_str } from './js_utils/is_str';
-import { ILayoutInfo, ICookedLayoutInfo, screen_2_canvas } from './App';
+import random_take from './Utils/random_take';
 
 export function GameUI(props: { lf2?: LF2; }) {
   const { lf2 } = props;
@@ -21,68 +22,80 @@ export function GameUI(props: { lf2?: LF2; }) {
   const f_h = 450;
   const menu_w = 282;
   const menu_h = 119;
-  const menu_x = Math.floor(f_w / 2);
-  const menu_y = Math.floor(f_h / 2);
-  const menu_cx = Math.floor(menu_w / 2);
-  const menu_cy = Math.floor(menu_h / 2);
+  const menu_x = Math.floor(f_w * .5);
+  const menu_y = Math.floor(f_h * .6);
+  const menu_cx = Math.floor(menu_w * .5);
+  const menu_cy = Math.floor(menu_h * .5);
 
-  const [raw_layouts, set_raw_layouts] = useState<ILayoutInfo[]>([{
-    key: 'bg_wait',
-    img: 'sprite/MENU_WAIT.png',
-    size: [f_w, 0],
-  }, {
-    key: 'txt_loading_content',
-    txt: 'txt_loading_content',
-    txt_fill: 'white',
-    pos: [610, 75],
-    font: ['16px', 'Arial']
-  }, {
-    visible: false,
-    key: 'bg_left',
-    img: arithmetic_progression(1, 13, 1).map(n => `sprite/MENU_BACK${n}.png`),
-    s_rect: [0, 0, 378, 546],
-    size: [0, f_h],
-  }, {
-    visible: false,
-    key: 'main_title',
-    img: 'sprite/MENU_CLIP.png',
-    s_rect: [0, 41, 496, 80],
-    center: [496 / 2, 0],
-    size: [496, 80],
-    pos: [796 / 2, 0]
-  }, {
-    visible: false,
-    key: 'main_menu',
-    img: 'sprite/MENU_CLIP.png',
-    s_rect: [0, 125, 282, 119],
-    center: [menu_cx, menu_cy],
-    size: [menu_w, menu_h],
-    pos: [menu_x, menu_y]
-  }, {
-    visible: 'mouse_on_me==1',
-    key: 'start_local_game',
-    img: 'sprite/MENU_CLIP.png',
-    s_rect: [535, 105, 256, 26],
-    center: [256 / 2 - 1, 0],
-    size: [256, 26],
-    pos: [796 / 2, menu_y - menu_cy + 13]
-  }, {
-    visible: 'mouse_on_me==1',
-    key: 'network_game',
-    img: 'sprite/MENU_CLIP.png',
-    s_rect: [535, 137, 256, 26],
-    center: [256 / 2 - 1, 0],
-    size: [256, 26],
-    pos: [796 / 2, menu_y - menu_cy + 45]
-  }, {
-    visible: 'mouse_on_me==1',
-    key: 'ctrl_settings',
-    img: 'sprite/MENU_CLIP.png',
-    s_rect: [535, 168, 256, 26],
-    center: [256 / 2 - 1, 0],
-    size: [256, 26],
-    pos: [796 / 2, menu_y - menu_cy + 76]
-  }]);
+  const www = 'entry'
+  const [raw_layouts_list, set_raw_layouts] = useState<{ [x in string]: ILayoutInfo[] }>({
+    "loading": [{
+      key: 'bg_wait',
+      img: 'sprite/MENU_WAIT.png',
+      size: [f_w, 0],
+    }, {
+      key: 'txt_loading_content',
+      txt: 'txt_loading_content',
+      txt_fill: 'white',
+      pos: [610, 75],
+      font: ['16px', 'Arial']
+    }],
+    "entry": [{
+      key: 'bg_left',
+      which: 'random_int_in_range(0,12,1)',
+      img: arithmetic_progression(1, 13, 1).map(n => `sprite/MENU_BACK${n}.png`),
+      s_rect: [0, 0, 378, 546],
+      size: [0, f_h],
+      pos: [0, 0],
+    }, {
+      key: 'bg_right',
+      which: 'random_int_in_range(0,12,1)',
+      img: arithmetic_progression(1, 13, 1).map(n => `sprite/MENU_BACK${n}.png`),
+      s_rect: [0, 0, 378, 546],
+      center: [1, 0],
+      size: [0, f_h],
+      pos: [f_w - 378, 0],
+      flip_x: true,
+    }, {
+      key: 'main_title',
+      img: 'sprite/MENU_CLIP.png',
+      s_rect: [0, 41, 496, 80],
+      center: [496 / 2, 0],
+      size: [496, 80],
+      pos: [796 / 2, 40]
+    }, {
+      key: 'main_menu',
+      img: 'sprite/MENU_CLIP.png',
+      s_rect: [0, 125, 282, 119],
+      center: [menu_cx, menu_cy],
+      size: [menu_w, menu_h],
+      pos: [menu_x, menu_y]
+    }, {
+      visible: 'mouse_on_me==1',
+      key: 'start_local_game',
+      img: 'sprite/MENU_CLIP.png',
+      s_rect: [535, 105, 256, 26],
+      center: [256 / 2 - 1, 0],
+      size: [256, 26],
+      pos: [796 / 2, menu_y - menu_cy + 13]
+    }, {
+      visible: 'mouse_on_me==1',
+      key: 'network_game',
+      img: 'sprite/MENU_CLIP.png',
+      s_rect: [535, 137, 256, 26],
+      center: [256 / 2 - 1, 0],
+      size: [256, 26],
+      pos: [796 / 2, menu_y - menu_cy + 45]
+    }, {
+      visible: 'mouse_on_me==1',
+      key: 'ctrl_settings',
+      img: 'sprite/MENU_CLIP.png',
+      s_rect: [535, 168, 256, 26],
+      center: [256 / 2 - 1, 0],
+      size: [256, 26],
+      pos: [796 / 2, menu_y - menu_cy + 76]
+    }]
+  });
   const [layouts, set_layouts] = useState<ICookedLayoutInfo[]>([]);
 
   const draw_ui = useCallback(async () => {
@@ -106,17 +119,22 @@ export function GameUI(props: { lf2?: LF2; }) {
     }
 
     for (const layout of layouts) {
-      const { _visible, _img } = layout;
+      const { _visible, _img, flip_x, flip_y } = layout;
       if (!_visible(layout)) continue;
       if (_img) {
         const [w, h] = layout._size;
         const [l, t] = layout._left_top;
-        offscreen_ctx.drawImage(_img.img_ele, ...layout._s_rect,
-          screen_w * l / f_w,
-          screen_h * t / f_h,
-          screen_w * w / f_w,
-          screen_h * h / f_h
-        );
+        const dx = screen_w * l / f_w
+        const dy = screen_h * t / f_h
+        const dw = screen_w * w / f_w
+        const dh = screen_h * h / f_h
+        if (flip_x || flip_y) {
+          offscreen_ctx.translate(flip_x ? 2 * dx + dw : 0, flip_y ? 2 * dy + dh : 0);
+          offscreen_ctx.scale(flip_x ? -1 : 1, flip_y ? -1 : 1);
+        }
+        offscreen_ctx.drawImage(_img.img_ele, ...layout._s_rect, dx, dy, dw, dh);
+
+        if (flip_x || flip_y) offscreen_ctx.setTransform(1, 0, 0, 1, 0, 0);
         continue;
       }
       const { txt, txt_fill = 'white', txt_stroke, font = ['16px', 'Arial'] } = layout;
@@ -161,9 +179,32 @@ export function GameUI(props: { lf2?: LF2; }) {
     };
 
     const layouts: ICookedLayoutInfo[] = [];
-    for (const raw_layout of raw_layouts) {
-      const { visible, img } = raw_layout;
-      const img_path = Array.isArray(img) ? random_get(img) : img;
+    const arithmetic_progression_map = new Map<string, number[]>();
+    for (const raw_layout of raw_layouts_list[www]) {
+      const { visible, img, which } = raw_layout;
+      let img_idx: number | undefined;
+      if (is_str(which)) {
+        const result = which.trim().replace(/\s/g, '').match(/random_int_in_range\((\d+),(\d+)(,\d+)?\)/);
+        if (result) {
+          const [, a, b, group_id] = result;
+          const begin = Number(a);
+          const end = Number(b);
+          if (begin < end) {
+            let arr: number[] = [];
+            if (is_str(group_id)) {
+              const r = arithmetic_progression_map.get(group_id)
+              if (r?.length) arr = r;
+              else arithmetic_progression_map.set(group_id, arr = arithmetic_progression(begin, end, 1))
+            } else {
+              arr = arithmetic_progression(begin, end, 1)
+            }
+            img_idx = random_take(arr);
+          }
+        }
+      }
+      const img_path = !is_arr(img) ? img : is_num(img_idx) ? img[img_idx] : random_get(img);
+
+
       const preload = async (img_path: string) => {
         const img_info = image_pool.find(img_path);
         if (img_info) return img_info;
@@ -171,7 +212,6 @@ export function GameUI(props: { lf2?: LF2; }) {
         return await image_pool.load(img_path, img_url);
       };
       const _img = img_path ? await preload(img_path) : void 0;
-
       const [sx = 0, sy = 0, sw = 0, sh = 0] = raw_layout.s_rect ?? [0, 0, _img?.w, _img?.h];
       let [w, h] = raw_layout.size ?? [0, 0];
       const [cx, cy] = raw_layout.center ?? [0, 0];
@@ -196,7 +236,7 @@ export function GameUI(props: { lf2?: LF2; }) {
       layouts.push(cooked);
     }
     set_layouts(layouts);
-  }, [raw_layouts, lf2]);
+  }, [raw_layouts_list, lf2]);
 
   useEffect(() => {
     cook_layouts();
@@ -242,3 +282,51 @@ export function GameUI(props: { lf2?: LF2; }) {
       onPointerCancel={onPointerUp} />
   );
 }
+
+export interface ILayoutInfo {
+  key: string;
+  img?: string[] | string;
+  which?: number | string;
+  s_rect?: number[];
+  center?: number[];
+  pos?: number[];
+  size?: number[];
+  visible?: boolean | string;
+  flip_x?: boolean;
+  flip_y?: boolean
+
+  txt?: string;
+  txt_fill?: string;
+  txt_stroke?: string;
+  font?: string[];
+
+}
+export interface ICookedLayoutInfo extends ILayoutInfo {
+  _img?: TImageInfo;
+  _s_rect: [number, number, number, number];
+  _visible: (layout: ICookedLayoutInfo) => boolean;
+  _left_top: [number, number];
+  _size: [number, number];
+}
+const canvas_2_screen = (ctx: CanvasRenderingContext2D, { x, y }: { x: number, y: number }) => {
+  const matrix = ctx.getTransform().invertSelf()
+  if (!matrix.is2D) return { x: NaN, y: NaN }
+  const { a, b, c, d, e, f } = matrix
+  const screenX = (c * y - d * x + d * e - c * f) / (b * c - a * d)
+  const screenY = (y - screenX * b - f) / d
+  return {
+    x: Math.round(screenX),
+    y: Math.round(screenY),
+  }
+}
+
+const screen_2_canvas = (ctx: CanvasRenderingContext2D, { x, y }: { x: number, y: number }) => {
+  const matrix = ctx.getTransform().invertSelf()
+  if (!matrix.is2D) return { x: NaN, y: NaN }
+  const { a, b, c, d, e, f } = matrix
+  return {
+    x: Math.round(x * a + y * c + e),
+    y: Math.round(x * b + y * d + f)
+  };
+}
+const is_arr = (arg: any): arg is any[] => Array.isArray(arg)

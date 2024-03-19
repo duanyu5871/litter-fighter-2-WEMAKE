@@ -1,4 +1,5 @@
 import random_get from "../Utils/random_get";
+import random_take from "../Utils/random_take";
 import { is_num } from "../js_utils/is_num";
 import { is_str } from "../js_utils/is_str";
 import { IBgData, IStageInfo, IStageObjectInfo, IStagePhaseInfo } from "../js_utils/lf2_type";
@@ -19,10 +20,36 @@ class StageObject implements IEntityCallbacks {
   readonly info: IStageObjectInfo;
   readonly entities = new Set<Entity>();
   readonly stage: Stage;
+  readonly get_oid: () => string;
+
+  private oid_list: string[] = [];
+  private old_list_idx = 0;
+
   constructor(stage: Stage, info: IStageObjectInfo) {
     this.stage = stage;
     this.info = { ...info }
-
+    const oid_len = this.oid_list.length;
+    switch (this.info.id_method) {
+      case 'non_repetitive':
+        this.get_oid = () => {
+          if (!oid_len) this.oid_list = [...this.info.id];
+          return random_take(this.oid_list);
+        }
+        break;
+      case 'once_random':
+        const len = random_in_range(0, oid_len);
+        const idx = Math.floor(random_in_range(0, len) % len);
+        const oid = this.info.id[idx];
+        this.get_oid = () => oid;
+        break;
+      case 'order':
+        this.get_oid = () => this.info.id[this.old_list_idx = (this.old_list_idx + 1) % oid_len];
+        break;
+      case 'random':
+      default:
+        this.get_oid = () => random_get(this.info.id);
+        break;
+    }
     const oid = random_get(this.info.id);
     if (!oid) { debugger; return; }
     const data = this.lf2.dat_mgr.find(oid)
@@ -41,9 +68,10 @@ class StageObject implements IEntityCallbacks {
     e.callbacks.delete(this);
     if (!this.entities.size) this.stage.handle_empty_stage_object(this)
   }
+
   spawn() {
     const { lf2 } = this;
-    const oid = random_get(this.info.id);
+    const oid = this.get_oid()
     if (!oid) { return; }
     const data = lf2.dat_mgr.find(oid)
     if (!data) { return; }

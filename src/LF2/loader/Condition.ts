@@ -6,8 +6,8 @@ interface JudgeFunc<T> { (arg: T): boolean }
 export class Condition<T> {
   readonly text: string = '';
   readonly children: Array<JudgeFunc<T> | '|' | '&' | Condition<T>> = [];
-  readonly get_val: (word: string) => (e: T) => any;
-  constructor(text: string, get_val: (word: string) => (e: T) => any) {
+  readonly get_val: (word: string) => (e: T) => string | number | boolean;
+  constructor(text: string, get_val: (word: string) => (e: T) => string | number | boolean) {
     this.get_val = get_val;
     this.text = text = text.replace(/\s|\n|\r/g, '');
     let p = 0;
@@ -39,7 +39,9 @@ export class Condition<T> {
       }
     }
   }
-
+  builtin_get_val(word: string): any {
+    return word;
+  }
   private gen_single_judge_func(str: string): JudgeFunc<T> {
     const reg_result = str.match(/(\S*)\s?(==|!=|<=|>=)\s?(\S*)/);
     if (!reg_result) return ALWAY_FALSE;
@@ -57,8 +59,8 @@ export class Condition<T> {
       return ALWAY_FALSE;
     }
     return t => predicate(
-      this.get_val(word_1)(t),
-      this.get_val(word_2)(t)
+      this.get_val(word_1)(t) ?? this.builtin_get_val(word_1),
+      this.get_val(word_2)(t) ?? this.builtin_get_val(word_2)
     );
   }
   make(): JudgeFunc<T> {
