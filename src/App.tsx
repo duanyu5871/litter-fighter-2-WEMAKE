@@ -187,8 +187,8 @@ function App() {
   }
 
   const [render_size_mode, set_render_size_mode] = useState<'fixed' | 'fill' | 'cover' | 'contain'>('fixed');
-  const [render_fixed_scale, set_render_fixed_scale] = useState<number>(0);
-  const [custom_render_fixed_scale, set_custom_render_fixed_scale] = useState<number>(0.25);
+  const [render_fixed_scale, set_render_fixed_scale] = useState<number>(1);
+  const [custom_render_fixed_scale, set_custom_render_fixed_scale] = useState<number>(1);
   const [v_align, set_v_align] = useState<number>(0.5);
   const [h_align, set_h_align] = useState<number>(0.5);
   const [custom_h_align, set_custom_h_align] = useState<number>(0.5);
