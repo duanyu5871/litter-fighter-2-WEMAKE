@@ -9,7 +9,9 @@
   background-color: #10206C;
 }
 
-.game_ui_canvas{
+.game_ui_canvas {
+  top: 0px;
+  left: 0px;
   width: 100%;
   height: 100%;
   display: block;

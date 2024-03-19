@@ -1,14 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import LF2 from './LF2/LF2';
+import { KEY_NAME_LIST } from './LF2/controller/BaseController';
 import { Condition } from './LF2/loader/Condition';
 import { TImageInfo, image_pool } from './LF2/loader/loader';
-import random_take from './Utils/random_take';
+import { random_in_range } from './LF2/random_in_range';
 import { arithmetic_progression } from './js_utils/arithmetic_progression';
 import { is_bool } from './js_utils/is_bool';
 import { is_num } from './js_utils/is_num';
 import { is_str } from './js_utils/is_str';
-import { KEY_NAME_LIST } from './LF2/controller/BaseController';
-import { random_in_range } from './LF2/random_in_range';
 export interface ILayoutItem {
   key: string;
   img?: string[] | string;
@@ -23,19 +22,20 @@ export interface ILayoutItem {
   flip_y?: boolean
   bg_color?: string;
   component?: string;
-
   txt?: string;
   txt_fill?: string;
   txt_stroke?: string;
   font?: string[];
-  on_click?: string;
+  click_action?: string;
 }
 export interface ILayoutData {
   name: string;
   id: string;
   bg_color?: string;
   items: ILayoutItem[];
-  key_press_events?: [string, string][],
+  key_press_actions?: [string, string][],
+  enter_action?: string,
+  leave_action?: string
 }
 export interface ICookedLayoutItem extends ILayoutItem {
   _img?: TImageInfo[];
@@ -98,7 +98,7 @@ const raw_layouts: ILayoutData[] = [
       center: [0.5, 0],
       size: [256, 26],
       pos: [796 / 2, 270 - 60 + 14],
-      on_click: 'goto(loading)'
+      click_action: 'goto(loading)'
     }, {
       visible: 'mouse_on_me==1',
       key: 'network_game',
@@ -107,7 +107,7 @@ const raw_layouts: ILayoutData[] = [
       center: [0.5, 0],
       size: [256, 26],
       pos: [796 / 2, 270 - 60 + 46],
-      on_click: 'alert(还没想好呢)'
+      click_action: 'alert(还没想好呢)'
     }, {
       visible: 'mouse_on_me==1',
       key: 'ctrl_settings',
@@ -116,14 +116,14 @@ const raw_layouts: ILayoutData[] = [
       center: [0.5, 0],
       size: [256, 26],
       pos: [796 / 2, 270 - 60 + 77],
-      on_click: 'goto(ctrl_settings)'
+      click_action: 'goto(ctrl_settings)'
     }]
   },
   {
     name: 'loading_page',
     id: 'loading',
     bg_color: 'rgb(16, 32, 108)',
-    key_press_events: [['escape', 'goto(entry)']],
+    key_press_actions: [['escape', 'goto(entry)']],
     items: [{
       key: 'bg_wait',
       img: 'sprite/MENU_WAIT.png',
@@ -134,13 +134,15 @@ const raw_layouts: ILayoutData[] = [
       txt_fill: 'white',
       pos: [610, 75],
       font: ['16px', 'Arial']
-    }]
+    }],
+    enter_action: 'load_default_data',
+    leave_action: 'cancel_load_data',
   },
   {
     name: 'ctrl_settings_page',
     id: 'ctrl_settings',
     bg_color: 'rgb(16, 32, 108)',
-    key_press_events: [['escape', 'goto(entry)']],
+    key_press_actions: [['escape', 'goto(entry)']],
     items: [
       {
         key: 'bg_left',
@@ -177,14 +179,14 @@ const raw_layouts: ILayoutData[] = [
         img: 'sprite/MENU_CLIP.png',
         s_rect: [489, 426, 151, 26],
         pos: [407, 414 - 15],
-        on_click: 'goto(entry)'
+        click_action: 'goto(entry)'
       }, {
         visible: 'mouse_on_me==1',
         key: 'btn_cancel',
         img: 'sprite/MENU_CLIP.png',
         s_rect: [643, 426, 151, 26],
         pos: [579, 414 - 15],
-        on_click: 'goto(entry)'
+        click_action: 'goto(entry)'
       }, {
         visible: 'mouse_on_me==0',
         key: 'btn_move_table_normal',
@@ -199,14 +201,14 @@ const raw_layouts: ILayoutData[] = [
         s_rect: [0, 379, 494, 23],
         center: [0, 1],
         pos: [0, 450],
-        on_click: 'link_to(https://lf2.net/control.html)'
+        click_action: 'link_to(https://lf2.net/control.html)'
       },
       ...[1, 2, 3, 4].map((play_id, idx) => [
         {
           key: `btn_ctrl_type_${play_id}`,
           img: ['sprite/CS6.png', 'sprite/CS2.png', 'sprite/CS3.png', 'sprite/CS4.png', 'sprite/CS5.png'],
           pos: [193 + 139 * idx, 155 - 15],
-          on_click: 'loop_img'
+          click_action: 'loop_img'
         }, {
           key: `btn_player_name_${play_id}`,
           component: `player_name_input(${play_id})`,
@@ -214,7 +216,7 @@ const raw_layouts: ILayoutData[] = [
           font: ['12px', 'normal'],
           pos: [193 + 139 * idx, 129 - 15],
           size: [106, 19],
-          on_click: 'loop_img'
+          click_action: 'loop_img'
         }, ...KEY_NAME_LIST.map<ILayoutItem>((key, jdx) => ({
           key: `btn_key_set_${play_id}_${key}`,
           component: `key_set(${play_id},${key})`,
@@ -222,13 +224,13 @@ const raw_layouts: ILayoutData[] = [
           font: ['12px', 'normal'],
           pos: [193 + 139 * idx, 253 - 15 + 22 * jdx],
           size: [106, 19],
-          on_click: 'loop_img'
+          click_action: 'loop_img'
         }))
       ]).flat(2)
     ]
   }
 ]
-export function GameUI(props: { lf2?: LF2; }) {
+export function GameUI(props: { lf2?: LF2; load_builtin?: () => void }) {
   const { lf2 } = props;
   const canvas_ref = useRef<HTMLCanvasElement>(null);
   const offscreen_ref = useRef<HTMLCanvasElement | null>(null);
@@ -390,7 +392,7 @@ export function GameUI(props: { lf2?: LF2; }) {
           _s_rect: [sx, sy, sw, sh],
           _layout: cooked_layout,
           _img_idx,
-          on_click: raw_items.on_click?.trim().replace(/\s/g, '')
+          click_action: raw_items.click_action?.trim().replace(/\s/g, '')
         };
         cooked_layout.items.push(cooked_item);
       }
@@ -440,7 +442,7 @@ export function GameUI(props: { lf2?: LF2; }) {
   };
   const onKeyDown = (e: React.KeyboardEvent) => {
     if (!layout) return;
-    const { key_press_events = [] } = layout;
+    const { key_press_actions: key_press_events = [] } = layout;
     for (const [key, action] of key_press_events) {
       if (e.key.toLowerCase() !== key) continue
       handle_layout_action(layout, action)
@@ -448,10 +450,19 @@ export function GameUI(props: { lf2?: LF2; }) {
   }
   const handle_layout_action = (layout: ICookedLayoutData, action: string) => {
     const [, next_layout_id] = action.match(/goto\((.+)\)/) ?? []
+
+    if (action === 'cancel_load_data') {
+      return lf2?.clear()
+    }
+    if (action === 'load_default_data') {
+      return props.load_builtin?.();
+    }
     if (next_layout_id) {
       const prev_layout = layout;
       prev_layout.arithmetic_progression_map.clear();
       const next_layout = cooked_layouts.find(v => v.id === next_layout_id)
+      if (prev_layout?.leave_action) handle_layout_action(prev_layout, prev_layout.leave_action)
+      if (next_layout?.enter_action) handle_layout_action(next_layout, next_layout.enter_action)
       return set_layout(next_layout)
     }
     const [, alert_msg] = action.match(/alert\((.+)\)/) ?? []
@@ -471,14 +482,15 @@ export function GameUI(props: { lf2?: LF2; }) {
   const onClick = (e: React.MouseEvent) => {
     if (!layout) return;
     for (const item of layout.items) {
-      const { on_click } = item;
+      const { click_action: on_click } = item;
       if (!on_click) continue;
       const { mouse_x: x, mouse_y: y } = mem.current;
       const on_me = pos_on_me(item, x, y);
       if (on_me) handle_item_action(item, on_click)
-
     }
   }
+
+
   return (
     <canvas
       ref={canvas_ref}
