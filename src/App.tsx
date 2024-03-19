@@ -2,17 +2,18 @@ import JSZIP from 'jszip';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import './App.css';
 import { BlackgroundRow } from './BlackgroundRow';
+import Fullsreen from './Fullsreen';
 import LF2 from './LF2/LF2';
 import Stage from './LF2/Stage';
 import { Character } from './LF2/entity/Character';
+import { random_in_range } from './LF2/random_in_range';
 import { Log } from './Log';
 import { PlayerRow } from './PlayerRow';
 import open_file, { read_file } from './Utils/open_file';
+import './game_ui.css';
 import './init';
 import lf2_dat_str_to_json from './js_utils/lf2_dat_translator/dat_2_json';
 import read_lf2_dat from './read_lf2_dat';
-import { is_num } from './js_utils/is_num';
-import Fullsreen from './Fullsreen';
 
 const fullsreen = new Fullsreen();
 function App() {
@@ -131,7 +132,7 @@ function App() {
       .then(v => JSZIP.loadAsync(v))
       .then(v => lf2.start(v))
       .then(_ => set_loaded(true))
-      .catch(e => alert('' + e))
+      .catch(e => Log.print('on_click_load_local_zip', e))
       .finally(() => set_loading(false))
   }
   const on_click_load_builtin_zip = () => {
@@ -142,7 +143,7 @@ function App() {
       .then(v => JSZIP.loadAsync(v))
       .then(v => lf2.start(v))
       .then(_ => set_loaded(true))
-      .catch(e => alert('' + e))
+      .catch(e => Log.print('on_click_load_builtin_zip', e))
       .finally(() => set_loading(false))
   }
   const on_click_cleaup = () => {
@@ -156,7 +157,7 @@ function App() {
     set_loading(true);
     lf2.start()
       .then(_ => set_loaded(true))
-      .catch(e => alert('' + e))
+      .catch(e => Log.print('on_click_load_builtin', e))
       .finally(() => set_loading(false))
   }
   const open_dat = async () => {
@@ -183,6 +184,14 @@ function App() {
       set_loading(false)
     })
   }
+  const [bg_left, set_bg_left] = useState<string>();
+  const [menu_clip, set_menu_clip] = useState<string>();
+  useEffect(() => {
+    if (!lf2) return;
+    const n = Math.round(random_in_range(1, 13));
+    lf2.import(`sprite/MENU_BACK${n}.png`).then(set_bg_left)
+    lf2.import(`sprite/MENU_CLIP.png`).then(set_menu_clip)
+  }, [lf2])
 
   return (
     <div className="App">
@@ -212,6 +221,10 @@ function App() {
       <div className='game_contiainer' ref={_game_contiainer_ref}>
         <canvas tabIndex={-1} ref={_canvas_ref} className='game_canvas' width={795} height={450} />
         <div className='game_overlay' ref={_overlay_ref} style={{ display: !game_overlay ? 'none' : void 0 }} />
+        <div className='game_ui'>
+          <img draggable='false' className='bg_left' src={bg_left} alt='' />
+          <img draggable='false' className='main_title' src={menu_clip} alt='' />
+        </div>
       </div>
       <div className='editor_view' style={{ display: editor_closed ? 'none' : void 0 }}>
         <div className='top'>

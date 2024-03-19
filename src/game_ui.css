@@ -1,0 +1,21 @@
+.game_ui {
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  top: 0px;
+  bottom: 0px;
+  /* pointer-events: none; */
+  user-select: none;
+  background-color: #10206C;
+}
+
+.game_ui .bg_left {
+  height: 100%;
+}
+
+.game_ui .main_title {
+  position: absolute;
+  object-fit: cover;
+  width: 496px;
+  height: 80px;
+}
