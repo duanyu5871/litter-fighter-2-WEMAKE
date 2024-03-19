@@ -61,7 +61,7 @@ function App() {
     if (fullsreen.enabled())
       fullsreen.exit();
     else
-      fullsreen.enter(document.body);
+      fullsreen.enter(document.body.parentElement!);
   }
 
 
