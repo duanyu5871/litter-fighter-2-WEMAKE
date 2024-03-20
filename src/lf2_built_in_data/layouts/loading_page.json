@@ -12,19 +12,13 @@
     {
       "key": "bg_wait",
       "img": "sprite/MENU_WAIT.png",
-      "size": [
-        794,
-        0
-      ]
+      "size": "794, 0"
     },
     {
       "key": "txt_loading_content",
       "txt": "txt_loading_content",
       "txt_fill": "white",
-      "pos": [
-        610,
-        75
-      ],
+      "pos": "610, 75",
       "font": [
         "16px",
         "Arial"

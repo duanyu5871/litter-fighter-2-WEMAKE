@@ -2,10 +2,10 @@ export interface ILayoutItem {
   key: string;
   img?: string[] | string;
   which?: number | string;
-  rect?: number[];
-  center?: number[];
-  pos?: number[];
-  size?: number[];
+  rect?: number[] | string;
+  center?: number[] | string;
+  pos?: number[] | string;
+  size?: number[] | string;
   visible?: boolean | string;
   flip_x?: boolean;
   flip_y?: boolean;

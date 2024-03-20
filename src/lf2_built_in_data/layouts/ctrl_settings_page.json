@@ -27,16 +27,8 @@
         "sprite/MENU_BACK12.png",
         "sprite/MENU_BACK13.png"
       ],
-      "rect": [
-        0,
-        0,
-        378,
-        546
-      ],
-      "size": [
-        0,
-        450
-      ]
+      "rect": "0, 0, 378, 546",
+      "size": "0, 450"
     },
     {
       "key": "bg_right",
@@ -56,139 +48,59 @@
         "sprite/MENU_BACK12.png",
         "sprite/MENU_BACK13.png"
       ],
-      "rect": [
-        0,
-        0,
-        378,
-        546
-      ],
-      "center": [
-        1,
-        0
-      ],
-      "size": [
-        0,
-        450
-      ],
-      "pos": [
-        794,
-        0
-      ],
+      "rect": "0, 0, 378, 546",
+      "center": "1, 0",
+      "size": "0, 450",
+      "pos": "794, 0",
       "flip_x": true
     },
     {
       "key": "main_title",
       "img": "sprite/MENU_CLIP.png",
-      "rect": [
-        0,
-        41,
-        496,
-        80
-      ],
-      "center": [
-        0.5,
-        0
-      ],
-      "size": [
-        372,
-        60
-      ],
-      "pos": [
-        398,
-        5
-      ]
+      "rect": "0, 41, 496, 80",
+      "center":"0.5, 0",
+      "size": "372, 60",
+      "pos": "398, 5"
     },
     {
       "key": "main_menu",
       "img": "sprite/MENU_CLIP2.png",
-      "rect": [
-        0,
-        0,
-        704,
-        353
-      ],
-      "center": [
-        0.5,
-        0.5
-      ],
-      "size": [
-        704,
-        353
-      ],
-      "pos": [
-        397,
-        255
-      ]
+      "rect": "0, 0, 704, 353",
+      "center":"0.5, 0.5",
+      "size": "704, 353",
+      "pos": "397, 255"
     },
     {
       "visible": "mouse_on_me==1",
       "key": "btn_confirm",
       "img": "sprite/MENU_CLIP.png",
-      "rect": [
-        489,
-        426,
-        151,
-        26
-      ],
-      "pos": [
-        407,
-        399
-      ],
+      "rect": "489, 426, 151, 26",
+      "pos": "407, 399",
       "click_action": "goto(entry)"
     },
     {
       "visible": "mouse_on_me==1",
       "key": "btn_cancel",
       "img": "sprite/MENU_CLIP.png",
-      "rect": [
-        643,
-        426,
-        151,
-        26
-      ],
-      "pos": [
-        579,
-        399
-      ],
+      "rect": "643, 426, 151, 26",
+      "pos": "579, 399",
       "click_action": "goto(entry)"
     },
     {
       "visible": "mouse_on_me==0",
       "key": "btn_move_table_normal",
       "img": "sprite/MENU_CLIP2.png",
-      "rect": [
-        0,
-        354,
-        494,
-        23
-      ],
-      "center": [
-        0,
-        1
-      ],
-      "pos": [
-        0,
-        450
-      ]
+      "rect": "0, 354, 494, 23",
+      "center": "0, 1",
+      "pos": "0, 450"
     },
     {
       "visible": "mouse_on_me==1",
       "key": "btn_move_table_hover",
       "img": "sprite/MENU_CLIP2.png",
-      "rect": [
-        0,
-        379,
-        494,
-        23
-      ],
-      "center": [
-        0,
-        1
-      ],
-      "pos": [
-        0,
-        450
-      ],
+      "rect": "0, 379, 494, 23",
+      "center": "0, 1",
+      "pos": "0, 450",
       "click_action": "link_to(https://lf2.net/control.html)"
     },
     {
@@ -200,10 +112,7 @@
         "sprite/CS4.png",
         "sprite/CS5.png"
       ],
-      "pos": [
-        193,
-        140
-      ],
+      "pos": "193, 140",
       "click_action": "loop_img"
     },
     {
@@ -214,14 +123,8 @@
         "12px",
         "normal"
       ],
-      "pos": [
-        193,
-        114
-      ],
-      "size": [
-        106,
-        19
-      ],
+      "pos": "193, 114",
+      "size": "106, 19",
       "click_action": "loop_img"
     },
     {
@@ -232,14 +135,8 @@
         "12px",
         "normal"
       ],
-      "pos": [
-        193,
-        238
-      ],
-      "size": [
-        106,
-        19
-      ],
+      "pos": "193, 238",
+      "size": "106, 19",
       "click_action": "loop_img"
     },
     {
@@ -250,14 +147,8 @@
         "12px",
         "normal"
       ],
-      "pos": [
-        193,
-        260
-      ],
-      "size": [
-        106,
-        19
-      ],
+      "pos": "193, 260",
+      "size": "106, 19",
       "click_action": "loop_img"
     },
     {
@@ -268,14 +159,8 @@
         "12px",
         "normal"
       ],
-      "pos": [
-        193,
-        282
-      ],
-      "size": [
-        106,
-        19
-      ],
+      "pos": "193, 282",
+      "size": "106, 19",
       "click_action": "loop_img"
     },
     {
@@ -286,14 +171,8 @@
         "12px",
         "normal"
       ],
-      "pos": [
-        193,
-        304
-      ],
-      "size": [
-        106,
-        19
-      ],
+      "pos": "193, 304",
+      "size": "106, 19",
       "click_action": "loop_img"
     },
     {
@@ -304,14 +183,8 @@
         "12px",
         "normal"
       ],
-      "pos": [
-        193,
-        326
-      ],
-      "size": [
-        106,
-        19
-      ],
+      "pos": "193, 326",
+      "size": "106, 19",
       "click_action": "loop_img"
     },
     {
@@ -322,14 +195,8 @@
         "12px",
         "normal"
       ],
-      "pos": [
-        193,
-        348
-      ],
-      "size": [
-        106,
-        19
-      ],
+      "pos": "193, 348",
+      "size": "106, 19",
       "click_action": "loop_img"
     },
     {
@@ -340,14 +207,8 @@
         "12px",
         "normal"
       ],
-      "pos": [
-        193,
-        370
-      ],
-      "size": [
-        106,
-        19
-      ],
+      "pos": "193, 370",
+      "size": "106, 19",
       "click_action": "loop_img"
     },
     {
@@ -359,10 +220,7 @@
         "sprite/CS4.png",
         "sprite/CS5.png"
       ],
-      "pos": [
-        332,
-        140
-      ],
+      "pos": "332, 140",
       "click_action": "loop_img"
     },
     {
@@ -373,14 +231,8 @@
         "12px",
         "normal"
       ],
-      "pos": [
-        332,
-        114
-      ],
-      "size": [
-        106,
-        19
-      ],
+      "pos": "332, 114",
+      "size": "106, 19",
       "click_action": "loop_img"
     },
     {
@@ -391,14 +243,8 @@
         "12px",
         "normal"
       ],
-      "pos": [
-        332,
-        238
-      ],
-      "size": [
-        106,
-        19
-      ],
+      "pos": "332, 238",
+      "size": "106, 19",
       "click_action": "loop_img"
     },
     {
@@ -409,14 +255,8 @@
         "12px",
         "normal"
       ],
-      "pos": [
-        332,
-        260
-      ],
-      "size": [
-        106,
-        19
-      ],
+      "pos": "332, 260",
+      "size": "106, 19",
       "click_action": "loop_img"
     },
     {
@@ -427,14 +267,8 @@
         "12px",
         "normal"
       ],
-      "pos": [
-        332,
-        282
-      ],
-      "size": [
-        106,
-        19
-      ],
+      "pos": "332, 282",
+      "size": "106, 19",
       "click_action": "loop_img"
     },
     {
@@ -445,14 +279,8 @@
         "12px",
         "normal"
       ],
-      "pos": [
-        332,
-        304
-      ],
-      "size": [
-        106,
-        19
-      ],
+      "pos": "332, 304",
+      "size": "106, 19",
       "click_action": "loop_img"
     },
     {
@@ -463,14 +291,8 @@
         "12px",
         "normal"
       ],
-      "pos": [
-        332,
-        326
-      ],
-      "size": [
-        106,
-        19
-      ],
+      "pos": "332, 326",
+      "size": "106, 19",
       "click_action": "loop_img"
     },
     {
@@ -481,14 +303,8 @@
         "12px",
         "normal"
       ],
-      "pos": [
-        332,
-        348
-      ],
-      "size": [
-        106,
-        19
-      ],
+      "pos": "332, 348",
+      "size": "106, 19",
       "click_action": "loop_img"
     },
     {
@@ -499,14 +315,8 @@
         "12px",
         "normal"
       ],
-      "pos": [
-        332,
-        370
-      ],
-      "size": [
-        106,
-        19
-      ],
+      "pos": "332, 370",
+      "size": "106, 19",
       "click_action": "loop_img"
     },
     {
@@ -518,10 +328,7 @@
         "sprite/CS4.png",
         "sprite/CS5.png"
       ],
-      "pos": [
-        471,
-        140
-      ],
+      "pos": "471, 140",
       "click_action": "loop_img"
     },
     {
@@ -532,14 +339,8 @@
         "12px",
         "normal"
       ],
-      "pos": [
-        471,
-        114
-      ],
-      "size": [
-        106,
-        19
-      ],
+      "pos": "471, 114",
+      "size": "106, 19",
       "click_action": "loop_img"
     },
     {
@@ -550,14 +351,8 @@
         "12px",
         "normal"
       ],
-      "pos": [
-        471,
-        238
-      ],
-      "size": [
-        106,
-        19
-      ],
+      "pos": "471, 238",
+      "size": "106, 19",
       "click_action": "loop_img"
     },
     {
@@ -568,14 +363,8 @@
         "12px",
         "normal"
       ],
-      "pos": [
-        471,
-        260
-      ],
-      "size": [
-        106,
-        19
-      ],
+      "pos": "471, 260",
+      "size": "106, 19",
       "click_action": "loop_img"
     },
     {
@@ -586,14 +375,8 @@
         "12px",
         "normal"
       ],
-      "pos": [
-        471,
-        282
-      ],
-      "size": [
-        106,
-        19
-      ],
+      "pos": "471, 282",
+      "size": "106, 19",
       "click_action": "loop_img"
     },
     {
@@ -604,14 +387,8 @@
         "12px",
         "normal"
       ],
-      "pos": [
-        471,
-        304
-      ],
-      "size": [
-        106,
-        19
-      ],
+      "pos": "471, 304",
+      "size": "106, 19",
       "click_action": "loop_img"
     },
     {
@@ -622,14 +399,8 @@
         "12px",
         "normal"
       ],
-      "pos": [
-        471,
-        326
-      ],
-      "size": [
-        106,
-        19
-      ],
+      "pos": "471, 326",
+      "size": "106, 19",
       "click_action": "loop_img"
     },
     {
@@ -640,14 +411,8 @@
         "12px",
         "normal"
       ],
-      "pos": [
-        471,
-        348
-      ],
-      "size": [
-        106,
-        19
-      ],
+      "pos": "471, 348",
+      "size": "106, 19",
       "click_action": "loop_img"
     },
     {
@@ -658,14 +423,8 @@
         "12px",
         "normal"
       ],
-      "pos": [
-        471,
-        370
-      ],
-      "size": [
-        106,
-        19
-      ],
+      "pos": "471, 370",
+      "size": "106, 19",
       "click_action": "loop_img"
     },
     {
@@ -677,10 +436,7 @@
         "sprite/CS4.png",
         "sprite/CS5.png"
       ],
-      "pos": [
-        610,
-        140
-      ],
+      "pos": "610, 140",
       "click_action": "loop_img"
     },
     {
@@ -691,14 +447,8 @@
         "12px",
         "normal"
       ],
-      "pos": [
-        610,
-        114
-      ],
-      "size": [
-        106,
-        19
-      ],
+      "pos": "610, 114",
+      "size": "106, 19",
       "click_action": "loop_img"
     },
     {
@@ -709,14 +459,8 @@
         "12px",
         "normal"
       ],
-      "pos": [
-        610,
-        238
-      ],
-      "size": [
-        106,
-        19
-      ],
+      "pos": "610, 238",
+      "size": "106, 19",
       "click_action": "loop_img"
     },
     {
@@ -727,14 +471,8 @@
         "12px",
         "normal"
       ],
-      "pos": [
-        610,
-        260
-      ],
-      "size": [
-        106,
-        19
-      ],
+      "pos": "610, 260",
+      "size": "106, 19",
       "click_action": "loop_img"
     },
     {
@@ -745,14 +483,8 @@
         "12px",
         "normal"
       ],
-      "pos": [
-        610,
-        282
-      ],
-      "size": [
-        106,
-        19
-      ],
+      "pos": "610, 282",
+      "size": "106, 19",
       "click_action": "loop_img"
     },
     {
@@ -763,14 +495,8 @@
         "12px",
         "normal"
       ],
-      "pos": [
-        610,
-        304
-      ],
-      "size": [
-        106,
-        19
-      ],
+      "pos": "610, 304",
+      "size": "106, 19",
       "click_action": "loop_img"
     },
     {
@@ -781,14 +507,8 @@
         "12px",
         "normal"
       ],
-      "pos": [
-        610,
-        326
-      ],
-      "size": [
-        106,
-        19
-      ],
+      "pos": "610, 326",
+      "size": "106, 19",
       "click_action": "loop_img"
     },
     {
@@ -799,14 +519,8 @@
         "12px",
         "normal"
       ],
-      "pos": [
-        610,
-        348
-      ],
-      "size": [
-        106,
-        19
-      ],
+      "pos": "610, 348",
+      "size": "106, 19",
       "click_action": "loop_img"
     },
     {
@@ -817,14 +531,8 @@
         "12px",
         "normal"
       ],
-      "pos": [
-        610,
-        370
-      ],
-      "size": [
-        106,
-        19
-      ],
+      "pos": "610, 370",
+      "size": "106, 19",
       "click_action": "loop_img"
     }
   ]

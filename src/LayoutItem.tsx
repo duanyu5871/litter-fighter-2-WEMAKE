@@ -100,11 +100,13 @@ export class LayoutItem {
   }
 
   private _cook_rects() {
-    const { w: img_w, h: img_h } = this.img_infos?.[0] || {};
-    const [sx = 0, sy = 0, sw = 0, sh = 0] = this.data.rect ?? [0, 0, img_w, img_h];
-    const [w = 0, h = 0] = this.data.size ?? [sw, sh];
-    const [cx, cy] = this.data.center ?? [0, 0];
-    const [x, y] = this.data.pos ?? [0, 0];
+    const { w: img_w = 0, h: img_h = 0 } = this.img_infos?.[0] || {};
+    const { size, center, pos, rect } = this.data
+
+    const [sx, sy, sw, sh] = read_as_4_nums(rect, 0, 0, img_w, img_h)
+    const [w, h] = read_as_2_nums(size, sw, sh);
+    const [cx, cy] = read_as_2_nums(center, 0, 0);
+    const [x, y] = read_as_2_nums(pos, 0, 0);
 
     // 宽或高其一为0时，使用原图宽高比例的计算之
     const dw = Math.floor(w ? w : sh ? h * sw / sh : 0)
@@ -115,4 +117,30 @@ export class LayoutItem {
     this.src_rect = [sx, sy, sw, sh];
     this.dst_rect = [dx, dy, dw, dh];
   }
+}
+
+const read_as_2_nums = (v: string | number | number[] | null | undefined, a1: number, a2: number): [number, number] => {
+  if (!v) return [a1, a2];
+  if (is_num(v)) return [v, v];
+  if (is_str(v)) v = v.replace(/\s/g, '').split(',').map(v => Number(v))
+  else v = v.map(v => Number(v))
+  const [b1, b2] = v;
+  return [
+    Number.isNaN(b1) ? a1 : b1,
+    Number.isNaN(b2) ? a2 : b2
+  ]
+}
+const read_as_4_nums = (v: string | number[] | null | undefined, a1: number, a2: number, a3: number, a4: number): [number, number, number, number] => {
+  if (!v) return [a1, a2, a3, a4];
+  if (is_num(v)) return [v, v, v, v];
+  if (is_str(v)) v = v.replace(/\s/g, '').split(',').map(v => Number(v))
+  else v = v.map(v => Number(v))
+
+  const [b1, b2, b3, b4] = v;
+  return [
+    Number.isNaN(b1) ? a1 : b1,
+    Number.isNaN(b2) ? a2 : b2,
+    Number.isNaN(b3) ? a3 : b3,
+    Number.isNaN(b4) ? a4 : b4
+  ]
 }

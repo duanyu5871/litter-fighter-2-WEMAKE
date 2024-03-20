@@ -21,10 +21,7 @@
         "sprite/MENU_BACK12.png",
         "sprite/MENU_BACK13.png"
       ],
-      "size": [
-        0,
-        450
-      ]
+      "size": "0, 450"
     },
     {
       "key": "bg_right",
@@ -44,134 +41,55 @@
         "sprite/MENU_BACK12.png",
         "sprite/MENU_BACK13.png"
       ],
-      "size": [
-        0,
-        450
-      ],
-      "center": [
-        1,
-        0
-      ],
-      "pos": [
-        794,
-        0
-      ],
+      "size": "0, 450",
+      "center": "1, 0",
+      "pos": "794, 0",
       "flip_x": true
     },
     {
       "key": "main_title",
       "img": "sprite/MENU_CLIP.png",
-      "rect": [
-        0,
-        41,
-        496,
-        80
-      ],
-      "center": [
-        0.5,
-        0
-      ],
-      "size": [
-        496,
-        80
-      ],
-      "pos": [
-        398,
-        40
-      ]
+      "rect": "0, 41, 496, 80",
+      "center":"0.5, 0",
+      "size": "496, 80",
+      "pos": "398, 40"
     },
     {
       "key": "main_menu",
       "img": "sprite/MENU_CLIP.png",
-      "rect": [
-        0,
-        125,
-        282,
-        119
-      ],
-      "center": [
-        0.5,
-        0.5
-      ],
-      "size": [
-        282,
-        119
-      ],
-      "pos": [
-        397,
-        270
-      ]
+      "rect": "0, 125, 282, 119",
+      "center":"0.5, 0.5",
+      "size": "282, 119",
+      "pos": "397, 270"
     },
     {
       "visible": "mouse_on_me==1",
       "key": "start_local_game",
       "img": "sprite/MENU_CLIP.png",
-      "rect": [
-        535,
-        105,
-        256,
-        26
-      ],
-      "center": [
-        0.5,
-        0
-      ],
-      "size": [
-        256,
-        26
-      ],
-      "pos": [
-        398,
-        224
-      ],
+      "rect": "535, 105, 256, 26",
+      "center":"0.5, 0",
+      "size": "256, 26",
+      "pos": "398, 224",
       "click_action": "goto(loading)"
     },
     {
       "visible": "mouse_on_me==1",
       "key": "network_game",
       "img": "sprite/MENU_CLIP.png",
-      "rect": [
-        535,
-        137,
-        256,
-        26
-      ],
-      "center": [
-        0.5,
-        0
-      ],
-      "size": [
-        256,
-        26
-      ],
-      "pos": [
-        398,
-        256
-      ],
+      "rect": "535, 137, 256, 26",
+      "center":"0.5, 0",
+      "size": "256, 26",
+      "pos": "398, 256",
       "click_action": "alert(还没想好呢)"
     },
     {
       "visible": "mouse_on_me==1",
       "key": "ctrl_settings",
       "img": "sprite/MENU_CLIP.png",
-      "rect": [
-        535,
-        168,
-        256,
-        26
-      ],
-      "center": [
-        0.5,
-        0
-      ],
-      "size": [
-        256,
-        26
-      ],
-      "pos": [
-        398,
-        287
-      ],
+      "rect": "535, 168, 256, 26",
+      "center":"0.5, 0",
+      "size": "256, 26",
+      "pos": "398, 287",
       "click_action": "goto(ctrl_settings)"
     }
   ]
