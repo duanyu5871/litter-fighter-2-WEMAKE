@@ -1,0 +1,41 @@
+{
+  "name": "user_selection_page",
+  "id": "user_selection",
+  "bg_color": "rgb(0, 0, 0)",
+  "key_press_actions": [
+    [
+      "escape",
+      "goto(entry)"
+    ]
+  ],
+  "items": [
+    {
+      "key": "frame",
+      "img": "sprite/CHARMENU.png",
+      "center": [
+        0.5,
+        0.5
+      ],
+      "pos": [
+        397,
+        225
+      ]
+    },
+    {
+      "visible": "mouse_on_me==1",
+      "key": "btn_confirm",
+      "img": "sprite/MENU_CLIP.png",
+      "rect": [
+        489,
+        426,
+        151,
+        26
+      ],
+      "pos": [
+        407,
+        399
+      ],
+      "click_action": "goto(entry)"
+    }
+  ]
+}

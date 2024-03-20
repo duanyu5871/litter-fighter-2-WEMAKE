@@ -1,4 +1,5 @@
 [
+  "layouts/user_selection.json",
   "layouts/entry_page.json",
   "layouts/ctrl_settings_page.json",
   "layouts/loading_page.json"
