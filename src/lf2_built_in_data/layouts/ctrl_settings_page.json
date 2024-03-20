@@ -1,0 +1,831 @@
+{
+  "name": "ctrl_settings_page",
+  "id": "ctrl_settings",
+  "bg_color": "rgb(16, 32, 108)",
+  "key_press_actions": [
+    [
+      "escape",
+      "goto(entry)"
+    ]
+  ],
+  "items": [
+    {
+      "key": "bg_left",
+      "which": "f:random_int_in_range(0,12,1)",
+      "img": [
+        "sprite/MENU_BACK1.png",
+        "sprite/MENU_BACK2.png",
+        "sprite/MENU_BACK3.png",
+        "sprite/MENU_BACK4.png",
+        "sprite/MENU_BACK5.png",
+        "sprite/MENU_BACK6.png",
+        "sprite/MENU_BACK7.png",
+        "sprite/MENU_BACK8.png",
+        "sprite/MENU_BACK9.png",
+        "sprite/MENU_BACK10.png",
+        "sprite/MENU_BACK11.png",
+        "sprite/MENU_BACK12.png",
+        "sprite/MENU_BACK13.png"
+      ],
+      "rect": [
+        0,
+        0,
+        378,
+        546
+      ],
+      "size": [
+        0,
+        450
+      ]
+    },
+    {
+      "key": "bg_right",
+      "which": "f:random_int_in_range(0,12,1)",
+      "img": [
+        "sprite/MENU_BACK1.png",
+        "sprite/MENU_BACK2.png",
+        "sprite/MENU_BACK3.png",
+        "sprite/MENU_BACK4.png",
+        "sprite/MENU_BACK5.png",
+        "sprite/MENU_BACK6.png",
+        "sprite/MENU_BACK7.png",
+        "sprite/MENU_BACK8.png",
+        "sprite/MENU_BACK9.png",
+        "sprite/MENU_BACK10.png",
+        "sprite/MENU_BACK11.png",
+        "sprite/MENU_BACK12.png",
+        "sprite/MENU_BACK13.png"
+      ],
+      "rect": [
+        0,
+        0,
+        378,
+        546
+      ],
+      "center": [
+        1,
+        0
+      ],
+      "size": [
+        0,
+        450
+      ],
+      "pos": [
+        794,
+        0
+      ],
+      "flip_x": true
+    },
+    {
+      "key": "main_title",
+      "img": "sprite/MENU_CLIP.png",
+      "rect": [
+        0,
+        41,
+        496,
+        80
+      ],
+      "center": [
+        0.5,
+        0
+      ],
+      "size": [
+        372,
+        60
+      ],
+      "pos": [
+        398,
+        5
+      ]
+    },
+    {
+      "key": "main_menu",
+      "img": "sprite/MENU_CLIP2.png",
+      "rect": [
+        0,
+        0,
+        704,
+        353
+      ],
+      "center": [
+        0.5,
+        0.5
+      ],
+      "size": [
+        704,
+        353
+      ],
+      "pos": [
+        397,
+        255
+      ]
+    },
+    {
+      "visible": "mouse_on_me==1",
+      "key": "btn_confirm",
+      "img": "sprite/MENU_CLIP.png",
+      "rect": [
+        489,
+        426,
+        151,
+        26
+      ],
+      "pos": [
+        407,
+        399
+      ],
+      "click_action": "goto(entry)"
+    },
+    {
+      "visible": "mouse_on_me==1",
+      "key": "btn_cancel",
+      "img": "sprite/MENU_CLIP.png",
+      "rect": [
+        643,
+        426,
+        151,
+        26
+      ],
+      "pos": [
+        579,
+        399
+      ],
+      "click_action": "goto(entry)"
+    },
+    {
+      "visible": "mouse_on_me==0",
+      "key": "btn_move_table_normal",
+      "img": "sprite/MENU_CLIP2.png",
+      "rect": [
+        0,
+        354,
+        494,
+        23
+      ],
+      "center": [
+        0,
+        1
+      ],
+      "pos": [
+        0,
+        450
+      ]
+    },
+    {
+      "visible": "mouse_on_me==1",
+      "key": "btn_move_table_hover",
+      "img": "sprite/MENU_CLIP2.png",
+      "rect": [
+        0,
+        379,
+        494,
+        23
+      ],
+      "center": [
+        0,
+        1
+      ],
+      "pos": [
+        0,
+        450
+      ],
+      "click_action": "link_to(https://lf2.net/control.html)"
+    },
+    {
+      "key": "btn_ctrl_type_1",
+      "img": [
+        "sprite/CS6.png",
+        "sprite/CS2.png",
+        "sprite/CS3.png",
+        "sprite/CS4.png",
+        "sprite/CS5.png"
+      ],
+      "pos": [
+        193,
+        140
+      ],
+      "click_action": "loop_img"
+    },
+    {
+      "key": "btn_player_name_1",
+      "component": "player_name_input(1)",
+      "txt": "player_name_input(1)",
+      "font": [
+        "12px",
+        "normal"
+      ],
+      "pos": [
+        193,
+        114
+      ],
+      "size": [
+        106,
+        19
+      ],
+      "click_action": "loop_img"
+    },
+    {
+      "key": "btn_key_set_1_d",
+      "component": "key_set(1,d)",
+      "txt": "key_set(1,d)",
+      "font": [
+        "12px",
+        "normal"
+      ],
+      "pos": [
+        193,
+        238
+      ],
+      "size": [
+        106,
+        19
+      ],
+      "click_action": "loop_img"
+    },
+    {
+      "key": "btn_key_set_1_L",
+      "component": "key_set(1,L)",
+      "txt": "key_set(1,L)",
+      "font": [
+        "12px",
+        "normal"
+      ],
+      "pos": [
+        193,
+        260
+      ],
+      "size": [
+        106,
+        19
+      ],
+      "click_action": "loop_img"
+    },
+    {
+      "key": "btn_key_set_1_R",
+      "component": "key_set(1,R)",
+      "txt": "key_set(1,R)",
+      "font": [
+        "12px",
+        "normal"
+      ],
+      "pos": [
+        193,
+        282
+      ],
+      "size": [
+        106,
+        19
+      ],
+      "click_action": "loop_img"
+    },
+    {
+      "key": "btn_key_set_1_U",
+      "component": "key_set(1,U)",
+      "txt": "key_set(1,U)",
+      "font": [
+        "12px",
+        "normal"
+      ],
+      "pos": [
+        193,
+        304
+      ],
+      "size": [
+        106,
+        19
+      ],
+      "click_action": "loop_img"
+    },
+    {
+      "key": "btn_key_set_1_D",
+      "component": "key_set(1,D)",
+      "txt": "key_set(1,D)",
+      "font": [
+        "12px",
+        "normal"
+      ],
+      "pos": [
+        193,
+        326
+      ],
+      "size": [
+        106,
+        19
+      ],
+      "click_action": "loop_img"
+    },
+    {
+      "key": "btn_key_set_1_j",
+      "component": "key_set(1,j)",
+      "txt": "key_set(1,j)",
+      "font": [
+        "12px",
+        "normal"
+      ],
+      "pos": [
+        193,
+        348
+      ],
+      "size": [
+        106,
+        19
+      ],
+      "click_action": "loop_img"
+    },
+    {
+      "key": "btn_key_set_1_a",
+      "component": "key_set(1,a)",
+      "txt": "key_set(1,a)",
+      "font": [
+        "12px",
+        "normal"
+      ],
+      "pos": [
+        193,
+        370
+      ],
+      "size": [
+        106,
+        19
+      ],
+      "click_action": "loop_img"
+    },
+    {
+      "key": "btn_ctrl_type_2",
+      "img": [
+        "sprite/CS6.png",
+        "sprite/CS2.png",
+        "sprite/CS3.png",
+        "sprite/CS4.png",
+        "sprite/CS5.png"
+      ],
+      "pos": [
+        332,
+        140
+      ],
+      "click_action": "loop_img"
+    },
+    {
+      "key": "btn_player_name_2",
+      "component": "player_name_input(2)",
+      "txt": "player_name_input(2)",
+      "font": [
+        "12px",
+        "normal"
+      ],
+      "pos": [
+        332,
+        114
+      ],
+      "size": [
+        106,
+        19
+      ],
+      "click_action": "loop_img"
+    },
+    {
+      "key": "btn_key_set_2_d",
+      "component": "key_set(2,d)",
+      "txt": "key_set(2,d)",
+      "font": [
+        "12px",
+        "normal"
+      ],
+      "pos": [
+        332,
+        238
+      ],
+      "size": [
+        106,
+        19
+      ],
+      "click_action": "loop_img"
+    },
+    {
+      "key": "btn_key_set_2_L",
+      "component": "key_set(2,L)",
+      "txt": "key_set(2,L)",
+      "font": [
+        "12px",
+        "normal"
+      ],
+      "pos": [
+        332,
+        260
+      ],
+      "size": [
+        106,
+        19
+      ],
+      "click_action": "loop_img"
+    },
+    {
+      "key": "btn_key_set_2_R",
+      "component": "key_set(2,R)",
+      "txt": "key_set(2,R)",
+      "font": [
+        "12px",
+        "normal"
+      ],
+      "pos": [
+        332,
+        282
+      ],
+      "size": [
+        106,
+        19
+      ],
+      "click_action": "loop_img"
+    },
+    {
+      "key": "btn_key_set_2_U",
+      "component": "key_set(2,U)",
+      "txt": "key_set(2,U)",
+      "font": [
+        "12px",
+        "normal"
+      ],
+      "pos": [
+        332,
+        304
+      ],
+      "size": [
+        106,
+        19
+      ],
+      "click_action": "loop_img"
+    },
+    {
+      "key": "btn_key_set_2_D",
+      "component": "key_set(2,D)",
+      "txt": "key_set(2,D)",
+      "font": [
+        "12px",
+        "normal"
+      ],
+      "pos": [
+        332,
+        326
+      ],
+      "size": [
+        106,
+        19
+      ],
+      "click_action": "loop_img"
+    },
+    {
+      "key": "btn_key_set_2_j",
+      "component": "key_set(2,j)",
+      "txt": "key_set(2,j)",
+      "font": [
+        "12px",
+        "normal"
+      ],
+      "pos": [
+        332,
+        348
+      ],
+      "size": [
+        106,
+        19
+      ],
+      "click_action": "loop_img"
+    },
+    {
+      "key": "btn_key_set_2_a",
+      "component": "key_set(2,a)",
+      "txt": "key_set(2,a)",
+      "font": [
+        "12px",
+        "normal"
+      ],
+      "pos": [
+        332,
+        370
+      ],
+      "size": [
+        106,
+        19
+      ],
+      "click_action": "loop_img"
+    },
+    {
+      "key": "btn_ctrl_type_3",
+      "img": [
+        "sprite/CS6.png",
+        "sprite/CS2.png",
+        "sprite/CS3.png",
+        "sprite/CS4.png",
+        "sprite/CS5.png"
+      ],
+      "pos": [
+        471,
+        140
+      ],
+      "click_action": "loop_img"
+    },
+    {
+      "key": "btn_player_name_3",
+      "component": "player_name_input(3)",
+      "txt": "player_name_input(3)",
+      "font": [
+        "12px",
+        "normal"
+      ],
+      "pos": [
+        471,
+        114
+      ],
+      "size": [
+        106,
+        19
+      ],
+      "click_action": "loop_img"
+    },
+    {
+      "key": "btn_key_set_3_d",
+      "component": "key_set(3,d)",
+      "txt": "key_set(3,d)",
+      "font": [
+        "12px",
+        "normal"
+      ],
+      "pos": [
+        471,
+        238
+      ],
+      "size": [
+        106,
+        19
+      ],
+      "click_action": "loop_img"
+    },
+    {
+      "key": "btn_key_set_3_L",
+      "component": "key_set(3,L)",
+      "txt": "key_set(3,L)",
+      "font": [
+        "12px",
+        "normal"
+      ],
+      "pos": [
+        471,
+        260
+      ],
+      "size": [
+        106,
+        19
+      ],
+      "click_action": "loop_img"
+    },
+    {
+      "key": "btn_key_set_3_R",
+      "component": "key_set(3,R)",
+      "txt": "key_set(3,R)",
+      "font": [
+        "12px",
+        "normal"
+      ],
+      "pos": [
+        471,
+        282
+      ],
+      "size": [
+        106,
+        19
+      ],
+      "click_action": "loop_img"
+    },
+    {
+      "key": "btn_key_set_3_U",
+      "component": "key_set(3,U)",
+      "txt": "key_set(3,U)",
+      "font": [
+        "12px",
+        "normal"
+      ],
+      "pos": [
+        471,
+        304
+      ],
+      "size": [
+        106,
+        19
+      ],
+      "click_action": "loop_img"
+    },
+    {
+      "key": "btn_key_set_3_D",
+      "component": "key_set(3,D)",
+      "txt": "key_set(3,D)",
+      "font": [
+        "12px",
+        "normal"
+      ],
+      "pos": [
+        471,
+        326
+      ],
+      "size": [
+        106,
+        19
+      ],
+      "click_action": "loop_img"
+    },
+    {
+      "key": "btn_key_set_3_j",
+      "component": "key_set(3,j)",
+      "txt": "key_set(3,j)",
+      "font": [
+        "12px",
+        "normal"
+      ],
+      "pos": [
+        471,
+        348
+      ],
+      "size": [
+        106,
+        19
+      ],
+      "click_action": "loop_img"
+    },
+    {
+      "key": "btn_key_set_3_a",
+      "component": "key_set(3,a)",
+      "txt": "key_set(3,a)",
+      "font": [
+        "12px",
+        "normal"
+      ],
+      "pos": [
+        471,
+        370
+      ],
+      "size": [
+        106,
+        19
+      ],
+      "click_action": "loop_img"
+    },
+    {
+      "key": "btn_ctrl_type_4",
+      "img": [
+        "sprite/CS6.png",
+        "sprite/CS2.png",
+        "sprite/CS3.png",
+        "sprite/CS4.png",
+        "sprite/CS5.png"
+      ],
+      "pos": [
+        610,
+        140
+      ],
+      "click_action": "loop_img"
+    },
+    {
+      "key": "btn_player_name_4",
+      "component": "player_name_input(4)",
+      "txt": "player_name_input(4)",
+      "font": [
+        "12px",
+        "normal"
+      ],
+      "pos": [
+        610,
+        114
+      ],
+      "size": [
+        106,
+        19
+      ],
+      "click_action": "loop_img"
+    },
+    {
+      "key": "btn_key_set_4_d",
+      "component": "key_set(4,d)",
+      "txt": "key_set(4,d)",
+      "font": [
+        "12px",
+        "normal"
+      ],
+      "pos": [
+        610,
+        238
+      ],
+      "size": [
+        106,
+        19
+      ],
+      "click_action": "loop_img"
+    },
+    {
+      "key": "btn_key_set_4_L",
+      "component": "key_set(4,L)",
+      "txt": "key_set(4,L)",
+      "font": [
+        "12px",
+        "normal"
+      ],
+      "pos": [
+        610,
+        260
+      ],
+      "size": [
+        106,
+        19
+      ],
+      "click_action": "loop_img"
+    },
+    {
+      "key": "btn_key_set_4_R",
+      "component": "key_set(4,R)",
+      "txt": "key_set(4,R)",
+      "font": [
+        "12px",
+        "normal"
+      ],
+      "pos": [
+        610,
+        282
+      ],
+      "size": [
+        106,
+        19
+      ],
+      "click_action": "loop_img"
+    },
+    {
+      "key": "btn_key_set_4_U",
+      "component": "key_set(4,U)",
+      "txt": "key_set(4,U)",
+      "font": [
+        "12px",
+        "normal"
+      ],
+      "pos": [
+        610,
+        304
+      ],
+      "size": [
+        106,
+        19
+      ],
+      "click_action": "loop_img"
+    },
+    {
+      "key": "btn_key_set_4_D",
+      "component": "key_set(4,D)",
+      "txt": "key_set(4,D)",
+      "font": [
+        "12px",
+        "normal"
+      ],
+      "pos": [
+        610,
+        326
+      ],
+      "size": [
+        106,
+        19
+      ],
+      "click_action": "loop_img"
+    },
+    {
+      "key": "btn_key_set_4_j",
+      "component": "key_set(4,j)",
+      "txt": "key_set(4,j)",
+      "font": [
+        "12px",
+        "normal"
+      ],
+      "pos": [
+        610,
+        348
+      ],
+      "size": [
+        106,
+        19
+      ],
+      "click_action": "loop_img"
+    },
+    {
+      "key": "btn_key_set_4_a",
+      "component": "key_set(4,a)",
+      "txt": "key_set(4,a)",
+      "font": [
+        "12px",
+        "normal"
+      ],
+      "pos": [
+        610,
+        370
+      ],
+      "size": [
+        106,
+        19
+      ],
+      "click_action": "loop_img"
+    }
+  ]
+}

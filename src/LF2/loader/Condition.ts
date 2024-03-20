@@ -1,13 +1,13 @@
 import { Warn } from '../../Log';
 
 const ALWAY_FALSE = () => false
-interface JudgeFunc<T> { (arg: T): boolean }
-
+export interface JudgeFunc<T> { (arg: T): boolean }
+export interface ValGetter<T> { (word: string): (e: T) => string | number | boolean }
 export class Condition<T> {
   readonly text: string = '';
   readonly children: Array<JudgeFunc<T> | '|' | '&' | Condition<T>> = [];
   readonly get_val: (word: string) => (e: T) => string | number | boolean;
-  constructor(text: string, get_val: (word: string) => (e: T) => string | number | boolean) {
+  constructor(text: string, get_val: ValGetter<T>) {
     this.get_val = get_val;
     this.text = text = text.replace(/\s|\n|\r/g, '');
     let p = 0;

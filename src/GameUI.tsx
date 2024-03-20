@@ -1,410 +1,150 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { Warn } from '@fimagine/logger';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import LF2 from './LF2/LF2';
-import { KEY_NAME_LIST } from './LF2/controller/BaseController';
-import { Condition } from './LF2/loader/Condition';
-import { TImageInfo, image_pool } from './LF2/loader/loader';
 import { random_in_range } from './LF2/random_in_range';
+import random_take from './Utils/random_take';
 import { arithmetic_progression } from './js_utils/arithmetic_progression';
-import { is_bool } from './js_utils/is_bool';
 import { is_num } from './js_utils/is_num';
 import { is_str } from './js_utils/is_str';
-export interface ILayoutItem {
-  key: string;
-  img?: string[] | string;
-  img_idx?: number;
-  which?: number | string;
-  s_rect?: number[];
-  center?: number[];
-  pos?: number[];
-  size?: number[];
-  visible?: boolean | string;
-  flip_x?: boolean;
-  flip_y?: boolean
-  bg_color?: string;
-  component?: string;
-  txt?: string;
-  txt_fill?: string;
-  txt_stroke?: string;
-  font?: string[];
-  click_action?: string;
-}
-export interface ILayoutData {
-  name: string;
-  id: string;
-  bg_color?: string;
-  items: ILayoutItem[];
-  key_press_actions?: [string, string][],
-  enter_action?: string,
-  leave_action?: string
-}
-export interface ICookedLayoutItem extends ILayoutItem {
-  _img?: TImageInfo[];
-  _img_idx?: (layout: ICookedLayoutItem) => number;
-  _s_rect: [number, number, number, number];
-  _visible: (layout: ICookedLayoutItem) => boolean;
-  _left_top: [number, number];
-  _size: [number, number];
-  _layout: ICookedLayoutData;
-}
-export interface ICookedLayoutData extends ILayoutData {
-  arithmetic_progression_map: Map<string, number[]>;
-  items: ICookedLayoutItem[]
-}
-const pos_on_me = (item: ICookedLayoutItem, x: number, y: number) => {
-  const [l, t] = item._left_top;
-  const [w, h] = item._size;
-  return l <= x && t <= y && l + w >= x && t + h >= y;
-}
+
+import { ILayoutData } from './ILayoutData';
+import { Layout } from './Layout';
+import { LayoutItem } from './LayoutItem';
+import { is_arr } from './is_arr';
+
 
 const f_w = 794;
 const f_h = 450;
-const raw_layouts: ILayoutData[] = [
-  {
-    name: 'entry_page',
-    id: 'entry',
-    bg_color: 'rgb(16, 32, 108)',
-    items: [{
-      key: 'bg_left',
-      which: 'random_int_in_range(0,12,1)',
-      img: arithmetic_progression(1, 13, 1).map(n => `sprite/MENU_BACK${n}.png`),
-      size: [0, f_h],
-    }, {
-      key: 'bg_right',
-      which: 'random_int_in_range(0,12,1)',
-      img: arithmetic_progression(1, 13, 1).map(n => `sprite/MENU_BACK${n}.png`),
-      size: [0, f_h],
-      center: [1, 0],
-      pos: [f_w, 0],
-      flip_x: true,
-    }, {
-      key: 'main_title',
-      img: 'sprite/MENU_CLIP.png',
-      s_rect: [0, 41, 496, 80],
-      center: [0.5, 0],
-      size: [496, 80],
-      pos: [796 / 2, 40]
-    }, {
-      key: 'main_menu',
-      img: 'sprite/MENU_CLIP.png',
-      s_rect: [0, 125, 282, 119],
-      center: [0.5, 0.5],
-      size: [282, 119],
-      pos: [397, 270]
-    }, {
-      visible: 'mouse_on_me==1',
-      key: 'start_local_game',
-      img: 'sprite/MENU_CLIP.png',
-      s_rect: [535, 105, 256, 26],
-      center: [0.5, 0],
-      size: [256, 26],
-      pos: [796 / 2, 270 - 60 + 14],
-      click_action: 'goto(loading)'
-    }, {
-      visible: 'mouse_on_me==1',
-      key: 'network_game',
-      img: 'sprite/MENU_CLIP.png',
-      s_rect: [535, 137, 256, 26],
-      center: [0.5, 0],
-      size: [256, 26],
-      pos: [796 / 2, 270 - 60 + 46],
-      click_action: 'alert(还没想好呢)'
-    }, {
-      visible: 'mouse_on_me==1',
-      key: 'ctrl_settings',
-      img: 'sprite/MENU_CLIP.png',
-      s_rect: [535, 168, 256, 26],
-      center: [0.5, 0],
-      size: [256, 26],
-      pos: [796 / 2, 270 - 60 + 77],
-      click_action: 'goto(ctrl_settings)'
-    }]
-  },
-  {
-    name: 'loading_page',
-    id: 'loading',
-    bg_color: 'rgb(16, 32, 108)',
-    key_press_actions: [['escape', 'goto(entry)']],
-    items: [{
-      key: 'bg_wait',
-      img: 'sprite/MENU_WAIT.png',
-      size: [f_w, 0],
-    }, {
-      key: 'txt_loading_content',
-      txt: 'txt_loading_content',
-      txt_fill: 'white',
-      pos: [610, 75],
-      font: ['16px', 'Arial']
-    }],
-    enter_action: 'load_default_data',
-    leave_action: 'cancel_load_data',
-  },
-  {
-    name: 'ctrl_settings_page',
-    id: 'ctrl_settings',
-    bg_color: 'rgb(16, 32, 108)',
-    key_press_actions: [['escape', 'goto(entry)']],
-    items: [
-      {
-        key: 'bg_left',
-        which: 'random_int_in_range(0,12,1)',
-        img: arithmetic_progression(1, 13, 1).map(n => `sprite/MENU_BACK${n}.png`),
-        s_rect: [0, 0, 378, 546],
-        size: [0, f_h],
-      }, {
-        key: 'bg_right',
-        which: 'random_int_in_range(0,12,1)',
-        img: arithmetic_progression(1, 13, 1).map(n => `sprite/MENU_BACK${n}.png`),
-        s_rect: [0, 0, 378, 546],
-        center: [1, 0],
-        size: [0, f_h],
-        pos: [f_w, 0],
-        flip_x: true,
-      }, {
-        key: 'main_title',
-        img: 'sprite/MENU_CLIP.png',
-        s_rect: [0, 41, 496, 80],
-        center: [0.5, 0],
-        size: [496 * .75, 80 * .75],
-        pos: [796 / 2, 5]
-      }, {
-        key: 'main_menu',
-        img: 'sprite/MENU_CLIP2.png',
-        s_rect: [0, 0, 704, 353],
-        center: [0.5, 0.5],
-        size: [704, 353],
-        pos: [397, 270 - 15]
-      }, {
-        visible: 'mouse_on_me==1',
-        key: 'btn_confirm',
-        img: 'sprite/MENU_CLIP.png',
-        s_rect: [489, 426, 151, 26],
-        pos: [407, 414 - 15],
-        click_action: 'goto(entry)'
-      }, {
-        visible: 'mouse_on_me==1',
-        key: 'btn_cancel',
-        img: 'sprite/MENU_CLIP.png',
-        s_rect: [643, 426, 151, 26],
-        pos: [579, 414 - 15],
-        click_action: 'goto(entry)'
-      }, {
-        visible: 'mouse_on_me==0',
-        key: 'btn_move_table_normal',
-        img: 'sprite/MENU_CLIP2.png',
-        s_rect: [0, 354, 494, 23],
-        center: [0, 1],
-        pos: [0, 450],
-      }, {
-        visible: 'mouse_on_me==1',
-        key: 'btn_move_table_hover',
-        img: 'sprite/MENU_CLIP2.png',
-        s_rect: [0, 379, 494, 23],
-        center: [0, 1],
-        pos: [0, 450],
-        click_action: 'link_to(https://lf2.net/control.html)'
-      },
-      ...[1, 2, 3, 4].map((play_id, idx) => [
-        {
-          key: `btn_ctrl_type_${play_id}`,
-          img: ['sprite/CS6.png', 'sprite/CS2.png', 'sprite/CS3.png', 'sprite/CS4.png', 'sprite/CS5.png'],
-          pos: [193 + 139 * idx, 155 - 15],
-          click_action: 'loop_img'
-        }, {
-          key: `btn_player_name_${play_id}`,
-          component: `player_name_input(${play_id})`,
-          get txt() { return this.component },
-          font: ['12px', 'normal'],
-          pos: [193 + 139 * idx, 129 - 15],
-          size: [106, 19],
-          click_action: 'loop_img'
-        }, ...KEY_NAME_LIST.map<ILayoutItem>((key, jdx) => ({
-          key: `btn_key_set_${play_id}_${key}`,
-          component: `key_set(${play_id},${key})`,
-          get txt() { return this.component },
-          font: ['12px', 'normal'],
-          pos: [193 + 139 * idx, 253 - 15 + 22 * jdx],
-          size: [106, 19],
-          click_action: 'loop_img'
-        }))
-      ]).flat(2)
-    ]
-  }
-]
+
 export function GameUI(props: { lf2?: LF2; load_builtin?: () => void }) {
   const { lf2 } = props;
   const canvas_ref = useRef<HTMLCanvasElement>(null);
-  const offscreen_ref = useRef<HTMLCanvasElement | null>(null);
+  const off_canvas = useMemo(() => document.createElement('canvas'), []);
+
   const mem = useRef({ pointer_down: false, mouse_x: NaN, mouse_y: NaN });
-  const [cooked_layouts, set_cooked_layouts] = useState<ICookedLayoutData[]>([]);
-  const [layout, set_layout] = useState<ICookedLayoutData>();
+  const [cooked_layouts, set_cooked_layouts] = useState<Layout[]>([]);
+  const [layout, set_layout] = useState<Layout>();
+
+  const val_getter = (word: string) => (item: LayoutItem) => {
+    if (word === 'mouse_on_me') {
+      const { mouse_x: x, mouse_y: y } = mem.current;
+      return item.hit(x, y) ? '1' : '0';
+    }
+    if (word.startsWith('f:')) {
+      const result = word.match(/f:random_int_in_range\((\d+),(\d+)(,\d+)?\)/);
+      if (result) {
+        const [, a, b, group_id] = result;
+        const begin = Number(a);
+        const end = Number(b);
+        if (begin > end) return end;
+        const { img_idx } = item.state;
+        if (is_num(img_idx)) return img_idx
+
+        if (is_str(group_id)) {
+          let arr = item.layout.state['random_int_arr' + group_id];
+          if (!is_arr(arr) || !arr.length)
+            arr = item.layout.state['random_int_arr' + group_id] = arithmetic_progression(begin, end, 1);
+          return item.state.img_idx = random_take(arr);
+        } else {
+          return item.state.img_idx = Math.floor(random_in_range(begin, end) % (end + 1))
+        }
+      }
+    }
+    return word;
+  };
+  useEffect(() => {
+    if (!lf2) return;
+    lf2.import('layouts/index.json')
+      .then(v => {
+        if (!is_arr(v))
+          throw new Error('layouts/index.json content is not array!')
+        return v;
+      }).then(list => {
+        return Promise.all(list.filter(element => {
+          const ok = is_str(element);
+          if (!ok) Warn.print('layouts/index.json', 'element is not a string! got:', element)
+          return ok
+        }).map(v => lf2.import(v)))
+      }).then(async (raw_layouts: ILayoutData[]) => {
+        const cooked_layouts: Layout[] = [];
+        for (const raw_layout of raw_layouts) {
+          const cooked_layout = await Layout.cook(lf2, raw_layout, val_getter)
+          cooked_layouts.push(cooked_layout);
+        }
+        set_cooked_layouts(cooked_layouts);
+        set_layout(cooked_layouts[0]);
+        console.log(cooked_layouts[0])
+      }).catch((v) => {
+        Warn.print('layouts/index.json', v)
+      })
+  }, [lf2])
 
   const draw_ui = useCallback(async () => {
     if (!layout) return;
     const canvas = canvas_ref.current;
     const onscreen_ctx = canvas?.getContext('2d');
+    const off_ctx = off_canvas.getContext('2d');
 
-    const offscreen = offscreen_ref.current;
-    const offscreen_ctx = offscreen?.getContext('2d');
-    if (!canvas || !offscreen || !offscreen_ctx || !onscreen_ctx || !lf2) return;
+    if (!canvas || !off_canvas || !off_ctx || !onscreen_ctx || !lf2) return;
 
     const { width, height } = canvas;
     const screen_w = Math.floor(width);
     const screen_h = Math.floor(height);
 
-    if (offscreen.width !== screen_w || offscreen.height !== screen_h) {
-      offscreen.width = screen_w;
-      offscreen.height = screen_h;
+    if (off_canvas.width !== screen_w || off_canvas.height !== screen_h) {
+      off_canvas.width = screen_w;
+      off_canvas.height = screen_h;
     }
-    offscreen_ctx.fillStyle = layout.bg_color ?? 'black';
-    offscreen_ctx.fillRect(0, 0, screen_w, screen_h);
+    off_ctx.fillStyle = layout.data.bg_color ?? 'black';
+    off_ctx.fillRect(0, 0, screen_w, screen_h);
 
     for (const item of layout.items) {
-      const { _visible, _img, flip_x, flip_y, bg_color, _img_idx } = item;
-      if (!_visible(item)) continue;
-
-      const [w, h] = item._size;
-      const [l, t] = item._left_top;
+      const { flip_x, flip_y, bg_color } = item.data;
+      const { visible, img_infos, img_idx } = item;
+      if (!visible) continue;
+      const [l, t, w, h] = item.dst_rect;
       const dx = Math.floor(screen_w / f_w * l)
       const dy = Math.floor(screen_h / f_h * t)
       const dw = Math.floor(screen_w / f_w * w)
       const dh = Math.floor(screen_h / f_h * h)
-      if (_img?.length) {
-        const img_idx = _img_idx?.(item) ?? 0
-        if (img_idx < 0 || img_idx >= _img.length) continue;
+      if (img_infos?.length) {
+
+        if (img_idx < 0 || img_idx >= img_infos.length) continue;
+        if (item.data.key === 'bg_left') console.log('!!!')
         if (flip_x || flip_y) {
-          offscreen_ctx.translate(
+          off_ctx.translate(
             flip_x ? 2 * dx + dw : 0,
             flip_y ? 2 * dy + dh : 0
           );
-          offscreen_ctx.scale(
+          off_ctx.scale(
             flip_x ? -1 : 1,
             flip_y ? -1 : 1
           );
         }
-        offscreen_ctx.drawImage(_img[img_idx].img_ele, ...item._s_rect, dx, dy, dw, dh);
-        if (flip_x || flip_y) offscreen_ctx.setTransform(1, 0, 0, 1, 0, 0);
+        off_ctx.drawImage(img_infos[img_idx].img_ele, ...item.src_rect, dx, dy, dw, dh);
+        if (flip_x || flip_y) off_ctx.setTransform(1, 0, 0, 1, 0, 0);
       }
       if (bg_color) {
-        offscreen_ctx.fillStyle = bg_color;
-        offscreen_ctx.fillRect(dx, dy, dw, dh);
+        off_ctx.fillStyle = bg_color;
+        off_ctx.fillRect(dx, dy, dw, dh);
       }
 
-      const { txt, txt_fill = 'white', txt_stroke, font = ['16px', 'Arial'] } = item;
+      const { txt, txt_fill = 'white', txt_stroke, font = ['16px', 'Arial'] } = item.data;
       if (is_str(txt)) {
-        const [l, t] = item._left_top;
-        const x = screen_w * l / f_w;
-        const y = screen_h * t / f_h;
-
         if (txt_fill) {
-          offscreen_ctx.fillStyle = txt_fill;
-          offscreen_ctx.font = font.join(' ');
-          offscreen_ctx.fillText(txt, x, y);
+          off_ctx.fillStyle = txt_fill;
+          off_ctx.font = font.join(' ');
+          off_ctx.fillText(txt, dx, dy);
         }
         if (txt_stroke) {
-          offscreen_ctx.strokeStyle = txt_stroke;
-          offscreen_ctx.fillText(txt, x, y);
+          off_ctx.strokeStyle = txt_stroke;
+          off_ctx.fillText(txt, dx, dy);
         }
       }
     }
-    onscreen_ctx.drawImage(offscreen, 0, 0);
-  }, [layout, lf2]);
+    onscreen_ctx.drawImage(off_canvas, 0, 0);
+  }, [layout, lf2, off_canvas]);
 
-  useEffect(() => {
-    offscreen_ref.current = document.createElement('canvas');
-  }, []);
-
-  const cook_layouts = useCallback(async () => {
-    if (!lf2) return;
-    const get_val = (word: string) => (item: ICookedLayoutItem) => {
-      if (word === 'mouse_on_me') {
-        const { mouse_x: x, mouse_y: y } = mem.current;
-        return pos_on_me(item, x, y) ? '1' : '0';
-      }
-      return word;
-    };
-
-    const cooked_layouts: ICookedLayoutData[] = [];
-    for (const raw_layout of raw_layouts) {
-      const cooked_layout: ICookedLayoutData = {
-        ...raw_layout,
-        items: [],
-        arithmetic_progression_map: new Map()
-      }
-      for (const raw_items of raw_layout.items) {
-        const { visible, img, which } = raw_items;
-        const img_paths = !is_arr(img) ? [img] : img;
-        const _img: TImageInfo[] = [];
-        const preload = async (img_path: string) => {
-          const img_info = image_pool.find(img_path);
-          if (img_info) return img_info;
-          const img_url = await lf2.import(img_path);
-          return await image_pool.load(img_path, img_url);
-        };
-        let _img_idx = () => 0;
-
-        if (is_str(which)) {
-          const trimed = which.trim().replace(/\s/g, '')
-          const result = trimed.match(/random_int_in_range\((\d+),(\d+)(,\d+)?\)/);
-          if (result) {
-            const [, a, b, group_id] = result;
-            const begin = Number(a);
-            const end = Number(b);
-            if (begin < end) {
-              if (is_str(group_id)) {
-                const w = Math.floor(random_in_range(begin, end) % (end + 1))
-                _img_idx = () => w
-              } else {
-                const w = Math.floor(random_in_range(begin, end) % (end + 1))
-                _img_idx = () => w
-              }
-            }
-          }
-        } else if (is_num(which)) {
-          _img_idx = () => which % (img?.length || 0);
-        }
-        for (const p of img_paths) {
-          if (!p) continue
-          _img.push(await preload(p))
-        }
-
-        const [sx = 0, sy = 0, sw = 0, sh = 0] = raw_items.s_rect ?? [0, 0, _img[0]?.w, _img[0]?.h];
-        const [w = 0, h = 0] = raw_items.size ?? [sw, sh];
-        const [cx, cy] = raw_items.center ?? [0, 0];
-        const [x, y] = raw_items.pos ?? [0, 0];
-        const _size: [number, number] = [
-          Math.floor((w === 0) ? h * sw / sh : w),
-          Math.floor((h === 0) ? w * sh / sw : h)
-        ];
-
-        let _visible = (_: ICookedLayoutItem) => true
-        if (is_bool(visible)) {
-          _visible = () => visible;
-        } else if (is_str(visible)) {
-          const cond = new Condition<ICookedLayoutItem>(visible, get_val);
-          _visible = cond.make();
-        }
-        const cooked_item: ICookedLayoutItem = {
-          ...raw_items,
-          _visible,
-          _img,
-          _left_top: [x - Math.floor(cx * _size[0]), y - Math.floor(cy * _size[1])],
-          _size,
-          _s_rect: [sx, sy, sw, sh],
-          _layout: cooked_layout,
-          _img_idx,
-          click_action: raw_items.click_action?.trim().replace(/\s/g, '')
-        };
-        cooked_layout.items.push(cooked_item);
-      }
-      cooked_layouts.push(cooked_layout)
-    }
-    set_cooked_layouts(cooked_layouts);
-    set_layout(cooked_layouts[0]);
-  }, [lf2]);
-
-  useEffect(() => {
-    cook_layouts();
-  }, [cook_layouts]);
 
   useEffect(() => {
     if (!lf2) return;
@@ -442,13 +182,13 @@ export function GameUI(props: { lf2?: LF2; load_builtin?: () => void }) {
   };
   const onKeyDown = (e: React.KeyboardEvent) => {
     if (!layout) return;
-    const { key_press_actions: key_press_events = [] } = layout;
+    const { key_press_actions: key_press_events = [] } = layout.data;
     for (const [key, action] of key_press_events) {
       if (e.key.toLowerCase() !== key) continue
       handle_layout_action(layout, action)
     }
   }
-  const handle_layout_action = (layout: ICookedLayoutData, action: string) => {
+  const handle_layout_action = (layout: Layout, action: string) => {
     const [, next_layout_id] = action.match(/goto\((.+)\)/) ?? []
 
     if (action === 'cancel_load_data') {
@@ -459,10 +199,11 @@ export function GameUI(props: { lf2?: LF2; load_builtin?: () => void }) {
     }
     if (next_layout_id) {
       const prev_layout = layout;
-      prev_layout.arithmetic_progression_map.clear();
-      const next_layout = cooked_layouts.find(v => v.id === next_layout_id)
-      if (prev_layout?.leave_action) handle_layout_action(prev_layout, prev_layout.leave_action)
-      if (next_layout?.enter_action) handle_layout_action(next_layout, next_layout.enter_action)
+      const next_layout = cooked_layouts.find(v => v.data.id === next_layout_id)
+      if (prev_layout?.data.leave_action) handle_layout_action(prev_layout, prev_layout.data.leave_action)
+      if (next_layout?.data.enter_action) handle_layout_action(next_layout, next_layout.data.enter_action)
+      prev_layout.unmount();
+      next_layout?.mount();
       return set_layout(next_layout)
     }
     const [, alert_msg] = action.match(/alert\((.+)\)/) ?? []
@@ -471,26 +212,22 @@ export function GameUI(props: { lf2?: LF2; load_builtin?: () => void }) {
     const [, url] = action.match(/link_to\((.+)\)/) ?? [];
     if (url) return window.open(url)
   }
-  const handle_item_action = (item: ICookedLayoutItem, action: string) => {
-    if (action === 'loop_img') {
-      const img_idx = is_num(item.which) ? item.which : 0
-      item._img_idx = () => item.which = (img_idx + 1) % (item._img?.length ?? 0)
-      return;
-    }
-    handle_layout_action(item._layout, action)
+  const handle_item_action = (item: LayoutItem, action: string) => {
+    if (action === 'loop_img')
+      return item.to_next_img();
+
+    handle_layout_action(item.layout, action)
   }
+
   const onClick = (e: React.MouseEvent) => {
     if (!layout) return;
     for (const item of layout.items) {
-      const { click_action: on_click } = item;
+      const { click_action: on_click } = item.data;
       if (!on_click) continue;
       const { mouse_x: x, mouse_y: y } = mem.current;
-      const on_me = pos_on_me(item, x, y);
-      if (on_me) handle_item_action(item, on_click)
+      item.hit(x, y) && handle_item_action(item, on_click)
     }
   }
-
-
   return (
     <canvas
       ref={canvas_ref}
@@ -506,7 +243,6 @@ export function GameUI(props: { lf2?: LF2; load_builtin?: () => void }) {
       onClick={onClick} />
   );
 }
-
 
 const canvas_2_screen = (ctx: CanvasRenderingContext2D, { x, y }: { x: number, y: number }) => {
   const matrix = ctx.getTransform().invertSelf()
@@ -529,4 +265,4 @@ const screen_2_canvas = (ctx: CanvasRenderingContext2D, { x, y }: { x: number, y
     y: Math.floor(x * b + y * d + f)
   };
 }
-const is_arr = (arg: any): arg is any[] => Array.isArray(arg)
+
