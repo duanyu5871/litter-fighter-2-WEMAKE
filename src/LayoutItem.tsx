@@ -48,7 +48,7 @@ export class LayoutItem {
 
   static async cook(lf2: LF2, layout: Layout, data: ILayoutItem, get_val: ValGetter<LayoutItem>) {
     const ret = new LayoutItem(data, layout);
-    ret._cook_img_infos(lf2);
+    await ret._cook_img_infos(lf2);
     ret._cook_img_idx(get_val);
     ret._cook_visible(get_val);
     ret._cook_rects();

@@ -110,7 +110,6 @@ export function GameUI(props: { lf2?: LF2; load_builtin?: () => void }) {
       if (img_infos?.length) {
 
         if (img_idx < 0 || img_idx >= img_infos.length) continue;
-        if (item.data.key === 'bg_left') console.log('!!!')
         if (flip_x || flip_y) {
           off_ctx.translate(
             flip_x ? 2 * dx + dw : 0,
