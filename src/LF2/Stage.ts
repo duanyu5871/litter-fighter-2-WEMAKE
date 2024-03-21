@@ -11,6 +11,7 @@ import { BotEnemyChaser } from "./controller/BotEnemyChaser";
 import { Character } from "./entity/Character";
 import { Entity, IEntityCallbacks } from "./entity/Entity";
 import { Weapon } from "./entity/Weapon";
+import { new_team } from "./new_id";
 import { random_in_range } from "./random_in_range";
 
 class StageObject implements IEntityCallbacks {
@@ -147,7 +148,7 @@ export default class Stage {
       this.data = Defines.THE_VOID_STAGE;
       this.bg = new Background(world, Defines.THE_VOID_BG);
     }
-    this.enemy_team = Entity.new_team()
+    this.enemy_team = new_team()
     this.enter_phase(0);
   }
   private _stop_bgm?: () => void;

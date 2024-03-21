@@ -15,7 +15,6 @@ import { turn_face } from './face_helper';
 export type TData = IBaseData | ICharacterData | IWeaponData | IEntityData | IBallData
 export const V_SHAKE = 4;
 export const A_SHAKE = 6;
-let __team__ = 4;
 export const get_team_shadow_color = (team: any) => {
   switch (team) {
     case 1: return 'blue';
@@ -56,9 +55,6 @@ export class Entity<
   I extends IGameObjInfo = IGameObjInfo,
   D extends IGameObjData<I, F> = IGameObjData<I, F>
 > extends FrameAnimater<F, I, D> {
-  static new_team() {
-    return ++__team__;
-  }
   callbacks = new Set<IEntityCallbacks>()
   protected _name: string = '';
   protected _team: number = 0;

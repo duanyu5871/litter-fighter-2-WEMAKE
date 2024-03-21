@@ -16,7 +16,7 @@ import { Weapon } from './entity/Weapon';
 import DatMgr from './loader/DatMgr';
 import { SoundMgr } from './loader/SoundMgr';
 import { get_import_fallbacks as get_import_fallback_names, import_builtin } from './loader/make_import';
-import { new_id } from './new_id';
+import { new_id, new_team } from './new_id';
 import { TKeyName } from './controller/BaseController';
 
 export default class LF2 {
@@ -141,7 +141,7 @@ export default class LF2 {
     const ret: Character[] = []
     while (--num >= 0) {
       const e = new Character(this.world, data);
-      e.team = team ?? Entity.new_team();
+      e.team = team ?? new_team();
       this.random_entity_info(e).attach();
       ret.push(e)
     }

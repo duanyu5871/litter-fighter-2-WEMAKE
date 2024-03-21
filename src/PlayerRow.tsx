@@ -9,6 +9,7 @@ import CharacterSelect from './LF2/ui/CharacterSelect';
 import { TKeyName } from './LF2/controller/BaseController';
 import { Input } from './LF2/ui/Select/Input';
 import { Button } from './LF2/ui/Select/Button';
+import { new_team } from './LF2/new_id';
 
 export const keys_map: { [x in string]?: Record<TKeyName, string> } = {
   '1': {
@@ -104,7 +105,7 @@ export function PlayerRow(props: Props) {
     if (!lp) return;
     lp.callbacks.add(callbacks.current)
     lp.name = player_name.trim() || '' + which;
-    lp.team = team ? Number(team) : Entity.new_team();
+    lp.team = team ? Number(team) : new_team();
     lp.controller = new PlayerController(which, lp, keys)
   }, [which, player_name, team, lf2, c_id, added, keys]);
 
