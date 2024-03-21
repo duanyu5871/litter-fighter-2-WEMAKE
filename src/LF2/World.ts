@@ -164,9 +164,7 @@ export class World {
   private _u_fps = new FPS()
   render_once() {
     if (this.disposed) return;
-    for (const e of this.entities) {
-      e.indicators.update();
-    }
+    for (const e of this.entities) e.indicators.update();
     this.renderer.render(this.scene, this.camera);
   }
 

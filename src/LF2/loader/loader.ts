@@ -22,7 +22,7 @@ export type TImageInfo = {
   h: number;
   minFilter?: THREE.MinificationTextureFilter;
   magFilter?: THREE.MagnificationTextureFilter;
-  img_ele: CanvasImageSource;
+  img: CanvasImageSource;
 }
 
 export type PaintFunc = (img: HTMLImageElement, cvs: HTMLCanvasElement, ctx: CanvasRenderingContext2D) => void;
@@ -54,7 +54,7 @@ class ImagePool {
     else this._paint(img_ele, cvs, ctx);
     const blob = await get_blob(cvs).catch(e => { throw new Error(e.message + ' key:' + key, { cause: e.cause }) });
     const url = URL.createObjectURL(blob);
-    return { key, url, w: img_ele.width, h: img_ele.height, img_ele }
+    return { key, url, w: cvs.width, h: cvs.height, img: cvs }
   }
 
   protected async _make_text_info(key: string, text: string, style?: TxtStyle): Promise<TImageInfo> {
@@ -88,7 +88,7 @@ class ImagePool {
     }
     const blob = await get_blob(cvs).catch(e => { throw new Error(e.message + ' key:' + key, { cause: e.cause }) });
     const url = URL.createObjectURL(blob);
-    return { key, url, w, h, img_ele: cvs }
+    return { key, url, w, h, img: cvs }
   }
   find(key: string) {
     return this._map.get(key)
@@ -156,7 +156,7 @@ class ImagePool {
     return this._map.get(this._gen_key(f))
   }
 }
-export const image_pool = new ImagePool();
+export const image_pool = (window as any).image_pool = new ImagePool();
 
 
 const error_texture = () => {

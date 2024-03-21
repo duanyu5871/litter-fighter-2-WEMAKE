@@ -1,8 +1,11 @@
 import JSZIP from 'jszip';
 import * as THREE from 'three';
-import { Log } from '../Log';
+import { Layout } from '../Layout';
+import { Log, Warn } from '../Log';
 import random_get from '../Utils/random_get';
+import { is_arr } from '../is_arr';
 import { is_num } from '../js_utils/is_num';
+import { is_str } from '../js_utils/is_str';
 import { ICharacterData, IStageInfo, IWeaponData, TFace } from '../js_utils/lf2_type';
 import { Defines } from '../js_utils/lf2_type/defines';
 import { BgLayer } from './BgLayer';
@@ -61,7 +64,7 @@ export default class LF2 {
     new PlayerInfo('4', get_default_keys(3))
   ]
   get player_infos() { return this._player_infos }
-  
+
   get players() { return this.world.players }
 
   private _bgm_enable = false;
@@ -372,5 +375,41 @@ export default class LF2 {
   remove_stage() {
     this.world.stage = new Stage(this.world, Defines.THE_VOID_STAGE)
   }
-}
 
+  private _layouts?: Layout[];
+  async layouts() {
+    if (this._layouts) return this._layouts;
+
+    const array = await this.import('layouts/index.json');
+    if (!is_arr(array)) return;
+
+    const paths: string[] = [];
+
+    for (const element of array) {
+      if (is_str(element)) paths.push(element);
+      else Warn.print('layouts/index.json', 'element is not a string! got:', element)
+    }
+
+    const cooked_layouts: Layout[] = [];
+    for (const path of paths) {
+      const raw_layout = await this.import(path);
+      const cooked_layout = await Layout.cook(this, raw_layout, () => () => 'todo')
+      cooked_layouts.push(cooked_layout);
+    }
+    this.world.render_once()
+    return this._layouts = cooked_layouts;
+  }
+
+  set_layout(id: string) {
+    const layout = this._layouts?.find(v => v.data.id === id);
+    if (!layout) return;
+
+    layout.init_3d()
+
+    if (layout.object_3d)
+      this.world.scene.add(layout.object_3d)
+
+
+    return layout
+  }
+}

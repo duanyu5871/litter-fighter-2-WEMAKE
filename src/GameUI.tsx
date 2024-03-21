@@ -120,7 +120,7 @@ export function GameUI(props: { lf2?: LF2; load_builtin?: () => void }) {
             flip_y ? -1 : 1
           );
         }
-        off_ctx.drawImage(img_infos[img_idx].img_ele, ...item.src_rect, dx, dy, dw, dh);
+        off_ctx.drawImage(img_infos[img_idx].img, dx, dy, dw, dh);
         if (flip_x || flip_y) off_ctx.setTransform(1, 0, 0, 1, 0, 0);
       }
       if (bg_color) {

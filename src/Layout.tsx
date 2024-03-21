@@ -1,12 +1,8 @@
+import * as THREE from 'three';
 import type { ILayoutData } from './ILayoutData';
 import type LF2 from './LF2/LF2';
-import type { Condition, ValGetter } from './LF2/loader/Condition';
-import type { TImageInfo, image_pool } from './LF2/loader/loader';
+import type { ValGetter } from './LF2/loader/Condition';
 import { LayoutItem } from './LayoutItem';
-import { is_arr } from './is_arr';
-import { is_bool } from './js_utils/is_bool';
-import { is_num } from './js_utils/is_num';
-import { is_str } from './js_utils/is_str';
 
 export class Layout {
   private _state: any = {};
@@ -33,5 +29,13 @@ export class Layout {
       cooked_layout.items.push(cooked_item);
     }
     return cooked_layout;
+  }
+
+  private _object_3d?: THREE.Object3D;
+  get object_3d() { return this._object_3d }
+  init_3d() {
+    this._object_3d = new THREE.Object3D();
+    for (const item of this.items)
+      item.init_3d();
   }
 }

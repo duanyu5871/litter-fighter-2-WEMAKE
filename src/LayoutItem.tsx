@@ -1,3 +1,4 @@
+import * as THREE from 'three';
 import type { ILayoutItem } from './ILayoutItem';
 import LF2 from './LF2/LF2';
 import { Condition, ValGetter } from './LF2/loader/Condition';
@@ -17,6 +18,7 @@ export class LayoutItem {
 
   get state() { return this._state };
   img_infos?: TImageInfo[];
+
   src_rect: [number, number, number, number] = [0, 0, 0, 0];
   dst_rect: [number, number, number, number] = [0, 0, 0, 0];
 
@@ -48,24 +50,37 @@ export class LayoutItem {
 
   static async cook(lf2: LF2, layout: Layout, data: ILayoutItem, get_val: ValGetter<LayoutItem>) {
     const ret = new LayoutItem(data, layout);
-    await ret._cook_img_infos(lf2);
+    await ret._cook_imgs(lf2);
     ret._cook_img_idx(get_val);
     ret._cook_visible(get_val);
     ret._cook_rects();
+    await ret._cook_component();
     return ret;
   }
+  private async _cook_component() {
+    const { component } = this.data
+    if (!component) return;
+  }
 
-  private async _cook_img_infos(lf2: LF2) {
-    const { img } = this.data;
+  private async _cook_imgs(lf2: LF2) {
+    const { img, flip_x, flip_y } = this.data;
     const img_paths = !is_arr(img) ? [img] : img;
     const img_infos: TImageInfo[] = [];
+    const [sx, sy, sw, sh] = read_as_4_nums(this.data.rect, 0, 0, 0, 0)
     const preload = async (img_path: string) => {
-      const img_info = image_pool.find(img_path);
+      const img_key = [img_path, sx, sy, sw, sh, flip_x ? 1 : 0, flip_y ? 1 : 0].join('_')
+      const img_info = image_pool.find(img_key);
       if (img_info) return img_info;
       const img_url = await lf2.import(img_path);
-      return await image_pool.load(img_path, img_url);
+      return await image_pool.load(img_key, img_url, (img, cvs, ctx) => {
+        const w = sw || img.width;
+        const h = sh || img.height;
+        console.log(img_key, sx, sy, sw, sh, img.width, img.height)
+        cvs.width = w;
+        cvs.height = h;
+        ctx.drawImage(img, sx, sy, w, h, 0, 0, w, h);
+      });
     };
-
     for (const p of img_paths) {
       if (!p) continue
       img_infos.push(await preload(p))
@@ -116,6 +131,15 @@ export class LayoutItem {
 
     this.src_rect = [sx, sy, sw, sh];
     this.dst_rect = [dx, dy, dw, dh];
+  }
+
+
+  private _object_3d?: THREE.Object3D;
+  get object_3d() { return this._object_3d }
+  init_3d() {
+
+    const o3d = this._object_3d = new THREE.Object3D();
+    this.layout.object_3d?.add(o3d)
   }
 }
 
