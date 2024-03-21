@@ -9,7 +9,7 @@ import CharacterSelect from './LF2/ui/CharacterSelect';
 import { TKeyName } from './LF2/controller/BaseController';
 import { Input } from './LF2/ui/Select/Input';
 import { Button } from './LF2/ui/Select/Button';
-import { new_team } from './LF2/new_id';
+import { new_id, new_team } from './LF2/new_id';
 
 export const keys_map: { [x in string]?: Record<TKeyName, string> } = {
   '1': {

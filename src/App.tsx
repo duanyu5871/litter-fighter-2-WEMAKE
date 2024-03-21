@@ -254,7 +254,7 @@ function App() {
       <div className='game_contiainer' ref={_game_contiainer_ref}>
         <canvas ref={_canvas_ref} tabIndex={-1} className='game_canvas' width={795} height={450} />
         <div className='game_ui'>
-          <GameUI lf2={lf2} load_builtin={on_click_load_builtin}/>
+          <GameUI lf2={lf2} load_builtin={on_click_load_builtin} />
         </div>
         <div className='game_overlay' ref={_overlay_ref} style={{ display: !game_overlay ? 'none' : void 0 }} />
       </div>
@@ -329,7 +329,7 @@ function App() {
               <Button onClick={() => set_game_overlay(v => !v)}>{game_overlay ? 'hide' : 'show '} game overlay(F7)</Button>
               <Button onClick={() => set_control_panel(v => !v)}>{control_panel ? 'hide' : 'show '} control panel(F8)</Button>
             </div>
-            {[1, 2, 3, 4].map(v => <PlayerRow key={v} which={v} lf2={lf2} visible={control_panel} />)}
+            {lf2?.player_infos.map((v, idx) => <PlayerRow key={idx} lf2={lf2} which={idx} visible={control_panel} />)}
             <BlackgroundRow lf2={lf2} visible={control_panel} />
           </> : null
         }

@@ -31,7 +31,7 @@ export function BlackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
 
   useEffect(() => {
     if (!lf2) return;
-    lf2.set_stage_bgm_enable(stage_bgm)
+    lf2.set_bgm_enable(stage_bgm)
   }, [stage_bgm, lf2]);
 
   useEffect(() => {

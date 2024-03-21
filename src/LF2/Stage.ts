@@ -136,7 +136,7 @@ export default class Stage {
 
   constructor(world: World, data: IStageInfo | IBgData) {
     this.world = world;
-    this._bgm_enable = this.world.lf2.stage_bgm_enable;
+    this._bgm_enable = this.world.lf2.bgm_enable;
     if ('type' in data && data.type === 'background') {
       this.data = Defines.THE_VOID_STAGE;
       this.bg = new Background(world, data);

@@ -8,6 +8,7 @@ import { Defines } from '../js_utils/lf2_type/defines';
 import { BgLayer } from './BgLayer';
 import Stage from './Stage';
 import { World } from './World';
+import { TKeyName, TKeys } from './controller/BaseController';
 import { PlayerController } from "./controller/LocalHuman";
 import './entity/Ball';
 import { Character } from './entity/Character';
@@ -15,12 +16,29 @@ import { Entity } from './entity/Entity';
 import { Weapon } from './entity/Weapon';
 import DatMgr from './loader/DatMgr';
 import { SoundMgr } from './loader/SoundMgr';
-import { get_import_fallbacks as get_import_fallback_names, import_builtin } from './loader/make_import';
+import { get_import_fallbacks, import_builtin } from './loader/make_import';
 import { new_id, new_team } from './new_id';
-import { TKeyName } from './controller/BaseController';
+
+const default_keys_list: TKeys[] = [
+  { L: 'a', R: 'd', U: 'w', D: 's', a: 'r', j: 't', d: 'y' },
+  { L: 'j', R: 'l', U: 'i', D: 'k', a: '[', j: ']', d: '\\' },
+  { L: 'arrowleft', R: 'arrowright', U: 'arrowup', D: 'arrowdown', a: '0', j: '.', d: 'Enter' },
+  { L: '4', R: '6', U: '8', D: '5', a: '/', j: '*', d: '-' },
+  { L: '', R: '', U: '', D: '', a: '', j: '', d: '' }
+]
+const get_default_keys = (i: number) => default_keys_list[i] || default_keys_list[default_keys_list.length - 1];
+
+class PlayerInfo {
+  private _name: string;
+  private _keys: TKeys;
+  constructor(name: string, keys: TKeys) {
+    this._name = name;
+    this._keys = keys;
+  }
+}
+
 
 export default class LF2 {
-
   private _disposers = new Set<() => void>();
   private _stage_infos: IStageInfo[] = [];
 
@@ -34,20 +52,28 @@ export default class LF2 {
   readonly canvas: HTMLCanvasElement;
   readonly world: World;
   readonly overlay: HTMLDivElement | null | undefined;
-  zip: JSZIP | undefined;
+  private zip: JSZIP | undefined;
 
+  private _player_infos: PlayerInfo[] = [
+    new PlayerInfo('1', get_default_keys(0)),
+    new PlayerInfo('2', get_default_keys(1)),
+    new PlayerInfo('3', get_default_keys(2)),
+    new PlayerInfo('4', get_default_keys(3))
+  ]
+  get player_infos() { return this._player_infos }
+  
   get players() { return this.world.players }
 
-  private _stage_bgm_enable = false;
-
-
-  get stage_infos() { return this._stage_infos }
-  get stage_bgm_enable() { return this._stage_bgm_enable; }
-
-  set_stage_bgm_enable(enabled: boolean): void {
-    this._stage_bgm_enable = enabled;
+  private _bgm_enable = false;
+  get bgm_enable() { return this._bgm_enable; }
+  set_bgm_enable(enabled: boolean): void {
+    this._bgm_enable = enabled;
     this.world.stage.set_bgm_enable(enabled);
   }
+
+  get stage_infos() { return this._stage_infos }
+
+
   get_local_player(which: string) {
     for (const [id, player] of this.players)
       if (id === which) return player;
@@ -56,7 +82,7 @@ export default class LF2 {
 
   @Log.Clone({ showArgs: true, showRet: false, disabled: true })
   async import(path: string) {
-    const fallback_paths = get_import_fallback_names(path);
+    const fallback_paths = get_import_fallbacks(path);
     if (this.zip) {
       for (const fallback_path of fallback_paths) {
         const zip_obj = this.zip.file(fallback_path);
@@ -85,18 +111,18 @@ export default class LF2 {
     this.overlay = overlay
   }
 
+  private _stages?: IStageInfo[];
   async stages(): Promise<IStageInfo[]> {
-    const ret: IStageInfo[] = await import_builtin('data/stage.json');
-    for (const a of ret) {
-      for (const b of a.phases) {
-        for (const c of b.objects) {
-        }
-      }
-    }
-    return ret;
+    if (this._stages) return this._stages
+    return this._stages = await this.import('data/stage.json')
   }
+
+  private _bgms?: string[];
   async bgms(): Promise<string[]> {
-    if (!this.zip) return Promise.all([
+
+    if (this._bgms) return this._bgms;
+
+    if (!this.zip) return this._bgms = await Promise.all([
       "boss1.wma.ogg",
       "boss2.wma.ogg",
       "main.wma.ogg",
@@ -106,12 +132,12 @@ export default class LF2 {
       "stage4.wma.ogg",
       "stage5.wma.ogg",
     ].map(async name => {
-      const src = import_builtin('bgm/' + name)
+      const src = this.import('bgm/' + name)
       await this.sound_mgr.load(name, src);
       return name;
     }))
 
-    return Promise.all(
+    return this._bgms = await Promise.all(
       this.zip.file(/^bgm\//).map(async file => {
         const src = file.async('blob');
         await this.sound_mgr.load(file.name, src)

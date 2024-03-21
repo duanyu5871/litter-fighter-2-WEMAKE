@@ -3,6 +3,7 @@ import { IHitKeyCollection } from '../../js_utils/lf2_type/IHitKeyCollection';
 import { Defines } from '../../js_utils/lf2_type/defines';
 import { Character } from '../entity/Character';
 export type TKeyName = 'L' | 'R' | 'U' | 'D' | 'a' | 'j' | 'd'
+export type TKeys = Record<TKeyName, string>
 export const KEY_NAME_LIST = ['d', 'L', 'R', 'U', 'D', 'j', 'a'] as const;
 export const CONFLICTS_KEY_MAP: Record<TKeyName, TKeyName | undefined> = {
   a: void 0,
