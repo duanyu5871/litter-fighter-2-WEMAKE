@@ -75,7 +75,6 @@ export class LayoutItem {
       return await image_pool.load(img_key, img_url, (img, cvs, ctx) => {
         const w = sw || img.width;
         const h = sh || img.height;
-        console.log(img_key, sx, sy, sw, sh, img.width, img.height)
         cvs.width = w;
         cvs.height = h;
         ctx.drawImage(img, sx, sy, w, h, 0, 0, w, h);
