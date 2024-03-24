@@ -1,5 +1,6 @@
-export interface ILayoutItem {
-  key: string;
+export interface ILayoutInfo {
+  id?: string;
+  name?: string;
   img?: string[] | string;
   which?: number | string;
   rect?: number[] | string;
@@ -16,4 +17,8 @@ export interface ILayoutItem {
   txt_stroke?: string;
   font?: string[];
   click_action?: string;
+  key_press_actions?: [string, string][];
+  enter_action?: string;
+  leave_action?: string;
+  items?: ILayoutInfo[];
 }

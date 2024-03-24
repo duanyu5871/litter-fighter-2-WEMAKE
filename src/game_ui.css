@@ -4,6 +4,7 @@
   right: 0px;
   top: 0px;
   bottom: 0px;
+  display: none;
   /* pointer-events: none; */
   user-select: none;
   background-color: #10206C;

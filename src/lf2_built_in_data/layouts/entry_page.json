@@ -4,7 +4,7 @@
   "bg_color": "rgb(16, 32, 108)",
   "items": [
     {
-      "key": "bg_left",
+      "id": "bg_left",
       "which": "f:random_int_in_range(0,12,1)",
       "img": [
         "sprite/MENU_BACK1.png",
@@ -24,7 +24,7 @@
       "size": "0, 450"
     },
     {
-      "key": "bg_right",
+      "id": "bg_right",
       "which": "f:random_int_in_range(0,12,1)",
       "img": [
         "sprite/MENU_BACK1.png",
@@ -47,7 +47,7 @@
       "flip_x": true
     },
     {
-      "key": "main_title",
+      "id": "main_title",
       "img": "sprite/MENU_CLIP.png",
       "rect": "0, 41, 496, 80",
       "center":"0.5, 0",
@@ -55,7 +55,7 @@
       "pos": "398, 40"
     },
     {
-      "key": "main_menu",
+      "id": "main_menu",
       "img": "sprite/MENU_CLIP.png",
       "rect": "0, 125, 282, 119",
       "center":"0.5, 0.5",
@@ -64,7 +64,7 @@
     },
     {
       "visible": "mouse_on_me==1",
-      "key": "start_local_game",
+      "id": "start_local_game",
       "img": "sprite/MENU_CLIP.png",
       "rect": "535, 105, 256, 26",
       "center":"0.5, 0",
@@ -74,7 +74,7 @@
     },
     {
       "visible": "mouse_on_me==1",
-      "key": "network_game",
+      "id": "network_game",
       "img": "sprite/MENU_CLIP.png",
       "rect": "535, 137, 256, 26",
       "center":"0.5, 0",
@@ -84,7 +84,7 @@
     },
     {
       "visible": "mouse_on_me==1",
-      "key": "ctrl_settings",
+      "id": "ctrl_settings",
       "img": "sprite/MENU_CLIP.png",
       "rect": "535, 168, 256, 26",
       "center":"0.5, 0",

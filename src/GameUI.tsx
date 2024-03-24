@@ -1,4 +1,3 @@
-import { Warn } from '@fimagine/logger';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import LF2 from './LF2/LF2';
 import { random_in_range } from './LF2/random_in_range';
@@ -7,9 +6,7 @@ import { arithmetic_progression } from './js_utils/arithmetic_progression';
 import { is_num } from './js_utils/is_num';
 import { is_str } from './js_utils/is_str';
 
-import { ILayoutData } from './ILayoutData';
 import { Layout } from './Layout';
-import { LayoutItem } from './LayoutItem';
 import { is_arr } from './is_arr';
 
 
@@ -25,7 +22,7 @@ export function GameUI(props: { lf2?: LF2; load_builtin?: () => void }) {
   const [cooked_layouts, set_cooked_layouts] = useState<Layout[]>([]);
   const [layout, set_layout] = useState<Layout>();
 
-  const val_getter = (word: string) => (item: LayoutItem) => {
+  const val_getter = (word: string) => (item: Layout) => {
     if (word === 'mouse_on_me') {
       const { mouse_x: x, mouse_y: y } = mem.current;
       return item.hit(x, y) ? '1' : '0';
@@ -40,10 +37,10 @@ export function GameUI(props: { lf2?: LF2; load_builtin?: () => void }) {
         const { img_idx } = item.state;
         if (is_num(img_idx)) return img_idx
 
-        if (is_str(group_id)) {
-          let arr = item.layout.state['random_int_arr' + group_id];
+        if (is_str(group_id) && item.parent) {
+          let arr = item.parent.state['random_int_arr' + group_id];
           if (!is_arr(arr) || !arr.length)
-            arr = item.layout.state['random_int_arr' + group_id] = arithmetic_progression(begin, end, 1);
+            arr = item.parent.state['random_int_arr' + group_id] = arithmetic_progression(begin, end, 1);
           return item.state.img_idx = random_take(arr);
         } else {
           return item.state.img_idx = Math.floor(random_in_range(begin, end) % (end + 1))
@@ -54,29 +51,6 @@ export function GameUI(props: { lf2?: LF2; load_builtin?: () => void }) {
   };
   useEffect(() => {
     if (!lf2) return;
-    lf2.import('layouts/index.json')
-      .then(v => {
-        if (!is_arr(v))
-          throw new Error('layouts/index.json content is not array!')
-        return v;
-      }).then(list => {
-        return Promise.all(list.filter(element => {
-          const ok = is_str(element);
-          if (!ok) Warn.print('layouts/index.json', 'element is not a string! got:', element)
-          return ok
-        }).map(v => lf2.import(v)))
-      }).then(async (raw_layouts: ILayoutData[]) => {
-        const cooked_layouts: Layout[] = [];
-        for (const raw_layout of raw_layouts) {
-          const cooked_layout = await Layout.cook(lf2, raw_layout, val_getter)
-          cooked_layouts.push(cooked_layout);
-        }
-        set_cooked_layouts(cooked_layouts);
-        set_layout(cooked_layouts[0]);
-        console.log(cooked_layouts[0])
-      }).catch((v) => {
-        Warn.print('layouts/index.json', v)
-      })
   }, [lf2])
 
   const draw_ui = useCallback(async () => {
@@ -190,32 +164,29 @@ export function GameUI(props: { lf2?: LF2; load_builtin?: () => void }) {
   const handle_layout_action = (layout: Layout, action: string) => {
     const [, next_layout_id] = action.match(/goto\((.+)\)/) ?? []
 
-    if (action === 'cancel_load_data') {
+    if (action === 'loop_img')
+      return layout.to_next_img();
+    if (action === 'cancel_load_data') 
       return lf2?.clear()
-    }
-    if (action === 'load_default_data') {
+    
+    if (action === 'load_default_data') 
       return props.load_builtin?.();
-    }
+    
     if (next_layout_id) {
       const prev_layout = layout;
       const next_layout = cooked_layouts.find(v => v.data.id === next_layout_id)
       if (prev_layout?.data.leave_action) handle_layout_action(prev_layout, prev_layout.data.leave_action)
       if (next_layout?.data.enter_action) handle_layout_action(next_layout, next_layout.data.enter_action)
-      prev_layout.unmount();
-      next_layout?.mount();
+      prev_layout.on_unmount();
+      next_layout?.on_mount();
       return set_layout(next_layout)
     }
+
     const [, alert_msg] = action.match(/alert\((.+)\)/) ?? []
     if (alert_msg) return alert(alert_msg);
 
     const [, url] = action.match(/link_to\((.+)\)/) ?? [];
     if (url) return window.open(url)
-  }
-  const handle_item_action = (item: LayoutItem, action: string) => {
-    if (action === 'loop_img')
-      return item.to_next_img();
-
-    handle_layout_action(item.layout, action)
   }
 
   const onClick = (e: React.MouseEvent) => {
@@ -224,7 +195,7 @@ export function GameUI(props: { lf2?: LF2; load_builtin?: () => void }) {
       const { click_action: on_click } = item.data;
       if (!on_click) continue;
       const { mouse_x: x, mouse_y: y } = mem.current;
-      item.hit(x, y) && handle_item_action(item, on_click)
+      item.hit(x, y) && handle_layout_action(item, on_click)
     }
   }
   return (

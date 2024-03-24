@@ -3,7 +3,9 @@ import * as THREE from 'three';
 import { Layout } from '../Layout';
 import { Log, Warn } from '../Log';
 import random_get from '../Utils/random_get';
+import random_take from '../Utils/random_take';
 import { is_arr } from '../is_arr';
+import { arithmetic_progression } from '../js_utils/arithmetic_progression';
 import { is_num } from '../js_utils/is_num';
 import { is_str } from '../js_utils/is_str';
 import { ICharacterData, IStageInfo, IWeaponData, TFace } from '../js_utils/lf2_type';
@@ -21,6 +23,7 @@ import DatMgr from './loader/DatMgr';
 import { SoundMgr } from './loader/SoundMgr';
 import { get_import_fallbacks, import_builtin } from './loader/make_import';
 import { new_id, new_team } from './new_id';
+import { random_in_range } from './random_in_range';
 
 const default_keys_list: TKeys[] = [
   { L: 'a', R: 'd', U: 'w', D: 's', a: 'r', j: 't', d: 'y' },
@@ -44,6 +47,10 @@ class PlayerInfo {
 export default class LF2 {
   private _disposers = new Set<() => void>();
   private _stage_infos: IStageInfo[] = [];
+  private _disposed: boolean = false;
+  private _layout: Layout | undefined;
+  static DisposeError = new Error('disposed')
+  static IngoreDisposeError = (e: any) => { if (e !== this.DisposeError) throw e; }
 
   set disposer(f: (() => void)[] | (() => void)) {
     if (Array.isArray(f))
@@ -76,12 +83,13 @@ export default class LF2 {
 
   get stage_infos() { return this._stage_infos }
 
-
   get_local_player(which: string) {
     for (const [id, player] of this.players)
       if (id === which) return player;
   }
   on_click_character?: (c: Character) => void;
+
+  _r = (r: any) => this._disposed ? Promise.reject(LF2.DisposeError) : r;
 
   @Log.Clone({ showArgs: true, showRet: false, disabled: true })
   async import(path: string) {
@@ -90,15 +98,25 @@ export default class LF2 {
       for (const fallback_path of fallback_paths) {
         const zip_obj = this.zip.file(fallback_path);
         if (!zip_obj) continue;
-        if (fallback_path.endsWith('.json'))
-          return await zip_obj.async('text').then(JSON.parse)
-        if (fallback_path.endsWith('.txt'))
-          return await zip_obj.async('text');
-        return await zip_obj.async('blob')
+        if (fallback_path.endsWith('.json')) {
+          const ret = await zip_obj.async('text').then(JSON.parse);
+          return this._r(ret);
+        }
+        if (fallback_path.endsWith('.txt')) {
+          const ret = await zip_obj.async('text');
+          return this._r(ret);
+        }
+        const ret = await zip_obj.async('blob')
+        return this._r(ret);
       }
     }
     for (const fallback_path of fallback_paths) {
-      try { return await import_builtin(fallback_path) } catch { }
+      try {
+        const ret = await import_builtin(fallback_path);
+        return this._r(ret);
+      } catch (e) {
+        console.error(e);
+      }
     }
     throw new Error(`resource not found, path: ${path}, fallbacks: ${fallback_paths.join(';')}!`)
   }
@@ -111,7 +129,14 @@ export default class LF2 {
     this.world = new World(this, canvas, overlay);
     this.dat_mgr = new DatMgr(this);
     this.sound_mgr = new SoundMgr(this);
-    this.overlay = overlay
+    this.overlay = overlay;
+
+    this.canvas.addEventListener('click', this.on_click);
+    this.canvas.addEventListener('mousemove', this.on_mouse_move);
+    this.canvas.addEventListener('pointerdown', this.on_pointer_down);
+    this.canvas.addEventListener('pointerup', this.on_pointer_up);
+    this.disposer = () => this.canvas.removeEventListener('pointerdown', this.on_pointer_down)
+    this.disposer = () => this.canvas.removeEventListener('pointerup', this.on_pointer_up)
   }
 
   private _stages?: IStageInfo[];
@@ -205,10 +230,6 @@ export default class LF2 {
         o.userData.owner.show_indicators = false;
       else if (o.userData.owner instanceof Entity)
         o.userData.owner.show_indicators = false;
-      else if (o instanceof THREE.Mesh)
-        o.material.color.set(0xffffff)
-      else if (o instanceof THREE.Sprite)
-        o.material.color.set(0xffffff)
     }
     this._intersection = next;
     (window as any).pick_0 = void 0
@@ -223,12 +244,57 @@ export default class LF2 {
       if (o.userData.owner instanceof Character) {
         this.on_click_character?.(o.userData.owner)
       }
-    } else if (o instanceof THREE.Mesh) {
-      o.material.color.set(0xff0000)
-    } else if (o instanceof THREE.Sprite) {
-      o.material.color.set(0xff0000)
     }
   }
+  private mouse_on_layouts = new Set<Layout>()
+  on_click = (e: MouseEvent) => {
+    if (!this._layout) return;
+    const { offsetX: x, offsetY: y } = e;
+    const coords = new THREE.Vector2(
+      (x / this.canvas.width) * 2 - 1,
+      -(y / this.canvas.height) * 2 + 1
+    )
+    const { sprite: object_3d } = this._layout;
+    if (!object_3d) return;
+    const raycaster = new THREE.Raycaster();
+    raycaster.setFromCamera(coords, this.world.camera);
+    const intersections = raycaster.intersectObjects([object_3d], true);
+    for (const { object: { userData: { owner } } } of intersections) {
+      if (owner instanceof Layout) owner.on_click()
+    }
+  }
+
+  on_mouse_move = (e: MouseEvent) => {
+    if (!this._layout) return;
+    const { offsetX: x, offsetY: y } = e;
+    const coords = new THREE.Vector2(
+      (x / this.canvas.width) * 2 - 1,
+      -(y / this.canvas.height) * 2 + 1
+    )
+    const { sprite: object_3d } = this._layout;
+    if (!object_3d) return;
+    const raycaster = new THREE.Raycaster();
+    raycaster.setFromCamera(coords, this.world.camera);
+    const intersections = raycaster.intersectObjects([object_3d], true);
+    const mouse_on_layouts = new Set<Layout>()
+    for (const { object: { userData: { owner } } } of intersections) {
+      if (owner instanceof Layout) mouse_on_layouts.add(owner);
+    }
+    for (const layout of mouse_on_layouts) {
+      if (!this.mouse_on_layouts.has(layout)) {
+        layout.on_mouse_enter()
+        layout.state.mouse_on_me = '1';
+      }
+    }
+    for (const layout of this.mouse_on_layouts) {
+      if (!mouse_on_layouts.has(layout)) {
+        layout.on_mouse_leave()
+        layout.state.mouse_on_me = '0';
+      }
+    }
+    this.mouse_on_layouts = mouse_on_layouts;
+  }
+
 
   on_pointer_down = (e: PointerEvent) => {
     const { offsetX: x, offsetY: y } = e;
@@ -304,13 +370,9 @@ export default class LF2 {
     }
     this.world.start_update();
     this.world.start_render();
-    this.canvas.addEventListener('pointerdown', this.on_pointer_down);
-    this.canvas.addEventListener('pointerup', this.on_pointer_up);
-    this.disposer = () => this.canvas.removeEventListener('pointerdown', this.on_pointer_down)
-    this.disposer = () => this.canvas.removeEventListener('pointerup', this.on_pointer_up)
-
   }
   dispose() {
+    this._disposed = true;
     for (const f of this._disposers) f();
     this.world.dispose()
     this.dat_mgr.cancel();
@@ -384,7 +446,6 @@ export default class LF2 {
     if (!is_arr(array)) return;
 
     const paths: string[] = [];
-
     for (const element of array) {
       if (is_str(element)) paths.push(element);
       else Warn.print('layouts/index.json', 'element is not a string! got:', element)
@@ -393,23 +454,56 @@ export default class LF2 {
     const cooked_layouts: Layout[] = [];
     for (const path of paths) {
       const raw_layout = await this.import(path);
-      const cooked_layout = await Layout.cook(this, raw_layout, () => () => 'todo')
+      const cooked_layout = await Layout.cook(this, raw_layout, this.layout_val_getter)
       cooked_layouts.push(cooked_layout);
     }
     this.world.render_once()
     return this._layouts = cooked_layouts;
   }
 
-  set_layout(id: string) {
-    const layout = this._layouts?.find(v => v.data.id === id);
-    if (!layout) return;
+  layout_val_getter = (word: string) => (item: Layout) => {
+    if (word === 'mouse_on_me') {
+      console.log('mouse_on_me', item.state.mouse_on_me)
+      return item.state.mouse_on_me;
+    }
+    if (word.startsWith('f:')) {
+      const result = word.match(/f:random_int_in_range\((\d+),(\d+)(,\d+)?\)/);
+      if (result) {
+        const [, a, b, group_id] = result;
+        const begin = Number(a);
+        const end = Number(b);
+        if (begin > end) return end;
+        const { img_idx } = item.state;
+        if (is_num(img_idx)) return img_idx
+        if (is_str(group_id) && item.parent) {
+          let arr = item.parent.state['random_int_arr' + group_id];
+          if (!is_arr(arr) || !arr.length)
+            arr = item.parent.state['random_int_arr' + group_id] = arithmetic_progression(begin, end, 1);
+          return item.state.img_idx = random_take(arr);
+        } else {
+          return item.state.img_idx = Math.floor(random_in_range(begin, end) % (end + 1))
+        }
+      }
+    }
+    return word;
+  };
 
-    layout.init_3d()
-
-    if (layout.object_3d)
-      this.world.scene.add(layout.object_3d)
-
-
-    return layout
+  set_layout(layout?: Layout): void;
+  set_layout(id?: string): void;
+  set_layout(any: string | Layout | undefined): void {
+    if (any === void 0) return;
+    const layout = typeof any === 'string' ? this._layouts?.find(v => v.data.id === any) : any;
+    if (this._layout) {
+      const layout = this._layout;
+      layout.on_unmount();
+      if (layout.sprite) this.world.scene.remove(layout.sprite);
+    }
+    this._layout = layout;
+    if (layout) {
+      layout.init_3d()
+      if (layout.sprite) this.world.scene.add(layout.sprite);
+      layout.on_mount();
+    }
+    this.world.start_render();
   }
 }

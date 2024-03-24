@@ -10,12 +10,12 @@
   ],
   "items": [
     {
-      "key": "bg_wait",
+      "id": "bg_wait",
       "img": "sprite/MENU_WAIT.png",
       "size": "794, 0"
     },
     {
-      "key": "txt_loading_content",
+      "id": "txt_loading_content",
       "txt": "txt_loading_content",
       "txt_fill": "white",
       "pos": "610, 75",

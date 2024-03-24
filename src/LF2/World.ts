@@ -157,7 +157,6 @@ export class World {
   private _render_request_id?: ReturnType<typeof requestAnimationFrame>;
   private _update_timer_id?: ReturnType<typeof setInterval>;
 
-
   private _r_prev_time = 0;
   private _r_fps = new FPS()
   private _u_prev_time = 0;
@@ -169,7 +168,7 @@ export class World {
   }
 
   start_render() {
-    if (this.disposed) return;
+    if (this.disposed || this._render_request_id) return;
     const on_render = (time: number) => {
       if (this._r_prev_time !== 0) {
         this.render_once()

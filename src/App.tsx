@@ -19,6 +19,7 @@ import lf2_dat_str_to_json from './js_utils/lf2_dat_translator/dat_2_json';
 import read_lf2_dat from './read_lf2_dat';
 
 const fullsreen = new Fullsreen();
+
 function App() {
   const _overlay_ref = useRef<HTMLDivElement>(null)
   const _canvas_ref = useRef<HTMLCanvasElement>(null)
@@ -117,11 +118,11 @@ function App() {
     if (!canvas) return;
     if (!lf2) {
       const lf2 = new LF2(canvas, overlay);
+      lf2.layouts().then(v => {
+        lf2.set_layout(v?.[0])
+      })
       Object.defineProperty(window, 'lf2', { value: lf2, configurable: true })
       set_lf2(lf2);
-      // lf2.world.callbacks.add({ on_stage_change: (_, s) => set_cur_stage(s) })
-      // lf2.on_click_character = c => set_cur_character(c)
-      return () => { lf2.dispose() }
     }
   }, [lf2]);
 
