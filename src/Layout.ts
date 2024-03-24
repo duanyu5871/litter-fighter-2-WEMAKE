@@ -41,7 +41,7 @@ export class Layout {
   protected _parent?: Layout;
   protected _items: Layout[] = [];
 
-  readonly data: ILayoutInfo;
+  readonly data: Readonly<ILayoutInfo>;
 
   center: [number, number];
   pos: [number, number];
@@ -66,8 +66,7 @@ export class Layout {
 
   constructor(lf2: LF2, data: ILayoutInfo) {
     this.lf2 = lf2;
-    this.data = data;
-    this.data.click_action = data.click_action?.trim().replace(/\s/g, '')
+    this.data = Object.freeze(data);
     this.center = read_as_2_nums(this.data.center, 0, 0)
     this.pos = read_as_2_nums(this.data.pos, 0, 0)
   }
@@ -77,23 +76,30 @@ export class Layout {
     return l <= x && t <= y && l + w >= x && t + h >= y;
   }
 
-  on_mount() {
-    this._state = {};
-    for (const item of this.items)
-      item.on_mount()
-    const { enter_action: a } = this.data;
-    if (a) this.handle_layout_action(a);
-  }
   on_mouse_leave() {
   }
   on_mouse_enter() {
   }
+  on_mount() {
+    this._state = {};
+
+    this.init_3d();
+
+    for (const item of this.items)
+      item.on_mount()
+
+    const { enter_action: a } = this.data;
+    if (a) this.handle_layout_action(a);
+  }
   on_unmount() {
+    const { leave_action: a } = this.data;
+    if (a) this.handle_layout_action(a);
+
     for (const item of this.items)
       item.on_unmount()
 
-    const { leave_action: a } = this.data;
-    if (a) this.handle_layout_action(a);
+    this._sprite?.removeFromParent();
+
   }
 
   to_next_img() {
@@ -103,11 +109,6 @@ export class Layout {
   }
 
   static async cook(lf2: LF2, data: ILayoutInfo, get_val: ValGetter<Layout>, parent?: Layout) {
-    if (!parent) {
-      data.size = [794, 450];
-      data.center = [0, 0];
-      data.pos = [0, -450]
-    }
     const ret = new Layout(lf2, data);
     ret.parent = parent;
     await ret._cook_imgs(lf2);
@@ -116,11 +117,17 @@ export class Layout {
     ret._cook_rects();
     await ret._cook_component();
 
+
     if (data.items)
       for (const raw_item of data.items) {
         const cooked_item = await Layout.cook(lf2, raw_item, get_val, ret);
         ret.items.push(cooked_item);
       }
+    if (!parent) {
+      ret.size = [794, 450];
+      ret.center = [0, 0];
+      ret.pos = [0, -450]
+    }
     return ret;
   }
 
@@ -159,11 +166,7 @@ export class Layout {
 
     if (is_str(visible)) {
       const func = new Condition<Layout>(visible, get_val).make();
-      return this._visible = () => {
-        const ret = func(this);
-        console.log(this.data.visible)
-        return ret;
-      }
+      return this._visible = () => func(this);
     }
     if (is_bool(visible))
       return this._visible = () => visible
@@ -215,8 +218,7 @@ export class Layout {
 
   protected _sprite?: THREE.Object3D;
   get sprite() { return this._sprite }
-  init_3d() {
-    if (this._sprite) return;
+  protected init_3d() {
     const [cx, cy] = this.center;
     const [x, y] = this.pos;
     const [w, h] = this.size;
@@ -231,15 +233,14 @@ export class Layout {
     if (texture) params.map = texture;
     else if (this.data.bg_color) params.color = this.data.bg_color;
     else params.color = 0;
+
     const material = new THREE.MeshBasicMaterial(params);
     this._sprite = new THREE.Mesh(geo, material);
     this._sprite.position.set(x, -y, 0);
     this._sprite.userData = {
       owner: this,
-    }
-    this._sprite.onBeforeRender = this.on_before_render
-    this.parent?.sprite?.add(this._sprite);
-    for (const item of this.items) item.init_3d();
+    };
+    (this.parent?.sprite || this.lf2.world.scene)?.add(this._sprite);
   }
 
   on_click() {
@@ -265,10 +266,13 @@ export class Layout {
     const [, next_layout_id = null] = action.match(/goto\((.+)\)/) ?? []
     if (next_layout_id !== null) return this.lf2.set_layout(next_layout_id)
   }
+  on_render() {
+    const sprite = this.sprite;
+    if (sprite)
+      sprite.visible = this.visible;
 
-  on_before_render = (renderer: THREE.WebGLRenderer, scene: THREE.Scene, camera: THREE.Camera, geometry: THREE.BufferGeometry<THREE.NormalBufferAttributes>, material: THREE.Material, group: THREE.Group<THREE.Object3DEventMap>) => {
-    const sprite = this._sprite
-    if (!sprite) return;
-    sprite.visible = this.visible;
-  };
+    for (const item of this.items) {
+      item.on_render();
+    }
+  }
 }

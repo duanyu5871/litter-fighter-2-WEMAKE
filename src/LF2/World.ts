@@ -164,6 +164,7 @@ export class World {
   render_once() {
     if (this.disposed) return;
     for (const e of this.entities) e.indicators.update();
+    this.lf2.layout?.on_render();
     this.renderer.render(this.scene, this.camera);
   }
 

@@ -43,7 +43,6 @@ class PlayerInfo {
   }
 }
 
-
 export default class LF2 {
   private _disposers = new Set<() => void>();
   private _stage_infos: IStageInfo[] = [];
@@ -73,6 +72,7 @@ export default class LF2 {
   get player_infos() { return this._player_infos }
 
   get players() { return this.world.players }
+  get layout() { return this._layout }
 
   private _bgm_enable = false;
   get bgm_enable() { return this._bgm_enable; }
@@ -130,11 +130,12 @@ export default class LF2 {
     this.dat_mgr = new DatMgr(this);
     this.sound_mgr = new SoundMgr(this);
     this.overlay = overlay;
-
     this.canvas.addEventListener('click', this.on_click);
     this.canvas.addEventListener('mousemove', this.on_mouse_move);
     this.canvas.addEventListener('pointerdown', this.on_pointer_down);
     this.canvas.addEventListener('pointerup', this.on_pointer_up);
+    this.disposer = () => this.canvas.removeEventListener('click', this.on_click)
+    this.disposer = () => this.canvas.removeEventListener('mousemove', this.on_mouse_move)
     this.disposer = () => this.canvas.removeEventListener('pointerdown', this.on_pointer_down)
     this.disposer = () => this.canvas.removeEventListener('pointerup', this.on_pointer_up)
   }
@@ -248,6 +249,7 @@ export default class LF2 {
   }
   private mouse_on_layouts = new Set<Layout>()
   on_click = (e: MouseEvent) => {
+    console.log(e);
     if (!this._layout) return;
     const { offsetX: x, offsetY: y } = e;
     const coords = new THREE.Vector2(
@@ -462,10 +464,8 @@ export default class LF2 {
   }
 
   layout_val_getter = (word: string) => (item: Layout) => {
-    if (word === 'mouse_on_me') {
-      console.log('mouse_on_me', item.state.mouse_on_me)
+    if (word === 'mouse_on_me')
       return item.state.mouse_on_me;
-    }
     if (word.startsWith('f:')) {
       const result = word.match(/f:random_int_in_range\((\d+),(\d+)(,\d+)?\)/);
       if (result) {
@@ -491,19 +491,11 @@ export default class LF2 {
   set_layout(layout?: Layout): void;
   set_layout(id?: string): void;
   set_layout(any: string | Layout | undefined): void {
-    if (any === void 0) return;
     const layout = typeof any === 'string' ? this._layouts?.find(v => v.data.id === any) : any;
-    if (this._layout) {
-      const layout = this._layout;
-      layout.on_unmount();
-      if (layout.sprite) this.world.scene.remove(layout.sprite);
-    }
+    if (this._layout === layout) return;
+    this._layout?.on_unmount();
     this._layout = layout;
-    if (layout) {
-      layout.init_3d()
-      if (layout.sprite) this.world.scene.add(layout.sprite);
-      layout.on_mount();
-    }
+    this._layout?.on_mount();
     this.world.start_render();
   }
 }

@@ -3,7 +3,6 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import './App.css';
 import { BlackgroundRow } from './BlackgroundRow';
 import Fullsreen from './Fullsreen';
-import { GameUI } from './GameUI';
 import LF2 from './LF2/LF2';
 import Select from './LF2/ui/Select';
 import { Button } from './LF2/ui/Select/Button';
@@ -27,7 +26,9 @@ function App() {
 
   const _text_area_dat_ref = useRef<HTMLTextAreaElement>(null);
   const _text_area_json_ref = useRef<HTMLTextAreaElement>(null);
-  const [lf2, set_lf2] = useState<LF2>();
+  const lf2_ref = useRef<LF2 | undefined>();
+  const lf2 = lf2_ref.current;
+
   const [editor_closed, set_editor_closed] = useState(true);
   const [game_overlay, set_game_overlay] = useState(true);
   const [control_panel, set_control_panel] = useState(true);
@@ -56,16 +57,12 @@ function App() {
     if (!lf2) return;
     lf2.world.playrate = fast_forward ? 100 : 1;
   }, [lf2, fast_forward])
-
-
   const toggle_fullscreen = () => {
     if (fullsreen.enabled())
       fullsreen.exit();
     else
       fullsreen.enter(document.body.parentElement!);
   }
-
-
   useEffect(() => {
     const on_key_down = (e: KeyboardEvent) => {
       const interrupt = () => {
@@ -113,18 +110,17 @@ function App() {
   }, [lf2, loaded, update_once])
 
   useEffect(() => {
-    const canvas = _canvas_ref.current;
-    const overlay = _overlay_ref.current;
-    if (!canvas) return;
-    if (!lf2) {
-      const lf2 = new LF2(canvas, overlay);
-      lf2.layouts().then(v => {
-        lf2.set_layout(v?.[0])
-      })
-      Object.defineProperty(window, 'lf2', { value: lf2, configurable: true })
-      set_lf2(lf2);
-    }
-  }, [lf2]);
+    if (lf2_ref.current) return;
+    const canvas = _canvas_ref.current!;
+    const overlay = _overlay_ref.current!;
+    
+    const lf2 = lf2_ref.current = new LF2(canvas, overlay);
+    lf2.layouts().then(v => {
+      lf2.set_layout(v?.[0])
+    })
+    Object.defineProperty(window, 'lf2', { value: lf2, configurable: true })
+
+  }, []);
 
   const on_click_load_local_zip = () => {
     if (!lf2) return;
@@ -151,7 +147,7 @@ function App() {
   const on_click_cleaup = () => {
     if (!lf2) return;
     lf2.dispose();
-    set_lf2(void 0);
+    lf2_ref.current = void 0;
     set_loaded(false);
   }
   const on_click_load_builtin = async () => {
@@ -254,9 +250,6 @@ function App() {
     <div className="App">
       <div className='game_contiainer' ref={_game_contiainer_ref}>
         <canvas ref={_canvas_ref} tabIndex={-1} className='game_canvas' width={795} height={450} />
-        <div className='game_ui'>
-          <GameUI lf2={lf2} load_builtin={on_click_load_builtin} />
-        </div>
         <div className='game_overlay' ref={_overlay_ref} style={{ display: !game_overlay ? 'none' : void 0 }} />
       </div>
       <div className='debug_ui'>
