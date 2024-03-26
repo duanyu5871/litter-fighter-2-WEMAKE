@@ -126,11 +126,8 @@
       "size": "120, 19",
       "pos": "611, 200",
       "component": "f:player_name(3)"
-    }
-
-
-
-    ,{
+    },
+    {
       "id": "player_c_head_4",
       "bg_color": "red",
       "size": "120, 120",
@@ -241,6 +238,90 @@
       "size": "120, 19",
       "pos": "611, 398",
       "component": "f:player_name(7)"
+    },
+    {
+      "id": "menu",
+      "img": "sprite/MENU_CLIP3.png",
+      "rect": "348,0,304,166",
+      "items": [
+        {
+          "id": "btn_start",
+          "img": "sprite/MENU_CLIP3.png",
+          "rect": "407,183,126,21",
+          "visible": "mouse_on_me==1",
+          "pos": "89,13",
+          "actions": {
+            "click": "alert(btn_start)"
+          }
+        },
+        {
+          "id": "btn_cancel",
+          "img": "sprite/MENU_CLIP3.png",
+          "rect": "379,206,186,21",
+          "visible": "mouse_on_me==1",
+          "pos": "61,36",
+          "actions": {
+            "click": "alert(btn_cancel)"
+          }
+        },
+        {
+          "id": "btn_update_random",
+          "img": "sprite/MENU_CLIP3.png",
+          "rect": "355,231,235,21",
+          "visible": "mouse_on_me==1",
+          "pos": "37,61",
+          "actions": {
+            "click": "alert(btn_update_random)"
+          }
+        },
+        {
+          "id": "btn_game_bg",
+          "img": "sprite/MENU_CLIP3.png",
+          "rect": "330,254,279,22",
+          "visible": "mouse_on_me==1",
+          "pos": "12,84",
+          "actions": {
+            "click": "alert(btn_game_bg)"
+          }
+        },
+        {
+          "id": "btn_game_stage_bg",
+          "img": "sprite/MENU_CLIP3.png",
+          "rect": "330,363,279,22",
+          "visible": true,
+          "pos": "12,84"
+        },
+        {
+          "id": "btn_game_stage_hover",
+          "img": "sprite/MENU_CLIP3.png",
+          "rect": "330,332,279,22",
+          "visible": "mouse_on_me==1",
+          "pos": "12,84",
+          "actions": {
+            "click": "alert(btn_game_stage_hover)"
+          }
+        },
+        {
+          "id": "btn_game_level",
+          "img": "sprite/MENU_CLIP3.png",
+          "rect": "352,278,228,22",
+          "visible": "mouse_on_me==1",
+          "pos": "34,108",
+          "actions": {
+            "click": "alert(btn_game_level)"
+          }
+        },
+        {
+          "id": "btn_exit",
+          "img": "sprite/MENU_CLIP3.png",
+          "rect": "416,304,111,19",
+          "visible": "mouse_on_me==1",
+          "pos": "98,134",
+          "actions": {
+            "click": "alert(btn_exit)"
+          }
+        }
+      ]
     }
   ]
 }

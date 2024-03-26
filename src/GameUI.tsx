@@ -166,17 +166,17 @@ export function GameUI(props: { lf2?: LF2; load_builtin?: () => void }) {
 
     if (action === 'loop_img')
       return layout.to_next_img();
-    if (action === 'cancel_load_data') 
+    if (action === 'cancel_load_data')
       return lf2?.clear()
-    
-    if (action === 'load_default_data') 
+
+    if (action === 'load_default_data')
       return props.load_builtin?.();
-    
+
     if (next_layout_id) {
       const prev_layout = layout;
       const next_layout = cooked_layouts.find(v => v.data.id === next_layout_id)
-      if (prev_layout?.data.leave_action) handle_layout_action(prev_layout, prev_layout.data.leave_action)
-      if (next_layout?.data.enter_action) handle_layout_action(next_layout, next_layout.data.enter_action)
+      if (prev_layout?.data.actions?.leave) handle_layout_action(prev_layout, prev_layout.data.actions.leave)
+      if (next_layout?.data.actions?.enter) handle_layout_action(next_layout, next_layout.data.actions.enter)
       prev_layout.on_unmount();
       next_layout?.on_mount();
       return set_layout(next_layout)
@@ -192,10 +192,10 @@ export function GameUI(props: { lf2?: LF2; load_builtin?: () => void }) {
   const onClick = (e: React.MouseEvent) => {
     if (!layout) return;
     for (const item of layout.items) {
-      const { click_action: on_click } = item.data;
-      if (!on_click) continue;
+      const { click: a } = item.data.actions || {};
+      if (!a) continue;
       const { mouse_x: x, mouse_y: y } = mem.current;
-      item.hit(x, y) && handle_layout_action(item, on_click)
+      item.hit(x, y) && handle_layout_action(item, a)
     }
   }
   return (

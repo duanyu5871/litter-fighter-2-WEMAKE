@@ -81,7 +81,9 @@
       "img": "sprite/MENU_CLIP.png",
       "rect": "489, 426, 151, 26",
       "pos": "407, 399",
-      "click_action": "goto(entry)"
+      "actions": {
+        "click": "goto(entry)"
+      }
     },
     {
       "visible": "mouse_on_me==1",
@@ -89,7 +91,9 @@
       "img": "sprite/MENU_CLIP.png",
       "rect": "643, 426, 151, 26",
       "pos": "579, 399",
-      "click_action": "goto(entry)"
+      "actions": {
+        "click": "goto(entry)"
+      }
     },
     {
       "visible": "mouse_on_me==0",
@@ -106,7 +110,9 @@
       "rect": "0, 379, 494, 23",
       "center": "0, 1",
       "pos": "0, 450",
-      "click_action": "link_to(https://lf2.net/control.html)"
+      "actions": {
+        "click": "link_to(https://lf2.net/control.html)"
+      }
     },
     {
       "id": "btn_ctrl_type_1",
@@ -118,7 +124,9 @@
         "sprite/CS5.png"
       ],
       "pos": "193, 140",
-      "click_action": "loop_img"
+      "actions": {
+        "click": "loop_img"
+      }
     },
     {
       "id": "btn_player_name_1",
@@ -130,7 +138,9 @@
       ],
       "pos": "193, 114",
       "size": "106, 19",
-      "click_action": "loop_img"
+      "actions": {
+        "click": "loop_img"
+      }
     },
     {
       "id": "btn_key_set_1_d",
@@ -142,7 +152,9 @@
       ],
       "pos": "193, 238",
       "size": "106, 19",
-      "click_action": "loop_img"
+      "actions": {
+        "click": "loop_img"
+      }
     },
     {
       "id": "btn_key_set_1_L",
@@ -154,7 +166,9 @@
       ],
       "pos": "193, 260",
       "size": "106, 19",
-      "click_action": "loop_img"
+      "actions": {
+        "click": "loop_img"
+      }
     },
     {
       "id": "btn_key_set_1_R",
@@ -166,7 +180,9 @@
       ],
       "pos": "193, 282",
       "size": "106, 19",
-      "click_action": "loop_img"
+      "actions": {
+        "click": "loop_img"
+      }
     },
     {
       "id": "btn_key_set_1_U",
@@ -178,7 +194,9 @@
       ],
       "pos": "193, 304",
       "size": "106, 19",
-      "click_action": "loop_img"
+      "actions": {
+        "click": "loop_img"
+      }
     },
     {
       "id": "btn_key_set_1_D",
@@ -190,7 +208,9 @@
       ],
       "pos": "193, 326",
       "size": "106, 19",
-      "click_action": "loop_img"
+      "actions": {
+        "click": "loop_img"
+      }
     },
     {
       "id": "btn_key_set_1_j",
@@ -202,7 +222,9 @@
       ],
       "pos": "193, 348",
       "size": "106, 19",
-      "click_action": "loop_img"
+      "actions": {
+        "click": "loop_img"
+      }
     },
     {
       "id": "btn_key_set_1_a",
@@ -214,7 +236,9 @@
       ],
       "pos": "193, 370",
       "size": "106, 19",
-      "click_action": "loop_img"
+      "actions": {
+        "click": "loop_img"
+      }
     },
     {
       "id": "btn_ctrl_type_2",
@@ -226,7 +250,9 @@
         "sprite/CS5.png"
       ],
       "pos": "332, 140",
-      "click_action": "loop_img"
+      "actions": {
+        "click": "loop_img"
+      }
     },
     {
       "id": "btn_player_name_2",
@@ -238,7 +264,9 @@
       ],
       "pos": "332, 114",
       "size": "106, 19",
-      "click_action": "loop_img"
+      "actions": {
+        "click": "loop_img"
+      }
     },
     {
       "id": "btn_key_set_2_d",
@@ -250,7 +278,9 @@
       ],
       "pos": "332, 238",
       "size": "106, 19",
-      "click_action": "loop_img"
+      "actions": {
+        "click": "loop_img"
+      }
     },
     {
       "id": "btn_key_set_2_L",
@@ -262,7 +292,9 @@
       ],
       "pos": "332, 260",
       "size": "106, 19",
-      "click_action": "loop_img"
+      "actions": {
+        "click": "loop_img"
+      }
     },
     {
       "id": "btn_key_set_2_R",
@@ -274,7 +306,9 @@
       ],
       "pos": "332, 282",
       "size": "106, 19",
-      "click_action": "loop_img"
+      "actions": {
+        "click": "loop_img"
+      }
     },
     {
       "id": "btn_key_set_2_U",
@@ -286,7 +320,9 @@
       ],
       "pos": "332, 304",
       "size": "106, 19",
-      "click_action": "loop_img"
+      "actions": {
+        "click": "loop_img"
+      }
     },
     {
       "id": "btn_key_set_2_D",
@@ -298,7 +334,9 @@
       ],
       "pos": "332, 326",
       "size": "106, 19",
-      "click_action": "loop_img"
+      "actions": {
+        "click": "loop_img"
+      }
     },
     {
       "id": "btn_key_set_2_j",
@@ -310,7 +348,9 @@
       ],
       "pos": "332, 348",
       "size": "106, 19",
-      "click_action": "loop_img"
+      "actions": {
+        "click": "loop_img"
+      }
     },
     {
       "id": "btn_key_set_2_a",
@@ -322,7 +362,9 @@
       ],
       "pos": "332, 370",
       "size": "106, 19",
-      "click_action": "loop_img"
+      "actions": {
+        "click": "loop_img"
+      }
     },
     {
       "id": "btn_ctrl_type_3",
@@ -334,7 +376,9 @@
         "sprite/CS5.png"
       ],
       "pos": "471, 140",
-      "click_action": "loop_img"
+      "actions": {
+        "click": "loop_img"
+      }
     },
     {
       "id": "btn_player_name_3",
@@ -346,7 +390,9 @@
       ],
       "pos": "471, 114",
       "size": "106, 19",
-      "click_action": "loop_img"
+      "actions": {
+        "click": "loop_img"
+      }
     },
     {
       "id": "btn_key_set_3_d",
@@ -358,7 +404,9 @@
       ],
       "pos": "471, 238",
       "size": "106, 19",
-      "click_action": "loop_img"
+      "actions": {
+        "click": "loop_img"
+      }
     },
     {
       "id": "btn_key_set_3_L",
@@ -370,7 +418,9 @@
       ],
       "pos": "471, 260",
       "size": "106, 19",
-      "click_action": "loop_img"
+      "actions": {
+        "click": "loop_img"
+      }
     },
     {
       "id": "btn_key_set_3_R",
@@ -382,7 +432,9 @@
       ],
       "pos": "471, 282",
       "size": "106, 19",
-      "click_action": "loop_img"
+      "actions": {
+        "click": "loop_img"
+      }
     },
     {
       "id": "btn_key_set_3_U",
@@ -394,7 +446,9 @@
       ],
       "pos": "471, 304",
       "size": "106, 19",
-      "click_action": "loop_img"
+      "actions": {
+        "click": "loop_img"
+      }
     },
     {
       "id": "btn_key_set_3_D",
@@ -406,7 +460,9 @@
       ],
       "pos": "471, 326",
       "size": "106, 19",
-      "click_action": "loop_img"
+      "actions": {
+        "click": "loop_img"
+      }
     },
     {
       "id": "btn_key_set_3_j",
@@ -418,7 +474,9 @@
       ],
       "pos": "471, 348",
       "size": "106, 19",
-      "click_action": "loop_img"
+      "actions": {
+        "click": "loop_img"
+      }
     },
     {
       "id": "btn_key_set_3_a",
@@ -430,7 +488,9 @@
       ],
       "pos": "471, 370",
       "size": "106, 19",
-      "click_action": "loop_img"
+      "actions": {
+        "click": "loop_img"
+      }
     },
     {
       "id": "btn_ctrl_type_4",
@@ -442,7 +502,9 @@
         "sprite/CS5.png"
       ],
       "pos": "610, 140",
-      "click_action": "loop_img"
+      "actions": {
+        "click": "loop_img"
+      }
     },
     {
       "id": "btn_player_name_4",
@@ -454,7 +516,9 @@
       ],
       "pos": "610, 114",
       "size": "106, 19",
-      "click_action": "loop_img"
+      "actions": {
+        "click": "loop_img"
+      }
     },
     {
       "id": "btn_key_set_4_d",
@@ -466,7 +530,9 @@
       ],
       "pos": "610, 238",
       "size": "106, 19",
-      "click_action": "loop_img"
+      "actions": {
+        "click": "loop_img"
+      }
     },
     {
       "id": "btn_key_set_4_L",
@@ -478,7 +544,9 @@
       ],
       "pos": "610, 260",
       "size": "106, 19",
-      "click_action": "loop_img"
+      "actions": {
+        "click": "loop_img"
+      }
     },
     {
       "id": "btn_key_set_4_R",
@@ -490,7 +558,9 @@
       ],
       "pos": "610, 282",
       "size": "106, 19",
-      "click_action": "loop_img"
+      "actions": {
+        "click": "loop_img"
+      }
     },
     {
       "id": "btn_key_set_4_U",
@@ -502,7 +572,9 @@
       ],
       "pos": "610, 304",
       "size": "106, 19",
-      "click_action": "loop_img"
+      "actions": {
+        "click": "loop_img"
+      }
     },
     {
       "id": "btn_key_set_4_D",
@@ -514,7 +586,9 @@
       ],
       "pos": "610, 326",
       "size": "106, 19",
-      "click_action": "loop_img"
+      "actions": {
+        "click": "loop_img"
+      }
     },
     {
       "id": "btn_key_set_4_j",
@@ -526,7 +600,9 @@
       ],
       "pos": "610, 348",
       "size": "106, 19",
-      "click_action": "loop_img"
+      "actions": {
+        "click": "loop_img"
+      }
     },
     {
       "id": "btn_key_set_4_a",
@@ -538,7 +614,9 @@
       ],
       "pos": "610, 370",
       "size": "106, 19",
-      "click_action": "loop_img"
+      "actions": {
+        "click": "loop_img"
+      }
     }
   ]
 }

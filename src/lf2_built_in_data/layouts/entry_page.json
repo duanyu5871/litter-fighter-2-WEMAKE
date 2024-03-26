@@ -50,7 +50,7 @@
       "id": "main_title",
       "img": "sprite/MENU_CLIP.png",
       "rect": "0, 41, 496, 80",
-      "center":"0.5, 0",
+      "center": "0.5, 0",
       "size": "496, 80",
       "pos": "398, 40"
     },
@@ -58,7 +58,7 @@
       "id": "main_menu",
       "img": "sprite/MENU_CLIP.png",
       "rect": "0, 125, 282, 119",
-      "center":"0.5, 0.5",
+      "center": "0.5, 0.5",
       "size": "282, 119",
       "pos": "397, 270"
     },
@@ -67,30 +67,36 @@
       "id": "start_local_game",
       "img": "sprite/MENU_CLIP.png",
       "rect": "535, 105, 256, 26",
-      "center":"0.5, 0",
+      "center": "0.5, 0",
       "size": "256, 26",
       "pos": "398, 224",
-      "click_action": "goto(loading)"
+      "actions": {
+        "click": "goto(loading)"
+      }
     },
     {
       "visible": "mouse_on_me==1",
       "id": "network_game",
       "img": "sprite/MENU_CLIP.png",
       "rect": "535, 137, 256, 26",
-      "center":"0.5, 0",
+      "center": "0.5, 0",
       "size": "256, 26",
       "pos": "398, 256",
-      "click_action": "alert(还没想好呢)"
+      "actions": {
+        "click": "alert(还没想好呢)"
+      }
     },
     {
       "visible": "mouse_on_me==1",
       "id": "ctrl_settings",
       "img": "sprite/MENU_CLIP.png",
       "rect": "535, 168, 256, 26",
-      "center":"0.5, 0",
+      "center": "0.5, 0",
       "size": "256, 26",
       "pos": "398, 287",
-      "click_action": "goto(ctrl_settings)"
+      "actions": {
+        "click": "goto(ctrl_settings)"
+      }
     }
   ]
 }

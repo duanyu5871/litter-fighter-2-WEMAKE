@@ -40,6 +40,8 @@ export class Layout {
   protected _img_idx = () => 0;
   protected _parent?: Layout;
   protected _items: Layout[] = [];
+  protected _index: number = 0;
+  protected _level: number = 0;
 
   readonly data: Readonly<ILayoutInfo>;
 
@@ -50,7 +52,10 @@ export class Layout {
   src_rect: [number, number, number, number] = [0, 0, 0, 0];
   dst_rect: [number, number, number, number] = [0, 0, 0, 0];
   lf2: LF2;
+  get z_order(): number { return this.data.z_order ?? 0 };
 
+  get level() { return this._level };
+  get index() { return this._index };
   get state() { return this._state };
   get img_idx() { return this._img_idx() };
   get visible() { return this._visible() };
@@ -88,11 +93,11 @@ export class Layout {
     for (const item of this.items)
       item.on_mount()
 
-    const { enter_action: a } = this.data;
+    const { enter: a } = this.data.actions || {};
     if (a) this.handle_layout_action(a);
   }
   on_unmount() {
-    const { leave_action: a } = this.data;
+    const { leave: a } = this.data.actions || {};
     if (a) this.handle_layout_action(a);
 
     for (const item of this.items)
@@ -119,8 +124,11 @@ export class Layout {
 
 
     if (data.items)
+
       for (const raw_item of data.items) {
         const cooked_item = await Layout.cook(lf2, raw_item, get_val, ret);
+        cooked_item._index = ret.items.length;
+        cooked_item._level = ret.level + 1;
         ret.items.push(cooked_item);
       }
     if (!parent) {
@@ -243,10 +251,10 @@ export class Layout {
     (this.parent?.sprite || this.lf2.world.scene)?.add(this._sprite);
   }
 
-  on_click() {
-    const { click_action } = this.data;
-    if (!click_action) return;
-    this.handle_layout_action(click_action);
+  on_click(): boolean {
+    const { click } = this.data.actions ?? {};
+    if (click) this.handle_layout_action(click)
+    return !!click;
   }
 
   handle_layout_action = (action: string) => {

@@ -25,6 +25,8 @@
       ]
     }
   ],
-  "enter_action": "load_default_data",
-  "leave_action": "cancel_load_data"
+  "actions": {
+    "enter": "load_default_data",
+    "leave": "cancel_load_data"
+  }
 }

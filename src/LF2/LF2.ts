@@ -261,9 +261,24 @@ export default class LF2 {
     const raycaster = new THREE.Raycaster();
     raycaster.setFromCamera(coords, this.world.camera);
     const intersections = raycaster.intersectObjects([object_3d], true);
-    for (const { object: { userData: { owner } } } of intersections) {
-      if (owner instanceof Layout) owner.on_click()
-    }
+
+    const layouts = intersections
+      .filter(v => v.object.userData.owner instanceof Layout)
+      .map(v => v.object.userData.owner as Layout)
+      .sort((a, b) => {
+        if (b.level > a.level) {
+          do { if (!b.parent) return 0; b = b.parent; } while (b.level !== a.level)
+        }
+        if (a.level < b.level) {
+          do { if (!a.parent) return 0; a = a.parent; } while (b.level !== a.level)
+        }
+        return b.z_order - a.z_order || b.index - a.index;
+      })
+
+
+    for (const layout of layouts)
+      if (layout.on_click()) break;
+
   }
 
   on_mouse_move = (e: MouseEvent) => {

@@ -16,9 +16,13 @@ export interface ILayoutInfo {
   txt_fill?: string;
   txt_stroke?: string;
   font?: string[];
-  click_action?: string;
+  z_order?: number;
+  actions?: {
+    click: string;
+    enter?: string;
+    leave?: string;
+  };
   key_press_actions?: [string, string][];
-  enter_action?: string;
-  leave_action?: string;
+
   items?: ILayoutInfo[];
 }
