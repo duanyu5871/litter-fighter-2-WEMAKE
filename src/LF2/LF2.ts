@@ -481,6 +481,8 @@ export default class LF2 {
   layout_val_getter = (word: string) => (item: Layout) => {
     if (word === 'mouse_on_me')
       return item.state.mouse_on_me;
+    if (word === 'opacity_hover')
+      return item.state.mouse_on_me === '1' ? 1 : 0.5;
     if (word.startsWith('f:')) {
       const result = word.match(/f:random_int_in_range\((\d+),(\d+)(,\d+)?\)/);
       if (result) {

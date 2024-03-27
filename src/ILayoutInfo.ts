@@ -2,6 +2,7 @@ export interface ILayoutInfo {
   id?: string;
   name?: string;
   img?: string[] | string;
+  opacity?: number;
   which?: number | string;
   rect?: number[] | string;
   center?: number[] | string;

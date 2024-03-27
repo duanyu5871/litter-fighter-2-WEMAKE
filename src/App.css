@@ -21,6 +21,7 @@
   height: 100%;
   outline: none;
   display: block;
+  user-select: none;
 }
 
 .game_overlay {

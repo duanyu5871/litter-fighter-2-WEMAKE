@@ -2,7 +2,7 @@ import { IStageInfo } from ".";
 import { IBgData } from "./IBgData";
 
 export namespace Defines {
-  export const OLD_SCREEN_WIDTH = 795;
+  export const OLD_SCREEN_WIDTH = 794;
   export const OLD_SCREEN_HEIGHT = 550;
 
   export const THE_VOID_STAGE: IStageInfo = {

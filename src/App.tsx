@@ -249,7 +249,7 @@ function App() {
   return (
     <div className="App">
       <div className='game_contiainer' ref={_game_contiainer_ref}>
-        <canvas ref={_canvas_ref} tabIndex={-1} className='game_canvas' width={795} height={450} />
+        <canvas ref={_canvas_ref} tabIndex={-1} className='game_canvas' width={794} height={450} />
         <div className='game_overlay' ref={_overlay_ref} style={{ display: !game_overlay ? 'none' : void 0 }} />
       </div>
       <div className='debug_ui'>

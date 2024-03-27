@@ -184,6 +184,8 @@ export function create_picture(
   texture.magFilter = magFilter ?? THREE.NearestFilter;
   texture.wrapS = THREE.MirroredRepeatWrapping;
   texture.wrapT = THREE.MirroredRepeatWrapping;
+  texture.name = id;
+  texture.userData = img_info;
   picture.i_w = i_w;
   picture.i_h = i_h;
   picture.texture = texture;

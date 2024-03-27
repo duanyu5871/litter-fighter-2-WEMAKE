@@ -38,10 +38,12 @@ export class Layout {
   protected _state: any = {}
   protected _visible = () => true;
   protected _img_idx = () => 0;
+  protected _opacity = () => 1;
   protected _parent?: Layout;
   protected _items: Layout[] = [];
   protected _index: number = 0;
   protected _level: number = 0;
+  protected _material?: THREE.MeshBasicMaterial;
 
   readonly data: Readonly<ILayoutInfo>;
 
@@ -54,11 +56,12 @@ export class Layout {
   lf2: LF2;
   get z_order(): number { return this.data.z_order ?? 0 };
 
-  get level() { return this._level };
-  get index() { return this._index };
-  get state() { return this._state };
-  get img_idx() { return this._img_idx() };
-  get visible() { return this._visible() };
+  get level() { return this._level }
+  get index() { return this._index }
+  get state() { return this._state }
+  get img_idx() { return this._img_idx() }
+  get visible() { return this._visible() }
+  get opacity() { return this._opacity() }
   get parent() { return this._parent; }
   set parent(v) { this._parent = v; }
   get items() { return this._items; }
@@ -118,7 +121,7 @@ export class Layout {
     ret.parent = parent;
     await ret._cook_imgs(lf2);
     ret._cook_img_idx(get_val);
-    ret._cook_visible(get_val);
+    ret._cook_data(get_val);
     ret._cook_rects();
     await ret._cook_component();
 
@@ -169,15 +172,22 @@ export class Layout {
     this.img_infos = img_infos;
   }
 
-  private _cook_visible(get_val: ValGetter<Layout>) {
-    const { visible } = this.data;
+  private _cook_data(get_val: ValGetter<Layout>) {
+    const { visible, opacity } = this.data;
 
     if (is_str(visible)) {
       const func = new Condition<Layout>(visible, get_val).make();
       return this._visible = () => func(this);
     }
     if (is_bool(visible))
-      return this._visible = () => visible
+      return this._visible = () => visible;
+
+    if (is_str(opacity)) {
+      const func = get_val(opacity);
+      return this._opacity = () => Number(func(this)) || 0;
+    }
+    if (is_num(opacity))
+      return this._opacity = () => opacity;
   }
 
   private _cook_img_idx(get_val: ValGetter<Layout>) {
@@ -242,8 +252,9 @@ export class Layout {
     else if (this.data.bg_color) params.color = this.data.bg_color;
     else params.color = 0;
 
-    const material = new THREE.MeshBasicMaterial(params);
-    this._sprite = new THREE.Mesh(geo, material);
+    this._material = new THREE.MeshBasicMaterial(params);
+    this._sprite = new THREE.Mesh(geo, this._material);
+    this._sprite.name = this.data.name ?? this.data.id ?? '';
     this._sprite.position.set(x, -y, 0);
     this._sprite.userData = {
       owner: this,
@@ -276,8 +287,12 @@ export class Layout {
   }
   on_render() {
     const sprite = this.sprite;
-    if (sprite)
+    if (sprite) {
       sprite.visible = this.visible;
+    }
+    if (this._material) {
+      this._material.opacity = this.opacity;
+    }
 
     for (const item of this.items) {
       item.on_render();
