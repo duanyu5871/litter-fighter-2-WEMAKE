@@ -3,6 +3,7 @@ import type { ILayoutInfo } from './ILayoutInfo';
 import LF2 from './LF2/LF2';
 import { Condition, ValGetter } from './LF2/loader/Condition';
 import { create_picture, image_pool, type TImageInfo } from './LF2/loader/loader';
+import { ease_in_out_sine } from './ease_in_out_sine';
 import { is_arr } from './is_arr';
 import { is_bool } from './js_utils/is_bool';
 import { is_num } from './js_utils/is_num';
@@ -35,6 +36,39 @@ const read_as_4_nums = (v: string | number[] | null | undefined, a1: number, a2:
   ]
 }
 export class Layout {
+
+  protected _opacity_to_max = true;
+  protected _opacity_time = -1;
+  protected _opacity_duration = -1;
+  protected _min_opacity = -1;
+  protected _max_opacity = -1;
+  set_opacity_animation(
+    to_max: boolean,
+    min: number = 0,
+    max: number = 1,
+    duration: number = 300
+  ) {
+    if (
+      min !== this._min_opacity &&
+      max !== this._max_opacity &&
+      duration !== this._opacity_duration
+    ) {
+      this._min_opacity = min;
+      this._max_opacity = max;
+      this._opacity_duration = duration;
+      this._opacity_time = 0;
+
+      this._opacity_to_max = to_max;
+      if (to_max) {
+        this._opacity_time = duration;
+      } else {
+        this._opacity_time = 0;
+      }
+    }
+    if (this._opacity_to_max === to_max) return;
+    this._opacity_to_max = to_max;
+    this._opacity_time = 0
+  }
   protected _state: any = {}
   protected _visible = () => true;
   protected _img_idx = () => 0;
@@ -54,6 +88,10 @@ export class Layout {
   src_rect: [number, number, number, number] = [0, 0, 0, 0];
   dst_rect: [number, number, number, number] = [0, 0, 0, 0];
   lf2: LF2;
+
+
+
+
   get z_order(): number { return this.data.z_order ?? 0 };
 
   get level() { return this._level }
@@ -285,17 +323,35 @@ export class Layout {
     const [, next_layout_id = null] = action.match(/goto\((.+)\)/) ?? []
     if (next_layout_id !== null) return this.lf2.set_layout(next_layout_id)
   }
-  on_render() {
+  on_render(dt: number) {
     const sprite = this.sprite;
     if (sprite) {
       sprite.visible = this.visible;
     }
     if (this._material) {
-      this._material.opacity = this.opacity;
+      const next_opacity = this.opacity;
+      if (next_opacity >= 0) {
+        this._material.opacity = next_opacity;
+      } else {
+        const { _min_opacity: min, _max_opacity: max } = this;
+        const time = this._opacity_time;
+        const duration = Number.isNaN(this._opacity_duration) ? 250 : this._opacity_duration
+        if (time >= duration) {
+          const opacity = this._opacity_to_max ? max : min
+          this._material.opacity = opacity;
+          this._opacity_time += duration;
+        } else {
+          const factor = Math.min(1, (time / duration))
+          const opacity = this._opacity_to_max ?
+            min + ease_in_out_sine(factor) * (max - min) :
+            max + ease_in_out_sine(factor) * (min - max)
+          this._material.opacity = opacity;
+          this._opacity_time += dt;
+        }
+      }
     }
-
     for (const item of this.items) {
-      item.on_render();
+      item.on_render(dt);
     }
   }
 }

@@ -474,7 +474,6 @@ export default class LF2 {
       const cooked_layout = await Layout.cook(this, raw_layout, this.layout_val_getter)
       cooked_layouts.push(cooked_layout);
     }
-    this.world.render_once()
     return this._layouts = cooked_layouts;
   }
 
@@ -484,7 +483,7 @@ export default class LF2 {
     if (word === 'opacity_hover')
       return item.state.mouse_on_me === '1' ? 1 : 0.5;
     if (word.startsWith('f:')) {
-      const result = word.match(/f:random_int_in_range\((\d+),(\d+)(,\d+)?\)/);
+      let result = word.match(/f:random_int_in_range\((\d+),(\d+),?(\d+)?\)/);
       if (result) {
         const [, a, b, group_id] = result;
         const begin = Number(a);
@@ -500,6 +499,20 @@ export default class LF2 {
         } else {
           return item.state.img_idx = Math.floor(random_in_range(begin, end) % (end + 1))
         }
+      }
+
+      result = word.match(/f:opacity_hover\((\S+),(\S+),?(\S+)?\)/);
+      if (result) {
+        const [, a, b, c] = result;
+        const begin = Number(a);
+        const end = Number(b);
+        const duration = Number(c);
+        if (begin >= 0 && end >= 0) {
+          const on_me = item.state.mouse_on_me === '1'
+          item.set_opacity_animation(on_me, begin, end, duration);
+          return -1;
+        }
+        return 1;
       }
     }
     return word;

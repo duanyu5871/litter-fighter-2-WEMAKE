@@ -161,10 +161,10 @@ export class World {
   private _r_fps = new FPS()
   private _u_prev_time = 0;
   private _u_fps = new FPS()
-  render_once() {
+  render_once(dt: number) {
     if (this.disposed) return;
     for (const e of this.entities) e.indicators.update();
-    this.lf2.layout?.on_render();
+    this.lf2.layout?.on_render(dt);
     this.renderer.render(this.scene, this.camera);
   }
 
@@ -172,8 +172,9 @@ export class World {
     if (this.disposed || this._render_request_id) return;
     const on_render = (time: number) => {
       if (this._r_prev_time !== 0) {
-        this.render_once()
-        this._r_fps.update(time - this._r_prev_time);
+        const dt = time - this._r_prev_time
+        this.render_once(dt)
+        this._r_fps.update(dt);
         this.overlay.FPS = this._r_fps.value
       }
       this._render_request_id = requestAnimationFrame(on_render)

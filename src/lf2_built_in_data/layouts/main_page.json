@@ -1,0 +1,123 @@
+{
+  "name": "main_page",
+  "id": "main_page",
+  "bg_color": "rgb(16, 32, 108)",
+  "items": [
+    {
+      "id": "bg_left",
+      "which": "f:random_int_in_range(0,12,1)",
+      "img": [
+        "sprite/MENU_BACK1.png",
+        "sprite/MENU_BACK2.png",
+        "sprite/MENU_BACK3.png",
+        "sprite/MENU_BACK4.png",
+        "sprite/MENU_BACK5.png",
+        "sprite/MENU_BACK6.png",
+        "sprite/MENU_BACK7.png",
+        "sprite/MENU_BACK8.png",
+        "sprite/MENU_BACK9.png",
+        "sprite/MENU_BACK10.png",
+        "sprite/MENU_BACK11.png",
+        "sprite/MENU_BACK12.png",
+        "sprite/MENU_BACK13.png"
+      ],
+      "size": "0, 450"
+    },
+    {
+      "id": "bg_right",
+      "which": "f:random_int_in_range(0,12,1)",
+      "img": [
+        "sprite/MENU_BACK1.png",
+        "sprite/MENU_BACK2.png",
+        "sprite/MENU_BACK3.png",
+        "sprite/MENU_BACK4.png",
+        "sprite/MENU_BACK5.png",
+        "sprite/MENU_BACK6.png",
+        "sprite/MENU_BACK7.png",
+        "sprite/MENU_BACK8.png",
+        "sprite/MENU_BACK9.png",
+        "sprite/MENU_BACK10.png",
+        "sprite/MENU_BACK11.png",
+        "sprite/MENU_BACK12.png",
+        "sprite/MENU_BACK13.png"
+      ],
+      "size": "0, 450",
+      "center": "1, 0",
+      "pos": "794, 0",
+      "flip_x": true
+    },
+    {
+      "id": "main_title",
+      "img": "sprite/MENU_CLIP.png",
+      "rect": "0, 41, 496, 80",
+      "center": "0.5, 0",
+      "size": "496, 80",
+      "pos": "398, 40"
+    },
+    {
+      "id": "main_menu",
+      "img": "sprite/MENU_CLIP3.png",
+      "rect": "0, 116, 305, 213",
+      "center": "0.5, 0.5",
+      "pos": "397, 270",
+      "items": [
+        {
+          "id": "btn_vs_mode",
+          "img": "sprite/MENU_CLIP3.png",
+          "opacity": "f:opacity_hover(0,1)",
+          "rect": "32, 331, 210, 22",
+          "center": "0.5, 0",
+          "pos": "-3,-108"
+        },
+        {
+          "id": "btn_stage_mode",
+          "img": "sprite/MENU_CLIP3.png",
+          "opacity": "f:opacity_hover(0,1)",
+          "rect": "18, 358, 238, 24",
+          "center": "0.5, 0",
+          "pos": "-3,-81"
+        },
+        {
+          "id": "btn_1v1_championship_mode",
+          "opacity": "f:opacity_hover(0,1)",
+          "img": "sprite/MENU_CLIP3.png",
+          "rect": "0, 385, 275, 23",
+          "center": "0.5, 0",
+          "pos": "-2,-54"
+        },
+        {
+          "id": "btn_2v2_championship_mode",
+          "opacity": "f:opacity_hover(0,1)",
+          "img": "sprite/MENU_CLIP3.png",
+          "rect": "0, 412, 275, 24",
+          "center": "0.5, 0",
+          "pos": "-2,-27"
+        },
+        {
+          "id": "btn_battle_mode",
+          "img": "sprite/MENU_CLIP3.png",
+          "opacity": "f:opacity_hover(0,1)",
+          "rect": "32, 438, 207, 24",
+          "center": "0.5, 0",
+          "pos": "-4,-1"
+        },
+        {
+          "id": "btn_demo_mode",
+          "img": "sprite/MENU_CLIP3.png",
+          "opacity": "f:opacity_hover(0,1)",
+          "rect": "42, 466, 188, 23",
+          "center": "0.5, 0",
+          "pos": "-4,27"
+        },
+        {
+          "id": "btn_quit",
+          "img": "sprite/MENU_CLIP3.png",
+          "opacity": "f:opacity_hover(0,1)",
+          "rect": "55, 521, 165, 23",
+          "center": "0.5, 0",
+          "pos": "-2,82"
+        }
+      ]
+    }
+  ]
+}
