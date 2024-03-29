@@ -3,12 +3,11 @@ import type { ILayoutInfo } from './ILayoutInfo';
 import LF2 from './LF2/LF2';
 import { Condition, ValGetter } from './LF2/loader/Condition';
 import { create_picture, image_pool, type TImageInfo } from './LF2/loader/loader';
-import { ease_in_out_sine } from './ease_in_out_sine';
+import { NumberAnimation } from './NumberAnimation';
 import { is_arr } from './is_arr';
 import { is_bool } from './js_utils/is_bool';
 import { is_num } from './js_utils/is_num';
 import { is_str } from './js_utils/is_str';
-
 
 const read_as_2_nums = (v: string | number | number[] | null | undefined, a1: number, a2: number): [number, number] => {
   if (!v) return [a1, a2];
@@ -35,13 +34,9 @@ const read_as_4_nums = (v: string | number[] | null | undefined, a1: number, a2:
     Number.isNaN(b4) ? a4 : b4
   ]
 }
-export class Layout {
 
-  protected _opacity_to_max = true;
-  protected _opacity_time = -1;
-  protected _opacity_duration = -1;
-  protected _min_opacity = -1;
-  protected _max_opacity = -1;
+export class Layout {
+  protected _o: NumberAnimation | null = null;
   set_opacity_animation(
     to_max: boolean,
     min: number = 0,
@@ -49,25 +44,14 @@ export class Layout {
     duration: number = 300
   ) {
     if (
-      min !== this._min_opacity &&
-      max !== this._max_opacity &&
-      duration !== this._opacity_duration
+      min !== this._o?.val_1 &&
+      max !== this._o?.val_2 &&
+      duration !== this._o?.duration
     ) {
-      this._min_opacity = min;
-      this._max_opacity = max;
-      this._opacity_duration = duration;
-      this._opacity_time = 0;
-
-      this._opacity_to_max = to_max;
-      if (to_max) {
-        this._opacity_time = duration;
-      } else {
-        this._opacity_time = 0;
-      }
+      this._o = new NumberAnimation(min, max, duration, !to_max).set_value(this._material?.opacity || 0)
     }
-    if (this._opacity_to_max === to_max) return;
-    this._opacity_to_max = to_max;
-    this._opacity_time = 0
+    if (this._o.reverse === to_max)
+      this._o.play(!to_max).set_value(this._material?.opacity || 0);
   }
   protected _state: any = {}
   protected _visible = () => true;
@@ -332,22 +316,8 @@ export class Layout {
       const next_opacity = this.opacity;
       if (next_opacity >= 0) {
         this._material.opacity = next_opacity;
-      } else {
-        const { _min_opacity: min, _max_opacity: max } = this;
-        const time = this._opacity_time;
-        const duration = Number.isNaN(this._opacity_duration) ? 250 : this._opacity_duration
-        if (time >= duration) {
-          const opacity = this._opacity_to_max ? max : min
-          this._material.opacity = opacity;
-          this._opacity_time += duration;
-        } else {
-          const factor = Math.min(1, (time / duration))
-          const opacity = this._opacity_to_max ?
-            min + ease_in_out_sine(factor) * (max - min) :
-            max + ease_in_out_sine(factor) * (min - max)
-          this._material.opacity = opacity;
-          this._opacity_time += dt;
-        }
+      } else if (this._o) {
+        this._material.opacity = this._o.update(dt);
       }
     }
     for (const item of this.items) {
