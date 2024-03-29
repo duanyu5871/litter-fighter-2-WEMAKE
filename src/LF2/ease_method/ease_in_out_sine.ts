@@ -1,4 +1,6 @@
-export function ease_in_out_sine(factor: number, from = 0, to = 1): number {
+import { IEaseMethod } from "./IEaseMethod";
+
+function ease_in_out_sine(factor: number, from = 0, to = 1): number {
   return from - (to - from) * (Math.cos(Math.PI * factor) - 1) / 2;
 }
 ease_in_out_sine.backward = function (v: number, from = 0, to = 1): number {
@@ -8,3 +10,6 @@ ease_in_out_sine.backward = function (v: number, from = 0, to = 1): number {
   if (v > max) v = max;
   return Math.acos(2 * (from - v) / (to - from) + 1) / Math.PI;
 }
+
+const exported: IEaseMethod = ease_in_out_sine
+export default exported;

@@ -1,9 +1,6 @@
-import { ease_in_out_sine } from './ease_in_out_sine';
+import { IEaseMethod } from './LF2/ease_method/IEaseMethod';
+import ease_in_out_sine from './LF2/ease_method/ease_in_out_sine';
 
-export interface IEaseMethod<Factor = number, Value = number> {
-  (factor: Factor, from?: Value, to?: Value): Value;
-  backward(value: Value, from?: Value, to?: Value): Factor;
-}
 export class NumberAnimation {
 
   protected _val_1: number;
