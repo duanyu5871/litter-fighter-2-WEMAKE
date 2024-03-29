@@ -1,4 +1,4 @@
-import { ease_in_out_quint } from './ease_in_out_quint';
+import ease_in_out_quint from '../LF2/ease_method/ease_in_out_quint';
 
 export default function fade_out(fun: (opacity: number) => void, duration: number, delay: number = 0): () => void {
   const mem = {
