@@ -282,6 +282,26 @@ export class Layout {
       owner: this,
     };
     (this.parent?.sprite || this.lf2.world.scene)?.add(this._sprite);
+
+    // const box = new THREE.Box3().expandByObject(this._sprite);
+    // const cam = this.lf2.world.camera;
+    // const cam_half_h = cam.top / 2;
+    // const cam_half_w = cam.right / 2;
+    // const a = [
+    //   new THREE.Vector3(box.min.x, box.min.y, box.min.z),
+    //   new THREE.Vector3(box.min.x, box.min.y, box.max.z),
+    //   new THREE.Vector3(box.min.x, box.max.y, box.min.z),
+    //   new THREE.Vector3(box.min.x, box.max.y, box.max.z),
+    //   new THREE.Vector3(box.max.x, box.min.y, box.min.z),
+    //   new THREE.Vector3(box.max.x, box.min.y, box.max.z),
+    //   new THREE.Vector3(box.max.x, box.max.y, box.min.z),
+    //   new THREE.Vector3(box.max.x, box.max.y, box.max.z)
+    // ].map(v => {
+    //   const { x, y } = v.project(cam);
+    //   v.x = Math.round(x * cam_half_w + cam_half_w);
+    //   v.y = Math.round(y * cam_half_h + cam_half_h);
+    //   return v;
+    // })
   }
 
   on_click(): boolean {
