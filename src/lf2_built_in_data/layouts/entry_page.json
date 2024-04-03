@@ -70,6 +70,7 @@
       "center": "0.5, 0",
       "size": "256, 26",
       "pos": "398, 224",
+      "tab_type": "ud",
       "actions": {
         "click": "goto(loading)"
       }
@@ -82,6 +83,7 @@
       "center": "0.5, 0",
       "size": "256, 26",
       "pos": "398, 256",
+      "tab_type": "ud",
       "actions": {
         "click": "alert(还没想好呢)"
       }
@@ -94,6 +96,7 @@
       "center": "0.5, 0",
       "size": "256, 26",
       "pos": "398, 287",
+      "tab_type": "ud",
       "actions": {
         "click": "goto(ctrl_settings)"
       }

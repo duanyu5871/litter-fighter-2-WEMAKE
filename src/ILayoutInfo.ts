@@ -24,6 +24,6 @@ export interface ILayoutInfo {
     leave?: string;
   };
   key_press_actions?: [string, string][];
-
+  tab_type?:string;
   items?: ILayoutInfo[];
 }

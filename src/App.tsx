@@ -152,6 +152,7 @@ function App() {
   }
   const on_click_load_builtin = async () => {
     if (!lf2) return;
+    alert('on_click_load_builtin!')
     set_loading(true);
     lf2.start()
       .then(_ => set_loaded(true))

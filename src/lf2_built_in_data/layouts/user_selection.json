@@ -399,6 +399,7 @@
           "opacity": "opacity_hover",
           "rect": "717,0,15,19",
           "pos": "50,70",
+          "tab_type": "lr",
           "actions": {
             "click": "f:cpu(1)"
           }
@@ -409,6 +410,7 @@
           "rect": "717,21,15,19",
           "opacity": "opacity_hover",
           "pos": "90,70",
+          "tab_type": "lr",
           "actions": {
             "click": "f:cpu(2)"
           }
@@ -419,6 +421,7 @@
           "rect": "717,42,15,19",
           "opacity": "opacity_hover",
           "pos": "130,70",
+          "tab_type": "lr",
           "actions": {
             "click": "f:cpu(3)"
           }
@@ -429,6 +432,7 @@
           "rect": "717,63,15,19",
           "opacity": "opacity_hover",
           "pos": "170,70",
+          "tab_type": "lr",
           "actions": {
             "click": "f:cpu(4)"
           }
@@ -439,6 +443,7 @@
           "rect": "717,84,15,19",
           "opacity": "opacity_hover",
           "pos": "210,70",
+          "tab_type": "lr",
           "actions": {
             "click": "f:cpu(5)"
           }
@@ -449,6 +454,7 @@
           "rect": "717,105,15,19",
           "opacity": "opacity_hover",
           "pos": "250,70",
+          "tab_type": "lr",
           "actions": {
             "click": "f:cpu(6)"
           }
@@ -459,6 +465,7 @@
           "rect": "717,126,15,19",
           "opacity": "opacity_hover",
           "pos": "290,70",
+          "tab_type": "lr",
           "actions": {
             "click": "f:cpu(7)"
           }

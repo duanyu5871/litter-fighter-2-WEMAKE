@@ -150,8 +150,8 @@ export class Layout {
     ret._cook_rects();
     await ret._cook_component();
     if (ret.data.actions?.click) {
-      ret.root._left_to_right!.push(ret);
-      ret.root._top_to_bottom!.push(ret);
+      if (ret.data.tab_type?.includes('lr')) ret.root._left_to_right!.push(ret);
+      if (ret.data.tab_type?.includes('ud')) ret.root._top_to_bottom!.push(ret);
     }
     if (data.items)
       for (const raw_item of data.items) {
