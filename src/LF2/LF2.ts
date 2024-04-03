@@ -13,7 +13,7 @@ import { Defines } from '../js_utils/lf2_type/defines';
 import { BgLayer } from './BgLayer';
 import Stage from './Stage';
 import { World } from './World';
-import { TKeyName, TKeys } from './controller/BaseController';
+import { KEY_NAME_LIST, TKeyName, TKeys } from './controller/BaseController';
 import { PlayerController } from "./controller/LocalHuman";
 import './entity/Ball';
 import { Character } from './entity/Character';
@@ -37,6 +37,8 @@ const get_default_keys = (i: number) => default_keys_list[i] || default_keys_lis
 class PlayerInfo {
   private _name: string;
   private _keys: TKeys;
+  get name() { return this._name }
+  get keys() { return this._keys }
   constructor(name: string, keys: TKeys) {
     this._name = name;
     this._keys = keys;
@@ -132,12 +134,17 @@ export default class LF2 {
     this.overlay = overlay;
     this.canvas.addEventListener('click', this.on_click);
     this.canvas.addEventListener('mousemove', this.on_mouse_move);
-    this.canvas.addEventListener('pointerdown', this.on_pointer_down);
-    this.canvas.addEventListener('pointerup', this.on_pointer_up);
+    this.canvas.addEventListener('pointerdown', this._on_pointer_down);
+    this.canvas.addEventListener('pointerup', this._on_pointer_up);
+    window.addEventListener('keydown', this._on_key_down);
+    window.addEventListener('keyup', this._on_key_up);
+
+    this.disposer = () => window.removeEventListener('keydown', this._on_key_down)
+    this.disposer = () => window.removeEventListener('keyup', this._on_key_up)
     this.disposer = () => this.canvas.removeEventListener('click', this.on_click)
     this.disposer = () => this.canvas.removeEventListener('mousemove', this.on_mouse_move)
-    this.disposer = () => this.canvas.removeEventListener('pointerdown', this.on_pointer_down)
-    this.disposer = () => this.canvas.removeEventListener('pointerup', this.on_pointer_up)
+    this.disposer = () => this.canvas.removeEventListener('pointerdown', this._on_pointer_down)
+    this.disposer = () => this.canvas.removeEventListener('pointerup', this._on_pointer_up)
   }
 
   private _stages?: IStageInfo[];
@@ -313,7 +320,7 @@ export default class LF2 {
   }
 
 
-  on_pointer_down = (e: PointerEvent) => {
+  private _on_pointer_down = (e: PointerEvent) => {
     const { offsetX: x, offsetY: y } = e;
     const coords = new THREE.Vector2(
       (x / this.canvas.width) * 2 - 1,
@@ -336,7 +343,21 @@ export default class LF2 {
     }
   }
 
-  on_pointer_up = () => { }
+  private _on_pointer_up = () => { }
+
+  private _on_key_down = (e: KeyboardEvent) => {
+    e.key.toLowerCase()
+    for (const k of KEY_NAME_LIST) {
+      for (const player_info of this._player_infos) {
+        if (player_info.keys[k] === e.key.toLowerCase()) {
+          this.layout?.on_player_key_down(k); return;
+        }
+      }
+    }
+  }
+  private _on_key_up = (e: KeyboardEvent) => {
+
+  }
 
   clear() {
     this.world.del_entities(...this.world.entities)
@@ -388,6 +409,7 @@ export default class LF2 {
     this.world.start_update();
     this.world.start_render();
   }
+
   dispose() {
     this._disposed = true;
     for (const f of this._disposers) f();
@@ -481,7 +503,7 @@ export default class LF2 {
     if (word === 'mouse_on_me')
       return item.state.mouse_on_me;
     if (word === 'opacity_hover')
-      return item.state.mouse_on_me === '1' ? 1 : 0.5;
+      return (item.state.mouse_on_me === '1' || item.focused_item === item) ? 1 : 0.5;
     if (word.startsWith('f:')) {
       let result = word.match(/f:random_int_in_range\((\d+),(\d+),?(\d+)?\)/);
       if (result) {
@@ -508,7 +530,7 @@ export default class LF2 {
         const end = Number(b);
         const duration = Number(c);
         if (begin >= 0 && end >= 0) {
-          const on_me = item.state.mouse_on_me === '1'
+          const on_me = (item.state.mouse_on_me === '1' || item.focused_item === item)
           item.set_opacity_animation(on_me, begin, end, duration);
           return -1;
         }

@@ -13,237 +13,300 @@
       "id": "frame",
       "img": "sprite/CHARMENU.png",
       "center": "0.5, 0.5",
-      "pos": "397, 225"
-    },
-    {
-      "id": "player_c_head_0",
-      "bg_color": "red",
-      "size": "120, 120",
-      "pos": "152, 33",
-      "component": "f:player_c_head(0)"
-    },
-    {
-      "id": "player_name_0",
-      "bg_color": "red",
-      "size": "120, 19",
-      "pos": "152, 156",
-      "component": "f:player_name(0)"
-    },
-    {
-      "id": "player_c_name_0",
-      "bg_color": "red",
-      "size": "120, 19",
-      "pos": "152, 178",
-      "component": "f:player_name(0)"
-    },
-    {
-      "id": "player_team_0",
-      "bg_color": "red",
-      "size": "120, 19",
-      "pos": "152, 200",
-      "component": "f:player_name(0)"
-    },
-    {
-      "id": "player_c_head_1",
-      "bg_color": "red",
-      "size": "120, 120",
-      "pos": "305, 33",
-      "component": "f:player_c_head(1)"
-    },
-    {
-      "id": "player_name_1",
-      "bg_color": "red",
-      "size": "120, 19",
-      "pos": "305, 156",
-      "component": "f:player_name(1)"
-    },
-    {
-      "id": "player_c_name_1",
-      "bg_color": "red",
-      "size": "120, 19",
-      "pos": "305, 178",
-      "component": "f:player_name(1)"
-    },
-    {
-      "id": "player_team_1",
-      "bg_color": "red",
-      "size": "120, 19",
-      "pos": "305, 200",
-      "component": "f:player_name(1)"
-    },
-    {
-      "id": "player_c_head_2",
-      "bg_color": "red",
-      "size": "120, 120",
-      "pos": "458, 33",
-      "component": "f:player_c_head(2)"
-    },
-    {
-      "id": "player_name_2",
-      "bg_color": "red",
-      "size": "120, 19",
-      "pos": "458, 156",
-      "component": "f:player_name(2)"
-    },
-    {
-      "id": "player_c_name_2",
-      "bg_color": "red",
-      "size": "120, 19",
-      "pos": "458, 178",
-      "component": "f:player_name(2)"
-    },
-    {
-      "id": "player_team_2",
-      "bg_color": "red",
-      "size": "120, 19",
-      "pos": "458, 200",
-      "component": "f:player_name(2)"
-    },
-    {
-      "id": "player_c_head_3",
-      "bg_color": "red",
-      "size": "120, 120",
-      "pos": "611, 33",
-      "component": "f:player_c_head(3)"
-    },
-    {
-      "id": "player_name_3",
-      "bg_color": "red",
-      "size": "120, 19",
-      "pos": "611, 156",
-      "component": "f:player_name(3)"
-    },
-    {
-      "id": "player_c_name_3",
-      "bg_color": "red",
-      "size": "120, 19",
-      "pos": "611, 178",
-      "component": "f:player_name(3)"
-    },
-    {
-      "id": "player_team_3",
-      "bg_color": "red",
-      "size": "120, 19",
-      "pos": "611, 200",
-      "component": "f:player_name(3)"
-    },
-    {
-      "id": "player_c_head_4",
-      "bg_color": "red",
-      "size": "120, 120",
-      "pos": "152, 230",
-      "component": "f:player_c_head(4)"
-    },
-    {
-      "id": "player_name_4",
-      "bg_color": "red",
-      "size": "120, 19",
-      "pos": "152, 354",
-      "component": "f:player_name(4)"
-    },
-    {
-      "id": "player_c_name_4",
-      "bg_color": "red",
-      "size": "120, 19",
-      "pos": "152, 376",
-      "component": "f:player_name(4)"
-    },
-    {
-      "id": "player_team_4",
-      "bg_color": "red",
-      "size": "120, 19",
-      "pos": "152, 398",
-      "component": "f:player_name(4)"
-    },
-    {
-      "id": "player_c_head_5",
-      "bg_color": "red",
-      "size": "120, 120",
-      "pos": "305, 230",
-      "component": "f:player_c_head(5)"
-    },
-    {
-      "id": "player_name_5",
-      "bg_color": "red",
-      "size": "120, 19",
-      "pos": "305, 354",
-      "component": "f:player_name(5)"
-    },
-    {
-      "id": "player_c_name_5",
-      "bg_color": "red",
-      "size": "120, 19",
-      "pos": "305, 376",
-      "component": "f:player_name(5)"
-    },
-    {
-      "id": "player_team_5",
-      "bg_color": "red",
-      "size": "120, 19",
-      "pos": "305, 398",
-      "component": "f:player_name(5)"
-    },
-    {
-      "id": "player_c_head_6",
-      "bg_color": "red",
-      "size": "120, 120",
-      "pos": "458, 230",
-      "component": "f:player_c_head(6)"
-    },
-    {
-      "id": "player_name_6",
-      "bg_color": "red",
-      "size": "120, 19",
-      "pos": "458, 354",
-      "component": "f:player_name(6)"
-    },
-    {
-      "id": "player_c_name_6",
-      "bg_color": "red",
-      "size": "120, 19",
-      "pos": "458, 376",
-      "component": "f:player_name(6)"
-    },
-    {
-      "id": "player_team_6",
-      "bg_color": "red",
-      "size": "120, 19",
-      "pos": "458, 398",
-      "component": "f:player_name(6)"
-    },
-    {
-      "id": "player_c_head_7",
-      "bg_color": "red",
-      "size": "120, 120",
-      "pos": "611, 230",
-      "component": "f:player_c_head(7)"
-    },
-    {
-      "id": "player_name_7",
-      "bg_color": "red",
-      "size": "120, 19",
-      "pos": "611, 354",
-      "component": "f:player_name(7)"
-    },
-    {
-      "id": "player_c_name_7",
-      "bg_color": "red",
-      "size": "120, 19",
-      "pos": "611, 376",
-      "component": "f:player_name(7)"
-    },
-    {
-      "id": "player_team_7",
-      "bg_color": "red",
-      "size": "120, 19",
-      "pos": "611, 398",
-      "component": "f:player_name(7)"
+      "pos": "397, 225",
+      "items": [
+        {
+          "id": "players_row_1",
+          "pos": "0,-192",
+          "items": [
+            {
+              "id": "player_layout_0",
+              "pos": "-246,0",
+              "items": [
+                {
+                  "id": "player_c_head",
+                  "bg_color": "red",
+                  "size": "120, 120",
+                  "pos": "0, 0",
+                  "component": "f:player_c_head(0)"
+                },
+                {
+                  "id": "player_name",
+                  "bg_color": "red",
+                  "size": "120, 19",
+                  "pos": "0, 123",
+                  "component": "f:player_name(0)"
+                },
+                {
+                  "id": "player_c_name",
+                  "bg_color": "red",
+                  "size": "120, 19",
+                  "pos": "0, 145",
+                  "component": "f:player_name(0)"
+                },
+                {
+                  "id": "player_team",
+                  "bg_color": "red",
+                  "size": "120, 19",
+                  "pos": "0, 167",
+                  "component": "f:player_name(0)"
+                }
+              ]
+            },
+            {
+              "id": "player_layout_1",
+              "pos": "-93,0",
+              "items": [
+                {
+                  "id": "player_c_head",
+                  "bg_color": "red",
+                  "size": "120, 120",
+                  "pos": "0, 0",
+                  "component": "f:player_c_head(1)"
+                },
+                {
+                  "id": "player_name",
+                  "bg_color": "red",
+                  "size": "120, 19",
+                  "pos": "0, 123",
+                  "component": "f:player_name(1)"
+                },
+                {
+                  "id": "player_c_name",
+                  "bg_color": "red",
+                  "size": "120, 19",
+                  "pos": "0, 145",
+                  "component": "f:player_name(1)"
+                },
+                {
+                  "id": "player_team",
+                  "bg_color": "red",
+                  "size": "120, 19",
+                  "pos": "0, 167",
+                  "component": "f:player_name(1)"
+                }
+              ]
+            },
+            {
+              "id": "player_layout_2",
+              "pos": "60,0",
+              "items": [
+                {
+                  "id": "player_c_head",
+                  "bg_color": "red",
+                  "size": "120, 120",
+                  "pos": "0, 0",
+                  "component": "f:player_c_head(2)"
+                },
+                {
+                  "id": "player_name",
+                  "bg_color": "red",
+                  "size": "120, 19",
+                  "pos": "0, 123",
+                  "component": "f:player_name(2)"
+                },
+                {
+                  "id": "player_c_name",
+                  "bg_color": "red",
+                  "size": "120, 19",
+                  "pos": "0, 145",
+                  "component": "f:player_name(2)"
+                },
+                {
+                  "id": "player_team",
+                  "bg_color": "red",
+                  "size": "120, 19",
+                  "pos": "0, 167",
+                  "component": "f:player_name(2)"
+                }
+              ]
+            },
+            {
+              "id": "player_layout_3",
+              "pos": "213,0",
+              "items": [
+                {
+                  "id": "player_c_head",
+                  "bg_color": "red",
+                  "size": "120, 120",
+                  "pos": "0, 0",
+                  "component": "f:player_c_head(3)"
+                },
+                {
+                  "id": "player_name",
+                  "bg_color": "red",
+                  "size": "120, 19",
+                  "pos": "0, 123",
+                  "component": "f:player_name(3)"
+                },
+                {
+                  "id": "player_c_name",
+                  "bg_color": "red",
+                  "size": "120, 19",
+                  "pos": "0, 145",
+                  "component": "f:player_name(3)"
+                },
+                {
+                  "id": "player_team",
+                  "bg_color": "red",
+                  "size": "120, 19",
+                  "pos": "0, 167",
+                  "component": "f:player_name(3)"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "players_row_2",
+          "pos": "0,5",
+          "items": [
+            {
+              "id": "player_layout_4",
+              "pos": "-246,0",
+              "items": [
+                {
+                  "id": "player_c_head",
+                  "bg_color": "red",
+                  "size": "120, 120",
+                  "pos": "0, 0",
+                  "component": "f:player_c_head(4)"
+                },
+                {
+                  "id": "player_name",
+                  "bg_color": "red",
+                  "size": "120, 19",
+                  "pos": "0, 123",
+                  "component": "f:player_name(4)"
+                },
+                {
+                  "id": "player_c_name",
+                  "bg_color": "red",
+                  "size": "120, 19",
+                  "pos": "0, 145",
+                  "component": "f:player_name(4)"
+                },
+                {
+                  "id": "player_team",
+                  "bg_color": "red",
+                  "size": "120, 19",
+                  "pos": "0, 167",
+                  "component": "f:player_name(4)"
+                }
+              ]
+            },
+            {
+              "id": "player_layout_5",
+              "pos": "-93,0",
+              "items": [
+                {
+                  "id": "player_c_head",
+                  "bg_color": "red",
+                  "size": "120, 120",
+                  "pos": "0, 0",
+                  "component": "f:player_c_head(5)"
+                },
+                {
+                  "id": "player_name",
+                  "bg_color": "red",
+                  "size": "120, 19",
+                  "pos": "0, 123",
+                  "component": "f:player_name(5)"
+                },
+                {
+                  "id": "player_c_name",
+                  "bg_color": "red",
+                  "size": "120, 19",
+                  "pos": "0, 145",
+                  "component": "f:player_name(5)"
+                },
+                {
+                  "id": "player_team",
+                  "bg_color": "red",
+                  "size": "120, 19",
+                  "pos": "0, 167",
+                  "component": "f:player_name(5)"
+                }
+              ]
+            },
+            {
+              "id": "player_layout_6",
+              "pos": "60,0",
+              "items": [
+                {
+                  "id": "player_c_head",
+                  "bg_color": "red",
+                  "size": "120, 120",
+                  "pos": "0, 0",
+                  "component": "f:player_c_head(6)"
+                },
+                {
+                  "id": "player_name",
+                  "bg_color": "red",
+                  "size": "120, 19",
+                  "pos": "0, 123",
+                  "component": "f:player_name(6)"
+                },
+                {
+                  "id": "player_c_name",
+                  "bg_color": "red",
+                  "size": "120, 19",
+                  "pos": "0, 145",
+                  "component": "f:player_name(6)"
+                },
+                {
+                  "id": "player_team",
+                  "bg_color": "red",
+                  "size": "120, 19",
+                  "pos": "0, 167",
+                  "component": "f:player_name(6)"
+                }
+              ]
+            },
+            {
+              "id": "player_layout_7",
+              "pos": "213,0",
+              "items": [
+                {
+                  "id": "player_c_head",
+                  "bg_color": "red",
+                  "size": "120, 120",
+                  "pos": "0, 0",
+                  "component": "f:player_c_head(7)"
+                },
+                {
+                  "id": "player_name",
+                  "bg_color": "red",
+                  "size": "120, 19",
+                  "pos": "0, 123",
+                  "component": "f:player_name(7)"
+                },
+                {
+                  "id": "player_c_name",
+                  "bg_color": "red",
+                  "size": "120, 19",
+                  "pos": "0, 145",
+                  "component": "f:player_name(7)"
+                },
+                {
+                  "id": "player_team",
+                  "bg_color": "red",
+                  "size": "120, 19",
+                  "pos": "0, 167",
+                  "component": "f:player_name(7)"
+                }
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "menu",
       "img": "sprite/MENU_CLIP3.png",
       "rect": "348,0,304,166",
       "pos": "10,10",
+      "visible": false,
       "items": [
         {
           "id": "btn_start",
@@ -328,55 +391,77 @@
       "id": "how_many_computer",
       "img": "sprite/CMC.png",
       "pos": "204,175",
+      "visible": "ask_cpu_num == 1",
       "items": [
         {
           "id": "_1",
           "img": "sprite/MENU_CLIP4.png",
           "opacity": "opacity_hover",
           "rect": "717,0,15,19",
-          "pos": "50,70"
+          "pos": "50,70",
+          "actions": {
+            "click": "f:cpu(1)"
+          }
         },
         {
           "id": "_2",
           "img": "sprite/MENU_CLIP4.png",
           "rect": "717,21,15,19",
           "opacity": "opacity_hover",
-          "pos": "90,70"
+          "pos": "90,70",
+          "actions": {
+            "click": "f:cpu(2)"
+          }
         },
         {
           "id": "_3",
           "img": "sprite/MENU_CLIP4.png",
           "rect": "717,42,15,19",
           "opacity": "opacity_hover",
-          "pos": "130,70"
+          "pos": "130,70",
+          "actions": {
+            "click": "f:cpu(3)"
+          }
         },
         {
           "id": "_4",
           "img": "sprite/MENU_CLIP4.png",
           "rect": "717,63,15,19",
           "opacity": "opacity_hover",
-          "pos": "170,70"
+          "pos": "170,70",
+          "actions": {
+            "click": "f:cpu(4)"
+          }
         },
         {
           "id": "_5",
           "img": "sprite/MENU_CLIP4.png",
           "rect": "717,84,15,19",
           "opacity": "opacity_hover",
-          "pos": "210,70"
+          "pos": "210,70",
+          "actions": {
+            "click": "f:cpu(5)"
+          }
         },
         {
           "id": "_6",
           "img": "sprite/MENU_CLIP4.png",
           "rect": "717,105,15,19",
           "opacity": "opacity_hover",
-          "pos": "250,70"
+          "pos": "250,70",
+          "actions": {
+            "click": "f:cpu(6)"
+          }
         },
         {
           "id": "_7",
           "img": "sprite/MENU_CLIP4.png",
           "rect": "717,126,15,19",
           "opacity": "opacity_hover",
-          "pos": "290,70"
+          "pos": "290,70",
+          "actions": {
+            "click": "f:cpu(7)"
+          }
         }
       ]
     }

@@ -36,22 +36,27 @@ const read_as_4_nums = (v: string | number[] | null | undefined, a1: number, a2:
 }
 
 export class Layout {
-  protected _o: NumberAnimation | null = null;
+  protected _opacity_animation?: NumberAnimation;
+  protected _root: Layout;
+  protected _left_to_right: Layout[] = [];
+  protected _top_to_bottom: Layout[] = [];
+  protected _focused_item?: Layout;
+
   set_opacity_animation(
     to_max: boolean,
     min: number = 0,
     max: number = 1,
-    duration: number = 300
+    duration: number = 150
   ) {
     if (
-      min !== this._o?.val_1 &&
-      max !== this._o?.val_2 &&
-      duration !== this._o?.duration
+      min !== this._opacity_animation?.val_1 &&
+      max !== this._opacity_animation?.val_2 &&
+      duration !== this._opacity_animation?.duration
     ) {
-      this._o = new NumberAnimation(min, max, duration, !to_max).set_value(this._material?.opacity || 0)
+      this._opacity_animation = new NumberAnimation(min, max, duration, !to_max).set_value(this._material?.opacity || 0)
     }
-    if (this._o.reverse === to_max)
-      this._o.play(!to_max).set_value(this._material?.opacity || 0);
+    if (this._opacity_animation.reverse === to_max)
+      this._opacity_animation.play(!to_max).set_value(this._material?.opacity || 0);
   }
   protected _state: any = {}
   protected _visible = () => true;
@@ -72,17 +77,14 @@ export class Layout {
   src_rect: [number, number, number, number] = [0, 0, 0, 0];
   dst_rect: [number, number, number, number] = [0, 0, 0, 0];
   lf2: LF2;
-
-
-
-
+  get focused_item(): Layout | undefined { return this._root === this ? this._focused_item : this._root._focused_item }
   get z_order(): number { return this.data.z_order ?? 0 };
-
+  get root() { return this._root }
   get level() { return this._level }
   get index() { return this._index }
   get state() { return this._state }
   get img_idx() { return this._img_idx() }
-  get visible() { return this._visible() }
+  get visible(): boolean { return this._visible() && this.parent?.visible !== false }
   get opacity() { return this._opacity() }
   get parent() { return this._parent; }
   set parent(v) { this._parent = v; }
@@ -94,11 +96,14 @@ export class Layout {
     this.dst_rect[3] = h;
   }
 
-  constructor(lf2: LF2, data: ILayoutInfo) {
+  constructor(lf2: LF2, data: ILayoutInfo, parent?: Layout) {
     this.lf2 = lf2;
     this.data = Object.freeze(data);
     this.center = read_as_2_nums(this.data.center, 0, 0)
     this.pos = read_as_2_nums(this.data.pos, 0, 0)
+
+    this.parent = parent;
+    this._root = parent ? parent.root : this;
   }
 
   hit(x: number, y: number): boolean {
@@ -129,7 +134,6 @@ export class Layout {
       item.on_unmount()
 
     this._sprite?.removeFromParent();
-
   }
 
   to_next_img() {
@@ -139,17 +143,17 @@ export class Layout {
   }
 
   static async cook(lf2: LF2, data: ILayoutInfo, get_val: ValGetter<Layout>, parent?: Layout) {
-    const ret = new Layout(lf2, data);
-    ret.parent = parent;
+    const ret = new Layout(lf2, data, parent);
     await ret._cook_imgs(lf2);
     ret._cook_img_idx(get_val);
     ret._cook_data(get_val);
     ret._cook_rects();
     await ret._cook_component();
-
-
+    if (ret.data.actions?.click) {
+      ret.root._left_to_right!.push(ret);
+      ret.root._top_to_bottom!.push(ret);
+    }
     if (data.items)
-
       for (const raw_item of data.items) {
         const cooked_item = await Layout.cook(lf2, raw_item, get_val, ret);
         cooked_item._index = ret.items.length;
@@ -160,6 +164,10 @@ export class Layout {
       ret.size = [794, 450];
       ret.center = [0, 0];
       ret.pos = [0, -450]
+    }
+    if (ret._root === ret) {
+      ret.root._left_to_right!.sort((a, b) => a.pos[0] - b.pos[0]);
+      ret.root._top_to_bottom!.sort((a, b) => a.pos[1] - b.pos[1]);
     }
     return ret;
   }
@@ -336,12 +344,49 @@ export class Layout {
       const next_opacity = this.opacity;
       if (next_opacity >= 0) {
         this._material.opacity = next_opacity;
-      } else if (this._o) {
-        this._material.opacity = this._o.update(dt);
+      } else if (this._opacity_animation) {
+        this._material.opacity = this._opacity_animation.update(dt);
       }
     }
     for (const item of this.items) {
       item.on_render(dt);
+    }
+  }
+
+  on_player_key_down(k: "L" | "R" | "U" | "D" | "a" | "j" | "d") {
+    const lr_items = this._left_to_right.filter(v => v.visible);
+    const lr_lengh = lr_items.length;
+    const ud_items = this._top_to_bottom.filter(v => v.visible);
+    const ud_lengh = ud_items.length;
+    switch (k) {
+      case 'L': {
+        const idx = lr_items.findIndex(v => v === this._focused_item);
+        this._focused_item = lr_items[(Math.max(idx, 0) + lr_lengh - 1) % lr_lengh];
+        break;
+      }
+      case 'R': {
+        const idx = lr_items.findIndex(v => v === this._focused_item);
+        this._focused_item = lr_items[(idx + 1) % lr_lengh];
+        break;
+      }
+      case 'U': {
+        const idx = ud_items.findIndex(v => v === this._focused_item);
+        this._focused_item = ud_items[(Math.max(idx, 0) + ud_lengh - 1) % ud_lengh];
+        break;
+      }
+      case 'D': {
+        const idx = ud_items.findIndex(v => v === this._focused_item);
+        this._focused_item = ud_items[(idx + 1) % ud_lengh];
+        break;
+      }
+      case 'a': {
+        this._focused_item?.on_click();
+        break;
+      }
+      case 'j':
+        break;
+      case 'd':
+        break;
     }
   }
 }
