@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import './App.css';
 import { BlackgroundRow } from './BlackgroundRow';
 import Fullsreen from './Fullsreen';
-import LF2 from './LF2/LF2';
+import LF2, { ICallbacks } from './LF2/LF2';
 import Select from './LF2/ui/Select';
 import { Button } from './LF2/ui/Select/Button';
 import { Input } from './LF2/ui/Select/Input';
@@ -16,6 +16,8 @@ import './init';
 import { arithmetic_progression } from './js_utils/arithmetic_progression';
 import lf2_dat_str_to_json from './js_utils/lf2_dat_translator/dat_2_json';
 import read_lf2_dat from './read_lf2_dat';
+import { Layout } from './Layout';
+import { ILayoutInfo } from './ILayoutInfo';
 
 const fullsreen = new Fullsreen();
 
@@ -27,7 +29,6 @@ function App() {
   const _text_area_dat_ref = useRef<HTMLTextAreaElement>(null);
   const _text_area_json_ref = useRef<HTMLTextAreaElement>(null);
   const lf2_ref = useRef<LF2 | undefined>();
-  const lf2 = lf2_ref.current;
 
   const [editor_closed, set_editor_closed] = useState(true);
   const [game_overlay, set_game_overlay] = useState(true);
@@ -37,26 +38,30 @@ function App() {
 
   const [paused, set_paused] = useState(false);
   useEffect(() => {
+    const lf2 = lf2_ref.current;
     if (!lf2) return;
     lf2.world.paused = paused;
-  }, [lf2, paused])
+  }, [paused])
 
   const update_once = useCallback(() => {
+    const lf2 = lf2_ref.current;
     set_paused(true);
     lf2?.world.update_once()
-  }, [lf2])
+  }, [])
 
   const [show_indicators, set_show_indicators] = useState(false);
   useEffect(() => {
+    const lf2 = lf2_ref.current;
     if (!lf2) return;
     lf2.world.show_indicators = show_indicators;
-  }, [lf2, show_indicators])
+  }, [show_indicators])
 
   const [fast_forward, set_fast_forward] = useState(false);
   useEffect(() => {
+    const lf2 = lf2_ref.current;
     if (!lf2) return;
     lf2.world.playrate = fast_forward ? 100 : 1;
-  }, [lf2, fast_forward])
+  }, [fast_forward])
   const toggle_fullscreen = () => {
     if (fullsreen.enabled())
       fullsreen.exit();
@@ -65,6 +70,7 @@ function App() {
   }
   useEffect(() => {
     const on_key_down = (e: KeyboardEvent) => {
+      const lf2 = lf2_ref.current;
       const interrupt = () => {
         e.stopPropagation();
         e.preventDefault();
@@ -107,22 +113,36 @@ function App() {
 
     window.addEventListener('keydown', on_key_down);
     return () => window.removeEventListener('keydown', on_key_down)
-  }, [lf2, loaded, update_once])
+  }, [loaded, update_once])
+
+
+  const [layout, set_layout] = useState<string | undefined>(void 0);
+  useEffect(() => {
+    lf2_ref.current?.set_layout(layout)
+  }, [layout])
+
+  const [layouts, set_layouts] = useState<Readonly<ILayoutInfo>[]>([]);
 
   useEffect(() => {
     if (lf2_ref.current) return;
     const canvas = _canvas_ref.current!;
     const overlay = _overlay_ref.current!;
-    
-    const lf2 = lf2_ref.current = new LF2(canvas, overlay);
-    lf2.layouts().then(v => {
-      lf2.set_layout(v?.[0])
+    const lf2 = (window as any).lf2 = lf2_ref.current = new LF2(canvas, overlay);
+    lf2.layouts().then((layouts) => {
+      const layout_data_list = layouts?.map(l => l.data) || []
+      layout_data_list.unshift({ id: '', name: 'close' })
+      set_layouts(layout_data_list)
     })
-    Object.defineProperty(window, 'lf2', { value: lf2, configurable: true })
 
+    const cbs: ICallbacks = {
+      on_layout_changed: v => set_layout(v?.data.id)
+    }
+    lf2.add_callbacks(cbs);
+    return () => { lf2.del_callbacks(cbs) }
   }, []);
 
   const on_click_load_local_zip = () => {
+    const lf2 = lf2_ref.current;
     if (!lf2) return;
     set_loading(true);
     open_file({ accept: '.zip' })
@@ -134,6 +154,7 @@ function App() {
       .finally(() => set_loading(false))
   }
   const on_click_load_builtin_zip = () => {
+    const lf2 = lf2_ref.current;
     if (!lf2) return;
     set_loading(true);
     fetch('lf2.data.zip')
@@ -145,14 +166,15 @@ function App() {
       .finally(() => set_loading(false))
   }
   const on_click_cleaup = () => {
+    const lf2 = lf2_ref.current;
     if (!lf2) return;
     lf2.dispose();
     lf2_ref.current = void 0;
     set_loaded(false);
   }
   const on_click_load_builtin = async () => {
+    const lf2 = lf2_ref.current;
     if (!lf2) return;
-    alert('on_click_load_builtin!')
     set_loading(true);
     lf2.start()
       .then(_ => set_loaded(true))
@@ -255,6 +277,12 @@ function App() {
       </div>
       <div className='debug_ui'>
         <div className='debug_ui_row'>
+          {'Page: '}
+          <Select
+            value={layout}
+            on_changed={set_layout}
+            items={layouts}
+            option={o => [o.id, o.name]} />
           {'Mode: '}
           <Select
             value={render_size_mode}
@@ -324,8 +352,8 @@ function App() {
               <Button onClick={() => set_game_overlay(v => !v)}>{game_overlay ? 'hide' : 'show '} game overlay(F7)</Button>
               <Button onClick={() => set_control_panel(v => !v)}>{control_panel ? 'hide' : 'show '} control panel(F8)</Button>
             </div>
-            {lf2?.player_infos.map((v, idx) => <PlayerRow key={idx} lf2={lf2} which={idx} visible={control_panel} />)}
-            <BlackgroundRow lf2={lf2} visible={control_panel} />
+            {lf2_ref.current?.player_infos.map((info, idx) => <PlayerRow key={idx} lf2={lf2_ref.current} which={idx+1} visible={control_panel} />)}
+            <BlackgroundRow lf2={lf2_ref.current} visible={control_panel} />
           </> : null
         }
       </div>

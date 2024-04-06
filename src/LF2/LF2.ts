@@ -44,8 +44,11 @@ class PlayerInfo {
     this._keys = keys;
   }
 }
-
+export interface ICallbacks {
+  on_layout_changed(layout: Layout | undefined, prev_layout: Layout | undefined): void;
+}
 export default class LF2 {
+  private _callbacks = new Set<ICallbacks>();
   private _disposers = new Set<() => void>();
   private _stage_infos: IStageInfo[] = [];
   private _disposed: boolean = false;
@@ -155,9 +158,7 @@ export default class LF2 {
 
   private _bgms?: string[];
   async bgms(): Promise<string[]> {
-
     if (this._bgms) return this._bgms;
-
     if (!this.zip) return this._bgms = await Promise.all([
       "boss1.wma.ogg",
       "boss2.wma.ogg",
@@ -380,6 +381,7 @@ export default class LF2 {
     }
     return ret;
   }
+
   async start(zip?: JSZIP) {
     this.zip = zip
     await this.dat_mgr.load();
@@ -478,7 +480,7 @@ export default class LF2 {
   }
 
   private _layouts?: Layout[];
-  async layouts() {
+  async layouts(): Promise<Layout[] | undefined> {
     if (this._layouts) return this._layouts;
 
     const array = await this.import('layouts/index.json');
@@ -545,9 +547,20 @@ export default class LF2 {
   set_layout(any: string | Layout | undefined): void {
     const layout = typeof any === 'string' ? this._layouts?.find(v => v.data.id === any) : any;
     if (this._layout === layout) return;
+    const prev_layout = this._layout;
     this._layout?.on_unmount();
     this._layout = layout;
     this._layout?.on_mount();
     this.world.start_render();
+    for (const cbs of this._callbacks) cbs.on_layout_changed(layout, prev_layout);
+  }
+
+  add_callbacks(callback: ICallbacks): this {
+    this._callbacks.add(callback)
+    return this;
+  }
+  del_callbacks(callback: ICallbacks): this {
+    this._callbacks.delete(callback);
+    return this;
   }
 }

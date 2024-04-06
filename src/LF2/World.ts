@@ -488,7 +488,7 @@ export class World {
       e.position.x - f.centerx + i.x :
       e.position.x + f.centerx - i.x - i.w;
     const top = e.position.y + f.centery - i.y;
-    const length = 20;
+    const length = 30;
     const far = e.position.z - length / 2;
     const near = far + length;
     return { left, right: left + i.w, top, bottom: top - i.h, near, far }

@@ -4,14 +4,13 @@ import { BaseController } from './LF2/controller/BaseController';
 import { BotEnemyChaser } from './LF2/controller/BotEnemyChaser';
 import { InvalidController } from './LF2/controller/InvalidController';
 import { Character } from './LF2/entity/Character';
-import { Entity } from './LF2/entity/Entity';
 import CharacterSelect from './LF2/ui/CharacterSelect';
 import Select from './LF2/ui/Select';
+import { Button } from './LF2/ui/Select/Button';
+import { Input } from './LF2/ui/Select/Input';
 import TeamSelect from './LF2/ui/TeamSelect';
 import { IStageInfo, IStagePhaseInfo } from './js_utils/lf2_type';
 import { Defines } from './js_utils/lf2_type/defines';
-import { Input } from './LF2/ui/Select/Input';
-import { Button } from './LF2/ui/Select/Button';
 
 const bot_controllers: { [x in string]?: (e: Character) => BaseController } = {
   'OFF': (e: Character) => new InvalidController(e),
@@ -23,6 +22,7 @@ export function BlackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
   const [bg, set_bg] = useState<string>();
   const [bgm, set_bgm] = useState<string>('');
   const [bgm_list, set_bgm_list] = useState<string[]>([]);
+  
   const [stage_id, set_stage_id] = useState<string>('');
   const [stage_bgm, set_stage_bgm] = useState<boolean>(false);
   const [stage_list, set_stage_list] = useState<IStageInfo[]>([]);

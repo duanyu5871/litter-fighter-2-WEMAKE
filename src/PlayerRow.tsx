@@ -80,7 +80,7 @@ export function PlayerRow(props: Props) {
   const [editing_key, set_editing_key] = useState<TKeyName | undefined>();
   const [keys, set_keys] = useState<Record<TKeyName, string>>(keys_map[which] ?? invalid_keys)
   const [team, set_team] = useState<string>('');
-  const [c_id, set_character_id] = useState<string>('');
+  const [character_id, set_character_id] = useState<string>('');
   const [player_name, set_player_name] = useState<string>(which);
   const [added, set_added] = useState(false);
   const [key_settings_show, set_key_settings_show] = useState(false);
@@ -91,13 +91,13 @@ export function PlayerRow(props: Props) {
     on_disposed: () => set_added(false),
     on_team_changed: (_, team) => set_team('' + team)
   })
+
   useEffect(() => {
     if (!lf2) return;
     if (!added) return lf2.remove_player(which)
-
     let lp = lf2.get_local_player(which);
-    if (lp?.data.id !== c_id) {
-      const r_c_id = c_id || random_get(lf2.dat_mgr.characters)?.id;
+    if (lp?.data.id !== character_id) {
+      const r_c_id = character_id || random_get(lf2.dat_mgr.characters)?.id;
       if (r_c_id) {
         lp = lf2.add_player(which, r_c_id, keys_map[which]) ?? lp;
       }
@@ -107,7 +107,7 @@ export function PlayerRow(props: Props) {
     lp.name = player_name.trim() || '' + which;
     lp.team = team ? Number(team) : new_team();
     lp.controller = new PlayerController(which, lp, keys)
-  }, [which, player_name, team, lf2, c_id, added, keys]);
+  }, [which, player_name, team, lf2, character_id, added, keys]);
 
   useEffect(() => {
     if (!editing_key) return;
@@ -146,7 +146,7 @@ export function PlayerRow(props: Props) {
           onBlur={on_name_blur} />
       </span>
       <span>character:</span>
-      <CharacterSelect lf2={lf2} value={c_id} on_changed={set_character_id} />
+      <CharacterSelect lf2={lf2} value={character_id} on_changed={set_character_id} />
       <span>team:</span>
       <TeamSelect value={team} on_changed={set_team} />
       <Button onClick={() => set_added(v => !v)}>{added ? 'del' : 'add'}</Button>

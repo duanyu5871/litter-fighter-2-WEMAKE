@@ -33,5 +33,5 @@ export default function Select<T, V>(props: ISelectProps<T, V>) {
     const [v, n] = option?.(item, idx, items) || ['' + item, '' + item]
     return (<option key={idx} value={'' + v}> {n} </option>)
   })
-  return <select id={default_id} title={default_id} {...remain_props} onChange={on_change}>{children}{options_children}</select>
+  return <select id={default_id} {...remain_props} onChange={on_change}>{children}{options_children}</select>
 }
