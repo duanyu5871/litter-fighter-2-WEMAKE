@@ -289,6 +289,7 @@ export class Layout {
     this._sprite.userData = {
       owner: this,
     };
+
     (this.parent?.sprite || this.lf2.world.scene)?.add(this._sprite);
 
     // const box = new THREE.Box3().expandByObject(this._sprite);
@@ -338,6 +339,9 @@ export class Layout {
   on_render(dt: number) {
     const sprite = this.sprite;
     if (sprite) {
+      if (this._root === this) {
+        sprite.position.x = this.lf2.world.camera.position.x
+      }
       sprite.visible = this.visible;
     }
     if (this._material) {
