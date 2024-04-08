@@ -87,7 +87,7 @@ export default class LF2 {
 
   _r = (r: any) => this._disposed ? Promise.reject(LF2.DisposeError) : r;
 
-  @Log.Clone({ showArgs: true, showRet: false, disabled: true })
+
   async import(path: string) {
     const fallback_paths = get_import_fallbacks(path);
     if (this.zip) {
@@ -409,7 +409,9 @@ export default class LF2 {
     this.world.dispose()
     this.dat_mgr.cancel();
   }
-  add_player = (which: string, character_id: string, kc?: Record<TKeyName, string>) => {
+  add_player = (which: string, character_id: string) => {
+
+    const player_info = this.player_infos.get(which);
     const data = this.dat_mgr.characters.find(v => v.id === character_id)
     if (!data) return;
     let x = 0;
@@ -449,7 +451,7 @@ export default class LF2 {
     if (!old) {
       this.random_entity_info(player)
     }
-    player.controller = new PlayerController(which, player, kc)
+    player.controller = new PlayerController(which, player, player_info?.keys)
     player.attach();
     return player
   }

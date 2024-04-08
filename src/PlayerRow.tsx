@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import LF2 from './LF2/LF2';
 import { TKeyName } from './LF2/controller/BaseController';
 import { PlayerController } from './LF2/controller/LocalHuman';
@@ -9,45 +9,7 @@ import { Button } from './LF2/ui/Select/Button';
 import { Input } from './LF2/ui/Select/Input';
 import TeamSelect from './LF2/ui/TeamSelect';
 import random_get from './js_utils/random_get';
-
-export const keys_map: { [x in string]?: Record<TKeyName, string> } = {
-  '1': {
-    L: 'a',
-    R: 'd',
-    U: 'w',
-    D: 's',
-    a: 'r',
-    j: 't',
-    d: 'y',
-  },
-  '2': {
-    L: 'j',
-    R: 'l',
-    U: 'i',
-    D: 'k',
-    a: '[',
-    j: ']',
-    d: '\\',
-  },
-  '3': {
-    L: 'arrowleft',
-    R: 'arrowright',
-    U: 'arrowup',
-    D: 'arrowdown',
-    a: '0',
-    j: '.',
-    d: 'Enter',
-  },
-  '4': {
-    L: '4',
-    R: '6',
-    U: '8',
-    D: '5',
-    a: '/',
-    j: '*',
-    d: '-',
-  }
-}
+import { IPlayerInfoCallback, PlayerInfo } from './LF2/PlayerInfo';
 
 const invalid_keys: Record<TKeyName, string> = {
   L: '',
@@ -77,10 +39,11 @@ export function PlayerRow(props: Props) {
   const { lf2, visible } = props;
   const which = '' + props.which;
   const [editing_key, set_editing_key] = useState<TKeyName | undefined>();
-  const [keys, set_keys] = useState<Record<TKeyName, string>>(keys_map[which] ?? invalid_keys)
+
+  const [keys, set_keys] = useState<Record<TKeyName, string>>(invalid_keys);
+  const [player_name, set_player_name] = useState<string>(which);
   const [team, set_team] = useState<string>('');
   const [character_id, set_character_id] = useState<string>('');
-  const [player_name, set_player_name] = useState<string>(which);
   const [added, set_added] = useState(false);
   const [key_settings_show, set_key_settings_show] = useState(false);
   const hp_ref = useRef<HTMLSpanElement>(null)
@@ -90,6 +53,24 @@ export function PlayerRow(props: Props) {
     on_disposed: () => set_added(false),
     on_team_changed: (_, team) => set_team('' + team)
   })
+  const ref_player_info = useRef<PlayerInfo>()
+
+  useEffect(() => {
+    if (!lf2) return;
+    const player_info = ref_player_info.current = lf2.player_infos.get(which);
+    if (!player_info) return;
+
+    set_keys(player_info.keys);
+    set_player_name(player_info.name);
+
+    const callback: IPlayerInfoCallback = {
+      on_key_changed: (name, key) => set_keys(v => ({ ...v, [name]: key }))
+    }
+    player_info.add_callback(callback);
+    return () => {
+      player_info.del_callback(callback);
+    }
+  }, [which, lf2]);
 
   useEffect(() => {
     if (!lf2) return;
@@ -98,7 +79,7 @@ export function PlayerRow(props: Props) {
     if (lp?.data.id !== character_id) {
       const r_c_id = character_id || random_get(lf2.dat_mgr.characters)?.id;
       if (r_c_id) {
-        lp = lf2.add_player(which, r_c_id, keys_map[which]) ?? lp;
+        lp = lf2.add_player(which, r_c_id) ?? lp;
       }
     }
     if (!lp) return;
@@ -115,8 +96,9 @@ export function PlayerRow(props: Props) {
       e.stopImmediatePropagation();
       e.preventDefault();
       e.stopPropagation();
-      if (e.key.toUpperCase() !== 'ESCAPE') {
-        if (e.key) set_keys(v => ({ ...v, [editing_key]: e.key }))
+      const key = e.key?.toLocaleLowerCase();
+      if (key && key !== 'escape') {
+        ref_player_info.current?.set_key(editing_key, e.key.toLowerCase()).save();
       }
       set_editing_key(void 0);
     }

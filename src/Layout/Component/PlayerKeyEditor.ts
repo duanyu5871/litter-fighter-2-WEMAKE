@@ -1,11 +1,11 @@
-import { Err } from '@fimagine/logger';
-import { LayoutComponent } from './LayoutComponent';
+import * as THREE from 'three';
+import { IPlayerInfoCallback } from '../../LF2/PlayerInfo';
 import { TKeyName } from '../../LF2/controller/BaseController';
 import { create_picture, image_pool } from '../../LF2/loader/loader';
-import * as THREE from 'three';
+import { LayoutComponent } from './LayoutComponent';
 
 
-export class PlayerKeyEditor extends LayoutComponent {
+export class PlayerKeyEditor extends LayoutComponent implements IPlayerInfoCallback {
   protected _which?: string;
   protected _key_name?: string;
   protected _sprite?: THREE.Mesh;
@@ -13,20 +13,17 @@ export class PlayerKeyEditor extends LayoutComponent {
   init(which: string, key_name: string): this {
     this._which = which;
     this._key_name = key_name;
+    this._layout.lf2.player_infos.get(this._which)?.add_callback(this);
     return this;
+  }
+  on_key_changed(name: TKeyName, value: string) {
+    this.update_sprite();
   }
   private _on_keydown = (e: KeyboardEvent) => {
     if ('escape' === e.key.toLowerCase()) return this._on_cancel();
     if (this._which === void 0) return;
     if (this._key_name === void 0) return;
-    const player_info = this._layout.lf2.player_infos.get(this._which);
-    if (player_info) {
-      player_info.keys[this._key_name as TKeyName] = e.key.toLowerCase();
-      player_info.save();
-    } else {
-      Err.print(PlayerKeyEditor.name, 'player_info not found, which:', this._which);
-    }
-    this.update_sprite();
+    this._layout.lf2.player_infos.get(this._which)?.set_key(this._key_name, e.key).save();
   };
   private _on_cancel = () => {
     window.removeEventListener('keydown', this._on_keydown);
@@ -35,12 +32,13 @@ export class PlayerKeyEditor extends LayoutComponent {
   }
   on_click() {
     window.addEventListener('pointerdown', this._on_cancel, { once: true });
-    window.addEventListener('keydown', this._on_keydown);
+    window.addEventListener('keydown', this._on_keydown, { once: true });
     if (this._material) this._material.color = new THREE.Color(16 / 255, 32 / 255, 108 / 255)
     return true;
   }
   on_mount() {
     this.update_sprite();
+    this._layout.lf2.player_infos.get(this._which!)?.add_callback(this);
   }
   async update_sprite() {
     this._sprite?.removeFromParent();
@@ -69,5 +67,6 @@ export class PlayerKeyEditor extends LayoutComponent {
   on_unmount(): void {
     this._on_cancel();
     this._sprite?.removeFromParent();
+    this._layout.lf2.player_infos.get(this._which!)?.del_callback(this);
   }
 }
