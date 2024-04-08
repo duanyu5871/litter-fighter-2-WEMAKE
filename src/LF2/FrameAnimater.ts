@@ -1,6 +1,6 @@
 import { Warn } from '@fimagine/logger';
 import * as THREE from 'three';
-import random_get from '../Utils/random_get';
+import random_get from '../js_utils/random_get';
 import { constructor_name } from '../js_utils/constructor_name';
 import { is_positive_num } from '../js_utils/is_positive_num';
 import { is_str } from '../js_utils/is_str';

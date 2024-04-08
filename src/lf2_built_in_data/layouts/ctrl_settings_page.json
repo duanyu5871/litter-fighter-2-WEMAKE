@@ -129,494 +129,268 @@
       }
     },
     {
-      "id": "btn_player_name_1",
-      "component": "player_name_input(1)",
-      "txt": "player_name_input(1)",
-      "font": [
-        "12px",
-        "normal"
-      ],
-      "pos": "193, 114",
-      "size": "106, 19",
-      "actions": {
-        "click": "loop_img"
-      }
+      "id": "player_1",
+      "pos": "193,0",
+      "items": [
+        {
+          "id": "btn_player_name_1",
+          "component": "player_name_input(1)",
+          "txt": "player_name_input(1)",
+          "font": [
+            "12px",
+            "normal"
+          ],
+          "pos": "0, 114",
+          "size": "106, 19"
+        },
+        {
+          "id": "btn_key_set_1_U",
+          "component": "key_set(1,U)",
+          "pos": "0, 238",
+          "size": "106, 19"
+        },
+        {
+          "id": "btn_key_set_1_D",
+          "component": "key_set(1,D)",
+          "pos": "0, 260",
+          "size": "106, 19"
+        },
+        {
+          "id": "btn_key_set_1_L",
+          "component": "key_set(1,L)",
+          "pos": "0, 282",
+          "size": "106, 19"
+        },
+        {
+          "id": "btn_key_set_1_R",
+          "component": "key_set(1,R)",
+          "pos": "0, 304",
+          "size": "106, 19"
+        },
+        {
+          "id": "btn_key_set_1_a",
+          "component": "key_set(1,a)",
+          "pos": "0, 326",
+          "size": "106, 19"
+        },
+        {
+          "id": "btn_key_set_1_j",
+          "component": "key_set(1,j)",
+          "font": [
+            "12px",
+            "normal"
+          ],
+          "pos": "0, 348",
+          "size": "106, 19"
+        },
+        {
+          "id": "btn_key_set_1_d",
+          "component": "key_set(1,d)",
+          "pos": "0, 370",
+          "size": "106, 19",
+          "actions": {
+            "click": "loop_img"
+          }
+        }
+      ]
     },
     {
-      "id": "btn_key_set_1_d",
-      "component": "key_set(1,d)",
-      "txt": "key_set(1,d)",
-      "font": [
-        "12px",
-        "normal"
-      ],
-      "pos": "193, 238",
-      "size": "106, 19",
-      "actions": {
-        "click": "loop_img"
-      }
+      "id": "player_2",
+      "pos": "332,0",
+      "items": [
+        {
+          "id": "btn_player_name_1",
+          "component": "player_name_input(1)",
+          "txt": "player_name_input(1)",
+          "font": [
+            "12px",
+            "normal"
+          ],
+          "pos": "0, 114",
+          "size": "106, 19"
+        },
+        {
+          "id": "btn_key_set_1_U",
+          "component": "key_set(2,U)",
+          "pos": "0, 238",
+          "size": "106, 19"
+        },
+        {
+          "id": "btn_key_set_1_D",
+          "component": "key_set(2,D)",
+          "pos": "0, 260",
+          "size": "106, 19"
+        },
+        {
+          "id": "btn_key_set_1_L",
+          "component": "key_set(2,L)",
+          "pos": "0, 282",
+          "size": "106, 19"
+        },
+        {
+          "id": "btn_key_set_1_R",
+          "component": "key_set(2,R)",
+          "pos": "0, 304",
+          "size": "106, 19"
+        },
+        {
+          "id": "btn_key_set_1_a",
+          "component": "key_set(2,a)",
+          "pos": "0, 326",
+          "size": "106, 19"
+        },
+        {
+          "id": "btn_key_set_1_j",
+          "component": "key_set(2,j)",
+          "font": [
+            "12px",
+            "normal"
+          ],
+          "pos": "0, 348",
+          "size": "106, 19"
+        },
+        {
+          "id": "btn_key_set_1_d",
+          "component": "key_set(2,d)",
+          "pos": "0, 370",
+          "size": "106, 19",
+          "actions": {
+            "click": "loop_img"
+          }
+        }
+      ]
     },
     {
-      "id": "btn_key_set_1_L",
-      "component": "key_set(1,L)",
-      "txt": "key_set(1,L)",
-      "font": [
-        "12px",
-        "normal"
-      ],
-      "pos": "193, 260",
-      "size": "106, 19",
-      "actions": {
-        "click": "loop_img"
-      }
+      "id": "player_3",
+      "pos": "471,0",
+      "items": [
+        {
+          "id": "btn_player_name_1",
+          "component": "player_name_input(1)",
+          "txt": "player_name_input(1)",
+          "font": [
+            "12px",
+            "normal"
+          ],
+          "pos": "0, 114",
+          "size": "106, 19"
+        },
+        {
+          "id": "btn_key_set_1_U",
+          "component": "key_set(3,U)",
+          "pos": "0, 238",
+          "size": "106, 19"
+        },
+        {
+          "id": "btn_key_set_1_D",
+          "component": "key_set(3,D)",
+          "pos": "0, 260",
+          "size": "106, 19"
+        },
+        {
+          "id": "btn_key_set_1_L",
+          "component": "key_set(3,L)",
+          "pos": "0, 282",
+          "size": "106, 19"
+        },
+        {
+          "id": "btn_key_set_1_R",
+          "component": "key_set(3,R)",
+          "pos": "0, 304",
+          "size": "106, 19"
+        },
+        {
+          "id": "btn_key_set_1_a",
+          "component": "key_set(3,a)",
+          "pos": "0, 326",
+          "size": "106, 19"
+        },
+        {
+          "id": "btn_key_set_1_j",
+          "component": "key_set(3,j)",
+          "font": [
+            "12px",
+            "normal"
+          ],
+          "pos": "0, 348",
+          "size": "106, 19"
+        },
+        {
+          "id": "btn_key_set_1_d",
+          "component": "key_set(3,d)",
+          "pos": "0, 370",
+          "size": "106, 19",
+          "actions": {
+            "click": "loop_img"
+          }
+        }
+      ]
     },
     {
-      "id": "btn_key_set_1_R",
-      "component": "key_set(1,R)",
-      "txt": "key_set(1,R)",
-      "font": [
-        "12px",
-        "normal"
-      ],
-      "pos": "193, 282",
-      "size": "106, 19",
-      "actions": {
-        "click": "loop_img"
-      }
-    },
-    {
-      "id": "btn_key_set_1_U",
-      "component": "key_set(1,U)",
-      "txt": "key_set(1,U)",
-      "font": [
-        "12px",
-        "normal"
-      ],
-      "pos": "193, 304",
-      "size": "106, 19",
-      "actions": {
-        "click": "loop_img"
-      }
-    },
-    {
-      "id": "btn_key_set_1_D",
-      "component": "key_set(1,D)",
-      "txt": "key_set(1,D)",
-      "font": [
-        "12px",
-        "normal"
-      ],
-      "pos": "193, 326",
-      "size": "106, 19",
-      "actions": {
-        "click": "loop_img"
-      }
-    },
-    {
-      "id": "btn_key_set_1_j",
-      "component": "key_set(1,j)",
-      "txt": "key_set(1,j)",
-      "font": [
-        "12px",
-        "normal"
-      ],
-      "pos": "193, 348",
-      "size": "106, 19",
-      "actions": {
-        "click": "loop_img"
-      }
-    },
-    {
-      "id": "btn_key_set_1_a",
-      "component": "key_set(1,a)",
-      "txt": "key_set(1,a)",
-      "font": [
-        "12px",
-        "normal"
-      ],
-      "pos": "193, 370",
-      "size": "106, 19",
-      "actions": {
-        "click": "loop_img"
-      }
-    },
-    {
-      "id": "btn_ctrl_type_2",
-      "img": [
-        "sprite/CS6.png",
-        "sprite/CS2.png",
-        "sprite/CS3.png",
-        "sprite/CS4.png",
-        "sprite/CS5.png"
-      ],
-      "pos": "332, 140",
-      "actions": {
-        "click": "loop_img"
-      }
-    },
-    {
-      "id": "btn_player_name_2",
-      "component": "player_name_input(2)",
-      "txt": "player_name_input(2)",
-      "font": [
-        "12px",
-        "normal"
-      ],
-      "pos": "332, 114",
-      "size": "106, 19",
-      "actions": {
-        "click": "loop_img"
-      }
-    },
-    {
-      "id": "btn_key_set_2_d",
-      "component": "key_set(2,d)",
-      "txt": "key_set(2,d)",
-      "font": [
-        "12px",
-        "normal"
-      ],
-      "pos": "332, 238",
-      "size": "106, 19",
-      "actions": {
-        "click": "loop_img"
-      }
-    },
-    {
-      "id": "btn_key_set_2_L",
-      "component": "key_set(2,L)",
-      "txt": "key_set(2,L)",
-      "font": [
-        "12px",
-        "normal"
-      ],
-      "pos": "332, 260",
-      "size": "106, 19",
-      "actions": {
-        "click": "loop_img"
-      }
-    },
-    {
-      "id": "btn_key_set_2_R",
-      "component": "key_set(2,R)",
-      "txt": "key_set(2,R)",
-      "font": [
-        "12px",
-        "normal"
-      ],
-      "pos": "332, 282",
-      "size": "106, 19",
-      "actions": {
-        "click": "loop_img"
-      }
-    },
-    {
-      "id": "btn_key_set_2_U",
-      "component": "key_set(2,U)",
-      "txt": "key_set(2,U)",
-      "font": [
-        "12px",
-        "normal"
-      ],
-      "pos": "332, 304",
-      "size": "106, 19",
-      "actions": {
-        "click": "loop_img"
-      }
-    },
-    {
-      "id": "btn_key_set_2_D",
-      "component": "key_set(2,D)",
-      "txt": "key_set(2,D)",
-      "font": [
-        "12px",
-        "normal"
-      ],
-      "pos": "332, 326",
-      "size": "106, 19",
-      "actions": {
-        "click": "loop_img"
-      }
-    },
-    {
-      "id": "btn_key_set_2_j",
-      "component": "key_set(2,j)",
-      "txt": "key_set(2,j)",
-      "font": [
-        "12px",
-        "normal"
-      ],
-      "pos": "332, 348",
-      "size": "106, 19",
-      "actions": {
-        "click": "loop_img"
-      }
-    },
-    {
-      "id": "btn_key_set_2_a",
-      "component": "key_set(2,a)",
-      "txt": "key_set(2,a)",
-      "font": [
-        "12px",
-        "normal"
-      ],
-      "pos": "332, 370",
-      "size": "106, 19",
-      "actions": {
-        "click": "loop_img"
-      }
-    },
-    {
-      "id": "btn_ctrl_type_3",
-      "img": [
-        "sprite/CS6.png",
-        "sprite/CS2.png",
-        "sprite/CS3.png",
-        "sprite/CS4.png",
-        "sprite/CS5.png"
-      ],
-      "pos": "471, 140",
-      "actions": {
-        "click": "loop_img"
-      }
-    },
-    {
-      "id": "btn_player_name_3",
-      "component": "player_name_input(3)",
-      "txt": "player_name_input(3)",
-      "font": [
-        "12px",
-        "normal"
-      ],
-      "pos": "471, 114",
-      "size": "106, 19",
-      "actions": {
-        "click": "loop_img"
-      }
-    },
-    {
-      "id": "btn_key_set_3_d",
-      "component": "key_set(3,d)",
-      "txt": "key_set(3,d)",
-      "font": [
-        "12px",
-        "normal"
-      ],
-      "pos": "471, 238",
-      "size": "106, 19",
-      "actions": {
-        "click": "loop_img"
-      }
-    },
-    {
-      "id": "btn_key_set_3_L",
-      "component": "key_set(3,L)",
-      "txt": "key_set(3,L)",
-      "font": [
-        "12px",
-        "normal"
-      ],
-      "pos": "471, 260",
-      "size": "106, 19",
-      "actions": {
-        "click": "loop_img"
-      }
-    },
-    {
-      "id": "btn_key_set_3_R",
-      "component": "key_set(3,R)",
-      "txt": "key_set(3,R)",
-      "font": [
-        "12px",
-        "normal"
-      ],
-      "pos": "471, 282",
-      "size": "106, 19",
-      "actions": {
-        "click": "loop_img"
-      }
-    },
-    {
-      "id": "btn_key_set_3_U",
-      "component": "key_set(3,U)",
-      "txt": "key_set(3,U)",
-      "font": [
-        "12px",
-        "normal"
-      ],
-      "pos": "471, 304",
-      "size": "106, 19",
-      "actions": {
-        "click": "loop_img"
-      }
-    },
-    {
-      "id": "btn_key_set_3_D",
-      "component": "key_set(3,D)",
-      "txt": "key_set(3,D)",
-      "font": [
-        "12px",
-        "normal"
-      ],
-      "pos": "471, 326",
-      "size": "106, 19",
-      "actions": {
-        "click": "loop_img"
-      }
-    },
-    {
-      "id": "btn_key_set_3_j",
-      "component": "key_set(3,j)",
-      "txt": "key_set(3,j)",
-      "font": [
-        "12px",
-        "normal"
-      ],
-      "pos": "471, 348",
-      "size": "106, 19",
-      "actions": {
-        "click": "loop_img"
-      }
-    },
-    {
-      "id": "btn_key_set_3_a",
-      "component": "key_set(3,a)",
-      "txt": "key_set(3,a)",
-      "font": [
-        "12px",
-        "normal"
-      ],
-      "pos": "471, 370",
-      "size": "106, 19",
-      "actions": {
-        "click": "loop_img"
-      }
-    },
-    {
-      "id": "btn_ctrl_type_4",
-      "img": [
-        "sprite/CS6.png",
-        "sprite/CS2.png",
-        "sprite/CS3.png",
-        "sprite/CS4.png",
-        "sprite/CS5.png"
-      ],
-      "pos": "610, 140",
-      "actions": {
-        "click": "loop_img"
-      }
-    },
-    {
-      "id": "btn_player_name_4",
-      "component": "player_name_input(4)",
-      "txt": "player_name_input(4)",
-      "font": [
-        "12px",
-        "normal"
-      ],
-      "pos": "610, 114",
-      "size": "106, 19",
-      "actions": {
-        "click": "loop_img"
-      }
-    },
-    {
-      "id": "btn_key_set_4_d",
-      "component": "key_set(4,d)",
-      "txt": "key_set(4,d)",
-      "font": [
-        "12px",
-        "normal"
-      ],
-      "pos": "610, 238",
-      "size": "106, 19",
-      "actions": {
-        "click": "loop_img"
-      }
-    },
-    {
-      "id": "btn_key_set_4_L",
-      "component": "key_set(4,L)",
-      "txt": "key_set(4,L)",
-      "font": [
-        "12px",
-        "normal"
-      ],
-      "pos": "610, 260",
-      "size": "106, 19",
-      "actions": {
-        "click": "loop_img"
-      }
-    },
-    {
-      "id": "btn_key_set_4_R",
-      "component": "key_set(4,R)",
-      "txt": "key_set(4,R)",
-      "font": [
-        "12px",
-        "normal"
-      ],
-      "pos": "610, 282",
-      "size": "106, 19",
-      "actions": {
-        "click": "loop_img"
-      }
-    },
-    {
-      "id": "btn_key_set_4_U",
-      "component": "key_set(4,U)",
-      "txt": "key_set(4,U)",
-      "font": [
-        "12px",
-        "normal"
-      ],
-      "pos": "610, 304",
-      "size": "106, 19",
-      "actions": {
-        "click": "loop_img"
-      }
-    },
-    {
-      "id": "btn_key_set_4_D",
-      "component": "key_set(4,D)",
-      "txt": "key_set(4,D)",
-      "font": [
-        "12px",
-        "normal"
-      ],
-      "pos": "610, 326",
-      "size": "106, 19",
-      "actions": {
-        "click": "loop_img"
-      }
-    },
-    {
-      "id": "btn_key_set_4_j",
-      "component": "key_set(4,j)",
-      "txt": "key_set(4,j)",
-      "font": [
-        "12px",
-        "normal"
-      ],
-      "pos": "610, 348",
-      "size": "106, 19",
-      "actions": {
-        "click": "loop_img"
-      }
-    },
-    {
-      "id": "btn_key_set_4_a",
-      "component": "key_set(4,a)",
-      "txt": "key_set(4,a)",
-      "font": [
-        "12px",
-        "normal"
-      ],
-      "pos": "610, 370",
-      "size": "106, 19",
-      "actions": {
-        "click": "loop_img"
-      }
+      "id": "player_4",
+      "pos": "610,0",
+      "items": [
+        {
+          "id": "btn_player_name_1",
+          "component": "player_name_input(1)",
+          "txt": "player_name_input(1)",
+          "font": [
+            "12px",
+            "normal"
+          ],
+          "pos": "0, 114",
+          "size": "106, 19"
+        },
+        {
+          "id": "btn_key_set_1_U",
+          "component": "key_set(4,U)",
+          "pos": "0, 238",
+          "size": "106, 19"
+        },
+        {
+          "id": "btn_key_set_1_D",
+          "component": "key_set(4,D)",
+          "pos": "0, 260",
+          "size": "106, 19"
+        },
+        {
+          "id": "btn_key_set_1_L",
+          "component": "key_set(4,L)",
+          "pos": "0, 282",
+          "size": "106, 19"
+        },
+        {
+          "id": "btn_key_set_1_R",
+          "component": "key_set(4,R)",
+          "pos": "0, 304",
+          "size": "106, 19"
+        },
+        {
+          "id": "btn_key_set_1_a",
+          "component": "key_set(4,a)",
+          "pos": "0, 326",
+          "size": "106, 19"
+        },
+        {
+          "id": "btn_key_set_1_j",
+          "component": "key_set(4,j)",
+          "font": [
+            "12px",
+            "normal"
+          ],
+          "pos": "0, 348",
+          "size": "106, 19"
+        },
+        {
+          "id": "btn_key_set_1_d",
+          "component": "key_set(4,d)",
+          "pos": "0, 370",
+          "size": "106, 19",
+          "actions": {
+            "click": "loop_img"
+          }
+        }
+      ]
     }
   ]
 }

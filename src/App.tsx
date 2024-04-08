@@ -16,8 +16,8 @@ import './init';
 import { arithmetic_progression } from './js_utils/arithmetic_progression';
 import lf2_dat_str_to_json from './js_utils/lf2_dat_translator/dat_2_json';
 import read_lf2_dat from './read_lf2_dat';
-import { Layout } from './Layout';
-import { ILayoutInfo } from './ILayoutInfo';
+import Layout from './Layout/Layout';
+import { ILayoutInfo } from './Layout/ILayoutInfo';
 
 const fullsreen = new Fullsreen();
 
@@ -63,7 +63,7 @@ function App() {
     lf2.world.playrate = fast_forward ? 100 : 1;
   }, [fast_forward])
   const toggle_fullscreen = () => {
-    if (fullsreen.enabled())
+    if (fullsreen.is_fullscreen())
       fullsreen.exit();
     else
       fullsreen.enter(document.body.parentElement!);
@@ -352,7 +352,7 @@ function App() {
               <Button onClick={() => set_game_overlay(v => !v)}>{game_overlay ? 'hide' : 'show '} game overlay(F7)</Button>
               <Button onClick={() => set_control_panel(v => !v)}>{control_panel ? 'hide' : 'show '} control panel(F8)</Button>
             </div>
-            {lf2_ref.current?.player_infos.map((info, idx) => <PlayerRow key={idx} lf2={lf2_ref.current} which={idx+1} visible={control_panel} />)}
+            {Array.from(lf2_ref.current?.player_infos.values() ?? []).map((info, idx) => <PlayerRow key={idx} lf2={lf2_ref.current} which={idx + 1} visible={control_panel} />)}
             <BlackgroundRow lf2={lf2_ref.current} visible={control_panel} />
           </> : null
         }

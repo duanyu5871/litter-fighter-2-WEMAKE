@@ -23,6 +23,8 @@ export type TImageInfo = {
   minFilter?: THREE.MinificationTextureFilter;
   magFilter?: THREE.MagnificationTextureFilter;
   img: CanvasImageSource;
+  wrapS?: THREE.Wrapping;
+  wrapT?: THREE.Wrapping;
 }
 
 export type PaintFunc = (img: HTMLImageElement, cvs: HTMLCanvasElement, ctx: CanvasRenderingContext2D) => void;
@@ -93,7 +95,7 @@ class ImagePool {
   find(key: string) {
     return this._map.get(key)
   }
-  async load_text(text: string, style?: TxtStyle): Promise<TImageInfo> {
+  async load_text(text: string, style: TxtStyle = {}): Promise<TImageInfo> {
     const key = new SparkMD5().append(text).append(JSON.stringify(style)).end()
 
     let info = this._map.get(key);
@@ -175,15 +177,15 @@ export function create_picture(
 ): TDataPromise<TPictureInfo> {
   let ok: (_: TPictureInfo) => void;
   let bad: (_: any) => void;
-  const { url, w: i_w, h: i_h, minFilter, magFilter } = img_info;
+  const { url, w: i_w, h: i_h, minFilter, magFilter, wrapS, wrapT } = img_info;
   const on_progress = (e: ProgressEvent) => console.log(`[create_picture] loading texture, id: ${id}, progress: ${Math.floor(100 * e.loaded / e.total)}%`);
   const on_load = () => ok(picture);
   const texture = texture_loader.load(url, on_load, on_progress, e => bad(e));
   texture.colorSpace = THREE.SRGBColorSpace;
   texture.minFilter = minFilter ?? THREE.NearestFilter;
   texture.magFilter = magFilter ?? THREE.NearestFilter;
-  texture.wrapS = THREE.MirroredRepeatWrapping;
-  texture.wrapT = THREE.MirroredRepeatWrapping;
+  texture.wrapS = wrapS ?? THREE.MirroredRepeatWrapping;
+  texture.wrapT = wrapT ?? THREE.MirroredRepeatWrapping;
   texture.name = id;
   texture.userData = img_info;
   picture.i_w = i_w;

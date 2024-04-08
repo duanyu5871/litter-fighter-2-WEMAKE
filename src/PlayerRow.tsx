@@ -1,15 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import LF2 from './LF2/LF2';
-import { Entity, IEntityCallbacks } from './LF2/entity/Entity';
-import random_get from './Utils/random_get';
-import { PlayerController } from './LF2/controller/LocalHuman';
-import Select, { ISelectProps } from './LF2/ui/Select';
-import TeamSelect from './LF2/ui/TeamSelect';
-import CharacterSelect from './LF2/ui/CharacterSelect';
 import { TKeyName } from './LF2/controller/BaseController';
-import { Input } from './LF2/ui/Select/Input';
+import { PlayerController } from './LF2/controller/LocalHuman';
+import { IEntityCallbacks } from './LF2/entity/Entity';
+import { new_team } from './LF2/new_id';
+import CharacterSelect from './LF2/ui/CharacterSelect';
 import { Button } from './LF2/ui/Select/Button';
-import { new_id, new_team } from './LF2/new_id';
+import { Input } from './LF2/ui/Select/Input';
+import TeamSelect from './LF2/ui/TeamSelect';
+import random_get from './js_utils/random_get';
 
 export const keys_map: { [x in string]?: Record<TKeyName, string> } = {
   '1': {

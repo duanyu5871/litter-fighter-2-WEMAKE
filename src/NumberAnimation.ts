@@ -2,11 +2,11 @@ import { IEaseMethod } from './LF2/ease_method/IEaseMethod';
 import ease_in_out_sine from './LF2/ease_method/ease_in_out_sine';
 
 export class NumberAnimation {
-
-  protected _val_1: number;
-  protected _val_2: number;
-  protected _duration: number;
+  protected _val_1 = 0;
+  protected _val_2 = 1;
+  protected _duration = 250;
   protected _reverse = false;
+
   protected _time = 0;
   protected _ease_method: IEaseMethod = ease_in_out_sine;
 
@@ -17,11 +17,15 @@ export class NumberAnimation {
   get ease_method(): IEaseMethod { return this._ease_method; }
   set ease_method(v: IEaseMethod) { this._ease_method = v; }
 
-  constructor(begin: number, end: number, duration: number, reverse = false) {
-    this._val_1 = Number.isNaN(begin) ? 0 : begin;
-    this._val_2 = Number.isNaN(end) ? 1 : end;
-    this._duration = Number.isNaN(duration) ? 250 : duration;
+  constructor(begin = 0, end = 1, duration = 250, reverse = false) {
+    this.set(begin, end, duration, reverse)
+  }
+  set(begin: number, end: number, duration: number, reverse: boolean): this {
+    this._val_1 = Number.isNaN(begin) ? this._val_1 : begin;
+    this._val_2 = Number.isNaN(end) ? this._val_2 : end;
+    this._duration = Number.isNaN(duration) ? this._duration : duration;
     this._reverse = reverse;
+    return this;
   }
   play(reverse = this._reverse) {
     this._reverse = reverse;

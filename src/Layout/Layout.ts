@@ -1,62 +1,45 @@
 import * as THREE from 'three';
+import LF2 from '../LF2/LF2';
+import { Condition, ValGetter } from '../LF2/loader/Condition';
+import { create_picture, image_pool, type TImageInfo } from '../LF2/loader/loader';
+import { NumberAnimation } from '../NumberAnimation';
+import { is_arr } from '../js_utils/is_arr';
+import { is_bool } from '../js_utils/is_bool';
+import { is_num } from '../js_utils/is_num';
+import { is_str } from '../js_utils/is_str';
 import type { ILayoutInfo } from './ILayoutInfo';
-import LF2 from './LF2/LF2';
-import { Condition, ValGetter } from './LF2/loader/Condition';
-import { create_picture, image_pool, type TImageInfo } from './LF2/loader/loader';
-import { NumberAnimation } from './NumberAnimation';
-import { is_arr } from './is_arr';
-import { is_bool } from './js_utils/is_bool';
-import { is_num } from './js_utils/is_num';
-import { is_str } from './js_utils/is_str';
+import { read_as_4_nums } from './utils/read_as_4_nums';
+import { read_as_2_nums } from './utils/read_as_2_nums';
+import { read_func_args_2 } from './utils/read_func_args';
+import { LayoutComponent } from './Component/LayoutComponent';
+import { PlayerKeyEditor } from './Component/PlayerKeyEditor';
 
-const read_as_2_nums = (v: string | number | number[] | null | undefined, a1: number, a2: number): [number, number] => {
-  if (!v) return [a1, a2];
-  if (is_num(v)) return [v, v];
-  if (is_str(v)) v = v.replace(/\s/g, '').split(',').map(v => Number(v))
-  else v = v.map(v => Number(v))
-  const [b1, b2] = v;
-  return [
-    Number.isNaN(b1) ? a1 : b1,
-    Number.isNaN(b2) ? a2 : b2
-  ]
-}
-const read_as_4_nums = (v: string | number[] | null | undefined, a1: number, a2: number, a3: number, a4: number): [number, number, number, number] => {
-  if (!v) return [a1, a2, a3, a4];
-  if (is_num(v)) return [v, v, v, v];
-  if (is_str(v)) v = v.replace(/\s/g, '').split(',').map(v => Number(v))
-  else v = v.map(v => Number(v))
-
-  const [b1, b2, b3, b4] = v;
-  return [
-    Number.isNaN(b1) ? a1 : b1,
-    Number.isNaN(b2) ? a2 : b2,
-    Number.isNaN(b3) ? a3 : b3,
-    Number.isNaN(b4) ? a4 : b4
-  ]
+export interface ILayoutCallback {
+  on_click?(): void;
 }
 
-export class Layout {
-  protected _opacity_animation?: NumberAnimation;
+export default class Layout {
+  protected _callbacks = new Set<ILayoutCallback>();
+  add_callback(callback: ILayoutCallback) { this._callbacks.add(callback); return this; }
+  del_callback(callback: ILayoutCallback) { this._callbacks.delete(callback); return this; }
+
+  protected _opacity_animation = new NumberAnimation();
   protected _root: Layout;
   protected _left_to_right: Layout[] = [];
   protected _top_to_bottom: Layout[] = [];
   protected _focused_item?: Layout;
-
+  protected _components = new Set<LayoutComponent>();
   set_opacity_animation(
-    to_max: boolean,
-    min: number = 0,
-    max: number = 1,
+    reverse: boolean,
+    begin: number = 0,
+    end: number = 1,
     duration: number = 150
   ) {
-    if (
-      min !== this._opacity_animation?.val_1 &&
-      max !== this._opacity_animation?.val_2 &&
-      duration !== this._opacity_animation?.duration
-    ) {
-      this._opacity_animation = new NumberAnimation(min, max, duration, !to_max).set_value(this._material?.opacity || 0)
-    }
-    if (this._opacity_animation.reverse === to_max)
-      this._opacity_animation.play(!to_max).set_value(this._material?.opacity || 0);
+    const anim = this._opacity_animation;
+    if (begin !== anim.val_1 && end !== anim.val_2 && duration !== anim.duration)
+      anim.set(begin, end, duration, reverse).set_value(this._material?.opacity || 0)
+    if (anim.reverse !== reverse)
+      anim.play(reverse).set_value(this._material?.opacity || 0);
   }
   protected _state: any = {}
   protected _visible = () => true;
@@ -95,38 +78,37 @@ export class Layout {
     this.dst_rect[2] = w;
     this.dst_rect[3] = h;
   }
-
   constructor(lf2: LF2, data: ILayoutInfo, parent?: Layout) {
     this.lf2 = lf2;
     this.data = Object.freeze(data);
     this.center = read_as_2_nums(this.data.center, 0, 0)
     this.pos = read_as_2_nums(this.data.pos, 0, 0)
-
     this.parent = parent;
     this._root = parent ? parent.root : this;
   }
-
   hit(x: number, y: number): boolean {
     const [l, t, w, h] = this.dst_rect;
     return l <= x && t <= y && l + w >= x && t + h >= y;
   }
-
   on_mouse_leave() {
   }
   on_mouse_enter() {
   }
   on_mount() {
     this._state = {};
-
     this.init_3d();
 
     for (const item of this.items)
-      item.on_mount()
+      item.on_mount();
 
     const { enter: a } = this.data.actions || {};
     if (a) this.handle_layout_action(a);
+
+    for (const c of this._components) c.on_mount?.();
   }
   on_unmount() {
+    for (const c of this._components) c.on_unmount?.();
+
     const { leave: a } = this.data.actions || {};
     if (a) this.handle_layout_action(a);
 
@@ -175,31 +157,50 @@ export class Layout {
   private async _cook_component() {
     const { component } = this.data
     if (!component) return;
+    const args = read_func_args_2(component, 'key_set');
+    if (args) {
+      const [, which, key_name] = args;
+      this._components.add(new PlayerKeyEditor(this).init(which, key_name))
+      return;
+    }
   }
 
   private async _cook_imgs(lf2: LF2) {
     const { img, flip_x, flip_y } = this.data;
-    const img_paths = !is_arr(img) ? [img] : img;
-    const img_infos: TImageInfo[] = [];
-    const [sx, sy, sw, sh] = read_as_4_nums(this.data.rect, 0, 0, 0, 0)
-    const preload = async (img_path: string) => {
-      const img_key = [img_path, sx, sy, sw, sh, flip_x ? 1 : 0, flip_y ? 1 : 0].join('_')
-      const img_info = image_pool.find(img_key);
-      if (img_info) return img_info;
-      const img_url = await lf2.import(img_path);
-      return await image_pool.load(img_key, img_url, (img, cvs, ctx) => {
-        const w = sw || img.width;
-        const h = sh || img.height;
-        cvs.width = w;
-        cvs.height = h;
-        ctx.drawImage(img, sx, sy, w, h, 0, 0, w, h);
-      });
-    };
-    for (const p of img_paths) {
-      if (!p) continue
-      img_infos.push(await preload(p))
-    }
-    this.img_infos = img_infos;
+    do {
+      if (!img) break;
+
+      const img_paths = !is_arr(img) ? [img] : img.filter(v => is_str(img));
+      if (!img_paths.length) break;
+
+      const img_infos: TImageInfo[] = [];
+      const [sx, sy, sw, sh] = read_as_4_nums(this.data.rect, 0, 0, 0, 0)
+      const preload = async (img_path: string) => {
+        const img_key = [img_path, sx, sy, sw, sh, flip_x ? 1 : 0, flip_y ? 1 : 0].join('_')
+        const img_info = image_pool.find(img_key);
+        if (img_info) return img_info;
+        const img_url = await lf2.import(img_path);
+        return await image_pool.load(img_key, img_url, (img, cvs, ctx) => {
+          const w = sw || img.width;
+          const h = sh || img.height;
+          cvs.width = w;
+          cvs.height = h;
+          ctx.drawImage(img, sx, sy, w, h, 0, 0, w, h);
+        });
+      };
+      for (const p of img_paths) {
+        if (!p) continue
+        img_infos.push(await preload(p))
+      }
+      this.img_infos = img_infos;
+
+    } while (0);
+
+    const { txt_fill, txt_stroke, txt } = this.data;
+    do {
+      if (!is_str(txt)) break;
+      this.img_infos = [await image_pool.load_text(txt, { fillStyle: txt_fill, strokeStyle: txt_stroke })]
+    } while (0);
   }
 
   private _cook_data(get_val: ValGetter<Layout>) {
@@ -316,6 +317,10 @@ export class Layout {
   on_click(): boolean {
     const { click } = this.data.actions ?? {};
     if (click) this.handle_layout_action(click)
+    for (const c of this._components) {
+      if (!c.on_click) continue;
+      if (c.on_click()) break;
+    }
     return !!click;
   }
 
@@ -336,6 +341,7 @@ export class Layout {
     const [, next_layout_id = null] = action.match(/goto\((.+)\)/) ?? []
     if (next_layout_id !== null) return this.lf2.set_layout(next_layout_id)
   }
+
   on_render(dt: number) {
     const sprite = this.sprite;
     if (sprite) {
@@ -363,22 +369,22 @@ export class Layout {
     const ud_items = this._top_to_bottom.filter(v => v.visible);
     const ud_lengh = ud_items.length;
     switch (k) {
-      case 'L': {
+      case 'L': { // 聚点移动至下一layout（向左）
         const idx = lr_items.findIndex(v => v === this._focused_item);
         this._focused_item = lr_items[(Math.max(idx, 0) + lr_lengh - 1) % lr_lengh];
         break;
       }
-      case 'R': {
+      case 'R': { // 聚点移动至下一layout（向右）
         const idx = lr_items.findIndex(v => v === this._focused_item);
         this._focused_item = lr_items[(idx + 1) % lr_lengh];
         break;
       }
-      case 'U': {
+      case 'U': { // 聚点移动至下一layout（向上）
         const idx = ud_items.findIndex(v => v === this._focused_item);
         this._focused_item = ud_items[(Math.max(idx, 0) + ud_lengh - 1) % ud_lengh];
         break;
       }
-      case 'D': {
+      case 'D': { // 聚点移动至下一layout（向下）
         const idx = ud_items.findIndex(v => v === this._focused_item);
         this._focused_item = ud_items[(idx + 1) % ud_lengh];
         break;

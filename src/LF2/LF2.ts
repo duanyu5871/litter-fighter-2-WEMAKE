@@ -1,10 +1,10 @@
 import JSZIP from 'jszip';
 import * as THREE from 'three';
-import { Layout } from '../Layout';
+import Layout from '../Layout/Layout';
 import { Log, Warn } from '../Log';
-import random_get from '../Utils/random_get';
-import random_take from '../Utils/random_take';
-import { is_arr } from '../is_arr';
+import random_get from '../js_utils/random_get';
+import random_take from '../js_utils/random_take';
+import { is_arr } from '../js_utils/is_arr';
 import { arithmetic_progression } from '../js_utils/arithmetic_progression';
 import { is_num } from '../js_utils/is_num';
 import { is_str } from '../js_utils/is_str';
@@ -24,26 +24,17 @@ import { SoundMgr } from './loader/SoundMgr';
 import { get_import_fallbacks, import_builtin } from './loader/make_import';
 import { new_id, new_team } from './new_id';
 import { random_in_range } from './random_in_range';
+import { PlayerInfo } from './PlayerInfo';
 
 const default_keys_list: TKeys[] = [
   { L: 'a', R: 'd', U: 'w', D: 's', a: 'r', j: 't', d: 'y' },
   { L: 'j', R: 'l', U: 'i', D: 'k', a: '[', j: ']', d: '\\' },
-  { L: 'arrowleft', R: 'arrowright', U: 'arrowup', D: 'arrowdown', a: '0', j: '.', d: 'Enter' },
+  { L: 'arrowleft', R: 'arrowright', U: 'arrowup', D: 'arrowdown', a: '0', j: '.', d: 'enter' },
   { L: '4', R: '6', U: '8', D: '5', a: '/', j: '*', d: '-' },
   { L: '', R: '', U: '', D: '', a: '', j: '', d: '' }
 ]
 const get_default_keys = (i: number) => default_keys_list[i] || default_keys_list[default_keys_list.length - 1];
 
-class PlayerInfo {
-  private _name: string;
-  private _keys: TKeys;
-  get name() { return this._name }
-  get keys() { return this._keys }
-  constructor(name: string, keys: TKeys) {
-    this._name = name;
-    this._keys = keys;
-  }
-}
 export interface ICallbacks {
   on_layout_changed(layout: Layout | undefined, prev_layout: Layout | undefined): void;
 }
@@ -68,12 +59,12 @@ export default class LF2 {
   readonly overlay: HTMLDivElement | null | undefined;
   private zip: JSZIP | undefined;
 
-  private _player_infos: PlayerInfo[] = [
-    new PlayerInfo('1', get_default_keys(0)),
-    new PlayerInfo('2', get_default_keys(1)),
-    new PlayerInfo('3', get_default_keys(2)),
-    new PlayerInfo('4', get_default_keys(3))
-  ]
+  private _player_infos = new Map([
+    ['1', new PlayerInfo('1', '1', get_default_keys(0))],
+    ['2', new PlayerInfo('2', '2', get_default_keys(1))],
+    ['3', new PlayerInfo('3', '3', get_default_keys(2))],
+    ['4', new PlayerInfo('4', '4', get_default_keys(3))]
+  ])
   get player_infos() { return this._player_infos }
 
   get players() { return this.world.players }
@@ -349,7 +340,7 @@ export default class LF2 {
   private _on_key_down = (e: KeyboardEvent) => {
     e.key.toLowerCase()
     for (const k of KEY_NAME_LIST) {
-      for (const player_info of this._player_infos) {
+      for (const [, player_info] of this._player_infos) {
         if (player_info.keys[k] === e.key.toLowerCase()) {
           this.layout?.on_player_key_down(k); return;
         }
@@ -533,7 +524,7 @@ export default class LF2 {
         const duration = Number(c);
         if (begin >= 0 && end >= 0) {
           const on_me = (item.state.mouse_on_me === '1' || item.focused_item === item)
-          item.set_opacity_animation(on_me, begin, end, duration);
+          item.set_opacity_animation(!on_me, begin, end, duration);
           return -1;
         }
         return 1;

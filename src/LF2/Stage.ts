@@ -1,9 +1,9 @@
-import random_get from "../Utils/random_get";
-import random_take from "../Utils/random_take";
 import { is_num } from "../js_utils/is_num";
 import { is_str } from "../js_utils/is_str";
 import { IBgData, IStageInfo, IStageObjectInfo, IStagePhaseInfo } from "../js_utils/lf2_type";
 import { Defines } from "../js_utils/lf2_type/defines";
+import random_get from "../js_utils/random_get";
+import random_take from "../js_utils/random_take";
 import { Background } from "./Background";
 import { factory } from "./Factory";
 import type { World } from "./World";

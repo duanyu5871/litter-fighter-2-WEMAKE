@@ -1,4 +1,4 @@
-import type { ICharacterData } from '../../../tool/src/js_utils/lf2_type';
+import type { ICharacterData } from '../../js_utils/lf2_type';
 import type LF2 from '../LF2';
 import Select, { ISelectProps } from './Select';
 
