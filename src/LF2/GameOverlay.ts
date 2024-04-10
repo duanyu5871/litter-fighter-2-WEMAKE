@@ -1,10 +1,11 @@
 import { is_num } from '../js_utils/is_num';
 import { Defines } from '../js_utils/lf2_type/defines';
+import { ILf2Callback } from './LF2';
 import Stage from './Stage';
 import type { IWorldCallbacks, World } from './World';
 import './game_overlay.css';
 const ele = document.createElement.bind(document);
-export class GameOverlay implements IWorldCallbacks {
+export class GameOverlay implements IWorldCallbacks, ILf2Callback {
   readonly world: World;
   readonly ele: HTMLDivElement | null | undefined;
   readonly fps_ele: HTMLElement;
@@ -46,8 +47,8 @@ export class GameOverlay implements IWorldCallbacks {
     this.cam_bar = ele('canvas');
     this.btn_free_cam = ele('button');
     this.init_btn_free_cam()
-
     this.init_camera_ctrl();
+    world.lf2.add_callbacks(this);
     if (!container) return;
     container.innerHTML = ''
     container.append(
@@ -157,5 +158,12 @@ export class GameOverlay implements IWorldCallbacks {
   on_disposed(world: World): void {
     if (this.update_timer) clearInterval(this.update_timer)
     this.update_timer = void 0;
+    world.lf2.del_callbacks(this);
+  }
+  on_loading_end() {
+    this.loading = '';
+  }
+  on_loading_content(content: string) {
+    this.loading = content;
   }
 }

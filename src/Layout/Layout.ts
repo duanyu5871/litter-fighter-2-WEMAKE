@@ -7,12 +7,11 @@ import { is_arr } from '../js_utils/is_arr';
 import { is_bool } from '../js_utils/is_bool';
 import { is_num } from '../js_utils/is_num';
 import { is_str } from '../js_utils/is_str';
-import type { ILayoutInfo } from './ILayoutInfo';
-import { read_as_4_nums } from './utils/read_as_4_nums';
-import { read_as_2_nums } from './utils/read_as_2_nums';
-import { read_func_args_2 } from './utils/read_func_args';
+import factory from './Component/Factory';
 import { LayoutComponent } from './Component/LayoutComponent';
-import { PlayerKeyEditor } from './Component/PlayerKeyEditor';
+import type { ILayoutInfo } from './ILayoutInfo';
+import { read_as_2_nums } from './utils/read_as_2_nums';
+import { read_as_4_nums } from './utils/read_as_4_nums';
 
 export interface ILayoutCallback {
   on_click?(): void;
@@ -157,11 +156,8 @@ export default class Layout {
   private async _cook_component() {
     const { component } = this.data
     if (!component) return;
-    const args = read_func_args_2(component, 'key_set');
-    if (args) {
-      const [, which, key_name] = args;
-      this._components.add(new PlayerKeyEditor(this).init(which, key_name))
-      return;
+    for (const c of factory.create_component(this, component)) {
+      this._components.add(c);
     }
   }
 

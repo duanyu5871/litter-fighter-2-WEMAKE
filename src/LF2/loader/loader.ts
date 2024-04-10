@@ -161,7 +161,7 @@ class ImagePool {
 export const image_pool = (window as any).image_pool = new ImagePool();
 
 
-const error_texture = () => {
+export const error_texture = () => {
   const texture = texture_loader.load(require('../checker.png'));
   texture.colorSpace = THREE.SRGBColorSpace;
   texture.minFilter = THREE.NearestFilter;

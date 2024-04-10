@@ -1,6 +1,9 @@
-export const read_func_args_2 = (str: string, func_name: string): RegExpMatchArray | null => {
-  const reg = new RegExp(func_name + "\\((.+),(.+)\\)");
+export const read_func_args = (str: string, func_name: string, min_arg_count: number = -1): string[] | null => {
+  const reg = new RegExp(func_name + "\\((.*)\\)");
   const result = str.match(reg);
   if (!result) return null;
-  return result;
+  const [, args_str] = result;
+  const args = args_str.split(',')
+  if (min_arg_count >= 0 && min_arg_count > args.length) return null;
+  return args;
 };

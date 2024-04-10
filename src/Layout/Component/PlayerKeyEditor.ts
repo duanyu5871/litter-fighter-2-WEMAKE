@@ -4,17 +4,33 @@ import { TKeyName } from '../../LF2/controller/BaseController';
 import { create_picture, image_pool } from '../../LF2/loader/loader';
 import { LayoutComponent } from './LayoutComponent';
 
-
 export class PlayerKeyEditor extends LayoutComponent implements IPlayerInfoCallback {
   protected _which?: string;
   protected _key_name?: string;
   protected _sprite?: THREE.Mesh;
   protected _material?: THREE.MeshBasicMaterial;
-  init(which: string, key_name: string): this {
+  override init(...args: string[]): this {
+    const [which = '', key_name = ''] = args;
     this._which = which;
     this._key_name = key_name;
     this._layout.lf2.player_infos.get(this._which)?.add_callback(this);
     return this;
+  }
+
+  override on_click() {
+    window.addEventListener('pointerdown', this._on_cancel, { once: true });
+    window.addEventListener('keydown', this._on_keydown, { once: true });
+    if (this._material) this._material.color = new THREE.Color(16 / 255, 32 / 255, 108 / 255)
+    return true;
+  }
+  override on_mount() {
+    this.update_sprite();
+    this._layout.lf2.player_infos.get(this._which!)?.add_callback(this);
+  }
+  override on_unmount(): void {
+    this._on_cancel();
+    this._sprite?.removeFromParent();
+    this._layout.lf2.player_infos.get(this._which!)?.del_callback(this);
   }
   on_key_changed(name: TKeyName, value: string) {
     this.update_sprite();
@@ -29,16 +45,6 @@ export class PlayerKeyEditor extends LayoutComponent implements IPlayerInfoCallb
     window.removeEventListener('keydown', this._on_keydown);
     window.removeEventListener('pointerdown', this._on_cancel);
     if (this._material) this._material.color = new THREE.Color('white')
-  }
-  on_click() {
-    window.addEventListener('pointerdown', this._on_cancel, { once: true });
-    window.addEventListener('keydown', this._on_keydown, { once: true });
-    if (this._material) this._material.color = new THREE.Color(16 / 255, 32 / 255, 108 / 255)
-    return true;
-  }
-  on_mount() {
-    this.update_sprite();
-    this._layout.lf2.player_infos.get(this._which!)?.add_callback(this);
   }
   async update_sprite() {
     this._sprite?.removeFromParent();
@@ -64,9 +70,5 @@ export class PlayerKeyEditor extends LayoutComponent implements IPlayerInfoCallb
       sprite.position.y = -this._layout.size[1] / 2
     }
   }
-  on_unmount(): void {
-    this._on_cancel();
-    this._sprite?.removeFromParent();
-    this._layout.lf2.player_infos.get(this._which!)?.del_callback(this);
-  }
 }
+

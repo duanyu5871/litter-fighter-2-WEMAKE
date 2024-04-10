@@ -35,11 +35,13 @@ const default_keys_list: TKeys[] = [
 ]
 const get_default_keys = (i: number) => default_keys_list[i] || default_keys_list[default_keys_list.length - 1];
 
-export interface ICallbacks {
-  on_layout_changed(layout: Layout | undefined, prev_layout: Layout | undefined): void;
+export interface ILf2Callback {
+  on_layout_changed?(layout: Layout | undefined, prev_layout: Layout | undefined): void;
+  on_loading_end?(): void;
+  on_loading_content?(content: string): void;
 }
 export default class LF2 {
-  private _callbacks = new Set<ICallbacks>();
+  private _callbacks = new Set<ILf2Callback>();
   private _disposers = new Set<() => void>();
   private _stage_infos: IStageInfo[] = [];
   private _disposed: boolean = false;
@@ -58,7 +60,6 @@ export default class LF2 {
   readonly world: World;
   readonly overlay: HTMLDivElement | null | undefined;
   private zip: JSZIP | undefined;
-
   private _player_infos = new Map([
     ['1', new PlayerInfo('1', '1', get_default_keys(0))],
     ['2', new PlayerInfo('2', '2', get_default_keys(1))],
@@ -545,15 +546,21 @@ export default class LF2 {
     this._layout = layout;
     this._layout?.on_mount();
     this.world.start_render();
-    for (const cbs of this._callbacks) cbs.on_layout_changed(layout, prev_layout);
+    for (const cbs of this._callbacks) cbs.on_layout_changed?.(layout, prev_layout);
   }
 
-  add_callbacks(callback: ICallbacks): this {
+  add_callbacks(callback: ILf2Callback): this {
     this._callbacks.add(callback)
     return this;
   }
-  del_callbacks(callback: ICallbacks): this {
+  del_callbacks(callback: ILf2Callback): this {
     this._callbacks.delete(callback);
     return this;
+  }
+  on_loading_content(content: string) {
+    for (const c of this._callbacks) c.on_loading_content?.(content);
+  }
+  on_loading_end() {
+    for (const c of this._callbacks) c.on_loading_end?.();
   }
 }

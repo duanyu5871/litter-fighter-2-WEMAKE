@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import './App.css';
 import { BlackgroundRow } from './BlackgroundRow';
 import Fullsreen from './Fullsreen';
-import LF2, { ICallbacks } from './LF2/LF2';
+import LF2, { ILf2Callback } from './LF2/LF2';
 import Select from './LF2/ui/Select';
 import { Button } from './LF2/ui/Select/Button';
 import { Input } from './LF2/ui/Select/Input';
@@ -134,7 +134,7 @@ function App() {
       set_layouts(layout_data_list)
     })
 
-    const cbs: ICallbacks = {
+    const cbs: ILf2Callback = {
       on_layout_changed: v => set_layout(v?.data.id)
     }
     lf2.add_callbacks(cbs);
