@@ -1,10 +1,9 @@
-import { ILf2Callback } from '../../LF2/LF2';
-import { create_picture, error_texture, image_pool } from '../../LF2/loader/loader';
-import { LayoutComponent } from './LayoutComponent';
 import * as THREE from 'three';
+import { ILf2Callback } from '../../LF2/LF2';
+import { create_picture, image_pool } from '../../LF2/loader/loader';
+import { LayoutComponent } from './LayoutComponent';
 
 export class LoadingFileNameDisplayer extends LayoutComponent implements ILf2Callback {
-
   override on_mount(): void {
     this._layout.lf2.add_callbacks(this)
   }
@@ -16,6 +15,7 @@ export class LoadingFileNameDisplayer extends LayoutComponent implements ILf2Cal
   }
   on_loading_end(): void {
     this.update_sprite('');
+    this._layout.lf2.set_layout('main_page')
   }
   protected _sprite: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial> | undefined
   protected async update_sprite(loading_content: string) {

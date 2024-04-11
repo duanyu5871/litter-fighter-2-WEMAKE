@@ -124,21 +124,25 @@ function App() {
   const [layouts, set_layouts] = useState<Readonly<ILayoutInfo>[]>([]);
 
   useEffect(() => {
-    if (lf2_ref.current) return;
     const canvas = _canvas_ref.current!;
     const overlay = _overlay_ref.current!;
-    const lf2 = (window as any).lf2 = lf2_ref.current = new LF2(canvas, overlay);
-    lf2.layouts().then((layouts) => {
-      const layout_data_list = layouts?.map(l => l.data) || []
-      layout_data_list.unshift({ id: '', name: 'close' })
-      set_layouts(layout_data_list)
-    })
+
+    if (!lf2_ref.current) {
+      const lf2 = (window as any).lf2 = lf2_ref.current = new LF2(canvas, overlay);
+      lf2.layouts().then((layouts) => {
+        const layout_data_list = layouts?.map(l => l.data) || []
+        layout_data_list.unshift({ id: '', name: 'close' })
+        set_layouts(layout_data_list)
+      })
+    }
 
     const cbs: ILf2Callback = {
-      on_layout_changed: v => set_layout(v?.data.id)
+      on_layout_changed: v => {
+        set_layout(v?.data.id)
+      }
     }
-    lf2.add_callbacks(cbs);
-    return () => { lf2.del_callbacks(cbs) }
+    lf2_ref.current.add_callbacks(cbs);
+    return () => { lf2_ref.current?.del_callbacks(cbs) }
   }, []);
 
   const on_click_load_local_zip = () => {
