@@ -132,17 +132,18 @@ function App() {
       lf2.layouts().then((layouts) => {
         const layout_data_list = layouts?.map(l => l.data) || []
         layout_data_list.unshift({ id: '', name: 'close' })
-        set_layouts(layout_data_list)
+        set_layouts(layout_data_list);
+        if (layout_data_list.length > 1)
+          set_layout(layout_data_list[1].id)
       })
     }
 
-    const cbs: ILf2Callback = {
-      on_layout_changed: v => {
-        set_layout(v?.data.id)
-      }
+    const callback: ILf2Callback = {
+      on_layout_changed: v => { set_layout(v?.data.id) },
+      on_loading_end: () => set_loaded(true)
     }
-    lf2_ref.current.add_callbacks(cbs);
-    return () => { lf2_ref.current?.del_callbacks(cbs) }
+    lf2_ref.current.add_callbacks(callback);
+    return () => { lf2_ref.current?.del_callbacks(callback) }
   }, []);
 
   const on_click_load_local_zip = () => {
@@ -153,7 +154,6 @@ function App() {
       .then(v => v[0])
       .then(v => JSZIP.loadAsync(v))
       .then(v => lf2.start(v))
-      .then(_ => set_loaded(true))
       .catch(e => Log.print('on_click_load_local_zip', e))
       .finally(() => set_loading(false))
   }
@@ -165,7 +165,6 @@ function App() {
       .then(v => v.blob())
       .then(v => JSZIP.loadAsync(v))
       .then(v => lf2.start(v))
-      .then(_ => set_loaded(true))
       .catch(e => Log.print('on_click_load_builtin_zip', e))
       .finally(() => set_loading(false))
   }
