@@ -8,6 +8,7 @@ import Select from './LF2/ui/Select';
 import { Button } from './LF2/ui/Select/Button';
 import { Input } from './LF2/ui/Select/Input';
 import { TextArea } from './LF2/ui/Select/TextArea';
+import { ILayoutInfo } from './Layout/ILayoutInfo';
 import { Log } from './Log';
 import { PlayerRow } from './PlayerRow';
 import open_file, { read_file } from './Utils/open_file';
@@ -16,8 +17,7 @@ import './init';
 import { arithmetic_progression } from './js_utils/arithmetic_progression';
 import lf2_dat_str_to_json from './js_utils/lf2_dat_translator/dat_2_json';
 import read_lf2_dat from './read_lf2_dat';
-import Layout from './Layout/Layout';
-import { ILayoutInfo } from './Layout/ILayoutInfo';
+import { useLocalNumber, useLocalString } from './useLocalStorage';
 
 const fullsreen = new Fullsreen();
 
@@ -206,13 +206,14 @@ function App() {
     })
   }
 
-  const [render_size_mode, set_render_size_mode] = useState<'fixed' | 'fill' | 'cover' | 'contain'>('fixed');
-  const [render_fixed_scale, set_render_fixed_scale] = useState<number>(1);
-  const [custom_render_fixed_scale, set_custom_render_fixed_scale] = useState<number>(1);
-  const [v_align, set_v_align] = useState<number>(0.5);
-  const [h_align, set_h_align] = useState<number>(0.5);
-  const [custom_h_align, set_custom_h_align] = useState<number>(0.5);
-  const [custom_v_align, set_custom_v_align] = useState<number>(0.5);
+
+  const [render_size_mode, set_render_size_mode] = useLocalString<'fixed' | 'fill' | 'cover' | 'contain'>('render_size_mode', 'fixed');
+  const [render_fixed_scale, set_render_fixed_scale] = useLocalNumber<number>('render_fixed_scale', 1);
+  const [custom_render_fixed_scale, set_custom_render_fixed_scale] = useLocalNumber<number>('custom_render_fixed_scale', 1);
+  const [v_align, set_v_align] = useLocalNumber<number>('v_align', 0.5);
+  const [h_align, set_h_align] = useLocalNumber<number>('h_align', 0.5);
+  const [custom_h_align, set_custom_h_align] = useLocalNumber<number>('custom_h_align', 0.5);
+  const [custom_v_align, set_custom_v_align] = useLocalNumber<number>('custom_v_align', 0.5);
 
   useEffect(() => {
     const ele = _game_contiainer_ref.current;

@@ -249,13 +249,8 @@ export default class LF2 {
   }
   private mouse_on_layouts = new Set<Layout>()
   on_click = (e: MouseEvent) => {
-    console.log(e);
     if (!this._layout) return;
-    const { offsetX: x, offsetY: y } = e;
-    const coords = new THREE.Vector2(
-      (x / this.canvas.width) * 2 - 1,
-      -(y / this.canvas.height) * 2 + 1
-    )
+    const coords = this.get_game_sceen_pos(e);
     const { sprite: object_3d } = this._layout;
     if (!object_3d) return;
     const raycaster = new THREE.Raycaster();
@@ -283,11 +278,7 @@ export default class LF2 {
 
   on_mouse_move = (e: MouseEvent) => {
     if (!this._layout) return;
-    const { offsetX: x, offsetY: y } = e;
-    const coords = new THREE.Vector2(
-      (x / this.canvas.width) * 2 - 1,
-      -(y / this.canvas.height) * 2 + 1
-    )
+    const coords = this.get_game_sceen_pos(e);
     const { sprite: object_3d } = this._layout;
     if (!object_3d) return;
     const raycaster = new THREE.Raycaster();
@@ -312,13 +303,18 @@ export default class LF2 {
     this.mouse_on_layouts = mouse_on_layouts;
   }
 
-
-  private _on_pointer_down = (e: PointerEvent) => {
+  get_game_sceen_pos(e: PointerEvent | MouseEvent) {
     const { offsetX: x, offsetY: y } = e;
-    const coords = new THREE.Vector2(
-      (x / this.canvas.width) * 2 - 1,
-      -(y / this.canvas.height) * 2 + 1
+    const { width, height } = this.canvas.getBoundingClientRect();
+
+    return new THREE.Vector2(
+      (x / width) * 2 - 1,
+      -(y / height) * 2 + 1
     )
+
+  }
+  private _on_pointer_down = (e: PointerEvent) => {
+    const coords = this.get_game_sceen_pos(e);
     const raycaster = new THREE.Raycaster()
     raycaster.setFromCamera(coords, this.world.camera)
     const intersections = raycaster.intersectObjects(this.world.scene.children);

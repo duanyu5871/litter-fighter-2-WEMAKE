@@ -15,14 +15,9 @@ export class LoadingFileNameDisplayer extends LayoutComponent implements ILf2Cal
     this.update_sprite(content);
   }
   on_loading_end(): void {
-    this.update_sprite('end');
-    console.log(this._layout)
+    this.update_sprite('');
   }
   protected _sprite: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial> | undefined
-  // = new THREE.Mesh(
-  //   new THREE.PlaneGeometry(1, 1),
-  //   new THREE.MeshBasicMaterial({ transparent: true, map: error_texture() })
-  // )
   protected async update_sprite(loading_content: string) {
     if (!loading_content) {
       this._sprite?.removeFromParent();
@@ -38,7 +33,7 @@ export class LoadingFileNameDisplayer extends LayoutComponent implements ILf2Cal
     const [cx, cy] = this._layout.center
     const img = await image_pool.load_text(loading_content, { font, fillStyle, strokeStyle });
     const texture = create_picture(img.key, img).data.texture
-    const geo = new THREE.PlaneGeometry(img.w, img.h).translate(-0.5 * img.w * cx, 0.5 * img.h * cy, 0);
+    const geo = new THREE.PlaneGeometry(img.w, img.h).translate(img.w * (0.5 - cx), img.h * (cy - 0.5), 0);
     if (!this._sprite) {
       this._sprite = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ transparent: true, map: texture }))
       this._layout.sprite.add(this._sprite);
