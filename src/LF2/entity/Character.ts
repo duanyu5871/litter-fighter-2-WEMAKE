@@ -8,7 +8,6 @@ import type { World } from '../World';
 import { ICube } from '../World';
 import { BaseController } from '../controller/BaseController';
 import { InvalidController } from '../controller/InvalidController';
-import { create_picture_by_img_key, image_pool } from '../loader/loader';
 import { CHARACTER_STATES } from '../state/character';
 import { Ball } from './Ball';
 import { Entity, get_team_shadow_color, get_team_text_color } from './Entity';
@@ -40,8 +39,9 @@ export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, IChar
     const fillStyle = get_team_text_color(team)
     const strokeStyle = get_team_shadow_color(team);
     if (!name) return;
-    image_pool.load_text(name, { strokeStyle, fillStyle })
-      .then((i) => create_picture_by_img_key('', i.key))
+
+    this.world.lf2.img_mgr.load_text(name, { strokeStyle, fillStyle })
+      .then((i) => this.world.lf2.img_mgr.create_picture_by_img_key('', i.key))
       .then((p) => {
         if (name !== this._name) return;
         if (team !== this._team) return;

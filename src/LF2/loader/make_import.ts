@@ -35,8 +35,8 @@ const fetch_not_html = (url: string) => fetch(url)
       return URL.createObjectURL(await v.blob())
     }
     if (lc_url.endsWith('.ogg')) {
-      if (!content_type.startsWith('application/ogg'))
-        throw new Error(`Content-Type got ${content_type}, expected 'application/ogg'`)
+      if (!content_type.startsWith('audio/ogg'))
+        throw new Error(`Content-Type got ${content_type}, expected 'audio/ogg'`)
       return URL.createObjectURL(await v.blob())
     }
     return await v.blob()
@@ -53,7 +53,6 @@ async function import_from_fetch(path: string): Promise<any> {
 
 export async function import_builtin<T = any>(path: string): Promise<T> {
   try { return await import_from_fetch(path) } catch { }
-  try { return await import('../../lf2_data/' + path).then(v => v.default) } catch { }
   try { return await import('../../lf2_built_in_data/' + path).then(v => v.default) } catch { }
   throw new Error(`import_builtin(path), failed to import resource, path: ${path}`)
 }

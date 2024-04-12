@@ -3,7 +3,6 @@ import { IBallData, IBgData, ICharacterData, IDataMap, IEntityData, IGameObjData
 import { map, traversal } from '../../js_utils/traversal';
 import LF2 from '../LF2';
 import { TData } from '../entity/Entity';
-import { image_pool } from './loader';
 // import { make_require } from './make_require';
 import { cook_frame } from './preprocess_frame';
 
@@ -51,7 +50,7 @@ export default class DatMgr {
 
     if (!('frames' in data)) return data;
     const { frames, base: { files } } = data;
-    const jobs = map(files, (_, v) => image_pool.load_by_pic_info(v, _ => this.lf2.import(v.path)))
+    const jobs = map(files, (_, v) => this.lf2.img_mgr.load_by_pic_info(v, _ => this.lf2.import(v.path)))
     await Promise.all(jobs);
     traversal(frames, (_, frame) => cook_frame(this.lf2, data, frame));
     return data;
@@ -78,6 +77,7 @@ export default class DatMgr {
     this._data_map.set(_index_id, data);
   }
   async load() {
+    this.lf2.on_loading_start();
     this._cancelled = false;
     const { objects, backgrounds } = await this.lf2.import('data/data.json');
     if (this._cancelled) throw new Error('cancelled')

@@ -49,6 +49,7 @@ body {
   background-color: #5A73D6;
 }
 
+
 button,
 input,
 select,
@@ -95,6 +96,15 @@ input:active {
   border-color: #FFFFFF;
   background-color: #5A73D655;
 }
+
+button:disabled,
+input:disabled {
+  color: #384888;
+  border: 2px #384888 solid;
+  background-color: transparent;
+  cursor: not-allowed;
+}
+
 
 button:focus-within,
 input:focus-within,

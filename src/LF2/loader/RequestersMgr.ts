@@ -1,0 +1,21 @@
+export default class RequestersMgr<V> {
+  readonly values = new Map<string, V>();
+  protected _f_map = new Map<string, [(v: V) => void, (reason: any) => void][]>();
+  get(key: string, job: () => Promise<V>): Promise<V> {
+    if (this.values.has(key))
+      return Promise.resolve(this.values.get(key)!);
+    return new Promise((a, b) => {
+      const has_job = this._f_map.has(key);
+      !has_job ?
+        this._f_map.set(key, [[a, b]]) :
+        this._f_map.get(key)?.push([a, b]);
+      if (has_job) return;
+      job().then(v => {
+        this.values.set(key, v);
+        for (const f of this._f_map.get(key)!) f[0](v);
+      }).catch(v => {
+        for (const f of this._f_map.get(key)!) f[1](v);
+      });
+    });
+  }
+}

@@ -78,7 +78,7 @@ export class FrameAnimater<
   constructor(world: World, data: D) {
     this.data = data;
     this.world = world;
-    this.pictures = create_pictures(data);
+    this.pictures = create_pictures(world.lf2, data);
 
     const material = new THREE.SpriteMaterial({
       map: this.pictures.get('0')?.texture,
@@ -241,7 +241,7 @@ export class FrameAnimater<
   }
 
   dispose(): void {
-    for(const f of this._disposers) f();
+    for (const f of this._disposers) f();
     this.sprite.removeFromParent();
   }
 }

@@ -1,6 +1,7 @@
 import { is_str } from "../../js_utils/is_str";
 import { Defines } from "../../js_utils/lf2_type/defines";
 import type LF2 from "../LF2";
+import RequestersMgr from "../loader/RequestersMgr";
 import { IPlayer, Src } from "./IPlayer";
 
 export default class ModernPlayer implements IPlayer {
@@ -9,26 +10,26 @@ export default class ModernPlayer implements IPlayer {
   protected _req_id: number = 0;
   protected _prev_bgm_url: string | null = null;
   protected _bgm_src_node: AudioBufferSourceNode | null = null;
-  protected _map = new Map<string, AudioBuffer>();
+
+  protected _r = new RequestersMgr<AudioBuffer>();
   constructor(lf2: LF2) {
     this.lf2 = lf2;
   }
 
   has(name: string): boolean {
-    return this._map.has(name);
+    return this._r.values.has(name);
   }
 
   preload(name: string, src: Src) {
-    this.lf2.on_loading_content(`loading sound: ${name}`, 0);
-    return (async () => {
+    return this._r.get(name, async () => {
+      this.lf2.on_loading_content(`loading sound: ${name}`, 0);
       const s = await src;
       const url = is_str(s) ? s : URL.createObjectURL(s);
-      return fetch(url)
+      const buf = await fetch(url)
         .then(buf => buf.arrayBuffer())
-        .then(buf => this.ctx.decodeAudioData(buf))
-        .then(buf => this._map.set(name, buf));
-    })().finally(() => {
+        .then(buf => this.ctx.decodeAudioData(buf));
       this.lf2.on_loading_content(`loading sound: ${name}`, 100);
+      return buf
     })
   }
 
@@ -45,7 +46,7 @@ export default class ModernPlayer implements IPlayer {
 
     const req_id = this._req_id;
     const ctx = this.ctx;
-    const buf = this._map.get(name);
+    const buf = this._r.values.get(name);
     const start = (buf: AudioBuffer) => {
       this._bgm_src_node = ctx.createBufferSource();
       this._bgm_src_node.buffer = buf;
@@ -64,7 +65,7 @@ export default class ModernPlayer implements IPlayer {
   }
 
   play(name: string, x?: number, y?: number, z?: number) {
-    const buf = this._map.get(name);
+    const buf = this._r.values.get(name);
     if (!buf) return;
 
     const edge_w = Defines.OLD_SCREEN_WIDTH / 2;

@@ -4,7 +4,7 @@ import { IBgLayerInfo } from "../js_utils/lf2_type/IBgLayerInfo";
 import { Defines } from '../js_utils/lf2_type/defines';
 import { BgLayer } from './BgLayer';
 import { World } from './World';
-import { TPictureInfo, create_picture, error_picture_info, image_pool } from './loader/loader';
+import { TPictureInfo, create_picture, error_picture_info } from './loader/loader';
 
 export interface ILayerUserData {
   x: number;
@@ -84,7 +84,7 @@ export class Background {
   }
 
   private async get_texture(key: string, path: string): Promise<THREE.Texture> {
-    const img_info = await image_pool.load(key, path);
+    const img_info = await this.world.lf2.img_mgr.load_img(key, path);
     const pic_info = await create_picture(key, img_info);
     return pic_info.texture;
   }
@@ -95,7 +95,7 @@ export class Background {
     try {
       const path = await this.world.lf2.import(key);
       if (!path) return error_picture_info(key);
-      const img_info = await image_pool.load(key, path)
+      const img_info = await this.world.lf2.img_mgr.load_img(key, path)
       const pic_info = await create_picture(key, img_info)
       return pic_info;
     } catch (e) {

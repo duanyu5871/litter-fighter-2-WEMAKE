@@ -2,29 +2,30 @@ import JSZIP from 'jszip';
 import * as THREE from 'three';
 import Layout from '../Layout/Layout';
 import { Log, Warn } from '../Log';
-import random_get from '../js_utils/random_get';
-import random_take from '../js_utils/random_take';
-import { is_arr } from '../js_utils/is_arr';
 import { arithmetic_progression } from '../js_utils/arithmetic_progression';
+import { is_arr } from '../js_utils/is_arr';
 import { is_num } from '../js_utils/is_num';
 import { is_str } from '../js_utils/is_str';
 import { ICharacterData, IStageInfo, IWeaponData, TFace } from '../js_utils/lf2_type';
 import { Defines } from '../js_utils/lf2_type/defines';
+import random_get from '../js_utils/random_get';
+import random_take from '../js_utils/random_take';
 import { BgLayer } from './BgLayer';
+import { PlayerInfo } from './PlayerInfo';
 import Stage from './Stage';
 import { World } from './World';
-import { KEY_NAME_LIST, TKeyName, TKeys } from './controller/BaseController';
+import { KEY_NAME_LIST, TKeys } from './controller/BaseController';
 import { PlayerController } from "./controller/LocalHuman";
 import './entity/Ball';
 import { Character } from './entity/Character';
 import { Entity } from './entity/Entity';
 import { Weapon } from './entity/Weapon';
 import DatMgr from './loader/DatMgr';
-import SoundMgr from './sound/SoundMgr';
+import { ImageMgr } from './loader/loader';
 import { get_import_fallbacks, import_builtin } from './loader/make_import';
 import { new_id, new_team } from './new_id';
 import { random_in_range } from './random_in_range';
-import { PlayerInfo } from './PlayerInfo';
+import SoundMgr from './sound/SoundMgr';
 
 const default_keys_list: TKeys[] = [
   { L: 'a', R: 'd', U: 'w', D: 's', a: 'r', j: 't', d: 'y' },
@@ -37,6 +38,7 @@ const get_default_keys = (i: number) => default_keys_list[i] || default_keys_lis
 
 export interface ILf2Callback {
   on_layout_changed?(layout: Layout | undefined, prev_layout: Layout | undefined): void;
+  on_loading_start?(): void;
   on_loading_end?(): void;
   on_loading_content?(content: string, progress: number): void;
 }
@@ -121,11 +123,13 @@ export default class LF2 {
   readonly weapons: Record<string, (num: number, team?: number) => void> = {}
   readonly dat_mgr: DatMgr;
   readonly sound_mgr: SoundMgr;
+  readonly img_mgr: ImageMgr
   constructor(canvas: HTMLCanvasElement, overlay?: HTMLDivElement | null) {
     this.canvas = canvas;
     this.world = new World(this, canvas, overlay);
     this.dat_mgr = new DatMgr(this);
     this.sound_mgr = new SoundMgr(this);
+    this.img_mgr = new ImageMgr(this);
     this.overlay = overlay;
     this.canvas.addEventListener('click', this.on_click);
     this.canvas.addEventListener('mousemove', this.on_mouse_move);
@@ -560,5 +564,8 @@ export default class LF2 {
   }
   on_loading_end() {
     for (const c of this._callbacks) c.on_loading_end?.();
+  }
+  on_loading_start() {
+    for (const c of this._callbacks) c.on_loading_start?.();
   }
 }

@@ -35,8 +35,8 @@ function App() {
   const [control_panel, set_control_panel] = useLocalBoolean('control_panel', true);
   const [loading, set_loading] = useState(false);
   const [loaded, set_loaded] = useState(false);
-
   const [paused, set_paused] = useState(false);
+
   useEffect(() => {
     const lf2 = lf2_ref.current;
     if (!lf2) return;
@@ -137,10 +137,15 @@ function App() {
           set_layout(layout_data_list[1].id)
       })
     }
-
     const callback: ILf2Callback = {
       on_layout_changed: v => { set_layout(v?.data.id) },
-      on_loading_end: () => set_loaded(true)
+      on_loading_start: () => {
+        set_loading(true);
+      },
+      on_loading_end: () => {
+        set_loaded(true);
+        set_loading(false);
+      }
     }
     lf2_ref.current.add_callbacks(callback);
     return () => { lf2_ref.current?.del_callbacks(callback) }
@@ -149,24 +154,17 @@ function App() {
   const on_click_load_local_zip = () => {
     const lf2 = lf2_ref.current;
     if (!lf2) return;
-    set_loading(true);
     open_file({ accept: '.zip' })
       .then(v => v[0])
       .then(v => JSZIP.loadAsync(v))
       .then(v => lf2.start(v))
       .catch(e => Log.print('on_click_load_local_zip', e))
-      .finally(() => set_loading(false))
   }
-  const on_click_load_builtin_zip = () => {
-    const lf2 = lf2_ref.current;
-    if (!lf2) return;
-    set_loading(true);
-    fetch('lf2.data.zip')
-      .then(v => v.blob())
-      .then(v => JSZIP.loadAsync(v))
-      .then(v => lf2.start(v))
-      .catch(e => Log.print('on_click_load_builtin_zip', e))
-      .finally(() => set_loading(false))
+  const on_click_download_zip = () => {
+    const a = document.createElement('a');
+    a.href = 'lf2.data.zip';
+    a.download = 'lf2.data.zip';
+    a.click();
   }
   const on_click_cleaup = () => {
     const lf2 = lf2_ref.current;
@@ -178,11 +176,7 @@ function App() {
   const on_click_load_builtin = async () => {
     const lf2 = lf2_ref.current;
     if (!lf2) return;
-    set_loading(true);
-    lf2.start()
-      .then(_ => set_loaded(true))
-      .catch(e => Log.print('on_click_load_builtin', e))
-      .finally(() => set_loading(false))
+    lf2.set_layout('loading')
   }
   const open_dat = async () => {
     const [file] = await open_file({ accept: '.dat' });
@@ -190,7 +184,6 @@ function App() {
     return read_lf2_dat(buf)
   }
   const on_click_read_dat = () => {
-    set_loading(true);
     open_dat().then((str) => {
       if (_text_area_dat_ref.current)
         _text_area_dat_ref.current.value = str
@@ -204,8 +197,6 @@ function App() {
         _text_area_json_ref.current.value = JSON.stringify(data, null, 2).replace(/\\\\/g, '/')
     }).catch(e => {
       console.error(e)
-    }).finally(() => {
-      set_loading(false)
     })
   }
 
@@ -339,9 +330,9 @@ function App() {
                 }
               </div>
           }
-          <Button onClick={on_click_load_local_zip} disabled={loading || loaded}>加载本地ZIP</Button>
-          <Button onClick={on_click_load_builtin_zip} disabled={loading || loaded}>加载默认ZIP</Button>
-          <Button onClick={on_click_load_builtin} disabled={loading || loaded}>加载默认数据</Button>
+          <Button onClick={on_click_download_zip}>下载数据包</Button>
+          <Button onClick={on_click_load_local_zip} disabled={loading || loaded}>加载数据包</Button>
+          <Button onClick={on_click_load_builtin} disabled={loading || loaded}>加载内置数据</Button>
           <Button onClick={on_click_cleaup} disabled={loading || !loaded}>清空数据</Button>
           <Button onClick={() => set_editor_closed(false)}>dat viewer</Button>
         </div>

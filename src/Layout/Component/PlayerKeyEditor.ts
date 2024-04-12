@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { IPlayerInfoCallback } from '../../LF2/PlayerInfo';
 import { TKeyName } from '../../LF2/controller/BaseController';
-import { create_picture, image_pool } from '../../LF2/loader/loader';
+import { create_picture } from '../../LF2/loader/loader';
 import { LayoutComponent } from './LayoutComponent';
 
 export class PlayerKeyEditor extends LayoutComponent implements IPlayerInfoCallback {
@@ -13,7 +13,7 @@ export class PlayerKeyEditor extends LayoutComponent implements IPlayerInfoCallb
     const [which = '', key_name = ''] = args;
     this._which = which;
     this._key_name = key_name;
-    this._layout.lf2.player_infos.get(this._which)?.add_callback(this);
+    this.layout.lf2.player_infos.get(this._which)?.add_callback(this);
     return this;
   }
 
@@ -25,12 +25,12 @@ export class PlayerKeyEditor extends LayoutComponent implements IPlayerInfoCallb
   }
   override on_mount() {
     this.update_sprite();
-    this._layout.lf2.player_infos.get(this._which!)?.add_callback(this);
+    this.layout.lf2.player_infos.get(this._which!)?.add_callback(this);
   }
   override on_unmount(): void {
     this._on_cancel();
     this._sprite?.removeFromParent();
-    this._layout.lf2.player_infos.get(this._which!)?.del_callback(this);
+    this.layout.lf2.player_infos.get(this._which!)?.del_callback(this);
   }
   on_key_changed(name: TKeyName, value: string) {
     this.update_sprite();
@@ -39,7 +39,7 @@ export class PlayerKeyEditor extends LayoutComponent implements IPlayerInfoCallb
     if ('escape' === e.key.toLowerCase()) return this._on_cancel();
     if (this._which === void 0) return;
     if (this._key_name === void 0) return;
-    this._layout.lf2.player_infos.get(this._which)?.set_key(this._key_name, e.key).save();
+    this.layout.lf2.player_infos.get(this._which)?.set_key(this._key_name, e.key).save();
   };
   private _on_cancel = () => {
     window.removeEventListener('keydown', this._on_keydown);
@@ -52,11 +52,11 @@ export class PlayerKeyEditor extends LayoutComponent implements IPlayerInfoCallb
     this._material = void 0;
     if (this._which === void 0) return;
     if (this._key_name === void 0) return;
-    if (!this._layout.sprite) return;
-    const player_info = this._layout.lf2.player_infos.get(this._which);
+    if (!this.layout.sprite) return;
+    const player_info = this.layout.lf2.player_infos.get(this._which);
     if (player_info) {
       const keycode = player_info.keys[this._key_name as TKeyName];
-      const img = await image_pool.load_text(keycode ?? '', { font: '16px Arial' });
+      const img = await this.layout.lf2.img_mgr.load_text(keycode ?? '', { font: '16px Arial' });
       const geo = new THREE.PlaneGeometry(img.w, img.h);
       const params: THREE.MeshBasicMaterialParameters = {
         transparent: true,
@@ -65,9 +65,9 @@ export class PlayerKeyEditor extends LayoutComponent implements IPlayerInfoCallb
       const material = this._material = new THREE.MeshBasicMaterial(params);
       const sprite = this._sprite = new THREE.Mesh(geo, material);
 
-      this._layout.sprite.add(sprite);
-      sprite.position.x = this._layout.size[0] / 2
-      sprite.position.y = -this._layout.size[1] / 2
+      this.layout.sprite.add(sprite);
+      sprite.position.x = this.layout.size[0] / 2
+      sprite.position.y = -this.layout.size[1] / 2
     }
   }
 }

@@ -1,9 +1,9 @@
 import Layout from '../Layout';
 
 export class LayoutComponent {
-  protected _layout: Layout;
+  readonly layout: Layout;
   constructor(layout: Layout) {
-    this._layout = layout;
+    this.layout = layout;
   }
   init(...args: string[]): this { return this; }
   on_click?(): boolean | void;

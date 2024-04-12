@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import LF2 from '../LF2/LF2';
 import { Condition, ValGetter } from '../LF2/loader/Condition';
-import { create_picture, image_pool, type TImageInfo } from '../LF2/loader/loader';
+import { create_picture, type TImageInfo } from '../LF2/loader/loader';
 import { NumberAnimation } from '../NumberAnimation';
 import { is_arr } from '../js_utils/is_arr';
 import { is_bool } from '../js_utils/is_bool';
@@ -173,10 +173,10 @@ export default class Layout {
       const [sx, sy, sw, sh] = read_as_4_nums(this.data.rect, 0, 0, 0, 0)
       const preload = async (img_path: string) => {
         const img_key = [img_path, sx, sy, sw, sh, flip_x ? 1 : 0, flip_y ? 1 : 0].join('_')
-        const img_info = image_pool.find(img_key);
+        const img_info = this.lf2.img_mgr.find(img_key);
         if (img_info) return img_info;
         const img_url = await lf2.import(img_path);
-        return await image_pool.load(img_key, img_url, (img, cvs, ctx) => {
+        return await this.lf2.img_mgr.load_img(img_key, img_url, (img, cvs, ctx) => {
           const w = sw || img.width;
           const h = sh || img.height;
           cvs.width = w;
@@ -195,7 +195,7 @@ export default class Layout {
     const { txt_fill, txt_stroke, txt } = this.data;
     do {
       if (!is_str(txt)) break;
-      this.img_infos = [await image_pool.load_text(txt, { fillStyle: txt_fill, strokeStyle: txt_stroke })]
+      this.img_infos = [await this.lf2.img_mgr.load_text(txt, { fillStyle: txt_fill, strokeStyle: txt_stroke })]
     } while (0);
   }
 

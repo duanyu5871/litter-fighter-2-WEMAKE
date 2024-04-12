@@ -4,10 +4,11 @@ import { create_img_ele } from '../../Utils/create_img_ele';
 import { get_blob } from '../../Utils/get_blob';
 import { IEntityPictureInfo } from '../../js_utils/lf2_type';
 import { IPictureInfo } from '../../types/IPictureInfo';
-
+import type LF2 from "../LF2";
+import RequestersMgr from "./RequestersMgr";
+export type Src = string | Blob | Promise<string | Blob>;
 export type TPictureInfo = IPictureInfo<THREE.Texture>;
 export type TDataPromise<T> = Promise<T> & { data: T }
-
 export function make_data_promise_resolve<T>(data: T): TDataPromise<T> {
   return Object.assign(Promise.resolve(data), { data })
 }
@@ -34,8 +35,13 @@ export interface TxtStyle {
   strokeStyle?: string;
   lineWidth?: number;
 }
-class ImagePool {
-  protected _map = new Map<string, TImageInfo>();
+
+export class ImageMgr {
+  readonly lf2: LF2;
+  constructor(lf2: LF2) {
+    this.lf2 = lf2
+  }
+  protected _requesters = new RequestersMgr<TImageInfo>();
   protected _paint(
     img: HTMLImageElement,
     cvs: HTMLCanvasElement,
@@ -92,25 +98,28 @@ class ImagePool {
     const url = URL.createObjectURL(blob);
     return { key, url, w, h, img: cvs }
   }
+
   find(key: string) {
-    return this._map.get(key)
+    return this._requesters.values.get(key)
   }
-  async load_text(text: string, style: TxtStyle = {}): Promise<TImageInfo> {
+  find_by_pic_info(f: IEntityPictureInfo) {
+    return this._requesters.values.get(this._gen_key(f))
+  }
+
+  load_text(text: string, style: TxtStyle = {}): Promise<TImageInfo> {
     const key = new SparkMD5().append(text).append(JSON.stringify(style)).end()
-
-    let info = this._map.get(key);
-    if (info) return info;
-    info = await this._make_text_info(key, text, style);
-    this._map.set(key, info);
-    return info
+    return this._requesters.get(key, async () => {
+      return await this._make_text_info(key, text, style);
+    })
   }
 
-  async load(key: string, src: string | Blob | Promise<string | Blob>, paint?: PaintFunc): Promise<TImageInfo> {
-    let info = this._map.get(key);
-    if (info) return info;
-    info = await this._make_info(key, src, paint);
-    this._map.set(key, info);
-    return info
+  load_img(key: string, src: Src, paint?: PaintFunc): Promise<TImageInfo> {
+    return this._requesters.get(key, async () => {
+      this.lf2.on_loading_content(`loading img: ${key}`, 0);
+      const info = await this._make_info(key, src, paint);
+      this.lf2.on_loading_content(`loading img: ${key}`, 100);
+      return info
+    })
   }
 
   protected _gen_key = (f: IEntityPictureInfo) => `${f.path}_${f.w}_${f.h}_${f.row}_${f.col}`;
@@ -151,16 +160,40 @@ class ImagePool {
       }
     }
 
-    return this.load(key, src, paint);
+    return this.load_img(key, src, paint);
   }
 
-  find_by_pic_info(f: IEntityPictureInfo) {
-    return this._map.get(this._gen_key(f))
+
+  create_picture_by_img_key(id: string, img_key: string) {
+    const img_info = this.find(img_key);
+    const picture = error_picture_info(id);
+    if (!img_info) {
+      return make_data_promise_reject(picture, new Error("[create_picture_by_img_key] failed, image info not found in image pool."));
+    }
+    picture.cell_w = picture.i_w = img_info.w
+    picture.cell_h = picture.i_h = img_info.h
+    return create_picture(id, img_info, picture);
+  }
+
+  create_picture_by_pic_info(id: string, pic_info: IEntityPictureInfo): TDataPromise<TPictureInfo> {
+    const img_info = this.find_by_pic_info(pic_info);
+    const { w: cell_w, h: cell_h, row, col } = pic_info;
+    const picture: TPictureInfo = {
+      id,
+      i_w: 0, i_h: 0,
+      cell_w: cell_w + 1,
+      cell_h: cell_h + 1,
+      row, col,
+      texture: error_texture()
+    };
+    if (!img_info) {
+      return make_data_promise_reject(picture, new Error("[create_picture_by_pic_info] failed, image info not found in image pool."));
+    }
+    return create_picture(id, img_info, picture);
   }
 }
-export const image_pool = (window as any).image_pool = new ImagePool();
 
-
+// export const image_pool = (window as any).image_pool = new ImagePool();
 export const error_texture = () => {
   const texture = texture_loader.load(require('../checker.png'));
   texture.colorSpace = THREE.SRGBColorSpace;
@@ -200,33 +233,6 @@ export function error_picture_info(id: string): TPictureInfo {
     id, i_w: 0, i_h: 0, cell_w: 0, cell_h: 0, row: 1, col: 1,
     texture: error_texture()
   }
-}
-export function create_picture_by_img_key(id: string, img_key: string) {
-  const img_info = image_pool.find(img_key);
-  const picture = error_picture_info(id);
-  if (!img_info) {
-    return make_data_promise_reject(picture, new Error("[create_picture_by_img_key] failed, image info not found in image pool."));
-  }
-  picture.cell_w = picture.i_w = img_info.w
-  picture.cell_h = picture.i_h = img_info.h
-  return create_picture(id, img_info, picture);
-}
-
-export function create_picture_by_pic_info(id: string, pic_info: IEntityPictureInfo): TDataPromise<TPictureInfo> {
-  const img_info = image_pool.find_by_pic_info(pic_info);
-  const { w: cell_w, h: cell_h, row, col } = pic_info;
-  const picture: TPictureInfo = {
-    id,
-    i_w: 0, i_h: 0,
-    cell_w: cell_w + 1,
-    cell_h: cell_h + 1,
-    row, col,
-    texture: error_texture()
-  };
-  if (!img_info) {
-    return make_data_promise_reject(picture, new Error("[create_picture_by_pic_info] failed, image info not found in image pool."));
-  }
-  return create_picture(id, img_info, picture);
 }
 
 
