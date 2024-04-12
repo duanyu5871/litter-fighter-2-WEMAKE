@@ -1,5 +1,5 @@
 {
-  "name": "loading_page",
+  "name": "加载页",
   "id": "loading",
   "bg_color": "rgb(16, 32, 108)",
   "key_press_actions": [

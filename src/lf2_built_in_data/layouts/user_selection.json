@@ -1,5 +1,5 @@
 {
-  "name": "user_selection_page",
+  "name": "角色选择页",
   "id": "user_selection",
   "bg_color": "rgb(0, 0, 0)",
   "key_press_actions": [

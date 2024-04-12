@@ -17,7 +17,7 @@ import './init';
 import { arithmetic_progression } from './js_utils/arithmetic_progression';
 import lf2_dat_str_to_json from './js_utils/lf2_dat_translator/dat_2_json';
 import read_lf2_dat from './read_lf2_dat';
-import { useLocalNumber, useLocalString } from './useLocalStorage';
+import { useLocalBoolean, useLocalNumber, useLocalString } from './useLocalStorage';
 
 const fullsreen = new Fullsreen();
 
@@ -31,8 +31,8 @@ function App() {
   const lf2_ref = useRef<LF2 | undefined>();
 
   const [editor_closed, set_editor_closed] = useState(true);
-  const [game_overlay, set_game_overlay] = useState(true);
-  const [control_panel, set_control_panel] = useState(true);
+  const [game_overlay, set_game_overlay] = useLocalBoolean('game_overlay', true);
+  const [control_panel, set_control_panel] = useLocalBoolean('control_panel', true);
   const [loading, set_loading] = useState(false);
   const [loaded, set_loaded] = useState(false);
 
@@ -113,7 +113,7 @@ function App() {
 
     window.addEventListener('keydown', on_key_down);
     return () => window.removeEventListener('keydown', on_key_down)
-  }, [loaded, update_once])
+  }, [loaded, set_control_panel, set_game_overlay, update_once])
 
 
   const [layout, set_layout] = useState<string | undefined>(void 0);
@@ -121,7 +121,7 @@ function App() {
     lf2_ref.current?.set_layout(layout)
   }, [layout])
 
-  const [layouts, set_layouts] = useState<Readonly<ILayoutInfo>[]>([]);
+  const [layouts, set_layouts] = useState<Readonly<ILayoutInfo>[]>([{ id: '', name: '无页面' }]);
 
   useEffect(() => {
     const canvas = _canvas_ref.current!;
@@ -131,7 +131,7 @@ function App() {
       const lf2 = (window as any).lf2 = lf2_ref.current = new LF2(canvas, overlay);
       lf2.layouts().then((layouts) => {
         const layout_data_list = layouts?.map(l => l.data) || []
-        layout_data_list.unshift({ id: '', name: 'close' })
+        layout_data_list.unshift({ id: '', name: '无页面' })
         set_layouts(layout_data_list);
         if (layout_data_list.length > 1)
           set_layout(layout_data_list[1].id)
@@ -299,8 +299,8 @@ function App() {
                 className='render_scale_select'
                 value={render_fixed_scale}
                 on_changed={set_render_fixed_scale}
-                items={arithmetic_progression(0, 4, 1)}
-                option={i => [i, '×' + (i || '?')]} />
+                items={arithmetic_progression(0, 4, 0.5)}
+                option={i => [i, '✕' + (i || '?')]} />
               {
                 render_fixed_scale ? null :
                   <Input
@@ -321,7 +321,7 @@ function App() {
                   value={v_align}
                   on_changed={set_v_align}
                   items={[-2, 0, 0.5, 1]}
-                  option={(v, idx) => [v, v <= -1 ? 'V' : ['Start', 'Center', 'End'][idx - 1]]} />
+                  option={(v, idx) => [v, v <= -1 ? '?' : ['上', '中', '右'][idx - 1]]} />
                 {
                   v_align > -1 ? null : <Input min={-1} max={2} type='number' step={0.1}
                     value={custom_v_align}
@@ -331,7 +331,7 @@ function App() {
                   value={h_align}
                   on_changed={set_h_align}
                   items={[-2, 0, 0.5, 1]}
-                  option={(v, idx) => [v, v <= -1 ? 'H' : ['Start', 'Center', 'End'][idx - 1]]} />
+                  option={(v, idx) => [v, v <= -1 ? '?' : ['上', '中', '下'][idx - 1]]} />
                 {
                   h_align > -1 ? null : <Input min={-1} max={2} type='number' step={0.1}
                     value={custom_h_align}
@@ -343,19 +343,19 @@ function App() {
           <Button onClick={on_click_load_builtin_zip} disabled={loading || loaded}>加载默认ZIP</Button>
           <Button onClick={on_click_load_builtin} disabled={loading || loaded}>加载默认数据</Button>
           <Button onClick={on_click_cleaup} disabled={loading || !loaded}>清空数据</Button>
-          <Button onClick={() => toggle_fullscreen()}>全屏(F9)</Button>
           <Button onClick={() => set_editor_closed(false)}>dat viewer</Button>
+        </div>
+        <div className='debug_ui_row'>
+          <Button onClick={() => set_paused(v => !v)}>{paused ? '恢复' : '暂停'}(F1)</Button>
+          <Button onClick={() => update_once()}>更新一次(F2)</Button>
+          <Button onClick={() => set_fast_forward(v => !v)}>{fast_forward ? '正常' : '不限'}速度(F5)</Button>
+          <Button onClick={() => set_show_indicators(v => !v)}>{show_indicators ? '隐藏' : '显示'}指示器(F6)</Button>
+          <Button onClick={() => set_game_overlay(v => !v)}>{game_overlay ? '隐藏' : '显示'}游戏覆盖(F7)</Button>
+          <Button onClick={() => set_control_panel(v => !v)}>{control_panel ? '隐藏' : '显示'}控制面板(F8)</Button>
+          <Button onClick={() => toggle_fullscreen()}>全屏(F9)</Button>
         </div>
         {
           loaded ? <>
-            <div className='debug_ui_row'>
-              <Button onClick={() => set_paused(v => !v)}>{paused ? '恢复' : '暂停'}(F1)</Button>
-              <Button onClick={() => update_once()}>更新一次(F2)</Button>
-              <Button onClick={() => set_fast_forward(v => !v)}>{fast_forward ? '正常' : '不限'}速度(F5)</Button>
-              <Button onClick={() => set_show_indicators(v => !v)}>{show_indicators ? '隐藏' : '显示'}指示器(F6)</Button>
-              <Button onClick={() => set_game_overlay(v => !v)}>{game_overlay ? '隐藏' : '显示'}游戏覆盖(F7)</Button>
-              <Button onClick={() => set_control_panel(v => !v)}>{control_panel ? '隐藏' : '显示'}控制面板(F8)</Button>
-            </div>
             {Array.from(lf2_ref.current?.player_infos.values() ?? []).map((info, idx) => <PlayerRow key={idx} lf2={lf2_ref.current} which={idx + 1} visible={control_panel} />)}
             <BlackgroundRow lf2={lf2_ref.current} visible={control_panel} />
           </> : null

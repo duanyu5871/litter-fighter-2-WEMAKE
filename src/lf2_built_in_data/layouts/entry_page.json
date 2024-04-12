@@ -1,5 +1,5 @@
 {
-  "name": "entry_page",
+  "name": "入口页",
   "id": "entry",
   "bg_color": "rgb(16, 32, 108)",
   "items": [
@@ -51,13 +51,12 @@
       "img": "sprite/MENU_CLIP.png",
       "rect": "0, 41, 496, 80",
       "center": "0.5, 0",
-      "size": "496, 80",
       "pos": "398, 40"
     },
     {
       "id": "main_menu",
       "img": "sprite/MENU_CLIP.png",
-      "rect": "5, 130, 272, 109",
+      "rect": "10, 135, 262, 99",
       "center": "0.5, 0.5",
       "pos": "397, 270",
       "items": [

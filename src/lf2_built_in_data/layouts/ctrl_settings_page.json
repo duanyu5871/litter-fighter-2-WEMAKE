@@ -1,5 +1,5 @@
 {
-  "name": "ctrl_settings_page",
+  "name": "设置页",
   "id": "ctrl_settings",
   "bg_color": "rgb(16, 32, 108)",
   "pos": "0, -450",
@@ -12,7 +12,6 @@
   ],
   "items": [
     {
-      "visible": false,
       "id": "bg_left",
       "which": "f:random_int_in_range(0,12,1)",
       "img": [
@@ -34,7 +33,6 @@
       "size": "0, 450"
     },
     {
-      "visible": false,
       "id": "bg_right",
       "which": "f:random_int_in_range(0,12,1)",
       "img": [
@@ -59,25 +57,300 @@
       "flip_x": true
     },
     {
-      "visible": false,
       "id": "main_title",
       "img": "sprite/MENU_CLIP.png",
       "rect": "0, 41, 496, 80",
       "center": "0.5, 0",
-      "size": "372, 60",
-      "pos": "398, 5"
+      "pos": "398, 0"
     },
     {
       "id": "main_menu",
       "img": "sprite/MENU_CLIP2.png",
       "rect": "0, 0, 704, 353",
       "center": "0.5, 0.5",
-      "size": "704, 353",
-      "pos": "397, 255"
+      "pos": "397, 255",
+      "items": [
+        {
+          "id": "player_1",
+          "pos": "-205,-141",
+          "items": [
+            {
+              "id": "btn_player_name",
+              "component": "player_name_input(1)",
+              "txt": "player_name_input(1)",
+              "size": "106, 19"
+            },
+            {
+              "id": "btn_ctrl_type",
+              "component": "player_ctrl_type(1)",
+              "img": [
+                "sprite/CS6.png",
+                "sprite/CS2.png",
+                "sprite/CS3.png",
+                "sprite/CS4.png",
+                "sprite/CS5.png"
+              ],
+              "pos": "0, 26",
+              "actions": {
+                "click": "loop_img"
+              }
+            },
+            {
+              "id": "btn_key_set_U",
+              "component": "key_set(1,U)",
+              "pos": "0, 124",
+              "size": "106, 19"
+            },
+            {
+              "id": "btn_key_set_D",
+              "component": "key_set(1,D)",
+              "pos": "0, 146",
+              "size": "106, 19"
+            },
+            {
+              "id": "btn_key_set_L",
+              "component": "key_set(1,L)",
+              "pos": "0, 168",
+              "size": "106, 19"
+            },
+            {
+              "id": "btn_key_set_R",
+              "component": "key_set(1,R)",
+              "pos": "0, 190",
+              "size": "106, 19"
+            },
+            {
+              "id": "btn_key_set_a",
+              "component": "key_set(1,a)",
+              "pos": "0, 212",
+              "size": "106, 19"
+            },
+            {
+              "id": "btn_key_set_j",
+              "component": "key_set(1,j)",
+              "pos": "0, 234",
+              "size": "106, 19"
+            },
+            {
+              "id": "btn_key_set_d",
+              "component": "key_set(1,d)",
+              "pos": "0, 256",
+              "size": "106, 19"
+            }
+          ]
+        },
+        {
+          "id": "player_2",
+          "pos": "-66,-141",
+          "items": [
+            {
+              "id": "btn_player_name",
+              "component": "player_name_input(2)",
+              "txt": "player_name_input(2)",
+              "size": "106, 19"
+            },
+            {
+              "id": "btn_ctrl_type",
+              "component": "player_ctrl_type(2)",
+              "img": [
+                "sprite/CS6.png",
+                "sprite/CS2.png",
+                "sprite/CS3.png",
+                "sprite/CS4.png",
+                "sprite/CS5.png"
+              ],
+              "pos": "0, 26",
+              "actions": {
+                "click": "loop_img"
+              }
+            },
+            {
+              "id": "btn_key_set_U",
+              "component": "key_set(2,U)",
+              "pos": "0, 124",
+              "size": "106, 19"
+            },
+            {
+              "id": "btn_key_set_D",
+              "component": "key_set(2,D)",
+              "pos": "0, 146",
+              "size": "106, 19"
+            },
+            {
+              "id": "btn_key_set_L",
+              "component": "key_set(2,L)",
+              "pos": "0, 168",
+              "size": "106, 19"
+            },
+            {
+              "id": "btn_key_set_R",
+              "component": "key_set(2,R)",
+              "pos": "0, 190",
+              "size": "106, 19"
+            },
+            {
+              "id": "btn_key_set_a",
+              "component": "key_set(2,a)",
+              "pos": "0, 212",
+              "size": "106, 19"
+            },
+            {
+              "id": "btn_key_set_j",
+              "component": "key_set(2,j)",
+              "pos": "0, 234",
+              "size": "106, 19"
+            },
+            {
+              "id": "btn_key_set_d",
+              "component": "key_set(2,d)",
+              "pos": "0, 256",
+              "size": "106, 19"
+            }
+          ]
+        },
+        {
+          "id": "player_3",
+          "pos": "73,-141",
+          "items": [
+            {
+              "id": "btn_player_name",
+              "component": "player_name_input(3)",
+              "txt": "player_name_input(3)",
+              "size": "106, 19"
+            },
+            {
+              "id": "btn_ctrl_type",
+              "component": "player_ctrl_type(3)",
+              "img": [
+                "sprite/CS6.png",
+                "sprite/CS2.png",
+                "sprite/CS3.png",
+                "sprite/CS4.png",
+                "sprite/CS5.png"
+              ],
+              "pos": "0, 26",
+              "actions": {
+                "click": "loop_img"
+              }
+            },
+            {
+              "id": "btn_key_set_U",
+              "component": "key_set(3,U)",
+              "pos": "0, 124",
+              "size": "106, 19"
+            },
+            {
+              "id": "btn_key_set_D",
+              "component": "key_set(3,D)",
+              "pos": "0, 146",
+              "size": "106, 19"
+            },
+            {
+              "id": "btn_key_set_L",
+              "component": "key_set(3,L)",
+              "pos": "0, 168",
+              "size": "106, 19"
+            },
+            {
+              "id": "btn_key_set_R",
+              "component": "key_set(3,R)",
+              "pos": "0, 190",
+              "size": "106, 19"
+            },
+            {
+              "id": "btn_key_set_a",
+              "component": "key_set(3,a)",
+              "pos": "0, 212",
+              "size": "106, 19"
+            },
+            {
+              "id": "btn_key_set_j",
+              "component": "key_set(3,j)",
+              "pos": "0, 234",
+              "size": "106, 19"
+            },
+            {
+              "id": "btn_key_set_d",
+              "component": "key_set(3,d)",
+              "pos": "0, 256",
+              "size": "106, 19"
+            }
+          ]
+        },
+        {
+          "id": "player_4",
+          "pos": "212,-141",
+          "items": [
+            {
+              "id": "btn_player_name",
+              "component": "player_name_input(4)",
+              "txt": "player_name_input(4)",
+              "size": "106, 19"
+            },
+            {
+              "id": "btn_ctrl_type",
+              "component": "player_ctrl_type(4)",
+              "img": [
+                "sprite/CS6.png",
+                "sprite/CS2.png",
+                "sprite/CS3.png",
+                "sprite/CS4.png",
+                "sprite/CS5.png"
+              ],
+              "pos": "0, 26",
+              "actions": {
+                "click": "loop_img"
+              }
+            },
+            {
+              "id": "btn_key_set_U",
+              "component": "key_set(4,U)",
+              "pos": "0, 124",
+              "size": "106, 19"
+            },
+            {
+              "id": "btn_key_set_D",
+              "component": "key_set(4,D)",
+              "pos": "0, 146",
+              "size": "106, 19"
+            },
+            {
+              "id": "btn_key_set_L",
+              "component": "key_set(4,L)",
+              "pos": "0, 168",
+              "size": "106, 19"
+            },
+            {
+              "id": "btn_key_set_R",
+              "component": "key_set(4,R)",
+              "pos": "0, 190",
+              "size": "106, 19"
+            },
+            {
+              "id": "btn_key_set_a",
+              "component": "key_set(4,a)",
+              "pos": "0, 212",
+              "size": "106, 19"
+            },
+            {
+              "id": "btn_key_set_j",
+              "component": "key_set(4,j)",
+              "pos": "0, 234",
+              "size": "106, 19"
+            },
+            {
+              "id": "btn_key_set_d",
+              "component": "key_set(4,d)",
+              "pos": "0, 256",
+              "size": "106, 19"
+            }
+          ]
+        }
+      ]
     },
     {
-      "visible": "mouse_on_me==1",
       "id": "btn_confirm",
+      "opacity": "f:opacity_hover(0,1)",
       "img": "sprite/MENU_CLIP.png",
       "rect": "489, 426, 151, 26",
       "pos": "407, 399",
@@ -86,8 +359,8 @@
       }
     },
     {
-      "visible": "mouse_on_me==1",
       "id": "btn_cancel",
+      "opacity": "f:opacity_hover(0,1)",
       "img": "sprite/MENU_CLIP.png",
       "rect": "643, 426, 151, 26",
       "pos": "579, 399",
@@ -96,7 +369,6 @@
       }
     },
     {
-      "visible": "mouse_on_me==0",
       "id": "btn_move_table_normal",
       "img": "sprite/MENU_CLIP2.png",
       "rect": "0, 354, 494, 23",
@@ -104,7 +376,7 @@
       "pos": "0, 450"
     },
     {
-      "visible": "mouse_on_me==1",
+      "opacity": "f:opacity_hover(0,1)",
       "id": "btn_move_table_hover",
       "img": "sprite/MENU_CLIP2.png",
       "rect": "0, 379, 494, 23",
@@ -113,284 +385,6 @@
       "actions": {
         "click": "link_to(https://lf2.net/control.html)"
       }
-    },
-    {
-      "id": "btn_ctrl_type_1",
-      "img": [
-        "sprite/CS6.png",
-        "sprite/CS2.png",
-        "sprite/CS3.png",
-        "sprite/CS4.png",
-        "sprite/CS5.png"
-      ],
-      "pos": "193, 140",
-      "actions": {
-        "click": "loop_img"
-      }
-    },
-    {
-      "id": "player_1",
-      "pos": "193,0",
-      "items": [
-        {
-          "id": "btn_player_name_1",
-          "component": "player_name_input(1)",
-          "txt": "player_name_input(1)",
-          "font": [
-            "12px",
-            "normal"
-          ],
-          "pos": "0, 114",
-          "size": "106, 19"
-        },
-        {
-          "id": "btn_key_set_1_U",
-          "component": "key_set(1,U)",
-          "pos": "0, 238",
-          "size": "106, 19"
-        },
-        {
-          "id": "btn_key_set_1_D",
-          "component": "key_set(1,D)",
-          "pos": "0, 260",
-          "size": "106, 19"
-        },
-        {
-          "id": "btn_key_set_1_L",
-          "component": "key_set(1,L)",
-          "pos": "0, 282",
-          "size": "106, 19"
-        },
-        {
-          "id": "btn_key_set_1_R",
-          "component": "key_set(1,R)",
-          "pos": "0, 304",
-          "size": "106, 19"
-        },
-        {
-          "id": "btn_key_set_1_a",
-          "component": "key_set(1,a)",
-          "pos": "0, 326",
-          "size": "106, 19"
-        },
-        {
-          "id": "btn_key_set_1_j",
-          "component": "key_set(1,j)",
-          "font": [
-            "12px",
-            "normal"
-          ],
-          "pos": "0, 348",
-          "size": "106, 19"
-        },
-        {
-          "id": "btn_key_set_1_d",
-          "component": "key_set(1,d)",
-          "pos": "0, 370",
-          "size": "106, 19",
-          "actions": {
-            "click": "loop_img"
-          }
-        }
-      ]
-    },
-    {
-      "id": "player_2",
-      "pos": "332,0",
-      "items": [
-        {
-          "id": "btn_player_name_1",
-          "component": "player_name_input(1)",
-          "txt": "player_name_input(1)",
-          "font": [
-            "12px",
-            "normal"
-          ],
-          "pos": "0, 114",
-          "size": "106, 19"
-        },
-        {
-          "id": "btn_key_set_1_U",
-          "component": "key_set(2,U)",
-          "pos": "0, 238",
-          "size": "106, 19"
-        },
-        {
-          "id": "btn_key_set_1_D",
-          "component": "key_set(2,D)",
-          "pos": "0, 260",
-          "size": "106, 19"
-        },
-        {
-          "id": "btn_key_set_1_L",
-          "component": "key_set(2,L)",
-          "pos": "0, 282",
-          "size": "106, 19"
-        },
-        {
-          "id": "btn_key_set_1_R",
-          "component": "key_set(2,R)",
-          "pos": "0, 304",
-          "size": "106, 19"
-        },
-        {
-          "id": "btn_key_set_1_a",
-          "component": "key_set(2,a)",
-          "pos": "0, 326",
-          "size": "106, 19"
-        },
-        {
-          "id": "btn_key_set_1_j",
-          "component": "key_set(2,j)",
-          "font": [
-            "12px",
-            "normal"
-          ],
-          "pos": "0, 348",
-          "size": "106, 19"
-        },
-        {
-          "id": "btn_key_set_1_d",
-          "component": "key_set(2,d)",
-          "pos": "0, 370",
-          "size": "106, 19",
-          "actions": {
-            "click": "loop_img"
-          }
-        }
-      ]
-    },
-    {
-      "id": "player_3",
-      "pos": "471,0",
-      "items": [
-        {
-          "id": "btn_player_name_1",
-          "component": "player_name_input(1)",
-          "txt": "player_name_input(1)",
-          "font": [
-            "12px",
-            "normal"
-          ],
-          "pos": "0, 114",
-          "size": "106, 19"
-        },
-        {
-          "id": "btn_key_set_1_U",
-          "component": "key_set(3,U)",
-          "pos": "0, 238",
-          "size": "106, 19"
-        },
-        {
-          "id": "btn_key_set_1_D",
-          "component": "key_set(3,D)",
-          "pos": "0, 260",
-          "size": "106, 19"
-        },
-        {
-          "id": "btn_key_set_1_L",
-          "component": "key_set(3,L)",
-          "pos": "0, 282",
-          "size": "106, 19"
-        },
-        {
-          "id": "btn_key_set_1_R",
-          "component": "key_set(3,R)",
-          "pos": "0, 304",
-          "size": "106, 19"
-        },
-        {
-          "id": "btn_key_set_1_a",
-          "component": "key_set(3,a)",
-          "pos": "0, 326",
-          "size": "106, 19"
-        },
-        {
-          "id": "btn_key_set_1_j",
-          "component": "key_set(3,j)",
-          "font": [
-            "12px",
-            "normal"
-          ],
-          "pos": "0, 348",
-          "size": "106, 19"
-        },
-        {
-          "id": "btn_key_set_1_d",
-          "component": "key_set(3,d)",
-          "pos": "0, 370",
-          "size": "106, 19",
-          "actions": {
-            "click": "loop_img"
-          }
-        }
-      ]
-    },
-    {
-      "id": "player_4",
-      "pos": "610,0",
-      "items": [
-        {
-          "id": "btn_player_name_1",
-          "component": "player_name_input(1)",
-          "txt": "player_name_input(1)",
-          "font": [
-            "12px",
-            "normal"
-          ],
-          "pos": "0, 114",
-          "size": "106, 19"
-        },
-        {
-          "id": "btn_key_set_1_U",
-          "component": "key_set(4,U)",
-          "pos": "0, 238",
-          "size": "106, 19"
-        },
-        {
-          "id": "btn_key_set_1_D",
-          "component": "key_set(4,D)",
-          "pos": "0, 260",
-          "size": "106, 19"
-        },
-        {
-          "id": "btn_key_set_1_L",
-          "component": "key_set(4,L)",
-          "pos": "0, 282",
-          "size": "106, 19"
-        },
-        {
-          "id": "btn_key_set_1_R",
-          "component": "key_set(4,R)",
-          "pos": "0, 304",
-          "size": "106, 19"
-        },
-        {
-          "id": "btn_key_set_1_a",
-          "component": "key_set(4,a)",
-          "pos": "0, 326",
-          "size": "106, 19"
-        },
-        {
-          "id": "btn_key_set_1_j",
-          "component": "key_set(4,j)",
-          "font": [
-            "12px",
-            "normal"
-          ],
-          "pos": "0, 348",
-          "size": "106, 19"
-        },
-        {
-          "id": "btn_key_set_1_d",
-          "component": "key_set(4,d)",
-          "pos": "0, 370",
-          "size": "106, 19",
-          "actions": {
-            "click": "loop_img"
-          }
-        }
-      ]
     }
   ]
 }
