@@ -20,7 +20,7 @@ import { Character } from './entity/Character';
 import { Entity } from './entity/Entity';
 import { Weapon } from './entity/Weapon';
 import DatMgr from './loader/DatMgr';
-import { SoundMgr } from './loader/SoundMgr';
+import SoundMgr from './sound/SoundMgr';
 import { get_import_fallbacks, import_builtin } from './loader/make_import';
 import { new_id, new_team } from './new_id';
 import { random_in_range } from './random_in_range';
@@ -162,14 +162,16 @@ export default class LF2 {
       "stage5.wma.ogg",
     ].map(async name => {
       const src = this.import('bgm/' + name)
-      await this.sound_mgr.load(name, src);
+      if (!this.sound_mgr.has(name))
+        await this.sound_mgr.preload(name, src);
       return name;
     }))
 
     return this._bgms = await Promise.all(
       this.zip.file(/^bgm\//).map(async file => {
         const src = file.async('blob');
-        await this.sound_mgr.load(file.name, src)
+        if (!this.sound_mgr.has(file.name))
+          await this.sound_mgr.preload(file.name, src)
         return file.name
       })
     )

@@ -160,7 +160,8 @@ export default class Stage {
     const { lf2 } = this;
     const { music } = phase_info;
     if (!music) return;
-    await lf2.sound_mgr.load(music, lf2.import(music))
+    if (!lf2.sound_mgr.has(music))
+      await lf2.sound_mgr.preload(music, lf2.import(music))
     if (this._disposed) return;
     this._stop_bgm = lf2.sound_mgr.play_bgm(music)
     this._disposers.push(this._stop_bgm);

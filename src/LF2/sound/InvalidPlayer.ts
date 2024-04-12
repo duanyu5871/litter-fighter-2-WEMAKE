@@ -1,0 +1,13 @@
+import type LF2 from "../LF2";
+import { IPlayer, Src } from "./IPlayer";
+
+export default class InvalidPlayer implements IPlayer {
+  readonly lf2: LF2;
+  constructor(lf2: LF2) { this.lf2 = lf2; }
+
+  has(name: string): boolean { return false; }
+  stop_bgm(): void { }
+  play_bgm(name: string): () => void { return () => void 0 }
+  preload(name: string, src: Src): Promise<any> { return Promise.reject(new Error('InvalidPlayer')) }
+  play(name: string, x?: number | undefined, y?: number | undefined, z?: number | undefined): void { }
+}

@@ -43,10 +43,10 @@ export default class DatMgr {
         weapon_drop_sound: b,
         weapon_hit_sound: c,
       } = (data as Partial<IWeaponData>).base ?? {}
-
-      a && this.lf2.sound_mgr.load(a, this.lf2.import(a));
-      b && this.lf2.sound_mgr.load(b, this.lf2.import(b));
-      c && this.lf2.sound_mgr.load(c, this.lf2.import(c));
+      const mgr = this.lf2.sound_mgr;
+      a && !mgr.has(a) && mgr.preload(a, this.lf2.import(a));
+      b && !mgr.has(b) && mgr.preload(b, this.lf2.import(b));
+      c && !mgr.has(c) && mgr.preload(c, this.lf2.import(c));
     }
 
     if (!('frames' in data)) return data;

@@ -12,7 +12,8 @@ export const cook_frame = (lf2: LF2, data: IGameObjData, frame: IFrameInfo) => {
 
   let pic = frame.pic;
   let pic_info: IEntityPictureInfo | undefined = void 0;
-  if (frame.sound) lf2.sound_mgr.load(frame.sound, lf2.import(frame.sound));
+  if (frame.sound && !lf2.sound_mgr.has(frame.sound))
+    lf2.sound_mgr.preload(frame.sound, lf2.import(frame.sound));
   cook_frame_hit(frame);
   cook_frame_hold(frame);
 
