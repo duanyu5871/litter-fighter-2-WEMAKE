@@ -30,7 +30,7 @@ export function useLocalNumber<S extends number = number>(name: string, initialS
   const [val, set_val] = useState<S | undefined>(() => {
     let v = localStorage.getItem(name);
     if (is_str(v)) return Number(v) as S;
-    const ret = is_str(initialState) ? initialState : is_fun(initialState) ? initialState() : void 0;
+    const ret = is_num(initialState) ? initialState : is_fun(initialState) ? initialState() : void 0;
     if (is_num(ret)) localStorage.setItem(name, '' + ret);
     return ret as S;
   });

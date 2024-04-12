@@ -1,4 +1,4 @@
-import Select, { ISelectProps } from './Select';
+import Select, { ISelectProps } from './Component/Select';
 export interface TeamSelectProps extends ISelectProps<string, string> { }
 export default function TeamSelect(props: TeamSelectProps) {
   return (

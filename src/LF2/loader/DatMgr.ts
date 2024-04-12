@@ -81,20 +81,23 @@ export default class DatMgr {
     this._cancelled = false;
     const { objects, backgrounds } = await this.lf2.import('data/data.json');
     if (this._cancelled) throw new Error('cancelled')
-    this.lf2.on_loading_content(`loading: spark.json`);
-
+    this.lf2.on_loading_content(`loading: spark.json`, 0);
     await this._add_data("spark", await this.lf2.import('data/spark.json'))
+    this.lf2.on_loading_content(`loading: spark.json`, 100);
+
     if (this._cancelled) throw new Error('cancelled')
     for (const { id, file } of objects) {
       if (this._cancelled) throw new Error('cancelled')
-      this.lf2.on_loading_content(`loading object: ${file}`);
+
+      this.lf2.on_loading_content(`loading object: ${file}`, 0);
       await this._add_data(id, await this.lf2.import(file));
+      this.lf2.on_loading_content(`loading object: ${file}`, 100);
     }
     for (const { id, file } of backgrounds) {
       if (this._cancelled) throw new Error('cancelled')
-      this.lf2.on_loading_content(`loading background: ${file}`);
-
+      this.lf2.on_loading_content(`loading background: ${file}`, 0);
       await this._add_data(id, await this.lf2.import(file));
+      this.lf2.on_loading_content(`loading background: ${file}`, 100);
     }
     for (const [, v] of this._data_map) {
       if (this._cancelled) throw new Error('cancelled')

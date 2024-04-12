@@ -4,10 +4,10 @@ import './App.css';
 import { BlackgroundRow } from './BlackgroundRow';
 import Fullsreen from './Fullsreen';
 import LF2, { ILf2Callback } from './LF2/LF2';
-import Select from './LF2/ui/Select';
-import { Button } from './LF2/ui/Select/Button';
-import { Input } from './LF2/ui/Select/Input';
-import { TextArea } from './LF2/ui/Select/TextArea';
+import Select from './LF2/ui/Component/Select';
+import { Button } from './LF2/ui/Component/Button';
+import { Input } from './LF2/ui/Component/Input';
+import { TextArea } from './LF2/ui/Component/TextArea';
 import { ILayoutInfo } from './Layout/ILayoutInfo';
 import { Log } from './Log';
 import { PlayerRow } from './PlayerRow';
@@ -281,7 +281,7 @@ function App() {
       </div>
       <div className='debug_ui'>
         <div className='debug_ui_row'>
-          {'Page: '}
+          {'页面: '}
           <Select
             value={layout}
             on_changed={set_layout}
@@ -294,13 +294,13 @@ function App() {
             items={['fixed', 'fill', 'cover', 'contain'] as const} />
           {
             render_size_mode !== 'fixed' ? null : <div className='render_scale'>
-              {'Scale: '}
+              {'缩放: '}
               <Select
                 className='render_scale_select'
                 value={render_fixed_scale}
                 on_changed={set_render_fixed_scale}
                 items={arithmetic_progression(0, 4, 1)}
-                option={i => [i, 'Scale: x' + (i || '?')]} />
+                option={i => [i, '×' + (i || '?')]} />
               {
                 render_fixed_scale ? null :
                   <Input
@@ -316,7 +316,7 @@ function App() {
           {
             render_size_mode === 'fill' ? null :
               <div className='render_align'>
-                {'Align: '}
+                {'对齐: '}
                 <Select
                   value={v_align}
                   on_changed={set_v_align}
@@ -343,18 +343,18 @@ function App() {
           <Button onClick={on_click_load_builtin_zip} disabled={loading || loaded}>加载默认ZIP</Button>
           <Button onClick={on_click_load_builtin} disabled={loading || loaded}>加载默认数据</Button>
           <Button onClick={on_click_cleaup} disabled={loading || !loaded}>清空数据</Button>
-          <Button onClick={() => toggle_fullscreen()}>Fullscreen(F9)</Button>
+          <Button onClick={() => toggle_fullscreen()}>全屏(F9)</Button>
           <Button onClick={() => set_editor_closed(false)}>dat viewer</Button>
         </div>
         {
           loaded ? <>
             <div className='debug_ui_row'>
-              <Button onClick={() => set_paused(v => !v)}>{paused ? 'resume' : 'pause'}(F1)</Button>
-              <Button onClick={() => update_once()}>update_once(F2)</Button>
-              <Button onClick={() => set_fast_forward(v => !v)}>{fast_forward ? 'normal' : 'unlimited'} speed(F5)</Button>
-              <Button onClick={() => set_show_indicators(v => !v)}>{show_indicators ? 'hide' : 'show'} indicators(F6)</Button>
-              <Button onClick={() => set_game_overlay(v => !v)}>{game_overlay ? 'hide' : 'show '} game overlay(F7)</Button>
-              <Button onClick={() => set_control_panel(v => !v)}>{control_panel ? 'hide' : 'show '} control panel(F8)</Button>
+              <Button onClick={() => set_paused(v => !v)}>{paused ? '恢复' : '暂停'}(F1)</Button>
+              <Button onClick={() => update_once()}>更新一次(F2)</Button>
+              <Button onClick={() => set_fast_forward(v => !v)}>{fast_forward ? '正常' : '不限'}速度(F5)</Button>
+              <Button onClick={() => set_show_indicators(v => !v)}>{show_indicators ? '隐藏' : '显示'}指示器(F6)</Button>
+              <Button onClick={() => set_game_overlay(v => !v)}>{game_overlay ? '隐藏' : '显示'}游戏覆盖(F7)</Button>
+              <Button onClick={() => set_control_panel(v => !v)}>{control_panel ? '隐藏' : '显示'}控制面板(F8)</Button>
             </div>
             {Array.from(lf2_ref.current?.player_infos.values() ?? []).map((info, idx) => <PlayerRow key={idx} lf2={lf2_ref.current} which={idx + 1} visible={control_panel} />)}
             <BlackgroundRow lf2={lf2_ref.current} visible={control_panel} />

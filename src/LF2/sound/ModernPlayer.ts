@@ -18,14 +18,18 @@ export default class ModernPlayer implements IPlayer {
     return this._map.has(name);
   }
 
-  async preload(name: string, src: Src) {
-    this.lf2.on_loading_content("loading sound: " + name);
-    const s = await src;
-    const url = is_str(s) ? s : URL.createObjectURL(s);
-    return fetch(url)
-      .then(buf => buf.arrayBuffer())
-      .then(buf => this.ctx.decodeAudioData(buf))
-      .then(buf => this._map.set(name, buf));
+  preload(name: string, src: Src) {
+    this.lf2.on_loading_content(`loading sound: ${name}`, 0);
+    return (async () => {
+      const s = await src;
+      const url = is_str(s) ? s : URL.createObjectURL(s);
+      return fetch(url)
+        .then(buf => buf.arrayBuffer())
+        .then(buf => this.ctx.decodeAudioData(buf))
+        .then(buf => this._map.set(name, buf));
+    })().finally(() => {
+      this.lf2.on_loading_content(`loading sound: ${name}`, 100);
+    })
   }
 
   stop_bgm() {

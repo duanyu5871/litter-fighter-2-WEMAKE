@@ -33,17 +33,17 @@ export class GameOverlay implements IWorldCallbacks, ILf2Callback {
     this.handle_cam_ctrl_pointer_event(e);
   }
   btn_free_cam: HTMLButtonElement;
-
+  
   constructor(world: World, container: HTMLDivElement | null | undefined) {
     this.world = world;
     this.world.callbacks.add(this);
     this.ele = container;
     this.fps_ele = ele('span');
-    this.fps_ele.className = 'fps_txt'
+    this.fps_ele.className = 'txt_game_overlay'
     this.ups_ele = ele('span');
-    this.ups_ele.className = 'fps_txt'
+    this.ups_ele.className = 'txt_game_overlay'
     this.loading_ele = ele('span');
-    this.loading_ele.className = 'fps_txt'
+    this.loading_ele.className = 'txt_game_overlay'
     this.cam_bar = ele('canvas');
     this.btn_free_cam = ele('button');
     this.init_btn_free_cam()
@@ -95,21 +95,16 @@ export class GameOverlay implements IWorldCallbacks, ILf2Callback {
     if (!this.cam_bar_ctx) return;
     const background_w = this.world.stage.width;
     const screen_w = Defines.OLD_SCREEN_WIDTH;
-
     const { width: bar_width, height } = this.cam_bar;
     const { player_left, player_right } = this.world.stage;
-
     const x_l = Math.floor(bar_width * player_left / background_w);
     const x_r = Math.floor(bar_width * player_right / background_w);
     const hh = this.cam_bar_handle_padding;
     const w = Math.floor(bar_width * screen_w / background_w) - hh
     const h = height - hh * 2;
-
     this.cam_bar_ctx.fillStyle = this.cam_bar_ctx.strokeStyle = '#FF000055'
     this.cam_bar_ctx.fillRect(0, 0, x_l, height);
     this.cam_bar_ctx.fillRect(x_r, 0, bar_width - x_r, height);
-
-
     this.cam_bar_ctx.lineWidth = 1;
     this.cam_bar_ctx.strokeStyle = '#FFFFFF55'
     this.cam_bar_ctx.strokeRect(x + hh, hh, w, h);
@@ -118,7 +113,6 @@ export class GameOverlay implements IWorldCallbacks, ILf2Callback {
       this.cam_bar_ctx.fillRect(x + hh, hh, w, h);
     }
   }
-
   set FPS(v: number) {
     this.fps_ele.innerText = 'FPS:' + v.toFixed(0);
   }
@@ -160,10 +154,8 @@ export class GameOverlay implements IWorldCallbacks, ILf2Callback {
     this.update_timer = void 0;
     world.lf2.del_callbacks(this);
   }
-  on_loading_end() {
-    this.loading = '';
-  }
-  on_loading_content(content: string) {
-    this.loading = content;
+
+  on_loading_content(content: string, progress: number) {
+    this.loading = `${content}, ${progress}%`;
   }
 }

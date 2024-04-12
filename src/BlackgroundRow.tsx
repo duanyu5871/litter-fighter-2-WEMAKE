@@ -5,9 +5,10 @@ import { BotEnemyChaser } from './LF2/controller/BotEnemyChaser';
 import { InvalidController } from './LF2/controller/InvalidController';
 import { Character } from './LF2/entity/Character';
 import CharacterSelect from './LF2/ui/CharacterSelect';
-import Select from './LF2/ui/Select';
-import { Button } from './LF2/ui/Select/Button';
-import { Input } from './LF2/ui/Select/Input';
+import Select from './LF2/ui/Component/Select';
+import { Button } from './LF2/ui/Component/Button';
+import { Input } from './LF2/ui/Component/Input';
+import { Checkbox } from "./LF2/ui/Component/Checkbox";
 import TeamSelect from './LF2/ui/TeamSelect';
 import { IStageInfo, IStagePhaseInfo } from './js_utils/lf2_type';
 import { Defines } from './js_utils/lf2_type/defines';
@@ -22,7 +23,7 @@ export function BlackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
   const [bg, set_bg] = useState<string>();
   const [bgm, set_bgm] = useState<string>('');
   const [bgm_list, set_bgm_list] = useState<string[]>([]);
-  
+
   const [stage_id, set_stage_id] = useState<string>('');
   const [stage_bgm, set_stage_bgm] = useState<boolean>(false);
   const [stage_list, set_stage_list] = useState<IStageInfo[]>([]);
@@ -116,14 +117,14 @@ export function BlackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
   return (
     <>
       <div className='background_settings_row'>
-        stage:
+        关卡:
         <Select on_changed={set_stage_id} value={stage_id} items={stage_list} option={i => [i.id, i.name]} />
-        bgm:
-        <Input type='checkbox' checked={stage_bgm} onChange={e => set_stage_bgm(e.target.checked)} />
-        <Button onClick={() => lf2.world.stage.kill_all_enemies()}>kill enemies</Button>
-        <Button onClick={() => lf2.world.stage.kill_boss()}>kill boss</Button>
-        <Button onClick={() => lf2.world.stage.kill_soliders()}>kill soliders</Button>
-        <Button onClick={() => lf2.world.stage.kill_others()}>kill others</Button>
+        音乐:
+        <Checkbox value={stage_bgm} onChanged={set_stage_bgm} />
+        <Button onClick={() => lf2.world.stage.kill_all_enemies()}>杀死全部敌人</Button>
+        <Button onClick={() => lf2.world.stage.kill_boss()}>杀死Boss</Button>
+        <Button onClick={() => lf2.world.stage.kill_soliders()}>杀死士兵</Button>
+        <Button onClick={() => lf2.world.stage.kill_others()}>杀死其他</Button>
         {
           !stage_phase_list.length ? null : <>
             phases:
@@ -134,7 +135,7 @@ export function BlackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
       </div>
 
       <div className='background_settings_row'>
-        background:
+        背景:
         <Select
           value={bg}
           on_changed={set_bg}
@@ -142,8 +143,8 @@ export function BlackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
           option={i => [i.id, i.base.name]}>
           <option value=''>OFF</option>
         </Select>
-        <Button onClick={v => lf2.clear()}>clear</Button>
-        music:
+        <Button onClick={v => lf2.clear()}>清场</Button>
+        BGM:
         <Select
           value={bgm}
           on_changed={set_bgm}
@@ -152,7 +153,7 @@ export function BlackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
       </div>
 
       <div className='background_settings_row'>
-        weapon:
+        武器:
         <Input type='number' style={{ width: 40 }}
           min={min_rwn} max={max_rwn} step={1} value={rwn}
           onChange={e => set_rwn(Number(e.target.value))}
@@ -164,26 +165,26 @@ export function BlackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
           option={i => [i.id, i.base.name]}>
           <option value=''>Random</option>
         </Select>
-        <Button onClick={on_click_add_weapon}>add</Button>
+        <Button onClick={on_click_add_weapon}>添加</Button>
       </div>
 
       <div className='background_settings_row'>
-        bot:
+        BOT:
         <Input type='number' style={{ width: 40 }}
           min={min_rcn} max={max_rcn} step={1} value={rcn}
           onChange={e => set_rcn(Number(e.target.value))}
           onBlur={() => set_rcn(v => Math.min(Math.max(Math.floor(v), min_rcn), max_rcn))} />
-        character:
+        角色:
         <CharacterSelect lf2={lf2} value={c_id} on_changed={set_character_id} />
-        team:
+        队伍:
         <TeamSelect value={team} on_changed={set_team} />
-        controller:
+        AI:
         <Select value={bot_ctrl}
           on_changed={set_bot_ctrl}
           items={Object.keys(bot_controllers)}
           option={i => [i, i]}
         />
-        <Button onClick={on_click_add_bot}>add</Button>
+        <Button onClick={on_click_add_bot}>添加</Button>
       </div>
     </>
   );

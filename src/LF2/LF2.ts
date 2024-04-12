@@ -38,7 +38,7 @@ const get_default_keys = (i: number) => default_keys_list[i] || default_keys_lis
 export interface ILf2Callback {
   on_layout_changed?(layout: Layout | undefined, prev_layout: Layout | undefined): void;
   on_loading_end?(): void;
-  on_loading_content?(content: string): void;
+  on_loading_content?(content: string, progress: number): void;
 }
 export default class LF2 {
   private _callbacks = new Set<ILf2Callback>();
@@ -555,8 +555,8 @@ export default class LF2 {
     this._callbacks.delete(callback);
     return this;
   }
-  on_loading_content(content: string) {
-    for (const c of this._callbacks) c.on_loading_content?.(content);
+  on_loading_content(content: string, progress: number) {
+    for (const c of this._callbacks) c.on_loading_content?.(content, progress);
   }
   on_loading_end() {
     for (const c of this._callbacks) c.on_loading_end?.();
