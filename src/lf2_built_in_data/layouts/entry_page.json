@@ -57,49 +57,47 @@
     {
       "id": "main_menu",
       "img": "sprite/MENU_CLIP.png",
-      "rect": "0, 125, 282, 119",
+      "rect": "5, 130, 272, 109",
       "center": "0.5, 0.5",
-      "size": "282, 119",
-      "pos": "397, 270"
-    },
-    {
-      "visible": "mouse_on_me==1",
-      "id": "start_local_game",
-      "img": "sprite/MENU_CLIP.png",
-      "rect": "535, 105, 256, 26",
-      "center": "0.5, 0",
-      "size": "256, 26",
-      "pos": "398, 224",
-      "tab_type": "ud",
-      "actions": {
-        "click": "goto(loading)"
-      }
-    },
-    {
-      "visible": "mouse_on_me==1",
-      "id": "network_game",
-      "img": "sprite/MENU_CLIP.png",
-      "rect": "535, 137, 256, 26",
-      "center": "0.5, 0",
-      "size": "256, 26",
-      "pos": "398, 256",
-      "tab_type": "ud",
-      "actions": {
-        "click": "alert(还没想好呢)"
-      }
-    },
-    {
-      "visible": "mouse_on_me==1",
-      "id": "ctrl_settings",
-      "img": "sprite/MENU_CLIP.png",
-      "rect": "535, 168, 256, 26",
-      "center": "0.5, 0",
-      "size": "256, 26",
-      "pos": "398, 287",
-      "tab_type": "ud",
-      "actions": {
-        "click": "goto(ctrl_settings)"
-      }
+      "pos": "397, 270",
+      "items": [
+        {
+          "id": "btn_start_local_game",
+          "opacity": "f:opacity_hover(0,1)",
+          "img": "sprite/MENU_CLIP.png",
+          "rect": "535, 105, 256, 26",
+          "center": "0.5, 0",
+          "pos": "1, -46",
+          "tab_type": "ud",
+          "actions": {
+            "click": "goto(loading)"
+          }
+        },
+        {
+          "id": "btn_network_game",
+          "opacity": "f:opacity_hover(0,1)",
+          "img": "sprite/MENU_CLIP.png",
+          "rect": "535, 137, 256, 26",
+          "center": "0.5, 0",
+          "pos": "1, -14",
+          "tab_type": "ud",
+          "actions": {
+            "click": "alert(还没想好呢)"
+          }
+        },
+        {
+          "id": "btn_ctrl_settings",
+          "opacity": "f:opacity_hover(0,1)",
+          "img": "sprite/MENU_CLIP.png",
+          "rect": "535, 168, 256, 26",
+          "center": "0.5, 0",
+          "pos": "1, 17",
+          "tab_type": "ud",
+          "actions": {
+            "click": "goto(ctrl_settings)"
+          }
+        }
+      ]
     }
   ]
 }

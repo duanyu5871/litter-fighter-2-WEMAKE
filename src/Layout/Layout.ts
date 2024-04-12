@@ -166,7 +166,7 @@ export default class Layout {
     do {
       if (!img) break;
 
-      const img_paths = !is_arr(img) ? [img] : img.filter(v => is_str(img));
+      const img_paths = !is_arr(img) ? [img] : img.filter(v => v && is_str(v));
       if (!img_paths.length) break;
 
       const img_infos: TImageInfo[] = [];
@@ -220,7 +220,6 @@ export default class Layout {
   private _cook_img_idx(get_val: ValGetter<Layout>) {
     const { img_infos } = this;
     if (!img_infos?.length) return;
-
     const { which } = this.data;
     if (is_str(which)) {
       const val = get_val(which)
