@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import LF2 from './LF2/LF2';
+import LF2, { ILf2Callback } from './LF2/LF2';
 import { BaseController } from './LF2/controller/BaseController';
 import { BotEnemyChaser } from './LF2/controller/BotEnemyChaser';
 import { InvalidController } from './LF2/controller/InvalidController';
@@ -12,6 +12,7 @@ import { Checkbox } from "./LF2/ui/Component/Checkbox";
 import TeamSelect from './LF2/ui/TeamSelect';
 import { IStageInfo, IStagePhaseInfo } from './js_utils/lf2_type';
 import { Defines } from './js_utils/lf2_type/defines';
+import { IWorldCallbacks } from './LF2/World';
 
 const bot_controllers: { [x in string]?: (e: Character) => BaseController } = {
   'OFF': (e: Character) => new InvalidController(e),
@@ -20,13 +21,15 @@ const bot_controllers: { [x in string]?: (e: Character) => BaseController } = {
 
 export function BlackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
   const { lf2, visible } = props;
-  const [bg, set_bg] = useState<string>();
+  const [bg, set_bg] = useState<string>(Defines.THE_VOID_BG.id);
+  
   const [bgm, set_bgm] = useState<string>('');
   const [bgm_list, set_bgm_list] = useState<string[]>([]);
 
-  const [stage_id, set_stage_id] = useState<string>('');
+  const [stage_id, set_stage_id] = useState<string>(Defines.THE_VOID_STAGE.id);
   const [stage_bgm, set_stage_bgm] = useState<boolean>(false);
-  const [stage_list, set_stage_list] = useState<IStageInfo[]>([]);
+  const [stage_list, set_stage_list] = useState<IStageInfo[]>([Defines.THE_VOID_STAGE]);
+
   const [stage_phase_list, set_stage_phases] = useState<IStagePhaseInfo[]>([]);
   const [stage_phase_idx, set_stage_phase_idx] = useState<number>(-1);
 
@@ -43,16 +46,7 @@ export function BlackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
 
   useEffect(() => {
     if (!lf2) return;
-    if (!bgm) lf2.sound_mgr.stop_bgm()
-    else lf2.sound_mgr.play_bgm(bgm)
-  }, [bgm, lf2]);
-
-  useEffect(() => {
-    if (!lf2) return;
-    lf2.bgms().then(v => set_bgm_list(['', ...v]));
-
-    set_stage_list([Defines.THE_VOID_STAGE, ...lf2.stage_infos])
-    lf2.world.callbacks.add({
+    const world_callbacks: IWorldCallbacks = {
       on_stage_change: (_world, curr, _prev) => {
         set_stage_id(curr.data.id)
         set_stage_phase_idx(0);
@@ -63,8 +57,32 @@ export function BlackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
           },
         })
       },
-    })
+    }
+    lf2.world.callbacks.add(world_callbacks)
+    return () => {
+      lf2.world.callbacks.delete(world_callbacks)
+    }
   }, [lf2]);
+
+  useEffect(() => {
+    if (!lf2) return;
+    lf2.stages.need_load && lf2.stages.load();
+    const lf2_callbacks: ILf2Callback = {
+      on_stages_loaded: (stages) => set_stage_list([Defines.THE_VOID_STAGE, ...stages]),
+      on_stages_clear: () => set_stage_list([Defines.THE_VOID_STAGE])
+    }
+    return lf2.add_callbacks(lf2_callbacks);
+  }, [lf2])
+
+  useEffect(() => {
+    if (!lf2) return;
+    lf2.bgms.need_load && lf2.bgms.load();
+    const lf2_callbacks: ILf2Callback = {
+      on_bgms_loaded: (names) => set_bgm_list(['', ...names!]),
+      on_bgms_clear: () => set_bgm_list([''])
+    }
+    return lf2.add_callbacks(lf2_callbacks);
+  }, [lf2])
 
   useEffect(() => {
     if (!lf2) return;
@@ -78,6 +96,18 @@ export function BlackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
     if (data) lf2.change_stage(data);
     else lf2.remove_stage();
   }, [lf2, stage_id, stage_list]);
+
+  useEffect(() => {
+    if (!lf2) return;
+
+    if (bg && stage_id !== Defines.THE_VOID_BG.id)
+      lf2.set_layout(void 0);
+    else if (stage_id && stage_id !== Defines.THE_VOID_STAGE.id)
+      lf2.set_layout(void 0);
+    else
+      lf2.set_layout('main_page')
+
+  }, [lf2, stage_id, bg])
 
 
   const min_rwn = 1;

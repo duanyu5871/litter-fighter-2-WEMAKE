@@ -26,6 +26,7 @@ import { get_import_fallbacks, import_builtin } from './loader/make_import';
 import { new_id, new_team } from './new_id';
 import { random_in_range } from './random_in_range';
 import SoundMgr from './sound/SoundMgr';
+import { Loader } from './Loader';
 
 const default_keys_list: TKeys[] = [
   { L: 'a', R: 'd', U: 'w', D: 's', a: 'r', j: 't', d: 'y' },
@@ -36,16 +37,21 @@ const default_keys_list: TKeys[] = [
 ]
 const get_default_keys = (i: number) => default_keys_list[i] || default_keys_list[default_keys_list.length - 1];
 
+
 export interface ILf2Callback {
   on_layout_changed?(layout: Layout | undefined, prev_layout: Layout | undefined): void;
   on_loading_start?(): void;
   on_loading_end?(): void;
   on_loading_content?(content: string, progress: number): void;
+
+  on_stages_loaded?(stages: IStageInfo[]): void;
+  on_stages_clear?(): void;
+  on_bgms_loaded?(names: string[]): void;
+  on_bgms_clear?(): void;
 }
 export default class LF2 {
   private _callbacks = new Set<ILf2Callback>();
   private _disposers = new Set<() => void>();
-  private _stage_infos: IStageInfo[] = [];
   private _disposed: boolean = false;
   private _layout: Layout | undefined;
   static DisposeError = new Error('disposed')
@@ -80,7 +86,49 @@ export default class LF2 {
     this.world.stage.set_bgm_enable(enabled);
   }
 
-  get stage_infos() { return this._stage_infos }
+  readonly stages = new Loader<IStageInfo[]>(
+    () => this.import('data/stage.json'),
+    (d) => {
+      for (const c of this._callbacks)
+        c.on_stages_loaded?.(d)
+    },
+    () => {
+      for (const c of this._callbacks)
+        c.on_stages_clear?.()
+    }
+  )
+
+  readonly bgms = new Loader<string[]>(() => {
+    if (!this.zip) return Promise.all([
+      "boss1.wma.ogg",
+      "boss2.wma.ogg",
+      "main.wma.ogg",
+      "stage1.wma.ogg",
+      "stage2.wma.ogg",
+      "stage3.wma.ogg",
+      "stage4.wma.ogg",
+      "stage5.wma.ogg",
+    ].map(async name => {
+      const src = this.import('bgm/' + name)
+      await this.sound_mgr.preload(name, src);
+      return name;
+    }))
+    return Promise.all(
+      this.zip.file(/^bgm\//).map(async file => {
+        await this.sound_mgr.preload(file.name, file.async('blob'))
+        return file.name
+      })
+    )
+  },
+    (d) => {
+      for (const c of this._callbacks)
+        c.on_bgms_loaded?.(d)
+    },
+    () => {
+      for (const c of this._callbacks)
+        c.on_bgms_clear?.()
+    });
+
 
   get_local_player(which: string) {
     for (const [id, player] of this.players)
@@ -144,41 +192,6 @@ export default class LF2 {
     this.disposer = () => this.canvas.removeEventListener('mousemove', this.on_mouse_move)
     this.disposer = () => this.canvas.removeEventListener('pointerdown', this._on_pointer_down)
     this.disposer = () => this.canvas.removeEventListener('pointerup', this._on_pointer_up)
-  }
-
-  private _stages?: IStageInfo[];
-  async stages(): Promise<IStageInfo[]> {
-    if (this._stages) return this._stages
-    return this._stages = await this.import('data/stage.json')
-  }
-
-  private _bgms?: string[];
-  async bgms(): Promise<string[]> {
-    if (this._bgms) return this._bgms;
-    if (!this.zip) return this._bgms = await Promise.all([
-      "boss1.wma.ogg",
-      "boss2.wma.ogg",
-      "main.wma.ogg",
-      "stage1.wma.ogg",
-      "stage2.wma.ogg",
-      "stage3.wma.ogg",
-      "stage4.wma.ogg",
-      "stage5.wma.ogg",
-    ].map(async name => {
-      const src = this.import('bgm/' + name)
-      if (!this.sound_mgr.has(name))
-        await this.sound_mgr.preload(name, src);
-      return name;
-    }))
-
-    return this._bgms = await Promise.all(
-      this.zip.file(/^bgm\//).map(async file => {
-        const src = file.async('blob');
-        if (!this.sound_mgr.has(file.name))
-          await this.sound_mgr.preload(file.name, src)
-        return file.name
-      })
-    )
   }
 
   random_entity_info(e: Entity) {
@@ -376,19 +389,11 @@ export default class LF2 {
     return ret;
   }
 
+
+
   async start(zip?: JSZIP) {
     this.zip = zip
     await this.dat_mgr.load();
-
-    const stage_infos: IStageInfo[] = await import_builtin('data/stage.json');
-    for (const a of stage_infos) {
-      for (const b of a.phases) {
-        for (const c of b.objects) {
-          c.id = c.id.filter(v => this.dat_mgr.find(v))
-        }
-      }
-    }
-    this._stage_infos = stage_infos;
 
     for (const d of this.dat_mgr.characters) {
       const name = d.base.name.toLowerCase();
@@ -551,9 +556,9 @@ export default class LF2 {
     for (const cbs of this._callbacks) cbs.on_layout_changed?.(layout, prev_layout);
   }
 
-  add_callbacks(callback: ILf2Callback): this {
+  add_callbacks(callback: ILf2Callback): () => void {
     this._callbacks.add(callback)
-    return this;
+    return () => { this._callbacks.delete(callback) };
   }
   del_callbacks(callback: ILf2Callback): this {
     this._callbacks.delete(callback);

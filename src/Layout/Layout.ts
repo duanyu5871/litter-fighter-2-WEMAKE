@@ -324,8 +324,9 @@ export default class Layout {
       return this.to_next_img();
     if (action === 'cancel_load_data')
       return this.lf2?.clear()
-    if (action === 'load_default_data')
+    if (action === 'load_default_data') {
       return this.lf2.start();
+    }
 
     const [, url = null] = action.match(/link_to\((.+)\)/) ?? [];
     if (url !== null) return window.open(url)

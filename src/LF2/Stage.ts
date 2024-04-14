@@ -177,7 +177,7 @@ export default class Stage {
     if (this.all_done()) {
       const { next } = this.data;
       if (next) {
-        const next_stage = this.lf2.stage_infos.find(v => v.id === next);
+        const next_stage = this.lf2.stages.data?.find(v => v.id === next);
         if (next_stage) this.lf2.change_stage(next_stage)
       }
       return;
