@@ -70,8 +70,8 @@ async function parse_under_dir(src_dir_path: string, dst_dir_path: string, index
 
 async function main() {
   const indexes = await parse_indexes('./LittleFighter/data/data.txt');
-  await parse_under_dir('./LittleFighter', '../src/lf2_data', indexes);
-  await fs.writeFile('../src/lf2_data/data/data.json', JSON.stringify(indexes, null, 2).replace(/\.dat"/g, ".json\""))
+  await parse_under_dir('./LittleFighter', '../public/lf2_data', indexes);
+  await fs.writeFile('../public/lf2_data/data/data.json', JSON.stringify(indexes, null, 2).replace(/\.dat"/g, ".json\""))
 
   await copy_dir("./src/js_utils", "../src/js_utils");
 }
