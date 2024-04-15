@@ -40,6 +40,7 @@ export class PlayerKeyEditor extends LayoutComponent implements IPlayerInfoCallb
     if (this._which === void 0) return;
     if (this._key_name === void 0) return;
     this.layout.lf2.player_infos.get(this._which)?.set_key(this._key_name, e.key).save();
+    this._on_cancel();
   };
   private _on_cancel = () => {
     window.removeEventListener('keydown', this._on_keydown);

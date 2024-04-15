@@ -13,7 +13,7 @@ import TeamSelect from './LF2/ui/TeamSelect';
 import { IStageInfo, IStagePhaseInfo } from './js_utils/lf2_type';
 import { Defines } from './js_utils/lf2_type/defines';
 import { IWorldCallbacks } from './LF2/World';
-
+import { useImmer } from 'use-immer';
 const bot_controllers: { [x in string]?: (e: Character) => BaseController } = {
   'OFF': (e: Character) => new InvalidController(e),
   'enemy chaser': (e: Character) => new BotEnemyChaser(e)
@@ -21,12 +21,15 @@ const bot_controllers: { [x in string]?: (e: Character) => BaseController } = {
 
 export function BlackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
   const { lf2, visible } = props;
-  const [bg, set_bg] = useState<string>(Defines.THE_VOID_BG.id);
-
   const [bgm, set_bgm] = useState<string>('');
   const [bgm_list, set_bgm_list] = useState<string[]>([]);
 
-  const [stage_id, set_stage_id] = useState<string>(Defines.THE_VOID_STAGE.id);
+  const [value, set_value] = useImmer({
+    bg_id: Defines.THE_VOID_BG.id,
+    stage_id: Defines.THE_VOID_STAGE.id,
+    type: 'bg' as 'bg' | 'stage'
+  });
+
   const [stage_bgm, set_stage_bgm] = useState<boolean>(false);
   const [stage_list, set_stage_list] = useState<IStageInfo[]>([Defines.THE_VOID_STAGE]);
 
@@ -48,10 +51,13 @@ export function BlackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
     if (!lf2) return;
     const world_callbacks: IWorldCallbacks = {
       on_stage_change: (_world, curr, _prev) => {
-        set_stage_id(curr.data.id)
+        set_value({
+          stage_id: curr.data.id,
+          bg_id: curr.bg.data.id,
+          type: curr.data.id === Defines.THE_VOID_STAGE.id ? 'bg' : 'stage'
+        })
         set_stage_phase_idx(0);
         set_stage_phases(curr.data.phases);
-        set_bg(curr.bg.data.id);
         curr.callbacks.add({
           on_phase_changed(stage, curr, prev) {
             set_stage_phase_idx(curr ? stage.data.phases.indexOf(curr) : -1)
@@ -63,13 +69,13 @@ export function BlackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
     return () => {
       lf2.world.callbacks.delete(world_callbacks)
     }
-  }, [lf2]);
+  }, [lf2, set_value]);
 
   useEffect(() => {
     if (!lf2) return;
     lf2.stages.need_load && lf2.stages.load();
     const lf2_callbacks: ILf2Callback = {
-      on_stages_loaded: (stages) => set_stage_list([Defines.THE_VOID_STAGE, ...stages]),
+      on_stages_loaded: (stages) => set_stage_list(stages),
       on_stages_clear: () => set_stage_list([Defines.THE_VOID_STAGE])
     }
     return lf2.add_callbacks(lf2_callbacks);
@@ -85,30 +91,21 @@ export function BlackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
     return lf2.add_callbacks(lf2_callbacks);
   }, [lf2])
 
+  const { bg_id, stage_id, type } = value
   useEffect(() => {
     if (!lf2) return;
-    if (bg) lf2.change_bg(bg);
-    else lf2.remove_bg();
-  }, [lf2, bg]);
+    if (type === 'bg')
+      lf2.change_bg(bg_id);
+    else if (type === 'stage')
+      lf2.change_stage(stage_id);
 
-  useEffect(() => {
-    if (!lf2) return;
-    const data = stage_list.find(v => v.id === stage_id);
-    if (data) lf2.change_stage(data);
-    else lf2.remove_stage();
-  }, [lf2, stage_id, stage_list]);
-
-  useEffect(() => {
-    if (!lf2) return;
-    if (bg && bg !== Defines.THE_VOID_BG.id)
-      lf2.set_layout(void 0);
-    else if (stage_id && stage_id !== Defines.THE_VOID_STAGE.id)
-      lf2.set_layout(void 0);
+    if (bg_id !== Defines.THE_VOID_BG.id && type === 'bg')
+      lf2.set_layout(void 0)
+    else if (stage_id !== Defines.THE_VOID_STAGE.id && type === 'stage')
+      lf2.set_layout(void 0)
     else
       lf2.set_layout('main_page')
-
-  }, [lf2, stage_id, bg])
-
+  }, [lf2, bg_id, stage_id, type, stage_list]);
 
   const min_rwn = 1;
   const max_rwn = 100;
@@ -148,7 +145,14 @@ export function BlackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
     <>
       <div className='background_settings_row'>
         关卡:
-        <Select on_changed={set_stage_id} value={stage_id} items={stage_list} option={i => [i.id, i.name]} />
+        <Select
+          value={value.stage_id}
+          on_changed={(v: string) => set_value(draft => {
+            draft.type = 'stage'
+            draft.stage_id = v;
+          })}
+          items={stage_list}
+          option={i => [i.id, i.name]} />
         音乐:
         <Checkbox value={stage_bgm} onChanged={set_stage_bgm} />
         <Button onClick={() => lf2.world.stage.kill_all_enemies()}>杀死全部敌人</Button>
@@ -167,12 +171,13 @@ export function BlackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
       <div className='background_settings_row'>
         背景:
         <Select
-          value={bg}
-          on_changed={set_bg}
+          value={value.bg_id}
+          on_changed={(v: string) => set_value(draft => {
+            draft.type = 'bg'
+            draft.bg_id = v;
+          })}
           items={lf2.dat_mgr.backgrounds}
-          option={i => [i.id, i.base.name]}>
-          <option value=''>OFF</option>
-        </Select>
+          option={i => [i.id, i.base.name]} />
         <Button onClick={v => lf2.remove_all_entities()}>清场</Button>
         BGM:
         <Select

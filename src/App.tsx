@@ -6,6 +6,7 @@ import Fullsreen from './Fullsreen';
 import LF2, { ILf2Callback } from './LF2/LF2';
 import Select from './LF2/ui/Component/Select';
 import { Button } from './LF2/ui/Component/Button';
+import { ToggleButton } from "./LF2/ui/Component/ToggleButton";
 import { Input } from './LF2/ui/Component/Input';
 import { TextArea } from './LF2/ui/Component/TextArea';
 import { ILayoutInfo } from './Layout/ILayoutInfo';
@@ -68,53 +69,6 @@ function App() {
     else
       fullsreen.enter(document.body.parentElement!);
   }
-  useEffect(() => {
-    const on_key_down = (e: KeyboardEvent) => {
-      const lf2 = lf2_ref.current;
-      const interrupt = () => {
-        e.stopPropagation();
-        e.preventDefault();
-        e.stopImmediatePropagation();
-      }
-      switch (e.key?.toUpperCase()) {
-        case 'F9':
-          interrupt();
-          toggle_fullscreen();
-          break;
-      }
-      if (!lf2 || !loaded) return;
-      switch (e.key?.toUpperCase()) {
-        case 'F2':
-          interrupt();
-          update_once()
-          break;
-        case 'F1':
-          interrupt();
-          set_paused(v => !v)
-          break;
-        case 'F5':
-          interrupt();
-          set_fast_forward(v => !v);
-          break;
-        case 'F6':
-          interrupt();
-          set_show_indicators(v => !v)
-          break;
-        case 'F7':
-          interrupt();
-          set_game_overlay(v => !v)
-          break;
-        case 'F8':
-          interrupt();
-          set_control_panel(v => !v)
-          break;
-      }
-    }
-
-    window.addEventListener('keydown', on_key_down);
-    return () => window.removeEventListener('keydown', on_key_down)
-  }, [loaded, set_control_panel, set_game_overlay, update_once])
-
   const [layout, set_layout] = useState<string | undefined>(void 0);
   useEffect(() => {
     lf2_ref.current?.set_layout(layout)
@@ -137,7 +91,7 @@ function App() {
       })
     }
     const callback: ILf2Callback = {
-      on_layout_changed: v => { set_layout(v?.data.id) },
+      on_layout_changed: v => { set_layout(v?.data.id ?? '') },
       on_loading_start: () => {
         set_loading(true);
       },
@@ -329,13 +283,52 @@ function App() {
           <Button onClick={() => set_editor_closed(false)}>dat viewer</Button>
         </div>
         <div className='debug_ui_row'>
-          <Button onClick={() => set_paused(v => !v)}>{paused ? '恢复' : '暂停'}(F1)</Button>
-          <Button onClick={() => update_once()}>更新一次(F2)</Button>
-          <Button onClick={() => set_fast_forward(v => !v)}>{fast_forward ? '正常' : '不限'}速度(F5)</Button>
-          <Button onClick={() => set_show_indicators(v => !v)}>{show_indicators ? '隐藏' : '显示'}指示器(F6)</Button>
-          <Button onClick={() => set_game_overlay(v => !v)}>{game_overlay ? '隐藏' : '显示'}游戏覆盖(F7)</Button>
-          <Button onClick={() => set_control_panel(v => !v)}>{control_panel ? '隐藏' : '显示'}控制面板(F8)</Button>
-          <Button onClick={() => toggle_fullscreen()}>全屏(F9)</Button>
+          <ToggleButton
+            onToggle={set_paused}
+            checked={paused}
+            shortcut='F1'>
+            <>游戏暂停(F1)</>
+            <>游戏恢复(F1)</>
+          </ToggleButton>
+          <Button
+            onClick={update_once}
+            shortcut='F2'>
+            更新一帧(F2)
+          </Button>
+          <ToggleButton
+            onToggle={set_fast_forward}
+            checked={fast_forward}
+            shortcut='shift+F5'>
+            <>不限速度(shift+F5)</>
+            <>正常速度(shift+F5)</>
+          </ToggleButton>
+          <ToggleButton
+            onToggle={set_show_indicators}
+            checked={show_indicators}
+            shortcut='F6'>
+            <>隐藏指示器(F6)</>
+            <>显示指示器(F6)</>
+          </ToggleButton>
+          <ToggleButton
+            onToggle={set_game_overlay}
+            checked={game_overlay}
+            shortcut='F7'>
+            <>显示游戏覆盖(F7)</>
+            <>隐藏游戏覆盖(F7)</>
+          </ToggleButton>
+          <ToggleButton
+            onToggle={set_control_panel}
+            checked={control_panel}
+            disabled={!loaded}
+            shortcut='F8'>
+            <>显示控制面板(F8)</>
+            <>隐藏控制面板(F8)</>
+          </ToggleButton>
+          <Button
+            onClick={toggle_fullscreen}
+            shortcut='F9'>
+            全屏(F9)
+          </Button>
         </div>
         {
           loaded ? <>

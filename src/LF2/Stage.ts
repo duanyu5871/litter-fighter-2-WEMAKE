@@ -1,3 +1,4 @@
+import { Log, Warn } from "../Log";
 import { is_num } from "../js_utils/is_num";
 import { is_str } from "../js_utils/is_str";
 import { IBgData, IStageInfo, IStageObjectInfo, IStagePhaseInfo } from "../js_utils/lf2_type";
@@ -111,6 +112,8 @@ export interface IStageCallbacks {
     prev: IStagePhaseInfo | undefined
   ): void;
 }
+
+@Log
 export default class Stage {
   readonly callbacks = new Set<IStageCallbacks>();
   readonly world: World;
@@ -142,7 +145,9 @@ export default class Stage {
       this.bg = new Background(world, data);
     } else if ('bg' in data) {
       this.data = data;
-      const bg_data = this.world.lf2.dat_mgr.backgrounds.find(v => v.id === 'bg_' + this.data.bg)// FIXME;
+      const bg_id = 'bg_' + this.data.bg
+      const bg_data = this.world.lf2.dat_mgr.backgrounds.find(v => v.id === bg_id)// FIXME;
+      if (!bg_data) Warn.print(Stage.name, `bg_data not found, id: ${bg_id}`)
       this.bg = new Background(world, bg_data ?? Defines.THE_VOID_BG);
     } else {
       this.data = Defines.THE_VOID_STAGE;

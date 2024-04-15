@@ -93,7 +93,7 @@ export default class LF2 {
   }
 
   readonly stages = new Loader<IStageInfo[]>(
-    () => this.import('data/stage.json'),
+    async () => [Defines.THE_VOID_STAGE, ...await this.import('data/stage.json')],
     (d) => {
       for (const c of this._callbacks)
         c.on_stages_loaded?.(d)
@@ -480,8 +480,17 @@ export default class LF2 {
     this.world.stage = new Stage(this.world, data)
   }
   remove_bg = () => this.remove_stage();
-  change_stage = (stage_info: IStageInfo) => {
-    this.world.stage = new Stage(this.world, stage_info)
+
+  change_stage(stage_info: IStageInfo): void
+  change_stage(stage_id: string): void
+
+  change_stage(arg: IStageInfo | string): void {
+    if (is_str(arg)) {
+      const stage_info = this.stages.data?.find(v => v.id === arg)
+      if (stage_info) this.change_stage(stage_info)
+    } else {
+      this.world.stage = new Stage(this.world, arg)
+    }
   }
   remove_stage() {
     this.world.stage = new Stage(this.world, Defines.THE_VOID_STAGE)

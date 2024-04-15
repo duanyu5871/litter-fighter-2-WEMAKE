@@ -1,5 +1,6 @@
 import { Log, Warn } from '../../Log';
 import { IBallData, IBgData, ICharacterData, IDataMap, IEntityData, IGameObjData, IWeaponData } from '../../js_utils/lf2_type';
+import { Defines } from '../../js_utils/lf2_type/defines';
 import { map, traversal } from '../../js_utils/traversal';
 import LF2 from '../LF2';
 import { TData } from '../entity/Entity';
@@ -17,7 +18,7 @@ export interface IDataListMap {
 }
 
 const create_data_list_map = (): IDataListMap => ({
-  background: [],
+  background: [Defines.THE_VOID_BG],
   entity: [],
   character: [],
   weapon: [],
