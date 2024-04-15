@@ -56,6 +56,12 @@ export default class LF2 {
   private _layout: Layout | undefined;
   static DisposeError = new Error('disposed')
   static IngoreDisposeError = (e: any) => { if (e !== this.DisposeError) throw e; }
+  private _loading: boolean = false;
+  private _loaded: boolean = false;
+
+  get loading() { return this._loading; }
+  get loaded() { return this._loaded; }
+  get need_load() { return !this._loaded && !this._loading; }
 
   set disposer(f: (() => void)[] | (() => void)) {
     if (Array.isArray(f))
@@ -169,6 +175,7 @@ export default class LF2 {
   }
   readonly characters: Record<string, (num: number, team?: number) => void> = {}
   readonly weapons: Record<string, (num: number, team?: number) => void> = {}
+
   readonly dat_mgr: DatMgr;
   readonly sound_mgr: SoundMgr;
   readonly img_mgr: ImageMgr
@@ -367,8 +374,9 @@ export default class LF2 {
 
   }
 
-  clear() {
-    this.world.del_entities(...this.world.entities)
+  remove_all_entities() {
+    this.world.del_entities(...this.world.entities);
+    this.world.del_game_objs(...this.world.game_objs);
   }
   add_random_weapon(num = 1): Weapon[] {
     const ret: Weapon[] = []
@@ -389,26 +397,24 @@ export default class LF2 {
     return ret;
   }
 
-
-
-  async start(zip?: JSZIP) {
+  load(zip?: JSZIP): Promise<void> {
+    this.set_layout("loading")
+    this.on_loading_start();
     this.zip = zip
-    await this.dat_mgr.load();
 
-    for (const d of this.dat_mgr.characters) {
-      const name = d.base.name.toLowerCase();
-      this.characters[`add_${name}`] = (num = 1, team = void 0) => {
-        this.add_character(d, num, team);
+    return this.dat_mgr.load().then(() => {
+      for (const d of this.dat_mgr.characters) {
+        const name = d.base.name.toLowerCase();
+        this.characters[`add_${name}`] = (num = 1, team = void 0) => this.add_character(d, num, team);
       }
-    }
-    for (const d of this.dat_mgr.weapons) {
-      const name = d.base.name.toLowerCase();
-      this.weapons[`add_${name}`] = (num = 1, team = void 0) => {
-        this.add_weapon(d, num, team)
+      for (const d of this.dat_mgr.weapons) {
+        const name = d.base.name.toLowerCase();
+        this.weapons[`add_${name}`] = (num = 1, team = void 0) => this.add_weapon(d, num, team)
       }
-    }
-    this.world.start_update();
-    this.world.start_render();
+      this.world.start_update();
+      this.world.start_render();
+      this.on_loading_end();
+    });
   }
 
   dispose() {
@@ -417,6 +423,7 @@ export default class LF2 {
     this.world.dispose()
     this.dat_mgr.cancel();
   }
+
   add_player = (which: string, character_id: string) => {
 
     const player_info = this.player_infos.get(which);
@@ -568,9 +575,12 @@ export default class LF2 {
     for (const c of this._callbacks) c.on_loading_content?.(content, progress);
   }
   on_loading_end() {
+    this._loaded = true;
+    this._loading = false;
     for (const c of this._callbacks) c.on_loading_end?.();
   }
   on_loading_start() {
+    this._loading = true;
     for (const c of this._callbacks) c.on_loading_start?.();
   }
 }

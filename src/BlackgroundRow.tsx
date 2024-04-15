@@ -22,7 +22,7 @@ const bot_controllers: { [x in string]?: (e: Character) => BaseController } = {
 export function BlackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
   const { lf2, visible } = props;
   const [bg, set_bg] = useState<string>(Defines.THE_VOID_BG.id);
-  
+
   const [bgm, set_bgm] = useState<string>('');
   const [bgm_list, set_bgm_list] = useState<string[]>([]);
 
@@ -51,6 +51,7 @@ export function BlackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
         set_stage_id(curr.data.id)
         set_stage_phase_idx(0);
         set_stage_phases(curr.data.phases);
+        set_bg(curr.bg.data.id);
         curr.callbacks.add({
           on_phase_changed(stage, curr, prev) {
             set_stage_phase_idx(curr ? stage.data.phases.indexOf(curr) : -1)
@@ -99,8 +100,7 @@ export function BlackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
 
   useEffect(() => {
     if (!lf2) return;
-
-    if (bg && stage_id !== Defines.THE_VOID_BG.id)
+    if (bg && bg !== Defines.THE_VOID_BG.id)
       lf2.set_layout(void 0);
     else if (stage_id && stage_id !== Defines.THE_VOID_STAGE.id)
       lf2.set_layout(void 0);
@@ -173,7 +173,7 @@ export function BlackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
           option={i => [i.id, i.base.name]}>
           <option value=''>OFF</option>
         </Select>
-        <Button onClick={v => lf2.clear()}>清场</Button>
+        <Button onClick={v => lf2.remove_all_entities()}>清场</Button>
         BGM:
         <Select
           value={bgm}

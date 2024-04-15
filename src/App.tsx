@@ -115,7 +115,6 @@ function App() {
     return () => window.removeEventListener('keydown', on_key_down)
   }, [loaded, set_control_panel, set_game_overlay, update_once])
 
-
   const [layout, set_layout] = useState<string | undefined>(void 0);
   useEffect(() => {
     lf2_ref.current?.set_layout(layout)
@@ -157,7 +156,7 @@ function App() {
     open_file({ accept: '.zip' })
       .then(v => v[0])
       .then(v => JSZIP.loadAsync(v))
-      .then(v => lf2.start(v))
+      .then(v => lf2.load(v))
       .catch(e => Log.print('on_click_load_local_zip', e))
   }
   const on_click_download_zip = () => {
@@ -166,13 +165,7 @@ function App() {
     a.download = 'lf2.data.zip';
     a.click();
   }
-  const on_click_cleaup = () => {
-    const lf2 = lf2_ref.current;
-    if (!lf2) return;
-    lf2.dispose();
-    lf2_ref.current = void 0;
-    set_loaded(false);
-  }
+
   const on_click_load_builtin = async () => {
     const lf2 = lf2_ref.current;
     if (!lf2) return;
@@ -312,7 +305,7 @@ function App() {
                   value={v_align}
                   on_changed={set_v_align}
                   items={[-2, 0, 0.5, 1]}
-                  option={(v, idx) => [v, v <= -1 ? '?' : ['上', '中', '右'][idx - 1]]} />
+                  option={(v, idx) => [v, v <= -1 ? '?' : ['上', '中', '下'][idx - 1]]} />
                 {
                   v_align > -1 ? null : <Input min={-1} max={2} type='number' step={0.1}
                     value={custom_v_align}
@@ -322,7 +315,7 @@ function App() {
                   value={h_align}
                   on_changed={set_h_align}
                   items={[-2, 0, 0.5, 1]}
-                  option={(v, idx) => [v, v <= -1 ? '?' : ['上', '中', '下'][idx - 1]]} />
+                  option={(v, idx) => [v, v <= -1 ? '?' : ['左', '中', '右'][idx - 1]]} />
                 {
                   h_align > -1 ? null : <Input min={-1} max={2} type='number' step={0.1}
                     value={custom_h_align}
@@ -331,9 +324,8 @@ function App() {
               </div>
           }
           <Button onClick={on_click_download_zip}>下载数据包</Button>
-          <Button onClick={on_click_load_local_zip} disabled={loading || loaded}>加载数据包</Button>
-          <Button onClick={on_click_load_builtin} disabled={loading || loaded}>加载内置数据</Button>
-          <Button onClick={on_click_cleaup} disabled={loading || !loaded}>清空数据</Button>
+          <Button onClick={on_click_load_local_zip} disabled={loading}>加载数据包</Button>
+          <Button onClick={on_click_load_builtin} disabled={loading}>加载内置数据</Button>
           <Button onClick={() => set_editor_closed(false)}>dat viewer</Button>
         </div>
         <div className='debug_ui_row'>
