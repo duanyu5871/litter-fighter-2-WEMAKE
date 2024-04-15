@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { is_num } from "../../../js_utils/is_num";
+import { is_num } from "../js_utils/is_num";
 import { WTF } from "./_no_id";
 
 export interface ISelectProps<T, V> extends React.SelectHTMLAttributes<HTMLSelectElement> {

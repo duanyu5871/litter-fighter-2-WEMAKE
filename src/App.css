@@ -34,6 +34,24 @@
   user-select: none;
 }
 
+.game_overlay_ui {
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  top: 0px;
+  bottom: 0px;
+  pointer-events: none;
+  user-select: none;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+}
+
+.game_overlay_ui button {
+  pointer-events: all;
+
+}
+
 .editor_view {
   position: fixed;
   z-index: 1;

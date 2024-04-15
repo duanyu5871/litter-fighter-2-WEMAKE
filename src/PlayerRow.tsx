@@ -1,15 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { Button } from './Component/Button';
+import CharacterSelect from './Component/CharacterSelect';
+import { Input } from './Component/Input';
+import TeamSelect from './Component/TeamSelect';
 import LF2 from './LF2/LF2';
+import { IPlayerInfoCallback, PlayerInfo } from './LF2/PlayerInfo';
 import { TKeyName } from './LF2/controller/BaseController';
 import { PlayerController } from './LF2/controller/LocalHuman';
 import { IEntityCallbacks } from './LF2/entity/Entity';
 import { new_team } from './LF2/new_id';
-import CharacterSelect from './LF2/ui/CharacterSelect';
-import { Button } from './LF2/ui/Component/Button';
-import { Input } from './LF2/ui/Component/Input';
-import TeamSelect from './LF2/ui/TeamSelect';
 import random_get from './js_utils/random_get';
-import { IPlayerInfoCallback, PlayerInfo } from './LF2/PlayerInfo';
 
 const invalid_keys: Record<TKeyName, string> = {
   L: '',

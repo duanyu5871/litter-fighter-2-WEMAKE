@@ -1,6 +1,6 @@
-import type { ICharacterData } from '../../js_utils/lf2_type';
-import type LF2 from '../LF2';
-import Select, { ISelectProps } from './Component/Select';
+import type { ICharacterData } from '../js_utils/lf2_type';
+import type LF2 from '../LF2/LF2';
+import Select, { ISelectProps } from './Select';
 
 export interface CharacterSelectProps extends ISelectProps<ICharacterData, string> {
   lf2?: LF2;

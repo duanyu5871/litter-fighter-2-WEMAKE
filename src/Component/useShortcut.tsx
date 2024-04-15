@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { is_str } from "../../../js_utils/is_str";
+import { is_str } from "../js_utils/is_str";
 
 export type TShortcut =
   `ctrl+shift+alt+${string}` |
