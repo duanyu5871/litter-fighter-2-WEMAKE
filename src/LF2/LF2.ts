@@ -27,7 +27,17 @@ import { new_id, new_team } from './new_id';
 import { random_in_range } from './random_in_range';
 import SoundMgr from './sound/SoundMgr';
 import { Loader } from './Loader';
+import axios from 'axios';
 
+const get_short_file_size_txt = (bytes: number) => {
+  if (bytes < 1024) return `${bytes}B`;
+  bytes /= 1024;
+  if (bytes < 1024) return `${bytes.toFixed(1).replace('.0', '')}KB`;
+  bytes /= 1024;
+  if (bytes < 1024) return `${bytes.toFixed(1).replace('.0', '')}MB`;
+  bytes /= 1024;
+  return `${bytes.toFixed(1).replace('.0', '')}GB`;
+}
 const default_keys_list: TKeys[] = [
   { L: 'a', R: 'd', U: 'w', D: 's', a: 'r', j: 't', d: 'y' },
   { L: 'j', R: 'l', U: 'i', D: 'k', a: '[', j: ']', d: '\\' },
@@ -397,24 +407,52 @@ export default class LF2 {
     return ret;
   }
 
-  load(zip?: JSZIP): Promise<void> {
-    this.set_layout("loading")
+  load(arg1?: JSZIP | string): Promise<void> {
     this.on_loading_start();
-    this.zip = zip
+    this.set_layout("loading");
 
-    return this.dat_mgr.load().then(() => {
-      for (const d of this.dat_mgr.characters) {
-        const name = d.base.name.toLowerCase();
-        this.characters[`add_${name}`] = (num = 1, team = void 0) => this.add_character(d, num, team);
+    if (is_str(arg1)) {
+      return this.download_zip(arg1)
+        .then(r => {
+          this.zip = r;
+          return this.load_data()
+        }).finally(() => {
+          this.on_loading_end()
+        })
+    }
+
+    if (arg1) this.zip = arg1
+    return this.load_data()
+      .finally(() => {
+        this.on_loading_end()
+      })
+  }
+
+  private async download_zip(zip: string) {
+    const resp = await axios.get('lf2.data.zip', {
+      responseType: 'blob', onDownloadProgress: (e) => {
+        const progress = e.total ? Math.round(100 * e.loaded / e.total) : 100;
+        const full_size = get_short_file_size_txt(e.total ?? e.loaded);
+        let txt = `download: ${zip}(${full_size})`;
+        if (e.total) txt += ',' + progress + '%'
+        this.on_loading_content(txt, progress);
       }
-      for (const d of this.dat_mgr.weapons) {
-        const name = d.base.name.toLowerCase();
-        this.weapons[`add_${name}`] = (num = 1, team = void 0) => this.add_weapon(d, num, team)
-      }
-      this.world.start_update();
-      this.world.start_render();
-      this.on_loading_end();
     });
+    return await JSZIP.loadAsync(resp.data);
+  }
+
+  private async load_data() {
+    await this.dat_mgr.load();
+    for (const d of this.dat_mgr.characters) {
+      const name = d.base.name.toLowerCase();
+      this.characters[`add_${name}`] = (num = 1, team = void 0) => this.add_character(d, num, team);
+    }
+    for (const d_1 of this.dat_mgr.weapons) {
+      const name_1 = d_1.base.name.toLowerCase();
+      this.weapons[`add_${name_1}`] = (num_1 = 1, team_1 = void 0) => this.add_weapon(d_1, num_1, team_1);
+    }
+    this.world.start_update();
+    this.world.start_render();
   }
 
   dispose() {

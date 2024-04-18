@@ -19,7 +19,7 @@ import { arithmetic_progression } from './js_utils/arithmetic_progression';
 import lf2_dat_str_to_json from './js_utils/lf2_dat_translator/dat_2_json';
 import read_lf2_dat from './read_lf2_dat';
 import { useLocalBoolean, useLocalNumber, useLocalString } from './useLocalStorage';
-
+import axios from 'axios';
 const fullsreen = new Fullsreen();
 
 function App() {
@@ -114,6 +114,7 @@ function App() {
       .then(v => lf2.load(v))
       .catch(e => Log.print('on_click_load_local_zip', e))
   }
+
   const on_click_download_zip = () => {
     const a = document.createElement('a');
     a.href = 'lf2.data.zip';
@@ -124,7 +125,13 @@ function App() {
   const on_click_load_builtin = async () => {
     const lf2 = lf2_ref.current;
     if (!lf2) return;
-    lf2.set_layout('loading')
+    lf2.load('lf2.data.zip')
+      .catch(e => Log.print('on_click_load_builtin', e))
+    // axios.get('lf2.data.zip', { responseType: 'blob' })
+    //   .then(r => r.data)
+    //   .then(v => JSZIP.loadAsync(v))
+    //   .then(v => lf2.load(v))
+    //   .catch(e => Log.print('on_click_load_builtin', e))
   }
   const open_dat = async () => {
     const [file] = await open_file({ accept: '.dat' });

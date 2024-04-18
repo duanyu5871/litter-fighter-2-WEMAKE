@@ -45,6 +45,7 @@ export class LoadingFileNameDisplayer extends LayoutComponent implements ILf2Cal
       );
     } else {
       const [geo, tex] = await text_builder.build();
+      if (!this.mounted) return;
       this._sprite.geometry = geo;
       this._sprite.material.map = tex;
       this._sprite.material.needsUpdate = true;
