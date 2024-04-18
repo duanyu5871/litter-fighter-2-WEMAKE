@@ -24,11 +24,13 @@ export class PlayerKeyEditor extends LayoutComponent implements IPlayerInfoCallb
   }
 
   override on_mount() {
+    super.on_mount();
     this.update_sprite();
     this.lf2.player_infos.get(this._which!)?.add_callback(this);
   }
 
   override on_unmount(): void {
+    super.on_unmount();
     this._on_cancel();
     this._sprite?.removeFromParent();
     this.lf2.player_infos.get(this._which!)?.del_callback(this);

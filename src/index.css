@@ -49,6 +49,24 @@ body {
   background-color: #5A73D6;
 }
 
+.lf2_border {
+  border: 2px #5A73D6 solid;
+  border-radius: 3px;
+}
+
+.lf2_hoverable_border {
+  transition:
+    color 200ms,
+    border-color 200ms,
+    border-radius 500ms;
+  border: 2px #5A73D6 solid;
+  border-radius: 3px;
+}
+
+.lf2_hoverable_border:hover {
+  border-color: #FFFFFF;
+}
+
 
 button,
 input,
@@ -57,6 +75,7 @@ textarea {
   color: #5A73D6;
   border: 2px #5A73D6 solid;
   border-radius: 3px;
+
   padding: 2px 4px;
   background-color: transparent;
   font-weight: bold;

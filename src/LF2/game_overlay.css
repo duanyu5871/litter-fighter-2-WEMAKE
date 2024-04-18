@@ -15,14 +15,10 @@
   bottom: 1px;
   height: 20px;
   box-sizing: border-box;
-  width: calc(100% - 2px - 75px);
-  border: 1px gray solid;
+  width: calc(100% - 2px - 35px);
   outline: none;
-  transition: background-color 200ms;
-}
-
-.camera_ctrl:hover {
-  background-color: #55555555;
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
 }
 
 .btn_free_cam {
@@ -31,5 +27,17 @@
   position: absolute;
   right: 1px;
   bottom: 1px;
-  width: 75px;
+  width: 35px;
+  line-height: 20px;
+  padding: 0px;
+
+  border-left-width: 0px;
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+}
+
+.btn_free_cam:focus {
+  border-left-width: 0px;
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
 }

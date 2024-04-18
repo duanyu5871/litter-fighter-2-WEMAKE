@@ -7,14 +7,15 @@ import './game_overlay.css';
 const ele = document.createElement.bind(document);
 export class GameOverlay implements IWorldCallbacks, ILf2Callback {
   readonly world: World;
-  readonly ele: HTMLDivElement | null | undefined;
-  readonly fps_ele: HTMLElement;
-  readonly ups_ele: HTMLElement;
-  readonly cam_bar: HTMLCanvasElement;
-  readonly loading_ele: HTMLSpanElement;
+  protected ele: HTMLDivElement | null | undefined;
+  protected ele_fps: HTMLElement;
+  protected ele_ups: HTMLElement;
+  protected ele_cam_bar: HTMLCanvasElement;
+  protected ele_loading: HTMLSpanElement;
+  protected ele_btn_free_cam: HTMLButtonElement;
 
   private cam_bar_pressing = false;
-  private cam_bar_ctx: CanvasRenderingContext2D | null = null;
+  private ctx_cam_bar: CanvasRenderingContext2D | null = null;
   private cam_locked: boolean = false;
 
   private _pointer_down = (e: PointerEvent) => {
@@ -32,38 +33,40 @@ export class GameOverlay implements IWorldCallbacks, ILf2Callback {
     this.cam_bar_pressing = false;
     this.handle_cam_ctrl_pointer_event(e);
   }
-  btn_free_cam: HTMLButtonElement;
-  
+
   constructor(world: World, container: HTMLDivElement | null | undefined) {
     this.world = world;
     this.world.callbacks.add(this);
     this.ele = container;
-    this.fps_ele = ele('span');
-    this.fps_ele.className = 'txt_game_overlay'
-    this.ups_ele = ele('span');
-    this.ups_ele.className = 'txt_game_overlay'
-    this.loading_ele = ele('span');
-    this.loading_ele.className = 'txt_game_overlay'
-    this.cam_bar = ele('canvas');
-    this.btn_free_cam = ele('button');
-    this.init_btn_free_cam()
-    this.init_camera_ctrl();
+    this.ele_fps = ele('span');
+    this.ele_fps.className = 'txt_game_overlay'
+    this.ele_ups = ele('span');
+    this.ele_ups.className = 'txt_game_overlay'
+    this.ele_loading = ele('span');
+    this.ele_loading.className = 'txt_game_overlay'
+    this.ele_cam_bar = ele('canvas');
+    this.ele_btn_free_cam = ele('button');
+    this.init_ele_btn_free_cam()
+    this.init_ele_cam_bar();
     world.lf2.add_callbacks(this);
+    world.callbacks.add(this)
+
     if (!container) return;
     container.innerHTML = ''
     container.append(
-      this.fps_ele, ele('br'),
-      this.ups_ele, ele('br'),
-      this.loading_ele, ele('br'),
-      this.cam_bar,
-      this.btn_free_cam
+      this.ele_fps, ele('br'),
+      this.ele_ups, ele('br'),
+      this.ele_loading, ele('br'),
+      this.ele_cam_bar,
+      this.ele_btn_free_cam
     );
   }
-  init_btn_free_cam() {
-    this.btn_free_cam.className = 'btn_free_cam';
-    this.btn_free_cam.innerText = 'free cam';
-    this.btn_free_cam.type = 'button';
-    this.btn_free_cam.addEventListener('click', () => {
+  init_ele_btn_free_cam() {
+    this.ele_btn_free_cam.style.display = 'none';
+    this.ele_btn_free_cam.className = 'btn_free_cam';
+    this.ele_btn_free_cam.innerText = '释放';
+    this.ele_btn_free_cam.type = 'button';
+    this.ele_btn_free_cam.addEventListener('click', () => {
       this.cam_locked = false;
       if (is_num(this.world.lock_cam_x)) {
         this.draw_cam_bar(this.world.lock_cam_x)
@@ -71,10 +74,11 @@ export class GameOverlay implements IWorldCallbacks, ILf2Callback {
       }
     })
   }
-  init_camera_ctrl() {
-    this.cam_bar.className = 'camera_ctrl';
-    this.cam_bar_ctx = this.cam_bar.getContext('2d');
-    this.cam_bar.addEventListener('pointerdown', this._pointer_down);
+  init_ele_cam_bar() {
+    this.ele_cam_bar.style.display = 'none';
+    this.ele_cam_bar.className = 'camera_ctrl lf2_hoverable_border';
+    this.ctx_cam_bar = this.ele_cam_bar.getContext('2d');
+    this.ele_cam_bar.addEventListener('pointerdown', this._pointer_down);
     window.addEventListener('pointermove', this._pointer_move);
     window.addEventListener('pointerup', this._pointer_up);
     window.addEventListener('pointercancel', this._pointer_up);
@@ -83,8 +87,8 @@ export class GameOverlay implements IWorldCallbacks, ILf2Callback {
 
   cam_bar_handle_padding = 2.5;
   handle_cam_ctrl_pointer_event(e: PointerEvent) {
-    if (!this.cam_bar_ctx) return;
-    const { left, width } = this.cam_bar.getBoundingClientRect();
+    if (!this.ctx_cam_bar) return;
+    const { left, width } = this.ele_cam_bar.getBoundingClientRect();
     const s_width = this.world.stage.width;
     const w = Math.floor(width * Defines.OLD_SCREEN_WIDTH / s_width);
     const x = Math.min(width - w - 3, Math.max(0, Math.floor(e.pageX - left - w / 2)));
@@ -92,47 +96,56 @@ export class GameOverlay implements IWorldCallbacks, ILf2Callback {
   }
 
   draw_cam_bar(x: number) {
-    if (!this.cam_bar_ctx) return;
+    if (!this.ctx_cam_bar) return;
     const background_w = this.world.stage.width;
     const screen_w = Defines.OLD_SCREEN_WIDTH;
-    const { width: bar_width, height } = this.cam_bar;
+    const { width: bar_width, height } = this.ele_cam_bar;
     const { player_left, player_right } = this.world.stage;
     const x_l = Math.floor(bar_width * player_left / background_w);
     const x_r = Math.floor(bar_width * player_right / background_w);
     const hh = this.cam_bar_handle_padding;
     const w = Math.floor(bar_width * screen_w / background_w) - hh
     const h = height - hh * 2;
-    this.cam_bar_ctx.fillStyle = this.cam_bar_ctx.strokeStyle = '#FF000055'
-    this.cam_bar_ctx.fillRect(0, 0, x_l, height);
-    this.cam_bar_ctx.fillRect(x_r, 0, bar_width - x_r, height);
-    this.cam_bar_ctx.lineWidth = 1;
-    this.cam_bar_ctx.strokeStyle = '#FFFFFF55'
-    this.cam_bar_ctx.strokeRect(x + hh, hh, w, h);
+    this.ctx_cam_bar.fillStyle = this.ctx_cam_bar.strokeStyle = '#FF000055'
+    this.ctx_cam_bar.fillRect(0, 0, x_l, height);
+    this.ctx_cam_bar.fillRect(x_r, 0, bar_width - x_r, height);
+    this.ctx_cam_bar.lineWidth = 1;
+    this.ctx_cam_bar.strokeStyle = '#FFFFFF55'
+    this.ctx_cam_bar.strokeRect(x + hh, hh, w, h);
     if (this.cam_locked) {
-      this.cam_bar_ctx.fillStyle = '#FFFFFF88';
-      this.cam_bar_ctx.fillRect(x + hh, hh, w, h);
+      this.ctx_cam_bar.fillStyle = '#FFFFFF88';
+      this.ctx_cam_bar.fillRect(x + hh, hh, w, h);
     }
   }
+
   set FPS(v: number) {
-    this.fps_ele.innerText = 'FPS:' + v.toFixed(0);
+    this.ele_fps.innerText = 'FPS:' + v.toFixed(0);
   }
+
   set UPS(v: number) {
-    this.ups_ele.innerText = 'UPS:' + v.toFixed(0);
+    this.ele_ups.innerText = 'UPS:' + v.toFixed(0);
   }
+
   set loading(v: string) {
-    this.loading_ele.innerText = v;
+    this.ele_loading.innerText = v;
   }
+
   on_cam_move(_world: World, cam_x: number): void {
-    const { width, height } = this.cam_bar.getBoundingClientRect();
-    this.cam_bar.width = width;
-    this.cam_bar.height = height;
+    const { width, height } = this.ele_cam_bar.getBoundingClientRect();
+    this.ele_cam_bar.width = width;
+    this.ele_cam_bar.height = height;
     const s_width = this.world.stage.width;
     const x = cam_x * width / s_width;
     this.draw_cam_bar(x)
   }
 
-  on_stage_change(_world: World, _curr: Stage, _prev: Stage): void {
-    this.on_cam_move(_world, this.world.camera.position.x)
+  on_stage_change(world: World, curr: Stage, _prev: Stage): void {
+    if (curr.bg.data.id === Defines.THE_VOID_BG.id) {
+      this.ele_cam_bar.style.display = this.ele_btn_free_cam.style.display = 'none';
+    } else {
+      this.ele_cam_bar.style.display = this.ele_btn_free_cam.style.display = 'unset';
+    }
+    this.on_cam_move(world, this.world.camera.position.x);
   }
 
   private update_timer: ReturnType<typeof setInterval> | undefined;
@@ -153,6 +166,7 @@ export class GameOverlay implements IWorldCallbacks, ILf2Callback {
     if (this.update_timer) clearInterval(this.update_timer)
     this.update_timer = void 0;
     world.lf2.del_callbacks(this);
+    world.callbacks.delete(this)
   }
 
   on_loading_content(content: string, progress: number) {

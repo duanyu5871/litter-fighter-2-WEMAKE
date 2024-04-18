@@ -5,9 +5,11 @@ import { TextBuilder } from './TextBuilder';
 
 export class LoadingFileNameDisplayer extends LayoutComponent implements ILf2Callback {
   override on_mount(): void {
+    super.on_mount();
     this.layout.lf2.add_callbacks(this)
   }
   override on_unmount(): void {
+    super.on_unmount();
     this.layout.lf2.del_callbacks(this)
   }
   on_loading_content(content: string): void {
@@ -27,7 +29,6 @@ export class LoadingFileNameDisplayer extends LayoutComponent implements ILf2Cal
     if (!this.layout.sprite) return;
 
     const { data } = this.layout;
-
     const text_builder = TextBuilder
       .get(this.lf2)
       .center(...this.layout.center)
