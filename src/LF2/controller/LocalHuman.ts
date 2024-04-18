@@ -15,6 +15,7 @@ export class PlayerController extends BaseController {
     if (!key) return;
     this.end(key);
   };
+
   private _on_key_down = (e: KeyboardEvent) => {
     const code = e.key?.toLowerCase();
     if (!code) return;
@@ -25,17 +26,17 @@ export class PlayerController extends BaseController {
     if (!this.is_end(key)) return;
     this.start(key);
   };
+
   constructor(which: string, character: Character, kc?: TKeyCodeMap) {
     super(character);
     this.which = which;
     if (kc) this.set_key_code_map(kc);
     window.addEventListener('keydown', this._on_key_down);
     window.addEventListener('keyup', this._on_key_up);
-    this.disposer = [
-      () => window.removeEventListener('keydown', this._on_key_down),
-      () => window.removeEventListener('keyup', this._on_key_up)
-    ]
+    this.disposer = () => window.removeEventListener('keydown', this._on_key_down)
+    this.disposer = () => window.removeEventListener('keyup', this._on_key_up)
   }
+  
   set_key_code_map(key_code_map: TKeyCodeMap) {
     this._key_code_map = {};
     this._code_key_map = {};

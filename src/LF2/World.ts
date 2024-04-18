@@ -536,7 +536,5 @@ export class World {
     this.del_game_objs(...this.game_objs);
     this.renderer.clear()
     this.renderer.dispose();
-    this._r_fps.dispose();
-    this._u_fps.dispose();
   }
 }

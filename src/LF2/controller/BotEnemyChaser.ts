@@ -42,7 +42,7 @@ export class BotEnemyChaser extends BaseController {
     const { x, z } = c.position;
     const { x: end_x, z: end_z } = this._nearest_enemy?.position || c.position;
     const DEAD_ZONE = 50;
-    const RUN_ZONE = 300;
+    const RUN_ZONE = 600;
     const { facing } = c;
     const { state } = c.get_frame();
     const is_running = state === Defines.State.Running

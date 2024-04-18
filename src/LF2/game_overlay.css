@@ -26,23 +26,10 @@
 }
 
 .btn_free_cam {
-  background-color: black;
-  color: white;
-  outline: none;
-  border: none;
   height: 20px;
   pointer-events: all;
   position: absolute;
   right: 1px;
   bottom: 1px;
   width: 75px;
-  transition: all 200ms;
-}
-
-.btn_free_cam:hover {
-  background-color: #FFFFFF55;
-}
-
-.btn_free_cam:active {
-  background-color: #FFFFFF22;
 }

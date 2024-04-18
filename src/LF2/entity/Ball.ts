@@ -6,7 +6,6 @@ import type { ICube, World } from '../World';
 import { BALL_STATES } from '../state/BallState';
 import { Entity } from './Entity';
 
-
 export class Ball extends Entity<IBallFrameInfo, IBallInfo, IBallData> {
   ud = 0;
   constructor(world: World, data: IBallData) {
@@ -52,7 +51,7 @@ export class Ball extends Entity<IBallFrameInfo, IBallInfo, IBallData> {
     super.update();
     const f = this.get_frame();
     if (this.hp <= 0) {
-      f.on_dead && this.enter_frame(f.on_dead)
+      f.on_dead && this.enter_frame(f.on_dead) 
     } else if (f.hp) {
       this.hp -= f.hp;
     }
