@@ -40,7 +40,7 @@ export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, IChar
     const strokeStyle = get_team_shadow_color(team);
     if (!name) return;
 
-    this.world.lf2.img_mgr.load_text(name, { strokeStyle, fillStyle })
+    this.world.lf2.img_mgr.load_text(name, { shadowColor: strokeStyle, fillStyle })
       .then((i) => this.world.lf2.img_mgr.create_picture_by_img_key('', i.key))
       .then((p) => {
         if (name !== this._name) return;

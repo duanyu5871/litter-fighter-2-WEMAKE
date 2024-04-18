@@ -66,7 +66,7 @@ export default class Layout {
   get index() { return this._index }
   get state() { return this._state }
   get img_idx() { return this._img_idx() }
-  get visible(): boolean { return this._visible() && this.parent?.visible !== false }
+  get visible(): boolean { return this._visible() }
   get opacity() { return this._opacity() }
   get parent() { return this._parent; }
   set parent(v) { this._parent = v; }
@@ -89,13 +89,16 @@ export default class Layout {
     const [l, t, w, h] = this.dst_rect;
     return l <= x && t <= y && l + w >= x && t + h >= y;
   }
+
   on_mouse_leave() {
   }
+
   on_mouse_enter() {
   }
+
   on_mount() {
     this._state = {};
-    this.init_3d();
+    this.init_sprite();
 
     for (const item of this.items)
       item.on_mount();
@@ -104,7 +107,15 @@ export default class Layout {
     if (a) this.handle_layout_action(a);
 
     for (const c of this._components) c.on_mount?.();
+
+    if (this._sprite) {
+      if (this._sprite.visible)
+        this.on_show();
+      else
+        this.on_hide();
+    }
   }
+
   on_unmount() {
     for (const c of this._components) c.on_unmount?.();
 
@@ -115,6 +126,14 @@ export default class Layout {
       item.on_unmount()
 
     this._sprite?.removeFromParent();
+  }
+
+  on_show() {
+    for (const c of this._components) c.on_show?.();
+  }
+
+  on_hide() {
+    for (const c of this._components) c.on_hide?.();
   }
 
   to_next_img() {
@@ -195,7 +214,7 @@ export default class Layout {
     const { txt_fill, txt_stroke, txt } = this.data;
     do {
       if (!is_str(txt)) break;
-      this.img_infos = [await this.lf2.img_mgr.load_text(txt, { fillStyle: txt_fill, strokeStyle: txt_stroke })]
+      this.img_infos = [await this.lf2.img_mgr.load_text(txt, { fillStyle: txt_fill, shadowColor: txt_stroke })]
     } while (0);
   }
 
@@ -262,7 +281,8 @@ export default class Layout {
 
   protected _sprite?: THREE.Object3D;
   get sprite() { return this._sprite }
-  protected init_3d() {
+
+  protected init_sprite() {
     const [cx, cy] = this.center;
     const [x, y] = this.pos;
     const [w, h] = this.size;
@@ -285,28 +305,8 @@ export default class Layout {
     this._sprite.userData = {
       owner: this,
     };
-
+    this._sprite.visible = this.visible;
     (this.parent?.sprite || this.lf2.world.scene)?.add(this._sprite);
-
-    // const box = new THREE.Box3().expandByObject(this._sprite);
-    // const cam = this.lf2.world.camera;
-    // const cam_half_h = cam.top / 2;
-    // const cam_half_w = cam.right / 2;
-    // const a = [
-    //   new THREE.Vector3(box.min.x, box.min.y, box.min.z),
-    //   new THREE.Vector3(box.min.x, box.min.y, box.max.z),
-    //   new THREE.Vector3(box.min.x, box.max.y, box.min.z),
-    //   new THREE.Vector3(box.min.x, box.max.y, box.max.z),
-    //   new THREE.Vector3(box.max.x, box.min.y, box.min.z),
-    //   new THREE.Vector3(box.max.x, box.min.y, box.max.z),
-    //   new THREE.Vector3(box.max.x, box.max.y, box.min.z),
-    //   new THREE.Vector3(box.max.x, box.max.y, box.max.z)
-    // ].map(v => {
-    //   const { x, y } = v.project(cam);
-    //   v.x = Math.round(x * cam_half_w + cam_half_w);
-    //   v.y = Math.round(y * cam_half_h + cam_half_h);
-    //   return v;
-    // })
   }
 
   on_click(): boolean {
@@ -345,7 +345,14 @@ export default class Layout {
       if (this._root === this) {
         sprite.position.x = this.lf2.world.camera.position.x
       }
-      sprite.visible = this.visible;
+      const { visible } = this;
+      if (sprite.visible !== visible) {
+        sprite.visible = visible
+        if (visible)
+          this.on_show();
+        else
+          this.on_hide();
+      }
     }
     if (this._material) {
       const next_opacity = this.opacity;

@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { ILf2Callback } from '../../LF2/LF2';
-import { create_picture } from '../../LF2/loader/loader';
 import { LayoutComponent } from './LayoutComponent';
+import { TextBuilder } from './TextBuilder';
 
 export class LoadingFileNameDisplayer extends LayoutComponent implements ILf2Callback {
   override on_mount(): void {
@@ -27,21 +27,26 @@ export class LoadingFileNameDisplayer extends LayoutComponent implements ILf2Cal
     if (!this.layout.sprite) return;
 
     const { data } = this.layout;
-    const font = data.font?.join(' ');
-    const fillStyle = data.txt_fill;
-    const strokeStyle = data.txt_stroke;
-    const [cx, cy] = this.layout.center
-    const img = await this.layout.lf2.img_mgr.load_text(loading_content, { font, fillStyle, strokeStyle });
-    const texture = create_picture(img.key, img).data.texture
-    const geo = new THREE.PlaneGeometry(img.w, img.h).translate(img.w * (0.5 - cx), img.h * (cy - 0.5), 0);
+
+    const text_builder = TextBuilder
+      .get(this.lf2)
+      .center(...this.layout.center)
+      .text(loading_content)
+      .style({
+        font: data.font?.join(' '),
+        fillStyle: data.txt_fill,
+        shadowColor: data.txt_stroke
+      })
+
     if (!this._sprite) {
-      this._sprite = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ transparent: true, map: texture }))
-      this.layout.sprite.add(this._sprite);
+      this.layout.sprite.add(
+        this._sprite = await text_builder.build_mesh()
+      );
     } else {
+      const [geo, tex] = await text_builder.build();
       this._sprite.geometry = geo;
-      this._sprite.material.map = texture;
+      this._sprite.material.map = tex;
       this._sprite.material.needsUpdate = true;
     }
   }
-
 }

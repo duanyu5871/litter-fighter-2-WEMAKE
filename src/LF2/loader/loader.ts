@@ -6,6 +6,7 @@ import { IEntityPictureInfo } from '../../js_utils/lf2_type';
 import { IPictureInfo } from '../../types/IPictureInfo';
 import type LF2 from "../LF2";
 import RequestersMgr from "./RequestersMgr";
+import { IStyle } from "./IStyle";
 export type Src = string | Blob | Promise<string | Blob>;
 export type TPictureInfo = IPictureInfo<THREE.Texture>;
 export type TDataPromise<T> = Promise<T> & { data: T }
@@ -29,13 +30,6 @@ export type TImageInfo = {
 }
 
 export type PaintFunc = (img: HTMLImageElement, cvs: HTMLCanvasElement, ctx: CanvasRenderingContext2D) => void;
-export interface TxtStyle {
-  font?: string;
-  fillStyle?: string;
-  strokeStyle?: string;
-  lineWidth?: number;
-}
-
 export class ImageMgr {
   readonly lf2: LF2;
   constructor(lf2: LF2) {
@@ -65,7 +59,7 @@ export class ImageMgr {
     return { key, url, w: cvs.width, h: cvs.height, img: cvs }
   }
 
-  protected async _make_text_info(key: string, text: string, style?: TxtStyle): Promise<TImageInfo> {
+  protected async _make_text_info(key: string, text: string, style?: IStyle): Promise<TImageInfo> {
     const cvs = document.createElement('canvas');
     const ctx = cvs.getContext('2d');
     if (!ctx) throw new Error("can not get context from canvas");
@@ -73,7 +67,7 @@ export class ImageMgr {
     const apply_test_style = () => {
       ctx.font = style?.font ?? 'normal 9px system-ui';
       ctx.fillStyle = style?.fillStyle ?? 'white';
-      ctx.shadowColor = style?.strokeStyle ?? 'black';
+      ctx.shadowColor = style?.shadowColor ?? 'black';
       ctx.lineWidth = style?.lineWidth ?? 1;
       ctx.shadowBlur = 5;
     }
@@ -106,7 +100,7 @@ export class ImageMgr {
     return this._requesters.values.get(this._gen_key(f))
   }
 
-  load_text(text: string, style: TxtStyle = {}): Promise<TImageInfo> {
+  load_text(text: string, style: IStyle = {}): Promise<TImageInfo> {
     const key = new SparkMD5().append(text).append(JSON.stringify(style)).end()
     return this._requesters.get(key, async () => {
       return await this._make_text_info(key, text, style);
