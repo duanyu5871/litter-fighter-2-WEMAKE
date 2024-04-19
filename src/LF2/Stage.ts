@@ -8,6 +8,7 @@ import random_take from "../js_utils/random_take";
 import { Background } from "./Background";
 import { factory } from "./Factory";
 import type { World } from "./World";
+import Callbacks from "./base/Callbacks";
 import { BotEnemyChaser } from "./controller/BotEnemyChaser";
 import { Character } from "./entity/Character";
 import { Entity, IEntityCallbacks } from "./entity/Entity";
@@ -115,7 +116,7 @@ export interface IStageCallbacks {
 
 @Log
 export default class Stage {
-  readonly callbacks = new Set<IStageCallbacks>();
+  readonly callbacks = new Callbacks<IStageCallbacks>();
   readonly world: World;
   readonly data: IStageInfo;
   readonly bg: Background;
@@ -187,8 +188,7 @@ export default class Stage {
       }
       return;
     }
-
-    for (const f of this.callbacks) f.on_phase_changed?.(this, phase, old)
+    this.callbacks.emit('on_phase_changed')(this, phase, old);
     if (!phase) return;
     const { objects } = phase;
     this.try_play_phase_bgm()
