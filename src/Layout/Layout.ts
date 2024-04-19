@@ -12,15 +12,16 @@ import { LayoutComponent } from './Component/LayoutComponent';
 import type { ILayoutInfo } from './ILayoutInfo';
 import { read_as_2_nums } from './utils/read_as_2_nums';
 import { read_as_4_nums } from './utils/read_as_4_nums';
+import Callbacks from '../LF2/base/Callbacks';
 
 export interface ILayoutCallback {
   on_click?(): void;
 }
 
 export default class Layout {
-  protected _callbacks = new Set<ILayoutCallback>();
-  add_callback(callback: ILayoutCallback) { this._callbacks.add(callback); return this; }
-  del_callback(callback: ILayoutCallback) { this._callbacks.delete(callback); return this; }
+  readonly callbacks = new Callbacks<ILayoutCallback>();
+  add_callback(callback: ILayoutCallback) { this.callbacks.add(callback); return this; }
+  del_callback(callback: ILayoutCallback) { this.callbacks.del(callback); return this; }
 
   protected _opacity_animation = new NumberAnimation();
   protected _root: Layout;

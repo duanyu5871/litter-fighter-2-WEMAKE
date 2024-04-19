@@ -4,6 +4,7 @@ import { constructor_name } from '../../js_utils/constructor_name';
 import { is_nagtive_num } from '../../js_utils/is_nagtive_num';
 import { IBallData, IBaseData, IBdyInfo, ICharacterData, IEntityData, IFrameInfo, IGameObjData, IGameObjInfo, IItrInfo, IOpointInfo, IWeaponData, TNextFrame } from '../../js_utils/lf2_type';
 import { Defines } from '../../js_utils/lf2_type/defines';
+import Callbacks from '../base/Callbacks';
 import { factory } from '../Factory';
 import { FrameAnimater } from '../FrameAnimater';
 import type { World } from '../World';
@@ -55,7 +56,7 @@ export class Entity<
   I extends IGameObjInfo = IGameObjInfo,
   D extends IGameObjData<I, F> = IGameObjData<I, F>
 > extends FrameAnimater<F, I, D> {
-  callbacks = new Set<IEntityCallbacks>()
+  callbacks = new Callbacks<IEntityCallbacks>()
   protected _name: string = '';
   protected _team: number = 0;
   protected _mp: number = 500;
@@ -70,27 +71,27 @@ export class Entity<
     const old = this._name;
     this._name = v;
     this.on_name_changed?.(v, old);
-    for (const cb of this.callbacks) cb.on_name_changed?.(this, v, old);
+    this.callbacks.emit('on_name_changed')(this, v, old)
   }
   get mp() { return this._mp; }
   set mp(v) {
     const old = this._mp;
     this._mp = v
-    for (const cb of this.callbacks) cb.on_mp_changed?.(this, v, old);
+    this.callbacks.emit('on_mp_changed')(this, v, old)
   }
 
   get hp() { return this._hp; }
   set hp(v) {
     const old = this._hp;
     this._hp = v
-    for (const cb of this.callbacks) cb.on_hp_changed?.(this, v, old);
+    this.callbacks.emit('on_hp_changed')(this, v, old)
   }
 
   get team() { return this._team }
   set team(v) {
     const old = this._team;
     this._team = v;
-    for (const cb of this.callbacks) cb.on_team_changed?.(this, v, old);
+    this.callbacks.emit('on_team_changed')(this, v, old)
     this.on_team_changed?.(v, old);
   }
   readonly states: Map<number, BaseState>;
@@ -455,7 +456,7 @@ export class Entity<
     super.dispose();
     this.shadow.removeFromParent();
     this.indicators.dispose();
-    for (const cb of this.callbacks) cb.on_disposed?.(this);
+    this.callbacks.emit('on_disposed')(this);
   }
 }
 

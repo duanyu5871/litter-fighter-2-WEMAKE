@@ -67,7 +67,7 @@ class StageObject implements IEntityCallbacks {
   }
   on_disposed(e: Entity): void {
     this.entities.delete(e);
-    e.callbacks.delete(this);
+    e.callbacks.del(this);
     if (!this.entities.size) this.stage.handle_empty_stage_object(this)
   }
 
@@ -101,7 +101,7 @@ class StageObject implements IEntityCallbacks {
     e.attach();
   }
   dispose() {
-    for (const e of this.entities) e.callbacks.delete(this);
+    for (const e of this.entities) e.callbacks.del(this);
   }
 }
 

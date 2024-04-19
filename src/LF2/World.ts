@@ -14,6 +14,9 @@ import { Character } from './entity/Character';
 import { Entity } from './entity/Entity';
 import './entity/Weapon';
 import { Weapon } from './entity/Weapon';
+import { is_str } from '../js_utils/is_str';
+import { is_fun } from '../js_utils/is_fun';
+import Callbacks from './base/Callbacks';
 export interface ICube {
   left: number;
   right: number;
@@ -23,11 +26,13 @@ export interface ICube {
   far: number;
 }
 export interface IWorldCallbacks {
-  on_disposed?(world: World): void;
-  on_stage_change?(world: World, curr: Stage, prev: Stage): void;
-  on_cam_move?(world: World, x: number): void;
-  on_pause_change?(world: World, pause: boolean): void;
+  on_disposed?(): void;
+  on_stage_change?(curr: Stage, prev: Stage): void;
+  on_cam_move?(x: number): void;
+  on_pause_change?(pause: boolean): void;
 }
+
+new Callbacks<IWorldCallbacks>().emit('on_cam_move')(0)
 
 export class World {
   static readonly DEFAULT_DOUBLE_CLICK_INTERVAL = 30;
@@ -37,7 +42,7 @@ export class World {
   static readonly DEFAULT_FRICTION = 0.2;
 
   readonly lf2: LF2
-  readonly callbacks = new Set<IWorldCallbacks>();
+  readonly callbacks = new Callbacks<IWorldCallbacks>();
 
   /**
    * 按键“双击”判定间隔，单位（帧数）
@@ -80,7 +85,7 @@ export class World {
     if (v === this._stage) return;
     const old = this._stage;
     this._stage = v;
-    for (const i of this.callbacks) i.on_stage_change?.(this, v, old)
+    this.callbacks.emit('on_stage_change')(v, old);
     old.dispose();
   }
 
@@ -342,7 +347,7 @@ export class World {
 
     const new_cam_x = Math.floor(this.camera.position.x)
     if (old_cam_x !== new_cam_x) {
-      for (const i of this.callbacks) i.on_cam_move?.(this, new_cam_x)
+      this.callbacks.emit('on_cam_move')(new_cam_x);
     }
   }
 
@@ -514,7 +519,7 @@ export class World {
       this.stop_update();
     else if (!this._update_timer_id)
       this.start_update();
-    for (const i of this.callbacks) i.on_pause_change?.(this, v);
+    this.callbacks.emit('on_pause_change')(v);
   }
 
   private _show_indicators = false;
@@ -528,7 +533,7 @@ export class World {
     })
   }
   dispose() {
-    for (const i of this.callbacks) i.on_disposed?.(this);
+    this.callbacks.emit('on_disposed')();
     this.bg.dispose();
     this.stop_update();
     this.stop_render();

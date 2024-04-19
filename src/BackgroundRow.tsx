@@ -19,10 +19,9 @@ const bot_controllers: { [x in string]?: (e: Character) => BaseController } = {
   'enemy chaser': (e: Character) => new BotEnemyChaser(e)
 }
 
-export function BlackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
+export function BackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
   const { lf2, visible } = props;
   const [bgm, set_bgm] = useState<string>('');
-  const [bgm_list, set_bgm_list] = useState<string[]>([]);
 
   const [value, set_value] = useImmer({
     bg_id: Defines.THE_VOID_BG.id,
@@ -31,10 +30,12 @@ export function BlackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
   });
 
   const [stage_bgm, set_stage_bgm] = useState<boolean>(false);
-  const [stage_list, set_stage_list] = useState<IStageInfo[]>([Defines.THE_VOID_STAGE]);
 
   const [stage_phase_list, set_stage_phases] = useState<IStagePhaseInfo[]>([]);
   const [stage_phase_idx, set_stage_phase_idx] = useState<number>(-1);
+
+
+  const bgm_list = useBgmList(lf2);
 
   useEffect(() => {
     if (!lf2) return;
@@ -50,7 +51,7 @@ export function BlackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
   useEffect(() => {
     if (!lf2) return;
     const world_callbacks: IWorldCallbacks = {
-      on_stage_change: (_world, curr, _prev) => {
+      on_stage_change: (curr) => {
         set_value({
           stage_id: curr.data.id,
           bg_id: curr.bg.data.id,
@@ -65,31 +66,11 @@ export function BlackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
         })
       },
     }
-    lf2.world.callbacks.add(world_callbacks)
-    return () => {
-      lf2.world.callbacks.delete(world_callbacks)
-    }
+    return lf2.world.callbacks.add(world_callbacks)
   }, [lf2, set_value]);
 
-  useEffect(() => {
-    if (!lf2) return;
-    lf2.stages.need_load && lf2.stages.load();
-    const lf2_callbacks: ILf2Callback = {
-      on_stages_loaded: (stages) => set_stage_list(stages),
-      on_stages_clear: () => set_stage_list([Defines.THE_VOID_STAGE])
-    }
-    return lf2.add_callbacks(lf2_callbacks);
-  }, [lf2])
 
-  useEffect(() => {
-    if (!lf2) return;
-    lf2.bgms.need_load && lf2.bgms.load();
-    const lf2_callbacks: ILf2Callback = {
-      on_bgms_loaded: (names) => set_bgm_list(['', ...names!]),
-      on_bgms_clear: () => set_bgm_list([''])
-    }
-    return lf2.add_callbacks(lf2_callbacks);
-  }, [lf2])
+  const stage_list = useStageList(lf2);
 
   const { bg_id, stage_id, type } = value
   useEffect(() => {
@@ -223,4 +204,36 @@ export function BlackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
       </div>
     </>
   );
+}
+
+const empty_bgm_list = [''];
+function useBgmList(lf2?: LF2 | null): string[] {
+  const [bgm_list, set_bgm_list] = useState<string[]>(empty_bgm_list);
+  useEffect(() => {
+    if (!lf2) return;
+    lf2.bgms.need_load && lf2.bgms.load();
+    lf2.bgms.need_load || set_bgm_list(['', ...lf2.bgms.data ?? []]);
+    const lf2_callbacks: ILf2Callback = {
+      on_bgms_loaded: (names) => set_bgm_list(['', ...names]),
+      on_bgms_clear: () => set_bgm_list(empty_bgm_list)
+    };
+    return lf2.callbacks.add(lf2_callbacks);
+  }, [lf2]);
+  return bgm_list
+}
+
+const empty_stage_list = [Defines.THE_VOID_STAGE];
+function useStageList(lf2?: LF2 | null): IStageInfo[] {
+  const [stage_list, set_stage_list] = useState<IStageInfo[]>(empty_stage_list);
+  useEffect(() => {
+    if (!lf2) return;
+    lf2.stages.need_load && lf2.stages.load();
+    lf2.stages.need_load || set_stage_list(lf2.stages.data ?? empty_stage_list)
+    const lf2_callbacks: ILf2Callback = {
+      on_stages_loaded: (stages) => set_stage_list(stages),
+      on_stages_clear: () => set_stage_list(empty_stage_list)
+    }
+    return lf2.callbacks.add(lf2_callbacks);
+  }, [lf2])
+  return stage_list
 }

@@ -28,6 +28,7 @@ import { random_in_range } from './random_in_range';
 import SoundMgr from './sound/SoundMgr';
 import { Loader } from './Loader';
 import axios from 'axios';
+import Callbacks from './base/Callbacks';
 
 const get_short_file_size_txt = (bytes: number) => {
   if (bytes < 1024) return `${bytes}B`;
@@ -60,7 +61,7 @@ export interface ILf2Callback {
   on_bgms_clear?(): void;
 }
 export default class LF2 {
-  private _callbacks = new Set<ILf2Callback>();
+  readonly callbacks = new Callbacks<ILf2Callback>();
   private _disposers = new Set<() => void>();
   private _disposed: boolean = false;
   private _layout: Layout | undefined;
@@ -104,14 +105,8 @@ export default class LF2 {
 
   readonly stages = new Loader<IStageInfo[]>(
     async () => [Defines.THE_VOID_STAGE, ...await this.import('data/stage.json')],
-    (d) => {
-      for (const c of this._callbacks)
-        c.on_stages_loaded?.(d)
-    },
-    () => {
-      for (const c of this._callbacks)
-        c.on_stages_clear?.()
-    }
+    (d) => this.callbacks.emit('on_stages_loaded')(d),
+    () => this.callbacks.emit('on_stages_clear')()
   )
 
   readonly bgms = new Loader<string[]>(() => {
@@ -136,14 +131,9 @@ export default class LF2 {
       })
     )
   },
-    (d) => {
-      for (const c of this._callbacks)
-        c.on_bgms_loaded?.(d)
-    },
-    () => {
-      for (const c of this._callbacks)
-        c.on_bgms_clear?.()
-    });
+    (d) => this.callbacks.emit('on_bgms_loaded')(d),
+    () => this.callbacks.emit('on_bgms_clear')()
+  );
 
 
   get_local_player(which: string) {
@@ -607,27 +597,19 @@ export default class LF2 {
     this._layout = layout;
     this._layout?.on_mount();
     this.world.start_render();
-    for (const cbs of this._callbacks) cbs.on_layout_changed?.(layout, prev_layout);
+    this.callbacks.emit('on_layout_changed')(layout, prev_layout)
   }
 
-  add_callbacks(callback: ILf2Callback): () => void {
-    this._callbacks.add(callback)
-    return () => { this._callbacks.delete(callback) };
-  }
-  del_callbacks(callback: ILf2Callback): this {
-    this._callbacks.delete(callback);
-    return this;
-  }
   on_loading_content(content: string, progress: number) {
-    for (const c of this._callbacks) c.on_loading_content?.(content, progress);
+    this.callbacks.emit('on_loading_content')(content, progress);
   }
   on_loading_end() {
     this._loaded = true;
     this._loading = false;
-    for (const c of this._callbacks) c.on_loading_end?.();
+    this.callbacks.emit('on_loading_end')();
   }
   on_loading_start() {
     this._loading = true;
-    for (const c of this._callbacks) c.on_loading_start?.();
+    this.callbacks.emit('on_loading_start')();
   }
 }

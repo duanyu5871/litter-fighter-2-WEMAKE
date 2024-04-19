@@ -48,7 +48,7 @@ export class GameOverlay implements IWorldCallbacks, ILf2Callback {
     this.ele_btn_free_cam = ele('button');
     this.init_ele_btn_free_cam()
     this.init_ele_cam_bar();
-    world.lf2.add_callbacks(this);
+    world.lf2.callbacks.add(this);
     world.callbacks.add(this)
 
     if (!container) return;
@@ -130,7 +130,7 @@ export class GameOverlay implements IWorldCallbacks, ILf2Callback {
     this.ele_loading.innerText = v;
   }
 
-  on_cam_move(_world: World, cam_x: number): void {
+  on_cam_move(cam_x: number): void {
     const { width, height } = this.ele_cam_bar.getBoundingClientRect();
     this.ele_cam_bar.width = width;
     this.ele_cam_bar.height = height;
@@ -139,13 +139,13 @@ export class GameOverlay implements IWorldCallbacks, ILf2Callback {
     this.draw_cam_bar(x)
   }
 
-  on_stage_change(world: World, curr: Stage, _prev: Stage): void {
+  on_stage_change(curr: Stage): void {
     if (curr.bg.data.id === Defines.THE_VOID_BG.id) {
       this.ele_cam_bar.style.display = this.ele_btn_free_cam.style.display = 'none';
     } else {
       this.ele_cam_bar.style.display = this.ele_btn_free_cam.style.display = 'unset';
     }
-    this.on_cam_move(world, this.world.camera.position.x);
+    this.on_cam_move(this.world.camera.position.x);
   }
 
   private update_timer: ReturnType<typeof setInterval> | undefined;
@@ -154,7 +154,7 @@ export class GameOverlay implements IWorldCallbacks, ILf2Callback {
     this.world.update_camera();
     this.world.stage.bg.update();
   };
-  on_pause_change(_world: World, pause: boolean): void {
+  on_pause_change(pause: boolean): void {
     if (pause) {
       this.update_timer = setInterval(this.update_camera, 1000 / 60);
     } else {
@@ -162,11 +162,11 @@ export class GameOverlay implements IWorldCallbacks, ILf2Callback {
       this.update_timer = void 0;
     }
   }
-  on_disposed(world: World): void {
+  on_disposed(): void {
     if (this.update_timer) clearInterval(this.update_timer)
     this.update_timer = void 0;
-    world.lf2.del_callbacks(this);
-    world.callbacks.delete(this)
+    this.world.lf2.callbacks.del(this);
+    this.world.callbacks.del(this)
   }
 
   on_loading_content(content: string, progress: number) {

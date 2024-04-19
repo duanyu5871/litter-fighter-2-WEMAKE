@@ -1,7 +1,7 @@
 import JSZIP from 'jszip';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import './App.css';
-import { BlackgroundRow } from './BlackgroundRow';
+import { BackgroundRow } from './BackgroundRow';
 import Fullsreen from './Fullsreen';
 import LF2, { ILf2Callback } from './LF2/LF2';
 import Select from './Component/Select';
@@ -101,8 +101,8 @@ function App() {
         set_loading(false);
       }
     }
-    lf2_ref.current.add_callbacks(callback);
-    return () => { lf2_ref.current?.del_callbacks(callback) }
+    lf2_ref.current.callbacks.add(callback);
+    return () => { lf2_ref.current?.callbacks.del(callback) }
   }, []);
 
   const on_click_load_local_zip = () => {
@@ -360,7 +360,7 @@ function App() {
             {
               loaded ? <>
                 {Array.from(lf2_ref.current?.player_infos.values() ?? []).map((info, idx) => <PlayerRow key={idx} lf2={lf2_ref.current} which={idx + 1} visible={debug_panel} />)}
-                <BlackgroundRow lf2={lf2_ref.current} visible={debug_panel} />
+                <BackgroundRow lf2={lf2_ref.current} visible={debug_panel} />
               </> : null
             }
           </div>
