@@ -10,7 +10,7 @@ import { BotEnemyChaser } from "./controller/BotEnemyChaser";
 import { Character } from "./entity/Character";
 import { Entity, IEntityCallbacks } from "./entity/Entity";
 import { Weapon } from "./entity/Weapon";
-import { random_in_range } from "./random_in_range";
+import { random_in_range } from "./base/random_in_range";
 
 export default class StageObject implements IEntityCallbacks {
   readonly is_enemies: boolean = false;

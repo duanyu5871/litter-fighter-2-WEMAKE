@@ -7,7 +7,7 @@ import StageObject from "./StageObject";
 import type { World } from "./World";
 import Callbacks from "./base/Callbacks";
 import { Character } from "./entity/Character";
-import { new_team } from "./new_id";
+import { new_team } from "./base/new_id";
 
 export interface IStageCallbacks {
   on_phase_changed?(

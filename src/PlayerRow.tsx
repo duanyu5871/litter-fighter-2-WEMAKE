@@ -8,7 +8,7 @@ import { IPlayerInfoCallback, PlayerInfo } from './LF2/PlayerInfo';
 import { TKeyName } from './LF2/controller/BaseController';
 import { PlayerController } from './LF2/controller/LocalHuman';
 import { IEntityCallbacks } from './LF2/entity/Entity';
-import { new_team } from './LF2/new_id';
+import { new_team } from './LF2/base/new_id';
 import random_get from './js_utils/random_get';
 
 const invalid_keys: Record<TKeyName, string> = {

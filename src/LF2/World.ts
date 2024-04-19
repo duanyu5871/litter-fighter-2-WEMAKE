@@ -3,7 +3,7 @@ import { Log } from '../Log';
 import { is_num } from '../js_utils/is_num';
 import { IBdyInfo, IFrameInfo, IItrInfo } from '../js_utils/lf2_type';
 import { Defines } from '../js_utils/lf2_type/defines';
-import { FPS } from './FPS';
+import { FPS } from './base/FPS';
 import { FrameAnimater } from './FrameAnimater';
 import { GameOverlay } from './GameOverlay';
 import LF2 from './LF2';

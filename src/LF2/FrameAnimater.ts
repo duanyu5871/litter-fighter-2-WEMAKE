@@ -10,7 +10,7 @@ import { IPictureInfo } from '../types/IPictureInfo';
 import type { World } from './World';
 import { turn_face } from './entity/face_helper';
 import create_pictures from './loader/create_pictures';
-import { new_id } from './new_id';
+import { new_id } from './base/new_id';
 
 export const EMPTY_PIECE: ITexturePieceInfo = {
   tex: 0, x: 0, y: 0, w: 0, h: 0, cx: 0, cy: 0,
