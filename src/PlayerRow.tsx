@@ -66,10 +66,7 @@ export function PlayerRow(props: Props) {
     const callback: IPlayerInfoCallback = {
       on_key_changed: (name, key) => set_keys(v => ({ ...v, [name]: key }))
     }
-    player_info.add_callback(callback);
-    return () => {
-      player_info.del_callback(callback);
-    }
+    return player_info.callbacks.add(callback);
   }, [which, lf2]);
 
   useEffect(() => {

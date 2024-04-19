@@ -1,3 +1,4 @@
+import { read_as_2_nums } from '../../Layout/utils/read_as_2_nums';
 import { Warn } from '../../Log';
 import { IEntityPictureInfo, IFrameInfo, IGameObjData, ITexturePieceInfo } from '../../js_utils/lf2_type';
 import { IRect } from '../../js_utils/lf2_type/IRect';
@@ -15,6 +16,15 @@ export const cook_frame = (lf2: LF2, data: IGameObjData, frame: IFrameInfo) => {
     lf2.sound_mgr.preload(frame.sound, lf2.import(frame.sound));
   cook_frame_hit(frame);
   cook_frame_hold(frame);
+
+  const unchecked_frame = (frame as any);
+  if (unchecked_frame) {
+    if (unchecked_frame.center) {
+      const [x, y] = read_as_2_nums(unchecked_frame.center, frame.centerx ?? 0, frame.centery ?? 0)
+      frame.centerx = x;
+      frame.centery = y;
+    }
+  }
 
   if (typeof pic === 'number') {
     for (const key in data.base.files) {

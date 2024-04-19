@@ -20,9 +20,6 @@ export interface ILayoutCallback {
 
 export default class Layout {
   readonly callbacks = new Callbacks<ILayoutCallback>();
-  add_callback(callback: ILayoutCallback) { this.callbacks.add(callback); return this; }
-  del_callback(callback: ILayoutCallback) { this.callbacks.del(callback); return this; }
-
   protected _opacity_animation = new NumberAnimation();
   protected _root: Layout;
   protected _left_to_right: Layout[] = [];

@@ -6,7 +6,7 @@ export interface IPlayerInfoCallback {
   on_name_changed?(value: string, prev: string): void;
 }
 export class PlayerInfo {
-  private _callbacks = new Callbacks<IPlayerInfoCallback>()
+  readonly callbacks = new Callbacks<IPlayerInfoCallback>()
   private _id: string;
   private _name!: string;
   private _keys!: TKeys;
@@ -42,7 +42,7 @@ export class PlayerInfo {
     if (this._name === name) return this;
     const prev = this._name;
     this._name = name;
-    this._callbacks.emit('on_name_changed')(name, prev);
+    this.callbacks.emit('on_name_changed')(name, prev);
     return this;
   }
   get_name(): string {
@@ -56,7 +56,7 @@ export class PlayerInfo {
     if (this._keys[name] === key) return this;
     const prev = this._keys[name];
     this._keys[name] = key.toLowerCase();
-    this._callbacks.emit('on_key_changed')(name, key, prev);
+    this.callbacks.emit('on_key_changed')(name, key, prev);
     return this;
   }
 
@@ -64,14 +64,5 @@ export class PlayerInfo {
   get_key(name: TKeyName): string;
   get_key(name: TKeyName): string {
     return this._keys[name];
-  }
-
-  add_callback(callback: IPlayerInfoCallback): this {
-    this._callbacks.add(callback);
-    return this;
-  }
-  del_callback(callback: IPlayerInfoCallback): this {
-    this._callbacks.del(callback);
-    return this;
   }
 }
