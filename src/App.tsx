@@ -2,24 +2,23 @@ import JSZIP from 'jszip';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import './App.css';
 import { BackgroundRow } from './BackgroundRow';
+import { Button } from './Component/Button';
+import { Input } from './Component/Input';
+import Select from './Component/Select';
+import { TextArea } from './Component/TextArea';
+import { ToggleButton } from "./Component/ToggleButton";
 import Fullsreen from './Fullsreen';
 import LF2, { ILf2Callback } from './LF2/LF2';
-import Select from './Component/Select';
-import { Button } from './Component/Button';
-import { ToggleButton } from "./Component/ToggleButton";
-import { Input } from './Component/Input';
-import { TextArea } from './Component/TextArea';
 import { ILayoutInfo } from './Layout/ILayoutInfo';
 import { Log } from './Log';
 import { PlayerRow } from './PlayerRow';
 import open_file, { read_file } from './Utils/open_file';
+import { arithmetic_progression } from './common/arithmetic_progression';
+import lf2_dat_str_to_json from './common/lf2_dat_translator/dat_2_json';
 import './game_ui.css';
 import './init';
-import { arithmetic_progression } from './js_utils/arithmetic_progression';
-import lf2_dat_str_to_json from './js_utils/lf2_dat_translator/dat_2_json';
 import read_lf2_dat from './read_lf2_dat';
 import { useLocalBoolean, useLocalNumber, useLocalString } from './useLocalStorage';
-import axios from 'axios';
 const fullsreen = new Fullsreen();
 
 function App() {
@@ -126,12 +125,9 @@ function App() {
     const lf2 = lf2_ref.current;
     if (!lf2) return;
     lf2.load('lf2.data.zip')
+      .catch(e => Log.print('on_click_load_builtin, lf2.data.zip not exists, will try lf2_data', e))
+      .then(() => lf2.load())
       .catch(e => Log.print('on_click_load_builtin', e))
-    // axios.get('lf2.data.zip', { responseType: 'blob' })
-    //   .then(r => r.data)
-    //   .then(v => JSZIP.loadAsync(v))
-    //   .then(v => lf2.load(v))
-    //   .catch(e => Log.print('on_click_load_builtin', e))
   }
   const open_dat = async () => {
     const [file] = await open_file({ accept: '.dat' });

@@ -1,5 +1,5 @@
-import { is_false } from './js_utils/is_bool';
-import { is_fun } from './js_utils/is_fun';
+import { is_false } from './common/is_bool';
+import { is_fun } from './common/is_fun';
 
 export default class Fullsreen {
   is_fullscreen(): boolean {

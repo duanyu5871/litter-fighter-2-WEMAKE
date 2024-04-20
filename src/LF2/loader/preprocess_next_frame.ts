@@ -1,5 +1,5 @@
-import { INextFrame } from "../../js_utils/lf2_type";
-import { Defines } from '../../js_utils/lf2_type/defines';
+import { INextFrame } from "../../common/lf2_type";
+import { Defines } from '../../common/lf2_type/defines';
 import { FrameAnimater } from '../FrameAnimater';
 import { Character } from '../entity/Character';
 import { Entity } from '../entity/Entity';

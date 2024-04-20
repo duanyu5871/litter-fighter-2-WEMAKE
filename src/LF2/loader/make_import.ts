@@ -1,4 +1,3 @@
-import { Log } from "../../Log";
 
 export function get_import_fallbacks(name: string): string[] {
   const fallbacks = [name];
@@ -42,7 +41,7 @@ const fetch_not_html = async (url: string, progress?: IOnProgress) => {
 }
 
 async function import_from_fetch(path: string, progress?: IOnProgress): Promise<any> {
-  const roots = ['lf2_data/', 'lf2_built_in_data/'];
+  const roots = ['lf2_data/'];
   for (const root of roots) {
     const ret = await fetch_not_html(root + path, progress);
     if (ret) return ret;

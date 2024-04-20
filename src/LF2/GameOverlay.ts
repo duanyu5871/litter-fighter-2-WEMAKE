@@ -1,5 +1,5 @@
-import { is_num } from '../js_utils/is_num';
-import { Defines } from '../js_utils/lf2_type/defines';
+import { is_num } from '../common/is_num';
+import { Defines } from '../common/lf2_type/defines';
 import { ILf2Callback } from './LF2';
 import Stage from './Stage';
 import type { IWorldCallbacks, World } from './World';

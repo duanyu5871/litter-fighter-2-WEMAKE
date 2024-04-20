@@ -10,8 +10,8 @@ import { Button } from './Component/Button';
 import { Input } from './Component/Input';
 import { Checkbox } from "./Component/Checkbox";
 import TeamSelect from './Component/TeamSelect';
-import { IStageInfo, IStagePhaseInfo } from './js_utils/lf2_type';
-import { Defines } from './js_utils/lf2_type/defines';
+import { IStageInfo, IStagePhaseInfo } from './common/lf2_type';
+import { Defines } from './common/lf2_type/defines';
 import { IWorldCallbacks } from './LF2/World';
 import { useImmer } from 'use-immer';
 const bot_controllers: { [x in string]?: (e: Character) => BaseController } = {

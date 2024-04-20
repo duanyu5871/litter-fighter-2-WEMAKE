@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { IRect } from '../../js_utils/lf2_type/IRect';
+import { IRect } from '../../common/lf2_type/IRect';
 import { Entity } from './Entity';
 export const EMPTY_ARR = [] as const;
 export const INDICATORS_COLOR = {

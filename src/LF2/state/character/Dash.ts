@@ -1,5 +1,5 @@
-import { IFrameInfo } from "../../../js_utils/lf2_type";
-import { Defines } from "../../../js_utils/lf2_type/defines";
+import { IFrameInfo } from "../../../common/lf2_type";
+import { Defines } from "../../../common/lf2_type/defines";
 import { World } from "../../World";
 import type { Character } from '../../entity/Character';
 import { BaseCharacterState } from "./Base";

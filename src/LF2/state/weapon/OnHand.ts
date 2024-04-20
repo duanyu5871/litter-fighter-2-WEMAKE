@@ -1,4 +1,4 @@
-import { IFrameInfo } from "../../../js_utils/lf2_type";
+import { IFrameInfo } from "../../../common/lf2_type";
 import { Weapon } from "../../entity/Weapon";
 import { BaseWeaponState } from "./Base";
 

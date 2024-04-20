@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-import { IBgData } from '../js_utils/lf2_type';
-import { IBgLayerInfo } from "../js_utils/lf2_type/IBgLayerInfo";
-import { Defines } from '../js_utils/lf2_type/defines';
+import { IBgData } from '../common/lf2_type';
+import { IBgLayerInfo } from "../common/lf2_type/IBgLayerInfo";
+import { Defines } from '../common/lf2_type/defines';
 import { BgLayer } from './BgLayer';
 import { World } from './World';
 import { TPictureInfo, create_picture, error_picture_info } from './loader/loader';

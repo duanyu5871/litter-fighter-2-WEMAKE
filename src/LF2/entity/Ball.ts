@@ -1,5 +1,5 @@
-import { IBallData, IBallFrameInfo, IBallInfo, IBdyInfo, IItrInfo, IOpointInfo } from '../../js_utils/lf2_type';
-import { Defines } from '../../js_utils/lf2_type/defines';
+import { IBallData, IBallFrameInfo, IBallInfo, IBdyInfo, IItrInfo, IOpointInfo } from '../../common/lf2_type';
+import { Defines } from '../../common/lf2_type/defines';
 import { factory } from '../Factory';
 import { EMPTY_FRAME_INFO } from '../FrameAnimater';
 import type { ICube, World } from '../World';

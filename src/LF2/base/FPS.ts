@@ -1,4 +1,4 @@
-import { clamp } from "../../js_utils/clamp";
+import { clamp } from "../../common/clamp";
 
 /**
  * 帧率计算

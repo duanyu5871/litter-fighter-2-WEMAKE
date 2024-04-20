@@ -1,7 +1,7 @@
 import { Warn } from "../Log";
-import { is_num } from "../js_utils/is_num";
-import { IBgData, IStageInfo, IStageObjectInfo, IStagePhaseInfo } from "../js_utils/lf2_type";
-import { Defines } from "../js_utils/lf2_type/defines";
+import { is_num } from "../common/is_num";
+import { IBgData, IStageInfo, IStageObjectInfo, IStagePhaseInfo } from "../common/lf2_type";
+import { Defines } from "../common/lf2_type/defines";
 import { Background } from "./Background";
 import StageObject from "./StageObject";
 import type { World } from "./World";

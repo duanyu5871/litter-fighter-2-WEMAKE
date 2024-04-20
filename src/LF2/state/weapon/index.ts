@@ -1,5 +1,5 @@
 
-import { Defines } from "../../../js_utils/lf2_type/defines";
+import { Defines } from "../../../common/lf2_type/defines";
 import BaseState from "../BaseState";
 import { BaseWeaponState } from "./Base";
 import { InTheSky } from "./InTheSky";

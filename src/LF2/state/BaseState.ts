@@ -1,4 +1,4 @@
-import { IFrameInfo } from "../../js_utils/lf2_type";
+import { IFrameInfo } from "../../common/lf2_type";
 import { Entity } from "../entity/Entity";
 
 export default class BaseState<E extends Entity = Entity, F extends IFrameInfo = IFrameInfo> {

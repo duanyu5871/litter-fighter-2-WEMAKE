@@ -1,5 +1,5 @@
-import { IBdyInfo, IFrameInfo, IItrInfo, IOpointInfo, IWeaponData, IWeaponInfo } from "../../js_utils/lf2_type";
-import { Defines } from "../../js_utils/lf2_type/defines";
+import { IBdyInfo, IFrameInfo, IItrInfo, IOpointInfo, IWeaponData, IWeaponInfo } from "../../common/lf2_type";
+import { Defines } from "../../common/lf2_type/defines";
 import { factory } from "../Factory";
 import { GONE_FRAME_INFO } from "../FrameAnimater";
 import { ICube, World } from "../World";

@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { is_str } from './js_utils/is_str';
-import { is_fun } from './js_utils/is_fun';
-import { is_num } from './js_utils/is_num';
-import { is_bool } from './js_utils/is_bool';
+import { is_str } from './common/is_str';
+import { is_fun } from './common/is_fun';
+import { is_num } from './common/is_num';
+import { is_bool } from './common/is_bool';
 
 type T_RET<S> = readonly [S, React.Dispatch<React.SetStateAction<S>>]
 type T_IN<S> = S | (() => S);

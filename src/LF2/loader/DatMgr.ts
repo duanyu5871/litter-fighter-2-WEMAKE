@@ -1,10 +1,9 @@
-import { Log, Warn } from '../../Log';
-import { IBallData, IBgData, ICharacterData, IDataMap, IEntityData, IGameObjData, IWeaponData } from '../../js_utils/lf2_type';
-import { Defines } from '../../js_utils/lf2_type/defines';
-import { map, traversal } from '../../js_utils/traversal';
+import { Log } from '../../Log';
+import { IBallData, IBgData, ICharacterData, IDataMap, IEntityData, IGameObjData, IWeaponData } from '../../common/lf2_type';
+import { Defines } from '../../common/lf2_type/defines';
+import { map, traversal } from '../../common/traversal';
 import LF2 from '../LF2';
 import { TData } from '../entity/Entity';
-// import { make_require } from './make_require';
 import { cook_frame } from './preprocess_frame';
 
 
@@ -124,7 +123,6 @@ export default class DatMgr {
   }
 
   load(): Promise<void> {
-    
     this.clear();
     return this._inner.load();
   }

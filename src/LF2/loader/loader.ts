@@ -2,7 +2,7 @@ import SparkMD5 from "spark-md5";
 import * as THREE from 'three';
 import { create_img_ele } from '../../Utils/create_img_ele';
 import { get_blob } from '../../Utils/get_blob';
-import { IEntityPictureInfo } from '../../js_utils/lf2_type';
+import { IEntityPictureInfo } from '../../common/lf2_type';
 import { IPictureInfo } from '../../types/IPictureInfo';
 import type LF2 from "../LF2";
 import RequestersMgr from "./RequestersMgr";

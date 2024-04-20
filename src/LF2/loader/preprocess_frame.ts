@@ -1,8 +1,8 @@
 import { read_as_2_nums } from '../../Layout/utils/read_as_2_nums';
 import { Warn } from '../../Log';
-import { IEntityPictureInfo, IFrameInfo, IGameObjData, ITexturePieceInfo } from '../../js_utils/lf2_type';
-import { IRect } from '../../js_utils/lf2_type/IRect';
-import { traversal } from '../../js_utils/traversal';
+import { IEntityPictureInfo, IFrameInfo, IGameObjData, ITexturePieceInfo } from '../../common/lf2_type';
+import { IRect } from '../../common/lf2_type/IRect';
+import { traversal } from '../../common/traversal';
 import LF2 from '../LF2';
 import { preprocess_next_frame } from './preprocess_next_frame';
 const get_keys = <V extends {}>(v: V): (keyof V)[] => {

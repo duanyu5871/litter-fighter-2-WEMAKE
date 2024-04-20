@@ -1,9 +1,9 @@
-import { is_num } from "../js_utils/is_num";
-import { is_str } from "../js_utils/is_str";
-import { IStageObjectInfo } from "../js_utils/lf2_type";
-import { Defines } from "../js_utils/lf2_type/defines";
-import random_get from "../js_utils/random_get";
-import random_take from "../js_utils/random_take";
+import { is_num } from "../common/is_num";
+import { is_str } from "../common/is_str";
+import { IStageObjectInfo } from "../common/lf2_type";
+import { Defines } from "../common/lf2_type/defines";
+import random_get from "../common/random_get";
+import random_take from "../common/random_take";
 import { factory } from "./Factory";
 import Stage from "./Stage";
 import { BotEnemyChaser } from "./controller/BotEnemyChaser";

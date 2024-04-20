@@ -2,14 +2,14 @@ import JSZIP from 'jszip';
 import * as THREE from 'three';
 import Layout from '../Layout/Layout';
 import { Log, Warn } from '../Log';
-import { arithmetic_progression } from '../js_utils/arithmetic_progression';
-import { is_arr } from '../js_utils/is_arr';
-import { is_num } from '../js_utils/is_num';
-import { is_str } from '../js_utils/is_str';
-import { ICharacterData, IStageInfo, IWeaponData, TFace } from '../js_utils/lf2_type';
-import { Defines } from '../js_utils/lf2_type/defines';
-import random_get from '../js_utils/random_get';
-import random_take from '../js_utils/random_take';
+import { arithmetic_progression } from '../common/arithmetic_progression';
+import { is_arr } from '../common/is_arr';
+import { is_num } from '../common/is_num';
+import { is_str } from '../common/is_str';
+import { ICharacterData, IStageInfo, IWeaponData, TFace } from '../common/lf2_type';
+import { Defines } from '../common/lf2_type/defines';
+import random_get from '../common/random_get';
+import random_take from '../common/random_take';
 import { BgLayer } from './BgLayer';
 import { PlayerInfo } from './PlayerInfo';
 import Stage from './Stage';
@@ -406,16 +406,11 @@ export default class LF2 {
         .then(r => {
           this.zip = r;
           return this.load_data()
-        }).finally(() => {
-          this.on_loading_end()
-        })
+        }).then(() => this.on_loading_end())
     }
 
     if (arg1) this.zip = arg1
-    return this.load_data()
-      .finally(() => {
-        this.on_loading_end()
-      })
+    return this.load_data().then(() => this.on_loading_end())
   }
 
   private async download_zip(zip: string) {

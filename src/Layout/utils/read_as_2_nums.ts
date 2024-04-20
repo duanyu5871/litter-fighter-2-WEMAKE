@@ -1,5 +1,5 @@
-import { is_num } from '../../js_utils/is_num';
-import { is_str } from '../../js_utils/is_str';
+import { is_num } from '../../common/is_num';
+import { is_str } from '../../common/is_str';
 
 export const read_as_2_nums = (v: string | number | number[] | null | undefined, a1: number, a2: number): [number, number] => {
   if (!v) return [a1, a2];

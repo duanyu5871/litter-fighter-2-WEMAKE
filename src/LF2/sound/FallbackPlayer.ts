@@ -1,4 +1,4 @@
-import { is_str } from "../../js_utils/is_str";
+import { is_str } from "../../common/is_str";
 import type LF2 from "../LF2";
 import { IPlayer, Src } from "./IPlayer";
 

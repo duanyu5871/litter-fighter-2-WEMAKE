@@ -1,11 +1,10 @@
 import { spawn } from 'child_process';
 import fs from 'fs/promises';
 import path from 'path';
-import dat_to_json from './js_utils/lf2_dat_translator/dat_2_json';
-import { read_indexes } from './js_utils/lf2_dat_translator/read_indexes';
-import { ICharacterData, IDataLists } from './js_utils/lf2_type';
+import dat_to_json from '../../src/common/lf2_dat_translator/dat_2_json';
+import { read_indexes } from '../../src/common/lf2_dat_translator/read_indexes';
+import { ICharacterData, IDataLists } from '../../src/common/lf2_type';
 import { read_lf2_dat_file } from './read_old_lf2_dat_file';
-import { copy_dir } from './utils/copy_dir';
 import { read_text_file } from './utils/read_text_file';
 
 async function parse_indexes(src_path: string): Promise<IDataLists | undefined> {
@@ -72,8 +71,6 @@ async function main() {
   const indexes = await parse_indexes('./LittleFighter/data/data.txt');
   await parse_under_dir('./LittleFighter', '../public/lf2_data', indexes);
   await fs.writeFile('../public/lf2_data/data/data.json', JSON.stringify(indexes, null, 2).replace(/\.dat"/g, ".json\""))
-
-  await copy_dir("./src/js_utils", "../src/js_utils");
 }
 
 main()

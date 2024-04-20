@@ -1,4 +1,4 @@
-import { Defines } from '../../../js_utils/lf2_type/defines';
+import { Defines } from '../../../common/lf2_type/defines';
 import type { Character } from '../../entity/Character';
 import { BaseCharacterState } from "./Base";
 

@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import { IBgLayerInfo } from "../js_utils/lf2_type/IBgLayerInfo";
-import { Defines } from '../js_utils/lf2_type/defines';
+import { IBgLayerInfo } from "../common/lf2_type/IBgLayerInfo";
+import { Defines } from '../common/lf2_type/defines';
 import { Background, ILayerUserData } from './Background';
 import fade_out from '../Utils/fade_out';
 

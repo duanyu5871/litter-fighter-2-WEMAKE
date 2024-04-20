@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 import { Log, Warn } from '../../Log';
-import { constructor_name } from '../../js_utils/constructor_name';
-import { is_nagtive_num } from '../../js_utils/is_nagtive_num';
-import { IBallData, IBaseData, IBdyInfo, ICharacterData, IEntityData, IFrameInfo, IGameObjData, IGameObjInfo, IItrInfo, IOpointInfo, IWeaponData, TNextFrame } from '../../js_utils/lf2_type';
-import { Defines } from '../../js_utils/lf2_type/defines';
+import { constructor_name } from '../../common/constructor_name';
+import { is_nagtive_num } from '../../common/is_nagtive_num';
+import { IBallData, IBaseData, IBdyInfo, ICharacterData, IEntityData, IFrameInfo, IGameObjData, IGameObjInfo, IItrInfo, IOpointInfo, IWeaponData, TNextFrame } from '../../common/lf2_type';
+import { Defines } from '../../common/lf2_type/defines';
 import Callbacks from '../base/Callbacks';
 import { factory } from '../Factory';
 import { FrameAnimater } from '../FrameAnimater';

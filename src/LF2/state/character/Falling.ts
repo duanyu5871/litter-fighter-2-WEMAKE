@@ -1,4 +1,4 @@
-import { IFrameInfo } from "../../../js_utils/lf2_type";
+import { IFrameInfo } from "../../../common/lf2_type";
 import type { Character } from '../../entity/Character';
 import find_direction from "../../entity/find_frame_direction";
 import { BaseCharacterState } from "./Base";

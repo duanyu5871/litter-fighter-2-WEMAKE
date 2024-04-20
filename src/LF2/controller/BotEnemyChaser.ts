@@ -1,4 +1,4 @@
-import { Defines } from "../../js_utils/lf2_type/defines";
+import { Defines } from "../../common/lf2_type/defines";
 import { Character } from "../entity/Character";
 import { Entity } from "../entity/Entity";
 import { Weapon } from "../entity/Weapon";

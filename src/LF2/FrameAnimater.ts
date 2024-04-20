@@ -1,11 +1,11 @@
 import { Warn } from '@fimagine/logger';
 import * as THREE from 'three';
-import random_get from '../js_utils/random_get';
-import { constructor_name } from '../js_utils/constructor_name';
-import { is_positive_num } from '../js_utils/is_positive_num';
-import { is_str } from '../js_utils/is_str';
-import { IFrameInfo, IGameObjData, IGameObjInfo, INextFrame, ITexturePieceInfo, TFace, TNextFrame } from '../js_utils/lf2_type';
-import { Defines } from '../js_utils/lf2_type/defines';
+import random_get from '../common/random_get';
+import { constructor_name } from '../common/constructor_name';
+import { is_positive_num } from '../common/is_positive_num';
+import { is_str } from '../common/is_str';
+import { IFrameInfo, IGameObjData, IGameObjInfo, INextFrame, ITexturePieceInfo, TFace, TNextFrame } from '../common/lf2_type';
+import { Defines } from '../common/lf2_type/defines';
 import { IPictureInfo } from '../types/IPictureInfo';
 import type { World } from './World';
 import { turn_face } from './entity/face_helper';

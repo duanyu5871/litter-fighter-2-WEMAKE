@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { Log, Warn } from '../../Log';
-import { constructor_name } from '../../js_utils/constructor_name';
-import { IBdyInfo, ICharacterData, ICharacterFrameInfo, ICharacterInfo, IFrameInfo, IItrInfo, INextFrame, IOpointInfo, TFace, TNextFrame } from '../../js_utils/lf2_type';
-import { Defines } from '../../js_utils/lf2_type/defines';
+import { constructor_name } from '../../common/constructor_name';
+import { IBdyInfo, ICharacterData, ICharacterFrameInfo, ICharacterInfo, IFrameInfo, IItrInfo, INextFrame, IOpointInfo, TFace, TNextFrame } from '../../common/lf2_type';
+import { Defines } from '../../common/lf2_type/defines';
 import { factory } from '../Factory';
 import type { World } from '../World';
 import { ICube } from '../World';

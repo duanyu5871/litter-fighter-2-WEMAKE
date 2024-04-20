@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { Log } from '../Log';
-import { is_num } from '../js_utils/is_num';
-import { IBdyInfo, IFrameInfo, IItrInfo } from '../js_utils/lf2_type';
-import { Defines } from '../js_utils/lf2_type/defines';
+import { is_num } from '../common/is_num';
+import { IBdyInfo, IFrameInfo, IItrInfo } from '../common/lf2_type';
+import { Defines } from '../common/lf2_type/defines';
 import { FPS } from './base/FPS';
 import { FrameAnimater } from './FrameAnimater';
 import { GameOverlay } from './GameOverlay';
@@ -14,8 +14,8 @@ import { Character } from './entity/Character';
 import { Entity } from './entity/Entity';
 import './entity/Weapon';
 import { Weapon } from './entity/Weapon';
-import { is_str } from '../js_utils/is_str';
-import { is_fun } from '../js_utils/is_fun';
+import { is_str } from '../common/is_str';
+import { is_fun } from '../common/is_fun';
 import Callbacks from './base/Callbacks';
 export interface ICube {
   left: number;
