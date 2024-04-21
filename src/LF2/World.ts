@@ -36,7 +36,7 @@ new Callbacks<IWorldCallbacks>().emit('on_cam_move')(0)
 
 export class World {
   static readonly DEFAULT_DOUBLE_CLICK_INTERVAL = 30;
-  static readonly DEFAULT_KEY_HIT_DURATION = 5
+  static readonly DEFAULT_KEY_HIT_DURATION = 20
   static readonly DEFAULT_GRAVITY = 0.4;
   static readonly DEFAULT_FRICTION_FACTOR = 0.95//0.894427191;
   static readonly DEFAULT_FRICTION = 0.2;

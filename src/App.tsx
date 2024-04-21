@@ -7,7 +7,7 @@ import { Input } from './Component/Input';
 import Select from './Component/Select';
 import { TextArea } from './Component/TextArea';
 import { ToggleButton } from "./Component/ToggleButton";
-import Fullsreen from './Fullsreen';
+import FullScreen from './FullScreen';
 import LF2, { ILf2Callback } from './LF2/LF2';
 import { ILayoutInfo } from './Layout/ILayoutInfo';
 import { Log } from './Log';
@@ -19,7 +19,7 @@ import './game_ui.css';
 import './init';
 import read_lf2_dat from './read_lf2_dat';
 import { useLocalBoolean, useLocalNumber, useLocalString } from './useLocalStorage';
-const fullsreen = new Fullsreen();
+const fullsreen = new FullScreen();
 
 function App() {
   const _overlay_ref = useRef<HTMLDivElement>(null)
@@ -64,7 +64,7 @@ function App() {
     lf2.world.playrate = fast_forward ? 100 : 1;
   }, [fast_forward])
   const toggle_fullscreen = () => {
-    if (fullsreen.is_fullscreen())
+    if (fullsreen.is_fullscreen)
       fullsreen.exit();
     else
       fullsreen.enter(document.body.parentElement!);
@@ -353,12 +353,8 @@ function App() {
                 <>隐藏控制面板(F10)</>
               </ToggleButton>
             </div>
-            {
-              loaded ? <>
-                {Array.from(lf2_ref.current?.player_infos.values() ?? []).map((info, idx) => <PlayerRow key={idx} lf2={lf2_ref.current} which={idx + 1} visible={debug_panel} />)}
-                <BackgroundRow lf2={lf2_ref.current} visible={debug_panel} />
-              </> : null
-            }
+            {Array.from(lf2_ref.current?.player_infos.values() ?? []).map((info, idx) => <PlayerRow key={idx} lf2={lf2_ref.current} which={idx + 1} visible={debug_panel} />)}
+            <BackgroundRow lf2={lf2_ref.current} visible={debug_panel} />
           </div>
           <div className='editor_view' style={{ display: editor_closed ? 'none' : void 0 }}>
             <div className='top'>

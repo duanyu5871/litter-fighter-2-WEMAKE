@@ -6,13 +6,13 @@ import random_get from "../common/random_get";
 import random_take from "../common/random_take";
 import { factory } from "./Factory";
 import Stage from "./Stage";
-import { BotEnemyChaser } from "./controller/BotEnemyChaser";
-import { Character } from "./entity/Character";
-import { Entity, IEntityCallbacks } from "./entity/Entity";
-import { Weapon } from "./entity/Weapon";
 import { random_in_range } from "./base/random_in_range";
+import { BotEnemyChaser } from "./controller/BotEnemyChaser";
+import { Character, ICharacterCallbacks } from "./entity/Character";
+import { Entity } from "./entity/Entity";
+import { Weapon } from "./entity/Weapon";
 
-export default class StageObject implements IEntityCallbacks {
+export default class StageObject implements ICharacterCallbacks {
   readonly is_enemies: boolean = false;
   get lf2() { return this.stage.lf2; }
   get world() { return this.stage.world; }
@@ -55,16 +55,16 @@ export default class StageObject implements IEntityCallbacks {
     if (!data) { debugger; return; }
     this.is_enemies = data.type === 'character';
   }
-  
+
   add_entity(e: Entity) {
     this.entities.add(e);
     e.callbacks.add(this);
   }
 
-  on_hp_changed(e: Entity, value: number, prev: number): void {
-    if (value <= 0) setTimeout(() => e.world.del_entities(e), 500);
+  on_dead(e: Character): void {
+    e.blink_and_gone(120)
   }
-  
+
   on_disposed(e: Entity): void {
     this.entities.delete(e);
     e.callbacks.del(this);
@@ -100,6 +100,7 @@ export default class StageObject implements IEntityCallbacks {
     this.add_entity(e);
     e.attach();
   }
+  
   dispose() {
     for (const e of this.entities) e.callbacks.del(this);
   }

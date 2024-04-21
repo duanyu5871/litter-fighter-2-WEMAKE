@@ -44,19 +44,19 @@ export interface IVictimRest {
   a_frame: IFrameInfo,
   b_frame: IFrameInfo
 }
-export interface IEntityCallbacks {
-  on_hp_changed?(e: Entity, value: number, prev: number): void;
-  on_mp_changed?(e: Entity, value: number, prev: number): void;
-  on_team_changed?(e: Entity, value: number, prev: number): void;
-  on_name_changed?(e: Entity, value: string, prev: string): void;
-  on_disposed?(e: Entity): void;
+export interface IEntityCallbacks<E extends Entity = Entity> {
+  on_hp_changed?(e: E, value: number, prev: number): void;
+  on_mp_changed?(e: E, value: number, prev: number): void;
+  on_team_changed?(e: E, value: number, prev: number): void;
+  on_name_changed?(e: E, value: string, prev: string): void;
+  on_disposed?(e: E): void;
 }
 export class Entity<
   F extends IFrameInfo = IFrameInfo,
   I extends IGameObjInfo = IGameObjInfo,
   D extends IGameObjData<I, F> = IGameObjData<I, F>
 > extends FrameAnimater<F, I, D> {
-  callbacks = new Callbacks<IEntityCallbacks>()
+  readonly callbacks = new Callbacks<IEntityCallbacks>()
   protected _name: string = '';
   protected _team: number = 0;
   protected _mp: number = 500;

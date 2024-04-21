@@ -6,15 +6,22 @@ import { Defines } from '../../common/lf2_type/defines';
 import { factory } from '../Factory';
 import type { World } from '../World';
 import { ICube } from '../World';
+import Callbacks from '../base/Callbacks';
 import { BaseController } from '../controller/BaseController';
 import { InvalidController } from '../controller/InvalidController';
 import { CHARACTER_STATES } from '../state/character';
 import { Ball } from './Ball';
-import { Entity, get_team_shadow_color, get_team_text_color } from './Entity';
+import { Entity, IEntityCallbacks, get_team_shadow_color, get_team_text_color } from './Entity';
 import { Weapon } from './Weapon';
 import { same_face, turn_face } from './face_helper';
+import { GONE_FRAME_INFO } from '../FrameAnimater';
+
+export interface ICharacterCallbacks<E extends Character = Character> extends IEntityCallbacks<E> {
+  on_dead?(e: E): void;
+}
 
 export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, ICharacterData> {
+  readonly callbacks = new Callbacks<ICharacterCallbacks>()
   protected _controller: BaseController = new InvalidController(this);
   get controller() { return this._controller; }
   set controller(v) {
@@ -138,6 +145,19 @@ export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, IChar
           if (this._fall_value < 70) { this._fall_value += 0.5; }
           if (this._defend_value < 60) { this._defend_value += 0.5; }
         }
+      }
+    }
+    if (this._blinking_count > 0) {
+      this._blinking_count--;
+      const bc = Math.floor(this._blinking_count / 6) % 2;
+      if (this._blinking_count <= 0) {
+        this.sprite.visible = this.shadow.visible = true;
+        if (this._after_blink) {
+          this._next_frame = void 0;
+          this._frame = GONE_FRAME_INFO
+        }
+      } else {
+        this.sprite.visible = this.shadow.visible = !!bc;
       }
     }
   }
@@ -327,6 +347,13 @@ export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, IChar
     const ret = super.spawn_object(opoint, speed_z);
     if (ret instanceof Ball) { ret.ud = this.controller.UD; }
     return ret;
+  }
+
+  protected _blinking_count: number = -1;
+  protected _after_blink: string | null = null;
+  blink_and_gone(frames: number) {
+    this._blinking_count = frames;
+    this._after_blink = Defines.ReservedFrameId.Gone;
   }
 }
 

@@ -1,16 +1,44 @@
+import Callbacks from './LF2/base/Callbacks';
 import { is_false } from './common/is_bool';
 import { is_fun } from './common/is_fun';
+export interface IFullScreenCallback {
+  onChange?(element: Element | null): void
+}
+export default class FullScreen {
+  readonly callbacks = new Callbacks<IFullScreenCallback>();
+  protected _prev_element: Element | null;
 
-export default class Fullsreen {
-  is_fullscreen(): boolean {
+  constructor() {
+    document.addEventListener('fullscreenchange', this.on_fullscreenchange)
+    this._prev_element = this.element
+  }
+  depose(): void {
+    document.removeEventListener('fullscreenchange', this.on_fullscreenchange);
+  }
+  private on_fullscreenchange = () => {
+    const curr_element = this.element
+    if (this._prev_element === curr_element) return;
+
+    this._prev_element = curr_element;
+    this.callbacks.emit('onChange')(curr_element);
+  }
+
+  get element(): Element | null {
     const d = document;
-    return !!(
+    return (
       d.fullscreenElement ||
       (d as any).mozFullScreenElement ||
       (d as any).webkitFullscreenElement
-    );
+    )
   }
-  enter(element: HTMLElement): Promise<void> {
+  set element(v: Element | null) {
+    if (!v) this.exit();
+    else this.enter(v);
+  }
+  get is_fullscreen(): boolean {
+    return !!this.element;
+  }
+  enter(element: Element): Promise<void> {
     const d = document as any;
     if (is_false(d.mozFullScreenEnabled)) return Promise.reject(new Error("全屏功能已被禁用"));
     if (is_fun(element.requestFullscreen)) return element.requestFullscreen();

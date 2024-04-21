@@ -1,3 +1,4 @@
+import { IFrameInfo } from "../../../common/lf2_type";
 import { Defines } from "../../../common/lf2_type/defines";
 import type { Character } from '../../entity/Character';
 import BaseState from "../BaseState";
@@ -22,6 +23,11 @@ CHARACTER_STATES.set(Defines.State.Falling, new Falling());
 CHARACTER_STATES.set(Defines.State.Burning, new Burning());
 CHARACTER_STATES.set(Defines.State.Frozen, new Frozen());
 CHARACTER_STATES.set(Defines.State.Lying, new class extends BaseCharacterState {
+  override enter(e: Character, prev_frame: IFrameInfo): void {
+    if (e.get_frame().state === Defines.State.Lying && e.hp <= 0) {
+      e.callbacks.emit('on_dead')(e);
+    }
+  }
   begin(e: Character) {
     e.on_gravity();
     e.velocity_decay();
@@ -29,7 +35,7 @@ CHARACTER_STATES.set(Defines.State.Lying, new class extends BaseCharacterState {
   }
 }())
 
-CHARACTER_STATES.set(Defines.State.Caught, new class extends BaseState<Character>{
+CHARACTER_STATES.set(Defines.State.Caught, new class extends BaseState<Character> {
   enter(_e: Character): void {
     _e.velocity.set(0, 0, 0);
   }

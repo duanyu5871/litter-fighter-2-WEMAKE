@@ -34,7 +34,6 @@ export function BackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
   const [stage_phase_list, set_stage_phases] = useState<IStagePhaseInfo[]>([]);
   const [stage_phase_idx, set_stage_phase_idx] = useState<number>(-1);
 
-
   const bgm_list = useBgmList(lf2);
 
   useEffect(() => {
@@ -74,7 +73,7 @@ export function BackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
 
   const { bg_id, stage_id, type } = value
   useEffect(() => {
-    if (!lf2) return;
+    if (!lf2?.loaded) return;
     if (type === 'bg')
       lf2.change_bg(bg_id);
     else if (type === 'stage')
