@@ -147,19 +147,6 @@ export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, IChar
         }
       }
     }
-    if (this._blinking_count > 0) {
-      this._blinking_count--;
-      const bc = Math.floor(this._blinking_count / 6) % 2;
-      if (this._blinking_count <= 0) {
-        this.sprite.visible = this.shadow.visible = true;
-        if (this._after_blink) {
-          this._next_frame = void 0;
-          this._frame = GONE_FRAME_INFO
-        }
-      } else {
-        this.sprite.visible = this.shadow.visible = !!bc;
-      }
-    }
   }
 
   override get_sudden_death_frame(): TNextFrame {
@@ -349,15 +336,6 @@ export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, IChar
     return ret;
   }
 
-  protected _blinking_count: number = -1;
-  protected _after_blink: string | null = null;
-  blink_and_gone(frames: number) {
-    this._blinking_count = frames;
-    this._after_blink = Defines.ReservedFrameId.Gone;
-  }
-  blink(frames: number) {
-    this._blinking_count = frames;
-  }
 }
 
 factory.set('character', (...args) => new Character(...args))

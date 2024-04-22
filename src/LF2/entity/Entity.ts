@@ -5,7 +5,8 @@ import { is_nagtive_num } from '../../common/is_nagtive_num';
 import { IBallData, IBaseData, IBdyInfo, ICharacterData, IEntityData, IFrameInfo, IGameObjData, IGameObjInfo, IItrInfo, IOpointInfo, IWeaponData, TNextFrame } from '../../common/lf2_type';
 import { Defines } from '../../common/lf2_type/defines';
 import { factory } from '../Factory';
-import { FrameAnimater } from '../FrameAnimater';
+import { FrameAnimater, GONE_FRAME_INFO } from '../FrameAnimater';
+import { Shadow } from '../Shadow';
 import type { World } from '../World';
 import { ICube } from '../World';
 import Callbacks from '../base/Callbacks';
@@ -13,7 +14,6 @@ import BaseState from "../state/BaseState";
 import { EntityIndicators } from './EntityIndicators';
 import type { Weapon } from './Weapon';
 import { turn_face } from './face_helper';
-import { Shadow } from '../Shadow';
 export type TData = IBaseData | ICharacterData | IWeaponData | IEntityData | IBallData
 export const V_SHAKE = 4;
 export const A_SHAKE = 6;
@@ -262,6 +262,20 @@ export class Entity<
     }
     this.v_rests.forEach((v, k, m) => { });
     this.a_rest > 1 ? this.a_rest-- : this.a_rest = 0;
+
+    if (this._blinking_count > 0) {
+      this._blinking_count--;
+      const bc = Math.floor(this._blinking_count / 6) % 2;
+      if (this._blinking_count <= 0) {
+        this.sprite.visible = this.shadow.visible = true;
+        if (this._after_blink) {
+          this._next_frame = void 0;
+          this._frame = GONE_FRAME_INFO as F
+        }
+      } else {
+        this.sprite.visible = this.shadow.visible = !!bc;
+      }
+    }
   }
   override update(): void {
     super.update();
@@ -449,6 +463,31 @@ export class Entity<
     this.shadow.dispose();
     this.indicators.dispose();
     this.callbacks.emit('on_disposed')(this);
+  }
+  
+  /**
+   * 是否处于闪烁状态
+   *
+   * @readonly
+   * @type {boolean}
+   */
+  get blinking() { return this._blinking_count > 0 }
+
+  
+  /**
+   * 闪烁计数，每帧-1
+   *
+   * @protected
+   * @type {number}
+   */
+  protected _blinking_count: number = -1;
+  protected _after_blink: string | null = null;
+  blink_and_gone(frames: number) {
+    this._blinking_count = frames;
+    this._after_blink = Defines.ReservedFrameId.Gone;
+  }
+  blink(frames: number) {
+    this._blinking_count = frames;
   }
 }
 

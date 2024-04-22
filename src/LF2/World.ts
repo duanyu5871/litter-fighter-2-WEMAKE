@@ -3,20 +3,18 @@ import { Log } from '../Log';
 import { is_num } from '../common/is_num';
 import { IBdyInfo, IFrameInfo, IItrInfo } from '../common/lf2_type';
 import { Defines } from '../common/lf2_type/defines';
-import { FPS } from './base/FPS';
 import { FrameAnimater } from './FrameAnimater';
 import { GameOverlay } from './GameOverlay';
 import LF2 from './LF2';
-import Stage from './stage/Stage';
+import Callbacks from './base/Callbacks';
+import { FPS } from './base/FPS';
 import { LocalHuman } from './controller/LocalHuman';
 import { Ball } from './entity/Ball';
 import { Character } from './entity/Character';
 import { Entity } from './entity/Entity';
 import './entity/Weapon';
 import { Weapon } from './entity/Weapon';
-import { is_str } from '../common/is_str';
-import { is_fun } from '../common/is_fun';
-import Callbacks from './base/Callbacks';
+import Stage from './stage/Stage';
 export interface ICube {
   left: number;
   right: number;
@@ -369,6 +367,7 @@ export class World {
     return this.itr_log(itr, ...args);
   }
   collision_detection(a: Entity, b: Entity) {
+    if (b.blinking) return;
     const af = a.get_frame();
     const bf = b.get_frame();
     if (!af.itr?.length || !bf.bdy?.length) return;
