@@ -23,7 +23,10 @@ export default class SoundMgr implements IPlayer {
       }
     }
   }
-  
+  bgm(): string | null {
+    return this.inner.bgm();
+  }
+
   has(name: string): boolean {
     return this.inner.has(name);
   }
@@ -36,8 +39,8 @@ export default class SoundMgr implements IPlayer {
     this.inner.stop_bgm()
   }
 
-  play_bgm(name: string): () => void {
-    return this.inner.play_bgm(name)
+  play_bgm(name: string, restart?: boolean | undefined): () => void {
+    return this.inner.play_bgm(name, restart)
   }
 
   play(name: string, x?: number, y?: number, z?: number) {

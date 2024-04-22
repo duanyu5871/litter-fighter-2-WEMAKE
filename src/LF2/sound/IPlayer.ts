@@ -14,9 +14,18 @@ export interface IPlayer {
    * @date 4/12/2024 - 10:23:17 AM
    *
    * @param {string} name
+   * @param {boolean|undefined} restart
    * @returns {() => void} 此方法将停止本次play_bgm播放的背景音乐
    */
-  play_bgm(name: string): () => void;
+  play_bgm(name: string, restart?: boolean | undefined): () => void;
+
+
+  /**
+   * 当前选中的背景音乐
+   *
+   * @returns {(string | null)}
+   */
+  bgm(): string | null;
 
 
   /**
@@ -29,7 +38,7 @@ export interface IPlayer {
    */
   preload(name: string, src: Src): Promise<any>;
 
-  
+
   /**
    * 对应名称声音是否存在
    * @date 4/12/2024 - 10:45:14 AM
@@ -37,7 +46,7 @@ export interface IPlayer {
    * @param {string} name 声音名
    * @returns {boolean} 存在返回true 否则返回false
    */
-  has(name: string): boolean; 
+  has(name: string): boolean;
 
   /**
    * 播放音效
@@ -49,4 +58,6 @@ export interface IPlayer {
    * @param {?number} [z] 音效产生位置z
    */
   play(name: string, x?: number, y?: number, z?: number): void;
+
+
 }

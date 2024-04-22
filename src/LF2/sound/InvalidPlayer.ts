@@ -7,6 +7,7 @@ export default class InvalidPlayer implements IPlayer {
 
   has(name: string): boolean { return false; }
   stop_bgm(): void { }
+  bgm(): string | null { return null; }
   play_bgm(name: string): () => void { return () => void 0 }
   preload(name: string, src: Src): Promise<any> { return Promise.reject(new Error('InvalidPlayer')) }
   play(name: string, x?: number | undefined, y?: number | undefined, z?: number | undefined): void { }

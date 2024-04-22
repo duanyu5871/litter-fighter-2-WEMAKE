@@ -28,14 +28,17 @@ export default class Stage {
   private _bgm_enable: boolean;
   private _cur_phase_idx = -1;
 
-  get left() { return this.bg.left }
-  get right() { return this.bg.right }
-  get near() { return this.bg.near }
-  get far() { return this.bg.far }
-  get width() { return this.bg.width }
-  get depth() { return this.bg.depth }
+  get cur_phase(): number { return this._cur_phase_idx }
+  get left(): number { return this.bg.left }
+  get right(): number { return this.bg.right }
+  get near(): number { return this.bg.near }
+  get far(): number { return this.bg.far }
+  get width(): number { return this.bg.width }
+  get depth(): number { return this.bg.depth }
   get middle() { return this.bg.middle }
   get lf2() { return this.world.lf2 }
+
+
 
 
   /**

@@ -12,8 +12,12 @@ export default class ModernPlayer implements IPlayer {
   protected _bgm_src_node: AudioBufferSourceNode | null = null;
 
   protected _r = new RequestersMgr<AudioBuffer>();
+  protected _bgm: string | null = null;
   constructor(lf2: LF2) {
     this.lf2 = lf2;
+  }
+  bgm(): string | null {
+    return this._bgm;
   }
 
   has(name: string): boolean {
@@ -35,12 +39,16 @@ export default class ModernPlayer implements IPlayer {
 
   stop_bgm() {
     if (!this._bgm_src_node) return;
+    this._bgm = null;
     this._bgm_src_node.stop();
     this._prev_bgm_url = null;
   }
-  play_bgm(name: string): () => void {
-    if (this._prev_bgm_url === name) return () => { };
+
+  play_bgm(name: string, restart?: boolean | undefined): () => void {
+    if (!restart && this._prev_bgm_url === name) return () => { };
     this.stop_bgm();
+
+    this._bgm = name;
     this._prev_bgm_url = name;
     ++this._req_id;
 

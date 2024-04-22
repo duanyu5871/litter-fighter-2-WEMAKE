@@ -21,21 +21,29 @@ const bot_controllers: { [x in string]?: (e: Character) => BaseController } = {
 
 export function BackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
   const { lf2, visible } = props;
-  const [bgm, set_bgm] = useState<string>('');
+
+  const _stage = lf2?.world.stage;
+  const _stage_data = _stage?.data;
+
 
   const [value, set_value] = useImmer({
-    bg_id: Defines.THE_VOID_BG.id,
-    stage_id: Defines.THE_VOID_STAGE.id,
-    type: 'bg' as 'bg' | 'stage'
+    bg_id: _stage_data?.bg ?? Defines.THE_VOID_BG.id,
+    stage_id: _stage_data?.id ?? Defines.THE_VOID_STAGE.id,
+    type: (_stage_data?.id === Defines.THE_VOID_STAGE.id ? 'bg' : 'stage') as 'bg' | 'stage'
   });
+  const [bgm, set_bgm] = useState<string>(lf2?.sound_mgr.bgm() ?? '');
+  const [stage_bgm, set_stage_bgm] = useState<boolean>(lf2?.bgm_enable ?? false);
+  const [stage_phase_list, set_stage_phases] = useState<IStagePhaseInfo[]>(_stage_data?.phases ?? []);
+  const [stage_phase_idx, set_stage_phase_idx] = useState<number>(_stage?.cur_phase ?? -1);
 
-  const [stage_bgm, set_stage_bgm] = useState<boolean>(false);
-
-  const [stage_phase_list, set_stage_phases] = useState<IStagePhaseInfo[]>([]);
-  const [stage_phase_idx, set_stage_phase_idx] = useState<number>(-1);
+  useEffect(() => {
+    set_bgm(lf2?.sound_mgr.bgm() ?? '')
+    set_stage_bgm(lf2?.bgm_enable ?? false);
+    set_stage_phases(lf2?.world.stage.data.phases ?? []);
+    set_stage_phase_idx(lf2?.world.stage.cur_phase ?? -1);
+  }, [lf2])
 
   const bgm_list = useBgmList(lf2);
-
   useEffect(() => {
     if (!lf2) return;
     lf2.set_bgm_enable(stage_bgm)
@@ -160,6 +168,12 @@ export function BackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
           option={i => [i.id, i.base.name]} />
         <Button onClick={v => lf2.remove_all_entities()}>清场</Button>
         BGM:
+        <Select
+          value={bgm}
+          on_changed={set_bgm}
+          items={bgm_list}
+          option={i => [i, i || 'OFF']} />
+        难度:
         <Select
           value={bgm}
           on_changed={set_bgm}

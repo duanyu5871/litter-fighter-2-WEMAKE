@@ -3,6 +3,7 @@ import { Log } from '../Log';
 import { is_num } from '../common/is_num';
 import { IBdyInfo, IFrameInfo, IItrInfo } from '../common/lf2_type';
 import { Defines } from '../common/lf2_type/defines';
+import { Difficulty } from './Difficulty';
 import { FrameAnimater } from './FrameAnimater';
 import { GameOverlay } from './GameOverlay';
 import LF2 from './LF2';
@@ -541,4 +542,8 @@ export class World {
     this.renderer.clear()
     this.renderer.dispose();
   }
+  
+  protected _difficulty: Difficulty = Difficulty.Difficult;
+  get difficulty(): Difficulty { return this._difficulty; }
+  set difficulty(v: Difficulty) { this.difficulty = v }
 }

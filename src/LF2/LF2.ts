@@ -506,12 +506,12 @@ export default class LF2 {
 
   change_stage(stage_info: IStageInfo): void
   change_stage(stage_id: string): void
-
   change_stage(arg: IStageInfo | string): void {
     if (is_str(arg)) {
       const stage_info = this.stages.data?.find(v => v.id === arg)
       if (stage_info) this.change_stage(stage_info)
     } else {
+      if (arg === this.world.stage.data) return;
       this.world.stage = new Stage(this.world, arg)
     }
   }
