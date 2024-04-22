@@ -14,7 +14,6 @@ import { Ball } from './Ball';
 import { Entity, IEntityCallbacks, get_team_shadow_color, get_team_text_color } from './Entity';
 import { Weapon } from './Weapon';
 import { same_face, turn_face } from './face_helper';
-import { GONE_FRAME_INFO } from '../FrameAnimater';
 
 export interface ICharacterCallbacks<E extends Character = Character> extends IEntityCallbacks<E> {
   on_dead?(e: E): void;
@@ -336,6 +335,15 @@ export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, IChar
     return ret;
   }
 
+  protected _blinking_count: number = -1;
+  protected _after_blink: string | null = null;
+  blink_and_gone(frames: number) {
+    this._blinking_count = frames;
+    this._after_blink = Defines.ReservedFrameId.Gone;
+  }
+  blink(frames: number) {
+    this._blinking_count = frames;
+  }
 }
 
 factory.set('character', (...args) => new Character(...args))
