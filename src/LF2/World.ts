@@ -7,8 +7,8 @@ import { FPS } from './base/FPS';
 import { FrameAnimater } from './FrameAnimater';
 import { GameOverlay } from './GameOverlay';
 import LF2 from './LF2';
-import Stage from './Stage';
-import { PlayerController } from './controller/LocalHuman';
+import Stage from './stage/Stage';
+import { LocalHuman } from './controller/LocalHuman';
 import { Ball } from './entity/Ball';
 import { Character } from './entity/Character';
 import { Entity } from './entity/Entity';
@@ -142,7 +142,7 @@ export class World {
       this.scene.add(e.sprite);
       this.scene.add(e.shadow.mesh);
       e.show_indicators = this._show_indicators;
-      if (e instanceof Character && e.controller instanceof PlayerController) {
+      if (e instanceof Character && e.controller instanceof LocalHuman) {
         this.players.set(e.controller.which, e);
       }
       this.entities.add(e)
@@ -153,7 +153,7 @@ export class World {
     for (const e of entities) {
       this.entities.delete(e)
       e.dispose();
-      if (e instanceof Character && e.controller instanceof PlayerController) {
+      if (e instanceof Character && e.controller instanceof LocalHuman) {
         this.players.delete(e.controller.which);
       }
     }
@@ -215,7 +215,7 @@ export class World {
     if (!this.bg) return;
     const { left, right, near, far, player_left, player_right } = this.stage;
 
-    const is_player = e.controller instanceof PlayerController;
+    const is_player = e.controller instanceof LocalHuman;
     const l = is_player ? player_left : left;
     const r = is_player ? player_right : right;
 

@@ -2,7 +2,7 @@ import { IFrameInfo } from "../../../common/lf2_type";
 import { Defines } from "../../../common/lf2_type/defines";
 import { World } from "../../World";
 import type { Character } from '../../entity/Character';
-import { BaseCharacterState } from "./Base";
+import BaseCharacterState from "./Base";
 export default class Dash extends BaseCharacterState {
   enter(e: Character, prev_frame: IFrameInfo): void {
     if (e.position.y > 0 && e.velocity.y !== 0) return;

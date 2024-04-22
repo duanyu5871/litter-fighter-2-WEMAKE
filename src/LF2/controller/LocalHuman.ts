@@ -3,7 +3,7 @@ import { BaseController, TKeyName } from "./BaseController";
 
 type TKeyCodeMap = { [x in TKeyName]?: string };
 type TCodeKeyMap = { [x in string]?: TKeyName };
-export class PlayerController extends BaseController {
+export class LocalHuman extends BaseController {
   readonly which: string;
   private _key_code_map: TKeyCodeMap = {};
   private _code_key_map: TCodeKeyMap = {};

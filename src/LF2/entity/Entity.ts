@@ -13,7 +13,7 @@ import BaseState from "../state/BaseState";
 import { EntityIndicators } from './EntityIndicators';
 import type { Weapon } from './Weapon';
 import { turn_face } from './face_helper';
-import { Shadow } from '../../Layout/Component/Shadow';
+import { Shadow } from '../Shadow';
 export type TData = IBaseData | ICharacterData | IWeaponData | IEntityData | IBallData
 export const V_SHAKE = 4;
 export const A_SHAKE = 6;

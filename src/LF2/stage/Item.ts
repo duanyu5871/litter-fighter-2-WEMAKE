@@ -1,18 +1,18 @@
-import { is_num } from "../common/is_num";
-import { is_str } from "../common/is_str";
-import { IStageObjectInfo } from "../common/lf2_type";
-import { Defines } from "../common/lf2_type/defines";
-import random_get from "../common/random_get";
-import random_take from "../common/random_take";
-import { factory } from "./Factory";
+import { is_num } from "../../common/is_num";
+import { is_str } from "../../common/is_str";
+import { IStageObjectInfo } from "../../common/lf2_type";
+import { Defines } from "../../common/lf2_type/defines";
+import random_get from "../../common/random_get";
+import random_take from "../../common/random_take";
+import { factory } from "../Factory";
 import Stage from "./Stage";
-import { random_in_range } from "./base/random_in_range";
-import { BotEnemyChaser } from "./controller/BotEnemyChaser";
-import { Character, ICharacterCallbacks } from "./entity/Character";
-import { Entity } from "./entity/Entity";
-import { Weapon } from "./entity/Weapon";
+import { random_in_range } from "../base/random_in_range";
+import { BotEnemyChaser } from "../controller/BotEnemyChaser";
+import { Character, ICharacterCallbacks } from "../entity/Character";
+import { Entity } from "../entity/Entity";
+import { Weapon } from "../entity/Weapon";
 
-export default class StageObject implements ICharacterCallbacks {
+export default class Item {
   readonly is_enemies: boolean = false;
   get lf2() { return this.stage.lf2; }
   get world() { return this.stage.world; }
@@ -23,6 +23,37 @@ export default class StageObject implements ICharacterCallbacks {
 
   private oid_list: string[] = [];
   private old_list_idx = 0;
+
+  readonly character_callback: ICharacterCallbacks = {
+    on_dead: (e: Character): void => {
+      // 角色死亡
+      e.blink_and_gone(120);
+    },
+    on_disposed: (e: Character): void => {
+      // 角色被移除
+      this.entities.delete(e);
+
+      e.callbacks.del(this.character_callback);
+
+      if (this.entities.size) return;
+
+      const { times, is_soldier } = this.info;
+      if (is_soldier) {
+        if (this.stage.all_boss_dead()) {
+          this.dispose();
+        } else if (!is_num(times) || times > 0) {
+          this.spawn();
+        }
+      } else if (times) {
+        this.spawn();
+      } else {
+        this.dispose();
+      }
+      if (this.stage.all_enemies_dead()) {
+        this.stage.enter_next_phase();
+      }
+    }
+  }
 
   constructor(stage: Stage, info: IStageObjectInfo) {
     this.stage = stage;
@@ -56,22 +87,7 @@ export default class StageObject implements ICharacterCallbacks {
     this.is_enemies = data.type === 'character';
   }
 
-  add_entity(e: Entity) {
-    this.entities.add(e);
-    e.callbacks.add(this);
-  }
-
-  on_dead(e: Character): void {
-    e.blink_and_gone(120)
-  }
-
-  on_disposed(e: Entity): void {
-    this.entities.delete(e);
-    e.callbacks.del(this);
-    if (!this.entities.size) this.stage.handle_empty_stage_object(this);
-  }
-
-  spawn() {
+  spawn(): void {
     const { lf2 } = this;
     const oid = this.get_oid();
     if (!oid) { return; }
@@ -97,11 +113,16 @@ export default class StageObject implements ICharacterCallbacks {
     } else if (e instanceof Weapon && !is_num(y)) {
       e.position.y = 450;
     }
-    this.add_entity(e);
+    this.entities.add(e);
+    e.callbacks.add(this.character_callback);
     e.attach();
   }
-  
-  dispose() {
-    for (const e of this.entities) e.callbacks.del(this);
+
+  dispose(): void {
+    this.stage.items.delete(this);
+    for (const e of this.entities) {
+      e.callbacks.del(this.character_callback);
+      e.dispose();
+    }
   }
 }

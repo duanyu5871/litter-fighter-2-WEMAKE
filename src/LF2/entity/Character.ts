@@ -355,6 +355,9 @@ export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, IChar
     this._blinking_count = frames;
     this._after_blink = Defines.ReservedFrameId.Gone;
   }
+  blink(frames: number) {
+    this._blinking_count = frames;
+  }
 }
 
 factory.set('character', (...args) => new Character(...args))

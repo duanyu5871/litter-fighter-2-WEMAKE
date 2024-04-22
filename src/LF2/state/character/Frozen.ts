@@ -1,5 +1,5 @@
 import type { Character } from "../../entity/Character";
-import { BaseCharacterState } from "./Base";
+import BaseCharacterState from "./Base";
 
 export default class Frozen extends BaseCharacterState {
   on_landing(e: Character, vx: number, vy: number, vz: number): void {

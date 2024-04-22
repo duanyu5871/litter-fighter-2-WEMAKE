@@ -12,10 +12,10 @@ import random_get from '../common/random_get';
 import random_take from '../common/random_take';
 import { BgLayer } from './BgLayer';
 import { PlayerInfo } from './PlayerInfo';
-import Stage from './Stage';
+import Stage from './stage/Stage';
 import { World } from './World';
 import { KEY_NAME_LIST, TKeys } from './controller/BaseController';
-import { PlayerController } from "./controller/LocalHuman";
+import { LocalHuman } from "./controller/LocalHuman";
 import './entity/Ball';
 import { Character } from './entity/Character';
 import { Entity } from './entity/Entity';
@@ -489,7 +489,7 @@ export default class LF2 {
     if (!old) {
       this.random_entity_info(player)
     }
-    player.controller = new PlayerController(which, player, player_info?.keys)
+    player.controller = new LocalHuman(which, player, player_info?.keys)
     player.attach();
     return player
   }

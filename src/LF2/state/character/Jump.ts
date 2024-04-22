@@ -1,6 +1,6 @@
 import { World } from "../../World";
 import type { Character } from '../../entity/Character';
-import { BaseCharacterState } from "./Base";
+import BaseCharacterState from "./Base";
 
 export default class Jump extends BaseCharacterState {
   private _jump_flags = new Set<string>();

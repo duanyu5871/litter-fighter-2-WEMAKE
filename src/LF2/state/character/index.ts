@@ -1,13 +1,13 @@
-import { IFrameInfo } from "../../../common/lf2_type";
 import { Defines } from "../../../common/lf2_type/defines";
 import type { Character } from '../../entity/Character';
 import BaseState from "../BaseState";
-import { BaseCharacterState } from "./Base";
+import BaseCharacterState from "./Base";
 import Burning from "./Burning";
 import Dash from "./Dash";
 import Falling from "./Falling";
 import Frozen from "./Frozen";
 import Jump from "./Jump";
+import Lying from "./Lying";
 import Running from "./Running";
 import Standing from "./Standing";
 import Walking from "./Walking";
@@ -22,18 +22,7 @@ CHARACTER_STATES.set(Defines.State.Dash, new Dash());
 CHARACTER_STATES.set(Defines.State.Falling, new Falling());
 CHARACTER_STATES.set(Defines.State.Burning, new Burning());
 CHARACTER_STATES.set(Defines.State.Frozen, new Frozen());
-CHARACTER_STATES.set(Defines.State.Lying, new class extends BaseCharacterState {
-  override enter(e: Character, prev_frame: IFrameInfo): void {
-    if (e.get_frame().state === Defines.State.Lying && e.hp <= 0) {
-      e.callbacks.emit('on_dead')(e);
-    }
-  }
-  begin(e: Character) {
-    e.on_gravity();
-    e.velocity_decay();
-    e.handle_frame_velocity();
-  }
-}())
+CHARACTER_STATES.set(Defines.State.Lying, new Lying())
 
 CHARACTER_STATES.set(Defines.State.Caught, new class extends BaseState<Character> {
   enter(_e: Character): void {

@@ -1,13 +1,13 @@
-import { Warn } from "../Log";
-import { is_num } from "../common/is_num";
-import { IBgData, IStageInfo, IStageObjectInfo, IStagePhaseInfo } from "../common/lf2_type";
-import { Defines } from "../common/lf2_type/defines";
-import { Background } from "./Background";
-import StageObject from "./StageObject";
-import type { World } from "./World";
-import Callbacks from "./base/Callbacks";
-import { Character } from "./entity/Character";
-import { new_team } from "./base/new_id";
+import { Warn } from "../../Log";
+import { is_num } from "../../common/is_num";
+import { IBgData, IStageInfo, IStageObjectInfo, IStagePhaseInfo } from "../../common/lf2_type";
+import { Defines } from "../../common/lf2_type/defines";
+import { Background } from "../Background";
+import type { World } from "../World";
+import Callbacks from "../base/Callbacks";
+import { new_team } from "../base/new_id";
+import { Character } from "../entity/Character";
+import Item from "./Item";
 
 export interface IStageCallbacks {
   on_phase_changed?(
@@ -37,8 +37,22 @@ export default class Stage {
   get middle() { return this.bg.middle }
   get lf2() { return this.world.lf2 }
 
-  get player_left() { return this.bg.left }
-  get player_right() { return this.data.phases[this._cur_phase_idx]?.bound ?? this.bg.right }
+
+  /**
+   * 玩家角色的地图左边界
+   *
+   * @readonly
+   * @type {number}
+   */
+  get player_left(): number { return this.bg.left }
+
+  /**
+   * 玩家角色的地图右边界
+   *
+   * @readonly
+   * @type {number}
+   */
+  get player_right(): number { return this.data.phases[this._cur_phase_idx]?.bound ?? this.bg.right }
 
   constructor(world: World, data: IStageInfo | IBgData) {
     this.world = world;
@@ -59,6 +73,7 @@ export default class Stage {
     this.enemy_team = new_team()
     this.enter_phase(0);
   }
+
   private _stop_bgm?: () => void;
 
   private async try_play_phase_bgm() {
@@ -98,14 +113,16 @@ export default class Stage {
       this.spawn_object(object);
     }
   }
-
+  enter_next_phase(): void {
+    this.enter_phase(this._cur_phase_idx + 1);
+  }
   set_bgm_enable(enabled: boolean) {
     this._bgm_enable = enabled;
     if (enabled) this.try_play_phase_bgm();
     else if (this._stop_bgm) this._stop_bgm();
   }
 
-  stage_objects = new Set<StageObject>();
+  readonly items = new Set<Item>();
   async spawn_object(obj_info: IStageObjectInfo) {
     let count = 0;
     for (const [, c] of this.world.players) {
@@ -117,14 +134,14 @@ export default class Stage {
     if (spawn_count <= 0 || !times) return;
 
     while ((--spawn_count) >= 0) {
-      const stage_object = new StageObject(this, obj_info);
+      const stage_object = new Item(this, obj_info);
       stage_object.spawn();
-      this.stage_objects.add(stage_object)
+      this.items.add(stage_object)
 
     }
   }
   kill_all_enemies() {
-    for (const o of this.stage_objects) {
+    for (const o of this.items) {
       if (!o.is_enemies) continue;
       for (const e of o.entities) {
         if (e instanceof Character) e.hp = 0;
@@ -132,7 +149,7 @@ export default class Stage {
     }
   }
   kill_soliders() {
-    for (const o of this.stage_objects) {
+    for (const o of this.items) {
       if (!o.is_enemies) continue;
       if (!o.info.is_soldier) continue;
       for (const e of o.entities) {
@@ -141,7 +158,7 @@ export default class Stage {
     }
   }
   kill_boss() {
-    for (const o of this.stage_objects) {
+    for (const o of this.items) {
       if (!o.is_enemies) continue;
       if (!o.info.is_boss) continue;
       for (const e of o.entities) {
@@ -150,7 +167,7 @@ export default class Stage {
     }
   }
   kill_others() {
-    for (const o of this.stage_objects) {
+    for (const o of this.items) {
       if (!o.is_enemies) continue;
       if (o.info.is_boss || o.info.is_soldier) continue;
       for (const e of o.entities) {
@@ -162,24 +179,24 @@ export default class Stage {
     this._disposed = true;
     for (const f of this._disposers) f();
     this.bg.dispose();
-    for (const so of this.stage_objects) {
+    for (const so of this.items) {
       so.dispose();
     }
   }
   all_boss_dead(): boolean {
-    return !find_in_set(this.stage_objects, i => i.info.is_boss)
+    return !find_in_set(this.items, i => i.info.is_boss)
   }
   all_enemies_dead(): boolean {
-    return !find_in_set(this.stage_objects, i => i.is_enemies)
+    return !find_in_set(this.items, i => i.is_enemies)
   }
   all_done(): boolean {
     return this._cur_phase_idx === this.data.phases.length;
   }
-  handle_empty_stage_object(stage_object: StageObject) {
+  handle_empty_stage_object(stage_object: Item) {
     const { times, is_soldier } = stage_object.info;
     if (is_soldier) {
       if (this.all_boss_dead()) {
-        this.stage_objects.delete(stage_object);
+        this.items.delete(stage_object);
         stage_object.dispose();
       } else if (!is_num(times) || times > 0) {
         stage_object.spawn();
@@ -187,7 +204,7 @@ export default class Stage {
     } else if (times) {
       stage_object.spawn();
     } else {
-      this.stage_objects.delete(stage_object);
+      this.items.delete(stage_object);
       stage_object.dispose();
     }
     if (this.all_enemies_dead()) {

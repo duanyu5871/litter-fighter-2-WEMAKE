@@ -1,7 +1,7 @@
 import type { Character } from '../../entity/Character';
 import BaseState from "../BaseState";
 
-export class BaseCharacterState extends BaseState<Character> {
+export default class BaseCharacterState extends BaseState<Character> {
   update(e: Character): void {
     this.begin(e);
   }

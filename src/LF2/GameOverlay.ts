@@ -1,7 +1,7 @@
 import { is_num } from '../common/is_num';
 import { Defines } from '../common/lf2_type/defines';
 import { ILf2Callback } from './LF2';
-import Stage from './Stage';
+import Stage from './stage/Stage';
 import type { IWorldCallbacks, World } from './World';
 import './game_overlay.css';
 const ele = document.createElement.bind(document);

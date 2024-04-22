@@ -1,5 +1,5 @@
 import type { Character } from '../../entity/Character';
-import { BaseCharacterState } from "./Base";
+import BaseCharacterState from "./Base";
 
 export default class Burning extends BaseCharacterState {
   update(e: Character): void {

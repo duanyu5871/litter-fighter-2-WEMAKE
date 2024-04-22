@@ -1,8 +1,8 @@
 import * as THREE from 'three';
-import LF2 from '../../LF2/LF2';
-import Stage from '../../LF2/Stage';
-import { IWorldCallbacks, World } from '../../LF2/World';
-import { Entity } from '../../LF2/entity/Entity';
+import LF2 from './LF2';
+import Stage from './stage/Stage';
+import { IWorldCallbacks, World } from './World';
+import { Entity } from './entity/Entity';
 
 
 export class Shadow implements IWorldCallbacks {

@@ -6,7 +6,7 @@ import TeamSelect from './Component/TeamSelect';
 import LF2 from './LF2/LF2';
 import { IPlayerInfoCallback, PlayerInfo } from './LF2/PlayerInfo';
 import { TKeyName } from './LF2/controller/BaseController';
-import { PlayerController } from './LF2/controller/LocalHuman';
+import { LocalHuman } from './LF2/controller/LocalHuman';
 import { IEntityCallbacks } from './LF2/entity/Entity';
 import { new_team } from './LF2/base/new_id';
 import random_get from './common/random_get';
@@ -83,7 +83,7 @@ export function PlayerRow(props: Props) {
     lp.callbacks.add(callbacks.current)
     lp.name = player_name.trim() || '' + which;
     lp.team = team ? Number(team) : new_team();
-    lp.controller = new PlayerController(which, lp, keys)
+    lp.controller = new LocalHuman(which, lp, keys)
   }, [which, player_name, team, lf2, character_id, added, keys]);
 
   useEffect(() => {
