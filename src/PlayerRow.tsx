@@ -36,7 +36,7 @@ interface Props {
   visible?: boolean;
 }
 export function PlayerRow(props: Props) {
-  const { lf2, visible } = props;
+  const { lf2, visible = true } = props;
   const which = '' + props.which;
   const [editing_key, set_editing_key] = useState<TKeyName | undefined>();
 

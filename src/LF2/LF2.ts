@@ -546,6 +546,8 @@ export default class LF2 {
       return item.state.mouse_on_me;
     if (word === 'opacity_hover')
       return (item.state.mouse_on_me === '1' || item.focused_item === item) ? 1 : 0.5;
+    if (word === "paused")
+      return this.world.paused ? 1 : 0
     if (word.startsWith('f:')) {
       let result = word.match(/f:random_int_in_range\((\d+),(\d+),?(\d+)?\)/);
       if (result) {
@@ -578,6 +580,7 @@ export default class LF2 {
         }
         return 1;
       }
+
     }
     return word;
   };

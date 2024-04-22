@@ -20,7 +20,7 @@ const bot_controllers: { [x in string]?: (e: Character) => BaseController } = {
 }
 
 export function BackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
-  const { lf2, visible } = props;
+  const { lf2, visible = true } = props;
 
   const _stage = lf2?.world.stage;
   const _stage_data = _stage?.data;
@@ -90,7 +90,7 @@ export function BackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
     if (bg_id !== Defines.THE_VOID_BG.id && type === 'bg')
       lf2.set_layout(void 0)
     else if (stage_id !== Defines.THE_VOID_STAGE.id && type === 'stage')
-      lf2.set_layout(void 0)
+      lf2.set_layout('stage_playing')
     else
       lf2.set_layout('main_page')
   }, [lf2, bg_id, stage_id, type, stage_list]);

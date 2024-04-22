@@ -147,6 +147,9 @@ export default class Layout {
     ret._cook_data(get_val);
     ret._cook_rects();
     await ret._cook_component();
+
+
+
     if (ret.data.actions?.click) {
       if (ret.data.tab_type?.includes('lr')) ret.root._left_to_right!.push(ret);
       if (ret.data.tab_type?.includes('ud')) ret.root._top_to_bottom!.push(ret);
@@ -290,12 +293,11 @@ export default class Layout {
     const geo = new THREE.PlaneGeometry(w, h)
       .translate(center_x, center_y, 0);
     const params: THREE.MeshBasicMaterialParameters = {
-      transparent: true,
+      transparent: true
     };
     if (texture) params.map = texture;
     else if (this.data.bg_color) params.color = this.data.bg_color;
-    else params.color = 0;
-
+    else this._opacity = () => 0.
     this._material = new THREE.MeshBasicMaterial(params);
     this._sprite = new THREE.Mesh(geo, this._material);
     this._sprite.name = this.data.name ?? this.data.id ?? '';
