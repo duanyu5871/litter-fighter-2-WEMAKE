@@ -140,7 +140,7 @@ export class World {
   add_entities(...entities: Entity[]) {
     for (const e of entities) {
       this.scene.add(e.sprite);
-      this.scene.add(e.shadow);
+      this.scene.add(e.shadow.mesh);
       e.show_indicators = this._show_indicators;
       if (e instanceof Character && e.controller instanceof PlayerController) {
         this.players.set(e.controller.which, e);

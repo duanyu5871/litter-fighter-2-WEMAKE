@@ -1,7 +1,7 @@
+import * as THREE from 'three';
 import LF2 from '../../LF2/LF2';
 import { IStyle } from '../../LF2/loader/IStyle';
 import { create_picture } from '../../LF2/loader/loader';
-import * as THREE from 'three';
 
 export class TextBuilder {
   protected lf2: LF2;

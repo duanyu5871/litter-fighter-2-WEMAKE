@@ -4,15 +4,16 @@ import { constructor_name } from '../../common/constructor_name';
 import { is_nagtive_num } from '../../common/is_nagtive_num';
 import { IBallData, IBaseData, IBdyInfo, ICharacterData, IEntityData, IFrameInfo, IGameObjData, IGameObjInfo, IItrInfo, IOpointInfo, IWeaponData, TNextFrame } from '../../common/lf2_type';
 import { Defines } from '../../common/lf2_type/defines';
-import Callbacks from '../base/Callbacks';
 import { factory } from '../Factory';
 import { FrameAnimater } from '../FrameAnimater';
 import type { World } from '../World';
 import { ICube } from '../World';
+import Callbacks from '../base/Callbacks';
 import BaseState from "../state/BaseState";
 import { EntityIndicators } from './EntityIndicators';
 import type { Weapon } from './Weapon';
 import { turn_face } from './face_helper';
+import { Shadow } from '../../Layout/Component/Shadow';
 export type TData = IBaseData | ICharacterData | IWeaponData | IEntityData | IBallData
 export const V_SHAKE = 4;
 export const A_SHAKE = 6;
@@ -62,8 +63,7 @@ export class Entity<
   protected _mp: number = 500;
   protected _hp: number = 500;
 
-  readonly shadow_material: THREE.MeshBasicMaterial;
-  readonly shadow: THREE.Mesh;
+  readonly shadow: Shadow;
   readonly velocity = new THREE.Vector3(0, 0, 0);
 
   get name() { return this._name; }
@@ -182,17 +182,9 @@ export class Entity<
 
   constructor(world: World, data: D, states: Map<number, BaseState> = new Map()) {
     super(world, data)
-    this.world.bg.get_shadow().then(pic_info => {
-      this.shadow_material.map = pic_info.texture;
-      this.shadow_material.opacity = 1;
-      this.shadow_material.needsUpdate = true;
-    })
+
     this.states = states;
-    const [sw, sh] = this.world.bg.data.base.shadowsize || [30, 30]
-    const geometry = new THREE.PlaneGeometry(sw, sh).translate(0, 0, 0);
-    this.shadow_material = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0 });
-    this.shadow = new THREE.Mesh(geometry, this.shadow_material);
-    this.shadow.renderOrder = 0
+    this.shadow = new Shadow(this);
   }
 
   velocity_decay(factor: number = 1) {
@@ -454,7 +446,7 @@ export class Entity<
   }
   dispose(): void {
     super.dispose();
-    this.shadow.removeFromParent();
+    this.shadow.dispose();
     this.indicators.dispose();
     this.callbacks.emit('on_disposed')(this);
   }
