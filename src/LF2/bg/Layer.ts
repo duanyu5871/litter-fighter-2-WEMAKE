@@ -2,31 +2,31 @@ import * as THREE from 'three';
 import fade_out from '../../Utils/fade_out';
 import { IBgLayerInfo } from "../../common/lf2_type/IBgLayerInfo";
 import { Defines } from '../../common/lf2_type/defines';
-import { Background, ILayerUserData } from './Background';
+import Background, { ILayerUserData } from './Background';
 
-export class BgLayer {
+export default class Layer {
   readonly mesh: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial, THREE.Object3DEventMap>;
   readonly bg: Background;
-  readonly user_data: Readonly<ILayerUserData>;
 
   private _show_indicators = false;
   get show_indicators() { return this._show_indicators; }
   set show_indicators(v: boolean) { this._show_indicators = v; }
+  get user_data() { return this.mesh.userData as ILayerUserData; }
 
   constructor(bg: Background, info: IBgLayerInfo, x: number, y: number, z: number, texture?: THREE.Texture) {
+    this.bg = bg;
+
     const { width: w, height: h } = texture ? texture.image : info;
     const params: THREE.MeshBasicMaterialParameters = { transparent: true, opacity: 0 }
     if (texture) params.map = texture;
     else params.color = info.color
 
-    const layer = this.mesh = new THREE.Mesh(
+    this.mesh = new THREE.Mesh(
       new THREE.PlaneGeometry(w, h).translate(w / 2, -h / 2, 0),
       new THREE.MeshBasicMaterial(params)
     );
-    layer.position.set(x, y, z);
-    this.bg = bg
-    this.user_data = { x, y, z, info, w, h, owner: this }
-    layer.userData = this.user_data;
+    this.mesh.position.set(x, y, z);
+    (this.mesh.userData as ILayerUserData) = { x, y, z, info, w, h, owner: this };
   }
 
   update(count: number) {

@@ -10,7 +10,7 @@ import { ICharacterData, IStageInfo, IWeaponData, TFace } from '../common/lf2_ty
 import { Defines } from '../common/lf2_type/defines';
 import random_get from '../common/random_get';
 import random_take from '../common/random_take';
-import { BgLayer } from './bg/BgLayer';
+import Layer from './bg/Layer';
 import { PlayerInfo } from './PlayerInfo';
 import Stage from './stage/Stage';
 import { World } from './World';
@@ -253,7 +253,7 @@ export default class LF2 {
     const old = this._intersection;
     if (old) {
       const o = old.object;
-      if (o.userData.owner instanceof BgLayer)
+      if (o.userData.owner instanceof Layer)
         o.userData.owner.show_indicators = false;
       else if (o.userData.owner instanceof Entity)
         o.userData.owner.show_indicators = false;
@@ -264,7 +264,7 @@ export default class LF2 {
     const o = next.object;
     (window as any).pick_0 = o.userData.owner ?? o.userData
     Log.print("click", o.userData.owner ?? o.userData)
-    if (o.userData.owner instanceof BgLayer)
+    if (o.userData.owner instanceof Layer)
       o.userData.owner.show_indicators = true;
     else if (o.userData.owner instanceof Entity) {
       o.userData.owner.show_indicators = true;

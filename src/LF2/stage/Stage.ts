@@ -2,7 +2,7 @@ import { Warn } from "../../Log";
 import { is_num } from "../../common/is_num";
 import { IBgData, IStageInfo, IStageObjectInfo, IStagePhaseInfo } from "../../common/lf2_type";
 import { Defines } from "../../common/lf2_type/defines";
-import { Background } from "../bg/Background";
+import Background from "../bg/Background";
 import type { World } from "../World";
 import Callbacks from "../base/Callbacks";
 import { new_team } from "../base/new_id";

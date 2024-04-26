@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { IBgData } from '../../common/lf2_type';
 import { IBgLayerInfo } from "../../common/lf2_type/IBgLayerInfo";
 import { Defines } from '../../common/lf2_type/defines';
-import { BgLayer } from './BgLayer';
+import Layer from './Layer';
 import { World } from '../World';
 import { TPictureInfo, create_picture, error_picture_info } from '../loader/loader';
 
@@ -13,12 +13,12 @@ export interface ILayerUserData {
   info: IBgLayerInfo;
   w: number;
   h: number;
-  owner: BgLayer;
+  owner: Layer;
 }
-export class Background {
+export default class Background {
   readonly data: Readonly<IBgData>;
   private _disposers: (() => void)[] = [];
-  private _layers: BgLayer[] = [];
+  private _layers: Layer[] = [];
   readonly id: string;
   readonly left: number
   readonly right: number
@@ -76,7 +76,7 @@ export class Background {
   private add_layer(info: IBgLayerInfo, texture?: THREE.Texture) {
     let { x, y, z, loop = 0 } = info;
     do {
-      const layer = new BgLayer(this, info, x, y, z, texture)
+      const layer = new Layer(this, info, x, y, z, texture)
       this.obj_3d.add(layer.mesh);
       this._layers.push(layer)
       x += loop;
