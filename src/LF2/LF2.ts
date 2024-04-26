@@ -10,7 +10,7 @@ import { ICharacterData, IStageInfo, IWeaponData, TFace } from '../common/lf2_ty
 import { Defines } from '../common/lf2_type/defines';
 import random_get from '../common/random_get';
 import random_take from '../common/random_take';
-import { BgLayer } from './BgLayer';
+import { BgLayer } from './bg/BgLayer';
 import { PlayerInfo } from './PlayerInfo';
 import Stage from './stage/Stage';
 import { World } from './World';

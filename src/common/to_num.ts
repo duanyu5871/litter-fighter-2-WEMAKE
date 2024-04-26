@@ -1,4 +1,3 @@
-
 export function to_num<T>(v: T): number | T;
 export function to_num<T>(v: T, or: number): number;
 export function to_num<T>(v: T, or?: number): number | T {

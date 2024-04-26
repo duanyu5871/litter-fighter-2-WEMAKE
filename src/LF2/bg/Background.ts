@@ -1,10 +1,10 @@
 import * as THREE from 'three';
-import { IBgData } from '../common/lf2_type';
-import { IBgLayerInfo } from "../common/lf2_type/IBgLayerInfo";
-import { Defines } from '../common/lf2_type/defines';
+import { IBgData } from '../../common/lf2_type';
+import { IBgLayerInfo } from "../../common/lf2_type/IBgLayerInfo";
+import { Defines } from '../../common/lf2_type/defines';
 import { BgLayer } from './BgLayer';
-import { World } from './World';
-import { TPictureInfo, create_picture, error_picture_info } from './loader/loader';
+import { World } from '../World';
+import { TPictureInfo, create_picture, error_picture_info } from '../loader/loader';
 
 export interface ILayerUserData {
   x: number;
@@ -77,7 +77,7 @@ export class Background {
     let { x, y, z, loop = 0 } = info;
     do {
       const layer = new BgLayer(this, info, x, y, z, texture)
-      this.obj_3d.add(layer.obj_3d);
+      this.obj_3d.add(layer.mesh);
       this._layers.push(layer)
       x += loop;
     } while (loop > 0 && x < this.width);
