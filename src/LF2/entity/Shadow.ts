@@ -36,8 +36,10 @@ export default class Shadow implements IWorldCallbacks {
   }
 
   on_stage_change(stage: Stage): void {
-    stage.bg.get_shadow().then(pic => {
-      const [sw, sh] = stage.bg.data.base.shadowsize || [30, 30];
+    const bg = stage.bg
+    bg.get_shadow().then(pic => {
+      if (bg !== stage.bg) return;
+      const [sw, sh] = bg.data.base.shadowsize || [30, 30];
       this.mesh.geometry = new T.PlaneGeometry(sw, sh);
       this.mesh.material.map = pic.texture;
       this.mesh.material.opacity = 1;

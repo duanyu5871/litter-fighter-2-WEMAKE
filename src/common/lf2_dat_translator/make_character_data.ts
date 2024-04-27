@@ -168,7 +168,7 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
         frame.hold = frame.hold || {};
         frame.hit.B = frame.hold.B = { id: '218' }; // running_stop
         frame.dvx = running_speed / 2;
-        frame.dvz = running_speedz / 2;
+        frame.dvz = running_speedz;
         break;
       }
       /** heavy_obj_walk */
@@ -189,7 +189,7 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
         frame.hit.B = frame.hold.B = { id: '19' }; // running_stop
         frame.hit.a = { id: '50' }; // running_stop
         frame.dvx = heavy_running_speed / 2;
-        frame.dvz = heavy_running_speedz / 2;
+        frame.dvz = heavy_running_speedz;
 
         break;
       }
