@@ -17,24 +17,6 @@ import { turn_face } from './face_helper';
 export type TData = IBaseData | ICharacterData | IWeaponData | IEntityData | IBallData
 export const V_SHAKE = 4;
 export const A_SHAKE = 6;
-export const get_team_shadow_color = (team: any) => {
-  switch (team) {
-    case 1: return 'blue';
-    case 2: return 'red';
-    case 3: return 'green';
-    case 4: return 'yellow';
-    default: return 'black';
-  }
-}
-export const get_team_text_color = (team: any) => {
-  switch (team) {
-    case 1: return '#CCCCFF';
-    case 2: return '#FFCCCC';
-    case 3: return '#CCFFCC';
-    case 4: return '#FFFFCC';
-    default: return 'white';
-  }
-}
 export interface IVictimRest {
   remain: number,
   itr: IItrInfo,
@@ -66,38 +48,30 @@ export class Entity<
   readonly shadow: Shadow;
   readonly velocity = new THREE.Vector3(0, 0, 0);
 
-  get name() { return this._name; }
+  get name(): string { return this._name; }
   set name(v: string) {
-    const old = this._name;
-    this._name = v;
-    this.on_name_changed?.(v, old);
-    this.callbacks.emit('on_name_changed')(this, v, old)
-  }
-  get mp() { return this._mp; }
-  set mp(v) {
-    const old = this._mp;
-    this._mp = v
-    this.callbacks.emit('on_mp_changed')(this, v, old)
+    const o = this._name;
+    this.callbacks.emit('on_name_changed')(this, this._name = v, o)
   }
 
-  get hp() { return this._hp; }
-  set hp(v) {
-    const old = this._hp;
-    this._hp = v
-    this.callbacks.emit('on_hp_changed')(this, v, old)
+  get mp(): number { return this._mp; }
+  set mp(v: number) {
+    const o = this._mp;
+    this.callbacks.emit('on_mp_changed')(this, this._mp = v, o)
+  }
+
+  get hp(): number { return this._hp; }
+  set hp(v: number) {
+    const o = this._hp;
+    this.callbacks.emit('on_hp_changed')(this, this._hp = v, o)
   }
 
   get team() { return this._team }
   set team(v) {
-    const old = this._team;
-    this._team = v;
-    this.callbacks.emit('on_team_changed')(this, v, old)
-    this.on_team_changed?.(v, old);
+    const o = this._team;
+    this.callbacks.emit('on_team_changed')(this, this._team = v, o)
   }
-  readonly states: Map<number, BaseState>;
-
-  protected on_name_changed?(prev: string, curr: string): void;
-  protected on_team_changed?(prev: number, curr: number): void;
+  readonly states: Map<number | string, BaseState>;
 
   v_rests = new Map<string, IVictimRest>();
   a_rest: number = 0;

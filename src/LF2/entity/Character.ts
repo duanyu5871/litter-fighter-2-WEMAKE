@@ -11,7 +11,9 @@ import { BaseController } from '../controller/BaseController';
 import { InvalidController } from '../controller/InvalidController';
 import { CHARACTER_STATES } from '../state/character';
 import { Ball } from './Ball';
-import { Entity, IEntityCallbacks, get_team_shadow_color, get_team_text_color } from './Entity';
+import { Entity, IEntityCallbacks } from './Entity';
+import { get_team_text_color } from './get_team_text_color';
+import { get_team_shadow_color } from './get_team_shadow_color';
 import { Weapon } from './Weapon';
 import { same_face, turn_face } from './face_helper';
 
@@ -32,22 +34,21 @@ export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, IChar
   protected _fall_value = 70;
   protected _defend_value = 60;
   protected _name_sprite?: THREE.Sprite;
-  get name_sprite() {
-    return this._name_sprite
-  }
 
   constructor(world: World, data: ICharacterData) {
     super(world, data, CHARACTER_STATES);
     this.sprite.name = Character.name + ':' + data.base.name;
     this.enter_frame({ id: Defines.ReservedFrameId.Auto });
+
   }
 
   private update_name_sprite(name: string, team: number) {
-    const fillStyle = get_team_text_color(team)
-    const strokeStyle = get_team_shadow_color(team);
     if (!name) {
+      this.remove_name_sprite();
       return;
     }
+    const fillStyle = get_team_text_color(team)
+    const strokeStyle = get_team_shadow_color(team);
     this.world.lf2.img_mgr.load_text(name, { shadowColor: strokeStyle, fillStyle })
       .then((i) => this.world.lf2.img_mgr.create_picture_by_img_key('', i.key))
       .then((p) => {
@@ -66,12 +67,15 @@ export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, IChar
       });
   }
 
-  protected override on_name_changed(value: string, prev: string): void {
-    this.update_name_sprite(value, this._team);
+  private remove_name_sprite(): void {
+    this._name_sprite?.removeFromParent();
+    this._name_sprite = void 0;
   }
-  protected override on_team_changed(value: number, prev: number): void {
-    this.update_name_sprite(this._name, value);
-  }
+
+  // protected override on_name_changed(value: string): void {
+  // }
+  // protected override on_team_changed(value: number): void {
+  // }
 
   override handle_facing_flag(facing: number, frame: IFrameInfo, flags: INextFrame): TFace {
     switch (facing) {
@@ -108,7 +112,6 @@ export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, IChar
   }
   override dispose() {
     this.controller.dispose();
-    this.name_sprite?.removeFromParent()
     super.dispose()
   }
 
