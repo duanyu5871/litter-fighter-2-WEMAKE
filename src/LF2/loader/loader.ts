@@ -187,9 +187,8 @@ export class ImageMgr {
   }
 }
 
-// export const image_pool = (window as any).image_pool = new ImagePool();
 export const error_texture = () => {
-  const texture = texture_loader.load(require('../checker.png'));
+  const texture = texture_loader.load(require('./error.png'));
   texture.colorSpace = THREE.SRGBColorSpace;
   texture.minFilter = THREE.NearestFilter;
   texture.magFilter = THREE.NearestFilter
