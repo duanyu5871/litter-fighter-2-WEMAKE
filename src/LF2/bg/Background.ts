@@ -45,8 +45,9 @@ export default class Background {
       x: (this.right + this.left) / 2,
       z: (this.far + this.near) / 2,
     }
-    const node = this.obj_3d = new THREE.Object3D();
+    this.obj_3d = new THREE.Object3D();
     this.obj_3d.position.z = -2 * Defines.OLD_SCREEN_HEIGHT;
+    this.obj_3d.name = Background.name + ':' + this.data.base.name;
     const jobs: Promise<any>[] = []
 
     for (const info of data.layers) {
@@ -59,7 +60,7 @@ export default class Background {
       });
     }
     this._disposers.push(() => this.fade_out());
-    world.scene.add(node);
+    world.scene.add(this.obj_3d);
   }
   fade_out(): void {
     const max_delay = 50;

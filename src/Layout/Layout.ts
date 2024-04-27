@@ -300,7 +300,7 @@ export default class Layout {
     else this._opacity = () => 0.
     this._material = new THREE.MeshBasicMaterial(params);
     this._sprite = new THREE.Mesh(geo, this._material);
-    this._sprite.name = this.data.name ?? this.data.id ?? '';
+    this._sprite.name = this.data.name ?? this.data.id ?? 'layout';
     this._sprite.position.set(x, -y, 0);
     this._sprite.userData = {
       owner: this,

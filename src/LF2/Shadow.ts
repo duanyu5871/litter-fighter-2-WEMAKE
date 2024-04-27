@@ -23,6 +23,7 @@ export class Shadow implements IWorldCallbacks {
       new THREE.PlaneGeometry(0, 0),
       new THREE.MeshBasicMaterial({ transparent: true, opacity: 0 })
     );
+    this.mesh.name = Shadow.name + ' of ' + this.entity.sprite.name
     this.mesh.renderOrder = 0
     this.on_stage_change(this.world.stage);
     this.world.callbacks.add(this);

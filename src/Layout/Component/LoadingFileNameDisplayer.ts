@@ -43,6 +43,7 @@ export class LoadingFileNameDisplayer extends LayoutComponent implements ILf2Cal
       this.layout.sprite.add(
         this._sprite = await text_builder.build_mesh()
       );
+      this._sprite.name = LoadingFileNameDisplayer.name;
     } else {
       const [geo, tex] = await text_builder.build();
       if (!this.mounted) return;

@@ -86,6 +86,7 @@ export class FrameAnimater<
     const sprite = this.sprite = new THREE.Sprite(material);
     sprite.userData.owner = this;
     sprite.renderOrder = 1;
+    sprite.name = 'FrameAnimater'
   }
   update_sprite_position() {
     const { x, y, z } = this.position;

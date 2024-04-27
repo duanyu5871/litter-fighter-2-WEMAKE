@@ -67,7 +67,8 @@ export class PlayerKeyEditor extends LayoutComponent implements IPlayerInfoCallb
       const sprite = this._sprite = await TextBuilder.get(this.lf2)
         .text(keycode ?? '')
         .style({ font: '16px Arial' })
-        .build_mesh()
+        .build_mesh();
+      sprite.name = PlayerKeyEditor.name;
       this.layout.sprite.add(sprite);
       sprite.position.x = this.layout.size[0] / 2
       sprite.position.y = -this.layout.size[1] / 2

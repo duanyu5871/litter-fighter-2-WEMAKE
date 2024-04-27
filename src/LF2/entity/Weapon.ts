@@ -10,6 +10,7 @@ export class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData> {
   holder?: Entity;
   constructor(world: World, data: IWeaponData) {
     super(world, data, WEAPON_STATES);
+    this.sprite.name = "Weapon: " + data.id
     this.hp = data.base.weapon_hp;
   }
   override find_auto_frame(): IFrameInfo {

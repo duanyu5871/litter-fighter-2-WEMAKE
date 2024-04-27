@@ -10,6 +10,7 @@ export class Ball extends Entity<IBallFrameInfo, IBallInfo, IBallData> {
   ud = 0;
   constructor(world: World, data: IBallData) {
     super(world, data, BALL_STATES);
+    this.sprite.name = "ball: " + data.id
     this.hp = this.data.base.hp;
   }
   override find_auto_frame() {
@@ -51,7 +52,7 @@ export class Ball extends Entity<IBallFrameInfo, IBallInfo, IBallData> {
     super.update();
     const f = this.get_frame();
     if (this.hp <= 0) {
-      f.on_dead && this.enter_frame(f.on_dead) 
+      f.on_dead && this.enter_frame(f.on_dead)
     } else if (f.hp) {
       this.hp -= f.hp;
     }

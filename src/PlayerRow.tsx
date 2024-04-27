@@ -38,15 +38,25 @@ interface Props {
 export function PlayerRow(props: Props) {
   const { lf2, visible = true } = props;
   const which = '' + props.which;
+
+  const { 
+    keys: _keys = invalid_keys,
+    name: _name = which,
+  } = lf2?.player_infos.get(which) || {};
+
+  const [keys, set_keys] = useState<Record<TKeyName, string>>(_keys);
+  const [player_name, set_player_name] = useState<string>(_name);
   const [editing_key, set_editing_key] = useState<TKeyName | undefined>();
 
-  const [keys, set_keys] = useState<Record<TKeyName, string>>(invalid_keys);
-  const [player_name, set_player_name] = useState<string>(which);
+
+
+
   const [team, set_team] = useState<string>('');
   const [character_id, set_character_id] = useState<string>('');
   const [added, set_added] = useState(false);
   const [key_settings_show, set_key_settings_show] = useState(false);
   const hp_ref = useRef<HTMLSpanElement>(null)
+
   const callbacks = useRef<IEntityCallbacks>({
     on_hp_changed: (_, hp) => { if (hp_ref.current) hp_ref.current.innerText = ('' + hp) },
     on_mp_changed: (_, mp) => { },

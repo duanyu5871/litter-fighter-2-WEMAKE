@@ -182,7 +182,7 @@ export class Entity<
 
   constructor(world: World, data: D, states: Map<number, BaseState> = new Map()) {
     super(world, data)
-
+    this.sprite.name = "Entity:" + data.id
     this.states = states;
     this.shadow = new Shadow(this);
   }
@@ -464,7 +464,7 @@ export class Entity<
     this.indicators.dispose();
     this.callbacks.emit('on_disposed')(this);
   }
-  
+
   /**
    * 是否处于闪烁状态
    *
@@ -473,7 +473,7 @@ export class Entity<
    */
   get blinking() { return this._blinking_count > 0 }
 
-  
+
   /**
    * 闪烁计数，每帧-1
    *

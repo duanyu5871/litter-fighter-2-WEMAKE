@@ -38,25 +38,31 @@ export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, IChar
 
   constructor(world: World, data: ICharacterData) {
     super(world, data, CHARACTER_STATES);
+    this.sprite.name = Character.name + ':' + data.base.name;
     this.enter_frame({ id: Defines.ReservedFrameId.Auto });
   }
 
   private update_name_sprite(name: string, team: number) {
     const fillStyle = get_team_text_color(team)
     const strokeStyle = get_team_shadow_color(team);
-    if (!name) return;
-
+    if (!name) {
+      return;
+    }
     this.world.lf2.img_mgr.load_text(name, { shadowColor: strokeStyle, fillStyle })
       .then((i) => this.world.lf2.img_mgr.create_picture_by_img_key('', i.key))
       .then((p) => {
         if (name !== this._name) return;
         if (team !== this._team) return;
-        const material = new THREE.SpriteMaterial({ map: p.texture });
-        if (!this._name_sprite) this._name_sprite = new THREE.Sprite(material);
-        else this._name_sprite.material = material;
+        if (!this._name_sprite) {
+          this._name_sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: p.texture }));
+          this.world.scene.add(this._name_sprite);
+        } else {
+          this._name_sprite.material.map = p.texture;
+          this._name_sprite.material.needsUpdate = true;
+        };
         this._name_sprite.scale.set(p.i_w, p.i_h, 1);
+        this._name_sprite.name = 'name sprite'
         this._name_sprite.center.set(0.5, 1.5);
-        this.world.scene.add(this._name_sprite);
       });
   }
 

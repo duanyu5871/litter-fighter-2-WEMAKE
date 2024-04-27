@@ -25,6 +25,7 @@ export default class Layer {
       new THREE.PlaneGeometry(w, h).translate(w / 2, -h / 2, 0),
       new THREE.MeshBasicMaterial(params)
     );
+    this.mesh.name = "bg layer: " + Layer.name
     this.mesh.position.set(x, y, z);
     (this.mesh.userData as ILayerUserData) = { x, y, z, info, w, h, owner: this };
   }
