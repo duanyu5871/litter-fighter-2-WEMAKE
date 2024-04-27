@@ -1,7 +1,7 @@
 import * as T from 'three';
 import type { Entity, IEntityCallbacks } from './Entity';
-import { get_team_shadow_color } from './get_team_shadow_color';
-import { get_team_text_color } from './get_team_text_color';
+import { get_team_shadow_color } from '../base/get_team_shadow_color';
+import { get_team_text_color } from '../base/get_team_text_color';
 
 
 export class NameSprite implements IEntityCallbacks {
