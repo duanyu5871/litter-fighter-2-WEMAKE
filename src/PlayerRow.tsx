@@ -48,9 +48,6 @@ export function PlayerRow(props: Props) {
   const [player_name, set_player_name] = useState<string>(_name);
   const [editing_key, set_editing_key] = useState<TKeyName | undefined>();
 
-
-
-
   const [team, set_team] = useState<string>('');
   const [character_id, set_character_id] = useState<string>('');
   const [added, set_added] = useState(false);

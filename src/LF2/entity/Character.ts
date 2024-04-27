@@ -1,9 +1,9 @@
-import * as THREE from 'three';
 import { Log, Warn } from '../../Log';
 import { constructor_name } from '../../common/constructor_name';
 import { IBdyInfo, ICharacterData, ICharacterFrameInfo, ICharacterInfo, IFrameInfo, IItrInfo, INextFrame, IOpointInfo, TFace, TNextFrame } from '../../common/lf2_type';
 import { Defines } from '../../common/lf2_type/defines';
 import { factory } from '../Factory';
+import { NameSprite } from './NameSprite';
 import type { World } from '../World';
 import { ICube } from '../World';
 import Callbacks from '../base/Callbacks';
@@ -12,8 +12,6 @@ import { InvalidController } from '../controller/InvalidController';
 import { CHARACTER_STATES } from '../state/character';
 import { Ball } from './Ball';
 import { Entity, IEntityCallbacks } from './Entity';
-import { get_team_text_color } from './get_team_text_color';
-import { get_team_shadow_color } from './get_team_shadow_color';
 import { Weapon } from './Weapon';
 import { same_face, turn_face } from './face_helper';
 
@@ -33,49 +31,13 @@ export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, IChar
   protected _resting = 0;
   protected _fall_value = 70;
   protected _defend_value = 60;
-  protected _name_sprite?: THREE.Sprite;
+  protected _name_sprite = new NameSprite(this);
 
   constructor(world: World, data: ICharacterData) {
     super(world, data, CHARACTER_STATES);
     this.sprite.name = Character.name + ':' + data.base.name;
     this.enter_frame({ id: Defines.ReservedFrameId.Auto });
-
   }
-
-  private update_name_sprite(name: string, team: number) {
-    if (!name) {
-      this.remove_name_sprite();
-      return;
-    }
-    const fillStyle = get_team_text_color(team)
-    const strokeStyle = get_team_shadow_color(team);
-    this.world.lf2.img_mgr.load_text(name, { shadowColor: strokeStyle, fillStyle })
-      .then((i) => this.world.lf2.img_mgr.create_picture_by_img_key('', i.key))
-      .then((p) => {
-        if (name !== this._name) return;
-        if (team !== this._team) return;
-        if (!this._name_sprite) {
-          this._name_sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: p.texture }));
-          this.world.scene.add(this._name_sprite);
-        } else {
-          this._name_sprite.material.map = p.texture;
-          this._name_sprite.material.needsUpdate = true;
-        };
-        this._name_sprite.scale.set(p.i_w, p.i_h, 1);
-        this._name_sprite.name = 'name sprite'
-        this._name_sprite.center.set(0.5, 1.5);
-      });
-  }
-
-  private remove_name_sprite(): void {
-    this._name_sprite?.removeFromParent();
-    this._name_sprite = void 0;
-  }
-
-  // protected override on_name_changed(value: string): void {
-  // }
-  // protected override on_team_changed(value: number): void {
-  // }
 
   override handle_facing_flag(facing: number, frame: IFrameInfo, flags: INextFrame): TFace {
     switch (facing) {
@@ -172,14 +134,14 @@ export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, IChar
     const next_frame_0 = this.controller.update();
     this._next_frame = next_frame_0 || this._next_frame;
   }
+
   override update_sprite_position() {
     super.update_sprite_position();
-    if (this._name_sprite) {
-      const { x, z } = this.position;
-      this._name_sprite.position.set(x, - z / 2, z)
-      this.world.restrict(this._name_sprite);
-    }
+    const { x, z } = this.position;
+    this._name_sprite.position.set(x, - z / 2, z)
+    this.world.restrict(this._name_sprite.mesh);
   }
+
   private dizzy_catch_test(target: Entity) {
     return (this.velocity.x > 0 && target.position.x > this.position.x) ||
       (this.velocity.x < 0 && target.position.x < this.position.x)

@@ -1,20 +1,33 @@
 export default class Callbacks<F> {
-  readonly list = new Set<Partial<F>>();
-  private _c = new Map<any, any>();
-  emit<K extends keyof F>(k: K): Exclude<F[K], undefined> {
-    const a = this._c.get(k);
-    if (a) return a;
-    const b: any = (...args: any[]) => {
-      for (const i of this.list) (i[k] as any)?.(...args);
+  protected _map = new Map<any, Set<Partial<F>>>();
+
+  emit<K extends keyof F>(key: K): Exclude<F[K], undefined> {
+    const ret: any = (...args: any[]) => {
+      this.invoke<K>('', key, args);
+      this.invoke<K>(key, key, args);
     }
-    this._c.set(k, b)
-    return b;
+    return ret;
   }
-  add(v: Partial<F>) {
-    this.list.add(v)
+
+
+  private invoke<K extends keyof F>(n: any, key: K, args: any[]) {
+    const set = this._map.get(n);
+    if (!set) return
+    for (const v of set) (v as any)[key]?.(...args);
+  }
+
+  add(v: Partial<F>, keys?: (keyof F)[]): () => void {
+    const any_keys: any[] = keys?.length ? keys : ['']
+    for (const key of any_keys) {
+      let set = this._map.get(key);
+      if (!set) this._map.set(key, set = new Set())
+      set.add(v);
+    }
     return () => { this.del(v) };
+
   }
-  del(v: Partial<F>) {
-    return this.list.delete(v);
+
+  del(v: Partial<F>): void {
+    for (const [, set] of this._map) set.delete(v);
   }
 }

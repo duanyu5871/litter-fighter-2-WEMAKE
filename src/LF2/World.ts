@@ -16,6 +16,7 @@ import { Entity } from './entity/Entity';
 import './entity/Weapon';
 import { Weapon } from './entity/Weapon';
 import Stage from './stage/Stage';
+import { IWorldCallbacks } from './IWorldCallbacks';
 export interface ICube {
   left: number;
   right: number;
@@ -24,13 +25,6 @@ export interface ICube {
   near: number;
   far: number;
 }
-export interface IWorldCallbacks {
-  on_disposed?(): void;
-  on_stage_change?(curr: Stage, prev: Stage): void;
-  on_cam_move?(x: number): void;
-  on_pause_change?(pause: boolean): void;
-}
-
 new Callbacks<IWorldCallbacks>().emit('on_cam_move')(0)
 
 export class World {
@@ -139,7 +133,6 @@ export class World {
   add_entities(...entities: Entity[]) {
     for (const e of entities) {
       this.scene.add(e.sprite);
-      this.scene.add(e.shadow.mesh);
       e.show_indicators = this._show_indicators;
       if (e instanceof Character && e.controller instanceof LocalHuman) {
         this.players.set(e.controller.which, e);
@@ -542,7 +535,7 @@ export class World {
     this.renderer.clear()
     this.renderer.dispose();
   }
-  
+
   protected _difficulty: Difficulty = Difficulty.Difficult;
   get difficulty(): Difficulty { return this._difficulty; }
   set difficulty(v: Difficulty) { this.difficulty = v }

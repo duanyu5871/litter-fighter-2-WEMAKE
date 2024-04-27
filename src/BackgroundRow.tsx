@@ -12,7 +12,7 @@ import { Checkbox } from "./Component/Checkbox";
 import TeamSelect from './Component/TeamSelect';
 import { IStageInfo, IStagePhaseInfo } from './common/lf2_type';
 import { Defines } from './common/lf2_type/defines';
-import { IWorldCallbacks } from './LF2/World';
+import { IWorldCallbacks } from './LF2/IWorldCallbacks';
 import { useImmer } from 'use-immer';
 const bot_controllers: { [x in string]?: (e: Character) => BaseController } = {
   'OFF': (e: Character) => new InvalidController(e),

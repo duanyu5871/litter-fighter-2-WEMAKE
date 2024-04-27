@@ -6,7 +6,7 @@ import { IBallData, IBaseData, IBdyInfo, ICharacterData, IEntityData, IFrameInfo
 import { Defines } from '../../common/lf2_type/defines';
 import { factory } from '../Factory';
 import { FrameAnimater, GONE_FRAME_INFO } from '../FrameAnimater';
-import { Shadow } from '../Shadow';
+import Shadow from './Shadow';
 import type { World } from '../World';
 import { ICube } from '../World';
 import Callbacks from '../base/Callbacks';
@@ -91,6 +91,23 @@ export class Entity<
    */
   protected _catching_value = 602;
 
+  set state(v: BaseState | undefined) {
+    if (this._state === v) return;
+    this._state?.leave(this, this.get_frame())
+    this._state = v;
+    this._state?.enter(this, this.get_prev_frame())
+  }
+
+  get state() { return this._state; }
+
+  constructor(world: World, data: D, states: Map<number, BaseState> = new Map()) {
+    super(world, data)
+    this.sprite.name = "Entity:" + data.id
+    this.states = states;
+    this.shadow = new Shadow(this);
+  }
+
+
   setup(shotter: Entity, o: IOpointInfo, speed_z: number = 0) {
     const shotter_frame = shotter.get_frame();
     this.team = shotter.team;
@@ -143,22 +160,6 @@ export class Entity<
       return;
     }
     return create(this.world, d).setup(this, opoint, speed_z).attach()
-  }
-
-  set state(v: BaseState | undefined) {
-    if (this._state === v) return;
-    this._state?.leave(this, this.get_frame())
-    this._state = v;
-    this._state?.enter(this, this.get_prev_frame())
-  }
-
-  get state() { return this._state; }
-
-  constructor(world: World, data: D, states: Map<number, BaseState> = new Map()) {
-    super(world, data)
-    this.sprite.name = "Entity:" + data.id
-    this.states = states;
-    this.shadow = new Shadow(this);
   }
 
   velocity_decay(factor: number = 1) {
@@ -434,7 +435,6 @@ export class Entity<
   }
   dispose(): void {
     super.dispose();
-    this.shadow.dispose();
     this.indicators.dispose();
     this.callbacks.emit('on_disposed')(this);
   }
