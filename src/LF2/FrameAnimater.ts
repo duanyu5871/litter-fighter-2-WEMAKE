@@ -57,8 +57,8 @@ export class FrameAnimater<
   protected _next_frame: TNextFrame | undefined = void 0;
   protected _prev_frame: F = EMPTY_FRAME_INFO as F;
 
-  protected _mp: number = 500;
-  protected _hp: number = 500;
+  protected _mp: number = Defines.MP;
+  protected _hp: number = Defines.HP;
 
   get facing() { return this._facing; }
   set facing(v: TFace) {

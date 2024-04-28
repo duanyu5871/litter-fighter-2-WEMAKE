@@ -3,7 +3,6 @@ import { constructor_name } from '../../common/constructor_name';
 import { IBdyInfo, ICharacterData, ICharacterFrameInfo, ICharacterInfo, IFrameInfo, IItrInfo, INextFrame, IOpointInfo, TFace, TNextFrame } from '../../common/lf2_type';
 import { Defines } from '../../common/lf2_type/defines';
 import { factory } from '../Factory';
-import { NameSprite } from './NameSprite';
 import type { World } from '../World';
 import { ICube } from '../World';
 import Callbacks from '../base/Callbacks';
@@ -12,6 +11,7 @@ import { InvalidController } from '../controller/InvalidController';
 import { CHARACTER_STATES } from '../state/character';
 import { Ball } from './Ball';
 import { Entity, IEntityCallbacks } from './Entity';
+import { NameSprite } from './NameSprite';
 import { Weapon } from './Weapon';
 import { same_face, turn_face } from './face_helper';
 
@@ -37,6 +37,12 @@ export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, IChar
     super(world, data, CHARACTER_STATES);
     this.sprite.name = Character.name + ':' + data.base.name;
     this.enter_frame({ id: Defines.ReservedFrameId.Auto });
+
+    this._max_hp = this._hp = data.base.hp ?? Defines.HP;
+    this._max_mp = this._mp = data.base.mp ?? Defines.MP;
+    this._mp_r_min_spd = data.base.mp_r_min_spd ?? Defines.MP_RECOVERY_MIN_SPEED;
+    this._mp_r_max_spd = data.base.mp_r_max_spd ?? Defines.MP_RECOVERY_MAX_SPEED;
+    this.update_mp_recovery_speed();
   }
 
   override handle_facing_flag(facing: number, frame: IFrameInfo, flags: INextFrame): TFace {

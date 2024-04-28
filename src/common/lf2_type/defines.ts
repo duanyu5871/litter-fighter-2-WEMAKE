@@ -4,6 +4,12 @@ import { IBgData } from "./IBgData";
 export namespace Defines {
   export const OLD_SCREEN_WIDTH = 794;
   export const OLD_SCREEN_HEIGHT = 550;
+  export const HP = 500;
+  export const MP = 500;
+
+  export const MP_RECOVERY_MAX_SPEED = 0.8;
+  export const MP_RECOVERY_MIN_SPEED = 0.2;
+  export const HP_RECOVERY_SPEED = 0.2;
 
   export const THE_VOID_STAGE: IStageInfo = {
     bg: "THE_VOID",

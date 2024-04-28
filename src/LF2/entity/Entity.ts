@@ -48,6 +48,11 @@ export class Entity<
   readonly callbacks = new Callbacks<IEntityCallbacks>()
   protected _name: string = '';
   protected _team: number = 0;
+  protected _max_mp: number = Defines.MP;
+  protected _max_hp: number = Defines.HP;
+  protected _mp_r_min_spd: number = 0;
+  protected _mp_r_max_spd: number = 0;
+  protected _mp_r_spd: number = Defines.MP_RECOVERY_MIN_SPEED;
 
   readonly shadow: Shadow;
   readonly velocity = new THREE.Vector3(0, 0, 0);
@@ -68,7 +73,27 @@ export class Entity<
   set hp(v: number) {
     const o = this._hp;
     this.callbacks.emit('on_hp_changed')(this, this._hp = v, o)
+    this.update_mp_recovery_speed();
   }
+
+  get max_mp(): number { return this._max_mp; }
+  set max_mp(v: number) {
+    const o = this._max_mp;
+    this.callbacks.emit('on_max_mp_changed')(this, this._max_mp = v, o)
+  }
+
+  get max_hp(): number { return this._max_hp; }
+  set max_hp(v: number) {
+    const o = this._max_hp;
+    this.callbacks.emit('on_max_hp_changed')(this, this._max_hp = v, o)
+    this.update_mp_recovery_speed();
+  }
+
+  get mp_recovery_min_speed(): number { return this._mp_r_min_spd; }
+  set mp_recovery_min_speed(v: number) { this._mp_r_min_spd = v; }
+
+  get mp_recovery_max_speed(): number { return this._mp_r_max_spd; }
+  set mp_recovery_max_speed(v: number) { this._mp_r_max_spd = v; }
 
   get team() { return this._team }
   set team(v) {
@@ -230,6 +255,9 @@ export class Entity<
 
   override self_update(): void {
     super.self_update();
+    if (this._mp < this._max_mp)
+      this.mp = Math.min(this._max_mp, this._mp + this._mp_r_spd);
+
     const { cpoint } = this._frame;
     if (cpoint && is_nagtive_num(cpoint.decrease)) {
       this._catching_value += cpoint.decrease;
@@ -468,6 +496,10 @@ export class Entity<
   }
   blink(frames: number) {
     this._blinking_count = frames;
+  }
+
+  protected update_mp_recovery_speed(): void {
+    this._mp_r_spd = this._mp_r_min_spd + (this._mp_r_max_spd - this._mp_r_min_spd) * (this._max_hp - this._hp) / this._max_hp
   }
 }
 
