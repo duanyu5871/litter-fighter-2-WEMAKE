@@ -38,7 +38,7 @@ export namespace Defines {
     PressUD = 'press_U_D',
     WeaponType = 'weapon_type',
   }
-  export enum ReservedFrameId {
+  export enum FrameId {
     None = "",
     Auto = "auto",
     Self = "self",

@@ -104,7 +104,7 @@ export default class Item {
     if (is_num(y)) e.position.y = y;
     if (is_num(hp)) e.hp = hp;
     if (is_str(act)) e.enter_frame(act);
-    else e.enter_frame(Defines.ReservedFrameId.Auto);
+    else e.enter_frame(Defines.FrameId.Auto);
 
     if (e instanceof Character) {
       e.team = this.stage.enemy_team;

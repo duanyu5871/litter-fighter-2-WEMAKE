@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { Log, Warn } from '../../Log';
 import { constructor_name } from '../../common/constructor_name';
 import { is_nagtive_num } from '../../common/is_nagtive_num';
-import { IBallData, IBaseData, IBdyInfo, ICharacterData, IEntityData, IFrameInfo, IGameObjData, IGameObjInfo, IItrInfo, IOpointInfo, IWeaponData, TNextFrame } from '../../common/lf2_type';
+import { IBallData, IBaseData, IBdyInfo, ICharacterData, IEntityData, IFrameInfo, IGameObjData, IGameObjInfo, IItrInfo, INextFrame, IOpointInfo, IWeaponData, TNextFrame } from '../../common/lf2_type';
 import { Defines } from '../../common/lf2_type/defines';
 import { factory } from '../Factory';
 import { FrameAnimater, GONE_FRAME_INFO } from '../FrameAnimater';
@@ -48,6 +48,8 @@ export class Entity<
   readonly callbacks = new Callbacks<IEntityCallbacks>()
   protected _name: string = '';
   protected _team: number = 0;
+  protected _mp: number = Defines.MP;
+  protected _hp: number = Defines.HP;
   protected _max_mp: number = Defines.MP;
   protected _max_hp: number = Defines.HP;
   protected _mp_r_min_spd: number = 0;
@@ -159,8 +161,6 @@ export class Entity<
 
   override set_frame(v: F) {
     super.set_frame(v);
-    if (v.hp) this.hp -= v.hp;
-    if (v.mp) this.mp -= v.mp;
     const prev_state = this._prev_frame.state;
     const next_state = this._frame.state;
     if (prev_state !== next_state) {
@@ -320,7 +320,7 @@ export class Entity<
   get catcher() { return this._catcher }
 
   get_sudden_death_frame(): TNextFrame {
-    return { id: Defines.ReservedFrameId.Auto }
+    return { id: Defines.FrameId.Auto }
   }
 
   /**
@@ -332,7 +332,7 @@ export class Entity<
    * @returns 下帧信息 
    */
   get_caught_end_frame(): TNextFrame {
-    return { id: Defines.ReservedFrameId.Auto }
+    return { id: Defines.FrameId.Auto }
   }
 
   /**
@@ -345,7 +345,7 @@ export class Entity<
    */
   get_caught_cancel_frame(): TNextFrame {
     if (this.position.y < 1) this.position.y = 1;
-    return { id: Defines.ReservedFrameId.Auto }
+    return { id: Defines.FrameId.Auto }
   }
 
 
@@ -388,7 +388,7 @@ export class Entity<
    * @returns 下帧信息 
    */
   get_catching_end_frame(): TNextFrame {
-    return { id: Defines.ReservedFrameId.Auto }
+    return { id: Defines.FrameId.Auto }
   }
 
   /**
@@ -401,7 +401,7 @@ export class Entity<
    * @returns 下帧信息 
    */
   get_catching_cancel_frame(): TNextFrame {
-    return { id: Defines.ReservedFrameId.Auto }
+    return { id: Defines.FrameId.Auto }
   }
 
   update_catching(): TNextFrame | undefined {
@@ -492,7 +492,7 @@ export class Entity<
   protected _after_blink: string | null = null;
   blink_and_gone(frames: number) {
     this._blinking_count = frames;
-    this._after_blink = Defines.ReservedFrameId.Gone;
+    this._after_blink = Defines.FrameId.Gone;
   }
   blink(frames: number) {
     this._blinking_count = frames;

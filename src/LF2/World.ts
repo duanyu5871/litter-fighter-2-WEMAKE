@@ -235,9 +235,9 @@ export class World {
     const { left, right, near, far } = this.bg.data.base;
     const { x, z } = e.position;
     if (x < left - 800)
-      e.enter_frame(Defines.ReservedFrameId.Gone)
+      e.enter_frame(Defines.FrameId.Gone)
     else if (x > right + 800)
-      e.enter_frame(Defines.ReservedFrameId.Gone)
+      e.enter_frame(Defines.FrameId.Gone)
     if (z < far)
       e.position.z = far;
     else if (z > near)
@@ -250,9 +250,9 @@ export class World {
     const { left, right, near, far } = this.bg.data.base;
     const { x, z } = e.position;
     if (x < left - 100)
-      e.enter_frame(Defines.ReservedFrameId.Gone)
+      e.enter_frame(Defines.FrameId.Gone)
     else if (x > right + 100)
-      e.enter_frame(Defines.ReservedFrameId.Gone)
+      e.enter_frame(Defines.FrameId.Gone)
     if (z < far)
       e.position.z = far;
     else if (z > near)
@@ -284,7 +284,7 @@ export class World {
     for (const e of this.entities) e.self_update();
     for (const e of this.entities) e.update();
     for (const e of this.entities)
-      if (e.get_frame().id === Defines.ReservedFrameId.Gone)
+      if (e.get_frame().id === Defines.FrameId.Gone)
         this.del_entities(e);
       else if (e.get_frame().state === Defines.State.Gone)
         this.del_entities(e);
@@ -292,7 +292,7 @@ export class World {
     for (const e of this.game_objs) e.self_update();
     for (const e of this.game_objs) e.update();
     for (const e of this.game_objs)
-      if (e.get_frame().id === Defines.ReservedFrameId.Gone)
+      if (e.get_frame().id === Defines.FrameId.Gone)
         this.del_game_objs(e);
 
     this.update_camera();

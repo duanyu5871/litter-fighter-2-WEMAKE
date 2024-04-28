@@ -485,7 +485,7 @@ export default class LF2 {
     player.velocity.z = vz;
     player.facing = face;
     player.name = player_name ?? which;
-    player.enter_frame(frame_id ?? Defines.ReservedFrameId.Auto);
+    player.enter_frame(frame_id ?? Defines.FrameId.Auto);
     if (!old) {
       this.random_entity_info(player)
     }

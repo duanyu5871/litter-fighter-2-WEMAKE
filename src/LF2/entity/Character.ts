@@ -36,7 +36,7 @@ export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, IChar
   constructor(world: World, data: ICharacterData) {
     super(world, data, CHARACTER_STATES);
     this.sprite.name = Character.name + ':' + data.base.name;
-    this.enter_frame({ id: Defines.ReservedFrameId.Auto });
+    this.enter_frame({ id: Defines.FrameId.Auto });
 
     this._max_hp = this._hp = data.base.hp ?? Defines.HP;
     this._max_mp = this._mp = data.base.mp ?? Defines.MP;
@@ -44,6 +44,29 @@ export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, IChar
     this._mp_r_max_spd = data.base.mp_r_max_spd ?? Defines.MP_RECOVERY_MAX_SPEED;
     this.update_mp_recovery_speed();
   }
+
+  override get_next_frame(which: string | TNextFrame): [ICharacterFrameInfo | undefined, INextFrame | undefined] {
+    const ret = super.get_next_frame(which);
+    if (ret[0]) {
+      const frame = ret[0];
+      const { hp = 0, mp = 0 } = frame;
+      if (this._frame.next === which) {
+        // 用next 进入此动作，负数表示消耗，无视正数。若消耗完毕跳至按下防御键的指定跳转动作
+        if (mp < 0 && this._mp < -mp) return super.get_next_frame(frame.hit?.d ?? Defines.FrameId.Auto);
+        if (hp < 0 && this._hp < -hp) return super.get_next_frame(frame.hit?.d ?? Defines.FrameId.Auto);
+        if (mp < 0) this.mp += mp;
+        if (hp < 0) this.hp += hp;
+      } else {
+        // 负数表示恢复，正数表示消耗。
+        if (mp > 0 && this._mp < mp) return [void 0, void 0];
+        if (hp > 0 && this._hp < hp) return [void 0, void 0];
+        if (mp) this.mp -= mp
+        if (hp) this.hp -= hp
+      }
+    }
+    return ret;
+  }
+
 
   override handle_facing_flag(facing: number, frame: IFrameInfo, flags: INextFrame): TFace {
     switch (facing) {
@@ -314,7 +337,7 @@ export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, IChar
   protected _after_blink: string | null = null;
   blink_and_gone(frames: number) {
     this._blinking_count = frames;
-    this._after_blink = Defines.ReservedFrameId.Gone;
+    this._after_blink = Defines.FrameId.Gone;
   }
   blink(frames: number) {
     this._blinking_count = frames;

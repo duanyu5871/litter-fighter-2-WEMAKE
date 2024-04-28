@@ -17,22 +17,22 @@ export const EMPTY_PIECE: ITexturePieceInfo = {
   ph: 0, pw: 0,
 }
 export const EMPTY_FRAME_INFO: IFrameInfo = {
-  id: Defines.ReservedFrameId.None,
+  id: Defines.FrameId.None,
   name: '',
   pic: 0,
   state: NaN,
   wait: 0,
-  next: { id: Defines.ReservedFrameId.Auto },
+  next: { id: Defines.FrameId.Auto },
   centerx: 0,
   centery: 0
 };
 export const GONE_FRAME_INFO: IFrameInfo = {
-  id: Defines.ReservedFrameId.Gone,
+  id: Defines.FrameId.Gone,
   name: 'GONE_FRAME_INFO',
   pic: 0,
   state: NaN,
   wait: 0,
-  next: { id: Defines.ReservedFrameId.Gone },
+  next: { id: Defines.FrameId.Gone },
   centerx: 0,
   centery: 0
 };
@@ -56,9 +56,6 @@ export class FrameAnimater<
   protected _frame: F = EMPTY_FRAME_INFO as F;
   protected _next_frame: TNextFrame | undefined = void 0;
   protected _prev_frame: F = EMPTY_FRAME_INFO as F;
-
-  protected _mp: number = Defines.MP;
-  protected _hp: number = Defines.HP;
 
   get facing() { return this._facing; }
   set facing(v: TFace) {
@@ -144,10 +141,10 @@ export class FrameAnimater<
     if (exact) return id ? this.data.frames[id] : void 0;
     switch (id) {
       case void 0:
-      case Defines.ReservedFrameId.None:
-      case Defines.ReservedFrameId.Self: return this.get_frame();
-      case Defines.ReservedFrameId.Auto: return this.find_auto_frame();
-      case Defines.ReservedFrameId.Gone: return GONE_FRAME_INFO as F;
+      case Defines.FrameId.None:
+      case Defines.FrameId.Self: return this.get_frame();
+      case Defines.FrameId.Auto: return this.find_auto_frame();
+      case Defines.FrameId.Gone: return GONE_FRAME_INFO as F;
     }
     if (!this.data.frames[id]) {
       Warn.print(constructor_name(this), 'find_frame_by_id(id), frame not find! id:', id);
@@ -159,8 +156,6 @@ export class FrameAnimater<
   get_next_frame(which: TNextFrame | string): [F | undefined, INextFrame | undefined] {
     if (is_str(which)) {
       const frame = this.find_frame_by_id(which);
-      if (frame.mp && frame.mp > this._mp) return [void 0, void 0]
-      if (frame.hp && frame.hp > this._hp) return [void 0, void 0]
       return [frame, void 0];
     }
     if (Array.isArray(which)) {
@@ -184,8 +179,6 @@ export class FrameAnimater<
     let { id } = which;
     if (Array.isArray(id)) id = random_get(id);
     const frame = this.find_frame_by_id(id);
-    if (frame.mp && frame.mp > this._mp) return [void 0, void 0]
-    if (frame.hp && frame.hp > this._hp) return [void 0, void 0]
     return [frame, which];
   }
 
