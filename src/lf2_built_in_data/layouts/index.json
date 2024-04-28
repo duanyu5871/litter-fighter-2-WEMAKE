@@ -4,5 +4,6 @@
   "layouts/user_selection.json",
   "layouts/loading_page.json",
   "layouts/ctrl_settings_page.json",
-  "layouts/stage_playing.json"
+  "layouts/stage_playing.json",
+  "layouts/normal_playing.json"
 ]

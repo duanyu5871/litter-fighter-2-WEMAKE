@@ -88,7 +88,7 @@ export function BackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
       lf2.change_stage(stage_id);
 
     if (bg_id !== Defines.THE_VOID_BG.id && type === 'bg')
-      lf2.set_layout(void 0)
+      lf2.set_layout('normal_playing')
     else if (stage_id !== Defines.THE_VOID_STAGE.id && type === 'stage')
       lf2.set_layout('stage_playing')
     else
