@@ -91,11 +91,17 @@ export class World {
   get width() { return this.bg.width || 0 }
   get depth() { return this.bg.depth || 0 };
   get middle() { return this.bg.middle || { x: 0, z: 0 } }
+
+  protected _screen_w: number = Defines.OLD_SCREEN_WIDTH;
+  protected _screen_h: number = Defines.OLD_SCREEN_HEIGHT;
+
+  get screen_w(): number { return this._screen_w; }
+  get screen_h(): number { return this._screen_h; }
   constructor(lf2: LF2, canvas: HTMLCanvasElement, overlay?: HTMLDivElement | null) {
     this.lf2 = lf2;
     this.renderer = new THREE.WebGLRenderer({ canvas });
-    const w = Defines.OLD_SCREEN_WIDTH;
-    const h = 450;//Defines.OLD_SCREEN_HEIGHT;
+    const w = this._screen_w = Defines.OLD_SCREEN_WIDTH;
+    const h = this._screen_h = 450;// Defines.OLD_SCREEN_HEIGHT;
     this.camera.left = 0;
     this.camera.right = w;
     this.camera.bottom = 0;
@@ -157,7 +163,7 @@ export class World {
   private _r_prev_time = 0;
   private _r_fps = new FPS()
   private _u_prev_time = 0;
-  private _u_fps = new FPS()
+  private _u_fps = new FPS();
   render_once(dt: number) {
     if (this.disposed) return;
     for (const e of this.entities) e.indicators.update();
@@ -252,7 +258,7 @@ export class World {
     else if (z > near)
       e.position.z = near;
   }
-  restrict(e: Entity | THREE.Sprite) {
+  restrict(e: Entity) {
     if (e instanceof Character) {
       this.restrict_character(e);
     } else if (e instanceof Ball) {
@@ -267,7 +273,7 @@ export class World {
     const { x } = e.position;
     const hw = (e.scale.x + 10) / 2
     const { x: cam_l } = this.camera.position;
-    const cam_r = cam_l + Defines.OLD_SCREEN_WIDTH;
+    const cam_r = cam_l + this._screen_w;
     if (x + hw > cam_r) e.position.x = cam_r - hw;
     else if (x - hw < cam_l) e.position.x = cam_l + hw;
   }
@@ -317,7 +323,7 @@ export class World {
     if (new_x > max_cam_right - 794) new_x = max_cam_right - 794;
 
     let cur_x = this.camera.position.x;
-    const acc = Math.min(acc_ratio, acc_ratio * Math.abs(cur_x - new_x) / Defines.OLD_SCREEN_WIDTH);
+    const acc = Math.min(acc_ratio, acc_ratio * Math.abs(cur_x - new_x) / this._screen_w);
     const max_speed = max_speed_ratio * acc
 
     if (cur_x > new_x) {

@@ -137,9 +137,7 @@ export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, IChar
 
   override update_sprite_position() {
     super.update_sprite_position();
-    const { x, z } = this.position;
-    this._name_sprite.position.set(x, - z / 2, z)
-    this.world.restrict(this._name_sprite.mesh);
+    this._name_sprite.update_position();
   }
 
   private dizzy_catch_test(target: Entity) {
