@@ -48,8 +48,6 @@ export class Entity<
   readonly callbacks = new Callbacks<IEntityCallbacks>()
   protected _name: string = '';
   protected _team: number = 0;
-  protected _mp: number = 500;
-  protected _hp: number = 500;
 
   readonly shadow: Shadow;
   readonly velocity = new THREE.Vector3(0, 0, 0);
@@ -136,6 +134,8 @@ export class Entity<
 
   override set_frame(v: F) {
     super.set_frame(v);
+    if (v.hp) this.hp -= v.hp;
+    if (v.mp) this.mp -= v.mp;
     const prev_state = this._prev_frame.state;
     const next_state = this._frame.state;
     if (prev_state !== next_state) {

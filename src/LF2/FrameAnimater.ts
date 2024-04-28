@@ -57,6 +57,8 @@ export class FrameAnimater<
   protected _next_frame: TNextFrame | undefined = void 0;
   protected _prev_frame: F = EMPTY_FRAME_INFO as F;
 
+  protected _mp: number = 500;
+  protected _hp: number = 500;
 
   get facing() { return this._facing; }
   set facing(v: TFace) {
@@ -157,6 +159,8 @@ export class FrameAnimater<
   get_next_frame(which: TNextFrame | string): [F | undefined, INextFrame | undefined] {
     if (is_str(which)) {
       const frame = this.find_frame_by_id(which);
+      if (frame.mp && frame.mp > this._mp) return [void 0, void 0]
+      if (frame.hp && frame.hp > this._hp) return [void 0, void 0]
       return [frame, void 0];
     }
     if (Array.isArray(which)) {
@@ -180,6 +184,8 @@ export class FrameAnimater<
     let { id } = which;
     if (Array.isArray(id)) id = random_get(id);
     const frame = this.find_frame_by_id(id);
+    if (frame.mp && frame.mp > this._mp) return [void 0, void 0]
+    if (frame.hp && frame.hp > this._hp) return [void 0, void 0]
     return [frame, which];
   }
 
@@ -214,7 +220,6 @@ export class FrameAnimater<
     const [frame, flags] = this.get_next_frame(which);
     if (!frame) {
       this._next_frame = void 0;
-      Warn.print(constructor_name(this), 'enter_frame(which), next frame not found! which:', which);
       return
     }
     const { sound } = frame;
