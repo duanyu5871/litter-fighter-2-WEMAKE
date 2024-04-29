@@ -1,3 +1,4 @@
+import axios from 'axios';
 import JSZIP from 'jszip';
 import * as THREE from 'three';
 import Layout from '../Layout/Layout';
@@ -10,11 +11,14 @@ import { ICharacterData, IStageInfo, IWeaponData, TFace } from '../common/lf2_ty
 import { Defines } from '../common/lf2_type/defines';
 import random_get from '../common/random_get';
 import random_take from '../common/random_take';
-import Layer from './bg/Layer';
+import { Loader } from './Loader';
 import { PlayerInfo } from './PlayerInfo';
-import Stage from './stage/Stage';
 import { World } from './World';
-import { KEY_NAME_LIST, TKeys } from './controller/BaseController';
+import Callbacks from './base/Callbacks';
+import { new_id, new_team } from './base/new_id';
+import { random_in_range } from './base/random_in_range';
+import Layer from './bg/Layer';
+import { KEY_NAME_LIST } from './controller/BaseController';
 import { LocalHuman } from "./controller/LocalHuman";
 import './entity/Ball';
 import { Character } from './entity/Character';
@@ -23,12 +27,8 @@ import { Weapon } from './entity/Weapon';
 import DatMgr from './loader/DatMgr';
 import { ImageMgr } from './loader/loader';
 import { get_import_fallbacks, import_builtin } from './loader/make_import';
-import { new_id, new_team } from './base/new_id';
-import { random_in_range } from './base/random_in_range';
 import SoundMgr from './sound/SoundMgr';
-import { Loader } from './Loader';
-import axios from 'axios';
-import Callbacks from './base/Callbacks';
+import Stage from './stage/Stage';
 
 const get_short_file_size_txt = (bytes: number) => {
   if (bytes < 1024) return `${bytes}B`;
@@ -39,15 +39,6 @@ const get_short_file_size_txt = (bytes: number) => {
   bytes /= 1024;
   return `${bytes.toFixed(1).replace('.0', '')}GB`;
 }
-const default_keys_list: TKeys[] = [
-  { L: 'a', R: 'd', U: 'w', D: 's', a: 'r', j: 't', d: 'y' },
-  { L: 'j', R: 'l', U: 'i', D: 'k', a: '[', j: ']', d: '\\' },
-  { L: 'arrowleft', R: 'arrowright', U: 'arrowup', D: 'arrowdown', a: '0', j: '.', d: 'enter' },
-  { L: '4', R: '6', U: '8', D: '5', a: '/', j: '*', d: '-' },
-  { L: '', R: '', U: '', D: '', a: '', j: '', d: '' }
-]
-const get_default_keys = (i: number) => default_keys_list[i] || default_keys_list[default_keys_list.length - 1];
-
 
 export interface ILf2Callback {
   on_layout_changed?(layout: Layout | undefined, prev_layout: Layout | undefined): void;
@@ -59,6 +50,8 @@ export interface ILf2Callback {
   on_stages_clear?(): void;
   on_bgms_loaded?(names: string[]): void;
   on_bgms_clear?(): void;
+
+  on_player_infos_changed?(player_infos: PlayerInfo[]): void;
 }
 export default class LF2 {
   readonly callbacks = new Callbacks<ILf2Callback>();
@@ -86,14 +79,14 @@ export default class LF2 {
   readonly overlay: HTMLDivElement | null | undefined;
   private zip: JSZIP | undefined;
   private _player_infos = new Map([
-    ['1', new PlayerInfo('1', '1', get_default_keys(0))],
-    ['2', new PlayerInfo('2', '2', get_default_keys(1))],
-    ['3', new PlayerInfo('3', '3', get_default_keys(2))],
-    ['4', new PlayerInfo('4', '4', get_default_keys(3))]
+    ['1', new PlayerInfo('1', '1')],
+    ['2', new PlayerInfo('2', '2')],
+    ['3', new PlayerInfo('3', '3')],
+    ['4', new PlayerInfo('4', '4')]
   ])
   get player_infos() { return this._player_infos }
 
-  get players() { return this.world.players }
+  get player_characters() { return this.world.players }
   get layout() { return this._layout }
 
   private _bgm_enable = false;
@@ -136,8 +129,8 @@ export default class LF2 {
   );
 
 
-  get_local_player(which: string) {
-    for (const [id, player] of this.players)
+  get_player_character(which: string) {
+    for (const [id, player] of this.player_characters)
       if (id === which) return player;
   }
   on_click_character?: (c: Character) => void;
@@ -173,8 +166,8 @@ export default class LF2 {
     }
     throw new Error(`resource not found, path: ${path}, fallbacks: ${fallback_paths.join(';')}!`)
   }
-  readonly characters: Record<string, (num: number, team?: number) => void> = {}
-  readonly weapons: Record<string, (num: number, team?: number) => void> = {}
+  readonly characters: Record<string, (num: number, team?: string) => void> = {}
+  readonly weapons: Record<string, (num: number, team?: string) => void> = {}
 
   readonly dat_mgr: DatMgr;
   readonly sound_mgr: SoundMgr;
@@ -211,9 +204,9 @@ export default class LF2 {
     e.position.y = 550;
     return e;
   }
-  add_character(data: ICharacterData, num: number, team?: number): Character[];
-  add_character(id: string, num: number, team?: number): Character[];
-  add_character(data: ICharacterData | string, num: number, team?: number): Character[] {
+  add_character(data: ICharacterData, num: number, team?: string): Character[];
+  add_character(id: string, num: number, team?: string): Character[];
+  add_character(data: ICharacterData | string, num: number, team?: string): Character[] {
     if (typeof data === 'string') {
       let d = this.dat_mgr.characters.find(v => v.id === data)
       if (!d) return [];
@@ -229,9 +222,9 @@ export default class LF2 {
     return ret;
   }
 
-  add_weapon(data: IWeaponData, num: number, team?: number): Weapon[];
-  add_weapon(id: string, num: number, team?: number): Weapon[];
-  add_weapon(data: IWeaponData | string, num: number, team?: number): Weapon[] {
+  add_weapon(data: IWeaponData, num: number, team?: string): Weapon[];
+  add_weapon(id: string, num: number, team?: string): Weapon[];
+  add_weapon(data: IWeaponData | string, num: number, team?: string): Weapon[] {
     if (typeof data === 'string') {
       let d = this.dat_mgr.weapons.find(v => v.id === data)
       if (!d) return [];
@@ -240,7 +233,7 @@ export default class LF2 {
     const ret: Weapon[] = []
     while (--num >= 0) {
       const e = new Weapon(this.world, data);
-      if (is_num(team)) e.team = team;
+      if (is_str(team)) e.team = team;
       this.random_entity_info(e).attach();
       ret.push(e);
     }
@@ -387,7 +380,7 @@ export default class LF2 {
     }
     return ret;
   }
-  add_random_character(num = 1, team?: number): Character[] {
+  add_random_character(num = 1, team?: string): Character[] {
     const ret: Character[] = []
     while (--num >= 0) {
       ret.push(
@@ -447,21 +440,21 @@ export default class LF2 {
     this.dat_mgr.cancel();
   }
 
-  add_player = (which: string, character_id: string) => {
+  add_player_character(player_id: string, character_id: string) {
+    const player_info = this.player_infos.get(player_id);
+    if (!player_info)  { debugger; return; }
 
-    const player_info = this.player_infos.get(which);
     const data = this.dat_mgr.characters.find(v => v.id === character_id)
-    if (!data) return;
+    if (!data) { debugger; return; }
     let x = 0;
     let y = 0;
     let z = 0;
     let vx = 0;
     let vy = 0;
     let vz = 0;
-    let face: TFace = 1;
-    let frame_id: string | undefined;
-    let player_name: string | undefined;
-    const old = this.players.get(which);
+    let old_facing: TFace = 1;
+    let old_frame_id: string = Defines.FrameId.Auto;
+    const old = this.player_characters.get(player_id);
     if (old) {
       x = old.position.x;
       y = old.position.y;
@@ -469,32 +462,32 @@ export default class LF2 {
       vx = old.velocity.x;
       vy = old.velocity.y;
       vz = old.velocity.z;
-      face = old.facing;
-      player_name = old.name;
-      frame_id = old.get_frame().id;
+      old_facing = old.facing;
+      old_frame_id = old.get_frame().id;
       this.world.del_entities(old);
     }
 
-    const player = new Character(this.world, data)
-    player.id = old?.id ?? new_id();
-    player.position.x = x;
-    player.position.y = y;
-    player.position.z = z;
-    player.velocity.x = vx;
-    player.velocity.y = vy;
-    player.velocity.z = vz;
-    player.facing = face;
-    player.name = player_name ?? which;
-    player.enter_frame(frame_id ?? Defines.FrameId.Auto);
+    const character = new Character(this.world, data)
+    character.id = old?.id ?? new_id();
+    character.position.x = x;
+    character.position.y = y;
+    character.position.z = z;
+    character.velocity.x = vx;
+    character.velocity.y = vy;
+    character.velocity.z = vz;
+    character.facing = old_facing;
+    character.name = player_info.name;
+    character.team = player_info.team;
+    character.enter_frame(old_frame_id);
     if (!old) {
-      this.random_entity_info(player)
+      this.random_entity_info(character)
     }
-    player.controller = new LocalHuman(which, player, player_info?.keys)
-    player.attach();
-    return player
+    character.controller = new LocalHuman(player_id, character, player_info?.keys)
+    character.attach();
+    return character
   }
-  remove_player = (which: string) => {
-    const old = this.players.get(which);
+  del_player_character(player_id: string) {
+    const old = this.player_characters.get(player_id);
     if (old) this.world.del_entities(old)
   }
   change_bg = (bg_id: string) => {

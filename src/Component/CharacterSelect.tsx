@@ -6,10 +6,11 @@ export interface CharacterSelectProps extends ISelectProps<ICharacterData, strin
   lf2?: LF2;
 }
 export default function CharacterSelect(props: CharacterSelectProps) {
-  const { lf2, ...remains } = props;
+  const { lf2, disabled, ...remains } = props;
   return (
     <Select
       items={lf2?.dat_mgr.characters}
+      disabled={!lf2?.dat_mgr.characters.length || disabled}
       option={i => [i.id, i.base.name]}
       {...remains}>
       <option value=''>Random</option>

@@ -120,8 +120,8 @@ export function BackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
   const on_click_add_bot = () => {
     (
       c_id ?
-        lf2.add_character(c_id, rcn, Number(team)) :
-        lf2.add_random_character(rcn, Number(team))
+        lf2.add_character(c_id, rcn, team) :
+        lf2.add_random_character(rcn, team)
     ).forEach(e => {
       e.name = 'bot';
       const controller_creator = bot_controllers[bot_ctrl];

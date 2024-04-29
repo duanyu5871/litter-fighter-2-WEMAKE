@@ -36,7 +36,7 @@ export interface IEntityCallbacks<E extends Entity = Entity> {
   on_self_healing_mp_changed?(e: E, value: number, prev: number): void;
 
 
-  on_team_changed?(e: E, value: number, prev: number): void;
+  on_team_changed?(e: E, value: string, prev: string): void;
   on_name_changed?(e: E, value: string, prev: string): void;
   on_disposed?(e: E): void;
 }
@@ -47,7 +47,7 @@ export class Entity<
 > extends FrameAnimater<F, I, D> {
   readonly callbacks = new Callbacks<IEntityCallbacks>()
   protected _name: string = '';
-  protected _team: number = 0;
+  protected _team: string = '';
   protected _mp: number = Defines.MP;
   protected _hp: number = Defines.HP;
   protected _max_mp: number = Defines.MP;

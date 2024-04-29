@@ -108,7 +108,7 @@ export class NameSprite implements IEntityCallbacks {
     this.update_name_sprite(entity, name, entity.team)
   }
 
-  on_team_changed(entity: Entity, team: number): void {
+  on_team_changed(entity: Entity, team: string): void {
     this.update_name_sprite(entity, entity.name, team)
   }
 
@@ -120,7 +120,7 @@ export class NameSprite implements IEntityCallbacks {
   on_self_healing_mp_changed(_e: Entity, value: number): void { this.self_healing_mp_bar.val = value; }
 
 
-  private update_name_sprite(e: Entity, name: string, team: number) {
+  private update_name_sprite(e: Entity, name: string, team: string) {
     const fillStyle = get_team_text_color(team)
     const strokeStyle = get_team_shadow_color(team);
     const world = e.world;
@@ -130,7 +130,7 @@ export class NameSprite implements IEntityCallbacks {
       this.mesh.material.map = null;
       return;
     }
-    lf2.img_mgr.load_text(name, { shadowColor: strokeStyle, fillStyle })
+    lf2.img_mgr.load_text(name, { shadowColor: strokeStyle, fillStyle, smoothing: false })
       .then((i) => lf2.img_mgr.create_picture_by_img_key('', i.key))
       .then((p) => {
         if (name !== e.name) return;

@@ -1,25 +1,14 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from './Component/Button';
 import CharacterSelect from './Component/CharacterSelect';
 import { Input } from './Component/Input';
 import TeamSelect from './Component/TeamSelect';
 import LF2 from './LF2/LF2';
-import { IPlayerInfoCallback, PlayerInfo } from './LF2/PlayerInfo';
+import { PlayerInfo } from './LF2/PlayerInfo';
 import { TKeyName } from './LF2/controller/BaseController';
-import { LocalHuman } from './LF2/controller/LocalHuman';
-import { IEntityCallbacks } from './LF2/entity/Entity';
-import { new_team } from './LF2/base/new_id';
 import random_get from './common/random_get';
+import { LocalHuman } from './LF2/controller/LocalHuman';
 
-const invalid_keys: Record<TKeyName, string> = {
-  L: '',
-  R: '',
-  U: '',
-  D: '',
-  a: '',
-  j: '',
-  d: ''
-}
 const key_names: Record<TKeyName, string> = {
   U: '上',
   D: '下',
@@ -31,111 +20,119 @@ const key_names: Record<TKeyName, string> = {
 }
 const key_name_arr = Object.keys(key_names) as TKeyName[];
 interface Props {
-  which: number;
-  lf2?: LF2;
+  lf2: LF2;
   visible?: boolean;
+  info: PlayerInfo;
 }
 export function PlayerRow(props: Props) {
-  const { lf2, visible = true } = props;
-  const which = '' + props.which;
+  const { lf2, info, visible = true } = props;
 
-  const { 
-    keys: _keys = invalid_keys,
-    name: _name = which,
-  } = lf2?.player_infos.get(which) || {};
-
-  const [keys, set_keys] = useState<Record<TKeyName, string>>(_keys);
-  const [player_name, set_player_name] = useState<string>(_name);
+  const [keys, set_keys] = useState<Record<TKeyName, string>>(info.keys);
+  const [player_name, set_player_name] = useState<string>(info.name);
   const [editing_key, set_editing_key] = useState<TKeyName | undefined>();
 
-  const [team, set_team] = useState<string>('');
-  const [character_id, set_character_id] = useState<string>('');
-  const [added, set_added] = useState(false);
+  const [team, set_team] = useState<string>(info.team);
+  const [character_id, set_character_id] = useState<string>(info.character);
+  const [added, set_added] = useState(!!lf2.get_player_character(info.id));
   const [key_settings_show, set_key_settings_show] = useState(false);
-  const hp_ref = useRef<HTMLSpanElement>(null)
-
-  const callbacks = useRef<IEntityCallbacks>({
-    on_hp_changed: (_, hp) => { if (hp_ref.current) hp_ref.current.innerText = ('' + hp) },
-    on_mp_changed: (_, mp) => { },
-    on_disposed: () => set_added(false),
-    on_team_changed: (_, team) => set_team('' + team)
-  })
-  const ref_player_info = useRef<PlayerInfo>()
 
   useEffect(() => {
-    if (!lf2) return;
-    const player_info = ref_player_info.current = lf2.player_infos.get(which);
-    if (!player_info) return;
-
-    set_keys(player_info.keys);
-    set_player_name(player_info.name);
-
-    const callback: IPlayerInfoCallback = {
-      on_key_changed: (name, key) => set_keys(v => ({ ...v, [name]: key }))
-    }
-    return player_info.callbacks.add(callback);
-  }, [which, lf2]);
-
-  useEffect(() => {
-    if (!lf2) return;
-    if (!added) return lf2.remove_player(which)
-    let lp = lf2.get_local_player(which);
-    if (lp?.data.id !== character_id) {
-      const r_c_id = character_id || random_get(lf2.dat_mgr.characters)?.id;
-      if (r_c_id) {
-        lp = lf2.add_player(which, r_c_id) ?? lp;
-      }
-    }
-    if (!lp) return;
-    lp.callbacks.add(callbacks.current)
-    lp.name = player_name.trim() || '' + which;
-    lp.team = team ? Number(team) : new_team();
-    lp.controller = new LocalHuman(which, lp, keys)
-  }, [which, player_name, team, lf2, character_id, added, keys]);
+    set_keys(info.keys);
+    set_player_name(info.name);
+    return info.callbacks.add({
+      on_key_changed: (name, key) => {
+        set_keys(v => {
+          const ks = { ...v, [name]: key };
+          const character = lf2.get_player_character(info.id);
+          if (character?.controller instanceof LocalHuman)
+            character.controller.set_key_code_map(ks);
+          return ks;
+        })
+      },
+      on_name_changed: (name) => {
+        set_player_name(name);
+        const character = lf2.get_player_character(info.id);
+        if (character) character.name = name;
+      },
+      on_team_changed: (team) => {
+        set_team(team);
+        const character = lf2.get_player_character(info.id);
+        if (character) character.team = team;
+      },
+      on_character_changed: set_character_id,
+    });
+  }, [info, lf2]);
 
   useEffect(() => {
     if (!editing_key) return;
-
     const on_keydown = (e: KeyboardEvent) => {
       e.stopImmediatePropagation();
       e.preventDefault();
       e.stopPropagation();
       const key = e.key?.toLocaleLowerCase();
       if (key && key !== 'escape') {
-        ref_player_info.current?.set_key(editing_key, e.key.toLowerCase()).save();
+        info.set_key(editing_key, e.key.toLowerCase()).save();
       }
       set_editing_key(void 0);
     }
     window.addEventListener('keydown', on_keydown, true);
     return () => window.removeEventListener('keydown', on_keydown, true);
+  }, [editing_key, info])
 
-  }, [editing_key])
 
   if (!lf2 || visible === false) return null;
-  const on_name_edit: React.ChangeEventHandler<HTMLInputElement> = e => {
-    set_player_name(e.target.value);
-  };
-  const on_name_blur: React.FocusEventHandler<HTMLInputElement> = e => {
-    set_player_name(e.target.value.trim() || which);
-  };
+
+  // useEffect(() => {
+  //   if (!lf2) return;
+  //   if (!added) return lf2.remove_player(which)
+  //   let lp = lf2.get_local_player(which);
+  //   if (lp?.data.id !== character_id) {
+  //     const r_c_id = character_id || random_get(lf2.dat_mgr.characters)?.id;
+  //     if (r_c_id) {
+  //       lp = lf2.add_player(which, r_c_id) ?? lp;
+  //     }
+  //   }
+  //   if (!lp) return;
+  //   lp.callbacks.add(callbacks.current)
+  //   lp.name = player_name.trim() || '' + which;
+  //   lp.team = team ? Number(team) : new_team();
+  //   lp.controller = new LocalHuman(which, lp, keys)
+  // }, [which, player_name, team, lf2, character_id, added, keys]);
+
+
+
+  const on_click_add = added ? () => {
+    lf2.del_player_character(info.id); // 移除玩家对应的角色
+  } : () => {
+    const real_character_id = character_id || random_get(lf2.dat_mgr.characters)?.id;
+    if (!real_character_id) { debugger; return; }
+    const character = lf2.add_player_character(info.id, real_character_id);
+    if (!character) { debugger; return; }
+
+    set_added(true);
+    character.callbacks.add({
+      on_disposed: () => set_added(false),
+      on_team_changed: (_, team) => set_team('' + team)
+    });
+  }
+
   return (
-    <div key={which} className='player_row'>
-      <span> 玩家{which}:{" "}
+    <div className='player_row'>
+      <span> 玩家{info.id}
         <Input
           type='text'
           maxLength={50}
           style={{ width: 75 }}
           placeholder='enter player name'
           value={player_name}
-          onChange={on_name_edit}
-          onBlur={on_name_blur} />
+          onChange={e => info.set_name(e.target.value)}
+          onBlur={e => info.set_name(e.target.value.trim() || info.id).save()} />
       </span>
       <span>角色:</span>
-      <CharacterSelect lf2={lf2} value={character_id} on_changed={set_character_id} />
+      <CharacterSelect lf2={lf2} value={character_id} on_changed={v => info.set_character(v).save()} />
       <span>队伍:</span>
-      <TeamSelect value={team} on_changed={set_team} />
-      <Button onClick={() => set_added(v => !v)}>{added ? '移除' : '加入'}</Button>
-      <span style={{ display: !added ? 'none' : void 0 }}>hp:<span ref={hp_ref} /></span>
+      <TeamSelect value={team} on_changed={v => info.set_team(v).save()} />
+      <Button onClick={on_click_add}>{added ? '移除' : '加入'}</Button>
       <Button onClick={() => set_key_settings_show(v => !v)}>键位</Button>
       {!key_settings_show ? null :
         key_name_arr.map(k => {

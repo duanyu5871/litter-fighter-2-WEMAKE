@@ -23,4 +23,6 @@ export interface IStyle {
   textBaseline?: CanvasTextBaseline;
   textRendering?: CanvasTextRendering;
   wordSpacing?: string;
+
+  smoothing?: boolean;
 }

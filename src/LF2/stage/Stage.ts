@@ -22,7 +22,7 @@ export default class Stage {
   readonly world: World;
   readonly data: IStageInfo;
   readonly bg: Background;
-  readonly enemy_team: number;
+  readonly enemy_team: string;
   private _disposed: boolean = false;
   private _disposers: (() => void)[] = [];
   private _bgm_enable: boolean;

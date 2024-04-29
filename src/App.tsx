@@ -350,7 +350,10 @@ function App() {
             <>隐藏控制面板(F10)</>
           </ToggleButton>
         </div>
-        {Array.from(lf2_ref.current?.player_infos.values() ?? []).map((info, idx) => <PlayerRow key={idx} lf2={lf2_ref.current} which={idx + 1} visible={debug_panel} />)}
+        
+        {Array.from(lf2_ref.current?.player_infos.values() ?? []).map((info, idx) =>
+          <PlayerRow key={idx} lf2={lf2_ref.current!} info={info} visible={debug_panel} />
+        )}
         <BackgroundRow lf2={lf2_ref.current} visible={debug_panel} />
       </div>
       <div className='editor_view' style={{ display: editor_closed ? 'none' : void 0 }}>

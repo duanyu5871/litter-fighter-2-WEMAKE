@@ -100,6 +100,7 @@
   background-color: #10206C;
   padding: 5px;
   transition: height 200ms;
+  overflow: auto;
 }
 
 .debug_ui_row {

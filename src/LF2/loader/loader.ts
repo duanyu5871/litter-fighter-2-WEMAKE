@@ -64,14 +64,15 @@ export class ImageMgr {
     const ctx = cvs.getContext('2d');
     if (!ctx) throw new Error("can not get context from canvas");
 
-    const apply_test_style = () => {
+    const apply_text_style = () => {
       ctx.font = style?.font ?? 'normal 9px system-ui';
       ctx.fillStyle = style?.fillStyle ?? 'white';
       ctx.shadowColor = style?.shadowColor ?? 'black';
       ctx.lineWidth = style?.lineWidth ?? 1;
       ctx.shadowBlur = 5;
+      ctx.imageSmoothingEnabled = style?.smoothing ?? true
     }
-    apply_test_style();
+    apply_text_style();
     let w = 0;
     let h = 0;
     let lines = text.split('\n').map((line, idx, arr) => {
@@ -84,7 +85,7 @@ export class ImageMgr {
     })
     cvs.style.width = (cvs.width = w) + 'px'
     cvs.style.height = (cvs.height = h) + 'px';
-    apply_test_style();
+    apply_text_style();
     for (const { x, y, t } of lines) {
       ctx.fillText(t, x, y);
     }
