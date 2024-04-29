@@ -1,6 +1,6 @@
 {
   "id": "spark",
-  "type": "entity",
+  "type": "frame_animater",
   "base": {
     "files": {
       "0": {

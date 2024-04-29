@@ -10,7 +10,7 @@ export class Ball extends Entity<IBallFrameInfo, IBallInfo, IBallData> {
   ud = 0;
   constructor(world: World, data: IBallData) {
     super(world, data, BALL_STATES);
-    this.sprite.name = "ball: " + data.id
+    this.mesh.name = "ball: " + data.id
     this.hp = this.data.base.hp;
   }
   override find_auto_frame() {
@@ -22,8 +22,8 @@ export class Ball extends Entity<IBallFrameInfo, IBallInfo, IBallData> {
     this.velocity.z = this.ud * speedz + dvz;
   }
 
-  override setup(shotter: Entity, o: IOpointInfo, speed_z: number) {
-    const ret = super.setup(shotter, o);
+  override on_spawn_by_shotter(shotter: Entity, o: IOpointInfo, speed_z: number) {
+    const ret = super.on_spawn_by_shotter(shotter, o);
     this.ud = speed_z;
     return ret;
   }

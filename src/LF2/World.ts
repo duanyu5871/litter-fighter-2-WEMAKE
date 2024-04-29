@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { Log } from '../Log';
+import { Log, Warn } from '../Log';
 import { is_num } from '../common/is_num';
 import { IBdyInfo, IFrameInfo, IItrInfo } from '../common/lf2_type';
 import { Defines } from '../common/lf2_type/defines';
@@ -17,6 +17,7 @@ import './entity/Weapon';
 import { Weapon } from './entity/Weapon';
 import Stage from './stage/Stage';
 import { IWorldCallbacks } from './IWorldCallbacks';
+import { factory } from './Factory';
 export interface ICube {
   left: number;
   right: number;
@@ -116,43 +117,34 @@ export class World {
 
   add_game_objs(...objs: FrameAnimater[]) {
     for (const e of objs) {
-      if (e instanceof Entity) {
-        this.add_entities(e);
-      } else {
-        this.scene.add(e.sprite)
-        this.game_objs.add(e)
+      if (e instanceof Character && e.controller instanceof LocalHuman) {
+        this.players.set(e.controller.which, e);
       }
+
+      if (e instanceof Entity) {
+        this.scene.add(e.mesh);
+        e.show_indicators = this._show_indicators;
+        this.entities.add(e);
+        continue;
+      }
+      this.scene.add(e.mesh)
+      this.game_objs.add(e)
+
     }
   }
 
   del_game_objs(...objs: FrameAnimater[]) {
     for (const e of objs) {
+      if (e instanceof Character && e.controller instanceof LocalHuman) {
+        this.players.delete(e.controller.which);
+      }
+
       if (e instanceof Entity) {
-        this.del_entities(e);
+        this.entities.delete(e)
+        e.dispose();
       } else {
         this.game_objs.delete(e);
         e.dispose();
-      }
-    }
-  }
-
-  add_entities(...entities: Entity[]) {
-    for (const e of entities) {
-      this.scene.add(e.sprite);
-      e.show_indicators = this._show_indicators;
-      if (e instanceof Character && e.controller instanceof LocalHuman) {
-        this.players.set(e.controller.which, e);
-      }
-      this.entities.add(e)
-    }
-  }
-
-  del_entities(...entities: Entity[]) {
-    for (const e of entities) {
-      this.entities.delete(e)
-      e.dispose();
-      if (e instanceof Character && e.controller instanceof LocalHuman) {
-        this.players.delete(e.controller.which);
       }
     }
   }
@@ -285,9 +277,9 @@ export class World {
     for (const e of this.entities) e.update();
     for (const e of this.entities)
       if (e.get_frame().id === Defines.FrameId.Gone)
-        this.del_entities(e);
+        this.del_game_objs(e);
       else if (e.get_frame().state === Defines.State.Gone)
-        this.del_entities(e);
+        this.del_game_objs(e);
 
     for (const e of this.game_objs) e.self_update();
     for (const e of this.game_objs) e.update();
@@ -468,14 +460,20 @@ export class World {
     }
     return false;
   }
+
   spark(x: number, y: number, z: number, f: string) {
-    const data = this.lf2.dat_mgr.find("spark");
-    if (!data || !('frames' in data)) return;
-    const e = new FrameAnimater(this, data)
+    const d = this.lf2.dat_mgr.find("spark");
+    if (!d || !('frames' in d)) return;
+    const create = factory.get(d.type);
+    if (!create) {
+      Warn.print(World.name + '::' + this.spark.name, `creator of "${d.type}" not found! opoint:`);
+      return;
+    }
+    const e = create(this, d)
     e.position.set(x, y, z)
-    e.sprite.material.depthTest = false;
-    e.sprite.material.depthWrite = false;
-    e.sprite.renderOrder = 2
+    e.mesh.material.depthTest = false;
+    e.mesh.material.depthWrite = false;
+    e.mesh.renderOrder = 2
     e.enter_frame(f)
     e.attach()
   }
@@ -536,7 +534,7 @@ export class World {
     this.bg.dispose();
     this.stop_update();
     this.stop_render();
-    this.del_entities(...this.entities);
+    this.del_game_objs(...this.entities);
     this.del_game_objs(...this.game_objs);
     this.renderer.clear()
     this.renderer.dispose();

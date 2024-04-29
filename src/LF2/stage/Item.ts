@@ -5,19 +5,20 @@ import { Defines } from "../../common/lf2_type/defines";
 import random_get from "../../common/random_get";
 import random_take from "../../common/random_take";
 import { factory } from "../Factory";
-import Stage from "./Stage";
+import { FrameAnimater } from "../FrameAnimater";
 import { random_in_range } from "../base/random_in_range";
 import { BotEnemyChaser } from "../controller/BotEnemyChaser";
 import { Character, ICharacterCallbacks } from "../entity/Character";
 import { Entity } from "../entity/Entity";
 import { Weapon } from "../entity/Weapon";
+import Stage from "./Stage";
 
 export default class Item {
   readonly is_enemies: boolean = false;
   get lf2() { return this.stage.lf2; }
   get world() { return this.stage.world; }
   readonly info: IStageObjectInfo;
-  readonly entities = new Set<Entity>();
+  readonly entities = new Set<FrameAnimater>();
   readonly stage: Stage;
   readonly get_oid: () => string;
 
@@ -101,8 +102,12 @@ export default class Item {
     const e = creator(this.world, data);
     e.position.x = random_in_range(x - 100, x + 100);
     e.position.z = random_in_range(this.stage.near, this.stage.far);
+
+    if (Entity.is(e)) {
+      if (is_num(hp)) e.hp = hp;
+    }
+
     if (is_num(y)) e.position.y = y;
-    if (is_num(hp)) e.hp = hp;
     if (is_str(act)) e.enter_frame(act);
     else e.enter_frame(Defines.FrameId.Auto);
 
@@ -114,14 +119,18 @@ export default class Item {
       e.position.y = 450;
     }
     this.entities.add(e);
-    e.callbacks.add(this.character_callback);
+    if (Entity.is(e)) {
+      e.callbacks.add(this.character_callback);
+    }
     e.attach();
   }
 
   dispose(): void {
     this.stage.items.delete(this);
     for (const e of this.entities) {
-      e.callbacks.del(this.character_callback);
+      if (Entity.is(e)) {
+        e.callbacks.del(this.character_callback);
+      }
       e.dispose();
     }
   }

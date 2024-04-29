@@ -59,8 +59,8 @@ export class NameSprite implements IEntityCallbacks {
     this.mesh.name = NameSprite.name;
     this.mesh.renderOrder = 0;
     this.entity = entity;
-    entity.sprite.addEventListener('added', () => this.on_mount(entity));
-    entity.sprite.addEventListener('removed', () => this.on_unmount(entity));
+    entity.mesh.addEventListener('added', () => this.on_mount(entity));
+    entity.mesh.addEventListener('removed', () => this.on_unmount(entity));
 
     this.bars_node.add(this.bars_bg)
 

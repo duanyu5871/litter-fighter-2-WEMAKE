@@ -16,13 +16,13 @@ export default function cook_itr(unsafe_itr?: Partial<IItrInfo>) {
   if (is_positive_num(arest)) { unsafe_itr.arest = Math.max(2, 2 * arest - 2); }
 
   const dvx = take(unsafe_itr, 'dvx');
-  if (not_zero(dvx)) unsafe_itr.dvx = dvx * 0.55;
+  if (not_zero(dvx)) unsafe_itr.dvx = dvx * 0.5;
 
   const dvz = take(unsafe_itr, 'dvz');
   if (not_zero(dvz)) unsafe_itr.dvz = dvz * 0.5;
 
   const dvy = take(unsafe_itr, 'dvy');
-  if (not_zero(dvy)) unsafe_itr.dvy = dvy * -0.55; //??
+  if (not_zero(dvy)) unsafe_itr.dvy = dvy * -0.5; //??
 
   switch (unsafe_itr.kind) {
     case Defines.ItrKind.Pick:
@@ -30,6 +30,7 @@ export default function cook_itr(unsafe_itr?: Partial<IItrInfo>) {
     case Defines.ItrKind.SuperPunchMe: {
       unsafe_itr.motionless = 0;
       unsafe_itr.shaking = 0;
+      if (is_positive_num(vrest)) unsafe_itr.vrest = vrest + 2;
       break;
     }
     case Defines.ItrKind.ForceCatch:

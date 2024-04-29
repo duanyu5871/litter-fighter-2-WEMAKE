@@ -10,7 +10,7 @@ export class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData> {
   holder?: Entity;
   constructor(world: World, data: IWeaponData) {
     super(world, data, WEAPON_STATES);
-    this.sprite.name = "Weapon: " + data.id
+    this.mesh.name = "Weapon: " + data.id
     this.hp = data.base.weapon_hp;
   }
   override find_auto_frame(): IFrameInfo {
@@ -38,8 +38,8 @@ export class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData> {
     if (this.hp <= 0)
       this._next_frame = GONE_FRAME_INFO;
   }
-  override setup(shotter: Entity, o: IOpointInfo, speed_z?: number): this {
-    super.setup(shotter, o, speed_z);
+  override on_spawn_by_shotter(shotter: Entity, o: IOpointInfo, speed_z?: number): this {
+    super.on_spawn_by_shotter(shotter, o, speed_z);
     if (this._frame.state === Defines.State.Weapon_OnHand) {
       this.holder = shotter
       this.holder.weapon = this

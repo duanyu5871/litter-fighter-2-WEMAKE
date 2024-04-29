@@ -368,7 +368,7 @@ export default class LF2 {
   }
 
   remove_all_entities() {
-    this.world.del_entities(...this.world.entities);
+    this.world.del_game_objs(...this.world.entities);
     this.world.del_game_objs(...this.world.game_objs);
   }
   add_random_weapon(num = 1): Weapon[] {
@@ -464,7 +464,7 @@ export default class LF2 {
       vz = old.velocity.z;
       old_facing = old.facing;
       old_frame_id = old.get_frame().id;
-      this.world.del_entities(old);
+      this.world.del_game_objs(old);
     }
 
     const character = new Character(this.world, data)
@@ -488,7 +488,7 @@ export default class LF2 {
   }
   del_player_character(player_id: string) {
     const old = this.player_characters.get(player_id);
-    if (old) this.world.del_entities(old)
+    if (old) this.world.del_game_objs(old)
   }
   change_bg = (bg_id: string) => {
     const data = this.dat_mgr.backgrounds.find(v => v.id == bg_id);

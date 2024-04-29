@@ -11,6 +11,7 @@ import type { World } from './World';
 import { new_id } from './base/new_id';
 import { turn_face } from './entity/face_helper';
 import create_pictures from './loader/create_pictures';
+import { factory } from './Factory';
 
 export const EMPTY_PIECE: ITexturePieceInfo = {
   tex: 0, x: 0, y: 0, w: 0, h: 0, cx: 0, cy: 0,
@@ -46,10 +47,14 @@ export class FrameAnimater<
   id: string = new_id();
   wait: number = 0;
 
+  readonly is_frame_animater = true
+  static is = (v: any): v is FrameAnimater => v?.is_frame_animater === true;
+
+
   readonly data: D;
   readonly world: World;
   readonly pictures: Map<string, IPictureInfo<THREE.Texture>>;
-  readonly sprite: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial>;
+  readonly mesh: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial>;
   readonly position = new THREE.Vector3(0, 0, 0);
   protected _piece: ITexturePieceInfo = EMPTY_PIECE;
   protected _facing: TFace = 1;
@@ -75,22 +80,28 @@ export class FrameAnimater<
     this.data = data;
     this.world = world;
     this.pictures = create_pictures(world.lf2, data);
-    const sprite = this.sprite = new THREE.Mesh(
+    const mesh = this.mesh = new THREE.Mesh(
       new THREE.PlaneGeometry(1, 1).translate(0.5, -0.5, 0),
       new THREE.MeshBasicMaterial({
         map: this.pictures.get('0')?.texture,
         transparent: true
       })
     );
-    sprite.userData.owner = this;
-    sprite.name = 'FrameAnimater'
+    mesh.userData.owner = this;
+    mesh.name = 'FrameAnimater';
   }
+
+  on_spawn_by_shotter(...args: any[]): this {
+    return this;
+  }
+
   update_sprite_position() {
     const { x, y, z } = this.position;
     const { centerx, centery } = this._frame
-    const offset_x = this._facing === 1 ? centerx : this.sprite.scale.x - centerx
-    this.sprite.position.set(x - offset_x, y - z / 2 + centery, z);
+    const offset_x = this._facing === 1 ? centerx : this.mesh.scale.x - centerx
+    this.mesh.position.set(x - offset_x, y - z / 2 + centery, z);
   }
+
   attach(): this {
     this.update_sprite();
     this.world.add_game_objs(this);
@@ -110,7 +121,7 @@ export class FrameAnimater<
     }
     this._previous.face = this._facing;
     this._previous.frame = this._frame;
-    const sprite = this.sprite;
+    const sprite = this.mesh;
     const piece = frame.pic;
     if (typeof piece === 'number' || !('1' in piece)) {
       return;
@@ -232,12 +243,19 @@ export class FrameAnimater<
     if (this._next_frame) this.enter_frame(this._next_frame);
   }
   update() {
+    if (this._next_frame) this.enter_frame(this._next_frame);
     if (this.wait > 0) { --this.wait; }
     else { this._next_frame = this._frame.next; }
     this.update_sprite_position();
   }
 
   dispose(): void {
-    this.sprite.removeFromParent();
+    this.mesh.removeFromParent();
+    this.mesh.geometry.dispose();
+    this.mesh.material.dispose();
+    for (const [, pic] of this.pictures)
+      pic.texture.dispose();
   }
 }
+
+factory.set('frame_animater', (...args) => new FrameAnimater(...args));

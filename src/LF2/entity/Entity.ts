@@ -2,20 +2,20 @@ import * as THREE from 'three';
 import { Log, Warn } from '../../Log';
 import { constructor_name } from '../../common/constructor_name';
 import { is_nagtive_num } from '../../common/is_nagtive_num';
-import { IBallData, IBaseData, IBdyInfo, ICharacterData, IEntityData, IFrameInfo, IGameObjData, IGameObjInfo, IItrInfo, INextFrame, IOpointInfo, IWeaponData, TNextFrame } from '../../common/lf2_type';
+import { IBallData, IBaseData, IBdyInfo, ICharacterData, IEntityData, IFrameInfo, IGameObjData, IGameObjInfo, IItrInfo, IOpointInfo, IWeaponData, TNextFrame } from '../../common/lf2_type';
 import { Defines } from '../../common/lf2_type/defines';
 import { factory } from '../Factory';
 import { FrameAnimater, GONE_FRAME_INFO } from '../FrameAnimater';
-import Shadow from './Shadow';
 import type { World } from '../World';
 import { ICube } from '../World';
 import Callbacks from '../base/Callbacks';
 import BaseState from "../state/BaseState";
 import { EntityIndicators } from './EntityIndicators';
+import Shadow from './Shadow';
 import type { Weapon } from './Weapon';
 import { turn_face } from './face_helper';
 export type TData = IBaseData | ICharacterData | IWeaponData | IEntityData | IBallData
-export const V_SHAKE = 4;
+export const V_SHAKE = 6;
 export const A_SHAKE = 6;
 export interface IVictimRest {
   remain: number,
@@ -45,6 +45,10 @@ export class Entity<
   I extends IGameObjInfo = IGameObjInfo,
   D extends IGameObjData<I, F> = IGameObjData<I, F>
 > extends FrameAnimater<F, I, D> {
+
+  readonly is_entity = true
+  static is = (v: any): v is Entity => v?.is_entity === true;
+
   readonly callbacks = new Callbacks<IEntityCallbacks>()
   protected _name: string = '';
   protected _team: string = '';
@@ -133,13 +137,12 @@ export class Entity<
 
   constructor(world: World, data: D, states: Map<number, BaseState> = new Map()) {
     super(world, data)
-    this.sprite.name = "Entity:" + data.id
+    this.mesh.name = "Entity:" + data.id
     this.states = states;
     this.shadow = new Shadow(this);
   }
 
-
-  setup(shotter: Entity, o: IOpointInfo, speed_z: number = 0) {
+  override on_spawn_by_shotter(shotter: Entity, o: IOpointInfo, speed_z: number = 0) {
     const shotter_frame = shotter.get_frame();
     this.team = shotter.team;
     this.facing = o.facing === Defines.FacingFlag.Backward ? turn_face(shotter.facing) : shotter.facing;
@@ -179,7 +182,7 @@ export class Entity<
     }
   }
 
-  spawn_object(opoint: IOpointInfo, speed_z: number = 0): Entity | undefined {
+  spawn_object(opoint: IOpointInfo, speed_z: number = 0): FrameAnimater | undefined {
     const d = this.world.lf2.dat_mgr.find(opoint.oid);
     if (!d) {
       Warn.print(constructor_name(this), 'spawn_object(), data not found! opoint:', opoint);
@@ -190,7 +193,7 @@ export class Entity<
       Warn.print(constructor_name(this), `spawn_object(), creator of "${d.type}" not found! opoint:`, opoint);
       return;
     }
-    return create(this.world, d).setup(this, opoint, speed_z).attach()
+    return create(this.world, d).on_spawn_by_shotter(this, opoint, speed_z).attach()
   }
 
   velocity_decay(factor: number = 1) {
@@ -231,9 +234,8 @@ export class Entity<
   protected override update_sprite() {
     super.update_sprite();
     if (this._shaking) {
-      // TODO:
-      // const wf = this._s[this._i = (this._i + 1) % 2] * 2 / this._piece.pw
-      // this.sprite.translateX().x += 4 * wf;
+      const x = (this._shaking % 2 ? -5 : 5);
+      this.mesh.position.x += x;
     }
     this.weapon?.follow_holder();
   }
@@ -277,13 +279,13 @@ export class Entity<
       this._blinking_count--;
       const bc = Math.floor(this._blinking_count / 6) % 2;
       if (this._blinking_count <= 0) {
-        this.sprite.visible = this.shadow.visible = true;
+        this.mesh.visible = this.shadow.visible = true;
         if (this._after_blink) {
           this._next_frame = void 0;
           this._frame = GONE_FRAME_INFO as F
         }
       } else {
-        this.sprite.visible = this.shadow.visible = !!bc;
+        this.mesh.visible = this.shadow.visible = !!bc;
       }
     }
   }
@@ -504,4 +506,4 @@ export class Entity<
   }
 }
 
-factory.set('entity', (...args) => new Entity(...args))
+factory.set('entity', (...args) => new Entity(...args));

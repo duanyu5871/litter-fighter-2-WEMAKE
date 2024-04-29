@@ -20,8 +20,8 @@ export default class Shadow implements IWorldCallbacks {
   constructor(entity: Entity) {
     this.mesh.name = Shadow.name;
     this.mesh.renderOrder = 0;
-    entity.sprite.addEventListener('added', () => this.on_mount(entity))
-    entity.sprite.addEventListener('removed', () => this.on_unmount(entity))
+    entity.mesh.addEventListener('added', () => this.on_mount(entity))
+    entity.mesh.addEventListener('removed', () => this.on_unmount(entity))
   }
 
   protected on_mount(entity: Entity) {

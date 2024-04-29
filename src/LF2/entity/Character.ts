@@ -35,7 +35,7 @@ export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, IChar
 
   constructor(world: World, data: ICharacterData) {
     super(world, data, CHARACTER_STATES);
-    this.sprite.name = Character.name + ':' + data.base.name;
+    this.mesh.name = Character.name + ':' + data.base.name;
     this.enter_frame({ id: Defines.FrameId.Auto });
 
     this._max_hp = this._hp = data.base.hp ?? Defines.HP;
@@ -225,7 +225,8 @@ export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, IChar
     }
   }
   override on_be_collided(attacker: Entity, itr: IItrInfo, bdy: IBdyInfo, r0: ICube, r1: ICube): void {
-    Log.print(constructor_name(this), 'on_be_collided()', attacker, itr, bdy)
+    if (itr.kind === Defines.ItrKind.SuperPunchMe)
+      Log.print(constructor_name(this), 'on_be_collided() Defines.ItrKind.SuperPunchMe', itr)
     super.on_be_collided(attacker, itr, bdy, r0, r1);
     if (itr.kind === Defines.ItrKind.SuperPunchMe) return;
     switch (itr.kind) {
