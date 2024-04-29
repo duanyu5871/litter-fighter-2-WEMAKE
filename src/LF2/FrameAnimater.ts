@@ -91,7 +91,7 @@ export class FrameAnimater<
     mesh.name = 'FrameAnimater';
   }
 
-  on_spawn_by_shotter(...args: any[]): this {
+  on_spawn_by_emitter(...args: any[]): this {
     return this;
   }
 

@@ -46,10 +46,13 @@ export class Entity<
   D extends IGameObjData<I, F> = IGameObjData<I, F>
 > extends FrameAnimater<F, I, D> {
 
-  readonly is_entity = true
   static is = (v: any): v is Entity => v?.is_entity === true;
-
+  readonly is_entity = true
+  readonly states: Map<number | string, BaseState>;
   readonly callbacks = new Callbacks<IEntityCallbacks>()
+  readonly shadow: Shadow;
+  readonly velocity = new THREE.Vector3(0, 0, 0);
+
   protected _name: string = '';
   protected _team: string = '';
   protected _mp: number = Defines.MP;
@@ -60,8 +63,35 @@ export class Entity<
   protected _mp_r_max_spd: number = 0;
   protected _mp_r_spd: number = Defines.MP_RECOVERY_MIN_SPEED;
 
-  readonly shadow: Shadow;
-  readonly velocity = new THREE.Vector3(0, 0, 0);
+  protected _emitter?: Entity;
+  protected _a_rest: number = 0;
+  protected _v_rests = new Map<string, IVictimRest>();
+
+  protected _motionless: number = 0
+  protected _shaking: number = 0;
+  /** 
+   * 抓人剩余值
+   * 
+   * 当抓住一个被击晕的人时，此值充满。
+   */
+  protected _catching_value = 602;
+
+
+  /**
+   * 闪烁计数，每帧-1
+   *
+   * @protected
+   * @type {number}
+   */
+  protected _blinking_count: number = -1;
+
+  /**
+   * 闪烁完毕后下一动作
+   *
+   * @protected
+   * @type {string | TNextFrame}
+   */
+  protected _after_blink: string | TNextFrame | null = null;
 
   get name(): string { return this._name; }
   set name(v: string) {
@@ -101,30 +131,22 @@ export class Entity<
   get mp_recovery_max_speed(): number { return this._mp_r_max_spd; }
   set mp_recovery_max_speed(v: number) { this._mp_r_max_spd = v; }
 
-  get team() { return this._team }
+  get team(): string { return this._team || (this.emitter ? this.emitter.team : '') }
   set team(v) {
     const o = this._team;
     this.callbacks.emit('on_team_changed')(this, this._team = v, o)
   }
-  readonly states: Map<number | string, BaseState>;
 
-  v_rests = new Map<string, IVictimRest>();
-  a_rest: number = 0;
+  get emitter() { return this._emitter }
 
-  protected _motionless: number = 0
-  protected _shaking: number = 0;
+  get a_rest(): number { return this._a_rest }
+
   readonly indicators: EntityIndicators = new EntityIndicators(this);
   protected _state: BaseState | undefined;
   get shaking() { return this._shaking; }
   get show_indicators() { return !!this.indicators?.show }
   set show_indicators(v: boolean) { this.indicators.show = v; }
 
-  /** 
-   * 抓人剩余值
-   * 
-   * 当抓住一个被击晕的人时，此值充满。
-   */
-  protected _catching_value = 602;
 
   set state(v: BaseState | undefined) {
     if (this._state === v) return;
@@ -135,6 +157,14 @@ export class Entity<
 
   get state() { return this._state; }
 
+  /**
+   * 是否处于闪烁状态
+   *
+   * @readonly
+   * @type {boolean}
+   */
+  get blinking() { return this._blinking_count > 0 }
+
   constructor(world: World, data: D, states: Map<number, BaseState> = new Map()) {
     super(world, data)
     this.mesh.name = "Entity:" + data.id
@@ -142,14 +172,25 @@ export class Entity<
     this.shadow = new Shadow(this);
   }
 
-  override on_spawn_by_shotter(shotter: Entity, o: IOpointInfo, speed_z: number = 0) {
-    const shotter_frame = shotter.get_frame();
-    this.team = shotter.team;
-    this.facing = o.facing === Defines.FacingFlag.Backward ? turn_face(shotter.facing) : shotter.facing;
+  get_v_rest_remain(id: string): number {
+    const v = this._v_rests.get(id);
+    return v ? v.remain : 0
+  }
 
-    let { x, y, z } = shotter.position;
+  find_v_rest(fn: (k: string, v: IVictimRest) => any): IVictimRest | undefined {
+    for (const [k, v] of this._v_rests) if (fn(k, v)) return v;
+    return void 0;
+  }
+
+  override on_spawn_by_emitter(emitter: Entity, o: IOpointInfo, speed_z: number = 0) {
+    this._emitter = emitter;
+    const shotter_frame = emitter.get_frame();
+    this.team = emitter.team;
+    this.facing = o.facing === Defines.FacingFlag.Backward ? turn_face(emitter.facing) : emitter.facing;
+
+    let { x, y, z } = emitter.position;
     y = y + shotter_frame.centery - o.y;
-    x = x - shotter.facing * (shotter_frame.centerx - o.x);
+    x = x - emitter.facing * (shotter_frame.centerx - o.x);
     this.position.set(x, y, z);
     this.enter_frame(o.action);
 
@@ -193,7 +234,7 @@ export class Entity<
       Warn.print(constructor_name(this), `spawn_object(), creator of "${d.type}" not found! opoint:`, opoint);
       return;
     }
-    return create(this.world, d).on_spawn_by_shotter(this, opoint, speed_z).attach()
+    return create(this.world, d).on_spawn_by_emitter(this, opoint, speed_z).attach()
   }
 
   velocity_decay(factor: number = 1) {
@@ -227,9 +268,6 @@ export class Entity<
     if (this.position.y <= 0 || this._shaking || this._motionless) return;
     this.velocity.y -= this.world.gravity;
   }
-
-  _s = [1, -1]
-  _i = 0;
 
   protected override update_sprite() {
     super.update_sprite();
@@ -267,20 +305,19 @@ export class Entity<
       if (this._catching_value < 0) this._catching_value = 0;
     }
     if (this._shaking <= 0) {
-      for (const [k, v] of this.v_rests) {
+      for (const [k, v] of this._v_rests) {
         if (v.remain >= 0) --v.remain;
-        else this.v_rests.delete(k);
+        else this._v_rests.delete(k);
       }
     }
-    this.v_rests.forEach((v, k, m) => { });
-    this.a_rest > 1 ? this.a_rest-- : this.a_rest = 0;
+    this._a_rest > 1 ? this._a_rest-- : this._a_rest = 0;
 
     if (this._blinking_count > 0) {
       this._blinking_count--;
       const bc = Math.floor(this._blinking_count / 6) % 2;
       if (this._blinking_count <= 0) {
         this.mesh.visible = this.shadow.visible = true;
-        if (this._after_blink) {
+        if (this._after_blink === Defines.FrameId.Gone) {
           this._next_frame = void 0;
           this._frame = GONE_FRAME_INFO as F
         }
@@ -454,16 +491,16 @@ export class Entity<
   on_collision(target: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
     this._motionless = itr.motionless ?? 4;
     if (itr.arest) {
-      this.a_rest = itr.arest;
-      Log.print('on_collision', '1, this.a_rest =', this.a_rest)
+      this._a_rest = itr.arest;
+      Log.print('on_collision', '1, this.a_rest =', this._a_rest)
     } else if (!itr.vrest) {
-      this.a_rest = this.wait + A_SHAKE + this._motionless;
-      Log.print('on_collision', '2, this.a_rest =', this.a_rest)
+      this._a_rest = this.wait + A_SHAKE + this._motionless;
+      Log.print('on_collision', '2, this.a_rest =', this._a_rest)
     }
   }
   on_be_collided(attacker: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
     this._shaking = itr.shaking ?? V_SHAKE;
-    if (!itr.arest && itr.vrest) this.v_rests.set(attacker.id, {
+    if (!itr.arest && itr.vrest) this._v_rests.set(attacker.id, {
       remain: itr.vrest - this._shaking,
       itr, bdy, attacker, a_cube, b_cube,
       a_frame: attacker.get_frame(),
@@ -476,23 +513,6 @@ export class Entity<
     this.callbacks.emit('on_disposed')(this);
   }
 
-  /**
-   * 是否处于闪烁状态
-   *
-   * @readonly
-   * @type {boolean}
-   */
-  get blinking() { return this._blinking_count > 0 }
-
-
-  /**
-   * 闪烁计数，每帧-1
-   *
-   * @protected
-   * @type {number}
-   */
-  protected _blinking_count: number = -1;
-  protected _after_blink: string | null = null;
   blink_and_gone(frames: number) {
     this._blinking_count = frames;
     this._after_blink = Defines.FrameId.Gone;
@@ -503,6 +523,12 @@ export class Entity<
 
   protected update_mp_recovery_speed(): void {
     this._mp_r_spd = this._mp_r_min_spd + (this._mp_r_max_spd - this._mp_r_min_spd) * (this._max_hp - this._hp) / this._max_hp
+  }
+
+  belong(other: Entity): boolean {
+    if (!this.emitter) return false;
+    if (this.emitter === other) return true;
+    return this.emitter.belong(other);
   }
 }
 

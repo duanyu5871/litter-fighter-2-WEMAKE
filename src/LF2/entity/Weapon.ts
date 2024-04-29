@@ -38,8 +38,8 @@ export class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData> {
     if (this.hp <= 0)
       this._next_frame = GONE_FRAME_INFO;
   }
-  override on_spawn_by_shotter(shotter: Entity, o: IOpointInfo, speed_z?: number): this {
-    super.on_spawn_by_shotter(shotter, o, speed_z);
+  override on_spawn_by_emitter(shotter: Entity, o: IOpointInfo, speed_z?: number): this {
+    super.on_spawn_by_emitter(shotter, o, speed_z);
     if (this._frame.state === Defines.State.Weapon_OnHand) {
       this.holder = shotter
       this.holder.weapon = this

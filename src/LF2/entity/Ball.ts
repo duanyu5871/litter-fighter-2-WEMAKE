@@ -22,8 +22,8 @@ export class Ball extends Entity<IBallFrameInfo, IBallInfo, IBallData> {
     this.velocity.z = this.ud * speedz + dvz;
   }
 
-  override on_spawn_by_shotter(shotter: Entity, o: IOpointInfo, speed_z: number) {
-    const ret = super.on_spawn_by_shotter(shotter, o);
+  override on_spawn_by_emitter(shotter: Entity, o: IOpointInfo, speed_z: number) {
+    const ret = super.on_spawn_by_emitter(shotter, o);
     this.ud = speed_z;
     return ret;
   }

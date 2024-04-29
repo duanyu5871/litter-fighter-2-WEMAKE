@@ -211,15 +211,9 @@ export class BaseController {
     switch (state) {
       case Defines.State.Standing:
       case Defines.State.Walking:
-        /** 重击判定 */
+        /** FIXME: 重击判定 */
         if (this.is_hit('a')) {
-          let super_punch = false;
-          for (const [, { itr }] of character.v_rests) {
-            if (itr.kind === Defines.ItrKind.SuperPunchMe) {
-              super_punch = true;
-              break;
-            }
-          }
+          const super_punch = character.find_v_rest((_, v) => v.itr.kind === Defines.ItrKind.SuperPunchMe);
           if (super_punch) {
             nf = [{ id: character.data.indexes.super_punch }, this.key_time_maps.a, 'a'];
           }

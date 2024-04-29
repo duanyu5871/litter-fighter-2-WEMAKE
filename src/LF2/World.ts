@@ -358,6 +358,8 @@ export class World {
     if (itr.kind !== Defines.ItrKind.Pick) return
     return this.itr_log(itr, ...args);
   }
+
+
   collision_detection(a: Entity, b: Entity) {
     if (b.blinking) return;
     const af = a.get_frame();
@@ -430,9 +432,12 @@ export class World {
             break;
           case Defines.ItrEffect.Through: continue; // TODO
         }
-        if (
-          (a.team && a.team === b.team && !itr.friendly_fire && !bdy.friendly_fire)
-        ) continue;
+
+        const friendly_fire = itr.friendly_fire || bdy.friendly_fire;
+        const team_a = a.team;
+        const team_b = b.team;
+
+        if (!friendly_fire && (team_a ? team_a === team_b : a.belong(b))) continue;
 
         switch (bf.state) {
           case Defines.State.Falling: {
@@ -441,7 +446,7 @@ export class World {
           }
         }
         if (!itr.vrest && a.a_rest) continue;
-        if (itr.vrest && b.v_rests.has(a.id) && b.v_rests.get(a.id)!.remain > 0) continue;
+        if (itr.vrest && b.get_v_rest_remain(a.id) > 0) continue;
 
         const r0 = this.get_cube(a, af, itr);
         const r1 = this.get_cube(b, bf, bdy);

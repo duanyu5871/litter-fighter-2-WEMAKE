@@ -333,16 +333,6 @@ export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, IChar
     if (ret instanceof Ball) { ret.ud = this.controller.UD; }
     return ret;
   }
-
-  protected _blinking_count: number = -1;
-  protected _after_blink: string | null = null;
-  blink_and_gone(frames: number) {
-    this._blinking_count = frames;
-    this._after_blink = Defines.FrameId.Gone;
-  }
-  blink(frames: number) {
-    this._blinking_count = frames;
-  }
 }
 
 factory.set('character', (...args) => new Character(...args))
