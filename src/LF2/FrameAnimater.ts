@@ -76,7 +76,7 @@ export class FrameAnimater<
     this.world = world;
     this.pictures = create_pictures(world.lf2, data);
     const sprite = this.sprite = new THREE.Mesh(
-      new THREE.PlaneGeometry(1, 1),
+      new THREE.PlaneGeometry(1, 1).translate(0.5, -0.5, 0),
       new THREE.MeshBasicMaterial({
         map: this.pictures.get('0')?.texture,
         transparent: true
@@ -87,7 +87,9 @@ export class FrameAnimater<
   }
   update_sprite_position() {
     const { x, y, z } = this.position;
-    this.sprite.position.set(x, y - z / 2, z,);
+    const { centerx, centery } = this._frame
+    const offset_x = this._facing === 1 ? centerx : this.sprite.scale.x - centerx
+    this.sprite.position.set(x - offset_x, y - z / 2 + centery, z);
   }
   attach(): this {
     this.update_sprite();
@@ -108,14 +110,13 @@ export class FrameAnimater<
     }
     this._previous.face = this._facing;
     this._previous.frame = this._frame;
-
     const sprite = this.sprite;
     const piece = frame.pic;
     if (typeof piece === 'number' || !('1' in piece)) {
       return;
     }
     if (this._piece !== piece[this._facing]) {
-      const { x, y, w, h, tex, pw, ph, cx, cy } = this._piece = piece[this._facing];
+      const { x, y, w, h, tex, pw, ph } = this._piece = piece[this._facing];
       const pic = this.pictures.get('' + tex);
       if (pic) {
         pic.texture.offset.set(x, y);
@@ -125,7 +126,7 @@ export class FrameAnimater<
         }
         sprite.material.needsUpdate = true
       }
-      sprite.scale.set(pw, ph, 0)// = new THREE.PlaneGeometry()
+      sprite.scale.set(pw, ph, 0)
     }
     this.update_sprite_position();
   }
