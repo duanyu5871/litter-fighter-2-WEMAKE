@@ -49,7 +49,7 @@ export class FrameAnimater<
   readonly data: D;
   readonly world: World;
   readonly pictures: Map<string, IPictureInfo<THREE.Texture>>;
-  readonly sprite: THREE.Sprite;
+  readonly sprite: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial>;
   readonly position = new THREE.Vector3(0, 0, 0);
   protected _piece: ITexturePieceInfo = EMPTY_PIECE;
   protected _facing: TFace = 1;
@@ -75,13 +75,14 @@ export class FrameAnimater<
     this.data = data;
     this.world = world;
     this.pictures = create_pictures(world.lf2, data);
-
-    const material = new THREE.SpriteMaterial({
-      map: this.pictures.get('0')?.texture,
-    });
-    const sprite = this.sprite = new THREE.Sprite(material);
+    const sprite = this.sprite = new THREE.Mesh(
+      new THREE.PlaneGeometry(1, 1),
+      new THREE.MeshBasicMaterial({
+        map: this.pictures.get('0')?.texture,
+        transparent: true
+      })
+    );
     sprite.userData.owner = this;
-    sprite.renderOrder = 1;
     sprite.name = 'FrameAnimater'
   }
   update_sprite_position() {
@@ -113,9 +114,8 @@ export class FrameAnimater<
     if (typeof piece === 'number' || !('1' in piece)) {
       return;
     }
-    const { cx, cy } = piece[this._facing];
     if (this._piece !== piece[this._facing]) {
-      const { x, y, w, h, tex, pw, ph } = this._piece = piece[this._facing];
+      const { x, y, w, h, tex, pw, ph, cx, cy } = this._piece = piece[this._facing];
       const pic = this.pictures.get('' + tex);
       if (pic) {
         pic.texture.offset.set(x, y);
@@ -123,10 +123,10 @@ export class FrameAnimater<
         if (pic.texture !== sprite.material.map) {
           sprite.material.map = pic.texture;
         }
+        sprite.material.needsUpdate = true
       }
-      sprite.scale.set(pw, ph, 1);
+      sprite.scale.set(pw, ph, 0)// = new THREE.PlaneGeometry()
     }
-    sprite.center.set(cx, cy);
     this.update_sprite_position();
   }
 

@@ -231,8 +231,9 @@ export class Entity<
   protected override update_sprite() {
     super.update_sprite();
     if (this._shaking) {
-      const wf = this._s[this._i = (this._i + 1) % 2] * 2 / this._piece.pw
-      this.sprite.center.x += 4 * wf;
+      // TODO:
+      // const wf = this._s[this._i = (this._i + 1) % 2] * 2 / this._piece.pw
+      // this.sprite.translateX().x += 4 * wf;
     }
     this.weapon?.follow_holder();
   }
