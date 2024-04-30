@@ -3,7 +3,7 @@ import { is_positive_num } from '../is_positive_num';
 import { IItrInfo } from '../lf2_type';
 import { Defines } from '../lf2_type/defines';
 import { not_zero } from '../not_zero';
-import { get_next_frame_by_id } from './get_the_next';
+import { get_next_frame_by_raw_id } from './get_the_next';
 import { take } from './take';
 
 export default function cook_itr(unsafe_itr?: Partial<IItrInfo>) {
@@ -45,11 +45,11 @@ export default function cook_itr(unsafe_itr?: Partial<IItrInfo>) {
   }
 
   const catchingact = take(unsafe_itr, 'catchingact');
-  if (is_num(catchingact)) unsafe_itr.catchingact = get_next_frame_by_id(catchingact);
+  if (is_num(catchingact)) unsafe_itr.catchingact = get_next_frame_by_raw_id(catchingact);
 
   const caughtact = take(unsafe_itr, 'caughtact');
   if (is_num(caughtact)) unsafe_itr.caughtact = {
-    ...get_next_frame_by_id(caughtact),
+    ...get_next_frame_by_raw_id(caughtact),
     facing: Defines.FacingFlag.OpposingCatcher,
   };
 }

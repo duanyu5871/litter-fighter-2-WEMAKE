@@ -361,7 +361,7 @@ export class World {
 
 
   collision_detection(a: Entity, b: Entity) {
-    if (b.blinking) return;
+    if (b.blinking || b.invisible) return;
     const af = a.get_frame();
     const bf = b.get_frame();
     if (!af.itr?.length || !bf.bdy?.length) return;

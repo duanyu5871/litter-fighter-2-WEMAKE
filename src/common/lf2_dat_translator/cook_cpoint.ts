@@ -3,7 +3,7 @@ import { is_str } from '../is_str';
 import { ICpointInfo } from '../lf2_type';
 import { Defines } from '../lf2_type/defines';
 import { not_zero } from '../not_zero';
-import { get_next_frame_by_id } from './get_the_next';
+import { get_next_frame_by_raw_id } from './get_the_next';
 import { take } from './take';
 
 export function cook_cpoint(unsure_cpoint: ICpointInfo) {
@@ -23,7 +23,7 @@ export function cook_cpoint(unsure_cpoint: ICpointInfo) {
 
   if (is_str(vaction) || is_num(vaction)) {
     unsure_cpoint.vaction = {
-      ...get_next_frame_by_id(vaction),
+      ...get_next_frame_by_raw_id(vaction),
       facing: Defines.FacingFlag.SameAsCatcher
     };
   }

@@ -35,4 +35,5 @@ export interface IFrameInfo {
   opoint?: IOpointInfo[];
   cpoint?: ICpointInfo;
   indicator_info?: IRectPair;
+  invisible?: number;
 }

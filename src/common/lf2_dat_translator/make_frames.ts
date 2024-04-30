@@ -10,7 +10,7 @@ import { cook_cpoint } from './cook_cpoint';
 import cook_itr from './cook_itr';
 import cook_opoint from './cook_opoint';
 import { cook_wpoint } from './cook_wpoint';
-import { get_next_frame_by_id } from './get_the_next';
+import { get_next_frame_by_raw_id } from './get_the_next';
 import { take } from './take';
 import take_sections from './take_sections';
 
@@ -45,7 +45,9 @@ export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string): Re
     const fields: any = {};
     for (const [name, value] of match_colon_value(_content)) fields[name] = to_num(value);
 
-    const next = get_next_frame_by_id(take(fields, 'next'));
+    const raw_next = take(fields, 'next');
+    const next = get_next_frame_by_raw_id(raw_next);
+
     const wait = take(fields, 'wait') * 2 + 1;
     const frame: F = {
       id: frame_id,
@@ -61,6 +63,13 @@ export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string): Re
       ...fields,
     };
 
+    if (
+      (raw_next >= 1100 && raw_next <= 1299) ||
+      (raw_next <= -1100 && raw_next >= -1299)
+    ) {
+      frame.invisible = 2 * (Math.abs(raw_next) - 1100);
+    }
+    
     if (!frame.itr?.length) delete frame.itr;
     if (!frame.bdy?.length) delete frame.bdy;
     if (!frame.opoint?.length) delete frame.opoint;

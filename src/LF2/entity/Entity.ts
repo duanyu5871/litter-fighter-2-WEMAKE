@@ -78,12 +78,20 @@ export class Entity<
 
 
   /**
+   * 隐身计数，每帧-1
+   *
+   * @protected
+   * @type {number}
+   */
+  protected _invisible_duration: number = -1;
+
+  /**
    * 闪烁计数，每帧-1
    *
    * @protected
    * @type {number}
    */
-  protected _blinking_count: number = -1;
+  protected _blinking_duration: number = -1;
 
   /**
    * 闪烁完毕后下一动作
@@ -163,7 +171,16 @@ export class Entity<
    * @readonly
    * @type {boolean}
    */
-  get blinking() { return this._blinking_count > 0 }
+  get blinking() { return this._blinking_duration > 0 }
+
+
+  /**
+   * 是否处于隐身状态
+   *
+   * @readonly
+   * @type {boolean}
+   */
+  get invisible() { return this._invisible_duration > 0 }
 
   constructor(world: World, data: D, states: Map<number, BaseState> = new Map()) {
     super(world, data)
@@ -316,11 +333,16 @@ export class Entity<
       }
     }
     this._a_rest > 1 ? this._a_rest-- : this._a_rest = 0;
-
-    if (this._blinking_count > 0) {
-      this._blinking_count--;
-      const bc = Math.floor(this._blinking_count / 6) % 2;
-      if (this._blinking_count <= 0) {
+    if (this._invisible_duration > 0) {
+      this._blinking_duration--;
+      this.mesh.visible = this.shadow.visible = false;
+      if (this._invisible_duration < 120)
+        this._blinking_duration = this._invisible_duration + 1;
+    }
+    if (this._blinking_duration > 0) {
+      this._blinking_duration--;
+      const bc = Math.floor(this._blinking_duration / 6) % 2;
+      if (this._blinking_duration <= 0) {
         this.mesh.visible = this.shadow.visible = true;
         if (this._after_blink === Defines.FrameId.Gone) {
           this._next_frame = void 0;
@@ -330,6 +352,7 @@ export class Entity<
         this.mesh.visible = this.shadow.visible = !!bc;
       }
     }
+
   }
   override update(): void {
     super.update();
@@ -518,12 +541,33 @@ export class Entity<
     this.callbacks.emit('on_disposed')(this);
   }
 
-  blink_and_gone(frames: number) {
-    this._blinking_count = frames;
+
+  /**
+   * 开始闪烁,闪烁完成后移除自己
+   *
+   * @param {number} duration 闪烁持续帧数
+   */
+  blink_and_gone(duration: number) {
+    this._blinking_duration = duration;
     this._after_blink = Defines.FrameId.Gone;
   }
-  blink(frames: number) {
-    this._blinking_count = frames;
+
+  /**
+   * 开始闪烁
+   *
+   * @param {number} duration 闪烁持续帧数
+   */
+  blink(duration: number) {
+    this._blinking_duration = duration;
+  }
+
+  /**
+   * 开始隐身
+   *
+   * @param {number} duration 隐身持续帧数
+   */
+  invisibility(duration: number) {
+    this._invisible_duration = duration;
   }
 
   protected update_mp_recovery_speed(): void {

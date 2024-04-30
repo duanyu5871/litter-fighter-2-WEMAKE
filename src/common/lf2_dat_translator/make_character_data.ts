@@ -11,7 +11,7 @@ import { Defines } from '../lf2_type/defines';
 import { set_obj_field } from '../set_obj_field';
 import { traversal } from '../traversal';
 import { Cond } from './Cond';
-import { get_next_frame_by_id } from './get_the_next';
+import { get_next_frame_by_raw_id } from './get_the_next';
 import { take } from './take';
 const k_9 = [
   'Fa', 'Fj',
@@ -62,7 +62,7 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
 
       if (!frame.hit) frame.hit = {};
       if (!frame.hit.sequences) frame.hit.sequences = {};
-      const nf = get_next_frame_by_id(next);
+      const nf = get_next_frame_by_raw_id(next);
       if (k === 'Fa' || k === 'Fj') {
         frame.hit.sequences['L' + k[1]] = { ...nf, facing: nf.facing === FacingFlag.Backward ? FacingFlag.Right : FacingFlag.Left };
         frame.hit.sequences['R' + k[1]] = { ...nf, facing: nf.facing === FacingFlag.Backward ? FacingFlag.Right : FacingFlag.Right };
@@ -273,7 +273,7 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
           if (t_action) {
             t_hit_a = [
               {
-                ...get_next_frame_by_id(t_action),
+                ...get_next_frame_by_raw_id(t_action),
                 facing: FacingFlag.ByController,
                 condition: Cond
                   .add<Defines.ValWord>(ValWord.PressFB, '!=', 0)
@@ -283,7 +283,7 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
             ]
           }
           if (a_action)
-            a_hit_a = get_next_frame_by_id(a_action)
+            a_hit_a = get_next_frame_by_raw_id(a_action)
 
           if (Array.isArray(s_hit_a)) {
             t_hit_a && s_hit_a.unshift(...t_hit_a);
