@@ -1,6 +1,4 @@
 import { delete_val_equal_keys } from '../delete_val_equal_keys';
-import { is_num } from '../is_num';
-import { is_str } from '../is_str';
 import { IBdyInfo, ICpointInfo, IItrInfo, IOpointInfo, IWpointInfo } from '../lf2_type';
 import { IFrameInfo } from "../lf2_type/IFrameInfo";
 import { Defines } from '../lf2_type/defines';
@@ -8,11 +6,21 @@ import { match_all } from '../match_all';
 import { match_colon_value } from '../match_colon_value';
 import { not_zero } from '../not_zero';
 import { to_num } from '../to_num';
+import { cook_cpoint } from './cook_cpoint';
 import cook_itr from './cook_itr';
+import cook_opoint from './cook_opoint';
+import { cook_wpoint } from './cook_wpoint';
 import { get_next_frame_by_id } from './get_the_next';
 import { take } from './take';
 import take_sections from './take_sections';
 
+const handle_raw_mp = (mp: number | undefined) => {
+  if (!mp) return [0, 0];
+  if (mp < 1000 && mp > -1000) return [mp, 0];
+  const _mp = mp % 1000;
+  const hp = (mp - _mp) / 100;
+  return [_mp, hp] as const;
+}
 export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string): Record<string, F> {
   const frames: Record<string, F> = {};
   const frame_regexp = /<frame>\s+(.*?)\s+(.*)((.|\n)+?)<frame_end>/g;
@@ -21,17 +29,18 @@ export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string): Re
     const bdy_list = take_sections<IBdyInfo>(_content, 'bdy:', 'bdy_end:', r => _content = r);
 
     const itr_list = take_sections<IItrInfo>(_content, 'itr:', 'itr_end:', r => _content = r);
-    cook_itr_list(itr_list);
+    for (const itr of itr_list) cook_itr(itr)
 
     const opoint_list = take_sections<IOpointInfo>(_content, 'opoint:', 'opoint_end:', r => _content = r);
-    cook_opoint_list(opoint_list);
+    for (const opoint of opoint_list) cook_opoint(opoint);
 
-    const wpoint = take_sections<IWpointInfo>(_content, 'wpoint:', 'wpoint_end:', r => _content = r)[0];
-    wpoint && cook_wpoint(wpoint);
+    const wpoint_list = take_sections<IWpointInfo>(_content, 'wpoint:', 'wpoint_end:', r => _content = r);
+    for (const wpoint of wpoint_list) cook_wpoint(wpoint);
 
-    const bpoint = take_sections(_content, 'bpoint:', 'bpoint_end:', r => _content = r)[0];
-    const cpoint = take_sections<ICpointInfo>(_content, 'cpoint:', 'cpoint_end:', r => _content = r)[0];
-    cpoint && cook_cpoint(cpoint);
+    const bpoint_list = take_sections(_content, 'bpoint:', 'bpoint_end:', r => _content = r);
+
+    const cpoint_list = take_sections<ICpointInfo>(_content, 'cpoint:', 'cpoint_end:', r => _content = r);
+    for (const cpoint of cpoint_list) cook_cpoint(cpoint);
 
     const fields: any = {};
     for (const [name, value] of match_colon_value(_content)) fields[name] = to_num(value);
@@ -45,121 +54,52 @@ export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string): Re
       next,
       bdy: bdy_list,
       itr: itr_list,
-      wpoint,
-      bpoint,
+      wpoint: wpoint_list[0],
+      bpoint: bpoint_list[0],
       opoint: opoint_list,
-      cpoint,
+      cpoint: cpoint_list[0],
       ...fields,
     };
 
-    if (!bdy_list?.length) delete frame.bdy;
-    if (!itr_list?.length) delete frame.itr;
-    if (!opoint_list?.length) delete frame.opoint;
+    if (!frame.itr?.length) delete frame.itr;
+    if (!frame.bdy?.length) delete frame.bdy;
+    if (!frame.opoint?.length) delete frame.opoint;
+    if (!frame.wpoint) delete frame.wpoint;
+    if (!frame.bpoint) delete frame.bpoint;
+    if (!frame.cpoint) delete frame.cpoint;
+
+
     delete_val_equal_keys(frame, ['mp', 'hp'], [0, void 0]);
 
     const sound = take(frame, 'sound');
     if (sound) frame.sound = sound + '.ogg';
 
-    delete_val_equal_keys(frame, ['wpoint', 'bpoint', 'cpoint', 'bdy', 'itr'], [null, void 0]);
-    delete_val_equal_keys(frame.wpoint, ['dvx', 'dvy', 'dvz'], [0, void 0]);
+    const [_mp, _hp] = handle_raw_mp(take(frame, 'mp'))
+    if (_mp) frame.mp = _mp;
+    if (_hp) frame.hp = _hp
 
-    if (frame.mp && frame.mp > 1000) {
-      const raw = frame.mp;
-      frame.mp = raw % 1000;
-      frame.hp = (raw - frame.mp) / 100;
-    }
     frames[frame_id] = frame;
 
-    const dircontrol = take(cpoint, 'dircontrol');
+    const dircontrol = take(cpoint_list, 'dircontrol');
     if (dircontrol) {
       frame.hold = frame.hold || {}
       frame.hold.B = { facing: Defines.FacingFlag.Backward, wait: 'i' }
     }
 
     const dvx = take(frame, 'dvx');
-    if (not_zero(dvx)) frame.dvx = dvx * 0.5;
+    if (dvx === 550) frame.dvx = dvx;
+    else if (not_zero(dvx)) frame.dvx = dvx * 0.5;
 
     const dvz = take(frame, 'dvz');
-    if (not_zero(dvz)) frame.dvz = dvz * 0.5;
+    if (dvz === 550) frame.dvz = dvz;
+    else if (not_zero(dvz)) frame.dvz = dvz * 0.5;
 
     const dvy = take(frame, 'dvy');
-    if (not_zero(dvy)) frame.dvy = dvy * -0.25;
-
+    if (dvy === 550) frame.dvy = dvy;
+    else if (not_zero(dvy)) frame.dvy = dvy * -0.5;
   }
   return frames;
 }
 
 
-function cook_wpoint(unsure_wpoint: IWpointInfo) {
-  const dvx = take(unsure_wpoint, 'dvx');
-  if (not_zero(dvx)) unsure_wpoint.dvx = dvx * 0.5;
 
-  const dvz = take(unsure_wpoint, 'dvz');
-  if (not_zero(dvz)) unsure_wpoint.dvz = dvz;
-
-  const dvy = take(unsure_wpoint, 'dvy');
-  if (not_zero(dvy)) unsure_wpoint.dvy = dvy * -0.5;
-
-  const attacking = take(unsure_wpoint, 'attacking');
-  if (attacking) unsure_wpoint.attacking = '' + attacking;
-}
-
-function cook_cpoint(unsure_cpoint: ICpointInfo) {
-  const tvx = take(unsure_cpoint, 'throwvx');
-  if (not_zero(tvx) && tvx !== -842150451) unsure_cpoint.throwvx = tvx * 0.5;
-
-  const tvy = take(unsure_cpoint, 'throwvy');
-  if (not_zero(tvy) && tvy !== -842150451) unsure_cpoint.throwvy = tvy * -0.5;
-
-  const tvz = take(unsure_cpoint, 'throwvz');
-  if (not_zero(tvz) && tvz !== -842150451) unsure_cpoint.throwvy = tvz;
-
-  const tvj = take(unsure_cpoint, 'throwinjury');
-  if (not_zero(tvj) && tvj !== -842150451) unsure_cpoint.throwinjury = tvj;
-
-  const vaction = take(unsure_cpoint as any, 'vaction');
-
-  if (is_str(vaction) || is_num(vaction)) {
-    unsure_cpoint.vaction = {
-      ...get_next_frame_by_id(vaction),
-      facing: Defines.FacingFlag.SameAsCatcher
-    };
-  }
-}
-
-function cook_opoint_list(unsure_opoint_list: IOpointInfo[]) {
-  for (const item of unsure_opoint_list) {
-    const action = take(item, 'action')
-    if (is_num(action)) item.action = get_next_frame_by_id(action);
-
-    const dvx = take(item, 'dvx');
-    if (not_zero(dvx)) item.dvx = dvx * 0.5;
-
-    const dvz = take(item, 'dvz');
-    if (not_zero(dvz)) item.dvz = dvz * 0.5;
-
-    const dvy = take(item, 'dvy');
-    if (not_zero(dvy)) item.dvy = dvy * -0.5;
-
-
-    const facing = take(item, 'facing')
-    item.multi = 1;
-    if (is_num(facing)) {
-      item.facing = facing % 2 ?
-        Defines.FacingFlag.Backward :
-        Defines.FacingFlag.None;
-      if (Math.abs(facing) >= 10) {
-        item.multi = Math.floor(facing / 10);
-      }
-    } else {
-      item.facing = Defines.FacingFlag.None;
-      item.multi = 1;
-    }
-  }
-}
-
-function cook_itr_list(unsure_itr_list: IItrInfo[]) {
-  for (const item of unsure_itr_list) {
-    cook_itr(item);
-  }
-}

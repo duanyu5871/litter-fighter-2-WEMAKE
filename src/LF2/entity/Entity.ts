@@ -266,7 +266,7 @@ export class Entity<
 
   on_gravity() {
     if (this.position.y <= 0 || this._shaking || this._motionless) return;
-    this.velocity.y -= this.world.gravity;
+    if (this._frame.dvy !== 550) this.velocity.y -= this.world.gravity;
   }
 
   protected override update_sprite() {
@@ -281,7 +281,8 @@ export class Entity<
   handle_frame_velocity() {
     if (this._shaking || this._motionless) return;
     const { dvx, dvy, dvz } = this.get_frame();
-    if (dvx !== void 0) {
+    if (dvx === 550) this.velocity.x = 0;
+    else if (dvx !== void 0) {
       const next_speed = this._facing * dvx;
       const curr_speed = this.velocity.x;
       if (
@@ -290,8 +291,12 @@ export class Entity<
       )
         this.velocity.x = next_speed;
     };
-    if (dvy !== void 0) this.velocity.y += dvy;
-    if (dvz !== void 0) this.velocity.z = dvz;
+
+    if (dvy === 550) this.velocity.y = 0;
+    else if (dvy !== void 0) this.velocity.y += dvy;
+
+    if (dvz === 550) this.velocity.z = 0;
+    else if (dvz !== void 0) this.velocity.z = dvz;
   }
 
   override self_update(): void {

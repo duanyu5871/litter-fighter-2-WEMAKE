@@ -127,8 +127,10 @@ export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, IChar
   override handle_frame_velocity() {
     super.handle_frame_velocity();
     const { dvz } = this.get_frame();
-    const { UD: UD1 } = this.controller;
-    if (dvz !== void 0 && dvz !== 0) this.velocity.z = UD1 * dvz;
+    if (dvz !== void 0 && dvz !== 0 && dvz !== 550) {
+      const { UD: UD1 } = this.controller;
+      this.velocity.z = UD1 * dvz;
+    }
   }
   override self_update(): void {
     super.self_update();
