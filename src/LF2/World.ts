@@ -434,10 +434,8 @@ export class World {
         }
 
         const friendly_fire = itr.friendly_fire || bdy.friendly_fire;
-        const team_a = a.team;
-        const team_b = b.team;
 
-        if (!friendly_fire && (team_a ? team_a === team_b : a.belong(b))) continue;
+        if (!friendly_fire && a.same_team(b)) continue;
 
         switch (bf.state) {
           case Defines.State.Falling: {

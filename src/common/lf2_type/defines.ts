@@ -87,6 +87,9 @@ export namespace Defines {
     NextAsLanding = 100,
     Z_Moveable = 301,
 
+    Teleport_ToNearestEnemy = 400,
+    Teleport_ToFarthestAlly = 401,
+
     Weapon_InTheSky = 1000,
     Weapon_OnHand = 1001,
     Weapon_Throwing = 1002,

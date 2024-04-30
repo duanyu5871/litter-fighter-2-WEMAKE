@@ -1,5 +1,5 @@
 import type { Character } from '../../entity/Character';
-import BaseState from "../BaseState";
+import BaseState from "../base/BaseState";
 
 export default class BaseCharacterState extends BaseState<Character> {
   update(e: Character): void {

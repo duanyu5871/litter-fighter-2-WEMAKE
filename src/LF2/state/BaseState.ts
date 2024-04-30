@@ -1,9 +1,0 @@
-import { IFrameInfo } from "../../common/lf2_type";
-import { Entity } from "../entity/Entity";
-
-export default class BaseState<E extends Entity = Entity, F extends IFrameInfo = IFrameInfo> {
-  update(e: E): void { };
-  enter(e: E, prev_frame: F): void { };
-  leave(e: E, next_frame: F): void { };
-  on_landing(e: E, vx: number, vy: number, vz: number): void { };
-}

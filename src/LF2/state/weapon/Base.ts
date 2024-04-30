@@ -1,5 +1,5 @@
 import { Weapon } from "../../entity/Weapon";
-import BaseState from "../BaseState";
+import BaseState from "../base/BaseState";
 
 export class BaseWeaponState extends BaseState<Weapon> {
   update(e: Weapon): void {

@@ -1,6 +1,6 @@
 
 import { Defines } from "../../../common/lf2_type/defines";
-import BaseState from "../BaseState";
+import BaseState from "../base/BaseState";
 import { BaseWeaponState } from "./Base";
 import { InTheSky } from "./InTheSky";
 import { Throwing } from "./Throwing";

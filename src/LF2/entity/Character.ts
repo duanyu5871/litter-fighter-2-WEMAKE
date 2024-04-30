@@ -20,6 +20,8 @@ export interface ICharacterCallbacks<E extends Character = Character> extends IE
 }
 
 export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, ICharacterData> {
+  static is = (v: any): v is Character => v?.is_character === true;
+  readonly is_character = true
   readonly callbacks = new Callbacks<ICharacterCallbacks>()
   protected _controller: BaseController = new InvalidController(this);
   get controller() { return this._controller; }

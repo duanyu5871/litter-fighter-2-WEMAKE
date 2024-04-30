@@ -9,7 +9,7 @@ import { FrameAnimater, GONE_FRAME_INFO } from '../FrameAnimater';
 import type { World } from '../World';
 import { ICube } from '../World';
 import Callbacks from '../base/Callbacks';
-import BaseState from "../state/BaseState";
+import BaseState from "../state/base/BaseState";
 import { EntityIndicators } from './EntityIndicators';
 import Shadow from './Shadow';
 import type { Weapon } from './Weapon';
@@ -534,6 +534,12 @@ export class Entity<
     if (!this.emitter) return false;
     if (this.emitter === other) return true;
     return this.emitter.belong(other);
+  }
+  same_team(other: Entity): boolean {
+    const a_team = this.team;
+    const b_team = other.team;
+    if (a_team && a_team === b_team) return true;
+    return this.belong(other) || other.belong(this);
   }
 }
 
