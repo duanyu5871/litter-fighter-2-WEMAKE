@@ -96,7 +96,7 @@ export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string): Re
 
     const dvy = take(frame, 'dvy');
     if (dvy === 550) frame.dvy = dvy;
-    else if (not_zero(dvy)) frame.dvy = dvy * -0.5;
+    else if (not_zero(dvy)) frame.dvy = dvy * -0.25;
   }
   return frames;
 }
