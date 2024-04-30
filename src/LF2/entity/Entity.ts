@@ -227,6 +227,8 @@ export class Entity<
     if (prev_state !== next_state) {
       this.state = this.states.get(next_state) || this.states.get(Defines.State.Any);
     }
+    if (v.invisible)
+      this.invisibility(v.invisible)
     if (v.opoint) {
       for (const opoint of v.opoint) {
         for (let i = 0; i < opoint.multi; ++i) {
@@ -334,7 +336,7 @@ export class Entity<
     }
     this._a_rest > 1 ? this._a_rest-- : this._a_rest = 0;
     if (this._invisible_duration > 0) {
-      this._blinking_duration--;
+      this._invisible_duration--;
       this.mesh.visible = this.shadow.visible = false;
       if (this._invisible_duration < 120)
         this._blinking_duration = this._invisible_duration + 1;

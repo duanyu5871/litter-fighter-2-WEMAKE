@@ -232,7 +232,19 @@ function App() {
       </div>
       <div className='debug_ui' style={{ display: control_panel_visible ? 'none' : void 0 }}>
         <div className='debug_ui_row'>
-          {'页面: '}
+          <Button onClick={on_click_download_zip}>下载数据包</Button>
+          <Button onClick={on_click_load_local_zip} disabled={loading}>加载数据包</Button>
+          <Button onClick={on_click_load_builtin} disabled={loading}>加载内置数据</Button>
+          <Button onClick={() => set_editor_closed(false)}>dat viewer</Button>
+          <ToggleButton
+            onToggle={set_control_panel_visible}
+            checked={control_panel_visible}
+            shortcut='F10'>
+            <>显示控制面板(F10)</>
+            <>隐藏控制面板(F10)</>
+          </ToggleButton>
+        </div>
+        <div className='debug_ui_row'>
           <Select
             value={layout}
             on_changed={set_layout}
@@ -290,10 +302,6 @@ function App() {
                 }
               </div>
           }
-          <Button onClick={on_click_download_zip}>下载数据包</Button>
-          <Button onClick={on_click_load_local_zip} disabled={loading}>加载数据包</Button>
-          <Button onClick={on_click_load_builtin} disabled={loading}>加载内置数据</Button>
-          <Button onClick={() => set_editor_closed(false)}>dat viewer</Button>
         </div>
         <div className='debug_ui_row'>
           <ToggleButton
@@ -342,15 +350,8 @@ function App() {
             shortcut='F9'>
             全屏(F9)
           </Button>
-          <ToggleButton
-            onToggle={set_control_panel_visible}
-            checked={control_panel_visible}
-            shortcut='F10'>
-            <>显示控制面板(F10)</>
-            <>隐藏控制面板(F10)</>
-          </ToggleButton>
         </div>
-        
+
         {Array.from(lf2_ref.current?.player_infos.values() ?? []).map((info, idx) =>
           <PlayerRow key={idx} lf2={lf2_ref.current!} info={info} visible={debug_panel} />
         )}
