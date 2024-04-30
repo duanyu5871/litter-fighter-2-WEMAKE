@@ -63,14 +63,14 @@ sound: 声音
 
 |值|名|描述|
 |-|-|-|
-| 0    | standing       | 站立(按键自由)|
-| 1    | walking        | 走路(按键自由)|
-| 2    | running        | 跑步(会跑起来)|
-| 3    |                | 攻击性动作|
-| 4    | jump           | 跳(能在空中左右转)|
-| 5    | dash           | 跑跳(dvx:0时能在地上左右转)|
-| 6    | rowing         | 受身、滚(著地act215)|
-| 7    | defend         | 防御(bdy前方防御)|
+| 0    | standing       | 站立(按键自由) |
+| 1    | walking        | 走路(按键自由) |
+| 2    | running        | 跑步(会跑起来) |
+| 3    |                | 攻击性动作 |
+| 4    | jump           | 跳(能在空中左右转) |
+| 5    | dash           | 跑跳(dvx:0时能在地上左右转) |
+| 6    | rowing         | 受身、滚(著地act215) |
+| 7    | defend         | 防御(bdy前方防御) |
 | 8    | broken_defend  | 破防|
 | 9    | catching       | 抓人|
 | 10   | picked_caught  | 被捉(武器掉落)|
@@ -89,7 +89,7 @@ sound: 声音
 | 401  |                | (瞬移到最远同盟，同盟在60的位置) |
 | 500  | transform      | (若没变过身，act跳至0) |
 | 501  | transform      | (变成之前变身过的人)|
-| 1700 | healself      | (回hp加快) |
+| 1700 | healself       | (回hp加快) |
 | 9995 |                | 变身成louisEX |
 | 9996 |                | (造出id: 217,218 louis_armour) |
 | 9997 | etc            | (没有影子，图片在何地都会看见) |
