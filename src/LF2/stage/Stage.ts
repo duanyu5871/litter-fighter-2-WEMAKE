@@ -1,11 +1,15 @@
 import { Warn } from "../../Log";
 import { is_num } from "../../common/is_num";
-import { IBgData, IStageInfo, IStageObjectInfo, IStagePhaseInfo } from "../../common/lf2_type";
+import { IBgData } from "../../common/lf2_type";
+import { IStageInfo } from "../../common/lf2_type/IStageInfo";
+import { IStageObjectInfo } from "../../common/lf2_type/IStageObjectInfo";
+import { IStagePhaseInfo } from "../../common/lf2_type/IStagePhaseInfo";
 import { Defines } from "../../common/lf2_type/defines";
-import Background from "../bg/Background";
 import type { World } from "../World";
 import Callbacks from "../base/Callbacks";
 import { new_team } from "../base/new_id";
+import { random_in_range } from "../base/random_in_range";
+import Background from "../bg/Background";
 import { Character } from "../entity/Character";
 import Item from "./Item";
 
@@ -114,6 +118,15 @@ export default class Stage {
     this.try_play_phase_bgm()
     for (const object of objects) {
       this.spawn_object(object);
+    }
+    if (is_num(phase.cam_jump_to_x)) {
+      this.world.camera.position.x = phase.cam_jump_to_x;
+    }
+    if (is_num(phase.player_jump_to_x)) {
+      const x = phase.player_jump_to_x;
+      for (const [, p] of this.world.players) {
+        p.position.x = random_in_range(x - 50, x + 50);
+      }
     }
   }
   enter_next_phase(): void {

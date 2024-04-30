@@ -1,4 +1,4 @@
-import { IStageInfo } from ".";
+import { IStageInfo } from "./IStageInfo";
 import { IBgData } from "./IBgData";
 
 export namespace Defines {

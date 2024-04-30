@@ -1,5 +1,7 @@
 import { arithmetic_progression } from '../arithmetic_progression';
-import { IStageInfo, IStageObjectInfo, IStagePhaseInfo } from '../lf2_type';
+import { IStageObjectInfo } from "../lf2_type/IStageObjectInfo";
+import { IStagePhaseInfo } from "../lf2_type/IStagePhaseInfo";
+import { IStageInfo } from "../lf2_type/IStageInfo";
 import { match_colon_value } from '../match_colon_value';
 import { match_hash_end } from '../match_hash_end';
 import { take_blocks } from '../take_blocks';
@@ -85,5 +87,12 @@ export function data_to_stage_jsons(full_str: string): IStageInfo[] | void {
     stage_infos.push(stage_info);
   }
 
+  for (const stage_info of stage_infos) {
+    const first_phase = stage_info.phases[0];
+    if (!first_phase) return;
+
+    first_phase.cam_jump_to_x = 0;
+    first_phase.player_jump_to_x = 0;
+  }
   return stage_infos.sort((a, b) => Number(a.id) - Number(b.id));
 }

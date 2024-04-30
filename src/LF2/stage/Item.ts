@@ -1,6 +1,6 @@
 import { is_num } from "../../common/is_num";
 import { is_str } from "../../common/is_str";
-import { IStageObjectInfo } from "../../common/lf2_type";
+import { IStageObjectInfo } from "../../common/lf2_type/IStageObjectInfo";
 import { Defines } from "../../common/lf2_type/defines";
 import random_get from "../../common/random_get";
 import random_take from "../../common/random_take";
@@ -88,7 +88,11 @@ export default class Item {
     this.is_enemies = data.type === 'character';
   }
 
-  spawn(): void {
+  spawn(
+    range_x: number = 100,
+    range_y: number = 0,
+    range_z: number = 0
+  ): void {
     const { lf2 } = this;
     const oid = this.get_oid();
     if (!oid) { return; }
@@ -97,11 +101,14 @@ export default class Item {
     const creator = factory.get(data.type);
     if (!creator) { return; }
 
-    const { hp, act, x, y } = this.info;
+    const { hp, act, x, y, z } = this.info;
     if (this.info.times) this.info.times--;
     const e = creator(this.world, data);
-    e.position.x = random_in_range(x - 100, x + 100);
-    e.position.z = random_in_range(this.stage.near, this.stage.far);
+    e.position.x = random_in_range(x - range_x, x + range_x);
+
+    e.position.z = is_num(z) ?
+      random_in_range(z - range_z, z + range_z) :
+      random_in_range(this.stage.near, this.stage.far);
 
     if (Entity.is(e)) {
       if (is_num(hp)) e.hp = hp;

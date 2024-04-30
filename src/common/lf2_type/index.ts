@@ -98,30 +98,6 @@ export type TFrameIdListPair = {
   [-1]: string[],
   1: string[],
 }
-export interface IStageObjectInfo {
-  id_method?: string;
-  id: string[];
-  x: number;
-  y?: number;
-  act?: string;
-  hp?: number;
-  times?: number;
-  ratio?: number;
-  is_boss?: true;
-  is_soldier?: true;
-  reserve?: number;
-  join?: number;
-}
-export interface IStagePhaseInfo {
-  bound: number;
-  desc: string;
-  objects: IStageObjectInfo[];
-  music?: string;
-}
-export interface IStageInfo {
-  bg: string;
-  id: string;
-  name: string;
-  phases: IStagePhaseInfo[];
-  next?: string;
-}
+export * from './IStageObjectInfo'
+export * from './IStagePhaseInfo'
+export * from './IStageInfo'
