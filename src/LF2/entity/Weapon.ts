@@ -11,7 +11,7 @@ export class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData> {
   constructor(world: World, data: IWeaponData) {
     super(world, data, WEAPON_STATES);
     this.mesh.name = "Weapon: " + data.id
-    this.hp = data.base.weapon_hp;
+    this.hp = this.max_hp = data.base.weapon_hp;
   }
   override find_auto_frame(): IFrameInfo {
     const { frames, indexes } = this.data;

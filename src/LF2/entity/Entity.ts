@@ -14,6 +14,7 @@ import { EntityIndicators } from './EntityIndicators';
 import Shadow from './Shadow';
 import type { Weapon } from './Weapon';
 import { turn_face } from './face_helper';
+import { InfoSprite } from './InfoSprite';
 export type TData = IBaseData | ICharacterData | IWeaponData | IEntityData | IBallData
 export const V_SHAKE = 6;
 export const A_SHAKE = 6;
@@ -100,6 +101,8 @@ export class Entity<
    * @type {string | TNextFrame}
    */
   protected _after_blink: string | TNextFrame | null = null;
+
+  protected _info_sprite: InfoSprite = new InfoSprite(this);
 
   get name(): string { return this._name; }
   set name(v: string) {
@@ -337,9 +340,11 @@ export class Entity<
     this._a_rest > 1 ? this._a_rest-- : this._a_rest = 0;
     if (this._invisible_duration > 0) {
       this._invisible_duration--;
-      this.mesh.visible = this.shadow.visible = false;
-      if (this._invisible_duration < 120)
-        this._blinking_duration = this._invisible_duration + 1;
+      this.mesh.visible = this.shadow.visible = this._info_sprite.visible = false;
+      if (this._invisible_duration <= 0) {
+        this._blinking_duration = 120;
+        this._info_sprite.visible = true
+      }
     }
     if (this._blinking_duration > 0) {
       this._blinking_duration--;
@@ -511,6 +516,7 @@ export class Entity<
   override update_sprite_position(): void {
     this.world.restrict(this);
     super.update_sprite_position();
+    this._info_sprite.update_position();
     const { x, z } = this.position;
     this.shadow.position.set(x, - z / 2, z - 550);
     if (this.weapon) this.weapon.follow_holder();

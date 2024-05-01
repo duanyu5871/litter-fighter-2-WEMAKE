@@ -11,7 +11,6 @@ import { InvalidController } from '../controller/InvalidController';
 import { CHARACTER_STATES } from '../state/character';
 import { Ball } from './Ball';
 import { Entity, IEntityCallbacks } from './Entity';
-import { NameSprite } from './NameSprite';
 import { Weapon } from './Weapon';
 import { same_face, turn_face } from './face_helper';
 
@@ -33,7 +32,6 @@ export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, IChar
   protected _resting = 0;
   protected _fall_value = 70;
   protected _defend_value = 60;
-  protected _name_sprite = new NameSprite(this);
 
   constructor(world: World, data: ICharacterData) {
     super(world, data, CHARACTER_STATES);
@@ -166,11 +164,6 @@ export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, IChar
   override on_after_update() {
     const next_frame_0 = this.controller.update();
     this._next_frame = next_frame_0 || this._next_frame;
-  }
-
-  override update_sprite_position() {
-    super.update_sprite_position();
-    this._name_sprite.update_position();
   }
 
   private dizzy_catch_test(target: Entity) {
