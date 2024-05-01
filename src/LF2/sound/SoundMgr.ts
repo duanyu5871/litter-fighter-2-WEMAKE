@@ -43,8 +43,18 @@ export default class SoundMgr implements IPlayer {
     return this.inner.play_bgm(name, restart)
   }
 
-  play(name: string, x?: number, y?: number, z?: number) {
+  play(name: string, x?: number, y?: number, z?: number): string {
     return this.inner.play(name, x, y, z)
+  }
+
+  stop(id: string): void {
+    return this.inner.stop(id);
+  }
+
+  async play_with_load(src: string): Promise<string> {
+    if (!this.inner.has(src))
+      await this.inner.preload(src, this.lf2.import(src));
+    return this.inner.play(src);
   }
 }
 

@@ -159,6 +159,7 @@ function App() {
   const [h_align, set_h_align] = useLocalNumber<number>('h_align', 0.5);
   const [custom_h_align, set_custom_h_align] = useLocalNumber<number>('custom_h_align', 0.5);
   const [custom_v_align, set_custom_v_align] = useLocalNumber<number>('custom_v_align', 0.5);
+  const [debug_ui_pos, set_debug_ui_pos] = useLocalString<'left' | 'right' | 'top' | 'bottom'>('debug_ui_pos', 'top');
 
   useEffect(() => {
     const ele = _game_contiainer_ref.current;
@@ -230,7 +231,7 @@ function App() {
           </ToggleButton>
         </div>
       </div>
-      <div className='debug_ui' style={{ display: control_panel_visible ? 'none' : void 0 }}>
+      <div className={'debug_ui debug_ui_' + debug_ui_pos} style={{ display: control_panel_visible ? 'none' : void 0 }}>
         <div className='debug_ui_row'>
           <Button onClick={on_click_download_zip}>下载数据包</Button>
           <Button onClick={on_click_load_local_zip} disabled={loading}>加载数据包</Button>
@@ -243,6 +244,11 @@ function App() {
             <>显示控制面板(F10)</>
             <>隐藏控制面板(F10)</>
           </ToggleButton>
+          <Select
+            items={['top', 'bottom', 'left', 'right'] as const}
+            option={v => [v, v]}
+            value={debug_ui_pos}
+            on_changed={set_debug_ui_pos} />
         </div>
         <div className='debug_ui_row'>
           <Select

@@ -1,4 +1,5 @@
-import { IBallData, IDatIndex } from "../lf2_type";
+import { IBallData } from "../lf2_type";
+import { IDatIndex } from "../lf2_type/IDatIndex";
 import { IBallInfo } from "../lf2_type/IBallInfo";
 import { IBallFrameInfo } from "../lf2_type/IBallFrameInfo";
 import { Defines } from "../lf2_type/defines";

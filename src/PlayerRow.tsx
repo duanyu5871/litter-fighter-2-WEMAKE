@@ -8,6 +8,8 @@ import { PlayerInfo } from './LF2/PlayerInfo';
 import { TKeyName } from './LF2/controller/BaseController';
 import random_get from './common/random_get';
 import { LocalHuman } from './LF2/controller/LocalHuman';
+import { Checkbox } from './Component/Checkbox';
+import { Defines } from './common/lf2_type/defines';
 
 const key_names: Record<TKeyName, string> = {
   U: '上',
@@ -32,9 +34,19 @@ export function PlayerRow(props: Props) {
   const [editing_key, set_editing_key] = useState<TKeyName | undefined>();
 
   const [team, set_team] = useState<string>(info.team);
+  const [show_hidden, set_show_hidden] = useState<boolean>(false)
   const [character_id, set_character_id] = useState<string>(info.character);
   const [added, set_added] = useState(!!lf2.get_player_character(info.id));
   const [key_settings_show, set_key_settings_show] = useState(false);
+
+  useEffect(() => {
+    set_show_hidden(lf2.is_cheat_enabled('' + Defines.Cheats.Hidden))
+    return lf2.callbacks.add({
+      on_cheat_changed: (name, enabled) => {
+        if (name === '' + Defines.Cheats.Hidden) set_show_hidden(enabled)
+      }
+    }, ['on_cheat_changed']);
+  }, [lf2]);
 
   useEffect(() => {
     set_keys(info.keys);
@@ -82,25 +94,6 @@ export function PlayerRow(props: Props) {
 
   if (!lf2 || visible === false) return null;
 
-  // useEffect(() => {
-  //   if (!lf2) return;
-  //   if (!added) return lf2.remove_player(which)
-  //   let lp = lf2.get_local_player(which);
-  //   if (lp?.data.id !== character_id) {
-  //     const r_c_id = character_id || random_get(lf2.dat_mgr.characters)?.id;
-  //     if (r_c_id) {
-  //       lp = lf2.add_player(which, r_c_id) ?? lp;
-  //     }
-  //   }
-  //   if (!lp) return;
-  //   lp.callbacks.add(callbacks.current)
-  //   lp.name = player_name.trim() || '' + which;
-  //   lp.team = team ? Number(team) : new_team();
-  //   lp.controller = new LocalHuman(which, lp, keys)
-  // }, [which, player_name, team, lf2, character_id, added, keys]);
-
-
-
   const on_click_add = added ? () => {
     lf2.del_player_character(info.id); // 移除玩家对应的角色
   } : () => {
@@ -129,7 +122,8 @@ export function PlayerRow(props: Props) {
           onBlur={e => info.set_name(e.target.value.trim() || info.id).save()} />
       </span>
       <span>角色:</span>
-      <CharacterSelect lf2={lf2} value={character_id} on_changed={v => info.set_character(v).save()} />
+      <CharacterSelect lf2={lf2} value={character_id} on_changed={v => info.set_character(v).save()} show_hidden={show_hidden} />
+      <Checkbox value={show_hidden} onChanged={set_show_hidden} title='显示隐藏角色' />
       <span>队伍:</span>
       <TeamSelect value={team} on_changed={v => info.set_team(v).save()} />
       <Button onClick={on_click_add}>{added ? '移除' : '加入'}</Button>

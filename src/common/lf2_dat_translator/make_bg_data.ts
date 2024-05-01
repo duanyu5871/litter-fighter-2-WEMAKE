@@ -1,5 +1,5 @@
 import { is_str } from '../is_str';
-import { IDatIndex } from '../lf2_type';
+import { IDatIndex } from "../lf2_type/IDatIndex";
 import { IBgData } from "../lf2_type/IBgData";
 import { IBgLayerInfo } from "../lf2_type/IBgLayerInfo";
 import { Defines } from '../lf2_type/defines';

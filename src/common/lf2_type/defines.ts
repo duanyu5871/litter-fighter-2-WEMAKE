@@ -1,5 +1,5 @@
-import { IStageInfo } from "./IStageInfo";
 import { IBgData } from "./IBgData";
+import { IStageInfo } from "./IStageInfo";
 
 export namespace Defines {
   export const OLD_SCREEN_WIDTH = 794;
@@ -163,5 +163,21 @@ export namespace Defines {
   export enum CPointKind {
     Attacker = 1,
     Victim = 2,
+  }
+  export enum Cheats {
+    Hidden,
+    Fn,
+  }
+  export const CheatKeys: Record<Cheats, string> = {
+    [Cheats.Hidden]: "lf2.net",
+    [Cheats.Fn]: "herofighter.com"
+  }
+  export const CheatSounds: Record<Cheats, string> = {
+    [Cheats.Hidden]: "data/m_pass.wav.ogg",
+    [Cheats.Fn]: "data/m_end.wav.ogg"
+  }
+  export interface ICheatInfo {
+    keys: string;
+    sound: string;
   }
 }

@@ -13,6 +13,8 @@ export default class ModernPlayer implements IPlayer {
 
   protected _r = new RequestersMgr<AudioBuffer>();
   protected _bgm: string | null = null;
+  protected _sound_id = 0;
+  protected _playings = new Map<string, AudioBufferSourceNode>()
   constructor(lf2: LF2) {
     this.lf2 = lf2;
   }
@@ -72,9 +74,9 @@ export default class ModernPlayer implements IPlayer {
     return () => (req_id === this._req_id) && this.stop_bgm();
   }
 
-  play(name: string, x?: number, y?: number, z?: number) {
+  play(name: string, x?: number, y?: number, z?: number): string {
     const buf = this._r.values.get(name);
-    if (!buf) return;
+    if (!buf) return '';
 
     const edge_w = Defines.OLD_SCREEN_WIDTH / 2;
     const viewer_x = this.lf2.world.camera.position.x + edge_w;
@@ -104,5 +106,17 @@ export default class ModernPlayer implements IPlayer {
 
     merger_node.connect(this.ctx.destination);
     src_node.start();
+
+    const id = '' + (++this._sound_id);
+    this._playings.set(id, src_node)
+    src_node.onended = () => this._playings.delete(id);
+    return id;
+  }
+
+  stop(id: string): void {
+    const n = this._playings.get(id);
+    if (!n) return;
+    n.stop();
+    this._playings.delete(id)
   }
 }

@@ -13,8 +13,8 @@ export type TTODO = any;
 export type TFace = -1 | 1;
 export type TTrend = -1 | 0 | 1;
 export type BOOL = 1 | 0;
-export interface IDataLists { objects: IDatIndex[], backgrounds: IDatIndex[] }
-export interface IDatIndex { id: string; type: string | number; file: string; hash?: string }
+export * from './IDataLists'
+export * from './IDatIndex'
 export interface IEntityPictureInfo {
   id: string;
   begin: number;

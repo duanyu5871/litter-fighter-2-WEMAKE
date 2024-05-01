@@ -41,6 +41,11 @@ const get_short_file_size_txt = (bytes: number) => {
   return `${bytes.toFixed(1).replace('.0', '')}GB`;
 }
 
+const cheat_info_pair = (n: Defines.Cheats) => ['' + n, {
+  keys: Defines.CheatKeys[n],
+  sound: Defines.CheatSounds[n],
+}] as const;
+
 export interface ILf2Callback {
   on_layout_changed?(layout: Layout | undefined, prev_layout: Layout | undefined): void;
   on_loading_start?(): void;
@@ -53,6 +58,7 @@ export interface ILf2Callback {
   on_bgms_clear?(): void;
 
   on_player_infos_changed?(player_infos: PlayerInfo[]): void;
+  on_cheat_changed?(cheat_name: string, enabled: boolean): void;
 }
 export default class LF2 {
   readonly callbacks = new Callbacks<ILf2Callback>();
@@ -354,16 +360,48 @@ export default class LF2 {
 
   private _on_pointer_up = () => { }
 
+  private _curr_key_list: string = '';
+  private readonly _cheats_map = new Map<string, Defines.ICheatInfo>([
+    cheat_info_pair(Defines.Cheats.Hidden),
+    cheat_info_pair(Defines.Cheats.Fn),
+  ]);
+  private readonly _cheats_enable_map = new Map<string, boolean>();
+  private readonly _cheat_sound_id_map = new Map<string, string>();
+  is_cheat_enabled(name: string | Defines.Cheats) {
+    return !!this._cheats_enable_map.get('' + name)
+  }
   private _on_key_down = (e: KeyboardEvent) => {
-    e.key.toLowerCase()
+    const key = e.key?.toLowerCase() ?? ''
+    this._curr_key_list += key;
+
+    let match = false;
+    for (const [cheat_name, { keys: k, sound: s }] of this._cheats_map) {
+      if (k.startsWith(this._curr_key_list)) {
+        match = true;
+      }
+      if (k !== this._curr_key_list) {
+        continue;
+      }
+      const sound_id = this._cheat_sound_id_map.get(cheat_name);
+      if (sound_id) this.sound_mgr.stop(sound_id);
+      this.sound_mgr.play_with_load(s).then(v => this._cheat_sound_id_map.set(cheat_name, v));
+      this._curr_key_list = ''
+      const enabled = !this._cheats_enable_map.get(cheat_name)
+      this._cheats_enable_map.set(cheat_name, enabled);
+      this.callbacks.emit('on_cheat_changed')(cheat_name, enabled)
+    }
+    if (!match) this._curr_key_list = '';
+
     for (const k of KEY_NAME_LIST) {
       for (const [, player_info] of this._player_infos) {
-        if (player_info.keys[k] === e.key.toLowerCase()) {
-          this.layout?.on_player_key_down(k); return;
+        if (player_info.keys[k] === key) {
+          this.layout?.on_player_key_down(k);
+          return;
         }
       }
     }
   }
+
   private _on_key_up = (e: KeyboardEvent) => {
 
   }
@@ -443,7 +481,7 @@ export default class LF2 {
 
   add_player_character(player_id: string, character_id: string) {
     const player_info = this.player_infos.get(player_id);
-    if (!player_info)  { debugger; return; }
+    if (!player_info) { debugger; return; }
 
     const data = this.dat_mgr.characters.find(v => v.id === character_id)
     if (!data) { debugger; return; }

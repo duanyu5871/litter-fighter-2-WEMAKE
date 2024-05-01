@@ -1,4 +1,5 @@
-import { IDataLists, IDatIndex } from '../lf2_type';
+import { IDataLists } from "../lf2_type/IDataLists";
+import { IDatIndex } from "../lf2_type/IDatIndex";
 import { match_block_once } from '../match_block';
 import { match_colon_value } from '../match_colon_value';
 import { match_hash_end } from '../match_hash_end';

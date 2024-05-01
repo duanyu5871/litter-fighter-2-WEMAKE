@@ -11,11 +11,15 @@ export function Checkbox(props: ICheckboxProps) {
   const _on_click = (e: React.MouseEvent<HTMLButtonElement>) => {
     onClick?.(e);
     _set_value(v => !v);
-    onChanged?.(!_value);
+    onChanged?.(!value);
   };
-  const _style = useMemo(() => {
+  const _style: React.CSSProperties = useMemo(() => {
     return {
-      width: 15, height: 15, padding: 0,
+      width: 15,
+      height: 15,
+      minWidth: 15,
+      minHeight: 15,
+      padding: 0,
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',

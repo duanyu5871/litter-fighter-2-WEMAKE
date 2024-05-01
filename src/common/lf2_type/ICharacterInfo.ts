@@ -47,7 +47,7 @@ export interface ICharacterInfo extends IGameObjInfo {
    * @see Defines.MP_RECOVERY_MAX_SPEED 默认值
    * @type {?number}
    */
-  mp_r_max_spd ?: number;
+  mp_r_max_spd?: number;
 
   /**
    * MP最小恢复速度（每帧）
@@ -56,5 +56,14 @@ export interface ICharacterInfo extends IGameObjInfo {
    * @see Defines.MP_RECOVERY_MIN_SPEED 默认值
    * @type {?number}
    */
-  mp_r_min_spd ?: number;
+  mp_r_min_spd?: number;
+
+
+  /**
+   * 是否为隐藏角色
+   * 默认否
+   *
+   * @type {?boolean}
+   */
+  hidden?: boolean;
 }

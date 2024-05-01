@@ -52,12 +52,19 @@ export interface IPlayer {
    * 播放音效
    * @date 4/12/2024 - 10:25:08 AM
    *
-   * @param {string} name 声音名
-   * @param {?number} [x] 音效产生位置x
-   * @param {?number} [y] 音效产生位置y
-   * @param {?number} [z] 音效产生位置z
+   * @param {string} name 声音名;
+   * @param {?number} [x] 音效产生位置x;
+   * @param {?number} [y] 音效产生位置y;
+   * @param {?number} [z] 音效产生位置z;
+   * @returns {string} 声音ID
    */
-  play(name: string, x?: number, y?: number, z?: number): void;
+  play(name: string, x?: number, y?: number, z?: number): string;
 
-
+  
+  /**
+   * 停止播放音效
+   *
+   * @param {string} id
+   */
+  stop(id: string): void;
 }

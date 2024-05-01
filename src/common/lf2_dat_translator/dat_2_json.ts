@@ -1,4 +1,5 @@
-import { IBaseData, IDatIndex, IGameObjInfo } from '../lf2_type';
+import { IBaseData, IGameObjInfo } from '../lf2_type';
+import { IDatIndex } from "../lf2_type/IDatIndex";
 import { IBallFrameInfo } from "../lf2_type/IBallFrameInfo";
 import { IBallInfo } from "../lf2_type/IBallInfo";
 import { ICharacterInfo } from "../lf2_type/ICharacterInfo";
@@ -109,6 +110,9 @@ export default function dat_to_json(full_str: string, datIndex?: IDatIndex): any
       }
       case 0: {
         const info = base as ICharacterInfo;
+        const num_id = Number(datIndex.id);
+        if ((num_id >= 30 && num_id <= 39) || (num_id >= 50 && num_id <= 59))
+          info.hidden = true;
         if (datIndex.id === '52') {
           info.ce = 3;
           info.armor = {
