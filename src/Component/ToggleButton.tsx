@@ -10,7 +10,7 @@ export interface IToggleButtonProps extends Omit<React.ButtonHTMLAttributes<HTML
   onToggle?(v: boolean): void;
   shortcut?: TShortcut;
   shortcutTarget?: Window | Document | Element;
-  show_shortcut?: boolean
+  show_shortcut?: boolean; 
 };
 export const ToggleButton = React.forwardRef<HTMLButtonElement, IToggleButtonProps>(
   (props: IToggleButtonProps, ref: React.ForwardedRef<HTMLButtonElement>) => {
