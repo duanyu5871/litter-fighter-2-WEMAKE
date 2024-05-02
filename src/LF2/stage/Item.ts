@@ -105,7 +105,6 @@ export default class Item {
     if (this.info.times) this.info.times--;
     const e = creator(this.world, data);
     e.position.x = random_in_range(x - range_x, x + range_x);
-
     e.position.z = is_num(z) ?
       random_in_range(z - range_z, z + range_z) :
       random_in_range(this.stage.near, this.stage.far);
@@ -113,10 +112,7 @@ export default class Item {
     if (Entity.is(e)) {
       if (is_num(hp)) e.hp = hp;
     }
-
     if (is_num(y)) e.position.y = y;
-    if (is_str(act)) e.enter_frame(act);
-    else e.enter_frame(Defines.FrameId.Auto);
 
     if (e instanceof Character) {
       e.team = this.stage.enemy_team;
@@ -129,7 +125,11 @@ export default class Item {
     if (Entity.is(e)) {
       e.callbacks.add(this.character_callback);
     }
+
     e.attach();
+
+    if (is_str(act)) e.enter_frame(act);
+    else e.enter_frame(Defines.FrameId.Auto);
   }
 
   dispose(): void {

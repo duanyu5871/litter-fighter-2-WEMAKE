@@ -89,6 +89,7 @@ export class FrameAnimater<
     );
     mesh.userData.owner = this;
     mesh.name = 'FrameAnimater';
+    this.mesh.visible = false;
   }
 
   on_spawn_by_emitter(...args: any[]): this {
@@ -100,11 +101,13 @@ export class FrameAnimater<
     const { centerx, centery } = this._frame
     const offset_x = this._facing === 1 ? centerx : this.mesh.scale.x - centerx
     this.mesh.position.set(x - offset_x, y - z / 2 + centery, z);
+    this.mesh.updateMatrix()
   }
 
   attach(): this {
     this.update_sprite();
     this.world.add_game_objs(this);
+    this.mesh.visible = true;
     return this;
   }
   private _previous = {
