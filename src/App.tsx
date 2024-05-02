@@ -5,19 +5,17 @@ import { BackgroundRow } from './BackgroundRow';
 import { Button } from './Component/Button';
 import { Input } from './Component/Input';
 import Select from './Component/Select';
-import { TextArea } from './Component/TextArea';
 import { ToggleButton } from "./Component/ToggleButton";
+import EditorView from './EditorView';
 import FullScreen from './FullScreen';
 import LF2, { ILf2Callback } from './LF2/LF2';
 import { ILayoutInfo } from './Layout/ILayoutInfo';
 import { Log } from './Log';
 import { PlayerRow } from './PlayerRow';
-import open_file, { read_file } from './Utils/open_file';
+import open_file from './Utils/open_file';
 import { arithmetic_progression } from './common/arithmetic_progression';
-import lf2_dat_str_to_json from './common/lf2_dat_translator/dat_2_json';
 import './game_ui.css';
 import './init';
-import read_lf2_dat from './read_lf2_dat';
 import { useLocalBoolean, useLocalNumber, useLocalString } from './useLocalStorage';
 const fullsreen = new FullScreen();
 
@@ -30,7 +28,7 @@ function App() {
   const _text_area_json_ref = useRef<HTMLTextAreaElement>(null);
   const lf2_ref = useRef<LF2 | undefined>();
 
-  const [editor_closed, set_editor_closed] = useState(true);
+  const [editor_open, set_editor_open] = useState(false);
   const [game_overlay, set_game_overlay] = useLocalBoolean('game_overlay', true);
   const [debug_panel, set_debug_panel] = useLocalBoolean('debug_panel', true);
   const [control_panel_visible, set_control_panel_visible] = useLocalBoolean('control_panel', true);
@@ -129,28 +127,6 @@ function App() {
       .then(() => lf2.load())
       .catch(e => Log.print('on_click_load_builtin', e))
   }
-  const open_dat = async () => {
-    const [file] = await open_file({ accept: '.dat' });
-    const buf = await read_file(file, { as: 'ArrayBuffer' });
-    return read_lf2_dat(buf)
-  }
-  const on_click_read_dat = () => {
-    open_dat().then((str) => {
-      if (_text_area_dat_ref.current)
-        _text_area_dat_ref.current.value = str
-      Log.print('App', "dat length", str.length);
-      return str;
-    }).then((str) => {
-      return lf2_dat_str_to_json(str);
-    }).then((data) => {
-      Log.print('App', "json length", JSON.stringify(data).replace(/\\\\/g, '/').length);
-      if (_text_area_json_ref.current)
-        _text_area_json_ref.current.value = JSON.stringify(data, null, 2).replace(/\\\\/g, '/')
-    }).catch(e => {
-      console.error(e)
-    })
-  }
-
 
   const [render_size_mode, set_render_size_mode] = useLocalString<'fixed' | 'fill' | 'cover' | 'contain'>('render_size_mode', 'fixed');
   const [render_fixed_scale, set_render_fixed_scale] = useLocalNumber<number>('render_fixed_scale', 1);
@@ -236,7 +212,7 @@ function App() {
           <Button onClick={on_click_download_zip}>下载数据包</Button>
           <Button onClick={on_click_load_local_zip} disabled={loading}>加载数据包</Button>
           <Button onClick={on_click_load_builtin} disabled={loading}>加载内置数据</Button>
-          <Button onClick={() => set_editor_closed(false)}>dat viewer</Button>
+          <Button onClick={() => set_editor_open(true)}>查看dat文件</Button>
           <ToggleButton
             onToggle={set_control_panel_visible}
             checked={control_panel_visible}
@@ -363,16 +339,7 @@ function App() {
         )}
         <BackgroundRow lf2={lf2_ref.current} visible={debug_panel} />
       </div>
-      <div className='editor_view' style={{ display: editor_closed ? 'none' : void 0 }}>
-        <div className='top'>
-          <Button onClick={() => set_editor_closed(true)} disabled={loading}>close</Button>
-          <Button onClick={on_click_read_dat} disabled={loading}>read_dat</Button>
-        </div>
-        <div className='main'>
-          <TextArea ref={_text_area_dat_ref} wrap="off" />
-          <TextArea ref={_text_area_json_ref} wrap="off" />
-        </div>
-      </div>
+      <EditorView open={editor_open} onClose={() => set_editor_open(false)} />
     </div >
   );
 }

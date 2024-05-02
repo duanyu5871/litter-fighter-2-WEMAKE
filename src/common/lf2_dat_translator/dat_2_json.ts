@@ -16,6 +16,7 @@ import { make_entity_data } from './make_entity_data';
 import { make_frames } from './make_frames';
 import { make_weapon_data } from './make_weapon_data';
 export default function dat_to_json(full_str: string, datIndex?: IDatIndex): any | void {
+  full_str = full_str.replace(/\\\\/g, '/');
   if (full_str.startsWith('<stage>')) return make_stage_infos(full_str);
   if (full_str.startsWith('name:')) return make_bg_data(full_str, datIndex);
   const infos_str = match_block_once(full_str, '<bmp_begin>', '<bmp_end>');
