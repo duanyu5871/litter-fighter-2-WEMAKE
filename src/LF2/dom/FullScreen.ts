@@ -1,6 +1,6 @@
-import Callbacks, { NoEmitCallbacks } from './LF2/base/Callbacks';
-import { is_false } from './common/is_bool';
-import { is_fun } from './common/is_fun';
+import { is_false } from '../../common/is_bool';
+import { is_fun } from '../../common/is_fun';
+import Callbacks, { NoEmitCallbacks } from '../base/Callbacks';
 export interface IFullScreenCallback {
   onChange?(element: Element | null): void
 }

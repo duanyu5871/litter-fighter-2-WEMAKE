@@ -7,7 +7,7 @@ import { Input } from './Component/Input';
 import Select from './Component/Select';
 import { ToggleButton } from "./Component/ToggleButton";
 import EditorView from './EditorView';
-import FullScreen from './FullScreen';
+import FullScreen from './LF2/dom/FullScreen';
 import LF2, { ILf2Callback } from './LF2/LF2';
 import { ILayoutInfo } from './Layout/ILayoutInfo';
 import { Log } from './Log';
@@ -17,7 +17,7 @@ import { arithmetic_progression } from './common/arithmetic_progression';
 import './game_ui.css';
 import './init';
 import { useLocalBoolean, useLocalNumber, useLocalString } from './useLocalStorage';
-const fullsreen = new FullScreen();
+const fullscreen = new FullScreen();
 
 function App() {
   const _overlay_ref = useRef<HTMLDivElement>(null)
@@ -62,10 +62,10 @@ function App() {
     lf2.world.playrate = fast_forward ? 100 : 1;
   }, [fast_forward])
   const toggle_fullscreen = () => {
-    if (fullsreen.is_fullscreen)
-      fullsreen.exit();
+    if (fullscreen.is_fullscreen)
+      fullscreen.exit();
     else
-      fullsreen.enter(document.body.parentElement!);
+      fullscreen.enter(document.body.parentElement!);
   }
   const [layout, set_layout] = useState<string | undefined>(void 0);
   useEffect(() => {
