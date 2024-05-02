@@ -226,8 +226,8 @@ function App() {
             onToggle={set_control_panel_visible}
             checked={control_panel_visible}
             shortcut='F10'>
-            <>显示控制面板(F10)</>
-            <>隐藏控制面板(F10)</>
+            <>显示控制面板</>
+            <>隐藏控制面板</>
           </ToggleButton>
         </div>
       </div>
@@ -241,8 +241,8 @@ function App() {
             onToggle={set_control_panel_visible}
             checked={control_panel_visible}
             shortcut='F10'>
-            <>显示控制面板(F10)</>
-            <>隐藏控制面板(F10)</>
+            <>显示控制面板</>
+            <>隐藏控制面板</>
           </ToggleButton>
           <Select
             items={['top', 'bottom', 'left', 'right'] as const}
@@ -314,47 +314,47 @@ function App() {
             onToggle={set_paused}
             checked={paused}
             shortcut='F1'>
-            <>游戏暂停(F1)</>
-            <>游戏恢复(F1)</>
+            <>游戏暂停</>
+            <>游戏恢复</>
           </ToggleButton>
           <Button
             onClick={update_once}
             shortcut='F2'>
-            更新一帧(F2)
+            更新一帧
           </Button>
           <ToggleButton
             onToggle={set_fast_forward}
             checked={fast_forward}
             shortcut='shift+F5'>
-            <>不限速度(shift+F5)</>
-            <>正常速度(shift+F5)</>
+            <>不限速度</>
+            <>正常速度</>
           </ToggleButton>
           <ToggleButton
             onToggle={set_show_indicators}
             checked={show_indicators}
             shortcut='F6'>
-            <>隐藏指示器(F6)</>
-            <>显示指示器(F6)</>
+            <>隐藏指示器</>
+            <>显示指示器</>
           </ToggleButton>
           <ToggleButton
             onToggle={set_game_overlay}
             checked={game_overlay}
             shortcut='F7'>
-            <>显示游戏覆盖(F7)</>
-            <>隐藏游戏覆盖(F7)</>
+            <>显示游戏覆盖</>
+            <>隐藏游戏覆盖</>
           </ToggleButton>
           <ToggleButton
             onToggle={set_debug_panel}
             checked={debug_panel}
             disabled={!loaded}
             shortcut='F8'>
-            <>显示调试面板(F8)</>
-            <>隐藏调试面板(F8)</>
+            <>显示调试面板</>
+            <>隐藏调试面板</>
           </ToggleButton>
           <Button
             onClick={toggle_fullscreen}
             shortcut='F9'>
-            全屏(F9)
+            全屏
           </Button>
         </div>
 

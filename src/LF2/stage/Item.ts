@@ -135,10 +135,9 @@ export default class Item {
   dispose(): void {
     this.stage.items.delete(this);
     for (const e of this.entities) {
-      if (Entity.is(e)) {
+      if (Entity.is(e))
         e.callbacks.del(this.character_callback);
-      }
-      e.dispose();
+      this.world.del_game_objs(e)
     }
   }
 }

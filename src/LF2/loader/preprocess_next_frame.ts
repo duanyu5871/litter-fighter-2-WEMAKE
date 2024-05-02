@@ -19,18 +19,18 @@ function get_val(word: string): (e: FrameAnimater) => any {
   switch (word) {
     case Defines.ValWord.TrendX:
       return e => {
-        if (e instanceof Entity) {
+        if (Entity.is(e)) {
           if (e.velocity.x < 0) return -e.facing;
           if (e.velocity.x > 0) return e.facing;
         }
         return 0
       }
     case Defines.ValWord.PressFB:
-      return e => e instanceof Character ? e.controller.LR * e.facing : 0;
+      return e => Character.is(e) ? e.controller.LR * e.facing : 0;
     case Defines.ValWord.PressUD:
-      return e => e instanceof Character ? e.controller.UD : 0;
+      return e => Character.is(e) ? e.controller.UD : 0;
     case Defines.ValWord.WeaponType:
-      return e => e instanceof Entity ? e.weapon?.data.base.type || 0 : 0;
+      return e => Entity.is(e) ? e.weapon?.data.base.type || 0 : 0;
   }
   return () => word
 }

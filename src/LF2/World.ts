@@ -121,7 +121,7 @@ export class World {
         this.players.set(e.controller.which, e);
       }
 
-      if (e instanceof Entity) {
+      if (Entity.is(e)) {
         this.scene.add(e.mesh);
         e.show_indicators = this._show_indicators;
         this.entities.add(e);
@@ -139,7 +139,7 @@ export class World {
         this.players.delete(e.controller.which);
       }
 
-      if (e instanceof Entity) {
+      if (Entity.is(e)) {
         this.entities.delete(e)
         e.dispose();
       } else {
@@ -527,10 +527,9 @@ export class World {
   set show_indicators(v: boolean) {
     if (this._show_indicators === v) return;
     this._show_indicators = v;
-    this.entities.forEach(e => {
-      if (e instanceof Entity)
-        e.show_indicators = v;
-    })
+    for (const e of this.entities) {
+      e.show_indicators = v;
+    }
   }
   dispose() {
     this.callbacks.emit('on_disposed')();

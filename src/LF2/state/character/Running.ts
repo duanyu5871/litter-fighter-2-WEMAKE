@@ -11,5 +11,8 @@ export default class Running extends BaseCharacterState {
     const speed_x = e.facing * (dvx - Math.abs(speed_z));
     e.velocity.x = speed_x;
     e.velocity.z = speed_z;
+    if (e.hp <= 0) {
+      e.enter_frame(e.get_sudden_death_frame());
+    }
   }
 }
