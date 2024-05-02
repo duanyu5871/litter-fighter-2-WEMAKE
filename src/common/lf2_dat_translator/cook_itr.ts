@@ -5,7 +5,6 @@ import { Defines } from '../lf2_type/defines';
 import { not_zero } from '../not_zero';
 import { get_next_frame_by_raw_id } from './get_the_next';
 import { take } from './take';
-
 export default function cook_itr(unsafe_itr?: Partial<IItrInfo>) {
   if (!unsafe_itr) return;
 

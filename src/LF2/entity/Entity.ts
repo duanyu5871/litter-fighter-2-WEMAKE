@@ -10,11 +10,13 @@ import type { World } from '../World';
 import { ICube } from '../World';
 import Callbacks from '../base/Callbacks';
 import BaseState from "../state/base/BaseState";
+import { ENTITY_STATES } from '../state/entity';
 import { EntityIndicators } from './EntityIndicators';
+import { InfoSprite } from './InfoSprite';
 import Shadow from './Shadow';
 import type { Weapon } from './Weapon';
 import { turn_face } from './face_helper';
-import { InfoSprite } from './InfoSprite';
+import { States } from '../state/base/States';
 export type TData = IBaseData | ICharacterData | IWeaponData | IEntityData | IBallData
 export const V_SHAKE = 6;
 export const A_SHAKE = 6;
@@ -49,7 +51,7 @@ export class Entity<
 
   static is = (v: any): v is Entity => v?.is_entity === true;
   readonly is_entity = true
-  readonly states: Map<number | string, BaseState>;
+  readonly states: States;
   readonly callbacks = new Callbacks<IEntityCallbacks>()
   readonly shadow: Shadow;
   readonly velocity = new THREE.Vector3(0, 0, 0);
@@ -185,7 +187,7 @@ export class Entity<
    */
   get invisible() { return this._invisible_duration > 0 }
 
-  constructor(world: World, data: D, states: Map<number, BaseState> = new Map()) {
+  constructor(world: World, data: D, states: States = ENTITY_STATES) {
     super(world, data)
     this.mesh.name = "Entity:" + data.id
     this.states = states;
@@ -201,7 +203,9 @@ export class Entity<
     for (const [k, v] of this._v_rests) if (fn(k, v)) return v;
     return void 0;
   }
-
+  override find_auto_frame() {
+    return this.data.frames['0'] ?? super.get_frame();
+  }
   override on_spawn_by_emitter(emitter: Entity, o: IOpointInfo, speed_z: number = 0) {
     this._emitter = emitter;
     const shotter_frame = emitter.get_frame();
@@ -534,6 +538,7 @@ export class Entity<
       Log.print('on_collision', '2, this.a_rest =', this._a_rest)
     }
   }
+
   on_be_collided(attacker: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
     this._shaking = itr.shaking ?? V_SHAKE;
     if (!itr.arest && itr.vrest) this._v_rests.set(attacker.id, {
@@ -542,7 +547,11 @@ export class Entity<
       a_frame: attacker.get_frame(),
       b_frame: this.get_frame()
     });
+    if (bdy.kind >= Defines.BdyKind.GotoMin && bdy.kind <= Defines.BdyKind.GotoMax) {
+      this._next_frame = { id: '' + (bdy.kind - 1000) }
+    }
   }
+
   dispose(): void {
     super.dispose();
     this.indicators.dispose();

@@ -1,8 +1,8 @@
-import { IFrameInfo } from "../../../common/lf2_type";
 import { Defines } from "../../../common/lf2_type/defines";
 import { Character } from '../../entity/Character';
-import { Entity } from "../../entity/Entity";
 import BaseState from "../base/BaseState";
+import { States } from "../base/States";
+import { ENTITY_STATES } from "../entity";
 import BaseCharacterState from "./Base";
 import Burning from "./Burning";
 import Dash from "./Dash";
@@ -12,9 +12,14 @@ import Jump from "./Jump";
 import Lying from "./Lying";
 import Running from "./Running";
 import Standing from "./Standing";
+import Teleport_ToFarthestAlly from "./Teleport_ToFarthestAlly";
+import Teleport_ToNearestEnemy from "./Teleport_ToNearestEnemy";
 import Walking from "./Walking";
 
-export const CHARACTER_STATES = new Map<number, BaseState<Character>>()
+export const CHARACTER_STATES = new States<Character>()
+
+for (const [k, v] of ENTITY_STATES.map) CHARACTER_STATES.set(k, v)
+
 CHARACTER_STATES.set(Defines.State.Any, new BaseCharacterState())
 CHARACTER_STATES.set(Defines.State.Standing, new Standing());
 CHARACTER_STATES.set(Defines.State.Walking, new Walking());
@@ -46,53 +51,6 @@ CHARACTER_STATES.set(Defines.State.NextAsLanding, new class extends BaseCharacte
   }
 }())
 
-CHARACTER_STATES.set(Defines.State.Teleport_ToNearestEnemy, new class extends BaseCharacterState {
-  enter(m: Character): void {
-    let _dis: number = -1;
-    let _tar: Character | undefined;
-    for (const o of m.world.entities) {
-      if (!Character.is(o) || o === m || o.same_team(m)) continue;
-      const dis =
-        Math.abs(o.position.x - m.position.x) +
-        Math.abs(o.position.z - o.position.z);
-      if (_dis < 0 || dis < _dis) {
-        _dis = dis;
-        _tar = o;
-      }
-    }
+CHARACTER_STATES.set(Defines.State.Teleport_ToNearestEnemy, new Teleport_ToNearestEnemy())
 
-    if (!_tar) {
-      m.position.y = 0;
-      return;
-    }
-    m.position.x = _tar.position.x - m.facing * 120;
-    m.position.z = _tar.position.z;
-    m.position.y = 0;
-  }
-}())
-
-CHARACTER_STATES.set(Defines.State.Teleport_ToFarthestAlly, new class extends BaseCharacterState {
-  enter(m: Character): void {
-    let _dis: number = -1;
-    let _tar: Character | undefined;
-    for (const o of m.world.entities) {
-      if (!Character.is(o) || o === m || !o.same_team(m)) continue;
-
-      const dis =
-        Math.abs(o.position.x - m.position.x) +
-        Math.abs(o.position.z - o.position.z);
-      if (dis > _dis) {
-        _dis = dis;
-        _tar = o;
-      }
-    }
-
-    if (!_tar) {
-      m.position.y = 0;
-      return;
-    }
-    m.position.x = _tar.position.x - m.facing * 60;
-    m.position.z = _tar.position.z;
-    m.position.y = 0;
-  }
-}())
+CHARACTER_STATES.set(Defines.State.Teleport_ToFarthestAlly, new Teleport_ToFarthestAlly())

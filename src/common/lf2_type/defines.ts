@@ -111,6 +111,9 @@ export namespace Defines {
     Ball_Sturdy = 3005,
     Ball_PunchThrough = 3006,
 
+    TurnIntoMin = 8001,// 
+    TurnIntoMax = 8999,// 
+    TurnIntoLouisEX = 9995,
     Gone = 9998,
   }
   export enum EntityEnum {
@@ -146,6 +149,11 @@ export namespace Defines {
     Fly = 15,         // 飛起 ??
     Ice = 16,         // 結冰
     // 1???=被你打到會跳到第???个frame(如人質的kind)
+  }
+
+  export enum BdyKind {
+    GotoMin = 1000,
+    GotoMax = 1999,
   }
 
   export enum ItrEffect {

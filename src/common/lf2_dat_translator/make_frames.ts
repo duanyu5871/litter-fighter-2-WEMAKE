@@ -6,6 +6,7 @@ import { match_all } from '../match_all';
 import { match_colon_value } from '../match_colon_value';
 import { not_zero } from '../not_zero';
 import { to_num } from '../to_num';
+import cook_bdy from './cook_bdy';
 import { cook_cpoint } from './cook_cpoint';
 import cook_itr from './cook_itr';
 import cook_opoint from './cook_opoint';
@@ -27,6 +28,7 @@ export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string): Re
   for (const [, frame_id, frame_name, content] of match_all(text, frame_regexp)) {
     let _content = content;
     const bdy_list = take_sections<IBdyInfo>(_content, 'bdy:', 'bdy_end:', r => _content = r);
+    for (const bdy of bdy_list) cook_bdy(bdy)
 
     const itr_list = take_sections<IItrInfo>(_content, 'itr:', 'itr_end:', r => _content = r);
     for (const itr of itr_list) cook_itr(itr)

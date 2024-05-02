@@ -2,6 +2,7 @@ import { IFrameInfo } from "../../../common/lf2_type";
 import { FrameAnimater } from "../../FrameAnimater";
 
 export default class BaseState<E extends FrameAnimater = FrameAnimater, F extends IFrameInfo = IFrameInfo> {
+  state: number = -1;
   update(e: E): void { };
   enter(e: E, prev_frame: F): void { };
   leave(e: E, next_frame: F): void { };

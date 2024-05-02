@@ -3,7 +3,7 @@ import { Defines } from '../../common/lf2_type/defines';
 import { factory } from '../Factory';
 import { EMPTY_FRAME_INFO } from '../FrameAnimater';
 import type { ICube, World } from '../World';
-import { BALL_STATES } from '../state/BallState';
+import { BALL_STATES } from '../state/ball';
 import { Entity } from './Entity';
 
 export class Ball extends Entity<IBallFrameInfo, IBallInfo, IBallData> {

@@ -222,9 +222,8 @@ export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, IChar
     }
   }
   override on_be_collided(attacker: Entity, itr: IItrInfo, bdy: IBdyInfo, r0: ICube, r1: ICube): void {
-    if (itr.kind === Defines.ItrKind.SuperPunchMe)
-      Log.print(constructor_name(this), 'on_be_collided() Defines.ItrKind.SuperPunchMe', itr)
     super.on_be_collided(attacker, itr, bdy, r0, r1);
+
     if (itr.kind === Defines.ItrKind.SuperPunchMe) return;
     switch (itr.kind) {
       case Defines.ItrKind.Catch:
@@ -268,7 +267,7 @@ export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, IChar
     this._defend_value = 0;
     this._fall_value -= itr.fall || 20;
     /* 击倒 */
-    if (this._fall_value <= 0) {
+    if (this._fall_value <= 0 || this._hp <= 0) {
       this._fall_value = 0;
       this.velocity.y = itr.dvy || 3;
       this.velocity.x = (itr.dvx || 0) * aface;
