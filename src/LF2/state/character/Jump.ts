@@ -1,4 +1,3 @@
-import { World } from "../../World";
 import type { Character } from '../../entity/Character';
 import BaseCharacterState from "./Base";
 
@@ -19,7 +18,7 @@ export default class Jump extends BaseCharacterState {
 
     const { LR: LR1, UD: UD1 } = character.controller;
     const { jump_height: h, jump_distance: dx, jump_distancez: dz } = character.data.base;
-    const g_acc = World.DEFAULT_GRAVITY
+    const g_acc = character.world.gravity
     const vz = UD1 * dz;
     character.velocity.set(
       LR1 * (dx - Math.abs(vz / 4)),
