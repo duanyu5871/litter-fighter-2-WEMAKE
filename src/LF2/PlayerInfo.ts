@@ -1,6 +1,6 @@
 import { Warn } from '@fimagine/logger';
 import { is_str } from '../common/is_str';
-import Callbacks from './base/Callbacks';
+import Callbacks, { NoEmitCallbacks } from './base/Callbacks';
 import { TKeyName, TKeys } from './controller/BaseController';
 
 const default_keys_list: TKeys[] = [
@@ -27,13 +27,16 @@ export interface PurePlayerInfo {
   version: number;
 }
 export class PlayerInfo {
-  readonly callbacks = new Callbacks<IPlayerInfoCallback>();
+  private _callbacks = new Callbacks<IPlayerInfoCallback>();
   private info: PurePlayerInfo;
   get id() { return this.info.id; }
   get name() { return this.info.name; }
   get keys() { return this.info.keys; }
   get team() { return this.info.team; }
   get character() { return this.info.character }
+  get callbacks(): NoEmitCallbacks<IPlayerInfoCallback> {
+    return this._callbacks
+  }
 
   constructor(id: string, name: string, keys: TKeys = get_default_keys(Number(id))) {
     this.info = { id, name, keys, team: '', version: 0, character: '' };
@@ -68,19 +71,19 @@ export class PlayerInfo {
   set_name(name: string): this {
     if (this.info.name === name) return this;
     const prev = this.info.name;
-    this.callbacks.emit('on_name_changed')(this.info.name = name, prev);
+    this._callbacks.emit('on_name_changed')(this.info.name = name, prev);
     return this;
   }
   set_character(character: string): this {
     if (this.info.character === character) return this;
     const prev = this.info.character;
-    this.callbacks.emit('on_character_changed')(this.info.character = character, prev);
+    this._callbacks.emit('on_character_changed')(this.info.character = character, prev);
     return this;
   }
   set_team(team: string): this {
     if (this.info.team === team) return this;
     const prev = this.info.team;
-    this.callbacks.emit('on_team_changed')(this.info.team = team, prev);
+    this._callbacks.emit('on_team_changed')(this.info.team = team, prev);
     return this;
   }
 
@@ -90,7 +93,7 @@ export class PlayerInfo {
     if (this.info.keys[name] === key) return this;
     const prev = this.info.keys[name];
     this.info.keys[name] = key.toLowerCase();
-    this.callbacks.emit('on_key_changed')(name, key.toLowerCase(), prev);
+    this._callbacks.emit('on_key_changed')(name, key.toLowerCase(), prev);
     return this;
   }
 

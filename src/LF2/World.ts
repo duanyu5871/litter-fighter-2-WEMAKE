@@ -7,7 +7,7 @@ import { Difficulty } from './Difficulty';
 import { FrameAnimater } from './FrameAnimater';
 import { GameOverlay } from './GameOverlay';
 import LF2 from './LF2';
-import Callbacks from './base/Callbacks';
+import Callbacks, { NoEmitCallbacks } from './base/Callbacks';
 import { FPS } from './base/FPS';
 import { LocalHuman } from './controller/LocalHuman';
 import { Ball } from './entity/Ball';
@@ -26,7 +26,6 @@ export interface ICube {
   near: number;
   far: number;
 }
-new Callbacks<IWorldCallbacks>().emit('on_cam_move')(0)
 
 export class World {
   static readonly DEFAULT_DOUBLE_CLICK_INTERVAL = 30;
@@ -36,8 +35,12 @@ export class World {
   static readonly DEFAULT_FRICTION = 0.2;
 
   readonly lf2: LF2
-  readonly callbacks = new Callbacks<IWorldCallbacks>();
+  readonly _callbacks = new Callbacks<IWorldCallbacks>();
 
+  get callbacks(): NoEmitCallbacks<IWorldCallbacks> {
+    return this._callbacks
+  }
+  
   /**
    * 按键“双击”判定间隔，单位（帧数）
    * 
@@ -79,7 +82,7 @@ export class World {
     if (v === this._stage) return;
     const old = this._stage;
     this._stage = v;
-    this.callbacks.emit('on_stage_change')(v, old);
+    this._callbacks.emit('on_stage_change')(v, old);
     old.dispose();
   }
 
@@ -337,7 +340,7 @@ export class World {
 
     const new_cam_x = Math.floor(this.camera.position.x)
     if (old_cam_x !== new_cam_x) {
-      this.callbacks.emit('on_cam_move')(new_cam_x);
+      this._callbacks.emit('on_cam_move')(new_cam_x);
     }
   }
 
@@ -519,7 +522,7 @@ export class World {
       this.stop_update();
     else if (!this._update_timer_id)
       this.start_update();
-    this.callbacks.emit('on_pause_change')(v);
+    this._callbacks.emit('on_pause_change')(v);
   }
 
   private _show_indicators = false;
@@ -532,7 +535,7 @@ export class World {
     }
   }
   dispose() {
-    this.callbacks.emit('on_disposed')();
+    this._callbacks.emit('on_disposed')();
     this.bg.dispose();
     this.stop_update();
     this.stop_render();

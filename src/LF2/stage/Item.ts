@@ -26,8 +26,7 @@ export default class Item {
   private old_list_idx = 0;
 
   readonly character_callback: ICharacterCallbacks = {
-    on_dead: (e: Character): void => {
-      // 角色死亡
+    on_dead: (e: Character): void => { // 角色死亡
       e.blink_and_gone(120);
     },
     on_disposed: (e: Character): void => {

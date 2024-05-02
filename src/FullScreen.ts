@@ -1,26 +1,32 @@
-import Callbacks from './LF2/base/Callbacks';
+import Callbacks, { NoEmitCallbacks } from './LF2/base/Callbacks';
 import { is_false } from './common/is_bool';
 import { is_fun } from './common/is_fun';
 export interface IFullScreenCallback {
   onChange?(element: Element | null): void
 }
 export default class FullScreen {
-  readonly callbacks = new Callbacks<IFullScreenCallback>();
+  protected _callbacks = new Callbacks<IFullScreenCallback>();
   protected _prev_element: Element | null;
+
+  get callbacks(): NoEmitCallbacks<IFullScreenCallback> {
+    return this._callbacks;
+  }
 
   constructor() {
     document.addEventListener('fullscreenchange', this.on_fullscreenchange)
     this._prev_element = this.element
   }
+
   depose(): void {
     document.removeEventListener('fullscreenchange', this.on_fullscreenchange);
   }
+  
   private on_fullscreenchange = () => {
     const curr_element = this.element
     if (this._prev_element === curr_element) return;
 
     this._prev_element = curr_element;
-    this.callbacks.emit('onChange')(curr_element);
+    this._callbacks.emit('onChange')(curr_element);
   }
 
   get element(): Element | null {

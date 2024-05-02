@@ -19,7 +19,7 @@ export interface ILayoutCallback {
 }
 
 export default class Layout {
-  readonly callbacks = new Callbacks<ILayoutCallback>();
+  protected _callbacks = new Callbacks<ILayoutCallback>();
   protected _opacity_animation = new NumberAnimation();
   protected _root: Layout;
   protected _left_to_right: Layout[] = [];

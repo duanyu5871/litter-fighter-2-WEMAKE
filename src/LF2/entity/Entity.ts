@@ -8,7 +8,7 @@ import { factory } from '../Factory';
 import { FrameAnimater, GONE_FRAME_INFO } from '../FrameAnimater';
 import type { World } from '../World';
 import { ICube } from '../World';
-import Callbacks from '../base/Callbacks';
+import Callbacks, { NoEmitCallbacks } from '../base/Callbacks';
 import BaseState from "../state/base/BaseState";
 import { ENTITY_STATES } from '../state/entity';
 import { EntityIndicators } from './EntityIndicators';
@@ -52,10 +52,10 @@ export class Entity<
   static is = (v: any): v is Entity => v?.is_entity === true;
   readonly is_entity = true
   readonly states: States;
-  readonly callbacks = new Callbacks<IEntityCallbacks>()
   readonly shadow: Shadow;
   readonly velocity = new THREE.Vector3(0, 0, 0);
 
+  protected _callbacks = new Callbacks<IEntityCallbacks>()
   protected _name: string = '';
   protected _team: string = '';
   protected _mp: number = Defines.MP;
@@ -109,32 +109,32 @@ export class Entity<
   get name(): string { return this._name; }
   set name(v: string) {
     const o = this._name;
-    this.callbacks.emit('on_name_changed')(this, this._name = v, o)
+    this._callbacks.emit('on_name_changed')(this, this._name = v, o)
   }
 
   get mp(): number { return this._mp; }
   set mp(v: number) {
     const o = this._mp;
-    this.callbacks.emit('on_mp_changed')(this, this._mp = v, o)
+    this._callbacks.emit('on_mp_changed')(this, this._mp = v, o)
   }
 
   get hp(): number { return this._hp; }
   set hp(v: number) {
     const o = this._hp;
-    this.callbacks.emit('on_hp_changed')(this, this._hp = v, o)
+    this._callbacks.emit('on_hp_changed')(this, this._hp = v, o)
     this.update_mp_recovery_speed();
   }
 
   get max_mp(): number { return this._max_mp; }
   set max_mp(v: number) {
     const o = this._max_mp;
-    this.callbacks.emit('on_max_mp_changed')(this, this._max_mp = v, o)
+    this._callbacks.emit('on_max_mp_changed')(this, this._max_mp = v, o)
   }
 
   get max_hp(): number { return this._max_hp; }
   set max_hp(v: number) {
     const o = this._max_hp;
-    this.callbacks.emit('on_max_hp_changed')(this, this._max_hp = v, o)
+    this._callbacks.emit('on_max_hp_changed')(this, this._max_hp = v, o)
     this.update_mp_recovery_speed();
   }
 
@@ -147,7 +147,7 @@ export class Entity<
   get team(): string { return this._team || (this.emitter ? this.emitter.team : '') }
   set team(v) {
     const o = this._team;
-    this.callbacks.emit('on_team_changed')(this, this._team = v, o)
+    this._callbacks.emit('on_team_changed')(this, this._team = v, o)
   }
 
   get emitter() { return this._emitter }
@@ -187,6 +187,11 @@ export class Entity<
    */
   get invisible() { return this._invisible_duration > 0 }
 
+  
+  get callbacks(): NoEmitCallbacks<IEntityCallbacks> {
+    return this._callbacks
+  }
+  
   constructor(world: World, data: D, states: States = ENTITY_STATES) {
     super(world, data)
     this.mesh.name = "Entity:" + data.id
@@ -555,7 +560,7 @@ export class Entity<
   dispose(): void {
     super.dispose();
     this.indicators.dispose();
-    this.callbacks.emit('on_disposed')(this);
+    this._callbacks.emit('on_disposed')(this);
   }
 
 

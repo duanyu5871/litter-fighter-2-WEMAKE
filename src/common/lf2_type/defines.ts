@@ -188,4 +188,9 @@ export namespace Defines {
     keys: string;
     sound: string;
   }
+
+  export const Sounds = {
+    StagePass: "data/m_pass.wav.ogg",
+    BattleEnd: "data/m_end.wav.ogg"
+  } as const
 }

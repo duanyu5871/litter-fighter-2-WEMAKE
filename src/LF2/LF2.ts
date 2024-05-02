@@ -15,7 +15,7 @@ import random_take from '../common/random_take';
 import { Loader } from './Loader';
 import { PlayerInfo } from './PlayerInfo';
 import { World } from './World';
-import Callbacks from './base/Callbacks';
+import Callbacks, { NoEmitCallbacks } from './base/Callbacks';
 import { new_id, new_team } from './base/new_id';
 import { random_in_range } from './base/random_in_range';
 import Layer from './bg/Layer';
@@ -54,14 +54,18 @@ export interface ILf2Callback {
 
   on_stages_loaded?(stages: IStageInfo[]): void;
   on_stages_clear?(): void;
+
   on_bgms_loaded?(names: string[]): void;
   on_bgms_clear?(): void;
 
   on_player_infos_changed?(player_infos: PlayerInfo[]): void;
   on_cheat_changed?(cheat_name: string, enabled: boolean): void;
+
+  on_stage_pass?(): void;
+  on_enter_next_stage?(): void;
 }
 export default class LF2 {
-  readonly callbacks = new Callbacks<ILf2Callback>();
+  private _callbacks = new Callbacks<ILf2Callback>();
   private _disposers = new Set<() => void>();
   private _disposed: boolean = false;
   private _layout: Layout | undefined;
@@ -69,7 +73,7 @@ export default class LF2 {
   static IngoreDisposeError = (e: any) => { if (e !== this.DisposeError) throw e; }
   private _loading: boolean = false;
   private _loaded: boolean = false;
-
+  get callbacks(): NoEmitCallbacks<ILf2Callback> { return this._callbacks }
   get loading() { return this._loading; }
   get loaded() { return this._loaded; }
   get need_load() { return !this._loaded && !this._loading; }
@@ -105,8 +109,8 @@ export default class LF2 {
 
   readonly stages = new Loader<IStageInfo[]>(
     async () => [Defines.THE_VOID_STAGE, ...await this.import('data/stage.json')],
-    (d) => this.callbacks.emit('on_stages_loaded')(d),
-    () => this.callbacks.emit('on_stages_clear')()
+    (d) => this._callbacks.emit('on_stages_loaded')(d),
+    () => this._callbacks.emit('on_stages_clear')()
   )
 
   readonly bgms = new Loader<string[]>(() => {
@@ -131,8 +135,8 @@ export default class LF2 {
       })
     )
   },
-    (d) => this.callbacks.emit('on_bgms_loaded')(d),
-    () => this.callbacks.emit('on_bgms_clear')()
+    (d) => this._callbacks.emit('on_bgms_loaded')(d),
+    () => this._callbacks.emit('on_bgms_clear')()
   );
 
 
@@ -388,7 +392,7 @@ export default class LF2 {
       this._curr_key_list = ''
       const enabled = !this._cheats_enable_map.get(cheat_name)
       this._cheats_enable_map.set(cheat_name, enabled);
-      this.callbacks.emit('on_cheat_changed')(cheat_name, enabled)
+      this._callbacks.emit('on_cheat_changed')(cheat_name, enabled)
     }
     if (!match) this._curr_key_list = '';
 
@@ -551,6 +555,19 @@ export default class LF2 {
     this.world.stage = new Stage(this.world, Defines.THE_VOID_STAGE)
   }
 
+  goto_next_stage() {
+    const next = this.world.stage.data.next;
+    const next_stage = this.stages.data?.find(v => v.id === next);
+
+    if (!next_stage) {
+      this.sound_mgr.play_with_load(Defines.Sounds.StagePass);
+      this._callbacks.emit('on_stage_pass')();
+      return;
+    }
+    this._callbacks.emit('on_enter_next_stage')();
+    this.change_stage(next_stage)
+  }
+
   private _layouts?: Layout[];
   async layouts(): Promise<Layout[] | undefined> {
     if (this._layouts) return this._layouts;
@@ -627,19 +644,19 @@ export default class LF2 {
     this._layout = layout;
     this._layout?.on_mount();
     this.world.start_render();
-    this.callbacks.emit('on_layout_changed')(layout, prev_layout)
+    this._callbacks.emit('on_layout_changed')(layout, prev_layout)
   }
 
   on_loading_content(content: string, progress: number) {
-    this.callbacks.emit('on_loading_content')(content, progress);
+    this._callbacks.emit('on_loading_content')(content, progress);
   }
   on_loading_end() {
     this._loaded = true;
     this._loading = false;
-    this.callbacks.emit('on_loading_end')();
+    this._callbacks.emit('on_loading_end')();
   }
   on_loading_start() {
     this._loading = true;
-    this.callbacks.emit('on_loading_start')();
+    this._callbacks.emit('on_loading_start')();
   }
 }

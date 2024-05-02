@@ -6,7 +6,7 @@ import { IStageObjectInfo } from "../../common/lf2_type/IStageObjectInfo";
 import { IStagePhaseInfo } from "../../common/lf2_type/IStagePhaseInfo";
 import { Defines } from "../../common/lf2_type/defines";
 import type { World } from "../World";
-import Callbacks from "../base/Callbacks";
+import Callbacks, { NoEmitCallbacks } from "../base/Callbacks";
 import { new_team } from "../base/new_id";
 import { random_in_range } from "../base/random_in_range";
 import Background from "../bg/Background";
@@ -22,11 +22,11 @@ export interface IStageCallbacks {
 }
 
 export default class Stage {
-  readonly callbacks = new Callbacks<IStageCallbacks>();
   readonly world: World;
   readonly data: IStageInfo;
   readonly bg: Background;
   readonly enemy_team: string;
+  private _callbacks = new Callbacks<IStageCallbacks>();
   private _disposed: boolean = false;
   private _disposers: (() => void)[] = [];
   private _bgm_enable: boolean;
@@ -41,9 +41,9 @@ export default class Stage {
   get depth(): number { return this.bg.depth }
   get middle() { return this.bg.middle }
   get lf2() { return this.world.lf2 }
-
-
-
+  get callbacks(): NoEmitCallbacks<IStageCallbacks> {
+    return this._callbacks
+  }
 
   /**
    * 玩家角色的地图左边界
@@ -104,15 +104,7 @@ export default class Stage {
     const old: IStagePhaseInfo | undefined = this.data.phases[this._cur_phase_idx]
     const phase: IStagePhaseInfo | undefined = this.data.phases[this._cur_phase_idx = idx]
 
-    if (this.all_done()) {
-      const { next } = this.data;
-      if (next) {
-        const next_stage = this.lf2.stages.data?.find(v => v.id === next);
-        if (next_stage) this.lf2.change_stage(next_stage)
-      }
-      return;
-    }
-    this.callbacks.emit('on_phase_changed')(this, phase, old);
+    this._callbacks.emit('on_phase_changed')(this, phase, old);
     if (!phase) return;
     const { objects } = phase;
     this.try_play_phase_bgm()
@@ -130,7 +122,12 @@ export default class Stage {
     }
   }
   enter_next_phase(): void {
-    this.enter_phase(this._cur_phase_idx + 1);
+    console.log('!')
+    if (!this.is_last_phase()) {
+      this.enter_phase(this._cur_phase_idx + 1);
+      return;
+    }
+    this.lf2.goto_next_stage()
   }
   set_bgm_enable(enabled: boolean) {
     this._bgm_enable = enabled;
@@ -205,8 +202,8 @@ export default class Stage {
   all_enemies_dead(): boolean {
     return !find_in_set(this.items, i => i.is_enemies)
   }
-  all_done(): boolean {
-    return this._cur_phase_idx === this.data.phases.length;
+  is_last_phase(): boolean {
+    return this._cur_phase_idx >= this.data.phases.length - 1;
   }
   handle_empty_stage_object(stage_object: Item) {
     const { times, is_soldier } = stage_object.info;

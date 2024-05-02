@@ -1,11 +1,11 @@
-import { Log, Warn } from '../../Log';
+import { Warn } from '../../Log';
 import { constructor_name } from '../../common/constructor_name';
 import { IBdyInfo, ICharacterData, ICharacterFrameInfo, ICharacterInfo, IFrameInfo, IItrInfo, INextFrame, IOpointInfo, TFace, TNextFrame } from '../../common/lf2_type';
 import { Defines } from '../../common/lf2_type/defines';
 import { factory } from '../Factory';
 import type { World } from '../World';
 import { ICube } from '../World';
-import Callbacks from '../base/Callbacks';
+import Callbacks, { NoEmitCallbacks } from '../base/Callbacks';
 import { BaseController } from '../controller/BaseController';
 import { InvalidController } from '../controller/InvalidController';
 import { CHARACTER_STATES } from '../state/character';
@@ -21,8 +21,11 @@ export interface ICharacterCallbacks<E extends Character = Character> extends IE
 export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, ICharacterData> {
   static is = (v: any): v is Character => v?.is_character === true;
   readonly is_character = true
-  readonly callbacks = new Callbacks<ICharacterCallbacks>()
+  protected _callbacks = new Callbacks<ICharacterCallbacks>()
   protected _controller: BaseController = new InvalidController(this);
+  get callbacks(): NoEmitCallbacks<ICharacterCallbacks> {
+    return this._callbacks
+  }
   get controller() { return this._controller; }
   set controller(v) {
     if (this._controller === v) return;
@@ -328,6 +331,10 @@ export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, IChar
     const ret = super.spawn_object(opoint, speed_z);
     if (ret instanceof Ball) { ret.ud = this.controller.UD; }
     return ret;
+  }
+
+  on_lying_and_dead() {
+    this._callbacks.emit('on_dead')(this);
   }
 }
 

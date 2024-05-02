@@ -24,6 +24,10 @@
         "18px",
         "Arial"
       ]
+    },
+    {
+      "id": "stage_transition",
+      "component": "stage_transitions()"
     }
   ],
   "actions": {
