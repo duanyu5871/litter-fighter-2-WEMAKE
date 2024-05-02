@@ -1,8 +1,8 @@
-import { is_str } from "../../common/is_str";
-import { Defines } from "../../common/lf2_type/defines";
-import type LF2 from "../LF2";
-import RequestersMgr from "../loader/RequestersMgr";
-import { IPlayer, Src } from "./IPlayer";
+import { is_str } from "../../../common/is_str";
+import { Defines } from "../../../common/lf2_type/defines";
+import type LF2 from "../../LF2";
+import RequestersMgr from "../../loader/RequestersMgr";
+import { IPlayer, Src } from "../../sound/IPlayer";
 
 export default class ModernPlayer implements IPlayer {
   readonly ctx = new AudioContext();

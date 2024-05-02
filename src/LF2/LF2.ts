@@ -21,6 +21,8 @@ import { random_in_range } from './base/random_in_range';
 import Layer from './bg/Layer';
 import { KEY_NAME_LIST } from './controller/BaseController';
 import { LocalHuman } from "./controller/LocalHuman";
+import { IKeyboardCallback, KeyEvent, Keyboard } from './dom/Keyboard';
+import Pointings, { IPointingsCallback, PointingEvent } from './dom/Pointings';
 import './entity/Ball';
 import { Character } from './entity/Character';
 import { Entity } from './entity/Entity';
@@ -64,7 +66,7 @@ export interface ILf2Callback {
   on_stage_pass?(): void;
   on_enter_next_stage?(): void;
 }
-export default class LF2 {
+export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   private _callbacks = new Callbacks<ILf2Callback>();
   private _disposers = new Set<() => void>();
   private _disposed: boolean = false;
@@ -183,6 +185,8 @@ export default class LF2 {
   readonly dat_mgr: DatMgr;
   readonly sound_mgr: SoundMgr;
   readonly img_mgr: ImageMgr
+  readonly keyboard: Keyboard;
+  readonly pointings: Pointings;
   constructor(canvas: HTMLCanvasElement, overlay?: HTMLDivElement | null) {
     this.canvas = canvas;
     this.world = new World(this, canvas, overlay);
@@ -190,19 +194,15 @@ export default class LF2 {
     this.sound_mgr = new SoundMgr(this);
     this.img_mgr = new ImageMgr(this);
     this.overlay = overlay;
-    this.canvas.addEventListener('click', this.on_click);
-    this.canvas.addEventListener('mousemove', this.on_mouse_move);
-    this.canvas.addEventListener('pointerdown', this._on_pointer_down);
-    this.canvas.addEventListener('pointerup', this._on_pointer_up);
-    window.addEventListener('keydown', this._on_key_down);
-    window.addEventListener('keyup', this._on_key_up);
 
-    this.disposer = () => window.removeEventListener('keydown', this._on_key_down)
-    this.disposer = () => window.removeEventListener('keyup', this._on_key_up)
-    this.disposer = () => this.canvas.removeEventListener('click', this.on_click)
-    this.disposer = () => this.canvas.removeEventListener('mousemove', this.on_mouse_move)
-    this.disposer = () => this.canvas.removeEventListener('pointerdown', this._on_pointer_down)
-    this.disposer = () => this.canvas.removeEventListener('pointerup', this._on_pointer_up)
+    this.keyboard = new Keyboard();
+    this.keyboard.callback.add(this);
+
+    this.pointings = new Pointings(canvas);
+    this.pointings.callback.add(this)
+
+    this.disposer = () => this.keyboard.dispose()
+    this.disposer = () => this.pointings.dispose()
   }
 
   random_entity_info(e: Entity) {
@@ -278,9 +278,10 @@ export default class LF2 {
     }
   }
   private mouse_on_layouts = new Set<Layout>()
-  on_click = (e: MouseEvent) => {
+
+  on_click(e: PointingEvent) {
     if (!this._layout) return;
-    const coords = this.get_game_sceen_pos(e);
+    const coords = new THREE.Vector2(e.scene_x, e.scene_y);
     const { sprite: object_3d } = this._layout;
     if (!object_3d) return;
     const raycaster = new THREE.Raycaster();
@@ -306,9 +307,9 @@ export default class LF2 {
 
   }
 
-  on_mouse_move = (e: MouseEvent) => {
+  on_pointer_move(e: PointingEvent) {
     if (!this._layout) return;
-    const coords = this.get_game_sceen_pos(e);
+    const coords = new THREE.Vector2(e.scene_x, e.scene_y);
     const { sprite: object_3d } = this._layout;
     if (!object_3d) return;
     const raycaster = new THREE.Raycaster();
@@ -333,18 +334,8 @@ export default class LF2 {
     this.mouse_on_layouts = mouse_on_layouts;
   }
 
-  get_game_sceen_pos(e: PointerEvent | MouseEvent) {
-    const { offsetX: x, offsetY: y } = e;
-    const { width, height } = this.canvas.getBoundingClientRect();
-
-    return new THREE.Vector2(
-      (x / width) * 2 - 1,
-      -(y / height) * 2 + 1
-    )
-
-  }
-  private _on_pointer_down = (e: PointerEvent) => {
-    const coords = this.get_game_sceen_pos(e);
+  on_pointer_down(e: PointingEvent) {
+    const coords = new THREE.Vector2(e.scene_x, e.scene_y)
     const raycaster = new THREE.Raycaster()
     raycaster.setFromCamera(coords, this.world.camera)
     const intersections = raycaster.intersectObjects(this.world.scene.children);
@@ -362,7 +353,9 @@ export default class LF2 {
     }
   }
 
-  private _on_pointer_up = () => { }
+  on_pointer_up(e: PointingEvent) {
+
+  }
 
   private _curr_key_list: string = '';
   private readonly _cheats_map = new Map<string, Defines.ICheatInfo>([
@@ -374,7 +367,7 @@ export default class LF2 {
   is_cheat_enabled(name: string | Defines.Cheats) {
     return !!this._cheats_enable_map.get('' + name)
   }
-  private _on_key_down = (e: KeyboardEvent) => {
+  on_key_down(e: KeyEvent) {
     const key = e.key?.toLowerCase() ?? ''
     this._curr_key_list += key;
 
@@ -406,7 +399,7 @@ export default class LF2 {
     }
   }
 
-  private _on_key_up = (e: KeyboardEvent) => {
+  on_key_up(e: KeyEvent) {
 
   }
 

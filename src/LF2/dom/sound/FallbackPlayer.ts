@@ -1,7 +1,7 @@
-import { Warn } from "../../Log";
-import { is_str } from "../../common/is_str";
-import type LF2 from "../LF2";
-import { IPlayer, Src } from "./IPlayer";
+import { Warn } from "../../../Log";
+import { is_str } from "../../../common/is_str";
+import type LF2 from "../../LF2";
+import { IPlayer, Src } from "../../sound/IPlayer";
 
 export default class FallbackPlayer implements IPlayer {
   protected _r = new Map<string, string>();

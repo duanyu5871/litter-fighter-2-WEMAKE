@@ -1,14 +1,15 @@
+import { IKeyboardCallback, KeyEvent } from '../dom/Keyboard';
 import { Character } from '../entity/Character';
 import { BaseController, TKeyName } from "./BaseController";
 
 type TKeyCodeMap = { [x in TKeyName]?: string };
 type TCodeKeyMap = { [x in string]?: TKeyName };
-export class LocalHuman extends BaseController {
+export class LocalHuman extends BaseController implements IKeyboardCallback {
   readonly which: string;
   private _key_code_map: TKeyCodeMap = {};
   private _code_key_map: TCodeKeyMap = {};
 
-  private _on_key_up = (e: KeyboardEvent) => {
+  on_key_up(e: KeyEvent) {
     const code = e.key?.toLowerCase();
     if (!code) return;
     const key = this._code_key_map[code];
@@ -16,7 +17,7 @@ export class LocalHuman extends BaseController {
     this.end(key);
   };
 
-  private _on_key_down = (e: KeyboardEvent) => {
+  on_key_down(e: KeyEvent) {
     const code = e.key?.toLowerCase();
     if (!code) return;
     const key = this._code_key_map[code];
@@ -31,12 +32,9 @@ export class LocalHuman extends BaseController {
     super(character);
     this.which = which;
     if (kc) this.set_key_code_map(kc);
-    window.addEventListener('keydown', this._on_key_down);
-    window.addEventListener('keyup', this._on_key_up);
-    this.disposer = () => window.removeEventListener('keydown', this._on_key_down)
-    this.disposer = () => window.removeEventListener('keyup', this._on_key_up)
+    this.disposer = character.world.lf2.keyboard.callback.add(this)
   }
-  
+
   set_key_code_map(key_code_map: TKeyCodeMap) {
     this._key_code_map = {};
     this._code_key_map = {};

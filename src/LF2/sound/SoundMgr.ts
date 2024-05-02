@@ -1,9 +1,9 @@
 import { Err } from "@fimagine/logger";
 import type LF2 from "../LF2";
-import FallbackPlayer from "./FallbackPlayer";
+import FallbackPlayer from "../dom/sound/FallbackPlayer";
 import { IPlayer, Src } from "./IPlayer";
 import InvalidPlayer from "./InvalidPlayer";
-import ModernPlayer from "./ModernPlayer";
+import ModernPlayer from "../dom/sound/ModernPlayer";
 
 export default class SoundMgr implements IPlayer {
   readonly lf2: LF2;
