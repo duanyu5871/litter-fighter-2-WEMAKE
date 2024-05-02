@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import LF2 from '../LF2/LF2';
-import { Condition, ValGetter } from '../LF2/loader/Condition';
+import { Condition, ValGetter } from '../LF2/base/Condition';
 import { create_picture, type TImageInfo } from '../LF2/loader/loader';
 import { NumberAnimation } from '../NumberAnimation';
 import { is_arr } from '../common/is_arr';

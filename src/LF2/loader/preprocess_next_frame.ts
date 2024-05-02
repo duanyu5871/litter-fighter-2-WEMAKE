@@ -3,7 +3,7 @@ import { Defines } from '../../common/lf2_type/defines';
 import { FrameAnimater } from '../FrameAnimater';
 import { Character } from '../entity/Character';
 import { Entity } from '../entity/Entity';
-import { Condition } from './Condition';
+import { Condition } from '../base/Condition';
 
 export const preprocess_next_frame = (i: INextFrame | INextFrame[]) => {
   if (Array.isArray(i)) {

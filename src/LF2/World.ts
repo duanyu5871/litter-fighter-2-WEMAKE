@@ -28,19 +28,13 @@ export interface ICube {
 }
 
 export class World {
-  static readonly DEFAULT_DOUBLE_CLICK_INTERVAL = 30;
-  static readonly DEFAULT_KEY_HIT_DURATION = 20
-  static readonly DEFAULT_GRAVITY = 0.4;
-  static readonly DEFAULT_FRICTION_FACTOR = 0.95//0.894427191;
-  static readonly DEFAULT_FRICTION = 0.2;
-
   readonly lf2: LF2
   readonly _callbacks = new Callbacks<IWorldCallbacks>();
 
   get callbacks(): NoEmitCallbacks<IWorldCallbacks> {
     return this._callbacks
   }
-  
+
   /**
    * 按键“双击”判定间隔，单位（帧数）
    * 
@@ -48,7 +42,7 @@ export class World {
    * 且中途未按下其对应冲突按键，视为“双击”。
    * 
    */
-  double_click_interval = World.DEFAULT_DOUBLE_CLICK_INTERVAL;
+  double_click_interval = Defines.DOUBLE_CLICK_INTERVAL;
 
   /** 
    * 按键“按下”/“双击”的判定持续帧，单位：帧数
@@ -59,11 +53,11 @@ export class World {
    * 当某双击后，接下来的数帧（数值key_hit_duration）内，均判定为“双击”。
    * 此时若存在对应的“按键‘双击’跳转动作”，且满足跳转条件，角色将会进入对应的“按键‘双击’跳转动作”。
    */
-  key_hit_duration = World.DEFAULT_KEY_HIT_DURATION
+  key_hit_duration = Defines.KEY_HIT_DURATION
 
-  gravity = World.DEFAULT_GRAVITY;
-  friction_factor = World.DEFAULT_FRICTION_FACTOR;
-  friction = World.DEFAULT_FRICTION;
+  gravity = Defines.GRAVITY;
+  friction_factor = Defines.FRICTION_FACTOR;
+  friction = Defines.FRICTION;
   scene: THREE.Scene = new THREE.Scene();
   camera: THREE.OrthographicCamera = new THREE.OrthographicCamera();
 
@@ -75,7 +69,6 @@ export class World {
 
   readonly players = new Map<string, Character>();
   readonly overlay: GameOverlay;
-  private _player: any;
 
   get stage() { return this._stage }
   set stage(v) {
@@ -141,7 +134,6 @@ export class World {
       if (e instanceof Character && e.controller instanceof LocalHuman) {
         this.players.delete(e.controller.which);
       }
-
       if (Entity.is(e)) {
         this.entities.delete(e)
         e.dispose();
@@ -254,11 +246,11 @@ export class World {
       e.position.z = near;
   }
   restrict(e: Entity) {
-    if (e instanceof Character) {
+    if (Character.is(e)) {
       this.restrict_character(e);
-    } else if (e instanceof Ball) {
+    } else if (Ball.is(e)) {
       this.restrict_ball(e);
-    } else if (e instanceof Weapon) {
+    } else if (Weapon.is(e)) {
       this.restrict_weapon(e);
     } else if (e instanceof THREE.Sprite) {
       this.restrict_name_sprite(e);

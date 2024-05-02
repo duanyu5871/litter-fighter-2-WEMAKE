@@ -7,6 +7,8 @@ import { BALL_STATES } from '../state/ball';
 import { Entity } from './Entity';
 
 export class Ball extends Entity<IBallFrameInfo, IBallInfo, IBallData> {
+  static is = (v: any): v is Ball => v?.is_ball === true;
+  readonly is_ball = true
   ud = 0;
   constructor(world: World, data: IBallData) {
     super(world, data, BALL_STATES);

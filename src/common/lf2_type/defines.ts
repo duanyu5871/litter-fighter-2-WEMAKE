@@ -193,4 +193,31 @@ export namespace Defines {
     StagePass: "data/m_pass.wav.ogg",
     BattleEnd: "data/m_end.wav.ogg"
   } as const
+
+
+  /**
+   * 按键“双击”判定间隔，单位（帧数）
+   * 
+   * 当同个按键在“双击判定间隔”之内按下两次，
+   * 且中途未按下其对应冲突按键，视为“双击”。
+   * 
+   * @type {number}
+   */
+  export const DOUBLE_CLICK_INTERVAL: number = 30;
+
+  /**
+   * 按键“按下”/“双击”的判定持续帧，单位：帧数
+   * 
+   * 当某按键被“按下”（不松开），接下来的数帧（数值key_hit_duration）内，均判定为“按下”。
+   * 此时若存在对应的“按键‘按下’跳转动作”，且满足跳转条件，角色将会进入对应的“按键‘按下’跳转动作”。
+   * 
+   * 当某双击后，接下来的数帧（数值key_hit_duration）内，均判定为“双击”。
+   * 此时若存在对应的“按键‘双击’跳转动作”，且满足跳转条件，角色将会进入对应的“按键‘双击’跳转动作”。
+   *
+   * @type {number}
+   */
+  export const KEY_HIT_DURATION: number = 20
+  export const GRAVITY: number = 0.4;
+  export const FRICTION_FACTOR: number = 0.95//0.894427191;
+  export const FRICTION: number = 0.2;
 }

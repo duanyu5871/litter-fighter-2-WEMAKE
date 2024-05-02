@@ -1,9 +1,10 @@
-import { Err } from "@fimagine/logger";
+
+import { Warn } from "../../Log";
 import type LF2 from "../LF2";
 import FallbackPlayer from "../dom/sound/FallbackPlayer";
+import ModernPlayer from "../dom/sound/ModernPlayer";
 import { IPlayer, Src } from "./IPlayer";
 import InvalidPlayer from "./InvalidPlayer";
-import ModernPlayer from "../dom/sound/ModernPlayer";
 
 export default class SoundMgr implements IPlayer {
   readonly lf2: LF2;
@@ -19,7 +20,7 @@ export default class SoundMgr implements IPlayer {
         this.inner = new cls(lf2);
         break;
       } catch (e) {
-        Err.print(SoundMgr.name, 'can not use ' + cls.name, e)
+        Warn.print(SoundMgr.name, 'can not use ' + cls.name, e)
       }
     }
   }

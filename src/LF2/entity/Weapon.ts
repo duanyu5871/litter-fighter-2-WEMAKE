@@ -7,6 +7,9 @@ import { WEAPON_STATES } from "../state/weapon";
 import { Character } from "./Character";
 import { Entity } from "./Entity";
 export class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData> {
+  static is = (v: any): v is Weapon => v?.is_ball === true;
+  readonly is_weapon = true
+
   holder?: Entity;
   constructor(world: World, data: IWeaponData) {
     super(world, data, WEAPON_STATES);
