@@ -1,6 +1,20 @@
 export class NoEmitCallbacks<F> {
-  protected _map = new Map<any, Set<Partial<F>>>();
+  
+  /**
+   * 回调对象map
+   *
+   * @protected
+   * @type {Map<any, Set<Partial<F>>>}
+   */
+  protected _map: Map<any, Set<Partial<F>>> = new Map<any, Set<Partial<F>>>();
 
+  /**
+   * 添加回调对象
+   *
+   * @param {Partial<F>} v 回调对象
+   * @param {?(keyof F)[]} [keys] 指定感兴趣的回调名
+   * @returns {() => void} 移除回调对象
+   */
   add(v: Partial<F>, keys?: (keyof F)[]): () => void {
     const any_keys: any[] = keys?.length ? keys : ['']
     for (const key of any_keys) {
@@ -11,11 +25,27 @@ export class NoEmitCallbacks<F> {
     return () => { this.del(v) };
   }
 
+
+  /**
+   * 移除回调对象
+   *
+   * @param {Partial<F>} v 回调对象
+   */
   del(v: Partial<F>): void {
     for (const [, set] of this._map) set.delete(v);
   }
 }
+
 export default class Callbacks<F> extends NoEmitCallbacks<F> {
+
+  
+  /**
+   * 获取指定回调名的回调函数
+   *
+   * @template {keyof F} K
+   * @param {K} key
+   * @returns {Exclude<F[K], undefined>} 指定回调名的回调函数
+   */
   emit<K extends keyof F>(key: K): Exclude<F[K], undefined> {
     const ret: any = (...args: any[]) => {
       this.invoke<K>('', key, args);
