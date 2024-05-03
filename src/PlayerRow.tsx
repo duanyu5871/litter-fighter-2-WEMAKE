@@ -10,6 +10,7 @@ import random_get from './common/random_get';
 import { LocalHuman } from './LF2/controller/LocalHuman';
 import { Checkbox } from './Component/Checkbox';
 import { Defines } from './common/lf2_type/defines';
+import { ToggleButton } from './Component/ToggleButton';
 
 const key_names: Record<TKeyName, string> = {
   U: '上',
@@ -25,9 +26,17 @@ interface Props {
   lf2: LF2;
   visible?: boolean;
   info: PlayerInfo;
+  touch_pad_on?: boolean;
+  on_click_toggle_touch_pad?(): void;
 }
 export function PlayerRow(props: Props) {
-  const { lf2, info, visible = true } = props;
+  const {
+    lf2,
+    info,
+    visible = true,
+    touch_pad_on,
+    on_click_toggle_touch_pad
+  } = props;
 
   const [keys, set_keys] = useState<Record<TKeyName, string>>(info.keys);
   const [player_name, set_player_name] = useState<string>(info.name);
@@ -136,6 +145,12 @@ export function PlayerRow(props: Props) {
           return <Button key={k} onClick={on_click}>{name}: {value.toUpperCase()}</Button>
         })
       }
+      <ToggleButton
+        checked={touch_pad_on}
+        onClick={on_click_toggle_touch_pad}>
+        <>触摸板</>
+        <>触摸板✓</>
+      </ToggleButton>
     </div >
   );
 }

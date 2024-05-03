@@ -11,7 +11,7 @@ export interface IWorldCallbacks {
    */
   on_stage_change?(curr: Stage, prev: Stage): void;
 
-  
+
   /**
    * 
    * @todo 这个回调比较高频似乎不应该放在此处
@@ -20,4 +20,8 @@ export interface IWorldCallbacks {
   on_cam_move?(x: number): void;
 
   on_pause_change?(pause: boolean): void;
+
+  on_player_character_add?(player_id: string): void;
+  on_player_character_del?(player_id: string): void;
+
 }

@@ -7,8 +7,8 @@ import { Input } from './Component/Input';
 import Select from './Component/Select';
 import { ToggleButton } from "./Component/ToggleButton";
 import EditorView from './EditorView';
-import FullScreen from './LF2/dom/FullScreen';
 import LF2, { ILf2Callback } from './LF2/LF2';
+import { BaseController } from './LF2/controller/BaseController';
 import { ILayoutInfo } from './Layout/ILayoutInfo';
 import { Log } from './Log';
 import { PlayerRow } from './PlayerRow';
@@ -17,15 +17,13 @@ import { arithmetic_progression } from './common/arithmetic_progression';
 import './game_ui.css';
 import './init';
 import { useLocalBoolean, useLocalNumber, useLocalString } from './useLocalStorage';
-const fullscreen = new FullScreen();
-
+import FullScreen from './LF2/dom/FullScreen';
+const fullscreen = new FullScreen()
 function App() {
   const _overlay_ref = useRef<HTMLDivElement>(null)
   const _canvas_ref = useRef<HTMLCanvasElement>(null)
   const _game_contiainer_ref = useRef<HTMLDivElement>(null)
 
-  const _text_area_dat_ref = useRef<HTMLTextAreaElement>(null);
-  const _text_area_json_ref = useRef<HTMLTextAreaElement>(null);
   const lf2_ref = useRef<LF2 | undefined>();
 
   const [editor_open, set_editor_open] = useState(false);
@@ -136,6 +134,7 @@ function App() {
   const [custom_h_align, set_custom_h_align] = useLocalNumber<number>('custom_h_align', 0.5);
   const [custom_v_align, set_custom_v_align] = useLocalNumber<number>('custom_v_align', 0.5);
   const [debug_ui_pos, set_debug_ui_pos] = useLocalString<'left' | 'right' | 'top' | 'bottom'>('debug_ui_pos', 'top');
+  const [touch_pad_on, set_touch_pad_on] = useLocalString<string>('touch_pad_on', '');
 
   useEffect(() => {
     const ele = _game_contiainer_ref.current;
@@ -191,6 +190,7 @@ function App() {
     render_size_mode, render_fixed_scale, custom_render_fixed_scale,
     v_align, h_align, custom_h_align, custom_v_align
   ])
+
 
   return (
     <div className="App">
@@ -335,13 +335,68 @@ function App() {
         </div>
 
         {Array.from(lf2_ref.current?.player_infos.values() ?? []).map((info, idx) =>
-          <PlayerRow key={idx} lf2={lf2_ref.current!} info={info} visible={debug_panel} />
+          <PlayerRow
+            key={idx}
+            lf2={lf2_ref.current!}
+            info={info}
+            visible={debug_panel}
+            touch_pad_on={touch_pad_on === info.id}
+            on_click_toggle_touch_pad={() => set_touch_pad_on(touch_pad_on === info.id ? '' : info.id)} />
         )}
         <BackgroundRow lf2={lf2_ref.current} visible={debug_panel} />
       </div>
       <EditorView open={editor_open} onClose={() => set_editor_open(false)} />
+
+      <GamePad player_id={touch_pad_on} lf2={lf2_ref.current} />
     </div >
   );
 }
 
+interface IAAAProps {
+  lf2?: LF2;
+  player_id?: string;
+}
+function GamePad(props: IAAAProps) {
+  const { player_id, lf2 } = props;
+  const [controller, set_controller] = useState<BaseController | undefined>(void 0);
+
+  useEffect(() => {
+    if (!lf2 || !player_id) return;
+    return lf2.world.callbacks.add({
+      on_player_character_add(add_player_id) {
+        if (add_player_id !== player_id) return
+        set_controller(lf2.player_characters.get(player_id)?.controller)
+      },
+      on_player_character_del(del_player_id) {
+        if (del_player_id !== player_id) return
+        set_controller(void 0);
+      },
+    })
+  }, [lf2, player_id])
+
+  if (!controller) return <></>
+  return <>
+    <img
+      onTouchStart={() => controller?.start('a')}
+      onTouchEnd={() => controller?.end('a')}
+      src={require('./lf2_built_in_data/sprite/touch_btn_a.png')}
+      alt='attack'
+      draggable={false}
+      style={{ width: 64, height: 64 }} />
+    <img
+      onTouchStart={() => controller?.start('j')}
+      onTouchEnd={() => controller?.end('j')}
+      src={require('./lf2_built_in_data/sprite/touch_btn_j.png')}
+      alt='jump'
+      draggable={false}
+      style={{ width: 64, height: 64 }} />
+    <img
+      onTouchStart={() => controller?.start('d')}
+      onTouchEnd={() => controller?.end('d')}
+      src={require('./lf2_built_in_data/sprite/touch_btn_d.png')}
+      alt='defense'
+      draggable={false}
+      style={{ width: 64, height: 64 }} />
+  </>
+}
 export default App;

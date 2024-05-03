@@ -99,7 +99,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   ])
   get player_infos() { return this._player_infos }
 
-  get player_characters() { return this.world.players }
+  get player_characters() { return this.world.player_characters }
   get layout() { return this._layout }
 
   private _bgm_enable = false;

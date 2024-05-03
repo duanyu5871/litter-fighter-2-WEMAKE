@@ -116,7 +116,7 @@ export default class Stage {
     }
     if (is_num(phase.player_jump_to_x)) {
       const x = phase.player_jump_to_x;
-      for (const [, p] of this.world.players) {
+      for (const [, p] of this.world.player_characters) {
         p.position.x = random_in_range(x - 50, x + 50);
       }
     }
@@ -138,7 +138,7 @@ export default class Stage {
   readonly items = new Set<Item>();
   async spawn_object(obj_info: IStageObjectInfo) {
     let count = 0;
-    for (const [, c] of this.world.players) {
+    for (const [, c] of this.world.player_characters) {
       count += c.data.base.ce ?? 1;
     }
 

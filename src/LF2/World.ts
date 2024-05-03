@@ -67,7 +67,7 @@ export class World {
   renderer: THREE.WebGLRenderer;
   disposed = false;
 
-  readonly players = new Map<string, Character>();
+  readonly player_characters = new Map<string, Character>();
   readonly overlay: GameOverlay;
 
   get stage() { return this._stage }
@@ -114,7 +114,8 @@ export class World {
   add_game_objs(...objs: FrameAnimater[]) {
     for (const e of objs) {
       if (e instanceof Character && e.controller instanceof LocalHuman) {
-        this.players.set(e.controller.which, e);
+        this.player_characters.set(e.controller.which, e);
+        this._callbacks.emit('on_player_character_add')(e.controller.which)
       }
 
       if (Entity.is(e)) {
@@ -132,7 +133,8 @@ export class World {
   del_game_objs(...objs: FrameAnimater[]) {
     for (const e of objs) {
       if (e instanceof Character && e.controller instanceof LocalHuman) {
-        this.players.delete(e.controller.which);
+        this.player_characters.delete(e.controller.which);
+        this._callbacks.emit('on_player_character_del')(e.controller.which)
       }
       if (Entity.is(e)) {
         this.entities.delete(e)
@@ -300,11 +302,11 @@ export class World {
       new_x = this.lock_cam_x;
       max_speed_ratio = 1000;
       acc_ratio = 10;
-    } else if (this.players.size) {
+    } else if (this.player_characters.size) {
       new_x = 0;
-      for (const [, player] of this.players)
+      for (const [, player] of this.player_characters)
         new_x += player.position.x - 794 / 2 + player.facing * 794 / 6;
-      new_x = Math.floor(new_x / this.players.size);
+      new_x = Math.floor(new_x / this.player_characters.size);
     }
     if (new_x < max_cam_left) new_x = max_cam_left;
     if (new_x > max_cam_right - 794) new_x = max_cam_right - 794;
