@@ -220,4 +220,42 @@ export namespace Defines {
   export const GRAVITY: number = 0.4;
   export const FRICTION_FACTOR: number = 0.95//0.894427191;
   export const FRICTION: number = 0.2;
-}
+
+  export enum Difficulty {
+    Easy = 1,
+    Normal = 2,
+    Difficult = 3,
+    Crazy = 4,
+  }
+
+  export interface ITeamColorInfo {
+    txt_color: string;
+    txt_shadow_color: string;
+  }
+  export interface ITeamColorInfoMap {
+    I: ITeamColorInfo;
+    [x: string | number]: ITeamColorInfo | undefined;
+  }
+  export const TeamColorInfoMap: ITeamColorInfoMap = {
+    I: {
+      txt_color: '#ffffff',
+      txt_shadow_color: '#000000',
+    },
+    1: {
+      txt_color: '#4f9bff',
+      txt_shadow_color: '#001e46',
+    },
+    2: {
+      txt_color: '#ff4f4f',
+      txt_shadow_color: '#460000',
+    },
+    3: {
+      txt_color: '#3cad0f',
+      txt_shadow_color: '#154103',
+    },
+    4: {
+      txt_color: '#ffd34c',
+      txt_shadow_color: '#9a5700',
+    },
+  }
+} 

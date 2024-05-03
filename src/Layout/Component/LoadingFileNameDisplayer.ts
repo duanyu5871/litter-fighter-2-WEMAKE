@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { ILf2Callback } from '../../LF2/LF2';
+import { ILf2Callback } from '../../LF2/ILf2Callback';
 import { LayoutComponent } from './LayoutComponent';
 import { TextBuilder } from './TextBuilder';
 

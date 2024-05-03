@@ -12,10 +12,12 @@ import { IStageInfo } from "../common/lf2_type/IStageInfo";
 import { Defines } from '../common/lf2_type/defines';
 import random_get from '../common/random_get';
 import random_take from '../common/random_take';
+import { ILf2Callback } from './ILf2Callback';
 import { Loader } from './Loader';
 import { PlayerInfo } from './PlayerInfo';
 import { World } from './World';
 import Callbacks, { NoEmitCallbacks } from './base/Callbacks';
+import { get_short_file_size_txt } from './base/get_short_file_size_txt';
 import { new_id, new_team } from './base/new_id';
 import { random_in_range } from './base/random_in_range';
 import Layer from './bg/Layer';
@@ -33,39 +35,11 @@ import { get_import_fallbacks, import_builtin } from './loader/make_import';
 import SoundMgr from './sound/SoundMgr';
 import Stage from './stage/Stage';
 
-const get_short_file_size_txt = (bytes: number) => {
-  if (bytes < 1024) return `${bytes}B`;
-  bytes /= 1024;
-  if (bytes < 1024) return `${bytes.toFixed(1).replace('.0', '')}KB`;
-  bytes /= 1024;
-  if (bytes < 1024) return `${bytes.toFixed(1).replace('.0', '')}MB`;
-  bytes /= 1024;
-  return `${bytes.toFixed(1).replace('.0', '')}GB`;
-}
-
 const cheat_info_pair = (n: Defines.Cheats) => ['' + n, {
   keys: Defines.CheatKeys[n],
   sound: Defines.CheatSounds[n],
 }] as const;
 
-export interface ILf2Callback {
-  on_layout_changed?(layout: Layout | undefined, prev_layout: Layout | undefined): void;
-  on_loading_start?(): void;
-  on_loading_end?(): void;
-  on_loading_content?(content: string, progress: number): void;
-
-  on_stages_loaded?(stages: IStageInfo[]): void;
-  on_stages_clear?(): void;
-
-  on_bgms_loaded?(names: string[]): void;
-  on_bgms_clear?(): void;
-
-  on_player_infos_changed?(player_infos: PlayerInfo[]): void;
-  on_cheat_changed?(cheat_name: string, enabled: boolean): void;
-
-  on_stage_pass?(): void;
-  on_enter_next_stage?(): void;
-}
 export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   private _callbacks = new Callbacks<ILf2Callback>();
   private _disposers = new Set<() => void>();

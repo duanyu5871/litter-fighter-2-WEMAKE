@@ -1,9 +1,6 @@
-export function get_team_text_color(team: any) {
-  switch (team) {
-    case '1': return '#4f9bff';
-    case '2': return '#ff4f4f';
-    case '3': return '#3cad0f';
-    case '4': return '#ffd34c';
-    default: return 'white';
-  }
+import { Defines } from "../../common/lf2_type/defines";
+
+export function get_team_text_color(team: string | number) {
+  const info = Defines.TeamColorInfoMap[team] || Defines.TeamColorInfoMap.I
+  return info.txt_color;
 }

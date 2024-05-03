@@ -3,9 +3,10 @@ import { Log, Warn } from '../Log';
 import { is_num } from '../common/is_num';
 import { IBdyInfo, IFrameInfo, IItrInfo } from '../common/lf2_type';
 import { Defines } from '../common/lf2_type/defines';
-import { Difficulty } from './Difficulty';
+import { factory } from './Factory';
 import { FrameAnimater } from './FrameAnimater';
 import { GameOverlay } from './GameOverlay';
+import { IWorldCallbacks } from './IWorldCallbacks';
 import LF2 from './LF2';
 import Callbacks, { NoEmitCallbacks } from './base/Callbacks';
 import { FPS } from './base/FPS';
@@ -16,8 +17,6 @@ import { Entity } from './entity/Entity';
 import './entity/Weapon';
 import { Weapon } from './entity/Weapon';
 import Stage from './stage/Stage';
-import { IWorldCallbacks } from './IWorldCallbacks';
-import { factory } from './Factory';
 export interface ICube {
   left: number;
   right: number;
@@ -539,7 +538,7 @@ export class World {
     this.renderer.dispose();
   }
 
-  protected _difficulty: Difficulty = Difficulty.Difficult;
-  get difficulty(): Difficulty { return this._difficulty; }
-  set difficulty(v: Difficulty) { this.difficulty = v }
+  protected _difficulty: Defines.Difficulty = Defines.Difficulty.Difficult;
+  get difficulty(): Defines.Difficulty { return this._difficulty; }
+  set difficulty(v: Defines.Difficulty) { this.difficulty = v }
 }

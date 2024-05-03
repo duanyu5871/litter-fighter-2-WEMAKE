@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import LF2, { ILf2Callback } from './LF2/LF2';
+import LF2 from './LF2/LF2';
+import { ILf2Callback } from './LF2/ILf2Callback';
 import { BaseController } from './LF2/controller/BaseController';
 import { BotEnemyChaser } from './LF2/controller/BotEnemyChaser';
 import { InvalidController } from './LF2/controller/InvalidController';

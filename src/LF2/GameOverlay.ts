@@ -1,6 +1,6 @@
 import { is_num } from '../common/is_num';
 import { Defines } from '../common/lf2_type/defines';
-import { ILf2Callback } from './LF2';
+import { ILf2Callback } from './ILf2Callback';
 import Stage from './stage/Stage';
 import type { World } from './World';
 import type { IWorldCallbacks } from './IWorldCallbacks';
