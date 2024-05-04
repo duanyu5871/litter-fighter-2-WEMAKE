@@ -38,7 +38,7 @@ export class PlayerInfo {
     return this._callbacks
   }
 
-  constructor(id: string, name: string, keys: TKeys = get_default_keys(Number(id))) {
+  constructor(id: string, name: string = id, keys: TKeys = get_default_keys(Number(id))) {
     this.info = { id, name, keys, team: '', version: 0, character: '' };
     this.load();
   }

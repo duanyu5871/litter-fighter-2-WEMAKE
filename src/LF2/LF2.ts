@@ -66,10 +66,10 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   readonly overlay: HTMLDivElement | null | undefined;
   private zip: JSZIP | undefined;
   private _player_infos = new Map([
-    ['1', new PlayerInfo('1', '1')],
-    ['2', new PlayerInfo('2', '2')],
-    ['3', new PlayerInfo('3', '3')],
-    ['4', new PlayerInfo('4', '4')]
+    ['1', new PlayerInfo('1')],
+    ['2', new PlayerInfo('2')],
+    ['3', new PlayerInfo('3')],
+    ['4', new PlayerInfo('4')]
   ])
   get player_infos() { return this._player_infos }
 
@@ -191,12 +191,11 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   }
   add_character(data: ICharacterData, num: number, team?: string): Character[];
   add_character(id: string, num: number, team?: string): Character[];
-  add_character(data: ICharacterData | string, num: number, team?: string): Character[] {
-    if (typeof data === 'string') {
-      let d = this.dat_mgr.characters.find(v => v.id === data)
-      if (!d) return [];
-      data = d
-    }
+  add_character(data: ICharacterData | string | undefined, num: number, team?: string): Character[] {
+    if (typeof data === 'string')
+      data = this.dat_mgr.find_character(data)
+    if (!data)
+      return [];
     const ret: Character[] = []
     while (--num >= 0) {
       const e = new Character(this.world, data);
@@ -209,12 +208,11 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
 
   add_weapon(data: IWeaponData, num: number, team?: string): Weapon[];
   add_weapon(id: string, num: number, team?: string): Weapon[];
-  add_weapon(data: IWeaponData | string, num: number, team?: string): Weapon[] {
-    if (typeof data === 'string') {
-      let d = this.dat_mgr.weapons.find(v => v.id === data)
-      if (!d) return [];
-      data = d
-    }
+  add_weapon(data: IWeaponData | string | undefined, num: number, team?: string): Weapon[] {
+    if (typeof data === 'string')
+      data = this.dat_mgr.find_weapon(data)
+    if (!data)
+      return [];
     const ret: Weapon[] = []
     while (--num >= 0) {
       const e = new Weapon(this.world, data);
@@ -500,8 +498,8 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     const old = this.player_characters.get(player_id);
     if (old) this.world.del_game_objs(old)
   }
-  change_bg = (bg_id: string) => {
-    const data = this.dat_mgr.backgrounds.find(v => v.id == bg_id);
+  change_bg(id: string) {
+    const data = this.dat_mgr.find_background(id);
     if (!data) return;
     this.world.stage = new Stage(this.world, data)
   }

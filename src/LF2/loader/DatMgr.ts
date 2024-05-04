@@ -1,5 +1,6 @@
 import { Log } from '../../Log';
-import { IBallData, IBgData, ICharacterData, IDataMap, IEntityData, IGameObjData, IWeaponData } from '../../common/lf2_type';
+import { is_str } from '../../common/is_str';
+import { IBallData, IBgData, IBgInfo, ICharacterData, IDataMap, IEntityData, IGameObjData, IWeaponData } from '../../common/lf2_type';
 import { Defines } from '../../common/lf2_type/defines';
 import { map, traversal } from '../../common/traversal';
 import LF2 from '../LF2';
@@ -145,4 +146,25 @@ export default class DatMgr {
   find(id: number | string): IGameObjData | undefined {
     return this._inner.data_map.get('' + id)
   }
+
+  find_weapon(id: string): IWeaponData | undefined
+  find_weapon(predicate: IFindPredicate<IWeaponData>): IWeaponData | undefined;
+  find_weapon(arg_0: string | IFindPredicate<IWeaponData>): IWeaponData | undefined {
+    return is_str(arg_0) ? this.weapons.find(v => v.id === arg_0) : this.weapons.find(arg_0)
+  }
+
+  find_character(id: string): ICharacterData | undefined
+  find_character(predicate: IFindPredicate<ICharacterData>): ICharacterData | undefined;
+  find_character(arg_0: string | IFindPredicate<ICharacterData>): ICharacterData | undefined {
+    return is_str(arg_0) ? this.characters.find(v => v.id === arg_0) : this.characters.find(arg_0)
+  }
+
+  find_background(id: string): IBgData | undefined;
+  find_background(predicate: IFindPredicate<IBgData>): IBgData | undefined;
+  find_background(arg_0: string | IFindPredicate<IBgData>): IBgData | undefined {
+    return is_str(arg_0) ? this.backgrounds.find(v => v.id === arg_0) : this.backgrounds.find(arg_0)
+  }
+}
+interface IFindPredicate<T> {
+  (value: T, index: number, obj: T[]): unknown
 }
