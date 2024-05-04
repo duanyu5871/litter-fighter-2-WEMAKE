@@ -18,7 +18,7 @@ import './entity/Weapon';
 import Weapon from './entity/Weapon';
 import Stage from './stage/Stage';
 import Interval from './dom/Interval';
-import Renderer from './dom/Render';
+import Render from './dom/Render';
 export interface ICube {
   left: number;
   right: number;
@@ -147,7 +147,7 @@ export class World {
     }
   }
 
-  private _render_request_id?: ReturnType<typeof Renderer.run>;
+  private _render_request_id?: ReturnType<typeof Render.run>;
   private _update_timer_id?: ReturnType<typeof Interval.set>;
 
   private _r_prev_time = 0;
@@ -170,15 +170,15 @@ export class World {
         this._r_fps.update(dt);
         this.overlay.FPS = this._r_fps.value
       }
-      this._render_request_id = Renderer.run(on_render)
+      this._render_request_id = Render.run(on_render)
       this._r_prev_time = time
     }
-    this._render_request_id && Renderer.stop(this._render_request_id);
-    this._render_request_id = Renderer.run(on_render);
+    this._render_request_id && Render.stop(this._render_request_id);
+    this._render_request_id = Render.run(on_render);
   }
 
   stop_render() {
-    this._render_request_id && Renderer.stop(this._render_request_id);
+    this._render_request_id && Render.stop(this._render_request_id);
     this._render_request_id = 0;
   }
 
