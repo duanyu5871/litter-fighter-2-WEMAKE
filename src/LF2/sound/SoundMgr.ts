@@ -3,7 +3,7 @@ import { Warn } from "../../Log";
 import type LF2 from "../LF2";
 import FallbackPlayer from "../dom/sound/FallbackPlayer";
 import ModernPlayer from "../dom/sound/ModernPlayer";
-import { IPlayer, Src } from "./IPlayer";
+import type { IPlayer, Src } from "./IPlayer";
 import InvalidPlayer from "./InvalidPlayer";
 
 export default class SoundMgr implements IPlayer {
