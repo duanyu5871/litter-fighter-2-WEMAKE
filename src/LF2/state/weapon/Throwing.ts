@@ -1,3 +1,3 @@
-import { InTheSky } from "./InTheSky";
+import InTheSky from "./InTheSky";
 
-export class Throwing extends InTheSky {}
+export default class Throwing extends InTheSky {}

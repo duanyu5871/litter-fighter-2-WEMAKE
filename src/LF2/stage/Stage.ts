@@ -153,7 +153,7 @@ export default class Stage {
     for (const o of this.items) {
       if (!o.is_enemies) continue;
       for (const e of o.entities) {
-        if (e instanceof Character) e.hp = 0;
+        if (Character.is(e)) e.hp = 0;
       }
     }
   }
@@ -162,7 +162,7 @@ export default class Stage {
       if (!o.is_enemies) continue;
       if (!o.info.is_soldier) continue;
       for (const e of o.entities) {
-        if (e instanceof Character) e.hp = 0;
+        if (Character.is(e)) e.hp = 0;
       }
     }
   }
@@ -171,7 +171,7 @@ export default class Stage {
       if (!o.is_enemies) continue;
       if (!o.info.is_boss) continue;
       for (const e of o.entities) {
-        if (e instanceof Character) e.hp = 0;
+        if (Character.is(e)) e.hp = 0;
       }
     }
   }
@@ -180,7 +180,7 @@ export default class Stage {
       if (!o.is_enemies) continue;
       if (o.info.is_boss || o.info.is_soldier) continue;
       for (const e of o.entities) {
-        if (e instanceof Character) e.hp = 0;
+        if (Character.is(e)) e.hp = 0;
       }
     }
   }

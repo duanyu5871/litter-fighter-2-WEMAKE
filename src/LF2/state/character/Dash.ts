@@ -1,4 +1,4 @@
-import { IFrameInfo } from "../../../common/lf2_type";
+import type { IFrameInfo } from "../../../common/lf2_type";
 import { Defines } from "../../../common/lf2_type/defines";
 import type { Character } from '../../entity/Character';
 import BaseCharacterState from "./Base";

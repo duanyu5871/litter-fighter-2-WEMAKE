@@ -65,7 +65,7 @@ export function PlayerRow(props: Props) {
         set_keys(v => {
           const ks = { ...v, [name]: key };
           const character = lf2.get_player_character(info.id);
-          if (character?.controller instanceof LocalHuman)
+          if (character && LocalHuman.is(character.controller))
             character.controller.set_key_code_map(ks);
           return ks;
         })

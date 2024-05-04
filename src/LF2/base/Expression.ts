@@ -3,9 +3,12 @@ import { Warn } from '../../Log';
 const ALWAY_FALSE = () => false
 export interface JudgeFunc<T> { (arg: T): boolean }
 export interface ValGetter<T> { (word: string): (e: T) => string | number | boolean }
-export class Condition<T> {
+export default class Expression<T> {
+  readonly is_expression = true;
+  static is = (v: any): v is Expression<unknown> => v?.is_expression === true;
+
   readonly text: string = '';
-  readonly children: Array<JudgeFunc<T> | '|' | '&' | Condition<T>> = [];
+  readonly children: Array<JudgeFunc<T> | '|' | '&' | Expression<T>> = [];
   readonly get_val: (word: string) => (e: T) => string | number | boolean;
   constructor(text: string, get_val: ValGetter<T>) {
     this.get_val = get_val;
@@ -16,7 +19,7 @@ export class Condition<T> {
       const letter = text[i];
       switch (letter) {
         case '(':
-          const res = new Condition<T>(text.substring(i + 1), get_val);
+          const res = new Expression<T>(text.substring(i + 1), get_val);
           i += res.text.length + 2;
           p = i + 1;
           this.children.push(res);
@@ -73,7 +76,7 @@ export class Condition<T> {
         let op = i === 0 ? '|' : this.children[i - 1];
         if (typeof item === 'function') {
           cur = item(e) || false;
-        } else if (item instanceof Condition) {
+        } else if (Expression.is(item)) {
           cur = item.make()(e);
         }
         if (op === '|') ret = ret || cur;

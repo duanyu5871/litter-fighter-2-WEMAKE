@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import LF2 from '../LF2/LF2';
-import { Condition, ValGetter } from '../LF2/base/Condition';
+import Callbacks from '../LF2/base/Callbacks';
+import Expression, { ValGetter } from '../LF2/base/Expression';
 import { create_picture, type TImageInfo } from '../LF2/loader/loader';
 import { NumberAnimation } from '../NumberAnimation';
 import { is_arr } from '../common/is_arr';
@@ -12,7 +13,6 @@ import { LayoutComponent } from './Component/LayoutComponent';
 import type { ILayoutInfo } from './ILayoutInfo';
 import { read_as_2_nums } from './utils/read_as_2_nums';
 import { read_as_4_nums } from './utils/read_as_4_nums';
-import Callbacks from '../LF2/base/Callbacks';
 
 export interface ILayoutCallback {
   on_click?(): void;
@@ -223,7 +223,7 @@ export default class Layout {
     const { visible, opacity } = this.data;
 
     if (is_str(visible)) {
-      const func = new Condition<Layout>(visible, get_val).make();
+      const func = new Expression<Layout>(visible, get_val).make();
       return this._visible = () => func(this);
     }
     if (is_bool(visible))

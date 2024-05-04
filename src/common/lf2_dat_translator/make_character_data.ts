@@ -81,7 +81,7 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
           {
             id: '45',
             facing: FacingFlag.ByController,
-            condition: Cond
+            expression: Cond
               .add(ValWord.WeaponType, '==', WeaponType.Baseball)
               .or(v => v
                 .add(ValWord.WeaponType, '==', WeaponType.Knife)
@@ -91,10 +91,10 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
           {
             id: ['20', '25'],
             facing: FacingFlag.ByController,
-            condition: Cond.one_of(ValWord.WeaponType, WeaponType.Knife, WeaponType.Stick).done()
+            expression: Cond.one_of(ValWord.WeaponType, WeaponType.Knife, WeaponType.Stick).done()
           },
           {
-            id: '55', condition: Cond.one_of(ValWord.WeaponType, WeaponType.Drink).done(),
+            id: '55', expression: Cond.one_of(ValWord.WeaponType, WeaponType.Drink).done(),
             facing: FacingFlag.ByController,
           },
           { id: ['60', '65'] }
@@ -116,7 +116,7 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
           {
             id: ['45'],
             facing: FacingFlag.ByController,
-            condition: Cond
+            expression: Cond
               .add(ValWord.WeaponType, '==', WeaponType.Baseball)
               .or(v => v
                 .add(ValWord.WeaponType, '==', WeaponType.Knife)
@@ -126,10 +126,10 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
           {
             id: ['20', '25'],
             facing: FacingFlag.ByController,
-            condition: Cond.one_of(ValWord.WeaponType, WeaponType.Knife, WeaponType.Stick).done()
+            expression: Cond.one_of(ValWord.WeaponType, WeaponType.Knife, WeaponType.Stick).done()
           }, // drink
           {
-            id: '55', condition: Cond.one_of(ValWord.WeaponType, WeaponType.Drink).done(),
+            id: '55', expression: Cond.one_of(ValWord.WeaponType, WeaponType.Drink).done(),
             facing: FacingFlag.ByController,
           },
           { id: ['60', '65'] }
@@ -147,7 +147,7 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
         frame.hit.a = [
           { // 丢出武器
             id: ['45'],
-            condition: Cond.add(ValWord.WeaponType, '==', WeaponType.Baseball)
+            expression: Cond.add(ValWord.WeaponType, '==', WeaponType.Baseball)
               .or(v => v
                 .add(ValWord.PressFB, '==', 1)
                 .and(ValWord.WeaponType, '!=', WeaponType.None)
@@ -155,10 +155,10 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
               .done(),
           }, // drink
           {
-            id: '55', condition: Cond.one_of(ValWord.WeaponType, WeaponType.Drink).done()
+            id: '55', expression: Cond.one_of(ValWord.WeaponType, WeaponType.Drink).done()
           },
           {
-            id: '35', condition: Cond.one_of(ValWord.WeaponType, WeaponType.Knife, WeaponType.Stick).done(),
+            id: '35', expression: Cond.one_of(ValWord.WeaponType, WeaponType.Knife, WeaponType.Stick).done(),
             facing: FacingFlag.ByController,
           },
           { id: '85' }
@@ -215,7 +215,7 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
             {
               id: ['52'],
               facing: FacingFlag.ByController,
-              condition: Cond.one_of(
+              expression: Cond.one_of(
                 ValWord.WeaponType, WeaponType.Baseball, WeaponType.Drink
               ).or(v => v
                 .add(ValWord.PressFB, '!=', 0)
@@ -225,7 +225,7 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
             {
               id: '30',
               facing: FacingFlag.ByController,
-              condition: Cond.one_of(ValWord.WeaponType, WeaponType.Knife, WeaponType.Stick).done()
+              expression: Cond.one_of(ValWord.WeaponType, WeaponType.Knife, WeaponType.Stick).done()
             },
             { id: '80', facing: FacingFlag.ByController }
           ]; // jump_atk
@@ -250,12 +250,12 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
             {
               id: '52',
               facing: FacingFlag.ByController,
-              condition: Cond.one_of(ValWord.WeaponType, WeaponType.Baseball, WeaponType.Drink).done(),
+              expression: Cond.one_of(ValWord.WeaponType, WeaponType.Baseball, WeaponType.Drink).done(),
             },
             {
               id: '40',
               facing: FacingFlag.ByController,
-              condition: Cond.one_of(ValWord.WeaponType, WeaponType.Knife, WeaponType.Stick).done()
+              expression: Cond.one_of(ValWord.WeaponType, WeaponType.Knife, WeaponType.Stick).done()
             },
             { id: '90' }]; // dash_atk
         }
@@ -275,7 +275,7 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
               {
                 ...get_next_frame_by_raw_id(t_action),
                 facing: FacingFlag.ByController,
-                condition: Cond
+                expression: Cond
                   .add<Defines.ValWord>(ValWord.PressFB, '!=', 0)
                   .or(ValWord.PressUD, '!=', 0)
                   .done()
@@ -317,13 +317,13 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
         const to_dash_frame: TNextFrame = [
           {
             id: '213',
-            condition: Cond
+            expression: Cond
               .add<Defines.ValWord>(ValWord.PressFB, '!=', 0)
               .or(ValWord.TrendX, '==', 1)
               .done(),
             facing: FacingFlag.ByController
           },
-          { id: '214', condition: Cond.add(ValWord.TrendX, '==', -1).done() },
+          { id: '214', expression: Cond.add(ValWord.TrendX, '==', -1).done() },
         ]; // dash
         frame.hit = frame.hit || {};
         frame.hit.d = { id: '102', facing: FacingFlag.ByController };

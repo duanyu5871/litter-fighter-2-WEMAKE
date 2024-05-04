@@ -1,19 +1,19 @@
 import { INextFrame } from "../../common/lf2_type";
 import { Defines } from '../../common/lf2_type/defines';
 import { FrameAnimater } from '../FrameAnimater';
+import Expression from '../base/Expression';
 import { Character } from '../entity/Character';
 import { Entity } from '../entity/Entity';
-import { Condition } from '../base/Condition';
 
-export const preprocess_next_frame = (i: INextFrame | INextFrame[]) => {
+export function cook_next_frame(i: INextFrame | INextFrame[]): void {
   if (Array.isArray(i)) {
-    for (const v of i) preprocess_next_frame(v);
+    for (const v of i) cook_next_frame(v);
     return;
   }
-  if (typeof i.condition !== 'string') return;
-  const condition = (i as any).condition_cls = new Condition(i.condition, get_val);
-  i.condition = condition.make()
-};
+  if (typeof i.expression !== 'string') return;
+  const expression = (i as any).condition_cls = new Expression(i.expression, get_val);
+  i.expression = expression.make();
+}
 
 function get_val(word: string): (e: FrameAnimater) => any {
   switch (word) {

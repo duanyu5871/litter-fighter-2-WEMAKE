@@ -174,7 +174,7 @@ export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, IChar
       (this.velocity.x < 0 && target.position.x < this.position.x)
   }
   private start_catch(target: Entity, itr: IItrInfo) {
-    if (!(target instanceof Character)) {
+    if (!Character.is(target)) {
       Warn.print(constructor_name(this), 'start_catch(), cannot catch', target)
       return;
     }
@@ -187,7 +187,7 @@ export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, IChar
     this._next_frame = itr.catchingact
   }
   private start_caught(attacker: Entity, itr: IItrInfo) {
-    if (!(attacker instanceof Character)) {
+    if (!Character.is(attacker)) {
       Warn.print(constructor_name(this), 'start_caught(), cannot be caught by', attacker)
       return
     }
@@ -213,7 +213,7 @@ export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, IChar
         break;
       }
       case Defines.ItrKind.Pick: {
-        if (target instanceof Weapon) {
+        if (Weapon.is(target)) {
           if (target.data.base.type === Defines.WeaponType.Heavy) {
             this._next_frame = { id: this.data.indexes.picking_heavy }
           } else {
@@ -230,7 +230,7 @@ export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, IChar
     if (itr.kind === Defines.ItrKind.SuperPunchMe) return;
     switch (itr.kind) {
       case Defines.ItrKind.Catch:
-        if (attacker instanceof Character && attacker.dizzy_catch_test(this))
+        if (Character.is(attacker) && attacker.dizzy_catch_test(this))
           this.start_caught(attacker, itr)
         return;
       case Defines.ItrKind.ForceCatch: {
@@ -329,7 +329,7 @@ export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, IChar
 
   override spawn_object(opoint: IOpointInfo, speed_z: number = 0) {
     const ret = super.spawn_object(opoint, speed_z);
-    if (ret instanceof Ball) { ret.ud = this.controller.UD; }
+    if (Ball.is(ret)) { ret.ud = this.controller.UD; }
     return ret;
   }
 

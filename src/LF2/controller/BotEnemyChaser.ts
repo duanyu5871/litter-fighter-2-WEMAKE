@@ -5,6 +5,9 @@ import { Weapon } from "../entity/Weapon";
 import { BaseController } from "./BaseController";
 
 export class BotEnemyChaser extends BaseController {
+  readonly is_bot_enemy_chaser = true;
+  static is = (v: any): v is BotEnemyChaser => v?.is_bot_enemy_chaser === true
+
   _count = 0;
   _nearest_enemy: Character | undefined;
   _nearest_friend: Character | undefined;
@@ -17,7 +20,7 @@ export class BotEnemyChaser extends BaseController {
   update_nearest() {
     const c = this.character;
     for (const e of c.world.entities) {
-      if (e instanceof Character) {
+      if (Character.is(e)) {
         if (e.team !== c.team) {
           if (!this._nearest_enemy) {
             this._nearest_enemy = e;

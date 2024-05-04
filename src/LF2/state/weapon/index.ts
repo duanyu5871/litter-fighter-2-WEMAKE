@@ -3,11 +3,11 @@ import { Defines } from "../../../common/lf2_type/defines";
 import { Weapon } from "../../entity/Weapon";
 import { States } from "../base/States";
 import { ENTITY_STATES } from "../entity";
-import { BaseWeaponState } from "./Base";
-import { InTheSky } from "./InTheSky";
-import { OnGround } from "./OnGround";
-import { OnHand } from "./OnHand";
-import { Throwing } from "./Throwing";
+import BaseWeaponState from "./Base";
+import InTheSky from "./InTheSky";
+import OnGround from "./OnGround";
+import OnHand from "./OnHand";
+import Throwing from "./Throwing";
 
 export const WEAPON_STATES = new States<Weapon>()
 for (const [k, v] of ENTITY_STATES.map) WEAPON_STATES.set(k, v)

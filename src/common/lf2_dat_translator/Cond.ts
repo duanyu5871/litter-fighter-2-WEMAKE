@@ -1,6 +1,9 @@
 import { is_str } from '../is_str';
 
 export class Cond<T extends string = string> {
+  readonly is_cond = true;
+  static is = (v: any): v is Cond => v?.is_cond === true;
+
   static readonly get = <T extends string = string>() => new Cond<T>();
   static readonly add = <T extends string = string>(...args: Parameters<Cond<T>['add']>) => this.get<T>().add(...args);
   static readonly one_of = <T extends string = string>(...args: Parameters<Cond<T>['one_of']>) => this.get<T>().one_of(...args);
@@ -58,7 +61,7 @@ export class Cond<T extends string = string> {
     ret = ret.replace(/\s|\n|\r/g, ''); // remove empty char;
 
     // remove redundant bracket;
-    if (this._parts.length === 1 && this._parts[0] instanceof Cond)
+    if (this._parts.length === 1 && Cond.is(this._parts[0]))
       ret = ret.replace(/^\(|\)$/g, '');
     return ret;
   }

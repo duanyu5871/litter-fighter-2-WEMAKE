@@ -1,8 +1,8 @@
-import { IFrameInfo } from "../../../common/lf2_type";
-import { Weapon } from "../../entity/Weapon";
-import { BaseWeaponState } from "./Base";
+import type { IFrameInfo } from "../../../common/lf2_type";
+import type { Weapon } from "../../entity/Weapon";
+import BaseWeaponState from "./Base";
 
-export class OnHand extends BaseWeaponState {
+export default class OnHand extends BaseWeaponState {
   enter(e: Weapon, prev_frame: IFrameInfo): void {
     e.shadow.visible = false;
   }

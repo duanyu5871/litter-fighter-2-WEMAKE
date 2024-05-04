@@ -178,7 +178,7 @@ export class FrameAnimater<
       const remains: INextFrame[] = [];
       for (let i = 0; i < l; ++i) {
         const w = which[i];
-        const { condition } = w;
+        const { expression: condition } = w;
         if (typeof condition !== 'function') {
           remains.push(w);
           continue;

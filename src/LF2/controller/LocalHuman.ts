@@ -5,6 +5,9 @@ import { BaseController, TKeyName } from "./BaseController";
 type TKeyCodeMap = { [x in TKeyName]?: string };
 type TCodeKeyMap = { [x in string]?: TKeyName };
 export class LocalHuman extends BaseController implements IKeyboardCallback {
+  readonly is_local_human = true;
+  static is = (v: any): v is LocalHuman => v?.is_local_human === true
+
   readonly which: string;
   private _key_code_map: TKeyCodeMap = {};
   private _code_key_map: TCodeKeyMap = {};

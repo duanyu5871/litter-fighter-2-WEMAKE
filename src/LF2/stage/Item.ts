@@ -113,11 +113,11 @@ export default class Item {
     }
     if (is_num(y)) e.position.y = y;
 
-    if (e instanceof Character) {
+    if (Character.is(e)) {
       e.team = this.stage.enemy_team;
       e.name = e.data.base.name;
       e.controller = new BotEnemyChaser(e);
-    } else if (e instanceof Weapon && !is_num(y)) {
+    } else if (Weapon.is(e) && !is_num(y)) {
       e.position.y = 450;
     }
     this.entities.add(e);

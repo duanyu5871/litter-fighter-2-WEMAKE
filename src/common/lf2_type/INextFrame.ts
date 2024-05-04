@@ -16,5 +16,5 @@ export interface INextFrame {
    * @type {Defines.FacingFlag}
    */
   facing?: number;
-  condition?: string | ((e: any) => boolean);
+  expression?: string | ((e: any) => boolean);
 }

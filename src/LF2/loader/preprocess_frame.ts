@@ -4,7 +4,7 @@ import { IEntityPictureInfo, IFrameInfo, IGameObjData, ITexturePieceInfo } from 
 import { IRect } from '../../common/lf2_type/IRect';
 import { traversal } from '../../common/traversal';
 import LF2 from '../LF2';
-import { preprocess_next_frame } from './preprocess_next_frame';
+import { cook_next_frame } from './preprocess_next_frame';
 const get_keys = <V extends {}>(v: V): (keyof V)[] => {
   return Object.keys(v) as (keyof V)[]
 }
@@ -122,12 +122,12 @@ const cook_frame_hit = (frame: IFrameInfo) => {
   const hit = frame.hit;
   if (!hit) return;
 
-  hit.sequences && traversal(hit.sequences, (k, v) => v && preprocess_next_frame(v));
+  hit.sequences && traversal(hit.sequences, (k, v) => v && cook_next_frame(v));
 
   hit && get_keys(hit).forEach(k => {
     if (k === 'sequences') return;
     const v = hit[k];
-    v && preprocess_next_frame(v);
+    v && cook_next_frame(v);
   });
 }
 
@@ -136,7 +136,7 @@ function cook_frame_hold(frame: IFrameInfo) {
   const hold = frame.hold;
   hold && get_keys(hold).forEach(k => {
     const v = hold[k];
-    if (v) preprocess_next_frame(v);
+    if (v) cook_next_frame(v);
   });
 }
 

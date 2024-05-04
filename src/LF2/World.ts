@@ -112,7 +112,7 @@ export class World {
 
   add_game_objs(...objs: FrameAnimater[]) {
     for (const e of objs) {
-      if (e instanceof Character && e.controller instanceof LocalHuman) {
+      if (Character.is(e) && LocalHuman.is(e.controller)) {
         this.player_characters.set(e.controller.which, e);
         this._callbacks.emit('on_player_character_add')(e.controller.which)
       }
@@ -131,7 +131,7 @@ export class World {
 
   del_game_objs(...objs: FrameAnimater[]) {
     for (const e of objs) {
-      if (e instanceof Character && e.controller instanceof LocalHuman) {
+      if (Character.is(e) && LocalHuman.is(e.controller)) {
         this.player_characters.delete(e.controller.which);
         this._callbacks.emit('on_player_character_del')(e.controller.which)
       }
@@ -201,7 +201,7 @@ export class World {
     if (!this.bg) return;
     const { left, right, near, far, player_left, player_right } = this.stage;
 
-    const is_player = e.controller instanceof LocalHuman;
+    const is_player = LocalHuman.is(e.controller);
     const l = is_player ? player_left : left;
     const r = is_player ? player_right : right;
 
@@ -374,7 +374,7 @@ export class World {
         const bdy = bf.bdy[j];
         switch (af.state) {
           case Defines.State.Weapon_OnHand: {
-            if (!(a instanceof Weapon)) continue;
+            if (!Weapon.is(a)) continue;
             const atk = a.holder?.get_frame().wpoint?.attacking;
             if (!atk) continue;
             const ooo = a.data.weapon_strength?.[atk];
@@ -393,22 +393,22 @@ export class World {
           case Defines.ItrKind.MagicFlute:
             continue; // todo
           case Defines.ItrKind.Pick:
-            if (!(b instanceof Weapon)) continue;
+            if (!(Weapon.is(b))) continue;
             if (bf.state === Defines.State.Weapon_OnGround) break;
             if (bf.state === Defines.State.HeavyWeapon_OnGround) break;
             continue;
           case Defines.ItrKind.PickSecretly:
-            if (!(b instanceof Weapon) || b.data.base.type === Defines.WeaponType.Heavy) continue;
+            if (!(Weapon.is(b)) || b.data.base.type === Defines.WeaponType.Heavy) continue;
             if (bf.state === Defines.State.Weapon_OnGround) break;
             continue;
           case Defines.ItrKind.ForceCatch:
-            if (b instanceof Character) break;
+            if (Character.is(b)) break;
             continue;
           case Defines.ItrKind.Catch:
-            if (b instanceof Character && bf.state === Defines.State.Tired) break;
+            if (Character.is(b) && bf.state === Defines.State.Tired) break;
             continue;
           case Defines.ItrKind.SuperPunchMe:
-            if (b instanceof Character && !b.weapon && (b.get_frame().state === Defines.State.Standing || b.get_frame().state === Defines.State.Walking)) break;
+            if (Character.is(b) && !b.weapon && (b.get_frame().state === Defines.State.Standing || b.get_frame().state === Defines.State.Walking)) break;
             continue;
           case Defines.ItrKind.Normal:
           case Defines.ItrKind.Heal:

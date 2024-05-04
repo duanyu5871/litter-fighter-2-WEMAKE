@@ -1,7 +1,7 @@
-import { Weapon } from "../../entity/Weapon";
-import { BaseWeaponState } from "./Base";
+import type { Weapon } from "../../entity/Weapon";
+import BaseWeaponState from "./Base";
 
-export class InTheSky extends BaseWeaponState {
+export default class InTheSky extends BaseWeaponState {
   update(e: Weapon): void {
     e.on_gravity();
     e.velocity_decay();

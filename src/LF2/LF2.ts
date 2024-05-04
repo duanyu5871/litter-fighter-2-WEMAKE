@@ -231,7 +231,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
       const o = old.object;
       if (o.userData.owner instanceof Layer)
         o.userData.owner.show_indicators = false;
-      else if (o.userData.owner instanceof Entity)
+      else if (Entity.is(o.userData.owner))
         o.userData.owner.show_indicators = false;
     }
     this._intersection = next;
@@ -242,9 +242,9 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     Log.print("click", o.userData.owner ?? o.userData)
     if (o.userData.owner instanceof Layer)
       o.userData.owner.show_indicators = true;
-    else if (o.userData.owner instanceof Entity) {
+    else if (Entity.is(o.userData.owner)) {
       o.userData.owner.show_indicators = true;
-      if (o.userData.owner instanceof Character) {
+      if (Character.is(o.userData.owner)) {
         this.on_click_character?.(o.userData.owner)
       }
     }

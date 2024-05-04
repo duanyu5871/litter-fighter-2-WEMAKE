@@ -1,6 +1,9 @@
 import { BaseController } from "./BaseController";
 
 export class TestController extends BaseController {
+  readonly is_test_controller = true;
+  static is = (v: any): v is TestController => v?.is_test_controller === true
+
   update() {
     const c = this.character;
     const { x, z } = c.position;

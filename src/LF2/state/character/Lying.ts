@@ -1,4 +1,4 @@
-import { IFrameInfo } from "../../../common/lf2_type";
+import type { IFrameInfo } from "../../../common/lf2_type";
 import { Defines } from "../../../common/lf2_type/defines";
 import { LocalHuman } from "../../controller/LocalHuman";
 import type { Character } from '../../entity/Character';
@@ -11,7 +11,7 @@ export default class Lying extends BaseCharacterState {
     }
   }
   override leave(e: Character, next_frame: IFrameInfo): void {
-    if (e.controller instanceof LocalHuman || e.world.stage.data.id === Defines.THE_VOID_STAGE.id)
+    if (LocalHuman.is(e.controller) || e.world.stage.data.id === Defines.THE_VOID_STAGE.id)
       e.blink(120);
   }
   begin(e: Character) {
