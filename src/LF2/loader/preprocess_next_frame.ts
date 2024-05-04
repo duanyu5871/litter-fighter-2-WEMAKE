@@ -2,7 +2,7 @@ import { INextFrame } from "../../common/lf2_type";
 import { Defines } from '../../common/lf2_type/defines';
 import { FrameAnimater } from '../FrameAnimater';
 import Expression from '../base/Expression';
-import { Character } from '../entity/Character';
+import Character from '../entity/Character';
 import Entity from '../entity/Entity';
 
 export function cook_next_frame(i: INextFrame | INextFrame[]): void {

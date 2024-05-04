@@ -1,6 +1,6 @@
 import type { FrameAnimater } from "./FrameAnimater";
-import type { Ball } from "./entity/Ball";
-import type { Character } from "./entity/Character";
+import type Ball from "./entity/Ball";
+import type Character from "./entity/Character";
 import type Entity from "./entity/Entity";
 import type Weapon from "./entity/Weapon";
 

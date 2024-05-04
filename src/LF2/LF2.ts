@@ -26,7 +26,7 @@ import { LocalHuman } from "./controller/LocalHuman";
 import { IKeyboardCallback, KeyEvent, Keyboard } from './dom/Keyboard';
 import Pointings, { IPointingsCallback, PointingEvent } from './dom/Pointings';
 import './entity/Ball';
-import { Character } from './entity/Character';
+import Character from './entity/Character';
 import Entity from './entity/Entity';
 import Weapon from './entity/Weapon';
 import DatMgr from './loader/DatMgr';

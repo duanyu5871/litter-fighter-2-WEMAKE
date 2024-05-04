@@ -1,4 +1,4 @@
-import { Character } from '../../entity/Character';
+import Character from '../../entity/Character';
 import BaseCharacterState from "./Base";
 
 export default class Teleport_ToNearestEnemy extends BaseCharacterState {

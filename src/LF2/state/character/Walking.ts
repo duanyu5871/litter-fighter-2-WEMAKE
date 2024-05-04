@@ -1,5 +1,5 @@
 import { Defines } from '../../../common/lf2_type/defines';
-import type { Character } from '../../entity/Character';
+import type Character from '../../entity/Character';
 import BaseCharacterState from "./Base";
 
 export default class Walking extends BaseCharacterState {

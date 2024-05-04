@@ -1,7 +1,7 @@
 import { TNextFrame } from '../../common/lf2_type';
 import { IHitKeyCollection } from '../../common/lf2_type/IHitKeyCollection';
 import { Defines } from '../../common/lf2_type/defines';
-import { Character } from '../entity/Character';
+import Character from '../entity/Character';
 export type TKeyName = 'L' | 'R' | 'U' | 'D' | 'a' | 'j' | 'd'
 export type TKeys = Record<TKeyName, string>
 export const KEY_NAME_LIST = ['d', 'L', 'R', 'U', 'D', 'j', 'a'] as const;

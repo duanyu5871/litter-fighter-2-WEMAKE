@@ -9,17 +9,13 @@ import Callbacks, { NoEmitCallbacks } from '../base/Callbacks';
 import { BaseController } from '../controller/BaseController';
 import { InvalidController } from '../controller/InvalidController';
 import { CHARACTER_STATES } from '../state/character';
-import { Ball } from './Ball';
+import Ball from './Ball';
 import Entity from './Entity';
-import { IEntityCallbacks } from './IEntityCallbacks';
+import ICharacterCallbacks from './ICharacterCallbacks';
 import Weapon from './Weapon';
 import { same_face, turn_face } from './face_helper';
 
-export interface ICharacterCallbacks<E extends Character = Character> extends IEntityCallbacks<E> {
-  on_dead?(e: E): void;
-}
-
-export class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, ICharacterData> {
+export default class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, ICharacterData> {
   static is = (v: any): v is Character => v?.is_character === true;
   readonly is_character = true
   protected _callbacks = new Callbacks<ICharacterCallbacks>()

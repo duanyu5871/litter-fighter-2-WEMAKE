@@ -1,4 +1,4 @@
-import type { Character } from '../../entity/Character';
+import type Character from '../../entity/Character';
 import BaseCharacterState from "./Base";
 
 

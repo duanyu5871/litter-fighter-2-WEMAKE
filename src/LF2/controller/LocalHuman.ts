@@ -1,5 +1,5 @@
 import { IKeyboardCallback, KeyEvent } from '../dom/Keyboard';
-import { Character } from '../entity/Character';
+import Character from '../entity/Character';
 import { BaseController, TKeyName } from "./BaseController";
 
 type TKeyCodeMap = { [x in TKeyName]?: string };

@@ -1,5 +1,5 @@
 import type { IFrameInfo } from "../../../common/lf2_type";
-import type { Character } from '../../entity/Character';
+import type Character from '../../entity/Character';
 import find_direction from "../../entity/find_frame_direction";
 import BaseCharacterState from "./Base";
 

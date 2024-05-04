@@ -17,7 +17,7 @@ import Shadow from './Shadow';
 import type Weapon from './Weapon';
 import { turn_face } from './face_helper';
 import { States } from '../state/base/States';
-import { IEntityCallbacks } from './IEntityCallbacks';
+import IEntityCallbacks from './IEntityCallbacks';
 export type TData = IBaseData | ICharacterData | IWeaponData | IEntityData | IBallData
 export const V_SHAKE = 6;
 export const A_SHAKE = 6;

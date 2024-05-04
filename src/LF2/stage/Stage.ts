@@ -11,7 +11,7 @@ import type { World } from "../World";
 import Callbacks, { NoEmitCallbacks } from "../base/Callbacks";
 import { new_team } from "../base/new_id";
 import Background from "../bg/Background";
-import { Character } from "../entity/Character";
+import Character from "../entity/Character";
 import type IStageCallbacks from "./IStageCallbacks";
 import Item from "./Item";
 

@@ -1,4 +1,4 @@
-import type { Character } from '../../entity/Character';
+import type Character from '../../entity/Character';
 import BaseState from "../base/BaseState";
 
 export default class BaseCharacterState extends BaseState<Character> {

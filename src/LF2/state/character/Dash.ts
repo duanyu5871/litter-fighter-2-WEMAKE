@@ -1,6 +1,6 @@
 import type { IFrameInfo } from "../../../common/lf2_type";
 import { Defines } from "../../../common/lf2_type/defines";
-import type { Character } from '../../entity/Character';
+import type Character from '../../entity/Character';
 import BaseCharacterState from "./Base";
 export default class Dash extends BaseCharacterState {
   enter(e: Character, prev_frame: IFrameInfo): void {
