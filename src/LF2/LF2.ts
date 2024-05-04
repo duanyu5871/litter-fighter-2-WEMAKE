@@ -22,7 +22,7 @@ import { new_id, new_team } from './base/new_id';
 import { random_in_range } from '../common/random_in_range';
 import Layer from './bg/Layer';
 import { KEY_NAME_LIST } from './controller/BaseController';
-import { LocalHuman } from "./controller/LocalHuman";
+import LocalHuman from "./controller/LocalHuman";
 import { IKeyboardCallback, KeyEvent, Keyboard } from './dom/Keyboard';
 import Pointings, { IPointingsCallback, PointingEvent } from './dom/Pointings';
 import './entity/Ball';

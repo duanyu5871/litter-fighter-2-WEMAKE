@@ -1,6 +1,6 @@
 import type { IFrameInfo } from "../../../common/lf2_type";
 import { Defines } from "../../../common/lf2_type/defines";
-import { LocalHuman } from "../../controller/LocalHuman";
+import LocalHuman from "../../controller/LocalHuman";
 import type Character from '../../entity/Character';
 import BaseCharacterState from "./Base";
 

@@ -7,7 +7,7 @@ import LF2 from './LF2/LF2';
 import { PlayerInfo } from './LF2/PlayerInfo';
 import { TKeyName } from './LF2/controller/BaseController';
 import random_get from './common/random_get';
-import { LocalHuman } from './LF2/controller/LocalHuman';
+import LocalHuman from './LF2/controller/LocalHuman';
 import { Checkbox } from './Component/Checkbox';
 import { Defines } from './common/lf2_type/defines';
 import { ToggleButton } from './Component/ToggleButton';
