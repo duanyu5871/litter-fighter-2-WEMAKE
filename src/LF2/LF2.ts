@@ -19,7 +19,7 @@ import { World } from './World';
 import Callbacks, { NoEmitCallbacks } from './base/Callbacks';
 import { get_short_file_size_txt } from './base/get_short_file_size_txt';
 import { new_id, new_team } from './base/new_id';
-import { random_in_range } from './base/random_in_range';
+import { random_in_range } from '../common/random_in_range';
 import Layer from './bg/Layer';
 import { KEY_NAME_LIST } from './controller/BaseController';
 import { LocalHuman } from "./controller/LocalHuman";
@@ -507,14 +507,14 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
 
   change_stage(stage_info: IStageInfo): void
   change_stage(stage_id: string): void
-  change_stage(arg: IStageInfo | string): void {
-    if (is_str(arg)) {
-      const stage_info = this.stages.data?.find(v => v.id === arg)
-      if (stage_info) this.change_stage(stage_info)
-    } else {
-      if (arg === this.world.stage.data) return;
-      this.world.stage = new Stage(this.world, arg)
-    }
+  change_stage(arg_0: IStageInfo | string | undefined): void {
+    if (arg_0 === this.world.stage.data)
+      return;
+    if (is_str(arg_0))
+      arg_0 = this.stages.data?.find(v => v.id === arg_0)
+    if (!arg_0)
+      return;
+    this.world.stage = new Stage(this.world, arg_0)
   }
   remove_stage() {
     this.world.stage = new Stage(this.world, Defines.THE_VOID_STAGE)
@@ -523,8 +523,8 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   goto_next_stage() {
     const next = this.world.stage.data.next;
     const next_stage = this.stages.data?.find(v => v.id === next);
-
     if (!next_stage) {
+      this.world.stage.stop_bgm();
       this.sound_mgr.play_with_load(Defines.Sounds.StagePass);
       this._callbacks.emit('on_stage_pass')();
       return;

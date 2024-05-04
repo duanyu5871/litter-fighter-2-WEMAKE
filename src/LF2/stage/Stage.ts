@@ -1,25 +1,19 @@
 import { Warn } from "../../Log";
+import find_in_set from "../../common/find_in_set";
 import { is_num } from "../../common/is_num";
 import { IBgData } from "../../common/lf2_type";
 import { IStageInfo } from "../../common/lf2_type/IStageInfo";
 import { IStageObjectInfo } from "../../common/lf2_type/IStageObjectInfo";
 import { IStagePhaseInfo } from "../../common/lf2_type/IStagePhaseInfo";
 import { Defines } from "../../common/lf2_type/defines";
+import { random_in_range } from "../../common/random_in_range";
 import type { World } from "../World";
 import Callbacks, { NoEmitCallbacks } from "../base/Callbacks";
 import { new_team } from "../base/new_id";
-import { random_in_range } from "../base/random_in_range";
 import Background from "../bg/Background";
 import { Character } from "../entity/Character";
+import type IStageCallbacks from "./IStageCallbacks";
 import Item from "./Item";
-
-export interface IStageCallbacks {
-  on_phase_changed?(
-    stage: Stage,
-    curr: IStagePhaseInfo | undefined,
-    prev: IStagePhaseInfo | undefined
-  ): void;
-}
 
 export default class Stage {
   readonly world: World;
@@ -93,8 +87,11 @@ export default class Stage {
     if (!lf2.sound_mgr.has(music))
       await lf2.sound_mgr.preload(music, lf2.import(music))
     if (this._disposed) return;
-    this._stop_bgm = lf2.sound_mgr.play_bgm(music)
-    this._disposers.push(this._stop_bgm);
+    this._stop_bgm = lf2.sound_mgr.play_bgm(music);
+  }
+
+  stop_bgm(): void {
+    this._stop_bgm?.();
   }
 
   enter_phase(idx: number) {
@@ -122,7 +119,6 @@ export default class Stage {
     }
   }
   enter_next_phase(): void {
-    console.log('!')
     if (!this.is_last_phase()) {
       this.enter_phase(this._cur_phase_idx + 1);
       return;
@@ -223,10 +219,5 @@ export default class Stage {
     if (this.all_enemies_dead()) {
       this.enter_phase(this._cur_phase_idx + 1);
     }
-  }
-}
-function find_in_set<T>(set: Set<T>, p: (v: T) => any): T | undefined {
-  for (const i of set) {
-    if (p(i)) return i;
   }
 }

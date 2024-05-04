@@ -6,7 +6,7 @@ import random_get from "../../common/random_get";
 import random_take from "../../common/random_take";
 import { factory } from "../Factory";
 import { FrameAnimater } from "../FrameAnimater";
-import { random_in_range } from "../base/random_in_range";
+import { random_in_range } from "../../common/random_in_range";
 import { BotEnemyChaser } from "../controller/BotEnemyChaser";
 import { Character, ICharacterCallbacks } from "../entity/Character";
 import { Entity } from "../entity/Entity";
