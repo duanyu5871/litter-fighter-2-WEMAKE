@@ -1,6 +1,6 @@
 
 import { Defines } from "../../../common/lf2_type/defines";
-import { Weapon } from "../../entity/Weapon";
+import Weapon from "../../entity/Weapon";
 import { States } from "../base/States";
 import { ENTITY_STATES } from "../entity";
 import BaseWeaponState from "./Base";

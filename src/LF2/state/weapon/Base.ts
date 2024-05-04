@@ -1,4 +1,4 @@
-import { Weapon } from "../../entity/Weapon";
+import Weapon from "../../entity/Weapon";
 import BaseState from "../base/BaseState";
 
 export default class BaseWeaponState extends BaseState<Weapon> {

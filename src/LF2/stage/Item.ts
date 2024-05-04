@@ -9,8 +9,8 @@ import { FrameAnimater } from "../FrameAnimater";
 import { random_in_range } from "../../common/random_in_range";
 import { BotEnemyChaser } from "../controller/BotEnemyChaser";
 import { Character, ICharacterCallbacks } from "../entity/Character";
-import { Entity } from "../entity/Entity";
-import { Weapon } from "../entity/Weapon";
+import Entity from "../entity/Entity";
+import Weapon from "../entity/Weapon";
 import Stage from "./Stage";
 
 export default class Item {

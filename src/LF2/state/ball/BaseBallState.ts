@@ -1,4 +1,4 @@
-import { Entity } from "../../entity/Entity";
+import Entity from "../../entity/Entity";
 import BaseState from "../base/BaseState";
 
 export class BaseBallState<E extends Entity = Entity> extends BaseState<E> {

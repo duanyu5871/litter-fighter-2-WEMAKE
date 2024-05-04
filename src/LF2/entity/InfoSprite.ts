@@ -1,7 +1,8 @@
 import * as T from 'three';
 import { get_team_shadow_color } from '../base/get_team_shadow_color';
 import { get_team_text_color } from '../base/get_team_text_color';
-import type { Entity, IEntityCallbacks } from './Entity';
+import type Entity from './Entity';
+import type { IEntityCallbacks } from './IEntityCallbacks';
 import { Character } from './Character';
 
 const BAR_W = 40;

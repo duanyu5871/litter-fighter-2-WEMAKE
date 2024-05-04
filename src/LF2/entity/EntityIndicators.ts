@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { IRect } from '../../common/lf2_type/IRect';
-import { Entity } from './Entity';
+import Entity from './Entity';
 export const EMPTY_ARR = [] as const;
 export const INDICATORS_COLOR = {
   bdy: 0x00ff00,

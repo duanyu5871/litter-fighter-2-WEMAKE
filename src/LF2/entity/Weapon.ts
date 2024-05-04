@@ -5,8 +5,8 @@ import { GONE_FRAME_INFO } from "../FrameAnimater";
 import { ICube, World } from "../World";
 import { WEAPON_STATES } from "../state/weapon";
 import { Character } from "./Character";
-import { Entity } from "./Entity";
-export class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData> {
+import Entity from "./Entity";
+export default class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData> {
   static is = (v: any): v is Weapon => v?.is_ball === true;
   readonly is_weapon = true
 

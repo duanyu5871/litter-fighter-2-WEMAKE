@@ -4,7 +4,7 @@ import { factory } from '../Factory';
 import { EMPTY_FRAME_INFO } from '../FrameAnimater';
 import type { ICube, World } from '../World';
 import { BALL_STATES } from '../state/ball';
-import { Entity } from './Entity';
+import Entity from './Entity';
 
 export class Ball extends Entity<IBallFrameInfo, IBallInfo, IBallData> {
   static is = (v: any): v is Ball => v?.is_ball === true;

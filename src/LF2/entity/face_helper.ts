@@ -1,5 +1,5 @@
 import { TFace } from "../../common/lf2_type";
-import { Entity } from "./Entity";
+import Entity from "./Entity";
 
 export function same_face(ref: Entity, target: Entity): TFace {
   return ref.facing === target.facing ? 1 : -1;

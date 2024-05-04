@@ -10,8 +10,9 @@ import { BaseController } from '../controller/BaseController';
 import { InvalidController } from '../controller/InvalidController';
 import { CHARACTER_STATES } from '../state/character';
 import { Ball } from './Ball';
-import { Entity, IEntityCallbacks } from './Entity';
-import { Weapon } from './Weapon';
+import Entity from './Entity';
+import { IEntityCallbacks } from './IEntityCallbacks';
+import Weapon from './Weapon';
 import { same_face, turn_face } from './face_helper';
 
 export interface ICharacterCallbacks<E extends Character = Character> extends IEntityCallbacks<E> {

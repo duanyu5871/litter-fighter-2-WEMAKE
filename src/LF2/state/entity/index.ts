@@ -1,5 +1,5 @@
 import { Defines } from "../../../common/lf2_type/defines";
-import { Entity } from "../../entity/Entity";
+import Entity from "../../entity/Entity";
 import { States } from "../base/States";
 import TurnInto from "./TurnInto";
 

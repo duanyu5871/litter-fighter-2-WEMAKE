@@ -1,6 +1,6 @@
 import * as T from 'three';
 import type { IWorldCallbacks } from '../IWorldCallbacks';
-import type { Entity } from './Entity';
+import type Entity from './Entity';
 import type Stage from '../stage/Stage';
 
 /**

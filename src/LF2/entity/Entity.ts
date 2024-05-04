@@ -14,9 +14,10 @@ import { ENTITY_STATES } from '../state/entity';
 import { EntityIndicators } from './EntityIndicators';
 import { InfoSprite } from './InfoSprite';
 import Shadow from './Shadow';
-import type { Weapon } from './Weapon';
+import type Weapon from './Weapon';
 import { turn_face } from './face_helper';
 import { States } from '../state/base/States';
+import { IEntityCallbacks } from './IEntityCallbacks';
 export type TData = IBaseData | ICharacterData | IWeaponData | IEntityData | IBallData
 export const V_SHAKE = 6;
 export const A_SHAKE = 6;
@@ -30,20 +31,7 @@ export interface IVictimRest {
   a_frame: IFrameInfo,
   b_frame: IFrameInfo
 }
-export interface IEntityCallbacks<E extends Entity = Entity> {
-  on_max_hp_changed?(e: E, value: number, prev: number): void;
-  on_max_mp_changed?(e: E, value: number, prev: number): void;
-  on_hp_changed?(e: E, value: number, prev: number): void;
-  on_mp_changed?(e: E, value: number, prev: number): void;
-  on_self_healing_hp_changed?(e: E, value: number, prev: number): void;
-  on_self_healing_mp_changed?(e: E, value: number, prev: number): void;
-
-
-  on_team_changed?(e: E, value: string, prev: string): void;
-  on_name_changed?(e: E, value: string, prev: string): void;
-  on_disposed?(e: E): void;
-}
-export class Entity<
+export default class Entity<
   F extends IFrameInfo = IFrameInfo,
   I extends IGameObjInfo = IGameObjInfo,
   D extends IGameObjData<I, F> = IGameObjData<I, F>

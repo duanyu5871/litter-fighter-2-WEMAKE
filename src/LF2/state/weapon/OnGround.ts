@@ -1,5 +1,5 @@
 import type { IFrameInfo } from "../../../common/lf2_type";
-import type { Weapon } from "../../entity/Weapon";
+import type Weapon from "../../entity/Weapon";
 import BaseWeaponState from "./Base";
 
 export default class OnGround extends BaseWeaponState {

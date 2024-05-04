@@ -1,4 +1,4 @@
-import type { Weapon } from "../../entity/Weapon";
+import type Weapon from "../../entity/Weapon";
 import BaseWeaponState from "./Base";
 
 export default class InTheSky extends BaseWeaponState {

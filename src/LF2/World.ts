@@ -13,10 +13,12 @@ import { FPS } from './base/FPS';
 import { LocalHuman } from './controller/LocalHuman';
 import { Ball } from './entity/Ball';
 import { Character } from './entity/Character';
-import { Entity } from './entity/Entity';
+import Entity from './entity/Entity';
 import './entity/Weapon';
-import { Weapon } from './entity/Weapon';
+import Weapon from './entity/Weapon';
 import Stage from './stage/Stage';
+import Interval from './dom/Interval';
+import Render from './dom/Render';
 export interface ICube {
   left: number;
   right: number;
@@ -145,8 +147,8 @@ export class World {
     }
   }
 
-  private _render_request_id?: ReturnType<typeof requestAnimationFrame>;
-  private _update_timer_id?: ReturnType<typeof setInterval>;
+  private _render_request_id?: ReturnType<typeof Render.run>;
+  private _update_timer_id?: ReturnType<typeof Interval.set>;
 
   private _r_prev_time = 0;
   private _r_fps = new FPS()
@@ -168,21 +170,21 @@ export class World {
         this._r_fps.update(dt);
         this.overlay.FPS = this._r_fps.value
       }
-      this._render_request_id = requestAnimationFrame(on_render)
+      this._render_request_id = Render.run(on_render)
       this._r_prev_time = time
     }
-    this._render_request_id && cancelAnimationFrame(this._render_request_id);
-    this._render_request_id = requestAnimationFrame(on_render);
+    this._render_request_id && Render.stop(this._render_request_id);
+    this._render_request_id = Render.run(on_render);
   }
 
   stop_render() {
-    this._render_request_id && cancelAnimationFrame(this._render_request_id);
+    this._render_request_id && Render.stop(this._render_request_id);
     this._render_request_id = 0;
   }
 
   start_update() {
     if (this.disposed) return;
-    if (this._update_timer_id) clearInterval(this._update_timer_id);
+    if (this._update_timer_id) Interval.del(this._update_timer_id);
     const dt = Math.max((1000 / 60) / this._playrate, 1);
     const on_update = () => {
       const time = Date.now()
@@ -193,7 +195,7 @@ export class World {
       }
       this._u_prev_time = time
     }
-    this._update_timer_id = setInterval(on_update, dt);
+    this._update_timer_id = Interval.set(on_update, dt);
   }
 
   restrict_character(e: Character) {
@@ -495,7 +497,7 @@ export class World {
     return { left, right: left + i.w, top, bottom: top - i.h, near, far }
   }
   stop_update() {
-    this._update_timer_id && clearInterval(this._update_timer_id);
+    this._update_timer_id && Interval.del(this._update_timer_id);
     this._update_timer_id = void 0;
   }
   private _playrate = 1;

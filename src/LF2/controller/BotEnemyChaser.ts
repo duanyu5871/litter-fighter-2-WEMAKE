@@ -1,7 +1,7 @@
 import { Defines } from "../../common/lf2_type/defines";
 import { Character } from "../entity/Character";
-import { Entity } from "../entity/Entity";
-import { Weapon } from "../entity/Weapon";
+import Entity from "../entity/Entity";
+import Weapon from "../entity/Weapon";
 import { BaseController } from "./BaseController";
 
 export class BotEnemyChaser extends BaseController {
