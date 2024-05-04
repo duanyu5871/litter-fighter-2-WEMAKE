@@ -13,7 +13,7 @@ import { Defines } from '../common/lf2_type/defines';
 import random_get from '../common/random_get';
 import random_take from '../common/random_take';
 import { ILf2Callback } from './ILf2Callback';
-import { Loader } from './Loader';
+import { Loader } from './base/Loader';
 import { PlayerInfo } from './PlayerInfo';
 import { World } from './World';
 import Callbacks, { NoEmitCallbacks } from './base/Callbacks';
