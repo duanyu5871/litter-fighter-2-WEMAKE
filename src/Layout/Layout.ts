@@ -3,7 +3,7 @@ import LF2 from '../LF2/LF2';
 import Callbacks from '../LF2/base/Callbacks';
 import Expression, { ValGetter } from '../LF2/base/Expression';
 import { create_picture, type TImageInfo } from '../LF2/loader/loader';
-import { NumberAnimation } from '../NumberAnimation';
+import NumberAnimation from '../NumberAnimation';
 import { is_arr } from '../common/is_arr';
 import { is_bool } from '../common/is_bool';
 import { is_num } from '../common/is_num';

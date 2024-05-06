@@ -1,11 +1,12 @@
 import * as THREE from 'three';
 import type { IPlayerInfoCallback, PlayerInfo } from "../../LF2/PlayerInfo";
-import { NumberAnimation } from "../../NumberAnimation";
+import NumberAnimation from "../../NumberAnimation";
 import { LayoutComponent } from "./LayoutComponent";
 import LayoutMeshBuilder from "./LayoutMeshBuilder";
 import { TKeyName } from '../../LF2/controller/BaseController';
 import { Defines } from '../../common/lf2_type/defines';
 import { ILf2Callback } from '../../LF2/ILf2Callback';
+import { SineAnimation } from '../../SineAnimation';
 
 /**
  * 显示玩家角色选择的角色头像
@@ -19,11 +20,13 @@ export default class PlayerCharacterHead extends LayoutComponent {
   protected _player_id: string | undefined = void 0;
   protected _player: PlayerInfo | undefined = void 0;
   protected _jid: number = 0;
-  protected _mesh: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial> | undefined
-  protected _opacity: NumberAnimation = new NumberAnimation(0, 1, 60, false);
+  protected _mesh_head: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial> | undefined
+  protected _mesh_join: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial> | undefined
+  protected _head_opacity: NumberAnimation = new NumberAnimation(0, 1, 60, false);
   protected _head: string | undefined = void 0;
   protected _joined: boolean = false;
   protected _character_id: string | undefined = void 0;
+  protected _hints_opacity: SineAnimation = new SineAnimation(0.85, 1, 1 / 25);
 
   protected _player_listener: Partial<IPlayerInfoCallback> = {
     on_joined_changed: (joined): void => {
@@ -43,12 +46,27 @@ export default class PlayerCharacterHead extends LayoutComponent {
       if (cheat_name === Defines.Cheats.Hidden && !enabled) this.handle_hidden_character();
     },
   };
+
   init(...args: string[]): this {
-    this._player_id = args[0]
+    this._player_id = args[0];
     return this;
   }
 
+  async create_hints_mesh() {
+    const [w, h] = this.layout.size
+    const src = 'sprite/CMA.png'
+    const hint_textures = await this.lf2.img_mgr.create_picture(src);
+    this._mesh_join = LayoutMeshBuilder.create()
+      .center(0.5, 0.5)
+      .size(hint_textures.i_w, hint_textures.i_h)
+      .build(hint_textures.texture);
+    this._mesh_join.position.set(w / 2, -h / 2, 0);
+    this.layout.sprite?.add(this._mesh_join)
+    this._mesh_join.visible = !this._player?.joined
+  }
+
   on_mount(): void {
+    this.create_hints_mesh();
     if (!this._player_id) return;
     this._player = this.lf2.player_infos.get(this._player_id);
     if (!this._player) return;
@@ -103,23 +121,25 @@ export default class PlayerCharacterHead extends LayoutComponent {
   }
 
   protected handle_changed() {
-    if (!this._mesh && this._joined && this._head) {
+    if (!this._mesh_head && this._joined && this._head) {
       this.update_mesh(++this._jid, this._head).catch(e => console.error(e))
     } else {
       this.fade_out();
     }
   }
   protected dispose_mesh() {
-    this._mesh?.geometry.dispose();
-    this._mesh?.material.map?.dispose();
-    this._mesh?.removeFromParent();
-    this._mesh = void 0;
+    this._mesh_head?.geometry.dispose();
+    this._mesh_head?.material.map?.dispose();
+    this._mesh_head?.removeFromParent();
+    this._mesh_head = void 0;
   }
   protected fade_out() {
-    this._opacity.play(true);
+    if (this._mesh_join) this._mesh_join.visible = true
+    this._head_opacity.play(true);
   }
   protected fade_in() {
-    this._opacity.play(false);
+    if (this._mesh_join) this._mesh_join.visible = false
+    this._head_opacity.play(false);
   }
 
   protected async update_mesh(jid: number, src: string) {
@@ -128,29 +148,33 @@ export default class PlayerCharacterHead extends LayoutComponent {
     if (jid !== this._jid) return;
     const pic = await this.lf2.img_mgr.create_picture_by_img_key(src, img.key);
     if (jid !== this._jid) return;
-    const builder = LayoutMeshBuilder.create().size(img.w, img.h);
-    if (!this._mesh) {
-      this._mesh = builder.build(pic.texture);
-      this._mesh.name = PlayerCharacterHead.name
-      this.layout.sprite?.add(this._mesh);
+    const [w, h] = this.layout.size
+    const builder = LayoutMeshBuilder.create().size(w, h);
+    if (!this._mesh_head) {
+      this._mesh_head = builder.build(pic.texture);
+      this._mesh_head.name = PlayerCharacterHead.name
+      this.layout.sprite?.add(this._mesh_head);
     } else {
-      this._mesh.geometry.dispose();
-      this._mesh.material.map?.dispose();
-      this._mesh.geometry = builder.build_geometry()
-      this._mesh.material.map = pic.texture;
-      this._mesh.material.needsUpdate = true;
+      this._mesh_head.geometry.dispose();
+      this._mesh_head.material.map?.dispose();
+      this._mesh_head.geometry = builder.build_geometry()
+      this._mesh_head.material.map = pic.texture;
+      this._mesh_head.material.needsUpdate = true;
     }
     this.fade_in();
   }
 
   on_render(dt: number): void {
-    if (this._mesh) {
-      this._mesh.material.opacity = this._opacity.update(dt);
-      this._mesh.material.needsUpdate = true;
+    if (this._mesh_head) {
+      this._mesh_head.material.opacity = this._head_opacity.update(dt);
+      this._mesh_head.material.needsUpdate = true;
     }
-    if (this._opacity.is_finish && this._opacity.reverse) {
+    if (this._head_opacity.is_finish && this._head_opacity.reverse) {
       if (!this._head || !this._joined) this.dispose_mesh();
       else this.update_mesh(++this._jid, this._head).catch(e => console.error(e))
+    }
+    if (this._mesh_join?.visible) {
+      this._mesh_join.material.opacity = this._hints_opacity.update(dt);
     }
   }
 }

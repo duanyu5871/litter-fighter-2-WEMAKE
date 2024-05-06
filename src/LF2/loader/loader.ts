@@ -186,6 +186,11 @@ export class ImageMgr {
     }
     return create_picture(id, img_info, picture);
   }
+
+  async create_picture(src: string) {
+    const img = await this.load_img(src, () => this.lf2.import(src));
+    return await this.create_picture_by_img_key(src, img.key);
+  }
 }
 
 export const error_texture = () => {
