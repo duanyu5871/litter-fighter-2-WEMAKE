@@ -4,7 +4,7 @@ import { TKeyName } from '../../LF2/controller/BaseController';
 import { LayoutComponent } from './LayoutComponent';
 import { TextBuilder } from './TextBuilder';
 
-export class PlayerKeyEditor extends LayoutComponent implements IPlayerInfoCallback {
+export default class PlayerKeyEditor extends LayoutComponent implements IPlayerInfoCallback {
   protected _which?: string;
   protected _key_name?: string;
   protected _sprite?: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial, THREE.Object3DEventMap>;

@@ -3,7 +3,7 @@ import { ILf2Callback } from '../../LF2/ILf2Callback';
 import { LayoutComponent } from './LayoutComponent';
 import { TextBuilder } from './TextBuilder';
 
-export class LoadingFileNameDisplayer extends LayoutComponent implements ILf2Callback {
+export default class LoadingFileNameDisplayer extends LayoutComponent implements ILf2Callback {
   override on_mount(): void {
     super.on_mount();
     this.lf2.callbacks.add(this)

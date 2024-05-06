@@ -1,5 +1,9 @@
 export default class Render {
-  static readonly run = requestAnimationFrame;
-  static readonly stop = cancelAnimationFrame;
+  static run(handler: (time: number) => void) {
+    return window.requestAnimationFrame(handler);
+  };
+  static stop(handle: number): void {
+    return window.cancelAnimationFrame(handle);
+  };
   private constructor() { }
 }

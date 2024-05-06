@@ -16,6 +16,8 @@ import { read_as_4_nums } from './utils/read_as_4_nums';
 
 export interface ILayoutCallback {
   on_click?(): void;
+  on_show?(layout: Layout): void;
+  on_hide?(layout: Layout): void;
 }
 
 export default class Layout {
@@ -127,10 +129,12 @@ export default class Layout {
   }
 
   on_show() {
+    this._callbacks.emit('on_show')(this);
     for (const c of this._components) c.on_show?.();
   }
 
   on_hide() {
+    this._callbacks.emit('on_hide')(this);
     for (const c of this._components) c.on_hide?.();
   }
 
