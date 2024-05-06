@@ -13,6 +13,7 @@ import { LayoutComponent } from './Component/LayoutComponent';
 import type { ILayoutInfo } from './ILayoutInfo';
 import { read_as_2_nums } from './utils/read_as_2_nums';
 import { read_as_4_nums } from './utils/read_as_4_nums';
+import { TKeyName } from '../LF2/controller/BaseController';
 
 export interface ILayoutCallback {
   on_click?(): void;
@@ -199,8 +200,7 @@ export default class Layout {
         const img_key = [img_path, sx, sy, sw, sh, flip_x ? 1 : 0, flip_y ? 1 : 0].join('_')
         const img_info = this.lf2.img_mgr.find(img_key);
         if (img_info) return img_info;
-        const img_url = await lf2.import(img_path);
-        return await this.lf2.img_mgr.load_img(img_key, img_url, (img, cvs, ctx) => {
+        return await this.lf2.img_mgr.load_img(img_key, () => lf2.import(img_path), (img, cvs, ctx) => {
           const w = sw || img.width;
           const h = sh || img.height;
           cvs.width = w;
@@ -366,37 +366,50 @@ export default class Layout {
         this._material.opacity = this._opacity_animation.update(dt);
       }
     }
-    for (const item of this.items) {
-      item.on_render(dt);
-    }
+    for (const i of this.items) i.on_render(dt);
+    for (const c of this._components) c.on_render?.(dt);
   }
 
-  on_player_key_down(k: "L" | "R" | "U" | "D" | "a" | "j" | "d") {
+  on_player_key_down(player_id: string, key: TKeyName) {
+    for (const i of this.items) i.on_player_key_down?.(player_id, key);
+    for (const c of this._components) c.on_player_key_down?.(player_id, key);
     const lr_items = this._left_to_right.filter(v => v.visible);
     const lr_lengh = lr_items.length;
+    
+    if (lr_lengh) {
+      switch (key) {
+        case 'L': { // 聚点移动至下一layout（向左）
+          const idx = lr_items.findIndex(v => v === this._focused_item);
+          this._focused_item = lr_items[(Math.max(idx, 0) + lr_lengh - 1) % lr_lengh];
+          break;
+        }
+        case 'R': { // 聚点移动至下一layout（向右）
+          const idx = lr_items.findIndex(v => v === this._focused_item);
+          this._focused_item = lr_items[(idx + 1) % lr_lengh];
+          break;
+        }
+      }
+    }
+
+
     const ud_items = this._top_to_bottom.filter(v => v.visible);
     const ud_lengh = ud_items.length;
-    switch (k) {
-      case 'L': { // 聚点移动至下一layout（向左）
-        const idx = lr_items.findIndex(v => v === this._focused_item);
-        this._focused_item = lr_items[(Math.max(idx, 0) + lr_lengh - 1) % lr_lengh];
-        break;
+    if (ud_lengh) {
+      switch (key) {
+        case 'U': { // 聚点移动至下一layout（向上）
+          const idx = ud_items.findIndex(v => v === this._focused_item);
+          this._focused_item = ud_items[(Math.max(idx, 0) + ud_lengh - 1) % ud_lengh];
+          break;
+        }
+        case 'D': { // 聚点移动至下一layout（向下）
+          const idx = ud_items.findIndex(v => v === this._focused_item);
+          this._focused_item = ud_items[(idx + 1) % ud_lengh];
+          break;
+        }
       }
-      case 'R': { // 聚点移动至下一layout（向右）
-        const idx = lr_items.findIndex(v => v === this._focused_item);
-        this._focused_item = lr_items[(idx + 1) % lr_lengh];
-        break;
-      }
-      case 'U': { // 聚点移动至下一layout（向上）
-        const idx = ud_items.findIndex(v => v === this._focused_item);
-        this._focused_item = ud_items[(Math.max(idx, 0) + ud_lengh - 1) % ud_lengh];
-        break;
-      }
-      case 'D': { // 聚点移动至下一layout（向下）
-        const idx = ud_items.findIndex(v => v === this._focused_item);
-        this._focused_item = ud_items[(idx + 1) % ud_lengh];
-        break;
-      }
+    }
+
+    switch (key) {
       case 'a': {
         this._focused_item?.on_click();
         break;

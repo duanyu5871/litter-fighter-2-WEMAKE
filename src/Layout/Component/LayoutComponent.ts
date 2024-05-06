@@ -1,3 +1,4 @@
+import type { TKeyName } from '../../LF2/controller/BaseController';
 import Layout from '../Layout';
 
 
@@ -36,4 +37,6 @@ export class LayoutComponent {
 
   on_show?(): void;
   on_hide?(): void;
+  on_render?(dt: number): void;
+  on_player_key_down?(player_id: string, key: TKeyName): void
 }

@@ -108,9 +108,10 @@ export class ImageMgr {
     })
   }
 
-  load_img(key: string, src: Src, paint?: PaintFunc): Promise<TImageInfo> {
+  load_img(key: string, get_src: () => Promise<Src>, paint?: PaintFunc): Promise<TImageInfo> {
     return this._requesters.get(key, async () => {
       this.lf2.on_loading_content(`loading img: ${key}`, 0);
+      const src = await get_src();
       const info = await this._make_info(key, src, paint);
       this.lf2.on_loading_content(`loading img: ${key}`, 100);
       return info
@@ -119,9 +120,8 @@ export class ImageMgr {
 
   protected _gen_key = (f: IEntityPictureInfo) => `${f.path}_${f.w}_${f.h}_${f.row}_${f.col}`;
 
-  async load_by_pic_info(f: IEntityPictureInfo, get_src: (f: IEntityPictureInfo) => string | Blob | Promise<string | Blob>): Promise<TImageInfo> {
+  async load_by_pic_info(f: IEntityPictureInfo, get_src: (f: IEntityPictureInfo) => Promise<string | Blob>): Promise<TImageInfo> {
     const key = this._gen_key(f);
-    const src = get_src(f);
     const { path, w: cell_w, h: cell_h } = f;
 
     const paint: typeof this._paint = (img, cvs, ctx) => {
@@ -155,7 +155,7 @@ export class ImageMgr {
       }
     }
 
-    return this.load_img(key, src, paint);
+    return this.load_img(key, () => get_src(f), paint);
   }
 
 

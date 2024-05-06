@@ -173,8 +173,8 @@ export namespace Defines {
     Victim = 2,
   }
   export enum Cheats {
-    Hidden,
-    Fn,
+    Hidden = 'Hidden',
+    Fn = 'Fn',
   }
   export const CheatKeys: Record<Cheats, string> = {
     [Cheats.Hidden]: "lf2.net",

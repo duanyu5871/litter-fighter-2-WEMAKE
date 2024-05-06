@@ -3,9 +3,9 @@ import type Layout from "../Layout";
 import { read_func_args } from "../utils/read_func_args";
 import type { LayoutComponent } from "./LayoutComponent";
 import LoadingFileNameDisplayer from "./LoadingFileNameDisplayer";
+import PlayerCharacterHead from './PlayerCharacterHead';
 import PlayerKeyEditor from "./PlayerKeyEditor";
 import StageTransitions from "./StageTransitions";
-import PlayerCharacterHead from './PlayerCharacterHead'
 class Factory {
   private _component_map = new Map<string, typeof LayoutComponent>([
     ['game_loading_file_name', LoadingFileNameDisplayer],

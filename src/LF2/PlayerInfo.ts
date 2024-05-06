@@ -17,6 +17,7 @@ export interface IPlayerInfoCallback {
   on_name_changed?(value: string, prev: string): void;
   on_character_changed?(value: string, prev: string): void;
   on_team_changed?(value: string, prev: string): void;
+  on_joined_changed?(joined: boolean): void
 }
 export interface PurePlayerInfo {
   id: string;
@@ -27,26 +28,27 @@ export interface PurePlayerInfo {
   version: number;
 }
 export class PlayerInfo {
-  private _callbacks = new Callbacks<IPlayerInfoCallback>();
-  private info: PurePlayerInfo;
-  get id() { return this.info.id; }
-  get name() { return this.info.name; }
-  get keys() { return this.info.keys; }
-  get team() { return this.info.team; }
-  get character() { return this.info.character }
-  get callbacks(): NoEmitCallbacks<IPlayerInfoCallback> {
-    return this._callbacks
-  }
+  protected _callbacks = new Callbacks<IPlayerInfoCallback>();
+  protected _info: PurePlayerInfo;
+  protected _joined: boolean = false;
+
+  get id(): string { return this._info.id; }
+  get name(): string { return this._info.name; }
+  get keys(): TKeys { return this._info.keys; }
+  get team(): string { return this._info.team; }
+  get character(): string { return this._info.character }
+  get callbacks(): NoEmitCallbacks<IPlayerInfoCallback> { return this._callbacks }
+  get joined(): boolean { return this._joined; }
 
   constructor(id: string, name: string = id, keys: TKeys = get_default_keys(Number(id))) {
-    this.info = { id, name, keys, team: '', version: 0, character: '' };
+    this._info = { id, name, keys, team: '', version: 0, character: '' };
     this.load();
   }
 
-  private get storage_key() { return 'player_info_' + this.info.id; }
+  private get storage_key() { return 'player_info_' + this._info.id; }
 
   save(): void {
-    localStorage.setItem(this.storage_key, JSON.stringify(this.info));
+    localStorage.setItem(this.storage_key, JSON.stringify(this._info));
   }
 
   load(): boolean {
@@ -54,14 +56,14 @@ export class PlayerInfo {
     if (!str) return false;
     try {
       const { name, keys, team, version, character } = JSON.parse(str) as Partial<PurePlayerInfo>;
-      if (version !== this.info.version) {
+      if (version !== this._info.version) {
         Warn.print(PlayerInfo.name, 'version changed');
         return false;
       }
-      this.info.name = is_str(name) ? name : this.info.name;
-      this.info.keys = keys ? keys : this.info.keys;
-      this.info.team = is_str(team) ? team : this.info.team;
-      this.info.character = is_str(character) ? character : this.info.character;
+      this._info.name = is_str(name) ? name : this._info.name;
+      this._info.keys = keys ? keys : this._info.keys;
+      this._info.team = is_str(team) ? team : this._info.team;
+      this._info.character = is_str(character) ? character : this._info.character;
       return true;
     } catch (e) {
       Warn.print(PlayerInfo.name, 'load failed, ', e);
@@ -69,30 +71,35 @@ export class PlayerInfo {
     }
   }
   set_name(name: string): this {
-    if (this.info.name === name) return this;
-    const prev = this.info.name;
-    this._callbacks.emit('on_name_changed')(this.info.name = name, prev);
+    if (this._info.name === name) return this;
+    const prev = this._info.name;
+    this._callbacks.emit('on_name_changed')(this._info.name = name, prev);
     return this;
   }
   set_character(character: string): this {
-    if (this.info.character === character) return this;
-    const prev = this.info.character;
-    this._callbacks.emit('on_character_changed')(this.info.character = character, prev);
+    if (this._info.character === character) return this;
+    const prev = this._info.character;
+    this._callbacks.emit('on_character_changed')(this._info.character = character, prev);
     return this;
   }
   set_team(team: string): this {
-    if (this.info.team === team) return this;
-    const prev = this.info.team;
-    this._callbacks.emit('on_team_changed')(this.info.team = team, prev);
+    if (this._info.team === team) return this;
+    const prev = this._info.team;
+    this._callbacks.emit('on_team_changed')(this._info.team = team, prev);
+    return this;
+  }
+  set_joined(joined: boolean): this {
+    if (this._joined === joined) return this;
+    this._callbacks.emit('on_joined_changed')(this._joined = joined);
     return this;
   }
 
   set_key(name: string, key: string): this
   set_key(name: TKeyName, key: string): this;
   set_key(name: TKeyName, key: string): this {
-    if (this.info.keys[name] === key) return this;
-    const prev = this.info.keys[name];
-    this.info.keys[name] = key.toLowerCase();
+    if (this._info.keys[name] === key) return this;
+    const prev = this._info.keys[name];
+    this._info.keys[name] = key.toLowerCase();
     this._callbacks.emit('on_key_changed')(name, key.toLowerCase(), prev);
     return this;
   }
@@ -100,6 +107,6 @@ export class PlayerInfo {
   get_key(name: string): string | undefined;
   get_key(name: TKeyName): string;
   get_key(name: TKeyName): string {
-    return this.info.keys[name];
+    return this._info.keys[name];
   }
 }

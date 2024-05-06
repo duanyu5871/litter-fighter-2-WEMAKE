@@ -1,5 +1,5 @@
 export class NoEmitCallbacks<F> {
-  
+
   /**
    * 回调对象map
    *
@@ -37,8 +37,6 @@ export class NoEmitCallbacks<F> {
 }
 
 export default class Callbacks<F> extends NoEmitCallbacks<F> {
-
-  
   /**
    * 获取指定回调名的回调函数
    *

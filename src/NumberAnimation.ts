@@ -16,7 +16,7 @@ export class NumberAnimation {
   get reverse() { return this._reverse; };
   get ease_method(): IEaseMethod { return this._ease_method; }
   set ease_method(v: IEaseMethod) { this._ease_method = v; }
-
+  get is_finish(): boolean { return this._time >= this._duration }
   constructor(begin = 0, end = 1, duration = 250, reverse = false) {
     this.set(begin, end, duration, reverse)
   }

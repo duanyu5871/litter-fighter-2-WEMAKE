@@ -362,9 +362,9 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     if (!match) this._curr_key_list = '';
 
     for (const k of KEY_NAME_LIST) {
-      for (const [, player_info] of this._player_infos) {
+      for (const [player_id, player_info] of this._player_infos) {
         if (player_info.keys[k] === key) {
-          this.layout?.on_player_key_down(k);
+          this.layout?.on_player_key_down(player_id, k);
           return;
         }
       }

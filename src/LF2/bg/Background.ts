@@ -85,7 +85,7 @@ export default class Background {
   }
 
   private async get_texture(key: string, path: string): Promise<THREE.Texture> {
-    const img_info = await this.world.lf2.img_mgr.load_img(key, path);
+    const img_info = await this.world.lf2.img_mgr.load_img(key, async () => path);
     const pic_info = await create_picture(key, img_info);
     return pic_info.texture;
   }
