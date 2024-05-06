@@ -7,6 +7,7 @@ import { TKeyName } from '../../LF2/controller/BaseController';
 import { Defines } from '../../common/lf2_type/defines';
 import { ILf2Callback } from '../../LF2/ILf2Callback';
 import { SineAnimation } from '../../SineAnimation';
+import { Warn } from '../../Log';
 
 /**
  * 显示玩家角色选择的角色头像
@@ -122,7 +123,7 @@ export default class PlayerCharacterHead extends LayoutComponent {
 
   protected handle_changed() {
     if (!this._mesh_head && this._joined && this._head) {
-      this.update_mesh(++this._jid, this._head).catch(e => console.error(e))
+      this.update_head_mesh(++this._jid, this._head).catch(e => console.error(e))
     } else {
       this.fade_out();
     }
@@ -134,19 +135,11 @@ export default class PlayerCharacterHead extends LayoutComponent {
     this._mesh_head = void 0;
   }
   protected fade_out() {
-    if (this._mesh_join) this._mesh_join.visible = true
     this._head_opacity.play(true);
   }
-  protected fade_in() {
-    if (this._mesh_join) this._mesh_join.visible = false
-    this._head_opacity.play(false);
-  }
-
-  protected async update_mesh(jid: number, src: string) {
+  protected async update_head_mesh(jid: number, src: string) {
     if (jid !== this._jid) return;
-    const img = await this.lf2.img_mgr.load_img(src, () => this.lf2.import(src));
-    if (jid !== this._jid) return;
-    const pic = await this.lf2.img_mgr.create_picture_by_img_key(src, img.key);
+    const pic = await this.lf2.img_mgr.create_picture(src);
     if (jid !== this._jid) return;
     const [w, h] = this.layout.size
     const builder = LayoutMeshBuilder.create().size(w, h);
@@ -161,7 +154,6 @@ export default class PlayerCharacterHead extends LayoutComponent {
       this._mesh_head.material.map = pic.texture;
       this._mesh_head.material.needsUpdate = true;
     }
-    this.fade_in();
   }
 
   on_render(dt: number): void {
@@ -170,8 +162,14 @@ export default class PlayerCharacterHead extends LayoutComponent {
       this._mesh_head.material.needsUpdate = true;
     }
     if (this._head_opacity.is_finish && this._head_opacity.reverse) {
-      if (!this._head || !this._joined) this.dispose_mesh();
-      else this.update_mesh(++this._jid, this._head).catch(e => console.error(e))
+      if (!this._head || !this._joined) {
+        if (this._mesh_join) this._mesh_join.visible = true
+        this.dispose_mesh();
+      } else {
+        if (this._mesh_join) this._mesh_join.visible = false
+        this.update_head_mesh(++this._jid, this._head).catch(e => Warn.print(PlayerCharacterHead.name, 'failed to update head, reason:', e))
+        this._head_opacity.play(false);
+      }
     }
     if (this._mesh_join?.visible) {
       this._mesh_join.material.opacity = this._hints_opacity.update(dt);
