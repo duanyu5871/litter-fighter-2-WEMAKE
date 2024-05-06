@@ -1,10 +1,10 @@
 import * as THREE from 'three';
 import type { IPlayerInfoCallback, PlayerInfo } from "../../LF2/PlayerInfo";
-import { Warn } from '../../Log';
 import NumberAnimation from "../../NumberAnimation";
 import { Defines } from '../../common/lf2_type/defines';
 import { LayoutComponent } from "./LayoutComponent";
 import { TextBuilder } from './TextBuilder';
+import { SineAnimation } from '../../SineAnimation';
 
 /**
  * 显示玩家队伍名
@@ -18,12 +18,10 @@ export default class PlayerTeamName extends LayoutComponent {
   protected _player: PlayerInfo | undefined = void 0;
   protected _jid: number = 0;
   protected _mesh: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial> | undefined
-  protected _head_opacity: NumberAnimation = new NumberAnimation(0, 1, 0, false);
+  protected _opacity: SineAnimation = new SineAnimation(0.75, 1, 1 / 50);
   protected _team_name: string | undefined = void 0;
 
   protected _player_listener: Partial<IPlayerInfoCallback> = {
-    on_character_decided: () => this.handle_changed(),
-    on_team_decided: () => this.handle_changed(),
     on_team_changed: (team) => {
       this._team_name = Defines.TeamInfoMap[team]?.name;
       this.handle_changed();
@@ -39,9 +37,7 @@ export default class PlayerTeamName extends LayoutComponent {
     if (!this._player_id) return;
     this._player = this.lf2.player_infos.get(this._player_id);
     if (!this._player) return;
-    this._player.callbacks.add(this._player_listener);
-    this._team_name = Defines.TeamInfoMap[this._player.team]?.name;
-    this.handle_changed();
+    this._player_listener.on_team_changed?.(this._player.team, '');
   }
 
   on_unmount(): void {
@@ -51,10 +47,10 @@ export default class PlayerTeamName extends LayoutComponent {
   }
 
   protected handle_changed() {
-    if (!this._mesh && this._player?.character_decided && this._team_name) {
-      this.update_team_name_mesh(++this._jid, this._team_name).catch(e => console.error(e))
+    if (this._player?.character_decided && this._team_name) {
+      this.update_mesh(++this._jid, this._team_name).catch(e => console.error(e))
     } else {
-      this.fade_out();
+      this.dispose_mesh();
     }
   }
 
@@ -65,11 +61,7 @@ export default class PlayerTeamName extends LayoutComponent {
     this._mesh = void 0;
   }
 
-  protected fade_out() {
-    this._head_opacity.play(true);
-  }
-
-  protected async update_team_name_mesh(jid: number, name: string) {
+  protected async update_mesh(jid: number, name: string) {
     if (jid !== this._jid) return;
     const [w, h] = this.layout.size
 
@@ -107,17 +99,10 @@ export default class PlayerTeamName extends LayoutComponent {
   }
 
   on_render(dt: number): void {
+    this._opacity.update(dt)
     if (this._mesh) {
-      this._mesh.material.opacity = this._head_opacity.update(dt);
+      this._mesh.material.opacity = this._player?.team_decided ? 1 : this._opacity.value;
       this._mesh.material.needsUpdate = true;
-    }
-    if (this._head_opacity.is_finish && this._head_opacity.reverse) {
-      if (!this._team_name || !this._player?.character_decided) {
-        this.dispose_mesh();
-      } else {
-        this.update_team_name_mesh(++this._jid, this._team_name).catch(e => Warn.print(PlayerTeamName.name, 'failed to update player team name, reason:', e))
-        this._head_opacity.play(false);
-      }
     }
   }
 }

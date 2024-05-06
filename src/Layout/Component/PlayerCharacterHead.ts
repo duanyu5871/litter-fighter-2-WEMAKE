@@ -28,7 +28,7 @@ export default class PlayerCharacterHead extends LayoutComponent {
   protected _head_opacity: NumberAnimation = new NumberAnimation(0, 1, 0, false);
   protected _head: string | undefined = void 0;
   protected _character_id: string | undefined = void 0;
-  protected _hints_opacity: SineAnimation = new SineAnimation(0.85, 1, 1 / 25);
+  protected _hints_opacity: SineAnimation = new SineAnimation(0.75, 1, 1 / 50);
 
   protected _player_listener: Partial<IPlayerInfoCallback> = {
     on_joined_changed: () => this.handle_changed(),
@@ -192,6 +192,7 @@ export default class PlayerCharacterHead extends LayoutComponent {
   }
 
   on_render(dt: number): void {
+    this._hints_opacity.update(dt)
     if (this._mesh_head) {
       this._mesh_head.material.opacity = this._head_opacity.update(dt);
       this._mesh_head.material.needsUpdate = true;
@@ -206,8 +207,8 @@ export default class PlayerCharacterHead extends LayoutComponent {
         this._head_opacity.play(false);
       }
     }
-    if (this._mesh_join?.visible) {
-      this._mesh_join.material.opacity = this._hints_opacity.update(dt);
+    if (this._mesh_join) {
+      this._mesh_join.material.opacity = this._hints_opacity.value;
     }
   }
 }

@@ -1,7 +1,6 @@
 import * as THREE from 'three';
 import type { IPlayerInfoCallback, PlayerInfo } from "../../LF2/PlayerInfo";
-import { Warn } from '../../Log';
-import NumberAnimation from "../../NumberAnimation";
+import { SineAnimation } from '../../SineAnimation';
 import { LayoutComponent } from "./LayoutComponent";
 import { TextBuilder } from './TextBuilder';
 
@@ -17,7 +16,7 @@ export default class PlayerCharacterName extends LayoutComponent {
   protected _player: PlayerInfo | undefined = void 0;
   protected _jid: number = 0;
   protected _mesh: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial> | undefined
-  protected _name_opacity: NumberAnimation = new NumberAnimation(0, 1, 0, false);
+  protected _opacity: SineAnimation = new SineAnimation(0.75, 1, 1 / 50);
   protected _name: string | undefined = void 0;
 
   protected _character_id: string | undefined = void 0;
@@ -54,9 +53,9 @@ export default class PlayerCharacterName extends LayoutComponent {
 
   protected handle_changed() {
     if (!this._mesh && this._player?.joined && this._name) {
-      this.update_name_mesh(++this._jid, this._name).catch(e => console.error(e))
+      this.update_mesh(++this._jid, this._name).catch(e => console.error(e))
     } else {
-      this.fade_out();
+      this.dispose_mesh();
     }
   }
   protected dispose_mesh() {
@@ -65,10 +64,8 @@ export default class PlayerCharacterName extends LayoutComponent {
     this._mesh?.removeFromParent();
     this._mesh = void 0;
   }
-  protected fade_out() {
-    this._name_opacity.play(true);
-  }
-  protected async update_name_mesh(jid: number, name: string) {
+
+  protected async update_mesh(jid: number, name: string) {
     if (jid !== this._jid) return;
     const [w, h] = this.layout.size
 
@@ -106,17 +103,10 @@ export default class PlayerCharacterName extends LayoutComponent {
   }
 
   on_render(dt: number): void {
+    this._opacity.update(dt)
     if (this._mesh) {
-      this._mesh.material.opacity = this._name_opacity.update(dt);
+      this._mesh.material.opacity = this._player?.character_decided ? 1 : this._opacity.value;
       this._mesh.material.needsUpdate = true;
-    }
-    if (this._name_opacity.is_finish && this._name_opacity.reverse) {
-      if (!this._name || !this._player?.joined) {
-        this.dispose_mesh();
-      } else {
-        this.update_name_mesh(++this._jid, this._name).catch(e => Warn.print(PlayerCharacterName.name, 'failed to update name, reason:', e))
-        this._name_opacity.play(false);
-      }
     }
   }
 }

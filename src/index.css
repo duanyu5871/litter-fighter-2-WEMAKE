@@ -1,7 +1,7 @@
 html {
-  -webkit-filter: grayscale(1);
+  /* -webkit-filter: grayscale(1); */
   /* Chrome, Safari, Opera */
-  filter: grayscale(1);
+  /* filter: grayscale(1); */
 }
 
 body {
