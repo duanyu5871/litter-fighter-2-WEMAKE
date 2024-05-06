@@ -81,39 +81,45 @@ export class PlayerInfo {
   set_name(name: string): this {
     if (this._info.name === name) return this;
     const prev = this._info.name;
-    this._callbacks.emit('on_name_changed')(this._info.name = name, prev);
+    this._info.name = name
+    this._callbacks.emit('on_name_changed')(name, prev);
     return this;
   }
 
   set_character(character: string): this {
     if (this._info.character === character) return this;
     const prev = this._info.character;
-    this._callbacks.emit('on_character_changed')(this._info.character = character, prev);
+    this._info.character = character
+    this._callbacks.emit('on_character_changed')(character, prev);
     return this;
   }
 
   set_team(team: string): this {
     if (this._info.team === team) return this;
     const prev = this._info.team;
-    this._callbacks.emit('on_team_changed')(this._info.team = team, prev);
+    this._info.team = team
+    this._callbacks.emit('on_team_changed')(team, prev);
     return this;
   }
 
   set_joined(joined: boolean): this {
     if (this._joined === joined) return this;
-    this._callbacks.emit('on_joined_changed')(this._joined = joined);
+    this._joined = joined
+    this._callbacks.emit('on_joined_changed')(joined);
     return this;
   }
 
   set_character_decided(is_decided: boolean): this {
     if (this._character_decided === is_decided) return this;
-    this._callbacks.emit('on_character_decided')(this._character_decided = is_decided);
+    this._character_decided = is_decided
+    this._callbacks.emit('on_character_decided')(is_decided);
     return this;
   }
 
   set_team_decided(is_decided: boolean): this {
     if (this._team_decided === is_decided) return this;
-    this._callbacks.emit('on_team_decided')(this._team_decided = is_decided);
+    this._team_decided = is_decided
+    this._callbacks.emit('on_team_decided')(is_decided);
     return this;
   }
 

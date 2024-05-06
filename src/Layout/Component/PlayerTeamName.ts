@@ -1,10 +1,9 @@
 import * as THREE from 'three';
 import type { IPlayerInfoCallback, PlayerInfo } from "../../LF2/PlayerInfo";
-import NumberAnimation from "../../NumberAnimation";
+import { SineAnimation } from '../../SineAnimation';
 import { Defines } from '../../common/lf2_type/defines';
 import { LayoutComponent } from "./LayoutComponent";
 import { TextBuilder } from './TextBuilder';
-import { SineAnimation } from '../../SineAnimation';
 
 /**
  * 显示玩家队伍名
@@ -19,11 +18,19 @@ export default class PlayerTeamName extends LayoutComponent {
   protected _jid: number = 0;
   protected _mesh: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial> | undefined
   protected _opacity: SineAnimation = new SineAnimation(0.75, 1, 1 / 50);
-  protected _team_name: string | undefined = void 0;
+  protected _text: string | undefined = void 0;
+  protected _show: boolean = false;
 
   protected _player_listener: Partial<IPlayerInfoCallback> = {
+    on_character_decided: (decided) => {
+      if (this._show === decided) return;
+      this._show = decided;
+      this.handle_changed();
+    },
     on_team_changed: (team) => {
-      this._team_name = Defines.TeamInfoMap[team]?.name;
+      const team_name = this.get_text(team);
+      if (this._text === team_name) return;
+      this._text = team_name;
       this.handle_changed();
     },
   }
@@ -33,11 +40,19 @@ export default class PlayerTeamName extends LayoutComponent {
     return this;
   }
 
+  get_text(team: string | undefined) {
+    if (team === void 0) team = Defines.TeamEnum.Independent
+    return Defines.TeamInfoMap[team]?.name;
+  }
+
   on_mount(): void {
     if (!this._player_id) return;
     this._player = this.lf2.player_infos.get(this._player_id);
     if (!this._player) return;
-    this._player_listener.on_team_changed?.(this._player.team, '');
+    this._player.callbacks.add(this._player_listener);
+    this._show = this._player.joined;
+    this._text = this.get_text(this._player.character);
+    this.handle_changed();
   }
 
   on_unmount(): void {
@@ -47,8 +62,8 @@ export default class PlayerTeamName extends LayoutComponent {
   }
 
   protected handle_changed() {
-    if (this._player?.character_decided && this._team_name) {
-      this.update_mesh(++this._jid, this._team_name).catch(e => console.error(e))
+    if (this._show && this._text) {
+      this.update_mesh(++this._jid, this._text)
     } else {
       this.dispose_mesh();
     }
@@ -64,7 +79,6 @@ export default class PlayerTeamName extends LayoutComponent {
   protected async update_mesh(jid: number, name: string) {
     if (jid !== this._jid) return;
     const [w, h] = this.layout.size
-
     const builder = TextBuilder.get(this.lf2)
       .pos(w / 2, -h / 2)
       .center(0.5, 0.5)
