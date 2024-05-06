@@ -14,10 +14,12 @@ const get_default_keys = (i: number) => default_keys_list[i - 1] || default_keys
 
 export interface IPlayerInfoCallback {
   on_key_changed?(key_name: TKeyName, value: string, prev: string): void;
-  on_name_changed?(value: string, prev: string): void;
-  on_character_changed?(value: string, prev: string): void;
-  on_team_changed?(value: string, prev: string): void;
-  on_joined_changed?(joined: boolean): void
+  on_name_changed?(player_name: string, prev: string): void;
+  on_character_changed?(character_id: string, prev: string): void;
+  on_team_changed?(team: string, prev: string): void;
+  on_joined_changed?(joined: boolean): void;
+  on_character_decided?(is_decided: boolean): void;
+  on_team_decided?(is_decided: boolean): void;
 }
 export interface PurePlayerInfo {
   id: string;
@@ -31,6 +33,9 @@ export class PlayerInfo {
   protected _callbacks = new Callbacks<IPlayerInfoCallback>();
   protected _info: PurePlayerInfo;
   protected _joined: boolean = false;
+  protected _team_decided: boolean = false;
+  protected _character_decided: boolean = false;
+
 
   get id(): string { return this._info.id; }
   get name(): string { return this._info.name; }
@@ -39,6 +44,8 @@ export class PlayerInfo {
   get character(): string { return this._info.character }
   get callbacks(): NoEmitCallbacks<IPlayerInfoCallback> { return this._callbacks }
   get joined(): boolean { return this._joined; }
+  get team_decided(): boolean { return this._team_decided; }
+  get character_decided(): boolean { return this._character_decided; }
 
   constructor(id: string, name: string = id, keys: TKeys = get_default_keys(Number(id))) {
     this._info = { id, name, keys, team: '', version: 0, character: '' };
@@ -70,27 +77,43 @@ export class PlayerInfo {
       return false;
     }
   }
+
   set_name(name: string): this {
     if (this._info.name === name) return this;
     const prev = this._info.name;
     this._callbacks.emit('on_name_changed')(this._info.name = name, prev);
     return this;
   }
+
   set_character(character: string): this {
     if (this._info.character === character) return this;
     const prev = this._info.character;
     this._callbacks.emit('on_character_changed')(this._info.character = character, prev);
     return this;
   }
+
   set_team(team: string): this {
     if (this._info.team === team) return this;
     const prev = this._info.team;
     this._callbacks.emit('on_team_changed')(this._info.team = team, prev);
     return this;
   }
+
   set_joined(joined: boolean): this {
     if (this._joined === joined) return this;
     this._callbacks.emit('on_joined_changed')(this._joined = joined);
+    return this;
+  }
+
+  set_character_decided(is_decided: boolean): this {
+    if (this._character_decided === is_decided) return this;
+    this._callbacks.emit('on_character_decided')(this._character_decided = is_decided);
+    return this;
+  }
+
+  set_team_decided(is_decided: boolean): this {
+    if (this._team_decided === is_decided) return this;
+    this._callbacks.emit('on_team_decided')(this._team_decided = is_decided);
     return this;
   }
 

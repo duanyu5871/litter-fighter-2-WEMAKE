@@ -4,14 +4,20 @@ import { read_func_args } from "../utils/read_func_args";
 import type { LayoutComponent } from "./LayoutComponent";
 import LoadingFileNameDisplayer from "./LoadingFileNameDisplayer";
 import PlayerCharacterHead from './PlayerCharacterHead';
+import PlayerCharacterName from "./PlayerCharacterName";
 import PlayerKeyEditor from "./PlayerKeyEditor";
+import PlayerName from "./PlayerName";
+import PlayerTeamName from "./PlayerTeamName";
 import StageTransitions from "./StageTransitions";
 class Factory {
   private _component_map = new Map<string, typeof LayoutComponent>([
     ['game_loading_file_name', LoadingFileNameDisplayer],
     ['key_set', PlayerKeyEditor],
     ['stage_transitions', StageTransitions],
-    ['player_c_head', PlayerCharacterHead]
+    ['player_c_head', PlayerCharacterHead],
+    ['player_c_name', PlayerCharacterName],
+    ['player_name', PlayerName],
+    ['player_t_name', PlayerTeamName]
   ])
   create_component(layout: Layout, component: ILayoutInfo['component']): LayoutComponent[] {
     // TODO: 支持多个component？

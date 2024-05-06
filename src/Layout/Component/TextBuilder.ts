@@ -5,6 +5,8 @@ import { create_picture } from '../../LF2/loader/loader';
 
 export class TextBuilder {
   protected lf2: LF2;
+  protected _x: number = 0;
+  protected _y: number = 0;
   protected _cx: number = 0.5;
   protected _cy: number = 0.5;
   protected _text: string = '';
@@ -22,6 +24,11 @@ export class TextBuilder {
     this._cy = y;
     return this;
   }
+  pos(x: number, y: number): this {
+    this._x = x;
+    this._y = y;
+    return this;
+  }
 
   text(v: string): this {
     this._text = v;
@@ -35,7 +42,11 @@ export class TextBuilder {
 
   async build_mesh() {
     const [geo, tex] = await this.build();
-    return new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ transparent: true, map: tex }))
+    const material = new THREE.MeshBasicMaterial({ transparent: true, map: tex });
+    const ret = new THREE.Mesh(geo, material)
+    ret.position.x = this._x;
+    ret.position.y = this._y;
+    return ret;
   }
 
   async build() {

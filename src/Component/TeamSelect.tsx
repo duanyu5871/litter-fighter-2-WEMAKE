@@ -1,10 +1,11 @@
+import { Defines } from '../common/lf2_type/defines';
 import Select, { ISelectProps } from './Select';
-export interface TeamSelectProps extends ISelectProps<string, string> { }
+export interface TeamSelectProps extends ISelectProps<Defines.TeamEnum, string> {}
 export default function TeamSelect(props: TeamSelectProps) {
   return (
     <Select
-      items={['', '1', '2', '3', '4']}
-      option={i => [i, i ? ('Team ' + i) : 'No Team']}
-      {...props} />
+      {...props}
+      items={Defines.Teams}
+      option={i => [i, Defines.TeamInfoMap[i].name]} />
   );
 }
