@@ -28,40 +28,6 @@
                   "bg_color": "red",
                   "size": "120, 120",
                   "pos": "0, 0",
-                  "component": "f:player_c_head(0)"
-                },
-                {
-                  "id": "player_name",
-                  "bg_color": "red",
-                  "size": "120, 19",
-                  "pos": "0, 123",
-                  "component": "f:player_name(0)"
-                },
-                {
-                  "id": "player_c_name",
-                  "bg_color": "red",
-                  "size": "120, 19",
-                  "pos": "0, 145",
-                  "component": "f:player_name(0)"
-                },
-                {
-                  "id": "player_team",
-                  "bg_color": "red",
-                  "size": "120, 19",
-                  "pos": "0, 167",
-                  "component": "f:player_name(0)"
-                }
-              ]
-            },
-            {
-              "id": "player_layout_1",
-              "pos": "-93,0",
-              "items": [
-                {
-                  "id": "player_c_head",
-                  "bg_color": "red",
-                  "size": "120, 120",
-                  "pos": "0, 0",
                   "component": "f:player_c_head(1)"
                 },
                 {
@@ -88,8 +54,8 @@
               ]
             },
             {
-              "id": "player_layout_2",
-              "pos": "60,0",
+              "id": "player_layout_1",
+              "pos": "-93,0",
               "items": [
                 {
                   "id": "player_c_head",
@@ -122,8 +88,8 @@
               ]
             },
             {
-              "id": "player_layout_3",
-              "pos": "213,0",
+              "id": "player_layout_2",
+              "pos": "60,0",
               "items": [
                 {
                   "id": "player_c_head",
@@ -154,16 +120,10 @@
                   "component": "f:player_name(3)"
                 }
               ]
-            }
-          ]
-        },
-        {
-          "id": "players_row_2",
-          "pos": "0,5",
-          "items": [
+            },
             {
-              "id": "player_layout_4",
-              "pos": "-246,0",
+              "id": "player_layout_3",
+              "pos": "213,0",
               "items": [
                 {
                   "id": "player_c_head",
@@ -194,10 +154,16 @@
                   "component": "f:player_name(4)"
                 }
               ]
-            },
+            }
+          ]
+        },
+        {
+          "id": "players_row_2",
+          "pos": "0,5",
+          "items": [
             {
-              "id": "player_layout_5",
-              "pos": "-93,0",
+              "id": "player_layout_4",
+              "pos": "-246,0",
               "items": [
                 {
                   "id": "player_c_head",
@@ -230,8 +196,8 @@
               ]
             },
             {
-              "id": "player_layout_6",
-              "pos": "60,0",
+              "id": "player_layout_5",
+              "pos": "-93,0",
               "items": [
                 {
                   "id": "player_c_head",
@@ -264,8 +230,8 @@
               ]
             },
             {
-              "id": "player_layout_7",
-              "pos": "213,0",
+              "id": "player_layout_6",
+              "pos": "60,0",
               "items": [
                 {
                   "id": "player_c_head",
@@ -294,6 +260,40 @@
                   "size": "120, 19",
                   "pos": "0, 167",
                   "component": "f:player_name(7)"
+                }
+              ]
+            },
+            {
+              "id": "player_layout_7",
+              "pos": "213,0",
+              "items": [
+                {
+                  "id": "player_c_head",
+                  "bg_color": "red",
+                  "size": "120, 120",
+                  "pos": "0, 0",
+                  "component": "f:player_c_head(8)"
+                },
+                {
+                  "id": "player_name",
+                  "bg_color": "red",
+                  "size": "120, 19",
+                  "pos": "0, 123",
+                  "component": "f:player_name(8)"
+                },
+                {
+                  "id": "player_c_name",
+                  "bg_color": "red",
+                  "size": "120, 19",
+                  "pos": "0, 145",
+                  "component": "f:player_name(8)"
+                },
+                {
+                  "id": "player_team",
+                  "bg_color": "red",
+                  "size": "120, 19",
+                  "pos": "0, 167",
+                  "component": "f:player_name(8)"
                 }
               ]
             }
