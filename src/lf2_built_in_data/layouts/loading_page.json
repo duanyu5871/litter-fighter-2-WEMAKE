@@ -29,9 +29,5 @@
       "id": "stage_transition",
       "component": "stage_transitions()"
     }
-  ],
-  "actions": {
-    "enter": "load_default_data",
-    "leave": "cancel_load_data"
-  }
+  ]
 }

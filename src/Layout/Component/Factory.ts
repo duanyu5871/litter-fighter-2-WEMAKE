@@ -16,18 +16,16 @@ class Factory {
     ['game_loading_file_name', LoadingFileNameDisplayer],
     ['key_set', PlayerKeyEditor],
     ['stage_transitions', StageTransitions],
-    ['player_c_sel_logic',PlayerCharacterSelLogic],
+    ['player_c_sel_logic', PlayerCharacterSelLogic],
     ['player_c_head', PlayerCharacterHead],
     ['player_c_name', PlayerCharacterName],
     ['player_name', PlayerName],
     ['player_t_name', PlayerTeamName]
   ])
-  create_component(layout: Layout, components: ILayoutInfo['component']): LayoutComponent[] {
+  create(layout: Layout, components: ILayoutInfo['component']): LayoutComponent[] {
     if (!components?.length) return [];
     if (is_str(components)) components = [components]
-
     const ret: LayoutComponent[] = [];
-
     for (const text of components) {
       const [func_name, args] = read_call_func_expression(text);
       if (!func_name) continue;
@@ -38,8 +36,10 @@ class Factory {
       const component = new Cls(layout, func_name).init(...args);
       ret.push(component);
     }
-
     return ret
+  }
+  register(key: string, Cls: typeof LayoutComponent) {
+    this._component_map.set(key, Cls);
   }
 }
 const factory = new Factory();

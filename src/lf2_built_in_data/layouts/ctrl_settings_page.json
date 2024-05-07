@@ -92,7 +92,7 @@
               ],
               "pos": "0, 26",
               "actions": {
-                "click": "loop_img"
+                "click": "loop_img()"
               }
             },
             {
@@ -161,7 +161,7 @@
               ],
               "pos": "0, 26",
               "actions": {
-                "click": "loop_img"
+                "click": "loop_img()"
               }
             },
             {
@@ -230,7 +230,7 @@
               ],
               "pos": "0, 26",
               "actions": {
-                "click": "loop_img"
+                "click": "loop_img()"
               }
             },
             {
@@ -299,7 +299,7 @@
               ],
               "pos": "0, 26",
               "actions": {
-                "click": "loop_img"
+                "click": "loop_img()"
               }
             },
             {

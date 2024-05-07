@@ -69,7 +69,10 @@
           "pos": "1, -46",
           "tab_type": "ud",
           "actions": {
-            "click": "goto(loading)"
+            "click": [
+              "goto(loading)",
+              "load_default_data()"
+            ]
           }
         },
         {

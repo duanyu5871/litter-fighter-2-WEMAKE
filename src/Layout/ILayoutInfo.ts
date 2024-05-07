@@ -19,9 +19,9 @@ export interface ILayoutInfo {
   font?: string[];
   z_order?: number;
   actions?: {
-    click: string;
-    enter?: string;
-    leave?: string;
+    click: string | string[];
+    enter?: string | string[];
+    leave?: string | string[];
   };
   key_press_actions?: [string, string][];
   tab_type?: string; // 'ud' | 'lr'

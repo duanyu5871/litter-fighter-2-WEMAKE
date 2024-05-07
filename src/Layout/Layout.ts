@@ -14,6 +14,7 @@ import type { ILayoutInfo } from './ILayoutInfo';
 import { read_as_2_nums } from './utils/read_as_2_nums';
 import { read_as_4_nums } from './utils/read_as_4_nums';
 import { TKeyName } from '../LF2/controller/BaseController';
+import actor from './Action/Actor';
 
 export interface ILayoutCallback {
   on_click?(): void;
@@ -104,8 +105,8 @@ export default class Layout {
     for (const item of this.items)
       item.on_mount();
 
-    const { enter: a } = this.data.actions || {};
-    if (a) this.handle_layout_action(a);
+    const { enter } = this.data.actions || {};
+    enter && actor.act(this, enter);
 
     for (const c of this._components) c.on_mount?.();
 
@@ -120,8 +121,8 @@ export default class Layout {
   on_unmount() {
     for (const c of this._components) c.on_unmount?.();
 
-    const { leave: a } = this.data.actions || {};
-    if (a) this.handle_layout_action(a);
+    const { leave } = this.data.actions || {};
+    leave && actor.act(this, leave);
 
     for (const item of this.items)
       item.on_unmount()
@@ -181,7 +182,7 @@ export default class Layout {
   private async _cook_component() {
     const { component } = this.data
     if (!component) return;
-    for (const c of factory.create_component(this, component)) {
+    for (const c of factory.create(this, component)) {
       this._components.add(c);
     }
   }
@@ -315,32 +316,12 @@ export default class Layout {
 
   on_click(): boolean {
     const { click } = this.data.actions ?? {};
-    if (click) this.handle_layout_action(click)
+    click && actor.act(this, click)
     for (const c of this._components) {
       if (!c.on_click) continue;
       if (c.on_click()) break;
     }
     return !!click;
-  }
-
-  handle_layout_action = (action: string) => {
-    if (action === 'loop_img')
-      return this.to_next_img();
-    if (action === 'cancel_load_data')
-      return this.lf2?.remove_all_entities()
-    if (action === 'load_default_data') {
-      if (this.lf2.loading) return;
-      return this.lf2.load();
-    }
-
-    const [, url = null] = action.match(/link_to\((.+)\)/) ?? [];
-    if (url !== null) return window.open(url)
-
-    const [, alert_msg = null] = action.match(/alert\((.+)\)/) ?? []
-    if (alert_msg !== null) return alert(alert_msg);
-
-    const [, next_layout_id = null] = action.match(/goto\((.+)\)/) ?? []
-    if (next_layout_id !== null) return this.lf2.set_layout(next_layout_id)
   }
 
   on_render(dt: number) {
@@ -375,7 +356,7 @@ export default class Layout {
     for (const c of this._components) c.on_player_key_down?.(player_id, key);
     const lr_items = this._left_to_right.filter(v => v.visible);
     const lr_lengh = lr_items.length;
-    
+
     if (lr_lengh) {
       switch (key) {
         case 'L': { // 聚点移动至下一layout（向左）
