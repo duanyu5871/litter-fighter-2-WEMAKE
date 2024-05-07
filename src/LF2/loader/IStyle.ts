@@ -1,4 +1,9 @@
 export interface IStyle {
+  padding_t?: number;
+  padding_b?: number;
+  padding_l?: number;
+  padding_r?: number;
+
   lineCap?: CanvasLineCap;
   lineDashOffset?: number;
   lineJoin?: CanvasLineJoin;

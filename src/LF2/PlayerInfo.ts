@@ -20,6 +20,7 @@ export interface IPlayerInfoCallback {
   on_joined_changed?(joined: boolean): void;
   on_character_decided?(is_decided: boolean): void;
   on_team_decided?(is_decided: boolean): void;
+  on_is_com_changed?(is_com: boolean): void;
 }
 export interface PurePlayerInfo {
   id: string;
@@ -33,6 +34,7 @@ export class PlayerInfo {
   protected _callbacks = new Callbacks<IPlayerInfoCallback>();
   protected _info: PurePlayerInfo;
   protected _joined: boolean = false;
+  protected _is_com: boolean = false;
   protected _team_decided: boolean = false;
   protected _character_decided: boolean = false;
 
@@ -44,7 +46,6 @@ export class PlayerInfo {
   get team(): string { return this._info.team; }
   set team(v: string) { this.set_team(v); }
 
-
   get character(): string { return this._info.character }
   set character(v: string) { this.set_character(v) }
 
@@ -52,6 +53,9 @@ export class PlayerInfo {
 
   get joined(): boolean { return this._joined; }
   set joined(v: boolean) { this.set_joined(v); }
+
+  get is_com(): boolean { return this._is_com; }
+  set is_com(v: boolean) { this.set_is_com(v); }
 
   get team_decided(): boolean { return this._team_decided; }
   set team_decided(v: boolean) { this.set_team_decided(v); }
@@ -118,6 +122,13 @@ export class PlayerInfo {
     if (this._joined === joined) return this;
     this._joined = joined
     this._callbacks.emit('on_joined_changed')(joined);
+    return this;
+  }
+
+  set_is_com(is_com: boolean): this {
+    if (this._is_com === is_com) return this;
+    this._is_com = is_com
+    this._callbacks.emit('on_is_com_changed')(is_com);
     return this;
   }
 

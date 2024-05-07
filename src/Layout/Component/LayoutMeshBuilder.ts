@@ -11,6 +11,7 @@ export default class LayoutMeshBuilder {
   protected h: number = 1;
   protected x: number = 0;
   protected y: number = 0;
+  protected _z: number = 0;
   size(w: number, h: number): this {
     this.w = w;
     this.h = h;
@@ -19,6 +20,10 @@ export default class LayoutMeshBuilder {
   pos(x: number, y: number): this {
     this.x = x;
     this.y = y;
+    return this;
+  }
+  z(z: number): this {
+    this._z = z;
     return this;
   }
   center(x: number, y: number): this {
@@ -31,6 +36,7 @@ export default class LayoutMeshBuilder {
     const ret = new THREE.Mesh(geo, material)
     ret.position.x = this.x;
     ret.position.y = this.y;
+    ret.position.z = this._z;
     return ret;
   }
   build_args(parameters?: THREE.MeshBasicMaterialParameters | undefined): [THREE.PlaneGeometry, THREE.MeshBasicMaterial] {

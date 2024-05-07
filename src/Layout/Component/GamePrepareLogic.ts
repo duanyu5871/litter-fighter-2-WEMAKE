@@ -44,6 +44,29 @@ export default class GamePrepareLogic extends LayoutComponent {
       player.callbacks.del(this._player_listener)
   }
   on_player_key_down(_player_id: string, key: TKeyName) {
+    switch (this._state) {
+      case GamePrepareState.PlayerCharacterSelecting:
+        break;
+      case GamePrepareState.ComputerNumberSelecting:
+        switch (key) {
+          case "L":
+          case "R":
+          case "U":
+          case "D":
+          case "a":
+          case "j":
+            for (const [, player] of this.lf2.player_infos) {
+              player.team_decided = false;
+            }
+            this._state = GamePrepareState.PlayerCharacterSelecting
+            break;
+          case "d":
+        }
+        break;
+      case GamePrepareState.ComputerCharacterSelecting:
+        break;
+      case GamePrepareState.GameSetting: break;
+    }
   }
   protected on_someone_joined_changed(joined: boolean) {
     this._joined_num += (joined ? 1 : -1);

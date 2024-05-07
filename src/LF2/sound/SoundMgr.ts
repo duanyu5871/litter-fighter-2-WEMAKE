@@ -58,7 +58,7 @@ export default class SoundMgr implements IPlayer {
     return this.inner.play(src, x, y, z);
   }
 
-  play_preset(t: 'ok' | 'cancel', x?: number, y?: number, z?: number): void {
+  play_preset(t: 'ok' | 'cancel' | 'join', x?: number, y?: number, z?: number): void {
     this.play_with_load(`data/m_${t}.wav.ogg`, x, y, z)
   }
 }

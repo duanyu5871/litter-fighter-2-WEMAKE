@@ -59,18 +59,25 @@ export class ImageMgr {
     return { key, url, w: cvs.width, h: cvs.height, img: cvs }
   }
 
-  protected async _make_text_info(key: string, text: string, style?: IStyle): Promise<TImageInfo> {
+  protected async _make_text_info(key: string, text: string, style: IStyle = {}): Promise<TImageInfo> {
     const cvs = document.createElement('canvas');
     const ctx = cvs.getContext('2d');
     if (!ctx) throw new Error("can not get context from canvas");
 
+    const {
+      padding_b = 2,
+      padding_l = 2,
+      padding_r = 2,
+      padding_t = 2
+    } = style
     const apply_text_style = () => {
-      ctx.font = style?.font ?? 'normal 9px system-ui';
-      ctx.fillStyle = style?.fillStyle ?? 'white';
-      ctx.shadowColor = style?.shadowColor ?? 'black';
-      ctx.lineWidth = style?.lineWidth ?? 1;
+      ctx.font = style.font ?? 'normal 9px system-ui';
+      ctx.fillStyle = style.fillStyle ?? 'white';
+      ctx.strokeStyle = style.strokeStyle ?? ''
+      ctx.shadowColor = style.shadowColor ?? '';
+      ctx.lineWidth = style.lineWidth ?? 1;
       ctx.shadowBlur = 5;
-      ctx.imageSmoothingEnabled = style?.smoothing ?? true
+      ctx.imageSmoothingEnabled = style.smoothing ?? false
     }
     apply_text_style();
     let w = 0;
@@ -83,15 +90,20 @@ export class ImageMgr {
       h += a + d;
       return ret;
     })
-    cvs.style.width = (cvs.width = w) + 'px'
-    cvs.style.height = (cvs.height = h) + 'px';
+    cvs.style.width = (cvs.width = w + padding_l + padding_r) + 'px'
+    cvs.style.height = (cvs.height = h + padding_t + padding_b) + 'px';
     apply_text_style();
     for (const { x, y, t } of lines) {
-      ctx.fillText(t, x, y);
+      ctx.fillText(t, padding_l + x, padding_t + y);
     }
     const blob = await get_blob(cvs).catch(e => { throw new Error(e.message + ' key:' + key, { cause: e.cause }) });
     const url = URL.createObjectURL(blob);
-    return { key, url, w, h, img: cvs }
+    return {
+      key, url,
+      w: w + padding_l + padding_r,
+      h: h + padding_t + padding_b,
+      img: cvs
+    }
   }
 
   find(key: string) {

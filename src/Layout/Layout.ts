@@ -226,10 +226,16 @@ export default class Layout {
 
     } while (0);
 
-    const { txt_fill, txt_stroke, txt } = this.data;
+    const { txt_fill, txt_stroke, txt, font } = this.data;
     do {
       if (!is_str(txt)) break;
-      this.img_infos = [await this.lf2.img_mgr.load_text(txt, { fillStyle: txt_fill, shadowColor: txt_stroke })]
+      this.img_infos = [
+        await this.lf2.img_mgr.load_text(txt, {
+          fillStyle: txt_fill,
+          strokeStyle: txt_stroke,
+          font: font?.join(' ')
+        })
+      ]
     } while (0);
   }
 
@@ -315,6 +321,7 @@ export default class Layout {
       .center(cx, cy)
       .size(w, h)
       .pos(x, -y)
+      .z(this.z_order)
       .build(params)
 
     this._mesh.name = this.data.name ?? this.data.id ?? 'layout';
@@ -336,14 +343,14 @@ export default class Layout {
   }
 
   on_render(dt: number) {
-    const sprite = this.mesh;
-    if (sprite) {
+    const mesh = this.mesh;
+    if (mesh) {
       if (this._root === this) {
-        sprite.position.x = this.lf2.world.camera.position.x
+        mesh.position.x = this.lf2.world.camera.position.x
       }
       const { visible } = this;
-      if (sprite.visible !== visible) {
-        sprite.visible = visible
+      if (mesh.visible !== visible) {
+        mesh.visible = visible
         if (visible)
           this.on_show();
         else

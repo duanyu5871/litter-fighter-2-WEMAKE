@@ -86,7 +86,7 @@ export default class PlayerCharacterSelLogic extends LayoutComponent {
     } else if (this.character_decided) {
       switch (key) {
         case 'a': { // 按攻击确认队伍
-          this.lf2.sound_mgr.play_preset('ok')
+          this.lf2.sound_mgr.play_preset('join')
           this.team_decided = true;
           break;
         }
@@ -111,7 +111,7 @@ export default class PlayerCharacterSelLogic extends LayoutComponent {
     } else if (this.joined) {
       switch (key) {
         case 'a': {  // 按攻击确认角色
-          this.lf2.sound_mgr.play_preset('ok')
+          this.lf2.sound_mgr.play_preset('join')
           this.character_decided = true;
           break;
         }
@@ -142,7 +142,7 @@ export default class PlayerCharacterSelLogic extends LayoutComponent {
       }
     } else {
       if (key === 'a') {
-        this.lf2.sound_mgr.play_preset('ok')
+        this.lf2.sound_mgr.play_preset('join')
         this.joined = true;
       }
     }
