@@ -8,6 +8,16 @@
       "goto(entry)"
     ]
   ],
+  "component": [
+    "player_c_sel_logic(1)",
+    "player_c_sel_logic(2)",
+    "player_c_sel_logic(3)",
+    "player_c_sel_logic(4)",
+    "player_c_sel_logic(5)",
+    "player_c_sel_logic(6)",
+    "player_c_sel_logic(7)",
+    "player_c_sel_logic(8)"
+  ],
   "items": [
     {
       "id": "frame",
@@ -27,25 +37,25 @@
                   "id": "player_c_head",
                   "size": "120, 120",
                   "pos": "0, 0",
-                  "component": "f:player_c_head(1)"
+                  "component": "player_c_head(1)"
                 },
                 {
                   "id": "player_name",
                   "size": "120, 19",
                   "pos": "0, 123",
-                  "component": "f:player_name(1)"
+                  "component": "player_name(1)"
                 },
                 {
                   "id": "player_c_name",
                   "size": "120, 19",
                   "pos": "0, 145",
-                  "component": "f:player_c_name(1)"
+                  "component": "player_c_name(1)"
                 },
                 {
                   "id": "player_team",
                   "size": "120, 19",
                   "pos": "0, 167",
-                  "component": "f:player_t_name(1)"
+                  "component": "player_t_name(1)"
                 }
               ]
             },
@@ -57,25 +67,25 @@
                   "id": "player_c_head",
                   "size": "120, 120",
                   "pos": "0, 0",
-                  "component": "f:player_c_head(2)"
+                  "component": "player_c_head(2)"
                 },
                 {
                   "id": "player_name",
                   "size": "120, 19",
                   "pos": "0, 123",
-                  "component": "f:player_name(2)"
+                  "component": "player_name(2)"
                 },
                 {
                   "id": "player_c_name",
                   "size": "120, 19",
                   "pos": "0, 145",
-                  "component": "f:player_c_name(2)"
+                  "component": "player_c_name(2)"
                 },
                 {
                   "id": "player_team",
                   "size": "120, 19",
                   "pos": "0, 167",
-                  "component": "f:player_t_name(2)"
+                  "component": "player_t_name(2)"
                 }
               ]
             },
@@ -87,25 +97,25 @@
                   "id": "player_c_head",
                   "size": "120, 120",
                   "pos": "0, 0",
-                  "component": "f:player_c_head(3)"
+                  "component": "player_c_head(3)"
                 },
                 {
                   "id": "player_name",
                   "size": "120, 19",
                   "pos": "0, 123",
-                  "component": "f:player_name(3)"
+                  "component": "player_name(3)"
                 },
                 {
                   "id": "player_c_name",
                   "size": "120, 19",
                   "pos": "0, 145",
-                  "component": "f:player_c_name(3)"
+                  "component": "player_c_name(3)"
                 },
                 {
                   "id": "player_team",
                   "size": "120, 19",
                   "pos": "0, 167",
-                  "component": "f:player_t_name(3)"
+                  "component": "player_t_name(3)"
                 }
               ]
             },
@@ -117,25 +127,25 @@
                   "id": "player_c_head",
                   "size": "120, 120",
                   "pos": "0, 0",
-                  "component": "f:player_c_head(4)"
+                  "component": "player_c_head(4)"
                 },
                 {
                   "id": "player_name",
                   "size": "120, 19",
                   "pos": "0, 123",
-                  "component": "f:player_name(4)"
+                  "component": "player_name(4)"
                 },
                 {
                   "id": "player_c_name",
                   "size": "120, 19",
                   "pos": "0, 145",
-                  "component": "f:player_c_name(4)"
+                  "component": "player_c_name(4)"
                 },
                 {
                   "id": "player_team",
                   "size": "120, 19",
                   "pos": "0, 167",
-                  "component": "f:player_t_name(4)"
+                  "component": "player_t_name(4)"
                 }
               ]
             }
@@ -153,25 +163,25 @@
                   "id": "player_c_head",
                   "size": "120, 120",
                   "pos": "0, 0",
-                  "component": "f:player_c_head(5)"
+                  "component": "player_c_head(5)"
                 },
                 {
                   "id": "player_name",
                   "size": "120, 19",
                   "pos": "0, 123",
-                  "component": "f:player_name(5)"
+                  "component": "player_name(5)"
                 },
                 {
                   "id": "player_c_name",
                   "size": "120, 19",
                   "pos": "0, 145",
-                  "component": "f:player_c_name(5)"
+                  "component": "player_c_name(5)"
                 },
                 {
                   "id": "player_team",
                   "size": "120, 19",
                   "pos": "0, 167",
-                  "component": "f:player_t_name(5)"
+                  "component": "player_t_name(5)"
                 }
               ]
             },
@@ -183,25 +193,25 @@
                   "id": "player_c_head",
                   "size": "120, 120",
                   "pos": "0, 0",
-                  "component": "f:player_c_head(6)"
+                  "component": "player_c_head(6)"
                 },
                 {
                   "id": "player_name",
                   "size": "120, 19",
                   "pos": "0, 123",
-                  "component": "f:player_name(6)"
+                  "component": "player_name(6)"
                 },
                 {
                   "id": "player_c_name",
                   "size": "120, 19",
                   "pos": "0, 145",
-                  "component": "f:player_c_name(6)"
+                  "component": "player_c_name(6)"
                 },
                 {
                   "id": "player_team",
                   "size": "120, 19",
                   "pos": "0, 167",
-                  "component": "f:player_t_name(6)"
+                  "component": "player_t_name(6)"
                 }
               ]
             },
@@ -213,25 +223,25 @@
                   "id": "player_c_head",
                   "size": "120, 120",
                   "pos": "0, 0",
-                  "component": "f:player_c_head(7)"
+                  "component": "player_c_head(7)"
                 },
                 {
                   "id": "player_name",
                   "size": "120, 19",
                   "pos": "0, 123",
-                  "component": "f:player_name(7)"
+                  "component": "player_name(7)"
                 },
                 {
                   "id": "player_c_name",
                   "size": "120, 19",
                   "pos": "0, 145",
-                  "component": "f:player_c_name(7)"
+                  "component": "player_c_name(7)"
                 },
                 {
                   "id": "player_team",
                   "size": "120, 19",
                   "pos": "0, 167",
-                  "component": "f:player_t_name(7)"
+                  "component": "player_t_name(7)"
                 }
               ]
             },
@@ -243,25 +253,25 @@
                   "id": "player_c_head",
                   "size": "120, 120",
                   "pos": "0, 0",
-                  "component": "f:player_c_head(8)"
+                  "component": "player_c_head(8)"
                 },
                 {
                   "id": "player_name",
                   "size": "120, 19",
                   "pos": "0, 123",
-                  "component": "f:player_name(8)"
+                  "component": "player_name(8)"
                 },
                 {
                   "id": "player_c_name",
                   "size": "120, 19",
                   "pos": "0, 145",
-                  "component": "f:player_c_name(8)"
+                  "component": "player_c_name(8)"
                 },
                 {
                   "id": "player_team",
                   "size": "120, 19",
                   "pos": "0, 167",
-                  "component": "f:player_t_name(8)"
+                  "component": "player_t_name(8)"
                 }
               ]
             }

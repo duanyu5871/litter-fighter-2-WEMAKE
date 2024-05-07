@@ -7,3 +7,10 @@ export const read_func_args = (str: string, func_name: string, min_arg_count: nu
   if (min_arg_count >= 0 && min_arg_count > args.length) return null;
   return args;
 };
+export function read_call_func_expression(text: string): [string, string[]] | [undefined, undefined] {
+  const result = text.match(/(.*)\((.*)\)/);
+  if (!result) return [void 0, void 0];
+  const [, func_name, args_str] = result;
+  const args = args_str.split(',')
+  return [func_name, args];
+}

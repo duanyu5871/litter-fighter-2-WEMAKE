@@ -12,7 +12,7 @@ export interface ILayoutInfo {
   flip_x?: boolean;
   flip_y?: boolean;
   bg_color?: string;
-  component?: string;
+  component?: string | string[];
   txt?: string;
   txt_fill?: string;
   txt_stroke?: string;
@@ -24,6 +24,6 @@ export interface ILayoutInfo {
     leave?: string;
   };
   key_press_actions?: [string, string][];
-  tab_type?:string; // 'ud' | 'lr'
+  tab_type?: string; // 'ud' | 'lr'
   items?: ILayoutInfo[];
 }

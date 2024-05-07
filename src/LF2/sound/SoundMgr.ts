@@ -52,10 +52,14 @@ export default class SoundMgr implements IPlayer {
     return this.inner.stop(id);
   }
 
-  async play_with_load(src: string): Promise<string> {
+  async play_with_load(src: string, x?: number, y?: number, z?: number): Promise<string> {
     if (!this.inner.has(src))
       await this.inner.preload(src, this.lf2.import(src));
-    return this.inner.play(src);
+    return this.inner.play(src, x, y, z);
+  }
+
+  play_preset(t: 'ok' | 'cancel', x?: number, y?: number, z?: number): void {
+    this.play_with_load(`data/m_${t}.wav.ogg`, x, y, z)
   }
 }
 

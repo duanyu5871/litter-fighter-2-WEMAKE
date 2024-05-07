@@ -40,12 +40,24 @@ export class PlayerInfo {
   get id(): string { return this._info.id; }
   get name(): string { return this._info.name; }
   get keys(): TKeys { return this._info.keys; }
+
   get team(): string { return this._info.team; }
+  set team(v: string) { this.set_team(v); }
+
+
   get character(): string { return this._info.character }
+  set character(v: string) { this.set_character(v) }
+
   get callbacks(): NoEmitCallbacks<IPlayerInfoCallback> { return this._callbacks }
+
   get joined(): boolean { return this._joined; }
+  set joined(v: boolean) { this.set_joined(v); }
+
   get team_decided(): boolean { return this._team_decided; }
+  set team_decided(v: boolean) { this.set_team_decided(v); }
+
   get character_decided(): boolean { return this._character_decided; }
+  set character_decided(v: boolean) { this.set_character_decided(v); }
 
   constructor(id: string, name: string = id, keys: TKeys = get_default_keys(Number(id))) {
     this._info = { id, name, keys, team: '', version: 0, character: '' };

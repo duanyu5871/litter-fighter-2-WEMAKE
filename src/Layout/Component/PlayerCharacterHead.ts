@@ -1,19 +1,13 @@
 import * as THREE from 'three';
-import { ILf2Callback } from '../../LF2/ILf2Callback';
 import type { IPlayerInfoCallback, PlayerInfo } from "../../LF2/PlayerInfo";
-import { TKeyName } from '../../LF2/controller/BaseController';
 import { Warn } from '../../Log';
 import NumberAnimation from "../../NumberAnimation";
 import { SineAnimation } from '../../SineAnimation';
-import { Defines } from '../../common/lf2_type/defines';
 import { LayoutComponent } from "./LayoutComponent";
 import LayoutMeshBuilder from "./LayoutMeshBuilder";
 
 /**
  * 显示玩家角色选择的角色头像
- * 
- * 当玩家未加入时显示，按攻击加入
- * 当已加入时，按攻击确认选择当前角色；
  *
  * @export
  * @class PlayerCharacterHead
@@ -26,25 +20,17 @@ export default class PlayerCharacterHead extends LayoutComponent {
   protected _mesh_head: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial> | undefined
   protected _mesh_join: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial> | undefined
   protected _head_opacity: NumberAnimation = new NumberAnimation(0, 1, 0, false);
-  protected _head: string | undefined = void 0;
-  protected _character_id: string | undefined = void 0;
+  protected _head: string = 'sprite/RFACE.png';
   protected _hints_opacity: SineAnimation = new SineAnimation(0.75, 1, 1 / 50);
 
   protected _player_listener: Partial<IPlayerInfoCallback> = {
     on_joined_changed: () => this.handle_changed(),
     on_character_changed: (character_id): void => {
       const character = character_id ? this.lf2.dat_mgr.find_character(character_id) : void 0;
-      this._character_id = character_id;
       this._head = character?.base.head || 'sprite/RFACE.png';
       this.handle_changed();
     },
   }
-  private _lf2_listener: Partial<ILf2Callback> = {
-    on_cheat_changed: (cheat_name, enabled) => {
-      // 当前选择的角色被隐藏时，让玩家选随机
-      if (cheat_name === Defines.Cheats.Hidden && !enabled) this.handle_hidden_character();
-    },
-  };
 
   init(...args: string[]): this {
     this._player_id = args[0];
@@ -70,7 +56,6 @@ export default class PlayerCharacterHead extends LayoutComponent {
     this._player = this.lf2.player_infos.get(this._player_id);
     if (!this._player) return;
     this._player.callbacks.add(this._player_listener);
-    this.lf2.callbacks.add(this._lf2_listener)
     this._player_listener.on_character_changed?.(this._player.character, '');
   }
 
@@ -80,81 +65,8 @@ export default class PlayerCharacterHead extends LayoutComponent {
     this.dispose_mesh();
   }
 
-  get_characters() {
-    const all_characters = this.lf2.dat_mgr.characters
-    const show_all = this.lf2.is_cheat_enabled(Defines.Cheats.Hidden)
-    return show_all ? all_characters : all_characters.filter(v => !v.base.hidden);
-  }
-
-  on_player_key_down(player_id: string, key: TKeyName): void {
-    const player = this._player
-    if (!player || player_id !== this._player_id)
-      return;
-    if (player.team_decided) {
-      if (key === 'j') player.set_team_decided(false);
-    } else if (player.character_decided) {
-      switch (key) {
-        // 按攻击确认队伍
-        case 'a': player.set_team_decided(true); break;
-        // 按跳跃取消确认角色
-        case 'j': player.set_character_decided(false); break;
-        case 'L': { // 上一个队伍
-          const idx = Defines.Teams.findIndex(v => v === player.team);
-          const next_idx = (idx + Defines.Teams.length - 1) % Defines.Teams.length;
-          player.set_team(Defines.Teams[next_idx]);
-          break;
-        }
-        case 'R': { // 下一个队伍
-          const idx = Defines.Teams.findIndex(v => v === player.team);
-          const next_idx = (idx + 1) % Defines.Teams.length;
-          player.set_team(Defines.Teams[next_idx]);
-          break;
-        }
-      }
-    } else if (player.joined) {
-      switch (key) {
-        // 按攻击确认角色
-        case 'a': player.set_character_decided(true); break;
-        // 按跳跃取消加入
-        case 'j': player.set_joined(false); break;
-        // 按上或下,回到随机
-        case 'D': case 'U': player.set_character(''); break;
-        case 'L': { // 上一个角色
-          const characters = this.get_characters();
-          const idx = characters.findIndex(v => v.id === this._character_id);
-          const next_idx = idx <= -1 ? characters.length - 1 : idx - 1;
-          player.set_character(characters[next_idx]?.id ?? '');
-          break;
-        }
-        case 'R': { // 下一个角色
-          const arr = this.get_characters();
-          const idx = arr.findIndex(v => v.id === this._character_id);
-          const next = idx >= arr.length - 1 ? -1 : idx + 1;
-          player.set_character(arr[next]?.id ?? '');
-          break;
-        }
-      }
-    } else {
-      if (key === 'a') player.set_joined(true);
-    }
-  }
-
-  /**
-   * 当前选择的角色被隐藏时，让玩家选随机
-   *
-   * @protected
-   */
-  protected handle_hidden_character() {
-    if (!this._player) return;
-    const all_characters = this.lf2.dat_mgr.characters
-    const show_all = this.lf2.is_cheat_enabled(Defines.Cheats.Hidden)
-    const characters = show_all ? all_characters : all_characters.filter(v => !v.base.hidden);
-    const idx = characters.findIndex(v => v.id === this._character_id);
-    this._player.set_character(characters[idx]?.id ?? '');
-  }
-
   protected handle_changed() {
-    if (!this._mesh_head && this._player?.joined && this._head) {
+    if (!this._mesh_head && this._player?.joined) {
       this.update_head_mesh(++this._jid, this._head).catch(e => console.error(e))
     } else {
       this.fade_out();
