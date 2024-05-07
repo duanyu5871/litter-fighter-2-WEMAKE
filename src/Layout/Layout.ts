@@ -2,19 +2,20 @@ import * as THREE from 'three';
 import LF2 from '../LF2/LF2';
 import Callbacks from '../LF2/base/Callbacks';
 import Expression, { ValGetter } from '../LF2/base/Expression';
+import { TKeyName } from '../LF2/controller/BaseController';
 import { create_picture, type TImageInfo } from '../LF2/loader/loader';
 import NumberAnimation from '../NumberAnimation';
 import { is_arr } from '../common/is_arr';
 import { is_bool } from '../common/is_bool';
 import { is_num } from '../common/is_num';
 import { is_str } from '../common/is_str';
+import actor from './Action/Actor';
 import factory from './Component/Factory';
 import { LayoutComponent } from './Component/LayoutComponent';
+import LayoutMeshBuilder from './Component/LayoutMeshBuilder';
 import type { ILayoutInfo } from './ILayoutInfo';
 import { read_as_2_nums } from './utils/read_as_2_nums';
 import { read_as_4_nums } from './utils/read_as_4_nums';
-import { TKeyName } from '../LF2/controller/BaseController';
-import actor from './Action/Actor';
 
 export interface ILayoutCallback {
   on_click?(): void;
@@ -25,6 +26,13 @@ export interface ILayoutCallback {
 export default class Layout {
   protected _callbacks = new Callbacks<ILayoutCallback>();
   protected _opacity_animation = new NumberAnimation();
+
+  /**
+   * 根节点
+   *
+   * @protected
+   * @type {Layout}
+   */
   protected _root: Layout;
   protected _left_to_right: Layout[] = [];
   protected _top_to_bottom: Layout[] = [];
@@ -38,32 +46,30 @@ export default class Layout {
   ) {
     const anim = this._opacity_animation;
     if (begin !== anim.val_1 && end !== anim.val_2 && duration !== anim.duration)
-      anim.set(begin, end, duration, reverse).set_value(this._material?.opacity || 0)
+      anim.set(begin, end, duration, reverse).set_value(this.material?.opacity || 0)
     if (anim.reverse !== reverse)
-      anim.play(reverse).set_value(this._material?.opacity || 0);
+      anim.play(reverse).set_value(this.material?.opacity || 0);
   }
   protected _state: any = {}
   protected _visible = () => true;
   protected _img_idx = () => 0;
   protected _opacity = () => 1;
   protected _parent?: Layout;
-  protected _items: Layout[] = [];
+  protected _children: Layout[] = [];
   protected _index: number = 0;
   protected _level: number = 0;
-  protected _material?: THREE.MeshBasicMaterial;
-
   readonly data: Readonly<ILayoutInfo>;
 
   center: [number, number];
   pos: [number, number];
   img_infos?: TImageInfo[];
-
   src_rect: [number, number, number, number] = [0, 0, 0, 0];
   dst_rect: [number, number, number, number] = [0, 0, 0, 0];
   lf2: LF2;
   get focused_item(): Layout | undefined { return this._root === this ? this._focused_item : this._root._focused_item }
+  get id(): string | undefined { return this.data.id }
   get z_order(): number { return this.data.z_order ?? 0 };
-  get root() { return this._root }
+  get root(): Layout { return this._root }
   get level() { return this._level }
   get index() { return this._index }
   get state() { return this._state }
@@ -72,13 +78,16 @@ export default class Layout {
   get opacity() { return this._opacity() }
   get parent() { return this._parent; }
   set parent(v) { this._parent = v; }
-  get items() { return this._items; }
-  set items(v) { this._items = v; }
+  get children() { return this._children; }
+  set children(v) { this._children = v; }
   get size(): [number, number] { return [this.dst_rect[2], this.dst_rect[3]] }
   set size([w, h]: [number, number]) {
     this.dst_rect[2] = w;
     this.dst_rect[3] = h;
   }
+  get material() { return this._mesh?.material };
+  get components() { return this._components; }
+
   constructor(lf2: LF2, data: ILayoutInfo, parent?: Layout) {
     this.lf2 = lf2;
     this.data = Object.freeze(data);
@@ -102,7 +111,7 @@ export default class Layout {
     this._state = {};
     this.init_sprite();
 
-    for (const item of this.items)
+    for (const item of this.children)
       item.on_mount();
 
     const { enter } = this.data.actions || {};
@@ -110,8 +119,8 @@ export default class Layout {
 
     for (const c of this._components) c.on_mount?.();
 
-    if (this._sprite) {
-      if (this._sprite.visible)
+    if (this._mesh) {
+      if (this._mesh.visible)
         this.on_show();
       else
         this.on_hide();
@@ -124,10 +133,10 @@ export default class Layout {
     const { leave } = this.data.actions || {};
     leave && actor.act(this, leave);
 
-    for (const item of this.items)
+    for (const item of this.children)
       item.on_unmount()
 
-    this._sprite?.removeFromParent();
+    this._mesh?.removeFromParent();
   }
 
   on_show() {
@@ -163,9 +172,9 @@ export default class Layout {
     if (data.items)
       for (const raw_item of data.items) {
         const cooked_item = await Layout.cook(lf2, raw_item, get_val, ret);
-        cooked_item._index = ret.items.length;
+        cooked_item._index = ret.children.length;
         cooked_item._level = ret.level + 1;
-        ret.items.push(cooked_item);
+        ret.children.push(cooked_item);
       }
     if (!parent) {
       ret.size = [794, 450];
@@ -285,33 +294,35 @@ export default class Layout {
     return texture;
   }
 
-  protected _sprite?: THREE.Object3D;
-  get sprite() { return this._sprite }
+  protected _mesh?: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial>;
+  get mesh() { return this._mesh }
 
   protected init_sprite() {
     const [cx, cy] = this.center;
     const [x, y] = this.pos;
     const [w, h] = this.size;
     const texture = this.create_texture();
-    const center_x = Math.round((0.5 - cx) * w);
-    const center_y = Math.round((cy - 0.5) * h);
-    const geo = new THREE.PlaneGeometry(w, h)
-      .translate(center_x, center_y, 0);
+
     const params: THREE.MeshBasicMaterialParameters = {
       transparent: true
     };
     if (texture) params.map = texture;
     else if (this.data.bg_color) params.color = this.data.bg_color;
     else this._opacity = () => 0.
-    this._material = new THREE.MeshBasicMaterial(params);
-    this._sprite = new THREE.Mesh(geo, this._material);
-    this._sprite.name = this.data.name ?? this.data.id ?? 'layout';
-    this._sprite.position.set(x, -y, 0);
-    this._sprite.userData = {
+
+    this._mesh = LayoutMeshBuilder
+      .create()
+      .center(cx, cy)
+      .size(w, h)
+      .pos(x, -y)
+      .build(params)
+
+    this._mesh.name = this.data.name ?? this.data.id ?? 'layout';
+    this._mesh.userData = {
       owner: this,
     };
-    this._sprite.visible = this.visible;
-    (this.parent?.sprite || this.lf2.world.scene)?.add(this._sprite);
+    this._mesh.visible = this.visible;
+    (this.parent?.mesh || this.lf2.world.scene)?.add(this._mesh);
   }
 
   on_click(): boolean {
@@ -325,7 +336,7 @@ export default class Layout {
   }
 
   on_render(dt: number) {
-    const sprite = this.sprite;
+    const sprite = this.mesh;
     if (sprite) {
       if (this._root === this) {
         sprite.position.x = this.lf2.world.camera.position.x
@@ -339,20 +350,20 @@ export default class Layout {
           this.on_hide();
       }
     }
-    if (this._material) {
+    if (this.material) {
       const next_opacity = this.opacity;
       if (next_opacity >= 0) {
-        this._material.opacity = next_opacity;
+        this.material.opacity = next_opacity;
       } else if (this._opacity_animation) {
-        this._material.opacity = this._opacity_animation.update(dt);
+        this.material.opacity = this._opacity_animation.update(dt);
       }
     }
-    for (const i of this.items) i.on_render(dt);
+    for (const i of this.children) i.on_render(dt);
     for (const c of this._components) c.on_render?.(dt);
   }
 
   on_player_key_down(player_id: string, key: TKeyName) {
-    for (const i of this.items) i.on_player_key_down?.(player_id, key);
+    for (const i of this.children) i.on_player_key_down?.(player_id, key);
     for (const c of this._components) c.on_player_key_down?.(player_id, key);
     const lr_items = this._left_to_right.filter(v => v.visible);
     const lr_lengh = lr_items.length;
@@ -371,7 +382,6 @@ export default class Layout {
         }
       }
     }
-
 
     const ud_items = this._top_to_bottom.filter(v => v.visible);
     const ud_lengh = ud_items.length;

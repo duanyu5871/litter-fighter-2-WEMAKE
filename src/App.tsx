@@ -335,7 +335,7 @@ function App() {
           </Button>
         </div>
 
-        {Array.from(lf2_ref.current?.player_infos.values() ?? []).map((info, idx) =>
+        {Array.from(lf2_ref.current?.player_infos.values() ?? []).splice(0, 4).map((info, idx) =>
           <PlayerRow
             key={idx}
             lf2={lf2_ref.current!}

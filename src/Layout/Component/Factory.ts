@@ -11,6 +11,7 @@ import PlayerKeyEditor from "./PlayerKeyEditor";
 import PlayerName from "./PlayerName";
 import PlayerTeamName from "./PlayerTeamName";
 import StageTransitions from "./StageTransitions";
+import GamePrepareLogic from "./GamePrepareLogic";
 class Factory {
   private _component_map = new Map<string, typeof LayoutComponent>([
     ['game_loading_file_name', LoadingFileNameDisplayer],
@@ -20,7 +21,8 @@ class Factory {
     ['player_c_head', PlayerCharacterHead],
     ['player_c_name', PlayerCharacterName],
     ['player_name', PlayerName],
-    ['player_t_name', PlayerTeamName]
+    ['player_t_name', PlayerTeamName],
+    ['game_prepare_logic', GamePrepareLogic]
   ])
   create(layout: Layout, components: ILayoutInfo['component']): LayoutComponent[] {
     if (!components?.length) return [];

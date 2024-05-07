@@ -16,7 +16,8 @@
     "player_c_sel_logic(5)",
     "player_c_sel_logic(6)",
     "player_c_sel_logic(7)",
-    "player_c_sel_logic(8)"
+    "player_c_sel_logic(8)",
+    "game_prepare_logic()"
   ],
   "items": [
     {

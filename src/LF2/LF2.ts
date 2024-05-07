@@ -69,7 +69,11 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     ['1', new PlayerInfo('1')],
     ['2', new PlayerInfo('2')],
     ['3', new PlayerInfo('3')],
-    ['4', new PlayerInfo('4')]
+    ['4', new PlayerInfo('4')],
+    ['5', new PlayerInfo('5')],
+    ['6', new PlayerInfo('6')],
+    ['7', new PlayerInfo('7')],
+    ['8', new PlayerInfo('8')]
   ])
   get player_infos() { return this._player_infos }
 
@@ -90,26 +94,27 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   )
 
   readonly bgms = new Loader<string[]>(() => {
-    if (!this.zip) return Promise.all([
-      "boss1.wma.ogg",
-      "boss2.wma.ogg",
-      "main.wma.ogg",
-      "stage1.wma.ogg",
-      "stage2.wma.ogg",
-      "stage3.wma.ogg",
-      "stage4.wma.ogg",
-      "stage5.wma.ogg",
+    const jobs = [
+      "bgm/boss1.wma.ogg",
+      "bgm/boss2.wma.ogg",
+      "bgm/main.wma.ogg",
+      "bgm/stage1.wma.ogg",
+      "bgm/stage2.wma.ogg",
+      "bgm/stage3.wma.ogg",
+      "bgm/stage4.wma.ogg",
+      "bgm/stage5.wma.ogg",
     ].map(async name => {
-      const src = this.import('bgm/' + name)
+      const src = this.import(name)
       await this.sound_mgr.preload(name, src);
       return name;
-    }))
-    return Promise.all(
-      this.zip.file(/^bgm\//).map(async file => {
+    })
+    if (this.zip) {
+      jobs.push(...this.zip.file(/^bgm\//).map(async file => {
         await this.sound_mgr.preload(file.name, file.async('blob'))
         return file.name
-      })
-    )
+      }))
+    }
+    return Promise.all(jobs)
   },
     (d) => this._callbacks.emit('on_bgms_loaded')(d),
     () => this._callbacks.emit('on_bgms_clear')()
@@ -254,7 +259,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   on_click(e: PointingEvent) {
     if (!this._layout) return;
     const coords = new THREE.Vector2(e.scene_x, e.scene_y);
-    const { sprite: object_3d } = this._layout;
+    const { mesh: object_3d } = this._layout;
     if (!object_3d) return;
     const raycaster = new THREE.Raycaster();
     raycaster.setFromCamera(coords, this.world.camera);
@@ -282,7 +287,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   on_pointer_move(e: PointingEvent) {
     if (!this._layout) return;
     const coords = new THREE.Vector2(e.scene_x, e.scene_y);
-    const { sprite: object_3d } = this._layout;
+    const { mesh: object_3d } = this._layout;
     if (!object_3d) return;
     const raycaster = new THREE.Raycaster();
     raycaster.setFromCamera(coords, this.world.camera);

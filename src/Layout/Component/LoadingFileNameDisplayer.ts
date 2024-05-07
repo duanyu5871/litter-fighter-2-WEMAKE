@@ -26,7 +26,7 @@ export default class LoadingFileNameDisplayer extends LayoutComponent implements
       delete this._sprite;
       return;
     }
-    if (!this.layout.sprite) return;
+    if (!this.layout.mesh) return;
 
     const { data } = this.layout;
     const text_builder = TextBuilder
@@ -40,7 +40,7 @@ export default class LoadingFileNameDisplayer extends LayoutComponent implements
       })
 
     if (!this._sprite) {
-      this.layout.sprite.add(
+      this.layout.mesh.add(
         this._sprite = await text_builder.build_mesh()
       );
       this._sprite.name = LoadingFileNameDisplayer.name;

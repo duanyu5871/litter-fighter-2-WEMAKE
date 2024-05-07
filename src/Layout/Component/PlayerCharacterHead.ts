@@ -29,7 +29,7 @@ export default class PlayerCharacterHead extends LayoutComponent {
       const character = character_id ? this.lf2.dat_mgr.find_character(character_id) : void 0;
       this._head = character?.base.head || 'sprite/RFACE.png';
       this.handle_changed();
-    },
+    }
   }
 
   init(...args: string[]): this {
@@ -44,9 +44,9 @@ export default class PlayerCharacterHead extends LayoutComponent {
     this._mesh_join = LayoutMeshBuilder.create()
       .center(0.5, 0.5)
       .size(hint_textures.i_w, hint_textures.i_h)
-      .build(hint_textures.texture);
+      .build({ map: hint_textures.texture, transparent: true });
     this._mesh_join.position.set(w / 2, -h / 2, 0);
-    this.layout.sprite?.add(this._mesh_join)
+    this.layout.mesh?.add(this._mesh_join)
     this._mesh_join.visible = !this._player?.joined
   }
 
@@ -91,9 +91,9 @@ export default class PlayerCharacterHead extends LayoutComponent {
     const [w, h] = this.layout.size
     const builder = LayoutMeshBuilder.create().size(w, h);
     if (!this._mesh_head) {
-      this._mesh_head = builder.build(pic.texture);
+      this._mesh_head = builder.build({ map: pic.texture, transparent: true });
       this._mesh_head.name = PlayerCharacterHead.name
-      this.layout.sprite?.add(this._mesh_head);
+      this.layout.mesh?.add(this._mesh_head);
     } else {
       this._mesh_head.geometry.dispose();
       this._mesh_head.material.map?.dispose();

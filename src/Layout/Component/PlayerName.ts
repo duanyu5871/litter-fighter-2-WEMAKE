@@ -88,7 +88,7 @@ export default class PlayerName extends LayoutComponent {
       }
       this._mesh = mesh;
       this._mesh.name = PlayerName.name
-      this.layout.sprite?.add(this._mesh);
+      this.layout.mesh?.add(this._mesh);
     } else {
       const [geo, tex] = await builder.build();
       if (jid !== this._jid) {

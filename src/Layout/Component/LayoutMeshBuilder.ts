@@ -9,25 +9,32 @@ export default class LayoutMeshBuilder {
   protected c_y: number = 0;
   protected w: number = 1;
   protected h: number = 1;
+  protected x: number = 0;
+  protected y: number = 0;
   size(w: number, h: number): this {
     this.w = w;
     this.h = h;
     return this
+  }
+  pos(x: number, y: number): this {
+    this.x = x;
+    this.y = y;
+    return this;
   }
   center(x: number, y: number): this {
     this.c_x = x;
     this.c_y = y;
     return this;
   }
-  build(texture: THREE.Texture): THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial> {
-    const [geo, material] = this.build_args(texture);
-    return new THREE.Mesh(geo, material)
+  build(parameters?: THREE.MeshBasicMaterialParameters | undefined): THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial> {
+    const [geo, material] = this.build_args(parameters);
+    const ret = new THREE.Mesh(geo, material)
+    ret.position.x = this.x;
+    ret.position.y = this.y;
+    return ret;
   }
-  build_args(texture: THREE.Texture): [THREE.PlaneGeometry, THREE.MeshBasicMaterial] {
-    const material = new THREE.MeshBasicMaterial({
-      map: texture,
-      transparent: true
-    })
+  build_args(parameters?: THREE.MeshBasicMaterialParameters | undefined): [THREE.PlaneGeometry, THREE.MeshBasicMaterial] {
+    const material = new THREE.MeshBasicMaterial(parameters)
     return [this.build_geometry(), material];
   }
   build_geometry(): THREE.PlaneGeometry {

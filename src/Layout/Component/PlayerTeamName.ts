@@ -96,7 +96,7 @@ export default class PlayerTeamName extends LayoutComponent {
       }
       this._mesh = mesh;
       this._mesh.name = PlayerTeamName.name
-      this.layout.sprite?.add(this._mesh);
+      this.layout.mesh?.add(this._mesh);
     } else {
       const [geo, tex] = await builder.build();
       if (jid !== this._jid) {

@@ -2,7 +2,9 @@ import { ILf2Callback } from '../../LF2/ILf2Callback';
 import type { PlayerInfo } from "../../LF2/PlayerInfo";
 import { TKeyName } from '../../LF2/controller/BaseController';
 import { SineAnimation } from '../../SineAnimation';
+import find_in_set from '../../common/find_in_set';
 import { Defines } from '../../common/lf2_type/defines';
+import GamePrepareLogic, { IGamePrepareLogicCallback } from './GamePrepareLogic';
 import { LayoutComponent } from "./LayoutComponent";
 
 /**
@@ -16,6 +18,11 @@ export default class PlayerCharacterSelLogic extends LayoutComponent {
   protected _player_id: string = '';
   protected _jid: number = 0;
   protected _hints_opacity: SineAnimation = new SineAnimation(0.75, 1, 1 / 50);
+  private _game_prepare_logic_listener: Partial<IGamePrepareLogicCallback> = {
+    on_all_ready: () => this.on_all_player_ready(),
+    on_not_ready: () => this.on_not_all_player_ready(),
+    on_countdown: (v) => this.on_countdown(v)
+  };
 
   get player(): PlayerInfo | undefined { return this.lf2.player_infos.get(this._player_id) };
 
@@ -50,9 +57,15 @@ export default class PlayerCharacterSelLogic extends LayoutComponent {
     this.lf2.callbacks.add(this._lf2_listener)
     if (!this.lf2.is_cheat_enabled(Defines.Cheats.Hidden))
       this.handle_hidden_character();
+
+    const gpl = find_in_set(this.layout.root.components, v => v instanceof GamePrepareLogic) as GamePrepareLogic | undefined;
+    gpl?.callbacks.add(this._game_prepare_logic_listener)
   }
 
   on_unmount(): void {
+    this.joined = false;
+    this.character_decided = false;
+    this.team_decided = false;
     this.lf2.callbacks.del(this._lf2_listener)
   }
 
@@ -146,4 +159,18 @@ export default class PlayerCharacterSelLogic extends LayoutComponent {
     const idx = characters.findIndex(v => v.id === this.character);
     this.player?.set_character(characters[idx]?.id ?? '');
   }
+
+  protected on_not_all_player_ready(): void {
+    console.log('on_not_all_player_ready')
+    // throw new Error('Method not implemented.');
+  }
+  protected on_all_player_ready(): void {
+    console.log('on_all_player_ready')
+    // throw new Error('Method not implemented.');
+  }
+
+  protected on_countdown(v: number): void {
+    console.log('on_countdown', v)
+  }
+
 }
