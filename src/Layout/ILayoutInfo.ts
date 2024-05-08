@@ -1,3 +1,5 @@
+import IStyle from "../LF2/loader/IStyle";
+
 export interface ILayoutInfo {
   id?: string;
   name?: string;
@@ -13,11 +15,8 @@ export interface ILayoutInfo {
   flip_y?: boolean;
   bg_color?: string;
   component?: string | string[];
+  style?: IStyle;
   txt?: string;
-  txt_fill?: string;
-  txt_stroke?: string;
-  font?: string[];
-  z_order?: number;
   actions?: {
     click: string | string[];
     enter?: string | string[];

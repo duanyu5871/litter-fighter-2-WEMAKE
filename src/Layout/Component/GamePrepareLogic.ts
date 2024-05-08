@@ -16,6 +16,9 @@ export enum GamePrepareState {
 }
 
 export default class GamePrepareLogic extends LayoutComponent {
+  static get inst(): GamePrepareLogic | null { return this._inst };
+  protected static _inst: GamePrepareLogic | null = null;
+
   protected _callbacks = new Callbacks<IGamePrepareLogicCallback>();
   protected _joined_num: number = 0;
   protected _ready_num: number = 0;
@@ -31,6 +34,7 @@ export default class GamePrepareLogic extends LayoutComponent {
     return !!this._joined_num && this._joined_num === this._ready_num;
   }
   on_mount(): void {
+    GamePrepareLogic._inst = this;
     for (const [, player] of this.lf2.player_infos) {
       if (player.joined) this._joined_num++;
       if (player.team_decided) this._ready_num++;
@@ -38,6 +42,8 @@ export default class GamePrepareLogic extends LayoutComponent {
     }
   }
   on_unmount(): void {
+    if (GamePrepareLogic._inst === this)
+      GamePrepareLogic._inst = null;
     this._joined_num = 0;
     this._ready_num = 0;
     for (const [, player] of this.lf2.player_infos)

@@ -17,13 +17,9 @@
     {
       "id": "txt_loading_content",
       "component": "game_loading_file_name()",
-      "txt_fill": "white",
       "pos": "769, 59",
       "center": "1, 0",
-      "font": [
-        "18px",
-        "Arial"
-      ]
+      "font": "18px Arial"
     },
     {
       "id": "stage_transition",

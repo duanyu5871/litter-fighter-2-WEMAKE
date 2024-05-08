@@ -2,9 +2,10 @@ import * as THREE from 'three';
 import { IBgData } from '../../common/lf2_type';
 import { IBgLayerInfo } from "../../common/lf2_type/IBgLayerInfo";
 import { Defines } from '../../common/lf2_type/defines';
-import Layer from './Layer';
 import { World } from '../World';
-import { TPictureInfo, create_picture, error_picture_info } from '../loader/loader';
+import { TPicture, err_pic_info } from '../loader/loader';
+import Layer from './Layer';
+import { Warn } from '@fimagine/logger';
 
 export interface ILayerUserData {
   x: number;
@@ -48,16 +49,13 @@ export default class Background {
     this.obj_3d = new THREE.Object3D();
     this.obj_3d.position.z = -2 * Defines.OLD_SCREEN_HEIGHT;
     this.obj_3d.name = Background.name + ':' + this.data.base.name;
-    const jobs: Promise<any>[] = []
 
     for (const info of data.layers) {
       if ('color' in info) this.add_layer(info);
       if (!info.file) continue;
-      const f = info.file;
-      this.world.lf2.import(f).then(b => {
-        if (!b) return;
-        jobs.push(this.get_texture(f, b).then(t => this.add_layer(info, t)))
-      });
+      this.world.lf2.img_mgr.create_pic_by_src(info.file)
+        .then(pic => this.add_layer(info, pic))
+        .catch(err => Warn.print(Background.name, info, err))
     }
     this._disposers.push(() => this.fade_out());
     world.scene.add(this.obj_3d);
@@ -74,33 +72,23 @@ export default class Background {
 
   }
 
-  private add_layer(info: IBgLayerInfo, texture?: THREE.Texture) {
+  private add_layer(info: IBgLayerInfo, pic?: TPicture) {
     let { x, y, z, loop = 0 } = info;
     do {
-      const layer = new Layer(this, info, x, y, z, texture)
+      const layer = new Layer(this, info, x, y, z, pic)
       this.obj_3d.add(layer.mesh);
       this._layers.push(layer)
       x += loop;
     } while (loop > 0 && x < this.width);
   }
 
-  private async get_texture(key: string, path: string): Promise<THREE.Texture> {
-    const img_info = await this.world.lf2.img_mgr.load_img(key, async () => path);
-    const pic_info = await create_picture(key, img_info);
-    return pic_info.texture;
-  }
-
-  async get_shadow(): Promise<TPictureInfo> {
+  async get_shadow(): Promise<TPicture> {
     const key = this.data.base.shadow;
-    if (!key) return error_picture_info(key)
+    if (!key) return err_pic_info(key)
     try {
-      const path = await this.world.lf2.import(key);
-      if (!path) return error_picture_info(key);
-      const img_info = await this.world.lf2.img_mgr.load_img(key, path)
-      const pic_info = await create_picture(key, img_info)
-      return pic_info;
+      return await this.world.lf2.img_mgr.create_pic_by_src(key)
     } catch (e) {
-      return error_picture_info(key);
+      return err_pic_info(key);
     }
   }
 

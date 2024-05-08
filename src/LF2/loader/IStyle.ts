@@ -1,33 +1,33 @@
-export interface IStyle {
+export default interface IStyle {
   padding_t?: number;
   padding_b?: number;
   padding_l?: number;
   padding_r?: number;
 
-  lineCap?: CanvasLineCap;
-  lineDashOffset?: number;
-  lineJoin?: CanvasLineJoin;
-  lineWidth?: number;
-  miterLimit?: number;
+  line_cap?: CanvasLineCap;
+  line_dash_offset?: number;
+  line_join?: CanvasLineJoin;
+  line_width?: number;
+  miter_limit?: number;
 
-  shadowBlur?: number;
-  shadowColor?: string;
-  shadowOffsetX?: number;
-  shadowOffsetY?: number;
+  shadow_blur?: number;
+  shadow_color?: string;
+  shadow_offset_x?: number;
+  shadow_offset_y?: number;
 
-  fillStyle?: string | CanvasGradient | CanvasPattern;
-  strokeStyle?: string | CanvasGradient | CanvasPattern;
+  fill_style?: string | CanvasGradient | CanvasPattern;
+  stroke_style?: string | CanvasGradient | CanvasPattern;
 
   direction?: CanvasDirection;
   font?: string;
-  fontKerning?: CanvasFontKerning;
-  fontStretch?: CanvasFontStretch;
-  fontVariantCaps?: CanvasFontVariantCaps;
-  letterSpacing?: string;
-  textAlign?: CanvasTextAlign;
-  textBaseline?: CanvasTextBaseline;
-  textRendering?: CanvasTextRendering;
-  wordSpacing?: string;
+  font_kerning?: CanvasFontKerning;
+  font_stretch?: CanvasFontStretch;
+  font_variant_caps?: CanvasFontVariantCaps;
+  letter_spacing?: string;
+  text_align?: CanvasTextAlign;
+  text_baseline?: CanvasTextBaseline;
+  text_rendering?: CanvasTextRendering;
+  word_spacing?: string;
 
   smoothing?: boolean;
 }

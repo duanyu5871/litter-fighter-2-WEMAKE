@@ -11,15 +11,15 @@ import { ICharacterData, IWeaponData, TFace } from '../common/lf2_type';
 import { IStageInfo } from "../common/lf2_type/IStageInfo";
 import { Defines } from '../common/lf2_type/defines';
 import random_get from '../common/random_get';
+import { random_in_range } from '../common/random_in_range';
 import random_take from '../common/random_take';
 import { ILf2Callback } from './ILf2Callback';
-import { Loader } from './base/Loader';
 import { PlayerInfo } from './PlayerInfo';
 import { World } from './World';
 import Callbacks, { NoEmitCallbacks } from './base/Callbacks';
+import { Loader } from './base/Loader';
 import { get_short_file_size_txt } from './base/get_short_file_size_txt';
 import { new_id, new_team } from './base/new_id';
-import { random_in_range } from '../common/random_in_range';
 import Layer from './bg/Layer';
 import { KEY_NAME_LIST } from './controller/BaseController';
 import LocalHuman from "./controller/LocalHuman";
@@ -275,7 +275,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
         if (a.level < b.level) {
           do { if (!a.parent) return 0; a = a.parent; } while (b.level !== a.level)
         }
-        return b.z_order - a.z_order || b.index - a.index;
+        return b.z - a.z || b.index - a.index;
       })
 
 
@@ -606,8 +606,8 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
 
   set_layout(layout?: Layout): void;
   set_layout(id?: string): void;
-  set_layout(any: string | Layout | undefined): void {
-    const layout = typeof any === 'string' ? this._layouts?.find(v => v.data.id === any) : any;
+  set_layout(arg: string | Layout | undefined): void {
+    const layout = is_str(arg) ? this._layouts?.find(v => v.id === arg) : arg;
     if (this._layout === layout) return;
     const prev_layout = this._layout;
     this._layout?.on_unmount();

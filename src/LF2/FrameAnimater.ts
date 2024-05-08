@@ -6,7 +6,7 @@ import { is_str } from '../common/is_str';
 import { IFrameInfo, IGameObjData, IGameObjInfo, INextFrame, ITexturePieceInfo, TFace, TNextFrame } from '../common/lf2_type';
 import { Defines } from '../common/lf2_type/defines';
 import random_get from '../common/random_get';
-import { IPictureInfo } from '../types/IPictureInfo';
+import IPicture from '../common/lf2_type/IPicture';
 import type { World } from './World';
 import { new_id } from './base/new_id';
 import { turn_face } from './entity/face_helper';
@@ -53,7 +53,7 @@ export class FrameAnimater<
 
   readonly data: D;
   readonly world: World;
-  readonly pictures: Map<string, IPictureInfo<THREE.Texture>>;
+  readonly pictures: Map<string, IPicture<THREE.Texture>>;
   readonly mesh: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial>;
   readonly position = new THREE.Vector3(0, 0, 0);
   protected _piece: ITexturePieceInfo = EMPTY_PIECE;

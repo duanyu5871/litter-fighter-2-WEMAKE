@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import fade_out from '../../Utils/fade_out';
 import { IBgLayerInfo } from "../../common/lf2_type/IBgLayerInfo";
 import { Defines } from '../../common/lf2_type/defines';
+import { TPicture } from '../loader/loader';
 import Background, { ILayerUserData } from './Background';
 
 export default class Layer {
@@ -13,12 +14,12 @@ export default class Layer {
   set show_indicators(v: boolean) { this._show_indicators = v; }
   get user_data() { return this.mesh.userData as ILayerUserData; }
 
-  constructor(bg: Background, info: IBgLayerInfo, x: number, y: number, z: number, texture?: THREE.Texture) {
+  constructor(bg: Background, info: IBgLayerInfo, x: number, y: number, z: number, pic?: TPicture) {
     this.bg = bg;
-
-    const { width: w, height: h } = texture ? texture.image : info;
+    const w = pic ? pic.w : info.width;
+    const h = pic ? pic.h : info.height;
     const params: THREE.MeshBasicMaterialParameters = { transparent: true, opacity: 0 }
-    if (texture) params.map = texture;
+    if (pic?.texture) params.map = pic.texture;
     else params.color = info.color
 
     this.mesh = new THREE.Mesh(

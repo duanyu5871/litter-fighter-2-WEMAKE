@@ -1,4 +1,4 @@
-import { read_as_2_nums } from '../../Layout/utils/read_as_2_nums';
+import read_nums from '../../Layout/utils/read_nums';
 import { Warn } from '../../Log';
 import { IEntityPictureInfo, IFrameInfo, IGameObjData, ITexturePieceInfo } from '../../common/lf2_type';
 import { IRect } from '../../common/lf2_type/IRect';
@@ -9,7 +9,6 @@ const get_keys = <V extends {}>(v: V): (keyof V)[] => {
   return Object.keys(v) as (keyof V)[]
 }
 export const cook_frame = (lf2: LF2, data: IGameObjData, frame: IFrameInfo) => {
-
   let pic = frame.pic;
   let pic_info: IEntityPictureInfo | undefined = void 0;
   if (frame.sound && !lf2.sound_mgr.has(frame.sound))
@@ -20,7 +19,7 @@ export const cook_frame = (lf2: LF2, data: IGameObjData, frame: IFrameInfo) => {
   const unchecked_frame = (frame as any);
   if (unchecked_frame) {
     if (unchecked_frame.center) {
-      const [x, y] = read_as_2_nums(unchecked_frame.center, frame.centerx ?? 0, frame.centery ?? 0)
+      const [x, y] = read_nums(unchecked_frame.center, 2, [frame.centerx ?? 0, frame.centery ?? 0])
       frame.centerx = x;
       frame.centery = y;
     }

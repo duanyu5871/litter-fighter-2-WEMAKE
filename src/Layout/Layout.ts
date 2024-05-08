@@ -3,7 +3,8 @@ import LF2 from '../LF2/LF2';
 import Callbacks from '../LF2/base/Callbacks';
 import Expression, { ValGetter } from '../LF2/base/Expression';
 import { TKeyName } from '../LF2/controller/BaseController';
-import { create_picture, type TImageInfo } from '../LF2/loader/loader';
+import IStyle from '../LF2/loader/IStyle';
+import { type TImageInfo } from '../LF2/loader/loader';
 import NumberAnimation from '../NumberAnimation';
 import { is_arr } from '../common/is_arr';
 import { is_bool } from '../common/is_bool';
@@ -14,8 +15,7 @@ import factory from './Component/Factory';
 import { LayoutComponent } from './Component/LayoutComponent';
 import LayoutMeshBuilder from './Component/LayoutMeshBuilder';
 import type { ILayoutInfo } from './ILayoutInfo';
-import { read_as_2_nums } from './utils/read_as_2_nums';
-import { read_as_4_nums } from './utils/read_as_4_nums';
+import read_nums from './utils/read_nums';
 
 export interface ILayoutCallback {
   on_click?(): void;
@@ -58,17 +58,21 @@ export default class Layout {
   protected _children: Layout[] = [];
   protected _index: number = 0;
   protected _level: number = 0;
-  readonly data: Readonly<ILayoutInfo>;
+  protected readonly data: Readonly<ILayoutInfo>;
 
   center: [number, number];
-  pos: [number, number];
+  pos: [number, number, number] = [0, 0, 0];
   img_infos?: TImageInfo[];
   src_rect: [number, number, number, number] = [0, 0, 0, 0];
   dst_rect: [number, number, number, number] = [0, 0, 0, 0];
   lf2: LF2;
+
   get focused_item(): Layout | undefined { return this._root === this ? this._focused_item : this._root._focused_item }
   get id(): string | undefined { return this.data.id }
-  get z_order(): number { return this.data.z_order ?? 0 };
+  get name(): string | undefined { return this.data.name }
+  get x(): number { return this.pos[0] };
+  get y(): number { return this.pos[1] };
+  get z(): number { return this.pos[2] };
   get root(): Layout { return this._root }
   get level() { return this._level }
   get index() { return this._index }
@@ -77,7 +81,6 @@ export default class Layout {
   get visible(): boolean { return this._visible() }
   get opacity() { return this._opacity() }
   get parent() { return this._parent; }
-  set parent(v) { this._parent = v; }
   get children() { return this._children; }
   set children(v) { this._children = v; }
   get size(): [number, number] { return [this.dst_rect[2], this.dst_rect[3]] }
@@ -87,13 +90,14 @@ export default class Layout {
   }
   get material() { return this._mesh?.material };
   get components() { return this._components; }
+  get style(): IStyle { return this.data.style || {} }
 
   constructor(lf2: LF2, data: ILayoutInfo, parent?: Layout) {
     this.lf2 = lf2;
     this.data = Object.freeze(data);
-    this.center = read_as_2_nums(this.data.center, 0, 0)
-    this.pos = read_as_2_nums(this.data.pos, 0, 0)
-    this.parent = parent;
+    this.center = read_nums(this.data.center, 2)
+    this.pos = read_nums(this.data.pos, 3)
+    this._parent = parent;
     this._root = parent ? parent.root : this;
   }
   hit(x: number, y: number): boolean {
@@ -179,7 +183,7 @@ export default class Layout {
     if (!parent) {
       ret.size = [794, 450];
       ret.center = [0, 0];
-      ret.pos = [0, -450]
+      ret.pos = [0, -450, 0]
     }
     if (ret._root === ret) {
       ret.root._left_to_right!.sort((a, b) => a.pos[0] - b.pos[0]);
@@ -205,12 +209,12 @@ export default class Layout {
       if (!img_paths.length) break;
 
       const img_infos: TImageInfo[] = [];
-      const [sx, sy, sw, sh] = read_as_4_nums(this.data.rect, 0, 0, 0, 0)
+      const [sx, sy, sw, sh] = read_nums(this.data.rect, 4)
       const preload = async (img_path: string) => {
         const img_key = [img_path, sx, sy, sw, sh, flip_x ? 1 : 0, flip_y ? 1 : 0].join('_')
         const img_info = this.lf2.img_mgr.find(img_key);
         if (img_info) return img_info;
-        return await this.lf2.img_mgr.load_img(img_key, () => lf2.import(img_path), (img, cvs, ctx) => {
+        return await this.lf2.img_mgr.load_img(img_key, async () => img_path, (img, cvs, ctx) => {
           const w = sw || img.width;
           const h = sh || img.height;
           cvs.width = w;
@@ -226,15 +230,11 @@ export default class Layout {
 
     } while (0);
 
-    const { txt_fill, txt_stroke, txt, font } = this.data;
+    const { txt, style } = this.data;
     do {
       if (!is_str(txt)) break;
       this.img_infos = [
-        await this.lf2.img_mgr.load_text(txt, {
-          fillStyle: txt_fill,
-          strokeStyle: txt_stroke,
-          font: font?.join(' ')
-        })
+        await this.lf2.img_mgr.load_text(txt, style)
       ]
     } while (0);
   }
@@ -275,10 +275,10 @@ export default class Layout {
     const { w: img_w = 0, h: img_h = 0 } = this.img_infos?.[0] || {};
     const { size, center, pos, rect } = this.data
 
-    const [sx, sy, sw, sh] = read_as_4_nums(rect, 0, 0, img_w, img_h)
-    const [w, h] = read_as_2_nums(size, sw, sh);
-    const [cx, cy] = read_as_2_nums(center, 0, 0);
-    const [x, y] = read_as_2_nums(pos, 0, 0);
+    const [sx, sy, sw, sh] = read_nums(rect, 4, [0, 0, img_w, img_h])
+    const [w, h] = read_nums(size, 2, [sw, sh]);
+    const [cx, cy] = read_nums(center, 2, [0, 0]);
+    const [x, y] = read_nums(pos, 2, [0, 0]);
 
     // 宽或高其一为0时，使用原图宽高比例的计算之
     const dw = Math.floor(w ? w : sh ? h * sw / sh : 0)
@@ -295,7 +295,7 @@ export default class Layout {
     const img_info = this.img_infos?.[img_idx];
     if (!img_info) return void 0;
     const { flip_x, flip_y } = this.data
-    const texture = create_picture(img_info.key, img_info).data.texture;
+    const texture = this.lf2.img_mgr.create_pic_by_img_info(img_info).texture;
     texture.offset.set(flip_x ? 1 : 0, flip_y ? 1 : 0);
     return texture;
   }
@@ -321,23 +321,20 @@ export default class Layout {
       .center(cx, cy)
       .size(w, h)
       .pos(x, -y)
-      .z(this.z_order)
+      .z(this.z)
       .build(params)
 
-    this._mesh.name = this.data.name ?? this.data.id ?? 'layout';
-    this._mesh.userData = {
-      owner: this,
-    };
+    this._mesh.name = `layout(name = ${this.name}, id =${this.id})`
+    this._mesh.userData = { owner: this };
     this._mesh.visible = this.visible;
     (this.parent?.mesh || this.lf2.world.scene)?.add(this._mesh);
   }
 
   on_click(): boolean {
     const { click } = this.data.actions ?? {};
-    click && actor.act(this, click)
+    click && actor.act(this, click);
     for (const c of this._components) {
-      if (!c.on_click) continue;
-      if (c.on_click()) break;
+      if (c.on_click?.()) break;
     }
     return !!click;
   }

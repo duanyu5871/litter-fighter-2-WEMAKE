@@ -1,7 +1,6 @@
 import * as THREE from 'three';
 import LF2 from '../../LF2/LF2';
-import { IStyle } from '../../LF2/loader/IStyle';
-import { create_picture } from '../../LF2/loader/loader';
+import IStyle from '../../LF2/loader/IStyle';
 
 export class TextBuilder {
   protected lf2: LF2;
@@ -50,9 +49,9 @@ export class TextBuilder {
   }
 
   async build() {
-    const img = await this.lf2.img_mgr.load_text(this._text, this._style);
-    const tex = create_picture(img.key, img).data.texture
-    const geo = new THREE.PlaneGeometry(img.w, img.h).translate(img.w * (0.5 - this._cx), img.h * (this._cy - 0.5), 0);
+    const pic = await this.lf2.img_mgr.create_pic_by_text(this._text, this._style);
+    const tex = pic.texture
+    const geo = new THREE.PlaneGeometry(pic.w, pic.h).translate(pic.w * (0.5 - this._cx), pic.h * (this._cy - 0.5), 0);
     return [geo, tex] as const;
   }
 }

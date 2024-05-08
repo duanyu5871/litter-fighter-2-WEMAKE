@@ -5,6 +5,8 @@ import NumberAnimation from "../../NumberAnimation";
 import { SineAnimation } from '../../SineAnimation';
 import { LayoutComponent } from "./LayoutComponent";
 import LayoutMeshBuilder from "./LayoutMeshBuilder";
+import GamePrepareLogic, { IGamePrepareLogicCallback } from './GamePrepareLogic';
+import { TPicture } from '../../LF2/loader/loader';
 
 /**
  * 显示玩家角色选择的角色头像
@@ -18,9 +20,11 @@ export default class PlayerCharacterHead extends LayoutComponent {
   protected _player: PlayerInfo | undefined = void 0;
   protected _jid: number = 0;
   protected _mesh_head: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial> | undefined
-  protected _mesh_join: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial> | undefined
+  protected _mesh_hints: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial> | undefined
+  protected _mesh_countdown: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial> | undefined
   protected _head_opacity: NumberAnimation = new NumberAnimation(0, 1, 0, false);
   protected _head: string = 'sprite/RFACE.png';
+  protected _countdown: string = '';
   protected _hints_opacity: SineAnimation = new SineAnimation(0.75, 1, 1 / 50);
 
   protected _player_listener: Partial<IPlayerInfoCallback> = {
@@ -31,23 +35,30 @@ export default class PlayerCharacterHead extends LayoutComponent {
       this.handle_changed();
     }
   }
+  private _game_prepare_logic_listener: Partial<IGamePrepareLogicCallback> = {
+    on_countdown: (v) => {
+      if (this._player?.joined) return;
+      this._countdown = `sprite/CM+${v}+.png`;
+    }
+  };
 
   init(...args: string[]): this {
     this._player_id = args[0];
     return this;
   }
 
+  static hint_pic: TPicture | null = null;
+
   async create_hints_mesh() {
     const [w, h] = this.layout.size
-    const src = 'sprite/CMA.png'
-    const hint_textures = await this.lf2.img_mgr.create_picture(src);
-    this._mesh_join = LayoutMeshBuilder.create()
+    const hint_pic = await this.lf2.img_mgr.create_pic_by_src('sprite/CMA.png');
+    this._mesh_hints = LayoutMeshBuilder.create()
       .center(0.5, 0.5)
-      .size(hint_textures.i_w, hint_textures.i_h)
-      .build({ map: hint_textures.texture, transparent: true });
-    this._mesh_join.position.set(w / 2, -h / 2, 0);
-    this.layout.mesh?.add(this._mesh_join)
-    this._mesh_join.visible = !this._player?.joined
+      .size(hint_pic.w, hint_pic.h)
+      .build({ map: hint_pic.texture, transparent: true });
+    this._mesh_hints.position.set(w / 2, -h / 2, 0);
+    this.layout.mesh?.add(this._mesh_hints)
+    this._mesh_hints.visible = !this._player?.joined
   }
 
   on_mount(): void {
@@ -57,15 +68,18 @@ export default class PlayerCharacterHead extends LayoutComponent {
     if (!this._player) return;
     this._player.callbacks.add(this._player_listener);
     this._player_listener.on_character_changed?.(this._player.character, '');
+    GamePrepareLogic.inst?.callbacks.add(this._game_prepare_logic_listener);
   }
 
   on_unmount(): void {
     if (!this._player) return;
     this._player.callbacks.del(this._player_listener);
     this.dispose_mesh();
+    GamePrepareLogic.inst?.callbacks.del(this._game_prepare_logic_listener);
   }
 
   protected handle_changed() {
+
     if (!this._mesh_head && this._player?.joined) {
       this.update_head_mesh(++this._jid, this._head).catch(e => console.error(e))
     } else {
@@ -83,7 +97,7 @@ export default class PlayerCharacterHead extends LayoutComponent {
   }
   protected async update_head_mesh(jid: number, src: string) {
     if (jid !== this._jid) return;
-    const pic = await this.lf2.img_mgr.create_picture(src);
+    const pic = await this.lf2.img_mgr.create_pic_by_src(src);
     if (jid !== this._jid) {
       pic.texture.dispose();
       return;
@@ -111,16 +125,16 @@ export default class PlayerCharacterHead extends LayoutComponent {
     }
     if (this._head_opacity.is_finish && this._head_opacity.reverse) {
       if (!this._head || !this._player?.joined) {
-        if (this._mesh_join) this._mesh_join.visible = true
+        if (this._mesh_hints) this._mesh_hints.visible = true
         this.dispose_mesh();
       } else {
-        if (this._mesh_join) this._mesh_join.visible = false
+        if (this._mesh_hints) this._mesh_hints.visible = false
         this.update_head_mesh(++this._jid, this._head).catch(e => Warn.print(PlayerCharacterHead.name, 'failed to update head, reason:', e))
         this._head_opacity.play(false);
       }
     }
-    if (this._mesh_join) {
-      this._mesh_join.material.opacity = this._hints_opacity.value;
+    if (this._mesh_hints) {
+      this._mesh_hints.material.opacity = this._hints_opacity.value;
     }
   }
 }

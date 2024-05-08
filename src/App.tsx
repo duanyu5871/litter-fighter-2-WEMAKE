@@ -80,7 +80,7 @@ function App() {
     if (!lf2_ref.current) {
       const lf2 = (window as any).lf2 = lf2_ref.current = new LF2(canvas, overlay);
       lf2.layouts().then((layouts) => {
-        const layout_data_list = layouts?.map(l => l.data) || []
+        const layout_data_list = layouts?.map(l => ({ id: l.id, name: l.name })) || []
         layout_data_list.unshift({ id: '', name: '无页面' })
         set_layouts(layout_data_list);
         if (layout_data_list.length > 1)
@@ -88,7 +88,7 @@ function App() {
       })
     }
     const callback: ILf2Callback = {
-      on_layout_changed: v => { set_layout(v?.data.id ?? '') },
+      on_layout_changed: v => { set_layout(v?.id ?? '') },
       on_loading_start: () => {
         set_loading(true);
       },
@@ -380,21 +380,21 @@ function GamePad(props: IAAAProps) {
     <img
       onTouchStart={() => controller?.start('a')}
       onTouchEnd={() => controller?.end('a')}
-      src={require('./lf2_built_in_data/sprite/touch_btn_a.png')}
+      src={require('./touch_btn_a.png')}
       alt='attack'
       draggable={false}
       style={{ width: 64, height: 64 }} />
     <img
       onTouchStart={() => controller?.start('j')}
       onTouchEnd={() => controller?.end('j')}
-      src={require('./lf2_built_in_data/sprite/touch_btn_j.png')}
+      src={require('./touch_btn_j.png')}
       alt='jump'
       draggable={false}
       style={{ width: 64, height: 64 }} />
     <img
       onTouchStart={() => controller?.start('d')}
       onTouchEnd={() => controller?.end('d')}
-      src={require('./lf2_built_in_data/sprite/touch_btn_d.png')}
+      src={require('./touch_btn_d.png')}
       alt='defense'
       draggable={false}
       style={{ width: 64, height: 64 }} />

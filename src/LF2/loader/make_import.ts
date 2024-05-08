@@ -41,7 +41,7 @@ const fetch_not_html = async (url: string, progress?: IOnProgress) => {
 }
 
 async function import_from_fetch(path: string, progress?: IOnProgress): Promise<any> {
-  const roots = ['lf2_data/'];
+  const roots = ['', 'lf2_data/', 'lf2_built_in_data/'];
   for (const root of roots) {
     const ret = await fetch_not_html(root + path, progress);
     if (ret) return ret;
@@ -50,7 +50,5 @@ async function import_from_fetch(path: string, progress?: IOnProgress): Promise<
 }
 
 export async function import_builtin<T = any>(path: string, progress?: IOnProgress): Promise<T> {
-  try { return await import_from_fetch(path, progress) } catch { }
-  try { return await import('../../lf2_built_in_data/' + path).then(v => v.default) } catch { }
-  throw new Error(`import_builtin(path), failed to import resource, path: ${path}`)
+  return import_from_fetch(path, progress)
 }

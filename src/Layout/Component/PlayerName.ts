@@ -76,7 +76,7 @@ export default class PlayerName extends LayoutComponent {
       .center(0.5, 0.5)
       .text(name)
       .style({
-        fillStyle: 'white',
+        fill_style: 'white',
         font: 'bold 14px Arial',
       });
     if (!this._mesh) {

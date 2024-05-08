@@ -2,7 +2,6 @@ import { ILf2Callback } from '../../LF2/ILf2Callback';
 import type { PlayerInfo } from "../../LF2/PlayerInfo";
 import { TKeyName } from '../../LF2/controller/BaseController';
 import { SineAnimation } from '../../SineAnimation';
-import find_in_set from '../../common/find_in_set';
 import { Defines } from '../../common/lf2_type/defines';
 import GamePrepareLogic, { IGamePrepareLogicCallback } from './GamePrepareLogic';
 import { LayoutComponent } from "./LayoutComponent";
@@ -57,9 +56,7 @@ export default class PlayerCharacterSelLogic extends LayoutComponent {
     this.lf2.callbacks.add(this._lf2_listener)
     if (!this.lf2.is_cheat_enabled(Defines.Cheats.Hidden))
       this.handle_hidden_character();
-
-    const gpl = find_in_set(this.layout.root.components, v => v instanceof GamePrepareLogic) as GamePrepareLogic | undefined;
-    gpl?.callbacks.add(this._game_prepare_logic_listener)
+    GamePrepareLogic.inst?.callbacks.add(this._game_prepare_logic_listener);
   }
 
   on_unmount(): void {
@@ -67,6 +64,7 @@ export default class PlayerCharacterSelLogic extends LayoutComponent {
     this.character_decided = false;
     this.team_decided = false;
     this.lf2.callbacks.del(this._lf2_listener)
+    GamePrepareLogic.inst?.callbacks.del(this._game_prepare_logic_listener);
   }
 
   get_characters() {

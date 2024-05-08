@@ -133,8 +133,8 @@ export class InfoSprite implements IEntityCallbacks {
       this.mesh.material.map = null;
       return;
     }
-    lf2.img_mgr.load_text(name, { shadowColor: strokeStyle, fillStyle, smoothing: false })
-      .then((i) => lf2.img_mgr.create_picture_by_img_key('', i.key))
+    lf2.img_mgr.load_text(name, { shadow_color: strokeStyle, fill_style: fillStyle, smoothing: false })
+      .then((i) => lf2.img_mgr.create_pic_by_img_key(i.key))
       .then((p) => {
         if (name !== e.name) return;
         if (team !== e.team) return;
@@ -145,7 +145,7 @@ export class InfoSprite implements IEntityCallbacks {
         this.mesh.material.map = p.texture;
         this.mesh.material.needsUpdate = true;
 
-        this.mesh.scale.set(p.i_w, p.i_h, 1);
+        this.mesh.scale.set(p.w, p.h, 1);
         this.mesh.name = 'name sprite'
       });
   }

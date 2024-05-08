@@ -19,37 +19,31 @@ export default class LoadingFileNameDisplayer extends LayoutComponent implements
     this.update_sprite('');
     this.lf2.set_layout('main_page')
   }
-  protected _sprite: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial> | undefined
+  protected _mesh: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial> | undefined
   protected async update_sprite(loading_content: string) {
     if (!loading_content) {
-      this._sprite?.removeFromParent();
-      delete this._sprite;
+      this._mesh?.removeFromParent();
+      delete this._mesh;
       return;
     }
     if (!this.layout.mesh) return;
 
-    const { data } = this.layout;
     const text_builder = TextBuilder
       .get(this.lf2)
       .center(...this.layout.center)
       .text(loading_content)
-      .style({
-        font: data.font?.join(' '),
-        fillStyle: data.txt_fill,
-        shadowColor: data.txt_stroke
-      })
+      .style(this.layout.style)
 
-    if (!this._sprite) {
-      this.layout.mesh.add(
-        this._sprite = await text_builder.build_mesh()
-      );
-      this._sprite.name = LoadingFileNameDisplayer.name;
+    if (!this._mesh) {
+      this._mesh = await text_builder.build_mesh()
+      this.layout.mesh.add(this._mesh);
+      this._mesh.name = LoadingFileNameDisplayer.name;
     } else {
       const [geo, tex] = await text_builder.build();
       if (!this.mounted) return;
-      this._sprite.geometry = geo;
-      this._sprite.material.map = tex;
-      this._sprite.material.needsUpdate = true;
+      this._mesh.geometry = geo;
+      this._mesh.material.map = tex;
+      this._mesh.material.needsUpdate = true;
     }
   }
 }

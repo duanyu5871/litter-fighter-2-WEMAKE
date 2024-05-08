@@ -25,6 +25,7 @@ export default class PlayerTeamName extends LayoutComponent {
     on_character_decided: (decided) => {
       if (this._show === decided) return;
       this._show = decided;
+      this._text = this.get_text(this._player?.team)
       this.handle_changed();
     },
     on_team_changed: (team) => {
@@ -84,7 +85,7 @@ export default class PlayerTeamName extends LayoutComponent {
       .center(0.5, 0.5)
       .text(name)
       .style({
-        fillStyle: 'white',
+        fill_style: 'white',
         font: 'bold 14px Arial',
       });
     if (!this._mesh) {

@@ -1,7 +1,7 @@
-export interface IPictureInfo<T> {
+export default interface IPicture<T> {
   id: string;
-  i_w: number;
-  i_h: number;
+  w: number;
+  h: number;
   cell_w: number;
   cell_h: number;
   row: number;
