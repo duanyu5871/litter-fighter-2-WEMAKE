@@ -15,6 +15,8 @@ export interface IOnProgress { (current: number, total: number): void }
 
 const fetch_not_html = async (url: string, progress?: IOnProgress) => {
   const v = await fetch(url);
+  if (url.startsWith('blob:')) return v.blob();
+
   const content_type = v.headers.get('Content-Type');
   if (!content_type) throw new Error(`Content-Type got ${content_type}`);
   if (content_type.startsWith('text/html')) return;
@@ -37,11 +39,14 @@ const fetch_not_html = async (url: string, progress?: IOnProgress) => {
       throw new Error(`Content-Type got ${content_type}, expected 'audio/ogg'`);
     return URL.createObjectURL(await v.blob());
   }
-  return await v.blob();
+  return v.blob();
 }
 
 async function import_from_fetch(path: string, progress?: IOnProgress): Promise<any> {
-  const roots = ['', 'lf2_data/', 'lf2_built_in_data/'];
+  if (path.startsWith('blob:') || path.startsWith('http:') || path.startsWith('https:')) {
+    return await fetch_not_html(path, progress);
+  }
+  const roots = ['lf2_data/', 'lf2_built_in_data/'];
   for (const root of roots) {
     const ret = await fetch_not_html(root + path, progress);
     if (ret) return ret;

@@ -144,8 +144,8 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
           const ret = await zip_obj.async('text');
           return this._r(ret);
         }
-        const ret = await zip_obj.async('blob')
-        return this._r(ret);
+        const ret = await zip_obj.async('blob');
+        return this._r(URL.createObjectURL(ret));
       }
     }
     for (const fallback_path of fallback_paths) {
