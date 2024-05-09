@@ -25,7 +25,7 @@ export default class Stage {
   private _disposers: (() => void)[] = [];
   private _bgm_enable: boolean;
   private _cur_phase_idx = -1;
-
+  get name(): string { return this.data.name }
   get cur_phase(): number { return this._cur_phase_idx }
   get left(): number { return this.bg.left }
   get right(): number { return this.bg.right }
@@ -134,10 +134,10 @@ export default class Stage {
   readonly items = new Set<Item>();
   async spawn_object(obj_info: IStageObjectInfo) {
     let count = 0;
-    for (const [, c] of this.world.player_characters) {
+    for (const [, c] of this.world.player_characters)
       count += c.data.base.ce ?? 1;
-    }
-
+    if (!count) count = 1;
+    
     const { ratio = 1, times = 1 } = obj_info;
     let spawn_count = Math.floor(count * ratio);
     if (spawn_count <= 0 || !times) return;

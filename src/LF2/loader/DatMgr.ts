@@ -55,7 +55,7 @@ class Inner {
 
     if (!('frames' in data)) return data;
     const { frames, base: { files } } = data;
-    const jobs = map(files, (_, v) => this.lf2.img_mgr.load_by_pic_info(v, _ => this.lf2.import(v.path)))
+    const jobs = map(files, (_, v) => this.lf2.img_mgr.load_by_e_pic_info(v, _ => this.lf2.import(v.path)))
     await Promise.all(jobs);
     traversal(frames, (_, frame) => cook_frame(this.lf2, data, frame));
     return data;

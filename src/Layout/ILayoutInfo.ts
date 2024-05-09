@@ -1,6 +1,7 @@
 import IStyle from "../LF2/loader/IStyle";
 
 export interface ILayoutInfo {
+  values?: { [x in string]?: any },
   id?: string;
   name?: string;
   img?: string[] | string;

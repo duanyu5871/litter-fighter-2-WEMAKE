@@ -13,6 +13,7 @@ import PlayerTeamName from "./PlayerTeamName";
 import StageTransitions from "./StageTransitions";
 import GamePrepareLogic from "./GamePrepareLogic";
 import ComNumButton from "./ComNumberButton";
+import StageTitleShow from "./StageTitleShow";
 class Factory {
   private _component_map = new Map<string, typeof LayoutComponent>([
     ['game_loading_file_name', LoadingFileNameDisplayer],
@@ -24,7 +25,8 @@ class Factory {
     ['player_name', PlayerName],
     ['player_t_name', PlayerTeamName],
     ['game_prepare_logic', GamePrepareLogic],
-    ['com_number', ComNumButton]
+    ['com_number', ComNumButton],
+    ['stage_title_show', StageTitleShow]
   ])
   create(layout: Layout, components: ILayoutInfo['component']): LayoutComponent[] {
     if (!components?.length) return [];

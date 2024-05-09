@@ -40,6 +40,7 @@ export default class PlayerName extends LayoutComponent {
   }
 
   on_mount(): void {
+    super.on_mount();
     if (!this._player_id) return;
     this._player = this.lf2.player_infos.get(this._player_id);
     if (!this._player) return;
@@ -50,6 +51,7 @@ export default class PlayerName extends LayoutComponent {
   }
 
   on_unmount(): void {
+    super.on_unmount();
     if (!this._player) return;
     this._player.callbacks.del(this._player_listener);
     this.dispose_mesh();

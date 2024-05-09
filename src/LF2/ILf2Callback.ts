@@ -20,4 +20,6 @@ export interface ILf2Callback {
 
   on_stage_pass?(): void;
   on_enter_next_stage?(): void;
+
+  on_dispose?(): void;
 }

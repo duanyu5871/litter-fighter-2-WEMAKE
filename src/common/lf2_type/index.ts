@@ -15,6 +15,7 @@ export type TTrend = -1 | 0 | 1;
 export type BOOL = 1 | 0;
 export * from './IDataLists'
 export * from './IDatIndex'
+
 export interface IEntityPictureInfo {
   id: string;
   begin: number;

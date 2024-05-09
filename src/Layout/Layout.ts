@@ -5,7 +5,7 @@ import Expression, { ValGetter } from '../LF2/base/Expression';
 import { TKeyName } from '../LF2/controller/BaseController';
 import IStyle from '../LF2/loader/IStyle';
 import { type TImageInfo } from '../LF2/loader/loader';
-import NumberAnimation from '../NumberAnimation';
+import NumberAnimation from '../common/animation/NumberAnimation';
 import { is_arr } from '../common/is_arr';
 import { is_bool } from '../common/is_bool';
 import { is_num } from '../common/is_num';
@@ -38,6 +38,10 @@ export default class Layout {
   protected _top_to_bottom: Layout[] = [];
   protected _focused_item?: Layout;
   protected _components = new Set<LayoutComponent>();
+
+  protected _id_layout_map?: Map<string, Layout>;
+  protected _name_layout_map?: Map<string, Layout>;
+
   set_opacity_animation(
     reverse: boolean,
     begin: number = 0,
@@ -88,9 +92,17 @@ export default class Layout {
     this.dst_rect[2] = w;
     this.dst_rect[3] = h;
   }
+  get w(): number { return this.dst_rect[2] }
+  set w(v: number) { this.dst_rect[2] = v }
+  get h(): number { return this.dst_rect[3] }
+  set h(v: number) { this.dst_rect[3] = v }
+
   get material() { return this._mesh?.material };
   get components() { return this._components; }
   get style(): IStyle { return this.data.style || {} }
+
+  get id_layout_map(): Map<string, Layout> { return this.root._id_layout_map! }
+  get name_layout_map(): Map<string, Layout> { return this.root._name_layout_map! }
 
   constructor(lf2: LF2, data: ILayoutInfo, parent?: Layout) {
     this.lf2 = lf2;
@@ -99,6 +111,10 @@ export default class Layout {
     this.pos = read_nums(this.data.pos, 3)
     this._parent = parent;
     this._root = parent ? parent.root : this;
+    if (this._root === this) {
+      this._id_layout_map = new Map();
+      this._name_layout_map = new Map();
+    }
   }
   hit(x: number, y: number): boolean {
     const [l, t, w, h] = this.dst_rect;
@@ -167,8 +183,6 @@ export default class Layout {
     ret._cook_rects();
     await ret._cook_component();
 
-
-
     if (ret.data.actions?.click) {
       if (ret.data.tab_type?.includes('lr')) ret.root._left_to_right!.push(ret);
       if (ret.data.tab_type?.includes('ud')) ret.root._top_to_bottom!.push(ret);
@@ -176,6 +190,8 @@ export default class Layout {
     if (data.items)
       for (const raw_item of data.items) {
         const cooked_item = await Layout.cook(lf2, raw_item, get_val, ret);
+        if (cooked_item.id) ret.id_layout_map.set(cooked_item.id, cooked_item);
+        if (cooked_item.name) ret.name_layout_map.set(cooked_item.name, cooked_item);
         cooked_item._index = ret.children.length;
         cooked_item._level = ret.level + 1;
         ret.children.push(cooked_item);
@@ -414,5 +430,22 @@ export default class Layout {
       case 'd':
         break;
     }
+  }
+
+  find_layout(id: string): Layout | undefined {
+    return this.id_layout_map.get(id);
+  }
+
+  find_layout_by_name(name: string): Layout | undefined {
+    return this.name_layout_map.get(name);
+  }
+
+  get_value(name: string, lookup: boolean = true): any {
+    const { values } = this.data;
+    if (values && name in values)
+      return values[name];
+    if (lookup && this.parent)
+      return this.parent.get_value(name, lookup)
+    return void 0;
   }
 }

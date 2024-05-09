@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import type { IPlayerInfoCallback, PlayerInfo } from "../../LF2/PlayerInfo";
 import { Warn } from '../../Log';
-import NumberAnimation from "../../NumberAnimation";
+import NumberAnimation from "../../common/animation/NumberAnimation";
 import { SineAnimation } from '../../SineAnimation';
 import { LayoutComponent } from "./LayoutComponent";
 import LayoutMeshBuilder from "./LayoutMeshBuilder";
@@ -62,6 +62,7 @@ export default class PlayerCharacterHead extends LayoutComponent {
   }
 
   on_mount(): void {
+    super.on_mount();
     this.create_hints_mesh();
     if (!this._player_id) return;
     this._player = this.lf2.player_infos.get(this._player_id);
@@ -72,6 +73,7 @@ export default class PlayerCharacterHead extends LayoutComponent {
   }
 
   on_unmount(): void {
+    super.on_unmount();
     if (!this._player) return;
     this._player.callbacks.del(this._player_listener);
     this.dispose_mesh();

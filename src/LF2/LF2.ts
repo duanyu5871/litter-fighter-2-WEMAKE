@@ -40,9 +40,23 @@ const cheat_info_pair = (n: Defines.Cheats) => ['' + n, {
   sound: Defines.CheatSounds[n],
 }] as const;
 
+class Functions {
+  protected _f_list = new Set<() => void>();
+  add(...fn: (() => void)[]): this {
+    for (const f of fn) this._f_list.add(f)
+    return this;
+  }
+  del(...fn: (() => void)[]): this {
+    for (const f of fn) this._f_list.delete(f)
+    return this;
+  }
+  invoke(): void {
+    for (const f of this._f_list) f()
+  }
+}
 export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   private _callbacks = new Callbacks<ILf2Callback>();
-  private _disposers = new Set<() => void>();
+  private _disposers = new Functions();
   private _disposed: boolean = false;
   private _layout: Layout | undefined;
   static DisposeError = new Error('disposed')
@@ -54,12 +68,6 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   get loaded() { return this._loaded; }
   get need_load() { return !this._loaded && !this._loading; }
 
-  set disposer(f: (() => void)[] | (() => void)) {
-    if (Array.isArray(f))
-      for (const i of f) this._disposers.add(i);
-    else
-      this._disposers.add(f);
-  }
 
   readonly canvas: HTMLCanvasElement;
   readonly world: World;
@@ -180,8 +188,10 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     this.pointings = new Pointings(canvas);
     this.pointings.callback.add(this)
 
-    this.disposer = () => this.keyboard.dispose()
-    this.disposer = () => this.pointings.dispose()
+    this._disposers.add(
+      () => this.keyboard.dispose(),
+      () => this.pointings.dispose()
+    )
   }
 
   random_entity_info(e: Entity) {
@@ -448,7 +458,8 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
 
   dispose() {
     this._disposed = true;
-    for (const f of this._disposers) f();
+    this._disposers.invoke();
+    this._callbacks.emit('on_dispose')();
     this.world.dispose()
     this.dat_mgr.cancel();
   }

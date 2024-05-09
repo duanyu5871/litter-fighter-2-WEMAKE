@@ -131,7 +131,7 @@ export class ImageMgr {
 
   protected _gen_key = (f: IEntityPictureInfo) => `${f.path}_${f.w}_${f.h}_${f.row}_${f.col}`;
 
-  async load_by_pic_info(f: IEntityPictureInfo, get_src: (f: IEntityPictureInfo) => Promise<string>): Promise<TImageInfo> {
+  async load_by_e_pic_info(f: IEntityPictureInfo, get_src: (f: IEntityPictureInfo) => Promise<string>): Promise<TImageInfo> {
     const key = this._gen_key(f);
     const { path, w: cell_w, h: cell_h } = f;
 
@@ -168,7 +168,6 @@ export class ImageMgr {
 
     return this.load_img(key, () => get_src(f), paint);
   }
-
   async create_pic_by_src(src: string): Promise<TPicture>;
   async create_pic_by_src(key: string, src: string): Promise<TPicture>
   async create_pic_by_src(key: string, src: string = key): Promise<TPicture> {
@@ -204,6 +203,20 @@ export class ImageMgr {
   async create_pic_by_text(text: string, style: IStyle = {}) {
     const img_info = await this.load_text(text, style);
     return this.create_pic_by_img_key(img_info.key);
+  }
+
+  crop(pic: TPicture, x: number, y: number, w: number, h: number): TPicture {
+    const texture = pic.texture.clone();
+    texture.repeat.set(
+      w / pic.w,
+      h / pic.h
+    )
+    texture.offset.set(
+      x / pic.w,
+      1 - (y + h) / pic.h
+    );
+    const ret = { ...pic, texture }
+    return ret;
   }
 }
 

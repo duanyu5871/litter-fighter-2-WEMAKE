@@ -52,6 +52,7 @@ export default class PlayerCharacterSelLogic extends LayoutComponent {
   }
 
   on_mount(): void {
+    super.on_mount();
     if (!this._player_id) return;
     this.lf2.callbacks.add(this._lf2_listener)
     if (!this.lf2.is_cheat_enabled(Defines.Cheats.Hidden))
@@ -60,6 +61,7 @@ export default class PlayerCharacterSelLogic extends LayoutComponent {
   }
 
   on_unmount(): void {
+    super.on_unmount();
     this.joined = false;
     this.character_decided = false;
     this.team_decided = false;

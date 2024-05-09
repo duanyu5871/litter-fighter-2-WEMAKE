@@ -34,6 +34,7 @@ export default class GamePrepareLogic extends LayoutComponent {
     return !!this._joined_num && this._joined_num === this._ready_num;
   }
   on_mount(): void {
+    super.on_mount();
     GamePrepareLogic._inst = this;
     for (const [, player] of this.lf2.player_infos) {
       if (player.joined) this._joined_num++;
@@ -42,6 +43,7 @@ export default class GamePrepareLogic extends LayoutComponent {
     }
   }
   on_unmount(): void {
+    super.on_unmount();
     if (GamePrepareLogic._inst === this)
       GamePrepareLogic._inst = null;
     this._joined_num = 0;
