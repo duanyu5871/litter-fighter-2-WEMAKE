@@ -1,21 +1,21 @@
 import { useEffect, useState } from 'react';
-import LF2 from './LF2/LF2';
+import { useImmer } from 'use-immer';
+import { Button } from './Component/Button';
+import CharacterSelect from './Component/CharacterSelect';
+import { Checkbox } from "./Component/Checkbox";
+import { Input } from './Component/Input';
+import Select from './Component/Select';
+import TeamSelect from './Component/TeamSelect';
 import { ILf2Callback } from './LF2/ILf2Callback';
+import { IWorldCallbacks } from './LF2/IWorldCallbacks';
+import LF2 from './LF2/LF2';
 import { BaseController } from './LF2/controller/BaseController';
 import { BotEnemyChaser } from './LF2/controller/BotEnemyChaser';
 import { InvalidController } from './LF2/controller/InvalidController';
 import Character from './LF2/entity/Character';
-import CharacterSelect from './Component/CharacterSelect';
-import Select from './Component/Select';
-import { Button } from './Component/Button';
-import { Input } from './Component/Input';
-import { Checkbox } from "./Component/Checkbox";
-import TeamSelect from './Component/TeamSelect';
-import { IStagePhaseInfo } from "./common/lf2_type/IStagePhaseInfo";
 import { IStageInfo } from "./common/lf2_type/IStageInfo";
+import { IStagePhaseInfo } from "./common/lf2_type/IStagePhaseInfo";
 import { Defines } from './common/lf2_type/defines';
-import { IWorldCallbacks } from './LF2/IWorldCallbacks';
-import { useImmer } from 'use-immer';
 const bot_controllers: { [x in string]?: (e: Character) => BaseController } = {
   'OFF': (e: Character) => new InvalidController(e),
   'enemy chaser': (e: Character) => new BotEnemyChaser(e)
@@ -29,20 +29,22 @@ export function BackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
 
 
   const [value, set_value] = useImmer({
-    bg_id: _stage_data?.bg ?? Defines.THE_VOID_BG.id,
-    stage_id: _stage_data?.id ?? Defines.THE_VOID_STAGE.id,
-    type: (_stage_data?.id === Defines.THE_VOID_STAGE.id ? 'bg' : 'stage') as 'bg' | 'stage'
+    bg_id: _stage_data?.bg ?? Defines.VOID_BG.id,
+    stage_id: _stage_data?.id ?? Defines.VOID_STAGE.id,
+    type: (_stage_data?.id === Defines.VOID_STAGE.id ? 'bg' : 'stage') as 'bg' | 'stage'
   });
   const [bgm, set_bgm] = useState<string>(lf2?.sound_mgr.bgm() ?? '');
   const [stage_bgm, set_stage_bgm] = useState<boolean>(lf2?.bgm_enable ?? false);
   const [stage_phase_list, set_stage_phases] = useState<IStagePhaseInfo[]>(_stage_data?.phases ?? []);
   const [stage_phase_idx, set_stage_phase_idx] = useState<number>(_stage?.cur_phase ?? -1);
+  const [difficulty, set_difficulty] = useState<Defines.Difficulty>(lf2?.difficulty ?? Defines.Difficulty.Difficult);
 
   useEffect(() => {
     set_bgm(lf2?.sound_mgr.bgm() ?? '')
     set_stage_bgm(lf2?.bgm_enable ?? false);
     set_stage_phases(lf2?.world.stage.data.phases ?? []);
     set_stage_phase_idx(lf2?.world.stage.cur_phase ?? -1);
+    set_difficulty(lf2?.difficulty ?? Defines.Difficulty.Difficult)
   }, [lf2])
 
   const bgm_list = useBgmList(lf2);
@@ -59,12 +61,21 @@ export function BackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
 
   useEffect(() => {
     if (!lf2) return;
+    const callback: ILf2Callback = {
+      on_difficulty_changed: set_difficulty,
+    }
+    return lf2.callbacks.add(callback, ['on_difficulty_changed'])
+  }, [lf2])
+
+  useEffect(() => {
+    if (!lf2) return;
+
     const world_callbacks: IWorldCallbacks = {
       on_stage_change: (curr) => {
         set_value({
           stage_id: curr.data.id,
           bg_id: curr.bg.data.id,
-          type: curr.data.id === Defines.THE_VOID_STAGE.id ? 'bg' : 'stage'
+          type: curr.data.id === Defines.VOID_STAGE.id ? 'bg' : 'stage'
         })
         set_stage_phase_idx(0);
         set_stage_phases(curr.data.phases);
@@ -89,9 +100,9 @@ export function BackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
     else if (type === 'stage')
       lf2.change_stage(stage_id);
 
-    if (bg_id !== Defines.THE_VOID_BG.id && type === 'bg')
+    if (bg_id !== Defines.VOID_BG.id && type === 'bg')
       lf2.set_layout('normal_playing')
-    else if (stage_id !== Defines.THE_VOID_STAGE.id && type === 'stage')
+    else if (stage_id !== Defines.VOID_STAGE.id && type === 'stage')
       lf2.set_layout('stage_playing')
     else
       lf2.set_layout('main_page')
@@ -177,10 +188,15 @@ export function BackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
           option={i => [i, i || 'OFF']} />
         难度:
         <Select
-          value={bgm}
-          on_changed={set_bgm}
-          items={bgm_list}
-          option={i => [i, i || 'OFF']} />
+          value={difficulty}
+          on_changed={set_difficulty}
+          items={[
+            Defines.Difficulty.Easy,
+            Defines.Difficulty.Normal,
+            Defines.Difficulty.Difficult,
+            Defines.Difficulty.Crazy
+          ]}
+          option={i => [i, Defines.DifficultyLabels[i]]} />
       </div>
 
       <div className='background_settings_row'>
@@ -237,7 +253,7 @@ function useBgmList(lf2?: LF2 | null): string[] {
   return bgm_list
 }
 
-const empty_stage_list = [Defines.THE_VOID_STAGE];
+const empty_stage_list = [Defines.VOID_STAGE];
 function useStageList(lf2?: LF2 | null): IStageInfo[] {
   const [stage_list, set_stage_list] = useState<IStageInfo[]>(empty_stage_list);
   useEffect(() => {

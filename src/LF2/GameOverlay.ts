@@ -141,7 +141,7 @@ export class GameOverlay implements IWorldCallbacks, ILf2Callback {
   }
 
   on_stage_change(curr: Stage): void {
-    if (curr.bg.data.id === Defines.THE_VOID_BG.id) {
+    if (curr.bg.data.id === Defines.VOID_BG.id) {
       this.ele_cam_bar.style.display = this.ele_btn_free_cam.style.display = 'none';
     } else {
       this.ele_cam_bar.style.display = this.ele_btn_free_cam.style.display = 'unset';

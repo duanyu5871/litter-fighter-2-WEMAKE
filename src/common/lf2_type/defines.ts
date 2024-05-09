@@ -11,18 +11,18 @@ export namespace Defines {
   export const MP_RECOVERY_MIN_SPEED = 0.2;
   export const HP_RECOVERY_SPEED = 0.2;
 
-  export const THE_VOID_STAGE: IStageInfo = {
-    bg: "THE_VOID",
-    id: "THE_VOID_STAGE",
-    name: "THE_VOID_STAGE",
+  export const VOID_STAGE: IStageInfo = {
+    bg: "VOID",
+    id: "VOID_STAGE",
+    name: "VOID_STAGE",
     phases: []
   }
-  export const THE_VOID_BG: IBgData = {
+  export const VOID_BG: IBgData = {
     type: 'background',
     layers: [],
-    id: 'THE_VOID_BG',
+    id: 'VOID_BG',
     base: {
-      name: 'THE_VOID_BG',
+      name: 'VOID_BG',
       shadow: '',
       shadowsize: [0, 0],
       left: 0,
@@ -227,7 +227,12 @@ export namespace Defines {
     Difficult = 3,
     Crazy = 4,
   }
-
+  export const DifficultyLabels: Record<Difficulty, string> = {
+    [Difficulty.Easy]: "Easy",
+    [Difficulty.Normal]: "Normal",
+    [Difficulty.Difficult]: "Difficult",
+    [Difficulty.Crazy]: "Crazy!"
+  }
   export interface ITeamInfo {
     name: string;
     txt_color: string;

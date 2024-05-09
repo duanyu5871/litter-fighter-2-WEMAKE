@@ -11,7 +11,7 @@ export default class Lying extends BaseCharacterState {
     }
   }
   override leave(e: Character, next_frame: IFrameInfo): void {
-    if (LocalHuman.is(e.controller) || e.world.stage.data.id === Defines.THE_VOID_STAGE.id)
+    if (LocalHuman.is(e.controller) || e.world.stage.data.id === Defines.VOID_STAGE.id)
       e.blink(120);
   }
   begin(e: Character) {

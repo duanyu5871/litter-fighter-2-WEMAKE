@@ -63,11 +63,19 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   static IngoreDisposeError = (e: any) => { if (e !== this.DisposeError) throw e; }
   private _loading: boolean = false;
   private _loaded: boolean = false;
+  private _difficulty: Defines.Difficulty = Defines.Difficulty.Difficult;
   get callbacks(): NoEmitCallbacks<ILf2Callback> { return this._callbacks }
   get loading() { return this._loading; }
   get loaded() { return this._loaded; }
   get need_load() { return !this._loaded && !this._loading; }
 
+  get difficulty(): Defines.Difficulty { return this._difficulty; }
+  set difficulty(v: Defines.Difficulty) {
+    if (this.difficulty === v) return;
+    const old = this.difficulty;
+    this.difficulty = v;
+    this._callbacks.emit('on_difficulty_changed')(v, old)
+  }
 
   readonly canvas: HTMLCanvasElement;
   readonly world: World;
@@ -96,7 +104,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   }
 
   readonly stages = new Loader<IStageInfo[]>(
-    async () => [Defines.THE_VOID_STAGE, ...await this.import('data/stage.json')],
+    async () => [Defines.VOID_STAGE, ...await this.import('data/stage.json')],
     (d) => this._callbacks.emit('on_stages_loaded')(d),
     () => this._callbacks.emit('on_stages_clear')()
   )
@@ -533,7 +541,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     this.world.stage = new Stage(this.world, arg_0)
   }
   remove_stage() {
-    this.world.stage = new Stage(this.world, Defines.THE_VOID_STAGE)
+    this.world.stage = new Stage(this.world, Defines.VOID_STAGE)
   }
 
   goto_next_stage() {

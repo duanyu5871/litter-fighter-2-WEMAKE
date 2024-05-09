@@ -59,17 +59,17 @@ export default class Stage {
     this.world = world;
     this._bgm_enable = this.world.lf2.bgm_enable;
     if ('type' in data && data.type === 'background') {
-      this.data = Defines.THE_VOID_STAGE;
+      this.data = Defines.VOID_STAGE;
       this.bg = new Background(world, data);
     } else if ('bg' in data) {
       this.data = data;
       const bg_id = this.data.bg
       const bg_data = this.world.lf2.dat_mgr.backgrounds.find(v => v.id === bg_id || v.id === 'bg_' + bg_id)// FIXME;
       if (!bg_data) Warn.print(Stage.name, `bg_data not found, id: ${bg_id}`)
-      this.bg = new Background(world, bg_data ?? Defines.THE_VOID_BG);
+      this.bg = new Background(world, bg_data ?? Defines.VOID_BG);
     } else {
-      this.data = Defines.THE_VOID_STAGE;
-      this.bg = new Background(world, Defines.THE_VOID_BG);
+      this.data = Defines.VOID_STAGE;
+      this.bg = new Background(world, Defines.VOID_BG);
     }
     this.enemy_team = new_team()
     this.enter_phase(0);

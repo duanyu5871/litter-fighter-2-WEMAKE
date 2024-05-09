@@ -108,7 +108,7 @@ export class World {
     this.camera.updateProjectionMatrix()
     this.renderer.setSize(w, h, false);
     this.overlay = new GameOverlay(this, overlay);
-    this._stage = new Stage(this, Defines.THE_VOID_BG);
+    this._stage = new Stage(this, Defines.VOID_BG);
   }
 
   add_game_objs(...objs: FrameAnimater[]) {
@@ -538,8 +538,4 @@ export class World {
     this.renderer.clear()
     this.renderer.dispose();
   }
-
-  protected _difficulty: Defines.Difficulty = Defines.Difficulty.Difficult;
-  get difficulty(): Defines.Difficulty { return this._difficulty; }
-  set difficulty(v: Defines.Difficulty) { this.difficulty = v }
 }

@@ -1,5 +1,6 @@
 import Layout from '../Layout/Layout';
 import { IStageInfo } from "../common/lf2_type/IStageInfo";
+import { Defines } from '../common/lf2_type/defines';
 import { PlayerInfo } from './PlayerInfo';
 
 
@@ -22,4 +23,5 @@ export interface ILf2Callback {
   on_enter_next_stage?(): void;
 
   on_dispose?(): void;
+  on_difficulty_changed?(value: Defines.Difficulty, prev: Defines.Difficulty): void;
 }

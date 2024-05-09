@@ -18,7 +18,7 @@ export interface IDataListMap {
 }
 
 const create_data_list_map = (): IDataListMap => ({
-  background: [Defines.THE_VOID_BG],
+  background: [Defines.VOID_BG],
   entity: [],
   character: [],
   weapon: [],
