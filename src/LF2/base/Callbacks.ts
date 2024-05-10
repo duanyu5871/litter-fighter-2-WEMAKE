@@ -1,4 +1,4 @@
-import { is_fun } from "../../common/is_fun";
+import list_fn from "../../common/list_fn";
 
 export class NoEmitCallbacks<F> {
 
@@ -38,37 +38,6 @@ export class NoEmitCallbacks<F> {
     for (const [, set] of this._map) set.delete(v);
   }
 }
-
-function list_fn(obj: any, set: Set<string> = new Set<string>()) {
-  if (!obj) return set;
-  for (const key of Object.getOwnPropertyNames(obj)) {
-    switch (key) {
-      case 'constructor':
-      case '__defineGetter__':
-      case '__defineSetter__':
-      case 'hasOwnProperty':
-      case '__lookupGetter__':
-      case '__lookupSetter__':
-      case 'isPrototypeOf':
-      case 'propertyIsEnumerable':
-      case 'toString':
-      case 'valueOf':
-      case 'toLocaleString':
-      case '__proto__ ':
-        continue;
-    }
-    const desc = Object.getOwnPropertyDescriptor(obj, key);
-    if (!desc) continue;
-    if ('get' in desc || 'set' in desc || !is_fun(obj[key]))
-      continue;
-    set.add(key);
-  }
-
-  const proto = Object.getPrototypeOf(obj);
-  list_fn(proto, set)
-  return set;
-}
-
 
 export default class Callbacks<F> extends NoEmitCallbacks<F> {
   /**
