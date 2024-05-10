@@ -1,5 +1,3 @@
-import axios from 'axios';
-import JSZIP from 'jszip';
 import * as THREE from 'three';
 import Layout from '../Layout/Layout';
 import { Log, Warn } from '../Log';
@@ -14,11 +12,12 @@ import random_get from '../common/random_get';
 import { random_in_range } from '../common/random_in_range';
 import random_take from '../common/random_take';
 import { ILf2Callback } from './ILf2Callback';
-import Invoker from './Invoker';
 import { PlayerInfo } from './PlayerInfo';
 import { World } from './World';
-import Callbacks, { NoEmitCallbacks } from './base/Callbacks';
+import Callbacks from './base/Callbacks';
+import Invoker from './base/Invoker';
 import { Loader } from './base/Loader';
+import NoEmitCallbacks from "./base/NoEmitCallbacks";
 import { get_short_file_size_txt } from './base/get_short_file_size_txt';
 import { new_id, new_team } from './base/new_id';
 import Layer from './bg/Layer';
@@ -26,13 +25,15 @@ import { KEY_NAME_LIST } from './controller/BaseController';
 import LocalHuman from "./controller/LocalHuman";
 import { IKeyboardCallback, KeyEvent, Keyboard } from './dom/Keyboard';
 import Pointings, { IPointingsCallback, PointingEvent } from './dom/Pointings';
+import Zip from './dom/download_zip';
+import { make_import } from './dom/make_import';
 import './entity/Ball';
 import Character from './entity/Character';
 import Entity from './entity/Entity';
 import Weapon from './entity/Weapon';
 import DatMgr from './loader/DatMgr';
+import get_import_fallbacks from "./loader/get_import_fallbacks";
 import { ImageMgr } from './loader/loader';
-import { get_import_fallbacks, import_builtin } from './loader/make_import';
 import SoundMgr from './sound/SoundMgr';
 import Stage from './stage/Stage';
 
@@ -66,7 +67,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
 
   readonly canvas: HTMLCanvasElement;
   readonly world: World;
-  private zip: JSZIP | undefined;
+  private zip: Zip | undefined;
   private _player_infos = new Map([
     ['1', new PlayerInfo('1')],
     ['2', new PlayerInfo('2')],
@@ -112,7 +113,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     })
     if (this.zip) {
       jobs.push(...this.zip.file(/^bgm\//).map(async file => {
-        await this.sound_mgr.preload(file.name, file.async('blob'))
+        await this.sound_mgr.preload(file.name, file.blob_url())
         return file.name
       }))
     }
@@ -131,29 +132,20 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
 
   _r = (r: any) => this._disposed ? Promise.reject(LF2.DisposeError) : r;
 
-
   async import(path: string) {
     const fallback_paths = get_import_fallbacks(path);
     if (this.zip) {
-      for (const fallback_path of fallback_paths) {
-        const zip_obj = this.zip.file(fallback_path);
-        if (!zip_obj) continue;
-        if (fallback_path.endsWith('.json')) {
-          const ret = await zip_obj.async('text').then(JSON.parse);
-          return this._r(ret);
-        }
-        if (fallback_path.endsWith('.txt')) {
-          const ret = await zip_obj.async('text');
-          return this._r(ret);
-        }
-        const ret = await zip_obj.async('blob');
-        return this._r(URL.createObjectURL(ret));
+      for (const path of fallback_paths) {
+        const obj = this.zip.file(path);
+        if (!obj) continue;
+        if (path.endsWith('.json')) return obj.json().then(this._r);
+        if (path.endsWith('.txt')) return obj.text().then(this._r);
+        return obj.blob_url().then(this._r);
       }
     }
-    for (const fallback_path of fallback_paths) {
+    for (const path of fallback_paths) {
       try {
-        const ret = await import_builtin(fallback_path);
-        return this._r(ret);
+        return make_import(path).then(this._r);
       } catch (e) {
         console.error(e);
       }
@@ -405,33 +397,20 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     return ret;
   }
 
-  load(arg1?: JSZIP | string): Promise<void> {
+  load(arg1?: Zip | string): Promise<void> {
     this.on_loading_start();
     this.set_layout("loading");
-
     if (is_str(arg1)) {
-      return this.download_zip(arg1)
-        .then(r => {
-          this.zip = r;
-          return this.load_data()
-        }).then(() => this.on_loading_end())
+      return Zip.download(arg1, (progress, full_size) => {
+        const txt = `download: ${arg1}(${get_short_file_size_txt(full_size)})`;
+        this.on_loading_content(txt, progress);
+      }).then(r => {
+        this.zip = r;
+        return this.load_data()
+      }).then(() => this.on_loading_end())
     }
-
     if (arg1) this.zip = arg1
     return this.load_data().then(() => this.on_loading_end())
-  }
-
-  private async download_zip(zip: string) {
-    const resp = await axios.get('lf2.data.zip', {
-      responseType: 'blob', onDownloadProgress: (e) => {
-        const progress = e.total ? Math.round(100 * e.loaded / e.total) : 100;
-        const full_size = get_short_file_size_txt(e.total ?? e.loaded);
-        let txt = `download: ${zip}(${full_size})`;
-        if (e.total) txt += ',' + progress + '%'
-        this.on_loading_content(txt, progress);
-      }
-    });
-    return await JSZIP.loadAsync(resp.data);
   }
 
   private async load_data() {
@@ -633,3 +612,4 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     this._callbacks.emit('on_loading_start')();
   }
 }
+

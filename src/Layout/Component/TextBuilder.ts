@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import LF2 from '../../LF2/LF2';
-import IStyle from '../../LF2/loader/IStyle';
+import IStyle from '../../common/lf2_type/IStyle';
 
 export class TextBuilder {
   protected lf2: LF2;

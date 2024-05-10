@@ -1,4 +1,3 @@
-import JSZIP from 'jszip';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import './App.css';
 import { BackgroundRow } from './BackgroundRow';
@@ -7,9 +6,11 @@ import { Input } from './Component/Input';
 import Select from './Component/Select';
 import { ToggleButton } from "./Component/ToggleButton";
 import EditorView from './EditorView';
-import LF2 from './LF2/LF2';
 import { ILf2Callback } from './LF2/ILf2Callback';
+import LF2 from './LF2/LF2';
 import { BaseController } from './LF2/controller/BaseController';
+import FullScreen from './LF2/dom/FullScreen';
+import Zip from './LF2/dom/download_zip';
 import { ILayoutInfo } from './Layout/ILayoutInfo';
 import { Log } from './Log';
 import { PlayerRow } from './PlayerRow';
@@ -18,7 +19,6 @@ import { arithmetic_progression } from './common/arithmetic_progression';
 import './game_ui.css';
 import './init';
 import { useLocalBoolean, useLocalNumber, useLocalString } from './useLocalStorage';
-import FullScreen from './LF2/dom/FullScreen';
 const fullscreen = new FullScreen()
 function App() {
   const _overlay_ref = useRef<HTMLDivElement>(null)
@@ -105,8 +105,7 @@ function App() {
     const lf2 = lf2_ref.current;
     if (!lf2) return;
     open_file({ accept: '.zip' })
-      .then(v => v[0])
-      .then(v => JSZIP.loadAsync(v))
+      .then(v => Zip.read_file(v[0]))
       .then(v => lf2.load(v))
       .catch(e => Log.print('on_click_load_local_zip', e))
   }

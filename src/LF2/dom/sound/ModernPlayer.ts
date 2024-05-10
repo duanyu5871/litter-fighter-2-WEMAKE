@@ -1,7 +1,7 @@
 import { is_str } from "../../../common/is_str";
 import { Defines } from "../../../common/lf2_type/defines";
 import type LF2 from "../../LF2";
-import RequestersMgr from "../../loader/RequestersMgr";
+import AsyncValuesKeeper from "../../base/AsyncValuesKeeper";
 import { IPlayer, Src } from "../../sound/IPlayer";
 
 export default class ModernPlayer implements IPlayer {
@@ -11,7 +11,7 @@ export default class ModernPlayer implements IPlayer {
   protected _prev_bgm_url: string | null = null;
   protected _bgm_src_node: AudioBufferSourceNode | null = null;
 
-  protected _r = new RequestersMgr<AudioBuffer>();
+  protected _r = new AsyncValuesKeeper<AudioBuffer>();
   protected _bgm: string | null = null;
   protected _sound_id = 0;
   protected _playings = new Map<string, AudioBufferSourceNode>()

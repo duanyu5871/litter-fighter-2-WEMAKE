@@ -5,8 +5,8 @@ import { get_blob } from '../../Utils/get_blob';
 import { IEntityPictureInfo } from '../../common/lf2_type';
 import type IPicture from '../../common/lf2_type/IPicture';
 import type LF2 from "../LF2";
-import type IStyle from "./IStyle";
-import RequestersMgr from "./RequestersMgr";
+import type IStyle from "../../common/lf2_type/IStyle";
+import AsyncValuesKeeper from "../base/AsyncValuesKeeper";
 export type TPicture = IPicture<THREE.Texture>;
 
 export function make_data_reject<T>(data: T, reason: any): [T, Promise<T>] {
@@ -31,7 +31,7 @@ export class ImageMgr {
   constructor(lf2: LF2) {
     this.lf2 = lf2
   }
-  protected _requesters = new RequestersMgr<TImageInfo>();
+  protected _requesters = new AsyncValuesKeeper<TImageInfo>();
   protected _paint = (
     img: HTMLImageElement,
     cvs: HTMLCanvasElement,

@@ -1,6 +1,7 @@
 import { is_false } from '../../common/is_bool';
 import { is_fun } from '../../common/is_fun';
-import Callbacks, { NoEmitCallbacks } from '../base/Callbacks';
+import Callbacks from '../base/Callbacks';
+import NoEmitCallbacks from "../base/NoEmitCallbacks";
 export interface IFullScreenCallback {
   onChange?(element: Element | null): void
 }

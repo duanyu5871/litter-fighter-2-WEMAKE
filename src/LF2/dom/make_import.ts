@@ -1,16 +1,4 @@
 
-export function get_import_fallbacks(name: string): string[] {
-  const fallbacks = [name];
-  if (name.endsWith('.bmp')) {
-    fallbacks.unshift(name + '.png')
-    fallbacks.unshift(name.substring(0, name.length - 4) + '.png')
-  }
-  if (name.endsWith('.wav') || name.endsWith('.wma')) {
-    fallbacks.unshift(name + '.ogg')
-    fallbacks.unshift(name.substring(0, name.length - 4) + '.ogg')
-  }
-  return fallbacks
-}
 export interface IOnProgress { (current: number, total: number): void }
 
 const fetch_not_html = async (url: string, progress?: IOnProgress) => {
@@ -42,18 +30,14 @@ const fetch_not_html = async (url: string, progress?: IOnProgress) => {
   return v.blob();
 }
 
-async function import_from_fetch(path: string, progress?: IOnProgress): Promise<any> {
-  if (path.startsWith('blob:') || path.startsWith('http:') || path.startsWith('https:')) {
+export async function make_import<T = any>(path: string, progress?: IOnProgress): Promise<T> {
+  if (path.startsWith('blob:') || path.startsWith('http:') || path.startsWith('https:')) 
     return await fetch_not_html(path, progress);
-  }
+  
   const roots = ['lf2_data/', 'lf2_built_in_data/'];
   for (const root of roots) {
     const ret = await fetch_not_html(root + path, progress);
     if (ret) return ret;
   }
   throw new Error(`import_from_fetch(path), failed to fetch resource, path: ${path}`)
-}
-
-export async function import_builtin<T = any>(path: string, progress?: IOnProgress): Promise<T> {
-  return import_from_fetch(path, progress)
 }

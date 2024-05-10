@@ -1,5 +1,6 @@
 import { IPlayerInfoCallback } from "../../LF2/PlayerInfo";
-import Callbacks, { NoEmitCallbacks } from "../../LF2/base/Callbacks";
+import Callbacks from "../../LF2/base/Callbacks";
+import NoEmitCallbacks from "../../LF2/base/NoEmitCallbacks";
 import { TKeyName } from "../../LF2/controller/BaseController";
 import { LayoutComponent } from "./LayoutComponent";
 

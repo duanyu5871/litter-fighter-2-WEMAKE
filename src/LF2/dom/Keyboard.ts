@@ -1,4 +1,5 @@
-import Callbacks, { NoEmitCallbacks } from "../base/Callbacks";
+import Callbacks from "../base/Callbacks";
+import NoEmitCallbacks from "../base/NoEmitCallbacks";
 
 export interface IKeyboardCallback {
   /**

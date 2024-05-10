@@ -3,7 +3,7 @@ import LF2 from '../LF2/LF2';
 import Callbacks from '../LF2/base/Callbacks';
 import Expression, { ValGetter } from '../LF2/base/Expression';
 import { TKeyName } from '../LF2/controller/BaseController';
-import IStyle from '../LF2/loader/IStyle';
+import IStyle from '../common/lf2_type/IStyle';
 import { type TImageInfo } from '../LF2/loader/loader';
 import NumberAnimation from '../common/animation/NumberAnimation';
 import { is_arr } from '../common/is_arr';

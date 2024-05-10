@@ -1,7 +1,11 @@
 import { clamp } from "../../common/clamp";
 
+
 /**
  * 帧率计算
+ *
+ * @export
+ * @class FPS
  */
 export default class FPS {
   /**

@@ -1,4 +1,4 @@
-import IStyle from "../LF2/loader/IStyle";
+import IStyle from "../common/lf2_type/IStyle";
 
 export interface ILayoutInfo {
   values?: { [x in string]?: any },

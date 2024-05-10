@@ -1,7 +1,8 @@
 import { Warn } from '@fimagine/logger';
 import { is_str } from '../common/is_str';
-import Callbacks, { NoEmitCallbacks } from './base/Callbacks';
-import { TKeyName, TKeys } from './controller/BaseController';
+import Callbacks from './base/Callbacks';
+import NoEmitCallbacks from "./base/NoEmitCallbacks";
+import type { TKeyName, TKeys } from './controller/BaseController';
 
 const default_keys_list: TKeys[] = [
   { L: 'a', R: 'd', U: 'w', D: 's', a: 'r', j: 't', d: 'y' },
