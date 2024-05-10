@@ -149,10 +149,12 @@ export class World {
   private _render_request_id?: ReturnType<typeof Render.run>;
   private _update_timer_id?: ReturnType<typeof Interval.set>;
 
-  private _r_prev_time = 0;
-  private _r_fps = new FPS()
-  private _u_prev_time = 0;
-  private _u_fps = new FPS();
+  private _FPS = new FPS()
+  protected _need_FPS: boolean = true;
+
+  private _UPS = new FPS();
+  private _need_UPS: boolean = true;
+
   render_once(dt: number) {
     if (this.disposed) return;
     for (const e of this.entities) e.indicators.update();
@@ -162,15 +164,21 @@ export class World {
 
   start_render() {
     if (this.disposed || this._render_request_id) return;
+
+    let _r_prev_time = 0;
     const on_render = (time: number) => {
-      if (this._r_prev_time !== 0) {
-        const dt = time - this._r_prev_time
+      const dt = time - _r_prev_time
+      if (_r_prev_time !== 0) {
         this.render_once(dt)
-        this._r_fps.update(dt);
-        this.overlay.FPS = this._r_fps.value
       }
+      if (_r_prev_time !== 0 && this._need_FPS) {
+        this._FPS.update(dt);
+        this._callbacks.emit('on_fps_update')(this._FPS.value)
+        this.overlay.FPS = this._FPS.value
+      }
+
       this._render_request_id = Render.run(on_render)
-      this._r_prev_time = time
+      _r_prev_time = time
     }
     this._render_request_id && Render.stop(this._render_request_id);
     this._render_request_id = Render.run(on_render);
@@ -185,14 +193,16 @@ export class World {
     if (this.disposed) return;
     if (this._update_timer_id) Interval.del(this._update_timer_id);
     const dt = Math.max((1000 / 60) / this._playrate, 1);
+    let _u_prev_time = 0;
     const on_update = () => {
       const time = Date.now()
-      if (this._u_prev_time !== 0) {
-        this.update_once()
-        this._u_fps.update(time - this._u_prev_time)
-        this.overlay.UPS = this._u_fps.value
+      this.update_once()
+
+      if (_u_prev_time !== 0 && this._need_UPS) {
+        this._UPS.update(time - _u_prev_time);
+        this._callbacks.emit('on_ups_update')(this._UPS.value);
       }
-      this._u_prev_time = time
+      _u_prev_time = time
     }
     this._update_timer_id = Interval.set(on_update, dt);
   }

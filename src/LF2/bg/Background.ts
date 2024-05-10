@@ -20,13 +20,15 @@ export default class Background {
   readonly data: Readonly<IBgData>;
   private _disposers: (() => void)[] = [];
   private _layers: Layer[] = [];
-  readonly id: string;
-  readonly left: number
-  readonly right: number
-  readonly near: number
-  readonly far: number
-  readonly width: number
-  readonly depth: number
+
+  get id(): string { return this.data.id }
+  get left(): number { return this.data.base.left }
+  get right(): number { return this.data.base.right }
+  get near(): number { return this.data.base.near }
+  get far(): number { return this.data.base.far }
+  readonly width: number;
+  readonly depth: number;
+
   readonly middle: { x: number, z: number };
   readonly obj_3d: THREE.Object3D;
   readonly world: World;
@@ -35,16 +37,11 @@ export default class Background {
     this.data = data;
     this.world = world;
 
-    this.id = this.data.id;
-    this.left = this.data.base.left;
-    this.right = this.data.base.right;
-    this.near = this.data.base.near;
-    this.far = this.data.base.far;
-    this.width = this.right - this.left;
-    this.depth = this.near - this.far;
+    this.width = this.data.base.right - this.data.base.left
+    this.depth = this.data.base.near - this.data.base.far
     this.middle = {
-      x: (this.right + this.left) / 2,
-      z: (this.far + this.near) / 2,
+      x: (this.data.base.right + this.data.base.left) / 2,
+      z: (this.data.base.far + this.data.base.near) / 2,
     }
     this.obj_3d = new THREE.Object3D();
     this.obj_3d.position.z = -2 * Defines.OLD_SCREEN_HEIGHT;

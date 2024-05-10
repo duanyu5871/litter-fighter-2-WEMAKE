@@ -64,7 +64,7 @@ export function BackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
     const callback: ILf2Callback = {
       on_difficulty_changed: set_difficulty,
     }
-    return lf2.callbacks.add(callback, ['on_difficulty_changed'])
+    return lf2.callbacks.add(callback)
   }, [lf2])
 
   useEffect(() => {

@@ -24,4 +24,19 @@ export interface IWorldCallbacks {
   on_player_character_add?(player_id: string): void;
   on_player_character_del?(player_id: string): void;
 
+  /**
+   * 渲染帧率变化回调
+   *
+   * @param {number} fps
+   */
+  on_fps_update?(fps: number): void;
+
+  
+  /**
+   * 更新帧率变化回调
+   *
+   * @param {number} fps
+   */
+  on_ups_update?(fps: number): void;
+
 }

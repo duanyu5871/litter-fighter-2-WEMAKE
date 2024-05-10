@@ -14,6 +14,7 @@ import random_get from '../common/random_get';
 import { random_in_range } from '../common/random_in_range';
 import random_take from '../common/random_take';
 import { ILf2Callback } from './ILf2Callback';
+import Invoker from './Invoker';
 import { PlayerInfo } from './PlayerInfo';
 import { World } from './World';
 import Callbacks, { NoEmitCallbacks } from './base/Callbacks';
@@ -40,23 +41,9 @@ const cheat_info_pair = (n: Defines.Cheats) => ['' + n, {
   sound: Defines.CheatSounds[n],
 }] as const;
 
-class Functions {
-  protected _f_list = new Set<() => void>();
-  add(...fn: (() => void)[]): this {
-    for (const f of fn) this._f_list.add(f)
-    return this;
-  }
-  del(...fn: (() => void)[]): this {
-    for (const f of fn) this._f_list.delete(f)
-    return this;
-  }
-  invoke(): void {
-    for (const f of this._f_list) f()
-  }
-}
 export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   private _callbacks = new Callbacks<ILf2Callback>();
-  private _disposers = new Functions();
+  private _disposers = new Invoker();
   private _disposed: boolean = false;
   private _layout: Layout | undefined;
   static DisposeError = new Error('disposed')
@@ -79,7 +66,6 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
 
   readonly canvas: HTMLCanvasElement;
   readonly world: World;
-  readonly overlay: HTMLDivElement | null | undefined;
   private zip: JSZIP | undefined;
   private _player_infos = new Map([
     ['1', new PlayerInfo('1')],
@@ -188,8 +174,6 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     this.dat_mgr = new DatMgr(this);
     this.sound_mgr = new SoundMgr(this);
     this.img_mgr = new ImageMgr(this);
-    this.overlay = overlay;
-
     this.keyboard = new Keyboard();
     this.keyboard.callback.add(this);
 

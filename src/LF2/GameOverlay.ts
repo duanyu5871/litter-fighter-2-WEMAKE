@@ -1,12 +1,11 @@
 import { is_num } from '../common/is_num';
 import { Defines } from '../common/lf2_type/defines';
 import { ILf2Callback } from './ILf2Callback';
-import Stage from './stage/Stage';
 import type { World } from './World';
 import type { IWorldCallbacks } from './IWorldCallbacks';
 import './game_overlay.css';
 const ele = document.createElement.bind(document);
-export class GameOverlay implements IWorldCallbacks, ILf2Callback {
+export class GameOverlay {
   readonly world: World;
   protected ele: HTMLDivElement | null | undefined;
   protected ele_fps: HTMLElement;
@@ -37,7 +36,6 @@ export class GameOverlay implements IWorldCallbacks, ILf2Callback {
 
   constructor(world: World, container: HTMLDivElement | null | undefined) {
     this.world = world;
-    this.world.callbacks.add(this);
     this.ele = container;
     this.ele_fps = ele('span');
     this.ele_fps.className = 'txt_game_overlay'
@@ -49,8 +47,8 @@ export class GameOverlay implements IWorldCallbacks, ILf2Callback {
     this.ele_btn_free_cam = ele('button');
     this.init_ele_btn_free_cam()
     this.init_ele_cam_bar();
-    world.lf2.callbacks.add(this);
-    world.callbacks.add(this)
+    world.lf2.callbacks.add(this._l_listener);
+    world.callbacks.add(this._w_listener);
 
     if (!container) return;
     container.innerHTML = ''
@@ -131,46 +129,47 @@ export class GameOverlay implements IWorldCallbacks, ILf2Callback {
     this.ele_loading.innerText = v;
   }
 
-  on_cam_move(cam_x: number): void {
-    const { width, height } = this.ele_cam_bar.getBoundingClientRect();
-    this.ele_cam_bar.width = width;
-    this.ele_cam_bar.height = height;
-    const s_width = this.world.stage.width;
-    const x = cam_x * width / s_width;
-    this.draw_cam_bar(x)
-  }
-
-  on_stage_change(curr: Stage): void {
-    if (curr.bg.data.id === Defines.VOID_BG.id) {
-      this.ele_cam_bar.style.display = this.ele_btn_free_cam.style.display = 'none';
-    } else {
-      this.ele_cam_bar.style.display = this.ele_btn_free_cam.style.display = 'unset';
-    }
-    this.on_cam_move(this.world.camera.position.x);
-  }
-
   private update_timer: ReturnType<typeof setInterval> | undefined;
 
   update_camera = () => {
     this.world.update_camera();
     this.world.stage.bg.update();
   };
-  on_pause_change(pause: boolean): void {
-    if (pause) {
-      this.update_timer = setInterval(this.update_camera, 1000 / 60);
-    } else {
-      if (this.update_timer) clearInterval(this.update_timer)
-      this.update_timer = void 0;
-    }
-  }
-  on_disposed(): void {
-    if (this.update_timer) clearInterval(this.update_timer)
-    this.update_timer = void 0;
-    this.world.lf2.callbacks.del(this);
-    this.world.callbacks.del(this)
-  }
 
-  on_loading_content(content: string, progress: number) {
-    this.loading = `${content}, ${progress}%`;
+  private _l_listener: Partial<ILf2Callback> = {
+    on_loading_content: (content, progress) => this.loading = `${content}, ${progress}%`,
+  }
+  private _w_listener: Partial<IWorldCallbacks> = {
+    on_ups_update: ups => this.UPS = ups,
+    on_fps_update: fps => this.FPS = fps,
+    on_pause_change: pause => {
+      if (pause) {
+        this.update_timer = setInterval(this.update_camera, 1000 / 60);
+      } else {
+        clearInterval(this.update_timer)
+      }
+    },
+    on_stage_change: stage => {
+      if (stage.bg.id === Defines.VOID_BG.id) {
+        this.ele_cam_bar.style.display = this.ele_btn_free_cam.style.display = 'none';
+      } else {
+        this.ele_cam_bar.style.display = this.ele_btn_free_cam.style.display = 'unset';
+      }
+      this._w_listener.on_cam_move?.(this.world.camera.position.x);
+    },
+    on_cam_move: cam_x => {
+      const { width, height } = this.ele_cam_bar.getBoundingClientRect();
+      this.ele_cam_bar.width = width;
+      this.ele_cam_bar.height = height;
+      const s_width = this.world.stage.width;
+      const x = cam_x * width / s_width;
+      this.draw_cam_bar(x)
+    },
+    on_disposed: () => {
+      clearInterval(this.update_timer)
+      this.update_timer = void 0;
+      this.world.lf2.callbacks.del(this._l_listener);
+      this.world.callbacks.del(this._w_listener)
+    }
   }
 }

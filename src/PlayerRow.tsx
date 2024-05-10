@@ -54,7 +54,7 @@ export function PlayerRow(props: Props) {
       on_cheat_changed: (name, enabled) => {
         if (name === '' + Defines.Cheats.Hidden) set_show_hidden(enabled)
       }
-    }, ['on_cheat_changed']);
+    });
   }, [lf2]);
 
   useEffect(() => {
