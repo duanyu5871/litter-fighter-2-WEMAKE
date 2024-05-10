@@ -131,7 +131,7 @@ export function PlayerRow(props: Props) {
           onBlur={e => info.set_name(e.target.value.trim() || info.id).save()} />
       </span>
       <span>角色:</span>
-      <CharacterSelect lf2={lf2} value={character_id} on_changed={v => info.set_character(v).save()} show_hidden={show_hidden} />
+      <CharacterSelect lf2={lf2} value={character_id} on_changed={v => info.set_character(v).save()} show_all={show_hidden} />
       <Checkbox value={show_hidden} onChanged={set_show_hidden} title='显示隐藏角色' />
       <span>队伍:</span>
       <TeamSelect value={team} on_changed={v => info.set_team(v).save()} />

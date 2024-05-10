@@ -1,19 +1,28 @@
-import { useMemo } from 'react';
-import type { ICharacterData } from '../common/lf2_type';
+import { useEffect, useMemo, useState } from 'react';
 import type LF2 from '../LF2/LF2';
+import type { ICharacterData } from '../common/lf2_type';
 import Select, { ISelectProps } from './Select';
 
 export interface CharacterSelectProps extends ISelectProps<ICharacterData, string> {
-  lf2?: LF2;
-  show_hidden?: boolean;
+  lf2: LF2;
+  show_all?: boolean;
 }
 export default function CharacterSelect(props: CharacterSelectProps) {
-  const { lf2, disabled, show_hidden, ...remains } = props;
-  const characters = lf2?.dat_mgr.characters;
-  const items = useMemo(() => characters?.filter(v => !v.base.hidden), [characters])
+  const { lf2, disabled, show_all = false, ...remains } = props;
+  const [characters, set_characters] = useState<ICharacterData[]>(lf2.dat_mgr.characters);
+
+  useEffect(() => {
+    set_characters(lf2.dat_mgr.characters);
+    return lf2.callbacks.add({
+      on_loading_end: () => set_characters(lf2.dat_mgr.characters),
+    })
+  }, [lf2])
+
+  const items = useMemo(() => show_all ? characters : characters.filter(v => !v.base.hidden), [characters, show_all])
+
   return (
     <Select
-      items={show_hidden ? characters : items}
+      items={items}
       disabled={!characters?.length || disabled}
       option={i => [i.id, i.base.name]}
       {...remains}>

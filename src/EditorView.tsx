@@ -3,7 +3,7 @@ import { Button } from "./Component/Button";
 import { TextArea } from "./Component/TextArea";
 import open_file, { read_file } from "./Utils/open_file";
 import dat_to_json from "./common/lf2_dat_translator/dat_2_json";
-import read_lf2_dat from "./read_lf2_dat";
+import decode_lf2_dat from "./common/lf2_dat_translator/decode_lf2_dat";
 export interface IEditorViewProps extends React.HTMLAttributes<HTMLDivElement> {
   onClose?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   loading?: boolean;
@@ -20,7 +20,7 @@ export default function EditorView(props: IEditorViewProps) {
   const on_click_read_dat = async () => {
     const [file] = await open_file({ accept: '.dat' });
     const buf = await read_file(file, { as: 'ArrayBuffer' });
-    const str_dat = await read_lf2_dat(buf)
+    const str_dat = await decode_lf2_dat(buf)
     const data = await dat_to_json(str_dat);
     _ref_txt_dat.current = str_dat;
     _ref_txt_json.current = JSON.stringify(data, null, 2);
