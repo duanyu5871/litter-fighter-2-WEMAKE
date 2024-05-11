@@ -473,7 +473,7 @@ export class World {
   }
 
   spark(x: number, y: number, z: number, f: string) {
-    const d = this.lf2.dat_mgr.find("spark");
+    const d = this.lf2.datas.find("spark");
     if (!d || !('frames' in d)) return;
     const create = factory.get(d.type);
     if (!create) {

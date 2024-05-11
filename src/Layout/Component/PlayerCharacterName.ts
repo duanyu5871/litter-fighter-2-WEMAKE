@@ -40,7 +40,7 @@ export default class PlayerCharacterName extends LayoutComponent {
   }
 
   get_text(character_id: string | undefined) {
-    const character = character_id ? this.lf2.dat_mgr.find_character(character_id) : void 0;
+    const character = character_id ? this.lf2.datas.find_character(character_id) : void 0;
     return character?.base.name ?? 'Random'
   }
 

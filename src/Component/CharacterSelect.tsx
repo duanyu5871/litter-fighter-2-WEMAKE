@@ -9,12 +9,12 @@ export interface CharacterSelectProps extends ISelectProps<ICharacterData, strin
 }
 export default function CharacterSelect(props: CharacterSelectProps) {
   const { lf2, disabled, show_all = false, ...remains } = props;
-  const [characters, set_characters] = useState<ICharacterData[]>(lf2.dat_mgr.characters);
+  const [characters, set_characters] = useState<ICharacterData[]>(lf2.datas.characters);
 
   useEffect(() => {
-    set_characters(lf2.dat_mgr.characters);
+    set_characters(lf2.datas.characters);
     return lf2.callbacks.add({
-      on_loading_end: () => set_characters(lf2.dat_mgr.characters),
+      on_loading_end: () => set_characters(lf2.datas.characters),
     })
   }, [lf2])
 

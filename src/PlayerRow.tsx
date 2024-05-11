@@ -106,7 +106,7 @@ export function PlayerRow(props: Props) {
   const on_click_add = added ? () => {
     lf2.del_player_character(info.id); // 移除玩家对应的角色
   } : () => {
-    const real_character_id = character_id || random_get(lf2.dat_mgr.characters)?.id;
+    const real_character_id = character_id || random_get(lf2.datas.characters)?.id;
     if (!real_character_id) { debugger; return; }
     const character = lf2.add_player_character(info.id, real_character_id);
     if (!character) { debugger; return; }

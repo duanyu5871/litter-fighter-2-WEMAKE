@@ -30,7 +30,7 @@ export default class PlayerCharacterHead extends LayoutComponent {
   protected _player_listener: Partial<IPlayerInfoCallback> = {
     on_joined_changed: () => this.handle_changed(),
     on_character_changed: (character_id): void => {
-      const character = character_id ? this.lf2.dat_mgr.find_character(character_id) : void 0;
+      const character = character_id ? this.lf2.datas.find_character(character_id) : void 0;
       this._head = character?.base.head || 'sprite/RFACE.png';
       this.handle_changed();
     }
@@ -51,7 +51,7 @@ export default class PlayerCharacterHead extends LayoutComponent {
 
   async create_hints_mesh() {
     const [w, h] = this.layout.size
-    const hint_pic = await this.lf2.img_mgr.create_pic_by_src('sprite/CMA.png');
+    const hint_pic = await this.lf2.images.create_pic_by_src('sprite/CMA.png');
     this._mesh_hints = LayoutMeshBuilder.create()
       .center(0.5, 0.5)
       .size(hint_pic.w, hint_pic.h)
@@ -99,7 +99,7 @@ export default class PlayerCharacterHead extends LayoutComponent {
   }
   protected async update_head_mesh(jid: number, src: string) {
     if (jid !== this._jid) return;
-    const pic = await this.lf2.img_mgr.create_pic_by_src(src);
+    const pic = await this.lf2.images.create_pic_by_src(src);
     if (jid !== this._jid) {
       pic.texture.dispose();
       return;

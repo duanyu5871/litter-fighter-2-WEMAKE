@@ -65,7 +65,7 @@ export default class Stage {
     } else if ('bg' in data) {
       this.data = data;
       const bg_id = this.data.bg
-      const bg_data = this.world.lf2.dat_mgr.backgrounds.find(v => v.id === bg_id || v.id === 'bg_' + bg_id)// FIXME;
+      const bg_data = this.world.lf2.datas.backgrounds.find(v => v.id === bg_id || v.id === 'bg_' + bg_id)// FIXME;
       if (!bg_data) Warn.print(Stage.name, `bg_data not found, id: ${bg_id}`)
       this.bg = new Background(world, bg_data ?? Defines.VOID_BG);
     } else {
@@ -85,10 +85,10 @@ export default class Stage {
     const { lf2 } = this;
     const { music } = phase_info;
     if (!music) return;
-    if (!lf2.sound_mgr.has(music))
-      await lf2.sound_mgr.preload(music, music)
+    if (!lf2.sounds.has(music))
+      await lf2.sounds.preload(music, music)
     if (this._disposed) return;
-    this._stop_bgm = lf2.sound_mgr.play_bgm(music);
+    this._stop_bgm = lf2.sounds.play_bgm(music);
   }
 
   stop_bgm(): void {

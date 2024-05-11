@@ -7,7 +7,7 @@ export default function create_pictures(lf2: LF2, data: TData) {
   const pictures = new Map<string, IPicture<THREE.Texture>>();
   const { base: { files } } = data;
   for (const key of Object.keys(files)) {
-    const pic = lf2.img_mgr.create_pic_by_e_pic_info(files[key]);
+    const pic = lf2.images.create_pic_by_e_pic_info(files[key]);
     pic.id = key;
     pictures.set(key, pic);
   }

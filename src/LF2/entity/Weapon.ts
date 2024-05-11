@@ -76,7 +76,7 @@ export default class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData>
 
     const { base } = this.data
     const sound_name = this.hp <= 0 ? base.weapon_broken_sound : base.weapon_hit_sound
-    if (sound_name) this.world.lf2.sound_mgr.play(sound_name, spark_x, spark_y, spark_z)
+    if (sound_name) this.world.lf2.sounds.play(sound_name, spark_x, spark_y, spark_z)
 
     const spark_frame_name = (itr.fall && itr.fall >= 60) ? 'slient_critical_hit' : 'slient_hit';
     this.world.spark(spark_x, spark_y, spark_z, spark_frame_name)

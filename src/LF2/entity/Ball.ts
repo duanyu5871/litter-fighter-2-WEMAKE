@@ -41,7 +41,7 @@ export default class Ball extends Entity<IBallFrameInfo, IBallInfo, IBallData> {
       this.velocity.x = 0;
       this.velocity.z = 0;
       this.velocity.y = 0;
-      this.data.base.weapon_hit_sound && this.world.lf2.sound_mgr.play(
+      this.data.base.weapon_hit_sound && this.world.lf2.sounds.play(
         this.data.base.weapon_hit_sound,
         this.position.x, this.position.y, this.position.z
       )

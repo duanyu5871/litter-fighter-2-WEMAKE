@@ -70,7 +70,7 @@ export default class PlayerCharacterSelLogic extends LayoutComponent {
   }
 
   get_characters() {
-    const all_characters = this.lf2.dat_mgr.characters
+    const all_characters = this.lf2.datas.characters
     const show_all = this.lf2.is_cheat_enabled(Defines.Cheats.Hidden)
     return show_all ? all_characters : all_characters.filter(v => !v.base.hidden);
   }
@@ -80,18 +80,18 @@ export default class PlayerCharacterSelLogic extends LayoutComponent {
       return;
     if (this.team_decided) {
       if (key === 'j') {
-        this.lf2.sound_mgr.play_preset('cancel')
+        this.lf2.sounds.play_preset('cancel')
         this.team_decided = false;
       }
     } else if (this.character_decided) {
       switch (key) {
         case 'a': { // 按攻击确认队伍
-          this.lf2.sound_mgr.play_preset('join')
+          this.lf2.sounds.play_preset('join')
           this.team_decided = true;
           break;
         }
         case 'j': { // 按跳跃取消确认角色
-          this.lf2.sound_mgr.play_preset('cancel')
+          this.lf2.sounds.play_preset('cancel')
           this.character_decided = false;
           break;
         }
@@ -111,12 +111,12 @@ export default class PlayerCharacterSelLogic extends LayoutComponent {
     } else if (this.joined) {
       switch (key) {
         case 'a': {  // 按攻击确认角色
-          this.lf2.sound_mgr.play_preset('join')
+          this.lf2.sounds.play_preset('join')
           this.character_decided = true;
           break;
         }
         case 'j': { // 按跳跃取消加入
-          this.lf2.sound_mgr.play_preset('cancel')
+          this.lf2.sounds.play_preset('cancel')
           this.joined = false;
           break;
         }
@@ -142,7 +142,7 @@ export default class PlayerCharacterSelLogic extends LayoutComponent {
       }
     } else {
       if (key === 'a') {
-        this.lf2.sound_mgr.play_preset('join')
+        this.lf2.sounds.play_preset('join')
         this.joined = true;
       }
     }
@@ -153,7 +153,7 @@ export default class PlayerCharacterSelLogic extends LayoutComponent {
    * @protected
    */
   protected handle_hidden_character() {
-    const all_characters = this.lf2.dat_mgr.characters
+    const all_characters = this.lf2.datas.characters
     const show_all = this.lf2.is_cheat_enabled(Defines.Cheats.Hidden)
     const characters = show_all ? all_characters : all_characters.filter(v => !v.base.hidden);
     const idx = characters.findIndex(v => v.id === this.character);

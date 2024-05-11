@@ -108,7 +108,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
       "bgm/stage4.wma.ogg",
       "bgm/stage5.wma.ogg",
     ].map(async name => {
-      await this.sound_mgr.preload(name, name);
+      await this.sounds.preload(name, name);
       return name;
     })
     return Promise.all(jobs)
@@ -153,17 +153,17 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   readonly characters: Record<string, (num: number, team?: string) => void> = {}
   readonly weapons: Record<string, (num: number, team?: string) => void> = {}
 
-  readonly dat_mgr: DatMgr;
-  readonly sound_mgr: SoundMgr;
-  readonly img_mgr: ImageMgr
+  readonly datas: DatMgr;
+  readonly sounds: SoundMgr;
+  readonly images: ImageMgr
   readonly keyboard: Keyboard;
   readonly pointings: Pointings;
   constructor(canvas: HTMLCanvasElement, overlay?: HTMLDivElement | null) {
     this.canvas = canvas;
     this.world = new World(this, canvas, overlay);
-    this.dat_mgr = new DatMgr(this);
-    this.sound_mgr = new SoundMgr(this);
-    this.img_mgr = new ImageMgr(this);
+    this.datas = new DatMgr(this);
+    this.sounds = new SoundMgr(this);
+    this.images = new ImageMgr(this);
     this.keyboard = new Keyboard();
     this.keyboard.callback.add(this);
 
@@ -190,7 +190,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   add_character(id: string, num: number, team?: string): Character[];
   add_character(data: ICharacterData | string | undefined, num: number, team?: string): Character[] {
     if (typeof data === 'string')
-      data = this.dat_mgr.find_character(data)
+      data = this.datas.find_character(data)
     if (!data)
       return [];
     const ret: Character[] = []
@@ -207,7 +207,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   add_weapon(id: string, num: number, team?: string): Weapon[];
   add_weapon(data: IWeaponData | string | undefined, num: number, team?: string): Weapon[] {
     if (typeof data === 'string')
-      data = this.dat_mgr.find_weapon(data)
+      data = this.datas.find_weapon(data)
     if (!data)
       return [];
     const ret: Weapon[] = []
@@ -349,8 +349,8 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
         continue;
       }
       const sound_id = this._cheat_sound_id_map.get(cheat_name);
-      if (sound_id) this.sound_mgr.stop(sound_id);
-      this.sound_mgr.play_with_load(s).then(v => this._cheat_sound_id_map.set(cheat_name, v));
+      if (sound_id) this.sounds.stop(sound_id);
+      this.sounds.play_with_load(s).then(v => this._cheat_sound_id_map.set(cheat_name, v));
       this._curr_key_list = ''
       const enabled = !this._cheats_enable_map.get(cheat_name)
       this._cheats_enable_map.set(cheat_name, enabled);
@@ -380,7 +380,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     const ret: Weapon[] = []
     while (--num >= 0) {
       ret.push(
-        ...this.add_weapon(random_get(this.dat_mgr.weapons), 1)
+        ...this.add_weapon(random_get(this.datas.weapons), 1)
       )
     }
     return ret;
@@ -389,7 +389,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     const ret: Character[] = []
     while (--num >= 0) {
       ret.push(
-        ...this.add_character(random_get(this.dat_mgr.characters), 1, team)
+        ...this.add_character(random_get(this.datas.characters), 1, team)
       )
     }
     return ret;
@@ -412,14 +412,14 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   }
 
   private async load_data() {
-    await this.dat_mgr.load();
-    for (const d of this.dat_mgr.characters) {
+    await this.datas.load();
+    for (const d of this.datas.characters) {
       const name = d.base.name.toLowerCase();
       this.characters[`add_${name}`] = (num = 1, team = void 0) => this.add_character(d, num, team);
     }
-    for (const d_1 of this.dat_mgr.weapons) {
-      const name_1 = d_1.base.name.toLowerCase();
-      this.weapons[`add_${name_1}`] = (num_1 = 1, team_1 = void 0) => this.add_weapon(d_1, num_1, team_1);
+    for (const d of this.datas.weapons) {
+      const name = d.base.name.toLowerCase();
+      this.weapons[`add_${name}`] = (num = 1, team_1 = void 0) => this.add_weapon(d, num, team_1);
     }
     this.world.start_update();
     this.world.start_render();
@@ -430,14 +430,14 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     this._disposers.invoke();
     this._callbacks.emit('on_dispose')();
     this.world.dispose()
-    this.dat_mgr.cancel();
+    this.datas.cancel();
   }
 
   add_player_character(player_id: string, character_id: string) {
     const player_info = this.player_infos.get(player_id);
     if (!player_info) { debugger; return; }
 
-    const data = this.dat_mgr.characters.find(v => v.id === character_id)
+    const data = this.datas.characters.find(v => v.id === character_id)
     if (!data) { debugger; return; }
     let x = 0;
     let y = 0;
@@ -484,7 +484,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     if (old) this.world.del_game_objs(old)
   }
   change_bg(id: string) {
-    const data = this.dat_mgr.find_background(id);
+    const data = this.datas.find_background(id);
     if (!data) return;
     this.world.stage = new Stage(this.world, data)
   }
@@ -510,7 +510,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     const next_stage = this.stages.data?.find(v => v.id === next);
     if (!next_stage) {
       this.world.stage.stop_bgm();
-      this.sound_mgr.play_with_load(Defines.Sounds.StagePass);
+      this.sounds.play_with_load(Defines.Sounds.StagePass);
       this._callbacks.emit('on_stage_pass')();
       return;
     }

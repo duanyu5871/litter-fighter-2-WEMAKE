@@ -228,9 +228,9 @@ export default class Layout {
       const [sx, sy, sw, sh] = read_nums(this.data.rect, 4)
       const preload = async (img_path: string) => {
         const img_key = [img_path, sx, sy, sw, sh, flip_x ? 1 : 0, flip_y ? 1 : 0].join('_')
-        const img_info = this.lf2.img_mgr.find(img_key);
+        const img_info = this.lf2.images.find(img_key);
         if (img_info) return img_info;
-        return await this.lf2.img_mgr.load_img(img_key, img_path, (img, cvs, ctx) => {
+        return await this.lf2.images.load_img(img_key, img_path, (img, cvs, ctx) => {
           const w = sw || img.width;
           const h = sh || img.height;
           cvs.width = w;
@@ -250,7 +250,7 @@ export default class Layout {
     do {
       if (!is_str(txt)) break;
       this.img_infos = [
-        await this.lf2.img_mgr.load_text(txt, style)
+        await this.lf2.images.load_text(txt, style)
       ]
     } while (0);
   }
@@ -311,7 +311,7 @@ export default class Layout {
     const img_info = this.img_infos?.[img_idx];
     if (!img_info) return void 0;
     const { flip_x, flip_y } = this.data
-    const texture = this.lf2.img_mgr.create_pic_by_img_info(img_info).texture;
+    const texture = this.lf2.images.create_pic_by_img_info(img_info).texture;
     texture.offset.set(flip_x ? 1 : 0, flip_y ? 1 : 0);
     return texture;
   }

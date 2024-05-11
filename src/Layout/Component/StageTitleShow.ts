@@ -37,7 +37,7 @@ export default class StageTitleShow extends LayoutComponent {
   }
 
   protected async on_stages_clear() {
-    this.lf2.sound_mgr.play_preset('pass')
+    this.lf2.sounds.play_preset('pass')
     this.depose_all_mesh();
     const meshs = [await this.create_mesh(`stage_clear`)]
     const parent_mesh = this.layout.mesh;
@@ -104,8 +104,8 @@ export default class StageTitleShow extends LayoutComponent {
     if (w <= 0 || h <= 0) return;
     const char_num_img = this.layout.get_value('char_num_img');
     if (!is_str(char_num_img)) return;
-    const num_pic = await this.lf2.img_mgr.create_pic_by_src(char_num_img);
-    const num_tex = this.lf2.img_mgr.crop(num_pic, x, y, w, h).texture
+    const num_pic = await this.lf2.images.create_pic_by_src(char_num_img);
+    const num_tex = this.lf2.images.crop(num_pic, x, y, w, h).texture
     const num_mesh = LayoutMeshBuilder.create()
       .size(w, h)
       .build({

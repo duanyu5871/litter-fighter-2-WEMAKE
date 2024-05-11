@@ -23,7 +23,7 @@ export default class InTheSky extends BaseWeaponState {
 
     if (sound_name) {
       const { x, y, z } = e.position;
-      e.world.lf2.sound_mgr.play(sound_name, x, y, z);
+      e.world.lf2.sounds.play(sound_name, x, y, z);
     }
   }
 }

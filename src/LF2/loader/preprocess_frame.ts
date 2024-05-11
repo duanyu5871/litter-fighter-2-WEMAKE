@@ -11,8 +11,8 @@ const get_keys = <V extends {}>(v: V): (keyof V)[] => {
 export const cook_frame = (lf2: LF2, data: IGameObjData, frame: IFrameInfo) => {
   let pic = frame.pic;
   let pic_info: IEntityPictureInfo | undefined = void 0;
-  if (frame.sound && !lf2.sound_mgr.has(frame.sound))
-    lf2.sound_mgr.preload(frame.sound, frame.sound);
+  if (frame.sound && !lf2.sounds.has(frame.sound))
+    lf2.sounds.preload(frame.sound, frame.sound);
   cook_frame_hit(frame);
   cook_frame_hold(frame);
 
@@ -34,7 +34,7 @@ export const cook_frame = (lf2: LF2, data: IGameObjData, frame: IFrameInfo) => {
     if (pic_info === void 0) return Warn.print(cook_frame.name, 'file info not found, pic number:', pic);
 
     const { id, row, w: cell_w, h: cell_h } = pic_info;
-    const img_info = lf2.img_mgr.find_by_pic_info(pic_info);
+    const img_info = lf2.images.find_by_pic_info(pic_info);
     if (!img_info) return Warn.print(cook_frame.name, 'image_info not found, pic_info:', pic_info);
     const x = (cell_w + 1) * (pic % row);
     const y = (cell_h + 1) * Math.floor(pic / row);
@@ -49,7 +49,7 @@ export const cook_frame = (lf2: LF2, data: IGameObjData, frame: IFrameInfo) => {
       }
     }
     if (pic_info === void 0) return Warn.print(cook_frame.name, 'file info not found, pic number:', pic);
-    const p = lf2.img_mgr.find_by_pic_info(pic_info);
+    const p = lf2.images.find_by_pic_info(pic_info);
     if (!p) return Warn.print(cook_frame.name, 'image_info not found', pic_info);
 
     const f_i_1: ITexturePieceInfo = {

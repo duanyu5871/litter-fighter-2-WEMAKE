@@ -244,7 +244,7 @@ export default class Entity<
   }
 
   spawn_object(opoint: IOpointInfo, speed_z: number = 0): FrameAnimater | undefined {
-    const d = this.world.lf2.dat_mgr.find(opoint.oid);
+    const d = this.world.lf2.datas.find(opoint.oid);
     if (!d) {
       Warn.print(constructor_name(this), 'spawn_object(), data not found! opoint:', opoint);
       return;

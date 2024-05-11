@@ -83,7 +83,7 @@ export default class Item {
     }
     const oid = random_get(this.info.id);
     if (!oid) { debugger; return; }
-    const data = this.lf2.dat_mgr.find(oid);
+    const data = this.lf2.datas.find(oid);
     if (!data) { debugger; return; }
     this.is_enemies = data.type === 'character';
   }
@@ -96,7 +96,7 @@ export default class Item {
     const { lf2 } = this;
     const oid = this.get_oid();
     if (!oid) { return; }
-    const data = lf2.dat_mgr.find(oid);
+    const data = lf2.datas.find(oid);
     if (!data) { return; }
     const creator = factory.get(data.type);
     if (!creator) { return; }

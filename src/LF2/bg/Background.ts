@@ -50,7 +50,7 @@ export default class Background {
     for (const info of data.layers) {
       if ('color' in info) this.add_layer(info);
       if (!info.file) continue;
-      this.world.lf2.img_mgr.create_pic_by_src(info.file)
+      this.world.lf2.images.create_pic_by_src(info.file)
         .then(pic => this.add_layer(info, pic))
         .catch(err => Warn.print(Background.name, info, err))
     }
@@ -83,7 +83,7 @@ export default class Background {
     const key = this.data.base.shadow;
     if (!key) return err_pic_info(key)
     try {
-      return await this.world.lf2.img_mgr.create_pic_by_src(key)
+      return await this.world.lf2.images.create_pic_by_src(key)
     } catch (e) {
       return err_pic_info(key);
     }

@@ -33,14 +33,14 @@ export function BackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
     stage_id: _stage_data?.id ?? Defines.VOID_STAGE.id,
     type: (_stage_data?.id === Defines.VOID_STAGE.id ? 'bg' : 'stage') as 'bg' | 'stage'
   });
-  const [bgm, set_bgm] = useState<string>(lf2?.sound_mgr.bgm() ?? '');
+  const [bgm, set_bgm] = useState<string>(lf2?.sounds.bgm() ?? '');
   const [stage_bgm, set_stage_bgm] = useState<boolean>(lf2?.bgm_enable ?? false);
   const [stage_phase_list, set_stage_phases] = useState<IStagePhaseInfo[]>(_stage_data?.phases ?? []);
   const [stage_phase_idx, set_stage_phase_idx] = useState<number>(_stage?.cur_phase ?? -1);
   const [difficulty, set_difficulty] = useState<Defines.Difficulty>(lf2?.difficulty ?? Defines.Difficulty.Difficult);
 
   useEffect(() => {
-    set_bgm(lf2?.sound_mgr.bgm() ?? '')
+    set_bgm(lf2?.sounds.bgm() ?? '')
     set_stage_bgm(lf2?.bgm_enable ?? false);
     set_stage_phases(lf2?.world.stage.data.phases ?? []);
     set_stage_phase_idx(lf2?.world.stage.cur_phase ?? -1);
@@ -55,8 +55,8 @@ export function BackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
 
   useEffect(() => {
     if (!lf2) return;
-    if (!bgm) lf2.sound_mgr.stop_bgm()
-    else lf2.sound_mgr.play_bgm(bgm)
+    if (!bgm) lf2.sounds.stop_bgm()
+    else lf2.sounds.play_bgm(bgm)
   }, [bgm, lf2]);
 
   useEffect(() => {
@@ -177,7 +177,7 @@ export function BackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
             draft.type = 'bg'
             draft.bg_id = v;
           })}
-          items={lf2.dat_mgr.backgrounds}
+          items={lf2.datas.backgrounds}
           option={i => [i.id, i.base.name]} />
         <Button onClick={v => lf2.remove_all_entities()}>清场</Button>
         BGM:
@@ -208,7 +208,7 @@ export function BackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
         <Select
           value={weapon_id}
           on_changed={set_weapon_id}
-          items={lf2.dat_mgr.weapons}
+          items={lf2.datas.weapons}
           option={i => [i.id, i.base.name]}>
           <option value=''>Random</option>
         </Select>

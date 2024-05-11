@@ -133,8 +133,8 @@ export class InfoSprite implements IEntityCallbacks {
       this.mesh.material.map = null;
       return;
     }
-    lf2.img_mgr.load_text(name, { shadow_color: strokeStyle, fill_style: fillStyle, smoothing: false })
-      .then((i) => lf2.img_mgr.create_pic_by_img_key(i.key))
+    lf2.images.load_text(name, { shadow_color: strokeStyle, fill_style: fillStyle, smoothing: false })
+      .then((i) => lf2.images.create_pic_by_img_key(i.key))
       .then((p) => {
         if (name !== e.name) return;
         if (team !== e.team) return;

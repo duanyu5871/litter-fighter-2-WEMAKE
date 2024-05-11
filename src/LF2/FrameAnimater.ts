@@ -232,7 +232,7 @@ export class FrameAnimater<
     }
     const { sound } = frame;
     const { x, y, z } = this.position;
-    sound && this.world.lf2.sound_mgr.play(sound, x, y, z);
+    sound && this.world.lf2.sounds.play(sound, x, y, z);
     this.set_frame(frame);
 
     if (flags?.facing !== void 0) this.facing = this.handle_facing_flag(flags.facing, frame, flags);

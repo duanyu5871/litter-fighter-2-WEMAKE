@@ -47,7 +47,7 @@ class Inner {
         weapon_drop_sound: b,
         weapon_hit_sound: c,
       } = (data as Partial<IWeaponData>).base ?? {}
-      const mgr = this.lf2.sound_mgr;
+      const mgr = this.lf2.sounds;
       a && !mgr.has(a) && mgr.preload(a, a);
       b && !mgr.has(b) && mgr.preload(b, b);
       c && !mgr.has(c) && mgr.preload(c, c);
@@ -55,7 +55,7 @@ class Inner {
 
     if (!('frames' in data)) return data;
     const { frames, base: { files } } = data;
-    const jobs = map(files, (_, v) => this.lf2.img_mgr.load_by_e_pic_info(v))
+    const jobs = map(files, (_, v) => this.lf2.images.load_by_e_pic_info(v))
     await Promise.all(jobs);
     traversal(frames, (_, frame) => cook_frame(this.lf2, data, frame));
     return data;
