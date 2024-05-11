@@ -104,12 +104,11 @@ export default class StageTitleShow extends LayoutComponent {
     if (w <= 0 || h <= 0) return;
     const char_num_img = this.layout.get_value('char_num_img');
     if (!is_str(char_num_img)) return;
-    const num_pic = await this.lf2.images.create_pic_by_src(char_num_img);
-    const num_tex = this.lf2.images.crop(num_pic, x, y, w, h).texture
+    const num_pic = await this.lf2.images.create_pic(char_num_img, char_num_img, { src_x: x, src_y: y, src_w: w, src_h: h });
     const num_mesh = LayoutMeshBuilder.create()
       .size(w, h)
       .build({
-        map: num_tex,
+        map: num_pic.texture,
         transparent: true,
         opacity: 0,
       })

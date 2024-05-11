@@ -16,15 +16,48 @@ export type BOOL = 1 | 0;
 export * from './IDataLists'
 export * from './IDatIndex'
 
+
+/**
+ * 实体图片信息
+ * 
+ * TODO 补充说明
+ *
+ * @export
+ * @interface IEntityPictureInfo
+ */
 export interface IEntityPictureInfo {
   id: string;
   begin: number;
   end: number;
   path: string;
-  w: number;
-  h: number;
+
+  /**
+   * 行数
+   * 
+   * @type {number}
+   */
   row: number;
+
+  /**
+   * 列数
+   * 
+   * @type {number}
+   */
   col: number;
+
+  /**
+   * 格宽
+   *
+   * @type {number}
+   */
+  cell_w: number;
+
+  /**
+   * 格高
+   *
+   * @type {number}
+   */
+  cell_h: number;
 }
 
 export type TNextFrame = INextFrame | INextFrame[]

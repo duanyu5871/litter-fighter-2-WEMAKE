@@ -33,7 +33,7 @@ export const cook_frame = (lf2: LF2, data: IGameObjData, frame: IFrameInfo) => {
     }
     if (pic_info === void 0) return Warn.print(cook_frame.name, 'file info not found, pic number:', pic);
 
-    const { id, row, w: cell_w, h: cell_h } = pic_info;
+    const { id, row, cell_w, cell_h } = pic_info;
     const img_info = lf2.images.find_by_pic_info(pic_info);
     if (!img_info) return Warn.print(cook_frame.name, 'image_info not found, pic_info:', pic_info);
     const x = (cell_w + 1) * (pic % row);

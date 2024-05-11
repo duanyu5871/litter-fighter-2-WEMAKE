@@ -58,11 +58,17 @@ export interface IPlayer {
    */
   play(name: string, x?: number, y?: number, z?: number): string;
 
-  
+
   /**
    * 停止播放音效
    *
    * @param {string} id
    */
   stop(id: string): void;
+
+  
+  /**
+   * 释放
+   */
+  dispose(): void;
 }

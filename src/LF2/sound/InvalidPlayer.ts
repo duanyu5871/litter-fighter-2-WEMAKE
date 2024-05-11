@@ -12,4 +12,5 @@ export default class InvalidPlayer implements IPlayer {
   preload(name: string, src: string): Promise<any> { return Promise.reject(new Error(InvalidPlayer.name)) }
   play(name: string, x?: number | undefined, y?: number | undefined, z?: number | undefined): string { return '' }
   stop(id: string): void { }
+  dispose(): void { }
 }

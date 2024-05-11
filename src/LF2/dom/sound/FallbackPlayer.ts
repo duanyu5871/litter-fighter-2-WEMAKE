@@ -5,17 +5,17 @@ import { IPlayer } from "../../sound/IPlayer";
 export default class FallbackPlayer implements IPlayer {
   protected _r = new Map<string, string>();
   protected _prev_bgm_url: string | null = null;
-  protected _ele?: HTMLAudioElement;
+  protected _bgm_ele?: HTMLAudioElement;
   protected _req_id: number = 0;
-  protected _bgm: string | null = null;
   protected _sound_id = 0;
   protected _playings = new Map<string, HTMLAudioElement>()
   readonly lf2: LF2;
   constructor(lf2: LF2) {
     this.lf2 = lf2;
   }
+
   bgm(): string | null {
-    return this._bgm;
+    return this._bgm_ele?.getAttribute("bgm_name") ?? null;
   }
 
   has(name: string): boolean {
@@ -23,22 +23,21 @@ export default class FallbackPlayer implements IPlayer {
   }
 
   stop_bgm() {
-    if (!this._ele) return;
-    this._bgm = null;
-    this._ele.pause();
-    delete this._ele;
+    if (!this._bgm_ele) return;
+    this._bgm_ele.pause();
+    delete this._bgm_ele;
     this._prev_bgm_url = null;
   }
 
   play_bgm(name: string, restart?: boolean | undefined): () => void {
     if (!restart && this._prev_bgm_url === name) return () => { };
-    if (this._ele) this.stop_bgm();
-    this._bgm = name;
-    this._ele = document.createElement('audio');
-    this._ele.src = '' + this._r.get(name);
-    this._ele.controls = false;
-    this._ele.loop = true;
-    this._ele.play();
+    if (this._bgm_ele) this.stop_bgm();
+    this._bgm_ele = document.createElement('audio');
+    this._bgm_ele?.setAttribute("bgm_name", name)
+    this._bgm_ele.src = '' + this._r.get(name);
+    this._bgm_ele.controls = false;
+    this._bgm_ele.loop = true;
+    this._bgm_ele.play();
     ++this._req_id;
     const req_id = this._req_id;
     this._prev_bgm_url = name;
@@ -75,5 +74,15 @@ export default class FallbackPlayer implements IPlayer {
     if (!n) return;
     n.pause();
     this._playings.delete(id)
+  }
+
+  dispose(): void {
+    this._playings.forEach(v => v.pause());
+    this._playings.clear();
+
+    this._bgm_ele?.pause();
+    delete this._bgm_ele;
+
+    this._r.clear();
   }
 }

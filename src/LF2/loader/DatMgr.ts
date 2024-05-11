@@ -128,7 +128,7 @@ export default class DatMgr {
     return this._inner.load();
   }
 
-  cancel(): void {
+  dispose(): void {
     ++this._inner_id;
   }
 

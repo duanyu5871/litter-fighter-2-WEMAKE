@@ -24,6 +24,7 @@ export default class SoundMgr implements IPlayer {
       }
     }
   }
+
   bgm(): string | null {
     return this.inner.bgm();
   }
@@ -60,6 +61,10 @@ export default class SoundMgr implements IPlayer {
 
   play_preset(t: 'cancel' | 'end' | 'join' | 'ok' | 'pass', x?: number, y?: number, z?: number): void {
     this.play_with_load(`data/m_${t}.wav.ogg`, x, y, z)
+  }
+
+  dispose(): void {
+    this.inner.dispose();
   }
 }
 

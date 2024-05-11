@@ -1,5 +1,4 @@
 import axios from "axios";
-import { is_str } from "../../../common/is_str";
 import { Defines } from "../../../common/lf2_type/defines";
 import type LF2 from "../../LF2";
 import AsyncValuesKeeper from "../../base/AsyncValuesKeeper";
@@ -19,6 +18,7 @@ export default class ModernPlayer implements IPlayer {
   constructor(lf2: LF2) {
     this.lf2 = lf2;
   }
+
   bgm(): string | null {
     return this._bgm;
   }
@@ -65,10 +65,7 @@ export default class ModernPlayer implements IPlayer {
     if (buf) {
       start(buf);
     } else {
-      fetch(name)
-        .then(buf => buf.arrayBuffer())
-        .then(buf => ctx.decodeAudioData(buf))
-        .then(start);
+      this.preload(name, name).then(start)
     }
     return () => (req_id === this._req_id) && this.stop_bgm();
   }
@@ -97,7 +94,6 @@ export default class ModernPlayer implements IPlayer {
     l_gain_node.connect(merger_node, 0, 0);
     splitter_node.connect(l_gain_node, 0);
 
-
     const r_gain_node = this.ctx.createGain();
     r_gain_node.gain.value = r_vol;
     r_gain_node.connect(merger_node, 0, 1);
@@ -117,5 +113,11 @@ export default class ModernPlayer implements IPlayer {
     if (!n) return;
     n.stop();
     this._playings.delete(id)
+  }
+
+  dispose(): void {
+    this._r.clean();
+    this._playings.forEach(v => v.stop())
+    this._playings.clear();
   }
 }

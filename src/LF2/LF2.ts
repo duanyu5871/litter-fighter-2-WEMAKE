@@ -16,7 +16,6 @@ import { ILf2Callback } from './ILf2Callback';
 import { PlayerInfo } from './PlayerInfo';
 import { World } from './World';
 import Callbacks from './base/Callbacks';
-import Invoker from './base/Invoker';
 import { Loader } from './base/Loader';
 import NoEmitCallbacks from "./base/NoEmitCallbacks";
 import { get_short_file_size_txt } from './base/get_short_file_size_txt';
@@ -45,11 +44,7 @@ const cheat_info_pair = (n: Defines.Cheats) => ['' + n, {
 
 export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   private _callbacks = new Callbacks<ILf2Callback>();
-  private _disposers = new Invoker();
-  private _disposed: boolean = false;
   private _layout: Layout | undefined;
-  static DisposeError = new Error('disposed')
-  static IngoreDisposeError = (e: any) => { if (e !== this.DisposeError) throw e; }
   private _loading: boolean = false;
   private _loaded: boolean = false;
   private _difficulty: Defines.Difficulty = Defines.Difficulty.Difficult;
@@ -124,30 +119,28 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   }
   on_click_character?: (c: Character) => void;
 
-  _r = <T>(r: T) => this._disposed ? Promise.reject(LF2.DisposeError) : r;
-
   async import_json(path: string): Promise<any> {
     const paths = get_import_fallbacks(path);
     const { zip } = this;
     const obj = zip && fisrt_not_void(paths, p => zip.file(p))
-    if (obj) return obj.json().then(this._r)
-    return import_as_json(paths).then(this._r);
+    if (obj) return obj.json()
+    return import_as_json(paths);
   }
 
   async import_image(path: string): Promise<string> {
     const paths = get_import_fallbacks(path);
     const { zip } = this;
     const obj = zip && fisrt_not_void(paths, p => zip.file(p))
-    if (obj) return obj.blob().then(b => URL.createObjectURL(b)).then(this._r)
-    return import_as_blob_url(paths).then(this._r);
+    if (obj) return obj.blob().then(b => URL.createObjectURL(b))
+    return import_as_blob_url(paths);
   }
 
   async import_sound(path: string): Promise<string> {
     const paths = get_import_fallbacks(path);
     const { zip } = this;
     const obj = zip && fisrt_not_void(paths, p => zip.file(p))
-    if (obj) return obj.blob().then(b => URL.createObjectURL(b)).then(this._r)
-    return import_as_blob_url(paths).then(this._r);
+    if (obj) return obj.blob().then(b => URL.createObjectURL(b))
+    return import_as_blob_url(paths);
   }
 
   readonly characters: Record<string, (num: number, team?: string) => void> = {}
@@ -158,6 +151,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   readonly images: ImageMgr
   readonly keyboard: Keyboard;
   readonly pointings: Pointings;
+
   constructor(canvas: HTMLCanvasElement, overlay?: HTMLDivElement | null) {
     this.canvas = canvas;
     this.world = new World(this, canvas, overlay);
@@ -168,12 +162,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     this.keyboard.callback.add(this);
 
     this.pointings = new Pointings(canvas);
-    this.pointings.callback.add(this)
-
-    this._disposers.add(
-      () => this.keyboard.dispose(),
-      () => this.pointings.dispose()
-    )
+    this.pointings.callback.add(this);
   }
 
   random_entity_info(e: Entity) {
@@ -426,11 +415,13 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   }
 
   dispose() {
-    this._disposed = true;
-    this._disposers.invoke();
     this._callbacks.emit('on_dispose')();
-    this.world.dispose()
-    this.datas.cancel();
+    this.world.dispose();
+    this.datas.dispose();
+    this.sounds.dispose();
+    this.images.dispose();
+    this.keyboard.dispose();
+    this.pointings.dispose();
   }
 
   add_player_character(player_id: string, character_id: string) {

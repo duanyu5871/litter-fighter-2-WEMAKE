@@ -30,4 +30,8 @@ export default class AsyncValuesKeeper<V> {
       });
     });
   }
+
+  clean(): void {
+    this._f_map.clear();
+  }
 }

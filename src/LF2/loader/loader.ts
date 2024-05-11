@@ -1,4 +1,3 @@
-import SparkMD5 from "spark-md5";
 import * as THREE from 'three';
 import { create_img_ele } from '../../Utils/create_img_ele';
 import { get_blob } from '../../Utils/get_blob';
@@ -7,11 +6,9 @@ import type IPicture from '../../common/lf2_type/IPicture';
 import type IStyle from "../../common/lf2_type/IStyle";
 import type LF2 from "../LF2";
 import AsyncValuesKeeper from "../base/AsyncValuesKeeper";
+import md5 from "../dom/md5";
 export type TPicture = IPicture<THREE.Texture>;
 
-export function make_data_reject<T>(data: T, reason: any): [T, Promise<T>] {
-  return [data, Promise.reject(reason)]
-}
 export const texture_loader = new THREE.TextureLoader();
 export type TImageInfo = {
   key: string,
@@ -24,15 +21,23 @@ export type TImageInfo = {
   wrap_s?: THREE.Wrapping;
   wrap_t?: THREE.Wrapping;
 }
-
+export interface IPaintParams {
+  src_x?: number;
+  src_y?: number;
+  src_w?: number;
+  src_h?: number;
+  dst_x?: number;
+  dst_y?: number;
+  dst_w?: number;
+  dst_h?: number;
+}
 export type PaintFunc = (img: HTMLImageElement, cvs: HTMLCanvasElement, ctx: CanvasRenderingContext2D) => void;
 export class ImageMgr {
   readonly lf2: LF2;
+  protected _requesters = new AsyncValuesKeeper<TImageInfo>();
   constructor(lf2: LF2) {
     this.lf2 = lf2
   }
-  protected _requesters = new AsyncValuesKeeper<TImageInfo>();
-
 
   protected async _make_img_info(key: string, src: string, paint?: PaintFunc): Promise<TImageInfo> {
     src = await this.lf2.import_image(src);
@@ -96,37 +101,34 @@ export class ImageMgr {
     }
   }
 
-  find(key: string) {
+  find(key: string): TImageInfo | undefined {
     return this._requesters.values.get(key)
   }
 
-  find_by_pic_info(f: IEntityPictureInfo) {
+  find_by_pic_info(f: IEntityPictureInfo): TImageInfo | undefined {
     return this._requesters.values.get(this._gen_key(f))
   }
 
   load_text(text: string, style: IStyle = {}): Promise<TImageInfo> {
-    const key = new SparkMD5().append(text).append(JSON.stringify(style)).end()
-    return this._requesters.get(key, async () => {
-      return await this._make_img_info_by_text(key, text, style);
-    })
+    const key = md5(text, JSON.stringify(style));
+    const fn = () => this._make_img_info_by_text(key, text, style);
+    return this._requesters.get(key, fn);
   }
 
-  load_img(src: string, unused?: string, paint?: PaintFunc): Promise<TImageInfo>;
-  load_img(key: string, src: string, paint?: PaintFunc): Promise<TImageInfo>
-  load_img(key_or_src: string, src?: string, paint?: PaintFunc): Promise<TImageInfo> {
-    return this._requesters.get(key_or_src, async () => {
-      this.lf2.on_loading_content(`loading img: ${key_or_src}`, 0);
-      const info = await this._make_img_info(key_or_src, src ?? key_or_src, paint);
-      this.lf2.on_loading_content(`loading img: ${key_or_src}`, 100);
+  load_img(key: string, src: string, paint?: PaintFunc): Promise<TImageInfo> {
+    const fn = async () => {
+      this.lf2.on_loading_content(`loading img: ${key}`, 0);
+      const info = await this._make_img_info(key, src, paint);
+      this.lf2.on_loading_content(`loading img: ${key}`, 100);
       return info
-    })
+    }
+    return this._requesters.get(key, fn);
   }
 
-  protected _gen_key = (f: IEntityPictureInfo) => `${f.path}_${f.w}_${f.h}_${f.row}_${f.col}`;
-
+  protected _gen_key = (f: IEntityPictureInfo) => `${f.path}_${f.cell_w}_${f.cell_h}_${f.row}_${f.col}`;
   async load_by_e_pic_info(f: IEntityPictureInfo): Promise<TImageInfo> {
     const key = this._gen_key(f);
-    const { path, w: cell_w, h: cell_h } = f;
+    const { path, cell_w: cell_w, cell_h: cell_h } = f;
     if (!path.endsWith('bmp') || !cell_w || !cell_h)
       return this.load_img(key, f.path)
 
@@ -157,18 +159,29 @@ export class ImageMgr {
       ctx.putImageData(img_data, 0, 0);
     });
   }
-  async create_pic_by_src(src: string): Promise<TPicture>;
-  async create_pic_by_src(key: string, src: string): Promise<TPicture>
-  async create_pic_by_src(key: string, src: string = key): Promise<TPicture> {
-    const img_info = await this.load_img(key, src)
-    return this.create_pic_by_img_key(img_info.key)
+
+  async create_pic(key: string, src: string, params?: IPaintParams): Promise<TPicture> {
+    const paint: PaintFunc | undefined = params && ((img, cvs, ctx) => {
+      const {
+        src_x = 0, src_y = 0, src_w = img.width, src_h = img.height,
+        dst_x = 0, dst_y = 0, dst_w = src_w, dst_h = src_h
+      } = params;
+      cvs.width = dst_w;
+      cvs.height = dst_h;
+      ctx.drawImage(img,
+        src_x, src_y, src_w, src_h,
+        dst_x, dst_y, dst_w, dst_h,
+      )
+    })
+    const img_info = await this.load_img(key, src, paint);
+    return this.create_pic_by_img_key(img_info.key);
   }
 
   create_pic_by_img_info(img_info: TImageInfo) {
     const picture = err_pic_info();
     picture.cell_w = picture.w = img_info.w
     picture.cell_h = picture.h = img_info.h
-    return create_pic(img_info, picture);
+    return _create_pic(img_info, picture);
   }
 
   create_pic_by_img_key(img_key: string) {
@@ -179,14 +192,14 @@ export class ImageMgr {
 
   create_pic_by_e_pic_info(e_pic_info: IEntityPictureInfo) {
     const img_info = this.find_by_pic_info(e_pic_info);
-    const { w: cell_w, h: cell_h, row, col } = e_pic_info;
+    const { cell_w, cell_h, row, col } = e_pic_info;
     const picture = err_pic_info();
-    picture.cell_w = cell_w + 1;
-    picture.cell_h = cell_h + 1;
+    picture.cell_w = cell_w;
+    picture.cell_h = cell_h;
     picture.row = row;
     picture.col = col;
     if (!img_info) return picture;
-    return create_pic(img_info, picture);
+    return _create_pic(img_info, picture);
   }
 
   async create_pic_by_text(text: string, style: IStyle = {}) {
@@ -194,31 +207,21 @@ export class ImageMgr {
     return this.create_pic_by_img_key(img_info.key);
   }
 
-  crop(pic: TPicture, x: number, y: number, w: number, h: number): TPicture {
-    const texture = pic.texture.clone();
-    texture.repeat.set(
-      w / pic.w,
-      h / pic.h
-    )
-    texture.offset.set(
-      x / pic.w,
-      1 - (y + h) / pic.h
-    );
-    const ret = { ...pic, texture }
-    return ret;
+  dispose() {
+    // TODO
   }
 }
 
-const error_texture = () => {
+function _error_texture() {
   const texture = texture_loader.load(require('./error.png'));
   texture.colorSpace = THREE.SRGBColorSpace;
   texture.minFilter = THREE.NearestFilter;
-  texture.magFilter = THREE.NearestFilter
+  texture.magFilter = THREE.NearestFilter;
   texture.wrapS = THREE.RepeatWrapping;
   return texture;
 }
 
-function create_pic(
+function _create_pic(
   img_info: TImageInfo,
   pic_info: TPicture = err_pic_info(''),
 ): TPicture {
@@ -239,7 +242,7 @@ function create_pic(
 export function err_pic_info(id: string = ''): TPicture {
   return {
     id, w: 0, h: 0, cell_w: 0, cell_h: 0, row: 1, col: 1,
-    texture: error_texture()
+    texture: _error_texture()
   }
 }
 

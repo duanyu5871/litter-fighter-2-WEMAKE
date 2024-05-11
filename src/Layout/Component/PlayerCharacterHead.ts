@@ -51,7 +51,8 @@ export default class PlayerCharacterHead extends LayoutComponent {
 
   async create_hints_mesh() {
     const [w, h] = this.layout.size
-    const hint_pic = await this.lf2.images.create_pic_by_src('sprite/CMA.png');
+    const src = 'sprite/CMA.png';
+    const hint_pic = await this.lf2.images.create_pic(src, src);
     this._mesh_hints = LayoutMeshBuilder.create()
       .center(0.5, 0.5)
       .size(hint_pic.w, hint_pic.h)
@@ -99,7 +100,7 @@ export default class PlayerCharacterHead extends LayoutComponent {
   }
   protected async update_head_mesh(jid: number, src: string) {
     if (jid !== this._jid) return;
-    const pic = await this.lf2.images.create_pic_by_src(src);
+    const pic = await this.lf2.images.create_pic(src, src);
     if (jid !== this._jid) {
       pic.texture.dispose();
       return;

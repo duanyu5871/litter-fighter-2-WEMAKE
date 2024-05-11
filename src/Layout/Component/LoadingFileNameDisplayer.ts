@@ -21,6 +21,8 @@ export default class LoadingFileNameDisplayer extends LayoutComponent implements
   }
   protected _mesh: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial> | undefined
   protected async update_sprite(loading_content: string) {
+    if (!this.mounted) return;
+    
     if (!loading_content) {
       this._mesh?.removeFromParent();
       delete this._mesh;
@@ -35,12 +37,20 @@ export default class LoadingFileNameDisplayer extends LayoutComponent implements
       .style(this.layout.style)
 
     if (!this._mesh) {
-      this._mesh = await text_builder.build_mesh()
-      this.layout.mesh.add(this._mesh);
+      const mesh = await text_builder.build_mesh();
+      if (!this.mounted || this._mesh) {
+        mesh.geometry.dispose();
+        mesh.material.map?.dispose();
+        return;
+      }
+      this.layout.mesh.add(this._mesh = mesh);
       this._mesh.name = LoadingFileNameDisplayer.name;
     } else {
       const [geo, tex] = await text_builder.build();
-      if (!this.mounted) return;
+      if (!this.mounted || !this._mesh) {
+        geo.dispose();
+        tex.dispose();
+      }
       this._mesh.geometry = geo;
       this._mesh.material.map = tex;
       this._mesh.material.needsUpdate = true;
