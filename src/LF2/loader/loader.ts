@@ -4,8 +4,8 @@ import { create_img_ele } from '../../Utils/create_img_ele';
 import { get_blob } from '../../Utils/get_blob';
 import { IEntityPictureInfo } from '../../common/lf2_type';
 import type IPicture from '../../common/lf2_type/IPicture';
-import type LF2 from "../LF2";
 import type IStyle from "../../common/lf2_type/IStyle";
+import type LF2 from "../LF2";
 import AsyncValuesKeeper from "../base/AsyncValuesKeeper";
 export type TPicture = IPicture<THREE.Texture>;
 
@@ -32,24 +32,18 @@ export class ImageMgr {
     this.lf2 = lf2
   }
   protected _requesters = new AsyncValuesKeeper<TImageInfo>();
-  protected _paint = (
-    img: HTMLImageElement,
-    cvs: HTMLCanvasElement,
-    ctx: CanvasRenderingContext2D
-  ) => {
-    cvs.width = img.width;
-    cvs.height = img.height;
-    ctx.drawImage(img, 0, 0);
-  }
 
-  protected async _make_img_info(key: string, get_src: () => Promise<string>, paint = this._paint): Promise<TImageInfo> {
+
+  protected async _make_img_info(key: string, src: string, paint?: PaintFunc): Promise<TImageInfo> {
+    src = await this.lf2.import_image(src);
+    const img = await create_img_ele(src);
+    if (!paint) {
+      return { key, url: src, w: img.width, h: img.height, img: img }
+    }
     const cvs = document.createElement('canvas');
     const ctx = cvs.getContext('2d', { willReadFrequently: true });
     if (!ctx) throw new Error("can not get context from canvas");
-    const src = await get_src().then(v => this.lf2.import(v));
-
-    const img_ele = await create_img_ele(src);
-    paint(img_ele, cvs, ctx);
+    paint(img, cvs, ctx);
     const blob = await get_blob(cvs).catch(e => { throw new Error(e.message + ' key:' + key, { cause: e.cause }) });
     const url = URL.createObjectURL(blob);
     return { key, url, w: cvs.width, h: cvs.height, img: cvs }
@@ -117,61 +111,56 @@ export class ImageMgr {
     })
   }
 
-  load_img(src: string, get_src?: undefined, paint?: PaintFunc): Promise<TImageInfo>;
-  load_img(key: string, get_src: () => Promise<string>, paint?: PaintFunc): Promise<TImageInfo>
-  load_img(key: string, get_src?: () => Promise<string>, paint?: PaintFunc): Promise<TImageInfo> {
-    return this._requesters.get(key, async () => {
-      if (!get_src) get_src = async () => key;
-      this.lf2.on_loading_content(`loading img: ${key}`, 0);
-      const info = await this._make_img_info(key, get_src, paint);
-      this.lf2.on_loading_content(`loading img: ${key}`, 100);
+  load_img(src: string, unused?: string, paint?: PaintFunc): Promise<TImageInfo>;
+  load_img(key: string, src: string, paint?: PaintFunc): Promise<TImageInfo>
+  load_img(key_or_src: string, src?: string, paint?: PaintFunc): Promise<TImageInfo> {
+    return this._requesters.get(key_or_src, async () => {
+      this.lf2.on_loading_content(`loading img: ${key_or_src}`, 0);
+      const info = await this._make_img_info(key_or_src, src ?? key_or_src, paint);
+      this.lf2.on_loading_content(`loading img: ${key_or_src}`, 100);
       return info
     })
   }
 
   protected _gen_key = (f: IEntityPictureInfo) => `${f.path}_${f.w}_${f.h}_${f.row}_${f.col}`;
 
-  async load_by_e_pic_info(f: IEntityPictureInfo, get_src: (f: IEntityPictureInfo) => Promise<string>): Promise<TImageInfo> {
+  async load_by_e_pic_info(f: IEntityPictureInfo): Promise<TImageInfo> {
     const key = this._gen_key(f);
     const { path, w: cell_w, h: cell_h } = f;
+    if (!path.endsWith('bmp') || !cell_w || !cell_h)
+      return this.load_img(key, f.path)
 
-    const paint: typeof this._paint = (img, cvs, ctx) => {
+    return this.load_img(key, f.path, (img, cvs, ctx) => {
       const { width: w, height: h } = img;
       cvs.width = w;
       cvs.height = h;
-      if (path.endsWith('bmp') && cell_w && cell_h) {
-        ctx.fillStyle = '#000000'
-        ctx.fillRect(0, 0, w, h)
-        ctx.drawImage(img, 0, 0);
-        const img_data = ctx.getImageData(0, 0, w, h);
-        for (let i = 0; i < img_data.data.length; i += 4) {
-          const pidx = i / 4;
-          if (pidx % (cell_w + 1) === cell_w) {
-            img_data.data[i + 3] = 0;
-            continue;
-          } else if (Math.floor((pidx / w)) % (cell_h + 1) === cell_h) {
-            img_data.data[i + 3] = 0;
-            continue;
-          }
-          if (
-            img_data.data[i + 0] === 0 &&
-            img_data.data[i + 1] === 0 &&
-            img_data.data[i + 2] === 0) {
-            img_data.data[i + 3] = 0;
-          }
+      ctx.fillStyle = '#000000'
+      ctx.fillRect(0, 0, w, h)
+      ctx.drawImage(img, 0, 0);
+      const img_data = ctx.getImageData(0, 0, w, h);
+      for (let i = 0; i < img_data.data.length; i += 4) {
+        const pidx = i / 4;
+        if (pidx % (cell_w + 1) === cell_w) {
+          img_data.data[i + 3] = 0;
+          continue;
+        } else if (Math.floor((pidx / w)) % (cell_h + 1) === cell_h) {
+          img_data.data[i + 3] = 0;
+          continue;
         }
-        ctx.putImageData(img_data, 0, 0);
-      } else {
-        this._paint(img, cvs, ctx)
+        if (
+          img_data.data[i + 0] === 0 &&
+          img_data.data[i + 1] === 0 &&
+          img_data.data[i + 2] === 0) {
+          img_data.data[i + 3] = 0;
+        }
       }
-    }
-
-    return this.load_img(key, () => get_src(f), paint);
+      ctx.putImageData(img_data, 0, 0);
+    });
   }
   async create_pic_by_src(src: string): Promise<TPicture>;
   async create_pic_by_src(key: string, src: string): Promise<TPicture>
   async create_pic_by_src(key: string, src: string = key): Promise<TPicture> {
-    const img_info = await this.load_img(key, async () => src)
+    const img_info = await this.load_img(key, src)
     return this.create_pic_by_img_key(img_info.key)
   }
 

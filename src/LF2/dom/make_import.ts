@@ -1,43 +1,78 @@
+import axios, { AxiosResponse } from "axios";
+import { is_str } from "../../common/is_str";
 
-export interface IOnProgress { (current: number, total: number): void }
-
-const fetch_not_html = async (url: string, progress?: IOnProgress) => {
-  const v = await fetch(url);
-  if (url.startsWith('blob:')) return v.blob();
-
-  const content_type = v.headers.get('Content-Type');
-  if (!content_type) throw new Error(`Content-Type got ${content_type}`);
-  if (content_type.startsWith('text/html')) return;
-  const lc_url = url.toLowerCase();
-  if (lc_url.endsWith('.json')) {
-    if (!content_type.startsWith('application/json'))
-      throw new Error(`Content-Type got ${content_type}, expected 'application/json'`);
-    return await v.json();
+const roots = [
+  'lf2_data',
+  'lf2_built_in_data'
+]
+function get_possible_url_list(list: string[]): string[] {
+  const ret: string[] = [];
+  for (let item of list) {
+    if (
+      item.startsWith('blob:') ||
+      item.startsWith('http:') ||
+      item.startsWith('https:')
+    ) {
+      ret.push(item);
+      continue;
+    }
+    if (!item.startsWith('/'))
+      item = '/' + item;
+    for (const root of roots)
+      ret.push(root + item);
   }
-  if (lc_url.endsWith('.png') ||
-    lc_url.endsWith('.bmp') ||
-    lc_url.endsWith('.jpeg') ||
-    lc_url.endsWith('.webp')) {
-    if (!content_type.startsWith('image/'))
-      throw new Error(`Content-Type got ${content_type}, expected start with 'image/'`);
-    return URL.createObjectURL(await v.blob());
-  }
-  if (lc_url.endsWith('.ogg')) {
-    if (!content_type.startsWith('audio/ogg'))
-      throw new Error(`Content-Type got ${content_type}, expected 'audio/ogg'`);
-    return URL.createObjectURL(await v.blob());
-  }
-  return v.blob();
+  return ret;
 }
 
-export async function make_import<T = any>(path: string, progress?: IOnProgress): Promise<T> {
-  if (path.startsWith('blob:') || path.startsWith('http:') || path.startsWith('https:')) 
-    return await fetch_not_html(path, progress);
-  
-  const roots = ['lf2_data/', 'lf2_built_in_data/'];
-  for (const root of roots) {
-    const ret = await fetch_not_html(root + path, progress);
-    if (ret) return ret;
+export async function import_as<T>(responseType: 'json' | 'blob', url: string): Promise<AxiosResponse<T, any>>
+export async function import_as<T>(responseType: 'json' | 'blob', url_list: string[]): Promise<AxiosResponse<T, any>>;
+export async function import_as<T>(responseType: 'json' | 'blob', url_list_or_url: string | string[]): Promise<AxiosResponse<T, any>> {
+
+  if (is_str(url_list_or_url))
+    return await axios.get<T>(url_list_or_url, { responseType })
+
+  const err_list: [string, any][] = [];
+  for (const url of url_list_or_url) {
+    try {
+      return await axios.get<T>(url, { responseType });
+    } catch (e) {
+      err_list.push([url, e]);
+    }
   }
-  throw new Error(`import_from_fetch(path), failed to fetch resource, path: ${path}`)
+  throw new MakeImportError(url_list_or_url, err_list)
+}
+
+export async function import_as_json(path_or_url_list: string[]): Promise<any> {
+  const url_list: string[] = get_possible_url_list(path_or_url_list);
+  return await import_as<any>('json', url_list).then(v => v.data);
+}
+export async function import_as_blob(path_or_url_list: string[]): Promise<Blob> {
+  const url_list: string[] = get_possible_url_list(path_or_url_list);
+  return await import_as<Blob>('blob', url_list).then(v => v.data);
+}
+export async function import_as_blob_url(path_or_url_list: string[]): Promise<string> {
+  const url_list: string[] = get_possible_url_list(path_or_url_list);
+  const err_list: [string, any][] = [];
+  for (const url of url_list) {
+    if (url.startsWith('blob'))
+      return url;
+    try {
+      const resp = await import_as<Blob>('blob', url);
+      return URL.createObjectURL(resp.data);
+    } catch (e) {
+      err_list.push([url, e]);
+    }
+  }
+  throw new MakeImportError(url_list, err_list)
+}
+
+export class MakeImportError extends Error {
+  static is = (v: any): v is MakeImportError => v.is_make_import_error === true;
+  readonly is_make_import_error = true;
+  readonly url_err_pair_list: [string, any][];
+  constructor(path_or_url_list: string[], url_err_pair_list: any[]) {
+    super(`failed, path or url: ${path_or_url_list.join(', ')}`);
+    this.name = 'MakeImportError';
+    this.url_err_pair_list = url_err_pair_list;
+  }
 }

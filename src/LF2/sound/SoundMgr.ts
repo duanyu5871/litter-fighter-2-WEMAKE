@@ -3,7 +3,7 @@ import { Warn } from "../../Log";
 import type LF2 from "../LF2";
 import FallbackPlayer from "../dom/sound/FallbackPlayer";
 import ModernPlayer from "../dom/sound/ModernPlayer";
-import type { IPlayer, Src } from "./IPlayer";
+import type { IPlayer } from "./IPlayer";
 import InvalidPlayer from "./InvalidPlayer";
 
 export default class SoundMgr implements IPlayer {
@@ -32,7 +32,7 @@ export default class SoundMgr implements IPlayer {
     return this.inner.has(name);
   }
 
-  preload(key: string, src: Src) {
+  preload(key: string, src: string) {
     return this.inner.preload(key, src);
   }
 
@@ -54,7 +54,7 @@ export default class SoundMgr implements IPlayer {
 
   async play_with_load(src: string, x?: number, y?: number, z?: number): Promise<string> {
     if (!this.inner.has(src))
-      await this.inner.preload(src, this.lf2.import(src));
+      await this.inner.preload(src, src);
     return this.inner.play(src, x, y, z);
   }
 

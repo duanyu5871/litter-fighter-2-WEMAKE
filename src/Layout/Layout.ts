@@ -230,7 +230,7 @@ export default class Layout {
         const img_key = [img_path, sx, sy, sw, sh, flip_x ? 1 : 0, flip_y ? 1 : 0].join('_')
         const img_info = this.lf2.img_mgr.find(img_key);
         if (img_info) return img_info;
-        return await this.lf2.img_mgr.load_img(img_key, async () => img_path, (img, cvs, ctx) => {
+        return await this.lf2.img_mgr.load_img(img_key, img_path, (img, cvs, ctx) => {
           const w = sw || img.width;
           const h = sh || img.height;
           cvs.width = w;

@@ -1,8 +1,9 @@
+import axios from "axios";
 import { is_str } from "../../../common/is_str";
 import { Defines } from "../../../common/lf2_type/defines";
 import type LF2 from "../../LF2";
 import AsyncValuesKeeper from "../../base/AsyncValuesKeeper";
-import { IPlayer, Src } from "../../sound/IPlayer";
+import { IPlayer } from "../../sound/IPlayer";
 
 export default class ModernPlayer implements IPlayer {
   readonly ctx = new AudioContext();
@@ -26,14 +27,12 @@ export default class ModernPlayer implements IPlayer {
     return this._r.values.has(name);
   }
 
-  preload(name: string, src: Src) {
+  preload(name: string, src: string) {
     return this._r.get(name, async () => {
       this.lf2.on_loading_content(`loading sound: ${name}`, 0);
-      const s = await src;
-      const url = is_str(s) ? s : URL.createObjectURL(s);
-      const buf = await fetch(url)
-        .then(buf => buf.arrayBuffer())
-        .then(buf => this.ctx.decodeAudioData(buf));
+      const url = await this.lf2.import_sound(src);
+      const buf = await axios.get<ArrayBuffer>(url, { responseType: 'arraybuffer' })
+        .then(v => this.ctx.decodeAudioData(v.data));
       this.lf2.on_loading_content(`loading sound: ${name}`, 100);
       return buf
     })

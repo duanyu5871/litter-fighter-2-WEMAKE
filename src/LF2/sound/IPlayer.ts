@@ -1,5 +1,3 @@
-export type Src = string | Blob | Promise<string | Blob>;
-
 export interface IPlayer {
 
   /**
@@ -33,10 +31,10 @@ export interface IPlayer {
    * @date 4/12/2024 - 10:25:37 AM
    *
    * @param {string} name 声音名
-   * @param {Src} src 声音源
+   * @param {string} src 声音源
    * @returns {Promise<any>}
    */
-  preload(name: string, src: Src): Promise<any>;
+  preload(name: string, src: string): Promise<any>;
 
 
   /**

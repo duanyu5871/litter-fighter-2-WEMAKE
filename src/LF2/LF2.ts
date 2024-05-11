@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import Layout from '../Layout/Layout';
 import { Log, Warn } from '../Log';
 import { arithmetic_progression } from '../common/arithmetic_progression';
+import { fisrt_not_void } from '../common/fisrt_not_void';
 import { is_arr } from '../common/is_arr';
 import { is_num } from '../common/is_num';
 import { is_str } from '../common/is_str';
@@ -26,7 +27,7 @@ import LocalHuman from "./controller/LocalHuman";
 import { IKeyboardCallback, KeyEvent, Keyboard } from './dom/Keyboard';
 import Pointings, { IPointingsCallback, PointingEvent } from './dom/Pointings';
 import Zip from './dom/download_zip';
-import { make_import } from './dom/make_import';
+import { import_as_blob_url, import_as_json } from './dom/make_import';
 import './entity/Ball';
 import Character from './entity/Character';
 import Entity from './entity/Entity';
@@ -91,7 +92,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   }
 
   readonly stages = new Loader<IStageInfo[]>(
-    async () => [Defines.VOID_STAGE, ...await this.import('data/stage.json')],
+    async () => [Defines.VOID_STAGE, ...await this.import_json('data/stage.json')],
     (d) => this._callbacks.emit('on_stages_loaded')(d),
     () => this._callbacks.emit('on_stages_clear')()
   )
@@ -107,16 +108,9 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
       "bgm/stage4.wma.ogg",
       "bgm/stage5.wma.ogg",
     ].map(async name => {
-      const src = this.import(name)
-      await this.sound_mgr.preload(name, src);
+      await this.sound_mgr.preload(name, name);
       return name;
     })
-    if (this.zip) {
-      jobs.push(...this.zip.file(/^bgm\//).map(async file => {
-        await this.sound_mgr.preload(file.name, file.blob_url())
-        return file.name
-      }))
-    }
     return Promise.all(jobs)
   },
     (d) => this._callbacks.emit('on_bgms_loaded')(d),
@@ -130,28 +124,32 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   }
   on_click_character?: (c: Character) => void;
 
-  _r = (r: any) => this._disposed ? Promise.reject(LF2.DisposeError) : r;
+  _r = <T>(r: T) => this._disposed ? Promise.reject(LF2.DisposeError) : r;
 
-  async import(path: string) {
-    const fallback_paths = get_import_fallbacks(path);
-    if (this.zip) {
-      for (const path of fallback_paths) {
-        const obj = this.zip.file(path);
-        if (!obj) continue;
-        if (path.endsWith('.json')) return obj.json().then(this._r);
-        if (path.endsWith('.txt')) return obj.text().then(this._r);
-        return obj.blob_url().then(this._r);
-      }
-    }
-    for (const path of fallback_paths) {
-      try {
-        return make_import(path).then(this._r);
-      } catch (e) {
-        console.error(e);
-      }
-    }
-    throw new Error(`resource not found, path: ${path}, fallbacks: ${fallback_paths.join(';')}!`)
+  async import_json(path: string): Promise<any> {
+    const paths = get_import_fallbacks(path);
+    const { zip } = this;
+    const obj = zip && fisrt_not_void(paths, p => zip.file(p))
+    if (obj) return obj.json().then(this._r)
+    return import_as_json(paths).then(this._r);
   }
+
+  async import_image(path: string): Promise<string> {
+    const paths = get_import_fallbacks(path);
+    const { zip } = this;
+    const obj = zip && fisrt_not_void(paths, p => zip.file(p))
+    if (obj) return obj.blob().then(b => URL.createObjectURL(b)).then(this._r)
+    return import_as_blob_url(paths).then(this._r);
+  }
+
+  async import_sound(path: string): Promise<string> {
+    const paths = get_import_fallbacks(path);
+    const { zip } = this;
+    const obj = zip && fisrt_not_void(paths, p => zip.file(p))
+    if (obj) return obj.blob().then(b => URL.createObjectURL(b)).then(this._r)
+    return import_as_blob_url(paths).then(this._r);
+  }
+
   readonly characters: Record<string, (num: number, team?: string) => void> = {}
   readonly weapons: Record<string, (num: number, team?: string) => void> = {}
 
@@ -524,7 +522,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   async layouts(): Promise<Layout[] | undefined> {
     if (this._layouts) return this._layouts;
 
-    const array = await this.import('layouts/index.json');
+    const array = await this.import_json('layouts/index.json');
     if (!is_arr(array)) return;
 
     const paths: string[] = [];
@@ -535,7 +533,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
 
     const cooked_layouts: Layout[] = [];
     for (const path of paths) {
-      const raw_layout = await this.import(path);
+      const raw_layout = await this.import_json(path);
       const cooked_layout = await Layout.cook(this, raw_layout, this.layout_val_getter)
       cooked_layouts.push(cooked_layout);
     }

@@ -48,14 +48,14 @@ class Inner {
         weapon_hit_sound: c,
       } = (data as Partial<IWeaponData>).base ?? {}
       const mgr = this.lf2.sound_mgr;
-      a && !mgr.has(a) && mgr.preload(a, this.lf2.import(a));
-      b && !mgr.has(b) && mgr.preload(b, this.lf2.import(b));
-      c && !mgr.has(c) && mgr.preload(c, this.lf2.import(c));
+      a && !mgr.has(a) && mgr.preload(a, a);
+      b && !mgr.has(b) && mgr.preload(b, b);
+      c && !mgr.has(c) && mgr.preload(c, c);
     }
 
     if (!('frames' in data)) return data;
     const { frames, base: { files } } = data;
-    const jobs = map(files, (_, v) => this.lf2.img_mgr.load_by_e_pic_info(v, _ => this.lf2.import(v.path)))
+    const jobs = map(files, (_, v) => this.lf2.img_mgr.load_by_e_pic_info(v))
     await Promise.all(jobs);
     traversal(frames, (_, frame) => cook_frame(this.lf2, data, frame));
     return data;
@@ -83,10 +83,10 @@ class Inner {
   }
 
   async load() {
-    const { objects, backgrounds } = await this.lf2.import('data/data.json');
+    const { objects, backgrounds } = await this.lf2.import_json('data/data.json');
     if (this.cancelled) throw new Error('cancelled')
     this.lf2.on_loading_content(`loading: spark.json`, 0);
-    await this._add_data("spark", await this.lf2.import('data/spark.json'))
+    await this._add_data("spark", await this.lf2.import_json('data/spark.json'))
     this.lf2.on_loading_content(`loading: spark.json`, 100);
 
     if (this.cancelled) throw new Error('cancelled')
@@ -94,13 +94,13 @@ class Inner {
       if (this.cancelled) throw new Error('cancelled')
 
       this.lf2.on_loading_content(`loading object: ${file}`, 0);
-      await this._add_data(id, await this.lf2.import(file));
+      await this._add_data(id, await this.lf2.import_json(file));
       this.lf2.on_loading_content(`loading object: ${file}`, 100);
     }
     for (const { id, file } of backgrounds) {
       if (this.cancelled) throw new Error('cancelled')
       this.lf2.on_loading_content(`loading background: ${file}`, 0);
-      await this._add_data(id, await this.lf2.import(file));
+      await this._add_data(id, await this.lf2.import_json(file));
       this.lf2.on_loading_content(`loading background: ${file}`, 100);
     }
     for (const [, v] of this.data_map) {

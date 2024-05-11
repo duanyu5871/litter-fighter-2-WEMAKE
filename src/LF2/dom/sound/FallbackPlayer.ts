@@ -1,7 +1,6 @@
 import { Warn } from "../../../Log";
-import { is_str } from "../../../common/is_str";
 import type LF2 from "../../LF2";
-import { IPlayer, Src } from "../../sound/IPlayer";
+import { IPlayer } from "../../sound/IPlayer";
 
 export default class FallbackPlayer implements IPlayer {
   protected _r = new Map<string, string>();
@@ -49,10 +48,8 @@ export default class FallbackPlayer implements IPlayer {
 
   }
 
-  async preload(name: string, src: Src): Promise<any> {
-    const s = await src;
-    const url = is_str(s) ? s : URL.createObjectURL(s);
-    this._r.set(name, url);
+  async preload(name: string, src: string): Promise<any> {
+    this._r.set(name, await this.lf2.import_sound(src));
   }
 
   play(name: string, x?: number, y?: number, z?: number): string {
