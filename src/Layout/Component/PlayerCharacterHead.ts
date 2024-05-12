@@ -23,7 +23,7 @@ export default class PlayerCharacterHead extends LayoutComponent {
   protected _mesh_hints?: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial>
   protected _mesh_countdown?: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial>
   protected _head_opacity: NumberAnimation = new NumberAnimation(0, 1, 0, false);
-  protected _head: string = Defines.BuiltInImg.RFACE;
+  protected _head: string = Defines.BuiltIn.Imgs.RFACE;
   protected _countdown: string = '';
   protected _hints_opacity: SineAnimation = new SineAnimation(0.75, 1, 1 / 50);
 
@@ -31,7 +31,7 @@ export default class PlayerCharacterHead extends LayoutComponent {
     on_joined_changed: () => this.handle_changed(),
     on_character_changed: (character_id): void => {
       const character = character_id ? this.lf2.datas.find_character(character_id) : void 0;
-      this._head = character?.base.head || Defines.BuiltInImg.RFACE;
+      this._head = character?.base.head || Defines.BuiltIn.Imgs.RFACE;
       this.handle_changed();
     }
   }
@@ -55,10 +55,9 @@ export default class PlayerCharacterHead extends LayoutComponent {
 
   static hint_pic: TPicture | null = null;
 
-  async create_hints_mesh() {
+  create_hints_mesh() {
     const [w, h] = this.layout.size
-    const src = 'sprite/CMA.png';
-    const hint_pic = await this.lf2.images.create_pic(src, src);
+    const hint_pic = this.lf2.images.create_pic_by_img_key(Defines.BuiltIn.Imgs.CMA);
     this._mesh_hints = LayoutMeshBuilder.create()
       .center(0.5, 0.5)
       .size(hint_pic.w, hint_pic.h)

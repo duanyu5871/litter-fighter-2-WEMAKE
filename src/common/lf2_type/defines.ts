@@ -295,12 +295,19 @@ export namespace Defines {
   export const is_weapon_data = (v: any): v is IWeaponData =>
     v.is_weapon_data === true
 
-  export enum BuiltInImg {
-    RFACE = 'sprite/RFACE.png',
-    CM5 = 'sprite/CM5.png',
-    CM4 = 'sprite/CM4.png',
-    CM3 = 'sprite/CM3.png',
-    CM2 = 'sprite/CM2.png',
-    CM1 = 'sprite/CM1.png',
+
+  export namespace BuiltIn {
+    export enum Imgs {
+      RFACE = 'sprite/RFACE.png',
+      CM5 = 'sprite/CM5.png',
+      CM4 = 'sprite/CM4.png',
+      CM3 = 'sprite/CM3.png',
+      CM2 = 'sprite/CM2.png',
+      CM1 = 'sprite/CM1.png',
+      CMA = 'sprite/CMA.png'
+    }
+    export enum Dats {
+      Spark = 'data/spark.json',
+    }
   }
 } 

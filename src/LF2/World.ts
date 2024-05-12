@@ -473,11 +473,11 @@ export class World {
   }
 
   spark(x: number, y: number, z: number, f: string) {
-    const d = this.lf2.datas.find("spark");
+    const d = this.lf2.datas.find(Defines.BuiltIn.Dats.Spark);
     if (!d || !('frames' in d)) return;
     const create = factory.get(d.type);
     if (!create) {
-      Warn.print(World.name + '::' + this.spark.name, `creator of "${d.type}" not found! opoint:`);
+      Warn.print(World.name + '::' + this.spark.name, `creator of "${d.type}" not found!`);
       return;
     }
     const e = create(this, d)

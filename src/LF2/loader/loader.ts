@@ -117,9 +117,8 @@ export class ImageMgr {
 
   load_img(key: string, src: string, paint?: PaintFunc): Promise<TImageInfo> {
     const fn = async () => {
-      this.lf2.on_loading_content(`loading img: ${key}`, 0);
+      this.lf2.on_loading_content(`loading: ${key}`, 0);
       const info = await this._make_img_info(key, src, paint);
-      this.lf2.on_loading_content(`loading img: ${key}`, 100);
       return info
     }
     return this._requesters.get(key, fn);

@@ -91,31 +91,36 @@ class Inner {
 
   async load() {
 
-    for (const k of Object.keys(Defines.BuiltInImg)) {
-      const src = (Defines.BuiltInImg as any)[k];
+    for (const k of Object.keys(Defines.BuiltIn.Imgs)) {
+      const src = (Defines.BuiltIn.Imgs as any)[k];
       if (!not_blank_str(src)) continue;
-      this.lf2.images.load_img(src, src)
+      this.lf2.on_loading_content(`loading: ${src}`, 0);
+      await this.lf2.images.load_img(src, src)
     }
+
+    for (const k of Object.keys(Defines.BuiltIn.Dats)) {
+      const src = (Defines.BuiltIn.Dats as any)[k];
+      if (!not_blank_str(src)) continue;
+
+      this.lf2.on_loading_content(`loading: ${src}`, 0);
+      await this._add_data(src, await this.lf2.import_json(src))
+    }
+
 
     const { objects, backgrounds } = await this.lf2.import_json('data/data.json');
     if (this.cancelled) throw new Error('cancelled')
-    this.lf2.on_loading_content(`loading: spark.json`, 0);
-    await this._add_data("spark", await this.lf2.import_json('data/spark.json'))
-    this.lf2.on_loading_content(`loading: spark.json`, 100);
 
     if (this.cancelled) throw new Error('cancelled')
     for (const { id, file } of objects) {
       if (this.cancelled) throw new Error('cancelled')
 
-      this.lf2.on_loading_content(`loading object: ${file}`, 0);
+      this.lf2.on_loading_content(`loading: ${file}`, 0);
       await this._add_data(id, await this.lf2.import_json(file));
-      this.lf2.on_loading_content(`loading object: ${file}`, 100);
     }
     for (const { id, file } of backgrounds) {
       if (this.cancelled) throw new Error('cancelled')
-      this.lf2.on_loading_content(`loading background: ${file}`, 0);
+      this.lf2.on_loading_content(`loading: ${file}`, 0);
       await this._add_data(id, await this.lf2.import_json(file));
-      this.lf2.on_loading_content(`loading background: ${file}`, 100);
     }
     for (const [, v] of this.data_map) {
       if (this.cancelled) throw new Error('cancelled')
