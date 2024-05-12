@@ -19,9 +19,9 @@ export default class PlayerCharacterHead extends LayoutComponent {
   protected _player_id: string | undefined = void 0;
   protected _player: PlayerInfo | undefined = void 0;
   protected _jid: number = 0;
-  protected _mesh_head: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial> | undefined
-  protected _mesh_hints: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial> | undefined
-  protected _mesh_countdown: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial> | undefined
+  protected _mesh_head?: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial>
+  protected _mesh_hints?: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial>
+  protected _mesh_countdown?: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial>
   protected _head_opacity: NumberAnimation = new NumberAnimation(0, 1, 0, false);
   protected _head: string = 'sprite/RFACE.png';
   protected _countdown: string = '';
@@ -37,8 +37,14 @@ export default class PlayerCharacterHead extends LayoutComponent {
   }
   private _game_prepare_logic_listener: Partial<IGamePrepareLogicCallback> = {
     on_countdown: (v) => {
-      if (this._player?.joined) return;
-      this._countdown = `sprite/CM+${v}+.png`;
+      this._countdown = `sprite/CM${v}.png`;
+
+    },
+    on_not_ready: () => {
+      this._countdown = '';
+    },
+    on_asking_com_num: () => {
+      this._countdown = '';
     }
   };
 
@@ -80,7 +86,7 @@ export default class PlayerCharacterHead extends LayoutComponent {
     this.dispose_mesh();
     GamePrepareLogic.inst?.callbacks.del(this._game_prepare_logic_listener);
   }
-
+  
   protected handle_changed() {
 
     if (!this._mesh_head && this._player?.joined) {

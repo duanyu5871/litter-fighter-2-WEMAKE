@@ -6,8 +6,13 @@ import { PlayerInfo } from './PlayerInfo';
 
 export interface ILf2Callback {
   on_layout_changed?(layout: Layout | undefined, prev_layout: Layout | undefined): void;
+
   on_loading_start?(): void;
   on_loading_end?(): void;
+  on_loading_failed?(reason: any): void;
+
+
+
   on_loading_content?(content: string, progress: number): void;
 
   on_stages_loaded?(stages: IStageInfo[]): void;

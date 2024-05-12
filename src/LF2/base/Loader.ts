@@ -76,22 +76,12 @@ export class Loader<T> {
    * @throws 当本次load未完成，再次调用load时，本次load将抛出Error，信息为：[Loader]data abandoned.
    * @returns {Promise<T>}
    */
-  load(): Promise<T> {
+  async load(): Promise<T> {
     if (!this._loader)
       throw this.no_loader();
     const jid = ++this._jid;
     this._state = 'loading';
     return this.start(jid);
-  }
-
-  /**
-   * 清空数据
-   */
-  clean(): void {
-    ++this._jid;
-    this._state = 'clean';
-    delete this._data;
-    this._on_clear?.();
   }
 
   /**
@@ -123,6 +113,16 @@ export class Loader<T> {
       }
       throw e;
     }
+  }
+
+  /**
+   * 清空数据
+   */
+  clean(): void {
+    ++this._jid;
+    this._state = 'clean';
+    delete this._data;
+    this._on_clear?.();
   }
 
   protected abandon(): Error {

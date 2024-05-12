@@ -445,4 +445,9 @@ export default class Layout {
       return this.parent.get_value(name, lookup)
     return void 0;
   }
+
+  dispose(): void {
+    for (const c of this.components) c.dispose?.();
+    for (const l of this.children) l.dispose();
+  }
 }

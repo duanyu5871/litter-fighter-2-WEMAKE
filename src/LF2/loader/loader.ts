@@ -40,7 +40,7 @@ export class ImageMgr {
   }
 
   protected async _make_img_info(key: string, src: string, paint?: PaintFunc): Promise<TImageInfo> {
-    src = await this.lf2.import_image(src);
+    src = await this.lf2.import_resource(src);
     const img = await create_img_ele(src);
     if (!paint) {
       return { key, url: src, w: img.width, h: img.height, img: img }

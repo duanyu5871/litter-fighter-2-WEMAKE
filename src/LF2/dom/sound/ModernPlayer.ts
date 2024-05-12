@@ -30,7 +30,7 @@ export default class ModernPlayer implements IPlayer {
   preload(name: string, src: string) {
     return this._r.get(name, async () => {
       this.lf2.on_loading_content(`loading sound: ${name}`, 0);
-      const url = await this.lf2.import_sound(src);
+      const url = await this.lf2.import_resource(src);
       const buf = await axios.get<ArrayBuffer>(url, { responseType: 'arraybuffer' })
         .then(v => this.ctx.decodeAudioData(v.data));
       this.lf2.on_loading_content(`loading sound: ${name}`, 100);
