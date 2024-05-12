@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import Layout from '../Layout/Layout';
 import { Log, Warn } from '../Log';
 import { arithmetic_progression } from '../common/arithmetic_progression';
-import { fisrt_not_void } from '../common/fisrt_not_void';
+import { fisrt } from '../common/container_help';
 import { ICharacterData, IWeaponData, TFace } from '../common/lf2_type';
 import { IStageInfo } from "../common/lf2_type/IStageInfo";
 import { Defines } from '../common/lf2_type/defines';
@@ -119,7 +119,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   async import_json(path: string): Promise<any> {
     const paths = get_import_fallbacks(path);
     const { _zip } = this;
-    const obj = _zip && fisrt_not_void(paths, p => _zip.file(p))
+    const obj = _zip && fisrt(paths, p => _zip.file(p))
     if (obj) return obj.json()
     return import_as_json(paths);
   }
@@ -127,7 +127,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   async import_resource(path: string): Promise<string> {
     const paths = get_import_fallbacks(path);
     const { _zip } = this;
-    const obj = _zip && fisrt_not_void(paths, p => _zip.file(p))
+    const obj = _zip && fisrt(paths, p => _zip.file(p))
     if (obj) return obj.blob().then(b => URL.createObjectURL(b))
     return import_as_blob_url(paths);
   }

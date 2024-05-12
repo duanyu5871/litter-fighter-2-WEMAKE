@@ -294,8 +294,6 @@ export namespace Defines {
     v.is_character_data === true
   export const is_weapon_data = (v: any): v is IWeaponData =>
     v.is_weapon_data === true
-
-
   export namespace BuiltIn {
     export enum Imgs {
       RFACE = 'sprite/RFACE.png',

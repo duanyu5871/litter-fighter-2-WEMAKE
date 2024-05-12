@@ -3,16 +3,17 @@ import LF2 from '../LF2/LF2';
 import Callbacks from '../LF2/base/Callbacks';
 import Expression, { ValGetter } from '../LF2/base/Expression';
 import { TKeyName } from '../LF2/controller/BaseController';
-import IStyle from '../common/lf2_type/IStyle';
 import { type TImageInfo } from '../LF2/loader/loader';
 import NumberAnimation from '../common/animation/NumberAnimation';
+import { filter, find } from '../common/container_help';
+import IStyle from '../common/lf2_type/IStyle';
+import { is_arr, is_bool, is_num, is_str } from '../common/type_check';
 import actor from './Action/Actor';
 import factory from './Component/Factory';
 import { LayoutComponent } from './Component/LayoutComponent';
 import LayoutMeshBuilder from './Component/LayoutMeshBuilder';
 import type { ILayoutInfo } from './ILayoutInfo';
 import read_nums from './utils/read_nums';
-import { is_arr, is_str, is_bool, is_num } from '../common/type_check';
 
 export interface ILayoutCallback {
   on_click?(): void;
@@ -128,13 +129,13 @@ export default class Layout {
     this._state = {};
     this.init_sprite();
 
+    for (const c of this._components) c.on_mount?.();
     for (const item of this.children)
       item.on_mount();
 
     const { enter } = this.data.actions || {};
     enter && actor.act(this, enter);
 
-    for (const c of this._components) c.on_mount?.();
 
     if (this._mesh) {
       if (this._mesh.visible)
@@ -178,7 +179,7 @@ export default class Layout {
     ret._cook_img_idx(get_val);
     ret._cook_data(get_val);
     ret._cook_rects();
-    await ret._cook_component();
+    ret._cook_component();
 
     if (ret.data.actions?.click) {
       if (ret.data.tab_type?.includes('lr')) ret.root._left_to_right!.push(ret);
@@ -449,5 +450,13 @@ export default class Layout {
   dispose(): void {
     for (const c of this.components) c.dispose?.();
     for (const l of this.children) l.dispose();
+  }
+
+  find_component<T extends abstract new (...args: any) => any>(type: T): InstanceType<T> | undefined {
+    return find(this.components, v => v instanceof type) as InstanceType<T> | undefined
+  }
+
+  find_components<T extends abstract new (...args: any) => any>(type: T): InstanceType<T> | undefined {
+    return filter(this.components, v => v instanceof type) as InstanceType<T> | undefined
   }
 }

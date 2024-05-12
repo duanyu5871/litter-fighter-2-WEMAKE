@@ -1,5 +1,5 @@
 import { Warn } from "../../Log";
-import find_in_set from "../../common/find_in_set";
+import { find } from "../../common/container_help/find";
 import { is_num } from "../../common/type_check";
 import { IBgData } from "../../common/lf2_type";
 import { IStageInfo } from "../../common/lf2_type/IStageInfo";
@@ -194,10 +194,10 @@ export default class Stage {
     }
   }
   all_boss_dead(): boolean {
-    return !find_in_set(this.items, i => i.info.is_boss)
+    return !find(this.items, i => i.info.is_boss)
   }
   all_enemies_dead(): boolean {
-    return !find_in_set(this.items, i => i.is_enemies)
+    return !find(this.items, i => i.is_enemies)
   }
   is_last_phase(): boolean {
     return this._cur_phase_idx >= this.data.phases.length - 1;

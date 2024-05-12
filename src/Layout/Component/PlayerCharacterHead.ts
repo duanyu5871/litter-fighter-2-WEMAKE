@@ -24,7 +24,6 @@ export default class PlayerCharacterHead extends LayoutComponent {
   protected _mesh_countdown?: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial>
   protected _head_opacity: NumberAnimation = new NumberAnimation(0, 1, 0, false);
   protected _head: string = Defines.BuiltIn.Imgs.RFACE;
-  protected _countdown: string = '';
   protected _hints_opacity: SineAnimation = new SineAnimation(0.75, 1, 1 / 50);
 
   protected _player_listener: Partial<IPlayerInfoCallback> = {
@@ -37,14 +36,20 @@ export default class PlayerCharacterHead extends LayoutComponent {
   }
   private _game_prepare_logic_listener: Partial<IGamePrepareLogicCallback> = {
     on_countdown: (v) => {
-      this._countdown = `sprite/CM${v}.png`;
-
+      console.log(v)
+      const pic = this.lf2.images.create_pic_by_img_key(`sprite/CM${v}.png`);
+      const [w, h] = this.layout.size
+      const mesh = LayoutMeshBuilder.create()
+        .center(0.5, 0.5)
+        .size(pic.w, pic.h)
+        .build({ map: pic.texture, transparent: true });
+      mesh.position.set(w / 2, -h / 2, 0);
+      mesh.name = 'countdown'
+      this.layout.mesh?.add(mesh);
     },
     on_not_ready: () => {
-      this._countdown = '';
     },
     on_asking_com_num: () => {
-      this._countdown = '';
     }
   };
 
@@ -75,7 +80,9 @@ export default class PlayerCharacterHead extends LayoutComponent {
     if (!this._player) return;
     this._player.callbacks.add(this._player_listener);
     this._player_listener.on_character_changed?.(this._player.character, '');
-    GamePrepareLogic.inst?.callbacks.add(this._game_prepare_logic_listener);
+
+    const game_prepare_logic = this.layout.root.find_component(GamePrepareLogic)
+    game_prepare_logic?.callbacks.add(this._game_prepare_logic_listener);
   }
 
   on_unmount(): void {
@@ -83,7 +90,8 @@ export default class PlayerCharacterHead extends LayoutComponent {
     if (!this._player) return;
     this._player.callbacks.del(this._player_listener);
     this.dispose_mesh();
-    GamePrepareLogic.inst?.callbacks.del(this._game_prepare_logic_listener);
+    const game_prepare_logic = this.layout.root.find_component(GamePrepareLogic)
+    game_prepare_logic?.callbacks.del(this._game_prepare_logic_listener);
   }
 
   protected handle_changed() {

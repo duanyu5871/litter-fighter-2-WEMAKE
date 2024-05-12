@@ -12,9 +12,10 @@ export interface IGamePrepareLogicCallback {
 }
 export enum GamePrepareState {
   PlayerCharacterSelecting = 1,
-  ComputerNumberSelecting = 2,
-  ComputerCharacterSelecting = 3,
-  GameSetting = 4,
+  CountingDown = 2,
+  ComputerNumberSelecting = 3,
+  ComputerCharacterSelecting = 4,
+  GameSetting = 5,
 }
 
 export default class GamePrepareLogic extends LayoutComponent {
@@ -101,22 +102,29 @@ export default class GamePrepareLogic extends LayoutComponent {
   on_render(dt: number): void {
     switch (this._state) {
       case GamePrepareState.PlayerCharacterSelecting:
-        if (!this.is_all_ready) {
+        if (this.is_all_ready) {
           this._count_down = 5000;
-          break;
-        }
-        if (this._count_down === 5000)
+          this._state = GamePrepareState.CountingDown;
           this._callbacks.emit('on_countdown')(5);
+        }
+        break;
+      case GamePrepareState.CountingDown: {
+        if (!this.is_all_ready) {
+          this._state = GamePrepareState.PlayerCharacterSelecting;
+           break;
+        }
         const prev_second = Math.ceil(this._count_down / 1000);
         this._count_down -= dt
         const curr_second = Math.ceil(this._count_down / 1000);
-        if (curr_second !== prev_second)
+        if (curr_second !== prev_second) {
           this._callbacks.emit('on_countdown')(curr_second);
+        }
         if (this._count_down <= 0) {
           this._callbacks.emit('on_asking_com_num')();
           this._state = GamePrepareState.ComputerNumberSelecting;
         }
         break;
+      }
       case GamePrepareState.ComputerNumberSelecting:
       case GamePrepareState.ComputerCharacterSelecting:
       case GamePrepareState.GameSetting:
