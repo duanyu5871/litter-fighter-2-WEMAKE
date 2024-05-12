@@ -6,8 +6,8 @@ import { Defines } from '../lf2_type/defines';
 import { match_all } from '../match_all';
 import { match_block_once } from '../match_block';
 import { match_colon_value } from '../match_colon_value';
-import { set_obj_field } from "../set_obj_field";
-import { to_num } from '../to_num';
+import { to_num } from '../type_cast/to_num';
+import { not_empty_str } from '../type_check';
 import cook_itr from './cook_itr';
 import { take } from './take';
 
@@ -49,26 +49,30 @@ const indexes_map: Record<Defines.WeaponType, IWeaponFrameIndexes> = {
     throwing: '40',
   }
 }
-export function make_weapon_data(info: IWeaponInfo, full_str: string, frames: Record<string, IFrameInfo>): IWeaponData {
-  let weapon_strength: any;
+
+function make_weapon_strength(full_str: string): IWeaponData['weapon_strength'] {
   const weapon_strength_str = match_block_once(full_str, '<weapon_strength_list>', '<weapon_strength_list_end>')?.trim();
+  if (!not_empty_str(weapon_strength_str)) return void 0;
 
-  if (weapon_strength_str) {
-    for (const [, id, name, remain] of match_all(weapon_strength_str, /entry:\s*(\d+)\s*(\S+)\s*\n?(.*)\n?/g)) {
-      const entry: IWeaponStrengthInfo = { id, name };
-      for (const [key, value] of match_colon_value(remain)) {
-        (entry as any)[key] = to_num(value);
-      }
-      cook_itr(entry)
-      weapon_strength = set_obj_field(weapon_strength, id, entry);
+  const list = match_all(weapon_strength_str, /entry:\s*(\d+)\s*(\S+)\s*\n?(.*)\n?/g).map(([, id, name, remain]) => {
+    const entry: IWeaponStrengthInfo = { id, name };
+    for (const [key, value] of match_colon_value(remain)) {
+      (entry as any)[key] = to_num(value);
     }
-  }
-
+    cook_itr(entry);
+    return entry;
+  });
+  if (list.length) return void 0;
+  const weapon_strength: IWeaponData['weapon_strength'] = {};
+  for (const entry of list)
+    weapon_strength[entry.id] = entry;
+  return weapon_strength;
+}
+export function make_weapon_data(info: IWeaponInfo, full_str: string, frames: Record<string, IFrameInfo>): IWeaponData {
+  const weapon_strength = make_weapon_strength(full_str);
   const indexes =
     indexes_map[info.type as Defines.WeaponType] ??
     indexes_map[Defines.WeaponType.None]
-
-
   const sound_1 = take(info, 'weapon_broken_sound')
   if (sound_1) info.weapon_broken_sound = sound_1 + '.ogg'
 

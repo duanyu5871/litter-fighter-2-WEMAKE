@@ -5,7 +5,7 @@ import { IStageInfo } from "../lf2_type/IStageInfo";
 import { match_colon_value } from '../match_colon_value';
 import { match_hash_end } from '../match_hash_end';
 import { take_blocks } from '../take_blocks';
-import { to_num } from '../to_num';
+import { to_num } from '../type_cast/to_num';
 
 export function data_to_stage_jsons(full_str: string): IStageInfo[] | void {
   full_str = full_str.replace(/<phase_end>[\n|\s|\r]*<stage>/g, '<phase_end><stage_end><stage>');

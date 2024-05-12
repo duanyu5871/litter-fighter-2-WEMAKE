@@ -5,7 +5,7 @@ import { IBgLayerInfo } from "../lf2_type/IBgLayerInfo";
 import { Defines } from '../lf2_type/defines';
 import { match_colon_value } from '../match_colon_value';
 import { take_blocks } from '../take_blocks';
-import { to_num } from '../to_num';
+import { to_num } from '../type_cast/to_num';
 import { ColonValueReader } from './ColonValueReader';
 import { take } from './take';
 const bg_color_translate = function (rect: number | string) {

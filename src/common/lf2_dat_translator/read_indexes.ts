@@ -3,7 +3,7 @@ import { IDatIndex } from "../lf2_type/IDatIndex";
 import { match_block_once } from '../match_block';
 import { match_colon_value } from '../match_colon_value';
 import { match_hash_end } from '../match_hash_end';
-import { to_num } from '../to_num';
+import { to_num } from '../type_cast/to_num';
 
 export function read_indexes(text: string | undefined | null): IDataLists | undefined {
   if (!text) return void 0;
@@ -13,7 +13,7 @@ export function read_indexes(text: string | undefined | null): IDataLists | unde
     for (const [name, value] of match_colon_value(line)) {
       switch (name) {
         case 'id': item[name] = value; break;
-        case 'type': item[name] = to_num(value); break;
+        case 'type': item[name] = to_num(value) ?? value; break;
         case 'file': item[name] = value.replace(/\\/g, '/'); break;
       }
     }

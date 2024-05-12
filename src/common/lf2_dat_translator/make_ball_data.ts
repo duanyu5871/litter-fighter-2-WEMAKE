@@ -3,7 +3,7 @@ import { IDatIndex } from "../lf2_type/IDatIndex";
 import { IBallInfo } from "../lf2_type/IBallInfo";
 import { IBallFrameInfo } from "../lf2_type/IBallFrameInfo";
 import { Defines } from "../lf2_type/defines";
-import { to_num } from "../to_num";
+import { to_num } from "../type_cast/to_num";
 import { traversal } from "../traversal";
 import { get_next_frame_by_raw_id } from "./get_the_next";
 import { take } from "./take";
