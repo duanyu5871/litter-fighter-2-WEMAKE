@@ -6,7 +6,7 @@ import NumberAnimation from "../../common/animation/NumberAnimation";
 import { Defines } from '../../common/lf2_type/defines';
 import GamePrepareLogic, { IGamePrepareLogicCallback } from './GamePrepareLogic';
 import { LayoutComponent } from "./LayoutComponent";
-import LayoutMeshBuilder from "./LayoutMeshBuilder";
+import MeshBuilder from "./LayoutMeshBuilder";
 
 /**
  * 显示玩家角色选择的角色头像
@@ -26,6 +26,8 @@ export default class PlayerCharacterHead extends LayoutComponent {
   protected _head: string = Defines.BuiltIn.Imgs.RFACE;
   protected _hints_opacity: SineAnimation = new SineAnimation(0.75, 1, 1 / 50);
 
+  get joined(): boolean { return true === this._player?.joined }
+
   protected _player_listener: Partial<IPlayerInfoCallback> = {
     on_joined_changed: () => this.handle_changed(),
     on_character_changed: (character_id): void => {
@@ -35,19 +37,36 @@ export default class PlayerCharacterHead extends LayoutComponent {
     }
   }
   private _game_prepare_logic_listener: Partial<IGamePrepareLogicCallback> = {
-    on_countdown: (v) => {
-      console.log(v)
-      const pic = this.lf2.images.create_pic_by_img_key(`sprite/CM${v}.png`);
-      const [w, h] = this.layout.size
-      const mesh = LayoutMeshBuilder.create()
+    on_countdown: (seconds) => {
+      if (this.joined || !seconds) {
+        this.release_countdown_mesh();
+        return;
+      }
+      const pic = this.lf2.images.create_pic_by_img_key(`sprite/CM${seconds}.png`);
+      const [w, h] = this.layout.size;
+      const builder = MeshBuilder.create()
         .center(0.5, 0.5)
         .size(pic.w, pic.h)
-        .build({ map: pic.texture, transparent: true });
-      mesh.position.set(w / 2, -h / 2, 0);
-      mesh.name = 'countdown'
-      this.layout.mesh?.add(mesh);
+      if (!this._mesh_countdown) {
+        this._mesh_countdown = builder.build({ map: pic.texture, transparent: true });
+        this._mesh_countdown.position.set(w / 2, -h / 2, 0);
+        this._mesh_countdown.name = 'countdown'
+        this.layout.mesh?.add(this._mesh_countdown);
+      } else {
+        this._mesh_countdown.geometry.dispose();
+        this._mesh_countdown.material.map?.dispose();
+        this._mesh_countdown.geometry = builder.build_geometry();
+        this._mesh_countdown.material.map = pic.texture;
+        this._mesh_countdown.material.needsUpdate = true;
+      }
+
+    },
+    on_all_ready: () => {
+      if (this._mesh_hints) this._mesh_hints.visible = false;
     },
     on_not_ready: () => {
+      this.release_countdown_mesh();
+      if (this._mesh_hints && !this._player?.joined) this._mesh_hints.visible = true;
     },
     on_asking_com_num: () => {
     }
@@ -59,11 +78,17 @@ export default class PlayerCharacterHead extends LayoutComponent {
   }
 
   static hint_pic: TPicture | null = null;
-
+  protected release_countdown_mesh(): void {
+    this._mesh_countdown?.removeFromParent();
+    this._mesh_countdown?.geometry.dispose();
+    this._mesh_countdown?.material.map?.dispose();
+    this._mesh_countdown?.material.dispose();
+    this._mesh_countdown = void 0;
+  }
   create_hints_mesh() {
     const [w, h] = this.layout.size
     const hint_pic = this.lf2.images.create_pic_by_img_key(Defines.BuiltIn.Imgs.CMA);
-    this._mesh_hints = LayoutMeshBuilder.create()
+    this._mesh_hints = MeshBuilder.create()
       .center(0.5, 0.5)
       .size(hint_pic.w, hint_pic.h)
       .build({ map: hint_pic.texture, transparent: true });
@@ -119,7 +144,7 @@ export default class PlayerCharacterHead extends LayoutComponent {
       return;
     }
     const [w, h] = this.layout.size
-    const builder = LayoutMeshBuilder.create().size(w, h);
+    const builder = MeshBuilder.create().size(w, h);
     if (!this._mesh_head) {
       this._mesh_head = builder.build({ map: pic.texture, transparent: true });
       this._mesh_head.name = PlayerCharacterHead.name
@@ -139,17 +164,18 @@ export default class PlayerCharacterHead extends LayoutComponent {
       this._mesh_head.material.opacity = this._head_opacity.update(dt);
       this._mesh_head.material.needsUpdate = true;
     }
-    if (this._head_opacity.is_finish && this._head_opacity.reverse) {
-      if (!this._head || !this._player?.joined) {
-        if (this._mesh_hints) this._mesh_hints.visible = true
-        this.dispose_mesh();
-      } else {
-        if (this._mesh_hints) this._mesh_hints.visible = false
+
+    if (this._head_opacity.is_finish && this._head_opacity.reverse && this._mesh_head) {
+      if (this._player?.joined) {
         this.update_head_mesh(++this._jid, this._head)
         this._head_opacity.play(false);
+      } else {
+        this.dispose_mesh();
       }
     }
+
     if (this._mesh_hints) {
+      this._mesh_hints.visible = !this.joined && !this._mesh_countdown;
       this._mesh_hints.material.opacity = this._hints_opacity.value;
     }
   }
