@@ -1,5 +1,5 @@
 import { Log } from '../../Log';
-import { is_str } from '../../common/type_check';
+import { is_str, not_blank_str } from '../../common/type_check';
 import { IBallData, IBgData, ICharacterData, IDataMap, IEntityData, IGameObjData, IWeaponData } from '../../common/lf2_type';
 import { Defines } from '../../common/lf2_type/defines';
 import { map, traversal } from '../../common/traversal';
@@ -41,21 +41,28 @@ class Inner {
   }
 
   private async _cook_data(data: TData): Promise<TData> {
-    {
-      let {
+    if (Defines.is_weapon_data(data)) {
+      const {
         weapon_broken_sound: a,
         weapon_drop_sound: b,
         weapon_hit_sound: c,
-      } = (data as Partial<IWeaponData>).base ?? {}
+      } = data.base
       const mgr = this.lf2.sounds;
-      a && !mgr.has(a) && mgr.preload(a, a);
-      b && !mgr.has(b) && mgr.preload(b, b);
-      c && !mgr.has(c) && mgr.preload(c, c);
+      not_blank_str(a) && !mgr.has(a) && mgr.preload(a, a);
+      not_blank_str(b) && !mgr.has(b) && mgr.preload(b, b);
+      not_blank_str(c) && !mgr.has(c) && mgr.preload(c, c);
     }
 
     if (!('frames' in data)) return data;
     const { frames, base: { files } } = data;
     const jobs = map(files, (_, v) => this.lf2.images.load_by_e_pic_info(v))
+    if (Defines.is_character_data(data)) {
+      const { small, head } = data.base;
+      jobs.push(
+        this.lf2.images.load_img(small, small),
+        this.lf2.images.load_img(head, head)
+      )
+    }
     await Promise.all(jobs);
     traversal(frames, (_, frame) => cook_frame(this.lf2, data, frame));
     return data;
@@ -83,6 +90,13 @@ class Inner {
   }
 
   async load() {
+
+    for (const k of Object.keys(Defines.BuiltInImg)) {
+      const src = (Defines.BuiltInImg as any)[k];
+      if (!not_blank_str(src)) continue;
+      this.lf2.images.load_img(src, src)
+    }
+
     const { objects, backgrounds } = await this.lf2.import_json('data/data.json');
     if (this.cancelled) throw new Error('cancelled')
     this.lf2.on_loading_content(`loading: spark.json`, 0);

@@ -1,12 +1,12 @@
 import * as THREE from 'three';
 import type { IPlayerInfoCallback, PlayerInfo } from "../../LF2/PlayerInfo";
-import { Warn } from '../../Log';
-import NumberAnimation from "../../common/animation/NumberAnimation";
+import { TPicture } from '../../LF2/loader/loader';
 import { SineAnimation } from '../../SineAnimation';
+import NumberAnimation from "../../common/animation/NumberAnimation";
+import { Defines } from '../../common/lf2_type/defines';
+import GamePrepareLogic, { IGamePrepareLogicCallback } from './GamePrepareLogic';
 import { LayoutComponent } from "./LayoutComponent";
 import LayoutMeshBuilder from "./LayoutMeshBuilder";
-import GamePrepareLogic, { IGamePrepareLogicCallback } from './GamePrepareLogic';
-import { TPicture } from '../../LF2/loader/loader';
 
 /**
  * 显示玩家角色选择的角色头像
@@ -23,7 +23,7 @@ export default class PlayerCharacterHead extends LayoutComponent {
   protected _mesh_hints?: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial>
   protected _mesh_countdown?: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial>
   protected _head_opacity: NumberAnimation = new NumberAnimation(0, 1, 0, false);
-  protected _head: string = 'sprite/RFACE.png';
+  protected _head: string = Defines.BuiltInImg.RFACE;
   protected _countdown: string = '';
   protected _hints_opacity: SineAnimation = new SineAnimation(0.75, 1, 1 / 50);
 
@@ -31,7 +31,7 @@ export default class PlayerCharacterHead extends LayoutComponent {
     on_joined_changed: () => this.handle_changed(),
     on_character_changed: (character_id): void => {
       const character = character_id ? this.lf2.datas.find_character(character_id) : void 0;
-      this._head = character?.base.head || 'sprite/RFACE.png';
+      this._head = character?.base.head || Defines.BuiltInImg.RFACE;
       this.handle_changed();
     }
   }
@@ -86,11 +86,11 @@ export default class PlayerCharacterHead extends LayoutComponent {
     this.dispose_mesh();
     GamePrepareLogic.inst?.callbacks.del(this._game_prepare_logic_listener);
   }
-  
+
   protected handle_changed() {
 
     if (!this._mesh_head && this._player?.joined) {
-      this.update_head_mesh(++this._jid, this._head).catch(e => console.error(e))
+      this.update_head_mesh(++this._jid, this._head)
     } else {
       this.fade_out();
     }
@@ -104,9 +104,9 @@ export default class PlayerCharacterHead extends LayoutComponent {
   protected fade_out() {
     this._head_opacity.play(true);
   }
-  protected async update_head_mesh(jid: number, src: string) {
+  protected update_head_mesh(jid: number, src: string) {
     if (jid !== this._jid) return;
-    const pic = await this.lf2.images.create_pic(src, src);
+    const pic = this.lf2.images.create_pic_by_img_key(src);
     if (jid !== this._jid) {
       pic.texture.dispose();
       return;
@@ -138,7 +138,7 @@ export default class PlayerCharacterHead extends LayoutComponent {
         this.dispose_mesh();
       } else {
         if (this._mesh_hints) this._mesh_hints.visible = false
-        this.update_head_mesh(++this._jid, this._head).catch(e => Warn.print(PlayerCharacterHead.name, 'failed to update head, reason:', e))
+        this.update_head_mesh(++this._jid, this._head)
         this._head_opacity.play(false);
       }
     }

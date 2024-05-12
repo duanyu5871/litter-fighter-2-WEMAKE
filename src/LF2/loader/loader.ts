@@ -128,7 +128,7 @@ export class ImageMgr {
   protected _gen_key = (f: IEntityPictureInfo) => `${f.path}_${f.cell_w}_${f.cell_h}_${f.row}_${f.col}`;
   async load_by_e_pic_info(f: IEntityPictureInfo): Promise<TImageInfo> {
     const key = this._gen_key(f);
-    const { path, cell_w: cell_w, cell_h: cell_h } = f;
+    const { path, cell_w, cell_h } = f;
     if (!path.endsWith('bmp') || !cell_w || !cell_h)
       return this.load_img(key, f.path)
 

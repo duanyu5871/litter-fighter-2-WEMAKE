@@ -416,11 +416,15 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
     landing_2: '219',
   };
 
-  return {
+  const ret: ICharacterData = {
     id: '',
     type: 'character',
     base: info,
     indexes,
     frames,
+    is_character_data: true,
+    is_game_obj_data: true,
+    is_base_data: true
   };
+  return ret;
 }

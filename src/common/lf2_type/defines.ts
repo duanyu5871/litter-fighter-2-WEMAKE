@@ -1,3 +1,4 @@
+import { ICharacterData, IWeaponData } from ".";
 import { IBgData } from "./IBgData";
 import { IStageInfo } from "./IStageInfo";
 
@@ -19,6 +20,8 @@ export namespace Defines {
   }
   export const VOID_BG: IBgData = {
     type: 'background',
+    is_base_data: true,
+    is_bg_data: true,
     layers: [],
     id: 'VOID_BG',
     base: {
@@ -286,5 +289,18 @@ export namespace Defines {
       txt_color: '#ffd34c',
       txt_shadow_color: '#9a5700',
     },
+  }
+  export const is_character_data = (v: any): v is ICharacterData =>
+    v.is_character_data === true
+  export const is_weapon_data = (v: any): v is IWeaponData =>
+    v.is_weapon_data === true
+
+  export enum BuiltInImg {
+    RFACE = 'sprite/RFACE.png',
+    CM5 = 'sprite/CM5.png',
+    CM4 = 'sprite/CM4.png',
+    CM3 = 'sprite/CM3.png',
+    CM2 = 'sprite/CM2.png',
+    CM1 = 'sprite/CM1.png',
   }
 } 

@@ -1,10 +1,10 @@
 import { IBallData } from "../lf2_type";
-import { IDatIndex } from "../lf2_type/IDatIndex";
-import { IBallInfo } from "../lf2_type/IBallInfo";
 import { IBallFrameInfo } from "../lf2_type/IBallFrameInfo";
+import { IBallInfo } from "../lf2_type/IBallInfo";
+import { IDatIndex } from "../lf2_type/IDatIndex";
 import { Defines } from "../lf2_type/defines";
-import { to_num } from "../type_cast/to_num";
 import { traversal } from "../traversal";
+import { to_num } from "../type_cast/to_num";
 import { get_next_frame_by_raw_id } from "./get_the_next";
 import { take } from "./take";
 
@@ -59,11 +59,15 @@ export function make_ball_data(info: IBallInfo, frames: Record<string, IBallFram
 
   const sound_3 = take(info, 'weapon_hit_sound')
   if (sound_3) info.weapon_hit_sound = sound_3 + '.ogg'
-  
-  return {
+
+  const ret: IBallData = {
     id: '',
     type: 'ball',
     base: info,
-    frames: frames
+    frames: frames,
+    is_ball_data: true,
+    is_game_obj_data: true,
+    is_base_data: true
   };
+  return ret
 }

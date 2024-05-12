@@ -52,7 +52,9 @@ export function make_bg_data(full_str: string, datIndex?: IDatIndex): IBgData | 
     type: 'background',
     id: datIndex?.id ?? fields.name,
     base: fields,
-    layers: []
+    layers: [],
+    is_bg_data: true,
+    is_base_data: true
   };
   const blocks = take_blocks(full_str, 'layer:', 'layer_end', v => full_str = v);
   let min_y = Defines.OLD_SCREEN_HEIGHT;

@@ -86,6 +86,7 @@ export interface IGameObjInfo {
   files: Record<string, IEntityPictureInfo>;
 }
 export interface IBaseData<I = any> {
+  get is_base_data(): true;
   id: string;
   type: string;
   base: I;
@@ -103,14 +104,17 @@ export interface IGameObjData<
   F extends IFrameInfo = IFrameInfo,
 > extends IBaseData<I> {
   frames: Record<string, F>;
+  get is_game_obj_data(): true;
 }
 
 export interface IEntityData extends IGameObjData<IGameObjInfo, IFrameInfo> {
   type: 'entity';
+  get is_entity_data(): true;
 }
 export interface ICharacterData extends IGameObjData<ICharacterInfo, ICharacterFrameInfo> {
   type: 'character';
   indexes: ICharacterFrameIndexes;
+  get is_character_data(): true;
 }
 export interface IWeaponStrengthInfo extends Partial<IItrInfo> {
   id: string;
@@ -120,9 +124,11 @@ export interface IWeaponData extends IGameObjData<IWeaponInfo, IFrameInfo> {
   type: 'weapon';
   weapon_strength?: { [x in string]?: IWeaponStrengthInfo };
   indexes: IWeaponFrameIndexes;
+  get is_weapon_data(): true;
 }
 export interface IBallData extends IGameObjData<IBallInfo, IBallFrameInfo> {
   type: 'ball';
+  get is_ball_data(): true;
 }
 export type TFrameIdPair = {
   [-1]: string,
