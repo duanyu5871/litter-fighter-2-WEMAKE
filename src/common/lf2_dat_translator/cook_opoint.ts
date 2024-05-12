@@ -1,4 +1,4 @@
-import { is_num, not_zero_num } from '../type_check/is_num';
+import { is_num, not_zero_num } from '../type_check';
 import { IOpointInfo } from '../lf2_type';
 import { Defines } from '../lf2_type/defines';
 import { get_next_frame_by_raw_id } from './get_the_next';

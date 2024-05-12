@@ -1,4 +1,4 @@
-import { is_positive } from '../type_check/is_num';
+import { is_positive } from '../type_check';
 import { IBdyInfo } from '../lf2_type';
 import { take } from './take';
 

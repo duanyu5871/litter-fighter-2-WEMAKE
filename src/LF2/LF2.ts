@@ -3,15 +3,11 @@ import Layout from '../Layout/Layout';
 import { Log, Warn } from '../Log';
 import { arithmetic_progression } from '../common/arithmetic_progression';
 import { fisrt_not_void } from '../common/fisrt_not_void';
-import { is_arr } from '../common/type_check/is_arr';
-import { is_num } from '../common/type_check/is_num';
-import { is_str } from '../common/type_check/is_str';
 import { ICharacterData, IWeaponData, TFace } from '../common/lf2_type';
 import { IStageInfo } from "../common/lf2_type/IStageInfo";
 import { Defines } from '../common/lf2_type/defines';
-import random_get from '../common/random_get';
-import { random_in_range } from '../common/random_in_range';
-import random_take from '../common/random_take';
+import { random_get, random_in, random_take } from '../common/random';
+import { is_arr, is_num, is_str, not_empty_str } from '../common/type_check';
 import { ILf2Callback } from './ILf2Callback';
 import { PlayerInfo } from './PlayerInfo';
 import { World } from './World';
@@ -202,7 +198,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     const ret: Weapon[] = []
     while (--num >= 0) {
       const e = new Weapon(this.world, data);
-      if (is_str(team)) e.team = team;
+      if (not_empty_str(team)) e.team = team;
       this.random_entity_info(e).attach();
       ret.push(e);
     }
@@ -368,18 +364,18 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   add_random_weapon(num = 1): Weapon[] {
     const ret: Weapon[] = []
     while (--num >= 0) {
-      ret.push(
-        ...this.add_weapon(random_get(this.datas.weapons), 1)
-      )
+      const d = random_get(this.datas.weapons);
+      if (!d) continue;
+      ret.push(...this.add_weapon(d, 1))
     }
     return ret;
   }
   add_random_character(num = 1, team?: string): Character[] {
     const ret: Character[] = []
     while (--num >= 0) {
-      ret.push(
-        ...this.add_character(random_get(this.datas.characters), 1, team)
-      )
+      const d = random_get(this.datas.characters);
+      if (!d) continue;
+      ret.push(...this.add_character(d, 1, team))
     }
     return ret;
   }
@@ -553,7 +549,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
             arr = item.parent.state['random_int_arr' + group_id] = arithmetic_progression(begin, end, 1);
           return item.state.img_idx = random_take(arr);
         } else {
-          return item.state.img_idx = Math.floor(random_in_range(begin, end) % (end + 1))
+          return item.state.img_idx = Math.floor(random_in(begin, end) % (end + 1))
         }
       }
 

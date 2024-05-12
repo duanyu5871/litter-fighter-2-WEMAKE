@@ -1,17 +1,16 @@
 import { Warn } from '@fimagine/logger';
 import * as THREE from 'three';
 import { constructor_name } from '../common/constructor_name';
-import { is_positive } from '../common/type_check/is_num';
-import { is_str } from '../common/type_check/is_str';
 import { IFrameInfo, IGameObjData, IGameObjInfo, INextFrame, ITexturePieceInfo, TFace, TNextFrame } from '../common/lf2_type';
 import { Defines } from '../common/lf2_type/defines';
-import random_get from '../common/random_get';
+import { random_get } from '../common/random';
 import IPicture from '../common/lf2_type/IPicture';
 import type { World } from './World';
 import { new_id } from './base/new_id';
 import { turn_face } from './entity/face_helper';
 import create_pictures from './loader/create_pictures';
 import { factory } from './Factory';
+import { is_str, is_positive } from '../common/type_check';
 
 export const EMPTY_PIECE: ITexturePieceInfo = {
   tex: 0, x: 0, y: 0, w: 0, h: 0, cx: 0, cy: 0,
@@ -188,7 +187,7 @@ export class FrameAnimater<
         }
       }
       if (!remains.length) return [void 0, void 0];
-      which = random_get(remains);
+      which = random_get(remains)!;
       return this.get_next_frame(which);
     }
     let { id } = which;

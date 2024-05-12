@@ -1,8 +1,5 @@
 import { useEffect, useState } from 'react';
-import { is_str } from './common/type_check/is_str';
-import { is_fun } from './common/type_check/is_fun';
-import { is_num } from './common/type_check/is_num';
-import { is_bool } from './common/type_check/is_bool';
+import { is_str, is_fun, is_num, is_bool } from './common/type_check';
 
 type T_RET<S> = readonly [S, React.Dispatch<React.SetStateAction<S>>]
 type T_IN<S> = S | (() => S);

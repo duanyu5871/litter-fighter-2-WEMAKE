@@ -1,6 +1,5 @@
 import * as THREE from 'three';
 import { Log, Warn } from '../Log';
-import { is_num } from '../common/type_check/is_num';
 import { IBdyInfo, IFrameInfo, IItrInfo } from '../common/lf2_type';
 import { Defines } from '../common/lf2_type/defines';
 import { factory } from './Factory';
@@ -19,6 +18,7 @@ import Character from './entity/Character';
 import Entity from './entity/Entity';
 import Weapon from './entity/Weapon';
 import Stage from './stage/Stage';
+import { is_num } from '../common/type_check';
 export interface ICube {
   left: number;
   right: number;

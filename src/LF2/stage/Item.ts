@@ -1,12 +1,9 @@
-import { is_num } from "../../common/type_check/is_num";
-import { is_str } from "../../common/type_check/is_str";
+import { is_num, is_str } from "../../common/type_check";
 import { IStageObjectInfo } from "../../common/lf2_type/IStageObjectInfo";
 import { Defines } from "../../common/lf2_type/defines";
-import random_get from "../../common/random_get";
-import random_take from "../../common/random_take";
+import { random_get, random_take, random_in } from "../../common/random";
 import { factory } from "../Factory";
 import { FrameAnimater } from "../FrameAnimater";
-import { random_in_range } from "../../common/random_in_range";
 import { BotEnemyChaser } from "../controller/BotEnemyChaser";
 import Character from "../entity/Character";
 import ICharacterCallbacks from '../entity/ICharacterCallbacks';
@@ -64,12 +61,12 @@ export default class Item {
       case 'non_repetitive':
         this.get_oid = () => {
           if (!oid_len) this.oid_list = [...this.info.id];
-          return random_take(this.oid_list);
+          return random_take(this.oid_list)!;
         };
         break;
       case 'once_random':
-        const len = random_in_range(0, oid_len);
-        const idx = Math.floor(random_in_range(0, len) % len);
+        const len = random_in(0, oid_len);
+        const idx = Math.floor(random_in(0, len) % len);
         const oid = this.info.id[idx];
         this.get_oid = () => oid;
         break;
@@ -78,7 +75,7 @@ export default class Item {
         break;
       case 'random':
       default:
-        this.get_oid = () => random_get(this.info.id);
+        this.get_oid = () => random_get(this.info.id) ?? 'TODO';
         break;
     }
     const oid = random_get(this.info.id);
@@ -104,10 +101,10 @@ export default class Item {
     const { hp, act, x, y, z } = this.info;
     if (this.info.times) this.info.times--;
     const e = creator(this.world, data);
-    e.position.x = random_in_range(x - range_x, x + range_x);
+    e.position.x = random_in(x - range_x, x + range_x);
     e.position.z = is_num(z) ?
-      random_in_range(z - range_z, z + range_z) :
-      random_in_range(this.stage.near, this.stage.far);
+      random_in(z - range_z, z + range_z) :
+      random_in(this.stage.near, this.stage.far);
 
     if (Entity.is(e)) {
       if (is_num(hp)) e.hp = hp;

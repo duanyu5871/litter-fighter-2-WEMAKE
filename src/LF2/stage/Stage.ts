@@ -1,12 +1,12 @@
 import { Warn } from "../../Log";
 import find_in_set from "../../common/find_in_set";
-import { is_num } from "../../common/type_check/is_num";
+import { is_num } from "../../common/type_check";
 import { IBgData } from "../../common/lf2_type";
 import { IStageInfo } from "../../common/lf2_type/IStageInfo";
 import { IStageObjectInfo } from "../../common/lf2_type/IStageObjectInfo";
 import { IStagePhaseInfo } from "../../common/lf2_type/IStagePhaseInfo";
 import { Defines } from "../../common/lf2_type/defines";
-import { random_in_range } from "../../common/random_in_range";
+import { random_in } from "../../common/random";
 import type { World } from "../World";
 import Callbacks from "../base/Callbacks";
 import NoEmitCallbacks from "../base/NoEmitCallbacks";
@@ -115,7 +115,7 @@ export default class Stage {
     if (is_num(phase.player_jump_to_x)) {
       const x = phase.player_jump_to_x;
       for (const [, p] of this.world.player_characters) {
-        p.position.x = random_in_range(x - 50, x + 50);
+        p.position.x = random_in(x - 50, x + 50);
       }
     }
   }

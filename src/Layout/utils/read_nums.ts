@@ -1,5 +1,4 @@
-import { is_nan } from '../../common/type_check/is_num';
-import { is_str } from '../../common/type_check/is_str';
+import { is_nan, is_str } from '../../common/type_check';
 
 export default function read_nums(src: string | number[] | null | undefined, len: 4, fallbacks?: [number, number, number, number]): [number, number, number, number];
 export default function read_nums(src: string | number[] | null | undefined, len: 3, fallbacks?: [number, number, number]): [number, number, number];

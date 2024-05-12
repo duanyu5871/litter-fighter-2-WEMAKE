@@ -1,5 +1,5 @@
 import { clamp } from '../clamp';
-import { is_num } from '../type_check/is_num';
+import { is_num } from '../type_check';
 interface IChildAnimation {
   get value(): number;
   get duration(): number;

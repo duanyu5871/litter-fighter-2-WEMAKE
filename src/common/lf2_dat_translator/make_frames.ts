@@ -5,7 +5,7 @@ import { Defines } from '../lf2_type/defines';
 import { match_all } from '../match_all';
 import { match_colon_value } from '../match_colon_value';
 import { to_num } from '../to_num';
-import { not_zero_num } from '../type_check/is_num';
+import { not_zero_num } from '../type_check';
 import cook_bdy from './cook_bdy';
 import { cook_cpoint } from './cook_cpoint';
 import cook_itr from './cook_itr';

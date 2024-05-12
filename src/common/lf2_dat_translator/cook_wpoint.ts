@@ -1,5 +1,5 @@
 import { IWpointInfo } from '../lf2_type';
-import { not_zero_num } from '../type_check/is_num';
+import { not_zero_num } from '../type_check';
 import { take } from './take';
 
 export function cook_wpoint(unsure_wpoint: IWpointInfo) {

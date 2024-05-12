@@ -6,16 +6,13 @@ import { TKeyName } from '../LF2/controller/BaseController';
 import IStyle from '../common/lf2_type/IStyle';
 import { type TImageInfo } from '../LF2/loader/loader';
 import NumberAnimation from '../common/animation/NumberAnimation';
-import { is_arr } from '../common/type_check/is_arr';
-import { is_bool } from '../common/type_check/is_bool';
-import { is_num } from '../common/type_check/is_num';
-import { is_str } from '../common/type_check/is_str';
 import actor from './Action/Actor';
 import factory from './Component/Factory';
 import { LayoutComponent } from './Component/LayoutComponent';
 import LayoutMeshBuilder from './Component/LayoutMeshBuilder';
 import type { ILayoutInfo } from './ILayoutInfo';
 import read_nums from './utils/read_nums';
+import { is_arr, is_str, is_bool, is_num } from '../common/type_check';
 
 export interface ILayoutCallback {
   on_click?(): void;
