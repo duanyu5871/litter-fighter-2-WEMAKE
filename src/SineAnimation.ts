@@ -1,4 +1,4 @@
-import { is_nan } from "./common/is_num";
+import { is_nan } from "./common/type_check/is_num";
 
 export class SineAnimation {
   protected _b: number = 0;

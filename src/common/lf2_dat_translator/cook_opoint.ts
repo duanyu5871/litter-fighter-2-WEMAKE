@@ -1,7 +1,6 @@
-import { is_num } from '../is_num';
+import { is_num, not_zero_num } from '../type_check/is_num';
 import { IOpointInfo } from '../lf2_type';
 import { Defines } from '../lf2_type/defines';
-import { not_zero } from '../not_zero';
 import { get_next_frame_by_raw_id } from './get_the_next';
 import { take } from './take';
 
@@ -10,13 +9,13 @@ export default function cook_opoint(opoint: IOpointInfo) {
   if (is_num(action)) opoint.action = get_next_frame_by_raw_id(action);
 
   const dvx = take(opoint, 'dvx');
-  if (not_zero(dvx)) opoint.dvx = dvx * 0.5;
+  if (not_zero_num(dvx)) opoint.dvx = dvx * 0.5;
 
   const dvz = take(opoint, 'dvz');
-  if (not_zero(dvz)) opoint.dvz = dvz * 0.5;
+  if (not_zero_num(dvz)) opoint.dvz = dvz * 0.5;
 
   const dvy = take(opoint, 'dvy');
-  if (not_zero(dvy)) opoint.dvy = dvy * -0.5;
+  if (not_zero_num(dvy)) opoint.dvy = dvy * -0.5;
 
   const facing = take(opoint, 'facing');
   opoint.multi = 1;

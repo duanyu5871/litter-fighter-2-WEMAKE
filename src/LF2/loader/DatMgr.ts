@@ -1,5 +1,5 @@
 import { Log } from '../../Log';
-import { is_str } from '../../common/is_str';
+import { is_str } from '../../common/type_check/is_str';
 import { IBallData, IBgData, ICharacterData, IDataMap, IEntityData, IGameObjData, IWeaponData } from '../../common/lf2_type';
 import { Defines } from '../../common/lf2_type/defines';
 import { map, traversal } from '../../common/traversal';

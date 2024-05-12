@@ -1,8 +1,8 @@
 import { Warn } from '@fimagine/logger';
 import * as THREE from 'three';
 import { constructor_name } from '../common/constructor_name';
-import { is_positive_num } from '../common/is_positive_num';
-import { is_str } from '../common/is_str';
+import { is_positive } from '../common/type_check/is_num';
+import { is_str } from '../common/type_check/is_str';
 import { IFrameInfo, IGameObjData, IGameObjInfo, INextFrame, ITexturePieceInfo, TFace, TNextFrame } from '../common/lf2_type';
 import { Defines } from '../common/lf2_type/defines';
 import random_get from '../common/random_get';
@@ -220,7 +220,7 @@ export class FrameAnimater<
 
   handle_wait_flag(wait: string | number, frame: IFrameInfo, flags: INextFrame): number {
     if (wait === 'i') return this.wait;
-    if (is_positive_num(wait)) return this.wait;
+    if (is_positive(wait)) return this.wait;
     return frame.wait;
   }
 

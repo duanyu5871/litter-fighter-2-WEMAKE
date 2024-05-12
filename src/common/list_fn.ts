@@ -1,4 +1,4 @@
-import { is_fun } from "./is_fun";
+import { is_fun } from "./type_check/is_fun";
 
 export default function list_fn(obj: any, set: Set<string> = new Set<string>()) {
   if (!obj) return set;

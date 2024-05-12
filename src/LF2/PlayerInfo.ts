@@ -1,5 +1,5 @@
 import { Warn } from '@fimagine/logger';
-import { is_str } from '../common/is_str';
+import { is_str } from '../common/type_check/is_str';
 import Callbacks from './base/Callbacks';
 import NoEmitCallbacks from "./base/NoEmitCallbacks";
 import type { TKeyName, TKeys } from './controller/BaseController';

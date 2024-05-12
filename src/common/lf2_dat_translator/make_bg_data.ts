@@ -1,4 +1,4 @@
-import { is_str } from '../is_str';
+import { is_str } from '../type_check/is_str';
 import { IDatIndex } from "../lf2_type/IDatIndex";
 import { IBgData } from "../lf2_type/IBgData";
 import { IBgLayerInfo } from "../lf2_type/IBgLayerInfo";

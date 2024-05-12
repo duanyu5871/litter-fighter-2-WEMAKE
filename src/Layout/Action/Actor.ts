@@ -1,4 +1,4 @@
-import { is_str } from "../../common/is_str";
+import { is_str } from "../../common/type_check/is_str";
 import type Layout from "../Layout";
 import { read_call_func_expression } from "../utils/read_func_args";
 

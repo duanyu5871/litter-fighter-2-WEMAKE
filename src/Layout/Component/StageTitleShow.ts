@@ -3,7 +3,7 @@ import { IWorldCallbacks } from "../../LF2/IWorldCallbacks";
 import Stage from "../../LF2/stage/Stage";
 import NumberAnimation from "../../common/animation/NumberAnimation";
 import SequenceAnimation from '../../common/animation/SequenceAnimation';
-import { is_str } from "../../common/is_str";
+import { is_str } from "../../common/type_check/is_str";
 import read_nums from "../utils/read_nums";
 import { LayoutComponent } from "./LayoutComponent";
 import LayoutMeshBuilder from "./LayoutMeshBuilder";

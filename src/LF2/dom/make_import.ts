@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from "axios";
-import { is_str } from "../../common/is_str";
+import { is_str } from "../../common/type_check/is_str";
 
 const roots = [
   'lf2_data',

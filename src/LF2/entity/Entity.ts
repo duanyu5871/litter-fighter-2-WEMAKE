@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { Log, Warn } from '../../Log';
 import { constructor_name } from '../../common/constructor_name';
-import { is_nagtive_num } from '../../common/is_nagtive_num';
+import { is_nagtive } from '../../common/type_check/is_num';
 import { IBallData, IBaseData, IBdyInfo, ICharacterData, IEntityData, IFrameInfo, IGameObjData, IGameObjInfo, IItrInfo, IOpointInfo, IWeaponData, TNextFrame } from '../../common/lf2_type';
 import { Defines } from '../../common/lf2_type/defines';
 import { factory } from '../Factory';
@@ -325,7 +325,7 @@ export default class Entity<
       this.mp = Math.min(this._max_mp, this._mp + this._mp_r_spd);
 
     const { cpoint } = this._frame;
-    if (cpoint && is_nagtive_num(cpoint.decrease)) {
+    if (cpoint && is_nagtive(cpoint.decrease)) {
       this._catching_value += cpoint.decrease;
       if (this._catching_value < 0) this._catching_value = 0;
     }

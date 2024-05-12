@@ -4,8 +4,8 @@ import { IFrameInfo } from "../lf2_type/IFrameInfo";
 import { Defines } from '../lf2_type/defines';
 import { match_all } from '../match_all';
 import { match_colon_value } from '../match_colon_value';
-import { not_zero } from '../not_zero';
 import { to_num } from '../to_num';
+import { not_zero_num } from '../type_check/is_num';
 import cook_bdy from './cook_bdy';
 import { cook_cpoint } from './cook_cpoint';
 import cook_itr from './cook_itr';
@@ -99,15 +99,15 @@ export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string): Re
 
     const dvx = take(frame, 'dvx');
     if (dvx === 550) frame.dvx = dvx;
-    else if (not_zero(dvx)) frame.dvx = dvx * 0.5;
+    else if (not_zero_num(dvx)) frame.dvx = dvx * 0.5;
 
     const dvz = take(frame, 'dvz');
     if (dvz === 550) frame.dvz = dvz;
-    else if (not_zero(dvz)) frame.dvz = dvz * 0.5;
+    else if (not_zero_num(dvz)) frame.dvz = dvz * 0.5;
 
     const dvy = take(frame, 'dvy');
     if (dvy === 550) frame.dvy = dvy;
-    else if (not_zero(dvy)) frame.dvy = dvy * -0.25;
+    else if (not_zero_num(dvy)) frame.dvy = dvy * -0.25;
   }
   return frames;
 }

@@ -1,6 +1,6 @@
 import { Warn } from "../../Log";
 import find_in_set from "../../common/find_in_set";
-import { is_num } from "../../common/is_num";
+import { is_num } from "../../common/type_check/is_num";
 import { IBgData } from "../../common/lf2_type";
 import { IStageInfo } from "../../common/lf2_type/IStageInfo";
 import { IStageObjectInfo } from "../../common/lf2_type/IStageObjectInfo";

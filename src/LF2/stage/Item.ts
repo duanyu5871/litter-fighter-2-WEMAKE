@@ -1,5 +1,5 @@
-import { is_num } from "../../common/is_num";
-import { is_str } from "../../common/is_str";
+import { is_num } from "../../common/type_check/is_num";
+import { is_str } from "../../common/type_check/is_str";
 import { IStageObjectInfo } from "../../common/lf2_type/IStageObjectInfo";
 import { Defines } from "../../common/lf2_type/defines";
 import random_get from "../../common/random_get";

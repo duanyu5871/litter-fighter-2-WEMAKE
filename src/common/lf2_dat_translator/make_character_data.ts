@@ -1,7 +1,7 @@
 import { arithmetic_progression } from '../arithmetic_progression';
 import { take_number } from '../as_number';
-import { is_num } from '../is_num';
-import { is_str } from '../is_str';
+import { is_num } from '../type_check/is_num';
+import { is_str } from '../type_check/is_str';
 import { ICharacterData, ICharacterFrameInfo, TNextFrame } from '../lf2_type';
 import { ICharacterFrameIndexes } from "../lf2_type/ICharacterFrameIndexes";
 import { ICharacterInfo } from "../lf2_type/ICharacterInfo";

@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { Log, Warn } from '../Log';
-import { is_num } from '../common/is_num';
+import { is_num } from '../common/type_check/is_num';
 import { IBdyInfo, IFrameInfo, IItrInfo } from '../common/lf2_type';
 import { Defines } from '../common/lf2_type/defines';
 import { factory } from './Factory';
