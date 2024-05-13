@@ -28,7 +28,7 @@ export function data_to_stage_jsons(full_str: string): IStageInfo[] | void {
         if (!line) continue;
         if (line.startsWith('bound')) {
           for (const [key, value] of match_colon_value(line)) {
-            if (key === 'bound') phase_info.bound = to_num(value, phase_info.bound);
+            if (key === 'bound') phase_info.bound = to_num(value) ?? phase_info.bound;
             if (key === 'music') phase_info.music = value.replace(/\\/g, '/') + '.ogg';
           }
           phase_info.desc = match_hash_end(line)?.trim() ?? '';
@@ -49,7 +49,7 @@ export function data_to_stage_jsons(full_str: string): IStageInfo[] | void {
             else if (key === 'id' && value === '1000') object.id = arithmetic_progression(1, 29, 1).map(v => '' + v);
             else if (key === 'id') object.id = [value];
             else if (key === 'act') object.act = value;
-            else (object as any)[key] = to_num(value, (object as any)[key])
+            else (object as any)[key] = to_num(value) ?? (object as any)[key]
           }
           phase_info.objects.push(object)
         }

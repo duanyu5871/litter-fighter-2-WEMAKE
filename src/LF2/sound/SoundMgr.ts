@@ -1,5 +1,5 @@
 
-import { Warn } from "../../Log";
+import { Log, Warn } from "../../Log";
 import type LF2 from "../LF2";
 import FallbackPlayer from "../dom/sound/FallbackPlayer";
 import ModernPlayer from "../dom/sound/ModernPlayer";
@@ -33,6 +33,7 @@ export default class SoundMgr implements IPlayer {
     return this.inner.has(name);
   }
 
+  // @Log.Clone({ showRet: false })
   load(key: string, src: string) {
     return this.inner.load(key, src);
   }

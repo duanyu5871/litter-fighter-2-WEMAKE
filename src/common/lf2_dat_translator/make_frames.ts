@@ -45,7 +45,8 @@ export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string): Re
     for (const cpoint of cpoint_list) cook_cpoint(cpoint);
 
     const fields: any = {};
-    for (const [name, value] of match_colon_value(_content)) fields[name] = to_num(value);
+    for (const [name, value] of match_colon_value(_content))
+      fields[name] = to_num(value) ?? value;
 
     const raw_next = take(fields, 'next');
     const next = get_next_frame_by_raw_id(raw_next);
@@ -71,7 +72,7 @@ export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string): Re
     ) {
       frame.invisible = 2 * (Math.abs(raw_next) - 1100);
     }
-    
+
     if (!frame.itr?.length) delete frame.itr;
     if (!frame.bdy?.length) delete frame.bdy;
     if (!frame.opoint?.length) delete frame.opoint;

@@ -31,16 +31,14 @@ export const cook_frame = (lf2: LF2, data: IGameObjData, frame: IFrameInfo) => {
       const ret = pic >= pic_info.begin && pic <= pic_info.end;
       if (ret) { pic -= pic_info.begin; break; }
     }
-    if (pic_info === void 0) return Warn.print(cook_frame.name, 'file info not found, pic number:', pic);
+    if (pic_info === void 0)
+      return Warn.print(cook_frame.name, 'file info not found, data:', data, 'pic number:', pic);
 
     const { id, row, cell_w, cell_h } = pic_info;
-    const img_info = lf2.images.find_by_pic_info(pic_info);
-    if (!img_info) return Warn.print(cook_frame.name, 'image_info not found, pic_info:', pic_info);
     const x = (cell_w + 1) * (pic % row);
     const y = (cell_h + 1) * Math.floor(pic / row);
     pic = frame.pic = { tex: id!, x, y, w: cell_w, h: cell_h }
   }
-  if(!pic) debugger;
   if ('x' in pic) {
     for (const key in data.base.files) {
       if (data.base.files[key].id === pic.tex) {

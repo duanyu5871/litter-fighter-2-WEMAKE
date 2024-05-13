@@ -57,7 +57,7 @@ function make_weapon_strength(full_str: string): IWeaponData['weapon_strength'] 
   const list = match_all(weapon_strength_str, /entry:\s*(\d+)\s*(\S+)\s*\n?(.*)\n?/g).map(([, id, name, remain]) => {
     const entry: IWeaponStrengthInfo = { id, name };
     for (const [key, value] of match_colon_value(remain)) {
-      (entry as any)[key] = to_num(value);
+      (entry as any)[key] = to_num(value) ?? value;
     }
     cook_itr(entry);
     return entry;

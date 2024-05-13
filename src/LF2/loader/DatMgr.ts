@@ -69,11 +69,11 @@ class Inner {
       traversal(files, (_, v) => {
         jobs.push(images.load_by_e_pic_info(v))
       })
+      if (jobs.length) await Promise.all(jobs);
       if (frames) {
         traversal(frames, (_, frame) => cook_frame(this.lf2, data, frame));
       }
     }
-    if (jobs.length) await Promise.all(jobs);
     return data;
   }
 

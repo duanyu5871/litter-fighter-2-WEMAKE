@@ -62,7 +62,7 @@ export function make_bg_data(full_str: string, datIndex?: IDatIndex): IBgData | 
     const [file, remains] = block_str.trim().split(/\n|\r/g).filter(v => v).map(v => v.trim());
     const fields: any = {};
     for (const [key, value] of match_colon_value(remains)) {
-      fields[key] = to_num(value);
+      fields[key] = to_num(value) ?? value;
     }
     take(fields, 'transparency')
     const y = take(fields, 'y')
