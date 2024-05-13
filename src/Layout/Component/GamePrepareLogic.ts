@@ -74,13 +74,21 @@ export default class GamePrepareLogic extends LayoutComponent {
         }
         break;
       case GamePrepareState.ComputerNumberSelecting:
-        console.log(
-          this.layout.root.search_components(ComNumButton)
-        )
+        switch (key) {
+          case "a":
+            this.state = GamePrepareState.ComputerCharacterSelecting
+            break;
+        }
         break;
       case GamePrepareState.ComputerCharacterSelecting:
+        switch (key) {
+          case "a":
+            this.state = GamePrepareState.GameSetting
+            break;
+        }
         break;
-      case GamePrepareState.GameSetting: break;
+      case GamePrepareState.GameSetting:
+        break;
     }
   }
   protected on_someone_joined_changed(joined: boolean) {

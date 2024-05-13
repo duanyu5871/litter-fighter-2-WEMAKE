@@ -82,17 +82,14 @@ export default class Layout {
   get index() { return this._index }
   get state() { return this._state }
   get img_idx() { return this._img_idx() }
-  get visible(): boolean {
-    let n: Layout | undefined = this;
-    do {
-      if (!n._visible())
-        return false;
-      n = n.parent
-    } while (n)
-    return true;
-  }
+  get visible(): boolean { return this._visible(); }
   set visible(v: boolean) {
-    this._visible = () => v
+    this._visible = () => v;
+    if (this.mesh) {
+      this.mesh.visible = v
+      if (v) this.on_show();
+      else this.on_hide();
+    }
   }
   get disabled(): boolean {
     let n: Layout | undefined = this;
@@ -401,13 +398,11 @@ export default class Layout {
       if (this._root === this) {
         mesh.position.x = this.lf2.world.camera.position.x
       }
-      const { visible } = this;
+      const visible = this.visible;
       if (mesh.visible !== visible) {
         mesh.visible = visible
-        if (visible)
-          this.on_show();
-        else
-          this.on_hide();
+        if (visible) this.on_show();
+        else this.on_hide();
       }
     }
     if (this.material) {
@@ -418,7 +413,7 @@ export default class Layout {
         this.material.opacity = this._opacity_animation.update(dt);
       }
     }
-    for (const i of this.children) i._visible() && i.on_render(dt);
+    for (const i of this.children) i.visible && i.on_render(dt);
     for (const c of this._components) c.on_render?.(dt);
   }
 
