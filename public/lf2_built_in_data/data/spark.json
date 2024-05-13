@@ -1,5 +1,5 @@
 {
-  "id": "spark",
+  "id": "data/spark.json",
   "type": "frame_animater",
   "base": {
     "files": {

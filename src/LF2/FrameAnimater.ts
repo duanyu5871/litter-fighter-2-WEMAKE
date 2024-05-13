@@ -11,6 +11,7 @@ import { turn_face } from './entity/face_helper';
 import create_pictures from './loader/create_pictures';
 import { factory } from './Factory';
 import { is_str, is_positive } from '../common/type_check';
+import { dispose_mesh } from '../Layout/utils/dispose_mesh';
 
 export const EMPTY_PIECE: ITexturePieceInfo = {
   tex: 0, x: 0, y: 0, w: 0, h: 0, cx: 0, cy: 0,
@@ -259,7 +260,3 @@ export class FrameAnimater<
 }
 
 factory.set('frame_animater', (...args) => new FrameAnimater(...args));
-
-function dispose_mesh(_mesh: any) {
-  throw new Error('Function not implemented.');
-}

@@ -40,7 +40,7 @@ export const cook_frame = (lf2: LF2, data: IGameObjData, frame: IFrameInfo) => {
     const y = (cell_h + 1) * Math.floor(pic / row);
     pic = frame.pic = { tex: id!, x, y, w: cell_w, h: cell_h }
   }
-
+  if(!pic) debugger;
   if ('x' in pic) {
     for (const key in data.base.files) {
       if (data.base.files[key].id === pic.tex) {

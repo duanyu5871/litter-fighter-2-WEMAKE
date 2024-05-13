@@ -1,4 +1,4 @@
-import { IBaseData, IGameObjInfo } from '../lf2_type';
+import { IBaseData, IEntityPictureInfo, IGameObjInfo } from '../lf2_type';
 import { IDatIndex } from "../lf2_type/IDatIndex";
 import { IBallFrameInfo } from "../lf2_type/IBallFrameInfo";
 import { IBallInfo } from "../lf2_type/IBallInfo";
@@ -32,15 +32,28 @@ export default function dat_to_json(full_str: string, datIndex?: IDatIndex): any
     if (reg_result) { base.small = reg_result[1]; continue; }
     if (info_str.startsWith('file(')) {
       const file_id = base.files ? Object.keys(base.files).length : 0
-      const file: any = { id: file_id };
+      const file: IEntityPictureInfo = {
+        id: '' + file_id,
+        begin: 0,
+        end: 0,
+        path: '',
+        row: 0,
+        col: 0,
+        cell_w: 0,
+        cell_h: 0
+      };
       for (const [key, value] of match_colon_value(info_str)) {
         if (key.startsWith('file')) {
           const [, begin, end] = key.match(/file\((\d+)-(\d+)\)/)!
           file.path = value;
           file.begin = Number(begin);
           file.end = Number(end);
+        } else if (key === 'w') {
+          file.cell_w = Number(value)
+        } else if (key === 'h') {
+          file.cell_h = Number(value)
         } else {
-          file[key] = Number(value);
+          (file as any)[key] = Number(value);
         }
       }
       base.files = set_obj_field(base.files, '' + file_id, file)
@@ -77,8 +90,8 @@ export default function dat_to_json(full_str: string, datIndex?: IDatIndex): any
 
   if (datIndex) {
     let ret: IBaseData | undefined = void 0;
-    switch (datIndex.type) {
-      case 1:
+    switch ('' + datIndex.type) {
+      case '1':
         base.type = {
           '120': Defines.WeaponType.Stick, // Knife
           '124': Defines.WeaponType.Stick, // Boomerang
@@ -87,7 +100,7 @@ export default function dat_to_json(full_str: string, datIndex?: IDatIndex): any
         base.name = datIndex.hash ?? datIndex.file.replace(/[^a-z|A-Z|0-9|_]/g, '')
         ret = make_weapon_data(base, full_str, make_frames(full_str));
         break;
-      case 2:
+      case '2':
         base.type = Defines.WeaponType.Heavy;
         switch (datIndex.id) {
           case '150': base.bounce = 0.2; break;
@@ -96,20 +109,20 @@ export default function dat_to_json(full_str: string, datIndex?: IDatIndex): any
         base.name = datIndex.hash ?? datIndex.file.replace(/[^a-z|A-Z|0-9|_]/g, '')
         ret = make_weapon_data(base, full_str, make_frames(full_str));
         break;
-      case 4:
+      case '4':
         base.type = Defines.WeaponType.Baseball;
         base.bounce = 0.45;
         base.name = datIndex.hash ?? datIndex.file.replace(/[^a-z|A-Z|0-9|_]/g, '')
         ret = make_weapon_data(base, full_str, make_frames(full_str));
         break;
-      case 6: {
+      case '6': {
         base.type = Defines.WeaponType.Drink;
         base.bounce = 0.4;
         base.name = datIndex.hash ?? datIndex.file.replace(/[^a-z|A-Z|0-9|_]/g, '')
         ret = make_weapon_data(base, full_str, make_frames(full_str));
         break;
       }
-      case 0: {
+      case '0': {
         const info = base as ICharacterInfo;
         const num_id = Number(datIndex.id);
         if ((num_id >= 30 && num_id <= 39) || (num_id >= 50 && num_id <= 59))
@@ -142,10 +155,10 @@ export default function dat_to_json(full_str: string, datIndex?: IDatIndex): any
 
         break;
       }
-      case 3: ret = make_ball_data(base as IBallInfo, make_frames<IBallFrameInfo>(full_str), datIndex); break;
-      case 5: ret = make_entity_data(base as IGameObjInfo, make_frames(full_str)); break;
+      case '3': ret = make_ball_data(base as IBallInfo, make_frames<IBallFrameInfo>(full_str), datIndex); break;
+      case '5': ret = make_entity_data(base as IGameObjInfo, make_frames(full_str)); break;
       default:
-        console.warn('[dat_to_json] unknow dat type:', datIndex.type)
+        console.warn('[dat_to_json] unknow dat type:', JSON.stringify(datIndex.type))
         ret = make_entity_data(base as IGameObjInfo, make_frames(full_str));
         break;
     }

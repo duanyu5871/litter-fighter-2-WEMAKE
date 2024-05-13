@@ -2,6 +2,8 @@ import { IPlayerInfoCallback } from "../../LF2/PlayerInfo";
 import Callbacks from "../../LF2/base/Callbacks";
 import NoEmitCallbacks from "../../LF2/base/NoEmitCallbacks";
 import { TKeyName } from "../../LF2/controller/BaseController";
+import { Log } from "../../Log";
+import ComNumButton from "./ComNumButton";
 import { LayoutComponent } from "./LayoutComponent";
 
 export interface IGamePrepareLogicCallback {
@@ -11,11 +13,11 @@ export interface IGamePrepareLogicCallback {
   on_asking_com_num?(): void;
 }
 export enum GamePrepareState {
-  PlayerCharacterSelecting = 1,
-  CountingDown = 2,
-  ComputerNumberSelecting = 3,
-  ComputerCharacterSelecting = 4,
-  GameSetting = 5,
+  PlayerCharacterSelecting = 'PlayerCharacterSelecting',
+  CountingDown = 'CountingDown',
+  ComputerNumberSelecting = 'ComputerNumberSelecting',
+  ComputerCharacterSelecting = 'ComputerCharacterSelecting',
+  GameSetting = 'GameSetting',
 }
 
 export default class GamePrepareLogic extends LayoutComponent {
@@ -67,17 +69,14 @@ export default class GamePrepareLogic extends LayoutComponent {
         switch (key) {
           case "j":
             this._count_down = Math.max(0, this._count_down - 500);
+            this._callbacks.emit('on_countdown')(Math.ceil(this._count_down / 1000));
             break;
         }
         break;
       case GamePrepareState.ComputerNumberSelecting:
-        switch (key) {
-          case "j":
-            for (const [, player] of this.lf2.player_infos)
-              player.team_decided = false;
-            this.state = GamePrepareState.PlayerCharacterSelecting
-            break;
-        }
+        console.log(
+          this.layout.root.search_components(ComNumButton)
+        )
         break;
       case GamePrepareState.ComputerCharacterSelecting:
         break;
@@ -132,6 +131,8 @@ export default class GamePrepareLogic extends LayoutComponent {
       case GamePrepareState.GameSetting:
     }
   }
+
+  @Log
   protected on_enter_state(state: GamePrepareState, prev: GamePrepareState) {
     switch (state) {
       case GamePrepareState.CountingDown: {
@@ -148,6 +149,7 @@ export default class GamePrepareLogic extends LayoutComponent {
     }
   }
 
+  @Log
   protected on_leave_state(state: GamePrepareState, next: GamePrepareState) {
     switch (state) {
       case GamePrepareState.CountingDown:

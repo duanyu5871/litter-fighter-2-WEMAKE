@@ -42,9 +42,12 @@ async function parse_under_dir(src_dir_path: string, dst_dir_path: string, index
         if (dirty?.frames?.[3]?.opoint) delete dirty.frames[3].opoint
       }
       if (!json) {
+        console.log('copy', src_path, '=>', dst_path)
         await fs.copyFile(src_path, dst_path);
         continue;
       }
+    
+      console.log('convert', src_path, '=>', dst_path)
       await fs.writeFile(
         dst_path.replace(/\.dat$/, '.json'),
         JSON.stringify(json, null, 2)
@@ -62,6 +65,7 @@ async function parse_under_dir(src_dir_path: string, dst_dir_path: string, index
         spawn('ffmpeg', args).on('exit', a).on('error', b)
       })
     } else {
+      console.log('copy', src_path, '=>', dst_path)
       await fs.copyFile(src_path, dst_path);
     }
   }

@@ -459,11 +459,29 @@ export default class Layout {
     for (const l of this.children) l.dispose();
   }
 
-  find_component<T extends abstract new (...args: any) => any>(type: T, condition: (c: InstanceType<T>) => unknown = () => 1): InstanceType<T> | undefined {
+  find_component<T extends TCls>(type: T, condition: TCond<T> = () => 1): InstanceType<T> | undefined {
     return find(this.components, v => v instanceof type && condition(v as any)) as InstanceType<T> | undefined
   }
 
-  find_components<T extends abstract new (...args: any) => any>(type: T, condition: (c: InstanceType<T>) => unknown = () => 1): InstanceType<T> | undefined {
-    return filter(this.components, v => v instanceof type && condition(v as any)) as InstanceType<T> | undefined
+  find_components<T extends TCls>(type: T, condition: TCond<T> = () => 1): InstanceType<T>[] {
+    return filter(this.components, v => v instanceof type && condition(v as any)) as InstanceType<T>[]
+  }
+
+  search_component<T extends TCls>(type: T, condition: TCond<T> = () => 1): InstanceType<T> | undefined {
+    const ret = this.find_component(type, condition);
+    if (ret) return ret;
+    for (const i of this._children) {
+      const ret = i.search_component(type, condition);
+      if (ret) return ret;
+    }
+  }
+
+  search_components<T extends TCls>(type: T, condition: TCond<T> = () => 1): InstanceType<T>[] {
+    const ret = this.find_components(type, condition);
+    for (const i of this._children)
+      ret.push(...i.search_components(type, condition))
+    return ret;
   }
 }
+type TCls<R = any> = abstract new (...args: any) => R;
+type TCond<T extends TCls> = (c: InstanceType<T>) => unknown;

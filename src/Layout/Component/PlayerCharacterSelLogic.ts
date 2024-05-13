@@ -51,13 +51,15 @@ export default class PlayerCharacterSelLogic extends LayoutComponent {
     return this;
   }
 
+  get gpl() { return this.layout.root.find_component(GamePrepareLogic) }
+
   on_mount(): void {
     super.on_mount();
     if (!this._player_id) return;
     this.lf2.callbacks.add(this._lf2_listener)
     if (!this.lf2.is_cheat_enabled(Defines.Cheats.Hidden))
       this.handle_hidden_character();
-    this.layout.find_component(GamePrepareLogic)?.callbacks.add(this._game_prepare_logic_listener);
+    this.gpl?.callbacks.add(this._game_prepare_logic_listener);
   }
 
   on_unmount(): void {
@@ -66,7 +68,7 @@ export default class PlayerCharacterSelLogic extends LayoutComponent {
     this.character_decided = false;
     this.team_decided = false;
     this.lf2.callbacks.del(this._lf2_listener)
-    this.layout.find_component(GamePrepareLogic)?.callbacks.del(this._game_prepare_logic_listener);
+    this.gpl?.callbacks.del(this._game_prepare_logic_listener);
   }
 
   get_characters() {
@@ -76,10 +78,9 @@ export default class PlayerCharacterSelLogic extends LayoutComponent {
   }
 
   on_player_key_down(player_id: string, key: TKeyName): void {
-    if (
-      this.layout.find_component(GamePrepareLogic)?.state !==
-      GamePrepareState.PlayerCharacterSelecting
-    ) return;
+    if (this.gpl?.state !== GamePrepareState.PlayerCharacterSelecting)
+      return;
+  
     if (player_id !== this._player_id)
       return;
     if (this.team_decided) {

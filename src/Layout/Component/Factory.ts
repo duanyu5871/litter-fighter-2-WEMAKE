@@ -12,7 +12,7 @@ import PlayerName from "./PlayerName";
 import PlayerTeamName from "./PlayerTeamName";
 import StageTransitions from "./StageTransitions";
 import GamePrepareLogic from "./GamePrepareLogic";
-import ComNumButton from "./ComNumberButton";
+import ComNumButton from "./ComNumButton";
 import StageTitleShow from "./StageTitleShow";
 import { ReachableLayoutGroup, ReachableLayout } from "./ReachableLayoutGroup";
 class Factory {
