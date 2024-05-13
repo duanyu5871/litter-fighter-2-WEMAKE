@@ -4,6 +4,7 @@ import { get_team_text_color } from '../base/get_team_text_color';
 import type Entity from './Entity';
 import type IEntityCallbacks from './IEntityCallbacks';
 import Character from './Character';
+import LocalHuman from '../controller/LocalHuman';
 
 const BAR_W = 40;
 const BAR_H = 2;
@@ -55,7 +56,9 @@ export class InfoSprite implements IEntityCallbacks {
   protected entity: Entity;
 
   get visible() { return this.mesh.visible; }
-  set visible(v) { this.mesh.visible = this.bars_node.visible = v && Character.is(this.entity); }
+  set visible(v) {
+    this.mesh.visible = this.bars_node.visible = v;
+  }
 
   constructor(entity: Entity) {
     this.mesh.name = InfoSprite.name;
@@ -63,7 +66,6 @@ export class InfoSprite implements IEntityCallbacks {
     this.entity = entity;
     entity.mesh.addEventListener('added', () => this.on_mount(entity));
     entity.mesh.addEventListener('removed', () => this.on_unmount(entity));
-
 
     this.bars_node.add(this.bars_bg)
 
@@ -95,10 +97,12 @@ export class InfoSprite implements IEntityCallbacks {
   }
 
   protected on_mount(entity: Entity) {
-    entity.world.scene.add(this.bars_node);
-    entity.world.scene.add(this.mesh);
-    entity.callbacks.add(this)
-    this.update_name_sprite(entity, entity.name, entity.team)
+    if (Character.is(this.entity) && LocalHuman.is(this.entity.controller)) {
+      entity.world.scene.add(this.bars_node);
+      entity.world.scene.add(this.mesh);
+    }
+    entity.callbacks.add(this);
+    this.update_name_sprite(entity, entity.name, entity.team);
   }
 
   protected on_unmount(entity: Entity) {

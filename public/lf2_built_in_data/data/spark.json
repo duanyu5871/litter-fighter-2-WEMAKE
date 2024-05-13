@@ -1,6 +1,8 @@
 {
   "id": "data/spark.json",
   "type": "frame_animater",
+  "is_game_obj_data": true,
+  "is_base_data": true,
   "base": {
     "files": {
       "0": {

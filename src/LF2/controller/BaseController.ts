@@ -15,6 +15,30 @@ export const CONFLICTS_KEY_MAP: Record<TKeyName, TKeyName | undefined> = {
   D: "U",
 }
 
+class DoubleClick {
+  press(time: number, character: Character) {
+    if (this.time === 0) {
+      // 双击判定：首次按下
+      this.time = -time;
+      this.frame_state_1 = character.get_frame().state;
+    } else if (this.time + time < character.world.double_click_interval) {
+      //  双击判定：间隔时间内再次按下
+      this.time = time
+      this.frame_state_2 = character.get_frame().state;
+    } else {
+      // 双击判定：超时，非双击
+      this.reset();
+    }
+  }
+  frame_state_2?: number;
+  frame_state_1?: number;
+  time: number = 0;
+  reset() {
+    this.time = 0;
+    this.frame_state_1 = void 0;
+    this.frame_state_2 = void 0;
+  }
+}
 export class BaseController {
   readonly is_base_controller = true;
   static is = (v: any): v is BaseController => v?.is_base_controller === true
@@ -40,13 +64,9 @@ export class BaseController {
     for (const k of keys) {
       this.key_time_maps[k] = this._time;
       const ck = CONFLICTS_KEY_MAP[k];
-      if (ck) { this.db_time_map[ck] = 0; }
-      if (this.db_time_map[k] === 0)
-        this.db_time_map[k] = -this._time;
-      else if (this.db_time_map[k] + this._time < this.character.world.double_click_interval)
-        this.db_time_map[k] = this._time
-      else
-        this.db_time_map[k] = 0;
+      if (ck) this.db_time_map[ck].reset();
+
+      this.db_time_map[k].press(this._time, this.character);
     };
     return this;
   }
@@ -97,9 +117,8 @@ export class BaseController {
     return !!v && this._time - v <= this.character.world.key_hit_duration;
   }
   is_db_hit(k: TKeyName): boolean {
-    const v = this.db_time_map[k];
-    const ret = v > 0 && this._time - v <= this.character.world.key_hit_duration;
-    if (!ret && v > 0) this.db_time_map[k] = -v;
+    const { time } = this.db_time_map[k];
+    const ret = time > 0 && this._time - time <= this.character.world.key_hit_duration;
     return ret;
   }
   is_end(k: string): boolean;
@@ -112,14 +131,14 @@ export class BaseController {
   is_start(k: TKeyName): boolean {
     return this.key_time_maps[k] === this._time - 1;
   }
-  db_time_map: Record<TKeyName, number> = {
-    d: 0,
-    a: 0,
-    j: 0,
-    L: 0,
-    R: 0,
-    U: 0,
-    D: 0
+  readonly db_time_map: Record<TKeyName, DoubleClick> = {
+    d: new DoubleClick(),
+    a: new DoubleClick(),
+    j: new DoubleClick(),
+    L: new DoubleClick(),
+    R: new DoubleClick(),
+    U: new DoubleClick(),
+    D: new DoubleClick()
   };
   get LR(): 0 | 1 | -1 {
     const L = !!this.key_time_maps.L;
@@ -179,10 +198,10 @@ export class BaseController {
       if (hold?.B && hold_R && end_L && nf[1] < this.key_time_maps.R) nf = [hold.B, this.key_time_maps.R, 'R'];
     }
     /** 相对方向的双击判定 */
-    if (hit?.FF && facing < 0 && this.is_db_hit('L') && nf[1] < this.db_time_map.L) nf = [hit.FF, this.db_time_map.L, void 0];
-    if (hit?.BB && facing > 0 && this.is_db_hit('L') && nf[1] < this.db_time_map.L) nf = [hit.BB, this.db_time_map.L, void 0];
-    if (hit?.BB && facing < 0 && this.is_db_hit('R') && nf[1] < this.db_time_map.R) nf = [hit.BB, this.db_time_map.R, void 0];
-    if (hit?.FF && facing > 0 && this.is_db_hit('R') && nf[1] < this.db_time_map.R) nf = [hit.FF, this.db_time_map.R, void 0];
+    if (hit?.FF && facing < 0 && this.is_db_hit('L') && nf[1] < this.db_time_map.L.time) nf = [hit.FF, this.db_time_map.L.time, void 0];
+    if (hit?.BB && facing > 0 && this.is_db_hit('L') && nf[1] < this.db_time_map.L.time) nf = [hit.BB, this.db_time_map.L.time, void 0];
+    if (hit?.BB && facing < 0 && this.is_db_hit('R') && nf[1] < this.db_time_map.R.time) nf = [hit.BB, this.db_time_map.R.time, void 0];
+    if (hit?.FF && facing > 0 && this.is_db_hit('R') && nf[1] < this.db_time_map.R.time) nf = [hit.FF, this.db_time_map.R.time, void 0];
 
     for (const key of KEY_NAME_LIST) {
       /** 加入按键序列，但d除外，因为d是按键序列的开始 */
@@ -205,7 +224,7 @@ export class BaseController {
       /** 双击判定 */
       const key_key = `${key}${key}` as keyof IHitKeyCollection;
       act = hit?.[key_key]
-      press_time = this.db_time_map[key];
+      press_time = this.db_time_map[key].time;
       if (act && this.is_db_hit(key) && nf[1] < press_time) {
         nf = [act, press_time, void 0];
       }

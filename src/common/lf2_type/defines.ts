@@ -298,7 +298,7 @@ export namespace Defines {
     v.is_bg_data === true
   export const is_game_obj_data = (v: any): v is IGameObjData =>
     v.is_game_obj_data === true
-
+  
   export namespace BuiltIn {
     export enum Imgs {
       RFACE = 'sprite/RFACE.png',

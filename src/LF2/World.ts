@@ -473,14 +473,17 @@ export class World {
   }
 
   spark(x: number, y: number, z: number, f: string) {
-    const d = this.lf2.datas.find(Defines.BuiltIn.Dats.Spark);
-    if (!d || !('frames' in d)) return;
-    const create = factory.get(d.type);
-    if (!create) {
-      Warn.print(World.name + '::' + this.spark.name, `creator of "${d.type}" not found!`);
+    const data = this.lf2.datas.find(Defines.BuiltIn.Dats.Spark);
+    if (!data) {
+      Warn.print(World.name + '::' + this.spark.name, `data of "${Defines.BuiltIn.Dats.Spark}" not found!`);
       return;
     }
-    const e = create(this, d)
+    const create = factory.get(data.type);
+    if (!create) {
+      Warn.print(World.name + '::' + this.spark.name, `creator of "${data.type}" not found!`);
+      return;
+    }
+    const e = create(this, data)
     e.position.set(x, y, z)
     e.mesh.material.depthTest = false;
     e.mesh.material.depthWrite = false;

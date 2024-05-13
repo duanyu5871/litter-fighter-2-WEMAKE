@@ -81,6 +81,7 @@ class Inner {
     const data = await this._cook_data(raw_data) as IGameObjData; // fixme
     const _index_id = '' + index_id;
     const _data_id = '' + data.id;
+    if(_data_id === 'spark') debugger
     if (_data_id !== _index_id) {
       Log.print('DatLoader',
         `_add_data(), index_id not equal to data_id,`,

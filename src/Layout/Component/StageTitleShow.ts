@@ -97,11 +97,13 @@ export default class StageTitleShow extends LayoutComponent {
     this._opactiy.play(false);
   }
   async create_mesh(rect_name: string) {
-    const [x, y, w, h] = read_nums(this.layout.get_value(rect_name), 4)
+    const raw_rect = this.layout.get_value(rect_name);
+    const [x, y, w, h] = read_nums(raw_rect, 4);
     if (w <= 0 || h <= 0) return;
     const char_num_img = this.layout.get_value('char_num_img');
     if (!is_str(char_num_img)) return;
-    const num_pic = await this.lf2.images.create_pic(char_num_img, char_num_img, { src_x: x, src_y: y, src_w: w, src_h: h });
+    const key = char_num_img + rect_name;
+    const num_pic = await this.lf2.images.create_pic(key, char_num_img, { src_x: x, src_y: y, src_w: w, src_h: h });
     const num_mesh = LayoutMeshBuilder.create()
       .size(w, h)
       .build({
