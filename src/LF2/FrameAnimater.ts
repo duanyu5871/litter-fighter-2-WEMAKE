@@ -80,13 +80,17 @@ export class FrameAnimater<
     this.data = data;
     this.world = world;
     this.pictures = create_pictures(world.lf2, data);
+
+    const first_text = this.pictures.get('0')?.texture;
     const mesh = this.mesh = new THREE.Mesh(
       new THREE.PlaneGeometry(1, 1).translate(0.5, -0.5, 0),
       new THREE.MeshBasicMaterial({
-        map: this.pictures.get('0')?.texture,
-        transparent: true
+        map: first_text,
+        transparent: true,
       })
     );
+    if (first_text) first_text.onUpdate = () => mesh.material.needsUpdate = true
+
     mesh.userData.owner = this;
     mesh.name = 'FrameAnimater';
     this.mesh.visible = false;
