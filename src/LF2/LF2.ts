@@ -100,7 +100,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
       "bgm/stage4.wma.ogg",
       "bgm/stage5.wma.ogg",
     ].map(async name => {
-      await this.sounds.preload(name, name);
+      await this.sounds.load(name, name);
       return name;
     })
     return Promise.all(jobs)

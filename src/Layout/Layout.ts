@@ -215,7 +215,7 @@ export default class Layout {
   }
 
   private async _cook_imgs(lf2: LF2) {
-    const { img, flip_x, flip_y } = this.data;
+    const { img } = this.data;
     do {
       if (!img) break;
 
@@ -225,7 +225,7 @@ export default class Layout {
       const img_infos: TImageInfo[] = [];
       const [sx, sy, sw, sh] = read_nums(this.data.rect, 4)
       const preload = async (img_path: string) => {
-        const img_key = [img_path, sx, sy, sw, sh, flip_x ? 1 : 0, flip_y ? 1 : 0].join('_')
+        const img_key = [img_path, sx, sy, sw, sh].join('_')
         const img_info = this.lf2.images.find(img_key);
         if (img_info) return img_info;
         return await this.lf2.images.load_img(img_key, img_path, (img, cvs, ctx) => {

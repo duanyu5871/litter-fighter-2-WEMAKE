@@ -1,4 +1,4 @@
-import { ICharacterData, IWeaponData } from ".";
+import { ICharacterData, IGameObjData, IWeaponData } from ".";
 import { IBgData } from "./IBgData";
 import { IStageInfo } from "./IStageInfo";
 
@@ -294,6 +294,11 @@ export namespace Defines {
     v.is_character_data === true
   export const is_weapon_data = (v: any): v is IWeaponData =>
     v.is_weapon_data === true
+  export const is_bg_data = (v: any): v is IBgData =>
+    v.is_bg_data === true
+  export const is_game_obj_data = (v: any): v is IGameObjData =>
+    v.is_game_obj_data === true
+
   export namespace BuiltIn {
     export enum Imgs {
       RFACE = 'sprite/RFACE.png',

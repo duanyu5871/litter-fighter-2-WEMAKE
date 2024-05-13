@@ -34,7 +34,7 @@ export interface IPlayer {
    * @param {string} src 声音源
    * @returns {Promise<any>}
    */
-  preload(name: string, src: string): Promise<any>;
+  load(name: string, src: string): Promise<any>;
 
 
   /**

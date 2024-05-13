@@ -11,7 +11,9 @@ export interface ICharacterInfo extends IGameObjInfo {
   ce?: number;
   armor?: IArmorInfo;
   name: string;
+  /** 角色头像 */
   head: string;
+  /** 角色缩略图 */
   small: string;
   jump_height: number;
   jump_distance: number;

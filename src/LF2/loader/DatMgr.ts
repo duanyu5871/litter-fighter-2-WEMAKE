@@ -1,12 +1,11 @@
 import { Log } from '../../Log';
-import { is_str, not_blank_str } from '../../common/type_check';
 import { IBallData, IBgData, ICharacterData, IDataMap, IEntityData, IGameObjData, IWeaponData } from '../../common/lf2_type';
 import { Defines } from '../../common/lf2_type/defines';
-import { map, traversal } from '../../common/traversal';
+import { traversal } from '../../common/traversal';
+import { is_str, not_blank_str } from '../../common/type_check';
 import LF2 from '../LF2';
 import { TData } from '../entity/Entity';
 import { cook_frame } from './preprocess_frame';
-
 
 export interface IDataListMap {
   'background': IBgData[];
@@ -41,30 +40,40 @@ class Inner {
   }
 
   private async _cook_data(data: TData): Promise<TData> {
+    const jobs: Promise<unknown>[] = [];
+    const { images, sounds } = this.lf2;
     if (Defines.is_weapon_data(data)) {
       const {
         weapon_broken_sound: a,
         weapon_drop_sound: b,
         weapon_hit_sound: c,
       } = data.base
-      const mgr = this.lf2.sounds;
-      not_blank_str(a) && !mgr.has(a) && mgr.preload(a, a);
-      not_blank_str(b) && !mgr.has(b) && mgr.preload(b, b);
-      not_blank_str(c) && !mgr.has(c) && mgr.preload(c, c);
+      not_blank_str(a) && !sounds.has(a) && jobs.push(sounds.load(a, a));
+      not_blank_str(b) && !sounds.has(b) && jobs.push(sounds.load(b, b));
+      not_blank_str(c) && !sounds.has(c) && jobs.push(sounds.load(c, c));
     }
-
-    if (!('frames' in data)) return data;
-    const { frames, base: { files } } = data;
-    const jobs = map(files, (_, v) => this.lf2.images.load_by_e_pic_info(v))
     if (Defines.is_character_data(data)) {
       const { small, head } = data.base;
-      jobs.push(
-        this.lf2.images.load_img(small, small),
-        this.lf2.images.load_img(head, head)
-      )
+      not_blank_str(small) && jobs.push(images.load_img(small, small));
+      not_blank_str(head) && jobs.push(images.load_img(head, head));
     }
-    await Promise.all(jobs);
-    traversal(frames, (_, frame) => cook_frame(this.lf2, data, frame));
+    if (Defines.is_bg_data(data)) {
+      const { layers, base: { shadow } } = data;
+      not_blank_str(shadow) && jobs.push(images.load_img(shadow, shadow))
+      for (const { file } of layers) {
+        not_blank_str(file) && jobs.push(images.load_img(file, file))
+      }
+    }
+    if (Defines.is_game_obj_data(data)) {
+      const { frames, base: { files } } = data;
+      traversal(files, (_, v) => {
+        jobs.push(images.load_by_e_pic_info(v))
+      })
+      if (frames) {
+        traversal(frames, (_, frame) => cook_frame(this.lf2, data, frame));
+      }
+    }
+    if (jobs.length) await Promise.all(jobs);
     return data;
   }
 

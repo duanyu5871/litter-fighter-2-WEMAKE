@@ -27,7 +27,7 @@ export default class ModernPlayer implements IPlayer {
     return this._r.values.has(name);
   }
 
-  preload(name: string, src: string) {
+  load(name: string, src: string) {
     return this._r.get(name, async () => {
       this.lf2.on_loading_content(`loading: ${name}`, 0);
       const url = await this.lf2.import_resource(src);
@@ -65,7 +65,7 @@ export default class ModernPlayer implements IPlayer {
     if (buf) {
       start(buf);
     } else {
-      this.preload(name, name).then(start)
+      this.load(name, name).then(start)
     }
     return () => (req_id === this._req_id) && this.stop_bgm();
   }

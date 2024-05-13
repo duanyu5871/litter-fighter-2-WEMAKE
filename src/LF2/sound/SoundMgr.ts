@@ -33,8 +33,8 @@ export default class SoundMgr implements IPlayer {
     return this.inner.has(name);
   }
 
-  preload(key: string, src: string) {
-    return this.inner.preload(key, src);
+  load(key: string, src: string) {
+    return this.inner.load(key, src);
   }
 
   stop_bgm() {
@@ -55,7 +55,7 @@ export default class SoundMgr implements IPlayer {
 
   async play_with_load(src: string, x?: number, y?: number, z?: number): Promise<string> {
     if (!this.inner.has(src))
-      await this.inner.preload(src, src);
+      await this.inner.load(src, src);
     return this.inner.play(src, x, y, z);
   }
 

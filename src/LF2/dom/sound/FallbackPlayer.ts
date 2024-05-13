@@ -47,7 +47,7 @@ export default class FallbackPlayer implements IPlayer {
 
   }
 
-  async preload(name: string, src: string): Promise<any> {
+  async load(name: string, src: string): Promise<any> {
     this._r.set(name, await this.lf2.import_resource(src));
   }
 

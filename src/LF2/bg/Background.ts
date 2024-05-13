@@ -50,9 +50,8 @@ export default class Background {
     for (const info of data.layers) {
       if ('color' in info) this.add_layer(info);
       if (!info.file) continue;
-      this.world.lf2.images.create_pic(info.file, info.file)
-        .then(pic => this.add_layer(info, pic))
-        .catch(err => Warn.print(Background.name, info, err))
+      const pic = this.world.lf2.images.create_pic_by_img_key(info.file)
+      this.add_layer(info, pic);
     }
     this._disposers.push(() => this.fade_out());
     world.scene.add(this.obj_3d);
@@ -79,14 +78,8 @@ export default class Background {
     } while (loop > 0 && x < this.width);
   }
 
-  async get_shadow(): Promise<TPicture> {
-    const key = this.data.base.shadow;
-    if (!key) return err_pic_info(key)
-    try {
-      return await this.world.lf2.images.create_pic(key, key)
-    } catch (e) {
-      return err_pic_info(key);
-    }
+  get_shadow(): TPicture {
+    return this.world.lf2.images.create_pic_by_img_key(this.data.base.shadow)
   }
 
   dispose() {

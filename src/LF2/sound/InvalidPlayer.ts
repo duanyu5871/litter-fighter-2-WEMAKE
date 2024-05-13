@@ -9,7 +9,7 @@ export default class InvalidPlayer implements IPlayer {
   stop_bgm(): void { }
   bgm(): string | null { return null; }
   play_bgm(name: string): () => void { return () => void 0 }
-  preload(name: string, src: string): Promise<any> { return Promise.reject(new Error(InvalidPlayer.name)) }
+  load(name: string, src: string): Promise<any> { return Promise.reject(new Error(InvalidPlayer.name)) }
   play(name: string, x?: number | undefined, y?: number | undefined, z?: number | undefined): string { return '' }
   stop(id: string): void { }
   dispose(): void { }
