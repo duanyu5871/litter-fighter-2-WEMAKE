@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { is_str, is_fun, is_num, is_bool } from './common/type_check';
+import { is_str, is_fun, is_num, is_bool, not_empty_str } from './common/type_check';
 
 type T_RET<S> = readonly [S, React.Dispatch<React.SetStateAction<S>>]
 type T_IN<S> = S | (() => S);
@@ -30,7 +30,10 @@ export function useLocalNumber<S extends number = number>(name: string, initialS
 export function useLocalNumber<S extends number = number>(name: string, initialState?: T_IN<S>): T_RET<S> | T_RET<S | undefined> {
   const [val, set_val] = useState<S | undefined>(() => {
     let v = localStorage.getItem(name);
-    if (is_str(v)) return Number(v) as S;
+    if (not_empty_str(v)) {
+      const n = Number(v);
+      if (is_num(n)) return n as S
+    };
     const ret = is_num(initialState) ? initialState : is_fun(initialState) ? initialState() : void 0;
     if (is_num(ret)) localStorage.setItem(name, '' + ret);
     return ret as S;
