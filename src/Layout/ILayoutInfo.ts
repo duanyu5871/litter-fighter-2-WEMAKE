@@ -12,6 +12,7 @@ export interface ILayoutInfo {
   pos?: number[] | string;
   size?: number[] | string;
   visible?: boolean | string;
+  disabled?: boolean | string;
   flip_x?: boolean;
   flip_y?: boolean;
   bg_color?: string;

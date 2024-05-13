@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import LF2 from '../LF2/LF2';
 import Callbacks from '../LF2/base/Callbacks';
 import Expression, { ValGetter } from '../LF2/base/Expression';
+import NoEmitCallbacks from '../LF2/base/NoEmitCallbacks';
 import { TKeyName } from '../LF2/controller/BaseController';
 import { type TImageInfo } from '../LF2/loader/loader';
 import NumberAnimation from '../common/animation/NumberAnimation';
@@ -24,7 +25,7 @@ export interface ILayoutCallback {
 export default class Layout {
   protected _callbacks = new Callbacks<ILayoutCallback>();
   protected _opacity_animation = new NumberAnimation();
-
+  get callbacks(): NoEmitCallbacks<ILayoutCallback> { return this._callbacks }
   /**
    * 根节点
    *
@@ -53,6 +54,7 @@ export default class Layout {
   }
   protected _state: any = {}
   protected _visible = () => true;
+  protected _disabled = () => false;
   protected _img_idx = () => 0;
   protected _opacity = () => 1;
   protected _parent?: Layout;
@@ -80,7 +82,24 @@ export default class Layout {
   get index() { return this._index }
   get state() { return this._state }
   get img_idx() { return this._img_idx() }
-  get visible(): boolean { return this._visible() }
+  get visible(): boolean {
+    let n: Layout | undefined = this;
+    do {
+      if (!n._visible())
+        return false;
+      n = n.parent
+    } while (n)
+    return true;
+  }
+  get disabled(): boolean {
+    let n: Layout | undefined = this;
+    do {
+      if (n._disabled())
+        return true;
+      n = n.parent
+    } while (n)
+    return false;
+  }
   get opacity() { return this._opacity() }
   get parent() { return this._parent; }
   get children() { return this._children; }
@@ -267,21 +286,28 @@ export default class Layout {
   }
 
   private _cook_data(get_val: ValGetter<Layout>) {
-    const { visible, opacity } = this.data;
+    const { visible, opacity, disabled } = this.data;
 
-    if (is_str(visible)) {
+    if (is_bool(disabled)) {
+      this._disabled = () => disabled;
+    } else if (is_str(disabled)) {
+      const func = new Expression<Layout>(disabled, get_val).make();
+      this._disabled = () => func(this);
+    }
+
+    if (is_bool(visible)) {
+      this._visible = () => visible;
+    } else if (is_str(visible)) {
       const func = new Expression<Layout>(visible, get_val).make();
-      return this._visible = () => func(this);
+      this._visible = () => func(this);
     }
-    if (is_bool(visible))
-      return this._visible = () => visible;
 
-    if (is_str(opacity)) {
+    if (is_num(opacity)) {
+      this._opacity = () => opacity;
+    } else if (is_str(opacity)) {
       const func = get_val(opacity);
-      return this._opacity = () => Number(func(this)) || 0;
+      this._opacity = () => Number(func(this)) || 0;
     }
-    if (is_num(opacity))
-      return this._opacity = () => opacity;
   }
 
   private _cook_img_idx(get_val: ValGetter<Layout>) {

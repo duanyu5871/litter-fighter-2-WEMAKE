@@ -1,5 +1,6 @@
 import { TKeyName } from "../../LF2/controller/BaseController";
 import { Log } from "../../Log";
+import Layout from "../Layout";
 import { LayoutComponent } from "./LayoutComponent";
 
 export class ReachableLayoutGroup extends LayoutComponent {
@@ -7,33 +8,48 @@ export class ReachableLayoutGroup extends LayoutComponent {
   protected _name: string = '';
   protected _set = new Set<ReachableLayout>();
   protected _arr: ReachableLayout[] = [];
+  protected _binded_layout_id?: string;
 
   get name(): string { return this._name; }
 
+  get binded_layout(): Layout {
+    if (!this._binded_layout_id) return this.layout;
+    return this.layout.root.find_layout(this._binded_layout_id) || this.layout
+  }
+
+  /**
+   * @inheritdoc
+   *
+   * @param {string} [name='']
+   * @param {string} [direction='']
+   * @param {(string | undefined)} [binded_layout_id=void 0] 绑定的布局
+   * @returns {this}
+   */
   @Log
-  override init(...args: string[]): this {
-    super.init(...args);
-    const [name = '', direction = ''] = args;
+  override init(name: string = '', direction: string = '', binded_layout_id: string | undefined = void 0): this {
+    super.init(name, direction);
     this._direction = direction;
     this._name = name;
+    this._binded_layout_id = binded_layout_id;
     return this;
   }
-  override on_mounted(): void {
-    super.on_mounted();
-  }
+
   add(l: ReachableLayout): this {
     this._set.add(l);
     return this;
   }
+
   del(l: ReachableLayout): this {
     this._set.delete(l);
     return this;
   }
+
   on_player_key_down(_player_id: string, key: TKeyName): void {
     if (this._set.size < 0) return;
     if (this._direction !== 'lr' && this._direction !== 'ud') return;
     if (this._direction === 'lr' && key !== 'L' && key !== 'R') return;
     if (this._direction === 'ud' && key !== 'U' && key !== 'D') return;
+    if (!this.binded_layout.visible) return;
 
     const items = Array.from(this._set).filter(v => v.layout.mesh?.visible).map(v => v.layout);
     const items_len = items.length

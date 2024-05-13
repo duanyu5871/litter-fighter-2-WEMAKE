@@ -17,7 +17,8 @@
     "player_c_sel_logic(6)",
     "player_c_sel_logic(7)",
     "player_c_sel_logic(8)",
-    "game_prepare_logic()"
+    "game_prepare_logic()",
+    "reachable_layout_group(com_num,lr,how_many_computer)"
   ],
   "items": [
     {
@@ -375,7 +376,10 @@
           "txt": "0",
           "opacity": "opacity_hover",
           "pos": "30,70",
-          "component": "com_number(0)",
+          "component": [
+            "com_number(0)",
+            "reachable_layout(com_num)"
+          ],
           "style": {
             "font": "16px Arial"
           }
@@ -384,7 +388,10 @@
           "txt": "1",
           "opacity": "opacity_hover",
           "pos": "70,70",
-          "component": "com_number(1)",
+          "component": [
+            "com_number(1)",
+            "reachable_layout(com_num)"
+          ],
           "style": {
             "font": "16px Arial"
           }
@@ -393,7 +400,10 @@
           "txt": "2",
           "opacity": "opacity_hover",
           "pos": "110,70",
-          "component": "com_number(2)",
+          "component": [
+            "com_number(2)",
+            "reachable_layout(com_num)"
+          ],
           "style": {
             "font": "16px Arial"
           }
@@ -402,7 +412,10 @@
           "txt": "3",
           "opacity": "opacity_hover",
           "pos": "150,70",
-          "component": "com_number(3)",
+          "component": [
+            "com_number(3)",
+            "reachable_layout(com_num)"
+          ],
           "style": {
             "font": "16px Arial"
           }
@@ -411,7 +424,10 @@
           "txt": "4",
           "opacity": "opacity_hover",
           "pos": "190,70",
-          "component": "com_number(4)",
+          "component": [
+            "com_number(4)",
+            "reachable_layout(com_num)"
+          ],
           "style": {
             "font": "16px Arial"
           }
@@ -420,7 +436,10 @@
           "txt": "5",
           "opacity": "opacity_hover",
           "pos": "230,70",
-          "component": "com_number(5)",
+          "component": [
+            "com_number(5)",
+            "reachable_layout(com_num)"
+          ],
           "style": {
             "font": "16px Arial"
           }
@@ -429,7 +448,10 @@
           "txt": "6",
           "opacity": "opacity_hover",
           "pos": "270,70",
-          "component": "com_number(6)",
+          "component": [
+            "com_number(6)",
+            "reachable_layout(com_num)"
+          ],
           "style": {
             "font": "16px Arial"
           }
@@ -438,7 +460,10 @@
           "txt": "7",
           "opacity": "opacity_hover",
           "pos": "310,70",
-          "component": "com_number(7)",
+          "component": [
+            "com_number(7)",
+            "reachable_layout(com_num)"
+          ],
           "style": {
             "font": "16px Arial"
           }
