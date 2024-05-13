@@ -3,6 +3,7 @@ import type { IPlayerInfoCallback, PlayerInfo } from "../../LF2/PlayerInfo";
 import { SineAnimation } from '../../SineAnimation';
 import { LayoutComponent } from "./LayoutComponent";
 import { TextBuilder } from './TextBuilder';
+import { dispose_mesh } from '../utils/release_mesh';
 
 /**
  * 显示玩家角色选择的角色名称
@@ -71,9 +72,7 @@ export default class PlayerCharacterName extends LayoutComponent {
     }
   }
   protected dispose_mesh() {
-    this._mesh?.geometry.dispose();
-    this._mesh?.material.map?.dispose();
-    this._mesh?.removeFromParent();
+    this._mesh && dispose_mesh(this._mesh);
     this._mesh = void 0;
   }
 

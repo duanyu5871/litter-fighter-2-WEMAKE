@@ -5,6 +5,7 @@ import NumberAnimation from "../../common/animation/NumberAnimation";
 import SequenceAnimation from '../../common/animation/SequenceAnimation';
 import { is_str } from "../../common/type_check";
 import read_nums from "../utils/read_nums";
+import { dispose_mesh as dispose_mesh } from "../utils/release_mesh";
 import { LayoutComponent } from "./LayoutComponent";
 import LayoutMeshBuilder from "./LayoutMeshBuilder";
 
@@ -25,14 +26,10 @@ export default class StageTitleShow extends LayoutComponent {
     new NumberAnimation(1, 0, 500)
   );
   private _meshs: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial, THREE.Object3DEventMap>[] = [];
-  private depose_mesh(mesh: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial, THREE.Object3DEventMap>) {
-    mesh.geometry.dispose();
-    mesh.material.dispose();
-    mesh.removeFromParent();
-  }
+
   private depose_all_mesh() {
     for (const mesh of this._meshs)
-      this.depose_mesh(mesh);
+      dispose_mesh(mesh);
     this._meshs.length = 0;
   }
 
@@ -42,7 +39,7 @@ export default class StageTitleShow extends LayoutComponent {
     const meshs = [await this.create_mesh(`stage_clear`)]
     const parent_mesh = this.layout.mesh;
     if (!parent_mesh || meshs.indexOf(void 0) >= 0 || !this.mounted) {
-      for (const mesh of meshs) mesh && this.depose_mesh(mesh)
+      for (const mesh of meshs) mesh && dispose_mesh(mesh)
       return;
     }
 
@@ -78,7 +75,7 @@ export default class StageTitleShow extends LayoutComponent {
 
     const parent_mesh = this.layout.mesh;
     if (!parent_mesh || meshs.indexOf(void 0) >= 0 || this._stage !== stage || !this.mounted) {
-      for (const mesh of meshs) mesh && this.depose_mesh(mesh)
+      for (const mesh of meshs) mesh && dispose_mesh(mesh)
       return;
     }
 

@@ -4,6 +4,7 @@ import { SineAnimation } from '../../SineAnimation';
 import { Defines } from '../../common/lf2_type/defines';
 import { LayoutComponent } from "./LayoutComponent";
 import { TextBuilder } from './TextBuilder';
+import { dispose_mesh } from '../utils/release_mesh';
 
 /**
  * 显示玩家队伍名
@@ -61,22 +62,17 @@ export default class PlayerTeamName extends LayoutComponent {
     super.on_unmount();
     if (!this._player) return;
     this._player.callbacks.del(this._player_listener);
-    this.dispose_mesh();
+    this._mesh && dispose_mesh(this._mesh);
+    this._mesh = void 0;
   }
 
   protected handle_changed() {
     if (this._show && this._text) {
       this.update_mesh(++this._jid, this._text)
     } else {
-      this.dispose_mesh();
+      this._mesh && dispose_mesh(this._mesh);
+      this._mesh = void 0;
     }
-  }
-
-  protected dispose_mesh() {
-    this._mesh?.geometry.dispose();
-    this._mesh?.material.map?.dispose();
-    this._mesh?.removeFromParent();
-    this._mesh = void 0;
   }
 
   protected async update_mesh(jid: number, name: string) {

@@ -252,12 +252,14 @@ export class FrameAnimater<
   }
 
   dispose(): void {
-    this.mesh.removeFromParent();
-    this.mesh.geometry.dispose();
-    this.mesh.material.dispose();
+    this.mesh && dispose_mesh(this.mesh);
     for (const [, pic] of this.pictures)
       pic.texture.dispose();
   }
 }
 
 factory.set('frame_animater', (...args) => new FrameAnimater(...args));
+
+function dispose_mesh(_mesh: any) {
+  throw new Error('Function not implemented.');
+}
