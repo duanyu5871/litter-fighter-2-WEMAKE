@@ -69,6 +69,8 @@ export default class PlayerCharacterHead extends LayoutComponent {
       if (this._mesh_hints && !this._player?.joined) this._mesh_hints.visible = true;
     },
     on_asking_com_num: () => {
+      this.release_countdown_mesh();
+      if (this._mesh_hints && !this._player?.joined) this._mesh_hints.visible = true;
     }
   };
 

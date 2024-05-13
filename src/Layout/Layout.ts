@@ -91,6 +91,9 @@ export default class Layout {
     } while (n)
     return true;
   }
+  set visible(v: boolean) {
+    this._visible = () => v
+  }
   get disabled(): boolean {
     let n: Layout | undefined = this;
     do {
@@ -415,7 +418,7 @@ export default class Layout {
         this.material.opacity = this._opacity_animation.update(dt);
       }
     }
-    for (const i of this.children) i.on_render(dt);
+    for (const i of this.children) i._visible() && i.on_render(dt);
     for (const c of this._components) c.on_render?.(dt);
   }
 

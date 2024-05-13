@@ -19,8 +19,7 @@ export enum GamePrepareState {
 }
 
 export default class GamePrepareLogic extends LayoutComponent {
-  static get inst(): GamePrepareLogic | null { return this._inst };
-  protected static _inst: GamePrepareLogic | null = null;
+
 
   protected _callbacks = new Callbacks<IGamePrepareLogicCallback>();
   protected _joined_num: number = 0;
@@ -31,6 +30,15 @@ export default class GamePrepareLogic extends LayoutComponent {
   }
   protected _state: GamePrepareState = GamePrepareState.PlayerCharacterSelecting;
 
+  get state(): GamePrepareState { return this._state; }
+  protected set state(v: GamePrepareState) {
+    if (this._state === v) return;
+    const old = this._state;
+    this.on_leave_state(old, v);
+    this._state = v;
+    this.on_enter_state(v, old);
+  }
+
   private _count_down: number = 5000;
   get callbacks(): NoEmitCallbacks<IGamePrepareLogicCallback> { return this._callbacks }
   get is_all_ready() {
@@ -38,7 +46,6 @@ export default class GamePrepareLogic extends LayoutComponent {
   }
   on_mount(): void {
     super.on_mount();
-    GamePrepareLogic._inst = this;
     for (const [, player] of this.lf2.player_infos) {
       if (player.joined) this._joined_num++;
       if (player.team_decided) this._ready_num++;
@@ -47,31 +54,29 @@ export default class GamePrepareLogic extends LayoutComponent {
   }
   on_unmount(): void {
     super.on_unmount();
-    if (GamePrepareLogic._inst === this)
-      GamePrepareLogic._inst = null;
     this._joined_num = 0;
     this._ready_num = 0;
     for (const [, player] of this.lf2.player_infos)
       player.callbacks.del(this._player_listener)
   }
   on_player_key_down(_player_id: string, key: TKeyName) {
-    switch (this._state) {
+    switch (this.state) {
       case GamePrepareState.PlayerCharacterSelecting:
+        break;
+      case GamePrepareState.CountingDown:
+        switch (key) {
+          case "j":
+            this._count_down = Math.max(0, this._count_down - 500);
+            break;
+        }
         break;
       case GamePrepareState.ComputerNumberSelecting:
         switch (key) {
-          case "L":
-          case "R":
-          case "U":
-          case "D":
-          case "a":
           case "j":
-            for (const [, player] of this.lf2.player_infos) {
+            for (const [, player] of this.lf2.player_infos)
               player.team_decided = false;
-            }
-            this._state = GamePrepareState.PlayerCharacterSelecting
+            this.state = GamePrepareState.PlayerCharacterSelecting
             break;
-          case "d":
         }
         break;
       case GamePrepareState.ComputerCharacterSelecting:
@@ -99,19 +104,17 @@ export default class GamePrepareLogic extends LayoutComponent {
   protected on_not_ready(): void {
     this._callbacks.emit('on_not_ready')();
   }
-  on_render(dt: number): void {
-    switch (this._state) {
+  override on_render(dt: number): void {
+    switch (this.state) {
       case GamePrepareState.PlayerCharacterSelecting:
         if (this.is_all_ready) {
-          this._count_down = 5000;
-          this._state = GamePrepareState.CountingDown;
-          this._callbacks.emit('on_countdown')(5);
+          this.state = GamePrepareState.CountingDown;
         }
         break;
       case GamePrepareState.CountingDown: {
         if (!this.is_all_ready) {
-          this._state = GamePrepareState.PlayerCharacterSelecting;
-           break;
+          this.state = GamePrepareState.PlayerCharacterSelecting;
+          break;
         }
         const prev_second = Math.ceil(this._count_down / 1000);
         this._count_down -= dt
@@ -120,14 +123,39 @@ export default class GamePrepareLogic extends LayoutComponent {
           this._callbacks.emit('on_countdown')(curr_second);
         }
         if (this._count_down <= 0) {
-          this._callbacks.emit('on_asking_com_num')();
-          this._state = GamePrepareState.ComputerNumberSelecting;
+          this.state = GamePrepareState.ComputerNumberSelecting;
         }
         break;
       }
       case GamePrepareState.ComputerNumberSelecting:
       case GamePrepareState.ComputerCharacterSelecting:
       case GamePrepareState.GameSetting:
+    }
+  }
+  protected on_enter_state(state: GamePrepareState, prev: GamePrepareState) {
+    switch (state) {
+      case GamePrepareState.CountingDown: {
+        this._count_down = 5000;
+        this._callbacks.emit('on_countdown')(5);
+        break;
+      }
+      case GamePrepareState.ComputerNumberSelecting: {
+        this._callbacks.emit('on_asking_com_num')();
+        const l = this.layout.find_layout('how_many_computer');
+        if (l) l.visible = true;
+        break;
+      }
+    }
+  }
+
+  protected on_leave_state(state: GamePrepareState, next: GamePrepareState) {
+    switch (state) {
+      case GamePrepareState.CountingDown:
+      case GamePrepareState.ComputerNumberSelecting: {
+        const l = this.layout.find_layout('how_many_computer');
+        if (l) l.visible = false;
+        break;
+      }
     }
   }
 }
