@@ -4,6 +4,7 @@ import { SineAnimation } from '../../SineAnimation';
 import { LayoutComponent } from "./LayoutComponent";
 import { TextBuilder } from './TextBuilder';
 import { dispose_mesh } from '../utils/dispose_mesh';
+import GamePrepareLogic, { GamePrepareState } from './GamePrepareLogic';
 
 /**
  * 显示玩家名称
@@ -78,7 +79,7 @@ export default class PlayerName extends LayoutComponent {
       .text(name)
       .style({
         fill_style: 'white',
-        font: 'bold 14px Arial',
+        font: '14px Arial',
       });
     if (!this._mesh) {
       const mesh = await builder.build_mesh();
@@ -104,12 +105,30 @@ export default class PlayerName extends LayoutComponent {
       this._mesh.material.needsUpdate = true;
     }
   }
+  get joined(): boolean { return true === this._player?.joined }
+  get gpl(): GamePrepareLogic | undefined {
+    return this.layout.root.find_component(GamePrepareLogic)
+  };
 
   on_render(dt: number): void {
     this._opacity.update(dt)
     if (this._mesh) {
       this._mesh.material.opacity = this._player?.joined ? 1 : this._opacity.value;
       this._mesh.material.needsUpdate = true;
+    }
+    const joined = this.joined;
+    switch (this.gpl?.state) {
+      case GamePrepareState.PlayerCharacterSelecting:
+        if (this._mesh) this._mesh.visible = true;
+        break;
+      case GamePrepareState.CountingDown:
+        if (this._mesh) this._mesh.visible = joined;
+        break;
+      case GamePrepareState.ComputerNumberSelecting:
+      case GamePrepareState.ComputerCharacterSelecting:
+      case GamePrepareState.GameSetting:
+        if (this._mesh) this._mesh.visible = joined;
+        break;
     }
   }
 }

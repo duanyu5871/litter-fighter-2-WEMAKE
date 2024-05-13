@@ -4,7 +4,7 @@ import { TPicture } from '../../LF2/loader/loader';
 import { SineAnimation } from '../../SineAnimation';
 import NumberAnimation from "../../common/animation/NumberAnimation";
 import { Defines } from '../../common/lf2_type/defines';
-import GamePrepareLogic, { IGamePrepareLogicCallback } from './GamePrepareLogic';
+import GamePrepareLogic, { GamePrepareState, IGamePrepareLogicCallback } from './GamePrepareLogic';
 import { LayoutComponent } from "./LayoutComponent";
 import MeshBuilder from "./LayoutMeshBuilder";
 
@@ -21,10 +21,11 @@ export default class PlayerCharacterHead extends LayoutComponent {
   protected _jid: number = 0;
   protected _mesh_head?: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial>
   protected _mesh_hints?: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial>
-  protected _mesh_countdown?: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial>
-  protected _head_opacity: NumberAnimation = new NumberAnimation(0, 1, 0, false);
+  protected _mesh_cd?: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial>
   protected _head: string = Defines.BuiltIn.Imgs.RFACE;
-  protected _hints_opacity: SineAnimation = new SineAnimation(0.75, 1, 1 / 50);
+  get gpl(): GamePrepareLogic | undefined {
+    return this.layout.root.find_component(GamePrepareLogic)
+  };
 
   get joined(): boolean { return true === this._player?.joined }
 
@@ -47,17 +48,17 @@ export default class PlayerCharacterHead extends LayoutComponent {
       const builder = MeshBuilder.create()
         .center(0.5, 0.5)
         .size(pic.w, pic.h)
-      if (!this._mesh_countdown) {
-        this._mesh_countdown = builder.build({ map: pic.texture, transparent: true });
-        this._mesh_countdown.position.set(w / 2, -h / 2, 0);
-        this._mesh_countdown.name = 'countdown'
-        this.layout.mesh?.add(this._mesh_countdown);
+      if (!this._mesh_cd) {
+        this._mesh_cd = builder.build({ map: pic.texture, transparent: true });
+        this._mesh_cd.position.set(w / 2, -h / 2, 0);
+        this._mesh_cd.name = 'countdown'
+        this.layout.mesh?.add(this._mesh_cd);
       } else {
-        this._mesh_countdown.geometry.dispose();
-        this._mesh_countdown.material.map?.dispose();
-        this._mesh_countdown.geometry = builder.build_geometry();
-        this._mesh_countdown.material.map = pic.texture;
-        this._mesh_countdown.material.needsUpdate = true;
+        this._mesh_cd.geometry.dispose();
+        this._mesh_cd.material.map?.dispose();
+        this._mesh_cd.geometry = builder.build_geometry();
+        this._mesh_cd.material.map = pic.texture;
+        this._mesh_cd.material.needsUpdate = true;
       }
 
     },
@@ -81,11 +82,11 @@ export default class PlayerCharacterHead extends LayoutComponent {
 
   static hint_pic: TPicture | null = null;
   protected release_countdown_mesh(): void {
-    this._mesh_countdown?.removeFromParent();
-    this._mesh_countdown?.geometry.dispose();
-    this._mesh_countdown?.material.map?.dispose();
-    this._mesh_countdown?.material.dispose();
-    this._mesh_countdown = void 0;
+    this._mesh_cd?.removeFromParent();
+    this._mesh_cd?.geometry.dispose();
+    this._mesh_cd?.material.map?.dispose();
+    this._mesh_cd?.material.dispose();
+    this._mesh_cd = void 0;
   }
   create_hints_mesh() {
     const [w, h] = this.layout.size
@@ -108,8 +109,7 @@ export default class PlayerCharacterHead extends LayoutComponent {
     this._player.callbacks.add(this._player_listener);
     this._player_listener.on_character_changed?.(this._player.character, '');
 
-    const game_prepare_logic = this.layout.root.find_component(GamePrepareLogic)
-    game_prepare_logic?.callbacks.add(this._game_prepare_logic_listener);
+    this.gpl?.callbacks.add(this._game_prepare_logic_listener);
   }
 
   on_unmount(): void {
@@ -117,26 +117,17 @@ export default class PlayerCharacterHead extends LayoutComponent {
     if (!this._player) return;
     this._player.callbacks.del(this._player_listener);
     this.dispose_mesh();
-    const game_prepare_logic = this.layout.root.find_component(GamePrepareLogic)
-    game_prepare_logic?.callbacks.del(this._game_prepare_logic_listener);
+    this.gpl?.callbacks.del(this._game_prepare_logic_listener);
   }
 
   protected handle_changed() {
-
-    if (!this._mesh_head && this._player?.joined) {
-      this.update_head_mesh(++this._jid, this._head)
-    } else {
-      this.fade_out();
-    }
+    this.update_head_mesh(++this._jid, this._head)
   }
   protected dispose_mesh() {
     this._mesh_head?.geometry.dispose();
     this._mesh_head?.material.map?.dispose();
     this._mesh_head?.removeFromParent();
     this._mesh_head = void 0;
-  }
-  protected fade_out() {
-    this._head_opacity.play(true);
   }
   protected update_head_mesh(jid: number, src: string) {
     if (jid !== this._jid) return;
@@ -161,24 +152,25 @@ export default class PlayerCharacterHead extends LayoutComponent {
   }
 
   on_render(dt: number): void {
-    this._hints_opacity.update(dt)
-    if (this._mesh_head) {
-      this._mesh_head.material.opacity = this._head_opacity.update(dt);
-      this._mesh_head.material.needsUpdate = true;
-    }
-
-    if (this._head_opacity.is_finish && this._head_opacity.reverse && this._mesh_head) {
-      if (this._player?.joined) {
-        this.update_head_mesh(++this._jid, this._head)
-        this._head_opacity.play(false);
-      } else {
-        this.dispose_mesh();
-      }
-    }
-
-    if (this._mesh_hints) {
-      this._mesh_hints.visible = !this.joined && !this._mesh_countdown;
-      this._mesh_hints.material.opacity = this._hints_opacity.value;
+    const joined = this.joined;
+    switch (this.gpl?.state) {
+      case GamePrepareState.PlayerCharacterSelecting:
+        if (this._mesh_hints) this._mesh_hints.visible = !joined
+        if (this._mesh_head) this._mesh_head.visible = joined;
+        if (this._mesh_cd) this._mesh_cd.visible = false;
+        break;
+      case GamePrepareState.CountingDown:
+        if (this._mesh_hints) this._mesh_hints.visible = false
+        if (this._mesh_head) this._mesh_head.visible = joined;
+        if (this._mesh_cd) this._mesh_cd.visible = !joined;
+        break;
+      case GamePrepareState.ComputerNumberSelecting:
+      case GamePrepareState.ComputerCharacterSelecting:
+      case GamePrepareState.GameSetting:
+        if (this._mesh_hints) this._mesh_hints.visible = false
+        if (this._mesh_head) this._mesh_head.visible = joined;
+        if (this._mesh_cd) this._mesh_cd.visible = false;
+        break;
     }
   }
 }

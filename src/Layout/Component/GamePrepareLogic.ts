@@ -48,6 +48,7 @@ export default class GamePrepareLogic extends LayoutComponent {
   }
   on_mount(): void {
     super.on_mount();
+    this.state = GamePrepareState.PlayerCharacterSelecting
     for (const [, player] of this.lf2.player_infos) {
       if (player.joined) this._joined_num++;
       if (player.team_decided) this._ready_num++;
