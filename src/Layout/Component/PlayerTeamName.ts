@@ -4,7 +4,7 @@ import { SineAnimation } from '../../SineAnimation';
 import { Defines } from '../../common/lf2_type/defines';
 import { LayoutComponent } from "./LayoutComponent";
 import { TextBuilder } from './TextBuilder';
-import { dispose_mesh } from '../utils/release_mesh';
+import { dispose_mesh } from '../utils/dispose_mesh';
 
 /**
  * 显示玩家队伍名

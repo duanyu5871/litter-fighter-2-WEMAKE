@@ -5,7 +5,7 @@ import NumberAnimation from "../../common/animation/NumberAnimation";
 import SequenceAnimation from '../../common/animation/SequenceAnimation';
 import { is_str } from "../../common/type_check";
 import read_nums from "../utils/read_nums";
-import { dispose_mesh as dispose_mesh } from "../utils/release_mesh";
+import { dispose_mesh } from "../utils/dispose_mesh";
 import { LayoutComponent } from "./LayoutComponent";
 import LayoutMeshBuilder from "./LayoutMeshBuilder";
 

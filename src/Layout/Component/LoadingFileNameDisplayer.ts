@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { ILf2Callback } from '../../LF2/ILf2Callback';
 import { LayoutComponent } from './LayoutComponent';
 import { TextBuilder } from './TextBuilder';
-import { dispose_mesh } from '../utils/release_mesh';
+import { dispose_mesh } from '../utils/dispose_mesh';
 
 export default class LoadingFileNameDisplayer extends LayoutComponent {
   protected _mesh?: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial>;
