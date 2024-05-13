@@ -33,6 +33,7 @@ export class LayoutComponent {
   on_click?(): boolean | void;
 
   on_mount(): void { this._mounted = true }
+  on_mounted(): void { }
   on_unmount(): void { this._mounted = false }
 
   on_show?(): void;

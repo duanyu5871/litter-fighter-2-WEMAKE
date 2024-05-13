@@ -14,6 +14,7 @@ import StageTransitions from "./StageTransitions";
 import GamePrepareLogic from "./GamePrepareLogic";
 import ComNumButton from "./ComNumberButton";
 import StageTitleShow from "./StageTitleShow";
+import { ReachableLayoutGroup, ReachableLayout } from "./ReachableLayoutGroup";
 class Factory {
   private _component_map = new Map<string, typeof LayoutComponent>([
     ['game_loading_file_name', LoadingFileNameDisplayer],
@@ -26,7 +27,9 @@ class Factory {
     ['player_t_name', PlayerTeamName],
     ['game_prepare_logic', GamePrepareLogic],
     ['com_number', ComNumButton],
-    ['stage_title_show', StageTitleShow]
+    ['stage_title_show', StageTitleShow],
+    ['reachable_layout_group', ReachableLayoutGroup],
+    ['reachable_layout', ReachableLayout],
   ])
   create(layout: Layout, components: ILayoutInfo['component']): LayoutComponent[] {
     if (!components?.length) return [];

@@ -32,8 +32,7 @@ export default class Layout {
    * @type {Layout}
    */
   protected _root: Layout;
-  protected _left_to_right: Layout[] = [];
-  protected _top_to_bottom: Layout[] = [];
+
   protected _focused_item?: Layout;
   protected _components = new Set<LayoutComponent>();
 
@@ -69,7 +68,8 @@ export default class Layout {
   dst_rect: [number, number, number, number] = [0, 0, 0, 0];
   lf2: LF2;
 
-  get focused_item(): Layout | undefined { return this._root === this ? this._focused_item : this._root._focused_item }
+  get focused_item(): Layout | undefined { return this._root._focused_item }
+  set focused_item(v: Layout | undefined) { this._root._focused_item = v }
   get id(): string | undefined { return this.data.id }
   get name(): string | undefined { return this.data.name }
   get x(): number { return this.pos[0] };
@@ -114,6 +114,28 @@ export default class Layout {
       this._name_layout_map = new Map();
     }
   }
+
+  get x_on_root(): number {
+    let x = 0;
+    let node: Layout | undefined = this;
+    do {
+      x += node.x;
+      node = node.parent;
+    } while (node)
+    return x;
+  }
+  get y_on_root(): number {
+    let ret = 0;
+    let node: Layout | undefined = this;
+    do {
+      ret += node.y;
+      node = node.parent;
+    } while (node)
+    return ret;
+  }
+
+
+
   hit(x: number, y: number): boolean {
     const [l, t, w, h] = this.dst_rect;
     return l <= x && t <= y && l + w >= x && t + h >= y;
@@ -130,12 +152,10 @@ export default class Layout {
     this.init_sprite();
 
     for (const c of this._components) c.on_mount?.();
-    for (const item of this.children)
-      item.on_mount();
+    for (const i of this.children) i.on_mount();
 
     const { enter } = this.data.actions || {};
     enter && actor.act(this, enter);
-
 
     if (this._mesh) {
       if (this._mesh.visible)
@@ -143,6 +163,7 @@ export default class Layout {
       else
         this.on_hide();
     }
+    for (const c of this._components) c.on_mounted?.();
   }
 
   on_unmount() {
@@ -181,10 +202,6 @@ export default class Layout {
     ret._cook_rects();
     ret._cook_component();
 
-    if (ret.data.actions?.click) {
-      if (ret.data.tab_type?.includes('lr')) ret.root._left_to_right!.push(ret);
-      if (ret.data.tab_type?.includes('ud')) ret.root._top_to_bottom!.push(ret);
-    }
     if (data.items)
       for (const raw_item of data.items) {
         const cooked_item = await Layout.cook(lf2, raw_item, get_val, ret);
@@ -199,14 +216,10 @@ export default class Layout {
       ret.center = [0, 0];
       ret.pos = [0, -450, 0]
     }
-    if (ret._root === ret) {
-      ret.root._left_to_right!.sort((a, b) => a.pos[0] - b.pos[0]);
-      ret.root._top_to_bottom!.sort((a, b) => a.pos[1] - b.pos[1]);
-    }
     return ret;
   }
 
-  private async _cook_component() {
+  private _cook_component() {
     const { component } = this.data
     if (!component) return;
     for (const c of factory.create(this, component)) {
@@ -383,41 +396,6 @@ export default class Layout {
   on_player_key_down(player_id: string, key: TKeyName) {
     for (const i of this.children) i.on_player_key_down?.(player_id, key);
     for (const c of this._components) c.on_player_key_down?.(player_id, key);
-    const lr_items = this._left_to_right.filter(v => v.visible);
-    const lr_lengh = lr_items.length;
-
-    if (lr_lengh) {
-      switch (key) {
-        case 'L': { // 聚点移动至下一layout（向左）
-          const idx = lr_items.findIndex(v => v === this._focused_item);
-          this._focused_item = lr_items[(Math.max(idx, 0) + lr_lengh - 1) % lr_lengh];
-          break;
-        }
-        case 'R': { // 聚点移动至下一layout（向右）
-          const idx = lr_items.findIndex(v => v === this._focused_item);
-          this._focused_item = lr_items[(idx + 1) % lr_lengh];
-          break;
-        }
-      }
-    }
-
-    const ud_items = this._top_to_bottom.filter(v => v.visible);
-    const ud_lengh = ud_items.length;
-    if (ud_lengh) {
-      switch (key) {
-        case 'U': { // 聚点移动至下一layout（向上）
-          const idx = ud_items.findIndex(v => v === this._focused_item);
-          this._focused_item = ud_items[(Math.max(idx, 0) + ud_lengh - 1) % ud_lengh];
-          break;
-        }
-        case 'D': { // 聚点移动至下一layout（向下）
-          const idx = ud_items.findIndex(v => v === this._focused_item);
-          this._focused_item = ud_items[(idx + 1) % ud_lengh];
-          break;
-        }
-      }
-    }
-
     switch (key) {
       case 'a': {
         this._focused_item?.on_click();
@@ -452,11 +430,11 @@ export default class Layout {
     for (const l of this.children) l.dispose();
   }
 
-  find_component<T extends abstract new (...args: any) => any>(type: T): InstanceType<T> | undefined {
-    return find(this.components, v => v instanceof type) as InstanceType<T> | undefined
+  find_component<T extends abstract new (...args: any) => any>(type: T, condition: (c: InstanceType<T>) => unknown = () => 1): InstanceType<T> | undefined {
+    return find(this.components, v => v instanceof type && condition(v as any)) as InstanceType<T> | undefined
   }
 
-  find_components<T extends abstract new (...args: any) => any>(type: T): InstanceType<T> | undefined {
-    return filter(this.components, v => v instanceof type) as InstanceType<T> | undefined
+  find_components<T extends abstract new (...args: any) => any>(type: T, condition: (c: InstanceType<T>) => unknown = () => 1): InstanceType<T> | undefined {
+    return filter(this.components, v => v instanceof type && condition(v as any)) as InstanceType<T> | undefined
   }
 }

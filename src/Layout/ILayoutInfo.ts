@@ -12,9 +12,7 @@ export interface ILayoutInfo {
   pos?: number[] | string;
   size?: number[] | string;
   visible?: boolean | string;
-  /** 未支持 */
   flip_x?: boolean;
-  /** 未支持 */
   flip_y?: boolean;
   bg_color?: string;
   component?: string | string[];
@@ -26,6 +24,5 @@ export interface ILayoutInfo {
     leave?: string | string[];
   };
   key_press_actions?: [string, string][];
-  tab_type?: string; // 'ud' | 'lr'
   items?: ILayoutInfo[];
 }

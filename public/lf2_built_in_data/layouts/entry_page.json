@@ -2,6 +2,9 @@
   "name": "入口页",
   "id": "entry",
   "bg_color": "rgb(16, 32, 108)",
+  "component": [
+    "reachable_layout_group(main,ud)"
+  ],
   "items": [
     {
       "id": "bg_left",
@@ -67,7 +70,9 @@
           "rect": "535, 105, 256, 26",
           "center": "0.5, 0",
           "pos": "1, -46",
-          "tab_type": "ud",
+          "component": [
+            "reachable_layout(main)"
+          ],
           "actions": {
             "click": [
               "goto(loading)",
@@ -82,7 +87,9 @@
           "rect": "535, 137, 256, 26",
           "center": "0.5, 0",
           "pos": "1, -14",
-          "tab_type": "ud",
+          "component": [
+            "reachable_layout(main)"
+          ],
           "actions": {
             "click": "alert(还没想好呢)"
           }
@@ -94,7 +101,9 @@
           "rect": "535, 168, 256, 26",
           "center": "0.5, 0",
           "pos": "1, 17",
-          "tab_type": "ud",
+          "component": [
+            "reachable_layout(main)"
+          ],
           "actions": {
             "click": "goto(ctrl_settings)"
           }

@@ -2,6 +2,9 @@
   "name": "主页",
   "id": "main_page",
   "bg_color": "rgb(16, 32, 108)",
+  "component": [
+    "reachable_layout_group(main,ud)"
+  ],
   "items": [
     {
       "id": "bg_left",
@@ -68,7 +71,9 @@
           "rect": "32, 331, 210, 22",
           "center": "0.5, 0",
           "pos": "-3,-108",
-          "tab_type": "ud",
+          "component": [
+            "reachable_layout(main)"
+          ],
           "actions": {
             "click": "goto(user_selection)"
           }
@@ -80,7 +85,9 @@
           "rect": "18, 358, 238, 24",
           "center": "0.5, 0",
           "pos": "-3,-81",
-          "tab_type": "ud",
+          "component": [
+            "reachable_layout(main)"
+          ],
           "actions": {
             "click": "goto(user_selection)"
           }
@@ -92,7 +99,9 @@
           "rect": "0, 385, 275, 23",
           "center": "0.5, 0",
           "pos": "-2,-54",
-          "tab_type": "ud",
+          "component": [
+            "reachable_layout(main)"
+          ],
           "actions": {
             "click": "alert(还没写)"
           }
@@ -104,7 +113,9 @@
           "rect": "0, 412, 275, 24",
           "center": "0.5, 0",
           "pos": "-2,-27",
-          "tab_type": "ud",
+          "component": [
+            "reachable_layout(main)"
+          ],
           "actions": {
             "click": "alert(还没写)"
           }
@@ -116,7 +127,9 @@
           "rect": "32, 438, 207, 24",
           "center": "0.5, 0",
           "pos": "-4,-1",
-          "tab_type": "ud",
+          "component": [
+            "reachable_layout(main)"
+          ],
           "actions": {
             "click": "alert(还没写)"
           }
@@ -128,7 +141,9 @@
           "rect": "42, 466, 188, 23",
           "center": "0.5, 0",
           "pos": "-4,27",
-          "tab_type": "ud",
+          "component": [
+            "reachable_layout(main)"
+          ],
           "actions": {
             "click": "alert(还没写)"
           }
@@ -140,7 +155,9 @@
           "rect": "55, 521, 165, 23",
           "center": "0.5, 0",
           "pos": "-2,82",
-          "tab_type": "ud",
+          "component": [
+            "reachable_layout(main)"
+          ],
           "actions": {
             "click": "alert(一个网页，你点关闭就是)"
           }
