@@ -1,18 +1,18 @@
-import * as THREE from 'three';
 import { IPlayerInfoCallback } from '../../LF2/PlayerInfo';
 import { TKeyName } from '../../LF2/controller/BaseController';
 import { LayoutComponent } from './LayoutComponent';
 import { TextBuilder } from './TextBuilder';
+import { Sprite } from './Sprite';
 
 export default class PlayerKeyEditor extends LayoutComponent implements IPlayerInfoCallback {
   protected get _which() { return this.args[0] || '' };
   protected get _key_name() { return this.args[1] || '' };
-  protected _sprite?: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial, THREE.Object3DEventMap>;
+  protected _sprite?: Sprite;
 
   override on_click() {
     window.addEventListener('pointerdown', this._on_cancel, { once: true });
     window.addEventListener('keydown', this._on_keydown, { once: true });
-    if (this._sprite?.material) this._sprite.material.color = new THREE.Color(16 / 255, 32 / 255, 108 / 255)
+    this._sprite?.set_rgb(16 / 255, 32 / 255, 108 / 255)
     return true;
   }
 
@@ -25,7 +25,7 @@ export default class PlayerKeyEditor extends LayoutComponent implements IPlayerI
   override on_unmount(): void {
     super.on_unmount();
     this._on_cancel();
-    this._sprite?.removeFromParent();
+    this._sprite?.dispose();
     this.lf2.player_infos.get(this._which!)?.callbacks.del(this);
   }
 
@@ -45,7 +45,7 @@ export default class PlayerKeyEditor extends LayoutComponent implements IPlayerI
   private _on_cancel = () => {
     window.removeEventListener('keydown', this._on_keydown);
     window.removeEventListener('pointerdown', this._on_cancel);
-    if (this._sprite?.material) this._sprite.material.color = new THREE.Color('white')
+    this._sprite?.set_rgb(1, 1, 1)
   }
 
   async update_sprite() {
@@ -57,14 +57,16 @@ export default class PlayerKeyEditor extends LayoutComponent implements IPlayerI
     const player_info = this.lf2.player_infos.get(this._which);
     if (player_info) {
       const keycode = player_info.keys[this._key_name as TKeyName];
-      const sprite = this._sprite = await TextBuilder.get(this.lf2)
-        .text(keycode ?? '')
-        .style({ font: '16px Arial' })
-        .build_mesh();
-      sprite.name = PlayerKeyEditor.name;
-      this.layout.mesh.add(sprite);
-      sprite.position.x = this.layout.size[0] / 2
-      sprite.position.y = -this.layout.size[1] / 2
+      const sprite = this._sprite = new Sprite(
+        await TextBuilder.get(this.lf2)
+          .text(keycode ?? '')
+          .style({ font: '16px Arial' })
+          .build_pic()
+      )
+        .set_pos(this.layout.size[0] / 2, -this.layout.size[1] / 2)
+        .set_name(PlayerKeyEditor.name);
+      this.layout.mesh.add(sprite.mesh);
+
     }
   }
 }

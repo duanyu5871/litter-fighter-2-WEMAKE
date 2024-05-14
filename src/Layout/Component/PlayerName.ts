@@ -1,11 +1,10 @@
 import * as THREE from 'three';
-import type { IPlayerInfoCallback } from "../../LF2/PlayerInfo";
+import Invoker from '../../LF2/base/Invoker';
 import { SineAnimation } from '../../SineAnimation';
 import { dispose_mesh } from '../utils/dispose_mesh';
 import GamePrepareLogic, { GamePrepareState } from './GamePrepareLogic';
 import { LayoutComponent } from "./LayoutComponent";
 import { TextBuilder } from './TextBuilder';
-import Invoker from '../../LF2/base/Invoker';
 
 /**
  * 显示玩家名称
@@ -20,7 +19,6 @@ export default class PlayerName extends LayoutComponent {
   protected get text(): string {
     const { player, gpl } = this;
     if (player?.joined) return player.name
-
     if (!gpl) return ''
     const { state } = gpl;
     if (state === GamePrepareState.PlayerCharacterSel) return 'Join?';
@@ -28,10 +26,7 @@ export default class PlayerName extends LayoutComponent {
     return ''
   }
   get joined(): boolean { return true === this.player?.joined }
-
-  get gpl(): GamePrepareLogic | undefined {
-    return this.layout.root.find_component(GamePrepareLogic)
-  };
+  get gpl(): GamePrepareLogic | undefined { return this.layout.root.find_component(GamePrepareLogic) }
 
   protected _jid: number = 0;
   protected _mesh: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial> | undefined
@@ -39,7 +34,7 @@ export default class PlayerName extends LayoutComponent {
   protected _character_id: string | undefined = void 0;
   protected _unmount_jobs = new Invoker();
 
-  on_mount(): void {
+  override on_mount(): void {
     super.on_mount();
     this._unmount_jobs.add(
       this.player?.callbacks.add({
@@ -54,7 +49,7 @@ export default class PlayerName extends LayoutComponent {
     this.handle_changed();
   }
 
-  on_unmount(): void {
+  override on_unmount(): void {
     super.on_unmount();
     this._unmount_jobs.invoke();
     this._unmount_jobs.clear();

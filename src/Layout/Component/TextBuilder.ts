@@ -47,9 +47,11 @@ export class TextBuilder {
     ret.position.y = this._y;
     return ret;
   }
-
+  async build_pic() {
+    return await this.lf2.images.create_pic_by_text(this._text, this._style);
+  }
   async build() {
-    const pic = await this.lf2.images.create_pic_by_text(this._text, this._style);
+    const pic = await this.build_pic();
     const tex = pic.texture
     const geo = new THREE.PlaneGeometry(pic.w, pic.h).translate(pic.w * (0.5 - this._cx), pic.h * (this._cy - 0.5), 0);
     return [geo, tex] as const;

@@ -44,7 +44,7 @@ export default class Invoker<F extends (...args: any[]) => any = () => void> {
   }
 
   /**
-   * 清空待调用函数
+   * 清空
    *
    * @returns {this}
    */

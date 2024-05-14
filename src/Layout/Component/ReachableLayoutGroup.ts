@@ -1,5 +1,4 @@
 import { TKeyName } from "../../LF2/controller/BaseController";
-import { Log } from "../../Log";
 import Layout from "../Layout";
 import { LayoutComponent } from "./LayoutComponent";
 
@@ -54,23 +53,39 @@ export class ReachableLayoutGroup extends LayoutComponent {
 }
 
 export class ReachableLayout extends LayoutComponent {
-  protected _group?: ReachableLayoutGroup;
-  protected _group_name: string = '';
-  get group_name(): string { return this._group_name; }
+  get group(): ReachableLayoutGroup | undefined {
+    return this.layout.root.find_component(ReachableLayoutGroup, v => v.name === this.group_name)
+  }
+  get group_name(): string { return this.args[0]; }
 
-  @Log
-  init(...args: string[]): this {
-    super.init(...args);
-    const [group_name = ''] = args;
-    this._group_name = group_name;
-    return this;
+  override on_mount(): void {
+    super.on_mount();
+    this.group?.add(this);
   }
-  on_mount(): void {
-    this._group = this.layout.root.find_component(ReachableLayoutGroup, v => v.name === this._group_name)
-    this._group?.add(this);
-    if (!this._group) debugger;
+  override on_unmount(): void {
+    super.on_unmount();
+    this.group?.del(this);
   }
-  on_unmount(): void {
-    this._group?.del(this);
+}
+
+class Lazy<T> {
+  static make<T>(init: () => T): Lazy<T> {
+    return new Lazy(init)
+  }
+  private readonly _init: () => T;
+  private _inited: boolean = false;
+  private _value?: T;
+  constructor(init: () => T) {
+    this._init = init;
+  }
+  get(): T {
+    if (!this._inited) {
+      this._inited = true;
+      this._value = this._init();
+    };
+    return this._value!;
+  }
+  reset(): void {
+    this._inited = false
   }
 }

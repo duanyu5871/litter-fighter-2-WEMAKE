@@ -1,10 +1,10 @@
 import * as THREE from 'three';
-import type { IPlayerInfoCallback, PlayerInfo } from "../../LF2/PlayerInfo";
+import Invoker from '../../LF2/base/Invoker';
 import { SineAnimation } from '../../SineAnimation';
 import { Defines } from '../../common/lf2_type/defines';
+import { dispose_mesh } from '../utils/dispose_mesh';
 import { LayoutComponent } from "./LayoutComponent";
 import { TextBuilder } from './TextBuilder';
-import { dispose_mesh } from '../utils/dispose_mesh';
 
 /**
  * 显示玩家队伍名
@@ -14,65 +14,50 @@ import { dispose_mesh } from '../utils/dispose_mesh';
  * @extends {LayoutComponent}
  */
 export default class PlayerTeamName extends LayoutComponent {
-  protected _player_id: string | undefined = void 0;
-  protected _player: PlayerInfo | undefined = void 0;
+  protected get player_id() { return this.args[0] || '' }
+  protected get player() { return this.lf2.player_infos.get(this.player_id) }
   protected _jid: number = 0;
   protected _mesh: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial> | undefined
   protected _opacity: SineAnimation = new SineAnimation(0.75, 1, 1 / 50);
-  protected _text: string | undefined = void 0;
-  protected _show: boolean = false;
-
-
-  protected _player_listener: Partial<IPlayerInfoCallback> = {
-    on_character_decided: (decided) => {
-      if (this._show === decided) return;
-      this._show = decided;
-      this._text = this.get_text(this._player?.team)
-      this.handle_changed();
-    },
-    on_team_changed: (team) => {
-      const team_name = this.get_text(team);
-      if (this._text === team_name) return;
-      this._text = team_name;
-      this.handle_changed();
-    },
-  }
-
-  init(...args: string[]): this {
-    this._player_id = args[0];
-    return this;
-  }
-
-  get_text(team: string | undefined) {
-    if (team === void 0) team = Defines.TeamEnum.Independent
+  protected get show(): boolean { return !!this.player?.character_decided }
+  protected get team(): string | undefined { return this.player?.team; }
+  protected get text(): string | undefined {
+    const { team } = this;
+    if (team === void 0) return void 0;
     return Defines.TeamInfoMap[team]?.name;
-  }
+  };
 
-  on_mount(): void {
+  protected _unmount_jobs = new Invoker();
+
+  override on_mount(): void {
     super.on_mount();
-    if (!this._player_id) return;
-    this._player = this.lf2.player_infos.get(this._player_id);
-    if (!this._player) return;
-    this._player.callbacks.add(this._player_listener);
-    this._show = this._player.joined;
-    this._text = this.get_text(this._player.character);
+    this._unmount_jobs.add(
+      this.player?.callbacks.add({
+        on_character_decided: () => this.handle_changed(),
+        on_team_changed: () => this.handle_changed(),
+      }),
+      () => this.dispose_mesh()
+    )
     this.handle_changed();
   }
 
-  on_unmount(): void {
+  override on_unmount(): void {
     super.on_unmount();
-    if (!this._player) return;
-    this._player.callbacks.del(this._player_listener);
+    this._unmount_jobs.invoke();
+    this._unmount_jobs.clear();
+  }
+
+  protected dispose_mesh(): void {
     this._mesh && dispose_mesh(this._mesh);
     this._mesh = void 0;
   }
 
   protected handle_changed() {
-    if (this._show && this._text) {
-      this.update_mesh(++this._jid, this._text)
+    const { text, show } = this;
+    if (show && text) {
+      this.update_mesh(++this._jid, text)
     } else {
-      this._mesh && dispose_mesh(this._mesh);
-      this._mesh = void 0;
+      this.dispose_mesh();
     }
   }
 
@@ -115,7 +100,7 @@ export default class PlayerTeamName extends LayoutComponent {
   on_render(dt: number): void {
     this._opacity.update(dt)
     if (this._mesh) {
-      this._mesh.material.opacity = this._player?.team_decided ? 1 : this._opacity.value;
+      this._mesh.material.opacity = this.player?.team_decided ? 1 : this._opacity.value;
       this._mesh.material.needsUpdate = true;
     }
   }

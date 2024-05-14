@@ -45,7 +45,7 @@ export default class PlayerCharacterName extends LayoutComponent {
     return character?.base.name ?? 'Random'
   }
 
-  on_mount(): void {
+  override on_mount(): void {
     super.on_mount();
     if (!this._player_id) return;
     this._player = this.lf2.player_infos.get(this._player_id);
@@ -56,7 +56,7 @@ export default class PlayerCharacterName extends LayoutComponent {
     this.handle_changed();
   }
 
-  on_unmount(): void {
+  override on_unmount(): void {
     super.on_unmount();
     if (!this._player) return;
     this._player.callbacks.del(this._player_listener);
