@@ -10,17 +10,16 @@ import { LayoutComponent } from "./LayoutComponent";
  * 玩家角色选择逻辑
  * 
  * @export
- * @class PlayerCharacterSelLogic
+ * @class CharacterSelLogic
  * @extends {LayoutComponent}
  */
-export default class PlayerCharacterSelLogic extends LayoutComponent {
-  protected _player_id: string = '';
+export default class CharacterSelLogic extends LayoutComponent {
+  protected get _player_id() { return this.args[0] || '' };
   protected _jid: number = 0;
   protected _hints_opacity: SineAnimation = new SineAnimation(0.75, 1, 1 / 50);
   private _game_prepare_logic_listener: Partial<IGamePrepareLogicCallback> = {
     on_all_ready: () => this.on_all_player_ready(),
     on_not_ready: () => this.on_not_all_player_ready(),
-    on_countdown: (v) => this.on_countdown(v)
   };
 
   get player(): PlayerInfo | undefined { return this.lf2.player_infos.get(this._player_id) };
@@ -45,11 +44,6 @@ export default class PlayerCharacterSelLogic extends LayoutComponent {
       if (cheat_name === Defines.Cheats.Hidden && !enabled) this.handle_hidden_character();
     },
   };
-
-  init(...args: string[]): this {
-    this._player_id = args[0];
-    return this;
-  }
 
   get gpl() { return this.layout.root.find_component(GamePrepareLogic) }
 
@@ -78,77 +72,78 @@ export default class PlayerCharacterSelLogic extends LayoutComponent {
   }
 
   on_player_key_down(player_id: string, key: TKeyName): void {
-    if (this.gpl?.state !== GamePrepareState.PlayerCharacterSelecting)
-      return;
-  
-    if (player_id !== this._player_id)
-      return;
-    if (this.team_decided) {
-      if (key === 'j') {
-        this.lf2.sounds.play_preset('cancel')
-        this.team_decided = false;
-      }
-    } else if (this.character_decided) {
-      switch (key) {
-        case 'a': { // 按攻击确认队伍
-          this.lf2.sounds.play_preset('join')
-          this.team_decided = true;
-          break;
-        }
-        case 'j': { // 按跳跃取消确认角色
+    const gpl = this.gpl;
+    if (!gpl) return;
+    if (gpl.state === GamePrepareState.PlayerCharacterSel) {
+      if (player_id !== this._player_id)
+        return;
+      if (this.team_decided) {
+        if (key === 'j') {
           this.lf2.sounds.play_preset('cancel')
-          this.character_decided = false;
-          break;
+          this.team_decided = false;
         }
-        case 'L': { // 上一个队伍
-          const idx = Defines.Teams.findIndex(v => v === this.team);
-          const next_idx = (idx + Defines.Teams.length - 1) % Defines.Teams.length;
-          this.team = Defines.Teams[next_idx];
-          break;
+      } else if (this.character_decided) {
+        switch (key) {
+          case 'a': { // 按攻击确认队伍
+            this.lf2.sounds.play_preset('join')
+            this.team_decided = true;
+            break;
+          }
+          case 'j': { // 按跳跃取消确认角色
+            this.lf2.sounds.play_preset('cancel')
+            this.character_decided = false;
+            break;
+          }
+          case 'L': { // 上一个队伍
+            const idx = Defines.Teams.findIndex(v => v === this.team);
+            const next_idx = (idx + Defines.Teams.length - 1) % Defines.Teams.length;
+            this.team = Defines.Teams[next_idx];
+            break;
+          }
+          case 'R': { // 下一个队伍
+            const idx = Defines.Teams.findIndex(v => v === this.team);
+            const next_idx = (idx + 1) % Defines.Teams.length;
+            this.team = Defines.Teams[next_idx];
+            break;
+          }
         }
-        case 'R': { // 下一个队伍
-          const idx = Defines.Teams.findIndex(v => v === this.team);
-          const next_idx = (idx + 1) % Defines.Teams.length;
-          this.team = Defines.Teams[next_idx];
-          break;
+      } else if (this.joined) {
+        switch (key) {
+          case 'a': {  // 按攻击确认角色
+            this.lf2.sounds.play_preset('join')
+            this.character_decided = true;
+            break;
+          }
+          case 'j': { // 按跳跃取消加入
+            this.lf2.sounds.play_preset('cancel')
+            this.joined = false;
+            break;
+          }
+          case 'D':
+          case 'U': { // 按上或下,回到随机
+            this.character = '';
+            break;
+          }
+          case 'L': { // 上一个角色
+            const characters = this.get_characters();
+            const idx = characters.findIndex(v => v.id === this.character);
+            const next_idx = idx <= -1 ? characters.length - 1 : idx - 1;
+            this.character = characters[next_idx]?.id ?? '';
+            break;
+          }
+          case 'R': { // 下一个角色
+            const arr = this.get_characters();
+            const idx = arr.findIndex(v => v.id === this.character);
+            const next = idx >= arr.length - 1 ? -1 : idx + 1;
+            this.character = arr[next]?.id ?? '';
+            break;
+          }
         }
-      }
-    } else if (this.joined) {
-      switch (key) {
-        case 'a': {  // 按攻击确认角色
+      } else {
+        if (key === 'a') {
           this.lf2.sounds.play_preset('join')
-          this.character_decided = true;
-          break;
+          this.joined = true;
         }
-        case 'j': { // 按跳跃取消加入
-          this.lf2.sounds.play_preset('cancel')
-          this.joined = false;
-          break;
-        }
-        case 'D':
-        case 'U': { // 按上或下,回到随机
-          this.character = '';
-          break;
-        }
-        case 'L': { // 上一个角色
-          const characters = this.get_characters();
-          const idx = characters.findIndex(v => v.id === this.character);
-          const next_idx = idx <= -1 ? characters.length - 1 : idx - 1;
-          this.character = characters[next_idx]?.id ?? '';
-          break;
-        }
-        case 'R': { // 下一个角色
-          const arr = this.get_characters();
-          const idx = arr.findIndex(v => v.id === this.character);
-          const next = idx >= arr.length - 1 ? -1 : idx + 1;
-          this.character = arr[next]?.id ?? '';
-          break;
-        }
-      }
-    } else {
-      if (key === 'a') {
-        this.lf2.sounds.play_preset('join')
-        this.joined = true;
       }
     }
   }
@@ -172,10 +167,6 @@ export default class PlayerCharacterSelLogic extends LayoutComponent {
   protected on_all_player_ready(): void {
     console.log('on_all_player_ready')
     // throw new Error('Method not implemented.');
-  }
-
-  protected on_countdown(v: number): void {
-    console.log('on_countdown', v)
   }
 
 }

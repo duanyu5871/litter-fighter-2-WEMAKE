@@ -5,16 +5,9 @@ import { LayoutComponent } from './LayoutComponent';
 import { TextBuilder } from './TextBuilder';
 
 export default class PlayerKeyEditor extends LayoutComponent implements IPlayerInfoCallback {
-  protected _which?: string;
-  protected _key_name?: string;
+  protected get _which() { return this.args[0] || '' };
+  protected get _key_name() { return this.args[1] || '' };
   protected _sprite?: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial, THREE.Object3DEventMap>;
-
-  override init(...args: string[]): this {
-    const [which = '', key_name = ''] = args;
-    this._which = which;
-    this._key_name = key_name;
-    return this;
-  }
 
   override on_click() {
     window.addEventListener('pointerdown', this._on_cancel, { once: true });

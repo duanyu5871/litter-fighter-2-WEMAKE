@@ -1,9 +1,9 @@
+import { Warn } from "@fimagine/logger";
 import { IPlayerInfoCallback } from "../../LF2/PlayerInfo";
 import Callbacks from "../../LF2/base/Callbacks";
 import NoEmitCallbacks from "../../LF2/base/NoEmitCallbacks";
 import { TKeyName } from "../../LF2/controller/BaseController";
-import { Log } from "../../Log";
-import ComNumButton from "./ComNumButton";
+import { FSM, IReadonlyFSM } from "../StateMachine";
 import { LayoutComponent } from "./LayoutComponent";
 
 export interface IGamePrepareLogicCallback {
@@ -13,16 +13,14 @@ export interface IGamePrepareLogicCallback {
   on_asking_com_num?(): void;
 }
 export enum GamePrepareState {
-  PlayerCharacterSelecting = 'PlayerCharacterSelecting',
+  PlayerCharacterSel = 'PlayerCharacterSelecting',
   CountingDown = 'CountingDown',
-  ComputerNumberSelecting = 'ComputerNumberSelecting',
-  ComputerCharacterSelecting = 'ComputerCharacterSelecting',
+  ComNumberSel = 'ComputerNumberSelecting',
+  ComputerCharacterSel = 'ComputerCharacterSelecting',
   GameSetting = 'GameSetting',
 }
 
 export default class GamePrepareLogic extends LayoutComponent {
-
-
   protected _callbacks = new Callbacks<IGamePrepareLogicCallback>();
   protected _joined_num: number = 0;
   protected _ready_num: number = 0;
@@ -30,16 +28,7 @@ export default class GamePrepareLogic extends LayoutComponent {
     on_joined_changed: v => this.on_someone_joined_changed(v),
     on_team_decided: v => this.on_someone_team_decided(v),
   }
-  protected _state: GamePrepareState = GamePrepareState.PlayerCharacterSelecting;
-
-  get state(): GamePrepareState { return this._state; }
-  protected set state(v: GamePrepareState) {
-    if (this._state === v) return;
-    const old = this._state;
-    this.on_leave_state(old, v);
-    this._state = v;
-    this.on_enter_state(v, old);
-  }
+  get state(): GamePrepareState { return this._fsm.state?.key!; }
 
   private _count_down: number = 5000;
   get callbacks(): NoEmitCallbacks<IGamePrepareLogicCallback> { return this._callbacks }
@@ -48,7 +37,7 @@ export default class GamePrepareLogic extends LayoutComponent {
   }
   on_mount(): void {
     super.on_mount();
-    this.state = GamePrepareState.PlayerCharacterSelecting
+    this._fsm.use(GamePrepareState.PlayerCharacterSel)
     for (const [, player] of this.lf2.player_infos) {
       if (player.joined) this._joined_num++;
       if (player.team_decided) this._ready_num++;
@@ -57,14 +46,13 @@ export default class GamePrepareLogic extends LayoutComponent {
   }
   on_unmount(): void {
     super.on_unmount();
-    this._joined_num = 0;
-    this._ready_num = 0;
+    this._joined_num = this._ready_num = 0;
     for (const [, player] of this.lf2.player_infos)
       player.callbacks.del(this._player_listener)
   }
   on_player_key_down(_player_id: string, key: TKeyName) {
     switch (this.state) {
-      case GamePrepareState.PlayerCharacterSelecting:
+      case GamePrepareState.PlayerCharacterSel:
         break;
       case GamePrepareState.CountingDown:
         switch (key) {
@@ -74,21 +62,20 @@ export default class GamePrepareLogic extends LayoutComponent {
             break;
         }
         break;
-      case GamePrepareState.ComputerNumberSelecting:
+      case GamePrepareState.ComNumberSel:
         switch (key) {
-          case "a":
-            this.state = GamePrepareState.ComputerCharacterSelecting
-            break;
+          case "a": return this._fsm.use(GamePrepareState.ComputerCharacterSel)
         }
         break;
-      case GamePrepareState.ComputerCharacterSelecting:
+      case GamePrepareState.ComputerCharacterSel:
         switch (key) {
-          case "a":
-            this.state = GamePrepareState.GameSetting
-            break;
+          case "a": return this._fsm.use(GamePrepareState.GameSetting)
         }
         break;
       case GamePrepareState.GameSetting:
+        switch (key) {
+          case "j": return this._fsm.use(GamePrepareState.PlayerCharacterSel)
+        }
         break;
     }
   }
@@ -113,119 +100,72 @@ export default class GamePrepareLogic extends LayoutComponent {
     this._callbacks.emit('on_not_ready')();
   }
   override on_render(dt: number): void {
-    switch (this.state) {
-      case GamePrepareState.PlayerCharacterSelecting:
-        if (this.is_all_ready) {
-          this.state = GamePrepareState.CountingDown;
+    this._fsm.update(dt);
+  }
+  get fsm(): IReadonlyFSM<GamePrepareState> {
+    return this._fsm;
+  }
+  private _fsm = new FSM<GamePrepareState>()
+    .add({
+      key: GamePrepareState.PlayerCharacterSel,
+      enter: () => {
+        for (const [, player] of this.lf2.player_infos) {
+          player.team_decided = false;
+          player.character_decided = false;
         }
-        break;
-      case GamePrepareState.CountingDown: {
-        if (!this.is_all_ready) {
-          this.state = GamePrepareState.PlayerCharacterSelecting;
-          break;
-        }
+      },
+      update: () => {
+        if (this.is_all_ready)
+          return GamePrepareState.CountingDown;
+      }
+    }, {
+      key: GamePrepareState.CountingDown,
+      enter: () => {
+        this._count_down = 5000;
+        this._callbacks.emit('on_countdown')(5);
+      },
+      update: (dt) => {
+        if (!this.is_all_ready)
+          return GamePrepareState.PlayerCharacterSel;
         const prev_second = Math.ceil(this._count_down / 1000);
         this._count_down -= dt
         const curr_second = Math.ceil(this._count_down / 1000);
         if (curr_second !== prev_second) {
           this._callbacks.emit('on_countdown')(curr_second);
         }
-        if (this._count_down <= 0) {
-          this.state = GamePrepareState.ComputerNumberSelecting;
-        }
-        break;
+        if (this._count_down <= 0)
+          return GamePrepareState.ComNumberSel;
+      },
+      leave: () => {
+        const l = this.layout.find_layout('how_many_computer');
+        if (l) l.visible = false;
+        else Warn.print(GamePrepareLogic.name, 'layout not found, id: how_many_computer')
       }
-      case GamePrepareState.ComputerNumberSelecting:
-      case GamePrepareState.ComputerCharacterSelecting:
-      case GamePrepareState.GameSetting:
-    }
-  }
-
-  @Log
-  protected on_enter_state(state: GamePrepareState, prev: GamePrepareState) {
-    switch (state) {
-      case GamePrepareState.CountingDown: {
-        this._count_down = 5000;
-        this._callbacks.emit('on_countdown')(5);
-        break;
-      }
-      case GamePrepareState.ComputerNumberSelecting: {
+    }, {
+      key: GamePrepareState.ComNumberSel,
+      enter: () => {
         this._callbacks.emit('on_asking_com_num')();
         const l = this.layout.find_layout('how_many_computer');
         if (l) l.visible = true;
-        break;
-      }
-    }
-  }
-
-  @Log
-  protected on_leave_state(state: GamePrepareState, next: GamePrepareState) {
-    switch (state) {
-      case GamePrepareState.CountingDown:
-      case GamePrepareState.ComputerNumberSelecting: {
+      },
+      update: () => void 0,
+      leave: () => {
         const l = this.layout.find_layout('how_many_computer');
         if (l) l.visible = false;
-        break;
       }
-    }
-  }
+    }, {
+      key: GamePrepareState.ComputerCharacterSel,
+      update: () => void 0,
+    }, {
+      key: GamePrepareState.GameSetting,
+      enter: () => {
+        const l = this.layout.find_layout('menu');
+        if (l) l.visible = true;
+      },
+      update: () => void 0,
+      leave: () => {
+        const l = this.layout.find_layout('menu');
+        if (l) l.visible = false;
+      },
+    }).use(GamePrepareState.PlayerCharacterSel)
 }
-
-// class Chain<T extends string> {
-//   static make<T extends string>(from: T, to: T, test: () => boolean): Chain<T> {
-//     return new Chain(from, to, test);
-//   }
-//   protected _from: T;
-//   protected _to: T;
-//   protected _test: () => boolean;
-//   constructor(from: T, to: T, test: () => boolean) {
-//     this._from = from;
-//     this._to = to;
-//     this._test = test;
-//   }
-//   get test() { return this._test }
-//   get from() { return this._from }
-//   get to() { return this._to }
-
-// }
-
-// class State<T extends string = string, D extends any = any> {
-//   protected _update: () => void = () => { };
-//   protected _enter: (delivery: D | null) => void = () => { };
-//   protected _leave: () => void = () => { };
-//   get update() { return this._update }
-//   get enter() { return this._enter }
-//   get leave() { return this._leave }
-
-//   constructor(update: () => void) {
-//     this._update = update;
-//   }
-// }
-
-// class StateMachine<T extends string = string, D extends any = any> {
-//   state_map = new Map<T, State<T, D>>()
-//   state: State<T, D> | null = null;
-
-//   set_state(next_state_id: T, delivery: D | null) {
-//     const next_state = this.state_map.get(next_state_id);
-//     this.state?.leave();
-//     this.state = next_state || null;
-//     this.state?.enter(delivery);
-//   }
-
-//   add(state_id: T, state: State<T, D>) {
-//     this.state_map.set(state_id, state);
-//   }
-
-//   update() {
-//     if (!this.state) return;
-//     const [next_state_id, delivery] = this.state?.test();
-//     if (next_state_id !== null)
-//       this.set_state(next_state_id, delivery);
-//     this.state?.update();
-//   }
-// }
-
-// const sm = new StateMachine();
-
-// sm.add('a', new State())

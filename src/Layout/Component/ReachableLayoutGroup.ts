@@ -4,34 +4,17 @@ import Layout from "../Layout";
 import { LayoutComponent } from "./LayoutComponent";
 
 export class ReachableLayoutGroup extends LayoutComponent {
-  protected _direction: string = '';
-  protected _name: string = '';
+  protected get _name(): string { return this.args[0] || '' };
+  protected get _direction(): string { return this.args[1] || '' };
   protected _set = new Set<ReachableLayout>();
   protected _arr: ReachableLayout[] = [];
-  protected _binded_layout_id?: string;
 
   get name(): string { return this._name; }
 
   get binded_layout(): Layout {
-    if (!this._binded_layout_id) return this.layout;
-    return this.layout.root.find_layout(this._binded_layout_id) || this.layout
-  }
-
-  /**
-   * @inheritdoc
-   *
-   * @param {string} [name='']
-   * @param {string} [direction='']
-   * @param {(string | undefined)} [binded_layout_id=void 0] 绑定的布局
-   * @returns {this}
-   */
-  @Log
-  override init(name: string = '', direction: string = '', binded_layout_id: string | undefined = void 0): this {
-    super.init(name, direction);
-    this._direction = direction;
-    this._name = name;
-    this._binded_layout_id = binded_layout_id;
-    return this;
+    const lid = this.args[2];
+    if (!lid) return this.layout;
+    return this.layout.root.find_layout(lid) || this.layout
   }
 
   add(l: ReachableLayout): this {

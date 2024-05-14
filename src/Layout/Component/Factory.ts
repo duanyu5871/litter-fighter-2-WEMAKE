@@ -6,7 +6,7 @@ import type { LayoutComponent } from "./LayoutComponent";
 import LoadingFileNameDisplayer from "./LoadingFileNameDisplayer";
 import PlayerCharacterHead from './PlayerCharacterHead';
 import PlayerCharacterName from "./PlayerCharacterName";
-import PlayerCharacterSelLogic from "./PlayerCharacterSelLogic";
+import CharacterSelLogic from "./CharacterSelLogic";
 import PlayerKeyEditor from "./PlayerKeyEditor";
 import PlayerName from "./PlayerName";
 import PlayerTeamName from "./PlayerTeamName";
@@ -20,7 +20,7 @@ class Factory {
     ['game_loading_file_name', LoadingFileNameDisplayer],
     ['key_set', PlayerKeyEditor],
     ['stage_transitions', StageTransitions],
-    ['player_c_sel_logic', PlayerCharacterSelLogic],
+    ['player_c_sel_logic', CharacterSelLogic],
     ['player_c_head', PlayerCharacterHead],
     ['player_c_name', PlayerCharacterName],
     ['player_name', PlayerName],

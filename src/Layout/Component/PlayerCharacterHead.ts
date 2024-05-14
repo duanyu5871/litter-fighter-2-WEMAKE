@@ -1,8 +1,6 @@
 import * as THREE from 'three';
-import type { IPlayerInfoCallback, PlayerInfo } from "../../LF2/PlayerInfo";
+import type { IPlayerInfoCallback } from "../../LF2/PlayerInfo";
 import { TPicture } from '../../LF2/loader/loader';
-import { SineAnimation } from '../../SineAnimation';
-import NumberAnimation from "../../common/animation/NumberAnimation";
 import { Defines } from '../../common/lf2_type/defines';
 import GamePrepareLogic, { GamePrepareState, IGamePrepareLogicCallback } from './GamePrepareLogic';
 import { LayoutComponent } from "./LayoutComponent";
@@ -16,13 +14,16 @@ import MeshBuilder from "./LayoutMeshBuilder";
  * @extends {LayoutComponent}
  */
 export default class PlayerCharacterHead extends LayoutComponent {
-  protected _player_id: string | undefined = void 0;
-  protected _player: PlayerInfo | undefined = void 0;
+
+  protected get _player_id() { return this.args[0] || '' }
+  protected get _player() { return this.lf2.player_infos.get(this._player_id) }
+
   protected _jid: number = 0;
   protected _mesh_head?: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial>
   protected _mesh_hints?: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial>
   protected _mesh_cd?: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial>
   protected _head: string = Defines.BuiltIn.Imgs.RFACE;
+
   get gpl(): GamePrepareLogic | undefined {
     return this.layout.root.find_component(GamePrepareLogic)
   };
@@ -75,10 +76,6 @@ export default class PlayerCharacterHead extends LayoutComponent {
     }
   };
 
-  init(...args: string[]): this {
-    this._player_id = args[0];
-    return this;
-  }
 
   static hint_pic: TPicture | null = null;
   protected release_countdown_mesh(): void {
@@ -103,12 +100,11 @@ export default class PlayerCharacterHead extends LayoutComponent {
   on_mount(): void {
     super.on_mount();
     this.create_hints_mesh();
-    if (!this._player_id) return;
-    this._player = this.lf2.player_infos.get(this._player_id);
-    if (!this._player) return;
-    this._player.callbacks.add(this._player_listener);
-    this._player_listener.on_character_changed?.(this._player.character, '');
-
+    const player = this._player
+    if (player) {
+      player.callbacks.add(this._player_listener);
+      this._player_listener.on_character_changed?.(player.character, '');
+    }
     this.gpl?.callbacks.add(this._game_prepare_logic_listener);
   }
 
@@ -154,7 +150,7 @@ export default class PlayerCharacterHead extends LayoutComponent {
   on_render(dt: number): void {
     const joined = this.joined;
     switch (this.gpl?.state) {
-      case GamePrepareState.PlayerCharacterSelecting:
+      case GamePrepareState.PlayerCharacterSel:
         if (this._mesh_hints) this._mesh_hints.visible = !joined
         if (this._mesh_head) this._mesh_head.visible = joined;
         if (this._mesh_cd) this._mesh_cd.visible = false;
@@ -164,8 +160,8 @@ export default class PlayerCharacterHead extends LayoutComponent {
         if (this._mesh_head) this._mesh_head.visible = joined;
         if (this._mesh_cd) this._mesh_cd.visible = !joined;
         break;
-      case GamePrepareState.ComputerNumberSelecting:
-      case GamePrepareState.ComputerCharacterSelecting:
+      case GamePrepareState.ComNumberSel:
+      case GamePrepareState.ComputerCharacterSel:
       case GamePrepareState.GameSetting:
         if (this._mesh_hints) this._mesh_hints.visible = false
         if (this._mesh_head) this._mesh_head.visible = joined;

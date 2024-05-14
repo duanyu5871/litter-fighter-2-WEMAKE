@@ -22,6 +22,7 @@ export default class PlayerTeamName extends LayoutComponent {
   protected _text: string | undefined = void 0;
   protected _show: boolean = false;
 
+
   protected _player_listener: Partial<IPlayerInfoCallback> = {
     on_character_decided: (decided) => {
       if (this._show === decided) return;

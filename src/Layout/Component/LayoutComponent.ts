@@ -12,10 +12,11 @@ export class LayoutComponent {
   readonly layout: Layout;
   readonly f_name: string;
   private _mounted: boolean = false;
+  private _args: readonly string[] = [];
   get mounted() { return this._mounted }
   get lf2() { return this.layout.lf2 }
   get world() { return this.layout.lf2.world }
-
+  get args(): readonly string[] { return this._args }
   /**
    * 布局组件基类构造函数
    *
@@ -29,7 +30,10 @@ export class LayoutComponent {
     this.f_name = f_name;
   }
 
-  init(...args: string[]): this { return this; }
+  init(...args: string[]): this {
+    this._args = args;
+    return this;
+  }
   on_click?(): boolean | void;
 
   on_mount(): void { this._mounted = true }

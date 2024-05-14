@@ -1,10 +1,11 @@
 import * as THREE from 'three';
-import type { IPlayerInfoCallback, PlayerInfo } from "../../LF2/PlayerInfo";
+import type { IPlayerInfoCallback } from "../../LF2/PlayerInfo";
 import { SineAnimation } from '../../SineAnimation';
-import { LayoutComponent } from "./LayoutComponent";
-import { TextBuilder } from './TextBuilder';
 import { dispose_mesh } from '../utils/dispose_mesh';
 import GamePrepareLogic, { GamePrepareState } from './GamePrepareLogic';
+import { LayoutComponent } from "./LayoutComponent";
+import { TextBuilder } from './TextBuilder';
+import Invoker from '../../LF2/base/Invoker';
 
 /**
  * 显示玩家名称
@@ -14,54 +15,53 @@ import GamePrepareLogic, { GamePrepareState } from './GamePrepareLogic';
  * @extends {LayoutComponent}
  */
 export default class PlayerName extends LayoutComponent {
-  protected _player_id: string | undefined = void 0;
-  protected _player: PlayerInfo | undefined = void 0;
+  protected get player_id() { return this.args[0] || '' }
+  protected get player() { return this.lf2.player_infos.get(this.player_id) }
+  protected get text(): string {
+    const { player, gpl } = this;
+    if (player?.joined) return player.name
+
+    if (!gpl) return ''
+    const { state } = gpl;
+    if (state === GamePrepareState.PlayerCharacterSel) return 'Join?';
+    if (state === GamePrepareState.ComputerCharacterSel) return 'Computer';
+    return ''
+  }
+  get joined(): boolean { return true === this.player?.joined }
+
+  get gpl(): GamePrepareLogic | undefined {
+    return this.layout.root.find_component(GamePrepareLogic)
+  };
+
   protected _jid: number = 0;
   protected _mesh: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial> | undefined
   protected _opacity: SineAnimation = new SineAnimation(0.75, 1, 1 / 50);
-  protected _text: string = '';
-  protected _joined: boolean = false;
   protected _character_id: string | undefined = void 0;
-
-  protected _player_listener: Partial<IPlayerInfoCallback> = {
-    on_joined_changed: (joined) => {
-      if (this._joined === joined) return;
-      this._joined = joined;
-      this.handle_changed();
-    },
-    on_name_changed: (name) => {
-      if (this._text === name) return;
-      this._text = name;
-      this.handle_changed();
-    },
-  }
-
-  init(...args: string[]): this {
-    this._player_id = args[0];
-    return this;
-  }
+  protected _unmount_jobs = new Invoker();
 
   on_mount(): void {
     super.on_mount();
-    if (!this._player_id) return;
-    this._player = this.lf2.player_infos.get(this._player_id);
-    if (!this._player) return;
-    this._player.callbacks.add(this._player_listener);
-    this._joined = this._player.joined;
-    this._text = this._player.name;
+    this._unmount_jobs.add(
+      this.player?.callbacks.add({
+        on_joined_changed: () => this.handle_changed(),
+        on_name_changed: () => this.handle_changed(),
+      }),
+      this.gpl?.fsm.callbacks.add({
+        on_state_changed: () => this.handle_changed()
+      }),
+      () => this.dispose_mesh(),
+    )
     this.handle_changed();
   }
 
   on_unmount(): void {
     super.on_unmount();
-    if (!this._player) return;
-    this._player.callbacks.del(this._player_listener);
-    this.dispose_mesh();
+    this._unmount_jobs.invoke();
+    this._unmount_jobs.clear();
   }
 
   protected handle_changed() {
-    const text = this._joined ? this._text : 'Join?';
-    this.update_name_mesh(++this._jid, text).catch(e => console.error(e));
+    this.update_name_mesh(++this._jid, this.text).catch(e => console.error(e));
   }
 
   protected dispose_mesh() {
@@ -71,8 +71,7 @@ export default class PlayerName extends LayoutComponent {
 
   protected async update_name_mesh(jid: number, name: string) {
     if (jid !== this._jid) return;
-    const [w, h] = this.layout.size
-
+    const [w, h] = this.layout.size;
     const builder = TextBuilder.get(this.lf2)
       .pos(w / 2, -h / 2)
       .center(0.5, 0.5)
@@ -105,27 +104,23 @@ export default class PlayerName extends LayoutComponent {
       this._mesh.material.needsUpdate = true;
     }
   }
-  get joined(): boolean { return true === this._player?.joined }
-  get gpl(): GamePrepareLogic | undefined {
-    return this.layout.root.find_component(GamePrepareLogic)
-  };
 
   on_render(dt: number): void {
     this._opacity.update(dt)
     if (this._mesh) {
-      this._mesh.material.opacity = this._player?.joined ? 1 : this._opacity.value;
+      this._mesh.material.opacity = this.player?.joined ? 1 : this._opacity.value;
       this._mesh.material.needsUpdate = true;
     }
     const joined = this.joined;
     switch (this.gpl?.state) {
-      case GamePrepareState.PlayerCharacterSelecting:
+      case GamePrepareState.PlayerCharacterSel:
         if (this._mesh) this._mesh.visible = true;
         break;
       case GamePrepareState.CountingDown:
         if (this._mesh) this._mesh.visible = joined;
         break;
-      case GamePrepareState.ComputerNumberSelecting:
-      case GamePrepareState.ComputerCharacterSelecting:
+      case GamePrepareState.ComNumberSel:
+      case GamePrepareState.ComputerCharacterSel:
       case GamePrepareState.GameSetting:
         if (this._mesh) this._mesh.visible = joined;
         break;
