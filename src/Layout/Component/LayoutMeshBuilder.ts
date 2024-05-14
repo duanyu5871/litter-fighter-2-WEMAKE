@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+/** @deprecated */
 export interface ILayoutMeshInfo {
   c_x: number;
   c_y: number;
@@ -8,6 +9,7 @@ export interface ILayoutMeshInfo {
   _y: number;
   _z: number;
 }
+/** @deprecated */
 export default class LayoutMeshBuilder {
   static create(): LayoutMeshBuilder {
     return new LayoutMeshBuilder();

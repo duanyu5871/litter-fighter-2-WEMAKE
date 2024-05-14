@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 import type { IPlayerInfoCallback, PlayerInfo } from "../../LF2/PlayerInfo";
 import { SineAnimation } from '../../SineAnimation';
+import { dispose_mesh } from '../utils/dispose_mesh';
 import { LayoutComponent } from "./LayoutComponent";
 import { TextBuilder } from './TextBuilder';
-import { dispose_mesh } from '../utils/dispose_mesh';
 
 /**
  * 显示玩家角色选择的角色名称

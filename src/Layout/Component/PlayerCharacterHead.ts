@@ -3,7 +3,7 @@ import { TPicture } from '../../LF2/loader/loader';
 import { Defines } from '../../common/lf2_type/defines';
 import GamePrepareLogic, { GamePrepareState, IGamePrepareLogicCallback } from './GamePrepareLogic';
 import { LayoutComponent } from "./LayoutComponent";
-import { Sprite } from './Sprite';
+import Sprite from './Sprite';
 
 /**
  * 显示玩家角色选择的角色头像
@@ -53,7 +53,7 @@ export default class PlayerCharacterHead extends LayoutComponent {
           .apply();
         this.layout.mesh?.add(this._mesh_cd.mesh);
       } else {
-        this._mesh_cd.set_pic(pic).apply();
+        this._mesh_cd.set_info(pic).apply();
       }
 
     },
@@ -131,7 +131,7 @@ export default class PlayerCharacterHead extends LayoutComponent {
         .apply();
       this.layout.mesh?.add(this._mesh_head.mesh);
     } else {
-      this._mesh_head.set_pic(pic).apply();
+      this._mesh_head.set_info(pic).apply();
     }
   }
 

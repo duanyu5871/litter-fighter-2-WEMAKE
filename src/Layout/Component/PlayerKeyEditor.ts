@@ -1,8 +1,8 @@
 import { IPlayerInfoCallback } from '../../LF2/PlayerInfo';
 import { TKeyName } from '../../LF2/controller/BaseController';
 import { LayoutComponent } from './LayoutComponent';
+import Sprite from './Sprite';
 import { TextBuilder } from './TextBuilder';
-import { Sprite } from './Sprite';
 
 export default class PlayerKeyEditor extends LayoutComponent implements IPlayerInfoCallback {
   protected get _which() { return this.args[0] || '' };
@@ -65,7 +65,7 @@ export default class PlayerKeyEditor extends LayoutComponent implements IPlayerI
       )
         .set_pos(this.layout.size[0] / 2, -this.layout.size[1] / 2)
         .set_name(PlayerKeyEditor.name);
-      this.layout.mesh.add(sprite.mesh);
+      this.layout.mesh?.add(sprite.mesh);
 
     }
   }
