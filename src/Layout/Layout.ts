@@ -20,6 +20,8 @@ export interface ILayoutCallback {
   on_click?(): void;
   on_show?(layout: Layout): void;
   on_hide?(layout: Layout): void;
+  on_foucs_changed?(layout: Layout): void;
+  on_foucs_item_changed?(foucs: Layout | undefined, blur: Layout | undefined): void;
 }
 type TStateValueInfo<T> = { is_func: true, v: () => T } | { is_func: false, v: T }
 class StateDelegate<T> {
@@ -111,9 +113,32 @@ export default class Layout {
   src_rect: [number, number, number, number] = [0, 0, 0, 0];
   dst_rect: [number, number, number, number] = [0, 0, 0, 0];
   lf2: LF2;
-
-  get focused_item(): Layout | undefined { return this._root._focused_item }
-  set focused_item(v: Layout | undefined) { this._root._focused_item = v }
+  get focused(): boolean {
+    return this._root._focused_item === this;
+  }
+  set focused(v: boolean) {
+    if (v)
+      this.focused_item = this;
+    else if (this.focused_item === this)
+      this.focused_item = void 0
+  }
+  get focused_item(): Layout | undefined {
+    return this._root._focused_item
+  }
+  set focused_item(val: Layout | undefined) {
+    const old = this._root._focused_item
+    if (old === val) return;
+    this._root._focused_item = val;
+    if (old) {
+      old.on_blur();
+      old._callbacks.emit('on_foucs_changed')(old);
+    }
+    if (val) {
+      val.on_foucs();
+      val._callbacks.emit('on_foucs_changed')(val);
+    }
+    this._root._callbacks.emit('on_foucs_item_changed')(val, old)
+  }
   get id(): string | undefined { return this.data.id }
   get name(): string | undefined { return this.data.name }
   get x(): number { return this.pos[0] };
@@ -231,6 +256,8 @@ export default class Layout {
   }
 
   on_hide() {
+    if (this.focused_item === this)
+      this.focused_item = void 0;
     for (const c of this.components) c.on_hide?.();
     this._callbacks.emit('on_hide')(this);
   }
@@ -546,6 +573,14 @@ export default class Layout {
       ret.push(...i.search_components(type, condition))
     return ret;
   }
+
+  on_foucs(): void {
+    for (const c of this._components) c.on_foucs();
+  }
+  on_blur(): void {
+    for (const c of this._components) c.on_blur();
+  }
+
 }
 type TCls<R = any> = abstract new (...args: any) => R;
 type TCond<T extends TCls> = (c: InstanceType<T>) => unknown;

@@ -9,6 +9,7 @@ import Layout from '../Layout';
  * @class LayoutComponent
  */
 export class LayoutComponent {
+
   readonly layout: Layout;
   readonly f_name: string;
   private _mounted: boolean = false;
@@ -42,6 +43,8 @@ export class LayoutComponent {
 
   on_show?(): void;
   on_hide?(): void;
+  on_blur(): void {}
+  on_foucs(): void {}
   on_render?(dt: number): void;
   on_player_key_down?(player_id: string, key: TKeyName): void;
   dispose?(): void;

@@ -5,6 +5,7 @@ export default class ComNumButton extends LayoutComponent {
   get which(): string { return this.args[0] || '' }
   on_click(): void {
     const [which] = this.args;
+    alert(which)
   }
   on_mount(): void { }
   @Log
