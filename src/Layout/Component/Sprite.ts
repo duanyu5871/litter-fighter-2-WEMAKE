@@ -51,11 +51,10 @@ export default class Sprite {
   constructor(info: ISpriteInfo) {
     this._info = info;
     const geo = this.create_geometry();
-    this._mesh = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({
-      map: info.texture,
-      color: info.color,
-      transparent: true
-    }));
+    const mp: THREE.MeshBasicMaterialParameters = { transparent: true }
+    if (info.texture) mp.map = info.texture;
+    if (info.color) mp.color = info.color;
+    this._mesh = new THREE.Mesh(geo, new THREE.MeshBasicMaterial(mp));
   }
 
   set_opacity(v: number): this {
@@ -109,7 +108,7 @@ export default class Sprite {
     this._mesh.geometry.dispose();
     this._mesh.geometry = this.create_geometry();
 
-    const { texture, color } = this._info;
+    const { texture } = this._info;
 
     let need_update_material = false;
     if (this._mesh.material.map !== texture) {
@@ -117,15 +116,9 @@ export default class Sprite {
       this._mesh.material.map = texture || null;
       need_update_material = true;
     }
-    const c = new THREE.Color(color || 0xffffff)
-    if (c.getHex() !== this._mesh.material.color.getHex()) {
-      // this._mesh.material.color = c;
-      // need_update_material = true;
-    }
     if (need_update_material) {
       this._mesh.material.needsUpdate = true;
     }
-
     return this;
   }
 
