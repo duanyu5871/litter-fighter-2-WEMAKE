@@ -11,6 +11,7 @@ export interface ILayoutMeshInfo {
 }
 /** @deprecated */
 export default class LayoutMeshBuilder {
+
   static create(): LayoutMeshBuilder {
     return new LayoutMeshBuilder();
   }
@@ -54,8 +55,11 @@ export default class LayoutMeshBuilder {
     return ret;
   }
   build_args(parameters?: THREE.MeshBasicMaterialParameters | undefined): [THREE.PlaneGeometry, THREE.MeshBasicMaterial] {
-    const material = new THREE.MeshBasicMaterial(parameters)
-    return [this.build_geometry(), material];
+
+    return [this.build_geometry(), this.build_material(parameters)];
+  }
+  build_material(parameters: THREE.MeshBasicMaterialParameters | undefined): THREE.MeshBasicMaterial {
+    return new THREE.MeshBasicMaterial(parameters);
   }
   build_geometry(): THREE.PlaneGeometry {
     const { _w, _h } = this._info;

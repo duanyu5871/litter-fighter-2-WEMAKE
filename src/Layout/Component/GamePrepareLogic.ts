@@ -135,11 +135,6 @@ export default class GamePrepareLogic extends LayoutComponent {
         }
         if (this._count_down <= 0)
           return GamePrepareState.ComNumberSel;
-      },
-      leave: () => {
-        const l = this.layout.find_layout('how_many_computer');
-        if (l) l.visible = false;
-        else Warn.print(GamePrepareLogic.name, 'layout not found, id: how_many_computer')
       }
     }, {
       key: GamePrepareState.ComNumberSel,

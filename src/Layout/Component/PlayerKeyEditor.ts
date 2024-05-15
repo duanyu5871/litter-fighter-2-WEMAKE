@@ -65,7 +65,7 @@ export default class PlayerKeyEditor extends LayoutComponent implements IPlayerI
       )
         .set_pos(this.layout.size[0] / 2, -this.layout.size[1] / 2)
         .set_name(PlayerKeyEditor.name);
-      this.layout.mesh?.add(sprite.mesh);
+      this.layout.mesh.add(sprite.mesh);
 
     }
   }

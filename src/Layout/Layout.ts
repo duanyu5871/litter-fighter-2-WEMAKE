@@ -8,7 +8,7 @@ import { type TImageInfo } from '../LF2/loader/loader';
 import NumberAnimation from '../common/animation/NumberAnimation';
 import { filter, find } from '../common/container_help';
 import IStyle from '../common/lf2_type/IStyle';
-import { is_arr, is_bool, is_num, is_str } from '../common/type_check';
+import { is_arr, is_bool, is_fun, is_num, is_str } from '../common/type_check';
 import actor from './Action/Actor';
 import factory from './Component/Factory';
 import { LayoutComponent } from './Component/LayoutComponent';
@@ -21,6 +21,46 @@ export interface ILayoutCallback {
   on_show?(layout: Layout): void;
   on_hide?(layout: Layout): void;
 }
+type TStateValueInfo<T> = { is_func: true, v: () => T } | { is_func: false, v: T }
+class StateDelegate<T> {
+
+  protected _default_value: TStateValueInfo<T>;
+  protected _values: (TStateValueInfo<T> | undefined)[] = [];
+  protected state_to_value(v: TStateValueInfo<T>) {
+    return v.is_func ? v.v() : v.v
+  }
+  protected value_to_state(v: T | (() => T)): TStateValueInfo<T> {
+    return is_fun(v) ?
+      { is_func: true, v: v } :
+      { is_func: false, v: v };
+  }
+
+  get value(): T {
+    for (const val of this._values)
+      if (val !== void 0)
+        return this.state_to_value(val);
+    return this.state_to_value(this._default_value);
+  }
+  get default_value(): T {
+    return this.state_to_value(this._default_value);
+  }
+
+  set default_value(v: T | (() => T)) {
+    this._default_value = this.value_to_state(v);
+  }
+
+  constructor(default_value: () => T);
+  constructor(default_value: T);
+  constructor(default_value: T | (() => T)) {
+    this._default_value = this.value_to_state(default_value);
+  }
+
+  set(index: number, v: T | (() => T)) {
+    this._values[index] = this.value_to_state(v);
+  }
+}
+
+new StateDelegate(false)
 
 export default class Layout {
   protected _callbacks = new Callbacks<ILayoutCallback>();
@@ -48,12 +88,14 @@ export default class Layout {
   ) {
     const anim = this._opacity_animation;
     if (begin !== anim.val_1 && end !== anim.val_2 && duration !== anim.duration)
-      anim.set(begin, end, duration, reverse).set_value(this.material?.opacity || 0)
+      anim.set(begin, end, duration, reverse).set_value(this.material.opacity)
     if (anim.reverse !== reverse)
-      anim.play(reverse).set_value(this.material?.opacity || 0);
+      anim.play(reverse).set_value(this.material.opacity);
   }
   protected _state: any = {}
-  protected _visible = () => true;
+
+  protected _visible: StateDelegate<boolean> = new StateDelegate(true);
+
   protected _disabled = () => false;
   protected _img_idx = () => 0;
   protected _opacity = () => 1;
@@ -82,15 +124,9 @@ export default class Layout {
   get index() { return this._index }
   get state() { return this._state }
   get img_idx() { return this._img_idx() }
-  get visible(): boolean { return this._visible(); }
-  set visible(v: boolean) {
-    this._visible = () => v;
-    if (this.mesh) {
-      this.mesh.visible = v
-      if (v) this.on_show();
-      else this.on_hide();
-    }
-  }
+  get visible(): boolean { return this._visible.value; }
+  set visible(v: boolean) { this._visible.set(0, v); }
+
   get disabled(): boolean {
     let n: Layout | undefined = this;
     do {
@@ -114,7 +150,7 @@ export default class Layout {
   get h(): number { return this.dst_rect[3] }
   set h(v: number) { this.dst_rect[3] = v }
 
-  get material() { return this._mesh?.material };
+  get material() { return this._mesh.material };
   get components() { return this._components; }
   get style(): IStyle { return this.data.style || {} }
 
@@ -153,8 +189,6 @@ export default class Layout {
     return ret;
   }
 
-
-
   hit(x: number, y: number): boolean {
     const [l, t, w, h] = this.dst_rect;
     return l <= x && t <= y && l + w >= x && t + h >= y;
@@ -176,12 +210,6 @@ export default class Layout {
     const { enter } = this.data.actions || {};
     enter && actor.act(this, enter);
 
-    if (this._mesh) {
-      if (this._mesh.visible)
-        this.on_show();
-      else
-        this.on_hide();
-    }
     for (const c of this._components) c.on_mounted?.();
   }
 
@@ -194,17 +222,17 @@ export default class Layout {
     for (const item of this.children)
       item.on_unmount()
 
-    this._mesh?.removeFromParent();
+    this._mesh.removeFromParent();
   }
 
   on_show() {
+    for (const c of this.components) c.on_show?.();
     this._callbacks.emit('on_show')(this);
-    for (const c of this._components) c.on_show?.();
   }
 
   on_hide() {
+    for (const c of this.components) c.on_hide?.();
     this._callbacks.emit('on_hide')(this);
-    for (const c of this._components) c.on_hide?.();
   }
 
   to_next_img() {
@@ -296,10 +324,10 @@ export default class Layout {
     }
 
     if (is_bool(visible)) {
-      this._visible = () => visible;
+      this._visible.default_value = visible;
     } else if (is_str(visible)) {
       const func = new Expression<Layout>(visible, get_val).make();
-      this._visible = () => func(this);
+      this._visible.default_value = () => func(this);
     }
 
     if (is_num(opacity)) {
@@ -353,7 +381,7 @@ export default class Layout {
     return texture;
   }
 
-  protected _mesh?: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial>;
+  protected _mesh = new THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial>()
   get mesh() { return this._mesh }
 
   protected init_sprite() {
@@ -365,18 +393,26 @@ export default class Layout {
     const params: THREE.MeshBasicMaterialParameters = {
       transparent: true
     };
+
     if (texture) params.map = texture;
     else if (this.data.bg_color) params.color = this.data.bg_color;
+
     else this._opacity = () => 0.
 
-    this._mesh = LayoutMeshBuilder
+    const bd = LayoutMeshBuilder
       .create()
       .center(cx, cy)
       .size(w, h)
       .pos(x, -y)
       .z(this.z)
-      .build(params)
 
+    this._mesh.geometry.dispose();
+    this._mesh.material.dispose();
+    this._mesh.geometry = bd.build_geometry();
+    this._mesh.material = bd.build_material(params);
+    this._mesh.position.x = x;
+    this._mesh.position.y = -y;
+    this._mesh.position.z = this.z;
     this._mesh.name = `layout(name = ${this.name}, id =${this.id})`
     this._mesh.userData = { owner: this };
     this._mesh.visible = this.visible;
@@ -386,35 +422,68 @@ export default class Layout {
   on_click(): boolean {
     const { click } = this.data.actions ?? {};
     click && actor.act(this, click);
-    for (const c of this._components) {
-      if (c.on_click?.()) break;
-    }
+    for (const c of this._components) c.on_click?.()
     return !!click;
+  }
+
+  get global_visible(): boolean {
+    let n: Layout | undefined = this;
+    do {
+      if (!n.visible)
+        return false;
+      n = n.parent;
+    } while (n)
+    return true;
+  }
+
+  invoke_all_on_show() {
+    this.on_show();
+    for (const child of this.children) {
+      if (!child.visible) continue;
+      child.invoke_all_on_show();
+    }
+  }
+
+  invoke_all_on_hide() {
+    this.on_hide();
+    for (const child of this.children) {
+      if (!child.visible) continue;
+      child.invoke_all_on_hide();
+    }
+  }
+
+  invoke_visible_callback() {
+    if (this.global_visible) {
+      this.invoke_all_on_show();
+    } else if (!this.parent || this.parent.global_visible) {
+      this.invoke_all_on_hide();
+    }
   }
 
   on_render(dt: number) {
     const mesh = this.mesh;
-    if (mesh) {
-      if (this._root === this) {
-        mesh.position.x = this.lf2.world.camera.position.x
-      }
-      const visible = this.visible;
-      if (mesh.visible !== visible) {
-        mesh.visible = visible
-        if (visible) this.on_show();
-        else this.on_hide();
-      }
+
+    if (this._root === this)
+      mesh.position.x = this.lf2.world.camera.position.x
+
+    const { visible } = this;
+    if (visible !== mesh.visible) {
+      mesh.visible = visible;
+      console.log('invoke_visible_callback')
+      this.invoke_visible_callback();
     }
-    if (this.material) {
-      const next_opacity = this.opacity;
-      if (next_opacity >= 0) {
-        this.material.opacity = next_opacity;
-      } else if (this._opacity_animation) {
-        this.material.opacity = this._opacity_animation.update(dt);
-      }
-    }
-    for (const i of this.children) i.visible && i.on_render(dt);
-    for (const c of this._components) c.on_render?.(dt);
+
+    const next_opacity = this.opacity;
+    if (next_opacity >= 0)
+      this.material.opacity = next_opacity;
+    else if (this._opacity_animation)
+      this.material.opacity = this._opacity_animation.update(dt);
+
+    for (const i of this.children)
+      i.on_render(dt)
+    for (const c of this._components)
+      c.on_render?.(dt)
+
   }
 
   on_player_key_down(player_id: string, key: TKeyName) {

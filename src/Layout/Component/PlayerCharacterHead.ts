@@ -51,7 +51,7 @@ export default class PlayerCharacterHead extends LayoutComponent {
           .set_pos(w / 2, -h / 2)
           .set_name('countdown')
           .apply();
-        this.layout.mesh?.add(this._mesh_cd.mesh);
+        this.layout.mesh.add(this._mesh_cd.mesh);
       } else {
         this._mesh_cd.set_info(pic).apply();
       }
@@ -86,7 +86,7 @@ export default class PlayerCharacterHead extends LayoutComponent {
       .set_visible(!this._player?.joined)
       .apply();
 
-    this.layout.mesh?.add(this._mesh_hints.mesh)
+    this.layout.mesh.add(this._mesh_hints.mesh)
   }
 
   override on_mount(): void {
@@ -129,7 +129,7 @@ export default class PlayerCharacterHead extends LayoutComponent {
         .set_size(...this.layout.size)
         .set_name(PlayerCharacterHead.name)
         .apply();
-      this.layout.mesh?.add(this._mesh_head.mesh);
+      this.layout.mesh.add(this._mesh_head.mesh);
     } else {
       this._mesh_head.set_info(pic).apply();
     }
