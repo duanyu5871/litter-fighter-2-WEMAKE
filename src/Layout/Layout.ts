@@ -12,7 +12,7 @@ import { is_arr, is_bool, is_fun, is_num, is_str } from '../common/type_check';
 import actor from './Action/Actor';
 import factory from './Component/Factory';
 import { LayoutComponent } from './Component/LayoutComponent';
-import LayoutMeshBuilder from './Component/LayoutMeshBuilder';
+import Sprite, { ISpriteInfo } from './Component/Sprite';
 import type { ILayoutInfo } from './ILayoutInfo';
 import read_nums from './utils/read_nums';
 
@@ -90,9 +90,9 @@ export default class Layout {
   ) {
     const anim = this._opacity_animation;
     if (begin !== anim.val_1 && end !== anim.val_2 && duration !== anim.duration)
-      anim.set(begin, end, duration, reverse).set_value(this.material.opacity)
+      anim.set(begin, end, duration, reverse).set_value(this.opacity)
     if (anim.reverse !== reverse)
-      anim.play(reverse).set_value(this.material.opacity);
+      anim.play(reverse).set_value(this.opacity);
   }
   protected _state: any = {}
 
@@ -175,7 +175,6 @@ export default class Layout {
   get h(): number { return this.dst_rect[3] }
   set h(v: number) { this.dst_rect[3] = v }
 
-  get material() { return this._mesh.material };
   get components() { return this._components; }
   get style(): IStyle { return this.data.style || {} }
 
@@ -408,8 +407,8 @@ export default class Layout {
     return texture;
   }
 
-  protected _mesh = new THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial>()
-  get mesh() { return this._mesh }
+  protected _mesh = new Sprite({ w: 0, h: 0 })
+  get sprite() { return this._mesh }
 
   protected init_sprite() {
     const [cx, cy] = this.center;
@@ -417,33 +416,24 @@ export default class Layout {
     const [w, h] = this.size;
     const texture = this.create_texture();
 
-    const params: THREE.MeshBasicMaterialParameters = {
-      transparent: true
-    };
+    const p: ISpriteInfo = { w, h }
+    if (texture) p.texture = texture;
+    else if (this.data.bg_color) p.color = this.data.bg_color;
 
-    if (texture) params.map = texture;
-    else if (this.data.bg_color) params.color = this.data.bg_color;
+    this._mesh = new Sprite(p)
+      .set_center(cx, cy)
+      .set_pos(x, -y)
+      .set_opacity((p.texture || p.color) ? 1 : 0)
+      .set_visible(this.visible)
+      .set_name(`layout(name = ${this.name}, id =${this.id})`)
+      .apply()
 
-    else this._opacity = () => 0.
+    this._mesh.dispose();
+    this._mesh.mesh.userData = { owner: this };
+    this._mesh.mesh.position.z = this.z;
 
-    const bd = LayoutMeshBuilder
-      .create()
-      .center(cx, cy)
-      .size(w, h)
-      .pos(x, -y)
-      .z(this.z)
-
-    this._mesh.geometry.dispose();
-    this._mesh.material.dispose();
-    this._mesh.geometry = bd.build_geometry();
-    this._mesh.material = bd.build_material(params);
-    this._mesh.position.x = x;
-    this._mesh.position.y = -y;
-    this._mesh.position.z = this.z;
-    this._mesh.name = `layout(name = ${this.name}, id =${this.id})`
-    this._mesh.userData = { owner: this };
-    this._mesh.visible = this.visible;
-    (this.parent?.mesh || this.lf2.world.scene)?.add(this._mesh);
+    if (this.parent?.sprite) this.parent?.sprite.add(this._mesh)
+    else this.lf2.world.scene.add(this._mesh.mesh);
   }
 
   on_click(): boolean {
@@ -488,10 +478,10 @@ export default class Layout {
   }
 
   on_render(dt: number) {
-    const mesh = this.mesh;
+    const mesh = this.sprite;
 
     if (this._root === this)
-      mesh.position.x = this.lf2.world.camera.position.x
+      mesh.x = this.lf2.world.camera.position.x
 
     const { visible } = this;
     if (visible !== mesh.visible) {
@@ -502,9 +492,9 @@ export default class Layout {
 
     const next_opacity = this.opacity;
     if (next_opacity >= 0)
-      this.material.opacity = next_opacity;
+      this.sprite.opacity = next_opacity;
     else if (this._opacity_animation)
-      this.material.opacity = this._opacity_animation.update(dt);
+      this.sprite.opacity = this._opacity_animation.update(dt);
 
     for (const i of this.children)
       i.on_render(dt)

@@ -41,7 +41,7 @@ export default class LoadingFileNameDisplayer extends LayoutComponent {
       }
       return;
     }
-    if (!this.layout.mesh) return;
+    if (!this.layout.sprite) return;
 
     const text_builder = TextBuilder
       .get(this.lf2)
@@ -56,7 +56,7 @@ export default class LoadingFileNameDisplayer extends LayoutComponent {
         mesh.material.map?.dispose();
         return;
       }
-      this.layout.mesh.add(this._mesh = mesh);
+      this.layout.sprite.mesh.add(this._mesh = mesh);
       this._mesh.name = LoadingFileNameDisplayer.name;
     } else {
       const [geo, tex] = await text_builder.build();

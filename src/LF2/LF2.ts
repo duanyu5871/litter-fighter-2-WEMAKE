@@ -229,11 +229,11 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   on_click(e: PointingEvent) {
     if (!this._layout) return;
     const coords = new THREE.Vector2(e.scene_x, e.scene_y);
-    const { mesh: object_3d } = this._layout;
+    const { sprite: object_3d } = this._layout;
     if (!object_3d) return;
     const raycaster = new THREE.Raycaster();
     raycaster.setFromCamera(coords, this.world.camera);
-    const intersections = raycaster.intersectObjects([object_3d], true);
+    const intersections = raycaster.intersectObjects([object_3d.mesh], true);
 
     const layouts = intersections
       .filter(v => v.object.userData.owner instanceof Layout)
@@ -257,11 +257,11 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   on_pointer_move(e: PointingEvent) {
     if (!this._layout) return;
     const coords = new THREE.Vector2(e.scene_x, e.scene_y);
-    const { mesh: object_3d } = this._layout;
-    if (!object_3d) return;
+    const { sprite: mesh } = this._layout;
+    if (!mesh) return;
     const raycaster = new THREE.Raycaster();
     raycaster.setFromCamera(coords, this.world.camera);
-    const intersections = raycaster.intersectObjects([object_3d], true);
+    const intersections = raycaster.intersectObjects([mesh.mesh], true);
     const mouse_on_layouts = new Set<Layout>()
     for (const { object: { userData: { owner } } } of intersections) {
       if (owner instanceof Layout) mouse_on_layouts.add(owner);

@@ -53,7 +53,7 @@ export default class PlayerKeyEditor extends LayoutComponent implements IPlayerI
     this._sprite = void 0;
     if (this._which === void 0) return;
     if (this._key_name === void 0) return;
-    if (!this.layout.mesh) return;
+    if (!this.layout.sprite) return;
     const player_info = this.lf2.player_infos.get(this._which);
     if (player_info) {
       const keycode = player_info.keys[this._key_name as TKeyName];
@@ -65,7 +65,7 @@ export default class PlayerKeyEditor extends LayoutComponent implements IPlayerI
       )
         .set_pos(this.layout.size[0] / 2, -this.layout.size[1] / 2)
         .set_name(PlayerKeyEditor.name);
-      this.layout.mesh.add(sprite.mesh);
+      this.layout.sprite.mesh.add(sprite.mesh);
 
     }
   }

@@ -33,7 +33,7 @@ export class ReachableLayoutGroup extends LayoutComponent {
     if (this._direction === 'ud' && key !== 'U' && key !== 'D') return;
     if (!this.binded_layout.visible) return;
 
-    const items = Array.from(this._set).filter(v => v.layout.mesh?.visible).map(v => v.layout);
+    const items = Array.from(this._set).filter(v => v.layout.sprite?.visible).map(v => v.layout);
     const items_len = items.length
     if (!items_len) return;
 

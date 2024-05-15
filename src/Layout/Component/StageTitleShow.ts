@@ -26,7 +26,7 @@ export default class StageTitleShow extends LayoutComponent {
     this.lf2.sounds.play_preset('pass')
     this.depose_all_mesh();
     const meshs = [await this.create_sp(`stage_clear`)]
-    const parent_mesh = this.layout.mesh;
+    const parent_mesh = this.layout.sprite;
     if (!parent_mesh || meshs.indexOf(void 0) >= 0 || !this.mounted) {
       for (const mesh of meshs) mesh?.dispose();
       return;
@@ -43,7 +43,7 @@ export default class StageTitleShow extends LayoutComponent {
     for (const sprite of this._sprites) {
       sprite.set_pos(x, y);
       x += sprite.w;
-      parent_mesh.add(sprite.mesh);
+      parent_mesh.add(sprite);
     }
     this._opactiy.play(false);
   }
@@ -61,7 +61,7 @@ export default class StageTitleShow extends LayoutComponent {
       await this.create_sp(`char_num_${sub_num}`),
     ]
 
-    const parent_sprite = this.layout.mesh;
+    const parent_sprite = this.layout.sprite;
     if (!parent_sprite || sps.indexOf(void 0) >= 0 || this.lf2.world.stage !== stage || !this.mounted) {
       for (const sp of sps) sp?.dispose();
       return;
@@ -79,7 +79,7 @@ export default class StageTitleShow extends LayoutComponent {
     for (const sprite of this._sprites) {
       sprite.set_pos(x, y);
       x += sprite.w;
-      parent_sprite.add(sprite.mesh);
+      parent_sprite.add(sprite);
     }
     this._opactiy.play(false);
   }

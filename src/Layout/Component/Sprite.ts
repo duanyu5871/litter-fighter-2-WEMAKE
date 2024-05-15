@@ -51,7 +51,11 @@ export default class Sprite {
   constructor(info: ISpriteInfo) {
     this._info = info;
     const geo = this.create_geometry();
-    this._mesh = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ map: info.texture, transparent: true }));
+    this._mesh = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({
+      map: info.texture,
+      color: info.color,
+      transparent: true
+    }));
   }
 
   set_opacity(v: number): this {
