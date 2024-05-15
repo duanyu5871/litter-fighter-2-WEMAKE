@@ -1,8 +1,8 @@
-import { Warn } from "@fimagine/logger";
 import { IPlayerInfoCallback } from "../../LF2/PlayerInfo";
 import Callbacks from "../../LF2/base/Callbacks";
 import NoEmitCallbacks from "../../LF2/base/NoEmitCallbacks";
 import { TKeyName } from "../../LF2/controller/BaseController";
+import { filter } from "../../common/container_help";
 import { FSM, IReadonlyFSM } from "../StateMachine";
 import { LayoutComponent } from "./LayoutComponent";
 
@@ -112,11 +112,18 @@ export default class GamePrepareLogic extends LayoutComponent {
         for (const [, player] of this.lf2.player_infos) {
           player.team_decided = false;
           player.character_decided = false;
+          player.is_com = false;
         }
       },
       update: () => {
         if (this.is_all_ready)
           return GamePrepareState.CountingDown;
+      },
+      leave: () => {
+        const joined_num = filter(this.lf2.player_infos.values(), v => v.joined).length;
+        const not_joined_num = filter(this.lf2.player_infos.values(), v => !v.joined).length;
+        this._min_com_num = joined_num <= 1 ? 1 : 0; // TODO: 闯关只需1人
+        this._max_com_num = not_joined_num;
       }
     }, {
       key: GamePrepareState.CountingDown,
@@ -162,5 +169,34 @@ export default class GamePrepareLogic extends LayoutComponent {
         const l = this.layout.find_layout('menu');
         if (l) l.visible = false;
       },
-    }).use(GamePrepareState.PlayerCharacterSel)
+    }).use(GamePrepareState.PlayerCharacterSel);
+
+
+  /** 至少可选COM数量 */
+  private _min_com_num = 0;
+  /** 至多可选COM数量 */
+  private _max_com_num = 7;
+  /** 指定选COM数量 */
+  private _com_num = 0;
+
+  /** 至少可选COM数量 */
+  get min_com_num(): number { return this._min_com_num };
+  /** 至多可选COM数量 */
+  get max_com_num(): number { return this._max_com_num };
+  /** 指定选COM数量 */
+  get com_num(): number { return this._com_num };
+
+  set_com_num(num: number) {
+    this._com_num = num;
+    if (num > 0) {
+      const com_slots = filter(this.lf2.player_infos.values(), v => !v.joined);
+      while (num >= 0 && com_slots.length) {
+        com_slots.shift()!.is_com = true
+        num -= 1;
+      }
+      this._fsm.use(GamePrepareState.ComputerCharacterSel);
+    } else {
+      this._fsm.use(GamePrepareState.GameSetting);
+    }
+  }
 }

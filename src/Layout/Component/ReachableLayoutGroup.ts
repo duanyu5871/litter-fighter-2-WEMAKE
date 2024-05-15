@@ -1,4 +1,5 @@
 import { TKeyName } from "../../LF2/controller/BaseController";
+import { filter } from "../../common/container_help";
 import Layout from "../Layout";
 import { LayoutComponent } from "./LayoutComponent";
 
@@ -33,7 +34,7 @@ export class ReachableLayoutGroup extends LayoutComponent {
     if (this._direction === 'ud' && key !== 'U' && key !== 'D') return;
     if (!this.binded_layout.visible) return;
 
-    const items = Array.from(this._set).filter(v => v.layout.sprite?.visible).map(v => v.layout);
+    const items = filter(this._set, v => v.layout.visible && !v.layout.disabled).map(v => v.layout);
     const items_len = items.length
     if (!items_len) return;
 

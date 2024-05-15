@@ -97,8 +97,8 @@ export default class Layout {
   protected _state: any = {}
 
   protected _visible: StateDelegate<boolean> = new StateDelegate(true);
+  protected _disabled: StateDelegate<boolean> = new StateDelegate(false);
 
-  protected _disabled = () => false;
   protected _img_idx = () => 0;
   protected _opacity = () => 1;
   protected _parent?: Layout;
@@ -151,16 +151,9 @@ export default class Layout {
   get img_idx() { return this._img_idx() }
   get visible(): boolean { return this._visible.value; }
   set visible(v: boolean) { this._visible.set(0, v); }
+  get disabled(): boolean { return this._disabled.value; }
+  set disabled(v: boolean) { this._disabled.set(0, v); }
 
-  get disabled(): boolean {
-    let n: Layout | undefined = this;
-    do {
-      if (n._disabled())
-        return true;
-      n = n.parent
-    } while (n)
-    return false;
-  }
   get opacity() { return this._opacity() }
   get parent() { return this._parent; }
   get children() { return this._children; }
@@ -343,10 +336,10 @@ export default class Layout {
     const { visible, opacity, disabled } = this.data;
 
     if (is_bool(disabled)) {
-      this._disabled = () => disabled;
+      this._disabled.default_value = disabled;
     } else if (is_str(disabled)) {
       const func = new Expression<Layout>(disabled, get_val).make();
-      this._disabled = () => func(this);
+      this._disabled.default_value = () => func(this);
     }
 
     if (is_bool(visible)) {

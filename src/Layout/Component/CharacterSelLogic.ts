@@ -7,7 +7,7 @@ import GamePrepareLogic, { GamePrepareState, IGamePrepareLogicCallback } from '.
 import { LayoutComponent } from "./LayoutComponent";
 
 /**
- * 玩家角色选择逻辑
+ * 角色选择逻辑
  * 
  * @export
  * @class CharacterSelLogic
@@ -72,7 +72,7 @@ export default class CharacterSelLogic extends LayoutComponent {
   }
 
   on_player_key_down(player_id: string, key: TKeyName): void {
-    const gpl = this.gpl;
+    const { gpl } = this;
     if (!gpl) return;
     if (gpl.state === GamePrepareState.PlayerCharacterSel) {
       if (player_id !== this._player_id)

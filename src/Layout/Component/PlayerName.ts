@@ -18,35 +18,37 @@ export default class PlayerName extends LayoutComponent {
   protected get player() { return this.lf2.player_infos.get(this.player_id) }
   protected get text(): string {
     const { player, gpl } = this;
-    if (player?.joined) return player.name
     if (!gpl) return ''
     const { state } = gpl;
+    if (player?.is_com) return 'Computer'
+    if (player?.joined) return player.name
     if (state === GamePrepareState.PlayerCharacterSel) return 'Join?';
-    if (state === GamePrepareState.ComputerCharacterSel) return 'Computer';
     return ''
   }
   get joined(): boolean { return true === this.player?.joined }
+  get is_com(): boolean { return true === this.player?.is_com }
+  
   get gpl(): GamePrepareLogic | undefined { return this.layout.root.find_component(GamePrepareLogic) }
-
   protected _jid: number = 0;
   protected _mesh: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial> | undefined
   protected _opacity: SineAnimation = new SineAnimation(0.75, 1, 1 / 50);
   protected _character_id: string | undefined = void 0;
   protected _unmount_jobs = new Invoker();
-
+  protected _dirty = false;
   override on_mount(): void {
     super.on_mount();
     this._unmount_jobs.add(
       this.player?.callbacks.add({
-        on_joined_changed: () => this.handle_changed(),
-        on_name_changed: () => this.handle_changed(),
+        on_is_com_changed: () => this._dirty = true,
+        on_joined_changed: () => this._dirty = true,
+        on_name_changed: () => this._dirty = true,
       }),
       this.gpl?.fsm.callbacks.add({
-        on_state_changed: () => this.handle_changed()
+        on_state_changed: () => this._dirty = true
       }),
       () => this.dispose_mesh(),
     )
-    this.handle_changed();
+    this.handle_dirty();
   }
 
   override on_unmount(): void {
@@ -55,8 +57,9 @@ export default class PlayerName extends LayoutComponent {
     this._unmount_jobs.clear();
   }
 
-  protected handle_changed() {
+  protected handle_dirty() {
     this.update_name_mesh(++this._jid, this.text).catch(e => console.error(e));
+
   }
 
   protected dispose_mesh() {
@@ -101,23 +104,25 @@ export default class PlayerName extends LayoutComponent {
   }
 
   on_render(dt: number): void {
+    if (this._dirty) { this.handle_dirty(); this._dirty = false; }
+
     this._opacity.update(dt)
     if (this._mesh) {
       this._mesh.material.opacity = this.player?.joined ? 1 : this._opacity.value;
       this._mesh.material.needsUpdate = true;
     }
-    const joined = this.joined;
+    const { joined, is_com } = this;
     switch (this.gpl?.state) {
       case GamePrepareState.PlayerCharacterSel:
         if (this._mesh) this._mesh.visible = true;
         break;
       case GamePrepareState.CountingDown:
+      case GamePrepareState.ComNumberSel:
         if (this._mesh) this._mesh.visible = joined;
         break;
-      case GamePrepareState.ComNumberSel:
       case GamePrepareState.ComputerCharacterSel:
       case GamePrepareState.GameSetting:
-        if (this._mesh) this._mesh.visible = joined;
+        if (this._mesh) this._mesh.visible = joined || is_com;
         break;
     }
   }
