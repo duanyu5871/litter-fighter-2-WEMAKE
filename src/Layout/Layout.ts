@@ -575,10 +575,10 @@ export default class Layout {
   }
 
   on_foucs(): void {
-    for (const c of this._components) c.on_foucs();
+    for (const c of this._components) c.on_foucs?.();
   }
   on_blur(): void {
-    for (const c of this._components) c.on_blur();
+    for (const c of this._components) c.on_blur?.();
   }
 
 }

@@ -7,9 +7,4 @@ export default class ComNumButton extends LayoutComponent {
     const [which] = this.args;
     alert(which)
   }
-  on_mount(): void { }
-  @Log
-  on_show(): void { }
-  @Log
-  on_hide(): void { }
 }
