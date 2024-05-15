@@ -211,14 +211,7 @@ export class ImageMgr {
   }
 }
 
-function _error_texture() {
-  const texture = texture_loader.load(require('./error.png'));
-  texture.colorSpace = THREE.SRGBColorSpace;
-  texture.minFilter = THREE.NearestFilter;
-  texture.magFilter = THREE.NearestFilter;
-  texture.wrapS = THREE.RepeatWrapping;
-  return texture;
-}
+
 
 function _create_pic(
   img_info: TImageInfo,
@@ -241,8 +234,15 @@ function _create_pic(
 export function err_pic_info(id: string = ''): TPicture {
   return {
     id, w: 0, h: 0, cell_w: 0, cell_h: 0, row: 1, col: 1,
-    texture: _error_texture()
+    texture: error_texture()
   }
 }
-
-
+export function empty_texture() {
+  return texture_loader.load('')
+}
+export function white_texture() { 
+  return texture_loader.load(require('./white.png'));
+}
+export function error_texture() {
+  return texture_loader.load(require('./error.png'));
+}

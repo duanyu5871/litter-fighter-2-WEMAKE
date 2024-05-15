@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { empty_texture } from '../../LF2/loader/loader';
 import { is_num } from '../../common/type_check';
 import { dispose_mesh } from '../utils/dispose_mesh';
 export interface ISpriteInfo {
@@ -52,7 +53,7 @@ export default class Sprite {
     this._info = info;
     const geo = this.create_geometry();
     const mp: THREE.MeshBasicMaterialParameters = { transparent: true }
-    if (info.texture) mp.map = info.texture;
+    mp.map = info.texture || empty_texture();
     if (info.color) mp.color = info.color;
     this._mesh = new THREE.Mesh(geo, new THREE.MeshBasicMaterial(mp));
   }
@@ -113,7 +114,7 @@ export default class Sprite {
     let need_update_material = false;
     if (this._mesh.material.map !== texture) {
       this._mesh.material.map?.dispose();
-      this._mesh.material.map = texture || null;
+      this._mesh.material.map = texture || empty_texture();
       need_update_material = true;
     }
     if (need_update_material) {

@@ -4,7 +4,7 @@ import Callbacks from '../LF2/base/Callbacks';
 import Expression, { ValGetter } from '../LF2/base/Expression';
 import NoEmitCallbacks from '../LF2/base/NoEmitCallbacks';
 import { TKeyName } from '../LF2/controller/BaseController';
-import { type TImageInfo } from '../LF2/loader/loader';
+import { empty_texture, white_texture, type TImageInfo } from '../LF2/loader/loader';
 import NumberAnimation from '../common/animation/NumberAnimation';
 import { filter, find } from '../common/container_help';
 import IStyle from '../common/lf2_type/IStyle';
@@ -400,7 +400,7 @@ export default class Layout {
   protected create_texture(): THREE.Texture | undefined {
     const img_idx = this.img_idx;
     const img_info = this.img_infos?.[img_idx];
-    if (!img_info) return void 0;
+    if (!img_info) return this.data.bg_color ? white_texture() : empty_texture();
     const { flip_x, flip_y } = this.data
     const texture = this.lf2.images.create_pic_by_img_info(img_info).texture;
     texture.offset.set(flip_x ? 1 : 0, flip_y ? 1 : 0);
@@ -416,9 +416,7 @@ export default class Layout {
     const [w, h] = this.size;
     const texture = this.create_texture();
 
-    const p: ISpriteInfo = { w, h }
-    if (texture) p.texture = texture;
-    else if (this.data.bg_color) p.color = this.data.bg_color;
+    const p: ISpriteInfo = { w, h, texture, color: this.data.bg_color }
 
     this._mesh = new Sprite(p)
       .set_center(cx, cy)
