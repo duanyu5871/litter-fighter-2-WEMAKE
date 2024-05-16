@@ -98,9 +98,9 @@ export default class Layout {
 
   protected _visible: StateDelegate<boolean> = new StateDelegate(true);
   protected _disabled: StateDelegate<boolean> = new StateDelegate(false);
+  protected _opacity: StateDelegate<number> = new StateDelegate(1);
 
   protected _img_idx = () => 0;
-  protected _opacity = () => 1;
   protected _parent?: Layout;
   protected _children: Layout[] = [];
   protected _index: number = 0;
@@ -154,7 +154,8 @@ export default class Layout {
   get disabled(): boolean { return this._disabled.value; }
   set disabled(v: boolean) { this._disabled.set(0, v); }
 
-  get opacity() { return this._opacity() }
+  get opacity(): number { return this._opacity.value }
+  set opacity(v: number) { this._opacity.set(0, v) }
   get parent() { return this._parent; }
   get children() { return this._children; }
   set children(v) { this._children = v; }
@@ -350,10 +351,10 @@ export default class Layout {
     }
 
     if (is_num(opacity)) {
-      this._opacity = () => opacity;
+      this._opacity.default_value = opacity;
     } else if (is_str(opacity)) {
       const func = get_val(opacity);
-      this._opacity = () => Number(func(this)) || 0;
+      this._opacity.default_value = () => Number(func(this)) || 0;
     }
   }
 
@@ -481,9 +482,9 @@ export default class Layout {
       this.invoke_visible_callback();
     }
 
-    const next_opacity = this.opacity;
-    if (next_opacity >= 0)
-      this.sprite.opacity = next_opacity;
+    const { opacity } = this;
+    if (opacity >= 0)
+      this.sprite.opacity = opacity;
     else if (this._opacity_animation)
       this.sprite.opacity = this._opacity_animation.update(dt);
 

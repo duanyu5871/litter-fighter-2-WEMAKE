@@ -31,7 +31,7 @@ export default class PlayerName extends LayoutComponent {
   get gpl(): GamePrepareLogic | undefined { return this.layout.root.find_component(GamePrepareLogic) }
   protected _jid: number = 0;
   protected _mesh: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial> | undefined
-  protected _opacity: SineAnimation = new SineAnimation(0.75, 1, 1 / 50);
+  protected _opacity: SineAnimation = new SineAnimation(0.65, 1, 1 / 25);
   protected _character_id: string | undefined = void 0;
   protected _unmount_jobs = new Invoker();
   protected _dirty = false;

@@ -2,7 +2,7 @@ import { is_str } from "../../common/type_check";
 import { ILayoutInfo } from "../ILayoutInfo";
 import type Layout from "../Layout";
 import { read_call_func_expression } from "../utils/read_func_args";
-import type { LayoutComponent } from "./LayoutComponent";
+import { LayoutComponent } from "./LayoutComponent";
 import LoadingFileNameDisplayer from "./LoadingFileNameDisplayer";
 import PlayerCharacterHead from './PlayerCharacterHead';
 import PlayerCharacterName from "./PlayerCharacterName";
@@ -15,6 +15,7 @@ import GamePrepareLogic from "./GamePrepareLogic";
 import ComNumButton from "./ComNumButton";
 import StageTitleShow from "./StageTitleShow";
 import { ReachableLayoutGroup, ReachableLayout } from "./ReachableLayoutGroup";
+import LaunchPageLogic from "./LaunchPageLogic";
 class Factory {
   private _component_map = new Map<string, typeof LayoutComponent>([
     ['game_loading_file_name', LoadingFileNameDisplayer],
@@ -30,6 +31,7 @@ class Factory {
     ['stage_title_show', StageTitleShow],
     ['reachable_layout_group', ReachableLayoutGroup],
     ['reachable_layout', ReachableLayout],
+    ['launch_page', LaunchPageLogic],
   ])
   create(layout: Layout, components: ILayoutInfo['component']): LayoutComponent[] {
     if (!components?.length) return [];

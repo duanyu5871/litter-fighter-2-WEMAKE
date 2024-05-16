@@ -18,7 +18,7 @@ export default class PlayerTeamName extends LayoutComponent {
   protected get player() { return this.lf2.player_infos.get(this.player_id) }
   protected _jid: number = 0;
   protected _mesh: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial> | undefined
-  protected _opacity: SineAnimation = new SineAnimation(0.75, 1, 1 / 50);
+  protected _opacity: SineAnimation = new SineAnimation(0.65, 1, 1 / 25);
   protected get show(): boolean { return !!this.player?.character_decided }
   protected get team(): string | undefined { return this.player?.team; }
   protected get text(): string | undefined {

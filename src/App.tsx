@@ -79,8 +79,8 @@ function App() {
 
     if (!lf2_ref.current) {
       const lf2 = (window as any).lf2 = lf2_ref.current = new LF2(canvas, overlay);
-      lf2.layouts().then((layouts) => {
-        const layout_data_list = layouts?.map(l => ({ id: l.id, name: l.name })) || []
+      lf2.load_layouts().then((layouts = []) => {
+        const layout_data_list = layouts.map(l => ({ id: l.id, name: l.name }))
         layout_data_list.unshift({ id: '', name: '无页面' })
         set_layouts(layout_data_list);
         if (layout_data_list.length > 1)
@@ -89,9 +89,7 @@ function App() {
     }
     const callback: ILf2Callback = {
       on_layout_changed: v => { set_layout(v?.id ?? '') },
-      on_loading_start: () => {
-        set_loading(true);
-      },
+      on_loading_start: () => set_loading(true),
       on_loading_end: () => {
         set_loaded(true);
         set_loading(false);

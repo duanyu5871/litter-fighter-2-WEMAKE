@@ -436,7 +436,6 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     if (this._layouts) {
       for (const l of this._layouts)
         l.dispose()
-      delete this._layouts;
     }
   }
 
@@ -525,29 +524,45 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     this.change_stage(next_stage)
   }
 
-  private _layouts?: Layout[];
-  async layouts(): Promise<Layout[] | undefined> {
-    if (this._layouts) return this._layouts;
+  private _launch_layout?: Layout;
+  async launch_layout(): Promise<Layout> {
+    if (this._launch_layout) return this._launch_layout;
+    const path = "launch/init.json"
+    const layout_info = await this.import_json(path);
+    const layout = await Layout.cook(this, layout_info, this.layout_val_getter);
+    return this._launch_layout = layout;
+  }
+
+  private _layouts: Layout[] = [];
+
+  get layouts(): Layout[] { return this._layouts }
+
+  async load_layouts(): Promise<Layout[]> {
+    if (this._layouts.length) return this._layouts;
 
     const array = await this.import_json('layouts/index.json');
-    if (!is_arr(array)) return;
+    if (!is_arr(array)) return this._layouts;
 
-    const paths: string[] = [];
+    const paths: string[] = ["launch/init.json"];
     for (const element of array) {
       if (is_str(element)) paths.push(element);
       else Warn.print('layouts/index.json', 'element is not a string! got:', element)
     }
 
-    const layouts: Layout[] = [];
     for (const path of paths) {
       const raw_layout = await this.import_json(path);
       const cooked_layout = await Layout.cook(this, raw_layout, this.layout_val_getter)
-      layouts.push(cooked_layout);
+      this._layouts.push(cooked_layout);
+      if (path === paths[0]) this.set_layout(cooked_layout)
     }
-    if (!this._disposed)
-      return this._layouts = layouts;
-    for (const l of layouts)
-      l.dispose();
+
+    if (this._disposed) {
+      for (const l of this._layouts) l.dispose();
+      this._layouts.length = 0;
+    } else {
+      this._callbacks.emit('on_layouts_loaded')()
+    }
+    return this._layouts;
   }
 
   layout_val_getter = (word: string) => (item: Layout) => {

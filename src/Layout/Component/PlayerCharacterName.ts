@@ -17,7 +17,7 @@ export default class PlayerCharacterName extends LayoutComponent {
   protected _player: PlayerInfo | undefined = void 0;
   protected _jid: number = 0;
   protected _mesh: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial> | undefined
-  protected _opacity: SineAnimation = new SineAnimation(0.75, 1, 1 / 50);
+  protected _opacity: SineAnimation = new SineAnimation(0.65, 1, 1 / 25);
   protected _text: string | undefined = void 0;
   protected _show: boolean = false;
 

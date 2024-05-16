@@ -29,4 +29,6 @@ export interface ILf2Callback {
 
   on_dispose?(): void;
   on_difficulty_changed?(value: Defines.Difficulty, prev: Defines.Difficulty): void;
+
+  on_layouts_loaded?(): void;
 }

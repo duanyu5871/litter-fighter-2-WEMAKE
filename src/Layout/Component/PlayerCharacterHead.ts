@@ -1,5 +1,6 @@
 import type { IPlayerInfoCallback } from "../../LF2/PlayerInfo";
 import { TPicture } from '../../LF2/loader/loader';
+import { SineAnimation } from "../../SineAnimation";
 import { Defines } from '../../common/lf2_type/defines';
 import GamePrepareLogic, { GamePrepareState, IGamePrepareLogicCallback } from './GamePrepareLogic';
 import { LayoutComponent } from "./LayoutComponent";
@@ -21,6 +22,7 @@ export default class PlayerCharacterHead extends LayoutComponent {
   protected _mesh_hints?: Sprite;
   protected _mesh_cd?: Sprite;
   protected _head: string = Defines.BuiltIn.Imgs.RFACE;
+  protected _opacity: SineAnimation = new SineAnimation(0.65, 1, 1 / 25);
 
   get gpl(): GamePrepareLogic | undefined {
     return this.layout.root.find_component(GamePrepareLogic)
@@ -136,6 +138,9 @@ export default class PlayerCharacterHead extends LayoutComponent {
   }
 
   on_render(dt: number): void {
+    this._opacity.update(dt)
+    if(this._mesh_hints) this._mesh_hints.opacity = this._opacity.value
+
     const joined = this.joined;
     switch (this.gpl?.state) {
       case GamePrepareState.PlayerCharacterSel:
