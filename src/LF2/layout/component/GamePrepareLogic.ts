@@ -56,8 +56,10 @@ export default class GamePrepareLogic extends LayoutComponent {
         }
         break;
       case GamePrepareState.ComNumberSel:
+        if ('d' === key) this._fsm.use(GamePrepareState.PlayerCharacterSel);
+        break;
       case GamePrepareState.GameSetting:
-        if ('j' === key) this._fsm.use(GamePrepareState.PlayerCharacterSel)
+        if ('j' === key) this._fsm.use(GamePrepareState.PlayerCharacterSel);
         break;
       case GamePrepareState.ComputerCharacterSel:
         if ('j' === key && !this.joined_com_infos.length)
@@ -161,32 +163,27 @@ export default class GamePrepareLogic extends LayoutComponent {
       v => (v.player?.is_com && v.player.joined) ? v.player : null
     )
   }
-  get com_infos(): PlayerInfo[] {
-    return map_no_void(
+  get com_slots(): CharacterSelLogic[] {
+    return filter(
       this.layout.root.search_components(CharacterSelLogic),
-      v => v.player?.is_com ? v.player : null
+      v => v.player?.is_com
     )
   }
-  get last_joined_com(): PlayerInfo | undefined {
-    const { com_infos } = this;
-    return find_last(com_infos, v => v.joined)
-  }
-  get first_not_joined_com(): PlayerInfo | undefined {
-    const { com_infos } = this;
-    return find(com_infos, v => !v.joined)
-  }
-  get empty_player_slots(): PlayerInfo[] {
-    return map_no_void(
+
+  get empty_player_slots(): CharacterSelLogic[] {
+    return filter(
       this.layout.root.search_components(CharacterSelLogic),
-      v => v.player?.joined ? null : v.player
+      v => !v.player?.joined
     )
   }
+  handling_com: CharacterSelLogic | undefined
   set_com_num(num: number) {
     this._com_num = num;
     if (num > 0) {
       const { empty_player_slots } = this
+      this.handling_com = empty_player_slots[0];
       while (num >= 0 && empty_player_slots.length) {
-        empty_player_slots.shift()!.is_com = true
+        empty_player_slots.shift()?.player?.set_is_com(true);
         num -= 1;
       }
       this._fsm.use(GamePrepareState.ComputerCharacterSel);

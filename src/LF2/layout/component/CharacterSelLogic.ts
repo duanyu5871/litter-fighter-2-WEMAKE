@@ -72,11 +72,9 @@ export default class CharacterSelLogic extends LayoutComponent {
       return;
     } else if (gpl.state === GamePrepareState.PlayerCharacterSel) {
       if (player_id !== this.player_id) { return; }
-    } else if (gpl.state === GamePrepareState.ComputerCharacterSel) { 
-      if (
-        (!this.joined && ('a' !== key || this.player !== gpl.first_not_joined_com)) ||
-        (this.team_decided && ('j' !== key || this.player !== gpl.last_joined_com))
-      ) return;
+    } else if (gpl.state === GamePrepareState.ComputerCharacterSel) {
+      if (!this.player?.is_com) { return; }
+      if (this !== gpl.handling_com) { return; }
     } else { return }
 
     if (key === 'j') this.lf2.sounds.play_preset('cancel');
@@ -120,6 +118,13 @@ export default class CharacterSelLogic extends LayoutComponent {
       }
     } else if (key === 'a') {
       this.joined = true;
+    }
+
+    if (gpl.state === GamePrepareState.ComputerCharacterSel) {
+      const { com_slots } = gpl;
+      const my_index = com_slots.indexOf(this);
+      if (this.team_decided) gpl.handling_com = com_slots[my_index + 1];
+      else if (!this.joined) gpl.handling_com = com_slots[my_index - 1];
     }
   }
 

@@ -491,7 +491,6 @@ export default class Layout {
       i.on_render(dt)
     for (const c of this._components)
       c.on_render?.(dt)
-
   }
 
   on_player_key_down(player_id: string, key: TKeyName) {
