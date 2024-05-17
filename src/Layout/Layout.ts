@@ -150,7 +150,9 @@ export default class Layout {
   get state() { return this._state }
   get img_idx() { return this._img_idx() }
   get visible(): boolean { return this._visible.value; }
-  set visible(v: boolean) { this._visible.set(0, v); }
+  set visible(v: boolean) { this.set_visible(v); }
+  set_visible(v: boolean): this { this._visible.set(0, v); return this; }
+
   get disabled(): boolean { return this._disabled.value; }
   set disabled(v: boolean) { this._disabled.set(0, v); }
 
@@ -401,28 +403,25 @@ export default class Layout {
     return texture;
   }
 
-  protected _mesh = new Sprite({ w: 0, h: 0 })
+  protected _mesh: Sprite = new Sprite()
+    .add_user_data('owner', this)
   get sprite() { return this._mesh }
 
   protected init_sprite() {
-    const [cx, cy] = this.center;
-    const [x, y] = this.pos;
+    const [x, y, z] = this.pos;
     const [w, h] = this.size;
-    const texture = this.create_texture();
-
-    const p: ISpriteInfo = { w, h, texture, color: this.data.bg_color }
-
-    this._mesh = new Sprite(p)
-      .set_center(cx, cy)
-      .set_pos(x, -y)
+    const p: ISpriteInfo = {
+      w, h,
+      texture: this.create_texture(),
+      color: this.data.bg_color
+    }
+    this._mesh.set_info(p)
+      .set_center(...this.center)
+      .set_pos(x, -y, z)
       .set_opacity((p.texture || p.color) ? 1 : 0)
       .set_visible(this.visible)
       .set_name(`layout(name = ${this.name}, id =${this.id})`)
       .apply()
-
-    this._mesh.dispose();
-    this._mesh.mesh.userData = { owner: this };
-    this._mesh.mesh.position.z = this.z;
 
     if (this.parent?.sprite) this.parent?.sprite.add(this._mesh)
     else this.lf2.world.scene.add(this._mesh.mesh);

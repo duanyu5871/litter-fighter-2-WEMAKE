@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import Layout from '../Layout/Layout';
 import { Log, Warn } from '../Log';
 import { arithmetic_progression } from '../common/arithmetic_progression';
+import { constructor_name } from '../common/constructor_name';
 import { fisrt } from '../common/container_help';
 import { ICharacterData, IWeaponData, TFace } from '../common/lf2_type';
 import { IStageInfo } from "../common/lf2_type/IStageInfo";
@@ -229,11 +230,11 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   on_click(e: PointingEvent) {
     if (!this._layout) return;
     const coords = new THREE.Vector2(e.scene_x, e.scene_y);
-    const { sprite: object_3d } = this._layout;
-    if (!object_3d) return;
+    const { sprite } = this._layout;
+    if (!sprite) return;
     const raycaster = new THREE.Raycaster();
     raycaster.setFromCamera(coords, this.world.camera);
-    const intersections = raycaster.intersectObjects([object_3d.mesh], true);
+    const intersections = raycaster.intersectObjects([sprite.mesh], true);
 
     const layouts = intersections
       .filter(v => v.object.userData.owner instanceof Layout)
@@ -625,5 +626,21 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   on_loading_content(content: string, progress: number) {
     this._callbacks.emit('on_loading_content')(content, progress);
   }
+
+  n_tree(n: THREE.Object3D = this.world.scene): II {
+    const children = n.children.map(v => this.n_tree(v))
+    return {
+      name: `<${constructor_name(n)}>${n.name}`,
+      inst: n,
+      user_data: n.userData,
+      children: children.length ? children : void 0
+    }
+  }
 }
 
+interface II {
+  name: string;
+  inst: THREE.Object3D;
+  user_data?: any,
+  children?: II[];
+}

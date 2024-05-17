@@ -17,10 +17,21 @@ export interface IReadonlyFSM<K extends string | number = string | number, S ext
 export class FSM<K extends string | number = string | number, S extends IState<K> = IState<K>> implements IReadonlyFSM<K, S> {
   protected _callbacks = new Callbacks<IFSMCallback<K, S>>()
   protected _state_map = new Map<K, S>();
+  protected _prev_state?: S;
   protected _state?: S;
   get callbacks(): NoEmitCallbacks<IFSMCallback<K, S>> { return this._callbacks }
   get state(): S | undefined {
     return this._state
+  }
+  protected set state(s: S | undefined) {
+    this._prev_state = this._state;
+    this._state?.leave?.();
+    this._state = s;
+    s?.enter?.();
+    this._callbacks.emit('on_state_changed')(this);
+  }
+  get prev_state(): S | undefined {
+    return this._prev_state;
   }
   get(key: K): S | undefined {
     return this._state_map.get(key)
@@ -35,6 +46,7 @@ export class FSM<K extends string | number = string | number, S extends IState<K
     this._state?.leave?.();
     this._state = next_state;
     next_state?.enter?.();
+    this._callbacks.emit('on_state_changed')(this);
     return this;
   }
   update(dt: number) {
@@ -47,8 +59,6 @@ export class FSM<K extends string | number = string | number, S extends IState<K
     const next_state = this._state_map.get(next_state_key);
     if (!next_state) return;
 
-    curr_state.leave?.();
-    this._state = next_state;
-    next_state.enter?.();
+    this.state = next_state;
   }
 }

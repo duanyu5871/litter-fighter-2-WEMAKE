@@ -215,7 +215,7 @@ export class ImageMgr {
 
 function _create_pic(
   img_info: TImageInfo,
-  pic_info: TPicture = err_pic_info(''),
+  pic_info: TPicture = err_pic_info(img_info.key),
 ): TPicture {
   const { url, w, h, min_filter, mag_filter, wrap_s, wrap_t } = img_info;
   const texture = texture_loader.load(url);

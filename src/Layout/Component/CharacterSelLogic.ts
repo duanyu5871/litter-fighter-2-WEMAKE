@@ -1,9 +1,8 @@
-import { ILf2Callback } from '../../LF2/ILf2Callback';
 import type { PlayerInfo } from "../../LF2/PlayerInfo";
+import Invoker from '../../LF2/base/Invoker';
 import { TKeyName } from '../../LF2/controller/BaseController';
-import { SineAnimation } from '../../SineAnimation';
 import { Defines } from '../../common/lf2_type/defines';
-import GamePrepareLogic, { GamePrepareState, IGamePrepareLogicCallback } from './GamePrepareLogic';
+import GamePrepareLogic, { GamePrepareState } from './GamePrepareLogic';
 import { LayoutComponent } from "./LayoutComponent";
 
 /**
@@ -14,15 +13,11 @@ import { LayoutComponent } from "./LayoutComponent";
  * @extends {LayoutComponent}
  */
 export default class CharacterSelLogic extends LayoutComponent {
-  protected get _player_id() { return this.args[0] || '' };
-  protected _jid: number = 0;
-  protected _hints_opacity: SineAnimation = new SineAnimation(0.75, 1, 1 / 50);
-  private _game_prepare_logic_listener: Partial<IGamePrepareLogicCallback> = {
-    on_all_ready: () => this.on_all_player_ready(),
-    on_not_ready: () => this.on_not_all_player_ready(),
-  };
+  get player_id() { return this.args[0] || '' }
 
-  get player(): PlayerInfo | undefined { return this.lf2.player_infos.get(this._player_id) };
+  get player(): PlayerInfo | undefined {
+    return this.lf2.player_infos.get(this.player_id)
+  };
 
   get character(): string { return this.player?.character || ''; }
   set character(v: string) { if (this.player) this.player.character = v; }
@@ -39,21 +34,21 @@ export default class CharacterSelLogic extends LayoutComponent {
   get joined(): boolean { return !!this.player?.joined; }
   set joined(v: boolean) { if (this.player) this.player.joined = v; }
 
-  private _lf2_listener: Partial<ILf2Callback> = {
-    on_cheat_changed: (cheat_name, enabled) => { // 当前选择的角色被隐藏时，让玩家选随机
-      if (cheat_name === Defines.Cheats.Hidden && !enabled) this.handle_hidden_character();
-    },
-  };
+  protected _unmount_jobs = new Invoker();
 
   get gpl() { return this.layout.root.find_component(GamePrepareLogic) }
 
   on_mount(): void {
     super.on_mount();
-    if (!this._player_id) return;
-    this.lf2.callbacks.add(this._lf2_listener)
+    this._unmount_jobs.add(
+      this.lf2.callbacks.add({
+        on_cheat_changed: (cheat_name, enabled) => { // 当前选择的角色被隐藏时，让玩家选随机
+          if (cheat_name === Defines.Cheats.Hidden && !enabled) this.handle_hidden_character();
+        },
+      })
+    )
     if (!this.lf2.is_cheat_enabled(Defines.Cheats.Hidden))
       this.handle_hidden_character();
-    this.gpl?.callbacks.add(this._game_prepare_logic_listener);
   }
 
   on_unmount(): void {
@@ -61,11 +56,11 @@ export default class CharacterSelLogic extends LayoutComponent {
     this.joined = false;
     this.character_decided = false;
     this.team_decided = false;
-    this.lf2.callbacks.del(this._lf2_listener)
-    this.gpl?.callbacks.del(this._game_prepare_logic_listener);
+    this._unmount_jobs.invoke();
+    this._unmount_jobs.clear();
   }
 
-  get_characters() {
+  get characters() {
     const all_characters = this.lf2.datas.characters
     const show_all = this.lf2.is_cheat_enabled(Defines.Cheats.Hidden)
     return show_all ? all_characters : all_characters.filter(v => !v.base.hidden);
@@ -73,80 +68,61 @@ export default class CharacterSelLogic extends LayoutComponent {
 
   on_player_key_down(player_id: string, key: TKeyName): void {
     const { gpl } = this;
-    if (!gpl) return;
-    if (gpl.state === GamePrepareState.PlayerCharacterSel) {
-      if (player_id !== this._player_id)
-        return;
-      if (this.team_decided) {
-        if (key === 'j') {
-          this.lf2.sounds.play_preset('cancel')
-          this.team_decided = false;
-        }
-      } else if (this.character_decided) {
-        switch (key) {
-          case 'a': { // 按攻击确认队伍
-            this.lf2.sounds.play_preset('join')
-            this.team_decided = true;
-            break;
-          }
-          case 'j': { // 按跳跃取消确认角色
-            this.lf2.sounds.play_preset('cancel')
-            this.character_decided = false;
-            break;
-          }
-          case 'L': { // 上一个队伍
-            const idx = Defines.Teams.findIndex(v => v === this.team);
-            const next_idx = (idx + Defines.Teams.length - 1) % Defines.Teams.length;
-            this.team = Defines.Teams[next_idx];
-            break;
-          }
-          case 'R': { // 下一个队伍
-            const idx = Defines.Teams.findIndex(v => v === this.team);
-            const next_idx = (idx + 1) % Defines.Teams.length;
-            this.team = Defines.Teams[next_idx];
-            break;
-          }
-        }
-      } else if (this.joined) {
-        switch (key) {
-          case 'a': {  // 按攻击确认角色
-            this.lf2.sounds.play_preset('join')
-            this.character_decided = true;
-            break;
-          }
-          case 'j': { // 按跳跃取消加入
-            this.lf2.sounds.play_preset('cancel')
-            this.joined = false;
-            break;
-          }
-          case 'D':
-          case 'U': { // 按上或下,回到随机
-            this.character = '';
-            break;
-          }
-          case 'L': { // 上一个角色
-            const characters = this.get_characters();
-            const idx = characters.findIndex(v => v.id === this.character);
-            const next_idx = idx <= -1 ? characters.length - 1 : idx - 1;
-            this.character = characters[next_idx]?.id ?? '';
-            break;
-          }
-          case 'R': { // 下一个角色
-            const arr = this.get_characters();
-            const idx = arr.findIndex(v => v.id === this.character);
-            const next = idx >= arr.length - 1 ? -1 : idx + 1;
-            this.character = arr[next]?.id ?? '';
-            break;
-          }
-        }
-      } else {
-        if (key === 'a') {
-          this.lf2.sounds.play_preset('join')
-          this.joined = true;
-        }
+    if (!gpl) {
+      return;
+    } else if (gpl.state === GamePrepareState.PlayerCharacterSel) {
+      if (player_id !== this.player_id) { return; }
+    } else if (gpl.state === GamePrepareState.ComputerCharacterSel) { 
+      if (
+        (!this.joined && ('a' !== key || this.player !== gpl.first_not_joined_com)) ||
+        (this.team_decided && ('j' !== key || this.player !== gpl.last_joined_com))
+      ) return;
+    } else { return }
+
+    if (key === 'j') this.lf2.sounds.play_preset('cancel');
+    if (key === 'a') this.lf2.sounds.play_preset('join');
+
+    if (this.team_decided) {
+      if (key === 'j') {
+        this.team_decided = false;
       }
+    } else if (this.character_decided) {
+      if ('a' === key) {
+        this.team_decided = true;
+      } else if ('j' === key) {
+        this.character_decided = false;
+      } else if ('L' === key) {
+        const idx = Defines.Teams.findIndex(v => v === this.team);
+        const next_idx = (idx + Defines.Teams.length - 1) % Defines.Teams.length;
+        this.team = Defines.Teams[next_idx];
+      } else if ('R' === key) { // 下一个队伍
+        const idx = Defines.Teams.findIndex(v => v === this.team);
+        const next_idx = (idx + 1) % Defines.Teams.length;
+        this.team = Defines.Teams[next_idx];
+      }
+    } else if (this.joined) {
+      if ('a' === key) { // 按攻击确认角色
+        this.character_decided = true;
+      } else if ('j' === key) { // 按跳跃取消加入
+        this.joined = false;
+      } else if ('D' === key || 'U' === key) { // 按上或下,回到随机
+        this.character = '';
+      } else if ('L' === key) { // 上一个角色
+        const { characters } = this;
+        const idx = characters.findIndex(v => v.id === this.character);
+        const next = idx <= -1 ? characters.length - 1 : idx - 1;
+        this.character = characters[next]?.id ?? '';
+      } else if ('R' === key) { // 下一个角色
+        const { characters } = this;
+        const idx = characters.findIndex(v => v.id === this.character);
+        const next = idx >= characters.length - 1 ? -1 : idx + 1;
+        this.character = characters[next]?.id ?? '';
+      }
+    } else if (key === 'a') {
+      this.joined = true;
     }
   }
+
   /**
    * 当前选择的角色被隐藏时，让玩家选随机
    *
@@ -159,14 +135,4 @@ export default class CharacterSelLogic extends LayoutComponent {
     const idx = characters.findIndex(v => v.id === this.character);
     this.player?.set_character(characters[idx]?.id ?? '');
   }
-
-  protected on_not_all_player_ready(): void {
-    console.log('on_not_all_player_ready')
-    // throw new Error('Method not implemented.');
-  }
-  protected on_all_player_ready(): void {
-    console.log('on_all_player_ready')
-    // throw new Error('Method not implemented.');
-  }
-
 }

@@ -285,7 +285,7 @@
       "id": "menu",
       "img": "sprite/MENU_CLIP3.png",
       "rect": "348,0,304,166",
-      "pos": "10,10,1s",
+      "pos": "10,10,1",
       "visible": false,
       "items": [
         {

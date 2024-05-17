@@ -1,16 +1,16 @@
-import { IPlayerInfoCallback } from "../../LF2/PlayerInfo";
+import { PlayerInfo } from "../../LF2/PlayerInfo";
 import Callbacks from "../../LF2/base/Callbacks";
+import Invoker from "../../LF2/base/Invoker";
 import NoEmitCallbacks from "../../LF2/base/NoEmitCallbacks";
 import { TKeyName } from "../../LF2/controller/BaseController";
-import { filter } from "../../common/container_help";
+import { filter, find, find_last, fisrt, } from "../../common/container_help";
+import { map_no_void } from "../../common/container_help/map_no_void";
 import { FSM, IReadonlyFSM } from "../StateMachine";
+import CharacterSelLogic from "./CharacterSelLogic";
 import { LayoutComponent } from "./LayoutComponent";
 
 export interface IGamePrepareLogicCallback {
-  on_all_ready?(): void;
-  on_not_ready?(): void;
   on_countdown?(v: number): void;
-  on_asking_com_num?(): void;
 }
 export enum GamePrepareState {
   PlayerCharacterSel = 'PlayerCharacterSelecting',
@@ -21,84 +21,71 @@ export enum GamePrepareState {
 }
 
 export default class GamePrepareLogic extends LayoutComponent {
+  protected _unmount_jobs = new Invoker();
   protected _callbacks = new Callbacks<IGamePrepareLogicCallback>();
-  protected _joined_num: number = 0;
-  protected _ready_num: number = 0;
-  protected _player_listener: Partial<IPlayerInfoCallback> = {
-    on_joined_changed: v => this.on_someone_joined_changed(v),
-    on_team_decided: v => this.on_someone_team_decided(v),
-  }
   get state(): GamePrepareState { return this._fsm.state?.key!; }
 
   private _count_down: number = 5000;
   get callbacks(): NoEmitCallbacks<IGamePrepareLogicCallback> { return this._callbacks }
-  get is_all_ready() {
-    return !!this._joined_num && this._joined_num === this._ready_num;
-  }
-  on_mount(): void {
+
+  override on_mount(): void {
     super.on_mount();
     this._fsm.use(GamePrepareState.PlayerCharacterSel)
-    for (const [, player] of this.lf2.player_infos) {
-      if (player.joined) this._joined_num++;
-      if (player.team_decided) this._ready_num++;
-      player.callbacks.add(this._player_listener)
-    }
+    this._unmount_jobs.add(
+      ...map_no_void(this.lf2.player_infos.values(), v => v.callbacks.add({
+        on_joined_changed: () => this.on_someone_changed(),
+        on_team_decided: () => this.on_someone_changed(),
+      }))
+    )
   }
-  on_unmount(): void {
+
+  override on_unmount(): void {
     super.on_unmount();
-    this._joined_num = this._ready_num = 0;
-    for (const [, player] of this.lf2.player_infos)
-      player.callbacks.del(this._player_listener)
+    this._unmount_jobs.invoke();
+    this._unmount_jobs.clear();
   }
-  on_player_key_down(_player_id: string, key: TKeyName) {
+
+  override on_player_key_down(_player_id: string, key: TKeyName) {
     switch (this.state) {
       case GamePrepareState.PlayerCharacterSel:
         break;
       case GamePrepareState.CountingDown:
-        switch (key) {
-          case "j":
-            this._count_down = Math.max(0, this._count_down - 500);
-            this._callbacks.emit('on_countdown')(Math.ceil(this._count_down / 1000));
-            break;
+        if ('j' === key) {
+          this._count_down = Math.max(0, this._count_down - 500);
+          this._callbacks.emit('on_countdown')(Math.ceil(this._count_down / 1000));
         }
         break;
       case GamePrepareState.ComNumberSel:
-        switch (key) {
-          case "a": return this._fsm.use(GamePrepareState.ComputerCharacterSel)
-        }
+      case GamePrepareState.GameSetting:
+        if ('j' === key) this._fsm.use(GamePrepareState.PlayerCharacterSel)
         break;
       case GamePrepareState.ComputerCharacterSel:
-        switch (key) {
-          case "a": return this._fsm.use(GamePrepareState.GameSetting)
-        }
-        break;
-      case GamePrepareState.GameSetting:
-        switch (key) {
-          case "j": return this._fsm.use(GamePrepareState.PlayerCharacterSel)
-        }
+        if ('j' === key && !this.joined_com_infos.length)
+          this._fsm.use(GamePrepareState.ComNumberSel)
         break;
     }
   }
-  protected on_someone_joined_changed(joined: boolean) {
-    this._joined_num += (joined ? 1 : -1);
-    if (joined && this._joined_num === this._ready_num + 1)
-      this.on_not_ready();
-    else if (!joined && this._joined_num === this._ready_num && this._joined_num)
-      this.on_all_ready();
+
+  protected on_someone_changed() {
+    let joined_num = 0;
+    let ready_num = 0;
+    for (const [, p] of this.lf2.player_infos) {
+      if (p.joined || p.is_com) joined_num += 1; // 已加入人数
+      if (p.team_decided) ready_num += 1; // 已准备人数
+    }
+    if (ready_num && ready_num === joined_num) {
+      if (this.state === GamePrepareState.ComputerCharacterSel) {
+        this._fsm.use(GamePrepareState.GameSetting);
+      } else if (this.state === GamePrepareState.PlayerCharacterSel) {
+        this._fsm.use(GamePrepareState.CountingDown);
+      }
+    } else if (ready_num < joined_num) {
+      if (this.state === GamePrepareState.CountingDown) {
+        this._fsm.use(GamePrepareState.PlayerCharacterSel);
+      }
+    }
   }
-  protected on_someone_team_decided(team_decided: boolean) {
-    this._ready_num += (team_decided ? 1 : -1);
-    if (!team_decided && this._joined_num === this._ready_num + 1)
-      this.on_not_ready();
-    else if (team_decided && this._joined_num === this._ready_num)
-      this.on_all_ready();
-  }
-  protected on_all_ready(): void {
-    this._callbacks.emit('on_all_ready')();
-  }
-  protected on_not_ready(): void {
-    this._callbacks.emit('on_not_ready')();
-  }
+
   override on_render(dt: number): void {
     this._fsm.update(dt);
   }
@@ -109,21 +96,13 @@ export default class GamePrepareLogic extends LayoutComponent {
     .add({
       key: GamePrepareState.PlayerCharacterSel,
       enter: () => {
+        this._com_num = 0;
         for (const [, player] of this.lf2.player_infos) {
+          if (player.is_com) player.joined = false;
           player.team_decided = false;
           player.character_decided = false;
           player.is_com = false;
         }
-      },
-      update: () => {
-        if (this.is_all_ready)
-          return GamePrepareState.CountingDown;
-      },
-      leave: () => {
-        const joined_num = filter(this.lf2.player_infos.values(), v => v.joined).length;
-        const not_joined_num = filter(this.lf2.player_infos.values(), v => !v.joined).length;
-        this._min_com_num = joined_num <= 1 ? 1 : 0; // TODO: 闯关只需1人
-        this._max_com_num = not_joined_num;
       }
     }, {
       key: GamePrepareState.CountingDown,
@@ -132,45 +111,32 @@ export default class GamePrepareLogic extends LayoutComponent {
         this._callbacks.emit('on_countdown')(5);
       },
       update: (dt) => {
-        if (!this.is_all_ready)
-          return GamePrepareState.PlayerCharacterSel;
         const prev_second = Math.ceil(this._count_down / 1000);
         this._count_down -= dt
         const curr_second = Math.ceil(this._count_down / 1000);
-        if (curr_second !== prev_second) {
+        if (curr_second !== prev_second)
           this._callbacks.emit('on_countdown')(curr_second);
-        }
         if (this._count_down <= 0)
           return GamePrepareState.ComNumberSel;
       }
     }, {
       key: GamePrepareState.ComNumberSel,
       enter: () => {
-        this._callbacks.emit('on_asking_com_num')();
-        const l = this.layout.find_layout('how_many_computer');
-        if (l) l.visible = true;
+        const { usable_player_infos } = this
+        const joined_num = filter(usable_player_infos, v => v.joined).length;
+        const not_joined_num = filter(usable_player_infos, v => !v.joined).length;
+        this._min_com_num = joined_num <= 1 ? 1 : 0; // TODO: 闯关只需1人
+        this._max_com_num = not_joined_num;
+        this.layout.find_layout('how_many_computer')?.set_visible(true)
       },
-      update: () => void 0,
-      leave: () => {
-        const l = this.layout.find_layout('how_many_computer');
-        if (l) l.visible = false;
-      }
+      leave: () => this.layout.find_layout('how_many_computer')?.set_visible(false)
     }, {
       key: GamePrepareState.ComputerCharacterSel,
-      update: () => void 0,
     }, {
       key: GamePrepareState.GameSetting,
-      enter: () => {
-        const l = this.layout.find_layout('menu');
-        if (l) l.visible = true;
-      },
-      update: () => void 0,
-      leave: () => {
-        const l = this.layout.find_layout('menu');
-        if (l) l.visible = false;
-      },
+      enter: () => this.layout.find_layout('menu')?.set_visible(true),
+      leave: () => this.layout.find_layout('menu')?.set_visible(false)
     }).use(GamePrepareState.PlayerCharacterSel);
-
 
   /** 至少可选COM数量 */
   private _min_com_num = 0;
@@ -186,12 +152,41 @@ export default class GamePrepareLogic extends LayoutComponent {
   /** 指定选COM数量 */
   get com_num(): number { return this._com_num };
 
+  get usable_player_infos(): PlayerInfo[] {
+    return map_no_void(this.layout.root.search_components(CharacterSelLogic), v => v.player)
+  }
+  get joined_com_infos(): PlayerInfo[] {
+    return map_no_void(
+      this.layout.root.search_components(CharacterSelLogic),
+      v => (v.player?.is_com && v.player.joined) ? v.player : null
+    )
+  }
+  get com_infos(): PlayerInfo[] {
+    return map_no_void(
+      this.layout.root.search_components(CharacterSelLogic),
+      v => v.player?.is_com ? v.player : null
+    )
+  }
+  get last_joined_com(): PlayerInfo | undefined {
+    const { com_infos } = this;
+    return find_last(com_infos, v => v.joined)
+  }
+  get first_not_joined_com(): PlayerInfo | undefined {
+    const { com_infos } = this;
+    return find(com_infos, v => !v.joined)
+  }
+  get empty_player_slots(): PlayerInfo[] {
+    return map_no_void(
+      this.layout.root.search_components(CharacterSelLogic),
+      v => v.player?.joined ? null : v.player
+    )
+  }
   set_com_num(num: number) {
     this._com_num = num;
     if (num > 0) {
-      const com_slots = filter(this.lf2.player_infos.values(), v => !v.joined);
-      while (num >= 0 && com_slots.length) {
-        com_slots.shift()!.is_com = true
+      const { empty_player_slots } = this
+      while (num >= 0 && empty_player_slots.length) {
+        empty_player_slots.shift()!.is_com = true
         num -= 1;
       }
       this._fsm.use(GamePrepareState.ComputerCharacterSel);
