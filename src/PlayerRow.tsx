@@ -9,7 +9,7 @@ import { TKeyName } from './LF2/controller/BaseController';
 import { random_get } from './LF2/utils/math/random';
 import LocalHuman from './LF2/controller/LocalHuman';
 import { Checkbox } from './Component/Checkbox';
-import { Defines } from './common/lf2_type/defines';
+import { Defines } from './LF2/defines/defines';
 import { ToggleButton } from './Component/ToggleButton';
 
 const key_names: Record<TKeyName, string> = {

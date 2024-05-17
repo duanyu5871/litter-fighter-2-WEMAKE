@@ -2,8 +2,8 @@ import { useRef } from "react";
 import { Button } from "./Component/Button";
 import { TextArea } from "./Component/TextArea";
 import open_file, { read_file } from "./Utils/open_file";
-import dat_to_json from "./common/lf2_dat_translator/dat_2_json";
-import decode_lf2_dat from "./common/lf2_dat_translator/decode_lf2_dat";
+import dat_to_json from "./LF2/dat_translator/dat_2_json";
+import decode_lf2_dat from "./LF2/dat_translator/decode_lf2_dat";
 export interface IEditorViewProps extends React.HTMLAttributes<HTMLDivElement> {
   onClose?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   loading?: boolean;

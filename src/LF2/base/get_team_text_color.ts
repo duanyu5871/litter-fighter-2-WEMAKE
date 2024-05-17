@@ -1,4 +1,4 @@
-import { Defines } from "../../common/lf2_type/defines";
+import { Defines } from "../defines/defines";
 
 export function get_team_text_color(team: string | number) {
   const info = Defines.TeamInfoMap[team] || Defines.TeamInfoMap[Defines.TeamEnum.Independent]

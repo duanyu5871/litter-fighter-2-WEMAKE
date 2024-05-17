@@ -1,15 +1,15 @@
-import { arithmetic_progression } from '../../LF2/utils/math/arithmetic_progression';
-import { take_number } from '../../LF2/utils/container_help/take_number';
-import { is_num, is_str } from '../../LF2/utils/type_check';
-import { ICharacterData, ICharacterFrameInfo, TNextFrame } from '../lf2_type';
-import { ICharacterFrameIndexes } from "../lf2_type/ICharacterFrameIndexes";
-import { ICharacterInfo } from "../lf2_type/ICharacterInfo";
-import { IFrameInfo } from "../lf2_type/IFrameInfo";
-import { INextFrame } from "../lf2_type/INextFrame";
-import { Defines } from '../lf2_type/defines';
-import { set_obj_field } from '../../LF2/utils/container_help/set_obj_field';
-import { traversal } from '../../LF2/utils/container_help/traversal';
-import { Cond } from './Cond';
+import { arithmetic_progression } from '../utils/math/arithmetic_progression';
+import { take_number } from '../utils/container_help/take_number';
+import { is_num, is_str } from '../utils/type_check';
+import { ICharacterData, ICharacterFrameInfo, TNextFrame } from '../defines';
+import { ICharacterFrameIndexes } from "../defines/ICharacterFrameIndexes";
+import { ICharacterInfo } from "../defines/ICharacterInfo";
+import { IFrameInfo } from "../defines/IFrameInfo";
+import { INextFrame } from "../defines/INextFrame";
+import { Defines } from '../defines/defines';
+import { set_obj_field } from '../utils/container_help/set_obj_field';
+import { traversal } from '../utils/container_help/traversal';
+import { CondMaker } from './CondMaker';
 import { get_next_frame_by_raw_id } from './get_the_next';
 import { take } from './take';
 const k_9 = [
@@ -80,7 +80,7 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
           {
             id: '45',
             facing: FacingFlag.ByController,
-            expression: Cond
+            expression: CondMaker
               .add(ValWord.WeaponType, '==', WeaponType.Baseball)
               .or(v => v
                 .add(ValWord.WeaponType, '==', WeaponType.Knife)
@@ -90,10 +90,10 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
           {
             id: ['20', '25'],
             facing: FacingFlag.ByController,
-            expression: Cond.one_of(ValWord.WeaponType, WeaponType.Knife, WeaponType.Stick).done()
+            expression: CondMaker.one_of(ValWord.WeaponType, WeaponType.Knife, WeaponType.Stick).done()
           },
           {
-            id: '55', expression: Cond.one_of(ValWord.WeaponType, WeaponType.Drink).done(),
+            id: '55', expression: CondMaker.one_of(ValWord.WeaponType, WeaponType.Drink).done(),
             facing: FacingFlag.ByController,
           },
           { id: ['60', '65'] }
@@ -115,7 +115,7 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
           {
             id: ['45'],
             facing: FacingFlag.ByController,
-            expression: Cond
+            expression: CondMaker
               .add(ValWord.WeaponType, '==', WeaponType.Baseball)
               .or(v => v
                 .add(ValWord.WeaponType, '==', WeaponType.Knife)
@@ -125,10 +125,10 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
           {
             id: ['20', '25'],
             facing: FacingFlag.ByController,
-            expression: Cond.one_of(ValWord.WeaponType, WeaponType.Knife, WeaponType.Stick).done()
+            expression: CondMaker.one_of(ValWord.WeaponType, WeaponType.Knife, WeaponType.Stick).done()
           }, // drink
           {
-            id: '55', expression: Cond.one_of(ValWord.WeaponType, WeaponType.Drink).done(),
+            id: '55', expression: CondMaker.one_of(ValWord.WeaponType, WeaponType.Drink).done(),
             facing: FacingFlag.ByController,
           },
           { id: ['60', '65'] }
@@ -146,7 +146,7 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
         frame.hit.a = [
           { // 丢出武器
             id: ['45'],
-            expression: Cond.add(ValWord.WeaponType, '==', WeaponType.Baseball)
+            expression: CondMaker.add(ValWord.WeaponType, '==', WeaponType.Baseball)
               .or(v => v
                 .add(ValWord.PressFB, '==', 1)
                 .and(ValWord.WeaponType, '!=', WeaponType.None)
@@ -154,10 +154,10 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
               .done(),
           }, // drink
           {
-            id: '55', expression: Cond.one_of(ValWord.WeaponType, WeaponType.Drink).done()
+            id: '55', expression: CondMaker.one_of(ValWord.WeaponType, WeaponType.Drink).done()
           },
           {
-            id: '35', expression: Cond.one_of(ValWord.WeaponType, WeaponType.Knife, WeaponType.Stick).done(),
+            id: '35', expression: CondMaker.one_of(ValWord.WeaponType, WeaponType.Knife, WeaponType.Stick).done(),
             facing: FacingFlag.ByController,
           },
           { id: '85' }
@@ -214,7 +214,7 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
             {
               id: ['52'],
               facing: FacingFlag.ByController,
-              expression: Cond.one_of(
+              expression: CondMaker.one_of(
                 ValWord.WeaponType, WeaponType.Baseball, WeaponType.Drink
               ).or(v => v
                 .add(ValWord.PressFB, '!=', 0)
@@ -224,7 +224,7 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
             {
               id: '30',
               facing: FacingFlag.ByController,
-              expression: Cond.one_of(ValWord.WeaponType, WeaponType.Knife, WeaponType.Stick).done()
+              expression: CondMaker.one_of(ValWord.WeaponType, WeaponType.Knife, WeaponType.Stick).done()
             },
             { id: '80', facing: FacingFlag.ByController }
           ]; // jump_atk
@@ -249,12 +249,12 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
             {
               id: '52',
               facing: FacingFlag.ByController,
-              expression: Cond.one_of(ValWord.WeaponType, WeaponType.Baseball, WeaponType.Drink).done(),
+              expression: CondMaker.one_of(ValWord.WeaponType, WeaponType.Baseball, WeaponType.Drink).done(),
             },
             {
               id: '40',
               facing: FacingFlag.ByController,
-              expression: Cond.one_of(ValWord.WeaponType, WeaponType.Knife, WeaponType.Stick).done()
+              expression: CondMaker.one_of(ValWord.WeaponType, WeaponType.Knife, WeaponType.Stick).done()
             },
             { id: '90' }]; // dash_atk
         }
@@ -274,7 +274,7 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
               {
                 ...get_next_frame_by_raw_id(t_action),
                 facing: FacingFlag.ByController,
-                expression: Cond
+                expression: CondMaker
                   .add<Defines.ValWord>(ValWord.PressFB, '!=', 0)
                   .or(ValWord.PressUD, '!=', 0)
                   .done()
@@ -316,13 +316,13 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
         const to_dash_frame: TNextFrame = [
           {
             id: '213',
-            expression: Cond
+            expression: CondMaker
               .add<Defines.ValWord>(ValWord.PressFB, '!=', 0)
               .or(ValWord.TrendX, '==', 1)
               .done(),
             facing: FacingFlag.ByController
           },
-          { id: '214', expression: Cond.add(ValWord.TrendX, '==', -1).done() },
+          { id: '214', expression: CondMaker.add(ValWord.TrendX, '==', -1).done() },
         ]; // dash
         frame.hit = frame.hit || {};
         frame.hit.d = { id: '102', facing: FacingFlag.ByController };

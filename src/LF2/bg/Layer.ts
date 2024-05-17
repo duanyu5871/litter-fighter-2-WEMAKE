@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import fade_out from '../../Utils/fade_out';
-import { IBgLayerInfo } from "../../common/lf2_type/IBgLayerInfo";
-import { Defines } from '../../common/lf2_type/defines';
+import { IBgLayerInfo } from "../defines/IBgLayerInfo";
+import { Defines } from '../defines/defines';
 import { TPicture } from '../loader/loader';
 import Background, { ILayerUserData } from './Background';
 

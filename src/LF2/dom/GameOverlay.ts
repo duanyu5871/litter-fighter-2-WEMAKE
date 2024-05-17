@@ -1,5 +1,5 @@
 
-import { Defines } from '../../common/lf2_type/defines';
+import { Defines } from '../defines/defines';
 import { is_num } from '../utils/type_check';
 import { ILf2Callback } from '../ILf2Callback';
 import type { IWorldCallbacks } from '../IWorldCallbacks';

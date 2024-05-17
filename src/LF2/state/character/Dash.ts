@@ -1,5 +1,5 @@
-import type { IFrameInfo } from "../../../common/lf2_type";
-import { Defines } from "../../../common/lf2_type/defines";
+import type { IFrameInfo } from "../../defines";
+import { Defines } from "../../defines/defines";
 import type Character from '../../entity/Character';
 import BaseCharacterState from "./Base";
 export default class Dash extends BaseCharacterState {

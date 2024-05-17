@@ -1,9 +1,9 @@
-import { IDataLists } from "../lf2_type/IDataLists";
-import { IDatIndex } from "../lf2_type/IDatIndex";
-import { match_block_once } from '../string_parser/match_block';
-import { match_colon_value } from '../string_parser/match_colon_value';
-import { match_hash_end } from '../string_parser/match_hash_end';
-import { to_num } from '../../LF2/utils/type_cast/to_num';
+import { IDataLists } from "../defines/IDataLists";
+import { IDatIndex } from "../defines/IDatIndex";
+import { match_block_once } from '../utils/string_parser/match_block';
+import { match_colon_value } from '../utils/string_parser/match_colon_value';
+import { match_hash_end } from '../utils/string_parser/match_hash_end';
+import { to_num } from '../utils/type_cast/to_num';
 
 export function read_indexes(text: string | undefined | null): IDataLists | undefined {
   if (!text) return void 0;

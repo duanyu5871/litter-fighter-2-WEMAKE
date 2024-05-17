@@ -1,13 +1,13 @@
-import { IWeaponData, IWeaponStrengthInfo } from '../lf2_type';
-import { IFrameInfo } from "../lf2_type/IFrameInfo";
-import { IWeaponFrameIndexes } from '../lf2_type/IWeaponFrameIndexes';
-import { IWeaponInfo } from "../lf2_type/IWeaponInfo";
-import { Defines } from '../lf2_type/defines';
-import { match_all } from '../string_parser/match_all';
-import { match_block_once } from '../string_parser/match_block';
-import { match_colon_value } from '../string_parser/match_colon_value';
-import { to_num } from '../../LF2/utils/type_cast/to_num';
-import { not_empty_str } from '../../LF2/utils/type_check';
+import { IWeaponData, IWeaponStrengthInfo } from '../defines';
+import { IFrameInfo } from "../defines/IFrameInfo";
+import { IWeaponFrameIndexes } from '../defines/IWeaponFrameIndexes';
+import { IWeaponInfo } from "../defines/IWeaponInfo";
+import { Defines } from '../defines/defines';
+import { match_all } from '../utils/string_parser/match_all';
+import { match_block_once } from '../utils/string_parser/match_block';
+import { match_colon_value } from '../utils/string_parser/match_colon_value';
+import { to_num } from '../utils/type_cast/to_num';
+import { not_empty_str } from '../utils/type_check';
 import cook_itr from './cook_itr';
 import { take } from './take';
 

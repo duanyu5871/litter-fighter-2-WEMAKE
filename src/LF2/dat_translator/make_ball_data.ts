@@ -1,10 +1,10 @@
-import { IBallData } from "../lf2_type";
-import { IBallFrameInfo } from "../lf2_type/IBallFrameInfo";
-import { IBallInfo } from "../lf2_type/IBallInfo";
-import { IDatIndex } from "../lf2_type/IDatIndex";
-import { Defines } from "../lf2_type/defines";
-import { traversal } from "../../LF2/utils/container_help/traversal";
-import { to_num } from "../../LF2/utils/type_cast/to_num";
+import { IBallData } from "../defines";
+import { IBallFrameInfo } from "../defines/IBallFrameInfo";
+import { IBallInfo } from "../defines/IBallInfo";
+import { IDatIndex } from "../defines/IDatIndex";
+import { Defines } from "../defines/defines";
+import { traversal } from "../utils/container_help/traversal";
+import { to_num } from "../utils/type_cast/to_num";
 import { get_next_frame_by_raw_id } from "./get_the_next";
 import { take } from "./take";
 

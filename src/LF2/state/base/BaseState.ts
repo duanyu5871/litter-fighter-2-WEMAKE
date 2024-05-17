@@ -1,4 +1,4 @@
-import { IFrameInfo } from "../../../common/lf2_type";
+import { IFrameInfo } from "../../defines";
 import { FrameAnimater } from "../../FrameAnimater";
 
 export default class BaseState<E extends FrameAnimater = FrameAnimater, F extends IFrameInfo = IFrameInfo> {

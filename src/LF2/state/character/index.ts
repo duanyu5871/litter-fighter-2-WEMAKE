@@ -1,4 +1,4 @@
-import { Defines } from "../../../common/lf2_type/defines";
+import { Defines } from "../../defines/defines";
 import Character from '../../entity/Character';
 import BaseState from "../base/BaseState";
 import { States } from "../base/States";

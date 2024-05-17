@@ -1,5 +1,5 @@
-import { IGameObjInfo, IEntityData } from "../lf2_type";
-import { IFrameInfo } from "../lf2_type/IFrameInfo";
+import { IGameObjInfo, IEntityData } from "../defines";
+import { IFrameInfo } from "../defines/IFrameInfo";
 
 export function make_entity_data(info: IGameObjInfo, frames: Record<string, IFrameInfo>): IEntityData {
   const ret: IEntityData = {

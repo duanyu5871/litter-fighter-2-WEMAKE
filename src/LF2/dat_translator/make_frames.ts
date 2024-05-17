@@ -1,10 +1,10 @@
-import { to_num } from '../../LF2/utils/type_cast/to_num';
-import { not_zero_num } from '../../LF2/utils/type_check';
-import { IBdyInfo, ICpointInfo, IItrInfo, IOpointInfo, IWpointInfo } from '../lf2_type';
-import { IFrameInfo } from "../lf2_type/IFrameInfo";
-import { Defines } from '../lf2_type/defines';
-import { match_all } from '../string_parser/match_all';
-import { match_colon_value } from '../string_parser/match_colon_value';
+import { to_num } from '../utils/type_cast/to_num';
+import { not_zero_num } from '../utils/type_check';
+import { IBdyInfo, ICpointInfo, IItrInfo, IOpointInfo, IWpointInfo } from '../defines';
+import { IFrameInfo } from "../defines/IFrameInfo";
+import { Defines } from '../defines/defines';
+import { match_all } from '../utils/string_parser/match_all';
+import { match_colon_value } from '../utils/string_parser/match_colon_value';
 import cook_bdy from './cook_bdy';
 import { cook_cpoint } from './cook_cpoint';
 import cook_itr from './cook_itr';
@@ -12,7 +12,7 @@ import cook_opoint from './cook_opoint';
 import { cook_wpoint } from './cook_wpoint';
 import { get_next_frame_by_raw_id } from './get_the_next';
 import { take } from './take';
-import take_sections from '../string_parser/take_sections';
+import take_sections from '../utils/string_parser/take_sections';
 
 const handle_raw_mp = (mp: number | undefined) => {
   if (!mp) return [0, 0];

@@ -1,4 +1,4 @@
-import type { IFrameInfo } from "../../../common/lf2_type";
+import type { IFrameInfo } from "../../defines";
 import type Weapon from "../../entity/Weapon";
 import BaseWeaponState from "./Base";
 

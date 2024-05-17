@@ -1,5 +1,5 @@
-import { INextFrame } from "../../common/lf2_type";
-import { Defines } from '../../common/lf2_type/defines';
+import { INextFrame } from "../defines";
+import { Defines } from '../defines/defines';
 import { FrameAnimater } from '../FrameAnimater';
 import Expression from '../base/Expression';
 import Character from '../entity/Character';

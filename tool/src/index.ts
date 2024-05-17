@@ -1,9 +1,9 @@
 import { spawn } from 'child_process';
 import fs from 'fs/promises';
 import path from 'path';
-import dat_to_json from '../../src/common/lf2_dat_translator/dat_2_json';
-import { read_indexes } from '../../src/common/lf2_dat_translator/read_indexes';
-import { ICharacterData, IDataLists } from '../../src/common/lf2_type';
+import dat_to_json from '../../src/LF2/dat_translator/dat_2_json';
+import { read_indexes } from '../../src/LF2/dat_translator/read_indexes';
+import { ICharacterData, IDataLists } from '../../src/LF2/defines';
 import { read_lf2_dat_file } from './read_old_lf2_dat_file';
 import { read_text_file } from './utils/read_text_file';
 
@@ -46,7 +46,7 @@ async function parse_under_dir(src_dir_path: string, dst_dir_path: string, index
         await fs.copyFile(src_path, dst_path);
         continue;
       }
-    
+
       console.log('convert', src_path, '=>', dst_path)
       await fs.writeFile(
         dst_path.replace(/\.dat$/, '.json'),

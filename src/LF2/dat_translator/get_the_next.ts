@@ -1,5 +1,5 @@
-import { INextFrame } from "../lf2_type/INextFrame";
-import { Defines } from "../lf2_type/defines";
+import { INextFrame } from "../defines/INextFrame";
+import { Defines } from "../defines/defines";
 
 export const get_next_frame_by_raw_id = (id: number | string): INextFrame => {
   if ('' + id === '1000') return { id: Defines.FrameId.Gone };

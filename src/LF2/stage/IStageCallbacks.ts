@@ -1,4 +1,4 @@
-import type { IStagePhaseInfo } from "../../common/lf2_type/IStagePhaseInfo";
+import type { IStagePhaseInfo } from "../defines/IStagePhaseInfo";
 import type Stage from "./Stage";
 
 export default interface IStageCallbacks {

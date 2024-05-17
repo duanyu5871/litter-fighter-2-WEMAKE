@@ -1,4 +1,4 @@
-import { TFace } from "../../common/lf2_type";
+import { TFace } from "../defines";
 import Entity from "./Entity";
 
 export function same_face(ref: Entity, target: Entity): TFace {

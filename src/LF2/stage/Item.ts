@@ -1,6 +1,6 @@
 import { is_num, is_str } from "../utils/type_check";
-import { IStageObjectInfo } from "../../common/lf2_type/IStageObjectInfo";
-import { Defines } from "../../common/lf2_type/defines";
+import { IStageObjectInfo } from "../defines/IStageObjectInfo";
+import { Defines } from "../defines/defines";
 import { random_get, random_take, random_in } from "../utils/math/random";
 import { factory } from "../Factory";
 import { FrameAnimater } from "../FrameAnimater";

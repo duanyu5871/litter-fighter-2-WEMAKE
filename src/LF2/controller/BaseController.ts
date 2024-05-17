@@ -1,6 +1,6 @@
-import { TNextFrame } from '../../common/lf2_type';
-import { IHitKeyCollection } from '../../common/lf2_type/IHitKeyCollection';
-import { Defines } from '../../common/lf2_type/defines';
+import { TNextFrame } from '../defines';
+import { IHitKeyCollection } from '../defines/IHitKeyCollection';
+import { Defines } from '../defines/defines';
 import Character from '../entity/Character';
 export type TKeyName = 'L' | 'R' | 'U' | 'D' | 'a' | 'j' | 'd'
 export type TKeys = Record<TKeyName, string>

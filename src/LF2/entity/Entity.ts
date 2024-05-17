@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 import { Log, Warn } from '../../Log';
-import { constructor_name } from '../../common/constructor_name';
+import { constructor_name } from '../utils/constructor_name';
 import { is_nagtive } from '../utils/type_check';
-import { IBallData, IBaseData, IBdyInfo, ICharacterData, IEntityData, IFrameInfo, IGameObjData, IGameObjInfo, IItrInfo, IOpointInfo, IWeaponData, TNextFrame } from '../../common/lf2_type';
-import { Defines } from '../../common/lf2_type/defines';
+import { IBallData, IBaseData, IBdyInfo, ICharacterData, IEntityData, IFrameInfo, IGameObjData, IGameObjInfo, IItrInfo, IOpointInfo, IWeaponData, TNextFrame } from '../defines';
+import { Defines } from '../defines/defines';
 import { factory } from '../Factory';
 import { FrameAnimater, GONE_FRAME_INFO } from '../FrameAnimater';
 import type { World } from '../World';

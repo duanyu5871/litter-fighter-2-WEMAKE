@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import IPicture from '../../common/lf2_type/IPicture';
+import IPicture from '../defines/IPicture';
 import { TData } from '../entity/Entity';
 import type LF2 from '../LF2';
 

@@ -1,5 +1,5 @@
-import { IBallData, IBallFrameInfo, IBallInfo, IBdyInfo, IItrInfo, IOpointInfo } from '../../common/lf2_type';
-import { Defines } from '../../common/lf2_type/defines';
+import { IBallData, IBallFrameInfo, IBallInfo, IBdyInfo, IItrInfo, IOpointInfo } from '../defines';
+import { Defines } from '../defines/defines';
 import { factory } from '../Factory';
 import { EMPTY_FRAME_INFO } from '../FrameAnimater';
 import type { ICube, World } from '../World';

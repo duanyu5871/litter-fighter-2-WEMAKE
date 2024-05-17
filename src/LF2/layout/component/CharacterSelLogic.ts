@@ -1,7 +1,7 @@
 import type { PlayerInfo } from "../../PlayerInfo";
 import Invoker from '../../base/Invoker';
 import { TKeyName } from '../../controller/BaseController';
-import { Defines } from '../../../common/lf2_type/defines';
+import { Defines } from '../../defines/defines';
 import GamePrepareLogic, { GamePrepareState } from './GamePrepareLogic';
 import { LayoutComponent } from "./LayoutComponent";
 

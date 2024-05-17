@@ -13,9 +13,9 @@ import { BaseController } from './LF2/controller/BaseController';
 import { BotEnemyChaser } from './LF2/controller/BotEnemyChaser';
 import { InvalidController } from './LF2/controller/InvalidController';
 import Character from './LF2/entity/Character';
-import { IStageInfo } from "./common/lf2_type/IStageInfo";
-import { IStagePhaseInfo } from "./common/lf2_type/IStagePhaseInfo";
-import { Defines } from './common/lf2_type/defines';
+import { IStageInfo } from "./LF2/defines/IStageInfo";
+import { IStagePhaseInfo } from "./LF2/defines/IStagePhaseInfo";
+import { Defines } from './LF2/defines/defines';
 const bot_controllers: { [x in string]?: (e: Character) => BaseController } = {
   'OFF': (e: Character) => new InvalidController(e),
   'enemy chaser': (e: Character) => new BotEnemyChaser(e)

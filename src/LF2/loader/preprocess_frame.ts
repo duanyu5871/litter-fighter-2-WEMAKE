@@ -1,6 +1,6 @@
 import { Warn } from '../../Log';
-import { IEntityPictureInfo, IFrameInfo, IGameObjData, ITexturePieceInfo } from '../../common/lf2_type';
-import { IRect } from '../../common/lf2_type/IRect';
+import { IEntityPictureInfo, IFrameInfo, IGameObjData, ITexturePieceInfo } from '../defines';
+import { IRect } from '../defines/IRect';
 import { traversal } from '../utils/container_help/traversal';
 import LF2 from '../LF2';
 import read_nums from '../layout/utils/read_nums';

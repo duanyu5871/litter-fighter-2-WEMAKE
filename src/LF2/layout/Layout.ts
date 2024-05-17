@@ -7,7 +7,7 @@ import { TKeyName } from '../controller/BaseController';
 import { empty_texture, white_texture, type TImageInfo } from '../loader/loader';
 import NumberAnimation from '../animation/NumberAnimation';
 import { filter, find } from '../utils/container_help';
-import IStyle from '../../common/lf2_type/IStyle';
+import IStyle from '../defines/IStyle';
 import { is_arr, is_bool, is_fun, is_num, is_str } from '../utils/type_check';
 import actor from './action/Actor';
 import factory from './component/Factory';

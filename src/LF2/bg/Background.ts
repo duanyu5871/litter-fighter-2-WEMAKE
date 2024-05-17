@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-import { IBgData } from '../../common/lf2_type';
-import { IBgLayerInfo } from "../../common/lf2_type/IBgLayerInfo";
-import { Defines } from '../../common/lf2_type/defines';
+import { IBgData } from '../defines';
+import { IBgLayerInfo } from "../defines/IBgLayerInfo";
+import { Defines } from '../defines/defines';
 import { World } from '../World';
 import { TPicture, err_pic_info } from '../loader/loader';
 import Layer from './Layer';

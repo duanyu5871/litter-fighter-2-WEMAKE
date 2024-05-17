@@ -1,6 +1,6 @@
-import { ICpointInfo } from '../lf2_type';
-import { Defines } from '../lf2_type/defines';
-import { is_num, not_zero_num, is_str } from '../../LF2/utils/type_check';
+import { ICpointInfo } from '../defines';
+import { Defines } from '../defines/defines';
+import { is_num, not_zero_num, is_str } from '../utils/type_check';
 import { get_next_frame_by_raw_id } from './get_the_next';
 import { take } from './take';
 

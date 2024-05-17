@@ -1,10 +1,10 @@
 import { Warn } from '@fimagine/logger';
 import * as THREE from 'three';
-import { constructor_name } from '../common/constructor_name';
-import { IFrameInfo, IGameObjData, IGameObjInfo, INextFrame, ITexturePieceInfo, TFace, TNextFrame } from '../common/lf2_type';
-import { Defines } from '../common/lf2_type/defines';
+import { constructor_name } from './utils/constructor_name';
+import { IFrameInfo, IGameObjData, IGameObjInfo, INextFrame, ITexturePieceInfo, TFace, TNextFrame } from './defines';
+import { Defines } from './defines/defines';
 import { random_get } from './utils/math/random';
-import IPicture from '../common/lf2_type/IPicture';
+import IPicture from './defines/IPicture';
 import type { World } from './World';
 import { new_id } from './base/new_id';
 import { turn_face } from './entity/face_helper';

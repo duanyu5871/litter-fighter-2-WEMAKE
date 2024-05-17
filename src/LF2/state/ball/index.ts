@@ -1,5 +1,5 @@
 
-import { Defines } from "../../../common/lf2_type/defines";
+import { Defines } from "../../defines/defines";
 import { States } from "../base/States";
 import { ENTITY_STATES } from "../entity";
 import BaseBallState from "./BaseBallState";

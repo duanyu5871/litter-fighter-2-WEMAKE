@@ -1,5 +1,5 @@
 /* eslint-disable eqeqeq */
-import { IFrameInfo, TFrameIdListPair, TFrameIdPair } from "../../common/lf2_type";
+import { IFrameInfo, TFrameIdListPair, TFrameIdPair } from "../defines";
 
 export default function find_direction(f: IFrameInfo, pair: TFrameIdListPair | TFrameIdPair): 1 | -1 | 0 {
   const { '-1': a, '1': b } = pair;

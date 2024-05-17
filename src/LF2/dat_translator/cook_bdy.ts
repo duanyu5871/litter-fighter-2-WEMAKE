@@ -1,5 +1,5 @@
-import { is_positive } from '../../LF2/utils/type_check';
-import { IBdyInfo } from '../lf2_type';
+import { is_positive } from '../utils/type_check';
+import { IBdyInfo } from '../defines';
 import { take } from './take';
 
 export default function cook_bdy(unsafe_bdy?: Partial<IBdyInfo>): void {

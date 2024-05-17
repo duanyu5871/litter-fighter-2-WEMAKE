@@ -1,11 +1,11 @@
 import { Warn } from "../../Log";
 import { find } from "../utils/container_help/find";
 import { is_num } from "../utils/type_check";
-import { IBgData } from "../../common/lf2_type";
-import { IStageInfo } from "../../common/lf2_type/IStageInfo";
-import { IStageObjectInfo } from "../../common/lf2_type/IStageObjectInfo";
-import { IStagePhaseInfo } from "../../common/lf2_type/IStagePhaseInfo";
-import { Defines } from "../../common/lf2_type/defines";
+import { IBgData } from "../defines";
+import { IStageInfo } from "../defines/IStageInfo";
+import { IStageObjectInfo } from "../defines/IStageObjectInfo";
+import { IStagePhaseInfo } from "../defines/IStagePhaseInfo";
+import { Defines } from "../defines/defines";
 import { random_in } from "../utils/math/random";
 import type { World } from "../World";
 import Callbacks from "../base/Callbacks";

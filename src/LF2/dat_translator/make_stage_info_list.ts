@@ -1,11 +1,11 @@
-import { arithmetic_progression } from '../../LF2/utils/math/arithmetic_progression';
-import { IStageObjectInfo } from "../lf2_type/IStageObjectInfo";
-import { IStagePhaseInfo } from "../lf2_type/IStagePhaseInfo";
-import { IStageInfo } from "../lf2_type/IStageInfo";
-import { match_colon_value } from '../string_parser/match_colon_value';
-import { match_hash_end } from '../string_parser/match_hash_end';
-import { take_blocks } from '../string_parser/take_blocks';
-import { to_num } from '../../LF2/utils/type_cast/to_num';
+import { arithmetic_progression } from '../utils/math/arithmetic_progression';
+import { IStageObjectInfo } from "../defines/IStageObjectInfo";
+import { IStagePhaseInfo } from "../defines/IStagePhaseInfo";
+import { IStageInfo } from "../defines/IStageInfo";
+import { match_colon_value } from '../utils/string_parser/match_colon_value';
+import { match_hash_end } from '../utils/string_parser/match_hash_end';
+import { take_blocks } from '../utils/string_parser/take_blocks';
+import { to_num } from '../utils/type_cast/to_num';
 
 export function make_stage_info_list(full_str: string): IStageInfo[] | void {
   full_str = full_str.replace(/<phase_end>[\n|\s|\r]*<stage>/g, '<phase_end><stage_end><stage>');

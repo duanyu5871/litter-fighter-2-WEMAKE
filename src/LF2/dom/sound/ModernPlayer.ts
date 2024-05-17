@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Defines } from "../../../common/lf2_type/defines";
+import { Defines } from "../../defines/defines";
 import type LF2 from "../../LF2";
 import AsyncValuesKeeper from "../../base/AsyncValuesKeeper";
 import { IPlayer } from "../../sound/IPlayer";
