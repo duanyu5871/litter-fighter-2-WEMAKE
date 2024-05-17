@@ -1,11 +1,10 @@
-import { delete_val_equal_keys } from '../delete_val_equal_keys';
+import { to_num } from '../../LF2/utils/type_cast/to_num';
+import { not_zero_num } from '../../LF2/utils/type_check';
 import { IBdyInfo, ICpointInfo, IItrInfo, IOpointInfo, IWpointInfo } from '../lf2_type';
 import { IFrameInfo } from "../lf2_type/IFrameInfo";
 import { Defines } from '../lf2_type/defines';
-import { match_all } from '../match_all';
-import { match_colon_value } from '../match_colon_value';
-import { to_num } from '../type_cast/to_num';
-import { not_zero_num } from '../type_check';
+import { match_all } from '../string_parser/match_all';
+import { match_colon_value } from '../string_parser/match_colon_value';
 import cook_bdy from './cook_bdy';
 import { cook_cpoint } from './cook_cpoint';
 import cook_itr from './cook_itr';
@@ -13,7 +12,7 @@ import cook_opoint from './cook_opoint';
 import { cook_wpoint } from './cook_wpoint';
 import { get_next_frame_by_raw_id } from './get_the_next';
 import { take } from './take';
-import take_sections from './take_sections';
+import take_sections from '../string_parser/take_sections';
 
 const handle_raw_mp = (mp: number | undefined) => {
   if (!mp) return [0, 0];
@@ -81,7 +80,8 @@ export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string): Re
     if (!frame.cpoint) delete frame.cpoint;
 
 
-    delete_val_equal_keys(frame, ['mp', 'hp'], [0, void 0]);
+    if (!frame.mp) delete frame.mp;
+    if (!frame.hp) delete frame.hp;
 
     const sound = take(frame, 'sound');
     if (sound) frame.sound = sound + '.ogg';

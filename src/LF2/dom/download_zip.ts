@@ -1,6 +1,6 @@
 import axios from 'axios';
 import JSZIP from 'jszip';
-import { is_str } from '../../common/type_check';
+import { is_str } from '../utils/type_check';
 export class ZipObject {
   protected inner: JSZIP.JSZipObject;
   get name() { return this.inner.name }

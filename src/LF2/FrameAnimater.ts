@@ -3,15 +3,15 @@ import * as THREE from 'three';
 import { constructor_name } from '../common/constructor_name';
 import { IFrameInfo, IGameObjData, IGameObjInfo, INextFrame, ITexturePieceInfo, TFace, TNextFrame } from '../common/lf2_type';
 import { Defines } from '../common/lf2_type/defines';
-import { random_get } from '../common/random';
+import { random_get } from './utils/math/random';
 import IPicture from '../common/lf2_type/IPicture';
 import type { World } from './World';
 import { new_id } from './base/new_id';
 import { turn_face } from './entity/face_helper';
 import create_pictures from './loader/create_pictures';
 import { factory } from './Factory';
-import { is_str, is_positive } from '../common/type_check';
-import { dispose_mesh } from '../Layout/utils/dispose_mesh';
+import { is_str, is_positive } from './utils/type_check';
+import { dispose_mesh } from './layout/utils/dispose_mesh';
 
 export const EMPTY_PIECE: ITexturePieceInfo = {
   tex: 0, x: 0, y: 0, w: 0, h: 0, cx: 0, cy: 0,

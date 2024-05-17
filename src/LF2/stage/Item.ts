@@ -1,7 +1,7 @@
-import { is_num, is_str } from "../../common/type_check";
+import { is_num, is_str } from "../utils/type_check";
 import { IStageObjectInfo } from "../../common/lf2_type/IStageObjectInfo";
 import { Defines } from "../../common/lf2_type/defines";
-import { random_get, random_take, random_in } from "../../common/random";
+import { random_get, random_take, random_in } from "../utils/math/random";
 import { factory } from "../Factory";
 import { FrameAnimater } from "../FrameAnimater";
 import { BotEnemyChaser } from "../controller/BotEnemyChaser";

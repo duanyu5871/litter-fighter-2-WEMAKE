@@ -1,4 +1,4 @@
-import list_fn from "../../common/list_fn";
+import list_fn from "../utils/container_help/list_fn";
 
 export default class NoEmitCallbacks<F> {
 

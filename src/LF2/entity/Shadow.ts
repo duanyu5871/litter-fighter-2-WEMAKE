@@ -1,5 +1,5 @@
 import * as T from 'three';
-import { dispose_mesh } from '../../Layout/utils/dispose_mesh';
+import { dispose_mesh } from '../layout/utils/dispose_mesh';
 import type { IWorldCallbacks } from '../IWorldCallbacks';
 import type Stage from '../stage/Stage';
 import type Entity from './Entity';

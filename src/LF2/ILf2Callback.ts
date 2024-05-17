@@ -1,4 +1,4 @@
-import Layout from '../Layout/Layout';
+import Layout from '../LF2/layout/Layout';
 import { IStageInfo } from "../common/lf2_type/IStageInfo";
 import { Defines } from '../common/lf2_type/defines';
 import { PlayerInfo } from './PlayerInfo';

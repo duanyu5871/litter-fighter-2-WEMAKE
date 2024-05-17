@@ -1,4 +1,4 @@
-import { clamp } from "../../common/clamp";
+import { clamp } from "../utils/math/clamp";
 
 
 /**

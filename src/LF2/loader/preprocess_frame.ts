@@ -1,9 +1,9 @@
-import read_nums from '../../Layout/utils/read_nums';
 import { Warn } from '../../Log';
 import { IEntityPictureInfo, IFrameInfo, IGameObjData, ITexturePieceInfo } from '../../common/lf2_type';
 import { IRect } from '../../common/lf2_type/IRect';
-import { traversal } from '../../common/traversal';
+import { traversal } from '../utils/container_help/traversal';
 import LF2 from '../LF2';
+import read_nums from '../layout/utils/read_nums';
 import { cook_next_frame } from './preprocess_next_frame';
 const get_keys = <V extends {}>(v: V): (keyof V)[] => {
   return Object.keys(v) as (keyof V)[]

@@ -1,4 +1,4 @@
-import { is_str } from '../type_check';
+import { is_str } from '../../LF2/utils/type_check';
 
 export class Cond<T extends string = string> {
   readonly is_cond = true;

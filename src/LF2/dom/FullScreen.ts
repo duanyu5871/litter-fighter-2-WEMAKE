@@ -1,4 +1,4 @@
-import { is_false, is_fun } from '../../common/type_check';
+import { is_false, is_fun } from '../utils/type_check';
 import Callbacks from '../base/Callbacks';
 import NoEmitCallbacks from "../base/NoEmitCallbacks";
 export interface IFullScreenCallback {

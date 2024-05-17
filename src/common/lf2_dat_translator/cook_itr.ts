@@ -1,6 +1,6 @@
 import { IItrInfo } from '../lf2_type';
 import { Defines } from '../lf2_type/defines';
-import { is_positive, not_zero_num, is_num } from '../type_check';
+import { is_positive, not_zero_num, is_num } from '../../LF2/utils/type_check';
 import { get_next_frame_by_raw_id } from './get_the_next';
 import { take } from './take';
 export default function cook_itr(unsafe_itr?: Partial<IItrInfo>) {

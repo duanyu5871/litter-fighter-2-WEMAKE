@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { WTF } from "./_no_id";
-import { is_num } from "../common/type_check";
+import { is_num } from "../LF2/utils/type_check";
 
 export interface ISelectProps<T, V> extends React.SelectHTMLAttributes<HTMLSelectElement> {
   items?: readonly T[];

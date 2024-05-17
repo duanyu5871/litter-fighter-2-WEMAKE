@@ -3,8 +3,8 @@ import { IBallFrameInfo } from "../lf2_type/IBallFrameInfo";
 import { IBallInfo } from "../lf2_type/IBallInfo";
 import { IDatIndex } from "../lf2_type/IDatIndex";
 import { Defines } from "../lf2_type/defines";
-import { traversal } from "../traversal";
-import { to_num } from "../type_cast/to_num";
+import { traversal } from "../../LF2/utils/container_help/traversal";
+import { to_num } from "../../LF2/utils/type_cast/to_num";
 import { get_next_frame_by_raw_id } from "./get_the_next";
 import { take } from "./take";
 

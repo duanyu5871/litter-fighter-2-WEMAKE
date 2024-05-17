@@ -1,8 +1,8 @@
 import { Log } from '../../Log';
 import { IBallData, IBgData, ICharacterData, IDataMap, IEntityData, IGameObjData, IWeaponData } from '../../common/lf2_type';
 import { Defines } from '../../common/lf2_type/defines';
-import { traversal } from '../../common/traversal';
-import { is_str, not_blank_str } from '../../common/type_check';
+import { traversal } from '../utils/container_help/traversal';
+import { is_str, not_blank_str } from '../utils/type_check';
 import LF2 from '../LF2';
 import { TData } from '../entity/Entity';
 import { cook_frame } from './preprocess_frame';

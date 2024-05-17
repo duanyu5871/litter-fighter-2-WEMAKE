@@ -6,7 +6,7 @@ import TeamSelect from './Component/TeamSelect';
 import LF2 from './LF2/LF2';
 import { PlayerInfo } from './LF2/PlayerInfo';
 import { TKeyName } from './LF2/controller/BaseController';
-import { random_get } from './common/random';
+import { random_get } from './LF2/utils/math/random';
 import LocalHuman from './LF2/controller/LocalHuman';
 import { Checkbox } from './Component/Checkbox';
 import { Defines } from './common/lf2_type/defines';

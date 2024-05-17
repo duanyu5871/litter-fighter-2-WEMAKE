@@ -18,7 +18,7 @@ import Character from './entity/Character';
 import Entity from './entity/Entity';
 import Weapon from './entity/Weapon';
 import Stage from './stage/Stage';
-import { is_num } from '../common/type_check';
+import { is_num } from './utils/type_check';
 export interface ICube {
   left: number;
   right: number;

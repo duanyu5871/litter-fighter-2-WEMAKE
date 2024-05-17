@@ -1,6 +1,6 @@
 
 import { Defines } from '../../common/lf2_type/defines';
-import { is_num } from '../../common/type_check';
+import { is_num } from '../utils/type_check';
 import { ILf2Callback } from '../ILf2Callback';
 import type { IWorldCallbacks } from '../IWorldCallbacks';
 import type { World } from '../World';

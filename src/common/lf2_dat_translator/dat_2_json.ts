@@ -1,21 +1,22 @@
-import { IBaseData, IEntityPictureInfo, IGameObjInfo } from '../lf2_type';
-import { IDatIndex } from "../lf2_type/IDatIndex";
+import { set_obj_field } from "../../LF2/utils/container_help/set_obj_field";
+import { IBaseData, IEntityPictureInfo, IGameObjInfo, IStageInfo } from '../lf2_type';
 import { IBallFrameInfo } from "../lf2_type/IBallFrameInfo";
 import { IBallInfo } from "../lf2_type/IBallInfo";
 import { ICharacterInfo } from "../lf2_type/ICharacterInfo";
+import { IDatIndex } from "../lf2_type/IDatIndex";
 import { IWeaponInfo } from "../lf2_type/IWeaponInfo";
 import { Defines } from '../lf2_type/defines';
-import { match_block_once } from '../match_block';
-import { match_colon_value } from '../match_colon_value';
-import { set_obj_field } from "../set_obj_field";
-import { data_to_stage_jsons as make_stage_infos } from './data_to_stage_jsons';
+import { match_block_once } from '../string_parser/match_block';
+import { match_colon_value } from '../string_parser/match_colon_value';
 import { make_ball_data } from './make_ball_data';
 import { make_bg_data } from './make_bg_data';
 import { make_character_data } from './make_character_data';
 import { make_entity_data } from './make_entity_data';
 import { make_frames } from './make_frames';
+import { make_stage_info_list as make_stage_infos } from './make_stage_info_list';
 import { make_weapon_data } from './make_weapon_data';
-export default function dat_to_json(full_str: string, datIndex?: IDatIndex): any | void {
+
+export default function dat_to_json(full_str: string, datIndex?: IDatIndex): void | IStageInfo[] | IBaseData<any> {
   full_str = full_str.replace(/\\\\/g, '/');
   if (full_str.startsWith('<stage>')) return make_stage_infos(full_str);
   if (full_str.startsWith('name:')) return make_bg_data(full_str, datIndex);

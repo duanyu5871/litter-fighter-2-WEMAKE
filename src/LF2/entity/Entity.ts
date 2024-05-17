@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { Log, Warn } from '../../Log';
 import { constructor_name } from '../../common/constructor_name';
-import { is_nagtive } from '../../common/type_check';
+import { is_nagtive } from '../utils/type_check';
 import { IBallData, IBaseData, IBdyInfo, ICharacterData, IEntityData, IFrameInfo, IGameObjData, IGameObjInfo, IItrInfo, IOpointInfo, IWeaponData, TNextFrame } from '../../common/lf2_type';
 import { Defines } from '../../common/lf2_type/defines';
 import { factory } from '../Factory';
