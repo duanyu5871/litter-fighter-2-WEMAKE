@@ -22,6 +22,7 @@ export interface IPlayerInfoCallback {
   on_character_decided?(is_decided: boolean): void;
   on_team_decided?(is_decided: boolean): void;
   on_is_com_changed?(is_com: boolean): void;
+  on_random_character_changed?(character_id: string, prev: string): void;
 }
 export interface PurePlayerInfo {
   id: string;
@@ -38,7 +39,7 @@ export class PlayerInfo {
   protected _is_com: boolean = false;
   protected _team_decided: boolean = false;
   protected _character_decided: boolean = false;
-
+  protected _random_character: string = '';
 
   get id(): string { return this._info.id; }
   get name(): string { return this._info.name; }
@@ -47,8 +48,13 @@ export class PlayerInfo {
   get team(): string { return this._info.team; }
   set team(v: string) { this.set_team(v); }
 
-  get character(): string { return this._info.character }
+  get character(): string { return this._info.character || this._random_character }
   set character(v: string) { this.set_character(v) }
+
+  get random_character() { return this._random_character }
+  set random_character(v: string) { this.set_random_character(v) }
+
+  get is_random() { return !this._info.character }
 
   get callbacks(): NoEmitCallbacks<IPlayerInfoCallback> { return this._callbacks }
 
@@ -111,6 +117,13 @@ export class PlayerInfo {
     return this;
   }
 
+  set_random_character(character: string): this {
+    if (this._random_character === character) return this;
+    const prev = this._random_character;
+    this._random_character = character
+    this._callbacks.emit('on_random_character_changed')(character, prev);
+    return this
+  }
   set_team(team: string): this {
     if (this._info.team === team) return this;
     const prev = this._info.team;

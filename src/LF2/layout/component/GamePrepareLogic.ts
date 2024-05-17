@@ -8,6 +8,7 @@ import { TKeyName } from "../../controller/BaseController";
 import { FSM, IReadonlyFSM } from "../StateMachine";
 import CharacterSelLogic from "./CharacterSelLogic";
 import { LayoutComponent } from "./LayoutComponent";
+import { random_get } from "../../utils/math/random";
 
 export interface IGamePrepareLogicCallback {
   on_countdown?(v: number): void;
@@ -124,9 +125,15 @@ export default class GamePrepareLogic extends LayoutComponent {
     }, {
       key: GamePrepareState.ComNumberSel,
       enter: () => {
-        const { usable_player_infos } = this
-        const joined_num = filter(usable_player_infos, v => v.joined).length;
-        const not_joined_num = filter(usable_player_infos, v => !v.joined).length;
+        for (const { player: p } of this.com_slots) {
+          p?.set_is_com(false)
+            .set_joined(false)
+            .set_team_decided(false)
+            .set_random_character('')
+        }
+        const { player_slots } = this
+        const joined_num = filter(player_slots, v => v.joined).length;
+        const not_joined_num = filter(player_slots, v => !v.joined).length;
         this._min_com_num = joined_num <= 1 ? 1 : 0; // TODO: 闯关只需1人
         this._max_com_num = not_joined_num;
         this.layout.find_layout('how_many_computer')?.set_visible(true)
@@ -136,7 +143,14 @@ export default class GamePrepareLogic extends LayoutComponent {
       key: GamePrepareState.ComputerCharacterSel,
     }, {
       key: GamePrepareState.GameSetting,
-      enter: () => this.layout.find_layout('menu')?.set_visible(true),
+      enter: () => {
+        for (const { player: p } of this.player_slots) {
+          if (!p?.joined || !p.is_random) continue;
+          const characters = this.lf2.datas.characters.filter(v => !v.base.hidden);
+          p.set_random_character(random_get(characters)?.id ?? '');
+        }
+        this.layout.find_layout('menu')?.set_visible(true)
+      },
       leave: () => this.layout.find_layout('menu')?.set_visible(false)
     }).use(GamePrepareState.PlayerCharacterSel);
 
@@ -154,38 +168,40 @@ export default class GamePrepareLogic extends LayoutComponent {
   /** 指定选COM数量 */
   get com_num(): number { return this._com_num };
 
-  get usable_player_infos(): PlayerInfo[] {
-    return map_no_void(this.layout.root.search_components(CharacterSelLogic), v => v.player)
+  get player_slots(): CharacterSelLogic[] { // 全部“玩家槽”
+    return this.layout.root.search_components(CharacterSelLogic)
   }
-  get joined_com_infos(): PlayerInfo[] {
-    return map_no_void(
+  get joined_com_infos(): CharacterSelLogic[] { // 已加入的“电脑槽”
+    return filter(
       this.layout.root.search_components(CharacterSelLogic),
-      v => (v.player?.is_com && v.player.joined) ? v.player : null
+      v => v.player?.is_com && v.player.joined
     )
   }
-  get com_slots(): CharacterSelLogic[] {
+  get com_slots(): CharacterSelLogic[] { // 电脑槽”
     return filter(
       this.layout.root.search_components(CharacterSelLogic),
       v => v.player?.is_com
     )
   }
-
-  get empty_player_slots(): CharacterSelLogic[] {
+  get empty_player_slots(): CharacterSelLogic[] { // 未使用玩家槽
     return filter(
       this.layout.root.search_components(CharacterSelLogic),
       v => !v.player?.joined
     )
   }
+
   handling_com: CharacterSelLogic | undefined
+
   set_com_num(num: number) {
     this._com_num = num;
     if (num > 0) {
       const { empty_player_slots } = this
       this.handling_com = empty_player_slots[0];
-      while (num >= 0 && empty_player_slots.length) {
+      while (num > 0 && empty_player_slots.length) {
         empty_player_slots.shift()?.player?.set_is_com(true);
         num -= 1;
       }
+      debugger
       this._fsm.use(GamePrepareState.ComputerCharacterSel);
     } else {
       this._fsm.use(GamePrepareState.GameSetting);

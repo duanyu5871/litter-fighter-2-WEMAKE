@@ -16,13 +16,13 @@ import Sprite from "./Sprite";
 export default class PlayerCharacterHead extends LayoutComponent {
   get player_id() { return this.args[0] || '' }
   get player() { return this.lf2.player_infos.get(this.player_id) }
+
   get head() {
     const character_id = this.player?.character;
     if (!character_id) return Defines.BuiltIn.Imgs.RFACE;
     const head = this.lf2.datas.find_character(character_id)?.base.head
     return head ?? Defines.BuiltIn.Imgs.RFACE;
   }
-
 
   protected _opacity: SineAnimation = new SineAnimation(0.65, 1, 1 / 25);
   protected readonly _mesh_head = new Sprite()
@@ -67,13 +67,17 @@ export default class PlayerCharacterHead extends LayoutComponent {
       ),
       this.player?.callbacks.add({
         on_joined_changed: () => this.handle_changed(),
-        on_character_changed: () => this.handle_changed()
+        on_character_changed: () => this.handle_changed(),
+        on_random_character_changed: () => {
+          debugger
+          this.handle_changed()
+        },
       }),
       this.gpl?.callbacks.add({
         on_countdown: (seconds) => {
           const pic = this.lf2.images.create_pic_by_img_key(`sprite/CM${seconds}.png`);
           this._mesh_cd.set_info(pic).apply();
-        }
+        },
       }),
       this.gpl?.fsm.callbacks.add({
         on_state_changed: () => this.handle_changed()
