@@ -18,7 +18,8 @@
     "player_c_sel_logic(7)",
     "player_c_sel_logic(8)",
     "game_prepare_logic()",
-    "reachable_layout_group(com_num,lr,how_many_computer)"
+    "reachable_layout_group(com_num,lr,how_many_computer)",
+    "reachable_layout_group(menu,ud,menu)"
   ],
   "items": [
     {
@@ -292,8 +293,11 @@
           "id": "btn_start",
           "img": "sprite/MENU_CLIP3.png",
           "rect": "407,183,126,21",
-          "visible": "mouse_on_me==1",
+          "opacity": "f:opacity_hover(0,1)",
           "pos": "89,13",
+          "component": [
+            "reachable_layout(menu)"
+          ],
           "actions": {
             "click": "alert(btn_start)"
           }
@@ -302,8 +306,11 @@
           "id": "btn_cancel",
           "img": "sprite/MENU_CLIP3.png",
           "rect": "379,206,186,21",
-          "visible": "mouse_on_me==1",
+          "opacity": "f:opacity_hover(0,1)",
           "pos": "61,36",
+          "component": [
+            "reachable_layout(menu)"
+          ],
           "actions": {
             "click": "alert(btn_cancel)"
           }
@@ -312,8 +319,11 @@
           "id": "btn_update_random",
           "img": "sprite/MENU_CLIP3.png",
           "rect": "355,231,235,21",
-          "visible": "mouse_on_me==1",
+          "opacity": "f:opacity_hover(0,1)",
           "pos": "37,61",
+          "component": [
+            "reachable_layout(menu)"
+          ],
           "actions": {
             "click": "alert(btn_update_random)"
           }
@@ -322,8 +332,11 @@
           "id": "btn_game_bg",
           "img": "sprite/MENU_CLIP3.png",
           "rect": "330,254,279,22",
-          "visible": "mouse_on_me==1",
+          "opacity": "f:opacity_hover(0,1)",
           "pos": "12,84",
+          "component": [
+            "reachable_layout(menu)"
+          ],
           "actions": {
             "click": "alert(btn_game_bg)"
           }
@@ -339,8 +352,11 @@
           "id": "btn_game_stage_hover",
           "img": "sprite/MENU_CLIP3.png",
           "rect": "330,332,279,22",
-          "visible": "mouse_on_me==1",
+          "opacity": "f:opacity_hover(0,1)",
           "pos": "12,84",
+          "component": [
+            "reachable_layout(menu)"
+          ],
           "actions": {
             "click": "alert(btn_game_stage_hover)"
           }
@@ -349,8 +365,11 @@
           "id": "btn_game_level",
           "img": "sprite/MENU_CLIP3.png",
           "rect": "352,278,228,22",
-          "visible": "mouse_on_me==1",
+          "opacity": "f:opacity_hover(0,1)",
           "pos": "34,108",
+          "component": [
+            "reachable_layout(menu)"
+          ],
           "actions": {
             "click": "alert(btn_game_level)"
           }
@@ -359,10 +378,13 @@
           "id": "btn_exit",
           "img": "sprite/MENU_CLIP3.png",
           "rect": "416,304,111,19",
-          "visible": "mouse_on_me==1",
+          "opacity": "f:opacity_hover(0,1)",
           "pos": "98,134",
+          "component": [
+            "reachable_layout(menu)"
+          ],
           "actions": {
-            "click": "alert(btn_exit)"
+            "click": "pop()"
           }
         }
       ]
@@ -375,7 +397,7 @@
       "items": [
         {
           "txt": "0",
-          "opacity": "opacity_hover",
+          "opacity": "f:opacity_hover(0.5,1)",
           "pos": "30,70",
           "component": [
             "com_number(0)",
@@ -387,7 +409,7 @@
         },
         {
           "txt": "1",
-          "opacity": "opacity_hover",
+          "opacity": "f:opacity_hover(0.5,1)",
           "pos": "70,70",
           "component": [
             "com_number(1)",
@@ -399,7 +421,7 @@
         },
         {
           "txt": "2",
-          "opacity": "opacity_hover",
+          "opacity": "f:opacity_hover(0.5,1)",
           "pos": "110,70",
           "component": [
             "com_number(2)",
@@ -411,7 +433,7 @@
         },
         {
           "txt": "3",
-          "opacity": "opacity_hover",
+          "opacity": "f:opacity_hover(0.5,1)",
           "pos": "150,70",
           "component": [
             "com_number(3)",
@@ -423,7 +445,7 @@
         },
         {
           "txt": "4",
-          "opacity": "opacity_hover",
+          "opacity": "f:opacity_hover(0.5,1)",
           "pos": "190,70",
           "component": [
             "com_number(4)",
@@ -435,7 +457,7 @@
         },
         {
           "txt": "5",
-          "opacity": "opacity_hover",
+          "opacity": "f:opacity_hover(0.5,1)",
           "pos": "230,70",
           "component": [
             "com_number(5)",
@@ -447,7 +469,7 @@
         },
         {
           "txt": "6",
-          "opacity": "opacity_hover",
+          "opacity": "f:opacity_hover(0.5,1)",
           "pos": "270,70",
           "component": [
             "com_number(6)",
@@ -459,7 +481,7 @@
         },
         {
           "txt": "7",
-          "opacity": "opacity_hover",
+          "opacity": "f:opacity_hover(0.5,1)",
           "pos": "310,70",
           "component": [
             "com_number(7)",
