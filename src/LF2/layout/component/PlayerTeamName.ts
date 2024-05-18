@@ -1,10 +1,9 @@
-import * as THREE from 'three';
-import Invoker from '../../base/Invoker';
-import { dispose_mesh } from '../utils/dispose_mesh';
-import { LayoutComponent } from "./LayoutComponent";
-import { TextBuilder } from './TextBuilder';
 import { SineAnimation } from '../../animation/SineAnimation';
+import Invoker from '../../base/Invoker';
 import { Defines } from '../../defines/defines';
+import Layout from '../Layout';
+import { LayoutComponent } from "./LayoutComponent";
+import Text from './Text';
 
 /**
  * 显示玩家队伍名
@@ -14,29 +13,39 @@ import { Defines } from '../../defines/defines';
  * @extends {LayoutComponent}
  */
 export default class PlayerTeamName extends LayoutComponent {
-  protected get player_id() { return this.args[0] || '' }
-  protected get player() { return this.lf2.player_infos.get(this.player_id) }
-  protected _jid: number = 0;
-  protected _mesh: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial> | undefined
+  get player_id() { return this.args[0] || '' }
+  get player() { return this.lf2.player_infos.get(this.player_id) }
+  get decided() { return !!this.player?.team_decided }
+  get text(): string {
+    const team = this.player?.team || '';
+    return Defines.TeamInfoMap[team]?.name || '';
+  }
+  protected _mesh: Text;
   protected _opacity: SineAnimation = new SineAnimation(0.65, 1, 1 / 25);
-  protected get show(): boolean { return !!this.player?.character_decided }
-  protected get team(): string | undefined { return this.player?.team; }
-  protected get text(): string | undefined {
-    const { team } = this;
-    if (team === void 0) return void 0;
-    return Defines.TeamInfoMap[team]?.name;
-  };
+  protected _unmount_jobs = new Invoker()
 
-  protected _unmount_jobs = new Invoker();
+  constructor(layout: Layout, f_name: string) {
+    super(layout, f_name)
+    const [w, h] = this.layout.size
+    this._mesh = new Text(this.lf2)
+      .set_pos(w / 2, -h / 2)
+      .set_center(0.5, 0.5)
+      .set_name(PlayerTeamName.name)
+      .set_style({
+        fill_style: 'white',
+        font: '14px Arial',
+      })
+  }
 
   override on_mount(): void {
     super.on_mount();
+    this.layout.sprite.add(this._mesh);
     this._unmount_jobs.add(
       this.player?.callbacks.add({
         on_character_decided: () => this.handle_changed(),
         on_team_changed: () => this.handle_changed(),
       }),
-      () => this.dispose_mesh()
+      () => this._mesh.removeFromParent()
     )
     this.handle_changed();
   }
@@ -47,61 +56,13 @@ export default class PlayerTeamName extends LayoutComponent {
     this._unmount_jobs.clear();
   }
 
-  protected dispose_mesh(): void {
-    this._mesh && dispose_mesh(this._mesh);
-    this._mesh = void 0;
-  }
-
   protected handle_changed() {
-    const { text, show } = this;
-    if (show && text) {
-      this.update_mesh(++this._jid, text)
-    } else {
-      this.dispose_mesh();
-    }
+    this._mesh.set_visible(!!this.player?.character_decided).set_text(this.text).apply();
   }
-
-  protected async update_mesh(jid: number, name: string) {
-    if (jid !== this._jid) return;
-    const [w, h] = this.layout.size
-    const builder = TextBuilder.get(this.lf2)
-      .pos(w / 2, -h / 2)
-      .center(0.5, 0.5)
-      .text(name)
-      .style({
-        fill_style: 'white',
-        font: 'bold 14px Arial',
-      });
-    if (!this._mesh) {
-      const mesh = await builder.build_mesh();
-      if (jid !== this._jid) {
-        mesh.geometry.dispose();
-        mesh.material.dispose();
-        return;
-      }
-      this._mesh = mesh;
-      this._mesh.name = PlayerTeamName.name
-      this.layout.sprite.mesh.add(this._mesh);
-    } else {
-      const [geo, tex] = await builder.build();
-      if (jid !== this._jid) {
-        geo.dispose();
-        tex.dispose();
-        return;
-      }
-      this._mesh.geometry.dispose();
-      this._mesh.material.map?.dispose();
-      this._mesh.geometry = geo
-      this._mesh.material.map = tex;
-      this._mesh.material.needsUpdate = true;
-    }
-  }
-
+  
   on_render(dt: number): void {
     this._opacity.update(dt)
-    if (this._mesh) {
-      this._mesh.material.opacity = this.player?.team_decided ? 1 : this._opacity.value;
-      this._mesh.material.needsUpdate = true;
-    }
+    this._mesh.opacity = this.decided ? 1 : this._opacity.value;
+
   }
 }

@@ -151,7 +151,11 @@ export default class GamePrepareLogic extends LayoutComponent {
         }
         this.layout.find_layout('menu')?.set_visible(true)
       },
-      leave: () => this.layout.find_layout('menu')?.set_visible(false)
+      leave: () => {
+        for (const { player: p } of this.player_slots)
+          p?.set_random_character('');
+        this.layout.find_layout('menu')?.set_visible(false)
+      }
     }).use(GamePrepareState.PlayerCharacterSel);
 
   /** 至少可选COM数量 */

@@ -81,7 +81,9 @@ export default class PlayerName extends LayoutComponent {
         this._mesh.visible = this.joined || this.is_com;
         break;
     }
-    this._mesh.set_text(this.text).apply();
+    this._mesh.set_style(v => ({
+      ...v, fill_style: this.is_com ? 'pink' : 'white'
+    })).set_text(this.text).apply()
   }
 
   on_render(dt: number): void {

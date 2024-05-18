@@ -1,5 +1,6 @@
 import LF2 from "../../LF2";
 import IStyle from "../../defines/IStyle";
+import { is_fun } from "../../utils/type_check";
 import Sprite from "./Sprite";
 
 export default class Text extends Sprite {
@@ -10,16 +11,19 @@ export default class Text extends Sprite {
   protected _jid: number = 0;
   protected _changed: boolean = true;
 
+  get style(): IStyle { return this._style; }
+
   constructor(lf2: LF2) {
     super()
     this.lf2 = lf2;
   }
 
-  set_style(v: IStyle): this {
-    this._style = v;
+  set_style(v: IStyle | ((v: IStyle) => IStyle)): this {
+    this._style = typeof v === 'function' ? v(this._style) : v;
     this._changed = true;
     return this;
   }
+
 
   set_text(v: string): this {
     this._text = v;
@@ -34,7 +38,7 @@ export default class Text extends Sprite {
     this.set_info(pic);
     super.apply();
   }
-  
+
   override apply(): this {
     if (this._changed)
       this.update_text(this._text, this._style, ++this._jid);

@@ -15,6 +15,11 @@ export default class PlayerCharacterName extends LayoutComponent {
   get player_id() { return this.args[0] || '' }
   get player() { return this.lf2.player_infos.get(this.player_id) }
   get decided() { return !!this.player?.character_decided }
+  get text(): string {
+    const character_id = this.player?.character;
+    const character = character_id ? this.lf2.datas.find_character(character_id) : void 0;
+    return character?.base.name ?? 'Random'
+  }
   protected _mesh: Text;
   protected _opacity: SineAnimation = new SineAnimation(0.65, 1, 1 / 25);
   protected _unmount_jobs = new Invoker()
@@ -54,12 +59,7 @@ export default class PlayerCharacterName extends LayoutComponent {
   }
 
   protected handle_changed() {
-    const text = (() => {
-      const character_id = this.player?.character;
-      const character = character_id ? this.lf2.datas.find_character(character_id) : void 0;
-      return character?.base.name ?? 'Random'
-    })()
-    this._mesh.set_visible(!!this.player?.joined).set_text(text).apply();
+    this._mesh.set_visible(!!this.player?.joined).set_text(this.text).apply();
   }
 
   on_render(dt: number): void {

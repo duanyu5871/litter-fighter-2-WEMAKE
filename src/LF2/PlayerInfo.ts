@@ -116,7 +116,13 @@ export class PlayerInfo {
     this._callbacks.emit('on_character_changed')(character, prev);
     return this;
   }
-
+  
+  /**
+   * 设置随机中的角色ID
+   *
+   * @param {string} character 角色ID，空字符串视为未设置
+   * @returns {this}
+   */
   set_random_character(character: string): this {
     if (this._random_character === character) return this;
     const prev = this._random_character;
