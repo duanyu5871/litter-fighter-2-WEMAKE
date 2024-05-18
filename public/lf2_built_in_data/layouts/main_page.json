@@ -75,7 +75,7 @@
             "reachable_layout(main)"
           ],
           "actions": {
-            "click": "goto(user_selection)"
+            "click": "push(user_selection)"
           }
         },
         {
@@ -89,7 +89,7 @@
             "reachable_layout(main)"
           ],
           "actions": {
-            "click": "goto(user_selection)"
+            "click": "push(user_selection)"
           }
         },
         {

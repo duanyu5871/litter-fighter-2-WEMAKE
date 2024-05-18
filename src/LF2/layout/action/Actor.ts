@@ -8,6 +8,7 @@ class Actor {
     ['alert', (_, msg) => alert(msg)],
     ['link_to', (_, url) => window.open(url)],
     ['goto', ({ lf2 }, layout_id) => lf2.set_layout(layout_id)],
+    ['push', ({ lf2 }, layout_id) => lf2.push_layout(layout_id)],
     ['loop_img', (l) => l.to_next_img()],
     ['load_default_data', ({ lf2 }) => lf2.loading || lf2.load()]
   ])

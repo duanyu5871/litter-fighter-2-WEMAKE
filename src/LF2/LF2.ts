@@ -42,7 +42,7 @@ const cheat_info_pair = (n: Defines.Cheats) => ['' + n, {
 export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   private _disposed: boolean = false;
   private _callbacks = new Callbacks<ILf2Callback>();
-  private _layout: Layout | undefined;
+  private _layout_stacks: (Layout | undefined)[] = [];
   private _loading: boolean = false;
   private _loaded: boolean = false;
   private _difficulty: Defines.Difficulty = Defines.Difficulty.Difficult;
@@ -75,7 +75,9 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   get player_infos() { return this._player_infos }
 
   get player_characters() { return this.world.player_characters }
-  get layout() { return this._layout }
+
+  get curr_layout(): Layout | undefined { return this._layout_stacks[this._layout_stacks.length - 1] }
+  set curr_layout(v: Layout | undefined) { this._layout_stacks[this._layout_stacks.length - 1] = v }
 
   private _bgm_enable = false;
   get bgm_enable() { return this._bgm_enable; }
@@ -231,9 +233,10 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   private mouse_on_layouts = new Set<Layout>()
 
   on_click(e: PointingEvent) {
-    if (!this._layout) return;
+    const { curr_layout: layout } = this;
+    if (!layout) return;
     const coords = new THREE.Vector2(e.scene_x, e.scene_y);
-    const { sprite } = this._layout;
+    const { sprite } = layout;
     if (!sprite) return;
     const raycaster = new THREE.Raycaster();
     raycaster.setFromCamera(coords, this.world.camera);
@@ -259,13 +262,14 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   }
 
   on_pointer_move(e: PointingEvent) {
-    if (!this._layout) return;
+    const { curr_layout: layout } = this;
+    if (!layout) return;
     const coords = new THREE.Vector2(e.scene_x, e.scene_y);
-    const { sprite: mesh } = this._layout;
-    if (!mesh) return;
+    const { sprite } = layout;
+    if (!sprite) return;
     const raycaster = new THREE.Raycaster();
     raycaster.setFromCamera(coords, this.world.camera);
-    const intersections = raycaster.intersectObjects([mesh.mesh], true);
+    const intersections = raycaster.intersectObjects([sprite.mesh], true);
     const mouse_on_layouts = new Set<Layout>()
     for (const { object: { userData: { owner } } } of intersections) {
       if (owner instanceof Layout) mouse_on_layouts.add(owner);
@@ -319,8 +323,8 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     return !!this._cheats_enable_map.get('' + name)
   }
   on_key_down(e: KeyEvent) {
-    const key = e.key?.toLowerCase() ?? ''
-    this._curr_key_list += key;
+    const key_code = e.key?.toLowerCase() ?? ''
+    this._curr_key_list += key_code;
     let match = false;
     for (const [cheat_name, { keys: k, sound: s }] of this._cheats_map) {
       if (k.startsWith(this._curr_key_list))
@@ -338,20 +342,29 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     if (!match) this._curr_key_list = '';
 
     if (e.times === 0) {
-      for (const k of KEY_NAME_LIST) {
-        for (const [player_id, player_info] of this._player_infos) {
-          if (player_info.keys[k] === key) {
-            this.layout?.on_player_key_down(player_id, k);
-            return;
+      const { curr_layout: layout } = this;
+      if (layout) {
+        for (const key_name of KEY_NAME_LIST) {
+          for (const [player_id, player_info] of this._player_infos) {
+            if (player_info.keys[key_name] === key_code)
+              layout.on_player_key_down(player_id, key_name);
           }
         }
       }
     }
-
   }
 
   on_key_up(e: KeyEvent) {
-
+    const key_code = e.key?.toLowerCase() ?? ''
+    const { curr_layout: layout } = this;
+    if (layout) {
+      for (const key_name of KEY_NAME_LIST) {
+        for (const [player_id, player_info] of this._player_infos) {
+          if (player_info.keys[key_name] === key_code)
+            layout.on_player_key_up(player_id, key_name);
+        }
+      }
+    }
   }
 
   remove_all_entities() {
@@ -536,7 +549,6 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   }
 
   private _layouts: Layout[] = [];
-
   get layouts(): Layout[] { return this._layouts }
 
   async load_layouts(): Promise<Layout[]> {
@@ -550,7 +562,6 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
       if (is_str(element)) paths.push(element);
       else Warn.print('layouts/index.json', 'element is not a string! got:', element)
     }
-
     for (const path of paths) {
       const raw_layout = await this.import_json(path);
       const cooked_layout = await Layout.cook(this, raw_layout, this.layout_val_getter)
@@ -613,13 +624,30 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   set_layout(layout?: Layout): void;
   set_layout(id?: string): void;
   set_layout(arg: string | Layout | undefined): void {
-    const layout = is_str(arg) ? this._layouts?.find(v => v.id === arg) : arg;
-    if (this._layout === layout) return;
-    const prev_layout = this._layout;
-    this._layout?.on_unmount();
-    this._layout = layout;
-    this._layout?.on_mount();
-    this._callbacks.emit('on_layout_changed')(layout, prev_layout)
+    const prev = this._layout_stacks.pop();
+    const curr = is_str(arg) ? this._layouts?.find(v => v.id === arg) : arg;
+    prev?.on_unmount();
+    this._layout_stacks.push(curr);
+    curr?.on_mount();
+    this._callbacks.emit('on_layout_changed')(curr, prev)
+  }
+
+  pop_layout(): void {
+    const popped_layout = this._layout_stacks.pop()
+    popped_layout?.on_unmount();
+    this.curr_layout?.on_mount();
+    this._callbacks.emit('on_layout_changed')(this.curr_layout, popped_layout)
+  }
+
+  push_layout(layout?: Layout): void;
+  push_layout(id?: string): void;
+  push_layout(arg: string | Layout | undefined): void {
+    const prev = this.curr_layout
+    const curr = is_str(arg) ? this._layouts?.find(v => v.id === arg) : arg;
+    prev?.on_unmount();
+    this._layout_stacks.push(curr);
+    curr?.on_mount();
+    this._callbacks.emit('on_layout_changed')(curr, prev)
   }
 
   on_loading_content(content: string, progress: number) {

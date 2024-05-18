@@ -49,6 +49,9 @@ export default class GamePrepareLogic extends LayoutComponent {
   override on_player_key_down(_player_id: string, key: TKeyName) {
     switch (this.state) {
       case GamePrepareState.PlayerCharacterSel:
+        if ('j' === key && !this.used_player_slots.length) {
+          this.lf2.pop_layout();
+        }
         break;
       case GamePrepareState.CountingDown:
         if ('j' === key) {
@@ -185,6 +188,12 @@ export default class GamePrepareLogic extends LayoutComponent {
     return filter(
       this.layout.root.search_components(CharacterSelLogic),
       v => v.player?.is_com
+    )
+  }
+  get used_player_slots(): CharacterSelLogic[] { // 未使用玩家槽
+    return filter(
+      this.layout.root.search_components(CharacterSelLogic),
+      v => v.player?.joined
     )
   }
   get empty_player_slots(): CharacterSelLogic[] { // 未使用玩家槽

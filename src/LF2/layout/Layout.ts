@@ -154,7 +154,8 @@ export default class Layout {
   set_visible(v: boolean): this { this._visible.set(0, v); return this; }
 
   get disabled(): boolean { return this._disabled.value; }
-  set disabled(v: boolean) { this._disabled.set(0, v); }
+  set disabled(v: boolean) { this.set_disabled(v); }
+  set_disabled(v: boolean): this { this._disabled.set(0, v); return this; }
 
   get opacity(): number { return this._opacity.value }
   set opacity(v: number) { this._opacity.set(0, v) }
@@ -494,7 +495,7 @@ export default class Layout {
   }
 
   on_player_key_down(player_id: string, key: TKeyName) {
-    for (const i of this.children) i.on_player_key_down?.(player_id, key);
+    for (const i of this.children) i.on_player_key_down(player_id, key);
     for (const c of this._components) c.on_player_key_down?.(player_id, key);
     switch (key) {
       case 'a': {
@@ -506,6 +507,11 @@ export default class Layout {
       case 'd':
         break;
     }
+  }
+
+  on_player_key_up(player_id: string, key: TKeyName) {
+    for (const i of this.children) i.on_player_key_up(player_id, key);
+    for (const c of this._components) c.on_player_key_up?.(player_id, key);
   }
 
   find_layout(id: string): Layout | undefined {
