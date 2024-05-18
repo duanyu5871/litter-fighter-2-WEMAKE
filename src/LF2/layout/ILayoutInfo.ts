@@ -25,5 +25,5 @@ export interface ILayoutInfo {
     leave?: string | string[];
   };
   key_press_actions?: [string, string][];
-  items?: ILayoutInfo[];
+  items?: (ILayoutInfo | string)[];
 }

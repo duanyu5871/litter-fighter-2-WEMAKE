@@ -20,6 +20,8 @@ export default class PlayerCharacterName extends LayoutComponent {
     const character = character_id ? this.lf2.datas.find_character(character_id) : void 0;
     return character?.base.name ?? 'Random'
   }
+  get joined(): boolean { return true === this.player?.joined }
+  get is_com(): boolean { return true === this.player?.is_com }
   protected _mesh: Text;
   protected _opacity: SineAnimation = new SineAnimation(0.65, 1, 1 / 25);
   protected _unmount_jobs = new Invoker()
@@ -43,6 +45,7 @@ export default class PlayerCharacterName extends LayoutComponent {
     this.layout.sprite.add(this._mesh);
     this._unmount_jobs.add(
       this.player?.callbacks.add({
+        on_is_com_changed: () => this.handle_changed(),
         on_joined_changed: () => this.handle_changed(),
         on_character_changed: () => this.handle_changed(),
         on_random_character_changed: () => this.handle_changed(),
@@ -59,7 +62,9 @@ export default class PlayerCharacterName extends LayoutComponent {
   }
 
   protected handle_changed() {
-    this._mesh.set_visible(!!this.player?.joined).set_text(this.text).apply();
+    this._mesh.set_style(v => ({
+      ...v, fill_style: this.is_com ? 'pink' : 'white'
+    })).set_visible(this.joined).set_text(this.text).apply()
   }
 
   on_render(dt: number): void {

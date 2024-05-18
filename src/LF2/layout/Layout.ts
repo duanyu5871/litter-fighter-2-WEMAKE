@@ -273,7 +273,8 @@ export default class Layout {
 
     if (data.items)
       for (const raw_item of data.items) {
-        const cooked_item = await Layout.cook(lf2, raw_item, get_val, ret);
+
+        const cooked_item = await Layout.cook(lf2, is_str(raw_item) ? await lf2.import_json(raw_item) : raw_item, get_val, ret);
         if (cooked_item.id) ret.id_layout_map.set(cooked_item.id, cooked_item);
         if (cooked_item.name) ret.name_layout_map.set(cooked_item.name, cooked_item);
         cooked_item._index = ret.children.length;

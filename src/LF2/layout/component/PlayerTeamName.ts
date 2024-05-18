@@ -20,6 +20,8 @@ export default class PlayerTeamName extends LayoutComponent {
     const team = this.player?.team || '';
     return Defines.TeamInfoMap[team]?.name || '';
   }
+  get is_com(): boolean { return true === this.player?.is_com }
+
   protected _mesh: Text;
   protected _opacity: SineAnimation = new SineAnimation(0.65, 1, 1 / 25);
   protected _unmount_jobs = new Invoker()
@@ -42,6 +44,7 @@ export default class PlayerTeamName extends LayoutComponent {
     this.layout.sprite.add(this._mesh);
     this._unmount_jobs.add(
       this.player?.callbacks.add({
+        on_is_com_changed: () => this.handle_changed(),
         on_character_decided: () => this.handle_changed(),
         on_team_changed: () => this.handle_changed(),
       }),
@@ -57,9 +60,11 @@ export default class PlayerTeamName extends LayoutComponent {
   }
 
   protected handle_changed() {
-    this._mesh.set_visible(!!this.player?.character_decided).set_text(this.text).apply();
+    this._mesh.set_style(v => ({
+      ...v, fill_style: this.is_com ? 'pink' : 'white'
+    })).set_visible(!!this.player?.character_decided).set_text(this.text).apply()
   }
-  
+
   on_render(dt: number): void {
     this._opacity.update(dt)
     this._mesh.opacity = this.decided ? 1 : this._opacity.value;
