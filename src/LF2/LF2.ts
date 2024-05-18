@@ -1,14 +1,5 @@
 import * as THREE from 'three';
-import Layout from './layout/Layout';
 import { Log, Warn } from '../Log';
-import { arithmetic_progression } from './utils/math/arithmetic_progression';
-import { constructor_name } from './utils/constructor_name';
-import { fisrt } from './utils/container_help';
-import { ICharacterData, IWeaponData, TFace } from './defines';
-import { IStageInfo } from "./defines/IStageInfo";
-import { Defines } from './defines/defines';
-import { random_get, random_in, random_take } from './utils/math/random';
-import { is_arr, is_num, is_str, not_empty_str } from './utils/type_check';
 import { ILf2Callback } from './ILf2Callback';
 import { PlayerInfo } from './PlayerInfo';
 import { World } from './World';
@@ -20,6 +11,9 @@ import { new_id, new_team } from './base/new_id';
 import Layer from './bg/Layer';
 import { KEY_NAME_LIST } from './controller/BaseController';
 import LocalHuman from "./controller/LocalHuman";
+import { ICharacterData, IWeaponData, TFace } from './defines';
+import { IStageInfo } from "./defines/IStageInfo";
+import { Defines } from './defines/defines';
 import { IKeyboardCallback, KeyEvent, Keyboard } from './dom/Keyboard';
 import Pointings, { IPointingsCallback, PointingEvent } from './dom/Pointings';
 import Zip from './dom/download_zip';
@@ -28,11 +22,17 @@ import './entity/Ball';
 import Character from './entity/Character';
 import Entity from './entity/Entity';
 import Weapon from './entity/Weapon';
+import Layout from './layout/Layout';
 import DatMgr from './loader/DatMgr';
 import get_import_fallbacks from "./loader/get_import_fallbacks";
 import { ImageMgr } from './loader/loader';
 import SoundMgr from './sound/SoundMgr';
 import Stage from './stage/Stage';
+import { constructor_name } from './utils/constructor_name';
+import { fisrt } from './utils/container_help';
+import { arithmetic_progression } from './utils/math/arithmetic_progression';
+import { random_get, random_in, random_take } from './utils/math/random';
+import { is_arr, is_num, is_str, not_empty_str } from './utils/type_check';
 
 const cheat_info_pair = (n: Defines.Cheats) => ['' + n, {
   keys: Defines.CheatKeys[n],
@@ -153,6 +153,9 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
 
     this.pointings = new Pointings(canvas);
     this.pointings.callback.add(this);
+
+    this.world.start_update();
+    this.world.start_render();
   }
 
   random_entity_info(e: Entity) {
@@ -318,15 +321,12 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   on_key_down(e: KeyEvent) {
     const key = e.key?.toLowerCase() ?? ''
     this._curr_key_list += key;
-
     let match = false;
     for (const [cheat_name, { keys: k, sound: s }] of this._cheats_map) {
-      if (k.startsWith(this._curr_key_list)) {
+      if (k.startsWith(this._curr_key_list))
         match = true;
-      }
-      if (k !== this._curr_key_list) {
+      if (k !== this._curr_key_list)
         continue;
-      }
       const sound_id = this._cheat_sound_id_map.get(cheat_name);
       if (sound_id) this.sounds.stop(sound_id);
       this.sounds.play_with_load(s).then(v => this._cheat_sound_id_map.set(cheat_name, v));
@@ -337,14 +337,17 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     }
     if (!match) this._curr_key_list = '';
 
-    for (const k of KEY_NAME_LIST) {
-      for (const [player_id, player_info] of this._player_infos) {
-        if (player_info.keys[k] === key) {
-          this.layout?.on_player_key_down(player_id, k);
-          return;
+    if (e.times === 0) {
+      for (const k of KEY_NAME_LIST) {
+        for (const [player_id, player_info] of this._player_infos) {
+          if (player_info.keys[k] === key) {
+            this.layout?.on_player_key_down(player_id, k);
+            return;
+          }
         }
       }
     }
+
   }
 
   on_key_up(e: KeyEvent) {
@@ -421,8 +424,6 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
       const name = d.base.name.toLowerCase();
       this.weapons[`add_${name}`] = (num = 1, team_1 = void 0) => this.add_weapon(d, num, team_1);
     }
-    this.world.start_update();
-    this.world.start_render();
   }
 
   dispose() {
@@ -605,7 +606,6 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
         }
         return 1;
       }
-
     }
     return word;
   };
@@ -619,7 +619,6 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     this._layout?.on_unmount();
     this._layout = layout;
     this._layout?.on_mount();
-    this.world.start_render();
     this._callbacks.emit('on_layout_changed')(layout, prev_layout)
   }
 

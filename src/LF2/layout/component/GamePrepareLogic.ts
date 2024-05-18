@@ -5,7 +5,7 @@ import Callbacks from "../../base/Callbacks";
 import Invoker from "../../base/Invoker";
 import NoEmitCallbacks from "../../base/NoEmitCallbacks";
 import { TKeyName } from "../../controller/BaseController";
-import { FSM, IReadonlyFSM } from "../StateMachine";
+import FSM, { IReadonlyFSM } from "../../base/FSM";
 import CharacterSelLogic from "./CharacterSelLogic";
 import { LayoutComponent } from "./LayoutComponent";
 import { random_get } from "../../utils/math/random";
