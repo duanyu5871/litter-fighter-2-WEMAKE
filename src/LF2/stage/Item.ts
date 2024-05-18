@@ -83,6 +83,11 @@ export default class Item {
     const data = this.lf2.datas.find(oid);
     if (!data) { debugger; return; }
     this.is_enemies = data.type === 'character';
+
+    // // FIXME:
+    // const { characters, weapons, entity } = lf2.datas;
+    // const fallbacks = [...characters, ...weapons, ...entity].filter(v => v.base.group && v.base.group.indexOf(oid) >= 0)
+    // if (!data) data = random_take(fallbacks)
   }
 
   spawn(
@@ -92,11 +97,11 @@ export default class Item {
   ): void {
     const { lf2 } = this;
     const oid = this.get_oid();
-    if (!oid) { return; }
+    if (!oid) { debugger; return; }
     const data = lf2.datas.find(oid);
-    if (!data) { return; }
+    if (!data) { debugger; return; }
     const creator = factory.get(data.type);
-    if (!creator) { return; }
+    if (!creator) { debugger; return; }
 
     const { hp, act, x, y, z } = this.info;
     if (this.info.times) this.info.times--;

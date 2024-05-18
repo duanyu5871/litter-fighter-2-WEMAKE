@@ -3,6 +3,7 @@ import FSM, { IReadonlyFSM } from "../../base/FSM";
 import Invoker from "../../base/Invoker";
 import NoEmitCallbacks from "../../base/NoEmitCallbacks";
 import { TKeyName } from "../../controller/BaseController";
+import { Defines } from "../../defines/defines";
 import { filter } from "../../utils/container_help";
 import { map_no_void } from "../../utils/container_help/map_no_void";
 import { random_get } from "../../utils/math/random";
@@ -38,8 +39,10 @@ export default class GamePrepareLogic extends LayoutComponent {
       })),
       this.lf2.callbacks.add({
         on_broadcast: m => {
-          if (m === 'reset_gpl') this._fsm.use(GamePrepareState.PlayerCharacterSel)
-          if (m === 'update_random') this.update_random()
+          if (m === Defines.BuiltIn.Boadcast.ResetGPL)
+            this._fsm.use(GamePrepareState.PlayerCharacterSel)
+          if (m === Defines.BuiltIn.Boadcast.UpdateRandom)
+            this.update_random();
         },
       })
     )

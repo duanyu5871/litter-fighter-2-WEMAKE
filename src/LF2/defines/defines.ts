@@ -298,7 +298,7 @@ export namespace Defines {
     v.is_bg_data === true
   export const is_game_obj_data = (v: any): v is IGameObjData =>
     v.is_game_obj_data === true
-  
+
   export namespace BuiltIn {
     export enum Imgs {
       RFACE = 'sprite/RFACE.png',
@@ -311,6 +311,10 @@ export namespace Defines {
     }
     export enum Dats {
       Spark = 'data/spark.json',
+    }
+    export enum Boadcast {
+      ResetGPL = 'reset_gpl',
+      UpdateRandom = 'update_random',
     }
   }
 } 

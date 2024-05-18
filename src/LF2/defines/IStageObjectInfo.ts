@@ -1,5 +1,5 @@
 export interface IStageObjectInfo {
-  id_method?: string;
+  id_method?: string; // TODO
   id: string[];
   x: number;
   y?: number;

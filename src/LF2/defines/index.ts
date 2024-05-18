@@ -83,7 +83,9 @@ export * from './IWpointInfo';
 export * from './IBgData';
 
 export interface IGameObjInfo {
+  /** 所属组 */
   files: Record<string, IEntityPictureInfo>;
+  group?: string[];
 }
 export interface IBaseData<I = any> {
   get is_base_data(): true;

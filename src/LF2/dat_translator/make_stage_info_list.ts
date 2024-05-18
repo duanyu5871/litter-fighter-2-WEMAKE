@@ -45,9 +45,7 @@ export function make_stage_info_list(full_str: string): IStageInfo[] | void {
           if (line.indexOf('<soldier>') >= 0) object.is_soldier = true;
           if (line.indexOf('<boss>') >= 0) object.is_boss = true;
           for (const [key, value] of match_colon_value(line)) {
-            if (key === 'id' && value === '3000') object.id = ['30', '31'];
-            else if (key === 'id' && value === '1000') object.id = arithmetic_progression(1, 29, 1).map(v => '' + v);
-            else if (key === 'id') object.id = [value];
+            if (key === 'id') object.id = [value];
             else if (key === 'act') object.act = value;
             else (object as any)[key] = to_num(value) ?? (object as any)[key]
           }

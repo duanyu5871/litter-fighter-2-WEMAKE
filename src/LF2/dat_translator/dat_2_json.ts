@@ -126,8 +126,12 @@ export default function dat_to_json(full_str: string, datIndex?: IDatIndex): voi
       case '0': {
         const info = base as ICharacterInfo;
         const num_id = Number(datIndex.id);
-        if ((num_id >= 30 && num_id <= 39) || (num_id >= 50 && num_id <= 59))
+        if ((num_id >= 30 && num_id <= 39) || (num_id >= 50 && num_id <= 59)) {
           info.hidden = true;
+        }
+        if (num_id >= 1 && num_id <= 29) {
+          info.group = ['1000']
+        }
         if (datIndex.id === '52') {
           info.ce = 3;
           info.armor = {
@@ -151,6 +155,8 @@ export default function dat_to_json(full_str: string, datIndex?: IDatIndex): voi
             type: 'times',
             toughness: 1,
           }
+        } else if (datIndex.id === '30' || datIndex.id === '31') {
+          info.group = ['3000']
         }
         ret = make_character_data(info, make_frames(full_str));
 
@@ -166,8 +172,9 @@ export default function dat_to_json(full_str: string, datIndex?: IDatIndex): voi
     if (ret) ret.id = datIndex.id;
     return ret;
   } else {
-    if ('small' in base && 'name' in base && 'head' in base)
+    if ('small' in base && 'name' in base && 'head' in base) {
       return make_character_data(base as ICharacterInfo, make_frames(full_str))
+    }
     if ('weapon_hp' in base) {
       const info = base as IWeaponInfo;
       return make_weapon_data(info, full_str, make_frames(full_str));
