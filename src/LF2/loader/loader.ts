@@ -177,7 +177,7 @@ export class ImageMgr {
   }
 
   create_pic_by_img_info(img_info: TImageInfo) {
-    const picture = err_pic_info();
+    const picture = err_pic_info(img_info.key);
     picture.cell_w = picture.w = img_info.w
     picture.cell_h = picture.h = img_info.h
     return _create_pic(img_info, picture);
