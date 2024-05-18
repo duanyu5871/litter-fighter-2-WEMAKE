@@ -10,6 +10,7 @@ import ICharacterCallbacks from '../entity/ICharacterCallbacks';
 import Entity from "../entity/Entity";
 import Weapon from "../entity/Weapon";
 import Stage from "./Stage";
+import { IGameObjData } from "../defines";
 
 export default class Item {
   readonly is_enemies: boolean = false;
@@ -20,8 +21,7 @@ export default class Item {
   readonly stage: Stage;
   readonly get_oid: () => string;
 
-  private oid_list: string[] = [];
-  private old_list_idx = 0;
+  private data_list: IGameObjData[] = [];
 
   readonly character_callback: ICharacterCallbacks = {
     on_dead: (e: Character): void => { // 角色死亡
@@ -56,38 +56,18 @@ export default class Item {
   constructor(stage: Stage, info: IStageObjectInfo) {
     this.stage = stage;
     this.info = { ...info };
-    const oid_len = this.oid_list.length;
-    switch (this.info.id_method) {
-      case 'non_repetitive':
-        this.get_oid = () => {
-          if (!oid_len) this.oid_list = [...this.info.id];
-          return random_take(this.oid_list)!;
-        };
-        break;
-      case 'once_random':
-        const len = random_in(0, oid_len);
-        const idx = Math.floor(random_in(0, len) % len);
-        const oid = this.info.id[idx];
-        this.get_oid = () => oid;
-        break;
-      case 'order':
-        this.get_oid = () => this.info.id[this.old_list_idx = (this.old_list_idx + 1) % oid_len];
-        break;
-      case 'random':
-      default:
-        this.get_oid = () => random_get(this.info.id) ?? 'TODO';
-        break;
+    for (const oid of this.info.id) {
+      const data = this.lf2.datas.find(oid);
+      if (data) { this.data_list.push(data); continue; }
+      const { characters, weapons, entity } = this.lf2.datas.find_group(oid);
+      this.data_list.push(...characters, ...weapons, ...entity);
     }
-    const oid = random_get(this.info.id);
-    if (!oid) { debugger; return; }
-    const data = this.lf2.datas.find(oid);
-    if (!data) { debugger; return; }
-    this.is_enemies = data.type === 'character';
-
-    // // FIXME:
-    // const { characters, weapons, entity } = lf2.datas;
-    // const fallbacks = [...characters, ...weapons, ...entity].filter(v => v.base.group && v.base.group.indexOf(oid) >= 0)
-    // if (!data) data = random_take(fallbacks)
+    this.is_enemies = !this.data_list.find(v => v.type !== 'character');
+    let waiting_data_list = [...this.data_list];
+    this.get_oid = () => {
+      if (!waiting_data_list.length) waiting_data_list = [...this.data_list]
+      return random_take(waiting_data_list)?.id!;
+    }
   }
 
   spawn(

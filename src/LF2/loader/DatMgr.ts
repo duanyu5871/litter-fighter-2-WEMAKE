@@ -1,10 +1,10 @@
 import { Log } from '../../Log';
+import LF2 from '../LF2';
 import { IBallData, IBgData, ICharacterData, IDataMap, IEntityData, IGameObjData, IWeaponData } from '../defines';
 import { Defines } from '../defines/defines';
+import { TData } from '../entity/Entity';
 import { traversal } from '../utils/container_help/traversal';
 import { is_str, not_blank_str } from '../utils/type_check';
-import LF2 from '../LF2';
-import { TData } from '../entity/Entity';
 import { cook_frame } from './preprocess_frame';
 
 export interface IDataListMap {
@@ -81,7 +81,7 @@ class Inner {
     const data = await this._cook_data(raw_data) as IGameObjData; // fixme
     const _index_id = '' + index_id;
     const _data_id = '' + data.id;
-    if(_data_id === 'spark') debugger
+    if (_data_id === 'spark') debugger
     if (_data_id !== _index_id) {
       Log.print('DatLoader',
         `_add_data(), index_id not equal to data_id,`,
@@ -142,6 +142,13 @@ class Inner {
 }
 
 export default class DatMgr {
+  find_group(group_name: string) {
+    return {
+      characters: this.characters.filter(v => v.base.group && v.base.group.indexOf(group_name) >= 0),
+      weapons: this.weapons.filter(v => v.base.group && v.base.group.indexOf(group_name) >= 0),
+      entity: this.entity.filter(v => v.base.group && v.base.group.indexOf(group_name) >= 0),
+    }
+  }
   private _inner_id: number = 0;
   private _inner = new Inner(this, ++this._inner_id);
   get inner_id(): number { return this._inner_id; }
