@@ -53,12 +53,11 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
 
   get difficulty(): Defines.Difficulty { return this._difficulty; }
   set difficulty(v: Defines.Difficulty) {
-    if (this.difficulty === v) return;
-    const old = this.difficulty;
-    this.difficulty = v;
+    if (this._difficulty === v) return;
+    const old = this._difficulty;
+    this._difficulty = v;
     this._callbacks.emit('on_difficulty_changed')(v, old)
   }
-
   readonly canvas: HTMLCanvasElement;
   readonly world: World;
   private _zip: Zip | undefined;
@@ -314,8 +313,9 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
 
   private _curr_key_list: string = '';
   private readonly _cheats_map = new Map<string, Defines.ICheatInfo>([
-    cheat_info_pair(Defines.Cheats.Hidden),
-    cheat_info_pair(Defines.Cheats.Fn),
+    cheat_info_pair(Defines.Cheats.LF2_NET),
+    cheat_info_pair(Defines.Cheats.HERO_FT),
+    cheat_info_pair(Defines.Cheats.GIM_INK),
   ]);
   private readonly _cheats_enable_map = new Map<string, boolean>();
   private readonly _cheat_sound_id_map = new Map<string, string>();
@@ -664,6 +664,12 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
       user_data: n.userData,
       children: children.length ? children : void 0
     }
+  }
+  switch_difficulty(): void {
+    const { difficulty } = this;
+    const max = this.is_cheat_enabled(Defines.Cheats.LF2_NET) ? 4 : 3;
+    const next = (difficulty % max) + 1;
+    this.difficulty = next
   }
 }
 

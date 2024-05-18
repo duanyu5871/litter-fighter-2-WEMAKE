@@ -39,9 +39,9 @@ export default class GamePrepareLogic extends LayoutComponent {
       })),
       this.lf2.callbacks.add({
         on_broadcast: m => {
-          if (m === Defines.BuiltIn.Boadcast.ResetGPL)
+          if (m === Defines.BuiltIn.Broadcast.ResetGPL)
             this._fsm.use(GamePrepareState.PlayerCharacterSel)
-          if (m === Defines.BuiltIn.Boadcast.UpdateRandom)
+          if (m === Defines.BuiltIn.Broadcast.UpdateRandom)
             this.update_random();
         },
       })

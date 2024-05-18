@@ -49,10 +49,10 @@ export function PlayerRow(props: Props) {
   const [key_settings_show, set_key_settings_show] = useState(false);
 
   useEffect(() => {
-    set_show_hidden(lf2.is_cheat_enabled('' + Defines.Cheats.Hidden))
+    set_show_hidden(lf2.is_cheat_enabled('' + Defines.Cheats.LF2_NET))
     return lf2.callbacks.add({
       on_cheat_changed: (name, enabled) => {
-        if (name === '' + Defines.Cheats.Hidden) set_show_hidden(enabled)
+        if (name === '' + Defines.Cheats.LF2_NET) set_show_hidden(enabled)
       }
     });
   }, [lf2]);

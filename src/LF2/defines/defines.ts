@@ -176,16 +176,19 @@ export namespace Defines {
     Victim = 2,
   }
   export enum Cheats {
-    Hidden = 'Hidden',
-    Fn = 'Fn',
+    LF2_NET = 'LF2_NET',
+    HERO_FT = 'HERO_FT',
+    GIM_INK = 'GIM_INK'
   }
   export const CheatKeys: Record<Cheats, string> = {
-    [Cheats.Hidden]: "lf2.net",
-    [Cheats.Fn]: "herofighter.com"
+    [Cheats.LF2_NET]: "lf2.net",
+    [Cheats.HERO_FT]: "herofighter.com",
+    [Cheats.GIM_INK]: "gim.ink"
   }
   export const CheatSounds: Record<Cheats, string> = {
-    [Cheats.Hidden]: "data/m_pass.wav.ogg",
-    [Cheats.Fn]: "data/m_end.wav.ogg"
+    [Cheats.LF2_NET]: "data/m_pass.wav.ogg",
+    [Cheats.HERO_FT]: "data/m_end.wav.ogg",
+    [Cheats.GIM_INK]: "data/030.wav.ogg"
   }
   export interface ICheatInfo {
     keys: string;
@@ -312,7 +315,7 @@ export namespace Defines {
     export enum Dats {
       Spark = 'data/spark.json',
     }
-    export enum Boadcast {
+    export enum Broadcast {
       ResetGPL = 'reset_gpl',
       UpdateRandom = 'update_random',
     }

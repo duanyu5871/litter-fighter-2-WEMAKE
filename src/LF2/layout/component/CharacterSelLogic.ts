@@ -43,11 +43,11 @@ export default class CharacterSelLogic extends LayoutComponent {
     this._unmount_jobs.add(
       this.lf2.callbacks.add({
         on_cheat_changed: (cheat_name, enabled) => { // 当前选择的角色被隐藏时，让玩家选随机
-          if (cheat_name === Defines.Cheats.Hidden && !enabled) this.handle_hidden_character();
+          if (cheat_name === Defines.Cheats.LF2_NET && !enabled) this.handle_hidden_character();
         },
       })
     )
-    if (!this.lf2.is_cheat_enabled(Defines.Cheats.Hidden))
+    if (!this.lf2.is_cheat_enabled(Defines.Cheats.LF2_NET))
       this.handle_hidden_character();
   }
 
@@ -62,7 +62,7 @@ export default class CharacterSelLogic extends LayoutComponent {
 
   get characters() {
     const all_characters = this.lf2.datas.characters
-    const show_all = this.lf2.is_cheat_enabled(Defines.Cheats.Hidden)
+    const show_all = this.lf2.is_cheat_enabled(Defines.Cheats.LF2_NET)
     return show_all ? all_characters : all_characters.filter(v => !v.base.hidden);
   }
 
@@ -135,7 +135,7 @@ export default class CharacterSelLogic extends LayoutComponent {
    */
   protected handle_hidden_character() {
     const all_characters = this.lf2.datas.characters
-    const show_all = this.lf2.is_cheat_enabled(Defines.Cheats.Hidden)
+    const show_all = this.lf2.is_cheat_enabled(Defines.Cheats.LF2_NET)
     const characters = show_all ? all_characters : all_characters.filter(v => !v.base.hidden);
     const idx = characters.findIndex(v => v.id === this.character);
     this.player?.set_character(characters[idx]?.id ?? '');
