@@ -11,7 +11,9 @@ class Actor {
     ['push', ({ lf2 }, layout_id) => lf2.push_layout(layout_id)],
     ['loop_img', (l) => l.to_next_img()],
     ['load_default_data', ({ lf2 }) => lf2.loading || lf2.load()],
-    ['pop', ({ lf2 }) => lf2.pop_layout()]
+    ['pop', ({ lf2 }) => lf2.pop_layout()],
+    ['broadcast', ({ lf2 }, message) => message && lf2.broadcast(message)],
+    ['sound', ({ lf2 }, name) => name && lf2.sounds.play_preset(name)]
   ])
   act(layout: Layout, actions: string | string[]): void {
     if (!actions.length) return;

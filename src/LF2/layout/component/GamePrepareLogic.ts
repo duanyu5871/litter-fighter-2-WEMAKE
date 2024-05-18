@@ -1,14 +1,13 @@
-import { filter, find, find_last } from "../../utils/container_help";
-import { map_no_void } from "../../utils/container_help/map_no_void";
-import { PlayerInfo } from "../../PlayerInfo";
 import Callbacks from "../../base/Callbacks";
+import FSM, { IReadonlyFSM } from "../../base/FSM";
 import Invoker from "../../base/Invoker";
 import NoEmitCallbacks from "../../base/NoEmitCallbacks";
 import { TKeyName } from "../../controller/BaseController";
-import FSM, { IReadonlyFSM } from "../../base/FSM";
+import { filter } from "../../utils/container_help";
+import { map_no_void } from "../../utils/container_help/map_no_void";
+import { random_get } from "../../utils/math/random";
 import CharacterSelLogic from "./CharacterSelLogic";
 import { LayoutComponent } from "./LayoutComponent";
-import { random_get } from "../../utils/math/random";
 
 export interface IGamePrepareLogicCallback {
   on_countdown?(v: number): void;
@@ -36,7 +35,13 @@ export default class GamePrepareLogic extends LayoutComponent {
       ...map_no_void(this.lf2.player_infos.values(), v => v.callbacks.add({
         on_joined_changed: () => this.on_someone_changed(),
         on_team_decided: () => this.on_someone_changed(),
-      }))
+      })),
+      this.lf2.callbacks.add({
+        on_broadcast: m => {
+          if (m === 'reset_gpl') this._fsm.use(GamePrepareState.PlayerCharacterSel)
+          if (m === 'update_random') this.update_random()
+        },
+      })
     )
   }
 
@@ -60,10 +65,8 @@ export default class GamePrepareLogic extends LayoutComponent {
         }
         break;
       case GamePrepareState.ComNumberSel:
-        if ('d' === key) this._fsm.use(GamePrepareState.PlayerCharacterSel);
-        break;
       case GamePrepareState.GameSetting:
-        if ('j' === key) this._fsm.use(GamePrepareState.PlayerCharacterSel);
+        if ('d' === key) this._fsm.use(GamePrepareState.PlayerCharacterSel);
         break;
       case GamePrepareState.ComputerCharacterSel:
         if ('j' === key && !this.joined_com_infos.length)
@@ -147,11 +150,7 @@ export default class GamePrepareLogic extends LayoutComponent {
     }, {
       key: GamePrepareState.GameSetting,
       enter: () => {
-        for (const { player: p } of this.player_slots) {
-          if (!p?.joined || !p.is_random) continue;
-          const characters = this.lf2.datas.characters.filter(v => !v.base.hidden);
-          p.set_random_character(random_get(characters)?.id ?? '');
-        }
+        this.update_random();
         this.layout.find_layout('menu')?.set_visible(true)
       },
       leave: () => {
@@ -167,6 +166,14 @@ export default class GamePrepareLogic extends LayoutComponent {
   private _max_com_num = 7;
   /** 指定选COM数量 */
   private _com_num = 0;
+
+  private update_random() {
+    for (const { player: p } of this.player_slots) {
+      if (!p?.joined || !p.is_random) continue;
+      const characters = this.lf2.datas.characters.filter(v => !v.base.hidden);
+      p.set_random_character(random_get(characters)?.id ?? '');
+    }
+  }
 
   /** 至少可选COM数量 */
   get min_com_num(): number { return this._min_com_num };

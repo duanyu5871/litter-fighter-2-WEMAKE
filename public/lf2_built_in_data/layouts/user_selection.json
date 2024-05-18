@@ -299,7 +299,10 @@
             "reachable_layout(menu)"
           ],
           "actions": {
-            "click": "alert(btn_start)"
+            "click": [
+              "alert(btn_start)",
+              "sound(ok)"
+            ]
           }
         },
         {
@@ -312,7 +315,10 @@
             "reachable_layout(menu)"
           ],
           "actions": {
-            "click": "alert(btn_cancel)"
+            "click": [
+              "broadcast(reset_gpl)",
+              "sound(ok)"
+            ]
           }
         },
         {
@@ -325,7 +331,10 @@
             "reachable_layout(menu)"
           ],
           "actions": {
-            "click": "alert(btn_update_random)"
+            "click": [
+              "broadcast(update_random)",
+              "sound(ok)"
+            ]
           }
         },
         {
@@ -338,7 +347,10 @@
             "reachable_layout(menu)"
           ],
           "actions": {
-            "click": "alert(btn_game_bg)"
+            "click": [
+              "alert(btn_game_bg)",
+              "sound(ok)"
+            ]
           }
         },
         {
@@ -358,7 +370,10 @@
             "reachable_layout(menu)"
           ],
           "actions": {
-            "click": "alert(btn_game_stage_hover)"
+            "click": [
+              "alert(btn_game_stage_hover)",
+              "sound(ok)"
+            ]
           }
         },
         {
@@ -371,7 +386,10 @@
             "reachable_layout(menu)"
           ],
           "actions": {
-            "click": "alert(btn_game_level)"
+            "click": [
+              "alert(btn_game_level)",
+              "sound(ok)"
+            ]
           }
         },
         {
@@ -384,7 +402,10 @@
             "reachable_layout(menu)"
           ],
           "actions": {
-            "click": "pop()"
+            "click": [
+              "pop()",
+              "sound(cancel)"
+            ]
           }
         }
       ]

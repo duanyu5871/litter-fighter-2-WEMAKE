@@ -653,7 +653,9 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   on_loading_content(content: string, progress: number) {
     this._callbacks.emit('on_loading_content')(content, progress);
   }
-
+  broadcast(message: string): void {
+    this._callbacks.emit('on_broadcast')(message);
+  }
   n_tree(n: THREE.Object3D = this.world.scene): II {
     const children = n.children.map(v => this.n_tree(v))
     return {

@@ -235,14 +235,13 @@ export default class Layout {
   }
 
   on_unmount() {
-    for (const c of this._components) c.on_unmount?.();
+    if (this.global_visible && !this.parent)
+      this.invoke_all_on_hide();
 
     const { leave } = this.data.actions || {};
     leave && actor.act(this, leave);
-
-    for (const item of this.children)
-      item.on_unmount()
-
+    for (const c of this._components) c.on_unmount?.();
+    for (const item of this.children) item.on_unmount()
     this._mesh.removeFromParent();
   }
 
@@ -478,7 +477,6 @@ export default class Layout {
     const { visible } = this;
     if (visible !== mesh.visible) {
       mesh.visible = visible;
-      console.log('invoke_visible_callback')
       this.invoke_visible_callback();
     }
 

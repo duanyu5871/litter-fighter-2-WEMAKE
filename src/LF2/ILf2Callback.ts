@@ -31,4 +31,5 @@ export interface ILf2Callback {
   on_difficulty_changed?(value: Defines.Difficulty, prev: Defines.Difficulty): void;
 
   on_layouts_loaded?(): void;
+  on_broadcast?(message: string): void;
 }
