@@ -201,7 +201,6 @@ export default class GamePrepareLogic extends LayoutComponent {
         empty_player_slots.shift()?.player?.set_is_com(true);
         num -= 1;
       }
-      debugger
       this._fsm.use(GamePrepareState.ComputerCharacterSel);
     } else {
       this._fsm.use(GamePrepareState.GameSetting);

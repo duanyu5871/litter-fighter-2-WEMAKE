@@ -68,10 +68,7 @@ export default class PlayerCharacterHead extends LayoutComponent {
       this.player?.callbacks.add({
         on_joined_changed: () => this.handle_changed(),
         on_character_changed: () => this.handle_changed(),
-        on_random_character_changed: () => {
-          debugger
-          this.handle_changed()
-        },
+        on_random_character_changed: () => this.handle_changed(),
       }),
       this.gpl?.callbacks.add({
         on_countdown: (seconds) => {
