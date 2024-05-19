@@ -56,6 +56,7 @@ export function make_bg_data(full_str: string, datIndex?: IDatIndex): IBgData | 
     is_bg_data: true,
     is_base_data: true
   };
+  ret.base.name = ret.base.name.replace(/_/g, ' ');
   const blocks = take_blocks(full_str, 'layer:', 'layer_end', v => full_str = v);
   let min_y = Defines.OLD_SCREEN_HEIGHT;
   for (const block_str of blocks) {

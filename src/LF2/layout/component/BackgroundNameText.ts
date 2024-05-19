@@ -1,21 +1,21 @@
 import Invoker from '../../base/Invoker';
-import { IStageInfo } from '../../defines';
+import { IBgData } from '../../defines';
 import { Defines } from '../../defines/defines';
 import Layout from '../Layout';
 import { LayoutComponent } from "./LayoutComponent";
 import Text from './Text';
 
-export default class StageNameText extends LayoutComponent {
-  private _stage: IStageInfo = Defines.VOID_STAGE;
+export default class BackgroundNameText extends LayoutComponent {
+  private _background: IBgData = Defines.VOID_BG;
 
-  get stages(): IStageInfo[] {
-    return this.lf2.stages.data?.filter(v => v.id !== Defines.VOID_STAGE.id) || []
+  get backgrounds(): IBgData[] {
+    return this.lf2.datas.backgrounds?.filter(v => v.id !== Defines.VOID_BG.id) || []
   }
-  get stage(): IStageInfo {
-    return this._stage
+  get background(): IBgData {
+    return this._background
   }
   get text(): string {
-    return this._stage.name;
+    return this._background.base.name;
   }
   protected _mesh: Text;
   protected _unmount_jobs = new Invoker();
@@ -23,8 +23,8 @@ export default class StageNameText extends LayoutComponent {
   constructor(layout: Layout, f_name: string) {
     super(layout, f_name)
     this._mesh = new Text(this.lf2)
-      .set_center(0.5, 0.5)
-      .set_name(StageNameText.name)
+      .set_center(0, 0.5)
+      .set_name(BackgroundNameText.name)
       .set_style({
         fill_style: '#9b9bff',
         font: '14px Arial',
@@ -34,14 +34,14 @@ export default class StageNameText extends LayoutComponent {
   override on_mount(): void {
     super.on_mount();
 
-    this._stage = this.stages[0] ?? Defines.VOID_STAGE;
+    this._background = this.backgrounds[0] ?? Defines.VOID_STAGE;
 
     this.layout.sprite.add(this._mesh);
     this._unmount_jobs.add(
       this.lf2.callbacks.add({
         on_broadcast: (v) => {
-          if (v === Defines.BuiltIn.Broadcast.SwitchStage)
-            this.switch_stage()
+          if (v === Defines.BuiltIn.Broadcast.SwitchBackground)
+            this.switch_background()
         }
       }),
       () => this._mesh.removeFromParent(),
@@ -55,12 +55,11 @@ export default class StageNameText extends LayoutComponent {
     this._unmount_jobs.clear();
   }
 
-  protected switch_stage() {
-    const { stages } = this;
-    const state_id = this.stage.id;
-    const idx = (stages.findIndex(v => v.id === state_id) + 1) % stages.length;
-    this._stage = stages[idx];
-
+  protected switch_background() {
+    const { backgrounds } = this;
+    const background_id = this.background.id;
+    const idx = (backgrounds.findIndex(v => v.id === background_id) + 1) % backgrounds.length;
+    this._background = backgrounds[idx];
     this._mesh.set_text(this.text).apply()
   }
 

@@ -17,7 +17,7 @@ export default class DifficultyText extends LayoutComponent {
       .set_center(0, 0.5)
       .set_name(DifficultyText.name)
       .set_style({
-        fill_style: 'white',
+        fill_style: '#9b9bff',
         font: '14px Arial',
       })
   }

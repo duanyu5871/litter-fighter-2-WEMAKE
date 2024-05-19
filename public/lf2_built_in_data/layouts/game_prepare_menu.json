@@ -67,7 +67,15 @@
           "broadcast(switch_background)",
           "sound(ok)"
         ]
-      }
+      },
+      "items": [
+        {
+          "pos": "157,12,0.1",
+          "component": [
+            "background_name_text()"
+          ]
+        }
+      ]
     },
     {
       "id": "btn_switch_stage",

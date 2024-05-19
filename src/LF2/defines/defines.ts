@@ -320,6 +320,7 @@ export namespace Defines {
       UpdateRandom = 'update_random',
       StartGame = 'start_game',
       SwitchStage = 'switch_stage',
+      SwitchBackground = 'switch_background'
     }
   }
 } 
