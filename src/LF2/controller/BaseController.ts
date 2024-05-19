@@ -45,6 +45,9 @@ export class BaseController {
 
   private _time = 1;
   private _disposers = new Set<() => void>();
+  private _player_id: string;
+  get player_id(): string { return this._player_id }
+  
   get time() { return this._time }
   set disposer(f: (() => void)[] | (() => void)) {
     if (Array.isArray(f))
@@ -152,7 +155,8 @@ export class BaseController {
   }
 
   private _key_list: string | undefined = void 0;
-  constructor(character: Character) {
+  constructor(player_id: string, character: Character) {
+    this._player_id = player_id;
     this.character = character;
   }
 

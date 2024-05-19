@@ -318,6 +318,8 @@ export namespace Defines {
     export enum Broadcast {
       ResetGPL = 'reset_gpl',
       UpdateRandom = 'update_random',
+      StartGame = 'start_game',
+      SwitchStage = 'switch_stage',
     }
   }
 } 

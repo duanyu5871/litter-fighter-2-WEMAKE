@@ -3,7 +3,10 @@ import FSM, { IReadonlyFSM } from "../../base/FSM";
 import Invoker from "../../base/Invoker";
 import NoEmitCallbacks from "../../base/NoEmitCallbacks";
 import { TKeyName } from "../../controller/BaseController";
+import { BotEnemyChaser } from "../../controller/BotEnemyChaser";
+import LocalHuman from "../../controller/LocalHuman";
 import { Defines } from "../../defines/defines";
+import Character from "../../entity/Character";
 import { filter } from "../../utils/container_help";
 import { map_no_void } from "../../utils/container_help/map_no_void";
 import { random_get } from "../../utils/math/random";
@@ -43,6 +46,8 @@ export default class GamePrepareLogic extends LayoutComponent {
             this._fsm.use(GamePrepareState.PlayerCharacterSel)
           if (m === Defines.BuiltIn.Broadcast.UpdateRandom)
             this.update_random();
+          if (m === Defines.BuiltIn.Broadcast.StartGame)
+            this.start_game();
         },
       })
     )
@@ -228,5 +233,22 @@ export default class GamePrepareLogic extends LayoutComponent {
     } else {
       this._fsm.use(GamePrepareState.GameSetting);
     }
+  }
+
+  start_game() {
+    for (const { player } of this.player_slots) {
+      if (!player?.joined) continue;
+      const character_data = this.lf2.datas.find_character(player.character)
+      if (!character_data) continue;
+      const character = new Character(this.world, character_data)
+      character.name = player.is_com ? 'com' : player.name;
+      character.team = player.team
+      character.facing = Math.random() < 0.5 ? 1 : -1
+      character.controller = player.is_com ?
+        new BotEnemyChaser(player.id, character) :
+        new LocalHuman(player.id, character, player.keys)
+      character.attach();
+    }
+    this.lf2.set_layout('normal_playing')
   }
 }

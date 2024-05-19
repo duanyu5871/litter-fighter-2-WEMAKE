@@ -444,7 +444,15 @@ export default class Layout {
     } while (n)
     return true;
   }
-
+  get global_disabled(): boolean {
+    let n: Layout | undefined = this;
+    do {
+      if (n.disabled)
+        return true;
+      n = n.parent;
+    } while (n)
+    return false;
+  }
   invoke_all_on_show() {
     this.on_show();
     for (const child of this.children) {

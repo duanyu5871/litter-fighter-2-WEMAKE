@@ -115,8 +115,8 @@ export class World {
   add_game_objs(...objs: FrameAnimater[]) {
     for (const e of objs) {
       if (Character.is(e) && LocalHuman.is(e.controller)) {
-        this.player_characters.set(e.controller.which, e);
-        this._callbacks.emit('on_player_character_add')(e.controller.which)
+        this.player_characters.set(e.controller.player_id, e);
+        this._callbacks.emit('on_player_character_add')(e.controller.player_id)
       }
 
       if (Entity.is(e)) {
@@ -134,8 +134,8 @@ export class World {
   del_game_objs(...objs: FrameAnimater[]) {
     for (const e of objs) {
       if (Character.is(e) && LocalHuman.is(e.controller)) {
-        this.player_characters.delete(e.controller.which);
-        this._callbacks.emit('on_player_character_del')(e.controller.which)
+        this.player_characters.delete(e.controller.player_id);
+        this._callbacks.emit('on_player_character_del')(e.controller.player_id)
       }
       if (Entity.is(e)) {
         this.entities.delete(e)

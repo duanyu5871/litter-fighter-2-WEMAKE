@@ -17,8 +17,8 @@ import { IStageInfo } from "./LF2/defines/IStageInfo";
 import { IStagePhaseInfo } from "./LF2/defines/IStagePhaseInfo";
 import { Defines } from './LF2/defines/defines';
 const bot_controllers: { [x in string]?: (e: Character) => BaseController } = {
-  'OFF': (e: Character) => new InvalidController(e),
-  'enemy chaser': (e: Character) => new BotEnemyChaser(e)
+  'OFF': (e: Character) => new InvalidController('', e),
+  'enemy chaser': (e: Character) => new BotEnemyChaser('', e)
 }
 
 export function BackgroundRow(props: { lf2?: LF2; visible?: boolean }) {

@@ -12,6 +12,7 @@ import create_pictures from './loader/create_pictures';
 import { factory } from './Factory';
 import { is_str, is_positive } from './utils/type_check';
 import { dispose_mesh } from './layout/utils/dispose_mesh';
+import LF2 from './LF2';
 
 export const EMPTY_PIECE: ITexturePieceInfo = {
   tex: 0, x: 0, y: 0, w: 0, h: 0, cx: 0, cy: 0,
@@ -62,6 +63,7 @@ export class FrameAnimater<
   protected _next_frame: TNextFrame | undefined = void 0;
   protected _prev_frame: F = EMPTY_FRAME_INFO as F;
 
+  get lf2(): LF2 { return this.world.lf2 }
   get facing() { return this._facing; }
   set facing(v: TFace) {
     if (this._facing === v) { return; }

@@ -20,7 +20,7 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
   static is = (v: any): v is Character => v?.is_character === true;
   readonly is_character = true
   protected _callbacks = new Callbacks<ICharacterCallbacks>()
-  protected _controller: BaseController = new InvalidController(this);
+  protected _controller: BaseController = new InvalidController('', this);
   get callbacks(): NoEmitCallbacks<ICharacterCallbacks> {
     return this._callbacks
   }

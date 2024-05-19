@@ -8,7 +8,6 @@ export default class LocalHuman extends BaseController implements IKeyboardCallb
   readonly is_local_human = true;
   static is = (v: any): v is LocalHuman => v?.is_local_human === true
 
-  readonly which: string;
   private _key_code_map: TKeyCodeMap = {};
   private _code_key_map: TCodeKeyMap = {};
 
@@ -31,9 +30,8 @@ export default class LocalHuman extends BaseController implements IKeyboardCallb
     this.start(key);
   };
 
-  constructor(which: string, character: Character, kc?: TKeyCodeMap) {
-    super(character);
-    this.which = which;
+  constructor(player_id: string, character: Character, kc?: TKeyCodeMap) {
+    super(player_id, character);
     if (kc) this.set_key_code_map(kc);
     this.disposer = character.world.lf2.keyboard.callback.add(this)
   }

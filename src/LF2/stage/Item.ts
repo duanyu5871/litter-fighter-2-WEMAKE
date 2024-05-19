@@ -99,7 +99,7 @@ export default class Item {
     if (Character.is(e)) {
       e.team = this.stage.enemy_team;
       e.name = e.data.base.name;
-      e.controller = new BotEnemyChaser(e);
+      e.controller = new BotEnemyChaser('', e);
     } else if (Weapon.is(e) && !is_num(y)) {
       e.position.y = 450;
     }

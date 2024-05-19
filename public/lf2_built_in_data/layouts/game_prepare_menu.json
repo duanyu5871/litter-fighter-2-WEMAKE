@@ -16,7 +16,7 @@
       ],
       "actions": {
         "click": [
-          "alert(btn_start)",
+          "broadcast(start_game)",
           "sound(ok)"
         ]
       }
@@ -54,7 +54,7 @@
       }
     },
     {
-      "id": "btn_game_bg",
+      "id": "btn_switch_bg",
       "img": "sprite/MENU_CLIP3.png",
       "rect": "330,254,279,22",
       "opacity": "f:opacity_hover(0,1)",
@@ -64,33 +64,44 @@
       ],
       "actions": {
         "click": [
-          "alert(btn_game_bg)",
+          "broadcast(switch_background)",
           "sound(ok)"
         ]
       }
     },
     {
-      "id": "btn_game_stage_bg",
+      "id": "btn_switch_stage",
       "img": "sprite/MENU_CLIP3.png",
       "rect": "330,363,279,22",
-      "visible": true,
-      "pos": "12,84"
-    },
-    {
-      "id": "btn_game_stage_hover",
-      "img": "sprite/MENU_CLIP3.png",
-      "rect": "330,332,279,22",
-      "opacity": "f:opacity_hover(0,1)",
       "pos": "12,84",
-      "component": [
-        "reachable_layout(menu)"
-      ],
-      "actions": {
-        "click": [
-          "alert(btn_game_stage_hover)",
-          "sound(ok)"
-        ]
-      }
+      "visible": false,
+      "disabled": true,
+      "items": [
+        {
+          "id": "btn_switch_stage_hover",
+          "img": "sprite/MENU_CLIP3.png",
+          "rect": "330,332,279,22",
+          "opacity": "f:opacity_hover(0,1)",
+          "pos": "0,0",
+          "component": [
+            "reachable_layout(menu)"
+          ],
+          "actions": {
+            "click": [
+              "broadcast(switch_stage)",
+              "sound(ok)"
+            ]
+          },
+          "items": [
+            {
+              "pos": "186,12,0.1",
+              "component": [
+                "stage_name_text()"
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "btn_switch_difficulty",

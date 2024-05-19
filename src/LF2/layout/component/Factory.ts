@@ -17,6 +17,7 @@ import StageTitleShow from "./StageTitleShow";
 import { ReachableLayoutGroup, ReachableLayout } from "./ReachableLayoutGroup";
 import LaunchPageLogic from "./LaunchPageLogic";
 import DifficultyText from "./DifficultyText";
+import StageNameText from "./StageNameText";
 class Factory {
   private _component_map = new Map<string, typeof LayoutComponent>([
     ['game_loading_file_name', LoadingFileNameDisplayer],
@@ -33,7 +34,8 @@ class Factory {
     ['reachable_layout_group', ReachableLayoutGroup],
     ['reachable_layout', ReachableLayout],
     ['launch_page', LaunchPageLogic],
-    ['difficulty_text', DifficultyText]
+    ['difficulty_text', DifficultyText],
+    ['stage_name_text', StageNameText]
   ])
   create(layout: Layout, components: ILayoutInfo['component']): LayoutComponent[] {
     if (!components?.length) return [];

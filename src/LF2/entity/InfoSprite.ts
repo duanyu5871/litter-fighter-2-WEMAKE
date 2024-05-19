@@ -97,7 +97,12 @@ export class InfoSprite implements IEntityCallbacks {
   }
 
   protected on_mount(entity: Entity) {
-    if (Character.is(this.entity) && LocalHuman.is(this.entity.controller)) {
+    if (
+      Character.is(this.entity) &&
+      this.entity.world.lf2.player_infos.has(
+        this.entity.controller.player_id
+      )
+    ) {
       entity.world.scene.add(this.bars_node);
       entity.world.scene.add(this.mesh);
     }
