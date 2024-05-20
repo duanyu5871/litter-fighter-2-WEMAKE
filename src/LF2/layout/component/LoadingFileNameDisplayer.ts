@@ -1,73 +1,41 @@
-import * as THREE from 'three';
-import { ILf2Callback } from '../../ILf2Callback';
+import Text from '../../3d/Text';
+import Invoker from '../../base/Invoker';
+import Layout from '../Layout';
 import { LayoutComponent } from './LayoutComponent';
-import { TextBuilder } from './TextBuilder';
-import { dispose_mesh } from '../utils/dispose_mesh';
 
 export default class LoadingFileNameDisplayer extends LayoutComponent {
-  protected _mesh?: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial>;
+  protected _unmount_job = new Invoker();
+  protected _mesh: Text;
 
-  protected _lf2_listener: ILf2Callback = {
-    on_loading_content: (content: string): void => {
-      this.update_sprite(content);
-    },
-    on_loading_end: (): void => {
-      this.update_sprite('');
-      this.lf2.set_layout('main_page')
-    }
+  constructor(layout: Layout, f_name: string) {
+    super(layout, f_name);
+    this._mesh = new Text(this.lf2)
+      .set_pos(0, 0, 1)
+      .set_center(...this.layout.center)
+      .set_style(this.layout.style)
+      .set_name(LoadingFileNameDisplayer.name)
+      .apply()
   }
 
   override on_mount(): void {
     super.on_mount();
-    this.lf2.callbacks.add(this._lf2_listener)
+    this.layout.sprite.add(this._mesh)
+    this._unmount_job.add(
+      () => this._mesh?.removeFromParent(),
+      this.lf2.callbacks.add({
+        on_loading_content: content => this.update_sprite(content),
+        on_loading_end: (): void => this.lf2.set_layout('main_page')
+      })
+    )
   }
-
+  
   override on_unmount(): void {
     super.on_unmount();
-    this.lf2.callbacks.del(this._lf2_listener)
-    if (this._mesh) {
-      dispose_mesh(this._mesh);
-      delete this._mesh;
-    }
+    this._unmount_job.invoke();
+    this._unmount_job.clear();
   }
 
-  protected async update_sprite(loading_content: string) {
-    if (!this.mounted) return;
-
-    if (!loading_content) {
-      if (this._mesh) {
-        dispose_mesh(this._mesh);
-        delete this._mesh;
-      }
-      return;
-    }
-    if (!this.layout.sprite) return;
-
-    const text_builder = TextBuilder
-      .get(this.lf2)
-      .center(...this.layout.center)
-      .text(loading_content)
-      .style(this.layout.style)
-
-    if (!this._mesh) {
-      const mesh = await text_builder.build_mesh();
-      if (!this.mounted || this._mesh) {
-        mesh.geometry.dispose();
-        mesh.material.map?.dispose();
-        return;
-      }
-      this.layout.sprite.mesh.add(this._mesh = mesh);
-      this._mesh.name = LoadingFileNameDisplayer.name;
-    } else {
-      const [geo, tex] = await text_builder.build();
-      if (!this.mounted || !this._mesh) {
-        geo.dispose();
-        tex.dispose();
-        return;
-      }
-      this._mesh.geometry = geo;
-      this._mesh.material.map = tex;
-      this._mesh.material.needsUpdate = true;
-    }
+  protected async update_sprite(text: string) {
+    this._mesh.set_text(text).apply();
   }
 }
