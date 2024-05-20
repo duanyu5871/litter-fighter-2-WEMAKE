@@ -7,6 +7,8 @@ export default class LaunchPageLogic extends LayoutComponent {
   get entry_name(): string { return this.args[0] || '' }
   protected _layouts_loaded: boolean = false;
   protected _dispose_jobs = new Invoker();
+  protected _offset_x = new SequenceAnimation(1000, new NumberAnimation(0, 40, 500));
+  protected _scale = new SequenceAnimation(1000, new NumberAnimation(0, 2, 250), new NumberAnimation(2, 1, 250));
   protected _opacity = new SequenceAnimation(1000, new NumberAnimation(0, 1, 500), 1000);
   get bearface() { return this.layout.find_layout('bearface') }
   get yeonface() { return this.layout.find_layout('yeonface') }
@@ -14,6 +16,7 @@ export default class LaunchPageLogic extends LayoutComponent {
   protected on_layouts_loaded() {
     this._layouts_loaded = true;
   }
+  // `The gameplay, art, and sound are all from "Little Fighter 2", modified by "Gim"`;
   override init(...args: string[]): this {
     super.init(...args);
     this._dispose_jobs.add(
@@ -30,8 +33,8 @@ export default class LaunchPageLogic extends LayoutComponent {
   override on_mount(): void {
     super.on_mount();
     const { bearface, yeonface } = this;
-    if (bearface) bearface.opacity = 0;
-    if (yeonface) yeonface.opacity = 0;
+    if (bearface) { bearface.opacity = 0; }
+    if (yeonface) { yeonface.opacity = 0; }
   }
 
   on_render(dt: number): void {
@@ -40,6 +43,13 @@ export default class LaunchPageLogic extends LayoutComponent {
       bearface?.sprite.mesh.material.map?.image &&
       yeonface?.sprite.mesh.material.map?.image
     ) {
+      const scale = this._scale.update(dt);
+      const offset_x = this._offset_x.update(dt)
+      bearface.sprite.x = 397 - offset_x
+      yeonface.sprite.x = 397 + offset_x
+      bearface.sprite.mesh.scale.set(scale, scale, scale);
+      yeonface.sprite.mesh.scale.set(scale, scale, scale);
+
       bearface.opacity = yeonface.opacity = this._opacity.update(dt)
       if (this._opacity.is_finish) {
         if (this._opacity.reverse) {
