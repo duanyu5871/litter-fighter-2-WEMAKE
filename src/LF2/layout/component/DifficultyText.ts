@@ -2,7 +2,7 @@ import Invoker from '../../base/Invoker';
 import { Defines } from '../../defines/defines';
 import Layout from '../Layout';
 import { LayoutComponent } from "./LayoutComponent";
-import Text from './Text';
+import Text from '../../3d/Text';
 
 export default class DifficultyText extends LayoutComponent {
   protected get text(): string {

@@ -1,6 +1,5 @@
-import LF2 from "../../LF2";
-import IStyle from "../../defines/IStyle";
-import { is_fun } from "../../utils/type_check";
+import LF2 from "../LF2";
+import IStyle from "../defines/IStyle";
 import Sprite from "./Sprite";
 
 export default class Text extends Sprite {

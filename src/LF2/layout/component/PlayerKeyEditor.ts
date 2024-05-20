@@ -1,73 +1,77 @@
-import { IPlayerInfoCallback } from '../../PlayerInfo';
+import Text from '../../3d/Text';
+import Invoker from '../../base/Invoker';
 import { TKeyName } from '../../controller/BaseController';
+import { IKeyboardCallback, KeyEvent } from '../../dom/Keyboard';
+import { IPointingsCallback } from '../../dom/Pointings';
+import Layout from '../Layout';
 import { LayoutComponent } from './LayoutComponent';
-import Sprite from './Sprite';
-import { TextBuilder } from './TextBuilder';
 
-export default class PlayerKeyEditor extends LayoutComponent implements IPlayerInfoCallback {
-  protected get _which() { return this.args[0] || '' };
-  protected get _key_name() { return this.args[1] || '' };
-  protected _sprite?: Sprite;
+export default class PlayerKeyEditor extends LayoutComponent {
+  get player_id() { return this.args[0] || '' };
+  get key_name() { return this.args[1] || '' };
+  get player() { return this.lf2.player_infos.get(this.player_id) }
+  protected _sprite: Text;
+  protected _unmount_jobs = new Invoker();
+
+  constructor(layout: Layout, f_name: string) {
+    super(layout, f_name);
+    const [w, h] = this.layout.size
+    this._sprite = new Text(this.lf2)
+      .set_pos(Math.ceil(w / 2), Math.ceil(-h / 2), 1)
+      .set_center(0.5, 0.5)
+      .set_name(PlayerKeyEditor.name)
+      .set_style({ font: '16px Arial' })
+      .apply()
+  }
 
   override on_click() {
-    window.addEventListener('pointerdown', this._on_cancel, { once: true });
-    window.addEventListener('keydown', this._on_keydown, { once: true });
-    this._sprite?.set_rgb(16 / 255, 32 / 255, 108 / 255)
+    this.lf2.pointings.callback.add(this.r)
+    this.lf2.keyboard.callback.add(this.l)
+    this._sprite.set_style(v => ({ ...v, fill_style: 'rgb(16,32,108)' })).apply()
     return true;
   }
 
   override on_mount() {
     super.on_mount();
+    this.layout.sprite.add(this._sprite);
+    this._unmount_jobs.add(
+      this.player?.callbacks.add({
+        on_key_changed: () => this.update_sprite()
+      }),
+      () => this._sprite.removeFromParent(),
+      () => this._on_cancel()
+    )
     this.update_sprite();
-    this.lf2.player_infos.get(this._which!)?.callbacks.add(this);
   }
 
   override on_unmount(): void {
     super.on_unmount();
-    this._on_cancel();
-    this._sprite?.dispose();
-    this.lf2.player_infos.get(this._which!)?.callbacks.del(this);
+    this._unmount_jobs.invoke();
+    this._unmount_jobs.clear();
   }
 
-  on_key_changed(name: TKeyName, value: string) {
-    this.update_sprite();
+  private l: IKeyboardCallback = {
+    on_key_down: e => {
+      if ('escape' !== e.key.toLowerCase())
+        this.player?.set_key(this.key_name, e.key).save();
+      this._on_cancel();
+    }
   }
 
-  private _on_keydown = (e: KeyboardEvent) => {
-    if ('escape' === e.key.toLowerCase())
-      return this._on_cancel();
-    if (this._which === void 0) return;
-    if (this._key_name === void 0) return;
-    this.lf2.player_infos.get(this._which)?.set_key(this._key_name, e.key).save();
-    this._on_cancel();
+  private r: IPointingsCallback = {
+    on_pointer_down: () => this._on_cancel()
   }
 
   private _on_cancel = () => {
-    window.removeEventListener('keydown', this._on_keydown);
-    window.removeEventListener('pointerdown', this._on_cancel);
-    this._sprite?.set_rgb(1, 1, 1)
+    this.lf2.keyboard.callback.del(this.l);
+    this.lf2.pointings.callback.del(this.r);
+    this._sprite?.set_style(v => ({ ...v, fill_style: 'white' })).apply()
   }
 
   async update_sprite() {
-    this._sprite?.removeFromParent();
-    this._sprite = void 0;
-    if (this._which === void 0) return;
-    if (this._key_name === void 0) return;
-    if (!this.layout.sprite) return;
-    const player_info = this.lf2.player_infos.get(this._which);
-    if (player_info) {
-      const keycode = player_info.keys[this._key_name as TKeyName];
-      const sprite = this._sprite = new Sprite(
-        await TextBuilder.get(this.lf2)
-          .text(keycode ?? '')
-          .style({ font: '16px Arial' })
-          .build_pic()
-      )
-        .set_pos(this.layout.size[0] / 2, -this.layout.size[1] / 2)
-        .set_name(PlayerKeyEditor.name);
-      this.layout.sprite.mesh.add(sprite.mesh);
-
-    }
+    const { player } = this;
+    if (!player) return;
+    const keycode = player.keys[this.key_name as TKeyName];
+    this._sprite.set_text(keycode ?? '').apply()
   }
 }
-

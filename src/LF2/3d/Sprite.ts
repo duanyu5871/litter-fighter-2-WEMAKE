@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-import { is_num } from '../../utils/type_check';
-import { empty_texture } from '../../loader/loader';
-import { dispose_mesh } from '../utils/dispose_mesh';
+import { is_num } from '../utils/type_check';
+import { empty_texture } from '../loader/loader';
+import { dispose_mesh } from '../layout/utils/dispose_mesh';
 export interface ISpriteInfo {
   w: number;
   h: number;

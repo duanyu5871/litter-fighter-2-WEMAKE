@@ -5,7 +5,7 @@ import SequenceAnimation from '../../animation/SequenceAnimation';
 import { is_str } from "../../utils/type_check";
 import read_nums from "../utils/read_nums";
 import { LayoutComponent } from "./LayoutComponent";
-import Sprite from "./Sprite";
+import Sprite from "../../3d/Sprite";
 
 export default class StageTitleShow extends LayoutComponent {
   protected _unmount_jobs = new Invoker();

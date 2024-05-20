@@ -12,7 +12,7 @@ import { is_arr, is_bool, is_fun, is_num, is_str } from '../utils/type_check';
 import actor from './action/Actor';
 import factory from './component/Factory';
 import { LayoutComponent } from './component/LayoutComponent';
-import Sprite, { ISpriteInfo } from './component/Sprite';
+import Sprite, { ISpriteInfo } from '../3d/Sprite';
 import type { ILayoutInfo } from './ILayoutInfo';
 import read_nums from './utils/read_nums';
 

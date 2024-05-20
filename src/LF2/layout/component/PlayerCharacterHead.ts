@@ -3,7 +3,7 @@ import { Defines } from '../../defines/defines';
 import Invoker from "../../base/Invoker";
 import GamePrepareLogic, { GamePrepareState } from "./GamePrepareLogic";
 import { LayoutComponent } from "./LayoutComponent";
-import Sprite from "./Sprite";
+import Sprite from "../../3d/Sprite";
 
 
 /**

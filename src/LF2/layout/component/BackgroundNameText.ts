@@ -3,7 +3,7 @@ import { IBgData } from '../../defines';
 import { Defines } from '../../defines/defines';
 import Layout from '../Layout';
 import { LayoutComponent } from "./LayoutComponent";
-import Text from './Text';
+import Text from '../../3d/Text';
 
 export default class BackgroundNameText extends LayoutComponent {
   private _background: IBgData = Defines.VOID_BG;

@@ -3,7 +3,7 @@ import { IStageInfo } from '../../defines';
 import { Defines } from '../../defines/defines';
 import Layout from '../Layout';
 import { LayoutComponent } from "./LayoutComponent";
-import Text from './Text';
+import Text from '../../3d/Text';
 
 export default class StageNameText extends LayoutComponent {
   private _stage: IStageInfo = Defines.VOID_STAGE;

@@ -2,7 +2,7 @@ import { SineAnimation } from '../../animation/SineAnimation';
 import Invoker from '../../base/Invoker';
 import Layout from '../Layout';
 import { LayoutComponent } from "./LayoutComponent";
-import Text from './Text';
+import Text from '../../3d/Text';
 
 /**
  * 显示玩家角色选择的角色名称
