@@ -178,7 +178,7 @@
           ],
           "actions": {
             "click": [
-              "alert(一个网页，你点关闭就是)",
+              "exit()",
               "sound(ok)"
             ]
           }

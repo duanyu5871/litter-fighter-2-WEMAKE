@@ -59,6 +59,8 @@
       "rect": "330,254,279,22",
       "opacity": "f:opacity_hover(0,1)",
       "pos": "12,84",
+      "visible": false,
+      "disabled": true,
       "component": [
         "reachable_layout(menu)"
       ],
@@ -82,8 +84,7 @@
       "img": "sprite/MENU_CLIP3.png",
       "rect": "330,363,279,22",
       "pos": "12,84",
-      "visible": false,
-      "disabled": true,
+
       "items": [
         {
           "id": "btn_switch_stage_hover",

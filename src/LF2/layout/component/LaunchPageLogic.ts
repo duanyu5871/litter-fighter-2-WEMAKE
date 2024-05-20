@@ -16,7 +16,8 @@ export default class LaunchPageLogic extends LayoutComponent {
   protected on_layouts_loaded() {
     this._layouts_loaded = true;
   }
-  // `The gameplay, art, and sound are all from "Little Fighter 2", modified by "Gim"`;
+  // The gameplay, art, and sound are all from "Litter Fighter 2", which was created by Marti Wong and Starsky Wong in 1992.
+  // Remake by Gim
   override init(...args: string[]): this {
     super.init(...args);
     this._dispose_jobs.add(

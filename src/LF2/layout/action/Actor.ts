@@ -14,7 +14,8 @@ class Actor {
     ['pop', ({ lf2 }) => lf2.pop_layout()],
     ['broadcast', ({ lf2 }, message) => message && lf2.broadcast(message)],
     ['sound', ({ lf2 }, name) => name && lf2.sounds.play_preset(name)],
-    ['switch_difficulty', ({ lf2 }) => lf2.switch_difficulty()]
+    ['switch_difficulty', ({ lf2 }) => lf2.switch_difficulty()],
+    ['exit', () => { if (window.confirm('确定退出?')) window.close() }]
   ])
   act(layout: Layout, actions: string | string[]): void {
     if (!actions.length) return;

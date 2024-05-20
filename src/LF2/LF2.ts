@@ -11,7 +11,7 @@ import { new_id, new_team } from './base/new_id';
 import Layer from './bg/Layer';
 import { KEY_NAME_LIST } from './controller/BaseController';
 import LocalHuman from "./controller/LocalHuman";
-import { ICharacterData, IWeaponData, TFace } from './defines';
+import { IBgData, ICharacterData, IWeaponData, TFace } from './defines';
 import { IStageInfo } from "./defines/IStageInfo";
 import { Defines } from './defines/defines';
 import { IKeyboardCallback, KeyEvent, Keyboard } from './dom/Keyboard';
@@ -504,23 +504,27 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     const old = this.player_characters.get(player_id);
     if (old) this.world.del_game_objs(old)
   }
-  change_bg(id: string) {
-    const data = this.datas.find_background(id);
-    if (!data) return;
-    this.world.stage = new Stage(this.world, data)
+  change_bg(bg_info: IBgData): void
+  change_bg(bg_id: string): void
+  change_bg(arg: IBgData | string | undefined) {
+    if (!arg) return;
+    if (is_str(arg))
+      arg = this.datas.find_background(arg);
+    if (!arg) return;
+    this.world.stage = new Stage(this.world, arg)
   }
   remove_bg = () => this.remove_stage();
 
   change_stage(stage_info: IStageInfo): void
   change_stage(stage_id: string): void
-  change_stage(arg_0: IStageInfo | string | undefined): void {
-    if (arg_0 === this.world.stage.data)
+  change_stage(arg: IStageInfo | string | undefined): void {
+    if (arg === this.world.stage.data)
       return;
-    if (is_str(arg_0))
-      arg_0 = this.stages.data?.find(v => v.id === arg_0)
-    if (!arg_0)
+    if (is_str(arg))
+      arg = this.stages.data?.find(v => v.id === arg)
+    if (!arg)
       return;
-    this.world.stage = new Stage(this.world, arg_0)
+    this.world.stage = new Stage(this.world, arg)
   }
   remove_stage() {
     this.world.stage = new Stage(this.world, Defines.VOID_STAGE)

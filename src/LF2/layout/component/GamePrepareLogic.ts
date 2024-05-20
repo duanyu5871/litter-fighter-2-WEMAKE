@@ -10,8 +10,10 @@ import Character from "../../entity/Character";
 import { filter } from "../../utils/container_help";
 import { map_no_void } from "../../utils/container_help/map_no_void";
 import { random_get } from "../../utils/math/random";
+import BackgroundNameText from "./BackgroundNameText";
 import CharacterSelLogic from "./CharacterSelLogic";
 import { LayoutComponent } from "./LayoutComponent";
+import StageNameText from "./StageNameText";
 
 export interface IGamePrepareLogicCallback {
   on_countdown?(v: number): void;
@@ -249,6 +251,11 @@ export default class GamePrepareLogic extends LayoutComponent {
         new LocalHuman(player.id, character, player.keys)
       character.attach();
     }
-    this.lf2.set_layout('normal_playing')
+    this.lf2.set_layout('normal_playing');
+
+    const stage_name_text = this.layout.root.search_component(StageNameText, v => v.layout.global_visible && !v.layout.global_disabled)
+    const background_name_text = this.layout.root.search_component(BackgroundNameText, v => v.layout.global_visible && !v.layout.global_disabled)
+    if (stage_name_text) this.lf2.change_stage(stage_name_text.stage);
+    if (background_name_text) this.lf2.change_bg(background_name_text.background);
   }
 }
