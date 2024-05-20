@@ -1,6 +1,6 @@
 {
-  "name": "角色选择页",
-  "id": "user_selection",
+  "name": "闯关模式准备页",
+  "id": "stage_mode_prepare_page",
   "bg_color": "rgb(0, 0, 0)",
   "key_press_actions": [
     [
@@ -17,7 +17,7 @@
     "player_c_sel_logic(6)",
     "player_c_sel_logic(7)",
     "player_c_sel_logic(8)",
-    "game_prepare_logic()",
+    "game_prepare_logic(stage_mode)",
     "reachable_layout_group(com_num,lr,how_many_computer)",
     "reachable_layout_group(menu,ud,menu)"
   ],

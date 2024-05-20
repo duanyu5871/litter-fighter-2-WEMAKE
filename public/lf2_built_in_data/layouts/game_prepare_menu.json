@@ -59,8 +59,6 @@
       "rect": "330,254,279,22",
       "opacity": "f:opacity_hover(0,1)",
       "pos": "12,84",
-      "visible": false,
-      "disabled": true,
       "component": [
         "reachable_layout(menu)"
       ],

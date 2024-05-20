@@ -99,8 +99,13 @@ export default class CharacterSelLogic extends LayoutComponent {
         this.team = Defines.Teams[next_idx];
       }
     } else if (this.joined) {
-      if ('a' === key) { // 按攻击确认角色
+      if ('a' === key) { // 按攻击确认角色,
         this.character_decided = true;
+        // 闯关模式下，直接确定为第一队
+        if (this.gpl?.game_mode === 'stage_mode') {
+          this.team = Defines.TeamEnum.Team_1;
+          this.team_decided = true;
+        }
       } else if ('j' === key) { // 按跳跃取消加入
         this.joined = false;
       } else if ('D' === key || 'U' === key) { // 按上或下,回到随机

@@ -1,0 +1,391 @@
+{
+  "name": "对战模式准备页",
+  "id": "vs_mode_prepare_page",
+  "bg_color": "rgb(0, 0, 0)",
+  "key_press_actions": [
+    [
+      "escape",
+      "goto(entry)"
+    ]
+  ],
+  "component": [
+    "player_c_sel_logic(1)",
+    "player_c_sel_logic(2)",
+    "player_c_sel_logic(3)",
+    "player_c_sel_logic(4)",
+    "player_c_sel_logic(5)",
+    "player_c_sel_logic(6)",
+    "player_c_sel_logic(7)",
+    "player_c_sel_logic(8)",
+    "game_prepare_logic(vs_mode)",
+    "reachable_layout_group(com_num,lr,how_many_computer)",
+    "reachable_layout_group(menu,ud,menu)"
+  ],
+  "items": [
+    {
+      "id": "frame",
+      "img": "sprite/CHARMENU.png",
+      "center": "0.5, 0.5",
+      "pos": "397, 225",
+      "items": [
+        {
+          "id": "players_row_1",
+          "pos": "0,-192",
+          "items": [
+            {
+              "id": "player_layout_0",
+              "pos": "-246,0",
+              "items": [
+                {
+                  "id": "player_c_head",
+                  "size": "120, 120",
+                  "pos": "0, 0",
+                  "component": "player_c_head(1)"
+                },
+                {
+                  "id": "player_name",
+                  "size": "120, 19",
+                  "pos": "0, 123",
+                  "component": "player_name(1)"
+                },
+                {
+                  "id": "player_c_name",
+                  "size": "120, 19",
+                  "pos": "0, 145",
+                  "component": "player_c_name(1)"
+                },
+                {
+                  "id": "player_team",
+                  "size": "120, 19",
+                  "pos": "0, 167",
+                  "component": "player_t_name(1)"
+                }
+              ]
+            },
+            {
+              "id": "player_layout_1",
+              "pos": "-93,0",
+              "items": [
+                {
+                  "id": "player_c_head",
+                  "size": "120, 120",
+                  "pos": "0, 0",
+                  "component": "player_c_head(2)"
+                },
+                {
+                  "id": "player_name",
+                  "size": "120, 19",
+                  "pos": "0, 123",
+                  "component": "player_name(2)"
+                },
+                {
+                  "id": "player_c_name",
+                  "size": "120, 19",
+                  "pos": "0, 145",
+                  "component": "player_c_name(2)"
+                },
+                {
+                  "id": "player_team",
+                  "size": "120, 19",
+                  "pos": "0, 167",
+                  "component": "player_t_name(2)"
+                }
+              ]
+            },
+            {
+              "id": "player_layout_2",
+              "pos": "60,0",
+              "items": [
+                {
+                  "id": "player_c_head",
+                  "size": "120, 120",
+                  "pos": "0, 0",
+                  "component": "player_c_head(3)"
+                },
+                {
+                  "id": "player_name",
+                  "size": "120, 19",
+                  "pos": "0, 123",
+                  "component": "player_name(3)"
+                },
+                {
+                  "id": "player_c_name",
+                  "size": "120, 19",
+                  "pos": "0, 145",
+                  "component": "player_c_name(3)"
+                },
+                {
+                  "id": "player_team",
+                  "size": "120, 19",
+                  "pos": "0, 167",
+                  "component": "player_t_name(3)"
+                }
+              ]
+            },
+            {
+              "id": "player_layout_3",
+              "pos": "213,0",
+              "items": [
+                {
+                  "id": "player_c_head",
+                  "size": "120, 120",
+                  "pos": "0, 0",
+                  "component": "player_c_head(4)"
+                },
+                {
+                  "id": "player_name",
+                  "size": "120, 19",
+                  "pos": "0, 123",
+                  "component": "player_name(4)"
+                },
+                {
+                  "id": "player_c_name",
+                  "size": "120, 19",
+                  "pos": "0, 145",
+                  "component": "player_c_name(4)"
+                },
+                {
+                  "id": "player_team",
+                  "size": "120, 19",
+                  "pos": "0, 167",
+                  "component": "player_t_name(4)"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "players_row_2",
+          "pos": "0,5",
+          "items": [
+            {
+              "id": "player_layout_4",
+              "pos": "-246,0",
+              "items": [
+                {
+                  "id": "player_c_head",
+                  "size": "120, 120",
+                  "pos": "0, 0",
+                  "component": "player_c_head(5)"
+                },
+                {
+                  "id": "player_name",
+                  "size": "120, 19",
+                  "pos": "0, 123",
+                  "component": "player_name(5)"
+                },
+                {
+                  "id": "player_c_name",
+                  "size": "120, 19",
+                  "pos": "0, 145",
+                  "component": "player_c_name(5)"
+                },
+                {
+                  "id": "player_team",
+                  "size": "120, 19",
+                  "pos": "0, 167",
+                  "component": "player_t_name(5)"
+                }
+              ]
+            },
+            {
+              "id": "player_layout_5",
+              "pos": "-93,0",
+              "items": [
+                {
+                  "id": "player_c_head",
+                  "size": "120, 120",
+                  "pos": "0, 0",
+                  "component": "player_c_head(6)"
+                },
+                {
+                  "id": "player_name",
+                  "size": "120, 19",
+                  "pos": "0, 123",
+                  "component": "player_name(6)"
+                },
+                {
+                  "id": "player_c_name",
+                  "size": "120, 19",
+                  "pos": "0, 145",
+                  "component": "player_c_name(6)"
+                },
+                {
+                  "id": "player_team",
+                  "size": "120, 19",
+                  "pos": "0, 167",
+                  "component": "player_t_name(6)"
+                }
+              ]
+            },
+            {
+              "id": "player_layout_6",
+              "pos": "60,0",
+              "items": [
+                {
+                  "id": "player_c_head",
+                  "size": "120, 120",
+                  "pos": "0, 0",
+                  "component": "player_c_head(7)"
+                },
+                {
+                  "id": "player_name",
+                  "size": "120, 19",
+                  "pos": "0, 123",
+                  "component": "player_name(7)"
+                },
+                {
+                  "id": "player_c_name",
+                  "size": "120, 19",
+                  "pos": "0, 145",
+                  "component": "player_c_name(7)"
+                },
+                {
+                  "id": "player_team",
+                  "size": "120, 19",
+                  "pos": "0, 167",
+                  "component": "player_t_name(7)"
+                }
+              ]
+            },
+            {
+              "id": "player_layout_7",
+              "pos": "213,0",
+              "items": [
+                {
+                  "id": "player_c_head",
+                  "size": "120, 120",
+                  "pos": "0, 0",
+                  "component": "player_c_head(8)"
+                },
+                {
+                  "id": "player_name",
+                  "size": "120, 19",
+                  "pos": "0, 123",
+                  "component": "player_name(8)"
+                },
+                {
+                  "id": "player_c_name",
+                  "size": "120, 19",
+                  "pos": "0, 145",
+                  "component": "player_c_name(8)"
+                },
+                {
+                  "id": "player_team",
+                  "size": "120, 19",
+                  "pos": "0, 167",
+                  "component": "player_t_name(8)"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "how_many_computer",
+      "img": "sprite/CMC.png",
+      "pos": "204,175,1",
+      "visible": false,
+      "items": [
+        {
+          "txt": "0",
+          "opacity": "f:opacity_hover(0.5,1)",
+          "pos": "30,70",
+          "component": [
+            "com_number(0)",
+            "reachable_layout(com_num)"
+          ],
+          "style": {
+            "font": "16px Arial"
+          }
+        },
+        {
+          "txt": "1",
+          "opacity": "f:opacity_hover(0.5,1)",
+          "pos": "70,70",
+          "component": [
+            "com_number(1)",
+            "reachable_layout(com_num)"
+          ],
+          "style": {
+            "font": "16px Arial"
+          }
+        },
+        {
+          "txt": "2",
+          "opacity": "f:opacity_hover(0.5,1)",
+          "pos": "110,70",
+          "component": [
+            "com_number(2)",
+            "reachable_layout(com_num)"
+          ],
+          "style": {
+            "font": "16px Arial"
+          }
+        },
+        {
+          "txt": "3",
+          "opacity": "f:opacity_hover(0.5,1)",
+          "pos": "150,70",
+          "component": [
+            "com_number(3)",
+            "reachable_layout(com_num)"
+          ],
+          "style": {
+            "font": "16px Arial"
+          }
+        },
+        {
+          "txt": "4",
+          "opacity": "f:opacity_hover(0.5,1)",
+          "pos": "190,70",
+          "component": [
+            "com_number(4)",
+            "reachable_layout(com_num)"
+          ],
+          "style": {
+            "font": "16px Arial"
+          }
+        },
+        {
+          "txt": "5",
+          "opacity": "f:opacity_hover(0.5,1)",
+          "pos": "230,70",
+          "component": [
+            "com_number(5)",
+            "reachable_layout(com_num)"
+          ],
+          "style": {
+            "font": "16px Arial"
+          }
+        },
+        {
+          "txt": "6",
+          "opacity": "f:opacity_hover(0.5,1)",
+          "pos": "270,70",
+          "component": [
+            "com_number(6)",
+            "reachable_layout(com_num)"
+          ],
+          "style": {
+            "font": "16px Arial"
+          }
+        },
+        {
+          "txt": "7",
+          "opacity": "f:opacity_hover(0.5,1)",
+          "pos": "310,70",
+          "component": [
+            "com_number(7)",
+            "reachable_layout(com_num)"
+          ],
+          "style": {
+            "font": "16px Arial"
+          }
+        }
+      ]
+    },
+    "layouts/game_prepare_menu.json"
+  ]
+}

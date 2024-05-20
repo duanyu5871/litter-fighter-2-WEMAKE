@@ -27,6 +27,7 @@ export enum GamePrepareState {
 }
 
 export default class GamePrepareLogic extends LayoutComponent {
+  get game_mode(): string { return this.args[0] }
   protected _unmount_jobs = new Invoker();
   protected _callbacks = new Callbacks<IGamePrepareLogicCallback>();
   get state(): GamePrepareState { return this._fsm.state?.key!; }
@@ -36,6 +37,19 @@ export default class GamePrepareLogic extends LayoutComponent {
 
   override on_mount(): void {
     super.on_mount();
+
+
+    const btn_switch_bg = this.layout.find_layout('btn_switch_bg')
+    const btn_switch_stage = this.layout.find_layout('btn_switch_stage')
+
+    if (this.game_mode === 'vs_mode') {
+      btn_switch_bg?.set_visible(true).set_disabled(false)
+      btn_switch_stage?.set_visible(false).set_disabled(true)
+    } else if (this.game_mode === 'stage_mode') {
+      btn_switch_stage?.set_visible(true).set_disabled(false)
+      btn_switch_bg?.set_visible(false).set_disabled(true)
+    }
+
     this._fsm.use(GamePrepareState.PlayerCharacterSel)
     this._unmount_jobs.add(
       ...map_no_void(this.lf2.player_infos.values(), v => v.callbacks.add({
@@ -150,7 +164,10 @@ export default class GamePrepareLogic extends LayoutComponent {
         const { player_slots } = this
         const joined_num = filter(player_slots, v => v.joined).length;
         const not_joined_num = filter(player_slots, v => !v.joined).length;
-        this._min_com_num = joined_num <= 1 ? 1 : 0; // TODO: 闯关只需1人
+
+        if (this.game_mode !== 'stage_mode')
+          this._min_com_num = joined_num <= 1 ? 1 : 0; 
+
         this._max_com_num = not_joined_num;
         this.layout.find_layout('how_many_computer')?.set_visible(true)
       },

@@ -60,6 +60,15 @@ export function make_stage_info_list(full_str: string): IStageInfo[] | void {
     }
     stage_info.name = (match_hash_end(head) ?? stage_info.id).replace(/stage/gi, '').trim();
     const nid = Number(stage_info.id);
+
+    if (nid % 10 === 0) {
+      stage_info.is_starting = true;
+      stage_info.starting_name = '' + (1 + nid / 10);
+    }
+    if (nid === 50) {
+      stage_info.starting_name = 'Survival';
+    }
+
     if (nid <= 4) {
       stage_info.bg = '2';
       if (nid < 4) stage_info.next = '' + (nid + 1)

@@ -26,4 +26,14 @@ export interface IStageInfo {
    * @type {?string}
    */
   act_of_goto_next?: string;
+
+  /**
+   * 是否为首个小关
+   */
+  is_starting?: boolean;
+
+  /**
+   * 起点名称
+   */
+  starting_name?: string;
 }

@@ -1,9 +1,10 @@
 [
   "layouts/entry_page.json",
   "layouts/main_page.json",
-  "layouts/user_selection.json",
+  "layouts/vs_mode_prepare_page.json",
   "layouts/loading_page.json",
   "layouts/ctrl_settings_page.json",
   "layouts/stage_playing.json",
-  "layouts/normal_playing.json"
+  "layouts/normal_playing.json",
+  "layouts/stage_mode_prepare_page.json"
 ]
