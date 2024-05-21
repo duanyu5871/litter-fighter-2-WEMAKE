@@ -76,7 +76,7 @@ body {
 
 button {
   min-height: 25px;
-  min-width: 25px;
+  min-width: max(fit-content,25px);
   user-select: none;
 }
 

@@ -128,6 +128,35 @@
   box-sizing: border-box;
 }
 
+.mobile.landscape .debug_ui_top,
+.mobile.landscape .debug_ui_bottom {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.mobile.landscape .debug_ui_left {
+  padding-left: 20px;
+}
+
+.mobile.landscape .debug_ui_right {
+  padding-right: 20px;
+}
+
+.mobile.portrait .debug_ui_top {
+  padding-top: 20px;
+}
+
+.mobile.portrait .debug_ui_bottom {
+  padding-bottom: 20px;
+}
+
+.mobile.portrait .debug_ui_left,
+.mobile.portrait .debug_ui_right {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+
 .settings_row {
   display: flex;
   gap: 5px;
