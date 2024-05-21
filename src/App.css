@@ -36,10 +36,8 @@
 
 .game_overlay_ui {
   position: absolute;
-  left: 0px;
-  right: 0px;
-  top: 0px;
-  bottom: 0px;
+  right: 10px;
+  top: 10px;
   pointer-events: none;
   user-select: none;
   display: flex;

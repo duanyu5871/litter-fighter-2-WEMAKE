@@ -1,3 +1,4 @@
+import { Factory } from '../Factory';
 import { EMPTY_FRAME_INFO } from '../FrameAnimater';
 import type { ICube, World } from '../World';
 import type { IBallData, IBallFrameInfo, IBallInfo, IBdyInfo, IItrInfo, IOpointInfo } from '../defines';
@@ -58,3 +59,4 @@ export default class Ball extends Entity<IBallFrameInfo, IBallInfo, IBallData> {
     }
   }
 }
+Factory.inst.set('ball', (...args) => new Ball(...args));

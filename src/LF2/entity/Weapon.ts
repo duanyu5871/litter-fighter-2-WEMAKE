@@ -1,3 +1,4 @@
+import { Factory } from "../Factory";
 import { GONE_FRAME_INFO } from "../FrameAnimater";
 import { ICube, World } from "../World";
 import { IBdyInfo, IFrameInfo, IItrInfo, IOpointInfo, IWeaponData, IWeaponInfo } from "../defines";
@@ -121,3 +122,4 @@ export default class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData>
     this.update_sprite_position()
   }
 }
+Factory.inst.set('weapon', (...args) => new Weapon(...args));

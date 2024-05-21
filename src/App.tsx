@@ -7,6 +7,7 @@ import Select from './Component/Select';
 import Show from './Component/Show';
 import Titled from './Component/Titled';
 import { ToggleButton } from "./Component/ToggleButton";
+import { ToggleImgButton } from './Component/ToggleImgButton';
 import EditorView from './EditorView';
 import LF2 from './LF2/LF2';
 import { BaseController } from './LF2/controller/BaseController';
@@ -227,16 +228,17 @@ function App() {
         <div className='game_overlay' ref={_overlay_ref} style={{ display: !game_overlay ? 'none' : void 0 }} />
       </div>
       <div className='game_overlay_ui'>
-        <img src={muted ? require('./btn_1_0.png') : require('./btn_0_3.png')} alt='' onClick={() => {
-          const sounds = lf2_ref.current?.sounds
-          sounds?.set_muted(!sounds.muted())
-        }} />
-        <Show show={lf2_ref.current?.is_cheat_enabled(Defines.Cheats.GIM_INK)}>
-          <img src={control_panel_visible ? require('./btn_1_3.png') : require('./btn_1_2.png')} alt='' onClick={() => set_control_panel_visible(v => !v)} />
+        <ToggleImgButton
+          checked={muted}
+          onClick={() => lf2_ref.current?.sounds?.set_muted(!lf2_ref.current.sounds.muted())}
+          src={[require('./btn_0_3.png'), require('./btn_1_0.png')]} />
+        <Show show={lf2_ref.current?.is_cheat_enabled(Defines.Cheats.GIM_INK) || true}>
+          <ToggleImgButton
+            checked={control_panel_visible}
+            onClick={() => set_control_panel_visible(v => !v)}
+            src={[require('./btn_1_2.png'), require('./btn_1_3.png')]} />
         </Show>
       </div>
-
-
       <Show.Div className={'debug_ui debug_ui_' + debug_ui_pos} show={control_panel_visible}>
         <div className='settings_row'>
           <Button onClick={on_click_download_zip}>下载数据包</Button>

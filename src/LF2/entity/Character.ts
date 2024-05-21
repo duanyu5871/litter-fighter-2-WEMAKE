@@ -1,4 +1,5 @@
 import { Warn } from '../../Log';
+import { Factory } from '../Factory';
 import type { World } from '../World';
 import { ICube } from '../World';
 import Callbacks from '../base/Callbacks';
@@ -332,3 +333,4 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
     this._callbacks.emit('on_dead')(this);
   }
 }
+Factory.inst.set('character', (...args) => new Character(...args));

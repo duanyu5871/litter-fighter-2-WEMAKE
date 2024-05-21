@@ -12,6 +12,7 @@ import create_pictures from './loader/create_pictures';
 import { constructor_name } from './utils/constructor_name';
 import { random_get } from './utils/math/random';
 import { is_positive, is_str } from './utils/type_check';
+import { Factory } from './Factory';
 
 export const EMPTY_PIECE: ITexturePieceInfo = {
   tex: 0, x: 0, y: 0, w: 0, h: 0, cx: 0, cy: 0,
@@ -260,3 +261,5 @@ export default class FrameAnimater<
       pic.texture.dispose();
   }
 }
+
+Factory.inst.set('frame_animater', (...args) => new FrameAnimater(...args));
