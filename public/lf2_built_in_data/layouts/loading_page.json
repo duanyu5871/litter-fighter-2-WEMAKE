@@ -11,15 +11,17 @@
   "items": [
     {
       "id": "bg_wait",
-      "img": "sprite/MENU_WAIT.png",
+      "img": "sprite/MENU_WAIT_SHORT.png",
       "size": "794, 0"
     },
     {
       "id": "txt_loading_content",
       "component": "game_loading_file_name()",
-      "pos": "769, 59",
-      "center": "1, 0",
-      "font": "18px Arial"
+      "pos": "514, 59",
+      "center": "0, 0",
+      "style": {
+        "font": "16px Arial"
+      }
     },
     {
       "id": "stage_transition",

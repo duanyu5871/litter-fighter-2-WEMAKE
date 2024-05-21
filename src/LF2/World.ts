@@ -525,7 +525,10 @@ export class World {
 
   private _paused = false;
   get paused() { return this._paused }
-  set paused(v: boolean) {
+  set paused(v: boolean) { this.set_paused(v) }
+
+  set_paused(v: boolean) {
+    if (this._paused === v) return;
     this._paused = v;
     if (v && this._update_timer_id)
       this.stop_update();

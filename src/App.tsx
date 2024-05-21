@@ -45,6 +45,8 @@ function App() {
   const [paused, set_paused] = useState(false);
   const [muted, set_muted] = useState(false);
   const [volume, set_volume] = useState(1);
+  const [bg_id, set_bg_id] = useState(Defines.VOID_BG.id);
+
 
   const [render_size_mode, set_render_size_mode] = useLocalString<'fixed' | 'fill' | 'cover' | 'contain'>('render_size_mode', 'contain');
   const [render_fixed_scale, set_render_fixed_scale] = useLocalNumber<number>('render_fixed_scale', 1);
@@ -114,7 +116,11 @@ function App() {
     set_cheat_1(lf2_ref.current.is_cheat_enabled(Defines.Cheats.LF2_NET));
     set_cheat_2(lf2_ref.current.is_cheat_enabled(Defines.Cheats.HERO_FT));
     set_cheat_3(lf2_ref.current.is_cheat_enabled(Defines.Cheats.GIM_INK));
+    set_bg_id(lf2_ref.current.world.stage.bg.id)
     const c = [
+      lf2_ref.current.world.callbacks.add({
+        on_stage_change: (s) => set_bg_id(s.bg.id),
+      }),
       lf2_ref.current.callbacks.add({
         on_layout_changed: v => { set_layout(v?.id ?? '') },
         on_loading_start: () => set_loading(true),
@@ -228,15 +234,21 @@ function App() {
         <div className='game_overlay' ref={_overlay_ref} style={{ display: !game_overlay ? 'none' : void 0 }} />
       </div>
       <div className='game_overlay_ui'>
-        <ToggleImgButton
-          checked={muted}
-          onClick={() => lf2_ref.current?.sounds?.set_muted(!lf2_ref.current.sounds.muted())}
-          src={[require('./btn_0_3.png'), require('./btn_1_0.png')]} />
         <Show show={lf2_ref.current?.is_cheat_enabled(Defines.Cheats.GIM_INK) || true}>
           <ToggleImgButton
             checked={control_panel_visible}
             onClick={() => set_control_panel_visible(v => !v)}
             src={[require('./btn_1_2.png'), require('./btn_1_3.png')]} />
+        </Show>
+        <ToggleImgButton
+          checked={muted}
+          onClick={() => lf2_ref.current?.sounds?.set_muted(!muted)}
+          src={[require('./btn_0_3.png'), require('./btn_1_0.png')]} />
+        <Show show={bg_id !== Defines.VOID_BG.id}>
+          <ToggleImgButton
+            checked={paused}
+            onClick={() => set_paused(!paused)}
+            src={[require('./btn_2_1.png'), require('./btn_2_2.png')]} />
         </Show>
       </div>
       <Show.Div className={'debug_ui debug_ui_' + debug_ui_pos} show={control_panel_visible}>
