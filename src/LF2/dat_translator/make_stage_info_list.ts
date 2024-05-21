@@ -1,7 +1,6 @@
-import { arithmetic_progression } from '../utils/math/arithmetic_progression';
+import { IStageInfo } from "../defines/IStageInfo";
 import { IStageObjectInfo } from "../defines/IStageObjectInfo";
 import { IStagePhaseInfo } from "../defines/IStagePhaseInfo";
-import { IStageInfo } from "../defines/IStageInfo";
 import { match_colon_value } from '../utils/string_parser/match_colon_value';
 import { match_hash_end } from '../utils/string_parser/match_hash_end';
 import { take_blocks } from '../utils/string_parser/take_blocks';

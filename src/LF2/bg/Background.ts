@@ -1,11 +1,10 @@
 import * as THREE from 'three';
+import { World } from '../World';
 import { IBgData } from '../defines';
 import { IBgLayerInfo } from "../defines/IBgLayerInfo";
 import { Defines } from '../defines/defines';
-import { World } from '../World';
-import { TPicture, err_pic_info } from '../loader/loader';
+import { TPicture } from '../loader/loader';
 import Layer from './Layer';
-import { Warn } from '@fimagine/logger';
 
 export interface ILayerUserData {
   x: number;

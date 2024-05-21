@@ -1,10 +1,9 @@
-import NumberAnimation from '../../animation/NumberAnimation';
+import Text from '../../3d/Text';
 import { SineAnimation } from '../../animation/SineAnimation';
 import Invoker from '../../base/Invoker';
 import Layout from '../Layout';
 import GamePrepareLogic, { GamePrepareState } from './GamePrepareLogic';
 import { LayoutComponent } from "./LayoutComponent";
-import Text from '../../3d/Text';
 
 /**
  * 显示玩家名称

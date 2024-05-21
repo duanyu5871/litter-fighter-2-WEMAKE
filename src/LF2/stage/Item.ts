@@ -1,17 +1,15 @@
-import { is_num, is_str } from "../utils/type_check";
-import { IStageObjectInfo } from "../defines/IStageObjectInfo";
-import { Defines } from "../defines/defines";
-import { random_get, random_take, random_in } from "../utils/math/random";
 import { Factory } from "../Factory";
 import FrameAnimater from "../FrameAnimater";
 import { BotEnemyChaser } from "../controller/BotEnemyChaser";
+import { IGameObjData } from "../defines";
+import { IStageObjectInfo } from "../defines/IStageObjectInfo";
+import { Defines } from "../defines/defines";
 import Character from "../entity/Character";
 import ICharacterCallbacks from '../entity/ICharacterCallbacks';
-import Entity from "../entity/Entity";
-import Weapon from "../entity/Weapon";
-import Stage from "./Stage";
-import { IGameObjData } from "../defines";
 import { is_character, is_entity, is_weapon } from "../entity/type_check";
+import { random_in, random_take } from "../utils/math/random";
+import { is_num, is_str } from "../utils/type_check";
+import Stage from "./Stage";
 
 export default class Item {
   readonly is_enemies: boolean = false;

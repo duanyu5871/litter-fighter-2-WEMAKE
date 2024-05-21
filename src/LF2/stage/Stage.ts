@@ -1,21 +1,20 @@
 import { Warn } from "../../Log";
-import { find } from "../utils/container_help/find";
-import { is_num } from "../utils/type_check";
-import { IBgData } from "../defines";
-import { IStageInfo } from "../defines/IStageInfo";
-import { IStageObjectInfo } from "../defines/IStageObjectInfo";
-import { IStagePhaseInfo } from "../defines/IStagePhaseInfo";
-import { Defines } from "../defines/defines";
-import { random_in } from "../utils/math/random";
 import type { World } from "../World";
 import Callbacks from "../base/Callbacks";
 import NoEmitCallbacks from "../base/NoEmitCallbacks";
 import { new_team } from "../base/new_id";
 import Background from "../bg/Background";
-import Character from "../entity/Character";
+import { IBgData } from "../defines";
+import { IStageInfo } from "../defines/IStageInfo";
+import { IStageObjectInfo } from "../defines/IStageObjectInfo";
+import { IStagePhaseInfo } from "../defines/IStagePhaseInfo";
+import { Defines } from "../defines/defines";
+import { is_character } from "../entity/type_check";
+import { find } from "../utils/container_help/find";
+import { random_in } from "../utils/math/random";
+import { is_num } from "../utils/type_check";
 import type IStageCallbacks from "./IStageCallbacks";
 import Item from "./Item";
-import { is_character } from "../entity/type_check";
 
 export default class Stage {
   readonly world: World;

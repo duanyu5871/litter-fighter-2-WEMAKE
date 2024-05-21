@@ -1,9 +1,7 @@
-import { INextFrame } from "../defines";
-import { Defines } from '../defines/defines';
 import FrameAnimater from '../FrameAnimater';
 import Expression from '../base/Expression';
-import Character from '../entity/Character';
-import Entity from '../entity/Entity';
+import { INextFrame } from "../defines";
+import { Defines } from '../defines/defines';
 import { is_character, is_entity } from "../entity/type_check";
 
 export function cook_next_frame(i: INextFrame | INextFrame[]): void {

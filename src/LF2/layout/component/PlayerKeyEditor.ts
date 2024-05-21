@@ -1,7 +1,7 @@
 import Text from '../../3d/Text';
 import Invoker from '../../base/Invoker';
 import { TKeyName } from '../../controller/BaseController';
-import { IKeyboardCallback, KeyEvent } from '../../dom/Keyboard';
+import { IKeyboardCallback } from '../../dom/Keyboard';
 import { IPointingsCallback } from '../../dom/Pointings';
 import Layout from '../Layout';
 import { LayoutComponent } from './LayoutComponent';
