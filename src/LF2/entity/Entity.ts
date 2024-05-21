@@ -595,7 +595,9 @@ export default class Entity<
     const a_team = this.team;
     const b_team = other.team;
     if (a_team && a_team === b_team) return true;
-    return this.belong(other) || other.belong(this);
+
+
+    return this.belong(other) || other.belong(this) || (!!this.emitter && this.emitter === other.emitter);
   }
 }
 

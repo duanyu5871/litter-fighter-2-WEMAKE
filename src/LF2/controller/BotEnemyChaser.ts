@@ -21,21 +21,21 @@ export class BotEnemyChaser extends BaseController {
   update_nearest() {
     const c = this.character;
     for (const e of c.world.entities) {
-      if (is_character(e)) {
-        if (e.team !== c.team) {
-          if (!this._nearest_enemy) {
-            this._nearest_enemy = e;
-          } else if (this.manhattan_to(e) > this.manhattan_to(this._nearest_enemy)) {
-            this._nearest_enemy = e;
-          }
-        } else {
-          if (!this._nearest_friend) {
-            this._nearest_friend = e;
-          } else if (this.manhattan_to(e) > this.manhattan_to(this._nearest_friend)) {
-            this._nearest_friend = e;
-          }
+      if (!is_character(e)) continue;
+      if (!e.team || !c.team || e.team !== c.team) {
+        if (!this._nearest_enemy) {
+          this._nearest_enemy = e;
+        } else if (this.manhattan_to(e) > this.manhattan_to(this._nearest_enemy)) {
+          this._nearest_enemy = e;
+        }
+      } else {
+        if (!this._nearest_friend) {
+          this._nearest_friend = e;
+        } else if (this.manhattan_to(e) > this.manhattan_to(this._nearest_friend)) {
+          this._nearest_friend = e;
         }
       }
+
     }
   }
   update() {
