@@ -166,7 +166,7 @@ export default class GamePrepareLogic extends LayoutComponent {
         const not_joined_num = filter(player_slots, v => !v.joined).length;
 
         if (this.game_mode !== 'stage_mode')
-          this._min_com_num = joined_num <= 1 ? 1 : 0; 
+          this._min_com_num = joined_num <= 1 ? 1 : 0;
 
         this._max_com_num = not_joined_num;
         this.layout.find_layout('how_many_computer')?.set_visible(true)
@@ -268,11 +268,15 @@ export default class GamePrepareLogic extends LayoutComponent {
         new LocalHuman(player.id, character, player.keys)
       character.attach();
     }
-    this.lf2.set_layout('normal_playing');
 
     const stage_name_text = this.layout.root.search_component(StageNameText, v => v.layout.global_visible && !v.layout.global_disabled)
     const background_name_text = this.layout.root.search_component(BackgroundNameText, v => v.layout.global_visible && !v.layout.global_disabled)
     if (stage_name_text) this.lf2.change_stage(stage_name_text.stage);
     if (background_name_text) this.lf2.change_bg(background_name_text.background);
+
+    if (stage_name_text)
+      this.lf2.set_layout('stage_mode_page');
+    else
+      this.lf2.set_layout('vs_mode_page');
   }
 }

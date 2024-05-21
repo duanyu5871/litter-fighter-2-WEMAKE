@@ -1,6 +1,9 @@
 {
-  "name": "对战模式",
-  "id": "normal_playing",
+  "name": "对战模式页",
+  "id": "vs_mode_page",
+  "component": [
+    "vs_mode_logic()"
+  ],
   "key_press_actions": [
     [
       "escape",

@@ -4,7 +4,7 @@
   "layouts/vs_mode_prepare_page.json",
   "layouts/loading_page.json",
   "layouts/ctrl_settings_page.json",
-  "layouts/stage_playing.json",
-  "layouts/normal_playing.json",
+  "layouts/stage_mode_page.json",
+  "layouts/vs_mode_page.json",
   "layouts/stage_mode_prepare_page.json"
 ]

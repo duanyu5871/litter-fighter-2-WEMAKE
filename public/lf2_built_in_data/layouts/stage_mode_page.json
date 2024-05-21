@@ -1,6 +1,6 @@
 {
   "name": "闯关模式",
-  "id": "stage_playing",
+  "id": "stage_mode_page",
   "values": {
     "char_num_img": "sprite/MENU_CLIP3.png",
     "state_name_prefix": "488, 400, 176, 41",
@@ -18,6 +18,7 @@
     "stage_clear": "12, 552, 386, 40"
   },
   "component": [
+    "vs_mode_logic()",
     "stage_title_show()"
   ],
   "key_press_actions": [

@@ -247,6 +247,7 @@ function App() {
         <Show show={bg_id !== Defines.VOID_BG.id}>
           <ToggleImgButton
             checked={paused}
+            shortcut='F1'
             onClick={() => set_paused(!paused)}
             src={[require('./btn_2_1.png'), require('./btn_2_2.png')]} />
         </Show>

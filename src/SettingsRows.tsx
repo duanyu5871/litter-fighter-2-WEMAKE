@@ -109,9 +109,9 @@ export default function SettingsRows(props: ISettingsRowsProps) {
       lf2.change_stage(stage_id);
 
     if (bg_id !== Defines.VOID_BG.id && type === 'bg')
-      lf2.set_layout('normal_playing')
+      lf2.set_layout('vs_mode_page')
     else if (stage_id !== Defines.VOID_STAGE.id && type === 'stage')
-      lf2.set_layout('stage_playing')
+      lf2.set_layout('stage_mode_page')
     else
       lf2.set_layout('main_page')
   }, [lf2, bg_id, stage_id, type, stage_list]);

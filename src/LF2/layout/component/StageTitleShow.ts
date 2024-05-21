@@ -51,7 +51,7 @@ export default class StageTitleShow extends LayoutComponent {
   protected async on_stage_change(stage: Stage) {
     this.depose_all_mesh();
 
-    const [, main_num, sub_num] = stage.name.match(/stage (\d*)-(\d*)/) ?? [];
+    const [, main_num, sub_num] = stage.name.match(/stage (\d*)-(\d*)/) ?? stage.name.match(/(\d*)-(\d*)/) ?? [];
     if (!is_str(main_num) || !is_str(sub_num)) return;
     const sps = [
       await this.create_sp(`state_name_prefix`),
