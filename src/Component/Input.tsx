@@ -1,7 +1,6 @@
-import { useMemo } from "react";
-import { WTF } from "./_no_id";
-
+import './Input.css'
 export function Input(props: React.InputHTMLAttributes<HTMLInputElement>) {
-  const default_id = useMemo(() => 'no_id_input_' + WTF.new_id(), []);
-  return <input id={default_id} title={default_id} {...props} />;
+  const { className, ...remain_props } = props;
+  const root_className = className ? `lf2ui_input ${className}` : 'lf2ui_input'
+  return <input {...remain_props} className={root_className} />;
 }

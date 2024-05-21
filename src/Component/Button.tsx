@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useForwardedRef } from "./useForwardedRef";
 import { TShortcut, useShortcut } from "./useShortcut";
 import device from 'current-device';
+import './Button.css'
 const is_desktop = device.desktop();
 
 export interface IButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -17,6 +18,7 @@ export const Button = React.forwardRef<HTMLButtonElement, IButtonProps>(
       shortcutTarget = window,
       show_shortcut = true,
       children,
+      className,
       ...remain_props
     } = props;
     useShortcut(shortcut, props.disabled, ref_btn, shortcutTarget);
@@ -30,9 +32,9 @@ export const Button = React.forwardRef<HTMLButtonElement, IButtonProps>(
     }, [])
 
     const _show_shortcut = show_shortcut ?? has_keyboard
-
+    const root_className = className ? `lf2ui_button ${className}` : 'lf2ui_button'
     return (
-      <button {...remain_props} type={props.type ?? 'button'} ref={on_ref} >
+      <button className={root_className} {...remain_props} type={props.type ?? 'button'} ref={on_ref} >
         {children}
         {shortcut && _show_shortcut ? `(${shortcut})` : null}
       </button>

@@ -31,20 +31,29 @@ function App() {
   const lf2_ref = useRef<LF2 | undefined>();
 
   const [editor_open, set_editor_open] = useState(false);
-  const [game_overlay, set_game_overlay] = useLocalBoolean('game_overlay', true);
+  const [game_overlay, set_game_overlay] = useLocalBoolean('game_overlay', false);
   const [showing_panel, set_showing_panel] = useLocalString<'stage' | 'bg' | 'weapon' | 'bot' | 'player' | ''>('showing_panel', '');
-  const [control_panel_visible, set_control_panel_visible] = useLocalBoolean('control_panel', true);
+  const [control_panel_visible, set_control_panel_visible] = useLocalBoolean('control_panel', false);
 
   const [cheat_1, set_cheat_1] = useLocalBoolean('cheat_1', false);
   const [cheat_2, set_cheat_2] = useLocalBoolean('cheat_2', false);
   const [cheat_3, set_cheat_3] = useLocalBoolean('cheat_3', false);
-
 
   const [loading, set_loading] = useState(false);
   const [loaded, set_loaded] = useState(false);
   const [paused, set_paused] = useState(false);
   const [muted, set_muted] = useState(false);
   const [volume, set_volume] = useState(1);
+
+  const [render_size_mode, set_render_size_mode] = useLocalString<'fixed' | 'fill' | 'cover' | 'contain'>('render_size_mode', 'contain');
+  const [render_fixed_scale, set_render_fixed_scale] = useLocalNumber<number>('render_fixed_scale', 1);
+  const [custom_render_fixed_scale, set_custom_render_fixed_scale] = useLocalNumber<number>('custom_render_fixed_scale', 1);
+  const [v_align, set_v_align] = useLocalNumber<number>('v_align', 0.5);
+  const [h_align, set_h_align] = useLocalNumber<number>('h_align', 0.5);
+  const [custom_h_align, set_custom_h_align] = useLocalNumber<number>('custom_h_align', 0.5);
+  const [custom_v_align, set_custom_v_align] = useLocalNumber<number>('custom_v_align', 0.5);
+  const [debug_ui_pos, set_debug_ui_pos] = useLocalString<'left' | 'right' | 'top' | 'bottom'>('debug_ui_pos', 'bottom');
+  const [touch_pad_on, set_touch_pad_on] = useLocalString<string>('touch_pad_on', '');
 
   useEffect(() => {
     const lf2 = lf2_ref.current;
@@ -154,15 +163,6 @@ function App() {
       .catch(e => Log.print('on_click_load_builtin', e))
   }
 
-  const [render_size_mode, set_render_size_mode] = useLocalString<'fixed' | 'fill' | 'cover' | 'contain'>('render_size_mode', 'fixed');
-  const [render_fixed_scale, set_render_fixed_scale] = useLocalNumber<number>('render_fixed_scale', 1);
-  const [custom_render_fixed_scale, set_custom_render_fixed_scale] = useLocalNumber<number>('custom_render_fixed_scale', 1);
-  const [v_align, set_v_align] = useLocalNumber<number>('v_align', 0.5);
-  const [h_align, set_h_align] = useLocalNumber<number>('h_align', 0.5);
-  const [custom_h_align, set_custom_h_align] = useLocalNumber<number>('custom_h_align', 0.5);
-  const [custom_v_align, set_custom_v_align] = useLocalNumber<number>('custom_v_align', 0.5);
-  const [debug_ui_pos, set_debug_ui_pos] = useLocalString<'left' | 'right' | 'top' | 'bottom'>('debug_ui_pos', 'top');
-  const [touch_pad_on, set_touch_pad_on] = useLocalString<string>('touch_pad_on', '');
 
   useEffect(() => {
     const ele = _game_contiainer_ref.current;
@@ -225,17 +225,17 @@ function App() {
       <div className='game_contiainer' ref={_game_contiainer_ref}>
         <canvas ref={_canvas_ref} tabIndex={-1} className='game_canvas' width={794} height={450} />
         <div className='game_overlay' ref={_overlay_ref} style={{ display: !game_overlay ? 'none' : void 0 }} />
-        <div className='game_overlay_ui' >
-          <ToggleButton
-            onToggle={set_control_panel_visible}
-            checked={control_panel_visible}
-            shortcut='F10'>
-            <>显示控制面板</>
-            <>隐藏控制面板</>
-          </ToggleButton>
-        </div>
       </div>
-      <img src={require('./btn_any.png')} alt='' style={{ top: 0, left: 0, position: 'absolute', clip: `rect(0px,32px,32px,0px)` }} />
+      <div className='game_overlay_ui'>
+        <img src={muted ? require('./btn_1_0.png') : require('./btn_0_3.png')} alt='' onClick={() => {
+          const sounds = lf2_ref.current?.sounds
+          sounds?.set_muted(!sounds.muted())
+        }} />
+        <Show show={lf2_ref.current?.is_cheat_enabled(Defines.Cheats.GIM_INK)}>
+          <img src={control_panel_visible ? require('./btn_1_3.png') : require('./btn_1_2.png')} alt='' onClick={() => set_control_panel_visible(v => !v)} />
+        </Show>
+      </div>
+
 
       <Show.Div className={'debug_ui debug_ui_' + debug_ui_pos} show={control_panel_visible}>
         <div className='settings_row'>

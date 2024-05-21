@@ -2,8 +2,8 @@ import device from 'current-device';
 import React, { useEffect, useRef, useState } from "react";
 import { useForwardedRef } from "./useForwardedRef";
 import { TShortcut, useShortcut } from "./useShortcut";
+import './Button.css'
 const is_desktop = device.desktop();
-
 
 export interface IToggleButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'children'> {
   checked?: boolean;
@@ -21,6 +21,7 @@ export const ToggleButton = React.forwardRef<HTMLButtonElement, IToggleButtonPro
       shortcut,
       shortcutTarget = window,
       show_shortcut,
+      className,
       ...remain_props
     } = props;
 
@@ -49,10 +50,12 @@ export const ToggleButton = React.forwardRef<HTMLButtonElement, IToggleButtonPro
     }, [])
 
     const _show_shortcut = show_shortcut ?? has_keyboard
+    const root_className = className ? `lf2ui_button ${className}` : 'lf2ui_button'
 
     return (
       <button
         {...remain_props}
+        className={root_className}
         type={props.type ?? 'button'}
         ref={on_ref}
         onClick={_onClick}>

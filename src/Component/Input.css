@@ -1,0 +1,38 @@
+.lf2ui_input {
+  color: #5A73D6;
+  border: 2px #5A73D6 solid;
+  border-radius: 3px;
+  padding: 2px 4px;
+  background-color: transparent;
+  font-weight: bold;
+  outline: none;
+  transition:
+    color 200ms,
+    border-color 200ms,
+    background-color 200ms,
+    border-radius 500ms;
+}
+
+.lf2ui_input:hover {
+  color: #FFFFFF;
+  border-color: #FFFFFF;
+}
+
+.lf2ui_input:active {
+  color: #FFFFFF;
+  border-color: #FFFFFF;
+  background-color: #5A73D655;
+}
+
+.lf2ui_input:disabled {
+  color: #384888;
+  border: 2px #384888 solid;
+  background-color: transparent;
+  cursor: not-allowed;
+}
+
+.lf2ui_input:focus-within,
+.lf2ui_input:active {
+  border: solid 2px white;
+  border-radius: 10 px;
+}

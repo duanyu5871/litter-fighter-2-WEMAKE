@@ -73,15 +73,6 @@ body {
   border-color: #FFFFFF;
 }
 
-
-button {
-  min-height: 25px;
-  min-width: max(fit-content,25px);
-  user-select: none;
-}
-
-button,
-input,
 select,
 textarea {
   color: #5A73D6;
@@ -104,7 +95,6 @@ textarea {
   font-size: 12px;
 }
 
-
 textarea::selection {
   color: #10206C;
   background-color: white;
@@ -112,33 +102,4 @@ textarea::selection {
 
 textarea:hover {
   border-color: #FFFFFF;
-}
-
-button:hover,
-input:hover {
-  color: #FFFFFF;
-  border-color: #FFFFFF;
-}
-
-button:active,
-input:active {
-  color: #FFFFFF;
-  border-color: #FFFFFF;
-  background-color: #5A73D655;
-}
-
-button:disabled,
-input:disabled {
-  color: #384888;
-  border: 2px #384888 solid;
-  background-color: transparent;
-  cursor: not-allowed;
-}
-
-
-button:focus-within,
-input:focus-within,
-input:active {
-  border: solid 2px white;
-  border-radius: 10 px;
 }

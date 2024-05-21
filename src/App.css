@@ -47,7 +47,7 @@
   align-items: flex-start;
 }
 
-.game_overlay_ui button {
+.game_overlay_ui>* {
   pointer-events: all;
 }
 

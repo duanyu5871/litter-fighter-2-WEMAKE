@@ -1,0 +1,22 @@
+.lf2ui_checkbox {
+  width: 15px;
+  height: 15px;
+  min-width: 15px;
+  min-height: 15px;
+  padding: 0px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lf2ui_checkbox_inner_show {
+  transition: all 200ms;
+  opacity: 1;
+  transform: rotate(10deg);
+}
+
+.lf2ui_checkbox_inner_hide {
+  transition: all 200ms;
+  opacity: 0;
+  transform: rotate(-10deg) scale(.5);
+}
