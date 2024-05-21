@@ -1,5 +1,5 @@
 
-import { Log, Warn } from "../../Log";
+import { Warn } from "../../Log";
 import type LF2 from "../LF2";
 import FallbackPlayer from "../dom/sound/FallbackPlayer";
 import ModernPlayer from "../dom/sound/ModernPlayer";
@@ -23,6 +23,22 @@ export default class SoundMgr implements IPlayer {
         Warn.print(SoundMgr.name, 'can not use ' + cls.name, e)
       }
     }
+  }
+
+  muted(): boolean {
+    return this.inner.muted();
+  }
+
+  set_muted(v: boolean): void {
+    return this.inner.set_muted(v);
+  }
+  
+  volume(): number {
+    return this.inner.volume();
+  }
+
+  set_volume(v: number): void {
+    return this.inner.set_volume(v);
   }
 
   bgm(): string | null {

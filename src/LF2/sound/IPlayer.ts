@@ -1,6 +1,38 @@
 export interface IPlayer {
 
   /**
+   * 是否禁音
+   *
+   * @returns {boolean}
+   */
+  muted(): boolean
+
+
+  /**
+   * 设置是否禁音
+   *
+   * @param {boolean} v
+   */
+  set_muted(v: boolean): void;
+
+  
+  /**
+   * 音量
+   *
+   * @returns {number} [0,1]
+   */
+  volume(): number;
+
+  
+  /**
+   * 设置
+   *
+   * @param {number} v [0,1]
+   */
+  set_volume(v: number): void;
+
+
+  /**
    * 停止背景音乐
    * @date 4/12/2024 - 10:22:30 AM
    */
@@ -66,7 +98,7 @@ export interface IPlayer {
    */
   stop(id: string): void;
 
-  
+
   /**
    * 释放
    */

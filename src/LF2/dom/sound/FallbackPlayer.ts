@@ -10,8 +10,26 @@ export default class FallbackPlayer implements IPlayer {
   protected _sound_id = 0;
   protected _playings = new Map<string, HTMLAudioElement>()
   readonly lf2: LF2;
+  protected _muted: boolean = true;
+  protected _volume: number = 1;
   constructor(lf2: LF2) {
     this.lf2 = lf2;
+  }
+  muted(): boolean {
+    return this._muted;
+  }
+  set_muted(v: boolean): void {
+    this._muted = v;
+    for (const [, a] of this._playings) a.muted = v;
+    if (this._bgm_ele) this._bgm_ele.muted = v
+  }
+  volume(): number {
+    return this._volume;
+  }
+  set_volume(v: number): void {
+    this._volume = v;
+    for (const [, a] of this._playings) a.volume = v;
+    if (this._bgm_ele) this._bgm_ele.volume = v
   }
 
   bgm(): string | null {
@@ -38,6 +56,8 @@ export default class FallbackPlayer implements IPlayer {
     this._bgm_ele.controls = false;
     this._bgm_ele.loop = true;
     this._bgm_ele.play();
+    this._bgm_ele.volume = this._volume;
+    this._bgm_ele.muted = this._muted;
     ++this._req_id;
     const req_id = this._req_id;
     this._prev_bgm_url = name;
@@ -57,6 +77,8 @@ export default class FallbackPlayer implements IPlayer {
     const audio = document.createElement('audio');
     audio.src = src_audio;
     audio.controls = false;
+    audio.volume = this._volume;
+    audio.muted = this._muted;
 
     const id = '' + (++this._sound_id);
     this._playings.set(id, audio)

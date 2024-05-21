@@ -1,26 +1,52 @@
 import axios from "axios";
-import { Defines } from "../../defines/defines";
 import type LF2 from "../../LF2";
 import AsyncValuesKeeper from "../../base/AsyncValuesKeeper";
+import { Defines } from "../../defines/defines";
 import { IPlayer } from "../../sound/IPlayer";
+
 
 export default class ModernPlayer implements IPlayer {
   readonly ctx = new AudioContext();
   readonly lf2: LF2;
   protected _req_id: number = 0;
   protected _prev_bgm_url: string | null = null;
-  protected _bgm_src_node: AudioBufferSourceNode | null = null;
+  protected _bgm_node: { src_node: AudioBufferSourceNode, gain_node: GainNode } | null = null;
 
   protected _r = new AsyncValuesKeeper<AudioBuffer>();
-  protected _bgm: string | null = null;
+  protected _bgm_name: string | null = null;
   protected _sound_id = 0;
-  protected _playings = new Map<string, AudioBufferSourceNode>()
+  protected _playings = new Map<string, { src_node: AudioBufferSourceNode, l_gain_node: GainNode, r_gain_node: GainNode, sound_x: number }>()
+  protected _muted: boolean = true;
+  protected _volume: number = 1;
   constructor(lf2: LF2) {
     this.lf2 = lf2;
   }
+  muted(): boolean {
+    return this._muted;
+  }
+  set_muted(v: boolean): void {
+    this._muted = v;
+    this.apply_volume();
+  }
+  volume(): number {
+    return this._volume;
+  }
+  set_volume(v: number): void {
+    this._volume = v;
+    this.apply_volume();
+  }
 
+  protected apply_volume(): void {
+    if (this._bgm_node)
+      this._bgm_node.gain_node.gain.value = this._muted ? 0 : this._volume;
+    for (const [, { sound_x, l_gain_node, r_gain_node }] of this._playings) {
+      const [, l_vol, r_vol] = this.get_l_r_vol(sound_x);
+      l_gain_node.gain.value = l_vol;
+      r_gain_node.gain.value = r_vol;
+    }
+  }
   bgm(): string | null {
-    return this._bgm;
+    return this._bgm_name;
   }
 
   has(name: string): boolean {
@@ -39,9 +65,9 @@ export default class ModernPlayer implements IPlayer {
   }
 
   stop_bgm() {
-    if (!this._bgm_src_node) return;
-    this._bgm = null;
-    this._bgm_src_node.stop();
+    if (!this._bgm_node) return;
+    this._bgm_name = null;
+    this._bgm_node.src_node.stop();
     this._prev_bgm_url = null;
   }
 
@@ -49,7 +75,7 @@ export default class ModernPlayer implements IPlayer {
     if (!restart && this._prev_bgm_url === name) return () => { };
     this.stop_bgm();
 
-    this._bgm = name;
+    this._bgm_name = name;
     this._prev_bgm_url = name;
     ++this._req_id;
 
@@ -57,10 +83,19 @@ export default class ModernPlayer implements IPlayer {
     const ctx = this.ctx;
     const buf = this._r.values.get(name);
     const start = (buf: AudioBuffer) => {
-      this._bgm_src_node = ctx.createBufferSource();
-      this._bgm_src_node.buffer = buf;
-      this._bgm_src_node.connect(ctx.destination);
-      this._bgm_src_node.start();
+      const src_node = ctx.createBufferSource();
+      src_node.buffer = buf;
+      src_node.start();
+
+      const gain_node = this.ctx.createGain()
+      gain_node.connect(ctx.destination)
+      gain_node.gain.value = this._muted ? 0 : this._volume;
+      src_node.connect(gain_node)
+
+      this._bgm_node = {
+        src_node,
+        gain_node
+      }
     };
     if (buf) {
       start(buf);
@@ -70,15 +105,21 @@ export default class ModernPlayer implements IPlayer {
     return () => (req_id === this._req_id) && this.stop_bgm();
   }
 
+  protected get_l_r_vol(x?: number) {
+    const edge_w = Defines.OLD_SCREEN_WIDTH / 2;
+    const viewer_x = this.lf2.world.camera.position.x + edge_w;
+    const sound_x = x ?? viewer_x;
+    return [
+      sound_x,
+      (this._muted ? 0 : this._volume) * Math.max(0, 1 - Math.abs((sound_x - viewer_x + edge_w) / Defines.OLD_SCREEN_WIDTH)),
+      (this._muted ? 0 : this._volume) * Math.max(0, 1 - Math.abs((sound_x - viewer_x - edge_w) / Defines.OLD_SCREEN_WIDTH))
+    ]
+  }
   play(name: string, x?: number, y?: number, z?: number): string {
     const buf = this._r.values.get(name);
     if (!buf) return '';
 
-    const edge_w = Defines.OLD_SCREEN_WIDTH / 2;
-    const viewer_x = this.lf2.world.camera.position.x + edge_w;
-    const sound_x = x ?? viewer_x;
-    const l_vol = Math.max(0, 1 - Math.abs((sound_x - viewer_x + edge_w) / Defines.OLD_SCREEN_WIDTH));
-    const r_vol = Math.max(0, 1 - Math.abs((sound_x - viewer_x - edge_w) / Defines.OLD_SCREEN_WIDTH));
+    const [sound_x, l_vol, r_vol] = this.get_l_r_vol(x);
 
     const ctx = this.ctx;
     const src_node = ctx.createBufferSource();
@@ -102,8 +143,14 @@ export default class ModernPlayer implements IPlayer {
     merger_node.connect(this.ctx.destination);
     src_node.start();
 
+
     const id = '' + (++this._sound_id);
-    this._playings.set(id, src_node)
+    this._playings.set(id, {
+      src_node,
+      l_gain_node,
+      r_gain_node,
+      sound_x,
+    })
     src_node.onended = () => this._playings.delete(id);
     return id;
   }
@@ -111,13 +158,13 @@ export default class ModernPlayer implements IPlayer {
   stop(id: string): void {
     const n = this._playings.get(id);
     if (!n) return;
-    n.stop();
+    n.src_node.stop();
     this._playings.delete(id)
   }
 
   dispose(): void {
     this._r.clean();
-    this._playings.forEach(v => v.stop())
+    this._playings.forEach(v => v.src_node.stop())
     this._playings.clear();
   }
 }
