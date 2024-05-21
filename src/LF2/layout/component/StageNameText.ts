@@ -52,6 +52,7 @@ export default class StageNameText extends LayoutComponent {
             this.switch_stage()
         },
         on_cheat_changed: () => this.switch_stage(),
+        on_stages_loaded: () => this.switch_stage(),
       }),
       () => this._mesh.removeFromParent(),
     )
