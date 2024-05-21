@@ -2,6 +2,7 @@ import { Defines } from "../defines/defines";
 import Character from "../entity/Character";
 import Entity from "../entity/Entity";
 import Weapon from "../entity/Weapon";
+import { is_character } from "../entity/type_check";
 import { BaseController } from "./BaseController";
 
 export class BotEnemyChaser extends BaseController {
@@ -20,7 +21,7 @@ export class BotEnemyChaser extends BaseController {
   update_nearest() {
     const c = this.character;
     for (const e of c.world.entities) {
-      if (Character.is(e)) {
+      if (is_character(e)) {
         if (e.team !== c.team) {
           if (!this._nearest_enemy) {
             this._nearest_enemy = e;

@@ -1,13 +1,11 @@
-import { IBdyInfo, IFrameInfo, IItrInfo, IOpointInfo, IWeaponData, IWeaponInfo } from "../defines";
-import { Defines } from "../defines/defines";
-import { factory } from "../Factory";
 import { GONE_FRAME_INFO } from "../FrameAnimater";
 import { ICube, World } from "../World";
+import { IBdyInfo, IFrameInfo, IItrInfo, IOpointInfo, IWeaponData, IWeaponInfo } from "../defines";
+import { Defines } from "../defines/defines";
 import { WEAPON_STATES } from "../state/weapon";
-import Character from "./Character";
 import Entity from "./Entity";
+import { is_character } from "./type_check";
 export default class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData> {
-  static is = (v: any): v is Weapon => v?.is_ball === true;
   readonly is_weapon = true
 
   holder?: Entity;
@@ -31,7 +29,7 @@ export default class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData>
       const { dvx, dvy, dvz } = wpoint_a;
       if (dvx || dvy || dvz) {
         this.enter_frame(this.data.indexes.throwing);
-        const vz = (Character.is(holder)) ? holder.controller.UD * (dvz || 0) : 0;
+        const vz = (is_character(holder)) ? holder.controller.UD * (dvz || 0) : 0;
         const vx = (dvx || 0 - Math.abs(vz / 2)) * this.facing
         this.velocity.set(vx, dvy || 0, vz)
         delete this.holder?.weapon;
@@ -123,4 +121,3 @@ export default class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData>
     this.update_sprite_position()
   }
 }
-factory.set('weapon', (...args) => new Weapon(...args))

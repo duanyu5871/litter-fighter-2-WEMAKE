@@ -1,23 +1,20 @@
 import { Warn } from '../../Log';
-import { constructor_name } from '../utils/constructor_name';
-import { IBdyInfo, ICharacterData, ICharacterFrameInfo, ICharacterInfo, IFrameInfo, IItrInfo, INextFrame, IOpointInfo, TFace, TNextFrame } from '../defines';
-import { Defines } from '../defines/defines';
-import { factory } from '../Factory';
 import type { World } from '../World';
 import { ICube } from '../World';
 import Callbacks from '../base/Callbacks';
-import NoEmitCallbacks from "../base/NoEmitCallbacks";
-import { BaseController } from '../controller/BaseController';
+import type NoEmitCallbacks from "../base/NoEmitCallbacks";
+import type { BaseController } from '../controller/BaseController';
 import { InvalidController } from '../controller/InvalidController';
+import type { IBdyInfo, ICharacterData, ICharacterFrameInfo, ICharacterInfo, IFrameInfo, IItrInfo, INextFrame, IOpointInfo, TFace, TNextFrame } from '../defines';
+import { Defines } from '../defines/defines';
 import { CHARACTER_STATES } from '../state/character';
-import Ball from './Ball';
+import { constructor_name } from '../utils/constructor_name';
 import Entity from './Entity';
 import ICharacterCallbacks from './ICharacterCallbacks';
-import Weapon from './Weapon';
 import { same_face, turn_face } from './face_helper';
+import { is_ball, is_character, is_weapon } from './type_check';
 
 export default class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, ICharacterData> {
-  static is = (v: any): v is Character => v?.is_character === true;
   readonly is_character = true
   protected _callbacks = new Callbacks<ICharacterCallbacks>()
   protected _controller: BaseController = new InvalidController('', this);
@@ -172,7 +169,7 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
       (this.velocity.x < 0 && target.position.x < this.position.x)
   }
   private start_catch(target: Entity, itr: IItrInfo) {
-    if (!Character.is(target)) {
+    if (!is_character(target)) {
       Warn.print(constructor_name(this), 'start_catch(), cannot catch', target)
       return;
     }
@@ -185,7 +182,7 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
     this._next_frame = itr.catchingact
   }
   private start_caught(attacker: Entity, itr: IItrInfo) {
-    if (!Character.is(attacker)) {
+    if (!is_character(attacker)) {
       Warn.print(constructor_name(this), 'start_caught(), cannot be caught by', attacker)
       return
     }
@@ -211,7 +208,7 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
         break;
       }
       case Defines.ItrKind.Pick: {
-        if (Weapon.is(target)) {
+        if (is_weapon(target)) {
           if (target.data.base.type === Defines.WeaponType.Heavy) {
             this._next_frame = { id: this.data.indexes.picking_heavy }
           } else {
@@ -228,7 +225,7 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
     if (itr.kind === Defines.ItrKind.SuperPunchMe) return;
     switch (itr.kind) {
       case Defines.ItrKind.Catch:
-        if (Character.is(attacker) && attacker.dizzy_catch_test(this))
+        if (is_character(attacker) && attacker.dizzy_catch_test(this))
           this.start_caught(attacker, itr)
         return;
       case Defines.ItrKind.ForceCatch: {
@@ -327,7 +324,7 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
 
   override spawn_object(opoint: IOpointInfo, speed_z: number = 0) {
     const ret = super.spawn_object(opoint, speed_z);
-    if (Ball.is(ret)) { ret.ud = this.controller.UD; }
+    if (is_ball(ret)) { ret.ud = this.controller.UD; }
     return ret;
   }
 
@@ -335,5 +332,3 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
     this._callbacks.emit('on_dead')(this);
   }
 }
-
-factory.set('character', (...args) => new Character(...args))

@@ -16,12 +16,19 @@ import Character from './LF2/entity/Character';
 import { IStageInfo } from "./LF2/defines/IStageInfo";
 import { IStagePhaseInfo } from "./LF2/defines/IStagePhaseInfo";
 import { Defines } from './LF2/defines/defines';
+import Titled from './Component/Titled';
+import Show from './Component/Show';
 const bot_controllers: { [x in string]?: (e: Character) => BaseController } = {
   'OFF': (e: Character) => new InvalidController('', e),
   'enemy chaser': (e: Character) => new BotEnemyChaser('', e)
 }
 
-export function BackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
+export interface ISettingsRowsProps {
+  lf2?: LF2;
+  visible?: boolean;
+}
+
+export default function SettingsRows(props: ISettingsRowsProps) {
   const { lf2, visible = true } = props;
 
   const _stage = lf2?.world.stage;
@@ -141,21 +148,25 @@ export function BackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
       if (controller_creator) e.controller = controller_creator(e);
     })
   }
-  const phase_desc = stage_phase_list[stage_phase_idx]?.desc
+  const phase_desc = stage_phase_list[stage_phase_idx]?.desc;
+
   return (
     <>
-      <div className='background_settings_row'>
-        关卡:
-        <Select
-          value={value.stage_id}
-          on_changed={(v: string) => set_value(draft => {
-            draft.type = 'stage'
-            draft.stage_id = v;
-          })}
-          items={stage_list}
-          option={i => [i.id, i.name]} />
-        音乐:
-        <Checkbox value={stage_bgm} onChanged={set_stage_bgm} />
+      <Show.Div className='settings_row'>
+        <div className='settings_row_title'>切换关卡</div>
+        <Titled title='关卡'>
+          <Select
+            value={value.stage_id}
+            on_changed={(v: string) => set_value(draft => {
+              draft.type = 'stage'
+              draft.stage_id = v;
+            })}
+            items={stage_list}
+            option={i => [i.id, i.name]} />
+        </Titled>
+        <Titled title='音乐'>
+          <Checkbox value={stage_bgm} onChanged={set_stage_bgm} />
+        </Titled>
         <Button onClick={() => lf2.world.stage.kill_all_enemies()}>杀死全部敌人</Button>
         <Button onClick={() => lf2.world.stage.kill_boss()}>杀死Boss</Button>
         <Button onClick={() => lf2.world.stage.kill_soliders()}>杀死士兵</Button>
@@ -167,72 +178,89 @@ export function BackgroundRow(props: { lf2?: LF2; visible?: boolean }) {
           </>
         }
         {phase_desc ? `# ${phase_desc}` : void 0}
-      </div>
+      </Show.Div>
 
-      <div className='background_settings_row'>
-        背景:
-        <Select
-          value={value.bg_id}
-          on_changed={(v: string) => set_value(draft => {
-            draft.type = 'bg'
-            draft.bg_id = v;
-          })}
-          items={lf2.datas.backgrounds}
-          option={i => [i.id, i.base.name]} />
+      <Show.Div className='settings_row'>
+        <div className='settings_row_title'>切换背景</div>
+        <Titled title='背景'>
+          <Select
+            value={value.bg_id}
+            on_changed={(v: string) => set_value(draft => {
+              draft.type = 'bg'
+              draft.bg_id = v;
+            })}
+            items={lf2.datas.backgrounds}
+            option={i => [i.id, i.base.name]} />
+        </Titled>
+        <Titled title='BGM'>
+          <Select
+            value={bgm}
+            on_changed={set_bgm}
+            items={bgm_list}
+            option={i => [i, i || 'OFF']} />
+        </Titled>
+        <Titled title='难度'>
+          <Select
+            value={difficulty}
+            on_changed={set_difficulty}
+            items={[
+              Defines.Difficulty.Easy,
+              Defines.Difficulty.Normal,
+              Defines.Difficulty.Difficult,
+              Defines.Difficulty.Crazy
+            ]}
+            option={i => [i, Defines.DifficultyLabels[i]]} />
+        </Titled>
         <Button onClick={v => lf2.remove_all_entities()}>清场</Button>
-        BGM:
-        <Select
-          value={bgm}
-          on_changed={set_bgm}
-          items={bgm_list}
-          option={i => [i, i || 'OFF']} />
-        难度:
-        <Select
-          value={difficulty}
-          on_changed={set_difficulty}
-          items={[
-            Defines.Difficulty.Easy,
-            Defines.Difficulty.Normal,
-            Defines.Difficulty.Difficult,
-            Defines.Difficulty.Crazy
-          ]}
-          option={i => [i, Defines.DifficultyLabels[i]]} />
-      </div>
+      </Show.Div>
 
-      <div className='background_settings_row'>
-        武器:
-        <Input type='number' style={{ width: 40 }}
-          min={min_rwn} max={max_rwn} step={1} value={rwn}
-          onChange={e => set_rwn(Number(e.target.value))}
-          onBlur={() => set_rwn(v => Math.min(Math.max(Math.floor(v), min_rwn), max_rwn))} />
-        <Select
-          value={weapon_id}
-          on_changed={set_weapon_id}
-          items={lf2.datas.weapons}
-          option={i => [i.id, i.base.name]}>
-          <option value=''>Random</option>
-        </Select>
+      <Show.Div className='settings_row'>
+        <div className='settings_row_title'>添加武器</div>
+        <Titled title='数量'>
+          <Input type='number' style={{ width: 40 }}
+            min={min_rwn} max={max_rwn} step={1} value={rwn}
+            onChange={e => set_rwn(Number(e.target.value))}
+            onBlur={() => set_rwn(v => Math.min(Math.max(Math.floor(v), min_rwn), max_rwn))} />
+        </Titled>
+        <Titled title='类型'>
+          <Select
+            value={weapon_id}
+            on_changed={set_weapon_id}
+            items={lf2.datas.weapons}
+            option={i => [i.id, i.base.name]}>
+            <option value=''>Random</option>
+          </Select>
+        </Titled>
         <Button onClick={on_click_add_weapon}>添加</Button>
-      </div>
+      </Show.Div>
 
-      <div className='background_settings_row'>
-        BOT:
-        <Input type='number' style={{ width: 40 }}
-          min={min_rcn} max={max_rcn} step={1} value={rcn}
-          onChange={e => set_rcn(Number(e.target.value))}
-          onBlur={() => set_rcn(v => Math.min(Math.max(Math.floor(v), min_rcn), max_rcn))} />
-        角色:
-        <CharacterSelect lf2={lf2} value={c_id} on_changed={set_character_id} />
-        队伍:
-        <TeamSelect value={team} on_changed={set_team} />
-        AI:
-        <Select value={bot_ctrl}
-          on_changed={set_bot_ctrl}
-          items={Object.keys(bot_controllers)}
-          option={i => [i, i]}
-        />
+      <Show.Div className='settings_row'>
+        <div className='settings_row_title'>添加BOT</div>
+
+        <Titled title='数量'>
+          <Input type='number' style={{ width: 40 }}
+            min={min_rcn} max={max_rcn} step={1} value={rcn}
+            onChange={e => set_rcn(Number(e.target.value))}
+            onBlur={() => set_rcn(v => Math.min(Math.max(Math.floor(v), min_rcn), max_rcn))} />
+        </Titled>
+
+        <Titled title='角色'>
+          <CharacterSelect lf2={lf2} value={c_id} on_changed={set_character_id} />
+        </Titled>
+
+        <Titled title='队伍'>
+          <TeamSelect value={team} on_changed={set_team} />
+        </Titled>
+
+        <Titled title='AI'>
+          <Select value={bot_ctrl}
+            on_changed={set_bot_ctrl}
+            items={Object.keys(bot_controllers)}
+            option={i => [i, i]}
+          />
+        </Titled>
         <Button onClick={on_click_add_bot}>添加</Button>
-      </div>
+      </Show.Div>
     </>
   );
 }

@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import './App.css';
-import { BackgroundRow } from './BackgroundRow';
 import { Button } from './Component/Button';
 import { Input } from './Component/Input';
 import Select from './Component/Select';
+import Show from './Component/Show';
+import Titled from './Component/Titled';
 import { ToggleButton } from "./Component/ToggleButton";
 import EditorView from './EditorView';
 import { ILf2Callback } from './LF2/ILf2Callback';
@@ -12,10 +13,11 @@ import { BaseController } from './LF2/controller/BaseController';
 import FullScreen from './LF2/dom/FullScreen';
 import Zip from './LF2/dom/download_zip';
 import { ILayoutInfo } from './LF2/layout/ILayoutInfo';
+import { arithmetic_progression } from './LF2/utils/math/arithmetic_progression';
 import { Log } from './Log';
 import { PlayerRow } from './PlayerRow';
+import SettingsRows from './SettingsRows';
 import open_file from './Utils/open_file';
-import { arithmetic_progression } from './LF2/utils/math/arithmetic_progression';
 import './game_ui.css';
 import './init';
 import { useLocalBoolean, useLocalNumber, useLocalString } from './useLocalStorage';
@@ -206,7 +208,7 @@ function App() {
         </div>
       </div>
       <div className={'debug_ui debug_ui_' + debug_ui_pos} style={{ display: control_panel_visible ? 'none' : void 0 }}>
-        <div className='debug_ui_row'>
+        <div className='settings_row'>
           <Button onClick={on_click_download_zip}>下载数据包</Button>
           <Button onClick={on_click_load_local_zip} disabled={loading}>加载数据包</Button>
           <Button onClick={on_click_load_builtin} disabled={loading}>加载内置数据</Button>
@@ -224,42 +226,44 @@ function App() {
             value={debug_ui_pos}
             on_changed={set_debug_ui_pos} />
         </div>
-        <div className='debug_ui_row'>
+        <div className='settings_row'>
           <Select
             value={layout}
             on_changed={set_layout}
             items={layouts}
             option={o => [o.id, o.name]} />
-          {'Mode: '}
-          <Select
-            value={render_size_mode}
-            on_changed={set_render_size_mode}
-            items={['fixed', 'fill', 'cover', 'contain'] as const} />
-          {
-            render_size_mode !== 'fixed' ? null : <div className='render_scale'>
-              {'缩放: '}
-              <Select
-                className='render_scale_select'
-                value={render_fixed_scale}
-                on_changed={set_render_fixed_scale}
-                items={arithmetic_progression(0, 4, 0.5)}
-                option={i => [i, '✕' + (i || '?')]} />
-              {
-                render_fixed_scale ? null :
-                  <Input
-                    className='render_scale_input'
-                    type='number'
-                    min={0}
-                    step={custom_render_fixed_scale <= 0.5 ? 0.1 : 0.5}
-                    value={custom_render_fixed_scale}
-                    onChange={e => set_custom_render_fixed_scale(Number(e.target.value))} />
-              }
-            </div>
-          }
-          {
-            render_size_mode === 'fill' ? null :
+          <Titled title='Mode'>
+            <Select
+              value={render_size_mode}
+              on_changed={set_render_size_mode}
+              items={['fixed', 'fill', 'cover', 'contain'] as const} />
+          </Titled>
+          <Show show={render_size_mode === 'fixed'}>
+            <Titled title='缩放'>
+              <div className='render_scale'>
+                <Select
+                  className='render_scale_select'
+                  value={render_fixed_scale}
+                  on_changed={set_render_fixed_scale}
+                  items={arithmetic_progression(0, 4, 0.5)}
+                  option={i => [i, '✕' + (i || '?')]} />
+                {
+                  render_fixed_scale ? null :
+                    <Input
+                      className='render_scale_input'
+                      type='number'
+                      min={0}
+                      step={custom_render_fixed_scale <= 0.5 ? 0.1 : 0.5}
+                      value={custom_render_fixed_scale}
+                      onChange={e => set_custom_render_fixed_scale(Number(e.target.value))} />
+                }
+              </div>
+            </Titled>
+          </Show>
+
+          <Show show={render_size_mode !== 'fill'}>
+            <Titled title='对齐'>
               <div className='render_align'>
-                {'对齐: '}
                 <Select
                   value={v_align}
                   on_changed={set_v_align}
@@ -281,9 +285,10 @@ function App() {
                     onChange={e => set_custom_h_align(Number(e.target.value))} />
                 }
               </div>
-          }
+            </Titled>
+          </Show>
         </div>
-        <div className='debug_ui_row'>
+        <div className='settings_row'>
           <ToggleButton
             onToggle={set_paused}
             checked={paused}
@@ -320,7 +325,6 @@ function App() {
           <ToggleButton
             onToggle={set_debug_panel}
             checked={debug_panel}
-            disabled={!loaded}
             shortcut='F8'>
             <>显示调试面板</>
             <>隐藏调试面板</>
@@ -331,7 +335,6 @@ function App() {
             全屏
           </Button>
         </div>
-
         {Array.from(lf2_ref.current?.player_infos.values() ?? []).splice(0, 4).map((info, idx) =>
           <PlayerRow
             key={idx}
@@ -341,7 +344,7 @@ function App() {
             touch_pad_on={touch_pad_on === info.id}
             on_click_toggle_touch_pad={() => set_touch_pad_on(touch_pad_on === info.id ? '' : info.id)} />
         )}
-        <BackgroundRow lf2={lf2_ref.current} visible={debug_panel} />
+        <SettingsRows lf2={lf2_ref.current} visible={debug_panel} />
       </div>
       <EditorView open={editor_open} onClose={() => set_editor_open(false)} />
 

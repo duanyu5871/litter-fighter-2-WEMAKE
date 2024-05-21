@@ -1,4 +1,5 @@
 import Character from '../../entity/Character';
+import { is_character } from '../../entity/type_check';
 import BaseCharacterState from "./Base";
 
 export default class Teleport_ToFarthestAlly extends BaseCharacterState {
@@ -6,7 +7,7 @@ export default class Teleport_ToFarthestAlly extends BaseCharacterState {
     let _dis: number = -1;
     let _tar: Character | undefined;
     for (const o of m.world.entities) {
-      if (!Character.is(o) || o === m || !o.same_team(m)) continue;
+      if (!is_character(o) || o === m || !o.same_team(m)) continue;
 
       const dis = Math.abs(o.position.x - m.position.x) +
         Math.abs(o.position.z - o.position.z);

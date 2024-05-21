@@ -1,4 +1,4 @@
-import type { FrameAnimater } from "./FrameAnimater";
+import type FrameAnimater from "./FrameAnimater";
 import type Ball from "./entity/Ball";
 import type Character from "./entity/Character";
 import type Entity from "./entity/Entity";
@@ -20,11 +20,14 @@ export class Factory {
   set<K extends keyof Creators>(k: K, creator: Creators[K]) {
     this._creators[k] = creator;
   }
-
   get(k: string): ICreator<FrameAnimater, typeof FrameAnimater> | undefined;
   get<K extends keyof Creators>(k: K): Creators[K] | undefined;
   get<K extends keyof Creators>(k: K): Creators[K] | undefined {
     return this._creators[k];
   }
+  protected static _inst: Factory;
+  static get inst(): Factory {
+    if (!this._inst) this._inst = new Factory()
+    return this._inst;
+  }
 }
-export const factory = new Factory()

@@ -23,6 +23,7 @@
     "jsx": "react-jsx"
   },
   "include": [
-    "src"
-, "tool/src/common/lf2_type/defines.ts"  ]
+    "src",
+    "tool/src/common/lf2_type/defines.ts"
+  ]
 }

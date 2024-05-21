@@ -11,6 +11,7 @@ import LocalHuman from './LF2/controller/LocalHuman';
 import { Checkbox } from './Component/Checkbox';
 import { Defines } from './LF2/defines/defines';
 import { ToggleButton } from './Component/ToggleButton';
+import Titled from './Component/Titled';
 
 const key_names: Record<TKeyName, string> = {
   U: '上',
@@ -119,8 +120,9 @@ export function PlayerRow(props: Props) {
   }
 
   return (
-    <div className='player_row'>
-      <span> 玩家{info.id}
+    <div className='settings_row'>
+      <span className='settings_row_title'>玩家{info.id}</span>
+      <Titled title='名称'>
         <Input
           type='text'
           maxLength={50}
@@ -129,28 +131,31 @@ export function PlayerRow(props: Props) {
           value={player_name}
           onChange={e => info.set_name(e.target.value)}
           onBlur={e => info.set_name(e.target.value.trim() || info.id).save()} />
-      </span>
-      <span>角色:</span>
-      <CharacterSelect lf2={lf2} value={character_id} on_changed={v => info.set_character(v).save()} show_all={show_hidden} />
+      </Titled>
+      <Titled title='角色'>
+        <CharacterSelect lf2={lf2} value={character_id} on_changed={v => info.set_character(v).save()} show_all={show_hidden} />
+      </Titled>
       <Checkbox value={show_hidden} onChanged={set_show_hidden} title='显示隐藏角色' />
-      <span>队伍:</span>
-      <TeamSelect value={team} on_changed={v => info.set_team(v).save()} />
+      <Titled title='队伍'>
+        <TeamSelect value={team} on_changed={v => info.set_team(v).save()} />
+      </Titled>
       <Button onClick={on_click_add}>{added ? '移除' : '加入'}</Button>
-      <Button onClick={() => set_key_settings_show(v => !v)}>键位</Button>
-      {!key_settings_show ? null :
-        key_name_arr.map(k => {
-          const on_click = () => set_editing_key(v => v === k ? void 0 : k);
-          const name = key_names[k]
-          const value = editing_key === k ? '编辑中...' : keys[k]
-          return <Button key={k} onClick={on_click}>{name}: {value.toUpperCase()}</Button>
-        })
-      }
       <ToggleButton
         checked={touch_pad_on}
         onClick={on_click_toggle_touch_pad}>
         <>触摸板</>
         <>触摸板✓</>
       </ToggleButton>
+      <Titled title={<Button onClick={() => set_key_settings_show(v => !v)}>键位</Button>}>
+        {!key_settings_show ? null :
+          key_name_arr.map(k => {
+            const on_click = () => set_editing_key(v => v === k ? void 0 : k);
+            const name = key_names[k]
+            const value = editing_key === k ? '编辑中...' : keys[k]
+            return <Button key={k} onClick={on_click}>{name}: {value.toUpperCase()}</Button>
+          })
+        }
+      </Titled>
     </div >
   );
 }

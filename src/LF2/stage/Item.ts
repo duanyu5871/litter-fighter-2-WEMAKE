@@ -2,8 +2,8 @@ import { is_num, is_str } from "../utils/type_check";
 import { IStageObjectInfo } from "../defines/IStageObjectInfo";
 import { Defines } from "../defines/defines";
 import { random_get, random_take, random_in } from "../utils/math/random";
-import { factory } from "../Factory";
-import { FrameAnimater } from "../FrameAnimater";
+import { Factory } from "../Factory";
+import FrameAnimater from "../FrameAnimater";
 import { BotEnemyChaser } from "../controller/BotEnemyChaser";
 import Character from "../entity/Character";
 import ICharacterCallbacks from '../entity/ICharacterCallbacks';
@@ -11,6 +11,7 @@ import Entity from "../entity/Entity";
 import Weapon from "../entity/Weapon";
 import Stage from "./Stage";
 import { IGameObjData } from "../defines";
+import { is_character, is_entity, is_weapon } from "../entity/type_check";
 
 export default class Item {
   readonly is_enemies: boolean = false;
@@ -80,7 +81,7 @@ export default class Item {
     if (!oid) { debugger; return; }
     const data = lf2.datas.find(oid);
     if (!data) { debugger; return; }
-    const creator = factory.get(data.type);
+    const creator = Factory.inst.get(data.type);
     if (!creator) { debugger; return; }
 
     const { hp, act, x, y, z } = this.info;
@@ -91,20 +92,20 @@ export default class Item {
       random_in(z - range_z, z + range_z) :
       random_in(this.stage.near, this.stage.far);
 
-    if (Entity.is(e)) {
+    if (is_entity(e)) {
       if (is_num(hp)) e.hp = hp;
     }
     if (is_num(y)) e.position.y = y;
 
-    if (Character.is(e)) {
+    if (is_character(e)) {
       e.team = this.stage.enemy_team;
       e.name = e.data.base.name;
       e.controller = new BotEnemyChaser('', e);
-    } else if (Weapon.is(e) && !is_num(y)) {
+    } else if (is_weapon(e) && !is_num(y)) {
       e.position.y = 450;
     }
     this.entities.add(e);
-    if (Entity.is(e)) {
+    if (is_entity(e)) {
       e.callbacks.add(this.character_callback);
     }
 
@@ -117,7 +118,7 @@ export default class Item {
   dispose(): void {
     this.stage.items.delete(this);
     for (const e of this.entities) {
-      if (Entity.is(e))
+      if (is_entity(e))
         e.callbacks.del(this.character_callback);
       this.world.del_game_objs(e)
     }

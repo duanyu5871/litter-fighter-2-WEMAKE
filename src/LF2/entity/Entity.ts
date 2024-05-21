@@ -1,24 +1,26 @@
+
 import * as THREE from 'three';
 import { Log, Warn } from '../../Log';
-import { constructor_name } from '../utils/constructor_name';
-import { is_nagtive } from '../utils/type_check';
-import { IBallData, IBaseData, IBdyInfo, ICharacterData, IEntityData, IFrameInfo, IGameObjData, IGameObjInfo, IItrInfo, IOpointInfo, IWeaponData, TNextFrame } from '../defines';
-import { Defines } from '../defines/defines';
-import { factory } from '../Factory';
-import { FrameAnimater, GONE_FRAME_INFO } from '../FrameAnimater';
+import { Factory } from '../Factory';
+import FrameAnimater, { GONE_FRAME_INFO } from '../FrameAnimater';
 import type { World } from '../World';
 import { ICube } from '../World';
 import Callbacks from '../base/Callbacks';
 import NoEmitCallbacks from "../base/NoEmitCallbacks";
+import { IBallData, IBaseData, IBdyInfo, ICharacterData, IEntityData, IFrameInfo, IGameObjData, IGameObjInfo, IItrInfo, IOpointInfo, IWeaponData, TNextFrame } from '../defines';
+import { Defines } from '../defines/defines';
 import BaseState from "../state/base/BaseState";
+import { States } from '../state/base/States';
 import { ENTITY_STATES } from '../state/entity';
+import { constructor_name } from '../utils/constructor_name';
+import { is_nagtive } from '../utils/type_check';
 import { EntityIndicators } from './EntityIndicators';
+import type IEntityCallbacks from './IEntityCallbacks';
 import { InfoSprite } from './InfoSprite';
 import Shadow from './Shadow';
 import type Weapon from './Weapon';
 import { turn_face } from './face_helper';
-import { States } from '../state/base/States';
-import IEntityCallbacks from './IEntityCallbacks';
+
 export type TData = IBaseData | ICharacterData | IWeaponData | IEntityData | IBallData
 export const V_SHAKE = 6;
 export const A_SHAKE = 6;
@@ -38,7 +40,6 @@ export default class Entity<
   D extends IGameObjData<I, F> = IGameObjData<I, F>
 > extends FrameAnimater<F, I, D> {
 
-  static is = (v: any): v is Entity => v?.is_entity === true;
   readonly is_entity = true
   readonly states: States;
   readonly shadow: Shadow;
@@ -176,11 +177,11 @@ export default class Entity<
    */
   get invisible() { return this._invisible_duration > 0 }
 
-  
+
   get callbacks(): NoEmitCallbacks<IEntityCallbacks> {
     return this._callbacks
   }
-  
+
   constructor(world: World, data: D, states: States = ENTITY_STATES) {
     super(world, data)
     this.mesh.name = "Entity:" + data.id
@@ -249,7 +250,7 @@ export default class Entity<
       Warn.print(constructor_name(this), 'spawn_object(), data not found! opoint:', opoint);
       return;
     }
-    const create = factory.get(d.type);
+    const create = Factory.inst.get(d.type);
     if (!create) {
       Warn.print(constructor_name(this), `spawn_object(), creator of "${d.type}" not found! opoint:`, opoint);
       return;
@@ -598,4 +599,4 @@ export default class Entity<
   }
 }
 
-factory.set('entity', (...args) => new Entity(...args));
+Factory.inst.set('entity', (...args) => new Entity(...args));

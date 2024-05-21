@@ -18,7 +18,9 @@ import { IKeyboardCallback, KeyEvent, Keyboard } from './dom/Keyboard';
 import Pointings, { IPointingsCallback, PointingEvent } from './dom/Pointings';
 import Zip from './dom/download_zip';
 import { import_as_blob_url, import_as_json } from './dom/make_import';
+import './entity/Entity'
 import './entity/Ball';
+import './entity/Weapon';
 import Character from './entity/Character';
 import Entity from './entity/Entity';
 import Weapon from './entity/Weapon';
@@ -33,7 +35,12 @@ import { fisrt } from './utils/container_help';
 import { arithmetic_progression } from './utils/math/arithmetic_progression';
 import { random_get, random_in, random_take } from './utils/math/random';
 import { is_arr, is_num, is_str, not_empty_str } from './utils/type_check';
+import { is_character, is_entity } from './entity/type_check';
 
+// Factory.inst.set('frame_animater', (...args) => new FrameAnimater(...args));
+// Factory.inst.set('weapon', (...args) => new Weapon(...args))
+// Factory.inst.set('character', (...args) => new Character(...args))
+// Factory.inst.set('ball', (...args) => new Ball(...args))
 const cheat_info_pair = (n: Defines.Cheats) => ['' + n, {
   keys: Defines.CheatKeys[n],
   sound: Defines.CheatSounds[n],
@@ -211,7 +218,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
       const o = old.object;
       if (o.userData.owner instanceof Layer)
         o.userData.owner.show_indicators = false;
-      else if (Entity.is(o.userData.owner))
+      else if (is_entity(o.userData.owner))
         o.userData.owner.show_indicators = false;
     }
     this._intersection = next;
@@ -222,9 +229,9 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     Log.print("click", o.userData.owner ?? o.userData)
     if (o.userData.owner instanceof Layer)
       o.userData.owner.show_indicators = true;
-    else if (Entity.is(o.userData.owner)) {
+    else if (is_entity(o.userData.owner)) {
       o.userData.owner.show_indicators = true;
-      if (Character.is(o.userData.owner)) {
+      if (is_character(o.userData.owner)) {
         this.on_click_character?.(o.userData.owner)
       }
     }

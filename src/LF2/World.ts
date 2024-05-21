@@ -1,22 +1,23 @@
 import * as THREE from 'three';
 import { Log, Warn } from '../Log';
-import { IBdyInfo, IFrameInfo, IItrInfo } from './defines';
-import { Defines } from './defines/defines';
-import { factory } from './Factory';
-import { FrameAnimater } from './FrameAnimater';
-import { GameOverlay } from './dom/GameOverlay';
+import { Factory } from './Factory';
+import FrameAnimater from './FrameAnimater';
 import { IWorldCallbacks } from './IWorldCallbacks';
 import LF2 from './LF2';
 import Callbacks from './base/Callbacks';
-import NoEmitCallbacks from "./base/NoEmitCallbacks";
 import FPS from './base/FPS';
+import NoEmitCallbacks from "./base/NoEmitCallbacks";
 import LocalHuman from './controller/LocalHuman';
+import { IBdyInfo, IFrameInfo, IItrInfo } from './defines';
+import { Defines } from './defines/defines';
+import { GameOverlay } from './dom/GameOverlay';
 import Interval from './dom/Interval';
 import Render from './dom/Render';
 import Ball from './entity/Ball';
 import Character from './entity/Character';
 import Entity from './entity/Entity';
 import Weapon from './entity/Weapon';
+import { is_ball, is_character, is_entity, is_weapon } from './entity/type_check';
 import Stage from './stage/Stage';
 import { is_num } from './utils/type_check';
 export interface ICube {
@@ -114,12 +115,12 @@ export class World {
 
   add_game_objs(...objs: FrameAnimater[]) {
     for (const e of objs) {
-      if (Character.is(e) && LocalHuman.is(e.controller)) {
+      if (is_character(e) && LocalHuman.is(e.controller)) {
         this.player_characters.set(e.controller.player_id, e);
         this._callbacks.emit('on_player_character_add')(e.controller.player_id)
       }
 
-      if (Entity.is(e)) {
+      if (is_entity(e)) {
         this.scene.add(e.mesh);
         e.show_indicators = this._show_indicators;
         this.entities.add(e);
@@ -133,11 +134,11 @@ export class World {
 
   del_game_objs(...objs: FrameAnimater[]) {
     for (const e of objs) {
-      if (Character.is(e) && LocalHuman.is(e.controller)) {
+      if (is_character(e) && LocalHuman.is(e.controller)) {
         this.player_characters.delete(e.controller.player_id);
         this._callbacks.emit('on_player_character_del')(e.controller.player_id)
       }
-      if (Entity.is(e)) {
+      if (is_entity(e)) {
         this.entities.delete(e)
         e.dispose();
       } else {
@@ -259,11 +260,11 @@ export class World {
       e.position.z = near;
   }
   restrict(e: Entity) {
-    if (Character.is(e)) {
+    if (is_character(e)) {
       this.restrict_character(e);
-    } else if (Ball.is(e)) {
+    } else if (is_ball(e)) {
       this.restrict_ball(e);
-    } else if (Weapon.is(e)) {
+    } else if (is_weapon(e)) {
       this.restrict_weapon(e);
     } else if (e instanceof THREE.Sprite) {
       this.restrict_name_sprite(e);
@@ -386,7 +387,7 @@ export class World {
         const bdy = bf.bdy[j];
         switch (af.state) {
           case Defines.State.Weapon_OnHand: {
-            if (!Weapon.is(a)) continue;
+            if (!is_weapon(a)) continue;
             const atk = a.holder?.get_frame().wpoint?.attacking;
             if (!atk) continue;
             const ooo = a.data.weapon_strength?.[atk];
@@ -405,22 +406,22 @@ export class World {
           case Defines.ItrKind.MagicFlute:
             continue; // todo
           case Defines.ItrKind.Pick:
-            if (!(Weapon.is(b))) continue;
+            if (!(is_weapon(b))) continue;
             if (bf.state === Defines.State.Weapon_OnGround) break;
             if (bf.state === Defines.State.HeavyWeapon_OnGround) break;
             continue;
           case Defines.ItrKind.PickSecretly:
-            if (!(Weapon.is(b)) || b.data.base.type === Defines.WeaponType.Heavy) continue;
+            if (!(is_weapon(b)) || b.data.base.type === Defines.WeaponType.Heavy) continue;
             if (bf.state === Defines.State.Weapon_OnGround) break;
             continue;
           case Defines.ItrKind.ForceCatch:
-            if (Character.is(b)) break;
+            if (is_character(b)) break;
             continue;
           case Defines.ItrKind.Catch:
-            if (Character.is(b) && bf.state === Defines.State.Tired) break;
+            if (is_character(b) && bf.state === Defines.State.Tired) break;
             continue;
           case Defines.ItrKind.SuperPunchMe:
-            if (Character.is(b) && !b.weapon && (b.get_frame().state === Defines.State.Standing || b.get_frame().state === Defines.State.Walking)) break;
+            if (is_character(b) && !b.weapon && (b.get_frame().state === Defines.State.Standing || b.get_frame().state === Defines.State.Walking)) break;
             continue;
           case Defines.ItrKind.Normal:
           case Defines.ItrKind.Heal:
@@ -478,7 +479,7 @@ export class World {
       Warn.print(World.name + '::' + this.spark.name, `data of "${Defines.BuiltIn.Dats.Spark}" not found!`);
       return;
     }
-    const create = factory.get(data.type);
+    const create = Factory.inst.get(data.type);
     if (!create) {
       Warn.print(World.name + '::' + this.spark.name, `creator of "${data.type}" not found!`);
       return;

@@ -5,6 +5,7 @@ import type Entity from './Entity';
 import type IEntityCallbacks from './IEntityCallbacks';
 import Character from './Character';
 import LocalHuman from '../controller/LocalHuman';
+import { is_character } from './type_check';
 
 const BAR_W = 40;
 const BAR_H = 2;
@@ -98,7 +99,7 @@ export class InfoSprite implements IEntityCallbacks {
 
   protected on_mount(entity: Entity) {
     if (
-      Character.is(this.entity) &&
+      is_character(this.entity) &&
       this.entity.world.lf2.player_infos.has(
         this.entity.controller.player_id
       )

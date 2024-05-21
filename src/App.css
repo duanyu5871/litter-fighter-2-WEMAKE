@@ -127,15 +127,7 @@
   gap: 5px;
 }
 
-.debug_ui_row {
-  width: max-content;
-  display: flex;
-  gap: 5px;
-  word-break: keep-all;
-  white-space: nowrap;
-}
-
-.player_row {
+.settings_row {
   display: flex;
   gap: 5px;
   word-break: keep-all;
@@ -143,14 +135,26 @@
   align-items: center;
 }
 
-.background_settings_row {
+.settings_row .name_content {
   display: flex;
-  gap: 5px;
-  word-break: keep-all;
-  white-space: nowrap;
+  flex-wrap: nowrap;
   align-items: center;
+
 }
 
+.settings_row .name_content >*:first-child:not(:last-child) {
+  margin-right: 3px;
+}
+
+.portrait .settings_row {
+  flex-wrap: wrap;
+  padding-bottom: 3px;
+  border-bottom: #5A73D655 1px solid;
+}
+
+.portrait .settings_row .settings_row_title {
+  width: 100%;
+}
 
 .render_scale {
   display: flex;

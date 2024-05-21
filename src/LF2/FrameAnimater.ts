@@ -1,18 +1,17 @@
 import { Warn } from '@fimagine/logger';
 import * as THREE from 'three';
-import { constructor_name } from './utils/constructor_name';
-import { IFrameInfo, IGameObjData, IGameObjInfo, INextFrame, ITexturePieceInfo, TFace, TNextFrame } from './defines';
-import { Defines } from './defines/defines';
-import { random_get } from './utils/math/random';
-import IPicture from './defines/IPicture';
+import type LF2 from './LF2';
 import type { World } from './World';
 import { new_id } from './base/new_id';
+import type { IFrameInfo, IGameObjData, IGameObjInfo, INextFrame, ITexturePieceInfo, TFace, TNextFrame } from './defines';
+import IPicture from './defines/IPicture';
+import { Defines } from './defines/defines';
 import { turn_face } from './entity/face_helper';
-import create_pictures from './loader/create_pictures';
-import { factory } from './Factory';
-import { is_str, is_positive } from './utils/type_check';
 import { dispose_mesh } from './layout/utils/dispose_mesh';
-import LF2 from './LF2';
+import create_pictures from './loader/create_pictures';
+import { constructor_name } from './utils/constructor_name';
+import { random_get } from './utils/math/random';
+import { is_positive, is_str } from './utils/type_check';
 
 export const EMPTY_PIECE: ITexturePieceInfo = {
   tex: 0, x: 0, y: 0, w: 0, h: 0, cx: 0, cy: 0,
@@ -40,7 +39,7 @@ export const GONE_FRAME_INFO: IFrameInfo = {
 };
 
 
-export class FrameAnimater<
+export default class FrameAnimater<
   F extends IFrameInfo = IFrameInfo,
   I extends IGameObjInfo = IGameObjInfo,
   D extends IGameObjData<I, F> = IGameObjData<I, F>
@@ -49,9 +48,6 @@ export class FrameAnimater<
   wait: number = 0;
 
   readonly is_frame_animater = true
-  static is = (v: any): v is FrameAnimater => v?.is_frame_animater === true;
-
-
   readonly data: D;
   readonly world: World;
   readonly pictures: Map<string, IPicture<THREE.Texture>>;
@@ -264,5 +260,3 @@ export class FrameAnimater<
       pic.texture.dispose();
   }
 }
-
-factory.set('frame_animater', (...args) => new FrameAnimater(...args));
