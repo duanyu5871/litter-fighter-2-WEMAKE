@@ -1,15 +1,16 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import './App.css';
 import { Button } from './Component/Button';
+import Combine from './Component/Combine';
 import { Input } from './Component/Input';
 import Select from './Component/Select';
 import Show from './Component/Show';
 import Titled from './Component/Titled';
 import { ToggleButton } from "./Component/ToggleButton";
 import EditorView from './EditorView';
-import { ILf2Callback } from './LF2/ILf2Callback';
 import LF2 from './LF2/LF2';
 import { BaseController } from './LF2/controller/BaseController';
+import { Defines } from './LF2/defines/defines';
 import FullScreen from './LF2/dom/FullScreen';
 import Zip from './LF2/dom/download_zip';
 import { ILayoutInfo } from './LF2/layout/ILayoutInfo';
@@ -31,11 +32,19 @@ function App() {
 
   const [editor_open, set_editor_open] = useState(false);
   const [game_overlay, set_game_overlay] = useLocalBoolean('game_overlay', true);
-  const [debug_panel, set_debug_panel] = useLocalBoolean('debug_panel', true);
+  const [showing_panel, set_showing_panel] = useLocalString<'stage' | 'bg' | 'weapon' | 'bot' | 'player' | ''>('showing_panel', '');
   const [control_panel_visible, set_control_panel_visible] = useLocalBoolean('control_panel', true);
+
+  const [cheat_1, set_cheat_1] = useLocalBoolean('cheat_1', false);
+  const [cheat_2, set_cheat_2] = useLocalBoolean('cheat_2', false);
+  const [cheat_3, set_cheat_3] = useLocalBoolean('cheat_3', false);
+
+
   const [loading, set_loading] = useState(false);
   const [loaded, set_loaded] = useState(false);
   const [paused, set_paused] = useState(false);
+  const [muted, set_muted] = useState(false);
+  const [volume, set_volume] = useState(1);
 
   useEffect(() => {
     const lf2 = lf2_ref.current;
@@ -89,16 +98,35 @@ function App() {
           set_layout(layout_data_list[1].id)
       })
     }
-    const callback: ILf2Callback = {
-      on_layout_changed: v => { set_layout(v?.id ?? '') },
-      on_loading_start: () => set_loading(true),
-      on_loading_end: () => {
-        set_loaded(true);
-        set_loading(false);
-      }
-    }
-    lf2_ref.current.callbacks.add(callback);
-    return () => { lf2_ref.current?.callbacks.del(callback) }
+
+    set_muted(lf2_ref.current.sounds.muted());
+    set_volume(lf2_ref.current.sounds.volume());
+    set_cheat_1(lf2_ref.current.is_cheat_enabled(Defines.Cheats.LF2_NET));
+    set_cheat_2(lf2_ref.current.is_cheat_enabled(Defines.Cheats.HERO_FT));
+    set_cheat_3(lf2_ref.current.is_cheat_enabled(Defines.Cheats.GIM_INK));
+    const c = [
+      lf2_ref.current.callbacks.add({
+        on_layout_changed: v => { set_layout(v?.id ?? '') },
+        on_loading_start: () => set_loading(true),
+        on_loading_end: () => {
+          set_loaded(true);
+          set_loading(false);
+        },
+        on_cheat_changed: (cheat_name, enabled) => {
+          switch (cheat_name) {
+            case Defines.Cheats.LF2_NET: set_cheat_1(enabled); break;
+            case Defines.Cheats.HERO_FT: set_cheat_2(enabled); break;
+            case Defines.Cheats.GIM_INK: set_cheat_3(enabled); break;
+          }
+        },
+      }),
+      lf2_ref.current.sounds.callbacks.add({
+        on_muted_changed: v => set_muted(v),
+        on_volume_changed: v => set_volume(v),
+      })
+    ];
+
+    return () => c.forEach(i => i())
   }, []);
 
   const on_click_load_local_zip = () => {
@@ -207,24 +235,41 @@ function App() {
           </ToggleButton>
         </div>
       </div>
-      <div className={'debug_ui debug_ui_' + debug_ui_pos} style={{ display: control_panel_visible ? 'none' : void 0 }}>
+      <img src={require('./btn_any.png')} alt='' style={{ top: 0, left: 0, position: 'absolute', clip: `rect(0px,32px,32px,0px)` }} />
+
+      <Show.Div className={'debug_ui debug_ui_' + debug_ui_pos} show={control_panel_visible}>
         <div className='settings_row'>
           <Button onClick={on_click_download_zip}>下载数据包</Button>
           <Button onClick={on_click_load_local_zip} disabled={loading}>加载数据包</Button>
           <Button onClick={on_click_load_builtin} disabled={loading}>加载内置数据</Button>
           <Button onClick={() => set_editor_open(true)}>查看dat文件</Button>
-          <ToggleButton
-            onToggle={set_control_panel_visible}
-            checked={control_panel_visible}
-            shortcut='F10'>
-            <>显示控制面板</>
-            <>隐藏控制面板</>
-          </ToggleButton>
           <Select
             items={['top', 'bottom', 'left', 'right'] as const}
-            option={v => [v, v]}
+            option={v => [v, '位置：' + v]}
             value={debug_ui_pos}
             on_changed={set_debug_ui_pos} />
+          <Combine>
+            <ToggleButton
+              onToggle={v => lf2_ref.current?.sounds.set_muted(v)}
+              checked={muted}>
+              <>音量</>
+              <>静音✓</>
+            </ToggleButton>
+            <Show show={!muted}>
+              <Input
+                type='number'
+                min={0}
+                max={100}
+                step={1}
+                value={Math.ceil(volume * 100)}
+                onChange={e => lf2_ref.current?.sounds.set_volume(Number(e.target.value) / 100)} />
+            </Show>
+          </Combine>
+          <Button
+            style={{ marginLeft: 'auto' }}
+            onClick={() => set_control_panel_visible(false)}>
+            ✕
+          </Button>
         </div>
         <div className='settings_row'>
           <Select
@@ -240,51 +285,49 @@ function App() {
           </Titled>
           <Show show={render_size_mode === 'fixed'}>
             <Titled title='缩放'>
-              <div className='render_scale'>
+              <Combine>
                 <Select
-                  className='render_scale_select'
                   value={render_fixed_scale}
                   on_changed={set_render_fixed_scale}
                   items={arithmetic_progression(0, 4, 0.5)}
                   option={i => [i, '✕' + (i || '?')]} />
-                {
-                  render_fixed_scale ? null :
-                    <Input
-                      className='render_scale_input'
-                      type='number'
-                      min={0}
-                      step={custom_render_fixed_scale <= 0.5 ? 0.1 : 0.5}
-                      value={custom_render_fixed_scale}
-                      onChange={e => set_custom_render_fixed_scale(Number(e.target.value))} />
-                }
-              </div>
+                <Show show={!render_fixed_scale}>
+                  <Input
+                    className='render_scale_input'
+                    type='number'
+                    min={0}
+                    step={custom_render_fixed_scale <= 0.5 ? 0.1 : 0.5}
+                    value={custom_render_fixed_scale}
+                    onChange={e => set_custom_render_fixed_scale(Number(e.target.value))} />
+                </Show>
+              </Combine>
             </Titled>
           </Show>
 
           <Show show={render_size_mode !== 'fill'}>
             <Titled title='对齐'>
-              <div className='render_align'>
+              <Combine className='render_align'>
                 <Select
                   value={v_align}
                   on_changed={set_v_align}
                   items={[-2, 0, 0.5, 1]}
                   option={(v, idx) => [v, v <= -1 ? '?' : ['上', '中', '下'][idx - 1]]} />
-                {
-                  v_align > -1 ? null : <Input min={-1} max={2} type='number' step={0.1}
+                <Show show={v_align < 0}>
+                  <Input min={-1} max={2} type='number' step={0.1}
                     value={custom_v_align}
                     onChange={e => set_custom_v_align(Number(e.target.value))} />
-                }
+                </Show>
                 <Select
                   value={h_align}
                   on_changed={set_h_align}
                   items={[-2, 0, 0.5, 1]}
                   option={(v, idx) => [v, v <= -1 ? '?' : ['左', '中', '右'][idx - 1]]} />
-                {
-                  h_align > -1 ? null : <Input min={-1} max={2} type='number' step={0.1}
+                <Show show={h_align < 0}>
+                  <Input min={-1} max={2} type='number' step={0.1}
                     value={custom_h_align}
                     onChange={e => set_custom_h_align(Number(e.target.value))} />
-                }
-              </div>
+                </Show>
+              </Combine>
             </Titled>
           </Show>
         </div>
@@ -294,7 +337,7 @@ function App() {
             checked={paused}
             shortcut='F1'>
             <>游戏暂停</>
-            <>游戏恢复</>
+            <>游戏暂停✓</>
           </ToggleButton>
           <Button
             onClick={update_once}
@@ -306,48 +349,99 @@ function App() {
             checked={fast_forward}
             shortcut='shift+F5'>
             <>不限速度</>
-            <>正常速度</>
+            <>不限速度✓</>
           </ToggleButton>
           <ToggleButton
             onToggle={set_show_indicators}
             checked={show_indicators}
             shortcut='F6'>
-            <>隐藏指示器</>
-            <>显示指示器</>
+            <>指示器</>
+            <>指示器✓</>
           </ToggleButton>
           <ToggleButton
             onToggle={set_game_overlay}
             checked={game_overlay}
             shortcut='F7'>
-            <>显示游戏覆盖</>
-            <>隐藏游戏覆盖</>
-          </ToggleButton>
-          <ToggleButton
-            onToggle={set_debug_panel}
-            checked={debug_panel}
-            shortcut='F8'>
-            <>显示调试面板</>
-            <>隐藏调试面板</>
+            <>游戏覆盖</>
+            <>游戏覆盖✓</>
           </ToggleButton>
           <Button
             onClick={toggle_fullscreen}
             shortcut='F9'>
             全屏
           </Button>
-        </div>
-        {Array.from(lf2_ref.current?.player_infos.values() ?? []).splice(0, 4).map((info, idx) =>
-          <PlayerRow
-            key={idx}
-            lf2={lf2_ref.current!}
-            info={info}
-            visible={debug_panel}
-            touch_pad_on={touch_pad_on === info.id}
-            on_click_toggle_touch_pad={() => set_touch_pad_on(touch_pad_on === info.id ? '' : info.id)} />
-        )}
-        <SettingsRows lf2={lf2_ref.current} visible={debug_panel} />
-      </div>
-      <EditorView open={editor_open} onClose={() => set_editor_open(false)} />
 
+        </div>
+        <div className='settings_row'>
+          <Combine>
+            <ToggleButton
+              onToggle={() => set_showing_panel(v => v === 'stage' ? '' : 'stage')}
+              checked={showing_panel === 'stage'}>
+              <>关卡面板</>
+              <>关卡面板✓</>
+            </ToggleButton>
+            <ToggleButton
+              onToggle={() => set_showing_panel(v => v === 'bg' ? '' : 'bg')}
+              checked={showing_panel === 'bg'}>
+              <>背景面板</>
+              <>背景面板✓</>
+            </ToggleButton>
+            <ToggleButton
+              onToggle={() => set_showing_panel(v => v === 'weapon' ? '' : 'weapon')}
+              checked={showing_panel === 'weapon'}>
+              <>武器面板</>
+              <>武器面板✓</>
+            </ToggleButton>
+            <ToggleButton
+              onToggle={() => set_showing_panel(v => v === 'bot' ? '' : 'bot')}
+              checked={showing_panel === 'bot'}>
+              <>Bot面板</>
+              <>Bot面板✓</>
+            </ToggleButton>
+            <ToggleButton
+              onToggle={() => set_showing_panel(v => v === 'player' ? '' : 'player')}
+              checked={showing_panel === 'player'}>
+              <>玩家面板</>
+              <>玩家面板✓</>
+            </ToggleButton>
+          </Combine>
+          <ToggleButton
+            onToggle={() => lf2_ref.current?.toggle_cheat_enabled(Defines.Cheats.LF2_NET)}
+            checked={cheat_1}>
+            <>LF2_NET</>
+            <>LF2_NET✓</>
+          </ToggleButton>
+          <ToggleButton
+            onToggle={() => lf2_ref.current?.toggle_cheat_enabled(Defines.Cheats.HERO_FT)}
+            checked={cheat_2}>
+            <>HERO_FT</>
+            <>HERO_FT✓</>
+          </ToggleButton>
+          <ToggleButton
+            onToggle={() => lf2_ref.current?.toggle_cheat_enabled(Defines.Cheats.GIM_INK)}
+            checked={cheat_3}>
+            <>GIM_INK</>
+            <>GIM_INK✓</>
+          </ToggleButton>
+        </div>
+        <Show show={showing_panel === 'player'}>
+          {Array.from(lf2_ref.current?.player_infos.values() ?? []).splice(0, 4).map((info, idx) =>
+            <PlayerRow
+              key={idx}
+              lf2={lf2_ref.current!}
+              info={info}
+              touch_pad_on={touch_pad_on === info.id}
+              on_click_toggle_touch_pad={() => set_touch_pad_on(touch_pad_on === info.id ? '' : info.id)} />
+          )}
+        </Show>
+        <SettingsRows
+          lf2={lf2_ref.current}
+          show_stage_settings={showing_panel === 'stage'}
+          show_bg_settings={showing_panel === 'bg'}
+          show_weapon_settings={showing_panel === 'weapon'}
+          show_bot_settings={showing_panel === 'bot'} />
+      </Show.Div>
+      <EditorView open={editor_open} onClose={() => set_editor_open(false)} />
       <GamePad player_id={touch_pad_on} lf2={lf2_ref.current} />
     </div >
   );

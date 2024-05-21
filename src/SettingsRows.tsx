@@ -5,19 +5,19 @@ import CharacterSelect from './Component/CharacterSelect';
 import { Checkbox } from "./Component/Checkbox";
 import { Input } from './Component/Input';
 import Select from './Component/Select';
+import Show from './Component/Show';
 import TeamSelect from './Component/TeamSelect';
+import Titled from './Component/Titled';
 import { ILf2Callback } from './LF2/ILf2Callback';
 import { IWorldCallbacks } from './LF2/IWorldCallbacks';
 import LF2 from './LF2/LF2';
 import { BaseController } from './LF2/controller/BaseController';
 import { BotEnemyChaser } from './LF2/controller/BotEnemyChaser';
 import { InvalidController } from './LF2/controller/InvalidController';
-import Character from './LF2/entity/Character';
 import { IStageInfo } from "./LF2/defines/IStageInfo";
 import { IStagePhaseInfo } from "./LF2/defines/IStagePhaseInfo";
 import { Defines } from './LF2/defines/defines';
-import Titled from './Component/Titled';
-import Show from './Component/Show';
+import Character from './LF2/entity/Character';
 const bot_controllers: { [x in string]?: (e: Character) => BaseController } = {
   'OFF': (e: Character) => new InvalidController('', e),
   'enemy chaser': (e: Character) => new BotEnemyChaser('', e)
@@ -26,15 +26,16 @@ const bot_controllers: { [x in string]?: (e: Character) => BaseController } = {
 export interface ISettingsRowsProps {
   lf2?: LF2;
   visible?: boolean;
+  show_stage_settings?: boolean;
+  show_bg_settings?: boolean;
+  show_weapon_settings?: boolean;
+  show_bot_settings?: boolean;
 }
 
 export default function SettingsRows(props: ISettingsRowsProps) {
   const { lf2, visible = true } = props;
-
   const _stage = lf2?.world.stage;
   const _stage_data = _stage?.data;
-
-
   const [value, set_value] = useImmer({
     bg_id: _stage_data?.bg ?? Defines.VOID_BG.id,
     stage_id: _stage_data?.id ?? Defines.VOID_STAGE.id,
@@ -152,7 +153,7 @@ export default function SettingsRows(props: ISettingsRowsProps) {
 
   return (
     <>
-      <Show.Div className='settings_row'>
+      <Show.Div className='settings_row' show={props.show_stage_settings !== false}>
         <div className='settings_row_title'>切换关卡</div>
         <Titled title='关卡'>
           <Select
@@ -180,7 +181,7 @@ export default function SettingsRows(props: ISettingsRowsProps) {
         {phase_desc ? `# ${phase_desc}` : void 0}
       </Show.Div>
 
-      <Show.Div className='settings_row'>
+      <Show.Div className='settings_row' show={props.show_bg_settings !== false}>
         <div className='settings_row_title'>切换背景</div>
         <Titled title='背景'>
           <Select
@@ -214,7 +215,7 @@ export default function SettingsRows(props: ISettingsRowsProps) {
         <Button onClick={v => lf2.remove_all_entities()}>清场</Button>
       </Show.Div>
 
-      <Show.Div className='settings_row'>
+      <Show.Div className='settings_row' show={props.show_weapon_settings !== false}>
         <div className='settings_row_title'>添加武器</div>
         <Titled title='数量'>
           <Input type='number' style={{ width: 40 }}
@@ -234,7 +235,7 @@ export default function SettingsRows(props: ISettingsRowsProps) {
         <Button onClick={on_click_add_weapon}>添加</Button>
       </Show.Div>
 
-      <Show.Div className='settings_row'>
+      <Show.Div className='settings_row' show={props.show_bot_settings !== false}>
         <div className='settings_row_title'>添加BOT</div>
 
         <Titled title='数量'>

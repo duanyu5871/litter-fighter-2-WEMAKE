@@ -1,8 +1,9 @@
+import device from 'current-device';
 import React, { useEffect, useRef, useState } from "react";
 import { useForwardedRef } from "./useForwardedRef";
 import { TShortcut, useShortcut } from "./useShortcut";
-import device from 'current-device';
 const is_desktop = device.desktop();
+
 
 export interface IToggleButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'children'> {
   checked?: boolean;
@@ -10,18 +11,18 @@ export interface IToggleButtonProps extends Omit<React.ButtonHTMLAttributes<HTML
   onToggle?(v: boolean): void;
   shortcut?: TShortcut;
   shortcutTarget?: Window | Document | Element;
-  show_shortcut?: boolean; 
+  show_shortcut?: boolean;
 };
 export const ToggleButton = React.forwardRef<HTMLButtonElement, IToggleButtonProps>(
   (props: IToggleButtonProps, ref: React.ForwardedRef<HTMLButtonElement>) => {
     const {
       children = [],
-      checked, onClick, onToggle, shortcut,
+      checked, onClick, onToggle,
+      shortcut,
       shortcutTarget = window,
       show_shortcut,
       ...remain_props
     } = props;
-
 
     const [ref_btn, on_ref] = useForwardedRef<HTMLButtonElement>(ref)
 
@@ -48,7 +49,7 @@ export const ToggleButton = React.forwardRef<HTMLButtonElement, IToggleButtonPro
     }, [])
 
     const _show_shortcut = show_shortcut ?? has_keyboard
-    
+
     return (
       <button
         {...remain_props}

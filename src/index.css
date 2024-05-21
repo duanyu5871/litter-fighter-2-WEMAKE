@@ -74,6 +74,12 @@ body {
 }
 
 
+button {
+  min-height: 25px;
+  min-width: 25px;
+  user-select: none;
+}
+
 button,
 input,
 select,
@@ -81,7 +87,6 @@ textarea {
   color: #5A73D6;
   border: 2px #5A73D6 solid;
   border-radius: 3px;
-
   padding: 2px 4px;
   background-color: transparent;
   font-weight: bold;

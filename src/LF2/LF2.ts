@@ -18,12 +18,13 @@ import { IKeyboardCallback, KeyEvent, Keyboard } from './dom/Keyboard';
 import Pointings, { IPointingsCallback, PointingEvent } from './dom/Pointings';
 import Zip from './dom/download_zip';
 import { import_as_blob_url, import_as_json } from './dom/make_import';
-import './entity/Entity'
 import './entity/Ball';
-import './entity/Weapon';
 import Character from './entity/Character';
+import './entity/Entity';
 import Entity from './entity/Entity';
+import './entity/Weapon';
 import Weapon from './entity/Weapon';
+import { is_character, is_entity } from './entity/type_check';
 import Layout from './layout/Layout';
 import DatMgr from './loader/DatMgr';
 import get_import_fallbacks from "./loader/get_import_fallbacks";
@@ -35,7 +36,6 @@ import { fisrt } from './utils/container_help';
 import { arithmetic_progression } from './utils/math/arithmetic_progression';
 import { random_get, random_in, random_take } from './utils/math/random';
 import { is_arr, is_num, is_str, not_empty_str } from './utils/type_check';
-import { is_character, is_entity } from './entity/type_check';
 
 // Factory.inst.set('frame_animater', (...args) => new FrameAnimater(...args));
 // Factory.inst.set('weapon', (...args) => new Weapon(...args))
@@ -329,6 +329,18 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   is_cheat_enabled(name: string | Defines.Cheats) {
     return !!this._cheats_enable_map.get('' + name)
   }
+  toggle_cheat_enabled(cheat_name: string | Defines.Cheats) {
+    const cheat_info = this._cheats_map.get(cheat_name);
+    if (!cheat_info) return;
+    const { sound: s } = cheat_info;
+    const sound_id = this._cheat_sound_id_map.get(cheat_name);
+    if (sound_id) this.sounds.stop(sound_id);
+    this.sounds.play_with_load(s).then(v => this._cheat_sound_id_map.set(cheat_name, v));
+    const enabled = !this._cheats_enable_map.get(cheat_name);
+    this._cheats_enable_map.set(cheat_name, enabled);
+    this._callbacks.emit('on_cheat_changed')(cheat_name, enabled);
+    this._curr_key_list = ''
+  }
   on_key_down(e: KeyEvent) {
     const key_code = e.key?.toLowerCase() ?? ''
     this._curr_key_list += key_code;
@@ -338,13 +350,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
         match = true;
       if (k !== this._curr_key_list)
         continue;
-      const sound_id = this._cheat_sound_id_map.get(cheat_name);
-      if (sound_id) this.sounds.stop(sound_id);
-      this.sounds.play_with_load(s).then(v => this._cheat_sound_id_map.set(cheat_name, v));
-      this._curr_key_list = ''
-      const enabled = !this._cheats_enable_map.get(cheat_name)
-      this._cheats_enable_map.set(cheat_name, enabled);
-      this._callbacks.emit('on_cheat_changed')(cheat_name, enabled)
+      this.toggle_cheat_enabled(cheat_name)
     }
     if (!match) this._curr_key_list = '';
 

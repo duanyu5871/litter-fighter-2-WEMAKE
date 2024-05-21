@@ -1,4 +1,5 @@
 
+import { clamp } from "three/src/math/MathUtils";
 import { Warn } from "../../Log";
 import type LF2 from "../LF2";
 import Callbacks from "../base/Callbacks";
@@ -10,7 +11,7 @@ import type { IPlayer } from "./IPlayer";
 import InvalidPlayer from "./InvalidPlayer";
 export interface ISoundMgrCallback {
   on_muted_changed?(muted: boolean, mgr: SoundMgr): void;
-  on_volume_changed?(muted: number, prev: number, mgr: SoundMgr): void;
+  on_volume_changed?(volume: number, prev: number, mgr: SoundMgr): void;
   on_bgm_changed?(bgm: string | null, prev: string | null, mgr: SoundMgr): void;
 }
 export default class SoundMgr implements IPlayer {
@@ -19,7 +20,7 @@ export default class SoundMgr implements IPlayer {
   readonly inner: IPlayer;
   readonly cls_list = [ModernPlayer, FallbackPlayer] as const;
   get callbacks(): NoEmitCallbacks<ISoundMgrCallback> {
-    return this.callbacks
+    return this._callbacks
   }
 
   constructor(lf2: LF2) {
@@ -52,6 +53,7 @@ export default class SoundMgr implements IPlayer {
   }
 
   set_volume(v: number): void {
+    v = clamp(v, 0, 1);
     const prev = this.volume()
     if (float_equal(v, prev))
       return;

@@ -1,0 +1,17 @@
+.lf2ui_combine {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: stretch;
+}
+
+.lf2ui_combine >*:not(:last-child) {
+  border-right-width: 1px !important;
+  border-top-right-radius: 0px !important;
+  border-bottom-right-radius: 0px !important;
+}
+
+.lf2ui_combine >*:not(:first-child) {
+  border-left-width: 0px !important;
+  border-top-left-radius: 0px !important;
+  border-bottom-left-radius: 0px !important;
+}
