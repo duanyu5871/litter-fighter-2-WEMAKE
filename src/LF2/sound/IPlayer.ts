@@ -51,7 +51,7 @@ export interface IPlayer {
 
 
   /**
-   * 当前选中的背景音乐
+   * 当前播放中的背景音乐
    *
    * @returns {(string | null)}
    */

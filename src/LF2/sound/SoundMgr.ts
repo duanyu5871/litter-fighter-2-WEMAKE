@@ -1,15 +1,26 @@
 
 import { Warn } from "../../Log";
 import type LF2 from "../LF2";
+import Callbacks from "../base/Callbacks";
+import NoEmitCallbacks from "../base/NoEmitCallbacks";
 import FallbackPlayer from "../dom/sound/FallbackPlayer";
 import ModernPlayer from "../dom/sound/ModernPlayer";
+import float_equal from "../utils/math/float_equal";
 import type { IPlayer } from "./IPlayer";
 import InvalidPlayer from "./InvalidPlayer";
-
+export interface ISoundMgrCallback {
+  on_muted_changed?(muted: boolean, mgr: SoundMgr): void;
+  on_volume_changed?(muted: number, prev: number, mgr: SoundMgr): void;
+  on_bgm_changed?(bgm: string | null, prev: string | null, mgr: SoundMgr): void;
+}
 export default class SoundMgr implements IPlayer {
+  private _callbacks = new Callbacks<ISoundMgrCallback>()
   readonly lf2: LF2;
   readonly inner: IPlayer;
   readonly cls_list = [ModernPlayer, FallbackPlayer] as const;
+  get callbacks(): NoEmitCallbacks<ISoundMgrCallback> {
+    return this.callbacks
+  }
 
   constructor(lf2: LF2) {
     this.lf2 = lf2;
@@ -30,15 +41,22 @@ export default class SoundMgr implements IPlayer {
   }
 
   set_muted(v: boolean): void {
-    return this.inner.set_muted(v);
+    if (v === this.muted())
+      return;
+    this.inner.set_muted(v);
+    this._callbacks.emit('on_muted_changed')(v, this)
   }
-  
+
   volume(): number {
     return this.inner.volume();
   }
 
   set_volume(v: number): void {
-    return this.inner.set_volume(v);
+    const prev = this.volume()
+    if (float_equal(v, prev))
+      return;
+    this.inner.set_volume(v);
+    this._callbacks.emit('on_volume_changed')(v, prev, this)
   }
 
   bgm(): string | null {
@@ -49,17 +67,23 @@ export default class SoundMgr implements IPlayer {
     return this.inner.has(name);
   }
 
-  // @Log.Clone({ showRet: false })
   load(key: string, src: string) {
     return this.inner.load(key, src);
   }
 
   stop_bgm() {
-    this.inner.stop_bgm()
+    const prev = this.bgm();
+    if (!prev) return;
+    this.inner.stop_bgm();
+    this._callbacks.emit('on_bgm_changed')(null, prev, this);
+
   }
 
   play_bgm(name: string, restart?: boolean | undefined): () => void {
-    return this.inner.play_bgm(name, restart)
+    const prev = this.inner.bgm();
+    const ret = this.inner.play_bgm(name, restart);
+    this._callbacks.emit('on_bgm_changed')(name, prev, this);
+    return ret;
   }
 
   play(name: string, x?: number, y?: number, z?: number): string {

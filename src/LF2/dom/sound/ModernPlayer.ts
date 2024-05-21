@@ -91,7 +91,7 @@ export default class ModernPlayer implements IPlayer {
       gain_node.connect(ctx.destination)
       gain_node.gain.value = this._muted ? 0 : this._volume;
       src_node.connect(gain_node)
-
+      src_node.loop = true;
       this._bgm_node = {
         src_node,
         gain_node
