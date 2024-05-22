@@ -1,3 +1,4 @@
+import { Log, Warn } from "../../../Log";
 import { is_str } from "../../utils/type_check";
 import type Layout from "../Layout";
 import { read_call_func_expression } from "../utils/read_func_args";
@@ -10,7 +11,13 @@ class Actor {
     ['goto', ({ lf2 }, layout_id) => layout_id && lf2.set_layout(layout_id)],
     ['push', ({ lf2 }, layout_id) => layout_id && lf2.push_layout(layout_id)],
     ['loop_img', (l) => l.to_next_img()],
-    ['load_default_data', ({ lf2 }) => lf2.loading || lf2.load()],
+    ['load_data', ({ lf2 }, url) => {
+      if (lf2.loading) return;
+      lf2.load('lf2.data.zip')
+        .catch(e => Warn.print('Actor.load_data, lf2.data.zip not exists, will try lf2_data', e))
+        .then(() => lf2.load())
+        .catch(e => Warn.print('Actor.load_data', e))
+    }],
     ['pop', ({ lf2 }) => lf2.pop_layout()],
     ['broadcast', ({ lf2 }, message) => message && lf2.broadcast(message)],
     ['sound', ({ lf2 }, name) => name && lf2.sounds.play_preset(name)],

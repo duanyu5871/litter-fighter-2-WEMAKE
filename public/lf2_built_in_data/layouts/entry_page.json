@@ -76,7 +76,7 @@
           "actions": {
             "click": [
               "goto(loading)",
-              "load_default_data()"
+              "load_data(lf2.data.zip)"
             ]
           }
         },

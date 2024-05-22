@@ -41,9 +41,7 @@ export default class StageNameText extends LayoutComponent {
 
   override on_mount(): void {
     super.on_mount();
-
-    this._stage = this.stages[0] ?? Defines.VOID_STAGE;
-
+    this.switch_stage()
     this.layout.sprite.add(this._mesh);
     this._unmount_jobs.add(
       this.lf2.callbacks.add({
@@ -67,6 +65,10 @@ export default class StageNameText extends LayoutComponent {
 
   protected switch_stage() {
     const { stages } = this;
+    if (!stages.length) {
+      this._stage = Defines.VOID_STAGE;
+      return
+    }
     const state_id = this.stage.id;
     const curr_idx = stages.findIndex(v => v.id === state_id)
     const next_idx = (curr_idx + 1) % stages.length;
