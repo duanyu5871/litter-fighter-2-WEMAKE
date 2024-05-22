@@ -23,19 +23,21 @@ export default class LoadingFileNameDisplayer extends LayoutComponent {
     this._unmount_job.add(
       () => this._mesh?.removeFromParent(),
       this.lf2.callbacks.add({
-        on_loading_content: content => this.update_sprite(content),
+        on_loading_content: (content, progress) => this.update_sprite(content, progress),
         on_loading_end: (): void => this.lf2.set_layout('main_page')
       })
     )
   }
-  
+
   override on_unmount(): void {
     super.on_unmount();
     this._unmount_job.invoke();
     this._unmount_job.clear();
   }
 
-  protected async update_sprite(text: string) {
-    this._mesh.set_text(text).apply();
+  protected async update_sprite(text: string, progress: number) {
+    const str = progress ? `${text}(${progress}%)` : text;
+    this._mesh.set_text(str).apply();
+
   }
 }

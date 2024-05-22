@@ -408,6 +408,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     this._callbacks.emit('on_loading_start')();
     this.set_layout("loading");
     if (is_str(arg1)) {
+      this.on_loading_content(`download: ${arg1}`, 0);
       return Zip.download(arg1, (progress, full_size) => {
         const txt = `download: ${arg1}(${get_short_file_size_txt(full_size)})`;
         this.on_loading_content(txt, progress);
@@ -694,6 +695,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     if (ret.children?.length === 0) delete ret.children;
     return ret;
   }
+
   switch_difficulty(): void {
     const { difficulty } = this;
     const max = this.is_cheat_enabled(Defines.Cheats.LF2_NET) ? 4 : 3;
