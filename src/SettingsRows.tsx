@@ -42,7 +42,6 @@ export default function SettingsRows(props: ISettingsRowsProps) {
   const [stage_id, set_stage_id] = useState(Defines.VOID_STAGE.id);
 
   const [bgm, set_bgm] = useState<string>(lf2?.sounds.bgm() ?? '');
-  const [stage_bgm, set_stage_bgm] = useState<boolean>(lf2?.bgm_enable ?? false);
   const [stage_phase_list, set_stage_phases] = useState<IStagePhaseInfo[]>(_stage_data?.phases ?? []);
   const [stage_phase_idx, set_stage_phase_idx] = useState<number>(_stage?.cur_phase ?? -1);
   const [difficulty, set_difficulty] = useState<Defines.Difficulty>(lf2?.difficulty ?? Defines.Difficulty.Difficult);
@@ -76,10 +75,6 @@ export default function SettingsRows(props: ISettingsRowsProps) {
   }, [lf2])
 
   const bgm_list = useBgmList(lf2);
-  useEffect(() => {
-    if (!lf2) return;
-    lf2.set_bgm_enable(stage_bgm)
-  }, [stage_bgm, lf2]);
 
   useEffect(() => {
     if (!lf2) return;
@@ -132,9 +127,6 @@ export default function SettingsRows(props: ISettingsRowsProps) {
             on_changed={(id: string) => lf2.change_stage(id)}
             items={stage_list}
             option={i => [i.id, i.name]} />
-        </Titled>
-        <Titled title='音乐'>
-          <Checkbox value={stage_bgm} onChanged={set_stage_bgm} />
         </Titled>
         <Button onClick={() => lf2.world.stage.kill_all_enemies()}>杀死全部敌人</Button>
         <Button onClick={() => lf2.world.stage.kill_boss()}>杀死Boss</Button>

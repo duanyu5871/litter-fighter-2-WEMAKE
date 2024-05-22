@@ -24,7 +24,6 @@ export default class Stage {
   private _callbacks = new Callbacks<IStageCallbacks>();
   private _disposed: boolean = false;
   private _disposers: (() => void)[] = [];
-  private _bgm_enable: boolean;
   private _cur_phase_idx = -1;
   get name(): string { return this.data.name }
   get cur_phase(): number { return this._cur_phase_idx }
@@ -58,7 +57,6 @@ export default class Stage {
 
   constructor(world: World, data: IStageInfo | IBgData) {
     this.world = world;
-    this._bgm_enable = this.world.lf2.bgm_enable;
     if ('type' in data && data.type === 'background') {
       this.data = Defines.VOID_STAGE;
       this.bg = new Background(world, data);
@@ -78,10 +76,9 @@ export default class Stage {
 
   private _stop_bgm?: () => void;
 
-  private async try_play_phase_bgm() {
+  private async play_phase_bgm() {
     const phase_info = this.data.phases[this._cur_phase_idx]
     if (!phase_info) return;
-    if (!this._bgm_enable) return;
     const { lf2 } = this;
     const { music } = phase_info;
     if (!music) return;
@@ -105,7 +102,7 @@ export default class Stage {
     this._callbacks.emit('on_phase_changed')(this, phase, old);
     if (!phase) return;
     const { objects } = phase;
-    this.try_play_phase_bgm()
+    this.play_phase_bgm()
     for (const object of objects) {
       this.spawn_object(object);
     }
@@ -125,11 +122,6 @@ export default class Stage {
       return;
     }
     this.lf2.goto_next_stage()
-  }
-  set_bgm_enable(enabled: boolean) {
-    this._bgm_enable = enabled;
-    if (enabled) this.try_play_phase_bgm();
-    else if (this._stop_bgm) this._stop_bgm();
   }
 
   readonly items = new Set<Item>();

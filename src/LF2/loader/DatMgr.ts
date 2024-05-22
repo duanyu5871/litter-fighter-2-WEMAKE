@@ -104,14 +104,14 @@ class Inner {
     for (const k of Object.keys(Defines.BuiltIn.Imgs)) {
       const src = (Defines.BuiltIn.Imgs as any)[k];
       if (!not_blank_str(src)) continue;
-      this.lf2.on_loading_content(`loading: ${src}`, 0);
+      this.lf2.on_loading_content(`${src}`, 0);
       await this.lf2.images.load_img(src, src)
     }
 
     for (const k of Object.keys(Defines.BuiltIn.Dats)) {
       const src = (Defines.BuiltIn.Dats as any)[k];
       if (!not_blank_str(src)) continue;
-      this.lf2.on_loading_content(`loading: ${src}`, 0);
+      this.lf2.on_loading_content(`${src}`, 0);
       await this._add_data(src, await this.lf2.import_json(src))
     }
 
@@ -123,12 +123,12 @@ class Inner {
     for (const { id, file } of objects) {
       if (this.cancelled) throw new Error('cancelled')
 
-      this.lf2.on_loading_content(`loading: ${file}`, 0);
+      this.lf2.on_loading_content(`${file}`, 0);
       await this._add_data(id, await this.lf2.import_json(file));
     }
     for (const { id, file } of backgrounds) {
       if (this.cancelled) throw new Error('cancelled')
-      this.lf2.on_loading_content(`loading: ${file}`, 0);
+      this.lf2.on_loading_content(`${file}`, 0);
       await this._add_data(id, await this.lf2.import_json(file));
     }
     for (const [, v] of this.data_map) {
@@ -139,9 +139,9 @@ class Inner {
     }
 
     const stage_file = 'data/stage.json';
-    this.lf2.on_loading_content(`loading: ${stage_file}`, 0);
+    this.lf2.on_loading_content(`${stage_file}`, 0);
     this.stages = [Defines.VOID_STAGE, ...await this.lf2.import_json('data/stage.json')];
-    this.lf2.on_loading_content(`loading: ${stage_file}`, 100);
+    this.lf2.on_loading_content(`${stage_file}`, 100);
   }
 }
 

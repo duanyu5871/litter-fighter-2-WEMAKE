@@ -92,20 +92,11 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   readonly keyboard: Keyboard;
   readonly pointings: Pointings;
 
-  private _bgm_enable = false;
-  get bgm_enable() { return this._bgm_enable; }
-
   get stages(): IStageInfo[] { return this.datas.stages }
 
   find_stage(stage_id: string): IStageInfo | undefined {
     return this.stages.find(v => v.id === stage_id);
   }
-
-  set_bgm_enable(enabled: boolean): void {
-    this._bgm_enable = enabled;
-    this.world.stage.set_bgm_enable(enabled);
-  }
-
 
   readonly bgms = new Loader<string[]>(() => {
     const jobs = [
@@ -410,9 +401,9 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     this._callbacks.emit('on_loading_start')();
     this.set_layout("loading");
     if (is_str(arg1)) {
-      this.on_loading_content(`download: ${arg1}`, 0);
+      this.on_loading_content(`${arg1}`, 0);
       return Zip.download(arg1, (progress, full_size) => {
-        const txt = `download: ${arg1}(${get_short_file_size_txt(full_size)})`;
+        const txt = `${arg1}(${get_short_file_size_txt(full_size)})`;
         this.on_loading_content(txt, progress);
       }).then(r => {
         return this.load_data(r)

@@ -1,11 +1,11 @@
 import * as THREE from 'three';
 import { create_img_ele } from '../../Utils/create_img_ele';
 import { get_blob } from '../../Utils/get_blob';
+import type LF2 from "../LF2";
+import AsyncValuesKeeper from "../base/AsyncValuesKeeper";
 import { IEntityPictureInfo } from '../defines';
 import type IPicture from '../defines/IPicture';
 import type IStyle from "../defines/IStyle";
-import type LF2 from "../LF2";
-import AsyncValuesKeeper from "../base/AsyncValuesKeeper";
 import md5 from "../dom/md5";
 export type TPicture = IPicture<THREE.Texture>;
 
@@ -117,7 +117,7 @@ export class ImageMgr {
 
   load_img(key: string, src: string, paint?: PaintFunc): Promise<TImageInfo> {
     const fn = async () => {
-      this.lf2.on_loading_content(`loading: ${key}`, 0);
+      this.lf2.on_loading_content(`${key}`, 0);
       const info = await this._make_img_info(key, src, paint);
       return info
     }

@@ -74,7 +74,7 @@ export default class ModernPlayer implements IPlayer {
 
   protected apply_bgm_volume() {
     if (!this._bgm_node) return;
-    const muted = this._muted || this._sound_muted;
+    const muted = this._muted || this._bgm_muted;
     this._bgm_node.gain_node.gain.value = (muted ? 0 : this._volume) / 4;
   }
 
@@ -88,11 +88,11 @@ export default class ModernPlayer implements IPlayer {
 
   load(name: string, src: string) {
     return this._r.get(name, async () => {
-      this.lf2.on_loading_content(`loading: ${name}`, 0);
+      this.lf2.on_loading_content(`${name}`, 0);
       const url = await this.lf2.import_resource(src);
       const buf = await axios.get<ArrayBuffer>(url, { responseType: 'arraybuffer' })
         .then(v => this.ctx.decodeAudioData(v.data));
-      this.lf2.on_loading_content(`loading: ${name}`, 100);
+      this.lf2.on_loading_content(`${name}`, 100);
       return buf
     })
   }
@@ -122,7 +122,8 @@ export default class ModernPlayer implements IPlayer {
 
       const gain_node = this.ctx.createGain()
       gain_node.connect(ctx.destination)
-      gain_node.gain.value = (this._muted ? 0 : this._volume) / 4;
+      const muted = this._muted || this._bgm_muted;
+      gain_node.gain.value = (muted ? 0 : this._volume) / 4;
       src_node.connect(gain_node)
       src_node.loop = true;
       this._bgm_node = {
