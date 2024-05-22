@@ -27,15 +27,18 @@ export default class Zip {
     return JSZIP.loadAsync(file).then(v => new Zip(v))
   }
 
-  static async download(url: string, on_progress: (progress: number, size: number) => void): Promise<Zip> {
-    const resp = await axios.get(url, {
+  static download(url: string, on_progress: (progress: number, size: number) => void): Promise<Zip> {
+    return axios.get(url, {
       responseType: 'blob',
       onDownloadProgress: (e) => {
         const progress = e.total ? Math.round(100 * e.loaded / e.total) : 100;
         on_progress(progress, e.total ?? e.loaded);
       }
+    }).then(resp => {
+      return JSZIP.loadAsync(resp.data)
+    }).then(v => {
+      return new Zip(v);
     });
-    return JSZIP.loadAsync(resp.data).then(v => new Zip(v));
   }
 
   private inner: JSZIP;
