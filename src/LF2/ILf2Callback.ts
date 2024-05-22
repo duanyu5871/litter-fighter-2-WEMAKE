@@ -1,7 +1,6 @@
 import Layout from '../LF2/layout/Layout';
-import { IStageInfo } from "./defines/IStageInfo";
-import { Defines } from './defines/defines';
 import { PlayerInfo } from './PlayerInfo';
+import { Defines } from './defines/defines';
 
 
 export interface ILf2Callback {
@@ -11,12 +10,7 @@ export interface ILf2Callback {
   on_loading_end?(): void;
   on_loading_failed?(reason: any): void;
 
-
-
   on_loading_content?(content: string, progress: number): void;
-
-  on_stages_loaded?(stages: IStageInfo[]): void;
-  on_stages_clear?(): void;
 
   on_bgms_loaded?(names: string[]): void;
   on_bgms_clear?(): void;

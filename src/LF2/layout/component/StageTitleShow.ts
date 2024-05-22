@@ -1,11 +1,11 @@
-import Invoker from "../../base/Invoker";
-import Stage from "../../stage/Stage";
+import Sprite from "../../3d/Sprite";
 import NumberAnimation from "../../animation/NumberAnimation";
 import SequenceAnimation from '../../animation/SequenceAnimation';
+import Invoker from "../../base/Invoker";
+import Stage from "../../stage/Stage";
 import { is_str } from "../../utils/type_check";
 import read_nums from "../utils/read_nums";
 import { LayoutComponent } from "./LayoutComponent";
-import Sprite from "../../3d/Sprite";
 
 export default class StageTitleShow extends LayoutComponent {
   protected _unmount_jobs = new Invoker();
@@ -102,9 +102,6 @@ export default class StageTitleShow extends LayoutComponent {
     this._unmount_jobs.add(
       this.world.callbacks.add({
         on_stage_change: v => this.on_stage_change(v),
-      }),
-      this.lf2.callbacks.add({
-        on_stages_clear: () => this.on_stages_clear()
       })
     )
   }

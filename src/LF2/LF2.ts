@@ -37,10 +37,6 @@ import { arithmetic_progression } from './utils/math/arithmetic_progression';
 import { random_get, random_in, random_take } from './utils/math/random';
 import { is_arr, is_num, is_str, not_empty_str } from './utils/type_check';
 
-// Factory.inst.set('frame_animater', (...args) => new FrameAnimater(...args));
-// Factory.inst.set('weapon', (...args) => new Weapon(...args))
-// Factory.inst.set('character', (...args) => new Character(...args))
-// Factory.inst.set('ball', (...args) => new Ball(...args))
 const cheat_info_pair = (n: Defines.Cheats) => ['' + n, {
   keys: Defines.CheatKeys[n],
   sound: Defines.CheatSounds[n],
@@ -85,18 +81,30 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   get curr_layout(): Layout | undefined { return this._layout_stacks[this._layout_stacks.length - 1] }
   set curr_layout(v: Layout | undefined) { this._layout_stacks[this._layout_stacks.length - 1] = v }
 
+
+  readonly characters: Record<string, (num: number, team?: string) => void> = {}
+  readonly weapons: Record<string, (num: number, team?: string) => void> = {}
+
+  readonly datas: DatMgr;
+  readonly sounds: SoundMgr;
+  readonly images: ImageMgr
+  readonly keyboard: Keyboard;
+  readonly pointings: Pointings;
+
   private _bgm_enable = false;
   get bgm_enable() { return this._bgm_enable; }
+
+  get stages(): IStageInfo[] { return this.datas.stages }
+
+  find_stage(stage_id: string): IStageInfo | undefined {
+    return this.stages.find(v => v.id === stage_id);
+  }
+
   set_bgm_enable(enabled: boolean): void {
     this._bgm_enable = enabled;
     this.world.stage.set_bgm_enable(enabled);
   }
 
-  readonly stages = new Loader<IStageInfo[]>(
-    async () => [Defines.VOID_STAGE, ...await this.import_json('data/stage.json')],
-    (d) => this._callbacks.emit('on_stages_loaded')(d),
-    () => this._callbacks.emit('on_stages_clear')()
-  )
 
   readonly bgms = new Loader<string[]>(() => {
     const jobs = [
@@ -141,14 +149,6 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     return import_as_blob_url(paths);
   }
 
-  readonly characters: Record<string, (num: number, team?: string) => void> = {}
-  readonly weapons: Record<string, (num: number, team?: string) => void> = {}
-
-  readonly datas: DatMgr;
-  readonly sounds: SoundMgr;
-  readonly images: ImageMgr
-  readonly keyboard: Keyboard;
-  readonly pointings: Pointings;
 
   constructor(canvas: HTMLCanvasElement, overlay?: HTMLDivElement | null) {
     this.canvas = canvas;
@@ -535,7 +535,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     if (arg === this.world.stage.data)
       return;
     if (is_str(arg))
-      arg = this.stages.data?.find(v => v.id === arg)
+      arg = this.stages?.find(v => v.id === arg)
     if (!arg)
       return;
     this.world.stage = new Stage(this.world, arg)
@@ -546,7 +546,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
 
   goto_next_stage() {
     const next = this.world.stage.data.next;
-    const next_stage = this.stages.data?.find(v => v.id === next);
+    const next_stage = this.stages?.find(v => v.id === next);
     if (!next_stage) {
       this.world.stage.stop_bgm();
       this.sounds.play_with_load(Defines.Sounds.StagePass);

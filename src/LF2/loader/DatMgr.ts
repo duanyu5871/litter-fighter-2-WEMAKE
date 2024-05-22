@@ -1,6 +1,6 @@
 import { Log } from '../../Log';
 import LF2 from '../LF2';
-import { IBallData, IBgData, ICharacterData, IDataMap, IEntityData, IGameObjData, IWeaponData } from '../defines';
+import { IBallData, IBgData, ICharacterData, IDataMap, IEntityData, IGameObjData, IStageInfo, IWeaponData } from '../defines';
 import { Defines } from '../defines/defines';
 import { TData } from '../entity/Entity';
 import { traversal } from '../utils/container_help/traversal';
@@ -31,7 +31,7 @@ class Inner {
   get cancelled(): boolean { return this.mgr.inner_id !== this.id }
   data_list_map = create_data_list_map();
   data_map = new Map<string, IGameObjData>();
-
+  stages: IStageInfo[] = [Defines.VOID_STAGE]
   get lf2() { return this.mgr.lf2 }
 
   constructor(mgr: DatMgr, id: number) {
@@ -111,7 +111,6 @@ class Inner {
     for (const k of Object.keys(Defines.BuiltIn.Dats)) {
       const src = (Defines.BuiltIn.Dats as any)[k];
       if (!not_blank_str(src)) continue;
-
       this.lf2.on_loading_content(`loading: ${src}`, 0);
       await this._add_data(src, await this.lf2.import_json(src))
     }
@@ -138,6 +137,11 @@ class Inner {
       this.data_list_map[t]?.push(v as any);
       this.data_list_map.all.push(v as any);
     }
+
+    const stage_file = 'data/stage.json';
+    this.lf2.on_loading_content(`loading: ${stage_file}`, 0);
+    this.stages = [Defines.VOID_STAGE, ...await this.lf2.import_json('data/stage.json')];
+    this.lf2.on_loading_content(`loading: ${stage_file}`, 100);
   }
 }
 
@@ -152,7 +156,6 @@ export default class DatMgr {
   private _inner_id: number = 0;
   private _inner = new Inner(this, ++this._inner_id);
   get inner_id(): number { return this._inner_id; }
-
   readonly lf2: LF2;
 
   constructor(lf2: LF2) {
@@ -178,6 +181,7 @@ export default class DatMgr {
   get balls() { return this._inner.data_list_map.ball; }
   get entity() { return this._inner.data_list_map.entity; }
   get all() { return this._inner.data_list_map.all; }
+  get stages(): IStageInfo[] { return this._inner.stages }
 
   find(id: number | string): IGameObjData | undefined {
     return this._inner.data_map.get('' + id)

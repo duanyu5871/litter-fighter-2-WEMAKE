@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { useImmer } from 'use-immer';
 import { Button } from './Component/Button';
 import CharacterSelect from './Component/CharacterSelect';
 import { Checkbox } from "./Component/Checkbox";
@@ -9,7 +8,6 @@ import Show from './Component/Show';
 import TeamSelect from './Component/TeamSelect';
 import Titled from './Component/Titled';
 import { ILf2Callback } from './LF2/ILf2Callback';
-import { IWorldCallbacks } from './LF2/IWorldCallbacks';
 import LF2 from './LF2/LF2';
 import { BaseController } from './LF2/controller/BaseController';
 import { BotEnemyChaser } from './LF2/controller/BotEnemyChaser';
@@ -18,6 +16,8 @@ import { IStageInfo } from "./LF2/defines/IStageInfo";
 import { IStagePhaseInfo } from "./LF2/defines/IStagePhaseInfo";
 import { Defines } from './LF2/defines/defines';
 import Character from './LF2/entity/Character';
+import Stage from './LF2/stage/Stage';
+import { useLocalNumber, useLocalString } from './useLocalStorage';
 const bot_controllers: { [x in string]?: (e: Character) => BaseController } = {
   'OFF': (e: Character) => new InvalidController('', e),
   'enemy chaser': (e: Character) => new BotEnemyChaser('', e)
@@ -36,11 +36,11 @@ export default function SettingsRows(props: ISettingsRowsProps) {
   const { lf2, visible = true } = props;
   const _stage = lf2?.world.stage;
   const _stage_data = _stage?.data;
-  const [value, set_value] = useImmer({
-    bg_id: _stage_data?.bg ?? Defines.VOID_BG.id,
-    stage_id: _stage_data?.id ?? Defines.VOID_STAGE.id,
-    type: (_stage_data?.id === Defines.VOID_STAGE.id ? 'bg' : 'stage') as 'bg' | 'stage'
-  });
+
+  const [stage_list, set_stage_list] = useState<IStageInfo[]>();
+  const [bg_id, set_bg_id] = useState(Defines.VOID_BG.id);
+  const [stage_id, set_stage_id] = useState(Defines.VOID_STAGE.id);
+
   const [bgm, set_bgm] = useState<string>(lf2?.sounds.bgm() ?? '');
   const [stage_bgm, set_stage_bgm] = useState<boolean>(lf2?.bgm_enable ?? false);
   const [stage_phase_list, set_stage_phases] = useState<IStagePhaseInfo[]>(_stage_data?.phases ?? []);
@@ -49,10 +49,37 @@ export default function SettingsRows(props: ISettingsRowsProps) {
 
   useEffect(() => {
     set_bgm(lf2?.sounds.bgm() ?? '')
-    set_stage_bgm(lf2?.bgm_enable ?? false);
-    set_stage_phases(lf2?.world.stage.data.phases ?? []);
-    set_stage_phase_idx(lf2?.world.stage.cur_phase ?? -1);
     set_difficulty(lf2?.difficulty ?? Defines.Difficulty.Difficult)
+    set_stage_list(lf2?.stages);
+    const on_stage_change = (stage: Stage | undefined) => {
+      set_stage_id(stage?.data.id ?? Defines.VOID_STAGE.id);
+      set_bg_id(stage?.bg.data.id ?? Defines.VOID_BG.id);
+      set_stage_phases(stage?.data.phases ?? []);
+      set_stage_phase_idx(stage?.cur_phase ?? -1);
+      stage?.callbacks.add({
+        on_phase_changed(stage, curr,) {
+          set_stage_phase_idx(curr ? stage.data.phases.indexOf(curr) : -1)
+        }
+      })
+      if (!lf2) return;
+      if (stage?.data.id !== Defines.VOID_STAGE.id)
+        lf2.push_layout('stage_mode_page');
+      else if (stage?.bg.data.id !== Defines.VOID_BG.id)
+        lf2.push_layout('vs_mode_page')
+      else
+        lf2.set_layout('main_page')
+    }
+    on_stage_change(lf2?.world.stage);
+
+    if (!lf2) return;
+    const a = [
+      lf2.callbacks.add({
+        on_difficulty_changed: set_difficulty,
+        on_loading_end: () => set_stage_list(lf2.stages),
+      }),
+      lf2.world.callbacks.add({ on_stage_change })
+    ]
+    return () => a.forEach(b => b())
   }, [lf2])
 
   const bgm_list = useBgmList(lf2);
@@ -67,67 +94,18 @@ export default function SettingsRows(props: ISettingsRowsProps) {
     else lf2.sounds.play_bgm(bgm)
   }, [bgm, lf2]);
 
-  useEffect(() => {
-    if (!lf2) return;
-    const callback: ILf2Callback = {
-      on_difficulty_changed: set_difficulty,
-    }
-    return lf2.callbacks.add(callback)
-  }, [lf2])
-
-  useEffect(() => {
-    if (!lf2) return;
-
-    const world_callbacks: IWorldCallbacks = {
-      on_stage_change: (curr) => {
-        set_value({
-          stage_id: curr.data.id,
-          bg_id: curr.bg.data.id,
-          type: curr.data.id === Defines.VOID_STAGE.id ? 'bg' : 'stage'
-        })
-        set_stage_phase_idx(0);
-        set_stage_phases(curr.data.phases);
-        curr.callbacks.add({
-          on_phase_changed(stage, curr, prev) {
-            set_stage_phase_idx(curr ? stage.data.phases.indexOf(curr) : -1)
-          },
-        })
-      },
-    }
-    return lf2.world.callbacks.add(world_callbacks)
-  }, [lf2, set_value]);
-
-
-  const stage_list = useStageList(lf2);
-
-  const { bg_id, stage_id, type } = value
-  useEffect(() => {
-    if (!lf2?.loaded) return;
-    if (type === 'bg')
-      lf2.change_bg(bg_id);
-    else if (type === 'stage')
-      lf2.change_stage(stage_id);
-
-    if (bg_id !== Defines.VOID_BG.id && type === 'bg')
-      lf2.set_layout('vs_mode_page')
-    else if (stage_id !== Defines.VOID_STAGE.id && type === 'stage')
-      lf2.set_layout('stage_mode_page')
-    else
-      lf2.set_layout('main_page')
-  }, [lf2, bg_id, stage_id, type, stage_list]);
-
   const min_rwn = 1;
   const max_rwn = 100;
-  const [rwn, set_rwn] = useState(10)
+  const [rwn, set_rwn] = useLocalNumber<number>('debug_rwn', 10)
 
   const min_rcn = 1;
   const max_rcn = 100;
-  const [rcn, set_rcn] = useState(10)
+  const [rcn, set_rcn] = useLocalNumber<number>('debug_rcn', 10)
 
   const [weapon_id, set_weapon_id] = useState<string>('');
   const [c_id, set_character_id] = useState<string>('');
-  const [team, set_team] = useState<string>('');
-  const [bot_ctrl, set_bot_ctrl] = useState<string>('');
+  const [team, set_team] = useLocalString<string>('debug_bot_team', '');
+  const [bot_ctrl, set_bot_ctrl] = useLocalString<string>('debug_bot_ctrl', '');
 
   if (!lf2 || visible === false) return <></>;
 
@@ -157,11 +135,8 @@ export default function SettingsRows(props: ISettingsRowsProps) {
         <div className='settings_row_title'>切换关卡</div>
         <Titled title='关卡'>
           <Select
-            value={value.stage_id}
-            on_changed={(v: string) => set_value(draft => {
-              draft.type = 'stage'
-              draft.stage_id = v;
-            })}
+            value={stage_id}
+            on_changed={(id: string) => lf2.change_stage(id)}
             items={stage_list}
             option={i => [i.id, i.name]} />
         </Titled>
@@ -185,11 +160,8 @@ export default function SettingsRows(props: ISettingsRowsProps) {
         <div className='settings_row_title'>切换背景</div>
         <Titled title='背景'>
           <Select
-            value={value.bg_id}
-            on_changed={(v: string) => set_value(draft => {
-              draft.type = 'bg'
-              draft.bg_id = v;
-            })}
+            value={bg_id}
+            on_changed={(bg_id: string) => lf2.change_bg(bg_id)}
             items={lf2.datas.backgrounds}
             option={i => [i.id, i.base.name]} />
         </Titled>
@@ -280,20 +252,4 @@ function useBgmList(lf2?: LF2 | null): string[] {
     return lf2.callbacks.add(lf2_callbacks);
   }, [lf2]);
   return bgm_list
-}
-
-const empty_stage_list = [Defines.VOID_STAGE];
-function useStageList(lf2?: LF2 | null): IStageInfo[] {
-  const [stage_list, set_stage_list] = useState<IStageInfo[]>(empty_stage_list);
-  useEffect(() => {
-    if (!lf2) return;
-    lf2.stages.need_load && lf2.stages.load();
-    lf2.stages.need_load || set_stage_list(lf2.stages.data ?? empty_stage_list)
-    const lf2_callbacks: ILf2Callback = {
-      on_stages_loaded: (stages) => set_stage_list(stages),
-      on_stages_clear: () => set_stage_list(empty_stage_list)
-    }
-    return lf2.callbacks.add(lf2_callbacks);
-  }, [lf2])
-  return stage_list
 }

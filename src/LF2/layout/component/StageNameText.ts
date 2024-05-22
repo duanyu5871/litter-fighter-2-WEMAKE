@@ -13,7 +13,7 @@ export default class StageNameText extends LayoutComponent {
   }
 
   get stages(): IStageInfo[] {
-    const ret = this.lf2.stages.data?.filter(v => v.id !== Defines.VOID_STAGE.id) || [];
+    const ret = this.lf2.stages?.filter(v => v.id !== Defines.VOID_STAGE.id) || [];
     if (this.show_all) return ret;
     return ret.filter(v => v.is_starting);
   }
@@ -50,7 +50,7 @@ export default class StageNameText extends LayoutComponent {
             this.switch_stage()
         },
         on_cheat_changed: () => this.switch_stage(),
-        on_stages_loaded: () => this.switch_stage(),
+        on_loading_end: () => this.switch_stage(),
       }),
       () => this._mesh.removeFromParent(),
     )
