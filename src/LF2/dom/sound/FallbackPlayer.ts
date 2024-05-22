@@ -12,6 +12,9 @@ export default class FallbackPlayer implements IPlayer {
   readonly lf2: LF2;
   protected _muted: boolean = true;
   protected _volume: number = 0.3;
+  protected _bgm_muted: boolean = true;
+  protected _sound_muted: boolean = false;
+
   constructor(lf2: LF2) {
     this.lf2 = lf2;
   }
@@ -20,16 +23,41 @@ export default class FallbackPlayer implements IPlayer {
   }
   set_muted(v: boolean): void {
     this._muted = v;
-    for (const [, a] of this._playings) a.muted = v;
-    if (this._bgm_ele) this._bgm_ele.muted = v
+    this.apply_sounds_volume();
+    this.apply_bgm_volume();
   }
+
+  bgm_muted(): boolean {
+    return this._bgm_muted;
+  }
+  set_bgm_muted(v: boolean): void {
+    this._bgm_muted = v;
+    this.apply_bgm_volume();
+  }
+  sound_muted(): boolean {
+    return this._sound_muted;
+  }
+  set_sound_muted(v: boolean): void {
+    this._sound_muted = v;
+    this.apply_bgm_volume();
+  }
+
+  private apply_bgm_volume() {
+    if (this._bgm_ele) this._bgm_ele.muted = this._bgm_muted || this._muted;
+  }
+
+  private apply_sounds_volume() {
+    for (const [, a] of this._playings) a.muted = this._sound_muted || this._muted;
+  }
+
   volume(): number {
     return this._volume;
   }
+
   set_volume(v: number): void {
     this._volume = v;
-    for (const [, a] of this._playings) a.volume = v;
-    if (this._bgm_ele) this._bgm_ele.volume = v / 4
+    this.apply_bgm_volume();
+    this.apply_sounds_volume();
   }
 
   bgm(): string | null {

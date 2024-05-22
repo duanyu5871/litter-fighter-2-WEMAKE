@@ -44,6 +44,8 @@ function App() {
   const [loaded, set_loaded] = useState(false);
   const [paused, set_paused] = useState(false);
   const [muted, set_muted] = useState(false);
+  const [bgm_muted, set_bgm_muted] = useState(false);
+  const [sound_muted, set_sound_muted] = useState(false);
   const [volume, set_volume] = useState(1);
   const [bg_id, set_bg_id] = useState(Defines.VOID_BG.id);
 
@@ -90,12 +92,7 @@ function App() {
       fullscreen.enter(document.body.parentElement!);
   }
   const [layout, set_layout] = useState<string | undefined>(void 0);
-  useEffect(() => {
-    lf2_ref.current?.set_layout(layout)
-  }, [layout])
-
   const [layouts, set_layouts] = useState<Readonly<ILayoutInfo>[]>([{ id: '', name: '无页面' }]);
-
   useEffect(() => {
     const canvas = _canvas_ref.current!;
     const overlay = _overlay_ref.current!;
@@ -112,6 +109,8 @@ function App() {
     }
 
     set_muted(lf2_ref.current.sounds.muted());
+    set_bgm_muted(lf2_ref.current.sounds.bgm_muted());
+    set_sound_muted(lf2_ref.current.sounds.sound_muted());
     set_volume(lf2_ref.current.sounds.volume());
     set_cheat_1(lf2_ref.current.is_cheat_enabled(Defines.Cheats.LF2_NET));
     set_cheat_2(lf2_ref.current.is_cheat_enabled(Defines.Cheats.HERO_FT));
@@ -122,7 +121,7 @@ function App() {
         on_stage_change: (s) => set_bg_id(s.bg.id),
       }),
       lf2_ref.current.callbacks.add({
-        on_layout_changed: v => { set_layout(v?.id ?? '') },
+        on_layout_changed: v => set_layout(v?.id ?? ''),
         on_loading_start: () => set_loading(true),
         on_loading_end: () => {
           set_loaded(true);
@@ -138,6 +137,8 @@ function App() {
       }),
       lf2_ref.current.sounds.callbacks.add({
         on_muted_changed: v => set_muted(v),
+        on_bgm_muted_changed: v => set_bgm_muted(v),
+        on_sound_muted_changed: v => set_sound_muted(v),
         on_volume_changed: v => set_volume(v),
       })
     ];
@@ -241,8 +242,12 @@ function App() {
             src={[require('./btn_1_2.png'), require('./btn_1_3.png')]} />
         </Show>
         <ToggleImgButton
-          checked={muted}
-          onClick={() => lf2_ref.current?.sounds?.set_muted(!muted)}
+          checked={bgm_muted}
+          onClick={() => lf2_ref.current?.sounds?.set_bgm_muted(!bgm_muted)}
+          src={[require('./btn_2_0.png'), require('./btn_3_0.png')]} />
+        <ToggleImgButton
+          checked={sound_muted}
+          onClick={() => lf2_ref.current?.sounds?.set_sound_muted(!sound_muted)}
           src={[require('./btn_0_3.png'), require('./btn_1_0.png')]} />
         <Show show={bg_id !== Defines.VOID_BG.id}>
           <ToggleImgButton
@@ -250,6 +255,12 @@ function App() {
             shortcut='F1'
             onClick={() => set_paused(!paused)}
             src={[require('./btn_2_1.png'), require('./btn_2_2.png')]} />
+        </Show>
+        <Show show={layout && Number(lf2_ref.current?.layout_stacks.length) > 1}>
+          <ToggleImgButton
+            shortcut='F1'
+            onClick={() => lf2_ref.current?.pop_layout()}
+            src={[require('./btn_2_3.png')]} />
         </Show>
       </div>
       <Show.Div className={'debug_ui debug_ui_' + debug_ui_pos} show={control_panel_visible}>
@@ -289,9 +300,9 @@ function App() {
         <div className='settings_row'>
           <Select
             value={layout}
-            on_changed={set_layout}
+            on_changed={(v: string) => lf2_ref.current?.set_layout(v)}
             items={layouts}
-            option={o => [o.id, o.name]} />
+            option={o => [o.id!, o.name]} />
           <Titled title='Mode'>
             <Select
               value={render_size_mode}

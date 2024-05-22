@@ -7,7 +7,7 @@
   "key_press_actions": [
     [
       "escape",
-      "goto(entry)"
+      "set_layout(entry)"
     ]
   ],
   "items": [
@@ -355,7 +355,10 @@
       "rect": "489, 426, 151, 26",
       "pos": "407, 399",
       "actions": {
-        "click": "goto(entry)"
+        "click": [
+          "sound(ok)",
+          "set_layout(entry)"
+        ]
       }
     },
     {
@@ -365,7 +368,10 @@
       "rect": "643, 426, 151, 26",
       "pos": "579, 399",
       "actions": {
-        "click": "goto(entry)"
+        "click": [
+          "sound(cancel)",
+          "set_layout(entry)"
+        ]
       }
     },
     {
@@ -383,7 +389,10 @@
       "center": "0, 1",
       "pos": "0, 450",
       "actions": {
-        "click": "link_to(https://lf2.net/control.html)"
+        "click": [
+          "sound(ok)",
+          "link_to(https://lf2.net/control.html)"
+        ]
       }
     }
   ]

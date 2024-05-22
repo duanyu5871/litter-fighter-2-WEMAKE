@@ -75,7 +75,8 @@
           ],
           "actions": {
             "click": [
-              "goto(loading)",
+              "sound(ok)",
+              "set_layout(loading)",
               "load_data(lf2.data.zip)"
             ]
           }
@@ -91,7 +92,10 @@
             "reachable_layout(main)"
           ],
           "actions": {
-            "click": "alert(还没想好呢)"
+            "click": [
+              "sound(ok)",
+              "alert(还没想好呢)"
+            ]
           }
         },
         {
@@ -105,7 +109,10 @@
             "reachable_layout(main)"
           ],
           "actions": {
-            "click": "goto(ctrl_settings)"
+            "click": [
+              "sound(ok)",
+              "push_layout(ctrl_settings)"
+            ]
           }
         }
       ]

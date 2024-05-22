@@ -54,6 +54,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   get loaded() { return this._loaded; }
   get need_load() { return !this._loaded && !this._loading; }
 
+  get layout_stacks() { return this._layout_stacks };
   get difficulty(): Defines.Difficulty { return this._difficulty; }
   set difficulty(v: Defines.Difficulty) {
     if (this._difficulty === v) return;
@@ -251,6 +252,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     const layouts = intersections
       .filter(v => v.object.userData.owner instanceof Layout)
       .map(v => v.object.userData.owner as Layout)
+      .filter(v => v.global_visible && !v.global_disabled)
       .sort((a, b) => {
         if (b.level > a.level) {
           do { if (!b.parent) return 0; b = b.parent; } while (b.level !== a.level)

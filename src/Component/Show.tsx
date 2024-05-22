@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function Show(props: React.PropsWithChildren<{ show?: boolean }>) {
+export default function Show(props: React.PropsWithChildren<{ show?: any }>) {
   const { show = true } = props;
   if (!show) return <></>;
   return <>{props.children}</>

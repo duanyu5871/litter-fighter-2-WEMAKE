@@ -61,13 +61,6 @@ export default function SettingsRows(props: ISettingsRowsProps) {
           set_stage_phase_idx(curr ? stage.data.phases.indexOf(curr) : -1)
         }
       })
-      if (!lf2) return;
-      if (stage?.data.id !== Defines.VOID_STAGE.id)
-        lf2.push_layout('stage_mode_page');
-      else if (stage?.bg.data.id !== Defines.VOID_BG.id)
-        lf2.push_layout('vs_mode_page')
-      else
-        lf2.set_layout('main_page')
     }
     on_stage_change(lf2?.world.stage);
 

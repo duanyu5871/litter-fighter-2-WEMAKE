@@ -1,4 +1,33 @@
 export interface IPlayer {
+  /**
+   * 是否禁音
+   *
+   * @returns {boolean}
+   */
+  bgm_muted(): boolean
+
+
+  /**
+   * 设置是否禁音
+   *
+   * @param {boolean} v
+   */
+  set_bgm_muted(v: boolean): void;
+
+  /**
+   * 是否禁音
+   *
+   * @returns {boolean}
+   */
+  sound_muted(): boolean
+
+
+  /**
+   * 设置是否禁音
+   *
+   * @param {boolean} v
+   */
+  set_sound_muted(v: boolean): void;
 
   /**
    * 是否禁音
@@ -15,7 +44,7 @@ export interface IPlayer {
    */
   set_muted(v: boolean): void;
 
-  
+
   /**
    * 音量
    *
@@ -23,7 +52,7 @@ export interface IPlayer {
    */
   volume(): number;
 
-  
+
   /**
    * 设置
    *

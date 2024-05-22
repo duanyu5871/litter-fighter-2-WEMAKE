@@ -7,7 +7,7 @@
   "key_press_actions": [
     [
       "escape",
-      "goto(entry)"
+      "set_layout(entry)"
     ]
   ],
   "items": [
@@ -21,6 +21,9 @@
   ],
   "actions": {
     "enter": "",
-    "leave": ""
+    "leave": [
+      "remove_all_entities()",
+      "destory_stage()"
+    ]
   }
 }

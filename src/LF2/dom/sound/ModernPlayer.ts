@@ -16,18 +16,41 @@ export default class ModernPlayer implements IPlayer {
   protected _bgm_name: string | null = null;
   protected _sound_id = 0;
   protected _playings = new Map<string, { src_node: AudioBufferSourceNode, l_gain_node: GainNode, r_gain_node: GainNode, sound_x: number }>()
-  protected _muted: boolean = true;
+  protected _muted: boolean = false;
   protected _volume: number = 0.3;
+  protected _bgm_muted: boolean = true;
+  protected _sound_muted: boolean = false;
   constructor(lf2: LF2) {
     this.lf2 = lf2;
   }
+
   muted(): boolean {
     return this._muted;
   }
+
   set_muted(v: boolean): void {
     this._muted = v;
     this.apply_volume();
   }
+
+  bgm_muted(): boolean {
+    return this._bgm_muted;
+  }
+
+  set_bgm_muted(v: boolean): void {
+    this._bgm_muted = v;
+    this.apply_bgm_volume();
+  }
+
+  sound_muted(): boolean {
+    return this._sound_muted;
+  }
+
+  set_sound_muted(v: boolean): void {
+    this._sound_muted = v;
+    this.apply_sound_volume();
+  }
+
   volume(): number {
     return this._volume;
   }
@@ -37,14 +60,24 @@ export default class ModernPlayer implements IPlayer {
   }
 
   protected apply_volume(): void {
-    if (this._bgm_node)
-      this._bgm_node.gain_node.gain.value = (this._muted ? 0 : this._volume) / 4;
+    this.apply_bgm_volume();
+    this.apply_sound_volume();
+  }
+
+  protected apply_sound_volume() {
     for (const [, { sound_x, l_gain_node, r_gain_node }] of this._playings) {
       const [, l_vol, r_vol] = this.get_l_r_vol(sound_x);
       l_gain_node.gain.value = l_vol;
       r_gain_node.gain.value = r_vol;
     }
   }
+
+  protected apply_bgm_volume() {
+    if (!this._bgm_node) return;
+    const muted = this._muted || this._sound_muted;
+    this._bgm_node.gain_node.gain.value = (muted ? 0 : this._volume) / 4;
+  }
+
   bgm(): string | null {
     return this._bgm_name;
   }
@@ -109,10 +142,11 @@ export default class ModernPlayer implements IPlayer {
     const edge_w = Defines.OLD_SCREEN_WIDTH / 2;
     const viewer_x = this.lf2.world.camera.position.x + edge_w;
     const sound_x = x ?? viewer_x;
+    const muted = this._muted || this._sound_muted;
     return [
       sound_x,
-      (this._muted ? 0 : this._volume) * Math.max(0, 1 - Math.abs((sound_x - viewer_x + edge_w) / Defines.OLD_SCREEN_WIDTH)),
-      (this._muted ? 0 : this._volume) * Math.max(0, 1 - Math.abs((sound_x - viewer_x - edge_w) / Defines.OLD_SCREEN_WIDTH))
+      (muted ? 0 : this._volume) * Math.max(0, 1 - Math.abs((sound_x - viewer_x + edge_w) / Defines.OLD_SCREEN_WIDTH)),
+      (muted ? 0 : this._volume) * Math.max(0, 1 - Math.abs((sound_x - viewer_x - edge_w) / Defines.OLD_SCREEN_WIDTH))
     ]
   }
   play(name: string, x?: number, y?: number, z?: number): string {

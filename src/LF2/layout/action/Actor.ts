@@ -1,4 +1,4 @@
-import { Log, Warn } from "../../../Log";
+import { Warn } from "../../../Log";
 import { is_str } from "../../utils/type_check";
 import type Layout from "../Layout";
 import { read_call_func_expression } from "../utils/read_func_args";
@@ -8,8 +8,9 @@ class Actor {
   private _handler_map = new Map<string, IActionHandler>([
     ['alert', (_, msg) => alert(msg)],
     ['link_to', (_, url) => window.open(url)],
-    ['goto', ({ lf2 }, layout_id) => layout_id && lf2.set_layout(layout_id)],
-    ['push', ({ lf2 }, layout_id) => layout_id && lf2.push_layout(layout_id)],
+    ['set_layout', ({ lf2 }, layout_id) => layout_id && lf2.set_layout(layout_id)],
+    ['push_layout', ({ lf2 }, layout_id) => layout_id && lf2.push_layout(layout_id)],
+    ['pop_layout', ({ lf2 }) => lf2.pop_layout()],
     ['loop_img', (l) => l.to_next_img()],
     ['load_data', ({ lf2 }, url) => {
       if (lf2.loading) return;
@@ -18,10 +19,12 @@ class Actor {
         .then(() => lf2.load())
         .catch(e => Warn.print('Actor.load_data', e))
     }],
-    ['pop', ({ lf2 }) => lf2.pop_layout()],
     ['broadcast', ({ lf2 }, message) => message && lf2.broadcast(message)],
     ['sound', ({ lf2 }, name) => name && lf2.sounds.play_preset(name)],
     ['switch_difficulty', ({ lf2 }) => lf2.switch_difficulty()],
+    ['destory_stage', ({ lf2 }) => lf2.remove_stage()],
+    ['remove_all_entities', ({ lf2 }) => lf2.remove_all_entities()],
+
     ['exit', () => { if (window.confirm('确定退出?')) window.close() }]
   ])
   act(layout: Layout, actions: string | string[]): void {

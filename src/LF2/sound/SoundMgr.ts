@@ -11,6 +11,8 @@ import type { IPlayer } from "./IPlayer";
 import InvalidPlayer from "./InvalidPlayer";
 export interface ISoundMgrCallback {
   on_muted_changed?(muted: boolean, mgr: SoundMgr): void;
+  on_bgm_muted_changed?(muted: boolean, mgr: SoundMgr): void;
+  on_sound_muted_changed?(muted: boolean, mgr: SoundMgr): void;
   on_volume_changed?(volume: number, prev: number, mgr: SoundMgr): void;
   on_bgm_changed?(bgm: string | null, prev: string | null, mgr: SoundMgr): void;
 }
@@ -18,7 +20,7 @@ export default class SoundMgr implements IPlayer {
   private _callbacks = new Callbacks<ISoundMgrCallback>()
   readonly lf2: LF2;
   readonly inner: IPlayer;
-  readonly cls_list = [ModernPlayer, FallbackPlayer] as const;
+  readonly cls_list: (new (lf2: LF2) => IPlayer)[] = [ModernPlayer, FallbackPlayer];
   get callbacks(): NoEmitCallbacks<ISoundMgrCallback> {
     return this._callbacks
   }
@@ -36,14 +38,27 @@ export default class SoundMgr implements IPlayer {
       }
     }
   }
-
-  muted(): boolean {
-    return this.inner.muted();
+  bgm_muted(): boolean {
+    return this.inner.bgm_muted()
+  }
+  set_bgm_muted(v: boolean): void {
+    if (v === this.bgm_muted()) return;
+    this.inner.set_bgm_muted(v)
+    this._callbacks.emit('on_bgm_muted_changed')(v, this)
+  }
+  sound_muted(): boolean {
+    return this.inner.sound_muted()
+  }
+  set_sound_muted(v: boolean): void {
+    if (v === this.sound_muted()) return;
+    this.inner.set_sound_muted(v)
+    this._callbacks.emit('on_sound_muted_changed')(v, this)
   }
 
+  muted(): boolean { return this.inner.muted(); }
+
   set_muted(v: boolean): void {
-    if (v === this.muted())
-      return;
+    if (v === this.muted()) return;
     this.inner.set_muted(v);
     this._callbacks.emit('on_muted_changed')(v, this)
   }

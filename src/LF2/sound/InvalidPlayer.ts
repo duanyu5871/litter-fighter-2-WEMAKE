@@ -4,6 +4,10 @@ import { IPlayer } from "./IPlayer";
 export default class InvalidPlayer implements IPlayer {
   readonly lf2: LF2;
   constructor(lf2: LF2) { this.lf2 = lf2; }
+  bgm_muted(): boolean { return true }
+  set_bgm_muted(v: boolean): void { }
+  sound_muted(): boolean { return true }
+  set_sound_muted(v: boolean): void { }
   muted(): boolean { return true }
   set_muted(v: boolean): void { }
   volume(): number { return 0 }

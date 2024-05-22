@@ -76,7 +76,7 @@
           ],
           "actions": {
             "click": [
-              "push(vs_mode_prepare_page)",
+              "push_layout(vs_mode_prepare_page)",
               "sound(ok)"
             ]
           }
@@ -93,7 +93,7 @@
           ],
           "actions": {
             "click": [
-              "push(stage_mode_prepare_page)",
+              "push_layout(stage_mode_prepare_page)",
               "sound(ok)"
             ]
           }

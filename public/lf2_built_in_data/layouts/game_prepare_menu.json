@@ -145,7 +145,7 @@
       ],
       "actions": {
         "click": [
-          "pop()",
+          "pop_layout()",
           "sound(cancel)"
         ]
       }

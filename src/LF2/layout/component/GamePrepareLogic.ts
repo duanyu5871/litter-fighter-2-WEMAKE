@@ -275,8 +275,8 @@ export default class GamePrepareLogic extends LayoutComponent {
     if (background_name_text) this.lf2.change_bg(background_name_text.background);
 
     if (stage_name_text)
-      this.lf2.set_layout('stage_mode_page');
+      this.lf2.push_layout('stage_mode_page');
     else
-      this.lf2.set_layout('vs_mode_page');
+      this.lf2.push_layout('vs_mode_page');
   }
 }

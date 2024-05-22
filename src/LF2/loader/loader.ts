@@ -124,7 +124,7 @@ export class ImageMgr {
     return this._requesters.get(key, fn);
   }
 
-  protected _gen_key = (f: IEntityPictureInfo) => `${f.path}_${f.cell_w}_${f.cell_h}_${f.row}_${f.col}`;
+  protected _gen_key = (f: IEntityPictureInfo) => `${f.path}#${f.cell_w || 0}_${f.cell_h || 0}_${f.row}_${f.col}`;
   async load_by_e_pic_info(f: IEntityPictureInfo): Promise<TImageInfo> {
     const key = this._gen_key(f);
     const { path, cell_w, cell_h } = f;
@@ -240,7 +240,7 @@ export function err_pic_info(id: string = ''): TPicture {
 export function empty_texture() {
   return texture_loader.load('')
 }
-export function white_texture() { 
+export function white_texture() {
   return texture_loader.load(require('./white.png'));
 }
 export function error_texture() {
