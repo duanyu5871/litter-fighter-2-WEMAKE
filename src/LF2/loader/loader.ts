@@ -65,12 +65,14 @@ export class ImageMgr {
       padding_r = 2,
       padding_t = 2
     } = style
+    const text_align = style.text_align ?? 'left'
     const apply_text_style = () => {
       ctx.font = style.font ?? 'normal 9px system-ui';
       ctx.fillStyle = style.fill_style ?? 'white';
       ctx.strokeStyle = style.stroke_style ?? ''
       ctx.shadowColor = style.shadow_color ?? '';
       ctx.lineWidth = style.line_width ?? 1;
+      ctx.textAlign = text_align
       ctx.shadowBlur = 5;
       ctx.imageSmoothingEnabled = style.smoothing ?? false
     }
@@ -80,13 +82,20 @@ export class ImageMgr {
     let lines = text.split('\n').map((line, idx, arr) => {
       const t = idx === arr.length ? (line + '\n') : line;
       const { width, fontBoundingBoxAscent: a, fontBoundingBoxDescent: d } = ctx.measureText(t);
-      const ret = { x: 0, y: h + a, t }
+      const ret = { x: 0, y: h + a, t, w: width }
       w = Math.max(w, width);
       h += a + d;
       return ret;
     })
+    if (text_align === 'center')
+      for (const l of lines)
+        l.x = Math.round(w / 2)
+    else if (text_align === 'right')
+      for (const l of lines)
+        l.x = Math.round(w);
     cvs.style.width = (cvs.width = w + padding_l + padding_r) + 'px'
     cvs.style.height = (cvs.height = h + padding_t + padding_b) + 'px';
+
     apply_text_style();
     for (const { x, y, t } of lines) {
       ctx.fillText(t, padding_l + x, padding_t + y);

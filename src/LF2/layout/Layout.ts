@@ -1,19 +1,19 @@
 import * as THREE from 'three';
+import Sprite, { ISpriteInfo } from '../3d/Sprite';
 import LF2 from '../LF2';
+import NumberAnimation from '../animation/NumberAnimation';
 import Callbacks from '../base/Callbacks';
 import Expression, { ValGetter } from '../base/Expression';
 import NoEmitCallbacks from '../base/NoEmitCallbacks';
 import { TKeyName } from '../controller/BaseController';
-import { empty_texture, white_texture, type TImageInfo } from '../loader/loader';
-import NumberAnimation from '../animation/NumberAnimation';
-import { filter, find } from '../utils/container_help';
 import IStyle from '../defines/IStyle';
+import { empty_texture, white_texture, type TImageInfo } from '../loader/loader';
+import { filter, find } from '../utils/container_help';
 import { is_arr, is_bool, is_fun, is_num, is_str } from '../utils/type_check';
+import type { ILayoutInfo } from './ILayoutInfo';
 import actor from './action/Actor';
 import factory from './component/Factory';
 import { LayoutComponent } from './component/LayoutComponent';
-import Sprite, { ISpriteInfo } from '../3d/Sprite';
-import type { ILayoutInfo } from './ILayoutInfo';
 import read_nums from './utils/read_nums';
 
 export interface ILayoutCallback {
@@ -249,7 +249,6 @@ export default class Layout {
   on_show() {
     for (const c of this.components) c.on_show?.();
     this._callbacks.emit('on_show')(this);
-    console.log(this.name, this.data.auto_focus, !this.global_disabled, !this.focused_item)
     if (this.data.auto_focus && !this.global_disabled && !this.focused_item)
       this.focused_item = this
   }

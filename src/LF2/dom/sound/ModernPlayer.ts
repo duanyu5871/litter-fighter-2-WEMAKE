@@ -18,7 +18,7 @@ export default class ModernPlayer implements IPlayer {
   protected _playings = new Map<string, { src_node: AudioBufferSourceNode, l_gain_node: GainNode, r_gain_node: GainNode, sound_x: number }>()
   protected _muted: boolean = false;
   protected _volume: number = 0.3;
-  protected _bgm_muted: boolean = true;
+  protected _bgm_muted: boolean = false;
   protected _sound_muted: boolean = false;
   constructor(lf2: LF2) {
     this.lf2 = lf2;
@@ -75,7 +75,7 @@ export default class ModernPlayer implements IPlayer {
   protected apply_bgm_volume() {
     if (!this._bgm_node) return;
     const muted = this._muted || this._bgm_muted;
-    this._bgm_node.gain_node.gain.value = (muted ? 0 : this._volume) / 4;
+    this._bgm_node.gain_node.gain.value = (muted ? 0 : this._volume) / 8;
   }
 
   bgm(): string | null {
@@ -123,7 +123,7 @@ export default class ModernPlayer implements IPlayer {
       const gain_node = this.ctx.createGain()
       gain_node.connect(ctx.destination)
       const muted = this._muted || this._bgm_muted;
-      gain_node.gain.value = (muted ? 0 : this._volume) / 4;
+      gain_node.gain.value = (muted ? 0 : this._volume) / 8;
       src_node.connect(gain_node)
       src_node.loop = true;
       this._bgm_node = {

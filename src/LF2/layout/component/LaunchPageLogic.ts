@@ -1,32 +1,42 @@
 import NumberAnimation from "../../animation/NumberAnimation";
 import SequenceAnimation from "../../animation/SequenceAnimation";
+import { SineAnimation } from "../../animation/SineAnimation";
 import Invoker from "../../base/Invoker";
 import Timeout from "../../dom/Timeout";
 import { LayoutComponent } from "./LayoutComponent";
+import Layout from "../Layout";
 
 export default class LaunchPageLogic extends LayoutComponent {
   get entry_name(): string { return this.args[0] || '' }
+  protected tap_to_launch!: Layout;
+  protected yeonface!: Layout;
+  protected bearface!: Layout;
+  protected long_text!: Layout;
+  protected sound_warning!: Layout;
   protected _layouts_loaded: boolean = false;
   protected _dispose_jobs = new Invoker();
   protected _offset_x = new SequenceAnimation(1000, new NumberAnimation(0, 40, 500));
   protected _scale = new SequenceAnimation(1000, new NumberAnimation(0, 2, 250), new NumberAnimation(2, 1, 250));
   protected _opacity = new SequenceAnimation(1000, new NumberAnimation(0, 1, 500), 1000);
-  get bearface() { return this.layout.find_layout('bearface')! }
-  get yeonface() { return this.layout.find_layout('yeonface')! }
+  protected _unmount_jobs = new Invoker();
+
+  protected _tap_hints_opacity = new SineAnimation(.2, 1, 0.002)
+  protected _tap_hints_fadeout_opacity = new NumberAnimation(1, 0, 255)
+  protected state: number = 0;
 
   protected on_layouts_loaded() {
     this._layouts_loaded = true;
   }
 
-  // Show text:
-  // The gameplay, art, and sound are all from "Litter Fighter 2".
-  //       created by Marti Wong and Starsky Wong in 1992.
-  // 
-  //              "LF2:Remake" created by Gim.
-
   override init(...args: string[]): this {
     super.init(...args);
     this.lf2.sounds.load('data/093.wav.ogg', 'data/093.wav.ogg')
+    this.lf2.sounds.load('data/m_cancel.wav.ogg', 'data/m_cancel.wav.ogg')
+    this.lf2.sounds.load('data/m_end.wav.ogg', 'data/m_end.wav.ogg')
+    this.lf2.sounds.load('data/m_join.wav.ogg', 'data/m_join.wav.ogg')
+    this.lf2.sounds.load('data/m_ok.wav.ogg', 'data/m_ok.wav.ogg')
+    this.lf2.sounds.load('data/m_pass.wav.ogg', 'data/m_pass.wav.ogg')
+    this.lf2.sounds.load('launch/093.wav.ogg', 'launch/main.wma.ogg')
     this._dispose_jobs.add(
       this.lf2.callbacks.add({
         on_layouts_loaded: () => this.on_layouts_loaded(),
@@ -40,33 +50,72 @@ export default class LaunchPageLogic extends LayoutComponent {
   }
   override on_mount(): void {
     super.on_mount();
-    this.bearface.opacity = this.yeonface.opacity = 0;
+    this.bearface = this.layout.find_layout('bearface')!
+    this.yeonface = this.layout.find_layout('yeonface')!
+    this.tap_to_launch = this.layout.find_layout('tap_to_launch')!
+    this.sound_warning = this.layout.find_layout('sound_warning')!
+    this.long_text = this.layout.find_layout('long_text')!
 
-    Timeout.set(() => this.lf2.sounds.play('data/093.wav.ogg'), 1000)
-    this._scale.play(false)
-    this._opacity.play(false)
-    this._offset_x.play(false)
+    this.state = 0;
+    this._tap_hints_opacity.time = 0;
+    this._tap_hints_fadeout_opacity.time = 0;
+    this.long_text.opacity = this.bearface.opacity = this.yeonface.opacity = 0;
+
+    this._scale.play(false);
+    this._opacity.play(false);
+    this._offset_x.play(false);
+    this._unmount_jobs.add(
+      this.lf2.pointings.callback.add({
+        on_pointer_down: () => {
+          if (this.state === 0) {
+            this.state = 1;
+            Timeout.set(() => this.lf2.sounds.play('data/093.wav.ogg'), 1000)
+          } else if (this.state === 2) {
+            this.state = 3;
+            this._opacity.play(true);
+            this.lf2.sounds.play_bgm('launch/093.wav.ogg')
+          }
+        }
+      })
+    )
   }
 
   override on_unmount(): void {
     super.on_unmount();
+    this._unmount_jobs.invoke();
+    this._unmount_jobs.clear();
   }
 
   override on_render(dt: number): void {
-    const { bearface, yeonface } = this;
-    const scale = this._scale.update(dt);
-    const offset_x = this._offset_x.update(dt)
-    const opacity = this._opacity.update(dt)
-    bearface.sprite.x = 397 - offset_x;
-    yeonface.sprite.x = 397 + offset_x;
-    bearface.sprite.mesh.scale.set(scale, scale, 1);
-    yeonface.sprite.mesh.scale.set(scale, scale, 1);
-    bearface.opacity = yeonface.opacity = opacity
-    if (this._opacity.is_finish && this._layouts_loaded) {
+    if (this.state === 0) {
+      this.sound_warning.opacity = this.tap_to_launch.opacity = this._tap_hints_opacity.update(dt);
+
+    } else if (this.state === 1 || this.state === 2 || this.state === 3) {
+      this.sound_warning.opacity = this.tap_to_launch.opacity = this._tap_hints_fadeout_opacity.update(dt);
+      const { bearface, yeonface, long_text } = this;
+      const scale = this._scale.update(dt);
+      const offset = this._offset_x.update(dt)
+      const opacity = this._opacity.update(dt)
+      bearface.sprite.x = 397 - offset;
+      yeonface.sprite.x = 397 + offset;
+      long_text.sprite.y = -150 - 2 * offset;
+      long_text.opacity = bearface.opacity = yeonface.opacity = opacity
       if (this._opacity.reverse) {
-        this.lf2.set_layout('entry')
+        const s = 0.1 + 0.9 * opacity
+        bearface.sprite.mesh.scale.set(s, s, 1);
+        yeonface.sprite.mesh.scale.set(s, s, 1);
+        yeonface.sprite.mesh.scale.set(s, s, 1);
       } else {
-        this._opacity.play(true)
+        bearface.sprite.mesh.scale.set(scale, scale, 1);
+        yeonface.sprite.mesh.scale.set(scale, scale, 1);
+        yeonface.sprite.mesh.scale.set(scale, scale, 1);
+      }
+      if (this._opacity.is_finish && this._layouts_loaded) {
+        if (this._opacity.reverse) {
+          this.lf2.set_layout('entry')
+        } else {
+          this.state = 2;
+        }
       }
     }
   }

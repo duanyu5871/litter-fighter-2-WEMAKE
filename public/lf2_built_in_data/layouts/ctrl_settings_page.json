@@ -57,18 +57,11 @@
       "flip_x": true
     },
     {
-      "id": "main_title",
-      "img": "sprite/MENU_CLIP.png",
-      "rect": "0, 41, 496, 80",
-      "center": "0.5, 0",
-      "pos": "398, 0"
-    },
-    {
       "id": "main_menu",
       "img": "sprite/MENU_CLIP2.png",
       "rect": "0, 0, 704, 353",
       "center": "0.5, 0.5",
-      "pos": "397, 255",
+      "pos": "397, 200",
       "items": [
         {
           "id": "player_1",
@@ -352,12 +345,14 @@
       "id": "btn_confirm",
       "img": "sprite/MENU_CLIP.png",
       "rect": "489, 426, 151, 26",
-      "pos": "407, 399",
+      "pos": "407, 344",
+      "component": [
+        "opacity_hover(0,1)"
+      ],
       "actions": {
         "click": [
-          "opacity_hover(0,1)",
           "sound(ok)",
-          "set_layout(entry)"
+          "pop_layout(entry)"
         ]
       }
     },
@@ -365,12 +360,14 @@
       "id": "btn_cancel",
       "img": "sprite/MENU_CLIP.png",
       "rect": "643, 426, 151, 26",
-      "pos": "579, 399",
+      "pos": "579, 344",
+      "component": [
+        "opacity_hover(0,1)"
+      ],
       "actions": {
         "click": [
-          "opacity_hover(0,1)",
           "sound(cancel)",
-          "set_layout(entry)"
+          "pop_layout(entry)"
         ]
       }
     },
@@ -387,9 +384,11 @@
       "rect": "0, 379, 494, 23",
       "center": "0, 1",
       "pos": "0, 450",
+      "component": [
+        "opacity_hover(0,1)"
+      ],
       "actions": {
         "click": [
-          "opacity_hover(0,1)",
           "sound(ok)",
           "link_to(https://lf2.net/control.html)"
         ]

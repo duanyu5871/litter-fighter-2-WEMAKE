@@ -12,7 +12,7 @@ export default class FallbackPlayer implements IPlayer {
   readonly lf2: LF2;
   protected _muted: boolean = true;
   protected _volume: number = 0.3;
-  protected _bgm_muted: boolean = true;
+  protected _bgm_muted: boolean = false;
   protected _sound_muted: boolean = false;
 
   constructor(lf2: LF2) {
@@ -84,7 +84,7 @@ export default class FallbackPlayer implements IPlayer {
     this._bgm_ele.controls = false;
     this._bgm_ele.loop = true;
     this._bgm_ele.play();
-    this._bgm_ele.volume = this._volume / 4;
+    this._bgm_ele.volume = this._volume / 8;
     this._bgm_ele.muted = this._muted;
     ++this._req_id;
     const req_id = this._req_id;

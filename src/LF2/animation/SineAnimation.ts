@@ -7,6 +7,8 @@ export class SineAnimation {
   protected _v: number = 0;
   protected _s: number = 1;
   get value() { return this._v };
+  get time(): number { return this._t; }
+  set time(v: number) { this._t = v; this.calc() }
   constructor(
     bottom: number = 0,
     height: number = 1,
