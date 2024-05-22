@@ -4,6 +4,10 @@ import { is_str, is_fun, is_num, is_bool, not_empty_str } from './LF2/utils/type
 type T_RET<S> = readonly [S, React.Dispatch<React.SetStateAction<S>>]
 type T_IN<S> = S | (() => S);
 
+if (localStorage.getItem('__clear_flag') !== '1000') {
+  localStorage.setItem('__clear_flag', '1000');
+  localStorage.clear();
+}
 export function useLocalString<S extends string = string>(name: string): T_RET<S | undefined>;
 export function useLocalString<S extends string = string>(name: string, initialState: T_IN<S>): T_RET<S>;
 export function useLocalString<S extends string = string>(name: string, initialState?: T_IN<S>): T_RET<S> | T_RET<S | undefined> {
@@ -65,4 +69,3 @@ export function useLocalBoolean(name: string, initialState?: T_IN<boolean>): T_R
   }, [name, val]);
   return [val, set_val];
 }
-
