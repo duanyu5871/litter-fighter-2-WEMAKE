@@ -1,7 +1,6 @@
 {
   "name": "加载页",
   "id": "loading",
-  "bg_color": "rgb(16, 32, 108)",
   "key_press_actions": [
     [
       "escape",
@@ -11,14 +10,26 @@
   "items": [
     {
       "id": "bg_wait",
-      "img": "sprite/MENU_WAIT_SHORT.png",
-      "size": "794, 0"
+      "img": "sprite/MENU_WAIT_SHORT.png"
+    },
+    {
+      "id": "img_loading_text",
+      "img": "sprite/MENU_WAIT_LOADING_TEXT.png",
+      "pos": "10,370"
+    },
+    {
+      "id": "main_title",
+      "img": "sprite/MENU_CLIP.png",
+      "rect": "40, 41, 456, 80",
+      "center": "0, 0",
+      "pos": "10,10",
+      "opacity": 0.3
     },
     {
       "id": "txt_loading_content",
       "component": "game_loading_file_name()",
-      "pos": "514, 59",
-      "center": "0, 0",
+      "pos": "10,420",
+      "center": "0,0",
       "style": {
         "font": "16px Arial"
       }

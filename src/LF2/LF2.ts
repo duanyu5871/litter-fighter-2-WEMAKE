@@ -32,7 +32,7 @@ import { ImageMgr } from './loader/loader';
 import SoundMgr from './sound/SoundMgr';
 import Stage from './stage/Stage';
 import { constructor_name } from './utils/constructor_name';
-import { fisrt } from './utils/container_help';
+import { fisrt, last } from './utils/container_help';
 import { arithmetic_progression } from './utils/math/arithmetic_progression';
 import { random_get, random_in, random_take } from './utils/math/random';
 import { is_arr, is_num, is_str, not_empty_str } from './utils/type_check';
@@ -682,6 +682,18 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
       children: children.length ? children : void 0
     }
   }
+  get_layout_tree(layout: Layout): III
+  get_layout_tree(layout?: Layout | undefined): III | null
+  get_layout_tree(layout: Layout | undefined = last(this._layout_stacks)): III | null {
+    if (!layout) return null
+    const ret: III = {
+      name: layout.name ? `name: ${layout.name}` : layout.id ? `id: ${layout.id}` : '<no_name>',
+      children: layout.children.map(v => this.get_layout_tree(v)),
+      inst: layout,
+    }
+    if (ret.children?.length === 0) delete ret.children;
+    return ret;
+  }
   switch_difficulty(): void {
     const { difficulty } = this;
     const max = this.is_cheat_enabled(Defines.Cheats.LF2_NET) ? 4 : 3;
@@ -689,7 +701,11 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     this.difficulty = next
   }
 }
-
+interface III {
+  name: string;
+  children?: III[];
+  inst: Layout;
+}
 interface II {
   name: string;
   inst: THREE.Object3D;
