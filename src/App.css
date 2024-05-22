@@ -35,7 +35,7 @@
 }
 
 .game_overlay_ui {
-  position: absolute;
+  position: fixed;
   right: 10px;
   top: 10px;
   pointer-events: none;
@@ -45,7 +45,7 @@
   align-items: flex-start;
 }
 
-.game_overlay_ui>* {
+.game_overlay_ui button {
   pointer-events: all;
 }
 

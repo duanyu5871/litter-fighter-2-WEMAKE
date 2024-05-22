@@ -55,6 +55,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   get need_load() { return !this._loaded && !this._loading; }
 
   get layout_stacks() { return this._layout_stacks };
+  get layout() { return this._layout_stacks[this._layout_stacks.length - 1] }
   get difficulty(): Defines.Difficulty { return this._difficulty; }
   set difficulty(v: Defines.Difficulty) {
     if (this._difficulty === v) return;

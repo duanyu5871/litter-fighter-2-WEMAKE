@@ -18,7 +18,9 @@ export const ToggleImgButton = React.forwardRef<HTMLButtonElement, IToggleImgPro
   (props: IToggleImgProps, ref: React.ForwardedRef<HTMLButtonElement>) => {
     const {
       src: children = [],
-      checked, onClick, onToggle,
+      checked = false,
+      onClick, 
+      onToggle,
       shortcut,
       shortcutTarget = window,
       show_shortcut,
@@ -57,7 +59,6 @@ export const ToggleImgButton = React.forwardRef<HTMLButtonElement, IToggleImgPro
 
     const _show_shortcut = show_shortcut ?? has_keyboard
     const root_className = className ? `lf2ui_img_button ${className}` : 'lf2ui_img_button'
-
     return (
       <button
         {...remain_props}
@@ -67,8 +68,8 @@ export const ToggleImgButton = React.forwardRef<HTMLButtonElement, IToggleImgPro
         onClick={_onClick}
         title={_show_shortcut ? shortcut : ''}>
         <div className='inner_div'>
-          <img className={`inner_0 ${'' + checked}`} src={unchecked_src} alt={alt_0} />
-          <img className={`inner_1 ${'' + checked}`} src={checked_src} alt={alt_1} />
+          <img draggable={false} className={`inner_0 ${'' + checked}`} src={unchecked_src} alt={alt_0} />
+          <img draggable={false} className={`inner_1 ${'' + checked}`} src={checked_src} alt={alt_1} />
         </div>
       </button>
     );

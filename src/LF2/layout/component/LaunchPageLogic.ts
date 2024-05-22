@@ -2,9 +2,10 @@ import NumberAnimation from "../../animation/NumberAnimation";
 import SequenceAnimation from "../../animation/SequenceAnimation";
 import { SineAnimation } from "../../animation/SineAnimation";
 import Invoker from "../../base/Invoker";
+import { TKeyName } from "../../controller/BaseController";
 import Timeout from "../../dom/Timeout";
-import { LayoutComponent } from "./LayoutComponent";
 import Layout from "../Layout";
+import { LayoutComponent } from "./LayoutComponent";
 
 export default class LaunchPageLogic extends LayoutComponent {
   get entry_name(): string { return this.args[0] || '' }
@@ -66,20 +67,24 @@ export default class LaunchPageLogic extends LayoutComponent {
     this._offset_x.play(false);
     this._unmount_jobs.add(
       this.lf2.pointings.callback.add({
-        on_pointer_down: () => {
-          if (this.state === 0) {
-            this.state = 1;
-            Timeout.set(() => this.lf2.sounds.play('data/093.wav.ogg'), 1000)
-          } else if (this.state === 2) {
-            this.state = 3;
-            this._opacity.play(true);
-            this.lf2.sounds.play_bgm('launch/093.wav.ogg')
-          }
-        }
+        on_pointer_down: () => this.on_pointer_down()
       })
     )
   }
 
+  on_player_key_down(player_id: string, key: TKeyName): void {
+    this.on_pointer_down()
+  }
+  on_pointer_down() {
+    if (this.state === 0) {
+      this.state = 1;
+      Timeout.set(() => this.lf2.sounds.play('data/093.wav.ogg'), 1000)
+    } else if (this.state === 2) {
+      this.state = 3;
+      this._opacity.play(true);
+      this.lf2.sounds.play_bgm('launch/093.wav.ogg')
+    }
+  }
   override on_unmount(): void {
     super.on_unmount();
     this._unmount_jobs.invoke();

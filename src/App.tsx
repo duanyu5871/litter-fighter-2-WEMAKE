@@ -10,7 +10,6 @@ import { ToggleButton } from "./Component/ToggleButton";
 import { ToggleImgButton } from './Component/ToggleImgButton';
 import EditorView from './EditorView';
 import LF2 from './LF2/LF2';
-import { BaseController } from './LF2/controller/BaseController';
 import { Defines } from './LF2/defines/defines';
 import FullScreen from './LF2/dom/FullScreen';
 import Zip from './LF2/dom/download_zip';
@@ -23,6 +22,7 @@ import open_file from './Utils/open_file';
 import './game_ui.css';
 import './init';
 import { useLocalBoolean, useLocalNumber, useLocalString } from './useLocalStorage';
+import GamePad from './GamePad';
 const fullscreen = new FullScreen()
 function App() {
   const _overlay_ref = useRef<HTMLDivElement>(null)
@@ -262,6 +262,7 @@ function App() {
             onClick={() => lf2_ref.current?.pop_layout()}
             src={[require('./btn_2_3.png')]} />
         </Show>
+        <GamePad player_id={touch_pad_on} lf2={lf2_ref.current} />
       </div>
       <Show.Div className={'debug_ui debug_ui_' + debug_ui_pos} show={control_panel_visible}>
         <div className='settings_row'>
@@ -468,56 +469,8 @@ function App() {
           show_bot_settings={showing_panel === 'bot'} />
       </Show.Div>
       <EditorView open={editor_open} onClose={() => set_editor_open(false)} />
-      <GamePad player_id={touch_pad_on} lf2={lf2_ref.current} />
     </div >
   );
 }
 
-interface IAAAProps {
-  lf2?: LF2;
-  player_id?: string;
-}
-function GamePad(props: IAAAProps) {
-  const { player_id, lf2 } = props;
-  const [controller, set_controller] = useState<BaseController | undefined>(void 0);
-
-  useEffect(() => {
-    if (!lf2 || !player_id) return;
-    return lf2.world.callbacks.add({
-      on_player_character_add(add_player_id) {
-        if (add_player_id !== player_id) return
-        set_controller(lf2.player_characters.get(player_id)?.controller)
-      },
-      on_player_character_del(del_player_id) {
-        if (del_player_id !== player_id) return
-        set_controller(void 0);
-      },
-    })
-  }, [lf2, player_id])
-
-  if (!controller) return <></>
-  return <>
-    <img
-      onTouchStart={() => controller?.start('a')}
-      onTouchEnd={() => controller?.end('a')}
-      src={require('./touch_btn_a.png')}
-      alt='attack'
-      draggable={false}
-      style={{ width: 64, height: 64 }} />
-    <img
-      onTouchStart={() => controller?.start('j')}
-      onTouchEnd={() => controller?.end('j')}
-      src={require('./touch_btn_j.png')}
-      alt='jump'
-      draggable={false}
-      style={{ width: 64, height: 64 }} />
-    <img
-      onTouchStart={() => controller?.start('d')}
-      onTouchEnd={() => controller?.end('d')}
-      src={require('./touch_btn_d.png')}
-      alt='defense'
-      draggable={false}
-      style={{ width: 64, height: 64 }} />
-  </>
-}
 export default App;
