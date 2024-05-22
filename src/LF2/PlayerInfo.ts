@@ -5,10 +5,10 @@ import NoEmitCallbacks from "./base/NoEmitCallbacks";
 import type { TKeyName, TKeys } from './controller/BaseController';
 
 const default_keys_list: TKeys[] = [
-  { L: 'a', R: 'd', U: 'w', D: 's', a: 'r', j: 't', d: 'y' },
-  { L: 'j', R: 'l', U: 'i', D: 'k', a: '[', j: ']', d: '\\' },
+  { L: 'a', R: 'd', U: 'w', D: 's', a: 'j', j: 'k', d: 'l' },
   { L: 'arrowleft', R: 'arrowright', U: 'arrowup', D: 'arrowdown', a: '0', j: '.', d: 'enter' },
-  { L: '4', R: '6', U: '8', D: '5', a: '/', j: '*', d: '-' },
+  { L: '', R: '', U: '', D: '', a: '', j: '', d: '' },
+  { L: '', R: '', U: '', D: '', a: '', j: '', d: '' },
   { L: '', R: '', U: '', D: '', a: '', j: '', d: '' }
 ]
 const get_default_keys = (i: number) => default_keys_list[i - 1] || default_keys_list[default_keys_list.length - 1];

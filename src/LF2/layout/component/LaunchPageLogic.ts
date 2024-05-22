@@ -15,7 +15,7 @@ export default class LaunchPageLogic extends LayoutComponent {
   protected sound_warning!: Layout;
   protected _layouts_loaded: boolean = false;
   protected _dispose_jobs = new Invoker();
-  protected _offset_x = new SequenceAnimation(1000, new NumberAnimation(0, 40, 500));
+  protected _offset_x = new SequenceAnimation(1000, new NumberAnimation(0, 80, 500));
   protected _scale = new SequenceAnimation(1000, new NumberAnimation(0, 2, 250), new NumberAnimation(2, 1, 250));
   protected _opacity = new SequenceAnimation(1000, new NumberAnimation(0, 1, 500), 1000);
   protected _unmount_jobs = new Invoker();
@@ -98,7 +98,7 @@ export default class LaunchPageLogic extends LayoutComponent {
       const opacity = this._opacity.update(dt)
       bearface.sprite.x = 397 - offset;
       yeonface.sprite.x = 397 + offset;
-      long_text.sprite.y = -150 - 2 * offset;
+      long_text.sprite.y = -150 - offset;
       long_text.opacity = bearface.opacity = yeonface.opacity = opacity
       if (this._opacity.reverse) {
         const s = 0.1 + 0.9 * opacity
