@@ -232,6 +232,7 @@ export default class Layout {
     enter && actor.act(this, enter);
 
     for (const c of this._components) c.on_mounted?.();
+    this.invoke_visible_callback()
   }
 
   on_unmount() {
@@ -248,6 +249,9 @@ export default class Layout {
   on_show() {
     for (const c of this.components) c.on_show?.();
     this._callbacks.emit('on_show')(this);
+    console.log(this.name, this.data.auto_focus, !this.global_disabled, !this.focused_item)
+    if (this.data.auto_focus && !this.global_disabled && !this.focused_item)
+      this.focused_item = this
   }
 
   on_hide() {

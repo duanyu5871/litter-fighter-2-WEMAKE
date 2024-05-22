@@ -11,6 +11,7 @@
       "rect": "407,183,126,21",
       "opacity": "f:opacity_hover(0,1)",
       "pos": "89,13",
+      "auto_focus": true,
       "component": [
         "reachable_layout(menu)"
       ],

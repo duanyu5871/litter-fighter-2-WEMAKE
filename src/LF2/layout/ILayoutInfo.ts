@@ -26,4 +26,6 @@ export interface ILayoutInfo {
   };
   key_press_actions?: [string, string][];
   items?: (ILayoutInfo | string)[];
+
+  auto_focus?: boolean;
 }

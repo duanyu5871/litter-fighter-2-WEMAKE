@@ -70,6 +70,7 @@
           "rect": "535, 105, 256, 26",
           "center": "0.5, 0",
           "pos": "1, -46",
+          "auto_focus": true,
           "component": [
             "reachable_layout(main)"
           ],
