@@ -592,8 +592,6 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   layout_val_getter = (word: string) => (item: Layout) => {
     if (word === 'mouse_on_me')
       return item.state.mouse_on_me;
-    if (word === 'opacity_hover')
-      return (item.state.mouse_on_me === '1' || item.focused_item === item) ? 1 : 0.5;
     if (word === "paused")
       return this.world.paused ? 1 : 0
     if (word.startsWith('f:')) {
@@ -613,20 +611,6 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
         } else {
           return item.state.img_idx = Math.floor(random_in(begin, end) % (end + 1))
         }
-      }
-
-      result = word.match(/f:opacity_hover\((\S+),(\S+),?(\S+)?\)/);
-      if (result) {
-        const [, a, b, c] = result;
-        const begin = Number(a);
-        const end = Number(b);
-        const duration = Number(c);
-        if (begin >= 0 && end >= 0) {
-          const on_me = (item.state.mouse_on_me === '1' || item.focused_item === item)
-          item.set_opacity_animation(!on_me, begin, end, duration);
-          return -1;
-        }
-        return 1;
       }
     }
     return word;

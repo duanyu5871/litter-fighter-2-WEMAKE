@@ -6,10 +6,10 @@
   "items": [
     {
       "txt": "0",
-      "opacity": "f:opacity_hover(0.5,1)",
       "pos": "30,70",
       "auto_focus": true,
       "component": [
+        "opacity_hover(0.5,1)",
         "com_number(0)",
         "reachable_layout(com_num)"
       ],
@@ -19,10 +19,10 @@
     },
     {
       "txt": "1",
-      "opacity": "f:opacity_hover(0.5,1)",
       "pos": "70,70",
       "auto_focus": true,
       "component": [
+        "opacity_hover(0.5,1)",
         "com_number(1)",
         "reachable_layout(com_num)"
       ],
@@ -32,10 +32,10 @@
     },
     {
       "txt": "2",
-      "opacity": "f:opacity_hover(0.5,1)",
       "pos": "110,70",
       "auto_focus": true,
       "component": [
+        "opacity_hover(0.5,1)",
         "com_number(2)",
         "reachable_layout(com_num)"
       ],
@@ -45,10 +45,10 @@
     },
     {
       "txt": "3",
-      "opacity": "f:opacity_hover(0.5,1)",
       "pos": "150,70",
       "auto_focus": true,
       "component": [
+        "opacity_hover(0.5,1)",
         "com_number(3)",
         "reachable_layout(com_num)"
       ],
@@ -58,10 +58,10 @@
     },
     {
       "txt": "4",
-      "opacity": "f:opacity_hover(0.5,1)",
       "pos": "190,70",
       "auto_focus": true,
       "component": [
+        "opacity_hover(0.5,1)",
         "com_number(4)",
         "reachable_layout(com_num)"
       ],
@@ -71,10 +71,10 @@
     },
     {
       "txt": "5",
-      "opacity": "f:opacity_hover(0.5,1)",
       "pos": "230,70",
       "auto_focus": true,
       "component": [
+        "opacity_hover(0.5,1)",
         "com_number(5)",
         "reachable_layout(com_num)"
       ],
@@ -84,10 +84,10 @@
     },
     {
       "txt": "6",
-      "opacity": "f:opacity_hover(0.5,1)",
       "pos": "270,70",
       "auto_focus": true,
       "component": [
+        "opacity_hover(0.5,1)",
         "com_number(6)",
         "reachable_layout(com_num)"
       ],
@@ -97,10 +97,10 @@
     },
     {
       "txt": "7",
-      "opacity": "f:opacity_hover(0.5,1)",
       "pos": "310,70",
       "auto_focus": true,
       "component": [
+        "opacity_hover(0.5,1)",
         "com_number(7)",
         "reachable_layout(com_num)"
       ],

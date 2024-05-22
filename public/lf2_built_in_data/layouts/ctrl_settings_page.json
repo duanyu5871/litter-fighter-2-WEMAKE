@@ -350,12 +350,12 @@
     },
     {
       "id": "btn_confirm",
-      "opacity": "f:opacity_hover(0,1)",
       "img": "sprite/MENU_CLIP.png",
       "rect": "489, 426, 151, 26",
       "pos": "407, 399",
       "actions": {
         "click": [
+          "opacity_hover(0,1)",
           "sound(ok)",
           "set_layout(entry)"
         ]
@@ -363,12 +363,12 @@
     },
     {
       "id": "btn_cancel",
-      "opacity": "f:opacity_hover(0,1)",
       "img": "sprite/MENU_CLIP.png",
       "rect": "643, 426, 151, 26",
       "pos": "579, 399",
       "actions": {
         "click": [
+          "opacity_hover(0,1)",
           "sound(cancel)",
           "set_layout(entry)"
         ]
@@ -382,7 +382,6 @@
       "pos": "0, 450"
     },
     {
-      "opacity": "f:opacity_hover(0,1)",
       "id": "btn_move_table_hover",
       "img": "sprite/MENU_CLIP2.png",
       "rect": "0, 379, 494, 23",
@@ -390,6 +389,7 @@
       "pos": "0, 450",
       "actions": {
         "click": [
+          "opacity_hover(0,1)",
           "sound(ok)",
           "link_to(https://lf2.net/control.html)"
         ]

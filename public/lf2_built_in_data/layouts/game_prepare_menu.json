@@ -9,10 +9,10 @@
       "id": "btn_start",
       "img": "sprite/MENU_CLIP3.png",
       "rect": "407,183,126,21",
-      "opacity": "f:opacity_hover(0,1)",
       "pos": "89,13",
       "auto_focus": true,
       "component": [
+        "opacity_hover(0,1)",
         "reachable_layout(menu)"
       ],
       "actions": {
@@ -26,9 +26,9 @@
       "id": "btn_cancel",
       "img": "sprite/MENU_CLIP3.png",
       "rect": "379,206,186,21",
-      "opacity": "f:opacity_hover(0,1)",
       "pos": "61,36",
       "component": [
+        "opacity_hover(0,1)",
         "reachable_layout(menu)"
       ],
       "actions": {
@@ -42,9 +42,9 @@
       "id": "btn_update_random",
       "img": "sprite/MENU_CLIP3.png",
       "rect": "355,231,235,21",
-      "opacity": "f:opacity_hover(0,1)",
       "pos": "37,61",
       "component": [
+        "opacity_hover(0,1)",
         "reachable_layout(menu)"
       ],
       "actions": {
@@ -58,9 +58,9 @@
       "id": "btn_switch_bg",
       "img": "sprite/MENU_CLIP3.png",
       "rect": "330,254,279,22",
-      "opacity": "f:opacity_hover(0,1)",
       "pos": "12,84",
       "component": [
+        "opacity_hover(0,1)",
         "reachable_layout(menu)"
       ],
       "actions": {
@@ -89,9 +89,9 @@
           "id": "btn_switch_stage_hover",
           "img": "sprite/MENU_CLIP3.png",
           "rect": "330,332,279,22",
-          "opacity": "f:opacity_hover(0,1)",
           "pos": "0,0",
           "component": [
+            "opacity_hover(0,1)",
             "reachable_layout(menu)"
           ],
           "actions": {
@@ -115,9 +115,9 @@
       "id": "btn_switch_difficulty",
       "img": "sprite/MENU_CLIP3.png",
       "rect": "352,278,228,22",
-      "opacity": "f:opacity_hover(0,1)",
       "pos": "34,108",
       "component": [
+        "opacity_hover(0,1)",
         "reachable_layout(menu)"
       ],
       "actions": {
@@ -139,9 +139,9 @@
       "id": "btn_exit",
       "img": "sprite/MENU_CLIP3.png",
       "rect": "416,304,111,19",
-      "opacity": "f:opacity_hover(0,1)",
       "pos": "98,134",
       "component": [
+        "opacity_hover(0,1)",
         "reachable_layout(menu)"
       ],
       "actions": {

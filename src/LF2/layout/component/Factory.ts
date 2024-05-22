@@ -19,6 +19,7 @@ import LaunchPageLogic from "./LaunchPageLogic";
 import DifficultyText from "./DifficultyText";
 import StageNameText from "./StageNameText";
 import BackgroundNameText from "./BackgroundNameText";
+import OpacityHover from "./OpacityHover";
 class Factory {
   private _component_map = new Map<string, typeof LayoutComponent>([
     ['game_loading_file_name', LoadingFileNameDisplayer],
@@ -38,6 +39,7 @@ class Factory {
     ['difficulty_text', DifficultyText],
     ['stage_name_text', StageNameText],
     ['background_name_text', BackgroundNameText],
+    ['opacity_hover', OpacityHover]
   ])
   create(layout: Layout, components: ILayoutInfo['component']): LayoutComponent[] {
     if (!components?.length) return [];

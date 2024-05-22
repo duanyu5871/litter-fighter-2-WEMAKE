@@ -65,13 +65,13 @@
       "items": [
         {
           "id": "btn_start_local_game",
-          "opacity": "f:opacity_hover(0,1)",
           "img": "sprite/MENU_CLIP.png",
           "rect": "535, 105, 256, 26",
           "center": "0.5, 0",
           "pos": "1, -46",
           "auto_focus": true,
           "component": [
+            "opacity_hover(0,1)",
             "reachable_layout(main)"
           ],
           "actions": {
@@ -84,12 +84,13 @@
         },
         {
           "id": "btn_network_game",
-          "opacity": "f:opacity_hover(0,1)",
+          "opacity": "f:",
           "img": "sprite/MENU_CLIP.png",
           "rect": "535, 137, 256, 26",
           "center": "0.5, 0",
           "pos": "1, -14",
           "component": [
+            "opacity_hover(0,1)",
             "reachable_layout(main)"
           ],
           "actions": {
@@ -101,12 +102,12 @@
         },
         {
           "id": "btn_ctrl_settings",
-          "opacity": "f:opacity_hover(0,1)",
           "img": "sprite/MENU_CLIP.png",
           "rect": "535, 168, 256, 26",
           "center": "0.5, 0",
           "pos": "1, 17",
           "component": [
+            "opacity_hover(0,1)",
             "reachable_layout(main)"
           ],
           "actions": {
