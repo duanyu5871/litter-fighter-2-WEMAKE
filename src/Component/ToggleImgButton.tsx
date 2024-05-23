@@ -28,7 +28,6 @@ export const ToggleImgButton = React.forwardRef<HTMLButtonElement, IToggleImgPro
       alt,
       ...remain_props
     } = props;
-
     const [ref_btn, on_ref] = useForwardedRef<HTMLButtonElement>(ref)
 
     const ref_checked = useRef(checked);

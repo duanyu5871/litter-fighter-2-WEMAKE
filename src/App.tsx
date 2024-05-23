@@ -25,6 +25,7 @@ import open_file from './Utils/open_file';
 import './game_ui.css';
 import './init';
 import { useLocalBoolean, useLocalNumber, useLocalString } from './useLocalStorage';
+
 const fullscreen = new FullScreen()
 function App() {
   const _overlay_ref = useRef<HTMLDivElement>(null)
@@ -38,19 +39,18 @@ function App() {
   const [showing_panel, set_showing_panel] = useLocalString<'stage' | 'bg' | 'weapon' | 'bot' | 'player' | ''>('showing_panel', '');
   const [control_panel_visible, set_control_panel_visible] = useLocalBoolean('control_panel', false);
 
-  const [cheat_1, set_cheat_1] = useLocalBoolean('cheat_1', false);
-  const [cheat_2, set_cheat_2] = useLocalBoolean('cheat_2', false);
-  const [cheat_3, set_cheat_3] = useLocalBoolean('cheat_3', false);
+  const [cheat_1, _set_cheat_1] = useLocalBoolean('cheat_1', false);
+  const [cheat_2, _set_cheat_2] = useLocalBoolean('cheat_2', false);
+  const [cheat_3, _set_cheat_3] = useLocalBoolean('cheat_3', false);
 
   const [loading, set_loading] = useState(false);
   const [loaded, set_loaded] = useState(false);
-  const [paused, set_paused] = useState(false);
-  const [muted, set_muted] = useState(false);
-  const [bgm_muted, set_bgm_muted] = useState(false);
-  const [sound_muted, set_sound_muted] = useState(false);
-  const [volume, set_volume] = useState(1);
-  const [bg_id, set_bg_id] = useState(Defines.VOID_BG.id);
-
+  const [paused, _set_paused] = useState(false);
+  const [muted, _set_muted] = useState(false);
+  const [bgm_muted, _set_bgm_muted] = useState(false);
+  const [sound_muted, _set_sound_muted] = useState(false);
+  const [volume, _set_volume] = useState(1);
+  const [bg_id, _set_bg_id] = useState(Defines.VOID_BG.id);
 
   const [render_size_mode, set_render_size_mode] = useLocalString<'fixed' | 'fill' | 'cover' | 'contain'>('render_size_mode', 'contain');
   const [render_fixed_scale, set_render_fixed_scale] = useLocalNumber<number>('render_fixed_scale', 1);
@@ -62,17 +62,12 @@ function App() {
   const [debug_ui_pos, set_debug_ui_pos] = useLocalString<'left' | 'right' | 'top' | 'bottom'>('debug_ui_pos', 'bottom');
   const [touch_pad_on, set_touch_pad_on] = useLocalString<string>('touch_pad_on', '');
   const [is_fullscreen, _set_is_fullscreen] = useState(false);
-  useEffect(() => {
-    const lf2 = lf2_ref.current;
-    if (!lf2) return;
-    lf2.world.paused = paused;
-  }, [paused])
 
-  const update_once = useCallback(() => {
+  const update_once = () => {
     const lf2 = lf2_ref.current;
-    set_paused(true);
+    lf2?.world.set_paused(true);
     lf2?.world.update_once();
-  }, [])
+  }
 
   const [show_indicators, set_show_indicators] = useState(false);
   useEffect(() => {
@@ -95,7 +90,7 @@ function App() {
       fullscreen.enter(document.body.parentElement!);
   }
 
-  const [layout, set_layout] = useState<string | undefined>(void 0);
+  const [layout, _set_layout] = useState<string | undefined>(void 0);
   const [layouts, set_layouts] = useState<Readonly<ILayoutInfo>[]>([{ id: '', name: '无页面' }]);
   useEffect(() => {
     const canvas = _canvas_ref.current!;
@@ -108,35 +103,36 @@ function App() {
         layout_data_list.unshift({ id: '', name: '无页面' })
         set_layouts(layout_data_list);
         if (layout_data_list.length > 1)
-          set_layout(layout_data_list[1].id)
+          _set_layout(layout_data_list[1].id)
       })
     }
     const lf2 = lf2_ref.current;
-    set_muted(lf2.sounds.muted());
-    set_bgm_muted(lf2.sounds.bgm_muted());
-    set_sound_muted(lf2.sounds.sound_muted());
-    set_volume(lf2.sounds.volume());
-    set_cheat_1(lf2.is_cheat_enabled(Defines.Cheats.LF2_NET));
-    set_cheat_2(lf2.is_cheat_enabled(Defines.Cheats.HERO_FT));
-    set_cheat_3(lf2.is_cheat_enabled(Defines.Cheats.GIM_INK));
-    set_bg_id(lf2.world.stage.bg.id)
+    _set_muted(lf2.sounds.muted());
+    _set_bgm_muted(lf2.sounds.bgm_muted());
+    _set_sound_muted(lf2.sounds.sound_muted());
+    _set_volume(lf2.sounds.volume());
+    _set_cheat_1(lf2.is_cheat_enabled(Defines.Cheats.LF2_NET));
+    _set_cheat_2(lf2.is_cheat_enabled(Defines.Cheats.HERO_FT));
+    _set_cheat_3(lf2.is_cheat_enabled(Defines.Cheats.GIM_INK));
+    _set_bg_id(lf2.world.stage.bg.id)
     const on_touchstart = () => {
       set_touch_pad_on(fisrt(lf2.player_infos.keys())!)
     }
     window.addEventListener('touchstart', on_touchstart, { once: true })
 
     _set_is_fullscreen(!!fullscreen.element)
-
+    _set_paused(lf2.world.paused)
     return new Invoker().add(
       () => window.removeEventListener('touchstart', on_touchstart),
       fullscreen.callbacks.add({
         onChange: e => _set_is_fullscreen(!!e),
       }),
       lf2.world.callbacks.add({
-        on_stage_change: (s) => set_bg_id(s.bg.id),
+        on_stage_change: (s) => _set_bg_id(s.bg.id),
+        on_pause_change: (v) => _set_paused(v)
       }),
       lf2.callbacks.add({
-        on_layout_changed: v => set_layout(v?.id ?? ''),
+        on_layout_changed: v => _set_layout(v?.id ?? ''),
         on_loading_start: () => set_loading(true),
         on_loading_end: () => {
           set_loaded(true);
@@ -144,17 +140,17 @@ function App() {
         },
         on_cheat_changed: (cheat_name, enabled) => {
           switch (cheat_name) {
-            case Defines.Cheats.LF2_NET: set_cheat_1(enabled); break;
-            case Defines.Cheats.HERO_FT: set_cheat_2(enabled); break;
-            case Defines.Cheats.GIM_INK: set_cheat_3(enabled); break;
+            case Defines.Cheats.LF2_NET: _set_cheat_1(enabled); break;
+            case Defines.Cheats.HERO_FT: _set_cheat_2(enabled); break;
+            case Defines.Cheats.GIM_INK: _set_cheat_3(enabled); break;
           }
         },
       }),
       lf2.sounds.callbacks.add({
-        on_muted_changed: v => set_muted(v),
-        on_bgm_muted_changed: v => set_bgm_muted(v),
-        on_sound_muted_changed: v => set_sound_muted(v),
-        on_volume_changed: v => set_volume(v),
+        on_muted_changed: v => _set_muted(v),
+        on_bgm_muted_changed: v => _set_bgm_muted(v),
+        on_sound_muted_changed: v => _set_sound_muted(v),
+        on_volume_changed: v => _set_volume(v),
       })
     ).clear_fn();
   }, []);
@@ -240,14 +236,15 @@ function App() {
     v_align, h_align, custom_h_align, custom_v_align
   ])
 
+  const lf2 = lf2_ref.current;
   return (
     <div className="App">
       <div className='game_contiainer' ref={_game_contiainer_ref}>
-        <canvas ref={_canvas_ref} tabIndex={-1} className='game_canvas' width={794} height={450} />
+        <canvas ref={_canvas_ref} tabIndex={-1} className='game_canvas' width={794} height={450} draggable={false} />
         <div className='game_overlay' ref={_overlay_ref} style={{ display: !game_overlay ? 'none' : void 0 }} />
       </div>
       <div className='game_overlay_ui'>
-        <Show show={lf2_ref.current?.is_cheat_enabled(Defines.Cheats.GIM_INK) || true}>
+        <Show show={lf2?.is_cheat_enabled(Defines.Cheats.GIM_INK) || true}>
           <ToggleImgButton
             checked={control_panel_visible}
             onClick={() => set_control_panel_visible(v => !v)}
@@ -259,26 +256,26 @@ function App() {
           src={[require('./btn_3_1.png'), require('./btn_3_2.png')]} />
         <ToggleImgButton
           checked={bgm_muted}
-          onClick={() => lf2_ref.current?.sounds?.set_bgm_muted(!bgm_muted)}
+          onClick={() => lf2?.sounds?.set_bgm_muted(!bgm_muted)}
           src={[require('./btn_2_0.png'), require('./btn_3_0.png')]} />
         <ToggleImgButton
           checked={sound_muted}
-          onClick={() => lf2_ref.current?.sounds?.set_sound_muted(!sound_muted)}
+          onClick={() => lf2?.sounds?.set_sound_muted(!sound_muted)}
           src={[require('./btn_0_3.png'), require('./btn_1_0.png')]} />
         <Show show={bg_id !== Defines.VOID_BG.id}>
           <ToggleImgButton
             checked={paused}
             shortcut='F1'
-            onClick={() => set_paused(!paused)}
+            onClick={() => lf2?.world.set_paused(!paused)}
             src={[require('./btn_2_1.png'), require('./btn_2_2.png')]} />
         </Show>
-        <Show show={layout && Number(lf2_ref.current?.layout_stacks.length) > 1}>
+        <Show show={layout && Number(lf2?.layout_stacks.length) > 1}>
           <ToggleImgButton
             shortcut='F1'
-            onClick={() => lf2_ref.current?.pop_layout()}
+            onClick={() => lf2?.pop_layout()}
             src={[require('./btn_2_3.png')]} />
         </Show>
-        <GamePad player_id={touch_pad_on} lf2={lf2_ref.current} />
+        <GamePad player_id={touch_pad_on} lf2={lf2} />
       </div>
       <Show.Div className={'debug_ui debug_ui_' + debug_ui_pos} show={control_panel_visible}>
         <div className='settings_row'>
@@ -293,7 +290,7 @@ function App() {
             on_changed={set_debug_ui_pos} />
           <Combine>
             <ToggleButton
-              onToggle={v => lf2_ref.current?.sounds.set_muted(v)}
+              onToggle={v => lf2?.sounds.set_muted(v)}
               checked={muted}>
               <>音量</>
               <>静音✓</>
@@ -305,7 +302,7 @@ function App() {
                 max={100}
                 step={1}
                 value={Math.ceil(volume * 100)}
-                onChange={e => lf2_ref.current?.sounds.set_volume(Number(e.target.value) / 100)} />
+                onChange={e => lf2?.sounds.set_volume(Number(e.target.value) / 100)} />
             </Show>
           </Combine>
           <Button
@@ -317,7 +314,7 @@ function App() {
         <div className='settings_row'>
           <Select
             value={layout}
-            on_changed={(v: string) => lf2_ref.current?.set_layout(v)}
+            on_changed={(v: string) => lf2?.set_layout(v)}
             items={layouts}
             option={o => [o.id!, o.name]} />
           <Titled title='Mode'>
@@ -376,7 +373,7 @@ function App() {
         </div>
         <div className='settings_row'>
           <ToggleButton
-            onToggle={set_paused}
+            onToggle={_set_paused}
             checked={paused}
             shortcut='F1'>
             <>游戏暂停</>
@@ -413,7 +410,6 @@ function App() {
             shortcut='F9'>
             全屏
           </Button>
-
         </div>
         <div className='settings_row'>
           <Combine>
@@ -449,36 +445,36 @@ function App() {
             </ToggleButton>
           </Combine>
           <ToggleButton
-            onToggle={() => lf2_ref.current?.toggle_cheat_enabled(Defines.Cheats.LF2_NET)}
+            onToggle={() => lf2?.toggle_cheat_enabled(Defines.Cheats.LF2_NET)}
             checked={cheat_1}>
             <>LF2_NET</>
             <>LF2_NET✓</>
           </ToggleButton>
           <ToggleButton
-            onToggle={() => lf2_ref.current?.toggle_cheat_enabled(Defines.Cheats.HERO_FT)}
+            onToggle={() => lf2?.toggle_cheat_enabled(Defines.Cheats.HERO_FT)}
             checked={cheat_2}>
             <>HERO_FT</>
             <>HERO_FT✓</>
           </ToggleButton>
           <ToggleButton
-            onToggle={() => lf2_ref.current?.toggle_cheat_enabled(Defines.Cheats.GIM_INK)}
+            onToggle={() => lf2?.toggle_cheat_enabled(Defines.Cheats.GIM_INK)}
             checked={cheat_3}>
             <>GIM_INK</>
             <>GIM_INK✓</>
           </ToggleButton>
         </div>
         <Show show={showing_panel === 'player'}>
-          {Array.from(lf2_ref.current?.player_infos.values() ?? []).splice(0, 4).map((info, idx) =>
+          {Array.from(lf2?.player_infos.values() ?? []).splice(0, 4).map((info, idx) =>
             <PlayerRow
               key={idx}
-              lf2={lf2_ref.current!}
+              lf2={lf2!}
               info={info}
               touch_pad_on={touch_pad_on === info.id}
               on_click_toggle_touch_pad={() => set_touch_pad_on(touch_pad_on === info.id ? '' : info.id)} />
           )}
         </Show>
         <SettingsRows
-          lf2={lf2_ref.current}
+          lf2={lf2}
           show_stage_settings={showing_panel === 'stage'}
           show_bg_settings={showing_panel === 'bg'}
           show_weapon_settings={showing_panel === 'weapon'}
