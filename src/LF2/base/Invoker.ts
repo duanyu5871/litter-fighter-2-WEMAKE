@@ -52,4 +52,11 @@ export default class Invoker<F extends (...args: any[]) => any = () => void> {
     this._f_list.clear();
     return this;
   }
+
+  invoke_and_clear(...args: Parameters<F>): void {
+    this.invoke(...args);
+    this.clear();
+  }
+
+  clear_fn = () => { this.clear() }
 }

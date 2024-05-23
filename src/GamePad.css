@@ -55,6 +55,8 @@
 .game_overlay_ui .left_pad .btn_right {
   transition: all 100ms;
   position: fixed;
+  border-radius: 100%;
+  overflow: hidden;
 }
 
 .game_overlay_ui .right_pad .btn_defense:active,

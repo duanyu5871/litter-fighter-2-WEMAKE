@@ -71,8 +71,7 @@ export default class GamePrepareLogic extends LayoutComponent {
 
   override on_unmount(): void {
     super.on_unmount();
-    this._unmount_jobs.invoke();
-    this._unmount_jobs.clear();
+    this._unmount_jobs.invoke_and_clear();
   }
 
   override on_player_key_down(_player_id: string, key: TKeyName) {

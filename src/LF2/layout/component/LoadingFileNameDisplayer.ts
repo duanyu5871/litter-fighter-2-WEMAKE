@@ -38,6 +38,5 @@ export default class LoadingFileNameDisplayer extends LayoutComponent {
   protected async update_sprite(text: string, progress: number) {
     const str = progress ? `${text}(${progress}%)` : text;
     this._mesh.set_text(str).apply();
-
   }
 }

@@ -59,8 +59,7 @@ export default class StageNameText extends LayoutComponent {
 
   override on_unmount(): void {
     super.on_unmount();
-    this._unmount_jobs.invoke();
-    this._unmount_jobs.clear();
+    this._unmount_jobs.invoke_and_clear();
   }
 
   protected switch_stage() {

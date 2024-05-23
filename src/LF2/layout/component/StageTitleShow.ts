@@ -108,8 +108,7 @@ export default class StageTitleShow extends LayoutComponent {
 
   on_unmount(): void {
     super.on_unmount();
-    this._unmount_jobs.invoke();
-    this._unmount_jobs.clear();
+    this._unmount_jobs.invoke_and_clear();
     this.depose_all_mesh();
   }
 

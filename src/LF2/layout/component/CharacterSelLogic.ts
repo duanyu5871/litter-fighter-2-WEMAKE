@@ -56,8 +56,7 @@ export default class CharacterSelLogic extends LayoutComponent {
     this.joined = false;
     this.character_decided = false;
     this.team_decided = false;
-    this._unmount_jobs.invoke();
-    this._unmount_jobs.clear();
+    this._unmount_jobs.invoke_and_clear();
   }
 
   get characters() {

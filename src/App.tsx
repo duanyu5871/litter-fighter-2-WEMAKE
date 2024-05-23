@@ -9,11 +9,14 @@ import Titled from './Component/Titled';
 import { ToggleButton } from "./Component/ToggleButton";
 import { ToggleImgButton } from './Component/ToggleImgButton';
 import EditorView from './EditorView';
+import GamePad from './GamePad';
 import LF2 from './LF2/LF2';
+import Invoker from './LF2/base/Invoker';
 import { Defines } from './LF2/defines/defines';
 import FullScreen from './LF2/dom/FullScreen';
 import Zip from './LF2/dom/download_zip';
 import { ILayoutInfo } from './LF2/layout/ILayoutInfo';
+import { fisrt } from './LF2/utils/container_help';
 import { arithmetic_progression } from './LF2/utils/math/arithmetic_progression';
 import { Log } from './Log';
 import { PlayerRow } from './PlayerRow';
@@ -22,7 +25,6 @@ import open_file from './Utils/open_file';
 import './game_ui.css';
 import './init';
 import { useLocalBoolean, useLocalNumber, useLocalString } from './useLocalStorage';
-import GamePad from './GamePad';
 const fullscreen = new FullScreen()
 function App() {
   const _overlay_ref = useRef<HTMLDivElement>(null)
@@ -59,7 +61,7 @@ function App() {
   const [custom_v_align, set_custom_v_align] = useLocalNumber<number>('custom_v_align', 0.5);
   const [debug_ui_pos, set_debug_ui_pos] = useLocalString<'left' | 'right' | 'top' | 'bottom'>('debug_ui_pos', 'bottom');
   const [touch_pad_on, set_touch_pad_on] = useLocalString<string>('touch_pad_on', '');
-
+  const [is_fullscreen, _set_is_fullscreen] = useState(false);
   useEffect(() => {
     const lf2 = lf2_ref.current;
     if (!lf2) return;
@@ -69,7 +71,7 @@ function App() {
   const update_once = useCallback(() => {
     const lf2 = lf2_ref.current;
     set_paused(true);
-    lf2?.world.update_once()
+    lf2?.world.update_once();
   }, [])
 
   const [show_indicators, set_show_indicators] = useState(false);
@@ -85,12 +87,14 @@ function App() {
     if (!lf2) return;
     lf2.world.playrate = fast_forward ? 100 : 1;
   }, [fast_forward])
+
   const toggle_fullscreen = () => {
     if (fullscreen.is_fullscreen)
       fullscreen.exit();
     else
       fullscreen.enter(document.body.parentElement!);
   }
+
   const [layout, set_layout] = useState<string | undefined>(void 0);
   const [layouts, set_layouts] = useState<Readonly<ILayoutInfo>[]>([{ id: '', name: '无页面' }]);
   useEffect(() => {
@@ -107,20 +111,31 @@ function App() {
           set_layout(layout_data_list[1].id)
       })
     }
+    const lf2 = lf2_ref.current;
+    set_muted(lf2.sounds.muted());
+    set_bgm_muted(lf2.sounds.bgm_muted());
+    set_sound_muted(lf2.sounds.sound_muted());
+    set_volume(lf2.sounds.volume());
+    set_cheat_1(lf2.is_cheat_enabled(Defines.Cheats.LF2_NET));
+    set_cheat_2(lf2.is_cheat_enabled(Defines.Cheats.HERO_FT));
+    set_cheat_3(lf2.is_cheat_enabled(Defines.Cheats.GIM_INK));
+    set_bg_id(lf2.world.stage.bg.id)
+    const on_touchstart = () => {
+      set_touch_pad_on(fisrt(lf2.player_infos.keys())!)
+    }
+    window.addEventListener('touchstart', on_touchstart, { once: true })
 
-    set_muted(lf2_ref.current.sounds.muted());
-    set_bgm_muted(lf2_ref.current.sounds.bgm_muted());
-    set_sound_muted(lf2_ref.current.sounds.sound_muted());
-    set_volume(lf2_ref.current.sounds.volume());
-    set_cheat_1(lf2_ref.current.is_cheat_enabled(Defines.Cheats.LF2_NET));
-    set_cheat_2(lf2_ref.current.is_cheat_enabled(Defines.Cheats.HERO_FT));
-    set_cheat_3(lf2_ref.current.is_cheat_enabled(Defines.Cheats.GIM_INK));
-    set_bg_id(lf2_ref.current.world.stage.bg.id)
-    const c = [
-      lf2_ref.current.world.callbacks.add({
+    _set_is_fullscreen(!!fullscreen.element)
+
+    return new Invoker().add(
+      () => window.removeEventListener('touchstart', on_touchstart),
+      fullscreen.callbacks.add({
+        onChange: e => _set_is_fullscreen(!!e),
+      }),
+      lf2.world.callbacks.add({
         on_stage_change: (s) => set_bg_id(s.bg.id),
       }),
-      lf2_ref.current.callbacks.add({
+      lf2.callbacks.add({
         on_layout_changed: v => set_layout(v?.id ?? ''),
         on_loading_start: () => set_loading(true),
         on_loading_end: () => {
@@ -135,15 +150,13 @@ function App() {
           }
         },
       }),
-      lf2_ref.current.sounds.callbacks.add({
+      lf2.sounds.callbacks.add({
         on_muted_changed: v => set_muted(v),
         on_bgm_muted_changed: v => set_bgm_muted(v),
         on_sound_muted_changed: v => set_sound_muted(v),
         on_volume_changed: v => set_volume(v),
       })
-    ];
-
-    return () => c.forEach(i => i())
+    ).clear_fn();
   }, []);
 
   const on_click_load_local_zip = () => {
@@ -241,6 +254,10 @@ function App() {
             onClick={() => set_control_panel_visible(v => !v)}
             src={[require('./btn_1_2.png'), require('./btn_1_3.png')]} />
         </Show>
+        <ToggleImgButton
+          checked={is_fullscreen}
+          onClick={() => toggle_fullscreen()}
+          src={[require('./btn_3_1.png'), require('./btn_3_2.png')]} />
         <ToggleImgButton
           checked={bgm_muted}
           onClick={() => lf2_ref.current?.sounds?.set_bgm_muted(!bgm_muted)}
