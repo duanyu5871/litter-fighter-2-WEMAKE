@@ -240,7 +240,6 @@ function App() {
     v_align, h_align, custom_h_align, custom_v_align
   ])
 
-
   return (
     <div className="App">
       <div className='game_contiainer' ref={_game_contiainer_ref}>
