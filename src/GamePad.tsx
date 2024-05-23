@@ -80,7 +80,7 @@ export default function GamePad(props: IGamePadProps) {
           // )
           const pressing =
             Math.pow(circ.x - c_x, 2) + Math.pow(circ.y - c_y, 2) < Math.pow(c_c_r + circ.r, 2)
-          if (ref_pressing_map.current[k] === pressing)
+          if (!!ref_pressing_map.current[k] === pressing)
             continue;
           ref_pressing_map.current[k] = pressing;
           if (pressing) {
