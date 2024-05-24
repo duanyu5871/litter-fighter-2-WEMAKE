@@ -21,7 +21,7 @@ export default class LoadingFileNameDisplayer extends LayoutComponent {
     super.on_mount();
     this.layout.sprite.add(this._mesh)
     this._unmount_job.add(
-      () => this._mesh?.removeFromParent(),
+      () => this._mesh?.del_self(),
       this.lf2.callbacks.add({
         on_loading_content: (content, progress) => this.update_sprite(content, progress),
         on_loading_end: (): void => this.lf2.set_layout('main_page')

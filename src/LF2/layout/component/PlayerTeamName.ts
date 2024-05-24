@@ -48,7 +48,7 @@ export default class PlayerTeamName extends LayoutComponent {
         on_character_decided: () => this.handle_changed(),
         on_team_changed: () => this.handle_changed(),
       }),
-      () => this._mesh.removeFromParent()
+      () => this._mesh.del_self()
     )
     this.handle_changed();
   }

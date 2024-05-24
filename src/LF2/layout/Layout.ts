@@ -243,7 +243,7 @@ export default class Layout {
     leave && actor.act(this, leave);
     for (const c of this._components) c.on_unmount?.();
     for (const item of this.children) item.on_unmount()
-    this._mesh.removeFromParent();
+    this._mesh.del_self();
   }
 
   on_show() {

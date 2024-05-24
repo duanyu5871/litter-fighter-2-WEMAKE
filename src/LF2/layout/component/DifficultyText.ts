@@ -30,7 +30,7 @@ export default class DifficultyText extends LayoutComponent {
       this.lf2.callbacks.add({
         on_difficulty_changed: () => this.handle_changed()
       }),
-      () => this._mesh.removeFromParent(),
+      () => this._mesh.del_self(),
     )
     this.handle_changed();
   }

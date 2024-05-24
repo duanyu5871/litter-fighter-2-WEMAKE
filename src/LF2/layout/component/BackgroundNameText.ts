@@ -44,7 +44,7 @@ export default class BackgroundNameText extends LayoutComponent {
             this.switch_background()
         }
       }),
-      () => this._mesh.removeFromParent(),
+      () => this._mesh.del_self(),
     )
     this._mesh.set_text(this.text).apply()
   }

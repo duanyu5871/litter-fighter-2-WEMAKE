@@ -55,7 +55,7 @@ export default class PlayerName extends LayoutComponent {
       this.gpl?.fsm.callbacks.add({
         on_state_changed: () => this.handle_changed()
       }),
-      () => this._mesh.removeFromParent(),
+      () => this._mesh.del_self(),
     )
     this.handle_changed();
   }

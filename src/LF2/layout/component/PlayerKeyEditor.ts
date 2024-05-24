@@ -38,7 +38,7 @@ export default class PlayerKeyEditor extends LayoutComponent {
       this.player?.callbacks.add({
         on_key_changed: () => this.update_sprite()
       }),
-      () => this._sprite.removeFromParent(),
+      () => this._sprite.del_self(),
       () => this._on_cancel()
     )
     this.update_sprite();

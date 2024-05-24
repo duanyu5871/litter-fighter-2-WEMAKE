@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-import { is_num } from '../utils/type_check';
-import { empty_texture } from '../loader/loader';
 import { dispose_mesh } from '../layout/utils/dispose_mesh';
+import { empty_texture } from '../loader/loader';
+import { is_num } from '../utils/type_check';
 export interface ISpriteInfo {
   w: number;
   h: number;
@@ -176,10 +176,6 @@ export default class Sprite {
     return this._rgb;
   }
 
-  removeFromParent(): void {
-    this._mesh.removeFromParent();
-  }
-
   dispose(): void {
     dispose_mesh(this._mesh);
   }
@@ -192,6 +188,10 @@ export default class Sprite {
   del(...sp: Sprite[]): this {
     this.mesh.remove(...sp.map(v => v.mesh));
     return this;
+  }
+
+  del_self(): void {
+    this._mesh.removeFromParent();
   }
 
   get_user_data(key: string): any {
