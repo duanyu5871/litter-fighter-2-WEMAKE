@@ -16,6 +16,7 @@ import { LayoutComponent } from './component/LayoutComponent';
 import read_nums from './utils/read_nums';
 
 export interface ICookedLayoutInfo extends ILayoutInfo {
+  pos: [number, number, number];
   center: [number, number, number];
   rect: [number, number, number, number];
   parent?: ICookedLayoutInfo;
@@ -105,8 +106,6 @@ export default class Layout {
   protected _level: number = 0;
   protected readonly data: Readonly<ICookedLayoutInfo>;
 
-  pos: [number, number, number] = [0, 0, 0];
-  get src_rect() { return this.data.rect };
   lf2: LF2;
   get focused(): boolean {
     return this._root._focused_item === this;
@@ -136,9 +135,9 @@ export default class Layout {
   }
   get id(): string | undefined { return this.data.id }
   get name(): string | undefined { return this.data.name }
-  get x(): number { return this.pos[0] };
-  get y(): number { return this.pos[1] };
-  get z(): number { return this.pos[2] };
+  get x(): number { return this.data.pos[0] };
+  get y(): number { return this.data.pos[1] };
+  get z(): number { return this.data.pos[2] };
   get root(): Layout { return this._root }
   get level() { return this._level }
   get index() { return this._index }
@@ -167,7 +166,6 @@ export default class Layout {
   constructor(lf2: LF2, data: ICookedLayoutInfo, parent?: Layout) {
     this.lf2 = lf2;
     this.data = Object.freeze(data);
-    this.pos = read_nums(this.data.pos, 3)
     this._parent = parent;
     this._root = parent ? parent.root : this;
     if (this._root === this) {
@@ -270,17 +268,18 @@ export default class Layout {
   }
 
   static async cook_layout_info(lf2: LF2, data_or_path: ILayoutInfo | string, parent?: ICookedLayoutInfo): Promise<ICookedLayoutInfo> {
-    let raw_layout_info = is_str(data_or_path) ? await lf2.import_json<ILayoutInfo>(data_or_path) : data_or_path;
-    if (parent && raw_layout_info.template) {
-      const raw_template_data = await lf2.import_json<ILayoutInfo>(raw_layout_info.template);
+    let raw_info = is_str(data_or_path) ? await lf2.import_json<ILayoutInfo>(data_or_path) : data_or_path;
+    if (parent && raw_info.template) {
+      const raw_template_data = await lf2.import_json<ILayoutInfo>(raw_info.template);
       const cooked_template_data = await this.cook_layout_info(lf2, raw_template_data);
-      raw_layout_info = { ...cooked_template_data, ...raw_layout_info }
+      raw_info = { ...cooked_template_data, ...raw_info }
     }
 
     const ret: ICookedLayoutInfo = {
-      ...raw_layout_info,
-      center: read_nums(raw_layout_info.center, 3, [0, 0, 0]),
-      rect: read_nums(raw_layout_info.rect, 4),
+      ...raw_info,
+      pos: read_nums(raw_info.pos, 3, parent ? [0, -450, 0] : void 0),
+      center: read_nums(raw_info.center, 3, [0, 0, 0]),
+      rect: read_nums(raw_info.rect, 4),
       size: [0, 0],
       left_top: [0, 0],
       parent: parent,
@@ -288,7 +287,7 @@ export default class Layout {
       items: void 0
     }
 
-    const { img, rect, txt, style } = raw_layout_info;
+    const { img, txt, style } = raw_info;
     if (img) {
       const img_paths = !is_arr(img) ? [img] : img.filter(v => v && is_str(v));
       const [sx, sy, sw, sh] = ret.rect;
@@ -311,7 +310,7 @@ export default class Layout {
 
     {
       const { w: img_w = 0, h: img_h = 0 } = ret.img_infos?.[0] || {};
-      const { size, center, pos, rect } = raw_layout_info
+      const { size, center, pos, rect } = raw_info
 
       const [sx, sy, sw, sh] = read_nums(rect, 4, [0, 0, img_w, img_h])
       const [w, h] = read_nums(size, 2, [parent ? sw : 794, parent ? sh : 450]);
@@ -328,9 +327,9 @@ export default class Layout {
       ret.left_top = [dx, dy];
     }
 
-    if (Array.isArray(raw_layout_info.items) && raw_layout_info.items.length) {
+    if (Array.isArray(raw_info.items) && raw_info.items.length) {
       ret.items = [];
-      for (const item of raw_layout_info.items)
+      for (const item of raw_info.items)
         ret.items.push(await Layout.cook_layout_info(lf2, item, ret))
     } else {
       delete ret.items;
@@ -354,9 +353,6 @@ export default class Layout {
         cooked_item._level = ret.level + 1;
         ret.children.push(cooked_item);
       }
-    if (!parent) {
-      ret.pos = [0, -450, 0]
-    }
     return ret;
   }
 
@@ -423,7 +419,7 @@ export default class Layout {
   get sprite() { return this._sprite }
 
   protected init_sprite() {
-    const [x, y, z] = this.pos;
+    const [x, y, z] = this.data.pos;
     const [w, h] = this.size;
     const p: ISpriteInfo = {
       w, h,
@@ -491,7 +487,6 @@ export default class Layout {
   }
 
   on_render(dt: number) {
-
     if (this._root === this)
       this._sprite.x = this.lf2.world.camera.position.x
 
