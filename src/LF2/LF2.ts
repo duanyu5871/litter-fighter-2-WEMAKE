@@ -618,7 +618,8 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
 
     const info = is_str(arg) ? this._layout_infos?.find(v => v.id === arg) : arg;
     const curr = info && Layout.cook(this, info, this.layout_val_getter)
-    if (curr) this._layout_stacks.push(curr);
+    curr && this._layout_stacks.push(curr);
+    curr?.on_start();
     curr?.on_resume();
     this._callbacks.emit('on_layout_changed')(curr, prev);
   }
@@ -640,7 +641,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
 
     const info = is_str(arg) ? this._layout_infos?.find(v => v.id === arg) : arg;
     const curr = info && Layout.cook(this, info, this.layout_val_getter)
-    if (curr) this._layout_stacks.push(curr);
+    curr && this._layout_stacks.push(curr);
     curr?.on_start();
     curr?.on_resume();
     this._callbacks.emit('on_layout_changed')(curr, prev);

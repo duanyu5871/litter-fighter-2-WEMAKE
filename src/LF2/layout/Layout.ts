@@ -79,12 +79,14 @@ export default class Layout {
    * @type {Layout}
    */
   protected _root: Layout;
-
   protected _focused_item?: Layout;
+
+  readonly id_layout_map: Map<string, Layout>;
+  readonly name_layout_map: Map<string, Layout>;
+
+
   protected _components = new Set<LayoutComponent>();
 
-  protected _id_layout_map?: Map<string, Layout>;
-  protected _name_layout_map?: Map<string, Layout>;
 
   protected _state: any = {}
 
@@ -99,7 +101,7 @@ export default class Layout {
   protected _level: number = 0;
   protected readonly data: Readonly<ICookedLayoutInfo>;
 
-  center: [number, number];
+  center: [number, number, number];
   pos: [number, number, number] = [0, 0, 0];
   src_rect: [number, number, number, number] = [0, 0, 0, 0];
   dst_rect: [number, number, number, number] = [0, 0, 0, 0];
@@ -166,20 +168,20 @@ export default class Layout {
   get components() { return this._components; }
   get style(): IStyle { return this.data.style || {} }
 
-  get id_layout_map(): Map<string, Layout> { return this.root._id_layout_map! }
-  get name_layout_map(): Map<string, Layout> { return this.root._name_layout_map! }
-
   constructor(lf2: LF2, data: ICookedLayoutInfo, parent?: Layout) {
     this.lf2 = lf2;
     this.data = Object.freeze(data);
-    this.center = read_nums(this.data.center, 2)
+    this.center = read_nums(this.data.center, 3, [0, 0, 0])
     this.pos = read_nums(this.data.pos, 3)
     this._parent = parent;
     this._root = parent ? parent.root : this;
     if (this._root === this) {
-      this._id_layout_map = new Map();
-      this._name_layout_map = new Map();
+      this.id_layout_map = new Map();
+      this.name_layout_map = new Map();
     }
+
+    this.id_layout_map = parent?.id_layout_map ?? new Map();
+    this.name_layout_map = parent?.name_layout_map ?? new Map();
   }
 
   get x_on_root(): number {
@@ -211,17 +213,23 @@ export default class Layout {
 
   on_mouse_enter() {
   }
+
   on_start() {
+    this._state = {};
+    this.init_sprite();
     for (const c of this._components) c.on_start?.();
     for (const i of this.children) i.on_start();
   }
+
   on_stop(): void {
     for (const c of this.components) c.on_stop?.();
     for (const l of this.children) l.on_stop();
+    this.parent?.sprite.del(this._sprite)
   }
+
   on_resume() {
-    this._state = {};
-    this.init_sprite();
+    if (this.root === this) this.lf2.world.scene.add(this.sprite.mesh);
+
     for (const c of this._components) c.on_resume?.();
     for (const i of this.children) i.on_resume();
 
@@ -233,6 +241,8 @@ export default class Layout {
   }
 
   on_pause() {
+    if (this.root === this) this._sprite.del_self();
+
     if (this.global_visible && !this.parent)
       this.invoke_all_on_hide();
 
@@ -240,7 +250,7 @@ export default class Layout {
     leave && actor.act(this, leave);
     for (const c of this._components) c.on_pause?.();
     for (const item of this.children) item.on_pause()
-    this._sprite.del_self();
+
   }
 
   on_show() {
@@ -309,17 +319,17 @@ export default class Layout {
     return ret;
   }
 
-  static cook(lf2: LF2, cooked_data: ICookedLayoutInfo, get_val: ValGetter<Layout>, parent?: Layout) {
+  static cook(lf2: LF2, info: ICookedLayoutInfo, get_val: ValGetter<Layout>, parent?: Layout) {
 
-    const ret = new Layout(lf2, cooked_data, parent);
+    const ret = new Layout(lf2, info, parent);
     ret._cook_img_idx(get_val);
     ret._cook_data(get_val);
     ret._cook_rects();
     ret._cook_component();
 
-    if (cooked_data.items)
-      for (const raw_item_info of cooked_data.items) {
-        const cooked_item = Layout.cook(lf2, raw_item_info, get_val, ret);
+    if (info.items)
+      for (const item_info of info.items) {
+        const cooked_item = Layout.cook(lf2, item_info, get_val, ret);
         if (cooked_item.id) ret.id_layout_map.set(cooked_item.id, cooked_item);
         if (cooked_item.name) ret.name_layout_map.set(cooked_item.name, cooked_item);
         cooked_item._index = ret.children.length;
@@ -328,7 +338,6 @@ export default class Layout {
       }
     if (!parent) {
       ret.size = [794, 450];
-      ret.center = [0, 0];
       ret.pos = [0, -450, 0]
     }
     return ret;
@@ -429,9 +438,7 @@ export default class Layout {
       .set_visible(this.visible)
       .set_name(`layout(name= ${this.name}, id=${this.id})`)
       .apply()
-
-    if (this.parent?.sprite) this.parent?.sprite.add(this._sprite)
-    else this.lf2.world.scene.add(this._sprite.mesh);
+    this.parent?.sprite.add(this._sprite);
   }
 
   on_click(): boolean {
@@ -459,6 +466,7 @@ export default class Layout {
     } while (n)
     return false;
   }
+
   invoke_all_on_show() {
     this.on_show();
     for (const child of this.children) {
@@ -504,16 +512,7 @@ export default class Layout {
   on_player_key_down(player_id: string, key: TKeyName) {
     for (const i of this.children) i.on_player_key_down(player_id, key);
     for (const c of this._components) c.on_player_key_down?.(player_id, key);
-    switch (key) {
-      case 'a': {
-        this._focused_item?.on_click();
-        break;
-      }
-      case 'j':
-        break;
-      case 'd':
-        break;
-    }
+    if ('a' === key) this._focused_item?.on_click();
   }
 
   on_player_key_up(player_id: string, key: TKeyName) {

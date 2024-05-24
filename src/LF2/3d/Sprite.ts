@@ -16,6 +16,7 @@ export default class Sprite implements INode {
   protected _h?: number;
   protected _c_x: number = 0;
   protected _c_y: number = 0;
+  protected _c_z: number = 0;
   protected _parent?: INode;
 
   protected _texture: THREE.Texture = empty_texture();
@@ -51,16 +52,17 @@ export default class Sprite implements INode {
   unset_size(): this { this._w = this._h = void 0; return this; }
 
   protected next_geometry(): THREE.PlaneGeometry {
-    const { w, h, _c_x, _c_y } = this;
-    const { w: _w, h: _h, c_x, c_y } = this._geo.userData;
+    const { w, h, _c_x, _c_y, _c_z } = this;
+    const { w: _w, h: _h, c_x, c_y, c_z } = this._geo.userData;
 
-    if (w === _w && h === _h && c_x === _c_x && c_y === _c_y)
+    if (w === _w && h === _h && c_x === _c_x && c_y === _c_y && c_z === _c_z)
       return this._geo;
     this._geo.dispose();
 
     const tran_x = Math.round(w * (0.5 - _c_x));
     const tran_y = Math.round(h * (_c_y - 0.5));
-    const ret = new THREE.PlaneGeometry(w, h).translate(tran_x, tran_y, 0);
+    const tran_z = Math.round(_c_z);
+    const ret = new THREE.PlaneGeometry(w, h).translate(tran_x, tran_y, tran_z);
     ret.userData.w = w;
     ret.userData.h = h;
     ret.userData.c_x = _c_x;
@@ -139,9 +141,10 @@ export default class Sprite implements INode {
    * @param {number} y
    * @returns {this}
    */
-  set_center(x: number, y: number): this {
+  set_center(x: number, y: number, z: number = this._c_z): this {
     this._c_x = x;
     this._c_y = y;
+    this._c_z = z;
     return this;
   }
 
