@@ -25,6 +25,7 @@ import open_file from './Utils/open_file';
 import './game_ui.css';
 import './init';
 import { useLocalBoolean, useLocalNumber, useLocalString } from './useLocalStorage';
+import { useShortcut } from './Component/useShortcut';
 
 const fullscreen = new FullScreen()
 function App() {
@@ -237,6 +238,15 @@ function App() {
   ])
 
   const lf2 = lf2_ref.current;
+  useShortcut('F1', 0, () => lf2?.world.set_paused(!paused));
+  useShortcut('F2', 0, () => update_once());
+  useShortcut('F4', 0, () => lf2?.pop_layout());
+  useShortcut('F5', 0, () => set_fast_forward(!fast_forward));
+  useShortcut('F11', 0, () => toggle_fullscreen());
+  useShortcut('ctrl+F1', 0, () => set_control_panel_visible(v => !v));
+  useShortcut('ctrl+F2', 0, () => set_show_indicators(v => !v));
+  useShortcut('ctrl+F3', 0, () => set_game_overlay(v => !v));
+
   return (
     <div className="App">
       <div className='game_contiainer' ref={_game_contiainer_ref}>
@@ -265,13 +275,12 @@ function App() {
         <Show show={bg_id !== Defines.VOID_BG.id}>
           <ToggleImgButton
             checked={paused}
-            shortcut='F1'
             onClick={() => lf2?.world.set_paused(!paused)}
             src={[require('./btn_2_1.png'), require('./btn_2_2.png')]} />
         </Show>
         <Show show={layout && Number(lf2?.layout_stacks.length) > 1}>
           <ToggleImgButton
-            shortcut='F1'
+            shortcut='F4'
             onClick={() => lf2?.pop_layout()}
             src={[require('./btn_2_3.png')]} />
         </Show>
@@ -372,42 +381,26 @@ function App() {
           </Show>
         </div>
         <div className='settings_row'>
-          <ToggleButton
-            onToggle={_set_paused}
-            checked={paused}
-            shortcut='F1'>
+          <ToggleButton title='F1' checked={paused} onClick={() => lf2?.world.set_paused(!paused)}>
             <>游戏暂停</>
             <>游戏暂停✓</>
           </ToggleButton>
-          <Button
-            onClick={update_once}
-            shortcut='F2'>
+          <Button title='F2' onClick={update_once}>
             更新一帧
           </Button>
-          <ToggleButton
-            onToggle={set_fast_forward}
-            checked={fast_forward}
-            shortcut='shift+F5'>
+          <ToggleButton title='F5' checked={fast_forward} onClick={() => set_fast_forward(!fast_forward)}>
             <>不限速度</>
             <>不限速度✓</>
           </ToggleButton>
-          <ToggleButton
-            onToggle={set_show_indicators}
-            checked={show_indicators}
-            shortcut='F6'>
+          <ToggleButton title='ctrl+F2' checked={show_indicators} onClick={() => set_show_indicators(v => !v)}>
             <>指示器</>
             <>指示器✓</>
           </ToggleButton>
-          <ToggleButton
-            onToggle={set_game_overlay}
-            checked={game_overlay}
-            shortcut='F7'>
+          <ToggleButton title='ctrl+F3' checked={game_overlay} onToggle={set_game_overlay} >
             <>游戏覆盖</>
             <>游戏覆盖✓</>
           </ToggleButton>
-          <Button
-            onClick={toggle_fullscreen}
-            shortcut='F9'>
+          <Button onClick={toggle_fullscreen}>
             全屏
           </Button>
         </div>

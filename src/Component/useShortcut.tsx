@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { is_str } from "../LF2/utils/type_check";
+import React, { useCallback, useEffect, useRef } from "react";
+import { is_fun, is_str } from "../LF2/utils/type_check";
 
 export type TShortcut =
   `ctrl+shift+alt+${string}` |
@@ -10,7 +10,18 @@ export type TShortcut =
   `shift+${string}` |
   `alt+${string}` |
   `${string}`
-export function useShortcut(shortcut: string | undefined, disabled: boolean | undefined, ref_btn: React.MutableRefObject<HTMLElement | null>, shortcutTarget: Window | Document | Element) {
+
+export function useShortcut(shortcut: string | undefined, disabled: any, fn?: () => void, target?: Window | Document | Element): void
+export function useShortcut(shortcut: string | undefined, disabled: any, ref_btn?: React.MutableRefObject<HTMLElement | null>, target?: Window | Document | Element): void
+export function useShortcut(shortcut: string | undefined, disabled: any, arg?: React.MutableRefObject<HTMLElement | null> | (() => void), target: Window | Document | Element = window): void {
+  const ref_fn = useRef<() => void>();
+  ref_fn.current = () => {
+    if (typeof arg === 'function')
+      return arg();
+    arg?.current?.focus();
+    arg?.current?.click();
+  }
+
   useEffect(() => {
     if (!shortcut || disabled) return;
     const keys = shortcut.split('+').filter(v => v);
@@ -26,14 +37,13 @@ export function useShortcut(shortcut: string | undefined, disabled: boolean | un
       if (e.shiftKey && keys.indexOf('shift') < 0) return;
       if (e.altKey && keys.indexOf('alt') < 0) return;
       if (e.key.toLowerCase() !== keys[keys.length - 1].toLowerCase()) return;
-      ref_btn.current?.focus();
-      ref_btn.current?.click();
+      ref_fn.current?.()
       interrupt();
     };
-    shortcutTarget.addEventListener('keydown', on_keydown);
+    target.addEventListener('keydown', on_keydown);
     return () => {
-      shortcutTarget.removeEventListener('keydown', on_keydown);
+      target.removeEventListener('keydown', on_keydown);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [shortcut, disabled, shortcutTarget]);
+  }, [shortcut, !!disabled, target]);
 }
