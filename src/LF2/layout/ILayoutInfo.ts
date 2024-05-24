@@ -28,4 +28,5 @@ export interface ILayoutInfo {
   items?: (ILayoutInfo | string)[];
 
   auto_focus?: boolean;
+  template?: string;
 }

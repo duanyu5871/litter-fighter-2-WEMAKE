@@ -266,7 +266,14 @@ export default class Layout {
     this._img_idx = () => (img_idx + 1) % img_infos.length
   }
 
-  static async cook(lf2: LF2, data: ILayoutInfo, get_val: ValGetter<Layout>, parent?: Layout) {
+  static async cook(lf2: LF2, data_or_path: ILayoutInfo | string, get_val: ValGetter<Layout>, parent?: Layout) {
+    let data = is_str(data_or_path) ? await lf2.import_json<ILayoutInfo>(data_or_path) : data_or_path
+
+    if (parent && data.template) {
+      const template_data = await lf2.import_json<ILayoutInfo>(data.template);
+      data = { ...template_data, ...data }
+    }
+
     const ret = new Layout(lf2, data, parent);
     await ret._cook_imgs(lf2);
     ret._cook_img_idx(get_val);
@@ -277,7 +284,7 @@ export default class Layout {
     if (data.items)
       for (const raw_item of data.items) {
 
-        const cooked_item = await Layout.cook(lf2, is_str(raw_item) ? await lf2.import_json(raw_item) : raw_item, get_val, ret);
+        const cooked_item = await Layout.cook(lf2, raw_item, get_val, ret);
         if (cooked_item.id) ret.id_layout_map.set(cooked_item.id, cooked_item);
         if (cooked_item.name) ret.name_layout_map.set(cooked_item.name, cooked_item);
         cooked_item._index = ret.children.length;
@@ -424,7 +431,7 @@ export default class Layout {
       .set_pos(x, -y, z)
       .set_opacity((p.texture || p.color) ? 1 : 0)
       .set_visible(this.visible)
-      .set_name(`layout(name = ${this.name}, id =${this.id})`)
+      .set_name(`layout(name= ${this.name}, id=${this.id})`)
       .apply()
 
     if (this.parent?.sprite) this.parent?.sprite.add(this._mesh)

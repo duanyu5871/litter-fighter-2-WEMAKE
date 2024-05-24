@@ -126,12 +126,12 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   }
   on_click_character?: (c: Character) => void;
 
-  async import_json(path: string): Promise<any> {
+  async import_json<C = any>(path: string): Promise<C> {
     const paths = get_import_fallbacks(path);
     const { _zip } = this;
     const obj = _zip && fisrt(paths, p => _zip.file(p))
-    if (obj) return obj.json()
-    return import_as_json(paths);
+    if (obj) return obj.json() as C
+    return import_as_json(paths) as C;
   }
 
   async import_resource(path: string): Promise<string> {
