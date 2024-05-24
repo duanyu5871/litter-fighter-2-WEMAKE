@@ -268,16 +268,20 @@ export default class Layout {
   }
 
   static async cook_layout_info(lf2: LF2, data_or_path: ILayoutInfo | string, parent?: ICookedLayoutInfo): Promise<ICookedLayoutInfo> {
+
     let raw_info = is_str(data_or_path) ? await lf2.import_json<ILayoutInfo>(data_or_path) : data_or_path;
+
     if (parent && raw_info.template) {
       const raw_template_data = await lf2.import_json<ILayoutInfo>(raw_info.template);
-      const cooked_template_data = await this.cook_layout_info(lf2, raw_template_data);
+      Object.assign(raw_template_data, raw_info);
+      delete raw_template_data.template
+      const cooked_template_data = await this.cook_layout_info(lf2, raw_template_data, parent);
       raw_info = { ...cooked_template_data, ...raw_info }
     }
 
     const ret: ICookedLayoutInfo = {
       ...raw_info,
-      pos: read_nums(raw_info.pos, 3, parent ? [0, -450, 0] : void 0),
+      pos: read_nums(raw_info.pos, 3, parent ? void 0 : [0, -450, 0]),
       center: read_nums(raw_info.center, 3, [0, 0, 0]),
       rect: read_nums(raw_info.rect, 4),
       size: [0, 0],

@@ -2,7 +2,6 @@
   "name": "l_frame",
   "id": "l_frame",
   "img": "sprite/l_frame.png",
-  "size": "150,45",
   "items": [
     {
       "id": "face",
@@ -12,12 +11,12 @@
     },
     {
       "id": "hp_bar",
-      "pos": "40,10,0.1",
+      "pos": "40,12,0.1",
       "template": "layouts/hp_bar.json"
     },
     {
       "id": "mp_bar",
-      "pos": "40,30,0.1",
+      "pos": "40,28,0.1",
       "template": "layouts/mp_bar.json"
     }
   ]
