@@ -64,6 +64,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     this._difficulty = v;
     this._callbacks.emit('on_difficulty_changed')(v, old)
   }
+
   readonly canvas: HTMLCanvasElement;
   readonly world: World;
   private _zip: Zip | undefined;
@@ -455,8 +456,11 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     this.keyboard.dispose();
     this.pointings.dispose();
 
-    for (const l of this._layout_stacks)
-      l?.dispose()
+    for (const l of this._layout_stacks) {
+      l?.on_unmount();
+      l?.dispose();
+    }
+    this._layout_stacks.length = 0;
 
   }
 
@@ -620,11 +624,12 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   }
 
   pop_layout(): void {
-    const popped_layout = this._layout_stacks.pop()
-    popped_layout?.on_unmount();
+    const popped = this._layout_stacks.pop()
+    popped?.on_unmount();
+    popped?.dispose();
 
     this.layout?.on_mount();
-    this._callbacks.emit('on_layout_changed')(this.layout, popped_layout)
+    this._callbacks.emit('on_layout_changed')(this.layout, popped)
   }
 
   push_layout(layout_info?: ICookedLayoutInfo): void;

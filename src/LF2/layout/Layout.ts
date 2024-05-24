@@ -286,20 +286,17 @@ export default class Layout {
       items: void 0
     }
 
-
     const { img, rect, txt, style } = raw_layout_info;
     if (img) {
       const img_paths = !is_arr(img) ? [img] : img.filter(v => v && is_str(v));
       const [sx, sy, sw, sh] = read_nums(rect, 4);
       const preload = async (img_path: string) => {
-        const img_key = [img_path, sx, sy, sw, sh].join('_');
+        const img_key = `${img_path}?${sx}_${sy}_${sw}_${sh}`;
         const img_info = lf2.images.find(img_key);
         if (img_info) return img_info;
         return await lf2.images.load_img(img_key, img_path, (img, cvs, ctx) => {
-          const w = sw || img.width;
-          const h = sh || img.height;
-          cvs.width = w;
-          cvs.height = h;
+          const w = cvs.width = sw || img.width;
+          const h = cvs.height = sh || img.height;
           ctx.drawImage(img, sx, sy, w, h, 0, 0, w, h);
         });
       };
