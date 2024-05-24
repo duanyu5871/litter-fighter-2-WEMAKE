@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { IToggleImgProps, ToggleImgButton } from './Component/ToggleImgButton';
 import './GamePad.css';
 import LF2 from './LF2/LF2';
-import { BaseController, TKeyName } from './LF2/controller/BaseController';
+import { BaseController, KEY_NAME_LIST, TKeyName } from './LF2/controller/BaseController';
 export interface IGamePadProps {
   lf2?: LF2;
   player_id?: string;
@@ -63,61 +63,109 @@ export default function GamePad(props: IGamePadProps) {
       { key: 'j' as TKeyName, rect: get_rect(ref_btn_j), circ: get_circ(ref_btn_j) },
       { key: 'd' as TKeyName, rect: get_rect(ref_btn_d), circ: get_circ(ref_btn_d) }
     ]
-    const on_touchmove = (e: TouchEvent) => {
-      e.preventDefault();
-      for (const { clientX: c_x, clientY: c_y, radiusX: c_x_r, radiusY: c_y_r } of e.touches) {
-        const c_c_r = Math.max(Math.min(c_x_r, c_y_r), 15)
-        const c_l = c_x - c_c_r;
-        const c_r = c_x + c_c_r;
-        const c_t = c_y - c_c_r;
-        const c_b = c_y + c_c_r;
-        for (const { rect, circ, key: k } of rect_infos) {
-          // const pressing = (
-          //   c_l <= rect.r &&
-          //   c_r >= rect.l &&
-          //   c_t <= rect.b &&
-          //   c_b >= rect.t
-          // )
-          const pressing =
-            Math.pow(circ.x - c_x, 2) + Math.pow(circ.y - c_y, 2) < Math.pow(c_c_r + circ.r, 2)
-          if (!!ref_pressing_map.current[k] === pressing)
-            continue;
-          ref_pressing_map.current[k] = pressing;
-          if (pressing) {
-            lf2?.layout?.on_player_key_down(player_id, k);
-            controller?.start(k);
-          } else {
-            controller?.end(k);
-          }
+
+    function copy_touch(touch: Touch) {
+      return {
+        id: touch.identifier,
+        x: touch.pageX,
+        y: touch.pageY,
+        r: Math.min(touch.radiusX, touch.radiusY),
+        end: false,
+      };
+    }
+    const touches: ReturnType<typeof copy_touch>[] = [];
+
+    const find_touch_index = (touch_id: number) => {
+      return touches.findIndex(v => v.id === touch_id)
+    }
+
+    const handle_touchs = () => {
+      const next_pressing_map: { [x in TKeyName]?: boolean } = {};
+      for (const t of touches) {
+        for (const { circ, key: k } of rect_infos) {
+          if (!next_pressing_map[k])
+            next_pressing_map[k] = Math.pow(circ.x - t.x, 2) + Math.pow(circ.y - t.y, 2) < Math.pow(t.r + circ.r, 2);
         }
       }
+      for (const k of KEY_NAME_LIST) {
+        if (ref_pressing_map.current[k] && !next_pressing_map[k]) {
+          controller?.end(k);
+          console.log(k, false)
+        } else if (!ref_pressing_map.current[k] && next_pressing_map[k]) {
+          lf2?.layout?.on_player_key_down(player_id, k);
+          controller?.start(k);
+          console.log(k, true)
+        }
+      }
+      ref_pressing_map.current = next_pressing_map;
     }
-    document.addEventListener('touchmove', on_touchmove, { passive: false })
+    const on_touch_start = (e: TouchEvent) => {
+      e.preventDefault();
+      for (const t of e.changedTouches) {
+        touches.push(copy_touch(t));
+      }
+      handle_touchs()
+    }
+    const on_touch_move = (e: TouchEvent) => {
+      e.preventDefault();
+      for (const t of e.changedTouches) {
+        const idx = find_touch_index(t.identifier);
+        if (idx >= 0) touches.splice(idx, 1, copy_touch(t));
+      }
+      handle_touchs()
+    }
+    const on_touch_end = (e: TouchEvent) => {
+      e.preventDefault();
+      for (const t of e.changedTouches) {
+        const idx = find_touch_index(t.identifier);
+        if (idx >= 0) touches.splice(idx, 1);
+      }
+      handle_touchs()
+    }
+    const on_touch_cancel = (e: TouchEvent) => {
+      e.preventDefault();
+      for (const t of e.changedTouches) {
+        const idx = find_touch_index(t.identifier);
+        if (idx >= 0) touches.splice(idx, 1);
+      }
+      handle_touchs()
+    }
+
+
+    document.addEventListener('touchstart', on_touch_start, { passive: false })
+    document.addEventListener('touchmove', on_touch_move, { passive: false })
+    document.addEventListener('touchend', on_touch_end, { passive: false })
+    document.addEventListener('touchcancel', on_touch_cancel, { passive: false })
     return () => {
       document.removeEventListener('contextmenu', on_contextmenu);
-      document.removeEventListener('touchmove', on_touchmove);
+      document.removeEventListener('touchstart', on_touch_start);
+      document.addEventListener('touchmove', on_touch_move)
+      document.removeEventListener('touchend', on_touch_end);
+      document.removeEventListener('touchcancel', on_touch_end);
     }
   }, [controller, lf2, player_id])
 
   if (!player_id) return <></>;
 
   const touch_props = (key: TKeyName): IToggleImgProps => {
-    const on_touch_end = () => {
-      if (!ref_pressing_map.current[key])
-        return;
-      ref_pressing_map.current[key] = false;
-      controller?.end(key);
-    }
+    // const on_touch_end = () => {
+    //   if (!ref_pressing_map.current[key])
+    //     return;
+    //   ref_pressing_map.current[key] = false;
+    //   controller?.end(key);
+    // }
     return {
-      onPointerDown: () => {
-        if (ref_pressing_map.current[key])
-          return;
-        ref_pressing_map.current[key] = true;
-        lf2?.layout?.on_player_key_down(player_id, key);
-        controller?.start(key);
-      },
-      onPointerCancel: on_touch_end,
-      onPointerUp: on_touch_end
+      // onPointerDown: () => {
+      //   if (ref_pressing_map.current[key])
+      //     return;
+      //   ref_pressing_map.current[key] = true;
+      //   lf2?.layout?.on_player_key_down(player_id, key);
+      //   controller?.start(key);
+      // },
+      // onPointerCancel: on_touch_end,
+      // onPointerUp: on_touch_end,
+
+      disabled: true
     }
   };
   return (
