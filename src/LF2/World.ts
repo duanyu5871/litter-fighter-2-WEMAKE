@@ -160,7 +160,7 @@ export class World {
   render_once(dt: number) {
     if (this.disposed) return;
     for (const e of this.entities) e.indicators.update();
-    this.lf2.curr_layout?.on_render(dt);
+    this.lf2.layout?.on_render(dt);
     this.renderer.render(this.scene, this.camera);
   }
 

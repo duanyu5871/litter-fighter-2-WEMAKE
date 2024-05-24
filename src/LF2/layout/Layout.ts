@@ -16,8 +16,10 @@ import factory from './component/Factory';
 import { LayoutComponent } from './component/LayoutComponent';
 import read_nums from './utils/read_nums';
 
-interface ICookedLayoutInfo {
-
+export interface ICookedLayoutInfo extends Omit<ILayoutInfo, 'items'> {
+  parent?: ICookedLayoutInfo;
+  items?: ICookedLayoutInfo[];
+  img_infos: TImageInfo[];
 }
 
 export interface ILayoutCallback {
@@ -109,11 +111,10 @@ export default class Layout {
   protected _children: Layout[] = [];
   protected _index: number = 0;
   protected _level: number = 0;
-  protected readonly data: Readonly<ILayoutInfo>;
+  protected readonly data: Readonly<ICookedLayoutInfo>;
 
   center: [number, number];
   pos: [number, number, number] = [0, 0, 0];
-  img_infos?: TImageInfo[];
   src_rect: [number, number, number, number] = [0, 0, 0, 0];
   dst_rect: [number, number, number, number] = [0, 0, 0, 0];
   lf2: LF2;
@@ -182,7 +183,7 @@ export default class Layout {
   get id_layout_map(): Map<string, Layout> { return this.root._id_layout_map! }
   get name_layout_map(): Map<string, Layout> { return this.root._name_layout_map! }
 
-  constructor(lf2: LF2, data: ILayoutInfo, parent?: Layout) {
+  constructor(lf2: LF2, data: ICookedLayoutInfo, parent?: Layout) {
     this.lf2 = lf2;
     this.data = Object.freeze(data);
     this.center = read_nums(this.data.center, 2)
@@ -265,30 +266,71 @@ export default class Layout {
   }
 
   to_next_img() {
-    const { img_idx, img_infos } = this;
+    const { img_idx, data: { img_infos } } = this;
     if (!img_infos?.length) return;
     this._img_idx = () => (img_idx + 1) % img_infos.length
   }
 
-  static async cook(lf2: LF2, data_or_path: ILayoutInfo | string, get_val: ValGetter<Layout>, parent?: Layout) {
-    let data = is_str(data_or_path) ? await lf2.import_json<ILayoutInfo>(data_or_path) : data_or_path
-
-    if (parent && data.template) {
-      const template_data = await lf2.import_json<ILayoutInfo>(data.template);
-      data = { ...template_data, ...data }
+  static async cook_layout_info(lf2: LF2, data_or_path: ILayoutInfo | string, parent?: ICookedLayoutInfo): Promise<ICookedLayoutInfo> {
+    let raw_layout_info = is_str(data_or_path) ? await lf2.import_json<ILayoutInfo>(data_or_path) : data_or_path;
+    if (parent && raw_layout_info.template) {
+      const raw_template_data = await lf2.import_json<ILayoutInfo>(raw_layout_info.template);
+      const cooked_template_data = await this.cook_layout_info(lf2, raw_template_data);
+      raw_layout_info = { ...cooked_template_data, ...raw_layout_info }
     }
 
-    const ret = new Layout(lf2, data, parent);
-    await ret._cook_imgs(lf2);
+    const ret: ICookedLayoutInfo = {
+      ...raw_layout_info,
+      parent: parent,
+      img_infos: [],
+      items: void 0
+    }
+
+
+    const { img, rect, txt, style } = raw_layout_info;
+    if (img) {
+      const img_paths = !is_arr(img) ? [img] : img.filter(v => v && is_str(v));
+      const [sx, sy, sw, sh] = read_nums(rect, 4);
+      const preload = async (img_path: string) => {
+        const img_key = [img_path, sx, sy, sw, sh].join('_');
+        const img_info = lf2.images.find(img_key);
+        if (img_info) return img_info;
+        return await lf2.images.load_img(img_key, img_path, (img, cvs, ctx) => {
+          const w = sw || img.width;
+          const h = sh || img.height;
+          cvs.width = w;
+          cvs.height = h;
+          ctx.drawImage(img, sx, sy, w, h, 0, 0, w, h);
+        });
+      };
+      for (const p of img_paths) {
+        if (p) ret.img_infos.push(await preload(p))
+      }
+    } else if (is_str(txt)) {
+      ret.img_infos.push(await lf2.images.load_text(txt, style))
+    }
+
+    if (Array.isArray(raw_layout_info.items) && raw_layout_info.items.length) {
+      ret.items = [];
+      for (const item of raw_layout_info.items)
+        ret.items.push(await Layout.cook_layout_info(lf2, item, ret))
+    } else {
+      delete ret.items;
+    }
+    return ret;
+  }
+
+  static cook(lf2: LF2, cooked_data: ICookedLayoutInfo, get_val: ValGetter<Layout>, parent?: Layout) {
+
+    const ret = new Layout(lf2, cooked_data, parent);
     ret._cook_img_idx(get_val);
     ret._cook_data(get_val);
     ret._cook_rects();
     ret._cook_component();
 
-    if (data.items)
-      for (const raw_item of data.items) {
-
-        const cooked_item = await Layout.cook(lf2, raw_item, get_val, ret);
+    if (cooked_data.items)
+      for (const raw_item_info of cooked_data.items) {
+        const cooked_item = Layout.cook(lf2, raw_item_info, get_val, ret);
         if (cooked_item.id) ret.id_layout_map.set(cooked_item.id, cooked_item);
         if (cooked_item.name) ret.name_layout_map.set(cooked_item.name, cooked_item);
         cooked_item._index = ret.children.length;
@@ -309,58 +351,6 @@ export default class Layout {
     for (const c of factory.create(this, component)) {
       this._components.add(c);
     }
-  }
-
-  static async cook_layout_info(raw_layout_info: ILayoutInfo): Promise<ILayoutInfo> {
-
-    const { img } = raw_layout_info;
-
-    const img_paths = !is_arr(img) ? [img] : img.filter(v => v && is_str(v));
-    if (img_paths.length) {
-
-    }
-    return raw_layout_info;
-  }
-
-
-  private async _cook_imgs(lf2: LF2) {
-    const { img } = this.data;
-    do {
-      if (!img) break;
-
-      const img_paths = !is_arr(img) ? [img] : img.filter(v => v && is_str(v));
-      if (!img_paths.length) break;
-
-      const img_infos: TImageInfo[] = [];
-      const [sx, sy, sw, sh] = read_nums(this.data.rect, 4);
-
-      const preload = async (img_path: string) => {
-        const img_key = [img_path, sx, sy, sw, sh].join('_');
-        const img_info = this.lf2.images.find(img_key);
-        if (img_info) return img_info;
-        return await this.lf2.images.load_img(img_key, img_path, (img, cvs, ctx) => {
-          const w = sw || img.width;
-          const h = sh || img.height;
-          cvs.width = w;
-          cvs.height = h;
-          ctx.drawImage(img, sx, sy, w, h, 0, 0, w, h);
-        });
-      };
-      for (const p of img_paths) {
-        if (!p) continue
-        img_infos.push(await preload(p))
-      }
-      this.img_infos = img_infos;
-
-    } while (0);
-
-    const { txt, style } = this.data;
-    do {
-      if (!is_str(txt)) break;
-      this.img_infos = [
-        await this.lf2.images.load_text(txt, style)
-      ]
-    } while (0);
   }
 
   private _cook_data(get_val: ValGetter<Layout>) {
@@ -389,7 +379,7 @@ export default class Layout {
   }
 
   private _cook_img_idx(get_val: ValGetter<Layout>) {
-    const { img_infos } = this;
+    const { data: { img_infos } } = this;
     if (!img_infos?.length) return;
     const { which } = this.data;
     if (is_str(which)) {
@@ -403,7 +393,7 @@ export default class Layout {
   }
 
   private _cook_rects() {
-    const { w: img_w = 0, h: img_h = 0 } = this.img_infos?.[0] || {};
+    const { w: img_w = 0, h: img_h = 0 } = this.data.img_infos?.[0] || {};
     const { size, center, pos, rect } = this.data
 
     const [sx, sy, sw, sh] = read_nums(rect, 4, [0, 0, img_w, img_h])
@@ -423,7 +413,7 @@ export default class Layout {
 
   protected create_texture(): THREE.Texture | undefined {
     const img_idx = this.img_idx;
-    const img_info = this.img_infos?.[img_idx];
+    const img_info = this.data.img_infos?.[img_idx];
     if (!img_info) return this.data.bg_color ? white_texture() : empty_texture();
     const { flip_x, flip_y } = this.data
     const texture = this.lf2.images.create_pic_by_img_info(img_info).texture;

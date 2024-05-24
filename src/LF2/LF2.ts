@@ -25,7 +25,8 @@ import Entity from './entity/Entity';
 import './entity/Weapon';
 import Weapon from './entity/Weapon';
 import { is_character, is_entity } from './entity/type_check';
-import Layout from './layout/Layout';
+import { ILayoutInfo } from './layout/ILayoutInfo';
+import Layout, { ICookedLayoutInfo } from './layout/Layout';
 import DatMgr from './loader/DatMgr';
 import get_import_fallbacks from "./loader/get_import_fallbacks";
 import { ImageMgr } from './loader/loader';
@@ -36,7 +37,6 @@ import { fisrt, last } from './utils/container_help';
 import { arithmetic_progression } from './utils/math/arithmetic_progression';
 import { random_get, random_in, random_take } from './utils/math/random';
 import { is_arr, is_num, is_str, not_empty_str } from './utils/type_check';
-import { ILayoutInfo } from './layout/ILayoutInfo';
 
 const cheat_info_pair = (n: Defines.Cheats) => ['' + n, {
   keys: Defines.CheatKeys[n],
@@ -46,7 +46,7 @@ const cheat_info_pair = (n: Defines.Cheats) => ['' + n, {
 export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   private _disposed: boolean = false;
   private _callbacks = new Callbacks<ILf2Callback>();
-  private _layout_stacks: (Layout | undefined)[] = [];
+  private _layout_stacks: Layout[] = [];
   private _loading: boolean = false;
   private _loaded: boolean = false;
   private _difficulty: Defines.Difficulty = Defines.Difficulty.Difficult;
@@ -80,10 +80,6 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   get player_infos() { return this._player_infos }
 
   get player_characters() { return this.world.player_characters }
-
-  get curr_layout(): Layout | undefined { return this._layout_stacks[this._layout_stacks.length - 1] }
-  set curr_layout(v: Layout | undefined) { this._layout_stacks[this._layout_stacks.length - 1] = v }
-
 
   readonly characters: Record<string, (num: number, team?: string) => void> = {}
   readonly weapons: Record<string, (num: number, team?: string) => void> = {}
@@ -233,7 +229,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   private mouse_on_layouts = new Set<Layout>()
 
   on_click(e: PointingEvent) {
-    const { curr_layout: layout } = this;
+    const { layout } = this;
     if (!layout) return;
     const coords = new THREE.Vector2(e.scene_x, e.scene_y);
     const { sprite } = layout;
@@ -263,7 +259,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   }
 
   on_pointer_move(e: PointingEvent) {
-    const { curr_layout: layout } = this;
+    const { layout } = this;
     if (!layout) return;
     const coords = new THREE.Vector2(e.scene_x, e.scene_y);
     const { sprite } = layout;
@@ -336,11 +332,12 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     this._callbacks.emit('on_cheat_changed')(cheat_name, enabled);
     this._curr_key_list = ''
   }
+
   on_key_down(e: KeyEvent) {
     const key_code = e.key?.toLowerCase() ?? ''
     this._curr_key_list += key_code;
     let match = false;
-    for (const [cheat_name, { keys: k, sound: s }] of this._cheats_map) {
+    for (const [cheat_name, { keys: k }] of this._cheats_map) {
       if (k.startsWith(this._curr_key_list))
         match = true;
       if (k !== this._curr_key_list)
@@ -350,7 +347,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     if (!match) this._curr_key_list = '';
 
     if (e.times === 0) {
-      const { curr_layout: layout } = this;
+      const { layout } = this;
       if (layout) {
         for (const key_name of KEY_NAME_LIST) {
           for (const [player_id, player_info] of this._player_infos) {
@@ -364,7 +361,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
 
   on_key_up(e: KeyEvent) {
     const key_code = e.key?.toLowerCase() ?? ''
-    const { curr_layout: layout } = this;
+    const { layout } = this;
     if (layout) {
       for (const key_name of KEY_NAME_LIST) {
         for (const [player_id, player_info] of this._player_infos) {
@@ -457,10 +454,10 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     this.images.dispose();
     this.keyboard.dispose();
     this.pointings.dispose();
-    if (this._layouts) {
-      for (const l of this._layouts)
-        l.dispose()
-    }
+
+    for (const l of this._layout_stacks)
+      l?.dispose()
+
   }
 
   add_player_character(player_id: string, character_id: string) {
@@ -552,25 +549,16 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     this.change_stage(next_stage)
   }
 
-  private _launch_layout?: Layout;
-  async launch_layout(): Promise<Layout> {
-    if (this._launch_layout) return this._launch_layout;
-    const path = "launch/init.json"
-    const layout_info = await this.import_json(path);
-    const layout = await Layout.cook(this, layout_info, this.layout_val_getter);
-    return this._launch_layout = layout;
-  }
-
-  private _layouts: Layout[] = [];
-  get layouts(): Layout[] { return this._layouts }
+  private _layout_infos: ICookedLayoutInfo[] = [];
+  get layout_infos(): readonly ICookedLayoutInfo[] { return this._layout_infos }
 
   protected _layout_info_map = new Map<string, ILayoutInfo>();
 
-  async load_layouts(): Promise<Layout[]> {
-    if (this._layouts.length) return this._layouts;
+  async load_layouts(): Promise<ICookedLayoutInfo[]> {
+    if (this._layout_infos.length) return this._layout_infos;
 
     const array = await this.import_json('layouts/index.json');
-    if (!is_arr(array)) return this._layouts;
+    if (!is_arr(array)) return this._layout_infos;
 
     const paths: string[] = ["launch/init.json"];
     for (const element of array) {
@@ -578,21 +566,17 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
       else Warn.print('layouts/index.json', 'element is not a string! got:', element)
     }
     for (const path of paths) {
-      const raw_layout = await this.import_json(path);
-      
-
-      const cooked_layout = await Layout.cook(this, raw_layout, this.layout_val_getter)
-      this._layouts.push(cooked_layout);
-      if (path === paths[0]) this.set_layout(cooked_layout)
+      const cooked_layout_data = await Layout.cook_layout_info(this, path)
+      this._layout_infos.push(cooked_layout_data);
+      if (path === paths[0]) this.set_layout(cooked_layout_data)
     }
 
-    if (this._disposed) {
-      for (const l of this._layouts) l.dispose();
-      this._layouts.length = 0;
-    } else {
+    if (this._disposed)
+      this._layout_infos.length = 0;
+    else
       this._callbacks.emit('on_layouts_loaded')()
-    }
-    return this._layouts;
+
+    return this._layout_infos;
   }
 
   layout_val_getter = (word: string) => (item: Layout) => {
@@ -622,33 +606,38 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     return word;
   };
 
-  set_layout(layout?: Layout): void;
+  set_layout(layout_info?: ICookedLayoutInfo): void;
   set_layout(id?: string): void;
-  set_layout(arg: string | Layout | undefined): void {
+  set_layout(arg: string | ICookedLayoutInfo | undefined): void {
     const prev = this._layout_stacks.pop();
-    const curr = is_str(arg) ? this._layouts?.find(v => v.id === arg) : arg;
     prev?.on_unmount();
-    this._layout_stacks.push(curr);
+
+    const info = is_str(arg) ? this._layout_infos?.find(v => v.id === arg) : arg;
+    const curr = info && Layout.cook(this, info, this.layout_val_getter)
+    if (curr) this._layout_stacks.push(curr);
     curr?.on_mount();
-    this._callbacks.emit('on_layout_changed')(curr, prev)
+    this._callbacks.emit('on_layout_changed')(curr, prev);
   }
 
   pop_layout(): void {
     const popped_layout = this._layout_stacks.pop()
     popped_layout?.on_unmount();
-    this.curr_layout?.on_mount();
-    this._callbacks.emit('on_layout_changed')(this.curr_layout, popped_layout)
+
+    this.layout?.on_mount();
+    this._callbacks.emit('on_layout_changed')(this.layout, popped_layout)
   }
 
-  push_layout(layout?: Layout): void;
+  push_layout(layout_info?: ICookedLayoutInfo): void;
   push_layout(id?: string): void;
-  push_layout(arg: string | Layout | undefined): void {
-    const prev = this.curr_layout
-    const curr = is_str(arg) ? this._layouts?.find(v => v.id === arg) : arg;
+  push_layout(arg: string | ICookedLayoutInfo | undefined): void {
+    const prev = this.layout;
     prev?.on_unmount();
-    this._layout_stacks.push(curr);
+
+    const info = is_str(arg) ? this._layout_infos?.find(v => v.id === arg) : arg;
+    const curr = info && Layout.cook(this, info, this.layout_val_getter)
+    if (curr) this._layout_stacks.push(curr);
     curr?.on_mount();
-    this._callbacks.emit('on_layout_changed')(curr, prev)
+    this._callbacks.emit('on_layout_changed')(curr, prev);
   }
 
   on_loading_content(content: string, progress: number) {
