@@ -97,8 +97,8 @@ export default class StageTitleShow extends LayoutComponent {
     return num_mesh;
   }
 
-  on_mount(): void {
-    super.on_mount();
+  on_resume(): void {
+    super.on_resume();
     this._unmount_jobs.add(
       this.world.callbacks.add({
         on_stage_change: v => this.on_stage_change(v),
@@ -106,8 +106,8 @@ export default class StageTitleShow extends LayoutComponent {
     )
   }
 
-  on_unmount(): void {
-    super.on_unmount();
+  on_pause(): void {
+    super.on_pause();
     this._unmount_jobs.invoke_and_clear();
     this.depose_all_mesh();
   }

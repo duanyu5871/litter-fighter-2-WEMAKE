@@ -38,8 +38,8 @@ export default class CharacterSelLogic extends LayoutComponent {
 
   get gpl() { return this.layout.root.find_component(GamePrepareLogic) }
 
-  on_mount(): void {
-    super.on_mount();
+  on_resume(): void {
+    super.on_resume();
     this._unmount_jobs.add(
       this.lf2.callbacks.add({
         on_cheat_changed: (cheat_name, enabled) => { // 当前选择的角色被隐藏时，让玩家选随机
@@ -51,8 +51,8 @@ export default class CharacterSelLogic extends LayoutComponent {
       this.handle_hidden_character();
   }
 
-  on_unmount(): void {
-    super.on_unmount();
+  on_pause(): void {
+    super.on_pause();
     this.joined = false;
     this.character_decided = false;
     this.team_decided = false;

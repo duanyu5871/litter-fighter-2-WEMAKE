@@ -47,8 +47,8 @@ export default class PlayerCharacterHead extends LayoutComponent {
 
   protected _unmount_jobs = new Invoker();
 
-  override on_mount(): void {
-    super.on_mount();
+  override on_resume(): void {
+    super.on_resume();
     const hint_pic = this.lf2.images.create_pic_by_img_key(Defines.BuiltIn.Imgs.CMA);
     this._mesh_hints
       .set_info(hint_pic)
@@ -82,8 +82,8 @@ export default class PlayerCharacterHead extends LayoutComponent {
     )
   }
 
-  override on_unmount(): void {
-    super.on_unmount();
+  override on_pause(): void {
+    super.on_pause();
     this._unmount_jobs.invoke_and_clear();
   }
 

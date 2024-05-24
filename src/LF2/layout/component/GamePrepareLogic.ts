@@ -35,10 +35,8 @@ export default class GamePrepareLogic extends LayoutComponent {
   private _count_down: number = 5000;
   get callbacks(): NoEmitCallbacks<IGamePrepareLogicCallback> { return this._callbacks }
 
-  override on_mount(): void {
-    super.on_mount();
-
-
+  override on_resume(): void {
+    super.on_resume();
     const btn_switch_bg = this.layout.find_layout('btn_switch_bg')
     const btn_switch_stage = this.layout.find_layout('btn_switch_stage')
 
@@ -69,8 +67,8 @@ export default class GamePrepareLogic extends LayoutComponent {
     )
   }
 
-  override on_unmount(): void {
-    super.on_unmount();
+  override on_pause(): void {
+    super.on_pause();
     this._unmount_jobs.invoke_and_clear();
   }
 

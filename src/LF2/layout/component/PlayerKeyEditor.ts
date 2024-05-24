@@ -31,8 +31,8 @@ export default class PlayerKeyEditor extends LayoutComponent {
     return true;
   }
 
-  override on_mount() {
-    super.on_mount();
+  override on_resume() {
+    super.on_resume();
     this.layout.sprite.add(this._sprite);
     this._unmount_jobs.add(
       this.player?.callbacks.add({
@@ -44,8 +44,8 @@ export default class PlayerKeyEditor extends LayoutComponent {
     this.update_sprite();
   }
 
-  override on_unmount(): void {
-    super.on_unmount();
+  override on_pause(): void {
+    super.on_pause();
     this._unmount_jobs.invoke_and_clear();
   }
 

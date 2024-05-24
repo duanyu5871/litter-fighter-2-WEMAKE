@@ -1,7 +1,6 @@
 import * as THREE from 'three';
 import Sprite, { ISpriteInfo } from '../3d/Sprite';
 import LF2 from '../LF2';
-import NumberAnimation from '../animation/NumberAnimation';
 import Callbacks from '../base/Callbacks';
 import Expression, { ValGetter } from '../base/Expression';
 import NoEmitCallbacks from '../base/NoEmitCallbacks';
@@ -72,7 +71,6 @@ new StateDelegate(false)
 
 export default class Layout {
   protected _callbacks = new Callbacks<ILayoutCallback>();
-  protected _opacity_animation = new NumberAnimation();
   get callbacks(): NoEmitCallbacks<ILayoutCallback> { return this._callbacks }
   /**
    * 根节点
@@ -88,18 +86,6 @@ export default class Layout {
   protected _id_layout_map?: Map<string, Layout>;
   protected _name_layout_map?: Map<string, Layout>;
 
-  set_opacity_animation(
-    reverse: boolean,
-    begin: number = 0,
-    end: number = 1,
-    duration: number = 150
-  ) {
-    const anim = this._opacity_animation;
-    if (begin !== anim.val_1 && end !== anim.val_2 && duration !== anim.duration)
-      anim.set(begin, end, duration, reverse).set_value(this.opacity)
-    if (anim.reverse !== reverse)
-      anim.play(reverse).set_value(this.opacity);
-  }
   protected _state: any = {}
 
   protected _visible: StateDelegate<boolean> = new StateDelegate(true);
@@ -225,30 +211,36 @@ export default class Layout {
 
   on_mouse_enter() {
   }
-
-  on_mount() {
+  on_start() {
+    for (const c of this._components) c.on_start?.();
+    for (const i of this.children) i.on_start();
+  }
+  on_stop(): void {
+    for (const c of this.components) c.on_stop?.();
+    for (const l of this.children) l.on_stop();
+  }
+  on_resume() {
     this._state = {};
     this.init_sprite();
-
-    for (const c of this._components) c.on_mount?.();
-    for (const i of this.children) i.on_mount();
+    for (const c of this._components) c.on_resume?.();
+    for (const i of this.children) i.on_resume();
 
     const { enter } = this.data.actions || {};
     enter && actor.act(this, enter);
 
-    for (const c of this._components) c.on_mounted?.();
+    for (const c of this._components) c.on_after_resume?.();
     this.invoke_visible_callback()
   }
 
-  on_unmount() {
+  on_pause() {
     if (this.global_visible && !this.parent)
       this.invoke_all_on_hide();
 
     const { leave } = this.data.actions || {};
     leave && actor.act(this, leave);
-    for (const c of this._components) c.on_unmount?.();
-    for (const item of this.children) item.on_unmount()
-    this._mesh.del_self();
+    for (const c of this._components) c.on_pause?.();
+    for (const item of this.children) item.on_pause()
+    this._sprite.del_self();
   }
 
   on_show() {
@@ -418,9 +410,9 @@ export default class Layout {
     return texture;
   }
 
-  protected _mesh: Sprite = new Sprite()
+  protected _sprite: Sprite = new Sprite()
     .add_user_data('owner', this)
-  get sprite() { return this._mesh }
+  get sprite() { return this._sprite }
 
   protected init_sprite() {
     const [x, y, z] = this.pos;
@@ -430,7 +422,7 @@ export default class Layout {
       texture: this.create_texture(),
       color: this.data.bg_color
     }
-    this._mesh.set_info(p)
+    this._sprite.set_info(p)
       .set_center(...this.center)
       .set_pos(x, -y, z)
       .set_opacity((p.texture || p.color) ? 1 : 0)
@@ -438,8 +430,8 @@ export default class Layout {
       .set_name(`layout(name= ${this.name}, id=${this.id})`)
       .apply()
 
-    if (this.parent?.sprite) this.parent?.sprite.add(this._mesh)
-    else this.lf2.world.scene.add(this._mesh.mesh);
+    if (this.parent?.sprite) this.parent?.sprite.add(this._sprite)
+    else this.lf2.world.scene.add(this._sprite.mesh);
   }
 
   on_click(): boolean {
@@ -492,22 +484,16 @@ export default class Layout {
   }
 
   on_render(dt: number) {
-    const mesh = this.sprite;
 
     if (this._root === this)
-      mesh.x = this.lf2.world.camera.position.x
+      this._sprite.x = this.lf2.world.camera.position.x
 
     const { visible } = this;
-    if (visible !== mesh.visible) {
-      mesh.visible = visible;
+    if (visible !== this._sprite.visible) {
+      this._sprite.visible = visible;
       this.invoke_visible_callback();
     }
-
-    const { opacity } = this;
-    if (opacity >= 0)
-      this.sprite.opacity = opacity;
-    else if (this._opacity_animation)
-      this.sprite.opacity = this._opacity_animation.update(dt);
+    this._sprite.opacity = this.opacity;
 
     for (const i of this.children)
       i.on_render(dt)
@@ -552,10 +538,6 @@ export default class Layout {
     return void 0;
   }
 
-  dispose(): void {
-    for (const c of this.components) c.dispose?.();
-    for (const l of this.children) l.dispose();
-  }
 
   find_component<T extends TCls>(type: T, condition: TCond<T> = () => 1): InstanceType<T> | undefined {
     return find(this.components, v => v instanceof type && condition(v as any)) as InstanceType<T> | undefined

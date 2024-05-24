@@ -17,8 +17,8 @@ export default class LoadingFileNameDisplayer extends LayoutComponent {
       .apply()
   }
 
-  override on_mount(): void {
-    super.on_mount();
+  override on_resume(): void {
+    super.on_resume();
     this.layout.sprite.add(this._mesh)
     this._unmount_job.add(
       () => this._mesh?.del_self(),
@@ -29,8 +29,8 @@ export default class LoadingFileNameDisplayer extends LayoutComponent {
     )
   }
 
-  override on_unmount(): void {
-    super.on_unmount();
+  override on_pause(): void {
+    super.on_pause();
     this._unmount_job.invoke();
     this._unmount_job.clear();
   }

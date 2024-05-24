@@ -45,12 +45,12 @@ export default class LaunchPageLogic extends LayoutComponent {
     )
     return this;
   }
-  override dispose(): void {
+  override on_stop(): void {
     this._dispose_jobs.invoke();
     this._dispose_jobs.clear();
   }
-  override on_mount(): void {
-    super.on_mount();
+  override on_resume(): void {
+    super.on_resume();
     this.bearface = this.layout.find_layout('bearface')!
     this.yeonface = this.layout.find_layout('yeonface')!
     this.tap_to_launch = this.layout.find_layout('tap_to_launch')!
@@ -85,8 +85,8 @@ export default class LaunchPageLogic extends LayoutComponent {
       this.lf2.sounds.play_bgm('launch/093.wav.ogg')
     }
   }
-  override on_unmount(): void {
-    super.on_unmount();
+  override on_pause(): void {
+    super.on_pause();
     this._unmount_jobs.invoke_and_clear();
   }
 

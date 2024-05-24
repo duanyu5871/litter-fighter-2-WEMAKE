@@ -457,8 +457,8 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     this.pointings.dispose();
 
     for (const l of this._layout_stacks) {
-      l?.on_unmount();
-      l?.dispose();
+      l?.on_pause();
+      l?.on_stop();
     }
     this._layout_stacks.length = 0;
 
@@ -614,21 +614,21 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   set_layout(id?: string): void;
   set_layout(arg: string | ICookedLayoutInfo | undefined): void {
     const prev = this._layout_stacks.pop();
-    prev?.on_unmount();
+    prev?.on_pause();
 
     const info = is_str(arg) ? this._layout_infos?.find(v => v.id === arg) : arg;
     const curr = info && Layout.cook(this, info, this.layout_val_getter)
     if (curr) this._layout_stacks.push(curr);
-    curr?.on_mount();
+    curr?.on_resume();
     this._callbacks.emit('on_layout_changed')(curr, prev);
   }
 
   pop_layout(): void {
     const popped = this._layout_stacks.pop()
-    popped?.on_unmount();
-    popped?.dispose();
+    popped?.on_pause();
+    popped?.on_stop();
 
-    this.layout?.on_mount();
+    this.layout?.on_resume();
     this._callbacks.emit('on_layout_changed')(this.layout, popped)
   }
 
@@ -636,12 +636,13 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   push_layout(id?: string): void;
   push_layout(arg: string | ICookedLayoutInfo | undefined): void {
     const prev = this.layout;
-    prev?.on_unmount();
+    prev?.on_pause();
 
     const info = is_str(arg) ? this._layout_infos?.find(v => v.id === arg) : arg;
     const curr = info && Layout.cook(this, info, this.layout_val_getter)
     if (curr) this._layout_stacks.push(curr);
-    curr?.on_mount();
+    curr?.on_start();
+    curr?.on_resume();
     this._callbacks.emit('on_layout_changed')(curr, prev);
   }
 

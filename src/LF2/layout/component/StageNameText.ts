@@ -39,8 +39,8 @@ export default class StageNameText extends LayoutComponent {
       })
   }
 
-  override on_mount(): void {
-    super.on_mount();
+  override on_resume(): void {
+    super.on_resume();
     this.switch_stage()
     this.layout.sprite.add(this._mesh);
     this._unmount_jobs.add(
@@ -57,8 +57,8 @@ export default class StageNameText extends LayoutComponent {
     this._mesh.set_text(this.text).apply()
   }
 
-  override on_unmount(): void {
-    super.on_unmount();
+  override on_pause(): void {
+    super.on_pause();
     this._unmount_jobs.invoke_and_clear();
   }
 

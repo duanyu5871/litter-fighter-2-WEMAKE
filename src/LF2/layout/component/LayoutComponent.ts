@@ -37,9 +37,10 @@ export class LayoutComponent {
   }
   on_click?(): boolean | void;
 
-  on_mount(): void { this._mounted = true }
-  on_mounted(): void { }
-  on_unmount(): void { this._mounted = false }
+  on_start(): void { this._mounted = true }
+  on_resume(): void { this._mounted = true }
+  on_after_resume(): void { }
+  on_pause(): void { this._mounted = false }
 
   on_show?(): void;
   on_hide?(): void;
@@ -48,5 +49,5 @@ export class LayoutComponent {
   on_render?(dt: number): void;
   on_player_key_down?(player_id: string, key: TKeyName): void;
   on_player_key_up?(player_id: string, key: TKeyName): void;
-  dispose?(): void;
+  on_stop?(): void;
 }
