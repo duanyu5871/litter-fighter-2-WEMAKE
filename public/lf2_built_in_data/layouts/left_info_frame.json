@@ -1,19 +1,22 @@
 {
-  "name": "启动页",
-  "id": "launch",
-  "bg_color": "rgb(16, 32, 108)",
-  "component": [
-    "launch_page(entry)"
-  ],
+  "name": "l_frame",
+  "id": "l_frame",
+  "img":"sprite/l_frame.png",
   "items": [
     {
+      "id": "face",
+      "pos": "0,0,0.1",
+      "center": "0,0",
+      "img": "sprite/s.png"
+    },
+    {
       "id": "hp_bar",
-      "pos": "0,0",
+      "pos": "40,10,0.1",
       "template": "layouts/hp_bar.json"
     },
     {
       "id": "mp_bar",
-      "pos": "0,10",
+      "pos": "40,30,0.1",
       "template": "layouts/mp_bar.json"
     }
   ]

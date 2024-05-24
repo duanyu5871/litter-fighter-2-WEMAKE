@@ -1,4 +1,5 @@
 import { spawn } from 'child_process';
+import compressing from 'compressing';
 import fs from 'fs/promises';
 import path from 'path';
 import dat_to_json from '../../src/LF2/dat_translator/dat_2_json';
@@ -74,7 +75,8 @@ async function parse_under_dir(src_dir_path: string, dst_dir_path: string, index
 async function main() {
   const indexes = await parse_indexes('./LittleFighter/data/data.txt');
   await parse_under_dir('./LittleFighter', '../public/lf2_data', indexes);
-  await fs.writeFile('../public/lf2_data/data/data.json', JSON.stringify(indexes, null, 2).replace(/\.dat"/g, ".json\""))
+  await fs.writeFile('../public/lf2_data/data/data.json', JSON.stringify(indexes, null, 2).replace(/\.dat"/g, ".json\""));
+  compressing.zip.compressDir('../public/lf2_data', '../public/lf2.data.zip')
 }
 
 main()
