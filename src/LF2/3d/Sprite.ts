@@ -2,19 +2,21 @@ import * as THREE from 'three';
 import { dispose_mesh } from '../layout/utils/dispose_mesh';
 import { empty_texture } from '../loader/loader';
 import { is_num } from '../utils/type_check';
+import INode from './INode';
 export interface ISpriteInfo {
   w: number;
   h: number;
   texture?: THREE.Texture;
   color?: string;
 }
-export default class Sprite {
+export default class Sprite implements INode {
   protected _mesh: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial>;
   protected _info: ISpriteInfo = { w: 0, h: 0 };
   protected _w?: number;
   protected _h?: number;
   protected _c_x: number = 0;
   protected _c_y: number = 0;
+  protected _parent?: INode;
 
   protected _texture: THREE.Texture = empty_texture();
   protected _rgb: [number, number, number] = [255, 255, 255];
@@ -74,6 +76,28 @@ export default class Sprite {
     mp.map = this._texture;
     mp.color = new THREE.Color(r / 255, g / 255, b / 255)
     this._mesh = new THREE.Mesh(geo, new THREE.MeshBasicMaterial(mp));
+  }
+  get parent(): INode | undefined { return this._parent; }
+  set parent(v: INode | undefined) { this._parent = v; }
+  get user_data(): Record<string, any> {
+    return this.mesh.userData;
+  }
+  get rgb(): [number, number, number] { return this._rgb }
+  set rgb([r, g, b]: [number, number, number]) {
+    this.set_rgb(r, g, b);
+    this.apply();
+  }
+  set_x(x: number): this {
+    this.mesh.position.x = x;
+    return this;
+  }
+  set_y(y: number): this {
+    this.mesh.position.y = y;
+    return this;
+  }
+  set_z(z: number): this {
+    this.mesh.position.z = z;
+    return this;
   }
 
   set_opacity(v: number): this {
@@ -179,19 +203,32 @@ export default class Sprite {
   dispose(): void {
     dispose_mesh(this._mesh);
   }
+  protected _children: INode[] = [];
+  get children() { return this._children; }
 
-  add(...sp: Sprite[]): this {
-    this.mesh.add(...sp.map(v => v.mesh));
+  add(...nodes: INode[]): this {
+    for (const node of nodes) {
+      node.parent = this;
+      if (node instanceof Sprite)
+        this.mesh.add(node.mesh);
+    }
+
     return this;
   }
 
-  del(...sp: Sprite[]): this {
-    this.mesh.remove(...sp.map(v => v.mesh));
+  del(...nodes: INode[]): this {
+    for (const node of nodes) {
+      if (node.parent === this)
+        node.parent = void 0;
+      if (node instanceof Sprite)
+        this.mesh.remove(node.mesh);
+    }
     return this;
   }
 
   del_self(): void {
-    this._mesh.removeFromParent();
+    if (this._parent) this._parent.del(this)
+    else this._mesh.removeFromParent();
   }
 
   get_user_data(key: string): any {
@@ -205,6 +242,11 @@ export default class Sprite {
 
   del_user_data(key: string): this {
     delete this.mesh.userData[key];
+    return this;
+  }
+
+  merge_user_data(v: Record<string, any>): this {
+    Object.assign(this.mesh.userData, v);
     return this;
   }
 }
