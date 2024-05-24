@@ -1,7 +1,8 @@
 {
   "name": "l_frame",
   "id": "l_frame",
-  "img":"sprite/l_frame.png",
+  "img": "sprite/l_frame.png",
+  "size": "150,45",
   "items": [
     {
       "id": "face",

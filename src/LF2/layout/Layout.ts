@@ -15,10 +15,14 @@ import factory from './component/Factory';
 import { LayoutComponent } from './component/LayoutComponent';
 import read_nums from './utils/read_nums';
 
-export interface ICookedLayoutInfo extends Omit<ILayoutInfo, 'items'> {
+export interface ICookedLayoutInfo extends ILayoutInfo {
+  center: [number, number, number];
+  rect: [number, number, number, number];
   parent?: ICookedLayoutInfo;
   items?: ICookedLayoutInfo[];
   img_infos: TImageInfo[];
+  size: [number, number];
+  left_top: [number, number];
 }
 
 export interface ILayoutCallback {
@@ -101,10 +105,8 @@ export default class Layout {
   protected _level: number = 0;
   protected readonly data: Readonly<ICookedLayoutInfo>;
 
-  center: [number, number, number];
   pos: [number, number, number] = [0, 0, 0];
-  src_rect: [number, number, number, number] = [0, 0, 0, 0];
-  dst_rect: [number, number, number, number] = [0, 0, 0, 0];
+  get src_rect() { return this.data.rect };
   lf2: LF2;
   get focused(): boolean {
     return this._root._focused_item === this;
@@ -149,21 +151,15 @@ export default class Layout {
   get disabled(): boolean { return this._disabled.value; }
   set disabled(v: boolean) { this.set_disabled(v); }
   set_disabled(v: boolean): this { this._disabled.set(0, v); return this; }
-
+  get center() { return this.data.center; }
   get opacity(): number { return this._opacity.value }
   set opacity(v: number) { this._opacity.set(0, v) }
   get parent() { return this._parent; }
   get children() { return this._children; }
   set children(v) { this._children = v; }
-  get size(): [number, number] { return [this.dst_rect[2], this.dst_rect[3]] }
-  set size([w, h]: [number, number]) {
-    this.dst_rect[2] = w;
-    this.dst_rect[3] = h;
-  }
-  get w(): number { return this.dst_rect[2] }
-  set w(v: number) { this.dst_rect[2] = v }
-  get h(): number { return this.dst_rect[3] }
-  set h(v: number) { this.dst_rect[3] = v }
+  get size(): [number, number] { return this.data.size }
+  get w(): number { return this.size[0]; }
+  get h(): number { return this.size[1]; }
 
   get components() { return this._components; }
   get style(): IStyle { return this.data.style || {} }
@@ -171,7 +167,6 @@ export default class Layout {
   constructor(lf2: LF2, data: ICookedLayoutInfo, parent?: Layout) {
     this.lf2 = lf2;
     this.data = Object.freeze(data);
-    this.center = read_nums(this.data.center, 3, [0, 0, 0])
     this.pos = read_nums(this.data.pos, 3)
     this._parent = parent;
     this._root = parent ? parent.root : this;
@@ -204,7 +199,8 @@ export default class Layout {
   }
 
   hit(x: number, y: number): boolean {
-    const [l, t, w, h] = this.dst_rect;
+    const [l, t] = this.data.left_top;
+    const [w, h] = this.data.size;
     return l <= x && t <= y && l + w >= x && t + h >= y;
   }
 
@@ -283,6 +279,10 @@ export default class Layout {
 
     const ret: ICookedLayoutInfo = {
       ...raw_layout_info,
+      center: read_nums(raw_layout_info.center, 3, [0, 0, 0]),
+      rect: read_nums(raw_layout_info.rect, 4),
+      size: [0, 0],
+      left_top: [0, 0],
       parent: parent,
       img_infos: [],
       items: void 0
@@ -291,7 +291,7 @@ export default class Layout {
     const { img, rect, txt, style } = raw_layout_info;
     if (img) {
       const img_paths = !is_arr(img) ? [img] : img.filter(v => v && is_str(v));
-      const [sx, sy, sw, sh] = read_nums(rect, 4);
+      const [sx, sy, sw, sh] = ret.rect;
       const preload = async (img_path: string) => {
         const img_key = `${img_path}?${sx}_${sy}_${sw}_${sh}`;
         const img_info = lf2.images.find(img_key);
@@ -309,6 +309,25 @@ export default class Layout {
       ret.img_infos.push(await lf2.images.load_text(txt, style))
     }
 
+    {
+      const { w: img_w = 0, h: img_h = 0 } = ret.img_infos?.[0] || {};
+      const { size, center, pos, rect } = raw_layout_info
+
+      const [sx, sy, sw, sh] = read_nums(rect, 4, [0, 0, img_w, img_h])
+      const [w, h] = read_nums(size, 2, [parent ? sw : 794, parent ? sh : 450]);
+      const [cx, cy] = read_nums(center, 2, [0, 0]);
+      const [x, y] = read_nums(pos, 2, [0, 0]);
+
+      // 宽或高其一为0时，使用原图宽高比例的计算之
+      const dw = Math.floor(w ? w : sh ? h * sw / sh : 0)
+      const dh = Math.floor(h ? h : sw ? w * sh / sw : 0)
+      const dx = x - Math.floor(cx * dw)
+      const dy = y - Math.floor(cy * dh)
+      ret.rect = [sx, sy, sw, sh];
+      ret.size = [dw, dh];
+      ret.left_top = [dx, dy];
+    }
+
     if (Array.isArray(raw_layout_info.items) && raw_layout_info.items.length) {
       ret.items = [];
       for (const item of raw_layout_info.items)
@@ -324,7 +343,6 @@ export default class Layout {
     const ret = new Layout(lf2, info, parent);
     ret._cook_img_idx(get_val);
     ret._cook_data(get_val);
-    ret._cook_rects();
     ret._cook_component();
 
     if (info.items)
@@ -337,7 +355,6 @@ export default class Layout {
         ret.children.push(cooked_item);
       }
     if (!parent) {
-      ret.size = [794, 450];
       ret.pos = [0, -450, 0]
     }
     return ret;
@@ -390,24 +407,6 @@ export default class Layout {
     }
   }
 
-  private _cook_rects() {
-    const { w: img_w = 0, h: img_h = 0 } = this.data.img_infos?.[0] || {};
-    const { size, center, pos, rect } = this.data
-
-    const [sx, sy, sw, sh] = read_nums(rect, 4, [0, 0, img_w, img_h])
-    const [w, h] = read_nums(size, 2, [sw, sh]);
-    const [cx, cy] = read_nums(center, 2, [0, 0]);
-    const [x, y] = read_nums(pos, 2, [0, 0]);
-
-    // 宽或高其一为0时，使用原图宽高比例的计算之
-    const dw = Math.floor(w ? w : sh ? h * sw / sh : 0)
-    const dh = Math.floor(h ? h : sw ? w * sh / sw : 0)
-    const dx = x - Math.floor(cx * dw)
-    const dy = y - Math.floor(cy * dh)
-
-    this.src_rect = [sx, sy, sw, sh];
-    this.dst_rect = [dx, dy, dw, dh];
-  }
 
   protected create_texture(): THREE.Texture | undefined {
     const img_idx = this.img_idx;
@@ -432,7 +431,7 @@ export default class Layout {
       color: this.data.bg_color
     }
     this._sprite.set_info(p)
-      .set_center(...this.center)
+      .set_center(...this.data.center)
       .set_pos(x, -y, z)
       .set_opacity((p.texture || p.color) ? 1 : 0)
       .set_visible(this.visible)
