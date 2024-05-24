@@ -90,24 +90,20 @@ export default function GamePad(props: IGamePadProps) {
       for (const k of KEY_NAME_LIST) {
         if (ref_pressing_map.current[k] && !next_pressing_map[k]) {
           controller?.end(k);
-          console.log(k, false)
         } else if (!ref_pressing_map.current[k] && next_pressing_map[k]) {
           lf2?.layout?.on_player_key_down(player_id, k);
           controller?.start(k);
-          console.log(k, true)
         }
       }
       ref_pressing_map.current = next_pressing_map;
     }
     const on_touch_start = (e: TouchEvent) => {
-      e.preventDefault();
       for (const t of e.changedTouches) {
         touches.push(copy_touch(t));
       }
       handle_touchs()
     }
     const on_touch_move = (e: TouchEvent) => {
-      e.preventDefault();
       for (const t of e.changedTouches) {
         const idx = find_touch_index(t.identifier);
         if (idx >= 0) touches.splice(idx, 1, copy_touch(t));
@@ -115,7 +111,6 @@ export default function GamePad(props: IGamePadProps) {
       handle_touchs()
     }
     const on_touch_end = (e: TouchEvent) => {
-      e.preventDefault();
       for (const t of e.changedTouches) {
         const idx = find_touch_index(t.identifier);
         if (idx >= 0) touches.splice(idx, 1);
@@ -123,7 +118,6 @@ export default function GamePad(props: IGamePadProps) {
       handle_touchs()
     }
     const on_touch_cancel = (e: TouchEvent) => {
-      e.preventDefault();
       for (const t of e.changedTouches) {
         const idx = find_touch_index(t.identifier);
         if (idx >= 0) touches.splice(idx, 1);
@@ -164,7 +158,7 @@ export default function GamePad(props: IGamePadProps) {
       // },
       // onPointerCancel: on_touch_end,
       // onPointerUp: on_touch_end,
-
+      style: { 'pointerEvents': 'none' },
       disabled: true
     }
   };
