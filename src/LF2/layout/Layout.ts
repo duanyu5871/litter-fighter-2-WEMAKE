@@ -16,6 +16,10 @@ import factory from './component/Factory';
 import { LayoutComponent } from './component/LayoutComponent';
 import read_nums from './utils/read_nums';
 
+interface ICookedLayoutInfo {
+
+}
+
 export interface ILayoutCallback {
   on_click?(): void;
   on_show?(layout: Layout): void;
@@ -307,6 +311,18 @@ export default class Layout {
     }
   }
 
+  static async cook_layout_info(raw_layout_info: ILayoutInfo): Promise<ILayoutInfo> {
+
+    const { img } = raw_layout_info;
+
+    const img_paths = !is_arr(img) ? [img] : img.filter(v => v && is_str(v));
+    if (img_paths.length) {
+
+    }
+    return raw_layout_info;
+  }
+
+
   private async _cook_imgs(lf2: LF2) {
     const { img } = this.data;
     do {
@@ -316,9 +332,10 @@ export default class Layout {
       if (!img_paths.length) break;
 
       const img_infos: TImageInfo[] = [];
-      const [sx, sy, sw, sh] = read_nums(this.data.rect, 4)
+      const [sx, sy, sw, sh] = read_nums(this.data.rect, 4);
+
       const preload = async (img_path: string) => {
-        const img_key = [img_path, sx, sy, sw, sh].join('_')
+        const img_key = [img_path, sx, sy, sw, sh].join('_');
         const img_info = this.lf2.images.find(img_key);
         if (img_info) return img_info;
         return await this.lf2.images.load_img(img_key, img_path, (img, cvs, ctx) => {

@@ -36,6 +36,7 @@ import { fisrt, last } from './utils/container_help';
 import { arithmetic_progression } from './utils/math/arithmetic_progression';
 import { random_get, random_in, random_take } from './utils/math/random';
 import { is_arr, is_num, is_str, not_empty_str } from './utils/type_check';
+import { ILayoutInfo } from './layout/ILayoutInfo';
 
 const cheat_info_pair = (n: Defines.Cheats) => ['' + n, {
   keys: Defines.CheatKeys[n],
@@ -563,6 +564,8 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   private _layouts: Layout[] = [];
   get layouts(): Layout[] { return this._layouts }
 
+  protected _layout_info_map = new Map<string, ILayoutInfo>();
+
   async load_layouts(): Promise<Layout[]> {
     if (this._layouts.length) return this._layouts;
 
@@ -576,6 +579,8 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     }
     for (const path of paths) {
       const raw_layout = await this.import_json(path);
+      
+
       const cooked_layout = await Layout.cook(this, raw_layout, this.layout_val_getter)
       this._layouts.push(cooked_layout);
       if (path === paths[0]) this.set_layout(cooked_layout)
