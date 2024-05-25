@@ -21,6 +21,9 @@ export type TImageInfo = {
   wrap_s?: THREE.Wrapping;
   wrap_t?: THREE.Wrapping;
 }
+export type ITextImageInfo = TImageInfo & {
+  text: string;
+}
 export interface IPaintParams {
   src_x?: number;
   src_y?: number;
@@ -54,7 +57,7 @@ export class ImageMgr {
     return { key, url, w: cvs.width, h: cvs.height, img: cvs }
   }
 
-  protected async _make_img_info_by_text(key: string, text: string, style: IStyle = {}): Promise<TImageInfo> {
+  protected async _make_img_info_by_text(key: string, text: string, style: IStyle = {}): Promise<ITextImageInfo> {
     const cvs = document.createElement('canvas');
     const ctx = cvs.getContext('2d');
     if (!ctx) throw new Error("can not get context from canvas");
@@ -106,7 +109,8 @@ export class ImageMgr {
       key, url,
       w: w + padding_l + padding_r,
       h: h + padding_t + padding_b,
-      img: cvs
+      img: cvs,
+      text: text
     }
   }
 
@@ -131,6 +135,15 @@ export class ImageMgr {
       return info
     }
     return this._requesters.get(key, fn);
+  }
+
+
+  remove_img(key: string) {
+    const img = this._requesters.take(key);
+    if (!img) return;
+    if (img.url.startsWith('blob:')) URL.revokeObjectURL(img.url);
+    debugger
+    return;
   }
 
   protected _gen_key = (f: IEntityPictureInfo) => `${f.path}#${f.cell_w || 0}_${f.cell_h || 0}_${f.row}_${f.col}`;

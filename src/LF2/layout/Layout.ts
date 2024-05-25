@@ -449,7 +449,7 @@ export default class Layout {
 
   get global_visible(): boolean {
     if (!this.visible) return false;
-    return !!this.parent?.visible;
+    return this.parent ? this.parent.visible : true;
   }
 
   get global_disabled(): boolean {

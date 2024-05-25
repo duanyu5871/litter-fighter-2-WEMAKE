@@ -9,6 +9,7 @@
 export default class AsyncValuesKeeper<V> {
   readonly values = new Map<string, V>();
   protected _f_map = new Map<string, [(v: V) => void, (reason: any) => void][]>();
+
   del(key: string): void { this.values.delete(key) }
 
   get(key: string, job: () => Promise<V>): Promise<V> {
@@ -33,5 +34,11 @@ export default class AsyncValuesKeeper<V> {
 
   clean(): void {
     this._f_map.clear();
+  }
+
+  take(key: string): V | undefined {
+    const ret = this.values.get(key);
+    this.values.delete(key)
+    return ret;
   }
 }

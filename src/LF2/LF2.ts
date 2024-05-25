@@ -136,7 +136,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     const paths = get_import_fallbacks(path);
     const { _zip } = this;
     const obj = _zip && fisrt(paths, p => _zip.file(p))
-    if (obj) return obj.blob().then(b => URL.createObjectURL(b))
+    if (obj) return obj.blob_url()
     return import_as_blob_url(paths);
   }
 
