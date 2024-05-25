@@ -10,8 +10,7 @@ export interface IShowDivProps extends React.HTMLAttributes<HTMLDivElement> {
   show?: any
 }
 export const Div = Show.Div = function (props: IShowDivProps) {
-  const { ...remain_props } = props;
-  if (!('show' in props)) return <></>
-  if (!props.show) return <></>;
+  const { show, ...remain_props } = props;
+  if (!show) return <></>;
   return <div {...remain_props}>{props.children}</div>
 }

@@ -141,9 +141,9 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   }
 
 
-  constructor(canvas: HTMLCanvasElement, overlay?: HTMLDivElement | null) {
+  constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
-    this.world = new World(this, canvas, overlay);
+    this.world = new World(this, canvas);
     this.datas = new DatMgr(this);
     this.sounds = new SoundMgr(this);
     this.images = new ImageMgr(this);

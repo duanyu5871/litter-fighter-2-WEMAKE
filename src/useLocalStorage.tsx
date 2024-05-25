@@ -5,8 +5,8 @@ type T_RET<S> = readonly [S, React.Dispatch<React.SetStateAction<S>>]
 type T_IN<S> = S | (() => S);
 
 if (localStorage.getItem('__clear_flag') !== '1000') {
-  localStorage.setItem('__clear_flag', '1000');
   localStorage.clear();
+  localStorage.setItem('__clear_flag', '1000');
 }
 export function useLocalString<S extends string = string>(name: string): T_RET<S | undefined>;
 export function useLocalString<S extends string = string>(name: string, initialState: T_IN<S>): T_RET<S>;
@@ -62,10 +62,11 @@ export function useLocalBoolean(name: string, initialState?: T_IN<boolean>): T_R
     return ret as boolean;
   });
   useEffect(() => {
-    if (is_bool(val))
+    if (is_bool(val)) {
       localStorage.setItem(name, '' + val);
-    else
+    } else {
       localStorage.removeItem(name);
+    }
   }, [name, val]);
   return [val, set_val];
 }

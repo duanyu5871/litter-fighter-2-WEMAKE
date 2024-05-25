@@ -1,7 +1,10 @@
 import axios from 'axios';
 import JSZIP from 'jszip';
 import { is_str } from '../utils/type_check';
-export class ZipObject {
+import IZipObject from '../ditto/zip/IZipObject';
+import IZip from '../ditto/zip/IZip';
+
+export class ZipObject implements IZipObject {
   protected inner: JSZIP.JSZipObject;
   get name() { return this.inner.name }
 
@@ -22,7 +25,7 @@ export class ZipObject {
   }
 }
 
-export default class Zip {
+export default class Zip implements IZip {
   static async read_file(file: File): Promise<Zip> {
     return JSZIP.loadAsync(file).then(v => new Zip(v))
   }

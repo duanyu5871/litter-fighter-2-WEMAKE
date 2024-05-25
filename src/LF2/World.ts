@@ -1,7 +1,5 @@
 import * as THREE from 'three';
 import { Log, Warn } from '../Log';
-import { Factory } from './entity/Factory';
-import FrameAnimater from './entity/FrameAnimater';
 import { IWorldCallbacks } from './IWorldCallbacks';
 import LF2 from './LF2';
 import Callbacks from './base/Callbacks';
@@ -10,12 +8,13 @@ import NoEmitCallbacks from "./base/NoEmitCallbacks";
 import LocalHuman from './controller/LocalHuman';
 import { IBdyInfo, IFrameInfo, IItrInfo } from './defines';
 import { Defines } from './defines/defines';
-import { GameOverlay } from './dom/GameOverlay';
 import Interval from './dom/Interval';
 import Render from './dom/Render';
 import Ball from './entity/Ball';
 import Character from './entity/Character';
 import Entity from './entity/Entity';
+import { Factory } from './entity/Factory';
+import FrameAnimater from './entity/FrameAnimater';
 import Weapon from './entity/Weapon';
 import { is_ball, is_character, is_entity, is_weapon } from './entity/type_check';
 import Stage from './stage/Stage';
@@ -70,7 +69,6 @@ export class World {
   disposed = false;
 
   readonly player_characters = new Map<string, Character>();
-  readonly overlay: GameOverlay;
 
   get stage() { return this._stage }
   set stage(v) {
@@ -96,7 +94,7 @@ export class World {
 
   get screen_w(): number { return this._screen_w; }
   get screen_h(): number { return this._screen_h; }
-  constructor(lf2: LF2, canvas: HTMLCanvasElement, overlay?: HTMLDivElement | null) {
+  constructor(lf2: LF2, canvas: HTMLCanvasElement) {
     this.lf2 = lf2;
     this.renderer = new THREE.WebGLRenderer({ canvas });
     const w = this._screen_w = Defines.OLD_SCREEN_WIDTH;
@@ -109,7 +107,6 @@ export class World {
     this.camera.near = 1;
     this.camera.updateProjectionMatrix()
     this.renderer.setSize(w, h, false);
-    this.overlay = new GameOverlay(this, overlay);
     this._stage = new Stage(this, Defines.VOID_BG);
   }
 
@@ -176,7 +173,6 @@ export class World {
       if (_r_prev_time !== 0 && this._need_FPS) {
         this._FPS.update(dt);
         this._callbacks.emit('on_fps_update')(this._FPS.value)
-        this.overlay.FPS = this._FPS.value
       }
 
       this._render_request_id = Render.run(on_render)

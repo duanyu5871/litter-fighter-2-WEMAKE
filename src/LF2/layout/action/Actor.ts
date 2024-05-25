@@ -24,7 +24,6 @@ class Actor {
     ['switch_difficulty', ({ lf2 }) => lf2.switch_difficulty()],
     ['destory_stage', ({ lf2 }) => lf2.remove_stage()],
     ['remove_all_entities', ({ lf2 }) => lf2.remove_all_entities()],
-
     ['exit', () => { if (window.confirm('确定退出?')) window.close() }]
   ])
   act(layout: Layout, actions: string | string[]): void {

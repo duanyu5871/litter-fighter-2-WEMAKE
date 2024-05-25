@@ -26,6 +26,7 @@ import './game_ui.css';
 import './init';
 import { useLocalBoolean, useLocalNumber, useLocalString } from './useLocalStorage';
 import { useShortcut } from './Component/useShortcut';
+import { GameOverlay } from './LF2/dom/GameOverlay';
 
 const fullscreen = new FullScreen()
 function App() {
@@ -94,11 +95,13 @@ function App() {
   const [layout, _set_layout] = useState<string | undefined>(void 0);
   const [layouts, set_layouts] = useState<Readonly<ILayoutInfo>[]>([{ id: '', name: '无页面' }]);
   useEffect(() => {
-    const canvas = _canvas_ref.current!;
-    const overlay = _overlay_ref.current!;
+    const ele_canvas = _canvas_ref.current!;
+    const ele_overlay = _overlay_ref.current!;
 
     if (!lf2_ref.current) {
-      const lf2 = (window as any).lf2 = lf2_ref.current = new LF2(canvas, overlay);
+      const lf2 = (window as any).lf2 = lf2_ref.current = new LF2(ele_canvas);
+      new GameOverlay(lf2.world, ele_overlay)
+
       lf2.load_layouts().then((layouts = []) => {
         const layout_data_list = layouts.map(l => ({ id: l.id, name: l.name }))
         layout_data_list.unshift({ id: '', name: '无页面' })
