@@ -27,6 +27,7 @@ import open_file from './Utils/open_file';
 import './game_ui.css';
 import './init';
 import { useLocalBoolean, useLocalNumber, useLocalString } from './useLocalStorage';
+import { is_weapon } from './LF2/entity/type_check';
 
 const fullscreen = new FullScreen()
 function App() {
@@ -250,6 +251,7 @@ function App() {
   useShortcut('F7', 0, () => { if (lf2) for (const e of lf2.world.entities) e.hp = e.max_hp; });
   useShortcut('F8', 0, () => lf2?.add_random_weapon(9));
   useShortcut('F9', 0, () => lf2?.world.stage.kill_all_enemies());
+  useShortcut('F10', 0, () => { if (lf2) for (const e of lf2.world.entities) if (is_weapon(e)) e.hp = 0; });
 
   useShortcut('F11', 0, () => toggle_fullscreen());
   useShortcut('ctrl+F1', 0, () => set_control_panel_visible(v => !v));
