@@ -23,6 +23,7 @@ yarn-debug.log*
 yarn-error.log*
 
 src/types/lf2.d.ts
+public/lf2.data.zip
 
 src/lf2_data
 public/lf2_data
