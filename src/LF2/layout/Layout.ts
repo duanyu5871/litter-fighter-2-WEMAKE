@@ -448,37 +448,26 @@ export default class Layout {
   }
 
   get global_visible(): boolean {
-    let n: Layout | undefined = this;
-    do {
-      if (!n.visible)
-        return false;
-      n = n.parent;
-    } while (n)
-    return true;
+    if (!this.visible) return false;
+    return !!this.parent?.visible;
   }
+
   get global_disabled(): boolean {
-    let n: Layout | undefined = this;
-    do {
-      if (n.disabled)
-        return true;
-      n = n.parent;
-    } while (n)
-    return false;
+    if (this.disabled) return true;
+    return !!this.parent?.disabled;
   }
 
   invoke_all_on_show() {
     this.on_show();
     for (const child of this.children) {
-      if (!child.visible) continue;
-      child.invoke_all_on_show();
+      if (child.visible) child.invoke_all_on_show();
     }
   }
 
   invoke_all_on_hide() {
     this.on_hide();
     for (const child of this.children) {
-      if (!child.visible) continue;
-      child.invoke_all_on_hide();
+      if (child.visible) child.invoke_all_on_hide();
     }
   }
 
