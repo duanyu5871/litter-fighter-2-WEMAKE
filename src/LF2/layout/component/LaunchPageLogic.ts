@@ -106,13 +106,13 @@ export default class LaunchPageLogic extends LayoutComponent {
       long_text.opacity = bearface.opacity = yeonface.opacity = opacity
       if (this._opacity.reverse) {
         const s = 0.1 + 0.9 * opacity
-        bearface.sprite.mesh.scale.set(s, s, 1);
-        yeonface.sprite.mesh.scale.set(s, s, 1);
-        yeonface.sprite.mesh.scale.set(s, s, 1);
+        bearface.sprite.inner.scale.set(s, s, 1);
+        yeonface.sprite.inner.scale.set(s, s, 1);
+        yeonface.sprite.inner.scale.set(s, s, 1);
       } else {
-        bearface.sprite.mesh.scale.set(scale, scale, 1);
-        yeonface.sprite.mesh.scale.set(scale, scale, 1);
-        yeonface.sprite.mesh.scale.set(scale, scale, 1);
+        bearface.sprite.inner.scale.set(scale, scale, 1);
+        yeonface.sprite.inner.scale.set(scale, scale, 1);
+        yeonface.sprite.inner.scale.set(scale, scale, 1);
       }
       if (this._opacity.is_finish && this._layouts_loaded) {
         if (this._opacity.reverse) {

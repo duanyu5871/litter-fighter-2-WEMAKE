@@ -222,7 +222,7 @@ export default class Layout {
   }
 
   on_resume() {
-    if (this.root === this) this.lf2.world.scene.add(this.sprite.mesh);
+    if (this.root === this) this.lf2.world.scene.add(this.sprite.inner);
 
     for (const c of this._components) c.on_resume?.();
     for (const i of this.children) i.on_resume();

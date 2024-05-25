@@ -237,7 +237,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     if (!sprite) return;
     const raycaster = new THREE.Raycaster();
     raycaster.setFromCamera(coords, this.world.camera);
-    const intersections = raycaster.intersectObjects([sprite.mesh], true);
+    const intersections = raycaster.intersectObjects([sprite.inner], true);
 
     const layouts = intersections
       .filter(v => v.object.userData.owner instanceof Layout)
@@ -267,7 +267,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     if (!sprite) return;
     const raycaster = new THREE.Raycaster();
     raycaster.setFromCamera(coords, this.world.camera);
-    const intersections = raycaster.intersectObjects([sprite.mesh], true);
+    const intersections = raycaster.intersectObjects([sprite.inner], true);
     const mouse_on_layouts = new Set<Layout>()
     for (const { object: { userData: { owner } } } of intersections) {
       if (owner instanceof Layout) mouse_on_layouts.add(owner);

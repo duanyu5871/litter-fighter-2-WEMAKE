@@ -37,7 +37,7 @@ export default class Text extends Sprite {
       pic.texture.dispose();
       return;
     }
-    const key = this.mesh.material.map?.userData.key;
+    const key = this.inner.material.map?.userData.key;
     this.set_info(pic);
     super.apply();
     if(key) this.lf2.images.remove_img(key);

@@ -14,9 +14,9 @@ export default class Sprite extends Node {
   protected _texture: THREE.Texture = empty_texture();
   protected _geo: THREE.PlaneGeometry = new THREE.PlaneGeometry();
 
-  override get mesh(): THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial> { return this._mesh as any; }
+  override get inner(): THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial> { return this._inner as any; }
 
-  get opacity(): number { return this.mesh.material.opacity }
+  get opacity(): number { return this.inner.material.opacity }
   set opacity(v: number) { this.set_opacity(v) }
 
   override get w(): number { return is_num(this._w) ? this._w : this._info.w; }
@@ -49,18 +49,18 @@ export default class Sprite extends Node {
     const mp: THREE.MeshBasicMaterialParameters = { transparent: true }
     mp.map = this._texture;
     mp.color = new THREE.Color(r / 255, g / 255, b / 255)
-    this._mesh = new THREE.Mesh(geo, new THREE.MeshBasicMaterial(mp));
+    this._inner = new THREE.Mesh(geo, new THREE.MeshBasicMaterial(mp));
   }
 
   override set_opacity(v: number): this {
-    this.mesh.material.opacity = v;
-    this.mesh.material.needsUpdate = true;
+    this.inner.material.opacity = v;
+    this.inner.material.needsUpdate = true;
     return super.set_opacity(v);
   }
 
   override apply(): this {
     super.apply();
-    const { mesh } = this
+    const { inner: mesh } = this
 
     mesh.geometry = this.next_geometry();
     const { _texture, _rgb: [_r, _g, _b] } = this;
@@ -100,6 +100,6 @@ export default class Sprite extends Node {
 
   override dispose(): void {
     super.dispose();
-    dispose_mesh(this.mesh);
+    dispose_mesh(this.inner);
   }
 }
