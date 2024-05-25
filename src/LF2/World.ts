@@ -61,13 +61,12 @@ export class World {
   gravity = Defines.GRAVITY;
   friction_factor = Defines.FRICTION_FACTOR;
   friction = Defines.FRICTION;
-  scene: Scene = new Scene();
+  scene: Scene;
   camera = new Camera_O();
 
   private _stage: Stage;
   entities = new Set<Entity>();
   game_objs = new Set<FrameAnimater>();
-  renderer: THREE.WebGLRenderer;
   disposed = false;
 
   readonly player_characters = new Map<string, Character>();
@@ -98,9 +97,10 @@ export class World {
   get screen_h(): number { return this._screen_h; }
   constructor(lf2: LF2, canvas: HTMLCanvasElement) {
     this.lf2 = lf2;
-    this.renderer = new THREE.WebGLRenderer({ canvas });
     const w = this._screen_w = Defines.OLD_SCREEN_WIDTH;
     const h = this._screen_h = 450;// Defines.OLD_SCREEN_HEIGHT;
+
+    this.scene = new Scene(canvas).set_size(w, h);
     this.camera.left = 0;
     this.camera.right = w;
     this.camera.bottom = 0;
@@ -108,7 +108,7 @@ export class World {
     this.camera.z = 10
     this.camera.near = 1;
     this.camera.apply()
-    this.renderer.setSize(w, h, false);
+    this.scene.add(this.camera);
     this._stage = new Stage(this, Defines.VOID_BG);
   }
 
@@ -160,7 +160,7 @@ export class World {
     if (this.disposed) return;
     for (const e of this.entities) e.indicators.update();
     this.lf2.layout?.on_render(dt);
-    this.renderer.render(this.scene.inner, this.camera.inner);
+    this.scene.render()
   }
 
   start_render() {
@@ -551,7 +551,6 @@ export class World {
     this.stop_render();
     this.del_game_objs(...this.entities);
     this.del_game_objs(...this.game_objs);
-    this.renderer.clear()
-    this.renderer.dispose();
+    this.scene.dispose();
   }
 }
