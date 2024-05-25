@@ -30,12 +30,13 @@ export class ReachableLayoutGroup extends LayoutComponent {
     else if (this.direction === 'ud')
       items.sort((a, b) => a.layout.y_on_root - b.layout.y_on_root);
 
+    const focused_layout = this.layout;
     if (key === 'L' || key === 'U') {
-      const idx = items.findIndex(v => v.layout === this.layout.root.focused_item);
-      this.layout.root.focused_item = items[(Math.max(idx, 0) + items.length - 1) % items.length].layout;
+      const idx = items.findIndex(v => v.layout === focused_layout);
+      items[(Math.max(idx, 0) + items.length - 1) % items.length].layout.focused = true;
     } else if (key === 'R' || key === 'D') {
-      const idx = items.findIndex(v => v.layout === this.layout.root.focused_item);
-      this.layout.root.focused_item = items[(idx + 1) % items.length].layout;
+      const idx = items.findIndex(v => v.layout === focused_layout);
+      items[(idx + 1) % items.length].layout.focused = true;
     }
   }
 }
