@@ -272,7 +272,7 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
     /* 击倒 */
     if (this._fall_value <= 0 || this._hp <= 0) {
       this._fall_value = 0;
-      this.velocity.y = itr.dvy || 3;
+      this.velocity.y = itr.dvy ?? 3;
       this.velocity.x = (itr.dvx || 0) * aface;
       if (
         itr.effect === Defines.ItrEffect.Fire ||

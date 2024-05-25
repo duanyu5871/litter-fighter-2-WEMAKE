@@ -19,7 +19,7 @@ export default function cook_itr(unsafe_itr?: Partial<IItrInfo>) {
   if (not_zero_num(dvz)) unsafe_itr.dvz = dvz * 0.5;
 
   const dvy = take(unsafe_itr, 'dvy');
-  if (not_zero_num(dvy)) unsafe_itr.dvy = dvy * -0.5; //??
+  if (not_zero_num(dvy)) unsafe_itr.dvy = dvy * -0.52;
 
   switch (unsafe_itr.kind) {
     case Defines.ItrKind.Pick:
