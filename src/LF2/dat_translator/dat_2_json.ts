@@ -28,9 +28,9 @@ export default function dat_to_json(full_str: string, datIndex?: IDatIndex): voi
     reg_result = info_str.match(/name:\s*(\S*)/);
     if (reg_result) { base.name = reg_result[1]; continue; }
     reg_result = info_str.match(/head:\s*(\S*)/);
-    if (reg_result) { base.head = reg_result[1]; continue; }
+    if (reg_result) { base.head = reg_result[1].replace(/.bmp$/, '.png'); continue; }
     reg_result = info_str.match(/small:\s*(\S*)/);
-    if (reg_result) { base.small = reg_result[1]; continue; }
+    if (reg_result) { base.small = reg_result[1].replace(/.bmp$/, '.png'); continue; }
     if (info_str.startsWith('file(')) {
       const file_id = base.files ? Object.keys(base.files).length : 0
       const file: IEntityPictureInfo = {
@@ -46,7 +46,7 @@ export default function dat_to_json(full_str: string, datIndex?: IDatIndex): voi
       for (const [key, value] of match_colon_value(info_str)) {
         if (key.startsWith('file')) {
           const [, begin, end] = key.match(/file\((\d+)-(\d+)\)/)!
-          file.path = value;
+          file.path = value.replace(/.bmp$/, '.png');
           file.begin = Number(begin);
           file.end = Number(end);
         } else if (key === 'w') {
