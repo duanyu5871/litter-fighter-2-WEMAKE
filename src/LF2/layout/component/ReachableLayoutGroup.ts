@@ -34,12 +34,10 @@ export class ReachableLayoutGroup extends LayoutComponent {
     if (key === 'L' || key === 'U') {
       const idx = items.findIndex(v => v.layout === focused_layout);
       const next_idx = (Math.max(idx, 0) + items.length - 1) % items.length
-      console.log(items, idx, next_idx)
       items[next_idx].layout.focused = true;
     } else if (key === 'R' || key === 'D') {
       const idx = items.findIndex(v => v.layout === focused_layout);
       const next_idx = (idx + 1) % items.length
-      console.log(items, idx, next_idx)
       items[next_idx].layout.focused = true;
     }
   }

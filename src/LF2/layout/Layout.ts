@@ -85,20 +85,14 @@ export default class Layout {
    */
   protected _root: Layout;
   protected _focused_item?: Layout;
-
   readonly id_layout_map: Map<string, Layout>;
   readonly name_layout_map: Map<string, Layout>;
 
-
   protected _components = new Set<LayoutComponent>();
-
-
   protected _state: any = {}
-
   protected _visible: StateDelegate<boolean> = new StateDelegate(true);
   protected _disabled: StateDelegate<boolean> = new StateDelegate(false);
   protected _opacity: StateDelegate<number> = new StateDelegate(1);
-
   protected _img_idx = () => 0;
   protected _parent?: Layout;
   protected _children: Layout[] = [];
@@ -228,6 +222,10 @@ export default class Layout {
   }
 
   on_resume() {
+    if (!this.parent) {
+      this.focused_item = this._state.focused_item;
+      console.log('on_resume focused_item', this.focused_item)
+    }
     if (this.root === this) this.lf2.world.scene.add(this.sprite);
 
     for (const c of this._components) c.on_resume?.();
@@ -238,9 +236,14 @@ export default class Layout {
 
     for (const c of this._components) c.on_after_resume?.();
     this.invoke_visible_callback()
+
   }
 
   on_pause() {
+    if (!this.parent) {
+      this._state.focused_item = this.focused_item;
+      console.log('on_pause focused_item', this.focused_item)
+    }
     if (this.root === this) this._sprite.del_self();
 
     if (this.global_visible && !this.parent)
@@ -249,7 +252,7 @@ export default class Layout {
     const { leave } = this.data.actions || {};
     leave && actor.act(this, leave);
     for (const c of this._components) c.on_pause?.();
-    for (const item of this.children) item.on_pause()
+    for (const item of this.children) item.on_pause();
 
   }
 

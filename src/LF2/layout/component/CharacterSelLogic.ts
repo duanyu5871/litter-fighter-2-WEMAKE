@@ -128,7 +128,7 @@ export default class CharacterSelLogic extends LayoutComponent {
       const { com_slots } = gpl;
       const my_index = com_slots.indexOf(this);
       if (this.team_decided) gpl.handling_com = com_slots[my_index + 1];
-      else if (!this.joined) gpl.handling_com = com_slots[my_index - 1];
+      else if (!this.joined && my_index > 0) gpl.handling_com = com_slots[my_index - 1];
     }
   }
 
