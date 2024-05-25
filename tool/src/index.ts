@@ -59,11 +59,20 @@ async function parse_under_dir(src_dir_path: string, dst_dir_path: string, index
       const dst_stat = await fs.stat(_dst_path).catch(e => void 0);
       if (dst_stat?.isFile() || dst_stat?.isDirectory())
         await fs.rm(_dst_path, { recursive: true, force: true })
-
       const args = ['-i', src_path, '-codec:a', 'libvorbis', '-b:a', '64k', '-ar', '44100', _dst_path];
       await new Promise((a, b) => {
         console.log('convert', src_path, '=>', _dst_path)
         spawn('ffmpeg', args).on('exit', a).on('error', b)
+      })
+    } else if (filename.endsWith('.bmp')) {
+      const _dst_path = dst_path.replace(/.bmp$/, '.png');
+      const dst_stat = await fs.stat(_dst_path).catch(e => void 0);
+      if (dst_stat?.isFile() || dst_stat?.isDirectory())
+        await fs.rm(_dst_path, { recursive: true, force: true })
+      const args = [src_path, "-alpha", "set", "-channel", "RGBA", "-fuzz", "0%", "-fill", "rgba(0,0,0,0)", "-opaque", "rgb(0,0,0)", _dst_path];
+      await new Promise((a, b) => {
+        console.log('convert', src_path, '=>', _dst_path)
+        spawn('magick', args).on('exit', a).on('error', b)
       })
     } else {
       console.log('copy', src_path, '=>', dst_path)
