@@ -8,12 +8,14 @@ import Show from './Component/Show';
 import Titled from './Component/Titled';
 import { ToggleButton } from "./Component/ToggleButton";
 import { ToggleImgButton } from './Component/ToggleImgButton';
+import { useShortcut } from './Component/useShortcut';
 import EditorView from './EditorView';
 import GamePad from './GamePad';
 import LF2 from './LF2/LF2';
 import Invoker from './LF2/base/Invoker';
 import { Defines } from './LF2/defines/defines';
 import FullScreen from './LF2/dom/FullScreen';
+import { GameOverlay } from './LF2/dom/GameOverlay';
 import Zip from './LF2/dom/download_zip';
 import { ILayoutInfo } from './LF2/layout/ILayoutInfo';
 import { fisrt } from './LF2/utils/container_help';
@@ -25,8 +27,6 @@ import open_file from './Utils/open_file';
 import './game_ui.css';
 import './init';
 import { useLocalBoolean, useLocalNumber, useLocalString } from './useLocalStorage';
-import { useShortcut } from './Component/useShortcut';
-import { GameOverlay } from './LF2/dom/GameOverlay';
 
 const fullscreen = new FullScreen()
 function App() {
@@ -245,6 +245,12 @@ function App() {
   useShortcut('F2', 0, () => update_once());
   useShortcut('F4', 0, () => lf2?.pop_layout());
   useShortcut('F5', 0, () => set_fast_forward(!fast_forward));
+
+  useShortcut('F6', 0, () => { if (lf2) lf2.infinity_mp = !lf2.infinity_mp });
+  useShortcut('F7', 0, () => { if (lf2) for (const e of lf2.world.entities) e.hp = e.max_hp; });
+  useShortcut('F8', 0, () => lf2?.add_random_weapon(9));
+  useShortcut('F9', 0, () => lf2?.world.stage.kill_all_enemies());
+
   useShortcut('F11', 0, () => toggle_fullscreen());
   useShortcut('ctrl+F1', 0, () => set_control_panel_visible(v => !v));
   useShortcut('ctrl+F2', 0, () => set_show_indicators(v => !v));

@@ -26,4 +26,5 @@ export interface ILf2Callback {
 
   on_layouts_loaded?(): void;
   on_broadcast?(message: string): void;
+  on_infinity_mp?(enabled: boolean): void;
 }

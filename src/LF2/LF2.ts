@@ -50,6 +50,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   private _loading: boolean = false;
   private _loaded: boolean = false;
   private _difficulty: Defines.Difficulty = Defines.Difficulty.Difficult;
+  private _infinity_mp: boolean = false;
   get callbacks(): NoEmitCallbacks<ILf2Callback> { return this._callbacks }
   get loading() { return this._loading; }
   get loaded() { return this._loaded; }
@@ -63,6 +64,14 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     const old = this._difficulty;
     this._difficulty = v;
     this._callbacks.emit('on_difficulty_changed')(v, old)
+  }
+  get infinity_mp(): boolean { return this._infinity_mp; }
+  set infinity_mp(v: boolean) {
+    if (this._infinity_mp === v) return;
+    this._infinity_mp = v;
+    this._callbacks.emit('on_infinity_mp')(v);
+    if (!v) return;
+    for (const e of this.world.entities) e.mp = e.max_mp;
   }
 
   readonly canvas: HTMLCanvasElement;
@@ -377,10 +386,14 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     this.world.del_game_objs(...this.world.entities);
     this.world.del_game_objs(...this.world.game_objs);
   }
-  add_random_weapon(num = 1): Weapon[] {
+  add_random_weapon(num = 1, duplicate = false): Weapon[] {
+    const src_arr = [...this.datas.weapons];
+    let tmp_arr = [...src_arr];
     const ret: Weapon[] = []
     while (--num >= 0) {
-      const d = random_get(this.datas.weapons);
+
+      const d = duplicate ? random_get(tmp_arr) : random_take(tmp_arr);
+      if (!tmp_arr.length) tmp_arr = [...src_arr]
       if (!d) continue;
       ret.push(...this.add_weapon(d, 1))
     }
