@@ -47,11 +47,11 @@ export default interface INode {
 
   set_z(z: number): this;
 
-  set_pos(x: number, y: number, z: number): this;
+  set_pos(x?: number, y?: number, z?: number): this;
 
-  set_size(w: number, h: number): this;
+  set_size(w?: number, h?: number): this;
 
-  set_center(x: number, y: number): this;
+  set_center(x?: number, y?: number, z?: number): this;
 
   apply(): this;
 
