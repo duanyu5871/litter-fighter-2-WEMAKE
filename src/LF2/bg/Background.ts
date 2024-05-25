@@ -53,7 +53,7 @@ export default class Background {
       this.add_layer(info, pic);
     }
     this._disposers.push(() => this.fade_out());
-    world.scene.add(this.obj_3d);
+    world.scene.inner.add(this.obj_3d);
   }
   fade_out(): void {
     const max_delay = 50;

@@ -2,9 +2,11 @@ import * as THREE from "three";
 import Node from "./Node";
 
 export default class Scene extends Node {
-  protected _inner: THREE.Scene = new THREE.Scene();
+  override get inner(): THREE.Scene { return this._inner as THREE.Scene }
+  
+  constructor() {
+    super();
+    this._inner = new THREE.Scene();
+  }
 }
 
-export class Camera_O extends Node {
-  protected _inner: THREE.OrthographicCamera = new THREE.OrthographicCamera();
-}

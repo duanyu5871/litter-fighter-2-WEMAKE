@@ -222,7 +222,7 @@ export default class Layout {
   }
 
   on_resume() {
-    if (this.root === this) this.lf2.world.scene.add(this.sprite.inner);
+    if (this.root === this) this.lf2.world.scene.add(this.sprite);
 
     for (const c of this._components) c.on_resume?.();
     for (const i of this.children) i.on_resume();
@@ -481,7 +481,7 @@ export default class Layout {
 
   on_render(dt: number) {
     if (this._root === this)
-      this._sprite.x = this.lf2.world.camera.position.x
+      this._sprite.x = this.lf2.world.camera.x
 
     const { visible } = this;
     if (visible !== this._sprite.visible) {

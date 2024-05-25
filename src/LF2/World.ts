@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 import { Log, Warn } from '../Log';
+import Camera_O from "./3d/Camera_O";
+import Scene from './3d/Scene';
 import { IWorldCallbacks } from './IWorldCallbacks';
 import LF2 from './LF2';
 import Callbacks from './base/Callbacks';
@@ -59,8 +61,8 @@ export class World {
   gravity = Defines.GRAVITY;
   friction_factor = Defines.FRICTION_FACTOR;
   friction = Defines.FRICTION;
-  scene: THREE.Scene = new THREE.Scene();
-  camera: THREE.OrthographicCamera = new THREE.OrthographicCamera();
+  scene: Scene = new Scene();
+  camera = new Camera_O();
 
   private _stage: Stage;
   entities = new Set<Entity>();
@@ -103,9 +105,9 @@ export class World {
     this.camera.right = w;
     this.camera.bottom = 0;
     this.camera.top = h;
-    this.camera.position.z = 10
+    this.camera.z = 10
     this.camera.near = 1;
-    this.camera.updateProjectionMatrix()
+    this.camera.apply()
     this.renderer.setSize(w, h, false);
     this._stage = new Stage(this, Defines.VOID_BG);
   }
@@ -118,12 +120,12 @@ export class World {
       }
 
       if (is_entity(e)) {
-        this.scene.add(e.mesh);
+        this.scene.inner.add(e.mesh);
         e.show_indicators = this._show_indicators;
         this.entities.add(e);
         continue;
       }
-      this.scene.add(e.mesh)
+      this.scene.inner.add(e.mesh)
       this.game_objs.add(e)
 
     }
@@ -158,7 +160,7 @@ export class World {
     if (this.disposed) return;
     for (const e of this.entities) e.indicators.update();
     this.lf2.layout?.on_render(dt);
-    this.renderer.render(this.scene, this.camera);
+    this.renderer.render(this.scene.inner, this.camera.inner);
   }
 
   start_render() {
@@ -269,7 +271,7 @@ export class World {
   restrict_name_sprite(e: THREE.Sprite) {
     const { x } = e.position;
     const hw = (e.scale.x + 10) / 2
-    const { x: cam_l } = this.camera.position;
+    const { x: cam_l } = this.camera;
     const cam_r = cam_l + this._screen_w;
     if (x + hw > cam_r) e.position.x = cam_r - hw;
     else if (x - hw < cam_l) e.position.x = cam_l + hw;
@@ -299,11 +301,11 @@ export class World {
   lock_cam_x: number | undefined = void 0;
 
   update_camera() {
-    const old_cam_x = Math.floor(this.camera.position.x)
+    const old_cam_x = Math.floor(this.camera.x)
     const { player_left, left, player_right, right } = this.stage;
     const max_cam_left = is_num(this.lock_cam_x) ? left : player_left;
     const max_cam_right = is_num(this.lock_cam_x) ? right : player_right;
-    let new_x = this.camera.position.x;
+    let new_x = this.camera.x;
     let max_speed_ratio = 50;
     let acc_ratio = 1;
     if (is_num(this.lock_cam_x)) {
@@ -319,7 +321,7 @@ export class World {
     if (new_x < max_cam_left) new_x = max_cam_left;
     if (new_x > max_cam_right - 794) new_x = max_cam_right - 794;
 
-    let cur_x = this.camera.position.x;
+    let cur_x = this.camera.x;
     const acc = Math.min(acc_ratio, acc_ratio * Math.abs(cur_x - new_x) / this._screen_w);
     const max_speed = max_speed_ratio * acc
 
@@ -327,20 +329,20 @@ export class World {
       if (this.cam_speed > 0) this.cam_speed = 0;
       else if (this.cam_speed > -max_speed) this.cam_speed -= acc;
       else this.cam_speed = -max_speed;
-      this.camera.position.x += this.cam_speed;
-      if (this.camera.position.x < new_x)
-        this.camera.position.x = new_x;
+      this.camera.x += this.cam_speed;
+      if (this.camera.x < new_x)
+        this.camera.x = new_x;
     }
     else if (cur_x < new_x) {
       if (this.cam_speed < 0) this.cam_speed = 0;
       else if (this.cam_speed < max_speed) this.cam_speed += acc;
       else this.cam_speed = max_speed;
-      this.camera.position.x += this.cam_speed;
-      if (this.camera.position.x > new_x)
-        this.camera.position.x = new_x;
+      this.camera.x += this.cam_speed;
+      if (this.camera.x > new_x)
+        this.camera.x = new_x;
     }
 
-    const new_cam_x = Math.floor(this.camera.position.x)
+    const new_cam_x = Math.floor(this.camera.x)
     if (old_cam_x !== new_cam_x) {
       this._callbacks.emit('on_cam_move')(new_cam_x);
     }

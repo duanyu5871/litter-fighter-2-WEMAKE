@@ -141,7 +141,7 @@ export default class ModernPlayer implements IPlayer {
 
   protected get_l_r_vol(x?: number) {
     const edge_w = Defines.OLD_SCREEN_WIDTH / 2;
-    const viewer_x = this.lf2.world.camera.position.x + edge_w;
+    const viewer_x = this.lf2.world.camera.x + edge_w;
     const sound_x = x ?? viewer_x;
     const muted = this._muted || this._sound_muted;
     return [

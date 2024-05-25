@@ -1,6 +1,6 @@
 import * as T from 'three';
-import { dispose_mesh } from '../layout/utils/dispose_mesh';
 import type { IWorldCallbacks } from '../IWorldCallbacks';
+import { dispose_mesh } from '../layout/utils/dispose_mesh';
 import type Stage from '../stage/Stage';
 import type Entity from './Entity';
 
@@ -28,7 +28,7 @@ export default class Shadow {
   }
 
   protected on_mount(entity: Entity) {
-    entity.world.scene.add(this.mesh)
+    entity.world.scene.inner.add(this.mesh)
     entity.world.callbacks.add(this.world_listener);
     this.on_stage_change(entity.world.stage);
   }

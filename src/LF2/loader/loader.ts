@@ -142,7 +142,6 @@ export class ImageMgr {
     const img = this._requesters.take(key);
     if (!img) return;
     if (img.url.startsWith('blob:')) URL.revokeObjectURL(img.url);
-    debugger
     return;
   }
 

@@ -54,7 +54,7 @@ export class EntityIndicators {
   protected _new_indicator(k: keyof typeof this._indicators_map, idx: number) {
     const material = new THREE.LineBasicMaterial({ color: INDICATORS_COLOR[k] });
     const ret = this._indicators_map[k][idx] = new THREE.LineSegments(geometry, material);
-    this.scene.add(ret);
+    this.scene.inner.add(ret);
     return ret;
   }
 
@@ -68,7 +68,7 @@ export class EntityIndicators {
 
   protected _del_indicator(k: keyof typeof this._indicators_map, idx: number) {
     const [indicator] = this._indicators_map[k].splice(idx, 1);
-    indicator && this.scene.remove(indicator)
+    indicator && this.scene.inner.remove(indicator)
   }
 
   private _unsafe_update_box() {
@@ -108,18 +108,18 @@ export class EntityIndicators {
   }
   hide_indicators(k: keyof typeof this._indicators_map) {
     for (const i of this._indicators_map[k])
-      this.scene.remove(i)
+      this.scene.inner.remove(i)
     this._indicators_map[k].length = 0
   }
   show_box() {
     if (this._box) return;
     const material = new THREE.LineBasicMaterial({ color: INDICATORS_COLOR.main })
     this._box = new THREE.LineSegments(geometry, material);
-    this.scene.add(this._box);
+    this.scene.inner.add(this._box);
   }
   hide_box() {
     if (!this._box) return;
-    this.scene.remove(this._box);
+    this.scene.inner.remove(this._box);
     delete this._box;
   }
   update() {
@@ -133,6 +133,6 @@ export class EntityIndicators {
     this._update_indicators('itr');
   }
   dispose() {
-    
+
   }
 }

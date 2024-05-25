@@ -104,7 +104,6 @@ export default class FrameAnimater<
     const { centerx, centery } = this._frame
     const offset_x = this._facing === 1 ? centerx : this.mesh.scale.x - centerx
     this.mesh.position.set(x - offset_x, y - z / 2 + centery, z);
-    this.mesh.updateMatrix()
   }
 
   attach(): this {

@@ -236,7 +236,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     const { sprite } = layout;
     if (!sprite) return;
     const raycaster = new THREE.Raycaster();
-    raycaster.setFromCamera(coords, this.world.camera);
+    raycaster.setFromCamera(coords, this.world.camera.inner);
     const intersections = raycaster.intersectObjects([sprite.inner], true);
 
     const layouts = intersections
@@ -266,7 +266,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     const { sprite } = layout;
     if (!sprite) return;
     const raycaster = new THREE.Raycaster();
-    raycaster.setFromCamera(coords, this.world.camera);
+    raycaster.setFromCamera(coords, this.world.camera.inner);
     const intersections = raycaster.intersectObjects([sprite.inner], true);
     const mouse_on_layouts = new Set<Layout>()
     for (const { object: { userData: { owner } } } of intersections) {
@@ -290,8 +290,8 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   on_pointer_down(e: PointingEvent) {
     const coords = new THREE.Vector2(e.scene_x, e.scene_y)
     const raycaster = new THREE.Raycaster()
-    raycaster.setFromCamera(coords, this.world.camera)
-    const intersections = raycaster.intersectObjects(this.world.scene.children);
+    raycaster.setFromCamera(coords, this.world.camera.inner)
+    const intersections = raycaster.intersectObjects(this.world.scene.inner.children);
     if (!intersections.length) {
       this.pick_intersection(void 0)
     } else {
@@ -653,7 +653,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   broadcast(message: string): void {
     this._callbacks.emit('on_broadcast')(message);
   }
-  n_tree(n: THREE.Object3D = this.world.scene): II {
+  n_tree(n: THREE.Object3D = this.world.scene.inner): II {
     const children = n.children.map(v => this.n_tree(v))
     return {
       name: `<${constructor_name(n)}>${n.name}`,

@@ -41,7 +41,7 @@ export default class Layer {
     if (!inner_w || !inner_h) return;
     const bg_width = this.bg.width;
     if (bg_width <= Defines.OLD_SCREEN_WIDTH) return;
-    const cam_x = this.bg.world.camera.position.x;
+    const cam_x = this.bg.world.camera.x;
     if (absolute)
       this.mesh.position.x = x + cam_x;
     else

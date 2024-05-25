@@ -1,0 +1,36 @@
+import * as THREE from "three";
+import Node from "./Node";
+
+
+export default class Camera_O extends Node {
+  get left(): number { return this.inner.left; }
+  set left(v: number) { this.inner.left = v; }
+  get right(): number { return this.inner.right; }
+  set right(v: number) { this.inner.right = v; }
+  get top(): number { return this.inner.top; }
+  set top(v: number) { this.inner.top = v; }
+  get bottom(): number { return this.inner.bottom; }
+  set bottom(v: number) { this.inner.bottom = v; }
+  get far(): number { return this.inner.far; }
+  set far(v: number) { this.inner.far = v; }
+  get near(): number { return this.inner.near; }
+  set near(v: number) { this.inner.near = v; }
+
+  override get inner(): THREE.OrthographicCamera {
+    return this._inner as THREE.OrthographicCamera;
+  }
+
+  constructor() {
+    super();
+    this._inner = new THREE.OrthographicCamera();
+  }
+  override apply(): this {
+    super.apply();
+    this.inner.updateProjectionMatrix();
+    return this;
+  }
+
+  getWorldQuaternion(q: THREE.Quaternion) {
+    this.inner.getWorldQuaternion(q);
+  }
+}

@@ -102,8 +102,7 @@ export class InfoSprite implements IEntityCallbacks {
         this.entity.controller.player_id
       )
     ) {
-      entity.world.scene.add(this.bars_node);
-      entity.world.scene.add(this.mesh);
+      entity.world.scene.inner.add(this.bars_node, this.mesh);
     }
     entity.callbacks.add(this);
     this.update_name_sprite(entity, entity.name, entity.team);
@@ -171,7 +170,7 @@ export class InfoSprite implements IEntityCallbacks {
 
   set_name_position(x: number, y: number, z: number) {
     const hw = (this.mesh.scale.x + 10) / 2
-    const { x: cam_l } = this.entity.world.camera.position;
+    const { x: cam_l } = this.entity.world.camera;
     const cam_r = cam_l + this.entity.world.screen_w;
     if (x + hw > cam_r) x = cam_r - hw;
     else if (x - hw < cam_l) x = cam_l + hw;
