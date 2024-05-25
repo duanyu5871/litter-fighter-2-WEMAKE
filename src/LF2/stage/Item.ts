@@ -1,5 +1,5 @@
-import { Factory } from "../Factory";
-import FrameAnimater from "../FrameAnimater";
+import { Factory } from "../entity/Factory";
+import FrameAnimater from "../entity/FrameAnimater";
 import { BotEnemyChaser } from "../controller/BotEnemyChaser";
 import { IGameObjData } from "../defines";
 import { IStageObjectInfo } from "../defines/IStageObjectInfo";

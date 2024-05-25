@@ -1,5 +1,5 @@
 import { Warn } from '../../Log';
-import { Factory } from '../Factory';
+import { Factory } from './Factory';
 import type { World } from '../World';
 import { ICube } from '../World';
 import Callbacks from '../base/Callbacks';

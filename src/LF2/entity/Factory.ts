@@ -1,8 +1,8 @@
 import type FrameAnimater from "./FrameAnimater";
-import type Ball from "./entity/Ball";
-import type Character from "./entity/Character";
-import type Entity from "./entity/Entity";
-import type Weapon from "./entity/Weapon";
+import type Ball from "./Ball";
+import type Character from "./Character";
+import type Entity from "./Entity";
+import type Weapon from "./Weapon";
 
 export interface ICreator<C, T extends new (...args: any[]) => C> {
   (...args: ConstructorParameters<T>): C

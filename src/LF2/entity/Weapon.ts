@@ -1,5 +1,5 @@
-import { Factory } from "../Factory";
-import { GONE_FRAME_INFO } from "../FrameAnimater";
+import { Factory } from "./Factory";
+import { GONE_FRAME_INFO } from "./FrameAnimater";
 import { ICube, World } from "../World";
 import { IBdyInfo, IFrameInfo, IItrInfo, IOpointInfo, IWeaponData, IWeaponInfo } from "../defines";
 import { Defines } from "../defines/defines";

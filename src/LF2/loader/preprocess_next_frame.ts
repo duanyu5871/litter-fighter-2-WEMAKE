@@ -1,4 +1,4 @@
-import FrameAnimater from '../FrameAnimater';
+import FrameAnimater from '../entity/FrameAnimater';
 import Expression from '../base/Expression';
 import { INextFrame } from "../defines";
 import { Defines } from '../defines/defines';

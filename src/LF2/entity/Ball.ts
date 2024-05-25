@@ -1,5 +1,5 @@
-import { Factory } from '../Factory';
-import { EMPTY_FRAME_INFO } from '../FrameAnimater';
+import { Factory } from './Factory';
+import { EMPTY_FRAME_INFO } from './FrameAnimater';
 import type { ICube, World } from '../World';
 import type { IBallData, IBallFrameInfo, IBallInfo, IBdyInfo, IItrInfo, IOpointInfo } from '../defines';
 import { Defines } from '../defines/defines';

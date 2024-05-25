@@ -1,5 +1,5 @@
 import { IFrameInfo } from "../../defines";
-import FrameAnimater from "../../FrameAnimater";
+import FrameAnimater from "../../entity/FrameAnimater";
 
 export default class BaseState<E extends FrameAnimater = FrameAnimater, F extends IFrameInfo = IFrameInfo> {
   state: number = -1;

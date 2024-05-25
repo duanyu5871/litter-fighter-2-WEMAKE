@@ -1,4 +1,4 @@
-import type FrameAnimater from "../FrameAnimater";
+import type FrameAnimater from "./FrameAnimater";
 import type Ball from "./Ball";
 import type Character from "./Character";
 import type Entity from "./Entity";

@@ -1,8 +1,8 @@
 
 import * as THREE from 'three';
 import { Log, Warn } from '../../Log';
-import { Factory } from '../Factory';
-import FrameAnimater, { GONE_FRAME_INFO } from '../FrameAnimater';
+import { Factory } from './Factory';
+import FrameAnimater, { GONE_FRAME_INFO } from './FrameAnimater';
 import type { World } from '../World';
 import { ICube } from '../World';
 import Callbacks from '../base/Callbacks';

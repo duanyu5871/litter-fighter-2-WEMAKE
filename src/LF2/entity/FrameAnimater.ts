@@ -1,17 +1,17 @@
 import { Warn } from '@fimagine/logger';
 import * as THREE from 'three';
-import type LF2 from './LF2';
-import type { World } from './World';
-import { new_id } from './base/new_id';
-import type { IFrameInfo, IGameObjData, IGameObjInfo, INextFrame, ITexturePieceInfo, TFace, TNextFrame } from './defines';
-import IPicture from './defines/IPicture';
-import { Defines } from './defines/defines';
-import { turn_face } from './entity/face_helper';
-import { dispose_mesh } from './layout/utils/dispose_mesh';
-import create_pictures from './loader/create_pictures';
-import { constructor_name } from './utils/constructor_name';
-import { random_get } from './utils/math/random';
-import { is_positive, is_str } from './utils/type_check';
+import type LF2 from '../LF2';
+import type { World } from '../World';
+import { new_id } from '../base/new_id';
+import type { IFrameInfo, IGameObjData, IGameObjInfo, INextFrame, ITexturePieceInfo, TFace, TNextFrame } from '../defines';
+import IPicture from '../defines/IPicture';
+import { Defines } from '../defines/defines';
+import { turn_face } from './face_helper';
+import { dispose_mesh } from '../layout/utils/dispose_mesh';
+import create_pictures from '../loader/create_pictures';
+import { constructor_name } from '../utils/constructor_name';
+import { random_get } from '../utils/math/random';
+import { is_positive, is_str } from '../utils/type_check';
 import { Factory } from './Factory';
 
 export const EMPTY_PIECE: ITexturePieceInfo = {

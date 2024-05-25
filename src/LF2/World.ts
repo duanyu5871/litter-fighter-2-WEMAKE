@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { Log, Warn } from '../Log';
-import { Factory } from './Factory';
-import FrameAnimater from './FrameAnimater';
+import { Factory } from './entity/Factory';
+import FrameAnimater from './entity/FrameAnimater';
 import { IWorldCallbacks } from './IWorldCallbacks';
 import LF2 from './LF2';
 import Callbacks from './base/Callbacks';
