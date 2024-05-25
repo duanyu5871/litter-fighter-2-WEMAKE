@@ -27,7 +27,7 @@ export default class PlayerName extends LayoutComponent {
     return ''
   }
   protected _mesh: Text;
-  protected _opacity: SineAnimation = new SineAnimation(0.65, 1, 1 / 25);
+  protected _opacity: SineAnimation = new SineAnimation(0.65, 0.35, 1 / 25);
   protected _unmount_jobs = new Invoker();
 
   constructor(layout: Layout, f_name: string) {
