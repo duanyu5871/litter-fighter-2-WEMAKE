@@ -12,11 +12,27 @@ export default class FallbackPlayer implements IPlayer {
   readonly lf2: LF2;
   protected _muted: boolean = true;
   protected _volume: number = 0.3;
+  protected _bgm_volume: number = 1;
+  protected _sound_volume: number = 1;
   protected _bgm_muted: boolean = false;
   protected _sound_muted: boolean = false;
 
   constructor(lf2: LF2) {
     this.lf2 = lf2;
+  }
+  bgm_volume(): number {
+    return this._bgm_volume
+  }
+  set_bgm_volume(v: number): void {
+    this._bgm_volume = v;
+    this.apply_bgm_volume();
+  }
+  sound_volume(): number {
+    return this._sound_volume
+  }
+  set_sound_volume(v: number): void {
+    this._sound_volume = v;
+    this.apply_sounds_volume();
   }
   muted(): boolean {
     return this._muted;
@@ -43,11 +59,17 @@ export default class FallbackPlayer implements IPlayer {
   }
 
   private apply_bgm_volume() {
-    if (this._bgm_ele) this._bgm_ele.muted = this._bgm_muted || this._muted;
+    if (this._bgm_ele) {
+      this._bgm_ele.muted = this._bgm_muted || this._muted;
+      this._bgm_ele.volume = this._volume * this._bgm_volume;
+    }
   }
 
   private apply_sounds_volume() {
-    for (const [, a] of this._playings) a.muted = this._sound_muted || this._muted;
+    for (const [, a] of this._playings) {
+      a.muted = this._sound_muted || this._muted;
+      a.volume = this._volume * this._sound_volume;
+    }
   }
 
   volume(): number {
@@ -84,7 +106,7 @@ export default class FallbackPlayer implements IPlayer {
     this._bgm_ele.controls = false;
     this._bgm_ele.loop = true;
     this._bgm_ele.play();
-    this._bgm_ele.volume = this._volume / 8;
+    this._bgm_ele.volume = this._volume * this._bgm_volume;
     this._bgm_ele.muted = this._muted;
     ++this._req_id;
     const req_id = this._req_id;
@@ -105,7 +127,7 @@ export default class FallbackPlayer implements IPlayer {
     const audio = document.createElement('audio');
     audio.src = src_audio;
     audio.controls = false;
-    audio.volume = this._volume;
+    audio.volume = this._volume * this._sound_volume;
     audio.muted = this._muted;
 
     const id = '' + (++this._sound_id);

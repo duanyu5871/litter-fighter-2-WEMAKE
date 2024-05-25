@@ -49,10 +49,14 @@ function App() {
   const [loading, set_loading] = useState(false);
   const [loaded, set_loaded] = useState(false);
   const [paused, _set_paused] = useState(false);
-  const [muted, _set_muted] = useState(false);
-  const [bgm_muted, _set_bgm_muted] = useState(false);
-  const [sound_muted, _set_sound_muted] = useState(false);
-  const [volume, _set_volume] = useState(1);
+
+  const [muted, _set_muted] = useLocalBoolean('total_muted', false);
+  const [bgm_muted, _set_bgm_muted] = useLocalBoolean('bgm_muted', false);
+  const [sound_muted, _set_sound_muted] = useLocalBoolean('sound_muted', false);
+  const [volume, _set_volume] = useLocalNumber<number>('total_volume', 1);
+  const [bgm_volume, _set_bgm_volume] = useLocalNumber<number>('bgm_volume', 1);
+  const [sound_volume, _set_sound_volume] = useLocalNumber<number>('sound_volume', 1);
+
   const [bg_id, _set_bg_id] = useState(Defines.VOID_BG.id);
 
   const [render_size_mode, set_render_size_mode] = useLocalString<'fixed' | 'fill' | 'cover' | 'contain'>('render_size_mode', 'contain');
@@ -93,7 +97,7 @@ function App() {
       fullscreen.enter(document.body.parentElement!);
   }
 
-  const [layout, _set_layout] = useState<string | undefined>(void 0);
+  const [layout_id, _set_layout] = useState<string | undefined>(void 0);
   const [layouts, set_layouts] = useState<Readonly<ILayoutInfo>[]>([{ id: '', name: '无页面' }]);
   useEffect(() => {
     const ele_canvas = _canvas_ref.current!;
@@ -112,10 +116,13 @@ function App() {
       })
     }
     const lf2 = lf2_ref.current;
-    _set_muted(lf2.sounds.muted());
-    _set_bgm_muted(lf2.sounds.bgm_muted());
-    _set_sound_muted(lf2.sounds.sound_muted());
-    _set_volume(lf2.sounds.volume());
+    lf2.sounds.set_muted(muted);
+    lf2.sounds.set_volume(volume);
+    lf2.sounds.set_bgm_muted(bgm_muted);
+    lf2.sounds.set_bgm_volume(bgm_volume);
+    lf2.sounds.set_sound_muted(sound_muted);
+    lf2.sounds.set_sound_volume(sound_volume);
+
     _set_cheat_1(lf2.is_cheat_enabled(Defines.Cheats.LF2_NET));
     _set_cheat_2(lf2.is_cheat_enabled(Defines.Cheats.HERO_FT));
     _set_cheat_3(lf2.is_cheat_enabled(Defines.Cheats.GIM_INK));
@@ -152,12 +159,15 @@ function App() {
         },
       }),
       lf2.sounds.callbacks.add({
-        on_muted_changed: v => _set_muted(v),
-        on_bgm_muted_changed: v => _set_bgm_muted(v),
-        on_sound_muted_changed: v => _set_sound_muted(v),
-        on_volume_changed: v => _set_volume(v),
+        on_muted_changed: _set_muted,
+        on_bgm_muted_changed: _set_bgm_muted,
+        on_sound_muted_changed: _set_sound_muted,
+        on_volume_changed: _set_volume,
+        on_bgm_volume_changed: _set_bgm_volume,
+        on_sound_volume_changed: _set_sound_volume
       })
     ).clear_fn();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const on_click_load_local_zip = () => {
@@ -289,12 +299,18 @@ function App() {
             onClick={() => lf2?.world.set_paused(!paused)}
             src={[require('./btn_2_1.png'), require('./btn_2_2.png')]} />
         </Show>
-        <Show show={layout && Number(lf2?.layout_stacks.length) > 1}>
+        <Show show={layouts.length > 1 && !loading && layout_id !== 'launch' && layout_id !== 'ctrl_settings'}>
+          <ToggleImgButton
+            onClick={() => lf2?.push_layout("ctrl_settings")}
+            src={[require('./btn_1_1.png'), require('./btn_1_1.png')]} />
+        </Show>
+        <Show show={layout_id && Number(lf2?.layout_stacks.length) > 1}>
           <ToggleImgButton
             shortcut='F4'
             onClick={() => lf2?.pop_layout()}
             src={[require('./btn_2_3.png')]} />
         </Show>
+
         <GamePad player_id={touch_pad_on} lf2={lf2} />
       </div>
       <Show.Div className={'debug_ui debug_ui_' + debug_ui_pos} show={control_panel_visible}>
@@ -325,6 +341,40 @@ function App() {
                 onChange={e => lf2?.sounds.set_volume(Number(e.target.value) / 100)} />
             </Show>
           </Combine>
+          <Combine>
+            <ToggleButton
+              onToggle={v => lf2?.sounds.set_bgm_muted(v)}
+              checked={bgm_muted}>
+              <>BGM✓</>
+              <>BGM</>
+            </ToggleButton>
+            <Show show={!bgm_muted}>
+              <Input
+                type='number'
+                min={0}
+                max={100}
+                step={1}
+                value={Math.ceil(bgm_volume * 100)}
+                onChange={e => lf2?.sounds.set_bgm_volume(Number(e.target.value) / 100)} />
+            </Show>
+          </Combine>
+          <Combine>
+            <ToggleButton
+              onToggle={v => lf2?.sounds.set_sound_muted(v)}
+              checked={sound_muted}>
+              <>Sound✓</>
+              <>Sound</>
+            </ToggleButton>
+            <Show show={!sound_muted}>
+              <Input
+                type='number'
+                min={0}
+                max={100}
+                step={1}
+                value={Math.ceil(sound_volume * 100)}
+                onChange={e => lf2?.sounds.set_sound_volume(Number(e.target.value) / 100)} />
+            </Show>
+          </Combine>
           <Button
             style={{ marginLeft: 'auto' }}
             onClick={() => set_control_panel_visible(false)}>
@@ -333,7 +383,7 @@ function App() {
         </div>
         <div className='settings_row'>
           <Select
-            value={layout}
+            value={layout_id}
             on_changed={(v: string) => lf2?.set_layout(v)}
             items={layouts}
             option={o => [o.id!, o.name]} />

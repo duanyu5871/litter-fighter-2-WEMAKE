@@ -15,6 +15,8 @@ export interface ISoundMgrCallback {
   on_sound_muted_changed?(muted: boolean, mgr: SoundMgr): void;
   on_volume_changed?(volume: number, prev: number, mgr: SoundMgr): void;
   on_bgm_changed?(bgm: string | null, prev: string | null, mgr: SoundMgr): void;
+  on_bgm_volume_changed?(volume: number, prev: number, mgr: SoundMgr): void;
+  on_sound_volume_changed?(volume: number, prev: number, mgr: SoundMgr): void;
 }
 export default class SoundMgr implements IPlayer {
   private _callbacks = new Callbacks<ISoundMgrCallback>()
@@ -37,6 +39,26 @@ export default class SoundMgr implements IPlayer {
         Warn.print(SoundMgr.name, 'can not use ' + cls.name, e)
       }
     }
+  }
+  bgm_volume(): number {
+    return this.inner.bgm_volume()
+  }
+  set_bgm_volume(v: number): void {
+    v = clamp(v, 0, 1);
+    const prev = this.bgm_volume();
+    if (float_equal(v, prev)) return;
+    this.inner.set_bgm_volume(v)
+    this._callbacks.emit('on_bgm_volume_changed')(v, prev, this)
+  }
+  sound_volume(): number {
+    return this.inner.sound_volume()
+  }
+  set_sound_volume(v: number): void {
+    v = clamp(v, 0, 1);
+    const prev = this.sound_volume()
+    if (float_equal(v, prev)) return;
+    this.inner.set_sound_volume(v)
+    this._callbacks.emit('on_sound_volume_changed')(v, prev, this)
   }
   bgm_muted(): boolean {
     return this.inner.bgm_muted()
@@ -70,8 +92,7 @@ export default class SoundMgr implements IPlayer {
   set_volume(v: number): void {
     v = clamp(v, 0, 1);
     const prev = this.volume()
-    if (float_equal(v, prev))
-      return;
+    if (float_equal(v, prev)) return;
     this.inner.set_volume(v);
     this._callbacks.emit('on_volume_changed')(v, prev, this)
   }

@@ -1,5 +1,35 @@
 export interface IPlayer {
   /**
+   * 音量
+   *
+   * @returns {number} [0,1]
+   */
+  bgm_volume(): number;
+
+
+  /**
+   * 设置
+   *
+   * @param {number} v [0,1]
+   */
+  set_bgm_volume(v: number): void;
+
+  /**
+   * 音量
+   *
+   * @returns {number} [0,1]
+   */
+  sound_volume(): number;
+
+
+  /**
+   * 设置
+   *
+   * @param {number} v [0,1]
+   */
+  set_sound_volume(v: number): void;
+
+  /**
    * 是否禁音
    *
    * @returns {boolean}

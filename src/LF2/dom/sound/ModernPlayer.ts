@@ -18,10 +18,26 @@ export default class ModernPlayer implements IPlayer {
   protected _playings = new Map<string, { src_node: AudioBufferSourceNode, l_gain_node: GainNode, r_gain_node: GainNode, sound_x: number }>()
   protected _muted: boolean = false;
   protected _volume: number = 0.3;
+  protected _bgm_volume: number = 1;
+  protected _sound_volume: number = 1;
   protected _bgm_muted: boolean = false;
   protected _sound_muted: boolean = false;
   constructor(lf2: LF2) {
     this.lf2 = lf2;
+  }
+  bgm_volume(): number {
+    return this._bgm_volume
+  }
+  set_bgm_volume(v: number): void {
+    this._bgm_volume = v;
+    this.apply_bgm_volume();
+  }
+  sound_volume(): number {
+    return this._sound_volume
+  }
+  set_sound_volume(v: number): void {
+    this._sound_volume = v;
+    this.apply_sound_volume();
   }
 
   muted(): boolean {
@@ -75,7 +91,7 @@ export default class ModernPlayer implements IPlayer {
   protected apply_bgm_volume() {
     if (!this._bgm_node) return;
     const muted = this._muted || this._bgm_muted;
-    this._bgm_node.gain_node.gain.value = (muted ? 0 : this._volume) / 8;
+    this._bgm_node.gain_node.gain.value = muted ? 0 : (this._volume * this._bgm_volume);
   }
 
   bgm(): string | null {
@@ -122,14 +138,13 @@ export default class ModernPlayer implements IPlayer {
 
       const gain_node = this.ctx.createGain()
       gain_node.connect(ctx.destination)
-      const muted = this._muted || this._bgm_muted;
-      gain_node.gain.value = (muted ? 0 : this._volume) / 8;
       src_node.connect(gain_node)
       src_node.loop = true;
       this._bgm_node = {
         src_node,
         gain_node
       }
+      this.apply_bgm_volume()
     };
     if (buf) {
       start(buf);
@@ -146,8 +161,8 @@ export default class ModernPlayer implements IPlayer {
     const muted = this._muted || this._sound_muted;
     return [
       sound_x,
-      (muted ? 0 : this._volume) * Math.max(0, 1 - Math.abs((sound_x - viewer_x + edge_w) / Defines.OLD_SCREEN_WIDTH)),
-      (muted ? 0 : this._volume) * Math.max(0, 1 - Math.abs((sound_x - viewer_x - edge_w) / Defines.OLD_SCREEN_WIDTH))
+      (muted ? 0 : (this._volume * this._sound_volume)) * Math.max(0, 1 - Math.abs((sound_x - viewer_x + edge_w) / Defines.OLD_SCREEN_WIDTH)),
+      (muted ? 0 : (this._volume * this._sound_volume)) * Math.max(0, 1 - Math.abs((sound_x - viewer_x - edge_w) / Defines.OLD_SCREEN_WIDTH))
     ]
   }
   play(name: string, x?: number, y?: number, z?: number): string {

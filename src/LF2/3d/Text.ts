@@ -17,38 +17,30 @@ export default class Text extends Sprite {
   }
 
   set_style(v: IStyle | ((v: IStyle) => IStyle)): this {
-    this._style = typeof v === 'function' ? v(this._style) : v;
-    this._changed = true;
+    this._style = typeof v === 'function' ? v({ ...this._style }) : v;
     return this;
   }
 
 
   set_text(v: string): this {
     this._text = v;
-    this._changed = true;
     return this;
   }
 
   protected async update_text(text: string, style: IStyle, jid: number) {
-    if (jid !== this._jid) return;
+    const out_of_date = () => jid !== this._jid
+    if (out_of_date()) return;
     const pic = await this.lf2.images.create_pic_by_text(text, style);
-    if (jid !== this._jid) {
-      this.lf2.images.remove_img(pic.id);
+    if (out_of_date()) {
       pic.texture.dispose();
       return;
     }
-    const key = this.inner.material.map?.userData.key;
     this.set_info(pic);
     super.apply();
-    if(key) this.lf2.images.remove_img(key);
   }
 
   override apply(): this {
-    if (this._changed)
-      this.update_text(this._text, this._style, ++this._jid);
-    else
-      super.apply()
-    this._changed = false;
+    this.update_text(this._text, this._style, ++this._jid);
     return this;
   }
 }

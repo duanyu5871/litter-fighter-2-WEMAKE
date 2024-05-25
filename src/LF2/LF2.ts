@@ -37,6 +37,7 @@ import { fisrt, last } from './utils/container_help';
 import { arithmetic_progression } from './utils/math/arithmetic_progression';
 import { random_get, random_in, random_take } from './utils/math/random';
 import { is_arr, is_num, is_str, not_empty_str } from './utils/type_check';
+import float_equal from './utils/math/float_equal';
 
 const cheat_info_pair = (n: Defines.Cheats) => ['' + n, {
   keys: Defines.CheatKeys[n],
@@ -226,7 +227,6 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     if (!next) return;
     const o = next.object;
     (window as any).pick_0 = o.userData.owner ?? o.userData
-    Log.print("click", o.userData.owner ?? o.userData)
     if (o.userData.owner instanceof Layer)
       o.userData.owner.show_indicators = true;
     else if (is_entity(o.userData.owner)) {
@@ -238,35 +238,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   }
   private mouse_on_layouts = new Set<Layout>()
 
-  on_click(e: PointingEvent) {
-    const { layout } = this;
-    if (!layout) return;
-    const coords = new THREE.Vector2(e.scene_x, e.scene_y);
-    const { sprite } = layout;
-    if (!sprite) return;
-    const raycaster = new THREE.Raycaster();
-    raycaster.setFromCamera(coords, this.world.camera.inner);
-    const intersections = raycaster.intersectObjects([sprite.inner], true);
 
-    const layouts = intersections
-      .filter(v => v.object.userData.owner instanceof Layout)
-      .map(v => v.object.userData.owner as Layout)
-      .filter(v => v.global_visible && !v.global_disabled)
-      .sort((a, b) => {
-        if (b.level > a.level) {
-          do { if (!b.parent) return 0; b = b.parent; } while (b.level !== a.level)
-        }
-        if (a.level < b.level) {
-          do { if (!a.parent) return 0; a = a.parent; } while (b.level !== a.level)
-        }
-        return b.z - a.z || b.index - a.index;
-      })
-
-
-    for (const layout of layouts)
-      if (layout.on_click()) break;
-
-  }
 
   on_pointer_move(e: PointingEvent) {
     const { layout } = this;
@@ -312,6 +284,26 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
         const iii = intersections.find(v => v.object.userData.owner)
         this.pick_intersection(iii)
       }
+    }
+    {
+      const { layout } = this;
+      if (!layout) return;
+      const { sprite } = layout;
+      if (!sprite) return;
+      raycaster.setFromCamera(coords, this.world.camera.inner);
+      const intersections = raycaster.intersectObjects([sprite.inner], true);
+      const layouts = intersections
+        .filter(v => v.object.userData.owner instanceof Layout)
+        .map(v => v.object.userData.owner as Layout)
+        .filter(v => v.global_visible && !v.global_disabled)
+        .sort((a, b) => {
+          const { global_z: z_a, depth: d_a } = a;
+          const { global_z: z_b, depth: d_b } = b;
+          if (!float_equal(z_a, d_a)) return z_b - z_a;
+          return d_b - d_a
+        })
+      for (const layout of layouts)
+        if (layout.on_click()) break;
     }
   }
 

@@ -103,7 +103,6 @@ export default class Layout {
   protected _parent?: Layout;
   protected _children: Layout[] = [];
   protected _index: number = 0;
-  protected _level: number = 0;
   protected readonly data: Readonly<ICookedLayoutInfo>;
 
   lf2: LF2;
@@ -139,7 +138,14 @@ export default class Layout {
   get y(): number { return this.data.pos[1] };
   get z(): number { return this.data.pos[2] };
   get root(): Layout { return this._root }
-  get level() { return this._level }
+
+  get depth() {
+    let depth = 0;
+    let l: Layout | undefined = this;
+    for (; l?._parent; l = l.parent)
+      ++depth
+    return depth;
+  }
   get index() { return this._index }
   get state() { return this._state }
   get img_idx() { return this._img_idx() }
@@ -354,7 +360,6 @@ export default class Layout {
         if (cooked_item.id) ret.id_layout_map.set(cooked_item.id, cooked_item);
         if (cooked_item.name) ret.name_layout_map.set(cooked_item.name, cooked_item);
         cooked_item._index = ret.children.length;
-        cooked_item._level = ret.level + 1;
         ret.children.push(cooked_item);
       }
     return ret;
@@ -455,6 +460,14 @@ export default class Layout {
   get global_disabled(): boolean {
     if (this.disabled) return true;
     return !!this.parent?.disabled;
+  }
+
+  get global_z(): number {
+    let global_z = 0;
+    let l: Layout | undefined = this;
+    for (; l?._parent; l = l.parent)
+      global_z += this.sprite.z;
+    return global_z;
   }
 
   invoke_all_on_show() {

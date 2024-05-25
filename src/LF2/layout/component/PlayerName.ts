@@ -13,18 +13,19 @@ import { LayoutComponent } from "./LayoutComponent";
  * @extends {LayoutComponent}
  */
 export default class PlayerName extends LayoutComponent {
-  protected get player_id() { return this.args[0] || '' }
-  protected get player() { return this.lf2.player_infos.get(this.player_id) }
-  protected get text(): string {
-    const { player } = this;
-    if (player?.is_com) return 'Computer'
-    if (player?.joined) return player.name
-    if (this.gpl?.state === GamePrepareState.PlayerCharacterSel) return 'Join?';
-    return ''
-  }
+  get player_id() { return this.args[0] || '' }
+  get player() { return this.lf2.player_infos.get(this.player_id) }
+  get player_name() { return this.player?.name ?? this.player_id }
   get joined(): boolean { return true === this.player?.joined }
   get is_com(): boolean { return true === this.player?.is_com }
   get gpl(): GamePrepareLogic | undefined { return this.layout.root.find_component(GamePrepareLogic) }
+  get can_join(): boolean { return this.gpl?.state === GamePrepareState.PlayerCharacterSel }
+  protected get text(): string {
+    if (this.is_com) return 'Computer'
+    if (this.joined) return this.player_name;
+    if (this.can_join) return 'Join?';
+    return ''
+  }
   protected _mesh: Text;
   protected _opacity: SineAnimation = new SineAnimation(0.65, 1, 1 / 25);
   protected _unmount_jobs = new Invoker();
@@ -66,19 +67,6 @@ export default class PlayerName extends LayoutComponent {
   }
 
   protected handle_changed() {
-    switch (this.gpl?.state) {
-      case GamePrepareState.PlayerCharacterSel:
-        this._mesh.visible = true;
-        break;
-      case GamePrepareState.CountingDown:
-      case GamePrepareState.ComNumberSel:
-        this._mesh.visible = this.joined;
-        break;
-      case GamePrepareState.ComputerCharacterSel:
-      case GamePrepareState.GameSetting:
-        this._mesh.visible = this.joined || this.is_com;
-        break;
-    }
     this._mesh.set_style(v => ({
       ...v, fill_style: this.is_com ? 'pink' : 'white'
     })).set_text(this.text).apply()

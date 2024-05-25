@@ -9,6 +9,7 @@
     ]
   ],
   "component": [
+    "game_prepare_logic(stage_mode)",
     "player_c_sel_logic(1)",
     "player_c_sel_logic(2)",
     "player_c_sel_logic(3)",
@@ -17,7 +18,6 @@
     "player_c_sel_logic(6)",
     "player_c_sel_logic(7)",
     "player_c_sel_logic(8)",
-    "game_prepare_logic(stage_mode)",
     "reachable_layout_group(com_num,lr,how_many_computer)",
     "reachable_layout_group(menu,ud,menu)"
   ],

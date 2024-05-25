@@ -11,8 +11,8 @@ export default class Callbacks<F> extends NoEmitCallbacks<F> {
   emit<K extends keyof F>(fn_name: K): Exclude<F[K], undefined | null> {
     const ret: any = (...args: any[]) => {
       const set = this._map.get(fn_name);
-      if (!set) return
-      for (const v of set) (v as any)[fn_name].apply(v, args);
+      if (!set?.size) return
+      for (const v of new Set(set)) (v as any)[fn_name].apply(v, args);
     }
     return ret;
   }

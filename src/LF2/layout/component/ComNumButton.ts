@@ -12,6 +12,6 @@ export default class ComNumButton extends LayoutComponent {
     const { gpl, num } = this;
     if (!gpl) return;
     const { min_com_num, max_com_num } = gpl;
-    this.layout.disabled = num < min_com_num || num >= max_com_num;
+    this.layout.disabled = num < min_com_num || num > max_com_num;
   }
 }
