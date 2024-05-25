@@ -1,4 +1,3 @@
-import * as THREE from 'three';
 import { Log, Warn } from '../Log';
 import Camera_O from "./3d/Camera_O";
 import Scene from './3d/Scene';
@@ -62,7 +61,7 @@ export class World {
   friction_factor = Defines.FRICTION_FACTOR;
   friction = Defines.FRICTION;
   scene: Scene;
-  camera = new Camera_O();
+  camera: Camera_O;
 
   private _stage: Stage;
   entities = new Set<Entity>();
@@ -101,13 +100,10 @@ export class World {
     const h = this._screen_h = 450;// Defines.OLD_SCREEN_HEIGHT;
 
     this.scene = new Scene(canvas).set_size(w, h);
-    this.camera.left = 0;
-    this.camera.right = w;
-    this.camera.bottom = 0;
-    this.camera.top = h;
-    this.camera.z = 10
-    this.camera.near = 1;
-    this.camera.apply()
+    this.camera = new Camera_O()
+      .setup(0, w, h, 0)
+      .set_pos(void 0, void 0, 10)
+      .apply()
     this.scene.add(this.camera);
     this._stage = new Stage(this, Defines.VOID_BG);
   }
@@ -264,17 +260,7 @@ export class World {
       this.restrict_ball(e);
     } else if (is_weapon(e)) {
       this.restrict_weapon(e);
-    } else if (e instanceof THREE.Sprite) {
-      this.restrict_name_sprite(e);
     }
-  }
-  restrict_name_sprite(e: THREE.Sprite) {
-    const { x } = e.position;
-    const hw = (e.scale.x + 10) / 2
-    const { x: cam_l } = this.camera;
-    const cam_r = cam_l + this._screen_w;
-    if (x + hw > cam_r) e.position.x = cam_r - hw;
-    else if (x - hw < cam_l) e.position.x = cam_l + hw;
   }
   update_once() {
     if (this.disposed) return;

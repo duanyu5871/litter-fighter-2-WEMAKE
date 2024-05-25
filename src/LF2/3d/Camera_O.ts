@@ -19,7 +19,6 @@ export default class Camera_O extends Node {
   override get inner(): THREE.OrthographicCamera {
     return this._inner as THREE.OrthographicCamera;
   }
-
   constructor() {
     super();
     this._inner = new THREE.OrthographicCamera();
@@ -29,7 +28,16 @@ export default class Camera_O extends Node {
     this.inner.updateProjectionMatrix();
     return this;
   }
-
+  setup(l: number, r: number, t: number, b: number, n: number = 0.1, f: number = 2000): this {
+    const { inner } = this;
+    inner.left = l;
+    inner.right = r;
+    inner.bottom = b;
+    inner.top = t;
+    inner.near = n;
+    inner.far = f;
+    return this;
+  }
   getWorldQuaternion(q: THREE.Quaternion) {
     this.inner.getWorldQuaternion(q);
   }
