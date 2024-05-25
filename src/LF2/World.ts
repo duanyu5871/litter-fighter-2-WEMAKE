@@ -19,6 +19,7 @@ import FrameAnimater from './entity/FrameAnimater';
 import Weapon from './entity/Weapon';
 import { is_ball, is_character, is_entity, is_weapon } from './entity/type_check';
 import Stage from './stage/Stage';
+import float_equal from './utils/math/float_equal';
 import { is_num } from './utils/type_check';
 export interface ICube {
   left: number;
@@ -57,7 +58,8 @@ export class World {
    */
   key_hit_duration = Defines.KEY_HIT_DURATION
 
-  gravity = Defines.GRAVITY;
+  protected _gravity = Defines.GRAVITY;
+
   friction_factor = Defines.FRICTION_FACTOR;
   friction = Defines.FRICTION;
   scene: Scene;
@@ -94,6 +96,14 @@ export class World {
 
   get screen_w(): number { return this._screen_w; }
   get screen_h(): number { return this._screen_h; }
+  get gravity(): number { return this._gravity; }
+  set gravity(v: number) { this.set_gravity(v); }
+  set_gravity(v: number) {
+    const prev = this._gravity
+    if (float_equal(v, prev)) return;
+    this._gravity = v;
+    this._callbacks.emit('on_gravity_change')(v, prev, this)
+  }
   constructor(lf2: LF2, canvas: HTMLCanvasElement) {
     this.lf2 = lf2;
     const w = this._screen_w = Defines.OLD_SCREEN_WIDTH;

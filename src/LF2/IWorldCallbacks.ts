@@ -1,3 +1,4 @@
+import { World } from './World';
 import type Stage from './stage/Stage';
 
 export interface IWorldCallbacks {
@@ -31,12 +32,13 @@ export interface IWorldCallbacks {
    */
   on_fps_update?(fps: number): void;
 
-  
+
   /**
    * 更新帧率变化回调
    *
    * @param {number} fps
    */
   on_ups_update?(fps: number): void;
-
+  
+  on_gravity_change?(value: number, prev: number, world: World): void;
 }

@@ -28,6 +28,7 @@ import './game_ui.css';
 import './init';
 import { useLocalBoolean, useLocalNumber, useLocalString } from './useLocalStorage';
 import { is_weapon } from './LF2/entity/type_check';
+import float_equal from './LF2/utils/math/float_equal';
 
 const fullscreen = new FullScreen()
 function App() {
@@ -69,6 +70,7 @@ function App() {
   const [debug_ui_pos, set_debug_ui_pos] = useLocalString<'left' | 'right' | 'top' | 'bottom'>('debug_ui_pos', 'bottom');
   const [touch_pad_on, set_touch_pad_on] = useLocalString<string>('touch_pad_on', '');
   const [is_fullscreen, _set_is_fullscreen] = useState(false);
+  const [gravity, _set_gravity] = useState(0);
 
   const update_once = () => {
     const lf2 = lf2_ref.current;
@@ -122,7 +124,7 @@ function App() {
     lf2.sounds.set_bgm_volume(bgm_volume);
     lf2.sounds.set_sound_muted(sound_muted);
     lf2.sounds.set_sound_volume(sound_volume);
-
+    _set_gravity(lf2.world.gravity);
     _set_cheat_1(lf2.is_cheat_enabled(Defines.Cheats.LF2_NET));
     _set_cheat_2(lf2.is_cheat_enabled(Defines.Cheats.HERO_FT));
     _set_cheat_3(lf2.is_cheat_enabled(Defines.Cheats.GIM_INK));
@@ -141,7 +143,8 @@ function App() {
       }),
       lf2.world.callbacks.add({
         on_stage_change: (s) => _set_bg_id(s.bg.id),
-        on_pause_change: (v) => _set_paused(v)
+        on_pause_change: (v) => _set_paused(v),
+        on_gravity_change: v => _set_gravity(v),
       }),
       lf2.callbacks.add({
         on_layout_changed: v => _set_layout(v?.id ?? ''),
@@ -310,7 +313,6 @@ function App() {
             onClick={() => lf2?.pop_layout()}
             src={[require('./btn_2_3.png')]} />
         </Show>
-
         <GamePad player_id={touch_pad_on} lf2={lf2} />
       </div>
       <Show.Div className={'debug_ui debug_ui_' + debug_ui_pos} show={control_panel_visible}>
@@ -324,6 +326,14 @@ function App() {
             option={v => [v, '位置：' + v]}
             value={debug_ui_pos}
             on_changed={set_debug_ui_pos} />
+
+          <Button
+            style={{ marginLeft: 'auto' }}
+            onClick={() => set_control_panel_visible(false)}>
+            ✕
+          </Button>
+        </div>
+        <div className='settings_row'>
           <Combine>
             <ToggleButton
               onToggle={v => lf2?.sounds.set_muted(v)}
@@ -375,11 +385,22 @@ function App() {
                 onChange={e => lf2?.sounds.set_sound_volume(Number(e.target.value) / 100)} />
             </Show>
           </Combine>
-          <Button
-            style={{ marginLeft: 'auto' }}
-            onClick={() => set_control_panel_visible(false)}>
-            ✕
-          </Button>
+          <Titled title="重力">
+            <Combine>
+              <Input
+                type='number'
+                min={0}
+                max={100}
+                step={1}
+                value={gravity}
+                onChange={e => lf2?.world.set_gravity(Number(e.target.value))} />
+              <Show show={!float_equal(gravity, Defines.GRAVITY)}>
+                <Button onClick={_ => lf2?.world.set_gravity(Defines.GRAVITY)}>
+                  重置
+                </Button>
+              </Show>
+            </Combine>
+          </Titled>
         </div>
         <div className='settings_row'>
           <Select
@@ -440,6 +461,7 @@ function App() {
               </Combine>
             </Titled>
           </Show>
+
         </div>
         <div className='settings_row'>
           <ToggleButton title='F1' checked={paused} onClick={() => lf2?.world.set_paused(!paused)}>
