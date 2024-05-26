@@ -20,6 +20,7 @@ export default class LaunchPageLogic extends LayoutComponent {
   protected _scale = new SequenceAnimation(1000, new NumberAnimation(0, 2, 250), new NumberAnimation(2, 1, 250));
   protected _opacity = new SequenceAnimation(1000, new NumberAnimation(0, 1, 500), 1000);
   protected _unmount_jobs = new Invoker();
+  protected _skipped = false;
 
   protected _tap_hints_opacity = new SineAnimation(.2, 1, 0.002)
   protected _tap_hints_fadeout_opacity = new NumberAnimation(1, 0, 255)
@@ -37,7 +38,7 @@ export default class LaunchPageLogic extends LayoutComponent {
     this.lf2.sounds.load('data/m_join.wav.ogg', 'data/m_join.wav.ogg')
     this.lf2.sounds.load('data/m_ok.wav.ogg', 'data/m_ok.wav.ogg')
     this.lf2.sounds.load('data/m_pass.wav.ogg', 'data/m_pass.wav.ogg')
-    this.lf2.sounds.load('launch/093.wav.ogg', 'launch/main.wma.ogg')
+    this.lf2.sounds.load('launch/main.wma.ogg', 'launch/main.wma.ogg')
     this._dispose_jobs.add(
       this.lf2.callbacks.add({
         on_layouts_loaded: () => this.on_layouts_loaded(),
@@ -51,6 +52,7 @@ export default class LaunchPageLogic extends LayoutComponent {
   }
   override on_resume(): void {
     super.on_resume();
+    this._skipped = false;
     this.bearface = this.layout.find_layout('bearface')!
     this.yeonface = this.layout.find_layout('yeonface')!
     this.tap_to_launch = this.layout.find_layout('tap_to_launch')!
@@ -79,10 +81,12 @@ export default class LaunchPageLogic extends LayoutComponent {
     if (this.state === 0) {
       this.state = 1;
       Timeout.set(() => this.lf2.sounds.play('data/093.wav.ogg'), 1000)
+    } else if (this.state === 1) {
+      this._skipped = true;
     } else if (this.state === 2) {
       this.state = 3;
       this._opacity.play(true);
-      this.lf2.sounds.play_bgm('launch/093.wav.ogg')
+      this.lf2.sounds.play_bgm('launch/main.wma.ogg')
     }
   }
   override on_pause(): void {
@@ -117,6 +121,10 @@ export default class LaunchPageLogic extends LayoutComponent {
       if (this._opacity.is_finish && this._layouts_loaded) {
         if (this._opacity.reverse) {
           this.lf2.set_layout('entry')
+        } else if (this._skipped) {
+          this.state = 3;
+          this._opacity.play(true);
+          this.lf2.sounds.play_bgm('launch/main.wma.ogg')
         } else {
           this.state = 2;
         }

@@ -109,7 +109,7 @@ export class World {
     const w = this._screen_w = Defines.OLD_SCREEN_WIDTH;
     const h = this._screen_h = 450;// Defines.OLD_SCREEN_HEIGHT;
 
-    this.scene = new Scene(canvas).set_size(w, h);
+    this.scene = new Scene(canvas).set_size(w * 2, h * 2);
     this.camera = new Camera_O()
       .setup(0, w, h, 0)
       .set_pos(void 0, void 0, 10)

@@ -8,22 +8,29 @@ import { ICharacterData, IDataLists } from '../../src/LF2/defines';
 import { read_lf2_dat_file } from './read_old_lf2_dat_file';
 import { read_text_file } from './utils/read_text_file';
 
-let target_file_type = {
+let steps = {
+  del_old: true,
+  sound: true,
   dat: true,
   bmp: true,
-  sound: true,
   others: true,
+  converting: true,
+  zipping: true,
 };
-let del_old = true;
 
 for (let i = 2; i < process.argv.length; ++i) {
   switch (process.argv[i]) {
+    case '--zipping-only':
+      for (const k in steps) (steps as any)[k] = false;
+      steps.zipping = true;
+      break;
     case '--dat-only':
-      del_old = false;
-      target_file_type.dat = true;
-      target_file_type.bmp = false;
-      target_file_type.sound = false;
-      target_file_type.others = false;
+      for (const k in steps) (steps as any)[k] = false;
+      steps.converting = steps.dat = steps.zipping = true;
+      break;
+    case '--bmp-only':
+      for (const k in steps) (steps as any)[k] = false;
+      steps.converting = steps.bmp = steps.zipping = true;
       break;
   }
 }
@@ -33,7 +40,7 @@ async function parse_indexes(src_path: string): Promise<IDataLists | undefined> 
 }
 
 async function parse_under_dir(src_dir_path: string, dst_dir_path: string, indexes: IDataLists | undefined) {
-  if (del_old) await fs.rmdir(dst_dir_path, { recursive: true }).catch(_ => void 0)
+  if (steps.del_old) await fs.rmdir(dst_dir_path, { recursive: true }).catch(_ => void 0)
   await fs.mkdir(dst_dir_path, { recursive: true }).catch(_ => void 0)
 
   for (const filename of await fs.readdir(src_dir_path)) {
@@ -51,7 +58,7 @@ async function parse_under_dir(src_dir_path: string, dst_dir_path: string, index
       continue;
     }
     if (filename.endsWith('.dat')) {
-      if (!target_file_type.dat) continue;
+      if (!steps.dat) continue;
       const buff = await read_lf2_dat_file(src_path);
       const index =
         indexes?.objects.find(v => src_path.endsWith(v.file)) ||
@@ -76,7 +83,7 @@ async function parse_under_dir(src_dir_path: string, dst_dir_path: string, index
       )
 
     } else if (filename.endsWith('.wma') || filename.endsWith('.wav')) {
-      if (!target_file_type.sound) continue;
+      if (!steps.sound) continue;
       const _dst_path = dst_path + '.ogg'
       const dst_stat = await fs.stat(_dst_path).catch(e => void 0);
       if (dst_stat?.isFile() || dst_stat?.isDirectory())
@@ -89,19 +96,19 @@ async function parse_under_dir(src_dir_path: string, dst_dir_path: string, index
         temp.stderr.on('data', d => console.error(filename, 'stderr: ' + d));
       })
     } else if (filename.endsWith('.bmp')) {
-      if (!target_file_type.bmp) continue;
+      if (!steps.bmp) continue;
       const _dst_path = dst_path.replace(/.bmp$/, '.png');
       const dst_stat = await fs.stat(_dst_path).catch(e => void 0);
       if (dst_stat?.isFile() || dst_stat?.isDirectory())
         await fs.rm(_dst_path, { recursive: true, force: true })
-      const args = [src_path, "-alpha", "set", "-channel", "RGBA", "-fuzz", "0%", "-fill", "rgba(0,0,0,0)", "-opaque", "rgb(0,0,0)", _dst_path];
+      const args = [src_path, "-alpha", "set", "-set", "colorspace", "sRGB", "-channel", "RGBA", "-fuzz", "0%", "-fill", "rgba(0,0,0,0)", "-opaque", "rgb(0,0,0)", _dst_path];
       await new Promise((a, b) => {
         console.log('convert', src_path, '=>', _dst_path)
         const temp = spawn('magick', args).on('exit', a).on('error', b)
         // temp.stdout.on('data', d => console.log(filename, 'stdout: ' + d));
         temp.stderr.on('data', d => console.error(filename, 'stderr: ' + d));
       })
-    } else if (target_file_type.others) {
+    } else if (steps.others) {
       console.log('copy', src_path, '=>', dst_path)
       await fs.copyFile(src_path, dst_path);
     }
@@ -109,11 +116,12 @@ async function parse_under_dir(src_dir_path: string, dst_dir_path: string, index
 }
 
 async function main() {
-  const indexes = await parse_indexes('./LittleFighter/data/data.txt');
-  await parse_under_dir('./LittleFighter', '../public/lf2_data', indexes);
-  await fs.writeFile('../public/lf2_data/data/data.json', JSON.stringify(indexes, null, 2).replace(/\.dat"/g, ".json\""));
-  
-  console.log('zipping', '../public/lf2_data', '=>',  '../public/lf2.data.zip')
+  if (steps.converting) {
+    const indexes = await parse_indexes('./LittleFighter/data/data.txt');
+    await parse_under_dir('./LittleFighter', '../public/lf2_data', indexes);
+    await fs.writeFile('../public/lf2_data/data/data.json', JSON.stringify(indexes, null, 2).replace(/\.dat"/g, ".json\""));
+  }
+  console.log('zipping', '../public/lf2_data', '=>', '../public/lf2.data.zip')
   compressing.zip.compressDir('../public/lf2_data', '../public/lf2.data.zip')
 }
 
