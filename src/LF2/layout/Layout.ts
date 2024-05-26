@@ -457,12 +457,12 @@ export default class Layout {
 
   get global_visible(): boolean {
     if (!this.visible) return false;
-    return this.parent ? this.parent.visible : true;
+    return this.parent ? this.parent.global_visible : true;
   }
 
   get global_disabled(): boolean {
     if (this.disabled) return true;
-    return !!this.parent?.disabled;
+    return !!this.parent?.global_disabled;
   }
 
   get global_z(): number {

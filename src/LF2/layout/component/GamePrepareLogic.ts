@@ -270,7 +270,7 @@ export default class GamePrepareLogic extends LayoutComponent {
     const background_name_text = this.layout.root.search_component(BackgroundNameText, v => v.layout.global_visible && !v.layout.global_disabled)
     if (stage_name_text) this.lf2.change_stage(stage_name_text.stage);
     if (background_name_text) this.lf2.change_bg(background_name_text.background);
-
+    debugger
     if (stage_name_text)
       this.lf2.push_layout('stage_mode_page');
     else
