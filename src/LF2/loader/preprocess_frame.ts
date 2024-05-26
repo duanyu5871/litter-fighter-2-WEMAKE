@@ -50,21 +50,20 @@ export const cook_frame = (lf2: LF2, data: IGameObjData, frame: IFrameInfo) => {
     const p = lf2.images.find_by_pic_info(pic_info);
     if (!p) return Warn.print(cook_frame.name, 'image_info not found', pic_info);
 
+    const scale_img_w = p.w / p.scale;
+    const scale_img_h = p.h / p.scale;
     const f_i_1: ITexturePieceInfo = {
       tex: pic.tex!,
-      x: pic.x / p.w,
-      y: 1 - (pic.y + pic.h) / p.h,
-      w: pic.w / p.w,
-      h: pic.h / p.h,
+      x: pic.x / scale_img_w,
+      y: 1 - (pic.y + pic.h) / scale_img_h,
+      w: pic.w / scale_img_w,
+      h: pic.h / scale_img_h,
       pw: pic.w,
       ph: pic.h,
-      cx: frame.centerx / pic.w,
-      cy: 1 - frame.centery / pic.h,
     };
     const f_i_2: ITexturePieceInfo = {
       ...f_i_1,
-      x: -f_i_1.x - f_i_1.w,
-      cx: 1 - f_i_1.cx,
+      x: -f_i_1.x - f_i_1.w
     };
     pic = frame.pic = {
       1: f_i_1,

@@ -13,7 +13,11 @@ export const texture_loader = new THREE.TextureLoader();
 export type TImageInfo = {
   key: string,
   url: string;
+  src_url: string;
+  scale: number;
+  /** 图片宽度（像素） */
   w: number;
+  /** 图片高度（像素） */
   h: number;
   min_filter?: THREE.MinificationTextureFilter;
   mag_filter?: THREE.MagnificationTextureFilter;
@@ -43,10 +47,13 @@ export class ImageMgr {
   }
 
   protected async _make_img_info(key: string, src: string, paint?: PaintFunc): Promise<TImageInfo> {
-    src = await this.lf2.import_resource(src);
-    const img = await create_img_ele(src);
+    const [blob_url, src_url] = await this.lf2.import_resource(src);
+    const img = await create_img_ele(blob_url);
+
+    const [, txt_scale] = src_url.match(/@(\d)x.png$/) ?? ['', '1'];
+    const scale = Math.max(1, Number(txt_scale));
     if (!paint) {
-      return { key, url: src, w: img.width, h: img.height, img: img }
+      return { key, url: blob_url, src_url, scale, w: img.width, h: img.height, img: img }
     }
     const cvs = document.createElement('canvas');
     const ctx = cvs.getContext('2d', { willReadFrequently: true });
@@ -54,7 +61,7 @@ export class ImageMgr {
     paint(img, cvs, ctx);
     const blob = await get_blob(cvs).catch(e => { throw new Error(e.message + ' key:' + key, { cause: e.cause }) });
     const url = URL.createObjectURL(blob);
-    return { key, url, w: cvs.width, h: cvs.height, img: cvs }
+    return { key, url, src_url, scale, w: cvs.width, h: cvs.height, img: cvs }
   }
 
   protected async _make_img_info_by_text(key: string, text: string, style: IStyle = {}): Promise<ITextImageInfo> {
@@ -106,7 +113,7 @@ export class ImageMgr {
     const blob = await get_blob(cvs).catch(e => { throw new Error(e.message + ' key:' + key, { cause: e.cause }) });
     const url = URL.createObjectURL(blob);
     return {
-      key, url,
+      key, url, scale: 1, src_url: url,
       w: w + padding_l + padding_r,
       h: h + padding_t + padding_b,
       img: cvs,

@@ -13,6 +13,12 @@ export default function get_import_fallbacks(name: string): string[] {
     fallbacks.unshift(name + '.png');
     fallbacks.unshift(name.substring(0, name.length - 4) + '.png');
   }
+  if (name.endsWith('.png')) {
+    const n = name.substring(0, name.length - 4)
+    fallbacks.unshift(n + '@2x.png');
+    fallbacks.unshift(n + '@3x.png');
+    fallbacks.unshift(n + '@4x.png');
+  }
   if (name.endsWith('.wav') || name.endsWith('.wma')) {
     fallbacks.unshift(name + '.ogg');
     fallbacks.unshift(name.substring(0, name.length - 4) + '.ogg');

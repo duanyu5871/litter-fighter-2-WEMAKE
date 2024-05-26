@@ -21,14 +21,4 @@ export interface ITexturePieceInfo {
    * 正常范围：0 ~ 1
    */
   h: number;
-
-  /**
-   * 纹理中心点（x）
-   */
-  cx: number;
-
-  /**
-   * 纹理中心点（y）
-   */
-  cy: number;
 }

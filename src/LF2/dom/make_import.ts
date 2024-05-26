@@ -50,15 +50,15 @@ export async function import_as_blob(path_or_url_list: string[]): Promise<Blob> 
   const url_list: string[] = get_possible_url_list(path_or_url_list);
   return await import_as<Blob>('blob', url_list).then(v => v.data);
 }
-export async function import_as_blob_url(path_or_url_list: string[]): Promise<string> {
+export async function import_as_blob_url(path_or_url_list: string[]): Promise<[string, string]> {
   const url_list: string[] = get_possible_url_list(path_or_url_list);
   const err_list: [string, any][] = [];
   for (const url of url_list) {
     if (url.startsWith('blob'))
-      return url;
+      return [url, url];
     try {
       const resp = await import_as<Blob>('blob', url);
-      return URL.createObjectURL(resp.data);
+      return [await URL.createObjectURL(resp.data), url];
     } catch (e) {
       err_list.push([url, e]);
     }

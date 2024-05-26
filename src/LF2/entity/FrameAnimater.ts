@@ -15,7 +15,7 @@ import { is_positive, is_str } from '../utils/type_check';
 import { Factory } from './Factory';
 
 export const EMPTY_PIECE: ITexturePieceInfo = {
-  tex: 0, x: 0, y: 0, w: 0, h: 0, cx: 0, cy: 0,
+  tex: 0, x: 0, y: 0, w: 0, h: 0,
   ph: 0, pw: 0,
 }
 export const EMPTY_FRAME_INFO: IFrameInfo = {
