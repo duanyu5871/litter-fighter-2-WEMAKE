@@ -44,8 +44,7 @@
     }
   ],
   "actions": {
-    "enter": "",
-    "leave": [
+    "stop": [
       "remove_all_entities()",
       "destory_stage()"
     ]

@@ -21,8 +21,10 @@ export interface ILayoutInfo {
   txt?: string;
   actions?: {
     click: string | string[];
-    enter?: string | string[];
-    leave?: string | string[];
+    resume?: string | string[];
+    pause?: string | string[];
+    start?: string | string[];
+    stop?: string | string[];
   };
   key_press_actions?: [string, string][];
   items?: (ILayoutInfo | string)[];

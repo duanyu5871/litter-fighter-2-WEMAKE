@@ -12,6 +12,11 @@
   ],
   "items": [
     {
+      "pos": "0,0,5",
+      "visible": "paused==1",
+      "template": "layouts/player_keys_hints.json"
+    },
+    {
       "visible": "paused==1",
       "id": "bg_wait",
       "img": "sprite/PAUSE.png",
@@ -30,8 +35,7 @@
     }
   ],
   "actions": {
-    "enter": "",
-    "leave": [
+    "stop": [
       "remove_all_entities()",
       "destory_stage()"
     ]

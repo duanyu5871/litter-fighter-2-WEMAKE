@@ -20,10 +20,13 @@ import DifficultyText from "./DifficultyText";
 import StageNameText from "./StageNameText";
 import BackgroundNameText from "./BackgroundNameText";
 import OpacityHover from "./OpacityHover";
+import PlayerKeyText from "./PlayerKeyText";
+
 class Factory {
   private _component_map = new Map<string, typeof LayoutComponent>([
     ['game_loading_file_name', LoadingFileNameDisplayer],
     ['key_set', PlayerKeyEditor],
+    ['key_txt', PlayerKeyText],
     ['stage_transitions', StageTransitions],
     ['player_c_sel_logic', CharacterSelLogic],
     ['player_c_head', PlayerCharacterHead],
