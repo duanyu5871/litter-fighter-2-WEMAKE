@@ -322,10 +322,10 @@ export default class Layout {
     }
 
     {
-      const { w: img_w = 0, h: img_h = 0 } = ret.img_infos?.[0] || {};
+      const { w: img_w = 0, h: img_h = 0, scale = 1 } = ret.img_infos?.[0] || {};
       const { size, center, pos, rect } = raw_info
 
-      const [sx, sy, sw, sh] = read_nums(rect, 4, [0, 0, img_w, img_h])
+      const [sx, sy, sw, sh] = read_nums(rect, 4, [0, 0, img_w / scale, img_h / scale])
       const [w, h] = read_nums(size, 2, [parent ? sw : 794, parent ? sh : 450]);
       const [cx, cy] = read_nums(center, 2, [0, 0]);
       const [x, y] = read_nums(pos, 2, [0, 0]);
@@ -433,10 +433,9 @@ export default class Layout {
   protected init_sprite() {
     const [x, y, z] = this.data.pos;
     const [w, h] = this.size;
+    const texture = this.create_texture();
     const p: ISpriteInfo = {
-      w, h,
-      texture: this.create_texture(),
-      color: this.data.bg_color
+      w, h, texture, color: this.data.bg_color
     }
     this._sprite.set_info(p)
       .set_center(...this.data.center)

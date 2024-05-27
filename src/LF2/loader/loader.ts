@@ -89,6 +89,7 @@ export class ImageMgr {
     apply_text_style();
     let w = 0;
     let h = 0;
+    const scale = 4;
     let lines = text.split('\n').map((line, idx, arr) => {
       const t = idx === arr.length ? (line + '\n') : line;
       const { width, fontBoundingBoxAscent: a, fontBoundingBoxDescent: d } = ctx.measureText(t);
@@ -103,19 +104,22 @@ export class ImageMgr {
     else if (text_align === 'right')
       for (const l of lines)
         l.x = Math.round(w);
-    cvs.style.width = (cvs.width = w + padding_l + padding_r) + 'px'
-    cvs.style.height = (cvs.height = h + padding_t + padding_b) + 'px';
+    cvs.style.width = (cvs.width = scale * (w + padding_l + padding_r)) + 'px'
+    cvs.style.height = (cvs.height = scale * (h + padding_t + padding_b)) + 'px';
 
     apply_text_style();
+    ctx.save()
+    ctx.scale(scale, scale)
     for (const { x, y, t } of lines) {
       ctx.fillText(t, padding_l + x, padding_t + y);
     }
+    ctx.restore()
     const blob = await get_blob(cvs).catch(e => { throw new Error(e.message + ' key:' + key, { cause: e.cause }) });
     const url = URL.createObjectURL(blob);
     return {
-      key, url, scale: 1, src_url: url,
-      w: w + padding_l + padding_r,
-      h: h + padding_t + padding_b,
+      key, url, scale: scale, src_url: url,
+      w: cvs.width,
+      h: cvs.height,
       img: cvs,
       text: text
     }
@@ -206,9 +210,10 @@ export class ImageMgr {
 
   create_pic_by_img_info(img_info: TImageInfo) {
     const picture = err_pic_info(img_info.key);
-    picture.cell_w = picture.w = img_info.w
-    picture.cell_h = picture.h = img_info.h
-    return _create_pic(img_info, picture);
+    const ret = _create_pic(img_info, picture);
+    picture.cell_w = ret.w;
+    picture.cell_h = ret.h;
+    return ret;
   }
 
   create_pic_by_img_key(img_key: string) {
@@ -245,7 +250,7 @@ function _create_pic(
   img_info: TImageInfo,
   pic_info: TPicture = err_pic_info(img_info.key),
 ): TPicture {
-  const { url, w, h, min_filter, mag_filter, wrap_s, wrap_t } = img_info;
+  const { url, w, h, min_filter, mag_filter, wrap_s, wrap_t, scale } = img_info;
   const texture = texture_loader.load(url);
   texture.colorSpace = THREE.SRGBColorSpace;
   texture.minFilter = min_filter ?? THREE.NearestFilter;
@@ -253,8 +258,8 @@ function _create_pic(
   texture.wrapS = wrap_s ?? THREE.MirroredRepeatWrapping;
   texture.wrapT = wrap_t ?? THREE.MirroredRepeatWrapping;
   texture.userData = img_info;
-  pic_info.w = w;
-  pic_info.h = h;
+  pic_info.w = w / scale;
+  pic_info.h = h / scale;
   pic_info.texture = texture;
   return pic_info;
 }
