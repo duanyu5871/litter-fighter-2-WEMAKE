@@ -198,7 +198,6 @@ function App() {
       .catch(e => Log.print('on_click_load_builtin', e))
   }
 
-
   useEffect(() => {
     const ele = _game_contiainer_ref.current;
     if (!ele) return;
@@ -276,6 +275,7 @@ function App() {
       <div className='game_contiainer' ref={_game_contiainer_ref}>
         <canvas ref={_canvas_ref} tabIndex={-1} className='game_canvas' width={794} height={450} draggable={false} />
         <div className='game_overlay' ref={_overlay_ref} style={{ display: !game_overlay ? 'none' : void 0 }} />
+        <GamePad player_id={touch_pad_on} lf2={lf2} />
       </div>
       <div className='game_overlay_ui'>
         <Show show={lf2?.is_cheat_enabled(Defines.Cheats.GIM_INK) || true}>
@@ -313,7 +313,6 @@ function App() {
             onClick={() => lf2?.pop_layout()}
             src={[require('./btn_2_3.png')]} />
         </Show>
-        <GamePad player_id={touch_pad_on} lf2={lf2} />
       </div>
       <Show.Div className={'debug_ui debug_ui_' + debug_ui_pos} show={control_panel_visible}>
         <div className='settings_row'>

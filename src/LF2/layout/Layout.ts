@@ -259,7 +259,7 @@ export default class Layout {
     for (const c of this._components) c.on_pause?.();
     for (const item of this.children) item.on_pause();
   }
-  
+
   on_show() {
     for (const c of this.components) c.on_show?.();
     this._callbacks.emit('on_show')(this);

@@ -2,10 +2,32 @@ import { useEffect, useRef, useState } from 'react';
 import { IToggleImgProps, ToggleImgButton } from './Component/ToggleImgButton';
 import './GamePad.css';
 import LF2 from './LF2/LF2';
-import { BaseController, KEY_NAME_LIST, TKeyName } from './LF2/controller/BaseController';
+import { BaseController, TKeyName } from './LF2/controller/BaseController';
 export interface IGamePadProps {
   lf2?: LF2;
   player_id?: string;
+}
+
+type TRect = { l: number, r: number, t: number, b: number }
+type TCirc = { x: number, y: number, r: number }
+const get_rect = (ele: React.RefObject<HTMLButtonElement>): TRect => {
+  if (!ele.current) return { l: 0, t: 0, r: 0, b: 0 };
+  const { x, y, width, height } = ele.current.getBoundingClientRect();
+  return { l: x, t: y, r: x + width, b: y + height }
+}
+const get_circ = (ele: React.RefObject<HTMLButtonElement>): TCirc => {
+  if (!ele.current) return { x: 0, y: 0, r: 0 };
+  const { x, y, width, height } = ele.current.getBoundingClientRect();
+  return { x: x + width / 2, y: y + height / 2, r: width / 2 }
+}
+function copy_touch(touch: Touch) {
+  return {
+    id: touch.identifier,
+    x: touch.pageX,
+    y: touch.pageY,
+    r: Math.max(touch.radiusX, touch.radiusY, 20),
+    end: false,
+  };
 }
 export default function GamePad(props: IGamePadProps) {
   const { player_id, lf2 } = props;
@@ -17,7 +39,10 @@ export default function GamePad(props: IGamePadProps) {
   const ref_btn_a = useRef<HTMLButtonElement>(null);
   const ref_btn_j = useRef<HTMLButtonElement>(null);
   const ref_btn_d = useRef<HTMLButtonElement>(null);
-
+  const ref_left_pad = useRef<HTMLDivElement>(null)
+  const ref_right_pad = useRef<HTMLDivElement>(null)
+  const ref_pad_text = useRef<HTMLDivElement>(null)
+  const [refresh_tag, set_refresh_tag] = useState(0);
   useEffect(() => {
     if (!lf2 || !player_id) return;
     return lf2.world.callbacks.add({
@@ -33,77 +58,104 @@ export default function GamePad(props: IGamePadProps) {
   }, [lf2, player_id]);
 
 
-  const ref_pressing_map = useRef<{ [x in TKeyName]?: boolean }>({});
+  useEffect(() => {
+    const left_pad = ref_left_pad.current!;
+    const right_pad = ref_right_pad.current!;
+    const on_resize = () => {
+      {
+        const btns = [ref_btn_U.current, ref_btn_D.current, ref_btn_L.current, ref_btn_R.current!]
+        let l: number = Infinity, r: number = 0, b: number = 0, t: number = Infinity
+        for (const { x, y, width, height } of btns.map(v => v?.getBoundingClientRect() || { x: 0, y: 0, width: 0, height: 0 })) {
+          l = Math.min(l, x)
+          t = Math.min(t, y)
+          r = Math.max(r, x + width)
+          b = Math.max(b, y + height)
+        }
+        left_pad.style.left = l + 'px'
+        left_pad.style.width = (r - l) + 'px'
+        left_pad.style.top = t + 'px'
+        left_pad.style.height = (b - t) + 'px'
+      }
+      {
+        const btns = [ref_btn_a.current, ref_btn_j.current, ref_btn_d.current]
+        let l: number = Infinity, r: number = 0, b: number = 0, t: number = Infinity
+        for (const { x, y, width, height } of btns.map(v => v?.getBoundingClientRect() || { x: 0, y: 0, width: 0, height: 0 })) {
+          l = Math.min(l, x)
+          t = Math.min(t, y)
+          r = Math.max(r, x + width)
+          b = Math.max(b, y + height)
+        }
+        right_pad.style.left = l + 'px'
+        right_pad.style.width = (r - l) + 'px'
+        right_pad.style.top = t + 'px'
+        right_pad.style.height = (b - t) + 'px'
+      }
+      set_refresh_tag(v => v + 1)
+    }
+    on_resize();
+    window.addEventListener('resize', on_resize)
+    return () => window.removeEventListener('contextmenu', on_resize);
+  }, []);
+
   useEffect(() => {
     if (!player_id || !lf2) return;
 
-    const on_contextmenu = (e: MouseEvent) => {
-      e.preventDefault();
-    }
-    document.addEventListener('contextmenu', on_contextmenu, { passive: false })
-
-    type TRect = { l: number, r: number, t: number, b: number }
-    type TCirc = { x: number, y: number, r: number }
-    const get_rect = (ele: React.RefObject<HTMLButtonElement>): TRect => {
-      if (!ele.current) return { l: 0, t: 0, r: 0, b: 0 };
-      const { x, y, width, height } = ele.current.getBoundingClientRect();
-      return { l: x, t: y, r: x + width, b: y + height }
-    }
-    const get_circ = (ele: React.RefObject<HTMLButtonElement>): TCirc => {
-      if (!ele.current) return { x: 0, y: 0, r: 0 };
-      const { x, y, width, height } = ele.current.getBoundingClientRect();
-      return { x: x + width / 2, y: y + height / 2, r: width / 2 }
-    }
-    const rect_infos: { key: TKeyName, rect: TRect, circ: TCirc }[] = [
-      { key: 'U' as TKeyName, rect: get_rect(ref_btn_U), circ: get_circ(ref_btn_U) },
-      { key: 'D' as TKeyName, rect: get_rect(ref_btn_D), circ: get_circ(ref_btn_D) },
-      { key: 'L' as TKeyName, rect: get_rect(ref_btn_L), circ: get_circ(ref_btn_L) },
-      { key: 'R' as TKeyName, rect: get_rect(ref_btn_R), circ: get_circ(ref_btn_R) },
-      { key: 'a' as TKeyName, rect: get_rect(ref_btn_a), circ: get_circ(ref_btn_a) },
-      { key: 'j' as TKeyName, rect: get_rect(ref_btn_j), circ: get_circ(ref_btn_j) },
-      { key: 'd' as TKeyName, rect: get_rect(ref_btn_d), circ: get_circ(ref_btn_d) }
+    const pad = ref_left_pad.current!;
+    const btn_infos = [
+      { key: 'U' as const, rect: get_rect(ref_btn_U), circ: get_circ(ref_btn_U) },
+      { key: 'D' as const, rect: get_rect(ref_btn_D), circ: get_circ(ref_btn_D) },
+      { key: 'L' as const, rect: get_rect(ref_btn_L), circ: get_circ(ref_btn_L) },
+      { key: 'R' as const, rect: get_rect(ref_btn_R), circ: get_circ(ref_btn_R) },
     ]
-
-    function copy_touch(touch: Touch) {
-      return {
-        id: touch.identifier,
-        x: touch.pageX,
-        y: touch.pageY,
-        r: Math.min(touch.radiusX, touch.radiusY),
-        end: false,
-      };
-    }
+    const prev_pressings = new Map([
+      ['L' as const, false],
+      ['R' as const, false],
+      ['U' as const, false],
+      ['D' as const, false],
+    ]);
     const touches: ReturnType<typeof copy_touch>[] = [];
-
     const find_touch_index = (touch_id: number) => {
       return touches.findIndex(v => v.id === touch_id)
     }
-
+    const pad_text = ref_pad_text.current!
     const handle_touchs = () => {
-      const next_pressing_map: { [x in TKeyName]?: boolean } = {};
+      const curr_pressings = new Map([
+        ['L' as const, false],
+        ['R' as const, false],
+        ['U' as const, false],
+        ['D' as const, false],
+      ]);
       for (const t of touches) {
-        for (const { circ, key: k } of rect_infos) {
-          if (!next_pressing_map[k])
-            next_pressing_map[k] = Math.pow(circ.x - t.x, 2) + Math.pow(circ.y - t.y, 2) < Math.pow(t.r + circ.r, 2);
+        for (const { circ, key: k } of btn_infos) {
+          curr_pressings.set(k, Math.pow(circ.x - t.x, 2) + Math.pow(circ.y - t.y, 2) < Math.pow(t.r + circ.r, 2))
         }
       }
-      for (const k of KEY_NAME_LIST) {
-        if (ref_pressing_map.current[k] && !next_pressing_map[k]) {
-          controller?.end(k);
-        } else if (!ref_pressing_map.current[k] && next_pressing_map[k]) {
+      for (const [k, v] of curr_pressings) {
+        if (v === prev_pressings.get(k)) continue;
+        if (v) {
           lf2?.layout?.on_player_key_down(player_id, k);
           controller?.start(k);
+          if (pad_text.innerText.length > 10)
+            pad_text.innerText = pad_text.innerText.substring(2)
+          pad_text.innerText += k + '⬇'
+        } else {
+          lf2?.layout?.on_player_key_up(player_id, k);
+          controller?.end(k);
+          if (pad_text.innerText.length > 10)
+            pad_text.innerText = pad_text.innerText.substring(2)
+          pad_text.innerText += k + '⬆'
         }
+        prev_pressings.set(k, v)
       }
-      ref_pressing_map.current = next_pressing_map;
     }
     const on_touch_start = (e: TouchEvent) => {
-      for (const t of e.changedTouches) {
+      e.preventDefault()
+      for (const t of e.changedTouches)
         touches.push(copy_touch(t));
-      }
       handle_touchs()
     }
     const on_touch_move = (e: TouchEvent) => {
+      e.preventDefault()
       for (const t of e.changedTouches) {
         const idx = find_touch_index(t.identifier);
         if (idx >= 0) touches.splice(idx, 1, copy_touch(t));
@@ -117,54 +169,111 @@ export default function GamePad(props: IGamePadProps) {
       }
       handle_touchs()
     }
-    const on_touch_cancel = (e: TouchEvent) => {
+    pad.addEventListener('touchstart', on_touch_start, { passive: false })
+    pad.addEventListener('touchmove', on_touch_move, { passive: false })
+    pad.addEventListener('touchend', on_touch_end, { passive: false })
+    pad.addEventListener('touchcancel', on_touch_end, { passive: false })
+
+    return () => {
+      pad.removeEventListener('touchstart', on_touch_start);
+      pad.removeEventListener('touchmove', on_touch_move)
+      pad.removeEventListener('touchend', on_touch_end);
+      pad.removeEventListener('touchcancel', on_touch_end);
+    }
+  }, [controller, lf2, player_id, refresh_tag])
+
+  useEffect(() => {
+    if (!player_id || !lf2) return;
+
+    const pad = ref_right_pad.current!;
+    const btn_infos = [
+      { key: 'a' as const, rect: get_rect(ref_btn_a), circ: get_circ(ref_btn_a) },
+      { key: 'j' as const, rect: get_rect(ref_btn_j), circ: get_circ(ref_btn_j) },
+      { key: 'd' as const, rect: get_rect(ref_btn_d), circ: get_circ(ref_btn_d) },
+    ]
+    const prev_pressings = new Map([
+      ['a' as const, false],
+      ['j' as const, false],
+      ['d' as const, false],
+    ]);
+    const touches: ReturnType<typeof copy_touch>[] = [];
+    const find_touch_index = (touch_id: number) => {
+      return touches.findIndex(v => v.id === touch_id)
+    }
+    const pad_text = ref_pad_text.current!
+    const handle_touchs = () => {
+      const curr_pressings = new Map([
+        ['a' as const, false],
+        ['j' as const, false],
+        ['d' as const, false],
+      ]);
+      for (const t of touches) {
+        for (const { circ, key: k } of btn_infos) {
+          curr_pressings.set(k, Math.pow(circ.x - t.x, 2) + Math.pow(circ.y - t.y, 2) < Math.pow(t.r + circ.r, 2))
+        }
+      }
+      for (const [k, v] of curr_pressings) {
+        if (v === prev_pressings.get(k)) continue;
+        if (v) {
+          lf2?.layout?.on_player_key_down(player_id, k);
+          controller?.start(k);
+          if (pad_text.innerText.length > 10)
+            pad_text.innerText = pad_text.innerText.substring(2)
+          pad_text.innerText += k + '⬇'
+        } else {
+          lf2?.layout?.on_player_key_up(player_id, k);
+          controller?.end(k);
+          if (pad_text.innerText.length > 10)
+            pad_text.innerText = pad_text.innerText.substring(2)
+          pad_text.innerText += k + '⬆'
+        }
+        prev_pressings.set(k, v)
+      }
+    }
+    const on_touch_start = (e: TouchEvent) => {
+      e.preventDefault()
+      for (const t of e.changedTouches)
+        touches.push(copy_touch(t));
+      handle_touchs()
+    }
+    const on_touch_move = (e: TouchEvent) => {
+      e.preventDefault()
+      for (const t of e.changedTouches) {
+        const idx = find_touch_index(t.identifier);
+        if (idx >= 0) touches.splice(idx, 1, copy_touch(t));
+      }
+      handle_touchs()
+    }
+    const on_touch_end = (e: TouchEvent) => {
       for (const t of e.changedTouches) {
         const idx = find_touch_index(t.identifier);
         if (idx >= 0) touches.splice(idx, 1);
       }
       handle_touchs()
     }
+    pad.addEventListener('touchstart', on_touch_start, { passive: false })
+    pad.addEventListener('touchmove', on_touch_move, { passive: false })
+    pad.addEventListener('touchend', on_touch_end, { passive: false })
+    pad.addEventListener('touchcancel', on_touch_end, { passive: false })
 
-
-    document.addEventListener('touchstart', on_touch_start, { passive: false })
-    document.addEventListener('touchmove', on_touch_move, { passive: false })
-    document.addEventListener('touchend', on_touch_end, { passive: false })
-    document.addEventListener('touchcancel', on_touch_cancel, { passive: false })
     return () => {
-      document.removeEventListener('contextmenu', on_contextmenu);
-      document.removeEventListener('touchstart', on_touch_start);
-      document.addEventListener('touchmove', on_touch_move)
-      document.removeEventListener('touchend', on_touch_end);
-      document.removeEventListener('touchcancel', on_touch_end);
+      pad.removeEventListener('touchstart', on_touch_start);
+      pad.removeEventListener('touchmove', on_touch_move)
+      pad.removeEventListener('touchend', on_touch_end);
+      pad.removeEventListener('touchcancel', on_touch_end);
     }
-  }, [controller, lf2, player_id])
-
+  }, [controller, lf2, player_id, refresh_tag])
   if (!player_id) return <></>;
-
   const touch_props = (key: TKeyName): IToggleImgProps => {
-    // const on_touch_end = () => {
-    //   if (!ref_pressing_map.current[key])
-    //     return;
-    //   ref_pressing_map.current[key] = false;
-    //   controller?.end(key);
-    // }
     return {
-      // onPointerDown: () => {
-      //   if (ref_pressing_map.current[key])
-      //     return;
-      //   ref_pressing_map.current[key] = true;
-      //   lf2?.layout?.on_player_key_down(player_id, key);
-      //   controller?.start(key);
-      // },
-      // onPointerCancel: on_touch_end,
-      // onPointerUp: on_touch_end,
       style: { 'pointerEvents': 'none' },
       disabled: true
     }
   };
   return (
     <>
-      <div className='left_pad'>
+      <div className='pad_text' ref={ref_pad_text} />
+      <div className='left_pad' ref={ref_left_pad}>
         <ToggleImgButton
           className='btn_up'
           ref={ref_btn_U}
@@ -194,7 +303,7 @@ export default function GamePad(props: IGamePadProps) {
           alt='right'
           draggable={false} />
       </div>
-      <div className='right_pad'>
+      <div className='right_pad' ref={ref_right_pad}>
         <ToggleImgButton
           className='btn_attack'
           ref={ref_btn_a}

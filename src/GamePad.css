@@ -1,81 +1,91 @@
-.game_overlay_ui .left_pad {
+.pad_text {
   position: fixed;
+  color: white;
+  left: 50%;
+  bottom: 10px;
+  transform: translate(-50%);
 }
 
-.game_overlay_ui .right_pad {
+.left_pad {
   position: fixed;
+  pointer-events: all;
+}
+
+.right_pad {
+  position: fixed;
+  pointer-events: all;
 }
 
 
-.game_overlay_ui .left_pad .btn_up {
+.left_pad .btn_up {
   left: 80px;
   bottom: 140px;
   transform: rotate(-90deg)
 }
 
-.game_overlay_ui .left_pad .btn_down {
+.left_pad .btn_down {
   left: 80px;
   bottom: 10px;
   transform: rotate(90deg)
 }
 
-.game_overlay_ui .left_pad .btn_right {
+.left_pad .btn_right {
   left: 150px;
   bottom: 75px;
 }
 
-.game_overlay_ui .left_pad .btn_left {
+.left_pad .btn_left {
   left: 10px;
   bottom: 75px;
   transform: rotate(180deg)
 }
 
-.game_overlay_ui .right_pad .btn_attack {
+.right_pad .btn_attack {
   right: 110px;
   bottom: 20px;
 }
 
-.game_overlay_ui .right_pad .btn_jump {
+.right_pad .btn_jump {
   right: 50px;
   bottom: 100px;
 }
 
-.game_overlay_ui .right_pad .btn_defense {
+.right_pad .btn_defense {
   right: 10px;
   bottom: 10px;
 }
 
 
-.game_overlay_ui .right_pad .btn_attack,
-.game_overlay_ui .right_pad .btn_defense,
-.game_overlay_ui .right_pad .btn_jump,
-.game_overlay_ui .left_pad .btn_up,
-.game_overlay_ui .left_pad .btn_down,
-.game_overlay_ui .left_pad .btn_left,
-.game_overlay_ui .left_pad .btn_right {
+.right_pad .btn_attack,
+.right_pad .btn_defense,
+.right_pad .btn_jump,
+.left_pad .btn_up,
+.left_pad .btn_down,
+.left_pad .btn_left,
+.left_pad .btn_right {
   transition: all 100ms;
   position: fixed;
   border-radius: 100%;
   overflow: hidden;
 }
 
-.game_overlay_ui .right_pad .btn_defense:active,
-.game_overlay_ui .right_pad .btn_jump:active,
-.game_overlay_ui .right_pad .btn_attack:active,
-.game_overlay_ui .left_pad .btn_up:active,
-.game_overlay_ui .left_pad .btn_down:active,
-.game_overlay_ui .left_pad .btn_left:active,
-.game_overlay_ui .left_pad .btn_right:active {
+.right_pad .btn_defense:active,
+.right_pad .btn_jump:active,
+.right_pad .btn_attack:active,
+.left_pad .btn_up:active,
+.left_pad .btn_down:active,
+.left_pad .btn_left:active,
+.left_pad .btn_right:active {
   opacity: 0.5;
 }
 
-.game_overlay_ui .right_pad .btn_defense img,
-.game_overlay_ui .right_pad .btn_jump img,
-.game_overlay_ui .right_pad .btn_attack img,
-.game_overlay_ui .left_pad .btn_up img,
-.game_overlay_ui .left_pad .btn_down img,
-.game_overlay_ui .left_pad .btn_left img,
-.game_overlay_ui .left_pad .btn_right img {
+.right_pad .btn_defense img,
+.right_pad .btn_jump img,
+.right_pad .btn_attack img,
+.left_pad .btn_up img,
+.left_pad .btn_down img,
+.left_pad .btn_left img,
+.left_pad .btn_right img {
   width: 80px;
   width: 80px;
   user-select: none;
