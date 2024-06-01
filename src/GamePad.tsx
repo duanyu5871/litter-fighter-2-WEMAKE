@@ -57,13 +57,14 @@ export default function GamePad(props: IGamePadProps) {
     });
   }, [lf2, player_id]);
 
+  const left_pad = ref_left_pad.current;
+  const right_pad = ref_right_pad.current;
 
   useEffect(() => {
-    const left_pad = ref_left_pad.current!;
-    const right_pad = ref_right_pad.current!;
+    if (!left_pad || !right_pad) return;
     const on_resize = () => {
       {
-        const btns = [ref_btn_U.current, ref_btn_D.current, ref_btn_L.current, ref_btn_R.current!]
+        const btns = [ref_btn_U.current, ref_btn_D.current, ref_btn_L.current, ref_btn_R.current]
         let l: number = Infinity, r: number = 0, b: number = 0, t: number = Infinity
         for (const { x, y, width, height } of btns.map(v => v?.getBoundingClientRect() || { x: 0, y: 0, width: 0, height: 0 })) {
           l = Math.min(l, x)
@@ -95,12 +96,11 @@ export default function GamePad(props: IGamePadProps) {
     on_resize();
     window.addEventListener('resize', on_resize)
     return () => window.removeEventListener('contextmenu', on_resize);
-  }, []);
+  }, [left_pad, right_pad]);
 
   useEffect(() => {
-    if (!player_id || !lf2) return;
-
-    const pad = ref_left_pad.current!;
+    if (!player_id || !lf2 || !left_pad) return;
+    const pad = left_pad;
     const btn_infos = [
       { key: 'U' as const, rect: get_rect(ref_btn_U), circ: get_circ(ref_btn_U) },
       { key: 'D' as const, rect: get_rect(ref_btn_D), circ: get_circ(ref_btn_D) },
@@ -180,12 +180,12 @@ export default function GamePad(props: IGamePadProps) {
       pad.removeEventListener('touchend', on_touch_end);
       pad.removeEventListener('touchcancel', on_touch_end);
     }
-  }, [controller, lf2, player_id, refresh_tag])
+  }, [controller, lf2, player_id, refresh_tag, left_pad])
 
   useEffect(() => {
-    if (!player_id || !lf2) return;
+    if (!player_id || !lf2 || !right_pad) return;
 
-    const pad = ref_right_pad.current!;
+    const pad = right_pad;
     const btn_infos = [
       { key: 'a' as const, rect: get_rect(ref_btn_a), circ: get_circ(ref_btn_a) },
       { key: 'j' as const, rect: get_rect(ref_btn_j), circ: get_circ(ref_btn_j) },
@@ -262,7 +262,7 @@ export default function GamePad(props: IGamePadProps) {
       pad.removeEventListener('touchend', on_touch_end);
       pad.removeEventListener('touchcancel', on_touch_end);
     }
-  }, [controller, lf2, player_id, refresh_tag])
+  }, [controller, lf2, player_id, refresh_tag, right_pad])
   if (!player_id) return <></>;
   const touch_props = (key: TKeyName): IToggleImgProps => {
     return {
