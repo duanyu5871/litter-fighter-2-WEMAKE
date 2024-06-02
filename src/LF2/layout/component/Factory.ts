@@ -2,25 +2,29 @@ import { is_str } from "../../utils/type_check";
 import { ILayoutInfo } from "../ILayoutInfo";
 import type Layout from "../Layout";
 import { read_call_func_expression } from "../utils/read_func_args";
+import BackgroundNameText from "./BackgroundNameText";
+import CharacterSelLogic from "./CharacterSelLogic";
+import ComNumButton from "./ComNumButton";
+import DifficultyText from "./DifficultyText";
+import GamePrepareLogic from "./GamePrepareLogic";
+import LaunchPageLogic from "./LaunchPageLogic";
 import { LayoutComponent } from "./LayoutComponent";
 import LoadingFileNameDisplayer from "./LoadingFileNameDisplayer";
+import OpacityHover from "./OpacityHover";
 import PlayerCharacterHead from './PlayerCharacterHead';
 import PlayerCharacterName from "./PlayerCharacterName";
-import CharacterSelLogic from "./CharacterSelLogic";
+import PlayerCharacterThumb from "./PlayerCharacterThumb";
 import PlayerKeyEditor from "./PlayerKeyEditor";
-import PlayerName from "./PlayerName";
-import PlayerTeamName from "./PlayerTeamName";
-import StageTransitions from "./StageTransitions";
-import GamePrepareLogic from "./GamePrepareLogic";
-import ComNumButton from "./ComNumButton";
-import StageTitleShow from "./StageTitleShow";
-import { ReachableLayoutGroup, ReachableLayout } from "./ReachableLayoutGroup";
-import LaunchPageLogic from "./LaunchPageLogic";
-import DifficultyText from "./DifficultyText";
-import StageNameText from "./StageNameText";
-import BackgroundNameText from "./BackgroundNameText";
-import OpacityHover from "./OpacityHover";
 import PlayerKeyText from "./PlayerKeyText";
+import PlayerName from "./PlayerName";
+import PlayerScore from "./PlayerScore";
+import PlayerScoreCell from "./PlayerScoreCell";
+import PlayerTeamName from "./PlayerTeamName";
+import { ReachableLayout, ReachableLayoutGroup } from "./ReachableLayoutGroup";
+import StageNameText from "./StageNameText";
+import StageTitleShow from "./StageTitleShow";
+import StageTransitions from "./StageTransitions";
+import VerticalLayout from "./VerticalLayout";
 
 class Factory {
   private _component_map = new Map<string, typeof LayoutComponent>([
@@ -30,6 +34,7 @@ class Factory {
     ['stage_transitions', StageTransitions],
     ['player_c_sel_logic', CharacterSelLogic],
     ['player_c_head', PlayerCharacterHead],
+    ['player_c_thumb', PlayerCharacterThumb],
     ['player_c_name', PlayerCharacterName],
     ['player_name', PlayerName],
     ['player_t_name', PlayerTeamName],
@@ -42,7 +47,10 @@ class Factory {
     ['difficulty_text', DifficultyText],
     ['stage_name_text', StageNameText],
     ['background_name_text', BackgroundNameText],
-    ['opacity_hover', OpacityHover]
+    ['opacity_hover', OpacityHover],
+    ['vertical_layout', VerticalLayout],
+    ['player_score', PlayerScore],
+    ['player_score_cell', PlayerScoreCell]
   ])
   create(layout: Layout, components: ILayoutInfo['component']): LayoutComponent[] {
     if (!components?.length) return [];

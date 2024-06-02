@@ -310,7 +310,8 @@ export namespace Defines {
       CM3 = 'sprite/CM3.png',
       CM2 = 'sprite/CM2.png',
       CM1 = 'sprite/CM1.png',
-      CMA = 'sprite/CMA.png'
+      CMA = 'sprite/CMA.png',
+      CHARACTER_THUMB = 'sprite/CHARACTER_THUMB.png',
     }
     export enum Dats {
       Spark = 'data/spark.json',

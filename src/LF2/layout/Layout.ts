@@ -8,8 +8,9 @@ import { TKeyName } from '../controller/BaseController';
 import IStyle from '../defines/IStyle';
 import { empty_texture, white_texture, type TImageInfo } from '../loader/loader';
 import { filter, find } from '../utils/container_help';
-import { is_arr, is_bool, is_fun, is_num, is_str } from '../utils/type_check';
+import { is_arr, is_bool, is_num, is_str } from '../utils/type_check';
 import type { ILayoutInfo } from './ILayoutInfo';
+import StateDelegate from './StateDelegate';
 import actor from './action/Actor';
 import factory from './component/Factory';
 import { LayoutComponent } from './component/LayoutComponent';
@@ -33,47 +34,6 @@ export interface ILayoutCallback {
   on_foucs_changed?(layout: Layout): void;
   on_foucs_item_changed?(foucs: Layout | undefined, blur: Layout | undefined): void;
 }
-type TStateValueInfo<T> = { is_func: true, v: () => T } | { is_func: false, v: T }
-class StateDelegate<T> {
-
-  protected _default_value: TStateValueInfo<T>;
-  protected _values: (TStateValueInfo<T> | undefined)[] = [];
-  protected state_to_value(v: TStateValueInfo<T>) {
-    return v.is_func ? v.v() : v.v
-  }
-  protected value_to_state(v: T | (() => T)): TStateValueInfo<T> {
-    return is_fun(v) ?
-      { is_func: true, v: v } :
-      { is_func: false, v: v };
-  }
-
-  get value(): T {
-    for (const val of this._values)
-      if (val !== void 0)
-        return this.state_to_value(val);
-    return this.state_to_value(this._default_value);
-  }
-  get default_value(): T {
-    return this.state_to_value(this._default_value);
-  }
-
-  set default_value(v: T | (() => T)) {
-    this._default_value = this.value_to_state(v);
-  }
-
-  constructor(default_value: () => T);
-  constructor(default_value: T);
-  constructor(default_value: T | (() => T)) {
-    this._default_value = this.value_to_state(default_value);
-  }
-
-  set(index: number, v: T | (() => T)) {
-    this._values[index] = this.value_to_state(v);
-  }
-}
-
-new StateDelegate(false)
-
 export default class Layout {
   protected _callbacks = new Callbacks<ILayoutCallback>();
   get callbacks(): NoEmitCallbacks<ILayoutCallback> { return this._callbacks }
@@ -88,6 +48,7 @@ export default class Layout {
   readonly id_layout_map: Map<string, Layout>;
   readonly name_layout_map: Map<string, Layout>;
 
+  protected _pos: StateDelegate<[number, number, number]> = new StateDelegate(() => this.data.pos)
   protected _components = new Set<LayoutComponent>();
   protected _state: any = {}
   protected _visible: StateDelegate<boolean> = new StateDelegate(true);
@@ -126,11 +87,37 @@ export default class Layout {
     }
     this._root._callbacks.emit('on_foucs_item_changed')(val, old)
   }
+
+
   get id(): string | undefined { return this.data.id }
   get name(): string | undefined { return this.data.name }
-  get x(): number { return this.data.pos[0] };
-  get y(): number { return this.data.pos[1] };
-  get z(): number { return this.data.pos[2] };
+  get pos(): [number, number, number] { return this._pos.value };
+  set pos(v: [number, number, number]) {
+    this._pos.set(0, v);
+    this._sprite.set_pos(v[0], -v[1], v[2])
+  }
+
+  get x(): number { return this._pos.value[0] };
+  set x(v: number) {
+    const pos: [number, number, number] = [...this._pos.value]
+    pos[0] = v
+    this.pos = pos;
+  }
+
+  get y(): number { return this._pos.value[1] };
+  set y(v: number) {
+    const pos: [number, number, number] = [...this._pos.value]
+    pos[1] = v
+    this.pos = pos;
+  }
+
+  get z(): number { return this._pos.value[2] };
+  set z(v: number) {
+    const pos: [number, number, number] = [...this._pos.value]
+    pos[2] = v
+    this.pos = pos;
+  }
+
   get root(): Layout { return this._root }
 
   get depth() {
@@ -162,6 +149,8 @@ export default class Layout {
 
   get components() { return this._components; }
   get style(): IStyle { return this.data.style || {} }
+
+
 
   constructor(lf2: LF2, data: ICookedLayoutInfo, parent?: Layout) {
     this.lf2 = lf2;

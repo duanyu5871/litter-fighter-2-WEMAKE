@@ -116,7 +116,7 @@ export class PlayerInfo {
     this._callbacks.emit('on_character_changed')(character, prev);
     return this;
   }
-  
+
   /**
    * 设置随机中的角色ID
    *
@@ -181,4 +181,14 @@ export class PlayerInfo {
   get_key(name: TKeyName): string {
     return this._info.keys[name];
   }
+
+
+}
+interface IScoreInfo {
+  kill: number;
+  attack: number;
+  hp_lost: number;
+  mp_usage: number;
+  picking: number;
+  status: string;
 }

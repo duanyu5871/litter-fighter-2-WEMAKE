@@ -1,0 +1,72 @@
+{
+  "img": "sprite/SCORE_BOARD2.png",
+  "component": "player_score(1)",
+  "items": [
+    {
+      "pos": "35,21",
+      "component": "player_c_thumb()"
+    },
+    {
+      "pos": "127,21",
+      "center": "0.5, 0.5",
+      "txt": "kill",
+      "component": "player_score_cell(kill)",
+      "style": {
+        "fill_style": "#ffaaaa",
+        "font": "12px Arial"
+      }
+    },
+    {
+      "pos": "191,21",
+      "center": "0.5, 0.5",
+      "txt": "attack",
+      "component": "player_score_cell(attack)",
+      "style": {
+        "fill_style": "#ffaaaa",
+        "font": "12px Arial"
+      }
+    },
+    {
+      "pos": "255,21",
+      "center": "0.5, 0.5",
+      "txt": "hp_lost",
+      "component": "player_score_cell(hp_lost)",
+      "style": {
+        "fill_style": "#f0f0aa",
+        "font": "12px Arial"
+      }
+    },
+    {
+      "pos": "319,21",
+      "center": "0.5, 0.5",
+      "txt": "mp_usage",
+      "component": "player_score_cell(mp_usage)",
+      "style": {
+        "fill_style": "#f0f0aa",
+        "font": "12px Arial"
+      }
+    },
+    {
+      "pos": "383,21",
+      "center": "0.5, 0.5",
+      "txt": "picking",
+      "component": "player_score_cell(picking)",
+      "style": {
+        "fill_style": "#aaf5aa",
+        "font": "12px Arial"
+      }
+    },
+    {
+      "pos": "447,21",
+      "center": "0.5, 0.5",
+      "txt": "Win (Alive)",
+      "txt": "Win (Dead)",
+      "txt": "Lose (Dead)",
+      "component": "player_score_cell(status)",
+      "style": {
+        "fill_style": "#aaf5aa",
+        "font": "10px Arial"
+      }
+    }
+  ]
+}
