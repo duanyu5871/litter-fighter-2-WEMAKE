@@ -72,6 +72,13 @@ function App() {
   const [is_fullscreen, _set_is_fullscreen] = useState(false);
   const [gravity, _set_gravity] = useState(0);
 
+  const cln = document.body.parentElement?.className;
+  useEffect(() => {
+    if (!cln) return;
+    if (cln.indexOf("portrait") >= 0)
+      set_v_align(0.3);
+  }, [cln, set_v_align])
+
   const update_once = () => {
     const lf2 = lf2_ref.current;
     lf2?.world.set_paused(true);
