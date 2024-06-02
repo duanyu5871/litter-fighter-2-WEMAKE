@@ -1,9 +1,14 @@
+
+import Sprite from "../../3d/Sprite";
 import NumberAnimation from "../../animation/NumberAnimation";
 import SequenceAnimation from "../../animation/SequenceAnimation";
 import { SineAnimation } from "../../animation/SineAnimation";
 import Invoker from "../../base/Invoker";
 import { TKeyName } from "../../controller/BaseController";
 import Timeout from "../../dom/Timeout";
+import ease_linearity from "../../ease_method/ease_linearity";
+import { TPicture } from "../../loader/loader";
+import { make_arr } from "../../utils/array/make_arr";
 import Layout from "../Layout";
 import { LayoutComponent } from "./LayoutComponent";
 
@@ -13,18 +18,24 @@ export default class LaunchPageLogic extends LayoutComponent {
   protected yeonface!: Layout;
   protected bearface!: Layout;
   protected long_text!: Layout;
+  protected long_text_2!: Layout;
   protected sound_warning!: Layout;
+
   protected _layouts_loaded: boolean = false;
   protected _dispose_jobs = new Invoker();
   protected _offset_x = new SequenceAnimation(1000, new NumberAnimation(0, 80, 500));
   protected _scale = new SequenceAnimation(1000, new NumberAnimation(0, 2, 250), new NumberAnimation(2, 1, 250));
-  protected _opacity = new SequenceAnimation(1000, new NumberAnimation(0, 1, 500), 1000);
+  protected _opacity = new SequenceAnimation(1000, new NumberAnimation(0, 1, 500), 250);
   protected _unmount_jobs = new Invoker();
   protected _skipped = false;
 
-  protected _tap_hints_opacity = new SineAnimation(.2, 1, 0.002)
+  protected _tap_hints_opacity = new SineAnimation(.1, 1, 0.002)
   protected _tap_hints_fadeout_opacity = new NumberAnimation(1, 0, 255)
   protected state: number = 0;
+
+  protected _loading_sprite = new Sprite();
+  protected _loading_imgs: TPicture[] = [];
+  protected _loading_idx_anim = new NumberAnimation(0, 44, 2000).set_ease_method(ease_linearity)
 
   protected on_layouts_loaded() {
     this._layouts_loaded = true;
@@ -39,6 +50,23 @@ export default class LaunchPageLogic extends LayoutComponent {
     this.lf2.sounds.load('data/m_ok.wav.ogg', 'data/m_ok.wav.ogg')
     this.lf2.sounds.load('data/m_pass.wav.ogg', 'data/m_pass.wav.ogg')
     this.lf2.sounds.load('launch/main.wma.ogg', 'launch/main.wma.ogg')
+
+    const max_col = 15;
+    const cell_w = 33 * 4;
+    const cell_h = 21 * 4;
+    const jobs = make_arr(44, async i => {
+      const x = cell_w * (i % max_col);
+      const y = cell_h * Math.floor(i / max_col);
+      const info = await this.lf2.images.load_img("SMALL_LOADING_" + i, "sprite/SMALL_LOADING.png", (img, canvas, ctx) => {
+        const w = canvas.width = cell_w;
+        const h = canvas.height = cell_h;
+        ctx.drawImage(img, x, y, w, h, 0, 0, w, h);
+      });
+      return this.lf2.images.create_pic_by_img_info(info);
+    })
+    Promise.all(jobs).then(s => this._loading_imgs = s);
+    this.layout.sprite.add(this._loading_sprite.set_pos(this.layout.w - 33, -this.layout.h + 21))
+
     this._dispose_jobs.add(
       this.lf2.callbacks.add({
         on_layouts_loaded: () => this.on_layouts_loaded(),
@@ -47,6 +75,7 @@ export default class LaunchPageLogic extends LayoutComponent {
     return this;
   }
   override on_stop(): void {
+    super.on_stop?.()
     this._dispose_jobs.invoke();
     this._dispose_jobs.clear();
   }
@@ -58,11 +87,14 @@ export default class LaunchPageLogic extends LayoutComponent {
     this.tap_to_launch = this.layout.find_layout('tap_to_launch')!
     this.sound_warning = this.layout.find_layout('sound_warning')!
     this.long_text = this.layout.find_layout('long_text')!
+    this.long_text_2 = this.layout.find_layout('long_text_2')!
+
 
     this.state = 0;
     this._tap_hints_opacity.time = 0;
     this._tap_hints_fadeout_opacity.time = 0;
     this.long_text.opacity = this.bearface.opacity = this.yeonface.opacity = 0;
+    this.long_text_2.opacity = 0;
 
     this._scale.play(false);
     this._opacity.play(false);
@@ -95,9 +127,15 @@ export default class LaunchPageLogic extends LayoutComponent {
   }
 
   override on_render(dt: number): void {
+    if (this._loading_imgs.length && !this._loading_idx_anim.is_finish) {
+      const idx = Math.floor(this._loading_idx_anim.update(dt))
+      const pic = this._loading_imgs[idx]
+      if (pic) this._loading_sprite.set_info(pic).apply()
+      if (this._loading_idx_anim.is_finish && !this.lf2.layout_infos_loaded) this._loading_idx_anim.play()
+    }
+
     if (this.state === 0) {
       this.sound_warning.opacity = this.tap_to_launch.opacity = this._tap_hints_opacity.update(dt);
-
     } else if (this.state === 1 || this.state === 2 || this.state === 3) {
       this.sound_warning.opacity = this.tap_to_launch.opacity = this._tap_hints_fadeout_opacity.update(dt);
       const { bearface, yeonface, long_text } = this;
@@ -118,6 +156,12 @@ export default class LaunchPageLogic extends LayoutComponent {
         yeonface.sprite.inner.scale.set(scale, scale, 1);
         yeonface.sprite.inner.scale.set(scale, scale, 1);
       }
+      if (this.state === 3) {
+        this.long_text_2.opacity = opacity
+      } else if (this.lf2.layout_infos_loaded) {
+        this.long_text_2.opacity = this._tap_hints_opacity.update(dt)
+      }
+
       if (this._opacity.is_finish && this._layouts_loaded) {
         if (this._opacity.reverse) {
           this.lf2.set_layout('entry')

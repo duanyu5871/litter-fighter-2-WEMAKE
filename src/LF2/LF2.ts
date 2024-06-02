@@ -558,9 +558,10 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     this.change_stage(next_stage)
   }
 
+  private _layout_infos_loaded = false;
   private _layout_infos: ICookedLayoutInfo[] = [];
   get layout_infos(): readonly ICookedLayoutInfo[] { return this._layout_infos }
-
+  get layout_infos_loaded() { return this._layout_infos_loaded }
   protected _layout_info_map = new Map<string, ILayoutInfo>();
 
   async load_layouts(): Promise<ICookedLayoutInfo[]> {
@@ -569,6 +570,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     const array = await this.import_json('layouts/index.json');
     if (!is_arr(array)) return this._layout_infos;
 
+    this._layout_infos_loaded = false;
     const paths: string[] = ["launch/init.json"];
     for (const element of array) {
       if (is_str(element)) paths.push(element);
@@ -580,10 +582,12 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
       if (path === paths[0]) this.set_layout(cooked_layout_data)
     }
 
-    if (this._disposed)
+    if (this._disposed) {
       this._layout_infos.length = 0;
-    else
+    } else {
       this._callbacks.emit('on_layouts_loaded')()
+      this._layout_infos_loaded = true;
+    }
 
     return this._layout_infos;
   }
