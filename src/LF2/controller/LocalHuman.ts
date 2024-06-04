@@ -1,9 +1,9 @@
 import { IKeyboardCallback, KeyEvent } from '../dom/Keyboard';
 import Character from '../entity/Character';
-import { BaseController, TKeyName } from "./BaseController";
+import { BaseController, KeyName } from "./BaseController";
 
-type TKeyCodeMap = { [x in TKeyName]?: string };
-type TCodeKeyMap = { [x in string]?: TKeyName };
+type TKeyCodeMap = { [x in KeyName]?: string };
+type TCodeKeyMap = { [x in string]?: KeyName };
 export default class LocalHuman extends BaseController implements IKeyboardCallback {
   readonly is_local_human = true;
   static is = (v: any): v is LocalHuman => v?.is_local_human === true
@@ -39,7 +39,7 @@ export default class LocalHuman extends BaseController implements IKeyboardCallb
   set_key_code_map(key_code_map: TKeyCodeMap) {
     this._key_code_map = {};
     this._code_key_map = {};
-    for (const key of Object.keys(key_code_map) as TKeyName[]) {
+    for (const key of Object.keys(key_code_map) as KeyName[]) {
       const code = key_code_map[key]?.toLowerCase()
       if (!code) continue;
       this._key_code_map[key] = code;

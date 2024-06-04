@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { IToggleImgProps, ToggleImgButton } from './Component/ToggleImgButton';
 import './GamePad.css';
 import LF2 from './LF2/LF2';
-import { BaseController, TKeyName } from './LF2/controller/BaseController';
+import { BaseController, KeyName, TKeyName } from './LF2/controller/BaseController';
 export interface IGamePadProps {
   lf2?: LF2;
   player_id?: string;
@@ -102,16 +102,16 @@ export default function GamePad(props: IGamePadProps) {
     if (!player_id || !lf2 || !left_pad) return;
     const pad = left_pad;
     const btn_infos = [
-      { key: 'U' as const, rect: get_rect(ref_btn_U), circ: get_circ(ref_btn_U) },
-      { key: 'D' as const, rect: get_rect(ref_btn_D), circ: get_circ(ref_btn_D) },
-      { key: 'L' as const, rect: get_rect(ref_btn_L), circ: get_circ(ref_btn_L) },
-      { key: 'R' as const, rect: get_rect(ref_btn_R), circ: get_circ(ref_btn_R) },
+      { key: KeyName.U, rect: get_rect(ref_btn_U), circ: get_circ(ref_btn_U) },
+      { key: KeyName.D, rect: get_rect(ref_btn_D), circ: get_circ(ref_btn_D) },
+      { key: KeyName.L, rect: get_rect(ref_btn_L), circ: get_circ(ref_btn_L) },
+      { key: KeyName.R, rect: get_rect(ref_btn_R), circ: get_circ(ref_btn_R) },
     ]
     const prev_pressings = new Map([
-      ['L' as const, false],
-      ['R' as const, false],
-      ['U' as const, false],
-      ['D' as const, false],
+      [KeyName.L, false],
+      [KeyName.R, false],
+      [KeyName.U, false],
+      [KeyName.D, false],
     ]);
     const touches: ReturnType<typeof copy_touch>[] = [];
     const find_touch_index = (touch_id: number) => {
@@ -120,10 +120,10 @@ export default function GamePad(props: IGamePadProps) {
     const pad_text = ref_pad_text.current!
     const handle_touchs = () => {
       const curr_pressings = new Map([
-        ['L' as const, false],
-        ['R' as const, false],
-        ['U' as const, false],
-        ['D' as const, false],
+        [KeyName.L, false],
+        [KeyName.R, false],
+        [KeyName.U, false],
+        [KeyName.D, false],
       ]);
       for (const t of touches) {
         for (const { circ, key: k } of btn_infos) {
@@ -187,14 +187,14 @@ export default function GamePad(props: IGamePadProps) {
 
     const pad = right_pad;
     const btn_infos = [
-      { key: 'a' as const, rect: get_rect(ref_btn_a), circ: get_circ(ref_btn_a) },
-      { key: 'j' as const, rect: get_rect(ref_btn_j), circ: get_circ(ref_btn_j) },
-      { key: 'd' as const, rect: get_rect(ref_btn_d), circ: get_circ(ref_btn_d) },
+      { key: KeyName.a, rect: get_rect(ref_btn_a), circ: get_circ(ref_btn_a) },
+      { key: KeyName.j, rect: get_rect(ref_btn_j), circ: get_circ(ref_btn_j) },
+      { key: KeyName.d, rect: get_rect(ref_btn_d), circ: get_circ(ref_btn_d) },
     ]
     const prev_pressings = new Map([
-      ['a' as const, false],
-      ['j' as const, false],
-      ['d' as const, false],
+      [KeyName.a, false],
+      [KeyName.j, false],
+      [KeyName.d, false],
     ]);
     const touches: ReturnType<typeof copy_touch>[] = [];
     const find_touch_index = (touch_id: number) => {
@@ -203,9 +203,9 @@ export default function GamePad(props: IGamePadProps) {
     const pad_text = ref_pad_text.current!
     const handle_touchs = () => {
       const curr_pressings = new Map([
-        ['a' as const, false],
-        ['j' as const, false],
-        ['d' as const, false],
+        [KeyName.a, false],
+        [KeyName.j, false],
+        [KeyName.d, false],
       ]);
       for (const t of touches) {
         for (const { circ, key: k } of btn_infos) {

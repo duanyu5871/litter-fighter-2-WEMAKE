@@ -3,7 +3,7 @@ import Character from "../entity/Character";
 import Entity from "../entity/Entity";
 import Weapon from "../entity/Weapon";
 import { is_character } from "../entity/type_check";
-import { BaseController } from "./BaseController";
+import { BaseController, KeyName } from "./BaseController";
 
 export class BotEnemyChaser extends BaseController {
   readonly is_bot_enemy_chaser = true;
@@ -50,19 +50,19 @@ export class BotEnemyChaser extends BaseController {
     const { facing } = c;
     const { state } = c.get_frame();
     const is_running = state === Defines.State.Running
-    if (end_x - x > DEAD_ZONE) this.start('R').end('L')
-    else if (x - end_x > DEAD_ZONE) this.start('L').end('R')
-    else if (is_running && facing > 0) this.start('L').end('R') // stop running.
-    else if (is_running && facing < 0) this.start('R').end('L') // stop running.
-    else this.end('L', 'R') // reach x
+    if (end_x - x > DEAD_ZONE) this.start(KeyName.R).end(KeyName.L)
+    else if (x - end_x > DEAD_ZONE) this.start(KeyName.L).end(KeyName.R)
+    else if (is_running && facing > 0) this.start(KeyName.L).end(KeyName.R) // stop running.
+    else if (is_running && facing < 0) this.start(KeyName.R).end(KeyName.L) // stop running.
+    else this.end(KeyName.L, KeyName.R) // reach x
 
     // too far, run.
-    if (end_x - x > RUN_ZONE && !is_running) this.db_hit('R');
-    else if (x - end_x > RUN_ZONE && !is_running) this.db_hit('L');
+    if (end_x - x > RUN_ZONE && !is_running) this.db_hit(KeyName.R);
+    else if (x - end_x > RUN_ZONE && !is_running) this.db_hit(KeyName.L);
 
-    if (z < end_z - DEAD_ZONE) this.start('D').end('U')
-    else if (z > end_z + DEAD_ZONE) this.start('U').end('D')
-    else this.end('D', 'U') // reach z
+    if (z < end_z - DEAD_ZONE) this.start(KeyName.D).end(KeyName.U)
+    else if (z > end_z + DEAD_ZONE) this.start(KeyName.U).end(KeyName.D)
+    else this.end(KeyName.D, KeyName.U) // reach z
 
     return super.update();
   }

@@ -1,4 +1,4 @@
-import { BaseController } from "./BaseController";
+import { BaseController, KeyName } from "./BaseController";
 
 export class TestController extends BaseController {
   readonly is_test_controller = true;
@@ -10,24 +10,24 @@ export class TestController extends BaseController {
     const { x: end_x, z: end_z } = c.world.middle;
     const DEAD_ZONE = 10
     if (x < end_x - DEAD_ZONE) {
-      this.start('R').end('L')
+      this.start(KeyName.R).end(KeyName.L)
     } else if (x > DEAD_ZONE + end_x) {
-      this.start('L').end('R')
+      this.start(KeyName.L).end(KeyName.R)
     } else {
-      this.end('L', 'R')
+      this.end(KeyName.L, KeyName.R)
     }
     if (z < end_z - DEAD_ZONE) {
-      this.start('D').end('U')
+      this.start(KeyName.D).end(KeyName.U)
     } else if (z > end_z + DEAD_ZONE) {
-      this.start('U').end('D')
+      this.start(KeyName.U).end(KeyName.D)
     } else {
-      this.end('D', 'U')
+      this.end(KeyName.D, KeyName.U)
     }
     if (!this.key_time_maps.U && !this.key_time_maps.D && !this.key_time_maps.L && !this.key_time_maps.R) {
       this.key_time_maps.d = 1;
-      this.start('d')
+      this.start(KeyName.d)
     } else {
-      this.end('d')
+      this.end(KeyName.d)
     }
     return super.update();
   }
