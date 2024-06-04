@@ -59,6 +59,7 @@ export default class PlayerCharacterThumb extends LayoutComponent {
 
   protected handle_changed() {
     const { thumb_url } = this;
+    debugger
     const img = this.lf2.images.find(thumb_url)
     if (img) {
       const pic = this.lf2.images.create_pic_by_img_info(img);
