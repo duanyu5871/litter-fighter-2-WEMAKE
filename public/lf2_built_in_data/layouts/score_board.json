@@ -12,6 +12,30 @@
       "template": "layouts/player_score_row.json"
     },
     {
+      "component": "player_score(2)",
+      "template": "layouts/player_score_row.json"
+    },
+    {
+      "component": "player_score(3)",
+      "template": "layouts/player_score_row.json"
+    },
+    {
+      "component": "player_score(4)",
+      "template": "layouts/player_score_row.json"
+    },
+    {
+      "component": "player_score(5)",
+      "template": "layouts/player_score_row.json"
+    },
+    {
+      "component": "player_score(6)",
+      "template": "layouts/player_score_row.json"
+    },
+    {
+      "component": "player_score(7)",
+      "template": "layouts/player_score_row.json"
+    },
+    {
       "img": "sprite/SCORE_BOARD3.png",
       "component": "play_time()"
     }

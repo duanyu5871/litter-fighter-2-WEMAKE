@@ -7,7 +7,7 @@ export default class VerticalLayout extends LayoutComponent {
     for (const l of this.layout.children) {
       if (!l.visible) continue;
       l.y = y;
-      y += l.h - 1;
+      y += l.h;
     }
   }
 }
