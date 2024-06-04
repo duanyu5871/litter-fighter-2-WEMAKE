@@ -1,21 +1,21 @@
-import { PlayerInfo } from "../../PlayerInfo";
 import Invoker from "../../base/Invoker";
+import Character from "../../entity/Character";
 import { LayoutComponent } from "./LayoutComponent";
 
 export default class PlayerScore extends LayoutComponent {
   get player_id(): string { return this.args[0] || ''; }
-  get player(): PlayerInfo | undefined { return this.lf2.player_infos.get(this.player_id) }
-
+  get character(): Character | undefined {
+    return this.lf2.player_characters.get(this.player_id)
+  }
   private _unmount_job = new Invoker()
 
   override on_resume(): void {
     super.on_resume()
-    this._unmount_job.add(
-      this.player?.callbacks.add({
-        on_joined_changed: v => this.layout.visible = v
-      })
-    )
-    this.layout.visible = !!this.player?.joined
+    this.layout.visible = !!this.character;
+  }
+
+  override on_show(): void {
+    super.on_show?.()
   }
 
   override on_pause(): void {

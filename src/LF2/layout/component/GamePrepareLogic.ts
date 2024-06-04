@@ -261,7 +261,7 @@ export default class GamePrepareLogic extends LayoutComponent {
       character.team = player.team
       character.facing = Math.random() < 0.5 ? 1 : -1
       character.controller = player.is_com ?
-        new BotEnemyChaser(player.id, character) :
+        new LocalHuman(player.id, character, player.keys).as_bot() :
         new LocalHuman(player.id, character, player.keys)
       character.attach();
     }

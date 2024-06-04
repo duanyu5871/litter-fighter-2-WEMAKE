@@ -16,15 +16,13 @@ import PlayerScore from "./PlayerScore";
  */
 export default class PlayerCharacterThumb extends LayoutComponent {
   private _player_id?: string;
-  
+
   get player_id() { return this.args[0] || this._player_id || ''; }
 
-  get player() { return this.lf2.player_infos.get(this.player_id) }
+  get character() { return this.lf2.player_characters.get(this.player_id) }
 
   get thumb_url(): string {
-    const character_id = this.player?.character;
-    if (!character_id) return Defines.BuiltIn.Imgs.CHARACTER_THUMB;
-    return this.lf2.datas.find_character(character_id)?.base.small ?? Defines.BuiltIn.Imgs.CHARACTER_THUMB;
+    return this.character?.data.base.small ?? Defines.BuiltIn.Imgs.CHARACTER_THUMB;
   }
 
   protected _opacity: SineAnimation = new SineAnimation(0.65, 1, 1 / 25);
@@ -38,24 +36,19 @@ export default class PlayerCharacterThumb extends LayoutComponent {
   get gpl(): GamePrepareLogic | undefined {
     return this.layout.root.find_component(GamePrepareLogic)
   };
-  get joined(): boolean { return !!this.player?.joined }
 
   protected _unmount_jobs = new Invoker();
 
   override on_resume(): void {
     super.on_resume();
     this._player_id = this.layout.find_component(PlayerScore)?.player_id
-    this.layout.sprite.add(
-      this._mesh_thumb
-    );
+    this.layout.sprite.add(this._mesh_thumb);
     this._unmount_jobs.add(
       () => this.layout.sprite.del(this._mesh_thumb),
-      this.player?.callbacks.add({
-        on_joined_changed: () => this.handle_changed(),
-        on_character_changed: () => this.handle_changed(),
-        on_random_character_changed: () => this.handle_changed(),
-      })
     )
+  }
+
+  override on_show(): void {
     this.handle_changed();
   }
 

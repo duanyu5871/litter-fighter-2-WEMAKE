@@ -34,7 +34,8 @@ export class BaseController {
   private _disposers = new Set<() => void>();
   private _player_id: string;
   get player_id(): string { return this._player_id }
-
+  get world() { return this.character.world }
+  get lf2() { return this.world.lf2 }
   get time() { return this._time }
   set disposer(f: (() => void)[] | (() => void)) {
     if (Array.isArray(f))

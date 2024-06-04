@@ -25,6 +25,7 @@ import StageNameText from "./StageNameText";
 import StageTitleShow from "./StageTitleShow";
 import StageTransitions from "./StageTransitions";
 import VerticalLayout from "./VerticalLayout";
+import VsModeLogic from "./VsModeLogic";
 
 class Factory {
   private _component_map = new Map<string, typeof LayoutComponent>([
@@ -50,7 +51,8 @@ class Factory {
     ['opacity_hover', OpacityHover],
     ['vertical_layout', VerticalLayout],
     ['player_score', PlayerScore],
-    ['player_score_cell', PlayerScoreCell]
+    ['player_score_cell', PlayerScoreCell],
+    ['vs_mode_logic', VsModeLogic],
   ])
   create(layout: Layout, components: ILayoutInfo['component']): LayoutComponent[] {
     if (!components?.length) return [];

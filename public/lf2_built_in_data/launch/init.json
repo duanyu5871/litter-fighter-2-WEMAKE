@@ -7,9 +7,6 @@
   ],
   "items": [
     {
-      "template": "layouts/score_board.json"
-    },
-    {
       "id": "tap_to_launch",
       "txt": "点击任意位置 启动游戏",
       "center": "0.5,0.5",
