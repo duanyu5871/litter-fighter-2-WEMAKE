@@ -532,15 +532,32 @@ export default class Layout {
     return void 0;
   }
 
-
+  /**
+   * 查找当前layout符合条件的的component
+   * @param type 
+   * @param condition 
+   * @returns 
+   */
   find_component<T extends TCls>(type: T, condition: TCond<T> = () => 1): InstanceType<T> | undefined {
     return find(this.components, v => v instanceof type && condition(v as any)) as InstanceType<T> | undefined
   }
 
+  /**
+   * 查找当前layout符合条件的的component数组
+   * @param type 
+   * @param condition 
+   * @returns 
+   */
   find_components<T extends TCls>(type: T, condition: TCond<T> = () => 1): InstanceType<T>[] {
     return filter(this.components, v => v instanceof type && condition(v as any)) as InstanceType<T>[]
   }
 
+  /**
+   * 查找当前layout以及子layout符合条件的component
+   * @param type 
+   * @param condition 
+   * @returns 
+   */
   search_component<T extends TCls>(type: T, condition: TCond<T> = () => 1): InstanceType<T> | undefined {
     const ret = this.find_component(type, condition);
     if (ret) return ret;
@@ -550,11 +567,23 @@ export default class Layout {
     }
   }
 
+  /**
+   * 查找当前layout以及子layout符合条件的component数组
+   * @param type 
+   * @param condition 
+   * @returns 
+   */
   search_components<T extends TCls>(type: T, condition: TCond<T> = () => 1): InstanceType<T>[] {
     const ret = this.find_components(type, condition);
     for (const i of this._children)
       ret.push(...i.search_components(type, condition))
     return ret;
+  }
+
+  lookup_component<T extends TCls>(type: T, condition: TCond<T> = () => 1): InstanceType<T> | undefined {
+    const ret = this.find_component(type, condition);
+    if (ret) return ret;
+    return this.parent?.lookup_component(type, condition);
   }
 
   on_foucs(): void {

@@ -34,7 +34,8 @@
       "template": "layouts/left_info_frame.json"
     },
     {
-      "template": "layouts/score_board.json"
+      "template": "layouts/score_board.json",
+      "visible": false
     }
   ],
   "actions": {

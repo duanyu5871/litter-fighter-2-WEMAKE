@@ -41,7 +41,7 @@ export default class PlayerCharacterThumb extends LayoutComponent {
 
   override on_resume(): void {
     super.on_resume();
-    this._player_id = this.layout.find_component(PlayerScore)?.player_id
+    this._player_id = this.layout.lookup_component(PlayerScore)?.player_id
     this.layout.sprite.add(this._mesh_thumb);
     this._unmount_jobs.add(
       () => this.layout.sprite.del(this._mesh_thumb),
@@ -59,7 +59,6 @@ export default class PlayerCharacterThumb extends LayoutComponent {
 
   protected handle_changed() {
     const { thumb_url } = this;
-    debugger
     const img = this.lf2.images.find(thumb_url)
     if (img) {
       const pic = this.lf2.images.create_pic_by_img_info(img);

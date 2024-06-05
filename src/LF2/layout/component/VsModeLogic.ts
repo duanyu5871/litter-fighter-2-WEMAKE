@@ -1,4 +1,5 @@
 import ICharacterCallbacks from "../../entity/ICharacterCallbacks";
+import { is_character } from "../../entity/type_check";
 import { LayoutComponent } from "./LayoutComponent";
 
 export default class VsModeLogic extends LayoutComponent implements ICharacterCallbacks {
@@ -16,12 +17,24 @@ export default class VsModeLogic extends LayoutComponent implements ICharacterCa
   }
 
   on_dead() {
-    this.lf2.sounds.play_preset('end')
+    const team_alives = new Map<string, number>()
+    for (const e of this.world.entities) {
+      if (!is_character(e) || e.hp < 0) continue;
+      const { team } = e
+      const count = team_alives.get(team)
+      if (count && count > 1) return;
+      team_alives.set(team, (count || 0) + 1);
+    }
+    if (team_alives.size > 1) return;
+
+    const i = team_alives.get('') || 0;
+    if (i > 1) return;
+    this.lf2.sounds.play_preset('end');
+
+    const score_board = this.layout.find_layout('score_board');
+    if (score_board) score_board.visible = true;
   }
 
-  handle_character_dead(): void {
-
-  }
   override on_show(): void {
   }
 }
