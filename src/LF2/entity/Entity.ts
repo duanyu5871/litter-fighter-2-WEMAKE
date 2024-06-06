@@ -1,8 +1,6 @@
 
 import * as THREE from 'three';
 import { Log, Warn } from '../../Log';
-import { Factory } from './Factory';
-import FrameAnimater, { GONE_FRAME_INFO } from './FrameAnimater';
 import type { World } from '../World';
 import { ICube } from '../World';
 import Callbacks from '../base/Callbacks';
@@ -15,6 +13,8 @@ import { ENTITY_STATES } from '../state/entity';
 import { constructor_name } from '../utils/constructor_name';
 import { is_nagtive } from '../utils/type_check';
 import { EntityIndicators } from './EntityIndicators';
+import { Factory } from './Factory';
+import FrameAnimater, { GONE_FRAME_INFO } from './FrameAnimater';
 import type IEntityCallbacks from './IEntityCallbacks';
 import { InfoSprite } from './InfoSprite';
 import Shadow from './Shadow';
@@ -48,14 +48,19 @@ export default class Entity<
   protected _callbacks = new Callbacks<IEntityCallbacks>()
   protected _name: string = '';
   protected _team: string = '';
+
   protected _mp: number = Defines.MP;
-  protected _hp: number = Defines.HP;
   protected _max_mp: number = Defines.MP;
+
+  protected _hp: number = Defines.HP;
   protected _max_hp: number = Defines.HP;
+
   protected _mp_r_min_spd: number = 0;
   protected _mp_r_max_spd: number = 0;
   protected _mp_r_spd: number = Defines.MP_RECOVERY_MIN_SPEED;
 
+  protected _holder?: Entity;
+  protected _holding?: Entity;
   protected _emitter?: Entity;
   protected _a_rest: number = 0;
   protected _v_rests = new Map<string, IVictimRest>();
@@ -95,25 +100,39 @@ export default class Entity<
   protected _after_blink: string | TNextFrame | null = null;
 
   protected _info_sprite: InfoSprite = new InfoSprite(this);
-  protected _damage_sum: number = 0;
-  get damage_sum() { return this._damage_sum; }
-  add_damage_sum(v: number) {
-    const old = this._damage_sum
-    this._damage_sum += v;
-    this._callbacks.emit("on_damage_sum_changed")(this, this._damage_sum, old)
-    this.emitter?.add_damage_sum(v);
-  }
 
+  /**
+   * 伤害总数
+   *
+   * @protected
+   * @type {number}
+   */
+  protected _damage_sum: number = 0;
+
+  /**
+   * 击杀总数
+   *
+   * @protected
+   * @type {number}
+   */
   protected _kill_sum: number = 0;
+
+
+  get damage_sum() { return this._damage_sum; }
+
   get kill_sum() { return this._kill_sum; }
-  add_kill_sum(v: number) {
-    const old = this._kill_sum
-    this._kill_sum += v;
-    this._callbacks.emit("on_kill_sum_changed")(this, this._kill_sum, old)
-    this.emitter?.add_kill_sum(v);
-  }
+
+  get holder(): Entity | undefined { return this._holder }
+
+  set holder(v: Entity | undefined) { this.set_holder(v) }
+
+  get holding(): Entity | undefined { return this._holding }
+
+  set holding(v: Entity | undefined) { this.set_holding(v) }
+
 
   get name(): string { return this._name; }
+
   set name(v: string) {
     const o = this._name;
     this._callbacks.emit('on_name_changed')(this, this._name = v, o)
@@ -204,6 +223,37 @@ export default class Entity<
     this.mesh.name = "Entity:" + data.id
     this.states = states;
     this.shadow = new Shadow(this);
+  }
+
+  set_holder(v: Entity | undefined): this {
+    if (this._holder === v) return this;
+    const old = this._holder
+    this._holder = v;
+    this._callbacks.emit("on_holder_changed")(this, v, old)
+    return this;
+  }
+  
+  set_holding(v: Entity | undefined): this {
+    if (this._holding === v) return this;
+    const old = this._holding
+    this._holding = v;
+    this._callbacks.emit("on_holding_changed")(this, v, old)
+    return this;
+  }
+  add_damage_sum(v: number): this {
+    const old = this._damage_sum
+    this._damage_sum += v;
+    this._callbacks.emit("on_damage_sum_changed")(this, this._damage_sum, old)
+    this.emitter?.add_damage_sum(v);
+    return this
+  }
+
+  add_kill_sum(v: number): this {
+    const old = this._kill_sum
+    this._kill_sum += v;
+    this._callbacks.emit("on_kill_sum_changed")(this, this._kill_sum, old)
+    this.emitter?.add_kill_sum(v);
+    return this
   }
 
   get_v_rest_remain(id: string): number {

@@ -9,7 +9,6 @@ import { is_character } from "./type_check";
 export default class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData> {
   readonly is_weapon = true
 
-  holder?: Entity;
   constructor(world: World, data: IWeaponData) {
     super(world, data, WEAPON_STATES);
     this.mesh.name = "Weapon: " + data.id
@@ -37,15 +36,17 @@ export default class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData>
         delete this.holder;
       }
     }
-    if (this.hp <= 0)
+    if (this.hp <= 0) {
+      // TODO: WEAPON BROKEN. -GIM
       this._next_frame = GONE_FRAME_INFO;
+    }
   }
-  override on_spawn_by_emitter(shotter: Entity, o: IOpointInfo, speed_z?: number): this {
-    super.on_spawn_by_emitter(shotter, o, speed_z);
+  override on_spawn_by_emitter(emitter: Entity, o: IOpointInfo, speed_z?: number): this {
+    super.on_spawn_by_emitter(emitter, o, speed_z);
     if (this._frame.state === Defines.State.Weapon_OnHand) {
-      this.holder = shotter
+      this.holder = emitter
       this.holder.weapon = this
-      this.team = shotter.team;
+      this.team = emitter.team;
     }
     return this;
   }
@@ -69,7 +70,6 @@ export default class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData>
 
     const spark_x = (Math.max(r0.left, r1.left) + Math.min(r0.right, r1.right)) / 2;
     const spark_y = (Math.min(r0.top, r1.top) + Math.max(r0.bottom, r1.bottom)) / 2;
-    // const spark_z = (Math.min(r0.near, r1.near) + Math.max(r0.far, r1.far)) / 2;
     const spark_z = Math.max(r0.far, r1.far);
     if (itr.injury) this.hp -= itr.injury;
 
@@ -97,7 +97,6 @@ export default class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData>
       this.team = attacker.team;
       this._next_frame = { id: this.data.indexes.in_the_sky }
     }
-
   }
   follow_holder() {
     const holder = this.holder;

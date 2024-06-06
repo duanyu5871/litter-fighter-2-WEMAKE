@@ -1,6 +1,11 @@
+import type { Unsafe } from '../utils/type_check';
 import type Entity from './Entity';
 
 export default interface IEntityCallbacks<E extends Entity = Entity> {
+  on_holder_changed?(e: E, value: Unsafe<Entity>, prev: Unsafe<Entity>): void;
+
+  on_holding_changed?(e: E, value: Unsafe<Entity>, prev: Unsafe<Entity>): void;
+
   /**
    * 造成的击杀数
    * 
@@ -74,7 +79,7 @@ export default interface IEntityCallbacks<E extends Entity = Entity> {
    */
   on_self_healing_mp_changed?(e: E, value: number, prev: number): void;
 
-  
+
   /**
    * 队伍变化
    *
@@ -93,6 +98,6 @@ export default interface IEntityCallbacks<E extends Entity = Entity> {
    */
   on_name_changed?(e: E, value: string, prev: string): void;
 
-  
+
   on_disposed?(e: E): void;
 }
