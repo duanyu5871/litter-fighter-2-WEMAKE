@@ -95,6 +95,15 @@ export default class Entity<
   protected _after_blink: string | TNextFrame | null = null;
 
   protected _info_sprite: InfoSprite = new InfoSprite(this);
+  protected _damage_sum: number = 0;
+  get damage_sum() { return this._damage_sum; }
+  add_damage_sum(v: number) {
+    const old = this._damage_sum
+    this._damage_sum += v;
+    this._callbacks.emit("on_damage_sum_changed")(this, this._damage_sum, old)
+
+    this.emitter?.add_damage_sum(v);
+  }
 
   get name(): string { return this._name; }
   set name(v: string) {

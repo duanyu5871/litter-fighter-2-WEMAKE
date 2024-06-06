@@ -48,7 +48,7 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
     const ret = super.get_next_frame(which);
     if (!ret[0]) return ret
 
-    if(this.world.lf2.infinity_mp) return ret;
+    if (this.world.lf2.infinity_mp) return ret;
 
     const [frame] = ret;
     const { hp = 0, mp = 0 } = frame;
@@ -266,7 +266,11 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
       this._next_frame = { id: indexes.defend_hit }
       return;
     }
-    if (itr.injury) this.hp -= itr.injury
+    if (itr.injury) {
+      this.hp -= itr.injury;
+      attacker.add_damage_sum(itr.injury)
+    }
+
     this._defend_value = 0;
     this._fall_value -= itr.fall || 20;
     /* 击倒 */

@@ -1,6 +1,14 @@
 import type Entity from './Entity';
 
 export default interface IEntityCallbacks<E extends Entity = Entity> {
+  /**
+   * 
+   *
+   * @param {E} e 
+   * @param {number} value 当前值
+   * @param {number} prev 上一次值
+   */
+  on_damage_sum_changed?(e: E, value: number, prev: number): void;
   
   /**
    * 最大血量变化
