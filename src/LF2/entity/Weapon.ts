@@ -14,11 +14,13 @@ export default class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData>
     this.mesh.name = "Weapon: " + data.id
     this.hp = this.max_hp = data.base.weapon_hp;
   }
+
   override find_auto_frame(): IFrameInfo {
     const { frames, indexes } = this.data;
     if (this.position.y > 0) return frames[indexes.in_the_sky];
     return frames[indexes.on_ground];
   }
+  
   override self_update(): void {
     super.self_update();
 
