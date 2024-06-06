@@ -1,8 +1,6 @@
 
 import * as THREE from 'three';
 import { Log, Warn } from '../../Log';
-import { Factory } from './Factory';
-import FrameAnimater, { GONE_FRAME_INFO } from './FrameAnimater';
 import type { World } from '../World';
 import { ICube } from '../World';
 import Callbacks from '../base/Callbacks';
@@ -15,10 +13,11 @@ import { ENTITY_STATES } from '../state/entity';
 import { constructor_name } from '../utils/constructor_name';
 import { is_nagtive } from '../utils/type_check';
 import { EntityIndicators } from './EntityIndicators';
+import { Factory } from './Factory';
+import FrameAnimater, { GONE_FRAME_INFO } from './FrameAnimater';
 import type IEntityCallbacks from './IEntityCallbacks';
 import { InfoSprite } from './InfoSprite';
 import Shadow from './Shadow';
-import type Weapon from './Weapon';
 import { turn_face } from './face_helper';
 
 export type TData = IBaseData | ICharacterData | IWeaponData | IEntityData | IBallData
@@ -48,14 +47,19 @@ export default class Entity<
   protected _callbacks = new Callbacks<IEntityCallbacks>()
   protected _name: string = '';
   protected _team: string = '';
+
   protected _mp: number = Defines.MP;
-  protected _hp: number = Defines.HP;
   protected _max_mp: number = Defines.MP;
+
+  protected _hp: number = Defines.HP;
   protected _max_hp: number = Defines.HP;
+
   protected _mp_r_min_spd: number = 0;
   protected _mp_r_max_spd: number = 0;
   protected _mp_r_spd: number = Defines.MP_RECOVERY_MIN_SPEED;
 
+  protected _holder?: Entity;
+  protected _holding?: Entity;
   protected _emitter?: Entity;
   protected _a_rest: number = 0;
   protected _v_rests = new Map<string, IVictimRest>();
@@ -96,7 +100,38 @@ export default class Entity<
 
   protected _info_sprite: InfoSprite = new InfoSprite(this);
 
+  /**
+   * 伤害总数
+   *
+   * @protected
+   * @type {number}
+   */
+  protected _damage_sum: number = 0;
+
+  /**
+   * 击杀总数
+   *
+   * @protected
+   * @type {number}
+   */
+  protected _kill_sum: number = 0;
+
+
+  get damage_sum() { return this._damage_sum; }
+
+  get kill_sum() { return this._kill_sum; }
+
+  get holder(): Entity | undefined { return this._holder }
+
+  set holder(v: Entity | undefined) { this.set_holder(v) }
+
+  get holding(): Entity | undefined { return this._holding }
+
+  set holding(v: Entity | undefined) { this.set_holding(v) }
+
+
   get name(): string { return this._name; }
+
   set name(v: string) {
     const o = this._name;
     this._callbacks.emit('on_name_changed')(this, this._name = v, o)
@@ -192,6 +227,37 @@ export default class Entity<
     this.mesh.name = "Entity:" + data.id
     this.states = states;
     this.shadow = new Shadow(this);
+  }
+
+  set_holder(v: Entity | undefined): this {
+    if (this._holder === v) return this;
+    const old = this._holder
+    this._holder = v;
+    this._callbacks.emit("on_holder_changed")(this, v, old)
+    return this;
+  }
+
+  set_holding(v: Entity | undefined): this {
+    if (this._holding === v) return this;
+    const old = this._holding
+    this._holding = v;
+    this._callbacks.emit("on_holding_changed")(this, v, old)
+    return this;
+  }
+  add_damage_sum(v: number): this {
+    const old = this._damage_sum
+    this._damage_sum += v;
+    this._callbacks.emit("on_damage_sum_changed")(this, this._damage_sum, old)
+    this.emitter?.add_damage_sum(v);
+    return this
+  }
+
+  add_kill_sum(v: number): this {
+    const old = this._kill_sum
+    this._kill_sum += v;
+    this._callbacks.emit("on_kill_sum_changed")(this, this._kill_sum, old)
+    this.emitter?.add_kill_sum(v);
+    return this
   }
 
   get_v_rest_remain(id: string): number {
@@ -297,11 +363,11 @@ export default class Entity<
 
   protected override update_sprite() {
     super.update_sprite();
+    this.holding?.follow_holder();
     if (this._shaking) {
       const x = (this._shaking % 2 ? -5 : 5);
       this.mesh.position.x += x;
     }
-    this.weapon?.follow_holder();
   }
 
   handle_frame_velocity() {
@@ -391,8 +457,6 @@ export default class Entity<
       this.state?.on_landing(this, x, y, z);
     }
   }
-
-  weapon?: Weapon;
 
   protected _catching?: Entity;
   protected _catcher?: Entity;
@@ -523,7 +587,7 @@ export default class Entity<
     this._info_sprite.update_position();
     const { x, z } = this.position;
     this.shadow.position.set(x, - z / 2, z - 550);
-    if (this.weapon) this.weapon.follow_holder();
+    if (this.holding) this.holding.follow_holder();
   }
 
   on_after_update?(): void;
@@ -532,10 +596,8 @@ export default class Entity<
     this._motionless = itr.motionless ?? 4;
     if (itr.arest) {
       this._a_rest = itr.arest;
-      Log.print('on_collision', '1, this.a_rest =', this._a_rest)
     } else if (!itr.vrest) {
       this._a_rest = this.wait + A_SHAKE + this._motionless;
-      Log.print('on_collision', '2, this.a_rest =', this._a_rest)
     }
   }
 
@@ -557,7 +619,6 @@ export default class Entity<
     this.indicators.dispose();
     this._callbacks.emit('on_disposed')(this);
   }
-
 
   /**
    * 开始闪烁,闪烁完成后移除自己
@@ -596,13 +657,35 @@ export default class Entity<
     if (this.emitter === other) return true;
     return this.emitter.belong(other);
   }
+
   same_team(other: Entity): boolean {
     const a_team = this.team;
     const b_team = other.team;
     if (a_team && a_team === b_team) return true;
-
-
     return this.belong(other) || other.belong(this) || (!!this.emitter && this.emitter === other.emitter);
+  }
+
+  follow_holder() {
+    const holder = this.holder;
+    if (!holder) return;
+    const { wpoint: wpoint_a, centerx: centerx_a, centery: centery_a } = holder.get_frame();
+
+    if (!wpoint_a) return;
+
+    if (wpoint_a.weaponact !== this._frame.id) {
+      this.enter_frame({ id: wpoint_a.weaponact })
+    }
+    const { wpoint: wpoint_b, centerx: centerx_b, centery: centery_b } = this.get_frame();
+    if (!wpoint_b) return;
+
+    const { x, y, z } = holder.position;
+    this.facing = holder.facing;
+    this.position.set(
+      x + this.facing * (wpoint_a.x - centerx_a + centerx_b - wpoint_b.x),
+      y + centery_a - wpoint_a.y - centery_b + wpoint_b.y,
+      z
+    );
+    this.update_sprite_position()
   }
 }
 

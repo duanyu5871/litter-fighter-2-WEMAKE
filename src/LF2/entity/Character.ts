@@ -1,5 +1,4 @@
 import { Warn } from '../../Log';
-import { Factory } from './Factory';
 import type { World } from '../World';
 import { ICube } from '../World';
 import Callbacks from '../base/Callbacks';
@@ -11,6 +10,7 @@ import { Defines } from '../defines/defines';
 import { CHARACTER_STATES } from '../state/character';
 import { constructor_name } from '../utils/constructor_name';
 import Entity from './Entity';
+import { Factory } from './Factory';
 import ICharacterCallbacks from './ICharacterCallbacks';
 import { same_face, turn_face } from './face_helper';
 import { is_ball, is_character, is_weapon } from './type_check';
@@ -48,7 +48,7 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
     const ret = super.get_next_frame(which);
     if (!ret[0]) return ret
 
-    if(this.world.lf2.infinity_mp) return ret;
+    if (this.world.lf2.infinity_mp) return ret;
 
     const [frame] = ret;
     const { hp = 0, mp = 0 } = frame;
@@ -87,7 +87,7 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
   override find_auto_frame(): IFrameInfo {
     const { in_the_sky, standing, heavy_obj_walk } = this.data.indexes;
     let fid: string;
-    if (this.weapon?.data.base.type === Defines.WeaponType.Heavy) fid = heavy_obj_walk[0]
+    if (this.holding?.data.base.type === Defines.WeaponType.Heavy) fid = heavy_obj_walk[0]
     else if (this.position.y > 0) fid = in_the_sky[0]
     else if (this.hp > 0) fid = standing;
     else fid = standing; // TODO
@@ -266,7 +266,12 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
       this._next_frame = { id: indexes.defend_hit }
       return;
     }
-    if (itr.injury) this.hp -= itr.injury
+    if (itr.injury) {
+      this.hp -= itr.injury;
+      attacker.add_damage_sum(itr.injury);
+      if (this.hp <= 0) attacker.add_kill_sum(1);
+    }
+
     this._defend_value = 0;
     this._fall_value -= itr.fall || 20;
     /* 击倒 */

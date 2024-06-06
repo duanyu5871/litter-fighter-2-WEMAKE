@@ -9,17 +9,18 @@ import { is_character } from "./type_check";
 export default class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData> {
   readonly is_weapon = true
 
-  holder?: Entity;
   constructor(world: World, data: IWeaponData) {
     super(world, data, WEAPON_STATES);
     this.mesh.name = "Weapon: " + data.id
     this.hp = this.max_hp = data.base.weapon_hp;
   }
+
   override find_auto_frame(): IFrameInfo {
     const { frames, indexes } = this.data;
     if (this.position.y > 0) return frames[indexes.in_the_sky];
     return frames[indexes.on_ground];
   }
+  
   override self_update(): void {
     super.self_update();
 
@@ -33,19 +34,21 @@ export default class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData>
         const vz = (is_character(holder)) ? holder.controller.UD * (dvz || 0) : 0;
         const vx = (dvx || 0 - Math.abs(vz / 2)) * this.facing
         this.velocity.set(vx, dvy || 0, vz)
-        delete this.holder?.weapon;
+        delete this.holder?.holding;
         delete this.holder;
       }
     }
-    if (this.hp <= 0)
+    if (this.hp <= 0) {
+      // TODO: WEAPON BROKEN. -GIM
       this._next_frame = GONE_FRAME_INFO;
+    }
   }
-  override on_spawn_by_emitter(shotter: Entity, o: IOpointInfo, speed_z?: number): this {
-    super.on_spawn_by_emitter(shotter, o, speed_z);
+  override on_spawn_by_emitter(emitter: Entity, o: IOpointInfo, speed_z?: number): this {
+    super.on_spawn_by_emitter(emitter, o, speed_z);
     if (this._frame.state === Defines.State.Weapon_OnHand) {
-      this.holder = shotter
-      this.holder.weapon = this
-      this.team = shotter.team;
+      this.holder = emitter
+      this.holder.holding = this
+      this.team = emitter.team;
     }
     return this;
   }
@@ -61,7 +64,7 @@ export default class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData>
   override on_be_collided(attacker: Entity, itr: IItrInfo, bdy: IBdyInfo, r0: ICube, r1: ICube): void {
     if (itr.kind === Defines.ItrKind.Pick || itr.kind === Defines.ItrKind.PickSecretly) {
       this.holder = attacker;
-      this.holder.weapon = this;
+      this.holder.holding = this;
       this.team = attacker.team;
       return;
     }
@@ -69,7 +72,6 @@ export default class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData>
 
     const spark_x = (Math.max(r0.left, r1.left) + Math.min(r0.right, r1.right)) / 2;
     const spark_y = (Math.min(r0.top, r1.top) + Math.max(r0.bottom, r1.bottom)) / 2;
-    // const spark_z = (Math.min(r0.near, r1.near) + Math.max(r0.far, r1.far)) / 2;
     const spark_z = Math.max(r0.far, r1.far);
     if (itr.injury) this.hp -= itr.injury;
 
@@ -97,29 +99,6 @@ export default class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData>
       this.team = attacker.team;
       this._next_frame = { id: this.data.indexes.in_the_sky }
     }
-
-  }
-  follow_holder() {
-    const holder = this.holder;
-    if (!holder) return;
-    const { wpoint: wpoint_a, centerx: centerx_a, centery: centery_a } = holder.get_frame();
-
-    if (!wpoint_a) return;
-
-    if (wpoint_a.weaponact !== this._frame.id) {
-      this.enter_frame({ id: wpoint_a.weaponact })
-    }
-    const { wpoint: wpoint_b, centerx: centerx_b, centery: centery_b } = this.get_frame();
-    if (!wpoint_b) return;
-
-    const { x, y, z } = holder.position;
-    this.facing = holder.facing;
-    this.position.set(
-      x + this.facing * (wpoint_a.x - centerx_a + centerx_b - wpoint_b.x),
-      y + centery_a - wpoint_a.y - centery_b + wpoint_b.y,
-      z
-    );
-    this.update_sprite_position()
   }
 }
 Factory.inst.set('weapon', (...args) => new Weapon(...args));

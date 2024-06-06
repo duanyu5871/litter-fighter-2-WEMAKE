@@ -29,7 +29,7 @@ function get_val(word: string): (e: FrameAnimater) => any {
     case Defines.ValWord.PressUD:
       return e => is_character(e) ? e.controller.UD : 0;
     case Defines.ValWord.WeaponType:
-      return e => is_entity(e) ? e.weapon?.data.base.type || 0 : 0;
+      return e => is_entity(e) ? e.holding?.data.base.type || 0 : 0;
   }
   return () => word
 }

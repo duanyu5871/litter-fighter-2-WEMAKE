@@ -13,7 +13,7 @@ export default class Walking extends BaseCharacterState {
     if (speed_x) e.velocity.x = speed_x;
     if (speed_z) e.velocity.z = speed_z;
     if (!UD && !LR && !e.wait) {
-      if (e.weapon?.data.base.type === Defines.WeaponType.Heavy) {
+      if (e.holding?.data.base.type === Defines.WeaponType.Heavy) {
         e.wait = e.get_frame().wait
       } else {
         e.enter_frame(e.data.indexes.standing);
