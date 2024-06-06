@@ -1,5 +1,4 @@
 import { Warn } from '../../Log';
-import { Factory } from './Factory';
 import type { World } from '../World';
 import { ICube } from '../World';
 import Callbacks from '../base/Callbacks';
@@ -11,6 +10,7 @@ import { Defines } from '../defines/defines';
 import { CHARACTER_STATES } from '../state/character';
 import { constructor_name } from '../utils/constructor_name';
 import Entity from './Entity';
+import { Factory } from './Factory';
 import ICharacterCallbacks from './ICharacterCallbacks';
 import { same_face, turn_face } from './face_helper';
 import { is_ball, is_character, is_weapon } from './type_check';
@@ -268,7 +268,8 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
     }
     if (itr.injury) {
       this.hp -= itr.injury;
-      attacker.add_damage_sum(itr.injury)
+      attacker.add_damage_sum(itr.injury);
+      if (this.hp <= 0) attacker.add_kill_sum(1);
     }
 
     this._defend_value = 0;

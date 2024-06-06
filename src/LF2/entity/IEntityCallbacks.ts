@@ -2,14 +2,23 @@ import type Entity from './Entity';
 
 export default interface IEntityCallbacks<E extends Entity = Entity> {
   /**
+   * 造成的击杀数
    * 
-   *
+   * @param {E} e 
+   * @param {number} value 当前值
+   * @param {number} prev 上一次值
+   */
+  on_kill_sum_changed?(e: E, value: number, prev: number): void;
+
+  /**
+   * 造成的伤害总数
+   * 
    * @param {E} e 
    * @param {number} value 当前值
    * @param {number} prev 上一次值
    */
   on_damage_sum_changed?(e: E, value: number, prev: number): void;
-  
+
   /**
    * 最大血量变化
    *
@@ -27,8 +36,8 @@ export default interface IEntityCallbacks<E extends Entity = Entity> {
    * @param {number} prev 上一次值
    */
   on_max_mp_changed?(e: E, value: number, prev: number): void;
-  
-  
+
+
   /**
    * 血量变化
    *
@@ -46,7 +55,7 @@ export default interface IEntityCallbacks<E extends Entity = Entity> {
    * @param {number} prev 上一次值
    */
   on_mp_changed?(e: E, value: number, prev: number): void;
-  
+
   /**
    * Description placeholder
    *
@@ -55,7 +64,7 @@ export default interface IEntityCallbacks<E extends Entity = Entity> {
    * @param {number} prev 上一次值
    */
   on_self_healing_hp_changed?(e: E, value: number, prev: number): void;
-  
+
   /**
    * Description placeholder
    *

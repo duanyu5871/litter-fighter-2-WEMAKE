@@ -101,8 +101,16 @@ export default class Entity<
     const old = this._damage_sum
     this._damage_sum += v;
     this._callbacks.emit("on_damage_sum_changed")(this, this._damage_sum, old)
-
     this.emitter?.add_damage_sum(v);
+  }
+
+  protected _kill_sum: number = 0;
+  get kill_sum() { return this._kill_sum; }
+  add_kill_sum(v: number) {
+    const old = this._kill_sum
+    this._kill_sum += v;
+    this._callbacks.emit("on_kill_sum_changed")(this, this._kill_sum, old)
+    this.emitter?.add_kill_sum(v);
   }
 
   get name(): string { return this._name; }
