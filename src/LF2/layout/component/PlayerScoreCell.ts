@@ -12,8 +12,8 @@ export default class PlayerScoreCell extends LayoutComponent {
   }
   vvv() {
     switch (this.kind) {
-      case 'kill': return 'kill';
-      case 'attack': return 'attack';
+      case 'kill': return '' + this.player_score?.kill_sum;
+      case 'attack': return '' + this.player_score?.damage_sum;
       case 'hp_lost': return '' + this.player_score?.hp_lost;
       case 'mp_usage': return '' + this.player_score?.mp_usage;
       case 'picking': return 'picking';

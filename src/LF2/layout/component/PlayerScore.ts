@@ -6,9 +6,11 @@ export default class PlayerScore extends LayoutComponent {
   private _hp_lost: number = 0;
   private _mp_usage: number = 0;
   private _damage_sum: number = 0;
+  private _kill_sum: number = 0;
   get hp_lost() { return this._hp_lost }
   get mp_usage() { return this._mp_usage }
-  get damage_sum() { return this._mp_usage }
+  get damage_sum() { return this._damage_sum }
+  get kill_sum() { return this._kill_sum }
   
   get player_id(): string { return this.args[0] || ''; }
   get character(): Character | undefined {
@@ -21,6 +23,9 @@ export default class PlayerScore extends LayoutComponent {
     this.layout.visible = !!this.character;
 
     this.character?.callbacks.add({
+      on_kill_sum_changed: (e, value, prev) => {
+        if (value > prev) this._kill_sum = value
+      },
       on_damage_sum_changed: (e, value, prev) => {
         if (value > prev) this._damage_sum = value
       },

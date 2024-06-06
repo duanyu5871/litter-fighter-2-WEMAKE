@@ -87,7 +87,7 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
   override find_auto_frame(): IFrameInfo {
     const { in_the_sky, standing, heavy_obj_walk } = this.data.indexes;
     let fid: string;
-    if (this.holding?.data.base.type === Defines.WeaponType.Heavy) fid = heavy_obj_walk[0]
+    if (is_weapon(this.holding) && this.holding.data.base.type === Defines.WeaponType.Heavy) fid = heavy_obj_walk[0]
     else if (this.position.y > 0) fid = in_the_sky[0]
     else if (this.hp > 0) fid = standing;
     else fid = standing; // TODO

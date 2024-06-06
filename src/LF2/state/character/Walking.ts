@@ -1,5 +1,6 @@
 import { Defines } from '../../defines/defines';
 import type Character from '../../entity/Character';
+import { is_weapon } from '../../entity/type_check';
 import BaseCharacterState from "./Base";
 
 export default class Walking extends BaseCharacterState {
@@ -13,7 +14,8 @@ export default class Walking extends BaseCharacterState {
     if (speed_x) e.velocity.x = speed_x;
     if (speed_z) e.velocity.z = speed_z;
     if (!UD && !LR && !e.wait) {
-      if (e.holding?.data.base.type === Defines.WeaponType.Heavy) {
+
+      if (is_weapon(e.holding) && e.holding?.data.base.type === Defines.WeaponType.Heavy) {
         e.wait = e.get_frame().wait
       } else {
         e.enter_frame(e.data.indexes.standing);

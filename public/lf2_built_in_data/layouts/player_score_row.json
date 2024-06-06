@@ -9,7 +9,6 @@
     {
       "pos": "127,21",
       "center": "0.5, 0.5",
-      "txt": "kill",
       "component": "player_score_cell(kill)",
       "style": {
         "fill_style": "#ffaaaa",
@@ -19,7 +18,6 @@
     {
       "pos": "191,21",
       "center": "0.5, 0.5",
-      "txt": "attack",
       "component": "player_score_cell(attack)",
       "style": {
         "fill_style": "#ffaaaa",

@@ -2,7 +2,7 @@ import FrameAnimater from '../entity/FrameAnimater';
 import Expression from '../base/Expression';
 import { INextFrame } from "../defines";
 import { Defines } from '../defines/defines';
-import { is_character, is_entity } from "../entity/type_check";
+import { is_character, is_entity, is_weapon } from "../entity/type_check";
 
 export function cook_next_frame(i: INextFrame | INextFrame[]): void {
   if (Array.isArray(i)) {
@@ -29,7 +29,7 @@ function get_val(word: string): (e: FrameAnimater) => any {
     case Defines.ValWord.PressUD:
       return e => is_character(e) ? e.controller.UD : 0;
     case Defines.ValWord.WeaponType:
-      return e => is_entity(e) ? e.holding?.data.base.type || 0 : 0;
+      return e => is_entity(e) && is_weapon(e.holding) ? e.holding?.data.base.type || 0 : 0;
   }
   return () => word
 }
