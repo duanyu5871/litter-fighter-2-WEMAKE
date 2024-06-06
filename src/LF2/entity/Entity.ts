@@ -18,7 +18,6 @@ import FrameAnimater, { GONE_FRAME_INFO } from './FrameAnimater';
 import type IEntityCallbacks from './IEntityCallbacks';
 import { InfoSprite } from './InfoSprite';
 import Shadow from './Shadow';
-import type Weapon from './Weapon';
 import { turn_face } from './face_helper';
 
 export type TData = IBaseData | ICharacterData | IWeaponData | IEntityData | IBallData
@@ -232,7 +231,7 @@ export default class Entity<
     this._callbacks.emit("on_holder_changed")(this, v, old)
     return this;
   }
-  
+
   set_holding(v: Entity | undefined): this {
     if (this._holding === v) return this;
     const old = this._holding
@@ -359,11 +358,11 @@ export default class Entity<
 
   protected override update_sprite() {
     super.update_sprite();
+    this.holding?.follow_holder();
     if (this._shaking) {
       const x = (this._shaking % 2 ? -5 : 5);
       this.mesh.position.x += x;
     }
-    this.weapon?.follow_holder();
   }
 
   handle_frame_velocity() {
@@ -453,8 +452,6 @@ export default class Entity<
       this.state?.on_landing(this, x, y, z);
     }
   }
-
-  weapon?: Weapon;
 
   protected _catching?: Entity;
   protected _catcher?: Entity;
@@ -585,7 +582,7 @@ export default class Entity<
     this._info_sprite.update_position();
     const { x, z } = this.position;
     this.shadow.position.set(x, - z / 2, z - 550);
-    if (this.weapon) this.weapon.follow_holder();
+    if (this.holding) this.holding.follow_holder();
   }
 
   on_after_update?(): void;
@@ -594,10 +591,8 @@ export default class Entity<
     this._motionless = itr.motionless ?? 4;
     if (itr.arest) {
       this._a_rest = itr.arest;
-      Log.print('on_collision', '1, this.a_rest =', this._a_rest)
     } else if (!itr.vrest) {
       this._a_rest = this.wait + A_SHAKE + this._motionless;
-      Log.print('on_collision', '2, this.a_rest =', this._a_rest)
     }
   }
 
@@ -619,7 +614,6 @@ export default class Entity<
     this.indicators.dispose();
     this._callbacks.emit('on_disposed')(this);
   }
-
 
   /**
    * 开始闪烁,闪烁完成后移除自己
@@ -658,13 +652,35 @@ export default class Entity<
     if (this.emitter === other) return true;
     return this.emitter.belong(other);
   }
+
   same_team(other: Entity): boolean {
     const a_team = this.team;
     const b_team = other.team;
     if (a_team && a_team === b_team) return true;
-
-
     return this.belong(other) || other.belong(this) || (!!this.emitter && this.emitter === other.emitter);
+  }
+
+  follow_holder() {
+    const holder = this.holder;
+    if (!holder) return;
+    const { wpoint: wpoint_a, centerx: centerx_a, centery: centery_a } = holder.get_frame();
+
+    if (!wpoint_a) return;
+
+    if (wpoint_a.weaponact !== this._frame.id) {
+      this.enter_frame({ id: wpoint_a.weaponact })
+    }
+    const { wpoint: wpoint_b, centerx: centerx_b, centery: centery_b } = this.get_frame();
+    if (!wpoint_b) return;
+
+    const { x, y, z } = holder.position;
+    this.facing = holder.facing;
+    this.position.set(
+      x + this.facing * (wpoint_a.x - centerx_a + centerx_b - wpoint_b.x),
+      y + centery_a - wpoint_a.y - centery_b + wpoint_b.y,
+      z
+    );
+    this.update_sprite_position()
   }
 }
 

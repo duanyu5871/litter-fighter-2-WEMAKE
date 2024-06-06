@@ -32,7 +32,7 @@ export default class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData>
         const vz = (is_character(holder)) ? holder.controller.UD * (dvz || 0) : 0;
         const vx = (dvx || 0 - Math.abs(vz / 2)) * this.facing
         this.velocity.set(vx, dvy || 0, vz)
-        delete this.holder?.weapon;
+        delete this.holder?.holding;
         delete this.holder;
       }
     }
@@ -45,7 +45,7 @@ export default class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData>
     super.on_spawn_by_emitter(emitter, o, speed_z);
     if (this._frame.state === Defines.State.Weapon_OnHand) {
       this.holder = emitter
-      this.holder.weapon = this
+      this.holder.holding = this
       this.team = emitter.team;
     }
     return this;
@@ -62,7 +62,7 @@ export default class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData>
   override on_be_collided(attacker: Entity, itr: IItrInfo, bdy: IBdyInfo, r0: ICube, r1: ICube): void {
     if (itr.kind === Defines.ItrKind.Pick || itr.kind === Defines.ItrKind.PickSecretly) {
       this.holder = attacker;
-      this.holder.weapon = this;
+      this.holder.holding = this;
       this.team = attacker.team;
       return;
     }
@@ -97,28 +97,6 @@ export default class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData>
       this.team = attacker.team;
       this._next_frame = { id: this.data.indexes.in_the_sky }
     }
-  }
-  follow_holder() {
-    const holder = this.holder;
-    if (!holder) return;
-    const { wpoint: wpoint_a, centerx: centerx_a, centery: centery_a } = holder.get_frame();
-
-    if (!wpoint_a) return;
-
-    if (wpoint_a.weaponact !== this._frame.id) {
-      this.enter_frame({ id: wpoint_a.weaponact })
-    }
-    const { wpoint: wpoint_b, centerx: centerx_b, centery: centery_b } = this.get_frame();
-    if (!wpoint_b) return;
-
-    const { x, y, z } = holder.position;
-    this.facing = holder.facing;
-    this.position.set(
-      x + this.facing * (wpoint_a.x - centerx_a + centerx_b - wpoint_b.x),
-      y + centery_a - wpoint_a.y - centery_b + wpoint_b.y,
-      z
-    );
-    this.update_sprite_position()
   }
 }
 Factory.inst.set('weapon', (...args) => new Weapon(...args));
