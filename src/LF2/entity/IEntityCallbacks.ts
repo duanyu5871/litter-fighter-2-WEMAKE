@@ -48,7 +48,7 @@ export default interface IEntityCallbacks<E extends Entity = Entity> {
   on_hp_changed?(e: E, value: number, prev: number): void;
 
   /**
-   * Description placeholder
+   * 气量变化
    *
    * @param {E} e
    * @param {number} value 当前值
@@ -73,7 +73,26 @@ export default interface IEntityCallbacks<E extends Entity = Entity> {
    * @param {number} prev 上一次值
    */
   on_self_healing_mp_changed?(e: E, value: number, prev: number): void;
+
+  
+  /**
+   * 队伍变化
+   *
+   * @param {E} e
+   * @param {string} value
+   * @param {string} prev
+   */
   on_team_changed?(e: E, value: string, prev: string): void;
+
+  /**
+   * 玩家名变化
+   * 
+   * @param e 
+   * @param value 
+   * @param prev 
+   */
   on_name_changed?(e: E, value: string, prev: string): void;
+
+  
   on_disposed?(e: E): void;
 }
