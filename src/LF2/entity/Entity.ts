@@ -100,6 +100,8 @@ export default class Entity<
 
   protected _info_sprite: InfoSprite = new InfoSprite(this);
 
+  protected _picking_sum: number = 0;
+
   /**
    * 伤害总数
    *
@@ -116,6 +118,7 @@ export default class Entity<
    */
   protected _kill_sum: number = 0;
 
+  get picking_sum() { return this._picking_sum; }
 
   get damage_sum() { return this._damage_sum; }
 
@@ -239,11 +242,17 @@ export default class Entity<
 
   set_holding(v: Entity | undefined): this {
     if (this._holding === v) return this;
-    const old = this._holding
+    const old = this._holding;
     this._holding = v;
     this._callbacks.emit("on_holding_changed")(this, v, old)
+
+    if (v) {
+      this._picking_sum += 1;
+      this._callbacks.emit("on_picking_sum_changed")(this, this._picking_sum, this._picking_sum - 1)
+    }
     return this;
   }
+
   add_damage_sum(v: number): this {
     const old = this._damage_sum
     this._damage_sum += v;

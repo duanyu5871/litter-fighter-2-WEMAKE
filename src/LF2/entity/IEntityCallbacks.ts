@@ -6,6 +6,8 @@ export default interface IEntityCallbacks<E extends Entity = Entity> {
 
   on_holding_changed?(e: E, value: Unsafe<Entity>, prev: Unsafe<Entity>): void;
 
+  on_picking_sum_changed?(e: E, value: number, prev: number): void;
+
   /**
    * 造成的击杀数
    * 

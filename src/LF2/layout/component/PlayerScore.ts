@@ -5,13 +5,11 @@ import { LayoutComponent } from "./LayoutComponent";
 export default class PlayerScore extends LayoutComponent {
   private _hp_lost: number = 0;
   private _mp_usage: number = 0;
-  private _damage_sum: number = 0;
-  private _kill_sum: number = 0;
+  private _lose: boolean = false;
   get hp_lost() { return this._hp_lost }
   get mp_usage() { return this._mp_usage }
-  get damage_sum() { return this._damage_sum }
-  get kill_sum() { return this._kill_sum }
-  
+  get lose() { return this._lose }
+
   get player_id(): string { return this.args[0] || ''; }
   get character(): Character | undefined {
     return this.lf2.player_characters.get(this.player_id)
@@ -21,20 +19,24 @@ export default class PlayerScore extends LayoutComponent {
   override on_resume(): void {
     super.on_resume()
     this.layout.visible = !!this.character;
-
     this.character?.callbacks.add({
-      on_kill_sum_changed: (e, value, prev) => {
-        if (value > prev) this._kill_sum = value
-      },
-      on_damage_sum_changed: (e, value, prev) => {
-        if (value > prev) this._damage_sum = value
-      },
       on_hp_changed: (e, value, prev) => {
         if (value < prev) this._hp_lost += prev - value
       },
       on_mp_changed: (e, value, prev) => {
         if (value < prev) this._mp_usage += prev - value
       },
+      on_dead: (e) => {
+        if (!e.team) { this._lose = true; return }
+        for (const [, c] of this.world.player_characters) {
+          if (c.team !== e.team) continue;
+          if (c.hp > 0) {
+            this._lose = false;
+            return;
+          }
+        }
+        this._lose = true;
+      }
     })
   }
 

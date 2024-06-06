@@ -1,4 +1,5 @@
 import Text from "../../3d/Text";
+import IStyle from "../../defines/IStyle";
 import { LayoutComponent } from "./LayoutComponent";
 import PlayerScore from "./PlayerScore";
 
@@ -8,27 +9,51 @@ export default class PlayerScoreCell extends LayoutComponent {
 
   override on_resume(): void {
     super.on_resume();
+  }
 
-  }
-  vvv() {
-    switch (this.kind) {
-      case 'kill': return '' + this.player_score?.kill_sum;
-      case 'attack': return '' + this.player_score?.damage_sum;
-      case 'hp_lost': return '' + this.player_score?.hp_lost;
-      case 'mp_usage': return '' + this.player_score?.mp_usage;
-      case 'picking': return 'picking';
-      case 'status': return 'status';
-    }
-    return ''
-  }
   override on_show(): void {
     super.on_show?.();
     this.layout.sprite.add(
       new Text(this.lf2)
         .set_center(0.5, 0.5)
-        .set_style(this.layout.style)
-        .set_text(this.vvv())
+        .set_style(this.get_style())
+        .set_text(this.get_txt())
         .apply()
     )
+  }
+
+  protected get_style(): IStyle {
+    const s = this.player_score
+    const c = this.player_score?.character;
+    if (!s || !c) return this.layout.style;
+    if (this.kind === 'status') {
+      let clr = this.layout.style.fill_style
+      if (c.hp > 0) clr = this.layout.get_value("win_alive_color")
+      else if (s.lose) clr = this.layout.get_value("lose_color")
+      else clr = this.layout.get_value("win_dead_color")
+      return { ...this.layout.style, fill_style: clr }
+    }
+    return this.layout.style
+  }
+  protected get_txt() {
+    const s = this.player_score
+    const c = this.player_score?.character;
+    if (!s || !c) return '';
+    switch (this.kind) {
+      case 'kill': return '' + c.kill_sum;
+      case 'attack': return '' + c.damage_sum;
+      case 'hp_lost': return '' + s.hp_lost;
+      case 'mp_usage': return '' + s.mp_usage;
+      case 'picking': return '' + c.picking_sum;
+      case 'status': {
+        if (c.hp > 0) return this.layout.get_value("win_alive_txt")
+        else if (s.lose) return this.layout.get_value("lose_txt")
+        else return this.layout.get_value("win_dead_txt")
+        // "win_alive_txt"
+        // "win_dead_txt"
+        // "lose_txt"
+      }
+    }
+    return ''
   }
 }

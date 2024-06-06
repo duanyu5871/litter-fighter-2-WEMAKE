@@ -1,3 +1,4 @@
+import { debug } from "console";
 import ICharacterCallbacks from "../../entity/ICharacterCallbacks";
 import { is_character } from "../../entity/type_check";
 import { LayoutComponent } from "./LayoutComponent";
@@ -17,6 +18,7 @@ export default class VsModeLogic extends LayoutComponent implements ICharacterCa
   }
 
   on_dead() {
+    debugger
     const team_alives = new Map<string, number>()
     for (const e of this.world.entities) {
       if (!is_character(e) || e.hp < 0) continue;

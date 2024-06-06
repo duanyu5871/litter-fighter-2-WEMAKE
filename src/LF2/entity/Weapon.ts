@@ -20,7 +20,7 @@ export default class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData>
     if (this.position.y > 0) return frames[indexes.in_the_sky];
     return frames[indexes.on_ground];
   }
-  
+
   override self_update(): void {
     super.self_update();
 
@@ -34,8 +34,8 @@ export default class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData>
         const vz = (is_character(holder)) ? holder.controller.UD * (dvz || 0) : 0;
         const vx = (dvx || 0 - Math.abs(vz / 2)) * this.facing
         this.velocity.set(vx, dvy || 0, vz)
-        delete this.holder?.holding;
-        delete this.holder;
+        holder.holding = void 0;
+        this.holder = void 0;
       }
     }
     if (this.hp <= 0) {

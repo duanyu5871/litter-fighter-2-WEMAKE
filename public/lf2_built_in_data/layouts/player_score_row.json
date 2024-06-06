@@ -1,6 +1,14 @@
 {
   "img": "sprite/SCORE_BOARD2.png",
   "component": "player_score(1)",
+  "values": {
+    "win_alive_txt": "Win (Alive)",
+    "win_dead_txt": "Win (Dead)",
+    "lose_txt": "Lose (Dead)",
+    "win_alive_color": "#aaf5aa",
+    "win_dead_color": "#f0f0aa",
+    "lose_color": "#ffaaaa"
+  },
   "items": [
     {
       "pos": "35,21",
@@ -45,7 +53,6 @@
     {
       "pos": "383,21",
       "center": "0.5, 0.5",
-      "txt": "picking",
       "component": "player_score_cell(picking)",
       "style": {
         "fill_style": "#aaf5aa",
@@ -55,9 +62,6 @@
     {
       "pos": "447,21",
       "center": "0.5, 0.5",
-      "txt": "Win (Alive)",
-      "txt": "Win (Dead)",
-      "txt": "Lose (Dead)",
       "component": "player_score_cell(status)",
       "style": {
         "fill_style": "#aaf5aa",
