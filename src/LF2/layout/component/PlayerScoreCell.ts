@@ -1,21 +1,34 @@
-import Character from "../../entity/Character";
+import Text from "../../3d/Text";
 import { LayoutComponent } from "./LayoutComponent";
 import PlayerScore from "./PlayerScore";
 
 export default class PlayerScoreCell extends LayoutComponent {
-  private _player_id?: string;
-  get kind(): string { return this.args[0] }
-  get player_id() { return this.args[1] || this._player_id || ''; }
-  get character(): Character | undefined {
-    return this.lf2.player_characters.get(this.player_id)
-  }
+  get kind() { return this.args[0] }
+  get player_score() { return this.layout.lookup_component(PlayerScore) }
 
   override on_resume(): void {
     super.on_resume();
-    this._player_id = this.layout.lookup_component(PlayerScore)?.player_id;
-  }
 
+  }
+  vvv() {
+    switch (this.kind) {
+      case 'kill': return 'kill';
+      case 'attack': return 'attack';
+      case 'hp_lost': return '' + this.player_score?.hp_lost;
+      case 'mp_usage': return '' + this.player_score?.mp_usage;
+      case 'picking': return 'picking';
+      case 'status': return 'status';
+    }
+    return ''
+  }
   override on_show(): void {
     super.on_show?.();
+    this.layout.sprite.add(
+      new Text(this.lf2)
+        .set_center(0.5, 0.5)
+        .set_style(this.layout.style)
+        .set_text(this.vvv())
+        .apply()
+    )
   }
 }

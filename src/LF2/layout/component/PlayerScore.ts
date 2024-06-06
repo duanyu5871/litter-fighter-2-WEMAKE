@@ -5,6 +5,8 @@ import { LayoutComponent } from "./LayoutComponent";
 export default class PlayerScore extends LayoutComponent {
   private _hp_lost: number = 0;
   private _mp_usage: number = 0;
+  get hp_lost() { return this._hp_lost }
+  get mp_usage() { return this._mp_usage }
   get player_id(): string { return this.args[0] || ''; }
   get character(): Character | undefined {
     return this.lf2.player_characters.get(this.player_id)
@@ -17,10 +19,10 @@ export default class PlayerScore extends LayoutComponent {
 
     this.character?.callbacks.add({
       on_hp_changed: (e, value, prev) => {
-        if (value > prev) this._hp_lost += value - prev
+        if (value < prev) this._hp_lost += prev - value
       },
       on_mp_changed: (e, value, prev) => {
-        if (value > prev) this._mp_usage += value - prev
+        if (value < prev) this._mp_usage += prev - value
       },
     })
   }

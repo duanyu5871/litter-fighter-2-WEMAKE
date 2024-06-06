@@ -54,6 +54,8 @@ export default class Layout {
   protected _visible: StateDelegate<boolean> = new StateDelegate(true);
   protected _disabled: StateDelegate<boolean> = new StateDelegate(false);
   protected _opacity: StateDelegate<number> = new StateDelegate(1);
+  protected _img_infos: StateDelegate<TImageInfo[]> = new StateDelegate([]);
+
   protected _img_idx = () => 0;
   protected _parent?: Layout;
   protected _children: Layout[] = [];
@@ -149,7 +151,10 @@ export default class Layout {
 
   get components() { return this._components; }
   get style(): IStyle { return this.data.style || {} }
-
+  
+  get img_infos() { return this._img_infos.value }
+  set img_infos(v: TImageInfo[]) { this.set_img_infos(v); }
+  set_img_infos(v: TImageInfo[]): this { this._img_infos.set(0, v); return this; }
 
 
   constructor(lf2: LF2, data: ICookedLayoutInfo, parent?: Layout) {
@@ -264,7 +269,7 @@ export default class Layout {
   }
 
   to_next_img() {
-    const { img_idx, data: { img_infos } } = this;
+    const { img_idx, img_infos } = this;
     if (!img_infos?.length) return;
     this._img_idx = () => (img_idx + 1) % img_infos.length
   }
@@ -392,10 +397,12 @@ export default class Layout {
       const func = get_val(opacity);
       this._opacity.default_value = () => Number(func(this)) || 0;
     }
+
+    this._img_infos.default_value = this.data.img_infos;
   }
 
   private _cook_img_idx(get_val: ValGetter<Layout>) {
-    const { data: { img_infos } } = this;
+    const { img_infos } = this;
     if (!img_infos?.length) return;
     const { which } = this.data;
     if (is_str(which)) {
@@ -411,7 +418,7 @@ export default class Layout {
 
   protected create_texture(): THREE.Texture | undefined {
     const img_idx = this.img_idx;
-    const img_info = this.data.img_infos?.[img_idx];
+    const img_info = this.img_infos?.[img_idx];
     if (!img_info) return this.data.bg_color ? white_texture() : empty_texture();
     const { flip_x, flip_y } = this.data
     const texture = this.lf2.images.create_pic_by_img_info(img_info).texture;

@@ -134,14 +134,19 @@ export default class Entity<
   get mp_recovery_max_speed(): number { return this._mp_r_max_spd; }
   set mp_recovery_max_speed(v: number) { this._mp_r_max_spd = v; }
 
-  get team(): string { return this._team || (this.emitter ? this.emitter.team : '') }
+  get team(): string { return this._team || this.starter?.team || '' }
   set team(v) {
     const o = this._team;
     this._callbacks.emit('on_team_changed')(this, this._team = v, o)
   }
 
   get emitter() { return this._emitter }
-
+  get starter() {
+    if (!this._emitter) return null;
+    let e = this._emitter;
+    while (e._emitter) e = e._emitter;
+    return e;
+  }
   get a_rest(): number { return this._a_rest }
 
   readonly indicators: EntityIndicators = new EntityIndicators(this);
