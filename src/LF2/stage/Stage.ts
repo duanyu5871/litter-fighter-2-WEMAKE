@@ -25,6 +25,8 @@ export default class Stage {
   private _disposed: boolean = false;
   private _disposers: (() => void)[] = [];
   private _cur_phase_idx = -1;
+  private _time: number = 0;
+
   get name(): string { return this.data.name }
   get cur_phase(): number { return this._cur_phase_idx }
   get left(): number { return this.bg.left }
@@ -38,7 +40,7 @@ export default class Stage {
   get callbacks(): NoEmitCallbacks<IStageCallbacks> {
     return this._callbacks
   }
-
+  get time() { return this._time }
   /**
    * 玩家角色的地图左边界
    *
@@ -130,7 +132,7 @@ export default class Stage {
     for (const [, c] of this.world.player_characters)
       count += c.data.base.ce ?? 1;
     if (!count) count = 1;
-    
+
     const { ratio = 1, times = 1 } = obj_info;
     let spawn_count = Math.floor(count * ratio);
     if (spawn_count <= 0 || !times) return;
@@ -212,5 +214,9 @@ export default class Stage {
     if (this.all_enemies_dead()) {
       this.enter_phase(this._cur_phase_idx + 1);
     }
+  }
+
+  update() {
+    this._time++;
   }
 }

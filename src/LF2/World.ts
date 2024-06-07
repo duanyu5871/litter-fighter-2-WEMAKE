@@ -292,6 +292,7 @@ export class World {
 
     this.update_camera();
     this.bg.update();
+    this.stage.update();
   }
   cam_speed = 0;
   lock_cam_x: number | undefined = void 0;
