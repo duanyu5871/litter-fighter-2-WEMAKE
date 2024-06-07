@@ -37,7 +37,16 @@
     },
     {
       "img": "sprite/SCORE_BOARD3.png",
-      "component": "play_time()"
+      "items": [
+        {
+          "pos": "453,13",
+          "component": "playing_time()",
+          "style": {
+            "fill_style": "#ffffff",
+            "font": "12px Arial"
+          }
+        }
+      ]
     }
   ]
 }

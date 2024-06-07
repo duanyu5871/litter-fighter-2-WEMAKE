@@ -55,6 +55,8 @@ export default class Layout {
   protected _disabled: StateDelegate<boolean> = new StateDelegate(false);
   protected _opacity: StateDelegate<number> = new StateDelegate(1);
   protected _img_infos: StateDelegate<TImageInfo[]> = new StateDelegate([]);
+  protected _size: StateDelegate<[number, number]> = new StateDelegate([0, 0]);
+  protected _center: StateDelegate<[number, number, number]> = new StateDelegate([0, 0, 0]);
 
   protected _img_idx = () => 0;
   protected _parent?: Layout;
@@ -94,30 +96,32 @@ export default class Layout {
   get id(): string | undefined { return this.data.id }
   get name(): string | undefined { return this.data.name }
   get pos(): [number, number, number] { return this._pos.value };
-  set pos(v: [number, number, number]) {
+  set pos(v: [number, number, number]) { this.set_pos(v) }
+  set_pos(v: [number, number, number]): this {
     this._pos.set(0, v);
     this._sprite.set_pos(v[0], -v[1], v[2])
+    return this;
   }
 
-  get x(): number { return this._pos.value[0] };
-  set x(v: number) {
-    const pos: [number, number, number] = [...this._pos.value]
-    pos[0] = v
-    this.pos = pos;
+  get x(): number { return this.pos[0] };
+  set x(v: number) { this.set_x(v); }
+  set_x(x: number): this {
+    const [, y, z] = this.pos;
+    return this.set_pos([x, y, z])
   }
 
-  get y(): number { return this._pos.value[1] };
-  set y(v: number) {
-    const pos: [number, number, number] = [...this._pos.value]
-    pos[1] = v
-    this.pos = pos;
+  get y(): number { return this.pos[1] };
+  set y(v: number) { this.set_y(v); }
+  set_y(y: number): this {
+    const [x, , z] = this.pos;
+    return this.set_pos([x, y, z])
   }
 
-  get z(): number { return this._pos.value[2] };
-  set z(v: number) {
-    const pos: [number, number, number] = [...this._pos.value]
-    pos[2] = v
-    this.pos = pos;
+  get z(): number { return this.pos[2] };
+  set z(z: number) { this.set_z(z); }
+  set_z(z: number): this {
+    const [x, y] = this.pos;
+    return this.set_pos([x, y, z])
   }
 
   get root(): Layout { return this._root }
@@ -132,6 +136,7 @@ export default class Layout {
   get index() { return this._index }
   get state() { return this._state }
   get img_idx() { return this._img_idx() }
+
   get visible(): boolean { return this._visible.value; }
   set visible(v: boolean) { this.set_visible(v); }
   set_visible(v: boolean): this { this._visible.set(0, v); return this; }
@@ -139,19 +144,34 @@ export default class Layout {
   get disabled(): boolean { return this._disabled.value; }
   set disabled(v: boolean) { this.set_disabled(v); }
   set_disabled(v: boolean): this { this._disabled.set(0, v); return this; }
-  get center() { return this.data.center; }
+
+  get center() { return this._center.value; }
+  set center(v: [number, number, number]) { this.set_center(v); }
+  set_center(v: [number, number, number]): this { this._center.set(0, v); return this; }
+
   get opacity(): number { return this._opacity.value }
-  set opacity(v: number) { this._opacity.set(0, v) }
+  set opacity(v: number) { this.set_opacity(v) }
+  set_opacity(v: number): this { this._opacity.set(0, v); return this }
+
   get parent() { return this._parent; }
   get children() { return this._children; }
   set children(v) { this._children = v; }
-  get size(): [number, number] { return this.data.size }
+
+  get size(): [number, number] { return this._size.value }
+  set size(v: [number, number]) { this.set_size(v); }
+  set_size(v: [number, number]): this { this._size.set(0, v); return this; }
+
   get w(): number { return this.size[0]; }
+  set w(v: number) { this.set_w(v); }
+  set_w(v: number): this { return this.set_size([v, this.h]); }
+
   get h(): number { return this.size[1]; }
+  set h(v: number) { this.set_h(v); }
+  set_h(v: number): this { return this.set_size([this.w, v]); }
 
   get components() { return this._components; }
   get style(): IStyle { return this.data.style || {} }
-  
+
   get img_infos() { return this._img_infos.value }
   set img_infos(v: TImageInfo[]) { this.set_img_infos(v); }
   set_img_infos(v: TImageInfo[]): this { this._img_infos.set(0, v); return this; }
@@ -399,6 +419,8 @@ export default class Layout {
     }
 
     this._img_infos.default_value = this.data.img_infos;
+    this._size.default_value = this.data.size;
+    this._center.default_value = this.data.center;
   }
 
   private _cook_img_idx(get_val: ValGetter<Layout>) {
@@ -427,7 +449,7 @@ export default class Layout {
   }
 
   protected _sprite: Sprite = new Sprite()
-    .add_user_data('owner', this)
+    .add_user_data('owner', this);
   get sprite() { return this._sprite }
 
   protected init_sprite() {
@@ -438,7 +460,7 @@ export default class Layout {
       w, h, texture, color: this.data.bg_color
     }
     this._sprite.set_info(p)
-      .set_center(...this.data.center)
+      .set_center(...this.center)
       .set_pos(x, -y, z)
       .set_opacity((p.texture || p.color) ? 1 : 0)
       .set_visible(this.visible)

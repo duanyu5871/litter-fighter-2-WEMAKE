@@ -2,24 +2,31 @@ import Text from "../../3d/Text";
 import IStyle from "../../defines/IStyle";
 import { LayoutComponent } from "./LayoutComponent";
 import PlayerScore from "./PlayerScore";
-
 export default class PlayerScoreCell extends LayoutComponent {
   get kind() { return this.args[0] }
   get player_score() { return this.layout.lookup_component(PlayerScore) }
+  private _txt?: Text;
 
-  override on_resume(): void {
-    super.on_resume();
+  override on_start(): void {
+    super.on_start?.();
+    this.layout.sprite.add(
+      this._txt = new Text(this.lf2)
+        .set_center(0.5, 0.5)
+        .apply()
+    )
+  }
+
+  override on_stop(): void {
+    super.on_stop?.();
+    this._txt?.del_self()
   }
 
   override on_show(): void {
     super.on_show?.();
-    this.layout.sprite.add(
-      new Text(this.lf2)
-        .set_center(0.5, 0.5)
-        .set_style(this.get_style())
-        .set_text(this.get_txt())
-        .apply()
-    )
+    this._txt
+      ?.set_style(this.get_style())
+      .set_text(this.get_txt())
+      .apply()
   }
 
   protected get_style(): IStyle {

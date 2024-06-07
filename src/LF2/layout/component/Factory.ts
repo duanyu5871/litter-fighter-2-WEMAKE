@@ -20,6 +20,7 @@ import PlayerName from "./PlayerName";
 import PlayerScore from "./PlayerScore";
 import PlayerScoreCell from "./PlayerScoreCell";
 import PlayerTeamName from "./PlayerTeamName";
+import { PlayingTimeText } from "./PlayingTimeText";
 import { ReachableLayout, ReachableLayoutGroup } from "./ReachableLayoutGroup";
 import StageNameText from "./StageNameText";
 import StageTitleShow from "./StageTitleShow";
@@ -53,6 +54,7 @@ class Factory {
     ['player_score', PlayerScore],
     ['player_score_cell', PlayerScoreCell],
     ['vs_mode_logic', VsModeLogic],
+    ['playing_time', PlayingTimeText]
   ])
   create(layout: Layout, components: ILayoutInfo['component']): LayoutComponent[] {
     if (!components?.length) return [];
