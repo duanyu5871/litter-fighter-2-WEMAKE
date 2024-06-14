@@ -4,8 +4,8 @@ import LF2 from '../LF2';
 import Callbacks from '../base/Callbacks';
 import Expression, { ValGetter } from '../base/Expression';
 import NoEmitCallbacks from '../base/NoEmitCallbacks';
-import { TKeyName } from '../controller/BaseController';
 import IStyle from '../defines/IStyle';
+import Defines from '../defines/defines';
 import { empty_texture, white_texture, type TImageInfo } from '../loader/loader';
 import { filter, find } from '../utils/container_help';
 import { is_arr, is_bool, is_num, is_str } from '../utils/type_check';
@@ -15,6 +15,7 @@ import actor from './action/Actor';
 import factory from './component/Factory';
 import { LayoutComponent } from './component/LayoutComponent';
 import read_nums from './utils/read_nums';
+import GameKey from '../defines/GameKey';
 
 export interface ICookedLayoutInfo extends ILayoutInfo {
   pos: [number, number, number];
@@ -533,13 +534,13 @@ export default class Layout {
       c.on_render?.(dt)
   }
 
-  on_player_key_down(player_id: string, key: TKeyName) {
+  on_player_key_down(player_id: string, key: GameKey) {
     for (const i of this.children) i.on_player_key_down(player_id, key);
     for (const c of this._components) c.on_player_key_down?.(player_id, key);
     if ('a' === key) this._focused_item?.on_click();
   }
 
-  on_player_key_up(player_id: string, key: TKeyName) {
+  on_player_key_up(player_id: string, key: GameKey) {
     for (const i of this.children) i.on_player_key_up(player_id, key);
     for (const c of this._components) c.on_player_key_up?.(player_id, key);
   }

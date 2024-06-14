@@ -2,9 +2,8 @@ import Callbacks from "../../base/Callbacks";
 import FSM, { IReadonlyFSM } from "../../base/FSM";
 import Invoker from "../../base/Invoker";
 import NoEmitCallbacks from "../../base/NoEmitCallbacks";
-import { TKeyName } from "../../controller/BaseController";
-import { BotEnemyChaser } from "../../controller/BotEnemyChaser";
 import LocalHuman from "../../controller/LocalHuman";
+import GameKey from "../../defines/GameKey";
 import { Defines } from "../../defines/defines";
 import Character from "../../entity/Character";
 import { filter } from "../../utils/container_help";
@@ -72,7 +71,7 @@ export default class GamePrepareLogic extends LayoutComponent {
     this._unmount_jobs.invoke_and_clear();
   }
 
-  override on_player_key_down(_player_id: string, key: TKeyName) {
+  override on_player_key_down(_player_id: string, key: GameKey) {
     switch (this.state) {
       case GamePrepareState.PlayerCharacterSel:
         if ('j' === key && !this.used_player_slots.length) {

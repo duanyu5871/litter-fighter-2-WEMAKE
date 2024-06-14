@@ -1,6 +1,7 @@
 import { ICharacterData, IGameObjData, IWeaponData } from ".";
 import { IBgData } from "./IBgData";
 import { IStageInfo } from "./IStageInfo";
+import { GameKey } from "./GameKey";
 
 export namespace Defines {
   export const OLD_SCREEN_WIDTH = 794;
@@ -324,4 +325,18 @@ export namespace Defines {
       SwitchBackground = 'switch_background'
     }
   }
-} 
+
+  export type TKeys = Record<GameKey, string>
+  const default_keys_map = new Map<string, TKeys>([
+    ['1', { L: 'a', R: 'd', U: 'w', D: 's', a: 'j', j: 'k', d: 'l' }],
+    ['2', { L: 'arrowleft', R: 'arrowright', U: 'arrowup', D: 'arrowdown', a: '0', j: '.', d: 'enter' }],
+    ['3', { L: '', R: '', U: '', D: '', a: '', j: '', d: '' }],
+    ['4', { L: '', R: '', U: '', D: '', a: '', j: '', d: '' }],
+    ['_', { L: '', R: '', U: '', D: '', a: '', j: '', d: '' }]
+  ])
+
+  export function get_default_keys(player_id: string): TKeys {
+    return default_keys_map.get(player_id) || default_keys_map.get('_')!;
+  }
+}
+export default Defines;

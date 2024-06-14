@@ -5,15 +5,15 @@ import { Input } from './Component/Input';
 import TeamSelect from './Component/TeamSelect';
 import LF2 from './LF2/LF2';
 import { PlayerInfo } from './LF2/PlayerInfo';
-import { TKeyName } from './LF2/controller/BaseController';
 import { random_get } from './LF2/utils/math/random';
 import LocalHuman from './LF2/controller/LocalHuman';
 import { Checkbox } from './Component/Checkbox';
 import { Defines } from './LF2/defines/defines';
 import { ToggleButton } from './Component/ToggleButton';
 import Titled from './Component/Titled';
+import GameKey from './LF2/defines/GameKey';
 
-const key_names: Record<TKeyName, string> = {
+const key_names: Record<GameKey, string> = {
   U: '上',
   D: '下',
   L: '左',
@@ -22,7 +22,7 @@ const key_names: Record<TKeyName, string> = {
   j: '跳',
   d: '防'
 }
-const key_name_arr = Object.keys(key_names) as TKeyName[];
+const key_name_arr = Object.keys(key_names) as GameKey[];
 interface Props {
   lf2: LF2;
   visible?: boolean;
@@ -39,9 +39,9 @@ export function PlayerRow(props: Props) {
     on_click_toggle_touch_pad
   } = props;
 
-  const [keys, set_keys] = useState<Record<TKeyName, string>>(info.keys);
+  const [keys, set_keys] = useState<Record<GameKey, string>>(info.keys);
   const [player_name, set_player_name] = useState<string>(info.name);
-  const [editing_key, set_editing_key] = useState<TKeyName | undefined>();
+  const [editing_key, set_editing_key] = useState<GameKey | undefined>();
 
   const [team, set_team] = useState<string>(info.team);
   const [show_hidden, set_show_hidden] = useState<boolean>(false)
