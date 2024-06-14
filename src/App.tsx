@@ -122,6 +122,8 @@ function App() {
         set_layouts(layout_data_list);
         if (layout_data_list.length > 1)
           _set_layout(layout_data_list[1].id)
+      }).catch(e => {
+        console.error((e as any).target)
       })
     }
     const lf2 = lf2_ref.current;
