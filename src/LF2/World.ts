@@ -153,7 +153,7 @@ export class World {
     }
   }
 
-  private _render_request_id?: ReturnType<typeof Render.run>;
+  private _render_request_id?: ReturnType<typeof Render.start>;
   private _update_timer_id?: ReturnType<typeof Interval.set>;
 
   private _FPS = new FPS()
@@ -182,12 +182,10 @@ export class World {
         this._FPS.update(dt);
         this._callbacks.emit('on_fps_update')(this._FPS.value)
       }
-
-      this._render_request_id = Render.run(on_render)
       _r_prev_time = time
     }
     this._render_request_id && Render.stop(this._render_request_id);
-    this._render_request_id = Render.run(on_render);
+    this._render_request_id = Render.start(on_render);
   }
 
   stop_render() {
