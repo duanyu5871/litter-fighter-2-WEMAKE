@@ -1,9 +1,10 @@
+import GameKey from "../defines/GameKey";
 import { Defines } from "../defines/defines";
 import Character from "../entity/Character";
 import Entity from "../entity/Entity";
 import Weapon from "../entity/Weapon";
 import { is_character } from "../entity/type_check";
-import { BaseController, KeyName } from "./BaseController";
+import { BaseController } from "./BaseController";
 
 export class BotEnemyChaser extends BaseController {
   readonly is_bot_enemy_chaser = true;
@@ -50,19 +51,19 @@ export class BotEnemyChaser extends BaseController {
     const { facing } = c;
     const { state } = c.get_frame();
     const is_running = state === Defines.State.Running
-    if (end_x - x > DEAD_ZONE) this.start(KeyName.R).end(KeyName.L)
-    else if (x - end_x > DEAD_ZONE) this.start(KeyName.L).end(KeyName.R)
-    else if (is_running && facing > 0) this.start(KeyName.L).end(KeyName.R) // stop running.
-    else if (is_running && facing < 0) this.start(KeyName.R).end(KeyName.L) // stop running.
-    else this.end(KeyName.L, KeyName.R) // reach x
+    if (end_x - x > DEAD_ZONE) this.start(GameKey.R).end(GameKey.L)
+    else if (x - end_x > DEAD_ZONE) this.start(GameKey.L).end(GameKey.R)
+    else if (is_running && facing > 0) this.start(GameKey.L).end(GameKey.R) // stop running.
+    else if (is_running && facing < 0) this.start(GameKey.R).end(GameKey.L) // stop running.
+    else this.end(GameKey.L, GameKey.R) // reach x
 
     // too far, run.
-    if (end_x - x > RUN_ZONE && !is_running) this.db_hit(KeyName.R);
-    else if (x - end_x > RUN_ZONE && !is_running) this.db_hit(KeyName.L);
+    if (end_x - x > RUN_ZONE && !is_running) this.db_hit(GameKey.R);
+    else if (x - end_x > RUN_ZONE && !is_running) this.db_hit(GameKey.L);
 
-    if (z < end_z - DEAD_ZONE) this.start(KeyName.D).end(KeyName.U)
-    else if (z > end_z + DEAD_ZONE) this.start(KeyName.U).end(KeyName.D)
-    else this.end(KeyName.D, KeyName.U) // reach z
+    if (z < end_z - DEAD_ZONE) this.start(GameKey.D).end(GameKey.U)
+    else if (z > end_z + DEAD_ZONE) this.start(GameKey.U).end(GameKey.D)
+    else this.end(GameKey.D, GameKey.U) // reach z
 
     return super.update();
   }

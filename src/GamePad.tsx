@@ -2,12 +2,12 @@ import { useEffect, useRef, useState } from 'react';
 import { IToggleImgProps, ToggleImgButton } from './Component/ToggleImgButton';
 import './GamePad.css';
 import LF2 from './LF2/LF2';
-import { BaseController, KeyName, TKeyName } from './LF2/controller/BaseController';
+import { BaseController } from './LF2/controller/BaseController';
+import GameKey from './LF2/defines/GameKey';
 export interface IGamePadProps {
   lf2?: LF2;
   player_id?: string;
 }
-
 type TRect = { l: number, r: number, t: number, b: number }
 type TCirc = { x: number, y: number, r: number }
 const get_rect = (ele: React.RefObject<HTMLButtonElement>): TRect => {
@@ -102,16 +102,16 @@ export default function GamePad(props: IGamePadProps) {
     if (!player_id || !lf2 || !left_pad) return;
     const pad = left_pad;
     const btn_infos = [
-      { key: KeyName.U, rect: get_rect(ref_btn_U), circ: get_circ(ref_btn_U) },
-      { key: KeyName.D, rect: get_rect(ref_btn_D), circ: get_circ(ref_btn_D) },
-      { key: KeyName.L, rect: get_rect(ref_btn_L), circ: get_circ(ref_btn_L) },
-      { key: KeyName.R, rect: get_rect(ref_btn_R), circ: get_circ(ref_btn_R) },
+      { key: GameKey.U, rect: get_rect(ref_btn_U), circ: get_circ(ref_btn_U) },
+      { key: GameKey.D, rect: get_rect(ref_btn_D), circ: get_circ(ref_btn_D) },
+      { key: GameKey.L, rect: get_rect(ref_btn_L), circ: get_circ(ref_btn_L) },
+      { key: GameKey.R, rect: get_rect(ref_btn_R), circ: get_circ(ref_btn_R) },
     ]
     const prev_pressings = new Map([
-      [KeyName.L, false],
-      [KeyName.R, false],
-      [KeyName.U, false],
-      [KeyName.D, false],
+      [GameKey.L, false],
+      [GameKey.R, false],
+      [GameKey.U, false],
+      [GameKey.D, false],
     ]);
     const touches: ReturnType<typeof copy_touch>[] = [];
     const find_touch_index = (touch_id: number) => {
@@ -120,10 +120,10 @@ export default function GamePad(props: IGamePadProps) {
     const pad_text = ref_pad_text.current!
     const handle_touchs = () => {
       const curr_pressings = new Map([
-        [KeyName.L, false],
-        [KeyName.R, false],
-        [KeyName.U, false],
-        [KeyName.D, false],
+        [GameKey.L, false],
+        [GameKey.R, false],
+        [GameKey.U, false],
+        [GameKey.D, false],
       ]);
       for (const t of touches) {
         for (const { circ, key: k } of btn_infos) {
@@ -187,14 +187,14 @@ export default function GamePad(props: IGamePadProps) {
 
     const pad = right_pad;
     const btn_infos = [
-      { key: KeyName.a, rect: get_rect(ref_btn_a), circ: get_circ(ref_btn_a) },
-      { key: KeyName.j, rect: get_rect(ref_btn_j), circ: get_circ(ref_btn_j) },
-      { key: KeyName.d, rect: get_rect(ref_btn_d), circ: get_circ(ref_btn_d) },
+      { key: GameKey.a, rect: get_rect(ref_btn_a), circ: get_circ(ref_btn_a) },
+      { key: GameKey.j, rect: get_rect(ref_btn_j), circ: get_circ(ref_btn_j) },
+      { key: GameKey.d, rect: get_rect(ref_btn_d), circ: get_circ(ref_btn_d) },
     ]
     const prev_pressings = new Map([
-      [KeyName.a, false],
-      [KeyName.j, false],
-      [KeyName.d, false],
+      [GameKey.a, false],
+      [GameKey.j, false],
+      [GameKey.d, false],
     ]);
     const touches: ReturnType<typeof copy_touch>[] = [];
     const find_touch_index = (touch_id: number) => {
@@ -203,9 +203,9 @@ export default function GamePad(props: IGamePadProps) {
     const pad_text = ref_pad_text.current!
     const handle_touchs = () => {
       const curr_pressings = new Map([
-        [KeyName.a, false],
-        [KeyName.j, false],
-        [KeyName.d, false],
+        [GameKey.a, false],
+        [GameKey.j, false],
+        [GameKey.d, false],
       ]);
       for (const t of touches) {
         for (const { circ, key: k } of btn_infos) {
@@ -264,7 +264,7 @@ export default function GamePad(props: IGamePadProps) {
     }
   }, [controller, lf2, player_id, refresh_tag, right_pad])
   if (!player_id) return <></>;
-  const touch_props = (key: TKeyName): IToggleImgProps => {
+  const touch_props = (key: GameKey): IToggleImgProps => {
     return {
       style: { 'pointerEvents': 'none' },
       disabled: true
@@ -277,28 +277,28 @@ export default function GamePad(props: IGamePadProps) {
         <ToggleImgButton
           className='btn_up'
           ref={ref_btn_U}
-          {...touch_props('U')}
+          {...touch_props(GameKey.U)}
           src={[require('./touch_btn_arrow.png')]}
           alt='up'
           draggable={false} />
         <ToggleImgButton
           className='btn_down'
           ref={ref_btn_D}
-          {...touch_props('D')}
+          {...touch_props(GameKey.D)}
           src={[require('./touch_btn_arrow.png')]}
           alt='down'
           draggable={false} />
         <ToggleImgButton
           className='btn_left'
           ref={ref_btn_L}
-          {...touch_props('L')}
+          {...touch_props(GameKey.L)}
           src={[require('./touch_btn_arrow.png')]}
           alt='left'
           draggable={false} />
         <ToggleImgButton
           className='btn_right'
           ref={ref_btn_R}
-          {...touch_props('R')}
+          {...touch_props(GameKey.R)}
           src={[require('./touch_btn_arrow.png')]}
           alt='right'
           draggable={false} />
@@ -307,21 +307,21 @@ export default function GamePad(props: IGamePadProps) {
         <ToggleImgButton
           className='btn_attack'
           ref={ref_btn_a}
-          {...touch_props('a')}
+          {...touch_props(GameKey.a)}
           src={[require('./touch_btn_a.png')]}
           alt='attack'
           draggable={false} />
         <ToggleImgButton
           className='btn_jump'
           ref={ref_btn_j}
-          {...touch_props('j')}
+          {...touch_props(GameKey.j)}
           src={[require('./touch_btn_j.png')]}
           alt='jump'
           draggable={false} />
         <ToggleImgButton
           className='btn_defense'
           ref={ref_btn_d}
-          {...touch_props('d')}
+          {...touch_props(GameKey.d)}
           src={[require('./touch_btn_d.png')]}
           alt='defense'
           draggable={false} />

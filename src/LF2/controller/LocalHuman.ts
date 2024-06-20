@@ -1,11 +1,12 @@
 import { TNextFrame } from '../defines';
+import GameKey from '../defines/GameKey';
 import { IKeyboardCallback, KeyEvent } from '../dom/Keyboard';
 import Character from '../entity/Character';
-import { BaseController, KeyName } from "./BaseController";
+import { BaseController } from "./BaseController";
 import { BotEnemyChaser } from './BotEnemyChaser';
 
-type TKeyCodeMap = { [x in KeyName]?: string };
-type TCodeKeyMap = { [x in string]?: KeyName };
+type TKeyCodeMap = { [x in GameKey]?: string };
+type TCodeKeyMap = { [x in string]?: GameKey };
 export default class LocalHuman extends BaseController implements IKeyboardCallback {
   readonly is_local_human = true;
   static is = (v: any): v is LocalHuman => v?.is_local_human === true
@@ -42,7 +43,7 @@ export default class LocalHuman extends BaseController implements IKeyboardCallb
   set_key_code_map(key_code_map: TKeyCodeMap) {
     this._key_code_map = {};
     this._code_key_map = {};
-    for (const key of Object.keys(key_code_map) as KeyName[]) {
+    for (const key of Object.keys(key_code_map) as GameKey[]) {
       const code = key_code_map[key]?.toLowerCase()
       if (!code) continue;
       this._key_code_map[key] = code;

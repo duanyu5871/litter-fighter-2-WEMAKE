@@ -1,4 +1,4 @@
-import { TKeyName } from "../../controller/BaseController";
+import GameKey from "../../defines/GameKey";
 import Layout from "../Layout";
 import { LayoutComponent } from "./LayoutComponent";
 
@@ -12,7 +12,7 @@ export class ReachableLayoutGroup extends LayoutComponent {
     return this.layout.root.find_layout(lid) || this.layout
   }
 
-  override on_player_key_down(_player_id: string, key: TKeyName): void {
+  override on_player_key_down(_player_id: string, key: GameKey): void {
     if (!this.binded_layout.global_visible) return;
     if (this.binded_layout.global_disabled) return;
     switch (this.direction) {

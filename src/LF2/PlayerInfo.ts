@@ -2,19 +2,12 @@ import { Warn } from '@fimagine/logger';
 import { is_str } from './utils/type_check';
 import Callbacks from './base/Callbacks';
 import NoEmitCallbacks from "./base/NoEmitCallbacks";
-import type { TKeyName, TKeys } from './controller/BaseController';
-
-const default_keys_list: TKeys[] = [
-  { L: 'a', R: 'd', U: 'w', D: 's', a: 'j', j: 'k', d: 'l' },
-  { L: 'arrowleft', R: 'arrowright', U: 'arrowup', D: 'arrowdown', a: '0', j: '.', d: 'enter' },
-  { L: '', R: '', U: '', D: '', a: '', j: '', d: '' },
-  { L: '', R: '', U: '', D: '', a: '', j: '', d: '' },
-  { L: '', R: '', U: '', D: '', a: '', j: '', d: '' }
-]
-const get_default_keys = (i: number) => default_keys_list[i - 1] || default_keys_list[default_keys_list.length - 1];
+import type { TKeys } from './controller/BaseController';
+import Defines from './defines/defines';
+import GameKey from './defines/GameKey';
 
 export interface IPlayerInfoCallback {
-  on_key_changed?(key_name: TKeyName, value: string, prev: string): void;
+  on_key_changed?(key_name: GameKey, value: string, prev: string): void;
   on_name_changed?(player_name: string, prev: string): void;
   on_character_changed?(character_id: string, prev: string): void;
   on_team_changed?(team: string, prev: string): void;
@@ -70,7 +63,7 @@ export class PlayerInfo {
   get character_decided(): boolean { return this._character_decided; }
   set character_decided(v: boolean) { this.set_character_decided(v); }
 
-  constructor(id: string, name: string = id, keys: TKeys = get_default_keys(Number(id))) {
+  constructor(id: string, name: string = id, keys: TKeys = Defines.get_default_keys(id)) {
     this._info = { id, name, keys, team: '', version: 0, character: '' };
     this.load();
   }
@@ -167,8 +160,8 @@ export class PlayerInfo {
   }
 
   set_key(name: string, key: string): this
-  set_key(name: TKeyName, key: string): this;
-  set_key(name: TKeyName, key: string): this {
+  set_key(name: GameKey, key: string): this;
+  set_key(name: GameKey, key: string): this {
     if (this._info.keys[name] === key) return this;
     const prev = this._info.keys[name];
     this._info.keys[name] = key.toLowerCase();
@@ -177,8 +170,8 @@ export class PlayerInfo {
   }
 
   get_key(name: string): string | undefined;
-  get_key(name: TKeyName): string;
-  get_key(name: TKeyName): string {
+  get_key(name: GameKey): string;
+  get_key(name: GameKey): string {
     return this._info.keys[name];
   }
 

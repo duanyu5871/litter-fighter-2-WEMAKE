@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from "axios";
+import axios, { AxiosResponse, RawAxiosRequestHeaders } from "axios";
 import { is_str } from "../utils/type_check";
 
 const roots = [
@@ -24,17 +24,53 @@ function get_possible_url_list(list: string[]): string[] {
   return ret;
 }
 
+const ct_map = new Map([
+  ['.json', 'application/json'],
+  ['.png', 'image/png'],
+  ['.jpg', 'image/jpeg'],
+  ['.jpeg', 'image/jpeg'],
+  ['.jfif', 'image/jpeg'],
+  ['.pjpeg', 'image/jpeg'],
+  ['.pjp', 'image/jpeg'],
+  ['.bmp', 'image/bmp'],
+  ['.wav', 'audio/wav'],
+  ['.wma', 'audio/x-ms-wma'],
+  ['.mp3', 'audio/mp3'],
+  ['.ogg', 'application/ogg'],
+])
+function get_req_header_accept(url: string): string | undefined {
+  if (url.startsWith('blob')) return void 0;
+  const ques_index = url.indexOf('?') + 1 || url.length + 1;
+  const hash_index = url.indexOf('#') + 1 || url.length + 1;
+  const end_index = Math.min(ques_index, hash_index) - 1;
+
+
+  const path = url.substring(0, end_index).toLowerCase()
+
+  for (const [k, v] of ct_map) {
+    if (path.endsWith(k)) return v;
+  }
+
+  return void 0;
+}
 export async function import_as<T>(responseType: 'json' | 'blob', url: string): Promise<AxiosResponse<T, any>>
 export async function import_as<T>(responseType: 'json' | 'blob', url_list: string[]): Promise<AxiosResponse<T, any>>;
 export async function import_as<T>(responseType: 'json' | 'blob', url_list_or_url: string | string[]): Promise<AxiosResponse<T, any>> {
 
+  const start_req = async (url: string) => {
+    const headers: RawAxiosRequestHeaders = {};
+    const accept = get_req_header_accept(url);
+    if (accept) headers.Accept = accept
+    return await axios.get<T>(url, { responseType, headers })
+  }
+
   if (is_str(url_list_or_url))
-    return await axios.get<T>(url_list_or_url, { responseType })
+    return start_req(url_list_or_url);
 
   const err_list: [string, any][] = [];
   for (const url of url_list_or_url) {
     try {
-      return await axios.get<T>(url, { responseType });
+      return await start_req(url);
     } catch (e) {
       err_list.push([url, e]);
     }

@@ -1,6 +1,6 @@
 import Text from '../../3d/Text';
 import Invoker from '../../base/Invoker';
-import { TKeyName } from '../../controller/BaseController';
+import GameKey from '../../defines/GameKey';
 import Layout from '../Layout';
 import { LayoutComponent } from './LayoutComponent';
 import PlayerKeyEditor from './PlayerKeyEditor';
@@ -48,7 +48,7 @@ export default class PlayerKeyText extends LayoutComponent {
   async update_sprite() {
     const { player } = this;
     if (!player) return;
-    const keycode = player.keys[this.key_name as TKeyName];
+    const keycode = player.keys[this.key_name as GameKey];
     this._sprite.set_text(keycode ?? '').apply();
   }
 }

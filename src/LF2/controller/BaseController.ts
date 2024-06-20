@@ -1,29 +1,24 @@
 import { ICharacterFrameInfo, TNextFrame } from '../defines';
+import GameKey from '../defines/GameKey';
 import { IHitKeyCollection } from '../defines/IHitKeyCollection';
 import { Defines } from '../defines/defines';
 import Character from '../entity/Character';
 import DoubleClick from './DoubleClick';
 
-export type TKeyName = 'L' | 'R' | 'U' | 'D' | 'a' | 'j' | 'd'
-export enum KeyName {
-  L = 'L',
-  R = 'R',
-  U = 'U',
-  D = 'D',
-  a = 'a',
-  j = 'j',
-  d = 'd'
-}
-export type TKeys = Record<KeyName, string>
-export const KEY_NAME_LIST = [KeyName.d, KeyName.L, KeyName.R, KeyName.U, KeyName.D, KeyName.j, KeyName.a] as const;
-export const CONFLICTS_KEY_MAP: Record<KeyName, KeyName | undefined> = {
+export type TKeys = Record<GameKey, string>
+
+export const KEY_NAME_LIST = [
+  GameKey.d, 
+  GameKey.L, GameKey.R, GameKey.U, GameKey.D, 
+  GameKey.j, GameKey.a] as const;
+export const CONFLICTS_KEY_MAP: Record<GameKey, GameKey | undefined> = {
   a: void 0,
   j: void 0,
   d: void 0,
-  [KeyName.L]: KeyName.R,
-  [KeyName.R]: KeyName.L,
-  [KeyName.U]: KeyName.D,
-  [KeyName.D]: KeyName.U,
+  [GameKey.L]: GameKey.R,
+  [GameKey.R]: GameKey.L,
+  [GameKey.U]: GameKey.D,
+  [GameKey.D]: GameKey.U,
 }
 
 export class BaseController {
@@ -44,9 +39,9 @@ export class BaseController {
       this._disposers.add(f);
   }
   character: Character;
-  key_time_maps: Record<KeyName, number> = { L: 0, R: 0, U: 0, D: 0, a: 0, j: 0, d: 0 };
+  key_time_maps: Record<GameKey, number> = { L: 0, R: 0, U: 0, D: 0, a: 0, j: 0, d: 0 };
 
-  readonly dbc_map: Record<KeyName, DoubleClick<ICharacterFrameInfo>>;
+  readonly dbc_map: Record<GameKey, DoubleClick<ICharacterFrameInfo>>;
 
   get LR(): 0 | 1 | -1 {
     const L = !!this.key_time_maps.L;
@@ -67,7 +62,7 @@ export class BaseController {
    * @param keys 指定按键
    * @returns {this}
    */
-  start(...keys: KeyName[]): this {
+  start(...keys: GameKey[]): this {
     for (const k of keys) {
       this.key_time_maps[k] = this._time;
       const ck = CONFLICTS_KEY_MAP[k];
@@ -83,7 +78,7 @@ export class BaseController {
    * @param keys 指定按键
    * @returns {this}
    */
-  hold(...keys: KeyName[]): this {
+  hold(...keys: GameKey[]): this {
     for (const k of keys)
       this.key_time_maps[k] = this._time - this.character.world.key_hit_duration;
     return this;
@@ -94,7 +89,7 @@ export class BaseController {
    * @param keys 指定按键
    * @returns {this}
    */
-  end(...keys: KeyName[]): this {
+  end(...keys: GameKey[]): this {
     for (const k of keys) this.key_time_maps[k] = 0;
     return this;
   }
@@ -104,7 +99,7 @@ export class BaseController {
    * @param keys 指定按键
    * @returns {this}
    */
-  db_hit = (...keys: KeyName[]): this => {
+  db_hit = (...keys: GameKey[]): this => {
     for (const k of keys)
       this.key_time_maps[k] = this._time;
     return this;
@@ -112,30 +107,30 @@ export class BaseController {
 
 
   is_hold(k: string): boolean;
-  is_hold(k: KeyName): boolean;
-  is_hold(k: KeyName): boolean {
+  is_hold(k: GameKey): boolean;
+  is_hold(k: GameKey): boolean {
     return !this.is_hit(k) && !!this.key_time_maps[k];
   }
 
   is_hit(k: string): boolean;
-  is_hit(k: KeyName): boolean;
-  is_hit(k: KeyName): boolean {
+  is_hit(k: GameKey): boolean;
+  is_hit(k: GameKey): boolean {
     const v = this.key_time_maps[k];
     return !!v && this._time - v <= this.character.world.key_hit_duration;
   }
-  is_db_hit(k: KeyName): boolean {
+  is_db_hit(k: GameKey): boolean {
     const { time } = this.dbc_map[k];
     const ret = time > 0 && this._time - time <= this.character.world.key_hit_duration;
     return ret;
   }
   is_end(k: string): boolean;
-  is_end(k: KeyName): boolean;
-  is_end(k: KeyName): boolean {
+  is_end(k: GameKey): boolean;
+  is_end(k: GameKey): boolean {
     return !this.key_time_maps[k];
   }
   is_start(k: string): boolean;
-  is_start(k: KeyName): boolean;
-  is_start(k: KeyName): boolean {
+  is_start(k: GameKey): boolean;
+  is_start(k: GameKey): boolean {
     return this.key_time_maps[k] === this._time - 1;
   }
 
@@ -157,7 +152,7 @@ export class BaseController {
     for (const f of this._disposers) f();
   }
 
-  _key_test(type: 'hit' | 'hold', key: KeyName) {
+  _key_test(type: 'hit' | 'hold', key: GameKey) {
     const conflict_key = CONFLICTS_KEY_MAP[key];
     if (conflict_key && !this.is_end(conflict_key))
       return false;
@@ -170,7 +165,7 @@ export class BaseController {
     const { facing } = character;
     const frame = character.get_frame();
     const { hold: hld, hit, state } = frame;
-    let nf: [TNextFrame | undefined, number, KeyName | undefined] = [void 0, 0, void 0];
+    let nf: [TNextFrame | undefined, number, GameKey | undefined] = [void 0, 0, void 0];
 
     // 按键序列初始化
     if (this.is_start('d')) this._key_list = '';
@@ -184,21 +179,21 @@ export class BaseController {
 
     /** 相对方向的按钮判定 */
     if (facing === 1) {
-      if (hit?.F && hit_R && end_L && nf[1] < this.key_time_maps.R) nf = [hit.F, this.key_time_maps.R, KeyName.R];
-      if (hit?.B && hit_L && end_R && nf[1] < this.key_time_maps.L) nf = [hit.B, this.key_time_maps.L, KeyName.L];
-      if (hld?.F && hold_R && end_L && nf[1] < this.key_time_maps.R) nf = [hld.F, this.key_time_maps.R, KeyName.R];
-      if (hld?.B && hold_L && end_R && nf[1] < this.key_time_maps.L) nf = [hld.B, this.key_time_maps.L, KeyName.L];
+      if (hit?.F && hit_R && end_L && nf[1] < this.key_time_maps.R) nf = [hit.F, this.key_time_maps.R, GameKey.R];
+      if (hit?.B && hit_L && end_R && nf[1] < this.key_time_maps.L) nf = [hit.B, this.key_time_maps.L, GameKey.L];
+      if (hld?.F && hold_R && end_L && nf[1] < this.key_time_maps.R) nf = [hld.F, this.key_time_maps.R, GameKey.R];
+      if (hld?.B && hold_L && end_R && nf[1] < this.key_time_maps.L) nf = [hld.B, this.key_time_maps.L, GameKey.L];
     } else {
-      if (hit?.F && hit_L && end_R && nf[1] < this.key_time_maps.L) nf = [hit.F, this.key_time_maps.L, KeyName.L];
-      if (hit?.B && hit_R && end_L && nf[1] < this.key_time_maps.R) nf = [hit.B, this.key_time_maps.R, KeyName.R];
-      if (hld?.F && hold_L && end_R && nf[1] < this.key_time_maps.L) nf = [hld.F, this.key_time_maps.L, KeyName.L];
-      if (hld?.B && hold_R && end_L && nf[1] < this.key_time_maps.R) nf = [hld.B, this.key_time_maps.R, KeyName.R];
+      if (hit?.F && hit_L && end_R && nf[1] < this.key_time_maps.L) nf = [hit.F, this.key_time_maps.L, GameKey.L];
+      if (hit?.B && hit_R && end_L && nf[1] < this.key_time_maps.R) nf = [hit.B, this.key_time_maps.R, GameKey.R];
+      if (hld?.F && hold_L && end_R && nf[1] < this.key_time_maps.L) nf = [hld.F, this.key_time_maps.L, GameKey.L];
+      if (hld?.B && hold_R && end_L && nf[1] < this.key_time_maps.R) nf = [hld.B, this.key_time_maps.R, GameKey.R];
     }
     /** 相对方向的双击判定 */
-    if (hit?.FF && facing < 0 && this.is_db_hit(KeyName.L)) nf = [hit.FF, this.dbc_map.L.time, void 0];
-    if (hit?.BB && facing > 0 && this.is_db_hit(KeyName.L)) nf = [hit.BB, this.dbc_map.L.time, void 0];
-    if (hit?.BB && facing < 0 && this.is_db_hit(KeyName.R)) nf = [hit.BB, this.dbc_map.R.time, void 0];
-    if (hit?.FF && facing > 0 && this.is_db_hit(KeyName.R)) nf = [hit.FF, this.dbc_map.R.time, void 0];
+    if (hit?.FF && facing < 0 && this.is_db_hit(GameKey.L)) nf = [hit.FF, this.dbc_map.L.time, void 0];
+    if (hit?.BB && facing > 0 && this.is_db_hit(GameKey.L)) nf = [hit.BB, this.dbc_map.L.time, void 0];
+    if (hit?.BB && facing < 0 && this.is_db_hit(GameKey.R)) nf = [hit.BB, this.dbc_map.R.time, void 0];
+    if (hit?.FF && facing > 0 && this.is_db_hit(GameKey.R)) nf = [hit.FF, this.dbc_map.R.time, void 0];
 
     for (const key of KEY_NAME_LIST) {
       /** 加入按键序列，但d除外，因为d是按键序列的开始 */
@@ -233,7 +228,7 @@ export class BaseController {
         if (this.is_hit('a')) {
           const super_punch = character.find_v_rest((_, v) => v.itr.kind === Defines.ItrKind.SuperPunchMe);
           if (super_punch) {
-            nf = [{ id: character.data.indexes.super_punch }, this.key_time_maps.a, KeyName.a];
+            nf = [{ id: character.data.indexes.super_punch }, this.key_time_maps.a, GameKey.a];
           }
           console.log("super_punch:", super_punch)
         }

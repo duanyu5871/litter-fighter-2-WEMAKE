@@ -1,6 +1,6 @@
 import type { PlayerInfo } from "../../PlayerInfo";
 import Invoker from '../../base/Invoker';
-import { TKeyName } from '../../controller/BaseController';
+import GameKey from "../../defines/GameKey";
 import { Defines } from '../../defines/defines';
 import GamePrepareLogic, { GamePrepareState } from './GamePrepareLogic';
 import { LayoutComponent } from "./LayoutComponent";
@@ -65,7 +65,7 @@ export default class CharacterSelLogic extends LayoutComponent {
     return show_all ? all_characters : all_characters.filter(v => !v.base.hidden);
   }
 
-  on_player_key_down(player_id: string, key: TKeyName): void {
+  on_player_key_down(player_id: string, key: GameKey): void {
     const { gpl } = this;
     if (!gpl) {
       return;

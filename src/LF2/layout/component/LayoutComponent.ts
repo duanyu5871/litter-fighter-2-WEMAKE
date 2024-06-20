@@ -1,4 +1,5 @@
-import type { TKeyName } from '../../controller/BaseController';
+import GameKey from '../../defines/GameKey';
+import Defines from '../../defines/defines';
 import Layout from '../Layout';
 
 
@@ -49,6 +50,6 @@ export class LayoutComponent {
   on_blur?(): void;
   on_foucs?(): void;
   on_render?(dt: number): void;
-  on_player_key_down?(player_id: string, key: TKeyName): void;
-  on_player_key_up?(player_id: string, key: TKeyName): void;
+  on_player_key_down?(player_id: string, key: GameKey): void;
+  on_player_key_up?(player_id: string, key: GameKey): void;
 }
