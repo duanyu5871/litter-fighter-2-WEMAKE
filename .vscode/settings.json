@@ -1,4 +1,5 @@
 {
+  "eslint.nodeEnv": "development",
   "editor.minimap.autohide": false,
   "editor.rulers": [
     80

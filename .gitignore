@@ -29,3 +29,6 @@ src/lf2_data
 public/lf2_data
 tool/json
 tool/dist
+
+deployer/dist
+.env
