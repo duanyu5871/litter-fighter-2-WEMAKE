@@ -1,0 +1,13 @@
+{
+  "release": {
+    "SSH_HOST": "120.76.98.130",
+    "SSH_PORT": "22",
+    "SSH_USER": "root",
+    "__SSH_PASS": "",
+    "SSH_PRI_KEY_PATH": "C:/Users/Gimho/.ssh/120.76.98.130.pem",
+    "__SSH_PRI_KEY_PASS": "",
+    "REMOTE_DIR": "/root/frontends/lf2",
+    "REMOTE_BACKUP_DIR": "/root/frontends/lf2_backup",
+    "LOCAL_DIR": "./build"
+  }
+}
