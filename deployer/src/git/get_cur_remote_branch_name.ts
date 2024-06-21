@@ -8,11 +8,10 @@ export const get_cur_remote_branch_name = () => {
   const result = exec_sync(`git branch -vv`)
     ?.split('\n')
     ?.find(v => v.startsWith(`* ${l_b_name}`))
-    ?.match(/\[(.*?)(: .*?)?\]/)?.[1];
+    ?.match(/\[(.*?)(: .*?)?\]/);
   if (result) {
     ret[0] = result[1];
     ret[1] = result[2];
   }
   return ret
 };
-'* main 70da0c3 [origin/main: behind 1] .'.match(/\[(.*?)\]/)

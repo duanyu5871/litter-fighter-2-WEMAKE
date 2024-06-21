@@ -9,6 +9,8 @@
     "REMOTE_DIR": "/root/frontends/lf2",
     "REMOTE_BACKUP_DIR": "/root/frontends/lf2_backup",
     "LOCAL_DIR": "./build",
-    "GIT_BRANCH": "origin/main"
+    "GIT_BRANCH": "origin/main",
+    "__GIT_NO_BEHIND": false,
+    "__GIT_NO_AHEAD": false
   }
 }

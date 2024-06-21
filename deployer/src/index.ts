@@ -29,7 +29,8 @@ async function main() {
     REMOTE_TMP_DIR,
     SSH_PRI_KEY_PASS,
     GIT_BRANCH,
-    GIT_NO_LEFT_BEHIND = true,
+    GIT_NO_BEHIND = true,
+    GIT_NO_AHEAD = true,
   } = release
 
   if (GIT_BRANCH) {
@@ -38,8 +39,10 @@ async function main() {
       return app_log_error("无法获取当前git远端分支名");
     if (GIT_BRANCH !== c_r_b_name)
       return app_log_error('git分支不正确, 当前:', c_r_b_name, ",要求:", GIT_BRANCH);
-    if (GIT_NO_LEFT_BEHIND && is_behind(c_r_b_name))
-      return app_log_error('git本地分支落后远端分支')
+    if (GIT_NO_BEHIND && status?.startsWith(': behind'))
+      return app_log_error('git 不允许本地分支 < 远端分支')
+    if (GIT_NO_AHEAD && status?.startsWith(': ahead'))
+      return app_log_error('git 不允许本地分支 > 远端分支')
   }
 
   if (!is_str(SSH_HOST)) return app_log_error('未指定 SSH_HOST');
