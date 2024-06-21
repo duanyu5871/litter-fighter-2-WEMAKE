@@ -8,6 +8,7 @@
     "__SSH_PRI_KEY_PASS": "",
     "REMOTE_DIR": "/root/frontends/lf2",
     "REMOTE_BACKUP_DIR": "/root/frontends/lf2_backup",
-    "LOCAL_DIR": "./build"
+    "LOCAL_DIR": "./build",
+    "GIT_BRANCH": "origin/main"
   }
 }

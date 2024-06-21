@@ -1,6 +1,7 @@
 import { readFileSync } from 'fs';
 import { readFile } from 'fs/promises';
 import Promises from './Promises';
+import { get_cur_remote_branch_name } from './git/get_cur_remote_branch_name';
 import { app_log, app_log_error } from './utils/app_log';
 import { check_remote_absolute_path } from './utils/check_remote_absolute_path';
 import { get_path_collection } from './utils/get_path_collection';
@@ -8,6 +9,7 @@ import { get_short_file_size_txt } from './utils/get_short_file_size_txt';
 import { is_str } from './utils/is_str';
 import { progress_log, progress_log_end, progress_log_start } from './utils/progress_log';
 import { ss2_log } from './utils/ss2_log';
+import { is_behind } from './git/is_behind';
 
 let client: Promises.Client | null = null;
 let sftp: Promises.SFTPWrapper | null = null;
@@ -25,8 +27,20 @@ async function main() {
     REMOTE_BACKUP_DIR,
     LOCAL_DIR,
     REMOTE_TMP_DIR,
-    SSH_PRI_KEY_PASS
+    SSH_PRI_KEY_PASS,
+    GIT_BRANCH,
+    GIT_NO_LEFT_BEHIND = true,
   } = release
+
+  if (GIT_BRANCH) {
+    const [c_r_b_name, status] = get_cur_remote_branch_name()
+    if (!c_r_b_name || !is_str(c_r_b_name))
+      return app_log_error("无法获取当前git远端分支名");
+    if (GIT_BRANCH !== c_r_b_name)
+      return app_log_error('git分支不正确, 当前:', c_r_b_name, ",要求:", GIT_BRANCH);
+    if (GIT_NO_LEFT_BEHIND && is_behind(c_r_b_name))
+      return app_log_error('git本地分支落后远端分支')
+  }
 
   if (!is_str(SSH_HOST)) return app_log_error('未指定 SSH_HOST');
   if (!is_str(SSH_PORT)) return app_log_error('未指定 SSH_PORT');
