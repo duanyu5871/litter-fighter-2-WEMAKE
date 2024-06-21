@@ -75,7 +75,7 @@
     "build_tool": "tsc -p ./tool",
     "build_deployer": "tsc -p ./deployer",
     "build_lf2_data": "tsc -p ./tool && node ./tool",
-    "deploy": "tsc -p ./deployer && node ./deployer",
+    "deploy": "tsc -p ./deployer && node ./deployer -- -s release",
     "full": "npm run build_lf2_data && npm run build && npm run deploy"
   },
   "eslintConfig": {
