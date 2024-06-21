@@ -24,5 +24,5 @@ export const progress_log_end = (verbose: any, ...args: any[]) => {
 }
 export const progress_log_start = (verbose: any, ...args: any[]) => {
   args.unshift('[deployer]')
-  return console.log('\n');
+  return console.log(...args);
 }
