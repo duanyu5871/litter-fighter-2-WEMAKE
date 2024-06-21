@@ -7,6 +7,7 @@ import { read_indexes } from '../../src/LF2/dat_translator/read_indexes';
 import { ICharacterData, IDataLists } from '../../src/LF2/defines';
 import { read_lf2_dat_file } from './read_old_lf2_dat_file';
 import { read_text_file } from './utils/read_text_file';
+import command_exists from 'command-exists';
 
 let steps = {
   del_old: true,
@@ -88,10 +89,13 @@ async function parse_under_dir(src_dir_path: string, dst_dir_path: string, index
       if (dst_stat?.isFile() || dst_stat?.isDirectory())
         await fs.rm(_dst_path, { recursive: true, force: true })
       const args = ['-i', src_path, '-codec:a', 'libvorbis', '-b:a', '64k', '-ar', '44100', _dst_path];
-      await new Promise((a, b) => {
+
+      if (!command_exists.sync('ffmpeg'))
+        throw new Error("ffmpeg not found, download it from: https://ffmpeg.org/download.html")
+
+      await new Promise((resolve, reject) => {
         console.log('convert', src_path, '=>', _dst_path)
-        const temp = spawn('ffmpeg', args).on('exit', a).on('error', b)
-        // temp.stdout.on('data', d => console.log(filename, 'stdout: ' + d));
+        const temp = spawn('ffmpeg', args).on('exit', resolve).on('error', reject)
         temp.stderr.on('data', d => console.error(filename, 'stderr: ' + d));
       })
     } else if (filename.endsWith('.bmp')) {
@@ -108,10 +112,13 @@ async function parse_under_dir(src_dir_path: string, dst_dir_path: string, index
         "-opaque", "rgb(0,0,0)",
         _dst_path
       ];
-      await new Promise((a, b) => {
+
+      if (!command_exists.sync('magick2'))
+        throw new Error("magick not found, download it from: https://imagemagick.org/script/download.php")
+
+      await new Promise((resolve, reject) => {
         console.log('convert', src_path, '=>', _dst_path)
-        const temp = spawn('magick', args).on('exit', a).on('error', b)
-        // temp.stdout.on('data', d => console.log(filename, 'stdout: ' + d));
+        const temp = spawn('magick', args).on('exit', resolve).on('error', reject)
         temp.stderr.on('data', d => console.error(filename, 'stderr: ' + d));
       })
     } else if (steps.others) {
