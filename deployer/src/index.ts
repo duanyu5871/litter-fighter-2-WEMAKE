@@ -10,6 +10,7 @@ import { is_str } from './utils/is_str';
 import { progress_log, progress_log_end, progress_log_start } from './utils/progress_log';
 import { ss2_log } from './utils/ss2_log';
 import { is_behind } from './git/is_behind';
+import { is_dirty } from './git/is_dirty';
 
 let client: Promises.Client | null = null;
 let sftp: Promises.SFTPWrapper | null = null;
@@ -31,6 +32,7 @@ async function main() {
     GIT_BRANCH,
     GIT_NO_BEHIND = true,
     GIT_NO_AHEAD = true,
+    GIT_NO_DIRTY = true,
   } = release
 
   if (GIT_BRANCH) {
@@ -43,6 +45,8 @@ async function main() {
       return app_log_error('git 不允许本地分支 < 远端分支')
     if (GIT_NO_AHEAD && status?.startsWith(': ahead'))
       return app_log_error('git 不允许本地分支 > 远端分支')
+    if (GIT_NO_DIRTY && is_dirty())
+      return app_log_error('git 不允许存在未提交代码')
   }
 
   if (!is_str(SSH_HOST)) return app_log_error('未指定 SSH_HOST');
