@@ -9,7 +9,7 @@ import { get_arg_map } from './utils/get_arg_map';
 import { get_path_collection } from './utils/get_path_collection';
 import { get_short_file_size_txt } from './utils/get_short_file_size_txt';
 import { is_str } from './utils/is_str';
-import { progress_log, progress_log_end, progress_log_start } from './utils/progress_log';
+import progress_log from './utils/progress_log';
 import { ss2_log } from './utils/ss2_log';
 
 let client: Promises.Client | null = null;
@@ -131,19 +131,21 @@ async function main() {
       await client.exec(`mkdir -p ${remote_dir_path} ${verbose}`)
     }
     try {
-      progress_log_start(verbose, `即将上传${local_file_paths.size}个文件，共${get_short_file_size_txt(size_sum)}`);
+      progress_log.verbose = !!verbose;
+
+      progress_log.start(`即将上传${local_file_paths.size}个文件，共${get_short_file_size_txt(size_sum)}`);
       for (const path of local_file_paths) {
         const remote_path = path.replace(LOCAL_DIR, remote_tmp_path)
         const progress_txt = `[${++file_idx}/${local_file_paths.size}] sftp put "${path}" to "${remote_path}"`
-        progress_log(verbose, progress_txt, `(0%)`)
+        progress_log.log(progress_txt, `(0%)`)
         await sftp.fastPut(path, remote_path, {
-          step: (total, _nb, fsize) => progress_log(verbose, progress_txt, `(${(100 * total / fsize).toFixed()}%)`)
+          step: (total, _nb, fsize) => progress_log.log(progress_txt, `(${(100 * total / fsize).toFixed()}%)`)
         })
       }
     } catch (e) {
       throw e
     } finally {
-      progress_log_end(verbose, "上传完毕");
+      progress_log.end("上传完毕");
     }
 
     await client.sequence_exec(
