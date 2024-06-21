@@ -1,0 +1,8 @@
+{
+  "release": {
+    "SSH_USER": "root",
+    "__SSH_PASS": "",
+    "SSH_PRI_KEY_PATH": "C:/Users/Gimho/.ssh/120.76.98.130.pem",
+    "__SSH_PRI_KEY_PASS": ""
+  }
+}

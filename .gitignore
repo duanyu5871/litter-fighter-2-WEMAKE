@@ -31,4 +31,4 @@ tool/json
 tool/dist
 
 deployer/dist
-deployer.private.template.json
+deployer.private.json
