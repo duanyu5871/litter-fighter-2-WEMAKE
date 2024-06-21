@@ -113,7 +113,7 @@ async function parse_under_dir(src_dir_path: string, dst_dir_path: string, index
         _dst_path
       ];
 
-      if (!command_exists.sync('magick2'))
+      if (!command_exists.sync('magick'))
         throw new Error("magick not found, download it from: https://imagemagick.org/script/download.php")
 
       await new Promise((resolve, reject) => {
@@ -146,7 +146,7 @@ async function main() {
   if (steps.zipping) {
     console.log('zipping', CONVERTED_DATA_PATH, '=>', ZIP_PATH)
     await fs.rm(ZIP_PATH)
-    await compressing.zip.compressDir(CONVERTED_DATA_PATH, ZIP_PATH)
+    await compressing.zip.compressDir(CONVERTED_DATA_PATH + '/', ZIP_PATH)
     await fs.rm(CONVERTED_DATA_PATH, { recursive: true, force: true })
   }
 }

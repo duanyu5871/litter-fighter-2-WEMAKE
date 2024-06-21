@@ -29,6 +29,22 @@ import './init';
 import { useLocalBoolean, useLocalNumber, useLocalString } from './useLocalStorage';
 import { is_weapon } from './LF2/entity/type_check';
 import float_equal from './LF2/utils/math/float_equal';
+import img_btn_0_0 from './assets/btn_0_0.png'
+import img_btn_0_1 from './assets/btn_0_1.png'
+import img_btn_0_2 from './assets/btn_0_2.png'
+import img_btn_0_3 from './assets/btn_0_3.png'
+import img_btn_1_0 from './assets/btn_1_0.png'
+import img_btn_1_1 from './assets/btn_1_1.png'
+import img_btn_1_2 from './assets/btn_1_2.png'
+import img_btn_1_3 from './assets/btn_1_3.png'
+import img_btn_2_0 from './assets/btn_2_0.png'
+import img_btn_2_1 from './assets/btn_2_1.png'
+import img_btn_2_2 from './assets/btn_2_2.png'
+import img_btn_2_3 from './assets/btn_2_3.png'
+import img_btn_3_0 from './assets/btn_3_0.png'
+import img_btn_3_1 from './assets/btn_3_1.png'
+import img_btn_3_2 from './assets/btn_3_2.png'
+import img_btn_3_3 from './assets/btn_3_3.png'
 
 const fullscreen = new FullScreen()
 function App() {
@@ -291,36 +307,36 @@ function App() {
           <ToggleImgButton
             checked={control_panel_visible}
             onClick={() => set_control_panel_visible(v => !v)}
-            src={[require('./btn_1_2.png'), require('./btn_1_3.png')]} />
+            src={[img_btn_1_2, img_btn_1_3]} />
         </Show>
         <ToggleImgButton
           checked={is_fullscreen}
           onClick={() => toggle_fullscreen()}
-          src={[require('./btn_3_1.png'), require('./btn_3_2.png')]} />
+          src={[img_btn_3_1, img_btn_3_2]} />
         <ToggleImgButton
           checked={bgm_muted}
           onClick={() => lf2?.sounds?.set_bgm_muted(!bgm_muted)}
-          src={[require('./btn_2_0.png'), require('./btn_3_0.png')]} />
+          src={[img_btn_2_0, img_btn_3_0]} />
         <ToggleImgButton
           checked={sound_muted}
           onClick={() => lf2?.sounds?.set_sound_muted(!sound_muted)}
-          src={[require('./btn_0_3.png'), require('./btn_1_0.png')]} />
+          src={[img_btn_0_3, img_btn_1_0]} />
         <Show show={bg_id !== Defines.VOID_BG.id}>
           <ToggleImgButton
             checked={paused}
             onClick={() => lf2?.world.set_paused(!paused)}
-            src={[require('./btn_2_1.png'), require('./btn_2_2.png')]} />
+            src={[img_btn_2_1, img_btn_2_2]} />
         </Show>
         <Show show={layouts.length > 1 && !loading && layout_id !== 'launch' && layout_id !== 'ctrl_settings'}>
           <ToggleImgButton
             onClick={() => lf2?.push_layout("ctrl_settings")}
-            src={[require('./btn_1_1.png'), require('./btn_1_1.png')]} />
+            src={[img_btn_1_1, img_btn_1_1]} />
         </Show>
         <Show show={layout_id && Number(lf2?.layout_stacks.length) > 1}>
           <ToggleImgButton
             shortcut='F4'
             onClick={() => lf2?.pop_layout()}
-            src={[require('./btn_2_3.png')]} />
+            src={[img_btn_2_3]} />
         </Show>
       </div>
       <Show.Div className={'debug_ui debug_ui_' + debug_ui_pos} show={control_panel_visible}>

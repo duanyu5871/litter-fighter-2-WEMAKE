@@ -4,6 +4,10 @@ import './GamePad.css';
 import LF2 from './LF2/LF2';
 import { BaseController } from './LF2/controller/BaseController';
 import GameKey from './LF2/defines/GameKey';
+import img_touch_btn_arrow from './assets/touch_btn_arrow.png'
+import img_touch_btn_a from './assets/touch_btn_a.png'
+import img_touch_btn_j from './assets/touch_btn_j.png'
+import img_touch_btn_d from './assets/touch_btn_d.png'
 export interface IGamePadProps {
   lf2?: LF2;
   player_id?: string;
@@ -278,28 +282,28 @@ export default function GamePad(props: IGamePadProps) {
           className='btn_up'
           ref={ref_btn_U}
           {...touch_props(GameKey.U)}
-          src={[require('./touch_btn_arrow.png')]}
+          src={[img_touch_btn_arrow]}
           alt='up'
           draggable={false} />
         <ToggleImgButton
           className='btn_down'
           ref={ref_btn_D}
           {...touch_props(GameKey.D)}
-          src={[require('./touch_btn_arrow.png')]}
+          src={[img_touch_btn_arrow]}
           alt='down'
           draggable={false} />
         <ToggleImgButton
           className='btn_left'
           ref={ref_btn_L}
           {...touch_props(GameKey.L)}
-          src={[require('./touch_btn_arrow.png')]}
+          src={[img_touch_btn_arrow]}
           alt='left'
           draggable={false} />
         <ToggleImgButton
           className='btn_right'
           ref={ref_btn_R}
           {...touch_props(GameKey.R)}
-          src={[require('./touch_btn_arrow.png')]}
+          src={[img_touch_btn_arrow]}
           alt='right'
           draggable={false} />
       </div>
@@ -308,21 +312,21 @@ export default function GamePad(props: IGamePadProps) {
           className='btn_attack'
           ref={ref_btn_a}
           {...touch_props(GameKey.a)}
-          src={[require('./touch_btn_a.png')]}
+          src={[img_touch_btn_a]}
           alt='attack'
           draggable={false} />
         <ToggleImgButton
           className='btn_jump'
           ref={ref_btn_j}
           {...touch_props(GameKey.j)}
-          src={[require('./touch_btn_j.png')]}
+          src={[img_touch_btn_j]}
           alt='jump'
           draggable={false} />
         <ToggleImgButton
           className='btn_defense'
           ref={ref_btn_d}
           {...touch_props(GameKey.d)}
-          src={[require('./touch_btn_d.png')]}
+          src={[img_touch_btn_d]}
           alt='defense'
           draggable={false} />
       </div>
