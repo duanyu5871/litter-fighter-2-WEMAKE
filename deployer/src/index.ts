@@ -131,9 +131,8 @@ async function main() {
       await client.exec(`mkdir -p ${remote_dir_path} ${verbose}`)
     }
 
-    app_log(`即将上传${local_file_paths.size}个文件，共${get_short_file_size_txt(size_sum)}`)
     try {
-      progress_log_start(verbose);
+      progress_log_start(`即将上传${local_file_paths.size}个文件，共${get_short_file_size_txt(size_sum)}`);
       for (const path of local_file_paths) {
         const remote_path = path.replace(LOCAL_DIR, remote_tmp_path)
         const progress_txt = `[${++file_idx}/${local_file_paths.size}] sftp put "${path}" to "${remote_path}"`
