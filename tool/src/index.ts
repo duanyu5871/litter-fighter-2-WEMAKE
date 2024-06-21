@@ -1,5 +1,5 @@
 import { spawn } from 'child_process';
-import compressing from 'compressing';
+import { zip } from 'compressing';
 import fs, { readFile } from 'fs/promises';
 import path from 'path';
 import dat_to_json from '../../src/LF2/dat_translator/dat_2_json';
@@ -145,10 +145,11 @@ async function main() {
   }
   if (steps.zipping) {
     console.log('zipping', CONVERTED_DATA_PATH, '=>', ZIP_PATH)
-    await fs.rm(ZIP_PATH)
-    await compressing.zip.compressDir(CONVERTED_DATA_PATH + '/', ZIP_PATH)
-    await fs.rm(CONVERTED_DATA_PATH, { recursive: true, force: true })
+    await fs.unlink(ZIP_PATH).catch(() => { })
+    await zip.compressDir(CONVERTED_DATA_PATH, ZIP_PATH, { ignoreBase: true })
   }
+  if (steps.converting)
+    await fs.rm(CONVERTED_DATA_PATH, { recursive: true, force: true })
 }
 
 main()

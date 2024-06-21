@@ -18,7 +18,6 @@ export default class VsModeLogic extends LayoutComponent implements ICharacterCa
   }
 
   on_dead() {
-    debugger
     const team_alives = new Map<string, number>()
     for (const e of this.world.entities) {
       if (!is_character(e) || e.hp < 0) continue;

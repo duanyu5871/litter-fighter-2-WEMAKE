@@ -14,10 +14,8 @@ class Actor {
     ['loop_img', (l) => l.to_next_img()],
     ['load_data', ({ lf2 }, url) => {
       if (lf2.loading) return;
-      lf2.load('lf2.data.zip')
-        .catch(e => Warn.print('Actor.load_data, lf2.data.zip not exists, will try lf2_data', e))
-        .then(() => lf2.load())
-        .catch(e => Warn.print('Actor.load_data', e))
+      lf2.load(url)
+        .catch(e => Warn.print(`Actor.load_data, ${url} not exists`, e))
     }],
     ['broadcast', ({ lf2 }, message) => message && lf2.broadcast(message)],
     ['sound', ({ lf2 }, name) => name && lf2.sounds.play_preset(name)],

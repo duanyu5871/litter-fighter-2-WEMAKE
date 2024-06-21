@@ -115,7 +115,6 @@ class Inner {
       await this._add_data(src, await this.lf2.import_json(src))
     }
 
-
     const { objects, backgrounds } = await this.lf2.import_json('data/data.json');
     if (this.cancelled) throw new Error('cancelled')
 
