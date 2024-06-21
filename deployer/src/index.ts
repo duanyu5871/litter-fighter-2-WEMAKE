@@ -145,7 +145,7 @@ async function main() {
     } catch (e) {
       throw e
     } finally {
-      progress_log_end(verbose);
+      progress_log_end(verbose, "上传完毕");
     }
 
     await client.sequence_exec(
