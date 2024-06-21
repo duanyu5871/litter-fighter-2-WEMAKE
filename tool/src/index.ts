@@ -1,6 +1,6 @@
 import { spawn } from 'child_process';
 import compressing from 'compressing';
-import fs from 'fs/promises';
+import fs, { readFile } from 'fs/promises';
 import path from 'path';
 import dat_to_json from '../../src/LF2/dat_translator/dat_2_json';
 import { read_indexes } from '../../src/LF2/dat_translator/read_indexes';
@@ -38,7 +38,6 @@ async function parse_indexes(src_path: string): Promise<IDataLists | undefined> 
   const text = await read_text_file(src_path)
   return read_indexes(text);
 }
-
 async function parse_under_dir(src_dir_path: string, dst_dir_path: string, indexes: IDataLists | undefined) {
   if (steps.del_old) await fs.rmdir(dst_dir_path, { recursive: true }).catch(_ => void 0)
   await fs.mkdir(dst_dir_path, { recursive: true }).catch(_ => void 0)
@@ -121,15 +120,28 @@ async function parse_under_dir(src_dir_path: string, dst_dir_path: string, index
     }
   }
 }
-
 async function main() {
+  const {
+    RAW_LF2_PATH,
+    CONVERTED_DATA_PATH,
+    ZIP_PATH,
+  } = await readFile('./converter.config.json').then(buf => JSON.parse(buf.toString()))
+  if (typeof RAW_LF2_PATH !== 'string') throw new Error('未设置RAW_LF2_PATH')
+  if (typeof CONVERTED_DATA_PATH !== 'string') throw new Error('未设置CONVERTED_DATA_PATH')
+  if (typeof ZIP_PATH !== 'string') throw new Error('未设置ZIP_PATH')
+
   if (steps.converting) {
-    const indexes = await parse_indexes('./LittleFighter/data/data.txt');
-    await parse_under_dir('./LittleFighter', '../public/lf2_data', indexes);
-    await fs.writeFile('../public/lf2_data/data/data.json', JSON.stringify(indexes, null, 2).replace(/\.dat"/g, ".json\""));
+    const indexes = await parse_indexes(`${RAW_LF2_PATH}/data/data.txt`);
+    await fs.rm(CONVERTED_DATA_PATH, { recursive: true, force: true })
+    await parse_under_dir(RAW_LF2_PATH, CONVERTED_DATA_PATH, indexes);
+    await fs.writeFile(`${CONVERTED_DATA_PATH}/data/data.json`, JSON.stringify(indexes, null, 2).replace(/\.dat"/g, ".json\""));
   }
-  console.log('zipping', '../public/lf2_data', '=>', '../public/lf2.data.zip')
-  compressing.zip.compressDir('../public/lf2_data', '../public/lf2.data.zip')
+  if (steps.zipping) {
+    console.log('zipping', CONVERTED_DATA_PATH, '=>', ZIP_PATH)
+    await fs.rm(ZIP_PATH)
+    await compressing.zip.compressDir(CONVERTED_DATA_PATH, ZIP_PATH)
+    await fs.rm(CONVERTED_DATA_PATH, { recursive: true, force: true })
+  }
 }
 
 main()

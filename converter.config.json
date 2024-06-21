@@ -1,0 +1,5 @@
+{
+  "RAW_LF2_PATH": "./tool/LittleFighter",
+  "CONVERTED_DATA_PATH": "./public/lf2_data",
+  "ZIP_PATH": "./public/lf2.data.zip"
+}

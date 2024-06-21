@@ -61,7 +61,6 @@
     "tailwindcss": "^3.0.2",
     "terser-webpack-plugin": "^5.2.5",
     "three": "^0.161.0",
-    "typescript": "^4.9.5",
     "use-immer": "^0.9.0",
     "web-vitals": "^2.1.4",
     "webpack": "^5.64.4",
@@ -73,8 +72,11 @@
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js",
-    "serve": "serve -s build",
-    "deploy": "npm run build && tsc -p ./deployer && node ./deployer/dist"
+    "build_tool": "tsc -p ./tool",
+    "build_deployer": "tsc -p ./deployer",
+    "build_lf2_data": "tsc -p ./tool && node ./tool",
+    "deploy": "tsc -p ./deployer && node ./deployer",
+    "full": "npm run build_lf2_data && npm run build && npm run deploy"
   },
   "eslintConfig": {
     "extends": [
@@ -154,6 +156,7 @@
     "@types/spark-md5": "^3.0.4",
     "@types/ssh2": "^1.15.0",
     "@types/three": "^0.161.2",
-    "ssh2": "^1.15.0"
+    "ssh2": "^1.15.0",
+    "typescript": "^5.5.2"
   }
 }
