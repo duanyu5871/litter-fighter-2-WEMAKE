@@ -5,6 +5,7 @@ import type { IBallData, IBallFrameInfo, IBallInfo, IBdyInfo, IItrInfo, IOpointI
 import { Defines } from '../defines/defines';
 import { BALL_STATES } from '../state/ball';
 import Entity from './Entity';
+import { is_character, is_weapon } from './type_check';
 
 export default class Ball extends Entity<IBallFrameInfo, IBallInfo, IBallData> {
   readonly is_ball = true
@@ -34,9 +35,10 @@ export default class Ball extends Entity<IBallFrameInfo, IBallInfo, IBallData> {
   }
   on_collision(target: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
     super.on_collision(target, itr, bdy, a_cube, b_cube);
-    if (target.data.type === Defines.EntityEnum.Character) {
+    if (is_character(target) || is_weapon(target)) {
       const f = this.get_frame();
-      f.on_hitting && this.enter_frame(f.on_hitting);
+      if (f.on_dead) this.enter_frame(f.on_dead)
+      else if (f.on_hitting) this.enter_frame(f.on_hitting);
       this.velocity.x = 0;
       this.velocity.z = 0;
       this.velocity.y = 0;
