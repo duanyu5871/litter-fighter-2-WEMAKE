@@ -147,6 +147,7 @@ export namespace Defines {
     PickSecretly = 7,
 
     Heal = 8,         // injury数值变成治療多少hp，动作跳至dvx ?
+    
     DeadWhenHit = 9,  // 打中敵人自己hp歸0(如John的防護罩) |
     MagicFlute = 10,  // henry魔王之樂章效果
     Block = 14,       // 阻擋

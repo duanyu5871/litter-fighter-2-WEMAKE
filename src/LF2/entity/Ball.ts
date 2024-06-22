@@ -6,6 +6,7 @@ import { Defines } from '../defines/defines';
 import { BALL_STATES } from '../state/ball';
 import Entity from './Entity';
 import { is_character, is_weapon } from './type_check';
+import { Log } from '../../Log';
 
 export default class Ball extends Entity<IBallFrameInfo, IBallInfo, IBallData> {
   readonly is_ball = true
@@ -33,19 +34,40 @@ export default class Ball extends Entity<IBallFrameInfo, IBallInfo, IBallData> {
     super.set_frame(v);
     this.shadow.visible = !v.no_shadow;
   }
+  play_hit_sound() {
+    const { weapon_hit_sound } = this.data.base;
+    if (!weapon_hit_sound) return;
+    this.world.lf2.sounds.play(
+      weapon_hit_sound,
+      this.position.x,
+      this.position.y,
+      this.position.z
+    )
+  }
   on_collision(target: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
     super.on_collision(target, itr, bdy, a_cube, b_cube);
     if (is_character(target) || is_weapon(target)) {
       const f = this.get_frame();
-      if (f.on_dead) this.enter_frame(f.on_dead)
-      else if (f.on_hitting) this.enter_frame(f.on_hitting);
+      switch (itr.kind) {
+        case Defines.ItrKind.Heal:
+          if (!itr.injury) break;
+          // TODO: 
+          break;
+        case Defines.ItrKind.DeadWhenHit:
+          this.play_hit_sound()
+          if (f.on_dead) this.enter_frame(f.on_dead)
+          else Log.print('Ball', 'Defines.ItrKind.DeadWhenHit, but on_dead not set.')
+          break;
+        default:
+          this.play_hit_sound()
+          if (f.on_hitting) this.enter_frame(f.on_hitting);
+          else Log.print('Ball', 'on_hitting not set.')
+          break;
+      }
+      if (itr.on_hit) this.enter_frame(itr.on_hit)
       this.velocity.x = 0;
       this.velocity.z = 0;
       this.velocity.y = 0;
-      this.data.base.weapon_hit_sound && this.world.lf2.sounds.play(
-        this.data.base.weapon_hit_sound,
-        this.position.x, this.position.y, this.position.z
-      )
     }
   }
   on_be_collided(attacker: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
@@ -54,7 +76,7 @@ export default class Ball extends Entity<IBallFrameInfo, IBallInfo, IBallData> {
   update(): void {
     super.update();
     const f = this.get_frame();
-    if (this.hp <= 0) {
+    if (this.hp <= 0) { // FIXME: 避免一直判断
       f.on_dead && this.enter_frame(f.on_dead)
     } else if (f.hp) {
       this.hp -= f.hp;

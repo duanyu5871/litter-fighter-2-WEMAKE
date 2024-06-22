@@ -12,14 +12,14 @@ export default function cook_itr(unsafe_itr?: Partial<IItrInfo>) {
   const arest = take(unsafe_itr, 'arest');
   if (is_positive(arest)) { unsafe_itr.arest = Math.max(2, 2 * arest - 2); }
 
-  const dvx = take(unsafe_itr, 'dvx');
-  if (not_zero_num(dvx)) unsafe_itr.dvx = dvx * 0.5;
+  const src_dvx = take(unsafe_itr, 'dvx');
+  if (not_zero_num(src_dvx)) unsafe_itr.dvx = src_dvx * 0.5;
 
-  const dvz = take(unsafe_itr, 'dvz');
-  if (not_zero_num(dvz)) unsafe_itr.dvz = dvz * 0.5;
+  const src_dvz = take(unsafe_itr, 'dvz');
+  if (not_zero_num(src_dvz)) unsafe_itr.dvz = src_dvz * 0.5;
 
-  const dvy = take(unsafe_itr, 'dvy');
-  if (not_zero_num(dvy)) unsafe_itr.dvy = dvy * -0.52;
+  const src_dvy = take(unsafe_itr, 'dvy');
+  if (not_zero_num(src_dvy)) unsafe_itr.dvy = src_dvy * -0.52;
 
   switch (unsafe_itr.kind) {
     case Defines.ItrKind.Pick:
@@ -38,6 +38,12 @@ export default function cook_itr(unsafe_itr?: Partial<IItrInfo>) {
         unsafe_itr.arest = unsafe_itr.vrest;
         delete unsafe_itr.vrest;
       }
+      break;
+    }
+    case Defines.ItrKind.Heal: {
+      if (src_dvx) unsafe_itr.on_hit = get_next_frame_by_raw_id(src_dvx)
+        unsafe_itr.friendly_fire = 1 // 允许治疗队友
+      break;
     }
   }
 

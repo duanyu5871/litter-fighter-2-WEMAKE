@@ -225,6 +225,10 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
     }
   }
   override on_be_collided(attacker: Entity, itr: IItrInfo, bdy: IBdyInfo, r0: ICube, r1: ICube): void {
+    if (itr.kind === Defines.ItrKind.Heal) {
+      // TODO:
+      return;
+    }
     super.on_be_collided(attacker, itr, bdy, r0, r1);
 
     if (itr.kind === Defines.ItrKind.SuperPunchMe) return;
