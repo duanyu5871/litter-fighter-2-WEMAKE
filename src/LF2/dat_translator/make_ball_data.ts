@@ -16,6 +16,25 @@ export function make_ball_data(info: IBallInfo, frames: Record<string, IBallFram
 
     const hit_a = take(frame, 'hit_a');
     const hit_d = take(frame, 'hit_d');
+    const hit_Fa = take(frame, 'hit_Fa')
+
+    /*
+      1= 追敵人的center(因為敵人站在地面，所以會下飄)
+      2= 水平追敵
+      3= 加速法追敵(追縱力較差)
+      4= 天使之祝福(別的dat檔用了無效)
+      5= 天使之祝福的開始(會追我方的人物很久)
+      6= 惡魔之審判的開始(視敵人數目而增加，基本上是一個)
+      7= 惡魔之審判,殃殞天降(可以做出打到地面的追蹤波)
+      8= 吸血蝙蝠的開始(視敵人數目而增加，基本數值是三個，別的dat檔用了無效)
+      9= 殃殞天降的開始(視敵人數目而增加，基本數值是四個)
+      10= 加速(從慢變快)
+      11= 極地火山
+      12= 吸血蝙蝠
+      13= 連環重炮的開始
+      14= 連環重炮
+    */
+
     if (hit_a) frame.hp = hit_a / 2;
     if (hit_d) frame.on_dead = get_next_frame_by_raw_id(hit_d);
     if (frame.state === Defines.State.Ball_Flying) {
