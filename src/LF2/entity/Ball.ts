@@ -31,7 +31,17 @@ export default class Ball extends Entity<IBallFrameInfo, IBallInfo, IBallData> {
     return ret;
   }
   set_frame(v: IBallFrameInfo): void {
+    switch (this._frame.behavior) {
+      case 1:
+      case 2:
+      case 3: this.unsubscribe_nearest_enemy(); break;
+    }
     super.set_frame(v);
+    switch (v.behavior) {
+      case 1:
+      case 2:
+      case 3: this.subscribe_nearest_enemy(); break;
+    }
   }
   play_hit_sound() {
     const { weapon_hit_sound } = this.data.base;
@@ -54,7 +64,7 @@ export default class Ball extends Entity<IBallFrameInfo, IBallInfo, IBallData> {
           break;
         case Defines.ItrKind.DeadWhenHit:
           this.play_hit_sound()
-          if (f.on_dead) this.enter_frame(f.on_dead)
+          if (f.on_timeout) this.enter_frame(f.on_timeout)
           else Log.print('Ball', 'Defines.ItrKind.DeadWhenHit, but on_dead not set.')
           break;
         default:
@@ -76,7 +86,7 @@ export default class Ball extends Entity<IBallFrameInfo, IBallInfo, IBallData> {
     super.update();
     const f = this.get_frame();
     if (this.hp <= 0) { // FIXME: 避免一直判断
-      f.on_dead && this.enter_frame(f.on_dead)
+      f.on_timeout && this.enter_frame(f.on_timeout)
     } else if (f.hp) {
       this.hp -= f.hp;
     }

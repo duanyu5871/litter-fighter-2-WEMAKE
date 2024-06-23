@@ -71,6 +71,7 @@ export class World {
   disposed = false;
 
   readonly player_characters = new Map<string, Character>();
+  readonly nearest_enemy_requester = new Set<Entity>();
 
   get stage() { return this._stage }
   set stage(v) {
@@ -270,23 +271,43 @@ export class World {
       this.restrict_weapon(e);
     }
   }
+  manhattan(e1: Entity, e2: Entity) {
+    const p1 = e1.position;
+    const p2 = e2.position;
+    return Math.abs(p1.x - p2.x) + Math.abs(p1.z - p2.z);
+  }
   update_once() {
     if (this.disposed) return;
     if (!this.bg) return;
     this.collision_detections();
-    for (const e of this.entities) e.self_update();
-    for (const e of this.entities) e.update();
-    for (const e of this.entities)
+    for (const e of this.entities) {
+      e.self_update();
+      if (is_character(e)) {
+        for (const r of this.nearest_enemy_requester) {
+          if (e === r || r.same_team(e) || e.hp <= 0)
+            continue;
+          const prev = r.nearest_enemy
+          if (!prev || this.manhattan(prev, r) > this.manhattan(e, r)) {
+            r.set_nearest_enemy(e)
+          }
+        }
+      }
+    }
+    for (const e of this.entities) {
+      e.update();
       if (e.get_frame().id === Defines.FrameId.Gone)
         this.del_game_objs(e);
       else if (e.get_frame().state === Defines.State.Gone)
         this.del_game_objs(e);
+    }
 
-    for (const e of this.game_objs) e.self_update();
-    for (const e of this.game_objs) e.update();
     for (const e of this.game_objs)
+      e.self_update();
+    for (const e of this.game_objs) {
+      e.update();
       if (e.get_frame().id === Defines.FrameId.Gone)
         this.del_game_objs(e);
+    }
 
     this.update_camera();
     this.bg.update();

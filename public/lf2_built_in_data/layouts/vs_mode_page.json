@@ -35,7 +35,7 @@
     },
     {
       "template": "layouts/score_board.json",
-      "visible": true
+      "visible": false
     }
   ],
   "actions": {

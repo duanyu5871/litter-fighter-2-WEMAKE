@@ -17,7 +17,7 @@ export function make_ball_data(info: IBallInfo, frames: Record<string, IBallFram
     const hit_a = take(frame, 'hit_a');
     const hit_d = take(frame, 'hit_d');
     const hit_Fa = take(frame, 'hit_Fa')
-    
+    if(hit_Fa) frame.behavior = hit_Fa;
     /*
       1= 追敵人的center(因為敵人站在地面，所以會下飄)
       2= 水平追敵
@@ -36,7 +36,7 @@ export function make_ball_data(info: IBallInfo, frames: Record<string, IBallFram
     */
 
     if (hit_a) frame.hp = hit_a / 2;
-    if (hit_d) frame.on_dead = get_next_frame_by_raw_id(hit_d);
+    if (hit_d) frame.on_timeout = get_next_frame_by_raw_id(hit_d);
     if (frame.state === Defines.State.Ball_Flying) {
       frame.speedz = 2;
       if (frames[10]) frame.on_hitting = { id: '10' }

@@ -2,7 +2,6 @@ import GameKey from "../defines/GameKey";
 import { Defines } from "../defines/defines";
 import Character from "../entity/Character";
 import Entity from "../entity/Entity";
-import Weapon from "../entity/Weapon";
 import { is_character } from "../entity/type_check";
 import { BaseController } from "./BaseController";
 
@@ -12,8 +11,6 @@ export class BotEnemyChaser extends BaseController {
 
   _count = 0;
   _nearest_enemy: Character | undefined;
-  _nearest_friend: Character | undefined;
-  _nearest_weapon: Weapon | undefined;
   manhattan_to(a: Entity) {
     const { x, z } = this.character.position;
     const { x: x1, z: z1 } = a.position;
@@ -29,14 +26,7 @@ export class BotEnemyChaser extends BaseController {
         } else if (this.manhattan_to(e) > this.manhattan_to(this._nearest_enemy)) {
           this._nearest_enemy = e;
         }
-      } else {
-        if (!this._nearest_friend) {
-          this._nearest_friend = e;
-        } else if (this.manhattan_to(e) > this.manhattan_to(this._nearest_friend)) {
-          this._nearest_friend = e;
-        }
       }
-
     }
   }
   update() {

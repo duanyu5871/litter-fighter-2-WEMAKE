@@ -1,6 +1,6 @@
 
 import * as THREE from 'three';
-import { Log, Warn } from '../../Log';
+import { Warn } from '../../Log';
 import type { World } from '../World';
 import { ICube } from '../World';
 import Callbacks from '../base/Callbacks';
@@ -38,7 +38,6 @@ export default class Entity<
   I extends IGameObjInfo = IGameObjInfo,
   D extends IGameObjData<I, F> = IGameObjData<I, F>
 > extends FrameAnimater<F, I, D> {
-
   readonly is_entity = true
   readonly states: States;
   readonly shadow: Shadow;
@@ -697,6 +696,19 @@ export default class Entity<
       z
     );
     this.update_sprite_position()
+  }
+
+
+  protected _nearest_enemy: Entity | null = null;
+  get nearest_enemy(): Entity | null { return this._nearest_enemy }
+  set_nearest_enemy(e: Entity) {
+    this._nearest_enemy = e;
+  }
+  subscribe_nearest_enemy() {
+    this.world.nearest_enemy_requester.add(this)
+  }
+  unsubscribe_nearest_enemy() {
+    this.world.nearest_enemy_requester.delete(this)
   }
 }
 
