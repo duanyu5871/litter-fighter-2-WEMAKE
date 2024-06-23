@@ -24,19 +24,21 @@ rowing_distance 受身时向后的速度
 
 ## frame
 
-<FRAME>## standing
+`<FRAME>`## standing
 
-<FRAME>架构，每一个动作的变化都必须使用一个frame，结束用<FRAME_END>
+`<FRAME>`架构，每一个动作的变化都必须使用一个frame，结束用<FRAME_END>
 人物基本的动作就快花掉150个frame以上所以非常多
+
 ## 为这动作所编的号码，就是所谓的act
+
 在这基本动作中，此号码最好不要乱改，因关係到动作的进行
 standing 动作名称，在改档时分辨用的
 
 - 每个frame彼此用hit或next连结在一起，达到进行动作的效果
-act号码，有：
-0 standing站立 5 walking走路 9 running跑步 60,65 punch攻击 70 super_punch强力攻击 80 jump_attack跳攻击
-85 run_attack跑攻击 102 rowing滚 110 defend防御 120 catching抓人 180,186 falling跌倒 210 jump跳
-218 stop_running停止跑步 220 injured受伤 230 lying躺，等等很多因动作不是用hit连的，而是用state和type(控制act)连的。
+  act号码，有：
+  0 standing站立 5 walking走路 9 running跑步 60,65 punch攻击 70 super_punch强力攻击 80 jump_attack跳攻击
+  85 run_attack跑攻击 102 rowing滚 110 defend防御 120 catching抓人 180,186 falling跌倒 210 jump跳
+  218 stop_running停止跑步 220 injured受伤 230 lying躺，等等很多因动作不是用hit连的，而是用state和type(控制act)连的。
 
 pic: # state: # wait: # next: # dvx: # dvy: # dvz: # centerx: # centery: # hit_XX: # mp: # sound:
 
@@ -53,60 +55,67 @@ centerx: x位置中心
 centery: y位置中心，对于图片来说，相当于影子的位置，由图片左上角算起，x向右，y向下算
 
 - 所以说很多xy的计算都是以图片为准
-hit_a: hit_d: hit_j: 指在该动作时按下A攻击D防御J跳跃，会跳到act号码所在的动作
-hit_Fa: hit_Ua: hit_Da: hit_Fj: hit_Uj: hit_Dj: hit_ja: 按时要先加防御D再…，如hit_Fa是防前攻
-F前 U上 D下 j跳 a攻
-mp: 气用量
-sound: 声音
+  hit_a: hit_d: hit_j: 指在该动作时按下A攻击D防御J跳跃，会跳到act号码所在的动作
+  hit_Fa: hit_Ua: hit_Da: hit_Fj: hit_Uj: hit_Dj: hit_ja: 按时要先加防御D再…，如hit_Fa是防前攻
+  F前 U上 D下 j跳 a攻
+  mp: 气用量
+  sound: 声音
 
 ## state
 
-|值|名|描述|
-|-|-|-|
-| 0    | standing       | 站立(按键自由) |
-| 1    | walking        | 走路(按键自由) |
-| 2    | running        | 跑步(会跑起来) |
-| 3    |                | 攻击性动作 |
-| 4    | jump           | 跳(能在空中左右转) |
-| 5    | dash           | 跑跳(dvx:0时能在地上左右转) |
-| 6    | rowing         | 受身、滚(著地act215) |
-| 7    | defend         | 防御(bdy前方防御) |
-| 8    | broken_defend  | 破防|
-| 9    | catching       | 抓人|
-| 10   | picked_caught  | 被捉(武器掉落)|
-| 11   | injured        | 受伤|
-| 12   | falling        | 跌倒(武器掉落，著地倒，被fall大于60打到)|
-| 13   | ice            | 结冻(被同盟攻击，著地倒并会扣10hp，打一下就倒，连结其他state会跑出冰碎片). 因为state:13可被同盟攻击，所以louis要抓结冻的同盟是可能的|
-| 14   | lying          | 躺(com会远离你)|
-| 15   |                | 普通动作 |
-| 16   | injured        | 受伤(会被itr的kind:1 捉起来) |
-| 17   | weapon_drink   | 喝(消耗id: 122,123的牛奶和酒的hp) |
-| 18   | fire           | 火(可攻击同盟，effect:20,21烧不到之，state:19 + effect:2烧不到之，冒火苗，著地倒)|
-| 19   | burn_run       | 烈火焚身(effect:20, 21烧不到之，冒火苗，和z方向移动)|
-| 100  |                | 落雷霸(著地act94) |
-| 301  |                | 鬼哭斩(z方向移动) |
-| 400  |                | (瞬移到最近敌人，敌人在120的位置)|
-| 401  |                | (瞬移到最远同盟，同盟在60的位置) |
-| 500  | transform      | (若没变过身，act跳至0) |
-| 501  | transform      | (变成之前变身过的人)|
-| 1700 | healself       | (回hp加快) |
-| 9995 |                | 变身成louisEX |
-| 9996 |                | (造出id: 217,218 louis_armour) |
-| 9997 | etc            | (没有影子，图片在何地都会看见) |
-| 9998 |                | (消失)|
-| 9999 | broken_weapon  | |
-| 80## |                | 变身成id:##的人物但图片是用第3个和第4个的|
+| 值   | 名                | 描述                                                                                                                                 |
+| ---- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| 0    | standing          | 站立(按键自由)                                                                                                                       |
+| 1    | walking           | 走路(按键自由)                                                                                                                       |
+| 2    | running           | 跑步(会跑起来)                                                                                                                       |
+| 3    |                   | 攻击性动作                                                                                                                           |
+| 4    | jump              | 跳(能在空中左右转)                                                                                                                   |
+| 5    | dash              | 跑跳(dvx:0时能在地上左右转)                                                                                                          |
+| 6    | rowing            | 受身、滚(著地act215)                                                                                                                 |
+| 7    | defend            | 防御(bdy前方防御)                                                                                                                    |
+| 8    | broken_defend     | 破防                                                                                                                                 |
+| 9    | catching          | 抓人                                                                                                                                 |
+| 10   | picked_caught     | 被捉(武器掉落)                                                                                                                       |
+| 11   | injured           | 受伤                                                                                                                                 |
+| 12   | falling           | 跌倒(武器掉落，著地倒，被fall大于60打到)                                                                                             |
+| 13   | ice               | 结冻(被同盟攻击，著地倒并会扣10hp，打一下就倒，连结其他state会跑出冰碎片). 因为state:13可被同盟攻击，所以louis要抓结冻的同盟是可能的 |
+| 14   | lying             | 躺(com会远离你)                                                                                                                      |
+| 15   |                   | 普通动作                                                                                                                             |
+| 16   | injured           | 受伤(会被itr的kind:1 捉起来)                                                                                                         |
+| 17   | weapon_drink      | 喝(消耗id: 122,123的牛奶和酒的hp)                                                                                                    |
+| 18   | fire              | 火(可攻击同盟，effect:20,21烧不到之，state:19 + effect:2烧不到之，冒火苗，著地倒)                                                    |
+| 19   | burn_run          | 烈火焚身(effect:20, 21烧不到之，冒火苗，和z方向移动)                                                                                 |
+| 100  |                   | 落雷霸(著地act94)                                                                                                                    |
+| 301  |                   | 鬼哭斩(z方向移动)                                                                                                                    |
+| 400  |                   | 瞬移到最近敌人，敌人在120的位置                                                                                                      |
+| 401  |                   | 瞬移到最远同盟，同盟在60的位置                                                                                                       |
+| 500  | transform         | 若没变过身，act跳至0                                                                                                                 |
+| 501  | transform         | 变成之前变身过的人                                                                                                                   |
+| 1700 | healself          | 回hp加快                                                                                                                             |
+| 3000 | ball-flying       | "波"的飛行(ball-flying，波是指氣功波)，打到人和自己的武器會跳到act10，打到別人的武器跳到act20                                        |
+| 3001 | ball-hiting       | "波"打中敵時的爆破(hiting)，打到人和自己的武器不消失，正面打到別人的武器act20。                                                      |
+| 3002 | ball-hit          | 波被取消，即被其他東西打中阻擋而爆破(hit)，打到人和自已的武器不消失，打到別人type1的武器act20。                                      |
+| 3003 | ball-rebounding   | 波的反彈及爆破(rebounding)，打到人和type2的武器不消失，打到別人的武器act20。                                                         |
+| 3004 | ball-disappear    | 波消失(disappear)，打到人和type2.4.6的武器不消失，打到type1的武器act20。                                                             |
+| 3005 | henry wind-flying | "拳氣"的飛行(henry wind-flying)，打到東西不消失，打到state3005的act20，無法上下移動，沒有影子。                                      |
+| 3006 | ball-flying       | 屬穿心攻擊的波(flying)，打到東西不消失，打到state3005.3006的act20。                                                                  |
+| 9995 |                   | 变身成louisEX                                                                                                                        |
+| 9996 |                   | 造出id: 217,218 louis_armour                                                                                                         |
+| 9997 | etc               | 没有影子，图片在何地都会看见                                                                                                         |
+| 9998 |                   | 消失                                                                                                                                 |
+| 9999 | broken_weapon     |                                                                                                                                      |
+| 80## |                   | 变身成id:##的人物但图片是用第3个和第4个的                                                                                            |
 
 ## next
 
-|值|描述|
-|-|-|
-| 0           | 原动作，此动作若有mp但不消耗 |
+| 值          | 描述                           |
+| ----------- | ------------------------------ |
+| 0           | 原动作，此动作若有mp但不消耗   |
 | 原act码     | 原动作，此动作若有mp: -#会消耗 |
-| 999         | 回到act: 0 |
-| 1000        | 移除物件 |
-| 1100 ~ 1299 | 隐身 |
-| -#          | 下一个动作会转向 |
+| 999         | 回到act: 0                     |
+| 1000        | 移除物件                       |
+| 1100 ~ 1299 | 隐身                           |
+| -#          | 下一个动作会转向               |
 
 dvx: 550 x方向不移动
 dvy: 550 y方向不移动
@@ -130,7 +139,7 @@ dvz: 550 z方向不移动
 - itr只会和bdy产生作用。
 - itr攻击人后自己动作会停3格，被打的也停3格时间。
 
-``` txt
+```txt
 itr:(攻击开始指令)
 kind: # x: # y: # w: # h: # vrest: # arest: # dvx: # dvy: # fall: # bdefend: # injury: #
 effect: # zwidth: # 另外要依kind而使用的是catchingact: # caughtact: #
@@ -144,39 +153,39 @@ w: x横向向右围起来的范围
 h: y纵向向下围起来的范围
 
 - 由wh组成一个四方形的面积，由xy决定此四方形的位置。
-vrest: 一有这指令就能在攻击范围内打击多个敌人，而数字是敌人多久被你打一次
+  vrest: 一有这指令就能在攻击范围内打击多个敌人，而数字是敌人多久被你打一次
 - 值不能小于4，否则动作不能进行
-arest: (vrest无效)一攻击到一个人，多久后才能再打一个人
+  arest: (vrest无效)一攻击到一个人，多久后才能再打一个人
 - 最小值是4
-dvx: 敌人被打后向后速度弹多少
-dvy: 敌人被打后向下速度弹多少(用负值才会向上弹)
-fall: 敌人被打而会跌倒的程度(持续攻击会累加)
-bdefend: 敌人防御时被打而会破防的程度(持续攻击会累加)
-injury: 攻击力
-effect: 效果，(在kind:0时使用)
-zwidth: z方向上下的范围
-catchingact: 抓到敌人后自已的动作跳到act码
-caughtact: 敌人被捉后动作跳到act码(130 ~ 144之间，除非有另外设计)
+  dvx: 敌人被打后向后速度弹多少
+  dvy: 敌人被打后向下速度弹多少(用负值才会向上弹)
+  fall: 敌人被打而会跌倒的程度(持续攻击会累加)
+  bdefend: 敌人防御时被打而会破防的程度(持续攻击会累加)
+  injury: 攻击力
+  effect: 效果，(在kind:0时使用)
+  zwidth: z方向上下的范围
+  catchingact: 抓到敌人后自已的动作跳到act码
+  caughtact: 敌人被捉后动作跳到act码(130 ~ 144之间，除非有另外设计)
 
 #### kind
 
-|值|描述|
-|-|-|
-| 0  | 拳击(或配合effect效果)  |
-| 1  | 抓state:16的人(要配合catchingact和caughtact)  |
-| 2  | 捡武器(type:1,2,4,6，state:1004,2004且有bdy的才被能捡) |
-| 3  | 强迫抓人(配合catchingact和caughtact)  |
-| 4  | 在falling动作有(被用cpoint丢出才有攻击力) |
-| 5  | 在武器的on_hand有(用人物wpoint的attacking来决定entry，攻击力在entry决定)  |
-| 6  | 敌人在此范围内按攻击会至super_punch(act70)的动作 |
-| 7  | 捡武器不影响动作(只能捡轻武器)  |
-| 8  | 治疗(可对同盟的bdy起作用，injury变成补多少hp，动作至dvx的动作码) |
-| 9  | 打到人，自己的hp→0(打到气功，气功不失血)  |
-| 10 | henry死亡之乐章效果  |
-| 11 | 无  |
-| 14 | 阻挡(在此范围不能移动) |
-| 15 | 飞起来(freeze白色龙捲效果)  |
-| 16 | 结冻(freeze白色龙捲效果) |
+| 值 | 描述                                                                     |
+| -- | ------------------------------------------------------------------------ |
+| 0  | 拳击(或配合effect效果)                                                   |
+| 1  | 抓state:16的人(要配合catchingact和caughtact)                             |
+| 2  | 捡武器(type:1,2,4,6，state:1004,2004且有bdy的才被能捡)                   |
+| 3  | 强迫抓人(配合catchingact和caughtact)                                     |
+| 4  | 在falling动作有(被用cpoint丢出才有攻击力)                                |
+| 5  | 在武器的on_hand有(用人物wpoint的attacking来决定entry，攻击力在entry决定) |
+| 6  | 敌人在此范围内按攻击会至super_punch(act70)的动作                         |
+| 7  | 捡武器不影响动作(只能捡轻武器)                                           |
+| 8  | 治疗(可对同盟的bdy起作用，injury变成补多少hp，动作至dvx的动作码)         |
+| 9  | 打到人，自己的hp→0(打到气功，气功不失血)                                |
+| 10 | henry死亡之乐章效果                                                      |
+| 11 | 无                                                                       |
+| 14 | 阻挡(在此范围不能移动)                                                   |
+| 15 | 飞起来(freeze白色龙捲效果)                                               |
+| 16 | 结冻(freeze白色龙捲效果)                                                 |
 
 #### fall
 
@@ -196,18 +205,18 @@ caughtact: 敌人被捉后动作跳到act码(130 ~ 144之间，除非有另外�
 
 #### effect
 
-|值|描述|
-|-|-|
-| 0  | 拳击 |
-| 1  | 利器(会流血) |
-| 2  | 著火 |
-| 20 | 著火(打不到气功) |
-| 21 | 著火(可反弹气功) |
+| 值 | 描述                                            |
+| -- | ----------------------------------------------- |
+| 0  | 拳击                                            |
+| 1  | 利器(会流血)                                    |
+| 2  | 著火                                            |
+| 20 | 著火(打不到气功)                                |
+| 21 | 著火(可反弹气功)                                |
 | 22 | 著火(左右的攻击方向是向内，所以dvx用负的是向外) |
-| 23 | 只有左右的攻击方向向内 |
-| 3  | 结冰 |
-| 30 | 结冰(打不到state:13的人) |
-| 4  | 打不到人(type: 1,2,3,4,5,6会被打到) |
+| 23 | 只有左右的攻击方向向内                          |
+| 3  | 结冰                                            |
+| 30 | 结冰(打不到state:13的人)                        |
+| 4  | 打不到人(type: 1,2,3,4,5,6会被打到)             |
 
 - 著火时会定身，因为fall值小于60
 - 其他数值与effect: 0一样
@@ -229,15 +238,15 @@ kind: # x: # y: # action: # dvx: # dvy: # oid: # facing: #
 opoint_end:(造物件指令结束)
 
 - 只有next:0或next接的动作才可造物件
-kind: 造物件后会：1掉落，2持在手上。
-x: x座标
-y: y座标，(以图片左上角为准，x向右，y向下算的位置)
+  kind: 造物件后会：1掉落，2持在手上。
+  x: x座标
+  y: y座标，(以图片左上角为准，x向右，y向下算的位置)
 - 此座标为此造出来的物件的center
-action: act号码，为此造出来的物件的act
-dvx: 造出来后的x速度
-dvy: 造出来后的y速度
-oid: id码，在data.txt可以找到你想造的物件
-facing: 数量和方向。
+  action: act号码，为此造出来的物件的act
+  dvx: 造出来后的x速度
+  dvy: 造出来后的y速度
+  oid: id码，在data.txt可以找到你想造的物件
+  facing: 数量和方向。
 
 facing说明
 十位数为数量，个位数为方向，0正向，1反向。
@@ -253,10 +262,10 @@ weaponact: 武器的动作，20 ~ 35之间，在范围之外会在游戏中被�
 attacking: 攻击状态，在武器中的entry可查。
 
 - 若weaponact不在20 ~ 35之间，则attacking没用。
-cover: 遮盖，0显示在人物之前，1藏在人物之后。
-dvx: 速度，丢出去的x速度。
-dvy: 丢出去的y速度。
-dvz: 丢出去的z速度，要自已按↑↓
+  cover: 遮盖，0显示在人物之前，1藏在人物之后。
+  dvx: 速度，丢出去的x速度。
+  dvy: 丢出去的y速度。
+  dvz: 丢出去的z速度，要自已按↑↓
 - 值=0，则会持在手上，值≠0则会丢出去。(武器的act跳到40)
 
 cpoint:(抓人指令开始)
@@ -281,9 +290,9 @@ throwvz: 丢出去的z速度(要按↑↓才会丢斜的)
 throwinjury: 被丢者的受伤量
 
 - -842150451不知是什麽…
-fronthurtact: (正面被打后的act)
-backhurtact: (背面被打后的act)
-dircontrol: 控制方向(按著→进入此动作会向右转，负数则会相反)
+  fronthurtact: (正面被打后的act)
+  backhurtact: (背面被打后的act)
+  dircontrol: 控制方向(按著→进入此动作会向右转，负数则会相反)
 
 hurtable完全说明
 0 抓在手上的敌人不会被他人打到，且当被捉者不在手上时(丢掉)，动作持续进行。
@@ -292,15 +301,15 @@ hurtable完全说明
 throwinjury完全说明
 
 - throwvx: 不能为0，而throwinjury值也不能在-2以下，否则自己会消失。
--1 变成被抓者的id(样子)，之后可按DJA变回来，若想再变回去请用state: 501。
-可惜的是变成henry你不能用五连矢…(会变回来)
+  -1 变成被抓者的id(样子)，之后可按DJA变回来，若想再变回去请用state: 501。
+  可惜的是变成henry你不能用五连矢…(会变回来)
 
 bpoint:(流血指令开始)
 x: # y: #
 bpoint_end:(流血指令结束)
 
 - hp少于1/3时，嘴角才会流血。
-x: y: 嘴角的位置
+  x: y: 嘴角的位置
 
 第四篇===气功篇
 
@@ -510,10 +519,10 @@ A2:
 一，在两个lying的动作加入hit，而在下一个动作加入mp: -#0000
 
 - 缺点：失血过多会无法复活。
-二，在两个lying的动作加入opoint和bdy，造出来的物件用state: 18且
-负攻击打你。
-２、让别人复活。
-先在每个角色的lying中加入bdy，自己用state: 18且负攻击打他。
+  二，在两个lying的动作加入opoint和bdy，造出来的物件用state: 18且
+  负攻击打你。
+  ２、让别人复活。
+  先在每个角色的lying中加入bdy，自己用state: 18且负攻击打他。
 
 Q3怎麽让COM使用我的角色？
 A2每个主要角色的攻击和出招方式由id决定，要先注意哪个id的出招按法

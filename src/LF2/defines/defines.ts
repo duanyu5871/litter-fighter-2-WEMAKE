@@ -69,27 +69,27 @@ export namespace Defines {
   }
   export enum State {
     Any = -1,
-    Standing = 0,
-    Walking = 1,
-    Running = 2,
-    Attacking = 3,
-    Jump = 4,
-    Dash = 5,
-    Defend = 7,
-    BrokenDefend = 8,
-    Catching = 9,
-    Caught = 10,
-    Injured = 11,
-    Falling = 12,
-    Frozen = 13,
-    Lying = 14,
-    Normal = 15,
-    Tired = 16,
+    _0 = 0, Standing = 0,
+    _1 = 1, Walking = 1,
+    _2 = 2, Running = 2,
+    _3 = 3, Attacking = 3,
+    _4 = 4, Jump = 4,
+    _5 = 5, Dash = 5,
+    _6 = 6, Rowing = 6,
+    _7 = 7, Defend = 7,
+    _8 = 8, BrokenDefend = 8,
+    _9 = 9, Catching = 9,
+    _10 = 10, Caught = 10,
+    _11 = 11, Injured = 11,
+    _12 = 12, Falling = 12,
+    _13 = 13, Frozen = 13,
+    _14 = 14, Lying = 14,
+    _15 = 15, Normal = 15,
+    _16 = 16, Tired = 16,
+    _17 = 17, drink = 17,
+    _18 = 18, Burning = 18,
+    _19 = 19, BurnRun = 19,
 
-    // 15,
-    Burning = 18,
-
-    BurnRun = 19,
     NextAsLanding = 100,
     Z_Moveable = 301,
 
@@ -147,7 +147,7 @@ export namespace Defines {
     PickSecretly = 7,
 
     Heal = 8,         // injury数值变成治療多少hp，动作跳至dvx ?
-    
+
     DeadWhenHit = 9,  // 打中敵人自己hp歸0(如John的防護罩) |
     MagicFlute = 10,  // henry魔王之樂章效果
     Block = 14,       // 阻擋

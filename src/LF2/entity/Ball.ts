@@ -32,7 +32,6 @@ export default class Ball extends Entity<IBallFrameInfo, IBallInfo, IBallData> {
   }
   set_frame(v: IBallFrameInfo): void {
     super.set_frame(v);
-    this.shadow.visible = !v.no_shadow;
   }
   play_hit_sound() {
     const { weapon_hit_sound } = this.data.base;

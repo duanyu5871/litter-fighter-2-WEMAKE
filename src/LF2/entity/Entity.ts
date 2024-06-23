@@ -304,6 +304,7 @@ export default class Entity<
 
   override set_frame(v: F) {
     super.set_frame(v);
+    this.shadow.visible = !v.no_shadow;
     const prev_state = this._prev_frame.state;
     const next_state = this._frame.state;
     if (prev_state !== next_state) {
@@ -319,9 +320,8 @@ export default class Entity<
         }
       }
     }
-    if (!v.cpoint) {
+    if (!v.cpoint)
       delete this._catching;
-    }
   }
 
   spawn_object(opoint: IOpointInfo, speed_z: number = 0): FrameAnimater | undefined {
@@ -429,13 +429,15 @@ export default class Entity<
       this._blinking_duration--;
       const bc = Math.floor(this._blinking_duration / 6) % 2;
       if (this._blinking_duration <= 0) {
-        this.mesh.visible = this.shadow.visible = true;
+        this.mesh.visible = true;
+        this.shadow.visible = !this._frame.no_shadow
         if (this._after_blink === Defines.FrameId.Gone) {
           this._next_frame = void 0;
           this._frame = GONE_FRAME_INFO as F
         }
       } else {
-        this.mesh.visible = this.shadow.visible = !!bc;
+        this.mesh.visible = !!bc;
+        this.shadow.visible = !!bc && !this._frame.no_shadow
       }
     }
 

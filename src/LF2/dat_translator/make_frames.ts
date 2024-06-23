@@ -109,6 +109,12 @@ export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string): Re
     const dvy = take(frame, 'dvy');
     if (dvy === 550) frame.dvy = dvy;
     else if (not_zero_num(dvy)) frame.dvy = dvy * -0.25;
+
+    switch (frame.state) {
+      case Defines.State.Ball_Sturdy:
+        frame.no_shadow = 1;
+        break;
+    }
   }
   return frames;
 }

@@ -17,7 +17,7 @@ export function make_ball_data(info: IBallInfo, frames: Record<string, IBallFram
     const hit_a = take(frame, 'hit_a');
     const hit_d = take(frame, 'hit_d');
     const hit_Fa = take(frame, 'hit_Fa')
-
+    
     /*
       1= 追敵人的center(因為敵人站在地面，所以會下飄)
       2= 水平追敵
@@ -45,7 +45,6 @@ export function make_ball_data(info: IBallInfo, frames: Record<string, IBallFram
       if (frames[40]) frame.on_disappearing = { id: '40' }
     } else if (frame.state === Defines.State.Ball_Sturdy) {
       frame.speedz = 0;
-      // frame.no_shadow = 1;
     } else if (frame.state === Defines.State.Ball_PunchThrough) {
       frame.speedz = 2;
     } else if (frame.state === 18) {
