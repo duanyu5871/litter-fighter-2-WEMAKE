@@ -75,10 +75,10 @@
     "build": "node scripts/build.js",
     "test": "node scripts/test.js",
     "build_tool": "tsc -p ./tool",
+    "build_data": "tsc -p ./tool && node ./tool",
     "build_deployer": "tsc -p ./deployer",
-    "build_lf2_data": "tsc -p ./tool && node ./tool",
     "deploy": "tsc -p ./deployer && node ./deployer -- -s release",
-    "full": "npm run build_lf2_data && npm run build && npm run deploy"
+    "full": "npm run build_data && npm run build && npm run deploy"
   },
   "eslintConfig": {
     "extends": [
