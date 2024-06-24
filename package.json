@@ -76,7 +76,7 @@
     "test": "node scripts/test.js",
     "build_tool": "tsc -p ./tool",
     "build_data": "tsc -p ./tool && node ./tool",
-    "deploy": "fdeploy -s release -i deployer.private.json -s deployer.config.json",
+    "deploy": "fdeploy -s release -i deployer.private.json -p deployer.config.json",
     "full": "npm run build_data && npm run build && npm run deploy"
   },
   "eslintConfig": {
