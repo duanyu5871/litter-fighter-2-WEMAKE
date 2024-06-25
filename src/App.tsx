@@ -217,8 +217,8 @@ function App() {
   const on_click_load_builtin = async () => {
     const lf2 = lf2_ref.current;
     if (!lf2) return;
-    lf2.load('lf2.data.zip')
-      .catch(e => Log.print('on_click_load_builtin, lf2.data.zip not exists, will try lf2_data', e))
+    lf2.load('lf2.info.json')
+      .catch(e => Log.print('on_click_load_builtin, lf2.info.json not exists, will try lf2_data', e))
       .then(() => lf2.load())
       .catch(e => Log.print('on_click_load_builtin', e))
   }

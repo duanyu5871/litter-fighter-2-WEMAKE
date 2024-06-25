@@ -8,6 +8,7 @@ import { ICharacterData, IDataLists } from '../../src/LF2/defines';
 import { read_lf2_dat_file } from './read_old_lf2_dat_file';
 import { read_text_file } from './utils/read_text_file';
 import command_exists from 'command-exists';
+import { createHash } from 'crypto';
 
 let steps = {
   del_old: true,
@@ -17,21 +18,29 @@ let steps = {
   others: true,
   converting: true,
   zipping: true,
+  cleanup: true
 };
 
 for (let i = 2; i < process.argv.length; ++i) {
   switch (process.argv[i]) {
+    case '--no-cleanup':
+      steps.cleanup = false
+      break;
     case '--zipping-only':
       for (const k in steps) (steps as any)[k] = false;
       steps.zipping = true;
       break;
+    case '--converting-only':
+      for (const k in steps) (steps as any)[k] = false;
+      steps.converting = steps.dat = steps.bmp = true;
+      break;
     case '--dat-only':
       for (const k in steps) (steps as any)[k] = false;
-      steps.converting = steps.dat = steps.zipping = true;
+      steps.converting = steps.dat = true;
       break;
     case '--bmp-only':
       for (const k in steps) (steps as any)[k] = false;
-      steps.converting = steps.bmp = steps.zipping = true;
+      steps.converting = steps.bmp = true;
       break;
   }
 }
@@ -132,10 +141,12 @@ async function main() {
     RAW_LF2_PATH,
     CONVERTED_DATA_PATH,
     ZIP_PATH,
+    INFO_PATH,
   } = await readFile('./converter.config.json').then(buf => JSON.parse(buf.toString()))
   if (typeof RAW_LF2_PATH !== 'string') throw new Error('未设置RAW_LF2_PATH')
   if (typeof CONVERTED_DATA_PATH !== 'string') throw new Error('未设置CONVERTED_DATA_PATH')
   if (typeof ZIP_PATH !== 'string') throw new Error('未设置ZIP_PATH')
+  if (typeof INFO_PATH !== 'string') throw new Error('未设置INFO_PATH')
 
   if (steps.converting) {
     const indexes = await parse_indexes(`${RAW_LF2_PATH}/data/data.txt`);
@@ -147,11 +158,20 @@ async function main() {
     console.log('zipping', CONVERTED_DATA_PATH, '=>', ZIP_PATH)
     await fs.unlink(ZIP_PATH).catch(() => { })
     await zip.compressDir(CONVERTED_DATA_PATH, ZIP_PATH, { ignoreBase: true })
+
+    const zip_file_buf = await fs.readFile(ZIP_PATH)
+    const zip_file_md5 = createHash('md5').update(zip_file_buf).digest().toString('hex')
+
+    if (steps.cleanup) {
+      await fs.writeFile(INFO_PATH, JSON.stringify({
+        url: 'lf2.data.zip',
+        md5: zip_file_md5
+      }))
+    }
   }
-  if (steps.converting)
+  if (steps.cleanup) {
     await fs.rm(CONVERTED_DATA_PATH, { recursive: true, force: true })
+  }
 }
 
-main()
-
-
+main();

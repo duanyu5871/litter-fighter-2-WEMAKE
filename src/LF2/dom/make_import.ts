@@ -2,7 +2,6 @@ import axios, { AxiosResponse, RawAxiosRequestHeaders } from "axios";
 import { is_str } from "../utils/type_check";
 
 const roots = [
-  'lf2_data',
   'lf2_built_in_data'
 ]
 function get_possible_url_list(list: string[]): string[] {
@@ -18,6 +17,7 @@ function get_possible_url_list(list: string[]): string[] {
     }
     if (!item.startsWith('/'))
       item = '/' + item;
+    ret.push(item);
     for (const root of roots)
       ret.push(root + item);
   }

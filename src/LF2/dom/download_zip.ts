@@ -1,8 +1,8 @@
 import axios from 'axios';
 import JSZIP from 'jszip';
-import { is_str } from '../utils/type_check';
-import IZipObject from '../ditto/zip/IZipObject';
 import IZip from '../ditto/zip/IZip';
+import IZipObject from '../ditto/zip/IZipObject';
+import { is_str } from '../utils/type_check';
 
 export class ZipObject implements IZipObject {
   protected inner: JSZIP.JSZipObject;
@@ -27,26 +27,31 @@ export class ZipObject implements IZipObject {
 
 export default class Zip implements IZip {
   static async read_file(file: File): Promise<Zip> {
-    return JSZIP.loadAsync(file).then(v => new Zip(v))
+    const buf = await file.arrayBuffer().then(raw => new Uint8Array(raw))
+    const jszip = await JSZIP.loadAsync(buf)
+    return new Zip(jszip, buf)
   }
-
-  static download(url: string, on_progress: (progress: number, size: number) => void): Promise<Zip> {
-    return axios.get(url, {
-      responseType: 'blob',
-      onDownloadProgress: (e) => {
-        const progress = e.total ? Math.round(100 * e.loaded / e.total) : 100;
-        on_progress(progress, e.total ?? e.loaded);
+  static async read_buf(buf: Uint8Array) {
+    const jszip = await JSZIP.loadAsync(buf)
+    return new Zip(jszip, buf)
+  }
+  static async download(url: string, on_progress: (progress: number, size: number) => void): Promise<Zip> {
+    const buf = await axios.get<ArrayBuffer>(url, {
+      responseType: 'arraybuffer',
+      onDownloadProgress: (e_1) => {
+        const progress_1 = e_1.total ? Math.round(100 * e_1.loaded / e_1.total) : 100;
+        on_progress(progress_1, e_1.total ?? e_1.loaded);
       }
-    }).then(resp => {
-      return JSZIP.loadAsync(resp.data)
-    }).then(v => {
-      return new Zip(v);
-    });
+    }).then(resp => new Uint8Array(resp.data));
+    const jszip = await JSZIP.loadAsync(buf)
+    return new Zip(jszip, buf);
   }
 
+  readonly buf;
   private inner: JSZIP;
-  private constructor(inner: JSZIP) {
+  private constructor(inner: JSZIP, buf: Uint8Array) {
     this.inner = inner;
+    this.buf = buf;
   }
 
   file(path: string): ZipObject | null

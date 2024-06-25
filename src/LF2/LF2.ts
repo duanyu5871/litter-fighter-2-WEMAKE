@@ -16,6 +16,7 @@ import { IStageInfo } from "./defines/IStageInfo";
 import { Defines } from './defines/defines';
 import { IKeyboardCallback, KeyEvent, Keyboard } from './dom/Keyboard';
 import Pointings, { IPointingsCallback, PointingEvent } from './dom/Pointings';
+import db from './dom/db';
 import Zip from './dom/download_zip';
 import { import_as_blob_url, import_as_json } from './dom/make_import';
 import './entity/Ball';
@@ -35,9 +36,9 @@ import Stage from './stage/Stage';
 import { constructor_name } from './utils/constructor_name';
 import { fisrt, last } from './utils/container_help';
 import { arithmetic_progression } from './utils/math/arithmetic_progression';
+import float_equal from './utils/math/float_equal';
 import { random_get, random_in, random_take } from './utils/math/random';
 import { is_arr, is_num, is_str, not_empty_str } from './utils/type_check';
-import float_equal from './utils/math/float_equal';
 
 const cheat_info_pair = (n: Defines.Cheats) => ['' + n, {
   keys: Defines.CheatKeys[n],
@@ -400,38 +401,55 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     }
     return ret;
   }
+  async get_cache_data(md5: string) {
+    return db.open().catch(_ => void 0).then(() => db.tbl_lf2_data.where('name').equals(md5).first())
+  }
+  async save_cache_data(md5: string, data: string) {
+    return db.open().catch(_ => void 0).then(() => db.tbl_lf2_data.put({
+      name: md5,
+      version: 0,
+      data: data,
+      create_date: Date.now()
+    }))
+  }
 
-  load(arg1?: Zip | string): Promise<void> {
+  async load_zip_from_info_json_url(info_url: string): Promise<Zip> {
+    this.on_loading_content(`${info_url}`, 0);
+    const { url, md5 } = await import_as_json([info_url]);
+    const exists = await this.get_cache_data(md5);
+    if (exists) {
+      const nums = [];
+      for (var i = 0, j = exists.data.length; i < j; ++i)
+        nums.push(exists.data.charCodeAt(i));
+      this.on_loading_content(`${url}(local cache)`, 0);
+      return await Zip.read_buf(new Uint8Array(nums))
+    } else {
+      this.on_loading_content(`${url}`, 0);
+      const zip = await Zip.download(url, (progress, full_size) => {
+        const txt = `${url}(${get_short_file_size_txt(full_size)})`;
+        this.on_loading_content(txt, progress);
+      })
+      let data: string = '';
+      for (const c of zip.buf) data += String.fromCharCode(c)
+      await this.save_cache_data(md5, data);
+      return zip;
+    }
+  }
+  async load(arg1?: Zip | string): Promise<void> {
     this._loading = true;
     this._callbacks.emit('on_loading_start')();
     this.set_layout("loading");
-    if (is_str(arg1)) {
-      this.on_loading_content(`${arg1}`, 0);
-      return Zip.download(arg1, (progress, full_size) => {
-        const txt = `${arg1}(${get_short_file_size_txt(full_size)})`;
-        this.on_loading_content(txt, progress);
-      }).then(r => {
-        return this.load_data(r)
-      }).then(() => {
-        this._loaded = true;
-        this._callbacks.emit('on_loading_end')();
-      }).catch((e) => {
-        this._callbacks.emit('on_loading_failed')(e);
-        return Promise.reject(e);
-      }).finally(() => {
-        this._loading = false;
-      })
-    } else {
-      return this.load_data(arg1).then(() => {
-        this._loaded = true;
-        this._callbacks.emit('on_loading_end')();
-        this._loading = false;
-      }).catch((e) => {
-        this._callbacks.emit('on_loading_failed')(e);
-        return Promise.reject(e);
-      }).finally(() => {
-        this._loading = false;
-      })
+
+    try {
+      const zip = is_str(arg1) ? await this.load_zip_from_info_json_url(arg1) : arg1;
+      await this.load_data(zip);
+      this._loaded = true;
+      this._callbacks.emit('on_loading_end')();
+    } catch (e) {
+      this._callbacks.emit('on_loading_failed')(e);
+      return await Promise.reject(e);
+    } finally {
+      this._loading = false;
     }
   }
 
@@ -658,6 +676,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
 
   on_loading_content(content: string, progress: number) {
     this._callbacks.emit('on_loading_content')(content, progress);
+    Log.print('LF2', `loading:${progress ? (content + `${progress}%`) : content}`)
   }
   broadcast(message: string): void {
     this._callbacks.emit('on_broadcast')(message);

@@ -78,7 +78,7 @@
             "click": [
               "sound(ok)",
               "set_layout(loading)",
-              "load_data(lf2.data.zip)"
+              "load_data(lf2.info.json)"
             ]
           }
         },

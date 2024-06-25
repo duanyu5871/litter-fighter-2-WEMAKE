@@ -10,11 +10,9 @@ export interface lf2_data {
 const db = new Dexie('lf2') as Dexie & {
   tbl_lf2_data: EntityTable<lf2_data, 'id'>;
 }
-
 db.version(1).stores({
   tbl_lf2_data: '++id, name, version'
 })
-
 db.version(2).stores({
   tbl_lf2_data: '++id, name, version, data'
 }).upgrade(trans => {
@@ -32,9 +30,8 @@ db.version(3).stores({
 })
 
 db.open().then(() => {
-
+  
     // db.transaction('rw', db.tbl_lf2_data, () => {
-
     //   return db.tbl_lf2_data.put({ name: 'default', version: 1 })
     // }).then(d => {
     // }).catch(e => {
