@@ -28,6 +28,7 @@ public/lf2.data.*.zip
 
 src/lf2_data
 public/lf2_data
+public/lf2.info.json
 tool/json
 tool/dist
 
