@@ -39,6 +39,8 @@ export interface IWorldCallbacks {
    * @param {number} fps
    */
   on_ups_update?(fps: number): void;
-  
+
   on_gravity_change?(value: number, prev: number, world: World): void;
+
+  on_is_sync_render_changed?(value: boolean): void;
 }

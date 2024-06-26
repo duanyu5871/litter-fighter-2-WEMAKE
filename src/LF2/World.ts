@@ -154,25 +154,36 @@ export class World {
     }
   }
 
-  private _render_request_id?: ReturnType<typeof Render.start>;
-  private _update_timer_id?: ReturnType<typeof Interval.set>;
-
-  private _FPS = new FPS()
-  protected _need_FPS: boolean = true;
-
-  private _UPS = new FPS();
+  private _need_FPS: boolean = true;
   private _need_UPS: boolean = true;
+  private _FPS = new FPS()
+  private _UPS = new FPS();
+  private _render_worker_id?: ReturnType<typeof Render.start>;
+  private _update_worker_id?: ReturnType<typeof Interval.set>;
 
-  render_once(dt: number) {
-    if (this.disposed) return;
-    for (const e of this.entities) e.indicators.update();
-    this.lf2.layout?.on_render(dt);
-    this.scene.render()
+  private _sync_render = true;
+  get sync_render() {
+    return this._sync_render
+  }
+  set sync_render(v: boolean) {
+    this.set_sync_render(v)
+  }
+  set_sync_render(v: boolean = !this._sync_render) {
+    if (this._sync_render === v) return;
+    this._sync_render = v;
+    this.start_render();
+    this.start_update();
+    this._callbacks.emit('on_is_sync_render_changed')(v)
+  }
+  stop_render() {
+    this._render_worker_id && Render.stop(this._render_worker_id);
+    this._render_worker_id = 0;
   }
 
   start_render() {
-    if (this.disposed || this._render_request_id) return;
-
+    if (this.disposed) return;
+    if (this._render_worker_id) Render.stop(this._render_worker_id);
+    if (this._sync_render) return;
     let _r_prev_time = 0;
     const on_render = (time: number) => {
       const dt = time - _r_prev_time
@@ -185,32 +196,42 @@ export class World {
       }
       _r_prev_time = time
     }
-    this._render_request_id && Render.stop(this._render_request_id);
-    this._render_request_id = Render.start(on_render);
+    this._render_worker_id && Render.stop(this._render_worker_id);
+    this._render_worker_id = Render.start(on_render);
   }
 
-  stop_render() {
-    this._render_request_id && Render.stop(this._render_request_id);
-    this._render_request_id = 0;
+  stop_update() {
+    this._update_worker_id && Interval.del(this._update_worker_id);
+    this._update_worker_id = void 0;
   }
 
   start_update() {
     if (this.disposed) return;
-    if (this._update_timer_id) Interval.del(this._update_timer_id);
+    if (this._update_worker_id) Interval.del(this._update_worker_id);
     const dt = Math.max((1000 / 60) / this._playrate, 1);
     let _u_prev_time = 0;
     const on_update = () => {
-      const time = Date.now()
-      this.update_once()
+      const time = Date.now();
+
+      if (!this._paused) this.update_once()
 
       if (_u_prev_time !== 0 && this._need_UPS) {
         this._UPS.update(time - _u_prev_time);
         this._callbacks.emit('on_ups_update')(this._UPS.value);
       }
+
+      if (this._sync_render) {
+        this.render_once(time - _u_prev_time)
+        if (_u_prev_time !== 0 && this._need_FPS) {
+          this._FPS.update(time - _u_prev_time);
+          this._callbacks.emit('on_fps_update')(this._FPS.value);
+        }
+      }
       _u_prev_time = time
     }
-    this._update_timer_id = Interval.set(on_update, dt);
+    this._update_worker_id = Interval.set(on_update, dt);
   }
+
 
   restrict_character(e: Character) {
     if (this.disposed) return;
@@ -312,6 +333,12 @@ export class World {
     this.update_camera();
     this.bg.update();
     this.stage.update();
+  }
+  render_once(dt: number) {
+    if (this.disposed) return;
+    for (const e of this.entities) e.indicators.update();
+    this.lf2.layout?.on_render(dt);
+    this.scene.render()
   }
   cam_speed = 0;
   lock_cam_x: number | undefined = void 0;
@@ -524,10 +551,7 @@ export class World {
     const near = far + length;
     return { left, right: left + i.w, top, bottom: top - i.h, near, far }
   }
-  stop_update() {
-    this._update_timer_id && Interval.del(this._update_timer_id);
-    this._update_timer_id = void 0;
-  }
+
   private _playrate = 1;
   get playrate() { return this._playrate }
   set playrate(v: number) {
@@ -544,10 +568,6 @@ export class World {
   set_paused(v: boolean) {
     if (this._paused === v) return;
     this._paused = v;
-    if (v && this._update_timer_id)
-      this.stop_update();
-    else if (!this._update_timer_id)
-      this.start_update();
     this._callbacks.emit('on_pause_change')(v);
   }
 

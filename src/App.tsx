@@ -88,6 +88,8 @@ function App() {
   const [is_fullscreen, _set_is_fullscreen] = useState(false);
   const [gravity, _set_gravity] = useState(0);
 
+  const [sync_render, set_sync_render] = useLocalBoolean('sync_render', false);
+
   const cln = document.body.parentElement?.className;
   useEffect(() => {
     if (!cln) return;
@@ -149,6 +151,7 @@ function App() {
     lf2.sounds.set_bgm_volume(bgm_volume);
     lf2.sounds.set_sound_muted(sound_muted);
     lf2.sounds.set_sound_volume(sound_volume);
+    lf2.world.sync_render = sync_render
     _set_gravity(lf2.world.gravity);
     _set_cheat_1(lf2.is_cheat_enabled(Defines.Cheats.LF2_NET));
     _set_cheat_2(lf2.is_cheat_enabled(Defines.Cheats.HERO_FT));
@@ -170,6 +173,7 @@ function App() {
         on_stage_change: (s) => _set_bg_id(s.bg.id),
         on_pause_change: (v) => _set_paused(v),
         on_gravity_change: v => _set_gravity(v),
+        on_is_sync_render_changed: v => set_sync_render(v)
       }),
       lf2.callbacks.add({
         on_layout_changed: v => _set_layout(v?.id ?? ''),
@@ -510,6 +514,10 @@ function App() {
           <Button onClick={toggle_fullscreen}>
             全屏
           </Button>
+          <ToggleButton checked={sync_render} onClick={() => lf2?.world.set_sync_render()}>
+            <>同步渲染</>
+            <>同步渲染✓</>
+          </ToggleButton>
         </div>
         <div className='settings_row'>
           <Combine>
