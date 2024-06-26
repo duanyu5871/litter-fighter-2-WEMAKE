@@ -3,10 +3,10 @@ import { is_str, is_fun, is_num, is_bool, not_empty_str } from './LF2/utils/type
 
 type T_RET<S> = readonly [S, React.Dispatch<React.SetStateAction<S>>]
 type T_IN<S> = S | (() => S);
-
-if (localStorage.getItem('__clear_flag') !== '1000') {
+const __clear_flag = '1001'
+if (localStorage.getItem('__clear_flag') !== __clear_flag) {
   localStorage.clear();
-  localStorage.setItem('__clear_flag', '1000');
+  localStorage.setItem('__clear_flag', __clear_flag);
 }
 export function useLocalString<S extends string = string>(name: string): T_RET<S | undefined>;
 export function useLocalString<S extends string = string>(name: string, initialState: T_IN<S>): T_RET<S>;

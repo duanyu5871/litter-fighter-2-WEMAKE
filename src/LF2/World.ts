@@ -161,19 +161,20 @@ export class World {
   private _render_worker_id?: ReturnType<typeof Render.start>;
   private _update_worker_id?: ReturnType<typeof Interval.set>;
 
-  private _sync_render = true;
-  get sync_render() {
+  private _sync_render: 0 | 1 | 2 = 0;
+  get sync_render(): number {
     return this._sync_render
   }
-  set sync_render(v: boolean) {
+  set sync_render(v: number) {
     this.set_sync_render(v)
   }
-  set_sync_render(v: boolean = !this._sync_render) {
+  set_sync_render(v: number = this._sync_render + 1) {
     if (this._sync_render === v) return;
-    this._sync_render = v;
+    const prev = this._sync_render
+    const curr = this._sync_render = Math.floor(v) % 3 as 0 | 1 | 2;
     this.start_render();
     this.start_update();
-    this._callbacks.emit('on_is_sync_render_changed')(v)
+    this._callbacks.emit('on_is_sync_render_changed')(curr, prev)
   }
   stop_render() {
     this._render_worker_id && Render.stop(this._render_worker_id);
@@ -210,6 +211,8 @@ export class World {
     if (this._update_worker_id) Interval.del(this._update_worker_id);
     const dt = Math.max((1000 / 60) / this._playrate, 1);
     let _u_prev_time = 0;
+    let _r_prev_time = 0;
+    let _skip = 0
     const on_update = () => {
       const time = Date.now();
 
@@ -219,15 +222,16 @@ export class World {
         this._UPS.update(time - _u_prev_time);
         this._callbacks.emit('on_ups_update')(this._UPS.value);
       }
+      _u_prev_time = time
 
-      if (this._sync_render) {
-        this.render_once(time - _u_prev_time)
-        if (_u_prev_time !== 0 && this._need_FPS) {
-          this._FPS.update(time - _u_prev_time);
+      if (this._sync_render === 1 || (++_skip) % 2) {
+        this.render_once(time - _r_prev_time)
+        if (_r_prev_time !== 0 && this._need_FPS) {
+          this._FPS.update(time - _r_prev_time);
           this._callbacks.emit('on_fps_update')(this._FPS.value);
         }
+        _r_prev_time = time
       }
-      _u_prev_time = time
     }
     this._update_worker_id = Interval.set(on_update, dt);
   }

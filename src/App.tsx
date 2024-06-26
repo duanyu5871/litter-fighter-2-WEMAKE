@@ -17,34 +17,30 @@ import { Defines } from './LF2/defines/defines';
 import FullScreen from './LF2/dom/FullScreen';
 import { GameOverlay } from './LF2/dom/GameOverlay';
 import Zip from './LF2/dom/download_zip';
+import { is_weapon } from './LF2/entity/type_check';
 import { ILayoutInfo } from './LF2/layout/ILayoutInfo';
 import { fisrt } from './LF2/utils/container_help';
 import { arithmetic_progression } from './LF2/utils/math/arithmetic_progression';
+import float_equal from './LF2/utils/math/float_equal';
 import { Log } from './Log';
 import { PlayerRow } from './PlayerRow';
 import SettingsRows from './SettingsRows';
 import open_file from './Utils/open_file';
+import img_btn_0_3 from './assets/btn_0_3.png';
+import img_btn_1_0 from './assets/btn_1_0.png';
+import img_btn_1_1 from './assets/btn_1_1.png';
+import img_btn_1_2 from './assets/btn_1_2.png';
+import img_btn_1_3 from './assets/btn_1_3.png';
+import img_btn_2_0 from './assets/btn_2_0.png';
+import img_btn_2_1 from './assets/btn_2_1.png';
+import img_btn_2_2 from './assets/btn_2_2.png';
+import img_btn_2_3 from './assets/btn_2_3.png';
+import img_btn_3_0 from './assets/btn_3_0.png';
+import img_btn_3_1 from './assets/btn_3_1.png';
+import img_btn_3_2 from './assets/btn_3_2.png';
 import './game_ui.css';
 import './init';
 import { useLocalBoolean, useLocalNumber, useLocalString } from './useLocalStorage';
-import { is_weapon } from './LF2/entity/type_check';
-import float_equal from './LF2/utils/math/float_equal';
-import img_btn_0_0 from './assets/btn_0_0.png'
-import img_btn_0_1 from './assets/btn_0_1.png'
-import img_btn_0_2 from './assets/btn_0_2.png'
-import img_btn_0_3 from './assets/btn_0_3.png'
-import img_btn_1_0 from './assets/btn_1_0.png'
-import img_btn_1_1 from './assets/btn_1_1.png'
-import img_btn_1_2 from './assets/btn_1_2.png'
-import img_btn_1_3 from './assets/btn_1_3.png'
-import img_btn_2_0 from './assets/btn_2_0.png'
-import img_btn_2_1 from './assets/btn_2_1.png'
-import img_btn_2_2 from './assets/btn_2_2.png'
-import img_btn_2_3 from './assets/btn_2_3.png'
-import img_btn_3_0 from './assets/btn_3_0.png'
-import img_btn_3_1 from './assets/btn_3_1.png'
-import img_btn_3_2 from './assets/btn_3_2.png'
-import img_btn_3_3 from './assets/btn_3_3.png'
 
 const fullscreen = new FullScreen()
 function App() {
@@ -88,7 +84,7 @@ function App() {
   const [is_fullscreen, _set_is_fullscreen] = useState(false);
   const [gravity, _set_gravity] = useState(0);
 
-  const [sync_render, set_sync_render] = useLocalBoolean('sync_render', false);
+  const [sync_render, set_sync_render] = useLocalNumber<0 | 1 | 2>('sync_render', 0);
 
   const cln = document.body.parentElement?.className;
   useEffect(() => {
@@ -514,10 +510,11 @@ function App() {
           <Button onClick={toggle_fullscreen}>
             全屏
           </Button>
-          <ToggleButton checked={sync_render} onClick={() => lf2?.world.set_sync_render()}>
-            <>同步渲染</>
-            <>同步渲染✓</>
-          </ToggleButton>
+          <Button onClick={() => lf2?.world.set_sync_render()}>
+            <Show show={sync_render === 0}>非同步渲染✓</Show>
+            <Show show={sync_render === 1}>同步渲染✓</Show>
+            <Show show={sync_render === 2}>同步渲染(x0.5)✓</Show>
+          </Button>
         </div>
         <div className='settings_row'>
           <Combine>

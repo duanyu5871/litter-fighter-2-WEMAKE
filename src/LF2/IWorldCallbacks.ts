@@ -42,5 +42,5 @@ export interface IWorldCallbacks {
 
   on_gravity_change?(value: number, prev: number, world: World): void;
 
-  on_is_sync_render_changed?(value: boolean): void;
+  on_is_sync_render_changed?(value: 0 | 1 | 2, prev: 0 | 1 | 2): void;
 }
