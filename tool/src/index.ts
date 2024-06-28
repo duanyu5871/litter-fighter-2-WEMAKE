@@ -9,6 +9,7 @@ import { read_lf2_dat_file } from './read_old_lf2_dat_file';
 import { read_text_file } from './utils/read_text_file';
 import command_exists from 'command-exists';
 import { createHash } from 'crypto';
+import { is_dir } from './utils/is_dir';
 
 let steps = {
   del_old: true,
@@ -140,13 +141,20 @@ async function main() {
   const {
     RAW_LF2_PATH,
     CONVERTED_DATA_PATH,
-    ZIP_PATH,
+    DATA_ZIP_PATH,
     INFO_PATH,
+
+    PREL_DIR_PATH,
+    PREL_ZIP_PATH,
   } = await readFile('./converter.config.json').then(buf => JSON.parse(buf.toString()))
   if (typeof RAW_LF2_PATH !== 'string') throw new Error('未设置RAW_LF2_PATH')
   if (typeof CONVERTED_DATA_PATH !== 'string') throw new Error('未设置CONVERTED_DATA_PATH')
-  if (typeof ZIP_PATH !== 'string') throw new Error('未设置ZIP_PATH')
+  if (typeof DATA_ZIP_PATH !== 'string') throw new Error('未设置DATA_ZIP_PATH')
   if (typeof INFO_PATH !== 'string') throw new Error('未设置INFO_PATH')
+
+  if (typeof PREL_DIR_PATH !== 'string') throw new Error('未设置 PREL_DIR_PATH')
+  if (typeof PREL_ZIP_PATH !== 'string') throw new Error('未设置 PREL_ZIP_PATH')
+
 
   if (steps.converting) {
     const indexes = await parse_indexes(`${RAW_LF2_PATH}/data/data.txt`);
@@ -155,11 +163,11 @@ async function main() {
     await fs.writeFile(`${CONVERTED_DATA_PATH}/data/data.json`, JSON.stringify(indexes, null, 2).replace(/\.dat"/g, ".json\""));
   }
   if (steps.zipping) {
-    console.log('zipping', CONVERTED_DATA_PATH, '=>', ZIP_PATH)
-    await fs.unlink(ZIP_PATH).catch(() => { })
-    await zip.compressDir(CONVERTED_DATA_PATH, ZIP_PATH, { ignoreBase: true })
+    console.log('zipping', CONVERTED_DATA_PATH, '=>', DATA_ZIP_PATH)
+    await fs.unlink(DATA_ZIP_PATH).catch(() => { })
+    await zip.compressDir(CONVERTED_DATA_PATH, DATA_ZIP_PATH, { ignoreBase: true })
 
-    const zip_file_buf = await fs.readFile(ZIP_PATH)
+    const zip_file_buf = await fs.readFile(DATA_ZIP_PATH)
     const zip_file_md5 = createHash('md5').update(zip_file_buf).digest().toString('hex')
 
     if (steps.cleanup) {
@@ -172,6 +180,10 @@ async function main() {
   if (steps.cleanup) {
     await fs.rm(CONVERTED_DATA_PATH, { recursive: true, force: true })
   }
+
+  await fs.unlink(PREL_ZIP_PATH).catch(() => { })
+  if (!await is_dir(PREL_DIR_PATH)) throw new Error(PREL_DIR_PATH + '不是目录')
+  await zip.compressDir(PREL_DIR_PATH, PREL_ZIP_PATH, { ignoreBase: true })
 }
 
 main();

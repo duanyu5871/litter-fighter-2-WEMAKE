@@ -1,6 +1,8 @@
 {
   "RAW_LF2_PATH": "./game_data",
   "CONVERTED_DATA_PATH": "./public/lf2_data",
-  "ZIP_PATH": "./public/lf2.data.zip",
-  "INFO_PATH": "./public/lf2.info.json"
+  "DATA_ZIP_PATH": "./public/lf2.data.zip",
+  "INFO_PATH": "./public/lf2.info.json",
+  "PREL_DIR_PATH": "./prel_data",
+  "PREL_ZIP_PATH": "./public/lf2.prel.zip"
 }

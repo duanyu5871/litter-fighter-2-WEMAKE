@@ -79,8 +79,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   readonly canvas: HTMLCanvasElement;
   readonly world: World;
 
-  private _game_data_zip: Zip | undefined; // game data zip
-  private _prel_data_zip: Zip | undefined; // preliminary data zip
+  private _zips: Zip[] = []; // [game data zip, preliminary data zip]
 
   private _player_infos = new Map([
     ['1', new PlayerInfo('1')],
@@ -112,16 +111,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   }
 
   readonly bgms = new Loader<string[]>(() => {
-    const jobs = [
-      "launch/main.wma.ogg",
-      // "bgm/boss1.wma.ogg",
-      // "bgm/boss2.wma.ogg",
-      // "bgm/stage1.wma.ogg",
-      // "bgm/stage2.wma.ogg",
-      // "bgm/stage3.wma.ogg",
-      // "bgm/stage4.wma.ogg",
-      // "bgm/stage5.wma.ogg",
-    ].map(async name => {
+    const jobs = ["launch/main.wma.ogg"].map(async name => {
       await this.sounds.load(name, name);
       return name;
     })
@@ -131,7 +121,6 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     () => this._callbacks.emit('on_bgms_clear')()
   );
 
-
   get_player_character(which: string) {
     for (const [id, player] of this.player_characters)
       if (id === which) return player;
@@ -139,22 +128,17 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   on_click_character?: (c: Character) => void;
 
   async import_json<C = any>(path: string): Promise<C> {
+    const zip_obj = fisrt(this._zips, z => z.file(path))
+    if (zip_obj) return zip_obj.json() as C
+
     const paths = get_import_fallbacks(path);
-    const { _game_data_zip, _prel_data_zip } = this;
-    const obj =
-      (_game_data_zip && fisrt(paths, p => _game_data_zip.file(p))) ||
-      (_prel_data_zip && fisrt(paths, p => _prel_data_zip.file(p)))
-    if (obj) return obj.json() as C
     return import_as_json(paths) as C;
   }
 
   async import_resource(path: string): Promise<[string, string]> {
+    const zip_obj = fisrt(this._zips, z => z.file(path))
+    if (zip_obj) return [await zip_obj.blob_url(), zip_obj.name]
     const paths = get_import_fallbacks(path);
-    const { _game_data_zip, _prel_data_zip } = this;
-    const obj =
-      (_game_data_zip && fisrt(paths, p => _game_data_zip.file(p))) ||
-      (_prel_data_zip && fisrt(paths, p => _prel_data_zip.file(p)))
-    if (obj) return [await obj.blob_url(), obj.name]
     return import_as_blob_url(paths);
   }
 
@@ -171,6 +155,8 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     this.pointings.callback.add(this);
     this.world.start_update();
     this.world.start_render();
+    this.load_layouts();
+    this.load_prel_data_zip('/lf2.prel.zip')
   }
 
   random_entity_info(e: Entity) {
@@ -418,7 +404,24 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     }))
   }
 
-  async load_zip_from_info_json_url(info_url: string): Promise<Zip> {
+  private on_loading_file(url: string, progress: number, full_size: number) {
+    const txt = `${url}(${get_short_file_size_txt(full_size)})`;
+    this.on_loading_content(txt, progress);
+  }
+
+  async load_prel_data_zip(url: string): Promise<Zip> {
+    this.on_loading_content(url, 0);
+    const ret = await Zip.download(url,
+      (progress, full_size) => this.on_loading_file(url, progress, full_size)
+    )
+    this._zips.unshift(ret);
+    this.on_loading_content(url, 100);
+    await this.load_layouts();
+    this._callbacks.emit('on_prel_data_loaded')();
+    return ret
+  }
+
+  async load_game_data_from_info_json_url(info_url: string): Promise<Zip> {
     this.on_loading_content(`${info_url}`, 0);
     const { url, md5 } = await import_as_json([info_url]);
     const exists = await this.get_cache_data(md5);
@@ -430,10 +433,9 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
       return await Zip.read_buf(new Uint8Array(nums))
     } else {
       this.on_loading_content(`${url}`, 0);
-      const zip = await Zip.download(url, (progress, full_size) => {
-        const txt = `${url}(${get_short_file_size_txt(full_size)})`;
-        this.on_loading_content(txt, progress);
-      })
+      const zip = await Zip.download(url,
+        (progress, full_size) => this.on_loading_file(url, progress, full_size)
+      )
       let data: string = '';
       for (const c of zip.buf) data += String.fromCharCode(c)
       await this.save_cache_data(md5, data);
@@ -446,7 +448,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     this.set_layout("loading");
 
     try {
-      const zip = is_str(arg1) ? await this.load_zip_from_info_json_url(arg1) : arg1;
+      const zip = is_str(arg1) ? await this.load_game_data_from_info_json_url(arg1) : arg1;
       await this.load_data(zip);
       this._loaded = true;
       this._callbacks.emit('on_loading_end')();
@@ -459,7 +461,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   }
 
   private async load_data(zip?: Zip) {
-    this._game_data_zip = zip;
+    if (zip) this._zips.unshift(zip);
     await this.datas.load();
     if (this._disposed)
       this.datas.dispose();
@@ -589,10 +591,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
 
   async load_layouts(): Promise<ICookedLayoutInfo[]> {
     if (this._layout_infos.length) return this._layout_infos;
-
     const array = await this.import_json('layouts/index.json').catch(e => []);
-
-
     this._layout_infos_loaded = false;
     const paths: string[] = ["launch/init.json"];
     for (const element of array) {
@@ -604,14 +603,12 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
       this._layout_infos.push(cooked_layout_data);
       if (path === paths[0]) this.set_layout(cooked_layout_data)
     }
-
     if (this._disposed) {
       this._layout_infos.length = 0;
     } else {
-      this._callbacks.emit('on_layouts_loaded')()
+      this._callbacks.emit('on_layouts_loaded')(this._layout_infos)
       this._layout_infos_loaded = true;
     }
-
     return this._layout_infos;
   }
 

@@ -38,7 +38,7 @@ export default class LaunchPageLogic extends LayoutComponent {
   protected _loading_imgs: TPicture[] = [];
   protected _loading_idx_anim = new NumberAnimation(0, 44, 2000).set_ease_method(ease_linearity)
 
-  protected on_layouts_loaded() {
+  protected on_prel_data_loaded() {
     this._layouts_loaded = true;
   }
 
@@ -65,7 +65,7 @@ export default class LaunchPageLogic extends LayoutComponent {
 
     this._dispose_jobs.add(
       this.lf2.callbacks.add({
-        on_layouts_loaded: () => this.on_layouts_loaded(),
+        on_prel_data_loaded: () => this.on_prel_data_loaded(),
       })
     )
     return this;
@@ -84,7 +84,6 @@ export default class LaunchPageLogic extends LayoutComponent {
     this.sound_warning = this.layout.find_layout('sound_warning')!
     this.long_text = this.layout.find_layout('long_text')!
     this.long_text_2 = this.layout.find_layout('long_text_2')!
-
 
     this.state = 0;
     this._tap_hints_opacity.time = 0;

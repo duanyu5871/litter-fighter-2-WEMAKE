@@ -129,16 +129,6 @@ function App() {
     if (!lf2_ref.current) {
       const lf2 = (window as any).lf2 = lf2_ref.current = new LF2(ele_canvas);
       new GameOverlay(lf2.world, ele_overlay)
-
-      lf2.load_layouts().then((layouts = []) => {
-        const layout_data_list = layouts.map(l => ({ id: l.id, name: l.name }))
-        layout_data_list.unshift({ id: '', name: '无页面' })
-        set_layouts(layout_data_list);
-        if (layout_data_list.length > 1)
-          _set_layout(layout_data_list[1].id)
-      }).catch(e => {
-        console.error('lf2.load_layouts error', e)
-      })
     }
     const lf2 = lf2_ref.current;
     lf2.sounds.set_muted(muted);
@@ -172,6 +162,14 @@ function App() {
         on_is_sync_render_changed: v => set_sync_render(v)
       }),
       lf2.callbacks.add({
+        on_layouts_loaded: (layouts) => {
+          const layout_data_list = layouts.map(l => ({ id: l.id, name: l.name }))
+          layout_data_list.unshift({ id: '', name: '无页面' });
+          set_layouts(layout_data_list);
+
+          if (layout_data_list.length > 1)
+            _set_layout(v => v || layout_data_list[1].id)
+        },
         on_layout_changed: v => _set_layout(v?.id ?? ''),
         on_loading_start: () => set_loading(true),
         on_loading_end: () => {

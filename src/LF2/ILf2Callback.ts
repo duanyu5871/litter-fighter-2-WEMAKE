@@ -1,4 +1,4 @@
-import Layout from '../LF2/layout/Layout';
+import Layout, { ICookedLayoutInfo } from '../LF2/layout/Layout';
 import { PlayerInfo } from './PlayerInfo';
 import { Defines } from './defines/defines';
 
@@ -24,7 +24,10 @@ export interface ILf2Callback {
   on_dispose?(): void;
   on_difficulty_changed?(value: Defines.Difficulty, prev: Defines.Difficulty): void;
 
-  on_layouts_loaded?(): void;
+  on_layouts_loaded?(layouts: ICookedLayoutInfo[]): void;
+
+  on_prel_data_loaded?(): void;
+
   on_broadcast?(message: string): void;
   on_infinity_mp?(enabled: boolean): void;
 }
