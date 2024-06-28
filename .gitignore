@@ -25,6 +25,7 @@ yarn-error.log*
 src/types/lf2.d.ts
 public/lf2.data.zip
 public/lf2.data.*.zip
+public/lf2.prel.zip
 
 src/lf2_data
 public/lf2_data

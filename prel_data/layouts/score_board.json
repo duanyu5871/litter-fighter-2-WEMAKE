@@ -1,0 +1,52 @@
+{
+  "id": "score_board",
+  "component": [
+    "vertical_layout()"
+  ],
+  "items": [
+    {
+      "img": "sprite/SCORE_BOARD1.png"
+    },
+    {
+      "component": "player_score(1)",
+      "template": "layouts/player_score_row.json"
+    },
+    {
+      "component": "player_score(2)",
+      "template": "layouts/player_score_row.json"
+    },
+    {
+      "component": "player_score(3)",
+      "template": "layouts/player_score_row.json"
+    },
+    {
+      "component": "player_score(4)",
+      "template": "layouts/player_score_row.json"
+    },
+    {
+      "component": "player_score(5)",
+      "template": "layouts/player_score_row.json"
+    },
+    {
+      "component": "player_score(6)",
+      "template": "layouts/player_score_row.json"
+    },
+    {
+      "component": "player_score(7)",
+      "template": "layouts/player_score_row.json"
+    },
+    {
+      "img": "sprite/SCORE_BOARD3.png",
+      "items": [
+        {
+          "pos": "453,13",
+          "component": "playing_time()",
+          "style": {
+            "fill_style": "#ffffff",
+            "font": "12px Arial"
+          }
+        }
+      ]
+    }
+  ]
+}

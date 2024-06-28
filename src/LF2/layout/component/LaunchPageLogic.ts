@@ -44,12 +44,7 @@ export default class LaunchPageLogic extends LayoutComponent {
 
   override init(...args: string[]): this {
     super.init(...args);
-    this.lf2.sounds.load('data/093.wav.ogg', 'data/093.wav.ogg')
-    this.lf2.sounds.load('data/m_cancel.wav.ogg', 'data/m_cancel.wav.ogg')
-    this.lf2.sounds.load('data/m_end.wav.ogg', 'data/m_end.wav.ogg')
-    this.lf2.sounds.load('data/m_join.wav.ogg', 'data/m_join.wav.ogg')
-    this.lf2.sounds.load('data/m_ok.wav.ogg', 'data/m_ok.wav.ogg')
-    this.lf2.sounds.load('data/m_pass.wav.ogg', 'data/m_pass.wav.ogg')
+    this.lf2.sounds.load('launch/093.wav.ogg', 'launch/093.wav.ogg')
     this.lf2.sounds.load('launch/main.wma.ogg', 'launch/main.wma.ogg')
 
     const max_col = 15;
@@ -58,7 +53,7 @@ export default class LaunchPageLogic extends LayoutComponent {
     const jobs = make_arr(44, async i => {
       const x = cell_w * (i % max_col);
       const y = cell_h * Math.floor(i / max_col);
-      const info = await this.lf2.images.load_img("SMALL_LOADING_" + i, "sprite/SMALL_LOADING.png", (img, canvas, ctx) => {
+      const info = await this.lf2.images.load_img("SMALL_LOADING_" + i, "launch/SMALL_LOADING.png", (img, canvas, ctx) => {
         const w = canvas.width = cell_w;
         const h = canvas.height = cell_h;
         ctx.drawImage(img, x, y, w, h, 0, 0, w, h);
@@ -113,7 +108,7 @@ export default class LaunchPageLogic extends LayoutComponent {
   on_pointer_down() {
     if (this.state === 0) {
       this.state = 1;
-      Timeout.set(() => this.lf2.sounds.play('data/093.wav.ogg'), 1000)
+      Timeout.set(() => this.lf2.sounds.play('launch/093.wav.ogg'), 1000)
     } else if (this.state === 1) {
       this._skipped = true;
     } else if (this.state === 2) {

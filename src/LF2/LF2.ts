@@ -78,7 +78,10 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
 
   readonly canvas: HTMLCanvasElement;
   readonly world: World;
-  private _zip: Zip | undefined;
+
+  private _game_data_zip: Zip | undefined; // game data zip
+  private _prel_data_zip: Zip | undefined; // preliminary data zip
+
   private _player_infos = new Map([
     ['1', new PlayerInfo('1')],
     ['2', new PlayerInfo('2')],
@@ -110,14 +113,14 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
 
   readonly bgms = new Loader<string[]>(() => {
     const jobs = [
-      "bgm/boss1.wma.ogg",
-      "bgm/boss2.wma.ogg",
-      "bgm/main.wma.ogg",
-      "bgm/stage1.wma.ogg",
-      "bgm/stage2.wma.ogg",
-      "bgm/stage3.wma.ogg",
-      "bgm/stage4.wma.ogg",
-      "bgm/stage5.wma.ogg",
+      "launch/main.wma.ogg",
+      // "bgm/boss1.wma.ogg",
+      // "bgm/boss2.wma.ogg",
+      // "bgm/stage1.wma.ogg",
+      // "bgm/stage2.wma.ogg",
+      // "bgm/stage3.wma.ogg",
+      // "bgm/stage4.wma.ogg",
+      // "bgm/stage5.wma.ogg",
     ].map(async name => {
       await this.sounds.load(name, name);
       return name;
@@ -137,16 +140,20 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
 
   async import_json<C = any>(path: string): Promise<C> {
     const paths = get_import_fallbacks(path);
-    const { _zip } = this;
-    const obj = _zip && fisrt(paths, p => _zip.file(p))
+    const { _game_data_zip, _prel_data_zip } = this;
+    const obj =
+      (_game_data_zip && fisrt(paths, p => _game_data_zip.file(p))) ||
+      (_prel_data_zip && fisrt(paths, p => _prel_data_zip.file(p)))
     if (obj) return obj.json() as C
     return import_as_json(paths) as C;
   }
 
   async import_resource(path: string): Promise<[string, string]> {
     const paths = get_import_fallbacks(path);
-    const { _zip } = this;
-    const obj = _zip && fisrt(paths, p => _zip.file(p))
+    const { _game_data_zip, _prel_data_zip } = this;
+    const obj =
+      (_game_data_zip && fisrt(paths, p => _game_data_zip.file(p))) ||
+      (_prel_data_zip && fisrt(paths, p => _prel_data_zip.file(p)))
     if (obj) return [await obj.blob_url(), obj.name]
     return import_as_blob_url(paths);
   }
@@ -160,10 +167,8 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     this.images = new ImageMgr(this);
     this.keyboard = new Keyboard();
     this.keyboard.callback.add(this);
-
     this.pointings = new Pointings(canvas);
     this.pointings.callback.add(this);
-
     this.world.start_update();
     this.world.start_render();
   }
@@ -454,7 +459,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   }
 
   private async load_data(zip?: Zip) {
-    this._zip = zip;
+    this._game_data_zip = zip;
     await this.datas.load();
     if (this._disposed)
       this.datas.dispose();
@@ -585,8 +590,8 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   async load_layouts(): Promise<ICookedLayoutInfo[]> {
     if (this._layout_infos.length) return this._layout_infos;
 
-    const array = await this.import_json('layouts/index.json');
-    if (!is_arr(array)) return this._layout_infos;
+    const array = await this.import_json('layouts/index.json').catch(e => []);
+
 
     this._layout_infos_loaded = false;
     const paths: string[] = ["launch/init.json"];

@@ -1,5 +1,5 @@
 {
-  "RAW_LF2_PATH": "./tool/LittleFighter",
+  "RAW_LF2_PATH": "./game_data",
   "CONVERTED_DATA_PATH": "./public/lf2_data",
   "ZIP_PATH": "./public/lf2.data.zip",
   "INFO_PATH": "./public/lf2.info.json"

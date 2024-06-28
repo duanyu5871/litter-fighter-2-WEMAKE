@@ -1,0 +1,112 @@
+{
+  "id": "how_many_computer",
+  "img": "sprite/CMC.png",
+  "pos": "204,175,1",
+  "visible": false,
+  "items": [
+    {
+      "txt": "0",
+      "pos": "30,70",
+      "auto_focus": true,
+      "component": [
+        "opacity_hover(0.5,1)",
+        "com_number(0)",
+        "reachable_layout(com_num)"
+      ],
+      "style": {
+        "font": "16px Arial"
+      }
+    },
+    {
+      "txt": "1",
+      "pos": "70,70",
+      "auto_focus": true,
+      "component": [
+        "opacity_hover(0.5,1)",
+        "com_number(1)",
+        "reachable_layout(com_num)"
+      ],
+      "style": {
+        "font": "16px Arial"
+      }
+    },
+    {
+      "txt": "2",
+      "pos": "110,70",
+      "auto_focus": true,
+      "component": [
+        "opacity_hover(0.5,1)",
+        "com_number(2)",
+        "reachable_layout(com_num)"
+      ],
+      "style": {
+        "font": "16px Arial"
+      }
+    },
+    {
+      "txt": "3",
+      "pos": "150,70",
+      "auto_focus": true,
+      "component": [
+        "opacity_hover(0.5,1)",
+        "com_number(3)",
+        "reachable_layout(com_num)"
+      ],
+      "style": {
+        "font": "16px Arial"
+      }
+    },
+    {
+      "txt": "4",
+      "pos": "190,70",
+      "auto_focus": true,
+      "component": [
+        "opacity_hover(0.5,1)",
+        "com_number(4)",
+        "reachable_layout(com_num)"
+      ],
+      "style": {
+        "font": "16px Arial"
+      }
+    },
+    {
+      "txt": "5",
+      "pos": "230,70",
+      "auto_focus": true,
+      "component": [
+        "opacity_hover(0.5,1)",
+        "com_number(5)",
+        "reachable_layout(com_num)"
+      ],
+      "style": {
+        "font": "16px Arial"
+      }
+    },
+    {
+      "txt": "6",
+      "pos": "270,70",
+      "auto_focus": true,
+      "component": [
+        "opacity_hover(0.5,1)",
+        "com_number(6)",
+        "reachable_layout(com_num)"
+      ],
+      "style": {
+        "font": "16px Arial"
+      }
+    },
+    {
+      "txt": "7",
+      "pos": "310,70",
+      "auto_focus": true,
+      "component": [
+        "opacity_hover(0.5,1)",
+        "com_number(7)",
+        "reachable_layout(com_num)"
+      ],
+      "style": {
+        "font": "16px Arial"
+      }
+    }
+  ]
+}
