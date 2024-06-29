@@ -47,7 +47,7 @@ export function make_bg_data(full_str: string, datIndex?: IDatIndex): IBgData | 
   fields.right = width;
   fields.far = 2 * (a - Defines.OLD_SCREEN_HEIGHT);
   fields.near = 2 * (b - Defines.OLD_SCREEN_HEIGHT);
-
+  
   const ret: IBgData = {
     type: 'background',
     id: datIndex?.id ?? fields.name,
@@ -57,6 +57,7 @@ export function make_bg_data(full_str: string, datIndex?: IDatIndex): IBgData | 
     is_base_data: true
   };
   ret.base.name = ret.base.name.replace(/_/g, ' ');
+  ret.base.shadow = ret.base.shadow.replace(/.bmp$/, '.png')
   const blocks = take_blocks(full_str, 'layer:', 'layer_end', v => full_str = v);
   let min_y = Defines.OLD_SCREEN_HEIGHT;
   for (const block_str of blocks) {
@@ -73,7 +74,7 @@ export function make_bg_data(full_str: string, datIndex?: IDatIndex): IBgData | 
     const color = take(fields, 'rect')
     const layer: IBgLayerInfo = {
       ...fields,
-      file,
+      file: file.replace(/.bmp$/, '.png'),
       y: Defines.OLD_SCREEN_HEIGHT - y,
       z: ret.layers.length - blocks.length,
     };

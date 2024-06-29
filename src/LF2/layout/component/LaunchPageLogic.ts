@@ -126,7 +126,8 @@ export default class LaunchPageLogic extends LayoutComponent {
       const idx = Math.floor(this._loading_idx_anim.update(dt))
       const pic = this._loading_imgs[idx]
       if (pic) this._loading_sprite.set_info(pic).apply()
-      if (this._loading_idx_anim.is_finish && !this.lf2.layout_infos_loaded) this._loading_idx_anim.play()
+      if (this._loading_idx_anim.is_finish && !this.lf2.layout_infos.find(v => v.id === 'entry'))
+        this._loading_idx_anim.play()
     }
 
     if (this.state === 0) {
@@ -153,7 +154,7 @@ export default class LaunchPageLogic extends LayoutComponent {
       }
       if (this.state === 3) {
         this.long_text_2.opacity = opacity
-      } else if (this.lf2.layout_infos_loaded) {
+      } else if (this.lf2.layout_infos.find(v => v.id === 'entry')) {
         this.long_text_2.opacity = this._tap_hints_opacity.update(dt)
       }
 

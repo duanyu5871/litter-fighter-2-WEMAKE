@@ -75,7 +75,7 @@
     "build": "node scripts/build.js",
     "test": "node scripts/test.js",
     "build_tool": "tsc -p ./tool",
-    "build_data": "tsc -p ./tool && node ./tool",
+    "build_data": "node ./tool",
     "deploy": "fdeploy -s release -i deployer.private.json -p deployer.config.json",
     "full": "npm run build_data && npm run build && npm run deploy"
   },

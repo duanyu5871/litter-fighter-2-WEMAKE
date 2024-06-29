@@ -1,15 +1,15 @@
 import { spawn } from 'child_process';
+import command_exists from 'command-exists';
 import { zip } from 'compressing';
+import { createHash } from 'crypto';
 import fs, { readFile } from 'fs/promises';
 import path from 'path';
 import dat_to_json from '../../src/LF2/dat_translator/dat_2_json';
 import { read_indexes } from '../../src/LF2/dat_translator/read_indexes';
 import { ICharacterData, IDataLists } from '../../src/LF2/defines';
 import { read_lf2_dat_file } from './read_old_lf2_dat_file';
-import { read_text_file } from './utils/read_text_file';
-import command_exists from 'command-exists';
-import { createHash } from 'crypto';
 import { is_dir } from './utils/is_dir';
+import { read_text_file } from './utils/read_text_file';
 
 let steps = {
   del_old: true,
@@ -139,51 +139,54 @@ async function parse_under_dir(src_dir_path: string, dst_dir_path: string, index
 }
 async function main() {
   const {
-    RAW_LF2_PATH,
-    CONVERTED_DATA_PATH,
-    DATA_ZIP_PATH,
-    INFO_PATH,
-
-    PREL_DIR_PATH,
-    PREL_ZIP_PATH,
+    RAW_LF2_PATH, OUT_DIR,
+    DATA_DIR_PATH, DATA_ZIP_NAME,
+    PREL_DIR_PATH, PREL_ZIP_NAME,
   } = await readFile('./converter.config.json').then(buf => JSON.parse(buf.toString()))
-  if (typeof RAW_LF2_PATH !== 'string') throw new Error('未设置RAW_LF2_PATH')
-  if (typeof CONVERTED_DATA_PATH !== 'string') throw new Error('未设置CONVERTED_DATA_PATH')
-  if (typeof DATA_ZIP_PATH !== 'string') throw new Error('未设置DATA_ZIP_PATH')
-  if (typeof INFO_PATH !== 'string') throw new Error('未设置INFO_PATH')
-
-  if (typeof PREL_DIR_PATH !== 'string') throw new Error('未设置 PREL_DIR_PATH')
-  if (typeof PREL_ZIP_PATH !== 'string') throw new Error('未设置 PREL_ZIP_PATH')
-
+  
+  check_str(
+    RAW_LF2_PATH, OUT_DIR,
+    DATA_DIR_PATH, DATA_ZIP_NAME,
+    PREL_DIR_PATH, PREL_ZIP_NAME,
+  )
 
   if (steps.converting) {
     const indexes = await parse_indexes(`${RAW_LF2_PATH}/data/data.txt`);
-    await fs.rm(CONVERTED_DATA_PATH, { recursive: true, force: true })
-    await parse_under_dir(RAW_LF2_PATH, CONVERTED_DATA_PATH, indexes);
-    await fs.writeFile(`${CONVERTED_DATA_PATH}/data/data.json`, JSON.stringify(indexes, null, 2).replace(/\.dat"/g, ".json\""));
+    await fs.rm(DATA_DIR_PATH, { recursive: true, force: true })
+    await parse_under_dir(RAW_LF2_PATH, DATA_DIR_PATH, indexes);
+    await fs.writeFile(`${DATA_DIR_PATH}/data/data.json`, JSON.stringify(indexes, null, 2).replace(/\.dat"/g, ".json\""));
   }
   if (steps.zipping) {
-    console.log('zipping', CONVERTED_DATA_PATH, '=>', DATA_ZIP_PATH)
-    await fs.unlink(DATA_ZIP_PATH).catch(() => { })
-    await zip.compressDir(CONVERTED_DATA_PATH, DATA_ZIP_PATH, { ignoreBase: true })
-
-    const zip_file_buf = await fs.readFile(DATA_ZIP_PATH)
-    const zip_file_md5 = createHash('md5').update(zip_file_buf).digest().toString('hex')
-
-    if (steps.cleanup) {
-      await fs.writeFile(INFO_PATH, JSON.stringify({
-        url: 'lf2.data.zip',
-        md5: zip_file_md5
-      }))
-    }
+    await make_zip(DATA_DIR_PATH, OUT_DIR, DATA_ZIP_NAME);
+    if (steps.cleanup) await fs.rm(DATA_DIR_PATH, { recursive: true, force: true })
   }
-  if (steps.cleanup) {
-    await fs.rm(CONVERTED_DATA_PATH, { recursive: true, force: true })
-  }
-
-  await fs.unlink(PREL_ZIP_PATH).catch(() => { })
-  if (!await is_dir(PREL_DIR_PATH)) throw new Error(PREL_DIR_PATH + '不是目录')
-  await zip.compressDir(PREL_DIR_PATH, PREL_ZIP_PATH, { ignoreBase: true })
+  await make_zip(PREL_DIR_PATH, OUT_DIR, PREL_ZIP_NAME);
 }
 
+
 main();
+async function make_zip(src_dir: string, out_dir: string, zip_name: string) {
+  console.log('zipping', src_dir, '=>', path.join(out_dir, zip_name))
+  if (!await is_dir(src_dir)) throw new Error(src_dir + '不是目录')
+  if (!await is_dir(out_dir)) throw new Error(out_dir + '不是目录')
+
+  const zip_path = path.join(out_dir, zip_name)
+  const inf_path = path.join(out_dir, zip_name + '.json')
+
+  await fs.unlink(zip_path).catch(() => { })
+  await zip.compressDir(src_dir, zip_path, { ignoreBase: true })
+  await write_file(inf_path, JSON.stringify({ url: zip_name, md5: await file_md5_str(zip_path) }))
+}
+async function file_md5_str(path: string) {
+  const buf = await fs.readFile(path)
+  return createHash('md5').update(buf).digest().toString('hex')
+}
+async function write_file(path: string, data: string) {
+  await fs.unlink(path).catch(() => { })
+  await fs.writeFile(path, data)
+}
+function check_str(...list: string[]) {
+  for (const ele of list)
+    if (typeof ele !== 'string')
+      throw new Error(`未设置${ele}`)
+}

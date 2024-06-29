@@ -207,16 +207,16 @@ function App() {
 
   const on_click_download_zip = () => {
     const a = document.createElement('a');
-    a.href = 'lf2.data.zip';
-    a.download = 'lf2.data.zip';
+    a.href = 'data.zip';
+    a.download = 'data.zip';
     a.click();
   }
 
   const on_click_load_builtin = async () => {
     const lf2 = lf2_ref.current;
     if (!lf2) return;
-    lf2.load('lf2.info.json')
-      .catch(e => Log.print('on_click_load_builtin, lf2.info.json not exists, will try lf2_data', e))
+    lf2.load('data.zip.json')
+      .catch(e => Log.print('on_click_load_builtin, data.zip.json not exists, will try lf2_data', e))
       .then(() => lf2.load())
       .catch(e => Log.print('on_click_load_builtin', e))
   }

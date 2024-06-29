@@ -156,7 +156,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     this.world.start_update();
     this.world.start_render();
     this.load_layouts();
-    this.load_prel_data_zip('/lf2.prel.zip')
+    this.load_prel_data_zip('prel.zip.json')
   }
 
   random_entity_info(e: Entity) {
@@ -410,37 +410,34 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   }
 
   async load_prel_data_zip(url: string): Promise<Zip> {
-    this.on_loading_content(url, 0);
-    const ret = await Zip.download(url,
-      (progress, full_size) => this.on_loading_file(url, progress, full_size)
-    )
+    const ret = await this.load_zip_from_info_url(url)
     this._zips.unshift(ret);
-    this.on_loading_content(url, 100);
     await this.load_layouts();
     this._callbacks.emit('on_prel_data_loaded')();
     return ret
   }
 
-  async load_game_data_from_info_json_url(info_url: string): Promise<Zip> {
+  async load_zip_from_info_url(info_url: string): Promise<Zip> {
     this.on_loading_content(`${info_url}`, 0);
     const { url, md5 } = await import_as_json([info_url]);
     const exists = await this.get_cache_data(md5);
+    let ret: Zip | null = null;
     if (exists) {
       const nums = [];
       for (var i = 0, j = exists.data.length; i < j; ++i)
         nums.push(exists.data.charCodeAt(i));
-      this.on_loading_content(`${url}(local cache)`, 0);
-      return await Zip.read_buf(new Uint8Array(nums))
+      ret = await Zip.read_buf(new Uint8Array(nums))
     } else {
-      this.on_loading_content(`${url}`, 0);
-      const zip = await Zip.download(url,
+      ret = await Zip.download(url,
         (progress, full_size) => this.on_loading_file(url, progress, full_size)
       )
       let data: string = '';
-      for (const c of zip.buf) data += String.fromCharCode(c)
+      for (const c of ret.buf)
+        data += String.fromCharCode(c)
       await this.save_cache_data(md5, data);
-      return zip;
     }
+    this.on_loading_content(`${url}`, 100);
+    return ret;
   }
   async load(arg1?: Zip | string): Promise<void> {
     this._loading = true;
@@ -448,7 +445,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     this.set_layout("loading");
 
     try {
-      const zip = is_str(arg1) ? await this.load_game_data_from_info_json_url(arg1) : arg1;
+      const zip = is_str(arg1) ? await this.load_zip_from_info_url(arg1) : arg1;
       await this.load_data(zip);
       this._loaded = true;
       this._callbacks.emit('on_loading_end')();
@@ -587,6 +584,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   private _layout_infos: ICookedLayoutInfo[] = [];
   get layout_infos(): readonly ICookedLayoutInfo[] { return this._layout_infos }
   get layout_infos_loaded() { return this._layout_infos_loaded }
+
   protected _layout_info_map = new Map<string, ILayoutInfo>();
 
   async load_layouts(): Promise<ICookedLayoutInfo[]> {
