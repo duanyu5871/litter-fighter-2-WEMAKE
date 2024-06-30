@@ -1,11 +1,15 @@
-import { set_obj_field } from "../utils/container_help/set_obj_field";
-import { IBaseData, IEntityPictureInfo, IGameObjInfo, IStageInfo } from '../defines';
+import {
+  IBallData, IBaseData, IBgData, ICharacterData,
+  IEntityData, IEntityPictureInfo, IGameObjInfo, IStageInfo,
+  IWeaponData
+} from '../defines';
 import { IBallFrameInfo } from "../defines/IBallFrameInfo";
 import { IBallInfo } from "../defines/IBallInfo";
 import { ICharacterInfo } from "../defines/ICharacterInfo";
 import { IDatIndex } from "../defines/IDatIndex";
 import { IWeaponInfo } from "../defines/IWeaponInfo";
 import { Defines } from '../defines/defines';
+import { set_obj_field } from "../utils/container_help/set_obj_field";
 import { match_block_once } from '../utils/string_parser/match_block';
 import { match_colon_value } from '../utils/string_parser/match_colon_value';
 import { make_ball_data } from './make_ball_data';
@@ -16,7 +20,9 @@ import { make_frames } from './make_frames';
 import { make_stage_info_list as make_stage_infos } from './make_stage_info_list';
 import { make_weapon_data } from './make_weapon_data';
 
-export default function dat_to_json(full_str: string, datIndex?: IDatIndex): void | IStageInfo[] | IBaseData<any> {
+export default function dat_to_json(
+  full_str: string, datIndex?: IDatIndex
+): void | IStageInfo[] | IEntityData | IBallData | IBgData | ICharacterData | IWeaponData | IBaseData {
   full_str = full_str.replace(/\\\\/g, '/');
   if (full_str.startsWith('<stage>')) return make_stage_infos(full_str);
   if (full_str.startsWith('name:')) return make_bg_data(full_str, datIndex);

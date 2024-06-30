@@ -14,7 +14,7 @@ export function read_indexes(text: string | undefined | null): IDataLists | unde
       switch (name) {
         case 'id': item[name] = value; break;
         case 'type': item[name] = to_num(value) ?? value; break;
-        case 'file': item[name] = value.replace(/\\/g, '/'); break;
+        case 'file': item[name] = value.replace(/\\/g, '/').replace(/.dat$/, '.json');; break;
       }
     }
     const hash = match_hash_end(line);
@@ -32,7 +32,7 @@ export function read_indexes(text: string | undefined | null): IDataLists | unde
     for (const [name, value] of match_colon_value(line)) {
       switch (name) {
         case 'id': item[name] = 'bg_' + value; break;
-        case 'file': item[name] = value.replace(/\\/g, '/'); break;
+        case 'file': item[name] = value.replace(/\\/g, '/').replace(/.dat$/, '.json'); break;
       }
     }
     return item;
