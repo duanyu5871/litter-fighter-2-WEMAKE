@@ -148,7 +148,7 @@ async function convert_pic(out_dir: string, src_dir: string, src_path: string, p
 
     const args = [
       src_path,
-      "-stroke", "rgba(0,0,0)",
+      "-stroke", "rgba(0,0,0,0)",
       "-strokewidth", "1",
       ...remove_lines,
       "-alpha",
