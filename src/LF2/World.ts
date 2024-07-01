@@ -210,27 +210,25 @@ export class World {
     if (this.disposed) return;
     if (this._update_worker_id) Interval.del(this._update_worker_id);
     const dt = Math.max((1000 / 60) / this._playrate, 1);
-    let _u_prev_time = 0;
-    let _r_prev_time = 0;
+    let _prev_time = 0;
     let _skip = 0
     const on_update = () => {
       const time = Date.now();
-
       if (!this._paused) this.update_once()
-
-      if (_u_prev_time !== 0 && this._need_UPS) {
-        this._UPS.update(time - _u_prev_time);
+      const dt = time - _prev_time;
+      if (_prev_time !== 0 && this._need_UPS) {
+        this._UPS.update(dt);
         this._callbacks.emit('on_ups_update')(this._UPS.value);
       }
-      _u_prev_time = time
+      _prev_time = time
 
       if (this._sync_render === 1 || (++_skip) % 2) {
-        this.render_once(time - _r_prev_time)
-        if (_r_prev_time !== 0 && this._need_FPS) {
-          this._FPS.update(time - _r_prev_time);
+        this.render_once(dt)
+        if (_prev_time !== 0 && this._need_FPS) {
+          this._FPS.update(dt);
           this._callbacks.emit('on_fps_update')(this._FPS.value);
         }
-        _r_prev_time = time
+        _prev_time = time
       }
     }
     this._update_worker_id = Interval.set(on_update, dt);

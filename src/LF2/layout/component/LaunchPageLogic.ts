@@ -5,7 +5,6 @@ import SequenceAnimation from "../../animation/SequenceAnimation";
 import { SineAnimation } from "../../animation/SineAnimation";
 import Invoker from "../../base/Invoker";
 import GameKey from "../../defines/GameKey";
-import Defines from "../../defines/defines";
 import Timeout from "../../dom/Timeout";
 import ease_linearity from "../../ease_method/ease_linearity";
 import { TPicture } from "../../loader/loader";
