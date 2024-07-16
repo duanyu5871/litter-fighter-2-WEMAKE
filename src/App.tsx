@@ -16,7 +16,7 @@ import Invoker from './LF2/base/Invoker';
 import { Defines } from './LF2/defines/defines';
 import Ditto from './LF2/ditto';
 import * as dom from './LF2/dom';
-import { GameOverlay } from './LF2/dom/GameOverlay';
+import { GameOverlay } from './GameOverlay';
 import { is_weapon } from './LF2/entity/type_check';
 import { ILayoutInfo } from './LF2/layout/ILayoutInfo';
 import { fisrt } from './LF2/utils/container_help';

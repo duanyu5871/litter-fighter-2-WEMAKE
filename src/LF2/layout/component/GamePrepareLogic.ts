@@ -1,7 +1,7 @@
 import Callbacks from "../../base/Callbacks";
 import FSM, { IReadonlyFSM } from "../../base/FSM";
 import Invoker from "../../base/Invoker";
-import NoEmitCallbacks from "../../base/NoEmitCallbacks";
+import { NoEmitCallbacks } from "../../base/NoEmitCallbacks";
 import LocalHuman from "../../controller/LocalHuman";
 import GameKey from "../../defines/GameKey";
 import { Defines } from "../../defines/defines";

@@ -1,4 +1,4 @@
-import NoEmitCallbacks from "../../base/NoEmitCallbacks";
+import { NoEmitCallbacks } from "../../base/NoEmitCallbacks";
 import { IFullScreenCallback } from "./IFullScreenCallback";
 
 

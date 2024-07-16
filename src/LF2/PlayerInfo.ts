@@ -1,7 +1,7 @@
 import { Warn } from '@fimagine/logger';
 import { is_str } from './utils/type_check';
 import Callbacks from './base/Callbacks';
-import NoEmitCallbacks from "./base/NoEmitCallbacks";
+import { NoEmitCallbacks } from "./base/NoEmitCallbacks";
 import type { TKeys } from './controller/BaseController';
 import Defines from './defines/defines';
 import GameKey from './defines/GameKey';

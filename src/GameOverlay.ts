@@ -1,9 +1,9 @@
 
-import { Defines } from '../defines/defines';
-import { is_num } from '../utils/type_check';
-import { ILf2Callback } from '../ILf2Callback';
-import type { IWorldCallbacks } from '../IWorldCallbacks';
-import type { World } from '../World';
+import { Defines } from './LF2/defines/defines';
+import { is_num } from './LF2/utils/type_check';
+import { ILf2Callback } from './LF2/ILf2Callback';
+import type { IWorldCallbacks } from './LF2/IWorldCallbacks';
+import type { World } from './LF2/World';
 import './game_overlay.css';
 const ele = document.createElement.bind(document);
 export class GameOverlay {

@@ -3,7 +3,7 @@ import Sprite, { ISpriteInfo } from '../3d/Sprite';
 import LF2 from '../LF2';
 import Callbacks from '../base/Callbacks';
 import Expression, { ValGetter } from '../base/Expression';
-import NoEmitCallbacks from '../base/NoEmitCallbacks';
+import { NoEmitCallbacks } from '../base/NoEmitCallbacks';
 import IStyle from '../defines/IStyle';
 import Defines from '../defines/defines';
 import { empty_texture, white_texture, type TImageInfo } from '../loader/loader';

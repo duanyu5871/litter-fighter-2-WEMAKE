@@ -1,5 +1,5 @@
 import Callbacks from '../base/Callbacks';
-import NoEmitCallbacks from "../base/NoEmitCallbacks";
+import { NoEmitCallbacks } from "../base/NoEmitCallbacks";
 import { is_false, is_fun } from '../utils/type_check';
 import { IFullScreen } from '../ditto/fullscreen/IFullScreen';
 import { IFullScreenCallback } from '../ditto/fullscreen/IFullScreenCallback';

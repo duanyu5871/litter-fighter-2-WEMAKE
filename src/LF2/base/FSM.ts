@@ -1,5 +1,5 @@
 import Callbacks from "./Callbacks";
-import NoEmitCallbacks from "./NoEmitCallbacks";
+import { NoEmitCallbacks } from "./NoEmitCallbacks";
 
 export interface IState<K extends string | number = string | number> {
   get key(): K;

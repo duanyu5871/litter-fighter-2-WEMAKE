@@ -1,4 +1,4 @@
-import type NoEmitCallbacks from "../../base/NoEmitCallbacks";
+import type { NoEmitCallbacks } from "../../base/NoEmitCallbacks";
 import { type IPointingsCallback } from "./IPointingsCallback";
 
 export interface IPointings {

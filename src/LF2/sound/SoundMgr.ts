@@ -3,7 +3,7 @@ import { clamp } from "three/src/math/MathUtils";
 import { Warn } from "../../Log";
 import type LF2 from "../LF2";
 import Callbacks from "../base/Callbacks";
-import NoEmitCallbacks from "../base/NoEmitCallbacks";
+import { NoEmitCallbacks } from "../base/NoEmitCallbacks";
 import FallbackPlayer from "../dom/sound/FallbackPlayer";
 import ModernPlayer from "../dom/sound/ModernPlayer";
 import float_equal from "../utils/math/float_equal";

@@ -1,7 +1,7 @@
 import { Warn } from "../../Log";
 import type { World } from "../World";
 import Callbacks from "../base/Callbacks";
-import NoEmitCallbacks from "../base/NoEmitCallbacks";
+import { NoEmitCallbacks } from "../base/NoEmitCallbacks";
 import { new_team } from "../base/new_id";
 import Background from "../bg/Background";
 import { IBgData } from "../defines";

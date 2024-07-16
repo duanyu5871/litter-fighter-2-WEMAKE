@@ -53,9 +53,9 @@ function get_req_header_accept(url: string): string | undefined {
 
   return void 0;
 }
-export async function import_as<T>(responseType: 'json' | 'blob', url: string): Promise<AxiosResponse<T, any>>
-export async function import_as<T>(responseType: 'json' | 'blob', url_list: string[]): Promise<AxiosResponse<T, any>>;
-export async function import_as<T>(responseType: 'json' | 'blob', url_list_or_url: string | string[]): Promise<AxiosResponse<T, any>> {
+async function import_as<T>(responseType: 'json' | 'blob', url: string): Promise<AxiosResponse<T, any>>
+async function import_as<T>(responseType: 'json' | 'blob', url_list: string[]): Promise<AxiosResponse<T, any>>;
+async function import_as<T>(responseType: 'json' | 'blob', url_list_or_url: string | string[]): Promise<AxiosResponse<T, any>> {
 
   const start_req = async (url: string) => {
     const headers: RawAxiosRequestHeaders = {};

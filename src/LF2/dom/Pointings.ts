@@ -1,5 +1,5 @@
 import Callbacks from "../base/Callbacks";
-import NoEmitCallbacks from "../base/NoEmitCallbacks";
+import { NoEmitCallbacks } from "../base/NoEmitCallbacks";
 import { IPointingEvent, IPointings, IPointingsCallback } from "../ditto";
 
 class __PointingEvent implements IPointingEvent {

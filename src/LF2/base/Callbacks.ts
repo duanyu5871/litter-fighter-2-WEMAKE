@@ -1,5 +1,4 @@
-import NoEmitCallbacks from "./NoEmitCallbacks";
-
+import { NoEmitCallbacks } from "./NoEmitCallbacks";
 export default class Callbacks<F> extends NoEmitCallbacks<F> {
   /**
    * 获取指定回调名的回调函数

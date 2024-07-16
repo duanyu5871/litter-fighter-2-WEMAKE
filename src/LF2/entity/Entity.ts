@@ -4,7 +4,7 @@ import { Warn } from '../../Log';
 import type { World } from '../World';
 import { ICube } from '../World';
 import Callbacks from '../base/Callbacks';
-import NoEmitCallbacks from "../base/NoEmitCallbacks";
+import { NoEmitCallbacks } from "../base/NoEmitCallbacks";
 import { IBallData, IBaseData, IBdyInfo, ICharacterData, IEntityData, IFrameInfo, IGameObjData, IGameObjInfo, IItrInfo, IOpointInfo, IWeaponData, TNextFrame } from '../defines';
 import { Defines } from '../defines/defines';
 import BaseState from "../state/base/BaseState";

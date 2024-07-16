@@ -1,5 +1,5 @@
 import Callbacks from "../base/Callbacks";
-import NoEmitCallbacks from "../base/NoEmitCallbacks";
+import { NoEmitCallbacks } from "../base/NoEmitCallbacks";
 import { IKeyboard } from "../ditto/keyboard/IKeyboard";
 import { IKeyboardCallback } from "../ditto/keyboard/IKeyboardCallback";
 import { IKeyEvent } from "../ditto/keyboard/IKeyEvent";

@@ -5,7 +5,7 @@ import { PlayerInfo } from './PlayerInfo';
 import { World } from './World';
 import Callbacks from './base/Callbacks';
 import { Loader } from './base/Loader';
-import NoEmitCallbacks from "./base/NoEmitCallbacks";
+import { NoEmitCallbacks } from "./base/NoEmitCallbacks";
 import { get_short_file_size_txt } from './base/get_short_file_size_txt';
 import { new_id, new_team } from './base/new_id';
 import Layer from './bg/Layer';

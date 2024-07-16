@@ -5,7 +5,7 @@ import { IWorldCallbacks } from './IWorldCallbacks';
 import LF2 from './LF2';
 import Callbacks from './base/Callbacks';
 import FPS from './base/FPS';
-import NoEmitCallbacks from "./base/NoEmitCallbacks";
+import { NoEmitCallbacks } from "./base/NoEmitCallbacks";
 import LocalHuman from './controller/LocalHuman';
 import { IBdyInfo, IFrameInfo, IItrInfo } from './defines';
 import { Defines } from './defines/defines';
