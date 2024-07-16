@@ -130,7 +130,6 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   async import_json<C = any>(path: string): Promise<C> {
     const zip_obj = fisrt(this._zips, z => z.file(path))
     if (zip_obj) return zip_obj.json() as C
-
     const paths = get_import_fallbacks(path);
     return import_as_json(paths) as C;
   }
@@ -155,7 +154,6 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     this.pointings.callback.add(this);
     this.world.start_update();
     this.world.start_render();
-    this.load_layouts();
     this.load_prel_data_zip('prel.zip.json')
   }
 
