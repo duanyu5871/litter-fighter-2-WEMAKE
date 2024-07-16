@@ -1,7 +1,6 @@
 import axios from 'axios';
 import JSZIP from 'jszip';
-import IZip from '../ditto/zip/IZip';
-import IZipObject from '../ditto/zip/IZipObject';
+import { IZip, IZipObject } from '../ditto';
 import { is_str } from '../utils/type_check';
 
 export class ZipObject implements IZipObject {
@@ -25,17 +24,17 @@ export class ZipObject implements IZipObject {
   }
 }
 
-export default class Zip implements IZip {
-  static async read_file(file: File): Promise<Zip> {
+export class Zip implements IZip {
+  static async read_file(file: File): Promise<IZip> {
     const buf = await file.arrayBuffer().then(raw => new Uint8Array(raw))
     const jszip = await JSZIP.loadAsync(buf)
     return new Zip(jszip, buf)
   }
-  static async read_buf(buf: Uint8Array) {
+  static async read_buf(buf: Uint8Array): Promise<IZip> {
     const jszip = await JSZIP.loadAsync(buf)
     return new Zip(jszip, buf)
   }
-  static async download(url: string, on_progress: (progress: number, size: number) => void): Promise<Zip> {
+  static async download(url: string, on_progress: (progress: number, size: number) => void): Promise<IZip> {
     const buf = await axios.get<ArrayBuffer>(url, {
       responseType: 'arraybuffer',
       onDownloadProgress: (e_1) => {
@@ -47,7 +46,7 @@ export default class Zip implements IZip {
     return new Zip(jszip, buf);
   }
 
-  readonly buf;
+  readonly buf: Uint8Array;
   private inner: JSZIP;
   private constructor(inner: JSZIP, buf: Uint8Array) {
     this.inner = inner;

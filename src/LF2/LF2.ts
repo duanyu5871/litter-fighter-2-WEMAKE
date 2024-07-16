@@ -14,10 +14,11 @@ import LocalHuman from "./controller/LocalHuman";
 import { IBgData, ICharacterData, IWeaponData, TFace } from './defines';
 import { IStageInfo } from "./defines/IStageInfo";
 import { Defines } from './defines/defines';
-import { IKeyboardCallback, KeyEvent, Keyboard } from './dom/Keyboard';
-import Pointings, { IPointingsCallback, PointingEvent } from './dom/Pointings';
+import ditto, { IKeyEvent, IPointingEvent, IPointings, IZip } from './ditto';
+import { IKeyboard } from './ditto/keyboard/IKeyboard';
+import { IKeyboardCallback } from "./ditto/keyboard/IKeyboardCallback";
+import { IPointingsCallback } from "./ditto/pointings/IPointingsCallback";
 import db from './dom/db';
-import Zip from './dom/download_zip';
 import { import_as_blob_url, import_as_json } from './dom/make_import';
 import './entity/Ball';
 import Character from './entity/Character';
@@ -40,6 +41,7 @@ import float_equal from './utils/math/float_equal';
 import { random_get, random_in, random_take } from './utils/math/random';
 import { is_arr, is_num, is_str, not_empty_str } from './utils/type_check';
 
+const { Zip } = ditto;
 const cheat_info_pair = (n: Defines.Cheats) => ['' + n, {
   keys: Defines.CheatKeys[n],
   sound: Defines.CheatSounds[n],
@@ -79,7 +81,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   readonly canvas: HTMLCanvasElement;
   readonly world: World;
 
-  private _zips: Zip[] = []; // [game data zip, preliminary data zip]
+  private _zips: IZip[] = []; // [game data zip, preliminary data zip]
 
   private _player_infos = new Map([
     ['1', new PlayerInfo('1')],
@@ -101,8 +103,8 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   readonly datas: DatMgr;
   readonly sounds: SoundMgr;
   readonly images: ImageMgr
-  readonly keyboard: Keyboard;
-  readonly pointings: Pointings;
+  readonly keyboard: IKeyboard;
+  readonly pointings: IPointings;
 
   get stages(): IStageInfo[] { return this.datas.stages }
 
@@ -149,9 +151,9 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     this.datas = new DatMgr(this);
     this.sounds = new SoundMgr(this);
     this.images = new ImageMgr(this);
-    this.keyboard = new Keyboard();
+    this.keyboard = new ditto.Keyboard();
     this.keyboard.callback.add(this);
-    this.pointings = new Pointings(canvas);
+    this.pointings = new ditto.Pointings(canvas);
     this.pointings.callback.add(this);
     this.world.start_update();
     this.world.start_render();
@@ -231,8 +233,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   private mouse_on_layouts = new Set<Layout>()
 
 
-
-  on_pointer_move(e: PointingEvent) {
+  on_pointer_move(e: IPointingEvent) {
     const { layout } = this;
     if (!layout) return;
     const coords = new THREE.Vector2(e.scene_x, e.scene_y);
@@ -260,7 +261,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     this.mouse_on_layouts = mouse_on_layouts;
   }
 
-  on_pointer_down(e: PointingEvent) {
+  on_pointer_down(e: IPointingEvent) {
     const coords = new THREE.Vector2(e.scene_x, e.scene_y)
     const raycaster = new THREE.Raycaster()
     raycaster.setFromCamera(coords, this.world.camera.inner)
@@ -299,7 +300,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     }
   }
 
-  on_pointer_up(e: PointingEvent) {
+  on_pointer_up(e: IPointingEvent) {
 
   }
 
@@ -327,7 +328,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     this._curr_key_list = ''
   }
 
-  on_key_down(e: KeyEvent) {
+  on_key_down(e: IKeyEvent) {
     const key_code = e.key?.toLowerCase() ?? ''
     this._curr_key_list += key_code;
     let match = false;
@@ -353,7 +354,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     }
   }
 
-  on_key_up(e: KeyEvent) {
+  on_key_up(e: IKeyEvent) {
     const key_code = e.key?.toLowerCase() ?? ''
     const { layout } = this;
     if (layout) {
@@ -409,7 +410,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     this.on_loading_content(txt, progress);
   }
 
-  async load_prel_data_zip(url: string): Promise<Zip> {
+  async load_prel_data_zip(url: string): Promise<IZip> {
     const ret = await this.load_zip_from_info_url(url)
     this._zips.unshift(ret);
     await this.load_layouts();
@@ -417,11 +418,11 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     return ret
   }
 
-  async load_zip_from_info_url(info_url: string): Promise<Zip> {
+  async load_zip_from_info_url(info_url: string): Promise<IZip> {
     this.on_loading_content(`${info_url}`, 0);
     const { url, md5 } = await import_as_json([info_url]);
     const exists = await this.get_cache_data(md5);
-    let ret: Zip | null = null;
+    let ret: IZip | null = null;
     if (exists) {
       const nums = [];
       for (var i = 0, j = exists.data.length; i < j; ++i)
@@ -439,7 +440,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     this.on_loading_content(`${url}`, 100);
     return ret;
   }
-  async load(arg1?: Zip | string): Promise<void> {
+  async load(arg1?: IZip | string): Promise<void> {
     this._loading = true;
     this._callbacks.emit('on_loading_start')();
     this.set_layout("loading");
@@ -457,7 +458,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     }
   }
 
-  private async load_data(zip?: Zip) {
+  private async load_data(zip?: IZip) {
     if (zip) this._zips.unshift(zip);
     await this.datas.load();
     if (this._disposed)

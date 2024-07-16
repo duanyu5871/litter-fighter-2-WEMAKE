@@ -15,10 +15,9 @@ import LF2 from './LF2/LF2';
 import Invoker from './LF2/base/Invoker';
 import { Defines } from './LF2/defines/defines';
 import Ditto from './LF2/ditto';
-import { Interval, md5, Render, Timeout } from './LF2/dom';
+import { Interval, md5, Render, Timeout, Zip } from './LF2/dom';
 import FullScreen from './LF2/dom/FullScreen';
 import { GameOverlay } from './LF2/dom/GameOverlay';
-import Zip from './LF2/dom/download_zip';
 import { is_weapon } from './LF2/entity/type_check';
 import { ILayoutInfo } from './LF2/layout/ILayoutInfo';
 import { fisrt } from './LF2/utils/container_help';
@@ -43,11 +42,16 @@ import img_btn_3_2 from './assets/btn_3_2.png';
 import './game_ui.css';
 import './init';
 import { useLocalBoolean, useLocalNumber, useLocalString } from './useLocalStorage';
+import { __Keyboard } from './LF2/dom/Keyboard';
+import { __Pointings } from './LF2/dom/Pointings';
 
 Ditto.setup({
   Timeout,
   Interval,
   Render,
+  Keyboard: __Keyboard,
+  Pointings: __Pointings,
+  Zip,
   md5,
 });
 

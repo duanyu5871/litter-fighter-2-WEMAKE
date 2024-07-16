@@ -7,7 +7,6 @@ import { IEntityPictureInfo } from '../defines';
 import type IPicture from '../defines/IPicture';
 import type IStyle from "../defines/IStyle";
 import Ditto from '../ditto';
-const {md5} = Ditto;
 
 export type TPicture = IPicture<THREE.Texture>;
 
@@ -136,7 +135,7 @@ export class ImageMgr {
   }
 
   load_text(text: string, style: IStyle = {}): Promise<TImageInfo> {
-    const key = md5(text, JSON.stringify(style));
+    const key = Ditto.MD5(text, JSON.stringify(style));
     const fn = () => this._make_img_info_by_text(key, text, style);
     return this._requesters.get(key, fn);
   }

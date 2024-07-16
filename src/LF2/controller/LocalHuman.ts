@@ -1,6 +1,7 @@
 import { TNextFrame } from '../defines';
 import GameKey from '../defines/GameKey';
-import { IKeyboardCallback, KeyEvent } from '../dom/Keyboard';
+import { IKeyboardCallback } from "../ditto/keyboard/IKeyboardCallback";
+import { IKeyEvent } from '../ditto/keyboard/IKeyEvent';
 import Character from '../entity/Character';
 import { BaseController } from "./BaseController";
 import { BotEnemyChaser } from './BotEnemyChaser';
@@ -15,7 +16,7 @@ export default class LocalHuman extends BaseController implements IKeyboardCallb
   private _code_key_map: TCodeKeyMap = {};
   private _ai?: BotEnemyChaser;
 
-  on_key_up(e: KeyEvent) {
+  on_key_up(e: IKeyEvent) {
     const code = e.key?.toLowerCase();
     if (!code) return;
     const key = this._code_key_map[code];
@@ -23,7 +24,7 @@ export default class LocalHuman extends BaseController implements IKeyboardCallb
     this.end(key);
   };
 
-  on_key_down(e: KeyEvent) {
+  on_key_down(e: IKeyEvent) {
     const code = e.key?.toLowerCase();
     if (!code) return;
     const key = this._code_key_map[code];

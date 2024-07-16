@@ -1,4 +1,6 @@
-export default interface IZipObject {
+/* auto re-export */
+export interface IZipObject {
+  name: string;
   text(): Promise<string>;
   json<T = any>(): Promise<T>;
   blob(): Promise<Blob>;

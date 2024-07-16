@@ -1,14 +1,8 @@
 import Callbacks from "../base/Callbacks";
 import NoEmitCallbacks from "../base/NoEmitCallbacks";
+import { IPointingEvent, IPointings, IPointingsCallback } from "../ditto";
 
-export interface IPointingsCallback {
-  on_pointer_down?(e: PointingEvent): void;
-  on_pointer_move?(e: PointingEvent): void;
-  on_pointer_up?(e: PointingEvent): void;
-  on_click?(e: PointingEvent): void;
-}
-
-export class PointingEvent {
+export class __PointingEvent implements IPointingEvent {
   protected _element: HTMLElement;
   readonly x: number;
   readonly y: number;
@@ -23,21 +17,19 @@ export class PointingEvent {
     this.scene_y = -(this.y / height) * 2 + 1;
   }
 }
-
-export default class Pointings {
+export class __Pointings implements IPointings {
   protected _callback = new Callbacks<IPointingsCallback>();
   protected _ele: HTMLElement;
   get callback(): NoEmitCallbacks<IPointingsCallback> { return this._callback }
 
   private _on_pointer_down = (e: PointerEvent) =>
-    this._callback.emit('on_pointer_down')(new PointingEvent(this._ele, e))
+    this._callback.emit('on_pointer_down')(new __PointingEvent(this._ele, e))
   private _on_pointer_up = (e: PointerEvent) =>
-    this._callback.emit('on_pointer_up')(new PointingEvent(this._ele, e))
+    this._callback.emit('on_pointer_up')(new __PointingEvent(this._ele, e))
   private _on_pointer_move = (e: PointerEvent) =>
-    this._callback.emit('on_pointer_move')(new PointingEvent(this._ele, e))
+    this._callback.emit('on_pointer_move')(new __PointingEvent(this._ele, e))
   private _on_click = (e: MouseEvent) =>
-    this._callback.emit('on_click')(new PointingEvent(this._ele, e))
-
+    this._callback.emit('on_click')(new __PointingEvent(this._ele, e))
 
   constructor(element: HTMLElement) {
     this._ele = element;

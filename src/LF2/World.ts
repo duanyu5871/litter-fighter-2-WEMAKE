@@ -28,7 +28,6 @@ export interface ICube {
   near: number;
   far: number;
 }
-const { Interval, Render } = Ditto;
 export class World {
   readonly lf2: LF2
   readonly _callbacks = new Callbacks<IWorldCallbacks>();
@@ -157,8 +156,8 @@ export class World {
   private _need_UPS: boolean = true;
   private _FPS = new FPS()
   private _UPS = new FPS();
-  private _render_worker_id?: ReturnType<typeof Render.add>;
-  private _update_worker_id?: ReturnType<typeof Interval.add>;
+  private _render_worker_id?: ReturnType<typeof Ditto.Render.add>;
+  private _update_worker_id?: ReturnType<typeof Ditto.Interval.add>;
 
   private _sync_render: 0 | 1 | 2 = 0;
   get sync_render(): number {
@@ -176,13 +175,13 @@ export class World {
     this._callbacks.emit('on_is_sync_render_changed')(curr, prev)
   }
   stop_render() {
-    this._render_worker_id && Render.del(this._render_worker_id);
+    this._render_worker_id && Ditto.Render.del(this._render_worker_id);
     this._render_worker_id = 0;
   }
 
   start_render() {
     if (this.disposed) return;
-    if (this._render_worker_id) Render.del(this._render_worker_id);
+    if (this._render_worker_id) Ditto.Render.del(this._render_worker_id);
     if (this._sync_render) return;
     let _r_prev_time = 0;
     const on_render = (time: number) => {
@@ -196,18 +195,18 @@ export class World {
       }
       _r_prev_time = time
     }
-    this._render_worker_id && Render.del(this._render_worker_id);
-    this._render_worker_id = Render.add(on_render);
+    this._render_worker_id && Ditto.Render.del(this._render_worker_id);
+    this._render_worker_id = Ditto.Render.add(on_render);
   }
 
   stop_update() {
-    this._update_worker_id && Interval.del(this._update_worker_id);
+    this._update_worker_id && Ditto.Interval.del(this._update_worker_id);
     this._update_worker_id = void 0;
   }
 
   start_update() {
     if (this.disposed) return;
-    if (this._update_worker_id) Interval.del(this._update_worker_id);
+    if (this._update_worker_id) Ditto.Interval.del(this._update_worker_id);
     const dt = Math.max((1000 / 60) / this._playrate, 1);
     let _prev_time = 0;
     let _skip = 0
@@ -230,7 +229,7 @@ export class World {
         _prev_time = time
       }
     }
-    this._update_worker_id = Interval.add(on_update, dt);
+    this._update_worker_id = Ditto.Interval.add(on_update, dt);
   }
 
 

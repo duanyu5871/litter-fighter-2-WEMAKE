@@ -1,23 +1,10 @@
 import Callbacks from "../base/Callbacks";
 import NoEmitCallbacks from "../base/NoEmitCallbacks";
+import { IKeyboard } from "../ditto/keyboard/IKeyboard";
+import { IKeyboardCallback } from "../ditto/keyboard/IKeyboardCallback";
+import { IKeyEvent } from "../ditto/keyboard/IKeyEvent";
 
-export interface IKeyboardCallback {
-  /**
-   * 键按下
-   *
-   * @param {KeyEvent} e
-   */
-  on_key_down?(e: KeyEvent): void;
-
-  /**
-   * 键抬起
-   *
-   * @param {KeyEvent} e
-   */
-  on_key_up?(e: KeyEvent): void;
-}
-
-export class KeyEvent {
+export class __KeyEvent implements IKeyEvent {
   readonly times: number;
   readonly key: string;
   constructor(e: KeyboardEvent, times: number = 0) {
@@ -26,23 +13,22 @@ export class KeyEvent {
   }
 }
 
-export class Keyboard {
+export class __Keyboard implements IKeyboard {
   protected _callback = new Callbacks<IKeyboardCallback>();
   protected _times_map = new Map<string, number>();
   get callback(): NoEmitCallbacks<IKeyboardCallback> { return this._callback }
-
 
   protected _on_key_down = (e: KeyboardEvent) => {
     const key_code = e.key?.toLowerCase() || ''
     const times = this._times_map.get(key_code) ?? -1;
     this._times_map.set(key_code, times + 1);
-    this._callback.emit('on_key_down')(new KeyEvent(e, times + 1))
+    this._callback.emit('on_key_down')(new __KeyEvent(e, times + 1))
   }
 
   protected _on_key_up = (e: KeyboardEvent) => {
     const key_code = e.key?.toLowerCase() || ''
     this._times_map.delete(key_code);
-    this._callback.emit('on_key_up')(new KeyEvent(e, 0))
+    this._callback.emit('on_key_up')(new __KeyEvent(e, 0))
   }
 
   constructor() {

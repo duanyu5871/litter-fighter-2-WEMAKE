@@ -1,8 +1,8 @@
 import Text from '../../3d/Text';
 import Invoker from '../../base/Invoker';
 import GameKey from '../../defines/GameKey';
-import { IKeyboardCallback } from '../../dom/Keyboard';
-import { IPointingsCallback } from '../../dom/Pointings';
+import { IKeyboardCallback } from "../../ditto/keyboard/IKeyboardCallback";
+import { IPointingsCallback } from "../../ditto/pointings/IPointingsCallback";
 import Layout from '../Layout';
 import { LayoutComponent } from './LayoutComponent';
 
