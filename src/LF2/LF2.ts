@@ -18,7 +18,6 @@ import ditto, { IKeyEvent, IPointingEvent, IPointings, IZip } from './ditto';
 import { IKeyboard } from './ditto/keyboard/IKeyboard';
 import { IKeyboardCallback } from "./ditto/keyboard/IKeyboardCallback";
 import { IPointingsCallback } from "./ditto/pointings/IPointingsCallback";
-import db from './dom/db';
 import { import_as_blob_url, import_as_json } from './dom/make_import';
 import './entity/Ball';
 import Character from './entity/Character';
@@ -41,7 +40,6 @@ import float_equal from './utils/math/float_equal';
 import { random_get, random_in, random_take } from './utils/math/random';
 import { is_arr, is_num, is_str, not_empty_str } from './utils/type_check';
 
-const { Zip } = ditto;
 const cheat_info_pair = (n: Defines.Cheats) => ['' + n, {
   keys: Defines.CheatKeys[n],
   sound: Defines.CheatSounds[n],
@@ -394,15 +392,10 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     return ret;
   }
   async get_cache_data(md5: string) {
-    return db.open().catch(_ => void 0).then(() => db.tbl_lf2_data.where('name').equals(md5).first())
+    return ditto.Cache.get(md5)
   }
   async save_cache_data(md5: string, data: string) {
-    return db.open().catch(_ => void 0).then(() => db.tbl_lf2_data.put({
-      name: md5,
-      version: 0,
-      data: data,
-      create_date: Date.now()
-    }))
+    return ditto.Cache.put(md5, data)
   }
 
   private on_loading_file(url: string, progress: number, full_size: number) {
@@ -427,9 +420,9 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
       const nums = [];
       for (var i = 0, j = exists.data.length; i < j; ++i)
         nums.push(exists.data.charCodeAt(i));
-      ret = await Zip.read_buf(new Uint8Array(nums))
+      ret = await ditto.Zip.read_buf(new Uint8Array(nums))
     } else {
-      ret = await Zip.download(url,
+      ret = await ditto.Zip.download(url,
         (progress, full_size) => this.on_loading_file(url, progress, full_size)
       )
       let data: string = '';

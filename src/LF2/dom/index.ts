@@ -6,3 +6,4 @@ export * from "./Zip";
 export * from "./Keyboard";
 export * from "./Pointings";
 export * from "./FullScreen";
+export * from "./cache";
