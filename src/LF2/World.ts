@@ -9,8 +9,7 @@ import NoEmitCallbacks from "./base/NoEmitCallbacks";
 import LocalHuman from './controller/LocalHuman';
 import { IBdyInfo, IFrameInfo, IItrInfo } from './defines';
 import { Defines } from './defines/defines';
-import Interval from './dom/Interval';
-import Render from './dom/Render';
+import Ditto from './ditto';
 import Ball from './entity/Ball';
 import Character from './entity/Character';
 import Entity from './entity/Entity';
@@ -29,7 +28,7 @@ export interface ICube {
   near: number;
   far: number;
 }
-
+const { Interval, Render } = Ditto;
 export class World {
   readonly lf2: LF2
   readonly _callbacks = new Callbacks<IWorldCallbacks>();
@@ -158,8 +157,8 @@ export class World {
   private _need_UPS: boolean = true;
   private _FPS = new FPS()
   private _UPS = new FPS();
-  private _render_worker_id?: ReturnType<typeof Render.start>;
-  private _update_worker_id?: ReturnType<typeof Interval.set>;
+  private _render_worker_id?: ReturnType<typeof Render.add>;
+  private _update_worker_id?: ReturnType<typeof Interval.add>;
 
   private _sync_render: 0 | 1 | 2 = 0;
   get sync_render(): number {
@@ -177,13 +176,13 @@ export class World {
     this._callbacks.emit('on_is_sync_render_changed')(curr, prev)
   }
   stop_render() {
-    this._render_worker_id && Render.stop(this._render_worker_id);
+    this._render_worker_id && Render.del(this._render_worker_id);
     this._render_worker_id = 0;
   }
 
   start_render() {
     if (this.disposed) return;
-    if (this._render_worker_id) Render.stop(this._render_worker_id);
+    if (this._render_worker_id) Render.del(this._render_worker_id);
     if (this._sync_render) return;
     let _r_prev_time = 0;
     const on_render = (time: number) => {
@@ -197,8 +196,8 @@ export class World {
       }
       _r_prev_time = time
     }
-    this._render_worker_id && Render.stop(this._render_worker_id);
-    this._render_worker_id = Render.start(on_render);
+    this._render_worker_id && Render.del(this._render_worker_id);
+    this._render_worker_id = Render.add(on_render);
   }
 
   stop_update() {
@@ -231,7 +230,7 @@ export class World {
         _prev_time = time
       }
     }
-    this._update_worker_id = Interval.set(on_update, dt);
+    this._update_worker_id = Interval.add(on_update, dt);
   }
 
 

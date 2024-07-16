@@ -5,7 +5,7 @@ import SequenceAnimation from "../../animation/SequenceAnimation";
 import { SineAnimation } from "../../animation/SineAnimation";
 import Invoker from "../../base/Invoker";
 import GameKey from "../../defines/GameKey";
-import Timeout from "../../dom/Timeout";
+import Ditto from "../../ditto";
 import ease_linearity from "../../ease_method/ease_linearity";
 import { TPicture } from "../../loader/loader";
 import { make_arr } from "../../utils/array/make_arr";
@@ -106,7 +106,7 @@ export default class LaunchPageLogic extends LayoutComponent {
   on_pointer_down() {
     if (this.state === 0) {
       this.state = 1;
-      Timeout.set(() => this.lf2.sounds.play('launch/093.wav.ogg'), 1000)
+      Ditto.Timeout.add(() => this.lf2.sounds.play('launch/093.wav.ogg'), 1000)
     } else if (this.state === 1) {
       this._skipped = true;
     } else if (this.state === 2) {

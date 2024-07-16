@@ -1,5 +1,5 @@
 import SparkMD5 from "spark-md5";
-export default function md5(...args: string[]): string {
+export function md5(...args: string[]): string {
   const s = new SparkMD5();
   for (const t of args) s.append(t)
   return s.end()

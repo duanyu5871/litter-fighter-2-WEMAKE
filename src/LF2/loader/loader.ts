@@ -6,7 +6,9 @@ import AsyncValuesKeeper from "../base/AsyncValuesKeeper";
 import { IEntityPictureInfo } from '../defines';
 import type IPicture from '../defines/IPicture';
 import type IStyle from "../defines/IStyle";
-import md5 from "../dom/md5";
+import Ditto from '../ditto';
+const {md5} = Ditto;
+
 export type TPicture = IPicture<THREE.Texture>;
 
 export const texture_loader = new THREE.TextureLoader();
