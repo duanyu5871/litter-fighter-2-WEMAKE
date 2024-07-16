@@ -4,7 +4,7 @@ import { IKeyboard } from "../ditto/keyboard/IKeyboard";
 import { IKeyboardCallback } from "../ditto/keyboard/IKeyboardCallback";
 import { IKeyEvent } from "../ditto/keyboard/IKeyEvent";
 
-export class __KeyEvent implements IKeyEvent {
+class __KeyEvent implements IKeyEvent {
   readonly times: number;
   readonly key: string;
   constructor(e: KeyboardEvent, times: number = 0) {

@@ -2,7 +2,7 @@ import Callbacks from "../base/Callbacks";
 import NoEmitCallbacks from "../base/NoEmitCallbacks";
 import { IPointingEvent, IPointings, IPointingsCallback } from "../ditto";
 
-export class __PointingEvent implements IPointingEvent {
+class __PointingEvent implements IPointingEvent {
   protected _element: HTMLElement;
   readonly x: number;
   readonly y: number;

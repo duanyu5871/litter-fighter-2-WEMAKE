@@ -1,4 +1,4 @@
-export const Timeout = {
+export const __Timeout = {
   add(handler: () => void, timeout?: number, ...args: any[]) {
     return window.setTimeout(handler, timeout, ...args);
   },

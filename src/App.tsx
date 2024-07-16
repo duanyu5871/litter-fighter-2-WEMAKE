@@ -15,8 +15,7 @@ import LF2 from './LF2/LF2';
 import Invoker from './LF2/base/Invoker';
 import { Defines } from './LF2/defines/defines';
 import Ditto from './LF2/ditto';
-import { Interval, md5, Render, Timeout, Zip } from './LF2/dom';
-import FullScreen from './LF2/dom/FullScreen';
+import * as dom from './LF2/dom';
 import { GameOverlay } from './LF2/dom/GameOverlay';
 import { is_weapon } from './LF2/entity/type_check';
 import { ILayoutInfo } from './LF2/layout/ILayoutInfo';
@@ -42,22 +41,22 @@ import img_btn_3_2 from './assets/btn_3_2.png';
 import './game_ui.css';
 import './init';
 import { useLocalBoolean, useLocalNumber, useLocalString } from './useLocalStorage';
-import { __Keyboard } from './LF2/dom/Keyboard';
-import { __Pointings } from './LF2/dom/Pointings';
 
 Ditto.setup({
-  Timeout,
-  Interval,
-  Render,
-  Keyboard: __Keyboard,
-  Pointings: __Pointings,
-  Zip,
-  md5,
+  Timeout: dom.__Timeout,
+  Interval: dom.__Interval,
+  Render: dom.__Render,
+  Keyboard: dom.__Keyboard,
+  Pointings: dom.__Pointings,
+  FullScreen: dom.__FullScreen,
+  Zip: dom.__Zip,
+  MD5: dom.__MD5,
 });
 
 
-const fullscreen = new FullScreen()
 function App() {
+
+  const [fullscreen] = useState(() => new Ditto.FullScreen())
   const _overlay_ref = useRef<HTMLDivElement>(null)
   const _canvas_ref = useRef<HTMLCanvasElement>(null)
   const _game_contiainer_ref = useRef<HTMLDivElement>(null)
@@ -162,7 +161,7 @@ function App() {
     }
     window.addEventListener('touchstart', on_touchstart, { once: true })
 
-    _set_is_fullscreen(!!fullscreen.element)
+    _set_is_fullscreen(!!fullscreen.target)
     _set_paused(lf2.world.paused)
     return new Invoker().add(
       () => window.removeEventListener('touchstart', on_touchstart),
@@ -214,7 +213,7 @@ function App() {
     const lf2 = lf2_ref.current;
     if (!lf2) return;
     open_file({ accept: '.zip' })
-      .then(v => Zip.read_file(v[0]))
+      .then(v => Ditto.Zip.read_file(v[0]))
       .then(v => lf2.load(v))
       .catch(e => Log.print('on_click_load_local_zip', e))
   }

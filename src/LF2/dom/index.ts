@@ -3,3 +3,6 @@ export * from "./md5";
 export * from "./Timeout";
 export * from "./Render";
 export * from "./Zip";
+export * from "./Keyboard";
+export * from "./Pointings";
+export * from "./FullScreen";

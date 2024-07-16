@@ -1,6 +1,6 @@
 
 const handle_req_id_map = new Map<number, number>()
-export const Render = {
+export const __Render = {
   add(handler: (time: number) => void): number {
     let handle: number;
     let req_id: number;

@@ -1,4 +1,4 @@
-export const Interval = {
+export const __Interval = {
   add(handler: () => void, timeout?: number, ...args: any[]) {
     return window.setInterval(handler, timeout, ...args)
   },

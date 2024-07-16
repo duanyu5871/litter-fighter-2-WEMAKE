@@ -1,3 +1,4 @@
+import { IFullScreen } from "./fullscreen";
 import { IRender } from "./IRender";
 import { ITimeout } from "./ITimeout";
 import { IKeyboard } from "./keyboard/IKeyboard";
@@ -8,6 +9,7 @@ export * from "./ITimeout";
 export * from "./keyboard";
 export * from "./pointings";
 export * from "./zip";
+export * from "./fullscreen";
 export interface IDittoPack {
   readonly Timeout: ITimeout;
   readonly Interval: ITimeout;
@@ -20,6 +22,7 @@ export interface IDittoPack {
   }
   readonly Keyboard: new (...arg: any[]) => IKeyboard;
   readonly Pointings: new (...arg: any[]) => IPointings;
+  readonly FullScreen: new (...arg: any[]) => IFullScreen;
   setup(pack: Omit<IDittoPack, 'setup'>): void;
   [key: string]: any;
 }

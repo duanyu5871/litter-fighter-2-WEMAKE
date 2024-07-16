@@ -24,15 +24,15 @@ export class ZipObject implements IZipObject {
   }
 }
 
-export class Zip implements IZip {
+export class __Zip implements IZip {
   static async read_file(file: File): Promise<IZip> {
     const buf = await file.arrayBuffer().then(raw => new Uint8Array(raw))
     const jszip = await JSZIP.loadAsync(buf)
-    return new Zip(jszip, buf)
+    return new __Zip(jszip, buf)
   }
   static async read_buf(buf: Uint8Array): Promise<IZip> {
     const jszip = await JSZIP.loadAsync(buf)
-    return new Zip(jszip, buf)
+    return new __Zip(jszip, buf)
   }
   static async download(url: string, on_progress: (progress: number, size: number) => void): Promise<IZip> {
     const buf = await axios.get<ArrayBuffer>(url, {
@@ -43,7 +43,7 @@ export class Zip implements IZip {
       }
     }).then(resp => new Uint8Array(resp.data));
     const jszip = await JSZIP.loadAsync(buf)
-    return new Zip(jszip, buf);
+    return new __Zip(jszip, buf);
   }
 
   readonly buf: Uint8Array;

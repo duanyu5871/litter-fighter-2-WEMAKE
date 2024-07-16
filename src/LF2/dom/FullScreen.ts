@@ -1,35 +1,35 @@
-import { is_false, is_fun } from '../utils/type_check';
 import Callbacks from '../base/Callbacks';
 import NoEmitCallbacks from "../base/NoEmitCallbacks";
-export interface IFullScreenCallback {
-  onChange?(element: Element | null): void
-}
-export default class FullScreen {
-  protected _callbacks = new Callbacks<IFullScreenCallback>();
-  protected _prev_element: Element | null;
+import { is_false, is_fun } from '../utils/type_check';
+import { IFullScreen } from '../ditto/fullscreen/IFullScreen';
+import { IFullScreenCallback } from '../ditto/fullscreen/IFullScreenCallback';
 
-  get callbacks(): NoEmitCallbacks<IFullScreenCallback> {
+export class __FullScreen<T extends Element = any> implements IFullScreen<T> {
+  protected _callbacks = new Callbacks<IFullScreenCallback>();
+  protected _prev_element: T | null;
+
+  get callbacks(): NoEmitCallbacks<IFullScreenCallback<T>> {
     return this._callbacks;
   }
 
   constructor() {
     document.addEventListener('fullscreenchange', this.on_fullscreenchange)
-    this._prev_element = this.element
+    this._prev_element = this.target
   }
 
   depose(): void {
     document.removeEventListener('fullscreenchange', this.on_fullscreenchange);
   }
-  
+
   private on_fullscreenchange = () => {
-    const curr_element = this.element
+    const curr_element = this.target
     if (this._prev_element === curr_element) return;
 
     this._prev_element = curr_element;
     this._callbacks.emit('onChange')(curr_element);
   }
 
-  get element(): Element | null {
+  get target(): T | null {
     const d = document;
     return (
       d.fullscreenElement ||
@@ -37,14 +37,14 @@ export default class FullScreen {
       (d as any).webkitFullscreenElement
     )
   }
-  set element(v: Element | null) {
+  set target(v: T | null) {
     if (!v) this.exit();
     else this.enter(v);
   }
   get is_fullscreen(): boolean {
-    return !!this.element;
+    return !!this.target;
   }
-  enter(element: Element): Promise<void> {
+  enter(element: T): Promise<void> {
     const d = document as any;
     if (is_false(d.mozFullScreenEnabled)) return Promise.reject(new Error("全屏功能已被禁用"));
     if (is_fun(element.requestFullscreen)) return element.requestFullscreen();
