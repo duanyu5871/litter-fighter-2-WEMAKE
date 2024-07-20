@@ -70,13 +70,13 @@ export function make_ball_data(info: IBallInfo, frames: Record<string, IBallFram
   info.hp = 500;
 
   const sound_1 = take(info, 'weapon_broken_sound')
-  if (sound_1) info.weapon_broken_sound = sound_1 + '.ogg'
+  if (sound_1) info.weapon_broken_sound = sound_1 + '.mp3'
 
   const sound_2 = take(info, 'weapon_drop_sound')
-  if (sound_2) info.weapon_drop_sound = sound_2 + '.ogg'
+  if (sound_2) info.weapon_drop_sound = sound_2 + '.mp3'
 
   const sound_3 = take(info, 'weapon_hit_sound')
-  if (sound_3) info.weapon_hit_sound = sound_3 + '.ogg'
+  if (sound_3) info.weapon_hit_sound = sound_3 + '.mp3'
 
   const ret: IBallData = {
     id: '',

@@ -43,8 +43,8 @@ export default class LaunchPageLogic extends LayoutComponent {
 
   override init(...args: string[]): this {
     super.init(...args);
-    this.lf2.sounds.load('launch/093.wav.ogg', 'launch/093.wav.ogg')
-    this.lf2.sounds.load('launch/main.wma.ogg', 'launch/main.wma.ogg')
+    this.lf2.sounds.load('launch/093.wav.mp3', 'launch/093.wav.mp3')
+    this.lf2.sounds.load('launch/main.wma.mp3', 'launch/main.wma.mp3')
 
     const max_col = 15;
     const cell_w = 33 * 4;
@@ -106,13 +106,13 @@ export default class LaunchPageLogic extends LayoutComponent {
   on_pointer_down() {
     if (this.state === 0) {
       this.state = 1;
-      Ditto.Timeout.add(() => this.lf2.sounds.play('launch/093.wav.ogg'), 1000)
+      Ditto.Timeout.add(() => this.lf2.sounds.play('launch/093.wav.mp3'), 1000)
     } else if (this.state === 1) {
       this._skipped = true;
     } else if (this.state === 2) {
       this.state = 3;
       this._opacity.play(true);
-      this.lf2.sounds.play_bgm('launch/main.wma.ogg')
+      this.lf2.sounds.play_bgm('launch/main.wma.mp3')
     }
   }
   override on_pause(): void {
@@ -163,7 +163,7 @@ export default class LaunchPageLogic extends LayoutComponent {
         } else if (this._skipped) {
           this.state = 3;
           this._opacity.play(true);
-          this.lf2.sounds.play_bgm('launch/main.wma.ogg')
+          this.lf2.sounds.play_bgm('launch/main.wma.mp3')
         } else {
           this.state = 2;
         }

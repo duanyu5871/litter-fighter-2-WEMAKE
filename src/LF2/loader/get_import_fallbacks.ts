@@ -20,8 +20,8 @@ export default function get_import_fallbacks(name: string): string[] {
     fallbacks.unshift(n + '@4x.png');
   }
   if (name.endsWith('.wav') || name.endsWith('.wma')) {
-    fallbacks.unshift(name + '.ogg');
-    fallbacks.unshift(name.substring(0, name.length - 4) + '.ogg');
+    fallbacks.unshift(name + '.mp3');
+    fallbacks.unshift(name.substring(0, name.length - 4) + '.mp3');
   }
   return fallbacks;
 }

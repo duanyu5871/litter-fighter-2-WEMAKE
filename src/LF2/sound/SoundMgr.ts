@@ -146,7 +146,7 @@ export default class SoundMgr implements IPlayer {
       case "join":
       case "ok":
       case "pass":
-        this.play_with_load(`data/m_${t}.wav.ogg`, x, y, z);
+        this.play_with_load(`data/m_${t}.wav.mp3`, x, y, z);
         break;
       default:
         this.play_with_load(t, x, y, z);

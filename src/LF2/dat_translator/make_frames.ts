@@ -84,7 +84,7 @@ export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string): Re
     if (!frame.hp) delete frame.hp;
 
     const sound = take(frame, 'sound');
-    if (sound) frame.sound = sound + '.ogg';
+    if (sound) frame.sound = sound + '.mp3';
 
     const [_mp, _hp] = handle_raw_mp(take(frame, 'mp'))
     if (_mp) frame.mp = _mp;

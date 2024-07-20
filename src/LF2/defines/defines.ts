@@ -188,9 +188,9 @@ export namespace Defines {
     [Cheats.GIM_INK]: "gim.ink"
   }
   export const CheatSounds: Record<Cheats, string> = {
-    [Cheats.LF2_NET]: "data/m_pass.wav.ogg",
-    [Cheats.HERO_FT]: "data/m_end.wav.ogg",
-    [Cheats.GIM_INK]: "data/030.wav.ogg"
+    [Cheats.LF2_NET]: "data/m_pass.wav.mp3",
+    [Cheats.HERO_FT]: "data/m_end.wav.mp3",
+    [Cheats.GIM_INK]: "data/030.wav.mp3"
   }
   export interface ICheatInfo {
     keys: string;
@@ -198,8 +198,8 @@ export namespace Defines {
   }
 
   export const Sounds = {
-    StagePass: "data/m_pass.wav.ogg",
-    BattleEnd: "data/m_end.wav.ogg"
+    StagePass: "data/m_pass.wav.mp3",
+    BattleEnd: "data/m_end.wav.mp3"
   } as const
 
 
