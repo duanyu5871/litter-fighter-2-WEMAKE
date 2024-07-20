@@ -204,34 +204,59 @@ export class World {
     this._update_worker_id = void 0;
   }
 
+
+  private _prev_time: number = Date.now();
+  private _auto_adaptive_dt: number = 0;
+  private _skip: number = 0;
+  private _expected_dt: number = 0;
+  private _applied_dt: number = 0;
   start_update() {
     if (this.disposed) return;
-    if (this._update_worker_id) Ditto.Interval.del(this._update_worker_id);
-    const dt = Math.max((1000 / 60) / this._playrate, 1);
-    let _prev_time = 0;
-    let _skip = 0
+    if (this._update_worker_id) Ditto.Timeout.del(this._update_worker_id);
+    this._expected_dt = (1000 / 60) / this._playrate;
+    this._applied_dt = Math.max(this._expected_dt + this._auto_adaptive_dt, 0)
     const on_update = () => {
       const time = Date.now();
       if (!this._paused) this.update_once()
-      const dt = time - _prev_time;
-      if (_prev_time !== 0 && this._need_UPS) {
-        this._UPS.update(dt);
-        this._callbacks.emit('on_ups_update')(this._UPS.value);
-      }
-      _prev_time = time
+      const dt = time - this._prev_time;
+      this._UPS.update(dt);
 
-      if (this._sync_render === 1 || (++_skip) % 2) {
+      if (this._need_UPS) this._callbacks.emit('on_ups_update')(this._UPS.value);
+
+
+      let need_render = 0;
+      if (1 === this._sync_render) {
+        need_render = 1;
+      } else if (2 === this._sync_render) {
+        need_render = ++this._skip;
+        if (2 === this._skip) this._skip = 0;
+      }
+      if (need_render) {
         this.render_once(dt)
-        if (_prev_time !== 0 && this._need_FPS) {
-          this._FPS.update(dt);
+        if (this._need_FPS) {
+          if (1 === this._sync_render)
+            this._FPS.update(dt);
+          else if (2 === this._sync_render)
+            this._FPS.update(dt * 2);
           this._callbacks.emit('on_fps_update')(this._FPS.value);
         }
-        _prev_time = time
       }
-    }
-    this._update_worker_id = Ditto.Interval.add(on_update, dt);
-  }
+      this._prev_time = time
 
+
+      if (60 - this._UPS.value > 1) { // too slow
+        --this._auto_adaptive_dt;
+      } else if (60 - this._UPS.value < -1) { // too fast
+        ++this._auto_adaptive_dt;
+      } else if (this._auto_adaptive_dt > 0) {
+        --this._auto_adaptive_dt;
+      } else if (this._auto_adaptive_dt < 0) {
+        ++this._auto_adaptive_dt;
+      }
+      this.start_update();
+    }
+    this._update_worker_id = Ditto.Timeout.add(on_update, this._applied_dt);
+  }
 
   restrict_character(e: Character) {
     if (this.disposed) return;
