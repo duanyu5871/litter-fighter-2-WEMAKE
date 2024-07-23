@@ -76,7 +76,6 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     for (const e of this.world.entities) e.mp = e.max_mp;
   }
 
-  readonly canvas: HTMLCanvasElement;
   readonly world: World;
 
   private _zips: IZip[] = []; // [game data zip, preliminary data zip]
@@ -128,21 +127,28 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   on_click_character?: (c: Character) => void;
 
   async import_json<C = any>(path: string): Promise<C> {
-    const zip_obj = fisrt(this._zips, z => z.file(path))
-    if (zip_obj) return zip_obj.json() as C
-    return import_as_json([path]) as C;
+    const paths = get_import_fallbacks(path);
+    for (const path of paths) {
+      const zip_obj = fisrt(this._zips, z => z.file(path))
+      if (!zip_obj) continue;
+      return zip_obj.json() as C
+    }
+    return import_as_json(paths) as C;
   }
 
   async import_resource(path: string): Promise<[string, string]> {
-    const zip_obj = fisrt(this._zips, z => z.file(path))
-    if (zip_obj) return [await zip_obj.blob_url(), zip_obj.name]
+
     const paths = get_import_fallbacks(path);
+    for (const path of paths) {
+      const zip_obj = fisrt(this._zips, z => z.file(path))
+      if (!zip_obj) continue;
+      return [await zip_obj.blob_url(), zip_obj.name]
+    }
     return import_as_blob_url(paths);
   }
 
 
   constructor(canvas: HTMLCanvasElement) {
-    this.canvas = canvas;
     this.world = new World(this, canvas);
     this.datas = new DatMgr(this);
     this.sounds = new SoundMgr(this);
