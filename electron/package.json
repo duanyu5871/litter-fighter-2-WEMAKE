@@ -1,0 +1,16 @@
+{
+  "name": "lf2-electron",
+  "version": "1.0.0",
+  "main": "./build/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "tsc && electron ."
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "electron": "^31.2.1",
+    "typescript": "^5.5.4"
+  }
+}
