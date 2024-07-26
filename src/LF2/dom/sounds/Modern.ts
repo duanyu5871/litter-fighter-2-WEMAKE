@@ -2,8 +2,8 @@ import axios from "axios";
 import AsyncValuesKeeper from "../../base/AsyncValuesKeeper";
 import { Defines } from "../../defines/defines";
 import BaseSounds from "../../ditto/sounds/BaseSounds";
+import { clamp } from "../../utils/math/clamp";
 import float_equal from "../../utils/math/float_equal";
-import { clamp } from "three/src/math/MathUtils";
 
 export class __Modern extends BaseSounds {
   readonly ctx = new AudioContext();
@@ -22,10 +22,10 @@ export class __Modern extends BaseSounds {
   protected _bgm_muted: boolean = false;
   protected _sound_muted: boolean = false;
 
-  bgm_volume(): number {
+  override bgm_volume(): number {
     return this._bgm_volume
   }
-  set_bgm_volume(v: number): void {
+  override set_bgm_volume(v: number): void {
     v = clamp(v, 0, 1);
     const prev = this.bgm_volume();
     if (float_equal(v, prev)) return;
@@ -33,10 +33,10 @@ export class __Modern extends BaseSounds {
     this.apply_bgm_volume();
     this._callbacks.emit('on_bgm_volume_changed')(v, prev, this)
   }
-  sound_volume(): number {
+  override sound_volume(): number {
     return this._sound_volume
   }
-  set_sound_volume(v: number): void {
+  override set_sound_volume(v: number): void {
     v = clamp(v, 0, 1);
     const prev = this.sound_volume()
     if (float_equal(v, prev)) return;
@@ -45,33 +45,33 @@ export class __Modern extends BaseSounds {
     this._callbacks.emit('on_sound_volume_changed')(v, prev, this)
   }
 
-  muted(): boolean {
+  override muted(): boolean {
     return this._muted;
   }
 
-  set_muted(v: boolean): void {
+  override set_muted(v: boolean): void {
     if (v === this.muted()) return;
     this._muted = v;
     this.apply_volume();
     this._callbacks.emit('on_muted_changed')(v, this)
   }
 
-  bgm_muted(): boolean {
+  override bgm_muted(): boolean {
     return this._bgm_muted;
   }
 
-  set_bgm_muted(v: boolean): void {
+  override set_bgm_muted(v: boolean): void {
     if (v === this.bgm_muted()) return;
     this._bgm_muted = v;
     this.apply_bgm_volume();
     this._callbacks.emit('on_bgm_muted_changed')(v, this)
   }
 
-  sound_muted(): boolean {
+  override sound_muted(): boolean {
     return this._sound_muted;
   }
 
-  set_sound_muted(v: boolean): void {
+  override set_sound_muted(v: boolean): void {
     if (v === this.sound_muted()) return;
     this._sound_muted = v;
     this.apply_sound_volume();
@@ -95,7 +95,7 @@ export class __Modern extends BaseSounds {
     this.apply_sound_volume();
   }
 
-  protected apply_sound_volume() {
+  protected apply_sound_volume(): void {
     for (const [, { sound_x, l_gain_node, r_gain_node }] of this._playings) {
       const [, l_vol, r_vol] = this.get_l_r_vol(sound_x);
       l_gain_node.gain.value = l_vol;
@@ -103,7 +103,7 @@ export class __Modern extends BaseSounds {
     }
   }
 
-  protected apply_bgm_volume() {
+  protected apply_bgm_volume(): void {
     if (!this._bgm_node) return;
     const muted = this._muted || this._bgm_muted;
     this._bgm_node.gain_node.gain.value = muted ? 0 : (this._volume * this._bgm_volume);
@@ -117,7 +117,7 @@ export class __Modern extends BaseSounds {
     return this._r.values.has(name);
   }
 
-  override load(name: string, src: string) {
+  override load(name: string, src: string): Promise<AudioBuffer> {
     return this._r.get(name, async () => {
       this.lf2.on_loading_content(`${name}`, 0);
       const [url] = await this.lf2.import_resource(src);
@@ -128,7 +128,7 @@ export class __Modern extends BaseSounds {
     })
   }
 
-  override stop_bgm() {
+  override stop_bgm(): void {
     if (!this._bgm_node) return;
     const prev = this.bgm();
     this._bgm_name = null;
@@ -175,7 +175,7 @@ export class __Modern extends BaseSounds {
     return () => (req_id === this._req_id) && this.stop_bgm();
   }
 
-  protected get_l_r_vol(x?: number) {
+  protected get_l_r_vol(x?: number): number[] {
     const edge_w = Defines.OLD_SCREEN_WIDTH / 2;
     const viewer_x = this.lf2.world.camera.x + edge_w;
     const sound_x = x ?? viewer_x;

@@ -1,6 +1,6 @@
-import { clamp } from "three/src/math/MathUtils";
 import { Warn } from "../../../Log";
 import BaseSounds from "../../ditto/sounds/BaseSounds";
+import { clamp } from "../../utils/math/clamp";
 import float_equal from "../../utils/math/float_equal";
 
 export class __Fallback extends BaseSounds {
@@ -67,14 +67,14 @@ export class __Fallback extends BaseSounds {
     this._callbacks.emit('on_sound_muted_changed')(v, this)
   }
 
-  private apply_bgm_volume() {
+  private apply_bgm_volume(): void {
     if (this._bgm_ele) {
       this._bgm_ele.muted = this._bgm_muted || this._muted;
       this._bgm_ele.volume = this._volume * this._bgm_volume;
     }
   }
 
-  private apply_sound_volume() {
+  private apply_sound_volume(): void {
     for (const [, a] of this._playings) {
       a.muted = this._sound_muted || this._muted;
       a.volume = this._volume * this._sound_volume;
@@ -103,7 +103,7 @@ export class __Fallback extends BaseSounds {
     return this._r.has(name);
   }
 
-  override stop_bgm() {
+  override stop_bgm(): void {
     if (!this._bgm_ele) return;
     this._bgm_ele.pause();
     delete this._bgm_ele;
@@ -132,7 +132,7 @@ export class __Fallback extends BaseSounds {
 
   }
 
-  override async load(name: string, src: string): Promise<any> {
+  override async load(name: string, src: string): Promise<void> {
     const [url] = await this.lf2.import_resource(src);
     this._r.set(name, url);
   }

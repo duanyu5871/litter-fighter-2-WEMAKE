@@ -1,10 +1,7 @@
-
-import { clamp } from "three/src/math/MathUtils";
 import { Warn } from "../../../Log";
 import type LF2 from "../../LF2";
 import BaseSounds from "../../ditto/sounds/BaseSounds";
 import type ISounds from "../../ditto/sounds/ISounds";
-import float_equal from "../../utils/math/float_equal";
 import { __Fallback } from "./Fallback";
 import { __Modern } from "./Modern";
 
