@@ -49,6 +49,7 @@ Ditto.setup({
   Keyboard: dom.__Keyboard,
   Pointings: dom.__Pointings,
   FullScreen: dom.__FullScreen,
+  Sounds: dom.__Sounds,
   Cache: dom.__Cache,
   Zip: dom.__Zip,
   MD5: dom.__MD5,

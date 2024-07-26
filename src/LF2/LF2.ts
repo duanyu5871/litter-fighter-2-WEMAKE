@@ -18,6 +18,7 @@ import ditto, { IKeyEvent, IPointingEvent, IPointings, IZip } from './ditto';
 import { IKeyboard } from './ditto/keyboard/IKeyboard';
 import { IKeyboardCallback } from "./ditto/keyboard/IKeyboardCallback";
 import { IPointingsCallback } from "./ditto/pointings/IPointingsCallback";
+import ISounds from './ditto/sounds/ISounds';
 import { import_as_blob_url, import_as_json } from './dom/make_import';
 import './entity/Ball';
 import Character from './entity/Character';
@@ -31,7 +32,6 @@ import Layout, { ICookedLayoutInfo } from './layout/Layout';
 import DatMgr from './loader/DatMgr';
 import get_import_fallbacks from "./loader/get_import_fallbacks";
 import { ImageMgr } from './loader/loader';
-import SoundMgr from './sound/SoundMgr';
 import Stage from './stage/Stage';
 import { constructor_name } from './utils/constructor_name';
 import { fisrt, last } from './utils/container_help';
@@ -98,7 +98,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   readonly weapons: Record<string, (num: number, team?: string) => void> = {}
 
   readonly datas: DatMgr;
-  readonly sounds: SoundMgr;
+  readonly sounds: ISounds;
   readonly images: ImageMgr
   readonly keyboard: IKeyboard;
   readonly pointings: IPointings;
@@ -151,7 +151,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   constructor(canvas: HTMLCanvasElement) {
     this.world = new World(this, canvas);
     this.datas = new DatMgr(this);
-    this.sounds = new SoundMgr(this);
+    this.sounds = new ditto.Sounds(this);
     this.images = new ImageMgr(this);
     this.keyboard = new ditto.Keyboard();
     this.keyboard.callback.add(this);

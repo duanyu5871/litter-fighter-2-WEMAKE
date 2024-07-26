@@ -1,13 +1,12 @@
 import axios from "axios";
-import type LF2 from "../../LF2";
 import AsyncValuesKeeper from "../../base/AsyncValuesKeeper";
 import { Defines } from "../../defines/defines";
-import { IPlayer } from "../../sound/IPlayer";
+import BaseSounds from "../../ditto/sounds/BaseSounds";
+import float_equal from "../../utils/math/float_equal";
+import { clamp } from "three/src/math/MathUtils";
 
-
-export default class ModernPlayer implements IPlayer {
+export class __Modern extends BaseSounds {
   readonly ctx = new AudioContext();
-  readonly lf2: LF2;
   protected _req_id: number = 0;
   protected _prev_bgm_url: string | null = null;
   protected _bgm_node: { src_node: AudioBufferSourceNode, gain_node: GainNode } | null = null;
@@ -22,22 +21,28 @@ export default class ModernPlayer implements IPlayer {
   protected _sound_volume: number = 1;
   protected _bgm_muted: boolean = false;
   protected _sound_muted: boolean = false;
-  constructor(lf2: LF2) {
-    this.lf2 = lf2;
-  }
+
   bgm_volume(): number {
     return this._bgm_volume
   }
   set_bgm_volume(v: number): void {
+    v = clamp(v, 0, 1);
+    const prev = this.bgm_volume();
+    if (float_equal(v, prev)) return;
     this._bgm_volume = v;
     this.apply_bgm_volume();
+    this._callbacks.emit('on_bgm_volume_changed')(v, prev, this)
   }
   sound_volume(): number {
     return this._sound_volume
   }
   set_sound_volume(v: number): void {
+    v = clamp(v, 0, 1);
+    const prev = this.sound_volume()
+    if (float_equal(v, prev)) return;
     this._sound_volume = v;
     this.apply_sound_volume();
+    this._callbacks.emit('on_sound_volume_changed')(v, prev, this)
   }
 
   muted(): boolean {
@@ -45,8 +50,10 @@ export default class ModernPlayer implements IPlayer {
   }
 
   set_muted(v: boolean): void {
+    if (v === this.muted()) return;
     this._muted = v;
     this.apply_volume();
+    this._callbacks.emit('on_muted_changed')(v, this)
   }
 
   bgm_muted(): boolean {
@@ -54,8 +61,10 @@ export default class ModernPlayer implements IPlayer {
   }
 
   set_bgm_muted(v: boolean): void {
+    if (v === this.bgm_muted()) return;
     this._bgm_muted = v;
     this.apply_bgm_volume();
+    this._callbacks.emit('on_bgm_muted_changed')(v, this)
   }
 
   sound_muted(): boolean {
@@ -63,16 +72,22 @@ export default class ModernPlayer implements IPlayer {
   }
 
   set_sound_muted(v: boolean): void {
+    if (v === this.sound_muted()) return;
     this._sound_muted = v;
     this.apply_sound_volume();
+    this._callbacks.emit('on_sound_muted_changed')(v, this)
   }
 
-  volume(): number {
+  override volume(): number {
     return this._volume;
   }
-  set_volume(v: number): void {
+  override set_volume(v: number): void {
+    v = clamp(v, 0, 1);
+    const prev = this.volume()
+    if (float_equal(v, prev)) return;
     this._volume = v;
     this.apply_volume();
+    this._callbacks.emit('on_volume_changed')(v, prev, this)
   }
 
   protected apply_volume(): void {
@@ -94,15 +109,15 @@ export default class ModernPlayer implements IPlayer {
     this._bgm_node.gain_node.gain.value = muted ? 0 : (this._volume * this._bgm_volume);
   }
 
-  bgm(): string | null {
+  override bgm(): string | null {
     return this._bgm_name;
   }
 
-  has(name: string): boolean {
+  override has(name: string): boolean {
     return this._r.values.has(name);
   }
 
-  load(name: string, src: string) {
+  override load(name: string, src: string) {
     return this._r.get(name, async () => {
       this.lf2.on_loading_content(`${name}`, 0);
       const [url] = await this.lf2.import_resource(src);
@@ -113,17 +128,21 @@ export default class ModernPlayer implements IPlayer {
     })
   }
 
-  stop_bgm() {
+  override stop_bgm() {
     if (!this._bgm_node) return;
+    const prev = this.bgm();
     this._bgm_name = null;
     this._bgm_node.src_node.stop();
     this._prev_bgm_url = null;
+    this._callbacks.emit('on_bgm_changed')(null, prev, this);
   }
 
-  play_bgm(name: string, restart?: boolean | undefined): () => void {
+  override play_bgm(name: string, restart?: boolean | undefined): () => void {
     if (!restart && this._prev_bgm_url === name) return () => { };
-    this.stop_bgm();
 
+    const prev = this.bgm();
+
+    this.stop_bgm();
     this._bgm_name = name;
     this._prev_bgm_url = name;
     ++this._req_id;
@@ -151,6 +170,8 @@ export default class ModernPlayer implements IPlayer {
     } else {
       this.load(name, name).then(start)
     }
+
+    this._callbacks.emit('on_bgm_changed')(name, prev, this);
     return () => (req_id === this._req_id) && this.stop_bgm();
   }
 
@@ -165,7 +186,7 @@ export default class ModernPlayer implements IPlayer {
       (muted ? 0 : (this._volume * this._sound_volume)) * Math.max(0, 1 - Math.abs((sound_x - viewer_x - edge_w) / Defines.OLD_SCREEN_WIDTH))
     ]
   }
-  play(name: string, x?: number, y?: number, z?: number): string {
+  override play(name: string, x?: number, y?: number, z?: number): string {
     const buf = this._r.values.get(name);
     if (!buf) return '';
 
@@ -205,14 +226,15 @@ export default class ModernPlayer implements IPlayer {
     return id;
   }
 
-  stop(id: string): void {
+  override stop(id: string): void {
     const n = this._playings.get(id);
     if (!n) return;
     n.src_node.stop();
     this._playings.delete(id)
   }
 
-  dispose(): void {
+  override dispose(): void {
+    super.dispose();
     this._r.clean();
     this._playings.forEach(v => v.src_node.stop())
     this._playings.clear();

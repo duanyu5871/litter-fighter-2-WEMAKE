@@ -1,10 +1,11 @@
-import { ICache } from "./cache";
-import { IFullScreen } from "./fullscreen";
-import { IRender } from "./IRender";
-import { ITimeout } from "./ITimeout";
-import { IKeyboard } from "./keyboard/IKeyboard";
-import { IPointings } from "./pointings";
-import { IZip } from "./zip/IZip";
+import type { ICache } from "./cache";
+import type { IFullScreen } from "./fullscreen";
+import type { IRender } from "./IRender";
+import type { ITimeout } from "./ITimeout";
+import type { IKeyboard } from "./keyboard/IKeyboard";
+import type { IPointings } from "./pointings";
+import type ISounds from "./sounds/ISounds";
+import type { IZip } from "./zip/IZip";
 export * from "./cache";
 export * from "./fullscreen";
 export * from "./IRender";
@@ -12,6 +13,8 @@ export * from "./ITimeout";
 export * from "./keyboard";
 export * from "./pointings";
 export * from "./zip";
+export * from "./sounds";
+
 export interface IDittoPack {
   readonly Timeout: ITimeout;
   readonly Interval: ITimeout;
@@ -22,6 +25,7 @@ export interface IDittoPack {
     read_buf(buf: Uint8Array): Promise<IZip>;
     download(url: string, on_progress: (progress: number, size: number) => void): Promise<IZip>;
   }
+  readonly Sounds: new (...args: any[]) => ISounds;
   readonly Keyboard: new (...args: any[]) => IKeyboard;
   readonly Pointings: new (...args: any[]) => IPointings;
   readonly FullScreen: new (...args: any[]) => IFullScreen;

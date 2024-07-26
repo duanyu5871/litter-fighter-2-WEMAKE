@@ -1,4 +1,10 @@
-export interface IPlayer {
+import type { NoEmitCallbacks } from "../../base/NoEmitCallbacks";
+import type { ISoundsCallback } from "./ISoundsCallback";
+
+export interface ISounds {
+
+  get callbacks(): NoEmitCallbacks<ISoundsCallback>;
+
   /**
    * 音量
    *
@@ -162,4 +168,11 @@ export interface IPlayer {
    * 释放
    */
   dispose(): void;
+
+
+  play_with_load(src: string, x?: number, y?: number, z?: number): Promise<string>;
+
+  play_preset(t: 'cancel' | 'end' | 'join' | 'ok' | 'pass', x?: number, y?: number, z?: number): void;
+  play_preset(t: string, x?: number, y?: number, z?: number): void
 }
+export default ISounds

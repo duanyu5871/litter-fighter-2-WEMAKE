@@ -1,15 +1,15 @@
+import { clamp } from "three/src/math/MathUtils";
 import { Warn } from "../../../Log";
-import type LF2 from "../../LF2";
-import { IPlayer } from "../../sound/IPlayer";
+import BaseSounds from "../../ditto/sounds/BaseSounds";
+import float_equal from "../../utils/math/float_equal";
 
-export default class FallbackPlayer implements IPlayer {
+export class __Fallback extends BaseSounds {
   protected _r = new Map<string, string>();
   protected _prev_bgm_url: string | null = null;
   protected _bgm_ele?: HTMLAudioElement;
   protected _req_id: number = 0;
   protected _sound_id = 0;
   protected _playings = new Map<string, HTMLAudioElement>()
-  readonly lf2: LF2;
   protected _muted: boolean = true;
   protected _volume: number = 0.3;
   protected _bgm_volume: number = 1;
@@ -17,45 +17,54 @@ export default class FallbackPlayer implements IPlayer {
   protected _bgm_muted: boolean = false;
   protected _sound_muted: boolean = false;
 
-  constructor(lf2: LF2) {
-    this.lf2 = lf2;
-  }
-  bgm_volume(): number {
+  override bgm_volume(): number {
     return this._bgm_volume
   }
-  set_bgm_volume(v: number): void {
+  override set_bgm_volume(v: number): void {
+    v = clamp(v, 0, 1);
+    const prev = this.bgm_volume();
+    if (float_equal(v, prev)) return;
     this._bgm_volume = v;
     this.apply_bgm_volume();
+    this._callbacks.emit('on_bgm_volume_changed')(v, prev, this)
   }
-  sound_volume(): number {
+  override sound_volume(): number {
     return this._sound_volume
   }
-  set_sound_volume(v: number): void {
+  override set_sound_volume(v: number): void {
+    v = clamp(v, 0, 1);
+    const prev = this.sound_volume()
+    if (float_equal(v, prev)) return;
     this._sound_volume = v;
-    this.apply_sounds_volume();
+    this.apply_sound_volume();
+    this._callbacks.emit('on_sound_volume_changed')(v, prev, this)
   }
-  muted(): boolean {
+  override muted(): boolean {
     return this._muted;
   }
-  set_muted(v: boolean): void {
+  override set_muted(v: boolean): void {
     this._muted = v;
-    this.apply_sounds_volume();
+    this.apply_sound_volume();
     this.apply_bgm_volume();
   }
 
-  bgm_muted(): boolean {
+  override bgm_muted(): boolean {
     return this._bgm_muted;
   }
-  set_bgm_muted(v: boolean): void {
+  override set_bgm_muted(v: boolean): void {
+    if (v === this.bgm_muted()) return;
     this._bgm_muted = v;
     this.apply_bgm_volume();
+    this._callbacks.emit('on_bgm_muted_changed')(v, this)
   }
-  sound_muted(): boolean {
+  override sound_muted(): boolean {
     return this._sound_muted;
   }
-  set_sound_muted(v: boolean): void {
+  override set_sound_muted(v: boolean): void {
+    if (v === this.sound_muted()) return;
     this._sound_muted = v;
-    this.apply_bgm_volume();
+    this.apply_sound_volume();
+    this._callbacks.emit('on_sound_muted_changed')(v, this)
   }
 
   private apply_bgm_volume() {
@@ -65,40 +74,45 @@ export default class FallbackPlayer implements IPlayer {
     }
   }
 
-  private apply_sounds_volume() {
+  private apply_sound_volume() {
     for (const [, a] of this._playings) {
       a.muted = this._sound_muted || this._muted;
       a.volume = this._volume * this._sound_volume;
     }
   }
 
-  volume(): number {
+  override volume(): number {
     return this._volume;
   }
 
-  set_volume(v: number): void {
+  override set_volume(v: number): void {
+    v = clamp(v, 0, 1);
+    const prev = this.volume()
+    if (float_equal(v, prev)) return;
     this._volume = v;
     this.apply_bgm_volume();
-    this.apply_sounds_volume();
+    this.apply_sound_volume();
+    this._callbacks.emit('on_volume_changed')(v, prev, this)
   }
 
-  bgm(): string | null {
+  override bgm(): string | null {
     return this._bgm_ele?.getAttribute("bgm_name") ?? null;
   }
 
-  has(name: string): boolean {
+  override has(name: string): boolean {
     return this._r.has(name);
   }
 
-  stop_bgm() {
+  override stop_bgm() {
     if (!this._bgm_ele) return;
     this._bgm_ele.pause();
     delete this._bgm_ele;
     this._prev_bgm_url = null;
   }
 
-  play_bgm(name: string, restart?: boolean | undefined): () => void {
+  override play_bgm(name: string, restart?: boolean | undefined): () => void {
     if (!restart && this._prev_bgm_url === name) return () => { };
+    const prev = this.bgm();
     if (this._bgm_ele) this.stop_bgm();
     this._bgm_ele = document.createElement('audio');
     this._bgm_ele?.setAttribute("bgm_name", name)
@@ -111,18 +125,19 @@ export default class FallbackPlayer implements IPlayer {
     ++this._req_id;
     const req_id = this._req_id;
     this._prev_bgm_url = name;
+    this._callbacks.emit('on_bgm_changed')(name, prev, this);
     return () => {
       if (req_id === this._req_id) this.stop_bgm();
     };
 
   }
 
-  async load(name: string, src: string): Promise<any> {
+  override async load(name: string, src: string): Promise<any> {
     const [url] = await this.lf2.import_resource(src);
     this._r.set(name, url);
   }
 
-  play(name: string, x?: number, y?: number, z?: number): string {
+  override play(name: string, x?: number, y?: number, z?: number): string {
     const src_audio = this._r.get(name);
     if (!src_audio) return '';
     const audio = document.createElement('audio');
@@ -135,21 +150,21 @@ export default class FallbackPlayer implements IPlayer {
     this._playings.set(id, audio)
 
     audio.onerror = e => {
-      Warn.print(FallbackPlayer.name, 'failed:', name, e);
+      Warn.print(__Fallback.name, 'failed:', name, e);
       this._playings.delete(id)
     };
     audio.onended = () => this._playings.delete(id)
     return id;
   }
 
-  stop(id: string): void {
+  override stop(id: string): void {
     const n = this._playings.get(id);
     if (!n) return;
     n.pause();
     this._playings.delete(id)
   }
 
-  dispose(): void {
+  override dispose(): void {
     this._playings.forEach(v => v.pause());
     this._playings.clear();
 
