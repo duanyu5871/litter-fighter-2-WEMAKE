@@ -53,8 +53,8 @@ Ditto.setup({
   Cache: dom.__Cache,
   Zip: dom.__Zip,
   MD5: dom.__MD5,
+  Importer: new dom.__Importer()
 });
-
 
 function App() {
 

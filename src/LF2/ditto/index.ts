@@ -1,5 +1,6 @@
 import type { ICache } from "./cache";
 import type { IFullScreen } from "./fullscreen";
+import { BaseImporter, type IImporter } from "./importer";
 import type { IRender } from "./IRender";
 import type { ITimeout } from "./ITimeout";
 import type { IKeyboard } from "./keyboard/IKeyboard";
@@ -29,15 +30,18 @@ export interface IDittoPack {
   readonly Keyboard: new (...args: any[]) => IKeyboard;
   readonly Pointings: new (...args: any[]) => IPointings;
   readonly FullScreen: new (...args: any[]) => IFullScreen;
+  readonly Importer: IImporter;
   readonly Cache: ICache;
   setup(pack: Omit<IDittoPack, 'setup'>): void;
   [key: string]: any;
 }
-export default {
+const Ditto: Partial<IDittoPack> = {
   setup(pack: Omit<IDittoPack, 'setup'>) {
     for (const k in pack) {
       const key = k as keyof IDittoPack;
       this[key] = pack[k];
     }
   },
-} as IDittoPack;
+  Importer: new BaseImporter(),
+}
+export default Ditto as IDittoPack;

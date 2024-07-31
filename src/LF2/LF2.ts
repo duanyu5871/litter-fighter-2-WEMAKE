@@ -19,7 +19,6 @@ import { IKeyboard } from './ditto/keyboard/IKeyboard';
 import { IKeyboardCallback } from "./ditto/keyboard/IKeyboardCallback";
 import { IPointingsCallback } from "./ditto/pointings/IPointingsCallback";
 import ISounds from './ditto/sounds/ISounds';
-import { import_as_blob_url, import_as_json } from './dom/make_import';
 import './entity/Ball';
 import Character from './entity/Character';
 import './entity/Entity';
@@ -133,20 +132,19 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
       if (!zip_obj) continue;
       return zip_obj.json() as C
     }
-    return import_as_json(paths) as C;
+    const [json] = await ditto.Importer.import_as_json<C>(paths);
+    return json
   }
 
   async import_resource(path: string): Promise<[string, string]> {
-
     const paths = get_import_fallbacks(path);
     for (const path of paths) {
       const zip_obj = fisrt(this._zips, z => z.file(path))
       if (!zip_obj) continue;
       return [await zip_obj.blob_url(), zip_obj.name]
     }
-    return import_as_blob_url(paths);
+    return ditto.Importer.import_as_blob_url(paths);
   }
-
 
   constructor(canvas: HTMLCanvasElement) {
     this.world = new World(this, canvas);
@@ -416,7 +414,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
 
   async load_zip_from_info_url(info_url: string): Promise<IZip> {
     this.on_loading_content(`${info_url}`, 0);
-    const { url, md5 } = await import_as_json([info_url]);
+    const [{ url, md5 }] = await ditto.Importer.import_as_json([info_url]);
     const exists = await this.get_cache_data(md5);
     let ret: IZip | null = null;
     if (exists) {
