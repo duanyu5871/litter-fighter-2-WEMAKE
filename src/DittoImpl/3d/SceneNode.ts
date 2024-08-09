@@ -1,30 +1,32 @@
 import * as THREE from "three";
-import Camera_O from "./Camera_O";
-import INode from "./INode";
-import Node from "./Node";
+import {
+  IObjectNode,
+  IOrthographicCameraNode, is_orthographic_camera_node,
+  ISceneNode
+} from "../../LF2/3d";
+import LF2 from "../../LF2/LF2";
+import { __ObjectNode } from "./ObjectNode";
 
-export default class Scene extends Node {
-  protected _cameras = new Set<Camera_O>();
+export class __SceneNode extends __ObjectNode implements ISceneNode {
+  readonly is_scene_node = true;
+  protected _cameras = new Set<IOrthographicCameraNode>();
   protected _renderer: THREE.WebGLRenderer;
-  override get inner(): THREE.Scene { return this._inner as THREE.Scene }
 
-  constructor(canvas: HTMLCanvasElement) {
-    super();
-    this._inner = new THREE.Scene();
+  constructor(lf2: LF2, canvas: HTMLCanvasElement) {
+    super(lf2, new THREE.Scene());
     this._renderer = new THREE.WebGLRenderer({ canvas })
   }
-  override add(...nodes: INode[]): this {
+  override add(...nodes: IObjectNode[]): this {
     super.add(...nodes);
     for (const n of nodes)
-      if (n instanceof Camera_O)
+      if (is_orthographic_camera_node(n))
         this._cameras.add(n)
-
     return this;
   }
-  override del(...nodes: INode[]): this {
+  override del(...nodes: IObjectNode[]): this {
     super.del(...nodes);
     for (const n of nodes)
-      if (n instanceof Camera_O)
+      if (is_orthographic_camera_node(n))
         this._cameras.delete(n)
     return this;
   }
@@ -41,7 +43,8 @@ export default class Scene extends Node {
   render(): void {
     const { inner } = this;
     for (const camera of this._cameras) {
-      this._renderer.render(inner, camera.inner);
+      // FIXME: AVOID ANY
+      this._renderer.render(inner, (camera as any).inner);
     }
   }
 }

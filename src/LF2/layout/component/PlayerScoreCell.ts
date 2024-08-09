@@ -1,16 +1,17 @@
-import Text from "../../3d/Text";
+import { ITextNode } from "../../3d/ITextNode";
 import IStyle from "../../defines/IStyle";
+import Ditto from "../../ditto";
 import { LayoutComponent } from "./LayoutComponent";
 import PlayerScore from "./PlayerScore";
 export default class PlayerScoreCell extends LayoutComponent {
   get kind() { return this.args[0] }
   get player_score() { return this.layout.lookup_component(PlayerScore) }
-  private _txt?: Text;
+  private _txt?: ITextNode;
 
   override on_start(): void {
     super.on_start?.();
     this.layout.sprite.add(
-      this._txt = new Text(this.lf2)
+      this._txt = new Ditto.TextNode(this.lf2)
         .set_center(0.5, 0.5)
         .apply()
     )

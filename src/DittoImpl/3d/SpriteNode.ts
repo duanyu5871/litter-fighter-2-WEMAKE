@@ -1,15 +1,13 @@
 import * as THREE from 'three';
-import { dispose_mesh } from '../layout/utils/dispose_mesh';
-import { empty_texture } from '../loader/loader';
-import { is_num } from '../utils/type_check';
-import Node from './Node';
-export interface ISpriteInfo {
-  w: number;
-  h: number;
-  texture?: THREE.Texture;
-  color?: string;
-}
-export default class Sprite extends Node {
+import LF2 from '../../LF2/LF2';
+import { dispose_mesh } from '../../LF2/layout/utils/dispose_mesh';
+import { empty_texture } from '../../LF2/loader/loader';
+import { is_num } from '../../LF2/utils/type_check';
+import { __ObjectNode } from './ObjectNode';
+import { ISpriteInfo, ISpriteNode } from '../../LF2/3d/ISpriteNode';
+
+export default class __SpriteNode extends __ObjectNode implements ISpriteNode {
+  readonly is_sprite_node = true;
   protected _info: ISpriteInfo = { w: 0, h: 0 };
   protected _texture: THREE.Texture = empty_texture();
   protected _geo: THREE.PlaneGeometry = new THREE.PlaneGeometry();
@@ -41,8 +39,8 @@ export default class Sprite extends Node {
     return this._geo = ret;
   }
 
-  constructor(info?: ISpriteInfo) {
-    super();
+  constructor(lf2: LF2, info?: ISpriteInfo) {
+    super(lf2);
     info && this.set_info(info)
     const [r, g, b] = this._rgb;
     const geo = this.next_geometry();
@@ -97,7 +95,9 @@ export default class Sprite extends Node {
     this._texture = info.texture || empty_texture();
     return this;
   }
-
+  get_info(): ISpriteInfo {
+    return this._info;
+  }
   override dispose(): void {
     super.dispose();
     dispose_mesh(this.inner);

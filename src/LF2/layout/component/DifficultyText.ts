@@ -1,19 +1,20 @@
+import { ITextNode } from '../../3d/ITextNode';
 import Invoker from '../../base/Invoker';
 import { Defines } from '../../defines/defines';
+import Ditto from '../../ditto';
 import Layout from '../Layout';
 import { LayoutComponent } from "./LayoutComponent";
-import Text from '../../3d/Text';
 
 export default class DifficultyText extends LayoutComponent {
   protected get text(): string {
     return Defines.DifficultyLabels[this.lf2.difficulty]
   }
-  protected _mesh: Text;
+  protected _mesh: ITextNode;
   protected _unmount_jobs = new Invoker();
 
   constructor(layout: Layout, f_name: string) {
     super(layout, f_name)
-    this._mesh = new Text(this.lf2)
+    this._mesh = new Ditto.TextNode(this.lf2)
       .set_center(0, 0.5)
       .set_name(DifficultyText.name)
       .set_style({

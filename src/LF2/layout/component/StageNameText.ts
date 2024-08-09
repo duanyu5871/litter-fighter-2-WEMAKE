@@ -1,7 +1,8 @@
-import Text from '../../3d/Text';
+import { ITextNode } from '../../3d/ITextNode';
 import Invoker from '../../base/Invoker';
 import { IStageInfo } from '../../defines';
 import { Defines } from '../../defines/defines';
+import Ditto from '../../ditto';
 import Layout from '../Layout';
 import { LayoutComponent } from "./LayoutComponent";
 
@@ -25,12 +26,12 @@ export default class StageNameText extends LayoutComponent {
     if (this.show_all) return this._stage.name;
     return this._stage.starting_name ?? this._stage.name;
   }
-  protected _mesh: Text;
+  protected _mesh: ITextNode;
   protected _unmount_jobs = new Invoker();
 
   constructor(layout: Layout, f_name: string) {
     super(layout, f_name)
-    this._mesh = new Text(this.lf2)
+    this._mesh = new Ditto.TextNode(this.lf2)
       .set_center(0.5, 0.5)
       .set_name(StageNameText.name)
       .set_style({

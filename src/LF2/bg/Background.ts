@@ -5,6 +5,8 @@ import { IBgLayerInfo } from "../defines/IBgLayerInfo";
 import { Defines } from '../defines/defines';
 import { TPicture } from '../loader/loader';
 import Layer from './Layer';
+import { IObjectNode } from '../3d/IObjectNode';
+import Ditto from '../ditto';
 
 export interface ILayerUserData {
   x: number;
@@ -29,7 +31,7 @@ export default class Background {
   readonly depth: number;
 
   readonly middle: { x: number, z: number };
-  readonly obj_3d: THREE.Object3D;
+  readonly obj_3d: IObjectNode;
   readonly world: World;
 
   constructor(world: World, data: IBgData) {
@@ -42,8 +44,8 @@ export default class Background {
       x: (this.data.base.right + this.data.base.left) / 2,
       z: (this.data.base.far + this.data.base.near) / 2,
     }
-    this.obj_3d = new THREE.Object3D();
-    this.obj_3d.position.z = -2 * Defines.OLD_SCREEN_HEIGHT;
+    this.obj_3d = new Ditto.ObjectNode(world.lf2);
+    this.obj_3d.z = -2 * Defines.OLD_SCREEN_HEIGHT;
     this.obj_3d.name = Background.name + ':' + this.data.base.name;
 
     for (const info of data.layers) {
@@ -53,7 +55,7 @@ export default class Background {
       this.add_layer(info, pic);
     }
     this._disposers.push(() => this.fade_out());
-    world.scene.inner.add(this.obj_3d);
+    world.scene.add(this.obj_3d);
   }
   fade_out(): void {
     const max_delay = 50;
@@ -62,7 +64,7 @@ export default class Background {
       layer.fade_out(250, Math.random() * max_delay)
     }
     setTimeout(() => {
-      this.obj_3d.removeFromParent()
+      this.obj_3d.del_self()
     }, duration + max_delay)
 
   }

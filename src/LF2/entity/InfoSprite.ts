@@ -63,8 +63,8 @@ export class InfoSprite implements IEntityCallbacks {
     this.mesh.name = InfoSprite.name;
     this.mesh.renderOrder = 0;
     this.entity = entity;
-    entity.mesh.addEventListener('added', () => this.on_mount(entity));
-    entity.mesh.addEventListener('removed', () => this.on_unmount(entity));
+    entity.inner.addEventListener('added', () => this.on_mount(entity));
+    entity.inner.addEventListener('removed', () => this.on_unmount(entity));
 
     this.bars_node.add(this.bars_bg)
 
@@ -164,7 +164,7 @@ export class InfoSprite implements IEntityCallbacks {
     const name_y = Math.floor(-z / 2 - this.mesh.scale.y)
     this.set_name_position(_x, name_y, z);
 
-    const bar_y = Math.floor(y - z / 2 + this.entity.mesh.scale.y + BAR_BG_H + 5);
+    const bar_y = Math.floor(y - z / 2 + this.entity.inner.scale.y + BAR_BG_H + 5);
     this.set_bars_position(_x, bar_y, z)
   }
 

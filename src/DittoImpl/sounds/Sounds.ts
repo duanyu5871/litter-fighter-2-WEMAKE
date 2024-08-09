@@ -1,7 +1,7 @@
-import { Warn } from "../../../Log";
-import type LF2 from "../../LF2";
-import BaseSounds from "../../ditto/sounds/BaseSounds";
-import type ISounds from "../../ditto/sounds/ISounds";
+import { Warn } from "../../Log";
+import type LF2 from "../../LF2/LF2";
+import BaseSounds from "../../LF2/ditto/sounds/BaseSounds";
+import type ISounds from "../../LF2/ditto/sounds/ISounds";
 import { __Fallback } from "./Fallback";
 import { __Modern } from "./Modern";
 

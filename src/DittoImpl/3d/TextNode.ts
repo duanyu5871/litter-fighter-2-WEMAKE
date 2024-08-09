@@ -1,27 +1,27 @@
-import LF2 from "../LF2";
-import IStyle from "../defines/IStyle";
-import Sprite from "./Sprite";
+import IStyle from "../../LF2/defines/IStyle";
+import __SpriteNode from "./SpriteNode";
+import { ITextNode } from "../../LF2/3d/ITextNode";
 
-export default class Text extends Sprite {
-  readonly lf2: LF2;
+export class __Text extends __SpriteNode implements ITextNode {
+
+  readonly is_text_node = true;
   protected _style: IStyle = {};
   protected _text: string = '';
   protected _jid: number = 0;
   protected _changed: boolean = true;
 
   get style(): IStyle { return this._style; }
+  set style(v: IStyle) { this.set_style(v); }
+  get text(): string { return this._text; }
+  set text(v: string) { this.set_text(v); }
 
-  constructor(lf2: LF2) {
-    super()
-    this.lf2 = lf2;
-  }
-
-  set_style(v: IStyle | ((v: IStyle) => IStyle)): this {
-    this._style = typeof v === 'function' ? v({ ...this._style }) : v;
+  get_style() { return this._style }
+  set_style(v: IStyle): this {
+    this._style = v;
     return this;
   }
 
-
+  get_text(): string { return this._text; }
   set_text(v: string): this {
     this._text = v;
     return this;

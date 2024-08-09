@@ -1,5 +1,6 @@
 
-import Sprite from "../../3d/Sprite";
+import { ISpriteNode } from "../../3d/ISpriteNode";
+import __SpriteNode from "../../../DittoImpl/3d/SpriteNode";
 import NumberAnimation from "../../animation/NumberAnimation";
 import SequenceAnimation from "../../animation/SequenceAnimation";
 import { SineAnimation } from "../../animation/SineAnimation";
@@ -7,6 +8,7 @@ import Invoker from "../../base/Invoker";
 import GameKey from "../../defines/GameKey";
 import Ditto from "../../ditto";
 import ease_linearity from "../../ease_method/ease_linearity";
+import LF2 from "../../LF2";
 import { TPicture } from "../../loader/loader";
 import { make_arr } from "../../utils/array/make_arr";
 import Layout from "../Layout";
@@ -33,9 +35,14 @@ export default class LaunchPageLogic extends LayoutComponent {
   protected _tap_hints_fadeout_opacity = new NumberAnimation(1, 0, 255)
   protected state: number = 0;
 
-  protected _loading_sprite = new Sprite();
+  protected _loading_sprite: ISpriteNode;
   protected _loading_imgs: TPicture[] = [];
   protected _loading_idx_anim = new NumberAnimation(0, 44, 2000).set_ease_method(ease_linearity)
+
+  constructor(layout: Layout, f_name: string) {
+    super(layout, f_name)
+    this._loading_sprite = new Ditto.SpriteNode(this.lf2)
+  }
 
   protected on_prel_data_loaded() {
     this._layouts_loaded = true;
@@ -143,13 +150,13 @@ export default class LaunchPageLogic extends LayoutComponent {
       long_text.opacity = bearface.opacity = yeonface.opacity = opacity
       if (this._opacity.reverse) {
         const s = 0.1 + 0.9 * opacity
-        bearface.sprite.inner.scale.set(s, s, 1);
-        yeonface.sprite.inner.scale.set(s, s, 1);
-        yeonface.sprite.inner.scale.set(s, s, 1);
+        bearface.sprite.set_scale(s, s, 1);
+        yeonface.sprite.set_scale(s, s, 1);
+        yeonface.sprite.set_scale(s, s, 1);
       } else {
-        bearface.sprite.inner.scale.set(scale, scale, 1);
-        yeonface.sprite.inner.scale.set(scale, scale, 1);
-        yeonface.sprite.inner.scale.set(scale, scale, 1);
+        bearface.sprite.set_scale(scale, scale, 1);
+        yeonface.sprite.set_scale(scale, scale, 1);
+        yeonface.sprite.set_scale(scale, scale, 1);
       }
       if (this.state === 3) {
         this.long_text_2.opacity = opacity

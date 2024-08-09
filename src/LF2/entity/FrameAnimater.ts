@@ -6,13 +6,13 @@ import { new_id } from '../base/new_id';
 import type { IFrameInfo, IGameObjData, IGameObjInfo, INextFrame, ITexturePieceInfo, TFace, TNextFrame } from '../defines';
 import IPicture from '../defines/IPicture';
 import { Defines } from '../defines/defines';
-import { turn_face } from './face_helper';
 import { dispose_mesh } from '../layout/utils/dispose_mesh';
 import create_pictures from '../loader/create_pictures';
 import { constructor_name } from '../utils/constructor_name';
 import { random_get } from '../utils/math/random';
 import { is_positive, is_str } from '../utils/type_check';
 import { Factory } from './Factory';
+import { turn_face } from './face_helper';
 
 export const EMPTY_PIECE: ITexturePieceInfo = {
   tex: 0, x: 0, y: 0, w: 0, h: 0,
@@ -39,7 +39,6 @@ export const GONE_FRAME_INFO: IFrameInfo = {
   centery: 0
 };
 
-
 export default class FrameAnimater<
   F extends IFrameInfo = IFrameInfo,
   I extends IGameObjInfo = IGameObjInfo,
@@ -52,7 +51,7 @@ export default class FrameAnimater<
   readonly data: D;
   readonly world: World;
   readonly pictures: Map<string, IPicture<THREE.Texture>>;
-  readonly mesh: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial>;
+  readonly inner: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial>;
   readonly position = new THREE.Vector3(0, 0, 0);
   protected _piece: ITexturePieceInfo = EMPTY_PIECE;
   protected _facing: TFace = 1;
@@ -81,7 +80,7 @@ export default class FrameAnimater<
     this.pictures = create_pictures(world.lf2, data);
 
     const first_text = this.pictures.get('0')?.texture;
-    const mesh = this.mesh = new THREE.Mesh(
+    const mesh = this.inner = new THREE.Mesh(
       new THREE.PlaneGeometry(1, 1).translate(0.5, -0.5, 0),
       new THREE.MeshBasicMaterial({
         map: first_text,
@@ -92,7 +91,7 @@ export default class FrameAnimater<
 
     mesh.userData.owner = this;
     mesh.name = 'FrameAnimater';
-    this.mesh.visible = false;
+    this.inner.visible = false;
   }
 
   on_spawn_by_emitter(...args: any[]): this {
@@ -102,14 +101,14 @@ export default class FrameAnimater<
   update_sprite_position() {
     const { x, y, z } = this.position;
     const { centerx, centery } = this._frame
-    const offset_x = this._facing === 1 ? centerx : this.mesh.scale.x - centerx
-    this.mesh.position.set(x - offset_x, y - z / 2 + centery, z);
+    const offset_x = this._facing === 1 ? centerx : this.inner.scale.x - centerx
+    this.inner.position.set(x - offset_x, y - z / 2 + centery, z);
   }
 
   attach(): this {
     this.update_sprite();
     this.world.add_game_objs(this);
-    this.mesh.visible = true;
+    this.inner.visible = true;
     return this;
   }
   private _previous = {
@@ -126,7 +125,7 @@ export default class FrameAnimater<
     }
     this._previous.face = this._facing;
     this._previous.frame = this._frame;
-    const sprite = this.mesh;
+    const sprite = this.inner;
     const piece = frame.pic;
     if (typeof piece === 'number' || !('1' in piece)) {
       return;
@@ -255,7 +254,7 @@ export default class FrameAnimater<
   }
 
   dispose(): void {
-    this.mesh && dispose_mesh(this.mesh);
+    this.inner && dispose_mesh(this.inner);
     for (const [, pic] of this.pictures)
       pic.texture.dispose();
   }

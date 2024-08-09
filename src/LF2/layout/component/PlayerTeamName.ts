@@ -1,9 +1,10 @@
+import { ITextNode } from '../../3d/ITextNode';
 import { SineAnimation } from '../../animation/SineAnimation';
 import Invoker from '../../base/Invoker';
 import { Defines } from '../../defines/defines';
+import Ditto from '../../ditto';
 import Layout from '../Layout';
 import { LayoutComponent } from "./LayoutComponent";
-import Text from '../../3d/Text';
 
 /**
  * 显示玩家队伍名
@@ -22,14 +23,14 @@ export default class PlayerTeamName extends LayoutComponent {
   }
   get is_com(): boolean { return true === this.player?.is_com }
 
-  protected _mesh: Text;
+  protected _mesh: ITextNode;
   protected _opacity: SineAnimation = new SineAnimation(0.65, 1, 1 / 25);
   protected _unmount_jobs = new Invoker()
 
   constructor(layout: Layout, f_name: string) {
     super(layout, f_name)
     const [w, h] = this.layout.size
-    this._mesh = new Text(this.lf2)
+    this._mesh = new Ditto.TextNode(this.lf2)
       .set_pos(w / 2, -h / 2)
       .set_center(0.5, 0.5)
       .set_name(PlayerTeamName.name)
@@ -59,9 +60,10 @@ export default class PlayerTeamName extends LayoutComponent {
   }
 
   protected handle_changed() {
-    this._mesh.set_style(v => ({
-      ...v, fill_style: this.is_com ? 'pink' : 'white'
-    })).set_visible(!!this.player?.character_decided).set_text(this.text).apply()
+    const style = this._mesh.get_style()
+    this._mesh.set_style({
+      ...style, fill_style: this.is_com ? 'pink' : 'white'
+    }).set_visible(!!this.player?.character_decided).set_text(this.text).apply()
   }
 
   on_render(dt: number): void {

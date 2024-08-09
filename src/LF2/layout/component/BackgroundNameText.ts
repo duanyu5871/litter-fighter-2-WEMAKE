@@ -1,9 +1,10 @@
+import { ITextNode } from '../../3d/ITextNode';
 import Invoker from '../../base/Invoker';
 import { IBgData } from '../../defines';
 import { Defines } from '../../defines/defines';
+import Ditto from '../../ditto';
 import Layout from '../Layout';
 import { LayoutComponent } from "./LayoutComponent";
-import Text from '../../3d/Text';
 
 export default class BackgroundNameText extends LayoutComponent {
   private _background: IBgData = Defines.VOID_BG;
@@ -17,12 +18,12 @@ export default class BackgroundNameText extends LayoutComponent {
   get text(): string {
     return this._background.base.name;
   }
-  protected _mesh: Text;
+  protected _mesh: ITextNode;
   protected _unmount_jobs = new Invoker();
 
   constructor(layout: Layout, f_name: string) {
     super(layout, f_name)
-    this._mesh = new Text(this.lf2)
+    this._mesh = new Ditto.TextNode(this.lf2)
       .set_center(0, 0.5)
       .set_name(BackgroundNameText.name)
       .set_style({

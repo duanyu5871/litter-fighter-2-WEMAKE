@@ -1,9 +1,11 @@
+import { ISpriteNode } from "../../3d/ISpriteNode";
 import { SineAnimation } from "../../animation/SineAnimation";
-import { Defines } from '../../defines/defines';
 import Invoker from "../../base/Invoker";
+import { Defines } from '../../defines/defines';
+import Ditto from "../../ditto";
+import Layout from "../Layout";
 import GamePrepareLogic, { GamePrepareState } from "./GamePrepareLogic";
 import { LayoutComponent } from "./LayoutComponent";
-import Sprite from "../../3d/Sprite";
 
 
 /**
@@ -25,20 +27,9 @@ export default class PlayerCharacterHead extends LayoutComponent {
   }
 
   protected _opacity: SineAnimation = new SineAnimation(0.65, 1, 1 / 25);
-  protected readonly _mesh_head = new Sprite()
-    .set_center(.5, .5)
-    .set_pos(this.layout.w / 2, -this.layout.h / 2, 0.1)
-    .set_name('head')
-    .apply();
-  protected readonly _mesh_hints = new Sprite()
-    .set_center(.5, .5)
-    .set_pos(this.layout.w / 2, -this.layout.h / 2, 0.1)
-    .set_name('hints')
-    .apply();
-  protected readonly _mesh_cd = new Sprite()
-    .set_center(.5, .5)
-    .set_pos(this.layout.w / 2, -this.layout.h / 2, 0.1)
-    .set_name('countdown');
+  protected readonly _mesh_head: ISpriteNode;
+  protected readonly _mesh_hints: ISpriteNode;
+  protected readonly _mesh_cd: ISpriteNode;
 
   get gpl(): GamePrepareLogic | undefined {
     return this.layout.root.find_component(GamePrepareLogic)
@@ -47,6 +38,24 @@ export default class PlayerCharacterHead extends LayoutComponent {
 
   protected _unmount_jobs = new Invoker();
 
+  constructor(layout: Layout, f_name: string) {
+    super(layout, f_name);
+
+    this._mesh_head = new Ditto.SpriteNode(this.lf2)
+      .set_center(.5, .5)
+      .set_pos(this.layout.w / 2, -this.layout.h / 2, 0.1)
+      .set_name('head')
+      .apply();
+    this._mesh_hints = new Ditto.SpriteNode(this.lf2)
+      .set_center(.5, .5)
+      .set_pos(this.layout.w / 2, -this.layout.h / 2, 0.1)
+      .set_name('hints')
+      .apply();
+    this._mesh_cd = new Ditto.SpriteNode(this.lf2)
+      .set_center(.5, .5)
+      .set_pos(this.layout.w / 2, -this.layout.h / 2, 0.1)
+      .set_name('countdown');
+  }
   override on_resume(): void {
     super.on_resume();
     const hint_pic = this.lf2.images.create_pic_by_img_key(Defines.BuiltIn.Imgs.CMA);

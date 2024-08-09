@@ -1,7 +1,7 @@
-import { Warn } from "../../../Log";
-import BaseSounds from "../../ditto/sounds/BaseSounds";
-import { clamp } from "../../utils/math/clamp";
-import float_equal from "../../utils/math/float_equal";
+import { Warn } from "../../Log";
+import BaseSounds from "../../LF2/ditto/sounds/BaseSounds";
+import { clamp } from "../../LF2/utils/math/clamp";
+import float_equal from "../../LF2/utils/math/float_equal";
 
 export class __Fallback extends BaseSounds {
   protected _r = new Map<string, string>();

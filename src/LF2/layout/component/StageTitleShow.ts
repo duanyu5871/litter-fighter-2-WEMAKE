@@ -1,7 +1,8 @@
-import Sprite from "../../3d/Sprite";
+import __SpriteNode from "../../../DittoImpl/3d/SpriteNode";
 import NumberAnimation from "../../animation/NumberAnimation";
 import SequenceAnimation from '../../animation/SequenceAnimation';
 import Invoker from "../../base/Invoker";
+import Ditto from "../../ditto";
 import Stage from "../../stage/Stage";
 import { is_str } from "../../utils/type_check";
 import read_nums from "../utils/read_nums";
@@ -14,7 +15,7 @@ export default class StageTitleShow extends LayoutComponent {
     3000,
     new NumberAnimation(1, 0, 500)
   );
-  private _sprites: Sprite[] = [];
+  private _sprites: __SpriteNode[] = [];
 
   private depose_all_mesh() {
     for (const mesh of this._sprites)
@@ -67,7 +68,7 @@ export default class StageTitleShow extends LayoutComponent {
       return;
     }
 
-    this._sprites = sps.filter(v => v) as Sprite[];
+    this._sprites = sps.filter(v => v) as __SpriteNode[];
     let total_w = 0;
     let total_h = 0;
     for (const mesh of this._sprites) {
@@ -91,7 +92,7 @@ export default class StageTitleShow extends LayoutComponent {
     if (!is_str(char_num_img)) return;
     const key = char_num_img + rect_name;
     const num_pic = await this.lf2.images.create_pic(key, char_num_img, { src_x: x, src_y: y, src_w: w, src_h: h });
-    const num_mesh = new Sprite(num_pic)
+    const num_mesh = new Ditto.SpriteNode(this.lf2, num_pic)
       .set_opacity(0)
       .set_size(w, h)
     return num_mesh;

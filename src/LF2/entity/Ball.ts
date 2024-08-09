@@ -13,7 +13,7 @@ export default class Ball extends Entity<IBallFrameInfo, IBallInfo, IBallData> {
   ud = 0;
   constructor(world: World, data: IBallData) {
     super(world, data, BALL_STATES);
-    this.mesh.name = "ball: " + data.id
+    this.inner.name = "ball: " + data.id
     this.hp = this.data.base.hp;
   }
   override find_auto_frame() {

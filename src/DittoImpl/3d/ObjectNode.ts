@@ -1,11 +1,16 @@
 import * as THREE from 'three';
-import { is_num } from '../utils/type_check';
-import INode from './INode';
+import LF2 from '../../LF2/LF2';
+import { is_num } from '../../LF2/utils/type_check';
+import { IBaseNode } from '../../LF2/3d/IBaseNode';
+import { IObjectNode } from '../../LF2/3d/IObjectNode';
 
-export default class Node implements INode {
-  protected _parent?: INode;
-  protected _children: INode[] = [];
-  protected _inner: THREE.Object3D = new THREE.Object3D();
+export class __ObjectNode implements IObjectNode {
+  readonly is_object_node = true
+  readonly is_base_node = true
+  readonly lf2: LF2;
+  protected _parent?: IObjectNode;
+  protected _children: IObjectNode[] = [];
+  protected _inner: THREE.Object3D;
   protected _rgb: [number, number, number] = [255, 255, 255];
   protected _w?: number;
   protected _h?: number;
@@ -13,10 +18,14 @@ export default class Node implements INode {
   protected _c_y: number = 0;
   protected _c_z: number = 0;
   protected _opacity: number = 1;
+  constructor(lf2: LF2, inner?: THREE.Object3D) {
+    this.lf2 = lf2;
+    this._inner = inner || new THREE.Object3D();
+  }
 
-  get parent(): INode | undefined { return this._parent; }
-  set parent(v: INode | undefined) { this._parent = v; }
-  get children(): readonly INode[] { return this._children; }
+  get parent(): IObjectNode | undefined { return this._parent; }
+  set parent(v: IObjectNode | undefined) { this._parent = v; }
+  get children(): readonly IObjectNode[] { return this._children; }
   get x(): number { return this._inner.position.x; }
   set x(v: number) { this._inner.position.x = v; }
   get y(): number { return this._inner.position.y; }
@@ -65,20 +74,30 @@ export default class Node implements INode {
     return this;
   }
   apply(): this { return this; }
-  add(...nodes: INode[]): this {
+  add(...nodes: IBaseNode[]): this {
     for (const node of nodes) {
       node.parent = this;
-      if (node instanceof Node)
+      if (node instanceof __ObjectNode) {
         this.inner.add(node.inner);
+      } else {
+        const { inner } = node as any
+        if (inner.isObject3D)
+          this.inner.add(inner);
+      }
     }
     return this;
   }
-  del(...nodes: INode[]): this {
+  del(...nodes: IBaseNode[]): this {
     for (const node of nodes) {
       if (node.parent === this)
         node.parent = void 0;
-      if (node instanceof Node)
+      if (node instanceof __ObjectNode) {
         this.inner.remove(node.inner);
+      } else {
+        const { inner } = node as any
+        if (inner.isObject3D)
+          this.inner.remove(inner);
+      }
     }
     return this;
   }
@@ -107,5 +126,13 @@ export default class Node implements INode {
   set_rgb(r: number, g: number, b: number): this {
     this._rgb = [r, g, b];
     return this;
+  }
+  set_scale(x: number, y: number, z: number): this {
+    this.inner.scale.set(x, y, z)
+    return this;
+  }
+  set_position(x: number, y: number, z: number): this {
+    this.inner.position.set(x, y, z)
+    return this
   }
 }

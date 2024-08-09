@@ -1,7 +1,9 @@
-import Sprite from "../../3d/Sprite";
+import { ISpriteNode } from "../../3d";
 import { SineAnimation } from "../../animation/SineAnimation";
 import Invoker from "../../base/Invoker";
 import { Defines } from '../../defines/defines';
+import Ditto from "../../ditto";
+import Layout from "../Layout";
 import GamePrepareLogic from "./GamePrepareLogic";
 import { LayoutComponent } from "./LayoutComponent";
 import PlayerScore from "./PlayerScore";
@@ -26,11 +28,7 @@ export default class PlayerCharacterThumb extends LayoutComponent {
   }
 
   protected _opacity: SineAnimation = new SineAnimation(0.65, 1, 1 / 25);
-  protected readonly _mesh_thumb = new Sprite()
-    .set_center(.5, .5)
-    .set_pos(this.layout.w / 2, -this.layout.h / 2, 0.1)
-    .set_name('thumb')
-    .apply();
+  protected readonly _mesh_thumb: ISpriteNode;
 
 
   get gpl(): GamePrepareLogic | undefined {
@@ -39,6 +37,14 @@ export default class PlayerCharacterThumb extends LayoutComponent {
 
   protected _unmount_jobs = new Invoker();
 
+  constructor(layout: Layout, f_name: string) {
+    super(layout, f_name)
+    this._mesh_thumb = new Ditto.SpriteNode(this.lf2)
+      .set_center(.5, .5)
+      .set_pos(this.layout.w / 2, -this.layout.h / 2, 0.1)
+      .set_name('thumb')
+      .apply();
+  }
   override on_resume(): void {
     super.on_resume();
     this._player_id = this.layout.lookup_component(PlayerScore)?.player_id

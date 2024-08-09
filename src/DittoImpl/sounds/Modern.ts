@@ -1,9 +1,9 @@
 import axios from "axios";
-import AsyncValuesKeeper from "../../base/AsyncValuesKeeper";
-import { Defines } from "../../defines/defines";
-import BaseSounds from "../../ditto/sounds/BaseSounds";
-import { clamp } from "../../utils/math/clamp";
-import float_equal from "../../utils/math/float_equal";
+import AsyncValuesKeeper from "../../LF2/base/AsyncValuesKeeper";
+import { Defines } from "../../LF2/defines/defines";
+import BaseSounds from "../../LF2/ditto/sounds/BaseSounds";
+import { clamp } from "../../LF2/utils/math/clamp";
+import float_equal from "../../LF2/utils/math/float_equal";
 
 export class __Modern extends BaseSounds {
   readonly ctx = new AudioContext();

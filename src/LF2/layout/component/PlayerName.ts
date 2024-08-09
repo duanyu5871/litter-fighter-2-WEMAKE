@@ -1,6 +1,7 @@
-import Text from '../../3d/Text';
+import { ITextNode } from '../../3d/ITextNode';
 import { SineAnimation } from '../../animation/SineAnimation';
 import Invoker from '../../base/Invoker';
+import Ditto from '../../ditto';
 import Layout from '../Layout';
 import GamePrepareLogic, { GamePrepareState } from './GamePrepareLogic';
 import { LayoutComponent } from "./LayoutComponent";
@@ -26,14 +27,14 @@ export default class PlayerName extends LayoutComponent {
     if (this.can_join) return 'Join?';
     return ''
   }
-  protected _mesh: Text;
+  protected _mesh: ITextNode;
   protected _opacity: SineAnimation = new SineAnimation(0.65, 0.35, 1 / 25);
   protected _unmount_jobs = new Invoker();
 
   constructor(layout: Layout, f_name: string) {
     super(layout, f_name)
     const [w, h] = this.layout.size
-    this._mesh = new Text(this.lf2)
+    this._mesh = new Ditto.TextNode(this.lf2)
       .set_pos(w / 2, -h / 2)
       .set_center(0.5, 0.5)
       .set_name(PlayerName.name)
@@ -67,9 +68,9 @@ export default class PlayerName extends LayoutComponent {
   }
 
   protected handle_changed() {
-    this._mesh.set_style(v => ({
-      ...v, fill_style: this.is_com ? 'pink' : 'white'
-    })).set_text(this.text).apply()
+    this._mesh.set_style({
+      ...this._mesh.style, fill_style: this.is_com ? 'pink' : 'white'
+    }).set_text(this.text).apply()
   }
 
   on_render(dt: number): void {

@@ -1,5 +1,7 @@
 import * as THREE from 'three';
+import { IObjectNode } from '../3d';
 import { IRect } from '../defines/IRect';
+import Ditto from '../ditto';
 import Entity from './Entity';
 export const EMPTY_ARR = [] as const;
 export const INDICATORS_COLOR = {
@@ -24,14 +26,14 @@ export class EntityIndicators {
   protected _entity: Entity;
   protected _show = false;
   protected _indicators_map = {
-    bdy: new Array<THREE.Object3D>(),
-    itr: new Array<THREE.Object3D>(),
+    bdy: new Array<IObjectNode>(),
+    itr: new Array<IObjectNode>(),
   };
   private _x: number = 0;
   private _y: number = 0;
   private _z: number = 0;
   protected get scene() { return this._entity.world.scene; };
-  protected _box?: THREE.Object3D;
+  protected _box?: IObjectNode;
   protected get frame() { return this._entity.get_frame(); }
   protected get face() { return this._entity.facing; }
   get show() { return this._show; }
@@ -52,9 +54,8 @@ export class EntityIndicators {
   }
 
   protected _new_indicator(k: keyof typeof this._indicators_map, idx: number) {
-    const material = new THREE.LineBasicMaterial({ color: INDICATORS_COLOR[k] });
-    const ret = this._indicators_map[k][idx] = new THREE.LineSegments(geometry, material);
-    this.scene.inner.add(ret);
+    const ret = this._indicators_map[k][idx] = new Ditto.LineSegmentsNode(this._entity.lf2, { color: INDICATORS_COLOR[k] });
+    this.scene.add(ret);
     return ret;
   }
 
@@ -62,13 +63,13 @@ export class EntityIndicators {
     const indicator = this._indicators_map[k][idx] ?? this._new_indicator(k, idx);
     const y = this._y + ii.y;
     const x = this._x + ii.x;
-    indicator.position.set(x, y, this._z)
-    indicator.scale.set(ii.w, ii.h, 1);
+    indicator.set_position(x, y, this._z)
+    indicator.set_scale(ii.w, ii.h, 1);
   }
 
   protected _del_indicator(k: keyof typeof this._indicators_map, idx: number) {
     const [indicator] = this._indicators_map[k].splice(idx, 1);
-    indicator && this.scene.inner.remove(indicator)
+    indicator && this.scene.del(indicator)
   }
 
   private _unsafe_update_box() {
@@ -77,8 +78,9 @@ export class EntityIndicators {
     const ii = indicator_info[this._entity.facing];
     const y = this._y + ii.y;
     const x = this._x + ii.x;
-    this._box!.position.set(x, y, this._z)
-    this._box!.scale.set(ii.w, ii.h, 1);
+    if (!this._box) return;
+    this._box.set_position(x, y, this._z)
+    this._box.set_scale(ii.w, ii.h, 1);
   }
 
   private _update_indicators(name: keyof typeof this._indicators_map) {
@@ -108,18 +110,17 @@ export class EntityIndicators {
   }
   hide_indicators(k: keyof typeof this._indicators_map) {
     for (const i of this._indicators_map[k])
-      this.scene.inner.remove(i)
+      this.scene.del(i)
     this._indicators_map[k].length = 0
   }
   show_box() {
     if (this._box) return;
-    const material = new THREE.LineBasicMaterial({ color: INDICATORS_COLOR.main })
-    this._box = new THREE.LineSegments(geometry, material);
-    this.scene.inner.add(this._box);
+    this._box = new Ditto.LineSegmentsNode(this._entity.lf2, { color: INDICATORS_COLOR.main });
+    this.scene.add(this._box);
   }
   hide_box() {
     if (!this._box) return;
-    this.scene.inner.remove(this._box);
+    this.scene.del(this._box);
     delete this._box;
   }
   update() {

@@ -23,12 +23,12 @@ export default class Shadow {
   constructor(entity: Entity) {
     this.mesh.name = Shadow.name;
     this.mesh.renderOrder = 0;
-    entity.mesh.addEventListener('added', () => this.on_mount(entity))
-    entity.mesh.addEventListener('removed', () => this.on_unmount(entity))
+    entity.inner.addEventListener('added', () => this.on_mount(entity))
+    entity.inner.addEventListener('removed', () => this.on_unmount(entity))
   }
 
   protected on_mount(entity: Entity) {
-    entity.world.scene.inner.add(this.mesh)
+    entity.world.scene.add(this.mesh)
     entity.world.callbacks.add(this.world_listener);
     this.on_stage_change(entity.world.stage);
   }

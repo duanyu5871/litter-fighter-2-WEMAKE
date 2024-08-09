@@ -1,14 +1,15 @@
-import Text from "../../3d/Text";
-import { Defines } from "../../defines/defines";
+
+import { ITextNode } from "../../3d/ITextNode";
+import Ditto from "../../ditto";
 import { LayoutComponent } from "./LayoutComponent";
 
 export class PlayingTimeText extends LayoutComponent {
-  private _txt?: Text;
+  private _txt?: ITextNode;
 
   override on_start(): void {
     super.on_start?.();
     this.layout.sprite.add(
-      this._txt = new Text(this.lf2)
+      this._txt = new Ditto.TextNode(this.lf2)
         .set_center(0.5, 0.5)
         .apply()
     )

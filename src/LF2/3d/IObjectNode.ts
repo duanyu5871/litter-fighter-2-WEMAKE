@@ -1,8 +1,9 @@
-export default interface INode {
-  get parent(): INode | undefined;
-  set parent(v: INode | undefined);
+import type LF2 from "../LF2";
+import { IBaseNode } from "./IBaseNode";
 
-  get children(): readonly INode[];
+export interface IObjectNode extends IBaseNode {
+  readonly is_object_node: true;
+  readonly lf2: LF2;
 
   get x(): number;
   set x(v: number);
@@ -12,9 +13,6 @@ export default interface INode {
 
   get z(): number;
   set z(v: number);
-
-  get name(): string;
-  set name(v: string);
 
   get visible(): boolean;
   set visible(v: boolean);
@@ -49,27 +47,17 @@ export default interface INode {
 
   set_pos(x?: number, y?: number, z?: number): this;
 
+  set_scale(x?: number, y?: number, z?: number): this;
+
   set_size(w?: number, h?: number): this;
 
   set_center(x?: number, y?: number, z?: number): this;
 
   apply(): this;
 
-  add(...sp: INode[]): this;
-
-  del(...sp: INode[]): this;
-
-  del_self(): void;
-
-  dispose(): void;
-
-  get_user_data(key: string): any;
-
-  add_user_data(key: string, value: any): this;
-
-  del_user_data(key: string): this;
-
-  merge_user_data(v: Record<string, any>): this;
-
   set_rgb(r: number, g: number, b: number): this;
+
+  set_position(x: number, y: number, z: number): this;
 }
+export const is_object_node = (v: any): v is IObjectNode =>
+  v?.is_object_node === true

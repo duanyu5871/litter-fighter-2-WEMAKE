@@ -1,7 +1,7 @@
 import axios from 'axios';
 import JSZIP from 'jszip';
-import { IZip, IZipObject } from '../ditto';
-import { is_str } from '../utils/type_check';
+import { IZip, IZipObject } from '../LF2/ditto';
+import { is_str } from '../LF2/utils/type_check';
 
 export class ZipObject implements IZipObject {
   protected inner: JSZIP.JSZipObject;

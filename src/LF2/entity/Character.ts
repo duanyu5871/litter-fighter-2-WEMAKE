@@ -34,7 +34,7 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
 
   constructor(world: World, data: ICharacterData) {
     super(world, data, CHARACTER_STATES);
-    this.mesh.name = Character.name + ':' + data.base.name;
+    this.inner.name = Character.name + ':' + data.base.name;
     this.enter_frame({ id: Defines.FrameId.Auto });
 
     this._max_hp = this._hp = data.base.hp ?? Defines.HP;

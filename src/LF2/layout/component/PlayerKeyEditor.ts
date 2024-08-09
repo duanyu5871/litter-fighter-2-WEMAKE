@@ -1,6 +1,7 @@
-import Text from '../../3d/Text';
+import { ITextNode } from '../../3d/ITextNode';
 import Invoker from '../../base/Invoker';
 import GameKey from '../../defines/GameKey';
+import Ditto from '../../ditto';
 import { IKeyboardCallback } from "../../ditto/keyboard/IKeyboardCallback";
 import { IPointingsCallback } from "../../ditto/pointings/IPointingsCallback";
 import Layout from '../Layout';
@@ -10,13 +11,13 @@ export default class PlayerKeyEditor extends LayoutComponent {
   get player_id() { return this.args[0] || '' };
   get key_name() { return this.args[1] || '' };
   get player() { return this.lf2.player_infos.get(this.player_id) }
-  protected _sprite: Text;
+  protected _sprite: ITextNode;
   protected _unmount_jobs = new Invoker();
 
   constructor(layout: Layout, f_name: string) {
     super(layout, f_name);
     const [w, h] = this.layout.size
-    this._sprite = new Text(this.lf2)
+    this._sprite = new Ditto.TextNode(this.lf2)
       .set_pos(Math.ceil(w / 2), Math.ceil(-h / 2), 1)
       .set_center(0.5, 0.5)
       .set_name(PlayerKeyEditor.name)
@@ -27,7 +28,7 @@ export default class PlayerKeyEditor extends LayoutComponent {
   override on_click() {
     this.lf2.keyboard.callback.add(this.l)
     this.lf2.pointings.callback.add(this.r)
-    this._sprite.set_style(v => ({ ...v, fill_style: 'blue' })).apply()
+    this._sprite.set_style({ ...this._sprite, fill_style: 'blue' }).apply()
     return true;
   }
 
@@ -64,7 +65,7 @@ export default class PlayerKeyEditor extends LayoutComponent {
   private _on_cancel = () => {
     this.lf2.keyboard.callback.del(this.l);
     this.lf2.pointings.callback.del(this.r);
-    this._sprite?.set_style(v => ({ ...v, fill_style: 'white' })).apply()
+    this._sprite?.set_style({ ...this._sprite.style, fill_style: 'white' }).apply()
   }
 
   async update_sprite() {

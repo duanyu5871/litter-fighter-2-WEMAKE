@@ -1,6 +1,6 @@
 import axios, { AxiosResponse, RawAxiosRequestHeaders } from "axios";
-import { IImporter } from "../ditto/importer/IImporter";
-import { ImportError } from "../ditto/importer/ImportError";
+import { IImporter } from "../LF2/ditto/importer/IImporter";
+import { ImportError } from "../LF2/ditto/importer/ImportError";
 
 const roots = [
   'lf2_built_in_data'

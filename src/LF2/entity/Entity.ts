@@ -226,7 +226,7 @@ export default class Entity<
 
   constructor(world: World, data: D, states: States = ENTITY_STATES) {
     super(world, data)
-    this.mesh.name = "Entity:" + data.id
+    this.inner.name = "Entity:" + data.id
     this.states = states;
     this.shadow = new Shadow(this);
   }
@@ -374,7 +374,7 @@ export default class Entity<
     this.holding?.follow_holder();
     if (this._shaking) {
       const x = (this._shaking % 2 ? -5 : 5);
-      this.mesh.position.x += x;
+      this.inner.position.x += x;
     }
   }
 
@@ -418,7 +418,7 @@ export default class Entity<
     this._a_rest > 1 ? this._a_rest-- : this._a_rest = 0;
     if (this._invisible_duration > 0) {
       this._invisible_duration--;
-      this.mesh.visible = this.shadow.visible = this._info_sprite.visible = false;
+      this.inner.visible = this.shadow.visible = this._info_sprite.visible = false;
       if (this._invisible_duration <= 0) {
         this._blinking_duration = 120;
         this._info_sprite.visible = true
@@ -428,14 +428,14 @@ export default class Entity<
       this._blinking_duration--;
       const bc = Math.floor(this._blinking_duration / 6) % 2;
       if (this._blinking_duration <= 0) {
-        this.mesh.visible = true;
+        this.inner.visible = true;
         this.shadow.visible = !this._frame.no_shadow
         if (this._after_blink === Defines.FrameId.Gone) {
           this._next_frame = void 0;
           this._frame = GONE_FRAME_INFO as F
         }
       } else {
-        this.mesh.visible = !!bc;
+        this.inner.visible = !!bc;
         this.shadow.visible = !!bc && !this._frame.no_shadow
       }
     }

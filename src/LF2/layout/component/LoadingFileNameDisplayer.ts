@@ -1,15 +1,16 @@
-import Text from '../../3d/Text';
+import { ITextNode } from '../../3d/ITextNode';
 import Invoker from '../../base/Invoker';
+import Ditto from '../../ditto';
 import Layout from '../Layout';
 import { LayoutComponent } from './LayoutComponent';
 
 export default class LoadingFileNameDisplayer extends LayoutComponent {
   protected _unmount_job = new Invoker();
-  protected _mesh: Text;
+  protected _mesh: ITextNode;
 
   constructor(layout: Layout, f_name: string) {
     super(layout, f_name);
-    this._mesh = new Text(this.lf2)
+    this._mesh = new Ditto.TextNode(this.lf2)
       .set_pos(0, 0, 1)
       .set_center(...this.layout.center)
       .set_style(this.layout.style)

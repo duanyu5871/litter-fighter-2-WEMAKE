@@ -10,7 +10,7 @@ export default class BaseSounds implements ISounds {
   protected _callbacks = new Callbacks<ISoundsCallback>()
   get callbacks(): NoEmitCallbacks<ISoundsCallback> { return this._callbacks; }
   bgm_volume(): number { return 0 }
-  set_bgm_volume(v: number): void { }
+  set_bgm_volume(v: number): void {  }
   sound_volume(): number { return 0 }
   set_sound_volume(v: number): void { }
   bgm_muted(): boolean { return true }

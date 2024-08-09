@@ -1,6 +1,6 @@
 import { Log, Warn } from '../Log';
-import Camera_O from "./3d/Camera_O";
-import Scene from './3d/Scene';
+import { IOrthographicCameraNode } from './3d/IOrthographicCamera';
+import { ISceneNode } from './3d/ISceneNode';
 import { IWorldCallbacks } from './IWorldCallbacks';
 import LF2 from './LF2';
 import Callbacks from './base/Callbacks';
@@ -60,8 +60,8 @@ export class World {
 
   friction_factor = Defines.FRICTION_FACTOR;
   friction = Defines.FRICTION;
-  scene: Scene;
-  camera: Camera_O;
+  scene: ISceneNode;
+  camera: IOrthographicCameraNode;
 
   private _stage: Stage;
   entities = new Set<Entity>();
@@ -108,8 +108,8 @@ export class World {
     const w = this._screen_w = Defines.OLD_SCREEN_WIDTH;
     const h = this._screen_h = 450;// Defines.OLD_SCREEN_HEIGHT;
 
-    this.scene = new Scene(canvas).set_size(w * 4, h * 4);
-    this.camera = new Camera_O()
+    this.scene = new Ditto.SceneNode(lf2, canvas).set_size(w * 4, h * 4);
+    this.camera = new Ditto.OrthographicCamera(lf2)
       .setup(0, w, h, 0)
       .set_pos(void 0, void 0, 10)
       .apply()
@@ -125,12 +125,12 @@ export class World {
       }
 
       if (is_entity(e)) {
-        this.scene.inner.add(e.mesh);
+        this.scene.add(e);
         e.show_indicators = this._show_indicators;
         this.entities.add(e);
         continue;
       }
-      this.scene.inner.add(e.mesh)
+      this.scene.add(e)
       this.game_objs.add(e)
 
     }
@@ -552,9 +552,9 @@ export class World {
     }
     const e = create(this, data)
     e.position.set(x, y, z)
-    e.mesh.material.depthTest = false;
-    e.mesh.material.depthWrite = false;
-    e.mesh.renderOrder = 2
+    e.inner.material.depthTest = false;
+    e.inner.material.depthWrite = false;
+    e.inner.renderOrder = 2
     e.enter_frame(f)
     e.attach()
   }

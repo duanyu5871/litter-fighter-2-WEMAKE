@@ -1,8 +1,10 @@
 import * as THREE from "three";
-import Node from "./Node";
+import LF2 from "../../LF2/LF2";
+import { __ObjectNode } from "./ObjectNode";
+import { IOrthographicCameraNode } from "../../LF2/3d/IOrthographicCamera";
 
-
-export default class Camera_O extends Node {
+export class __Camera_O_Node extends __ObjectNode implements IOrthographicCameraNode {
+  readonly is_orthographic_camera_node = true
   get left(): number { return this.inner.left; }
   set left(v: number) { this.inner.left = v; }
   get right(): number { return this.inner.right; }
@@ -19,8 +21,8 @@ export default class Camera_O extends Node {
   override get inner(): THREE.OrthographicCamera {
     return this._inner as THREE.OrthographicCamera;
   }
-  constructor() {
-    super();
+  constructor(lf2: LF2) {
+    super(lf2);
     this._inner = new THREE.OrthographicCamera();
   }
   override apply(): this {

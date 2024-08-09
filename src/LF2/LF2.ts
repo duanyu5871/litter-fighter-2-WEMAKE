@@ -32,7 +32,6 @@ import DatMgr from './loader/DatMgr';
 import get_import_fallbacks from "./loader/get_import_fallbacks";
 import { ImageMgr } from './loader/loader';
 import Stage from './stage/Stage';
-import { constructor_name } from './utils/constructor_name';
 import { fisrt, last } from './utils/container_help';
 import { arithmetic_progression } from './utils/math/arithmetic_progression';
 import float_equal from './utils/math/float_equal';
@@ -676,15 +675,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   broadcast(message: string): void {
     this._callbacks.emit('on_broadcast')(message);
   }
-  n_tree(n: THREE.Object3D = this.world.scene.inner): II {
-    const children = n.children.map(v => this.n_tree(v))
-    return {
-      name: `<${constructor_name(n)}>${n.name}`,
-      inst: n,
-      user_data: n.userData,
-      children: children.length ? children : void 0
-    }
-  }
+
   get_layout_tree(layout: Layout): III
   get_layout_tree(layout?: Layout | undefined): III | null
   get_layout_tree(layout: Layout | undefined = last(this._layout_stacks)): III | null {

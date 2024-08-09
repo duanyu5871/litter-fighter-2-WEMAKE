@@ -1,11 +1,12 @@
 import * as THREE from 'three';
-import Sprite, { ISpriteInfo } from '../3d/Sprite';
+import { ISpriteInfo, ISpriteNode } from '../3d';
 import LF2 from '../LF2';
 import Callbacks from '../base/Callbacks';
 import Expression, { ValGetter } from '../base/Expression';
 import { NoEmitCallbacks } from '../base/NoEmitCallbacks';
+import GameKey from '../defines/GameKey';
 import IStyle from '../defines/IStyle';
-import Defines from '../defines/defines';
+import Ditto from '../ditto';
 import { empty_texture, white_texture, type TImageInfo } from '../loader/loader';
 import { filter, find } from '../utils/container_help';
 import { is_arr, is_bool, is_num, is_str } from '../utils/type_check';
@@ -15,7 +16,6 @@ import actor from './action/Actor';
 import factory from './component/Factory';
 import { LayoutComponent } from './component/LayoutComponent';
 import read_nums from './utils/read_nums';
-import GameKey from '../defines/GameKey';
 
 export interface ICookedLayoutInfo extends ILayoutInfo {
   pos: [number, number, number];
@@ -177,9 +177,12 @@ export default class Layout {
   set img_infos(v: TImageInfo[]) { this.set_img_infos(v); }
   set_img_infos(v: TImageInfo[]): this { this._img_infos.set(0, v); return this; }
 
+  protected _sprite: ISpriteNode;
 
   constructor(lf2: LF2, data: ICookedLayoutInfo, parent?: Layout) {
     this.lf2 = lf2;
+    this._sprite = new Ditto.SpriteNode(this.lf2)
+      .add_user_data('owner', this)
     this.data = Object.freeze(data);
     this._parent = parent;
     this._root = parent ? parent.root : this;
@@ -449,8 +452,6 @@ export default class Layout {
     return texture;
   }
 
-  protected _sprite: Sprite = new Sprite()
-    .add_user_data('owner', this);
   get sprite() { return this._sprite }
 
   protected init_sprite() {
