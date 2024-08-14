@@ -596,7 +596,7 @@ export default class Entity<
     super.update_sprite_position();
     this._info_sprite.update_position();
     const { x, z } = this.position;
-    this.shadow.position.set(x, - z / 2, z - 550);
+    this.shadow.mesh.set_position(x, - z / 2, z - 550);
     if (this.holding) this.holding.follow_holder();
   }
 

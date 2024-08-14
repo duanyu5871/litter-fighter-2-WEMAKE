@@ -17,7 +17,7 @@ export default class PlayerKeyText extends LayoutComponent {
     super(layout, f_name);
     const [w, h] = this.layout.size;
     this._sprite = new Ditto.TextNode(this.lf2)
-      .set_pos(Math.ceil(w / 2), Math.ceil(-h / 2), 1)
+      .set_position(Math.ceil(w / 2), Math.ceil(-h / 2), 1)
       .set_center(0.5, 0.5)
       .set_name(PlayerKeyEditor.name)
       .set_style({ font: '16px Arial' })

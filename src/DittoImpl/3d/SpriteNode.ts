@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import LF2 from '../../LF2/LF2';
-import { dispose_mesh } from '../../LF2/layout/utils/dispose_mesh';
+import { dispose_mesh } from './disposer';
 import { empty_texture } from '../../LF2/loader/loader';
 import { is_num } from '../../LF2/utils/type_check';
 import { __ObjectNode } from './ObjectNode';

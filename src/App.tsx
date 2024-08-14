@@ -9,14 +9,22 @@ import Titled from './Component/Titled';
 import { ToggleButton } from "./Component/ToggleButton";
 import { ToggleImgButton } from './Component/ToggleImgButton';
 import { useShortcut } from './Component/useShortcut';
+import * as dom from './DittoImpl';
+import { __Camera_O_Node } from './DittoImpl/3d/Camera_O';
+import { __LineSegmentsNode } from './DittoImpl/3d/LineSegmentsNode';
+import { __MeshNode } from './DittoImpl/3d/MeshNode';
+import { __ObjectNode } from './DittoImpl/3d/ObjectNode';
+import { __SceneNode } from './DittoImpl/3d/SceneNode';
+import __SpriteNode from './DittoImpl/3d/SpriteNode';
+import { __Text } from './DittoImpl/3d/TextNode';
+import { __BillboardNode } from './DittoImpl/BillboardNode';
 import EditorView from './EditorView';
+import { GameOverlay } from './GameOverlay';
 import GamePad from './GamePad';
 import LF2 from './LF2/LF2';
 import Invoker from './LF2/base/Invoker';
 import { Defines } from './LF2/defines/defines';
 import Ditto from './LF2/ditto';
-import * as dom from './DittoImpl';
-import { GameOverlay } from './GameOverlay';
 import { is_weapon } from './LF2/entity/type_check';
 import { ILayoutInfo } from './LF2/layout/ILayoutInfo';
 import { fisrt } from './LF2/utils/container_help';
@@ -41,12 +49,6 @@ import img_btn_3_2 from './assets/btn_3_2.png';
 import './game_ui.css';
 import './init';
 import { useLocalBoolean, useLocalNumber, useLocalString } from './useLocalStorage';
-import { __Text } from './DittoImpl/3d/TextNode';
-import { __SceneNode } from './DittoImpl/3d/SceneNode';
-import { __ObjectNode } from './DittoImpl/3d/ObjectNode';
-import { __Camera_O_Node } from './DittoImpl/3d/Camera_O';
-import __SpriteNode from './DittoImpl/3d/SpriteNode';
-import { __LineSegmentsNode } from './DittoImpl/3d/LineSegmentsNode';
 
 Ditto.setup({
   Timeout: dom.__Timeout,
@@ -67,6 +69,8 @@ Ditto.setup({
   OrthographicCamera: __Camera_O_Node,
   SpriteNode: __SpriteNode,
   LineSegmentsNode: __LineSegmentsNode,
+  MeshNode: __MeshNode,
+  BillboardNode: __BillboardNode,
 });
 
 function App() {

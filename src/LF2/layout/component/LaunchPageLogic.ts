@@ -67,7 +67,7 @@ export default class LaunchPageLogic extends LayoutComponent {
       return this.lf2.images.create_pic_by_img_info(info);
     })
     Promise.all(jobs).then(s => this._loading_imgs = s);
-    this.layout.sprite.add(this._loading_sprite.set_pos(this.layout.w - 33, -this.layout.h + 21))
+    this.layout.sprite.add(this._loading_sprite.set_position(this.layout.w - 33, -this.layout.h + 21, 0))
 
     this._dispose_jobs.add(
       this.lf2.callbacks.add({

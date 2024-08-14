@@ -1,15 +1,15 @@
 import * as THREE from 'three';
-import LF2 from '../../LF2/LF2';
-import { is_num } from '../../LF2/utils/type_check';
 import { IBaseNode } from '../../LF2/3d/IBaseNode';
 import { IObjectNode } from '../../LF2/3d/IObjectNode';
+import LF2 from '../../LF2/LF2';
+import { is_num } from '../../LF2/utils/type_check';
 
 export class __ObjectNode implements IObjectNode {
   readonly is_object_node = true
   readonly is_base_node = true
   readonly lf2: LF2;
   protected _parent?: IObjectNode;
-  protected _children: IObjectNode[] = [];
+  protected _children: IBaseNode[] = [];
   protected _inner: THREE.Object3D;
   protected _rgb: [number, number, number] = [255, 255, 255];
   protected _w?: number;
@@ -22,10 +22,16 @@ export class __ObjectNode implements IObjectNode {
     this.lf2 = lf2;
     this._inner = inner || new THREE.Object3D();
   }
+  get scale_x(): number { return this._inner.scale.x; }
+  set scale_x(v: number) { this._inner.scale.x = v; }
+  get scale_y(): number { return this._inner.scale.y; }
+  set scale_y(v: number) { this._inner.scale.y = v; }
+  get scale_z(): number { return this._inner.scale.z; }
+  set scale_z(v: number) { this._inner.scale.z = v; }
 
   get parent(): IObjectNode | undefined { return this._parent; }
   set parent(v: IObjectNode | undefined) { this._parent = v; }
-  get children(): readonly IObjectNode[] { return this._children; }
+  get children(): readonly IBaseNode[] { return this._children; }
   get x(): number { return this._inner.position.x; }
   set x(v: number) { this._inner.position.x = v; }
   get y(): number { return this._inner.position.y; }
@@ -43,6 +49,7 @@ export class __ObjectNode implements IObjectNode {
   get size(): [number, number] { return [this.w, this.h] }
   set size([w, h]: [number, number]) { this.set_size(w, h); }
   get user_data(): Record<string, any> { return this._inner.userData; }
+  set user_data(v: Record<string, any>) { this._inner.userData = v; }
   get rgb(): [number, number, number] { return this._rgb }
   set rgb([r, g, b]: [number, number, number]) {
     this.set_rgb(r, g, b);
@@ -57,9 +64,9 @@ export class __ObjectNode implements IObjectNode {
   set_x(x: number): this { this._inner.position.x = x; return this; }
   set_y(y: number): this { this._inner.position.y = y; return this; }
   set_z(z: number): this { this._inner.position.z = z; return this; }
-  set_pos(x?: number, y?: number, z?: number): this {
-    const p = this._inner.position;
-    p.set(x ?? p.x, y ?? p.y, z ?? p.z);
+  set_position(_x?: number, _y?: number, _z?: number): this {
+    const { x, y, z } = this._inner.position;
+    this._inner.position.set(_x ?? x, _y ?? y, _z ?? z);
     return this;
   }
   set_size(w?: number, h?: number): this {
@@ -76,28 +83,17 @@ export class __ObjectNode implements IObjectNode {
   apply(): this { return this; }
   add(...nodes: IBaseNode[]): this {
     for (const node of nodes) {
-      node.parent = this;
-      if (node instanceof __ObjectNode) {
-        this.inner.add(node.inner);
-      } else {
-        const { inner } = node as any
-        if (inner.isObject3D)
-          this.inner.add(inner);
-      }
+      const { inner } = node as any
+      if (inner.isObject3D) this.inner.add(inner);
+      this._children.push(node)
     }
     return this;
   }
   del(...nodes: IBaseNode[]): this {
     for (const node of nodes) {
-      if (node.parent === this)
-        node.parent = void 0;
-      if (node instanceof __ObjectNode) {
-        this.inner.remove(node.inner);
-      } else {
-        const { inner } = node as any
-        if (inner.isObject3D)
-          this.inner.remove(inner);
-      }
+      if (node.parent === this) node.parent = void 0;
+      const { inner } = node as any
+      if (inner.isObject3D) this.inner.remove(inner);
     }
     return this;
   }
@@ -131,10 +127,9 @@ export class __ObjectNode implements IObjectNode {
     this.inner.scale.set(x, y, z)
     return this;
   }
-  set_position(x: number, y: number, z: number): this {
-    this.inner.position.set(x, y, z)
-    return this
-  }
+  set_scale_x(v: number): this { this.inner.scale.x = v; return this }
+  set_scale_y(v: number): this { this.inner.scale.y = v; return this }
+  set_scale_z(v: number): this { this.inner.scale.z = v; return this }
   rotation_from_quaternion(q: THREE.Quaternion): this {
     this.inner.rotation.setFromQuaternion(q);
     return this

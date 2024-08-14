@@ -43,17 +43,17 @@ export default class PlayerCharacterHead extends LayoutComponent {
 
     this._mesh_head = new Ditto.SpriteNode(this.lf2)
       .set_center(.5, .5)
-      .set_pos(this.layout.w / 2, -this.layout.h / 2, 0.1)
+      .set_position(this.layout.w / 2, -this.layout.h / 2, 0.1)
       .set_name('head')
       .apply();
     this._mesh_hints = new Ditto.SpriteNode(this.lf2)
       .set_center(.5, .5)
-      .set_pos(this.layout.w / 2, -this.layout.h / 2, 0.1)
+      .set_position(this.layout.w / 2, -this.layout.h / 2, 0.1)
       .set_name('hints')
       .apply();
     this._mesh_cd = new Ditto.SpriteNode(this.lf2)
       .set_center(.5, .5)
-      .set_pos(this.layout.w / 2, -this.layout.h / 2, 0.1)
+      .set_position(this.layout.w / 2, -this.layout.h / 2, 0.1)
       .set_name('countdown');
   }
   override on_resume(): void {

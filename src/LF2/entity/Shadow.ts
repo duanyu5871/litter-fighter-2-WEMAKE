@@ -1,6 +1,7 @@
 import * as T from 'three';
+import { IMeshNode } from '../3d/IMeshNode';
+import Ditto from '../ditto';
 import type { IWorldCallbacks } from '../IWorldCallbacks';
-import { dispose_mesh } from '../layout/utils/dispose_mesh';
 import type Stage from '../stage/Stage';
 import type Entity from './Entity';
 
@@ -11,16 +12,18 @@ export default class Shadow {
   protected world_listener: IWorldCallbacks = {
     on_stage_change: v => this.on_stage_change(v)
   }
-  protected mesh: T.Mesh<T.PlaneGeometry, T.MeshBasicMaterial> = new T.Mesh(
-    new T.PlaneGeometry(0, 0),
-    new T.MeshBasicMaterial({ transparent: true, opacity: 0 })
-  );
+  mesh: IMeshNode;
+  protected material = new T.MeshBasicMaterial({ transparent: true, opacity: 0 });
 
-  get position() { return this.mesh.position; }
   get visible() { return this.mesh.visible; }
   set visible(v) { this.mesh.visible = v; }
 
   constructor(entity: Entity) {
+    const { lf2 } = entity;
+    this.mesh = new Ditto.MeshNode(lf2, {
+      geometry: new T.PlaneGeometry(0, 0),
+      material: this.material,
+    });
     this.mesh.name = Shadow.name;
     this.mesh.renderOrder = 0;
     entity.inner.addEventListener('added', () => this.on_mount(entity))
@@ -34,7 +37,7 @@ export default class Shadow {
   }
 
   protected on_unmount(entity: Entity) {
-    dispose_mesh(this.mesh)
+    this.mesh.dispose()
     entity.world.callbacks.del(this.world_listener);
   }
 
@@ -44,8 +47,8 @@ export default class Shadow {
     if (bg !== stage.bg) return;
     const [sw, sh] = bg.data.base.shadowsize || [30, 30];
     this.mesh.geometry = new T.PlaneGeometry(sw, sh);
-    this.mesh.material.map = pic.texture;
-    this.mesh.material.opacity = 1;
-    this.mesh.material.needsUpdate = true;
+    this.material.map = pic.texture;
+    this.material.opacity = 1;
+    this.material.needsUpdate = true;
   }
 }

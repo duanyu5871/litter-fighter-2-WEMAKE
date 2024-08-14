@@ -1,12 +1,13 @@
 import { Warn } from '@fimagine/logger';
 import * as THREE from 'three';
+import { dispose_mesh } from '../../DittoImpl/3d/disposer';
+import { IBaseNode } from '../3d';
 import type LF2 from '../LF2';
 import type { World } from '../World';
 import { new_id } from '../base/new_id';
 import type { IFrameInfo, IGameObjData, IGameObjInfo, INextFrame, ITexturePieceInfo, TFace, TNextFrame } from '../defines';
 import IPicture from '../defines/IPicture';
 import { Defines } from '../defines/defines';
-import { dispose_mesh } from '../layout/utils/dispose_mesh';
 import create_pictures from '../loader/create_pictures';
 import { constructor_name } from '../utils/constructor_name';
 import { random_get } from '../utils/math/random';
@@ -43,7 +44,7 @@ export default class FrameAnimater<
   F extends IFrameInfo = IFrameInfo,
   I extends IGameObjInfo = IGameObjInfo,
   D extends IGameObjData<I, F> = IGameObjData<I, F>
-> {
+> implements IBaseNode {
   id: string = new_id();
   wait: number = 0;
 
@@ -92,6 +93,42 @@ export default class FrameAnimater<
     mesh.userData.owner = this;
     mesh.name = 'FrameAnimater';
     this.inner.visible = false;
+  }
+  readonly is_base_node = true;
+  get parent(): IBaseNode | undefined {
+    throw new Error('Method not implemented.');
+  }
+  set parent(v: IBaseNode | undefined) {
+    throw new Error('Method not implemented.');
+  }
+  get children(): readonly IBaseNode[] { return [] }
+  get name(): string { return this.inner.name }
+  set name(v: string) { this.inner.name = v }
+  get user_data(): Record<string, any> { return this.inner.userData }
+  set user_data(v: Record<string, any>) { this.inner.userData = v }
+  apply(): this {
+    throw new Error('Method not implemented.');
+  }
+  add(...sp: IBaseNode[]): this {
+    throw new Error('Method not implemented.');
+  }
+  del(...sp: IBaseNode[]): this {
+    throw new Error('Method not implemented.');
+  }
+  del_self(): void {
+    throw new Error('Method not implemented.');
+  }
+  get_user_data(key: string) {
+    throw new Error('Method not implemented.');
+  }
+  add_user_data(key: string, value: any): this {
+    throw new Error('Method not implemented.');
+  }
+  del_user_data(key: string): this {
+    throw new Error('Method not implemented.');
+  }
+  merge_user_data(v: Record<string, any>): this {
+    throw new Error('Method not implemented.');
   }
 
   on_spawn_by_emitter(...args: any[]): this {

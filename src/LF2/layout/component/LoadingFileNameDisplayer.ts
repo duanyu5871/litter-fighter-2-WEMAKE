@@ -11,7 +11,7 @@ export default class LoadingFileNameDisplayer extends LayoutComponent {
   constructor(layout: Layout, f_name: string) {
     super(layout, f_name);
     this._mesh = new Ditto.TextNode(this.lf2)
-      .set_pos(0, 0, 1)
+      .set_position(0, 0, 1)
       .set_center(...this.layout.center)
       .set_style(this.layout.style)
       .set_name(LoadingFileNameDisplayer.name)

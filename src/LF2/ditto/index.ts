@@ -1,4 +1,6 @@
 import { ILineSegmentsInfo, ILineSegmentsNode } from "../3d";
+import { IBillboardInfo, IBillboardNode } from "../3d/IBillboardNode";
+import { IMeshInfo, IMeshNode } from "../3d/IMeshNode";
 import type { IObjectNode } from "../3d/IObjectNode";
 import { IOrthographicCameraNode } from "../3d/IOrthographicCamera";
 import { ISceneNode } from "../3d/ISceneNode";
@@ -47,6 +49,8 @@ export interface IDittoPack {
   OrthographicCamera: new (lf2: LF2) => IOrthographicCameraNode,
   SpriteNode: new (lf2: LF2, info?: ISpriteInfo) => ISpriteNode,
   LineSegmentsNode: new (lf2: LF2, info?: ILineSegmentsInfo) => ILineSegmentsNode,
+  MeshNode: new (lf2: LF2, info?: IMeshInfo) => IMeshNode,
+  BillboardNode: new (lf2: LF2, info?: IBillboardInfo) => IBillboardNode
 }
 
 export interface IDitto extends IDittoPack {

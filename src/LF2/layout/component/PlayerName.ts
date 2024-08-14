@@ -35,7 +35,7 @@ export default class PlayerName extends LayoutComponent {
     super(layout, f_name)
     const [w, h] = this.layout.size
     this._mesh = new Ditto.TextNode(this.lf2)
-      .set_pos(w / 2, -h / 2)
+      .set_position(w / 2, -h / 2)
       .set_center(0.5, 0.5)
       .set_name(PlayerName.name)
       .set_style({

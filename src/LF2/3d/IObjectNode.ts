@@ -1,36 +1,29 @@
+import * as THREE from 'three';
 import type LF2 from "../LF2";
 import { IBaseNode } from "./IBaseNode";
-import * as THREE from 'three'
 
 export interface IObjectNode extends IBaseNode {
   readonly is_object_node: true;
   readonly lf2: LF2;
 
-  get x(): number;
-  set x(v: number);
+  x: number;
+  y: number;
+  z: number;
 
-  get y(): number;
-  set y(v: number);
+  visible: boolean;
 
-  get z(): number;
-  set z(v: number);
-
-  get visible(): boolean;
-  set visible(v: boolean);
-
-  get opacity(): number;
-  set opacity(v: number);
+  opacity: number;
 
   get w(): number;
   get h(): number;
 
-  get size(): [number, number];
-  set size([w, h]: [number, number]);
+  size: [number, number];
+  user_data: Record<string, any>;
+  rgb: [number, number, number];
 
-  get user_data(): Record<string, any>;
-
-  get rgb(): [number, number, number];
-  set rgb([r, g, b]: [number, number, number]);
+  scale_x: number;
+  scale_y: number;
+  scale_z: number;
 
   unset_size(): this;
 
@@ -46,9 +39,12 @@ export interface IObjectNode extends IBaseNode {
 
   set_z(z: number): this;
 
-  set_pos(x?: number, y?: number, z?: number): this;
+  set_position(x?: number, y?: number, z?: number): this;
 
   set_scale(x?: number, y?: number, z?: number): this;
+  set_scale_x(v: number): this;
+  set_scale_y(v: number): this;
+  set_scale_z(v: number): this;
 
   set_size(w?: number, h?: number): this;
 
@@ -58,7 +54,6 @@ export interface IObjectNode extends IBaseNode {
 
   set_rgb(r: number, g: number, b: number): this;
 
-  set_position(x: number, y: number, z: number): this;
 
   rotation_from_quaternion(q: THREE.Quaternion): this;
 

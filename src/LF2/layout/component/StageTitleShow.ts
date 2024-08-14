@@ -42,7 +42,7 @@ export default class StageTitleShow extends LayoutComponent {
     let x = this.layout.w / 2 - total_w / 2;
     let y = -(this.layout.h / 2 - total_h / 2);
     for (const sprite of this._sprites) {
-      sprite.set_pos(x, y);
+      sprite.set_position(x, y);
       x += sprite.w;
       parent_mesh.add(sprite);
     }
@@ -78,7 +78,7 @@ export default class StageTitleShow extends LayoutComponent {
     let x = this.layout.w / 2 - total_w / 2;
     let y = -(this.layout.h / 2 - total_h / 2);
     for (const sprite of this._sprites) {
-      sprite.set_pos(x, y);
+      sprite.set_position(x, y);
       x += sprite.w;
       parent_sprite.add(sprite);
     }

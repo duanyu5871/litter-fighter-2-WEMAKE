@@ -41,7 +41,7 @@ export default class PlayerCharacterThumb extends LayoutComponent {
     super(layout, f_name)
     this._mesh_thumb = new Ditto.SpriteNode(this.lf2)
       .set_center(.5, .5)
-      .set_pos(this.layout.w / 2, -this.layout.h / 2, 0.1)
+      .set_position(this.layout.w / 2, -this.layout.h / 2, 0.1)
       .set_name('thumb')
       .apply();
   }

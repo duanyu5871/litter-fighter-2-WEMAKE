@@ -4,15 +4,13 @@ export interface IBaseNode {
   readonly is_base_node: true;
   readonly lf2: LF2;
 
-  get parent(): IBaseNode | undefined;
-  set parent(v: IBaseNode | undefined);
+  parent: IBaseNode | undefined;
 
   get children(): readonly IBaseNode[];
 
-  get name(): string;
-  set name(v: string);
+  name: string;
 
-  get user_data(): Record<string, any>;
+  user_data: Record<string, any>;
 
   apply(): this;
 

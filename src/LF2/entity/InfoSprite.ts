@@ -1,6 +1,9 @@
 import * as T from 'three';
+import { IBillboardNode, IMeshNode, IObjectNode } from '../3d';
+import LF2 from '../LF2';
 import { get_team_shadow_color } from '../base/get_team_shadow_color';
 import { get_team_text_color } from '../base/get_team_text_color';
+import Ditto from '../ditto';
 import type Entity from './Entity';
 import type IEntityCallbacks from './IEntityCallbacks';
 import { is_character } from './type_check';
@@ -14,43 +17,41 @@ const BAR_BG_H = 1 + (BAR_H + 1) * 2;
 const BAR_BG_GEO = new T.PlaneGeometry(BAR_BG_W, BAR_BG_H).translate(0, -.5 * BAR_BG_H, 0);
 
 class Bar {
-  readonly mesh: T.Mesh<T.PlaneGeometry, T.MeshBasicMaterial>;
-  get position() { return this.mesh.position }
+  readonly mesh: IMeshNode;
   protected _max: number = 0;
   protected _val: number = 0;
 
-  constructor(color: T.ColorRepresentation) {
-    this.mesh = new T.Mesh(BAR_GEO, new T.MeshBasicMaterial({ visible: true, color }))
+  constructor(lf2: LF2, color: T.ColorRepresentation) {
+    this.mesh = new Ditto.MeshNode(lf2, {
+      geometry: BAR_GEO,
+      material: new T.MeshBasicMaterial({ visible: true, color })
+    })
   }
   set max(v: number) {
     this._max = v;
-    this.mesh.scale.x = this._val / this._max;
+    this.mesh.set_scale_x(this._val / this._max)
   };
   set val(v: number) {
     this._val = Math.max(0, v);
-    this.mesh.scale.x = this._val / this._max;
+    this.mesh.set_scale_x(this._val / this._max)
   };
   set(val: number, max: number) {
     this._max = max;
     this._val = val;
-    this.mesh.scale.x = this._val / this._max;
+    this.mesh.set_scale_x(this._val / this._max)
   }
 }
 
 export class InfoSprite implements IEntityCallbacks {
-  protected mesh = new T.Sprite(new T.SpriteMaterial({ visible: false }));
+  protected mesh: IBillboardNode;
+  protected bars_node: IObjectNode;
+  protected bars_bg: IMeshNode;
 
-  protected bars_node = new T.Object3D()
-  protected bars_bg = new T.Mesh(
-    BAR_BG_GEO,
-    new T.MeshBasicMaterial({ color: 'rgb(0,0,0)' })
-  )
+  protected self_healing_hp_bar: Bar;
+  protected hp_bar: Bar;
 
-  protected self_healing_hp_bar = new Bar('rgb(111,8,31)');
-  protected hp_bar = new Bar('rgb(255,0,0)');
-
-  protected self_healing_mp_bar = new Bar('rgb(31,8,111)');
-  protected mp_bar = new Bar('rgb(0,0,255)');
+  protected self_healing_mp_bar: Bar;
+  protected mp_bar: Bar;
 
   protected entity: Entity;
 
@@ -60,6 +61,24 @@ export class InfoSprite implements IEntityCallbacks {
   }
 
   constructor(entity: Entity) {
+    const { lf2 } = entity;
+    this.mesh = new Ditto.BillboardNode(lf2, {
+      material: new T.SpriteMaterial({ visible: false })
+    });
+    this.bars_node = new Ditto.ObjectNode(lf2)
+
+    this.bars_bg = new Ditto.MeshNode(lf2, {
+      geometry: BAR_BG_GEO,
+      material: new T.MeshBasicMaterial({ color: 'rgb(0,0,0)' })
+    })
+
+    this.self_healing_hp_bar = new Bar(lf2, 'rgb(111,8,31)');
+    this.hp_bar = new Bar(lf2, 'rgb(255,0,0)');
+
+    this.self_healing_mp_bar = new Bar(lf2, 'rgb(31,8,111)');
+    this.mp_bar = new Bar(lf2, 'rgb(0,0,255)');
+
+
     this.mesh.name = InfoSprite.name;
     this.mesh.renderOrder = 0;
     this.entity = entity;
@@ -73,19 +92,19 @@ export class InfoSprite implements IEntityCallbacks {
 
     this.bars_node.add(this.bars_bg)
 
-    this.self_healing_hp_bar.position.set(hp_x, hp_y, 0);
+    this.self_healing_hp_bar.mesh.set_position(hp_x, hp_y);
     this.bars_node.add(this.self_healing_hp_bar.mesh)
 
-    this.hp_bar.position.set(hp_x, hp_y, 0);
+    this.hp_bar.mesh.set_position(hp_x, hp_y);
     this.bars_node.add(this.hp_bar.mesh)
 
     const mp_x = -BAR_W / 2;
     const mp_y = -2 - BAR_H;
 
-    this.self_healing_mp_bar.position.set(mp_x, mp_y, 0);
+    this.self_healing_mp_bar.mesh.set_position(mp_x, mp_y);
     this.bars_node.add(this.self_healing_mp_bar.mesh)
 
-    this.mp_bar.position.set(mp_x, mp_y, 0);
+    this.mp_bar.mesh.set_position(mp_x, mp_y);
     this.bars_node.add(this.mp_bar.mesh);
 
     this.hp_bar.set(500, 500);
@@ -102,15 +121,15 @@ export class InfoSprite implements IEntityCallbacks {
         this.entity.controller.player_id
       )
     ) {
-      entity.world.scene.inner.add(this.bars_node, this.mesh);
+      entity.world.scene.add(this.bars_node, this.mesh);
     }
     entity.callbacks.add(this);
     this.update_name_sprite(entity, entity.name, entity.team);
   }
 
   protected on_unmount(entity: Entity) {
-    this.bars_node.removeFromParent();
-    this.mesh.removeFromParent();
+    this.bars_node.del_self();
+    this.mesh.del_self();
     entity.callbacks.del(this)
   }
 
@@ -152,7 +171,7 @@ export class InfoSprite implements IEntityCallbacks {
         this.mesh.material.map = p.texture;
         this.mesh.material.needsUpdate = true;
 
-        this.mesh.scale.set(p.w, p.h, 1);
+        this.mesh.set_scale(p.w, p.h, 1);
         this.mesh.name = 'name sprite'
       });
   }
@@ -161,7 +180,7 @@ export class InfoSprite implements IEntityCallbacks {
     const { x, z, y } = this.entity.position;
 
     const _x = Math.floor(x);
-    const name_y = Math.floor(-z / 2 - this.mesh.scale.y)
+    const name_y = Math.floor(-z / 2 - this.mesh.scale_y)
     this.set_name_position(_x, name_y, z);
 
     const bar_y = Math.floor(y - z / 2 + this.entity.inner.scale.y + BAR_BG_H + 5);
@@ -169,16 +188,16 @@ export class InfoSprite implements IEntityCallbacks {
   }
 
   set_name_position(x: number, y: number, z: number) {
-    const hw = (this.mesh.scale.x + 10) / 2
+    const hw = (this.mesh.scale_x + 10) / 2
     const { x: cam_l } = this.entity.world.camera;
     const cam_r = cam_l + this.entity.world.screen_w;
     if (x + hw > cam_r) x = cam_r - hw;
     else if (x - hw < cam_l) x = cam_l + hw;
 
-    this.mesh.position.set(x, y, z);
+    this.mesh.set_position(x, y, z);
   }
 
-  set_bars_position(x: number, y: number, z: number) {
-    this.bars_node.position.set(x, y, z)
+  set_bars_position(x?: number, y?: number, z?: number) {
+    this.bars_node.set_position(x, y, z)
   }
 }

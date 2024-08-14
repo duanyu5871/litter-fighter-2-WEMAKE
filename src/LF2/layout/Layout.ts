@@ -100,7 +100,7 @@ export default class Layout {
   set pos(v: [number, number, number]) { this.set_pos(v) }
   set_pos(v: [number, number, number]): this {
     this._pos.set(0, v);
-    this._sprite.set_pos(v[0], -v[1], v[2])
+    this._sprite.set_position(v[0], -v[1], v[2])
     return this;
   }
 
@@ -463,7 +463,7 @@ export default class Layout {
     }
     this._sprite.set_info(p)
       .set_center(...this.center)
-      .set_pos(x, -y, z)
+      .set_position(x, -y, z)
       .set_opacity((p.texture || p.color) ? 1 : 0)
       .set_visible(this.visible)
       .set_name(`layout(name= ${this.name}, id=${this.id})`)

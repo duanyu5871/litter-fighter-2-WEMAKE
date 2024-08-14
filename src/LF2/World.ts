@@ -111,7 +111,7 @@ export class World {
     this.scene = new Ditto.SceneNode(lf2, canvas).set_size(w * 4, h * 4);
     this.camera = new Ditto.OrthographicCamera(lf2)
       .setup(0, w, h, 0)
-      .set_pos(void 0, void 0, 10)
+      .set_position(void 0, void 0, 10)
       .apply()
     this.scene.add(this.camera);
     this._stage = new Stage(this, Defines.VOID_BG);
@@ -123,7 +123,6 @@ export class World {
         this.player_characters.set(e.controller.player_id, e);
         this._callbacks.emit('on_player_character_add')(e.controller.player_id)
       }
-
       if (is_entity(e)) {
         this.scene.add(e);
         e.show_indicators = this._show_indicators;
