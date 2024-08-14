@@ -92,8 +92,8 @@ export default class Background {
   update() {
     this._update_times++;
     for (const layer of this._layers) layer.update(this._update_times)
-    this.world.camera.getWorldQuaternion(this._q);
-    this.obj_3d.rotation.setFromQuaternion(this._q);
+    this.world.camera.world_quaternion(this._q);
+    this.obj_3d.rotation_from_quaternion(this._q);
   }
 }
 

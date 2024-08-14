@@ -4,9 +4,10 @@ import { IBgLayerInfo } from "../defines/IBgLayerInfo";
 import { Defines } from '../defines/defines';
 import { TPicture } from '../loader/loader';
 import Background, { ILayerUserData } from './Background';
+import Ditto from '../ditto';
 
 export default class Layer {
-  readonly mesh: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial, THREE.Object3DEventMap>;
+  readonly mesh: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial>;
   readonly bg: Background;
 
   private _show_indicators = false;
@@ -21,7 +22,6 @@ export default class Layer {
     const params: THREE.MeshBasicMaterialParameters = { transparent: true, opacity: 0 }
     if (pic?.texture) params.map = pic.texture;
     else params.color = info.color
-
     this.mesh = new THREE.Mesh(
       new THREE.PlaneGeometry(w, h).translate(w / 2, -h / 2, 0),
       new THREE.MeshBasicMaterial(params)

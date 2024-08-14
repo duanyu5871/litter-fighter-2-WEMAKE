@@ -16,7 +16,8 @@ export interface IOrthographicCameraNode extends IObjectNode {
   set near(v: number)
   setup(l: number, r: number, t: number, b: number, n?: number, f?: number): this;
 
-  getWorldQuaternion(q: THREE.Quaternion): void;
+  world_quaternion(q: THREE.Quaternion): this;
+  raycaster(raycaster: THREE.Raycaster, coords: THREE.Vector2): this;
 }
 export const is_orthographic_camera_node = (v: any): v is IOrthographicCameraNode =>
   v?.is_orthographic_camera_node === true

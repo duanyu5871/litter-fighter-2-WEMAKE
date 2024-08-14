@@ -40,7 +40,12 @@ export class __Camera_O_Node extends __ObjectNode implements IOrthographicCamera
     inner.far = f;
     return this;
   }
-  getWorldQuaternion(q: THREE.Quaternion) {
+  world_quaternion(q: THREE.Quaternion): this {
     this.inner.getWorldQuaternion(q);
+    return this;
+  }
+  raycaster(r: THREE.Raycaster, coords: THREE.Vector2): this {
+    r.setFromCamera(coords, this.inner);
+    return this;
   }
 }

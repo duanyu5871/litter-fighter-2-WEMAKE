@@ -135,4 +135,14 @@ export class __ObjectNode implements IObjectNode {
     this.inner.position.set(x, y, z)
     return this
   }
+  rotation_from_quaternion(q: THREE.Quaternion): this {
+    this.inner.rotation.setFromQuaternion(q);
+    return this
+  }
+  intersects_from_raycaster(raycaster: THREE.Raycaster, recursive?: boolean): THREE.Intersection<THREE.Object3D<THREE.Object3DEventMap>>[] {
+    return raycaster.intersectObjects(this.inner.children, recursive)
+  }
+  intersect_from_raycaster(raycaster: THREE.Raycaster, recursive?: boolean): THREE.Intersection<THREE.Object3D<THREE.Object3DEventMap>>[] {
+    return raycaster.intersectObject(this.inner, recursive)
+  }
 }

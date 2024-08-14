@@ -238,8 +238,8 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     const { sprite } = layout;
     if (!sprite) return;
     const raycaster = new THREE.Raycaster();
-    raycaster.setFromCamera(coords, this.world.camera.inner);
-    const intersections = raycaster.intersectObjects([sprite.inner], true);
+    this.world.camera.raycaster(raycaster, coords)
+    const intersections = sprite.intersect_from_raycaster(raycaster, true)
     const mouse_on_layouts = new Set<Layout>()
     for (const { object: { userData: { owner } } } of intersections) {
       if (owner instanceof Layout) mouse_on_layouts.add(owner);
@@ -262,8 +262,9 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   on_pointer_down(e: IPointingEvent) {
     const coords = new THREE.Vector2(e.scene_x, e.scene_y)
     const raycaster = new THREE.Raycaster()
-    raycaster.setFromCamera(coords, this.world.camera.inner)
-    const intersections = raycaster.intersectObjects(this.world.scene.inner.children);
+    this.world.camera.raycaster(raycaster, coords)
+
+    const intersections = this.world.scene.intersects_from_raycaster(raycaster)
     if (!intersections.length) {
       this.pick_intersection(void 0)
     } else {
@@ -281,8 +282,8 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
       if (!layout) return;
       const { sprite } = layout;
       if (!sprite) return;
-      raycaster.setFromCamera(coords, this.world.camera.inner);
-      const intersections = raycaster.intersectObjects([sprite.inner], true);
+      this.world.camera.raycaster(raycaster, coords)
+      const intersections = sprite.intersects_from_raycaster(raycaster, true)
       const layouts = intersections
         .filter(v => v.object.userData.owner instanceof Layout)
         .map(v => v.object.userData.owner as Layout)
