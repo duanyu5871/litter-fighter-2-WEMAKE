@@ -23,8 +23,8 @@ export interface IMeshNode extends IObjectNode {
   set_depth_write(v: boolean): this;
 
 
-  get renderOrder(): number;
-  set renderOrder(v: number);
+  get render_order(): number;
+  set render_order(v: number);
 }
 export const is_mesh_node = (v: any): v is IMeshNode =>
   v?.is_mesh_node === true

@@ -17,6 +17,6 @@ export class __BillboardNode extends __ObjectNode implements IBillboardNode {
     throw new Error("Method not implemented.");
   }
   get material(): SpriteMaterial { return this.inner.material }
-  get renderOrder(): number { return this.inner.renderOrder }
-  set renderOrder(v: number) { this.inner.renderOrder = v }
+  get render_order(): number { return this.inner.renderOrder }
+  set render_order(v: number) { this.inner.renderOrder = v }
 }

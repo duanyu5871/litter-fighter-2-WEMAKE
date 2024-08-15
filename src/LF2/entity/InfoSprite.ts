@@ -80,7 +80,7 @@ export class InfoSprite implements IEntityCallbacks {
 
 
     this.mesh.name = InfoSprite.name;
-    this.mesh.renderOrder = 0;
+    this.mesh.render_order = 0;
     this.entity = entity;
     entity.inner.on('added', () => this.on_mount(entity));
     entity.inner.on('removed', () => this.on_unmount(entity));

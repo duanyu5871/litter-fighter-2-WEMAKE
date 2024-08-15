@@ -17,8 +17,8 @@ export class __MeshNode extends __ObjectNode implements IMeshNode {
 
   set geometry(v: BufferGeometry) { this.inner.geometry = v }
   get geometry(): BufferGeometry { return this.inner.geometry }
-  get renderOrder(): number { return this.inner.renderOrder }
-  set renderOrder(v: number) { this.inner.renderOrder = v }
+  get render_order(): number { return this.inner.renderOrder }
+  set render_order(v: number) { this.inner.renderOrder = v }
   get inner() { return this._inner as Mesh }
   get material() { return this.inner.material };
 

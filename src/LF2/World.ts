@@ -553,7 +553,7 @@ export class World {
     e.position.set(x, y, z)
     e.inner.set_depth_test(false);
     e.inner.set_depth_write(false);
-    e.inner.renderOrder = 2
+    e.inner.render_order = 2
     e.enter_frame(f)
     e.attach()
   }

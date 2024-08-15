@@ -7,7 +7,7 @@ export interface IBillboardInfo {
 export interface IBillboardNode extends IObjectNode {
   readonly is_billboard_node: true
   get material(): SpriteMaterial
-  get renderOrder(): number;
-  set renderOrder(v: number)
+  get render_order(): number;
+  set render_order(v: number)
 }
 export const is_billboard_node = (v: any): v is IBillboardNode => v.is_billboard_node === true

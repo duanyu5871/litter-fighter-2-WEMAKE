@@ -25,7 +25,7 @@ export default class Shadow {
       material: this.material,
     });
     this.mesh.name = Shadow.name;
-    this.mesh.renderOrder = 0;
+    this.mesh.render_order = 0;
     entity.inner.on('added', () => this.on_mount(entity))
     entity.inner.on('removed', () => this.on_unmount(entity))
   }
