@@ -1,13 +1,13 @@
 import { Warn } from '@fimagine/logger';
 import * as THREE from 'three';
-import { dispose_mesh } from '../../DittoImpl/3d/disposer';
-import { IBaseNode } from '../3d';
+import { IBaseNode, IMeshNode } from '../3d';
 import type LF2 from '../LF2';
 import type { World } from '../World';
 import { new_id } from '../base/new_id';
 import type { IFrameInfo, IGameObjData, IGameObjInfo, INextFrame, ITexturePieceInfo, TFace, TNextFrame } from '../defines';
 import IPicture from '../defines/IPicture';
 import { Defines } from '../defines/defines';
+import Ditto from '../ditto';
 import create_pictures from '../loader/create_pictures';
 import { constructor_name } from '../utils/constructor_name';
 import { random_get } from '../utils/math/random';
@@ -52,7 +52,7 @@ export default class FrameAnimater<
   readonly data: D;
   readonly world: World;
   readonly pictures: Map<string, IPicture<THREE.Texture>>;
-  readonly inner: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial>;
+  readonly inner: IMeshNode;
   readonly position = new THREE.Vector3(0, 0, 0);
   protected _piece: ITexturePieceInfo = EMPTY_PIECE;
   protected _facing: TFace = 1;
@@ -74,24 +74,25 @@ export default class FrameAnimater<
   }
   get_frame() { return this._frame; }
   get_prev_frame() { return this._prev_frame; }
-
+  private material: THREE.MeshBasicMaterial;
   constructor(world: World, data: D) {
     this.data = data;
     this.world = world;
     this.pictures = create_pictures(world.lf2, data);
-
     const first_text = this.pictures.get('0')?.texture;
-    const mesh = this.inner = new THREE.Mesh(
-      new THREE.PlaneGeometry(1, 1).translate(0.5, -0.5, 0),
-      new THREE.MeshBasicMaterial({
+    this.inner = new Ditto.MeshNode(
+      world.lf2, {
+      geometry: new THREE.PlaneGeometry(1, 1).translate(0.5, -0.5, 0),
+      material: this.material = new THREE.MeshBasicMaterial({
         map: first_text,
         transparent: true,
       })
+    }
     );
-    if (first_text) first_text.onUpdate = () => mesh.material.needsUpdate = true
+    if (first_text) first_text.onUpdate = () => this.inner.update_all_material()
 
-    mesh.userData.owner = this;
-    mesh.name = 'FrameAnimater';
+    this.inner.user_data.owner = this;
+    this.inner.name = 'FrameAnimater';
     this.inner.visible = false;
   }
   readonly is_base_node = true;
@@ -104,32 +105,17 @@ export default class FrameAnimater<
   get children(): readonly IBaseNode[] { return [] }
   get name(): string { return this.inner.name }
   set name(v: string) { this.inner.name = v }
-  get user_data(): Record<string, any> { return this.inner.userData }
-  set user_data(v: Record<string, any>) { this.inner.userData = v }
-  apply(): this {
-    throw new Error('Method not implemented.');
-  }
-  add(...sp: IBaseNode[]): this {
-    throw new Error('Method not implemented.');
-  }
-  del(...sp: IBaseNode[]): this {
-    throw new Error('Method not implemented.');
-  }
-  del_self(): void {
-    throw new Error('Method not implemented.');
-  }
-  get_user_data(key: string) {
-    throw new Error('Method not implemented.');
-  }
-  add_user_data(key: string, value: any): this {
-    throw new Error('Method not implemented.');
-  }
-  del_user_data(key: string): this {
-    throw new Error('Method not implemented.');
-  }
-  merge_user_data(v: Record<string, any>): this {
-    throw new Error('Method not implemented.');
-  }
+  get user_data(): Record<string, any> { return this.inner.user_data }
+  set user_data(v: Record<string, any>) { this.inner.user_data = v }
+
+  apply(): this { this.inner.apply(); return this; }
+  add(...sp: IBaseNode[]): this { this.inner.add(...sp); return this; }
+  del(...sp: IBaseNode[]): this { this.inner.del(...sp); return this; }
+  del_self(): this { this.inner.del_self(); return this; }
+  get_user_data(key: string) { return this.inner.get_user_data(key) }
+  add_user_data(key: string, value: any): this { this.inner.add_user_data(key, value); return this; }
+  del_user_data(key: string): this { this.inner.del_user_data(key); return this; }
+  merge_user_data(v: Record<string, any>): this { this.inner.merge_user_data(v); return this; }
 
   on_spawn_by_emitter(...args: any[]): this {
     return this;
@@ -138,8 +124,8 @@ export default class FrameAnimater<
   update_sprite_position() {
     const { x, y, z } = this.position;
     const { centerx, centery } = this._frame
-    const offset_x = this._facing === 1 ? centerx : this.inner.scale.x - centerx
-    this.inner.position.set(x - offset_x, y - z / 2 + centery, z);
+    const offset_x = this._facing === 1 ? centerx : this.inner.scale_x - centerx
+    this.inner.set_position(x - offset_x, y - z / 2 + centery, z);
   }
 
   attach(): this {
@@ -162,7 +148,7 @@ export default class FrameAnimater<
     }
     this._previous.face = this._facing;
     this._previous.frame = this._frame;
-    const sprite = this.inner;
+    const { inner } = this;
     const piece = frame.pic;
     if (typeof piece === 'number' || !('1' in piece)) {
       return;
@@ -173,12 +159,12 @@ export default class FrameAnimater<
       if (pic) {
         pic.texture.offset.set(x, y);
         pic.texture.repeat.set(w, h);
-        if (pic.texture !== sprite.material.map) {
-          sprite.material.map = pic.texture;
+        if (pic.texture !== this.material.map) {
+          this.material.map = pic.texture;
         }
-        sprite.material.needsUpdate = true
+        inner.update_all_material()
       }
-      sprite.scale.set(pw, ph, 0)
+      inner.set_scale(pw, ph, 0)
     }
     this.update_sprite_position();
   }
@@ -291,7 +277,7 @@ export default class FrameAnimater<
   }
 
   dispose(): void {
-    this.inner && dispose_mesh(this.inner);
+    this.inner.dispose()
     for (const [, pic] of this.pictures)
       pic.texture.dispose();
   }

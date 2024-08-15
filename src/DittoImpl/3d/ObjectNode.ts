@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { IBaseNode } from '../../LF2/3d/IBaseNode';
-import { IObjectNode } from '../../LF2/3d/IObjectNode';
+import { IObjectNode, ObjectEventKey } from '../../LF2/3d/IObjectNode';
 import LF2 from '../../LF2/LF2';
 import { is_num } from '../../LF2/utils/type_check';
 
@@ -123,8 +123,9 @@ export class __ObjectNode implements IObjectNode {
     this._rgb = [r, g, b];
     return this;
   }
-  set_scale(x: number, y: number, z: number): this {
-    this.inner.scale.set(x, y, z)
+  set_scale(_x?: number, _y?: number, _z?: number): this {
+    const { x, y, z } = this._inner.position;
+    this._inner.scale.set(_x ?? x, _y ?? y, _z ?? z);
     return this;
   }
   set_scale_x(v: number): this { this.inner.scale.x = v; return this }
@@ -139,5 +140,13 @@ export class __ObjectNode implements IObjectNode {
   }
   intersect_from_raycaster(raycaster: THREE.Raycaster, recursive?: boolean): THREE.Intersection<THREE.Object3D<THREE.Object3DEventMap>>[] {
     return raycaster.intersectObject(this.inner, recursive)
+  }
+  on(key: ObjectEventKey, fn: () => void) {
+    this._inner.addEventListener(key, fn)
+    return this;
+  }
+  off(key: ObjectEventKey, fn: () => void) {
+    this._inner.removeEventListener(key, fn)
+    return this;
   }
 }

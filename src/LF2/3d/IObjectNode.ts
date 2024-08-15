@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import type LF2 from "../LF2";
 import { IBaseNode } from "./IBaseNode";
-
+export type ObjectEventKey = 'added' | 'removed'
 export interface IObjectNode extends IBaseNode {
   readonly is_object_node: true;
   readonly lf2: LF2;
@@ -53,12 +53,11 @@ export interface IObjectNode extends IBaseNode {
   apply(): this;
 
   set_rgb(r: number, g: number, b: number): this;
-
-
   rotation_from_quaternion(q: THREE.Quaternion): this;
-
   intersects_from_raycaster(raycaster: THREE.Raycaster, recursive?: boolean): THREE.Intersection<THREE.Object3D<THREE.Object3DEventMap>>[]
   intersect_from_raycaster(raycaster: THREE.Raycaster, recursive?: boolean): THREE.Intersection<THREE.Object3D<THREE.Object3DEventMap>>[]
+  on(key: ObjectEventKey, fn: () => void): this
+  off(key: ObjectEventKey, fn: () => void): this
 }
 export const is_object_node = (v: any): v is IObjectNode =>
   v?.is_object_node === true

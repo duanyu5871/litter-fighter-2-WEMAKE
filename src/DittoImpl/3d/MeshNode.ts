@@ -1,4 +1,4 @@
-import { Mesh } from "three";
+import { Material, Mesh } from "three";
 import { BufferGeometry, IMeshInfo, IMeshNode } from "../../LF2/3d/IMeshNode";
 import LF2 from "../../LF2/LF2";
 import { __ObjectNode } from "./ObjectNode";
@@ -14,6 +14,7 @@ export class __MeshNode extends __ObjectNode implements IMeshNode {
     ))
     if (info) this.__info = info
   }
+
   set geometry(v: BufferGeometry) { this.inner.geometry = v }
   get geometry(): BufferGeometry { return this.inner.geometry }
   get renderOrder(): number { return this.inner.renderOrder }
@@ -37,27 +38,35 @@ export class __MeshNode extends __ObjectNode implements IMeshNode {
       mm.opacity += offset
     return this;
   }
-  set_materials_opacity(opacity: number) {
+  private traversal_material(fn: (m: Material) => void): this {
     const m = this.material;
-    if (!Array.isArray(m)) {
-      m.opacity = opacity
-      return this;
-    }
-    for (const mm of m)
-      mm.opacity = opacity
+    if (!Array.isArray(m))
+      fn(m);
+    else for (const mm of m)
+      fn(mm);
     return this;
   }
-
+  set_materials_opacity(opacity: number): this {
+    return this.traversal_material((m) => {
+      m.opacity = opacity
+    })
+  }
+  update_all_material(): this {
+    return this.traversal_material((m) => {
+      m.needsUpdate = !null
+    })
+  }
+  set_depth_test(v: boolean): this {
+    return this.traversal_material(m => m.depthTest = v)
+  }
+  set_depth_write(v: boolean): this {
+    return this.traversal_material(m => m.depthWrite = v)
+  }
   dispose() {
     super.dispose();
     const { inner } = this
     inner.removeFromParent();
-    const m = inner.material;
-    if (Array.isArray(m))
-      for (const i of m)
-        dispose_material(i);
-    else
-      dispose_material(m)
+    this.traversal_material(dispose_material)
     inner.geometry.dispose();
   }
 }

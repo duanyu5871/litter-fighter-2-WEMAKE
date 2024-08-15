@@ -374,7 +374,7 @@ export default class Entity<
     this.holding?.follow_holder();
     if (this._shaking) {
       const x = (this._shaking % 2 ? -5 : 5);
-      this.inner.position.x += x;
+      this.inner.x += x;
     }
   }
 
