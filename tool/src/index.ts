@@ -123,17 +123,15 @@ async function convert_pic(out_dir: string, src_dir: string, src_path: string, p
       "set",
       "-fill", "rgba(0,0,0,0)",
       "-opaque", "rgb(0,0,0)",
-      'PNG32:' + dst_path
+      'PNG8:' + dst_path
     )
     return;
   }
+
   for (const pic of pic_list) {
     const { col: row, row: col, cell_w, cell_h } = pic
     const w = (cell_w + 1) * col;
     const h = (cell_h + 1) * row;
-    if (pic.path === 'sprite/template1/0.png') {
-      console.log(w, h, col, row)
-    }
     const dst_path = out_dir + '/' + pic.path;
     console.log('convert', src_path, '=>', dst_path)
     const remove_lines: string[] = [];
@@ -155,7 +153,7 @@ async function convert_pic(out_dir: string, src_dir: string, src_path: string, p
       "set",
       "-fill", "rgba(0,0,0,0)",
       "-opaque", "rgb(0,0,0)",
-      'PNG32:' + dst_path
+      'PNG8:' + dst_path
     ]
 
     await exec_cmd('magick', ...args)
