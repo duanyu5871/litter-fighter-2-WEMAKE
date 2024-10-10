@@ -4,9 +4,11 @@
     "SSH_PORT": "22",
     "REMOTE_DIR": "/root/frontends/lf2",
     "REMOTE_BACKUP_DIR": "/root/frontends/lf2_backup",
-    "LOCAL_DIR": "./build",
+    "LOCAL_PATH": "./build",
     "GIT_BRANCH": "origin/main",
-    "__GIT_NO_BEHIND": false,
-    "__GIT_NO_AHEAD": false
+    "GIT_IGNORED": true,
+    "GIT_NO_BEHIND": false,
+    "GIT_NO_AHEAD": false,
+    "GIT_NO_DIRTY": false
   }
 }

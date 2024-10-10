@@ -154,7 +154,7 @@
     ]
   },
   "devDependencies": {
-    "@fimagine/frontend_deployer": "git+https://gitee.com/fimagine/frontend_deployer.git#v1.0.2",
+    "@fimagine/frontend_deployer": "^1.0.7",
     "@types/command-exists": "^1.2.3",
     "@types/spark-md5": "^3.0.4",
     "@types/ssh2": "^1.15.0",
