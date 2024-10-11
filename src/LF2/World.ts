@@ -205,7 +205,6 @@ export class World {
 
 
   private _prev_time: number = Date.now();
-  private _auto_adaptive_dt: number = 0;
   private _skip: number = 0;
   private _expected_dt: number = 0;
   private _applied_dt: number = 0;
@@ -213,7 +212,7 @@ export class World {
     if (this.disposed) return;
     if (this._update_worker_id) Ditto.Timeout.del(this._update_worker_id);
     this._expected_dt = (1000 / 60) / this._playrate;
-    this._applied_dt = Math.max(this._expected_dt + this._auto_adaptive_dt, 0)
+    this._applied_dt = Math.max(this._expected_dt , 0)
     const on_update = () => {
       const time = Date.now();
       if (!this._paused) this.update_once()
@@ -241,17 +240,6 @@ export class World {
         }
       }
       this._prev_time = time
-
-
-      if (60 - this._UPS.value > 1) { // too slow
-        --this._auto_adaptive_dt;
-      } else if (60 - this._UPS.value < -1) { // too fast
-        ++this._auto_adaptive_dt;
-      } else if (this._auto_adaptive_dt > 0) {
-        --this._auto_adaptive_dt;
-      } else if (this._auto_adaptive_dt < 0) {
-        ++this._auto_adaptive_dt;
-      }
       this.start_update();
     }
     this._update_worker_id = Ditto.Timeout.add(on_update, this._applied_dt);

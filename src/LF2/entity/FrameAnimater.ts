@@ -281,6 +281,9 @@ export default class FrameAnimater<
     for (const [, pic] of this.pictures)
       pic.texture.dispose();
   }
+  get_object_3d() {
+    return this.inner.get_object_3d()
+  }
 }
 
 Factory.inst.set('frame_animater', (...args) => new FrameAnimater(...args));

@@ -1,4 +1,4 @@
-import { Material, Mesh } from "three";
+import { Material, Mesh, Object3D, Object3DEventMap } from "three";
 import { BufferGeometry, IMeshInfo, IMeshNode } from "../../LF2/3d/IMeshNode";
 import LF2 from "../../LF2/LF2";
 import { __ObjectNode } from "./ObjectNode";
@@ -53,7 +53,7 @@ export class __MeshNode extends __ObjectNode implements IMeshNode {
   }
   update_all_material(): this {
     return this.traversal_material((m) => {
-      m.needsUpdate = !null
+      m.needsUpdate = true
     })
   }
   set_depth_test(v: boolean): this {
@@ -68,5 +68,8 @@ export class __MeshNode extends __ObjectNode implements IMeshNode {
     inner.removeFromParent();
     this.traversal_material(dispose_material)
     inner.geometry.dispose();
+  }
+  get_object_3d(): Object3D<Object3DEventMap> {
+    return this.inner;
   }
 }

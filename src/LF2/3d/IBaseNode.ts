@@ -29,6 +29,8 @@ export interface IBaseNode {
   del_user_data(key: string): this;
 
   merge_user_data(v: Record<string, any>): this;
+
+  get_object_3d(): any
 }
 export const is_base_node = (v: any): v is IBaseNode =>
   v?.is_base_node === true
