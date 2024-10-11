@@ -31,7 +31,7 @@ export function StatusButton<V = any>(props: IStatusButtonProps<V>) {
   const ref_onChange = useRef(onChange);
   const [_inner_value, _set_inner_value] = useState(value);
   ref_value.current = value ?? _inner_value;
-  ref_onChange.current = onChange || _set_inner_value;
+  ref_onChange.current = onChange ?? _set_inner_value;
 
   const _onClick = useCallback((e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     onClick?.(e);

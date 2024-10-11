@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import './App.css';
 import { Button } from './Component/Button';
 import Combine from './Component/Combine';
@@ -97,6 +97,7 @@ function App() {
   const [paused, _set_paused] = useState(false);
 
   const [muted, _set_muted] = useLocalBoolean('total_muted', false);
+
   const [bgm_muted, _set_bgm_muted] = useLocalBoolean('bgm_muted', false);
   const [sound_muted, _set_sound_muted] = useLocalBoolean('sound_muted', false);
   const [volume, _set_volume] = useLocalNumber<number>('total_volume', 1);
@@ -310,6 +311,17 @@ function App() {
   ])
 
   const lf2 = lf2_ref.current;
+  const player_infos = lf2?.player_infos
+  const players = useMemo(() => {
+    if (!player_infos) return [];
+    return Array.from(player_infos.values()).splice(0, 4)
+  }, [player_infos])
+
+  const touch_pad_player_items = useMemo(() => [
+    { value: '', label: '触控板: 关闭' },
+    ...players.map(v => ({ value: v.id, label: '触控板: 玩家' + v.id }))
+  ], [players])
+
   useShortcut('F1', 0, () => lf2?.world.set_paused(!paused));
   useShortcut('F2', 0, () => update_once());
   useShortcut('F4', 0, () => lf2?.pop_layout());
@@ -381,7 +393,6 @@ function App() {
             option={v => [v, '位置：' + v]}
             value={debug_ui_pos}
             on_changed={set_debug_ui_pos} />
-
           <Button
             style={{ marginLeft: 'auto' }}
             onClick={() => set_control_panel_visible(false)}>
@@ -584,6 +595,10 @@ function App() {
               <>玩家面板✓</>
             </ToggleButton>
           </Combine>
+          <StatusButton
+            value={touch_pad_on}
+            items={touch_pad_player_items}
+            onChange={(v) => set_touch_pad_on(v!)} />
           <ToggleButton
             onChange={() => lf2?.toggle_cheat_enabled(Defines.Cheats.LF2_NET)}
             value={cheat_1}>
@@ -604,7 +619,7 @@ function App() {
           </ToggleButton>
         </div>
         <Show show={showing_panel === 'player'}>
-          {Array.from(lf2?.player_infos.values() ?? []).splice(0, 4).map((info, idx) =>
+          {players.map((info, idx) =>
             <PlayerRow
               key={idx}
               lf2={lf2!}

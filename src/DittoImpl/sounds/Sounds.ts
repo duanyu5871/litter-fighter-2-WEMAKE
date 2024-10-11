@@ -1,15 +1,17 @@
-import { Warn } from "../../Log";
 import type LF2 from "../../LF2/LF2";
 import BaseSounds from "../../LF2/ditto/sounds/BaseSounds";
 import type ISounds from "../../LF2/ditto/sounds/ISounds";
+import { Warn } from "../../Log";
 import { __Fallback } from "./Fallback";
 import { __Modern } from "./Modern";
 
-export class __Sounds extends BaseSounds {
+export class __Sounds implements ISounds {
   readonly inner: ISounds;
   readonly cls_list: (new (lf2: LF2) => ISounds)[] = [__Modern, __Fallback];
+
+  get callbacks() { return this.inner.callbacks }
+
   constructor(lf2: LF2) {
-    super(lf2);
     this.inner = new BaseSounds(lf2)
     for (const cls of this.cls_list) {
       try {
@@ -20,75 +22,74 @@ export class __Sounds extends BaseSounds {
       }
     }
   }
-  override bgm_volume(): number {
+  bgm_volume(): number {
     return this.inner.bgm_volume()
   }
-  override set_bgm_volume(v: number): void {
+  set_bgm_volume(v: number): void {
     return this.inner.set_bgm_volume(v)
   }
-  override sound_volume(): number {
+  sound_volume(): number {
     return this.inner.sound_volume()
   }
-  override set_sound_volume(v: number): void {
+  set_sound_volume(v: number): void {
     return this.inner.set_sound_volume(v)
   }
-  override bgm_muted(): boolean {
+  bgm_muted(): boolean {
     return this.inner.bgm_muted()
   }
-  override set_bgm_muted(v: boolean): void {
+  set_bgm_muted(v: boolean): void {
     return this.inner.set_bgm_muted(v)
   }
-  override sound_muted(): boolean {
+  sound_muted(): boolean {
     return this.inner.sound_muted()
   }
-  override set_sound_muted(v: boolean): void {
+  set_sound_muted(v: boolean): void {
     return this.inner.set_sound_muted(v)
   }
-  override muted(): boolean {
+  muted(): boolean {
     return this.inner.muted();
   }
-  override set_muted(v: boolean): void {
+  set_muted(v: boolean): void {
     return this.inner.set_muted(v);
   }
-  override volume(): number {
+  volume(): number {
     return this.inner.volume();
   }
-  override set_volume(v: number): void {
+  set_volume(v: number): void {
     return this.inner.set_volume(v);
   }
-  override bgm(): string | null {
+  bgm(): string | null {
     return this.inner.bgm();
   }
-  override has(name: string): boolean {
+  has(name: string): boolean {
     return this.inner.has(name);
   }
-  override load(key: string, src: string) {
+  load(key: string, src: string) {
     return this.inner.load(key, src);
   }
-  override stop_bgm(): void {
+  stop_bgm(): void {
     return this.inner.stop_bgm();
   }
-  override play_bgm(name: string, restart?: boolean | undefined): () => void {
+  play_bgm(name: string, restart?: boolean | undefined): () => void {
     return this.inner.play_bgm(name, restart);
   }
-  override play(name: string, x?: number, y?: number, z?: number): string {
+  play(name: string, x?: number, y?: number, z?: number): string {
     return this.inner.play(name, x, y, z)
   }
-  override stop(id: string): void {
+  stop(id: string): void {
     return this.inner.stop(id);
   }
 
-  override async play_with_load(src: string, x?: number, y?: number, z?: number): Promise<string> {
+  async play_with_load(src: string, x?: number, y?: number, z?: number): Promise<string> {
     return this.inner.play_with_load(src, x, y, z)
   }
-  override play_preset(t: 'cancel' | 'end' | 'join' | 'ok' | 'pass', x?: number, y?: number, z?: number): void;
-  override play_preset(t: string, x?: number, y?: number, z?: number): void
-  override play_preset(t: 'cancel' | 'end' | 'join' | 'ok' | 'pass' | string, x?: number, y?: number, z?: number): void {
+  play_preset(t: 'cancel' | 'end' | 'join' | 'ok' | 'pass', x?: number, y?: number, z?: number): void;
+  play_preset(t: string, x?: number, y?: number, z?: number): void
+  play_preset(t: 'cancel' | 'end' | 'join' | 'ok' | 'pass' | string, x?: number, y?: number, z?: number): void {
     return this.inner.play_preset(t, x, y, z)
   }
 
-  override dispose(): void {
-    super.dispose();
+  dispose(): void {
     this.inner.dispose();
   }
 }
