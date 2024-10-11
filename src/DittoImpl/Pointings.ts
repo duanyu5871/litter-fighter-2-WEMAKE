@@ -8,6 +8,7 @@ class __PointingEvent implements IPointingEvent {
   readonly y: number;
   readonly scene_x: number;
   readonly scene_y: number;
+  readonly is_pointing_event = true;
   constructor(element: HTMLElement, event: PointerEvent | MouseEvent) {
     this._element = element;
     this.x = event.offsetX;

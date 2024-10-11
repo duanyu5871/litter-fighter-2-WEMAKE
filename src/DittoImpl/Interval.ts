@@ -1,4 +1,6 @@
-export const __Interval = {
+import type { ITimeout } from "../LF2/ditto"
+
+export const __Interval: ITimeout = {
   add(handler: () => void, timeout?: number, ...args: any[]) {
     return window.setInterval(handler, timeout, ...args)
   },

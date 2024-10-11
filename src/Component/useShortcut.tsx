@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useRef } from "react";
-import { is_fun, is_str } from "../LF2/utils/type_check";
+import React, { useEffect, useRef } from "react";
+import { is_str } from "../LF2/utils/type_check";
 
 export type TShortcut =
   `ctrl+shift+alt+${string}` |

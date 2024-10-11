@@ -141,7 +141,7 @@ export function PlayerRow(props: Props) {
       </Titled>
       <Button onClick={on_click_add}>{added ? '移除' : '加入'}</Button>
       <ToggleButton
-        checked={touch_pad_on}
+        value={touch_pad_on}
         onClick={on_click_toggle_touch_pad}>
         <>触摸板</>
         <>触摸板✓</>

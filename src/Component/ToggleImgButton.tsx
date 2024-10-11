@@ -12,14 +12,15 @@ export interface IToggleImgProps extends Omit<React.ButtonHTMLAttributes<HTMLBut
   shortcut?: TShortcut;
   shortcutTarget?: Window | Document | Element;
   show_shortcut?: boolean;
-  src?: [string, string] | [string]
+  src?: [string, string] | [string];
+  ref?: React.Ref<HTMLButtonElement>;
 };
-export const ToggleImgButton = React.forwardRef<HTMLButtonElement, IToggleImgProps>(
+export const ToggleImgButton: React.FC<IToggleImgProps> = React.forwardRef<HTMLButtonElement, IToggleImgProps>(
   (props: IToggleImgProps, ref: React.ForwardedRef<HTMLButtonElement>) => {
     const {
       src: children = [],
       checked = false,
-      onClick, 
+      onClick,
       onToggle,
       shortcut,
       shortcutTarget = window,

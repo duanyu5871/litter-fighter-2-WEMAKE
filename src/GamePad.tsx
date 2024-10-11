@@ -8,7 +8,7 @@ import img_touch_btn_arrow from './assets/touch_btn_arrow.png'
 import img_touch_btn_a from './assets/touch_btn_a.png'
 import img_touch_btn_j from './assets/touch_btn_j.png'
 import img_touch_btn_d from './assets/touch_btn_d.png'
-export interface IGamePadProps {
+export interface IGamePadProps extends React.HTMLAttributes<HTMLDivElement> {
   lf2?: LF2;
   player_id?: string;
 }
@@ -34,7 +34,7 @@ function copy_touch(touch: Touch) {
   };
 }
 export default function GamePad(props: IGamePadProps) {
-  const { player_id, lf2 } = props;
+  const { player_id, lf2, ..._p } = props;
   const [controller, set_controller] = useState<BaseController | undefined>(void 0);
   const ref_btn_U = useRef<HTMLButtonElement>(null);
   const ref_btn_D = useRef<HTMLButtonElement>(null);
@@ -267,7 +267,7 @@ export default function GamePad(props: IGamePadProps) {
       pad.removeEventListener('touchcancel', on_touch_end);
     }
   }, [controller, lf2, player_id, refresh_tag, right_pad])
-  if (!player_id) return <></>;
+  if (!player_id) return <div {..._p} />;
   const touch_props = (key: GameKey): IToggleImgProps => {
     return {
       style: { 'pointerEvents': 'none' },
@@ -275,7 +275,7 @@ export default function GamePad(props: IGamePadProps) {
     }
   };
   return (
-    <>
+    <div {..._p}>
       <div className='pad_text' ref={ref_pad_text} />
       <div className='left_pad' ref={ref_left_pad}>
         <ToggleImgButton
@@ -330,6 +330,6 @@ export default function GamePad(props: IGamePadProps) {
           alt='defense'
           draggable={false} />
       </div>
-    </>
+    </div>
   );
 }

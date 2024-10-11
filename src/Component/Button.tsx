@@ -9,37 +9,39 @@ export interface IButtonProps extends React.ButtonHTMLAttributes<HTMLButtonEleme
   shortcut?: TShortcut;
   shortcutTarget?: Window | Document | Element;
   show_shortcut?: boolean;
+  _ref?: React.Ref<HTMLButtonElement>;
 }
-export const Button = React.forwardRef<HTMLButtonElement, IButtonProps>(
-  (props: IButtonProps, ref: React.ForwardedRef<HTMLButtonElement>) => {
-    const [ref_btn, on_ref] = useForwardedRef(ref)
-    const {
-      shortcut,
-      shortcutTarget = window,
-      show_shortcut = true,
-      children,
-      className,
-      ...remain_props
-    } = props;
-    useShortcut(shortcut, props.disabled, ref_btn, shortcutTarget);
+export function Button(props: IButtonProps) {
+  const {
+    shortcut,
+    shortcutTarget = window,
+    show_shortcut = true,
+    children,
+    className,
+    type = 'button',
+    _ref,
+    ..._p
+  } = props;
 
-    const [has_keyboard, set_has_keyboard] = useState(is_desktop)
+  const [ref_btn, on_ref] = useForwardedRef(_ref)
+  useShortcut(shortcut, props.disabled, ref_btn, shortcutTarget);
 
-    useEffect(() => {
-      const o = () => set_has_keyboard(true)
-      window.addEventListener('keydown', o, { once: true })
-      return () => window.removeEventListener('keydown', o)
-    }, [])
+  const [has_keyboard, set_has_keyboard] = useState(is_desktop)
 
-    const _show_shortcut = show_shortcut ?? has_keyboard
-    const root_className = className ? `lf2ui_button ${className}` : 'lf2ui_button'
-    return (
-      <button className={root_className} {...remain_props} type={props.type ?? 'button'} ref={on_ref} >
-        {children}
-        {shortcut && _show_shortcut ? `(${shortcut})` : null}
-      </button>
-    );
+  useEffect(() => {
+    const o = () => set_has_keyboard(true)
+    window.addEventListener('keydown', o, { once: true })
+    return () => window.removeEventListener('keydown', o)
+  }, [])
 
-  }
-);
+  const _show_shortcut = show_shortcut ?? has_keyboard
+  const root_className = className ? `lf2ui_button ${className}` : 'lf2ui_button'
+  return (
+    <button className={root_className} {..._p} type={type} ref={on_ref} >
+      {children}
+      {shortcut && _show_shortcut ? `(${shortcut})` : null}
+    </button>
+  );
+
+}
 

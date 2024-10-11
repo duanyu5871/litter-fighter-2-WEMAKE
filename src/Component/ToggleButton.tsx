@@ -1,67 +1,29 @@
-import device from 'current-device';
-import React, { useEffect, useRef, useState } from "react";
-import { useForwardedRef } from "./useForwardedRef";
-import { TShortcut, useShortcut } from "./useShortcut";
-import './Button.css'
-const is_desktop = device.desktop();
+import React, { useMemo } from "react";
+import './Button.css';
+import { IStatusButtonProps, IStatusItem, StatusButton } from './StatusButton';
 
-export interface IToggleButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'children'> {
-  checked?: boolean;
-  children?: [React.ReactNode, React.ReactNode] | [React.ReactNode];
-  onToggle?(v: boolean): void;
-  shortcut?: TShortcut;
-  shortcutTarget?: Window | Document | Element;
-  show_shortcut?: boolean;
+export interface IToggleButtonProps extends Omit<IStatusButtonProps<boolean>, 'onChange'> {
+  children?: [React.ReactNode, React.ReactNode] | [React.ReactNode] | React.ReactNode;
+  onChange?: (v: boolean) => void;
 };
-export const ToggleButton = React.forwardRef<HTMLButtonElement, IToggleButtonProps>(
-  (props: IToggleButtonProps, ref: React.ForwardedRef<HTMLButtonElement>) => {
-    const {
-      children = [],
-      checked, onClick, onToggle,
-      shortcut,
-      shortcutTarget = window,
-      show_shortcut,
-      className,
-      ...remain_props
-    } = props;
+export function ToggleButton(props: IToggleButtonProps) {
+  const { children, onChange, items, ..._p } = props;
 
-    const [ref_btn, on_ref] = useForwardedRef<HTMLButtonElement>(ref)
+  const _items = useMemo<IStatusItem<boolean>[]>(() => {
+    if (items) return items;
+    if (Array.isArray(children)) {
+      const [a, b = a] = children;
+      return [
+        { value: false, label: a },
+        { value: true, label: b }
+      ]
+    }
+    return [
+      { value: false, label: children },
+      { value: true, label: children }
+    ]
+  }, [items, children])
 
-    const ref_checked = useRef(checked);
-    ref_checked.current = checked;
+  return <StatusButton {..._p} items={_items} onChange={v => onChange?.(!!v)} />
+}
 
-    const ref_onToggle = useRef(onToggle);
-    ref_onToggle.current = onToggle;
-
-    const checked_inner = children[1] ?? children[0];
-    const unchecked_inner = children[0];
-    const _onClick: typeof onClick = e => {
-      onClick?.(e);
-      onToggle?.(!checked);
-    };
-    useShortcut(shortcut, props.disabled, ref_btn, shortcutTarget);
-
-    const [has_keyboard, set_has_keyboard] = useState(is_desktop)
-
-    useEffect(() => {
-      const o = () => set_has_keyboard(true)
-      window.addEventListener('keydown', o, { once: true })
-      return () => window.removeEventListener('keydown', o)
-    }, [])
-
-    const _show_shortcut = show_shortcut ?? has_keyboard
-    const root_className = className ? `lf2ui_button ${className}` : 'lf2ui_button'
-
-    return (
-      <button
-        {...remain_props}
-        className={root_className}
-        type={props.type ?? 'button'}
-        ref={on_ref}
-        onClick={_onClick}>
-        {checked ? checked_inner : unchecked_inner}
-        {shortcut && _show_shortcut ? `(${shortcut})` : null}
-      </button>
-    );
-  }
-);

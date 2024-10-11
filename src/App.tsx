@@ -5,6 +5,7 @@ import Combine from './Component/Combine';
 import { Input } from './Component/Input';
 import Select from './Component/Select';
 import Show from './Component/Show';
+import { StatusButton } from './Component/StatusButton';
 import Titled from './Component/Titled';
 import { ToggleButton } from "./Component/ToggleButton";
 import { ToggleImgButton } from './Component/ToggleImgButton';
@@ -390,8 +391,8 @@ function App() {
         <div className='settings_row'>
           <Combine>
             <ToggleButton
-              onToggle={v => lf2?.sounds.set_muted(v)}
-              checked={muted}>
+              onChange={v => lf2?.sounds.set_muted(v)}
+              value={muted}>
               <>音量</>
               <>静音✓</>
             </ToggleButton>
@@ -407,8 +408,8 @@ function App() {
           </Combine>
           <Combine>
             <ToggleButton
-              onToggle={v => lf2?.sounds.set_bgm_muted(v)}
-              checked={bgm_muted}>
+              onChange={v => lf2?.sounds.set_bgm_muted(v)}
+              value={bgm_muted}>
               <>BGM✓</>
               <>BGM</>
             </ToggleButton>
@@ -424,8 +425,8 @@ function App() {
           </Combine>
           <Combine>
             <ToggleButton
-              onToggle={v => lf2?.sounds.set_sound_muted(v)}
-              checked={sound_muted}>
+              onChange={v => lf2?.sounds.set_sound_muted(v)}
+              value={sound_muted}>
               <>Sound✓</>
               <>Sound</>
             </ToggleButton>
@@ -518,82 +519,86 @@ function App() {
 
         </div>
         <div className='settings_row'>
-          <ToggleButton title='F1' checked={paused} onClick={() => lf2?.world.set_paused(!paused)}>
+          <ToggleButton title='F1' value={paused} onClick={() => lf2?.world.set_paused(!paused)}>
             <>游戏暂停</>
             <>游戏暂停✓</>
           </ToggleButton>
           <Button title='F2' onClick={update_once}>
             更新一帧
           </Button>
-          <ToggleButton title='F5' checked={fast_forward} onClick={() => set_fast_forward(!fast_forward)}>
+          <ToggleButton title='F5' value={fast_forward} onClick={() => set_fast_forward(!fast_forward)}>
             <>不限速度</>
             <>不限速度✓</>
           </ToggleButton>
-          <ToggleButton title='ctrl+F2' checked={show_indicators} onClick={() => set_show_indicators(v => !v)}>
+          <ToggleButton title='ctrl+F2' value={show_indicators} onClick={() => set_show_indicators(v => !v)}>
             <>指示器</>
             <>指示器✓</>
           </ToggleButton>
-          <ToggleButton title='ctrl+F3' checked={game_overlay} onToggle={set_game_overlay} >
+          <ToggleButton title='ctrl+F3' value={game_overlay} onChange={set_game_overlay} >
             <>游戏覆盖</>
             <>游戏覆盖✓</>
           </ToggleButton>
-          <Button onClick={toggle_fullscreen}>
-            全屏
-          </Button>
-          <Button onClick={() => lf2?.world.set_sync_render()}>
-            <Show show={sync_render === 0}>非同步渲染✓</Show>
-            <Show show={sync_render === 1}>同步渲染✓</Show>
-            <Show show={sync_render === 2}>同步渲染(x0.5)✓</Show>
-          </Button>
+          <ToggleButton onClick={toggle_fullscreen} value={fullscreen.is_fullscreen}>
+            <>全屏</>
+            <>全屏✓</>
+          </ToggleButton>
+          <StatusButton
+            items={[
+              { value: 0, label: '非同步渲染✓' },
+              { value: 1, label: '同步渲染✓' },
+              { value: 2, label: '同步渲染(x0.5)✓' },
+            ]}
+            value={sync_render}
+            onClick={() => lf2?.world.set_sync_render()} />
         </div>
         <div className='settings_row'>
           <Combine>
             <ToggleButton
-              onToggle={() => set_showing_panel(v => v === 'stage' ? '' : 'stage')}
-              checked={showing_panel === 'stage'}>
+              onChange={() => set_showing_panel(v => v === 'stage' ? '' : 'stage')}
+              value={showing_panel === 'stage'}>
               <>关卡面板</>
               <>关卡面板✓</>
             </ToggleButton>
             <ToggleButton
-              onToggle={() => set_showing_panel(v => v === 'bg' ? '' : 'bg')}
-              checked={showing_panel === 'bg'}>
+              onChange={() => set_showing_panel(v => v === 'bg' ? '' : 'bg')}
+              value={showing_panel === 'bg'}>
               <>背景面板</>
               <>背景面板✓</>
             </ToggleButton>
             <ToggleButton
-              onToggle={() => set_showing_panel(v => v === 'weapon' ? '' : 'weapon')}
-              checked={showing_panel === 'weapon'}>
+              onChange={() => set_showing_panel(v => v === 'weapon' ? '' : 'weapon')}
+              value={showing_panel === 'weapon'}>
               <>武器面板</>
               <>武器面板✓</>
             </ToggleButton>
             <ToggleButton
-              onToggle={() => set_showing_panel(v => v === 'bot' ? '' : 'bot')}
-              checked={showing_panel === 'bot'}>
+              onChange={() => set_showing_panel(v => v === 'bot' ? '' : 'bot')}
+              value={showing_panel === 'bot'}>
               <>Bot面板</>
               <>Bot面板✓</>
             </ToggleButton>
             <ToggleButton
-              onToggle={() => set_showing_panel(v => v === 'player' ? '' : 'player')}
-              checked={showing_panel === 'player'}>
+              onChange={() => set_showing_panel(v => v === 'player' ? '' : 'player')}
+              value={showing_panel === 'player'}>
               <>玩家面板</>
               <>玩家面板✓</>
             </ToggleButton>
           </Combine>
           <ToggleButton
-            onToggle={() => lf2?.toggle_cheat_enabled(Defines.Cheats.LF2_NET)}
-            checked={cheat_1}>
+            onChange={() => lf2?.toggle_cheat_enabled(Defines.Cheats.LF2_NET)}
+            value={cheat_1}>
             <>LF2_NET</>
             <>LF2_NET✓</>
           </ToggleButton>
           <ToggleButton
-            onToggle={() => lf2?.toggle_cheat_enabled(Defines.Cheats.HERO_FT)}
-            checked={cheat_2}>
+            onChange={() => lf2?.toggle_cheat_enabled(Defines.Cheats.HERO_FT)}
+            value={cheat_2}>
             <>HERO_FT</>
             <>HERO_FT✓</>
           </ToggleButton>
           <ToggleButton
-            onToggle={() => lf2?.toggle_cheat_enabled(Defines.Cheats.GIM_INK)}
-            checked={cheat_3}>
+            onChange={() => lf2?.toggle_cheat_enabled(Defines.Cheats.GIM_INK)}
+            value={cheat_3}>
             <>GIM_INK</>
             <>GIM_INK✓</>
           </ToggleButton>
