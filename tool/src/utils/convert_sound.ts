@@ -1,10 +1,8 @@
 import command_exists from 'command-exists';
 import fs from 'fs/promises';
-import { steps } from '..';
-import { exec_cmd } from '../exec_cmd';
+import { exec_cmd } from './exec_cmd';
 
 export async function convert_sound(out_dir: string, src_dir: string, src_path: string) {
-  if (!steps.sound) return;
   const dst_path = src_path.replace(src_dir, out_dir) + '.mp3';
   console.log('convert', src_path, '=>', dst_path);
   await fs.rm(dst_path, { recursive: true, force: true }).catch(() => void 0);

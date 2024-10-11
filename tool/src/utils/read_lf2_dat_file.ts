@@ -6,6 +6,15 @@ const head_placeholder_length = 123
 export function decode_dat(arr: { [i in number]: number }, len: number) {
   for (let i = 0; i < len; ++i) arr[i] -= pwd.charCodeAt(i % pwd.length);
 }
+
+/**
+ * 读取lf2文件的ArrayBuffer
+ *
+ * @export
+ * @async
+ * @param {ArrayBuffer} array_buffer 解密前内容
+ * @returns {Promise<string>} 解密后内容
+ */
 export async function read_lf2_dat(array_buffer: ArrayBuffer): Promise<string> {
   const buf = new Uint8Array(array_buffer);
   decode_dat(buf, buf.byteLength)
@@ -14,6 +23,14 @@ export async function read_lf2_dat(array_buffer: ArrayBuffer): Promise<string> {
   return String.fromCharCode(...char_code_arr);
 }
 
+/**
+ * 读取lf2文件
+ *
+ * @export
+ * @async
+ * @param {string} path 文件目录
+ * @returns {Promise<string>} 解密后文件内容
+ */
 export async function read_lf2_dat_file(path: string): Promise<string> {
   const buf = await fs.readFile(path);
   decode_dat(buf, buf.length)
