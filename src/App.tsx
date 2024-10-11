@@ -404,8 +404,8 @@ function App() {
             <ToggleButton
               onChange={v => lf2?.sounds.set_muted(v)}
               value={muted}>
-              <>音量</>
-              <>静音✓</>
+              <>音量✓</>
+              <>静音</>
             </ToggleButton>
             <Show show={!muted}>
               <Input

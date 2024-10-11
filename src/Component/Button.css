@@ -4,7 +4,7 @@
   user-select: none;
   color: #5A73D6;
   border: 2px #5A73D6 solid;
-  border-radius: 3px;
+  border-radius: 5px;
   padding: 2px 4px;
   background-color: transparent;
   font-weight: bold;
@@ -12,8 +12,7 @@
   transition:
     color 200ms,
     border-color 200ms,
-    background-color 200ms,
-    border-radius 500ms;
+    background-color 200ms
 }
 
 .lf2ui_button:hover {
