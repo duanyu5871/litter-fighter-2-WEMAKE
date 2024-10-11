@@ -20,7 +20,7 @@ export async function convert_pic(out_dir: string, src_dir: string, src_path: st
       "set",
       "-fill", "rgba(0,0,0,0)",
       "-opaque", "rgb(0,0,0)",
-      'PNG32:' + dst_path
+      'PNG8:' + dst_path
     )
     return;
   }
@@ -50,7 +50,7 @@ export async function convert_pic(out_dir: string, src_dir: string, src_path: st
       "set",
       "-fill", "rgba(0,0,0,0)",
       "-opaque", "rgb(0,0,0)",
-      'PNG32:' + dst_path
+      'PNG8:' + dst_path
     ]
 
     await exec_cmd('magick', ...args)
