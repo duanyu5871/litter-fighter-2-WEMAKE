@@ -1,5 +1,5 @@
 .lf2ui_combine {
-  display: flex;
+  display: inline-flex;
   flex-wrap: nowrap;
   align-items: stretch;
 }

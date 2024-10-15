@@ -163,14 +163,14 @@
   align-items: center;
 }
 
-.settings_row .name_content {
-  display: flex;
+.name_content {
+  display: inline-flex;
   flex-wrap: nowrap;
   align-items: center;
 
 }
 
-.settings_row .name_content>*:first-child:not(:last-child) {
+.name_content>*:first-child:not(:last-child) {
   margin-right: 3px;
 }
 

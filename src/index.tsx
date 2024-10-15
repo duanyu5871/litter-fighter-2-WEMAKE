@@ -1,15 +1,20 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import App from './App';
+import './index.css';
+import './LF2/defines/defines';
 import reportWebVitals from './reportWebVitals';
-import './LF2/defines/defines'
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-);
-root.render(
+const router = createBrowserRouter([
+  { path: '/quad_tree_test', Component: React.lazy(() => import('./QuadTree_index')) },
+  { path: '/bebavior_net_test', Component: React.lazy(() => import('./Bebavior_index')) },
+  { path: '*', Component: App },
+]);
+ReactDOM.createRoot(
+  document.getElementById('root')!
+).render(
   <React.StrictMode>
-    <App />
+    <RouterProvider router={router} />
   </React.StrictMode>
 );
 reportWebVitals();
