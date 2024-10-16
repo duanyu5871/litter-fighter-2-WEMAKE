@@ -9,6 +9,7 @@ const router = createBrowserRouter([
   { path: '/quad_tree_test', Component: React.lazy(() => import('./Laboratory/QuadTree')) },
   { path: '/bebavior_net_test', Component: React.lazy(() => import('./Laboratory/BehaviorNet')) },
   // { path: '*', Component: React.lazy(() => import('./App')) },
+  { path: '/mne', Component: React.lazy(() => import('./Laboratory/MNE')) },
   { path: '*', Component: React.lazy(() => import('./Laboratory/BehaviorNet')) },
 ]);
 ReactDOM.createRoot(
