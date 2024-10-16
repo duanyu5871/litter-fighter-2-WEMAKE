@@ -1,37 +1,12 @@
 
 import { useCallback, useEffect, useMemo, useRef } from "react";
-import { Vector2 } from "three";
-import { __Render } from "./DittoImpl";
-import FPS from "./LF2/base/FPS";
-import { Bebavior } from "./LF2/behavior";
+import { __Render } from "../../DittoImpl";
+import FPS from "../../LF2/base/FPS";
+import { Behavior } from "../../LF2/behavior";
+import { Creature } from "./Creature";
 const CANVAS_PADDING = 100;
 const GROUND_W = 500;
 const GROUND_H = 500;
-
-class Creature {
-  pos = new Vector2(0, 0)
-  name = 'Creature';
-  color = 'red';
-  actor = new Bebavior.Actor();
-  update(delta_time: number) {
-    this.pos.x = Math.max(this.pos.x, 0)
-    this.pos.y = Math.max(this.pos.y, 0)
-    this.actor.update(delta_time)
-  }
-  render(ctx: CanvasRenderingContext2D) {
-    ctx.fillStyle = this.color;
-    ctx.font = 'bold 20px serif'
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.globalAlpha = 1
-    ctx.fillText(this.name, this.pos.x, this.pos.y)
-    if (this.actor.behavior?.name) {
-      ctx.font = 'bold 12px serif'
-      ctx.globalAlpha = 0.5
-      ctx.fillText(this.actor.behavior?.name, this.pos.x, this.pos.y + 20)
-    }
-  }
-}
 
 const cat = new Creature();
 cat.name = 'Cat';
@@ -40,7 +15,8 @@ cat.color = 'white';
 const human = new Creature();
 human.name = 'You';
 human.color = 'white';
-
+human.pos.x = GROUND_W / 2
+human.pos.y = GROUND_H / 2
 const creatures = [cat, human]
 
 const distance_vector = () => cat.pos.clone().sub(human.pos)
@@ -50,49 +26,51 @@ const is_too_far = () => distance_vector().length() > 200;
 const escaping = () => cat.pos.add(direction())
 const closing = () => cat.pos.sub(direction())
 
-enum CatBebaviorEnum {
+enum CatBehaviorEnum {
   escaping_from_human = 'escaping from you',
   interested_in_human = 'interested in you',
   looking_at_human = 'looking at you',
 }
 cat.actor.add_behavior(
-  Bebavior.Noding(CatBebaviorEnum.escaping_from_human).on_update(() => escaping()),
-  Bebavior.Noding(CatBebaviorEnum.interested_in_human).on_update(() => closing()),
-  Bebavior.Noding(CatBebaviorEnum.looking_at_human),
+  Behavior.Noding(CatBehaviorEnum.escaping_from_human, cat).on_update((cat) => escaping()),
+  Behavior.Noding(CatBehaviorEnum.interested_in_human, cat).on_update(() => closing()),
+  Behavior.Noding(CatBehaviorEnum.looking_at_human, cat),
 )
-Bebavior.Connecting(cat.actor)
-  .start(CatBebaviorEnum.interested_in_human)
-  .end(CatBebaviorEnum.looking_at_human)
+Behavior.Connecting(cat.actor)
+  .start(CatBehaviorEnum.interested_in_human,1,2)
+  .end(CatBehaviorEnum.looking_at_human)
   .judge(() => !is_too_close() && !is_too_far())
   .done();
-Bebavior.Connecting(cat.actor)
-  .start(CatBebaviorEnum.escaping_from_human)
-  .end(CatBebaviorEnum.looking_at_human)
+Behavior.Connecting(cat.actor)
+  .start(CatBehaviorEnum.escaping_from_human)
+  .end(CatBehaviorEnum.looking_at_human)
   .judge(() => !is_too_close() && !is_too_far())
   .done();
-Bebavior.Connecting(cat.actor)
-  .start(CatBebaviorEnum.looking_at_human)
-  .end(CatBebaviorEnum.interested_in_human)
+Behavior.Connecting(cat.actor)
+  .start(CatBehaviorEnum.looking_at_human)
+  .end(CatBehaviorEnum.interested_in_human)
   .judge(() => is_too_far())
   .done();
-Bebavior.Connecting(cat.actor)
-  .start(CatBebaviorEnum.looking_at_human)
-  .end(CatBebaviorEnum.escaping_from_human)
+Behavior.Connecting(cat.actor)
+  .start(CatBehaviorEnum.looking_at_human)
+  .end(CatBehaviorEnum.escaping_from_human)
   .judge(() => is_too_close())
   .done();
 
-
-
-enum HumanBebaviorEnum {
+enum HumanBehaviorEnum {
   Moving = 'moving',
   Standing = 'standing'
 }
-Bebavior.Connecting(human.actor)
+Behavior.Noding(HumanBehaviorEnum.Standing)
+  .actor(human.actor)
+  .done()
+human.actor.use_behavior(HumanBehaviorEnum.Standing)
+Behavior.Connecting(human.actor)
   .done()
 
 
-cat.actor.use_behavior(CatBebaviorEnum.looking_at_human)
-export default function BebaviorNetView() {
+cat.actor.use_behavior(CatBehaviorEnum.looking_at_human)
+export default function BehaviorNetView() {
   const ref_canvas = useRef<HTMLCanvasElement>(null);
   const ref_ctx = useRef<CanvasRenderingContext2D | null>();
   const ref_pause = useRef(false);

@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Vector2 as __Vector2, Vector2 } from "three";
-import { Button } from "./Component/Button";
-import Combine from "./Component/Combine";
-import { Input } from "./Component/Input";
-import Titled from "./Component/Titled";
-import { __Render } from "./DittoImpl";
-import FPS from "./LF2/base/FPS";
+import { Button } from "../../Component/Button";
+import Combine from "../../Component/Combine";
+import { Input } from "../../Component/Input";
+import Titled from "../../Component/Titled";
+import { __Render } from "../../DittoImpl";
+import FPS from "../../LF2/base/FPS";
 import { QuadTree } from "./QuadTree";
 const CANVAS_PADDING = 100;
 const WIDTH = 1000;
