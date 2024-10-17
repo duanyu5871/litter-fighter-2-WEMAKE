@@ -21,9 +21,6 @@ export class BounceTales {
   protected zoom_speed = 0.25;
 
   constructor(canvas: HTMLCanvasElement) {
-    const w = 10000;
-    const h = 600;
-    const bs = 1000;
     this.engine = Engine.create({});
     this.render = Render.create({
       engine: this.engine,
@@ -34,27 +31,10 @@ export class BounceTales {
       }
     });
     const mouse = Mouse.create(this.render.canvas);
-    this.bricks = [
-      Bodies.rectangle(400, 200, 100, 100),
-      Bodies.rectangle(450, 50, 100, 100)
-    ];
-    for (let i = 0; i < 100; i++) {
-      this.bricks.push(
-        Bodies.rectangle(
-          Math.random() * w,
-          Math.random() * h,
-          100,
-          100
-        )
-      )
-    }
+    this.bricks = [];
 
     this.player = new Player(this);
-    this.grounds = [Bodies.rectangle(w / 2, h + bs / 2, w, bs, { isStatic: true }),
-    Bodies.rectangle(w / 2, 0 - bs / 2, w, bs, { isStatic: true }),
-    Bodies.rectangle(0 - bs / 2, h / 2, bs, h + 60, { isStatic: true }),
-    Bodies.rectangle(w + bs / 2, h / 2, bs, h + 60, { isStatic: true })
-    ];
+    this.grounds = [];
     this.mouse_constraint = MouseConstraint.create(this.engine, {
       mouse: mouse,
       constraint: {
@@ -65,8 +45,75 @@ export class BounceTales {
         }
       }
     });
-    Composite.add(this.engine.world, [...this.bricks, this.player.body, ...this.grounds, this.mouse_constraint]);
+    Composite.add(
+      this.engine.world, [
+      ...this.bricks,
+      this.player.body,
+      ...this.grounds,
+      this.mouse_constraint
+    ]);
     this.render.mouse = mouse;
+
+    fetch('map/map_999.txt')
+      .then(r => r.text())
+      .then(v => {
+        if (v.charCodeAt(0) === 65533 && v.charCodeAt(1) === 65533) {
+          return v.substring(2).replace(/\0|\r/g, '');
+        } else {
+          return v;
+        }
+      }).then((v) => {
+        this.load_map(v)
+      })
+  }
+
+  load_map(str: string) {
+    const rows = str.split('\n').map(v => v.split('\t'))
+    for (let i = 0; i < rows.length; i++) {
+      const row = rows[i];
+      if (i === 0) continue;
+      const y = i - 1;
+      for (let x = 0; x < row.length; x++) {
+        const word = row[x];
+        switch (word) {
+          case '0':
+            Body.setPosition(this.player.body, { x: x * 100 + 50, y: y * 100 + 50 })
+            break;
+          case '1': {
+            const bw = 100
+            const bh = 100
+            this.bricks.push(
+              Bodies.rectangle(
+                x * 100 + bw / 2,
+                y * 100 + bh / 2,
+                bw,
+                bh,
+                { isStatic: true }
+              )
+            )
+            break;
+          }
+          default:
+            const r = word.match(/^(\d+)_(\d+)_(\d+)$/)
+            if (r) {
+              const [, , w, h] = r;
+              const bw = 100 * Number(w)
+              const bh = 100 * Number(h)
+              this.bricks.push(
+                Bodies.rectangle(
+                  x * 100 + bw / 2,
+                  y * 100 + bh / 2,
+                  bw, bh,
+                  { isStatic: true }
+                )
+              )
+            }
+
+        }
+      }
+    }
+    Composite.add(this.engine.world, [...this.bricks]);
+
   }
   run() {
     Render.run(this.render);

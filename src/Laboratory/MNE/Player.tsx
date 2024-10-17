@@ -13,8 +13,8 @@ export enum PlayerState {
 }
 export const max_jump_frames = 3
 export class Player extends Behavior.Actor {
-  radius = 50;
-  body = Bodies.circle(400, 100, this.radius, {}, 100);
+  radius = 49;
+  body = Bodies.circle(100, -100, this.radius, {}, 100);
   solution: BounceTales;
   constructor(solution: BounceTales) {
     super();
@@ -78,22 +78,22 @@ export class Player extends Behavior.Actor {
       this.solution.is_keydown('a')
     )
     if (vx < max_vx && direction > 0) {
-      this.body.force.x = 0.01 * direction;
+      Body.applyForce(this.body, this.body.position, { x: 0.01 * direction, y: this.body.force.y })
     } else if (vx > -max_vx && direction < 0) {
-      this.body.force.x = 0.01 * direction;
+      Body.applyForce(this.body, this.body.position, { x: 0.01 * direction, y: this.body.force.y })
     } else if (direction > 0) {
       Body.setVelocity(this.body, { x: max_vx, y: this.body.velocity.y })
     } else if (direction < 0) {
       Body.setVelocity(this.body, { x: -max_vx, y: this.body.velocity.y })
     }
-    if (direction === 0 && Math.abs(vx) < 0.5) {
+    if (direction === 0 && Math.abs(vx) < 0.5 && this.is_ground) {
       Body.setVelocity(this.body, { x: 0, y: this.body.velocity.y })
     }
-    // this.body.velocity.x = 0.01 * d;
   }
   on_update_jump(): void {
-    this.body.force.y -= 0.13;
+    Body.setVelocity(this.body, { x: this.body.velocity.x, y: -12 })
     --this.remain_jump_frames;
+    console.log('on_update_jump')
     this.on_update_move();
   }
   on_leave_jump() {
