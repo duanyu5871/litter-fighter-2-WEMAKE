@@ -1,0 +1,4 @@
+[submodule ".\\src\\Laboratory\\BounceTales"]
+	path = .\\src\\Laboratory\\BounceTales
+	url = https://gitee.com/fimagine/bunce_tales.git
+	branch = main
