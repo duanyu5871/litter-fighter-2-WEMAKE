@@ -180,11 +180,15 @@ function App() {
     const on_touchstart = () => {
       set_touch_pad_on(fisrt(lf2.player_infos.keys())!)
     }
+    const on_keydown = () => {
+      set_touch_pad_on('')
+    }
     window.addEventListener('touchstart', on_touchstart, { once: true })
-
+    window.addEventListener('keydown', on_keydown)
     _set_is_fullscreen(!!fullscreen.target)
     _set_paused(lf2.world.paused)
     return new Invoker().add(
+      () => window.removeEventListener('keydown', on_keydown),
       () => window.removeEventListener('touchstart', on_touchstart),
       fullscreen.callbacks.add({
         onChange: e => _set_is_fullscreen(!!e),

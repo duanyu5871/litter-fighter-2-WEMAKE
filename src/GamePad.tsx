@@ -267,7 +267,7 @@ export default function GamePad(props: IGamePadProps) {
       pad.removeEventListener('touchcancel', on_touch_end);
     }
   }, [controller, lf2, player_id, refresh_tag, right_pad])
-  if (!player_id) return <div {..._p} />;
+  if (!player_id) return <></>;
   const touch_props = (key: GameKey): IToggleImgProps => {
     return {
       style: { 'pointerEvents': 'none' },
