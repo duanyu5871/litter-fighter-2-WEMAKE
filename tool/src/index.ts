@@ -11,6 +11,11 @@ import { convert_pic } from './utils/convert_pic';
 import { join } from 'path';
 import { read_lf2_dat_file } from './utils/read_lf2_dat_file';
 import { ColonValueReader } from '../../src/LF2/dat_translator/ColonValueReader';
+import { readFileSync } from 'fs';
+const {
+  RAW_LF2_PATH, DATA_DIR_PATH, OUT_DIR, DATA_ZIP_NAME, PREL_DIR_PATH, PREL_ZIP_NAME,
+  TXT_LF2_PATH
+} = JSON.parse(readFileSync('./converter.config.json').toString())
 
 export let steps = {
   del_old: true,
@@ -23,17 +28,21 @@ export let steps = {
   cleanup: true,
 };
 enum EntryEnum {
-  MAIN = "main",
-  HELP = "help",
-  DAT_2_TXT = "dat-2-txt",
+  MAIN = 1,
+  HELP,
+  DAT_2_TXT,
+  MAKE_PREL_ZIP,
 }
 let entry = EntryEnum.MAIN;
-console.log("process.argv", process.argv)
+
 for (let i = 2; i < process.argv.length; ++i) {
   switch (process.argv[i].toLowerCase()) {
     case '-h':
     case '--help':
       entry = EntryEnum.HELP;
+      break;
+    case '--make-prel-zip':
+      entry = EntryEnum.MAKE_PREL_ZIP;
       break;
     case '--dat-2-txt':
       entry = EntryEnum.DAT_2_TXT
@@ -59,10 +68,11 @@ for (let i = 2; i < process.argv.length; ++i) {
       break;
   }
 }
+
+async function make_prel_zip() {
+  await make_zip_and_json(PREL_DIR_PATH, OUT_DIR, PREL_ZIP_NAME);
+}
 async function main() {
-  const {
-    RAW_LF2_PATH, DATA_DIR_PATH, OUT_DIR, DATA_ZIP_NAME, PREL_DIR_PATH, PREL_ZIP_NAME
-  } = await readFile('./converter.config.json').then(buf => JSON.parse(buf.toString()))
   check_is_str_ok(
     RAW_LF2_PATH, OUT_DIR,
     DATA_DIR_PATH, DATA_ZIP_NAME,
@@ -120,14 +130,10 @@ async function main() {
   }
   await make_zip_and_json(DATA_DIR_PATH, OUT_DIR, DATA_ZIP_NAME);
   await fs.rm(DATA_DIR_PATH, { recursive: true, force: true })
-  await make_zip_and_json(PREL_DIR_PATH, OUT_DIR, PREL_ZIP_NAME);
+  await make_prel_zip()
 }
 
 async function DAT_2_TXT() {
-  const {
-    RAW_LF2_PATH, TXT_LF2_PATH
-  } = await readFile('./converter.config.json').then(buf => JSON.parse(buf.toString()))
-
   check_is_str_ok(
     RAW_LF2_PATH, TXT_LF2_PATH
   )
@@ -187,5 +193,6 @@ switch (entry) {
   case EntryEnum.MAIN: main(); break;
   case EntryEnum.HELP: console.log("need_help"); break;
   case EntryEnum.DAT_2_TXT: DAT_2_TXT(); break;
+  case EntryEnum.MAKE_PREL_ZIP: make_prel_zip(); break;
 }
 

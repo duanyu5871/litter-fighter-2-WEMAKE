@@ -81,7 +81,8 @@
     "build_data": "node ./tool",
     "deploy": "fdeploy -s release -i deployer.private.json -p deployer.config.json",
     "flow": "npm run build_tool && npm run build_data && npm run build && npm run deploy",
-    "dat-2-txt": "npm run build_tool && node ./tool --dat-2-txt"
+    "dat_2_txt": "npm run build_tool && node ./tool --dat-2-txt",
+    "make_prel_zip": "npm run build_tool && node ./tool --make-prel-zip"
   },
   "eslintConfig": {
     "extends": [

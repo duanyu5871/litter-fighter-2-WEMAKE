@@ -263,7 +263,6 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     const coords = new THREE.Vector2(e.scene_x, e.scene_y)
     const raycaster = new THREE.Raycaster()
     this.world.camera.raycaster(raycaster, coords)
-
     const intersections = this.world.scene.intersects_from_raycaster(raycaster)
     if (!intersections.length) {
       this.pick_intersection(void 0)

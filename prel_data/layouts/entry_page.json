@@ -8,7 +8,8 @@
   "items": [
     {
       "id": "bg_left",
-      "which": "f:random_int_in_range(0,12,1)",
+      "which": 2,
+      "_which": "f:random_int_in_range(0,12,1)",
       "img": [
         "sprite/MENU_BACK1.png",
         "sprite/MENU_BACK2.png",

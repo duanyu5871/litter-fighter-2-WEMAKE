@@ -136,7 +136,9 @@ export default class Layout {
   }
   get index() { return this._index }
   get state() { return this._state }
-  get img_idx() { return this._img_idx() }
+  get img_idx() {
+    return this._img_idx()
+  }
 
   get visible(): boolean { return this._visible.value; }
   set visible(v: boolean) { this.set_visible(v); }
@@ -342,7 +344,6 @@ export default class Layout {
     } else if (is_str(txt)) {
       ret.img_infos.push(await lf2.images.load_text(txt, style))
     }
-
     {
       const { w: img_w = 0, h: img_h = 0, scale = 1 } = ret.img_infos?.[0] || {};
       const { size, center, pos, rect } = raw_info
