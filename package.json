@@ -80,7 +80,8 @@
     "build_tool": "tsc -p ./tool",
     "build_data": "node ./tool",
     "deploy": "fdeploy -s release -i deployer.private.json -p deployer.config.json",
-    "flow": "npm run build_tool && npm run build_data && npm run build && npm run deploy"
+    "flow": "npm run build_tool && npm run build_data && npm run build && npm run deploy",
+    "dat-2-txt": "npm run build_tool && node ./tool --dat-2-txt"
   },
   "eslintConfig": {
     "extends": [

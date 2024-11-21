@@ -40,6 +40,8 @@ export namespace Defines {
     TrendX = 'trend_x',
     PressFB = 'press_F_B',
     PressUD = 'press_U_D',
+
+    /** 角色手持的武器类型 */
     WeaponType = 'weapon_type',
   }
   export enum FrameId {
@@ -52,10 +54,36 @@ export namespace Defines {
   }
   export enum WeaponType {
     None = 0,
-    Stick = 1,// 棍棒类。
-    Heavy = 2,// 重物类，双手举起丢出
-    Knife = 3,// 小刀类，与棍棒类几乎一致，但站立时前A会丢出。
-    Baseball = 4,// 棒球类，只能丢。
+
+    /** 
+     * 棍棒
+     * 
+     * 丢出方式：
+     *    奔跑,空中: 前 + 攻击
+     */
+    Stick = 1,
+
+    /** 重物类 */
+    Heavy = 2,
+
+    /** 
+     * 小刀类。
+     * 丢出方式：
+     *    奔跑,空中,站立: 前 + 攻击
+     */
+    Knife = 3,
+
+    /** 
+     * 棒球类
+     */
+    Baseball = 4,
+
+    /**
+     * 饮料
+     * 
+     * 丢出方式：
+     *    奔跑,空中: 前 + 攻击
+     */
     Drink = 5,
   }
   export enum FacingFlag {

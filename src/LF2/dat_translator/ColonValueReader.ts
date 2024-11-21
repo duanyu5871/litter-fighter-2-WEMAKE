@@ -1,40 +1,50 @@
-export class ColonValueReader {
-  private _cells: [string, 'str' | 'num' | 'num_2'][] = [];
-  str(name: string): this { this._cells.push([name, 'str']); return this; }
-  num(name: string): this { this._cells.push([name, 'num']); return this; }
-  num_2(name: string): this { this._cells.push([name, 'num_2']); return this; }
-  reg_exp(flags?: string): RegExp {
-    let str = '';
+
+enum ValueType {
+  Str,
+  Int,
+  Int_Int,
+}
+/**
+ * 从逗号分隔的字符串读取数据
+ *
+ * @export
+ */
+export class ColonValueReader<Output = any> {
+  private _cells: [keyof Output, ValueType][] = [];
+  str(name: keyof Output): this { this._cells.push([name, ValueType.Str]); return this; }
+  int(name: keyof Output): this { this._cells.push([name, ValueType.Int]); return this; }
+  int_2(name: keyof Output): this { this._cells.push([name, ValueType.Int_Int]); return this; }
+
+  read(text: string, output: Output): [Output | null, string] {
+    let rem_txt = text;
     for (const [n, t] of this._cells) {
       switch (t) {
-        case 'str': str += `${n}\\s*:\\s*(\\S+)[\\s|\\n]*`; break;
-        case 'num': str += `${n}\\s*:\\s*(\\d+)[\\s|\\n]*`; break;
-        case 'num_2': str += `${n}\\s*:\\s*(\\d+)\\s*(\\d+)[\\s|\\n]*`; break;
+        case ValueType.Str: {
+          const reg_str = `${n.toString()}\\s*:\\s*(\\S+)[\\s|\\n]*`
+          const reg_res = new RegExp(reg_str).exec(rem_txt)
+          if (!reg_res) break;
+          (output as any)[n] = reg_res[1];
+          rem_txt = rem_txt.slice(0, reg_res.index) + rem_txt.slice(reg_res[0].length)
+          break;
+        }
+        case ValueType.Int: {
+          const reg_str = `${n.toString()}\\s*:\\s*(\\d+)[\\s|\\n]*`
+          const reg_res = new RegExp(reg_str).exec(rem_txt)
+          if (!reg_res) break;
+          (output as any)[n] = Number(reg_res[1]);
+          rem_txt = rem_txt.slice(0, reg_res.index) + rem_txt.slice(reg_res[0].length)
+          break;
+        }
+        case ValueType.Int_Int: {
+          const reg_str = `${n.toString()}\\s*:\\s*(\\d+)\\s*(\\d+)[\\s|\\n]*`
+          const reg_res = new RegExp(reg_str).exec(rem_txt)
+          if (!reg_res) break;
+          (output as any)[n] = [Number(reg_res[1]), Number(reg_res[2])];
+          rem_txt = rem_txt.slice(0, reg_res.index) + rem_txt.slice(reg_res[0].length)
+          break;
+        }
       }
     }
-    return new RegExp(str, flags);
-  }
-  read(text: string): any {
-    const result = this.reg_exp().exec(text);
-    if (!result) return null;
-    const ret: any = {};
-    let pos = 1;
-    for (const [n, t] of this._cells) {
-      switch (t) {
-        case 'str':
-          ret[n] = result[pos];
-          pos += 1;
-          break;
-        case 'num':
-          ret[n] = Number(result[pos]);
-          pos += 1;
-          break;
-        case 'num_2':
-          ret[n] = [Number(result[pos]), Number(result[pos + 1])];
-          pos += 2;
-          break;
-      }
-    }
-    return ret;
+    return [output, rem_txt];
   }
 }

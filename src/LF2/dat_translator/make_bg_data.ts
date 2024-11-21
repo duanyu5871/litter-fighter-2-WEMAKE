@@ -33,13 +33,13 @@ const bg_color_translate = function (rect: number | string) {
     ')'
 };
 export function make_bg_data(full_str: string, datIndex?: IDatIndex): IBgData | void {
-  const fields = new ColonValueReader()
+  const [fields] = new ColonValueReader()
     .str('name')
-    .num('width')
-    .num_2('zboundary')
+    .int('width')
+    .int_2('zboundary')
     .str('shadow')
-    .num_2('shadowsize')
-    .read(full_str);
+    .int_2('shadowsize')
+    .read(full_str, {});
 
   const width = take(fields, 'width');
   const [a, b] = take(fields, 'zboundary');
@@ -47,7 +47,7 @@ export function make_bg_data(full_str: string, datIndex?: IDatIndex): IBgData | 
   fields.right = width;
   fields.far = 2 * (a - Defines.OLD_SCREEN_HEIGHT);
   fields.near = 2 * (b - Defines.OLD_SCREEN_HEIGHT);
-  
+
   const ret: IBgData = {
     type: 'background',
     id: datIndex?.id ?? fields.name,

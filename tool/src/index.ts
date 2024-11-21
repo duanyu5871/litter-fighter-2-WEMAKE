@@ -8,6 +8,9 @@ import { convert_sound } from './utils/convert_sound';
 import { make_zip_and_json } from './utils/make_zip_and_json';
 import { write_file } from './utils/write_file';
 import { convert_pic } from './utils/convert_pic';
+import { join } from 'path';
+import { read_lf2_dat_file } from './utils/read_lf2_dat_file';
+import { ColonValueReader } from '../../src/LF2/dat_translator/ColonValueReader';
 
 export let steps = {
   del_old: true,
@@ -17,11 +20,24 @@ export let steps = {
   others: true,
   converting: true,
   zipping: true,
-  cleanup: true
+  cleanup: true,
 };
-
+enum EntryEnum {
+  MAIN = "main",
+  HELP = "help",
+  DAT_2_TXT = "dat-2-txt",
+}
+let entry = EntryEnum.MAIN;
+console.log("process.argv", process.argv)
 for (let i = 2; i < process.argv.length; ++i) {
-  switch (process.argv[i]) {
+  switch (process.argv[i].toLowerCase()) {
+    case '-h':
+    case '--help':
+      entry = EntryEnum.HELP;
+      break;
+    case '--dat-2-txt':
+      entry = EntryEnum.DAT_2_TXT
+      break;
     case '--no-cleanup':
       steps.cleanup = false
       break;
@@ -106,5 +122,70 @@ async function main() {
   await fs.rm(DATA_DIR_PATH, { recursive: true, force: true })
   await make_zip_and_json(PREL_DIR_PATH, OUT_DIR, PREL_ZIP_NAME);
 }
-main()
+
+async function DAT_2_TXT() {
+  const {
+    RAW_LF2_PATH, TXT_LF2_PATH
+  } = await readFile('./converter.config.json').then(buf => JSON.parse(buf.toString()))
+
+  check_is_str_ok(
+    RAW_LF2_PATH, TXT_LF2_PATH
+  )
+  try {
+    await fs.rm(TXT_LF2_PATH, { recursive: true, force: true })
+  } catch {
+
+  }
+  async function a(path: string, t_path: string) {
+    try {
+      await fs.mkdir(t_path, { recursive: true })
+    } catch {
+    }
+    const items = await fs.readdir(path)
+    for (const item of items) {
+      const sub_path = join(path, item);
+      let sub_t_path = join(t_path, item);
+      const stat = await fs.stat(sub_path);
+      if (stat.isDirectory()) {
+        await a(sub_path, sub_t_path);
+      } else if (stat.isFile()) {
+        if (item.endsWith('.dat')) {
+          sub_t_path = sub_t_path.replace(/.dat$/, '.txt')
+          console.log('reading', sub_path, '=>', sub_t_path);
+          const data = await read_lf2_dat_file(sub_path)
+          await fs.writeFile(sub_t_path, data);
+        } else {
+          // await fs.copyFile(sub_path, sub_t_path)
+        }
+      }
+    }
+  }
+  await a(RAW_LF2_PATH, TXT_LF2_PATH);
+
+  async function test() {
+    const src_str = await readFile(join(TXT_LF2_PATH, '/bg/sys/bc/bg.txt')).then(v => v.toString())
+    const result = {
+      name: '',
+      width: 0,
+      zboundary: [0, 0],
+      shadow: '',
+      shadowsize: [0, 0],
+    }
+    const [, rem_str] = new ColonValueReader<typeof result>()
+      .str('name')
+      .int('width')
+      .int_2('zboundary')
+      .str('shadow')
+      .int_2('shadowsize')
+      .read(src_str, result);
+    console.log(src_str, '\n///////////////////////\n', rem_str)
+  }
+  await test()
+}
+
+switch (entry) {
+  case EntryEnum.MAIN: main(); break;
+  case EntryEnum.HELP: console.log("need_help"); break;
+  case EntryEnum.DAT_2_TXT: DAT_2_TXT(); break;
+}
 

@@ -1,18 +1,24 @@
 import { TNextFrame } from ".";
 import { IRect } from "./IRect";
 import { IRectPair } from "./IRectPair";
+import type { Defines } from "./defines";
 
 export interface IItrInfo extends IRect {
   /** 友军伤害：0=关闭（默认），1=开启，*/
   friendly_fire?: number;
+
   /** 命中后，自己停顿多少帧，默认是4 */
   motionless?: number;
+
   /** 命中后，目标停顿多少帧（伴随震动），默认是4 */
   shaking?: number;
 
   /** 命中后，自己跳转至什么帧 */
   on_hit?: TNextFrame;
 
+  /**
+   * @see {Defines.ItrKind}
+   */
   kind: number;
   dvx?: number;
   dvy?: number;
@@ -20,12 +26,27 @@ export interface IItrInfo extends IRect {
   fall?: number;
   vrest?: number;
   arest?: number;
+
+  /** 
+   * 破防值 
+   * 
+   * “防御状态”下的“受击目标”，击中时，其“格挡值”将被减去“破防值”，
+   * 若“格挡值”小于0，“受击目标”将进入“破防动作”。
+   * 
+   * 若非“防御状态”下的“受攻目标”存在“强硬值”，击中时，其“强硬值”将被减去“破防值”，
+   * 若“强硬值”小于0，“受攻目标”被击中。
+   */
   bdefend?: number;
 
   /** 伤害值 */
   injury?: number;
+
+  /**
+   * @see {Defines.ItrEffect}
+   */
   effect?: number;
   indicator_info?: IRectPair;
   catchingact?: TNextFrame,
   caughtact?: TNextFrame
 }
+
