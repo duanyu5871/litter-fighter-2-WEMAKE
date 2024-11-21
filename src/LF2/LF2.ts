@@ -649,7 +649,6 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     const popped = this._layout_stacks.pop()
     popped?.on_pause();
     popped?.on_stop();
-
     this.layout?.on_resume();
     this._callbacks.emit('on_layout_changed')(this.layout, popped)
   }

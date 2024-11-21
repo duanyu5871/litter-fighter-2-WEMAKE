@@ -1,3 +1,4 @@
+import { Warn } from "../../../Log";
 import { is_str } from "../../utils/type_check";
 import { ILayoutInfo } from "../ILayoutInfo";
 import type Layout from "../Layout";
@@ -21,6 +22,7 @@ import PlayerScore from "./PlayerScore";
 import PlayerScoreCell from "./PlayerScoreCell";
 import PlayerTeamName from "./PlayerTeamName";
 import { PlayingTimeText } from "./PlayingTimeText";
+import { RandomImgOnLayoutResume } from "./RandomImgOnLayoutResume";
 import { ReachableLayout, ReachableLayoutGroup } from "./ReachableLayoutGroup";
 import StageNameText from "./StageNameText";
 import StageTitleShow from "./StageTitleShow";
@@ -54,18 +56,32 @@ class Factory {
     ['player_score', PlayerScore],
     ['player_score_cell', PlayerScoreCell],
     ['vs_mode_logic', VsModeLogic],
-    ['playing_time', PlayingTimeText]
+    ['playing_time', PlayingTimeText],
+    ['random_img_on_layout_resume', RandomImgOnLayoutResume]
   ])
   create(layout: Layout, components: ILayoutInfo['component']): LayoutComponent[] {
     if (!components?.length) return [];
     if (is_str(components)) components = [components]
     const ret: LayoutComponent[] = [];
-    for (const text of components) {
-      const [func_name, args] = read_call_func_expression(text);
-      if (!func_name) continue;
-
+    for (const component_expression of components) {
+      const [func_name, args] = read_call_func_expression(component_expression);
+      if (!func_name) {
+        Warn.print(
+          'Layout Component Factory',
+          'expression not correct! expression:',
+          component_expression
+        )
+        continue;
+      }
       const Cls = this._component_map.get(func_name);
-      if (!Cls) continue;
+      if (!Cls) {
+        Warn.print(
+          'Layout Component Factory',
+          'Component class not found! expression:',
+          component_expression
+        )
+        continue;
+      }
 
       const component = new Cls(layout, func_name).init(...args);
       ret.push(component);

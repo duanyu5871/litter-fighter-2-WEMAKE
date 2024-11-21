@@ -8,8 +8,6 @@
   "items": [
     {
       "id": "bg_left",
-      "which": 2,
-      "_which": "f:random_int_in_range(0,12,1)",
       "img": [
         "sprite/MENU_BACK1.png",
         "sprite/MENU_BACK2.png",
@@ -25,11 +23,13 @@
         "sprite/MENU_BACK12.png",
         "sprite/MENU_BACK13.png"
       ],
-      "size": "0, 450"
+      "size": "0, 450",
+      "component": [
+        "random_img_on_layout_resume(entry_page)"
+      ]
     },
     {
       "id": "bg_right",
-      "which": "f:random_int_in_range(0,12,1)",
       "img": [
         "sprite/MENU_BACK1.png",
         "sprite/MENU_BACK2.png",
@@ -48,7 +48,10 @@
       "size": "0, 450",
       "center": "1, 0",
       "pos": "794, 0",
-      "flip_x": true
+      "flip_x": true,
+      "component": [
+        "random_img_on_layout_resume(entry_page)"
+      ]
     },
     {
       "id": "main_title",

@@ -13,7 +13,9 @@
   "items": [
     {
       "id": "bg_left",
-      "which": "f:random_int_in_range(0,12,1)",
+      "component": [
+        "random_img_on_layout_resume(entry_page)"
+      ],
       "img": [
         "sprite/MENU_BACK1.png",
         "sprite/MENU_BACK2.png",
@@ -34,7 +36,9 @@
     },
     {
       "id": "bg_right",
-      "which": "f:random_int_in_range(0,12,1)",
+      "component": [
+        "random_img_on_layout_resume(entry_page)"
+      ],
       "img": [
         "sprite/MENU_BACK1.png",
         "sprite/MENU_BACK2.png",

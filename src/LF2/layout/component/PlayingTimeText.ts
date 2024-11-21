@@ -47,4 +47,3 @@ export class PlayingTimeText extends LayoutComponent {
   //   this._txt?.set_text(this.get_txt()).apply()
   // }
 }
-

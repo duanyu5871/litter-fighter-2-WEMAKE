@@ -139,6 +139,9 @@ export default class Layout {
   get img_idx() {
     return this._img_idx()
   }
+  set img_idx(v: number) {
+    this._img_idx = () => v;
+  }
 
   get visible(): boolean { return this._visible.value; }
   set visible(v: boolean) { this.set_visible(v); }
@@ -374,10 +377,9 @@ export default class Layout {
   }
 
   static cook(lf2: LF2, info: ICookedLayoutInfo, get_val: ValGetter<Layout>, parent?: Layout) {
-
     const ret = new Layout(lf2, info, parent);
-    ret._cook_img_idx(get_val);
     ret._cook_data(get_val);
+    ret._cook_img_idx(get_val);
     ret._cook_component();
 
     if (info.items)
@@ -457,11 +459,7 @@ export default class Layout {
 
   protected init_sprite() {
     const [x, y, z] = this.data.pos;
-    const [w, h] = this.size;
-    const texture = this.create_texture();
-    const p: ISpriteInfo = {
-      w, h, texture, color: this.data.bg_color
-    }
+    const p = this.create_sprite_info();
     this._sprite.set_info(p)
       .set_center(...this.center)
       .set_position(x, -y, z)
@@ -470,6 +468,20 @@ export default class Layout {
       .set_name(`layout(name= ${this.name}, id=${this.id})`)
       .apply()
     this.parent?.sprite.add(this._sprite);
+  }
+  
+  create_sprite_info(): ISpriteInfo {
+    const [w, h] = this.size;
+    const texture = this.create_texture();
+    const p: ISpriteInfo = {
+      w, h, texture, color: this.data.bg_color
+    }
+    return p;
+  }
+
+  update_img() {
+    const p = this.create_sprite_info();
+    this._sprite.set_info(p).apply();
   }
 
   on_click(): boolean {
