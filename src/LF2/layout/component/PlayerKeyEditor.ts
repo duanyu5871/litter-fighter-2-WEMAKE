@@ -28,7 +28,7 @@ export default class PlayerKeyEditor extends LayoutComponent {
   override on_click() {
     this.lf2.keyboard.callback.add(this.l)
     this.lf2.pointings.callback.add(this.r)
-    this._sprite.set_style({ ...this._sprite, fill_style: 'blue' }).apply()
+    this._sprite.set_style({ ...this._sprite.style, fill_style: 'blue' }).apply()
     return true;
   }
 
