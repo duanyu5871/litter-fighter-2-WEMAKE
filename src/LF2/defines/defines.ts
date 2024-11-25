@@ -218,7 +218,7 @@ export namespace Defines {
   export const CheatSounds: Record<Cheats, string> = {
     [Cheats.LF2_NET]: "data/m_pass.wav.mp3",
     [Cheats.HERO_FT]: "data/m_end.wav.mp3",
-    [Cheats.GIM_INK]: "data/030.wav.mp3"
+    [Cheats.GIM_INK]: "data/093_r.wav.mp3"
   }
   export interface ICheatInfo {
     keys: string;

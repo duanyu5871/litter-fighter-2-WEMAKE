@@ -135,8 +135,8 @@ export function PlayerRow(props: Props) {
       <Titled title='角色'>
         <CharacterSelect lf2={lf2} value={character_id} on_changed={v => info.set_character(v).save()} show_all={show_hidden} />
       </Titled>
-      <Checkbox value={show_hidden} onChanged={set_show_hidden} title='显示隐藏角色' />
-      <Titled title='队伍'>
+      {/* <Checkbox value={show_hidden} onChanged={set_show_hidden} title='显示隐藏角色' /> */}
+      <Titled title='TEAM'>
         <TeamSelect value={team} on_changed={v => info.set_team(v).save()} />
       </Titled>
       <Button onClick={on_click_add}>{added ? '移除' : '加入'}</Button>
