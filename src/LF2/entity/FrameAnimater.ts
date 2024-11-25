@@ -45,6 +45,7 @@ export default class FrameAnimater<
   I extends IGameObjInfo = IGameObjInfo,
   D extends IGameObjData<I, F> = IGameObjData<I, F>
 > implements IBaseNode {
+  static readonly TAG: string = 'FrameAnimater';
   id: string = new_id();
   wait: number = 0;
 
@@ -170,7 +171,7 @@ export default class FrameAnimater<
   }
 
   find_auto_frame(): F {
-    Warn.print(constructor_name(this), 'find_auto_frame(), not implemented! will return current frame.');
+    Warn.print(FrameAnimater.TAG + '::find_auto_frame', 'not implemented! will return current frame.');
     return this.get_frame();
   }
 
@@ -186,7 +187,7 @@ export default class FrameAnimater<
       case Defines.FrameId.Gone: return GONE_FRAME_INFO as F;
     }
     if (!this.data.frames[id]) {
-      Warn.print(constructor_name(this), 'find_frame_by_id(id), frame not find! id:', id);
+      Warn.print(FrameAnimater.TAG + '::find_auto_frame', 'find_frame_by_id(id), frame not find! id:', id);
       return EMPTY_FRAME_INFO as F;
     }
     return this.data.frames[id];

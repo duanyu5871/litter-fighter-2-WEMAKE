@@ -29,6 +29,7 @@ export interface ICube {
   far: number;
 }
 export class World {
+  static readonly TAG = 'World';
   readonly lf2: LF2
   readonly _callbacks = new Callbacks<IWorldCallbacks>();
 
@@ -535,12 +536,12 @@ export class World {
   spark(x: number, y: number, z: number, f: string) {
     const data = this.lf2.datas.find(Defines.BuiltIn.Dats.Spark);
     if (!data) {
-      Warn.print(World.name + '::' + this.spark.name, `data of "${Defines.BuiltIn.Dats.Spark}" not found!`);
+      Warn.print(World.TAG + '::spark', `data of "${Defines.BuiltIn.Dats.Spark}" not found!`);
       return;
     }
     const create = Factory.inst.get(data.type);
     if (!create) {
-      Warn.print(World.name + '::' + this.spark.name, `creator of "${data.type}" not found!`);
+      Warn.print(World.TAG + '::spark', `creator of "${data.type}" not found!`);
       return;
     }
     const e = create(this, data)

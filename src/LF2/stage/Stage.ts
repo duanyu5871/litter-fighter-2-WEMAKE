@@ -17,6 +17,7 @@ import type IStageCallbacks from "./IStageCallbacks";
 import Item from "./Item";
 
 export default class Stage {
+  static readonly TAG: string = 'Stage';
   readonly world: World;
   readonly data: IStageInfo;
   readonly bg: Background;
@@ -66,7 +67,7 @@ export default class Stage {
       this.data = data;
       const bg_id = this.data.bg
       const bg_data = this.world.lf2.datas.backgrounds.find(v => v.id === bg_id || v.id === 'bg_' + bg_id)// FIXME;
-      if (!bg_data) Warn.print(Stage.name, `bg_data not found, id: ${bg_id}`)
+      if (!bg_data) Warn.print(Stage.TAG + '::constructor', `bg_data not found, id: ${bg_id}`)
       this.bg = new Background(world, bg_data ?? Defines.VOID_BG);
     } else {
       this.data = Defines.VOID_STAGE;

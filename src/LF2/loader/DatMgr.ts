@@ -83,15 +83,17 @@ class Inner {
     const _data_id = '' + data.id;
     if (_data_id === 'spark') debugger
     if (_data_id !== _index_id) {
-      Log.print('DatLoader',
-        `_add_data(), index_id not equal to data_id,`,
+      Log.print(
+        DatMgr.TAG + '::_add_data',
+        `index_id not equal to data_id,`,
         `index_id: ${_index_id}, data_id: ${_data_id},`,
         `will use index_id as data key.`
       );
     }
     if (this.data_map.has(_index_id)) {
-      Log.print('DatLoader',
-        " _add_data(), id duplicated, old data will be overwritten!",
+      Log.print(
+        DatMgr.TAG + '::_add_data',
+        "id duplicated, old data will be overwritten!",
         "old data:", this.data_map.get(_index_id),
         "new data:", data
       )
@@ -145,6 +147,7 @@ class Inner {
 }
 
 export default class DatMgr {
+  static readonly TAG: string = 'DatMgr';
   find_group(group_name: string) {
     return {
       characters: this.characters.filter(v => v.base.group && v.base.group.indexOf(group_name) >= 0),

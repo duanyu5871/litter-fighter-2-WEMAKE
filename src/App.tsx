@@ -240,7 +240,7 @@ function App() {
     open_file({ accept: '.zip' })
       .then(v => Ditto.Zip.read_file(v[0]))
       .then(v => lf2.load(v))
-      .catch(e => Log.print('on_click_load_local_zip', e))
+      .catch(e => Log.print('App -> on_click_load_local_zip', e))
   }
 
   const on_click_download_zip = () => {
@@ -254,9 +254,9 @@ function App() {
     const lf2 = lf2_ref.current;
     if (!lf2) return;
     lf2.load('data.zip.json')
-      .catch(e => Log.print('on_click_load_builtin, data.zip.json not exists, will try lf2_data', e))
+      .catch(e => Log.print('App -> on_click_load_builtin, data.zip.json not exists, will try lf2_data', e))
       .then(() => lf2.load())
-      .catch(e => Log.print('on_click_load_builtin', e))
+      .catch(e => Log.print('App -> on_click_load_builtin', e))
   }
 
   useEffect(() => {

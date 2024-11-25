@@ -31,6 +31,7 @@ import VerticalLayout from "./VerticalLayout";
 import VsModeLogic from "./VsModeLogic";
 
 class Factory {
+  static readonly TAG = `Layout Component Factory`
   private _component_map = new Map<string, typeof LayoutComponent>([
     ['game_loading_file_name', LoadingFileNameDisplayer],
     ['key_set', PlayerKeyEditor],
@@ -67,7 +68,7 @@ class Factory {
       const [func_name, args] = read_call_func_expression(component_expression);
       if (!func_name) {
         Warn.print(
-          'Layout Component Factory',
+          Factory.TAG + '::create',
           'expression not correct! expression:',
           component_expression
         )
@@ -76,7 +77,7 @@ class Factory {
       const Cls = this._component_map.get(func_name);
       if (!Cls) {
         Warn.print(
-          'Layout Component Factory',
+          Factory.TAG + '::create',
           'Component class not found! expression:',
           component_expression
         )

@@ -38,6 +38,7 @@ export default class Entity<
   I extends IGameObjInfo = IGameObjInfo,
   D extends IGameObjData<I, F> = IGameObjData<I, F>
 > extends FrameAnimater<F, I, D> {
+  static readonly TAG: string = 'Entity';
   readonly is_entity = true
   readonly states: States;
   readonly shadow: Shadow;
@@ -326,12 +327,12 @@ export default class Entity<
   spawn_object(opoint: IOpointInfo, speed_z: number = 0): FrameAnimater | undefined {
     const d = this.world.lf2.datas.find(opoint.oid);
     if (!d) {
-      Warn.print(constructor_name(this), 'spawn_object(), data not found! opoint:', opoint);
+      Warn.print(Entity.TAG + '::spawn_object', 'data not found! opoint:', opoint);
       return;
     }
     const create = Factory.inst.get(d.type);
     if (!create) {
-      Warn.print(constructor_name(this), `spawn_object(), creator of "${d.type}" not found! opoint:`, opoint);
+      Warn.print(Entity.TAG + '::spawn_object', `creator of "${d.type}" not found! opoint:`, opoint);
       return;
     }
     return create(this.world, d).on_spawn_by_emitter(this, opoint, speed_z).attach()

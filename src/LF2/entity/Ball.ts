@@ -9,6 +9,7 @@ import { is_character, is_weapon } from './type_check';
 import { Log } from '../../Log';
 
 export default class Ball extends Entity<IBallFrameInfo, IBallInfo, IBallData> {
+  static readonly TAG: string = 'Ball';
   readonly is_ball = true
   ud = 0;
   constructor(world: World, data: IBallData) {
@@ -65,12 +66,12 @@ export default class Ball extends Entity<IBallFrameInfo, IBallInfo, IBallData> {
         case Defines.ItrKind.DeadWhenHit:
           this.play_hit_sound()
           if (f.on_timeout) this.enter_frame(f.on_timeout)
-          else Log.print('Ball', 'Defines.ItrKind.DeadWhenHit, but on_dead not set.')
+          else Log.print(Ball.TAG + '::on_collision', 'Defines.ItrKind.DeadWhenHit, but on_dead not set.')
           break;
         default:
           this.play_hit_sound()
           if (f.on_hitting) this.enter_frame(f.on_hitting);
-          else Log.print('Ball', 'on_hitting not set.')
+          else Log.print(Ball.TAG + '::on_collision', 'on_hitting not set.')
           break;
       }
       if (itr.on_hit) this.enter_frame(itr.on_hit)

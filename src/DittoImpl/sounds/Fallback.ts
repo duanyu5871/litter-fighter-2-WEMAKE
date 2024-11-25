@@ -4,6 +4,7 @@ import { clamp } from "../../LF2/utils/math/clamp";
 import float_equal from "../../LF2/utils/math/float_equal";
 
 export class __Fallback extends BaseSounds {
+  static readonly TAG = '__Fallback';
   protected _r = new Map<string, string>();
   protected _prev_bgm_url: string | null = null;
   protected _bgm_ele?: HTMLAudioElement;
@@ -150,7 +151,7 @@ export class __Fallback extends BaseSounds {
     this._playings.set(id, audio)
 
     audio.onerror = e => {
-      Warn.print(__Fallback.name, 'failed:', name, e);
+      Warn.print(__Fallback.TAG + '::play -> audio.onerror', ', failed:', name, e);
       this._playings.delete(id)
     };
     audio.onended = () => this._playings.delete(id)

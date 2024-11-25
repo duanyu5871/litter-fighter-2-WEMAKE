@@ -32,7 +32,7 @@ export const cook_frame = (lf2: LF2, data: IGameObjData, frame: IFrameInfo) => {
       if (ret) { pic -= pic_info.begin; break; }
     }
     if (pic_info === void 0)
-      return Warn.print(cook_frame.name, 'file info not found, data:', data, 'pic number:', pic);
+      return Warn.print(cook_frame.TAG, 'file info not found, data:', data, 'pic number:', pic);
 
     const { id, row, cell_w, cell_h } = pic_info;
     const x = (cell_w + 1) * (pic % row);
@@ -46,9 +46,9 @@ export const cook_frame = (lf2: LF2, data: IGameObjData, frame: IFrameInfo) => {
         break;
       }
     }
-    if (pic_info === void 0) return Warn.print(cook_frame.name, 'file info not found, pic number:', pic);
+    if (pic_info === void 0) return Warn.print(cook_frame.TAG, 'file info not found, pic number:', pic);
     const p = lf2.images.find_by_pic_info(pic_info);
-    if (!p) return Warn.print(cook_frame.name, 'image_info not found', pic_info);
+    if (!p) return Warn.print(cook_frame.TAG, 'image_info not found', pic_info);
 
     const scale_img_w = p.w / p.scale;
     const scale_img_h = p.h / p.scale;
@@ -113,6 +113,7 @@ export const cook_frame = (lf2: LF2, data: IGameObjData, frame: IFrameInfo) => {
   });
 
 };
+cook_frame.TAG = 'cook_frame'
 
 const cook_frame_hit = (frame: IFrameInfo) => {
   const hit = frame.hit;

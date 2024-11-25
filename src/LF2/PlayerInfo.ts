@@ -33,6 +33,7 @@ export class PlayerInfo {
   protected _team_decided: boolean = false;
   protected _character_decided: boolean = false;
   protected _random_character: string = '';
+  static readonly TAG = 'PlayerInfo';
 
   get id(): string { return this._info.id; }
   get name(): string { return this._info.name; }
@@ -80,7 +81,7 @@ export class PlayerInfo {
     try {
       const { name, keys, team, version, character } = JSON.parse(str) as Partial<PurePlayerInfo>;
       if (version !== this._info.version) {
-        Warn.print(PlayerInfo.name, 'version changed');
+        Warn.print(PlayerInfo.TAG + '::load', 'version changed');
         return false;
       }
       this._info.name = is_str(name) ? name : this._info.name;
@@ -89,7 +90,7 @@ export class PlayerInfo {
       this._info.character = is_str(character) ? character : this._info.character;
       return true;
     } catch (e) {
-      Warn.print(PlayerInfo.name, 'load failed, ', e);
+      Warn.print(PlayerInfo.TAG + '::load', 'load failed, ', e);
       return false;
     }
   }

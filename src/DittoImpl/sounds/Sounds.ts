@@ -6,6 +6,7 @@ import { __Fallback } from "./Fallback";
 import { __Modern } from "./Modern";
 
 export class __Sounds implements ISounds {
+  static readonly TAG: string = '__Sounds';
   readonly inner: ISounds;
   readonly cls_list: (new (lf2: LF2) => ISounds)[] = [__Modern, __Fallback];
 
@@ -18,7 +19,7 @@ export class __Sounds implements ISounds {
         this.inner = new cls(lf2);
         break;
       } catch (e) {
-        Warn.print(__Sounds.name, 'can not use ' + cls.name, e)
+        Warn.print(__Sounds.TAG + '::constructor', 'can not use ' + cls.name, e)
       }
     }
   }

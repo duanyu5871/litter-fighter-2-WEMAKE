@@ -45,6 +45,7 @@ const cheat_info_pair = (n: Defines.Cheats) => ['' + n, {
 }] as const;
 
 export default class LF2 implements IKeyboardCallback, IPointingsCallback {
+  static readonly TAG = 'LF2';
   private _disposed: boolean = false;
   private _callbacks = new Callbacks<ILf2Callback>();
   private _layout_stacks: Layout[] = [];
@@ -588,7 +589,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     const paths: string[] = ["launch/init.json"];
     for (const element of array) {
       if (is_str(element)) paths.push(element);
-      else Warn.print('layouts/index.json', 'element is not a string! got:', element)
+      else Warn.print(LF2.TAG + '::load_layouts', 'layouts/index.json', 'element is not a string! got:', element)
     }
     for (const path of paths) {
       const cooked_layout_data = await Layout.cook_layout_info(this, path)
@@ -646,6 +647,10 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   }
 
   pop_layout(): void {
+    if (this._layout_stacks.length <= 1) {
+      Warn.print(LF2.TAG + '::pop_layout', 'can not pop top layout!')
+      return;
+    }
     const popped = this._layout_stacks.pop()
     popped?.on_pause();
     popped?.on_stop();
@@ -669,7 +674,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
 
   on_loading_content(content: string, progress: number) {
     this._callbacks.emit('on_loading_content')(content, progress);
-    Log.print('LF2', `loading:${progress ? (content + `${progress}%`) : content}`)
+    Log.print(LF2.TAG + '::on_loading_content', `loading: ${progress ? (content + `${progress}%`) : content}`)
   }
   broadcast(message: string): void {
     this._callbacks.emit('on_broadcast')(message);

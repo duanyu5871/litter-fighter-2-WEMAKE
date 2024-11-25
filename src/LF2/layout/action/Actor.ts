@@ -5,6 +5,7 @@ import { read_call_func_expression } from "../utils/read_func_args";
 
 interface IActionHandler { (layout: Layout, ...args: string[]): void }
 class Actor {
+  static readonly TAG: string = 'Actor';
   private _handler_map = new Map<string, IActionHandler>([
     ['alert', (_, msg) => alert(msg)],
     ['link_to', (_, url) => window.open(url)],
@@ -15,7 +16,7 @@ class Actor {
     ['load_data', ({ lf2 }, url) => {
       if (lf2.loading) return;
       lf2.load(url)
-        .catch(e => Warn.print(`Actor.load_data, ${url} not exists`, e))
+        .catch(e => Warn.print(Actor.TAG + '::load_data', `${url} not exists`, e))
     }],
     ['broadcast', ({ lf2 }, message) => message && lf2.broadcast(message)],
     ['sound', ({ lf2 }, name) => name && lf2.sounds.play_preset(name)],

@@ -8,7 +8,6 @@ import { InvalidController } from '../controller/InvalidController';
 import type { IBdyInfo, ICharacterData, ICharacterFrameInfo, ICharacterInfo, IFrameInfo, IItrInfo, INextFrame, IOpointInfo, TFace, TNextFrame } from '../defines';
 import { Defines } from '../defines/defines';
 import { CHARACTER_STATES } from '../state/character';
-import { constructor_name } from '../utils/constructor_name';
 import Entity from './Entity';
 import { Factory } from './Factory';
 import ICharacterCallbacks from './ICharacterCallbacks';
@@ -16,6 +15,7 @@ import { same_face, turn_face } from './face_helper';
 import { is_ball, is_character, is_weapon } from './type_check';
 
 export default class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, ICharacterData> {
+  static readonly TAG: string = 'Character';
   readonly is_character = true
   protected _callbacks = new Callbacks<ICharacterCallbacks>()
   protected _controller: BaseController = new InvalidController('', this);
@@ -175,11 +175,11 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
   }
   private start_catch(target: Entity, itr: IItrInfo) {
     if (!is_character(target)) {
-      Warn.print(constructor_name(this), 'start_catch(), cannot catch', target)
+      Warn.print(Character.TAG + '::start_catch', 'cannot catch', target)
       return;
     }
     if (itr.catchingact === void 0) {
-      Warn.print(constructor_name(this), 'start_catch(), cannot catch, catchingact got', itr.catchingact)
+      Warn.print(Character.TAG + '::start_catch', 'cannot catch, catchingact got', itr.catchingact)
       return;
     }
     this._catching_value = 602;
@@ -188,11 +188,11 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
   }
   private start_caught(attacker: Entity, itr: IItrInfo) {
     if (!is_character(attacker)) {
-      Warn.print(constructor_name(this), 'start_caught(), cannot be caught by', attacker)
+      Warn.print(Character.TAG + '::start_caught', 'cannot be caught by', attacker)
       return
     }
     if (itr.caughtact === void 0) {
-      Warn.print(constructor_name(this), 'start_caught(), cannot be caught, caughtact got', itr.caughtact)
+      Warn.print(Character.TAG + '::start_caught', 'cannot be caught, caughtact got', itr.caughtact)
       return;
     }
     this._catcher = attacker;
