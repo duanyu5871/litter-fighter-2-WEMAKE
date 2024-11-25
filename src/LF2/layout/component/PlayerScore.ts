@@ -28,7 +28,7 @@ export default class PlayerScore extends LayoutComponent {
       },
       on_dead: (e) => {
         if (!e.team) { this._lose = true; return }
-        for (const [, c] of this.world.player_characters) {
+        for (const [, c] of this.world.player_slot_characters) {
           if (c.team !== e.team) continue;
           if (c.hp > 0) {
             this._lose = false;

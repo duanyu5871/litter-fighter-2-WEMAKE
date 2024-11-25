@@ -35,7 +35,7 @@ export default class Layer {
   }
 
   update(count: number) {
-    this.mesh.tran_materials_opacity(0.1)
+    this.mesh.tran_opacity(0.1)
     const { w: inner_w, h: inner_h, info: { width, c1, c2, cc, absolute }, x } = this.user_data;
     if (cc !== void 0 && c1 !== void 0 && c2 !== void 0) {
       const now = count % cc;
@@ -52,6 +52,6 @@ export default class Layer {
   }
 
   fade_out(duration: number, delay: number = 0): void {
-    fade_out(o => this.mesh.set_materials_opacity(o), duration, delay)
+    fade_out(o => this.mesh.set_opacity(o), duration, delay)
   }
 }

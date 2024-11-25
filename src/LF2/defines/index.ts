@@ -13,9 +13,10 @@ export type TTODO = any;
 export type TFace = -1 | 1;
 export type TTrend = -1 | 0 | 1;
 export type BOOL = 1 | 0;
-export * from './IDataLists'
-export * from './IDatIndex'
-
+export * from './defines';
+export * from './IDataLists';
+export * from './IDatIndex';
+export * from "./IStageInfo";
 
 /**
  * 实体图片信息
@@ -65,6 +66,7 @@ export type TNextFrame = INextFrame | INextFrame[]
 export * from './IBallFrameInfo';
 export * from './IBallInfo';
 export * from './IBdyInfo';
+export * from './IBgData';
 export * from './IBgInfo';
 export * from './IBgLayerInfo';
 export * from './IBpointInfo';
@@ -76,11 +78,13 @@ export * from './IFramePictureInfo';
 export * from './IItrInfo';
 export * from './INextFrame';
 export * from './IOpointInfo';
+export * from './IStageInfo';
+export * from './IStageObjectInfo';
+export * from './IStagePhaseInfo';
 export * from './ITexturePieceInfo';
 export * from './ITexturePieceInfos';
 export * from './IWeaponInfo';
 export * from './IWpointInfo';
-export * from './IBgData';
 
 export interface IGameObjInfo {
   /** 所属组 */
@@ -140,6 +144,3 @@ export type TFrameIdListPair = {
   [-1]: string[],
   1: string[],
 }
-export * from './IStageObjectInfo'
-export * from './IStagePhaseInfo'
-export * from './IStageInfo'

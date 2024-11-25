@@ -8,14 +8,13 @@ import { BotEnemyChaser } from './BotEnemyChaser';
 
 type TKeyCodeMap = { [x in GameKey]?: string };
 type TCodeKeyMap = { [x in string]?: GameKey };
-export default class LocalHuman extends BaseController implements IKeyboardCallback {
-  readonly is_local_human = true;
-  static is = (v: any): v is LocalHuman => v?.is_local_human === true
+export default class LocalController extends BaseController implements IKeyboardCallback {
+  readonly is_local_controller = true;
+  static is = (v: any): v is LocalController => v?.is_local_controller === true
 
   private _key_code_map: TKeyCodeMap = {};
   private _code_key_map: TCodeKeyMap = {};
-  private _ai?: BotEnemyChaser;
-
+  ai?: BotEnemyChaser;
   on_key_up(e: IKeyEvent) {
     const code = e.key?.toLowerCase();
     if (!code) return;
@@ -53,18 +52,18 @@ export default class LocalHuman extends BaseController implements IKeyboardCallb
   };
 
   as_bot(): this {
-    this._ai = new BotEnemyChaser(this.player_id, this.character);
+    this.ai = new BotEnemyChaser(this.player_id, this.character);
     this.lf2.keyboard.callback.del(this)
     return this;
   }
 
   as_human(): this {
-    this._ai = void 0;
+    this.ai = void 0;
     this.lf2.keyboard.callback.add(this)
     return this;
   }
   override update(): TNextFrame | undefined {
-    if (this._ai) return this._ai.update()
+    if (this.ai) return this.ai.update()
     return super.update()
   }
 }

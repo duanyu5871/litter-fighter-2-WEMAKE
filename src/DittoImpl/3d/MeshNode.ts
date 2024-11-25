@@ -28,7 +28,7 @@ export class __MeshNode extends __ObjectNode implements IMeshNode {
   }
   get_info(): IMeshInfo { return this.__info }
 
-  tran_materials_opacity(offset: number) {
+  tran_opacity(offset: number) {
     const m = this.material;
     if (!Array.isArray(m)) {
       m.opacity += offset
@@ -46,7 +46,7 @@ export class __MeshNode extends __ObjectNode implements IMeshNode {
       fn(mm);
     return this;
   }
-  set_materials_opacity(opacity: number): this {
+  set_opacity(opacity: number): this {
     return this.traversal_material((m) => {
       m.opacity = opacity
     })

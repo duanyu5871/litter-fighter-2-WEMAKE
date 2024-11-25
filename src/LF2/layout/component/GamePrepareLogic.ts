@@ -2,7 +2,7 @@ import Callbacks from "../../base/Callbacks";
 import FSM, { IReadonlyFSM } from "../../base/FSM";
 import Invoker from "../../base/Invoker";
 import { NoEmitCallbacks } from "../../base/NoEmitCallbacks";
-import LocalHuman from "../../controller/LocalHuman";
+import LocalController from "../../controller/LocalController";
 import GameKey from "../../defines/GameKey";
 import { Defines } from "../../defines/defines";
 import Character from "../../entity/Character";
@@ -260,8 +260,8 @@ export default class GamePrepareLogic extends LayoutComponent {
       character.team = player.team
       character.facing = Math.random() < 0.5 ? 1 : -1
       character.controller = player.is_com ?
-        new LocalHuman(player.id, character, player.keys).as_bot() :
-        new LocalHuman(player.id, character, player.keys)
+        new LocalController(player.id, character, player.keys).as_bot() :
+        new LocalController(player.id, character, player.keys)
       character.attach();
     }
 

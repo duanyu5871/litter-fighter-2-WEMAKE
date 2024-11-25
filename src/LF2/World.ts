@@ -6,7 +6,7 @@ import LF2 from './LF2';
 import Callbacks from './base/Callbacks';
 import FPS from './base/FPS';
 import { NoEmitCallbacks } from "./base/NoEmitCallbacks";
-import LocalHuman from './controller/LocalHuman';
+import LocalController from './controller/LocalController';
 import { IBdyInfo, IFrameInfo, IItrInfo } from './defines';
 import { Defines } from './defines/defines';
 import Ditto from './ditto';
@@ -68,7 +68,7 @@ export class World {
   game_objs = new Set<FrameAnimater>();
   disposed = false;
 
-  readonly player_characters = new Map<string, Character>();
+  readonly player_slot_characters = new Map<string, Character>();
   readonly nearest_enemy_requester = new Set<Entity>();
 
   get stage() { return this._stage }
@@ -119,8 +119,8 @@ export class World {
 
   add_game_objs(...objs: FrameAnimater[]) {
     for (const e of objs) {
-      if (is_character(e) && LocalHuman.is(e.controller)) {
-        this.player_characters.set(e.controller.player_id, e);
+      if (is_character(e) && LocalController.is(e.controller)) {
+        this.player_slot_characters.set(e.controller.player_id, e);
         this._callbacks.emit('on_player_character_add')(e.controller.player_id)
       }
       if (is_entity(e)) {
@@ -137,8 +137,8 @@ export class World {
 
   del_game_objs(...objs: FrameAnimater[]) {
     for (const e of objs) {
-      if (is_character(e) && LocalHuman.is(e.controller)) {
-        this.player_characters.delete(e.controller.player_id);
+      if (is_character(e) && LocalController.is(e.controller)) {
+        this.player_slot_characters.delete(e.controller.player_id);
         this._callbacks.emit('on_player_character_del')(e.controller.player_id)
       }
       if (is_entity(e)) {
@@ -212,7 +212,7 @@ export class World {
     if (this.disposed) return;
     if (this._update_worker_id) Ditto.Timeout.del(this._update_worker_id);
     this._expected_dt = (1000 / 60) / this._playrate;
-    this._applied_dt = Math.max(this._expected_dt , 0)
+    this._applied_dt = Math.max(this._expected_dt, 0)
     const on_update = () => {
       const time = Date.now();
       if (!this._paused) this.update_once()
@@ -250,7 +250,7 @@ export class World {
     if (!this.bg) return;
     const { left, right, near, far, player_left, player_right } = this.stage;
 
-    const is_player = LocalHuman.is(e.controller);
+    const is_player = LocalController.is(e.controller);
     const l = is_player ? player_left : left;
     const r = is_player ? player_right : right;
 
@@ -367,11 +367,16 @@ export class World {
       new_x = this.lock_cam_x;
       max_speed_ratio = 1000;
       acc_ratio = 10;
-    } else if (this.player_characters.size) {
+    } else if (this.player_slot_characters.size) {
+      let l = 0
       new_x = 0;
-      for (const [, player] of this.player_characters)
+      for (const [, player] of this.player_slot_characters) {
+        const c = player.controller;
+        if (!LocalController.is(c) || c.ai) continue;
         new_x += player.position.x - 794 / 2 + player.facing * 794 / 6;
-      new_x = Math.floor(new_x / this.player_characters.size);
+        ++l;
+      }
+      new_x = Math.floor(new_x / l);
     }
     if (new_x < max_cam_left) new_x = max_cam_left;
     if (new_x > max_cam_right - 794) new_x = max_cam_right - 794;
@@ -403,15 +408,16 @@ export class World {
     }
   }
 
+  private _temp_entitis_set = new Set<Entity>();
   collision_detections() {
-    const bs = new Set<Entity>();
+    this._temp_entitis_set.clear()
     for (const a of this.entities) {
-      for (const b of bs) {
+      for (const b of this._temp_entitis_set) {
         const r0 = this.collision_detection(a, b);
         const r1 = this.collision_detection(b, a);
         if (r0 || r1) continue;
       }
-      bs.add(a);
+      this._temp_entitis_set.add(a);
     }
   }
 

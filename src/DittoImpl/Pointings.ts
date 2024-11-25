@@ -3,13 +3,21 @@ import { NoEmitCallbacks } from "../LF2/base/NoEmitCallbacks";
 import { IPointingEvent, IPointings, IPointingsCallback } from "../LF2/ditto";
 
 class __PointingEvent implements IPointingEvent {
-  protected _element: HTMLElement;
-  readonly x: number;
-  readonly y: number;
-  readonly scene_x: number;
-  readonly scene_y: number;
   readonly is_pointing_event = true;
+  protected _element: HTMLElement;
+  x: number;
+  y: number;
+  scene_x: number;
+  scene_y: number;
   constructor(element: HTMLElement, event: PointerEvent | MouseEvent) {
+    this._element = element;
+    this.x = event.offsetX;
+    this.y = event.offsetY;
+    const { width, height } = element.getBoundingClientRect();
+    this.scene_x = (this.x / width) * 2 - 1;
+    this.scene_y = -(this.y / height) * 2 + 1;
+  }
+  init(element: HTMLElement, event: PointerEvent | MouseEvent) {
     this._element = element;
     this.x = event.offsetX;
     this.y = event.offsetY;

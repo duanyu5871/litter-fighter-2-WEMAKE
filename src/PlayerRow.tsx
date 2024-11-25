@@ -6,7 +6,7 @@ import TeamSelect from './Component/TeamSelect';
 import LF2 from './LF2/LF2';
 import { PlayerInfo } from './LF2/PlayerInfo';
 import { random_get } from './LF2/utils/math/random';
-import LocalHuman from './LF2/controller/LocalHuman';
+import LocalController from './LF2/controller/LocalController';
 import { Checkbox } from './Component/Checkbox';
 import { Defines } from './LF2/defines/defines';
 import { ToggleButton } from './Component/ToggleButton';
@@ -66,7 +66,7 @@ export function PlayerRow(props: Props) {
         set_keys(v => {
           const ks = { ...v, [name]: key };
           const character = lf2.get_player_character(info.id);
-          if (character && LocalHuman.is(character.controller))
+          if (character && LocalController.is(character.controller))
             character.controller.set_key_code_map(ks);
           return ks;
         })

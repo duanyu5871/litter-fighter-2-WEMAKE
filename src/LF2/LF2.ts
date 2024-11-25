@@ -10,20 +10,21 @@ import { get_short_file_size_txt } from './base/get_short_file_size_txt';
 import { new_id, new_team } from './base/new_id';
 import Layer from './bg/Layer';
 import { KEY_NAME_LIST } from './controller/BaseController';
-import LocalHuman from "./controller/LocalHuman";
-import { IBgData, ICharacterData, IWeaponData, TFace } from './defines';
-import { IStageInfo } from "./defines/IStageInfo";
-import { Defines } from './defines/defines';
-import ditto, { IKeyEvent, IPointingEvent, IPointings, IZip } from './ditto';
-import { IKeyboard } from './ditto/keyboard/IKeyboard';
-import { IKeyboardCallback } from "./ditto/keyboard/IKeyboardCallback";
-import { IPointingsCallback } from "./ditto/pointings/IPointingsCallback";
-import ISounds from './ditto/sounds/ISounds';
+import LocalController from "./controller/LocalController";
+import {
+  Defines, IBgData, ICharacterData, IStageInfo, IWeaponData, TFace
+} from './defines';
+import ditto, {
+  IKeyboard,
+  IKeyboardCallback,
+  IKeyEvent, IPointingEvent, IPointings,
+  IPointingsCallback, ISounds,
+  IZip
+} from "./ditto";
+
 import './entity/Ball';
 import Character from './entity/Character';
-import './entity/Entity';
 import Entity from './entity/Entity';
-import './entity/Weapon';
 import Weapon from './entity/Weapon';
 import { is_character, is_entity } from './entity/type_check';
 import { ILayoutInfo } from './layout/ILayoutInfo';
@@ -90,7 +91,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   ])
   get player_infos() { return this._player_infos }
 
-  get player_characters() { return this.world.player_characters }
+  get player_characters() { return this.world.player_slot_characters }
 
   readonly characters: Record<string, (num: number, team?: string) => void> = {}
   readonly weapons: Record<string, (num: number, team?: string) => void> = {}
@@ -228,42 +229,42 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
       }
     }
   }
-  private mouse_on_layouts = new Set<Layout>()
-
+  private _mouse_on_layouts = new Set<Layout>();
+  private _pointer_raycaster = new THREE.Raycaster();
+  private _pointer_vec_2 = new THREE.Vector2();
 
   on_pointer_move(e: IPointingEvent) {
     const { layout } = this;
     if (!layout) return;
-    const coords = new THREE.Vector2(e.scene_x, e.scene_y);
+    this._pointer_vec_2.x = e.scene_x;
+    this._pointer_vec_2.y = e.scene_y;
     const { sprite } = layout;
     if (!sprite) return;
-    const raycaster = new THREE.Raycaster();
-    this.world.camera.raycaster(raycaster, coords)
-    const intersections = sprite.intersect_from_raycaster(raycaster, true)
-    const mouse_on_layouts = new Set<Layout>()
+    this.world.camera.raycaster(this._pointer_raycaster, this._pointer_vec_2)
+    const intersections = sprite.intersect_from_raycaster(this._pointer_raycaster, true)
+    this._mouse_on_layouts.clear()
     for (const { object: { userData: { owner } } } of intersections) {
-      if (owner instanceof Layout) mouse_on_layouts.add(owner);
+      if (owner instanceof Layout) this._mouse_on_layouts.add(owner);
     }
-    for (const layout of mouse_on_layouts) {
-      if (!this.mouse_on_layouts.has(layout)) {
+    for (const layout of this._mouse_on_layouts) {
+      if (!this._mouse_on_layouts.has(layout)) {
         layout.on_mouse_enter()
         layout.state.mouse_on_me = '1';
       }
     }
-    for (const layout of this.mouse_on_layouts) {
-      if (!mouse_on_layouts.has(layout)) {
+    for (const layout of this._mouse_on_layouts) {
+      if (!this._mouse_on_layouts.has(layout)) {
         layout.on_mouse_leave()
         layout.state.mouse_on_me = '0';
       }
     }
-    this.mouse_on_layouts = mouse_on_layouts;
   }
 
   on_pointer_down(e: IPointingEvent) {
-    const coords = new THREE.Vector2(e.scene_x, e.scene_y)
-    const raycaster = new THREE.Raycaster()
-    this.world.camera.raycaster(raycaster, coords)
-    const intersections = this.world.scene.intersects_from_raycaster(raycaster)
+    this._pointer_vec_2.x = e.scene_x;
+    this._pointer_vec_2.y = e.scene_y;
+    this.world.camera.raycaster(this._pointer_raycaster, this._pointer_vec_2)
+    const intersections = this.world.scene.intersects_from_raycaster(this._pointer_raycaster)
     if (!intersections.length) {
       this.pick_intersection(void 0)
     } else {
@@ -281,8 +282,8 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
       if (!layout) return;
       const { sprite } = layout;
       if (!sprite) return;
-      this.world.camera.raycaster(raycaster, coords)
-      const intersections = sprite.intersects_from_raycaster(raycaster, true)
+      this.world.camera.raycaster(this._pointer_raycaster, this._pointer_vec_2)
+      const intersections = sprite.intersects_from_raycaster(this._pointer_raycaster, true)
       const layouts = intersections
         .filter(v => v.object.userData.owner instanceof Layout)
         .map(v => v.object.userData.owner as Layout)
@@ -338,7 +339,6 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
       this.toggle_cheat_enabled(cheat_name)
     }
     if (!match) this._curr_key_list = '';
-
     if (e.times === 0) {
       const { layout } = this;
       if (layout) {
@@ -527,7 +527,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     if (!old) {
       this.random_entity_info(character)
     }
-    character.controller = new LocalHuman(player_id, character, player_info?.keys)
+    character.controller = new LocalController(player_id, character, player_info?.keys)
     character.attach();
     return character
   }
@@ -675,11 +675,11 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     this._callbacks.emit('on_broadcast')(message);
   }
 
-  get_layout_tree(layout: Layout): III
-  get_layout_tree(layout?: Layout | undefined): III | null
-  get_layout_tree(layout: Layout | undefined = last(this._layout_stacks)): III | null {
+  get_layout_tree(layout: Layout): ILayoutTreeNode
+  get_layout_tree(layout?: Layout | undefined): ILayoutTreeNode | null
+  get_layout_tree(layout: Layout | undefined = last(this._layout_stacks)): ILayoutTreeNode | null {
     if (!layout) return null
-    const ret: III = {
+    const ret: ILayoutTreeNode = {
       name: layout.name ? `name: ${layout.name}` : layout.id ? `id: ${layout.id}` : '<no_name>',
       children: layout.children.map(v => this.get_layout_tree(v)),
       inst: layout,
@@ -695,14 +695,8 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     this.difficulty = next
   }
 }
-interface III {
+interface ILayoutTreeNode {
   name: string;
-  children?: III[];
+  children?: ILayoutTreeNode[];
   inst: Layout;
-}
-interface II {
-  name: string;
-  inst: THREE.Object3D;
-  user_data?: any,
-  children?: II[];
 }
