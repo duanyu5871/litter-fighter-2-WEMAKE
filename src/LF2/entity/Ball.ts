@@ -13,7 +13,7 @@ export default class Ball extends Entity<IBallFrameInfo, IBallInfo, IBallData> {
   ud = 0;
   constructor(world: World, data: IBallData) {
     super(world, data, BALL_STATES);
-    this.inner.name = "ball: " + data.id
+    this.name = "ball: " + data.id
     this.hp = this.data.base.hp;
   }
   override find_auto_frame() {
@@ -31,7 +31,7 @@ export default class Ball extends Entity<IBallFrameInfo, IBallInfo, IBallData> {
     return ret;
   }
   set_frame(v: IBallFrameInfo): void {
-    switch (this._frame.behavior) {
+    switch (this.frame.behavior) {
       case 1:
       case 2:
       case 3: this.unsubscribe_nearest_enemy(); break;

@@ -34,7 +34,7 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
 
   constructor(world: World, data: ICharacterData) {
     super(world, data, CHARACTER_STATES);
-    this.inner.name = Character.name + ':' + data.base.name;
+    this.name = Character.name + ':' + data.base.name;
     this.enter_frame({ id: Defines.FrameId.Auto });
 
     this._max_hp = this._hp = data.base.hp ?? Defines.HP;
@@ -53,7 +53,7 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
     const [frame] = ret;
     const { hp = 0, mp = 0 } = frame;
 
-    if (this._frame.next === which) {
+    if (this.frame.next === which) {
       // 用next 进入此动作，负数表示消耗，无视正数。若消耗完毕跳至按下防御键的指定跳转动作
       if (mp < 0 && this._mp < -mp) return super.get_next_frame(frame.hit?.d ?? Defines.FrameId.Auto);
       if (hp < 0 && this._hp < -hp) return super.get_next_frame(frame.hit?.d ?? Defines.FrameId.Auto);
@@ -96,9 +96,9 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
   override find_frame_by_id(id: string | undefined): ICharacterFrameInfo;
   override find_frame_by_id(id: string | undefined, exact: true): ICharacterFrameInfo | undefined;
   override find_frame_by_id(id: string | undefined, exact?: boolean): IFrameInfo | undefined {
-    if (this.hp <= 0 && this.position.y <= 0 && this._frame.state === Defines.State.Lying) {
+    if (this.hp <= 0 && this.position.y <= 0 && this.frame.state === Defines.State.Lying) {
       const { lying } = this.data.indexes;
-      const fid = this._frame.id;
+      const fid = this.frame.id;
       if (lying[-1] === fid) return super.find_frame_by_id(lying[-1])
       if (lying[1] === fid) return super.find_frame_by_id(lying[1])
     }
@@ -137,7 +137,7 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
   }
   override self_update(): void {
     super.self_update();
-    switch (this._frame.state) {
+    switch (this.frame.state) {
       case Defines.State.Falling:
         this._resting = 0;
         this._fall_value = 70;
@@ -155,13 +155,13 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
 
   override get_sudden_death_frame(): TNextFrame {
     this.velocity.y = 2;
-    this.velocity.x = 2 * this._facing;
+    this.velocity.x = 2 * this.facing;
     return { id: this.data.indexes.falling[1][1] }
   }
 
   override get_caught_end_frame(): TNextFrame {
     this.velocity.y = 2;
-    this.velocity.x = -2 * this._facing;
+    this.velocity.x = -2 * this.facing;
     return { id: this.data.indexes.falling[-1][1] }
   }
   override on_after_update() {

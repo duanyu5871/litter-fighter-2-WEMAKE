@@ -1,7 +1,7 @@
 
 import * as THREE from 'three';
 import { Warn } from '../../Log';
-import { IBaseNode, IMeshNode } from '../3d';
+import { IBaseNode } from '../3d';
 import LF2 from '../LF2';
 import type { World } from '../World';
 import { ICube } from '../World';
@@ -9,10 +9,7 @@ import Callbacks from '../base/Callbacks';
 import { NoEmitCallbacks } from "../base/NoEmitCallbacks";
 import { new_id } from '../base/new_id';
 import { IBallData, IBaseData, IBdyInfo, ICharacterData, IEntityData, IFrameInfo, IGameObjData, IGameObjInfo, IItrInfo, INextFrame, IOpointInfo, ITexturePieceInfo, IWeaponData, TFace, TNextFrame } from '../defines';
-import IPicture from '../defines/IPicture';
 import { Defines } from '../defines/defines';
-import Ditto from '../ditto';
-import create_pictures from '../loader/create_pictures';
 import BaseState from "../state/base/BaseState";
 import { States } from '../state/base/States';
 import { ENTITY_STATES } from '../state/entity';
@@ -76,19 +73,10 @@ export default class Entity<
   readonly is_frame_animater = true
   readonly data: D;
   readonly world: World;
-  readonly pictures: Map<string, IPicture<THREE.Texture>>;
-  readonly inner: IMeshNode;
   readonly position = new THREE.Vector3(0, 0, 0);
 
   get catcher() { return this._catcher; }
   get lf2(): LF2 { return this.world.lf2 }
-  get facing() { return this._facing; }
-  set facing(v: TFace) {
-    if (this._facing === v) { return; }
-    this._facing = v;
-    this.update_sprite();
-  }
-  private material: THREE.MeshBasicMaterial;
   readonly is_base_node = true;
   get parent() {
     throw new Error('Method not implemented.');
@@ -97,12 +85,10 @@ export default class Entity<
     throw new Error('Method not implemented.');
   }
   get children(): readonly IBaseNode[] { return [] }
-  get user_data(): Record<string, any> { return this.inner.user_data }
-  set user_data(v: Record<string, any>) { this.inner.user_data = v }
 
-  protected _piece: ITexturePieceInfo = EMPTY_PIECE;
-  protected _facing: TFace = 1;
-  protected _frame: F = EMPTY_FRAME_INFO as F;
+  facing: TFace = 1;
+  frame: F = EMPTY_FRAME_INFO as F;
+
   protected _next_frame: TNextFrame | undefined = void 0;
   protected _prev_frame: F = EMPTY_FRAME_INFO as F;
   protected _catching?: Entity;
@@ -166,7 +152,7 @@ export default class Entity<
    */
   protected _after_blink: string | TNextFrame | null = null;
 
-  protected _info_sprite: InfoSprite;
+  info_sprite: InfoSprite;
 
   protected _picking_sum: number = 0;
 
@@ -294,24 +280,9 @@ export default class Entity<
   constructor(world: World, data: D, states: States = ENTITY_STATES) {
     this.data = data;
     this.world = world;
-    this.pictures = create_pictures(world.lf2, data);
-    const first_text = this.pictures.get('0')?.texture;
-    this.inner = new Ditto.MeshNode(
-      world.lf2, {
-      geometry: new THREE.PlaneGeometry(1, 1).translate(0.5, -0.5, 0),
-      material: this.material = new THREE.MeshBasicMaterial({
-        map: first_text,
-        transparent: true,
-      })
-    }
-    );
-    if (first_text) first_text.onUpdate = () => this.inner.update_all_material()
-    this.inner.user_data.owner = this;
-    this.inner.visible = false;
-    this.inner.name = "Entity:" + data.id
     this.states = states;
     this.shadow = new Shadow(this);
-    this._info_sprite = new InfoSprite(this)
+    this.info_sprite = new InfoSprite(this)
   }
 
   set_holder(v: Entity | undefined): this {
@@ -386,11 +357,11 @@ export default class Entity<
   }
 
   set_frame(v: F) {
-    this._prev_frame = this._frame;
-    this._frame = v;
+    this._prev_frame = this.frame;
+    this.frame = v;
     this.shadow.visible = !v.no_shadow;
     const prev_state = this._prev_frame.state;
-    const next_state = this._frame.state;
+    const next_state = this.frame.state;
     if (prev_state !== next_state) {
       this.state = this.states.get(next_state) || this.states.get(Defines.State.Any);
     }
@@ -423,9 +394,7 @@ export default class Entity<
   }
 
   attach(): this {
-    this.update_sprite();
     this.world.add_entities(this);
-    this.inner.visible = true;
     return this;
   }
 
@@ -458,48 +427,12 @@ export default class Entity<
 
   on_gravity() {
     if (this.position.y <= 0 || this._shaking || this._motionless) return;
-    if (this._frame.dvy !== 550) this.velocity.y -= this.world.gravity;
+    if (this.frame.dvy !== 550) this.velocity.y -= this.world.gravity;
   }
 
   private _previous = {
     face: (void 0) as TFace | undefined,
     frame: (void 0) as F | undefined,
-  }
-  protected update_sprite() {
-    const frame = this.get_frame();
-    if (
-      this._previous.face === this._facing &&
-      this._previous.frame === this._frame
-    ) {
-      return;
-    }
-    this._previous.face = this._facing;
-    this._previous.frame = this._frame;
-    const { inner } = this;
-    const piece = frame.pic;
-    if (typeof piece === 'number' || !('1' in piece)) {
-      return;
-    }
-    if (this._piece !== piece[this._facing]) {
-      const { x, y, w, h, tex, pw, ph } = this._piece = piece[this._facing];
-      const pic = this.pictures.get('' + tex);
-      if (pic) {
-        pic.texture.offset.set(x, y);
-        pic.texture.repeat.set(w, h);
-        if (pic.texture !== this.material.map) {
-          this.material.map = pic.texture;
-        }
-        inner.update_all_material()
-      }
-      inner.set_scale(pw, ph, 0)
-    }
-    this.update_sprite_position();
-
-    this.holding?.follow_holder();
-    if (this._shaking) {
-      const x = (this._shaking % 2 ? -5 : 5);
-      this.inner.x += x;
-    }
   }
 
   handle_frame_velocity() {
@@ -507,7 +440,7 @@ export default class Entity<
     const { dvx, dvy, dvz } = this.get_frame();
     if (dvx === 550) this.velocity.x = 0;
     else if (dvx !== void 0) {
-      const next_speed = this._facing * dvx;
+      const next_speed = this.facing * dvx;
       const curr_speed = this.velocity.x;
       if (
         (next_speed > 0 && curr_speed <= next_speed) ||
@@ -528,7 +461,7 @@ export default class Entity<
     if (this._mp < this._max_mp)
       this.mp = Math.min(this._max_mp, this._mp + this._mp_r_spd);
 
-    const { cpoint } = this._frame;
+    const { cpoint } = this.frame;
     if (cpoint && is_nagtive(cpoint.decrease)) {
       this._catching_value += cpoint.decrease;
       if (this._catching_value < 0) this._catching_value = 0;
@@ -542,25 +475,23 @@ export default class Entity<
     this._a_rest > 1 ? this._a_rest-- : this._a_rest = 0;
     if (this._invisible_duration > 0) {
       this._invisible_duration--;
-      this.inner.visible = this.shadow.visible = this._info_sprite.visible = false;
+      this.shadow.visible = this.info_sprite.visible = false;
       if (this._invisible_duration <= 0) {
         this._blinking_duration = 120;
-        this._info_sprite.visible = true
+        this.info_sprite.visible = true
       }
     }
     if (this._blinking_duration > 0) {
       this._blinking_duration--;
       const bc = Math.floor(this._blinking_duration / 6) % 2;
       if (this._blinking_duration <= 0) {
-        this.inner.visible = true;
-        this.shadow.visible = !this._frame.no_shadow
+        this.shadow.visible = !this.frame.no_shadow
         if (this._after_blink === Defines.FrameId.Gone) {
           this._next_frame = void 0;
-          this._frame = GONE_FRAME_INFO as F
+          this.frame = GONE_FRAME_INFO as F
         }
       } else {
-        this.inner.visible = !!bc;
-        this.shadow.visible = !!bc && !this._frame.no_shadow
+        this.shadow.visible = !!bc && !this.frame.no_shadow
       }
     }
   }
@@ -568,11 +499,7 @@ export default class Entity<
   update(): void {
     if (this._next_frame) this.enter_frame(this._next_frame);
     if (this.wait > 0) { --this.wait; }
-    else { this._next_frame = this._frame.next; }
-    const { x, y, z } = this.position;
-    const { centerx, centery } = this._frame
-    const offset_x = this._facing === 1 ? centerx : this.inner.scale_x - centerx
-    this.inner.set_position(x - offset_x, y - z / 2 + centery, z);
+    else { this._next_frame = this.frame.next; }
     this.state?.update(this);
     if (!this._shaking && !this._motionless)
       this.position.add(this.velocity);
@@ -582,7 +509,6 @@ export default class Entity<
     } else if (this._shaking > 0) {
       ++this.wait;
       --this._shaking;
-      this.update_sprite();
     }
 
     const next_frame_1 = this.update_catching();
@@ -639,7 +565,7 @@ export default class Entity<
     }
 
     const { cpoint: cpoint_a } = this._catcher.get_frame();
-    const { cpoint: cpoint_b } = this._frame;
+    const { cpoint: cpoint_b } = this.frame;
     if (!cpoint_a || !cpoint_b) {
       delete this._catcher;
       return this.get_caught_cancel_frame()
@@ -693,14 +619,14 @@ export default class Entity<
       return this.get_catching_end_frame();
     }
 
-    const { cpoint: cpoint_a } = this._frame;
+    const { cpoint: cpoint_a } = this.frame;
     const { cpoint: cpoint_b } = this._catching.get_frame();
     if (!cpoint_a || !cpoint_b) {
       delete this._catching;
       return this.get_catching_cancel_frame();
     }
 
-    const { centerx: centerx_a, centery: centery_a } = this._frame;
+    const { centerx: centerx_a, centery: centery_a } = this.frame;
     const { centerx: centerx_b, centery: centery_b } = this._catching.get_frame();
     const { throwvx, throwvy, throwvz, x: catch_x, y: catch_y, cover } = cpoint_a;
     if (throwvx || throwvy || throwvz) {
@@ -717,19 +643,6 @@ export default class Entity<
     this._catching.position.z = pz;
     if (cover === 11) this._catching.position.z += 1;
     else if (cover === 10) this._catching.position.z -= 1;
-  }
-
-  update_sprite_position(): void {
-    this.world.restrict(this);
-
-    const { x, y, z } = this.position;
-    const { centerx, centery } = this._frame
-    const offset_x = this._facing === 1 ? centerx : this.inner.scale_x - centerx
-    this.inner.set_position(x - offset_x, y - z / 2 + centery, z);
-
-    this._info_sprite.update_position();
-    this.shadow.mesh.set_position(x, - z / 2, z - 550);
-    if (this.holding) this.holding.follow_holder();
   }
 
   on_after_update?(): void;
@@ -757,9 +670,6 @@ export default class Entity<
   }
 
   dispose(): void {
-    this.inner.dispose()
-    for (const [, pic] of this.pictures)
-      pic.texture.dispose();
     this.indicators.dispose();
     this._callbacks.emit('on_disposed')(this);
   }
@@ -816,7 +726,7 @@ export default class Entity<
 
     if (!wpoint_a) return;
 
-    if (wpoint_a.weaponact !== this._frame.id) {
+    if (wpoint_a.weaponact !== this.frame.id) {
       this.enter_frame({ id: wpoint_a.weaponact })
     }
     const { wpoint: wpoint_b, centerx: centerx_b, centery: centery_b } = this.get_frame();
@@ -829,7 +739,6 @@ export default class Entity<
       y + centery_a - wpoint_a.y - centery_b + wpoint_b.y,
       z
     );
-    this.update_sprite_position()
   }
 
 
@@ -843,10 +752,6 @@ export default class Entity<
   }
   unsubscribe_nearest_enemy() {
     this.world.nearest_enemy_requester.delete(this)
-  }
-
-  get_object_3d() {
-    return this.inner.get_object_3d()
   }
 
   enter_frame(which: TNextFrame | string): void {
@@ -863,7 +768,6 @@ export default class Entity<
     if (flags?.facing !== void 0) this.facing = this.handle_facing_flag(flags.facing, frame, flags);
     if (flags?.wait !== void 0) this.wait = this.handle_wait_flag(flags.wait, frame, flags);
     else this.wait = frame.wait;
-    this.update_sprite();
     this._next_frame = void 0;
   }
 
@@ -941,17 +845,8 @@ export default class Entity<
     return this.data.frames[id];
   }
 
-  get_frame() { return this._frame; }
+  get_frame() { return this.frame; }
   get_prev_frame() { return this._prev_frame; }
-
-  apply(): this { this.inner.apply(); return this; }
-  add(...sp: IBaseNode[]): this { this.inner.add(...sp); return this; }
-  del(...sp: IBaseNode[]): this { this.inner.del(...sp); return this; }
-  del_self(): this { this.inner.del_self(); return this; }
-  get_user_data(key: string) { return this.inner.get_user_data(key) }
-  add_user_data(key: string, value: any): this { this.inner.add_user_data(key, value); return this; }
-  del_user_data(key: string): this { this.inner.del_user_data(key); return this; }
-  merge_user_data(v: Record<string, any>): this { this.inner.merge_user_data(v); return this; }
 }
 
 Factory.inst.set('entity', (...args) => new Entity(...args));

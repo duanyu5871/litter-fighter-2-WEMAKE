@@ -10,7 +10,7 @@ export default class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData>
 
   constructor(world: World, data: IWeaponData) {
     super(world, data, WEAPON_STATES);
-    this.inner.name = "Weapon: " + data.id
+    this.name = "Weapon: " + data.id
     this.hp = this.max_hp = data.base.weapon_hp;
   }
 
@@ -44,7 +44,7 @@ export default class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData>
   }
   override on_spawn_by_emitter(emitter: Entity, o: IOpointInfo, speed_z?: number): this {
     super.on_spawn_by_emitter(emitter, o, speed_z);
-    if (this._frame.state === Defines.State.Weapon_OnHand) {
+    if (this.frame.state === Defines.State.Weapon_OnHand) {
       this.holder = emitter
       this.holder.holding = this
       this.team = emitter.team;
@@ -53,7 +53,7 @@ export default class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData>
   }
   override on_collision(target: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
     super.on_collision(target, itr, bdy, a_cube, b_cube);
-    if (this._frame.state === Defines.State.Weapon_OnHand) {
+    if (this.frame.state === Defines.State.Weapon_OnHand) {
       return;
     }
     this.velocity.x = -0.3 * this.velocity.x
