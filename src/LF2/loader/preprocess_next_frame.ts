@@ -1,7 +1,7 @@
-import FrameAnimater from '../entity/FrameAnimater';
 import Expression from '../base/Expression';
 import { INextFrame } from "../defines";
 import { Defines } from '../defines/defines';
+import Entity from '../entity/Entity';
 import { is_character, is_entity, is_weapon } from "../entity/type_check";
 
 export function cook_next_frame(i: INextFrame | INextFrame[]): void {
@@ -14,7 +14,7 @@ export function cook_next_frame(i: INextFrame | INextFrame[]): void {
   i.expression = expression.make();
 }
 
-function get_val(word: string): (e: FrameAnimater) => any {
+function get_val(word: string): (e: Entity) => any {
   switch (word) {
     case Defines.ValWord.TrendX:
       return e => {

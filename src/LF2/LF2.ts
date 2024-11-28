@@ -214,7 +214,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
       if (o.userData.owner instanceof Layer)
         o.userData.owner.show_indicators = false;
       else if (is_entity(o.userData.owner))
-        o.userData.owner.show_indicators = false;
+        o.userData.owner.indicators.show = false;
     }
     this._intersection = next;
     (window as any).pick_0 = void 0
@@ -224,7 +224,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     if (o.userData.owner instanceof Layer)
       o.userData.owner.show_indicators = true;
     else if (is_entity(o.userData.owner)) {
-      o.userData.owner.show_indicators = true;
+      o.userData.owner.indicators.show = true;
       if (is_character(o.userData.owner)) {
         this.on_click_character?.(o.userData.owner)
       }
@@ -367,8 +367,8 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   }
 
   remove_all_entities() {
-    this.world.del_game_objs(...this.world.entities);
-    this.world.del_game_objs(...this.world.game_objs);
+    this.world.del_entities(...this.world.entities);
+    this.world.del_entities(...this.world.entities);
   }
   add_random_weapon(num = 1, duplicate = false): Weapon[] {
     const src_arr = [...this.datas.weapons];
@@ -510,7 +510,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
       vz = old.velocity.z;
       old_facing = old.facing;
       old_frame_id = old.get_frame().id;
-      this.world.del_game_objs(old);
+      this.world.del_entities(old);
     }
 
     const character = new Character(this.world, data)
@@ -534,7 +534,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   }
   del_player_character(player_id: string) {
     const old = this.player_characters.get(player_id);
-    if (old) this.world.del_game_objs(old)
+    if (old) this.world.del_entities(old)
   }
   change_bg(bg_info: IBgData): void
   change_bg(bg_id: string): void

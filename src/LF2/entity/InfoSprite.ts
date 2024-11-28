@@ -61,7 +61,7 @@ export class InfoSprite implements IEntityCallbacks {
   }
 
   constructor(entity: Entity) {
-    const { lf2 } = entity;
+    const { lf2 } = entity.world;
     this.mesh = new Ditto.BillboardNode(lf2, {
       material: new T.SpriteMaterial({ visible: false })
     });

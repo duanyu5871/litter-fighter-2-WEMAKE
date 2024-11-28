@@ -1,5 +1,4 @@
 import { Factory } from "../entity/Factory";
-import FrameAnimater from "../entity/FrameAnimater";
 import { BotEnemyChaser } from "../controller/BotEnemyChaser";
 import { IGameObjData } from "../defines";
 import { IStageObjectInfo } from "../defines/IStageObjectInfo";
@@ -10,13 +9,14 @@ import { is_character, is_entity, is_weapon } from "../entity/type_check";
 import { random_in, random_take } from "../utils/math/random";
 import { is_num, is_str } from "../utils/type_check";
 import Stage from "./Stage";
+import Entity from "../entity/Entity";
 
 export default class Item {
   readonly is_enemies: boolean = false;
   get lf2() { return this.stage.lf2; }
   get world() { return this.stage.world; }
   readonly info: IStageObjectInfo;
-  readonly entities = new Set<FrameAnimater>();
+  readonly entities = new Set<Entity>();
   readonly stage: Stage;
   readonly get_oid: () => string;
 
@@ -118,7 +118,7 @@ export default class Item {
     for (const e of this.entities) {
       if (is_entity(e))
         e.callbacks.del(this.character_callback);
-      this.world.del_game_objs(e)
+      this.world.del_entities(e)
     }
   }
 }

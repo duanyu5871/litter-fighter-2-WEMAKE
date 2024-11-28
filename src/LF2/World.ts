@@ -14,7 +14,6 @@ import Ball from './entity/Ball';
 import Character from './entity/Character';
 import Entity from './entity/Entity';
 import { Factory } from './entity/Factory';
-import FrameAnimater from './entity/FrameAnimater';
 import Weapon from './entity/Weapon';
 import { is_ball, is_character, is_entity, is_weapon } from './entity/type_check';
 import Stage from './stage/Stage';
@@ -66,7 +65,6 @@ export class World {
 
   private _stage: Stage;
   entities = new Set<Entity>();
-  game_objs = new Set<FrameAnimater>();
   disposed = false;
 
   readonly player_slot_characters = new Map<string, Character>();
@@ -118,37 +116,28 @@ export class World {
     this._stage = new Stage(this, Defines.VOID_BG);
   }
 
-  add_game_objs(...objs: FrameAnimater[]) {
+  add_entities(...objs: Entity[]) {
     for (const e of objs) {
       if (is_character(e) && LocalController.is(e.controller)) {
         this.player_slot_characters.set(e.controller.player_id, e);
         this._callbacks.emit('on_player_character_add')(e.controller.player_id)
       }
-      if (is_entity(e)) {
-        this.scene.add(e);
-        e.show_indicators = this._show_indicators;
-        this.entities.add(e);
-        continue;
-      }
+      if (is_entity(e)) e.indicators.show = this._show_indicators;
       this.scene.add(e)
-      this.game_objs.add(e)
+      this.entities.add(e)
 
     }
   }
 
-  del_game_objs(...objs: FrameAnimater[]) {
+  del_entities(...objs: Entity[]) {
     for (const e of objs) {
       if (is_character(e) && LocalController.is(e.controller)) {
         this.player_slot_characters.delete(e.controller.player_id);
         this._callbacks.emit('on_player_character_del')(e.controller.player_id)
       }
-      if (is_entity(e)) {
-        this.entities.delete(e)
-        e.dispose();
-      } else {
-        this.game_objs.delete(e);
-        e.dispose();
-      }
+
+      this.entities.delete(e);
+      e.dispose();
     }
   }
 
@@ -326,21 +315,11 @@ export class World {
           }
         }
       }
-    }
-    for (const e of this.entities) {
       e.update();
       if (e.get_frame().id === Defines.FrameId.Gone)
-        this.del_game_objs(e);
+        this.del_entities(e);
       else if (e.get_frame().state === Defines.State.Gone)
-        this.del_game_objs(e);
-    }
-
-    for (const e of this.game_objs)
-      e.self_update();
-    for (const e of this.game_objs) {
-      e.update();
-      if (e.get_frame().id === Defines.FrameId.Gone)
-        this.del_game_objs(e);
+        this.del_entities(e);
     }
 
     this.update_camera();
@@ -560,7 +539,7 @@ export class World {
     attacker.on_collision(victim, itr, bdy, a_cube, b_cube);
     victim.on_be_collided(attacker, itr, bdy, a_cube, b_cube);
   }
-  get_cube(e: FrameAnimater, f: IFrameInfo, i: IItrInfo | IBdyInfo): ICube {
+  get_cube(e: Entity, f: IFrameInfo, i: IItrInfo | IBdyInfo): ICube {
     const left = e.facing > 0 ?
       e.position.x - f.centerx + i.x :
       e.position.x + f.centerx - i.x - i.w;
@@ -596,7 +575,7 @@ export class World {
     if (this._show_indicators === v) return;
     this._show_indicators = v;
     for (const e of this.entities) {
-      e.show_indicators = v;
+      e.indicators.show = v;
     }
   }
   dispose() {
@@ -604,8 +583,7 @@ export class World {
     this.bg.dispose();
     this.stop_update();
     this.stop_render();
-    this.del_game_objs(...this.entities);
-    this.del_game_objs(...this.game_objs);
+    this.del_entities(...this.entities);
     this.scene.dispose();
   }
 }

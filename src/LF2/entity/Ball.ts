@@ -1,10 +1,9 @@
 import { Factory } from './Factory';
-import { EMPTY_FRAME_INFO } from './FrameAnimater';
 import type { ICube, World } from '../World';
 import type { IBallData, IBallFrameInfo, IBallInfo, IBdyInfo, IItrInfo, IOpointInfo } from '../defines';
 import { Defines } from '../defines/defines';
 import { BALL_STATES } from '../state/ball';
-import Entity from './Entity';
+import Entity, { EMPTY_FRAME_INFO } from './Entity';
 import { is_character, is_weapon } from './type_check';
 import { Log } from '../../Log';
 

@@ -1,7 +1,7 @@
-import { IFrameInfo } from "../../defines";
-import FrameAnimater from "../../entity/FrameAnimater";
+import type { IFrameInfo } from "../../defines";
+import type Entity from "../../entity/Entity";
 
-export default class BaseState<E extends FrameAnimater = FrameAnimater, F extends IFrameInfo = IFrameInfo> {
+export default class BaseState<E extends Entity = Entity, F extends IFrameInfo = IFrameInfo> {
   state: number = -1;
   update(e: E): void { };
   enter(e: E, prev_frame: F): void { };

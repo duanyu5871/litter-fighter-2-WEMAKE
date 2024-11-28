@@ -1,10 +1,9 @@
 import { Factory } from "./Factory";
-import { GONE_FRAME_INFO } from "./FrameAnimater";
 import { ICube, World } from "../World";
 import { IBdyInfo, IFrameInfo, IItrInfo, IOpointInfo, IWeaponData, IWeaponInfo } from "../defines";
 import { Defines } from "../defines/defines";
 import { WEAPON_STATES } from "../state/weapon";
-import Entity from "./Entity";
+import Entity, { GONE_FRAME_INFO } from "./Entity";
 import { is_character } from "./type_check";
 export default class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData> {
   readonly is_weapon = true
