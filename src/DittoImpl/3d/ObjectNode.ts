@@ -83,6 +83,7 @@ export class __ObjectNode implements IObjectNode {
   apply(): this { return this; }
   add(...nodes: IBaseNode[]): this {
     for (const node of nodes) {
+      node.parent = this;
       const object_3d = node.get_object_3d()
       if (object_3d.isObject3D) this.inner.add(object_3d);
       this._children.push(node)
@@ -91,6 +92,8 @@ export class __ObjectNode implements IObjectNode {
   }
   del(...nodes: IBaseNode[]): this {
     for (const node of nodes) {
+      const idx = this._children.indexOf(node);
+      if (idx >= 0) this._children.splice(idx, 1);
       if (node.parent === this) node.parent = void 0;
       const object_3d = node.get_object_3d()
       if (object_3d.isObject3D) this.inner.remove(object_3d);
