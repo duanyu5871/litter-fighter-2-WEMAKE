@@ -22,7 +22,6 @@ export default class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData>
 
   override self_update(): void {
     super.self_update();
-
     const holder = this.holder
     if (holder) {
       const { wpoint: wpoint_a } = holder.get_frame();

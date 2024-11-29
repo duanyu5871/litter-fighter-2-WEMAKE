@@ -18,7 +18,7 @@ export default class Shadow {
   get visible() { return this.mesh.visible; }
   set visible(v) { this.mesh.visible = v; }
 
-  constructor(entity: Entity) {
+  constructor(entity: Entity, entity_mesh: IMeshNode) {
     const { lf2 } = entity;
     this.mesh = new Ditto.MeshNode(lf2, {
       geometry: new T.PlaneGeometry(0, 0),
@@ -26,8 +26,8 @@ export default class Shadow {
     });
     this.mesh.name = Shadow.name;
     this.mesh.render_order = 0;
-    // entity.inner.on('added', () => this.on_mount(entity))
-    // entity.inner.on('removed', () => this.on_unmount(entity))
+    entity_mesh.on('added', () => this.on_mount(entity))
+    entity_mesh.on('removed', () => this.on_unmount(entity))
   }
 
   protected on_mount(entity: Entity) {

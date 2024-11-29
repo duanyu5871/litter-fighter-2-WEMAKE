@@ -13,9 +13,10 @@ import Ditto from './ditto';
 import Ball from './entity/Ball';
 import Character from './entity/Character';
 import Entity from './entity/Entity';
+import { EntityRender } from './entity/EntityRender';
 import { Factory } from './entity/Factory';
 import Weapon from './entity/Weapon';
-import { is_ball, is_character, is_entity, is_weapon } from './entity/type_check';
+import { is_ball, is_character, is_weapon } from './entity/type_check';
 import Stage from './stage/Stage';
 import float_equal from './utils/math/float_equal';
 import { is_num } from './utils/type_check';
@@ -111,10 +112,13 @@ export class World {
     this.camera = new Ditto.OrthographicCamera(lf2)
       .setup(0, w, h, 0)
       .set_position(void 0, void 0, 10)
+      .set_name("default_orthographic_camera")
       .apply()
     this.scene.add(this.camera);
     this._stage = new Stage(this, Defines.VOID_BG);
   }
+
+  entity_renders = new Map<Entity, EntityRender>();
 
   add_entities(...objs: Entity[]) {
     for (const e of objs) {
@@ -122,10 +126,12 @@ export class World {
         this.player_slot_characters.set(e.controller.player_id, e);
         this._callbacks.emit('on_player_character_add')(e.controller.player_id)
       }
-      if (is_entity(e)) e.indicators.show = this._show_indicators;
+      e.indicators.show = this._show_indicators;
       // this.scene.add(e as any)
       this.entities.add(e)
-
+      const r = new EntityRender().set_entity(e);
+      this.entity_renders.set(e, r);
+      this.scene.add(r.entity_mesh!)
     }
   }
 
@@ -135,6 +141,12 @@ export class World {
         this.player_slot_characters.delete(e.controller.player_id);
         this._callbacks.emit('on_player_character_del')(e.controller.player_id)
       }
+      const r = this.entity_renders.get(e);
+      if (r?.entity_mesh) {
+        this.scene.del(r.entity_mesh)
+      }
+      this.entity_renders.delete(e);
+
 
       this.entities.delete(e);
       e.dispose();
@@ -193,7 +205,6 @@ export class World {
     this._update_worker_id = void 0;
   }
 
-
   private _prev_time: number = Date.now();
   private _skip: number = 0;
   private _expected_dt: number = 0;
@@ -210,7 +221,6 @@ export class World {
       this._UPS.update(dt);
 
       if (this._need_UPS) this._callbacks.emit('on_ups_update')(this._UPS.value);
-
 
       let need_render = 0;
       if (1 === this._sync_render) {
@@ -329,6 +339,9 @@ export class World {
   render_once(dt: number) {
     if (this.disposed) return;
     for (const e of this.entities) e.indicators.update();
+    for (const [, r] of this.entity_renders) {
+      r.update();
+    }
     this.lf2.layout?.on_render(dt);
     this.scene.render()
   }

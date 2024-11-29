@@ -3,11 +3,7 @@ import type Weapon from "../../entity/Weapon";
 import BaseWeaponState from "./Base";
 
 export default class OnHand extends BaseWeaponState {
-  enter(e: Weapon, prev_frame: IFrameInfo): void {
-    e.shadow.visible = false;
-  }
+  enter(e: Weapon, prev_frame: IFrameInfo): void {}
   update(e: Weapon): void { }
-  leave(e: Weapon, next_frame: IFrameInfo): void {
-    e.shadow.visible = true;
-  }
+  leave(e: Weapon, next_frame: IFrameInfo): void {}
 }

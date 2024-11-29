@@ -95,7 +95,6 @@ export default class Entity<
   protected _catcher?: Entity;
   readonly is_entity = true
   readonly states: States;
-  readonly shadow: Shadow;
   readonly velocity = new THREE.Vector3(0, 0, 0);
 
   protected _callbacks = new Callbacks<IEntityCallbacks>()
@@ -281,7 +280,6 @@ export default class Entity<
     this.data = data;
     this.world = world;
     this.states = states;
-    this.shadow = new Shadow(this);
     this.info_sprite = new InfoSprite(this)
   }
 
@@ -359,7 +357,6 @@ export default class Entity<
   set_frame(v: F) {
     this._prev_frame = this.frame;
     this.frame = v;
-    this.shadow.visible = !v.no_shadow;
     const prev_state = this._prev_frame.state;
     const next_state = this.frame.state;
     if (prev_state !== next_state) {
@@ -430,10 +427,6 @@ export default class Entity<
     if (this.frame.dvy !== 550) this.velocity.y -= this.world.gravity;
   }
 
-  private _previous = {
-    face: (void 0) as TFace | undefined,
-    frame: (void 0) as F | undefined,
-  }
 
   handle_frame_velocity() {
     if (this._shaking || this._motionless) return;
@@ -475,7 +468,7 @@ export default class Entity<
     this._a_rest > 1 ? this._a_rest-- : this._a_rest = 0;
     if (this._invisible_duration > 0) {
       this._invisible_duration--;
-      this.shadow.visible = this.info_sprite.visible = false;
+      this.info_sprite.visible = false;
       if (this._invisible_duration <= 0) {
         this._blinking_duration = 120;
         this.info_sprite.visible = true
@@ -483,15 +476,11 @@ export default class Entity<
     }
     if (this._blinking_duration > 0) {
       this._blinking_duration--;
-      const bc = Math.floor(this._blinking_duration / 6) % 2;
       if (this._blinking_duration <= 0) {
-        this.shadow.visible = !this.frame.no_shadow
         if (this._after_blink === Defines.FrameId.Gone) {
           this._next_frame = void 0;
           this.frame = GONE_FRAME_INFO as F
         }
-      } else {
-        this.shadow.visible = !!bc && !this.frame.no_shadow
       }
     }
   }
