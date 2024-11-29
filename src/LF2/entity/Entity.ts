@@ -19,7 +19,6 @@ import { Factory } from './Factory';
 import { FrameIndicators } from './FrameIndicators';
 import type IEntityCallbacks from './IEntityCallbacks';
 import { InfoSprite } from './InfoSprite';
-import Shadow from './Shadow';
 import { turn_face } from './face_helper';
 import { is_entity } from './type_check';
 
@@ -30,7 +29,7 @@ export const EMPTY_PIECE: ITexturePieceInfo = {
 export const EMPTY_FRAME_INFO: IFrameInfo = {
   id: Defines.FrameId.None,
   name: '',
-  pic: 0,
+  pic: { tex: '', x: 0, y: 0, w: 0, h: 0 },
   state: NaN,
   wait: 0,
   next: { id: Defines.FrameId.Auto },
@@ -40,7 +39,7 @@ export const EMPTY_FRAME_INFO: IFrameInfo = {
 export const GONE_FRAME_INFO: IFrameInfo = {
   id: Defines.FrameId.Gone,
   name: 'GONE_FRAME_INFO',
-  pic: 0,
+  pic: { tex: '', x: 0, y: 0, w: 0, h: 0 },
   state: NaN,
   wait: 0,
   next: { id: Defines.FrameId.Gone },
@@ -67,6 +66,7 @@ export default class Entity<
 > {
   static readonly TAG: string = 'Entity';
 
+  update_count: number = Number.MIN_SAFE_INTEGER;
   id: string = new_id();
   wait: number = 0;
   readonly indicators: FrameIndicators = new FrameIndicators(this);
@@ -448,7 +448,6 @@ export default class Entity<
     if (dvz === 550) this.velocity.z = 0;
     else if (dvz !== void 0) this.velocity.z = dvz;
   }
-
   self_update(): void {
     if (this._next_frame) this.enter_frame(this._next_frame);
     if (this._mp < this._max_mp)
@@ -511,6 +510,10 @@ export default class Entity<
       this.velocity.y = 0;
       this.state?.on_landing(this, x, y, z);
     }
+    if (this.update_count === Number.MAX_SAFE_INTEGER)
+      this.update_count = Number.MIN_SAFE_INTEGER
+    else
+      ++this.update_count;
   }
 
   get_sudden_death_frame(): TNextFrame {

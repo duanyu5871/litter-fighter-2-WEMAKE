@@ -100,12 +100,12 @@ export default function dat_to_json(
     switch ('' + datIndex.type) {
       case '1':
         base.type = {
-          '120': Defines.WeaponType.Stick, // Knife
-          '124': Defines.WeaponType.Stick, // Boomerang
+          '120': Defines.WeaponType.Knife, // Knife
+          '124': Defines.WeaponType.Knife, // Boomerang
         }['' + datIndex.id] ?? Defines.WeaponType.Stick
         base.bounce = 0.2;
         base.name = datIndex.hash ?? datIndex.file.replace(/[^a-z|A-Z|0-9|_]/g, '')
-        ret = make_weapon_data(base, full_str, make_frames(full_str));
+        ret = make_weapon_data(base, full_str, make_frames(full_str, base.files));
         break;
       case '2':
         base.type = Defines.WeaponType.Heavy;
@@ -114,19 +114,19 @@ export default function dat_to_json(
           default: base.bounce = 0.1; break;
         }
         base.name = datIndex.hash ?? datIndex.file.replace(/[^a-z|A-Z|0-9|_]/g, '')
-        ret = make_weapon_data(base, full_str, make_frames(full_str));
+        ret = make_weapon_data(base, full_str, make_frames(full_str, base.files));
         break;
       case '4':
         base.type = Defines.WeaponType.Baseball;
         base.bounce = 0.45;
         base.name = datIndex.hash ?? datIndex.file.replace(/[^a-z|A-Z|0-9|_]/g, '')
-        ret = make_weapon_data(base, full_str, make_frames(full_str));
+        ret = make_weapon_data(base, full_str, make_frames(full_str, base.files));
         break;
       case '6': {
         base.type = Defines.WeaponType.Drink;
         base.bounce = 0.4;
         base.name = datIndex.hash ?? datIndex.file.replace(/[^a-z|A-Z|0-9|_]/g, '')
-        ret = make_weapon_data(base, full_str, make_frames(full_str));
+        ret = make_weapon_data(base, full_str, make_frames(full_str, base.files));
         break;
       }
       case '0': {
@@ -164,29 +164,29 @@ export default function dat_to_json(
         } else if (datIndex.id === '30' || datIndex.id === '31') {
           info.group = ['3000']
         }
-        ret = make_character_data(info, make_frames(full_str));
+        ret = make_character_data(info, make_frames(full_str, info.files));
 
         break;
       }
-      case '3': ret = make_ball_data(base as IBallInfo, make_frames<IBallFrameInfo>(full_str), datIndex); break;
-      case '5': ret = make_entity_data(base as IGameObjInfo, make_frames(full_str)); break;
+      case '3': ret = make_ball_data(base as IBallInfo, make_frames<IBallFrameInfo>(full_str, base.files), datIndex); break;
+      case '5': ret = make_entity_data(base as IGameObjInfo, make_frames(full_str, base.files)); break;
       default:
         console.warn('[dat_to_json] unknow dat type:', JSON.stringify(datIndex.type))
-        ret = make_entity_data(base as IGameObjInfo, make_frames(full_str));
+        ret = make_entity_data(base as IGameObjInfo, make_frames(full_str, base.files));
         break;
     }
     if (ret) ret.id = datIndex.id;
     return ret;
   } else {
     if ('small' in base && 'name' in base && 'head' in base) {
-      return make_character_data(base as ICharacterInfo, make_frames(full_str))
+      return make_character_data(base as ICharacterInfo, make_frames(full_str, base.files))
     }
     if ('weapon_hp' in base) {
       const info = base as IWeaponInfo;
-      return make_weapon_data(info, full_str, make_frames(full_str));
+      return make_weapon_data(info, full_str, make_frames(full_str, info.files));
     }
     if ('weapon_hit_sound' in base)
-      return make_ball_data(base as IBallInfo, make_frames<IBallFrameInfo>(full_str));
-    return make_entity_data(base as IGameObjInfo, make_frames(full_str));
+      return make_ball_data(base as IBallInfo, make_frames<IBallFrameInfo>(full_str, base.files));
+    return make_entity_data(base as IGameObjInfo, make_frames(full_str, base.files));
   }
 }

@@ -14,7 +14,7 @@ import { IRectPair } from "./IRectPair";
 export interface IFrameInfo {
   id: string;
   name: string;
-  pic: number | IFramePictureInfo | ITexturePieceInfos;
+  pic?: IFramePictureInfo | ITexturePieceInfos;
   state: number;
   wait: number;
   next: TNextFrame;
@@ -36,6 +36,5 @@ export interface IFrameInfo {
   cpoint?: ICpointInfo;
   indicator_info?: IRectPair;
   invisible?: number;
-  
   no_shadow?: number;
 }

@@ -325,6 +325,8 @@ export class World {
           }
         }
       }
+    }
+    for (const e of this.entities) {
       e.update();
       if (e.get_frame().id === Defines.FrameId.Gone)
         this.del_entities(e);

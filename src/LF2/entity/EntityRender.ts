@@ -17,6 +17,7 @@ export class EntityRender {
   entity_material?: THREE.MeshBasicMaterial;
   piece: ITexturePieceInfo = EMPTY_PIECE;
   shadow?: Shadow;
+  _prev_update_count?: number;
 
   set_entity(entity: Entity): EntityRender {
     const { world, lf2, data } = this.entity = entity
@@ -47,13 +48,16 @@ export class EntityRender {
   update() {
     const { entity, entity_mesh: inner, entity_material: material, pictures, shadow } = this;
     if (!entity || !inner || !material || !pictures) return;
+    if (this._prev_update_count === entity.update_count) return;
+
+    this._prev_update_count = entity.update_count;
     const { world, lf2 } = entity;
     const { frame, position: { x, y, z }, facing } = entity;
     const { centerx, centery } = frame
     const offset_x = entity.facing === 1 ? centerx : inner.scale_x - centerx
     inner.set_position(x - offset_x, y - z / 2 + centery, z);
     inner.visible = !entity.invisible;
-    
+
     if (shadow) {
       shadow.mesh.set_position(x, - z / 2, z - 550);
       shadow.visible = !frame.no_shadow && !entity.invisible;
@@ -74,30 +78,26 @@ export class EntityRender {
     }
     this._previous.face = facing;
     this._previous.frame = frame;
-    const piece = frame.pic;
-    if (typeof piece === 'number' || !('1' in piece)) {
-      return;
-    }
-    if (this.piece !== piece[facing]) {
-      const { x, y, w, h, tex, pw, ph } = this.piece = piece[facing];
-      const pic = pictures.get('' + tex);
-      if (pic) {
-        pic.texture.offset.set(x, y);
-        pic.texture.repeat.set(w, h);
-        if (pic.texture !== material.map) {
-          material.map = pic.texture;
+    const frame_pic = frame.pic;
+    if (frame_pic && "-1" in frame_pic) {
+      if (this.piece !== frame_pic[facing]) {
+        const { x, y, w, h, tex, pw, ph } = this.piece = frame_pic[facing];
+        const pic = pictures.get('' + tex);
+        if (pic) {
+          pic.texture.offset.set(x, y);
+          pic.texture.repeat.set(w, h);
+          if (pic.texture !== material.map) {
+            material.map = pic.texture;
+          }
+          inner.update_all_material()
         }
-        inner.update_all_material()
+        inner.set_scale(pw, ph, 0)
       }
-      inner.set_scale(pw, ph, 0)
     }
 
     world.restrict(entity);
 
     entity.info_sprite.update_position();
-
-
-
     entity.holding?.follow_holder();
 
     if (entity.shaking) {

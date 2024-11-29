@@ -1,5 +1,7 @@
-import { IBdyInfo, ICpointInfo, IItrInfo, IOpointInfo, IWpointInfo } from '../defines';
+import { IBdyInfo, ICpointInfo, IEntityPictureInfo, IFramePictureInfo, IGameObjInfo, IItrInfo, IOpointInfo, IWpointInfo } from '../defines';
 import { IFrameInfo } from "../defines/IFrameInfo";
+import { IRect } from '../defines/IRect';
+import { IRectPair } from '../defines/IRectPair';
 import { Defines } from '../defines/defines';
 import { match_all } from '../utils/string_parser/match_all';
 import { match_colon_value } from '../utils/string_parser/match_colon_value';
@@ -21,7 +23,7 @@ const handle_raw_mp = (mp: number | undefined) => {
   const hp = (mp - _mp) / 100;
   return [_mp, hp] as const;
 }
-export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string): Record<string, F> {
+export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string, files: IGameObjInfo['files']): Record<string, F> {
   const frames: Record<string, F> = {};
   const frame_regexp = /<frame>\s+(.*?)\s+(.*)((.|\n)+?)<frame_end>/g;
   for (const [, frame_id, frame_name, content] of match_all(text, frame_regexp)) {
@@ -49,11 +51,33 @@ export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string): Re
 
     const raw_next = take(fields, 'next');
     const next = get_next_frame_by_raw_id(raw_next);
+    let pic_idx = take(fields, 'pic');
+    let frame_pic_info: IFramePictureInfo | undefined = void 0;
+    let entity_pic_info: IEntityPictureInfo | undefined = void 0;
+    for (const key in files) {
+      entity_pic_info = files[key];
+      const ret = pic_idx >= entity_pic_info.begin && pic_idx <= entity_pic_info.end;
+      if (ret) {
+        pic_idx -= entity_pic_info.begin;
+        break;
+      }
+    }
+    if (entity_pic_info) {
+      const { id, row, cell_w, cell_h } = entity_pic_info;
+      frame_pic_info = {
+        tex: id,
+        x: (cell_w + 1) * (pic_idx % row),
+        y: (cell_h + 1) * Math.floor(pic_idx / row),
+        w: cell_w,
+        h: cell_h,
+      }
+    }
 
     const wait = take(fields, 'wait') * 2 + 1;
     const frame: F = {
       id: frame_id,
       name: frame_name,
+      pic: frame_pic_info,
       wait,
       next,
       bdy: bdy_list,
@@ -64,6 +88,47 @@ export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string): Re
       cpoint: cpoint_list[0],
       ...fields,
     };
+
+    if (frame_pic_info) {
+      const ii: IRect = {
+        x: -frame.centerx,
+        y: frame.centery - frame_pic_info.h,
+        w: frame_pic_info.w,
+        h: frame_pic_info.h
+      }
+      const ii_1: IRect = {
+        ...ii,
+        x: frame.centerx - ii.w
+      }
+      frame.indicator_info = { 1: ii, [-1]: ii_1 }
+      bdy_list.forEach(bdy => {
+        const i_1: IRect = {
+          w: bdy.w,
+          h: bdy.h,
+          x: ii.x + bdy.x,
+          y: ii.y + ii.h - bdy.y - bdy.h,
+        };
+        const i_2 = {
+          ...i_1,
+          x: ii_1.x + ii.w - bdy.w - bdy.x,
+        };
+        bdy.indicator_info = { 1: i_1, [-1]: i_2 };
+      })
+      itr_list.forEach(itr => {
+        const i_1: IRect = {
+          w: itr.w,
+          h: itr.h,
+          x: ii.x + itr.x,
+          y: ii.y + ii.h - itr.y - itr.h,
+        };
+        const i_2 = {
+          ...i_1,
+          x: ii_1.x + ii.w - itr.w - itr.x,
+        };
+        itr.indicator_info = { 1: i_1, [-1]: i_2 };
+      })
+    }
+
 
     if (
       (raw_next >= 1100 && raw_next <= 1299) ||

@@ -1,16 +1,13 @@
 import { Warn } from '../../Log';
-import { IEntityPictureInfo, IFrameInfo, IGameObjData, ITexturePieceInfo } from '../defines';
-import { IRect } from '../defines/IRect';
-import { traversal } from '../utils/container_help/traversal';
 import LF2 from '../LF2';
+import { IEntityPictureInfo, IFrameInfo, IGameObjData, ITexturePieceInfo } from '../defines';
 import read_nums from '../layout/utils/read_nums';
+import { traversal } from '../utils/container_help/traversal';
 import { cook_next_frame } from './preprocess_next_frame';
 const get_keys = <V extends {}>(v: V): (keyof V)[] => {
   return Object.keys(v) as (keyof V)[]
 }
 export const cook_frame = (lf2: LF2, data: IGameObjData, frame: IFrameInfo) => {
-  let pic = frame.pic;
-  let pic_info: IEntityPictureInfo | undefined = void 0;
   if (frame.sound && !lf2.sounds.has(frame.sound))
     lf2.sounds.load(frame.sound, frame.sound);
   cook_frame_hit(frame);
@@ -24,22 +21,9 @@ export const cook_frame = (lf2: LF2, data: IGameObjData, frame: IFrameInfo) => {
       frame.centery = y;
     }
   }
-
-  if (typeof pic === 'number') {
-    for (const key in data.base.files) {
-      pic_info = data.base.files[key];
-      const ret = pic >= pic_info.begin && pic <= pic_info.end;
-      if (ret) { pic -= pic_info.begin; break; }
-    }
-    if (pic_info === void 0)
-      return Warn.print(cook_frame.TAG, 'file info not found, data:', data, 'pic number:', pic);
-
-    const { id, row, cell_w, cell_h } = pic_info;
-    const x = (cell_w + 1) * (pic % row);
-    const y = (cell_h + 1) * Math.floor(pic / row);
-    pic = frame.pic = { tex: id!, x, y, w: cell_w, h: cell_h }
-  }
-  if ('x' in pic) {
+  let pic = frame.pic;
+  let pic_info: IEntityPictureInfo | undefined = void 0;
+  if (pic && 'x' in pic) {
     for (const key in data.base.files) {
       if (data.base.files[key].id === pic.tex) {
         pic_info = data.base.files[key];
@@ -69,49 +53,7 @@ export const cook_frame = (lf2: LF2, data: IGameObjData, frame: IFrameInfo) => {
       1: f_i_1,
       [-1]: f_i_2,
     };
-
   }
-  const f_i_1 = pic[1];
-  const ii: IRect = {
-    x: -frame.centerx,
-    y: frame.centery - f_i_1.ph,
-    w: f_i_1.pw,
-    h: f_i_1.ph
-  }
-  const ii_1: IRect = {
-    ...ii,
-    x: frame.centerx - ii.w
-  }
-  frame.indicator_info = { 1: ii, [-1]: ii_1 }
-
-  frame.bdy?.forEach(bdy => {
-    const b_ii: IRect = {
-      w: bdy.w,
-      h: bdy.h,
-      x: ii.x + bdy.x,
-      y: ii.y + ii.h - bdy.y - bdy.h,
-    };
-    const b_ii_1 = {
-      ...b_ii,
-      x: ii_1.x + ii.w - bdy.w - bdy.x,
-    };
-    bdy.indicator_info = { 1: b_ii, [-1]: b_ii_1 };
-  });
-
-  frame.itr?.forEach(itr => {
-    const i_ii: IRect = {
-      w: itr.w,
-      h: itr.h,
-      x: ii.x + itr.x,
-      y: ii.y + ii.h - itr.y - itr.h,
-    };
-    const i_ii_1 = {
-      ...i_ii,
-      x: ii_1.x + ii.w - itr.w - itr.x,
-    };
-    itr.indicator_info = { 1: i_ii, [-1]: i_ii_1 };
-  });
-
 };
 cook_frame.TAG = 'cook_frame'
 
