@@ -1,4 +1,4 @@
-import { Log, Warn } from '../Log';
+import { Warn } from '../Log';
 import { IOrthographicCameraNode } from './3d/IOrthographicCamera';
 import { ISceneNode } from './3d/ISceneNode';
 import { IWorldCallbacks } from './IWorldCallbacks';
@@ -127,11 +127,10 @@ export class World {
         this._callbacks.emit('on_player_character_add')(e.controller.player_id)
       }
       e.indicators.show = this._show_indicators;
-      // this.scene.add(e as any)
       this.entities.add(e)
-      const r = new EntityRender().set_entity(e);
-      this.entity_renders.set(e, r);
-      this.scene.add(r.entity_mesh!)
+      const render = new EntityRender(e).set_entity(e);
+      this.entity_renders.set(e, render);
+      this.scene.add(render.entity_mesh!)
     }
   }
 
@@ -146,8 +145,6 @@ export class World {
         this.scene.del(r.entity_mesh)
       }
       this.entity_renders.delete(e);
-
-
       this.entities.delete(e);
       e.dispose();
     }

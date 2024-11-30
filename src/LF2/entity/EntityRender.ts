@@ -11,14 +11,16 @@ export const EMPTY_PIECE: ITexturePieceInfo = {
   ph: 0, pw: 0,
 }
 export class EntityRender {
-  pictures?: Map<string, IPicture<THREE.Texture>>;
-  entity?: Entity;
-  entity_mesh?: IMeshNode;
-  entity_material?: THREE.MeshBasicMaterial;
+  pictures!: Map<string, IPicture<THREE.Texture>>;
+  entity!: Entity;
+  entity_mesh!: IMeshNode;
+  entity_material!: THREE.MeshBasicMaterial;
   piece: ITexturePieceInfo = EMPTY_PIECE;
-  shadow?: Shadow;
+  shadow!: Shadow;
   _prev_update_count?: number;
-
+  constructor(entity: Entity) {
+    this.set_entity(entity);
+  }
   set_entity(entity: Entity): EntityRender {
     const { world, lf2, data } = this.entity = entity
     this.pictures = create_pictures(lf2, entity.data);
@@ -49,72 +51,61 @@ export class EntityRender {
   }
 
   protected _blinking_count = 0;
-  protected _shaking_count: number = 0;
   private _previous = {
     face: (void 0) as TFace | undefined,
     frame: (void 0) as IFrameInfo | undefined,
   }
   update() {
-    const { entity, entity_mesh: inner, entity_material: material, pictures, shadow } = this;
-    if (!entity || !inner || !material || !pictures) return;
-    if (this._prev_update_count === entity.update_count) return;
-
-    this._prev_update_count = entity.update_count;
-    const { world, lf2 } = entity;
+    const { entity, entity_mesh, entity_material, pictures, shadow } = this;
     const { frame, position: { x, y, z }, facing } = entity;
-    const { centerx, centery } = frame
-    const offset_x = entity.facing === 1 ? centerx : inner.scale_x - centerx
-    inner.set_position(x - offset_x, y - z / 2 + centery, z);
-    inner.visible = !entity.invisible;
 
-    if (shadow) {
-      shadow.mesh.set_position(x, - z / 2, z - 550);
-      shadow.visible = !frame.no_shadow && !entity.invisible;
-    }
-
-    if (entity.blinking) {
-      ++this._blinking_count;
-      inner.visible = 0 === Math.floor(this._blinking_count / 6) % 2;
-    } else {
-      this._blinking_count = 0;
-    }
-
-    if (
-      this._previous.face === facing &&
-      this._previous.frame === frame
-    ) {
-      return;
-    }
-    this._previous.face = facing;
-    this._previous.frame = frame;
-    const frame_pic = frame.pic;
-    if (frame_pic && "-1" in frame_pic) {
-      if (this.piece !== frame_pic[facing]) {
-        const { x, y, w, h, tex, pw, ph } = this.piece = frame_pic[facing];
-        const pic = pictures.get('' + tex);
-        if (pic) {
-          pic.texture.offset.set(x, y);
-          pic.texture.repeat.set(w, h);
-          if (pic.texture !== material.map) {
-            material.map = pic.texture;
+    if (this._prev_update_count !== entity.update_count) {
+      this._prev_update_count = entity.update_count;
+      if (this._previous.face !== facing || this._previous.frame !== frame) {
+        this._previous.face = facing;
+        this._previous.frame = frame;
+        const frame_pic = frame.pic;
+        if (frame_pic && "-1" in frame_pic) {
+          if (this.piece !== frame_pic[facing]) {
+            const { x, y, w, h, tex, pw, ph } = this.piece = frame_pic[facing];
+            const pic = pictures.get('' + tex);
+            if (pic) {
+              pic.texture.offset.set(x, y);
+              pic.texture.repeat.set(w, h);
+              if (pic.texture !== entity_material.map) {
+                entity_material.map = pic.texture;
+              }
+              entity_mesh.update_all_material()
+            }
+            entity_mesh.set_scale(pw, ph, 0)
           }
-          inner.update_all_material()
         }
-        inner.set_scale(pw, ph, 0)
       }
+
+      const { centerx, centery } = frame
+      const offset_x = entity.facing === 1 ? centerx : entity_mesh.scale_x - centerx
+      entity_mesh.set_position(x - offset_x, y - z / 2 + centery, z);
+      entity_mesh.visible = !entity.invisible;
+
+      if (shadow) {
+        shadow.mesh.set_position(x, - z / 2, z - 550);
+        shadow.visible = !frame.no_shadow && !entity.invisible;
+      }
+
+      if (entity.blinking) {
+        ++this._blinking_count;
+        entity_mesh.visible = 0 === Math.floor(this._blinking_count / 6) % 2;
+      } else {
+        this._blinking_count = 0;
+      }
+
+      entity.info_sprite.update_position();
+      entity.holding?.follow_holder();
     }
-
-    world.restrict(entity);
-
-    entity.info_sprite.update_position();
-    entity.holding?.follow_holder();
 
     if (entity.shaking) {
-      const x = (this._shaking_count % 2 ? -5 : 5);
-      ++this._shaking_count;
-      inner.x += x;
-    } else {
-      this._shaking_count = 0;
+      const x = (entity.shaking % 2 ? -2 : 2);
+      entity_mesh.x += facing * x;
     }
   }
   dispose(): void {

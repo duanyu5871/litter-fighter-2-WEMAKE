@@ -514,6 +514,7 @@ export default class Entity<
       this.update_count = Number.MIN_SAFE_INTEGER
     else
       ++this.update_count;
+    this.world.restrict(this);
   }
 
   get_sudden_death_frame(): TNextFrame {

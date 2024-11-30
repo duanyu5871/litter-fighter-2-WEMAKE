@@ -245,7 +245,7 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
     const spark_x = (Math.max(r0.left, r1.left) + Math.min(r0.right, r1.right)) / 2;
     const spark_y = (Math.min(r0.top, r1.top) + Math.max(r0.bottom, r1.bottom)) / 2;
     // const spark_z = (Math.min(r0.near, r1.near) + Math.max(r0.far, r1.far)) / 2;
-    const spark_z = Math.max(r0.far, r1.far);
+    const spark_z = Math.max(r0.near, r1.near);
 
     const { indexes } = this.data;
 
