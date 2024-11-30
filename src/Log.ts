@@ -1,5 +1,5 @@
 import L from '@fimagine/logger';
-L.Config.currentTime = () => new Date().toISOString();
+L.Config.currentTime = () => new Date().toISOString().replaceAll(/T/g, ' ').replace('Z', '');
 export const Log = Object.assign(
   L.Log.Clone({ showArgs: true, showRet: true, disabled: false }),
   {
