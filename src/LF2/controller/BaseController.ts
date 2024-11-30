@@ -8,8 +8,8 @@ import DoubleClick from './DoubleClick';
 export type TKeys = Record<GameKey, string>
 
 export const KEY_NAME_LIST = [
-  GameKey.d, 
-  GameKey.L, GameKey.R, GameKey.U, GameKey.D, 
+  GameKey.d,
+  GameKey.L, GameKey.R, GameKey.U, GameKey.D,
   GameKey.j, GameKey.a] as const;
 export const CONFLICTS_KEY_MAP: Record<GameKey, GameKey | undefined> = {
   a: void 0,
@@ -95,13 +95,13 @@ export class BaseController {
   }
 
   /**
-   * 指定按键直接进入"双击"状态
+   * 指定按键直接进入"双击"状态(结尾不会抬起)
+   * like: ⬇+⬆+⬇
    * @param keys 指定按键
    * @returns {this}
    */
-  db_hit = (...keys: GameKey[]): this => {
-    for (const k of keys)
-      this.key_time_maps[k] = this._time;
+  db_hit(...keys: GameKey[]): this {
+    this.start(...keys).end(...keys).start(...keys)
     return this;
   }
   is_hit_or_hold(k: string): boolean;
