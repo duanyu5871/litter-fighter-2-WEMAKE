@@ -5,7 +5,7 @@ import Entity from "../entity/Entity";
 import { is_character } from "../entity/type_check";
 import { BaseController } from "./BaseController";
 
-export class BotEnemyChaser extends BaseController {
+export class BotController extends BaseController {
   readonly is_bot_enemy_chaser = true;
   _count = 0;
   _nearest_enemy: Character | undefined;

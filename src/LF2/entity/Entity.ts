@@ -20,7 +20,7 @@ import { FrameIndicators } from './FrameIndicators';
 import type IEntityCallbacks from './IEntityCallbacks';
 import { InfoSprite } from './InfoSprite';
 import { turn_face } from './face_helper';
-import { controller_is_bot_enemy_chaser, controller_is_local_controller, is_character, is_entity } from './type_check';
+import { controller_is_bot_controller, controller_is_local_controller, is_character, is_entity } from './type_check';
 
 export const EMPTY_PIECE: ITexturePieceInfo = {
   tex: 0, x: 0, y: 0, w: 0, h: 0,

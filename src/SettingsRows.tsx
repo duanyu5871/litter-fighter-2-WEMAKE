@@ -10,7 +10,7 @@ import Titled from './Component/Titled';
 import { ILf2Callback } from './LF2/ILf2Callback';
 import LF2 from './LF2/LF2';
 import { BaseController } from './LF2/controller/BaseController';
-import { BotEnemyChaser } from './LF2/controller/BotEnemyChaser';
+import { BotController } from './LF2/controller/BotController';
 import { InvalidController } from './LF2/controller/InvalidController';
 import { IStageInfo } from "./LF2/defines/IStageInfo";
 import { IStagePhaseInfo } from "./LF2/defines/IStagePhaseInfo";
@@ -20,7 +20,7 @@ import Stage from './LF2/stage/Stage';
 import { useLocalNumber, useLocalString } from './useLocalStorage';
 const bot_controllers: { [x in string]?: (e: Character) => BaseController } = {
   'OFF': (e: Character) => new InvalidController('', e),
-  'enemy chaser': (e: Character) => new BotEnemyChaser('', e)
+  'enemy chaser': (e: Character) => new BotController('', e)
 }
 
 export interface ISettingsRowsProps {

@@ -1,5 +1,5 @@
 import { Factory } from "../entity/Factory";
-import { BotEnemyChaser } from "../controller/BotEnemyChaser";
+import { BotController } from "../controller/BotController";
 import { IGameObjData } from "../defines";
 import { IStageObjectInfo } from "../defines/IStageObjectInfo";
 import { Defines } from "../defines/defines";
@@ -98,7 +98,7 @@ export default class Item {
     if (is_character(e)) {
       e.team = this.stage.enemy_team;
       e.name = e.data.base.name;
-      e.controller = new BotEnemyChaser('', e);
+      e.controller = new BotController('', e);
     } else if (is_weapon(e) && !is_num(y)) {
       e.position.y = 450;
     }
