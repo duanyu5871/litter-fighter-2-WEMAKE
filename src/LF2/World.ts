@@ -364,7 +364,7 @@ export class World {
       new_x = 0;
       for (const [, player] of this.player_slot_characters) {
         const c = player.controller;
-        if (!LocalController.is(c) || c.ai) continue;
+        if (!LocalController.is(c)) continue;
         new_x += player.position.x - 794 / 2 + player.facing * 794 / 6;
         ++l;
       }

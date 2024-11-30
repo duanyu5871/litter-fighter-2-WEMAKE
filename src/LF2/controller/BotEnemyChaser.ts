@@ -7,8 +7,6 @@ import { BaseController } from "./BaseController";
 
 export class BotEnemyChaser extends BaseController {
   readonly is_bot_enemy_chaser = true;
-  static is = (v: any): v is BotEnemyChaser => v?.is_bot_enemy_chaser === true
-
   _count = 0;
   _nearest_enemy: Character | undefined;
   manhattan_to(a: Entity) {
@@ -51,10 +49,18 @@ export class BotEnemyChaser extends BaseController {
     if (end_x - x > RUN_ZONE && !is_running) this.db_hit(GameKey.R);
     else if (x - end_x > RUN_ZONE && !is_running) this.db_hit(GameKey.L);
 
-    if (z < end_z - DEAD_ZONE) this.start(GameKey.D).end(GameKey.U)
-    else if (z > end_z + DEAD_ZONE) this.start(GameKey.U).end(GameKey.D)
-    else this.end(GameKey.D, GameKey.U) // reach z
-
+    if (z < end_z - DEAD_ZONE) {
+      if (this.is_end(GameKey.D)) {
+        this.start(GameKey.D).end(GameKey.U)
+      }
+    } else if (z > end_z + DEAD_ZONE) {
+      if (this.is_end(GameKey.U)) {
+        this.start(GameKey.U).end(GameKey.D)
+      }
+    } else {
+      // reach z
+      this.end(GameKey.D, GameKey.U)
+    }
     return super.update();
   }
 }

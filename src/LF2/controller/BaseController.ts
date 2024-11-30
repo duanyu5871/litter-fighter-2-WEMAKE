@@ -104,7 +104,11 @@ export class BaseController {
       this.key_time_maps[k] = this._time;
     return this;
   }
-
+  is_hit_or_hold(k: string): boolean;
+  is_hit_or_hold(k: GameKey): boolean;
+  is_hit_or_hold(k: GameKey): boolean {
+    return !!this.key_time_maps[k];
+  }
 
   is_hold(k: string): boolean;
   is_hold(k: GameKey): boolean;

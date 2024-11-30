@@ -1,10 +1,8 @@
-import { TNextFrame } from '../defines';
 import GameKey from '../defines/GameKey';
 import { IKeyboardCallback } from "../ditto/keyboard/IKeyboardCallback";
 import { IKeyEvent } from '../ditto/keyboard/IKeyEvent';
 import Character from '../entity/Character';
 import { BaseController } from "./BaseController";
-import { BotEnemyChaser } from './BotEnemyChaser';
 
 type TKeyCodeMap = { [x in GameKey]?: string };
 type TCodeKeyMap = { [x in string]?: GameKey };
@@ -14,7 +12,6 @@ export default class LocalController extends BaseController implements IKeyboard
 
   private _key_code_map: TKeyCodeMap = {};
   private _code_key_map: TCodeKeyMap = {};
-  ai?: BotEnemyChaser;
   on_key_up(e: IKeyEvent) {
     const code = e.key?.toLowerCase();
     if (!code) return;
@@ -52,18 +49,11 @@ export default class LocalController extends BaseController implements IKeyboard
   };
 
   as_bot(): this {
-    this.ai = new BotEnemyChaser(this.player_id, this.character);
-    this.lf2.keyboard.callback.del(this)
     return this;
   }
 
   as_human(): this {
-    this.ai = void 0;
-    this.lf2.keyboard.callback.add(this)
     return this;
   }
-  override update(): TNextFrame | undefined {
-    if (this.ai) return this.ai.update()
-    return super.update()
-  }
+
 }

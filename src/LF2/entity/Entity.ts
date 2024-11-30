@@ -20,7 +20,7 @@ import { FrameIndicators } from './FrameIndicators';
 import type IEntityCallbacks from './IEntityCallbacks';
 import { InfoSprite } from './InfoSprite';
 import { turn_face } from './face_helper';
-import { is_entity } from './type_check';
+import { controller_is_bot_enemy_chaser, controller_is_local_controller, is_character, is_entity } from './type_check';
 
 export const EMPTY_PIECE: ITexturePieceInfo = {
   tex: 0, x: 0, y: 0, w: 0, h: 0,
@@ -449,6 +449,10 @@ export default class Entity<
     else if (dvz !== void 0) this.velocity.z = dvz;
   }
   self_update(): void {
+    // if (is_character(this) && controller_is_local_controller(this.controller)) {
+    //   if (this.controller.ai)
+    //     console.log('n', this._next_frame)
+    // }
     if (this._next_frame) this.enter_frame(this._next_frame);
     if (this._mp < this._max_mp)
       this.mp = Math.min(this._max_mp, this._mp + this._mp_r_spd);
