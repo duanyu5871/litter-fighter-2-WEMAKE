@@ -4,10 +4,19 @@ import { ICharacterData, IDataLists } from '../../../src/LF2/defines';
 import { read_lf2_dat_file } from './read_lf2_dat_file';
 
 export type IRet = ReturnType<typeof dat_to_json>
+function get_dst_path(
+  out_dir: string,
+  src_dir: string,
+  src_path: string,
+): string {
+  return src_path.replace(src_dir, out_dir).replace(/\.dat$/, '.json');
+}
 export async function convert_dat_file(
-  out_dir: string, src_dir: string, src_path: string, indexes: IDataLists
-): Promise<[IRet, string]> {
-  const dst_path = src_path.replace(src_dir, out_dir).replace(/\.dat$/, '.json');
+  out_dir: string,
+  src_path: string,
+  dst_path: string,
+  indexes: IDataLists
+): Promise<IRet> {
   const index_file_value = dst_path.replace(out_dir + '/', '');
   const index_info = indexes.objects.find(v => index_file_value === v.file) ||
     indexes.backgrounds.find(v => index_file_value === v.file);
@@ -21,9 +30,10 @@ export async function convert_dat_file(
   if (!ret) {
     console.log('convert failed', src_path, '=>', dst_path);
     await fs.copyFile(src_path, dst_path);
-    return [void 0, dst_path];
+    return void 0;
   }
   console.log('convert', src_path, '=>', dst_path);
   await fs.writeFile(dst_path, JSON.stringify(ret, null, 2));
-  return [ret, dst_path];
+  return ret;
 }
+convert_dat_file.get_dst_path = get_dst_path

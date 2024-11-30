@@ -2,8 +2,14 @@ import command_exists from 'command-exists';
 import fs from 'fs/promises';
 import { exec_cmd } from './exec_cmd';
 
-export async function convert_sound(out_dir: string, src_dir: string, src_path: string) {
-  const dst_path = src_path.replace(src_dir, out_dir) + '.mp3';
+function get_dst_path(
+  out_dir: string,
+  src_dir: string,
+  src_path: string
+): string {
+  return src_path.replace(src_dir, out_dir) + '.mp3';
+}
+export async function convert_sound(dst_path: string, src_path: string) {
   console.log('convert', src_path, '=>', dst_path);
   await fs.rm(dst_path, { recursive: true, force: true }).catch(() => void 0);
 
@@ -13,3 +19,5 @@ export async function convert_sound(out_dir: string, src_dir: string, src_path: 
   const args = ['-i', src_path, '-codec:a', 'libmp3lame', '-b:a', '64k', '-ar', '44100', dst_path];
   return await exec_cmd('ffmpeg', ...args)
 }
+
+convert_sound.get_dst_path = get_dst_path

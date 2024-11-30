@@ -1,32 +1,23 @@
+import { readFileSync } from 'fs';
 import fs, { readFile } from 'fs/promises';
+import path, { join } from 'path';
+import { ColonValueReader } from '../../src/LF2/dat_translator/ColonValueReader';
 import { IEntityPictureInfo } from '../../src/LF2/defines';
+import { CacheInfos } from './utils/cache_infos';
 import { check_is_str_ok } from './utils/check_is_str_ok';
 import { classify } from './utils/classify';
 import { convert_dat_file } from './utils/convert_dat_file';
 import { convert_data_txt } from './utils/convert_data_txt';
 import { convert_sound } from './utils/convert_sound';
 import { make_zip_and_json } from './utils/make_zip_and_json';
-import { write_file } from './utils/write_file';
-import { convert_pic } from './utils/convert_pic';
-import { join } from 'path';
 import { read_lf2_dat_file } from './utils/read_lf2_dat_file';
-import { ColonValueReader } from '../../src/LF2/dat_translator/ColonValueReader';
-import { readFileSync } from 'fs';
+import { write_file } from './utils/write_file';
+import { convert_pic, convert_pic_2 } from './utils/convert_pic';
 const {
   RAW_LF2_PATH, DATA_DIR_PATH, OUT_DIR, DATA_ZIP_NAME, PREL_DIR_PATH, PREL_ZIP_NAME,
   TXT_LF2_PATH
 } = JSON.parse(readFileSync('./converter.config.json').toString())
 
-export let steps = {
-  del_old: true,
-  sound: true,
-  dat: true,
-  bmp: true,
-  others: true,
-  converting: true,
-  zipping: true,
-  cleanup: true,
-};
 enum EntryEnum {
   MAIN = 1,
   HELP,
@@ -47,51 +38,42 @@ for (let i = 2; i < process.argv.length; ++i) {
     case '--dat-2-txt':
       entry = EntryEnum.DAT_2_TXT
       break;
-    case '--no-cleanup':
-      steps.cleanup = false
-      break;
-    case '--zipping-only':
-      for (const k in steps) (steps as any)[k] = false;
-      steps.zipping = true;
-      break;
-    case '--converting-only':
-      for (const k in steps) (steps as any)[k] = false;
-      steps.converting = steps.dat = steps.bmp = true;
-      break;
-    case '--dat-only':
-      for (const k in steps) (steps as any)[k] = false;
-      steps.converting = steps.dat = true;
-      break;
-    case '--bmp-only':
-      for (const k in steps) (steps as any)[k] = false;
-      steps.converting = steps.bmp = true;
-      break;
   }
 }
 
 async function make_prel_zip() {
   await make_zip_and_json(PREL_DIR_PATH, OUT_DIR, PREL_ZIP_NAME);
 }
+
 async function main() {
   check_is_str_ok(
-    RAW_LF2_PATH, OUT_DIR,
-    DATA_DIR_PATH, DATA_ZIP_NAME,
-    PREL_DIR_PATH, PREL_ZIP_NAME,
+    RAW_LF2_PATH,
+    OUT_DIR,
+    DATA_DIR_PATH,
+    DATA_ZIP_NAME,
+    PREL_DIR_PATH,
+    PREL_ZIP_NAME,
   )
-  await fs.rm(DATA_DIR_PATH, { recursive: true, force: true })
+  const cache_infos = await CacheInfos.create(path.join(OUT_DIR, 'cache_infos.json'))
   const ress = await classify(RAW_LF2_PATH);
   for (const src_path of ress.directories) {
     const dst_path = src_path.replace(RAW_LF2_PATH, DATA_DIR_PATH)
     await fs.mkdir(dst_path, { recursive: true }).catch(_ => void 0)
   }
+
   const pic_list_map = new Map<string, IEntityPictureInfo[]>();
   const indexes = await convert_data_txt(RAW_LF2_PATH, DATA_DIR_PATH);
   if (indexes) {
     for (const src_path of ress.file.dat) {
-      const [json, dst_path] = await convert_dat_file(DATA_DIR_PATH, RAW_LF2_PATH, src_path, indexes)
-      if (Array.isArray(json) || !json)
+      const dst_path = convert_dat_file.get_dst_path(DATA_DIR_PATH, RAW_LF2_PATH, src_path);
+      const cache_info = await cache_infos.get_info(src_path, dst_path);
+      const is_changed = await cache_info.is_changed()
+      if (!is_changed) {
+        console.log('not changed:', src_path, '=>', dst_path);
         continue;
-      if ('is_game_obj_data' in json) {
+      }
+      const json = await convert_dat_file(DATA_DIR_PATH, src_path, dst_path, indexes);
+      if (!Array.isArray(json) && json && 'is_game_obj_data' in json) {
         let edited = false
         for (const pic_name in json.base.files) {
           const file = json.base.files[pic_name];
@@ -106,30 +88,67 @@ async function main() {
           }
         }
         if (edited) {
-          write_file(dst_path, JSON.stringify(json, null, 2))
+          await write_file(dst_path, JSON.stringify(json, null, 2))
         }
+      }
+      await cache_info.update()
+    }
+  }
+  const imgs = [...ress.file.bmp, ...ress.file.png]
+  for (const src_path of imgs) {
+    const dst_path = convert_pic.get_dst_path(DATA_DIR_PATH, RAW_LF2_PATH, src_path)
+    const pic_list = pic_list_map.get(dst_path.replace(DATA_DIR_PATH + '/', ''))
+    if (!pic_list?.length) {
+      const cache_info = await cache_infos.get_info(src_path, dst_path);
+      const is_changed = await cache_info.is_changed()
+      if (!is_changed) {
+        console.log('not changed:', src_path, '=>', dst_path);
+        continue;
+      }
+      await convert_pic(DATA_DIR_PATH, RAW_LF2_PATH, src_path)
+      await cache_info.update()
+    } else {
+      for (const pic of pic_list) {
+        const dst_path = convert_pic_2.get_dst_path(DATA_DIR_PATH, pic)
+        const cache_info = await cache_infos.get_info(src_path, dst_path);
+        const is_changed = await cache_info.is_changed()
+        if (!is_changed) {
+          console.log('not changed:', src_path, '=>', dst_path);
+          continue;
+        }
+        await convert_pic_2(dst_path, src_path, pic)
+        await cache_info.update()
       }
     }
   }
-  if (steps.bmp) {
-    for (const src_path of ress.file.bmp)
-      await convert_pic(DATA_DIR_PATH, RAW_LF2_PATH, src_path, pic_list_map)
-    for (const src_path of ress.file.png)
-      await convert_pic(DATA_DIR_PATH, RAW_LF2_PATH, src_path, pic_list_map)
+
+  const sounds = [...ress.file.wav, ...ress.file.wma]
+  for (const src_path of sounds) {
+    const dst_path = convert_sound.get_dst_path(DATA_DIR_PATH, RAW_LF2_PATH, src_path)
+    const cache_info = await cache_infos.get_info(src_path, dst_path);
+    const is_changed = await cache_info.is_changed()
+    if (!is_changed) {
+      console.log('not changed:', src_path, '=>', dst_path);
+      continue;
+    }
+    await convert_sound(dst_path, src_path);
+    await cache_info.update();
   }
-  if (steps.sound) {
-    for (const src_path of ress.file.wav) // .wav
-      await convert_sound(DATA_DIR_PATH, RAW_LF2_PATH, src_path);
-    for (const src_path of ress.file.wma) // .wma
-      await convert_sound(DATA_DIR_PATH, RAW_LF2_PATH, src_path);
-  }
+
   for (const src_path of ress.unknown) {
     const dst_path = src_path.replace(RAW_LF2_PATH, DATA_DIR_PATH)
+    const cache_info = await cache_infos.get_info(src_path, dst_path);
+    const is_changed = await cache_info.is_changed()
+    if (!is_changed) {
+      console.log('not changed:', src_path, '=>', dst_path);
+      continue;
+    }
     console.log('copy', src_path, '=>', dst_path)
     await fs.copyFile(src_path, dst_path)
+    await cache_info.update();
   }
+  await cache_infos.save()
   await make_zip_and_json(DATA_DIR_PATH, OUT_DIR, DATA_ZIP_NAME);
-  await fs.rm(DATA_DIR_PATH, { recursive: true, force: true })
   await make_prel_zip()
 }
 
