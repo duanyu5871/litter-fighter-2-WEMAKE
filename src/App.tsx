@@ -50,7 +50,9 @@ import img_btn_3_2 from './assets/btn_3_2.png';
 import './game_ui.css';
 import './init';
 import { useLocalBoolean, useLocalNumber, useLocalString } from './useLocalStorage';
+import { LoadingImg } from './LoadingImg';
 
+const loading_img = new LoadingImg();
 Ditto.setup({
   Timeout: dom.__Timeout,
   Interval: dom.__Interval,
@@ -197,7 +199,7 @@ function App() {
         on_stage_change: (s) => _set_bg_id(s.bg.id),
         on_pause_change: (v) => _set_paused(v),
         on_gravity_change: v => _set_gravity(v),
-        on_is_sync_render_changed: v => set_sync_render(v)
+        on_is_sync_render_changed: v => set_sync_render(v),
       }),
       lf2.callbacks.add({
         on_layouts_loaded: (layouts) => {
@@ -341,6 +343,24 @@ function App() {
   useShortcut('ctrl+F1', 0, () => set_control_panel_visible(v => !v));
   useShortcut('ctrl+F2', 0, () => set_show_indicators(v => !v));
   useShortcut('ctrl+F3', 0, () => set_game_overlay(v => !v));
+
+  useEffect(() => {
+    const ele = _game_contiainer_ref.current;
+    if (!ele) return;
+
+    if (layout_id) {
+      loading_img.hide()
+      const tid = setTimeout(() => {
+        ele.style.transition = 'opacity 1000ms'
+        ele.style.opacity = '1';
+      }, 1000)
+      return () => clearTimeout(tid)
+    } else {
+      ele.style.opacity = '0';
+      const tid = setTimeout(() => loading_img.show(), 1000)
+      return () => clearTimeout(tid)
+    }
+  }, [layout_id])
 
   return (
     <div className="App">
@@ -640,6 +660,10 @@ function App() {
           show_bot_settings={showing_panel === 'bot'} />
       </Show.Div>
       <EditorView open={editor_open} onClose={() => set_editor_open(false)} />
+      <img
+        src='lf2_built_in_data/launch/SMALL_LOADING@4x.png'
+        alt='loading...'
+        ref={r => loading_img.set_element(r)} />
     </div >
   );
 }
