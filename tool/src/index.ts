@@ -13,6 +13,7 @@ import { make_zip_and_json } from './utils/make_zip_and_json';
 import { read_lf2_dat_file } from './utils/read_lf2_dat_file';
 import { write_file } from './utils/write_file';
 import { convert_pic, convert_pic_2 } from './utils/convert_pic';
+import { read_text_file } from './utils/read_text_file';
 const {
   RAW_LF2_PATH, DATA_DIR_PATH, OUT_DIR, DATA_ZIP_NAME, PREL_DIR_PATH, PREL_ZIP_NAME,
   TXT_LF2_PATH
@@ -67,11 +68,6 @@ async function main() {
     for (const src_path of ress.file.dat) {
       const dst_path = convert_dat_file.get_dst_path(DATA_DIR_PATH, RAW_LF2_PATH, src_path);
       const cache_info = await cache_infos.get_info(src_path, dst_path);
-      const is_changed = await cache_info.is_changed()
-      if (!is_changed) {
-        console.log('not changed:', src_path, '=>', dst_path);
-        continue;
-      }
       const json = await convert_dat_file(DATA_DIR_PATH, src_path, dst_path, indexes);
       if (!Array.isArray(json) && json && 'is_game_obj_data' in json) {
         let edited = false

@@ -88,8 +88,11 @@ export * from './IWpointInfo';
 
 export interface IGameObjInfo {
   /** 所属组 */
-  files: Record<string, IEntityPictureInfo>;
   group?: string[];
+  files: Record<string, IEntityPictureInfo>;
+  depth_test?: boolean;
+  depth_write?: boolean;
+  render_order?: number;
 }
 export interface IBaseData<I = any> {
   get is_base_data(): true;

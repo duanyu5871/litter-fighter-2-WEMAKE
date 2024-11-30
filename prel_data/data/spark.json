@@ -1,9 +1,12 @@
 {
   "id": "data/spark.json",
-  "type": "frame_animater",
+  "type": "entity",
   "is_game_obj_data": true,
   "is_base_data": true,
   "base": {
+    "depth_test": false,
+    "depth_write": false,
+    "render_order": 2,
     "files": {
       "0": {
         "id": 0,

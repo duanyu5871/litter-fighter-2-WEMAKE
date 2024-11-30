@@ -36,6 +36,15 @@ export class EntityRender {
     this.entity_mesh.visible = false;
     this.entity_mesh.name = "Entity:" + data.id;
     this.shadow = new Shadow(entity, this.entity_mesh)
+    if (typeof data.base.depth_test === 'boolean') {
+      this.entity_mesh.set_depth_test(data.base.depth_test)
+    }
+    if (typeof data.base.depth_write === 'boolean') {
+      this.entity_mesh.set_depth_write(data.base.depth_write)
+    }
+    if (typeof data.base.render_order === 'number') {
+      this.entity_mesh.render_order = data.base.render_order
+    }
     return this;
   }
 
