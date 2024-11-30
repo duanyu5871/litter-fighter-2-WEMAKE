@@ -4,7 +4,7 @@ export const Log = Object.assign(
   L.Log.Clone({ showArgs: true, showRet: true, disabled: false }),
   {
     print(...args: any[]) {
-      return console.warn(...args);
+      return console.log(...args);
     }
   }
 )

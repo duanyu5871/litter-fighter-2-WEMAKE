@@ -5,6 +5,7 @@ import type Character from '../../entity/Character';
 import BaseCharacterState from "./Base";
 
 export default class Lying extends BaseCharacterState {
+
   override enter(e: Character, prev_frame: IFrameInfo): void {
     if (e.get_frame().state === Defines.State.Lying && e.hp <= 0) {
       e.on_lying_and_dead()

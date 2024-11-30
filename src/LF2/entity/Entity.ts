@@ -710,6 +710,7 @@ export default class Entity<
   }
 
   same_team(other: Entity): boolean {
+    if(this === other) return true;
     const a_team = this.team;
     const b_team = other.team;
     if (a_team && a_team === b_team) return true;

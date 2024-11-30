@@ -16,22 +16,31 @@ export class BotController extends BaseController {
   }
   update_nearest() {
     const c = this.character;
+    if (this._nearest_enemy?.frame.state === Defines.State.Lying) {
+      this._nearest_enemy = void 0;
+    }
     for (const e of c.world.entities) {
-      if (!is_character(e)) continue;
-      if (!e.team || !c.team || e.team !== c.team) {
-        if (!this._nearest_enemy) {
-          this._nearest_enemy = e;
-        } else if (this.manhattan_to(e) > this.manhattan_to(this._nearest_enemy)) {
-          this._nearest_enemy = e;
-        }
+      if (
+        !is_character(e) ||
+        e.same_team(c) ||
+        e.frame.state === Defines.State.Lying
+      ) continue;
+
+      if (!this._nearest_enemy) {
+        this._nearest_enemy = e;
+      } else if (this.manhattan_to(e) > this.manhattan_to(this._nearest_enemy)) {
+        this._nearest_enemy = e;
       }
     }
+    console.log("update_nearest, enemy state", this._nearest_enemy?.state?.state)
+
   }
   want_to_jump = false
   update() {
     this._count++;
-    if (this._count % 30 === 0) this.update_nearest(); // pre 0.5 second.
+    if (this._count % 10 === 0) this.update_nearest();
     if (!this._nearest_enemy) return;
+
     const c = this.character;
     const { x, z } = c.position;
     const { x: end_x, z: end_z } = this._nearest_enemy.position;
@@ -78,9 +87,6 @@ export class BotController extends BaseController {
         is_x_reach = true;
       }
     }
-
-
-
     if (z < end_z - WALK_ATTACK_DEAD_ZONE_Z) {
       if (this.is_end(GameKey.D)) {
         this.start(GameKey.D).end(GameKey.U)
@@ -101,6 +107,7 @@ export class BotController extends BaseController {
       this.is_hit(GameKey.a) ?
         this.end(GameKey.a) :
         this.start(GameKey.a)
+      this.want_to_jump = false;
     } else {
       if (is_x_reach) {
         if (is_running && facing > 0) {

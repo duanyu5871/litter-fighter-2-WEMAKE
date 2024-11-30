@@ -16,8 +16,7 @@ import Teleport_ToFarthestAlly from "./Teleport_ToFarthestAlly";
 import Teleport_ToNearestEnemy from "./Teleport_ToNearestEnemy";
 import Walking from "./Walking";
 
-export const CHARACTER_STATES = new States<Character>()
-
+export const CHARACTER_STATES = (window as any).CHARACTER_STATES = new States<Character>()
 for (const [k, v] of ENTITY_STATES.map) CHARACTER_STATES.set(k, v)
 
 CHARACTER_STATES.set(Defines.State.Any, new BaseCharacterState())
