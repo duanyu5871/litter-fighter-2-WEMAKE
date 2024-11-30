@@ -1,4 +1,19 @@
 import L from '@fimagine/logger';
 L.Config.currentTime = () => new Date().toISOString();
-export const Log = L.Log.Clone({ showArgs: true, showRet: true, disabled: false });
-export const Warn = L.Warn.Clone({ showArgs: true, showRet: true, disabled: false });
+export const Log = Object.assign(
+  L.Log.Clone({ showArgs: true, showRet: true, disabled: false }),
+  {
+    print(...args: any[]) {
+      return console.warn(...args);
+    }
+  }
+)
+
+export const Warn = Object.assign(
+  L.Warn.Clone({ showArgs: true, showRet: true, disabled: false }),
+  {
+    print(...args: any[]) {
+      return console.warn(...args);
+    }
+  }
+);

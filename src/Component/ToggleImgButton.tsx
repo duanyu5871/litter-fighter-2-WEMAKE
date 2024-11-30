@@ -13,7 +13,7 @@ export interface IToggleImgProps extends Omit<React.ButtonHTMLAttributes<HTMLBut
   shortcutTarget?: Window | Document | Element;
   show_shortcut?: boolean;
   src?: [string, string] | [string];
-  ref?: React.Ref<HTMLButtonElement>;
+  ref?: React.Ref<HTMLButtonElement> | string;
 };
 export const ToggleImgButton: React.FC<IToggleImgProps> = React.forwardRef<HTMLButtonElement, IToggleImgProps>(
   (props: IToggleImgProps, ref: React.ForwardedRef<HTMLButtonElement>) => {

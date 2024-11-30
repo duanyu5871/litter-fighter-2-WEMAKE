@@ -1,10 +1,10 @@
-import { Warn } from '@fimagine/logger';
-import { is_str } from './utils/type_check';
+import { Warn } from '../Log';
 import Callbacks from './base/Callbacks';
 import { NoEmitCallbacks } from "./base/NoEmitCallbacks";
 import type { TKeys } from './controller/BaseController';
 import Defines from './defines/defines';
 import GameKey from './defines/GameKey';
+import { is_str } from './utils/type_check';
 
 export interface IPlayerInfoCallback {
   on_key_changed?(key_name: GameKey, value: string, prev: string): void;

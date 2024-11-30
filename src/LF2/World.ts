@@ -416,13 +416,6 @@ export class World {
     }
   }
 
-  itr_log = Log.Clone().print.bind({}, 'collision_detection');
-  itr_pick_weapon_log = (itr: IItrInfo, ...args: any[]) => {
-    if (itr.kind !== Defines.ItrKind.Pick) return
-    return this.itr_log(itr, ...args);
-  }
-
-
   collision_detection(a: Entity, b: Entity) {
     if (b.blinking || b.invisible) return;
     const af = a.get_frame();
