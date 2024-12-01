@@ -35,10 +35,10 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
     this.name = Character.name + ':' + data.base.name;
     this.enter_frame({ id: Defines.FrameId.Auto });
 
-    this._max_hp = this._hp = data.base.hp ?? Defines.HP;
-    this._max_mp = this._mp = data.base.mp ?? Defines.MP;
-    this._mp_r_min_spd = data.base.mp_r_min_spd ?? Defines.MP_RECOVERY_MIN_SPEED;
-    this._mp_r_max_spd = data.base.mp_r_max_spd ?? Defines.MP_RECOVERY_MAX_SPEED;
+    this._max_hp = this._hp = data.base.hp ?? Defines.DAFUALT_HP;
+    this._max_mp = this._mp = data.base.mp ?? Defines.DAFAULT_MP;
+    this._mp_r_min_spd = data.base.mp_r_min_spd ?? Defines.DAFAULT_MP_RECOVERY_MIN_SPEED;
+    this._mp_r_max_spd = data.base.mp_r_max_spd ?? Defines.DAFAULT_MP_RECOVERY_MAX_SPEED;
     this.update_mp_recovery_speed();
   }
 
@@ -55,16 +55,10 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
       // 用next 进入此动作，负数表示消耗，无视正数。若消耗完毕跳至按下防御键的指定跳转动作
       if (mp < 0 && this._mp < -mp) return super.get_next_frame(frame.hit?.d ?? Defines.FrameId.Auto);
       if (hp < 0 && this._hp < -hp) return super.get_next_frame(frame.hit?.d ?? Defines.FrameId.Auto);
-      if (mp < 0) this.mp += mp;
-      if (hp < 0) this.hp += hp;
     } else {
-      // 负数表示恢复，正数表示消耗。
       if (mp > 0 && this._mp < mp) return [void 0, void 0];
       if (hp > 0 && this._hp < hp) return [void 0, void 0];
-      if (mp) this.mp -= mp
-      if (hp) this.hp -= hp
     }
-
     return ret;
   }
 
@@ -163,8 +157,11 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
     return { id: this.data.indexes.falling[-1][1] }
   }
   override on_after_update() {
-    const next_frame_0 = this.controller.update();
-    this._next_frame = next_frame_0 || this._next_frame;
+    const next_frame_idx = this.controller.update();
+    if (next_frame_idx) {
+      const [a] = this.get_next_frame(next_frame_idx);
+      if (a) this._next_frame = next_frame_idx;
+    }
   }
 
   private dizzy_catch_test(target: Entity) {

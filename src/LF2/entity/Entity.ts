@@ -85,15 +85,15 @@ export default class Entity<
   protected _name: string = '';
   protected _team: string = new_team();
 
-  protected _mp: number = Defines.MP;
-  protected _max_mp: number = Defines.MP;
+  protected _mp: number = Defines.DAFAULT_MP;
+  protected _max_mp: number = Defines.DAFAULT_MP;
 
-  protected _hp: number = Defines.HP;
-  protected _max_hp: number = Defines.HP;
+  protected _hp: number = Defines.DAFUALT_HP;
+  protected _max_hp: number = Defines.DAFUALT_HP;
 
   protected _mp_r_min_spd: number = 0;
   protected _mp_r_max_spd: number = 0;
-  protected _mp_r_spd: number = Defines.MP_RECOVERY_MIN_SPEED;
+  protected _mp_r_spd: number = Defines.DAFAULT_MP_RECOVERY_MIN_SPEED;
 
   protected _holder?: Entity;
   protected _holding?: Entity;
@@ -739,15 +739,23 @@ export default class Entity<
       this._next_frame = void 0;
       return
     }
-    const { sound } = frame;
+    const { sound, mp = 0, hp = 0 } = frame;
+    if (this.frame.next === which) {
+      if (mp < 0) this.mp += mp;
+      if (hp < 0) this.hp += hp;
+    } else {
+      if (mp) this.mp -= mp
+      if (hp) this.hp -= hp
+    }
+
     const { x, y, z } = this.position;
     sound && this.world.lf2.sounds.play(sound, x, y, z);
     this.set_frame(frame);
-
     if (flags?.facing !== void 0) this.facing = this.handle_facing_flag(flags.facing, frame, flags);
     if (flags?.wait !== void 0) this.wait = this.handle_wait_flag(flags.wait, frame, flags);
     else this.wait = frame.wait;
     this._next_frame = void 0;
+
   }
 
   handle_wait_flag(wait: string | number, frame: IFrameInfo, flags: INextFrame): number {

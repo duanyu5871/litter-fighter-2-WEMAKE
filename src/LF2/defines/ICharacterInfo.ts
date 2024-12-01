@@ -28,7 +28,7 @@ export interface ICharacterInfo extends IGameObjInfo {
    * 默认角色血量
    * 在一些模式下，此数值可能会被覆盖
    * 
-   * @see Defines.HP 默认值
+   * @see Defines.DAFUALT_HP 默认值
    * @type {?number}
    */
   hp?: number;
@@ -37,7 +37,7 @@ export interface ICharacterInfo extends IGameObjInfo {
    * 默认角色蓝量
    * 在一些模式下，此数值可能会被覆盖
    * 
-   * @see Defines.MP 默认值
+   * @see Defines.DAFAULT_MP 默认值
    * @type {?number}
    */
   mp?: number;
@@ -46,7 +46,7 @@ export interface ICharacterInfo extends IGameObjInfo {
    * MP最大恢复速度（每帧）
    * 血量越低，MP恢复速度 越接近MP最大恢复速度
    * 
-   * @see Defines.MP_RECOVERY_MAX_SPEED 默认值
+   * @see Defines.DAFAULT_MP_RECOVERY_MAX_SPEED 默认值
    * @type {?number}
    */
   mp_r_max_spd?: number;
@@ -55,7 +55,7 @@ export interface ICharacterInfo extends IGameObjInfo {
    * MP最小恢复速度（每帧）
    * 血量越高，MP恢复速度 越接近MP最大恢复速度
    * 
-   * @see Defines.MP_RECOVERY_MIN_SPEED 默认值
+   * @see Defines.DAFAULT_MP_RECOVERY_MIN_SPEED 默认值
    * @type {?number}
    */
   mp_r_min_spd?: number;
