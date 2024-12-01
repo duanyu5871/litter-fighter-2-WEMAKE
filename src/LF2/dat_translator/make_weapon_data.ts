@@ -62,7 +62,7 @@ function make_weapon_strength(full_str: string): IWeaponData['weapon_strength'] 
     cook_itr(entry);
     return entry;
   });
-  if (list.length) return void 0;
+  if (!list.length) return void 0;
   const weapon_strength: IWeaponData['weapon_strength'] = {};
   for (const entry of list)
     weapon_strength[entry.id] = entry;

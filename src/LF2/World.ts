@@ -13,10 +13,10 @@ import Ditto from './ditto';
 import Ball from './entity/Ball';
 import Character from './entity/Character';
 import Entity from './entity/Entity';
-import { EntityRender } from './renderer/EntityRender';
 import { Factory } from './entity/Factory';
 import Weapon from './entity/Weapon';
 import { is_ball, is_character, is_weapon } from './entity/type_check';
+import { EntityRender } from './renderer/EntityRender';
 import Stage from './stage/Stage';
 import float_equal from './utils/math/float_equal';
 import { is_num } from './utils/type_check';
@@ -436,9 +436,9 @@ export class World {
             if (!is_weapon(a)) continue;
             const atk = a.holder?.get_frame().wpoint?.attacking;
             if (!atk) continue;
-            const ooo = a.data.weapon_strength?.[atk];
-            if (!ooo) continue;
-            itr = { ...itr, ...ooo }
+            const override_itr = a.data.weapon_strength?.[atk];
+            if (!override_itr) continue;
+            itr = { ...itr, ...override_itr }
             break;
           }
           case Defines.State.BurnRun: {
