@@ -8,9 +8,25 @@ export namespace Defines {
   export const OLD_SCREEN_HEIGHT = 550;
   export const DAFUALT_HP = 500;
   export const DAFAULT_MP = 500;
-  export const DAFAULT_MP_RECOVERY_MAX_SPEED = 2;
-  export const DAFAULT_MP_RECOVERY_MIN_SPEED = 0.5;
+
+
+  /**
+   * 默认最大回蓝速度, 血越少，回蓝越快（线性）
+   *
+   * @type {number}
+   */
+  export const DAFAULT_MP_RECOVERY_MAX_SPEED: number = 2;
+
+  /**
+   * 默认最大回蓝速度, 血越多，回蓝越慢（线性）
+   *
+   * @type {number}
+   */
+  export const DAFAULT_MP_RECOVERY_MIN_SPEED: number = 0.5;
+
+
   export const DAFAULT_HP_RECOVERY_SPEED = 0.2;
+  
   export const VOID_STAGE: IStageInfo = {
     bg: "VOID",
     id: "VOID_STAGE",
