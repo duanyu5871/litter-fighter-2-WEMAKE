@@ -9,7 +9,7 @@ import { Defines } from "../../defines/defines";
 import Character from "../../entity/Character";
 import { filter } from "../../utils/container_help";
 import { map_no_void } from "../../utils/container_help/map_no_void";
-import { random_get } from "../../utils/math/random";
+import { random_get, random_in } from "../../utils/math/random";
 import BackgroundNameText from "./BackgroundNameText";
 import CharacterSelLogic from "./CharacterSelLogic";
 import { LayoutComponent } from "./LayoutComponent";
@@ -252,17 +252,22 @@ export default class GamePrepareLogic extends LayoutComponent {
   }
 
   start_game() {
+    const { far, near, left, right } = this.lf2.world.bg;
+  
     for (const { player } of this.player_slots) {
       if (!player?.joined) continue;
       const character_data = this.lf2.datas.find_character(player.character)
       if (!character_data) continue;
-      const character = new Character(this.world, character_data)
+      const character = new Character(this.world, character_data);
       character.name = player.is_com ? 'com' : player.name;
       character.team = player.team
       character.facing = Math.random() < 0.5 ? 1 : -1
       character.controller = player.is_com ?
         new BotController(player.id, character) :
-        new LocalController(player.id, character, player.keys)
+        new LocalController(player.id, character, player.keys);
+      character.position.z = random_in(far, near);
+      character.position.x = random_in(left, right);
+      character.blinking = 120;
       character.attach();
     }
 

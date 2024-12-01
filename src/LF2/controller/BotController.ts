@@ -8,42 +8,58 @@ import { BaseController } from "./BaseController";
 export class BotController extends BaseController {
   readonly is_bot_enemy_chaser = true;
   _count = 0;
-  _nearest_enemy: Character | undefined;
+  _chasing_enemy: Character | undefined;
+  _avoiding_enemy: Character | undefined;
   manhattan_to(a: Entity) {
     const { x, z } = this.character.position;
     const { x: x1, z: z1 } = a.position;
     return Math.abs(x1 - x) + Math.abs(z1 - z);
   }
+  should_avoid(e?: Character | null) {
+    if (!e) return true;
+    return (
+      e.frame.state === Defines.State.Lying ||
+      e.invisible ||
+      e.blinking
+    )
+  }
   update_nearest() {
     const c = this.character;
-    if (this._nearest_enemy?.frame.state === Defines.State.Lying) {
-      this._nearest_enemy = void 0;
+    if (this.should_avoid(this._chasing_enemy)) {
+      this._chasing_enemy = void 0;
+    }
+    if (!this.should_avoid(this._avoiding_enemy)) {
+      this._avoiding_enemy = void 0;
     }
     for (const e of c.world.entities) {
-      if (
-        !is_character(e) ||
-        e.same_team(c) ||
-        e.frame.state === Defines.State.Lying
-      ) continue;
-
-      if (!this._nearest_enemy) {
-        this._nearest_enemy = e;
-      } else if (this.manhattan_to(e) > this.manhattan_to(this._nearest_enemy)) {
-        this._nearest_enemy = e;
+      if (!is_character(e) || c.same_team(e))
+        continue;
+      if (this.should_avoid(e)) {
+        if (!this._avoiding_enemy) {
+          this._avoiding_enemy = e;
+        } else if (this.manhattan_to(e) > this.manhattan_to(this._avoiding_enemy)) {
+          this._avoiding_enemy = e;
+        }
+      } else {
+        if (!this._chasing_enemy) {
+          this._chasing_enemy = e;
+        } else if (this.manhattan_to(e) > this.manhattan_to(this._chasing_enemy)) {
+          this._chasing_enemy = e;
+        }
       }
     }
-    console.log("update_nearest, enemy state", this._nearest_enemy?.state?.state)
-
   }
-  want_to_jump = false
-  update() {
-    this._count++;
-    if (this._count % 10 === 0) this.update_nearest();
-    if (!this._nearest_enemy) return;
+  want_to_jump = false;
 
+  chase_enemy() {
+    if (!this._chasing_enemy) return false;
     const c = this.character;
     const { x, z } = c.position;
-    const { x: end_x, z: end_z } = this._nearest_enemy.position;
+    const {
+      x: target_x,
+      z: target_z,
+    } = this._chasing_enemy.position;
+
     const WALK_ATTACK_DEAD_ZONE_X = 50;
     const WALK_ATTACK_DEAD_ZONE_Z = 10;
     const RUN_ATTACK_DEAD_ZONE_X = 75;
@@ -56,18 +72,18 @@ export class BotController extends BaseController {
     let is_x_reach = false;
     let is_z_reach = false;
 
-    if (end_x - x > RUN_ZONE && !is_running) {
+    if (target_x - x > RUN_ZONE && !is_running) {
       this.db_hit(GameKey.R)
-      console.log('run >>>', this.is_db_hit(GameKey.R))
-    } else if (x - end_x > RUN_ZONE && !is_running) {
+      // console.log('run >>>', this.is_db_hit(GameKey.R))
+    } else if (x - target_x > RUN_ZONE && !is_running) {
       this.db_hit(GameKey.L)
-      console.log('run <<<', this.is_db_hit(GameKey.L))
+      // console.log('run <<<', this.is_db_hit(GameKey.L))
     } else if (is_running) {
-      if (end_x - x > RUN_ATTACK_DEAD_ZONE_X) {
+      if (target_x - x > RUN_ATTACK_DEAD_ZONE_X) {
         if (this.is_end(GameKey.R)) {
           this.start(GameKey.R).end(GameKey.L)
         }
-      } else if (x - end_x > RUN_ATTACK_DEAD_ZONE_X) {
+      } else if (x - target_x > RUN_ATTACK_DEAD_ZONE_X) {
         if (this.is_end(GameKey.L)) {
           this.start(GameKey.L).end(GameKey.R)
         }
@@ -75,11 +91,11 @@ export class BotController extends BaseController {
         is_x_reach = true;
       }
     } else {
-      if (end_x - x > WALK_ATTACK_DEAD_ZONE_X) {
+      if (target_x - x > WALK_ATTACK_DEAD_ZONE_X) {
         if (this.is_end(GameKey.R)) {
           this.start(GameKey.R).end(GameKey.L)
         }
-      } else if (x - end_x > WALK_ATTACK_DEAD_ZONE_X) {
+      } else if (x - target_x > WALK_ATTACK_DEAD_ZONE_X) {
         if (this.is_end(GameKey.L)) {
           this.start(GameKey.L).end(GameKey.R)
         }
@@ -87,11 +103,11 @@ export class BotController extends BaseController {
         is_x_reach = true;
       }
     }
-    if (z < end_z - WALK_ATTACK_DEAD_ZONE_Z) {
+    if (z < target_z - WALK_ATTACK_DEAD_ZONE_Z) {
       if (this.is_end(GameKey.D)) {
         this.start(GameKey.D).end(GameKey.U)
       }
-    } else if (z > end_z + WALK_ATTACK_DEAD_ZONE_Z) {
+    } else if (z > target_z + WALK_ATTACK_DEAD_ZONE_Z) {
       if (this.is_end(GameKey.U)) {
         this.start(GameKey.U).end(GameKey.D)
       }
@@ -129,6 +145,55 @@ export class BotController extends BaseController {
         }
       }
     }
+    return true
+  }
+  avoid_enemy() {
+    console.log('avoid_enemy')
+    if (!this._avoiding_enemy) return false;
+
+    const c = this.character;
+    const { x, z } = c.position;
+    const { x: target_x, z: target_z } = this._avoiding_enemy.position;
+
+    if (this.manhattan_to(this._avoiding_enemy) > 200) {
+      this.end(GameKey.L, GameKey.R, GameKey.U, GameKey.D)
+      return true;
+    }
+    // const { near, far } = this.world.bg;
+    let is_x_reach = false;
+    let is_z_reach = false;
+    if (target_x < x) {
+      if (this.is_end(GameKey.R)) {
+        this.start(GameKey.R).end(GameKey.L)
+      }
+    } else {
+      if (this.is_end(GameKey.L)) {
+        this.start(GameKey.L).end(GameKey.R)
+      }
+    }
+
+    if (z < target_z) {
+      if (this.is_end(GameKey.U)) {
+        this.start(GameKey.U).end(GameKey.D)
+      }
+    } else {
+      if (this.is_end(GameKey.D)) {
+        this.start(GameKey.D).end(GameKey.U)
+      }
+    }
+
+    if (is_x_reach) {
+      this.end(GameKey.L, GameKey.R)
+    }
+    if (is_z_reach) {
+      this.end(GameKey.U, GameKey.D)
+    }
+    return true;
+  }
+  update() {
+    this._count++;
+    if (this._count % 10 === 0) this.update_nearest();
+    this.chase_enemy() || this.avoid_enemy()
     return super.update();
   }
 }

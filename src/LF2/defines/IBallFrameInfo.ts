@@ -9,6 +9,5 @@ export interface IBallFrameInfo extends IFrameInfo {
   on_hitting?: TNextFrame;
   on_timeout?: TNextFrame;
   speedz?: number;
-
   behavior?: number;
 }

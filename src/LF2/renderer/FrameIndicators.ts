@@ -1,8 +1,8 @@
 import * as THREE from 'three';
-import { IObjectNode } from '../3d';
+import { IMeshNode, IObjectNode } from '../3d';
 import { IRect } from '../defines/IRect';
 import Ditto from '../ditto';
-import Entity from './Entity';
+import Entity from '../entity/Entity';
 export const EMPTY_ARR = [] as const;
 export const INDICATORS_COLOR = {
   bdy: 0x00ff00,
@@ -23,7 +23,7 @@ const vertices = new Float32Array([
 geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
 
 export class FrameIndicators {
-  protected _obj: Entity;
+  protected _entity: Entity;
   protected _show = false;
   protected _indicators_map = {
     bdy: new Array<IObjectNode>(),
@@ -32,10 +32,10 @@ export class FrameIndicators {
   private _x: number = 0;
   private _y: number = 0;
   private _z: number = 0;
-  protected get scene() { return this._obj.world.scene; };
+  protected get scene() { return this._entity.world.scene; };
   protected _box?: IObjectNode;
-  protected get frame() { return this._obj.get_frame(); }
-  protected get face() { return this._obj.facing; }
+  protected get frame() { return this._entity.get_frame(); }
+  protected get face() { return this._entity.facing; }
   get show() { return this._show; }
   set show(v: boolean) {
     if (this._show === v) return;
@@ -49,12 +49,12 @@ export class FrameIndicators {
     }
   }
 
-  constructor(e: Entity) {
-    this._obj = e;
+  constructor(entity: Entity, entity_mesh: IMeshNode) {
+    this._entity = entity;
   }
 
   protected _new_indicator(k: keyof typeof this._indicators_map, idx: number) {
-    const ret = this._indicators_map[k][idx] = new Ditto.LineSegmentsNode(this._obj.lf2, { color: INDICATORS_COLOR[k] });
+    const ret = this._indicators_map[k][idx] = new Ditto.LineSegmentsNode(this._entity.lf2, { color: INDICATORS_COLOR[k] });
     this.scene.add(ret);
     return ret;
   }
@@ -73,9 +73,9 @@ export class FrameIndicators {
   }
 
   private _unsafe_update_box() {
-    const { indicator_info } = this._obj.get_frame();
+    const { indicator_info } = this._entity.get_frame();
     if (!indicator_info) return;
-    const ii = indicator_info[this._obj.facing];
+    const ii = indicator_info[this._entity.facing];
     const y = this._y + ii.y;
     const x = this._x + ii.x;
     if (!this._box) return;
@@ -115,7 +115,7 @@ export class FrameIndicators {
   }
   show_box() {
     if (this._box) return;
-    this._box = new Ditto.LineSegmentsNode(this._obj.lf2, { color: INDICATORS_COLOR.main });
+    this._box = new Ditto.LineSegmentsNode(this._entity.lf2, { color: INDICATORS_COLOR.main });
     this.scene.add(this._box);
   }
   hide_box() {
@@ -125,15 +125,12 @@ export class FrameIndicators {
   }
   update() {
     if (!this._show) return;
-    const { x: game_x, y: game_y, z: game_z } = this._obj.position;
+    const { x: game_x, y: game_y, z: game_z } = this._entity.position;
     this._x = game_x;
     this._y = game_y - game_z / 2;
     this._z = game_z;
     this._box && this._unsafe_update_box();
     this._update_indicators('bdy');
     this._update_indicators('itr');
-  }
-  dispose() {
-
   }
 }

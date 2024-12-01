@@ -47,7 +47,6 @@ export default class Background {
     this.obj_3d = new Ditto.ObjectNode(world.lf2);
     this.obj_3d.z = -2 * Defines.OLD_SCREEN_HEIGHT;
     this.obj_3d.name = Background.name + ':' + this.data.base.name;
-
     for (const info of data.layers) {
       if ('color' in info) this.add_layer(info);
       if (!info.file) continue;
@@ -57,6 +56,7 @@ export default class Background {
     this._disposers.push(() => this.fade_out());
     world.scene.add(this.obj_3d);
   }
+  
   fade_out(): void {
     const max_delay = 50;
     const duration = 120;

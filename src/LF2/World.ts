@@ -13,7 +13,7 @@ import Ditto from './ditto';
 import Ball from './entity/Ball';
 import Character from './entity/Character';
 import Entity from './entity/Entity';
-import { EntityRender } from './entity/EntityRender';
+import { EntityRender } from './renderer/EntityRender';
 import { Factory } from './entity/Factory';
 import Weapon from './entity/Weapon';
 import { is_ball, is_character, is_weapon } from './entity/type_check';
@@ -120,16 +120,17 @@ export class World {
 
   entity_renders = new Map<Entity, EntityRender>();
 
-  add_entities(...objs: Entity[]) {
-    for (const e of objs) {
-      if (is_character(e) && LocalController.is(e.controller)) {
-        this.player_slot_characters.set(e.controller.player_id, e);
-        this._callbacks.emit('on_player_character_add')(e.controller.player_id)
+  add_entities(...entities: Entity[]) {
+    for (const entity of entities) {
+      if (is_character(entity) && LocalController.is(entity.controller)) {
+        this.player_slot_characters.set(entity.controller.player_id, entity);
+        this._callbacks.emit('on_player_character_add')(entity.controller.player_id)
       }
-      e.indicators.show = this._show_indicators;
-      this.entities.add(e)
-      const render = new EntityRender(e).set_entity(e);
-      this.entity_renders.set(e, render);
+
+      this.entities.add(entity)
+      const render = new EntityRender(entity).set_entity(entity);
+      this.entity_renders.set(entity, render);
+      render.indicators.show = this._show_indicators;
       this.scene.add(render.entity_mesh!)
     }
   }
@@ -141,10 +142,12 @@ export class World {
         this._callbacks.emit('on_player_character_del')(e.controller.player_id)
       }
       const r = this.entity_renders.get(e);
-      if (r?.entity_mesh) {
+      if (r) {
+        r.dispose();
+        this.entity_renders.delete(e);
         this.scene.del(r.entity_mesh)
       }
-      this.entity_renders.delete(e);
+
       this.entities.delete(e);
       e.dispose();
     }
@@ -337,7 +340,6 @@ export class World {
   }
   render_once(dt: number) {
     if (this.disposed) return;
-    for (const e of this.entities) e.indicators.update();
     for (const [, r] of this.entity_renders) {
       r.update();
     }
@@ -576,8 +578,8 @@ export class World {
   set show_indicators(v: boolean) {
     if (this._show_indicators === v) return;
     this._show_indicators = v;
-    for (const e of this.entities) {
-      e.indicators.show = v;
+    for (const [, r] of this.entity_renders) {
+      r.indicators.show = v;
     }
   }
   dispose() {

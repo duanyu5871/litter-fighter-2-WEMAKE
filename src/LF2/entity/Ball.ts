@@ -1,11 +1,11 @@
-import { Factory } from './Factory';
+import { Log } from '../../Log';
 import type { ICube, World } from '../World';
 import type { IBallData, IBallFrameInfo, IBallInfo, IBdyInfo, IItrInfo, IOpointInfo } from '../defines';
-import { Defines } from '../defines/defines';
+import { Defines } from '../defines';
 import { BALL_STATES } from '../state/ball';
 import Entity, { EMPTY_FRAME_INFO } from './Entity';
+import { Factory } from './Factory';
 import { is_character, is_weapon } from './type_check';
-import { Log } from '../../Log';
 
 export default class Ball extends Entity<IBallFrameInfo, IBallInfo, IBallData> {
   static readonly TAG: string = 'Ball';

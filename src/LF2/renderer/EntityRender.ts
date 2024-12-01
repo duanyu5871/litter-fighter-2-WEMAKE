@@ -3,9 +3,10 @@ import { IMeshNode } from "../3d";
 import { IFrameInfo, ITexturePieceInfo, TFace } from "../defines";
 import IPicture from "../defines/IPicture";
 import Ditto from "../ditto";
+import Entity from "../entity/Entity";
 import create_pictures from "../loader/create_pictures";
-import Entity from "./Entity";
-import Shadow from "./Shadow";
+import { FrameIndicators } from "./FrameIndicators";
+import Shadow from "./ShadowRender";
 export const EMPTY_PIECE: ITexturePieceInfo = {
   tex: 0, x: 0, y: 0, w: 0, h: 0,
   ph: 0, pw: 0,
@@ -18,6 +19,7 @@ export class EntityRender {
   piece: ITexturePieceInfo = EMPTY_PIECE;
   shadow!: Shadow;
   _prev_update_count?: number;
+  indicators!: FrameIndicators;
   constructor(entity: Entity) {
     this.set_entity(entity);
   }
@@ -37,7 +39,6 @@ export class EntityRender {
     this.entity_mesh.user_data.owner = this;
     this.entity_mesh.visible = false;
     this.entity_mesh.name = "Entity:" + data.id;
-    this.shadow = new Shadow(entity, this.entity_mesh)
     if (typeof data.base.depth_test === 'boolean') {
       this.entity_mesh.set_depth_test(data.base.depth_test)
     }
@@ -47,10 +48,11 @@ export class EntityRender {
     if (typeof data.base.render_order === 'number') {
       this.entity_mesh.render_order = data.base.render_order
     }
+    this.shadow = new Shadow(entity, this.entity_mesh)
+    this.indicators = new FrameIndicators(entity, this.entity_mesh);
     return this;
   }
 
-  protected _blinking_count = 0;
   private _previous = {
     face: (void 0) as TFace | undefined,
     frame: (void 0) as IFrameInfo | undefined,
@@ -59,8 +61,9 @@ export class EntityRender {
     const { entity, entity_mesh, entity_material, pictures, shadow } = this;
     const { frame, position: { x, y, z }, facing } = entity;
 
-    if (this._prev_update_count !== entity.update_count) {
-      this._prev_update_count = entity.update_count;
+    if (this._prev_update_count !== entity.update_id) {
+      this.indicators.update();
+      this._prev_update_count = entity.update_id;
       if (this._previous.face !== facing || this._previous.frame !== frame) {
         this._previous.face = facing;
         this._previous.frame = frame;
@@ -85,18 +88,18 @@ export class EntityRender {
       const { centerx, centery } = frame
       const offset_x = entity.facing === 1 ? centerx : entity_mesh.scale_x - centerx
       entity_mesh.set_position(x - offset_x, y - z / 2 + centery, z);
-      entity_mesh.visible = !entity.invisible;
+
+      const is_visible = !entity.invisible;
+      const is_blinking = !!entity.blinking;
+      entity_mesh.visible = is_visible;
 
       if (shadow) {
         shadow.mesh.set_position(x, - z / 2, z - 550);
-        shadow.visible = !frame.no_shadow && !entity.invisible;
+        shadow.visible = is_visible && !frame.no_shadow;
       }
 
-      if (entity.blinking) {
-        ++this._blinking_count;
-        entity_mesh.visible = 0 === Math.floor(this._blinking_count / 6) % 2;
-      } else {
-        this._blinking_count = 0;
+      if (is_blinking && is_visible) {
+        entity_mesh.visible = 0 === Math.floor(entity.blinking / 6) % 2;
       }
 
       entity.info_sprite.update_position();
@@ -109,7 +112,8 @@ export class EntityRender {
     }
   }
   dispose(): void {
-    if (this.entity_mesh) this.entity_mesh.dispose()
+    this.indicators.hide_box();
+    this.entity_mesh.dispose();
     if (this.pictures)
       for (const [, pic] of this.pictures)
         pic.texture.dispose();

@@ -1,8 +1,6 @@
 import { Warn } from '../../Log';
-import type { World } from '../World';
-import { ICube } from '../World';
-import Callbacks from '../base/Callbacks';
-import type { NoEmitCallbacks } from "../base/NoEmitCallbacks";
+import { type World, type ICube } from '../World';
+import { Callbacks, type NoEmitCallbacks } from "../base";
 import type { BaseController } from '../controller/BaseController';
 import { InvalidController } from '../controller/InvalidController';
 import type { IBdyInfo, ICharacterData, ICharacterFrameInfo, ICharacterInfo, IFrameInfo, IItrInfo, INextFrame, IOpointInfo, TFace, TNextFrame } from '../defines';

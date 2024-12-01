@@ -17,3 +17,4 @@ export class States<E extends Entity = Entity> {
     }
   }
 }
+export default States

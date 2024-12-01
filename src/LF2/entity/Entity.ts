@@ -1,27 +1,20 @@
 
-import * as THREE from 'three';
 import { Warn } from '../../Log';
-import { IBaseNode } from '../3d';
 import LF2 from '../LF2';
 import type { World } from '../World';
 import { ICube } from '../World';
-import Callbacks from '../base/Callbacks';
-import { NoEmitCallbacks } from "../base/NoEmitCallbacks";
-import { new_id } from '../base/new_id';
+import { Callbacks, new_id, type NoEmitCallbacks } from '../base';
 import { IBallData, IBaseData, IBdyInfo, ICharacterData, IEntityData, IFrameInfo, IGameObjData, IGameObjInfo, IItrInfo, INextFrame, IOpointInfo, ITexturePieceInfo, IWeaponData, TFace, TNextFrame } from '../defines';
 import { Defines } from '../defines/defines';
-import BaseState from "../state/base/BaseState";
-import { States } from '../state/base/States';
+import Ditto from '../ditto';
+import { States, type BaseState } from '../state/base';
 import { ENTITY_STATES } from '../state/entity';
 import { random_get } from '../utils/math/random';
 import { is_nagtive, is_positive, is_str } from '../utils/type_check';
 import { Factory } from './Factory';
-import { FrameIndicators } from './FrameIndicators';
 import type IEntityCallbacks from './IEntityCallbacks';
 import { InfoSprite } from './InfoSprite';
 import { turn_face } from './face_helper';
-import { controller_is_bot_controller, controller_is_local_controller, is_character, is_entity } from './type_check';
-
 export const EMPTY_PIECE: ITexturePieceInfo = {
   tex: 0, x: 0, y: 0, w: 0, h: 0,
   ph: 0, pw: 0,
@@ -66,25 +59,16 @@ export default class Entity<
 > {
   static readonly TAG: string = 'Entity';
 
-  update_count: number = Number.MIN_SAFE_INTEGER;
   id: string = new_id();
   wait: number = 0;
-  readonly indicators: FrameIndicators = new FrameIndicators(this);
+  update_id: number = Number.MIN_SAFE_INTEGER;
   readonly is_frame_animater = true
   readonly data: D;
   readonly world: World;
-  readonly position = new THREE.Vector3(0, 0, 0);
+  readonly position = new Ditto.Vector3(0, 0, 0);
 
   get catcher() { return this._catcher; }
   get lf2(): LF2 { return this.world.lf2 }
-  readonly is_base_node = true;
-  get parent() {
-    throw new Error('Method not implemented.');
-  }
-  set parent(v: IBaseNode | undefined) {
-    throw new Error('Method not implemented.');
-  }
-  get children(): readonly IBaseNode[] { return [] }
 
   facing: TFace = 1;
   frame: F = EMPTY_FRAME_INFO as F;
@@ -95,7 +79,7 @@ export default class Entity<
   protected _catcher?: Entity;
   readonly is_entity = true
   readonly states: States;
-  readonly velocity = new THREE.Vector3(0, 0, 0);
+  readonly velocity = new Ditto.Vector3(0, 0, 0);
 
   protected _callbacks = new Callbacks<IEntityCallbacks>()
   protected _name: string = '';
@@ -133,7 +117,7 @@ export default class Entity<
    * @protected
    * @type {number}
    */
-  protected _invisible_duration: number = -1;
+  protected _invisible_duration: number = 0;
 
   /**
    * 闪烁计数，每帧-1
@@ -141,7 +125,7 @@ export default class Entity<
    * @protected
    * @type {number}
    */
-  protected _blinking_duration: number = -1;
+  protected _blinking_duration: number = 0;
 
   /**
    * 闪烁完毕后下一动作
@@ -184,7 +168,6 @@ export default class Entity<
   get holding(): Entity | undefined { return this._holding }
 
   set holding(v: Entity | undefined) { this.set_holding(v) }
-
 
   get name(): string { return this._name; }
 
@@ -255,21 +238,23 @@ export default class Entity<
   get state() { return this._state; }
 
   /**
-   * 是否处于闪烁状态
+   * 闪烁计数
    *
    * @readonly
-   * @type {boolean}
+   * @type {number}
    */
-  get blinking() { return this._blinking_duration > 0 }
+  get blinking() { return this._blinking_duration }
+  set blinking(v: number) { this._blinking_duration = Math.max(0, v) }
 
 
   /**
-   * 是否处于隐身状态
+   * 隐身计数
    *
    * @readonly
-   * @type {boolean}
+   * @type {number}
    */
-  get invisible() { return this._invisible_duration > 0 }
+  get invisible() { return this._invisible_duration }
+  set invisible(v: number) { this._invisible_duration = Math.max(0, v) }
 
 
   get callbacks(): NoEmitCallbacks<IEntityCallbacks> {
@@ -514,10 +499,10 @@ export default class Entity<
       this.velocity.y = 0;
       this.state?.on_landing(this, x, y, z);
     }
-    if (this.update_count === Number.MAX_SAFE_INTEGER)
-      this.update_count = Number.MIN_SAFE_INTEGER
+    if (this.update_id === Number.MAX_SAFE_INTEGER)
+      this.update_id = Number.MIN_SAFE_INTEGER
     else
-      ++this.update_count;
+      ++this.update_id;
     this.world.restrict(this);
   }
 
@@ -553,14 +538,10 @@ export default class Entity<
 
   update_caught(): TNextFrame | undefined {
     if (!this._catcher) return;
-
-    if (is_entity(this._catcher)) {
-      if (!this._catcher._catching_value) {
-        delete this._catcher;
-        return this.get_caught_end_frame();
-      }
+    if (!this._catcher._catching_value) {
+      delete this._catcher;
+      return this.get_caught_end_frame();
     }
-
     const { cpoint: cpoint_a } = this._catcher.get_frame();
     const { cpoint: cpoint_b } = this.frame;
     if (!cpoint_a || !cpoint_b) {
@@ -667,7 +648,6 @@ export default class Entity<
   }
 
   dispose(): void {
-    this.indicators.dispose();
     this._callbacks.emit('on_disposed')(this);
   }
 
@@ -710,7 +690,7 @@ export default class Entity<
   }
 
   same_team(other: Entity): boolean {
-    if(this === other) return true;
+    if (this === other) return true;
     const a_team = this.team;
     const b_team = other.team;
     if (a_team && a_team === b_team) return true;

@@ -49,6 +49,7 @@ import img_btn_3_1 from './assets/btn_3_1.png';
 import img_btn_3_2 from './assets/btn_3_2.png';
 import './game_ui.css';
 import './init';
+import * as THREE from 'three'
 import { useLocalBoolean, useLocalNumber, useLocalString } from './useLocalStorage';
 import { LoadingImg } from './LoadingImg';
 
@@ -74,6 +75,7 @@ Ditto.setup({
   LineSegmentsNode: __LineSegmentsNode,
   MeshNode: __MeshNode,
   BillboardNode: __BillboardNode,
+  Vector3: THREE.Vector3
 });
 
 function App() {

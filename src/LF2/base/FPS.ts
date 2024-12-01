@@ -1,6 +1,5 @@
 import { clamp } from "../utils/math/clamp";
 
-
 /**
  * 帧率计算
  *

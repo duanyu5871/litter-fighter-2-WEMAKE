@@ -8,7 +8,6 @@ import { Loader } from './base/Loader';
 import { NoEmitCallbacks } from "./base/NoEmitCallbacks";
 import { get_short_file_size_txt } from './base/get_short_file_size_txt';
 import { new_id, new_team } from './base/new_id';
-import Layer from './bg/Layer';
 import { KEY_NAME_LIST } from './controller/BaseController';
 import LocalController from "./controller/LocalController";
 import {
@@ -26,7 +25,6 @@ import './entity/Ball';
 import Character from './entity/Character';
 import Entity from './entity/Entity';
 import Weapon from './entity/Weapon';
-import { is_character, is_entity } from './entity/type_check';
 import { ILayoutInfo } from './layout/ILayoutInfo';
 import Layout, { ICookedLayoutInfo } from './layout/Layout';
 import DatMgr from './loader/DatMgr';
@@ -35,7 +33,6 @@ import { ImageMgr } from './loader/loader';
 import Stage from './stage/Stage';
 import { fisrt, last } from './utils/container_help';
 import { arithmetic_progression } from './utils/math/arithmetic_progression';
-import float_equal from './utils/math/float_equal';
 import { random_get, random_in, random_take } from './utils/math/random';
 import { is_arr, is_num, is_str, not_empty_str } from './utils/type_check';
 
@@ -205,31 +202,6 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     return ret;
   }
 
-  private _intersection: THREE.Intersection | undefined = void 0;
-
-  pick_intersection(next: THREE.Intersection | undefined) {
-    const old = this._intersection;
-    if (old) {
-      const o = old.object;
-      if (o.userData.owner instanceof Layer)
-        o.userData.owner.show_indicators = false;
-      else if (is_entity(o.userData.owner))
-        o.userData.owner.indicators.show = false;
-    }
-    this._intersection = next;
-    (window as any).pick_0 = void 0
-    if (!next) return;
-    const o = next.object;
-    (window as any).pick_0 = o.userData.owner ?? o.userData
-    if (o.userData.owner instanceof Layer)
-      o.userData.owner.show_indicators = true;
-    else if (is_entity(o.userData.owner)) {
-      o.userData.owner.indicators.show = true;
-      if (is_character(o.userData.owner)) {
-        this.on_click_character?.(o.userData.owner)
-      }
-    }
-  }
   private _mouse_on_layouts = new Set<Layout>();
   private _pointer_raycaster = new THREE.Raycaster();
   private _pointer_vec_2 = new THREE.Vector2();
@@ -262,42 +234,42 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   }
 
   on_pointer_down(e: IPointingEvent) {
-    this._pointer_vec_2.x = e.scene_x;
-    this._pointer_vec_2.y = e.scene_y;
-    this.world.camera.raycaster(this._pointer_raycaster, this._pointer_vec_2)
-    const intersections = this.world.scene.intersects_from_raycaster(this._pointer_raycaster)
-    if (!intersections.length) {
-      this.pick_intersection(void 0)
-    } else {
-      if (this._intersection) {
-        const idx = intersections.findIndex(v => v.object === this._intersection?.object);
-        const iii = intersections.find((v, i) => i > idx && v.object.userData.owner);
-        this.pick_intersection(iii)
-      } else {
-        const iii = intersections.find(v => v.object.userData.owner)
-        this.pick_intersection(iii)
-      }
-    }
-    {
-      const { layout } = this;
-      if (!layout) return;
-      const { sprite } = layout;
-      if (!sprite) return;
-      this.world.camera.raycaster(this._pointer_raycaster, this._pointer_vec_2)
-      const intersections = sprite.intersects_from_raycaster(this._pointer_raycaster, true)
-      const layouts = intersections
-        .filter(v => v.object.userData.owner instanceof Layout)
-        .map(v => v.object.userData.owner as Layout)
-        .filter(v => v.global_visible && !v.global_disabled)
-        .sort((a, b) => {
-          const { global_z: z_a, depth: d_a } = a;
-          const { global_z: z_b, depth: d_b } = b;
-          if (!float_equal(z_a, d_a)) return z_b - z_a;
-          return d_b - d_a
-        })
-      for (const layout of layouts)
-        if (layout.on_click()) break;
-    }
+    // this._pointer_vec_2.x = e.scene_x;
+    // this._pointer_vec_2.y = e.scene_y;
+    // this.world.camera.raycaster(this._pointer_raycaster, this._pointer_vec_2)
+    // const intersections = this.world.scene.intersects_from_raycaster(this._pointer_raycaster)
+    // if (!intersections.length) {
+    //   this.pick_intersection(void 0)
+    // } else {
+    //   if (this._intersection) {
+    //     const idx = intersections.findIndex(v => v.object === this._intersection?.object);
+    //     const iii = intersections.find((v, i) => i > idx && v.object.userData.owner);
+    //     this.pick_intersection(iii)
+    //   } else {
+    //     const iii = intersections.find(v => v.object.userData.owner)
+    //     this.pick_intersection(iii)
+    //   }
+    // }
+    // {
+    //   const { layout } = this;
+    //   if (!layout) return;
+    //   const { sprite } = layout;
+    //   if (!sprite) return;
+    //   this.world.camera.raycaster(this._pointer_raycaster, this._pointer_vec_2)
+    //   const intersections = sprite.intersects_from_raycaster(this._pointer_raycaster, true)
+    //   const layouts = intersections
+    //     .filter(v => v.object.userData.owner instanceof Layout)
+    //     .map(v => v.object.userData.owner as Layout)
+    //     .filter(v => v.global_visible && !v.global_disabled)
+    //     .sort((a, b) => {
+    //       const { global_z: z_a, depth: d_a } = a;
+    //       const { global_z: z_b, depth: d_b } = b;
+    //       if (!float_equal(z_a, d_a)) return z_b - z_a;
+    //       return d_b - d_a
+    //     })
+    //   for (const layout of layouts)
+    //     if (layout.on_click()) break;
+    // }
   }
 
   on_pointer_up(e: IPointingEvent) {
