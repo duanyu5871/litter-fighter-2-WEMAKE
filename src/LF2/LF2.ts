@@ -35,6 +35,7 @@ import { fisrt, last } from './utils/container_help';
 import { arithmetic_progression } from './utils/math/arithmetic_progression';
 import { random_get, random_in, random_take } from './utils/math/random';
 import { is_arr, is_num, is_str, not_empty_str } from './utils/type_check';
+import float_equal from './utils/math/float_equal';
 
 const cheat_info_pair = (n: Defines.Cheats) => ['' + n, {
   keys: Defines.CheatKeys[n],
@@ -234,10 +235,10 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   }
 
   on_pointer_down(e: IPointingEvent) {
-    // this._pointer_vec_2.x = e.scene_x;
-    // this._pointer_vec_2.y = e.scene_y;
-    // this.world.camera.raycaster(this._pointer_raycaster, this._pointer_vec_2)
-    // const intersections = this.world.scene.intersects_from_raycaster(this._pointer_raycaster)
+    this._pointer_vec_2.x = e.scene_x;
+    this._pointer_vec_2.y = e.scene_y;
+    this.world.camera.raycaster(this._pointer_raycaster, this._pointer_vec_2)
+    const intersections = this.world.scene.intersects_from_raycaster(this._pointer_raycaster)
     // if (!intersections.length) {
     //   this.pick_intersection(void 0)
     // } else {
@@ -250,26 +251,26 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     //     this.pick_intersection(iii)
     //   }
     // }
-    // {
-    //   const { layout } = this;
-    //   if (!layout) return;
-    //   const { sprite } = layout;
-    //   if (!sprite) return;
-    //   this.world.camera.raycaster(this._pointer_raycaster, this._pointer_vec_2)
-    //   const intersections = sprite.intersects_from_raycaster(this._pointer_raycaster, true)
-    //   const layouts = intersections
-    //     .filter(v => v.object.userData.owner instanceof Layout)
-    //     .map(v => v.object.userData.owner as Layout)
-    //     .filter(v => v.global_visible && !v.global_disabled)
-    //     .sort((a, b) => {
-    //       const { global_z: z_a, depth: d_a } = a;
-    //       const { global_z: z_b, depth: d_b } = b;
-    //       if (!float_equal(z_a, d_a)) return z_b - z_a;
-    //       return d_b - d_a
-    //     })
-    //   for (const layout of layouts)
-    //     if (layout.on_click()) break;
-    // }
+    {
+      const { layout } = this;
+      if (!layout) return;
+      const { sprite } = layout;
+      if (!sprite) return;
+      this.world.camera.raycaster(this._pointer_raycaster, this._pointer_vec_2)
+      const intersections = sprite.intersects_from_raycaster(this._pointer_raycaster, true)
+      const layouts = intersections
+        .filter(v => v.object.userData.owner instanceof Layout)
+        .map(v => v.object.userData.owner as Layout)
+        .filter(v => v.global_visible && !v.global_disabled)
+        .sort((a, b) => {
+          const { global_z: z_a, depth: d_a } = a;
+          const { global_z: z_b, depth: d_b } = b;
+          if (!float_equal(z_a, d_a)) return z_b - z_a;
+          return d_b - d_a
+        })
+      for (const layout of layouts)
+        if (layout.on_click()) break;
+    }
   }
 
   on_pointer_up(e: IPointingEvent) {
