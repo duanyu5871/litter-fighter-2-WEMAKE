@@ -28,6 +28,7 @@ export default class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData>
       if (!wpoint_a) return;
       const { dvx, dvy, dvz } = wpoint_a;
       if (dvx || dvy || dvz) {
+        this.follow_holder()
         this.enter_frame(this.data.indexes.throwing);
         const vz = (is_character(holder)) ? holder.controller.UD * (dvz || 0) : 0;
         const vx = (dvx || 0 - Math.abs(vz / 2)) * this.facing

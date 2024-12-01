@@ -701,14 +701,14 @@ export default class Entity<
   follow_holder() {
     const holder = this.holder;
     if (!holder) return;
-    const { wpoint: wpoint_a, centerx: centerx_a, centery: centery_a } = holder.get_frame();
+    const { wpoint: wpoint_a, centerx: centerx_a, centery: centery_a } = holder.frame;
 
     if (!wpoint_a) return;
 
     if (wpoint_a.weaponact !== this.frame.id) {
       this.enter_frame({ id: wpoint_a.weaponact })
     }
-    const { wpoint: wpoint_b, centerx: centerx_b, centery: centery_b } = this.get_frame();
+    const { wpoint: wpoint_b, centerx: centerx_b, centery: centery_b } = this.frame;
     if (!wpoint_b) return;
 
     const { x, y, z } = holder.position;
