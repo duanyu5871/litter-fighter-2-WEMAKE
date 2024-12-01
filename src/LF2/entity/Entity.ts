@@ -3,7 +3,7 @@ import { Warn } from '../../Log';
 import LF2 from '../LF2';
 import type { World } from '../World';
 import { ICube } from '../World';
-import { Callbacks, new_id, type NoEmitCallbacks } from '../base';
+import { Callbacks, new_id, new_team, type NoEmitCallbacks } from '../base';
 import { IBallData, IBaseData, IBdyInfo, ICharacterData, IEntityData, IFrameInfo, IGameObjData, IGameObjInfo, IItrInfo, INextFrame, IOpointInfo, ITexturePieceInfo, IWeaponData, TFace, TNextFrame } from '../defines';
 import { Defines } from '../defines/defines';
 import Ditto from '../ditto';
@@ -83,7 +83,7 @@ export default class Entity<
 
   protected _callbacks = new Callbacks<IEntityCallbacks>()
   protected _name: string = '';
-  protected _team: string = '';
+  protected _team: string = new_team();
 
   protected _mp: number = Defines.MP;
   protected _max_mp: number = Defines.MP;
@@ -409,7 +409,8 @@ export default class Entity<
 
   on_gravity() {
     if (this.position.y <= 0 || this._shaking || this._motionless) return;
-    if (this.frame.dvy !== 550) this.velocity.y -= this.world.gravity;
+    if (this.frame.dvy !== 550) this.velocity.y -= this.state?.get_gravity(this) ?? this.world.gravity;
+
   }
 
 

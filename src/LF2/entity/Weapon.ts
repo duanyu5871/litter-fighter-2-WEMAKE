@@ -41,6 +41,7 @@ export default class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData>
       this._next_frame = GONE_FRAME_INFO;
     }
   }
+
   override on_spawn_by_emitter(emitter: Entity, o: IOpointInfo, speed_z?: number): this {
     super.on_spawn_by_emitter(emitter, o, speed_z);
     if (this.frame.state === Defines.State.Weapon_OnHand) {
@@ -50,6 +51,7 @@ export default class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData>
     }
     return this;
   }
+
   override on_collision(target: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
     super.on_collision(target, itr, bdy, a_cube, b_cube);
     if (this.frame.state === Defines.State.Weapon_OnHand) {
@@ -59,6 +61,7 @@ export default class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData>
     this.velocity.y = -0.3 * this.velocity.y
     this.enter_frame(this.find_auto_frame())
   }
+  
   override on_be_collided(attacker: Entity, itr: IItrInfo, bdy: IBdyInfo, r0: ICube, r1: ICube): void {
     if (itr.kind === Defines.ItrKind.Pick || itr.kind === Defines.ItrKind.PickSecretly) {
       this.holder = attacker;

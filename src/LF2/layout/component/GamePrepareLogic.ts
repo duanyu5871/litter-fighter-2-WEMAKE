@@ -1,3 +1,4 @@
+import { new_team } from "../../base";
 import Callbacks from "../../base/Callbacks";
 import FSM, { IReadonlyFSM } from "../../base/FSM";
 import Invoker from "../../base/Invoker";
@@ -253,14 +254,14 @@ export default class GamePrepareLogic extends LayoutComponent {
 
   start_game() {
     const { far, near, left, right } = this.lf2.world.bg;
-  
+
     for (const { player } of this.player_slots) {
       if (!player?.joined) continue;
       const character_data = this.lf2.datas.find_character(player.character)
       if (!character_data) continue;
       const character = new Character(this.world, character_data);
       character.name = player.is_com ? 'com' : player.name;
-      character.team = player.team
+      character.team = player.team || new_team()
       character.facing = Math.random() < 0.5 ? 1 : -1
       character.controller = player.is_com ?
         new BotController(player.id, character) :

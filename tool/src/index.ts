@@ -67,7 +67,7 @@ async function main() {
   if (indexes) {
     for (const src_path of ress.file.dat) {
       const dst_path = convert_dat_file.get_dst_path(DATA_DIR_PATH, RAW_LF2_PATH, src_path);
-      const cache_info = await cache_infos.get_info(src_path, dst_path);
+      const cache_info = await cache_infos.get_info(src_path, dst_path, 'dat_v1');
       const json = await convert_dat_file(DATA_DIR_PATH, src_path, dst_path, indexes);
       if (!Array.isArray(json) && json && 'is_game_obj_data' in json) {
         let edited = false
