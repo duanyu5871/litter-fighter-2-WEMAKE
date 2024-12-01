@@ -1,3 +1,4 @@
+import { IVector2 } from "../ditto/IVector2";
 import { IObjectNode } from "./IObjectNode";
 
 export interface IOrthographicCameraNode extends IObjectNode {
@@ -17,7 +18,7 @@ export interface IOrthographicCameraNode extends IObjectNode {
   setup(l: number, r: number, t: number, b: number, n?: number, f?: number): this;
 
   world_quaternion(q: THREE.Quaternion): this;
-  raycaster(raycaster: THREE.Raycaster, coords: THREE.Vector2): this;
+  raycaster(raycaster: THREE.Raycaster, coords: IVector2): this;
 }
 export const is_orthographic_camera_node = (v: any): v is IOrthographicCameraNode =>
   v?.is_orthographic_camera_node === true

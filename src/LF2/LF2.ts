@@ -36,6 +36,7 @@ import { arithmetic_progression } from './utils/math/arithmetic_progression';
 import { random_get, random_in, random_take } from './utils/math/random';
 import { is_arr, is_num, is_str, not_empty_str } from './utils/type_check';
 import float_equal from './utils/math/float_equal';
+import Ditto from './ditto';
 
 const cheat_info_pair = (n: Defines.Cheats) => ['' + n, {
   keys: Defines.CheatKeys[n],
@@ -205,7 +206,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
 
   private _mouse_on_layouts = new Set<Layout>();
   private _pointer_raycaster = new THREE.Raycaster();
-  private _pointer_vec_2 = new THREE.Vector2();
+  private _pointer_vec_2 = new Ditto.Vector2();
 
   on_pointer_move(e: IPointingEvent) {
     const { layout } = this;

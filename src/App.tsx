@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import * as THREE from 'three';
 import './App.css';
 import { Button } from './Component/Button';
 import Combine from './Component/Combine';
@@ -31,6 +32,7 @@ import { ILayoutInfo } from './LF2/layout/ILayoutInfo';
 import { fisrt } from './LF2/utils/container_help';
 import { arithmetic_progression } from './LF2/utils/math/arithmetic_progression';
 import float_equal from './LF2/utils/math/float_equal';
+import { LoadingImg } from './LoadingImg';
 import { Log } from './Log';
 import { PlayerRow } from './PlayerRow';
 import SettingsRows from './SettingsRows';
@@ -49,9 +51,7 @@ import img_btn_3_1 from './assets/btn_3_1.png';
 import img_btn_3_2 from './assets/btn_3_2.png';
 import './game_ui.css';
 import './init';
-import * as THREE from 'three'
 import { useLocalBoolean, useLocalNumber, useLocalString } from './useLocalStorage';
-import { LoadingImg } from './LoadingImg';
 
 const loading_img = new LoadingImg();
 Ditto.setup({
@@ -75,7 +75,8 @@ Ditto.setup({
   LineSegmentsNode: __LineSegmentsNode,
   MeshNode: __MeshNode,
   BillboardNode: __BillboardNode,
-  Vector3: THREE.Vector3
+  Vector3: THREE.Vector3,
+  Vector2: THREE.Vector2,
 });
 
 function App() {

@@ -12,7 +12,8 @@ import type { IFullScreen } from "./fullscreen";
 import { BaseImporter, type IImporter } from "./importer";
 import type { IRender } from "./IRender";
 import type { ITimeout } from "./ITimeout";
-import { IVec3 as IVector3 } from "./IVec3";
+import { IVector2 } from "./IVector2";
+import { IVector3 } from "./IVector3";
 import type { IKeyboard } from "./keyboard/IKeyboard";
 import type { IPointings } from "./pointings";
 import BaseSounds from "./sounds/BaseSounds";
@@ -53,6 +54,7 @@ export interface IDittoPack {
   MeshNode: new (lf2: LF2, info?: IMeshInfo) => IMeshNode,
   BillboardNode: new (lf2: LF2, info?: IBillboardInfo) => IBillboardNode,
   Vector3: new (x?: number, y?: number, z?: number) => IVector3,
+  Vector2: new (x?: number, y?: number) => IVector2,
 }
 
 export interface IDitto extends IDittoPack {
