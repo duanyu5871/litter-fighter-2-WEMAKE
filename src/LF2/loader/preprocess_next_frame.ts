@@ -11,27 +11,25 @@ export function cook_next_frame(i: INextFrame | INextFrame[]): void {
   }
   if (typeof i.expression !== 'string') return;
   const expression = (i as any).condition_cls = new Expression(i.expression, get_val);
-  i.expression = expression.make();
+  i.expression = expression.run;
 }
 
-function get_val(word: string): (e: Entity) => any {
+function get_val(word: string, e: Entity): any {
   switch (word) {
     case Defines.ValWord.TrendX:
-      return e => {
-        if (is_entity(e)) {
-          if (e.velocity.x < 0) return -e.facing;
-          if (e.velocity.x > 0) return e.facing;
-        }
-        return 0
+      if (is_entity(e)) {
+        if (e.velocity.x < 0) return -e.facing;
+        if (e.velocity.x > 0) return e.facing;
       }
+      return 0
     case Defines.ValWord.PressFB:
-      return e => is_character(e) ? e.controller.LR * e.facing : 0;
+      return is_character(e) ? e.controller.LR * e.facing : 0;
     case Defines.ValWord.PressUD:
-      return e => is_character(e) ? e.controller.UD : 0;
+      return is_character(e) ? e.controller.UD : 0;
     case Defines.ValWord.WeaponType:
-      return e => is_entity(e) && is_weapon(e.holding) ? e.holding?.data.base.type || 0 : 0;
+      return is_entity(e) && is_weapon(e.holding) ? e.holding?.data.base.type || 0 : 0;
   }
-  return () => word
+  return word
 }
 
 
