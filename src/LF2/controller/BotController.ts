@@ -148,7 +148,7 @@ export class BotController extends BaseController {
     return true
   }
   avoid_enemy() {
-    console.log('avoid_enemy')
+    // console.log('avoid_enemy')
     if (!this._avoiding_enemy) return false;
 
     const c = this.character;
