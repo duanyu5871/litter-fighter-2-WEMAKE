@@ -1,15 +1,14 @@
 import { Warn } from '../../Log';
-
 const ALWAY_FALSE = () => false
 export interface JudgeFunc<T> { (arg: T): boolean }
-export interface ValGetter<T> { (word: string): (e: T) => string | number | boolean }
-export default class Expression<T> {
+export interface ValGetter<T> { (word: string, e: T): string | number | boolean }
+export class Expression<T> {
   readonly is_expression = true;
   static is = (v: any): v is Expression<unknown> => v?.is_expression === true;
 
   readonly text: string = '';
-  readonly children: Array<JudgeFunc<T> | '|' | '&' | Expression<T>> = [];
-  readonly get_val: (word: string) => (e: T) => string | number | boolean;
+  readonly children: Array<JudgeFunc<T> | '|' | '&'> = [];
+  readonly get_val: (word: string, e: T) => string | number | boolean;
   constructor(text: string, get_val: ValGetter<T>) {
     this.get_val = get_val;
     this.text = text = text.replace(/\s|\n|\r/g, '');
@@ -22,15 +21,17 @@ export default class Expression<T> {
           const res = new Expression<T>(text.substring(i + 1), get_val);
           i += res.text.length + 2;
           p = i + 1;
-          this.children.push(res);
+          this.children.push(res.make());
           continue;
         case ')':
           if (p < text.length)
             this.children.push(this.gen_single_judge_func(text.substring(p, i)));
           this.text = text.substring(0, i);
           return;
-        case '|': case '&':
-          this.children.push(this.gen_single_judge_func(text.substring(p, i)), letter);
+        case '|':
+        case '&':
+          const sub_str = text.substring(p, i)
+          this.children.push(this.gen_single_judge_func(sub_str), letter);
           p = i + 1;
           continue;
         case void 0: {
@@ -62,8 +63,8 @@ export default class Expression<T> {
       return ALWAY_FALSE;
     }
     return t => predicate(
-      this.get_val(word_1)(t) ?? this.builtin_get_val(word_1),
-      this.get_val(word_2)(t) ?? this.builtin_get_val(word_2)
+      this.get_val(word_1, t) ?? this.builtin_get_val(word_1),
+      this.get_val(word_2, t) ?? this.builtin_get_val(word_2)
     );
   }
   make(): JudgeFunc<T> {
@@ -71,18 +72,19 @@ export default class Expression<T> {
       let ret = false;
       let cur = false;
       const len = this.children.length;
-      for (let i = 0; i < len; i += 2) {
+      for (let i = 0; i < len; ++i) {
         const item = this.children[i];
-        let op = i === 0 ? '|' : this.children[i - 1];
         if (typeof item === 'function') {
           cur = item(e) || false;
-        } else if (Expression.is(item)) {
-          cur = item.make()(e);
+          if (i === 0) ret = cur;
+        } else if (item === '|') {
+          ret = ret || cur;
+        } else if (item === '&') {
+          ret = ret && cur;
         }
-        if (op === '|') ret = ret || cur;
-        if (op === '&') ret = ret && cur;
       }
       return ret;
     };
   }
 }
+export default Expression;

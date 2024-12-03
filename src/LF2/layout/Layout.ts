@@ -421,8 +421,7 @@ export default class Layout {
     if (is_num(opacity)) {
       this._opacity.default_value = opacity;
     } else if (is_str(opacity)) {
-      const func = get_val(opacity);
-      this._opacity.default_value = () => Number(func(this)) || 0;
+      this._opacity.default_value = () => Number(get_val(opacity, this)) || 0;
     }
 
     this._img_infos.default_value = this.data.img_infos;
@@ -435,8 +434,7 @@ export default class Layout {
     if (!img_infos?.length) return;
     const { which } = this.data;
     if (is_str(which)) {
-      const val = get_val(which)
-      return this._img_idx = () => Number(val(this)) || 0;
+      return this._img_idx = () => Number(get_val(which, this)) || 0;
     }
     if (is_num(which)) {
       const img_idx = which % img_infos.length
@@ -469,7 +467,7 @@ export default class Layout {
       .apply()
     this.parent?.sprite.add(this._sprite);
   }
-  
+
   create_sprite_info(): ISpriteInfo {
     const [w, h] = this.size;
     const texture = this.create_texture();
