@@ -407,14 +407,14 @@ export default class Layout {
     if (is_bool(disabled)) {
       this._disabled.default_value = disabled;
     } else if (is_str(disabled)) {
-      const func = new Expression<Layout>(disabled, get_val).make();
+      const func = new Expression<Layout>(disabled, get_val).run;
       this._disabled.default_value = () => func(this);
     }
 
     if (is_bool(visible)) {
       this._visible.default_value = visible;
     } else if (is_str(visible)) {
-      const func = new Expression<Layout>(visible, get_val).make();
+      const func = new Expression<Layout>(visible, get_val).run;
       this._visible.default_value = () => func(this);
     }
 

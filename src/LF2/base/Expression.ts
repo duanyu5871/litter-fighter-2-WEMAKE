@@ -1,90 +1,108 @@
 import { Warn } from '../../Log';
-const ALWAY_FALSE = () => false
-export interface JudgeFunc<T> { (arg: T): boolean }
+function ALWAY_FALSE<T = unknown>(text: string, err?: string): Judger<T> {
+  return { run: () => false, text, err }
+}
+export interface Judger<T> {
+  run(arg: T): boolean;
+  text: string;
+  err?: string;
+}
 export interface ValGetter<T> { (word: string, e: T): string | number | boolean }
-export class Expression<T> {
+
+const predicate_maps: { [x in string]?: (a: any, b: any) => boolean } = {
+  // eslint-disable-next-line eqeqeq
+  '==': (v1, v2) => v1 == v2,
+  // eslint-disable-next-line eqeqeq
+  '=': (v1, v2) => v1 == v2,
+  // eslint-disable-next-line eqeqeq
+  '!=': (v1, v2) => v1 != v2,
+  '>=': (v1, v2) => v1 >= v2,
+  '<=': (v1, v2) => v1 <= v2,
+  '<': (v1, v2) => v1 < v2,
+  '>': (v1, v2) => v1 > v2,
+}
+export class Expression<T> implements Judger<T> {
   readonly is_expression = true;
   static is = (v: any): v is Expression<unknown> => v?.is_expression === true;
-
   readonly text: string = '';
-  readonly children: Array<JudgeFunc<T> | '|' | '&'> = [];
+  readonly children: Array<Expression<T> | Judger<T> | '|' | '&'> = [];
   readonly get_val: (word: string, e: T) => string | number | boolean;
-  constructor(text: string, get_val: ValGetter<T>) {
+  err?: string | undefined;
+  constructor(t: string, get_val: ValGetter<T>) {
     this.get_val = get_val;
-    this.text = text = text.replace(/\s|\n|\r/g, '');
+    this.text = t.replace(/\s|\n|\r/g, '').replace(/^\(/, '');
     let p = 0;
-    const count = text.length + 1;
-    for (let i = 0; i < count; ++i) {
-      const letter = text[i];
-      switch (letter) {
-        case '(':
-          const res = new Expression<T>(text.substring(i + 1), get_val);
-          i += res.text.length + 2;
-          p = i + 1;
-          this.children.push(res.make());
-          continue;
-        case ')':
-          if (p < text.length)
-            this.children.push(this.gen_single_judge_func(text.substring(p, i)));
-          this.text = text.substring(0, i);
-          return;
-        case '|':
-        case '&':
-          const sub_str = text.substring(p, i)
-          this.children.push(this.gen_single_judge_func(sub_str), letter);
-          p = i + 1;
-          continue;
-        case void 0: {
-          if (p < text.length) {
-            this.children.push(this.gen_single_judge_func(text.substring(p, i)));
-          }
-          return;
+    const count = this.text.length + 1;
+    let i = 0;
+    let letter: string = '';
+    for (; i < count; ++i) {
+      letter = this.text[i];
+      if ('(' === letter) {
+        const exp = new Expression<T>(this.text.substring(i), get_val);
+        i += exp.text.length + 1
+        p = i + 1;
+        this.children.push(exp);
+      } else if ('|' === letter || '&' === letter) {
+        if (p < i) {
+          const sub_str = this.text.substring(p, i).replace(/\)*$/g, '')
+          const func = this.gen_single_judge_func(sub_str)
+          this.children.push(func, letter);
+        } else {
+          this.children.push(letter);
         }
+        p = i + 1;
+      } else if (')' === letter || void 0 === letter) {
+        if (p < i) {
+          const sub_str = this.text.substring(p, i)
+          const func = this.gen_single_judge_func(sub_str)
+          this.children.push(func);
+        }
+        break;
       }
     }
+    this.text = this.text.substring(0, i)
   }
   builtin_get_val(word: string): any {
     return word;
   }
-  private gen_single_judge_func(str: string): JudgeFunc<T> {
-    const reg_result = str.match(/(\S*)\s?(==|!=|<=|>=)\s?(\S*)/);
-    if (!reg_result) return ALWAY_FALSE;
+  private gen_single_judge_func(text: string): Judger<T> {
+    if (!text)
+      return ALWAY_FALSE(text, '[empty text]');
+    const reg_result = text.match(/(\S*)\s*(==|!=|<=|>=)\s?(\S*)/) || text.match(/(\S*)\s*(=|<|>)\s?(\S*)/);
+    if (!reg_result)
+      return ALWAY_FALSE(text, `[wrong expression: ${text}]`);
     const [, word_1, op, word_2] = reg_result;
-    const predicate = {
-      // eslint-disable-next-line eqeqeq
-      '==': (v1: any, v2: any) => v1 == v2,
-      // eslint-disable-next-line eqeqeq
-      '!=': (v1: any, v2: any) => v1 != v2,
-      '>=': (v1: any, v2: any) => v1 >= v2,
-      '<=': (v1: any, v2: any) => v1 <= v2,
-    }[op];
+    if (!word_1 || !word_2)
+      return ALWAY_FALSE(text, `[wrong expression: ${text}]`);
+    const predicate = predicate_maps[op];
     if (!predicate) {
-      Warn.print('gen_single_judge_func', 'wrong operator:', op);
-      return ALWAY_FALSE;
+      Warn.print('gen_single_judge_func', `wrong operator: ${op}`);
+      return ALWAY_FALSE(text, `wrong operator: ${op}`);
     }
-    return t => predicate(
-      this.get_val(word_1, t) ?? this.builtin_get_val(word_1),
-      this.get_val(word_2, t) ?? this.builtin_get_val(word_2)
-    );
-  }
-  make(): JudgeFunc<T> {
-    return e => {
-      let ret = false;
-      let cur = false;
-      const len = this.children.length;
-      for (let i = 0; i < len; ++i) {
-        const item = this.children[i];
-        if (typeof item === 'function') {
-          cur = item(e) || false;
-          if (i === 0) ret = cur;
-        } else if (item === '|') {
-          ret = ret || cur;
-        } else if (item === '&') {
-          ret = ret && cur;
-        }
-      }
-      return ret;
+    return {
+      run: t => predicate(
+        this.get_val(word_1, t) ?? this.builtin_get_val(word_1),
+        this.get_val(word_2, t) ?? this.builtin_get_val(word_2)
+      ),
+      text
     };
+  }
+  run = (e: T): boolean => {
+    let ret = false;
+    let cur = false;
+    const len = this.children.length;
+    for (let i = 0; i < len; ++i) {
+      const item = this.children[i];
+      if (item === '|') {
+        ret = ret || cur;
+      } else if (item === '&') {
+        ret = ret && cur;
+      } else {
+        cur = item.run(e) || false;
+        if (i === 0) ret = cur;
+      }
+    }
+    return ret;
   }
 }
 export default Expression;
