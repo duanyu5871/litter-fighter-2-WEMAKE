@@ -135,6 +135,7 @@ class Inner {
     for (const [, v] of this.data_map) {
       if (this.cancelled) throw new Error('cancelled')
       const t = v.type as keyof IDataMap;
+      if (t === 'character') this.process_character_data(v as ICharacterData);
       this.data_list_map[t]?.push(v as any);
       this.data_list_map.all.push(v as any);
     }
@@ -143,6 +144,13 @@ class Inner {
     this.lf2.on_loading_content(`${stage_file}`, 0);
     this.stages = [Defines.VOID_STAGE, ...await this.lf2.import_json('data/stage.json')];
     this.lf2.on_loading_content(`${stage_file}`, 100);
+  }
+
+  process_character_data(data: ICharacterData): void {
+    data.base.fall_value = data.base.fall_value ?? Defines.DEFAULT_FALL_VALUE;
+    data.base.defend_value = data.base.defend_value ?? Defines.DEFAULT_DEFEND_VALUE;
+    data.base.hp = data.base.hp ?? Defines.DAFUALT_HP;
+    data.base.mp = data.base.mp ?? Defines.DAFAULT_MP;
   }
 }
 
