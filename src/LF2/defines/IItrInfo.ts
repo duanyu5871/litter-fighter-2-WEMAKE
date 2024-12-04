@@ -4,7 +4,13 @@ import { IRectPair } from "./IRectPair";
 import type { Defines } from "./defines";
 
 export interface IItrInfo extends IRect {
-  /** 友军伤害：0=关闭（默认），1=开启，*/
+  /**
+   * 是否判定同队Bdy
+   * 
+   * 0=关闭（默认），1=开启
+   * 
+   * @type {?number}
+   */
   friendly_fire?: number;
 
   /** 命中后，自己停顿多少帧，默认是4 */
@@ -17,6 +23,8 @@ export interface IItrInfo extends IRect {
   on_hit?: TNextFrame;
 
   /**
+   * 本itr的效果类型
+   * 详细效果见Defines.ItrKind
    * @see {Defines.ItrKind}
    */
   kind: number;

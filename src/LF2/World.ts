@@ -452,19 +452,26 @@ export class World {
           case Defines.ItrKind.MagicFlute:
             continue; // todo
           case Defines.ItrKind.Pick:
-            if (!(is_weapon(b))) continue;
-            if (bf.state === Defines.State.Weapon_OnGround) break;
-            if (bf.state === Defines.State.HeavyWeapon_OnGround) break;
+            if (
+              !is_character(a) ||
+              !is_weapon(b) || (
+                bf.state !== Defines.State.Weapon_OnGround &&
+                bf.state !== Defines.State.HeavyWeapon_OnGround
+              )
+            ) break;
             continue;
           case Defines.ItrKind.PickSecretly:
-            if (!(is_weapon(b)) || b.data.base.type === Defines.WeaponType.Heavy) continue;
-            if (bf.state === Defines.State.Weapon_OnGround) break;
+            if (
+              !is_character(a) ||
+              !is_weapon(b) ||
+              bf.state !== Defines.State.Weapon_OnGround
+            ) break;
             continue;
           case Defines.ItrKind.ForceCatch:
-            if (is_character(b)) break;
+            if (is_character(a) && is_character(b)) break;
             continue;
           case Defines.ItrKind.Catch:
-            if (is_character(b) && bf.state === Defines.State.Tired) break;
+            if (is_character(a) && is_character(b) && bf.state === Defines.State.Tired) break;
             continue;
           case Defines.ItrKind.SuperPunchMe:
             if (is_character(b) && !b.holding && (b.get_frame().state === Defines.State.Standing || b.get_frame().state === Defines.State.Walking)) break;

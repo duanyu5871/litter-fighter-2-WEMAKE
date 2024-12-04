@@ -703,18 +703,19 @@ export default class Entity<
     this._mp_r_spd = this._mp_r_min_spd + (this._mp_r_max_spd - this._mp_r_min_spd) * (this._max_hp - this._hp) / this._max_hp
   }
 
-  belong(other: Entity): boolean {
-    if (!this.emitter) return false;
-    if (this.emitter === other) return true;
-    return this.emitter.belong(other);
-  }
+  // belong(other: Entity): boolean {
+  //   if (!this.emitter) return false;
+  //   if (this.emitter === other) return true;
+  //   return this.emitter.belong(other);
+  // }
 
   same_team(other: Entity): boolean {
-    if (this === other) return true;
-    const a_team = this.team;
-    const b_team = other.team;
-    if (a_team && a_team === b_team) return true;
-    return this.belong(other) || other.belong(this) || (!!this.emitter && this.emitter === other.emitter);
+    return this.team === other.team;
+    // if (this === other) return true;
+    // const a_team = this.team;
+    // const b_team = other.team;
+    // if (a_team && a_team === b_team) return true;
+    // return this.belong(other) || other.belong(this) || (!!this.emitter && this.emitter === other.emitter);
   }
 
   follow_holder() {

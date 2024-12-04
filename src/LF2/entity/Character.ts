@@ -34,7 +34,7 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
     this._mp_r_max_spd = data.base.mp_r_max_spd ?? Defines.DAFAULT_MP_RECOVERY_MAX_SPEED;
     this.update_mp_recovery_speed();
 
-    
+
   }
 
   override get_next_frame(which: string | TNextFrame): [ICharacterFrameInfo | undefined, INextFrame | undefined] {
@@ -182,7 +182,7 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
     this._next_frame = itr.caughtact;
   }
   override on_collision(target: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
-    super.on_collision(target, itr, bdy, a_cube, b_cube);
+
     switch (itr.kind) {
       case Defines.ItrKind.Catch:
         if (this.dizzy_catch_test(target))
@@ -193,14 +193,19 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
         break;
       }
       case Defines.ItrKind.Pick: {
-        if (is_weapon(target)) {
-          if (target.data.base.type === Defines.WeaponType.Heavy) {
-            this._next_frame = { id: this.data.indexes.picking_heavy }
-          } else {
-            this._next_frame = { id: this.data.indexes.picking_light }
-          }
+        if (!is_weapon(target)) return;
+        if (target.data.base.type === Defines.WeaponType.Heavy) {
+          this._next_frame = { id: this.data.indexes.picking_heavy }
+        } else {
+          this._next_frame = { id: this.data.indexes.picking_light }
         }
         break;
+      }
+      case Defines.ItrKind.PickSecretly:
+        // do nothing
+        break;
+      default: {
+        super.on_collision(target, itr, bdy, a_cube, b_cube);
       }
     }
   }
