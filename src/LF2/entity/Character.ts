@@ -1,8 +1,6 @@
 import { Warn } from '../../Log';
-import { type World, type ICube } from '../World';
+import { type ICube, type World } from '../World';
 import { Callbacks, type NoEmitCallbacks } from "../base";
-import type { BaseController } from '../controller/BaseController';
-import { InvalidController } from '../controller/InvalidController';
 import type { IBdyInfo, ICharacterData, ICharacterFrameInfo, ICharacterInfo, IFrameInfo, IItrInfo, INextFrame, IOpointInfo, TFace, TNextFrame } from '../defines';
 import { Defines } from '../defines/defines';
 import { CHARACTER_STATES } from '../state/character';
@@ -16,15 +14,8 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
   static readonly TAG: string = 'Character';
   readonly is_character = true
   protected _callbacks = new Callbacks<ICharacterCallbacks>()
-  protected _controller: BaseController = new InvalidController('', this);
   get callbacks(): NoEmitCallbacks<ICharacterCallbacks> {
     return this._callbacks
-  }
-  get controller() { return this._controller; }
-  set controller(v) {
-    if (this._controller === v) return;
-    this._controller.dispose();
-    this._controller = v;
   }
   protected _resting = 0;
   protected _fall_value = 70;
@@ -62,11 +53,10 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
     return ret;
   }
 
-
   override handle_facing_flag(facing: number, frame: IFrameInfo, flags: INextFrame): TFace {
     switch (facing) {
       case Defines.FacingFlag.ByController:
-        return this.controller.LR || this.facing;
+        return this.controller?.LR || this.facing;
       case Defines.FacingFlag.SameAsCatcher:
         return this._catcher?.facing || this.facing;
       case Defines.FacingFlag.OpposingCatcher:
@@ -96,10 +86,6 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
     }
     return super.find_frame_by_id(id, exact as true);
   }
-  override dispose() {
-    this.controller.dispose();
-    super.dispose()
-  }
 
   on_landing() {
     const { indexes } = this.data;
@@ -121,10 +107,12 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
   }
   override handle_frame_velocity() {
     super.handle_frame_velocity();
-    const { dvz } = this.get_frame();
-    if (dvz !== void 0 && dvz !== 0 && dvz !== 550) {
-      const { UD: UD1 } = this.controller;
-      this.velocity.z = UD1 * dvz;
+    if (this.controller) {
+      const { dvz } = this.get_frame();
+      if (dvz !== void 0 && dvz !== 0 && dvz !== 550) {
+        const { UD: UD1 } = this.controller;
+        this.velocity.z = UD1 * dvz;
+      }
     }
   }
   override self_update(): void {
@@ -155,13 +143,6 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
     this.velocity.y = 2;
     this.velocity.x = -2 * this.facing;
     return { id: this.data.indexes.falling[-1][1] }
-  }
-  override on_after_update() {
-    const next_frame_idx = this.controller.update();
-    if (next_frame_idx) {
-      const [a] = this.get_next_frame(next_frame_idx);
-      if (a) this._next_frame = next_frame_idx;
-    }
   }
 
   private dizzy_catch_test(target: Entity) {
@@ -333,7 +314,11 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
 
   override spawn_object(opoint: IOpointInfo, speed_z: number = 0) {
     const ret = super.spawn_object(opoint, speed_z);
-    if (is_ball(ret)) { ret.ud = this.controller.UD; }
+    if (this.controller) {
+      if (is_ball(ret)) {
+        ret.ud = this.controller.UD;
+      }
+    }
     return ret;
   }
 

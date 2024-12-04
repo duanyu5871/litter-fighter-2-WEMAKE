@@ -8,7 +8,7 @@ export default class Dash extends BaseCharacterState {
 
     const { dash_distance: dx, dash_distancez: dz, dash_height: h } = e.data.base;
     e.velocity.y = e.world.gravity * Math.sqrt(2 * h / e.world.gravity);
-    const { UD: UD1, LR: LR1 } = e.controller;
+    const { UD: UD1 = 0, LR: LR1 = 0 } = e.controller || {};
     e.velocity.z = UD1 * dz;
     if (prev_frame.state === Defines.State.Running) {
       e.velocity.x = e.facing * dx;

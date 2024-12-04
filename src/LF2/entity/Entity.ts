@@ -4,6 +4,8 @@ import LF2 from '../LF2';
 import type { World } from '../World';
 import { ICube } from '../World';
 import { Callbacks, new_id, new_team, type NoEmitCallbacks } from '../base';
+import { BaseController } from '../controller/BaseController';
+import { InvalidController } from '../controller/InvalidController';
 import { IBallData, IBaseData, IBdyInfo, ICharacterData, IEntityData, IFrameInfo, IGameObjData, IGameObjInfo, IItrInfo, INextFrame, IOpointInfo, ITexturePieceInfo, IWeaponData, TFace, TNextFrame } from '../defines';
 import { Defines } from '../defines/defines';
 import Ditto from '../ditto';
@@ -259,6 +261,14 @@ export default class Entity<
 
   get callbacks(): NoEmitCallbacks<IEntityCallbacks> {
     return this._callbacks
+  }
+
+  protected _controller?: BaseController;
+  get controller() { return this._controller; }
+  set controller(v) {
+    if (this._controller === v) return;
+    this._controller?.dispose();
+    this._controller = v;
   }
 
   constructor(world: World, data: D, states: States = ENTITY_STATES) {
@@ -624,7 +634,15 @@ export default class Entity<
     else if (cover === 10) this._catching.position.z -= 1;
   }
 
-  on_after_update?(): void;
+  on_after_update(): void {
+    if (this.controller) {
+      const next_frame_idx = this.controller.update();
+      if (next_frame_idx) {
+        const [a] = this.get_next_frame(next_frame_idx);
+        if (a) this._next_frame = next_frame_idx;
+      }
+    }
+  }
 
   on_collision(target: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
     this._motionless = itr.motionless ?? 4;
@@ -649,6 +667,7 @@ export default class Entity<
   }
 
   dispose(): void {
+    this.controller = void 0;
     this._callbacks.emit('on_disposed')(this);
   }
 

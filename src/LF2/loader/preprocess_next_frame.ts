@@ -23,9 +23,9 @@ function get_val(word: string, e: Entity): any {
       }
       return 0
     case Defines.ValWord.PressFB:
-      return is_character(e) ? e.controller.LR * e.facing : 0;
+      return e.controller ? e.controller.LR * e.facing : 0;
     case Defines.ValWord.PressUD:
-      return is_character(e) ? e.controller.UD : 0;
+      return e.controller ? e.controller.UD : 0;
     case Defines.ValWord.WeaponType:
       return is_entity(e) && is_weapon(e.holding) ? e.holding?.data.base.type || 0 : 0;
   }

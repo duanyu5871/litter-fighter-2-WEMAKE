@@ -16,7 +16,7 @@ export default class Jump extends BaseCharacterState {
     if (this._jump_flags.has(character.id))
       return;
 
-    const { LR: LR1, UD: UD1 } = character.controller;
+    const { LR: LR1 = 0, UD: UD1 = 0 } = character.controller || {};
     const { jump_height: h, jump_distance: dx, jump_distancez: dz } = character.data.base;
     const g_acc = character.world.gravity
     const vz = UD1 * dz;

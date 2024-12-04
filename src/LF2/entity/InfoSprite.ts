@@ -6,7 +6,7 @@ import { get_team_text_color } from '../base/get_team_text_color';
 import Ditto from '../ditto';
 import type Entity from './Entity';
 import type IEntityCallbacks from './IEntityCallbacks';
-import { is_character } from './type_check';
+import { controller_is_local_controller, is_character } from './type_check';
 
 const BAR_W = 40;
 const BAR_H = 2;
@@ -116,10 +116,7 @@ export class InfoSprite implements IEntityCallbacks {
 
   protected on_mount(entity: Entity) {
     if (
-      is_character(this.entity) &&
-      this.entity.world.lf2.player_infos.has(
-        this.entity.controller.player_id
-      )
+      is_character(this.entity) && controller_is_local_controller(this.entity.controller)
     ) {
       entity.world.scene.add(this.bars_node, this.mesh);
     }

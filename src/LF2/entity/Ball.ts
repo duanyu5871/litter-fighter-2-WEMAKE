@@ -65,7 +65,7 @@ export default class Ball extends Entity<IBallFrameInfo, IBallInfo, IBallData> {
         case Defines.ItrKind.DeadWhenHit:
           this.play_hit_sound()
           if (f.on_timeout) this.enter_frame(f.on_timeout)
-          else Log.print(Ball.TAG + '::on_collision', 'Defines.ItrKind.DeadWhenHit, but on_dead not set.')
+          else Log.print(Ball.TAG + '::on_collision', 'Defines.ItrKind.DeadWhenHit, but on_timeout not set.')
           break;
         default:
           this.play_hit_sound()

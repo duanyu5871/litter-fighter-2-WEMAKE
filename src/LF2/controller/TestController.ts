@@ -6,7 +6,7 @@ export class TestController extends BaseController {
   static is = (v: any): v is TestController => v?.is_test_controller === true
 
   update() {
-    const c = this.character;
+    const c = this.entity;
     const { x, z } = c.position;
     const { x: end_x, z: end_z } = c.world.middle;
     const DEAD_ZONE = 10

@@ -11,7 +11,7 @@ export class BotController extends BaseController {
   _chasing_enemy: Character | undefined;
   _avoiding_enemy: Character | undefined;
   manhattan_to(a: Entity) {
-    const { x, z } = this.character.position;
+    const { x, z } = this.entity.position;
     const { x: x1, z: z1 } = a.position;
     return Math.abs(x1 - x) + Math.abs(z1 - z);
   }
@@ -24,7 +24,7 @@ export class BotController extends BaseController {
     )
   }
   update_nearest() {
-    const c = this.character;
+    const c = this.entity;
     if (this.should_avoid(this._chasing_enemy)) {
       this._chasing_enemy = void 0;
     }
@@ -53,7 +53,7 @@ export class BotController extends BaseController {
 
   chase_enemy() {
     if (!this._chasing_enemy) return false;
-    const c = this.character;
+    const c = this.entity;
     const { x, z } = c.position;
     const {
       x: target_x,
@@ -151,7 +151,7 @@ export class BotController extends BaseController {
     // console.log('avoid_enemy')
     if (!this._avoiding_enemy) return false;
 
-    const c = this.character;
+    const c = this.entity;
     const { x, z } = c.position;
     const { x: target_x, z: target_z } = this._avoiding_enemy.position;
 

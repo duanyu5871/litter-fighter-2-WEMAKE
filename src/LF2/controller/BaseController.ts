@@ -2,7 +2,8 @@ import { ICharacterFrameInfo, TNextFrame } from '../defines';
 import GameKey from '../defines/GameKey';
 import { IHitKeyCollection } from '../defines/IHitKeyCollection';
 import { Defines } from '../defines/defines';
-import Character from '../entity/Character';
+import Entity from '../entity/Entity';
+import { is_character } from '../entity/type_check';
 import DoubleClick from './DoubleClick';
 
 export type TKeys = Record<GameKey, string>
@@ -29,7 +30,7 @@ export class BaseController {
   private _disposers = new Set<() => void>();
   private _player_id: string;
   get player_id(): string { return this._player_id }
-  get world() { return this.character.world }
+  get world() { return this.entity.world }
   get lf2() { return this.world.lf2 }
   get time() { return this._time }
   set disposer(f: (() => void)[] | (() => void)) {
@@ -38,7 +39,7 @@ export class BaseController {
     else
       this._disposers.add(f);
   }
-  character: Character;
+  entity: Entity;
   key_time_maps: Record<GameKey, number> = { L: 0, R: 0, U: 0, D: 0, a: 0, j: 0, d: 0 };
 
   readonly dbc_map: Record<GameKey, DoubleClick<ICharacterFrameInfo>>;
@@ -68,7 +69,7 @@ export class BaseController {
       const ck = CONFLICTS_KEY_MAP[k];
       if (ck) this.dbc_map[ck].reset();
 
-      this.dbc_map[k].press(this._time, this.character.get_frame());
+      this.dbc_map[k].press(this._time, this.entity.get_frame());
     };
     return this;
   }
@@ -80,7 +81,7 @@ export class BaseController {
    */
   hold(...keys: GameKey[]): this {
     for (const k of keys)
-      this.key_time_maps[k] = this._time - this.character.world.key_hit_duration;
+      this.key_time_maps[k] = this._time - this.entity.world.key_hit_duration;
     return this;
   }
 
@@ -120,11 +121,11 @@ export class BaseController {
   is_hit(k: GameKey): boolean;
   is_hit(k: GameKey): boolean {
     const v = this.key_time_maps[k];
-    return !!v && this._time - v <= this.character.world.key_hit_duration;
+    return !!v && this._time - v <= this.entity.world.key_hit_duration;
   }
   is_db_hit(k: GameKey): boolean {
     const { time } = this.dbc_map[k];
-    const ret = time > 0 && this._time - time <= this.character.world.key_hit_duration;
+    const ret = time > 0 && this._time - time <= this.entity.world.key_hit_duration;
     return ret;
   }
   is_end(k: string): boolean;
@@ -138,9 +139,9 @@ export class BaseController {
     return this.key_time_maps[k] === this._time - 1;
   }
 
-  constructor(player_id: string, character: Character) {
+  constructor(player_id: string, character: Entity) {
     this._player_id = player_id;
-    this.character = character;
+    this.entity = character;
     this.dbc_map = {
       d: new DoubleClick('d', character.world.double_click_interval),
       a: new DoubleClick('a', character.world.double_click_interval),
@@ -165,9 +166,8 @@ export class BaseController {
 
   update(): TNextFrame | undefined {
     ++this._time;
-    const character = this.character;
-    const { facing } = character;
-    const frame = character.get_frame();
+    const entity = this.entity;
+    const frame = entity.get_frame();
     const { hold: hld, hit, state } = frame;
     let nf: [TNextFrame | undefined, number, GameKey | undefined] = [void 0, 0, void 0];
 
@@ -181,6 +181,7 @@ export class BaseController {
     const end_L = this.is_end('L');
     const end_R = this.is_end('R');
 
+    const { facing } = entity;
     /** 相对方向的按钮判定 */
     if (facing === 1) {
       if (hit?.F && hit_R && end_L && nf[1] < this.key_time_maps.R) nf = [hit.F, this.key_time_maps.R, GameKey.R];
@@ -229,10 +230,10 @@ export class BaseController {
       case Defines.State.Standing:
       case Defines.State.Walking:
         /** FIXME: 重击判定 */
-        if (this.is_hit('a')) {
-          const super_punch = character.find_v_rest((_, v) => v.itr.kind === Defines.ItrKind.SuperPunchMe);
+        if (this.is_hit('a') && is_character(entity)) {
+          const super_punch = entity.find_v_rest((_, v) => v.itr.kind === Defines.ItrKind.SuperPunchMe);
           if (super_punch) {
-            nf = [{ id: character.data.indexes.super_punch }, this.key_time_maps.a, GameKey.a];
+            nf = [{ id: entity.data.indexes.super_punch }, this.key_time_maps.a, GameKey.a];
           }
           console.log("super_punch:", super_punch)
         }

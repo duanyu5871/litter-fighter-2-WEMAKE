@@ -8,18 +8,22 @@ export default class Walking extends BaseCharacterState {
   update(e: Character): void {
     e.on_gravity();
     e.velocity_decay();
-    const { dvx = 0, dvz = 0 } = e.get_frame();
-    const { UD, LR } = e.controller;
-    const speed_z = UD * dvz;
-    const speed_x = LR * (dvx - Math.abs(speed_z / 4));
-    if (speed_x) e.velocity.x = speed_x;
-    if (speed_z) e.velocity.z = speed_z;
-    if (!UD && !LR && !e.wait) {
-      if (is_weapon(e.holding) && e.holding?.data.base.type === Defines.WeaponType.Heavy) {
-        e.wait = e.get_frame().wait
-      } else {
-        e.enter_frame(e.data.indexes.standing);
+    if (e.controller) {
+      const { dvx = 0, dvz = 0 } = e.get_frame();
+      const { UD, LR } = e.controller;
+      const speed_z = UD * dvz;
+      const speed_x = LR * (dvx - Math.abs(speed_z / 4));
+      if (speed_x) e.velocity.x = speed_x;
+      if (speed_z) e.velocity.z = speed_z;
+      if (!UD && !LR && !e.wait) {
+        if (is_weapon(e.holding) && e.holding?.data.base.type === Defines.WeaponType.Heavy) {
+          e.wait = e.get_frame().wait
+        } else {
+          e.enter_frame(e.data.indexes.standing);
+        }
       }
+    } else {
+      e.enter_frame(e.data.indexes.standing);
     }
     if (e.hp <= 0) {
       e.enter_frame(e.get_sudden_death_frame());
