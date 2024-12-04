@@ -43,6 +43,8 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
   info.dash_height = info.dash_height * info.dash_height / 3.5;
   info.dash_distance /= 2;
   info.jump_distance /= 2;
+  info.fall_value = Defines.DEFAULT_FALL_VALUE;
+  info.defend_value = Defines.DEFAULT_DEFEND_VALUE;
   const round_trip_frames_map: any = {};
   for (const [frame_id, frame] of traversal(frames)) {
     const hit_a = take(frame, 'hit_a');

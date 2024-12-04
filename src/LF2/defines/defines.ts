@@ -8,6 +8,8 @@ export namespace Defines {
   export const OLD_SCREEN_HEIGHT = 550;
   export const DAFUALT_HP = 500;
   export const DAFAULT_MP = 500;
+  export const DEFAULT_FALL_VALUE = 140
+  export const DEFAULT_DEFEND_VALUE = 120
 
 
   /**
@@ -223,6 +225,7 @@ export namespace Defines {
     HERO_FT = 'HERO_FT',
     GIM_INK = 'GIM_INK'
   }
+
   export const CheatKeys: Record<Cheats, string> = {
     [Cheats.LF2_NET]: "lf2.net",
     [Cheats.HERO_FT]: "herofighter.com",

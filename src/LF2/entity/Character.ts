@@ -18,8 +18,8 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
     return this._callbacks
   }
   protected _resting = 0;
-  protected _fall_value = 70;
-  protected _defend_value = 60;
+  protected _fall_value = Defines.DEFAULT_FALL_VALUE;
+  protected _defend_value = Defines.DEFAULT_DEFEND_VALUE;
 
   constructor(world: World, data: ICharacterData) {
     super(world, data, CHARACTER_STATES);
@@ -28,9 +28,13 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
 
     this._max_hp = this._hp = data.base.hp ?? Defines.DAFUALT_HP;
     this._max_mp = this._mp = data.base.mp ?? Defines.DAFAULT_MP;
+    this._fall_value = this.data.base.fall_value;
+    this._defend_value = this.data.base.defend_value;
     this._mp_r_min_spd = data.base.mp_r_min_spd ?? Defines.DAFAULT_MP_RECOVERY_MIN_SPEED;
     this._mp_r_max_spd = data.base.mp_r_max_spd ?? Defines.DAFAULT_MP_RECOVERY_MAX_SPEED;
     this.update_mp_recovery_speed();
+
+    
   }
 
   override get_next_frame(which: string | TNextFrame): [ICharacterFrameInfo | undefined, INextFrame | undefined] {
@@ -120,14 +124,14 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
     switch (this.frame.state) {
       case Defines.State.Falling:
         this._resting = 0;
-        this._fall_value = 70;
-        this._defend_value = 60;
+        this._fall_value = this.data.base.fall_value;
+        this._defend_value = this.data.base.defend_value;
         break;
       default: {
         if (this._resting > 0) { this._resting--; }
         else {
-          if (this._fall_value < 70) { this._fall_value += 0.5; }
-          if (this._defend_value < 60) { this._defend_value += 0.5; }
+          if (this._fall_value < this.data.base.fall_value) { this._fall_value += 1; }
+          if (this._defend_value < this.data.base.defend_value) { this._defend_value += 1; }
         }
       }
     }
@@ -173,8 +177,8 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
     }
     this._catcher = attacker;
     this._resting = 0;
-    this._fall_value = 70;
-    this._defend_value = 50;
+    this._fall_value = this.data.base.fall_value;
+    this._defend_value = this.data.base.defend_value;
     this._next_frame = itr.caughtact;
   }
   override on_collision(target: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
@@ -233,7 +237,7 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
 
     this._resting = 30
     if (this.get_frame().state === Defines.State.Defend && aface !== this.facing && bdefend < 100) {
-      this._defend_value -= bdefend;
+      this._defend_value -= 2 * bdefend;
       if (this._defend_value <= 0) { // 破防
         this._defend_value = 0;
         this.world.spark(spark_x, spark_y, spark_z, "broken_defend")
@@ -253,7 +257,7 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
     }
 
     this._defend_value = 0;
-    this._fall_value -= itr.fall || 20;
+    this._fall_value -= itr.fall ? itr.fall * 2 : 40;
     /* 击倒 */
     if (this._fall_value <= 0 || this._hp <= 0) {
       this._fall_value = 0;
@@ -304,7 +308,7 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
     }
 
     /* 击晕 */
-    if (this._fall_value <= 20) {
+    if (this._fall_value <= 40) {
       this._next_frame = { id: indexes.dizzy };
       return;
     }

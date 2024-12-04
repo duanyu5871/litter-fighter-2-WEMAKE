@@ -1,5 +1,5 @@
 import { IGameObjInfo } from ".";
-import type { Defines } from "./defines";
+
 export interface IArmorInfo {
   hit_sound?: string;
   fireproof?: number;
@@ -23,7 +23,9 @@ export interface ICharacterInfo extends IGameObjInfo {
   dash_distancez: number;
   rowing_height: number;
   rowing_distance: number;
-
+  fall_value: number;
+  defend_value: number;
+  
   /**
    * 默认角色血量
    * 在一些模式下，此数值可能会被覆盖
