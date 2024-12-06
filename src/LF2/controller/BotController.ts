@@ -64,7 +64,7 @@ export class BotController extends BaseController {
     const WALK_ATTACK_DEAD_ZONE_Z = 10;
     const RUN_ATTACK_DEAD_ZONE_X = 75;
     const RUN_ATTACK_DEAD_ZONE_Z = 10;
-    const JUMP_DESIRE = 5
+    const JUMP_DESIRE = 1
     const RUN_ZONE = 300;
     const { facing } = c;
     const { state } = c.get_frame();
