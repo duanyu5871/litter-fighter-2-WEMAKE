@@ -214,7 +214,7 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
         if (frame_id === '212') {
           frame.hit.a = [
             {
-              id: ['52'],
+              id: '52', // 角色跳跃丢出武器
               facing: FacingFlag.ByController,
               expression: CondMaker.one_of(
                 ValWord.WeaponType, WeaponType.Baseball, WeaponType.Drink
@@ -224,11 +224,18 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
               ).done(),
             },
             {
-              id: '30',
+              id: '30', // 角色跳跃用武器攻击
               facing: FacingFlag.ByController,
-              expression: CondMaker.one_of(ValWord.WeaponType, WeaponType.Knife, WeaponType.Stick).done()
+              expression: CondMaker.one_of(
+                ValWord.WeaponType,
+                WeaponType.Knife,
+                WeaponType.Stick
+              ).done()
             },
-            { id: '80', facing: FacingFlag.ByController }
+            {
+              id: '80', // 角色跳跃攻击
+              facing: FacingFlag.ByController
+            }
           ]; // jump_atk
         }
         frame.hit.B = { facing: FacingFlag.ByController };
@@ -238,9 +245,6 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
       /** dash */
       case 213: case 214: case 216: case 217: {
         frame.state = 5;
-        if (frame_id === '213' || frame_id === '214') {
-          frame.dash_flag = 1;
-        }
         if (frame_id === '213' && frames[214]) set_hit_turn_back(frame, '214'); // turn back;
         if (frame_id === '216' && frames[217]) set_hit_turn_back(frame, '217'); // turn back;
         if (frame_id === '214' && frames[213]) set_hit_turn_back(frame, '213'); // turn back;
@@ -262,7 +266,9 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
         }
         break;
       }
-      case 120: case 121: case 122: case 123: /** catching */
+
+      /** catching */
+      case 120: case 121: case 122: case 123:
         if (frame.cpoint) {
           if (frame.cpoint.vaction) (frame.cpoint?.vaction as INextFrame).facing = FacingFlag.OpposingCatcher;
           if (frame.cpoint.injury) frame.cpoint!.shaking = 1;
@@ -309,7 +315,9 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
         }
 
         break;
-      case 232: case 233: case 234:  /** throw_lying_man */
+
+      /** throw_lying_man */
+      case 232: case 233: case 234:
         if (frame.cpoint?.vaction) (frame.cpoint?.vaction as INextFrame).facing = FacingFlag.SameAsCatcher;
         break;
 
@@ -339,7 +347,20 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
       case State.Z_Moveable:
         frame.dvz = running_speedz;
         break;
-      case 1: case 2: {
+
+      case Defines.State.Walking:
+      case Defines.State.Running: {
+        /* 
+          NOTE: 
+            在原版LF2中，角色走路和跑步是用帧的往返切换来实现的。
+            这打破了wait next的规则。
+            我不希望打破这个规则。
+            从原版数据转换过来时，帮助生成额外的帧来实现相同的效果。
+            这样，在WEMAKE中，可以实现更合理的走路和跑步动画。
+            
+            原版：0 ==> 1 ==> 2 ==> 1 ==>0
+            WEMAKE: 0 ==> 1 ==> 2 ==> copy_1 ==> 0
+        */
         if (frame.state === 1) frame.wait = walking_frame_rate * 2;
         if (frame.state === 2) frame.wait = running_frame_rate * 2;
         round_trip_frames_map[frame.name] = round_trip_frames_map[frame.name] || [];

@@ -2,7 +2,7 @@ import type Character from '../../entity/Character';
 import BaseCharacterState from "./Base";
 
 export default class Jump extends BaseCharacterState {
-  private _jump_flags = new Set<string>();
+  private _jump_flags = new Set<Character>();
   update(character: Character): void {
     character.on_gravity();
     character.velocity_decay();
@@ -10,10 +10,10 @@ export default class Jump extends BaseCharacterState {
 
     const { jump_flag } = character.get_prev_frame();
     if (!jump_flag) {
-      this._jump_flags.delete(character.id);
+      this._jump_flags.delete(character);
       return;
     }
-    if (this._jump_flags.has(character.id))
+    if (this._jump_flags.has(character))
       return;
 
     const { LR: LR1 = 0, UD: UD1 = 0 } = character.controller || {};
@@ -25,7 +25,7 @@ export default class Jump extends BaseCharacterState {
       g_acc * Math.sqrt(2 * h / g_acc),
       vz
     )
-    this._jump_flags.add(character.id);
+    this._jump_flags.add(character);
   }
   on_landing(character: Character, vx: number, vy: number, vz: number): void {
     character.enter_frame({ id: character.data.indexes.landing_1 });
