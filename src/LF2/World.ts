@@ -428,6 +428,12 @@ export class World {
     const l1 = bf.bdy.length;
     for (let i = 0; i < l0; ++i) {
       for (let j = 0; j < l1; ++j) {
+        /*
+          FIXME: 
+            在这个循环里continue, 是判断为不碰撞;
+            再加上switch的break，不太符合人的直觉，但是……?
+              -Gim
+        */
         let itr = af.itr[i];
         const bdy = bf.bdy[j];
         switch (af.state) {
@@ -457,15 +463,15 @@ export class World {
                 bf.state !== Defines.State.Weapon_OnGround &&
                 bf.state !== Defines.State.HeavyWeapon_OnGround
               )
-            ) break;
-            continue;
+            ) continue;
+            break;
           case Defines.ItrKind.PickSecretly:
             if (
               !is_character(a) ||
               !is_weapon(b) ||
               bf.state !== Defines.State.Weapon_OnGround
-            ) break;
-            continue;
+            ) continue;
+            break;
           case Defines.ItrKind.ForceCatch:
             if (is_character(a) && is_character(b)) break;
             continue;
@@ -481,7 +487,6 @@ export class World {
           case Defines.ItrKind.Fly:
           case Defines.ItrKind.Ice:
         }
-
         switch (itr.effect) {
           case Defines.ItrEffect.MFire1:
           case Defines.ItrEffect.MFire2:
@@ -494,9 +499,7 @@ export class World {
           case Defines.ItrEffect.Through: continue; // TODO
         }
 
-        const friendly_fire = itr.friendly_fire || bdy.friendly_fire;
-
-        if (!friendly_fire && a.same_team(b)) continue;
+        if (!(itr.friendly_fire || bdy.friendly_fire) && a.same_team(b)) continue;
 
         switch (bf.state) {
           case Defines.State.Falling: {
