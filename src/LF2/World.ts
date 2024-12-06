@@ -496,7 +496,9 @@ export class World {
           case Defines.ItrEffect.Fire:
             if (af.state === Defines.State.BurnRun) continue;
             break;
-          case Defines.ItrEffect.Through: continue; // TODO
+          case Defines.ItrEffect.Through:
+            if (is_character(b)) continue;
+            break;
         }
 
         if (!(itr.friendly_fire || bdy.friendly_fire) && a.same_team(b)) continue;
