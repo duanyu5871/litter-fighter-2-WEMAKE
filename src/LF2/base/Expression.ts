@@ -28,9 +28,10 @@ export class Expression<T> implements Judger<T> {
   readonly children: Array<Expression<T> | Judger<T> | '|' | '&'> = [];
   readonly get_val: (word: string, e: T) => string | number | boolean;
   err?: string | undefined;
+
   constructor(t: string, get_val: ValGetter<T>) {
     this.get_val = get_val;
-    this.text = t.replace(/\s|\n|\r/g, '').replace(/^\(/, '');
+    this.text = t.replace(/\s|\n|\r/g, '');
     let p = 0;
     const count = this.text.length + 1;
     let i = 0;
@@ -38,7 +39,7 @@ export class Expression<T> implements Judger<T> {
     for (; i < count; ++i) {
       letter = this.text[i];
       if ('(' === letter) {
-        const exp = new Expression<T>(this.text.substring(i), get_val);
+        const exp = new Expression<T>(this.text.substring(i + 1), get_val);
         i += exp.text.length + 1
         p = i + 1;
         this.children.push(exp);
@@ -89,17 +90,14 @@ export class Expression<T> implements Judger<T> {
   }
   run = (e: T): boolean => {
     let ret = false;
-    let cur = false;
     const len = this.children.length;
-    for (let i = 0; i < len; ++i) {
-      const item = this.children[i];
-      if (item === '|') {
-        ret = ret || cur;
-      } else if (item === '&') {
-        ret = ret && cur;
-      } else {
-        cur = item.run(e) || false;
-        if (i === 0) ret = cur;
+    for (let i = -1; i < len; i += 2) {
+      const op = this.children[i] || '|';
+      const va = (this.children[i + 1] as Judger<any>).run(e) || false;
+      if (op === '|') {
+        ret = ret || va;
+      } else if (op === '&') {
+        ret = ret && va;
       }
     }
     return ret;

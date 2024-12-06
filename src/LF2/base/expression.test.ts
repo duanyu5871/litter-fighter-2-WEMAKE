@@ -1,39 +1,44 @@
-import { Expression } from './Expression';
+import { Expression, Judger } from './Expression';
 
-const expression_result_pairs: [string, boolean][] = [
-  // ["1=1&(((1=1)&1=1)|(1=1&1=1))|1=1", true],
-  // ["1=1&(((1=1)&1=1)|(1=1&1=1))|1=2", true],
-  ["1=1&(((1=1)&1=1)|(1=1&1=1))&1=2", false],
-  ["1==0", false],
-  ["1==1", true],
-  ["1==2", false],
-
-  ["1!=0", true],
-  ["1!=1", false],
-  ["1!=2", true],
-
-  ["1>=0", true],
-  ["1>=1", true],
-  ["1>=2", false],
-
-  ["1<=0", false],
-  ["1<=1", true],
-  ["1<=2", true],
-
-  ["1<0", false],
-  ["1<1", false],
-  ["1<2", true],
-
-  ["1>0", true],
-  ["1>1", false],
-  ["1>2", false],
-
-  ["1=0", false],
-  ["1=1", true],
-  ["1=2", false],
+const expression_result_pairs: [1 | 0, string, any][] = [
+  [0, "(1=1)&1=2", false],
+  [0, "(1=1)&1=1", true],
+  [0, "(1=1)&(1=2)", false],
+  [0, "(1=1)&(1=1)", true],
+  [0, "1=1&1=2", false],
+  [0, "1=1&(((1=1)&1=1)|(1=1&1=1))|1=1", true],
+  [0, "1=1&(((1=1)&1=1)|(1=1&1=1))|1=2", true],
+  [0, "1=1&(((1=1)&1=1)|(1=1&1=1))&1=2", false],
+  [0, "1==0", false],
+  [0, "1==1", true],
+  [0, "1==2", false],
+  [0, "1!=0", true],
+  [0, "1!=1", false],
+  [0, "1!=2", true],
+  [0, "1>=0", true],
+  [0, "1>=1", true],
+  [0, "1>=2", false],
+  [0, "1<=0", false],
+  [0, "1<=1", true],
+  [0, "1<=2", true],
+  [0, "1<0", false],
+  [0, "1<1", false],
+  [0, "1<2", true],
+  [0, "1>0", true],
+  [0, "1>1", false],
+  [0, "1>2", false],
+  [0, "1=0", false],
+  [0, "1=1", true],
+  [0, "1=2", false],
 ]
-for (const [str, result] of expression_result_pairs) {
+for (const [ig, str, result] of expression_result_pairs) {
+  if (ig) continue;
   test(`expression ${str} should be ${result}`, () => {
-    expect(new Expression(str, a => a).run(void 0)).toBe(result);
+    const exp = new Expression(str, a => a);
+    if ("(1=1)&1=2" === str) {
+      console.log("exp.children.length", exp.children.length)
+    }
+    expect(exp.run(void 0)).toBe(result);
   })
 }
+
