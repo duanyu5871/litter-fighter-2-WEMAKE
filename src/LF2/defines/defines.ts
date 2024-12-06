@@ -5,6 +5,22 @@ import type { IItrInfo } from "./IItrInfo";
 import { IStageInfo } from "./IStageInfo";
 
 export namespace Defines {
+  export enum BallBehavior {
+    _01 = 1,//= 追敵人的center(因為敵人站在地面，所以會下飄)
+    _02 = 2,//= 水平追敵
+    _03 = 3,//= 加速法追敵(追縱力較差)
+    _04 = 4,//= 天使之祝福(別的dat檔用了無效)
+    _05 = 5,//= 天使之祝福的開始(會追我方的人物很久)
+    _06 = 6,//= 惡魔之審判的開始(視敵人數目而增加，基本上是一個)
+    _07 = 7,//= 惡魔之審判,殃殞天降(可以做出打到地面的追蹤波)
+    _08 = 8,//= 吸血蝙蝠的開始(視敵人數目而增加，基本數值是三個，別的dat檔用了無效)
+    _09 = 9,//= 殃殞天降的開始(視敵人數目而增加，基本數值是四個)
+    _10 = 10,//= 加速(從慢變快)
+    _11 = 11,//= 極地火山
+    _12 = 12,//= 吸血蝙蝠
+    _13 = 13,//= 連環重炮的開始
+    _14 = 14,//= 連環重炮
+  }
   export const OLD_SCREEN_WIDTH = 794;
   export const OLD_SCREEN_HEIGHT = 550;
   export const DAFUALT_HP = 500;

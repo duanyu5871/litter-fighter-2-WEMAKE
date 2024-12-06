@@ -5,7 +5,6 @@ import type { World } from '../World';
 import { ICube } from '../World';
 import { Callbacks, new_id, new_team, type NoEmitCallbacks } from '../base';
 import { BaseController } from '../controller/BaseController';
-import { InvalidController } from '../controller/InvalidController';
 import { IBallData, IBaseData, IBdyInfo, ICharacterData, IEntityData, IFrameInfo, IGameObjData, IGameObjInfo, IItrInfo, INextFrame, IOpointInfo, ITexturePieceInfo, IWeaponData, TFace, TNextFrame } from '../defines';
 import { Defines } from '../defines/defines';
 import Ditto from '../ditto';
@@ -703,19 +702,8 @@ export default class Entity<
     this._mp_r_spd = this._mp_r_min_spd + (this._mp_r_max_spd - this._mp_r_min_spd) * (this._max_hp - this._hp) / this._max_hp
   }
 
-  // belong(other: Entity): boolean {
-  //   if (!this.emitter) return false;
-  //   if (this.emitter === other) return true;
-  //   return this.emitter.belong(other);
-  // }
-
   same_team(other: Entity): boolean {
     return this.team === other.team;
-    // if (this === other) return true;
-    // const a_team = this.team;
-    // const b_team = other.team;
-    // if (a_team && a_team === b_team) return true;
-    // return this.belong(other) || other.belong(this) || (!!this.emitter && this.emitter === other.emitter);
   }
 
   follow_holder() {
@@ -747,10 +735,10 @@ export default class Entity<
     this._nearest_enemy = e;
   }
   subscribe_nearest_enemy() {
-    this.world.nearest_enemy_requester.add(this)
+    this.world.nearest_enemy_requesters.add(this)
   }
   unsubscribe_nearest_enemy() {
-    this.world.nearest_enemy_requester.delete(this)
+    this.world.nearest_enemy_requesters.delete(this)
   }
 
   enter_frame(which: TNextFrame | string): void {
@@ -771,29 +759,30 @@ export default class Entity<
     const { x, y, z } = this.position;
     sound && this.world.lf2.sounds.play(sound, x, y, z);
     this.set_frame(frame);
-    if (flags?.facing !== void 0) this.facing = this.handle_facing_flag(flags.facing, frame, flags);
-    if (flags?.wait !== void 0) this.wait = this.handle_wait_flag(flags.wait, frame, flags);
+
+    if (flags?.facing !== void 0) this.facing = this.handle_facing_flag(flags.facing, frame);
+    if (flags?.wait !== void 0) this.wait = this.handle_wait_flag(flags.wait, frame);
     else this.wait = frame.wait;
     this._next_frame = void 0;
 
   }
 
-  handle_wait_flag(wait: string | number, frame: IFrameInfo, flags: INextFrame): number {
+  handle_wait_flag(wait: string | number, frame: IFrameInfo): number {
     if (wait === 'i') return this.wait;
-    if (is_positive(wait)) return this.wait;
+    if (wait === 'd') return Math.max(0, frame.wait - this.frame.wait + this.wait);
+    if (is_positive(wait)) return wait;
     return frame.wait;
   }
-
+                                                   
   /**
    * 进入下一帧时，需要处理朝向
    * 
    * @see {Defines.FacingFlag}
    * @param facing 目标朝向, 可参考Defines.FacingFlag
    * @param frame 帧
-   * @param flags 
    * @returns 返回新的朝向
    */
-  handle_facing_flag(facing: number, frame: IFrameInfo, flags: INextFrame): -1 | 1 {
+  handle_facing_flag(facing: number, frame: IFrameInfo): -1 | 1 {
     switch (facing) {
       case Defines.FacingFlag.Backward:
         return turn_face(this.facing);

@@ -32,15 +32,17 @@ export default class Ball extends Entity<IBallFrameInfo, IBallInfo, IBallData> {
   }
   set_frame(v: IBallFrameInfo): void {
     switch (this.frame.behavior) {
-      case 1:
-      case 2:
-      case 3: this.unsubscribe_nearest_enemy(); break;
+      case Defines.BallBehavior._01:
+      case Defines.BallBehavior._02:
+      case Defines.BallBehavior._03:
+        this.unsubscribe_nearest_enemy(); break;
     }
     super.set_frame(v);
     switch (v.behavior) {
-      case 1:
-      case 2:
-      case 3: this.subscribe_nearest_enemy(); break;
+      case Defines.BallBehavior._01:
+      case Defines.BallBehavior._02:
+      case Defines.BallBehavior._03:
+        this.subscribe_nearest_enemy(); break;
     }
   }
   play_hit_sound() {

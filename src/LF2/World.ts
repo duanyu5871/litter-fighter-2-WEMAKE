@@ -69,7 +69,7 @@ export class World {
   disposed = false;
 
   readonly player_slot_characters = new Map<string, Character>();
-  readonly nearest_enemy_requester = new Set<Entity>();
+  readonly nearest_enemy_requesters = new Set<Entity>();
 
   get stage() { return this._stage }
   set stage(v) {
@@ -315,14 +315,13 @@ export class World {
     this.collision_detections();
     for (const e of this.entities) {
       e.self_update();
-      if (is_character(e)) {
-        for (const r of this.nearest_enemy_requester) {
-          if (e === r || r.same_team(e) || e.hp <= 0)
-            continue;
-          const prev = r.nearest_enemy
-          if (!prev || this.manhattan(prev, r) > this.manhattan(e, r)) {
-            r.set_nearest_enemy(e)
-          }
+
+      for (const r of this.nearest_enemy_requesters) {
+        if (is_character(e) || r.same_team(e) || e.hp <= 0)
+          continue;
+        const prev = r.nearest_enemy
+        if (!prev || this.manhattan(prev, r) > this.manhattan(e, r)) {
+          r.set_nearest_enemy(e)
         }
       }
     }

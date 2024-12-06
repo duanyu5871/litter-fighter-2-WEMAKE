@@ -1,10 +1,9 @@
-import { Factory } from "./Factory";
 import { ICube, World } from "../World";
 import { IBdyInfo, IFrameInfo, IItrInfo, IOpointInfo, IWeaponData, IWeaponInfo } from "../defines";
 import { Defines } from "../defines/defines";
 import { WEAPON_STATES } from "../state/weapon";
 import Entity, { GONE_FRAME_INFO } from "./Entity";
-import { is_character } from "./type_check";
+import { Factory } from "./Factory";
 export default class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData> {
   readonly is_weapon = true
 
@@ -20,19 +19,37 @@ export default class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData>
     return frames[indexes.on_ground];
   }
 
+  /** @inheritdoc */
   override self_update(): void {
     super.self_update();
-    const holder = this.holder
+    const { holder } = this
     if (holder) {
-      const { wpoint: wpoint_a } = holder.get_frame();
-      if (!wpoint_a) return;
-      const { dvx, dvy, dvz } = wpoint_a;
-      if (dvx || dvy || dvz) {
+      const { wpoint, state } = holder.frame;
+      if (wpoint) { // 武器被丢出
+        const { dvx, dvy, dvz } = wpoint;
+        if (dvx !== void 0 || dvy !== void 0 || dvz !== void 0) {
+          this.follow_holder()
+          this.enter_frame(this.data.indexes.throwing);
+          const vz = holder.controller ? holder.controller.UD * (dvz || 0) : 0;
+          const vx = (dvx || 0 - Math.abs(vz / 2)) * this.facing
+          this.velocity.set(vx, dvy || 0, vz)
+          holder.holding = void 0;
+          this.holder = void 0;
+        }
+      }
+      /*
+        TODO: 
+          武器是否被打掉是不是又攻击方的itr来控制更好呢？
+          这样也许可以实现更丰富的东西。
+          -Gim
+      */
+      if (
+        state === Defines.State.Falling ||
+        state === Defines.State.Lying ||
+        state === Defines.State.Caught
+      ) {
         this.follow_holder()
-        this.enter_frame(this.data.indexes.throwing);
-        const vz = holder.controller ? holder.controller.UD * (dvz || 0) : 0;
-        const vx = (dvx || 0 - Math.abs(vz / 2)) * this.facing
-        this.velocity.set(vx, dvy || 0, vz)
+        this.enter_frame(this.data.indexes.in_the_sky);
         holder.holding = void 0;
         this.holder = void 0;
       }
@@ -58,11 +75,12 @@ export default class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData>
     if (this.frame.state === Defines.State.Weapon_OnHand) {
       return;
     }
-    this.velocity.x = -0.3 * this.velocity.x
-    this.velocity.y = -0.3 * this.velocity.y
+    // TODO: 这里是击中的反弹，如何更合适？ -Gim
+    this.velocity.x = -0.3 * this.velocity.x;
+    this.velocity.y = -0.3 * this.velocity.y;
     this.enter_frame(this.find_auto_frame())
   }
-  
+
   override on_be_collided(attacker: Entity, itr: IItrInfo, bdy: IBdyInfo, r0: ICube, r1: ICube): void {
     if (itr.kind === Defines.ItrKind.Pick || itr.kind === Defines.ItrKind.PickSecretly) {
       this.holder = attacker;

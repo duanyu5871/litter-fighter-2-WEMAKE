@@ -57,7 +57,7 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
     return ret;
   }
 
-  override handle_facing_flag(facing: number, frame: IFrameInfo, flags: INextFrame): TFace {
+  override handle_facing_flag(facing: number, frame: IFrameInfo): TFace {
     switch (facing) {
       case Defines.FacingFlag.ByController:
         return this.controller?.LR || this.facing;
@@ -66,7 +66,7 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
       case Defines.FacingFlag.OpposingCatcher:
         return turn_face(this._catcher?.facing) || this.facing;
       default:
-        return super.handle_facing_flag(facing, frame, flags);
+        return super.handle_facing_flag(facing, frame);
     }
   }
 
