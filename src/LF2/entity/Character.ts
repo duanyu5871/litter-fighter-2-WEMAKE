@@ -321,8 +321,8 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
     this._next_frame = { id: indexes.grand_injured[same_face(this, attacker)][0] }
   }
 
-  override spawn_object(opoint: IOpointInfo, speed_z: number = 0) {
-    const ret = super.spawn_object(opoint, speed_z);
+  override spawn_entity(opoint: IOpointInfo, speed_z: number = 0) {
+    const ret = super.spawn_entity(opoint, speed_z);
     if (this.controller) {
       if (is_ball(ret)) {
         ret.ud = this.controller.UD;

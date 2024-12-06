@@ -5,6 +5,7 @@ import type { World } from '../World';
 import { ICube } from '../World';
 import { Callbacks, new_id, new_team, type NoEmitCallbacks } from '../base';
 import { BaseController } from '../controller/BaseController';
+import { BotController } from '../controller/BotController';
 import { IBallData, IBaseData, IBdyInfo, ICharacterData, IEntityData, IFrameInfo, IGameObjData, IGameObjInfo, IItrInfo, INextFrame, IOpointInfo, ITexturePieceInfo, IWeaponData, TFace, TNextFrame } from '../defines';
 import { Defines } from '../defines/defines';
 import Ditto from '../ditto';
@@ -16,6 +17,7 @@ import { Factory } from './Factory';
 import type IEntityCallbacks from './IEntityCallbacks';
 import { InfoSprite } from './InfoSprite';
 import { turn_face } from './face_helper';
+import { is_character } from './type_check';
 export const EMPTY_PIECE: ITexturePieceInfo = {
   tex: 0, x: 0, y: 0, w: 0, h: 0,
   ph: 0, pw: 0,
@@ -362,7 +364,7 @@ export default class Entity<
       for (const opoint of v.opoint) {
         for (let i = 0; i < opoint.multi; ++i) {
           const s = 2 * (i - (opoint.multi - 1) / 2);
-          this.spawn_object(opoint, s)
+          this.spawn_entity(opoint, s)
         }
       }
     }
@@ -370,7 +372,7 @@ export default class Entity<
       delete this._catching;
   }
 
-  spawn_object(opoint: IOpointInfo, speed_z: number = 0): Entity | undefined {
+  spawn_entity(opoint: IOpointInfo, speed_z: number = 0): Entity | undefined {
     const d = this.world.lf2.datas.find(opoint.oid);
     if (!d) {
       Warn.print(Entity.TAG + '::spawn_object', 'data not found! opoint:', opoint);
@@ -381,7 +383,9 @@ export default class Entity<
       Warn.print(Entity.TAG + '::spawn_object', `creator of "${d.type}" not found! opoint:`, opoint);
       return;
     }
-    return create(this.world, d).on_spawn_by_emitter(this, opoint, speed_z).attach()
+    const entity = create(this.world, d).on_spawn_by_emitter(this, opoint, speed_z).attach();
+    if (is_character(entity)) entity.controller = new BotController(entity.id, entity)
+    return entity
   }
 
   attach(): this {
@@ -773,7 +777,7 @@ export default class Entity<
     if (is_positive(wait)) return wait;
     return frame.wait;
   }
-                                                   
+
   /**
    * 进入下一帧时，需要处理朝向
    * 
