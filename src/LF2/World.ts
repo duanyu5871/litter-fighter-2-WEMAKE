@@ -484,6 +484,8 @@ export class World {
             if (is_character(b) && !b.holding && (b.get_frame().state === Defines.State.Standing || b.get_frame().state === Defines.State.Walking)) break;
             continue;
           case Defines.ItrKind.Normal:
+            if (is_character(a) && bf.state === Defines.State.Weapon_OnGround) continue;
+            break
           case Defines.ItrKind.Heal:
           case Defines.ItrKind.DeadWhenHit:
           case Defines.ItrKind.Fly:

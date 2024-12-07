@@ -103,7 +103,8 @@ export default class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData>
     const spark_x = (Math.max(r0.left, r1.left) + Math.min(r0.right, r1.right)) / 2;
     const spark_y = (Math.min(r0.top, r1.top) + Math.max(r0.bottom, r1.bottom)) / 2;
     const spark_z = Math.max(r0.far, r1.far);
-    if (itr.injury) this.hp -= itr.injury;
+    if (itr.bdefend === 100) this.hp = 0;
+    else if (itr.injury) this.hp -= itr.injury;
 
     const is_broken = this.hp <= 0
 
