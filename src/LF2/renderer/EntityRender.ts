@@ -20,6 +20,7 @@ export class EntityRender {
   shadow!: Shadow;
   _prev_update_count?: number;
   indicators!: FrameIndicators;
+  private _shaking?: number;
   constructor(entity: Entity) {
     this.set_entity(entity);
   }
@@ -107,9 +108,12 @@ export class EntityRender {
     }
 
     if (entity.shaking) {
-      const x = (entity.shaking % 2 ? -2 : 2);
-      entity_mesh.x += facing * x;
+      if (this._shaking !== entity.shaking) {
+        const x = (entity.shaking % 2 ? -2 : 2);
+        entity_mesh.x += facing * x;
+      }
     }
+    this._shaking = entity.shaking
   }
   dispose(): void {
     this.indicators.hide_box();
