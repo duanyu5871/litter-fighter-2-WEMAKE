@@ -179,7 +179,7 @@ export namespace Defines {
     TurnIntoMax = 8999,// 
     TurnIntoLouisEX = 9995,
     Gone = 9998,
-    _9999 = 9999,
+    _9999 = 9999, Weapon_Brokens = 9999,
   }
   export enum EntityEnum {
     Character = 'character',

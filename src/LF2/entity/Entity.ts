@@ -333,7 +333,7 @@ export default class Entity<
     this._emitter = emitter;
     const shotter_frame = emitter.get_frame();
     this.team = emitter.team;
-    this.facing = o.facing === Defines.FacingFlag.Backward ? turn_face(emitter.facing) : emitter.facing;
+    this.facing = emitter.facing;
 
     let { x, y, z } = emitter.position;
     y = y + shotter_frame.centery - o.y;
@@ -344,7 +344,7 @@ export default class Entity<
     this.velocity.z = speed_z
 
     if (o.dvx) this.velocity.x = (o.dvx - Math.abs(speed_z / 2)) * this.facing;
-    if (o.dvy) this.velocity.y = 2 * o.dvy;
+    if (o.dvy) this.velocity.y = o.dvy;
     if (o.dvz) this.velocity.z += o.dvz;
 
     return this;
@@ -362,8 +362,9 @@ export default class Entity<
       this.invisibility(v.invisible)
     if (v.opoint) {
       for (const opoint of v.opoint) {
-        for (let i = 0; i < opoint.multi; ++i) {
-          const s = 2 * (i - (opoint.multi - 1) / 2);
+        const count = opoint.multi ?? 1
+        for (let i = 0; i < count; ++i) {
+          const s = 2 * (i - (count - 1) / 2);
           this.spawn_entity(opoint, s)
         }
       }
@@ -423,7 +424,6 @@ export default class Entity<
   on_gravity() {
     if (this.position.y <= 0 || this._shaking || this._motionless) return;
     if (this.frame.dvy !== 550) this.velocity.y -= this.state?.get_gravity(this) ?? this.world.gravity;
-
   }
 
 

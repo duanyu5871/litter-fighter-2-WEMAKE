@@ -97,6 +97,18 @@ export function make_weapon_data(info: IWeaponInfo, full_str: string, frames: Re
 export function make_weapon_brokens(data: IWeaponData) {
   switch (data.id) {
     case "100": // #stick
+      data.base.brokens = [{
+        x: 24,
+        y: 24,
+        action: { id: '10' },
+        oid: 999
+      }, {
+        x: 24,
+        y: 24,
+        action: { id: '14' },
+        oid: 999
+      }]
+      break;
     case "101": // #hoe
     case "120": // #knife
     case "121": // #baseball

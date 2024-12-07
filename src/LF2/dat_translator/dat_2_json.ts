@@ -18,7 +18,7 @@ import { make_character_data } from './make_character_data';
 import { make_entity_data } from './make_entity_data';
 import { make_frames } from './make_frames';
 import { make_stage_info_list as make_stage_infos } from './make_stage_info_list';
-import { make_weapon_data } from './make_weapon_data';
+import { make_weapon_brokens, make_weapon_data } from './make_weapon_data';
 
 export default function dat_to_json(
   full_str: string, datIndex?: IDatIndex
@@ -176,6 +176,7 @@ export default function dat_to_json(
         break;
     }
     if (ret) ret.id = datIndex.id;
+    make_weapon_brokens(ret as any)
     return ret;
   } else {
     if ('small' in base && 'name' in base && 'head' in base) {

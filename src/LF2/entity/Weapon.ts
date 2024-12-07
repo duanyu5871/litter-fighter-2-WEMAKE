@@ -59,8 +59,9 @@ export default class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData>
       this._next_frame = GONE_FRAME_INFO;
       if (this.data.base.brokens?.length) {
         for (const opoint of this.data.base.brokens) {
-          for (let i = 0; i < opoint.multi; ++i) {
-            const s = 2 * (i - (opoint.multi - 1) / 2);
+          const count = opoint.multi ?? 1
+          for (let i = 0; i < count; ++i) {
+            const s = 2 * (i - (count - 1) / 2);
             this.spawn_entity(opoint, s)
           }
         }
@@ -91,6 +92,7 @@ export default class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData>
 
   override on_be_collided(attacker: Entity, itr: IItrInfo, bdy: IBdyInfo, r0: ICube, r1: ICube): void {
     if (itr.kind === Defines.ItrKind.Pick || itr.kind === Defines.ItrKind.PickSecretly) {
+      if (attacker.holding) return;
       this.holder = attacker;
       this.holder.holding = this;
       this.team = attacker.team;

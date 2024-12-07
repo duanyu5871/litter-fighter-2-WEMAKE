@@ -458,6 +458,7 @@ export class World {
             continue; // todo
           case Defines.ItrKind.Pick:
             if (
+              a.holding || b.holder ||
               !is_character(a) ||
               !is_weapon(b) || (
                 bf.state !== Defines.State.Weapon_OnGround &&
@@ -467,6 +468,7 @@ export class World {
             break;
           case Defines.ItrKind.PickSecretly:
             if (
+              a.holding || b.holder ||
               !is_character(a) ||
               !is_weapon(b) ||
               bf.state !== Defines.State.Weapon_OnGround
