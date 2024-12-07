@@ -81,7 +81,6 @@ export function make_weapon_data(info: IWeaponInfo, full_str: string, frames: Re
 
   const sound_3 = take(info, 'weapon_hit_sound')
   if (sound_3) info.weapon_hit_sound = sound_3 + '.mp3'
-
   return {
     id: '',
     type: 'weapon',
@@ -93,4 +92,21 @@ export function make_weapon_data(info: IWeaponInfo, full_str: string, frames: Re
     is_game_obj_data: true,
     is_weapon_data: true,
   };
+}
+
+export function make_weapon_brokens(data: IWeaponData) {
+  switch (data.id) {
+    case "100": // #stick
+    case "101": // #hoe
+    case "120": // #knife
+    case "121": // #baseball
+    case "122": // #milk
+    case "150": // #stone
+    case "151": // #wooden_box
+    case "123": // #beer
+    case "124": // #<
+    case "217": // #louis_armour
+    case "218": // #louis_armour
+      break;
+  }
 }

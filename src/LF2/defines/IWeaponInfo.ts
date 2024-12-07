@@ -1,5 +1,4 @@
-import { IGameObjInfo } from ".";
-
+import { IGameObjInfo, IOpointInfo } from ".";
 export interface IWeaponInfo extends IGameObjInfo {
   weapon_hp: number;
   type: number;
@@ -9,4 +8,5 @@ export interface IWeaponInfo extends IGameObjInfo {
   weapon_drop_sound?: string;
   weapon_broken_sound?: string;
   bounce: number;
+  brokens?: IOpointInfo[];
 }

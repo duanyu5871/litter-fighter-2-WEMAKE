@@ -57,6 +57,14 @@ export default class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData>
     if (this.hp <= 0) {
       // TODO: WEAPON BROKEN. -GIM
       this._next_frame = GONE_FRAME_INFO;
+      if (this.data.base.brokens?.length) {
+        for (const opoint of this.data.base.brokens) {
+          for (let i = 0; i < opoint.multi; ++i) {
+            const s = 2 * (i - (opoint.multi - 1) / 2);
+            this.spawn_entity(opoint, s)
+          }
+        }
+      }
     }
   }
 
@@ -95,8 +103,10 @@ export default class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData>
     const spark_z = Math.max(r0.far, r1.far);
     if (itr.injury) this.hp -= itr.injury;
 
+    const is_broken = this.hp <= 0
+
     const { base } = this.data
-    const sound_name = this.hp <= 0 ? base.weapon_broken_sound : base.weapon_hit_sound
+    const sound_name = is_broken ? base.weapon_broken_sound : base.weapon_hit_sound
     if (sound_name) this.world.lf2.sounds.play(sound_name, spark_x, spark_y, spark_z)
 
     const spark_frame_name = (itr.fall && itr.fall >= 60) ? 'slient_critical_hit' : 'slient_hit';
