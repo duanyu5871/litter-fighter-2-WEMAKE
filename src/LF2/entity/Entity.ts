@@ -822,23 +822,19 @@ export default class Entity<
     }
     if (Array.isArray(which)) {
       const l = which.length;
-      const remains: INextFrame[] = [];
+      const matchs: [F, INextFrame | undefined][] = [];
       for (let i = 0; i < l; ++i) {
-        const w = which[i];
-        const { expression: condition } = w;
-        if (typeof condition !== 'function') {
-          remains.push(w);
-          continue;
-        }
-        if (condition(this)) {
-          return this.get_next_frame(w);
-        }
+        const [a, b] = this.get_next_frame(which[i]);
+        if (a) matchs.push([a, b] as const)
       }
-      if (!remains.length) return [void 0, void 0];
-      which = random_get(remains)!;
-      return this.get_next_frame(which);
+      if (!matchs.length) return [void 0, void 0];
+      return random_get(matchs)!;
     }
-    let { id } = which;
+
+    let { id, expression: condition } = which;
+    if (typeof condition === 'function' && !condition(this)) {
+      return [void 0, void 0]
+    }
     if (Array.isArray(id)) id = random_get(id);
     const frame = this.find_frame_by_id(id);
     return [frame, which];

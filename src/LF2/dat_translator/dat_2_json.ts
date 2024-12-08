@@ -12,6 +12,7 @@ import { Defines } from '../defines/defines';
 import { set_obj_field } from "../utils/container_help/set_obj_field";
 import { match_block_once } from '../utils/string_parser/match_block';
 import { match_colon_value } from '../utils/string_parser/match_colon_value';
+import { CondMaker } from './CondMaker';
 import { make_ball_data } from './make_ball_data';
 import { make_bg_data } from './make_bg_data';
 import { make_character_data } from './make_character_data';
@@ -106,6 +107,7 @@ export default function dat_to_json(
         base.bounce = 0.2;
         base.name = datIndex.hash ?? datIndex.file.replace(/[^a-z|A-Z|0-9|_]/g, '')
         ret = make_weapon_data(base, full_str, make_frames(full_str, base.files));
+        make_weapon_brokens(ret as any)
         break;
       case '2':
         base.type = Defines.WeaponType.Heavy;
@@ -115,18 +117,21 @@ export default function dat_to_json(
         }
         base.name = datIndex.hash ?? datIndex.file.replace(/[^a-z|A-Z|0-9|_]/g, '')
         ret = make_weapon_data(base, full_str, make_frames(full_str, base.files));
+        make_weapon_brokens(ret as any)
         break;
       case '4':
         base.type = Defines.WeaponType.Baseball;
         base.bounce = 0.45;
         base.name = datIndex.hash ?? datIndex.file.replace(/[^a-z|A-Z|0-9|_]/g, '')
         ret = make_weapon_data(base, full_str, make_frames(full_str, base.files));
+        make_weapon_brokens(ret as any)
         break;
       case '6': {
         base.type = Defines.WeaponType.Drink;
         base.bounce = 0.4;
         base.name = datIndex.hash ?? datIndex.file.replace(/[^a-z|A-Z|0-9|_]/g, '')
         ret = make_weapon_data(base, full_str, make_frames(full_str, base.files));
+        make_weapon_brokens(ret as any)
         break;
       }
       case '0': {
@@ -164,8 +169,14 @@ export default function dat_to_json(
         } else if (datIndex.id === '30' || datIndex.id === '31') {
           info.group = ['3000']
         }
-        ret = make_character_data(info, make_frames(full_str, info.files));
-
+        const cdata = ret = make_character_data(info, make_frames(full_str, info.files));
+        if (datIndex.id === '6') { // louis
+          for (const k in cdata.frames) {
+            const ja = cdata.frames[k].hit?.sequences?.['ja'];
+            if (!ja || !('id' in ja) || ja.id !== '300') continue;
+            ja.expression = new CondMaker().add(Defines.ValWord.HP_P, '<=', 33).done()
+          }
+        }
         break;
       }
       case '3': ret = make_ball_data(base as IBallInfo, make_frames<IBallFrameInfo>(full_str, base.files), datIndex); break;
@@ -176,7 +187,6 @@ export default function dat_to_json(
         break;
     }
     if (ret) ret.id = datIndex.id;
-    make_weapon_brokens(ret as any)
     return ret;
   } else {
     if ('small' in base && 'name' in base && 'head' in base) {

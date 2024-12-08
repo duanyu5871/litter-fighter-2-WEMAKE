@@ -75,6 +75,11 @@ export namespace Defines {
 
     /** 角色手持的武器类型 */
     WeaponType = 'weapon_type',
+
+    /** 
+     * 剩余血量占比(0~100)
+     */
+    HP_P = 'hp_p',
   }
   export enum FrameId {
     None = "",
