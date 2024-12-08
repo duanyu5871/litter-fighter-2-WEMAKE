@@ -29,6 +29,12 @@ function get_val_from_entity(word: string, e: Entity): any {
       return e.controller ? e.controller.UD : 0;
     case Defines.ValWord.HP_P:
       return clamp(Math.round(100 * e.hp / e.max_hp), 0, 100);
+    case Defines.ValWord.LF2_NET_ON:
+      return e.lf2.is_cheat_enabled(Defines.Cheats.LF2_NET) ? 1 : 0;
+    case Defines.ValWord.HERO_FT_ON:
+      return e.lf2.is_cheat_enabled(Defines.Cheats.HERO_FT) ? 1 : 0;
+    case Defines.ValWord.GIM_INK_ON:
+      return e.lf2.is_cheat_enabled(Defines.Cheats.GIM_INK) ? 1 : 0;
     case Defines.ValWord.WeaponType:
       return is_entity(e) && is_weapon(e.holding) ? e.holding?.data.base.type || 0 : 0;
   }

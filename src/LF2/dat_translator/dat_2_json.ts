@@ -174,7 +174,9 @@ export default function dat_to_json(
           for (const k in cdata.frames) {
             const ja = cdata.frames[k].hit?.sequences?.['ja'];
             if (!ja || !('id' in ja) || ja.id !== '300') continue;
-            ja.expression = new CondMaker().add(Defines.ValWord.HP_P, '<=', 33).done()
+            ja.expression = new CondMaker().add(Defines.ValWord.HP_P, '<=', 33)
+              .or(Defines.ValWord.LF2_NET_ON, '==', 1)
+              .done()
           }
         }
         break;

@@ -80,6 +80,10 @@ export namespace Defines {
      * 剩余血量占比(0~100)
      */
     HP_P = 'hp_p',
+
+    LF2_NET_ON = 'lf2_net_on',
+    HERO_FT_ON = "hero_ft_on",
+    GIM_INK_ON = "gim_ink_on"
   }
   export enum FrameId {
     None = "",
@@ -194,6 +198,13 @@ export namespace Defines {
 
     TransformToCatching_End = 501,
     _501 = 501, 
+
+    /**
+     * LF2的Louis爆甲
+     * 但现在Wemake中，爆甲是通过opoint实现的。
+     */
+    LouisCastOff = 9996,
+    _9996 = 9996,
   }
   export enum EntityEnum {
     Character = 'character',

@@ -146,8 +146,37 @@ export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string, fil
       case Defines.State.Weapon_Brokens:
         frame.no_shadow = 1;
         break;
+      case Defines.State.LouisCastOff:
+        frame.opoint = frame.opoint || [];
+        frame.opoint.push({
+          x: 39,
+          y: 79,
+          oid: 218,
+          dvy: 5,
+          action: { id: 'auto' }
+        }, {
+          x: 39,
+          y: 79,
+          oid: 217,
+          dvy: 4,
+          dvx: 8,
+          action: { id: 'auto', facing: Defines.FacingFlag.Backward },
+          multi: 2
+        }, {
+          x: 39,
+          y: 79,
+          oid: 217,
+          dvy: 4,
+          dvx: 8,
+          action: { id: 'auto' },
+          multi: 2
+        })
+        break;
     }
   }
+
+
+
   return frames;
 }
 
