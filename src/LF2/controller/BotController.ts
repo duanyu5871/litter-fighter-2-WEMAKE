@@ -119,6 +119,26 @@ export class BotController extends BaseController {
       this.end(GameKey.D, GameKey.U)
     }
     if (is_x_reach && is_z_reach) {
+
+      if (z < target_z) {
+        if (this.is_end(GameKey.D)) {
+          this.start(GameKey.D).end(GameKey.U)
+        }
+      } else if (z > target_z) {
+        if (this.is_end(GameKey.U)) {
+          this.start(GameKey.U).end(GameKey.D)
+        }
+      }
+      if (target_x - x > 0) {
+        if (this.is_end(GameKey.R)) {
+          this.start(GameKey.R).end(GameKey.L)
+        }
+      } else if (x - target_x > 0) {
+        if (this.is_end(GameKey.L)) {
+          this.start(GameKey.L).end(GameKey.R)
+        }
+      }
+      
       // 上来就一拳。
       this.is_hit(GameKey.a) ?
         this.end(GameKey.a) :
