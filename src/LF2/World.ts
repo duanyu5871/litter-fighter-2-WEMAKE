@@ -6,6 +6,7 @@ import LF2 from './LF2';
 import Callbacks from './base/Callbacks';
 import FPS from './base/FPS';
 import { NoEmitCallbacks } from "./base/NoEmitCallbacks";
+import { BaseController } from './controller/BaseController';
 import LocalController from './controller/LocalController';
 import { IBdyInfo, IFrameInfo, IItrInfo } from './defines';
 import { Defines } from './defines/defines';
@@ -122,7 +123,7 @@ export class World {
 
   add_entities(...entities: Entity[]) {
     for (const entity of entities) {
-      if (is_character(entity) && LocalController.is(entity.controller)) {
+      if (is_character(entity) && BaseController.is(entity.controller) && this.lf2.player_infos.has(entity.controller.player_id)) {
         this.player_slot_characters.set(entity.controller.player_id, entity);
         this._callbacks.emit('on_player_character_add')(entity.controller.player_id)
       }

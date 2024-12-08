@@ -17,7 +17,7 @@ export class BotController extends BaseController {
   }
   should_avoid(e?: Character | null) {
     if (!e) return true;
-    return (
+    return e.hp > 0 && (
       e.frame.state === Defines.State.Lying ||
       e.invisible ||
       e.blinking
@@ -138,7 +138,7 @@ export class BotController extends BaseController {
           this.start(GameKey.L).end(GameKey.R)
         }
       }
-      
+
       // 上来就一拳。
       this.is_hit(GameKey.a) ?
         this.end(GameKey.a) :
