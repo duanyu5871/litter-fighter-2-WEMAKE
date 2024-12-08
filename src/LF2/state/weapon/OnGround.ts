@@ -1,10 +1,11 @@
+import { new_team } from "../../base";
 import type { IFrameInfo } from "../../defines";
 import type Weapon from "../../entity/Weapon";
 import BaseWeaponState from "./Base";
 
 export default class OnGround extends BaseWeaponState {
   enter(e: Weapon, prev_frame: IFrameInfo): void {
-    e.team = '';
+    e.team = new_team();
   }
   update(e: Weapon): void {
     e.on_gravity();

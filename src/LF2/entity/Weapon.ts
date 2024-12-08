@@ -84,9 +84,11 @@ export default class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData>
     if (this.frame.state === Defines.State.Weapon_OnHand) {
       return;
     }
-    // TODO: 这里是击中的反弹，如何更合适？ -Gim
-    this.velocity.x = -0.3 * this.velocity.x;
-    this.velocity.y = -0.3 * this.velocity.y;
+    if (this.data.base.type !== Defines.WeaponType.Heavy) {
+      // TODO: 这里是击中的反弹，如何更合适？ -Gim
+      this.velocity.x = -0.3 * this.velocity.x;
+      this.velocity.y = -0.3 * this.velocity.y;
+    }
     this.enter_frame(this.find_auto_frame())
   }
 
