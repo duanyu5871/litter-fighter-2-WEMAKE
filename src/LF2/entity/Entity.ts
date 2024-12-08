@@ -69,6 +69,7 @@ export default class Entity<
   readonly data: D;
   readonly world: World;
   readonly position = new Ditto.Vector3(0, 0, 0);
+  throwinjury?: number;
 
   get catcher() { return this._catcher; }
   get lf2(): LF2 { return this.world.lf2 }
@@ -512,6 +513,10 @@ export default class Entity<
       const { x, y, z } = this.velocity;
       this.velocity.y = 0;
       this.state?.on_landing(this, x, y, z);
+      if (this.throwinjury !== void 0) {
+        this.hp -= this.throwinjury;
+        delete this.throwinjury;
+      }
     }
     if (this.update_id === Number.MAX_SAFE_INTEGER)
       this.update_id = Number.MIN_SAFE_INTEGER
@@ -556,7 +561,7 @@ export default class Entity<
       delete this._catcher;
       return this.get_caught_end_frame();
     }
-    const { cpoint: cpoint_a } = this._catcher.get_frame();
+    const { cpoint: cpoint_a } = this._catcher.frame;
     const { cpoint: cpoint_b } = this.frame;
     if (!cpoint_a || !cpoint_b) {
       delete this._catcher;
@@ -565,16 +570,62 @@ export default class Entity<
     if (cpoint_a.injury) this.hp += cpoint_a.injury;
     if (cpoint_a.shaking) this._shaking = V_SHAKE;
 
-    const { throwvx, throwvy, throwvz } = cpoint_a;
+    const { throwvx, throwvy, throwvz, throwinjury } = cpoint_a;
     if (throwvx) this.velocity.x = throwvx * this.facing;
     if (throwvy) this.velocity.y = throwvy;
     if (throwvz) this.velocity.z = throwvz;
+    if (throwinjury) this.throwinjury = throwinjury;
     // this.velocity.z = throwvz * this._catcher.controller.UD1;
 
     if (throwvx || throwvy || throwvz) {
       delete this._catcher;
     }
     if (cpoint_a.vaction) return cpoint_a.vaction;
+  }
+
+  update_catching(): TNextFrame | undefined {
+    if (!this._catching) return;
+
+    if (!this._catching_value) {
+      delete this._catching;
+      return this.get_catching_end_frame();
+    }
+
+    const { cpoint: cpoint_a } = this.frame;
+    const { cpoint: cpoint_b } = this._catching.frame;
+    if (!cpoint_a || !cpoint_b) {
+      delete this._catching;
+      return this.get_catching_cancel_frame();
+    }
+
+    const { throwvx, throwvy, throwvz, x: catch_x, y: catch_y, cover, throwinjury } = cpoint_a;
+    if (throwvx || throwvy || throwvz) {
+      delete this._catching;
+      return void 0;
+    }
+    if (throwinjury !== void 0) {
+      if (throwinjury > 0) {
+        // TODO：丢出后，被丢的人落地后的受到的伤害
+        return;
+      } else if (throwinjury === -1) {
+        // TODO：变成抓住的人
+        return;
+      } else {
+        return GONE_FRAME_INFO
+      }
+    }
+
+    const { centerx: centerx_a, centery: centery_a } = this.frame;
+    const { centerx: centerx_b, centery: centery_b } = this._catching.frame;
+    const { x: caught_x, y: caught_y } = cpoint_b;
+    const face_a = this.facing;
+    const face_b = this._catching.facing;
+    const { x: px, y: py, z: pz } = this.position;
+    this._catching.position.x = px - face_a * (centerx_a - catch_x) + face_b * (centerx_b - caught_x);
+    this._catching.position.y = py + centery_a - catch_y + caught_y - centery_b;
+    this._catching.position.z = pz;
+    if (cover === 11) this._catching.position.z += 1;
+    else if (cover === 10) this._catching.position.z -= 1;
   }
 
   /**
@@ -601,40 +652,6 @@ export default class Entity<
    */
   get_catching_cancel_frame(): TNextFrame {
     return { id: Defines.FrameId.Auto }
-  }
-
-  update_catching(): TNextFrame | undefined {
-    if (!this._catching) return;
-
-    if (!this._catching_value) {
-      delete this._catching;
-      return this.get_catching_end_frame();
-    }
-
-    const { cpoint: cpoint_a } = this.frame;
-    const { cpoint: cpoint_b } = this._catching.get_frame();
-    if (!cpoint_a || !cpoint_b) {
-      delete this._catching;
-      return this.get_catching_cancel_frame();
-    }
-
-    const { centerx: centerx_a, centery: centery_a } = this.frame;
-    const { centerx: centerx_b, centery: centery_b } = this._catching.get_frame();
-    const { throwvx, throwvy, throwvz, x: catch_x, y: catch_y, cover } = cpoint_a;
-    if (throwvx || throwvy || throwvz) {
-      delete this._catching;
-      return void 0;
-    }
-
-    const { x: caught_x, y: caught_y } = cpoint_b;
-    const face_a = this.facing;
-    const face_b = this._catching.facing;
-    const { x: px, y: py, z: pz } = this.position;
-    this._catching.position.x = px - face_a * (centerx_a - catch_x) + face_b * (centerx_b - caught_x);
-    this._catching.position.y = py + centery_a - catch_y + caught_y - centery_b;
-    this._catching.position.z = pz;
-    if (cover === 11) this._catching.position.z += 1;
-    else if (cover === 10) this._catching.position.z -= 1;
   }
 
   on_after_update(): void {

@@ -1,7 +1,6 @@
 import { IBdyInfo, ICpointInfo, IEntityPictureInfo, IFramePictureInfo, IGameObjInfo, IItrInfo, IOpointInfo, IWpointInfo } from '../defines';
 import { IFrameInfo } from "../defines/IFrameInfo";
 import { IRect } from '../defines/IRect';
-import { IRectPair } from '../defines/IRectPair';
 import { Defines } from '../defines/defines';
 import { match_all } from '../utils/string_parser/match_all';
 import { match_colon_value } from '../utils/string_parser/match_colon_value';
@@ -88,48 +87,7 @@ export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string, fil
       cpoint: cpoint_list[0],
       ...fields,
     };
-
-    if (frame_pic_info) {
-      const ii: IRect = {
-        x: -frame.centerx,
-        y: frame.centery - frame_pic_info.h,
-        w: frame_pic_info.w,
-        h: frame_pic_info.h
-      }
-      const ii_1: IRect = {
-        ...ii,
-        x: frame.centerx - ii.w
-      }
-      frame.indicator_info = { 1: ii, [-1]: ii_1 }
-      bdy_list.forEach(bdy => {
-        const i_1: IRect = {
-          w: bdy.w,
-          h: bdy.h,
-          x: ii.x + bdy.x,
-          y: ii.y + ii.h - bdy.y - bdy.h,
-        };
-        const i_2 = {
-          ...i_1,
-          x: ii_1.x + ii.w - bdy.w - bdy.x,
-        };
-        bdy.indicator_info = { 1: i_1, [-1]: i_2 };
-      })
-      itr_list.forEach(itr => {
-        const i_1: IRect = {
-          w: itr.w,
-          h: itr.h,
-          x: ii.x + itr.x,
-          y: ii.y + ii.h - itr.y - itr.h,
-        };
-        const i_2 = {
-          ...i_1,
-          x: ii_1.x + ii.w - itr.w - itr.x,
-        };
-        itr.indicator_info = { 1: i_1, [-1]: i_2 };
-      })
-    }
-
-
+    cook_frame_indicator_info(frame)
     if (
       (raw_next >= 1100 && raw_next <= 1299) ||
       (raw_next <= -1100 && raw_next >= -1299)
@@ -195,3 +153,47 @@ export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string, fil
 
 
 
+function cook_frame_indicator_info(frame: IFrameInfo) {
+  const { pic, bdy, itr } = frame;
+  if (!pic || !('w' in pic)) return;
+  const f_rect_1: IRect = {
+    x: -frame.centerx,
+    y: frame.centery - pic.h,
+    w: pic.w,
+    h: pic.h
+  };
+  const f_rect_2: IRect = {
+    ...f_rect_1,
+    x: frame.centerx - f_rect_1.w
+  };
+  frame.indicator_info = {
+    1: f_rect_1,
+    [-1]: f_rect_2
+  };
+  bdy?.forEach(o => {
+    const rect_1: IRect = {
+      w: o.w,
+      h: o.h,
+      x: f_rect_1.x + o.x,
+      y: f_rect_1.y + f_rect_1.h - o.y - o.h,
+    };
+    const rect_2: IRect = {
+      ...rect_1,
+      x: f_rect_2.x + f_rect_1.w - o.w - o.x,
+    };
+    o.indicator_info = { 1: rect_1, [-1]: rect_2 };
+  });
+  itr?.forEach(o => {
+    const rect_1: IRect = {
+      w: o.w,
+      h: o.h,
+      x: f_rect_1.x + o.x,
+      y: f_rect_1.y + f_rect_1.h - o.y - o.h,
+    };
+    const rect_2: IRect = {
+      ...rect_1,
+      x: f_rect_2.x + f_rect_1.w - o.w - o.x,
+    };
+    o.indicator_info = { 1: rect_1, [-1]: rect_2 };
+  });
+}

@@ -180,6 +180,15 @@ export namespace Defines {
     TurnIntoLouisEX = 9995,
     Gone = 9998,
     _9999 = 9999, Weapon_Brokens = 9999,
+    
+    /**
+     * 被成抓人
+     */
+    TransformToCatching_Begin = 500,
+    _500 = 500, 
+
+    TransformToCatching_End = 501,
+    _501 = 501, 
   }
   export enum EntityEnum {
     Character = 'character',
