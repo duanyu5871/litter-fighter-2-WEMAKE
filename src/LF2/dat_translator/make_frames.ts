@@ -162,13 +162,13 @@ export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string, fil
         frame.opoint.push({
           x: 39,
           y: 79,
-          oid: 218,
+          oid: '218',
           dvy: 5,
           action: { id: 'auto' }
         }, {
           x: 39,
           y: 79,
-          oid: 217,
+          oid: '217',
           dvy: 4,
           dvx: 8,
           action: { id: 'auto', facing: Defines.FacingFlag.Backward },
@@ -176,7 +176,7 @@ export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string, fil
         }, {
           x: 39,
           y: 79,
-          oid: 217,
+          oid: '217',
           dvy: 4,
           dvx: 8,
           action: { id: 'auto' },

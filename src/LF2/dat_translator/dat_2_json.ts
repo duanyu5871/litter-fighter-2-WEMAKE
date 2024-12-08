@@ -12,7 +12,7 @@ import { Defines } from '../defines/defines';
 import { set_obj_field } from "../utils/container_help/set_obj_field";
 import { match_block_once } from '../utils/string_parser/match_block';
 import { match_colon_value } from '../utils/string_parser/match_colon_value';
-import { CondMaker } from './CondMaker';
+import { cook_louis_data, cook_rudolf_data } from './cook_louis_data';
 import { make_ball_data } from './make_ball_data';
 import { make_bg_data } from './make_bg_data';
 import { make_character_data } from './make_character_data';
@@ -170,15 +170,8 @@ export default function dat_to_json(
           info.group = ['3000']
         }
         const cdata = ret = make_character_data(info, make_frames(full_str, info.files));
-        if (datIndex.id === '6') { // louis
-          for (const k in cdata.frames) {
-            const ja = cdata.frames[k].hit?.sequences?.['ja'];
-            if (!ja || !('id' in ja) || ja.id !== '300') continue;
-            ja.expression = new CondMaker().add(Defines.ValWord.HP_P, '<=', 33)
-              .or(Defines.ValWord.LF2_NET_ON, '==', 1)
-              .done()
-          }
-        }
+        if (datIndex.id === '6') cook_louis_data(cdata);
+        if (datIndex.id === '5') cook_rudolf_data(cdata);
         break;
       }
       case '3': ret = make_ball_data(base as IBallInfo, make_frames<IBallFrameInfo>(full_str, base.files), datIndex); break;

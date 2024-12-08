@@ -349,7 +349,10 @@ export default class Entity<
     if (o.dvx) this.velocity.x = (o.dvx - Math.abs(speed_z / 2)) * this.facing;
     if (o.dvy) this.velocity.y = o.dvy;
     if (o.dvz) this.velocity.z += o.dvz;
-
+    if (o.max_hp) this.max_hp = o.max_hp;
+    if (o.max_mp) this.max_mp = o.max_mp;
+    if (o.hp) this.hp = o.hp;
+    if (o.mp) this.mp = o.mp;
     return this;
   }
 

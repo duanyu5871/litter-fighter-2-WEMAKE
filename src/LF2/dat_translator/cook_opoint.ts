@@ -6,9 +6,10 @@ import { take } from './take';
 
 export default function cook_opoint(opoint: IOpointInfo) {
   const action = take(opoint, 'action');
+  opoint.oid = '' + take(opoint, 'oid');
+
   if (is_num(action)) {
     const act = get_next_frame_by_raw_id(action)
-
     const facing = take(opoint, 'facing');
     if (is_num(facing)) {
       act.facing = facing % 2 ?
@@ -31,5 +32,6 @@ export default function cook_opoint(opoint: IOpointInfo) {
 
   const dvy = take(opoint, 'dvy');
   if (not_zero_num(dvy)) opoint.dvy = dvy * -0.5;
+
 }
 

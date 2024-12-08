@@ -37,13 +37,13 @@ export class BotController extends BaseController {
       if (this.should_avoid(e)) {
         if (!this._avoiding_enemy) {
           this._avoiding_enemy = e;
-        } else if (this.manhattan_to(e) > this.manhattan_to(this._avoiding_enemy)) {
+        } else if (this.manhattan_to(e) < this.manhattan_to(this._avoiding_enemy)) {
           this._avoiding_enemy = e;
         }
       } else {
         if (!this._chasing_enemy) {
           this._chasing_enemy = e;
-        } else if (this.manhattan_to(e) > this.manhattan_to(this._chasing_enemy)) {
+        } else if (this.manhattan_to(e) < this.manhattan_to(this._chasing_enemy)) {
           this._chasing_enemy = e;
         }
       }
