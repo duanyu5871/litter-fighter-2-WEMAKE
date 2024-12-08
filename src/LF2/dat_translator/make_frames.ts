@@ -1,4 +1,4 @@
-import { IBdyInfo, ICpointInfo, IEntityPictureInfo, IFramePictureInfo, IGameObjInfo, IItrInfo, IOpointInfo, IWpointInfo } from '../defines';
+import { IBdyInfo, ICpointInfo, IEntityPictureInfo, IFramePictureInfo, IGameObjInfo, IItrInfo, INextFrame, IOpointInfo, IWpointInfo, TNextFrame } from '../defines';
 import { IFrameInfo } from "../defines/IFrameInfo";
 import { IRect } from '../defines/IRect';
 import { Defines } from '../defines/defines';
@@ -7,6 +7,7 @@ import { match_colon_value } from '../utils/string_parser/match_colon_value';
 import take_sections from '../utils/string_parser/take_sections';
 import { to_num } from '../utils/type_cast/to_num';
 import { not_zero_num } from '../utils/type_check';
+import { CondMaker } from './CondMaker';
 import cook_bdy from './cook_bdy';
 import { cook_cpoint } from './cook_cpoint';
 import cook_itr from './cook_itr';
@@ -174,13 +175,8 @@ export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string, fil
         break;
     }
   }
-
-
-
   return frames;
 }
-
-
 
 function cook_frame_indicator_info(frame: IFrameInfo) {
   const { pic, bdy, itr } = frame;

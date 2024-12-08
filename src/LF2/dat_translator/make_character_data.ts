@@ -1,6 +1,3 @@
-import { arithmetic_progression } from '../utils/math/arithmetic_progression';
-import { take_number } from '../utils/container_help/take_number';
-import { is_num, is_str } from '../utils/type_check';
 import { ICharacterData, ICharacterFrameInfo, TNextFrame } from '../defines';
 import { ICharacterFrameIndexes } from "../defines/ICharacterFrameIndexes";
 import { ICharacterInfo } from "../defines/ICharacterInfo";
@@ -8,7 +5,10 @@ import { IFrameInfo } from "../defines/IFrameInfo";
 import { INextFrame } from "../defines/INextFrame";
 import { Defines } from '../defines/defines';
 import { set_obj_field } from '../utils/container_help/set_obj_field';
+import { take_number } from '../utils/container_help/take_number';
 import { traversal } from '../utils/container_help/traversal';
+import { arithmetic_progression } from '../utils/math/arithmetic_progression';
+import { is_num, is_str } from '../utils/type_check';
 import { CondMaker } from './CondMaker';
 import { get_next_frame_by_raw_id } from './get_the_next';
 import { take } from './take';
@@ -449,5 +449,40 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
     is_game_obj_data: true,
     is_base_data: true
   };
+  cook_transform_begin_expression_to_hit(ret.frames)
   return ret;
+}
+
+function cook_transform_begin_expression_to_hit<F extends IFrameInfo = IFrameInfo>(frames: Record<string, F>) {
+  const transform_begin_frame_id_list: string[] = []
+  for (const k in frames) {
+    const { state, id } = frames[k];
+    if (state === Defines.State.TransformToCatching_Begin) {
+      transform_begin_frame_id_list.push(id)
+    }
+  }
+  if (transform_begin_frame_id_list.length) {
+    const cook_hit_next_frame_to_transform = (n: TNextFrame | undefined) => {
+      if (
+        !n ||
+        Array.isArray(n) ||
+        !n.id ||
+        Array.isArray(n.id) ||
+        transform_begin_frame_id_list.indexOf(n.id) < 0
+      ) return;
+      n.expression = new CondMaker()
+        .add(Defines.ValWord.HAS_TRANSFROM_DATA, '==', 1)
+        .done();
+    }
+    for (const k in frames) {
+      const { hit } = frames[k];
+      if (!hit) continue;
+      cook_hit_next_frame_to_transform(hit.a)
+      cook_hit_next_frame_to_transform(hit.j)
+      cook_hit_next_frame_to_transform(hit.d)
+      if (hit.sequences)
+        for (const k2 in hit.sequences)
+          cook_hit_next_frame_to_transform(hit.sequences[k2])
+    }
+  }
 }

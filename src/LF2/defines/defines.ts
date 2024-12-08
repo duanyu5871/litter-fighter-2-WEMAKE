@@ -83,7 +83,8 @@ export namespace Defines {
 
     LF2_NET_ON = 'lf2_net_on',
     HERO_FT_ON = "hero_ft_on",
-    GIM_INK_ON = "gim_ink_on"
+    GIM_INK_ON = "gim_ink_on",
+    HAS_TRANSFROM_DATA = "has_transform_data"
   }
   export enum FrameId {
     None = "",
@@ -189,15 +190,22 @@ export namespace Defines {
     TurnIntoLouisEX = 9995,
     Gone = 9998,
     _9999 = 9999, Weapon_Brokens = 9999,
-    
+
     /**
-     * 被成抓人
+     * 被存在变过的人时，此才允许进入state为500的frame。
+     * rudolf抓人变身后，才能dja，你懂的。
+     * 
+     * 但现在Wemake中，改为has_transform_data判断。
      */
     TransformToCatching_Begin = 500,
-    _500 = 500, 
+    _500 = 500,
 
+
+    /** 
+     * 变成最后一次曾经变过的人（rudolf的变身效果）
+     */
     TransformToCatching_End = 501,
-    _501 = 501, 
+    _501 = 501,
 
     /**
      * LF2的Louis爆甲

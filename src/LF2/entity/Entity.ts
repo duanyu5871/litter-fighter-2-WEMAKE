@@ -68,6 +68,7 @@ export default class Entity<
   update_id: number = Number.MIN_SAFE_INTEGER;
   readonly is_frame_animater = true
   public data: D;
+  public transform_data?: D;
   readonly world: World;
   readonly position = new Ditto.Vector3(0, 0, 0);
   throwinjury?: number;
@@ -607,6 +608,7 @@ export default class Entity<
       } else if (throwinjury === -1) {
         // TODO：变成抓住的人
         if (is_character(this) && is_character(this._catching)) {
+          this.transform_data = this.data;
           (this as Character).data = this._catching.data;
           return this.find_auto_frame();
         }
@@ -661,12 +663,32 @@ export default class Entity<
 
   on_after_update(): void {
     if (this.controller) {
-      const next_frame_idx = this.controller.update();
-      if (next_frame_idx) {
-        const [a] = this.get_next_frame(next_frame_idx);
-        if (a) this._next_frame = next_frame_idx;
+      const { next_frame, key_list } = this.controller.update();
+      if (
+        key_list &&
+        key_list.indexOf('ja') >= 0 &&
+        this.transform_data &&
+        (
+          this.state?.state === Defines.State.Walking ||
+          this.state?.state === Defines.State.Standing
+        )
+      ) {
+        this.transfrom_to_another();
+        this.controller.reset_key_list();
+      } else if (next_frame) {
+        const [a] = this.get_next_frame(next_frame);
+        if (a) this._next_frame = next_frame;
       }
     }
+  }
+
+  transfrom_to_another() {
+    // FIXME: rudolf变化逻辑
+    const temp = this.transform_data
+    if (!temp) return;
+    this.transform_data = this.data;
+    this.data = temp;
+    this._next_frame = this.find_auto_frame();
   }
 
   on_collision(target: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {

@@ -22,6 +22,24 @@ export const CONFLICTS_KEY_MAP: Record<GameKey, GameKey | undefined> = {
   [GameKey.D]: GameKey.U,
 }
 
+
+class ControllerUpdateResult {
+  next_frame?: TNextFrame;
+  time: number = 0;
+  game_key?: GameKey;
+  key_list?: string;
+  set(
+    next_frame: TNextFrame | undefined,
+    time: number,
+    game_key?: GameKey,
+    key_list?: string,
+  ) {
+    this.next_frame = next_frame
+    this.time = time
+    this.game_key = game_key
+    this.key_list = key_list
+  }
+}
 export class BaseController {
   readonly is_base_controller = true;
   static is = (v: any): v is BaseController => v?.is_base_controller === true
@@ -57,7 +75,9 @@ export class BaseController {
   }
 
   private _key_list: string | undefined = void 0;
-
+  reset_key_list() {
+    this._key_list = void 0;
+  }
   /**
    * 指定按键进入start状态（按下）
    * @param keys 指定按键
@@ -164,16 +184,17 @@ export class BaseController {
     return this[`is_${type}`](key);
   }
 
-  update(): TNextFrame | undefined {
+
+  nf = new ControllerUpdateResult()
+  update(): ControllerUpdateResult {
     ++this._time;
     const entity = this.entity;
     const frame = entity.get_frame();
     const { hold: hld, hit, state } = frame;
-    let nf: [TNextFrame | undefined, number, GameKey | undefined] = [void 0, 0, void 0];
 
     // 按键序列初始化
     if (this.is_start('d')) this._key_list = '';
-
+    this.nf.set(void 0, 0)
     const hit_L = this.is_hit('L');
     const hit_R = this.is_hit('R');
     const hold_L = this.is_hold('L');
@@ -184,21 +205,21 @@ export class BaseController {
     const { facing } = entity;
     /** 相对方向的按钮判定 */
     if (facing === 1) {
-      if (hit?.F && hit_R && end_L && nf[1] < this.key_time_maps.R) nf = [hit.F, this.key_time_maps.R, GameKey.R];
-      if (hit?.B && hit_L && end_R && nf[1] < this.key_time_maps.L) nf = [hit.B, this.key_time_maps.L, GameKey.L];
-      if (hld?.F && hold_R && end_L && nf[1] < this.key_time_maps.R) nf = [hld.F, this.key_time_maps.R, GameKey.R];
-      if (hld?.B && hold_L && end_R && nf[1] < this.key_time_maps.L) nf = [hld.B, this.key_time_maps.L, GameKey.L];
+      if (hit?.F && hit_R && end_L && this.nf.time < this.key_time_maps.R) this.nf.set(hit.F, this.key_time_maps.R, GameKey.R);
+      if (hit?.B && hit_L && end_R && this.nf.time < this.key_time_maps.L) this.nf.set(hit.B, this.key_time_maps.L, GameKey.L);
+      if (hld?.F && hold_R && end_L && this.nf.time < this.key_time_maps.R) this.nf.set(hld.F, this.key_time_maps.R, GameKey.R);
+      if (hld?.B && hold_L && end_R && this.nf.time < this.key_time_maps.L) this.nf.set(hld.B, this.key_time_maps.L, GameKey.L);
     } else {
-      if (hit?.F && hit_L && end_R && nf[1] < this.key_time_maps.L) nf = [hit.F, this.key_time_maps.L, GameKey.L];
-      if (hit?.B && hit_R && end_L && nf[1] < this.key_time_maps.R) nf = [hit.B, this.key_time_maps.R, GameKey.R];
-      if (hld?.F && hold_L && end_R && nf[1] < this.key_time_maps.L) nf = [hld.F, this.key_time_maps.L, GameKey.L];
-      if (hld?.B && hold_R && end_L && nf[1] < this.key_time_maps.R) nf = [hld.B, this.key_time_maps.R, GameKey.R];
+      if (hit?.F && hit_L && end_R && this.nf.time < this.key_time_maps.L) this.nf.set(hit.F, this.key_time_maps.L, GameKey.L);
+      if (hit?.B && hit_R && end_L && this.nf.time < this.key_time_maps.R) this.nf.set(hit.B, this.key_time_maps.R, GameKey.R);
+      if (hld?.F && hold_L && end_R && this.nf.time < this.key_time_maps.L) this.nf.set(hld.F, this.key_time_maps.L, GameKey.L);
+      if (hld?.B && hold_R && end_L && this.nf.time < this.key_time_maps.R) this.nf.set(hld.B, this.key_time_maps.R, GameKey.R);
     }
     /** 相对方向的双击判定 */
-    if (hit?.FF && facing < 0 && this.is_db_hit(GameKey.L)) nf = [hit.FF, this.dbc_map.L.time, void 0];
-    if (hit?.BB && facing > 0 && this.is_db_hit(GameKey.L)) nf = [hit.BB, this.dbc_map.L.time, void 0];
-    if (hit?.BB && facing < 0 && this.is_db_hit(GameKey.R)) nf = [hit.BB, this.dbc_map.R.time, void 0];
-    if (hit?.FF && facing > 0 && this.is_db_hit(GameKey.R)) nf = [hit.FF, this.dbc_map.R.time, void 0];
+    if (hit?.FF && facing < 0 && this.is_db_hit(GameKey.L)) this.nf.set(hit.FF, this.dbc_map.L.time);
+    if (hit?.BB && facing > 0 && this.is_db_hit(GameKey.L)) this.nf.set(hit.BB, this.dbc_map.L.time);
+    if (hit?.BB && facing < 0 && this.is_db_hit(GameKey.R)) this.nf.set(hit.BB, this.dbc_map.R.time);
+    if (hit?.FF && facing > 0 && this.is_db_hit(GameKey.R)) this.nf.set(hit.FF, this.dbc_map.R.time);
 
     for (const key of KEY_NAME_LIST) {
       /** 加入按键序列，但d除外，因为d是按键序列的开始 */
@@ -208,21 +229,21 @@ export class BaseController {
       /** 按键判定 */
       let act = hit?.[key];
       let press_time = this.key_time_maps[key];
-      if (act && this._key_test('hit', key) && nf[1] < press_time) {
-        nf = [act, press_time, key];
+      if (act && this._key_test('hit', key) && this.nf.time < press_time) {
+        this.nf.set(act, press_time, key);
       }
 
       /** 长按判定 */
       act = hld?.[key]
-      if (act && this._key_test('hold', key) && nf[1] < press_time) {
-        nf = [act, press_time, key];
+      if (act && this._key_test('hold', key) && this.nf.time < press_time) {
+        this.nf.set(act, press_time, key);
       }
 
       /** 双击判定 */
       const key_key = `${key}${key}` as keyof IHitKeyCollection;
       act = hit?.[key_key]
       if (act && this.is_db_hit(key)) {
-        nf = [act, this.dbc_map[key].time, void 0];
+        this.nf.set(act, this.dbc_map[key].time);
       }
     }
 
@@ -233,7 +254,7 @@ export class BaseController {
         if (this.is_hit('a') && is_character(entity)) {
           const super_punch = entity.find_v_rest((_, v) => v.itr.kind === Defines.ItrKind.SuperPunchMe);
           if (super_punch) {
-            nf = [{ id: entity.data.indexes.super_punch }, this.key_time_maps.a, GameKey.a];
+            this.nf.set({ id: entity.data.indexes.super_punch }, this.key_time_maps.a, GameKey.a);
           }
           console.log("super_punch:", super_punch)
         }
@@ -245,29 +266,31 @@ export class BaseController {
       if (this.is_hit('d')) {
         const seq = Object.keys(seqs).find(v => this.same_time_seq_test(v));
         if (seq && seqs[seq]) {
-          nf = [seqs[seq], this._time, void 0];
+          this.nf.set(seqs[seq], this._time, void 0, this._key_list);
           this._key_list = void 0;
           break;
+        } else {
+          this.nf.key_list = this._key_list
         }
       }
 
       /** 顺序按键 判定 */
       if (this._key_list && this._key_list.length >= 2 && seqs[this._key_list]) {
-        nf = [seqs[this._key_list], this._time, void 0]
+        this.nf.set(seqs[this._key_list], this._time, void 0, this._key_list)
         this._key_list = void 0;
         break;
+      } else {
+        this.nf.key_list = this._key_list;
       }
     } while (0)
 
     /** 这里不想支持过长的指令 */
     if (this._key_list && this._key_list.length >= 10) this._key_list = void 0;
-
-    return nf[0]
+    return this.nf
   }
 
   private same_time_seq_test(str: string): boolean {
     for (const key of str) if (!this.is_hit(key)) return false;
-
     return true;
   }
 }
