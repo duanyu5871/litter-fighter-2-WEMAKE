@@ -14,6 +14,7 @@ import Running from "./Running";
 import Standing from "./Standing";
 import Teleport_ToFarthestAlly from "./Teleport_ToFarthestAlly";
 import Teleport_ToNearestEnemy from "./Teleport_ToNearestEnemy";
+import { TransformToLouisEX } from "./TransformToLouisEX";
 import Walking from "./Walking";
 
 export const CHARACTER_STATES = (window as any).CHARACTER_STATES = new States<Character>()
@@ -53,3 +54,4 @@ CHARACTER_STATES.set(Defines.State.NextAsLanding, new class extends BaseCharacte
 CHARACTER_STATES.set(Defines.State.Teleport_ToNearestEnemy, new Teleport_ToNearestEnemy())
 
 CHARACTER_STATES.set(Defines.State.Teleport_ToFarthestAlly, new Teleport_ToFarthestAlly())
+CHARACTER_STATES.set(Defines.State.TransformToLouisEx, new TransformToLouisEX())

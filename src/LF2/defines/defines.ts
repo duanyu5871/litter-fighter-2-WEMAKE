@@ -213,6 +213,9 @@ export namespace Defines {
      */
     LouisCastOff = 9996,
     _9996 = 9996,
+
+    TransformToLouisEx = 9996,
+    _9995 = 9995,
   }
   export enum EntityEnum {
     Character = 'character',
