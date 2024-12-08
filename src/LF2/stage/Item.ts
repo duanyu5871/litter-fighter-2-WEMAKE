@@ -23,9 +23,6 @@ export default class Item {
   private data_list: IGameObjData[] = [];
 
   readonly character_callback: ICharacterCallbacks = {
-    on_dead: (e: Character): void => { // 角色死亡
-      e.blink_and_gone(120);
-    },
     on_disposed: (e: Character): void => {
       // 角色被移除
       this.entities.delete(e);

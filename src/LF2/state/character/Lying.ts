@@ -9,6 +9,12 @@ export default class Lying extends BaseCharacterState {
   override enter(e: Character, prev_frame: IFrameInfo): void {
     if (e.get_frame().state === Defines.State.Lying && e.hp <= 0) {
       e.on_lying_and_dead()
+
+      if (
+        !e.controller?.player_id ||
+        !e.lf2.world.player_slot_characters.has(e.controller?.player_id)
+      )
+        e.blink_and_gone(120);
     }
   }
   override leave(e: Character, next_frame: IFrameInfo): void {

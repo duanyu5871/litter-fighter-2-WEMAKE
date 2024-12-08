@@ -113,7 +113,7 @@ export function make_weapon_brokens(data: IWeaponData) {
         x: 24,
         y: 24,
         action: { id: frame_id },
-        oid: 999,
+        oid: '999',
         ...aa[idx]
       }
     });
