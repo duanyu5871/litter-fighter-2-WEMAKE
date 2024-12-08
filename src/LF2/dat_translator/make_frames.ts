@@ -51,25 +51,34 @@ export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string, fil
 
     const raw_next = take(fields, 'next');
     const next = get_next_frame_by_raw_id(raw_next);
-    let pic_idx = take(fields, 'pic');
+    const pic_idx = take(fields, 'pic');
     let frame_pic_info: IFramePictureInfo | undefined = void 0;
     let entity_pic_info: IEntityPictureInfo | undefined = void 0;
     for (const key in files) {
-      entity_pic_info = files[key];
-      const ret = pic_idx >= entity_pic_info.begin && pic_idx <= entity_pic_info.end;
-      if (ret) {
-        pic_idx -= entity_pic_info.begin;
-        break;
-      }
+      const { begin, end } = entity_pic_info = files[key];
+      const ret = pic_idx >= begin && pic_idx <= end;
+      if (ret) break;
+      /*
+        NOTE: 
+          发现一些dat的pic超过了end，比如henry_wind的pic: 36
+      */
     }
+    let error: any;
     if (entity_pic_info) {
-      const { id, row, cell_w, cell_h } = entity_pic_info;
+      const { id, row, cell_w, cell_h, begin } = entity_pic_info;
+      const idx = pic_idx - begin
       frame_pic_info = {
         tex: id,
-        x: (cell_w + 1) * (pic_idx % row),
-        y: (cell_h + 1) * Math.floor(pic_idx / row),
+        x: (cell_w + 1) * (idx % row),
+        y: (cell_h + 1) * Math.floor(idx / row),
         w: cell_w,
         h: cell_h,
+      }
+    } else {
+      error = {
+        msg: 'entity_pic_info not found!',
+        files,
+        pic_idx,
       }
     }
 
@@ -88,6 +97,7 @@ export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string, fil
       cpoint: cpoint_list[0],
       ...fields,
     };
+    if (error) (frame as any).__ERROR__ = error
     cook_frame_indicator_info(frame)
     if (
       (raw_next >= 1100 && raw_next <= 1299) ||

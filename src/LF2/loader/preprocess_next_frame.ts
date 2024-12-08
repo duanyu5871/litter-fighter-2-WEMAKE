@@ -38,7 +38,7 @@ function get_val_from_entity(word: string, e: Entity): any {
     case Defines.ValWord.WeaponType:
       return is_entity(e) && is_weapon(e.holding) ? e.holding?.data.base.type || 0 : 0;
     case Defines.ValWord.HAS_TRANSFROM_DATA:
-      return e.transform_data ? 1 : 0;
+      return e.transform_datas ? 1 : 0;
   }
   return word
 }
