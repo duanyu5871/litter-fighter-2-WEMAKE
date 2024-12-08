@@ -26,15 +26,16 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
     this.name = Character.name + ':' + data.base.name;
     this.enter_frame({ id: Defines.FrameId.Auto });
 
-    this._max_hp = this._hp = data.base.hp ?? Defines.DAFUALT_HP;
-    this._max_mp = this._mp = data.base.mp ?? Defines.DAFAULT_MP;
-    this._fall_value = this.data.base.fall_value;
-    this._defend_value = this.data.base.defend_value;
+    this._max_hp = data.base.hp ?? Defines.DAFUALT_HP;
+    this._max_mp = data.base.mp ?? Defines.DAFAULT_MP;
     this._mp_r_min_spd = data.base.mp_r_min_spd ?? Defines.DAFAULT_MP_RECOVERY_MIN_SPEED;
     this._mp_r_max_spd = data.base.mp_r_max_spd ?? Defines.DAFAULT_MP_RECOVERY_MAX_SPEED;
     this.update_mp_recovery_speed();
 
-
+    this._fall_value = this.data.base.fall_value;
+    this._defend_value = this.data.base.defend_value;
+    this._hp = this._max_hp
+    this._mp = this._max_mp
   }
 
   override get_next_frame(which: string | TNextFrame): [ICharacterFrameInfo | undefined, INextFrame | undefined] {

@@ -13,6 +13,7 @@ import { States, type BaseState } from '../state/base';
 import { ENTITY_STATES } from '../state/entity';
 import { random_get } from '../utils/math/random';
 import { is_nagtive, is_positive, is_str } from '../utils/type_check';
+import type Character from './Character';
 import { Factory } from './Factory';
 import type IEntityCallbacks from './IEntityCallbacks';
 import { InfoSprite } from './InfoSprite';
@@ -66,7 +67,7 @@ export default class Entity<
   wait: number = 0;
   update_id: number = Number.MIN_SAFE_INTEGER;
   readonly is_frame_animater = true
-  readonly data: D;
+  public data: D;
   readonly world: World;
   readonly position = new Ditto.Vector3(0, 0, 0);
   throwinjury?: number;
@@ -599,21 +600,25 @@ export default class Entity<
     }
 
     const { throwvx, throwvy, throwvz, x: catch_x, y: catch_y, cover, throwinjury } = cpoint_a;
-    if (throwvx || throwvy || throwvz) {
-      delete this._catching;
-      return void 0;
-    }
     if (throwinjury !== void 0) {
       if (throwinjury > 0) {
         // TODO：丢出后，被丢的人落地后的受到的伤害
-        return;
+        // return;
       } else if (throwinjury === -1) {
         // TODO：变成抓住的人
-        return;
+        if (is_character(this) && is_character(this._catching)) {
+          (this as Character).data = this._catching.data;
+          return this.find_auto_frame();
+        }
       } else {
         return GONE_FRAME_INFO
       }
     }
+    if (throwvx || throwvy || throwvz) {
+      delete this._catching;
+      return void 0;
+    }
+
 
     const { centerx: centerx_a, centery: centery_a } = this.frame;
     const { centerx: centerx_b, centery: centery_b } = this._catching.frame;

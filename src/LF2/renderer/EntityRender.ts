@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { IMeshNode } from "../3d";
-import { IFrameInfo, ITexturePieceInfo, TFace } from "../defines";
+import { IFrameInfo, IGameObjData, ITexturePieceInfo, TFace } from "../defines";
 import IPicture from "../defines/IPicture";
 import Ditto from "../ditto";
 import Entity from "../entity/Entity";
@@ -12,30 +12,36 @@ export const EMPTY_PIECE: ITexturePieceInfo = {
   ph: 0, pw: 0,
 }
 export class EntityRender {
-  pictures!: Map<string, IPicture<THREE.Texture>>;
-  entity!: Entity;
-  entity_mesh!: IMeshNode;
-  entity_material!: THREE.MeshBasicMaterial;
-  piece: ITexturePieceInfo = EMPTY_PIECE;
-  shadow!: Shadow;
-  _prev_update_count?: number;
-  indicators!: FrameIndicators;
-  private _shaking?: number;
+  protected pictures!: Map<string, IPicture<THREE.Texture>>;
+  protected entity!: Entity;
+  protected entity_mesh!: IMeshNode;
+  protected entity_material!: THREE.MeshBasicMaterial;
+  protected piece: ITexturePieceInfo = EMPTY_PIECE;
+  protected shadow!: Shadow;
+  readonly indicators!: FrameIndicators;
+  protected _prev_update_count?: number;
+  protected _shaking?: number;
+  protected _prev_data?: IGameObjData;
   constructor(entity: Entity) {
     this.set_entity(entity);
+    this.shadow = new Shadow(entity, this.entity_mesh)
+    this.indicators = new FrameIndicators(entity, this.entity_mesh);
   }
   set_entity(entity: Entity): EntityRender {
     const { world, lf2, data } = this.entity = entity
+    this._prev_data = entity.data;
     this.pictures = create_pictures(lf2, entity.data);
     const first_text = this.pictures.get('0')?.texture;
-    const inner = this.entity_mesh = new Ditto.MeshNode(
-      world.lf2, {
-      geometry: new THREE.PlaneGeometry(1, 1).translate(0.5, -0.5, 0),
-      material: this.entity_material = new THREE.MeshBasicMaterial({
-        map: first_text,
-        transparent: true,
+    const inner = this.entity_mesh = (
+      this.entity_mesh || new Ditto.MeshNode(
+        world.lf2, {
+        geometry: new THREE.PlaneGeometry(1, 1).translate(0.5, -0.5, 0),
+        material: this.entity_material = new THREE.MeshBasicMaterial({
+          map: first_text,
+          transparent: true,
+        })
       })
-    });
+    );
     if (first_text) first_text.onUpdate = () => inner.update_all_material()
     this.entity_mesh.user_data.owner = this;
     this.entity_mesh.visible = false;
@@ -49,11 +55,11 @@ export class EntityRender {
     if (typeof data.base.render_order === 'number') {
       this.entity_mesh.render_order = data.base.render_order
     }
-    this.shadow = new Shadow(entity, this.entity_mesh)
-    this.indicators = new FrameIndicators(entity, this.entity_mesh);
     return this;
   }
-
+  attach() {
+    this.entity.world.scene.add(this.entity_mesh!)
+  }
   private _previous = {
     face: (void 0) as TFace | undefined,
     frame: (void 0) as IFrameInfo | undefined,
@@ -61,6 +67,10 @@ export class EntityRender {
   update() {
     const { entity, entity_mesh, entity_material, pictures, shadow } = this;
     const { frame, position: { x, y, z }, facing } = entity;
+
+    if (entity.data !== this._prev_data) {
+      this.set_entity(entity)
+    }
 
     if (this._prev_update_count !== entity.update_id) {
       this.indicators.update();

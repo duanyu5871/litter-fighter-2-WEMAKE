@@ -129,9 +129,9 @@ export class World {
 
       this.entities.add(entity)
       const render = new EntityRender(entity).set_entity(entity);
+      render.attach()
       this.entity_renders.set(entity, render);
       render.indicators.show = this._show_indicators;
-      this.scene.add(render.entity_mesh!)
     }
   }
 
@@ -145,7 +145,6 @@ export class World {
       if (r) {
         r.dispose();
         this.entity_renders.delete(e);
-        this.scene.del(r.entity_mesh)
       }
 
       this.entities.delete(e);
