@@ -327,12 +327,29 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
           {
             id: '213',
             expression: CondMaker
-              .add<Defines.ValWord>(ValWord.PressFB, '!=', 0)
-              .or(ValWord.TrendX, '==', 1)
+              .add(ValWord.PressLR, '==', -1)
               .done(),
-            facing: FacingFlag.ByController
+            facing: FacingFlag.Left
           },
-          { id: '214', expression: CondMaker.add(ValWord.TrendX, '==', -1).done() },
+          {
+            id: '213',
+            expression: CondMaker
+              .add(ValWord.PressLR, '==', 1)
+              .done(),
+            facing: FacingFlag.Right
+          },
+          {
+            id: '214',
+            expression: CondMaker
+              .add(ValWord.TrendX, '==', -1)
+              .done()
+          },
+          {
+            id: '213',
+            expression: CondMaker
+              .add(ValWord.TrendX, '==', 1)
+              .done()
+          }
         ]; // dash
         frame.hit = frame.hit || {};
         frame.hit.d = { id: '102', facing: FacingFlag.ByController };

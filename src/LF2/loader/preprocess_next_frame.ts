@@ -25,6 +25,8 @@ function get_val_from_entity(word: string, e: Entity): any {
       return 0
     case Defines.ValWord.PressFB:
       return e.controller ? e.controller.LR * e.facing : 0;
+    case Defines.ValWord.PressLR:
+      return e.controller ? e.controller.LR : 0;
     case Defines.ValWord.PressUD:
       return e.controller ? e.controller.UD : 0;
     case Defines.ValWord.HP_P:

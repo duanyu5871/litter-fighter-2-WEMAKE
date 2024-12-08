@@ -850,6 +850,7 @@ export default class Entity<
       return [frame, void 0];
     }
     if (Array.isArray(which)) {
+      /*
       const l = which.length;
       const matchs: [F, INextFrame | undefined][] = [];
       for (let i = 0; i < l; ++i) {
@@ -858,8 +859,14 @@ export default class Entity<
       }
       if (!matchs.length) return [void 0, void 0];
       return random_get(matchs)!;
+      */
+      const l = which.length;
+      for (let i = 0; i < l; ++i) {
+        const f = this.get_next_frame(which[i]);
+        if (f[0]) return f
+      }
+      return [void 0, void 0];
     }
-
     let { id, expression: condition } = which;
     if (typeof condition === 'function' && !condition(this)) {
       return [void 0, void 0]

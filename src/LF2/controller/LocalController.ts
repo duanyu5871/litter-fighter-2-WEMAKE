@@ -47,13 +47,4 @@ export default class LocalController extends BaseController implements IKeyboard
       this._code_key_map[code] = key
     }
   };
-
-  as_bot(): this {
-    return this;
-  }
-
-  as_human(): this {
-    return this;
-  }
-
 }

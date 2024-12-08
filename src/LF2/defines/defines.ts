@@ -69,9 +69,18 @@ export namespace Defines {
     }
   }
   export enum ValWord {
+    /**
+     * X轴运动趋势
+     * 当X轴速度为0时，有trend_x==0，
+     * 速度与朝向一致时，有trend_x==1，
+     * 速度与朝向不一致时，有trend_x==-1，
+     */
     TrendX = 'trend_x',
+
+    
     PressFB = 'press_F_B',
     PressUD = 'press_U_D',
+    PressLR = 'press_L_R',
 
     /** 角色手持的武器类型 */
     WeaponType = 'weapon_type',
