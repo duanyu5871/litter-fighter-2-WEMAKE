@@ -1,20 +1,19 @@
+import { TNextFrame } from ".";
 import { IBdyInfo } from "./IBdyInfo";
 import { IBpointInfo } from "./IBpointInfo";
 import { ICpointInfo } from "./ICpointInfo";
 import { IFramePictureInfo } from "./IFramePictureInfo";
-import { IItrInfo } from "./IItrInfo";
-import { IOpointInfo } from "./IOpointInfo";
-import { ITexturePieceInfos } from "./ITexturePieceInfos";
-import { IWpointInfo } from "./IWpointInfo";
-import { TNextFrame } from ".";
 import { IHitKeyCollection } from "./IHitKeyCollection";
 import { IHoldKeyCollection } from "./IHoldKeyCollection";
+import { IItrInfo } from "./IItrInfo";
+import { IOpointInfo } from "./IOpointInfo";
 import { IRectPair } from "./IRectPair";
+import { IWpointInfo } from "./IWpointInfo";
 
 export interface IFrameInfo {
   id: string;
   name: string;
-  pic?: IFramePictureInfo | ITexturePieceInfos;
+  pic?: IFramePictureInfo;
   state: number;
   wait: number;
   next: TNextFrame;

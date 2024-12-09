@@ -1,3 +1,4 @@
+import { ITexturePieceInfo } from "./ITexturePieceInfo";
 
 export interface IFramePictureInfo {
   /** 纹理ID */
@@ -10,4 +11,10 @@ export interface IFramePictureInfo {
   w: number;
   /** 精灵图高度（像素） */
   h: number;
+
+  /** 纹理数据 */
+  1?: ITexturePieceInfo;
+  
+  /** 纹理数据（镜像） */
+  [-1]?: ITexturePieceInfo;
 }

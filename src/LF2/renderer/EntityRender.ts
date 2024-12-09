@@ -4,10 +4,10 @@ import { IFrameInfo, IGameObjData, ITexturePieceInfo, TFace } from "../defines";
 import IPicture from "../defines/IPicture";
 import Ditto from "../ditto";
 import Entity from "../entity/Entity";
+import { InfoSprite } from "../entity/InfoSprite";
 import create_pictures from "../loader/create_pictures";
 import { FrameIndicators } from "./FrameIndicators";
 import Shadow from "./ShadowRender";
-import { InfoSprite } from "../entity/InfoSprite";
 export const EMPTY_PIECE: ITexturePieceInfo = {
   tex: 0, x: 0, y: 0, w: 0, h: 0,
   ph: 0, pw: 0,
@@ -83,7 +83,7 @@ export class EntityRender {
         this._previous.frame = frame;
         const frame_pic = frame.pic;
         if (frame_pic && "-1" in frame_pic) {
-          if (this.piece !== frame_pic[facing]) {
+          if (this.piece !== frame_pic[facing] && frame_pic[facing]) {
             const { x, y, w, h, tex, pw, ph } = this.piece = frame_pic[facing];
             const pic = pictures.get('' + tex);
             if (pic) {
