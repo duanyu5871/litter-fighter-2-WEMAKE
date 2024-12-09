@@ -1,8 +1,10 @@
+import { Defines } from "../../defines";
 import type Entity from "../../entity/Entity";
 import { GONE_FRAME_INFO } from "../../entity/Entity";
 import { BaseState } from "../base";
 
-export class State9999 extends BaseState {
+export class WeaponBroken extends BaseState {
+  readonly state = Defines.State.Weapon_Brokens;
   enter(e: Entity): void {
     e.emitter?.velocity && e.velocity.add(e.emitter.velocity);
   }

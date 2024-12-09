@@ -77,7 +77,7 @@ export namespace Defines {
      */
     TrendX = 'trend_x',
 
-    
+
     PressFB = 'press_F_B',
     PressUD = 'press_U_D',
     PressLR = 'press_L_R',
@@ -194,11 +194,17 @@ export namespace Defines {
     Ball_Sturdy = 3005,
     Ball_PunchThrough = 3006,
 
-    TurnIntoMin = 8001,// 
-    TurnIntoMax = 8999,// 
+    TransformTo_Min = 8001,
+    _8001 = 8001,
+
+    TransformTo_Max = 8999,
+    _8999 = 8999,
+
     TurnIntoLouisEX = 9995,
     Gone = 9998,
-    _9999 = 9999, Weapon_Brokens = 9999,
+
+    Weapon_Brokens = 9999,
+    _9999 = 9999,
 
     /**
      * 被存在变过的人时，此才允许进入state为500的frame。

@@ -690,7 +690,11 @@ export default class Entity<
 
   }
 
+  lastest_victim?: Entity;
+  lastest_attacker?: Entity;
+  
   on_collision(target: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
+    this.lastest_victim = target;
     this._motionless = itr.motionless ?? 4;
     if (itr.arest) {
       this._a_rest = itr.arest;
@@ -700,6 +704,7 @@ export default class Entity<
   }
 
   on_be_collided(attacker: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
+    this.lastest_attacker = attacker;
     this._shaking = itr.shaking ?? V_SHAKE;
     if (!itr.arest && itr.vrest) this._v_rests.set(attacker.id, {
       remain: itr.vrest - this._shaking,
