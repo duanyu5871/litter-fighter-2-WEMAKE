@@ -1,6 +1,7 @@
+import { IFramePictureInfo } from "./IFramePictureInfo";
 import { ITexturePieceInfo } from "./ITexturePieceInfo";
 
-export interface ITexturePieceInfos {
+export interface ITexturePieceInfos extends IFramePictureInfo {
   /** 纹理数据 */
   1: ITexturePieceInfo;
   /** 纹理数据（镜像） */

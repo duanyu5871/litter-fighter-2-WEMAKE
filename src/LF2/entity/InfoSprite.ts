@@ -181,8 +181,8 @@ export class InfoSprite implements IEntityCallbacks {
     const name_y = Math.floor(-z / 2 - this.mesh.scale_y)
     this.set_name_position(_x, name_y, z);
 
-    // const bar_y = Math.floor(y - z / 2 + this.entity.inner.scale_y + BAR_BG_H + 5);
-    // this.set_bars_position(_x, bar_y, z)
+    const bar_y = Math.floor(y - z / 2 + 79 + BAR_BG_H + 5);
+    this.set_bars_position(_x, bar_y, z)
   }
 
   set_name_position(x: number, y: number, z: number) {
@@ -191,7 +191,6 @@ export class InfoSprite implements IEntityCallbacks {
     const cam_r = cam_l + this.entity.world.screen_w;
     if (x + hw > cam_r) x = cam_r - hw;
     else if (x - hw < cam_l) x = cam_l + hw;
-
     this.mesh.set_position(x, y, z);
   }
 

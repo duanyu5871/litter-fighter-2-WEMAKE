@@ -23,7 +23,7 @@ export const cook_frame = (lf2: LF2, data: IGameObjData, frame: IFrameInfo) => {
   }
   let pic = frame.pic;
   let pic_info: IEntityPictureInfo | undefined = void 0;
-  if (pic && 'x' in pic) {
+  if (pic && !('1' in pic)) {
     for (const key in data.base.files) {
       if (data.base.files[key].id === pic.tex) {
         pic_info = data.base.files[key];
@@ -49,7 +49,8 @@ export const cook_frame = (lf2: LF2, data: IGameObjData, frame: IFrameInfo) => {
       ...f_i_1,
       x: -f_i_1.x - f_i_1.w
     };
-    pic = frame.pic = {
+    frame.pic = {
+      ...pic,
       1: f_i_1,
       [-1]: f_i_2,
     };
