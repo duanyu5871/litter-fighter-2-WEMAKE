@@ -28,8 +28,7 @@ export * from "./IStageInfo";
  */
 export interface IEntityPictureInfo {
   id: string;
-  begin: number;
-  end: number;
+
   path: string;
 
   /**
@@ -59,6 +58,8 @@ export interface IEntityPictureInfo {
    * @type {number}
    */
   cell_h: number;
+
+  variants?: string[];
 }
 
 export type TNextFrame = INextFrame | INextFrame[]

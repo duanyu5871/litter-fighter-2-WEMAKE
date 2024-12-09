@@ -14,12 +14,13 @@ export default class TransformTo8XXX extends BaseState<Entity> {
       const creator = Factory.inst.get(data.type);
       if (creator) {
         const new_entity = creator(e.world, data);
-        if(!e.lastest_attacker) debugger;
+        if (!e.lastest_attacker) debugger;
         new_entity.team = e.lastest_attacker?.team || new_team();
         if (is_character(new_entity)) {
           new_entity.controller = new BotController('', new_entity);
         }
         new_entity.position.set(e.position.x, e.position.y, e.position.z);
+        new_entity.variant = 1;
         new_entity.attach()
       }
     }

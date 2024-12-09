@@ -42,8 +42,6 @@ export default function dat_to_json(
       const file_id = base.files ? Object.keys(base.files).length : 0
       const file: IEntityPictureInfo = {
         id: '' + file_id,
-        begin: 0,
-        end: 0,
         path: '',
         row: 0,
         col: 0,
@@ -52,10 +50,7 @@ export default function dat_to_json(
       };
       for (const [key, value] of match_colon_value(info_str)) {
         if (key.startsWith('file')) {
-          const [, begin, end] = key.match(/file\((\d+)-(\d+)\)/)!
           file.path = value.replace(/.bmp$/, '.png');
-          file.begin = Number(begin);
-          file.end = Number(end);
         } else if (key === 'w') {
           file.cell_w = Number(value)
         } else if (key === 'h') {

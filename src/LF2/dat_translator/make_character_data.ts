@@ -466,7 +466,8 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
     is_game_obj_data: true,
     is_base_data: true
   };
-  cook_transform_begin_expression_to_hit(ret.frames)
+  cook_transform_begin_expression_to_hit(ret.frames);
+  cook_file_variants(ret);
   return ret;
 }
 
@@ -500,6 +501,33 @@ function cook_transform_begin_expression_to_hit<F extends IFrameInfo = IFrameInf
       if (hit.sequences)
         for (const k2 in hit.sequences)
           cook_hit_next_frame_to_transform(hit.sequences[k2])
+    }
+  }
+}
+
+function cook_file_variants(ret: ICharacterData) {
+  const file_keys = Object.keys(ret.base.files);
+  if (file_keys.length && file_keys.length % 2 === 0) {
+    file_keys.sort();
+    let has_variant = true;
+    for (let i = 0; i < file_keys.length / 2; ++i) {
+      const file_1 = ret.base.files[file_keys[i]];
+      const file_2 = ret.base.files[file_keys[i + file_keys.length / 2]];
+      if (
+        file_1.cell_w !== file_2.cell_w ||
+        file_1.cell_h !== file_2.cell_h ||
+        file_1.row !== file_2.row ||
+        file_1.col !== file_2.col ||
+        !file_2.path.match(/_\d+b.png$/)
+      ) {
+        has_variant = false;
+      }
+    }
+    if (has_variant) {
+      for (let i = 0; i < file_keys.length / 2; ++i) {
+        const file_1 = ret.base.files[file_keys[i]];
+        file_1.variants = [file_keys[i + file_keys.length / 2]]
+      }
     }
   }
 }

@@ -19,7 +19,7 @@ import type IEntityCallbacks from './IEntityCallbacks';
 import { turn_face } from './face_helper';
 import { is_character } from './type_check';
 export const EMPTY_PIECE: ITexturePieceInfo = {
-  tex: 0, x: 0, y: 0, w: 0, h: 0,
+  tex: '', x: 0, y: 0, w: 0, h: 0,
   pixel_h: 0, pixel_w: 0,
 }
 export const EMPTY_FRAME_INFO: IFrameInfo = {
@@ -65,6 +65,7 @@ export default class Entity<
   id: string = new_id();
   wait: number = 0;
   update_id: number = Number.MIN_SAFE_INTEGER;
+  variant: number = 0;
   readonly is_frame_animater = true
   public data: D;
   public transform_datas?: [D, D];
@@ -692,7 +693,7 @@ export default class Entity<
 
   lastest_victim?: Entity;
   lastest_attacker?: Entity;
-  
+
   on_collision(target: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
     this.lastest_victim = target;
     this._motionless = itr.motionless ?? 4;

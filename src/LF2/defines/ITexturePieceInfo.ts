@@ -1,7 +1,7 @@
 
 export interface ITexturePieceInfo {
   /** 纹理ID */
-  tex: number | string;
+  tex: string;
 
   pixel_w: number;
 

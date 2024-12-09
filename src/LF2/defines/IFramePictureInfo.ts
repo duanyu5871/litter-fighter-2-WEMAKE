@@ -2,7 +2,7 @@ import { ITexturePieceInfo } from "./ITexturePieceInfo";
 
 export interface IFramePictureInfo {
   /** 纹理ID */
-  tex: number | string;
+  tex: string;
   /** 裁剪起点X坐标（像素） */
   x: number;
   /** 裁剪起点Y坐标（像素） */

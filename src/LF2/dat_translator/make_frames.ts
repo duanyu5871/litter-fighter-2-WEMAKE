@@ -54,23 +54,25 @@ export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string, fil
     const pic_idx = take(fields, 'pic');
     let frame_pic_info: IFramePictureInfo | undefined = void 0;
     let entity_pic_info: IEntityPictureInfo | undefined = void 0;
+
+    let pic = pic_idx;
     for (const key in files) {
-      const { begin, end } = entity_pic_info = files[key];
-      const ret = pic_idx >= begin && pic_idx <= end;
-      if (ret) break;
+      const { row, col } = entity_pic_info = files[key];
+      if (pic <= row * col) break;
+      pic -= row * col
       /*
         NOTE: 
           发现一些dat的pic超过了end，比如henry_wind的pic: 36
       */
     }
+
     let error: any;
     if (entity_pic_info) {
-      const { id, row, cell_w, cell_h, begin } = entity_pic_info;
-      const idx = pic_idx - begin
+      const { id, row, cell_w, cell_h } = entity_pic_info;
       frame_pic_info = {
         tex: id,
-        x: (cell_w + 1) * (idx % row),
-        y: (cell_h + 1) * Math.floor(idx / row),
+        x: (cell_w + 1) * (pic % row),
+        y: (cell_h + 1) * Math.floor(pic / row),
         w: cell_w,
         h: cell_h,
       }

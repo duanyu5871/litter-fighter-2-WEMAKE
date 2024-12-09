@@ -9,7 +9,7 @@ import create_pictures from "../loader/create_pictures";
 import { FrameIndicators } from "./FrameIndicators";
 import Shadow from "./ShadowRender";
 export const EMPTY_PIECE: ITexturePieceInfo = {
-  tex: 0, x: 0, y: 0, w: 0, h: 0,
+  tex: '0', x: 0, y: 0, w: 0, h: 0,
   pixel_h: 0, pixel_w: 0,
 }
 export class EntityRender {
@@ -17,6 +17,7 @@ export class EntityRender {
   protected entity!: Entity;
   protected entity_mesh!: IMeshNode;
   protected entity_material!: THREE.MeshBasicMaterial;
+  protected variants = new Map<string, string[]>();
   protected piece: ITexturePieceInfo = EMPTY_PIECE;
   protected shadow!: Shadow;
   readonly indicators!: FrameIndicators;
@@ -32,6 +33,16 @@ export class EntityRender {
   }
   set_entity(entity: Entity): EntityRender {
     const { world, lf2, data } = this.entity = entity
+
+    this.variants.clear();
+    for (const k in data.base.files) {
+      if (data.base.files[k].variants)
+        this.variants.set(k, [k, ...data.base.files[k].variants])
+      else
+        this.variants.set(k, [k])
+    }
+
+
     this._prev_data = entity.data;
     this.pictures = create_pictures(lf2, entity.data);
     const first_text = this.pictures.get('0')?.texture;
@@ -66,15 +77,14 @@ export class EntityRender {
   private _previous = {
     face: (void 0) as TFace | undefined,
     frame: (void 0) as IFrameInfo | undefined,
+    variant: 0,
   }
   update() {
     const { entity, entity_mesh, entity_material, pictures, shadow } = this;
     const { frame, position: { x, y, z }, facing } = entity;
-
     if (entity.data !== this._prev_data) {
       this.set_entity(entity)
     }
-
     if (this._prev_update_count !== entity.update_id) {
       this.indicators.update();
       this._prev_update_count = entity.update_id;
@@ -85,7 +95,8 @@ export class EntityRender {
         if (frame_pic && "-1" in frame_pic) {
           if (this.piece !== frame_pic[facing] && frame_pic[facing]) {
             const { x, y, w, h, tex, pixel_w, pixel_h } = this.piece = frame_pic[facing];
-            const pic = pictures.get('' + tex);
+            const real_tex = this.variants.get(tex)?.at(entity.variant) ?? tex
+            const pic = pictures.get(real_tex);
             if (pic) {
               pic.texture.offset.set(x, y);
               pic.texture.repeat.set(w, h);
