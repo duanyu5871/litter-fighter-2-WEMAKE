@@ -7,6 +7,7 @@ import Entity from "../entity/Entity";
 import create_pictures from "../loader/create_pictures";
 import { FrameIndicators } from "./FrameIndicators";
 import Shadow from "./ShadowRender";
+import { InfoSprite } from "../entity/InfoSprite";
 export const EMPTY_PIECE: ITexturePieceInfo = {
   tex: 0, x: 0, y: 0, w: 0, h: 0,
   ph: 0, pw: 0,
@@ -22,10 +23,12 @@ export class EntityRender {
   protected _prev_update_count?: number;
   protected _shaking?: number;
   protected _prev_data?: IGameObjData;
+  protected _info_sprite: InfoSprite;
   constructor(entity: Entity) {
     this.set_entity(entity);
     this.shadow = new Shadow(entity, this.entity_mesh)
     this.indicators = new FrameIndicators(entity, this.entity_mesh);
+    this._info_sprite = new InfoSprite(entity, this.entity_mesh)
   }
   set_entity(entity: Entity): EntityRender {
     const { world, lf2, data } = this.entity = entity
@@ -104,16 +107,15 @@ export class EntityRender {
       const is_blinking = !!entity.blinking;
       entity_mesh.visible = is_visible;
 
-      if (shadow) {
-        shadow.mesh.set_position(x, - z / 2, z - 550);
-        shadow.visible = is_visible && !frame.no_shadow;
-      }
+      shadow.mesh.set_position(x, - z / 2, z - 550);
+      shadow.visible = is_visible && !frame.no_shadow;
+      this._info_sprite.visible = is_visible;
 
       if (is_blinking && is_visible) {
         entity_mesh.visible = 0 === Math.floor(entity.blinking / 6) % 2;
       }
 
-      entity.info_sprite.update_position();
+      this._info_sprite.update_position();
       entity.holding?.follow_holder();
     }
 

@@ -60,7 +60,7 @@ export class InfoSprite implements IEntityCallbacks {
     this.mesh.visible = this.bars_node.visible = v;
   }
 
-  constructor(entity: Entity) {
+  constructor(entity: Entity, entity_mesh: IMeshNode) {
     const { lf2 } = entity.world;
     this.mesh = new Ditto.BillboardNode(lf2, {
       material: new T.SpriteMaterial({ visible: false })
@@ -82,8 +82,8 @@ export class InfoSprite implements IEntityCallbacks {
     this.mesh.name = InfoSprite.name;
     this.mesh.render_order = 0;
     this.entity = entity;
-    // entity.inner.on('added', () => this.on_mount(entity));
-    // entity.inner.on('removed', () => this.on_unmount(entity));
+    entity_mesh.on('added', () => this.on_mount(entity));
+    entity_mesh.on('removed', () => this.on_unmount(entity));
 
     this.bars_node.add(this.bars_bg)
 
@@ -116,7 +116,8 @@ export class InfoSprite implements IEntityCallbacks {
 
   protected on_mount(entity: Entity) {
     if (
-      is_character(this.entity) && controller_is_local_controller(this.entity.controller)
+      this.entity.controller?.player_id &&
+      this.entity.lf2.player_infos.has(this.entity.controller?.player_id)
     ) {
       entity.world.scene.add(this.bars_node, this.mesh);
     }

@@ -141,8 +141,6 @@ export default class Entity<
    */
   protected _after_blink: string | TNextFrame | null = null;
 
-  info_sprite: InfoSprite;
-
   protected _picking_sum: number = 0;
 
   /**
@@ -279,7 +277,6 @@ export default class Entity<
     this.data = data;
     this.world = world;
     this.states = states;
-    this.info_sprite = new InfoSprite(this)
   }
 
   set_holder(v: Entity | undefined): this {
@@ -476,10 +473,8 @@ export default class Entity<
     this._a_rest > 1 ? this._a_rest-- : this._a_rest = 0;
     if (this._invisible_duration > 0) {
       this._invisible_duration--;
-      this.info_sprite.visible = false;
       if (this._invisible_duration <= 0) {
         this._blinking_duration = 120;
-        this.info_sprite.visible = true
       }
     }
     if (this._blinking_duration > 0) {
