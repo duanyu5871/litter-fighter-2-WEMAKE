@@ -58,12 +58,8 @@ export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string, fil
     let pic = pic_idx;
     for (const key in files) {
       const { row, col } = entity_pic_info = files[key];
-      if (pic <= row * col) break;
-      pic -= row * col
-      /*
-        NOTE: 
-          发现一些dat的pic超过了end，比如henry_wind的pic: 36
-      */
+      if (pic < row * col) break;
+      pic -= row * col;
     }
 
     let error: any;

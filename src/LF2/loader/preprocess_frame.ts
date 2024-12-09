@@ -23,6 +23,7 @@ export const cook_frame = (lf2: LF2, data: IGameObjData, frame: IFrameInfo) => {
   }
   let pic = frame.pic;
   let pic_info: IEntityPictureInfo | undefined = void 0;
+  // if ('data/spark.json' === data.id) { debugger; }
   if (pic && !('1' in pic)) {
     for (const key in data.base.files) {
       if (data.base.files[key].id === pic.tex) {

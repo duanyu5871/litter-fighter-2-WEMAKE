@@ -23,9 +23,17 @@ export class BotController extends BaseController {
       e.blinking
     )
   }
+  should_chase(e?: Character | null) {
+    if (!e) return true;
+    return e.hp > 0 && (
+      e.frame.state !== Defines.State.Lying &&
+      !e.invisible &&
+      !e.blinking
+    )
+  }
   update_nearest() {
     const c = this.entity;
-    if (this.should_avoid(this._chasing_enemy)) {
+    if (!this.should_chase(this._chasing_enemy)) {
       this._chasing_enemy = void 0;
     }
     if (!this.should_avoid(this._avoiding_enemy)) {
@@ -40,7 +48,7 @@ export class BotController extends BaseController {
         } else if (this.manhattan_to(e) < this.manhattan_to(this._avoiding_enemy)) {
           this._avoiding_enemy = e;
         }
-      } else {
+      } else if (this.should_chase(e)) {
         if (!this._chasing_enemy) {
           this._chasing_enemy = e;
         } else if (this.manhattan_to(e) < this.manhattan_to(this._chasing_enemy)) {
