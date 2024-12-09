@@ -10,7 +10,7 @@ import { FrameIndicators } from "./FrameIndicators";
 import Shadow from "./ShadowRender";
 export const EMPTY_PIECE: ITexturePieceInfo = {
   tex: 0, x: 0, y: 0, w: 0, h: 0,
-  ph: 0, pw: 0,
+  pixel_h: 0, pixel_w: 0,
 }
 export class EntityRender {
   protected pictures!: Map<string, IPicture<THREE.Texture>>;
@@ -84,7 +84,7 @@ export class EntityRender {
         const frame_pic = frame.pic;
         if (frame_pic && "-1" in frame_pic) {
           if (this.piece !== frame_pic[facing] && frame_pic[facing]) {
-            const { x, y, w, h, tex, pw, ph } = this.piece = frame_pic[facing];
+            const { x, y, w, h, tex, pixel_w, pixel_h } = this.piece = frame_pic[facing];
             const pic = pictures.get('' + tex);
             if (pic) {
               pic.texture.offset.set(x, y);
@@ -94,7 +94,7 @@ export class EntityRender {
               }
               entity_mesh.update_all_material()
             }
-            entity_mesh.set_scale(pw, ph, 0)
+            entity_mesh.set_scale(pixel_w, pixel_h, 0)
           }
         }
       }

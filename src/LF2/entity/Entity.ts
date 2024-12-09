@@ -16,12 +16,11 @@ import { is_nagtive, is_positive, is_str } from '../utils/type_check';
 import type Character from './Character';
 import { Factory } from './Factory';
 import type IEntityCallbacks from './IEntityCallbacks';
-import { InfoSprite } from './InfoSprite';
 import { turn_face } from './face_helper';
 import { is_character } from './type_check';
 export const EMPTY_PIECE: ITexturePieceInfo = {
   tex: 0, x: 0, y: 0, w: 0, h: 0,
-  ph: 0, pw: 0,
+  pixel_h: 0, pixel_w: 0,
 }
 export const EMPTY_FRAME_INFO: IFrameInfo = {
   id: Defines.FrameId.None,

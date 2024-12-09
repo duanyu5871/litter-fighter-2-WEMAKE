@@ -42,8 +42,8 @@ export const cook_frame = (lf2: LF2, data: IGameObjData, frame: IFrameInfo) => {
       y: 1 - (pic.y + pic.h) / scale_img_h,
       w: pic.w / scale_img_w,
       h: pic.h / scale_img_h,
-      pw: pic.w,
-      ph: pic.h,
+      pixel_w: pic.w,
+      pixel_h: pic.h,
     };
     const f_i_2: ITexturePieceInfo = {
       ...f_i_1,

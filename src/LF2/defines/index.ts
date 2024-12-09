@@ -82,7 +82,6 @@ export * from './IStageInfo';
 export * from './IStageObjectInfo';
 export * from './IStagePhaseInfo';
 export * from './ITexturePieceInfo';
-export * from './ITexturePieceInfos';
 export * from './IWeaponInfo';
 export * from './IWpointInfo';
 

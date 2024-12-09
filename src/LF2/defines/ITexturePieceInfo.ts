@@ -3,9 +3,9 @@ export interface ITexturePieceInfo {
   /** 纹理ID */
   tex: number | string;
 
-  pw: number;
+  pixel_w: number;
 
-  ph: number;
+  pixel_h: number;
 
   /** 纹理裁剪起点（x），-1 ~ 1 */
   x: number;
