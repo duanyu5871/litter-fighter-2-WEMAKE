@@ -24,6 +24,14 @@ db.version(3).stores({
   });
 })
 
+db.version(4).stores({
+  tbl_lf2_data: '++id, name, version, data, create_date, url'
+}).upgrade(trans => {
+  return trans.table('tbl_lf2_data').toCollection().modify(lf2_data => {
+    lf2_data.url = ''
+  });
+})
+
 export const __Cache: ICache = {
   async list(): Promise<ICacheData[] | undefined> {
     return db.open().catch(_ => void 0).then(() => db.tbl_lf2_data.toArray())
@@ -31,12 +39,18 @@ export const __Cache: ICache = {
   async get(name: string): Promise<ICacheData | undefined> {
     return db.open().catch(_ => void 0).then(() => db.tbl_lf2_data.where('name').equals(name).first())
   },
-  async put(name: string, data: string): Promise<number | void> {
+  async put(name: string, version: number, url: string, data: string): Promise<number | void> {
     return db.open().catch(_ => void 0).then(() => db.tbl_lf2_data.put({
-      name, version: 0, data, create_date: Date.now()
+      name, version, data, create_date: Date.now(), url
     }))
   },
   async del(...names: string[]): Promise<number | void> {
-    return db.open().catch(_ => void 0).then(() => db.tbl_lf2_data.where('name').anyOf(names).delete())
+    return db.open().catch(_ => void 0).then(() =>
+      db.tbl_lf2_data.where('name')
+        .anyOf(names)
+        .or('url')
+        .anyOf(names)
+        .delete()
+    )
   }
 }

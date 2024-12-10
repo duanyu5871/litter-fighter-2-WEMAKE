@@ -367,12 +367,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     }
     return ret;
   }
-  async get_cache_data(md5: string) {
-    return ditto.Cache.get(md5)
-  }
-  async save_cache_data(md5: string, data: string) {
-    return ditto.Cache.put(md5, data)
-  }
+
 
   private on_loading_file(url: string, progress: number, full_size: number) {
     const txt = `${url}(${get_short_file_size_txt(full_size)})`;
@@ -390,7 +385,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   async load_zip_from_info_url(info_url: string): Promise<IZip> {
     this.on_loading_content(`${info_url}`, 0);
     const [{ url, md5 }] = await ditto.Importer.import_as_json([info_url]);
-    const exists = await this.get_cache_data(md5);
+    const exists = await ditto.Cache.get(md5);
     let ret: IZip | null = null;
     if (exists) {
       const nums = [];
@@ -398,13 +393,15 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
         nums.push(exists.data.charCodeAt(i));
       ret = await ditto.Zip.read_buf(new Uint8Array(nums))
     } else {
+
       ret = await ditto.Zip.download(url,
         (progress, full_size) => this.on_loading_file(url, progress, full_size)
       )
       let data: string = '';
       for (const c of ret.buf)
         data += String.fromCharCode(c)
-      await this.save_cache_data(md5, data);
+      await ditto.Cache.del(info_url)
+      await ditto.Cache.put(md5, 0, info_url, data);
     }
     this.on_loading_content(`${url}`, 100);
     return ret;
