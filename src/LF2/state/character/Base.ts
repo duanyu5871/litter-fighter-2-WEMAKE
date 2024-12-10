@@ -3,9 +3,6 @@ import BaseState from "../base/BaseState";
 
 export default class BaseCharacterState extends BaseState<Character> {
   update(e: Character): void {
-    this.begin(e);
-  }
-  begin(e: Character) {
     e.on_gravity();
     e.velocity_decay();
     e.handle_frame_velocity();

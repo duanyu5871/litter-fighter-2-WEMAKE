@@ -4,42 +4,53 @@ import find_direction from "../../entity/find_frame_direction";
 import BaseCharacterState from "./Base";
 
 export default class Falling extends BaseCharacterState {
-  _ignore_frames = new Map<string | number, Set<string>>();
+  _bouncing_frames_map = new Map<string, Set<string>>();
+  _begin_velocty_y_map = new Map<string, number>();
+
   enter(e: Character, prev_frame: IFrameInfo): void {
     super.enter(e, prev_frame);
-    const { id: data_id, indexes: { bouncing } } = e.data;
-    if (!this._ignore_frames.has(data_id)) {
-      this._ignore_frames.set(data_id, new Set([...bouncing[1], ...bouncing[-1]]));
+    const { indexes: { bouncing } } = e.data;
+    if (!this._bouncing_frames_map.has(e.data.id)) {
+      this._bouncing_frames_map.set(e.data.id, new Set([
+        ...bouncing[1],
+        ...bouncing[-1]
+      ]));
+    }
+    this._begin_velocty_y_map.set(e.data.id, e.velocity.y);
+  }
+
+  is_bouncing_frame(e: Character) {
+    return !!this._bouncing_frames_map.get(e.data.id)?.has(e.frame.id);
+  }
+
+  update(e: Character): void {
+    if (e.shaking > 0) return;
+    if (this.is_bouncing_frame(e)) {
+      this.update_bouncing(e);
+    } else {
+      this.update_falling(e);
     }
   }
-  begin(e: Character): void {
+
+  update_bouncing(e: Character): void {
     e.on_gravity();
-    const { data: { id: data_id } } = e;
-    const ignore_frames = this._ignore_frames.get(data_id);
-    const { id: frame_id } = e.get_frame();
-    if (ignore_frames?.has('' + frame_id)) {
-      e.velocity_decay(0.7);
-    } else {
-      e.velocity_decay();
-    }
+    e.velocity_decay(0.7);
     e.handle_frame_velocity();
   }
-  update(e: Character): void {
-    super.update(e);
-    if (e.shaking > 0) return;
-    const { data: { id: data_id, indexes: { falling } } } = e;
-    const { id: frame_id } = e.get_frame();
 
-    if (this._ignore_frames.get(data_id)?.has(frame_id)) return;
-
+  update_falling(e: Character): void {
+    e.on_gravity();
+    e.velocity_decay(0);
+    e.handle_frame_velocity();
+    const { data: { indexes: { falling } } } = e;
     const { x, y } = e.velocity;
     let falling_frame_idx = 1; // ---
     if (y > 1) falling_frame_idx = 0; // ↗
     if (y < -1) falling_frame_idx = 2; // ↘
-
     const direction = x / e.facing >= 0 ? (1 as const) : (-1 as const);
     e.enter_frame({ id: falling[direction][falling_frame_idx] });
   }
+
   on_landing(e: Character, vx: number, vy: number, vz: number): void {
     const { facing, data: { indexes } } = e;
     const f = e.get_frame();
