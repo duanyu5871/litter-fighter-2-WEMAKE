@@ -29,7 +29,7 @@ export namespace Defines {
   export const DEFAULT_DEFEND_VALUE = 120
   export const DEFAULT_ITR_SHAKEING = 6;
   export const DEFAULT_ITR_MOTIONLESS = 6;
-  export const DAFUALT_CATCH_TIME = 600;
+  export const DAFUALT_CATCH_TIME = 680;
 
   /**
    * 默认最大回蓝速度, 血越少，回蓝越快（线性）
@@ -95,7 +95,10 @@ export namespace Defines {
     LF2_NET_ON = 'lf2_net_on',
     HERO_FT_ON = "hero_ft_on",
     GIM_INK_ON = "gim_ink_on",
-    HAS_TRANSFROM_DATA = "has_transform_data"
+    HAS_TRANSFROM_DATA = "has_transform_data",
+
+    Catching = "catching",
+    CAUGHT = "caught",
   }
   export enum FrameId {
     None = "",

@@ -279,7 +279,15 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
     this.defend_value = 0;
     this.fall_value -= itr.fall ? itr.fall * 2 : 40;
     /* 击倒 */
-    if (this.fall_value <= 0 || this._hp <= 0) {
+    if (
+      this.fall_value <= 0 ||
+      this._hp <= 0 || (
+        this.fall_value <= 40 && (
+          this.velocity.y > 0 ||
+          this.position.y > 0
+        )
+      )
+    ) {
       this.fall_value = 0;
       this.velocity.y = itr.dvy ?? 3;
 

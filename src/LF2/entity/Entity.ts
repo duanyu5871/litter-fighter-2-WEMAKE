@@ -72,6 +72,7 @@ export default class Entity<
   readonly position = new Ditto.Vector3(0, 0, 0);
   throwinjury?: number;
 
+  get catching() { return this._catching; }
   get catcher() { return this._catcher; }
   get lf2(): LF2 { return this.world.lf2 }
 

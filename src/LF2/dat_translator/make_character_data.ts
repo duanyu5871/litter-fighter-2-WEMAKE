@@ -282,15 +282,19 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
                 ...get_next_frame_by_raw_id(t_action),
                 facing: FacingFlag.ByController,
                 expression: CondMaker
-                  .add<Defines.ValWord>(ValWord.PressFB, '!=', 0)
-                  .or(ValWord.PressUD, '!=', 0)
-                  .done()
+                  .add<Defines.ValWord>(ValWord.Catching, '==', 1).and().bracket(c => {
+                    return c.add(ValWord.PressFB, '!=', 0).or(ValWord.PressUD, '!=', 0)
+                  }).done()
               }
             ]
           }
           if (a_action)
-            a_hit_a = get_next_frame_by_raw_id(a_action)
-
+            a_hit_a = {
+              ...get_next_frame_by_raw_id(a_action),
+              expression: CondMaker
+                .add<Defines.ValWord>(ValWord.Catching, '==', 1)
+                .done()
+            }
           if (Array.isArray(s_hit_a)) {
             t_hit_a && s_hit_a.unshift(...t_hit_a);
             a_hit_a && s_hit_a.unshift(a_hit_a);
