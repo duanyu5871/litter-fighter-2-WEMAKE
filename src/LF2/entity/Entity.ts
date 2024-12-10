@@ -12,7 +12,7 @@ import Ditto from '../ditto';
 import { States, type BaseState } from '../state/base';
 import { ENTITY_STATES } from '../state/entity';
 import { random_get } from '../utils/math/random';
-import { is_nagtive, is_positive, is_str } from '../utils/type_check';
+import { is_positive, is_str } from '../utils/type_check';
 import type Character from './Character';
 import { Factory } from './Factory';
 import type IEntityCallbacks from './IEntityCallbacks';
@@ -458,7 +458,7 @@ export default class Entity<
 
     const { cpoint } = this.frame;
     if (cpoint?.decrease) {
-      this._catch_time += cpoint.decrease;
+      this._catch_time -= cpoint.decrease;
       if (this._catch_time < 0) this._catch_time = 0;
     }
     if (this._shaking <= 0) {
