@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import type LF2 from '../LF2/LF2';
-import type { ICharacterData } from '../LF2/defines';
+import { Defines, type ICharacterData } from '../LF2/defines';
 import Select, { ISelectProps } from './Select';
 
 export interface CharacterSelectProps extends ISelectProps<ICharacterData, string> {
@@ -18,7 +18,10 @@ export default function CharacterSelect(props: CharacterSelectProps) {
     })
   }, [lf2])
 
-  const items = useMemo(() => show_all ? characters : characters.filter(v => !v.base.hidden), [characters, show_all])
+  const items = useMemo(() => show_all ? characters : characters.filter(v => {
+    const r = v.base.group?.indexOf(Defines.EntityGroup.Hidden);
+    return r === void 0 || r === -1;
+  }), [characters, show_all])
 
   return (
     <Select

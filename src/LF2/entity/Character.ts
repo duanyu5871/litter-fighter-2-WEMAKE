@@ -30,12 +30,18 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
     this._max_mp = data.base.mp ?? Defines.DAFAULT_MP;
     this._mp_r_min_spd = data.base.mp_r_min_spd ?? Defines.DAFAULT_MP_RECOVERY_MIN_SPEED;
     this._mp_r_max_spd = data.base.mp_r_max_spd ?? Defines.DAFAULT_MP_RECOVERY_MAX_SPEED;
+    this._max_catch_time = data.base.catch_time ?? Defines.DAFUALT_CATCH_TIME;
+
+
     this.update_mp_recovery_speed();
 
     this._fall_value = this.data.base.fall_value;
     this._defend_value = this.data.base.defend_value;
     this._hp = this._max_hp
     this._mp = this._max_mp
+    this._catch_time = this._max_catch_time;
+
+
   }
 
   override get_next_frame(which: string | TNextFrame): [ICharacterFrameInfo | undefined, INextFrame | undefined] {
@@ -163,7 +169,7 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
       Warn.print(Character.TAG + '::start_catch', 'cannot catch, catchingact got', itr.catchingact)
       return;
     }
-    this._catching_value = 602;
+    this._catch_time = 602;
     this._catching = target;
     this._next_frame = itr.catchingact
   }

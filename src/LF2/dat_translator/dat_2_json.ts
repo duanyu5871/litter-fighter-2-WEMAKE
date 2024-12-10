@@ -132,11 +132,15 @@ export default function dat_to_json(
       case '0': {
         const info = base as ICharacterInfo;
         const num_id = Number(datIndex.id);
+        const add_group = (info: ICharacterInfo, group: string) => {
+          info.group = info.group || [];
+          if (info.group.indexOf(group) < 0) info.group.push(group)
+        }
         if ((num_id >= 30 && num_id <= 39) || (num_id >= 50 && num_id <= 59)) {
-          info.hidden = true;
+          add_group(info, Defines.EntityGroup.Hidden)
         }
         if (num_id >= 1 && num_id <= 29) {
-          info.group = ['1000']
+          add_group(info, Defines.EntityGroup.Regular)
         }
         if (datIndex.id === '52') {
           info.ce = 3;
@@ -162,7 +166,7 @@ export default function dat_to_json(
             toughness: 1,
           }
         } else if (datIndex.id === '30' || datIndex.id === '31') {
-          info.group = ['3000']
+          add_group(info, Defines.EntityGroup._3000)
         }
         const cdata = ret = make_character_data(info, make_frames(full_str, info.files));
         if (datIndex.id === '6') cook_louis_data(cdata);

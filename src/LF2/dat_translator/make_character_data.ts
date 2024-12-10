@@ -271,7 +271,6 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
       case 120: case 121: case 122: case 123:
         if (frame.cpoint) {
           if (frame.cpoint.vaction) (frame.cpoint?.vaction as INextFrame).facing = FacingFlag.OpposingCatcher;
-          if (frame.cpoint.injury) frame.cpoint!.shaking = 1;
           const a_action = take(frame.cpoint, 'aaction');
           const t_action = take(frame.cpoint, 'taction');
           const s_hit_a = frame.hit?.a;

@@ -195,7 +195,7 @@ export default class GamePrepareLogic extends LayoutComponent {
   private update_random() {
     for (const { player: p } of this.player_slots) {
       if (!p?.joined || !p.is_random) continue;
-      const characters = this.lf2.datas.characters.filter(v => !v.base.hidden);
+      const { characters } = this.lf2.datas.find_group(Defines.EntityGroup.Regular)
       p.set_random_character(random_get(characters)?.id ?? '');
     }
   }

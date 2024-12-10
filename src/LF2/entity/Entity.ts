@@ -6,7 +6,7 @@ import { ICube } from '../World';
 import { Callbacks, new_id, new_team, type NoEmitCallbacks } from '../base';
 import { BaseController } from '../controller/BaseController';
 import { BotController } from '../controller/BotController';
-import { IBallData, IBaseData, IBdyInfo, ICharacterData, IEntityData, IFrameInfo, IGameObjData, IGameObjInfo, IItrInfo, INextFrame, IOpointInfo, ITexturePieceInfo, IWeaponData, TFace, TNextFrame } from '../defines';
+import { IBallData, IBaseData, IBdyInfo, ICharacterData, ICpointInfo, IEntityData, IFrameInfo, IGameObjData, IGameObjInfo, IItrInfo, INextFrame, IOpointInfo, ITexturePieceInfo, IWeaponData, TFace, TNextFrame } from '../defines';
 import { Defines } from '../defines/defines';
 import Ditto from '../ditto';
 import { States, type BaseState } from '../state/base';
@@ -108,13 +108,15 @@ export default class Entity<
 
   protected _motionless: number = 0
   protected _shaking: number = 0;
+
+
   /** 
    * 抓人剩余值
    * 
    * 当抓住一个被击晕的人时，此值充满。
    */
-  protected _catching_value = 602;
-
+  protected _catch_time = Defines.DAFUALT_CATCH_TIME;
+  protected _max_catch_time = Defines.DAFUALT_CATCH_TIME
 
   /**
    * 隐身计数，每帧-1
@@ -450,18 +452,14 @@ export default class Entity<
     else if (dvz !== void 0) this.velocity.z = dvz;
   }
   self_update(): void {
-    // if (is_character(this) && controller_is_local_controller(this.controller)) {
-    //   if (this.controller.ai)
-    //     console.log('n', this._next_frame)
-    // }
     if (this._next_frame) this.enter_frame(this._next_frame);
     if (this._mp < this._max_mp)
       this.mp = Math.min(this._max_mp, this._mp + this._mp_r_spd);
 
     const { cpoint } = this.frame;
-    if (cpoint && is_nagtive(cpoint.decrease)) {
-      this._catching_value += cpoint.decrease;
-      if (this._catching_value < 0) this._catching_value = 0;
+    if (cpoint?.decrease) {
+      this._catch_time += cpoint.decrease;
+      if (this._catch_time < 0) this._catch_time = 0;
     }
     if (this._shaking <= 0) {
       for (const [k, v] of this._v_rests) {
@@ -469,7 +467,9 @@ export default class Entity<
         else this._v_rests.delete(k);
       }
     }
-    this._a_rest > 1 ? this._a_rest-- : this._a_rest = 0;
+    if (this._motionless <= 0)
+      this._a_rest > 1 ? this._a_rest-- : this._a_rest = 0;
+
     if (this._invisible_duration > 0) {
       this._invisible_duration--;
       if (this._invisible_duration <= 0) {
@@ -553,21 +553,26 @@ export default class Entity<
     return { id: Defines.FrameId.Auto }
   }
 
-
+  private prev_cpoint_a?: ICpointInfo;
   update_caught(): TNextFrame | undefined {
     if (!this._catcher) return;
-    if (!this._catcher._catching_value) {
+    if (!this._catcher._catch_time) {
       delete this._catcher;
+      this.prev_cpoint_a = void 0;
       return this.get_caught_end_frame();
     }
     const { cpoint: cpoint_a } = this._catcher.frame;
     const { cpoint: cpoint_b } = this.frame;
     if (!cpoint_a || !cpoint_b) {
       delete this._catcher;
+      this.prev_cpoint_a = void 0;
       return this.get_caught_cancel_frame()
     }
-    if (cpoint_a.injury) this.hp += cpoint_a.injury;
-    if (cpoint_a.shaking) this._shaking = Defines.DEFAULT_ITR_SHAKEING;
+    if (this.prev_cpoint_a !== cpoint_a) {
+      if (cpoint_a.injury) this.hp -= cpoint_a.injury;
+      if (cpoint_a.shaking && cpoint_a.shaking > 0) this._shaking = cpoint_a.shaking;
+    }
+    this.prev_cpoint_a = cpoint_a;
 
     const { throwvx, throwvy, throwvz, throwinjury } = cpoint_a;
     if (throwvx) this.velocity.x = throwvx * this.facing;
@@ -578,14 +583,16 @@ export default class Entity<
 
     if (throwvx || throwvy || throwvz) {
       delete this._catcher;
+      this.prev_cpoint_a = void 0;
     }
-    if (cpoint_a.vaction) return cpoint_a.vaction;
+    if (cpoint_a.vaction)
+      return cpoint_a.vaction;
   }
 
   update_catching(): TNextFrame | undefined {
     if (!this._catching) return;
 
-    if (!this._catching_value) {
+    if (!this._catch_time) {
       delete this._catching;
       return this.get_catching_end_frame();
     }

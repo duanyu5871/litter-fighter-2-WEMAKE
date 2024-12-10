@@ -21,6 +21,9 @@ import ditto, {
   IZip
 } from "./ditto";
 
+import { CharactersHelper } from './CharactersHelper';
+import { WeaponsHelper } from './WeaponsHelper';
+import Ditto from './ditto';
 import './entity/Ball';
 import Character from './entity/Character';
 import Entity from './entity/Entity';
@@ -33,10 +36,9 @@ import { ImageMgr } from './loader/loader';
 import Stage from './stage/Stage';
 import { fisrt, last } from './utils/container_help';
 import { arithmetic_progression } from './utils/math/arithmetic_progression';
+import float_equal from './utils/math/float_equal';
 import { random_get, random_in, random_take } from './utils/math/random';
 import { is_arr, is_num, is_str, not_empty_str } from './utils/type_check';
-import float_equal from './utils/math/float_equal';
-import Ditto from './ditto';
 
 const cheat_info_pair = (n: Defines.Cheats) => ['' + n, {
   keys: Defines.CheatKeys[n],
@@ -93,9 +95,8 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
 
   get player_characters() { return this.world.player_slot_characters }
 
-  readonly characters: Record<string, (num: number, team?: string) => void> = {}
-  readonly weapons: Record<string, (num: number, team?: string) => void> = {}
-
+  readonly characters = new CharactersHelper(this);
+  readonly weapons = new WeaponsHelper(this);
   readonly datas: DatMgr;
   readonly sounds: ISounds;
   readonly images: ImageMgr
@@ -434,11 +435,11 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
 
     for (const d of this.datas.characters) {
       const name = d.base.name.toLowerCase();
-      this.characters[`add_${name}`] = (num = 1, team = void 0) => this.add_character(d, num, team);
+      (this.characters as any)[`add_${name}`] = (num = 1, team = void 0) => this.add_character(d, num, team);
     }
     for (const d of this.datas.weapons) {
       const name = d.base.name.toLowerCase();
-      this.weapons[`add_${name}`] = (num = 1, team_1 = void 0) => this.add_weapon(d, num, team_1);
+      (this.weapons as any)[`add_${name}`] = (num = 1, team_1 = void 0) => this.add_weapon(d, num, team_1);
     }
   }
 

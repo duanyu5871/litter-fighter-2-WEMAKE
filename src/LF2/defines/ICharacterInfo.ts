@@ -1,5 +1,5 @@
 import { IGameObjInfo } from ".";
-
+import type Defines from "./defines";
 export interface IArmorInfo {
   hit_sound?: string;
   fireproof?: number;
@@ -25,7 +25,7 @@ export interface ICharacterInfo extends IGameObjInfo {
   rowing_distance: number;
   fall_value: number;
   defend_value: number;
-  
+
   /**
    * 默认角色血量
    * 在一些模式下，此数值可能会被覆盖
@@ -62,12 +62,19 @@ export interface ICharacterInfo extends IGameObjInfo {
    */
   mp_r_min_spd?: number;
 
-
   /**
    * 是否为隐藏角色
    * 默认否
    *
    * @type {?boolean}
    */
-  hidden?: boolean;
+  // hidden?: boolean;
+
+  /**
+   * 角色抓人能抓多久
+   * 
+   * @see {Defines.DAFUALT_CATCH_TIME} 默认值
+   * @type {?number}
+   */
+  catch_time?: number
 }

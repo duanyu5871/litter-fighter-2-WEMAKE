@@ -60,9 +60,9 @@ export default class CharacterSelLogic extends LayoutComponent {
   }
 
   get characters() {
-    const all_characters = this.lf2.datas.characters
-    const show_all = this.lf2.is_cheat_enabled(Defines.Cheats.LF2_NET)
-    return show_all ? all_characters : all_characters.filter(v => !v.base.hidden);
+    return this.lf2.is_cheat_enabled(Defines.Cheats.LF2_NET) ?
+      this.lf2.datas.characters :
+      this.lf2.datas.get_characters_not_in_group(Defines.EntityGroup.Hidden)
   }
 
   on_player_key_down(player_id: string, key: GameKey): void {
@@ -138,9 +138,7 @@ export default class CharacterSelLogic extends LayoutComponent {
    * @protected
    */
   protected handle_hidden_character() {
-    const all_characters = this.lf2.datas.characters
-    const show_all = this.lf2.is_cheat_enabled(Defines.Cheats.LF2_NET)
-    const characters = show_all ? all_characters : all_characters.filter(v => !v.base.hidden);
+    const { characters } = this;
     const idx = characters.findIndex(v => v.id === this.character);
     this.player?.set_character(characters[idx]?.id ?? '');
   }

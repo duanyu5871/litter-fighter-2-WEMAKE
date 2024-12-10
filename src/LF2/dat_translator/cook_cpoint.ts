@@ -18,6 +18,16 @@ export function cook_cpoint(unsure_cpoint: ICpointInfo): void {
   if (not_zero_num(tvj) && tvj !== -842150451) unsure_cpoint.throwinjury = tvj;
 
   const vaction = take(unsure_cpoint as any, 'vaction');
+  const raw_injury = take(unsure_cpoint, 'injury');
+  if (is_num(raw_injury)) {
+    unsure_cpoint.injury = Math.abs(raw_injury);
+    if (raw_injury > 0) unsure_cpoint.shaking = Defines.DEFAULT_ITR_SHAKEING;
+  }
+
+  const raw_decrease = take(unsure_cpoint, 'decrease');
+  if (is_num(raw_decrease)) {
+    unsure_cpoint.decrease = -Math.abs(raw_decrease)
+  }
 
   if (is_str(vaction) || is_num(vaction)) {
     unsure_cpoint.vaction = {

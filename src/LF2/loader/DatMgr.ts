@@ -156,11 +156,12 @@ class Inner {
 
 export default class DatMgr {
   static readonly TAG: string = 'DatMgr';
-  find_group(group_name: string) {
+
+  find_group(group: string) {
     return {
-      characters: this.characters.filter(v => v.base.group && v.base.group.indexOf(group_name) >= 0),
-      weapons: this.weapons.filter(v => v.base.group && v.base.group.indexOf(group_name) >= 0),
-      entity: this.entity.filter(v => v.base.group && v.base.group.indexOf(group_name) >= 0),
+      characters: this.characters.filter(v => v.base.group && v.base.group.indexOf(group) >= 0),
+      weapons: this.weapons.filter(v => v.base.group && v.base.group.indexOf(group) >= 0),
+      entity: this.entity.filter(v => v.base.group && v.base.group.indexOf(group) >= 0),
     }
   }
   private _inner_id: number = 0;
@@ -213,6 +214,13 @@ export default class DatMgr {
   find_background(predicate: IFindPredicate<IBgData>): IBgData | undefined;
   find_background(arg_0: string | IFindPredicate<IBgData>): IBgData | undefined {
     return is_str(arg_0) ? this.backgrounds.find(v => v.id === arg_0) : this.backgrounds.find(arg_0)
+  }
+
+  get_characters_of_group(group: string): ICharacterData[] {
+    return this.characters.filter(v => v.base.group && v.base.group.indexOf(group) >= 0)
+  }
+  get_characters_not_in_group(group: string): ICharacterData[] {
+    return this.characters.filter(v => !v.base.group || v.base.group.indexOf(group) < 0)
   }
 }
 interface IFindPredicate<T> {
