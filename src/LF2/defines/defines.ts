@@ -27,6 +27,8 @@ export namespace Defines {
   export const DAFAULT_MP = 500;
   export const DEFAULT_FALL_VALUE = 140
   export const DEFAULT_DEFEND_VALUE = 120
+  export const DEFAULT_ITR_SHAKEING = 6;
+  export const DEFAULT_ITR_MOTIONLESS = 6;
 
 
   /**

@@ -11,7 +11,8 @@ import Throwing from "./Throwing";
 
 export const WEAPON_STATES = new States<Weapon>()
 for (const [k, v] of ENTITY_STATES.map) WEAPON_STATES.set(k, v)
-WEAPON_STATES.set(Defines.State.Any, new BaseWeaponState())
+WEAPON_STATES.set(Defines.State.Weapon_Rebounding, new BaseWeaponState())
+
 WEAPON_STATES.set(Defines.State.Weapon_InTheSky, new InTheSky())
 WEAPON_STATES.set(Defines.State.Weapon_OnGround, new OnGround())
 WEAPON_STATES.set(Defines.State.Weapon_OnHand, new OnHand())

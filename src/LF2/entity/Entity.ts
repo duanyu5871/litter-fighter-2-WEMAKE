@@ -43,8 +43,7 @@ export const GONE_FRAME_INFO: IFrameInfo = {
   centery: 0
 };
 export type TData = IBaseData | ICharacterData | IWeaponData | IEntityData | IBallData
-export const V_SHAKE = 6;
-export const A_SHAKE = 6;
+
 export interface IVictimRest {
   remain: number,
   itr: IItrInfo,
@@ -568,7 +567,7 @@ export default class Entity<
       return this.get_caught_cancel_frame()
     }
     if (cpoint_a.injury) this.hp += cpoint_a.injury;
-    if (cpoint_a.shaking) this._shaking = V_SHAKE;
+    if (cpoint_a.shaking) this._shaking = Defines.DEFAULT_ITR_SHAKEING;
 
     const { throwvx, throwvy, throwvz, throwinjury } = cpoint_a;
     if (throwvx) this.velocity.x = throwvx * this.facing;
@@ -696,17 +695,20 @@ export default class Entity<
 
   on_collision(target: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
     this.lastest_victim = target;
-    this._motionless = itr.motionless ?? 4;
+    this._motionless = itr.motionless ?? Defines.DEFAULT_ITR_MOTIONLESS;
     if (itr.arest) {
       this._a_rest = itr.arest;
     } else if (!itr.vrest) {
-      this._a_rest = this.wait + A_SHAKE + this._motionless;
+      this._a_rest = this.wait + this._motionless;
     }
+    this.state?.on_collision?.(this, target, itr, bdy, a_cube, b_cube);
   }
 
   on_be_collided(attacker: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
+    if (this.state?.before_be_collided?.(attacker, this, itr, bdy, a_cube, b_cube))
+      return;
     this.lastest_attacker = attacker;
-    this._shaking = itr.shaking ?? V_SHAKE;
+    this._shaking = itr.shaking ?? Defines.DEFAULT_ITR_SHAKEING;
     if (!itr.arest && itr.vrest) this._v_rests.set(attacker.id, {
       remain: itr.vrest - this._shaking,
       itr, bdy, attacker, a_cube, b_cube,
@@ -716,6 +718,7 @@ export default class Entity<
     if (bdy.kind >= Defines.BdyKind.GotoMin && bdy.kind <= Defines.BdyKind.GotoMax) {
       this._next_frame = { id: '' + (bdy.kind - 1000) }
     }
+    this.state?.on_be_collided?.(attacker, this, itr, bdy, a_cube, b_cube);
   }
 
   dispose(): void {
