@@ -29,7 +29,7 @@ export namespace Defines {
   export const DEFAULT_DEFEND_VALUE = 120
   export const DEFAULT_ITR_SHAKEING = 6;
   export const DEFAULT_ITR_MOTIONLESS = 6;
-  export const DAFUALT_CATCH_TIME = 602;
+  export const DAFUALT_CATCH_TIME = 550;
 
   /**
    * 默认最大回蓝速度, 血越少，回蓝越快（线性）

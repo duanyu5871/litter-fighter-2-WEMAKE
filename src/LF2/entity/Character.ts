@@ -169,7 +169,7 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
       Warn.print(Character.TAG + '::start_catch', 'cannot catch, catchingact got', itr.catchingact)
       return;
     }
-    this._catch_time = 602;
+    this._catch_time = this._max_catch_time;
     this._catching = target;
     this._next_frame = itr.catchingact
   }
