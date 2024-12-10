@@ -10,10 +10,10 @@
       "set_layout(entry)"
     ]
   ],
-  "items": [
+  "items": [ 
     {
       "pos": "0,0,5",
-      "visible": "paused==1",
+      "visible": false,
       "template": "layouts/player_keys_hints.json"
     },
     {

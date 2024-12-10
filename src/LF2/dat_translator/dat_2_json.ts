@@ -102,7 +102,6 @@ export default function dat_to_json(
         base.bounce = 0.2;
         base.name = datIndex.hash ?? datIndex.file.replace(/[^a-z|A-Z|0-9|_]/g, '')
         ret = make_weapon_data(base, full_str, make_frames(full_str, base.files));
-        make_weapon_brokens(ret as any)
         break;
       case '2':
         base.type = Defines.WeaponType.Heavy;
@@ -112,21 +111,18 @@ export default function dat_to_json(
         }
         base.name = datIndex.hash ?? datIndex.file.replace(/[^a-z|A-Z|0-9|_]/g, '')
         ret = make_weapon_data(base, full_str, make_frames(full_str, base.files));
-        make_weapon_brokens(ret as any)
         break;
       case '4':
         base.type = Defines.WeaponType.Baseball;
         base.bounce = 0.45;
         base.name = datIndex.hash ?? datIndex.file.replace(/[^a-z|A-Z|0-9|_]/g, '')
         ret = make_weapon_data(base, full_str, make_frames(full_str, base.files));
-        make_weapon_brokens(ret as any)
         break;
       case '6': {
         base.type = Defines.WeaponType.Drink;
         base.bounce = 0.4;
         base.name = datIndex.hash ?? datIndex.file.replace(/[^a-z|A-Z|0-9|_]/g, '')
         ret = make_weapon_data(base, full_str, make_frames(full_str, base.files));
-        make_weapon_brokens(ret as any)
         break;
       }
       case '0': {
@@ -181,6 +177,7 @@ export default function dat_to_json(
         break;
     }
     if (ret) ret.id = datIndex.id;
+    if (ret.type === 'weapon') make_weapon_brokens(ret as any)
     return ret;
   } else {
     if ('small' in base && 'name' in base && 'head' in base) {

@@ -328,7 +328,8 @@ export namespace Defines {
     None = 5,     // (或以上) |沒效果，也打不中任何東西
     MFire1 = 20,  // 定身火 ??
     MFire2 = 21,  // 定身火 ??
-    MFire3 = 22,  // 定身火 ??
+    FireExplosion = 22,  // 定身火 ??
+    Explosion = 23, // julian col
     MIce = 30,    // 定身冰 ??
   }
   export enum CPointKind {

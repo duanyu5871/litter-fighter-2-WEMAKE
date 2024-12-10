@@ -124,7 +124,6 @@ export function make_weapon_brokens(data: IWeaponData) {
       }
     });
   }
-
   switch (data.id) {
     case "100": // #stick
       data.base.brokens = ooo('10', '10', '14', '14', '14')

@@ -75,7 +75,11 @@ export default class Entity<
   get catcher() { return this._catcher; }
   get lf2(): LF2 { return this.world.lf2 }
 
+  // private ___facing: TFace = 1;
+  // get facing(): TFace { return this.___facing; }
+  // set facing(v: TFace) { this.___facing = v; }
   facing: TFace = 1;
+
   frame: F = EMPTY_FRAME_INFO as F;
 
   protected _next_frame: TNextFrame | undefined = void 0;
@@ -704,7 +708,7 @@ export default class Entity<
     this.lastest_victim = target;
     this._motionless = itr.motionless ?? Defines.DEFAULT_ITR_MOTIONLESS;
     if (itr.arest) {
-      this._a_rest = itr.arest;
+      this._a_rest = itr.arest - this._motionless;
     } else if (!itr.vrest) {
       this._a_rest = this.wait + this._motionless;
     }
@@ -717,7 +721,7 @@ export default class Entity<
     this.lastest_attacker = attacker;
     this._shaking = itr.shaking ?? Defines.DEFAULT_ITR_SHAKEING;
     if (!itr.arest && itr.vrest) this._v_rests.set(attacker.id, {
-      remain: itr.vrest - this._shaking,
+      remain: itr.vrest,
       itr, bdy, attacker, a_cube, b_cube,
       a_frame: attacker.get_frame(),
       b_frame: this.get_frame()

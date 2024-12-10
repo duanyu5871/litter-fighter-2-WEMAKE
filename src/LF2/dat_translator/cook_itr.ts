@@ -7,10 +7,10 @@ export default function cook_itr(unsafe_itr?: Partial<IItrInfo>) {
   if (!unsafe_itr) return;
 
   const vrest = take(unsafe_itr, 'vrest');
-  if (is_positive(vrest)) { unsafe_itr.vrest = Math.max(2, 2 * vrest - 2); }
+  if (is_positive(vrest)) { unsafe_itr.vrest = Math.max(2, 2 * vrest - Defines.DEFAULT_ITR_SHAKEING); }
 
   const arest = take(unsafe_itr, 'arest');
-  if (is_positive(arest)) { unsafe_itr.arest = Math.max(2, 2 * arest - 2); }
+  if (is_positive(arest)) { unsafe_itr.arest = Math.max(2, 2 * arest - Defines.DEFAULT_ITR_MOTIONLESS); }
 
   const src_dvx = take(unsafe_itr, 'dvx');
   if (not_zero_num(src_dvx)) unsafe_itr.dvx = src_dvx * 0.5;

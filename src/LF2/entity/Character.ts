@@ -18,8 +18,8 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
     return this._callbacks
   }
   protected _resting = 0;
-  protected _fall_value = Defines.DEFAULT_FALL_VALUE;
-  protected _defend_value = Defines.DEFAULT_DEFEND_VALUE;
+  fall_value = Defines.DEFAULT_FALL_VALUE;
+  defend_value = Defines.DEFAULT_DEFEND_VALUE;
 
   constructor(world: World, data: ICharacterData) {
     super(world, data, CHARACTER_STATES);
@@ -35,8 +35,8 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
 
     this.update_mp_recovery_speed();
 
-    this._fall_value = this.data.base.fall_value;
-    this._defend_value = this.data.base.defend_value;
+    this.fall_value = this.data.base.fall_value;
+    this.defend_value = this.data.base.defend_value;
     this._hp = this._max_hp
     this._mp = this._max_mp
     this._catch_time = this._max_catch_time;
@@ -129,16 +129,18 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
   override self_update(): void {
     super.self_update();
     switch (this.frame.state) {
-      case Defines.State.Falling:
+      case Defines.State.Lying:
         this._resting = 0;
-        this._fall_value = this.data.base.fall_value;
-        this._defend_value = this.data.base.defend_value;
+        this.fall_value = this.data.base.fall_value;
+        this.defend_value = this.data.base.defend_value;
+        break;
+      case Defines.State.Burning:
         break;
       default: {
         if (this._resting > 0) { this._resting--; }
         else {
-          if (this._fall_value < this.data.base.fall_value) { this._fall_value += 1; }
-          if (this._defend_value < this.data.base.defend_value) { this._defend_value += 1; }
+          if (this.fall_value < this.data.base.fall_value) { this.fall_value += 1; }
+          if (this.defend_value < this.data.base.defend_value) { this.defend_value += 1; }
         }
       }
     }
@@ -184,8 +186,8 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
     }
     this._catcher = attacker;
     this._resting = 0;
-    this._fall_value = this.data.base.fall_value;
-    this._defend_value = this.data.base.defend_value;
+    this.fall_value = this.data.base.fall_value;
+    this.defend_value = this.data.base.defend_value;
     this._next_frame = itr.caughtact;
   }
   override on_collision(target: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
@@ -248,16 +250,22 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
     const bdefend = itr.bdefend || 0;
 
     this._resting = 30
-    if (this.get_frame().state === Defines.State.Defend && aface !== this.facing && bdefend < 100) {
-      this._defend_value -= 2 * bdefend;
-      if (this._defend_value <= 0) { // 破防
-        this._defend_value = 0;
+    if (
+      this.frame.state === Defines.State.Defend &&
+      aface !== this.facing &&
+      bdefend < 100
+    ) {
+      this.defend_value -= 2 * bdefend;
+      if (this.defend_value <= 0) { // 破防
+        this.defend_value = 0;
         this.world.spark(spark_x, spark_y, spark_z, "broken_defend")
         this._next_frame = { id: indexes.broken_defend }
         return;
       }
 
-      if (itr.dvx) this.velocity.x = itr.dvx * aface / 2;
+      if (itr.dvx) {
+        this.velocity.x = itr.dvx * aface / 2;
+      }
       this.world.spark(spark_x, spark_y, spark_z, "defend_hit")
       this._next_frame = { id: indexes.defend_hit }
       return;
@@ -268,24 +276,43 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
       if (this.hp <= 0) attacker.add_kill_sum(1);
     }
 
-    this._defend_value = 0;
-    this._fall_value -= itr.fall ? itr.fall * 2 : 40;
+    this.defend_value = 0;
+    this.fall_value -= itr.fall ? itr.fall * 2 : 40;
     /* 击倒 */
-    if (this._fall_value <= 0 || this._hp <= 0) {
-      this._fall_value = 0;
+    if (this.fall_value <= 0 || this._hp <= 0) {
+      this.fall_value = 0;
       this.velocity.y = itr.dvy ?? 3;
-      this.velocity.x = (itr.dvx || 0) * aface;
+
+      if (itr.dvx) {
+        switch (itr.effect) {
+          case Defines.ItrEffect.FireExplosion:
+          case Defines.ItrEffect.Explosion: {
+            const direction = this.position.x > attacker.position.x ? -1 : 1
+            this.velocity.x = itr.dvx * direction;
+            break;
+          }
+          default: {
+            this.velocity.x = itr.dvx * aface;
+            break;
+          }
+        }
+      }
+
       if (
         itr.effect === Defines.ItrEffect.Fire ||
         itr.effect === Defines.ItrEffect.MFire1 ||
         itr.effect === Defines.ItrEffect.MFire2 ||
-        itr.effect === Defines.ItrEffect.MFire3
+        itr.effect === Defines.ItrEffect.FireExplosion
       ) {
         // TODO: SOUND
+        this.fall_value = 0;
+        this.defend_value = 0;
         this._next_frame = { id: indexes.fire[0], facing: turn_face(attacker.facing) }
         return;
       } else if (itr.effect === Defines.ItrEffect.Ice) {
         // TODO: SOUND
+        this.fall_value = 0;
+        this.defend_value = 0;
         this._next_frame = { id: indexes.ice, facing: turn_face(attacker.facing) }
         return
       } else if (itr.effect === Defines.ItrEffect.Sharp) {
@@ -304,7 +331,7 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
       itr.effect === Defines.ItrEffect.Fire ||
       itr.effect === Defines.ItrEffect.MFire1 ||
       itr.effect === Defines.ItrEffect.MFire2 ||
-      itr.effect === Defines.ItrEffect.MFire3
+      itr.effect === Defines.ItrEffect.FireExplosion
     ) {
       // TODO: SOUND
       this._next_frame = { id: indexes.fire[0], facing: turn_face(attacker.facing) }
@@ -320,7 +347,7 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
     }
 
     /* 击晕 */
-    if (this._fall_value <= 40) {
+    if (this.fall_value <= 40) {
       this._next_frame = { id: indexes.dizzy };
       return;
     }
