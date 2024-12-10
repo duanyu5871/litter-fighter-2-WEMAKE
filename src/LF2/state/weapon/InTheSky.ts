@@ -4,6 +4,9 @@ import BaseWeaponState from "./Base";
 
 export default class InTheSky extends BaseWeaponState {
   protected _unhurt_weapons = new Set<Weapon>();
+  get_gravity(e: Weapon) {
+    return e.world.gravity * 0.6
+  };
   update(e: Weapon): void {
     e.on_gravity();
     e.velocity_decay();
@@ -39,4 +42,3 @@ export default class InTheSky extends BaseWeaponState {
     }
   }
 }
-

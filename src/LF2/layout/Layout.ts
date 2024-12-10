@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { ISpriteInfo, ISpriteNode } from '../3d';
 import LF2 from '../LF2';
 import Callbacks from '../base/Callbacks';
-import Expression, { ValGetter } from '../base/Expression';
+import Expression, { IValGetter } from '../base/Expression';
 import { NoEmitCallbacks } from '../base/NoEmitCallbacks';
 import GameKey from '../defines/GameKey';
 import IStyle from '../defines/IStyle';
@@ -376,7 +376,7 @@ export default class Layout {
     return ret;
   }
 
-  static cook(lf2: LF2, info: ICookedLayoutInfo, get_val: ValGetter<Layout>, parent?: Layout) {
+  static cook(lf2: LF2, info: ICookedLayoutInfo, get_val: IValGetter<Layout>, parent?: Layout) {
     const ret = new Layout(lf2, info, parent);
     ret._cook_data(get_val);
     ret._cook_img_idx(get_val);
@@ -401,7 +401,7 @@ export default class Layout {
     }
   }
 
-  private _cook_data(get_val: ValGetter<Layout>) {
+  private _cook_data(get_val: IValGetter<Layout>) {
     const { visible, opacity, disabled } = this.data;
 
     if (is_bool(disabled)) {
@@ -429,7 +429,7 @@ export default class Layout {
     this._center.default_value = this.data.center;
   }
 
-  private _cook_img_idx(get_val: ValGetter<Layout>) {
+  private _cook_img_idx(get_val: IValGetter<Layout>) {
     const { img_infos } = this;
     if (!img_infos?.length) return;
     const { which } = this.data;

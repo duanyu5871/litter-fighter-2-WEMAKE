@@ -1,3 +1,4 @@
+import { IExpression } from "../base/Expression";
 
 export interface INextFrame {
   id?: string | string[];
@@ -22,5 +23,11 @@ export interface INextFrame {
    * @type {Defines.FacingFlag}
    */
   facing?: number;
-  expression?: string | ((e: any) => boolean);
+
+  /**
+   * 进入帧的判断表达式
+   */
+  expression?: string;
+
+  judger?: IExpression<any>;
 }

@@ -1,4 +1,4 @@
-import { Expression, Judger } from './Expression';
+import { Expression, IJudger } from './Expression';
 
 const expression_result_pairs: [1 | 0, string, any][] = [
   [0, "(1=1)&1=2", false],

@@ -11,8 +11,7 @@ export function cook_next_frame(i: INextFrame | INextFrame[]): void {
     return;
   }
   if (typeof i.expression !== 'string') return;
-  const expression = (i as any).condition_cls = new Expression(i.expression, get_val_from_entity);
-  i.expression = expression.run;
+  i.judger = new Expression(i.expression, get_val_from_entity);
 }
 
 function get_val_from_entity(word: string, e: Entity): any {

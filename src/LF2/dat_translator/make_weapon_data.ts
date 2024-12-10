@@ -16,36 +16,42 @@ const indexes_map: Record<Defines.WeaponType, IWeaponFrameIndexes> = {
     in_the_sky: '',
     on_ground: '',
     just_on_ground: '',
+    throw_on_ground: '',
     throwing: '',
   },
   [Defines.WeaponType.Stick]: {
     in_the_sky: '0',
     on_ground: '60',
     just_on_ground: '70',
+    throw_on_ground: '71',
     throwing: '40',
   },
   [Defines.WeaponType.Heavy]: {
     in_the_sky: '0',
     on_ground: '20',
     just_on_ground: '21',
+    throw_on_ground: '71',
     throwing: '0',
   },
   [Defines.WeaponType.Knife]: {
     in_the_sky: '0',
     on_ground: '60',
     just_on_ground: '70',
+    throw_on_ground: '71',
     throwing: '40',
   },
   [Defines.WeaponType.Baseball]: {
     in_the_sky: '0',
     on_ground: '60',
     just_on_ground: '70',
+    throw_on_ground: '71',
     throwing: '40',
   },
   [Defines.WeaponType.Drink]: {
     in_the_sky: '0',
     on_ground: '60',
     just_on_ground: '70',
+    throw_on_ground: '71',
     throwing: '40',
   }
 }

@@ -870,8 +870,8 @@ export default class Entity<
       }
       return [void 0, void 0];
     }
-    let { id, expression: condition } = which;
-    if (typeof condition === 'function' && !condition(this)) {
+    let { id, judger } = which;
+    if (judger && !judger.run(this)) {
       return [void 0, void 0]
     }
     if (Array.isArray(id)) id = random_get(id);
