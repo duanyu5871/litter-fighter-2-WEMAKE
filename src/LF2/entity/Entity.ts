@@ -462,7 +462,7 @@ export default class Entity<
 
     const { cpoint } = this.frame;
     if (cpoint?.decrease) {
-      this._catch_time -= cpoint.decrease;
+      this._catch_time -= Math.abs(cpoint.decrease);
       if (this._catch_time < 0) this._catch_time = 0;
     }
     if (this._shaking <= 0) {
