@@ -400,7 +400,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
       let data: string = '';
       for (const c of ret.buf)
         data += String.fromCharCode(c)
-      await ditto.Cache.del(info_url)
+      await ditto.Cache.del(info_url, '')
       await ditto.Cache.put(md5, 0, info_url, data);
     }
     this.on_loading_content(`${url}`, 100);
