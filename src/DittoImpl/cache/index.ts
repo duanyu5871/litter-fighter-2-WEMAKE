@@ -1,6 +1,6 @@
 import Dexie, { EntityTable } from 'dexie';
-import { ICacheData } from '../../LF2/ditto/cache/ICacheData';
 import { ICache } from '../../LF2/ditto/cache';
+import { ICacheData } from '../../LF2/ditto/cache/ICacheData';
 
 const db = new Dexie('lf2') as Dexie & {
   tbl_lf2_data: EntityTable<ICacheData, 'id'>;
@@ -25,6 +25,9 @@ db.version(3).stores({
 })
 
 export const __Cache: ICache = {
+  async list(): Promise<ICacheData[] | undefined> {
+    return db.open().catch(_ => void 0).then(() => db.tbl_lf2_data.toArray())
+  },
   async get(name: string): Promise<ICacheData | undefined> {
     return db.open().catch(_ => void 0).then(() => db.tbl_lf2_data.where('name').equals(name).first())
   },
@@ -32,5 +35,8 @@ export const __Cache: ICache = {
     return db.open().catch(_ => void 0).then(() => db.tbl_lf2_data.put({
       name, version: 0, data, create_date: Date.now()
     }))
+  },
+  async del(...names: string[]): Promise<number | void> {
+    return db.open().catch(_ => void 0).then(() => db.tbl_lf2_data.where('name').anyOf(names).delete())
   }
 }
