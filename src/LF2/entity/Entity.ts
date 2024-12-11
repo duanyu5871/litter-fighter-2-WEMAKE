@@ -17,7 +17,7 @@ import type Character from './Character';
 import { Factory } from './Factory';
 import type IEntityCallbacks from './IEntityCallbacks';
 import { turn_face } from './face_helper';
-import { is_character, is_weapon } from './type_check';
+import { is_character } from './type_check';
 export const EMPTY_PIECE: ITexturePieceInfo = {
   tex: '', x: 0, y: 0, w: 0, h: 0,
   pixel_h: 0, pixel_w: 0,
@@ -348,27 +348,11 @@ export default class Entity<
   }
 
   find_auto_frame(): F {
-    const self = this;
-    if (is_character(self)) {
-      const { in_the_sky, standing, heavy_obj_walk } = self.data.indexes;
-      let fid: string;
-      if (is_weapon(this.holding) && this.holding.data.base.type === Defines.WeaponType.Heavy) {
-        fid = heavy_obj_walk[0]
-      } else if (this.position.y > 0) {
-        fid = in_the_sky[0]
-      } else if (this.hp > 0) {
-        fid = standing;
-      } else {
-        fid = standing; // TODO
-      }
-      return this.data.frames[fid] ?? this.data.frames['0'] ?? this.frame;
-    } else if (is_weapon(self)) {
-      const { frames, indexes } = self.data;
-      if (this.position.y > 0) return frames[indexes.in_the_sky];
-      return frames[indexes.on_ground];
-    } else {
-      return this.data.frames['0'] ?? this.frame;
-    }
+    return (
+      this.state?.get_auto_frame?.(this) ??
+      this.data.frames['0'] ??
+      this.frame
+    ) as F // FIXME: fix this 'as'.
   }
 
   on_spawn_by_emitter(emitter: Entity, o: IOpointInfo, speed_z: number = 0) {

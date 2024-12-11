@@ -1,4 +1,4 @@
-import { Defines, IBdyInfo, IItrInfo } from "../../defines";
+import { Defines, IBdyInfo, IFrameInfo, IItrInfo } from "../../defines";
 import Entity from "../../entity/Entity";
 import Weapon from "../../entity/Weapon";
 import { ICube } from "../../World";
@@ -65,6 +65,12 @@ export default class BaseWeaponState extends BaseState<Weapon> {
       target.team = attacker.team;
       target.enter_frame({ id: target.data.indexes.in_the_sky })
     }
+  }
+
+  override get_auto_frame(e: Weapon): IFrameInfo | undefined {
+    const { frames, indexes } = e.data;
+    if (e.position.y > 0) return frames[indexes.in_the_sky];
+    return frames[indexes.on_ground];
   }
 }
 
