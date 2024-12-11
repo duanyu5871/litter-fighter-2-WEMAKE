@@ -32,13 +32,13 @@ CHARACTER_STATES.set(Defines.State.Frozen, new Frozen());
 CHARACTER_STATES.set(Defines.State.Lying, new Lying())
 
 CHARACTER_STATES.set(Defines.State.Caught, new class extends BaseState<Character> {
-  enter(_e: Character): void {
+  override enter(_e: Character): void {
     _e.velocity.set(0, 0, 0);
   }
 }())
 
 CHARACTER_STATES.set(Defines.State.Z_Moveable, new class extends BaseCharacterState {
-  update(e: Character): void {
+  override update(e: Character): void {
     e.handle_gravity();
     e.handle_ground_velocity_decay();
     e.handle_frame_velocity();
@@ -46,7 +46,7 @@ CHARACTER_STATES.set(Defines.State.Z_Moveable, new class extends BaseCharacterSt
 }())
 
 CHARACTER_STATES.set(Defines.State.NextAsLanding, new class extends BaseCharacterState {
-  on_landing(e: Character, vx: number, vy: number, vz: number): void {
+  override on_landing(e: Character, vx: number, vy: number, vz: number): void {
     e.enter_frame(e.get_frame().next)
   }
 }())

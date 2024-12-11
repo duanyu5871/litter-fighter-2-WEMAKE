@@ -3,7 +3,7 @@ import BaseCharacterState from "./Base";
 
 
 export default class Standing extends BaseCharacterState {
-  update(e: Character): void {
+  override update(e: Character): void {
     super.update(e);
     if (e.hp <= 0) {
       e.enter_frame(e.get_sudden_death_frame());

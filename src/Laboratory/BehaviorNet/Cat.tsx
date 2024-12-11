@@ -43,7 +43,7 @@ export class Cat extends Creature {
 
   }
 
-  update(delta_time: number): void {
+  override update(delta_time: number): void {
     super.update(delta_time);
     this.human = this.ground?.creatures.find(v => v.name === 'You');
   }

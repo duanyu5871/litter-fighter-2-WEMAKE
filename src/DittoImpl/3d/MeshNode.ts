@@ -19,7 +19,7 @@ export class __MeshNode extends __ObjectNode implements IMeshNode {
   get geometry(): BufferGeometry { return this.inner.geometry }
   get render_order(): number { return this.inner.renderOrder }
   set render_order(v: number) { this.inner.renderOrder = v }
-  get inner() { return this._inner as Mesh }
+  override get inner() { return this._inner as Mesh }
   get material() { return this.inner.material };
 
   set_info(info: IMeshInfo): this {
@@ -46,7 +46,7 @@ export class __MeshNode extends __ObjectNode implements IMeshNode {
       fn(mm);
     return this;
   }
-  set_opacity(opacity: number): this {
+  override set_opacity(opacity: number): this {
     return this.traversal_material((m) => {
       m.opacity = opacity
     })
@@ -62,14 +62,14 @@ export class __MeshNode extends __ObjectNode implements IMeshNode {
   set_depth_write(v: boolean): this {
     return this.traversal_material(m => m.depthWrite = v)
   }
-  dispose() {
+  override dispose() {
     super.dispose();
     const { inner } = this
     inner.removeFromParent();
     this.traversal_material(dispose_material)
     inner.geometry.dispose();
   }
-  get_object_3d(): Object3D<Object3DEventMap> {
+  override get_object_3d(): Object3D<Object3DEventMap> {
     return this.inner;
   }
 }

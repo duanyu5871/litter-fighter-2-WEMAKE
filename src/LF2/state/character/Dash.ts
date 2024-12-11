@@ -3,7 +3,7 @@ import { Defines } from "../../defines/defines";
 import type Character from '../../entity/Character';
 import BaseCharacterState from "./Base";
 export default class Dash extends BaseCharacterState {
-  enter(e: Character, prev_frame: IFrameInfo): void {
+  override enter(e: Character, prev_frame: IFrameInfo): void {
     if (e.position.y > 0 && e.velocity.y !== 0) return;
     const {
       dash_distance: dx,

@@ -9,7 +9,7 @@ export class __BillboardNode extends __ObjectNode implements IBillboardNode {
   constructor(lf2: LF2, info?: IBillboardInfo) {
     super(lf2, new Sprite(info?.material))
   }
-  get inner() { return this._inner as Sprite }
+  override get inner() { return this._inner as Sprite }
   set geometry(v: BufferGeometry<NormalBufferAttributes>) {
     throw new Error("Method not implemented.");
   }

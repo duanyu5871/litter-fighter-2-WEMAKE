@@ -12,6 +12,7 @@ import { Defines } from './LF2/defines/defines';
 import { ToggleButton } from './Component/ToggleButton';
 import Titled from './Component/Titled';
 import GameKey from './LF2/defines/GameKey';
+import { is_local_ctrl } from './LF2/entity/type_check';
 
 const key_names: Record<GameKey, string> = {
   U: '上',
@@ -66,7 +67,7 @@ export function PlayerRow(props: Props) {
         set_keys(v => {
           const ks = { ...v, [name]: key };
           const character = lf2.get_player_character(info.id);
-          if (character && LocalController.is(character.controller))
+          if (character && is_local_ctrl(character.controller))
             character.controller.set_key_code_map(ks);
           return ks;
         })

@@ -3,26 +3,23 @@ import type { ICube, World } from '../World';
 import type { IBallData, IBallFrameInfo, IBallInfo, IBdyInfo, IItrInfo, IOpointInfo } from '../defines';
 import { Defines } from '../defines';
 import { BALL_STATES } from '../state/ball';
-import Entity, { EMPTY_FRAME_INFO } from './Entity';
+import Entity from './Entity';
 import { Factory } from './Factory';
 import { is_character, is_weapon } from './type_check';
 
 export default class Ball extends Entity<IBallFrameInfo, IBallInfo, IBallData> {
-  static readonly TAG: string = 'Ball';
+  static override readonly TAG: string = 'Ball';
   readonly is_ball = true;
   constructor(world: World, data: IBallData) {
     super(world, data, BALL_STATES);
     this.name = "ball: " + data.id
     this.hp = this.data.base.hp;
   }
-  override find_auto_frame() {
-    return this.data.frames[0] ?? EMPTY_FRAME_INFO;
-  }
   override on_spawn_by_emitter(shotter: Entity, o: IOpointInfo, speed_z: number) {
     const ret = super.on_spawn_by_emitter(shotter, o);
     return ret;
   }
-  set_frame(v: IBallFrameInfo): void {
+  override set_frame(v: IBallFrameInfo): void {
     switch (this.frame.behavior) {
       case Defines.BallBehavior._01:
       case Defines.BallBehavior._02:
@@ -47,7 +44,7 @@ export default class Ball extends Entity<IBallFrameInfo, IBallInfo, IBallData> {
       this.position.z
     )
   }
-  on_collision(target: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
+  override on_collision(target: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
     super.on_collision(target, itr, bdy, a_cube, b_cube);
     if (is_character(target) || is_weapon(target)) {
       const f = this.get_frame();
@@ -73,10 +70,10 @@ export default class Ball extends Entity<IBallFrameInfo, IBallInfo, IBallData> {
       this.velocity.y = 0;
     }
   }
-  on_be_collided(attacker: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
+  override on_be_collided(attacker: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
     super.on_be_collided(attacker, itr, bdy, a_cube, b_cube);
   }
-  update(): void {
+  override update(): void {
     super.update();
     const f = this.get_frame();
     if (this.hp <= 0) { // FIXME: 避免一直判断

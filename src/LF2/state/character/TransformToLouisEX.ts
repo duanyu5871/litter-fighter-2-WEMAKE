@@ -3,7 +3,7 @@ import { BaseState } from "../base";
 
 
 export class TransformToLouisEX extends BaseState {
-  enter(e: Entity): void {
+  override enter(e: Entity): void {
     const d = e.lf2.datas.find_character('50')
     if (d) {
       e.data = d;

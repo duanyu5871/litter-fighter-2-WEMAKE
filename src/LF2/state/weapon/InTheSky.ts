@@ -4,16 +4,16 @@ import BaseWeaponState from "./Base";
 
 export default class InTheSky extends BaseWeaponState {
   protected _unhurt_weapons = new Set<Weapon>();
-  get_gravity(e: Weapon) {
+  override get_gravity(e: Weapon) {
     return e.world.gravity * 0.6
   };
-  enter(e: Weapon, prev_frame: IFrameInfo): void {
+  override enter(e: Weapon, prev_frame: IFrameInfo): void {
     this._unhurt_weapons.add(e);
   }
-  leave(e: Weapon, next_frame: IFrameInfo): void {
+  override leave(e: Weapon, next_frame: IFrameInfo): void {
     this._unhurt_weapons.delete(e);
   }
-  on_landing(e: Weapon, vx: number, vy: number, vz: number): void {
+  override on_landing(e: Weapon, vx: number, vy: number, vz: number): void {
     const { base, indexes } = e.data
     const dvy = Math.floor(-vy * base.bounce);
     const min_bounce_vy = 2;

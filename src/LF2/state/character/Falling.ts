@@ -7,8 +7,7 @@ export default class Falling extends BaseCharacterState {
   _bouncing_frames_map = new Map<string, Set<string>>();
   _begin_velocty_y_map = new Map<string, number>();
 
-  enter(e: Character, prev_frame: IFrameInfo): void {
-    super.enter(e, prev_frame);
+  override enter(e: Character, prev_frame: IFrameInfo): void {
     const { indexes: { bouncing } } = e.data;
     if (!this._bouncing_frames_map.has(e.data.id)) {
       this._bouncing_frames_map.set(e.data.id, new Set([
@@ -23,7 +22,7 @@ export default class Falling extends BaseCharacterState {
     return !!this._bouncing_frames_map.get(e.data.id)?.has(e.frame.id);
   }
 
-  update(e: Character): void {
+  override update(e: Character): void {
     if (e.shaking > 0) return;
     if (this.is_bouncing_frame(e)) {
       this.update_bouncing(e);
@@ -53,7 +52,7 @@ export default class Falling extends BaseCharacterState {
     e.enter_frame({ id: falling[direction][falling_frame_idx] });
   }
 
-  on_landing(e: Character, vx: number, vy: number, vz: number): void {
+  override on_landing(e: Character, vx: number, vy: number, vz: number): void {
     const { facing, data: { indexes } } = e;
     const f = e.get_frame();
     const d = find_direction(f, indexes.bouncing) ||

@@ -17,7 +17,7 @@ import type Character from './Character';
 import { Factory } from './Factory';
 import type IEntityCallbacks from './IEntityCallbacks';
 import { turn_face } from './face_helper';
-import { is_character } from './type_check';
+import { is_character, is_weapon } from './type_check';
 export const EMPTY_PIECE: ITexturePieceInfo = {
   tex: '', x: 0, y: 0, w: 0, h: 0,
   pixel_h: 0, pixel_w: 0,
@@ -347,9 +347,30 @@ export default class Entity<
     return void 0;
   }
 
-  find_auto_frame() {
-    return this.data.frames['0'] ?? this.get_frame();
+  find_auto_frame(): F {
+    const self = this;
+    if (is_character(self)) {
+      const { in_the_sky, standing, heavy_obj_walk } = self.data.indexes;
+      let fid: string;
+      if (is_weapon(this.holding) && this.holding.data.base.type === Defines.WeaponType.Heavy) {
+        fid = heavy_obj_walk[0]
+      } else if (this.position.y > 0) {
+        fid = in_the_sky[0]
+      } else if (this.hp > 0) {
+        fid = standing;
+      } else {
+        fid = standing; // TODO
+      }
+      return this.data.frames[fid] ?? this.data.frames['0'] ?? this.frame;
+    } else if (is_weapon(self)) {
+      const { frames, indexes } = self.data;
+      if (this.position.y > 0) return frames[indexes.in_the_sky];
+      return frames[indexes.on_ground];
+    } else {
+      return this.data.frames['0'] ?? this.frame;
+    }
   }
+
   on_spawn_by_emitter(emitter: Entity, o: IOpointInfo, speed_z: number = 0) {
     this._emitter = emitter;
     const shotter_frame = emitter.get_frame();
@@ -964,10 +985,16 @@ export default class Entity<
     return [frame, which];
   }
 
-  find_frame_by_id(id: string | undefined): F;
-  find_frame_by_id(id: string | undefined, exact: true): F | undefined;
-  find_frame_by_id(id: string | undefined, exact: boolean = false): F | undefined {
-    if (exact) return id ? this.data.frames[id] : void 0;
+  find_frame_by_id(id: string | undefined): F | undefined {
+    const self = this;
+    if (
+      is_character(self) &&
+      this.hp <= 0 &&
+      this.position.y <= 0 &&
+      this.frame.state === Defines.State.Lying
+    ) {
+      return this.frame;
+    }
     switch (id) {
       case void 0:
       case Defines.FrameId.None:

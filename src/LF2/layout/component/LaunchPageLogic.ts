@@ -107,7 +107,7 @@ export default class LaunchPageLogic extends LayoutComponent {
     )
   }
 
-  on_player_key_down(player_id: string, key: GameKey): void {
+  override on_player_key_down(player_id: string, key: GameKey): void {
     this.on_pointer_down()
   }
   on_pointer_down() {

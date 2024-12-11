@@ -16,7 +16,7 @@ import Character from './entity/Character';
 import Entity from './entity/Entity';
 import { Factory } from './entity/Factory';
 import Weapon from './entity/Weapon';
-import { is_ball, is_character, is_weapon } from './entity/type_check';
+import { is_local_ctrl, is_ball, is_base_ctrl, is_character, is_weapon } from './entity/type_check';
 import { EntityRender } from './renderer/EntityRender';
 import Stage from './stage/Stage';
 import float_equal from './utils/math/float_equal';
@@ -123,7 +123,7 @@ export class World {
 
   add_entities(...entities: Entity[]) {
     for (const entity of entities) {
-      if (is_character(entity) && BaseController.is(entity.controller) && this.lf2.player_infos.has(entity.controller.player_id)) {
+      if (is_character(entity) && is_base_ctrl(entity.controller) && this.lf2.player_infos.has(entity.controller.player_id)) {
         this.player_slot_characters.set(entity.controller.player_id, entity);
         this._callbacks.emit('on_player_character_add')(entity.controller.player_id)
       }
@@ -138,7 +138,7 @@ export class World {
 
   del_entities(...objs: Entity[]) {
     for (const e of objs) {
-      if (is_character(e) && LocalController.is(e.controller)) {
+      if (is_character(e) && is_local_ctrl(e.controller)) {
         this.player_slot_characters.delete(e.controller.player_id);
         this._callbacks.emit('on_player_character_del')(e.controller.player_id)
       }
@@ -250,7 +250,7 @@ export class World {
     if (!this.bg) return;
     const { left, right, near, far, player_left, player_right } = this.stage;
 
-    const is_player = LocalController.is(e.controller);
+    const is_player = is_local_ctrl(e.controller);
     const l = is_player ? player_left : left;
     const r = is_player ? player_right : right;
 
@@ -365,7 +365,7 @@ export class World {
       new_x = 0;
       for (const [, player] of this.player_slot_characters) {
         const c = player.controller;
-        if (!LocalController.is(c)) continue;
+        if (!is_local_ctrl(c)) continue;
         new_x += player.position.x - 794 / 2 + player.facing * 794 / 6;
         ++l;
       }

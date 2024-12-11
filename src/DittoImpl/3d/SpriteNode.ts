@@ -14,8 +14,8 @@ export default class __SpriteNode extends __ObjectNode implements ISpriteNode {
 
   override get inner(): THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial> { return this._inner as any; }
 
-  get opacity(): number { return this.inner.material.opacity }
-  set opacity(v: number) { this.set_opacity(v) }
+  override get opacity(): number { return this.inner.material.opacity }
+  override set opacity(v: number) { this.set_opacity(v) }
 
   override get w(): number { return is_num(this._w) ? this._w : this._info.w; }
   override get h(): number { return is_num(this._h) ? this._h : this._info.h; }

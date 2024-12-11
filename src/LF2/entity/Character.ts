@@ -9,7 +9,7 @@ import { same_face, turn_face } from './face_helper';
 import { is_ball, is_character, is_weapon } from './type_check';
 
 export default class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, ICharacterData> {
-  static readonly TAG: string = 'Character';
+  static override readonly TAG: string = 'Character';
   readonly is_character = true;
   protected _resting = 0;
   constructor(world: World, data: ICharacterData) {
@@ -63,27 +63,6 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
       default:
         return super.handle_facing_flag(facing, frame);
     }
-  }
-
-  override find_auto_frame(): IFrameInfo {
-    const { in_the_sky, standing, heavy_obj_walk } = this.data.indexes;
-    let fid: string;
-    if (is_weapon(this.holding) && this.holding.data.base.type === Defines.WeaponType.Heavy) fid = heavy_obj_walk[0]
-    else if (this.position.y > 0) fid = in_the_sky[0]
-    else if (this.hp > 0) fid = standing;
-    else fid = standing; // TODO
-    return this.data.frames[fid] ?? super.find_auto_frame();
-  }
-  override find_frame_by_id(id: string | undefined): ICharacterFrameInfo;
-  override find_frame_by_id(id: string | undefined, exact: true): ICharacterFrameInfo | undefined;
-  override find_frame_by_id(id: string | undefined, exact?: boolean): IFrameInfo | undefined {
-    if (this.hp <= 0 && this.position.y <= 0 && this.frame.state === Defines.State.Lying) {
-      const { lying } = this.data.indexes;
-      const fid = this.frame.id;
-      if (lying[-1] === fid) return super.find_frame_by_id(lying[-1])
-      if (lying[1] === fid) return super.find_frame_by_id(lying[1])
-    }
-    return super.find_frame_by_id(id, exact as true);
   }
 
   override self_update(): void {

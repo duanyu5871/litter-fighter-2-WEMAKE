@@ -5,7 +5,7 @@ import BaseCharacterState from "./Base";
 
 export default class Walking extends BaseCharacterState {
 
-  update(e: Character): void {
+  override update(e: Character): void {
     e.handle_gravity();
     e.handle_ground_velocity_decay();
     e.handle_frame_velocity();

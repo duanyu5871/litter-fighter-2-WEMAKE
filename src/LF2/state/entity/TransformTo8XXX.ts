@@ -7,7 +7,7 @@ import { is_character } from "../../entity/type_check";
 import BaseState from "../base/BaseState";
 
 export default class TransformTo8XXX extends BaseState<Entity> {
-  enter(e: Entity): void {
+  override enter(e: Entity): void {
     const oid = '' + (this.state - 8000);
     const data = e.lf2.datas.find(oid);
     if (data) {

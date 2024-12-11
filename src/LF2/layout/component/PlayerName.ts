@@ -73,7 +73,7 @@ export default class PlayerName extends LayoutComponent {
     }).set_text(this.text).apply()
   }
 
-  on_render(dt: number): void {
+  override on_render(dt: number): void {
     this._opacity.update(dt)
     this._mesh.opacity = this.joined ? 1 : this._opacity.value;
   }

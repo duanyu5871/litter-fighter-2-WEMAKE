@@ -4,7 +4,7 @@ import { LayoutComponent } from "./LayoutComponent";
 export default class ComNumButton extends LayoutComponent {
   get num(): number { return Number(this.args[0] || '') }
   get gpl() { return this.layout.root.search_component(GamePrepareLogic) }
-  on_click(): void {
+  override on_click(): void {
     this.gpl?.set_com_num(this.num);
   }
   override on_show(): void {

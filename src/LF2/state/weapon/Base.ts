@@ -5,13 +5,13 @@ import { ICube } from "../../World";
 import BaseState from "../base/BaseState";
 
 export default class BaseWeaponState extends BaseState<Weapon> {
-  update(e: Weapon): void {
+  override update(e: Weapon): void {
     e.handle_gravity();
     e.handle_ground_velocity_decay();
     e.handle_frame_velocity();
   }
 
-  on_collision(attacker: Weapon, target: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
+  override on_collision(attacker: Weapon, target: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
     if (attacker.frame.state === Defines.State.Weapon_OnHand) {
       return;
     }
@@ -23,7 +23,7 @@ export default class BaseWeaponState extends BaseState<Weapon> {
     attacker.enter_frame(attacker.find_auto_frame())
   }
 
-  before_be_collided(attacker: Entity, target: Weapon, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): boolean | undefined | void {
+  override before_be_collided(attacker: Entity, target: Weapon, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): boolean | undefined | void {
     if (
       itr.kind === Defines.ItrKind.Pick ||
       itr.kind === Defines.ItrKind.PickSecretly
@@ -36,7 +36,7 @@ export default class BaseWeaponState extends BaseState<Weapon> {
       return true;
     }
   }
-  on_be_collided(attacker: Entity, target: Weapon, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
+  override on_be_collided(attacker: Entity, target: Weapon, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
     const spark_x = (Math.max(a_cube.left, b_cube.left) + Math.min(a_cube.right, b_cube.right)) / 2;
     const spark_y = (Math.min(a_cube.top, b_cube.top) + Math.max(a_cube.bottom, b_cube.bottom)) / 2;
     const spark_z = Math.max(a_cube.far, b_cube.far);

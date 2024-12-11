@@ -98,7 +98,7 @@ export default class StageTitleShow extends LayoutComponent {
     return num_mesh;
   }
 
-  on_resume(): void {
+  override on_resume(): void {
     super.on_resume();
     this._unmount_jobs.add(
       this.world.callbacks.add({
@@ -107,13 +107,13 @@ export default class StageTitleShow extends LayoutComponent {
     )
   }
 
-  on_pause(): void {
+  override on_pause(): void {
     super.on_pause();
     this._unmount_jobs.invoke_and_clear();
     this.depose_all_mesh();
   }
 
-  on_render(dt: number): void {
+  override on_render(dt: number): void {
     if (this._sprites.length) {
       this._opactiy.update(dt);
       for (const m of this._sprites)

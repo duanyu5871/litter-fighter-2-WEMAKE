@@ -3,7 +3,7 @@ import BaseCharacterState from "./Base";
 
 export default class Jump extends BaseCharacterState {
   private _jump_flags = new Set<Character>();
-  update(character: Character): void {
+  override update(character: Character): void {
     character.handle_gravity();
     character.handle_ground_velocity_decay();
     character.handle_frame_velocity();
@@ -27,7 +27,7 @@ export default class Jump extends BaseCharacterState {
     )
     this._jump_flags.add(character);
   }
-  on_landing(character: Character, vx: number, vy: number, vz: number): void {
+  override on_landing(character: Character, vx: number, vy: number, vz: number): void {
     character.enter_frame({ id: character.data.indexes.landing_1 });
   }
 }

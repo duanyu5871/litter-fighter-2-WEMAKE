@@ -3,7 +3,7 @@ import { is_character } from '../../entity/type_check';
 import BaseCharacterState from "./Base";
 
 export default class Teleport_ToNearestEnemy extends BaseCharacterState {
-  enter(m: Character): void {
+  override enter(m: Character): void {
     let _dis: number = -1;
     let _tar: Character | undefined;
     for (const o of m.world.entities) {

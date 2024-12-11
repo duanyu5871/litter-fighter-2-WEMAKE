@@ -16,7 +16,7 @@ export default class OpacityHover extends LayoutComponent {
     )
     return super.init(...args);
   }
-  on_render(dt: number): void {
+  override on_render(dt: number): void {
     const r = this.layout.state.mouse_on_me !== '1' && !this.layout.focused
     if (this.anim.reverse !== r) {
       this.anim.reverse = r

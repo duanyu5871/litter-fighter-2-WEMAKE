@@ -2,7 +2,7 @@ import { LayoutComponent } from "./LayoutComponent";
 
 export default class VerticalLayout extends LayoutComponent {
 
-  on_render(dt: number): void {
+  override on_render(dt: number): void {
     let w = 0;
     let h = 0;
     for (const l of this.layout.children) {

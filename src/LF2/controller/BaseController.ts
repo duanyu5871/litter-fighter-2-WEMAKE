@@ -41,8 +41,7 @@ class ControllerUpdateResult {
   }
 }
 export class BaseController {
-  readonly is_base_controller = true;
-  static is = (v: any): v is BaseController => v?.is_base_controller === true
+  readonly is_base_controller = true
 
   private _time = 1;
   private _disposers = new Set<() => void>();

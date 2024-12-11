@@ -38,7 +38,7 @@ export default class CharacterSelLogic extends LayoutComponent {
 
   get gpl() { return this.layout.root.find_component(GamePrepareLogic) }
 
-  on_resume(): void {
+  override on_resume(): void {
     super.on_resume();
     this._unmount_jobs.add(
       this.lf2.callbacks.add({
@@ -51,7 +51,7 @@ export default class CharacterSelLogic extends LayoutComponent {
       this.handle_hidden_character();
   }
 
-  on_pause(): void {
+  override on_pause(): void {
     super.on_pause();
     this.joined = false;
     this.character_decided = false;
@@ -65,7 +65,7 @@ export default class CharacterSelLogic extends LayoutComponent {
       this.lf2.datas.get_characters_not_in_group(Defines.EntityGroup.Hidden)
   }
 
-  on_player_key_down(player_id: string, key: GameKey): void {
+  override on_player_key_down(player_id: string, key: GameKey): void {
     const { gpl } = this;
     if (!gpl) {
       return;

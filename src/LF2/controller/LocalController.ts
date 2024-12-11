@@ -8,7 +8,6 @@ type TKeyCodeMap = { [x in GameKey]?: string };
 type TCodeKeyMap = { [x in string]?: GameKey };
 export default class LocalController extends BaseController implements IKeyboardCallback {
   readonly is_local_controller = true;
-  static is = (v: any): v is LocalController => v?.is_local_controller === true
 
   private _key_code_map: TKeyCodeMap = {};
   private _code_key_map: TCodeKeyMap = {};

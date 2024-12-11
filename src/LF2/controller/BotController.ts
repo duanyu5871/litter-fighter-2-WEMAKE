@@ -217,7 +217,7 @@ export class BotController extends BaseController {
     }
     return true;
   }
-  update() {
+  override update() {
     this._count++;
     if (this._count % 10 === 0) this.update_nearest();
     this.chase_enemy() || this.avoid_enemy()

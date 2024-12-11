@@ -3,9 +3,8 @@ import { BaseController } from "./BaseController";
 
 export class TestController extends BaseController {
   readonly is_test_controller = true;
-  static is = (v: any): v is TestController => v?.is_test_controller === true
 
-  update() {
+  override update() {
     const c = this.entity;
     const { x, z } = c.position;
     const { x: end_x, z: end_z } = c.world.middle;
