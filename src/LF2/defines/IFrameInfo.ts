@@ -9,6 +9,7 @@ import { IItrInfo } from "./IItrInfo";
 import { IOpointInfo } from "./IOpointInfo";
 import { IRectPair } from "./IRectPair";
 import { IWpointInfo } from "./IWpointInfo";
+import type { Defines } from './defines';
 
 export interface IFrameInfo {
   id: string;
@@ -46,4 +47,17 @@ export interface IFrameInfo {
    * z轴速度，当按着上或下，此值生效
    */
   speedz?: number;
+
+  /**
+   * 起跳标志（角色专用）
+   * 
+   * 从state为```Defines.State.Jump```的frame，
+   * 跳至state为```Defines.State.Jump```的frame时，
+   * 若前（frame.jump_flag == 1）且后（frame.jump_flag == 0）或空。
+   * 此时将会计算跳跃速度，让角色跳起来。
+   *  
+   * @see {Defines.State.Jump}
+   * @type {?number}
+   */
+  jump_flag?: number;
 }

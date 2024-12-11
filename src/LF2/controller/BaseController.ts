@@ -1,4 +1,4 @@
-import { ICharacterFrameInfo, TNextFrame } from '../defines';
+import { IFrameInfo, TNextFrame } from '../defines';
 import GameKey from '../defines/GameKey';
 import { IHitKeyCollection } from '../defines/IHitKeyCollection';
 import { Defines } from '../defines/defines';
@@ -59,7 +59,7 @@ export class BaseController {
   entity: Entity;
   key_time_maps: Record<GameKey, number> = { L: 0, R: 0, U: 0, D: 0, a: 0, j: 0, d: 0 };
 
-  readonly dbc_map: Record<GameKey, DoubleClick<ICharacterFrameInfo>>;
+  readonly dbc_map: Record<GameKey, DoubleClick<IFrameInfo>>;
 
   get LR(): 0 | 1 | -1 {
     const L = !!this.key_time_maps.L;

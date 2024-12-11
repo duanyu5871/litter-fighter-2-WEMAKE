@@ -1,8 +1,10 @@
+import { IFrameInfo } from '../../defines';
 import type Character from '../../entity/Character';
 import BaseCharacterState from "./Base";
 
 export default class Jump extends BaseCharacterState {
-  private _jump_flags = new Set<Character>();
+  private _jumpings = new Set<Character>();
+
   override update(character: Character): void {
     character.handle_gravity();
     character.handle_ground_velocity_decay();
@@ -10,12 +12,12 @@ export default class Jump extends BaseCharacterState {
 
     const { jump_flag } = character.get_prev_frame();
     if (!jump_flag) {
-      this._jump_flags.delete(character);
+      this._jumpings.delete(character);
       return;
     }
-    if (this._jump_flags.has(character))
+    if (this._jumpings.has(character)) {
       return;
-
+    }
     const { LR: LR1 = 0, UD: UD1 = 0 } = character.controller || {};
     const { jump_height: h, jump_distance: dx, jump_distancez: dz } = character.data.base;
     const g_acc = character.world.gravity
@@ -25,7 +27,7 @@ export default class Jump extends BaseCharacterState {
       g_acc * Math.sqrt(2 * h / g_acc),
       vz
     )
-    this._jump_flags.add(character);
+    this._jumpings.add(character);
   }
   override on_landing(character: Character, vx: number, vy: number, vz: number): void {
     character.enter_frame({ id: character.data.indexes.landing_1 });

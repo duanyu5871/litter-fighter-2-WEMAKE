@@ -1,7 +1,6 @@
-import { ICharacterData, ICharacterFrameInfo, TNextFrame } from '../defines';
+import { ICharacterData, IFrameInfo, TNextFrame } from '../defines';
 import { ICharacterFrameIndexes } from "../defines/ICharacterFrameIndexes";
 import { ICharacterInfo } from "../defines/ICharacterInfo";
-import { IFrameInfo } from "../defines/IFrameInfo";
 import { INextFrame } from "../defines/INextFrame";
 import { Defines } from '../defines/defines';
 import { set_obj_field } from '../utils/container_help/set_obj_field';
@@ -28,7 +27,7 @@ const set_hold_turn_back = (frame: IFrameInfo, back_frame_id: string = '') => {
   frame.hold = frame.hold || {}
   frame.hold.B = { id: back_frame_id, wait: 'i', facing: FacingFlag.Backward }
 }
-export function make_character_data(info: ICharacterInfo, frames: Record<string, ICharacterFrameInfo>): ICharacterData {
+export function make_character_data(info: ICharacterInfo, frames: Record<string, IFrameInfo>): ICharacterData {
   const walking_frame_rate = take_number(info, 'walking_frame_rate', 3);
   const running_frame_rate = take_number(info, 'running_frame_rate', 3);
   const walking_speed = take_number(info, 'walking_speed', 0);
@@ -39,8 +38,8 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
   const heavy_walking_speedz = take_number(info, 'heavy_walking_speedz', 0);
   const heavy_running_speed = take_number(info, 'heavy_running_speed', 0);
   const heavy_running_speedz = take_number(info, 'heavy_running_speedz', 0);
-  info.jump_height = info.jump_height * info.jump_height / 3.5;
-  info.dash_height = info.dash_height * info.dash_height / 3.5;
+  info.jump_height = Math.round(info.jump_height * info.jump_height / 3.5);
+  info.dash_height = Math.round(info.dash_height * info.dash_height / 3.5);
   info.dash_distance /= 2;
   info.jump_distance /= 2;
   info.fall_value = Defines.DEFAULT_FALL_VALUE;

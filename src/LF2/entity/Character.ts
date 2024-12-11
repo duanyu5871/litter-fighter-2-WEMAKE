@@ -1,6 +1,6 @@
 import { Warn } from '../../Log';
 import { type ICube, type World } from '../World';
-import type { IBdyInfo, ICharacterData, ICharacterFrameInfo, ICharacterInfo, IFrameInfo, IItrInfo, INextFrame, IOpointInfo, TFace, TNextFrame } from '../defines';
+import type { IBdyInfo, ICharacterData, IFrameInfo, ICharacterInfo, IItrInfo, INextFrame, IOpointInfo, TFace, TNextFrame } from '../defines';
 import { Defines } from '../defines/defines';
 import { CHARACTER_STATES } from '../state/character';
 import Entity from './Entity';
@@ -8,7 +8,7 @@ import { Factory } from './Factory';
 import { same_face, turn_face } from './face_helper';
 import { is_ball, is_character, is_weapon } from './type_check';
 
-export default class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, ICharacterData> {
+export default class Character extends Entity<IFrameInfo, ICharacterInfo, ICharacterData> {
   static override readonly TAG: string = 'Character';
   readonly is_character = true;
   protected _resting = 0;
@@ -32,7 +32,7 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
     this._catch_time = this._max_catch_time;
   }
 
-  override get_next_frame(which: string | TNextFrame): [ICharacterFrameInfo | undefined, INextFrame | undefined] {
+  override get_next_frame(which: string | TNextFrame): [IFrameInfo | undefined, INextFrame | undefined] {
     const ret = super.get_next_frame(which);
     if (!ret[0]) return ret
 

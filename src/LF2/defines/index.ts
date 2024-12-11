@@ -2,7 +2,6 @@ import { IBallFrameInfo } from "./IBallFrameInfo";
 import { IBallInfo } from "./IBallInfo";
 import { IBgData } from "./IBgData";
 import { ICharacterFrameIndexes } from "./ICharacterFrameIndexes";
-import { ICharacterFrameInfo } from "./ICharacterFrameInfo";
 import { ICharacterInfo } from "./ICharacterInfo";
 import { IFrameInfo } from "./IFrameInfo";
 import { IItrInfo } from "./IItrInfo";
@@ -71,7 +70,6 @@ export * from './IBgData';
 export * from './IBgInfo';
 export * from './IBgLayerInfo';
 export * from './IBpointInfo';
-export * from './ICharacterFrameInfo';
 export * from './ICharacterInfo';
 export * from './ICpointInfo';
 export * from './IFrameInfo';
@@ -120,7 +118,7 @@ export interface IEntityData extends IGameObjData<IGameObjInfo, IFrameInfo> {
   type: 'entity';
   get is_entity_data(): true;
 }
-export interface ICharacterData extends IGameObjData<ICharacterInfo, ICharacterFrameInfo> {
+export interface ICharacterData extends IGameObjData<ICharacterInfo, IFrameInfo> {
   type: 'character';
   indexes: ICharacterFrameIndexes;
   get is_character_data(): true;
