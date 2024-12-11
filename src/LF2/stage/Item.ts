@@ -73,7 +73,7 @@ export default class Item {
     if (!oid) { debugger; return; }
     const data = lf2.datas.find(oid);
     if (!data) { debugger; return; }
-    const creator = Factory.inst.get(data.type);
+    const creator = Factory.inst.get_entity_creator(data.type);
     if (!creator) { debugger; return; }
 
     const { hp, act, x, y, z, reserve } = this.info;
@@ -93,7 +93,7 @@ export default class Item {
     if (is_character(e)) {
       e.team = this.stage.enemy_team;
       e.name = e.data.base.name;
-      e.controller = new BotController('', e);
+      e.controller = Factory.inst.get_ctrl_creator(e.data.id)?.('', e);
     } else if (is_weapon(e) && !is_num(y)) {
       e.position.y = 450;
     }

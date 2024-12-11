@@ -1,3 +1,4 @@
+import type { BaseController } from "../controller/BaseController";
 import type Ball from "./Ball";
 import type Character from "./Character";
 import type Entity from "./Entity";
@@ -7,25 +8,38 @@ export interface ICreator<C, T extends new (...args: any[]) => C> {
   (...args: ConstructorParameters<T>): C
 }
 
-export interface Creators {
+export interface EntityCreators {
   'entity': ICreator<Entity, typeof Entity>;
   'ball': ICreator<Ball, typeof Ball>;
   'character': ICreator<Character, typeof Character>;
   'weapon': ICreator<Weapon, typeof Weapon>;
 }
+
+export type ControllerCreator = ICreator<BaseController, typeof BaseController>
+export type ControllerCreators = {
+  [x in string]?: ControllerCreator
+}
+
+let _factory_inst: Factory | undefined = void 0;
+let _entity_creators: Partial<EntityCreators> = {};
+let _ctrl_creators: ControllerCreators = {};
 export class Factory {
-  private _creators: Partial<Creators> = {}
-  set<K extends keyof Creators>(k: K, creator: Creators[K]) {
-    this._creators[k] = creator;
+  set_entity_creator<K extends keyof EntityCreators>(k: K, creator: EntityCreators[K]) {
+    _entity_creators[k] = creator;
   }
-  get(k: string): ICreator<Entity, typeof Entity> | undefined;
-  get<K extends keyof Creators>(k: K): Creators[K] | undefined;
-  get<K extends keyof Creators>(k: K): Creators[K] | undefined {
-    return this._creators[k];
+  get_entity_creator(k: string): ICreator<Entity, typeof Entity> | undefined;
+  get_entity_creator<K extends keyof EntityCreators>(k: K): EntityCreators[K] | undefined;
+  get_entity_creator<K extends keyof EntityCreators>(k: K): EntityCreators[K] | undefined {
+    return _entity_creators[k];
   }
-  protected static _inst: Factory;
+  get_ctrl_creator(id: string): ControllerCreator | undefined {
+    return _ctrl_creators[id]
+  }
+  set_ctrl_creator(id: string, creator: ControllerCreator) {
+    return _ctrl_creators[id] = creator;
+  }
   static get inst(): Factory {
-    if (!this._inst) this._inst = new Factory()
-    return this._inst;
+    if (!_factory_inst) _factory_inst = new Factory()
+    return _factory_inst;
   }
 }

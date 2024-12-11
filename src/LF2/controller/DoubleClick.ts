@@ -1,4 +1,4 @@
-export default class DoubleClick<D> {
+export class DoubleClick<D> {
   data: [D | undefined, D | undefined] = [void 0, void 0];
   time: number = 0;
   readonly name: string;
@@ -24,3 +24,4 @@ export default class DoubleClick<D> {
     this.data = [void 0, void 0];
   }
 }
+export default DoubleClick;

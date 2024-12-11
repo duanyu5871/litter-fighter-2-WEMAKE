@@ -408,7 +408,7 @@ export default class Entity<
       Warn.print(Entity.TAG + '::spawn_object', 'data not found! opoint:', opoint);
       return;
     }
-    const create = Factory.inst.get(d.type);
+    const create = Factory.inst.get_entity_creator(d.type);
     if (!create) {
       Warn.print(Entity.TAG + '::spawn_object', `creator of "${d.type}" not found! opoint:`, opoint);
       return;
@@ -997,4 +997,4 @@ export default class Entity<
   get_prev_frame() { return this._prev_frame; }
 }
 
-Factory.inst.set('entity', (...args) => new Entity(...args));
+Factory.inst.set_entity_creator('entity', (...args) => new Entity(...args));

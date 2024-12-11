@@ -1,8 +1,11 @@
 import { Log } from '../../Log';
 import LF2 from '../LF2';
+import { BotController } from '../controller/BotController';
+import { InvalidController } from '../controller/InvalidController';
 import { IBallData, IBgData, ICharacterData, IDataMap, IEntityData, IGameObjData, IStageInfo, IWeaponData } from '../defines';
 import { Defines } from '../defines/defines';
 import { TData } from '../entity/Entity';
+import { Factory } from '../entity/Factory';
 import { traversal } from '../utils/container_help/traversal';
 import { is_str, not_blank_str } from '../utils/type_check';
 import { cook_frame } from './preprocess_frame';
@@ -135,7 +138,13 @@ class Inner {
     for (const [, v] of this.data_map) {
       if (this.cancelled) throw new Error('cancelled')
       const t = v.type as keyof IDataMap;
-      if (t === 'character') this.process_character_data(v as ICharacterData);
+      if (t === 'character') {
+        this.process_character_data(v as ICharacterData);
+        Factory.inst.set_ctrl_creator(v.id, (a, b) => new BotController(a, b))
+      } else {
+        Factory.inst.set_ctrl_creator(v.id, (a, b) => new InvalidController(a, b))
+      }
+
       this.data_list_map[t]?.push(v as any);
       this.data_list_map.all.push(v as any);
     }

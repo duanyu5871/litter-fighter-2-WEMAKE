@@ -16,6 +16,8 @@ export * from './defines';
 export * from './IDataLists';
 export * from './IDatIndex';
 export * from "./IStageInfo";
+export * from './IHitKeyCollection';
+export * from './GameKey';
 
 /**
  * 实体图片信息
@@ -95,6 +97,9 @@ export interface IGameObjInfo {
 export interface IBaseData<I = any> {
   get is_base_data(): true;
   id: string;
+  /**
+   * @see {IDataMap}
+   */
   type: string;
   base: I;
 }

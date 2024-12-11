@@ -11,13 +11,14 @@ export default class TransformTo8XXX extends BaseState<Entity> {
     const oid = '' + (this.state - 8000);
     const data = e.lf2.datas.find(oid);
     if (data) {
-      const creator = Factory.inst.get(data.type);
+      const creator = Factory.inst.get_entity_creator(data.type);
       if (creator) {
         const new_entity = creator(e.world, data);
         if (!e.lastest_attacker) debugger;
         new_entity.team = e.lastest_attacker?.team || new_team();
         if (is_character(new_entity)) {
-          new_entity.controller = new BotController('', new_entity);
+          const creator = Factory.inst.get_ctrl_creator(data.id)
+          new_entity.controller = creator?.(e.controller?.player_id ?? '', new_entity)
         }
         new_entity.position.set(e.position.x, e.position.y, e.position.z);
         new_entity.variant = 1;

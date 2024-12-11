@@ -72,4 +72,4 @@ export default class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData>
     return this;
   }
 }
-Factory.inst.set('weapon', (...args) => new Weapon(...args));
+Factory.inst.set_entity_creator('weapon', (...args) => new Weapon(...args));

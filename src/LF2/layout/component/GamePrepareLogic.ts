@@ -3,11 +3,11 @@ import Callbacks from "../../base/Callbacks";
 import FSM, { IReadonlyFSM } from "../../base/FSM";
 import Invoker from "../../base/Invoker";
 import { NoEmitCallbacks } from "../../base/NoEmitCallbacks";
-import { BotController } from "../../controller/BotController";
 import LocalController from "../../controller/LocalController";
 import GameKey from "../../defines/GameKey";
 import { Defines } from "../../defines/defines";
 import Character from "../../entity/Character";
+import { Factory } from "../../entity/Factory";
 import { filter } from "../../utils/container_help";
 import { map_no_void } from "../../utils/container_help/map_no_void";
 import { random_get, random_in } from "../../utils/math/random";
@@ -263,9 +263,14 @@ export default class GamePrepareLogic extends LayoutComponent {
       character.name = player.is_com ? 'com' : player.name;
       character.team = player.team || new_team()
       character.facing = Math.random() < 0.5 ? 1 : -1
-      character.controller = player.is_com ?
-        new BotController(player.id, character) :
-        new LocalController(player.id, character, player.keys);
+
+      if (player.is_com) {
+        const creator = Factory.inst.get_ctrl_creator(character_data.id)
+        character.controller =  creator?.(player.id, character)
+      } else {
+        character.controller = new LocalController(player.id, character, player.keys)
+      }
+
       character.position.z = random_in(far, near);
       character.position.x = random_in(left, right);
       character.blinking = 120;

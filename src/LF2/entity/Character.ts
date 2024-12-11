@@ -316,4 +316,4 @@ export default class Character extends Entity<IFrameInfo, ICharacterInfo, IChara
     this._callbacks.emit('on_dead')(this);
   }
 }
-Factory.inst.set('character', (...args) => new Character(...args));
+Factory.inst.set_entity_creator('character', (...args) => new Character(...args));

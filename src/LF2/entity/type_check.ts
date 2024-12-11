@@ -1,4 +1,4 @@
-import { BaseController } from "../controller/BaseController";
+import type { BaseController } from "../controller/BaseController";
 import type { BotController } from "../controller/BotController";
 import type LocalController from "../controller/LocalController";
 import type Ball from "./Ball";

@@ -1,8 +1,6 @@
-import { IFrameInfo, TNextFrame } from '../defines';
-import GameKey from '../defines/GameKey';
-import { IHitKeyCollection } from '../defines/IHitKeyCollection';
-import { Defines } from '../defines/defines';
-import Entity from '../entity/Entity';
+import type { IFrameInfo, TNextFrame, IHitKeyCollection } from '../defines';
+import { Defines, GameKey } from '../defines';
+import type Entity from '../entity/Entity';
 import { is_character } from '../entity/type_check';
 import DoubleClick from './DoubleClick';
 

@@ -540,7 +540,7 @@ export class World {
       Warn.print(World.TAG + '::spark', `data of "${Defines.BuiltIn.Dats.Spark}" not found!`);
       return;
     }
-    const create = Factory.inst.get(data.type);
+    const create = Factory.inst.get_entity_creator(data.type);
     if (!create) {
       Warn.print(World.TAG + '::spark', `creator of "${data.type}" not found!`);
       return;

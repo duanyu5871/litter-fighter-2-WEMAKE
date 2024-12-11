@@ -83,4 +83,4 @@ export default class Ball extends Entity<IBallFrameInfo, IBallInfo, IBallData> {
     }
   }
 }
-Factory.inst.set('ball', (...args) => new Ball(...args));
+Factory.inst.set_entity_creator('ball', (...args) => new Ball(...args));
