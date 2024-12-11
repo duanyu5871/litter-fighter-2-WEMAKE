@@ -244,9 +244,9 @@ export default class Entity<
 
   set state(v: BaseState | undefined) {
     if (this._state === v) return;
-    this._state?.leave(this, this.get_frame())
+    this._state?.leave?.(this, this.get_frame())
     this._state = v;
-    this._state?.enter(this, this.get_prev_frame())
+    this._state?.enter?.(this, this.get_prev_frame())
   }
 
   get state() { return this._state; }

@@ -86,25 +86,6 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
     return super.find_frame_by_id(id, exact as true);
   }
 
-  on_landing() {
-    const { indexes } = this.data;
-    const f = this.get_frame();
-    switch (f.state) {
-      case 100: // 落雷霸
-        this._next_frame = (f.next);
-        break;
-      case Defines.State.Frozen:
-        if (this.velocity.y <= -4) {
-          this._next_frame = ({ id: indexes.bouncing[this.facing] });
-          return 2;
-        }
-        break;
-      default:
-        this._next_frame = ({ id: indexes.landing_2 });
-        break;
-    }
-  }
-
   override self_update(): void {
     super.self_update();
     switch (this.frame.state) {

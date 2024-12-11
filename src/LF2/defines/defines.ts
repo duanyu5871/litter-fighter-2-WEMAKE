@@ -153,9 +153,9 @@ export namespace Defines {
   }
   export enum State {
     Any = -1,
-    _0 = 0, Standing = 0,
-    _1 = 1, Walking = 1,
-    Running = 2, _2 = 2, 
+    Standing = 0, _0 = 0,
+    Walking = 1, _1 = 1,
+    Running = 2, _2 = 2,
     _3 = 3, Attacking = 3,
     _4 = 4, Jump = 4,
     _5 = 5, Dash = 5,
@@ -180,9 +180,9 @@ export namespace Defines {
      *    改成上下键与speedz配合，控制角色Z轴移动速度。
      *    speedz可用于任意帧中。
      */
-    BurnRun = 19, _19 = 19, 
+    BurnRun = 19, _19 = 19,
 
-    
+
     /** 
      * 此状态下，在空中时(position.y > 0)，wait结束不会进入到next中.
      * 
@@ -250,11 +250,10 @@ export namespace Defines {
     _501 = 501,
 
     /**
-     * LF2的Louis爆甲
+     * 原LF2的Louis爆甲
      * 但现在Wemake中，爆甲是通过opoint实现的。
      */
-    LouisCastOff = 9996,
-    _9996 = 9996,
+    LouisCastOff = 9996, _9996 = 9996,
 
     TransformToLouisEx = 9996,
     _9995 = 9995,

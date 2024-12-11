@@ -7,17 +7,10 @@ export default class InTheSky extends BaseWeaponState {
   get_gravity(e: Weapon) {
     return e.world.gravity * 0.6
   };
-  update(e: Weapon): void {
-    e.handle_gravity();
-    e.handle_ground_velocity_decay();
-    e.handle_frame_velocity();
-  }
   enter(e: Weapon, prev_frame: IFrameInfo): void {
-    super.enter(e, prev_frame);
     this._unhurt_weapons.add(e);
   }
   leave(e: Weapon, next_frame: IFrameInfo): void {
-    super.enter(e, next_frame);
     this._unhurt_weapons.delete(e);
   }
   on_landing(e: Weapon, vx: number, vy: number, vz: number): void {

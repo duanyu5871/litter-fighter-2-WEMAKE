@@ -3,21 +3,19 @@ import type Weapon from "../../entity/Weapon";
 import BaseWeaponState from "./Base";
 
 export default class Throwing extends BaseWeaponState {
-  protected _unhurt_weapons = new Set<Weapon>();
+  /**
+   * 用于确保丢出的武器只受一次跌落伤害
+   * @protected
+   * @type {Set<Weapon>}
+   */
+  protected _unhurt_weapons: Set<Weapon> = new Set<Weapon>();
   get_gravity(e: Weapon) {
-    return e.world.gravity * 0.6
+    return e.world.gravity * 0.5
   };
-  update(e: Weapon): void {
-    e.handle_gravity();
-    e.handle_ground_velocity_decay();
-    e.handle_frame_velocity();
-  }
   enter(e: Weapon, prev_frame: IFrameInfo): void {
-    super.enter(e, prev_frame);
     this._unhurt_weapons.add(e);
   }
   leave(e: Weapon, next_frame: IFrameInfo): void {
-    super.enter(e, next_frame);
     this._unhurt_weapons.delete(e);
   }
   on_landing(e: Weapon, vx: number, vy: number, vz: number): void {
