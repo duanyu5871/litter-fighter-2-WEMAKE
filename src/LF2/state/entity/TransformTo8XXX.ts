@@ -21,7 +21,8 @@ export default class TransformTo8XXX extends BaseState<Entity> {
         }
         new_entity.position.set(e.position.x, e.position.y, e.position.z);
         new_entity.variant = 1;
-        new_entity.attach()
+        new_entity.reserve = e.reserve;
+        new_entity.attach();
       }
     }
     e.enter_frame({ id: Defines.FrameId.Gone })

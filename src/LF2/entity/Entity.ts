@@ -54,6 +54,7 @@ export interface IVictimRest {
   a_frame: IFrameInfo,
   b_frame: IFrameInfo
 }
+
 export default class Entity<
   F extends IFrameInfo = IFrameInfo,
   I extends IGameObjInfo = IGameObjInfo,
@@ -65,11 +66,14 @@ export default class Entity<
   wait: number = 0;
   update_id: number = Number.MIN_SAFE_INTEGER;
   variant: number = 0;
+  reserve?: number = 0;
   readonly is_frame_animater = true
   public data: D;
   public transform_datas?: [D, D];
   readonly world: World;
   readonly position = new Ditto.Vector3(0, 0, 0);
+  fall_value = Defines.DEFAULT_FALL_VALUE;
+  defend_value = Defines.DEFAULT_DEFEND_VALUE;
   throwinjury?: number;
 
   get catching() { return this._catching; }
@@ -279,6 +283,17 @@ export default class Entity<
     this._controller = v;
   }
 
+  /**
+   * 是否属于玩家选择槽的entity
+   *
+   * @readonly
+   * @type {boolean}
+   */
+  get in_player_slot(): boolean {
+    const player_id = this.controller?.player_id
+    return !!(player_id && this.world.player_slot_characters.has(player_id))
+  }
+
   constructor(world: World, data: D, states: States = ENTITY_STATES) {
     this.data = data;
     this.world = world;
@@ -403,59 +418,114 @@ export default class Entity<
     return this;
   }
 
-  velocity_decay(factor: number = 1) {
+  /**
+   * 实体响应地面速度衰减（x轴方向与z轴方向的速度）的衰减
+   * 
+   * 速度衰减逻辑如下，
+   * - ```v *= 当前衰减系数*世界摩擦系数```
+   * - ```v -= 世界摩擦力（使v向0的方向变化，直至归0）```
+   * 
+   * 以下情况不响应:
+   * - 实体处于地面以上(不含地面，即：position.y > 0）
+   * - 角色处于shaking中（即实体被某物击中, see IItrInfo.shaking）
+   * - 角色处于motionless中，（即实体击中某物时, see IItrInfo.motionless）
+   * 
+   * @see {IItrInfo.shaking} 目标停顿值
+   * @see {IItrInfo.motionless} 自身停顿值
+   * @see {World.friction_factor} 世界摩擦系数
+   * @see {World.friction} 世界摩擦力
+   * 
+   * @param {number} [factor=1] 当前衰减系数
+   */
+  handle_ground_velocity_decay(factor: number = 1) {
     if (this.position.y > 0 || this._shaking || this._motionless) return;
     let { x, z } = this.velocity;
-    x *= this.world.friction_factor * factor;
-    this.velocity.z = z *= this.world.friction_factor * factor;
+    factor *= this.world.friction_factor;
+    x *= factor;
+    z *= factor;
 
     if (x > 0) {
       x -= this.world.friction
-      if (x < 0) x = 0;
-      this.velocity.x = x;
+      if (x < 0) x = 0; // 不能因为摩擦力反向加速
     } else if (x < 0) {
       x += this.world.friction;
-      if (x > 0) x = 0;
-      this.velocity.x = x;
+      if (x > 0) x = 0;  // 不能因为摩擦力反向加速
     }
 
     if (z > 0) {
       z -= this.world.friction
-      if (z < 0) z = 0;
-      this.velocity.z = z;
+      if (z < 0) z = 0; // 不能因为摩擦力反向加速
     } else if (z < 0) {
       z += this.world.friction;
-      if (z > 0) z = 0;
-      this.velocity.z = z;
+      if (z > 0) z = 0; // 不能因为摩擦力反向加速
     }
+
+    this.velocity.x = x;
+    this.velocity.z = z;
   }
 
-  on_gravity() {
+  /** 
+   * 实体响应重力
+   * 
+   * 本质就是增加y轴方向向下的速度，
+   * 有`velocity.y -= BaseState.get_gravity() ?? World.gravity`
+   * 
+   * 以下情况不响应重力:
+   * 
+   * - 实体处于地面或地面以下（position.y <= 0）
+   * 
+   * - 角色处于shaking中（即实体被某物击中, see IItrInfo.shaking）
+   * 
+   * - 角色处于motionless中，（即实体击中某物时, see IItrInfo.motionless）
+   * 
+   * @see {IItrInfo.shaking}
+   * @see {IItrInfo.motionless}
+   * @see {BaseState.get_gravity}
+   * @see {World.gravity}
+   */
+  handle_gravity() {
     if (this.position.y <= 0 || this._shaking || this._motionless) return;
-    if (this.frame.dvy !== 550) this.velocity.y -= this.state?.get_gravity(this) ?? this.world.gravity;
+    this.velocity.y -= this.state?.get_gravity(this) ?? this.world.gravity;
   }
-
 
   handle_frame_velocity() {
     if (this._shaking || this._motionless) return;
-    const { dvx, dvy, dvz } = this.get_frame();
-    if (dvx === 550) this.velocity.x = 0;
-    else if (dvx !== void 0) {
+    const { dvx, dvy, dvz, speedz, speedx } = this.frame;
+    let {
+      x: final_v_x,
+      y: final_v_y,
+      z: final_v_z
+    } = this.velocity;
+
+    if (dvx !== void 0) {
       const next_speed = this.facing * dvx;
-      const curr_speed = this.velocity.x;
+      const curr_speed = final_v_x;
       if (
         (next_speed > 0 && curr_speed <= next_speed) ||
         (next_speed < 0 && curr_speed >= next_speed)
       )
-        this.velocity.x = next_speed;
+        final_v_x = next_speed;
     };
 
-    if (dvy === 550) this.velocity.y = 0;
-    else if (dvy !== void 0) this.velocity.y += dvy;
-
-    if (dvz === 550) this.velocity.z = 0;
-    else if (dvz !== void 0) this.velocity.z = dvz;
+    if (dvy !== void 0) final_v_y += dvy;
+    if (dvz !== void 0) final_v_z = dvz;
+    if (this._controller) {
+      const { UD, LR } = this._controller;
+      if (LR && speedx && speedx !== 550) {
+        final_v_x = LR * speedx;
+      }
+      if (UD && speedz && speedz !== 550) {
+        final_v_z = UD * speedz;
+      }
+    }
+    if (dvx === 550) final_v_x = 0;
+    if (dvz === 550) final_v_z = 0;
+    if (dvy === 550) final_v_y = 0;
+    this.velocity.x = final_v_x;
+    this.velocity.y = final_v_y;
+    this.velocity.z = final_v_z;
   }
+
   self_update(): void {
     if (this._next_frame) this.enter_frame(this._next_frame);
     if (this._mp < this._max_mp)
@@ -901,7 +971,7 @@ export default class Entity<
     switch (id) {
       case void 0:
       case Defines.FrameId.None:
-      case Defines.FrameId.Self: return this.get_frame();
+      case Defines.FrameId.Self: return this.frame;
       case Defines.FrameId.Auto: return this.find_auto_frame();
       case Defines.FrameId.Gone: return GONE_FRAME_INFO as F;
     }

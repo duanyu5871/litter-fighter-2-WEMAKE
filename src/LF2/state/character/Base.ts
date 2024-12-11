@@ -3,8 +3,8 @@ import BaseState from "../base/BaseState";
 
 export default class BaseCharacterState extends BaseState<Character> {
   update(e: Character): void {
-    e.on_gravity();
-    e.velocity_decay();
+    e.handle_gravity();
+    e.handle_ground_velocity_decay();
     e.handle_frame_velocity();
   }
   on_landing(e: Character, vx: number, vy: number, vz: number): void {

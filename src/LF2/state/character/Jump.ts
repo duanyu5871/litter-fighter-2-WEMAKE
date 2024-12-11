@@ -4,8 +4,8 @@ import BaseCharacterState from "./Base";
 export default class Jump extends BaseCharacterState {
   private _jump_flags = new Set<Character>();
   update(character: Character): void {
-    character.on_gravity();
-    character.velocity_decay();
+    character.handle_gravity();
+    character.handle_ground_velocity_decay();
     character.handle_frame_velocity();
 
     const { jump_flag } = character.get_prev_frame();

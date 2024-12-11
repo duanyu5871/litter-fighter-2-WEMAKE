@@ -11,5 +11,13 @@ export interface IStageObjectInfo {
   is_boss?: true;
   is_soldier?: true;
   reserve?: number;
+
+  
+  /**
+   * 敌人被击败后，归降后的血量。
+   * 若无此字段，敌人不会归降
+   * 
+   * @type {?number}
+   */
   join?: number;
 }

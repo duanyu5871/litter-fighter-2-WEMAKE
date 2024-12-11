@@ -13,10 +13,22 @@ export interface IItrInfo extends IRect {
    */
   friendly_fire?: number;
 
-  /** 命中后，自己停顿多少帧，默认是6 */
+  /** 
+   * 自身停顿值
+   * - 命中后，自己停顿多少帧
+   * - 不设置时存在默认值，见Defines.DEFAULT_ITR_MOTIONLESS
+   * 
+   * @see {Defines.DEFAULT_ITR_MOTIONLESS}
+   */
   motionless?: number;
 
-  /** 命中后，目标停顿多少帧（伴随震动），默认是6 */
+  /** 
+   * 目标停顿值
+   * - 命中后，目标停顿多少帧（伴随震动）
+   * - 不设置时存在默认值，见Defines.DEFAULT_ITR_MOTIONLESS
+   * 
+   * @see {Defines.DEFAULT_ITR_SHAKEING}
+   */
   shaking?: number;
 
   /** 命中后，自己跳转至什么帧 */

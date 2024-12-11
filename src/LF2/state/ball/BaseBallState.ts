@@ -3,7 +3,7 @@ import BaseState from "../base/BaseState";
 
 export default class BaseBallState<E extends Ball = Ball> extends BaseState<E> {
   update(self: E): void {
-    self.velocity_decay();
+    self.handle_ground_velocity_decay();
 
 
     const frame = self.get_frame();

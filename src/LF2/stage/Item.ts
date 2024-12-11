@@ -1,44 +1,40 @@
-import { Factory } from "../entity/Factory";
 import { BotController } from "../controller/BotController";
 import { IGameObjData } from "../defines";
 import { IStageObjectInfo } from "../defines/IStageObjectInfo";
 import { Defines } from "../defines/defines";
 import Character from "../entity/Character";
-import ICharacterCallbacks from '../entity/ICharacterCallbacks';
+import Entity from "../entity/Entity";
+import { Factory } from "../entity/Factory";
+import IEntityCallbacks from "../entity/IEntityCallbacks";
 import { is_character, is_entity, is_weapon } from "../entity/type_check";
 import { random_in, random_take } from "../utils/math/random";
 import { is_num, is_str } from "../utils/type_check";
 import Stage from "./Stage";
-import Entity from "../entity/Entity";
 
 export default class Item {
   readonly is_enemies: boolean = false;
+  times: number | undefined;
   get lf2() { return this.stage.lf2; }
   get world() { return this.stage.world; }
-  readonly info: IStageObjectInfo;
+  readonly info: Readonly<IStageObjectInfo>;
   readonly entities = new Set<Entity>();
   readonly stage: Stage;
   readonly get_oid: () => string;
 
   private data_list: IGameObjData[] = [];
 
-  readonly character_callback: ICharacterCallbacks = {
+  readonly entity_callback: IEntityCallbacks = {
     on_disposed: (e: Character): void => {
-      // 角色被移除
-      this.entities.delete(e);
-
-      e.callbacks.del(this.character_callback);
-
+      this.entities.delete(e); // 被移除
+      e.callbacks.del(this.entity_callback);
       if (this.entities.size) return;
-
-      const { times, is_soldier } = this.info;
-      if (is_soldier) {
+      if (this.info.is_soldier) {
         if (this.stage.all_boss_dead()) {
           this.dispose();
-        } else if (!is_num(times) || times > 0) {
+        } else if (!is_num(this.times) || this.times > 0) {
           this.spawn();
         }
-      } else if (times) {
+      } else if (this.times) {
         this.spawn();
       } else {
         this.dispose();
@@ -51,7 +47,8 @@ export default class Item {
 
   constructor(stage: Stage, info: IStageObjectInfo) {
     this.stage = stage;
-    this.info = { ...info };
+    this.info = info;
+    this.times = info.times;
     for (const oid of this.info.id) {
       const data = this.lf2.datas.find(oid);
       if (data) { this.data_list.push(data); continue; }
@@ -79,9 +76,10 @@ export default class Item {
     const creator = Factory.inst.get(data.type);
     if (!creator) { debugger; return; }
 
-    const { hp, act, x, y, z } = this.info;
-    if (this.info.times) this.info.times--;
+    const { hp, act, x, y, z, reserve } = this.info;
+    if (this.times) this.times--;
     const e = creator(this.world, data);
+    e.reserve = reserve;
     e.position.x = random_in(x - range_x, x + range_x);
     e.position.z = is_num(z) ?
       random_in(z - range_z, z + range_z) :
@@ -101,7 +99,7 @@ export default class Item {
     }
     this.entities.add(e);
     if (is_entity(e)) {
-      e.callbacks.add(this.character_callback);
+      e.callbacks.add(this.entity_callback);
     }
 
     e.attach();
@@ -114,7 +112,7 @@ export default class Item {
     this.stage.items.delete(this);
     for (const e of this.entities) {
       if (is_entity(e))
-        e.callbacks.del(this.character_callback);
+        e.callbacks.del(this.entity_callback);
       this.world.del_entities(e)
     }
   }

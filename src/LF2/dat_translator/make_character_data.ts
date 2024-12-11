@@ -138,12 +138,14 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
         frame.hit.j = { id: '210' }; // jump
         frame.hit.d = { id: '110' }; // defend
         frame.hit.FF = { id: 'running_0' };
-        frame.dvx = walking_speed / 2;
-        frame.dvz = walking_speedz;
+        frame.speedx = walking_speed / 2;
+        frame.speedz = walking_speedz;
         break;
       }
       /** running */
-      case 9: case 10: case 11: {
+      case 9:
+      case 10:
+      case 11: {
         frame.hit = frame.hit || {};
         frame.hit.a = [
           { // 丢出武器
@@ -169,7 +171,7 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
         frame.hold = frame.hold || {};
         frame.hit.B = frame.hold.B = { id: '218' }; // running_stop
         frame.dvx = running_speed / 2;
-        frame.dvz = running_speedz;
+        frame.speedz = running_speedz;
         break;
       }
       /** heavy_obj_walk */
@@ -179,8 +181,8 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
         frame.hit = frame.hit || {};
         frame.hit.FF = { id: 'heavy_obj_run_0' };
         frame.hit.a = { id: '50', facing: FacingFlag.ByController }; // running_stop
-        frame.dvx = heavy_walking_speed / 2;
-        frame.dvz = heavy_walking_speedz;
+        frame.speedx = heavy_walking_speed / 2;
+        frame.speedz = heavy_walking_speedz;
         break;
       }
       /** heavy_obj_run */
@@ -190,7 +192,7 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
         frame.hit.B = frame.hold.B = { id: '19' }; // running_stop
         frame.hit.a = { id: '50' }; // running_stop
         frame.dvx = heavy_running_speed / 2;
-        frame.dvz = heavy_running_speedz;
+        frame.speedz = heavy_running_speedz;
 
         break;
       }
@@ -365,7 +367,8 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
     switch (frame.state) {
       case State.BurnRun:
       case State.Z_Moveable:
-        frame.dvz = running_speedz;
+        frame.dvz = void 0;
+        frame.speedz = running_speedz;
         break;
 
       case Defines.State.Walking:

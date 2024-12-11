@@ -6,10 +6,9 @@ import { get_team_text_color } from '../base/get_team_text_color';
 import Ditto from '../ditto';
 import type Entity from './Entity';
 import type IEntityCallbacks from './IEntityCallbacks';
-import { controller_is_local_controller, is_character } from './type_check';
 
 const BAR_W = 40;
-const BAR_H = 2;
+const BAR_H = 5;
 const BAR_GEO = new T.PlaneGeometry(BAR_W, BAR_H).translate(.5 * BAR_W, -.5 * BAR_H, 0);
 
 const BAR_BG_W = BAR_W + 2;

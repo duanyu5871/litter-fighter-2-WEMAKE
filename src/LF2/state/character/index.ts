@@ -39,8 +39,8 @@ CHARACTER_STATES.set(Defines.State.Caught, new class extends BaseState<Character
 
 CHARACTER_STATES.set(Defines.State.Z_Moveable, new class extends BaseCharacterState {
   update(e: Character): void {
-    e.on_gravity();
-    e.velocity_decay();
+    e.handle_gravity();
+    e.handle_ground_velocity_decay();
     e.handle_frame_velocity();
   }
 }())

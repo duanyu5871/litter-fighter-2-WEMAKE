@@ -6,8 +6,8 @@ import BaseState from "../base/BaseState";
 
 export default class BaseWeaponState extends BaseState<Weapon> {
   update(e: Weapon): void {
-    e.on_gravity();
-    e.velocity_decay();
+    e.handle_gravity();
+    e.handle_ground_velocity_decay();
     e.handle_frame_velocity();
   }
 

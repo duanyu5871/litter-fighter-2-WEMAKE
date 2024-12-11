@@ -36,4 +36,14 @@ export interface IFrameInfo {
   indicator_info?: IRectPair;
   invisible?: number;
   no_shadow?: number;
+
+  /**
+   * x轴速度，当按着左或右，此值生效
+   */
+  speedx?: number;
+
+  /**
+   * z轴速度，当按着上或下，此值生效
+   */
+  speedz?: number;
 }

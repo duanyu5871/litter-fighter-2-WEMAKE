@@ -1,9 +1,8 @@
-import { debug } from "console";
-import ICharacterCallbacks from "../../entity/ICharacterCallbacks";
+import IEntityCallbacks from "../../entity/IEntityCallbacks";
 import { is_character } from "../../entity/type_check";
 import { LayoutComponent } from "./LayoutComponent";
 
-export default class VsModeLogic extends LayoutComponent implements ICharacterCallbacks {
+export default class VsModeLogic extends LayoutComponent implements IEntityCallbacks {
   override on_start(): void {
     super.on_start?.()
     for (const [, v] of this.lf2.player_characters) {

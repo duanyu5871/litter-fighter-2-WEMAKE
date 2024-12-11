@@ -1,5 +1,6 @@
 import type { Unsafe } from '../utils/type_check';
 import type Entity from './Entity';
+import type { Defines } from '../defines';
 
 export default interface IEntityCallbacks<E extends Entity = Entity> {
   on_holder_changed?(e: E, value: Unsafe<Entity>, prev: Unsafe<Entity>): void;
@@ -100,6 +101,16 @@ export default interface IEntityCallbacks<E extends Entity = Entity> {
    */
   on_name_changed?(e: E, value: string, prev: string): void;
 
+
+  /**
+   * 角色倒地死亡回调
+   * 
+   * 当角色hp为0，且状态处于Lying时触发
+   *
+   * @see {Defines.State.Lying}
+   * @param {E} e
+   */
+  on_dead?(e: E): void;
 
   on_disposed?(e: E): void;
 }

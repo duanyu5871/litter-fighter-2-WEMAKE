@@ -9,7 +9,7 @@ export class WeaponBroken extends BaseState {
     e.emitter?.velocity && e.velocity.add(e.emitter.velocity);
   }
   update(e: Entity): void {
-    e.on_gravity();
+    e.handle_gravity();
   }
   on_landing(e: Entity, vx: number, vy: number, vz: number): void {
     e.enter_frame(GONE_FRAME_INFO);

@@ -33,14 +33,14 @@ export default class Falling extends BaseCharacterState {
   }
 
   update_bouncing(e: Character): void {
-    e.on_gravity();
-    e.velocity_decay(0.7);
+    e.handle_gravity();
+    e.handle_ground_velocity_decay(0.7);
     e.handle_frame_velocity();
   }
 
   update_falling(e: Character): void {
-    e.on_gravity();
-    e.velocity_decay(0);
+    e.handle_gravity();
+    e.handle_ground_velocity_decay(0);
     e.handle_frame_velocity();
     const { data: { indexes: { falling } } } = e;
     const { x, y } = e.velocity;

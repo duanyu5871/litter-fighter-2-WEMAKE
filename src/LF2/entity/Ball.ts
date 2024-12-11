@@ -9,8 +9,7 @@ import { is_character, is_weapon } from './type_check';
 
 export default class Ball extends Entity<IBallFrameInfo, IBallInfo, IBallData> {
   static readonly TAG: string = 'Ball';
-  readonly is_ball = true
-  ud = 0;
+  readonly is_ball = true;
   constructor(world: World, data: IBallData) {
     super(world, data, BALL_STATES);
     this.name = "ball: " + data.id
@@ -19,15 +18,8 @@ export default class Ball extends Entity<IBallFrameInfo, IBallInfo, IBallData> {
   override find_auto_frame() {
     return this.data.frames[0] ?? EMPTY_FRAME_INFO;
   }
-  override handle_frame_velocity(): void {
-    super.handle_frame_velocity();
-    const { speedz = 0, dvz = 0 } = this.get_frame();
-    this.velocity.z = this.ud * speedz + dvz;
-  }
-
   override on_spawn_by_emitter(shotter: Entity, o: IOpointInfo, speed_z: number) {
     const ret = super.on_spawn_by_emitter(shotter, o);
-    this.ud = speed_z;
     return ret;
   }
   set_frame(v: IBallFrameInfo): void {

@@ -256,7 +256,7 @@ export class BaseController {
           if (super_punch) {
             this.nf.set({ id: entity.data.indexes.super_punch }, this.key_time_maps.a, GameKey.a);
           }
-          console.log("super_punch:", super_punch)
+          // console.log("super_punch:", super_punch)
         }
         break;
     }

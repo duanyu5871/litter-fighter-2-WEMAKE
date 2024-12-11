@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Button } from './Component/Button';
 import CharacterSelect from './Component/CharacterSelect';
-import { Checkbox } from "./Component/Checkbox";
 import { Input } from './Component/Input';
 import Select from './Component/Select';
 import Show from './Component/Show';

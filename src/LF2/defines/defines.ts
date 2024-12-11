@@ -155,7 +155,7 @@ export namespace Defines {
     Any = -1,
     _0 = 0, Standing = 0,
     _1 = 1, Walking = 1,
-    _2 = 2, Running = 2,
+    Running = 2, _2 = 2, 
     _3 = 3, Attacking = 3,
     _4 = 4, Jump = 4,
     _5 = 5, Dash = 5,
@@ -172,10 +172,32 @@ export namespace Defines {
     _16 = 16, Tired = 16,
     _17 = 17, drink = 17,
     _18 = 18, Burning = 18,
-    _19 = 19, BurnRun = 19,
 
-    NextAsLanding = 100,
-    Z_Moveable = 301,
+    /**
+     * 原版中：此state，支持根据上下键与dvz控制角色Z轴移动，比如Firen的D>J。
+     * 
+     * WEMAKE中，实现方式有所变动：
+     *    改成上下键与speedz配合，控制角色Z轴移动速度。
+     *    speedz可用于任意帧中。
+     */
+    BurnRun = 19, _19 = 19, 
+
+    
+    /** 
+     * 此状态下，在空中时(position.y > 0)，wait结束不会进入到next中.
+     * 
+     * 但会在落地(position.y == 0)时进入next
+     */
+    NextAsLanding = 100, _100 = 100,
+
+    /**
+     * 原版中：此state，用于支持根据上下键与dvz控制角色Z轴移动，比如Deep的D>J。
+     * 
+     * WEMAKE中，实现方式有所变动：
+     *    改成上下键与speedz配合，控制角色Z轴移动速度。
+     *    speedz可用于任意帧中。
+     */
+    Z_Moveable = 301, _301 = 301,
 
     Teleport_ToNearestEnemy = 400,
     Teleport_ToFarthestAlly = 401,

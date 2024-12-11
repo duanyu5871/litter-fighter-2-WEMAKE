@@ -1,26 +1,17 @@
 import { Warn } from '../../Log';
 import { type ICube, type World } from '../World';
-import { Callbacks, type NoEmitCallbacks } from "../base";
 import type { IBdyInfo, ICharacterData, ICharacterFrameInfo, ICharacterInfo, IFrameInfo, IItrInfo, INextFrame, IOpointInfo, TFace, TNextFrame } from '../defines';
 import { Defines } from '../defines/defines';
 import { CHARACTER_STATES } from '../state/character';
 import Entity from './Entity';
 import { Factory } from './Factory';
-import ICharacterCallbacks from './ICharacterCallbacks';
 import { same_face, turn_face } from './face_helper';
 import { is_ball, is_character, is_weapon } from './type_check';
 
 export default class Character extends Entity<ICharacterFrameInfo, ICharacterInfo, ICharacterData> {
   static readonly TAG: string = 'Character';
-  readonly is_character = true
-  protected _callbacks = new Callbacks<ICharacterCallbacks>()
-  get callbacks(): NoEmitCallbacks<ICharacterCallbacks> {
-    return this._callbacks
-  }
+  readonly is_character = true;
   protected _resting = 0;
-  fall_value = Defines.DEFAULT_FALL_VALUE;
-  defend_value = Defines.DEFAULT_DEFEND_VALUE;
-
   constructor(world: World, data: ICharacterData) {
     super(world, data, CHARACTER_STATES);
     this.name = Character.name + ':' + data.base.name;
@@ -32,7 +23,6 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
     this._mp_r_max_spd = data.base.mp_r_max_spd ?? Defines.DAFAULT_MP_RECOVERY_MAX_SPEED;
     this._max_catch_time = data.base.catch_time ?? Defines.DAFUALT_CATCH_TIME;
 
-
     this.update_mp_recovery_speed();
 
     this.fall_value = this.data.base.fall_value;
@@ -40,8 +30,6 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
     this._hp = this._max_hp
     this._mp = this._max_mp
     this._catch_time = this._max_catch_time;
-
-
   }
 
   override get_next_frame(which: string | TNextFrame): [ICharacterFrameInfo | undefined, INextFrame | undefined] {
@@ -116,16 +104,7 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
         break;
     }
   }
-  override handle_frame_velocity() {
-    super.handle_frame_velocity();
-    if (this.controller) {
-      const { dvz } = this.get_frame();
-      if (dvz !== void 0 && dvz !== 0 && dvz !== 550) {
-        const { UD: UD1 } = this.controller;
-        this.velocity.z = UD1 * dvz;
-      }
-    }
-  }
+
   override self_update(): void {
     super.self_update();
     switch (this.frame.state) {
@@ -367,13 +346,13 @@ export default class Character extends Entity<ICharacterFrameInfo, ICharacterInf
     const ret = super.spawn_entity(opoint, speed_z);
     if (this.controller) {
       if (is_ball(ret)) {
-        ret.ud = this.controller.UD;
+        // ret.ud = this.controller.UD;
       }
     }
     return ret;
   }
 
-  on_lying_and_dead() {
+  on_dead() {
     this._callbacks.emit('on_dead')(this);
   }
 }

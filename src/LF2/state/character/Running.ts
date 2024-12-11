@@ -3,14 +3,17 @@ import BaseCharacterState from "./Base";
 
 export default class Running extends BaseCharacterState {
   update(e: Character): void {
-    e.on_gravity();
-    e.velocity_decay();
-    const { dvx = 0, dvz = 0 } = e.get_frame();
-    const { UD: i = 0 } = e.controller || {};
-    const speed_z = i * dvz;
-    const speed_x = e.facing * (dvx - Math.abs(speed_z));
-    e.velocity.x = speed_x;
-    e.velocity.z = speed_z;
+    e.handle_gravity();
+    e.handle_ground_velocity_decay();
+    e.handle_frame_velocity();
+    if (e.velocity.z) {
+      const dz = Math.abs(e.velocity.z / 4);
+      if (e.velocity.x > 0) {
+        e.velocity.x -= dz
+      } else if (e.velocity.x < 0) {
+        e.velocity.x += dz;
+      }
+    }
     if (e.hp <= 0) {
       e.enter_frame(e.get_sudden_death_frame());
     }

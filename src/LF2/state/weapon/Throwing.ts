@@ -8,8 +8,8 @@ export default class Throwing extends BaseWeaponState {
     return e.world.gravity * 0.6
   };
   update(e: Weapon): void {
-    e.on_gravity();
-    e.velocity_decay();
+    e.handle_gravity();
+    e.handle_ground_velocity_decay();
     e.handle_frame_velocity();
   }
   enter(e: Weapon, prev_frame: IFrameInfo): void {
