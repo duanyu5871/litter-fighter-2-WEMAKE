@@ -1,6 +1,6 @@
 import { Log } from '../../Log';
 import type { ICube, World } from '../World';
-import type { IBallData, IBallFrameInfo, IBallInfo, IBdyInfo, IItrInfo, IOpointInfo } from '../defines';
+import type { IBallData, IBallFrameInfo, IBallInfo, IBdyInfo, IItrInfo } from '../defines';
 import { Defines } from '../defines';
 import { BALL_STATES } from '../state/ball';
 import Entity from './Entity';
@@ -13,11 +13,6 @@ export default class Ball extends Entity<IBallFrameInfo, IBallInfo, IBallData> {
   constructor(world: World, data: IBallData) {
     super(world, data, BALL_STATES);
     this.name = "ball: " + data.id
-    this.hp = this.data.base.hp;
-  }
-  override on_spawn_by_emitter(shotter: Entity, o: IOpointInfo, speed_z: number) {
-    const ret = super.on_spawn_by_emitter(shotter, o);
-    return ret;
   }
   override set_frame(v: IBallFrameInfo): void {
     switch (this.frame.behavior) {

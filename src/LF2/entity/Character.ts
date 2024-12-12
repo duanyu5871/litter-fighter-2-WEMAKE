@@ -11,25 +11,10 @@ import { is_ball, is_character, is_weapon } from './type_check';
 export default class Character extends Entity<IFrameInfo, ICharacterInfo, ICharacterData> {
   static override readonly TAG: string = 'Character';
   readonly is_character = true;
-  protected _resting = 0;
   constructor(world: World, data: ICharacterData) {
     super(world, data, CHARACTER_STATES);
     this.name = Character.name + ':' + data.base.name;
     this.enter_frame({ id: Defines.FrameId.Auto });
-
-    this._hp_max = data.base.hp ?? Defines.DAFUALT_HP;
-    this._mp_max = data.base.mp ?? Defines.DEFAULT_MP;
-    this._mp_r_spd_min = data.base.mp_r_min_spd ?? Defines.DEFAULT_MP_RECOVERY_MIN_SPEED;
-    this._mp_r_spd_max = data.base.mp_r_max_spd ?? Defines.DEFAULT_MP_RECOVERY_MAX_SPEED;
-    this._max_catch_time = data.base.catch_time ?? Defines.DAFUALT_CATCH_TIME;
-
-    this.update_mp_recovery_speed();
-
-    this.fall_value = this.data.base.fall_value;
-    this.defend_value = this.data.base.defend_value;
-    this._hp = this._hp_max
-    this._mp = this._mp_max
-    this._catch_time = this._max_catch_time;
   }
 
   override self_update(): void {
@@ -37,16 +22,16 @@ export default class Character extends Entity<IFrameInfo, ICharacterInfo, IChara
     switch (this.frame.state) {
       case Defines.State.Lying:
         this._resting = 0;
-        this.fall_value = this.data.base.fall_value;
-        this.defend_value = this.data.base.defend_value;
+        this.fall_value = this.fall_value_max;
+        this.defend_value = this.defend_value_max;
         break;
       case Defines.State.Burning:
         break;
       default: {
         if (this._resting > 0) { this._resting--; }
         else {
-          if (this.fall_value < this.data.base.fall_value) { this.fall_value += 1; }
-          if (this.defend_value < this.data.base.defend_value) { this.defend_value += 1; }
+          if (this.fall_value < this.fall_value_max) { this.fall_value += 1; }
+          if (this.defend_value < this.defend_value_max) { this.defend_value += 1; }
         }
       }
     }
@@ -68,36 +53,8 @@ export default class Character extends Entity<IFrameInfo, ICharacterInfo, IChara
     return (this.velocity.x > 0 && target.position.x > this.position.x) ||
       (this.velocity.x < 0 && target.position.x < this.position.x)
   }
-  private start_catch(target: Entity, itr: IItrInfo) {
-    if (!is_character(target)) {
-      Warn.print(Character.TAG + '::start_catch', 'cannot catch', target)
-      return;
-    }
-    if (itr.catchingact === void 0) {
-      Warn.print(Character.TAG + '::start_catch', 'cannot catch, catchingact got', itr.catchingact)
-      return;
-    }
-    this._catch_time = this._max_catch_time;
-    this._catching = target;
-    this._next_frame = itr.catchingact
-  }
-  private start_caught(attacker: Entity, itr: IItrInfo) {
-    if (!is_character(attacker)) {
-      Warn.print(Character.TAG + '::start_caught', 'cannot be caught by', attacker)
-      return
-    }
-    if (itr.caughtact === void 0) {
-      Warn.print(Character.TAG + '::start_caught', 'cannot be caught, caughtact got', itr.caughtact)
-      return;
-    }
-    this._catcher = attacker;
-    this._resting = 0;
-    this.fall_value = this.data.base.fall_value;
-    this.defend_value = this.data.base.defend_value;
-    this._next_frame = itr.caughtact;
-  }
-  override on_collision(target: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
 
+  override on_collision(target: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
     switch (itr.kind) {
       case Defines.ItrKind.Catch:
         if (this.dizzy_catch_test(target))

@@ -72,8 +72,11 @@ export default class Entity<
   transform_datas?: [D, D];
   readonly world: World;
   readonly position = new Ditto.Vector3(0, 0, 0);
+  protected _resting = 0;
   fall_value = Defines.DEFAULT_FALL_VALUE;
+  fall_value_max = Defines.DEFAULT_FALL_VALUE;
   defend_value = Defines.DEFAULT_DEFEND_VALUE;
+  defend_value_max = Defines.DEFAULT_DEFEND_VALUE;
   throwinjury?: number;
 
   get catching() { return this._catching; }
@@ -108,7 +111,6 @@ export default class Entity<
   protected _hp: number = Defines.DAFUALT_HP;
   protected _hp_max: number = Defines.DAFUALT_HP;
 
-
   protected _holder?: Entity;
   protected _holding?: Entity;
   protected _emitter?: Entity;
@@ -125,7 +127,7 @@ export default class Entity<
    * 当抓住一个被击晕的人时，此值充满。
    */
   protected _catch_time = Defines.DAFUALT_CATCH_TIME;
-  protected _max_catch_time = Defines.DAFUALT_CATCH_TIME
+  protected _catch_time_max = Defines.DAFUALT_CATCH_TIME
 
   /**
    * 隐身计数，每帧-1
@@ -200,7 +202,7 @@ export default class Entity<
   set hp(v: number) {
     const o = this._hp;
     this._callbacks.emit('on_hp_changed')(this, this._hp = v, o)
-    this.update_mp_recovery_speed();
+    this.update_mp_r_spd();
   }
 
   get max_mp(): number { return this._mp_max; }
@@ -213,14 +215,13 @@ export default class Entity<
   set max_hp(v: number) {
     const o = this._hp_max;
     this._callbacks.emit('on_max_hp_changed')(this, this._hp_max = v, o)
-    this.update_mp_recovery_speed();
+    this.update_mp_r_spd();
   }
 
-  get mp_recovery_min_speed(): number { return this._mp_r_spd_min; }
-  set mp_recovery_min_speed(v: number) { this._mp_r_spd_min = v; }
-
-  get mp_recovery_max_speed(): number { return this._mp_r_spd_max; }
-  set mp_recovery_max_speed(v: number) { this._mp_r_spd_max = v; }
+  get mp_r_spd_min(): number { return this._mp_r_spd_min; }
+  set mp_r_spd_min(v: number) { this._mp_r_spd_min = v; }
+  get mp_r_spd_max(): number { return this._mp_r_spd_max; }
+  set mp_r_spd_max(v: number) { this._mp_r_spd_max = v; }
 
   get team(): string { return this._team || this.starter?.team || '' }
   set team(v) {
@@ -298,6 +299,19 @@ export default class Entity<
     this.data = data;
     this.world = world;
     this.states = states;
+    this._hp_max = data.base.hp ?? Defines.DAFUALT_HP;
+    this._mp_max = data.base.mp ?? Defines.DEFAULT_MP;
+    this._mp_r_spd_min = data.base.mp_r_min_spd ?? Defines.DEFAULT_MP_RECOVERY_MIN_SPEED;
+    this._mp_r_spd_max = data.base.mp_r_max_spd ?? Defines.DEFAULT_MP_RECOVERY_MAX_SPEED;
+    this._catch_time_max = data.base.catch_time ?? Defines.DAFUALT_CATCH_TIME;
+    this.update_mp_r_spd();
+    this.fall_value_max = this.data.base.fall_value ?? Defines.DEFAULT_FALL_VALUE;
+    this.defend_value_max = this.data.base.defend_value ?? Defines.DEFAULT_DEFEND_VALUE;
+    this.fall_value = this.fall_value_max
+    this.defend_value = this.defend_value_max
+    this._hp = this._hp_max
+    this._mp = this._mp_max
+    this._catch_time = this._catch_time_max;
   }
 
   set_holder(v: Entity | undefined): this {
@@ -376,6 +390,13 @@ export default class Entity<
     if (o.max_mp) this.max_mp = o.max_mp;
     if (o.hp) this.hp = o.hp;
     if (o.mp) this.mp = o.mp;
+
+    if (this.frame.state === Defines.State.Weapon_OnHand) {
+      this.holder = emitter
+      this.holder.holding = this
+      this.team = emitter.team;
+    }
+    
     return this;
   }
 
@@ -780,6 +801,27 @@ export default class Entity<
   lastest_victim?: Entity;
   lastest_attacker?: Entity;
 
+  start_catch(target: Entity, itr: IItrInfo) {
+    if (itr.catchingact === void 0) {
+      Warn.print(Entity.TAG + '::start_catch', 'cannot catch, catchingact got', itr.catchingact)
+      return;
+    }
+    this._catch_time = this._catch_time_max;
+    this._catching = target;
+    this._next_frame = itr.catchingact
+  }
+  start_caught(attacker: Entity, itr: IItrInfo) {
+    if (itr.caughtact === void 0) {
+      Warn.print(Entity.TAG + '::start_caught', 'cannot be caught, caughtact got', itr.caughtact)
+      return;
+    }
+    this._catcher = attacker;
+    this._resting = 0;
+    this.fall_value = this.fall_value_max;
+    this.defend_value = this.defend_value_max;
+    this._next_frame = itr.caughtact;
+  }
+
   on_collision(target: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
     this.lastest_victim = target;
     this._motionless = itr.motionless ?? Defines.DEFAULT_ITR_MOTIONLESS;
@@ -841,7 +883,7 @@ export default class Entity<
     this._invisible_duration = duration;
   }
 
-  protected update_mp_recovery_speed(): void {
+  protected update_mp_r_spd(): void {
     this._mp_r_spd = this._mp_r_spd_min + (this._mp_r_spd_max - this._mp_r_spd_min) * (this._hp_max - this._hp) / this._hp_max
   }
 
@@ -1020,6 +1062,7 @@ export default class Entity<
 
   get_frame() { return this.frame; }
   get_prev_frame() { return this._prev_frame; }
+
 }
 
 Factory.inst.set_entity_creator('entity', (...args) => new Entity(...args));

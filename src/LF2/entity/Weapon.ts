@@ -10,7 +10,6 @@ export default class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData>
   constructor(world: World, data: IWeaponData) {
     super(world, data, WEAPON_STATES);
     this.name = "Weapon: " + data.id
-    this.hp = this.max_hp = data.base.weapon_hp;
   }
   
   override self_update(): void {
@@ -60,16 +59,6 @@ export default class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData>
         }
       }
     }
-  }
-
-  override on_spawn_by_emitter(emitter: Entity, o: IOpointInfo, speed_z?: number): this {
-    super.on_spawn_by_emitter(emitter, o, speed_z);
-    if (this.frame.state === Defines.State.Weapon_OnHand) {
-      this.holder = emitter
-      this.holder.holding = this
-      this.team = emitter.team;
-    }
-    return this;
   }
 }
 Factory.inst.set_entity_creator('weapon', (...args) => new Weapon(...args));
