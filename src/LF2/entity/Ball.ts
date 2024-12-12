@@ -65,9 +65,6 @@ export default class Ball extends Entity<IBallFrameInfo, IBallInfo, IBallData> {
       this.velocity.y = 0;
     }
   }
-  override on_be_collided(attacker: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
-    super.on_be_collided(attacker, itr, bdy, a_cube, b_cube);
-  }
   override update(): void {
     super.update();
     const f = this.get_frame();
