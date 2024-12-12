@@ -15,7 +15,7 @@ export default class InTheSky extends BaseWeaponState {
   }
   override on_landing(e: Weapon, vx: number, vy: number, vz: number): void {
     const { base, indexes } = e.data
-    const dvy = Math.floor(-vy * base.bounce);
+    const dvy = Math.floor(-vy * (base.bounce || 0));
     const min_bounce_vy = 2;
     if (dvy < min_bounce_vy) {
       e.enter_frame(indexes.just_on_ground)

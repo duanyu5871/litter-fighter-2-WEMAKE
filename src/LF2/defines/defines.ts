@@ -258,22 +258,32 @@ export namespace Defines {
     TransformToLouisEx = 9996,
     _9995 = 9995,
   }
+  
   export enum EntityEnum {
     Character = 'character',
     Weapon = 'weapon',
     Ball = 'ball',
   }
+
   export enum EntityGroup {
-    /** 隐藏角色 */
+    /** 
+     * 隐藏角色 
+     */
     Hidden = 'hidden',
 
-    /** 常规角色 */
+    /** 
+     * 常规角色 
+     * 属于此组的角色才可被随机到
+     */
     Regular = '1000',
 
-    /** 最杂的杂鱼 */
+    /** 
+     * 最杂的杂鱼 
+     * 默认只有30和31的角色
+     */
     _3000 = '3000',
-
   }
+
   export enum ItrKind {
     /** */
     Normal = 0,

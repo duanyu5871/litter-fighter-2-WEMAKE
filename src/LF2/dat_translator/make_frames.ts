@@ -1,4 +1,5 @@
-import { IBdyInfo, ICpointInfo, IEntityPictureInfo, IFramePictureInfo, IGameObjInfo, IItrInfo, IOpointInfo, IWpointInfo } from '../defines';
+import { IBdyInfo, ICpointInfo, IEntityPictureInfo, IFramePictureInfo, IItrInfo, IOpointInfo, IWpointInfo } from '../defines';
+import { IEntityInfo } from "../defines/IGameObjInfo";
 import { IFrameInfo } from "../defines/IFrameInfo";
 import { IRect } from '../defines/IRect';
 import { Defines } from '../defines/defines';
@@ -22,7 +23,7 @@ const handle_raw_mp = (mp: number | undefined) => {
   const hp = (mp - _mp) / 100;
   return [_mp, hp] as const;
 }
-export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string, files: IGameObjInfo['files']): Record<string, F> {
+export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string, files: IEntityInfo['files']): Record<string, F> {
   const frames: Record<string, F> = {};
   const frame_regexp = /<frame>\s+(.*?)\s+(.*)((.|\n)+?)<frame_end>/g;
   for (const [, frame_id, frame_name, content] of match_all(text, frame_regexp)) {

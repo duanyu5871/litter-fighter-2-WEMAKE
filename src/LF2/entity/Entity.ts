@@ -7,7 +7,8 @@ import { Callbacks, new_id, new_team, type NoEmitCallbacks } from '../base';
 import { IExpression } from '../base/Expression';
 import { BaseController } from '../controller/BaseController';
 import { BotController } from '../controller/BotController';
-import { IBallData, IBaseData, IBdyInfo, ICharacterData, ICpointInfo, IEntityData, IFrameInfo, IGameObjData, IGameObjInfo, IItrInfo, INextFrame, IOpointInfo, ITexturePieceInfo, IWeaponData, TFace, TNextFrame } from '../defines';
+import { IBallData, IBaseData, IBdyInfo, ICharacterData, ICpointInfo, IEntityData, IFrameInfo, IGameObjData, IItrInfo, INextFrame, IOpointInfo, ITexturePieceInfo, IWeaponData, TFace, TNextFrame } from '../defines';
+import { IEntityInfo } from "../defines/IGameObjInfo";
 import { Defines } from '../defines/defines';
 import Ditto from '../ditto';
 import { States, type BaseState } from '../state/base';
@@ -58,7 +59,7 @@ export interface IVictimRest {
 
 export default class Entity<
   F extends IFrameInfo = IFrameInfo,
-  I extends IGameObjInfo = IGameObjInfo,
+  I extends IEntityInfo = IEntityInfo,
   D extends IGameObjData<I, F> = IGameObjData<I, F>
 > {
   static readonly TAG: string = 'Entity';

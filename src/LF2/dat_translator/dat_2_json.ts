@@ -1,8 +1,9 @@
 import {
   IBallData, IBaseData, IBgData, ICharacterData,
-  IEntityData, IEntityPictureInfo, IGameObjInfo, IStageInfo,
+  IEntityData, IEntityPictureInfo, IStageInfo,
   IWeaponData
 } from '../defines';
+import { IEntityInfo } from "../defines/IGameObjInfo";
 import { IBallFrameInfo } from "../defines/IBallFrameInfo";
 import { IBallInfo } from "../defines/IBallInfo";
 import { ICharacterInfo } from "../defines/ICharacterInfo";
@@ -170,10 +171,10 @@ export default function dat_to_json(
         break;
       }
       case '3': ret = make_ball_data(base as IBallInfo, make_frames<IBallFrameInfo>(full_str, base.files), datIndex); break;
-      case '5': ret = make_entity_data(base as IGameObjInfo, make_frames(full_str, base.files)); break;
+      case '5': ret = make_entity_data(base as IEntityInfo, make_frames(full_str, base.files)); break;
       default:
         console.warn('[dat_to_json] unknow dat type:', JSON.stringify(datIndex.type))
-        ret = make_entity_data(base as IGameObjInfo, make_frames(full_str, base.files));
+        ret = make_entity_data(base as IEntityInfo, make_frames(full_str, base.files));
         break;
     }
     if (ret) ret.id = datIndex.id;
@@ -189,6 +190,6 @@ export default function dat_to_json(
     }
     if ('weapon_hit_sound' in base)
       return make_ball_data(base as IBallInfo, make_frames<IBallFrameInfo>(full_str, base.files));
-    return make_entity_data(base as IGameObjInfo, make_frames(full_str, base.files));
+    return make_entity_data(base as IEntityInfo, make_frames(full_str, base.files));
   }
 }

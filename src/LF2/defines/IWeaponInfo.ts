@@ -1,5 +1,5 @@
-import { IGameObjInfo } from ".";
-export interface IWeaponInfo extends IGameObjInfo {
+import { IEntityInfo } from "./IGameObjInfo";
+export interface IWeaponInfo extends IEntityInfo {
   weapon_hp: number;
   type: number;
   weapon_drop_hurt?: number;

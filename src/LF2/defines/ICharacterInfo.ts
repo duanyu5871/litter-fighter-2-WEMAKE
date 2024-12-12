@@ -1,4 +1,4 @@
-import { IGameObjInfo } from ".";
+import { IEntityInfo } from "./IGameObjInfo";
 export interface IArmorInfo {
   hit_sound?: string;
   fireproof?: number;
@@ -6,7 +6,7 @@ export interface IArmorInfo {
   toughness: number;
   type: string; // hp? times? fall? defend?
 }
-export interface ICharacterInfo extends IGameObjInfo {
+export interface ICharacterInfo extends IEntityInfo {
   ce?: number;
   armor?: IArmorInfo;
   /** 角色头像 */
