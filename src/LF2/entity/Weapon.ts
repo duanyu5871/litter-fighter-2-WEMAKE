@@ -49,15 +49,6 @@ export default class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData>
     if (this.hp <= 0) {
       // TODO: WEAPON BROKEN. -GIM
       this._next_frame = GONE_FRAME_INFO;
-      if (this.data.base.brokens?.length) {
-        for (const opoint of this.data.base.brokens) {
-          const count = opoint.multi ?? 1
-          for (let i = 0; i < count; ++i) {
-            const s = 2 * (i - (count - 1) / 2);
-            this.spawn_entity(opoint, s)
-          }
-        }
-      }
     }
   }
 }

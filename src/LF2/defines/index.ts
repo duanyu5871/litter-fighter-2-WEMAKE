@@ -6,6 +6,7 @@ import { ICharacterInfo } from "./ICharacterInfo";
 import { IFrameInfo } from "./IFrameInfo";
 import { IItrInfo } from "./IItrInfo";
 import { INextFrame } from "./INextFrame";
+import { IOpointInfo } from "./IOpointInfo";
 import { IWeaponFrameIndexes } from "./IWeaponFrameIndexes";
 import { IWeaponInfo } from "./IWeaponInfo";
 export type TTODO = any;
@@ -13,11 +14,11 @@ export type TFace = -1 | 1;
 export type TTrend = -1 | 0 | 1;
 export type BOOL = 1 | 0;
 export * from './defines';
+export * from './GameKey';
 export * from './IDataLists';
 export * from './IDatIndex';
-export * from "./IStageInfo";
 export * from './IHitKeyCollection';
-export * from './GameKey';
+export * from "./IStageInfo";
 
 /**
  * 实体图片信息
@@ -149,6 +150,26 @@ export interface IGameObjInfo {
    * @type {?number}
    */
   catch_time?: number
+
+  /**
+   * 物体的弹性
+   * 目前仅用于武器，当武器接触到地面时，有如下速度变化：
+   * 
+   * - ```vy = -vy * bounce``` 
+   * 
+   * @type {number}
+   */
+  bounce?: number;
+
+  /**
+   * 物体的碎片信息（目前仅用于武器）
+   * 当物体的血量归0时，将根据brokens创建一系列物品。
+   * 武器的碎片用这个实现。
+   * 也许也能用来实现更可怕的效果。
+   *
+   * @type {?IOpointInfo[]}
+   */
+  brokens?: IOpointInfo[];
 }
 export interface IBaseData<I = any> {
   get is_base_data(): true;

@@ -203,6 +203,16 @@ export default class Entity<
     const o = this._hp;
     this._callbacks.emit('on_hp_changed')(this, this._hp = v, o)
     this.update_mp_r_spd();
+
+    if (o !== v && o <= 0 && this.data.base.brokens?.length) {
+      for (const opoint of this.data.base.brokens) {
+        const count = opoint.multi ?? 1
+        for (let i = 0; i < count; ++i) {
+          const s = 2 * (i - (count - 1) / 2);
+          this.spawn_entity(opoint, s)
+        }
+      }
+    }
   }
 
   get max_mp(): number { return this._mp_max; }
@@ -396,7 +406,7 @@ export default class Entity<
       this.holder.holding = this
       this.team = emitter.team;
     }
-    
+
     return this;
   }
 
