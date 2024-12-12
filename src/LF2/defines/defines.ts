@@ -24,7 +24,7 @@ export namespace Defines {
   export const OLD_SCREEN_WIDTH = 794;
   export const OLD_SCREEN_HEIGHT = 550;
   export const DAFUALT_HP = 500;
-  export const DAFAULT_MP = 500;
+  export const DEFAULT_MP = 500;
   export const DEFAULT_FALL_VALUE = 140
   export const DEFAULT_DEFEND_VALUE = 120
   export const DEFAULT_ITR_SHAKEING = 6;
@@ -36,17 +36,17 @@ export namespace Defines {
    *
    * @type {number}
    */
-  export const DAFAULT_MP_RECOVERY_MAX_SPEED: number = 2;
+  export const DEFAULT_MP_RECOVERY_MAX_SPEED: number = 2;
 
   /**
    * 默认最大回蓝速度, 血越多，回蓝越慢（线性）
    *
    * @type {number}
    */
-  export const DAFAULT_MP_RECOVERY_MIN_SPEED: number = 0.5;
+  export const DEFAULT_MP_RECOVERY_MIN_SPEED: number = 0.5;
 
 
-  export const DAFAULT_HP_RECOVERY_SPEED = 0.2;
+  export const DEFAULT_HP_RECOVERY_SPEED = 0.2;
 
   export const VOID_STAGE: IStageInfo = {
     bg: "VOID",

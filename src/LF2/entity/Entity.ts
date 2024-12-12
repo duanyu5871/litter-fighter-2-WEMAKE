@@ -4,6 +4,7 @@ import LF2 from '../LF2';
 import type { World } from '../World';
 import { ICube } from '../World';
 import { Callbacks, new_id, new_team, type NoEmitCallbacks } from '../base';
+import { IExpression } from '../base/Expression';
 import { BaseController } from '../controller/BaseController';
 import { BotController } from '../controller/BotController';
 import { IBallData, IBaseData, IBdyInfo, ICharacterData, ICpointInfo, IEntityData, IFrameInfo, IGameObjData, IGameObjInfo, IItrInfo, INextFrame, IOpointInfo, ITexturePieceInfo, IWeaponData, TFace, TNextFrame } from '../defines';
@@ -67,9 +68,8 @@ export default class Entity<
   update_id: number = Number.MIN_SAFE_INTEGER;
   variant: number = 0;
   reserve?: number = 0;
-  readonly is_frame_animater = true
-  public data: D;
-  public transform_datas?: [D, D];
+  data: D;
+  transform_datas?: [D, D];
   readonly world: World;
   readonly position = new Ditto.Vector3(0, 0, 0);
   fall_value = Defines.DEFAULT_FALL_VALUE;
@@ -99,15 +99,15 @@ export default class Entity<
   protected _name: string = '';
   protected _team: string = new_team();
 
-  protected _mp: number = Defines.DAFAULT_MP;
-  protected _max_mp: number = Defines.DAFAULT_MP;
+  protected _mp: number = Defines.DEFAULT_MP;
+  protected _mp_max: number = Defines.DEFAULT_MP;
+  protected _mp_r_spd_min: number = Defines.DEFAULT_MP_RECOVERY_MIN_SPEED;
+  protected _mp_r_spd_max: number = Defines.DEFAULT_MP_RECOVERY_MAX_SPEED;
+  protected _mp_r_spd: number = Defines.DEFAULT_MP_RECOVERY_MIN_SPEED;
 
   protected _hp: number = Defines.DAFUALT_HP;
-  protected _max_hp: number = Defines.DAFUALT_HP;
+  protected _hp_max: number = Defines.DAFUALT_HP;
 
-  protected _mp_r_min_spd: number = 0;
-  protected _mp_r_max_spd: number = 0;
-  protected _mp_r_spd: number = Defines.DAFAULT_MP_RECOVERY_MIN_SPEED;
 
   protected _holder?: Entity;
   protected _holding?: Entity;
@@ -203,24 +203,24 @@ export default class Entity<
     this.update_mp_recovery_speed();
   }
 
-  get max_mp(): number { return this._max_mp; }
+  get max_mp(): number { return this._mp_max; }
   set max_mp(v: number) {
-    const o = this._max_mp;
-    this._callbacks.emit('on_max_mp_changed')(this, this._max_mp = v, o)
+    const o = this._mp_max;
+    this._callbacks.emit('on_max_mp_changed')(this, this._mp_max = v, o)
   }
 
-  get max_hp(): number { return this._max_hp; }
+  get max_hp(): number { return this._hp_max; }
   set max_hp(v: number) {
-    const o = this._max_hp;
-    this._callbacks.emit('on_max_hp_changed')(this, this._max_hp = v, o)
+    const o = this._hp_max;
+    this._callbacks.emit('on_max_hp_changed')(this, this._hp_max = v, o)
     this.update_mp_recovery_speed();
   }
 
-  get mp_recovery_min_speed(): number { return this._mp_r_min_spd; }
-  set mp_recovery_min_speed(v: number) { this._mp_r_min_spd = v; }
+  get mp_recovery_min_speed(): number { return this._mp_r_spd_min; }
+  set mp_recovery_min_speed(v: number) { this._mp_r_spd_min = v; }
 
-  get mp_recovery_max_speed(): number { return this._mp_r_max_spd; }
-  set mp_recovery_max_speed(v: number) { this._mp_r_max_spd = v; }
+  get mp_recovery_max_speed(): number { return this._mp_r_spd_max; }
+  set mp_recovery_max_speed(v: number) { this._mp_r_spd_max = v; }
 
   get team(): string { return this._team || this.starter?.team || '' }
   set team(v) {
@@ -533,8 +533,8 @@ export default class Entity<
 
   self_update(): void {
     if (this._next_frame) this.enter_frame(this._next_frame);
-    if (this._mp < this._max_mp)
-      this.mp = Math.min(this._max_mp, this._mp + this._mp_r_spd);
+    if (this._mp < this._mp_max)
+      this.mp = Math.min(this._mp_max, this._mp + this._mp_r_spd);
 
     const { cpoint } = this.frame;
     if (cpoint?.decrease) {
@@ -842,7 +842,7 @@ export default class Entity<
   }
 
   protected update_mp_recovery_speed(): void {
-    this._mp_r_spd = this._mp_r_min_spd + (this._mp_r_max_spd - this._mp_r_min_spd) * (this._max_hp - this._hp) / this._max_hp
+    this._mp_r_spd = this._mp_r_spd_min + (this._mp_r_spd_max - this._mp_r_spd_min) * (this._hp_max - this._hp) / this._hp_max
   }
 
   same_team(other: Entity): boolean {
@@ -890,24 +890,34 @@ export default class Entity<
       this._next_frame = void 0;
       return
     }
-    const { sound, mp = 0, hp = 0 } = frame;
-    if (this.frame.next === which) {
-      if (mp < 0) this.mp += mp;
-      if (hp < 0) this.hp += hp;
-    } else {
-      if (mp) this.mp -= mp
-      if (hp) this.hp -= hp
+    const { sound } = frame;
+
+    if (!this.world.lf2.infinity_mp) {
+      const { mp = 0, hp = 0 } = frame;
+      if (this.frame.next === which) {
+        if (mp < 0) this.mp += mp;
+        if (hp < 0) this.hp += hp;
+      } else {
+        if (mp) this.mp -= mp
+        if (hp) this.hp -= hp
+      }
     }
-
-    const { x, y, z } = this.position;
-    sound && this.world.lf2.sounds.play(sound, x, y, z);
+    if (sound) {
+      const { x, y, z } = this.position;
+      this.world.lf2.sounds.play(sound, x, y, z);
+    }
     this.set_frame(frame);
-
-    if (flags?.facing !== void 0) this.facing = this.handle_facing_flag(flags.facing, frame);
-    if (flags?.wait !== void 0) this.wait = this.handle_wait_flag(flags.wait, frame);
-    else this.wait = frame.wait;
+    this.wait = frame.wait;
     this._next_frame = void 0;
 
+    if (flags && typeof flags !== 'string') {
+      if (flags.facing !== void 0) {
+        this.facing = this.handle_facing_flag(flags.facing, frame);
+      }
+      if (flags.wait !== void 0) {
+        this.wait = this.handle_wait_flag(flags.wait, frame);
+      }
+    }
   }
 
   handle_wait_flag(wait: string | number, frame: IFrameInfo): number {
@@ -927,6 +937,12 @@ export default class Entity<
    */
   handle_facing_flag(facing: number, frame: IFrameInfo): -1 | 1 {
     switch (facing) {
+      case Defines.FacingFlag.ByController:
+        return this.controller?.LR || this.facing;
+      case Defines.FacingFlag.SameAsCatcher:
+        return this._catcher?.facing || this.facing;
+      case Defines.FacingFlag.OpposingCatcher:
+        return turn_face(this._catcher?.facing) || this.facing;
       case Defines.FacingFlag.Backward:
         return turn_face(this.facing);
       case Defines.FacingFlag.Left:
@@ -937,22 +953,8 @@ export default class Entity<
     }
   }
 
-  get_next_frame(which: TNextFrame | string): [F | undefined, INextFrame | undefined] {
-    if (is_str(which)) {
-      const frame = this.find_frame_by_id(which);
-      return [frame, void 0];
-    }
+  get_next_frame(which: TNextFrame | string): [F | undefined, INextFrame | string | undefined] {
     if (Array.isArray(which)) {
-      /*
-      const l = which.length;
-      const matchs: [F, INextFrame | undefined][] = [];
-      for (let i = 0; i < l; ++i) {
-        const [a, b] = this.get_next_frame(which[i]);
-        if (a) matchs.push([a, b] as const)
-      }
-      if (!matchs.length) return [void 0, void 0];
-      return random_get(matchs)!;
-      */
       const l = which.length;
       for (let i = 0; i < l; ++i) {
         const f = this.get_next_frame(which[i]);
@@ -960,12 +962,35 @@ export default class Entity<
       }
       return [void 0, void 0];
     }
-    let { id, judger } = which;
+    let id: string | string[] | undefined = void 0;
+    let judger: IExpression<any> | undefined = void 0;
+    if (is_str(which)) {
+      id = which;
+    } else {
+      id = which.id;
+      judger = which.judger;
+    }
+
     if (judger && !judger.run(this)) {
       return [void 0, void 0]
     }
-    if (Array.isArray(id)) id = random_get(id);
-    const frame = this.find_frame_by_id(id);
+    const frame = this.find_frame_by_id(
+      Array.isArray(id) ? random_get(id) : id
+    );
+    if (!frame) return [void 0, void 0]
+
+    if (!this.world.lf2.infinity_mp) {
+      const { hp = 0, mp = 0 } = frame;
+      if (this.frame.next === which) {
+        // 用next 进入此动作，负数表示消耗，无视正数。若消耗完毕跳至按下防御键的指定跳转动作
+        if (mp < 0 && this._mp < -mp) return this.get_next_frame(frame.hit?.d ?? Defines.FrameId.Auto);
+        if (hp < 0 && this._hp < -hp) return this.get_next_frame(frame.hit?.d ?? Defines.FrameId.Auto);
+      } else {
+        if (mp > 0 && this._mp < mp) return [void 0, void 0];
+        if (hp > 0 && this._hp < hp) return [void 0, void 0];
+      }
+    }
+
     return [frame, which];
   }
 

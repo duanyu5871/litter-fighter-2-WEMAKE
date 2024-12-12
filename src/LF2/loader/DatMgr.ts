@@ -159,7 +159,7 @@ class Inner {
     data.base.fall_value = data.base.fall_value ?? Defines.DEFAULT_FALL_VALUE;
     data.base.defend_value = data.base.defend_value ?? Defines.DEFAULT_DEFEND_VALUE;
     data.base.hp = data.base.hp ?? Defines.DAFUALT_HP;
-    data.base.mp = data.base.mp ?? Defines.DAFAULT_MP;
+    data.base.mp = data.base.mp ?? Defines.DEFAULT_MP;
   }
 }
 

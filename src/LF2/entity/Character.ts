@@ -1,6 +1,6 @@
 import { Warn } from '../../Log';
 import { type ICube, type World } from '../World';
-import type { IBdyInfo, ICharacterData, IFrameInfo, ICharacterInfo, IItrInfo, INextFrame, IOpointInfo, TFace, TNextFrame } from '../defines';
+import type { IBdyInfo, ICharacterData, ICharacterInfo, IFrameInfo, IItrInfo, INextFrame, IOpointInfo, TNextFrame } from '../defines';
 import { Defines } from '../defines/defines';
 import { CHARACTER_STATES } from '../state/character';
 import Entity from './Entity';
@@ -17,52 +17,19 @@ export default class Character extends Entity<IFrameInfo, ICharacterInfo, IChara
     this.name = Character.name + ':' + data.base.name;
     this.enter_frame({ id: Defines.FrameId.Auto });
 
-    this._max_hp = data.base.hp ?? Defines.DAFUALT_HP;
-    this._max_mp = data.base.mp ?? Defines.DAFAULT_MP;
-    this._mp_r_min_spd = data.base.mp_r_min_spd ?? Defines.DAFAULT_MP_RECOVERY_MIN_SPEED;
-    this._mp_r_max_spd = data.base.mp_r_max_spd ?? Defines.DAFAULT_MP_RECOVERY_MAX_SPEED;
+    this._hp_max = data.base.hp ?? Defines.DAFUALT_HP;
+    this._mp_max = data.base.mp ?? Defines.DEFAULT_MP;
+    this._mp_r_spd_min = data.base.mp_r_min_spd ?? Defines.DEFAULT_MP_RECOVERY_MIN_SPEED;
+    this._mp_r_spd_max = data.base.mp_r_max_spd ?? Defines.DEFAULT_MP_RECOVERY_MAX_SPEED;
     this._max_catch_time = data.base.catch_time ?? Defines.DAFUALT_CATCH_TIME;
 
     this.update_mp_recovery_speed();
 
     this.fall_value = this.data.base.fall_value;
     this.defend_value = this.data.base.defend_value;
-    this._hp = this._max_hp
-    this._mp = this._max_mp
+    this._hp = this._hp_max
+    this._mp = this._mp_max
     this._catch_time = this._max_catch_time;
-  }
-
-  override get_next_frame(which: string | TNextFrame): [IFrameInfo | undefined, INextFrame | undefined] {
-    const ret = super.get_next_frame(which);
-    if (!ret[0]) return ret
-
-    if (this.world.lf2.infinity_mp) return ret;
-
-    const [frame] = ret;
-    const { hp = 0, mp = 0 } = frame;
-
-    if (this.frame.next === which) {
-      // 用next 进入此动作，负数表示消耗，无视正数。若消耗完毕跳至按下防御键的指定跳转动作
-      if (mp < 0 && this._mp < -mp) return super.get_next_frame(frame.hit?.d ?? Defines.FrameId.Auto);
-      if (hp < 0 && this._hp < -hp) return super.get_next_frame(frame.hit?.d ?? Defines.FrameId.Auto);
-    } else {
-      if (mp > 0 && this._mp < mp) return [void 0, void 0];
-      if (hp > 0 && this._hp < hp) return [void 0, void 0];
-    }
-    return ret;
-  }
-
-  override handle_facing_flag(facing: number, frame: IFrameInfo): TFace {
-    switch (facing) {
-      case Defines.FacingFlag.ByController:
-        return this.controller?.LR || this.facing;
-      case Defines.FacingFlag.SameAsCatcher:
-        return this._catcher?.facing || this.facing;
-      case Defines.FacingFlag.OpposingCatcher:
-        return turn_face(this._catcher?.facing) || this.facing;
-      default:
-        return super.handle_facing_flag(facing, frame);
-    }
   }
 
   override self_update(): void {
