@@ -138,16 +138,15 @@ export class World {
 
   del_entities(...objs: Entity[]) {
     for (const e of objs) {
-      if (is_character(e) && is_local_ctrl(e.controller)) {
-        this.player_slot_characters.delete(e.controller.player_id);
-        this._callbacks.emit('on_player_character_del')(e.controller.player_id)
+      if (e.controller?.player_id) {
+        const ok = this.player_slot_characters.delete(e.controller.player_id)
+        if (ok) this._callbacks.emit('on_player_character_del')(e.controller.player_id)
       }
       const r = this.entity_renders.get(e);
       if (r) {
         r.dispose();
         this.entity_renders.delete(e);
       }
-
       this.entities.delete(e);
       e.dispose();
     }
