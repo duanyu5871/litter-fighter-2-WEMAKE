@@ -205,7 +205,7 @@ export default class Entity<
     this._callbacks.emit('on_hp_changed')(this, this._hp = v, o)
     this.update_mp_r_spd();
 
-    if (o !== v && o <= 0 && this.data.base.brokens?.length) {
+    if (o > 0 && v <= 0 && this.data.base.brokens?.length) {
       for (const opoint of this.data.base.brokens) {
         const count = opoint.multi ?? 1
         for (let i = 0; i < count; ++i) {
