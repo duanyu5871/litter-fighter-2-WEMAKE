@@ -6,11 +6,11 @@ import { ICube } from '../World';
 import { Callbacks, new_id, new_team, type NoEmitCallbacks } from '../base';
 import { IExpression } from '../base/Expression';
 import { BaseController } from '../controller/BaseController';
-import { BotController } from '../controller/BotController';
 import { IBallData, IBaseData, IBdyInfo, ICharacterData, ICpointInfo, IEntityData, IFrameInfo, IGameObjData, IItrInfo, INextFrame, IOpointInfo, ITexturePieceInfo, IWeaponData, TFace, TNextFrame } from '../defines';
 import { IEntityInfo } from "../defines/IGameObjInfo";
 import { Defines } from '../defines/defines';
 import Ditto from '../ditto';
+import { IVector3 } from '../ditto/IVector3';
 import { States, type BaseState } from '../state/base';
 import { ENTITY_STATES } from '../state/entity';
 import { random_get } from '../utils/math/random';
@@ -98,6 +98,7 @@ export default class Entity<
   readonly is_entity = true
   readonly states: States;
   readonly velocity = new Ditto.Vector3(0, 0, 0);
+  readonly velocities: IVector3[] = [];
 
   protected _callbacks = new Callbacks<IEntityCallbacks>()
   protected _name: string = '';
@@ -115,6 +116,7 @@ export default class Entity<
   protected _holder?: Entity;
   protected _holding?: Entity;
   protected _emitter?: Entity;
+  protected _emitter_opoint?: IOpointInfo;
   protected _a_rest: number = 0;
   protected _v_rests = new Map<string, IVictimRest>();
 
@@ -206,13 +208,7 @@ export default class Entity<
     this.update_mp_r_spd();
 
     if (o > 0 && v <= 0 && this.data.base.brokens?.length) {
-      for (const opoint of this.data.base.brokens) {
-        const count = opoint.multi ?? 1
-        for (let i = 0; i < count; ++i) {
-          const s = 2 * (i - (count - 1) / 2);
-          this.spawn_entity(opoint, s)
-        }
-      }
+      this.apply_opoints(this.data.base.brokens)
     }
   }
 
@@ -380,27 +376,47 @@ export default class Entity<
     ) as F // FIXME: fix this 'as'.
   }
 
-  on_spawn_by_emitter(emitter: Entity, o: IOpointInfo, speed_z: number = 0) {
+  on_spawn_by_emitter(
+    emitter: Entity,
+    opoint: IOpointInfo,
+    offset_velocity: IVector3 = new Ditto.Vector3(0, 0, 0)
+  ) {
     this._emitter = emitter;
+    this._emitter_opoint = opoint;
+
+    this.velocities.push(offset_velocity);
+
     const shotter_frame = emitter.get_frame();
     this.team = emitter.team;
     this.facing = emitter.facing;
 
     let { x, y, z } = emitter.position;
-    y = y + shotter_frame.centery - o.y;
-    x = x - emitter.facing * (shotter_frame.centerx - o.x);
+    y = y + shotter_frame.centery - opoint.y;
+    x = x - emitter.facing * (shotter_frame.centerx - opoint.x);
     this.position.set(x, y, z);
-    this.enter_frame(o.action);
+    this.enter_frame(opoint.action);
 
-    this.velocity.z = speed_z
+    let { dvx = 0, dvy = 0, dvz = 0, speedz = 3 } = opoint;
+    let ud = emitter.controller?.UD || 0
+    let { x: ovx, y: ovy, z: ovz } = offset_velocity;
+    if (dvx > 0) {
+      dvx = dvx - Math.abs(ovz / 2);
+    } else {
+      dvx = dvx + Math.abs(ovz / 2);
+    }
+    this.velocity.x = ovx + dvx * this.facing
+    this.velocities.push(
+      new Ditto.Vector3(
+        0,
+        ovy + dvy,
+        ovz + dvz + speedz * ud
+      )
+    )
 
-    if (o.dvx) this.velocity.x = (o.dvx - Math.abs(speed_z / 2)) * this.facing;
-    if (o.dvy) this.velocity.y = o.dvy;
-    if (o.dvz) this.velocity.z += o.dvz;
-    if (o.max_hp) this.max_hp = o.max_hp;
-    if (o.max_mp) this.max_mp = o.max_mp;
-    if (o.hp) this.hp = o.hp;
-    if (o.mp) this.mp = o.mp;
+    if (opoint.max_hp) this.max_hp = opoint.max_hp;
+    if (opoint.max_mp) this.max_mp = opoint.max_mp;
+    if (opoint.hp) this.hp = opoint.hp;
+    if (opoint.mp) this.mp = opoint.mp;
 
     if (this.frame.state === Defines.State.Weapon_OnHand) {
       this.holder = emitter
@@ -422,31 +438,34 @@ export default class Entity<
     if (v.invisible)
       this.invisibility(v.invisible)
     if (v.opoint) {
-      for (const opoint of v.opoint) {
-        const count = opoint.multi ?? 1
-        for (let i = 0; i < count; ++i) {
-          const s = 2 * (i - (count - 1) / 2);
-          this.spawn_entity(opoint, s)
-        }
-      }
+      this.apply_opoints(v.opoint)
     }
     if (!v.cpoint)
       delete this._catching;
   }
-
-  spawn_entity(opoint: IOpointInfo, speed_z: number = 0): Entity | undefined {
-    const d = this.world.lf2.datas.find(opoint.oid);
-    if (!d) {
+  apply_opoints(opoints: IOpointInfo[]) {
+    for (const opoint of opoints) {
+      const count = opoint.multi ?? 1
+      for (let i = 0; i < count; ++i) {
+        const ovz = i - (count - 1) / 2;
+        this.spawn_entity(opoint, new Ditto.Vector3(0, 0, ovz))
+      }
+    }
+  }
+  spawn_entity(opoint: IOpointInfo, offset_velocity: IVector3 = new Ditto.Vector3(0, 0, 0)): Entity | undefined {
+    const data = this.world.lf2.datas.find(opoint.oid);
+    if (!data) {
       Warn.print(Entity.TAG + '::spawn_object', 'data not found! opoint:', opoint);
       return;
     }
-    const create = Factory.inst.get_entity_creator(d.type);
+    const create = Factory.inst.get_entity_creator(data.type);
     if (!create) {
-      Warn.print(Entity.TAG + '::spawn_object', `creator of "${d.type}" not found! opoint:`, opoint);
+      Warn.print(Entity.TAG + '::spawn_object', `creator of "${data.type}" not found! opoint:`, opoint);
       return;
     }
-    const entity = create(this.world, d).on_spawn_by_emitter(this, opoint, speed_z).attach();
-    if (is_character(entity)) entity.controller = new BotController(entity.id, entity)
+    const entity = create(this.world, data)
+    entity.controller = Factory.inst.get_ctrl_creator(entity.data.id)?.('', entity);
+    entity.on_spawn_by_emitter(this, opoint, offset_velocity).attach();
     return entity
   }
 
@@ -604,8 +623,11 @@ export default class Entity<
     if (this.wait > 0) { --this.wait; }
     else { this._next_frame = this.frame.next; }
     this.state?.update(this);
-    if (!this._shaking && !this._motionless)
+    if (!this._shaking && !this._motionless) {
       this.position.add(this.velocity);
+      for (const v of this.velocities)
+        this.position.add(v);
+    }
     if (this._motionless > 0) {
       ++this.wait;
       --this._motionless;

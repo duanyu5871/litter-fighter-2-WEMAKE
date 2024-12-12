@@ -38,7 +38,6 @@ export function make_ball_data(info: IBallInfo, frames: Record<string, IBallFram
     if (hit_a) frame.hp = hit_a / 2;
     if (hit_d) frame.on_timeout = get_next_frame_by_raw_id(hit_d);
     if (frame.state === Defines.State.Ball_Flying) {
-      frame.speedz = 2;
       if (frames[10]) frame.on_hitting = { id: '10' }
       if (frames[20]) frame.on_be_hit = { id: '20' }
       if (frames[30]) frame.on_rebounding = { id: '30' }

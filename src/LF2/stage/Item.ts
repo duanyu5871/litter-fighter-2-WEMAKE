@@ -33,6 +33,8 @@ export default class Item {
           this.dispose();
         } else if (!is_num(this.times) || this.times > 0) {
           this.spawn();
+        } else {
+          this.dispose();
         }
       } else if (this.times) {
         this.spawn();
@@ -67,18 +69,19 @@ export default class Item {
     range_x: number = 100,
     range_y: number = 0,
     range_z: number = 0
-  ): void {
+  ): boolean {
     const { lf2 } = this;
     const oid = this.get_oid();
-    if (!oid) { debugger; return; }
+    if (!oid) { debugger; return false; }
     const data = lf2.datas.find(oid);
-    if (!data) { debugger; return; }
+    if (!data) { debugger; return false; }
     const creator = Factory.inst.get_entity_creator(data.type);
-    if (!creator) { debugger; return; }
+    if (!creator) { debugger; return false; }
 
     const { hp, act, x, y, z, reserve } = this.info;
     if (this.times) this.times--;
     const e = creator(this.world, data);
+    e.controller = Factory.inst.get_ctrl_creator(e.data.id)?.('', e);
     e.reserve = reserve;
     e.position.x = random_in(x - range_x, x + range_x);
     e.position.z = is_num(z) ?
@@ -93,7 +96,6 @@ export default class Item {
     if (is_character(e)) {
       e.team = this.stage.enemy_team;
       e.name = e.data.base.name;
-      e.controller = Factory.inst.get_ctrl_creator(e.data.id)?.('', e);
     } else if (is_weapon(e) && !is_num(y)) {
       e.position.y = 450;
     }
@@ -106,6 +108,8 @@ export default class Item {
 
     if (is_str(act)) e.enter_frame(act);
     else e.enter_frame(Defines.FrameId.Auto);
+
+    return true;
   }
 
   dispose(): void {

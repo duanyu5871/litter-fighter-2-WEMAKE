@@ -152,7 +152,8 @@ export default class Character extends Entity<IFrameInfo, ICharacterInfo, IChara
       )
     ) {
       this.fall_value = 0;
-      this.velocity.y = itr.dvy ?? 3;
+      this.velocity.y = itr.dvy ?? 4;
+      this.velocity.z = 0;
 
       if (itr.dvx) {
         switch (itr.effect) {
@@ -197,7 +198,8 @@ export default class Character extends Entity<IFrameInfo, ICharacterInfo, IChara
     }
 
     if (itr.dvx) this.velocity.x = itr.dvx * aface;
-
+    if (this.position.y > 0 && this.velocity.y > 2) this.velocity.y = 2;
+    this.velocity.z = 0;
     if (
       itr.effect === Defines.ItrEffect.Fire ||
       itr.effect === Defines.ItrEffect.MFire1 ||
@@ -224,16 +226,6 @@ export default class Character extends Entity<IFrameInfo, ICharacterInfo, IChara
     }
     /* 击中 */
     this._next_frame = { id: indexes.grand_injured[same_face(this, attacker)][0] }
-  }
-
-  override spawn_entity(opoint: IOpointInfo, speed_z: number = 0) {
-    const ret = super.spawn_entity(opoint, speed_z);
-    if (this.controller) {
-      if (is_ball(ret)) {
-        // ret.ud = this.controller.UD;
-      }
-    }
-    return ret;
   }
 
   on_dead() {

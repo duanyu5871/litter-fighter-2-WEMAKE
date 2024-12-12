@@ -265,12 +265,11 @@ export default class GamePrepareLogic extends LayoutComponent {
       character.facing = Math.random() < 0.5 ? 1 : -1
 
       if (player.is_com) {
-        const creator = Factory.inst.get_ctrl_creator(character_data.id)
-        character.controller =  creator?.(player.id, character)
+        debugger;
+        character.controller = Factory.inst.get_ctrl_creator(character_data.id)?.(player.id, character)
       } else {
         character.controller = new LocalController(player.id, character, player.keys)
       }
-
       character.position.z = random_in(far, near);
       character.position.x = random_in(left, right);
       character.blinking = 120;

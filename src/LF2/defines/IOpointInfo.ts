@@ -12,4 +12,6 @@ export interface IOpointInfo {
   hp?: number;
   max_mp?: number;
   mp?: number;
+
+  speedz?: number;
 }

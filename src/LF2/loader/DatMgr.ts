@@ -1,5 +1,6 @@
 import { Log } from '../../Log';
 import LF2 from '../LF2';
+import { BallController } from '../controller/BallController';
 import { BotController } from '../controller/BotController';
 import { InvalidController } from '../controller/InvalidController';
 import { IBallData, IBgData, ICharacterData, IDataMap, IEntityData, IGameObjData, IStageInfo, IWeaponData } from '../defines';
@@ -139,12 +140,13 @@ class Inner {
       if (this.cancelled) throw new Error('cancelled')
       const t = v.type as keyof IDataMap;
       if (t === 'character') {
-        this.process_character_data(v as ICharacterData);
         Factory.inst.set_ctrl_creator(v.id, (a, b) => new BotController(a, b))
+        this.process_character_data(v as ICharacterData);
+      } else if (t === 'ball') {
+        Factory.inst.set_ctrl_creator(v.id, (a, b) => new BallController(a, b))
       } else {
         Factory.inst.set_ctrl_creator(v.id, (a, b) => new InvalidController(a, b))
       }
-
       this.data_list_map[t]?.push(v as any);
       this.data_list_map.all.push(v as any);
     }
