@@ -31,14 +31,14 @@ export interface IFrameInfo {
    * TODO: move to INextFrame
    * @see {INextFrame}
    */
-  mp?: number;
+  // mp?: number;
 
   /**
    * 此frame消耗的血量
    * TODO: move to INextFrame
    * @see {INextFrame}
    */
-  hp?: number;
+  // hp?: number;
 
   hold?: IHoldKeyCollection;
   hit?: IHitKeyCollection;

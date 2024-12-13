@@ -16,13 +16,6 @@ import { cook_wpoint } from './cook_wpoint';
 import { get_next_frame_by_raw_id } from './get_the_next';
 import { take } from './take';
 
-const handle_raw_mp = (mp: number | undefined) => {
-  if (!mp) return [0, 0];
-  if (mp < 1000 && mp > -1000) return [mp, 0];
-  const _mp = mp % 1000;
-  const hp = (mp - _mp) / 100;
-  return [_mp, hp] as const;
-}
 export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string, files: IEntityInfo['files']): Record<string, F> {
   const frames: Record<string, F> = {};
   const frame_regexp = /<frame>\s+(.*?)\s+(.*)((.|\n)+?)<frame_end>/g;
@@ -111,17 +104,8 @@ export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string, fil
     if (!frame.bpoint) delete frame.bpoint;
     if (!frame.cpoint) delete frame.cpoint;
 
-
-    if (!frame.mp) delete frame.mp;
-    if (!frame.hp) delete frame.hp;
-
     const sound = take(frame, 'sound');
     if (sound) frame.sound = sound + '.mp3';
-
-    const [_mp, _hp] = handle_raw_mp(take(frame, 'mp'))
-    if (_mp) frame.mp = _mp;
-    if (_hp) frame.hp = _hp
-
     frames[frame_id] = frame;
 
     const dircontrol = take(cpoint_list, 'dircontrol');
@@ -134,9 +118,15 @@ export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string, fil
     if (dvx === 550) frame.dvx = dvx;
     else if (not_zero_num(dvx)) frame.dvx = dvx * 0.5;
 
-    const dvz = take(frame, 'dvz');
-    if (dvz === 550) frame.dvz = dvz;
-    else if (not_zero_num(dvz)) frame.dvz = dvz * 0.5;
+    if(frame.state === Defines.State._3){
+      const dvz = take(frame, 'dvz');
+      if (dvz === 550) frame.dvz = dvz;
+      else if (not_zero_num(dvz)) frame.speedz = dvz;
+    } else {
+      const dvz = take(frame, 'dvz');
+      if (dvz === 550) frame.dvz = dvz;
+      else if (not_zero_num(dvz)) frame.dvz = dvz * 0.5;
+    }
 
     const dvy = take(frame, 'dvy');
     if (dvy === 550) frame.dvy = dvy;

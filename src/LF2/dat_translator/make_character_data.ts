@@ -9,8 +9,9 @@ import { traversal } from '../utils/container_help/traversal';
 import { arithmetic_progression } from '../utils/math/arithmetic_progression';
 import { is_num, is_str } from '../utils/type_check';
 import { CondMaker } from './CondMaker';
-import { get_next_frame_by_raw_id } from './get_the_next';
+import { cook_next_frame_mp_hp, get_next_frame_by_raw_id } from './get_the_next';
 import { take } from './take';
+import { take_raw_frame_mp } from './take_raw_frame_mp';
 const k_9 = [
   'Fa', 'Fj',
   'Da', 'Dj',
@@ -47,24 +48,37 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
   info.fall_value = Defines.DEFAULT_FALL_VALUE;
   info.defend_value = Defines.DEFAULT_DEFEND_VALUE;
   const round_trip_frames_map: any = {};
+  const frame_mp_hp_map = new Map<string, [number, number]>()
+
+  traversal(frames, (frame_id, frame) => {
+    frame_mp_hp_map.set(frame_id, take_raw_frame_mp(frame))
+  })
+
   for (const [frame_id, frame] of traversal(frames)) {
+
+    if (Array.isArray(frame.next)) {
+      for (const n of frame.next)
+        cook_next_frame_mp_hp(n, 'next', frame_mp_hp_map)
+    } else {
+      cook_next_frame_mp_hp(frame.next, 'next', frame_mp_hp_map)
+    }
+
     const hit_a = take(frame, 'hit_a');
-    if (hit_a) frame.hit = set_obj_field(frame.hit, 'a', get_next_frame_by_raw_id(hit_a));
+    if (hit_a) frame.hit = set_obj_field(frame.hit, 'a', get_next_frame_by_raw_id(hit_a, 'hit', frame_mp_hp_map));
     const hit_j = take(frame, 'hit_j');
-    if (hit_j) frame.hit = set_obj_field(frame.hit, 'j', get_next_frame_by_raw_id(hit_j));
+    if (hit_j) frame.hit = set_obj_field(frame.hit, 'j', get_next_frame_by_raw_id(hit_j, 'hit', frame_mp_hp_map));
     const hit_d = take(frame, 'hit_d');
-    if (hit_d) frame.hit = set_obj_field(frame.hit, 'd', get_next_frame_by_raw_id(hit_d));
+    if (hit_d) frame.hit = set_obj_field(frame.hit, 'd', get_next_frame_by_raw_id(hit_d, 'hit', frame_mp_hp_map));
 
     k_9.forEach(k => {
-      const h_k = `hit_${k}`;
-      const next = take(frame, h_k);
+      const next = take(frame, `hit_${k}`);
 
       if (!is_str(next) && !is_num(next)) return;
       if (next === '0' || next === 0) return;
 
       if (!frame.hit) frame.hit = {};
       if (!frame.hit.sequences) frame.hit.sequences = {};
-      const nf = get_next_frame_by_raw_id(next);
+      const nf = get_next_frame_by_raw_id(next, 'hit', frame_mp_hp_map);
       if (k === 'Fa' || k === 'Fj') {
         frame.hit.sequences['L' + k[1]] = { ...nf, facing: nf.facing === FacingFlag.Backward ? FacingFlag.Right : FacingFlag.Left };
         frame.hit.sequences['R' + k[1]] = { ...nf, facing: nf.facing === FacingFlag.Backward ? FacingFlag.Right : FacingFlag.Right };

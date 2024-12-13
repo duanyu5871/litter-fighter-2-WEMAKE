@@ -1097,27 +1097,12 @@ export default class Entity<
       return
     }
     const { sound } = frame;
-
     if (!this.world.lf2.infinity_mp) {
-
-      let loss_mp = 0
-      let loss_hp = 0
       if (flags && typeof flags !== 'string') {
         const { mp, hp } = flags
-        if (mp) loss_mp += mp
-        if (hp) loss_hp += hp
+        if (mp) this.mp -= mp
+        if (hp) this.hp -= hp
       }
-
-      const { mp = 0, hp = 0 } = frame;
-      if (this.frame.next === which) {
-        if (mp < 0) loss_mp -= mp;
-        if (hp < 0) loss_hp -= hp;
-      } else {
-        if (mp) loss_mp += mp
-        if (hp) loss_hp += hp
-      }
-      if (mp) this.mp -= loss_mp
-      if (hp) this.hp -= loss_hp
     }
     if (sound) {
       const { x, y, z } = this.position;
@@ -1181,11 +1166,15 @@ export default class Entity<
     }
     let id: string | string[] | undefined = void 0;
     let judger: IExpression<any> | undefined = void 0;
+    let use_hp: number | undefined = void 0;
+    let use_mp: number | undefined = void 0;
     if (is_str(which)) {
       id = which;
     } else {
       id = which.id;
       judger = which.judger;
+      use_hp = which.hp
+      use_mp = which.mp
     }
 
     if (judger && !judger.run(this)) {
@@ -1197,17 +1186,15 @@ export default class Entity<
     if (!frame) return [void 0, void 0]
 
     if (!this.world.lf2.infinity_mp) {
-      const { hp = 0, mp = 0 } = frame;
       if (this.frame.next === which) {
         // 用next 进入此动作，负数表示消耗，无视正数。若消耗完毕跳至按下防御键的指定跳转动作
-        if (mp < 0 && this._mp < -mp) return this.get_next_frame(frame.hit?.d ?? Defines.FrameId.Auto);
-        if (hp < 0 && this._hp < -hp) return this.get_next_frame(frame.hit?.d ?? Defines.FrameId.Auto);
+        if (use_mp && this._mp < use_mp) return this.get_next_frame(frame.hit?.d ?? Defines.FrameId.Auto);
+        if (use_hp && this._hp < use_hp) return this.get_next_frame(frame.hit?.d ?? Defines.FrameId.Auto);
       } else {
-        if (mp > 0 && this._mp < mp) return [void 0, void 0];
-        if (hp > 0 && this._hp < hp) return [void 0, void 0];
+        if (use_mp && this._mp < use_mp) return [void 0, void 0];
+        if (use_hp && this._hp < use_hp) return [void 0, void 0];
       }
     }
-
     return [frame, which];
   }
 
