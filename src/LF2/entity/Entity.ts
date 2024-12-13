@@ -724,8 +724,7 @@ export default class Entity<
     this.on_after_update?.();
     if (prev_position_y > 0 && this.position.y <= 0) {
       this.position.y = 0;
-
-      if(this.velocity.y > 0){
+      if(this.velocity.y < 0){
         this.play_sound(this.data.base.drop_sounds)
       }
 
