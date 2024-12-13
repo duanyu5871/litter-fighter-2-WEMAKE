@@ -16,6 +16,7 @@ export * from './defines';
 export * from './GameKey';
 export * from './IDataLists';
 export * from './IDatIndex';
+export * from './IEntityInfo';
 export * from './IHitKeyCollection';
 export * from "./IStageInfo";
 

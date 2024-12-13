@@ -30,4 +30,18 @@ export interface INextFrame {
   expression?: string;
 
   judger?: IExpression<any>;
+
+  /**
+   * 进入此帧消耗的血量
+   *
+   * @type {?number}
+   */
+  hp?: number;
+
+  /**
+   * 进入此帧消耗的蓝量
+   *
+   * @type {?number}
+   */
+  mp?: number;
 }

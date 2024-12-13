@@ -57,12 +57,12 @@ export default class BaseBallState<E extends Ball = Ball> extends BaseState<E> {
           // TODO: 
           break;
         case Defines.ItrKind.DeadWhenHit:
-          self.play_hit_sound()
+          self.play_sound(self.data.base.hit_sounds)
           if (f.on_timeout) self.enter_frame(f.on_timeout)
           else { debugger; console.log(Ball.TAG + '::on_collision', 'Defines.ItrKind.DeadWhenHit, but on_timeout not set.') }
           break;
         default:
-          self.play_hit_sound()
+          self.play_sound(self.data.base.hit_sounds)
           if (f.on_hitting) self.enter_frame(f.on_hitting);
           else { console.log(Ball.TAG + '::on_collision', 'on_hitting not set.') }
           break;

@@ -19,9 +19,13 @@ export function make_ball_data(info: IEntityInfo, frames: Record<string, IBallFr
     const hit_Fa = take(frame, 'hit_Fa')
 
     if ('' + hit_Fa === '13') {
+      /*
+      13 = 連環重炮的開始
+       其实就是放出一个id为228的实体
+      */
       frame.opoint = frame.opoint || []
       frame.opoint.push({
-        oid: '100',
+        oid: '228',
         x: frame.centerx,
         y: frame.centery,
         action: { id: '0' }
@@ -43,11 +47,10 @@ export function make_ball_data(info: IEntityInfo, frames: Record<string, IBallFr
       10= 加速(從慢變快)
       11= 極地火山
       12= 吸血蝙蝠
-      13= 連環重炮的開始
       14= 連環重炮
     */
 
-    if (hit_a) frame.hp = hit_a / 2;
+    if (hit_a) frame.hp = -hit_a / 2;
     if (hit_d) frame.on_timeout = get_next_frame_by_raw_id(hit_d);
     if (frame.state === Defines.State.Ball_Flying) {
       if (frames[10]) frame.on_hitting = { id: '10' }

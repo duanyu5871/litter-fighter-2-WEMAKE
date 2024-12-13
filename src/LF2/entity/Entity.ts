@@ -1099,14 +1099,25 @@ export default class Entity<
     const { sound } = frame;
 
     if (!this.world.lf2.infinity_mp) {
+
+      let loss_mp = 0
+      let loss_hp = 0
+      if (flags && typeof flags !== 'string') {
+        const { mp, hp } = flags
+        if (mp) loss_mp += mp
+        if (hp) loss_hp += hp
+      }
+
       const { mp = 0, hp = 0 } = frame;
       if (this.frame.next === which) {
-        if (mp < 0) this.mp += mp;
-        if (hp < 0) this.hp += hp;
+        if (mp < 0) loss_mp -= mp;
+        if (hp < 0) loss_hp -= hp;
       } else {
-        if (mp) this.mp -= mp
-        if (hp) this.hp -= hp
+        if (mp) loss_mp += mp
+        if (hp) loss_hp += hp
       }
+      if (mp) this.mp -= loss_mp
+      if (hp) this.hp -= loss_hp
     }
     if (sound) {
       const { x, y, z } = this.position;

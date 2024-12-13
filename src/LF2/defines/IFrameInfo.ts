@@ -24,8 +24,17 @@ export interface IFrameInfo {
   centerx: number;
   centery: number;
   sound?: string;
+
+  /**
+   * 此frame消耗的蓝量
+   */
   mp?: number;
+
+  /**
+   * 此frame消耗的血量
+   */
   hp?: number;
+
   hold?: IHoldKeyCollection;
   hit?: IHitKeyCollection;
   bdy?: IBdyInfo[];
