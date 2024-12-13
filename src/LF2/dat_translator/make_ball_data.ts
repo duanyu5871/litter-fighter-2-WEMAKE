@@ -48,9 +48,8 @@ export function make_ball_data(info: IBallInfo, frames: Record<string, IBallFram
       frame.speedz = 2;
     } else if (frame.state === Defines.State.Burning) {
       if (frame.itr && Number(datIndex?.id) === 211) {
-        // julian ball 2 explosion
         for (const itr of frame.itr) {
-          itr.friendly_fire = 1;
+          delete itr.friendly_fire;
         }
       }
     }
