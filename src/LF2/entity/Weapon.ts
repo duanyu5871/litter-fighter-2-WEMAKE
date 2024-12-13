@@ -48,7 +48,7 @@ export default class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData>
     }
     if (this.hp <= 0) {
       // TODO: WEAPON BROKEN. -GIM
-      this._next_frame = GONE_FRAME_INFO;
+      this.next_frame = GONE_FRAME_INFO;
     }
   }
 }

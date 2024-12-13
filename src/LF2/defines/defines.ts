@@ -160,8 +160,30 @@ export namespace Defines {
     _4 = 4, Jump = 4,
     _5 = 5, Dash = 5,
     _6 = 6, Rowing = 6,
-    _7 = 7, Defend = 7,
-    _8 = 8, BrokenDefend = 8,
+
+
+    /** 
+     * [LF2 & WEMAKE]
+     * 防御状态
+     * 
+     * 此状态下：
+     *    - 防御值不会恢复
+     * 
+     * @see {Entity.self_update}
+     */
+    Defend = 7, _7 = 7,
+
+    /** 
+     * [LF2 & WEMAKE]
+     * 破防
+     * 
+     * 此状态下：
+     *    - 防御值不会恢复
+     * 
+     * @see {Entity.self_update}
+     */
+    BrokenDefend = 8, _8 = 8,
+
     _9 = 9, Catching = 9,
     _10 = 10, Caught = 10,
     _11 = 11, Injured = 11,
@@ -258,7 +280,7 @@ export namespace Defines {
     TransformToLouisEx = 9996,
     _9995 = 9995,
   }
-  
+
   export enum EntityEnum {
     Character = 'character',
     Weapon = 'weapon',
@@ -349,8 +371,35 @@ export namespace Defines {
   }
 
   export enum BdyKind {
+    /**
+     * [LF2][[WEMAKE]
+     */
+    Normal = 0,
+
+    /**
+     * 原版lf2中，kind: 10xx是id为300的“人质”专用的，被攻击时跳至xx帧，
+     * 且仅有特定类型才能击中此bdy。以此实现被攻击后跳转的逻辑。
+     */
     GotoMin = 1000,
+    /**
+     * 原版lf2中，kind: 10xx是id为300的“人质”专用的，被攻击时跳至xx帧，
+     * 且仅有特定类型才能击中此bdy。以此实现被攻击后跳转的逻辑。
+     */
     GotoMax = 1999,
+
+    /**
+     * [WEMAKE ONLY]
+     * 这是WEMAKE新增的kind，用于代替原版frame.state为Defend“防御动作”的bdy
+     * 处于此状态的物体, 正面迎接伤害时，扣除防御值(defend_value -= itr.bdefend)
+     *    - 当itr.bdefend >= 100，则视为被直接击中
+     *    - 当defend_value>0：
+     *      - 若bdy.hit_act存在，则进入bdy.hit_act;
+     *      - 若bdy.hit_act不存在，则视为被直接击中
+     *    - 当defend_value<=0：
+     *      - 若bdy.break_act存在，则进入bdy.break_act;
+     *      - 若bdy.break_act不存在，则视为被直接击中
+     */
+    Defend = 2000,
   }
 
   export enum ItrEffect {

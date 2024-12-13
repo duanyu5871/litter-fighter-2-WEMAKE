@@ -23,8 +23,8 @@ export interface ICharacterFrameIndexes {
   weapen_atk: string[];
   picking_heavy: string;
   picking_light: string;
-  broken_defend: string;
-  defend_hit: string;
+  // broken_defend: string;
+  // defend_hit: string;
   in_the_sky: string[];
   super_punch: string;
   falling: TFrameIdListPair;

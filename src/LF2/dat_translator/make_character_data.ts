@@ -192,16 +192,24 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
         frame.hit.a = { id: '50' }; // running_stop
         frame.dvx = heavy_running_speed / 2;
         frame.speedz = heavy_running_speedz;
-
         break;
       }
-      /** defend */
+      /*
+        defend 110
+        defend_hit 111
+       */
       case 110:
-
-      // eslint-disable-next-line no-fallthrough
       case 111: {
         set_hit_turn_back(frame);
         set_hold_turn_back(frame);
+        if (frame.bdy?.length) for (const bdy of frame.bdy) {
+          bdy.break_act = { id: '112' }
+          bdy.hit_act = { id: '111' }
+        }
+        break;
+      }
+      /** broken_defend */
+      case 112: {
         break;
       }
       /** jump */
@@ -369,9 +377,14 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
         frame.dvz = void 0;
         frame.speedz = running_speedz;
         break;
-
-      case Defines.State.Walking:
-      case Defines.State.Running: {
+      case State.Defend: {
+        if (frame.bdy?.length) for (const bdy of frame.bdy) {
+          bdy.break_act = { id: '112' }
+        }
+        break;
+      }
+      case State.Walking:
+      case State.Running: {
         /* 
           NOTE: 
             在原版LF2中，角色走路和跑步是用帧的往返切换来实现的。
@@ -383,14 +396,20 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
             原版：0 ==> 1 ==> 2 ==> 1 ==>0
             WEMAKE: 0 ==> 1 ==> 2 ==> copy_1 ==> 0
         */
-        if (frame.state === 1) frame.wait = walking_frame_rate * 2;
-        if (frame.state === 2) frame.wait = running_frame_rate * 2;
-        round_trip_frames_map[frame.name] = round_trip_frames_map[frame.name] || [];
-        round_trip_frames_map[frame.name].push(frame);
+        if (frame.state === Defines.State.Walking) {
+          frame.wait = walking_frame_rate * 2;
+          round_trip_frames_map[frame.name] = round_trip_frames_map[frame.name] || [];
+          round_trip_frames_map[frame.name].push(frame);
+        }
+        if (frame.state === Defines.State.Running) {
+          frame.wait = running_frame_rate * 2;
+          round_trip_frames_map[frame.name] = round_trip_frames_map[frame.name] || [];
+          round_trip_frames_map[frame.name].push(frame);
+        }
         delete frames[frame_id];
         break;
       }
-      case 100: {
+      case Defines.State.NextAsLanding: {
         frame.next = { id: '' + (Number(frame.id) + 1) };
         break;
       }
@@ -413,8 +432,8 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
     heavy_obj_run: "heavy_obj_run_0",
     heavy_obj_walk: ['heavy_obj_walk_0'],
     super_punch: '70',
-    defend_hit: '111',
-    broken_defend: '112',
+    // defend_hit: '111',
+    // broken_defend: '112',
     picking_light: '115',
     picking_heavy: '117',
     weapen_atk: ['20', '25'],

@@ -8,7 +8,7 @@ export default class Lying extends BaseCharacterState {
     if (e.get_frame().state === Defines.State.Lying && e.hp <= 0) {
       e.on_dead()
       if (!e.in_player_slot) { // 非玩家槽的角色在被击败时，闪烁着离开了这个世界
-        e.blink_and_gone(120);
+        e.blink_and_gone(60);
       }
     }
   }

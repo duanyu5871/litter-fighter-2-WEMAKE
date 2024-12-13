@@ -74,9 +74,25 @@ export default class Entity<
   readonly world: World;
   readonly position = new Ditto.Vector3(0, 0, 0);
   protected _resting = 0;
-  fall_value = Defines.DEFAULT_FALL_VALUE;
+
+
+  private _fall_value = Defines.DEFAULT_FALL_VALUE;
+  get fall_value(): number { return this._fall_value; }
+  set fall_value(v: number) {
+    const o = this._fall_value
+    this._fall_value = v;
+    if (v < o) this._resting = 30;
+  }
+
   fall_value_max = Defines.DEFAULT_FALL_VALUE;
-  defend_value = Defines.DEFAULT_DEFEND_VALUE;
+  private _defend_value = Defines.DEFAULT_DEFEND_VALUE;
+  get defend_value(): number { return this._defend_value; }
+  set defend_value(v: number) {
+    const o = this._defend_value
+    this._defend_value = v;
+    if (v < o) this._resting = 30;
+  }
+
   defend_value_max = Defines.DEFAULT_DEFEND_VALUE;
   throwinjury?: number;
 
@@ -91,7 +107,7 @@ export default class Entity<
 
   frame: F = EMPTY_FRAME_INFO as F;
 
-  protected _next_frame: TNextFrame | undefined = void 0;
+  next_frame: TNextFrame | undefined = void 0;
   protected _prev_frame: F = EMPTY_FRAME_INFO as F;
   protected _catching?: Entity;
   protected _catcher?: Entity;
@@ -583,7 +599,7 @@ export default class Entity<
   }
 
   self_update(): void {
-    if (this._next_frame) this.enter_frame(this._next_frame);
+    if (this.next_frame) this.enter_frame(this.next_frame);
     if (this._mp < this._mp_max)
       this.mp = Math.min(this._mp_max, this._mp + this._mp_r_spd);
 
@@ -611,17 +627,47 @@ export default class Entity<
       this._blinking_duration--;
       if (this._blinking_duration <= 0) {
         if (this._after_blink === Defines.FrameId.Gone) {
-          this._next_frame = void 0;
+          this.next_frame = void 0;
           this.frame = GONE_FRAME_INFO as F
+        }
+      }
+    }
+
+    switch (this.frame.state) {
+      case Defines.State.Lying:
+        this._resting = 0;
+        this.fall_value = this.fall_value_max;
+        this.defend_value = this.defend_value_max;
+        break;
+      case Defines.State.Burning:
+        break;
+      case Defines.State.Defend:
+      case Defines.State.BrokenDefend:
+        if (this._resting > 0) {
+          this._resting--;
+        } else if (this.fall_value < this.fall_value_max) {
+          this.fall_value += 1;
+        }
+        break;
+      default: {
+        if (this._resting > 0) {
+          this._resting--;
+        } else {
+          if (this.fall_value < this.fall_value_max) {
+            this.fall_value += 1;
+          }
+          if (this.defend_value < this.defend_value_max) {
+            this.defend_value += 1;
+          }
         }
       }
     }
   }
 
   update(): void {
-    if (this._next_frame) this.enter_frame(this._next_frame);
+    if (this.next_frame) this.enter_frame(this.next_frame);
     if (this.wait > 0) { --this.wait; }
-    else { this._next_frame = this.frame.next; }
+    else { this.next_frame = this.frame.next; }
     this.state?.update(this);
     if (!this._shaking && !this._motionless) {
       this.position.add(this.velocity);
@@ -638,7 +684,7 @@ export default class Entity<
 
     const next_frame_1 = this.update_catching();
     const next_frame_2 = this.update_caught();
-    this._next_frame = next_frame_2 || next_frame_1 || this._next_frame;
+    this.next_frame = next_frame_2 || next_frame_1 || this.next_frame;
 
     this.on_after_update?.();
     if (this.position.y <= 0 && this.velocity.y < 0) {
@@ -658,8 +704,12 @@ export default class Entity<
     this.world.restrict(this);
   }
 
+  /**
+   * hp意外归0时，应该去的地方
+   * @returns 
+   */
   get_sudden_death_frame(): TNextFrame {
-    return { id: Defines.FrameId.Auto }
+    return this.state?.get_sudden_death_frame?.(this) || { id: Defines.FrameId.Auto }
   }
 
   /**
@@ -671,7 +721,7 @@ export default class Entity<
    * @returns 下帧信息 
    */
   get_caught_end_frame(): TNextFrame {
-    return { id: Defines.FrameId.Auto }
+    return this.state?.get_caught_end_frame?.(this) || { id: Defines.FrameId.Auto }
   }
 
   /**
@@ -816,22 +866,31 @@ export default class Entity<
         this.controller.reset_key_list();
       } else if (next_frame) {
         const [a] = this.get_next_frame(next_frame);
-        if (a) this._next_frame = next_frame;
+        if (a) this.next_frame = next_frame;
       }
     }
   }
 
   transfrom_to_another() {
-    // FIXME: rudolf变化逻辑
     const { transform_datas } = this
     if (!transform_datas) return;
     const next_idx = (transform_datas.indexOf(this.data) + 1) % transform_datas.length;
     this.data = transform_datas[next_idx];
-    this._next_frame = this.get_next_frame('245')[0];
-
+    this.next_frame = this.get_next_frame('245')[0];
   }
 
+  /**
+   * 最近一次攻击到的实体
+   *
+   * @type {?Entity}
+   */
   lastest_victim?: Entity;
+
+  /**
+   * 最近一次攻击本实体的实体
+   *
+   * @type {?Entity}
+   */
   lastest_attacker?: Entity;
 
   start_catch(target: Entity, itr: IItrInfo) {
@@ -841,8 +900,9 @@ export default class Entity<
     }
     this._catch_time = this._catch_time_max;
     this._catching = target;
-    this._next_frame = itr.catchingact
+    this.next_frame = itr.catchingact
   }
+
   start_caught(attacker: Entity, itr: IItrInfo) {
     if (itr.caughtact === void 0) {
       Warn.print(Entity.TAG + '::start_caught', 'cannot be caught, caughtact got', itr.caughtact)
@@ -852,10 +912,13 @@ export default class Entity<
     this._resting = 0;
     this.fall_value = this.fall_value_max;
     this.defend_value = this.defend_value_max;
-    this._next_frame = itr.caughtact;
+    this.next_frame = itr.caughtact;
   }
 
   on_collision(target: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
+    if (this.state?.before_collision?.(this, target, itr, bdy, a_cube, b_cube)) {
+      return;
+    }
     this.lastest_victim = target;
     this._motionless = itr.motionless ?? Defines.DEFAULT_ITR_MOTIONLESS;
     if (itr.arest) {
@@ -866,19 +929,52 @@ export default class Entity<
     this.state?.on_collision?.(this, target, itr, bdy, a_cube, b_cube);
   }
 
+  spark_point(r0: ICube, r1: ICube) {
+    const x = (Math.max(r0.left, r1.left) + Math.min(r0.right, r1.right)) / 2;
+    const y = (Math.min(r0.top, r1.top) + Math.max(r0.bottom, r1.bottom)) / 2;
+    // const spark_z = (Math.min(r0.near, r1.near) + Math.max(r0.far, r1.far)) / 2;
+    const z = Math.max(r0.near, r1.near);
+    return [x, y, z] as const;
+  }
+
+  dizzy_catch_test(target: Entity): boolean {
+    return (
+      is_character(this) &&
+      is_character(target) && (
+        (this.velocity.x > 0 && target.position.x > this.position.x) ||
+        (this.velocity.x < 0 && target.position.x < this.position.x)
+      )
+    )
+  }
+
   on_be_collided(attacker: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
-    if (this.state?.before_be_collided?.(attacker, this, itr, bdy, a_cube, b_cube))
+    if (itr.kind === Defines.ItrKind.SuperPunchMe) {
       return;
+    }
+    if (this.state?.before_be_collided?.(attacker, this, itr, bdy, a_cube, b_cube)) {
+      return;
+    }
     this.lastest_attacker = attacker;
     this._shaking = itr.shaking ?? Defines.DEFAULT_ITR_SHAKEING;
-    if (!itr.arest && itr.vrest) this._v_rests.set(attacker.id, {
-      remain: itr.vrest,
-      itr, bdy, attacker, a_cube, b_cube,
-      a_frame: attacker.get_frame(),
-      b_frame: this.get_frame()
-    });
-    if (bdy.kind >= Defines.BdyKind.GotoMin && bdy.kind <= Defines.BdyKind.GotoMax) {
-      this._next_frame = { id: '' + (bdy.kind - 1000) }
+    if (!itr.arest && itr.vrest) {
+      this._v_rests.set(attacker.id, {
+        remain: itr.vrest,
+        itr,
+        bdy,
+        attacker,
+        a_cube,
+        b_cube,
+        a_frame: attacker.frame,
+        b_frame: this.frame
+      });
+    }
+    if (
+      bdy.kind >= Defines.BdyKind.GotoMin &&
+      bdy.kind <= Defines.BdyKind.GotoMax
+    ) {
+      const [f] = this.get_next_frame('' + (bdy.kind - 1000))
+      if (f) this.next_frame = f
+      return;
     }
     this.state?.on_be_collided?.(attacker, this, itr, bdy, a_cube, b_cube);
   }
@@ -962,7 +1058,7 @@ export default class Entity<
   enter_frame(which: TNextFrame | string): void {
     const [frame, flags] = this.get_next_frame(which);
     if (!frame) {
-      this._next_frame = void 0;
+      this.next_frame = void 0;
       return
     }
     const { sound } = frame;
@@ -983,7 +1079,7 @@ export default class Entity<
     }
     this.set_frame(frame);
     this.wait = frame.wait;
-    this._next_frame = void 0;
+    this.next_frame = void 0;
 
     if (flags && typeof flags !== 'string') {
       if (flags.facing !== void 0) {
@@ -1070,15 +1166,9 @@ export default class Entity<
   }
 
   find_frame_by_id(id: string | undefined): F | undefined {
-    const self = this;
-    if (
-      is_character(self) &&
-      this.hp <= 0 &&
-      this.position.y <= 0 &&
-      this.frame.state === Defines.State.Lying
-    ) {
-      return this.frame;
-    }
+    const r = this.state?.find_frame_by_id?.(this, id);
+    if (r) return r as F; // FIXME: fix this 'as'
+
     switch (id) {
       case void 0:
       case Defines.FrameId.None:
@@ -1087,7 +1177,8 @@ export default class Entity<
       case Defines.FrameId.Gone: return GONE_FRAME_INFO as F;
     }
     if (!this.data.frames[id]) {
-      Warn.print(Entity.TAG + '::find_auto_frame', 'find_frame_by_id(id), frame not find! id:', id);
+      console.warn(Entity.TAG + '::find_frame_by_id', 'frame not find! id:', id);
+      debugger;
       return EMPTY_FRAME_INFO as F;
     }
     return this.data.frames[id];
@@ -1096,6 +1187,13 @@ export default class Entity<
   get_frame() { return this.frame; }
   get_prev_frame() { return this._prev_frame; }
 
+  /**
+   * 角色专用（目前）
+   * 当hp<0且处于Lying状态，此函数被调用
+   */
+  on_dead() {
+    this._callbacks.emit('on_dead')(this);
+  }
 }
 
 Factory.inst.set_entity_creator('entity', (...args) => new Entity(...args));

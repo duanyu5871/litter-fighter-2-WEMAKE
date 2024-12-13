@@ -2,7 +2,7 @@ import { Defines, IBdyInfo, IFrameInfo, IItrInfo } from "../../defines";
 import Entity from "../../entity/Entity";
 import Weapon from "../../entity/Weapon";
 import { ICube } from "../../World";
-import BaseState from "../base/BaseState";
+import BaseState, { WhatNext } from "../base/BaseState";
 
 export default class BaseWeaponState extends BaseState<Weapon> {
   override update(e: Weapon): void {
@@ -23,20 +23,28 @@ export default class BaseWeaponState extends BaseState<Weapon> {
     attacker.enter_frame(attacker.find_auto_frame())
   }
 
-  override before_be_collided(attacker: Entity, target: Weapon, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): boolean | undefined | void {
+  override before_be_collided(
+    attacker: Entity, target: Weapon,
+    itr: IItrInfo, bdy: IBdyInfo,
+    a_cube: ICube, b_cube: ICube
+  ): WhatNext {
     if (
       itr.kind === Defines.ItrKind.Pick ||
       itr.kind === Defines.ItrKind.PickSecretly
     ) {
-      if (attacker.holding)
-        return true;
-      target.holder = attacker;
-      attacker.holding = target;
-      target.team = attacker.team;
-      return true;
+      if (!attacker.holding) {
+        target.holder = attacker;
+        attacker.holding = target;
+        target.team = attacker.team;
+      }
+      return WhatNext.Interrupt;
     }
+    return WhatNext.Continue;
   }
-  override on_be_collided(attacker: Entity, target: Weapon, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
+  override on_be_collided(
+    attacker: Entity, target: Weapon,
+    itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube
+  ): void {
     const spark_x = (Math.max(a_cube.left, b_cube.left) + Math.min(a_cube.right, b_cube.right)) / 2;
     const spark_y = (Math.min(a_cube.top, b_cube.top) + Math.max(a_cube.bottom, b_cube.bottom)) / 2;
     const spark_z = Math.max(a_cube.far, b_cube.far);
