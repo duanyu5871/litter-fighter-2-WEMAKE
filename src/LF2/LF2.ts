@@ -477,9 +477,9 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
       x = old.position.x;
       y = old.position.y;
       z = old.position.z;
-      vx = old.velocity.x;
-      vy = old.velocity.y;
-      vz = old.velocity.z;
+      vx = old.velocities[0].x;
+      vy = old.velocities[0].y;
+      vz = old.velocities[0].z;
       old_facing = old.facing;
       old_frame_id = old.get_frame().id;
       this.world.del_entities(old);
@@ -490,9 +490,9 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     character.position.x = x;
     character.position.y = y;
     character.position.z = z;
-    character.velocity.x = vx;
-    character.velocity.y = vy;
-    character.velocity.z = vz;
+    character.velocities[0].x = vx;
+    character.velocities[0].y = vy;
+    character.velocities[0].z = vz;
     character.facing = old_facing;
     character.name = player_info.name;
     character.team = player_info.team;

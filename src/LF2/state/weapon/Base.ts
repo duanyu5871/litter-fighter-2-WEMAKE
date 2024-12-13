@@ -17,8 +17,8 @@ export default class BaseWeaponState extends BaseState<Weapon> {
     }
     if (attacker.data.base.type !== Defines.WeaponType.Heavy) {
       // TODO: 这里是击中的反弹，如何更合适？ -Gim
-      attacker.velocity.x = -0.3 * attacker.velocity.x;
-      attacker.velocity.y = -0.3 * attacker.velocity.y;
+      attacker.velocities[0].x = -0.3 * attacker.velocities[0].x;
+      attacker.velocities[0].y = -0.3 * attacker.velocities[0].y;
     }
     attacker.enter_frame(attacker.find_auto_frame())
   }
@@ -56,16 +56,16 @@ export default class BaseWeaponState extends BaseState<Weapon> {
       if (itr.fall && itr.fall >= 60) {
         const vx = itr.dvx ? itr.dvx * attacker.facing : 0;
         const vy = itr.dvy ? itr.dvy : 3;
-        target.velocity.x = vx / 2;
-        target.velocity.y = vy;
+        target.velocities[0].x = vx / 2;
+        target.velocities[0].y = vy;
         target.team = attacker.team;
         target.enter_frame({ id: target.data.indexes.in_the_sky })
       }
     } else {
       const vx = itr.dvx ? itr.dvx * attacker.facing : 0;
       const vy = itr.dvy ? itr.dvy : 3;
-      target.velocity.x = vx;
-      target.velocity.y = vy;
+      target.velocities[0].x = vx;
+      target.velocities[0].y = vy;
       target.team = attacker.team;
       target.enter_frame({ id: target.data.indexes.in_the_sky })
     }

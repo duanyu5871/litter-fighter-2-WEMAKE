@@ -24,7 +24,7 @@ export default class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData>
           this.enter_frame(this.data.indexes.throwing);
           const vz = holder.controller ? holder.controller.UD * (dvz || 0) : 0;
           const vx = (dvx || 0 - Math.abs(vz / 2)) * this.facing
-          this.velocity.set(vx, dvy || 0, vz)
+          this.velocities[0].set(vx, dvy || 0, vz)
           holder.holding = void 0;
           this.holder = void 0;
         }

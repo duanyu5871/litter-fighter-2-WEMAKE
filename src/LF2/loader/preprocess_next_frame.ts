@@ -18,8 +18,8 @@ function get_val_from_entity(word: string, e: Entity): any {
   switch (word) {
     case Defines.ValWord.TrendX:
       if (is_entity(e)) {
-        if (e.velocity.x < 0) return -e.facing;
-        if (e.velocity.x > 0) return e.facing;
+        if (e.velocities[0].x < 0) return -e.facing;
+        if (e.velocities[0].x > 0) return e.facing;
       }
       return 0
     case Defines.ValWord.PressFB:

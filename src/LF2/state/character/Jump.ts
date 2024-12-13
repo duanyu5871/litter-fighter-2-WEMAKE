@@ -22,14 +22,14 @@ export default class Jump extends BaseCharacterState {
     const { jump_height: h = 0, jump_distance: dx = 0, jump_distancez: dz = 0 } = character.data.base;
     const g_acc = character.world.gravity
     const vz = UD1 * dz;
-    character.velocity.set(
+    character.velocities[0].set(
       LR1 * (dx - Math.abs(vz / 4)),
       g_acc * Math.sqrt(2 * h / g_acc),
       vz
     )
     this._jumpings.add(character);
   }
-  override on_landing(character: Character, vx: number, vy: number, vz: number): void {
+  override on_landing(character: Character): void {
     character.enter_frame({ id: character.data.indexes.landing_1 });
   }
 }

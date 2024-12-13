@@ -25,20 +25,20 @@ export default class BaseBallState<E extends Ball = Ball> extends BaseState<E> {
         const pos_1 = e.position;
         const pos_2 = nearest_enemy.position
         if (pos_2.x > pos_1.x) {
-          e.velocity.x += acc_x
-          if (e.velocity.x > 0) e.facing = 1;
-          if (e.velocity.x > max_speed_x) e.velocity.x = max_speed_x
+          e.velocities[0].x += acc_x
+          if (e.velocities[0].x > 0) e.facing = 1;
+          if (e.velocities[0].x > max_speed_x) e.velocities[0].x = max_speed_x
         } else if (pos_2.x < pos_1.x) {
-          e.velocity.x -= acc_x
-          if (e.velocity.x < 0) e.facing = -1;
-          if (e.velocity.x < min_speed_x) e.velocity.x = min_speed_x
+          e.velocities[0].x -= acc_x
+          if (e.velocities[0].x < 0) e.facing = -1;
+          if (e.velocities[0].x < min_speed_x) e.velocities[0].x = min_speed_x
         }
         if (pos_2.z > pos_1.z) {
-          e.velocity.z += acc_z
-          if (e.velocity.z > max_speed_z) e.velocity.z = max_speed_z
+          e.velocities[0].z += acc_z
+          if (e.velocities[0].z > max_speed_z) e.velocities[0].z = max_speed_z
         } else if (pos_2.z < pos_1.z) {
-          e.velocity.z -= acc_z
-          if (e.velocity.z < min_speed_z) e.velocity.z = min_speed_z
+          e.velocities[0].z -= acc_z
+          if (e.velocities[0].z < min_speed_z) e.velocities[0].z = min_speed_z
         }
         break
       }
@@ -68,9 +68,9 @@ export default class BaseBallState<E extends Ball = Ball> extends BaseState<E> {
           break;
       }
       if (itr.on_hit) self.enter_frame(itr.on_hit)
-      self.velocity.x = 0;
-      self.velocity.z = 0;
-      self.velocity.y = 0;
+      self.velocities[0].x = 0;
+      self.velocities[0].z = 0;
+      self.velocities[0].y = 0;
     }
   }
 }

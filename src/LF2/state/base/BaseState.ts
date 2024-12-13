@@ -10,7 +10,7 @@ export class BaseState<E extends Entity = Entity, F extends IFrameInfo = IFrameI
   update(e: E): void { };
   enter?(e: E, prev_frame: F): void;
   leave?(e: E, next_frame: F): void;
-  on_landing(e: E, vx: number, vy: number, vz: number): void { };
+  on_landing(e: E): void { };
   get_gravity(e: E): number { return e.world.gravity }
 
   before_collision?(

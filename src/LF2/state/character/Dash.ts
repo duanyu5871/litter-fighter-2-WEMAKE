@@ -10,23 +10,23 @@ export default class Dash extends BaseCharacterState {
       dash_distancez: dz = 0,
       dash_height: h = 0
     } = e.data.base;
-    e.velocity.y = e.world.gravity * Math.sqrt(2 * h / e.world.gravity);
+    e.velocities[0].y = e.world.gravity * Math.sqrt(2 * h / e.world.gravity);
     const {
       UD: UD1 = 0,
       LR: LR1 = 0
     } = e.controller || {};
   
-    if(UD1) e.velocity.z = UD1 * dz;
+    if(UD1) e.velocities[0].z = UD1 * dz;
     
     if (prev_frame.state === Defines.State.Running) {
-      e.velocity.x = e.facing * dx;
+      e.velocities[0].x = e.facing * dx;
     }
-    else if (LR1) e.velocity.x = LR1 * dx;
-    else if (e.velocity.x > 0) e.velocity.x = dx;
-    else if (e.velocity.x < 0) e.velocity.x = -dx;
+    else if (LR1) e.velocities[0].x = LR1 * dx;
+    else if (e.velocities[0].x > 0) e.velocities[0].x = dx;
+    else if (e.velocities[0].x < 0) e.velocities[0].x = -dx;
     else {
       debugger;
-      e.velocity.x = e.facing * dx
+      e.velocities[0].x = e.facing * dx
     };
   }
 }

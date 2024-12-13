@@ -113,8 +113,24 @@ export default class Entity<
   protected _catcher?: Entity;
   readonly is_entity = true
   readonly states: States;
-  readonly velocity = new Ditto.Vector3(0, 0, 0);
-  readonly velocities: IVector3[] = [];
+  
+  /**
+   * 最终速度向量
+   * - 会更新position前，通过velocities计算得出
+   * - 直接修改速度向量将不会影响position的运算，
+   * 但可能会影响到使用到velocity判断的逻辑，
+   * @readonly
+   * @type {IVector3}
+   */
+  readonly velocity: IVector3 = new Ditto.Vector3(0, 0, 0)
+
+  /**
+   * 速度向量数组
+   *
+   * @readonly
+   * @type {IVector3[]}
+   */
+  readonly velocities: IVector3[] = [new Ditto.Vector3(0, 0, 0)];
 
   protected _callbacks = new Callbacks<IEntityCallbacks>()
   protected _name: string = '';
@@ -429,7 +445,7 @@ export default class Entity<
     } else {
       dvx = dvx + Math.abs(ovz / 2);
     }
-    this.velocity.x = ovx + dvx * this.facing
+    this.velocities[0].x = ovx + dvx * this.facing
     this.velocities.push(
       new Ditto.Vector3(
         0,
@@ -520,7 +536,7 @@ export default class Entity<
    */
   handle_ground_velocity_decay(factor: number = 1) {
     if (this.position.y > 0 || this._shaking || this._motionless) return;
-    let { x, z } = this.velocity;
+    let { x, z } = this.velocities[0];
     factor *= this.world.friction_factor;
     x *= factor;
     z *= factor;
@@ -541,8 +557,8 @@ export default class Entity<
       if (z > 0) z = 0; // 不能因为摩擦力反向加速
     }
 
-    this.velocity.x = x;
-    this.velocity.z = z;
+    this.velocities[0].x = x;
+    this.velocities[0].z = z;
   }
 
   /** 
@@ -566,7 +582,7 @@ export default class Entity<
    */
   handle_gravity() {
     if (this.position.y <= 0 || this._shaking || this._motionless) return;
-    this.velocity.y -= this.state?.get_gravity(this) ?? this.world.gravity;
+    this.velocities[0].y -= this.state?.get_gravity(this) ?? this.world.gravity;
   }
 
   handle_frame_velocity() {
@@ -576,7 +592,7 @@ export default class Entity<
       x: final_v_x,
       y: final_v_y,
       z: final_v_z
-    } = this.velocity;
+    } = this.velocities[0];
 
     if (dvx !== void 0) {
       const next_speed = this.facing * dvx;
@@ -602,9 +618,9 @@ export default class Entity<
     if (dvx === 550) final_v_x = 0;
     if (dvz === 550) final_v_z = 0;
     if (dvy === 550) final_v_y = 0;
-    this.velocity.x = final_v_x;
-    this.velocity.y = final_v_y;
-    this.velocity.z = final_v_z;
+    this.velocities[0].x = final_v_x;
+    this.velocities[0].y = final_v_y;
+    this.velocities[0].z = final_v_z;
   }
 
   self_update(): void {
@@ -674,14 +690,24 @@ export default class Entity<
   }
 
   update(): void {
+    const prev_position_y = this.position.y;
     if (this.next_frame) this.enter_frame(this.next_frame);
     if (this.wait > 0) { --this.wait; }
     else { this.next_frame = this.frame.next; }
     this.state?.update(this);
     if (!this._shaking && !this._motionless) {
-      this.position.add(this.velocity);
-      for (const v of this.velocities)
-        this.position.add(v);
+      let vx = 0;
+      let vy = 0;
+      let vz = 0;
+      for (const v of this.velocities) {
+        vx += v.x;
+        vy += v.y;
+        vz += v.z;
+      }
+      this.velocity.set(vx, vy, vz);
+      this.position.x += vx;
+      this.position.y += vy;
+      this.position.z += vz;
     }
     if (this._motionless > 0) {
       ++this.wait;
@@ -696,14 +722,14 @@ export default class Entity<
     this.next_frame = next_frame_2 || next_frame_1 || this.next_frame;
 
     this.on_after_update?.();
-    if (this.position.y <= 0) {
+    if (prev_position_y > 0 && this.position.y <= 0) {
       this.position.y = 0;
 
       this.play_sound(this.data.base.drop_sounds)
 
-      const { x, y, z } = this.velocity;
-      this.velocity.y = 0;
-      this.state?.on_landing(this, x, y, z);
+      this.velocities[0].y = 0;
+      this.state?.on_landing(this);
+
       if (this.throwinjury !== void 0) {
         this.hp -= this.throwinjury;
         delete this.throwinjury;
@@ -771,9 +797,9 @@ export default class Entity<
     this.prev_cpoint_a = cpoint_a;
 
     const { throwvx, throwvy, throwvz, throwinjury } = cpoint_a;
-    if (throwvx) this.velocity.x = throwvx * this.facing;
-    if (throwvy) this.velocity.y = throwvy;
-    if (throwvz) this.velocity.z = throwvz;
+    if (throwvx) this.velocities[0].x = throwvx * this.facing;
+    if (throwvy) this.velocities[0].y = throwvy;
+    if (throwvz) this.velocities[0].z = throwvz;
     if (throwinjury) this.throwinjury = throwinjury;
     // this.velocity.z = throwvz * this._catcher.controller.UD1;
 
@@ -953,8 +979,8 @@ export default class Entity<
     return (
       is_character(this) &&
       is_character(target) && (
-        (this.velocity.x > 0 && target.position.x > this.position.x) ||
-        (this.velocity.x < 0 && target.position.x < this.position.x)
+        (this.velocities[0].x > 0 && target.position.x > this.position.x) ||
+        (this.velocities[0].x < 0 && target.position.x < this.position.x)
       )
     )
   }

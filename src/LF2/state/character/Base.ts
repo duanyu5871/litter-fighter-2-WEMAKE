@@ -12,7 +12,7 @@ export default class BaseCharacterState extends BaseState<Character> {
     e.handle_ground_velocity_decay();
     e.handle_frame_velocity();
   }
-  override on_landing(e: Character, vx: number, vy: number, vz: number): void {
+  override on_landing(e: Character): void {
     e.enter_frame({ id: e.data.indexes.landing_2 });
   }
   override get_auto_frame(e: Character): IFrameInfo | undefined {
@@ -93,7 +93,7 @@ export default class BaseCharacterState extends BaseState<Character> {
             return;
           }
         } else {
-          if (itr.dvx) target.velocity.x = itr.dvx * attacker.facing / 2;
+          if (itr.dvx) target.velocities[0].x = itr.dvx * attacker.facing / 2;
           target.world.spark(...target.spark_point(r0, r1), "defend_hit")
           const f = bdy.hit_act && target.get_next_frame(bdy.hit_act)[0]
           if (f) {
@@ -128,22 +128,22 @@ export default class BaseCharacterState extends BaseState<Character> {
       case Defines.ItrEffect.MFire2:
       case Defines.ItrEffect.FireExplosion: {
         target.fall_value = 0;
-        target.velocity.y = itr.dvy ?? 4;
-        target.velocity.z = 0;
+        target.velocities[0].y = itr.dvy ?? 4;
+        target.velocities[0].z = 0;
         const direction = Defines.ItrEffect.FireExplosion === itr.effect ?
           (target.position.x > attacker.position.x ? -1 : 1) :
           (attacker.facing)
-        target.velocity.x = (itr.dvx || 0) * direction;
+        target.velocities[0].x = (itr.dvx || 0) * direction;
         target.next_frame = { id: target.data.indexes.fire[0], facing: turn_face(attacker.facing) }
         break;
       }
       case Defines.ItrEffect.Ice: {
         target.fall_value = 0;
-        if (itr.dvx) target.velocity.x = itr.dvx * attacker.facing;
-        if (target.position.y > 0 && target.velocity.y > 2) target.velocity.y = 2;
-        target.velocity.z = 0;
+        if (itr.dvx) target.velocities[0].x = itr.dvx * attacker.facing;
+        if (target.position.y > 0 && target.velocities[0].y > 2) target.velocities[0].y = 2;
+        target.velocities[0].z = 0;
         const direction = target.position.x > attacker.position.x ? -1 : 1
-        target.velocity.x = (itr.dvx || 0) * direction;
+        target.velocities[0].x = (itr.dvx || 0) * direction;
         // TODO: SOUND
         target.next_frame = { id: target.data.indexes.ice, facing: turn_face(attacker.facing) }
         break;
@@ -154,26 +154,26 @@ export default class BaseCharacterState extends BaseState<Character> {
         target.fall_value -= itr.fall ? itr.fall * 2 : 40;
         const is_fall = target.fall_value <= 0 || target.hp <= 0 || (
           target.fall_value <= 40 && (
-            target.velocity.y > 0 ||
+            target.velocities[0].y > 0 ||
             target.position.y > 0
           )
         )
         if (is_fall) {
           target.fall_value = 0;
-          target.velocity.y = itr.dvy ?? 4;
-          target.velocity.z = 0;
-          target.velocity.x = (itr.dvx || 0) * attacker.facing;
+          target.velocities[0].y = itr.dvy ?? 4;
+          target.velocities[0].z = 0;
+          target.velocities[0].x = (itr.dvx || 0) * attacker.facing;
           if (itr.effect === Defines.ItrEffect.Sharp) {
             target.world.spark(...target.spark_point(r0, r1), "critical_bleed");
           } else {
             target.world.spark(...target.spark_point(r0, r1), "critical_hit")
           }
-          const direction: TFace = target.velocity.x / target.facing >= 0 ? 1 : -1
+          const direction: TFace = target.velocities[0].x / target.facing >= 0 ? 1 : -1
           target.next_frame = { id: target.data.indexes.critical_hit[direction][0] }
         } else {
-          if (itr.dvx) target.velocity.x = itr.dvx * attacker.facing;
-          if (target.position.y > 0 && target.velocity.y > 2) target.velocity.y = 2;
-          target.velocity.z = 0;
+          if (itr.dvx) target.velocities[0].x = itr.dvx * attacker.facing;
+          if (target.position.y > 0 && target.velocities[0].y > 2) target.velocities[0].y = 2;
+          target.velocities[0].z = 0;
           if (itr.effect === Defines.ItrEffect.Sharp) {
             target.world.spark(...target.spark_point(r0, r1), "bleed")
           } else {
@@ -195,14 +195,14 @@ export default class BaseCharacterState extends BaseState<Character> {
   }
 
   override get_sudden_death_frame(target: Character): TNextFrame {
-    target.velocity.y = 2;
-    target.velocity.x = 2 * target.facing;
+    target.velocities[0].y = 2;
+    target.velocities[0].x = 2 * target.facing;
     return { id: target.data.indexes.falling[1][1] }
   }
 
   override get_caught_end_frame(target: Character): TNextFrame {
-    target.velocity.y = 2;
-    target.velocity.x = -2 * target.facing;
+    target.velocities[0].y = 2;
+    target.velocities[0].x = -2 * target.facing;
     return { id: target.data.indexes.falling[-1][1] }
   }
 
