@@ -20,7 +20,8 @@ import { make_character_data } from './make_character_data';
 import { make_entity_data } from './make_entity_data';
 import { make_frames } from './make_frames';
 import { make_stage_info_list as make_stage_infos } from './make_stage_info_list';
-import { make_weapon_brokens, make_weapon_data } from './make_weapon_data';
+import { make_weapon_special, make_weapon_data } from './make_weapon_data';
+import { add_entity_groups } from './add_entity_to_group';
 
 export default function dat_to_json(
   full_str: string, datIndex?: IDatIndex
@@ -129,15 +130,15 @@ export default function dat_to_json(
       case '0': {
         const info = base as ICharacterInfo;
         const num_id = Number(datIndex.id);
-        const add_group = (info: ICharacterInfo, group: string) => {
-          info.group = info.group || [];
-          if (info.group.indexOf(group) < 0) info.group.push(group)
-        }
-        if ((num_id >= 30 && num_id <= 39) || (num_id >= 50 && num_id <= 59)) {
-          add_group(info, Defines.EntityGroup.Hidden)
+
+        if (
+          (num_id >= 30 && num_id <= 39) ||
+          (num_id >= 50 && num_id <= 59)
+        ) {
+          add_entity_groups(info, Defines.EntityGroup.Hidden)
         }
         if (num_id >= 1 && num_id <= 29) {
-          add_group(info, Defines.EntityGroup.Regular)
+          add_entity_groups(info, Defines.EntityGroup.Regular)
         }
         if (datIndex.id === '52') {
           info.ce = 3;
@@ -163,7 +164,7 @@ export default function dat_to_json(
             toughness: 1,
           }
         } else if (datIndex.id === '30' || datIndex.id === '31') {
-          add_group(info, Defines.EntityGroup._3000)
+          add_entity_groups(info, Defines.EntityGroup._3000)
         }
         const cdata = ret = make_character_data(info, make_frames(full_str, info.files));
         if (datIndex.id === '6') cook_louis_data(cdata);
@@ -178,7 +179,7 @@ export default function dat_to_json(
         break;
     }
     if (ret) ret.id = datIndex.id;
-    if (ret.type === 'weapon') make_weapon_brokens(ret as any)
+    if (ret.type === 'weapon') make_weapon_special(ret as any)
     return ret;
   } else {
     if ('small' in base && 'name' in base && 'head' in base) {
@@ -192,4 +193,4 @@ export default function dat_to_json(
       return make_ball_data(base as IBallInfo, make_frames<IBallFrameInfo>(full_str, base.files));
     return make_entity_data(base as IEntityInfo, make_frames(full_str, base.files));
   }
-}
+}        

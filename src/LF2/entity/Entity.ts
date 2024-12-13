@@ -152,8 +152,8 @@ export default class Entity<
   protected _a_rest: number = 0;
   protected _v_rests = new Map<string, IVictimRest>();
 
-  protected _motionless: number = 0
-  protected _shaking: number = 0;
+  public motionless: number = 0
+  public shaking: number = 0;
 
 
   /** 
@@ -288,7 +288,6 @@ export default class Entity<
 
 
   protected _state: BaseState | undefined;
-  get shaking() { return this._shaking; }
 
 
   set state(v: BaseState | undefined) {
@@ -535,7 +534,7 @@ export default class Entity<
    * @param {number} [factor=1] 当前衰减系数
    */
   handle_ground_velocity_decay(factor: number = 1) {
-    if (this.position.y > 0 || this._shaking || this._motionless) return;
+    if (this.position.y > 0 || this.shaking || this.motionless) return;
     let { x, z } = this.velocities[0];
     factor *= this.world.friction_factor;
     x *= factor;
@@ -581,12 +580,12 @@ export default class Entity<
    * @see {World.gravity}
    */
   handle_gravity() {
-    if (this.position.y <= 0 || this._shaking || this._motionless) return;
+    if (this.position.y <= 0 || this.shaking || this.motionless) return;
     this.velocities[0].y -= this.state?.get_gravity(this) ?? this.world.gravity;
   }
 
   handle_frame_velocity() {
-    if (this._shaking || this._motionless) return;
+    if (this.shaking || this.motionless) return;
     const { dvx, dvy, dvz, speedz, speedx } = this.frame;
     let {
       x: final_v_x,
@@ -633,13 +632,13 @@ export default class Entity<
       this._catch_time -= Math.abs(cpoint.decrease);
       if (this._catch_time < 0) this._catch_time = 0;
     }
-    if (this._shaking <= 0) {
+    if (this.shaking <= 0) {
       for (const [k, v] of this._v_rests) {
         if (v.remain >= 0) --v.remain;
         else this._v_rests.delete(k);
       }
     }
-    if (this._motionless <= 0)
+    if (this.motionless <= 0)
       this._a_rest > 1 ? this._a_rest-- : this._a_rest = 0;
 
     if (this._invisible_duration > 0) {
@@ -690,12 +689,11 @@ export default class Entity<
   }
 
   update(): void {
-    const prev_position_y = this.position.y;
     if (this.next_frame) this.enter_frame(this.next_frame);
     if (this.wait > 0) { --this.wait; }
     else { this.next_frame = this.frame.next; }
     this.state?.update(this);
-    if (!this._shaking && !this._motionless) {
+    if (!this.shaking && !this.motionless) {
       let vx = 0;
       let vy = 0;
       let vz = 0;
@@ -709,12 +707,12 @@ export default class Entity<
       this.position.y += vy;
       this.position.z += vz;
     }
-    if (this._motionless > 0) {
+    if (this.motionless > 0) {
       ++this.wait;
-      --this._motionless;
-    } else if (this._shaking > 0) {
+      --this.motionless;
+    } else if (this.shaking > 0) {
       ++this.wait;
-      --this._shaking;
+      --this.shaking;
     }
 
     const next_frame_1 = this.update_catching();
@@ -722,12 +720,9 @@ export default class Entity<
     this.next_frame = next_frame_2 || next_frame_1 || this.next_frame;
 
     this.on_after_update?.();
-    if (prev_position_y > 0 && this.position.y <= 0) {
+    if (this.position.y <= 0 && this.velocity.y < 0) {
       this.position.y = 0;
-      if(this.velocity.y < 0){
-        this.play_sound(this.data.base.drop_sounds)
-      }
-
+      this.play_sound(this.data.base.drop_sounds)
       this.velocities[0].y = 0;
       this.state?.on_landing(this);
 
@@ -793,7 +788,7 @@ export default class Entity<
     }
     if (this.prev_cpoint_a !== cpoint_a) {
       if (cpoint_a.injury) this.hp -= cpoint_a.injury;
-      if (cpoint_a.shaking && cpoint_a.shaking > 0) this._shaking = cpoint_a.shaking;
+      if (cpoint_a.shaking && cpoint_a.shaking > 0) this.shaking = cpoint_a.shaking;
     }
     this.prev_cpoint_a = cpoint_a;
 
@@ -959,11 +954,11 @@ export default class Entity<
       return;
     }
     this.lastest_victim = target;
-    this._motionless = itr.motionless ?? Defines.DEFAULT_ITR_MOTIONLESS;
+    this.motionless = itr.motionless ?? Defines.DEFAULT_ITR_MOTIONLESS;
     if (itr.arest) {
-      this._a_rest = itr.arest - this._motionless;
+      this._a_rest = itr.arest - this.motionless;
     } else if (!itr.vrest) {
-      this._a_rest = this.wait + this._motionless;
+      this._a_rest = this.wait + this.motionless;
     }
     this.state?.on_collision?.(this, target, itr, bdy, a_cube, b_cube);
   }
@@ -994,7 +989,7 @@ export default class Entity<
       return;
     }
     this.lastest_attacker = attacker;
-    this._shaking = itr.shaking ?? Defines.DEFAULT_ITR_SHAKEING;
+    this.shaking = itr.shaking ?? Defines.DEFAULT_ITR_SHAKEING;
     if (!itr.arest && itr.vrest) {
       this._v_rests.set(attacker.id, {
         remain: itr.vrest,

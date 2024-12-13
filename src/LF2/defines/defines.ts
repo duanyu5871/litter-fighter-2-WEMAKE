@@ -304,6 +304,19 @@ export namespace Defines {
      * 默认只有30和31的角色
      */
     _3000 = '3000',
+
+    
+    /** 
+     * 对战模式常规武器
+     * 对战模式应当掉落属于这组的武器
+     */
+    VsRegularWeapon = "VsRegularWeapon",
+
+    /**
+     * 闯关常规武器
+     * 闯关模式应当掉落属于这组的武器
+     */
+    StageRegularWeapon = "StageRegularWeapon",
   }
 
   export enum ItrKind {

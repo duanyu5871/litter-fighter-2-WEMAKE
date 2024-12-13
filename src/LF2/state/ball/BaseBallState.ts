@@ -64,13 +64,14 @@ export default class BaseBallState<E extends Ball = Ball> extends BaseState<E> {
         default:
           self.play_hit_sound()
           if (f.on_hitting) self.enter_frame(f.on_hitting);
-          else { debugger; console.log(Ball.TAG + '::on_collision', 'on_hitting not set.') }
+          else { console.log(Ball.TAG + '::on_collision', 'on_hitting not set.') }
           break;
       }
       if (itr.on_hit) self.enter_frame(itr.on_hit)
       self.velocities[0].x = 0;
       self.velocities[0].z = 0;
       self.velocities[0].y = 0;
+      self.velocities.length = 1
     }
   }
 }

@@ -4,4 +4,5 @@ export interface IVector3 {
   z: number;
   set(x: number, y: number, z: number): void;
   add(o: IVector3): void;
+  clone(): IVector3;
 }

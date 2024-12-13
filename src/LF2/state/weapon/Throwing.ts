@@ -14,6 +14,9 @@ export default class Throwing extends BaseWeaponState {
   };
   override enter(e: Weapon, prev_frame: IFrameInfo): void {
     this._unhurt_weapons.add(e);
+    e.velocities.length = 0
+    e.velocities[0] = e.velocity.clone()
+    
   }
   override leave(e: Weapon, next_frame: IFrameInfo): void {
     this._unhurt_weapons.delete(e);
