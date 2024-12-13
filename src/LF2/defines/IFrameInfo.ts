@@ -10,6 +10,7 @@ import { IOpointInfo } from "./IOpointInfo";
 import { IRectPair } from "./IRectPair";
 import { IWpointInfo } from "./IWpointInfo";
 import type { Defines } from './defines';
+import type { INextFrame } from "../defines/INextFrame";
 
 export interface IFrameInfo {
   id: string;
@@ -27,11 +28,15 @@ export interface IFrameInfo {
 
   /**
    * 此frame消耗的蓝量
+   * TODO: move to INextFrame
+   * @see {INextFrame}
    */
   mp?: number;
 
   /**
    * 此frame消耗的血量
+   * TODO: move to INextFrame
+   * @see {INextFrame}
    */
   hp?: number;
 
