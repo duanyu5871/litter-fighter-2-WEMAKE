@@ -1,5 +1,5 @@
 import { IBdyInfo, ICpointInfo, IEntityPictureInfo, IFramePictureInfo, IItrInfo, IOpointInfo, IWpointInfo } from '../defines';
-import { IEntityInfo } from "../defines/IGameObjInfo";
+import { IEntityInfo } from "../defines/IEntityInfo";
 import { IFrameInfo } from "../defines/IFrameInfo";
 import { IRect } from '../defines/IRect';
 import { Defines } from '../defines/defines';

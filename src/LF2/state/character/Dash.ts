@@ -6,9 +6,9 @@ export default class Dash extends BaseCharacterState {
   override enter(e: Character, prev_frame: IFrameInfo): void {
     if (e.position.y > 0 && e.velocity.y !== 0) return;
     const {
-      dash_distance: dx,
-      dash_distancez: dz,
-      dash_height: h
+      dash_distance: dx = 0,
+      dash_distancez: dz = 0,
+      dash_height: h = 0
     } = e.data.base;
     e.velocity.y = e.world.gravity * Math.sqrt(2 * h / e.world.gravity);
     const {

@@ -80,13 +80,13 @@ export function make_weapon_data(info: IWeaponInfo, full_str: string, frames: Re
     indexes_map[info.type as Defines.WeaponType] ??
     indexes_map[Defines.WeaponType.None]
   const sound_1 = take(info, 'weapon_broken_sound')
-  if (sound_1) info.weapon_broken_sound = sound_1 + '.mp3'
+  if (sound_1) info.dead_sounds = [sound_1 + '.mp3']
 
   const sound_2 = take(info, 'weapon_drop_sound')
-  if (sound_2) info.weapon_drop_sound = sound_2 + '.mp3'
+  if (sound_2) info.drop_sounds = [sound_2 + '.mp3']
 
   const sound_3 = take(info, 'weapon_hit_sound')
-  if (sound_3) info.weapon_hit_sound = sound_3 + '.mp3'
+  if (sound_3) info.hit_sounds = [sound_3 + '.mp3']
   return {
     id: '',
     type: 'weapon',

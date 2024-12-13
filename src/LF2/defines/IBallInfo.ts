@@ -1,4 +1,4 @@
-import { IEntityInfo } from "./IGameObjInfo";
+import { IEntityInfo } from "./IEntityInfo";
 
 export interface IBallInfo extends IEntityInfo {
   weapon_hit_sound?: string;

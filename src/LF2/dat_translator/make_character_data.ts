@@ -38,10 +38,12 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
   const heavy_walking_speedz = take_number(info, 'heavy_walking_speedz', 0);
   const heavy_running_speed = take_number(info, 'heavy_running_speed', 0);
   const heavy_running_speedz = take_number(info, 'heavy_running_speedz', 0);
-  info.jump_height = Math.round(info.jump_height * info.jump_height / 3.5);
-  info.dash_height = Math.round(info.dash_height * info.dash_height / 3.5);
-  info.dash_distance /= 2;
-  info.jump_distance /= 2;
+
+  if (info.jump_height) info.jump_height = Math.round(info.jump_height * info.jump_height / 3.5);
+  if (info.dash_height) info.dash_height = Math.round(info.dash_height * info.dash_height / 3.5);
+
+  if (info.dash_distance) info.dash_distance /= 2;
+  if (info.jump_distance) info.jump_distance /= 2;
   info.fall_value = Defines.DEFAULT_FALL_VALUE;
   info.defend_value = Defines.DEFAULT_DEFEND_VALUE;
   const round_trip_frames_map: any = {};

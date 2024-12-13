@@ -26,12 +26,5 @@ export default class InTheSky extends BaseWeaponState {
       this._unhurt_weapons.delete(e);
       if (base.weapon_drop_hurt) e.hp -= base.weapon_drop_hurt;
     }
-    const sound_name = e.hp <= 0 ?
-      base.weapon_broken_sound :
-      base.weapon_drop_sound;
-    if (sound_name) {
-      const { x, y, z } = e.position;
-      e.world.lf2.sounds.play(sound_name, x, y, z);
-    }
   }
 }

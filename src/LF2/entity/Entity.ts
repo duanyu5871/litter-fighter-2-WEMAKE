@@ -7,7 +7,7 @@ import { Callbacks, new_id, new_team, type NoEmitCallbacks } from '../base';
 import { IExpression } from '../base/Expression';
 import { BaseController } from '../controller/BaseController';
 import { IBallData, IBaseData, IBdyInfo, ICharacterData, ICpointInfo, IEntityData, IFrameInfo, IGameObjData, IItrInfo, INextFrame, IOpointInfo, ITexturePieceInfo, IWeaponData, TFace, TNextFrame } from '../defines';
-import { IEntityInfo } from "../defines/IGameObjInfo";
+import { IEntityInfo } from "../defines/IEntityInfo";
 import { Defines } from '../defines/defines';
 import Ditto from '../ditto';
 import { IVector3 } from '../ditto/IVector3';
@@ -224,8 +224,17 @@ export default class Entity<
     this.update_mp_r_spd();
 
     if (o > 0 && v <= 0 && this.data.base.brokens?.length) {
-      this.apply_opoints(this.data.base.brokens)
+      this.apply_opoints(this.data.base.brokens);
+      this.play_sound(this.data.base.dead_sounds);
     }
+  }
+
+  play_sound(sounds: string[] | undefined) {
+    if (!sounds?.length) return;
+    const sound = random_get(sounds)
+    if (!sound) return;
+    const { x, y, z } = this.position;
+    this.lf2.sounds.play(sound, x, y, z)
   }
 
   get max_mp(): number { return this._mp_max; }
@@ -687,8 +696,11 @@ export default class Entity<
     this.next_frame = next_frame_2 || next_frame_1 || this.next_frame;
 
     this.on_after_update?.();
-    if (this.position.y <= 0 && this.velocity.y < 0) {
+    if (this.position.y <= 0) {
       this.position.y = 0;
+
+      this.play_sound(this.data.base.drop_sounds)
+
       const { x, y, z } = this.velocity;
       this.velocity.y = 0;
       this.state?.on_landing(this, x, y, z);
@@ -976,6 +988,7 @@ export default class Entity<
       if (f) this.next_frame = f
       return;
     }
+    this.play_sound(this.data.base.hit_sounds);
     this.state?.on_be_collided?.(attacker, this, itr, bdy, a_cube, b_cube);
   }
 

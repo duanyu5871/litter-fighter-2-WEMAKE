@@ -544,7 +544,7 @@ export namespace Defines {
     v.is_weapon_data === true
   export const is_bg_data = (v: any): v is IBgData =>
     v.is_bg_data === true
-  export const is_game_obj_data = (v: any): v is IGameObjData =>
+  export const is_entity_data = (v: any): v is IGameObjData =>
     v.is_game_obj_data === true
 
   export namespace BuiltIn {

@@ -19,7 +19,7 @@ export default class Jump extends BaseCharacterState {
       return;
     }
     const { LR: LR1 = 0, UD: UD1 = 0 } = character.controller || {};
-    const { jump_height: h, jump_distance: dx, jump_distancez: dz } = character.data.base;
+    const { jump_height: h = 0, jump_distance: dx = 0, jump_distancez: dz = 0 } = character.data.base;
     const g_acc = character.world.gravity
     const vz = UD1 * dz;
     character.velocity.set(

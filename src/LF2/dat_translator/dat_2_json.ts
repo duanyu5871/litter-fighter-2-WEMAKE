@@ -3,7 +3,7 @@ import {
   IEntityData, IEntityPictureInfo, IStageInfo,
   IWeaponData
 } from '../defines';
-import { IEntityInfo } from "../defines/IGameObjInfo";
+import { IEntityInfo } from "../defines/IEntityInfo";
 import { IBallFrameInfo } from "../defines/IBallFrameInfo";
 import { IBallInfo } from "../defines/IBallInfo";
 import { ICharacterInfo } from "../defines/ICharacterInfo";

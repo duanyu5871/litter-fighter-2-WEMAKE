@@ -4,7 +4,7 @@ import { IBgData } from "./IBgData";
 import { ICharacterFrameIndexes } from "./ICharacterFrameIndexes";
 import { ICharacterInfo } from "./ICharacterInfo";
 import { IFrameInfo } from "./IFrameInfo";
-import { IEntityInfo } from "./IGameObjInfo";
+import { IEntityInfo } from "./IEntityInfo";
 import { IItrInfo } from "./IItrInfo";
 import { INextFrame } from "./INextFrame";
 import { IWeaponFrameIndexes } from "./IWeaponFrameIndexes";

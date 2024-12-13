@@ -46,16 +46,24 @@ class Inner {
   private async _cook_data(data: TData): Promise<TData> {
     const jobs: Promise<unknown>[] = [];
     const { images, sounds } = this.lf2;
-    if (Defines.is_weapon_data(data)) {
+
+    if (
+      Defines.is_weapon_data(data) ||
+      Defines.is_character_data(data) ||
+      Defines.is_entity_data(data)
+    ) {
       const {
-        weapon_broken_sound: a,
-        weapon_drop_sound: b,
-        weapon_hit_sound: c,
-      } = data.base
-      not_blank_str(a) && !sounds.has(a) && jobs.push(sounds.load(a, a));
-      not_blank_str(b) && !sounds.has(b) && jobs.push(sounds.load(b, b));
-      not_blank_str(c) && !sounds.has(c) && jobs.push(sounds.load(c, c));
+        dead_sounds: a,
+        drop_sounds: b,
+        hit_sounds: c,
+      } = data.base;
+      const l = new Set<string>()
+      a?.forEach(i => l.add(i));
+      b?.forEach(i => l.add(i));
+      c?.forEach(i => l.add(i));
+      l.forEach(i => sounds.has(i) || jobs.push(sounds.load(i, i)))
     }
+
     if (Defines.is_character_data(data)) {
       const { small, head } = data.base;
       not_blank_str(small) && jobs.push(images.load_img(small, small));
@@ -68,7 +76,7 @@ class Inner {
         not_blank_str(file) && jobs.push(images.load_img(file, file))
       }
     }
-    if (Defines.is_game_obj_data(data)) {
+    if (Defines.is_entity_data(data)) {
       const { frames, base: { files } } = data;
       traversal(files, (_, v) => {
         jobs.push(images.load_by_e_pic_info(v))

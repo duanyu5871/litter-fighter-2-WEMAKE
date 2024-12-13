@@ -50,10 +50,6 @@ export default class BaseWeaponState extends BaseState<Weapon> {
     const spark_z = Math.max(a_cube.far, b_cube.far);
     if (itr.bdefend === 100) target.hp = 0;
     else if (itr.injury) target.hp -= itr.injury;
-    const is_broken = target.hp <= 0
-    const { base } = target.data
-    const sound_name = is_broken ? base.weapon_broken_sound : base.weapon_hit_sound
-    if (sound_name) target.world.lf2.sounds.play(sound_name, spark_x, spark_y, spark_z)
     const spark_frame_name = (itr.fall && itr.fall >= 60) ? 'slient_critical_hit' : 'slient_hit';
     target.world.spark(spark_x, spark_y, spark_z, spark_frame_name)
     if (target.data.base.type === Defines.WeaponType.Heavy) {

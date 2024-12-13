@@ -4,7 +4,37 @@ import type { IOpointInfo } from "./IOpointInfo";
 
 
 export interface IEntityInfo {
+  
+  /**
+   * 实体名称
+   * @type {string}
+   */
   name: string;
+
+  
+  /**
+   * 角色强度等级
+   * 
+   * 用于闯关模式
+   * 
+   * 若一个角色强度等级为3，使用该角色进入闯关，敌方将视此角色为3个人
+   * 
+   * 默认：1
+   * @type {?number}
+   */
+  ce?: number;
+
+  /** 
+   * 头像 
+   * @type {string}
+   */
+  head?: string;
+
+  /** 
+   * 缩略图 
+   * @type {string}
+   */
+  small?: string;
 
   /**
    * 所属组
@@ -89,4 +119,58 @@ export interface IEntityInfo {
    * @type {?IOpointInfo[]}
    */
   brokens?: IOpointInfo[];
+
+  /**
+   * 落地伤害
+   * 
+   * 目前只有武器会用到
+   * 
+   * @type {?number}
+   */
+  drop_hurt?: number;
+
+
+  /**
+   * 被打到的声音
+   * 
+   * 替代了：
+   *    - LF2原版 ball类的weapon_hit_sound
+   *    - LF2原版 weapon类的weapon_hit_sound
+   * 
+   * 注意：
+   *    - WEMAKE 中任意实体都支持该值
+   *
+   * @type {?string[]}
+   */
+  hit_sounds?: string[];
+
+  
+  /**
+   * 落地声音
+   * 
+   * 替代了：
+   *    - LF2原版 ball类的weapon_drop_sound
+   *    - LF2原版 weapon类的weapon_drop_sound
+   * 
+   * 注意：
+   *    - WEMAKE 中任意实体都支持该值
+   *
+   * @type {?string[]}
+   */
+  drop_sounds?: string[];
+
+  
+  /**
+   * hp降至0时，发出的声音（会随机挑选一个播放）
+   * 
+   * 替代了：
+   *    - LF2原版 ball类的weapon_broken_sound
+   *    - LF2原版 weapon类的weapon_broken_sound
+   * 
+   * 注意：
+   *    - WEMAKE 中任意实体都支持该值
+   * 
+   * @type {?string[]}
+   */
+  dead_sounds?: string[];
 }
