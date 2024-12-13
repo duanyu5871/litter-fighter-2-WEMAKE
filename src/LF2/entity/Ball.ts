@@ -1,11 +1,11 @@
 import type { World } from '../World';
-import type { IBallData, IBallFrameInfo, IBallInfo } from '../defines';
+import type { IBallData, IBallFrameInfo, IEntityInfo } from '../defines';
 import { Defines } from '../defines';
 import { BALL_STATES } from '../state/ball';
 import Entity from './Entity';
 import { Factory } from './Factory';
 
-export default class Ball extends Entity<IBallFrameInfo, IBallInfo, IBallData> {
+export default class Ball extends Entity<IBallFrameInfo, IEntityInfo, IBallData> {
   static override readonly TAG: string = 'Ball';
   readonly is_ball = true;
   constructor(world: World, data: IBallData) {

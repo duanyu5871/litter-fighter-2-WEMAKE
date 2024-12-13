@@ -1,14 +1,14 @@
 import { IBallData } from "../defines";
 import { IBallFrameInfo } from "../defines/IBallFrameInfo";
-import { IBallInfo } from "../defines/IBallInfo";
 import { IDatIndex } from "../defines/IDatIndex";
+import { IEntityInfo } from "../defines/IEntityInfo";
 import { Defines } from "../defines/defines";
 import { traversal } from "../utils/container_help/traversal";
 import { to_num } from "../utils/type_cast/to_num";
 import { get_next_frame_by_raw_id } from "./get_the_next";
 import { take } from "./take";
 
-export function make_ball_data(info: IBallInfo, frames: Record<string, IBallFrameInfo>, datIndex?: IDatIndex): IBallData {
+export function make_ball_data(info: IEntityInfo, frames: Record<string, IBallFrameInfo>, datIndex?: IDatIndex): IBallData {
 
   for (const [, frame] of traversal(frames)) {
     const hit_j = take(frame, 'hit_j');
@@ -68,13 +68,13 @@ export function make_ball_data(info: IBallInfo, frames: Record<string, IBallFram
   info.hp = 500;
 
   const sound_1 = take(info, 'weapon_broken_sound')
-  if (sound_1) info.weapon_broken_sound = sound_1 + '.mp3'
+  if (sound_1) info.dead_sounds = [sound_1 + '.mp3']
 
   const sound_2 = take(info, 'weapon_drop_sound')
-  if (sound_2) info.weapon_drop_sound = sound_2 + '.mp3'
+  if (sound_2) info.drop_sounds = [sound_2 + '.mp3']
 
   const sound_3 = take(info, 'weapon_hit_sound')
-  if (sound_3) info.weapon_hit_sound = sound_3 + '.mp3'
+  if (sound_3) info.hit_sounds = [sound_3 + '.mp3']
 
   const ret: IBallData = {
     id: '',

@@ -1,10 +1,9 @@
 import { IBallFrameInfo } from "./IBallFrameInfo";
-import { IBallInfo } from "./IBallInfo";
 import { IBgData } from "./IBgData";
 import { ICharacterFrameIndexes } from "./ICharacterFrameIndexes";
 import { ICharacterInfo } from "./ICharacterInfo";
-import { IFrameInfo } from "./IFrameInfo";
 import { IEntityInfo } from "./IEntityInfo";
+import { IFrameInfo } from "./IFrameInfo";
 import { IItrInfo } from "./IItrInfo";
 import { INextFrame } from "./INextFrame";
 import { IWeaponFrameIndexes } from "./IWeaponFrameIndexes";
@@ -67,7 +66,6 @@ export interface IEntityPictureInfo {
 export type TNextFrame = INextFrame | INextFrame[]
 
 export * from './IBallFrameInfo';
-export * from './IBallInfo';
 export * from './IBdyInfo';
 export * from './IBgData';
 export * from './IBgInfo';
@@ -131,7 +129,7 @@ export interface IWeaponData extends IGameObjData<IWeaponInfo, IFrameInfo> {
   indexes: IWeaponFrameIndexes;
   get is_weapon_data(): true;
 }
-export interface IBallData extends IGameObjData<IBallInfo, IBallFrameInfo> {
+export interface IBallData extends IGameObjData<IEntityInfo, IBallFrameInfo> {
   type: 'ball';
   get is_ball_data(): true;
 }
