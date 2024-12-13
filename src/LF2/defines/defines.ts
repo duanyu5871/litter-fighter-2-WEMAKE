@@ -99,6 +99,11 @@ export namespace Defines {
 
     Catching = "catching",
     CAUGHT = "caught",
+
+    /**
+     * 角色是否应该使用重击
+     */
+    RequireSuperPunch = 'super_punch'
   }
   export enum FrameId {
     None = "",
@@ -425,7 +430,7 @@ export namespace Defines {
     MFire1 = 20,  // 定身火 ??
     MFire2 = 21,  // 定身火 ??
     FireExplosion = 22,  // 定身火 ??
-    Explosion = 23, // julian col
+    Explosion = 23,      // julian col
     MIce = 30,    // 定身冰 ??
   }
   export enum CPointKind {

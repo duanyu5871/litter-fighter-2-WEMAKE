@@ -71,7 +71,20 @@ export default class BaseCharacterState extends BaseState<Character> {
     a_cube: ICube, b_cube: ICube
   ): WhatNext {
     if (itr.kind === Defines.ItrKind.Heal)
-      return WhatNext.Interrupt;
+      return WhatNext.Interrupt; // TODO.
+    if (itr.kind === Defines.ItrKind.SuperPunchMe) {
+      target.v_rests.set(attacker.id, {
+        remain: itr.vrest || 0,
+        itr,
+        bdy,
+        attacker,
+        a_cube,
+        b_cube,
+        a_frame: attacker.frame,
+        b_frame: target.frame
+      });
+      return WhatNext.Interrupt;;
+    }
     return WhatNext.Continue;
   }
 
@@ -148,6 +161,7 @@ export default class BaseCharacterState extends BaseState<Character> {
         target.next_frame = { id: target.data.indexes.ice, facing: turn_face(attacker.facing) }
         break;
       }
+      case Defines.ItrEffect.Explosion:
       case Defines.ItrEffect.Normal:
       case Defines.ItrEffect.Sharp:
       case void 0: {
@@ -159,16 +173,21 @@ export default class BaseCharacterState extends BaseState<Character> {
           )
         )
         if (is_fall) {
+
+          const aface: TFace = Defines.ItrEffect.Explosion === itr.effect ?
+            (target.position.x > attacker.position.x ? -1 : 1) :
+            attacker.facing;
           target.fall_value = 0;
+          target.velocities.length = 1;
           target.velocities[0].y = itr.dvy ?? 4;
           target.velocities[0].z = 0;
-          target.velocities[0].x = (itr.dvx || 0) * attacker.facing;
+          target.velocities[0].x = (itr.dvx || 0) * aface;
           if (itr.effect === Defines.ItrEffect.Sharp) {
             target.world.spark(...target.spark_point(r0, r1), "critical_bleed");
           } else {
             target.world.spark(...target.spark_point(r0, r1), "critical_hit")
           }
-          const direction: TFace = target.velocities[0].x / target.facing >= 0 ? 1 : -1
+          const direction: TFace = target.velocities[0].x / target.facing >= 0 ? 1 : -1;
           target.next_frame = { id: target.data.indexes.critical_hit[direction][0] }
         } else {
           if (itr.dvx) target.velocities[0].x = itr.dvx * attacker.facing;

@@ -21,6 +21,13 @@ export default function cook_itr(unsafe_itr?: Partial<IItrInfo>) {
   const src_dvy = take(unsafe_itr, 'dvy');
   if (not_zero_num(src_dvy)) unsafe_itr.dvy = src_dvy * -0.52;
 
+  switch (unsafe_itr.effect) {
+    case Defines.ItrEffect.FireExplosion:
+    case Defines.ItrEffect.Explosion: {
+      unsafe_itr.motionless = 0;
+      break;
+    }
+  }
   switch (unsafe_itr.kind) {
     case Defines.ItrKind.Pick:
     case Defines.ItrKind.PickSecretly:
@@ -42,7 +49,7 @@ export default function cook_itr(unsafe_itr?: Partial<IItrInfo>) {
     }
     case Defines.ItrKind.Heal: {
       if (src_dvx) unsafe_itr.on_hit = get_next_frame_by_raw_id(src_dvx)
-        unsafe_itr.friendly_fire = 1 // 允许治疗队友
+      unsafe_itr.friendly_fire = 1 // 允许治疗队友
       break;
     }
   }

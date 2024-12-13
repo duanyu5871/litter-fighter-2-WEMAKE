@@ -118,7 +118,7 @@ export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string, fil
     if (dvx === 550) frame.dvx = dvx;
     else if (not_zero_num(dvx)) frame.dvx = dvx * 0.5;
 
-    if(frame.state === Defines.State._3){
+    if (frame.state === Defines.State._3) {
       const dvz = take(frame, 'dvz');
       if (dvz === 550) frame.dvz = dvz;
       else if (not_zero_num(dvz)) frame.speedz = dvz;
@@ -179,6 +179,14 @@ export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string, fil
           multi: 2
         })
         break;
+    }
+
+    if (frame.itr) {
+      for (const itr of frame.itr) {
+        if (itr.kind === Defines.ItrKind.SuperPunchMe && (!itr.vrest || itr.vrest < frame.wait)) {
+          itr.vrest = frame.wait;
+        }
+      }
     }
   }
   return frames;

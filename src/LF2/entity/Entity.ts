@@ -150,7 +150,7 @@ export default class Entity<
   protected _emitter?: Entity;
   protected _emitter_opoint?: IOpointInfo;
   protected _a_rest: number = 0;
-  protected _v_rests = new Map<string, IVictimRest>();
+  public v_rests = new Map<string, IVictimRest>();
 
   public motionless: number = 0
   public shaking: number = 0;
@@ -399,12 +399,12 @@ export default class Entity<
   }
 
   get_v_rest_remain(id: string): number {
-    const v = this._v_rests.get(id);
+    const v = this.v_rests.get(id);
     return v ? v.remain : 0
   }
 
   find_v_rest(fn: (k: string, v: IVictimRest) => any): IVictimRest | undefined {
-    for (const [k, v] of this._v_rests) if (fn(k, v)) return v;
+    for (const [k, v] of this.v_rests) if (fn(k, v)) return v;
     return void 0;
   }
 
@@ -626,16 +626,17 @@ export default class Entity<
     if (this.next_frame) this.enter_frame(this.next_frame);
     if (this._mp < this._mp_max)
       this.mp = Math.min(this._mp_max, this._mp + this._mp_r_spd);
-
+    if (this.frame.hp)
+      this.hp -= this.frame.hp
     const { cpoint } = this.frame;
     if (cpoint?.decrease) {
       this._catch_time -= Math.abs(cpoint.decrease);
       if (this._catch_time < 0) this._catch_time = 0;
     }
     if (this.shaking <= 0) {
-      for (const [k, v] of this._v_rests) {
+      for (const [k, v] of this.v_rests) {
         if (v.remain >= 0) --v.remain;
-        else this._v_rests.delete(k);
+        else this.v_rests.delete(k);
       }
     }
     if (this.motionless <= 0)
@@ -954,6 +955,7 @@ export default class Entity<
       return;
     }
     this.lastest_victim = target;
+    if (this.frame.name === 'explosion') debugger
     this.motionless = itr.motionless ?? Defines.DEFAULT_ITR_MOTIONLESS;
     if (itr.arest) {
       this._a_rest = itr.arest - this.motionless;
@@ -982,16 +984,13 @@ export default class Entity<
   }
 
   on_be_collided(attacker: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
-    if (itr.kind === Defines.ItrKind.SuperPunchMe) {
-      return;
-    }
     if (this.state?.before_be_collided?.(attacker, this, itr, bdy, a_cube, b_cube)) {
       return;
     }
     this.lastest_attacker = attacker;
     this.shaking = itr.shaking ?? Defines.DEFAULT_ITR_SHAKEING;
     if (!itr.arest && itr.vrest) {
-      this._v_rests.set(attacker.id, {
+      this.v_rests.set(attacker.id, {
         remain: itr.vrest,
         itr,
         bdy,
@@ -1112,6 +1111,8 @@ export default class Entity<
     this.wait = frame.wait;
     this.next_frame = void 0;
 
+    if (frame.name === 'punch')
+      console.log(frame.name, flags, this.controller?.LR)
     if (flags && typeof flags !== 'string') {
       if (flags.facing !== void 0) {
         this.facing = this.handle_facing_flag(flags.facing, frame);

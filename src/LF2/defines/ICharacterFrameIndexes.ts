@@ -26,7 +26,7 @@ export interface ICharacterFrameIndexes {
   // broken_defend: string;
   // defend_hit: string;
   in_the_sky: string[];
-  super_punch: string;
+  // super_punch: string;
   falling: TFrameIdListPair;
   bouncing: TFrameIdListPair;
   critical_hit: TFrameIdListPair;

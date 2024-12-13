@@ -113,7 +113,8 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
             id: '55', expression: CondMaker.one_of(ValWord.WeaponType, WeaponType.Drink).done(),
             facing: FacingFlag.ByController,
           },
-          { id: ['60', '65'] }
+          { id: '70', expression: CondMaker.add(ValWord.RequireSuperPunch, '==', 1).done() },
+          { id: ['60', '65'], facing: Defines.FacingFlag.ByController }
         ]; // punch
         frame.hit.j = { id: '210' }; // jump
         frame.hit.d = { id: '110' }; // defend
@@ -148,7 +149,8 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
             id: '55', expression: CondMaker.one_of(ValWord.WeaponType, WeaponType.Drink).done(),
             facing: FacingFlag.ByController,
           },
-          { id: ['60', '65'] }
+          { id: '70', expression: CondMaker.add(ValWord.RequireSuperPunch, '==', 1).done() },
+          { id: ['60', '65'], facing: Defines.FacingFlag.ByController }
         ]; // punch
         frame.hit.j = { id: '210' }; // jump
         frame.hit.d = { id: '110' }; // defend
@@ -395,6 +397,7 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
         break;
       case State.Defend: {
         if (frame.bdy?.length) for (const bdy of frame.bdy) {
+          bdy.kind = Defines.BdyKind.Defend
           bdy.break_act = { id: '112' }
         }
         break;
@@ -447,7 +450,7 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
     running: "running_0",
     heavy_obj_run: "heavy_obj_run_0",
     heavy_obj_walk: ['heavy_obj_walk_0'],
-    super_punch: '70',
+    // super_punch: '70',
     // defend_hit: '111',
     // broken_defend: '112',
     picking_light: '115',

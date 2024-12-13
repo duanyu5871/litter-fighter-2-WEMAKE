@@ -27,18 +27,13 @@ export interface IFrameInfo {
   sound?: string;
 
   /**
-   * 此frame消耗的蓝量
-   * TODO: move to INextFrame
+   * 此frame消耗的血量，每帧都会扣
+   * 
+   * 原版的角色消耗mp与hp见INextFrame
+   * 
    * @see {INextFrame}
    */
-  // mp?: number;
-
-  /**
-   * 此frame消耗的血量
-   * TODO: move to INextFrame
-   * @see {INextFrame}
-   */
-  // hp?: number;
+  hp?: number;
 
   hold?: IHoldKeyCollection;
   hit?: IHitKeyCollection;

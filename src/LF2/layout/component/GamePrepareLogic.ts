@@ -265,7 +265,6 @@ export default class GamePrepareLogic extends LayoutComponent {
       character.facing = Math.random() < 0.5 ? 1 : -1
 
       if (player.is_com) {
-        debugger;
         character.controller = Factory.inst.get_ctrl_creator(character_data.id)?.(player.id, character)
       } else {
         character.controller = new LocalController(player.id, character, player.keys)

@@ -26,6 +26,18 @@ function get_val_from_entity(word: string, e: Entity): any {
       return e.controller ? e.controller.LR * e.facing : 0;
     case Defines.ValWord.PressLR:
       return e.controller ? e.controller.LR : 0;
+    case Defines.ValWord.RequireSuperPunch:
+      for (const [, { itr, attacker }] of e.v_rests) {
+        if (
+          itr.kind === Defines.ItrKind.SuperPunchMe && (
+            (attacker.position.x > e.position.x && e.facing === 1 && e.controller?.LR !== -1) ||
+            (attacker.position.x < e.position.x && e.facing === -1 && e.controller?.LR !== 1)
+          )
+        ) {
+          return 1
+        }
+      }
+      return 0
     case Defines.ValWord.PressUD:
       return e.controller ? e.controller.UD : 0;
     case Defines.ValWord.HP_P:

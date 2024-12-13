@@ -244,19 +244,6 @@ export class BaseController {
       }
     }
 
-    switch (state) {
-      case Defines.State.Standing:
-      case Defines.State.Walking:
-        /** FIXME: 重击判定 */
-        if (this.is_hit('a') && is_character(entity)) {
-          const super_punch = entity.find_v_rest((_, v) => v.itr.kind === Defines.ItrKind.SuperPunchMe);
-          if (super_punch) {
-            this.nf.set({ id: entity.data.indexes.super_punch }, this.key_time_maps.a, GameKey.a);
-          }
-          // console.log("super_punch:", super_punch)
-        }
-        break;
-    }
     const seqs = hit?.sequences
     if (seqs) do {
       /** 同时按键 判定 */

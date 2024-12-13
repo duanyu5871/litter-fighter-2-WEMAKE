@@ -51,7 +51,7 @@ export function make_ball_data(info: IEntityInfo, frames: Record<string, IBallFr
       14= 連環重炮
     */
 
-    // if (hit_a) frame.hp = -hit_a / 2; // TODO
+    if (hit_a) frame.hp = hit_a / 2;
     if (hit_d) frame.on_timeout = get_next_frame_by_raw_id(hit_d);
     if (frame.state === Defines.State.Ball_Flying) {
       if (frames[10]) frame.on_hitting = { id: '10' }
