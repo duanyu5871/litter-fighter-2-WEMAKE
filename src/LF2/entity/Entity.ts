@@ -113,7 +113,7 @@ export default class Entity<
   protected _catcher?: Entity;
   readonly is_entity = true
   readonly states: States;
-  
+
   /**
    * 最终速度向量
    * - 会更新position前，通过velocities计算得出
@@ -725,7 +725,9 @@ export default class Entity<
     if (prev_position_y > 0 && this.position.y <= 0) {
       this.position.y = 0;
 
-      this.play_sound(this.data.base.drop_sounds)
+      if(this.velocity.y > 0){
+        this.play_sound(this.data.base.drop_sounds)
+      }
 
       this.velocities[0].y = 0;
       this.state?.on_landing(this);

@@ -5,12 +5,6 @@ import { ICube } from "../../World";
 import BaseState, { WhatNext } from "../base/BaseState";
 
 export default class BaseWeaponState extends BaseState<Weapon> {
-  override update(e: Weapon): void {
-    e.handle_gravity();
-    e.handle_ground_velocity_decay();
-    e.handle_frame_velocity();
-  }
-
   override on_collision(attacker: Weapon, target: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
     if (attacker.frame.state === Defines.State.Weapon_OnHand) {
       return;
@@ -41,6 +35,7 @@ export default class BaseWeaponState extends BaseState<Weapon> {
     }
     return WhatNext.Continue;
   }
+
   override on_be_collided(
     attacker: Entity, target: Weapon,
     itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube

@@ -87,6 +87,10 @@ export function make_weapon_data(info: IWeaponInfo, full_str: string, frames: Re
 
   const sound_3 = take(info, 'weapon_hit_sound')
   if (sound_3) info.hit_sounds = [sound_3 + '.mp3']
+
+  const drop_hurt = take(info, 'weapon_drop_hurt')
+  if (drop_hurt && Number(drop_hurt)) info.drop_hurt = Number(drop_hurt)
+
   return {
     id: '',
     type: 'weapon',

@@ -30,7 +30,12 @@ export default class Throwing extends BaseWeaponState {
     }
     if (this._unhurt_weapons.has(e)) {
       this._unhurt_weapons.delete(e);
-      if (base.weapon_drop_hurt) e.hp -= base.weapon_drop_hurt;
+      if (base.drop_hurt) e.hp -= base.drop_hurt;
     }
+  }
+  override update(e: Weapon): void {
+    e.handle_gravity();
+    e.handle_ground_velocity_decay();
+    e.handle_frame_velocity();
   }
 }
