@@ -49,6 +49,8 @@ export default class BaseBallState<E extends Ball = Ball> extends BaseState<E> {
   }
   // attacker
   override on_collision(self: E, target: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
+    target.motionless = 0;
+    target.shaking = 0;
     if (is_character(target) || is_weapon(target)) {
       switch (self.frame.state) {
         case Defines.ItrKind.DeadWhenHit:
@@ -56,17 +58,6 @@ export default class BaseBallState<E extends Ball = Ball> extends BaseState<E> {
           self.hp = 0;
           break;
       }
-      // const f = self.frame;
-      // switch (itr.kind) {
-      //   case Defines.ItrKind.Heal:
-      //     if (!itr.injury) break;
-      //     // TODO: 
-      //     break;
-      //   default: {
-      //     break;
-      //   }
-      // }
-      // if (itr.on_hit) self.enter_frame(itr.on_hit)
       self.velocities.length = 1
       self.velocities[0].x = 0;
       self.velocities[0].z = 0;
@@ -74,6 +65,8 @@ export default class BaseBallState<E extends Ball = Ball> extends BaseState<E> {
     }
   }
   override on_be_collided(attacker: Entity, target: E, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
+    target.motionless = 0;
+    target.shaking = 0;
     target.velocities.length = 1
     target.velocities[0].x = 0;
     target.velocities[0].z = 0;
