@@ -1,6 +1,5 @@
-import { ICharacterData, IFrameInfo, TNextFrame } from '../defines';
+import { ICharacterData, IEntityInfo, IFrameInfo, TNextFrame } from '../defines';
 import { ICharacterFrameIndexes } from "../defines/ICharacterFrameIndexes";
-import { ICharacterInfo } from "../defines/ICharacterInfo";
 import { INextFrame } from "../defines/INextFrame";
 import { Defines } from '../defines/defines';
 import { set_obj_field } from '../utils/container_help/set_obj_field';
@@ -28,7 +27,7 @@ const set_hold_turn_back = (frame: IFrameInfo, back_frame_id: string = '') => {
   frame.hold = frame.hold || {}
   frame.hold.B = { id: back_frame_id, wait: 'i', facing: FacingFlag.Backward }
 }
-export function make_character_data(info: ICharacterInfo, frames: Record<string, IFrameInfo>): ICharacterData {
+export function make_character_data(info: IEntityInfo, frames: Record<string, IFrameInfo>): ICharacterData {
   const walking_frame_rate = take_number(info, 'walking_frame_rate', 3);
   const running_frame_rate = take_number(info, 'running_frame_rate', 3);
   const walking_speed = take_number(info, 'walking_speed', 0);
@@ -45,8 +44,8 @@ export function make_character_data(info: ICharacterInfo, frames: Record<string,
 
   if (info.dash_distance) info.dash_distance /= 2;
   if (info.jump_distance) info.jump_distance /= 2;
-  info.fall_value = Defines.DEFAULT_FALL_VALUE;
-  info.defend_value = Defines.DEFAULT_DEFEND_VALUE;
+  info.fall_value = Defines.DEFAULT_FALL_VALUE_MAX;
+  info.defend_value = Defines.DEFAULT_DEFEND_VALUE_MAX;
   const round_trip_frames_map: any = {};
   const frame_mp_hp_map = new Map<string, [number, number]>()
 

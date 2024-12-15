@@ -1,4 +1,3 @@
-import { IEntityInfo } from "./IEntityInfo";
 export interface IArmorInfo {
   /**
    * 护甲被击中的声音
@@ -25,19 +24,9 @@ export interface IArmorInfo {
   toughness: number;
 
   type: string; // hp? times? fall? defend?
-}
 
-export interface ICharacterInfo extends IEntityInfo {
-  armor?: IArmorInfo;
-  /**
-   * 
-   */
-  jump_height?: number;
-  jump_distance?: number;
-  jump_distancez?: number;
-  dash_height?: number;
-  dash_distance?: number;
-  dash_distancez?: number;
-  rowing_height?: number;
-  rowing_distance?: number;
+  fall_value?: number;
+  
+  defend_value?: number;
+
 }

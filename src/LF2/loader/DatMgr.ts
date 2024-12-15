@@ -166,8 +166,8 @@ class Inner {
   }
 
   process_character_data(data: ICharacterData): void {
-    data.base.fall_value = data.base.fall_value ?? Defines.DEFAULT_FALL_VALUE;
-    data.base.defend_value = data.base.defend_value ?? Defines.DEFAULT_DEFEND_VALUE;
+    data.base.fall_value = data.base.fall_value ?? Defines.DEFAULT_FALL_VALUE_MAX;
+    data.base.defend_value = data.base.defend_value ?? Defines.DEFAULT_DEFEND_VALUE_MAX;
     data.base.hp = data.base.hp ?? Defines.DAFUALT_HP;
     data.base.mp = data.base.mp ?? Defines.DEFAULT_MP;
   }

@@ -92,8 +92,15 @@ export default class BaseCharacterState extends BaseState<Character> {
 
     switch (bdy.kind) {
       case Defines.BdyKind.Defend: {
-        if (attacker.facing === target.facing)
+        if (
+          Defines.ItrEffect.FireExplosion === itr.effect ||
+          Defines.ItrEffect.Explosion === itr.effect
+        ) {
+          // 爆炸伤害允许不需要方向
+        } else if (attacker.facing === target.facing) {
+          // 默认仅允许抵御来自前方的伤害
           break;
+        }
         if (itr.bdefend && itr.bdefend >= Defines.DEFAULT_FORCE_BREAK_DEFEND_VALUE)
           break;
         if (itr.bdefend)
@@ -142,6 +149,7 @@ export default class BaseCharacterState extends BaseState<Character> {
       case Defines.ItrEffect.MFire2:
       case Defines.ItrEffect.FireExplosion: {
         target.fall_value = 0;
+        target.defend_value = 0;
         target.velocities[0].y = itr.dvy ?? 4;
         target.velocities[0].z = 0;
         const direction = Defines.ItrEffect.FireExplosion === itr.effect ?
@@ -153,6 +161,7 @@ export default class BaseCharacterState extends BaseState<Character> {
       }
       case Defines.ItrEffect.Ice: {
         target.fall_value = 0;
+        target.defend_value = 0;
         if (itr.dvx) target.velocities[0].x = itr.dvx * attacker.facing;
         if (target.position.y > 0 && target.velocities[0].y > 2) target.velocities[0].y = 2;
         target.velocities[0].z = 0;
@@ -166,7 +175,8 @@ export default class BaseCharacterState extends BaseState<Character> {
       case Defines.ItrEffect.Normal:
       case Defines.ItrEffect.Sharp:
       case void 0: {
-        target.fall_value -= itr.fall ? itr.fall : 40;
+        target.fall_value -= itr.fall ? itr.fall : Defines.DEFAULT_ITR_FALL;
+        target.defend_value = 0;
         const is_fall = target.fall_value <= 0 || target.hp <= 0 || (
           target.fall_value <= 80 && (
             target.velocities[0].y > 0 ||
@@ -199,7 +209,7 @@ export default class BaseCharacterState extends BaseState<Character> {
             target.world.spark(...target.spark_point(r0, r1), "hit")
           }
           /* 击晕 */
-          if (target.fall_value <= 40) {
+          if (target.fall_value <= Defines.DEFAULT_FALL_VALUE_DIZZY) {
             target.next_frame = { id: target.data.indexes.dizzy };
             break;
           }

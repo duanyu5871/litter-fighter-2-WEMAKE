@@ -25,11 +25,13 @@ export namespace Defines {
   export const OLD_SCREEN_HEIGHT = 550;
   export const DAFUALT_HP = 500;
   export const DEFAULT_MP = 500;
-  export const DEFAULT_FALL_VALUE = 140
-  export const DEFAULT_DEFEND_VALUE = 120
+  export const DEFAULT_FALL_VALUE_MAX = 140
+  export const DEFAULT_DEFEND_VALUE_MAX = 120
   export const DEFAULT_ITR_SHAKEING = 6;
   export const DEFAULT_ITR_MOTIONLESS = 6;
   export const DAFUALT_CATCH_TIME = 680;
+  export const DEFAULT_ITR_FALL = 40
+  export const DEFAULT_FALL_VALUE_DIZZY = 40;
 
   /**
    * 直接破防值

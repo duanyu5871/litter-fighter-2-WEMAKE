@@ -76,7 +76,7 @@ export default class Entity<
   protected _resting = 0;
 
 
-  private _fall_value = Defines.DEFAULT_FALL_VALUE;
+  private _fall_value = Defines.DEFAULT_FALL_VALUE_MAX;
   get fall_value(): number { return this._fall_value; }
   set fall_value(v: number) {
     const o = this._fall_value
@@ -84,8 +84,8 @@ export default class Entity<
     if (v < o) this._resting = 30;
   }
 
-  fall_value_max = Defines.DEFAULT_FALL_VALUE;
-  private _defend_value = Defines.DEFAULT_DEFEND_VALUE;
+  fall_value_max = Defines.DEFAULT_FALL_VALUE_MAX;
+  private _defend_value = Defines.DEFAULT_DEFEND_VALUE_MAX;
   get defend_value(): number { return this._defend_value; }
   set defend_value(v: number) {
     const o = this._defend_value
@@ -93,7 +93,7 @@ export default class Entity<
     if (v < o) this._resting = 30;
   }
 
-  defend_value_max = Defines.DEFAULT_DEFEND_VALUE;
+  defend_value_max = Defines.DEFAULT_DEFEND_VALUE_MAX;
   throwinjury?: number;
 
   get catching() { return this._catching; }
@@ -154,7 +154,6 @@ export default class Entity<
 
   public motionless: number = 0
   public shaking: number = 0;
-
 
   /** 
    * 抓人剩余值
@@ -352,8 +351,8 @@ export default class Entity<
     this._mp_r_spd_max = data.base.mp_r_max_spd ?? Defines.DEFAULT_MP_RECOVERY_MAX_SPEED;
     this._catch_time_max = data.base.catch_time ?? Defines.DAFUALT_CATCH_TIME;
     this.update_mp_r_spd();
-    this.fall_value_max = this.data.base.fall_value ?? Defines.DEFAULT_FALL_VALUE;
-    this.defend_value_max = this.data.base.defend_value ?? Defines.DEFAULT_DEFEND_VALUE;
+    this.fall_value_max = this.data.base.fall_value ?? Defines.DEFAULT_FALL_VALUE_MAX;
+    this.defend_value_max = this.data.base.defend_value ?? Defines.DEFAULT_DEFEND_VALUE_MAX;
     this.fall_value = this.fall_value_max
     this.defend_value = this.defend_value_max
     this._hp = this._hp_max
@@ -1229,6 +1228,22 @@ export default class Entity<
    */
   on_dead() {
     this._callbacks.emit('on_dead')(this);
+  }
+
+
+  merge_velocities() {
+    if (this.velocities.length <= 1) 
+      return;
+    let vx = 0;
+    let vy = 0;
+    let vz = 0;
+    for (const v of this.velocities) {
+      vx += v.x;
+      vy += v.y;
+      vz += v.z;
+    }
+    this.velocities.length = 1;
+    this.velocities[0].set(vx, vy, vz)
   }
 }
 

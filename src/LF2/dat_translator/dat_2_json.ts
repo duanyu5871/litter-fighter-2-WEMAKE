@@ -3,15 +3,15 @@ import {
   IEntityData, IEntityPictureInfo, IStageInfo,
   IWeaponData
 } from '../defines';
-import { IEntityInfo } from "../defines/IEntityInfo";
 import { IBallFrameInfo } from "../defines/IBallFrameInfo";
-import { ICharacterInfo } from "../defines/ICharacterInfo";
 import { IDatIndex } from "../defines/IDatIndex";
+import { IEntityInfo } from "../defines/IEntityInfo";
 import { IWeaponInfo } from "../defines/IWeaponInfo";
 import { Defines } from '../defines/defines';
 import { set_obj_field } from "../utils/container_help/set_obj_field";
 import { match_block_once } from '../utils/string_parser/match_block';
 import { match_colon_value } from '../utils/string_parser/match_colon_value';
+import { add_entity_groups } from './add_entity_to_group';
 import { cook_louis_data, cook_rudolf_data } from './cook_louis_data';
 import { make_ball_data } from './make_ball_data';
 import { make_bg_data } from './make_bg_data';
@@ -19,8 +19,7 @@ import { make_character_data } from './make_character_data';
 import { make_entity_data } from './make_entity_data';
 import { make_frames } from './make_frames';
 import { make_stage_info_list as make_stage_infos } from './make_stage_info_list';
-import { make_weapon_special, make_weapon_data } from './make_weapon_data';
-import { add_entity_groups } from './add_entity_to_group';
+import { make_weapon_data, make_weapon_special } from './make_weapon_data';
 
 export default function dat_to_json(
   full_str: string, datIndex?: IDatIndex
@@ -127,7 +126,7 @@ export default function dat_to_json(
         break;
       }
       case '0': {
-        const info = base as ICharacterInfo;
+        const info = base as IEntityInfo;
         const num_id = Number(datIndex.id);
 
         if (
@@ -182,7 +181,7 @@ export default function dat_to_json(
     return ret;
   } else {
     if ('small' in base && 'name' in base && 'head' in base) {
-      return make_character_data(base as ICharacterInfo, make_frames(full_str, base.files))
+      return make_character_data(base as IEntityInfo, make_frames(full_str, base.files))
     }
     if ('weapon_hp' in base) {
       const info = base as IWeaponInfo;

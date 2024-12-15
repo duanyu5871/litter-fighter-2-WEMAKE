@@ -1,19 +1,20 @@
 import type { IEntityPictureInfo } from ".";
 import type { Defines } from "./defines";
+import { IArmorInfo } from "./IArmorInfo";
 import type { IOpointInfo } from "./IOpointInfo";
 
 
 export interface IEntityInfo {
-  
+
   /**
    * 实体名称
    * @type {string}
    */
   name: string;
 
-  
+
   /**
-   * 角色强度等级
+   * 角色强度系数
    * 
    * 用于闯关模式
    * 
@@ -44,10 +45,15 @@ export interface IEntityInfo {
   group?: string[];
 
   files: Record<string, IEntityPictureInfo>;
+  
   depth_test?: boolean;
+
   depth_write?: boolean;
+
   render_order?: number;
+
   fall_value?: number;
+
   defend_value?: number;
 
   /**
@@ -144,7 +150,7 @@ export interface IEntityInfo {
    */
   hit_sounds?: string[];
 
-  
+
   /**
    * 落地声音
    * 
@@ -159,7 +165,7 @@ export interface IEntityInfo {
    */
   drop_sounds?: string[];
 
-  
+
   /**
    * hp降至0时，发出的声音（会随机挑选一个播放）
    * 
@@ -173,4 +179,40 @@ export interface IEntityInfo {
    * @type {?string[]}
    */
   dead_sounds?: string[];
+
+  /**
+   * TODO:
+   */
+  jump_height?: number;
+  /**
+   * TODO:
+   */
+  jump_distance?: number;
+  /**
+   * TODO:
+   */
+  jump_distancez?: number;
+  /**
+   * TODO:
+   */
+  dash_height?: number;
+  /**
+   * TODO:
+   */
+  dash_distance?: number;
+  /**
+   * TODO:
+   */
+  dash_distancez?: number;
+  /**
+   * TODO:
+   */
+  rowing_height?: number;
+  /**
+   * TODO:
+   */
+  rowing_distance?: number;
+
+  
+  armor?: IArmorInfo;
 }

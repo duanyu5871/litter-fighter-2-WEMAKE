@@ -68,25 +68,21 @@ export function make_stage_info_list(full_str: string): IStageInfo[] | void {
       stage_info.starting_name = 'Survival';
     }
 
-    if (nid <= 4) {
+    if (nid <= 9) {
       stage_info.bg = '2';
-      if (nid < 4) stage_info.next = '' + (nid + 1)
-    }
-    else if (nid <= 14) {
+      if (nid < 9) stage_info.next = '' + (nid + 1)
+    } else if (nid <= 19) {
       stage_info.bg = '3';
-      if (nid < 14) stage_info.next = '' + (nid + 1)
-    }
-    else if (nid <= 24) {
+      if (nid < 19) stage_info.next = '' + (nid + 1)
+    } else if (nid <= 29) {
       stage_info.bg = '5';
-      if (nid < 24) stage_info.next = '' + (nid + 1)
-    }
-    else if (nid <= 34) {
+      if (nid < 29) stage_info.next = '' + (nid + 1)
+    } else if (nid <= 39) {
       stage_info.bg = '6';
-      if (nid < 34) stage_info.next = '' + (nid + 1)
-    }
-    else if (nid <= 44) {
+      if (nid < 39) stage_info.next = '' + (nid + 1)
+    } else if (nid <= 49) {
       stage_info.bg = '7';
-      if (nid < 44) stage_info.next = '' + (nid + 1)
+      if (nid < 49) stage_info.next = '' + (nid + 1)
     } else {
       stage_info.bg = '8';
     }
