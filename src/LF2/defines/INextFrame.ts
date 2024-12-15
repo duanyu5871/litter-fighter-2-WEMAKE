@@ -60,4 +60,12 @@ export interface INextFrame {
    * @type {?number}
    */
   hp?: number;
+
+  
+  /**
+   * TODO
+   *
+   * @type {?string[]}
+   */
+  sounds?: string[];
 }

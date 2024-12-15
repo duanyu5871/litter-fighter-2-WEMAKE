@@ -50,28 +50,33 @@ export default class BaseBallState<E extends Ball = Ball> extends BaseState<E> {
   // attacker
   override on_collision(self: E, target: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
     if (is_character(target) || is_weapon(target)) {
-      const f = self.frame;
-      switch (itr.kind) {
-        case Defines.ItrKind.Heal:
-          if (!itr.injury) break;
-          // TODO: 
-          break;
+      switch (self.frame.state) {
         case Defines.ItrKind.DeadWhenHit:
-          self.play_sound(self.data.base.hit_sounds)
-          if (f.on_timeout) self.enter_frame(f.on_timeout)
-          else { debugger; console.log(Ball.TAG + '::on_collision', 'Defines.ItrKind.DeadWhenHit, but on_timeout not set.') }
-          break;
-        default:
-          self.play_sound(self.data.base.hit_sounds)
-          if (f.on_hitting) self.enter_frame(f.on_hitting);
-          else { console.log(Ball.TAG + '::on_collision', 'on_hitting not set.') }
+        case Defines.State.Ball_Flying:
+          self.hp = 0;
           break;
       }
-      if (itr.on_hit) self.enter_frame(itr.on_hit)
+      // const f = self.frame;
+      // switch (itr.kind) {
+      //   case Defines.ItrKind.Heal:
+      //     if (!itr.injury) break;
+      //     // TODO: 
+      //     break;
+      //   default: {
+      //     break;
+      //   }
+      // }
+      // if (itr.on_hit) self.enter_frame(itr.on_hit)
+      self.velocities.length = 1
       self.velocities[0].x = 0;
       self.velocities[0].z = 0;
       self.velocities[0].y = 0;
-      self.velocities.length = 1
     }
+  }
+  override on_be_collided(attacker: Entity, target: E, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
+    target.velocities.length = 1
+    target.velocities[0].x = 0;
+    target.velocities[0].z = 0;
+    target.velocities[0].y = 0;
   }
 }

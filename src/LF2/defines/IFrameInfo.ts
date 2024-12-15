@@ -1,4 +1,5 @@
 import { TNextFrame } from ".";
+import type { INextFrame } from "../defines/INextFrame";
 import { IBdyInfo } from "./IBdyInfo";
 import { IBpointInfo } from "./IBpointInfo";
 import { ICpointInfo } from "./ICpointInfo";
@@ -10,7 +11,6 @@ import { IOpointInfo } from "./IOpointInfo";
 import { IRectPair } from "./IRectPair";
 import { IWpointInfo } from "./IWpointInfo";
 import type { Defines } from './defines';
-import type { INextFrame } from "../defines/INextFrame";
 
 export interface IFrameInfo {
   id: string;
@@ -69,4 +69,9 @@ export interface IFrameInfo {
    * @type {?number}
    */
   jump_flag?: number;
+
+  /**
+   * hp降至0时，跳转去？
+   */
+  on_dead?: TNextFrame;
 }

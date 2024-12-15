@@ -31,8 +31,7 @@ export interface IItrInfo extends IRect {
    */
   shaking?: number;
 
-  /** 命中后，自己跳转至什么帧 */
-  on_hit?: TNextFrame;
+
 
   /**
    * 本itr的效果类型
@@ -68,5 +67,9 @@ export interface IItrInfo extends IRect {
   indicator_info?: IRectPair;
   catchingact?: TNextFrame,
   caughtact?: TNextFrame
+
+  /** 命中后，自己跳转至什么帧 */
+  hit_act?: TNextFrame;
+  hit_sounds: string[];
 }
 

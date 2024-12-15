@@ -153,7 +153,18 @@ export namespace Defines {
     /**
      * 角色是否应该使用重击
      */
-    RequireSuperPunch = 'super_punch'
+    RequireSuperPunch = 'super_punch',
+
+    HitByCharacter = 'hit_by_character',
+    HitByWeapon = 'hit_by_weapon',
+    HitByBall = 'hit_by_ball',
+
+    HitByItrKind = 'hit_by_itr_kind',
+    HitByItrEffect = 'hit_by_itr_effect',
+
+    HitOnCharacter = 'hit_on_character',
+    HitOnWeapon = 'hit_on_weapon',
+    HitOnBall = 'hit_on_ball',
   }
   export enum FrameId {
     None = "",

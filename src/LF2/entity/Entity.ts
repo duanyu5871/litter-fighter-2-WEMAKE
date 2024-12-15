@@ -45,7 +45,16 @@ export const GONE_FRAME_INFO: IFrameInfo = {
   centery: 0
 };
 export type TData = IBaseData | ICharacterData | IWeaponData | IEntityData | IBallData
-
+export interface CollisionInfo {
+  victim: Entity
+  attacker: Entity,
+  itr: IItrInfo,
+  bdy: IBdyInfo,
+  aframe: IFrameInfo,
+  bframe: IFrameInfo,
+  a_cube: ICube,
+  b_cube: ICube
+}
 export interface IVictimRest {
   remain: number,
   itr: IItrInfo,
@@ -238,9 +247,14 @@ export default class Entity<
     this._callbacks.emit('on_hp_changed')(this, this._hp = v, o)
     this.update_mp_r_spd();
 
-    if (o > 0 && v <= 0 && this.data.base.brokens?.length) {
-      this.apply_opoints(this.data.base.brokens);
-      this.play_sound(this.data.base.dead_sounds);
+    if (o > 0 && v <= 0) {
+      if (this.data.base.brokens?.length) {
+        this.apply_opoints(this.data.base.brokens);
+        this.play_sound(this.data.base.dead_sounds);
+      }
+      if (this.frame.on_dead) {
+        this.enter_frame(this.frame.on_dead)
+      }
     }
   }
 
@@ -426,8 +440,16 @@ export default class Entity<
     this.velocities.push(offset_velocity);
 
     const shotter_frame = emitter.get_frame();
-    this.team = emitter.team;
-    this.facing = emitter.facing;
+
+    if (emitter.frame.state === Defines.State.Ball_Rebounding) {
+      if (!emitter.lastest_collision) debugger
+      this.team = emitter.lastest_collision?.attacker.team || new_team();
+      this.facing = emitter.facing;
+    } else {
+      this.team = emitter.team;
+      this.facing = emitter.facing;
+    }
+
 
     let { x, y, z } = emitter.position;
     y = y + shotter_frame.centery - opoint.y;
@@ -601,7 +623,6 @@ export default class Entity<
       y: final_v_y,
       z: final_v_z
     } = this.velocities[0];
-
     if (dvx !== void 0) {
       const next_speed = this.facing * dvx;
       const curr_speed = final_v_x;
@@ -611,7 +632,6 @@ export default class Entity<
       )
         final_v_x = next_speed;
     };
-
     if (dvy !== void 0) final_v_y += dvy;
     if (dvz !== void 0) final_v_z = dvz;
     if (this._controller) {
@@ -731,7 +751,26 @@ export default class Entity<
     const next_frame_2 = this.update_caught();
     this.next_frame = next_frame_2 || next_frame_1 || this.next_frame;
 
-    this.on_after_update?.();
+    if (this.controller) {
+      const { next_frame, key_list } = this.controller.update();
+      if (
+        key_list === 'ja' &&
+        this.transform_datas &&
+        this.transform_datas[1] === this.data &&
+        (
+          this.state?.state === Defines.State.Walking ||
+          this.state?.state === Defines.State.Standing ||
+          this.state?.state === Defines.State.Defend
+        )
+      ) {
+        this.transfrom_to_another();
+        this.controller.reset_key_list();
+      } else if (next_frame) {
+        const [a] = this.get_next_frame(next_frame);
+        if (a) this.next_frame = next_frame;
+      }
+    }
+
     if (this.position.y <= 0 && this.velocity.y < 0) {
       this.position.y = 0;
       this.play_sound(this.data.base.drop_sounds)
@@ -748,6 +787,8 @@ export default class Entity<
     else
       ++this.update_id;
     this.world.restrict(this);
+    this.collided = void 0;
+    this.collision = void 0;
   }
 
   /**
@@ -895,28 +936,6 @@ export default class Entity<
     return { id: Defines.FrameId.Auto }
   }
 
-  on_after_update(): void {
-    if (this.controller) {
-      const { next_frame, key_list } = this.controller.update();
-      if (
-        key_list === 'ja' &&
-        this.transform_datas &&
-        this.transform_datas[1] === this.data &&
-        (
-          this.state?.state === Defines.State.Walking ||
-          this.state?.state === Defines.State.Standing ||
-          this.state?.state === Defines.State.Defend
-        )
-      ) {
-        this.transfrom_to_another();
-        this.controller.reset_key_list();
-      } else if (next_frame) {
-        const [a] = this.get_next_frame(next_frame);
-        if (a) this.next_frame = next_frame;
-      }
-    }
-  }
-
   transfrom_to_another() {
     const { transform_datas } = this
     if (!transform_datas) return;
@@ -925,19 +944,10 @@ export default class Entity<
     this.next_frame = this.get_next_frame('245')[0];
   }
 
-  /**
-   * 最近一次攻击到的实体
-   *
-   * @type {?Entity}
-   */
-  lastest_victim?: Entity;
-
-  /**
-   * 最近一次攻击本实体的实体
-   *
-   * @type {?Entity}
-   */
-  lastest_attacker?: Entity;
+  lastest_collided?: CollisionInfo;
+  lastest_collision?: CollisionInfo;
+  collided?: CollisionInfo;
+  collision?: CollisionInfo;
 
   start_catch(target: Entity, itr: IItrInfo) {
     if (itr.catchingact === void 0) {
@@ -965,7 +975,16 @@ export default class Entity<
     if (this.state?.before_collision?.(this, target, itr, bdy, a_cube, b_cube)) {
       return;
     }
-    this.lastest_victim = target;
+    this.collided = this.lastest_collided = {
+      attacker: this,
+      victim: target,
+      aframe: this.frame,
+      bframe: target.frame,
+      itr,
+      bdy,
+      a_cube,
+      b_cube,
+    };
     if (this.frame.name === 'explosion') debugger
     this.motionless = itr.motionless ?? Defines.DEFAULT_ITR_MOTIONLESS;
     if (itr.arest) {
@@ -973,6 +992,12 @@ export default class Entity<
     } else if (!itr.vrest) {
       this._a_rest = this.wait + this.motionless;
     }
+
+    if (bdy.kind !== Defines.BdyKind.Defend) {
+      const sounds = itr.hit_sounds?.length ? itr.hit_sounds : this.data.base.hit_sounds?.length ? this.data.base.hit_sounds : void 0
+      sounds && this.play_sound(sounds);
+    }
+    if (itr.hit_act) this.next_frame = itr.hit_act;
     this.state?.on_collision?.(this, target, itr, bdy, a_cube, b_cube);
   }
 
@@ -998,7 +1023,16 @@ export default class Entity<
     if (this.state?.before_be_collided?.(attacker, this, itr, bdy, a_cube, b_cube)) {
       return;
     }
-    this.lastest_attacker = attacker;
+    this.collision = this.lastest_collision = {
+      attacker: attacker,
+      victim: this,
+      aframe: attacker.frame,
+      bframe: this.frame,
+      itr,
+      bdy,
+      a_cube,
+      b_cube,
+    };
     this.shaking = itr.shaking ?? Defines.DEFAULT_ITR_SHAKEING;
     if (!itr.arest && itr.vrest) {
       this.v_rests.set(attacker.id, {
@@ -1020,7 +1054,10 @@ export default class Entity<
       if (f) this.next_frame = f
       return;
     }
-    this.play_sound(this.data.base.hit_sounds);
+
+    if (bdy.hit_act) this.next_frame = bdy.hit_act;
+    
+    this.play_sound(bdy.hit_sounds)
     this.state?.on_be_collided?.(attacker, this, itr, bdy, a_cube, b_cube);
   }
 

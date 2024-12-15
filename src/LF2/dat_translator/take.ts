@@ -36,3 +36,12 @@ export function take(any: any, key: string | number | symbol): any {
   delete any[key];
   return ret;
 };
+
+export function take_str(any: any, key: string | number | symbol): string | undefined {
+  if (typeof any[key] === 'string') {
+    const ret = any[key];
+    delete any[key];
+    return ret;
+  }
+  return void 0
+}

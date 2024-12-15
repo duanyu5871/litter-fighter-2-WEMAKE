@@ -27,13 +27,5 @@ export default class Ball extends Entity<IBallFrameInfo, IEntityInfo, IBallData>
         this.subscribe_nearest_enemy(); break;
     }
   }
-
-  override update(): void {
-    super.update();
-    const f = this.get_frame();
-    if (this.hp <= 0) { // FIXME: 避免一直判断
-      f.on_timeout && this.enter_frame(f.on_timeout)
-    }
-  }
 }
 Factory.inst.set_entity_creator('ball', (...args) => new Ball(...args));

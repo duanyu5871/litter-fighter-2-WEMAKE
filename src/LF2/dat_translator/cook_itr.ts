@@ -55,7 +55,7 @@ export default function cook_itr(unsafe_itr?: Partial<IItrInfo>) {
       break;
     }
     case Defines.ItrKind.Heal: {
-      if (src_dvx) unsafe_itr.on_hit = get_next_frame_by_raw_id(src_dvx)
+      if (src_dvx) unsafe_itr.hit_act = get_next_frame_by_raw_id(src_dvx)
       unsafe_itr.friendly_fire = 1 // 允许治疗队友
       break;
     }

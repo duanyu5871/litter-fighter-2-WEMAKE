@@ -2,7 +2,7 @@ import Expression from '../base/Expression';
 import { INextFrame } from "../defines";
 import { Defines } from '../defines/defines';
 import Entity from '../entity/Entity';
-import { is_entity, is_weapon } from "../entity/type_check";
+import { is_ball, is_character, is_entity, is_weapon } from "../entity/type_check";
 import { clamp } from '../utils/math';
 
 export function cook_next_frame(i: INextFrame | INextFrame[]): void {
@@ -56,6 +56,22 @@ function get_val_from_entity(word: string, e: Entity): any {
       return e.catching ? 1 : 0;
     case Defines.ValWord.CAUGHT:
       return e.catcher ? 1 : 0;
+    case Defines.ValWord.HitByCharacter:
+      return is_character(e.collision?.attacker) ? 1 : 0;
+    case Defines.ValWord.HitByWeapon:
+      return is_weapon(e.collision?.attacker) ? 1 : 0;
+    case Defines.ValWord.HitByBall:
+      return is_ball(e.collision?.attacker) ? 1 : 0;
+    case Defines.ValWord.HitOnCharacter:
+      return is_character(e.collided?.victim) ? 1 : 0;
+    case Defines.ValWord.HitOnWeapon:
+      return is_weapon(e.collided?.victim) ? 1 : 0;
+    case Defines.ValWord.HitOnBall:
+      return is_ball(e.collided?.victim) ? 1 : 0;
+    case Defines.ValWord.HitByItrKind:
+      return '' + e.collision?.itr.kind;
+    case Defines.ValWord.HitByItrEffect:
+      return '' + e.collision?.itr.effect;
   }
   return word
 }

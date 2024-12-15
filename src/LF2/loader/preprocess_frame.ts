@@ -10,8 +10,36 @@ const get_keys = <V extends {}>(v: V): (keyof V)[] => {
 export const cook_frame = (lf2: LF2, data: IGameObjData, frame: IFrameInfo) => {
   if (frame.sound && !lf2.sounds.has(frame.sound))
     lf2.sounds.load(frame.sound, frame.sound);
-  cook_frame_hit(frame);
-  cook_frame_hold(frame);
+
+  const { hold, hit } = frame;
+  if (hit) {
+    hit.sequences && traversal(hit.sequences, (_, v) => v && cook_next_frame(v));
+    hit && get_keys(hit).forEach(k => {
+      if (k !== 'sequences') {
+        hit[k] && cook_next_frame(hit[k]);
+      }
+    });
+  }
+
+  if (hold) {
+    get_keys(hold).forEach(k => {
+      hold[k] && cook_next_frame(hold[k]);
+    });
+  }
+
+  if (frame.on_dead) cook_next_frame(frame.on_dead)
+
+  if (frame.bdy?.length) {
+    for (const bdy of frame.bdy) {
+      if (bdy.break_act) cook_next_frame(bdy.break_act)
+      if (bdy.hit_act) cook_next_frame(bdy.hit_act)
+    }
+  }
+  if (frame.itr?.length) {
+    for (const itr of frame.itr) {
+      if (itr.hit_act) cook_next_frame(itr.hit_act)
+    }
+  }
 
   const unchecked_frame = (frame as any);
   if (unchecked_frame) {
@@ -58,26 +86,3 @@ export const cook_frame = (lf2: LF2, data: IGameObjData, frame: IFrameInfo) => {
   }
 };
 cook_frame.TAG = 'cook_frame'
-
-const cook_frame_hit = (frame: IFrameInfo) => {
-  const hit = frame.hit;
-  if (!hit) return;
-
-  hit.sequences && traversal(hit.sequences, (k, v) => v && cook_next_frame(v));
-
-  hit && get_keys(hit).forEach(k => {
-    if (k === 'sequences') return;
-    const v = hit[k];
-    v && cook_next_frame(v);
-  });
-}
-
-
-function cook_frame_hold(frame: IFrameInfo) {
-  const hold = frame.hold;
-  hold && get_keys(hold).forEach(k => {
-    const v = hold[k];
-    if (v) cook_next_frame(v);
-  });
-}
-

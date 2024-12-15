@@ -4,6 +4,7 @@ import { IRect } from "./IRect";
 import { IRectPair } from "./IRectPair";
 
 export interface IBdyInfo extends IRect {
+
   /**
    * [WEMAKE]
    * 是否判定同队Itr
@@ -31,4 +32,6 @@ export interface IBdyInfo extends IRect {
   hit_act?: TNextFrame;
 
   break_act?: TNextFrame;
+
+  hit_sounds: string[];
 }

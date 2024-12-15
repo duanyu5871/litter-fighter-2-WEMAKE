@@ -5,10 +5,22 @@ import { IEntityInfo } from "../defines/IEntityInfo";
 import { Defines } from "../defines/defines";
 import { traversal } from "../utils/container_help/traversal";
 import { to_num } from "../utils/type_cast/to_num";
+import { CondMaker } from "./CondMaker";
 import { get_next_frame_by_raw_id } from "./get_the_next";
-import { take } from "./take";
+import { take, take_str } from "./take";
 
 export function make_ball_data(info: IEntityInfo, frames: Record<string, IBallFrameInfo>, datIndex?: IDatIndex): IBallData {
+
+  info.hp = 500;
+
+  let sound_1 = take_str(info, 'weapon_broken_sound')
+  if (sound_1) { sound_1 += '.mp3'; info.dead_sounds = [sound_1] }
+
+  let sound_2 = take_str(info, 'weapon_drop_sound')
+  if (sound_2) { sound_2 += '.mp3'; info.drop_sounds = [sound_2] }
+
+  let sound_3 = take_str(info, 'weapon_hit_sound');
+  if (sound_3) { sound_3 += '.mp3'; info.hit_sounds = [sound_3] }
 
   for (const [, frame] of traversal(frames)) {
 
@@ -61,10 +73,44 @@ export function make_ball_data(info: IEntityInfo, frames: Record<string, IBallFr
     */
 
     if (hit_a) frame.hp = hit_a / 2;
-    if (hit_d) frame.on_timeout = get_next_frame_by_raw_id(hit_d);
+    if (hit_d) frame.on_dead = get_next_frame_by_raw_id(hit_d);
+
+    if (frame.itr && sound_3) {
+      for (const itr of frame.itr) {
+        itr.hit_sounds = [sound_3];
+      }
+    }
+    if (frame.bdy && sound_3) {
+      for (const bdy of frame.bdy) {
+        bdy.hit_sounds = [sound_3];
+      }
+    }
+
     if (frame.state === Defines.State.Ball_Flying) {
-      if (frames[10]) frame.on_hitting = { id: '10' }
-      if (frames[20]) frame.on_be_hit = { id: '20' }
+      if (frame.bdy && frames[20]) {
+        for (const bdy of frame.bdy) {
+          bdy.hit_act = [{
+            id: '20',
+            expression: CondMaker
+              .add(Defines.ValWord.HitByBall, '==', 1)
+              .done()
+          }, {
+            id: '30',
+            expression: CondMaker
+              .add(Defines.ValWord.HitByCharacter, '==', 1)
+              .and((c => c
+                .add(Defines.ValWord.HitByItrKind, '!=', 0)
+                .or(Defines.ValWord.HitByItrEffect, '!=', 2)
+              ))
+              .done()
+          }]
+        }
+      }
+      if (frame.itr && frames[10]) {
+        for (const itr of frame.itr) {
+          itr.hit_act = { id: '10' }
+        }
+      }
       if (frames[30]) frame.on_rebounding = { id: '30' }
       if (frames[40]) frame.on_disappearing = { id: '40' }
     } else if (frame.state === Defines.State.Ball_Sturdy) {
@@ -90,16 +136,7 @@ export function make_ball_data(info: IEntityInfo, frames: Record<string, IBallFr
     // 223、224
     // frame.hp = (50 to_num(take(frame, 'hit_a'), 0)) / 2
   }
-  info.hp = 500;
 
-  const sound_1 = take(info, 'weapon_broken_sound')
-  if (sound_1) info.dead_sounds = [sound_1 + '.mp3']
-
-  const sound_2 = take(info, 'weapon_drop_sound')
-  if (sound_2) info.drop_sounds = [sound_2 + '.mp3']
-
-  const sound_3 = take(info, 'weapon_hit_sound')
-  if (sound_3) info.hit_sounds = [sound_3 + '.mp3']
 
   const ret: IBallData = {
     id: '',

@@ -388,8 +388,8 @@ type3的说明
 打到东西act10
 被气功打到act20
 被type0人物打到act30(itr:kind:0的effect 2除外)
-state: 3 3005 3006 打到人不会act10
-state: 3005 3006 打到气功不会act10
+state: 3\3005\3006 打到人不会act10
+state: 3005\3006 打到气功不会act10
 
 ## Weapon
 

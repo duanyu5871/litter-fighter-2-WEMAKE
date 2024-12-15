@@ -219,6 +219,9 @@ export default class BaseCharacterState extends BaseState<Character> {
         break;
       }
     }
+
+    const f = bdy.hit_act && target.get_next_frame(bdy.hit_act)[0]
+    if (f) target.next_frame = f;
   }
 
   override get_sudden_death_frame(target: Character): TNextFrame {
