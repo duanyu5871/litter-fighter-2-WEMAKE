@@ -56,23 +56,33 @@ function get_val_from_entity(word: string, e: Entity): any {
       return e.catching ? 1 : 0;
     case Defines.ValWord.CAUGHT:
       return e.catcher ? 1 : 0;
+
     case Defines.ValWord.HitByCharacter:
-      return is_character(e.collision?.attacker) ? 1 : 0;
+      return is_character(e.collided?.attacker) ? 1 : 0;
     case Defines.ValWord.HitByWeapon:
-      return is_weapon(e.collision?.attacker) ? 1 : 0;
+      return is_weapon(e.collided?.attacker) ? 1 : 0;
     case Defines.ValWord.HitByBall:
-      return is_ball(e.collision?.attacker) ? 1 : 0;
-    case Defines.ValWord.HitOnCharacter:
-      return is_character(e.collided?.victim) ? 1 : 0;
-    case Defines.ValWord.HitOnWeapon:
-      return is_weapon(e.collided?.victim) ? 1 : 0;
-    case Defines.ValWord.HitOnBall:
-      return is_ball(e.collided?.victim) ? 1 : 0;
+      return is_ball(e.collided?.attacker) ? 1 : 0;
     case Defines.ValWord.HitByItrKind:
-      return '' + e.collision?.itr.kind;
+      return '' + e.collided?.itr.kind;
     case Defines.ValWord.HitByItrEffect:
-      return '' + e.collision?.itr.effect;
+      return '' + e.collided?.itr.effect;
+    case Defines.ValWord.HitByState:
+      return '' + e.collided?.aframe.state;
+
+
+    case Defines.ValWord.HitOnCharacter:
+      return is_character(e.collision?.victim) ? 1 : 0;
+    case Defines.ValWord.HitOnWeapon:
+      return is_weapon(e.collision?.victim) ? 1 : 0;
+    case Defines.ValWord.HitOnBall:
+      return is_ball(e.collision?.victim) ? 1 : 0;
+    case Defines.ValWord.HitOnState:
+      return '' + e.collision?.bframe.state;
+    case Defines.ValWord.HitOnSth:
+      return e.collision?.victim ? 1 : 0
   }
+
   return word
 }
 

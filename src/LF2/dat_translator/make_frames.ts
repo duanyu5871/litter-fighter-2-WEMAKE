@@ -133,7 +133,7 @@ export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string, fil
     else if (not_zero_num(dvy)) frame.dvy = dvy * -0.25;
 
     switch (frame.state) {
-      case Defines.State.Ball_Sturdy:
+      case Defines.State.Ball_3005:
         frame.no_shadow = 1;
         break;
       case Defines.State.HeavyWeapon_OnHand:

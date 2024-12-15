@@ -14,8 +14,8 @@ export default class TransformTo8XXX extends BaseState<Entity> {
       const creator = Factory.inst.get_entity_creator(data.type);
       if (creator) {
         const new_entity = creator(e.world, data);
-        if (!e.lastest_collision) debugger;
-        new_entity.team = e.lastest_collision?.attacker.team || new_team();
+        if (!e.lastest_collided) debugger;
+        new_entity.team = e.lastest_collided?.attacker.team || new_team();
         if (is_character(new_entity)) {
           const creator = Factory.inst.get_ctrl_creator(data.id)
           new_entity.controller = creator?.(e.controller?.player_id ?? '', new_entity)

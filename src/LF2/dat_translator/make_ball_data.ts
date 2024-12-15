@@ -75,9 +75,19 @@ export function make_ball_data(info: IEntityInfo, frames: Record<string, IBallFr
     if (hit_a) frame.hp = hit_a / 2;
     if (hit_d) frame.on_dead = get_next_frame_by_raw_id(hit_d);
 
-    if (frame.itr && sound_3) {
+    if (frame.itr) {
       for (const itr of frame.itr) {
-        itr.hit_sounds = [sound_3];
+        if (itr.kind === Defines.ItrKind.JohnShield) {
+          if (hit_d) {
+            itr.hit_act = [{
+              id: hit_d,
+              expression: CondMaker
+                .add(Defines.ValWord.HitOnCharacter, '==', 1)
+                .done()
+            }]
+          }
+        }
+        if (sound_3) itr.hit_sounds = [sound_3];
       }
     }
     if (frame.bdy && sound_3) {
@@ -86,37 +96,90 @@ export function make_ball_data(info: IEntityInfo, frames: Record<string, IBallFr
       }
     }
 
+
     if (frame.state === Defines.State.Ball_Flying) {
       if (frame.bdy && frames[20]) {
         for (const bdy of frame.bdy) {
           bdy.hit_act = [{
             id: '20',
             expression: CondMaker
-              .add(Defines.ValWord.HitByBall, '==', 1)
+              .add<Defines.ValWord>(Defines.ValWord.HitByBall, '==', 1)
+              .and(Defines.ValWord.HitByItrKind, '!=', Defines.ItrKind.JohnShield)
               .done()
           }, {
-            id: '30',
+            id: '30', // 反弹逻辑
             expression: CondMaker
-              .add(Defines.ValWord.HitByCharacter, '==', 1)
-              .and((c => c
-                .add(Defines.ValWord.HitByItrKind, '!=', 0)
-                .or(Defines.ValWord.HitByItrEffect, '!=', 2)
-              ))
+              .add(Defines.ValWord.HitByItrKind, '==', Defines.ItrKind.WeaponSwing)
+              .or(Defines.ValWord.HitByItrKind, '==', Defines.ItrKind.JohnShield)
+              .or(c => c
+                .add(Defines.ValWord.HitOnSth, '==', 0)
+                .and(c => c
+                  .add(Defines.ValWord.HitByCharacter, '==', 1)
+                  .and((c => c
+                    .add(Defines.ValWord.HitByItrKind, '!=', Defines.ItrKind.Normal)
+                    .or(Defines.ValWord.HitByItrEffect, '!=', Defines.ItrEffect.Fire)
+                  ))
+                ))
               .done()
           }]
         }
       }
       if (frame.itr && frames[10]) {
         for (const itr of frame.itr) {
-          itr.hit_act = { id: '10' }
+          itr.hit_act = [{ id: '10' }]
         }
       }
       if (frames[30]) frame.on_rebounding = { id: '30' }
       if (frames[40]) frame.on_disappearing = { id: '40' }
-    } else if (frame.state === Defines.State.Ball_Sturdy) {
+    } else if (frame.state === Defines.State.Ball_3005) {
       frame.speedz = 0;
-    } else if (frame.state === Defines.State.Ball_PunchThrough) {
+      if (frame.bdy && frames[20]) {
+        for (const bdy of frame.bdy) {
+          bdy.hit_act = [{
+            id: '20',
+            expression: CondMaker
+              .add<Defines.ValWord>(Defines.ValWord.HitByState, '==', 3005)
+              .or(Defines.ValWord.HitByItrKind, '==', Defines.ItrKind.JohnShield)
+              .done()
+          }]
+        }
+      }
+      if (frame.itr && frames[20]) {
+        for (const itr of frame.itr) {
+          itr.hit_act = [{
+            id: '20',
+            expression: CondMaker
+              .add(Defines.ValWord.HitOnState, '==', 3005)
+              .done()
+          }]
+        }
+      }
+
+    } else if (frame.state === Defines.State.Ball_3006) {
       frame.speedz = 2;
+      if (frame.bdy && frames[20]) {
+        for (const bdy of frame.bdy) {
+          bdy.hit_act = [{
+            id: '20',
+            expression: CondMaker
+              .add<Defines.ValWord>(Defines.ValWord.HitByState, '==', 3005)
+              .or(Defines.ValWord.HitByState, '==', 3006)
+              .or(Defines.ValWord.HitByItrKind, '==', Defines.ItrKind.JohnShield)
+              .done()
+          }]
+        }
+      }
+      if (frame.itr && frames[20]) {
+        for (const itr of frame.itr) {
+          itr.hit_act = [{
+            id: '20',
+            expression: CondMaker
+              .add(Defines.ValWord.HitOnState, '==', 3005)
+              .or(Defines.ValWord.HitOnState, '==', 3006)
+              .done()
+          }]
+        }
+      }
     } else if (frame.state === Defines.State.Burning) {
       if (frame.itr && Number(datIndex?.id) === 211) {
         for (const itr of frame.itr) {

@@ -483,8 +483,10 @@ export class World {
           case Defines.ItrKind.Normal:
             if (is_character(a) && bf.state === Defines.State.Weapon_OnGround) continue;
             break
+          case Defines.ItrKind.JohnShield:
+            if (is_character(b) && a.same_team(b)) continue;
+            break;
           case Defines.ItrKind.Heal:
-          case Defines.ItrKind.DeadWhenHit:
           case Defines.ItrKind.Fly:
           case Defines.ItrKind.Ice:
         }

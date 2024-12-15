@@ -158,6 +158,7 @@ export namespace Defines {
     HitByCharacter = 'hit_by_character',
     HitByWeapon = 'hit_by_weapon',
     HitByBall = 'hit_by_ball',
+    HitByState = 'hit_by_state',
 
     HitByItrKind = 'hit_by_itr_kind',
     HitByItrEffect = 'hit_by_itr_effect',
@@ -165,6 +166,8 @@ export namespace Defines {
     HitOnCharacter = 'hit_on_character',
     HitOnWeapon = 'hit_on_weapon',
     HitOnBall = 'hit_on_ball',
+    HitOnState = 'hit_on_state',
+    HitOnSth = "hit_on_something",
   }
   export enum FrameId {
     None = "",
@@ -306,8 +309,8 @@ export namespace Defines {
     Ball_Flying4 = 3002,
     Ball_Rebounding = 3003,
     Ball_Disappear = 3004,
-    Ball_Sturdy = 3005,
-    Ball_PunchThrough = 3006,
+    Ball_3005 = 3005,
+    Ball_3006 = 3006,
 
     TransformTo_Min = 8001,
     _8001 = 8001,
@@ -428,6 +431,9 @@ export namespace Defines {
     /** 被丢出时，此itr才生效 */
     CharacterThrew = 4,
 
+    /** 武器挥动 */
+    WeaponSwing = 5,
+
     SuperPunchMe = 6, // 敌人靠近按A时是重击
 
     /** 
@@ -441,7 +447,17 @@ export namespace Defines {
 
     Heal = 8,         // injury数值变成治疗多少hp，动作跳至dvx ?
 
-    DeadWhenHit = 9,  // 打中敌人自己hp归0(如John的防护罩) |
+    /*
+     * 用于：
+     * * [X] LF2
+     * * [X] WEMAKE
+     * 
+     * - 原版：
+     *    - 打中敌人自己hp归0(如John的防护罩)
+     *    - 反弹state3000与3002的ball
+     */
+    JohnShield = 9, _9 = 9,
+
     MagicFlute = 10,  // henry魔王之乐章效果
     Block = 14,       // 阻挡
     Fly = 15,         // 飞起 ??

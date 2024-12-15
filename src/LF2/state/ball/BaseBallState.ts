@@ -52,7 +52,7 @@ export default class BaseBallState<E extends Ball = Ball> extends BaseState<E> {
     target.shaking = 0;
     if (is_character(target) || is_weapon(target)) {
       switch (self.frame.state) {
-        case Defines.ItrKind.DeadWhenHit:
+        case Defines.ItrKind.JohnShield:
         case Defines.State.Ball_Flying:
           self.hp = 0;
           break;

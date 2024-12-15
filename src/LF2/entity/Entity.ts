@@ -442,8 +442,8 @@ export default class Entity<
     const shotter_frame = emitter.get_frame();
 
     if (emitter.frame.state === Defines.State.Ball_Rebounding) {
-      if (!emitter.lastest_collision) debugger
-      this.team = emitter.lastest_collision?.attacker.team || new_team();
+      if (!emitter.lastest_collided) debugger
+      this.team = emitter.lastest_collided?.attacker.team || new_team();
       this.facing = emitter.facing;
     } else {
       this.team = emitter.team;
@@ -787,8 +787,8 @@ export default class Entity<
     else
       ++this.update_id;
     this.world.restrict(this);
-    this.collided = void 0;
     this.collision = void 0;
+    this.collided = void 0;
   }
 
   /**
@@ -944,10 +944,10 @@ export default class Entity<
     this.next_frame = this.get_next_frame('245')[0];
   }
 
-  lastest_collided?: CollisionInfo;
   lastest_collision?: CollisionInfo;
-  collided?: CollisionInfo;
+  lastest_collided?: CollisionInfo;
   collision?: CollisionInfo;
+  collided?: CollisionInfo;
 
   start_catch(target: Entity, itr: IItrInfo) {
     if (itr.catchingact === void 0) {
@@ -975,7 +975,7 @@ export default class Entity<
     if (this.state?.before_collision?.(this, target, itr, bdy, a_cube, b_cube)) {
       return;
     }
-    this.collided = this.lastest_collided = {
+    this.collision = this.lastest_collision = {
       attacker: this,
       victim: target,
       aframe: this.frame,
@@ -997,7 +997,7 @@ export default class Entity<
       const sounds = itr.hit_sounds?.length ? itr.hit_sounds : this.data.base.hit_sounds?.length ? this.data.base.hit_sounds : void 0
       sounds && this.play_sound(sounds);
     }
-    if (itr.hit_act) this.next_frame = itr.hit_act;
+    if (itr.hit_act) this.next_frame = this.get_next_frame(itr.hit_act)[0] ?? this.next_frame;
     this.state?.on_collision?.(this, target, itr, bdy, a_cube, b_cube);
   }
 
@@ -1023,7 +1023,7 @@ export default class Entity<
     if (this.state?.before_be_collided?.(attacker, this, itr, bdy, a_cube, b_cube)) {
       return;
     }
-    this.collision = this.lastest_collision = {
+    this.collided = this.lastest_collided = {
       attacker: attacker,
       victim: this,
       aframe: attacker.frame,
@@ -1055,8 +1055,8 @@ export default class Entity<
       return;
     }
 
-    if (bdy.hit_act) this.next_frame = bdy.hit_act;
-    
+    if (bdy.hit_act) this.next_frame = this.get_next_frame(bdy.hit_act)[0] ?? this.next_frame;
+
     this.play_sound(bdy.hit_sounds)
     this.state?.on_be_collided?.(attacker, this, itr, bdy, a_cube, b_cube);
   }

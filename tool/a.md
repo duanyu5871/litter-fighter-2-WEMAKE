@@ -391,6 +391,12 @@ type3的说明
 state: 3\3005\3006 打到人不会act10
 state: 3005\3006 打到气功不会act10
 
+| 攻 \ 受        | ball, state 3000  | character  | weapon     |
+| ---------------- | ----------------- | ---------- | ---------- |
+| ball, state 3000 | act 10 \ act 20 | act 10 \ - | act 10 \ - |
+| character        | - \ act 30       |            |            |
+
+
 ## Weapon
 
 这次对于武器的entry和state说明

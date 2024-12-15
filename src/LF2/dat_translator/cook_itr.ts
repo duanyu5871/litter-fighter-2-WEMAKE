@@ -1,6 +1,6 @@
 import { IItrInfo } from '../defines';
 import { Defines } from '../defines/defines';
-import { is_positive, not_zero_num, is_num } from '../utils/type_check';
+import { is_num, is_positive, not_zero_num } from '../utils/type_check';
 import { get_next_frame_by_raw_id } from './get_the_next';
 import { take } from './take';
 export default function cook_itr(unsafe_itr?: Partial<IItrInfo>) {
@@ -54,6 +54,9 @@ export default function cook_itr(unsafe_itr?: Partial<IItrInfo>) {
       }
       break;
     }
+    case Defines.ItrKind.JohnShield:
+      unsafe_itr.friendly_fire = 1;
+      break;
     case Defines.ItrKind.Heal: {
       if (src_dvx) unsafe_itr.hit_act = get_next_frame_by_raw_id(src_dvx)
       unsafe_itr.friendly_fire = 1 // 允许治疗队友
