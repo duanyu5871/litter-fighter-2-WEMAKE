@@ -5,21 +5,64 @@ import type { IItrInfo } from "./IItrInfo";
 import { IStageInfo } from "./IStageInfo";
 
 export namespace Defines {
+  export enum OpointSpreading {
+    Normal = 0,
+    Bat = 1,
+  }
+
   export enum BallBehavior {
-    _01 = 1,//= 追敵人的center(因為敵人站在地面，所以會下飄)
-    _02 = 2,//= 水平追敵
-    _03 = 3,//= 加速法追敵(追縱力較差)
-    _04 = 4,//= 天使之祝福(別的dat檔用了無效)
-    _05 = 5,//= 天使之祝福的開始(會追我方的人物很久)
-    _06 = 6,//= 惡魔之審判的開始(視敵人數目而增加，基本上是一個)
-    _07 = 7,//= 惡魔之審判,殃殞天降(可以做出打到地面的追蹤波)
-    _08 = 8,//= 吸血蝙蝠的開始(視敵人數目而增加，基本數值是三個，別的dat檔用了無效)
-    _09 = 9,//= 殃殞天降的開始(視敵人數目而增加，基本數值是四個)
-    _10 = 10,//= 加速(從慢變快)
-    _11 = 11,//= 極地火山
+    _01 = 1,//= 追敌人的center(因为敌人站在地面，所以会下飘)
+    _02 = 2,//= 水平追敌
+    _03 = 3,//= 加速法追敌(追纵力较差)
+    _04 = 4,//= 天使之祝福(别的dat档用了无效)
+    _05 = 5,//= 天使之祝福的开始(会追我方的人物很久)
+    _06 = 6,//= 恶魔之审判的开始(视敌人数目而增加，基本上是一个)
+    _07 = 7,//= 恶魔之审判,殃殒天降(可以做出打到地面的追踪波)
+
+    /**
+     * 用于：
+     * * [X] LF2
+     * * [X] WEMAKE
+     * 
+     * 吸血蝙蝠的开始
+     * 
+     * - LF2中：
+     *    - ball类的frame的hit_FA=8时，将会生成id: 225的对象。
+     *    - 生成与敌人相当数量的对象，但不少于三个。
+     *    - 仅限于id: 225
+     * 
+     * - WEMAKE中：
+     *    - 此值不会有任何作用（但依旧保留）
+     *    - 生成将通过opoint被实现
+     */
+    BatStart = 8, _08 = 8,//= (视敌人数目而增加，基本数值是三个，别的dat档用了无效)
+
+
+    _09 = 9,//= 殃殒天降的开始(视敌人数目而增加，基本数值是四个)
+    _10 = 10,//= 加速(从慢变快)
+    _11 = 11,//= 极地火山
     _12 = 12,//= 吸血蝙蝠
-    _13 = 13,//= 連環重炮的開始
-    _14 = 14,//= 連環重炮
+
+    /**
+     * 用于：
+     * * [X] LF2
+     * * [X] WEMAKE
+     * 
+     * 连环重炮的开始
+     * 
+     * - LF2中：
+     *    ball类的frame的hit_FA=13时，将会生成一个JulianBall。
+     * 
+     * - WEMAKE中：
+     *    - 此值不会有任何作用（但依旧保留）
+     *    - 生成将通过opoint被实现
+     */
+    JulianBallStart = 13, _13 = 13,
+
+    /**
+     * 连环重炮
+     */
+    JulianBall = 14, _14 = 14,
   }
   export const OLD_SCREEN_WIDTH = 794;
   export const OLD_SCREEN_HEIGHT = 550;
@@ -245,7 +288,7 @@ export namespace Defines {
     HeavyWeapon_InTheSky = 2000,//= 重型武器在空中(heavy weapon-in the sky))
     HeavyWeapon_OnHand = 2001,//= 重型武器在手中
     HeavyWeapon_Throwing = 2002,//= 重型武器在地上
-    HeavyWeapon_OnGround = 2004,//= 與itr kind2作用
+    HeavyWeapon_OnGround = 2004,//= 与itr kind2作用
 
     Ball_Flying = 3000,
     Ball_Hitting = 3001,
@@ -317,7 +360,7 @@ export namespace Defines {
      */
     _3000 = '3000',
 
-    
+
     /** 
      * 对战模式常规武器
      * 对战模式应当掉落属于这组的武器
@@ -374,7 +417,7 @@ export namespace Defines {
     /** 被丢出时，此itr才生效 */
     CharacterThrew = 4,
 
-    SuperPunchMe = 6, // 敵人靠近按A時是重击
+    SuperPunchMe = 6, // 敌人靠近按A时是重击
 
     /** 
      * 当角色的itr与武器的bdy碰撞，且武器的frame.state为1004(Weapon_OnGround)时
@@ -385,30 +428,38 @@ export namespace Defines {
      */
     PickSecretly = 7,
 
-    Heal = 8,         // injury数值变成治療多少hp，动作跳至dvx ?
+    Heal = 8,         // injury数值变成治疗多少hp，动作跳至dvx ?
 
-    DeadWhenHit = 9,  // 打中敵人自己hp歸0(如John的防護罩) |
-    MagicFlute = 10,  // henry魔王之樂章效果
-    Block = 14,       // 阻擋
-    Fly = 15,         // 飛起 ??
-    Ice = 16,         // 結冰
-    // 1???=被你打到會跳到第???个frame(如人質的kind)
+    DeadWhenHit = 9,  // 打中敌人自己hp归0(如John的防护罩) |
+    MagicFlute = 10,  // henry魔王之乐章效果
+    Block = 14,       // 阻挡
+    Fly = 15,         // 飞起 ??
+    Ice = 16,         // 结冰
+    // 1???=被你打到会跳到第???个frame(如人质的kind)
   }
 
   export enum BdyKind {
     /**
-     * [LF2][[WEMAKE]
+     * [LF2][WEMAKE]
      */
     Normal = 0,
 
     /**
-     * 原版lf2中，kind: 10xx是id为300的“人质”专用的，被攻击时跳至xx帧，
+     * [LF2][WEMAKE]
+     * 
+     * - 原版lf2中
+     *    - kind: 10xx是id为300的“人质”专用的，被攻击时跳至xx帧，
      * 且仅有特定类型才能击中此bdy。以此实现被攻击后跳转的逻辑。
+     * 
+     * - WEMAKE中：
+     *    - kind: 1XXX, 被攻击时调至，被攻击时跳至“XXX”帧。
      */
     GotoMin = 1000,
+
     /**
-     * 原版lf2中，kind: 10xx是id为300的“人质”专用的，被攻击时跳至xx帧，
-     * 且仅有特定类型才能击中此bdy。以此实现被攻击后跳转的逻辑。
+     * 参见GotoMin
+     * 
+     * @see {BdyKind.GotoMin}
      */
     GotoMax = 1999,
 
@@ -430,10 +481,10 @@ export namespace Defines {
   export enum ItrEffect {
     Normal = 0,   // 拳击
     Sharp = 1,    // 利器攻击
-    Fire = 2,     // 著火
-    Ice = 3,      // 結冰
-    Through = 4,  // 穿過敵人(僅能打中type 1.2.3.4.5.6的物件) |
-    None = 5,     // (或以上) |沒效果，也打不中任何東西
+    Fire = 2,     // 着火
+    Ice = 3,      // 结冰
+    Through = 4,  // 穿过敌人(仅能打中type 1.2.3.4.5.6的物件) |
+    None = 5,     // (或以上) |没效果，也打不中任何东西
     MFire1 = 20,  // 定身火 ??
     MFire2 = 21,  // 定身火 ??
     FireExplosion = 22,  // 定身火 ??
@@ -441,9 +492,17 @@ export namespace Defines {
     MIce = 30,    // 定身冰 ??
   }
   export enum CPointKind {
+    /**
+     * 抓人的
+     */
     Attacker = 1,
+
+    /**
+     * 被抓的
+     */
     Victim = 2,
   }
+
   export enum Cheats {
     LF2_NET = 'LF2_NET',
     HERO_FT = 'HERO_FT',

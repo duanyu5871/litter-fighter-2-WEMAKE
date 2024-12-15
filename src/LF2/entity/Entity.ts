@@ -433,6 +433,7 @@ export default class Entity<
     y = y + shotter_frame.centery - opoint.y;
     x = x - emitter.facing * (shotter_frame.centerx - opoint.x);
     this.position.set(x, y, z);
+
     this.enter_frame(opoint.action);
 
     let { dvx = 0, dvy = 0, dvz = 0, speedz = 3 } = opoint;
@@ -482,15 +483,24 @@ export default class Entity<
     if (!v.cpoint)
       delete this._catching;
   }
+
   apply_opoints(opoints: IOpointInfo[]) {
     for (const opoint of opoints) {
       const count = opoint.multi ?? 1
       for (let i = 0; i < count; ++i) {
-        const ovz = i - (count - 1) / 2;
-        this.spawn_entity(opoint, new Ditto.Vector3(0, 0, ovz))
+        const v = new Ditto.Vector3(0, 0, 0);
+        switch (opoint.spreading) {
+          case void 0:
+          case Defines.OpointSpreading.Normal:
+            v.z = i - (count - 1) / 2;
+            break;
+          case Defines.OpointSpreading.Bat:
+        }
+        this.spawn_entity(opoint, v)
       }
     }
   }
+
   spawn_entity(opoint: IOpointInfo, offset_velocity: IVector3 = new Ditto.Vector3(0, 0, 0)): Entity | undefined {
     const data = this.world.lf2.datas.find(opoint.oid);
     if (!data) {
@@ -1232,7 +1242,7 @@ export default class Entity<
 
 
   merge_velocities() {
-    if (this.velocities.length <= 1) 
+    if (this.velocities.length <= 1)
       return;
     let vx = 0;
     let vy = 0;

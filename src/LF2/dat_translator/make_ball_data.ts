@@ -11,7 +11,7 @@ import { take } from "./take";
 export function make_ball_data(info: IEntityInfo, frames: Record<string, IBallFrameInfo>, datIndex?: IDatIndex): IBallData {
 
   for (const [, frame] of traversal(frames)) {
-    
+
     const hit_j = take(frame, 'hit_j');
     if (hit_j !== 0) frame.dvz = to_num(hit_j, 50) - 50;
 
@@ -30,6 +30,15 @@ export function make_ball_data(info: IEntityInfo, frames: Record<string, IBallFr
         x: frame.centerx,
         y: frame.centery,
         action: { id: '0' }
+      })
+    } else if ('' + hit_Fa === '8') {
+      frame.opoint = frame.opoint || []
+      frame.opoint.push({
+        oid: '225',
+        x: frame.centerx,
+        y: frame.centery,
+        action: { id: '0' },
+        multi: 3
       })
     } else if (hit_Fa) {
       frame.behavior = hit_Fa;

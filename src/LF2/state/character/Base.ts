@@ -117,10 +117,8 @@ export default class BaseCharacterState extends BaseState<Character> {
           if (itr.dvx) target.velocities[0].x = itr.dvx * attacker.facing / 2;
           target.world.spark(...target.spark_point(r0, r1), "defend_hit")
           const f = bdy.hit_act && target.get_next_frame(bdy.hit_act)[0]
-          if (f) {
-            target.next_frame = f
-            return;
-          }
+          if (f) target.next_frame = f;
+          return;
         }
         break;
       }

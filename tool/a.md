@@ -2,25 +2,25 @@
 
 用编缉器开启dat档
 
-name: Template 名子在游戏选单中可看到
-walking_frame_rate 走路的动作变换的时间(值愈大，则愈慢)
-walking_speed 走路速度
-walking_speedz 走路的z(按↑↓时)速度
-running_frame_rate 跑步的动作变换的时间
-running_speed 跑步速度
-running_speedz 跑步z速度
-heavy_walking_speed 搬重物时走路的速度
-heavy_walking_speedz 搬重物时走路的z速度
-heavy_running_speed 搬重物时跑步的速度
-heavy_running_speedz 搬重物时跑步的z速度
-jump_height 跳的高度(负值)
-jump_distance 前跳的速度
-jump_distancez z方向跳的速度
-dash_height 跑跳的高度(负值)
-dash_distance 跑跳的速度
-dash_distancez 跑跳的z速度
-rowing_height 受身时向上的高度(负值)
-rowing_distance 受身时向后的速度
+* [X] name: Template 名子在游戏选单中可看到
+  walking_frame_rate 走路的动作变换的时间(值愈大，则愈慢)
+  walking_speed 走路速度
+  walking_speedz 走路的z(按↑↓时)速度
+  running_frame_rate 跑步的动作变换的时间
+  running_speed 跑步速度
+  running_speedz 跑步z速度
+  heavy_walking_speed 搬重物时走路的速度
+  heavy_walking_speedz 搬重物时走路的z速度
+  heavy_running_speed 搬重物时跑步的速度
+  heavy_running_speedz 搬重物时跑步的z速度
+  jump_height 跳的高度(负值)
+  jump_distance 前跳的速度
+  jump_distancez z方向跳的速度
+  dash_height 跑跳的高度(负值)
+  dash_distance 跑跳的速度
+  dash_distancez 跑跳的z速度
+  rowing_height 受身时向上的高度(负值)
+  rowing_distance 受身时向后的速度
 
 ## frame
 
