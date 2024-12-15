@@ -94,9 +94,10 @@ export default class BaseCharacterState extends BaseState<Character> {
       case Defines.BdyKind.Defend: {
         if (attacker.facing === target.facing)
           break;
-        if (itr.bdefend && itr.bdefend >= 100)
+        if (itr.bdefend && itr.bdefend >= Defines.DEFAULT_FORCE_BREAK_DEFEND_VALUE)
           break;
-        target.defend_value -= 2 * (itr.bdefend || 0);
+        if (itr.bdefend)
+          target.defend_value -= itr.bdefend;
         if (target.defend_value <= 0) { // 破防
           target.defend_value = 0;
           target.world.spark(...target.spark_point(r0, r1), "broken_defend")
@@ -165,15 +166,14 @@ export default class BaseCharacterState extends BaseState<Character> {
       case Defines.ItrEffect.Normal:
       case Defines.ItrEffect.Sharp:
       case void 0: {
-        target.fall_value -= itr.fall ? itr.fall * 2 : 40;
+        target.fall_value -= itr.fall ? itr.fall : 40;
         const is_fall = target.fall_value <= 0 || target.hp <= 0 || (
-          target.fall_value <= 40 && (
+          target.fall_value <= 80 && (
             target.velocities[0].y > 0 ||
             target.position.y > 0
           )
         )
         if (is_fall) {
-
           const aface: TFace = Defines.ItrEffect.Explosion === itr.effect ?
             (target.position.x > attacker.position.x ? -1 : 1) :
             attacker.facing;

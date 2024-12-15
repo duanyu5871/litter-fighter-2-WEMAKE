@@ -144,7 +144,7 @@ export default function dat_to_json(
           info.armor = {
             fireproof: 1,
             antifreeze: 1,
-            hit_sound: 'data/002.wav.mp3',
+            hit_sounds: ['data/002.wav.mp3'],
             type: 'times',
             toughness: 3,
           }
@@ -152,13 +152,13 @@ export default function dat_to_json(
           info.ce = 2;
         } else if (datIndex.id === '37') {
           info.armor = {
-            hit_sound: 'data/085.wav.mp3',
+            hit_sounds: ['data/085.wav.mp3'],
             type: 'times',
             toughness: 3,
           }
         } else if (datIndex.id === '6') {
           info.armor = {
-            hit_sound: 'data/085.wav.mp3',
+            hit_sounds: ['data/085.wav.mp3'],
             type: 'times',
             toughness: 1,
           }

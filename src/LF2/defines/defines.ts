@@ -32,6 +32,11 @@ export namespace Defines {
   export const DAFUALT_CATCH_TIME = 680;
 
   /**
+   * 直接破防值
+   */
+  export const DEFAULT_FORCE_BREAK_DEFEND_VALUE = 200;
+
+  /**
    * 默认最大回蓝速度, 血越少，回蓝越快（线性）
    *
    * @type {number}

@@ -1,9 +1,16 @@
 import { IEntityInfo } from "./IEntityInfo";
 export interface IArmorInfo {
   /**
-   * 护甲被击中时发出的声音
+   * 护甲被击中的声音
    */
-  hit_sound?: string;
+  hit_sounds?: string[];
+
+  /**
+   * 护甲被击破的声音
+   *
+   * @type {?string[]}
+   */
+  dead_sounds?: string[];
 
   /**
    * 护甲是否防火烧
@@ -19,6 +26,7 @@ export interface IArmorInfo {
 
   type: string; // hp? times? fall? defend?
 }
+
 export interface ICharacterInfo extends IEntityInfo {
   armor?: IArmorInfo;
   /**

@@ -43,12 +43,12 @@ export default class BaseWeaponState extends BaseState<Weapon> {
     const spark_x = (Math.max(a_cube.left, b_cube.left) + Math.min(a_cube.right, b_cube.right)) / 2;
     const spark_y = (Math.min(a_cube.top, b_cube.top) + Math.max(a_cube.bottom, b_cube.bottom)) / 2;
     const spark_z = Math.max(a_cube.far, b_cube.far);
-    if (itr.bdefend === 100) target.hp = 0;
+    if (itr.bdefend && itr.bdefend >= Defines.DEFAULT_FORCE_BREAK_DEFEND_VALUE) target.hp = 0;
     else if (itr.injury) target.hp -= itr.injury;
-    const spark_frame_name = (itr.fall && itr.fall >= 60) ? 'slient_critical_hit' : 'slient_hit';
+    const spark_frame_name = (itr.fall && itr.fall >= 120) ? 'slient_critical_hit' : 'slient_hit';
     target.world.spark(spark_x, spark_y, spark_z, spark_frame_name)
     if (target.data.base.type === Defines.WeaponType.Heavy) {
-      if (itr.fall && itr.fall >= 60) {
+      if (itr.fall && itr.fall >= 120) {
         const vx = itr.dvx ? itr.dvx * attacker.facing : 0;
         const vy = itr.dvy ? itr.dvy : 3;
         target.velocities[0].x = vx / 2;

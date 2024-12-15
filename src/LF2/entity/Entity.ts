@@ -665,6 +665,8 @@ export default class Entity<
         this.defend_value = this.defend_value_max;
         break;
       case Defines.State.Burning:
+      case Defines.State.Frozen:
+      case Defines.State.Injured:
         break;
       case Defines.State.Defend:
       case Defines.State.BrokenDefend:

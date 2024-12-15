@@ -21,6 +21,13 @@ export default function cook_itr(unsafe_itr?: Partial<IItrInfo>) {
   const src_dvy = take(unsafe_itr, 'dvy');
   if (not_zero_num(src_dvy)) unsafe_itr.dvy = src_dvy * -0.52;
 
+  
+  const fall = take(unsafe_itr, 'fall');
+  if (not_zero_num(fall)) unsafe_itr.fall = fall * 2;
+
+  const bdefend = take(unsafe_itr, 'bdefend');
+  if (not_zero_num(bdefend)) unsafe_itr.bdefend = bdefend * 2;
+
   switch (unsafe_itr.effect) {
     case Defines.ItrEffect.FireExplosion:
     case Defines.ItrEffect.Explosion: {
