@@ -225,7 +225,7 @@ export class BotController extends BaseController {
     }
     return true;
   }
-
+  
   override update() {
     switch (this._dummy) {
       case void 0: {
@@ -268,6 +268,19 @@ export class BotController extends BaseController {
         } else {
           this.end(GameKey.d, GameKey.U, GameKey.a)
         }
+        break;
+      }
+      case 5: {
+        if (this.entity.frame.state === Defines.State.Standing) {
+          this.entity.position.x = this.world.bg.width / 2;
+          this.entity.position.z = (this.world.bg.near + this.world.far) / 2
+          this.start(GameKey.j)
+        } else if (this.entity.frame.state === Defines.State.Falling) {
+          this.start(GameKey.j)
+        } else {
+          this.end(GameKey.j)
+        }
+
         break;
       }
       default:
