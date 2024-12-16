@@ -43,10 +43,12 @@ export function make_character_data(info: IEntityInfo, frames: Record<string, IF
   const heavy_walking_speedz = take_number(info, 'heavy_walking_speedz', 0);
   const heavy_running_speed = take_number(info, 'heavy_running_speed', 0);
   const heavy_running_speedz = take_number(info, 'heavy_running_speedz', 0);
+  const rowing_height = take_number(info, 'rowing_height', 0);
 
   if (info.jump_height) info.jump_height = Math.round(info.jump_height * info.jump_height / 3.5);
   if (info.dash_height) info.dash_height = Math.round(info.dash_height * info.dash_height / 3.5);
-  if (info.rowing_height) info.rowing_height = Math.round(info.rowing_height * info.rowing_height / 3.5);
+  // if (info.rowing_height) info.rowing_height = Math.round(info.rowing_height * info.rowing_height / 3.5);
+  if (info.rowing_height) info.rowing_height = -info.rowing_height;
 
   if (info.dash_distance) info.dash_distance /= 2;
   if (info.jump_distance) info.jump_distance /= 2;
@@ -357,40 +359,42 @@ export function make_character_data(info: IEntityInfo, frames: Record<string, IF
         if (frame.cpoint?.vaction) (frame.cpoint?.vaction as INextFrame).facing = FacingFlag.SameAsCatcher;
         break;
 
+      case 100: case 108:
+        // frame.dvy = -rowing_height / frame.wait;
+        // frame.dvy = -rowing_height / frame.wait;
+        break;
       /** （180~185）falling 向前 */
       case 180:
-        break;
       case 181:
+        break;
       case 182:
-      case 183:
         if (!frame.hit) frame.hit = {}
         frame.hit.j = push_next_frame(frame.hit.j, {
-          id: '108',
+          id: '100',
           expression: CondMaker
             .add<Defines.ValWord>(ValWord.HP, '>', 0)
-            .and(ValWord.VY, '>=', 0)
             .done()
         })
         break;
+      case 183:
       case 184:
       case 185:
         break;
 
       /** （186~191）falling 向后 */
       case 186:
-        break;
       case 187:
+        break;
       case 188:
-      case 189:
         if (!frame.hit) frame.hit = {}
         frame.hit.j = push_next_frame(frame.hit.j, {
-          id: '100',
+          id: '108',
           expression: CondMaker
             .add<Defines.ValWord>(ValWord.HP, '>', 0)
-            .and(ValWord.VY, '>=', 0)
             .done()
         })
         break;
+      case 189:
       case 190:
       case 191:
         break;

@@ -11,10 +11,13 @@ export class Rowing extends BaseCharacterState {
     } = e.data.base;
 
     e.merge_velocities()
-    const nvx = e.facing * dx;
-    const { x, y } = e.velocity;
-    e.velocities[0].x = x + nvx;
-    e.velocities[0].y = y + e.world.gravity * Math.sqrt(2 * h / e.world.gravity);
+    const { x } = e.velocity;
+    if (x >= 0) {
+      e.velocities[0].x = dx;
+    } else {
+      e.velocities[0].x = -dx;
+    }
+    e.velocities[0].y = e.world.gravity * Math.sqrt(2 * h / e.world.gravity);
   }
   override on_landing(e: Character): void {
     // e.data.base.rowing_distance

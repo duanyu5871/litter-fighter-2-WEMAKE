@@ -23,6 +23,7 @@ export default class Falling extends BaseCharacterState {
   }
 
   override update(e: Character): void {
+    console.log(e.frame.id)
     if (e.shaking > 0) return;
     if (this.is_bouncing_frame(e)) {
       this.update_bouncing(e);

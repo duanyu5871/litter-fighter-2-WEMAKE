@@ -725,16 +725,17 @@ export default class Entity<
     if (this.wait > 0) { --this.wait; }
     else { this.next_frame = this.frame.next; }
     this.state?.update(this);
+
+    let vx = 0;
+    let vy = 0;
+    let vz = 0;
+    for (const v of this.velocities) {
+      vx += v.x;
+      vy += v.y;
+      vz += v.z;
+    }
+    this.velocity.set(vx, vy, vz);
     if (!this.shaking && !this.motionless) {
-      let vx = 0;
-      let vy = 0;
-      let vz = 0;
-      for (const v of this.velocities) {
-        vx += v.x;
-        vy += v.y;
-        vz += v.z;
-      }
-      this.velocity.set(vx, vy, vz);
       this.position.x += vx;
       this.position.y += vy;
       this.position.z += vz;
@@ -750,7 +751,7 @@ export default class Entity<
     const next_frame_1 = this.update_catching();
     const next_frame_2 = this.update_caught();
     this.next_frame = next_frame_2 || next_frame_1 || this.next_frame;
-    
+
     if (this.controller) {
       const { next_frame, key_list } = this.controller.update();
       if (
