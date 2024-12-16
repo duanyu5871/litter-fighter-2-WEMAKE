@@ -19,11 +19,6 @@ export class BotController extends BaseController {
     this.end(...Object.values(GameKey))
     this._dummy = v;
   }
-
-  dummy_stand_at_middle() {
-    this.dummy = 1;
-  }
-
   manhattan_to(a: Entity) {
     const { x, z } = this.entity.position;
     const { x: x1, z: z1 } = a.position;
@@ -260,6 +255,18 @@ export class BotController extends BaseController {
         }
         if (this.entity.frame.state === Defines.State.Falling) {
           this.start(GameKey.j)
+        }
+        break;
+      }
+      case 4: {
+        if (this.entity.frame.state === Defines.State.Standing && this.entity.resting <= 0) {
+          this.entity.position.x = this.world.bg.width / 2;
+          this.entity.position.z = (this.world.bg.near + this.world.far) / 2
+        }
+        if (this.entity.frame.state === Defines.State.Standing && this.time % 60 === 0) {
+          this.start(GameKey.d, GameKey.U, GameKey.a)
+        } else {
+          this.end(GameKey.d, GameKey.U, GameKey.a)
         }
         break;
       }

@@ -10,6 +10,7 @@ import Falling from "./Falling";
 import Frozen from "./Frozen";
 import Jump from "./Jump";
 import Lying from "./Lying";
+import { Rowing } from "./Rowing";
 import Running from "./Running";
 import Standing from "./Standing";
 import Teleport_ToFarthestAlly from "./Teleport_ToFarthestAlly";
@@ -55,3 +56,5 @@ CHARACTER_STATES.set(Defines.State.Teleport_ToNearestEnemy, new Teleport_ToNeare
 
 CHARACTER_STATES.set(Defines.State.Teleport_ToFarthestAlly, new Teleport_ToFarthestAlly())
 CHARACTER_STATES.set(Defines.State.TransformToLouisEx, new TransformToLouisEX())
+CHARACTER_STATES.set(Defines.State.Rowing, new Rowing())
+
