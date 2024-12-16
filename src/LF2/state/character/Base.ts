@@ -173,6 +173,10 @@ export default class BaseCharacterState extends BaseState<Character> {
       case Defines.ItrEffect.Normal:
       case Defines.ItrEffect.Sharp:
       case void 0: {
+
+        const f = bdy.hit_act && target.get_next_frame(bdy.hit_act)[0]
+        if (f) target.next_frame = f;
+        
         target.fall_value -= itr.fall ? itr.fall : Defines.DEFAULT_ITR_FALL;
         target.defend_value = 0;
         const is_fall = target.fall_value <= 0 || target.hp <= 0 || (
@@ -220,8 +224,6 @@ export default class BaseCharacterState extends BaseState<Character> {
       }
     }
 
-    const f = bdy.hit_act && target.get_next_frame(bdy.hit_act)[0]
-    if (f) target.next_frame = f;
   }
 
   override get_sudden_death_frame(target: Character): TNextFrame {

@@ -8,14 +8,28 @@ import { BaseController } from "./BaseController";
 export class BotController extends BaseController {
   readonly is_bot_enemy_chaser = true;
   _count = 0;
-  _chasing_enemy: Character | undefined;
-  _avoiding_enemy: Character | undefined;
+  chasing_enemy: Entity | undefined;
+  avoiding_enemy: Entity | undefined;
+  want_to_jump = false;
+  private _dummy?: number;
+  get dummy(): number | undefined {
+    return this._dummy;
+  }
+  set dummy(v) {
+    this.end(...Object.values(GameKey))
+    this._dummy = v;
+  }
+
+  dummy_stand_at_middle() {
+    this.dummy = 1;
+  }
+
   manhattan_to(a: Entity) {
     const { x, z } = this.entity.position;
     const { x: x1, z: z1 } = a.position;
     return Math.abs(x1 - x) + Math.abs(z1 - z);
   }
-  should_avoid(e?: Character | null) {
+  should_avoid(e?: Entity | null) {
     if (!e) return true;
     return e.hp > 0 && (
       e.frame.state === Defines.State.Lying ||
@@ -23,7 +37,7 @@ export class BotController extends BaseController {
       e.blinking
     )
   }
-  should_chase(e?: Character | null) {
+  should_chase(e?: Entity | null) {
     if (!e) return true;
     return e.hp > 0 && (
       e.frame.state !== Defines.State.Lying &&
@@ -33,40 +47,39 @@ export class BotController extends BaseController {
   }
   update_nearest() {
     const c = this.entity;
-    if (!this.should_chase(this._chasing_enemy)) {
-      this._chasing_enemy = void 0;
+    if (!this.should_chase(this.chasing_enemy)) {
+      this.chasing_enemy = void 0;
     }
-    if (!this.should_avoid(this._avoiding_enemy)) {
-      this._avoiding_enemy = void 0;
+    if (!this.should_avoid(this.avoiding_enemy)) {
+      this.avoiding_enemy = void 0;
     }
     for (const e of c.world.entities) {
       if (!is_character(e) || c.same_team(e))
         continue;
       if (this.should_avoid(e)) {
-        if (!this._avoiding_enemy) {
-          this._avoiding_enemy = e;
-        } else if (this.manhattan_to(e) < this.manhattan_to(this._avoiding_enemy)) {
-          this._avoiding_enemy = e;
+        if (!this.avoiding_enemy) {
+          this.avoiding_enemy = e;
+        } else if (this.manhattan_to(e) < this.manhattan_to(this.avoiding_enemy)) {
+          this.avoiding_enemy = e;
         }
       } else if (this.should_chase(e)) {
-        if (!this._chasing_enemy) {
-          this._chasing_enemy = e;
-        } else if (this.manhattan_to(e) < this.manhattan_to(this._chasing_enemy)) {
-          this._chasing_enemy = e;
+        if (!this.chasing_enemy) {
+          this.chasing_enemy = e;
+        } else if (this.manhattan_to(e) < this.manhattan_to(this.chasing_enemy)) {
+          this.chasing_enemy = e;
         }
       }
     }
   }
-  want_to_jump = false;
 
   chase_enemy() {
-    if (!this._chasing_enemy) return false;
+    if (!this.chasing_enemy) return false;
     const me = this.entity;
     const { x: my_x, z: my_z } = me.position;
     const {
       x: target_x,
       z: target_z,
-    } = this._chasing_enemy.position;
+    } = this.chasing_enemy.position;
 
     const WALK_ATTACK_DEAD_ZONE_X = 50;
     const WALK_ATTACK_DEAD_ZONE_Z = 10;
@@ -176,13 +189,13 @@ export class BotController extends BaseController {
   }
   avoid_enemy() {
     // console.log('avoid_enemy')
-    if (!this._avoiding_enemy) return false;
+    if (!this.avoiding_enemy) return false;
 
     const c = this.entity;
     const { x, z } = c.position;
-    const { x: target_x, z: target_z } = this._avoiding_enemy.position;
+    const { x: target_x, z: target_z } = this.avoiding_enemy.position;
 
-    if (this.manhattan_to(this._avoiding_enemy) > 200) {
+    if (this.manhattan_to(this.avoiding_enemy) > 200) {
       this.end(GameKey.L, GameKey.R, GameKey.U, GameKey.D)
       return true;
     }
@@ -217,10 +230,42 @@ export class BotController extends BaseController {
     }
     return true;
   }
+
   override update() {
-    this._count++;
-    if (this._count % 10 === 0) this.update_nearest();
-    this.chase_enemy() || this.avoid_enemy()
+    switch (this._dummy) {
+      case void 0: {
+        if (this.time % 10 === 0) this.update_nearest();
+        this.chase_enemy() || this.avoid_enemy()
+        break;
+      }
+      case 1: {
+        if (this.entity.frame.state === Defines.State.Standing && this.entity.resting <= 0) {
+          this.entity.position.x = this.world.bg.width / 2;
+          this.entity.position.z = (this.world.bg.near + this.world.far) / 2
+        }
+        break;
+      }
+      case 2: {
+        if (this.entity.frame.state === Defines.State.Standing && this.entity.resting <= 0) {
+          this.entity.position.x = this.world.bg.width / 2;
+          this.entity.position.z = (this.world.bg.near + this.world.far) / 2
+        }
+        this.start(GameKey.d)
+        break;
+      }
+      case 3: {
+        if (this.entity.frame.state === Defines.State.Standing && this.entity.resting <= 0) {
+          this.entity.position.x = this.world.bg.width / 2;
+          this.entity.position.z = (this.world.bg.near + this.world.far) / 2
+        }
+        if (this.entity.frame.state === Defines.State.Falling) {
+          this.start(GameKey.j)
+        }
+        break;
+      }
+      default:
+        break;
+    }
     return super.update();
   }
 }

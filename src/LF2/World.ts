@@ -310,7 +310,6 @@ export class World {
   }
   update_once() {
     if (this.disposed) return;
-    this.collision_detections();
     for (const e of this.entities) {
       e.self_update();
       for (const r of this.nearest_enemy_requesters) {
@@ -329,6 +328,7 @@ export class World {
       else if (e.get_frame().state === Defines.State.Gone)
         this.del_entities(e);
     }
+    this.collision_detections();
 
     this.update_camera();
     this.bg.update();

@@ -83,7 +83,7 @@ export default class Entity<
   readonly world: World;
   readonly position = new Ditto.Vector3(0, 0, 0);
   protected _resting = 0;
-
+  get resting() { return this._resting; }
 
   private _fall_value = Defines.DEFAULT_FALL_VALUE_MAX;
   get fall_value(): number { return this._fall_value; }
@@ -750,7 +750,7 @@ export default class Entity<
     const next_frame_1 = this.update_catching();
     const next_frame_2 = this.update_caught();
     this.next_frame = next_frame_2 || next_frame_1 || this.next_frame;
-
+    
     if (this.controller) {
       const { next_frame, key_list } = this.controller.update();
       if (

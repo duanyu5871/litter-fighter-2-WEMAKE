@@ -80,7 +80,17 @@ function get_val_from_entity(word: string, e: Entity): any {
     case Defines.ValWord.HitOnState:
       return '' + e.collision?.bframe.state;
     case Defines.ValWord.HitOnSth:
-      return e.collision?.victim ? 1 : 0
+      return e.collision?.victim ? 1 : 0;
+    case Defines.ValWord.HP:
+      return e.hp;
+    case Defines.ValWord.MP:
+      return e.mp;
+    case Defines.ValWord.VX:
+      return e.velocity.x;
+    case Defines.ValWord.VY:
+      return e.velocity.y;
+    case Defines.ValWord.VZ:
+      return e.velocity.z;
   }
 
   return word

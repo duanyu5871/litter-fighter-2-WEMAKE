@@ -17,7 +17,12 @@ const k_9 = [
   'Ua', 'Uj', 'ja'
 ] as const;
 
-
+function push_next_frame(src: TNextFrame | undefined, ...list: INextFrame[]): TNextFrame | undefined {
+  if (!list.length) return src;
+  if (!src) return list;
+  if (Array.isArray(src)) return [...src, ...list];
+  return [src, ...list];
+}
 const { FacingFlag, ValWord, WeaponType, State } = Defines
 const set_hit_turn_back = (frame: IFrameInfo, back_frame_id: string = '') => {
   frame.hit = frame.hit || {}
@@ -85,7 +90,6 @@ export function make_character_data(info: IEntityInfo, frames: Record<string, IF
         frame.hit.sequences[k] = nf;
       }
     });
-
 
     switch (Number(frame.id)) {
       /** standing */
@@ -348,6 +352,44 @@ export function make_character_data(info: IEntityInfo, frames: Record<string, IF
       /** throw_lying_man */
       case 232: case 233: case 234:
         if (frame.cpoint?.vaction) (frame.cpoint?.vaction as INextFrame).facing = FacingFlag.SameAsCatcher;
+        break;
+
+      /** （180~185）falling 向前 */
+      case 180:
+        break;
+      case 181:
+      case 182:
+      case 183:
+        if (!frame.hit) frame.hit = {}
+        frame.hit.j = push_next_frame(frame.hit.j, {
+          id: '108',
+          expression: CondMaker
+            .add<Defines.ValWord>(ValWord.HP, '>', 0)
+            .and(ValWord.VY, '>=', 0)
+            .done()
+        })
+        break;
+      case 184:
+      case 185:
+        break;
+
+      /** （186~191）falling 向后 */
+      case 186:
+        break;
+      case 187:
+      case 188:
+      case 189:
+        if (!frame.hit) frame.hit = {}
+        frame.hit.j = push_next_frame(frame.hit.j, {
+          id: '100',
+          expression: CondMaker
+            .add<Defines.ValWord>(ValWord.HP, '>', 0)
+            .and(ValWord.VY, '>=', 0)
+            .done()
+        })
+        break;
+      case 190:
+      case 191:
         break;
 
       /** crouch */

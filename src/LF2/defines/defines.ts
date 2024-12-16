@@ -168,6 +168,11 @@ export namespace Defines {
     HitOnBall = 'hit_on_ball',
     HitOnState = 'hit_on_state',
     HitOnSth = "hit_on_something",
+    HP = "hp",
+    MP = "mp",
+    VX = "vx",
+    VY = "vy",
+    VZ = "vz",
   }
   export enum FrameId {
     None = "",

@@ -1,10 +1,24 @@
 export enum GameKey {
-  L = 'L',
-  R = 'R',
-  U = 'U',
-  D = 'D',
-  a = 'a',
-  j = 'j',
-  d = 'd'
+
+  /** Left */
+  L = 'L', Left = 'L',
+
+  /** Right */
+  R = 'R', Right = 'R',
+
+  /** Up */
+  U = 'U', Up = 'U',
+
+  /** Down */
+  D = 'D', Down = 'D',
+
+  /** Attack */
+  a = 'a', Attack = 'a',
+
+  /** Jump */
+  j = 'j', Jump = 'j',
+
+  /** Defend */
+  d = 'd', Defend = 'd',
 }
 export default GameKey
