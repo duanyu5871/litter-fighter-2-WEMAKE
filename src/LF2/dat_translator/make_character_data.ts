@@ -5,7 +5,6 @@ import { Defines } from '../defines/defines';
 import { set_obj_field } from '../utils/container_help/set_obj_field';
 import { take_number } from '../utils/container_help/take_number';
 import { traversal } from '../utils/container_help/traversal';
-import { arithmetic_progression } from '../utils/math/arithmetic_progression';
 import { is_num, is_str } from '../utils/type_check';
 import { CondMaker } from './CondMaker';
 import { cook_next_frame_mp_hp, get_next_frame_by_raw_id } from './get_the_next';
@@ -495,25 +494,11 @@ export function make_character_data(info: IEntityInfo, frames: Record<string, IF
 
   const indexes: ICharacterFrameIndexes = {
     standing: '0',
-    running: "running_0",
-    heavy_obj_run: "heavy_obj_run_0",
     heavy_obj_walk: ['heavy_obj_walk_0'],
-    // super_punch: '70',
-    // defend_hit: '111',
-    // broken_defend: '112',
     picking_light: '115',
     picking_heavy: '117',
-    weapen_atk: ['20', '25'],
-    jump_weapen_atk: '30',
-    run_weapen_atk: '35',
-    dash_weapen_atk: '40',
-    l_weapen_thw: '45',
-    h_weapen_thw: '50',
-    air_weapon_thw: '52',
-    drink: '55',
     ice: '200',
     fire: ['203', '205'],
-    air_quick_rise: ['100', '108'],
     injured: {
       [-1]: '220',
       1: '222',
@@ -528,10 +513,7 @@ export function make_character_data(info: IEntityInfo, frames: Record<string, IF
       1: ['222']
     },
     in_the_sky: ['212'],
-    throw_enemy: '232',
     catch: ['120'],
-    catch_atk: '121',
-    caughts: arithmetic_progression(130, 144).map(v => '' + v),
     critical_hit: {
       [-1]: ['180'], 1: ['186']
     },
