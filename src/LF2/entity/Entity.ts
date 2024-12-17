@@ -776,6 +776,11 @@ export default class Entity<
       this.position.y = 0;
       this.play_sound(this.data.base.drop_sounds)
       this.velocities[0].y = 0;
+
+      if (this.frame.on_landing) {
+        const next_frame = this.get_next_frame(this.frame.on_landing);
+        if (next_frame[0]) this.next_frame = next_frame[0];
+      }
       this.state?.on_landing(this);
 
       if (this.throwinjury !== void 0) {

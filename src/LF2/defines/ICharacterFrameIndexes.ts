@@ -1,10 +1,10 @@
 import { TFrameIdListPair, TFrameIdPair } from ".";
 
 export interface ICharacterFrameIndexes {
-  landing_2: string;
   standing: string;
   heavy_obj_walk: string[],
   landing_1: string;
+  landing_2: string;
   catch: string[];
   dizzy: string;
   picking_heavy: string;

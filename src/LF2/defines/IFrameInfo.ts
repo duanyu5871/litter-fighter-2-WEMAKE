@@ -71,7 +71,15 @@ export interface IFrameInfo {
   jump_flag?: number;
 
   /**
-   * hp降至0时，跳转去？
+   * hp降至0时，跳转至动作
    */
   on_dead?: TNextFrame;
+
+  
+  /**
+   * Description placeholder
+   *
+   * @type {?TNextFrame}
+   */
+  on_landing?: TNextFrame;
 }
