@@ -1,9 +1,8 @@
 import {
   IBallData, IBaseData, IBgData, ICharacterData,
-  IEntityData, IEntityPictureInfo, IStageInfo,
+  IEntityData, IEntityPictureInfo, IFrameInfo, IStageInfo,
   IWeaponData
 } from '../defines';
-import { IFrameInfo } from "../defines/IBallFrameInfo";
 import { IDatIndex } from "../defines/IDatIndex";
 import { IEntityInfo } from "../defines/IEntityInfo";
 import { IWeaponInfo } from "../defines/IWeaponInfo";

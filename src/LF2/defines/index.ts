@@ -1,4 +1,3 @@
-import { IFrameInfo } from "./IBallFrameInfo";
 import { IBgData } from "./IBgData";
 import { ICharacterFrameIndexes } from "./ICharacterFrameIndexes";
 import { IEntityInfo } from "./IEntityInfo";
@@ -65,7 +64,6 @@ export interface IEntityPictureInfo {
 
 export type TNextFrame = INextFrame | INextFrame[]
 
-export * from './IBallFrameInfo';
 export * from './IBdyInfo';
 export * from './IBgData';
 export * from './IBgInfo';
