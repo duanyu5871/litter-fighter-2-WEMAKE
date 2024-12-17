@@ -22,7 +22,7 @@ export async function convert_dat_file(
     indexes.backgrounds.find(v => index_file_value === v.file);
 
   const txt = await read_lf2_dat_file(src_path);
-  const ret = dat_to_json(txt, index_info);
+  const ret = dat_to_json(txt, index_info!);
   {
     let dirty = ret as Partial<ICharacterData>;
     if (dirty?.frames?.[3]?.opoint) delete dirty.frames[3].opoint;

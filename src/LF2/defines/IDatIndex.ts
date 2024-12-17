@@ -1,1 +1,6 @@
-export interface IDatIndex { id: string; type: string | number; file: string; hash?: string; }
+export interface IDatIndex {
+  id: string;
+  type: string;
+  file: string;
+  hash?: string;
+}

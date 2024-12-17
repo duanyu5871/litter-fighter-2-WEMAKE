@@ -76,7 +76,7 @@ function get_val_from_entity(word: string, e: Entity): any {
     case Defines.ValWord.HitOnBall:
       return find(e.collision_list, c => is_ball(c.attacker)) ? 1 : 0;
     case Defines.ValWord.HitOnState:
-      return e.collision_list.map(i => i.aframe.state);
+      return e.collision_list.map(i => i.bframe.state);
     case Defines.ValWord.HitOnSth:
       return e.collision_list.length;
     case Defines.ValWord.HP:

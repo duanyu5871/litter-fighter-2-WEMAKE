@@ -68,8 +68,8 @@ export default class BaseWeaponState extends BaseState<Weapon> {
 
   override get_auto_frame(e: Weapon): IFrameInfo | undefined {
     const { frames, indexes } = e.data;
-    if (e.position.y > 0) return frames[indexes.in_the_sky];
-    return frames[indexes.on_ground];
+    if (e.position.y > 0) return indexes.in_the_sky ? frames[indexes.in_the_sky] : void 0;
+    return indexes.on_ground ? frames[indexes.on_ground] : void 0;
   }
 }
 

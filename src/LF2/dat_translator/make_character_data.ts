@@ -1,5 +1,5 @@
 import { ICharacterData, IEntityInfo, IFrameInfo, TNextFrame } from '../defines';
-import { ICharacterFrameIndexes } from "../defines/ICharacterFrameIndexes";
+import { IFrameIndexes } from "../defines/IFrameIndexes";
 import { INextFrame } from "../defines/INextFrame";
 import { Defines } from '../defines/defines';
 import { set_obj_field } from '../utils/container_help/set_obj_field';
@@ -492,7 +492,7 @@ export function make_character_data(info: IEntityInfo, frames: Record<string, IF
   for (const key in round_trip_frames_map)
     make_round_trip_frames(key, round_trip_frames_map[key]);
 
-  const indexes: ICharacterFrameIndexes = {
+  const indexes: IFrameIndexes = {
     standing: '0',
     heavy_obj_walk: ['heavy_obj_walk_0'],
     picking_light: '115',
@@ -512,7 +512,7 @@ export function make_character_data(info: IEntityInfo, frames: Record<string, IF
       [-1]: ['220'],
       1: ['222']
     },
-    in_the_sky: ['212'],
+    in_the_sky: '212',
     critical_hit: {
       [-1]: ['180'], 1: ['186']
     },

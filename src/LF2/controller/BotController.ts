@@ -1,6 +1,5 @@
 import GameKey from "../defines/GameKey";
 import { Defines } from "../defines/defines";
-import Character from "../entity/Character";
 import Entity from "../entity/Entity";
 import { is_character } from "../entity/type_check";
 import { BaseController } from "./BaseController";
@@ -25,7 +24,10 @@ export class BotController extends BaseController {
     return Math.abs(x1 - x) + Math.abs(z1 - z);
   }
   should_avoid(e?: Entity | null) {
-    if (!e) return true;
+    if (!e)
+      return false;
+    if (e.frame.id === Defines.FrameId.Gone)
+      return false
     return e.hp > 0 && (
       e.frame.state === Defines.State.Lying ||
       e.invisible ||
@@ -33,7 +35,10 @@ export class BotController extends BaseController {
     )
   }
   should_chase(e?: Entity | null) {
-    if (!e) return true;
+    if (!e)
+      return false;
+    if (e.frame.id === Defines.FrameId.Gone)
+      return false
     return e.hp > 0 && (
       e.frame.state !== Defines.State.Lying &&
       !e.invisible &&
@@ -225,7 +230,7 @@ export class BotController extends BaseController {
     }
     return true;
   }
-  
+
   override update() {
     switch (this._dummy) {
       case void 0: {

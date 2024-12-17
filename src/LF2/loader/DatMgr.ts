@@ -3,7 +3,7 @@ import LF2 from '../LF2';
 import { BallController } from '../controller/BallController';
 import { BotController } from '../controller/BotController';
 import { InvalidController } from '../controller/InvalidController';
-import { IBallData, IBgData, ICharacterData, IDataMap, IEntityData, IStageInfo, IWeaponData } from '../defines';
+import { IEntityData, IBgData, ICharacterData, IDataMap, IStageInfo, IWeaponData } from '../defines';
 import { Defines } from '../defines/defines';
 import { TData } from '../entity/Entity';
 import { Factory } from '../entity/Factory';
@@ -16,7 +16,7 @@ export interface IDataListMap {
   'entity': IEntityData[];
   'character': ICharacterData[];
   'weapon': IWeaponData[];
-  'ball': IBallData[];
+  'ball': IEntityData[];
   'all': TData[]
 }
 

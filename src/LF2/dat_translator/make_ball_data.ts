@@ -1,4 +1,4 @@
-import { IBallData } from "../defines";
+import { IEntityData } from "../defines";
 import { IFrameInfo } from "../defines/IFrameInfo";
 import { IDatIndex } from "../defines/IDatIndex";
 import { IEntityInfo } from "../defines/IEntityInfo";
@@ -9,7 +9,7 @@ import { CondMaker } from "./CondMaker";
 import { get_next_frame_by_raw_id } from "./get_the_next";
 import { take, take_str } from "./take";
 
-export function make_ball_data(info: IEntityInfo, frames: Record<string, IFrameInfo>, datIndex?: IDatIndex): IBallData {
+export function make_ball_data(info: IEntityInfo, frames: Record<string, IFrameInfo>, datIndex?: IDatIndex): IEntityData {
 
   info.hp = 500;
 
@@ -136,7 +136,7 @@ export function make_ball_data(info: IEntityInfo, frames: Record<string, IFrameI
           bdy.hit_act = [{
             id: '20',
             expression: CondMaker
-              .add<Defines.ValWord>(Defines.ValWord.HitByState, '==', 3005)
+              .add<Defines.ValWord>(Defines.ValWord.HitByState, '{{', 3005)
               .or(Defines.ValWord.HitByItrKind, '{{', Defines.ItrKind.JohnShield)
               .done()
           }]
@@ -147,7 +147,7 @@ export function make_ball_data(info: IEntityInfo, frames: Record<string, IFrameI
           itr.hit_act = [{
             id: '20',
             expression: CondMaker
-              .add(Defines.ValWord.HitOnState, '==', 3005)
+              .add(Defines.ValWord.HitOnState, '{{', 3005)
               .done()
           }]
         }
@@ -160,8 +160,8 @@ export function make_ball_data(info: IEntityInfo, frames: Record<string, IFrameI
           bdy.hit_act = [{
             id: '20',
             expression: CondMaker
-              .add<Defines.ValWord>(Defines.ValWord.HitByState, '==', 3005)
-              .or(Defines.ValWord.HitByState, '==', 3006)
+              .add<Defines.ValWord>(Defines.ValWord.HitByState, '{{', 3005)
+              .or(Defines.ValWord.HitByState, '{{', 3006)
               .or(Defines.ValWord.HitByItrKind, '{{', Defines.ItrKind.JohnShield)
               .done()
           }]
@@ -172,8 +172,8 @@ export function make_ball_data(info: IEntityInfo, frames: Record<string, IFrameI
           itr.hit_act = [{
             id: '20',
             expression: CondMaker
-              .add(Defines.ValWord.HitOnState, '==', 3005)
-              .or(Defines.ValWord.HitOnState, '==', 3006)
+              .add(Defines.ValWord.HitOnState, '{{', 3005)
+              .or(Defines.ValWord.HitOnState, '{{', 3006)
               .done()
           }]
         }
@@ -199,7 +199,7 @@ export function make_ball_data(info: IEntityInfo, frames: Record<string, IFrameI
   }
 
 
-  const ret: IBallData = {
+  const ret: IEntityData = {
     id: '',
     type: 'ball',
     base: info,

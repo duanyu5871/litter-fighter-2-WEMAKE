@@ -1,6 +1,6 @@
 import { IItrPrefab, IOpointInfo, IWeaponData } from '../defines';
+import { IFrameIndexes } from '../defines/IFrameIndexes';
 import { IFrameInfo } from "../defines/IFrameInfo";
-import { IWeaponFrameIndexes } from '../defines/IWeaponFrameIndexes';
 import { IWeaponInfo } from "../defines/IWeaponInfo";
 import { Defines } from '../defines/defines';
 import { match_all } from '../utils/string_parser/match_all';
@@ -12,7 +12,7 @@ import { add_entity_groups } from './add_entity_to_group';
 import cook_itr from './cook_itr';
 import { take } from './take';
 
-const indexes_map: Record<Defines.WeaponType, IWeaponFrameIndexes> = {
+const indexes_map: Record<Defines.WeaponType, IFrameIndexes> = {
   [Defines.WeaponType.None]: {
     in_the_sky: '',
     on_ground: '',
@@ -91,6 +91,10 @@ export function make_weapon_data(info: IWeaponInfo, full_str: string, frames: Re
 
   const drop_hurt = take(info, 'weapon_drop_hurt')
   if (drop_hurt && Number(drop_hurt)) info.drop_hurt = Number(drop_hurt)
+
+  const weapon_hp = take(info, 'weapon_hp')
+  if (weapon_hp && Number(weapon_hp)) info.hp = Number(weapon_hp)
+
   return {
     id: '',
     on_dead: { id: Defines.FrameId.Gone },

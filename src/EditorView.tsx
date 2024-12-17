@@ -21,7 +21,11 @@ export default function EditorView(props: IEditorViewProps) {
     const [file] = await open_file({ accept: '.dat' });
     const buf = await read_file(file, { as: 'ArrayBuffer' });
     const str_dat = await decode_lf2_dat(buf)
-    const data = await dat_to_json(str_dat);
+    const data = await dat_to_json(str_dat, {
+      id: "",
+      type: "",
+      file: ""
+    });
     _ref_txt_dat.current = str_dat;
     _ref_txt_json.current = JSON.stringify(data, null, 2);
     if (_ref_textarea_dat.current) _ref_textarea_dat.current.value = _ref_txt_dat.current

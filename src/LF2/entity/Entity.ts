@@ -6,7 +6,7 @@ import { ICube } from '../World';
 import { Callbacks, new_id, new_team, type NoEmitCallbacks } from '../base';
 import { IExpression } from '../base/Expression';
 import { BaseController } from '../controller/BaseController';
-import { IBallData, IBaseData, IBdyInfo, ICharacterData, ICpointInfo, IFrameInfo, IEntityData, IItrInfo, INextFrame, IOpointInfo, ITexturePieceInfo, IWeaponData, TFace, TNextFrame } from '../defines';
+import { IEntityData, IBaseData, IBdyInfo, ICharacterData, ICpointInfo, IFrameInfo, IItrInfo, INextFrame, IOpointInfo, ITexturePieceInfo, IWeaponData, TFace, TNextFrame } from '../defines';
 import { IEntityInfo } from "../defines/IEntityInfo";
 import { Defines } from '../defines/defines';
 import Ditto from '../ditto';
@@ -44,7 +44,7 @@ export const GONE_FRAME_INFO: IFrameInfo = {
   centerx: 0,
   centery: 0
 };
-export type TData = IBaseData | ICharacterData | IWeaponData | IEntityData | IBallData
+export type TData = IBaseData | ICharacterData | IWeaponData | IEntityData | IEntityData
 export interface CollisionInfo {
   victim: Entity
   attacker: Entity,
@@ -1151,7 +1151,8 @@ export default class Entity<
     this.world.nearest_enemy_requesters.delete(this)
   }
 
-  enter_frame(which: TNextFrame | string): void {
+  enter_frame(which?: TNextFrame | string): void {
+    if (!which || this.frame.id === Defines.FrameId.Gone) return;
     const [frame, flags] = this.get_next_frame(which);
     if (!frame) {
       this.next_frame = void 0;

@@ -1,14 +1,14 @@
 import type { World } from '../World';
-import type { IBallData, IFrameInfo, IEntityInfo, } from '../defines';
+import type { IEntityData, IFrameInfo, IEntityInfo, } from '../defines';
 import { Defines, } from '../defines';
 import { BALL_STATES } from '../state/ball';
 import Entity from './Entity';
 import { Factory } from './Factory';
 
-export default class Ball extends Entity<IEntityInfo, IBallData> {
+export default class Ball extends Entity<IEntityInfo, IEntityData> {
   static override readonly TAG: string = 'Ball';
   readonly is_ball = true;
-  constructor(world: World, data: IBallData) {
+  constructor(world: World, data: IEntityData) {
     super(world, data, BALL_STATES);
     this.name = "ball: " + data.id
   }

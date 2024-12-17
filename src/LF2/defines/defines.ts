@@ -1,4 +1,4 @@
-import { IBallData, ICharacterData, IEntityData, IWeaponData } from ".";
+import { IEntityData, ICharacterData, IWeaponData } from ".";
 import { GameKey } from "./GameKey";
 import { IBgData } from "./IBgData";
 import type { IItrInfo } from "./IItrInfo";
@@ -664,7 +664,7 @@ export namespace Defines {
     v.type === 'character'
   export const is_weapon_data = (v: any): v is IWeaponData =>
     v.type === 'weapon'
-  export const is_ball_data = (v: any): v is IBallData =>
+  export const is_ball_data = (v: any): v is IWeaponData =>
     v.type === 'ball'
   export const is_bg_data = (v: any): v is IBgData =>
     v.type === 'background'

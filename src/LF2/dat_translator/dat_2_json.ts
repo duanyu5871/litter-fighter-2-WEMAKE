@@ -1,6 +1,6 @@
 import {
-  IBallData, IBaseData, IBgData, ICharacterData,
-  IEntityData, IEntityPictureInfo, IFrameInfo, IStageInfo,
+  IEntityData, IBaseData, IBgData, ICharacterData,
+  IEntityPictureInfo, IFrameInfo, IStageInfo,
   IWeaponData
 } from '../defines';
 import { IDatIndex } from "../defines/IDatIndex";
@@ -21,8 +21,9 @@ import { make_stage_info_list as make_stage_infos } from './make_stage_info_list
 import { make_weapon_data, make_weapon_special } from './make_weapon_data';
 
 export default function dat_to_json(
-  full_str: string, datIndex?: IDatIndex
-): void | IStageInfo[] | IEntityData | IBallData | IBgData | ICharacterData | IWeaponData | IBaseData {
+  full_str: string,
+  datIndex: IDatIndex
+): void | IStageInfo[] | IBgData | IBaseData {
   full_str = full_str.replace(/\\\\/g, '/');
   if (full_str.startsWith('<stage>')) return make_stage_infos(full_str);
   if (full_str.startsWith('name:')) return make_bg_data(full_str, datIndex);
@@ -90,104 +91,91 @@ export default function dat_to_json(
     }
   }
 
-  if (datIndex) {
-    let ret: IBaseData | undefined = void 0;
-    switch ('' + datIndex.type) {
-      case '1':
-        base.type = {
-          '120': Defines.WeaponType.Knife, // Knife
-          '124': Defines.WeaponType.Knife, // Boomerang
-        }['' + datIndex.id] ?? Defines.WeaponType.Stick
-        base.bounce = 0.2;
-        base.name = datIndex.hash ?? datIndex.file.replace(/[^a-z|A-Z|0-9|_]/g, '')
-        ret = make_weapon_data(base, full_str, make_frames(full_str, base.files));
-        break;
-      case '2':
-        base.type = Defines.WeaponType.Heavy;
-        switch (datIndex.id) {
-          case '150': base.bounce = 0.2; break;
-          default: base.bounce = 0.1; break;
-        }
-        base.name = datIndex.hash ?? datIndex.file.replace(/[^a-z|A-Z|0-9|_]/g, '')
-        ret = make_weapon_data(base, full_str, make_frames(full_str, base.files));
-        break;
-      case '4':
-        base.type = Defines.WeaponType.Baseball;
-        base.bounce = 0.45;
-        base.name = datIndex.hash ?? datIndex.file.replace(/[^a-z|A-Z|0-9|_]/g, '')
-        ret = make_weapon_data(base, full_str, make_frames(full_str, base.files));
-        break;
-      case '6': {
-        base.type = Defines.WeaponType.Drink;
-        base.bounce = 0.4;
-        base.name = datIndex.hash ?? datIndex.file.replace(/[^a-z|A-Z|0-9|_]/g, '')
-        ret = make_weapon_data(base, full_str, make_frames(full_str, base.files));
-        break;
+  let ret: IEntityData | undefined = void 0;
+  switch ('' + datIndex.type) {
+    case '1':
+      base.type = {
+        '120': Defines.WeaponType.Knife, // Knife
+        '124': Defines.WeaponType.Knife, // Boomerang
+      }['' + datIndex.id] ?? Defines.WeaponType.Stick
+      base.bounce = 0.2;
+      base.name = datIndex.hash ?? datIndex.file.replace(/[^a-z|A-Z|0-9|_]/g, '')
+      ret = make_weapon_data(base, full_str, make_frames(full_str, base.files));
+      break;
+    case '2':
+      base.type = Defines.WeaponType.Heavy;
+      switch (datIndex.id) {
+        case '150': base.bounce = 0.2; break;
+        default: base.bounce = 0.1; break;
       }
-      case '0': {
-        const info = base as IEntityInfo;
-        const num_id = Number(datIndex.id);
+      base.name = datIndex.hash ?? datIndex.file.replace(/[^a-z|A-Z|0-9|_]/g, '')
+      ret = make_weapon_data(base, full_str, make_frames(full_str, base.files));
+      break;
+    case '4':
+      base.type = Defines.WeaponType.Baseball;
+      base.bounce = 0.45;
+      base.name = datIndex.hash ?? datIndex.file.replace(/[^a-z|A-Z|0-9|_]/g, '')
+      ret = make_weapon_data(base, full_str, make_frames(full_str, base.files));
+      break;
+    case '6': {
+      base.type = Defines.WeaponType.Drink;
+      base.bounce = 0.4;
+      base.name = datIndex.hash ?? datIndex.file.replace(/[^a-z|A-Z|0-9|_]/g, '')
+      ret = make_weapon_data(base, full_str, make_frames(full_str, base.files));
+      break;
+    }
+    case '0': {
+      const info = base as IEntityInfo;
+      const num_id = Number(datIndex.id);
 
-        if (
-          (num_id >= 30 && num_id <= 39) ||
-          (num_id >= 50 && num_id <= 59)
-        ) {
-          add_entity_groups(info, Defines.EntityGroup.Hidden)
-        }
-        if (num_id >= 1 && num_id <= 29) {
-          add_entity_groups(info, Defines.EntityGroup.Regular)
-        }
-        if (datIndex.id === '52') {
-          info.ce = 3;
-          info.armor = {
-            fireproof: 1,
-            antifreeze: 1,
-            hit_sounds: ['data/002.wav.mp3'],
-            type: 'times',
-            toughness: 3,
-          }
-        } else if (datIndex.id === '51') {
-          info.ce = 2;
-        } else if (datIndex.id === '37') {
-          info.armor = {
-            hit_sounds: ['data/085.wav.mp3'],
-            type: 'times',
-            toughness: 3,
-          }
-        } else if (datIndex.id === '6') {
-          info.armor = {
-            hit_sounds: ['data/085.wav.mp3'],
-            type: 'times',
-            toughness: 1,
-          }
-        } else if (datIndex.id === '30' || datIndex.id === '31') {
-          add_entity_groups(info, Defines.EntityGroup._3000)
-        }
-        const cdata = ret = make_character_data(info, make_frames(full_str, info.files));
-        if (datIndex.id === '6') cook_louis_data(cdata);
-        if (datIndex.id === '5') cook_rudolf_data(cdata);
-        break;
+      if (
+        (num_id >= 30 && num_id <= 39) ||
+        (num_id >= 50 && num_id <= 59)
+      ) {
+        add_entity_groups(info, Defines.EntityGroup.Hidden)
       }
-      case '3': ret = make_ball_data(base as IEntityInfo, make_frames<IFrameInfo>(full_str, base.files), datIndex); break;
-      case '5': ret = make_entity_data(base as IEntityInfo, make_frames(full_str, base.files)); break;
-      default:
-        console.warn('[dat_to_json] unknow dat type:', JSON.stringify(datIndex.type))
-        ret = make_entity_data(base as IEntityInfo, make_frames(full_str, base.files));
-        break;
+      if (num_id >= 1 && num_id <= 29) {
+        add_entity_groups(info, Defines.EntityGroup.Regular)
+      }
+      if (datIndex.id === '52') {
+        info.ce = 3;
+        info.armor = {
+          fireproof: 1,
+          antifreeze: 1,
+          hit_sounds: ['data/002.wav.mp3'],
+          type: 'times',
+          toughness: 3,
+        }
+      } else if (datIndex.id === '51') {
+        info.ce = 2;
+      } else if (datIndex.id === '37') {
+        info.armor = {
+          hit_sounds: ['data/085.wav.mp3'],
+          type: 'times',
+          toughness: 3,
+        }
+      } else if (datIndex.id === '6') {
+        info.armor = {
+          hit_sounds: ['data/085.wav.mp3'],
+          type: 'times',
+          toughness: 1,
+        }
+      } else if (datIndex.id === '30' || datIndex.id === '31') {
+        add_entity_groups(info, Defines.EntityGroup._3000)
+      }
+      const cdata = ret = make_character_data(info, make_frames(full_str, info.files));
+      if (datIndex.id === '6') cook_louis_data(cdata);
+      if (datIndex.id === '5') cook_rudolf_data(cdata);
+      break;
     }
-    if (ret) ret.id = datIndex.id;
-    if (ret.type === 'weapon') make_weapon_special(ret as any)
-    return ret;
-  } else {
-    if ('small' in base && 'name' in base && 'head' in base) {
-      return make_character_data(base as IEntityInfo, make_frames(full_str, base.files))
-    }
-    if ('weapon_hp' in base) {
-      const info = base as IWeaponInfo;
-      return make_weapon_data(info, full_str, make_frames(full_str, info.files));
-    }
-    if ('weapon_hit_sound' in base)
-      return make_ball_data(base as IEntityInfo, make_frames<IFrameInfo>(full_str, base.files));
-    return make_entity_data(base as IEntityInfo, make_frames(full_str, base.files));
+    case '3': ret = make_ball_data(base as IEntityInfo, make_frames<IFrameInfo>(full_str, base.files), datIndex); break;
+    case '5': ret = make_entity_data(base as IEntityInfo, make_frames(full_str, base.files)); break;
+    default:
+      console.warn('[dat_to_json] unknow dat type:', JSON.stringify(datIndex.type))
+      ret = make_entity_data(base as IEntityInfo, make_frames(full_str, base.files));
+      break;
   }
+  if (ret) ret.id = datIndex.id;
+  if (ret.type === 'weapon') make_weapon_special(ret as any)
+  return ret;
 }        
