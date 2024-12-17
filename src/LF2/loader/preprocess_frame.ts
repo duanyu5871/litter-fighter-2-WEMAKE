@@ -1,13 +1,13 @@
 import { Warn } from '../../Log';
 import LF2 from '../LF2';
-import { IEntityPictureInfo, IFrameInfo, IGameObjData, ITexturePieceInfo } from '../defines';
+import { IEntityPictureInfo, IFrameInfo, IEntityData, ITexturePieceInfo } from '../defines';
 import read_nums from '../layout/utils/read_nums';
 import { traversal } from '../utils/container_help/traversal';
 import { cook_next_frame } from './preprocess_next_frame';
 const get_keys = <V extends {}>(v: V): (keyof V)[] => {
   return Object.keys(v) as (keyof V)[]
 }
-export const cook_frame = (lf2: LF2, data: IGameObjData, frame: IFrameInfo) => {
+export const cook_frame = (lf2: LF2, data: IEntityData, frame: IFrameInfo) => {
   if (frame.sound && !lf2.sounds.has(frame.sound))
     lf2.sounds.load(frame.sound, frame.sound);
 

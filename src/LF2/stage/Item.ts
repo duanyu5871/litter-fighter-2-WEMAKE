@@ -1,5 +1,5 @@
 import { BotController } from "../controller/BotController";
-import { IGameObjData } from "../defines";
+import { IEntityData } from "../defines";
 import { IStageObjectInfo } from "../defines/IStageObjectInfo";
 import { Defines } from "../defines/defines";
 import Character from "../entity/Character";
@@ -21,7 +21,7 @@ export default class Item {
   readonly stage: Stage;
   readonly get_oid: () => string;
 
-  private data_list: IGameObjData[] = [];
+  private data_list: IEntityData[] = [];
 
   readonly entity_callback: IEntityCallbacks = {
     on_disposed: (e: Character): void => {

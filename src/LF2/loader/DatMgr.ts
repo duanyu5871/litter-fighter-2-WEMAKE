@@ -3,7 +3,7 @@ import LF2 from '../LF2';
 import { BallController } from '../controller/BallController';
 import { BotController } from '../controller/BotController';
 import { InvalidController } from '../controller/InvalidController';
-import { IBallData, IBgData, ICharacterData, IDataMap, IEntityData, IGameObjData, IStageInfo, IWeaponData } from '../defines';
+import { IBallData, IBgData, ICharacterData, IDataMap, IEntityData, IStageInfo, IWeaponData } from '../defines';
 import { Defines } from '../defines/defines';
 import { TData } from '../entity/Entity';
 import { Factory } from '../entity/Factory';
@@ -34,7 +34,7 @@ class Inner {
   readonly id: number;
   get cancelled(): boolean { return this.mgr.inner_id !== this.id }
   data_list_map = create_data_list_map();
-  data_map = new Map<string, IGameObjData>();
+  data_map = new Map<string, IEntityData>();
   stages: IStageInfo[] = [Defines.VOID_STAGE]
   get lf2() { return this.mgr.lf2 }
 
@@ -47,11 +47,7 @@ class Inner {
     const jobs: Promise<unknown>[] = [];
     const { images, sounds } = this.lf2;
 
-    if (
-      Defines.is_weapon_data(data) ||
-      Defines.is_character_data(data) ||
-      Defines.is_entity_data(data)
-    ) {
+    if (Defines.is_entity_data(data)) {
       const {
         dead_sounds: a,
         drop_sounds: b,
@@ -90,7 +86,7 @@ class Inner {
   }
 
   private async _add_data(index_id: string | number, raw_data: TData) {
-    const data = await this._cook_data(raw_data) as IGameObjData; // fixme
+    const data = await this._cook_data(raw_data) as IEntityData; // fixme
     const _index_id = '' + index_id;
     const _data_id = '' + data.id;
     if (_data_id === 'spark') debugger
@@ -213,7 +209,7 @@ export default class DatMgr {
   get all() { return this._inner.data_list_map.all; }
   get stages(): IStageInfo[] { return this._inner.stages }
 
-  find(id: number | string): IGameObjData | undefined {
+  find(id: number | string): IEntityData | undefined {
     return this._inner.data_map.get('' + id)
   }
 

@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { IMeshNode } from "../3d";
-import { IFrameInfo, IGameObjData, ITexturePieceInfo, TFace } from "../defines";
+import { IFrameInfo, IEntityData, ITexturePieceInfo, TFace } from "../defines";
 import IPicture from "../defines/IPicture";
 import Ditto from "../ditto";
 import Entity from "../entity/Entity";
@@ -23,7 +23,7 @@ export class EntityRender {
   readonly indicators!: FrameIndicators;
   protected _prev_update_count?: number;
   protected _shaking?: number;
-  protected _prev_data?: IGameObjData;
+  protected _prev_data?: IEntityData;
   protected _info_sprite: InfoSprite;
   constructor(entity: Entity) {
     this.set_entity(entity);

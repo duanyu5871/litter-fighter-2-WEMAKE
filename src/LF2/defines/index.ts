@@ -98,18 +98,13 @@ export interface IDataMap {
   'ball': IBallData;
 }
 
-export interface IGameObjData<
-  I extends IEntityInfo = IEntityInfo
-> extends IBaseData<I> {
+export interface IEntityData<I extends IEntityInfo = IEntityInfo> extends IBaseData<I> {
+  type: 'entity' | 'character' | 'weapon' | 'ball';
   on_dead?: TNextFrame;
   frames: Record<string, IFrameInfo>;
 }
 
-export interface IEntityData extends IGameObjData<IEntityInfo> {
-  type: 'entity';
-  get is_entity_data(): true;
-}
-export interface ICharacterData extends IGameObjData<IEntityInfo> {
+export interface ICharacterData extends IEntityData<IEntityInfo> {
   type: 'character';
   indexes: ICharacterFrameIndexes;
 }
@@ -117,14 +112,13 @@ export interface IWeaponStrengthInfo extends Partial<IItrInfo> {
   id: string;
   name: string;
 }
-export interface IWeaponData extends IGameObjData<IWeaponInfo> {
+export interface IWeaponData extends IEntityData<IWeaponInfo> {
   type: 'weapon';
   weapon_strength?: { [x in string]?: IWeaponStrengthInfo };
   indexes: IWeaponFrameIndexes;
 }
-export interface IBallData extends IGameObjData<IEntityInfo> {
+export interface IBallData extends IEntityData<IEntityInfo> {
   type: 'ball';
-  get is_ball_data(): true;
 }
 export type TFrameIdPair = {
   [-1]: string,
