@@ -438,9 +438,9 @@ export class World {
             if (!is_weapon(a)) continue;
             const atk = a.holder?.get_frame().wpoint?.attacking;
             if (!atk) continue;
-            const override_itr = a.data.weapon_strength?.[atk];
-            if (!override_itr) continue;
-            itr = { ...itr, ...override_itr }
+            const itr_prefab = a.data.itr_prefabs?.[atk];
+            if (!itr_prefab) continue;
+            itr = { ...itr, ...itr_prefab }
             break;
           }
           case Defines.State.BurnRun: {

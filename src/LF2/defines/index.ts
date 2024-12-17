@@ -101,6 +101,7 @@ export interface IDataMap {
 export interface IEntityData<I extends IEntityInfo = IEntityInfo> extends IBaseData<I> {
   type: 'entity' | 'character' | 'weapon' | 'ball';
   on_dead?: TNextFrame;
+  itr_prefabs?: { [x in string]?: IItrPrefab };
   frames: Record<string, IFrameInfo>;
 }
 
@@ -108,13 +109,12 @@ export interface ICharacterData extends IEntityData<IEntityInfo> {
   type: 'character';
   indexes: ICharacterFrameIndexes;
 }
-export interface IWeaponStrengthInfo extends Partial<IItrInfo> {
+export interface IItrPrefab extends Partial<IItrInfo> {
   id: string;
   name: string;
 }
 export interface IWeaponData extends IEntityData<IWeaponInfo> {
   type: 'weapon';
-  weapon_strength?: { [x in string]?: IWeaponStrengthInfo };
   indexes: IWeaponFrameIndexes;
 }
 export interface IBallData extends IEntityData<IEntityInfo> {

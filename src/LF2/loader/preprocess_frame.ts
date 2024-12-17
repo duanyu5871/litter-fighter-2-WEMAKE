@@ -36,8 +36,12 @@ export const cook_frame = (lf2: LF2, data: IEntityData, frame: IFrameInfo) => {
     }
   }
   if (frame.itr?.length) {
-    for (const itr of frame.itr) {
-      if (itr.hit_act) cook_next_frame(itr.hit_act)
+    for (let i = 0; i < frame.itr.length; ++i) {
+      let itr = frame.itr[i];
+      const prefab = itr.prefab_id !== void 0 ? data.itr_prefabs?.[itr.prefab_id] : void 0;
+      if (prefab) itr = frame.itr[i] = { ...prefab, ...itr, prefab_id: void 0 };
+      if (itr.hit_act)
+        cook_next_frame(itr.hit_act)
     }
   }
 

@@ -5,6 +5,13 @@ import type { Defines } from "./defines";
 
 export interface IItrInfo extends IRect {
   /**
+   * 预制信息id
+   * 
+   * @see {?string}
+   */
+  prefab_id?: string,
+
+  /**
    * 是否判定同队Bdy
    * 
    * 0=关闭（默认），1=开启
@@ -38,7 +45,7 @@ export interface IItrInfo extends IRect {
    * 详细效果见Defines.ItrKind
    * @see {Defines.ItrKind}
    */
-  kind: number;
+  kind?: number;
   dvx?: number;
   dvy?: number;
   dvz?: number;
@@ -70,6 +77,6 @@ export interface IItrInfo extends IRect {
 
   /** 命中后，自己跳转至什么帧 */
   hit_act?: TNextFrame;
-  hit_sounds: string[];
+  hit_sounds?: string[];
 }
 

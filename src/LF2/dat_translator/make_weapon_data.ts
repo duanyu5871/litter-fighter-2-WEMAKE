@@ -1,4 +1,4 @@
-import { IOpointInfo, IWeaponData, IWeaponStrengthInfo } from '../defines';
+import { IItrPrefab, IOpointInfo, IWeaponData } from '../defines';
 import { IFrameInfo } from "../defines/IFrameInfo";
 import { IWeaponFrameIndexes } from '../defines/IWeaponFrameIndexes';
 import { IWeaponInfo } from "../defines/IWeaponInfo";
@@ -57,12 +57,12 @@ const indexes_map: Record<Defines.WeaponType, IWeaponFrameIndexes> = {
   }
 }
 
-function make_weapon_strength(full_str: string): IWeaponData['weapon_strength'] {
+function make_itr_prefabs(full_str: string): IWeaponData['itr_prefabs'] {
   const weapon_strength_str = match_block_once(full_str, '<weapon_strength_list>', '<weapon_strength_list_end>')?.trim();
   if (!not_empty_str(weapon_strength_str)) return void 0;
 
   const list = match_all(weapon_strength_str, /entry:\s*(\d+)\s*(\S+)\s*\n?(.*)\n?/g).map(([, id, name, remain]) => {
-    const entry: IWeaponStrengthInfo = { id, name };
+    const entry: IItrPrefab = { id, name };
     for (const [key, value] of match_colon_value(remain)) {
       (entry as any)[key] = to_num(value) ?? value;
     }
@@ -70,13 +70,13 @@ function make_weapon_strength(full_str: string): IWeaponData['weapon_strength'] 
     return entry;
   });
   if (!list.length) return void 0;
-  const weapon_strength: IWeaponData['weapon_strength'] = {};
-  for (const entry of list)
-    weapon_strength[entry.id] = entry;
-  return weapon_strength;
+  const itr_prefab: IWeaponData['itr_prefabs'] = {};
+  for (const item of list)
+    itr_prefab[item.id] = item;
+  return itr_prefab;
 }
 export function make_weapon_data(info: IWeaponInfo, full_str: string, frames: Record<string, IFrameInfo>): IWeaponData {
-  const weapon_strength = make_weapon_strength(full_str);
+  const itr_prefabs = make_itr_prefabs(full_str);
   const indexes =
     indexes_map[info.type as Defines.WeaponType] ??
     indexes_map[Defines.WeaponType.None]
@@ -91,13 +91,12 @@ export function make_weapon_data(info: IWeaponInfo, full_str: string, frames: Re
 
   const drop_hurt = take(info, 'weapon_drop_hurt')
   if (drop_hurt && Number(drop_hurt)) info.drop_hurt = Number(drop_hurt)
-
   return {
     id: '',
     on_dead: { id: Defines.FrameId.Gone },
     type: 'weapon',
     base: info,
-    weapon_strength,
+    itr_prefabs,
     frames,
     indexes
   };
