@@ -1,26 +1,60 @@
-# 人物
+# 角色
 
-用编缉器开启dat档
+## 头部信息
 
-* [X] name: Template 名子在游戏选单中可看到
-  walking_frame_rate 走路的动作变换的时间(值愈大，则愈慢)
-  walking_speed 走路速度
-  walking_speedz 走路的z(按↑↓时)速度
-  running_frame_rate 跑步的动作变换的时间
-  running_speed 跑步速度
-  running_speedz 跑步z速度
-  heavy_walking_speed 搬重物时走路的速度
-  heavy_walking_speedz 搬重物时走路的z速度
-  heavy_running_speed 搬重物时跑步的速度
-  heavy_running_speedz 搬重物时跑步的z速度
-  jump_height 跳的高度(负值)
-  jump_distance 前跳的速度
-  jump_distancez z方向跳的速度
-  dash_height 跑跳的高度(负值)
-  dash_distance 跑跳的速度
-  dash_distancez 跑跳的z速度
-  rowing_height 受身时向上的高度(负值)
-  rowing_distance 受身时向后的速度
+打开一个角色的dat文件（此处以davis.dat为例），文件头部可见如下信息
+
+```plaintext
+<bmp_begin>
+name: Davis
+head: sprite\sys\davis_f.bmp
+small: sprite\sys\davis_s.bmp
+file(0-69): sprite\sys\davis_0.bmp  w: 79  h: 79  row: 10  col: 7
+file(70-139): sprite\sys\davis_1.bmp  w: 79  h: 79  row: 10  col: 7
+file(140-209): sprite\sys\davis_2.bmp  w: 79  h: 79  row: 10  col: 7
+walking_frame_rate 3
+walking_speed 5.000000
+walking_speedz 2.500000
+running_frame_rate 3
+running_speed 10.000000
+running_speedz 1.600000
+heavy_walking_speed 3.700000
+heavy_walking_speedz 1.850000
+heavy_running_speed 6.200000
+heavy_running_speedz 1.000000
+jump_height -16.299999
+jump_distance 10.000000
+jump_distancez 3.750000
+dash_height -10.000000
+dash_distance 18.000000
+dash_distancez 5.000000
+rowing_height -2.000000
+rowing_distance 5.000000
+<bmp_end>
+```
+
+| -                    | 说明                   |
+| -------------------- | ---------------------- |
+| name                 | 角色名称               |
+| walking_frame_rate   | 走路的动作变换的时间   |
+| walking_speed        | 走路速度               |
+| walking_speedz       | 走路的z(按↑↓时)速度  |
+| running_frame_rate   | 跑步的动作变换的时间   |
+| running_speed        | 跑步速度               |
+| running_speedz       | 跑步z速度              |
+| heavy_walking_speed  | 搬重物时走路的速度     |
+| heavy_walking_speedz | 搬重物时走路的z速度    |
+| heavy_running_speed  | 搬重物时跑步的速度     |
+| heavy_running_speedz | 搬重物时跑步的z速度    |
+| jump_height          | 跳的高度(负值)         |
+| jump_distance        | 前跳的速度             |
+| jump_distancez       | z方向跳的速度          |
+| dash_height          | 跑跳的高度(负值)       |
+| dash_distance        | 跑跳的速度             |
+| dash_distancez       | 跑跳的z速度            |
+| rowing_height        | 受身时向上的高度(负值) |
+| rowing_distance      | 受身时向后的速度       |
+
 
 ## frame
 
@@ -48,7 +82,7 @@ state: 动作的状态，会影响人物当时的状态
 wait: 动作停留时间，注意:hit连的和state连的会比next连的少一格时间(state:连的按键可留4格时间)
 next: 下一个动作act号码
 dvx: 横向x方向的速度
-dvy: 上下y方向的加速度- 正值是向下，负值是向上，wait愈久加得愈快
+dvy: 上下y方向的加速度- 正值是向下，负值是向上，wait越久加得越快
 dvz: 与地面z方向的速度- 玩时要按↑↓才会动
 移动的距离=dvx*wait，dvx动作结束后，还会移动一段距离才停止(=煞车)
 centerx: x位置中心
@@ -63,7 +97,7 @@ centery: y位置中心，对于图片来说，相当于影子的位置，由图�
 
 ## frame.state
 
-| 值   | 名                | 描述                                                                                                                                        |
+| 值   | 一般frame名       | 说明                                                                                                                                        |
 | ---- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
 | 0    | standing          | 站立(按键自由)                                                                                                                              |
 | 1    | walking           | 走路(按键自由)                                                                                                                              |
@@ -72,8 +106,6 @@ centery: y位置中心，对于图片来说，相当于影子的位置，由图�
 | 4    | jump              | 跳(能在空中左右转)，落地act215                                                                                                              |
 | 5    | dash              | 跑跳(dvx:0时能在地上左右转)                                                                                                                 |
 | 6    | rowing            | 受身、滚，落地act215                                                                                                                        |
-|      |                   |                                                                                                                                             |
-|      |                   |                                                                                                                                             |
 | 7    | defend            | 防御(bdy前方防御)                                                                                                                           |
 | 8    | broken_defend     | 破防                                                                                                                                        |
 | 9    | catching          | 抓人                                                                                                                                        |
@@ -395,7 +427,6 @@ state: 3005\3006 打到气功不会act10
 | ---------------- | ----------------- | ---------- | ---------- |
 | ball, state 3000 | act 10 \ act 20 | act 10 \ - | act 10 \ - |
 | character        | - \ act 30       |            |            |
-
 
 ## Weapon
 

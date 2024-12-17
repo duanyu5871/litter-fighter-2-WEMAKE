@@ -513,7 +513,6 @@ export function make_character_data(info: IEntityInfo, frames: Record<string, IF
       1: ['222']
     },
     in_the_sky: ['212'],
-    catch: ['120'],
     critical_hit: {
       [-1]: ['180'], 1: ['186']
     },
@@ -590,8 +589,7 @@ function cook_file_variants(ret: ICharacterData) {
         file_1.cell_w !== file_2.cell_w ||
         file_1.cell_h !== file_2.cell_h ||
         file_1.row !== file_2.row ||
-        file_1.col !== file_2.col ||
-        !file_2.path.match(/_\d+b.png$/)
+        file_1.col !== file_2.col
       ) {
         has_variant = false;
       }

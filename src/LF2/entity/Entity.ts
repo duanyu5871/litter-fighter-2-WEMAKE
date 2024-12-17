@@ -793,8 +793,8 @@ export default class Entity<
     else
       ++this.update_id;
     this.world.restrict(this);
-    this.collision = void 0;
-    this.collided = void 0;
+    this.collision_list.length = 0;
+    this.collided_list.length = 0;
   }
 
   /**
@@ -952,8 +952,8 @@ export default class Entity<
 
   lastest_collision?: CollisionInfo;
   lastest_collided?: CollisionInfo;
-  collision?: CollisionInfo;
-  collided?: CollisionInfo;
+  collision_list: CollisionInfo[] = [];
+  collided_list: CollisionInfo[] = [];
 
   start_catch(target: Entity, itr: IItrInfo) {
     if (itr.catchingact === void 0) {
@@ -981,7 +981,7 @@ export default class Entity<
     if (this.state?.before_collision?.(this, target, itr, bdy, a_cube, b_cube)) {
       return;
     }
-    this.collision = this.lastest_collision = {
+    this.collision_list.push(this.lastest_collision = {
       attacker: this,
       victim: target,
       aframe: this.frame,
@@ -990,7 +990,7 @@ export default class Entity<
       bdy,
       a_cube,
       b_cube,
-    };
+    })
     if (this.frame.name === 'explosion') debugger
     this.motionless = itr.motionless ?? Defines.DEFAULT_ITR_MOTIONLESS;
     if (itr.arest) {
@@ -1029,7 +1029,7 @@ export default class Entity<
     if (this.state?.before_be_collided?.(attacker, this, itr, bdy, a_cube, b_cube)) {
       return;
     }
-    this.collided = this.lastest_collided = {
+    this.collided_list.push(this.lastest_collided = {
       attacker: attacker,
       victim: this,
       aframe: attacker.frame,
@@ -1038,7 +1038,7 @@ export default class Entity<
       bdy,
       a_cube,
       b_cube,
-    };
+    });
     this.shaking = itr.shaking ?? Defines.DEFAULT_ITR_SHAKEING;
     if (!itr.arest && itr.vrest) {
       this.v_rests.set(attacker.id, {

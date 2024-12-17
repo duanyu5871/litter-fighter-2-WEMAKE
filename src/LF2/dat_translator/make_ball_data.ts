@@ -104,20 +104,20 @@ export function make_ball_data(info: IEntityInfo, frames: Record<string, IBallFr
             id: '20',
             expression: CondMaker
               .add<Defines.ValWord>(Defines.ValWord.HitByBall, '==', 1)
-              .and(Defines.ValWord.HitByItrKind, '!=', Defines.ItrKind.JohnShield)
+              .and(Defines.ValWord.HitByItrKind, '!{', Defines.ItrKind.JohnShield)
               .done()
           }, {
             id: '30', // 反弹逻辑
             expression: CondMaker
-              .add(Defines.ValWord.HitByItrKind, '==', Defines.ItrKind.WeaponSwing)
-              .or(Defines.ValWord.HitByItrKind, '==', Defines.ItrKind.JohnShield)
+              .add(Defines.ValWord.HitByItrKind, '{{', Defines.ItrKind.WeaponSwing)
+              .or(Defines.ValWord.HitByItrKind, '{{', Defines.ItrKind.JohnShield)
               .or(c => c
                 .add(Defines.ValWord.HitOnSth, '==', 0)
                 .and(c => c
                   .add(Defines.ValWord.HitByCharacter, '==', 1)
                   .and((c => c
-                    .add(Defines.ValWord.HitByItrKind, '!=', Defines.ItrKind.Normal)
-                    .or(Defines.ValWord.HitByItrEffect, '!=', Defines.ItrEffect.Fire)
+                    .add(Defines.ValWord.HitByItrKind, '!{', Defines.ItrKind.Normal)
+                    .or(Defines.ValWord.HitByItrEffect, '!{', Defines.ItrEffect.Fire)
                   ))
                 ))
               .done()
@@ -139,7 +139,7 @@ export function make_ball_data(info: IEntityInfo, frames: Record<string, IBallFr
             id: '20',
             expression: CondMaker
               .add<Defines.ValWord>(Defines.ValWord.HitByState, '==', 3005)
-              .or(Defines.ValWord.HitByItrKind, '==', Defines.ItrKind.JohnShield)
+              .or(Defines.ValWord.HitByItrKind, '{{', Defines.ItrKind.JohnShield)
               .done()
           }]
         }
@@ -164,7 +164,7 @@ export function make_ball_data(info: IEntityInfo, frames: Record<string, IBallFr
             expression: CondMaker
               .add<Defines.ValWord>(Defines.ValWord.HitByState, '==', 3005)
               .or(Defines.ValWord.HitByState, '==', 3006)
-              .or(Defines.ValWord.HitByItrKind, '==', Defines.ItrKind.JohnShield)
+              .or(Defines.ValWord.HitByItrKind, '{{', Defines.ItrKind.JohnShield)
               .done()
           }]
         }

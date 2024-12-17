@@ -3,6 +3,7 @@ import { INextFrame } from "../defines";
 import { Defines } from '../defines/defines';
 import Entity from '../entity/Entity';
 import { is_ball, is_character, is_entity, is_weapon } from "../entity/type_check";
+import { find, find_last } from '../utils/container_help';
 import { clamp } from '../utils/math';
 
 export function cook_next_frame(i: INextFrame | INextFrame[]): void {
@@ -56,31 +57,28 @@ function get_val_from_entity(word: string, e: Entity): any {
       return e.catching ? 1 : 0;
     case Defines.ValWord.CAUGHT:
       return e.catcher ? 1 : 0;
-
     case Defines.ValWord.HitByCharacter:
-      return is_character(e.collided?.attacker) ? 1 : 0;
+      return find(e.collided_list, c => is_character(c.attacker)) ? 1 : 0;
     case Defines.ValWord.HitByWeapon:
-      return is_weapon(e.collided?.attacker) ? 1 : 0;
+      return find(e.collided_list, c => is_weapon(c.attacker)) ? 1 : 0;
     case Defines.ValWord.HitByBall:
-      return is_ball(e.collided?.attacker) ? 1 : 0;
+      return find(e.collided_list, c => is_ball(c.attacker)) ? 1 : 0;
     case Defines.ValWord.HitByItrKind:
-      return '' + e.collided?.itr.kind;
+      return e.collided_list.map(i => i.itr.kind);
     case Defines.ValWord.HitByItrEffect:
-      return '' + e.collided?.itr.effect;
+      return e.collided_list.map(i => i.itr.effect).filter(v => v !== void 0);
     case Defines.ValWord.HitByState:
-      return '' + e.collided?.aframe.state;
-
-
+      return e.collided_list.map(i => i.aframe.state);
     case Defines.ValWord.HitOnCharacter:
-      return is_character(e.collision?.victim) ? 1 : 0;
+      return find(e.collision_list, c => is_character(c.attacker)) ? 1 : 0;
     case Defines.ValWord.HitOnWeapon:
-      return is_weapon(e.collision?.victim) ? 1 : 0;
+      return find(e.collision_list, c => is_weapon(c.attacker)) ? 1 : 0;
     case Defines.ValWord.HitOnBall:
-      return is_ball(e.collision?.victim) ? 1 : 0;
+      return find(e.collision_list, c => is_ball(c.attacker)) ? 1 : 0;
     case Defines.ValWord.HitOnState:
-      return '' + e.collision?.bframe.state;
+      return e.collision_list.map(i => i.aframe.state);
     case Defines.ValWord.HitOnSth:
-      return e.collision?.victim ? 1 : 0;
+      return e.collision_list.length;
     case Defines.ValWord.HP:
       return e.hp;
     case Defines.ValWord.MP:

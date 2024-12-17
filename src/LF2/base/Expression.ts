@@ -2,6 +2,24 @@ import { Warn } from '../../Log';
 function ALWAY_FALSE<T = unknown>(text: string, err?: string): IJudger<T> {
   return { run: () => false, text, err }
 }
+
+
+export type TBinaryOperator = '==' | '>=' | '<=' | '!=' | '<' | '>' | '{{' | '}}' | '!{' | '!}' | BinaryOperatorEnum
+export enum BinaryOperatorEnum {
+  LESS = '<',
+  LESS_OR_EQUAL = '<=',
+  EQUAL = '==',
+  GREATER_OR_EQUAL = '>=',
+  GREATER = ">",
+  NOT_EQUAL = '!=',
+  IncludedBy = '}}',
+  Include = '{{',
+  NotIncludedBy = '!}',
+  NotInclude = '!{'
+}
+
+
+
 export interface IJudger<T> {
   run(arg: T): boolean;
   readonly text: string;
@@ -19,17 +37,37 @@ export interface IValGetter<T> {
   (word: string, e: T): string | number | boolean
 }
 
-const predicate_maps: { [x in string]?: (a: any, b: any) => boolean } = {
+
+
+const predicate_maps: Record<BinaryOperatorEnum, (a: any, b: any) => boolean> = {
   // eslint-disable-next-line eqeqeq
-  '==': (v1, v2) => v1 == v2,
+  '==': (a, b) => a == b,
   // eslint-disable-next-line eqeqeq
-  '=': (v1, v2) => v1 == v2,
-  // eslint-disable-next-line eqeqeq
-  '!=': (v1, v2) => v1 != v2,
-  '>=': (v1, v2) => v1 >= v2,
-  '<=': (v1, v2) => v1 <= v2,
-  '<': (v1, v2) => v1 < v2,
-  '>': (v1, v2) => v1 > v2,
+  '!=': (a, b) => a != b,
+  '>=': (a, b) => a >= b,
+  '<=': (a, b) => a <= b,
+  '<': (a, b) => a < b,
+  '>': (a, b) => a > b,
+  '{{': (a, b) => {
+    const c = Array.isArray(a) ? a : typeof a === 'string' ? a.split(',') : [a];
+    // eslint-disable-next-line eqeqeq
+    return c.findIndex(v => v == b) >= 0;
+  },
+  '}}': (a, b) => {
+    const c = Array.isArray(b) ? b : typeof b === 'string' ? b.split(',') : [b];
+    // eslint-disable-next-line eqeqeq
+    return c.findIndex(v => v == a) >= 0;
+  },
+  '!{': (a, b) => {
+    const c = Array.isArray(a) ? a : typeof a === 'string' ? a.split(',') : [a];
+    // eslint-disable-next-line eqeqeq
+    return c.findIndex(v => v == b) < 0;
+  },
+  '!}': (a, b) => {
+    const c = Array.isArray(b) ? b : typeof b === 'string' ? b.split(',') : [b];
+    // eslint-disable-next-line eqeqeq
+    return c.findIndex(v => v == a) < 0;
+  }
 }
 
 export class Expression<T> implements IExpression<T> {
@@ -39,8 +77,8 @@ export class Expression<T> implements IExpression<T> {
   readonly children: IExpression<T>[] = [];
   readonly get_val: (word: string, e: T) => string | number | boolean;
   readonly err?: string | undefined;
-  before: string = ''
-
+  before: string = '';
+  not: boolean = false;
   constructor(text: string, get_val: IValGetter<T>);
   constructor(run: IJudger<T>, get_val: IValGetter<T>);
   constructor(arg_0: string | IJudger<T>, get_val: IValGetter<T>) {
@@ -54,7 +92,14 @@ export class Expression<T> implements IExpression<T> {
       let before: string = '';
       for (; i < count; ++i) {
         letter = this.text[i];
-        if ('(' === letter) {
+        if ('!' === letter && this.text[i] === '(') {
+          const child = new Expression<T>(this.text.substring(i + 2), get_val);
+          child.not = true;
+          child.before = before;
+          i += child.text.length + 2
+          p = i + 2;
+          this.children.push(child);
+        } else if ('(' === letter) {
           const child = new Expression<T>(this.text.substring(i + 1), get_val);
           child.before = before;
           i += child.text.length + 1
@@ -91,13 +136,13 @@ export class Expression<T> implements IExpression<T> {
   private gen_judger(text: string): IJudger<T> {
     if (!text)
       return ALWAY_FALSE(text, '[empty text]');
-    const reg_result = text.match(/(\S*)\s*(==|!=|<=|>=)\s?(\S*)/) || text.match(/(\S*)\s*(=|<|>)\s?(\S*)/);
+    const reg_result = text.match(/(\S*)\s*(==|!=|<=|>=|\{\{|\}\}|!\{|!\})\s?(\S*)/) || text.match(/(\S*)\s*(=|<|>)\s?(\S*)/);
     if (!reg_result)
       return ALWAY_FALSE(text, `[wrong expression: ${text}]`);
     const [, word_1, op, word_2] = reg_result;
     if (!word_1 || !word_2)
       return ALWAY_FALSE(text, `[wrong expression: ${text}]`);
-    const predicate = predicate_maps[op];
+    const predicate = predicate_maps[op as TBinaryOperator];
     if (!predicate) {
       Warn.print('gen_single_judge_func', `wrong operator: ${op}`);
       return ALWAY_FALSE(text, `wrong operator: ${op}`);
@@ -123,7 +168,7 @@ export class Expression<T> implements IExpression<T> {
         ret = ret && child.run(e);
       }
     }
-    return ret;
+    return this.not ? !ret : ret;
   }
 }
 export default Expression;

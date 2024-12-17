@@ -167,6 +167,9 @@ export namespace Defines {
     HitOnWeapon = 'hit_on_weapon',
     HitOnBall = 'hit_on_ball',
     HitOnState = 'hit_on_state',
+    /** 
+     * 击中物品的数量
+     */
     HitOnSth = "hit_on_something",
     HP = "hp",
     MP = "mp",
