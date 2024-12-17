@@ -2,7 +2,7 @@ import { Defines, IBdyInfo, IFrameInfo, IItrInfo, TFace, TNextFrame } from '../.
 import type Character from '../../entity/Character';
 import Entity from '../../entity/Entity';
 import { same_face, turn_face } from '../../entity/face_helper';
-import { is_weapon } from '../../entity/type_check';
+import { is_character, is_weapon } from '../../entity/type_check';
 import { ICube } from '../../World';
 import BaseState, { WhatNext } from "../base/BaseState";
 
@@ -173,10 +173,8 @@ export default class BaseCharacterState extends BaseState<Character> {
       case Defines.ItrEffect.Normal:
       case Defines.ItrEffect.Sharp:
       case void 0: {
-
         const f = bdy.hit_act && target.get_next_frame(bdy.hit_act)[0]
         if (f) target.next_frame = f;
-        
         target.fall_value -= itr.fall ? itr.fall : Defines.DEFAULT_ITR_FALL;
         target.defend_value = 0;
         const is_fall = target.fall_value <= 0 || target.hp <= 0 || (
@@ -196,8 +194,10 @@ export default class BaseCharacterState extends BaseState<Character> {
           target.velocities[0].x = (itr.dvx || 0) * aface;
           if (itr.effect === Defines.ItrEffect.Sharp) {
             target.world.spark(...target.spark_point(r0, r1), "critical_bleed");
-          } else {
+          } else if (is_character(attacker)) {
             target.world.spark(...target.spark_point(r0, r1), "critical_hit")
+          } else {
+            target.world.spark(...target.spark_point(r0, r1), "slient_critical_hit")
           }
           const direction: TFace = target.velocities[0].x / target.facing >= 0 ? 1 : -1;
           target.next_frame = { id: target.data.indexes.critical_hit[direction][0] }
@@ -207,8 +207,10 @@ export default class BaseCharacterState extends BaseState<Character> {
           target.velocities[0].z = 0;
           if (itr.effect === Defines.ItrEffect.Sharp) {
             target.world.spark(...target.spark_point(r0, r1), "bleed")
-          } else {
+          } else if (is_character(attacker)) {
             target.world.spark(...target.spark_point(r0, r1), "hit")
+          } else {
+            target.world.spark(...target.spark_point(r0, r1), "slient_hit")
           }
           /* 击晕 */
           if (target.fall_value <= Defines.DEFAULT_FALL_VALUE_DIZZY) {
