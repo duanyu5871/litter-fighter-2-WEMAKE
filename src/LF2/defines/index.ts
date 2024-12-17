@@ -112,7 +112,6 @@ export interface IEntityData extends IGameObjData<IEntityInfo> {
 export interface ICharacterData extends IGameObjData<IEntityInfo> {
   type: 'character';
   indexes: ICharacterFrameIndexes;
-  get is_character_data(): true;
 }
 export interface IWeaponStrengthInfo extends Partial<IItrInfo> {
   id: string;
@@ -122,7 +121,6 @@ export interface IWeaponData extends IGameObjData<IWeaponInfo> {
   type: 'weapon';
   weapon_strength?: { [x in string]?: IWeaponStrengthInfo };
   indexes: IWeaponFrameIndexes;
-  get is_weapon_data(): true;
 }
 export interface IBallData extends IGameObjData<IEntityInfo> {
   type: 'ball';

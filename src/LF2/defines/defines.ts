@@ -106,7 +106,6 @@ export namespace Defines {
   }
   export const VOID_BG: IBgData = {
     type: 'background',
-    is_bg_data: true,
     layers: [],
     id: 'VOID_BG',
     base: {
@@ -657,11 +656,11 @@ export namespace Defines {
     },
   }
   export const is_character_data = (v: any): v is ICharacterData =>
-    v.is_character_data === true
+    v.type === 'character'
   export const is_weapon_data = (v: any): v is IWeaponData =>
-    v.is_weapon_data === true
+    v.type === 'weapon'
   export const is_bg_data = (v: any): v is IBgData =>
-    v.is_bg_data === true
+    v.type === 'background'
   export const is_entity_data = (v: any): v is IGameObjData =>
     v.is_game_obj_data === true
 

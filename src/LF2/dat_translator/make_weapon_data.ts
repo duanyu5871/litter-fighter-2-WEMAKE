@@ -99,8 +99,7 @@ export function make_weapon_data(info: IWeaponInfo, full_str: string, frames: Re
     base: info,
     weapon_strength,
     frames,
-    indexes,
-    is_weapon_data: true,
+    indexes
   };
 }
 
