@@ -83,7 +83,6 @@ export * from './IWeaponInfo';
 export * from './IWpointInfo';
 
 export interface IBaseData<I = any> {
-  get is_base_data(): true;
   id: string;
   /**
    * @see {IDataMap}
@@ -104,7 +103,6 @@ export interface IGameObjData<
 > extends IBaseData<I> {
   on_dead?: TNextFrame;
   frames: Record<string, IFrameInfo>;
-  get is_game_obj_data(): true;
 }
 
 export interface IEntityData extends IGameObjData<IEntityInfo> {

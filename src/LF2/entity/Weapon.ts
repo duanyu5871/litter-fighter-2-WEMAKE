@@ -16,8 +16,8 @@ export default class Weapon extends Entity<IWeaponInfo, IWeaponData> {
     super.self_update();
     const { holder } = this
     if (holder) {
-      const { wpoint, state } = holder.frame;
-      if (wpoint) { // 武器被丢出
+      const { wpoint } = holder.frame;
+      if (wpoint) { // 被丢出
         const { dvx, dvy, dvz } = wpoint;
         if (dvx !== void 0 || dvy !== void 0 || dvz !== void 0) {
           this.follow_holder()
@@ -29,21 +29,16 @@ export default class Weapon extends Entity<IWeaponInfo, IWeaponData> {
           this.holder = void 0;
         }
       }
-      /*
-        TODO: 
-          武器是否被打掉是不是又攻击方的itr来控制更好呢？
-          这样也许可以实现更丰富的东西。
-          -Gim
-      */
-      if (
-        state === Defines.State.Falling ||
-        state === Defines.State.Lying ||
-        state === Defines.State.Caught
-      ) {
-        this.follow_holder()
-        this.enter_frame(this.data.indexes.in_the_sky);
-        holder.holding = void 0;
-        this.holder = void 0;
+
+      switch (holder.frame.state) {
+        case Defines.State.Falling:
+        case Defines.State.Lying:
+        case Defines.State.Caught:
+          this.follow_holder()
+          this.enter_frame(this.data.indexes.in_the_sky);
+          holder.holding = void 0;
+          this.holder = void 0;
+          break;
       }
     }
   }

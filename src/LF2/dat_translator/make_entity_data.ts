@@ -8,9 +8,7 @@ export function make_entity_data(info: IEntityInfo, frames: Record<string, IFram
     type: 'entity',
     base: info,
     frames: frames,
-    is_entity_data: true,
-    is_game_obj_data: true,
-    is_base_data: true
+    is_entity_data: true
   };
   return ret;
 }

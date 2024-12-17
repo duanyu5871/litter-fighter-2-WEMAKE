@@ -53,8 +53,7 @@ export function make_bg_data(full_str: string, datIndex?: IDatIndex): IBgData | 
     id: datIndex?.id ?? fields.name,
     base: fields,
     layers: [],
-    is_bg_data: true,
-    is_base_data: true
+    is_bg_data: true
   };
   ret.base.name = ret.base.name.replace(/_/g, ' ');
   ret.base.shadow = ret.base.shadow.replace(/.bmp$/, '.png')

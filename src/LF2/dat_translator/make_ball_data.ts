@@ -204,9 +204,7 @@ export function make_ball_data(info: IEntityInfo, frames: Record<string, IFrameI
     type: 'ball',
     base: info,
     frames: frames,
-    is_ball_data: true,
-    is_game_obj_data: true,
-    is_base_data: true
+    is_ball_data: true
   };
   return ret
 }

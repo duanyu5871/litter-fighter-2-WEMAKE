@@ -534,9 +534,7 @@ export function make_character_data(info: IEntityInfo, frames: Record<string, IF
     base: info,
     indexes,
     frames,
-    is_character_data: true,
-    is_game_obj_data: true,
-    is_base_data: true
+    is_character_data: true
   };
   cook_transform_begin_expression_to_hit(ret.frames);
   cook_file_variants(ret);

@@ -106,7 +106,6 @@ export namespace Defines {
   }
   export const VOID_BG: IBgData = {
     type: 'background',
-    is_base_data: true,
     is_bg_data: true,
     layers: [],
     id: 'VOID_BG',
