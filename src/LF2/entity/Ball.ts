@@ -1,18 +1,18 @@
 import type { World } from '../World';
-import type { IBallData, IBallFrameInfo, IEntityInfo, } from '../defines';
+import type { IBallData, IFrameInfo, IEntityInfo, } from '../defines';
 import { Defines, } from '../defines';
 import { BALL_STATES } from '../state/ball';
 import Entity from './Entity';
 import { Factory } from './Factory';
 
-export default class Ball extends Entity<IBallFrameInfo, IEntityInfo, IBallData> {
+export default class Ball extends Entity<IFrameInfo, IEntityInfo, IBallData> {
   static override readonly TAG: string = 'Ball';
   readonly is_ball = true;
   constructor(world: World, data: IBallData) {
     super(world, data, BALL_STATES);
     this.name = "ball: " + data.id
   }
-  override set_frame(v: IBallFrameInfo): void {
+  override set_frame(v: IFrameInfo): void {
     switch (this.frame.behavior) {
       case Defines.BallBehavior._01:
       case Defines.BallBehavior._02:

@@ -1,5 +1,5 @@
 import { IBallData } from "../defines";
-import { IBallFrameInfo } from "../defines/IBallFrameInfo";
+import { IFrameInfo } from "../defines/IFrameInfo";
 import { IDatIndex } from "../defines/IDatIndex";
 import { IEntityInfo } from "../defines/IEntityInfo";
 import { Defines } from "../defines/defines";
@@ -9,7 +9,7 @@ import { CondMaker } from "./CondMaker";
 import { get_next_frame_by_raw_id } from "./get_the_next";
 import { take, take_str } from "./take";
 
-export function make_ball_data(info: IEntityInfo, frames: Record<string, IBallFrameInfo>, datIndex?: IDatIndex): IBallData {
+export function make_ball_data(info: IEntityInfo, frames: Record<string, IFrameInfo>, datIndex?: IDatIndex): IBallData {
 
   info.hp = 500;
 
@@ -41,7 +41,7 @@ export function make_ball_data(info: IEntityInfo, frames: Record<string, IBallFr
         oid: '228',
         x: frame.centerx,
         y: frame.centery,
-        action: { id: '0' }
+        action: { id: '50' }
       })
     } else if ('' + hit_Fa === '8') {
       frame.opoint = frame.opoint || []
@@ -129,8 +129,6 @@ export function make_ball_data(info: IEntityInfo, frames: Record<string, IBallFr
           itr.hit_act = [{ id: '10' }]
         }
       }
-      if (frames[30]) frame.on_rebounding = { id: '30' }
-      if (frames[40]) frame.on_disappearing = { id: '40' }
     } else if (frame.state === Defines.State.Ball_3005) {
       frame.speedz = 0;
       if (frame.bdy && frames[20]) {

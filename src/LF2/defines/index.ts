@@ -1,4 +1,4 @@
-import { IBallFrameInfo } from "./IBallFrameInfo";
+import { IFrameInfo } from "./IBallFrameInfo";
 import { IBgData } from "./IBgData";
 import { ICharacterFrameIndexes } from "./ICharacterFrameIndexes";
 import { IEntityInfo } from "./IEntityInfo";
@@ -128,7 +128,7 @@ export interface IWeaponData extends IGameObjData<IWeaponInfo, IFrameInfo> {
   indexes: IWeaponFrameIndexes;
   get is_weapon_data(): true;
 }
-export interface IBallData extends IGameObjData<IEntityInfo, IBallFrameInfo> {
+export interface IBallData extends IGameObjData<IEntityInfo, IFrameInfo> {
   type: 'ball';
   get is_ball_data(): true;
 }

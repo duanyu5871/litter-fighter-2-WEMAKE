@@ -82,4 +82,12 @@ export interface IFrameInfo {
    * @type {?TNextFrame}
    */
   on_landing?: TNextFrame;
+
+  
+  /**
+   * 原ball的hit_Fa
+   *
+   * @type {?number}
+   */
+  behavior?: number;
 }

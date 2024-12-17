@@ -3,7 +3,7 @@ import {
   IEntityData, IEntityPictureInfo, IStageInfo,
   IWeaponData
 } from '../defines';
-import { IBallFrameInfo } from "../defines/IBallFrameInfo";
+import { IFrameInfo } from "../defines/IBallFrameInfo";
 import { IDatIndex } from "../defines/IDatIndex";
 import { IEntityInfo } from "../defines/IEntityInfo";
 import { IWeaponInfo } from "../defines/IWeaponInfo";
@@ -169,7 +169,7 @@ export default function dat_to_json(
         if (datIndex.id === '5') cook_rudolf_data(cdata);
         break;
       }
-      case '3': ret = make_ball_data(base as IEntityInfo, make_frames<IBallFrameInfo>(full_str, base.files), datIndex); break;
+      case '3': ret = make_ball_data(base as IEntityInfo, make_frames<IFrameInfo>(full_str, base.files), datIndex); break;
       case '5': ret = make_entity_data(base as IEntityInfo, make_frames(full_str, base.files)); break;
       default:
         console.warn('[dat_to_json] unknow dat type:', JSON.stringify(datIndex.type))
@@ -188,7 +188,7 @@ export default function dat_to_json(
       return make_weapon_data(info, full_str, make_frames(full_str, info.files));
     }
     if ('weapon_hit_sound' in base)
-      return make_ball_data(base as IEntityInfo, make_frames<IBallFrameInfo>(full_str, base.files));
+      return make_ball_data(base as IEntityInfo, make_frames<IFrameInfo>(full_str, base.files));
     return make_entity_data(base as IEntityInfo, make_frames(full_str, base.files));
   }
 }        
