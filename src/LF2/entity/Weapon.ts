@@ -1,17 +1,17 @@
 import { World } from "../World";
-import { IFrameInfo, IOpointInfo, IWeaponData, IWeaponInfo } from "../defines";
+import { IWeaponData, IWeaponInfo } from "../defines";
 import { Defines } from "../defines/defines";
 import { WEAPON_STATES } from "../state/weapon";
 import Entity, { GONE_FRAME_INFO } from "./Entity";
 import { Factory } from "./Factory";
-export default class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData> {
+export default class Weapon extends Entity<IWeaponInfo, IWeaponData> {
   readonly is_weapon = true
 
   constructor(world: World, data: IWeaponData) {
     super(world, data, WEAPON_STATES);
     this.name = "Weapon: " + data.id
   }
-  
+
   override self_update(): void {
     super.self_update();
     const { holder } = this
@@ -45,10 +45,6 @@ export default class Weapon extends Entity<IFrameInfo, IWeaponInfo, IWeaponData>
         holder.holding = void 0;
         this.holder = void 0;
       }
-    }
-    if (this.hp <= 0) {
-      // TODO: WEAPON BROKEN. -GIM
-      this.next_frame = GONE_FRAME_INFO;
     }
   }
 }

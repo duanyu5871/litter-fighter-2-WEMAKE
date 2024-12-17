@@ -67,9 +67,8 @@ export interface IVictimRest {
 }
 
 export default class Entity<
-  F extends IFrameInfo = IFrameInfo,
   I extends IEntityInfo = IEntityInfo,
-  D extends IGameObjData<I, F> = IGameObjData<I, F>
+  D extends IGameObjData<I> = IGameObjData<I>
 > {
   static readonly TAG: string = 'Entity';
 
@@ -114,10 +113,10 @@ export default class Entity<
   // set facing(v: TFace) { this.___facing = v; }
   facing: TFace = 1;
 
-  frame: F = EMPTY_FRAME_INFO as F;
+  frame: IFrameInfo = EMPTY_FRAME_INFO;
 
   next_frame: TNextFrame | undefined = void 0;
-  protected _prev_frame: F = EMPTY_FRAME_INFO as F;
+  protected _prev_frame: IFrameInfo = EMPTY_FRAME_INFO;
   protected _catching?: Entity;
   protected _catcher?: Entity;
   readonly is_entity = true
@@ -252,8 +251,17 @@ export default class Entity<
         this.apply_opoints(this.data.base.brokens);
         this.play_sound(this.data.base.dead_sounds);
       }
+
+
+      let nf: IFrameInfo | undefined = void 0;
       if (this.frame.on_dead) {
-        this.enter_frame(this.frame.on_dead)
+        nf = this.get_next_frame(this.frame.on_dead)[0];
+      }
+      if (!nf && this.data.on_dead) {
+        nf = this.get_next_frame(this.data.on_dead)[0];
+      }
+      if (nf) {
+        this.enter_frame(nf)
       }
     }
   }
@@ -421,12 +429,12 @@ export default class Entity<
     return void 0;
   }
 
-  find_auto_frame(): F {
+  find_auto_frame(): IFrameInfo {
     return (
       this.state?.get_auto_frame?.(this) ??
       this.data.frames['0'] ??
       this.frame
-    ) as F // FIXME: fix this 'as'.
+    )  // FIXME: fix this 'as'.
   }
 
   on_spawn_by_emitter(
@@ -489,7 +497,7 @@ export default class Entity<
     return this;
   }
 
-  set_frame(v: F) {
+  set_frame(v: IFrameInfo) {
     this._prev_frame = this.frame;
     this.frame = v;
     const prev_state = this._prev_frame.state;
@@ -682,7 +690,7 @@ export default class Entity<
       if (this._blinking_duration <= 0) {
         if (this._after_blink === Defines.FrameId.Gone) {
           this.next_frame = void 0;
-          this.frame = GONE_FRAME_INFO as F
+          this.frame = GONE_FRAME_INFO;
         }
       }
     }
@@ -1210,7 +1218,7 @@ export default class Entity<
     }
   }
 
-  get_next_frame(which: TNextFrame | string): [F | undefined, INextFrame | string | undefined] {
+  get_next_frame(which: TNextFrame | string): [IFrameInfo | undefined, INextFrame | string | undefined] {
     if (Array.isArray(which)) {
       const l = which.length;
       for (let i = 0; i < l; ++i) {
@@ -1253,21 +1261,21 @@ export default class Entity<
     return [frame, which];
   }
 
-  find_frame_by_id(id: string | undefined): F | undefined {
+  find_frame_by_id(id: string | undefined): IFrameInfo | undefined {
     const r = this.state?.find_frame_by_id?.(this, id);
-    if (r) return r as F; // FIXME: fix this 'as'
+    if (r) return r
 
     switch (id) {
       case void 0:
       case Defines.FrameId.None:
       case Defines.FrameId.Self: return this.frame;
       case Defines.FrameId.Auto: return this.find_auto_frame();
-      case Defines.FrameId.Gone: return GONE_FRAME_INFO as F;
+      case Defines.FrameId.Gone: return GONE_FRAME_INFO;
     }
     if (!this.data.frames[id]) {
       console.warn(Entity.TAG + '::find_frame_by_id', 'frame not find! id:', id);
       debugger;
-      return EMPTY_FRAME_INFO as F;
+      return EMPTY_FRAME_INFO;
     }
     return this.data.frames[id];
   }

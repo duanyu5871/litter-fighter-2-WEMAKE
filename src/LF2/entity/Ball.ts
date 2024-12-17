@@ -5,7 +5,7 @@ import { BALL_STATES } from '../state/ball';
 import Entity from './Entity';
 import { Factory } from './Factory';
 
-export default class Ball extends Entity<IFrameInfo, IEntityInfo, IBallData> {
+export default class Ball extends Entity<IEntityInfo, IBallData> {
   static override readonly TAG: string = 'Ball';
   readonly is_ball = true;
   constructor(world: World, data: IBallData) {

@@ -100,18 +100,18 @@ export interface IDataMap {
 }
 
 export interface IGameObjData<
-  I extends IEntityInfo = IEntityInfo,
-  F extends IFrameInfo = IFrameInfo,
+  I extends IEntityInfo = IEntityInfo
 > extends IBaseData<I> {
-  frames: Record<string, F>;
+  on_dead?: TNextFrame;
+  frames: Record<string, IFrameInfo>;
   get is_game_obj_data(): true;
 }
 
-export interface IEntityData extends IGameObjData<IEntityInfo, IFrameInfo> {
+export interface IEntityData extends IGameObjData<IEntityInfo> {
   type: 'entity';
   get is_entity_data(): true;
 }
-export interface ICharacterData extends IGameObjData<IEntityInfo, IFrameInfo> {
+export interface ICharacterData extends IGameObjData<IEntityInfo> {
   type: 'character';
   indexes: ICharacterFrameIndexes;
   get is_character_data(): true;
@@ -120,13 +120,13 @@ export interface IWeaponStrengthInfo extends Partial<IItrInfo> {
   id: string;
   name: string;
 }
-export interface IWeaponData extends IGameObjData<IWeaponInfo, IFrameInfo> {
+export interface IWeaponData extends IGameObjData<IWeaponInfo> {
   type: 'weapon';
   weapon_strength?: { [x in string]?: IWeaponStrengthInfo };
   indexes: IWeaponFrameIndexes;
   get is_weapon_data(): true;
 }
-export interface IBallData extends IGameObjData<IEntityInfo, IFrameInfo> {
+export interface IBallData extends IGameObjData<IEntityInfo> {
   type: 'ball';
   get is_ball_data(): true;
 }
