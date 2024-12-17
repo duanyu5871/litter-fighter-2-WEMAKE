@@ -1,6 +1,6 @@
 import { Warn } from '../../Log';
 import LF2 from '../LF2';
-import { IEntityPictureInfo, IFrameInfo, IEntityData, ITexturePieceInfo } from '../defines';
+import { IEntityData, IEntityPictureInfo, IFrameInfo, ITexturePieceInfo } from '../defines';
 import read_nums from '../layout/utils/read_nums';
 import { traversal } from '../utils/container_help/traversal';
 import { cook_next_frame } from './preprocess_next_frame';
@@ -27,10 +27,15 @@ export const cook_frame = (lf2: LF2, data: IEntityData, frame: IFrameInfo) => {
     });
   }
 
+  if (frame.next) cook_next_frame(frame.next)
   if (frame.on_dead) cook_next_frame(frame.on_dead)
+  if (frame.on_landing) cook_next_frame(frame.on_landing)
 
   if (frame.bdy?.length) {
-    for (const bdy of frame.bdy) {
+    for (let i = 0; i < frame.bdy.length; ++i) {
+      let bdy = frame.bdy[i];
+      const prefab = bdy.prefab_id !== void 0 ? data.bdy_prefabs?.[bdy.prefab_id] : void 0;
+      if (prefab) bdy = frame.bdy[i] = { ...prefab, ...bdy };
       if (bdy.break_act) cook_next_frame(bdy.break_act)
       if (bdy.hit_act) cook_next_frame(bdy.hit_act)
     }
@@ -39,9 +44,11 @@ export const cook_frame = (lf2: LF2, data: IEntityData, frame: IFrameInfo) => {
     for (let i = 0; i < frame.itr.length; ++i) {
       let itr = frame.itr[i];
       const prefab = itr.prefab_id !== void 0 ? data.itr_prefabs?.[itr.prefab_id] : void 0;
-      if (prefab) itr = frame.itr[i] = { ...prefab, ...itr, prefab_id: void 0 };
-      if (itr.hit_act)
-        cook_next_frame(itr.hit_act)
+      if (prefab) itr = frame.itr[i] = { ...prefab, ...itr };
+
+      if (itr.hit_act) cook_next_frame(itr.hit_act)
+      if (itr.catchingact) cook_next_frame(itr.catchingact)
+      if (itr.caughtact) cook_next_frame(itr.caughtact)
     }
   }
 
@@ -55,7 +62,6 @@ export const cook_frame = (lf2: LF2, data: IEntityData, frame: IFrameInfo) => {
   }
   let pic = frame.pic;
   let pic_info: IEntityPictureInfo | undefined = void 0;
-  // if ('data/spark.json' === data.id) { debugger; }
   if (pic && !('1' in pic)) {
     for (const key in data.base.files) {
       if (data.base.files[key].id === pic.tex) {

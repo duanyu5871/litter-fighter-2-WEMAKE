@@ -4,6 +4,12 @@ import { IRect } from "./IRect";
 import { IRectPair } from "./IRectPair";
 
 export interface IBdyInfo extends IRect {
+  /**
+   * 预制信息id
+   * 
+   * @see {?string}
+   */
+  prefab_id?: string;
 
   /**
    * [WEMAKE]

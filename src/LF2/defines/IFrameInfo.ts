@@ -18,6 +18,12 @@ export interface IFrameInfo {
   pic?: IFramePictureInfo;
   state: number;
   wait: number;
+  
+  /**
+   * wait end, what next?
+   *
+   * @type {TNextFrame}
+   */
   next: TNextFrame;
   dvx?: number;
   dvy?: number;
