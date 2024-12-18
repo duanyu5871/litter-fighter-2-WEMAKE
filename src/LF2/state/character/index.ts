@@ -1,5 +1,6 @@
 import { Defines } from "../../defines/defines";
 import Character from '../../entity/Character';
+import { is_weapon } from "../../entity/type_check";
 import BaseState from "../base/BaseState";
 import { States } from "../base/States";
 import { ENTITY_STATES } from "../entity";
@@ -61,10 +62,32 @@ CHARACTER_STATES.set(Defines.State.Rowing, new Rowing())
 CHARACTER_STATES.set(Defines.State.Drink, new class extends BaseCharacterState {
   override update(e: Character): void {
     super.update(e);
+    // FIXME: 更通用的补充机制。而不是写死。 -Gim
     if (e.holding) {
       e.holding.mp -= 1;
-      if (!e.holding.mp) {
-        e.holding.hp = 0;
+      if (e.holding.data.id === '122') {
+        const next_hp = e.hp + 2
+        if (next_hp < e.max_hp) {
+          e.hp = next_hp;
+        }
+      } else if (e.holding.data.id === '123') {
+        const next_mp = e.mp + 5
+        if (next_mp < e.max_mp) {
+          e.mp = next_mp;
+        }
+      }
+      if (e.holding.mp <= 0) {
+        e.holding.hp = 1;
+
+        if (is_weapon(e.holding)) {
+          e.holding.enter_frame(e.holding.data.indexes.in_the_sky);
+          e.holding.velocities.length = 1;
+          e.holding.velocities[0].set(3 * e.facing, 4, 0)
+          e.holding.holder = void 0;
+          e.holding.follow_holder()
+          e.holding = void 0;
+        }
+        e.enter_frame(Defines.FrameId.Auto)
       }
     }
   }

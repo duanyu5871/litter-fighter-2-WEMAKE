@@ -29,7 +29,11 @@ export default class Weapon extends Entity<IWeaponInfo, IWeaponData> {
           this.holder = void 0;
         }
       }
-
+      if (!this.hp) {
+        this.follow_holder()
+        holder.holding = void 0;
+        this.holder = void 0;
+      }
       switch (holder.frame.state) {
         case Defines.State.Falling:
         case Defines.State.Lying:
