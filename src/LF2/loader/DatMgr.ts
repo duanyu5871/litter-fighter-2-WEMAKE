@@ -11,6 +11,7 @@ import { is_ball_data, is_bg_data, is_character_data, is_entity_data, is_weapon_
 import { traversal } from '../utils/container_help/traversal';
 import { is_str, not_blank_str } from '../utils/type_check';
 import { cook_frame } from './preprocess_frame';
+import { cook_next_frame } from './preprocess_next_frame';
 
 export interface IDataListMap {
   'background': IBgData[];
@@ -80,6 +81,9 @@ class Inner {
       b?.forEach(i => l.add(i));
       c?.forEach(i => l.add(i));
       l.forEach(i => -(not_blank_str(i) && sounds.has(i)) || jobs.push(sounds.load(i, i)))
+
+      if (data.on_dead) cook_next_frame(data.on_dead);
+      if (data.on_exhaustion) cook_next_frame(data.on_exhaustion);
 
       const { frames, base: { files } } = data;
       traversal(files, (_, v) => {

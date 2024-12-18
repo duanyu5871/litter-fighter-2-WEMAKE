@@ -287,7 +287,7 @@ export namespace Defines {
     _16 = 16, Tired = 16,
 
     /**
-     * 
+     * 消耗手中物品
      */
     Drink = 17, _17 = 17,
     _18 = 18, Burning = 18,

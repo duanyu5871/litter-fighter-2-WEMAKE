@@ -58,3 +58,14 @@ CHARACTER_STATES.set(Defines.State.Teleport_ToFarthestAlly, new Teleport_ToFarth
 CHARACTER_STATES.set(Defines.State.TransformToLouisEx, new TransformToLouisEX())
 CHARACTER_STATES.set(Defines.State.Rowing, new Rowing())
 
+CHARACTER_STATES.set(Defines.State.Drink, new class extends BaseCharacterState {
+  override update(e: Character): void {
+    super.update(e);
+    if (e.holding) {
+      e.holding.mp -= 1;
+      if (!e.holding.mp) {
+        e.holding.hp = 0;
+      }
+    }
+  }
+}())
