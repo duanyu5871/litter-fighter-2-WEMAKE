@@ -9,7 +9,8 @@ import { IStageInfo } from "../defines/IStageInfo";
 import { IStageObjectInfo } from "../defines/IStageObjectInfo";
 import { IStagePhaseInfo } from "../defines/IStagePhaseInfo";
 import { Defines } from "../defines/defines";
-import { is_character } from "../entity/type_check";
+import Entity from "../entity/Entity";
+import { is_character, is_weapon } from "../entity/type_check";
 import { find } from "../utils/container_help/find";
 import { random_in } from "../utils/math/random";
 import { is_num } from "../utils/type_check";
@@ -21,7 +22,7 @@ export default class Stage {
   readonly world: World;
   readonly data: IStageInfo;
   readonly bg: Background;
-  readonly enemy_team: string;
+  readonly team: string;
   private _callbacks = new Callbacks<IStageCallbacks>();
   private _disposed: boolean = false;
   private _disposers: (() => void)[] = [];
@@ -73,8 +74,7 @@ export default class Stage {
       this.data = Defines.VOID_STAGE;
       this.bg = new Background(world, Defines.VOID_BG);
     }
-    this.enemy_team = new_team()
-    this.enter_phase(0);
+    this.team = new_team()
   }
 
   private _stop_bgm?: () => void;
@@ -96,12 +96,9 @@ export default class Stage {
   }
 
   enter_phase(idx: number) {
-
     if (this._cur_phase_idx === idx) return;
-
     const old: IStagePhaseInfo | undefined = this.data.phases[this._cur_phase_idx]
     const phase: IStagePhaseInfo | undefined = this.data.phases[this._cur_phase_idx = idx]
-
     this._callbacks.emit('on_phase_changed')(this, phase, old);
     if (!phase) return;
     const { objects } = phase;
@@ -112,10 +109,17 @@ export default class Stage {
     if (is_num(phase.cam_jump_to_x)) {
       this.world.camera.x = phase.cam_jump_to_x;
     }
+
     if (is_num(phase.player_jump_to_x)) {
       const x = phase.player_jump_to_x;
-      for (const [, p] of this.world.player_slot_characters) {
-        p.position.x = random_in(x - 50, x + 50);
+
+      const player_teams = new Set<string>();
+      for (const [, v] of this.lf2.world.player_slot_characters) {
+        player_teams.add(v.team)
+      }
+      for (const entity of this.world.entities) {
+        if (is_character(entity) && player_teams.has(entity.team))
+          entity.position.x = random_in(x, x + 50);
       }
     }
   }
@@ -184,9 +188,23 @@ export default class Stage {
     this._disposed = true;
     for (const f of this._disposers) f();
     this.bg.dispose();
-    for (const so of this.items) {
-      so.dispose();
+    for (const item of this.items)
+      item.dispose();
+
+    const temp: Entity[] = []
+    const player_teams = new Set<string>();
+    for (const [, v] of this.lf2.world.player_slot_characters) {
+      player_teams.add(v.team)
     }
+
+    for (const e of this.world.entities) {
+      if (is_character(e) && player_teams.has(e.team))
+        continue;
+      else if (is_weapon(e) && e.holder && player_teams.has(e.holder.team))
+        continue;
+      temp.push(e)
+    }
+    this.world.del_entities(...temp)
   }
   all_boss_dead(): boolean {
     return !find(this.items, i => i.info.is_boss)
@@ -197,20 +215,20 @@ export default class Stage {
   is_last_phase(): boolean {
     return this._cur_phase_idx >= this.data.phases.length - 1;
   }
-  handle_empty_stage_object(stage_object: Item) {
-    const { times, is_soldier } = stage_object.info;
+  handle_empty_stage_item(item: Item) {
+    const { times, is_soldier } = item.info;
     if (is_soldier) {
       if (this.all_boss_dead()) {
-        this.items.delete(stage_object);
-        stage_object.dispose();
+        this.items.delete(item);
+        item.dispose();
       } else if (!is_num(times) || times > 0) {
-        stage_object.spawn();
+        item.spawn();
       }
     } else if (times) {
-      stage_object.spawn();
+      item.spawn();
     } else {
-      this.items.delete(stage_object);
-      stage_object.dispose();
+      this.items.delete(item);
+      item.dispose();
     }
     if (this.all_enemies_dead()) {
       this.enter_phase(this._cur_phase_idx + 1);

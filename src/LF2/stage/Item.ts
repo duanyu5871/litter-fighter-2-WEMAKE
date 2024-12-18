@@ -1,4 +1,3 @@
-import { BotController } from "../controller/BotController";
 import { IEntityData } from "../defines";
 import { IStageObjectInfo } from "../defines/IStageObjectInfo";
 import { Defines } from "../defines/defines";
@@ -94,7 +93,6 @@ export default class Item {
     if (is_num(y)) e.position.y = y;
 
     if (is_character(e)) {
-      e.team = this.stage.enemy_team;
       e.name = e.data.base.name;
     } else if (is_weapon(e) && !is_num(y)) {
       e.position.y = 450;
@@ -103,7 +101,7 @@ export default class Item {
     if (is_entity(e)) {
       e.callbacks.add(this.entity_callback);
     }
-
+    e.team = this.stage.team;
     e.attach();
 
     if (is_str(act)) e.enter_frame(act);
@@ -115,9 +113,7 @@ export default class Item {
   dispose(): void {
     this.stage.items.delete(this);
     for (const e of this.entities) {
-      if (is_entity(e))
-        e.callbacks.del(this.entity_callback);
-      this.world.del_entities(e)
+      e.callbacks.del(this.entity_callback);
     }
   }
 }
