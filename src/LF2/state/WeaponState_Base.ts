@@ -1,11 +1,10 @@
-import { Defines, IBdyInfo, IFrameInfo, IItrInfo } from "../../defines";
-import Entity from "../../entity/Entity";
-import Weapon from "../../entity/Weapon";
-import { ICube } from "../../World";
-import BaseState, { WhatNext } from "../base/BaseState";
+import { Defines, IBdyInfo, IFrameInfo, IItrInfo } from "../defines";
+import type Entity from "../entity/Entity";
+import type { ICube } from "../World";
+import State_Base, { WhatNext } from "./State_Base";
 
-export default class BaseWeaponState extends BaseState<Weapon> {
-  override on_collision(attacker: Weapon, target: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
+export default class WeaponState_Base extends State_Base<Entity> {
+  override on_collision(attacker: Entity, target: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
     if (attacker.frame.state === Defines.State.Weapon_OnHand) {
       return;
     }
@@ -18,7 +17,7 @@ export default class BaseWeaponState extends BaseState<Weapon> {
   }
 
   override before_be_collided(
-    attacker: Entity, target: Weapon,
+    attacker: Entity, target: Entity,
     itr: IItrInfo, bdy: IBdyInfo,
     a_cube: ICube, b_cube: ICube
   ): WhatNext {
@@ -37,7 +36,7 @@ export default class BaseWeaponState extends BaseState<Weapon> {
   }
 
   override on_be_collided(
-    attacker: Entity, target: Weapon,
+    attacker: Entity, target: Entity,
     itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube
   ): void {
     const spark_x = (Math.max(a_cube.left, b_cube.left) + Math.min(a_cube.right, b_cube.right)) / 2;
@@ -66,7 +65,7 @@ export default class BaseWeaponState extends BaseState<Weapon> {
     }
   }
 
-  override get_auto_frame(e: Weapon): IFrameInfo | undefined {
+  override get_auto_frame(e: Entity): IFrameInfo | undefined {
     const { frames, indexes } = e.data;
     if (e.position.y > 0) return indexes?.in_the_sky ? frames[indexes.in_the_sky] : void 0;
     return indexes?.on_ground ? frames[indexes.on_ground] : void 0;

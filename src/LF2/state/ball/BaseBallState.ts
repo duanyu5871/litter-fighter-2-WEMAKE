@@ -3,9 +3,9 @@ import Ball from "../../entity/Ball";
 import Entity from "../../entity/Entity";
 import { is_character, is_weapon } from "../../entity/type_check";
 import { ICube } from "../../World";
-import BaseState from "../base/BaseState";
+import State_Base from "../State_Base";
 
-export default class BaseBallState<E extends Ball = Ball> extends BaseState<E> {
+export default class BaseBallState<E extends Ball = Ball> extends State_Base<E> {
   override update(e: E): void {
     e.handle_ground_velocity_decay();
     const frame = e.get_frame();
@@ -58,6 +58,9 @@ export default class BaseBallState<E extends Ball = Ball> extends BaseState<E> {
           break;
       }
       self.velocities.length = 1
+      target.velocities[0].x = 0;
+      target.velocities[0].z = 0;
+      target.velocities[0].y = 0;
     }
   }
   override on_be_collided(attacker: Entity, target: E, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {

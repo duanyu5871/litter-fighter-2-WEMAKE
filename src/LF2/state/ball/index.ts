@@ -1,8 +1,8 @@
 
 import { Defines } from "../../defines/defines";
 import Ball from "../../entity/Ball";
-import { States } from "../base/States";
-import { ENTITY_STATES } from "../entity";
+import { States } from "../States";
+import { ENTITY_STATES } from "..";
 import BaseBallState from "./BaseBallState";
 
 export const BALL_STATES = new States<Ball>();

@@ -4,9 +4,9 @@ import Entity from '../../entity/Entity';
 import { same_face, turn_face } from '../../entity/face_helper';
 import { is_character, is_weapon } from '../../entity/type_check';
 import { ICube } from '../../World';
-import BaseState, { WhatNext } from "../base/BaseState";
+import State_Base, { WhatNext } from "../State_Base";
 
-export default class BaseCharacterState extends BaseState<Character> {
+export default class BaseCharacterState extends State_Base<Character> {
   override update(e: Character): void {
     e.handle_gravity();
     e.handle_ground_velocity_decay();
@@ -188,7 +188,9 @@ export default class BaseCharacterState extends BaseState<Character> {
           const aface: TFace = Defines.ItrEffect.Explosion === itr.effect ?
             (target.position.x > attacker.position.x ? -1 : 1) :
             attacker.facing;
-          target.fall_value = 0;
+          target.fall_value = target.fall_value_max;
+          target.defend_value = target.defend_value_max;
+          target.resting = 0;
           target.velocities.length = 1;
           target.velocities[0].y = itr.dvy ?? 4;
           target.velocities[0].z = 0;

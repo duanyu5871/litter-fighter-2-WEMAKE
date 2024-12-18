@@ -1,19 +1,19 @@
-import { IFrameInfo } from "../../defines";
-import type Weapon from "../../entity/Weapon";
-import BaseWeaponState from "./Base";
+import { IFrameInfo } from "../defines";
+import type Entity from "../entity/Entity";
+import WeaponState_Base from "./WeaponState_Base";
 
-export default class InTheSky extends BaseWeaponState {
-  protected _unhurt_weapons = new Set<Weapon>();
-  override get_gravity(e: Weapon) {
+export default class WeaponState_InTheSky extends WeaponState_Base {
+  protected _unhurt_weapons = new Set<Entity>();
+  override get_gravity(e: Entity) {
     return e.world.gravity * 0.6
   };
-  override enter(e: Weapon, prev_frame: IFrameInfo): void {
+  override enter(e: Entity, prev_frame: IFrameInfo): void {
     this._unhurt_weapons.add(e);
   }
-  override leave(e: Weapon, next_frame: IFrameInfo): void {
+  override leave(e: Entity, next_frame: IFrameInfo): void {
     this._unhurt_weapons.delete(e);
   }
-  override on_landing(e: Weapon): void {
+  override on_landing(e: Entity): void {
     const { y: vy } = e.velocity;
     const { base, indexes } = e.data
     const dvy = Math.floor(-vy * (base.bounce || 0));
@@ -28,7 +28,7 @@ export default class InTheSky extends BaseWeaponState {
       if (base.drop_hurt) e.hp -= base.drop_hurt;
     }
   }
-  override update(e: Weapon): void {
+  override update(e: Entity): void {
     e.handle_gravity();
     e.handle_ground_velocity_decay();
     e.handle_frame_velocity();

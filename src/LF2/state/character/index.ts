@@ -1,9 +1,9 @@
 import { Defines } from "../../defines/defines";
 import Character from '../../entity/Character';
 import { is_weapon } from "../../entity/type_check";
-import BaseState from "../base/BaseState";
-import { States } from "../base/States";
-import { ENTITY_STATES } from "../entity";
+import State_Base from "../State_Base";
+import { States } from "../States";
+import { ENTITY_STATES } from "..";
 import BaseCharacterState from "./Base";
 import Burning from "./Burning";
 import Dash from "./Dash";
@@ -33,7 +33,7 @@ CHARACTER_STATES.set(Defines.State.Burning, new Burning());
 CHARACTER_STATES.set(Defines.State.Frozen, new Frozen());
 CHARACTER_STATES.set(Defines.State.Lying, new Lying())
 
-CHARACTER_STATES.set(Defines.State.Caught, new class extends BaseState<Character> {
+CHARACTER_STATES.set(Defines.State.Caught, new class extends State_Base<Character> {
   override enter(_e: Character): void {
     _e.velocities[0].set(0, 0, 0);
   }

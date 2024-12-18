@@ -11,7 +11,10 @@ import { new_id, new_team } from './base/new_id';
 import { KEY_NAME_LIST } from './controller/BaseController';
 import LocalController from "./controller/LocalController";
 import {
-  Defines, IBgData, IStageInfo, IEntityData, TFace
+  Defines, IBgData,
+  IEntityData,
+  IStageInfo,
+  TFace
 } from './defines';
 import ditto, {
   IKeyboard,
@@ -21,13 +24,13 @@ import ditto, {
   IZip
 } from "./ditto";
 
+import { BallsHelper } from './BallsHelper';
 import { CharactersHelper } from './CharactersHelper';
 import { WeaponsHelper } from './WeaponsHelper';
 import Ditto from './ditto';
 import './entity/Ball';
 import Character from './entity/Character';
 import Entity from './entity/Entity';
-import Weapon from './entity/Weapon';
 import { ILayoutInfo } from './layout/ILayoutInfo';
 import Layout, { ICookedLayoutInfo } from './layout/Layout';
 import DatMgr from './loader/DatMgr';
@@ -39,7 +42,6 @@ import { arithmetic_progression } from './utils/math/arithmetic_progression';
 import float_equal from './utils/math/float_equal';
 import { random_get, random_in, random_take } from './utils/math/random';
 import { is_arr, is_num, is_str, not_empty_str } from './utils/type_check';
-import { BallsHelper } from './BallsHelper';
 
 const cheat_info_pair = (n: Defines.Cheats) => ['' + n, {
   keys: Defines.CheatKeys[n],
@@ -190,16 +192,16 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     return ret;
   }
 
-  add_weapon(data: IEntityData, num: number, team?: string): Weapon[];
-  add_weapon(id: string, num: number, team?: string): Weapon[];
-  add_weapon(data: IEntityData | string | undefined, num: number, team?: string): Weapon[] {
+  add_weapon(data: IEntityData, num: number, team?: string): Entity[];
+  add_weapon(id: string, num: number, team?: string): Entity[];
+  add_weapon(data: IEntityData | string | undefined, num: number, team?: string): Entity[] {
     if (typeof data === 'string')
       data = this.datas.find_weapon(data)
     if (!data)
       return [];
-    const ret: Weapon[] = []
+    const ret: Entity[] = []
     while (--num >= 0) {
-      const e = new Weapon(this.world, data);
+      const e = new Entity(this.world, data);
       if (not_empty_str(team)) e.team = team;
       this.random_entity_info(e).attach();
       ret.push(e);
@@ -346,10 +348,10 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   remove_all_entities() {
     this.world.del_entities(...this.world.entities);
   }
-  add_random_weapon(num = 1, duplicate = false): Weapon[] {
+  add_random_weapon(num = 1, duplicate = false): Entity[] {
     const src_arr = [...this.datas.weapons];
     let tmp_arr = [...src_arr];
-    const ret: Weapon[] = []
+    const ret: Entity[] = []
     while (--num >= 0) {
 
       const d = duplicate ? random_get(tmp_arr) : random_take(tmp_arr);

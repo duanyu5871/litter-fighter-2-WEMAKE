@@ -13,7 +13,6 @@ import Ball from './entity/Ball';
 import Character from './entity/Character';
 import Entity from './entity/Entity';
 import { Factory } from './entity/Factory';
-import Weapon from './entity/Weapon';
 import { is_ball, is_base_ctrl, is_character, is_local_ctrl, is_weapon } from './entity/type_check';
 import { EntityRender } from './renderer/EntityRender';
 import Stage from './stage/Stage';
@@ -277,7 +276,7 @@ export class World {
       e.position.z = near;
   }
 
-  restrict_weapon(e: Weapon) {
+  restrict_weapon(e: Entity) {
     if (this.disposed) return;
     if (!this.bg) return;
     const { left, right, near, far } = this.bg.data.base;

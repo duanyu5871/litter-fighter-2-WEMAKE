@@ -10,8 +10,7 @@ import { IBaseData, IBdyInfo, ICpointInfo, IEntityData, IFrameInfo, IItrInfo, IN
 import { Defines } from '../defines/defines';
 import Ditto from '../ditto';
 import { IVector3 } from '../ditto/IVector3';
-import { States, type BaseState } from '../state/base';
-import { ENTITY_STATES } from '../state/entity';
+import { type State_Base } from '../state/State_Base';
 import { random_get } from '../utils/math/random';
 import { is_positive, is_str } from '../utils/type_check';
 import type Character from './Character';
@@ -19,6 +18,7 @@ import { Factory } from './Factory';
 import type IEntityCallbacks from './IEntityCallbacks';
 import { turn_face } from './face_helper';
 import { is_character, is_weapon_data } from './type_check';
+import { States, ENTITY_STATES } from '../state';
 export const EMPTY_PIECE: ITexturePieceInfo = {
   tex: '', x: 0, y: 0, w: 0, h: 0,
   pixel_h: 0, pixel_w: 0,
@@ -79,6 +79,7 @@ export default class Entity {
   readonly position = new Ditto.Vector3(0, 0, 0);
   protected _resting = 0;
   get resting() { return this._resting; }
+  set resting(v: number) { this._resting = v; }
 
   private _fall_value = Defines.DEFAULT_FALL_VALUE_MAX;
   get fall_value(): number { return this._fall_value; }
@@ -299,10 +300,10 @@ export default class Entity {
   get a_rest(): number { return this._a_rest }
 
 
-  protected _state: BaseState | undefined;
+  protected _state: State_Base | undefined;
 
 
-  set state(v: BaseState | undefined) {
+  set state(v: State_Base | undefined) {
     if (this._state === v) return;
     this._state?.leave?.(this, this.get_frame())
     this._state = v;
@@ -608,7 +609,7 @@ export default class Entity {
    * 实体响应重力
    * 
    * 本质就是增加y轴方向向下的速度，
-   * 有`velocity.y -= BaseState.get_gravity() ?? World.gravity`
+   * 有`velocity.y -= State_Base.get_gravity() ?? World.gravity`
    * 
    * 以下情况不响应重力:
    * 
@@ -620,7 +621,7 @@ export default class Entity {
    * 
    * @see {IItrInfo.shaking}
    * @see {IItrInfo.motionless}
-   * @see {BaseState.get_gravity}
+   * @see {State_Base.get_gravity}
    * @see {World.gravity}
    */
   handle_gravity() {
@@ -700,12 +701,40 @@ export default class Entity {
       }
     }
 
+
+    if (this.holder) {
+      const { wpoint } = this.holder.frame;
+      if (wpoint) { // 被丢出
+        const { dvx, dvy, dvz } = wpoint;
+        if (dvx !== void 0 || dvy !== void 0 || dvz !== void 0) {
+          this.follow_holder()
+          this.enter_frame(this.data.indexes?.throwing);
+          const vz = this.holder.controller ? this.holder.controller.UD * (dvz || 0) : 0;
+          const vx = (dvx || 0 - Math.abs(vz / 2)) * this.facing
+          this.velocities[0].set(vx, dvy || 0, vz)
+          this.holder.holding = void 0;
+          this.holder = void 0;
+        }
+      }
+      if (this.hp <= 0 && this.holder) {
+        this.follow_holder()
+        this.holder.holding = void 0;
+        this.holder = void 0;
+      }
+    }
+
     switch (this.frame.state) {
+      case Defines.State.Falling:
       case Defines.State.Lying:
-        this._resting = 0;
-        this.fall_value = this.fall_value_max;
-        this.defend_value = this.defend_value_max;
+      case Defines.State.Caught: {
+        if (this.holding) {
+          this.holding.follow_holder()
+          this.holding.enter_frame(this.data.indexes?.in_the_sky);
+          this.holding.holder = void 0;
+          this.holding = void 0;
+        }
         break;
+      }
       case Defines.State.Burning:
       case Defines.State.Frozen:
       case Defines.State.Injured:
@@ -731,6 +760,8 @@ export default class Entity {
         }
       }
     }
+
+
   }
 
   update(): void {
@@ -1316,3 +1347,4 @@ export default class Entity {
 }
 
 Factory.inst.set_entity_creator('entity', (...args) => new Entity(...args));
+Factory.inst.set_entity_creator('weapon', (...args) => new Entity(...args));

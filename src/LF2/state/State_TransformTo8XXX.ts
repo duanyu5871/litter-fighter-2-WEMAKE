@@ -1,12 +1,11 @@
-import { new_team } from "../../base";
-import { BotController } from "../../controller/BotController";
-import { Defines } from "../../defines/defines";
-import type Entity from "../../entity/Entity";
-import { Factory } from "../../entity/Factory";
-import { is_character } from "../../entity/type_check";
-import BaseState from "../base/BaseState";
+import { new_team } from "../base";
+import { Defines } from "../defines/defines";
+import type Entity from "../entity/Entity";
+import { Factory } from "../entity/Factory";
+import { is_character } from "../entity/type_check";
+import State_Base from "./State_Base";
 
-export default class TransformTo8XXX extends BaseState<Entity> {
+export default class State_TransformTo8XXX extends State_Base {
   override enter(e: Entity): void {
     const oid = '' + (this.state - 8000);
     const data = e.lf2.datas.find(oid);

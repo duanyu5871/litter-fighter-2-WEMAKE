@@ -1,11 +1,11 @@
-import type { IBdyInfo, IFrameInfo, IItrInfo, TNextFrame } from "../../defines";
-import type Entity from "../../entity/Entity";
-import type { ICube } from "../../World";
+import type { IBdyInfo, IFrameInfo, IItrInfo, TNextFrame } from "../defines";
+import type Entity from "../entity/Entity";
+import type { ICube } from "../World";
 export enum WhatNext {
   Interrupt = 1,
   Continue = 0,
 }
-export class BaseState<E extends Entity = Entity> {
+export class State_Base<E extends Entity = Entity> {
   state: number = -1;
   update(e: E): void { };
   enter?(e: E, prev_frame: IFrameInfo): void;
@@ -45,4 +45,4 @@ export class BaseState<E extends Entity = Entity> {
 
   find_frame_by_id?(e: E, id: string | undefined): IFrameInfo | undefined
 }
-export default BaseState;
+export default State_Base;
