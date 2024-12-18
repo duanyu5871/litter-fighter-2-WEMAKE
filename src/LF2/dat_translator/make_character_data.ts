@@ -1,4 +1,4 @@
-import { ICharacterData, IEntityInfo, IFrameInfo, TNextFrame } from '../defines';
+import { IEntityData, IEntityInfo, IFrameInfo, TNextFrame } from '../defines';
 import { IFrameIndexes } from "../defines/IFrameIndexes";
 import { INextFrame } from "../defines/INextFrame";
 import { Defines } from '../defines/defines';
@@ -31,7 +31,7 @@ const set_hold_turn_back = (frame: IFrameInfo, back_frame_id: string = '') => {
   frame.hold = frame.hold || {}
   frame.hold.B = { id: back_frame_id, wait: 'i', facing: FacingFlag.Backward }
 }
-export function make_character_data(info: IEntityInfo, frames: Record<string, IFrameInfo>): ICharacterData {
+export function make_character_data(info: IEntityInfo, frames: Record<string, IFrameInfo>): IEntityData {
   const walking_frame_rate = take_number(info, 'walking_frame_rate', 3);
   const running_frame_rate = take_number(info, 'running_frame_rate', 3);
   const walking_speed = take_number(info, 'walking_speed', 0);
@@ -528,7 +528,7 @@ export function make_character_data(info: IEntityInfo, frames: Record<string, IF
     landing_2: '219',
   };
 
-  const ret: ICharacterData = {
+  const ret: IEntityData = {
     id: '',
     type: 'character',
     base: info,
@@ -574,7 +574,7 @@ function cook_transform_begin_expression_to_hit<F extends IFrameInfo = IFrameInf
   }
 }
 
-function cook_file_variants(ret: ICharacterData) {
+function cook_file_variants(ret: IEntityData) {
   const file_keys = Object.keys(ret.base.files);
   if (file_keys.length && file_keys.length % 2 === 0) {
     file_keys.sort();

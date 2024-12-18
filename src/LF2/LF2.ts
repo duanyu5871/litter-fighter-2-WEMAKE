@@ -11,7 +11,7 @@ import { new_id, new_team } from './base/new_id';
 import { KEY_NAME_LIST } from './controller/BaseController';
 import LocalController from "./controller/LocalController";
 import {
-  Defines, IBgData, ICharacterData, IStageInfo, IWeaponData, TFace
+  Defines, IBgData, IEntityData, IStageInfo, IWeaponData, TFace
 } from './defines';
 import ditto, {
   IKeyboard,
@@ -173,9 +173,9 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     e.position.y = 550;
     return e;
   }
-  add_character(data: ICharacterData, num: number, team?: string): Character[];
+  add_character(data: IEntityData, num: number, team?: string): Character[];
   add_character(id: string, num: number, team?: string): Character[];
-  add_character(data: ICharacterData | string | undefined, num: number, team?: string): Character[] {
+  add_character(data: IEntityData | string | undefined, num: number, team?: string): Character[] {
     if (typeof data === 'string')
       data = this.datas.find_character(data)
     if (!data)

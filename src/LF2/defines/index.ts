@@ -93,7 +93,7 @@ export interface IBaseData<I = any> {
 export interface IDataMap {
   'background': IBgData;
   'entity': IEntityData;
-  'character': ICharacterData;
+  'character': IEntityData;
   'weapon': IWeaponData;
   'ball': IEntityData;
 }
@@ -102,14 +102,10 @@ export interface IEntityData<I extends IEntityInfo = IEntityInfo> extends IBaseD
   type: 'entity' | 'character' | 'weapon' | 'ball';
   on_dead?: TNextFrame;
   on_exhaustion?: TNextFrame;
+  indexes?: IFrameIndexes;
   bdy_prefabs?: { [x in string]?: IBdyPrefab };
   itr_prefabs?: { [x in string]?: IItrPrefab };
   frames: Record<string, IFrameInfo>;
-}
-
-export interface ICharacterData extends IEntityData<IEntityInfo> {
-  type: 'character';
-  indexes?: IFrameIndexes;
 }
 export interface IWeaponData extends IEntityData<IWeaponInfo> {
   type: 'weapon';

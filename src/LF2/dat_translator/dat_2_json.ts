@@ -1,11 +1,9 @@
 import {
-  IEntityData, IBaseData, IBgData, ICharacterData,
-  IEntityPictureInfo, IFrameInfo, IStageInfo,
-  IWeaponData
+  IBaseData, IBgData, IEntityData,
+  IEntityPictureInfo, IFrameInfo, IStageInfo
 } from '../defines';
 import { IDatIndex } from "../defines/IDatIndex";
 import { IEntityInfo } from "../defines/IEntityInfo";
-import { IWeaponInfo } from "../defines/IWeaponInfo";
 import { Defines } from '../defines/defines';
 import { set_obj_field } from "../utils/container_help/set_obj_field";
 import { match_block_once } from '../utils/string_parser/match_block';

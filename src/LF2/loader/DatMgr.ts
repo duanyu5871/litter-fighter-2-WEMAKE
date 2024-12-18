@@ -3,7 +3,7 @@ import LF2 from '../LF2';
 import { BallController } from '../controller/BallController';
 import { BotController } from '../controller/BotController';
 import { InvalidController } from '../controller/InvalidController';
-import { IBgData, ICharacterData, IDataMap, IEntityData, IStageInfo, IWeaponData } from '../defines';
+import { IBgData, IEntityData, IDataMap, IStageInfo, IWeaponData } from '../defines';
 import { Defines } from '../defines/defines';
 import { TData } from '../entity/Entity';
 import { Factory } from '../entity/Factory';
@@ -16,7 +16,7 @@ import { cook_next_frame } from './preprocess_next_frame';
 export interface IDataListMap {
   'background': IBgData[];
   'entity': IEntityData[];
-  'character': ICharacterData[];
+  'character': IEntityData[];
   'weapon': IWeaponData[];
   'ball': IEntityData[];
   'all': TData[]
@@ -231,9 +231,9 @@ export default class DatMgr {
     return is_str(arg_0) ? this.weapons.find(v => v.id === arg_0) : this.weapons.find(arg_0)
   }
 
-  find_character(id: string): ICharacterData | undefined
-  find_character(predicate: IFindPredicate<ICharacterData>): ICharacterData | undefined;
-  find_character(arg_0: string | IFindPredicate<ICharacterData>): ICharacterData | undefined {
+  find_character(id: string): IEntityData | undefined
+  find_character(predicate: IFindPredicate<IEntityData>): IEntityData | undefined;
+  find_character(arg_0: string | IFindPredicate<IEntityData>): IEntityData | undefined {
     return is_str(arg_0) ? this.characters.find(v => v.id === arg_0) : this.characters.find(arg_0)
   }
 
@@ -243,10 +243,10 @@ export default class DatMgr {
     return is_str(arg_0) ? this.backgrounds.find(v => v.id === arg_0) : this.backgrounds.find(arg_0)
   }
 
-  get_characters_of_group(group: string): ICharacterData[] {
+  get_characters_of_group(group: string): IEntityData[] {
     return this.characters.filter(v => v.base.group && v.base.group.indexOf(group) >= 0)
   }
-  get_characters_not_in_group(group: string): ICharacterData[] {
+  get_characters_not_in_group(group: string): IEntityData[] {
     return this.characters.filter(v => !v.base.group || v.base.group.indexOf(group) < 0)
   }
 }

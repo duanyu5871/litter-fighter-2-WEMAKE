@@ -6,7 +6,7 @@ import { ICube } from '../World';
 import { Callbacks, new_id, new_team, type NoEmitCallbacks } from '../base';
 import { IExpression } from '../base/Expression';
 import { BaseController } from '../controller/BaseController';
-import { IBaseData, IBdyInfo, ICharacterData, ICpointInfo, IEntityData, IFrameInfo, IItrInfo, INextFrame, IOpointInfo, ITexturePieceInfo, IWeaponData, TFace, TNextFrame } from '../defines';
+import { IBaseData, IBdyInfo, ICpointInfo, IEntityData, IFrameInfo, IItrInfo, INextFrame, IOpointInfo, ITexturePieceInfo, IWeaponData, TFace, TNextFrame } from '../defines';
 import { IEntityInfo } from "../defines/IEntityInfo";
 import { Defines } from '../defines/defines';
 import Ditto from '../ditto';
@@ -19,7 +19,7 @@ import type Character from './Character';
 import { Factory } from './Factory';
 import type IEntityCallbacks from './IEntityCallbacks';
 import { turn_face } from './face_helper';
-import { is_character, is_character_data, is_weapon_data } from './type_check';
+import { is_character, is_weapon_data } from './type_check';
 export const EMPTY_PIECE: ITexturePieceInfo = {
   tex: '', x: 0, y: 0, w: 0, h: 0,
   pixel_h: 0, pixel_w: 0,
@@ -44,7 +44,7 @@ export const GONE_FRAME_INFO: IFrameInfo = {
   centerx: 0,
   centery: 0
 };
-export type TData = IBaseData | ICharacterData | IWeaponData | IEntityData | IEntityData
+export type TData = IBaseData | IEntityData | IWeaponData | IEntityData | IEntityData
 export interface CollisionInfo {
   victim: Entity
   attacker: Entity,
@@ -372,7 +372,7 @@ export default class Entity<
       this._mp_max = data.base.mp ?? Defines.DEFAULT_MP;
     }
 
-    if (is_character_data(data)) {
+    if (data.type === 'character') {
       this._mp_r_spd_min = data.base.mp_r_min_spd ?? Defines.DEFAULT_MP_RECOVERY_MIN_SPEED;
       this._mp_r_spd_max = data.base.mp_r_max_spd ?? Defines.DEFAULT_MP_RECOVERY_MAX_SPEED;
     } else {

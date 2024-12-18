@@ -1,15 +1,15 @@
 import { useEffect, useMemo, useState } from 'react';
 import type LF2 from '../LF2/LF2';
-import { Defines, type ICharacterData } from '../LF2/defines';
+import { Defines, type IEntityData } from '../LF2/defines';
 import Select, { ISelectProps } from './Select';
 
-export interface CharacterSelectProps extends ISelectProps<ICharacterData, string> {
+export interface CharacterSelectProps extends ISelectProps<IEntityData, string> {
   lf2: LF2;
   show_all?: boolean;
 }
 export default function CharacterSelect(props: CharacterSelectProps) {
   const { lf2, disabled, show_all = false, ...remains } = props;
-  const [characters, set_characters] = useState<ICharacterData[]>(lf2.datas.characters);
+  const [characters, set_characters] = useState<IEntityData[]>(lf2.datas.characters);
 
   useEffect(() => {
     set_characters(lf2.datas.characters);

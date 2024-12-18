@@ -1,7 +1,7 @@
-import { Defines, ICharacterData } from "../defines";
+import { Defines, IEntityData } from "../defines";
 import { CondMaker } from "./CondMaker";
 
-export function cook_louis_data(cdata: ICharacterData) {
+export function cook_louis_data(cdata: IEntityData) {
   for (const k in cdata.frames) {
     const ja = cdata.frames[k].hit?.sequences?.['ja'];
     if (!ja || !('id' in ja) || ja.id !== '300') continue;
@@ -10,7 +10,7 @@ export function cook_louis_data(cdata: ICharacterData) {
       .done()
   }
 }
-export function cook_rudolf_data(cdata: ICharacterData) {
+export function cook_rudolf_data(cdata: IEntityData) {
   for (const k in cdata.frames) {
     const opoints = cdata.frames[k].opoint;
     if (opoints) {

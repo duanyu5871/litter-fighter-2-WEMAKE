@@ -1,4 +1,3 @@
-import { IEntityData, ICharacterData, IWeaponData } from ".";
 import { GameKey } from "./GameKey";
 import { IBgData } from "./IBgData";
 import type { IItrInfo } from "./IItrInfo";
