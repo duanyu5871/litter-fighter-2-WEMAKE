@@ -8,11 +8,10 @@ export default class Falling extends BaseCharacterState {
   _begin_velocty_y_map = new Map<string, number>();
 
   override enter(e: Character, prev_frame: IFrameInfo): void {
-    const { indexes: { bouncing } } = e.data;
-    if (!this._bouncing_frames_map.has(e.data.id) && bouncing) {
+    if (!this._bouncing_frames_map.has(e.data.id) && e.data.indexes?.bouncing) {
       this._bouncing_frames_map.set(e.data.id, new Set([
-        ...bouncing[1],
-        ...bouncing[-1]
+        ...e.data.indexes.bouncing[1],
+        ...e.data.indexes.bouncing[-1]
       ]));
     }
     this._begin_velocty_y_map.set(e.data.id, e.velocities[0].y);
@@ -40,7 +39,6 @@ export default class Falling extends BaseCharacterState {
   update_falling(e: Character): void {
     e.handle_gravity();
     e.handle_frame_velocity();
-    const { data: { indexes: { falling } } } = e;
     const { x, y } = e.velocity;
 
     let falling_frame_idx = 1; // ---
@@ -48,21 +46,21 @@ export default class Falling extends BaseCharacterState {
     if (y < -1) falling_frame_idx = 2; // ↘
 
     const direction = x / e.facing >= 0 ? (1 as const) : (-1 as const);
-    e.enter_frame(falling?.[direction][falling_frame_idx]);
+    e.enter_frame(e.data.indexes?.falling?.[direction][falling_frame_idx]);
   }
 
   override on_landing(e: Character): void {
     const { facing, data: { indexes } } = e;
     const f = e.get_frame();
-    const d = find_direction(f, indexes.bouncing) ||
-      find_direction(f, indexes.falling) ||
-      find_direction(f, indexes.critical_hit) || facing;
+    const d = find_direction(f, indexes?.bouncing) ||
+      find_direction(f, indexes?.falling) ||
+      find_direction(f, indexes?.critical_hit) || facing;
     const { y: vy } = e.velocity;
     if (vy <= -4) {
-      e.enter_frame(indexes.bouncing?.[d][1]);
+      e.enter_frame(indexes?.bouncing?.[d][1]);
       e.velocities[0].y = 2;
     } else {
-      e.enter_frame(indexes.lying?.[d]);
+      e.enter_frame(indexes?.lying?.[d]);
     }
   }
 }

@@ -20,6 +20,6 @@ export class Rowing extends BaseCharacterState {
     e.velocities[0].y = e.world.gravity * Math.sqrt(2 * h / e.world.gravity);
   }
   override on_landing(e: Character): void {
-    e.enter_frame({ id: e.data.indexes.landing_1 });
+    e.enter_frame(e.data.indexes?.landing_1);
   }
 }

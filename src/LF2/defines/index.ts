@@ -109,11 +109,11 @@ export interface IEntityData<I extends IEntityInfo = IEntityInfo> extends IBaseD
 
 export interface ICharacterData extends IEntityData<IEntityInfo> {
   type: 'character';
-  indexes: IFrameIndexes;
+  indexes?: IFrameIndexes;
 }
 export interface IWeaponData extends IEntityData<IWeaponInfo> {
   type: 'weapon';
-  indexes: IFrameIndexes;
+  indexes?: IFrameIndexes;
 }
 export interface IBdyPrefab extends Partial<IBdyInfo> {
   id: string;

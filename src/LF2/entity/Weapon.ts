@@ -21,7 +21,7 @@ export default class Weapon extends Entity<IWeaponInfo, IWeaponData> {
         const { dvx, dvy, dvz } = wpoint;
         if (dvx !== void 0 || dvy !== void 0 || dvz !== void 0) {
           this.follow_holder()
-          this.enter_frame(this.data.indexes.throwing);
+          this.enter_frame(this.data.indexes?.throwing);
           const vz = holder.controller ? holder.controller.UD * (dvz || 0) : 0;
           const vx = (dvx || 0 - Math.abs(vz / 2)) * this.facing
           this.velocities[0].set(vx, dvy || 0, vz)
@@ -39,7 +39,7 @@ export default class Weapon extends Entity<IWeaponInfo, IWeaponData> {
         case Defines.State.Lying:
         case Defines.State.Caught:
           this.follow_holder()
-          this.enter_frame(this.data.indexes.in_the_sky);
+          this.enter_frame(this.data.indexes?.in_the_sky);
           holder.holding = void 0;
           this.holder = void 0;
           break;

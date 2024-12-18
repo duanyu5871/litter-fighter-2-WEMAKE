@@ -54,7 +54,7 @@ export default class BaseWeaponState extends BaseState<Weapon> {
         target.velocities[0].x = vx / 2;
         target.velocities[0].y = vy;
         target.team = attacker.team;
-        target.enter_frame({ id: target.data.indexes.in_the_sky })
+        target.enter_frame(target.data.indexes?.in_the_sky)
       }
     } else {
       const vx = itr.dvx ? itr.dvx * attacker.facing : 0;
@@ -62,14 +62,14 @@ export default class BaseWeaponState extends BaseState<Weapon> {
       target.velocities[0].x = vx;
       target.velocities[0].y = vy;
       target.team = attacker.team;
-      target.enter_frame({ id: target.data.indexes.in_the_sky })
+      target.enter_frame(target.data.indexes?.in_the_sky)
     }
   }
 
   override get_auto_frame(e: Weapon): IFrameInfo | undefined {
     const { frames, indexes } = e.data;
-    if (e.position.y > 0) return indexes.in_the_sky ? frames[indexes.in_the_sky] : void 0;
-    return indexes.on_ground ? frames[indexes.on_ground] : void 0;
+    if (e.position.y > 0) return indexes?.in_the_sky ? frames[indexes.in_the_sky] : void 0;
+    return indexes?.on_ground ? frames[indexes.on_ground] : void 0;
   }
 }
 

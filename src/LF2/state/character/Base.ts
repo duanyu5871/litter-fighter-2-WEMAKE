@@ -13,19 +13,18 @@ export default class BaseCharacterState extends BaseState<Character> {
     e.handle_frame_velocity();
   }
   override on_landing(e: Character): void {
-    e.enter_frame({ id: e.data.indexes.landing_2 });
+    e.enter_frame(e.data.indexes?.landing_2);
   }
   override get_auto_frame(e: Character): IFrameInfo | undefined {
-    const { in_the_sky, standing, heavy_obj_walk } = e.data.indexes;
     let fid: string | undefined;
     if (is_weapon(e.holding) && e.holding.data.base.type === Defines.WeaponType.Heavy) {
-      fid = heavy_obj_walk?.[0]
+      fid = e.data.indexes?.heavy_obj_walk?.[0]
     } else if (e.position.y > 0) {
-      fid = in_the_sky?.[0]
+      fid = e.data.indexes?.in_the_sky?.[0]
     } else if (e.hp > 0) {
-      fid = standing;
+      fid = e.data.indexes?.standing;
     } else {
-      fid = standing; // TODO
+      fid = e.data.indexes?.standing; // TODO
     }
     if (!fid) return void 0;
     return e.data.frames[fid];
@@ -50,9 +49,9 @@ export default class BaseCharacterState extends BaseState<Character> {
       case Defines.ItrKind.Pick: {
         if (is_weapon(target)) {
           if (target.data.base.type === Defines.WeaponType.Heavy) {
-            attacker.next_frame = { id: attacker.data.indexes.picking_heavy }
+            attacker.next_frame = { id: attacker.data.indexes?.picking_heavy }
           } else {
-            attacker.next_frame = { id: attacker.data.indexes.picking_light }
+            attacker.next_frame = { id: attacker.data.indexes?.picking_light }
           }
         }
         return WhatNext.Interrupt;
@@ -155,7 +154,7 @@ export default class BaseCharacterState extends BaseState<Character> {
           (target.position.x > attacker.position.x ? -1 : 1) :
           (attacker.facing)
         target.velocities[0].x = (itr.dvx || 0) * direction;
-        if (target.data.indexes.fire)
+        if (target.data.indexes?.fire)
           target.next_frame = { id: target.data.indexes.fire[0], facing: turn_face(attacker.facing) }
         break;
       }
@@ -168,7 +167,7 @@ export default class BaseCharacterState extends BaseState<Character> {
         const direction = target.position.x > attacker.position.x ? -1 : 1
         target.velocities[0].x = (itr.dvx || 0) * direction;
         // TODO: SOUND
-        target.next_frame = { id: target.data.indexes.ice, facing: turn_face(attacker.facing) }
+        target.next_frame = { id: target.data.indexes?.ice, facing: turn_face(attacker.facing) }
         break;
       }
       case Defines.ItrEffect.Explosion:
@@ -202,7 +201,7 @@ export default class BaseCharacterState extends BaseState<Character> {
             target.world.spark(...target.spark_point(r0, r1), "slient_critical_hit")
           }
           const direction: TFace = target.velocities[0].x / target.facing >= 0 ? 1 : -1;
-          if (target.data.indexes.critical_hit)
+          if (target.data.indexes?.critical_hit)
             target.next_frame = { id: target.data.indexes.critical_hit[direction][0] }
         } else {
           if (itr.dvx) target.velocities[0].x = itr.dvx * attacker.facing;
@@ -217,11 +216,11 @@ export default class BaseCharacterState extends BaseState<Character> {
           }
           /* 击晕 */
           if (target.fall_value <= Defines.DEFAULT_FALL_VALUE_DIZZY) {
-            target.next_frame = { id: target.data.indexes.dizzy };
+            target.next_frame = { id: target.data.indexes?.dizzy };
             break;
           }
           /* 击中 */
-          if (target.data.indexes.grand_injured)
+          if (target.data.indexes?.grand_injured)
             target.next_frame = {
               id: target.data.indexes.grand_injured[same_face(target, attacker)][0]
             }
@@ -235,15 +234,15 @@ export default class BaseCharacterState extends BaseState<Character> {
   override get_sudden_death_frame(target: Character): TNextFrame | undefined {
     target.velocities[0].y = 2;
     target.velocities[0].x = 2 * target.facing;
-    if (target.data.indexes.falling)
-      return { id: target.data.indexes.falling[1][1] }
+    if (target.data.indexes?.falling)
+      return { id: target.data.indexes?.falling[1][1] }
     return void 0;
   }
 
   override get_caught_end_frame(target: Character): TNextFrame | undefined {
     target.velocities[0].y = 2;
     target.velocities[0].x = -2 * target.facing;
-    if (target.data.indexes.falling)
+    if (target.data.indexes?.falling)
       return { id: target.data.indexes.falling[-1][1] }
     return void 0
   }

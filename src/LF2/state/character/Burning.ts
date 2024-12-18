@@ -14,10 +14,10 @@ export default class Burning extends BaseCharacterState {
       const { y: vy } = e.velocity;
       const { data: { indexes } } = e;
       if (vy <= -4) {
-        e.enter_frame(indexes.bouncing?.[-1][1]);
+        e.enter_frame(indexes?.bouncing?.[-1][1]);
         e.velocities[0].y = 2;
       } else {
-        e.enter_frame(indexes.lying?.[-1]);
+        e.enter_frame(indexes?.lying?.[-1]);
       }
     }
   }
