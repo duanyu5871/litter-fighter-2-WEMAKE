@@ -75,6 +75,7 @@ export function make_weapon_data(info: IWeaponInfo, full_str: string, frames: Re
   return {
     id: '',
     on_dead: { id: Defines.FrameId.Gone },
+    on_exhaustion: { id: Defines.FrameId.Gone },
     type: 'weapon',
     base: info,
     itr_prefabs,

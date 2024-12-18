@@ -6,7 +6,7 @@ import { BaseController } from "./BaseController";
 
 type TKeyCodeMap = { [x in GameKey]?: string };
 type TCodeKeyMap = { [x in string]?: GameKey };
-export default class LocalController extends BaseController implements IKeyboardCallback {
+export class LocalController extends BaseController implements IKeyboardCallback {
   readonly is_local_controller = true;
 
   private _key_code_map: TKeyCodeMap = {};
@@ -47,3 +47,4 @@ export default class LocalController extends BaseController implements IKeyboard
     }
   };
 }
+export default LocalController

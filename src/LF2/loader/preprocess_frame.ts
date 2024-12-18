@@ -29,6 +29,7 @@ export const cook_frame = (lf2: LF2, data: IEntityData, frame: IFrameInfo) => {
 
   if (frame.next) cook_next_frame(frame.next)
   if (frame.on_dead) cook_next_frame(frame.on_dead)
+  if (frame.on_exhaustion) cook_next_frame(frame.on_exhaustion)
   if (frame.on_landing) cook_next_frame(frame.on_landing)
 
   if (frame.bdy?.length) {

@@ -84,6 +84,8 @@ export interface IFrameInfo {
    * @type {?TNextFrame}
    */
   on_dead?: TNextFrame;
+  
+  on_exhaustion?: TNextFrame;
 
   
   /**

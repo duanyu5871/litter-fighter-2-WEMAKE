@@ -68,6 +68,8 @@ export namespace Defines {
   export const OLD_SCREEN_HEIGHT = 550;
   export const DAFUALT_HP = 500;
   export const DEFAULT_MP = 500;
+  export const DEFAULT_MILK_MP = 249;
+  export const DEFAULT_BEER_MP = 154;
   export const DEFAULT_FALL_VALUE_MAX = 140
   export const DEFAULT_DEFEND_VALUE_MAX = 120
   export const DEFAULT_ITR_SHAKEING = 6;
@@ -94,7 +96,6 @@ export namespace Defines {
    * @type {number}
    */
   export const DEFAULT_MP_RECOVERY_MIN_SPEED: number = 0.5;
-
 
   export const DEFAULT_HP_RECOVERY_SPEED = 0.2;
 
@@ -676,19 +677,7 @@ export namespace Defines {
       txt_shadow_color: '#9a5700',
     },
   }
-  export const is_entity_data = (v: any): v is IEntityData =>
-    v.type === 'entity' ||
-    is_character_data(v) ||
-    is_weapon_data(v) ||
-    is_ball_data(v)
-  export const is_character_data = (v: any): v is ICharacterData =>
-    v.type === 'character'
-  export const is_weapon_data = (v: any): v is IWeaponData =>
-    v.type === 'weapon'
-  export const is_ball_data = (v: any): v is IWeaponData =>
-    v.type === 'ball'
-  export const is_bg_data = (v: any): v is IBgData =>
-    v.type === 'background'
+
   export namespace BuiltIn {
     export enum Imgs {
       RFACE = 'sprite/RFACE.png',

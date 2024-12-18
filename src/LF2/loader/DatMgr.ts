@@ -3,10 +3,11 @@ import LF2 from '../LF2';
 import { BallController } from '../controller/BallController';
 import { BotController } from '../controller/BotController';
 import { InvalidController } from '../controller/InvalidController';
-import { IEntityData, IBgData, ICharacterData, IDataMap, IStageInfo, IWeaponData } from '../defines';
+import { IBgData, ICharacterData, IDataMap, IEntityData, IStageInfo, IWeaponData } from '../defines';
 import { Defines } from '../defines/defines';
 import { TData } from '../entity/Entity';
 import { Factory } from '../entity/Factory';
+import { is_ball_data, is_bg_data, is_character_data, is_entity_data, is_weapon_data } from '../entity/type_check';
 import { traversal } from '../utils/container_help/traversal';
 import { is_str, not_blank_str } from '../utils/type_check';
 import { cook_frame } from './preprocess_frame';
@@ -47,7 +48,28 @@ class Inner {
     const jobs: Promise<unknown>[] = [];
     const { images, sounds } = this.lf2;
 
-    if (Defines.is_entity_data(data)) {
+    if (is_ball_data(data)) {
+      Factory.inst.set_ctrl_creator(data.id, (a, b) => new BallController(a, b))
+    } else if (is_weapon_data(data)) {
+      Factory.inst.set_ctrl_creator(data.id, (a, b) => new InvalidController(a, b))
+    } else if (is_character_data(data)) {
+      Factory.inst.set_ctrl_creator(data.id, (a, b) => new BotController(a, b))
+      const { small, head } = data.base;
+      data.base.fall_value = data.base.fall_value ?? Defines.DEFAULT_FALL_VALUE_MAX;
+      data.base.defend_value = data.base.defend_value ?? Defines.DEFAULT_DEFEND_VALUE_MAX;
+      data.base.hp = data.base.hp ?? Defines.DAFUALT_HP;
+      data.base.mp = data.base.mp ?? Defines.DEFAULT_MP;
+      not_blank_str(small) && jobs.push(images.load_img(small, small));
+      not_blank_str(head) && jobs.push(images.load_img(head, head));
+    }
+    if (is_bg_data(data)) {
+      const { layers, base: { shadow } } = data;
+      not_blank_str(shadow) && jobs.push(images.load_img(shadow, shadow))
+      for (const { file } of layers) {
+        not_blank_str(file) && jobs.push(images.load_img(file, file))
+      }
+    }
+    if (is_entity_data(data)) {
       const {
         dead_sounds: a,
         drop_sounds: b,
@@ -58,29 +80,30 @@ class Inner {
       b?.forEach(i => l.add(i));
       c?.forEach(i => l.add(i));
       l.forEach(i => sounds.has(i) || jobs.push(sounds.load(i, i)))
-    }
 
-    if (Defines.is_character_data(data)) {
-      const { small, head } = data.base;
-      not_blank_str(small) && jobs.push(images.load_img(small, small));
-      not_blank_str(head) && jobs.push(images.load_img(head, head));
-    }
-    if (Defines.is_bg_data(data)) {
-      const { layers, base: { shadow } } = data;
-      not_blank_str(shadow) && jobs.push(images.load_img(shadow, shadow))
-      for (const { file } of layers) {
-        not_blank_str(file) && jobs.push(images.load_img(file, file))
-      }
-    }
-    if (Defines.is_entity_data(data)) {
       const { frames, base: { files } } = data;
       traversal(files, (_, v) => {
         jobs.push(images.load_by_e_pic_info(v))
       })
       if (jobs.length) await Promise.all(jobs);
       if (frames) {
-        traversal(frames, (_, frame) => cook_frame(this.lf2, data, frame));
+        traversal(frames, (_, frame) => {
+          const ret = cook_frame(this.lf2, data, frame);
+          if (frame.itr) for (const itr of frame.itr) {
+            if (itr.hit_sounds) for (const sound of itr.hit_sounds) {
+              sounds.has(sound) || jobs.push(sounds.load(sound, sound))
+            }
+          }
+          if (frame.bdy) for (const itr of frame.bdy) {
+            if (itr.hit_sounds) for (const sound of itr.hit_sounds) {
+              sounds.has(sound) || jobs.push(sounds.load(sound, sound))
+            }
+          }
+          return ret;
+        });
       }
+
+
     }
     return data;
   }
@@ -143,14 +166,6 @@ class Inner {
     for (const [, v] of this.data_map) {
       if (this.cancelled) throw new Error('cancelled')
       const t = v.type as keyof IDataMap;
-      if (t === 'character') {
-        Factory.inst.set_ctrl_creator(v.id, (a, b) => new BotController(a, b))
-        this.process_character_data(v as ICharacterData);
-      } else if (t === 'ball') {
-        Factory.inst.set_ctrl_creator(v.id, (a, b) => new BallController(a, b))
-      } else {
-        Factory.inst.set_ctrl_creator(v.id, (a, b) => new InvalidController(a, b))
-      }
       this.data_list_map[t]?.push(v as any);
       this.data_list_map.all.push(v as any);
     }
@@ -160,12 +175,8 @@ class Inner {
     this.stages = [Defines.VOID_STAGE, ...await this.lf2.import_json('data/stage.json')];
     this.lf2.on_loading_content(`${stage_file}`, 100);
   }
+  process_entity_data(data: IEntityData): void {
 
-  process_character_data(data: ICharacterData): void {
-    data.base.fall_value = data.base.fall_value ?? Defines.DEFAULT_FALL_VALUE_MAX;
-    data.base.defend_value = data.base.defend_value ?? Defines.DEFAULT_DEFEND_VALUE_MAX;
-    data.base.hp = data.base.hp ?? Defines.DAFUALT_HP;
-    data.base.mp = data.base.mp ?? Defines.DEFAULT_MP;
   }
 }
 

@@ -101,6 +101,7 @@ export interface IDataMap {
 export interface IEntityData<I extends IEntityInfo = IEntityInfo> extends IBaseData<I> {
   type: 'entity' | 'character' | 'weapon' | 'ball';
   on_dead?: TNextFrame;
+  on_exhaustion?: TNextFrame;
   bdy_prefabs?: { [x in string]?: IBdyPrefab };
   itr_prefabs?: { [x in string]?: IItrPrefab };
   frames: Record<string, IFrameInfo>;

@@ -57,18 +57,28 @@ export interface IEntityInfo {
   defend_value?: number;
 
   /**
-   * 默认角色血量
-   * 在一些模式下，此数值可能会被覆盖
+   * 默认血量
    *
+   * - 默认值：
+   *    - 角色、武器、波：Defines.DAFUALT_HP
+   * 
+   * 原版中，武器和波的hp是通过weapon_hp设置的
+   * 
    * @see Defines.DAFUALT_HP 默认值
    * @type {?number}
    */
   hp?: number;
 
   /**
-   * 默认角色蓝量
-   * 在一些模式下，此数值可能会被覆盖
-   *
+   * 默认蓝量
+   * 
+   * WEMAKE里，牛奶与啤酒恢复的总量通过此值控制。
+   * 
+   * - 默认值：
+   *    - 啤酒：154
+   *    - 牛奶：249，闯关模式下
+   *    - 角色、武器、波：Defines.DEFAULT_MP
+   * 
    * @see Defines.DEFAULT_MP 默认值
    * @type {?number}
    */
@@ -77,8 +87,12 @@ export interface IEntityInfo {
   /**
    * MP最大恢复速度（每帧）
    * 血量越低，MP恢复速度 越接近MP最大恢复速度
-   *
-   * @see Defines.DEFAULT_MP_RECOVERY_MAX_SPEED 默认值
+   * 
+   * - 默认值：
+   *    - 角色：Defines.DEFAULT_MP_RECOVERY_MAX_SPEED
+   *    - 武器、波：0
+   * 
+   * @see Defines.DEFAULT_MP_RECOVERY_MAX_SPEED
    * @type {?number}
    */
   mp_r_max_spd?: number;
@@ -87,7 +101,11 @@ export interface IEntityInfo {
    * MP最小恢复速度（每帧）
    * 血量越高，MP恢复速度 越接近MP最大恢复速度
    *
-   * @see Defines.DEFAULT_MP_RECOVERY_MIN_SPEED 默认值
+   * - 默认值：
+   *    - 角色：Defines.DEFAULT_MP_RECOVERY_MIN_SPEED
+   *    - 武器、波：0
+   *    
+   * @see Defines.DEFAULT_MP_RECOVERY_MIN_SPEED 
    * @type {?number}
    */
   mp_r_min_spd?: number;

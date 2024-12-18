@@ -1,7 +1,6 @@
-import type { IFrameInfo, TNextFrame, IHitKeyCollection } from '../defines';
-import { Defines, GameKey } from '../defines';
+import type { IFrameInfo, IHitKeyCollection, TNextFrame } from '../defines';
+import { GameKey } from '../defines';
 import type Entity from '../entity/Entity';
-import { is_character } from '../entity/type_check';
 import DoubleClick from './DoubleClick';
 
 export type TKeys = Record<GameKey, string>

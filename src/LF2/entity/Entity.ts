@@ -19,7 +19,7 @@ import type Character from './Character';
 import { Factory } from './Factory';
 import type IEntityCallbacks from './IEntityCallbacks';
 import { turn_face } from './face_helper';
-import { is_character } from './type_check';
+import { is_character, is_weapon, is_weapon_data } from './type_check';
 export const EMPTY_PIECE: ITexturePieceInfo = {
   tex: '', x: 0, y: 0, w: 0, h: 0,
   pixel_h: 0, pixel_w: 0,
@@ -359,9 +359,20 @@ export default class Entity<
     this.world = world;
     this.states = states;
     this._hp_max = data.base.hp ?? Defines.DAFUALT_HP;
-    this._mp_max = data.base.mp ?? Defines.DEFAULT_MP;
+
+    if (is_weapon_data(data) && data.id === '122') {
+      this._mp_max = data.base.mp ?? Defines.DEFAULT_MILK_MP;
+    } else if (is_weapon_data(data) && data.id === '123') {
+      this._mp_max = data.base.mp ?? Defines.DEFAULT_BEER_MP;
+    } else {
+      this._mp_max = data.base.mp ?? Defines.DEFAULT_MP;
+    }
+
+
+
     this._mp_r_spd_min = data.base.mp_r_min_spd ?? Defines.DEFAULT_MP_RECOVERY_MIN_SPEED;
     this._mp_r_spd_max = data.base.mp_r_max_spd ?? Defines.DEFAULT_MP_RECOVERY_MAX_SPEED;
+
     this._catch_time_max = data.base.catch_time ?? Defines.DAFUALT_CATCH_TIME;
     this.update_mp_r_spd();
     this.fall_value_max = this.data.base.fall_value ?? Defines.DEFAULT_FALL_VALUE_MAX;
