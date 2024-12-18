@@ -138,9 +138,10 @@ export default class Stage {
       count += c.data.base.ce ?? 1;
     if (!count) count = 1;
 
-    const { ratio = 1, times = 1 } = obj_info;
-    let spawn_count = Math.floor(count * ratio);
+    const { ratio = 1, times = 1, is_boss } = obj_info;
+    let spawn_count = is_boss ? 1 : Math.floor(count * ratio);
     if (spawn_count <= 0 || !times) return;
+
 
     while ((--spawn_count) >= 0) {
       const stage_object = new Item(this, obj_info);
