@@ -82,7 +82,7 @@ export default class Item {
     const e = creator(this.world, data);
     e.controller = Factory.inst.get_ctrl_creator(e.data.id)?.('', e);
     e.reserve = reserve;
-    e.position.x = random_in(x - range_x, x + range_x);
+    e.position.x = random_in(x, x + range_x);
     e.position.z = is_num(z) ?
       random_in(z - range_z, z + range_z) :
       random_in(this.stage.near, this.stage.far);
