@@ -11,7 +11,7 @@ import { new_id, new_team } from './base/new_id';
 import { KEY_NAME_LIST } from './controller/BaseController';
 import LocalController from "./controller/LocalController";
 import {
-  Defines, IBgData, IEntityData, IStageInfo, IWeaponData, TFace
+  Defines, IBgData, IStageInfo, IEntityData, TFace
 } from './defines';
 import ditto, {
   IKeyboard,
@@ -190,9 +190,9 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     return ret;
   }
 
-  add_weapon(data: IWeaponData, num: number, team?: string): Weapon[];
+  add_weapon(data: IEntityData, num: number, team?: string): Weapon[];
   add_weapon(id: string, num: number, team?: string): Weapon[];
-  add_weapon(data: IWeaponData | string | undefined, num: number, team?: string): Weapon[] {
+  add_weapon(data: IEntityData | string | undefined, num: number, team?: string): Weapon[] {
     if (typeof data === 'string')
       data = this.datas.find_weapon(data)
     if (!data)

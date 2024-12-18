@@ -1,13 +1,13 @@
 import { World } from "../World";
-import { IWeaponData, IWeaponInfo } from "../defines";
+import { IEntityData } from "../defines";
 import { Defines } from "../defines/defines";
 import { WEAPON_STATES } from "../state/weapon";
-import Entity, { GONE_FRAME_INFO } from "./Entity";
+import Entity from "./Entity";
 import { Factory } from "./Factory";
-export default class Weapon extends Entity<IWeaponInfo, IWeaponData> {
+export default class Weapon extends Entity {
   readonly is_weapon = true
 
-  constructor(world: World, data: IWeaponData) {
+  constructor(world: World, data: IEntityData) {
     super(world, data, WEAPON_STATES);
     this.name = "Weapon: " + data.id
   }

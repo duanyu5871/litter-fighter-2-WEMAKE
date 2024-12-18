@@ -1,7 +1,6 @@
-import { IOpointInfo, IWeaponData } from '../defines';
+import { IEntityData, IEntityInfo, IOpointInfo } from '../defines';
 import { IFrameIndexes } from '../defines/IFrameIndexes';
 import { IFrameInfo } from "../defines/IFrameInfo";
-import { IWeaponInfo } from "../defines/IWeaponInfo";
 import { Defines } from '../defines/defines';
 import { add_entity_groups } from './add_entity_to_group';
 import { make_itr_prefabs } from './make_itr_prefabs';
@@ -52,7 +51,7 @@ const indexes_map: Record<Defines.WeaponType, IFrameIndexes> = {
   }
 }
 
-export function make_weapon_data(info: IWeaponInfo, full_str: string, frames: Record<string, IFrameInfo>): IWeaponData {
+export function make_weapon_data(info: IEntityInfo, full_str: string, frames: Record<string, IFrameInfo>): IEntityData {
   const itr_prefabs = make_itr_prefabs(full_str);
   const indexes =
     indexes_map[info.type as Defines.WeaponType] ??
@@ -83,7 +82,7 @@ export function make_weapon_data(info: IWeaponInfo, full_str: string, frames: Re
   };
 }
 
-export function make_weapon_special(data: IWeaponData) {
+export function make_weapon_special(data: IEntityData) {
   const ooo = (...frame_ids: string[]): IOpointInfo[] => {
     const aa = [
       { dvy: 5, dvx: -1, },

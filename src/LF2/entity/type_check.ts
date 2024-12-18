@@ -1,7 +1,7 @@
 import type { BaseController } from "../controller/BaseController";
 import type { BotController } from "../controller/BotController";
 import type { LocalController } from "../controller/LocalController";
-import type { IEntityData, IWeaponData, IBgData } from "../defines";
+import type { IEntityData, IBgData } from "../defines";
 import type Ball from "./Ball";
 import type Character from "./Character";
 import type Entity from "./Entity";
@@ -23,7 +23,7 @@ export const is_entity_data = (v: any): v is IEntityData =>
   is_ball_data(v)
 export const is_character_data = (v: any): v is IEntityData =>
   v.type === 'character'
-export const is_weapon_data = (v: any): v is IWeaponData =>
+export const is_weapon_data = (v: any): v is IEntityData =>
   v.type === 'weapon'
 export const is_ball_data = (v: any): v is IEntityData =>
   v.type === 'ball'

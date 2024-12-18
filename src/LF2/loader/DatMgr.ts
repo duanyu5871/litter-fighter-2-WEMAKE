@@ -3,7 +3,7 @@ import LF2 from '../LF2';
 import { BallController } from '../controller/BallController';
 import { BotController } from '../controller/BotController';
 import { InvalidController } from '../controller/InvalidController';
-import { IBgData, IEntityData, IDataMap, IStageInfo, IWeaponData } from '../defines';
+import { IBgData, IEntityData, IDataMap, IStageInfo } from '../defines';
 import { Defines } from '../defines/defines';
 import { TData } from '../entity/Entity';
 import { Factory } from '../entity/Factory';
@@ -17,7 +17,7 @@ export interface IDataListMap {
   'background': IBgData[];
   'entity': IEntityData[];
   'character': IEntityData[];
-  'weapon': IWeaponData[];
+  'weapon': IEntityData[];
   'ball': IEntityData[];
   'all': TData[]
 }
@@ -225,9 +225,9 @@ export default class DatMgr {
     return this._inner.data_map.get('' + id)
   }
 
-  find_weapon(id: string): IWeaponData | undefined
-  find_weapon(predicate: IFindPredicate<IWeaponData>): IWeaponData | undefined;
-  find_weapon(arg_0: string | IFindPredicate<IWeaponData>): IWeaponData | undefined {
+  find_weapon(id: string): IEntityData | undefined
+  find_weapon(predicate: IFindPredicate<IEntityData>): IEntityData | undefined;
+  find_weapon(arg_0: string | IFindPredicate<IEntityData>): IEntityData | undefined {
     return is_str(arg_0) ? this.weapons.find(v => v.id === arg_0) : this.weapons.find(arg_0)
   }
 

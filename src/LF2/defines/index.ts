@@ -5,7 +5,6 @@ import { IFrameIndexes } from "./IFrameIndexes";
 import { IFrameInfo } from "./IFrameInfo";
 import { IItrInfo } from "./IItrInfo";
 import { INextFrame } from "./INextFrame";
-import { IWeaponInfo } from "./IWeaponInfo";
 export type TTODO = any;
 export type TFace = -1 | 1;
 export type TTrend = -1 | 0 | 1;
@@ -79,7 +78,6 @@ export * from './IStageInfo';
 export * from './IStageObjectInfo';
 export * from './IStagePhaseInfo';
 export * from './ITexturePieceInfo';
-export * from './IWeaponInfo';
 export * from './IWpointInfo';
 
 export interface IBaseData<I = any> {
@@ -94,11 +92,11 @@ export interface IDataMap {
   'background': IBgData;
   'entity': IEntityData;
   'character': IEntityData;
-  'weapon': IWeaponData;
+  'weapon': IEntityData;
   'ball': IEntityData;
 }
 
-export interface IEntityData<I extends IEntityInfo = IEntityInfo> extends IBaseData<I> {
+export interface IEntityData extends IBaseData<IEntityInfo> {
   type: 'entity' | 'character' | 'weapon' | 'ball';
   on_dead?: TNextFrame;
   on_exhaustion?: TNextFrame;
@@ -106,10 +104,6 @@ export interface IEntityData<I extends IEntityInfo = IEntityInfo> extends IBaseD
   bdy_prefabs?: { [x in string]?: IBdyPrefab };
   itr_prefabs?: { [x in string]?: IItrPrefab };
   frames: Record<string, IFrameInfo>;
-}
-export interface IWeaponData extends IEntityData<IWeaponInfo> {
-  type: 'weapon';
-  indexes?: IFrameIndexes;
 }
 export interface IBdyPrefab extends Partial<IBdyInfo> {
   id: string;

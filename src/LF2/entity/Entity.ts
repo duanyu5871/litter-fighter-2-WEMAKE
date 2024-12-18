@@ -6,8 +6,7 @@ import { ICube } from '../World';
 import { Callbacks, new_id, new_team, type NoEmitCallbacks } from '../base';
 import { IExpression } from '../base/Expression';
 import { BaseController } from '../controller/BaseController';
-import { IBaseData, IBdyInfo, ICpointInfo, IEntityData, IFrameInfo, IItrInfo, INextFrame, IOpointInfo, ITexturePieceInfo, IWeaponData, TFace, TNextFrame } from '../defines';
-import { IEntityInfo } from "../defines/IEntityInfo";
+import { IBaseData, IBdyInfo, ICpointInfo, IEntityData, IFrameInfo, IItrInfo, INextFrame, IOpointInfo, ITexturePieceInfo, TFace, TNextFrame } from '../defines';
 import { Defines } from '../defines/defines';
 import Ditto from '../ditto';
 import { IVector3 } from '../ditto/IVector3';
@@ -44,7 +43,7 @@ export const GONE_FRAME_INFO: IFrameInfo = {
   centerx: 0,
   centery: 0
 };
-export type TData = IBaseData | IEntityData | IWeaponData | IEntityData | IEntityData
+export type TData = IBaseData | IEntityData | IEntityData | IEntityData | IEntityData
 export interface CollisionInfo {
   victim: Entity
   attacker: Entity,
@@ -66,10 +65,7 @@ export interface IVictimRest {
   b_frame: IFrameInfo
 }
 
-export default class Entity<
-  I extends IEntityInfo = IEntityInfo,
-  D extends IEntityData<I> = IEntityData<I>
-> {
+export default class Entity {
   static readonly TAG: string = 'Entity';
 
   id: string = new_id();
@@ -77,8 +73,8 @@ export default class Entity<
   update_id: number = Number.MIN_SAFE_INTEGER;
   variant: number = 0;
   reserve?: number = 0;
-  data: D;
-  transform_datas?: [D, D];
+  data: IEntityData;
+  transform_datas?: [IEntityData, IEntityData];
   readonly world: World;
   readonly position = new Ditto.Vector3(0, 0, 0);
   protected _resting = 0;
@@ -358,7 +354,7 @@ export default class Entity<
     return !!(player_id && this.world.player_slot_characters.has(player_id))
   }
 
-  constructor(world: World, data: D, states: States = ENTITY_STATES) {
+  constructor(world: World, data: IEntityData, states: States = ENTITY_STATES) {
     this.data = data;
     this.world = world;
     this.states = states;

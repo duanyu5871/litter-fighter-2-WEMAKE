@@ -5,6 +5,7 @@ import type { IOpointInfo } from "./IOpointInfo";
 
 
 export interface IEntityInfo {
+  type?: number;
 
   /**
    * 实体名称
