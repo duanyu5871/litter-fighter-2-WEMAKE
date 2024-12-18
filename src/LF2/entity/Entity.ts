@@ -120,9 +120,9 @@ export default class Entity {
 
   /**
    * 最终速度向量
-   * - 会更新position前，通过velocities计算得出
-   * - 直接修改速度向量将不会影响position的运算，
-   * 但可能会影响到使用到velocity判断的逻辑，
+   * - 每次更新position前，通过velocities计算得出
+   * - 直接修改速度向量将不会影响position的计算，
+   * - 直接修改会影响到使用其他到velocity判断的逻辑，所以别直接改
    * @readonly
    * @type {IVector3}
    */
@@ -450,7 +450,7 @@ export default class Entity {
     this._emitter = emitter;
     this._emitter_opoint = opoint;
 
-    this.velocities.push(offset_velocity);
+    this.velocities[1] = offset_velocity;
 
     const shotter_frame = emitter.get_frame();
 

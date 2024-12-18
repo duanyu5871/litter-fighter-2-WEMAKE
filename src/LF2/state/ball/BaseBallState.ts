@@ -58,9 +58,6 @@ export default class BaseBallState<E extends Ball = Ball> extends BaseState<E> {
           break;
       }
       self.velocities.length = 1
-      self.velocities[0].x = 0;
-      self.velocities[0].z = 0;
-      self.velocities[0].y = 0;
     }
   }
   override on_be_collided(attacker: Entity, target: E, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
