@@ -7,7 +7,7 @@ import { cook_next_frame } from './preprocess_next_frame';
 const get_keys = <V extends {}>(v: V): (keyof V)[] => {
   return Object.keys(v) as (keyof V)[]
 }
-export const cook_frame = (lf2: LF2, data: IEntityData, frame: IFrameInfo) => {
+export function cook_frame(lf2: LF2, data: IEntityData, frame: IFrameInfo) {
   if (frame.sound && !lf2.sounds.has(frame.sound))
     lf2.sounds.load(frame.sound, frame.sound);
 
@@ -27,18 +27,18 @@ export const cook_frame = (lf2: LF2, data: IEntityData, frame: IFrameInfo) => {
     });
   }
 
-  if (frame.next) cook_next_frame(frame.next)
-  if (frame.on_dead) cook_next_frame(frame.on_dead)
-  if (frame.on_exhaustion) cook_next_frame(frame.on_exhaustion)
-  if (frame.on_landing) cook_next_frame(frame.on_landing)
+  if (frame.next) cook_next_frame(frame.next);
+  if (frame.on_dead) cook_next_frame(frame.on_dead);
+  if (frame.on_exhaustion) cook_next_frame(frame.on_exhaustion);
+  if (frame.on_landing) cook_next_frame(frame.on_landing);
 
   if (frame.bdy?.length) {
     for (let i = 0; i < frame.bdy.length; ++i) {
       let bdy = frame.bdy[i];
       const prefab = bdy.prefab_id !== void 0 ? data.bdy_prefabs?.[bdy.prefab_id] : void 0;
       if (prefab) bdy = frame.bdy[i] = { ...prefab, ...bdy };
-      if (bdy.break_act) cook_next_frame(bdy.break_act)
-      if (bdy.hit_act) cook_next_frame(bdy.hit_act)
+      if (bdy.break_act) cook_next_frame(bdy.break_act);
+      if (bdy.hit_act) cook_next_frame(bdy.hit_act);
     }
   }
   if (frame.itr?.length) {
@@ -47,16 +47,16 @@ export const cook_frame = (lf2: LF2, data: IEntityData, frame: IFrameInfo) => {
       const prefab = itr.prefab_id !== void 0 ? data.itr_prefabs?.[itr.prefab_id] : void 0;
       if (prefab) itr = frame.itr[i] = { ...prefab, ...itr };
 
-      if (itr.hit_act) cook_next_frame(itr.hit_act)
-      if (itr.catchingact) cook_next_frame(itr.catchingact)
-      if (itr.caughtact) cook_next_frame(itr.caughtact)
+      if (itr.hit_act) cook_next_frame(itr.hit_act);
+      if (itr.catchingact) cook_next_frame(itr.catchingact);
+      if (itr.caughtact) cook_next_frame(itr.caughtact);
     }
   }
 
   const unchecked_frame = (frame as any);
   if (unchecked_frame) {
     if (unchecked_frame.center) {
-      const [x, y] = read_nums(unchecked_frame.center, 2, [frame.centerx ?? 0, frame.centery ?? 0])
+      const [x, y] = read_nums(unchecked_frame.center, 2, [frame.centerx ?? 0, frame.centery ?? 0]);
       frame.centerx = x;
       frame.centery = y;
     }
@@ -95,5 +95,5 @@ export const cook_frame = (lf2: LF2, data: IEntityData, frame: IFrameInfo) => {
       [-1]: f_i_2,
     };
   }
-};
+}
 cook_frame.TAG = 'cook_frame'

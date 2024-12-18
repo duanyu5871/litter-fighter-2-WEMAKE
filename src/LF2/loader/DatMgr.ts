@@ -79,7 +79,7 @@ class Inner {
       a?.forEach(i => l.add(i));
       b?.forEach(i => l.add(i));
       c?.forEach(i => l.add(i));
-      l.forEach(i => sounds.has(i) || jobs.push(sounds.load(i, i)))
+      l.forEach(i => -(not_blank_str(i) && sounds.has(i)) || jobs.push(sounds.load(i, i)))
 
       const { frames, base: { files } } = data;
       traversal(files, (_, v) => {
@@ -88,22 +88,19 @@ class Inner {
       if (jobs.length) await Promise.all(jobs);
       if (frames) {
         traversal(frames, (_, frame) => {
-          const ret = cook_frame(this.lf2, data, frame);
+          cook_frame(this.lf2, data, frame);
           if (frame.itr) for (const itr of frame.itr) {
             if (itr.hit_sounds) for (const sound of itr.hit_sounds) {
-              sounds.has(sound) || jobs.push(sounds.load(sound, sound))
+              (not_blank_str(sound) && sounds.has(sound)) || jobs.push(sounds.load(sound, sound))
             }
           }
           if (frame.bdy) for (const itr of frame.bdy) {
             if (itr.hit_sounds) for (const sound of itr.hit_sounds) {
-              sounds.has(sound) || jobs.push(sounds.load(sound, sound))
+              (not_blank_str(sound) && sounds.has(sound)) || jobs.push(sounds.load(sound, sound))
             }
           }
-          return ret;
         });
       }
-
-
     }
     return data;
   }
