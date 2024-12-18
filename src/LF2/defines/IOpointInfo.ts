@@ -1,4 +1,4 @@
-import type { TNextFrame, INextFrame } from ".";
+import type { INextFrame, TNextFrame, Defines } from ".";
 export interface IOpointInfo {
   /**
    * 实体产生的X坐标（相对frame矩形左上角）
@@ -49,12 +49,15 @@ export interface IOpointInfo {
    * 生成数量。
    * 
    * - 在原版中：
-   *    - 生成物体的数量是通过facing实现的，facing的十位数为数量，个位数为方向，0正向，1反向。
+   *    - 生成物体的数量是通过facing实现的，facing的十位数以上为数量（数量=facing整除10）
+   *    - 个位数为方向，0表示与发射者朝向相同，1表示与发射者朝向相反
+   * 
    * - 在WEMAKE中：
    *    - multi即代表生成数量，默认为1，若小于1，则什么都不会生成。
-   *    - 生成的朝向见通过action的facing决定
+   *    - 生成物的朝向见通过action的facing决定
    * 
    * @see {INextFrame.facing}
+   * @see {Defines.FacingFlag}
    * @type {?number}
    */
   multi?: number;

@@ -37,8 +37,9 @@ export interface IWorldCallbacks {
    * 更新帧率变化回调
    *
    * @param {number} fps
+   * @param {number} score 性能评分[0,100]
    */
-  on_ups_update?(fps: number): void;
+  on_ups_update?(fps: number, score: number): void;
 
   on_gravity_change?(value: number, prev: number, world: World): void;
 

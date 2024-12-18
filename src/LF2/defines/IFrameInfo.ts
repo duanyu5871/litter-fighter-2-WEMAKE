@@ -77,7 +77,11 @@ export interface IFrameInfo {
   jump_flag?: number;
 
   /**
-   * hp降至0时，跳转至动作
+   * 死亡后跳转
+   * 
+   * hp从正数降至小于等于0时，跳转至on_dead中符合条件的帧
+   * 
+   * @type {?TNextFrame}
    */
   on_dead?: TNextFrame;
 
@@ -94,6 +98,7 @@ export interface IFrameInfo {
    * 原ball的hit_Fa
    *
    * @type {?number}
+   * @see {Defines.FrameBehavior}
    */
   behavior?: number;
 }

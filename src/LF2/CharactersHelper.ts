@@ -1,4 +1,4 @@
-import Character from "./entity/Character";
+import Entity from "./entity/Entity";
 import { is_character } from "./entity/type_check";
 import LF2 from "./LF2";
 
@@ -7,12 +7,12 @@ export class CharactersHelper {
   constructor(lf2: LF2) {
     this.lf2 = lf2;
   }
-  entities() {
-    const ret: Character[] = [];
+  list(): Entity[] {
+    const ret: Entity[] = [];
     this.lf2.world.entities.forEach((v) => is_character(v) && ret.push(v));
     return ret;
   }
-  entity(idx: number) {
-    return this.entities()[idx];
+  at(idx: number): Entity | undefined {
+    return this.list()[idx];
   }
 }

@@ -1,15 +1,10 @@
-import { IItrPrefab, IOpointInfo, IWeaponData } from '../defines';
+import { IOpointInfo, IWeaponData } from '../defines';
 import { IFrameIndexes } from '../defines/IFrameIndexes';
 import { IFrameInfo } from "../defines/IFrameInfo";
 import { IWeaponInfo } from "../defines/IWeaponInfo";
 import { Defines } from '../defines/defines';
-import { match_all } from '../utils/string_parser/match_all';
-import { match_block_once } from '../utils/string_parser/match_block';
-import { match_colon_value } from '../utils/string_parser/match_colon_value';
-import { to_num } from '../utils/type_cast/to_num';
-import { not_empty_str } from '../utils/type_check';
 import { add_entity_groups } from './add_entity_to_group';
-import cook_itr from './cook_itr';
+import { make_itr_prefabs } from './make_itr_prefabs';
 import { take } from './take';
 
 const indexes_map: Record<Defines.WeaponType, IFrameIndexes> = {
@@ -57,24 +52,6 @@ const indexes_map: Record<Defines.WeaponType, IFrameIndexes> = {
   }
 }
 
-function make_itr_prefabs(full_str: string): IWeaponData['itr_prefabs'] {
-  const weapon_strength_str = match_block_once(full_str, '<weapon_strength_list>', '<weapon_strength_list_end>')?.trim();
-  if (!not_empty_str(weapon_strength_str)) return void 0;
-
-  const list = match_all(weapon_strength_str, /entry:\s*(\d+)\s*(\S+)\s*\n?(.*)\n?/g).map(([, id, name, remain]) => {
-    const entry: IItrPrefab = { id, name };
-    for (const [key, value] of match_colon_value(remain)) {
-      (entry as any)[key] = to_num(value) ?? value;
-    }
-    cook_itr(entry);
-    return entry;
-  });
-  if (!list.length) return void 0;
-  const itr_prefab: IWeaponData['itr_prefabs'] = {};
-  for (const item of list)
-    itr_prefab[item.id] = item;
-  return itr_prefab;
-}
 export function make_weapon_data(info: IWeaponInfo, full_str: string, frames: Record<string, IFrameInfo>): IWeaponData {
   const itr_prefabs = make_itr_prefabs(full_str);
   const indexes =

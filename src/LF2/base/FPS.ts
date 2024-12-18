@@ -34,29 +34,29 @@ export default class FPS {
   private _duration: number = 0;
 
   /**
-   * 耗时保留率
+   * 保留率
    *
    * @private
    * @type {number}
    */
-  private _retention: number = 0.01;
+  private _retention: number = 0.99;
 
   /**
    * Creates an instance of FPS.
    *
    * @constructor
-   * @param {number} [retention=0.01] 耗时保留率，范围[0, 0.99] 耗时保留率越大，fps的波动越平缓。
+   * @param {number} [retention=0.99] 保留率，范围[0, 0.99] 保留率越大，fps的波动越平缓。
    */
-  constructor(retention: number = 0.01) {
+  constructor(retention: number = 0.99) {
     this._retention = clamp(retention, 0, 0.99)
   }
 
   update(dt: number) {
+    // if (dt <= 0) return;
     if (this._duration)
-      this._duration = this._duration * (1 - this._retention) + dt * this._retention;
+      this._duration = this._duration * this._retention + dt * (1 - this._retention);
     else
       this._duration = dt;
-
     this._value = 1000 / this._duration;
   }
 

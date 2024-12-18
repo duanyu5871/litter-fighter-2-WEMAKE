@@ -10,7 +10,7 @@ export namespace Defines {
     Bat = 1,
   }
 
-  export enum BallBehavior {
+  export enum FrameBehavior {
     _01 = 1,//= 追敌人的center(因为敌人站在地面，所以会下飘)
     _02 = 2,//= 水平追敌
     _03 = 3,//= 加速法追敌(追纵力较差)
@@ -35,7 +35,7 @@ export namespace Defines {
      *    - 此值不会有任何作用（但依旧保留）
      *    - 生成将通过opoint被实现
      */
-    BatStart = 8, _08 = 8,//= (视敌人数目而增加，基本数值是三个，别的dat档用了无效)
+    BatStart = 8, _08 = 8,
 
 
     _09 = 9,//= 殃殒天降的开始(视敌人数目而增加，基本数值是四个)
@@ -189,8 +189,9 @@ export namespace Defines {
     /** 
      * 棍棒
      * 
-     * 丢出方式：
-     *    奔跑,空中: 前 + 攻击
+     * - 丢出方式：
+     *    - 奔跑: 前 + 攻击
+     *    - 空中: 前 + 攻击
      */
     Stick = 1,
 
@@ -199,8 +200,10 @@ export namespace Defines {
 
     /** 
      * 小刀类。
-     * 丢出方式：
-     *    奔跑,空中,站立: 前 + 攻击
+     * - 丢出方式：
+     *    - 奔跑: 前 + 攻击
+     *    - 空中: 前 + 攻击
+     *    - 站立: 前 + 攻击
      */
     Knife = 3,
 
@@ -212,15 +215,29 @@ export namespace Defines {
     /**
      * 饮料
      * 
-     * 丢出方式：
-     *    奔跑,空中: 前 + 攻击
+     * - 丢出方式：
+     *    - 奔跑: 前 + 攻击
+     *    - 空中: 前 + 攻击
+     *    - 冲跳: 前 + 攻击
      */
     Drink = 5,
   }
+
+  /**
+   * 朝向控制
+   *
+   * @export
+   * @enum {number}
+   */
   export enum FacingFlag {
-    Left = -1,
     None = 0,
+
+    /** 向左 */
+    Left = -1,
+
+    /** 向右 */
     Right = 1,
+
     Backward = 2,
     ByController = 3,
     SameAsCatcher = 4,
@@ -267,7 +284,11 @@ export namespace Defines {
     _14 = 14, Lying = 14,
     _15 = 15, Normal = 15,
     _16 = 16, Tired = 16,
-    _17 = 17, drink = 17,
+
+    /**
+     * 
+     */
+    Drink = 17, _17 = 17,
     _18 = 18, Burning = 18,
 
     /**

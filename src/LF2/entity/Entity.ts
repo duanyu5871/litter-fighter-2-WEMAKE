@@ -252,17 +252,8 @@ export default class Entity<
         this.play_sound(this.data.base.dead_sounds);
       }
 
-
-      let nf: IFrameInfo | undefined = void 0;
-      if (this.frame.on_dead) {
-        nf = this.get_next_frame(this.frame.on_dead)[0];
-      }
-      if (!nf && this.data.on_dead) {
-        nf = this.get_next_frame(this.data.on_dead)[0];
-      }
-      if (nf) {
-        this.enter_frame(nf)
-      }
+      const nf = this.frame.on_dead ?? this.data.on_dead;
+      if (nf) this.enter_frame(nf)
     }
   }
 
@@ -321,7 +312,7 @@ export default class Entity<
   get state() { return this._state; }
 
   /**
-   * 闪烁计数
+   * 闪烁计数F
    *
    * @readonly
    * @type {number}

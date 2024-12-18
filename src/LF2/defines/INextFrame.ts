@@ -1,4 +1,5 @@
 import { IExpression } from "../base/Expression";
+import type { Defines } from "./defines"
 
 export interface INextFrame {
   id?: string | string[];
@@ -61,7 +62,7 @@ export interface INextFrame {
    */
   hp?: number;
 
-  
+
   /**
    * TODO
    *

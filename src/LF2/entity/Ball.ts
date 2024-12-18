@@ -14,16 +14,16 @@ export default class Ball extends Entity<IEntityInfo, IEntityData> {
   }
   override set_frame(v: IFrameInfo): void {
     switch (this.frame.behavior) {
-      case Defines.BallBehavior._01:
-      case Defines.BallBehavior._02:
-      case Defines.BallBehavior._03:
+      case Defines.FrameBehavior._01:
+      case Defines.FrameBehavior._02:
+      case Defines.FrameBehavior._03:
         this.unsubscribe_nearest_enemy(); break;
     }
     super.set_frame(v);
     switch (v.behavior) {
-      case Defines.BallBehavior._01:
-      case Defines.BallBehavior._02:
-      case Defines.BallBehavior._03:
+      case Defines.FrameBehavior._01:
+      case Defines.FrameBehavior._02:
+      case Defines.FrameBehavior._03:
         this.subscribe_nearest_enemy(); break;
     }
   }

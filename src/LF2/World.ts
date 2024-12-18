@@ -6,8 +6,6 @@ import LF2 from './LF2';
 import Callbacks from './base/Callbacks';
 import FPS from './base/FPS';
 import { NoEmitCallbacks } from "./base/NoEmitCallbacks";
-import { BaseController } from './controller/BaseController';
-import LocalController from './controller/LocalController';
 import { IBdyInfo, IFrameInfo, IItrInfo } from './defines';
 import { Defines } from './defines/defines';
 import Ditto from './ditto';
@@ -16,7 +14,7 @@ import Character from './entity/Character';
 import Entity from './entity/Entity';
 import { Factory } from './entity/Factory';
 import Weapon from './entity/Weapon';
-import { is_local_ctrl, is_ball, is_base_ctrl, is_character, is_weapon } from './entity/type_check';
+import { is_ball, is_base_ctrl, is_character, is_local_ctrl, is_weapon } from './entity/type_check';
 import { EntityRender } from './renderer/EntityRender';
 import Stage from './stage/Stage';
 import float_equal from './utils/math/float_equal';
@@ -154,11 +152,18 @@ export class World {
 
   private _need_FPS: boolean = true;
   private _need_UPS: boolean = true;
-  private _FPS = new FPS()
-  private _UPS = new FPS();
+  private _FPS = new FPS(0.8)
+  private _UPS = new FPS(0.8);
   private _render_worker_id?: ReturnType<typeof Ditto.Render.add>;
   private _update_worker_id?: ReturnType<typeof Ditto.Interval.add>;
 
+
+  /**
+   * 同步渲染
+   *
+   * @private
+   * @type {(0 | 1 | 2)}
+   */
   private _sync_render: 0 | 1 | 2 = 0;
   get sync_render(): number {
     return this._sync_render
@@ -205,44 +210,33 @@ export class World {
   }
 
   private _prev_time: number = Date.now();
-  private _skip: number = 0;
-  private _expected_dt: number = 0;
-  private _applied_dt: number = 0;
+  private _working_dt: number = Date.now();
+  private _update_count: number = 0;
   start_update() {
     if (this.disposed) return;
-    if (this._update_worker_id) Ditto.Timeout.del(this._update_worker_id);
-    this._expected_dt = (1000 / 60) / this._playrate;
-    this._applied_dt = Math.max(this._expected_dt, 0)
+    if (this._update_worker_id) Ditto.Interval.del(this._update_worker_id);
+
     const on_update = () => {
       const time = Date.now();
+      const real_dt = time - this._prev_time;
+      if (real_dt < this._ideally_dt)
+        return;
+      this._update_count++;
       if (!this._paused) this.update_once()
-      const dt = time - this._prev_time;
-      this._UPS.update(dt);
-
-      if (this._need_UPS) this._callbacks.emit('on_ups_update')(this._UPS.value);
-
-      let need_render = 0;
-      if (1 === this._sync_render) {
-        need_render = 1;
-      } else if (2 === this._sync_render) {
-        need_render = ++this._skip;
-        if (2 === this._skip) this._skip = 0;
+      if (0 === this._update_count % this._sync_render) {
+        this.render_once(real_dt)
+        this._callbacks.emit('on_fps_update')(this._UPS.value / this._sync_render);
       }
-      if (need_render) {
-        this.render_once(dt)
-        if (this._need_FPS) {
-          if (1 === this._sync_render)
-            this._FPS.update(dt);
-          else if (2 === this._sync_render)
-            this._FPS.update(dt * 2);
-          this._callbacks.emit('on_fps_update')(this._FPS.value);
-        }
+      if (this._need_UPS) {
+        this._UPS.update(real_dt);
+        this._callbacks.emit('on_ups_update')(this._UPS.value, 0);
       }
-      this._prev_time = time
-      this.start_update();
+      this._working_dt = Date.now() - time
+      this._prev_time = time;
     }
-    this._update_worker_id = Ditto.Timeout.add(on_update, this._applied_dt);
+    this._update_worker_id = Ditto.Interval.add(on_update, 0);
   }
+
 
   restrict_character(e: Character) {
     if (this.disposed) return;
@@ -568,13 +562,16 @@ export class World {
     return { left, right: left + i.w, top, bottom: top - i.h, near, far }
   }
 
-  private _playrate = 1;
+  private _ideally_dt: number = Math.floor(1000 / 60);
+  private _playrate: number = 1;
+
   get playrate() { return this._playrate }
   set playrate(v: number) {
     if (v <= 0) throw new Error('playrate must be larger than 0')
     if (v === this._playrate) return;
     this._playrate = v;
-    this.start_update()
+    this._ideally_dt = Math.floor(1000 / 60) / this._playrate;
+    this.start_update();
   }
 
   private _paused = false;

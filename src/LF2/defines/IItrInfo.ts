@@ -3,6 +3,7 @@ import { IRect } from "./IRect";
 import { IRectPair } from "./IRectPair";
 import type { Defines } from "./defines";
 
+
 export interface IItrInfo extends IRect {
   /**
    * 预制信息id

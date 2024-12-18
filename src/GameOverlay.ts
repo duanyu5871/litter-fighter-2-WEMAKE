@@ -11,6 +11,7 @@ export class GameOverlay {
   protected ele: HTMLDivElement | null | undefined;
   protected ele_fps: HTMLElement;
   protected ele_ups: HTMLElement;
+  protected ele_sps: HTMLElement;
   protected ele_cam_bar: HTMLCanvasElement;
   protected ele_loading: HTMLSpanElement;
   protected ele_btn_free_cam: HTMLButtonElement;
@@ -42,6 +43,8 @@ export class GameOverlay {
     this.ele_fps.className = 'txt_game_overlay'
     this.ele_ups = ele('span');
     this.ele_ups.className = 'txt_game_overlay'
+    this.ele_sps = ele('span');
+    this.ele_sps.className = 'txt_game_overlay'
     this.ele_loading = ele('span');
     this.ele_loading.className = 'txt_game_overlay'
     this.ele_cam_bar = ele('canvas');
@@ -56,6 +59,7 @@ export class GameOverlay {
     container.append(
       this.ele_fps, ele('br'),
       this.ele_ups, ele('br'),
+      // this.ele_sps, ele('br'),
       this.ele_loading, ele('br'),
       this.ele_cam_bar,
       this.ele_btn_free_cam
@@ -126,6 +130,10 @@ export class GameOverlay {
     this.ele_ups.innerText = 'UPS:' + v.toFixed(0);
   }
 
+  set SPS(v: number) {
+    this.ele_sps.innerText = 'SPS:' + v.toFixed(0);
+  }
+  
   set loading(v: string) {
     this.ele_loading.innerText = v;
   }
@@ -141,7 +149,10 @@ export class GameOverlay {
     on_loading_content: (content, progress) => this.loading = `${content}, ${progress}%`,
   }
   private _w_listener: Partial<IWorldCallbacks> = {
-    on_ups_update: ups => this.UPS = ups,
+    on_ups_update: (ups, sps) => {
+      this.UPS = ups
+      this.SPS = sps
+    },
     on_fps_update: fps => this.FPS = fps,
     on_pause_change: pause => {
       if (pause) {

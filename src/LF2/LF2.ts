@@ -39,6 +39,7 @@ import { arithmetic_progression } from './utils/math/arithmetic_progression';
 import float_equal from './utils/math/float_equal';
 import { random_get, random_in, random_take } from './utils/math/random';
 import { is_arr, is_num, is_str, not_empty_str } from './utils/type_check';
+import { BallsHelper } from './BallsHelper';
 
 const cheat_info_pair = (n: Defines.Cheats) => ['' + n, {
   keys: Defines.CheatKeys[n],
@@ -97,6 +98,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
 
   readonly characters = new CharactersHelper(this);
   readonly weapons = new WeaponsHelper(this);
+  readonly balls = new BallsHelper(this);
   readonly datas: DatMgr;
   readonly sounds: ISounds;
   readonly images: ImageMgr
@@ -342,7 +344,6 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   }
 
   remove_all_entities() {
-    this.world.del_entities(...this.world.entities);
     this.world.del_entities(...this.world.entities);
   }
   add_random_weapon(num = 1, duplicate = false): Weapon[] {
