@@ -82,7 +82,7 @@ export default class Entity {
   readonly world: World;
   readonly position = new Ditto.Vector3(0, 0, 0);
   protected _resting = 0;
-  get resting() { return this.resting; }
+  get resting() { return this._resting; }
   set resting(v: number) {
     const o = this._resting
     if (o === v) return;
