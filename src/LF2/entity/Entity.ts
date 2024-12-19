@@ -298,14 +298,14 @@ export default class Entity {
     this.lf2.sounds.play(sound, x, y, z)
   }
 
-  get max_mp(): number { return this._mp_max; }
-  set max_mp(v: number) {
+  get mp_max(): number { return this._mp_max; }
+  set mp_max(v: number) {
     const o = this._mp_max;
     this._callbacks.emit('on_max_mp_changed')(this, this._mp_max = v, o)
   }
 
-  get max_hp(): number { return this._hp_max; }
-  set max_hp(v: number) {
+  get hp_max(): number { return this._hp_max; }
+  set hp_max(v: number) {
     const o = this._hp_max;
     this._callbacks.emit('on_max_hp_changed')(this, this._hp_max = v, o)
     this.update_mp_r_spd();
@@ -523,8 +523,8 @@ export default class Entity {
       )
     )
 
-    if (opoint.max_hp) this.max_hp = opoint.max_hp;
-    if (opoint.max_mp) this.max_mp = opoint.max_mp;
+    if (opoint.max_hp) this.hp_max = opoint.max_hp;
+    if (opoint.max_mp) this.mp_max = opoint.max_mp;
     if (opoint.hp) this.hp = opoint.hp;
     if (opoint.mp) this.mp = opoint.mp;
 

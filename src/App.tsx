@@ -337,7 +337,7 @@ function App() {
   useShortcut('F5', 0, () => set_fast_forward(!fast_forward));
 
   useShortcut('F6', 0, () => { if (lf2) lf2.infinity_mp = !lf2.infinity_mp });
-  useShortcut('F7', 0, () => { if (lf2) for (const e of lf2.world.entities) e.hp = e.max_hp; });
+  useShortcut('F7', 0, () => { if (lf2) for (const e of lf2.world.entities) e.hp = e.hp_max; });
   useShortcut('F8', 0, () => lf2?.add_random_weapon(9));
   useShortcut('F9', 0, () => lf2?.world.stage.kill_all_enemies());
   useShortcut('F10', 0, () => { if (lf2) for (const e of lf2.world.entities) if (is_weapon(e)) e.hp = 0; });

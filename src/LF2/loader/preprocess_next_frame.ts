@@ -40,7 +40,7 @@ function get_val_from_entity(word: string, e: Entity): any {
     case Defines.ValWord.PressUD:
       return e.controller ? e.controller.UD : 0;
     case Defines.ValWord.HP_P:
-      return clamp(Math.round(100 * e.hp / e.max_hp), 0, 100);
+      return clamp(Math.round(100 * e.hp / e.hp_max), 0, 100);
     case Defines.ValWord.LF2_NET_ON:
       return e.lf2.is_cheat_enabled(Defines.Cheats.LF2_NET) ? 1 : 0;
     case Defines.ValWord.HERO_FT_ON:

@@ -72,6 +72,9 @@ export class InfoRender implements IEntityCallbacks {
   protected self_healing_mp_bar: Bar;
   protected mp_bar: Bar;
 
+  protected fall_value_bar: Bar;
+  protected defend_value_bar: Bar;
+
   protected entity: Entity;
 
   get visible() { return this.mesh.visible; }
@@ -93,6 +96,9 @@ export class InfoRender implements IEntityCallbacks {
 
     this.self_healing_mp_bar = new Bar(lf2, 'rgb(31,8,111)');
     this.mp_bar = new Bar(lf2, 'rgb(0,0,255)');
+
+    this.fall_value_bar = new Bar(lf2, 'rgb(0,0,255)', BAR_BG_W, 1);
+    this.defend_value_bar = new Bar(lf2, 'rgb(0,0,255)', BAR_BG_W, 1);
 
     this.mesh.name = InfoRender.name;
     this.mesh.render_order = 0;
@@ -120,11 +126,11 @@ export class InfoRender implements IEntityCallbacks {
     this.mp_bar.mesh.set_position(mp_x, mp_y);
     this.bars_node.add(this.mp_bar.mesh);
 
-    this.hp_bar.set(500, 500);
-    this.mp_bar.set(500, 500);
-    this.self_healing_hp_bar.set(500, 500);
-    this.self_healing_mp_bar.set(500, 500);
 
+    this.hp_bar.set(entity.hp, entity.hp_max);
+    this.mp_bar.set(entity.mp, entity.mp_max);
+    this.self_healing_hp_bar.set(entity.hp, entity.hp_max);
+    this.self_healing_mp_bar.set(entity.mp, entity.mp_max);
   }
 
   protected on_mount(entity: Entity) {

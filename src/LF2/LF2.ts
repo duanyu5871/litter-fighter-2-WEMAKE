@@ -75,7 +75,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     this._infinity_mp = v;
     this._callbacks.emit('on_infinity_mp')(v);
     if (!v) return;
-    for (const e of this.world.entities) e.mp = e.max_mp;
+    for (const e of this.world.entities) e.mp = e.mp_max;
   }
 
   readonly world: World;
