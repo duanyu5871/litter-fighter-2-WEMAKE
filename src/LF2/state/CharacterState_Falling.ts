@@ -51,7 +51,7 @@ export default class CharacterState_Falling extends CharacterState_Base {
 
   override on_landing(e: Character): void {
     const { facing, data: { indexes } } = e;
-    const f = e.get_frame();
+    const f = e.frame;
     const d = find_direction(f, indexes?.bouncing) ||
       find_direction(f, indexes?.falling) ||
       find_direction(f, indexes?.critical_hit) || facing;

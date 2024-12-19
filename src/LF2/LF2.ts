@@ -28,7 +28,6 @@ import { BallsHelper } from './BallsHelper';
 import { CharactersHelper } from './CharactersHelper';
 import { WeaponsHelper } from './WeaponsHelper';
 import Ditto from './ditto';
-import './entity/Ball';
 import Character from './entity/Character';
 import Entity from './entity/Entity';
 import { ILayoutInfo } from './layout/ILayoutInfo';
@@ -484,7 +483,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
       vy = old.velocities[0].y;
       vz = old.velocities[0].z;
       old_facing = old.facing;
-      old_frame_id = old.get_frame().id;
+      old_frame_id = old.frame.id;
       this.world.del_entities(old);
     }
 

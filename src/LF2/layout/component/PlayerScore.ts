@@ -21,7 +21,7 @@ export default class PlayerScore extends LayoutComponent {
     this.layout.visible = !!this.character;
     this.character?.callbacks.add({
       on_hp_changed: (e, value, prev) => {
-        if (value < prev) this._hp_lost += prev - value
+        if (value < prev) this._hp_lost += prev - value;
       },
       on_mp_changed: (e, value, prev) => {
         if (value < prev) this._mp_usage += prev - value

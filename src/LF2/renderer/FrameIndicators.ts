@@ -34,7 +34,7 @@ export class FrameIndicators {
   private _z: number = 0;
   protected get scene() { return this._entity.world.scene; };
   protected _box?: IObjectNode;
-  protected get frame() { return this._entity.get_frame(); }
+  protected get frame() { return this._entity.frame; }
   protected get face() { return this._entity.facing; }
   get show() { return this._show; }
   set show(v: boolean) {
@@ -73,7 +73,7 @@ export class FrameIndicators {
   }
 
   private _unsafe_update_box() {
-    const { indicator_info } = this._entity.get_frame();
+    const { indicator_info } = this._entity.frame;
     if (!indicator_info) return;
     const ii = indicator_info[this._entity.facing];
     const y = this._y + ii.y;

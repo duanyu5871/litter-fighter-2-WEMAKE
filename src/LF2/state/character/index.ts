@@ -21,8 +21,6 @@ import { CharacterState_Drink } from "../CharacterState_Drink";
 
 export const CHARACTER_STATES = (window as any).CHARACTER_STATES = new States<Character>()
 for (const [k, v] of ENTITY_STATES.map) CHARACTER_STATES.set(k, v)
-
-CHARACTER_STATES.set(Defines.State.Any, new CharacterState_Base())
 CHARACTER_STATES.set(Defines.State.Standing, new CharacterState_Standing());
 CHARACTER_STATES.set(Defines.State.Walking, new CharacterState_Walking());
 CHARACTER_STATES.set(Defines.State.Running, new CharacterState_Running());
@@ -32,7 +30,6 @@ CHARACTER_STATES.set(Defines.State.Falling, new CharacterState_Falling());
 CHARACTER_STATES.set(Defines.State.Burning, new CharacterState_Burning());
 CHARACTER_STATES.set(Defines.State.Frozen, new CharacterState_Frozen());
 CHARACTER_STATES.set(Defines.State.Lying, new CharacterState_Lying())
-
 CHARACTER_STATES.set(Defines.State.Caught, new class extends State_Base {
   override enter(_e: Character): void {
     _e.velocities.length = 1
@@ -44,7 +41,7 @@ CHARACTER_STATES.set(Defines.State.Z_Moveable, new CharacterState_Base())
 
 CHARACTER_STATES.set(Defines.State.NextAsLanding, new class extends CharacterState_Base {
   override on_landing(e: Character): void {
-    e.enter_frame(e.get_frame().next)
+    e.enter_frame(e.frame.next)
   }
 }())
 

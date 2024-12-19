@@ -25,7 +25,7 @@ export default class BallState_Base extends State_Base {
   }
   override update(e: Entity): void {
     e.handle_ground_velocity_decay();
-    const frame = e.get_frame();
+    const frame = e.frame;
 
     const max_speed_x = 5;
     const min_speed_x = -5;

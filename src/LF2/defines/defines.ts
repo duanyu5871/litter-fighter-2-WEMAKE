@@ -244,7 +244,12 @@ export namespace Defines {
     OpposingCatcher = 5,
   }
   export enum State {
-    Any = -1,
+    _Entity_Base = -1,
+    _Character_Base = -2,
+    _Weapon_Base = -3,
+    _Ball_Base = -4,
+
+
     Standing = 0, _0 = 0,
     Walking = 1, _1 = 1,
     Running = 2, _2 = 2,

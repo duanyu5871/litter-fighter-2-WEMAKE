@@ -7,7 +7,7 @@ export class States<E extends Entity = Entity> {
     return this.map.get(key);
   }
   set(key: number, value: State_Base<E>) {
-    if (value.state === -1) value.state = key;
+    value.state = key;
     this.map.set(key, value);
   }
   add(...values: State_Base<E>[]): this {

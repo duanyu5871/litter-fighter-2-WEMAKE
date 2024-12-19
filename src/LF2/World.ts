@@ -9,7 +9,6 @@ import { NoEmitCallbacks } from "./base/NoEmitCallbacks";
 import { IBdyInfo, IFrameInfo, IItrInfo } from './defines';
 import { Defines } from './defines/defines';
 import Ditto from './ditto';
-import Ball from './entity/Ball';
 import Character from './entity/Character';
 import Entity from './entity/Entity';
 import { Factory } from './entity/Factory';
@@ -261,7 +260,7 @@ export class World {
       e.position.z = near;
   }
 
-  restrict_ball(e: Ball) {
+  restrict_ball(e: Entity) {
     if (this.disposed) return;
     if (!this.bg) return;
     const { left, right, near, far } = this.bg.data.base;
@@ -319,9 +318,9 @@ export class World {
     }
     for (const e of this.entities) {
       e.update();
-      if (e.get_frame().id === Defines.FrameId.Gone)
+      if (e.frame.id === Defines.FrameId.Gone)
         this.del_entities(e);
-      else if (e.get_frame().state === Defines.State.Gone)
+      else if (e.frame.state === Defines.State.Gone)
         this.del_entities(e);
     }
     this.collision_detections();
@@ -409,12 +408,12 @@ export class World {
 
   collision_detection(a: Entity, b: Entity) {
     if (b.blinking || b.invisible) return;
-    const af = a.get_frame();
-    const bf = b.get_frame();
+    const af = a.frame;
+    const bf = b.frame;
     if (!af.itr?.length || !bf.bdy?.length) return;
 
     const b_catcher = b.catcher;
-    if (b_catcher && b_catcher.get_frame().cpoint?.hurtable !== 1)
+    if (b_catcher && b_catcher.frame.cpoint?.hurtable !== 1)
       return;
 
     const l0 = af.itr.length;
@@ -432,7 +431,7 @@ export class World {
         switch (af.state) {
           case Defines.State.Weapon_OnHand: {
             if (!is_weapon(a)) continue;
-            const atk = a.holder?.get_frame().wpoint?.attacking;
+            const atk = a.holder?.frame.wpoint?.attacking;
             if (!atk) continue;
             const itr_prefab = a.data.itr_prefabs?.[atk];
             if (!itr_prefab) continue;

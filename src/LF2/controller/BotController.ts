@@ -88,7 +88,7 @@ export class BotController extends BaseController {
     const JUMP_DESIRE = 1
     const RUN_ZONE = 300;
     const { facing } = me;
-    const { state } = me.get_frame();
+    const { state } = me.frame;
     const is_running = state === Defines.State.Running
     let is_x_reach = false;
     let is_z_reach = false;

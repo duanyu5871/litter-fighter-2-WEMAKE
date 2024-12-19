@@ -5,8 +5,7 @@ import CharacterState_Base from "./CharacterState_Base";
 
 export default class CharacterState_Lying extends CharacterState_Base {
   override enter(e: Character, prev_frame: IFrameInfo): void {
-    if (e.get_frame().state === Defines.State.Lying && e.hp <= 0) {
-      e.on_dead()
+    if (e.frame.state === Defines.State.Lying && e.hp <= 0) {
       if (!e.in_player_slot) { // 非玩家槽的角色在被击败时，闪烁着离开了这个世界
         e.blink_and_gone(60);
       }

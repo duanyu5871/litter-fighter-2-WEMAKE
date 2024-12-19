@@ -19,7 +19,13 @@ import { Factory } from './Factory';
 import type IEntityCallbacks from './IEntityCallbacks';
 import { turn_face } from './face_helper';
 import { is_character, is_weapon_data } from './type_check';
-const calc_v = (a: number, b: number) => {
+const calc_vx = (a: number, b: number) => {
+  return (b > 0 && a < b) || (b < 0 && a > b) ? b : a
+}
+const calc_vy = (a: number, b: number) => {
+  return a + b
+}
+const calc_vz = (a: number, b: number) => {
   return (b > 0 && a < b) || (b < 0 && a > b) ? b : a
 }
 export const EMPTY_PIECE: ITexturePieceInfo = {
@@ -252,6 +258,8 @@ export default class Entity {
     this.update_mp_r_spd();
 
     if (o > 0 && v <= 0) {
+      this._callbacks.emit('on_dead')(this);
+      
       if (this.data.base.brokens?.length) {
         this.apply_opoints(this.data.base.brokens);
         this.play_sound(this.data.base.dead_sounds);
@@ -308,7 +316,7 @@ export default class Entity {
 
   set state(v: State_Base | undefined) {
     if (this._state === v) return;
-    this._state?.leave?.(this, this.get_frame())
+    this._state?.leave?.(this, this.frame)
     this._state = v;
     this._state?.enter?.(this, this.get_prev_frame())
   }
@@ -456,7 +464,7 @@ export default class Entity {
 
     this.velocities[1] = offset_velocity;
 
-    const shotter_frame = emitter.get_frame();
+    const shotter_frame = emitter.frame;
 
     if (emitter.frame.state === Defines.State.Ball_Rebounding) {
       if (!emitter.lastest_collided) debugger
@@ -509,10 +517,28 @@ export default class Entity {
   set_frame(v: IFrameInfo) {
     this._prev_frame = this.frame;
     this.frame = v;
-    const prev_state = this._prev_frame.state;
-    const next_state = this.frame.state;
-    if (prev_state !== next_state) {
-      this.state = this.states.get(next_state) || this.states.get(Defines.State.Any);
+    const prev_state_code = this._prev_frame.state;
+    const next_state_code = this.frame.state;
+    if (prev_state_code !== next_state_code) {
+      let next_state = this.states.get(next_state_code)
+      if (!next_state) {
+        switch (this.data.type) {
+          case 'entity':
+            next_state = this.states.get(Defines.State._Entity_Base);
+            break;
+          case 'character':
+            next_state = this.states.get(Defines.State._Character_Base);
+            break;
+          case 'weapon':
+            next_state = this.states.get(Defines.State._Weapon_Base);
+            break;
+          case 'ball':
+            next_state = this.states.get(Defines.State._Ball_Base);
+            break;
+        }
+      }
+      if (!next_state) debugger;
+      this.state = next_state;
     }
     if (v.invisible)
       this.invisibility(v.invisible)
@@ -640,13 +666,13 @@ export default class Entity {
       y: vy,
       z: vz
     } = this.velocities[0];
-    if (dvx) vx = calc_v(vx, this.facing * dvx)
-    if (dvy) vy = calc_v(vy, dvy)
-    if (dvz) vz = calc_v(vz, dvz);
+    if (dvx) vx = calc_vx(vx, this.facing * dvx)
+    if (dvy) vy = calc_vy(vy, dvy)
+    if (dvz) vz = calc_vz(vz, dvz);
     if (this._controller) {
       const { UD, LR } = this._controller;
-      if (LR && speedx) vx = calc_v(vx, LR * speedx);
-      if (UD && speedz) vz = calc_v(vz, UD * speedz);
+      if (LR && speedx && speedx !== 550) vx = calc_vx(vx, LR * speedx);
+      if (UD && speedz && speedz !== 550) vz = calc_vz(vz, UD * speedz);
     }
     if (dvx === 550) vx = 0;
     if (dvz === 550) vz = 0;
@@ -751,8 +777,6 @@ export default class Entity {
         }
       }
     }
-
-
   }
 
   update(): void {
@@ -1309,17 +1333,7 @@ export default class Entity {
     return this.data.frames[id];
   }
 
-  get_frame() { return this.frame; }
   get_prev_frame() { return this._prev_frame; }
-
-  /**
-   * 角色专用（目前）
-   * 当hp<0且处于Lying状态，此函数被调用
-   */
-  on_dead() {
-    this._callbacks.emit('on_dead')(this);
-  }
-
 
   merge_velocities() {
     if (this.velocities.length <= 1)
@@ -1338,4 +1352,5 @@ export default class Entity {
 }
 
 Factory.inst.set_entity_creator('entity', (...args) => new Entity(...args));
+Factory.inst.set_entity_creator('ball', (...args) => new Entity(...args));
 Factory.inst.set_entity_creator('weapon', (...args) => new Entity(...args));

@@ -85,7 +85,7 @@ export class BaseController {
       const ck = CONFLICTS_KEY_MAP[k];
       if (ck) this.dbc_map[ck].reset();
 
-      this.dbc_map[k].press(this._time, this.entity.get_frame());
+      this.dbc_map[k].press(this._time, this.entity.frame);
     };
     return this;
   }
@@ -185,7 +185,7 @@ export class BaseController {
   update(): ControllerUpdateResult {
     ++this._time;
     const entity = this.entity;
-    const frame = entity.get_frame();
+    const frame = entity.frame;
     const { hold: hld, hit, state } = frame;
 
     // 按键序列初始化

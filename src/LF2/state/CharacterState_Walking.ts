@@ -13,7 +13,7 @@ export class CharacterState_Walking extends CharacterState_Base {
       const { UD, LR } = e.controller;
       if (!UD && !LR && !e.wait) {
         if (is_weapon(e.holding) && e.holding?.data.base.type === Defines.WeaponType.Heavy) {
-          e.wait = e.get_frame().wait
+          e.wait = e.frame.wait
         } else {
           e.enter_frame(e.data.indexes?.standing);
         }
