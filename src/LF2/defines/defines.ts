@@ -1,8 +1,8 @@
 import { GameKey } from "./GameKey";
-import { IBgData } from "./IBgData";
+import type { IBdyInfo } from "./IBdyInfo";
+import type { IBgData } from "./IBgData";
 import type { IItrInfo } from "./IItrInfo";
-import { IStageInfo } from "./IStageInfo";
-
+import type { IStageInfo } from "./IStageInfo";
 export namespace Defines {
   export enum OpointSpreading {
     Normal = 0,
@@ -420,82 +420,6 @@ export namespace Defines {
     StageRegularWeapon = "StageRegularWeapon",
   }
 
-  export enum ItrKind {
-    /** */
-    Normal = 0,
-
-    /** 
-     * 当角色1的itr与角色2的bdy碰撞，且角色2的frame.state为16(Tired)时
-     * 角色1捉起角色2
-     * 角色1进入抓人动作
-     * 角色2进入被抓动作
-     * 
-     * @see {Defines.State.Tired}
-     * @see {IItrInfo['catchingact']} 角色1进入抓人动作
-     * @see {IItrInfo['caughtact']} 角色2进入被抓动作
-     */
-    Catch = 1,
-
-    /** 
-     * 当角色的itr与武器的bdy碰撞，
-     * 且武器的frame.state为1004(Weapon_OnGround)或2004(HeavyWeapon_OnGround)时
-     * 
-     * 角色此时应捡起武器，且进入捡武器的动作。
-     * 
-     * @see {Defines.State.Weapon_OnGround}
-     * @see {Defines.State.HeavyWeapon_OnGround}
-     */
-    Pick = 2,
-
-    /** 
-     * 当角色1的itr与角色2的bdy碰撞
-     * 角色1捉起角色2
-     * 角色1进入抓人动作
-     * 角色2进入被抓动作
-     * 
-     * 强制抓人
-     * 
-     * @see {IItrInfo['catchingact']} 角色1进入抓人动作
-     * @see {IItrInfo['caughtact']} 角色2进入被抓动作
-     */
-    ForceCatch = 3,
-
-    /** 被丢出时，此itr才生效 */
-    CharacterThrew = 4,
-
-    /** 武器挥动 */
-    WeaponSwing = 5,
-
-    SuperPunchMe = 6, // 敌人靠近按A时是重击
-
-    /** 
-     * 当角色的itr与武器的bdy碰撞，且武器的frame.state为1004(Weapon_OnGround)时
-     * 
-     * 角色此时立刻应捡起武器
-     * 
-     * @see {Defines.State.Weapon_OnGround}
-     */
-    PickSecretly = 7,
-
-    Heal = 8,         // injury数值变成治疗多少hp，动作跳至dvx ?
-
-    /*
-     * 用于：
-     * * [X] LF2
-     * * [X] WEMAKE
-     * 
-     * - 原版：
-     *    - 打中敌人自己hp归0(如John的防护罩)
-     *    - 反弹state3000与3002的ball
-     */
-    JohnShield = 9, _9 = 9,
-
-    MagicFlute = 10,  // henry魔王之乐章效果
-    Block = 14,       // 阻挡
-    Fly = 15,         // 飞起 ??
-    Ice = 16,         // 结冰
-    // 1???=被你打到会跳到第???个frame(如人质的kind)
-  }
 
   export enum BdyKind {
     /**
@@ -538,18 +462,86 @@ export namespace Defines {
   }
 
   export enum ItrEffect {
-    Normal = 0,   // 拳击
-    Sharp = 1,    // 利器攻击
-    Fire = 2,     // 着火
-    Ice = 3,      // 结冰
-    Through = 4,  // 穿过敌人(仅能打中type 1.2.3.4.5.6的物件) |
-    None = 5,     // (或以上) |没效果，也打不中任何东西
-    MFire1 = 20,  // 定身火 ??
-    MFire2 = 21,  // 定身火 ??
-    FireExplosion = 22,  // 定身火 ??
-    Explosion = 23,      // julian col
-    MIce = 30,    // 定身冰 ??
+    /** 
+     * 普通效果 
+     */
+    Normal = 0,
+
+    /** 
+     * 利器 
+     * 
+     * Sharp的攻击效果是血花
+     */
+    Sharp = 1,
+
+    /** 
+     * 着火 
+     */
+    Fire = 2,
+
+    /** 
+     * 结冰 
+     */
+    Ice = 3,
+
+    /** 
+     * 穿过敌人(仅能打中type 1.2.3.4.5.6的物件) 
+     */
+    Through = 4,
+
+    /** 
+     * 没效果，也打不中任何东西 
+     */
+    None = 5,
+
+    /** 
+     * 火焰攻击_1
+     * 
+     * 用于：
+     * * [X] LF2
+     * * [X] WEMAKE
+     * 
+     * - 原版中：
+     *    - 能攻击队友（着火的人烧到队友就是用此实现的）
+     * 
+     * - WEMAKE中：
+     *    - 能不能攻击队友是通过itr.friendly_fire于bdy.friendly_fire决定的。
+     * 
+     * @see {IItrInfo.friendly_fire}
+     * @see {IBdyInfo.friendly_fire}
+     */
+    MFire1 = 20,
+
+    /** 定身火 ?? */
+    MFire2 = 21,
+
+    /** 
+     * 爆炸类的攻击(带火焰效果)
+     * 
+     * 攻击方向将根据攻受两方的X轴位置决定（攻击方向决定了击飞速度的方向），
+     * 以此实现左边被打的往左飞，右边被打的往右飞的效果。
+     * 被击中的角色将着火。
+     * 
+     * 例: firen d^j
+     */
+    FireExplosion = 22,
+
+    /** 
+     * 爆炸类的攻击
+     * 
+     * 攻击方向将根据攻受两方的X轴位置决定（攻击方向决定了击飞速度的方向），
+     * 以此实现左边被打的往左飞，右边被打的往右飞的效果。
+     * 
+     * 例: julian d^j
+     */
+    Explosion = 23,
+
+    /** 
+     * 定身冰?? 
+     */
+    MIce = 30,
   }
+
   export enum CPointKind {
     /**
      * 抓人的
@@ -573,11 +565,13 @@ export namespace Defines {
     [Cheats.HERO_FT]: "herofighter.com",
     [Cheats.GIM_INK]: "gim.ink"
   }
+
   export const CheatSounds: Record<Cheats, string> = {
     [Cheats.LF2_NET]: "data/m_pass.wav.mp3",
     [Cheats.HERO_FT]: "data/m_end.wav.mp3",
     [Cheats.GIM_INK]: "data/093_r.wav.mp3"
   }
+
   export interface ICheatInfo {
     keys: string;
     sound: string;
@@ -682,27 +676,25 @@ export namespace Defines {
     },
   }
 
-  export namespace BuiltIn {
-    export enum Imgs {
-      RFACE = 'sprite/RFACE.png',
-      CM5 = 'sprite/CM5.png',
-      CM4 = 'sprite/CM4.png',
-      CM3 = 'sprite/CM3.png',
-      CM2 = 'sprite/CM2.png',
-      CM1 = 'sprite/CM1.png',
-      CMA = 'sprite/CMA.png',
-      CHARACTER_THUMB = 'sprite/CHARACTER_THUMB.png',
-    }
-    export enum Dats {
-      Spark = 'data/spark.json',
-    }
-    export enum Broadcast {
-      ResetGPL = 'reset_gpl',
-      UpdateRandom = 'update_random',
-      StartGame = 'start_game',
-      SwitchStage = 'switch_stage',
-      SwitchBackground = 'switch_background'
-    }
+  export enum BuiltIn_Imgs {
+    RFACE = 'sprite/RFACE.png',
+    CM5 = 'sprite/CM5.png',
+    CM4 = 'sprite/CM4.png',
+    CM3 = 'sprite/CM3.png',
+    CM2 = 'sprite/CM2.png',
+    CM1 = 'sprite/CM1.png',
+    CMA = 'sprite/CMA.png',
+    CHARACTER_THUMB = 'sprite/CHARACTER_THUMB.png',
+  }
+  export enum BuiltIn_Dats {
+    Spark = 'data/spark.json',
+  }
+  export enum BuiltIn_Broadcast {
+    ResetGPL = 'reset_gpl',
+    UpdateRandom = 'update_random',
+    StartGame = 'start_game',
+    SwitchStage = 'switch_stage',
+    SwitchBackground = 'switch_background'
   }
 
   export type TKeys = Record<GameKey, string>

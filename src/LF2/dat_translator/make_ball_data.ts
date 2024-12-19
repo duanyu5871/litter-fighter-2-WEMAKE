@@ -1,4 +1,4 @@
-import { IEntityData } from "../defines";
+import { IEntityData, ItrKind } from "../defines";
 import { IFrameInfo } from "../defines/IFrameInfo";
 import { IDatIndex } from "../defines/IDatIndex";
 import { IEntityInfo } from "../defines/IEntityInfo";
@@ -77,7 +77,7 @@ export function make_ball_data(info: IEntityInfo, frames: Record<string, IFrameI
 
     if (frame.itr) {
       for (const itr of frame.itr) {
-        if (itr.kind === Defines.ItrKind.JohnShield) {
+        if (itr.kind === ItrKind.JohnShield) {
           if (hit_d) {
             itr.hit_act = [{
               id: hit_d,
@@ -104,19 +104,19 @@ export function make_ball_data(info: IEntityInfo, frames: Record<string, IFrameI
             id: '20',
             expression: CondMaker
               .add<Defines.ValWord>(Defines.ValWord.HitByBall, '==', 1)
-              .and(Defines.ValWord.HitByItrKind, '!{', Defines.ItrKind.JohnShield)
+              .and(Defines.ValWord.HitByItrKind, '!{', ItrKind.JohnShield)
               .done()
           }, {
             id: '30', // 反弹逻辑
             expression: CondMaker
-              .add(Defines.ValWord.HitByItrKind, '{{', Defines.ItrKind.WeaponSwing)
-              .or(Defines.ValWord.HitByItrKind, '{{', Defines.ItrKind.JohnShield)
+              .add(Defines.ValWord.HitByItrKind, '{{', ItrKind.WeaponSwing)
+              .or(Defines.ValWord.HitByItrKind, '{{', ItrKind.JohnShield)
               .or(c => c
                 .add(Defines.ValWord.HitOnSth, '==', 0)
                 .and(c => c
                   .add(Defines.ValWord.HitByCharacter, '==', 1)
                   .and((c => c
-                    .add(Defines.ValWord.HitByItrKind, '!{', Defines.ItrKind.Normal)
+                    .add(Defines.ValWord.HitByItrKind, '!{', ItrKind.Normal)
                     .or(Defines.ValWord.HitByItrEffect, '!{', Defines.ItrEffect.Fire)
                   ))
                 ))
@@ -137,7 +137,7 @@ export function make_ball_data(info: IEntityInfo, frames: Record<string, IFrameI
             id: '20',
             expression: CondMaker
               .add<Defines.ValWord>(Defines.ValWord.HitByState, '{{', 3005)
-              .or(Defines.ValWord.HitByItrKind, '{{', Defines.ItrKind.JohnShield)
+              .or(Defines.ValWord.HitByItrKind, '{{', ItrKind.JohnShield)
               .done()
           }]
         }
@@ -162,7 +162,7 @@ export function make_ball_data(info: IEntityInfo, frames: Record<string, IFrameI
             expression: CondMaker
               .add<Defines.ValWord>(Defines.ValWord.HitByState, '{{', 3005)
               .or(Defines.ValWord.HitByState, '{{', 3006)
-              .or(Defines.ValWord.HitByItrKind, '{{', Defines.ItrKind.JohnShield)
+              .or(Defines.ValWord.HitByItrKind, '{{', ItrKind.JohnShield)
               .done()
           }]
         }

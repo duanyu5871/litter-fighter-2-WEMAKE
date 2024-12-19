@@ -1,4 +1,4 @@
-import { Defines, IBdyInfo, IFrameInfo, IItrInfo, TFace, TNextFrame } from '../defines';
+import { Defines, IBdyInfo, IFrameInfo, IItrInfo, ItrKind, TFace, TNextFrame } from '../defines';
 import type Entity from '../entity/Entity';
 import { same_face, turn_face } from '../entity/face_helper';
 import { is_character, is_weapon } from '../entity/type_check';
@@ -35,17 +35,17 @@ export default class CharacterState_Base extends State_Base {
     a_cube: ICube, b_cube: ICube
   ): WhatNext {
     switch (itr.kind) {
-      case Defines.ItrKind.Catch: {
+      case ItrKind.Catch: {
         if (attacker.dizzy_catch_test(target)) {
           attacker.start_catch(target, itr);
         }
         return WhatNext.Interrupt;
       }
-      case Defines.ItrKind.ForceCatch: {
+      case ItrKind.ForceCatch: {
         attacker.start_catch(target, itr);
         return WhatNext.Interrupt
       }
-      case Defines.ItrKind.Pick: {
+      case ItrKind.Pick: {
         if (is_weapon(target)) {
           if (target.data.base.type === Defines.WeaponType.Heavy) {
             attacker.next_frame = { id: attacker.data.indexes?.picking_heavy }
@@ -55,7 +55,7 @@ export default class CharacterState_Base extends State_Base {
         }
         return WhatNext.Interrupt;
       }
-      case Defines.ItrKind.PickSecretly:
+      case ItrKind.PickSecretly:
         // do nothing
         return WhatNext.Interrupt;
       default: {
@@ -69,9 +69,9 @@ export default class CharacterState_Base extends State_Base {
     itr: IItrInfo, bdy: IBdyInfo,
     a_cube: ICube, b_cube: ICube
   ): WhatNext {
-    if (itr.kind === Defines.ItrKind.Heal)
+    if (itr.kind === ItrKind.Heal)
       return WhatNext.Interrupt; // TODO.
-    if (itr.kind === Defines.ItrKind.SuperPunchMe) {
+    if (itr.kind === ItrKind.SuperPunchMe) {
       target.v_rests.set(attacker.id, {
         remain: itr.vrest || 0,
         itr,
@@ -124,11 +124,11 @@ export default class CharacterState_Base extends State_Base {
     }
 
     switch (itr.kind) {
-      case Defines.ItrKind.Catch:
+      case ItrKind.Catch:
         if (attacker.dizzy_catch_test(target))
           target.start_caught(attacker, itr)
         return;
-      case Defines.ItrKind.ForceCatch: {
+      case ItrKind.ForceCatch: {
         target.start_caught(attacker, itr)
         return;
       }
@@ -175,14 +175,22 @@ export default class CharacterState_Base extends State_Base {
       case void 0: {
         const f = bdy.hit_act && target.get_next_frame(bdy.hit_act)[0]
         if (f) target.next_frame = f;
+
         target.fall_value -= itr.fall ? itr.fall : Defines.DEFAULT_ITR_FALL;
         target.defend_value = 0;
-        const is_fall = target.fall_value <= 0 || target.hp <= 0 || (
-          target.fall_value <= 80 && (
-            target.velocities[0].y > 0 ||
-            target.position.y > 0
+
+        const is_fall = (
+          target.fall_value <= 0 ||
+          target.hp <= 0
+        ) || (
+            target.fall_value <= 80
+            && (
+              Defines.State.Caught === target.frame.state ||
+              target.velocities[0].y > 0 ||
+              target.position.y > 0
+            )
           )
-        )
+
         if (is_fall) {
           const aface: TFace = Defines.ItrEffect.Explosion === itr.effect ?
             (target.position.x > attacker.position.x ? -1 : 1) :
@@ -215,20 +223,34 @@ export default class CharacterState_Base extends State_Base {
           } else {
             target.world.spark(...target.spark_point(r0, r1), "slient_hit")
           }
-          /* 击晕 */
-          if (target.fall_value <= Defines.DEFAULT_FALL_VALUE_DIZZY) {
-            target.next_frame = { id: target.data.indexes?.dizzy };
-            break;
-          }
-          /* 击中 */
-          if (target.data.indexes?.grand_injured)
-            target.next_frame = {
-              id: target.data.indexes.grand_injured[same_face(target, attacker)][0]
+          if (Defines.State.Caught === target.frame.state) {
+            if (target.frame.cpoint) {
+              const { backhurtact, fronthurtact } = target.frame.cpoint;
+              if (attacker.facing === target.facing && backhurtact) {
+                target.next_frame = { id: backhurtact };
+              } else if (attacker.facing !== target.facing && fronthurtact) {
+                target.next_frame = { id: fronthurtact };
+              }
             }
+          } else {
+            /* 击晕 */
+            if (target.fall_value <= Defines.DEFAULT_FALL_VALUE_DIZZY) {
+              target.next_frame = { id: target.data.indexes?.dizzy };
+            }
+
+            /* 击中 */
+            else if (target.data.indexes?.grand_injured) {
+              target.next_frame = {
+                id: target.data.indexes.grand_injured[same_face(target, attacker)][0]
+              }
+            }
+          }
+
         }
         break;
       }
     }
+
 
   }
 

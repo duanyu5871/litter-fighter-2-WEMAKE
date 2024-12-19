@@ -1,5 +1,5 @@
 import Expression from '../base/Expression';
-import { INextFrame } from "../defines";
+import { INextFrame, ItrKind } from "../defines";
 import { Defines } from '../defines/defines';
 import Entity from '../entity/Entity';
 import { is_ball, is_character, is_weapon } from "../entity/type_check";
@@ -28,7 +28,7 @@ function get_val_from_entity(word: string, e: Entity): any {
     case Defines.ValWord.RequireSuperPunch:
       for (const [, { itr, attacker }] of e.v_rests) {
         if (
-          itr.kind === Defines.ItrKind.SuperPunchMe && (
+          itr.kind === ItrKind.SuperPunchMe && (
             (attacker.position.x > e.position.x && e.facing === 1 && e.controller?.LR !== -1) ||
             (attacker.position.x < e.position.x && e.facing === -1 && e.controller?.LR !== 1)
           )

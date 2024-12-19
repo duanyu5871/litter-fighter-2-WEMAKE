@@ -1,4 +1,4 @@
-import { IBdyInfo, ICpointInfo, IEntityPictureInfo, IFramePictureInfo, IItrInfo, IOpointInfo, IWpointInfo } from '../defines';
+import { IBdyInfo, ICpointInfo, IEntityPictureInfo, IFramePictureInfo, IItrInfo, IOpointInfo, ItrKind, IWpointInfo } from '../defines';
 import { IEntityInfo } from "../defines/IEntityInfo";
 import { IFrameInfo } from "../defines/IFrameInfo";
 import { IRect } from '../defines/IRect';
@@ -183,7 +183,7 @@ export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string, fil
 
     if (frame.itr) {
       for (const itr of frame.itr) {
-        if (itr.kind === Defines.ItrKind.SuperPunchMe && (!itr.vrest || itr.vrest < frame.wait)) {
+        if (itr.kind === ItrKind.SuperPunchMe && (!itr.vrest || itr.vrest < frame.wait)) {
           itr.vrest = frame.wait;
         }
       }

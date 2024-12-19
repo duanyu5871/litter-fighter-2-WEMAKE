@@ -6,7 +6,7 @@ import LF2 from './LF2';
 import Callbacks from './base/Callbacks';
 import FPS from './base/FPS';
 import { NoEmitCallbacks } from "./base/NoEmitCallbacks";
-import { IBdyInfo, IFrameInfo, IItrInfo } from './defines';
+import { IBdyInfo, IFrameInfo, IItrInfo, ItrKind } from './defines';
 import { Defines } from './defines/defines';
 import Ditto from './ditto';
 import Entity from './entity/Entity';
@@ -443,11 +443,11 @@ export class World {
           }
         }
         switch (itr.kind) {
-          case Defines.ItrKind.Block:
-          case Defines.ItrKind.CharacterThrew:
-          case Defines.ItrKind.MagicFlute:
+          case ItrKind.Block:
+          case ItrKind.CharacterThrew:
+          case ItrKind.MagicFlute:
             continue; // todo
-          case Defines.ItrKind.Pick:
+          case ItrKind.Pick:
             if (
               a.holding || b.holder ||
               !is_character(a) ||
@@ -457,7 +457,7 @@ export class World {
               )
             ) continue;
             break;
-          case Defines.ItrKind.PickSecretly:
+          case ItrKind.PickSecretly:
             if (
               a.holding || b.holder ||
               !is_character(a) ||
@@ -465,24 +465,24 @@ export class World {
               bf.state !== Defines.State.Weapon_OnGround
             ) continue;
             break;
-          case Defines.ItrKind.ForceCatch:
+          case ItrKind.ForceCatch:
             if (is_character(a) && is_character(b)) break;
             continue;
-          case Defines.ItrKind.Catch:
+          case ItrKind.Catch:
             if (is_character(a) && is_character(b) && bf.state === Defines.State.Tired) break;
             continue;
-          case Defines.ItrKind.SuperPunchMe:
+          case ItrKind.SuperPunchMe:
             if (is_character(b) && !b.holding) break;
             continue;
-          case Defines.ItrKind.Normal:
+          case ItrKind.Normal:
             if (is_character(a) && bf.state === Defines.State.Weapon_OnGround) continue;
             break
-          case Defines.ItrKind.JohnShield:
+          case ItrKind.JohnShield:
             if (is_character(b) && a.same_team(b)) continue;
             break;
-          case Defines.ItrKind.Heal:
-          case Defines.ItrKind.Fly:
-          case Defines.ItrKind.Ice:
+          case ItrKind.Heal:
+          case ItrKind.Fly:
+          case ItrKind.Ice:
         }
         switch (itr.effect) {
           case Defines.ItrEffect.MFire1:
@@ -528,9 +528,9 @@ export class World {
   }
 
   spark(x: number, y: number, z: number, f: string) {
-    const data = this.lf2.datas.find(Defines.BuiltIn.Dats.Spark);
+    const data = this.lf2.datas.find(Defines.BuiltIn_Dats.Spark);
     if (!data) {
-      Warn.print(World.TAG + '::spark', `data of "${Defines.BuiltIn.Dats.Spark}" not found!`);
+      Warn.print(World.TAG + '::spark', `data of "${Defines.BuiltIn_Dats.Spark}" not found!`);
       return;
     }
     const create = Factory.inst.get_entity_creator(data.type);

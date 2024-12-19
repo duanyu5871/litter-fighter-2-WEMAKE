@@ -3,6 +3,7 @@ import Entity from "../entity/Entity";
 import BallState_Base from "./BallState_Base";
 import CharacterState_Base from "./CharacterState_Base";
 import CharacterState_Burning from "./CharacterState_Burning";
+import { CharacterState_Caught } from "./CharacterState_Caught";
 import CharacterState_Dash from "./CharacterState_Dash";
 import { CharacterState_Drink } from "./CharacterState_Drink";
 import CharacterState_Falling from "./CharacterState_Falling";
@@ -59,13 +60,7 @@ ENTITY_STATES.set(Defines.State.Falling, new CharacterState_Falling());
 ENTITY_STATES.set(Defines.State.Burning, new CharacterState_Burning());
 ENTITY_STATES.set(Defines.State.Frozen, new CharacterState_Frozen());
 ENTITY_STATES.set(Defines.State.Lying, new CharacterState_Lying())
-ENTITY_STATES.set(Defines.State.Caught, new class extends State_Base {
-  override enter(_e: Entity): void {
-    _e.velocities.length = 1
-    _e.velocities[0].set(0, 0, 0);
-  }
-}())
-
+ENTITY_STATES.set(Defines.State.Caught, new CharacterState_Caught())
 ENTITY_STATES.set(Defines.State.Z_Moveable, new CharacterState_Base())
 ENTITY_STATES.set(Defines.State.NextAsLanding, new class extends CharacterState_Base {
   override on_landing(e: Entity): void {

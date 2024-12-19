@@ -1,4 +1,4 @@
-import { Defines, IBdyInfo, IFrameInfo, IItrInfo } from "../defines";
+import { Defines, IBdyInfo, IFrameInfo, IItrInfo, ItrKind } from "../defines";
 import type Entity from "../entity/Entity";
 import type { ICube } from "../World";
 import State_Base, { WhatNext } from "./State_Base";
@@ -22,8 +22,8 @@ export default class WeaponState_Base extends State_Base<Entity> {
     a_cube: ICube, b_cube: ICube
   ): WhatNext {
     if (
-      itr.kind === Defines.ItrKind.Pick ||
-      itr.kind === Defines.ItrKind.PickSecretly
+      itr.kind === ItrKind.Pick ||
+      itr.kind === ItrKind.PickSecretly
     ) {
       if (!attacker.holding) {
         target.holder = attacker;

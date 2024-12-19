@@ -47,7 +47,7 @@ export default class StageNameText extends LayoutComponent {
     this._unmount_jobs.add(
       this.lf2.callbacks.add({
         on_broadcast: (v) => {
-          if (v === Defines.BuiltIn.Broadcast.SwitchStage)
+          if (v === Defines.BuiltIn_Broadcast.SwitchStage)
             this.switch_stage()
         },
         on_cheat_changed: () => this.switch_stage(),

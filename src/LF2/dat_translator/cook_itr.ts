@@ -1,4 +1,4 @@
-import { IItrInfo } from '../defines';
+import { IItrInfo, ItrKind } from '../defines';
 import { Defines } from '../defines/defines';
 import { is_num, is_positive, not_zero_num } from '../utils/type_check';
 import { get_next_frame_by_raw_id } from './get_the_next';
@@ -36,16 +36,16 @@ export default function cook_itr(unsafe_itr?: Partial<IItrInfo>) {
     }
   }
   switch (unsafe_itr.kind) {
-    case Defines.ItrKind.Pick:
-    case Defines.ItrKind.PickSecretly:
-    case Defines.ItrKind.SuperPunchMe: {
+    case ItrKind.Pick:
+    case ItrKind.PickSecretly:
+    case ItrKind.SuperPunchMe: {
       unsafe_itr.motionless = 0;
       unsafe_itr.shaking = 0;
       if (is_positive(vrest)) unsafe_itr.vrest = vrest + 2;
       break;
     }
-    case Defines.ItrKind.ForceCatch:
-    case Defines.ItrKind.Catch: {
+    case ItrKind.ForceCatch:
+    case ItrKind.Catch: {
       unsafe_itr.motionless = 0;
       unsafe_itr.shaking = 0;
       if (unsafe_itr.vrest) {
@@ -54,10 +54,10 @@ export default function cook_itr(unsafe_itr?: Partial<IItrInfo>) {
       }
       break;
     }
-    case Defines.ItrKind.JohnShield:
+    case ItrKind.JohnShield:
       unsafe_itr.friendly_fire = 1;
       break;
-    case Defines.ItrKind.Heal: {
+    case ItrKind.Heal: {
       if (src_dvx) unsafe_itr.hit_act = get_next_frame_by_raw_id(src_dvx)
       unsafe_itr.friendly_fire = 1 // 允许治疗队友
       break;

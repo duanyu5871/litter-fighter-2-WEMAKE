@@ -135,15 +135,15 @@ class Inner {
 
   async load() {
 
-    for (const k of Object.keys(Defines.BuiltIn.Imgs)) {
-      const src = (Defines.BuiltIn.Imgs as any)[k];
+    for (const k of Object.keys(Defines.BuiltIn_Imgs)) {
+      const src = (Defines.BuiltIn_Imgs as any)[k];
       if (!not_blank_str(src)) continue;
       this.lf2.on_loading_content(`${src}`, 0);
       await this.lf2.images.load_img(src, src)
     }
 
-    for (const k of Object.keys(Defines.BuiltIn.Dats)) {
-      const src = (Defines.BuiltIn.Dats as any)[k];
+    for (const k of Object.keys(Defines.BuiltIn_Dats)) {
+      const src = (Defines.BuiltIn_Dats as any)[k];
       if (!not_blank_str(src)) continue;
       this.lf2.on_loading_content(`${src}`, 0);
       await this._add_data(src, await this.lf2.import_json(src))

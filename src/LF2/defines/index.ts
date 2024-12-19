@@ -16,6 +16,7 @@ export * from './IDatIndex';
 export * from './IEntityInfo';
 export * from './IHitKeyCollection';
 export * from "./IStageInfo";
+export * from './ItrKind'
 
 /**
  * 实体图片信息

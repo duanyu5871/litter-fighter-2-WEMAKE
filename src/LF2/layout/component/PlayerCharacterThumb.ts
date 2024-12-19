@@ -24,7 +24,7 @@ export default class PlayerCharacterThumb extends LayoutComponent {
   get character() { return this.lf2.player_characters.get(this.player_id) }
 
   get thumb_url(): string {
-    return this.character?.data.base.small ?? Defines.BuiltIn.Imgs.CHARACTER_THUMB;
+    return this.character?.data.base.small ?? Defines.BuiltIn_Imgs.CHARACTER_THUMB;
   }
 
   protected _opacity: SineAnimation = new SineAnimation(0.65, 1, 1 / 25);

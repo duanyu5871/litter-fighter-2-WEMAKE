@@ -1,7 +1,7 @@
-import { TNextFrame } from ".";
-import Defines from "./defines";
-import { IRect } from "./IRect";
-import { IRectPair } from "./IRectPair";
+import type { TNextFrame } from ".";
+import type { Defines } from "./defines";
+import type { IRect } from "./IRect";
+import type { IRectPair } from "./IRectPair";
 
 export interface IBdyInfo extends IRect {
   /**

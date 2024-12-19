@@ -1,4 +1,4 @@
-import { Defines, IBdyInfo, IFrameInfo, IItrInfo } from "../defines";
+import { Defines, IBdyInfo, IFrameInfo, IItrInfo, ItrKind } from "../defines";
 import Entity from "../entity/Entity";
 import { is_character, is_weapon } from "../entity/type_check";
 import { ICube } from "../World";
@@ -68,7 +68,7 @@ export default class BallState_Base extends State_Base {
     target.shaking = 0;
     if (is_character(target) || is_weapon(target)) {
       switch (self.frame.state) {
-        case Defines.ItrKind.JohnShield:
+        case ItrKind.JohnShield:
         case Defines.State.Ball_Flying:
           self.hp = 0;
           break;

@@ -41,7 +41,7 @@ export default class BackgroundNameText extends LayoutComponent {
     this._unmount_jobs.add(
       this.lf2.callbacks.add({
         on_broadcast: (v) => {
-          if (v === Defines.BuiltIn.Broadcast.SwitchBackground)
+          if (v === Defines.BuiltIn_Broadcast.SwitchBackground)
             this.switch_background()
         }
       }),

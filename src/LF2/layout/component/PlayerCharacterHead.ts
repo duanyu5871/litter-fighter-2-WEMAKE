@@ -21,9 +21,9 @@ export default class PlayerCharacterHead extends LayoutComponent {
 
   get head() {
     const character_id = this.player?.character;
-    if (!character_id) return Defines.BuiltIn.Imgs.RFACE;
+    if (!character_id) return Defines.BuiltIn_Imgs.RFACE;
     const head = this.lf2.datas.find_character(character_id)?.base.head
-    return head ?? Defines.BuiltIn.Imgs.RFACE;
+    return head ?? Defines.BuiltIn_Imgs.RFACE;
   }
 
   protected _opacity: SineAnimation = new SineAnimation(0.65, 1, 1 / 25);
@@ -58,7 +58,7 @@ export default class PlayerCharacterHead extends LayoutComponent {
   }
   override on_resume(): void {
     super.on_resume();
-    const hint_pic = this.lf2.images.create_pic_by_img_key(Defines.BuiltIn.Imgs.CMA);
+    const hint_pic = this.lf2.images.create_pic_by_img_key(Defines.BuiltIn_Imgs.CMA);
     this._mesh_hints
       .set_info(hint_pic)
       .set_visible(!this.player?.joined)

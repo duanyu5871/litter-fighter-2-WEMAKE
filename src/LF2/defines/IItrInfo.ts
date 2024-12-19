@@ -43,8 +43,8 @@ export interface IItrInfo extends IRect {
 
   /**
    * 本itr的效果类型
-   * 详细效果见Defines.ItrKind
-   * @see {Defines.ItrKind}
+   * 详细效果见ItrKind
+   * @see {ItrKind}
    */
   kind?: number;
   dvx?: number;
