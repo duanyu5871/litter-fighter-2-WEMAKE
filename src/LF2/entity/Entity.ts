@@ -82,27 +82,53 @@ export default class Entity {
   readonly world: World;
   readonly position = new Ditto.Vector3(0, 0, 0);
   protected _resting = 0;
-  get resting() { return this._resting; }
-  set resting(v: number) { this._resting = v; }
+  get resting() { return this.resting; }
+  set resting(v: number) {
+    const o = this._resting
+    if (o === v) return;
+    this._resting = v;
+    this._callbacks.emit('on_resting_changed')(this, v, o)
+  }
 
   private _fall_value = Defines.DEFAULT_FALL_VALUE_MAX;
   get fall_value(): number { return this._fall_value; }
   set fall_value(v: number) {
     const o = this._fall_value
+    if (o === v) return;
     this._fall_value = v;
-    if (v < o) this._resting = 30;
+    if (v < o) this.resting = 30;
+    this._callbacks.emit('on_fall_value_changed')(this, v, o)
   }
 
-  fall_value_max = Defines.DEFAULT_FALL_VALUE_MAX;
+  private _fall_value_max = Defines.DEFAULT_FALL_VALUE_MAX;
+  get fall_value_max(): number { return this._fall_value_max; }
+  set fall_value_max(v: number) {
+    const o = this._fall_value_max;
+    if (o === v) return;
+    this._fall_value_max = v;
+    this._callbacks.emit('on_fall_value_max_changed')(this, v, o)
+  }
+
+
   private _defend_value = Defines.DEFAULT_DEFEND_VALUE_MAX;
   get defend_value(): number { return this._defend_value; }
   set defend_value(v: number) {
-    const o = this._defend_value
+    const o = this._defend_value;
+    if (o === v) return;
     this._defend_value = v;
-    if (v < o) this._resting = 30;
+    if (v < o) this.resting = 30;
+    this._callbacks.emit('on_defend_value_changed')(this, v, o)
   }
 
-  defend_value_max = Defines.DEFAULT_DEFEND_VALUE_MAX;
+  private _defend_value_max = Defines.DEFAULT_DEFEND_VALUE_MAX;
+  get defend_value_max(): number { return this._defend_value_max; }
+  set defend_value_max(v: number) {
+    const o = this._defend_value_max;
+    if (o === v) return;
+    this._defend_value_max = v;
+    this._callbacks.emit('on_defend_value_max_changed')(this, v, o)
+  }
+
   throwinjury?: number;
 
   get catching() { return this._catching; }
@@ -761,15 +787,15 @@ export default class Entity {
         break;
       case Defines.State.Defend:
       case Defines.State.BrokenDefend:
-        if (this._resting > 0) {
-          this._resting--;
+        if (this.resting > 0) {
+          this.resting--;
         } else if (this.fall_value < this.fall_value_max) {
           this.fall_value += 1;
         }
         break;
       default: {
-        if (this._resting > 0) {
-          this._resting--;
+        if (this.resting > 0) {
+          this.resting--;
         } else {
           if (this.fall_value < this.fall_value_max) {
             this.fall_value += 1;
@@ -1033,7 +1059,7 @@ export default class Entity {
       return;
     }
     this._catcher = attacker;
-    this._resting = 0;
+    this.resting = 0;
     this.fall_value = this.fall_value_max;
     this.defend_value = this.defend_value_max;
     this.next_frame = itr.caughtact;

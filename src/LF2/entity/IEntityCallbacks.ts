@@ -1,6 +1,6 @@
+import type { Defines } from '../defines';
 import type { Unsafe } from '../utils/type_check';
 import type Entity from './Entity';
-import type { Defines } from '../defines';
 
 export default interface IEntityCallbacks<E extends Entity = Entity> {
   on_holder_changed?(e: E, value: Unsafe<Entity>, prev: Unsafe<Entity>): void;
@@ -113,4 +113,61 @@ export default interface IEntityCallbacks<E extends Entity = Entity> {
   on_dead?(e: E): void;
 
   on_disposed?(e: E): void;
+
+  /**
+   * 
+   *
+   * @param {E} e
+   * @param {number} value 当前值
+   * @param {number} prev 上一次值
+   */
+  on_fall_value_max_changed?(e: E, value: number, prev: number): void;
+
+  /**
+   * 
+   *
+   * @param {E} e
+   * @param {number} value 当前值
+   * @param {number} prev 上一次值
+   */
+  on_fall_value_changed?(e: E, value: number, prev: number): void;
+
+  /**
+   * 
+   *
+   * @param {E} e
+   * @param {number} value 当前值
+   * @param {number} prev 上一次值
+   */
+  on_defend_value_max_changed?(e: E, value: number, prev: number): void;
+
+
+  /**
+   * 
+   *
+   * @param {E} e
+   * @param {number} value 当前值
+   * @param {number} prev 上一次值
+   */
+  on_defend_value_changed?(e: E, value: number, prev: number): void;
+
+
+  /**
+   * 
+   *
+   * @param {E} e
+   * @param {number} value 当前值
+   * @param {number} prev 上一次值
+   */
+  on_resting_max_changed?(e: E, value: number, prev: number): void;
+
+
+  /**
+   * 
+   *
+   * @param {E} e
+   * @param {number} value 当前值
+   * @param {number} prev 上一次值
+   */
+  on_resting_changed?(e: E, value: number, prev: number): void;
 }

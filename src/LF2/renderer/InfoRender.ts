@@ -4,36 +4,56 @@ import LF2 from '../LF2';
 import { get_team_shadow_color } from '../base/get_team_shadow_color';
 import { get_team_text_color } from '../base/get_team_text_color';
 import Ditto from '../ditto';
-import type Entity from './Entity';
-import type IEntityCallbacks from './IEntityCallbacks';
+import type Entity from '../entity/Entity';
+import type IEntityCallbacks from '../entity/IEntityCallbacks';
 
 const BAR_W = 40;
-const BAR_H = 5;
-const BAR_GEO = new T.PlaneGeometry(BAR_W, BAR_H).translate(.5 * BAR_W, -.5 * BAR_H, 0);
+const BAR_H = 3;
 
 const BAR_BG_W = BAR_W + 2;
 const BAR_BG_H = 1 + (BAR_H + 1) * 2;
-const BAR_BG_GEO = new T.PlaneGeometry(BAR_BG_W, BAR_BG_H).translate(0, -.5 * BAR_BG_H, 0);
 
+const geo_map = new Map<string, T.PlaneGeometry>();
+function get_bar_geo(w: number, h: number) {
+  const key = `w_h_${w}_${h}`;
+  let ret = geo_map.get(key);
+  if (!ret) geo_map.set(key, ret = new T.PlaneGeometry(w, h).translate(.5 * w, -.5 * h, 0))
+  return ret;
+}
+
+const material_map = new Map<T.ColorRepresentation, T.MeshBasicMaterial>();
+function get_color_material(color: T.ColorRepresentation) {
+  const key = (
+    typeof color === 'string' ||
+    typeof color === 'number'
+  ) ? `c_${color}` : color ? color : 'c_void';
+
+  let ret = material_map.get(key);
+  if (!ret) material_map.set(key, ret = new T.MeshBasicMaterial({ visible: true, color }))
+  return ret;
+}
 class Bar {
   readonly mesh: IMeshNode;
-  protected _max: number = 0;
-  protected _val: number = 0;
+  protected _max: number = 1;
+  protected _val: number = 1;
 
-  constructor(lf2: LF2, color: T.ColorRepresentation) {
-    this.mesh = new Ditto.MeshNode(lf2, {
-      geometry: BAR_GEO,
-      material: new T.MeshBasicMaterial({ visible: true, color })
-    })
-  }
   set max(v: number) {
     this._max = v;
-    this.mesh.set_scale_x(this._val / this._max)
-  };
+    this.mesh.set_scale_x(this._val / this._max);
+  }
+
   set val(v: number) {
     this._val = Math.max(0, v);
-    this.mesh.set_scale_x(this._val / this._max)
-  };
+    this.mesh.set_scale_x(this._val / this._max);
+  }
+
+  constructor(lf2: LF2, color: T.ColorRepresentation, w: number = BAR_BG_W, h: number = BAR_BG_H) {
+    this.mesh = new Ditto.MeshNode(lf2, {
+      geometry: get_bar_geo(w, h),
+      material: get_color_material(color)
+    })
+  }
+
   set(val: number, max: number) {
     this._max = max;
     this._val = val;
@@ -41,10 +61,10 @@ class Bar {
   }
 }
 
-export class InfoSprite implements IEntityCallbacks {
+export class InfoRender implements IEntityCallbacks {
   protected mesh: IBillboardNode;
   protected bars_node: IObjectNode;
-  protected bars_bg: IMeshNode;
+  protected bars_bg: Bar;
 
   protected self_healing_hp_bar: Bar;
   protected hp_bar: Bar;
@@ -66,10 +86,7 @@ export class InfoSprite implements IEntityCallbacks {
     });
     this.bars_node = new Ditto.ObjectNode(lf2)
 
-    this.bars_bg = new Ditto.MeshNode(lf2, {
-      geometry: BAR_BG_GEO,
-      material: new T.MeshBasicMaterial({ color: 'rgb(0,0,0)' })
-    })
+    this.bars_bg = new Bar(lf2, 'rgb(0,0,0)', BAR_BG_W, BAR_BG_H);
 
     this.self_healing_hp_bar = new Bar(lf2, 'rgb(111,8,31)');
     this.hp_bar = new Bar(lf2, 'rgb(255,0,0)');
@@ -77,19 +94,16 @@ export class InfoSprite implements IEntityCallbacks {
     this.self_healing_mp_bar = new Bar(lf2, 'rgb(31,8,111)');
     this.mp_bar = new Bar(lf2, 'rgb(0,0,255)');
 
-
-    this.mesh.name = InfoSprite.name;
+    this.mesh.name = InfoRender.name;
     this.mesh.render_order = 0;
     this.entity = entity;
     entity_mesh.on('added', () => this.on_mount(entity));
     entity_mesh.on('removed', () => this.on_unmount(entity));
 
-    this.bars_node.add(this.bars_bg)
-
     const hp_x = -BAR_W / 2;
     const hp_y = -1;
 
-    this.bars_node.add(this.bars_bg)
+    this.bars_node.add(this.bars_bg.mesh)
 
     this.self_healing_hp_bar.mesh.set_position(hp_x, hp_y);
     this.bars_node.add(this.self_healing_hp_bar.mesh)

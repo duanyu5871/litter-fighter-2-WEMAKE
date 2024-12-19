@@ -4,7 +4,7 @@ import { IFrameInfo, IEntityData, ITexturePieceInfo, TFace } from "../defines";
 import IPicture from "../defines/IPicture";
 import Ditto from "../ditto";
 import Entity from "../entity/Entity";
-import { InfoSprite } from "../entity/InfoSprite";
+import { InfoRender } from "./InfoRender";
 import create_pictures from "../loader/create_pictures";
 import { FrameIndicators } from "./FrameIndicators";
 import Shadow from "./ShadowRender";
@@ -24,12 +24,12 @@ export class EntityRender {
   protected _prev_update_count?: number;
   protected _shaking?: number;
   protected _prev_data?: IEntityData;
-  protected _info_sprite: InfoSprite;
+  protected _info_sprite: InfoRender;
   constructor(entity: Entity) {
     this.set_entity(entity);
     this.shadow = new Shadow(entity, this.entity_mesh)
     this.indicators = new FrameIndicators(entity, this.entity_mesh);
-    this._info_sprite = new InfoSprite(entity, this.entity_mesh)
+    this._info_sprite = new InfoRender(entity, this.entity_mesh)
   }
   set_entity(entity: Entity): EntityRender {
     const { world, lf2, data } = this.entity = entity
