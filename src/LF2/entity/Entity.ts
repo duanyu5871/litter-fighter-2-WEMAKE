@@ -7,6 +7,7 @@ import { Callbacks, new_id, new_team, type NoEmitCallbacks } from '../base';
 import { IExpression } from '../base/Expression';
 import { BaseController } from '../controller/BaseController';
 import { IBaseData, IBdyInfo, ICpointInfo, IEntityData, IFrameInfo, IItrInfo, INextFrame, IOpointInfo, ITexturePieceInfo, TFace, TNextFrame } from '../defines';
+import { SpeedMode } from '../defines/SpeedMode';
 import { Defines } from '../defines/defines';
 import Ditto from '../ditto';
 import { IVector3 } from '../ditto/IVector3';
@@ -18,13 +19,8 @@ import { Factory } from './Factory';
 import type IEntityCallbacks from './IEntityCallbacks';
 import { turn_face } from './face_helper';
 import { is_character, is_weapon_data } from './type_check';
-const calc_vx = (a: number, b: number) => {
-  return (b > 0 && a < b) || (b < 0 && a > b) ? b : a
-}
-const calc_vy = (a: number, b: number) => {
-  return a + b
-}
-const calc_vz = (a: number, b: number) => {
+const calc_v = (a: number, b: number, c: number) => {
+  if (c === 1) return a + b
   return (b > 0 && a < b) || (b < 0 && a > b) ? b : a
 }
 export const EMPTY_PIECE: ITexturePieceInfo = {
@@ -661,19 +657,25 @@ export default class Entity {
 
   handle_frame_velocity() {
     if (this.shaking || this.motionless) return;
-    const { dvx, dvy, dvz, speedz, speedx } = this.frame;
+    const { dvx, dvy, dvz, speedz, speedx,
+      vxm = SpeedMode.LF2,
+      vym = SpeedMode.Add,
+      vzm = SpeedMode.LF2,
+      speedxm = SpeedMode.LF2,
+      speedzm = SpeedMode.LF2,
+    } = this.frame;
     let {
       x: vx,
       y: vy,
       z: vz
     } = this.velocities[0];
-    if (dvx) vx = calc_vx(vx, this.facing * dvx)
-    if (dvy) vy = calc_vy(vy, dvy)
-    if (dvz) vz = calc_vz(vz, dvz);
+    if (dvx) vx = calc_v(vx, this.facing * dvx, vxm)
+    if (dvy) vy = calc_v(vy, dvy, vym)
+    if (dvz) vz = calc_v(vz, dvz, vzm);
     if (this._controller) {
       const { UD, LR } = this._controller;
-      if (LR && speedx && speedx !== 550) vx = calc_vx(vx, LR * speedx);
-      if (UD && speedz && speedz !== 550) vz = calc_vz(vz, UD * speedz);
+      if (LR && speedx && speedx !== 550) vx = calc_v(vx, LR * speedx, speedxm);
+      if (UD && speedz && speedz !== 550) vz = calc_v(vz, UD * speedz, speedzm);
     }
     if (dvx === 550) vx = 0;
     if (dvz === 550) vz = 0;

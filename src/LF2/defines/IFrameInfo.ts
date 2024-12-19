@@ -1,5 +1,6 @@
 import { TNextFrame } from ".";
 import type { INextFrame } from "../defines/INextFrame";
+import type { Defines } from './defines';
 import { IBdyInfo } from "./IBdyInfo";
 import { IBpointInfo } from "./IBpointInfo";
 import { ICpointInfo } from "./ICpointInfo";
@@ -10,7 +11,7 @@ import { IItrInfo } from "./IItrInfo";
 import { IOpointInfo } from "./IOpointInfo";
 import { IRectPair } from "./IRectPair";
 import { IWpointInfo } from "./IWpointInfo";
-import type { Defines } from './defines';
+import type { SpeedMode } from './SpeedMode';
 
 export interface IFrameInfo {
   id: string;
@@ -18,7 +19,7 @@ export interface IFrameInfo {
   pic?: IFramePictureInfo;
   state: number;
   wait: number;
-  
+
   /**
    * wait end, what next?
    *
@@ -28,6 +29,13 @@ export interface IFrameInfo {
   dvx?: number;
   dvy?: number;
   dvz?: number;
+
+  /** @see {SpeedMode} */
+  vxm?: number;
+  /** @see {SpeedMode} */
+  vym?: number;
+  /** @see {SpeedMode} */
+  vzm?: number;
 
   centerx: number;
   centery: number;
@@ -58,11 +66,15 @@ export interface IFrameInfo {
    * x轴速度，当按着左或右，此值生效
    */
   speedx?: number;
+  /** @see {SpeedMode} */
+  speedxm?: number;
 
   /**
    * z轴速度，当按着上或下，此值生效
    */
   speedz?: number;
+  /** @see {SpeedMode} */
+  speedzm?: number;
 
   /**
    * 起跳标志（角色专用）
@@ -85,10 +97,10 @@ export interface IFrameInfo {
    * @type {?TNextFrame}
    */
   on_dead?: TNextFrame;
-  
+
   on_exhaustion?: TNextFrame;
 
-  
+
   /**
    * Description placeholder
    *
@@ -96,7 +108,7 @@ export interface IFrameInfo {
    */
   on_landing?: TNextFrame;
 
-  
+
   /**
    * 原ball的hit_Fa
    *
