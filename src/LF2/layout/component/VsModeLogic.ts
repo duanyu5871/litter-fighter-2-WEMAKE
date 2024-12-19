@@ -17,10 +17,6 @@ export default class VsModeLogic extends LayoutComponent implements IEntityCallb
     }
   }
 
-  on_hp_changed(e: Entity, value: number, prev: number): void {
-    if (prev <= 0 || value > 0) return;
-  }
-  
   on_dead() {
     const team_alives = new Map<string, number>()
     for (const e of this.world.entities) {
