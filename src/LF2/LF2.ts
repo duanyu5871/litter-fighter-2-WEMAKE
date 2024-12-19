@@ -28,7 +28,6 @@ import { BallsHelper } from './BallsHelper';
 import { CharactersHelper } from './CharactersHelper';
 import { WeaponsHelper } from './WeaponsHelper';
 import Ditto from './ditto';
-import Character from './entity/Character';
 import Entity from './entity/Entity';
 import { ILayoutInfo } from './layout/ILayoutInfo';
 import Layout, { ICookedLayoutInfo } from './layout/Layout';
@@ -127,7 +126,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     for (const [id, player] of this.player_characters)
       if (id === which) return player;
   }
-  on_click_character?: (c: Character) => void;
+  on_click_character?: (c: Entity) => void;
 
   async import_json<C = any>(path: string): Promise<C> {
     const paths = get_import_fallbacks(path);
@@ -174,16 +173,16 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     e.position.y = 550;
     return e;
   }
-  add_character(data: IEntityData, num: number, team?: string): Character[];
-  add_character(id: string, num: number, team?: string): Character[];
-  add_character(data: IEntityData | string | undefined, num: number, team?: string): Character[] {
+  add_character(data: IEntityData, num: number, team?: string): Entity[];
+  add_character(id: string, num: number, team?: string): Entity[];
+  add_character(data: IEntityData | string | undefined, num: number, team?: string): Entity[] {
     if (typeof data === 'string')
       data = this.datas.find_character(data)
     if (!data)
       return [];
-    const ret: Character[] = []
+    const ret: Entity[] = []
     while (--num >= 0) {
-      const e = new Character(this.world, data);
+      const e = new Entity(this.world, data);
       e.team = team ?? new_team();
       this.random_entity_info(e).attach();
       ret.push(e)
@@ -360,8 +359,8 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     }
     return ret;
   }
-  add_random_character(num = 1, team?: string): Character[] {
-    const ret: Character[] = []
+  add_random_character(num = 1, team?: string): Entity[] {
+    const ret: Entity[] = []
     while (--num >= 0) {
       const d = random_get(this.datas.characters);
       if (!d) continue;
@@ -487,7 +486,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
       this.world.del_entities(old);
     }
 
-    const character = new Character(this.world, data)
+    const character = new Entity(this.world, data)
     character.id = old?.id ?? new_id();
     character.position.x = x;
     character.position.y = y;

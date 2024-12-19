@@ -1,9 +1,9 @@
 import { IFrameInfo } from "../defines";
-import Character from "../entity/Character";
+import Entity from "../entity/Entity";
 import CharacterState_Base from "./CharacterState_Base";
 
 export class CharacterState_Rowing extends CharacterState_Base {
-  override enter(e: Character, prev_frame: IFrameInfo): void {
+  override enter(e: Entity, prev_frame: IFrameInfo): void {
     if (e.position.y <= 0) return;
     const {
       rowing_distance: dx = 0,
@@ -19,7 +19,7 @@ export class CharacterState_Rowing extends CharacterState_Base {
     }
     e.velocities[0].y = e.world.gravity * Math.sqrt(2 * h / e.world.gravity);
   }
-  override on_landing(e: Character): void {
+  override on_landing(e: Entity): void {
     e.enter_frame(e.data.indexes?.landing_1);
   }
 }

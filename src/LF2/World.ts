@@ -9,7 +9,6 @@ import { NoEmitCallbacks } from "./base/NoEmitCallbacks";
 import { IBdyInfo, IFrameInfo, IItrInfo } from './defines';
 import { Defines } from './defines/defines';
 import Ditto from './ditto';
-import Character from './entity/Character';
 import Entity from './entity/Entity';
 import { Factory } from './entity/Factory';
 import { is_ball, is_base_ctrl, is_character, is_local_ctrl, is_weapon } from './entity/type_check';
@@ -65,7 +64,7 @@ export class World {
   entities = new Set<Entity>();
   disposed = false;
 
-  readonly player_slot_characters = new Map<string, Character>();
+  readonly player_slot_characters = new Map<string, Entity>();
   readonly nearest_enemy_requesters = new Set<Entity>();
 
   get stage() { return this._stage }
@@ -239,7 +238,7 @@ export class World {
   }
 
 
-  restrict_character(e: Character) {
+  restrict_character(e: Entity) {
     if (this.disposed) return;
     if (!this.bg) return;
     const { left, right, near, far, player_left, player_right } = this.stage;

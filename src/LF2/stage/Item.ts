@@ -1,11 +1,10 @@
 import { IEntityData } from "../defines";
 import { IStageObjectInfo } from "../defines/IStageObjectInfo";
 import { Defines } from "../defines/defines";
-import Character from "../entity/Character";
 import Entity from "../entity/Entity";
 import { Factory } from "../entity/Factory";
 import IEntityCallbacks from "../entity/IEntityCallbacks";
-import { is_character, is_entity, is_weapon } from "../entity/type_check";
+import { is_character, is_weapon } from "../entity/type_check";
 import { random_in, random_take } from "../utils/math/random";
 import { is_num, is_str } from "../utils/type_check";
 import Stage from "./Stage";
@@ -23,7 +22,7 @@ export default class Item {
   private data_list: IEntityData[] = [];
 
   readonly entity_callback: IEntityCallbacks = {
-    on_disposed: (e: Character): void => {
+    on_disposed: (e: Entity): void => {
       this.entities.delete(e); // 被移除
       e.callbacks.del(this.entity_callback);
       if (this.entities.size) return;
@@ -87,9 +86,7 @@ export default class Item {
       random_in(z - range_z, z + range_z) :
       random_in(this.stage.near, this.stage.far);
 
-    if (is_entity(e)) {
-      if (is_num(hp)) e.hp = hp;
-    }
+    if (is_num(hp)) e.hp = hp;
     if (is_num(y)) e.position.y = y;
 
     if (is_character(e)) {
@@ -98,9 +95,7 @@ export default class Item {
       e.position.y = 450;
     }
     this.entities.add(e);
-    if (is_entity(e)) {
-      e.callbacks.add(this.entity_callback);
-    }
+    e.callbacks.add(this.entity_callback);
     e.team = this.stage.team;
     e.attach();
 

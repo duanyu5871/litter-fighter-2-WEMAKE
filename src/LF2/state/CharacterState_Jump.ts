@@ -1,11 +1,11 @@
 import { IFrameInfo } from '../defines';
-import type Character from '../entity/Character';
+import type Entity from '../entity/Entity';
 import CharacterState_Base from "./CharacterState_Base";
 
 export default class CharacterState_Jump extends CharacterState_Base {
-  private _jumpings = new Set<Character>();
+  private _jumpings = new Set<Entity>();
 
-  override update(character: Character): void {
+  override update(character: Entity): void {
     character.handle_gravity();
     character.handle_ground_velocity_decay();
     character.handle_frame_velocity();
@@ -29,7 +29,7 @@ export default class CharacterState_Jump extends CharacterState_Base {
     )
     this._jumpings.add(character);
   }
-  override on_landing(character: Character): void {
+  override on_landing(character: Entity): void {
     character.enter_frame(character.data.indexes?.landing_1);
   }
 }

@@ -1,7 +1,7 @@
 import GameKey from '../defines/GameKey';
 import { IKeyboardCallback } from "../ditto/keyboard/IKeyboardCallback";
 import { IKeyEvent } from '../ditto/keyboard/IKeyEvent';
-import Character from '../entity/Character';
+import Entity from '../entity/Entity';
 import { BaseController } from "./BaseController";
 
 type TKeyCodeMap = { [x in GameKey]?: string };
@@ -30,7 +30,7 @@ export class LocalController extends BaseController implements IKeyboardCallback
     this.start(key);
   };
 
-  constructor(player_id: string, character: Character, kc?: TKeyCodeMap) {
+  constructor(player_id: string, character: Entity, kc?: TKeyCodeMap) {
     super(player_id, character);
     if (kc) this.set_key_code_map(kc);
     this.disposer = character.world.lf2.keyboard.callback.add(this)

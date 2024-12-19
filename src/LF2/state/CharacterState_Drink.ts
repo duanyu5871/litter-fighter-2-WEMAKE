@@ -1,10 +1,10 @@
 import { Defines } from "../defines";
-import Character from "../entity/Character";
+import Entity from "../entity/Entity";
 import { is_weapon } from "../entity/type_check";
 import CharacterState_Base from "./CharacterState_Base";
 
 export class CharacterState_Drink extends CharacterState_Base {
-  override update(e: Character): void {
+  override update(e: Entity): void {
     super.update(e);
     // FIXME: 更通用的补充机制。而不是写死。 -Gim
     if (e.holding) {

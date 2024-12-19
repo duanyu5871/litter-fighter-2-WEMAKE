@@ -2,12 +2,12 @@ import type { BaseController } from "../controller/BaseController";
 import type { BotController } from "../controller/BotController";
 import type { LocalController } from "../controller/LocalController";
 import type { IBgData, IEntityData } from "../defines";
-import type Character from "./Character";
-import type Entity from "./Entity";
-export const is_character = (v: any): v is Character => v?.is_character === true;
-export const is_ball = (v: any): v is Entity => v?.data?.type === 'ball';
-export const is_weapon = (v: any): v is Entity => v?.data?.type === 'weapon';
-export const is_entity = (v: any): v is Entity => v?.is_entity === true;
+export const is_character_data = (v: any) => v?.type === 'character'
+export const is_weapon_data = (v: any) => v?.type === 'weapon'
+export const is_ball_data = (v: any) => v?.type === 'ball'
+export const is_character = (v: any) => is_character_data(v?.data);
+export const is_ball = (v: any) => is_ball_data(v?.data);
+export const is_weapon = (v: any) => is_weapon_data(v?.data);
 export const is_base_ctrl =
   (v: any): v is BaseController => v?.is_base_controller === true
 export const is_bot_ctrl =
@@ -19,11 +19,5 @@ export const is_entity_data = (v: any): v is IEntityData =>
   is_character_data(v) ||
   is_weapon_data(v) ||
   is_ball_data(v)
-export const is_character_data = (v: any): v is IEntityData =>
-  v.type === 'character'
-export const is_weapon_data = (v: any): v is IEntityData =>
-  v.type === 'weapon'
-export const is_ball_data = (v: any): v is IEntityData =>
-  v.type === 'ball'
 export const is_bg_data = (v: any): v is IBgData =>
   v.type === 'background'

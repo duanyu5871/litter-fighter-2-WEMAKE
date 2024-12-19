@@ -7,6 +7,7 @@ export class States<E extends Entity = Entity> {
     return this.map.get(key);
   }
   set(key: number, value: State_Base<E>) {
+    if(this.map.has(key)) debugger;
     value.state = key;
     this.map.set(key, value);
   }

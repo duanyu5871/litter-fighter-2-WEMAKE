@@ -14,7 +14,6 @@ import { ENTITY_STATES, States } from '../state';
 import { type State_Base } from '../state/State_Base';
 import { random_get } from '../utils/math/random';
 import { is_positive, is_str } from '../utils/type_check';
-import type Character from './Character';
 import { Factory } from './Factory';
 import type IEntityCallbacks from './IEntityCallbacks';
 import { turn_face } from './face_helper';
@@ -259,7 +258,7 @@ export default class Entity {
 
     if (o > 0 && v <= 0) {
       this._callbacks.emit('on_dead')(this);
-      
+
       if (this.data.base.brokens?.length) {
         this.apply_opoints(this.data.base.brokens);
         this.play_sound(this.data.base.dead_sounds);
@@ -397,6 +396,8 @@ export default class Entity {
     this._hp = this._hp_max
     this._mp = this._mp_max
     this._catch_time = this._catch_time_max;
+
+    this.enter_frame(Defines.FrameId.Auto);
   }
 
   set_holder(v: Entity | undefined): this {
@@ -949,7 +950,7 @@ export default class Entity {
         // TODO：变成抓住的人
         if (is_character(this) && is_character(this._catching)) {
           this.transform_datas = [this.data, this._catching.data as any];
-          (this as Character).data = this._catching.data;
+          (this as Entity).data = this._catching.data;
           return this.find_auto_frame();
         }
       } else {
@@ -1354,3 +1355,4 @@ export default class Entity {
 Factory.inst.set_entity_creator('entity', (...args) => new Entity(...args));
 Factory.inst.set_entity_creator('ball', (...args) => new Entity(...args));
 Factory.inst.set_entity_creator('weapon', (...args) => new Entity(...args));
+Factory.inst.set_entity_creator('character', (...args) => new Entity(...args));

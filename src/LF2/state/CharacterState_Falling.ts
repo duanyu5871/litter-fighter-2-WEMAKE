@@ -1,5 +1,5 @@
 import type { IFrameInfo } from "../defines";
-import type Character from '../entity/Character';
+import type Entity from '../entity/Entity';
 import find_direction from "../entity/find_frame_direction";
 import CharacterState_Base from "./CharacterState_Base";
 
@@ -7,7 +7,7 @@ export default class CharacterState_Falling extends CharacterState_Base {
   _bouncing_frames_map = new Map<string, Set<string>>();
   _begin_velocty_y_map = new Map<string, number>();
 
-  override enter(e: Character, prev_frame: IFrameInfo): void {
+  override enter(e: Entity, prev_frame: IFrameInfo): void {
     if (!this._bouncing_frames_map.has(e.data.id) && e.data.indexes?.bouncing) {
       this._bouncing_frames_map.set(e.data.id, new Set([
         ...e.data.indexes.bouncing[1],
@@ -17,11 +17,11 @@ export default class CharacterState_Falling extends CharacterState_Base {
     this._begin_velocty_y_map.set(e.data.id, e.velocities[0].y);
   }
 
-  is_bouncing_frame(e: Character) {
+  is_bouncing_frame(e: Entity) {
     return !!this._bouncing_frames_map.get(e.data.id)?.has(e.frame.id);
   }
 
-  override update(e: Character): void {
+  override update(e: Entity): void {
     if (e.shaking > 0) return;
     if (this.is_bouncing_frame(e)) {
       this.update_bouncing(e);
@@ -30,13 +30,13 @@ export default class CharacterState_Falling extends CharacterState_Base {
     }
   }
 
-  update_bouncing(e: Character): void {
+  update_bouncing(e: Entity): void {
     e.handle_gravity();
     e.handle_ground_velocity_decay(0.7);
     e.handle_frame_velocity();
   }
 
-  update_falling(e: Character): void {
+  update_falling(e: Entity): void {
     e.handle_gravity();
     e.handle_frame_velocity();
     const { x, y } = e.velocity;
@@ -49,7 +49,7 @@ export default class CharacterState_Falling extends CharacterState_Base {
     e.enter_frame(e.data.indexes?.falling?.[direction][falling_frame_idx]);
   }
 
-  override on_landing(e: Character): void {
+  override on_landing(e: Entity): void {
     const { facing, data: { indexes } } = e;
     const f = e.frame;
     const d = find_direction(f, indexes?.bouncing) ||

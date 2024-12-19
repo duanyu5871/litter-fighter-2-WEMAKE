@@ -14,12 +14,12 @@ import { InvalidController } from './LF2/controller/InvalidController';
 import { IStageInfo } from "./LF2/defines/IStageInfo";
 import { IStagePhaseInfo } from "./LF2/defines/IStagePhaseInfo";
 import { Defines } from './LF2/defines/defines';
-import Character from './LF2/entity/Character';
 import Stage from './LF2/stage/Stage';
 import { useLocalNumber, useLocalString } from './useLocalStorage';
-const bot_controllers: { [x in string]?: (e: Character) => BaseController } = {
-  'OFF': (e: Character) => new InvalidController('', e),
-  'enemy chaser': (e: Character) => new BotController('', e)
+import Entity from './LF2/entity/Entity';
+const bot_controllers: { [x in string]?: (e: Entity) => BaseController } = {
+  'OFF': (e: Entity) => new InvalidController('', e),
+  'enemy chaser': (e: Entity) => new BotController('', e)
 }
 
 export interface ISettingsRowsProps {

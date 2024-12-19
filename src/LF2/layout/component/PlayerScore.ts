@@ -1,5 +1,5 @@
 import Invoker from "../../base/Invoker";
-import Character from "../../entity/Character";
+import Entity from "../../entity/Entity";
 import { LayoutComponent } from "./LayoutComponent";
 
 export default class PlayerScore extends LayoutComponent {
@@ -11,7 +11,7 @@ export default class PlayerScore extends LayoutComponent {
   get lose() { return this._lose }
 
   get player_id(): string { return this.args[0] || ''; }
-  get character(): Character | undefined {
+  get character(): Entity | undefined {
     return this.lf2.player_characters.get(this.player_id)
   }
   private _unmount_job = new Invoker()

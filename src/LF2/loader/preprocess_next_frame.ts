@@ -2,8 +2,8 @@ import Expression from '../base/Expression';
 import { INextFrame } from "../defines";
 import { Defines } from '../defines/defines';
 import Entity from '../entity/Entity';
-import { is_ball, is_character, is_entity, is_weapon } from "../entity/type_check";
-import { find, find_last } from '../utils/container_help';
+import { is_ball, is_character, is_weapon } from "../entity/type_check";
+import { find } from '../utils/container_help';
 import { clamp } from '../utils/math';
 
 export function cook_next_frame(i: INextFrame | INextFrame[]): void {
@@ -18,10 +18,8 @@ export function cook_next_frame(i: INextFrame | INextFrame[]): void {
 function get_val_from_entity(word: string, e: Entity): any {
   switch (word) {
     case Defines.ValWord.TrendX:
-      if (is_entity(e)) {
-        if (e.velocities[0].x < 0) return -e.facing;
-        if (e.velocities[0].x > 0) return e.facing;
-      }
+      if (e.velocities[0].x < 0) return -e.facing;
+      if (e.velocities[0].x > 0) return e.facing;
       return 0
     case Defines.ValWord.PressFB:
       return e.controller ? e.controller.LR * e.facing : 0;
@@ -50,7 +48,7 @@ function get_val_from_entity(word: string, e: Entity): any {
     case Defines.ValWord.GIM_INK_ON:
       return e.lf2.is_cheat_enabled(Defines.Cheats.GIM_INK) ? 1 : 0;
     case Defines.ValWord.WeaponType:
-      return is_entity(e) && is_weapon(e.holding) ? e.holding?.data.base.type || 0 : 0;
+      return e.holding?.data.base.type ?? 0;
     case Defines.ValWord.HAS_TRANSFROM_DATA:
       return e.transform_datas ? 1 : 0;
     case Defines.ValWord.Catching:

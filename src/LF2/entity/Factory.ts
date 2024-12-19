@@ -1,5 +1,4 @@
 import type { BaseController } from "../controller/BaseController";
-import type Character from "./Character";
 import type Entity from "./Entity";
 
 export interface ICreator<C, T extends new (...args: any[]) => C> {
@@ -9,7 +8,7 @@ export interface ICreator<C, T extends new (...args: any[]) => C> {
 export interface EntityCreators {
   'entity': ICreator<Entity, typeof Entity>;
   'ball': ICreator<Entity, typeof Entity>;
-  'character': ICreator<Character, typeof Character>;
+  'character': ICreator<Entity, typeof Entity>;
   'weapon': ICreator<Entity, typeof Entity>;
 }
 

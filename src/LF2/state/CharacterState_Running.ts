@@ -1,8 +1,8 @@
-import type Character from '../entity/Character';
+import type Entity from '../entity/Entity';
 import CharacterState_Base from "./CharacterState_Base";
 
 export default class CharacterState_Running extends CharacterState_Base {
-  override update(e: Character): void {
+  override update(e: Entity): void {
     e.handle_gravity();
     e.handle_ground_velocity_decay();
     e.handle_frame_velocity();

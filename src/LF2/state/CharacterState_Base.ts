@@ -1,6 +1,5 @@
 import { Defines, IBdyInfo, IFrameInfo, IItrInfo, TFace, TNextFrame } from '../defines';
-import type Character from '../entity/Character';
-import Entity from '../entity/Entity';
+import type Entity from '../entity/Entity';
 import { same_face, turn_face } from '../entity/face_helper';
 import { is_character, is_weapon } from '../entity/type_check';
 import { ICube } from '../World';
@@ -12,12 +11,12 @@ export default class CharacterState_Base extends State_Base {
     e.handle_ground_velocity_decay();
     e.handle_frame_velocity();
   }
-  override on_landing(e: Character): void {
+  override on_landing(e: Entity): void {
     e.enter_frame(e.data.indexes?.landing_2);
   }
   override get_auto_frame(e: Entity): IFrameInfo | undefined {
     let fid: string | undefined;
-    if (is_weapon(e.holding) && e.holding.data.base.type === Defines.WeaponType.Heavy) {
+    if (e.holding?.data.base.type === Defines.WeaponType.Heavy) {
       fid = e.data.indexes?.heavy_obj_walk?.[0]
     } else if (e.position.y > 0) {
       fid = e.data.indexes?.in_the_sky?.[0]
@@ -66,7 +65,7 @@ export default class CharacterState_Base extends State_Base {
   }
 
   override before_be_collided(
-    attacker: Character, target: Entity,
+    attacker: Entity, target: Entity,
     itr: IItrInfo, bdy: IBdyInfo,
     a_cube: ICube, b_cube: ICube
   ): WhatNext {
@@ -88,7 +87,7 @@ export default class CharacterState_Base extends State_Base {
     return WhatNext.Continue;
   }
 
-  override on_be_collided(attacker: Entity, target: Character, itr: IItrInfo, bdy: IBdyInfo, r0: ICube, r1: ICube): void {
+  override on_be_collided(attacker: Entity, target: Entity, itr: IItrInfo, bdy: IBdyInfo, r0: ICube, r1: ICube): void {
 
     switch (bdy.kind) {
       case Defines.BdyKind.Defend: {
@@ -233,7 +232,7 @@ export default class CharacterState_Base extends State_Base {
 
   }
 
-  override get_sudden_death_frame(target: Character): TNextFrame | undefined {
+  override get_sudden_death_frame(target: Entity): TNextFrame | undefined {
     target.velocities[0].y = 2;
     target.velocities[0].x = 2 * target.facing;
     if (target.data.indexes?.falling)
@@ -241,7 +240,7 @@ export default class CharacterState_Base extends State_Base {
     return void 0;
   }
 
-  override get_caught_end_frame(target: Character): TNextFrame | undefined {
+  override get_caught_end_frame(target: Entity): TNextFrame | undefined {
     target.velocities[0].y = 2;
     target.velocities[0].x = -2 * target.facing;
     if (target.data.indexes?.falling)
@@ -249,7 +248,7 @@ export default class CharacterState_Base extends State_Base {
     return void 0
   }
 
-  override find_frame_by_id(e: Character, id: string | undefined): IFrameInfo | undefined {
+  override find_frame_by_id(e: Entity, id: string | undefined): IFrameInfo | undefined {
     if (e.hp <= 0 && e.position.y <= 0 && e.frame.state === Defines.State.Lying) {
       return e.frame;
     }

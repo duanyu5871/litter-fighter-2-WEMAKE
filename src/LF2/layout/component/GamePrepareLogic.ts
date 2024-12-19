@@ -6,7 +6,7 @@ import { NoEmitCallbacks } from "../../base/NoEmitCallbacks";
 import LocalController from "../../controller/LocalController";
 import GameKey from "../../defines/GameKey";
 import { Defines } from "../../defines/defines";
-import Character from "../../entity/Character";
+import Entity from "../../entity/Entity";
 import { Factory } from "../../entity/Factory";
 import { filter } from "../../utils/container_help";
 import { map_no_void } from "../../utils/container_help/map_no_void";
@@ -259,7 +259,7 @@ export default class GamePrepareLogic extends LayoutComponent {
       if (!player?.joined) continue;
       const character_data = this.lf2.datas.find_character(player.character)
       if (!character_data) continue;
-      const character = new Character(this.world, character_data);
+      const character = new Entity(this.world, character_data);
       character.name = player.is_com ? 'com' : player.name;
       character.team = player.team || new_team()
       character.facing = Math.random() < 0.5 ? 1 : -1
