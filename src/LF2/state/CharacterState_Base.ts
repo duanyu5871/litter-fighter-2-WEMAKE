@@ -108,16 +108,16 @@ export default class CharacterState_Base extends State_Base {
         if (target.defend_value <= 0) { // 破防
           target.defend_value = 0;
           target.world.spark(...target.spark_point(r0, r1), "broken_defend")
-          const f = bdy.break_act && target.get_next_frame(bdy.break_act)[0]
-          if (f) {
-            target.next_frame = f
+          const result = bdy.break_act && target.get_next_frame(bdy.break_act)
+          if (result) {
+            target.next_frame = result.frame
             return;
           }
         } else {
           if (itr.dvx) target.velocities[0].x = itr.dvx * attacker.facing / 2;
           target.world.spark(...target.spark_point(r0, r1), "defend_hit")
-          const f = bdy.hit_act && target.get_next_frame(bdy.hit_act)[0]
-          if (f) target.next_frame = f;
+          const result = bdy.hit_act && target.get_next_frame(bdy.hit_act)
+          if (result) target.next_frame = result.frame
           return;
         }
         break;
@@ -174,8 +174,8 @@ export default class CharacterState_Base extends State_Base {
       case ItrEffect.Normal:
       case ItrEffect.Sharp:
       case void 0: {
-        const f = bdy.hit_act && target.get_next_frame(bdy.hit_act)[0]
-        if (f) target.next_frame = f;
+        const result = bdy.hit_act && target.get_next_frame(bdy.hit_act)
+        if (result) target.next_frame = result.frame;
 
         target.fall_value -= itr.fall ? itr.fall : Defines.DEFAULT_ITR_FALL;
         target.defend_value = 0;

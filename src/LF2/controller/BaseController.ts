@@ -2,7 +2,7 @@ import type { IFrameInfo, IHitKeyCollection, TNextFrame } from '../defines';
 import { GameKey } from '../defines';
 import type Entity from '../entity/Entity';
 import DoubleClick from './DoubleClick';
-
+import { KeyStatus } from './KeyStatus';
 export type TKeys = Record<GameKey, string>
 
 export const KEY_NAME_LIST = [
@@ -40,7 +40,7 @@ class ControllerUpdateResult {
 export class BaseController {
   readonly is_base_controller = true
 
-  private _time = 1;
+  private _time = 10;
   private _disposers = new Set<() => void>();
   private _player_id: string;
   get player_id(): string { return this._player_id }
@@ -54,19 +54,27 @@ export class BaseController {
       this._disposers.add(f);
   }
   entity: Entity;
-  key_time_maps: Record<GameKey, number> = { L: 0, R: 0, U: 0, D: 0, a: 0, j: 0, d: 0 };
+  key_status_maps: Record<GameKey, KeyStatus> = {
+    L: new KeyStatus(),
+    R: new KeyStatus(),
+    U: new KeyStatus(),
+    D: new KeyStatus(),
+    a: new KeyStatus(),
+    j: new KeyStatus(),
+    d: new KeyStatus()
+  };
 
   readonly dbc_map: Record<GameKey, DoubleClick<IFrameInfo>>;
 
   get LR(): 0 | 1 | -1 {
-    const L = !!this.key_time_maps.L;
-    const R = !!this.key_time_maps.R;
+    const L = !!this.key_status_maps.L.time;
+    const R = !!this.key_status_maps.R.time;
     return L === R ? 0 : R ? 1 : -1;
   }
 
   get UD(): 0 | 1 | -1 {
-    const U = !!this.key_time_maps.U;
-    const D = !!this.key_time_maps.D;
+    const U = !!this.key_status_maps.U.time;
+    const D = !!this.key_status_maps.D.time;
     return U === D ? 0 : D ? 1 : -1;
   }
 
@@ -81,7 +89,7 @@ export class BaseController {
    */
   start(...keys: GameKey[]): this {
     for (const k of keys) {
-      this.key_time_maps[k] = this._time;
+      this.key_status_maps[k].hit(this._time);
       const ck = CONFLICTS_KEY_MAP[k];
       if (ck) this.dbc_map[ck].reset();
 
@@ -97,7 +105,7 @@ export class BaseController {
    */
   hold(...keys: GameKey[]): this {
     for (const k of keys)
-      this.key_time_maps[k] = this._time - this.entity.world.key_hit_duration;
+      this.key_status_maps[k].hit(this._time - this.entity.world.key_hit_duration);
     return this;
   }
 
@@ -107,7 +115,7 @@ export class BaseController {
    * @returns {this}
    */
   end(...keys: GameKey[]): this {
-    for (const k of keys) this.key_time_maps[k] = 0;
+    for (const k of keys) this.key_status_maps[k].end();
     return this;
   }
 
@@ -124,20 +132,20 @@ export class BaseController {
   is_hit_or_hold(k: string): boolean;
   is_hit_or_hold(k: GameKey): boolean;
   is_hit_or_hold(k: GameKey): boolean {
-    return !!this.key_time_maps[k];
+    return !!this.key_status_maps[k].time;
   }
 
   is_hold(k: string): boolean;
   is_hold(k: GameKey): boolean;
   is_hold(k: GameKey): boolean {
-    return !this.is_hit(k) && !!this.key_time_maps[k];
+    return !this.is_hit(k) && !!this.key_status_maps[k].time;
   }
 
   is_hit(k: string): boolean;
   is_hit(k: GameKey): boolean;
   is_hit(k: GameKey): boolean {
-    const v = this.key_time_maps[k];
-    return !!v && this._time - v <= this.entity.world.key_hit_duration;
+    const { time } = this.key_status_maps[k];
+    return time > 0 && this._time - time <= this.entity.world.key_hit_duration;
   }
   is_db_hit(k: GameKey): boolean {
     const { time } = this.dbc_map[k];
@@ -147,12 +155,13 @@ export class BaseController {
   is_end(k: string): boolean;
   is_end(k: GameKey): boolean;
   is_end(k: GameKey): boolean {
-    return !this.key_time_maps[k];
+    return !this.key_status_maps[k].time;
   }
   is_start(k: string): boolean;
   is_start(k: GameKey): boolean;
   is_start(k: GameKey): boolean {
-    return this.key_time_maps[k] === this._time - 1;
+    const { time } = this.key_status_maps[k]
+    return !!(time > 0 && time === this._time - 1);
   }
 
   constructor(player_id: string, character: Entity) {
@@ -201,15 +210,15 @@ export class BaseController {
     const { facing } = entity;
     /** 相对方向的按钮判定 */
     if (facing === 1) {
-      if (hit?.F && hit_R && end_L && this.nf.time < this.key_time_maps.R) this.nf.set(hit.F, this.key_time_maps.R, GameKey.R);
-      if (hit?.B && hit_L && end_R && this.nf.time < this.key_time_maps.L) this.nf.set(hit.B, this.key_time_maps.L, GameKey.L);
-      if (hld?.F && hold_R && end_L && this.nf.time < this.key_time_maps.R) this.nf.set(hld.F, this.key_time_maps.R, GameKey.R);
-      if (hld?.B && hold_L && end_R && this.nf.time < this.key_time_maps.L) this.nf.set(hld.B, this.key_time_maps.L, GameKey.L);
+      if (hit?.F && hit_R && end_L && this.nf.time < this.key_status_maps.R.time) this.nf.set(hit.F, this.key_status_maps.R.time, GameKey.R);
+      if (hit?.B && hit_L && end_R && this.nf.time < this.key_status_maps.L.time) this.nf.set(hit.B, this.key_status_maps.L.time, GameKey.L);
+      if (hld?.F && hold_R && end_L && this.nf.time < this.key_status_maps.R.time) this.nf.set(hld.F, this.key_status_maps.R.time, GameKey.R);
+      if (hld?.B && hold_L && end_R && this.nf.time < this.key_status_maps.L.time) this.nf.set(hld.B, this.key_status_maps.L.time, GameKey.L);
     } else {
-      if (hit?.F && hit_L && end_R && this.nf.time < this.key_time_maps.L) this.nf.set(hit.F, this.key_time_maps.L, GameKey.L);
-      if (hit?.B && hit_R && end_L && this.nf.time < this.key_time_maps.R) this.nf.set(hit.B, this.key_time_maps.R, GameKey.R);
-      if (hld?.F && hold_L && end_R && this.nf.time < this.key_time_maps.L) this.nf.set(hld.F, this.key_time_maps.L, GameKey.L);
-      if (hld?.B && hold_R && end_L && this.nf.time < this.key_time_maps.R) this.nf.set(hld.B, this.key_time_maps.R, GameKey.R);
+      if (hit?.F && hit_L && end_R && this.nf.time < this.key_status_maps.L.time) this.nf.set(hit.F, this.key_status_maps.L.time, GameKey.L);
+      if (hit?.B && hit_R && end_L && this.nf.time < this.key_status_maps.R.time) this.nf.set(hit.B, this.key_status_maps.R.time, GameKey.R);
+      if (hld?.F && hold_L && end_R && this.nf.time < this.key_status_maps.L.time) this.nf.set(hld.F, this.key_status_maps.L.time, GameKey.L);
+      if (hld?.B && hold_R && end_L && this.nf.time < this.key_status_maps.R.time) this.nf.set(hld.B, this.key_status_maps.R.time, GameKey.R);
     }
     /** 相对方向的双击判定 */
     if (hit?.FF && facing < 0 && this.is_db_hit(GameKey.L)) this.nf.set(hit.FF, this.dbc_map.L.time);
@@ -224,15 +233,15 @@ export class BaseController {
 
       /** 按键判定 */
       let act = hit?.[key];
-      let press_time = this.key_time_maps[key];
-      if (act && this._key_test('hit', key) && this.nf.time < press_time) {
-        this.nf.set(act, press_time, key);
+      let key_status = this.key_status_maps[key];
+      if (act && this._key_test('hit', key) && this.nf.time < key_status.time) {
+        this.nf.set(act, key_status.time, key);
       }
 
       /** 长按判定 */
       act = hld?.[key]
-      if (act && this._key_test('hold', key) && this.nf.time < press_time) {
-        this.nf.set(act, press_time, key);
+      if (act && this._key_test('hold', key) && this.nf.time < key_status.time) {
+        this.nf.set(act, key_status.time, key);
       }
 
       /** 双击判定 */

@@ -285,7 +285,7 @@ export namespace Defines {
     _12 = 12, Falling = 12,
     _13 = 13, Frozen = 13,
     _14 = 14, Lying = 14,
-    
+
     Normal = 15, _15 = 15,
     _16 = 16, Tired = 16,
 
@@ -330,24 +330,22 @@ export namespace Defines {
     Weapon_Rebounding = 1003,
     Weapon_OnGround = 1004,
 
-    HeavyWeapon_InTheSky = 2000,//= 重型武器在空中(heavy weapon-in the sky))
-    HeavyWeapon_OnHand = 2001,//= 重型武器在手中
+    HeavyWeapon_InTheSky = 2000,
+    HeavyWeapon_OnHand = 2001,
     HeavyWeapon_Throwing = 2002,//= 重型武器在地上
     HeavyWeapon_OnGround = 2004,//= 与itr kind2作用
 
-    Ball_Flying = 3000,
-    Ball_Hitting = 3001,
-    Ball_Flying4 = 3002,
-    Ball_Rebounding = 3003,
-    Ball_Disappear = 3004,
-    Ball_3005 = 3005,
-    Ball_3006 = 3006,
+    Ball_Flying = 3000, _3000 = 3000,
+    Ball_Hitting = 3001, _3001 = 3001,
+    Ball_Hit = 3002, _3002 = 3002,
+    Ball_Rebounding = 3003, _3003 = 3003,
+    Ball_Disappear = 3004, _3004 = 3004,
+    Ball_3005 = 3005, _3005 = 3005,
+    Ball_3006 = 3006, _3006 = 3006,
 
-    TransformTo_Min = 8001,
-    _8001 = 8001,
+    TransformTo_Min = 8001, _8001 = 8001,
 
-    TransformTo_Max = 8999,
-    _8999 = 8999,
+    TransformTo_Max = 8999, _8999 = 8999,
 
     TurnIntoLouisEX = 9995,
     Gone = 9998,

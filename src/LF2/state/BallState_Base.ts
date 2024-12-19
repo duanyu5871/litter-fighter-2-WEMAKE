@@ -13,6 +13,19 @@ export default class BallState_Base extends State_Base {
         e.unsubscribe_nearest_enemy();
         break;
     }
+    switch (e.frame.state) {
+      case Defines.State.Ball_Hitting:
+      case Defines.State.Ball_Hit:
+      case Defines.State.Ball_Rebounding:
+      case Defines.State.Ball_Disappear:
+        e.shaking = 0;
+        e.motionless = 0;
+        e.velocities.length = 1
+        e.velocities[0].x = 0;
+        e.velocities[0].z = 0;
+        e.velocities[0].y = 0;
+        break;
+    }
   }
   override leave(e: Entity, _next_frame: IFrameInfo): void {
     switch (e.frame.behavior) {
@@ -64,26 +77,23 @@ export default class BallState_Base extends State_Base {
         break;
     }
   }
-  override on_collision(self: Entity, target: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
+  override on_collision(e: Entity, target: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
     target.shaking = 0;
     if (is_character(target) || is_weapon(target)) {
-      switch (self.frame.state) {
+      e.velocities.length = 1
+      switch (e.frame.state) {
         case ItrKind.JohnShield:
         case Defines.State.Ball_Flying:
-          self.hp = 0;
+          e.hp = 0;
           break;
       }
-      self.velocities.length = 1
-      target.velocities[0].x = 0;
-      target.velocities[0].z = 0;
-      target.velocities[0].y = 0;
     }
   }
-  override on_be_collided(attacker: Entity, target: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
-    target.shaking = 0;
-    target.velocities.length = 1
-    target.velocities[0].x = 0;
-    target.velocities[0].z = 0;
-    target.velocities[0].y = 0;
+  override on_be_collided(attacker: Entity, e: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
+    e.shaking = 0;
+    e.velocities.length = 1
+    e.velocities[0].x = 0;
+    e.velocities[0].z = 0;
+    e.velocities[0].y = 0;
   }
 }

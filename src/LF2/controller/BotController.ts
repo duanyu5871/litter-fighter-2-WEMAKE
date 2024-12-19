@@ -285,7 +285,14 @@ export class BotController extends BaseController {
         } else {
           this.end(GameKey.j)
         }
-
+        break;
+      }
+      case 6: {
+        if (this.entity.frame.state === Defines.State.Standing) {
+          this.entity.position.x = this.world.bg.width / 2;
+          this.entity.position.z = (this.world.bg.near + this.world.far) / 2
+          this.start(GameKey.d)
+        }
         break;
       }
       default:

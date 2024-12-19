@@ -430,7 +430,7 @@ export class World {
         const bdy = bf.bdy[j];
         switch (af.state) {
           case Defines.State.Weapon_OnHand: {
-            if (!is_weapon(a)) continue;
+            // if (!is_weapon(a)) continue;
             const atk = a.holder?.frame.wpoint?.attacking;
             if (!atk) continue;
             const itr_prefab = a.data.itr_prefabs?.[atk];
@@ -441,6 +441,9 @@ export class World {
           case Defines.State.BurnRun: {
             if (bf.state === Defines.State.Burning) continue;
             break;
+          }
+          case Defines.State.Weapon_Rebounding: {
+            continue;
           }
         }
         switch (itr.kind) {

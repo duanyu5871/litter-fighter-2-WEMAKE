@@ -1,19 +1,20 @@
 import { Defines, IBdyInfo, IFrameInfo, IItrInfo, ItrKind } from "../defines";
 import type Entity from "../entity/Entity";
+import { is_character } from "../entity/type_check";
 import type { ICube } from "../World";
 import State_Base, { WhatNext } from "./State_Base";
 
-export default class WeaponState_Base extends State_Base<Entity> {
-  override on_collision(attacker: Entity, target: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
-    if (attacker.frame.state === Defines.State.Weapon_OnHand) {
+export default class WeaponState_Base extends State_Base {
+  override on_collision(e: Entity, target: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
+    if (e.frame.state === Defines.State.Weapon_OnHand) {
       return;
     }
-    if (attacker.data.base.type !== Defines.WeaponType.Heavy) {
+    if (e.data.base.type !== Defines.WeaponType.Heavy && e.frame.state === Defines.State.Weapon_Throwing) {
       // TODO: 这里是击中的反弹，如何更合适？ -Gim
-      attacker.velocities[0].x = -0.3 * attacker.velocities[0].x;
-      attacker.velocities[0].y = -0.3 * attacker.velocities[0].y;
+      e.velocities[0].x = -0.3 * e.velocities[0].x;
+      e.velocities[0].y = -0.3 * e.velocities[0].y;
     }
-    attacker.enter_frame(attacker.find_auto_frame())
+    e.enter_frame(e.data.indexes?.in_the_sky)
   }
 
   override before_be_collided(
@@ -69,6 +70,10 @@ export default class WeaponState_Base extends State_Base<Entity> {
     const { frames, indexes } = e.data;
     if (e.position.y > 0) return indexes?.in_the_sky ? frames[indexes.in_the_sky] : void 0;
     return indexes?.on_ground ? frames[indexes.on_ground] : void 0;
+  }
+
+  override update(e: Entity): void {
+    e.handle_ground_velocity_decay()
   }
 }
 

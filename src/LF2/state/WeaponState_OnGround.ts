@@ -11,5 +11,6 @@ export default class WeaponState_OnGround extends WeaponState_Base {
     e.handle_gravity();
     e.handle_ground_velocity_decay();
     e.handle_frame_velocity();
+    
   }
 }

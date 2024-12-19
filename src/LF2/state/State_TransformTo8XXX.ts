@@ -7,6 +7,8 @@ import State_Base from "./State_Base";
 
 export default class State_TransformTo8XXX extends State_Base {
   override enter(e: Entity): void {
+    if (typeof this.state !== 'number')
+      return;
     const oid = '' + (this.state - 8000);
     const data = e.lf2.datas.find(oid);
     if (data) {
