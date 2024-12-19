@@ -1,8 +1,8 @@
-import Character from '../../entity/Character';
-import { is_character } from '../../entity/type_check';
-import BaseCharacterState from "./Base";
+import Character from '../entity/Character';
+import { is_character } from '../entity/type_check';
+import CharacterState_Base from "./CharacterState_Base";
 
-export default class Teleport_ToFarthestAlly extends BaseCharacterState {
+export default class CharacterState_Teleport2FarthestAlly extends CharacterState_Base {
   override enter(m: Character): void {
     let _dis: number = -1;
     let _tar: Character | undefined;

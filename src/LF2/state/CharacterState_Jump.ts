@@ -1,8 +1,8 @@
-import { IFrameInfo } from '../../defines';
-import type Character from '../../entity/Character';
-import BaseCharacterState from "./Base";
+import { IFrameInfo } from '../defines';
+import type Character from '../entity/Character';
+import CharacterState_Base from "./CharacterState_Base";
 
-export default class Jump extends BaseCharacterState {
+export default class CharacterState_Jump extends CharacterState_Base {
   private _jumpings = new Set<Character>();
 
   override update(character: Character): void {

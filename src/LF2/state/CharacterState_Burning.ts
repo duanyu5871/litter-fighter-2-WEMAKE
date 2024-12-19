@@ -1,7 +1,7 @@
-import type Character from '../../entity/Character';
-import BaseCharacterState from "./Base";
+import type Character from '../entity/Character';
+import CharacterState_Base from "./CharacterState_Base";
 
-export default class Burning extends BaseCharacterState {
+export default class CharacterState_Burning extends CharacterState_Base {
   override update(e: Character): void {
     super.update(e);
     if (e.fall_value <= 0)

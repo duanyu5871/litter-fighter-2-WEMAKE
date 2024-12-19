@@ -1,12 +1,29 @@
-import { Defines, IBdyInfo, IItrInfo } from "../../defines";
-import Ball from "../../entity/Ball";
-import Entity from "../../entity/Entity";
-import { is_character, is_weapon } from "../../entity/type_check";
-import { ICube } from "../../World";
-import State_Base from "../State_Base";
+import { Defines, IBdyInfo, IFrameInfo, IItrInfo } from "../defines";
+import Entity from "../entity/Entity";
+import { is_character, is_weapon } from "../entity/type_check";
+import { ICube } from "../World";
+import State_Base from "./State_Base";
 
-export default class BaseBallState<E extends Ball = Ball> extends State_Base<E> {
-  override update(e: E): void {
+export default class BallState_Base extends State_Base {
+  override enter(e: Entity, _prev_frame: IFrameInfo): void {
+    switch (e.frame.behavior) {
+      case Defines.FrameBehavior._01:
+      case Defines.FrameBehavior._02:
+      case Defines.FrameBehavior._03:
+        e.unsubscribe_nearest_enemy();
+        break;
+    }
+  }
+  override leave(e: Entity, _next_frame: IFrameInfo): void {
+    switch (e.frame.behavior) {
+      case Defines.FrameBehavior._01:
+      case Defines.FrameBehavior._02:
+      case Defines.FrameBehavior._03:
+        e.unsubscribe_nearest_enemy();
+        break;
+    }
+  }
+  override update(e: Entity): void {
     e.handle_ground_velocity_decay();
     const frame = e.get_frame();
 
@@ -47,8 +64,7 @@ export default class BaseBallState<E extends Ball = Ball> extends State_Base<E> 
         break;
     }
   }
-  // attacker
-  override on_collision(self: E, target: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
+  override on_collision(self: Entity, target: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
     target.shaking = 0;
     if (is_character(target) || is_weapon(target)) {
       switch (self.frame.state) {
@@ -63,7 +79,7 @@ export default class BaseBallState<E extends Ball = Ball> extends State_Base<E> 
       target.velocities[0].y = 0;
     }
   }
-  override on_be_collided(attacker: Entity, target: E, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
+  override on_be_collided(attacker: Entity, target: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
     target.shaking = 0;
     target.velocities.length = 1
     target.velocities[0].x = 0;

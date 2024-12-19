@@ -28,6 +28,7 @@ export interface IFrameInfo {
   dvx?: number;
   dvy?: number;
   dvz?: number;
+
   centerx: number;
   centery: number;
   sound?: string;

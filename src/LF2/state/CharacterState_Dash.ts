@@ -1,8 +1,8 @@
-import type { IFrameInfo } from "../../defines";
-import { Defines } from "../../defines/defines";
-import type Character from '../../entity/Character';
-import BaseCharacterState from "./Base";
-export default class Dash extends BaseCharacterState {
+import type { IFrameInfo } from "../defines";
+import { Defines } from "../defines/defines";
+import type Character from '../entity/Character';
+import CharacterState_Base from "./CharacterState_Base";
+export default class CharacterState_Dash extends CharacterState_Base {
   override enter(e: Character, prev_frame: IFrameInfo): void {
     if (e.position.y > 0 && e.velocity.y !== 0) return;
     const {

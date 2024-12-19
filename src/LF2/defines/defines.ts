@@ -87,14 +87,14 @@ export namespace Defines {
    *
    * @type {number}
    */
-  export const DEFAULT_MP_RECOVERY_MAX_SPEED: number = 2;
+  export const DEFAULT_MP_RECOVERY_MAX_SPEED: number = 1;
 
   /**
    * 默认最大回蓝速度, 血越多，回蓝越慢（线性）
    *
    * @type {number}
    */
-  export const DEFAULT_MP_RECOVERY_MIN_SPEED: number = 0.5;
+  export const DEFAULT_MP_RECOVERY_MIN_SPEED: number = 0.25;
 
   export const DEFAULT_HP_RECOVERY_SPEED = 0.2;
 
@@ -317,8 +317,8 @@ export namespace Defines {
      */
     Z_Moveable = 301, _301 = 301,
 
-    Teleport_ToNearestEnemy = 400,
-    Teleport_ToFarthestAlly = 401,
+    TeleportToNearestEnemy = 400,
+    TeleportToFarthestAlly = 401,
 
     Weapon_InTheSky = 1000,
     Weapon_OnHand = 1001,

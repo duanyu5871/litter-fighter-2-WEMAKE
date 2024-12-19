@@ -1,9 +1,9 @@
-import type { IFrameInfo } from "../../defines";
-import type Character from '../../entity/Character';
-import find_direction from "../../entity/find_frame_direction";
-import BaseCharacterState from "./Base";
+import type { IFrameInfo } from "../defines";
+import type Character from '../entity/Character';
+import find_direction from "../entity/find_frame_direction";
+import CharacterState_Base from "./CharacterState_Base";
 
-export default class Falling extends BaseCharacterState {
+export default class CharacterState_Falling extends CharacterState_Base {
   _bouncing_frames_map = new Map<string, Set<string>>();
   _begin_velocty_y_map = new Map<string, number>();
 

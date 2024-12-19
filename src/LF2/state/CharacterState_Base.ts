@@ -1,13 +1,13 @@
-import { Defines, IBdyInfo, IFrameInfo, IItrInfo, TFace, TNextFrame } from '../../defines';
-import type Character from '../../entity/Character';
-import Entity from '../../entity/Entity';
-import { same_face, turn_face } from '../../entity/face_helper';
-import { is_character, is_weapon } from '../../entity/type_check';
-import { ICube } from '../../World';
-import State_Base, { WhatNext } from "../State_Base";
+import { Defines, IBdyInfo, IFrameInfo, IItrInfo, TFace, TNextFrame } from '../defines';
+import type Character from '../entity/Character';
+import Entity from '../entity/Entity';
+import { same_face, turn_face } from '../entity/face_helper';
+import { is_character, is_weapon } from '../entity/type_check';
+import { ICube } from '../World';
+import State_Base, { WhatNext } from "./State_Base";
 
-export default class BaseCharacterState extends State_Base<Character> {
-  override update(e: Character): void {
+export default class CharacterState_Base extends State_Base {
+  override update(e: Entity): void {
     e.handle_gravity();
     e.handle_ground_velocity_decay();
     e.handle_frame_velocity();
@@ -15,7 +15,7 @@ export default class BaseCharacterState extends State_Base<Character> {
   override on_landing(e: Character): void {
     e.enter_frame(e.data.indexes?.landing_2);
   }
-  override get_auto_frame(e: Character): IFrameInfo | undefined {
+  override get_auto_frame(e: Entity): IFrameInfo | undefined {
     let fid: string | undefined;
     if (is_weapon(e.holding) && e.holding.data.base.type === Defines.WeaponType.Heavy) {
       fid = e.data.indexes?.heavy_obj_walk?.[0]
@@ -31,7 +31,7 @@ export default class BaseCharacterState extends State_Base<Character> {
   }
 
   override before_collision(
-    attacker: Character, target: Entity,
+    attacker: Entity, target: Entity,
     itr: IItrInfo, bdy: IBdyInfo,
     a_cube: ICube, b_cube: ICube
   ): WhatNext {

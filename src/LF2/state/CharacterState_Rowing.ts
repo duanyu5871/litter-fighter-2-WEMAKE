@@ -1,8 +1,8 @@
-import { IFrameInfo } from "../../defines";
-import Character from "../../entity/Character";
-import BaseCharacterState from "./Base";
+import { IFrameInfo } from "../defines";
+import Character from "../entity/Character";
+import CharacterState_Base from "./CharacterState_Base";
 
-export class Rowing extends BaseCharacterState {
+export class CharacterState_Rowing extends CharacterState_Base {
   override enter(e: Character, prev_frame: IFrameInfo): void {
     if (e.position.y <= 0) return;
     const {

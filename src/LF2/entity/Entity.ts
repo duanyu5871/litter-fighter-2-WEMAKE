@@ -10,6 +10,7 @@ import { IBaseData, IBdyInfo, ICpointInfo, IEntityData, IFrameInfo, IItrInfo, IN
 import { Defines } from '../defines/defines';
 import Ditto from '../ditto';
 import { IVector3 } from '../ditto/IVector3';
+import { ENTITY_STATES, States } from '../state';
 import { type State_Base } from '../state/State_Base';
 import { random_get } from '../utils/math/random';
 import { is_positive, is_str } from '../utils/type_check';
@@ -18,7 +19,9 @@ import { Factory } from './Factory';
 import type IEntityCallbacks from './IEntityCallbacks';
 import { turn_face } from './face_helper';
 import { is_character, is_weapon_data } from './type_check';
-import { States, ENTITY_STATES } from '../state';
+const calc_v = (a: number, b: number) => {
+  return (b > 0 && a < b) || (b < 0 && a > b) ? b : a
+}
 export const EMPTY_PIECE: ITexturePieceInfo = {
   tex: '', x: 0, y: 0, w: 0, h: 0,
   pixel_h: 0, pixel_w: 0,
@@ -633,36 +636,24 @@ export default class Entity {
     if (this.shaking || this.motionless) return;
     const { dvx, dvy, dvz, speedz, speedx } = this.frame;
     let {
-      x: final_v_x,
-      y: final_v_y,
-      z: final_v_z
+      x: vx,
+      y: vy,
+      z: vz
     } = this.velocities[0];
-    if (dvx !== void 0) {
-      const next_speed = this.facing * dvx;
-      const curr_speed = final_v_x;
-      if (
-        (next_speed > 0 && curr_speed <= next_speed) ||
-        (next_speed < 0 && curr_speed >= next_speed)
-      )
-        final_v_x = next_speed;
-    };
-    if (dvy !== void 0) final_v_y += dvy;
-    if (dvz !== void 0) final_v_z = dvz;
+    if (dvx) vx = calc_v(vx, this.facing * dvx)
+    if (dvy) vy = calc_v(vy, dvy)
+    if (dvz) vz = calc_v(vz, dvz);
     if (this._controller) {
       const { UD, LR } = this._controller;
-      if (LR && speedx && speedx !== 550) {
-        final_v_x = LR * speedx;
-      }
-      if (UD && speedz && speedz !== 550) {
-        final_v_z = UD * speedz;
-      }
+      if (LR && speedx) vx = calc_v(vx, LR * speedx);
+      if (UD && speedz) vz = calc_v(vz, UD * speedz);
     }
-    if (dvx === 550) final_v_x = 0;
-    if (dvz === 550) final_v_z = 0;
-    if (dvy === 550) final_v_y = 0;
-    this.velocities[0].x = final_v_x;
-    this.velocities[0].y = final_v_y;
-    this.velocities[0].z = final_v_z;
+    if (dvx === 550) vx = 0;
+    if (dvz === 550) vz = 0;
+    if (dvy === 550) vy = 0;
+    this.velocities[0].x = vx;
+    this.velocities[0].y = vy;
+    this.velocities[0].z = vz;
   }
 
   self_update(): void {

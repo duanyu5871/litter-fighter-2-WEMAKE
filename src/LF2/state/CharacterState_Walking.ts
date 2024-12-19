@@ -1,17 +1,16 @@
-import { Defines } from '../../defines/defines';
-import type Character from '../../entity/Character';
-import { is_weapon } from '../../entity/type_check';
-import BaseCharacterState from "./Base";
 
-export default class Walking extends BaseCharacterState {
+import { Defines } from '../defines/defines';
+import type Entity from '../entity/Entity';
+import { is_weapon } from '../entity/type_check';
+import CharacterState_Base from "./CharacterState_Base";
 
-  override update(e: Character): void {
+export class CharacterState_Walking extends CharacterState_Base {
+  override update(e: Entity): void {
     e.handle_gravity();
     e.handle_ground_velocity_decay();
     e.handle_frame_velocity();
     if (e.controller) {
       const { UD, LR } = e.controller;
-
       if (!UD && !LR && !e.wait) {
         if (is_weapon(e.holding) && e.holding?.data.base.type === Defines.WeaponType.Heavy) {
           e.wait = e.get_frame().wait

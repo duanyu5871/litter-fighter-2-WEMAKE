@@ -1,8 +1,8 @@
-import type Character from '../../entity/Character';
-import BaseCharacterState from "./Base";
+import type Character from '../entity/Character';
+import CharacterState_Base from "./CharacterState_Base";
 
 
-export default class Standing extends BaseCharacterState {
+export default class CharacterState_Standing extends CharacterState_Base {
   override update(e: Character): void {
     super.update(e);
     if (e.hp <= 0) {
