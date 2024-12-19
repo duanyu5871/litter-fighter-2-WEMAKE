@@ -5,7 +5,7 @@ import WeaponState_Base from "./WeaponState_Base";
 export default class WeaponState_InTheSky extends WeaponState_Base {
   protected _unhurt_weapons = new Set<Entity>();
   override get_gravity(e: Entity) {
-    return e.world.gravity * 0.6
+    return e.world.gravity;
   };
   override enter(e: Entity, prev_frame: IFrameInfo): void {
     this._unhurt_weapons.add(e);
