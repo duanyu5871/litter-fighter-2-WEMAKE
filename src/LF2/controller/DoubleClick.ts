@@ -1,6 +1,7 @@
 export class DoubleClick<D> {
   data: [D | undefined, D | undefined] = [void 0, void 0];
   time: number = 0;
+  used: boolean = false;
   readonly name: string;
   readonly interval: number;
   constructor(name: string, interval: number) {

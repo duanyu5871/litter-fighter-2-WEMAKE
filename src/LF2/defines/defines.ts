@@ -285,7 +285,8 @@ export namespace Defines {
     _12 = 12, Falling = 12,
     _13 = 13, Frozen = 13,
     _14 = 14, Lying = 14,
-    _15 = 15, Normal = 15,
+    
+    Normal = 15, _15 = 15,
     _16 = 16, Tired = 16,
 
     /**

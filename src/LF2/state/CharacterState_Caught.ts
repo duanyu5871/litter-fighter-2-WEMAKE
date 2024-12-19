@@ -7,4 +7,8 @@ export class CharacterState_Caught extends CharacterState_Base {
     e.velocities.length = 1;
     e.velocities[0].set(0, 0, 0);
   }
+  override update(e: Entity): void {
+    e.velocities.length = 1;
+    e.velocities[0].set(0, 0, 0);
+  }
 }

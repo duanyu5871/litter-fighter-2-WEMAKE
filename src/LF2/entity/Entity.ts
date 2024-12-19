@@ -301,13 +301,13 @@ export default class Entity {
   get mp_max(): number { return this._mp_max; }
   set mp_max(v: number) {
     const o = this._mp_max;
-    this._callbacks.emit('on_max_mp_changed')(this, this._mp_max = v, o)
+    this._callbacks.emit('on_mp_max_changed')(this, this._mp_max = v, o)
   }
 
   get hp_max(): number { return this._hp_max; }
   set hp_max(v: number) {
     const o = this._hp_max;
-    this._callbacks.emit('on_max_hp_changed')(this, this._hp_max = v, o)
+    this._callbacks.emit('on_hp_max_changed')(this, this._hp_max = v, o)
     this.update_mp_r_spd();
   }
 
@@ -504,8 +504,6 @@ export default class Entity {
     x = x - emitter.facing * (shotter_frame.centerx - opoint.x);
     this.position.set(x, y, z);
 
-    this.enter_frame(opoint.action);
-
     let { dvx = 0, dvy = 0, dvz = 0, speedz = 3 } = opoint;
     let ud = emitter.controller?.UD || 0
     let { x: ovx, y: ovy, z: ovz } = offset_velocity;
@@ -533,7 +531,7 @@ export default class Entity {
       this.holder.holding = this
       this.team = emitter.team;
     }
-
+    this.enter_frame(opoint.action);
     return this;
   }
 

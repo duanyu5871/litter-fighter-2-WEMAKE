@@ -1,3 +1,4 @@
+import { IFrameInfo } from "../defines";
 import { Defines } from "../defines/defines";
 import Entity from "../entity/Entity";
 import BallState_Base from "./BallState_Base";
@@ -72,3 +73,13 @@ ENTITY_STATES.set(Defines.State.TeleportToFarthestAlly, new CharacterState_Telep
 ENTITY_STATES.set(Defines.State.TransformToLouisEx, new CharacterState_TransformToLouisEX())
 ENTITY_STATES.set(Defines.State.Rowing, new CharacterState_Rowing())
 ENTITY_STATES.set(Defines.State.Drink, new CharacterState_Drink())
+ENTITY_STATES.set(Defines.State.Normal, new class extends State_Base {
+  override enter(e: Entity, prev_frame: IFrameInfo): void {
+    e.velocities.length = 1
+  }
+  override update(e: Entity): void {
+    e.handle_gravity();
+    e.handle_ground_velocity_decay();
+    e.handle_frame_velocity();
+  }
+}())

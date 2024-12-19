@@ -34,7 +34,7 @@ export default interface IEntityCallbacks<E extends Entity = Entity> {
    * @param {number} value 当前值
    * @param {number} prev 上一次值
    */
-  on_max_hp_changed?(e: E, value: number, prev: number): void;
+  on_hp_max_changed?(e: E, value: number, prev: number): void;
 
   /**
    * 最大气量变化
@@ -43,7 +43,7 @@ export default interface IEntityCallbacks<E extends Entity = Entity> {
    * @param {number} value 当前值
    * @param {number} prev 上一次值
    */
-  on_max_mp_changed?(e: E, value: number, prev: number): void;
+  on_mp_max_changed?(e: E, value: number, prev: number): void;
 
 
   /**
