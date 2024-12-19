@@ -1,4 +1,5 @@
 import { Defines, IBdyInfo, IFrameInfo, IItrInfo, ItrKind, TFace, TNextFrame } from '../defines';
+import { ItrEffect } from '../defines/ItrEffect';
 import type Entity from '../entity/Entity';
 import { same_face, turn_face } from '../entity/face_helper';
 import { is_character, is_weapon } from '../entity/type_check';
@@ -92,8 +93,8 @@ export default class CharacterState_Base extends State_Base {
     switch (bdy.kind) {
       case Defines.BdyKind.Defend: {
         if (
-          Defines.ItrEffect.FireExplosion === itr.effect ||
-          Defines.ItrEffect.Explosion === itr.effect
+          ItrEffect.FireExplosion === itr.effect ||
+          ItrEffect.Explosion === itr.effect
         ) {
           // 爆炸伤害允许不需要方向
         } else if (attacker.facing === target.facing) {
@@ -141,15 +142,15 @@ export default class CharacterState_Base extends State_Base {
     }
 
     switch (itr.effect) {
-      case Defines.ItrEffect.Fire:
-      case Defines.ItrEffect.MFire1:
-      case Defines.ItrEffect.MFire2:
-      case Defines.ItrEffect.FireExplosion: {
+      case ItrEffect.Fire:
+      case ItrEffect.MFire1:
+      case ItrEffect.MFire2:
+      case ItrEffect.FireExplosion: {
         target.fall_value = 0;
         target.defend_value = 0;
         target.velocities[0].y = itr.dvy ?? 4;
         target.velocities[0].z = 0;
-        const direction = Defines.ItrEffect.FireExplosion === itr.effect ?
+        const direction = ItrEffect.FireExplosion === itr.effect ?
           (target.position.x > attacker.position.x ? -1 : 1) :
           (attacker.facing)
         target.velocities[0].x = (itr.dvx || 0) * direction;
@@ -157,7 +158,7 @@ export default class CharacterState_Base extends State_Base {
           target.next_frame = { id: target.data.indexes.fire[0], facing: turn_face(attacker.facing) }
         break;
       }
-      case Defines.ItrEffect.Ice: {
+      case ItrEffect.Ice: {
         target.fall_value = 0;
         target.defend_value = 0;
         if (itr.dvx) target.velocities[0].x = itr.dvx * attacker.facing;
@@ -169,9 +170,9 @@ export default class CharacterState_Base extends State_Base {
         target.next_frame = { id: target.data.indexes?.ice, facing: turn_face(attacker.facing) }
         break;
       }
-      case Defines.ItrEffect.Explosion:
-      case Defines.ItrEffect.Normal:
-      case Defines.ItrEffect.Sharp:
+      case ItrEffect.Explosion:
+      case ItrEffect.Normal:
+      case ItrEffect.Sharp:
       case void 0: {
         const f = bdy.hit_act && target.get_next_frame(bdy.hit_act)[0]
         if (f) target.next_frame = f;
@@ -192,7 +193,7 @@ export default class CharacterState_Base extends State_Base {
           )
 
         if (is_fall) {
-          const aface: TFace = Defines.ItrEffect.Explosion === itr.effect ?
+          const aface: TFace = ItrEffect.Explosion === itr.effect ?
             (target.position.x > attacker.position.x ? -1 : 1) :
             attacker.facing;
           target.fall_value = target.fall_value_max;
@@ -202,7 +203,7 @@ export default class CharacterState_Base extends State_Base {
           target.velocities[0].y = itr.dvy ?? 4;
           target.velocities[0].z = 0;
           target.velocities[0].x = (itr.dvx || 0) * aface;
-          if (itr.effect === Defines.ItrEffect.Sharp) {
+          if (itr.effect === ItrEffect.Sharp) {
             target.world.spark(...target.spark_point(r0, r1), "critical_bleed");
           } else if (is_character(attacker)) {
             target.world.spark(...target.spark_point(r0, r1), "critical_hit")
@@ -216,7 +217,7 @@ export default class CharacterState_Base extends State_Base {
           if (itr.dvx) target.velocities[0].x = itr.dvx * attacker.facing;
           if (target.position.y > 0 && target.velocities[0].y > 2) target.velocities[0].y = 2;
           target.velocities[0].z = 0;
-          if (itr.effect === Defines.ItrEffect.Sharp) {
+          if (itr.effect === ItrEffect.Sharp) {
             target.world.spark(...target.spark_point(r0, r1), "bleed")
           } else if (is_character(attacker)) {
             target.world.spark(...target.spark_point(r0, r1), "hit")

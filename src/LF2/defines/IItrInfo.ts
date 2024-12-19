@@ -69,7 +69,7 @@ export interface IItrInfo extends IRect {
   injury?: number;
 
   /**
-   * @see {Defines.ItrEffect}
+   * @see {ItrEffect}
    */
   effect?: number;
   indicator_info?: IRectPair;

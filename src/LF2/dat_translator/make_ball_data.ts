@@ -1,4 +1,4 @@
-import { IEntityData, ItrKind } from "../defines";
+import { IEntityData, ItrEffect, ItrKind } from "../defines";
 import { IFrameInfo } from "../defines/IFrameInfo";
 import { IDatIndex } from "../defines/IDatIndex";
 import { IEntityInfo } from "../defines/IEntityInfo";
@@ -117,7 +117,7 @@ export function make_ball_data(info: IEntityInfo, frames: Record<string, IFrameI
                   .add(Defines.ValWord.HitByCharacter, '==', 1)
                   .and((c => c
                     .add(Defines.ValWord.HitByItrKind, '!{', ItrKind.Normal)
-                    .or(Defines.ValWord.HitByItrEffect, '!{', Defines.ItrEffect.Fire)
+                    .or(Defines.ValWord.HitByItrEffect, '!{', ItrEffect.Fire)
                   ))
                 ))
               .done()

@@ -41,17 +41,15 @@ export enum ItrKind {
   /** 被丢出时，此itr才生效 */
   CharacterThrew = 4,
 
-  /** 武器挥动 */
+  /** 
+   * 武器挥动 
+   */
   WeaponSwing = 5,
 
-  SuperPunchMe = 6,// 敌人靠近按A时是重击
-
-
-
-
-
-
-
+  /**
+   * 敌人靠近按A时是重击
+   */
+  SuperPunchMe = 6,
 
   /**
    * 当角色的itr与武器的bdy碰撞，且武器的frame.state为1004(Weapon_OnGround)时
@@ -63,15 +61,6 @@ export enum ItrKind {
   PickSecretly = 7,
 
   Heal = 8,// injury数值变成治疗多少hp，动作跳至dvx ?
-
-
-
-
-
-
-
-
-
 
   /*
    * 用于：

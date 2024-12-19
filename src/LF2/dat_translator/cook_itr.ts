@@ -1,4 +1,4 @@
-import { IItrInfo, ItrKind } from '../defines';
+import { IItrInfo, ItrEffect, ItrKind } from '../defines';
 import { Defines } from '../defines/defines';
 import { is_num, is_positive, not_zero_num } from '../utils/type_check';
 import { get_next_frame_by_raw_id } from './get_the_next';
@@ -29,8 +29,8 @@ export default function cook_itr(unsafe_itr?: Partial<IItrInfo>) {
   if (not_zero_num(bdefend)) unsafe_itr.bdefend = bdefend * 2;
 
   switch (unsafe_itr.effect) {
-    case Defines.ItrEffect.FireExplosion:
-    case Defines.ItrEffect.Explosion: {
+    case ItrEffect.FireExplosion:
+    case ItrEffect.Explosion: {
       unsafe_itr.motionless = 0;
       break;
     }

@@ -7,6 +7,7 @@ import Callbacks from './base/Callbacks';
 import FPS from './base/FPS';
 import { NoEmitCallbacks } from "./base/NoEmitCallbacks";
 import { IBdyInfo, IFrameInfo, IItrInfo, ItrKind } from './defines';
+import { ItrEffect } from './defines/ItrEffect';
 import { Defines } from './defines/defines';
 import Ditto from './ditto';
 import Entity from './entity/Entity';
@@ -485,15 +486,15 @@ export class World {
           case ItrKind.Ice:
         }
         switch (itr.effect) {
-          case Defines.ItrEffect.MFire1:
-          case Defines.ItrEffect.MFire2:
+          case ItrEffect.MFire1:
+          case ItrEffect.MFire2:
             if (bf.state === Defines.State.BurnRun) continue;
             if (bf.state === Defines.State.Burning) continue;
             break;
-          case Defines.ItrEffect.Fire:
+          case ItrEffect.Fire:
             if (af.state === Defines.State.BurnRun) continue;
             break;
-          case Defines.ItrEffect.Through:
+          case ItrEffect.Through:
             if (is_character(b)) continue;
             break;
         }
