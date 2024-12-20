@@ -756,7 +756,6 @@ export default class Entity {
       }
     }
 
-
     if (this.holder) {
       const { wpoint } = this.holder.frame;
       if (wpoint) { // 被丢出
@@ -1088,14 +1087,12 @@ export default class Entity {
       a_cube,
       b_cube,
     })
-    if (this.frame.name === 'explosion') debugger
     this.motionless = itr.motionless ?? Defines.DEFAULT_ITR_MOTIONLESS;
     if (itr.arest) {
       this._a_rest = itr.arest - this.motionless;
     } else if (!itr.vrest) {
       this._a_rest = this.wait + this.motionless;
     }
-
     if (bdy.kind !== Defines.BdyKind.Defend) {
       const sounds = itr.hit_sounds?.length ? itr.hit_sounds : this.data.base.hit_sounds?.length ? this.data.base.hit_sounds : void 0
       sounds && this.play_sound(sounds);
@@ -1105,10 +1102,15 @@ export default class Entity {
   }
 
   spark_point(r0: ICube, r1: ICube) {
-    const x = (Math.max(r0.left, r1.left) + Math.min(r0.right, r1.right)) / 2;
-    const y = (Math.min(r0.top, r1.top) + Math.max(r0.bottom, r1.bottom)) / 2;
-    // const spark_z = (Math.min(r0.near, r1.near) + Math.max(r0.far, r1.far)) / 2;
-    const z = Math.max(r0.near, r1.near);
+    const l = Math.max(r0.left, r1.left);
+    const r = Math.min(r0.right, r1.right);
+    const t = Math.min(r0.top, r1.top);
+    const b = Math.max(r0.bottom, r1.bottom);
+    const n = Math.min(r0.near, r1.near);
+    const f = Math.max(r0.far, r1.far);
+    const x = l + Math.random() * (r - l);
+    const y = t + Math.random() * (b - t);
+    const z = n + Math.random() * (f - n);
     return [x, y, z] as const;
   }
 

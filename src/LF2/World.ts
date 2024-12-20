@@ -407,137 +407,126 @@ export class World {
     this._temp_entitis_set.clear()
     for (const a of this.entities) {
       for (const b of this._temp_entitis_set) {
-        const r0 = this.collision_detection(a, b);
-        const r1 = this.collision_detection(b, a);
-        if (r0 || r1) continue;
+        this.collision_detection(a, b);
+        this.collision_detection(b, a);
       }
       this._temp_entitis_set.add(a);
     }
   }
 
   collision_detection(a: Entity, b: Entity) {
-    if (b.blinking || b.invisible) return;
+    if (b.blinking || b.invisible)
+      return;
     const af = a.frame;
     const bf = b.frame;
-    if (!af.itr?.length || !bf.bdy?.length) return;
-
+    if (!af.itr?.length || !bf.bdy?.length)
+      return;
     const b_catcher = b.catcher;
     if (b_catcher && b_catcher.frame.cpoint?.hurtable !== 1)
       return;
-
     const l0 = af.itr.length;
     const l1 = bf.bdy.length;
     for (let i = 0; i < l0; ++i) {
       for (let j = 0; j < l1; ++j) {
-        /*
-          FIXME: 
-            在这个循环里continue, 是判断为不碰撞;
-            再加上switch的break，不太符合人的直觉，但是……?
-              -Gim
-        */
-        let itr = af.itr[i];
-        const bdy = bf.bdy[j];
-        switch (af.state) {
-          case Defines.State.Weapon_OnHand: {
-            // if (!is_weapon(a)) continue;
-            const atk = a.holder?.frame.wpoint?.attacking;
-            if (!atk) continue;
-            const itr_prefab = a.data.itr_prefabs?.[atk];
-            if (!itr_prefab) continue;
-            itr = { ...itr, ...itr_prefab }
-            break;
-          }
-          case Defines.State.BurnRun: {
-            if (bf.state === Defines.State.Burning) continue;
-            break;
-          }
-          case Defines.State.Weapon_Rebounding: {
-            continue;
-          }
-        }
-        switch (itr.kind) {
-          case ItrKind.Block:
-          case ItrKind.CharacterThrew:
-          case ItrKind.MagicFlute:
-            continue; // todo
-          case ItrKind.Pick:
-            if (
-              a.holding || b.holder ||
-              !is_character(a) ||
-              !is_weapon(b) || (
-                bf.state !== Defines.State.Weapon_OnGround &&
-                bf.state !== Defines.State.HeavyWeapon_OnGround
-              )
-            ) continue;
-            break;
-          case ItrKind.PickSecretly:
-            if (
-              a.holding || b.holder ||
-              !is_character(a) ||
-              !is_weapon(b) ||
-              bf.state !== Defines.State.Weapon_OnGround
-            ) continue;
-            break;
-          case ItrKind.ForceCatch:
-            if (is_character(a) && is_character(b)) break;
-            continue;
-          case ItrKind.Catch:
-            if (is_character(a) && is_character(b) && bf.state === Defines.State.Tired) break;
-            continue;
-          case ItrKind.SuperPunchMe:
-            if (is_character(b) && !b.holding) break;
-            continue;
-          case ItrKind.Normal:
-            if (is_character(a) && bf.state === Defines.State.Weapon_OnGround) continue;
-            break
-          case ItrKind.JohnShield:
-            if (is_character(b) && a.same_team(b)) continue;
-            break;
-          case ItrKind.Heal:
-          case ItrKind.Fly:
-          case ItrKind.Ice:
-        }
-        switch (itr.effect) {
-          case ItrEffect.MFire1:
-          case ItrEffect.MFire2:
-            if (bf.state === Defines.State.BurnRun) continue;
-            if (bf.state === Defines.State.Burning) continue;
-            break;
-          case ItrEffect.Fire:
-            if (af.state === Defines.State.BurnRun) continue;
-            break;
-          case ItrEffect.Through:
-            if (is_character(b)) continue;
-            break;
-        }
-
-        if (!(itr.friendly_fire || bdy.friendly_fire) && a.same_team(b)) continue;
-
-        switch (bf.state) {
-          case Defines.State.Falling: {
-            if (!itr.fall || itr.fall < 60) continue;
-            break;
-          }
-        }
-        if (!itr.vrest && a.a_rest) continue;
-        if (itr.vrest && b.get_v_rest_remain(a.id) > 0) continue;
-
-        const r0 = this.get_cube(a, af, itr);
-        const r1 = this.get_cube(b, bf, bdy);
-        if (
-          r0.left <= r1.right &&
-          r0.right >= r1.left &&
-          r0.bottom <= r1.top &&
-          r0.top >= r1.bottom &&
-          r0.far <= r1.near &&
-          r0.near >= r1.far
-        ) {
-          this.handle_collision(a, itr, r0, b, bdy, r1);
-          return true;
-        }
+        this.collision_test(a, af, af.itr[i], b, bf, bf.bdy[j])
       }
     }
-    return false;
+  }
+
+  collision_test(a: Entity, af: IFrameInfo, itr: IItrInfo, b: Entity, bf: IFrameInfo, bdy: IBdyInfo) {
+    switch (af.state) {
+      case Defines.State.Weapon_OnHand: {
+        const atk = a.holder?.frame.wpoint?.attacking;
+        if (!atk) return;
+        const itr_prefab = a.data.itr_prefabs?.[atk];
+        if (!itr_prefab) return;
+        itr = { ...itr, ...itr_prefab }
+        break;
+      }
+      case Defines.State.BurnRun: {
+        if (bf.state === Defines.State.Burning) return;
+        break;
+      }
+      case Defines.State.Weapon_Rebounding: {
+        return;
+      }
+    }
+    switch (itr.kind) {
+      case ItrKind.Block:
+      case ItrKind.CharacterThrew:
+      case ItrKind.MagicFlute:
+        return; // todo
+      case ItrKind.Pick:
+        if (
+          a.holding || b.holder || (
+            bf.state !== Defines.State.Weapon_OnGround &&
+            bf.state !== Defines.State.HeavyWeapon_OnGround
+          )
+        ) return;
+        break;
+      case ItrKind.PickSecretly:
+        if (
+          a.holding || b.holder ||
+          bf.state !== Defines.State.Weapon_OnGround
+        ) return;
+        break;
+      case ItrKind.ForceCatch:
+        if (is_character(b)) break;
+        return;
+      case ItrKind.Catch:
+        if (is_character(b) && bf.state === Defines.State.Tired) break;
+        return;
+      case ItrKind.SuperPunchMe:
+        if (is_character(b) && !b.holding) break;
+        return;
+      case ItrKind.Normal:
+        if (is_character(a) && bf.state === Defines.State.Weapon_OnGround) return;
+        break
+      case ItrKind.JohnShield:
+        if (is_character(b) && a.same_team(b)) return;
+        break;
+      case ItrKind.Heal:
+      case ItrKind.Fly:
+      case ItrKind.Ice:
+    }
+    switch (itr.effect) {
+      case ItrEffect.MFire1:
+      case ItrEffect.MFire2:
+        if (bf.state === Defines.State.BurnRun) return;
+        if (bf.state === Defines.State.Burning) return;
+        break;
+      case ItrEffect.Fire:
+        if (af.state === Defines.State.BurnRun) return;
+        break;
+      case ItrEffect.Through:
+        if (is_character(b)) return;
+        break;
+    }
+    if (!(itr.friendly_fire || bdy.friendly_fire) && a.same_team(b)) 
+      return;
+    switch (bf.state) {
+      case Defines.State.Falling: {
+        if (!itr.fall || itr.fall < 60) 
+          return;
+        break;
+      }
+    }
+    if (!itr.vrest && a.a_rest) 
+      return;
+    if (itr.vrest && b.get_v_rest_remain(a.id) > 0) 
+      return;
+    const r0 = this.get_cube(a, af, itr);
+    const r1 = this.get_cube(b, bf, bdy);
+    if (
+      r0.left <= r1.right &&
+      r0.right >= r1.left &&
+      r0.bottom <= r1.top &&
+      r0.top >= r1.bottom &&
+      r0.far <= r1.near &&
+      r0.near >= r1.far
+    ) {
+      this.handle_collision(a, itr, r0, b, bdy, r1);
+    }
   }
 
   spark(x: number, y: number, z: number, f: string) {
