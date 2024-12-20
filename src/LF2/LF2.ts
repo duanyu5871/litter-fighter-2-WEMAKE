@@ -344,7 +344,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   }
 
   remove_all_entities() {
-    this.world.del_entities(...this.world.entities);
+    this.world.del_entities(Array.from(this.world.entities));
   }
   add_random_weapon(num = 1, duplicate = false): Entity[] {
     const src_arr = [...this.datas.weapons];
@@ -483,7 +483,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
       vz = old.velocities[0].z;
       old_facing = old.facing;
       old_frame_id = old.frame.id;
-      this.world.del_entities(old);
+      this.world.del_entity(old);
     }
 
     const character = new Entity(this.world, data)
@@ -507,7 +507,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   }
   del_player_character(player_id: string) {
     const old = this.player_characters.get(player_id);
-    if (old) this.world.del_entities(old)
+    if (old) this.world.del_entity(old)
   }
   change_bg(bg_info: IBgData): void
   change_bg(bg_id: string): void

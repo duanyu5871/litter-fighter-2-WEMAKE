@@ -133,21 +133,25 @@ export class World {
     }
   }
 
-  del_entities(...objs: Entity[]) {
-    for (const e of objs) {
-      if (!this.entities.delete(e))
-        continue;
+  del_entity(e: Entity) {
+    if (!this.entities.delete(e))
+      return false;
+    if (e.controller?.player_id) {
+      const ok = this.player_slot_characters.delete(e.controller.player_id)
+      if (ok) this._callbacks.emit('on_player_character_del')(e.controller.player_id)
+    }
+    const r = this.entity_renders.get(e);
+    if (r) {
+      r.dispose();
+      this.entity_renders.delete(e);
+    }
+    e.dispose()
+    return true;
+  }
 
-      if (e.controller?.player_id) {
-        const ok = this.player_slot_characters.delete(e.controller.player_id)
-        if (ok) this._callbacks.emit('on_player_character_del')(e.controller.player_id)
-      }
-      const r = this.entity_renders.get(e);
-      if (r) {
-        r.dispose();
-        this.entity_renders.delete(e);
-      }
-      e.dispose()
+  del_entities(entities: Entity[]) {
+    for (const e of entities) {
+      this.del_entity(e)
     }
   }
 
@@ -303,6 +307,7 @@ export class World {
     const p2 = e2.position;
     return Math.abs(p1.x - p2.x) + Math.abs(p1.z - p2.z);
   }
+  private gone_entities: Entity[] = [];
   update_once() {
     if (this.disposed) return;
     for (const e of this.entities) {
@@ -316,13 +321,17 @@ export class World {
         }
       }
     }
+    this.gone_entities.length = 0;
     for (const e of this.entities) {
       e.update();
-      if (e.frame.id === Defines.FrameId.Gone)
-        this.del_entities(e);
-      else if (e.frame.state === Defines.State.Gone)
-        this.del_entities(e);
+      if (
+        e.frame.id === Defines.FrameId.Gone ||
+        e.frame.state === Defines.State.Gone
+      ) {
+        this.gone_entities.push(e);
+      }
     }
+    this.del_entities(this.gone_entities)
     this.collision_detections();
 
     this.update_camera();
@@ -602,7 +611,7 @@ export class World {
     this.bg.dispose();
     this.stop_update();
     this.stop_render();
-    this.del_entities(...this.entities);
+    this.del_entities(Array.from(this.entities));
     this.scene.dispose();
   }
 }

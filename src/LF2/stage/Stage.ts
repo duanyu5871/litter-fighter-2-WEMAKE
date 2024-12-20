@@ -197,7 +197,6 @@ export default class Stage {
     for (const [, v] of this.lf2.world.player_slot_characters) {
       player_teams.add(v.team)
     }
-
     for (const e of this.world.entities) {
       if (is_character(e) && player_teams.has(e.team))
         continue;
@@ -205,7 +204,7 @@ export default class Stage {
         continue;
       temp.push(e)
     }
-    this.world.del_entities(...temp)
+    this.world.del_entities(temp)
   }
   all_boss_dead(): boolean {
     return !find(this.items, i => i.info.is_boss)

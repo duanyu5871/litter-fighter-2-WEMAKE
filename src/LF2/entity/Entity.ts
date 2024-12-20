@@ -1165,7 +1165,7 @@ export default class Entity {
   }
 
   dispose(): void {
-    this.world.del_entities(this)
+    this.world.del_entity(this)
     this.controller = void 0;
     this._callbacks.emit('on_disposed')(this);
   }
