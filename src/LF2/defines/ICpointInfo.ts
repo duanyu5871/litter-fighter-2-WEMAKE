@@ -17,4 +17,6 @@ export interface ICpointInfo {
   backhurtact?: string;
   cover: number;
   shaking?: number;
+
+  /*dircontrol*/
 }

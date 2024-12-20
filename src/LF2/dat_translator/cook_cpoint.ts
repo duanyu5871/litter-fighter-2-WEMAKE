@@ -12,7 +12,7 @@ export function cook_cpoint(unsure_cpoint: ICpointInfo): void {
   if (not_zero_num(tvy) && tvy !== -842150451) unsure_cpoint.throwvy = tvy * -0.5;
 
   const tvz = take(unsure_cpoint, 'throwvz');
-  if (not_zero_num(tvz) && tvz !== -842150451) unsure_cpoint.throwvy = tvz;
+  if (not_zero_num(tvz) && tvz !== -842150451) unsure_cpoint.throwvz = tvz;
 
   const tvj = take(unsure_cpoint, 'throwinjury');
   if (not_zero_num(tvj) && tvj !== -842150451) unsure_cpoint.throwinjury = tvj;

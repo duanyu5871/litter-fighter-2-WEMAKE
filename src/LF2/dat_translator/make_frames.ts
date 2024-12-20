@@ -111,6 +111,8 @@ export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string, fil
 
     const dircontrol = take(cpoint_list, 'dircontrol');
     if (dircontrol) {
+      frame.hit = frame.hit || {}
+      frame.hit.B = { facing: Defines.FacingFlag.Backward, wait: 'i' }
       frame.hold = frame.hold || {}
       frame.hold.B = { facing: Defines.FacingFlag.Backward, wait: 'i' }
     }

@@ -324,7 +324,6 @@ export function make_character_data(info: IEntityInfo, frames: Record<string, IF
       case 232: case 233: case 234:
         if (frame.cpoint?.vaction) (frame.cpoint?.vaction as INextFrame).facing = FacingFlag.SameAsCatcher;
         break;
-
       case 100: case 108:
         // frame.dvy = -rowing_height / frame.wait;
         // frame.dvy = -rowing_height / frame.wait;

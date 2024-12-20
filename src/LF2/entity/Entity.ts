@@ -550,7 +550,7 @@ export default class Entity {
     if (prev_state_code !== next_state_code) {
       let next_state = this.states.get(next_state_code)
       if (!next_state) {
-        debugger;
+        // debugger;
         const next_state_key = this.data.type + next_state_code
         next_state = this.states.get(next_state_key)
         if (!next_state) {
@@ -951,11 +951,17 @@ export default class Entity {
     this.prev_cpoint_a = cpoint_a;
 
     const { throwvx, throwvy, throwvz, throwinjury } = cpoint_a;
-    if (throwvx) this.velocities[0].x = throwvx * this.facing;
-    if (throwvy) this.velocities[0].y = throwvy;
-    if (throwvz) this.velocities[0].z = throwvz;
+    
+    if (throwvz) {
+      this.velocities[0].z = throwvz * (this._catcher.controller?.UD || 0);
+    }
+    if (throwvx) {
+      this.velocities[0].x = throwvx * this.facing;
+    }
+    if (throwvy) {
+      this.velocities[0].y = throwvy;
+    }
     if (throwinjury) this.throwinjury = throwinjury;
-    // this.velocity.z = throwvz * this._catcher.controller.UD1;
 
     if (throwvx || throwvy || throwvz) {
       delete this._catcher;
