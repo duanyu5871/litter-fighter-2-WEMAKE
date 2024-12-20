@@ -1001,7 +1001,7 @@ export default class Entity {
       return void 0;
     }
 
-
+    /** "对齐颗粒度" */
     const { centerx: centerx_a, centery: centery_a } = this.frame;
     const { centerx: centerx_b, centery: centery_b } = this._catching.frame;
     const { x: caught_x, y: caught_y } = cpoint_b;
@@ -1011,8 +1011,8 @@ export default class Entity {
     this._catching.position.x = px - face_a * (centerx_a - catch_x) + face_b * (centerx_b - caught_x);
     this._catching.position.y = py + centery_a - catch_y + caught_y - centery_b;
     this._catching.position.z = pz;
-    if (cover === 11) this._catching.position.z += 1;
-    else if (cover === 10) this._catching.position.z -= 1;
+    if (cover === 11) this._catching.position.z -= 0.5;
+    else if (cover === 10) this._catching.position.z += 0.5;
   }
 
   /**
@@ -1218,7 +1218,7 @@ export default class Entity {
     const { wpoint: wpoint_a, centerx: centerx_a, centery: centery_a } = holder.frame;
 
     if (!wpoint_a) return;
-    wpoint_a.cover
+
     if (wpoint_a.weaponact !== this.frame.id) {
       this.enter_frame({ id: wpoint_a.weaponact })
     }
@@ -1227,10 +1227,11 @@ export default class Entity {
 
     const { x, y, z } = holder.position;
     this.facing = holder.facing;
+
     this.position.set(
       x + this.facing * (wpoint_a.x - centerx_a + centerx_b - wpoint_b.x),
       y + centery_a - wpoint_a.y - centery_b + wpoint_b.y,
-      z
+      z - wpoint_a.cover / 2,
     );
   }
 
