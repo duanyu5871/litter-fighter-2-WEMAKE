@@ -97,40 +97,7 @@ export function make_character_data(info: IEntityInfo, frames: Record<string, IF
 
     switch (Number(frame.id)) {
       /** standing */
-      case 0: case 1: case 2: case 3: case 4: {
-        frame.hit = frame.hit || {};
-        frame.hold = frame.hold || {};
-        frame.hit.a = [
-          {
-            id: '45',
-            facing: FacingFlag.ByController,
-            expression: CondMaker
-              .add(ValWord.WeaponType, '==', WeaponType.Baseball)
-              .or(v => v
-                .add(ValWord.WeaponType, '==', WeaponType.Knife)
-                .and(ValWord.PressFB, '!=', 0)
-              ).done(),
-          },
-          {
-            id: ['20', '25'],
-            facing: FacingFlag.ByController,
-            expression: CondMaker.one_of(ValWord.WeaponType, WeaponType.Knife, WeaponType.Stick).done()
-          },
-          {
-            id: '55', expression: CondMaker.one_of(ValWord.WeaponType, WeaponType.Drink).done(),
-            facing: FacingFlag.ByController,
-          },
-          { id: '70', expression: CondMaker.add(ValWord.RequireSuperPunch, '==', 1).done() },
-          { id: ['60', '65'], facing: Defines.FacingFlag.ByController }
-        ]; // punch
-        frame.hit.j = { id: '210' }; // jump
-        frame.hit.d = { id: '110' }; // defend
-        frame.hit.B = frame.hold.B = { id: 'walking_0', facing: FacingFlag.Backward }; // walking
-        frame.hit.F = frame.hit.U = frame.hit.D =
-          frame.hold.F = frame.hold.U = frame.hold.D = { id: 'walking_0' }; // walking
-        frame.hit.FF = frame.hit.FF = { id: 'running_0' };
-        break;
-      }
+      case 0: case 1: case 2: case 3: case 4: break;
       /** walking */
       case 5: case 6: case 7: case 8: {
         set_hit_turn_back(frame);
@@ -437,6 +404,39 @@ export function make_character_data(info: IEntityInfo, frames: Record<string, IF
         break;
     }
     switch (frame.state) {
+      case State.Standing:
+        frame.hit = frame.hit || {};
+        frame.hold = frame.hold || {};
+        frame.hit.a = [
+          {
+            id: '45',
+            facing: FacingFlag.ByController,
+            expression: CondMaker
+              .add(ValWord.WeaponType, '==', WeaponType.Baseball)
+              .or(v => v
+                .add(ValWord.WeaponType, '==', WeaponType.Knife)
+                .and(ValWord.PressFB, '!=', 0)
+              ).done(),
+          },
+          {
+            id: ['20', '25'],
+            facing: FacingFlag.ByController,
+            expression: CondMaker.one_of(ValWord.WeaponType, WeaponType.Knife, WeaponType.Stick).done()
+          },
+          {
+            id: '55', expression: CondMaker.one_of(ValWord.WeaponType, WeaponType.Drink).done(),
+            facing: FacingFlag.ByController,
+          },
+          { id: '70', expression: CondMaker.add(ValWord.RequireSuperPunch, '==', 1).done() },
+          { id: ['60', '65'], facing: Defines.FacingFlag.ByController }
+        ]; // punch
+        frame.hit.j = { id: '210' }; // jump
+        frame.hit.d = { id: '110' }; // defend
+        frame.hit.B = frame.hold.B = { id: 'walking_0', facing: FacingFlag.Backward }; // walking
+        frame.hit.F = frame.hit.U = frame.hit.D =
+          frame.hold.F = frame.hold.U = frame.hold.D = { id: 'walking_0' }; // walking
+        frame.hit.FF = frame.hit.FF = { id: 'running_0' };
+        break;
       case State.BurnRun:
       case State.Z_Moveable:
         frame.dvz = void 0;
@@ -450,7 +450,70 @@ export function make_character_data(info: IEntityInfo, frames: Record<string, IF
         break;
       }
       case State.Walking:
+        set_hit_turn_back(frame);
+        set_hold_turn_back(frame);
+        frame.hit = frame.hit || {};
+        frame.hit.a = [
+          {
+            id: ['45'],
+            facing: FacingFlag.ByController,
+            expression: CondMaker
+              .add(ValWord.WeaponType, '==', WeaponType.Baseball)
+              .or(v => v
+                .add(ValWord.WeaponType, '==', WeaponType.Knife)
+                .and(ValWord.PressFB, '!=', 0)
+              ).done(),
+          },
+          {
+            id: ['20', '25'],
+            facing: FacingFlag.ByController,
+            expression: CondMaker.one_of(ValWord.WeaponType, WeaponType.Knife, WeaponType.Stick).done()
+          }, // drink
+          {
+            id: '55', expression: CondMaker.one_of(ValWord.WeaponType, WeaponType.Drink).done(),
+            facing: FacingFlag.ByController,
+          },
+          { id: '70', expression: CondMaker.add(ValWord.RequireSuperPunch, '==', 1).done() },
+          { id: ['60', '65'], facing: Defines.FacingFlag.ByController }
+        ]; // punch
+        frame.hit.j = { id: '210' }; // jump
+        frame.hit.d = { id: '110' }; // defend
+        frame.hit.FF = { id: 'running_0' };
+        frame.speedx = walking_speed / 2;
+        frame.speedz = walking_speedz;
+
+        frame.wait = walking_frame_rate * 2;
+        round_trip_frames_map[frame.name] = round_trip_frames_map[frame.name] || [];
+        round_trip_frames_map[frame.name].push(frame);
+        delete frames[frame_id];
+        break
       case State.Running: {
+        frame.hit = frame.hit || {};
+        frame.hit.a = [
+          { // 丢出武器
+            id: ['45'],
+            expression: CondMaker.add(ValWord.WeaponType, '==', WeaponType.Baseball)
+              .or(v => v
+                .add(ValWord.PressFB, '==', 1)
+                .and(ValWord.WeaponType, '!=', WeaponType.None)
+              )
+              .done(),
+          }, // drink
+          {
+            id: '55', expression: CondMaker.one_of(ValWord.WeaponType, WeaponType.Drink).done()
+          },
+          {
+            id: '35', expression: CondMaker.one_of(ValWord.WeaponType, WeaponType.Knife, WeaponType.Stick).done(),
+            facing: FacingFlag.ByController,
+          },
+          { id: '85' }
+        ]; // run_atk
+        frame.hit.j = { id: '213' }; // dash
+        frame.hit.d = { id: '102' }; // rowing
+        frame.hold = frame.hold || {};
+        frame.hit.B = frame.hold.B = { id: '218' }; // running_stop
+        frame.dvx = running_speed / 2;
+        frame.speedz = running_speedz;
         /* 
           NOTE: 
             在原版LF2中，角色走路和跑步是用帧的往返切换来实现的。
@@ -462,16 +525,9 @@ export function make_character_data(info: IEntityInfo, frames: Record<string, IF
             原版：0 ==> 1 ==> 2 ==> 1 ==>0
             WEMAKE: 0 ==> 1 ==> 2 ==> copy_1 ==> 0
         */
-        if (frame.state === Defines.State.Walking) {
-          frame.wait = walking_frame_rate * 2;
-          round_trip_frames_map[frame.name] = round_trip_frames_map[frame.name] || [];
-          round_trip_frames_map[frame.name].push(frame);
-        }
-        if (frame.state === Defines.State.Running) {
-          frame.wait = running_frame_rate * 2;
-          round_trip_frames_map[frame.name] = round_trip_frames_map[frame.name] || [];
-          round_trip_frames_map[frame.name].push(frame);
-        }
+        frame.wait = running_frame_rate * 2;
+        round_trip_frames_map[frame.name] = round_trip_frames_map[frame.name] || [];
+        round_trip_frames_map[frame.name].push(frame);
         delete frames[frame_id];
         break;
       }

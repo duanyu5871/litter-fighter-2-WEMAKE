@@ -1097,8 +1097,7 @@ export default class Entity {
       this._a_rest = this.wait + this.motionless;
     }
     if (bdy.kind !== Defines.BdyKind.Defend) {
-      const sounds = itr.hit_sounds?.length ? itr.hit_sounds : this.data.base.hit_sounds?.length ? this.data.base.hit_sounds : void 0
-      sounds && this.play_sound(sounds);
+      this.play_sound(itr.hit_sounds);
     }
     if (itr.hit_act) this.next_frame = this.get_next_frame(itr.hit_act)?.frame ?? this.next_frame;
     this.state?.on_collision?.(this, target, itr, bdy, a_cube, b_cube);
@@ -1163,9 +1162,11 @@ export default class Entity {
       return;
     }
 
+
     if (bdy.hit_act) this.next_frame = this.get_next_frame(bdy.hit_act)?.frame ?? this.next_frame;
 
-    this.play_sound(bdy.hit_sounds)
+    const sounds = bdy.hit_sounds || this.data.base.hit_sounds
+    this.play_sound(sounds)
     this.state?.on_be_collided?.(attacker, this, itr, bdy, a_cube, b_cube);
   }
 
@@ -1217,7 +1218,7 @@ export default class Entity {
     const { wpoint: wpoint_a, centerx: centerx_a, centery: centery_a } = holder.frame;
 
     if (!wpoint_a) return;
-
+    wpoint_a.cover
     if (wpoint_a.weaponact !== this.frame.id) {
       this.enter_frame({ id: wpoint_a.weaponact })
     }

@@ -205,7 +205,7 @@ export default class CharacterState_Base extends State_Base {
           target.velocities[0].x = (itr.dvx || 0) * aface;
           if (itr.effect === ItrEffect.Sharp) {
             target.world.spark(...target.spark_point(r0, r1), "critical_bleed");
-          } else if (is_character(attacker)) {
+          } else if (is_character(target)) {
             target.world.spark(...target.spark_point(r0, r1), "critical_hit")
           } else {
             target.world.spark(...target.spark_point(r0, r1), "slient_critical_hit")
@@ -219,7 +219,7 @@ export default class CharacterState_Base extends State_Base {
           target.velocities[0].z = 0;
           if (itr.effect === ItrEffect.Sharp) {
             target.world.spark(...target.spark_point(r0, r1), "bleed")
-          } else if (is_character(attacker)) {
+          } else if (is_character(target)) {
             target.world.spark(...target.spark_point(r0, r1), "hit")
           } else {
             target.world.spark(...target.spark_point(r0, r1), "slient_hit")
