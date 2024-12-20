@@ -8,6 +8,7 @@ import { to_num } from "../utils/type_cast/to_num";
 import { CondMaker } from "./CondMaker";
 import { get_next_frame_by_raw_id } from "./get_the_next";
 import { take, take_str } from "./take";
+import { OpointKind } from "../defines/OpointKind";
 
 export function make_ball_data(info: IEntityInfo, frames: Record<string, IFrameInfo>, datIndex?: IDatIndex): IEntityData {
 
@@ -38,6 +39,7 @@ export function make_ball_data(info: IEntityInfo, frames: Record<string, IFrameI
       */
       frame.opoint = frame.opoint || []
       frame.opoint.push({
+        kind: OpointKind.Normal,
         oid: '228',
         x: frame.centerx,
         y: frame.centery,
@@ -46,6 +48,7 @@ export function make_ball_data(info: IEntityInfo, frames: Record<string, IFrameI
     } else if ('' + hit_Fa === '8') {
       frame.opoint = frame.opoint || []
       frame.opoint.push({
+        kind: OpointKind.Normal,
         oid: '225',
         x: frame.centerx,
         y: frame.centery,
