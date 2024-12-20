@@ -1,6 +1,7 @@
 import { IEntityData, IEntityInfo, IOpointInfo } from '../defines';
 import { IFrameIndexes } from '../defines/IFrameIndexes';
 import { IFrameInfo } from "../defines/IFrameInfo";
+import { OpointKind } from '../defines/OpointKind';
 import { Defines } from '../defines/defines';
 import { add_entity_groups } from './add_entity_to_group';
 import { make_itr_prefabs } from './make_itr_prefabs';
@@ -98,6 +99,7 @@ export function make_weapon_special(data: IEntityData) {
     ]
     return frame_ids.map((frame_id, idx) => {
       return {
+        kind: OpointKind.Normal,
         x: 24,
         y: 24,
         action: { id: frame_id },

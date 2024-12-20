@@ -2,6 +2,7 @@ import { IBdyInfo, ICpointInfo, IEntityPictureInfo, IFramePictureInfo, IItrInfo,
 import { IEntityInfo } from "../defines/IEntityInfo";
 import { IFrameInfo } from "../defines/IFrameInfo";
 import { IRect } from '../defines/IRect';
+import { OpointKind } from '../defines/OpointKind';
 import { Defines } from '../defines/defines';
 import { match_all } from '../utils/string_parser/match_all';
 import { match_colon_value } from '../utils/string_parser/match_colon_value';
@@ -159,12 +160,14 @@ export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string, fil
       case Defines.State.LouisCastOff:
         frame.opoint = frame.opoint || [];
         frame.opoint.push({
+          kind: OpointKind.Normal,
           x: 39,
           y: 79,
           oid: '218',
           dvy: 5,
           action: { id: 'auto' }
         }, {
+          kind: OpointKind.Normal,
           x: 39,
           y: 79,
           oid: '217',
@@ -173,6 +176,7 @@ export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string, fil
           action: { id: 'auto', facing: Defines.FacingFlag.Backward },
           multi: 2
         }, {
+          kind: OpointKind.Normal,
           x: 39,
           y: 79,
           oid: '217',
