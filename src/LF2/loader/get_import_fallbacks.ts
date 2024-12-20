@@ -9,20 +9,23 @@
  */
 export default function get_import_fallbacks(name: string): string[] {
   const fallbacks = [name];
-  if (name.endsWith('.bmp')) {
-    fallbacks.unshift(name + '.png');
-    fallbacks.unshift(name.substring(0, name.length - 4) + '.png');
-    // >> a.bmp
-    // << [a.png, a.bmp.png, a.bmp]
-  }
-  if (name.endsWith('.png')) {
-    const n = name.substring(0, name.length - 4)
-    fallbacks.unshift(n + '@2x.png');
-    fallbacks.unshift(n + '@3x.png');
-    fallbacks.unshift(n + '@4x.png');
-
-    // >> a.png
-    // << [a@4x.png, a@3x.png, a@2x.png, a.png]
+  if (
+    name.endsWith('.png') ||
+    name.endsWith('.bmp') ||
+    name.endsWith('.webp')
+  ) {
+    const regexp = /(.*)\/(.*)(\.png|\.webp|\.bmp)$/
+    const l = [
+      name.replace(regexp, (_, dir, name) => dir + '/@4x/' + name + '.webp'),
+      name.replace(regexp, (_, dir, name) => dir + '/@4x/' + name + '.png'),
+      name.replace(regexp, (_, dir, name) => dir + '/@3x/' + name + '.webp'),
+      name.replace(regexp, (_, dir, name) => dir + '/@3x/' + name + '.png'),
+      name.replace(regexp, (_, dir, name) => dir + '/@2x/' + name + '.webp'),
+      name.replace(regexp, (_, dir, name) => dir + '/@2x/' + name + '.png'),
+      name.replace(regexp, (_, dir, name) => dir + '/' + name + '.webp'),
+      name.replace(regexp, (_, dir, name) => dir + '/' + name + '.png'),
+    ].filter(v => v !== name)
+    fallbacks.unshift(...l);
   }
   if (name.endsWith('.wav') || name.endsWith('.wma')) {
     fallbacks.unshift(name + '.mp3');

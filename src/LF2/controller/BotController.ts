@@ -94,10 +94,10 @@ export class BotController extends BaseController {
     let is_z_reach = false;
 
     if (target_x - my_x > RUN_ZONE && !is_running) {
-      this.db_hit('R').end('R')
+      this.db_hit('R')
       // console.log('run >>>', this.is_db_hit(GameKey.R))
     } else if (my_x - target_x > RUN_ZONE && !is_running) {
-      this.db_hit('L').end('L')
+      this.db_hit('L')
       // console.log('run <<<', this.is_db_hit(GameKey.L))
     } else if (is_running) {
       if (target_x - my_x > RUN_ATTACK_DEAD_ZONE_X) {

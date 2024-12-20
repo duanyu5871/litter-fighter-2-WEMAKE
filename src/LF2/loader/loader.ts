@@ -51,7 +51,11 @@ export class ImageMgr {
     const [blob_url, src_url] = await this.lf2.import_resource(src);
     const img = await create_img_ele(blob_url);
 
-    const [, txt_scale] = src_url.match(/@(\d)x.png$/) ?? ['', '1'];
+    let [, txt_scale] =
+      src_url.match(/@(\d)[x|X](.png|.webp)$/) ??
+      src_url.match(/@(\d)[x|X]\/(.*)(.png|.webp)$/) ?? ['', '1'];
+
+
     const scale = Math.max(1, Number(txt_scale));
     if (!paint) {
       return { key, url: blob_url, src_url, scale, w: img.width, h: img.height, img: img }
