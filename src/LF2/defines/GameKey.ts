@@ -21,4 +21,5 @@ export enum GameKey {
   /** Defend */
   d = 'd', Defend = 'd',
 }
+export type TLooseGameKey = GameKey | 'L' | 'R' | 'U' | 'D' | 'a' | 'j' | 'd'
 export default GameKey
