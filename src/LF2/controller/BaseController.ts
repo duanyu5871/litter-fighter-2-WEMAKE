@@ -1,3 +1,4 @@
+
 import type { IFrameInfo, IHitKeyCollection, TLooseGameKey } from '../defines';
 import { GameKey } from '../defines';
 import type Entity from '../entity/Entity';
@@ -21,6 +22,9 @@ export const CONFLICTS_KEY_MAP: Record<GameKey, GameKey | undefined> = {
   [GameKey.D]: GameKey.U,
 }
 
+/**
+ * @link https://www.processon.com/view/link/6765125f16640e2a68b21418?cid=6764eb96c3e02b46ac818e40
+ */
 export class BaseController {
   readonly is_base_controller = true
 
