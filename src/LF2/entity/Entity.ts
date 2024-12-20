@@ -7,6 +7,7 @@ import { Callbacks, new_id, new_team, type NoEmitCallbacks } from '../base';
 import { IExpression } from '../base/Expression';
 import { BaseController } from '../controller/BaseController';
 import { IBaseData, IBdyInfo, ICpointInfo, IEntityData, IFrameInfo, IItrInfo, INextFrameResult, IOpointInfo, ITexturePieceInfo, TFace, TNextFrame } from '../defines';
+import { OpointKind } from '../defines/OpointKind';
 import { SpeedMode } from '../defines/SpeedMode';
 import { Defines } from '../defines/defines';
 import Ditto from '../ditto';
@@ -530,10 +531,12 @@ export default class Entity {
     if (opoint.mp) this.mp = opoint.mp;
 
     this.enter_frame(result?.which);
-    if (this.frame.state === Defines.State.Weapon_OnHand) {
-      this.holder = emitter
-      this.holder.holding = this
-      this.team = emitter.team;
+
+    switch (opoint.kind) {
+      case OpointKind.Pick:
+        this.holder = emitter
+        this.holder.holding = this
+        break;
     }
     return this;
   }

@@ -1,5 +1,15 @@
 import type { INextFrame, TNextFrame, Defines } from ".";
+import type { OpointKind } from "./OpointKind";
 export interface IOpointInfo {
+
+  /**
+   *
+   * @type {number}
+   * @memberof IOpointInfo
+   * @see {OpointKind}
+   */
+  kind: number;
+
   /**
    * 实体产生的X坐标（相对frame矩形左上角）
    * @type {number}
