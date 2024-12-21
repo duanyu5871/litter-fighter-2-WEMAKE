@@ -1,6 +1,7 @@
-import { GameKey } from "./GameKey";
+import type { GameKey } from "./GameKey";
 import type { IBgData } from "./IBgData";
 import type { IStageInfo } from "./IStageInfo";
+
 export namespace Defines {
   export enum OpointSpreading {
     Normal = 0,
@@ -237,9 +238,32 @@ export namespace Defines {
     Right = 1,
 
     Backward = 2,
-    ByController = 3,
+
+    /**
+     * 跟随控制器
+     * 
+     * - entity.controller.LR == -1时，向左
+     * - entity.controller.LR == 1时，向右
+     * - 否则维持原方向
+     * @see {BaseController.LR}
+     * @see {Entity.controller}
+     */
+    Ctrl = 3,
+
     SameAsCatcher = 4,
+
     OpposingCatcher = 5,
+
+    /**
+     * 反向跟随控制器
+     * 
+     * - entity.controller.LR == -1时，向右
+     * - entity.controller.LR == 1时，向左
+     * - 否则维持原方向
+     * @see {BaseController.LR}
+     * @see {Entity.controller}
+     */
+    AntiCtrl = 6,
   }
   export enum State {
     _Entity_Base = -1,

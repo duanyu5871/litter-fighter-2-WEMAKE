@@ -106,7 +106,7 @@ export function make_character_data(info: IEntityInfo, frames: Record<string, IF
         frame.hit.a = [
           {
             id: ['45'],
-            facing: FacingFlag.ByController,
+            facing: FacingFlag.Ctrl,
             expression: CondMaker
               .add(ValWord.WeaponType, '==', WeaponType.Baseball)
               .or(v => v
@@ -116,15 +116,15 @@ export function make_character_data(info: IEntityInfo, frames: Record<string, IF
           },
           {
             id: ['20', '25'],
-            facing: FacingFlag.ByController,
+            facing: FacingFlag.Ctrl,
             expression: CondMaker.one_of(ValWord.WeaponType, WeaponType.Knife, WeaponType.Stick).done()
           }, // drink
           {
             id: '55', expression: CondMaker.one_of(ValWord.WeaponType, WeaponType.Drink).done(),
-            facing: FacingFlag.ByController,
+            facing: FacingFlag.Ctrl,
           },
           { id: '70', expression: CondMaker.add(ValWord.RequireSuperPunch, '==', 1).done() },
-          { id: ['60', '65'], facing: Defines.FacingFlag.ByController }
+          { id: ['60', '65'], facing: Defines.FacingFlag.Ctrl }
         ]; // punch
         frame.hit.j = { id: '210' }; // jump
         frame.hit.d = { id: '110' }; // defend
@@ -153,7 +153,7 @@ export function make_character_data(info: IEntityInfo, frames: Record<string, IF
           },
           {
             id: '35', expression: CondMaker.one_of(ValWord.WeaponType, WeaponType.Knife, WeaponType.Stick).done(),
-            facing: FacingFlag.ByController,
+            facing: FacingFlag.Ctrl,
           },
           { id: '85' }
         ]; // run_atk
@@ -171,7 +171,7 @@ export function make_character_data(info: IEntityInfo, frames: Record<string, IF
         set_hold_turn_back(frame);
         frame.hit = frame.hit || {};
         frame.hit.FF = { id: 'heavy_obj_run_0' };
-        frame.hit.a = { id: '50', facing: FacingFlag.ByController }; // running_stop
+        frame.hit.a = { id: '50', facing: FacingFlag.Ctrl }; // running_stop
         frame.speedx = heavy_walking_speed / 2;
         frame.speedz = heavy_walking_speedz;
         break;
@@ -216,7 +216,7 @@ export function make_character_data(info: IEntityInfo, frames: Record<string, IF
           frame.hit.a = [
             {
               id: '52', // 角色跳跃丢出武器
-              facing: FacingFlag.ByController,
+              facing: FacingFlag.Ctrl,
               expression: CondMaker.one_of(
                 ValWord.WeaponType, WeaponType.Baseball, WeaponType.Drink
               ).or(v => v
@@ -226,7 +226,7 @@ export function make_character_data(info: IEntityInfo, frames: Record<string, IF
             },
             {
               id: '30', // 角色跳跃用武器攻击
-              facing: FacingFlag.ByController,
+              facing: FacingFlag.Ctrl,
               expression: CondMaker.one_of(
                 ValWord.WeaponType,
                 WeaponType.Knife,
@@ -235,12 +235,12 @@ export function make_character_data(info: IEntityInfo, frames: Record<string, IF
             },
             {
               id: '80', // 角色跳跃攻击
-              facing: FacingFlag.ByController
+              facing: FacingFlag.Ctrl
             }
           ]; // jump_atk
         }
-        frame.hit.B = { facing: FacingFlag.ByController };
-        frame.hold.B = { facing: FacingFlag.ByController };
+        frame.hit.B = { facing: FacingFlag.Ctrl };
+        frame.hold.B = { facing: FacingFlag.Ctrl };
         break;
       }
       /** dash */
@@ -255,12 +255,12 @@ export function make_character_data(info: IEntityInfo, frames: Record<string, IF
           frame.hit.a = [
             {
               id: '52',
-              facing: FacingFlag.ByController,
+              facing: FacingFlag.Ctrl,
               expression: CondMaker.one_of(ValWord.WeaponType, WeaponType.Baseball, WeaponType.Drink).done(),
             },
             {
               id: '40',
-              facing: FacingFlag.ByController,
+              facing: FacingFlag.Ctrl,
               expression: CondMaker.one_of(ValWord.WeaponType, WeaponType.Knife, WeaponType.Stick).done()
             },
             { id: '90' }]; // dash_atk
@@ -281,7 +281,7 @@ export function make_character_data(info: IEntityInfo, frames: Record<string, IF
             t_hit_a = [
               {
                 ...get_next_frame_by_raw_id(t_action),
-                facing: FacingFlag.ByController,
+                facing: FacingFlag.Ctrl,
                 expression: CondMaker
                   .add<Defines.ValWord>(ValWord.Catching, '==', 1).and().bracket(c => {
                     return c.add(ValWord.PressFB, '!=', 0).or(ValWord.PressUD, '!=', 0)
@@ -395,7 +395,7 @@ export function make_character_data(info: IEntityInfo, frames: Record<string, IF
           }
         ]; // dash
         frame.hit = frame.hit || {};
-        frame.hit.d = { id: '102', facing: FacingFlag.ByController };
+        frame.hit.d = { id: '102', facing: FacingFlag.Ctrl };
         frame.hit.j = to_dash_frame;
         // frame.hold = frame.hold || {};
         // frame.hold.d = { id: '102', facing: FacingFlag.ByController };
@@ -409,7 +409,7 @@ export function make_character_data(info: IEntityInfo, frames: Record<string, IF
         frame.hit.a = [
           {
             id: '45',
-            facing: FacingFlag.ByController,
+            facing: FacingFlag.Ctrl,
             expression: CondMaker
               .add(ValWord.WeaponType, '==', WeaponType.Baseball)
               .or(v => v
@@ -419,15 +419,15 @@ export function make_character_data(info: IEntityInfo, frames: Record<string, IF
           },
           {
             id: ['20', '25'],
-            facing: FacingFlag.ByController,
+            facing: FacingFlag.Ctrl,
             expression: CondMaker.one_of(ValWord.WeaponType, WeaponType.Knife, WeaponType.Stick).done()
           },
           {
             id: '55', expression: CondMaker.one_of(ValWord.WeaponType, WeaponType.Drink).done(),
-            facing: FacingFlag.ByController,
+            facing: FacingFlag.Ctrl,
           },
           { id: '70', expression: CondMaker.add(ValWord.RequireSuperPunch, '==', 1).done() },
-          { id: ['60', '65'], facing: Defines.FacingFlag.ByController }
+          { id: ['60', '65'], facing: Defines.FacingFlag.Ctrl }
         ]; // punch
         frame.hit.j = { id: '210' }; // jump
         frame.hit.d = { id: '110' }; // defend
@@ -455,7 +455,7 @@ export function make_character_data(info: IEntityInfo, frames: Record<string, IF
         frame.hit.a = [
           {
             id: ['45'],
-            facing: FacingFlag.ByController,
+            facing: FacingFlag.Ctrl,
             expression: CondMaker
               .add(ValWord.WeaponType, '==', WeaponType.Baseball)
               .or(v => v
@@ -465,15 +465,15 @@ export function make_character_data(info: IEntityInfo, frames: Record<string, IF
           },
           {
             id: ['20', '25'],
-            facing: FacingFlag.ByController,
+            facing: FacingFlag.Ctrl,
             expression: CondMaker.one_of(ValWord.WeaponType, WeaponType.Knife, WeaponType.Stick).done()
           }, // drink
           {
             id: '55', expression: CondMaker.one_of(ValWord.WeaponType, WeaponType.Drink).done(),
-            facing: FacingFlag.ByController,
+            facing: FacingFlag.Ctrl,
           },
           { id: '70', expression: CondMaker.add(ValWord.RequireSuperPunch, '==', 1).done() },
-          { id: ['60', '65'], facing: Defines.FacingFlag.ByController }
+          { id: ['60', '65'], facing: Defines.FacingFlag.Ctrl }
         ]; // punch
         frame.hit.j = { id: '210' }; // jump
         frame.hit.d = { id: '110' }; // defend
@@ -503,7 +503,7 @@ export function make_character_data(info: IEntityInfo, frames: Record<string, IF
           },
           {
             id: '35', expression: CondMaker.one_of(ValWord.WeaponType, WeaponType.Knife, WeaponType.Stick).done(),
-            facing: FacingFlag.ByController,
+            facing: FacingFlag.Ctrl,
           },
           { id: '85' }
         ]; // run_atk

@@ -4,6 +4,7 @@ import { IFrameInfo } from "../defines/IFrameInfo";
 import { IRect } from '../defines/IRect';
 import { OpointKind } from '../defines/OpointKind';
 import { Defines } from '../defines/defines';
+import { traversal } from '../utils/container_help/traversal';
 import { match_all } from '../utils/string_parser/match_all';
 import { match_colon_value } from '../utils/string_parser/match_colon_value';
 import take_sections from '../utils/string_parser/take_sections';
@@ -109,13 +110,14 @@ export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string, fil
     if (sound) frame.sound = sound + '.mp3';
     frames[frame_id] = frame;
 
-    const dircontrol = take(cpoint_list, 'dircontrol');
+    const dircontrol = take(cpoint_list[0], 'dircontrol');
     if (dircontrol) {
-      frame.hit = frame.hit || {}
-      frame.hit.B = { facing: Defines.FacingFlag.Backward, wait: 'i' }
-      frame.hold = frame.hold || {}
-      frame.hold.B = { facing: Defines.FacingFlag.Backward, wait: 'i' }
+      const nexts = Array.isArray(frame.next) ? frame.next : [frame.next];
+      for (const next of nexts) {
+        next.facing = dircontrol === 1 ? Defines.FacingFlag.Ctrl : Defines.FacingFlag.AntiCtrl;
+      }
     }
+
 
     const dvx = take(frame, 'dvx');
     if (dvx === 550) frame.dvx = dvx;

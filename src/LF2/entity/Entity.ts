@@ -951,7 +951,7 @@ export default class Entity {
     this.prev_cpoint_a = cpoint_a;
 
     const { throwvx, throwvy, throwvz, throwinjury } = cpoint_a;
-    
+
     if (throwvz) {
       this.velocities[0].z = throwvz * (this._catcher.controller?.UD || 0);
     }
@@ -1303,8 +1303,10 @@ export default class Entity {
    */
   handle_facing_flag(facing: number, frame: IFrameInfo): -1 | 1 {
     switch (facing) {
-      case Defines.FacingFlag.ByController:
+      case Defines.FacingFlag.Ctrl:
         return this.controller?.LR || this.facing;
+      case Defines.FacingFlag.AntiCtrl:
+        return this.controller?.LR ? turn_face(this.controller.LR) : this.facing;
       case Defines.FacingFlag.SameAsCatcher:
         return this._catcher?.facing || this.facing;
       case Defines.FacingFlag.OpposingCatcher:
