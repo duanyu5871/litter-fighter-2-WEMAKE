@@ -1273,16 +1273,15 @@ export default class Entity {
       this.world.lf2.sounds.play(sound, x, y, z);
     }
     this.set_frame(frame);
-    this.wait = frame.wait;
-    this.next_frame = void 0;
 
-    if (flags && typeof flags !== 'string') {
-      if (flags.facing !== void 0) {
-        this.facing = this.handle_facing_flag(flags.facing, frame);
-      }
-      if (flags.wait !== void 0) {
-        this.wait = this.handle_wait_flag(flags.wait, frame);
-      }
+    this.next_frame = void 0;
+    if (flags.facing !== void 0) {
+      this.facing = this.handle_facing_flag(flags.facing, frame);
+    }
+    if (flags.wait !== void 0) {
+      this.wait = this.handle_wait_flag(flags.wait, frame);
+    } else {
+      this.wait = frame.wait;
     }
   }
 
