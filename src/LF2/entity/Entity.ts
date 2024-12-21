@@ -730,9 +730,13 @@ export default class Entity {
     if (this.frame.hp)
       this.hp -= this.frame.hp
     const { cpoint } = this.frame;
-    if (cpoint?.decrease) {
-      this._catch_time -= Math.abs(cpoint.decrease);
-      if (this._catch_time < 0) this._catch_time = 0;
+    if (cpoint) {
+      if (cpoint?.decrease) {
+        this._catch_time -= Math.abs(cpoint.decrease);
+        if (this._catch_time < 0) this._catch_time = 0;
+      } else {
+        this._catch_time = this._catch_time_max;
+      }
     }
     if (this.shaking <= 0) {
       for (const [k, v] of this.v_rests) {
@@ -1347,10 +1351,16 @@ export default class Entity {
     if (judger && !judger.run(this)) {
       return void 0
     }
-    const frame = this.find_frame_by_id(
-      Array.isArray(id) ? random_get(id) : id
-    );
-    if (!frame) return void 0
+
+    let frame: IFrameInfo | undefined
+    if (id) {
+      frame = this.find_frame_by_id(
+        Array.isArray(id) ? random_get(id) : id
+      );
+      if (!frame) return void 0
+    } else {
+      frame = this.frame;
+    }
 
     if (!this.world.lf2.infinity_mp) {
       if (this.frame.next === which) {

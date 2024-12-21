@@ -4,7 +4,6 @@ import { IFrameInfo } from "../defines/IFrameInfo";
 import { IRect } from '../defines/IRect';
 import { OpointKind } from '../defines/OpointKind';
 import { Defines } from '../defines/defines';
-import { traversal } from '../utils/container_help/traversal';
 import { match_all } from '../utils/string_parser/match_all';
 import { match_colon_value } from '../utils/string_parser/match_colon_value';
 import take_sections from '../utils/string_parser/take_sections';
@@ -15,9 +14,9 @@ import { cook_cpoint } from './cook_cpoint';
 import cook_itr from './cook_itr';
 import cook_opoint from './cook_opoint';
 import { cook_wpoint } from './cook_wpoint';
+import { add_next_frame } from './edit_next_frame';
 import { get_next_frame_by_raw_id } from './get_the_next';
 import { take } from './take';
-
 export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string, files: IEntityInfo['files']): Record<string, F> {
   const frames: Record<string, F> = {};
   const frame_regexp = /<frame>\s+(.*?)\s+(.*)((.|\n)+?)<frame_end>/g;
@@ -112,9 +111,11 @@ export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string, fil
 
     const dircontrol = take(cpoint_list[0], 'dircontrol');
     if (dircontrol) {
-      const nexts = Array.isArray(frame.next) ? frame.next : [frame.next];
-      for (const next of nexts) {
-        next.facing = dircontrol === 1 ? Defines.FacingFlag.Ctrl : Defines.FacingFlag.AntiCtrl;
+      frame.hit = frame.hit || {}
+      if (dircontrol === 1) {
+        frame.hit.B = add_next_frame(frame.hit.B, { wait: 'i', facing: Defines.FacingFlag.Backward })
+      } else {
+        frame.hit.F = add_next_frame(frame.hit.F, { wait: 'i', facing: Defines.FacingFlag.Backward })
       }
     }
 
