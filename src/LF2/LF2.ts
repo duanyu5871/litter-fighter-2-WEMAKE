@@ -40,6 +40,7 @@ import { arithmetic_progression } from './utils/math/arithmetic_progression';
 import float_equal from './utils/math/float_equal';
 import { random_get, random_in, random_take } from './utils/math/random';
 import { is_arr, is_num, is_str, not_empty_str } from './utils/type_check';
+import { PIO } from './utils/PromisesInOne';
 
 const cheat_info_pair = (n: Defines.Cheats) => ['' + n, {
   keys: Defines.CheatKeys[n],
@@ -128,6 +129,8 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   }
   on_click_character?: (c: Entity) => void;
 
+
+  @PIO
   async import_json<C = any>(path: string): Promise<C> {
     const paths = get_import_fallbacks(path);
     for (const path of paths) {
@@ -135,10 +138,12 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
       if (!zip_obj) continue;
       return zip_obj.json() as C
     }
-    const [json] = await ditto.Importer.import_as_json<C>(paths);
-    return json
+    const v = await ditto.Importer.import_as_json<C>(paths);
+    return v[0];
   }
 
+
+  @PIO
   async import_resource(path: string): Promise<[string, string]> {
     const paths = get_import_fallbacks(path);
     for (const path of paths) {
@@ -148,6 +153,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     }
     return ditto.Importer.import_as_blob_url(paths);
   }
+
 
   constructor(canvas: HTMLCanvasElement) {
     this.world = new World(this, canvas);

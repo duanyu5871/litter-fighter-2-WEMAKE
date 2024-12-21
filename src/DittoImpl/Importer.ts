@@ -1,6 +1,7 @@
 import axios, { AxiosResponse, RawAxiosRequestHeaders } from "axios";
 import { IImporter } from "../LF2/ditto/importer/IImporter";
 import { ImportError } from "../LF2/ditto/importer/ImportError";
+import { PIO } from "../LF2/utils/PromisesInOne";
 
 const roots = [
   'lf2_built_in_data'
@@ -73,15 +74,18 @@ async function import_as<T>(responseType: 'json' | 'blob', urls: string[]): Prom
 }
 
 export class __Importer implements IImporter {
+  @PIO
   async import_as_json<T = any>(urls: string[]): Promise<[T, string]> {
     const url_list: string[] = get_possible_url_list(urls);
     return await import_as<T>('json', url_list).then(([v, url]) => [v.data, url]);
   }
+  @PIO
   async import_as_blob(urls: string[]): Promise<[Blob, string]> {
     const url_list: string[] = get_possible_url_list(urls);
     const [resp, url] = await import_as<Blob>('blob', url_list);
     return [resp.data, url];
   }
+  @PIO
   async import_as_blob_url(urls: string[]): Promise<[string, string]> {
     const [blob, url] = await this.import_as_blob(urls);
     return [URL.createObjectURL(blob), url];
