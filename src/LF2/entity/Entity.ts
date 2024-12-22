@@ -6,7 +6,7 @@ import { ICube } from '../World';
 import { Callbacks, new_id, new_team, type NoEmitCallbacks } from '../base';
 import { IExpression } from '../base/Expression';
 import { BaseController } from '../controller/BaseController';
-import { IBaseData, IBdyInfo, ICpointInfo, IEntityData, IFrameInfo, IItrInfo, INextFrameResult, IOpointInfo, ITexturePieceInfo, TFace, TNextFrame } from '../defines';
+import { IBaseData, ICpointInfo, IEntityData, IFrameInfo, IItrInfo, INextFrameResult, IOpointInfo, ITexturePieceInfo, TFace, TNextFrame } from '../defines';
 import { OpointKind } from '../defines/OpointKind';
 import { SpeedMode } from '../defines/SpeedMode';
 import { Defines } from '../defines/defines';
@@ -20,6 +20,7 @@ import WeaponState_Base from '../state/WeaponState_Base';
 import { random_get } from '../utils/math/random';
 import { is_positive, is_str } from '../utils/type_check';
 import { Factory } from './Factory';
+import { ICollisionInfo } from './ICollisionInfo';
 import type IEntityCallbacks from './IEntityCallbacks';
 import { turn_face } from './face_helper';
 import { is_character, is_weapon_data } from './type_check';
@@ -52,27 +53,6 @@ export const GONE_FRAME_INFO: IFrameInfo = {
   centery: 0
 };
 export type TData = IBaseData | IEntityData | IEntityData | IEntityData | IEntityData
-export interface CollisionInfo {
-  victim: Entity
-  attacker: Entity,
-  itr: IItrInfo,
-  bdy: IBdyInfo,
-  aframe: IFrameInfo,
-  bframe: IFrameInfo,
-  a_cube: ICube,
-  b_cube: ICube
-}
-export interface IVictimRest {
-  remain: number,
-  itr: IItrInfo,
-  bdy: IBdyInfo,
-  attacker: Entity,
-  a_cube: ICube,
-  b_cube: ICube,
-  a_frame: IFrameInfo,
-  b_frame: IFrameInfo
-}
-
 export default class Entity {
   static readonly TAG: string = 'Entity';
 
@@ -189,7 +169,7 @@ export default class Entity {
   protected _emitter?: Entity;
   protected _emitter_opoint?: IOpointInfo;
   protected _a_rest: number = 0;
-  public v_rests = new Map<string, IVictimRest>();
+  public v_rests = new Map<string, ICollisionInfo>();
 
   public motionless: number = 0
   public shaking: number = 0;
@@ -463,10 +443,10 @@ export default class Entity {
 
   get_v_rest_remain(id: string): number {
     const v = this.v_rests.get(id);
-    return v ? v.remain : 0
+    return v?.remain ?? 0
   }
 
-  find_v_rest(fn: (k: string, v: IVictimRest) => any): IVictimRest | undefined {
+  find_v_rest(fn: (k: string, v: ICollisionInfo) => any): ICollisionInfo | undefined {
     for (const [k, v] of this.v_rests) if (fn(k, v)) return v;
     return void 0;
   }
@@ -740,7 +720,7 @@ export default class Entity {
     }
     if (this.shaking <= 0) {
       for (const [k, v] of this.v_rests) {
-        if (v.remain >= 0) --v.remain;
+        if (v.remain && v.remain >= 0) --v.remain;
         else this.v_rests.delete(k);
       }
     }
@@ -1059,10 +1039,10 @@ export default class Entity {
     this.next_frame = this.get_next_frame('245')?.frame;
   }
 
-  lastest_collision?: CollisionInfo;
-  lastest_collided?: CollisionInfo;
-  collision_list: CollisionInfo[] = [];
-  collided_list: CollisionInfo[] = [];
+  lastest_collision?: ICollisionInfo;
+  lastest_collided?: ICollisionInfo;
+  collision_list: ICollisionInfo[] = [];
+  collided_list: ICollisionInfo[] = [];
 
   start_catch(target: Entity, itr: IItrInfo) {
     if (itr.catchingact === void 0) {
@@ -1086,20 +1066,9 @@ export default class Entity {
     this.next_frame = itr.caughtact;
   }
 
-  on_collision(target: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
-    if (this.state?.before_collision?.(this, target, itr, bdy, a_cube, b_cube)) {
-      return;
-    }
-    this.collision_list.push(this.lastest_collision = {
-      attacker: this,
-      victim: target,
-      aframe: this.frame,
-      bframe: target.frame,
-      itr,
-      bdy,
-      a_cube,
-      b_cube,
-    })
+  on_collision(collision: ICollisionInfo): void {
+    this.collision_list.push(this.lastest_collision = collision)
+    const { itr, bdy } = collision
     this.motionless = itr.motionless ?? Defines.DEFAULT_ITR_MOTIONLESS;
     if (itr.arest) {
       this._a_rest = itr.arest - this.motionless;
@@ -1110,7 +1079,6 @@ export default class Entity {
       this.play_sound(itr.hit_sounds);
     }
     if (itr.hit_act) this.next_frame = this.get_next_frame(itr.hit_act)?.frame ?? this.next_frame;
-    this.state?.on_collision?.(this, target, itr, bdy, a_cube, b_cube);
   }
 
   spark_point(r0: ICube, r1: ICube) {
@@ -1136,32 +1104,12 @@ export default class Entity {
     )
   }
 
-  on_be_collided(attacker: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
-    if (this.state?.before_be_collided?.(attacker, this, itr, bdy, a_cube, b_cube)) {
-      return;
-    }
-    this.collided_list.push(this.lastest_collided = {
-      attacker: attacker,
-      victim: this,
-      aframe: attacker.frame,
-      bframe: this.frame,
-      itr,
-      bdy,
-      a_cube,
-      b_cube,
-    });
+  on_be_collided(collision: ICollisionInfo): void {
+    this.collided_list.push(this.lastest_collided = collision);
+    const { itr, bdy } = collision
     this.shaking = itr.shaking ?? Defines.DEFAULT_ITR_SHAKEING;
-    if (!itr.arest && itr.vrest) {
-      this.v_rests.set(attacker.id, {
-        remain: itr.vrest,
-        itr,
-        bdy,
-        attacker,
-        a_cube,
-        b_cube,
-        a_frame: attacker.frame,
-        b_frame: this.frame
-      });
+    if (collision.remain !== void 0) {
+      this.v_rests.set(collision.attacker.id, collision);
     }
     if (
       bdy.kind >= Defines.BdyKind.GotoMin &&
@@ -1171,13 +1119,9 @@ export default class Entity {
       if (result) this.next_frame = result.frame
       return;
     }
-
-
     if (bdy.hit_act) this.next_frame = this.get_next_frame(bdy.hit_act)?.frame ?? this.next_frame;
-
     const sounds = bdy.hit_sounds || this.data.base.hit_sounds
     this.play_sound(sounds)
-    this.state?.on_be_collided?.(attacker, this, itr, bdy, a_cube, b_cube);
   }
 
   dispose(): void {

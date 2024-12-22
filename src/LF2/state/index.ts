@@ -1,8 +1,8 @@
-import { IBdyInfo, IFrameInfo, IItrInfo, TNextFrame } from "../defines";
+import { IFrameInfo, TNextFrame } from "../defines";
 import { Defines } from "../defines/defines";
 import Entity from "../entity/Entity";
+import { ICollisionInfo } from "../entity/ICollisionInfo";
 import { is_ball, is_character, is_weapon } from "../entity/type_check";
-import { ICube } from "../World";
 import BallState_Base from "./BallState_Base";
 import CharacterState_Base from "./CharacterState_Base";
 import CharacterState_Burning from "./CharacterState_Burning";
@@ -113,32 +113,18 @@ ENTITY_STATES.set(Defines.State.Normal, new (class State_15 extends State_Base i
   override get_auto_frame(e: Entity): IFrameInfo | undefined {
     return this.get_proxy(e).get_auto_frame?.(e)
   }
-  override before_collision(
-    attacker: Entity,
-    target: Entity,
-    itr: IItrInfo,
-    bdy: IBdyInfo,
-    a_cube: ICube,
-    b_cube: ICube
-  ): WhatNext {
-    return this.get_proxy(attacker).before_collision?.(attacker, target, itr, bdy, a_cube, b_cube) || WhatNext.Continue;
+  override before_collision(collision: ICollisionInfo): WhatNext {
+    return this.get_proxy(collision.attacker).before_collision?.(collision) || WhatNext.Continue;
   }
 
-  override before_be_collided(
-    attacker: Entity,
-    target: Entity,
-    itr: IItrInfo,
-    bdy: IBdyInfo,
-    a_cube: ICube,
-    b_cube: ICube
-  ): WhatNext {
-    return this.get_proxy(attacker).before_be_collided?.(attacker, target, itr, bdy, a_cube, b_cube) || WhatNext.Continue;
+  override before_be_collided(collision: ICollisionInfo): WhatNext {
+    return this.get_proxy(collision.attacker).before_be_collided?.(collision) || WhatNext.Continue;
   }
-  override on_collision(attacker: Entity, target: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
-    this.get_proxy(attacker).on_collision?.(attacker, target, itr, bdy, a_cube, b_cube)
+  override on_collision(collision: ICollisionInfo): void {
+    this.get_proxy(collision.attacker).on_collision?.(collision)
   }
-  override on_be_collided(attacker: Entity, target: Entity, itr: IItrInfo, bdy: IBdyInfo, r0: ICube, r1: ICube): void {
-    this.get_proxy(target).on_be_collided?.(attacker, target, itr, bdy, r0, r1)
+  override on_be_collided(collision: ICollisionInfo): void {
+    this.get_proxy(collision.victim).on_be_collided?.(collision)
   }
   override get_sudden_death_frame(target: Entity): TNextFrame | undefined {
     return this.get_proxy(target)?.get_sudden_death_frame?.(target)

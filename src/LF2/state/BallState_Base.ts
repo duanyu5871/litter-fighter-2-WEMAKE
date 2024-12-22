@@ -1,7 +1,7 @@
-import { Defines, IBdyInfo, IFrameInfo, IItrInfo, ItrKind } from "../defines";
+import { Defines, IFrameInfo, ItrKind } from "../defines";
 import Entity from "../entity/Entity";
+import { ICollisionInfo } from "../entity/ICollisionInfo";
 import { is_character, is_weapon } from "../entity/type_check";
-import { ICube } from "../World";
 import State_Base from "./State_Base";
 
 export default class BallState_Base extends State_Base {
@@ -77,23 +77,24 @@ export default class BallState_Base extends State_Base {
         break;
     }
   }
-  override on_collision(e: Entity, target: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
-    target.shaking = 0;
-    if (is_character(target) || is_weapon(target)) {
-      e.velocities.length = 1
-      switch (e.frame.state) {
+  override on_collision(collision: ICollisionInfo): void {
+    const { attacker, victim } = collision;
+    if (is_character(victim) || is_weapon(victim)) {
+      attacker.velocities.length = 1
+      switch (attacker.frame.state) {
         case ItrKind.JohnShield:
         case Defines.State.Ball_Flying:
-          e.hp = 0;
+          attacker.hp = 0;
           break;
       }
     }
   }
-  override on_be_collided(attacker: Entity, e: Entity, itr: IItrInfo, bdy: IBdyInfo, a_cube: ICube, b_cube: ICube): void {
-    e.shaking = 0;
-    e.velocities.length = 1
-    e.velocities[0].x = 0;
-    e.velocities[0].z = 0;
-    e.velocities[0].y = 0;
+  override on_be_collided(collision: ICollisionInfo): void {
+    const { victim } = collision;
+    victim.shaking = 0;
+    victim.velocities.length = 1
+    victim.velocities[0].x = 0;
+    victim.velocities[0].z = 0;
+    victim.velocities[0].y = 0;
   }
 }

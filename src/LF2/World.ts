@@ -10,11 +10,13 @@ import { IBdyInfo, IFrameInfo, IItrInfo, ItrKind } from './defines';
 import { ItrEffect } from './defines/ItrEffect';
 import { Defines } from './defines/defines';
 import Ditto from './ditto';
+import { ICollisionInfo } from './entity/ICollisionInfo';
 import Entity from './entity/Entity';
 import { Factory } from './entity/Factory';
 import { is_ball, is_base_ctrl, is_character, is_local_ctrl, is_weapon } from './entity/type_check';
 import { EntityRender } from './renderer/EntityRender';
 import Stage from './stage/Stage';
+import { WhatNext } from './state/State_Base';
 import float_equal from './utils/math/float_equal';
 import { is_num } from './utils/type_check';
 export interface ICube {
@@ -502,18 +504,18 @@ export class World {
         if (is_character(b)) return;
         break;
     }
-    if (!(itr.friendly_fire || bdy.friendly_fire) && a.same_team(b)) 
+    if (!(itr.friendly_fire || bdy.friendly_fire) && a.same_team(b))
       return;
     switch (bf.state) {
       case Defines.State.Falling: {
-        if (!itr.fall || itr.fall < 60) 
+        if (!itr.fall || itr.fall < 60)
           return;
         break;
       }
     }
-    if (!itr.vrest && a.a_rest) 
+    if (!itr.vrest && a.a_rest)
       return;
-    if (itr.vrest && b.get_v_rest_remain(a.id) > 0) 
+    if (itr.vrest && b.get_v_rest_remain(a.id) > 0)
       return;
     const r0 = this.get_cube(a, af, itr);
     const r1 = this.get_cube(b, bf, bdy);
@@ -550,8 +552,53 @@ export class World {
     attacker: Entity, itr: IItrInfo, a_cube: ICube,
     victim: Entity, bdy: IBdyInfo, b_cube: ICube,
   ) {
-    attacker.on_collision(victim, itr, bdy, a_cube, b_cube);
-    victim.on_be_collided(attacker, itr, bdy, a_cube, b_cube);
+    const collision: ICollisionInfo = {
+      remain: !itr.arest && itr.vrest ? itr.vrest : void 0,
+      victim,
+      attacker,
+      itr,
+      bdy,
+      aframe: attacker.frame,
+      bframe: victim.frame,
+      a_cube,
+      b_cube
+    }
+
+    const a = attacker.state?.before_collision?.(collision)
+    switch (a) {
+      case WhatNext.SkipState:
+        attacker.state?.on_collision?.(collision);
+        break;
+      case WhatNext.SkipEntity:
+        attacker.on_collision(collision);
+        break;
+      case WhatNext.SkipAll:
+        break;
+      case WhatNext.Continue:
+      case void 0:
+      default:
+        attacker.on_collision(collision);
+        attacker.state?.on_collision?.(collision);
+        break;
+    }
+
+    const b = victim.state?.before_be_collided?.(collision)
+    switch (b) {
+      case WhatNext.SkipState:
+        victim.state?.on_be_collided?.(collision);
+        break;
+      case WhatNext.SkipEntity:
+        victim.on_be_collided(collision);
+        break;
+      case WhatNext.SkipAll:
+        break;
+      case WhatNext.Continue:
+      case void 0:
+      default:
+        victim.on_be_collided(collision);
+        victim.state?.on_be_collided?.(collision);
+        break;
+    }
   }
   get_cube(e: Entity, f: IFrameInfo, i: IItrInfo | IBdyInfo): ICube {
     const left = e.facing > 0 ?
