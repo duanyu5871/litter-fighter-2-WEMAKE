@@ -441,14 +441,9 @@ export default class Entity {
     return this
   }
 
-  get_v_rest_remain(id: string): number {
+  get_v_rest(id: string): number {
     const v = this.v_rests.get(id);
-    return v?.remain ?? 0
-  }
-
-  find_v_rest(fn: (k: string, v: ICollisionInfo) => any): ICollisionInfo | undefined {
-    for (const [k, v] of this.v_rests) if (fn(k, v)) return v;
-    return void 0;
+    return v?.v_rest ?? 0
   }
 
   find_auto_frame(): IFrameInfo {
@@ -720,7 +715,7 @@ export default class Entity {
     }
     if (this.shaking <= 0) {
       for (const [k, v] of this.v_rests) {
-        if (v.remain && v.remain >= 0) --v.remain;
+        if (v.v_rest && v.v_rest >= 0) --v.v_rest;
         else this.v_rests.delete(k);
       }
     }
@@ -1039,10 +1034,41 @@ export default class Entity {
     this.next_frame = this.get_next_frame('245')?.frame;
   }
 
+  /**
+   * 最近一次攻击信息
+   *
+   * @type {ICollisionInfo}
+   * @memberof Entity
+   */
   lastest_collision?: ICollisionInfo;
+
+  /**
+   * 最近一次被攻击信息
+   * 
+   * @type {ICollisionInfo}
+   * @memberof Entity
+   */
   lastest_collided?: ICollisionInfo;
-  collision_list: ICollisionInfo[] = [];
-  collided_list: ICollisionInfo[] = [];
+
+  /**
+   * 当前tick碰撞信息
+   * 
+   * - 会在update后置空
+   *
+   * @type {ICollisionInfo[]}
+   * @memberof Entity
+   */
+  readonly collision_list: ICollisionInfo[] = [];
+
+  /**
+   * 当前tick被碰撞信息
+   * 
+   * - 会在update后置空
+   * 
+   * @type {ICollisionInfo[]}
+   * @memberof Entity
+   */
+  readonly collided_list: ICollisionInfo[] = [];
 
   start_catch(target: Entity, itr: IItrInfo) {
     if (itr.catchingact === void 0) {
@@ -1108,7 +1134,7 @@ export default class Entity {
     this.collided_list.push(this.lastest_collided = collision);
     const { itr, bdy } = collision
     this.shaking = itr.shaking ?? Defines.DEFAULT_ITR_SHAKEING;
-    if (collision.remain !== void 0) {
+    if (collision.v_rest !== void 0) {
       this.v_rests.set(collision.attacker.id, collision);
     }
     if (

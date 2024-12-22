@@ -74,5 +74,5 @@ export interface ICollisionInfo {
    * @type {number}
    * @memberof ICollisionInfo
    */
-  remain?: number;
+  v_rest?: number;
 }

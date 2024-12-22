@@ -515,7 +515,7 @@ export class World {
     }
     if (!itr.vrest && a.a_rest)
       return;
-    if (itr.vrest && b.get_v_rest_remain(a.id) > 0)
+    if (itr.vrest && b.get_v_rest(a.id) > 0)
       return;
     const r0 = this.get_cube(a, af, itr);
     const r1 = this.get_cube(b, bf, bdy);
@@ -553,7 +553,7 @@ export class World {
     victim: Entity, bdy: IBdyInfo, b_cube: ICube,
   ) {
     const collision: ICollisionInfo = {
-      remain: !itr.arest && itr.vrest ? itr.vrest : void 0,
+      v_rest: !itr.arest && itr.vrest ? itr.vrest : void 0,
       victim,
       attacker,
       itr,
