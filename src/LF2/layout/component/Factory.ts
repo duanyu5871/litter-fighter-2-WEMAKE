@@ -6,6 +6,7 @@ import { read_call_func_expression } from "../utils/read_func_args";
 import BackgroundNameText from "./BackgroundNameText";
 import CharacterSelLogic from "./CharacterSelLogic";
 import ComNumButton from "./ComNumButton";
+import { DemoModeLogic } from "./DemoModeLogic";
 import DifficultyText from "./DifficultyText";
 import GamePrepareLogic from "./GamePrepareLogic";
 import LaunchPageLogic from "./LaunchPageLogic";
@@ -57,6 +58,7 @@ class Factory {
     ['player_score', PlayerScore],
     ['player_score_cell', PlayerScoreCell],
     ['vs_mode_logic', VsModeLogic],
+    ['demo_mode_logic', DemoModeLogic],
     ['playing_time', PlayingTimeText],
     ['random_img_on_layout_resume', RandomImgOnLayoutResume]
   ])

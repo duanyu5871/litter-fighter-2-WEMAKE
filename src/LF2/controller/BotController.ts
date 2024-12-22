@@ -47,6 +47,7 @@ export class BotController extends BaseController {
   }
   update_nearest() {
     const c = this.entity;
+    if (c.hp <= 0) return;
     if (!this.should_chase(this.chasing_enemy)) {
       this.chasing_enemy = void 0;
     }
@@ -140,25 +141,29 @@ export class BotController extends BaseController {
       this.end(GameKey.D, GameKey.U)
     }
     if (is_x_reach && is_z_reach) {
-      if (my_z < target_z) {
-        if (this.is_end(GameKey.D)) {
-          this.start(GameKey.D).end(GameKey.U)
+      if (
+        this.entity.frame.state === Defines.State.Standing ||
+        this.entity.frame.state === Defines.State.Walking
+      ) {
+        if (my_z < target_z + 10) {
+          if (this.is_end(GameKey.D)) {
+            this.start(GameKey.D).end(GameKey.U)
+          }
+        } else if (my_z > target_z - 10) {
+          if (this.is_end(GameKey.U)) {
+            this.start(GameKey.U).end(GameKey.D)
+          }
         }
-      } else if (my_z > target_z) {
-        if (this.is_end(GameKey.U)) {
-          this.start(GameKey.U).end(GameKey.D)
+        if (my_x < target_x + 10 && me.facing === -1) {
+          if (this.is_end(GameKey.R)) {
+            this.start(GameKey.R).end(GameKey.L)
+          }
+        } else if (target_x < my_x - 10 && me.facing === 1) {
+          if (this.is_end(GameKey.L)) {
+            this.start(GameKey.L).end(GameKey.R)
+          }
         }
       }
-      if (my_x < target_x && me.facing === -1) {
-        if (this.is_end(GameKey.R)) {
-          this.start(GameKey.R).end(GameKey.L)
-        }
-      } else if (target_x < my_x && me.facing === 1) {
-        if (this.is_end(GameKey.L)) {
-          this.start(GameKey.L).end(GameKey.R)
-        }
-      }
-
       // 上来就一拳。
       this.is_hit(GameKey.a) ?
         this.end(GameKey.a) :

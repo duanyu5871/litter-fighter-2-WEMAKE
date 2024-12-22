@@ -166,7 +166,7 @@
           ],
           "actions": {
             "click": [
-              "alert(还没写)",
+              "push_layout(demo_mode_page)",
               "sound(ok)"
             ]
           }

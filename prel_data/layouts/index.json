@@ -6,5 +6,6 @@
   "layouts/ctrl_settings_page.json",
   "layouts/stage_mode_page.json",
   "layouts/vs_mode_page.json",
-  "layouts/stage_mode_prepare_page.json"
+  "layouts/stage_mode_prepare_page.json",
+  "layouts/demo_mode_page.json"
 ]

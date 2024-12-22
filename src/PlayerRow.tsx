@@ -3,16 +3,14 @@ import { Button } from './Component/Button';
 import CharacterSelect from './Component/CharacterSelect';
 import { Input } from './Component/Input';
 import TeamSelect from './Component/TeamSelect';
+import Titled from './Component/Titled';
+import { ToggleButton } from './Component/ToggleButton';
+import { Defines } from './LF2/defines/defines';
+import GameKey from './LF2/defines/GameKey';
+import { is_local_ctrl } from './LF2/entity/type_check';
 import LF2 from './LF2/LF2';
 import { PlayerInfo } from './LF2/PlayerInfo';
 import { random_get } from './LF2/utils/math/random';
-import LocalController from './LF2/controller/LocalController';
-import { Checkbox } from './Component/Checkbox';
-import { Defines } from './LF2/defines/defines';
-import { ToggleButton } from './Component/ToggleButton';
-import Titled from './Component/Titled';
-import GameKey from './LF2/defines/GameKey';
-import { is_local_ctrl } from './LF2/entity/type_check';
 
 const key_names: Record<GameKey, string> = {
   U: '上',

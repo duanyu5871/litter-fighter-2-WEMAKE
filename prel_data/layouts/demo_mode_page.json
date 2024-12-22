@@ -1,0 +1,37 @@
+{
+  "name": "DEMO模式页",
+  "id": "demo_mode_page",
+  "component": [
+    "demo_mode_logic()"
+  ],
+  "key_press_actions": [
+    [
+      "escape",
+      "set_layout(entry)"
+    ]
+  ],
+  "items": [ 
+    {
+      "pos": "0,0,5",
+      "visible": false,
+      "template": "layouts/player_keys_hints.json"
+    },
+    {
+      "visible": "paused==1",
+      "id": "bg_wait",
+      "img": "sprite/PAUSE.png",
+      "center": "0.5,0.5",
+      "pos": "397,225"
+    },
+    {
+      "template": "layouts/score_board.json",
+      "visible": false
+    }
+  ],
+  "actions": {
+    "stop": [
+      "remove_all_entities()",
+      "destory_stage()"
+    ]
+  }
+}

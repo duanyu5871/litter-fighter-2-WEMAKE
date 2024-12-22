@@ -10,13 +10,14 @@ import { IBdyInfo, IFrameInfo, IItrInfo, ItrKind } from './defines';
 import { ItrEffect } from './defines/ItrEffect';
 import { Defines } from './defines/defines';
 import Ditto from './ditto';
-import { ICollisionInfo } from './entity/ICollisionInfo';
 import Entity from './entity/Entity';
 import { Factory } from './entity/Factory';
+import { ICollisionInfo } from './entity/ICollisionInfo';
 import { is_ball, is_base_ctrl, is_character, is_local_ctrl, is_weapon } from './entity/type_check';
 import { EntityRender } from './renderer/EntityRender';
 import Stage from './stage/Stage';
 import { WhatNext } from './state/State_Base';
+import { find } from './utils/container_help';
 import float_equal from './utils/math/float_equal';
 import { is_num } from './utils/type_check';
 export interface ICube {
@@ -366,9 +367,12 @@ export class World {
     } else if (this.player_slot_characters.size) {
       let l = 0
       new_x = 0;
+
+      const has_human_player = find(this.player_slot_characters, ([_, p]) => is_local_ctrl(p.controller) && p.hp > 0)
       for (const [, player] of this.player_slot_characters) {
         const c = player.controller;
-        if (!is_local_ctrl(c)) continue;
+        if (!is_local_ctrl(c) && has_human_player)
+          continue;
         new_x += player.position.x - 794 / 2 + player.facing * 794 / 6;
         ++l;
       }

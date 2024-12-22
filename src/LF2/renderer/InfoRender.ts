@@ -145,12 +145,8 @@ export class InfoRender implements IEntityCallbacks {
   }
 
   protected on_mount(entity: Entity) {
-    if (
-      this.entity.controller?.player_id &&
-      this.entity.lf2.player_infos.has(this.entity.controller?.player_id)
-    ) {
+    if (entity.in_player_slot) 
       entity.world.scene.add(this.bars_node, this.mesh);
-    }
     entity.callbacks.add(this);
     this.update_name_sprite(entity, entity.name, entity.team);
   }
