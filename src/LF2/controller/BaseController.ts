@@ -1,6 +1,6 @@
 
 import type { IFrameInfo, IHitKeyCollection, TLooseGameKey } from '../defines';
-import { GameKey } from '../defines';
+import { Defines, GameKey } from '../defines';
 import type Entity from '../entity/Entity';
 import { ControllerUpdateResult } from './ControllerUpdateResult';
 import DoubleClick from './DoubleClick';
@@ -130,7 +130,27 @@ export class BaseController {
   }
 
   is_db_hit(k: TLooseGameKey): boolean {
-    const { time } = this.dbc[k];
+    const { time, data: [f_0, f_1] } = this.dbc[k];
+    if (
+      (
+        f_0?.state === Defines.State.Standing ||
+        f_0?.state === Defines.State.Walking
+      ) && (
+        f_1?.state !== Defines.State.Standing &&
+        f_1?.state !== Defines.State.Walking
+      ) && (
+        k === GameKey.L || k === GameKey.R
+      )
+    ) {
+      /*
+        Note: 
+          （特殊对待跑步的逻辑）
+          状态为“站立”与“行走”的帧，左键或右键双击，
+          需要两次点击的帧状态均为“站立”或“行走”，才视为双击。
+            -Gim
+      */
+      return false;
+    }
     return time > 0 && this._time - time <= this.entity.world.key_hit_duration;
   }
   is_end(k: string): boolean;

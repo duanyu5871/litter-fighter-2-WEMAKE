@@ -71,16 +71,38 @@ export class BotController extends BaseController {
         }
       }
     }
+    if (this.dummy === 7) {
+      this.avoiding_enemy = this.chasing_enemy;
+    }
   }
 
+  guess_entity_pos(entity: Entity) {
+    const { x: px, z: pz } = entity.position;
+    const { x: vx, z: vz } = entity.velocity;
+    let x = px + vx;
+    let z = pz + vz;
+    switch (entity.frame.state) {
+      case Defines.State.Jump:
+        x += 2 * vx;
+        z += 2 * vz
+        break;
+      case Defines.State.Running:
+        x += 4 * vx;
+        z += 4 * vz
+        break;
+      case Defines.State.Dash:
+        x += 8 * vx;
+        z += 8 * vz
+        break;
+    }
+    return { x: px, z: pz, next_x: x, next_z: z }
+  }
   chase_enemy() {
     if (!this.chasing_enemy) return false;
+
     const me = this.entity;
-    const { x: my_x, z: my_z } = me.position;
-    const {
-      x: target_x,
-      z: target_z,
-    } = this.chasing_enemy.position;
+    const { x: my_x, z: my_z } = this.guess_entity_pos(me)
+    const { x: enemy_x, z: enemy_z } = this.guess_entity_pos(this.chasing_enemy)
 
     const WALK_ATTACK_DEAD_ZONE_X = 50;
     const WALK_ATTACK_DEAD_ZONE_Z = 10;
@@ -94,18 +116,18 @@ export class BotController extends BaseController {
     let is_x_reach = false;
     let is_z_reach = false;
 
-    if (target_x - my_x > RUN_ZONE && !is_running) {
+    if (enemy_x - my_x > RUN_ZONE && !is_running) {
       this.db_hit('R')
       // console.log('run >>>', this.is_db_hit(GameKey.R))
-    } else if (my_x - target_x > RUN_ZONE && !is_running) {
+    } else if (my_x - enemy_x > RUN_ZONE && !is_running) {
       this.db_hit('L')
       // console.log('run <<<', this.is_db_hit(GameKey.L))
     } else if (is_running) {
-      if (target_x - my_x > RUN_ATTACK_DEAD_ZONE_X) {
+      if (enemy_x - my_x > RUN_ATTACK_DEAD_ZONE_X) {
         if (this.is_end(GameKey.R)) {
           this.start(GameKey.R).end(GameKey.L)
         }
-      } else if (my_x - target_x > RUN_ATTACK_DEAD_ZONE_X) {
+      } else if (my_x - enemy_x > RUN_ATTACK_DEAD_ZONE_X) {
         if (this.is_end(GameKey.L)) {
           this.start(GameKey.L).end(GameKey.R)
         }
@@ -113,11 +135,11 @@ export class BotController extends BaseController {
         is_x_reach = true;
       }
     } else {
-      if (target_x - my_x > WALK_ATTACK_DEAD_ZONE_X) {
+      if (enemy_x - my_x > WALK_ATTACK_DEAD_ZONE_X) {
         if (this.is_end(GameKey.R)) {
           this.start(GameKey.R).end(GameKey.L)
         }
-      } else if (my_x - target_x > WALK_ATTACK_DEAD_ZONE_X) {
+      } else if (my_x - enemy_x > WALK_ATTACK_DEAD_ZONE_X) {
         if (this.is_end(GameKey.L)) {
           this.start(GameKey.L).end(GameKey.R)
         }
@@ -125,11 +147,11 @@ export class BotController extends BaseController {
         is_x_reach = true;
       }
     }
-    if (my_z < target_z - WALK_ATTACK_DEAD_ZONE_Z) {
+    if (my_z < enemy_z - WALK_ATTACK_DEAD_ZONE_Z) {
       if (this.is_end(GameKey.D)) {
         this.start(GameKey.D).end(GameKey.U)
       }
-    } else if (my_z > target_z + WALK_ATTACK_DEAD_ZONE_Z) {
+    } else if (my_z > enemy_z + WALK_ATTACK_DEAD_ZONE_Z) {
       if (this.is_end(GameKey.U)) {
         this.start(GameKey.U).end(GameKey.D)
       }
@@ -145,23 +167,27 @@ export class BotController extends BaseController {
         this.entity.frame.state === Defines.State.Standing ||
         this.entity.frame.state === Defines.State.Walking
       ) {
-        if (my_z < target_z + 10) {
+        if (my_z < enemy_z + 10) {
           if (this.is_end(GameKey.D)) {
             this.start(GameKey.D).end(GameKey.U)
           }
-        } else if (my_z > target_z - 10) {
+        } else if (my_z > enemy_z - 10) {
           if (this.is_end(GameKey.U)) {
             this.start(GameKey.U).end(GameKey.D)
           }
+        } else {
+          this.end(GameKey.U, GameKey.D)
         }
-        if (my_x < target_x + 10 && me.facing === -1) {
+        if (my_x < enemy_x + 10 && me.facing === -1) {
           if (this.is_end(GameKey.R)) {
             this.start(GameKey.R).end(GameKey.L)
           }
-        } else if (target_x < my_x - 10 && me.facing === 1) {
+        } else if (enemy_x < my_x - 10 && me.facing === 1) {
           if (this.is_end(GameKey.L)) {
             this.start(GameKey.L).end(GameKey.R)
           }
+        } else {
+          this.end(GameKey.L, GameKey.R)
         }
       }
       // 上来就一拳。
@@ -193,46 +219,56 @@ export class BotController extends BaseController {
     return true
   }
   avoid_enemy() {
-    // console.log('avoid_enemy')
     if (!this.avoiding_enemy) return false;
 
     const c = this.entity;
     const { x, z } = c.position;
-    const { x: target_x, z: target_z } = this.avoiding_enemy.position;
-
-    if (this.manhattan_to(this.avoiding_enemy) > 200) {
+    const { x: enemy_x, z: enemy_z } = this.avoiding_enemy.position;
+    const distance = this.manhattan_to(this.avoiding_enemy)
+    if (distance > 200) {
       this.end(GameKey.L, GameKey.R, GameKey.U, GameKey.D)
       return true;
     }
-    // const { near, far } = this.world.bg;
-    let is_x_reach = false;
-    let is_z_reach = false;
-    if (target_x < x) {
-      if (this.is_end(GameKey.R)) {
-        this.start(GameKey.R).end(GameKey.L)
-      }
+
+
+    const { left, right, near, far } = this.lf2.world.bg
+
+    let x_d: 0 | -1 | 1 = 0;
+    if (enemy_x <= x) {
+      x_d = enemy_x < right - 200 ? 1 : -1
     } else {
-      if (this.is_end(GameKey.L)) {
-        this.start(GameKey.L).end(GameKey.R)
-      }
+      x_d = enemy_x > left + 200 ? -1 : 1
+    }
+    switch (x_d) {
+      case 1:
+        if (distance < 25)
+          this.db_hit(GameKey.R).end(GameKey.L)
+        else
+          this.is_end(GameKey.R) && this.start(GameKey.R).end(GameKey.L);
+        break;
+      case -1:
+        if (distance < 25)
+          this.db_hit(GameKey.L).end(GameKey.R)
+        else
+          this.is_end(GameKey.L) && this.start(GameKey.L).end(GameKey.R);
+        break;
     }
 
-    if (z < target_z) {
-      if (this.is_end(GameKey.U)) {
-        this.start(GameKey.U).end(GameKey.D)
-      }
+    let z_d: 0 | -1 | 1 = 0;
+    if (z <= enemy_z) {
+      z_d = enemy_z > far + 50 ? 1 : -1
     } else {
-      if (this.is_end(GameKey.D)) {
-        this.start(GameKey.D).end(GameKey.U)
-      }
+      z_d = enemy_z < near - 50 ? -1 : 1
+    }
+    switch (z_d) {
+      case 1:
+        this.is_end(GameKey.U) && this.start(GameKey.U).end(GameKey.D)
+        break;
+      case -1:
+        this.is_end(GameKey.D) && this.start(GameKey.D).end(GameKey.U)
+        break;
     }
 
-    if (is_x_reach) {
-      this.end(GameKey.L, GameKey.R)
-    }
-    if (is_z_reach) {
-      this.end(GameKey.U, GameKey.D)
-    }
     return true;
   }
 
@@ -240,7 +276,12 @@ export class BotController extends BaseController {
     switch (this._dummy) {
       case void 0: {
         if (this.time % 10 === 0) this.update_nearest();
-        this.chase_enemy() || this.avoid_enemy()
+        if (!this.chase_enemy() && !this.avoid_enemy()) {
+          this.is_end(GameKey.L) || this.end(GameKey.L)
+          this.is_end(GameKey.R) || this.end(GameKey.R)
+          this.is_end(GameKey.U) || this.end(GameKey.U)
+          this.is_end(GameKey.D) || this.end(GameKey.D)
+        }
         break;
       }
       case 1: {
@@ -298,6 +339,11 @@ export class BotController extends BaseController {
           this.entity.position.z = (this.world.bg.near + this.world.far) / 2
           this.start(GameKey.d)
         }
+        break;
+      }
+      case 7: {
+        if (this.time % 10 === 0) this.update_nearest();
+        this.avoid_enemy();
         break;
       }
       default:
