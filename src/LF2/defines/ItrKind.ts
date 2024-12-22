@@ -1,4 +1,4 @@
-import type { IItrInfo } from './IItrInfo'
+import type { IItrInfo } from './IItrInfo';
 export enum ItrKind {
   /** 
    * 拳击

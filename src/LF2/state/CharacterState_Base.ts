@@ -1,10 +1,9 @@
-import { Defines, IBdyInfo, IFrameInfo, IItrInfo, ItrKind, TFace, TNextFrame } from '../defines';
+import { Defines, IFrameInfo, ItrKind, TFace, TNextFrame } from '../defines';
 import { ItrEffect } from '../defines/ItrEffect';
 import type Entity from '../entity/Entity';
 import { same_face, turn_face } from '../entity/face_helper';
 import { ICollisionInfo } from '../entity/ICollisionInfo';
 import { is_character, is_weapon } from '../entity/type_check';
-import { ICube } from '../World';
 import State_Base, { WhatNext } from "./State_Base";
 
 export default class CharacterState_Base extends State_Base {

@@ -1,8 +1,6 @@
-import { Defines, IBdyInfo, IFrameInfo, IItrInfo, ItrKind } from "../defines";
+import { Defines, IFrameInfo, ItrKind } from "../defines";
 import type Entity from "../entity/Entity";
 import { ICollisionInfo } from "../entity/ICollisionInfo";
-import { is_character } from "../entity/type_check";
-import type { ICube } from "../World";
 import State_Base, { WhatNext } from "./State_Base";
 
 export default class WeaponState_Base extends State_Base {
