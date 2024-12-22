@@ -33,7 +33,6 @@ export class EntityRender {
   }
   set_entity(entity: Entity): EntityRender {
     const { world, lf2, data } = this.entity = entity
-
     this.variants.clear();
     for (const k in data.base.files) {
       if (data.base.files[k].variants)
@@ -41,8 +40,6 @@ export class EntityRender {
       else
         this.variants.set(k, [k])
     }
-
-
     this._prev_data = entity.data;
     this.pictures = create_pictures(lf2, entity.data);
     const first_text = this.pictures.get('0')?.texture;

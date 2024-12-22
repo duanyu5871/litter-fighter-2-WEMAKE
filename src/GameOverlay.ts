@@ -5,6 +5,7 @@ import { ILf2Callback } from './LF2/ILf2Callback';
 import type { IWorldCallbacks } from './LF2/IWorldCallbacks';
 import type { World } from './LF2/World';
 import './game_overlay.css';
+import { Button } from './Component/Button';
 const ele = document.createElement.bind(document);
 export class GameOverlay {
   readonly world: World;
@@ -67,9 +68,10 @@ export class GameOverlay {
   }
   init_ele_btn_free_cam() {
     this.ele_btn_free_cam.style.display = 'none';
-    this.ele_btn_free_cam.className = 'btn_free_cam';
+    this.ele_btn_free_cam.className = `${Button.default_class_name} btn_free_cam`;
     this.ele_btn_free_cam.innerText = '释放';
     this.ele_btn_free_cam.type = 'button';
+    
     this.ele_btn_free_cam.addEventListener('click', () => {
       this.cam_locked = false;
       if (is_num(this.world.lock_cam_x)) {
@@ -80,7 +82,8 @@ export class GameOverlay {
   }
   init_ele_cam_bar() {
     this.ele_cam_bar.style.display = 'none';
-    this.ele_cam_bar.className = 'camera_ctrl lf2_hoverable_border';
+    this.ele_cam_bar.className = `${Button.default_class_name} camera_ctrl `;
+
     this.ctx_cam_bar = this.ele_cam_bar.getContext('2d');
     this.ele_cam_bar.addEventListener('pointerdown', this._pointer_down);
     window.addEventListener('pointermove', this._pointer_move);

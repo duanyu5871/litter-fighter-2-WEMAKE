@@ -5,7 +5,6 @@
   "is_base_data": true,
   "base": {
     "depth_test": false,
-    "depth_write": false,
     "render_order": 2,
     "files": {
       "0": {

@@ -393,7 +393,7 @@ function App() {
           checked={sound_muted}
           onClick={() => lf2?.sounds?.set_sound_muted(!sound_muted)}
           src={[img_btn_0_3, img_btn_1_0]} />
-        <Show show={bg_id !== Defines.VOID_BG.id}>
+        <Show show={bg_id !== Defines.VOID_BG.id && layout_id !== 'ctrl_settings'}>
           <ToggleImgButton
             checked={paused}
             onClick={() => lf2?.world.set_paused(!paused)}
@@ -401,7 +401,10 @@ function App() {
         </Show>
         <Show show={layouts.length > 1 && !loading && layout_id !== 'launch' && layout_id !== 'ctrl_settings'}>
           <ToggleImgButton
-            onClick={() => lf2?.push_layout("ctrl_settings")}
+            onClick={() => {
+              lf2?.world.set_paused(true);
+              lf2?.push_layout("ctrl_settings")
+            }}
             src={[img_btn_1_1, img_btn_1_1]} />
         </Show>
         <Show show={layout_id && Number(lf2?.layout_stacks.length) > 1}>
@@ -486,7 +489,7 @@ function App() {
                 type='number'
                 min={0}
                 max={100}
-                step={1}
+                step={0.01}
                 value={gravity}
                 onChange={e => lf2?.world.set_gravity(Number(e.target.value))} />
               <Show show={!float_equal(gravity, Defines.GRAVITY)}>

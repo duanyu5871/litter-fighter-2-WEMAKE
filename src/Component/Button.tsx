@@ -35,13 +35,12 @@ export function Button(props: IButtonProps) {
   }, [])
 
   const _show_shortcut = show_shortcut ?? has_keyboard
-  const root_className = className ? `lf2ui_button ${className}` : 'lf2ui_button'
+  const root_className = className ? `${Button.default_class_name} ${className}` : Button.default_class_name
   return (
     <button className={root_className} {..._p} type={type} ref={on_ref} >
       {children}
       {shortcut && _show_shortcut ? `(${shortcut})` : null}
     </button>
   );
-
 }
-
+Button.default_class_name = 'lf2ui_button'

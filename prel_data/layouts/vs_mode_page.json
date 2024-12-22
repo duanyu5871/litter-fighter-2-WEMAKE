@@ -26,12 +26,12 @@
     {
       "id": "left_info_frame_1",
       "pos": "0,0",
-      "template": "layouts/left_info_frame.json"
+      "template": "_layouts/left_info_frame.json"
     },
     {
       "id": "left_info_frame_5",
       "pos": "0,45",
-      "template": "layouts/left_info_frame.json"
+      "template": "_layouts/left_info_frame.json"
     },
     {
       "template": "layouts/score_board.json",
