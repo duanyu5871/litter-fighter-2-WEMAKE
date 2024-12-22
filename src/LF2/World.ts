@@ -7,6 +7,7 @@ import Callbacks from './base/Callbacks';
 import FPS from './base/FPS';
 import { NoEmitCallbacks } from "./base/NoEmitCallbacks";
 import { IBdyInfo, IFrameInfo, IItrInfo, ItrKind } from './defines';
+import { BdyKind } from './defines/BdyKind';
 import { ItrEffect } from './defines/ItrEffect';
 import { Defines } from './defines/defines';
 import Ditto from './ditto';
@@ -440,7 +441,6 @@ export class World {
   }
 
   collision_test(a: Entity, af: IFrameInfo, itr: IItrInfo, b: Entity, bf: IFrameInfo, bdy: IBdyInfo) {
-
     const a_group = a.holder?.data.base.group ?? a.data.base.group;
     const v_group = bdy.itr_groups
     if (v_group?.length) {
@@ -470,6 +470,9 @@ export class World {
     }
     switch (itr.kind) {
       case ItrKind.Block:
+        if (bdy.kind !== BdyKind.Normal)
+          return;
+        break;
       case ItrKind.CharacterThrew:
       case ItrKind.MagicFlute:
         return; // todo
@@ -522,13 +525,17 @@ export class World {
         if (is_character(b)) return;
         break;
       case ItrEffect.Ice2:
-        if (b.frame.state === Defines.State.Frozen)
+        if (
+          b.frame.state === Defines.State.Frozen ||
+          b.frame.id === b.data.indexes?.ice
+        )
           return;
+        break;
     }
 
     if (
-      bdy.kind >= Defines.BdyKind.GotoMin &&
-      bdy.kind <= Defines.BdyKind.GotoMax
+      bdy.kind >= BdyKind.GotoMin &&
+      bdy.kind <= BdyKind.GotoMax
     ) {
       if (a.same_team(b))
         return;
@@ -599,6 +606,7 @@ export class World {
 
     const a = attacker.state?.before_collision?.(collision)
     switch (a) {
+      case void 0: debugger; break;
       case WhatNext.OnlyState:
         attacker.state?.on_collision?.(collision);
         break;
@@ -608,7 +616,6 @@ export class World {
       case WhatNext.SkipAll:
         break;
       case WhatNext.Continue:
-      case void 0:
       default:
         attacker.on_collision(collision);
         attacker.state?.on_collision?.(collision);
@@ -617,6 +624,7 @@ export class World {
 
     const b = victim.state?.before_be_collided?.(collision)
     switch (b) {
+      case void 0: debugger; break;
       case WhatNext.OnlyState:
         victim.state?.on_be_collided?.(collision);
         break;
@@ -626,7 +634,6 @@ export class World {
       case WhatNext.SkipAll:
         break;
       case WhatNext.Continue:
-      case void 0:
       default:
         victim.on_be_collided(collision);
         victim.state?.on_be_collided?.(collision);

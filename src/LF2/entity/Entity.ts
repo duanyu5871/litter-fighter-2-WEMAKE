@@ -6,7 +6,8 @@ import { ICube } from '../World';
 import { Callbacks, new_id, new_team, type NoEmitCallbacks } from '../base';
 import { IExpression } from '../base/Expression';
 import { BaseController } from '../controller/BaseController';
-import { IBaseData, ICpointInfo, IEntityData, IFrameInfo, IItrInfo, INextFrameResult, IOpointInfo, ITexturePieceInfo, TFace, TNextFrame } from '../defines';
+import { IBaseData, ICpointInfo, IEntityData, IFrameInfo, IItrInfo, INextFrameResult, IOpointInfo, ITexturePieceInfo, ItrKind, TFace, TNextFrame } from '../defines';
+import { BdyKind } from '../defines/BdyKind';
 import { OpointKind } from '../defines/OpointKind';
 import { SpeedMode } from '../defines/SpeedMode';
 import { Defines } from '../defines/defines';
@@ -23,7 +24,7 @@ import { Factory } from './Factory';
 import { ICollisionInfo } from './ICollisionInfo';
 import type IEntityCallbacks from './IEntityCallbacks';
 import { turn_face } from './face_helper';
-import { is_character, is_weapon_data } from './type_check';
+import { is_ball, is_character, is_weapon_data } from './type_check';
 const calc_v = (a: number, b: number, c: number) => {
   if (c === 1) return a + b
   return (b > 0 && a < b) || (b < 0 && a > b) ? b : a
@@ -812,6 +813,22 @@ export default class Entity {
       vy += v.y;
       vz += v.z;
     }
+    for (const [, v] of this.v_rests) {
+      if (v.itr.kind === ItrKind.Block) {
+        if (
+          (vx < 0 && v.attacker.position.x < this.position.x) ||
+          (vx > 0 && v.attacker.position.x > this.position.x)
+        ) {
+          vx = 0;
+        }
+        if (
+          (vz < 0 && v.attacker.position.z < this.position.z) ||
+          (vz > 0 && v.attacker.position.z > this.position.z)
+        ) {
+          vz = 0;
+        }
+      }
+    }
     this.velocity.set(vx, vy, vz);
     if (!this.shaking && !this.motionless) {
       this.position.x += vx;
@@ -1094,17 +1111,25 @@ export default class Entity {
 
   on_collision(collision: ICollisionInfo): void {
     this.collision_list.push(this.lastest_collision = collision)
-    const { itr, bdy } = collision
-    this.motionless = itr.motionless ?? Defines.DEFAULT_ITR_MOTIONLESS;
+    const { itr, bdy } = collision;
+
+    if (is_ball(collision.victim)) {
+      this.shaking = itr.motionless ?? Defines.DEFAULT_ITR_MOTIONLESS;
+    } else {
+      this.motionless = itr.motionless ?? Defines.DEFAULT_ITR_MOTIONLESS;
+    }
+
     if (itr.arest) {
       this._a_rest = itr.arest - this.motionless;
     } else if (!itr.vrest) {
       this._a_rest = this.wait + this.motionless;
     }
-    if (bdy.kind !== Defines.BdyKind.Defend) {
+    if (bdy.kind !== BdyKind.Defend && itr.kind !== ItrKind.Block) {
       this.play_sound(itr.hit_sounds);
     }
-    if (itr.hit_act) this.next_frame = this.get_next_frame(itr.hit_act)?.frame ?? this.next_frame;
+    if (itr.hit_act) {
+      this.next_frame = this.get_next_frame(itr.hit_act)?.frame ?? this.next_frame;
+    }
   }
 
   spark_point(r0: ICube, r1: ICube) {
@@ -1138,16 +1163,21 @@ export default class Entity {
       this.v_rests.set(collision.attacker.id, collision);
     }
     if (
-      bdy.kind >= Defines.BdyKind.GotoMin &&
-      bdy.kind <= Defines.BdyKind.GotoMax
+      bdy.kind >= BdyKind.GotoMin &&
+      bdy.kind <= BdyKind.GotoMax
     ) {
       const result = this.get_next_frame('' + (bdy.kind - 1000))
       if (result) this.next_frame = result.frame
       return;
     }
-    if (bdy.hit_act) this.next_frame = this.get_next_frame(bdy.hit_act)?.frame ?? this.next_frame;
-    const sounds = bdy.hit_sounds || this.data.base.hit_sounds
-    this.play_sound(sounds)
+    if (bdy.hit_act) {
+      this.next_frame = this.get_next_frame(bdy.hit_act)?.frame ?? this.next_frame;
+    }
+
+    if (itr.kind !== ItrKind.Block) {
+      const sounds = bdy.hit_sounds || this.data.base.hit_sounds
+      this.play_sound(sounds)
+    }
   }
 
   dispose(): void {

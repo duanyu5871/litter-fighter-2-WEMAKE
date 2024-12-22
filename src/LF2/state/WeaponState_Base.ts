@@ -30,7 +30,7 @@ export default class WeaponState_Base extends State_Base {
       }
       return WhatNext.SkipAll;
     }
-    return WhatNext.Continue;
+    return super.before_be_collided(collision)
   }
 
   override on_be_collided(collision: ICollisionInfo): void {

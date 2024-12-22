@@ -1,4 +1,5 @@
 import { Defines, IFrameInfo, IItrInfo, ItrKind, TFace, TNextFrame } from '../defines';
+import { BdyKind } from '../defines/BdyKind';
 import { ItrEffect } from '../defines/ItrEffect';
 import type Entity from '../entity/Entity';
 import { same_face, turn_face } from '../entity/face_helper';
@@ -57,7 +58,7 @@ export default class CharacterState_Base extends State_Base {
         // do nothing
         return WhatNext.SkipAll;
       default: {
-        return WhatNext.Continue
+        return super.before_collision(collision)
       }
     }
   }
@@ -75,13 +76,13 @@ export default class CharacterState_Base extends State_Base {
       victim.velocities[0].set(0, 0, 0);
       return WhatNext.OnlyEntity;
     }
-    return WhatNext.Continue;
+    return super.before_be_collided(collision)
   }
 
   override on_be_collided(collision: ICollisionInfo): void {
     const { itr, bdy, attacker, victim, a_cube, b_cube } = collision
     switch (bdy.kind) {
-      case Defines.BdyKind.Defend: {
+      case BdyKind.Defend: {
         if (
           ItrEffect.FireExplosion === itr.effect ||
           ItrEffect.Explosion === itr.effect
@@ -168,6 +169,9 @@ export default class CharacterState_Base extends State_Base {
           victim.next_frame = { id: victim.data.indexes.fire[0], facing: turn_face(attacker.facing) }
         break;
       }
+      case ItrEffect.Ice2:
+        this.frozen(victim, itr, attacker);
+        break;
       case ItrEffect.Ice: {
         if (victim.frame.state === Defines.State.Frozen) {
           this.fall(collision)
@@ -241,10 +245,15 @@ export default class CharacterState_Base extends State_Base {
 
   private frozen(victim: Entity, itr: IItrInfo, attacker: Entity) {
     victim.play_sound(["data/065.wav.mp3"]);
-    if (itr.dvy)
-      victim.velocities[0].y = itr.dvy;
-    else if (victim.position.y > 0 && victim.velocities[0].y > 2)
-      victim.velocities[0].y = 2;
+    victim.fall_value -= itr.fall ? itr.fall : Defines.DEFAULT_ITR_FALL;
+    const is_fall = victim.fall_value <= 0 || (victim.fall_value <= 80
+      && (
+        Defines.State.Caught === victim.frame.state ||
+        victim.velocities[0].y > 0 ||
+        victim.position.y > 0
+      ))
+    if (is_fall && itr.dvy)
+      victim.velocities[0].y = itr.dvy ?? 2;
     if (itr.dvz)
       victim.velocities[0].z = itr.dvz;
     victim.velocities[0].x = (itr.dvx || 2) * attacker.facing;

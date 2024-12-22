@@ -54,6 +54,13 @@ export default function cook_itr(unsafe_itr?: Partial<IItrInfo>) {
       }
       break;
     }
+    case ItrKind.Block:
+      unsafe_itr.friendly_fire = 1;
+      unsafe_itr.motionless = 0;
+      unsafe_itr.shaking = 0;      
+      delete unsafe_itr.hit_act;
+      delete unsafe_itr.hit_sounds;
+      break;
     case ItrKind.JohnShield:
       unsafe_itr.friendly_fire = 1;
       break;

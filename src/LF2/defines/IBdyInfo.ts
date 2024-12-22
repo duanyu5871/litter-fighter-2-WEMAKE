@@ -22,7 +22,7 @@ export interface IBdyInfo extends IRect {
 
   /**
    * [LF2][WEMAKE]
-   * @see {Defines.BdyKind}
+   * @see {BdyKind}
    *
    * @type {number}
    */

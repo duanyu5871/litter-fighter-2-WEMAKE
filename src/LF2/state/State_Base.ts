@@ -1,4 +1,4 @@
-import type { IFrameInfo, TNextFrame } from "../defines";
+import { ItrKind, type IFrameInfo, type TNextFrame } from "../defines";
 import type Entity from "../entity/Entity";
 import { ICollisionInfo } from "../entity/ICollisionInfo";
 export enum WhatNext {
@@ -15,7 +15,13 @@ export class State_Base {
   on_landing?(e: Entity): void;
   get_gravity(e: Entity): number { return e.world.gravity }
 
-  before_collision?(collision: ICollisionInfo): WhatNext;
+  before_collision(collision: ICollisionInfo): WhatNext {
+    switch (collision.itr.kind) {
+      case ItrKind.Block:
+        return WhatNext.SkipAll;
+    }
+    return WhatNext.Continue
+  }
 
   on_collision?(collision: ICollisionInfo): void;
 
@@ -31,7 +37,13 @@ export class State_Base {
    *    - 返回WhatNext.Interrupt，target.on_be_collided的后续逻辑将被跳过
    *    - 返回WhatNext.Continue，target.on_be_collided的后续逻辑将继续执行
    */
-  before_be_collided?(collision: ICollisionInfo): WhatNext;
+  before_be_collided(collision: ICollisionInfo): WhatNext {
+    switch (collision.itr.kind) {
+      case ItrKind.Block:
+        return WhatNext.OnlyEntity;
+    }
+    return WhatNext.Continue
+  }
 
   on_be_collided?(collision: ICollisionInfo): void;
 

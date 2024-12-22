@@ -446,63 +446,6 @@ export namespace Defines {
 
   }
 
-
-  export enum BdyKind {
-    /**
-     * [LF2][WEMAKE]
-     */
-    Normal = 0,
-
-    /**
-     * [LF2][WEMAKE]
-     * 
-     * - 原版lf2中
-     *    - 用于实现被攻击后跳转的逻辑。
-     *    - kind: 10xx是id为300的“人质”专用的，被攻击时跳至xx帧。
-     *    - 只有如下的itr能击中此bdy。
-     *      - 角色的kind0的itr
-     *      - id为210 kind0的itr
-     *      - id为202 kind0的itr
-     *      - 角色手持武器造成的itr（可能是武器kind: 5的itr，未验证）
-     * 
-     * - WEMAKE中：
-     *    - kind: 1XXX, 被攻击时跳至“XXX”帧。
-     *    - 此bdy的friendly_fire无效
-     *    - itr.friendly_fire 对此无效
-     *    - 角色与id为210以及id为202的限制通过itr_groups实现
-     *    - 仅允许kind: 5与kind：0的itr击中此bdy
-     *    
-     * @see {IBdyInfo.itr_groups}
-     * @see {BuiltIn_OID.Henry_Arrow1}
-     * @see {BuiltIn_OID.Rudolf_Weapon}
-     * @see {EntityGroup.CriminalSaver}
-     * @see {IBdyInfo.friendly_fire}
-     * @see {IItrInfo.friendly_fire}
-     */
-    GotoMin = 1000,
-
-    /**
-     * 参见GotoMin
-     * 
-     * @see {BdyKind.GotoMin}
-     */
-    GotoMax = 1999,
-
-    /**
-     * [WEMAKE ONLY]
-     * 这是WEMAKE新增的kind，用于代替原版frame.state为Defend“防御动作”的bdy
-     * 处于此状态的物体, 正面迎接伤害时，扣除防御值(defend_value -= itr.bdefend)
-     *    - 当itr.bdefend >= 100，则视为被直接击中
-     *    - 当defend_value>0：
-     *      - 若bdy.hit_act存在，则进入bdy.hit_act;
-     *      - 若bdy.hit_act不存在，则视为被直接击中
-     *    - 当defend_value<=0：
-     *      - 若bdy.break_act存在，则进入bdy.break_act;
-     *      - 若bdy.break_act不存在，则视为被直接击中
-     */
-    Defend = 2000,
-  }
-
   export enum CPointKind {
     /**
      * 抓人的

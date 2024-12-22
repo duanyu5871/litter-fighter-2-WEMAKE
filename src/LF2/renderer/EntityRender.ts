@@ -129,7 +129,7 @@ export class EntityRender {
 
     if (entity.shaking) {
       if (this._shaking !== entity.shaking) {
-        const x = (entity.shaking % 2 ? -2 : 2);
+        const x = (entity.shaking % 2 ? -4 : 4);
         entity_mesh.x += facing * x;
       }
     }

@@ -1,4 +1,5 @@
 import { IEntityData, IEntityInfo, IFrameInfo, TNextFrame } from '../defines';
+import { BdyKind } from '../defines/BdyKind';
 import { IFrameIndexes } from "../defines/IFrameIndexes";
 import { INextFrame } from "../defines/INextFrame";
 import { Defines } from '../defines/defines';
@@ -453,88 +454,102 @@ export function make_character_data(info: IEntityInfo, frames: Record<string, IF
         break;
       case State.Defend: {
         if (frame.bdy?.length) for (const bdy of frame.bdy) {
-          bdy.kind = Defines.BdyKind.Defend
+          bdy.kind = BdyKind.Defend
           bdy.break_act = { id: '112' }
         }
         break;
       }
       case State.Walking:
+        /** heavy_obj_walk */
+        if (
+          frame_id !== '12' &&
+          frame_id !== '13' &&
+          frame_id !== '14' &&
+          frame_id !== '15'
+        ) {
+          frame.hit = frame.hit || {};
+          frame.hit.a = [
+            {
+              id: ['45'],
+              facing: FacingFlag.Ctrl,
+              expression: CondMaker
+                .add(ValWord.WeaponType, '==', WeaponType.Baseball)
+                .or(v => v
+                  .add(ValWord.WeaponType, '==', WeaponType.Knife)
+                  .and(ValWord.PressFB, '!=', 0)
+                ).done(),
+            },
+            {
+              id: ['20', '25'],
+              facing: FacingFlag.Ctrl,
+              expression: CondMaker.one_of(ValWord.WeaponType, WeaponType.Knife, WeaponType.Stick).done()
+            }, // drink
+            {
+              id: '55', expression: CondMaker.one_of(ValWord.WeaponType, WeaponType.Drink).done(),
+              facing: FacingFlag.Ctrl,
+            },
+            { id: '70', expression: CondMaker.add(ValWord.RequireSuperPunch, '==', 1).done() },
+            { id: ['60', '65'], facing: Defines.FacingFlag.Ctrl }
+          ]; // punch
+          frame.hit.j = { id: '210' }; // jump
+          frame.hit.d = { id: '110' }; // defend
+          frame.hit.FF = { id: 'running_0' };
+          frame.speedx = walking_speed / 2;
+          frame.speedz = walking_speedz;
+          frame.wait = walking_frame_rate * 2;
+        }
         set_hit_turn_back(frame);
         set_hold_turn_back(frame);
-        frame.hit = frame.hit || {};
-        frame.hit.a = [
-          {
-            id: ['45'],
-            facing: FacingFlag.Ctrl,
-            expression: CondMaker
-              .add(ValWord.WeaponType, '==', WeaponType.Baseball)
-              .or(v => v
-                .add(ValWord.WeaponType, '==', WeaponType.Knife)
-                .and(ValWord.PressFB, '!=', 0)
-              ).done(),
-          },
-          {
-            id: ['20', '25'],
-            facing: FacingFlag.Ctrl,
-            expression: CondMaker.one_of(ValWord.WeaponType, WeaponType.Knife, WeaponType.Stick).done()
-          }, // drink
-          {
-            id: '55', expression: CondMaker.one_of(ValWord.WeaponType, WeaponType.Drink).done(),
-            facing: FacingFlag.Ctrl,
-          },
-          { id: '70', expression: CondMaker.add(ValWord.RequireSuperPunch, '==', 1).done() },
-          { id: ['60', '65'], facing: Defines.FacingFlag.Ctrl }
-        ]; // punch
-        frame.hit.j = { id: '210' }; // jump
-        frame.hit.d = { id: '110' }; // defend
-        frame.hit.FF = { id: 'running_0' };
-        frame.speedx = walking_speed / 2;
-        frame.speedz = walking_speedz;
-
-        frame.wait = walking_frame_rate * 2;
         round_trip_frames_map[frame.name] = round_trip_frames_map[frame.name] || [];
         round_trip_frames_map[frame.name].push(frame);
         delete frames[frame_id];
         break
       case State.Running: {
-        frame.hit = frame.hit || {};
-        frame.hit.a = [
-          { // 丢出武器
-            id: ['45'],
-            expression: CondMaker.add(ValWord.WeaponType, '==', WeaponType.Baseball)
-              .or(v => v
-                .add(ValWord.PressFB, '==', 1)
-                .and(ValWord.WeaponType, '!=', WeaponType.None)
-              )
-              .done(),
-          }, // drink
-          {
-            id: '55', expression: CondMaker.one_of(ValWord.WeaponType, WeaponType.Drink).done()
-          },
-          {
-            id: '35', expression: CondMaker.one_of(ValWord.WeaponType, WeaponType.Knife, WeaponType.Stick).done(),
-            facing: FacingFlag.Ctrl,
-          },
-          { id: '85' }
-        ]; // run_atk
-        frame.hit.j = { id: '213' }; // dash
-        frame.hit.d = { id: '102' }; // rowing
-        frame.hold = frame.hold || {};
-        frame.hit.B = frame.hold.B = { id: '218' }; // running_stop
-        frame.dvx = running_speed / 2;
-        frame.speedz = running_speedz;
-        /* 
-          NOTE: 
-            在原版LF2中，角色走路和跑步是用帧的往返切换来实现的。
-            这打破了wait next的规则。
-            我不希望打破这个规则。
-            从原版数据转换过来时，帮助生成额外的帧来实现相同的效果。
-            这样，在WEMAKE中，可以实现更合理的走路和跑步动画。
-            
-            原版：0 ==> 1 ==> 2 ==> 1 ==>0
-            WEMAKE: 0 ==> 1 ==> 2 ==> copy_1 ==> 0
-        */
-        frame.wait = running_frame_rate * 2;
+        /** heavy_obj_run */
+        if (
+          frame_id !== '16' &&
+          frame_id !== '17' &&
+          frame_id !== '18'
+        ) {
+          frame.hit = frame.hit || {};
+          frame.hit.a = [
+            { // 丢出武器
+              id: ['45'],
+              expression: CondMaker.add(ValWord.WeaponType, '==', WeaponType.Baseball)
+                .or(v => v
+                  .add(ValWord.PressFB, '==', 1)
+                  .and(ValWord.WeaponType, '!=', WeaponType.None)
+                )
+                .done(),
+            }, // drink
+            {
+              id: '55', expression: CondMaker.one_of(ValWord.WeaponType, WeaponType.Drink).done()
+            },
+            {
+              id: '35', expression: CondMaker.one_of(ValWord.WeaponType, WeaponType.Knife, WeaponType.Stick).done(),
+              facing: FacingFlag.Ctrl,
+            },
+            { id: '85' }
+          ]; // run_atk
+          frame.hit.j = { id: '213' }; // dash
+          frame.hit.d = { id: '102' }; // rowing
+          frame.hold = frame.hold || {};
+          frame.hit.B = frame.hold.B = { id: '218' }; // running_stop
+          frame.dvx = running_speed / 2;
+          frame.speedz = running_speedz;
+          /* 
+            NOTE: 
+              在原版LF2中，角色走路和跑步是用帧的往返切换来实现的。
+              这打破了wait next的规则。
+              我不希望打破这个规则。
+              从原版数据转换过来时，帮助生成额外的帧来实现相同的效果。
+              这样，在WEMAKE中，可以实现更合理的走路和跑步动画。
+              
+              原版：0 ==> 1 ==> 2 ==> 1 ==>0
+              WEMAKE: 0 ==> 1 ==> 2 ==> copy_1 ==> 0
+          */
+          frame.wait = running_frame_rate * 2;
+        }
         round_trip_frames_map[frame.name] = round_trip_frames_map[frame.name] || [];
         round_trip_frames_map[frame.name].push(frame);
         delete frames[frame_id];

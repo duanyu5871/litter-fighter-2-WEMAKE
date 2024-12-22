@@ -14,14 +14,14 @@ export function make_ball_data(info: IEntityInfo, frames: Record<string, IFrameI
 
   info.hp = 500;
 
-  let sound_1 = take_str(info, 'weapon_broken_sound')
-  if (sound_1) { sound_1 += '.mp3'; info.dead_sounds = [sound_1] }
+  let weapon_broken_sound = take_str(info, 'weapon_broken_sound')
+  if (weapon_broken_sound) { weapon_broken_sound += '.mp3'; info.dead_sounds = [weapon_broken_sound] }
 
-  let sound_2 = take_str(info, 'weapon_drop_sound')
-  if (sound_2) { sound_2 += '.mp3'; info.drop_sounds = [sound_2] }
+  let weapon_drop_sound = take_str(info, 'weapon_drop_sound')
+  if (weapon_drop_sound) { weapon_drop_sound += '.mp3'; info.drop_sounds = [weapon_drop_sound] }
 
-  let sound_3 = take_str(info, 'weapon_hit_sound');
-  if (sound_3) { sound_3 += '.mp3'; info.hit_sounds = [sound_3] }
+  let weapon_hit_sound = take_str(info, 'weapon_hit_sound');
+  if (weapon_hit_sound) { weapon_hit_sound += '.mp3'; info.hit_sounds = [weapon_hit_sound] }
 
   for (const [, frame] of traversal(frames)) {
 
@@ -91,32 +91,31 @@ export function make_ball_data(info: IEntityInfo, frames: Record<string, IFrameI
           }
         }
         if (
-          sound_3 &&
+          weapon_hit_sound &&
           itr.kind !== ItrKind.Wind &&
-          itr.kind !== ItrKind.Freeze
+          itr.kind !== ItrKind.Freeze &&
+          itr.kind !== ItrKind.Block
         ) {
-          itr.hit_sounds = [sound_3]
+          itr.hit_sounds = [weapon_hit_sound]
         };
       }
     }
-    if (frame.bdy && sound_1) {
-      for (const bdy of frame.bdy) {
-        bdy.hit_sounds = [sound_1];
-      }
-    }
-
-
     if (frame.state === Defines.State.Ball_Flying) {
       if (frame.bdy && frames[20]) {
         for (const bdy of frame.bdy) {
+          bdy.friendly_fire = 1;
           bdy.hit_act = [{
             id: '20',
+            sounds: weapon_broken_sound ? [weapon_broken_sound] : void 0,
             expression: CondMaker
               .add<Defines.ValWord>(Defines.ValWord.HitByBall, '==', 1)
               .and(Defines.ValWord.HitByItrKind, '!{', ItrKind.JohnShield)
+              .and(Defines.ValWord.HitByItrKind, '!{', ItrKind.Block)
+              .and(Defines.ValWord.HitByItrEffect, '!{', ItrEffect.Ice2)
               .done()
           }, {
             id: '30', // 反弹逻辑
+            sounds: weapon_broken_sound ? [weapon_broken_sound] : void 0,
             expression: CondMaker
               .add(Defines.ValWord.HitByItrKind, '{{', ItrKind.WeaponSwing)
               .or(Defines.ValWord.HitByItrKind, '{{', ItrKind.JohnShield)
@@ -124,10 +123,7 @@ export function make_ball_data(info: IEntityInfo, frames: Record<string, IFrameI
                 .add(Defines.ValWord.HitOnSth, '==', 0)
                 .and(c => c
                   .add(Defines.ValWord.HitByCharacter, '==', 1)
-                  .and((c => c
-                    .add(Defines.ValWord.HitByItrKind, '!{', ItrKind.Normal)
-                    .or(Defines.ValWord.HitByItrEffect, '!{', ItrEffect.Fire)
-                  ))
+                  .and(Defines.ValWord.HitByItrKind, '{{', ItrKind.Normal)
                 ))
               .done()
           }]
@@ -135,7 +131,13 @@ export function make_ball_data(info: IEntityInfo, frames: Record<string, IFrameI
       }
       if (frame.itr && frames[10]) {
         for (const itr of frame.itr) {
-          itr.hit_act = [{ id: '10' }]
+          switch (itr.kind) {
+            case ItrKind.Block:
+              break;
+            default:
+              itr.hit_act = [{ id: '10' }]
+          }
+
         }
       }
     } else if (frame.state === Defines.State.Ball_3005) {
