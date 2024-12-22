@@ -52,6 +52,7 @@ import img_btn_3_2 from './assets/btn_3_2.png';
 import './game_ui.css';
 import './init';
 import { useLocalBoolean, useLocalNumber, useLocalString } from './useLocalStorage';
+import { __Camera_P_Node } from './DittoImpl/3d/__Camera_P_Node';
 
 const loading_img = new LoadingImg();
 Ditto.setup({
@@ -71,6 +72,7 @@ Ditto.setup({
   TextNode: __Text,
   SceneNode: __SceneNode,
   OrthographicCamera: __Camera_O_Node,
+  PerspectiveCamera: __Camera_P_Node,
   SpriteNode: __SpriteNode,
   LineSegmentsNode: __LineSegmentsNode,
   MeshNode: __MeshNode,

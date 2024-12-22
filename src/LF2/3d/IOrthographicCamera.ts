@@ -16,7 +16,6 @@ export interface IOrthographicCameraNode extends IObjectNode {
   get near(): number
   set near(v: number)
   setup(l: number, r: number, t: number, b: number, n?: number, f?: number): this;
-
   world_quaternion(q: THREE.Quaternion): this;
   raycaster(raycaster: THREE.Raycaster, coords: IVector2): this;
 }

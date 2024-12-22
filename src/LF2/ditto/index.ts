@@ -3,6 +3,7 @@ import { IBillboardInfo, IBillboardNode } from "../3d/IBillboardNode";
 import { IMeshInfo, IMeshNode } from "../3d/IMeshNode";
 import type { IObjectNode } from "../3d/IObjectNode";
 import { IOrthographicCameraNode } from "../3d/IOrthographicCamera";
+import { IPerspectiveCamera } from "../3d/IPerspectiveCamera";
 import { ISceneNode } from "../3d/ISceneNode";
 import { ISpriteInfo, ISpriteNode } from "../3d/ISpriteNode";
 import { ITextNode } from "../3d/ITextNode";
@@ -49,6 +50,7 @@ export interface IDittoPack {
   TextNode: new (lf2: LF2) => ITextNode
   SceneNode: new (lf2: LF2, canvas: HTMLCanvasElement) => ISceneNode,
   OrthographicCamera: new (lf2: LF2) => IOrthographicCameraNode,
+  PerspectiveCamera: new (lf2: LF2) => IPerspectiveCamera,
   SpriteNode: new (lf2: LF2, info?: ISpriteInfo) => ISpriteNode,
   LineSegmentsNode: new (lf2: LF2, info?: ILineSegmentsInfo) => ILineSegmentsNode,
   MeshNode: new (lf2: LF2, info?: IMeshInfo) => IMeshNode,
