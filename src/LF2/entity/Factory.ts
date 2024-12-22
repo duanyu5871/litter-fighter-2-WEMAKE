@@ -24,10 +24,10 @@ export class Factory {
   set_entity_creator<K extends keyof EntityCreators>(k: K, creator: EntityCreators[K]) {
     _entity_creators[k] = creator;
   }
-  get_entity_creator(k: string): ICreator<Entity, typeof Entity> | undefined;
-  get_entity_creator<K extends keyof EntityCreators>(k: K): EntityCreators[K] | undefined;
-  get_entity_creator<K extends keyof EntityCreators>(k: K): EntityCreators[K] | undefined {
-    return _entity_creators[k];
+  get_entity_creator(type: string): ICreator<Entity, typeof Entity> | undefined;
+  get_entity_creator<K extends keyof EntityCreators>(type: K): EntityCreators[K] | undefined;
+  get_entity_creator<K extends keyof EntityCreators>(type: K): EntityCreators[K] | undefined {
+    return _entity_creators[type];
   }
   get_ctrl_creator(id: string): ControllerCreator | undefined {
     return _ctrl_creators[id]

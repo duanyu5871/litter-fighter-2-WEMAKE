@@ -175,5 +175,6 @@ export default function dat_to_json(
   }
   if (ret) ret.id = datIndex.id;
   if (ret.type === 'weapon') make_weapon_special(ret as any)
+  if (!ret.base.name) ret.base.name = ret.type + '_' + ret.id
   return ret;
 }        

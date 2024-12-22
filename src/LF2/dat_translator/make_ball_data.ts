@@ -10,7 +10,7 @@ import { get_next_frame_by_raw_id } from "./get_the_next";
 import { take, take_str } from "./take";
 import { OpointKind } from "../defines/OpointKind";
 
-export function make_ball_data(info: IEntityInfo, frames: Record<string, IFrameInfo>, datIndex?: IDatIndex): IEntityData {
+export function make_ball_data(info: IEntityInfo, frames: Record<string, IFrameInfo>, datIndex: IDatIndex): IEntityData {
 
   info.hp = 500;
 
@@ -200,8 +200,6 @@ export function make_ball_data(info: IEntityInfo, frames: Record<string, IFrameI
     // 223、224
     // frame.hp = (50 to_num(take(frame, 'hit_a'), 0)) / 2
   }
-
-
   const ret: IEntityData = {
     id: '',
     type: 'ball',

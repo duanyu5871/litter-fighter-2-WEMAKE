@@ -41,6 +41,8 @@ import float_equal from './utils/math/float_equal';
 import { random_get, random_in, random_take } from './utils/math/random';
 import { is_arr, is_num, is_str, not_empty_str } from './utils/type_check';
 import { PIO } from './utils/PromisesInOne';
+import { EntitiesHelper } from './EntitiesHelper';
+import { Factory } from './entity/Factory';
 
 const cheat_info_pair = (n: Defines.Cheats) => ['' + n, {
   keys: Defines.CheatKeys[n],
@@ -99,6 +101,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
 
   readonly characters = new CharactersHelper(this);
   readonly weapons = new WeaponsHelper(this);
+  readonly entities = new EntitiesHelper(this);
   readonly balls = new BallsHelper(this);
   readonly datas: DatMgr;
   readonly sounds: ISounds;
@@ -179,36 +182,30 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     e.position.y = 550;
     return e;
   }
-  add_character(data: IEntityData, num: number, team?: string): Entity[];
-  add_character(id: string, num: number, team?: string): Entity[];
+
   add_character(data: IEntityData | string | undefined, num: number, team?: string): Entity[] {
     if (typeof data === 'string')
       data = this.datas.find_character(data)
-    if (!data)
-      return [];
-    const ret: Entity[] = []
-    while (--num >= 0) {
-      const e = new Entity(this.world, data);
-      e.team = team ?? new_team();
-      this.random_entity_info(e).attach();
-      ret.push(e)
-    }
-    return ret;
+    if (!data) return [];
+    return this.add_entity(data, num, team)
   }
 
-  add_weapon(data: IEntityData, num: number, team?: string): Entity[];
-  add_weapon(id: string, num: number, team?: string): Entity[];
-  add_weapon(data: IEntityData | string | undefined, num: number, team?: string): Entity[] {
+  add_weapon(data?: IEntityData | string, num: number = 1, team?: string): Entity[] {
     if (typeof data === 'string')
       data = this.datas.find_weapon(data)
-    if (!data)
-      return [];
+    if (!data) return [];
+    return this.add_entity(data, num, team)
+  }
+
+  add_entity(data: IEntityData, num: number = 1, team?: string): Entity[] {
+    const creator = Factory.inst.get_entity_creator(data.type);
+    if (!creator) return [];
     const ret: Entity[] = []
     while (--num >= 0) {
-      const e = new Entity(this.world, data);
-      if (not_empty_str(team)) e.team = team;
-      this.random_entity_info(e).attach();
-      ret.push(e);
+      const entity = creator(this.world, data);
+      entity.team = not_empty_str(team) ? team : new_team();
+      this.random_entity_info(entity).attach();
+      ret.push(entity);
     }
     return ret;
   }
@@ -436,14 +433,23 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     await this.datas.load();
     if (this._disposed)
       this.datas.dispose();
-
     for (const d of this.datas.characters) {
-      const name = d.base.name.toLowerCase();
+      const name = d.base.name?.toLowerCase() ?? (d.type + '_id_' + d.id);
       (this.characters as any)[`add_${name}`] = (num = 1, team = void 0) => this.add_character(d, num, team);
+      (this.entities as any)[`add_${name}`] = (num = 1, team_1 = void 0) => this.add_character(d, num, team_1);
     }
     for (const d of this.datas.weapons) {
-      const name = d.base.name.toLowerCase();
+      const name = d.base.name?.toLowerCase() ?? (d.type + '_id_' + d.id);
       (this.weapons as any)[`add_${name}`] = (num = 1, team_1 = void 0) => this.add_weapon(d, num, team_1);
+      (this.entities as any)[`add_${name}`] = (num = 1, team_1 = void 0) => this.add_weapon(d, num, team_1);
+    }
+    for (const d of this.datas.balls) {
+      const name = d.base.name?.toLowerCase() ?? (d.type + '_id_' + d.id);
+      (this.entities as any)[`add_${name}`] = (num = 1, team_1 = void 0) => this.add_entity(d, num, team_1);
+    }
+    for (const d of this.datas.entity) {
+      const name = d.base.name?.toLowerCase() ?? (d.type + '_id_' + d.id);
+      (this.entities as any)[`add_${name}`] = (num = 1, team_1 = void 0) => this.add_entity(d, num, team_1);
     }
   }
 
