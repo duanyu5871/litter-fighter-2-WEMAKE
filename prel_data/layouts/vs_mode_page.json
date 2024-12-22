@@ -10,7 +10,7 @@
       "set_layout(entry)"
     ]
   ],
-  "items": [ 
+  "items": [
     {
       "pos": "0,0,5",
       "visible": false,
@@ -25,13 +25,15 @@
     },
     {
       "id": "left_info_frame_1",
+      "visible": false,
       "pos": "0,0",
-      "template": "_layouts/left_info_frame.json"
+      "template": "layouts/left_info_frame.json"
     },
     {
       "id": "left_info_frame_5",
+      "visible": false,
       "pos": "0,45",
-      "template": "_layouts/left_info_frame.json"
+      "template": "layouts/left_info_frame.json"
     },
     {
       "template": "layouts/score_board.json",

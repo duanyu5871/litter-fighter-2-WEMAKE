@@ -188,8 +188,17 @@ export class __Modern extends BaseSounds {
   }
   override play(name: string, x?: number, y?: number, z?: number): string {
     const buf = this._r.values.get(name);
-    if (!buf) return '';
+    if (!buf) {
+      this.load(name, name)
+        .then(() => this.play(name, x, y, z))
+        .catch(e => {
+          debugger;
+          console.error(e);
+        })
+      return '';
+    };
 
+    const id = '' + (++this._sound_id);
     const [sound_x, l_vol, r_vol] = this.get_l_r_vol(x);
 
     const ctx = this.ctx;
@@ -214,8 +223,6 @@ export class __Modern extends BaseSounds {
     merger_node.connect(this.ctx.destination);
     src_node.start();
 
-
-    const id = '' + (++this._sound_id);
     this._playings.set(id, {
       src_node,
       l_gain_node,

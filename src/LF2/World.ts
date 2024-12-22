@@ -440,6 +440,17 @@ export class World {
   }
 
   collision_test(a: Entity, af: IFrameInfo, itr: IItrInfo, b: Entity, bf: IFrameInfo, bdy: IBdyInfo) {
+
+    const a_group = a.holder?.data.base.group ?? a.data.base.group;
+    const v_group = bdy.itr_groups
+    if (v_group?.length) {
+      if (!a_group?.length)
+        return;
+      const intersect = v_group.find(v => a_group.indexOf(v) >= 0);
+      if (!intersect)
+        return;
+    }
+
     switch (af.state) {
       case Defines.State.Weapon_OnHand: {
         const atk = a.holder?.frame.wpoint?.attacking;
@@ -491,9 +502,11 @@ export class World {
       case ItrKind.JohnShield:
         if (is_character(b) && a.same_team(b)) return;
         break;
+      // case ItrKind.Ice: {
+      //   if (b.frame.state === Defines.State.Frozen) return;
+      // }
       case ItrKind.Heal:
-      case ItrKind.Fly:
-      case ItrKind.Ice:
+      case ItrKind.Wind:
     }
     switch (itr.effect) {
       case ItrEffect.MFire1:
@@ -502,14 +515,30 @@ export class World {
         if (bf.state === Defines.State.Burning) return;
         break;
       case ItrEffect.Fire:
-        if (af.state === Defines.State.BurnRun) return;
+        if (af.state === Defines.State.BurnRun)
+          return;
         break;
       case ItrEffect.Through:
         if (is_character(b)) return;
         break;
+      case ItrEffect.Ice2:
+        if (b.frame.state === Defines.State.Frozen)
+          return;
     }
+
+    if (
+      bdy.kind >= Defines.BdyKind.GotoMin &&
+      bdy.kind <= Defines.BdyKind.GotoMax
+    ) {
+      if (a.same_team(b))
+        return;
+      if (itr.kind !== ItrKind.Normal && itr.kind !== ItrKind.WeaponSwing)
+        return;
+    }
+
     if (!(itr.friendly_fire || bdy.friendly_fire) && a.same_team(b))
       return;
+
     switch (bf.state) {
       case Defines.State.Falling: {
         if (!itr.fall || itr.fall < 60)
@@ -570,10 +599,10 @@ export class World {
 
     const a = attacker.state?.before_collision?.(collision)
     switch (a) {
-      case WhatNext.SkipState:
+      case WhatNext.OnlyState:
         attacker.state?.on_collision?.(collision);
         break;
-      case WhatNext.SkipEntity:
+      case WhatNext.OnlyEntity:
         attacker.on_collision(collision);
         break;
       case WhatNext.SkipAll:
@@ -588,10 +617,10 @@ export class World {
 
     const b = victim.state?.before_be_collided?.(collision)
     switch (b) {
-      case WhatNext.SkipState:
+      case WhatNext.OnlyState:
         victim.state?.on_be_collided?.(collision);
         break;
-      case WhatNext.SkipEntity:
+      case WhatNext.OnlyEntity:
         victim.on_be_collided(collision);
         break;
       case WhatNext.SkipAll:

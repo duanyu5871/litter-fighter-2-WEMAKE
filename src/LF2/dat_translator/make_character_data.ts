@@ -7,6 +7,7 @@ import { take_number } from '../utils/container_help/take_number';
 import { traversal } from '../utils/container_help/traversal';
 import { is_num, is_str } from '../utils/type_check';
 import { CondMaker } from './CondMaker';
+import { edit_next_frame } from './edit_next_frame';
 import { cook_next_frame_mp_hp, get_next_frame_by_raw_id } from './get_the_next';
 import { take } from './take';
 import { take_raw_frame_mp } from './take_raw_frame_mp';
@@ -363,7 +364,6 @@ export function make_character_data(info: IEntityInfo, frames: Record<string, IF
       case 190:
       case 191:
         break;
-
       /** crouch */
       case 215:
         const to_dash_frame: TNextFrame = [
@@ -403,6 +403,16 @@ export function make_character_data(info: IEntityInfo, frames: Record<string, IF
         break;
     }
     switch (frame.state) {
+      case State.Frozen:
+        edit_next_frame(frame.next, i => {
+          const f = typeof i.id === 'string' && frames[i.id];
+          if (!f) return;
+          if (f.state !== State.Frozen) {
+            i.blink_time = 60;
+          }
+        })
+        break;
+
       case State.Standing:
         frame.hit = frame.hit || {};
         frame.hold = frame.hold || {};

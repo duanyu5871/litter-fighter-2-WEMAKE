@@ -2,8 +2,8 @@ import type { IFrameInfo, TNextFrame } from "../defines";
 import type Entity from "../entity/Entity";
 import { ICollisionInfo } from "../entity/ICollisionInfo";
 export enum WhatNext {
-  SkipState = 3,
-  SkipEntity = 2,
+  OnlyState = 3,
+  OnlyEntity = 2,
   SkipAll = 1,
   Continue = 0,
 }

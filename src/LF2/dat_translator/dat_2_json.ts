@@ -6,6 +6,7 @@ import { IDatIndex } from "../defines/IDatIndex";
 import { IEntityInfo } from "../defines/IEntityInfo";
 import { Defines } from '../defines/defines';
 import { set_obj_field } from "../utils/container_help/set_obj_field";
+import { traversal } from '../utils/container_help/traversal';
 import { match_block_once } from '../utils/string_parser/match_block';
 import { match_colon_value } from '../utils/string_parser/match_colon_value';
 import { add_entity_groups } from './add_entity_to_group';
@@ -175,6 +176,21 @@ export default function dat_to_json(
   }
   if (ret) ret.id = datIndex.id;
   if (ret.type === 'weapon') make_weapon_special(ret as any)
-  if (!ret.base.name) ret.base.name = ret.type + '_' + ret.id
+  if (!ret.base.name) ret.base.name = ret.type + '_' + ret.id;
+
+  if (ret.type === 'character') {
+    add_entity_groups(ret.base, Defines.EntityGroup.CriminalSaver)
+  } else if (
+    ret.id === Defines.BuiltIn_OID.Henry_Arrow1 ||
+    ret.id === Defines.BuiltIn_OID.Rudolf_Weapon
+  ) {
+    add_entity_groups(ret.base, Defines.EntityGroup.CriminalSaver)
+  } else if (ret.id === Defines.BuiltIn_OID.Criminal) {
+    traversal(ret.frames, (_, frame) => {
+      frame.bdy?.forEach(bdy => {
+        bdy.itr_groups = [Defines.EntityGroup.CriminalSaver]
+      })
+    })
+  }
   return ret;
 }        

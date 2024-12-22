@@ -151,9 +151,6 @@ export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string, fil
       case Defines.State.Weapon_OnHand:
         frame.no_shadow = 1;
         break;
-      case Defines.State.Weapon_Brokens:
-        frame.no_shadow = 1;
-        break;
       case Defines.State.Burning: {
         if (frame.itr) {
           for (const itr of frame.itr) {

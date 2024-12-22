@@ -1257,6 +1257,11 @@ export default class Entity {
     } else {
       this.wait = frame.wait;
     }
+    if (flags.sounds?.length)
+      this.play_sound(flags.sounds)
+
+    if (flags.blink_time)
+      this.blink(flags.blink_time)
   }
 
   handle_wait_flag(wait: string | number, frame: IFrameInfo): number {

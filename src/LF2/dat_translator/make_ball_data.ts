@@ -1,14 +1,14 @@
 import { IEntityData, ItrEffect, ItrKind } from "../defines";
-import { IFrameInfo } from "../defines/IFrameInfo";
 import { IDatIndex } from "../defines/IDatIndex";
 import { IEntityInfo } from "../defines/IEntityInfo";
+import { IFrameInfo } from "../defines/IFrameInfo";
+import { OpointKind } from "../defines/OpointKind";
 import { Defines } from "../defines/defines";
 import { traversal } from "../utils/container_help/traversal";
 import { to_num } from "../utils/type_cast/to_num";
 import { CondMaker } from "./CondMaker";
 import { get_next_frame_by_raw_id } from "./get_the_next";
 import { take, take_str } from "./take";
-import { OpointKind } from "../defines/OpointKind";
 
 export function make_ball_data(info: IEntityInfo, frames: Record<string, IFrameInfo>, datIndex: IDatIndex): IEntityData {
 
@@ -90,12 +90,18 @@ export function make_ball_data(info: IEntityInfo, frames: Record<string, IFrameI
             }]
           }
         }
-        if (sound_3) itr.hit_sounds = [sound_3];
+        if (
+          sound_3 &&
+          itr.kind !== ItrKind.Wind &&
+          itr.kind !== ItrKind.Freeze
+        ) {
+          itr.hit_sounds = [sound_3]
+        };
       }
     }
-    if (frame.bdy && sound_3) {
+    if (frame.bdy && sound_1) {
       for (const bdy of frame.bdy) {
-        bdy.hit_sounds = [sound_3];
+        bdy.hit_sounds = [sound_1];
       }
     }
 

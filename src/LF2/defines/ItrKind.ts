@@ -124,7 +124,17 @@ export enum ItrKind {
 
 
   Block = 14,// 阻挡
-  Fly = 15,// 飞起 ??
-  Ice = 16
+
+  /**
+   *  freeze d^j 飞起来的效果
+   * 
+   *  用于：
+   *  * [X] LF2
+   *  * [X] WEMAKE
+   * 
+   */
+  Wind = 15, _15 = 15,
+
+  Freeze = 16, _16 = 16,
 
 }

@@ -21,7 +21,7 @@ export default function cook_itr(unsafe_itr?: Partial<IItrInfo>) {
   const src_dvy = take(unsafe_itr, 'dvy');
   if (not_zero_num(src_dvy)) unsafe_itr.dvy = src_dvy * -0.52;
 
-  
+
   const fall = take(unsafe_itr, 'fall');
   if (not_zero_num(fall)) unsafe_itr.fall = fall * 2;
 
@@ -60,6 +60,24 @@ export default function cook_itr(unsafe_itr?: Partial<IItrInfo>) {
     case ItrKind.Heal: {
       if (src_dvx) unsafe_itr.hit_act = get_next_frame_by_raw_id(src_dvx)
       unsafe_itr.friendly_fire = 1 // 允许治疗队友
+      break;
+    }
+    case ItrKind.Freeze: {
+      unsafe_itr.shaking = 0;
+      unsafe_itr.motionless = 0;
+      unsafe_itr.dvx = 0;
+      unsafe_itr.dvy = 0;
+      unsafe_itr.dvz = 0;
+      break;
+    }
+    case ItrKind.Wind: {
+      unsafe_itr.shaking = 0;
+      unsafe_itr.motionless = 0;
+      unsafe_itr.vrest = 1;
+      unsafe_itr.injury = void 0;
+      unsafe_itr.dvx = 0;
+      unsafe_itr.dvy = 0;
+      unsafe_itr.dvz = 0;
       break;
     }
   }

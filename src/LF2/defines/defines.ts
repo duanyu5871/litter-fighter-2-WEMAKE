@@ -1,6 +1,8 @@
 import type { GameKey } from "./GameKey";
 import type { IBgData } from "./IBgData";
 import type { IStageInfo } from "./IStageInfo";
+import type { IBdyInfo } from "./IBdyInfo";
+import type { IItrInfo } from "./IItrInfo";
 
 export namespace Defines {
   export enum OpointSpreading {
@@ -427,6 +429,7 @@ export namespace Defines {
      */
     _3000 = '3000',
 
+    CriminalSaver = 'CriminalSaver',
 
     /** 
      * 对战模式常规武器
@@ -439,6 +442,8 @@ export namespace Defines {
      * 闯关模式应当掉落属于这组的武器
      */
     StageRegularWeapon = "StageRegularWeapon",
+
+
   }
 
 
@@ -452,11 +457,27 @@ export namespace Defines {
      * [LF2][WEMAKE]
      * 
      * - 原版lf2中
-     *    - kind: 10xx是id为300的“人质”专用的，被攻击时跳至xx帧，
-     * 且仅有特定类型才能击中此bdy。以此实现被攻击后跳转的逻辑。
+     *    - 用于实现被攻击后跳转的逻辑。
+     *    - kind: 10xx是id为300的“人质”专用的，被攻击时跳至xx帧。
+     *    - 只有如下的itr能击中此bdy。
+     *      - 角色的kind0的itr
+     *      - id为210 kind0的itr
+     *      - id为202 kind0的itr
+     *      - 角色手持武器造成的itr（可能是武器kind: 5的itr，未验证）
      * 
      * - WEMAKE中：
-     *    - kind: 1XXX, 被攻击时调至，被攻击时跳至“XXX”帧。
+     *    - kind: 1XXX, 被攻击时跳至“XXX”帧。
+     *    - 此bdy的friendly_fire无效
+     *    - itr.friendly_fire 对此无效
+     *    - 角色与id为210以及id为202的限制通过itr_groups实现
+     *    - 仅允许kind: 5与kind：0的itr击中此bdy
+     *    
+     * @see {IBdyInfo.itr_groups}
+     * @see {BuiltIn_OID.Henry_Arrow1}
+     * @see {BuiltIn_OID.Rudolf_Weapon}
+     * @see {EntityGroup.CriminalSaver}
+     * @see {IBdyInfo.friendly_fire}
+     * @see {IItrInfo.friendly_fire}
      */
     GotoMin = 1000,
 
@@ -635,6 +656,85 @@ export namespace Defines {
     StartGame = 'start_game',
     SwitchStage = 'switch_stage',
     SwitchBackground = 'switch_background'
+  }
+  export enum BuiltIn_OID {
+    Template = '0',
+    Julian = '52',
+    Firzen = '51',
+    LouisEX = '50',
+    Bat = '38',
+    Justin = '39',
+    Knight = '37',
+    Jan = '36',
+    Monk = '35',
+    Sorcerer = '34',
+    Jack = '33',
+    Mark = '32',
+    Hunter = '31',
+    Bandit = '30',
+    Deep = '1',
+    John = '2',
+    Henry = '4',
+    Rudolf = '5',
+    Louis = '6',
+    Firen = '7',
+    Freeze = '8',
+    Dennis = '9',
+    Woody = '10',
+    Davis = '11',
+    Weapon0 = '100',
+    Weapon_Stick = '100',
+    Weapon2 = '101',
+    Weapon_Hoe = '101',
+    Weapon4 = '120',
+    Weapon_Knife = '120',
+    Weapon5 = '121',
+    Weapon_baseball = '121',
+    Weapon6 = '122',
+    Weapon_milk = '122',
+    Weapon1 = '150',
+    Weapon_Stone = '150',
+    Weapon3 = '151',
+    Weapon_Wooden_box = '151',
+    Weapon8 = '123',
+    Weapon_Beer = '123',
+    Weapon9 = '124',
+    Weapon_Boomerang = '124',
+    Weapon10 = '217',
+    Weapon_Louis_Armour_A = '217',
+    Weapon11 = '218',
+    Weapon_Louis_Armour_B = '218',
+    Criminal = '300',
+    John_ball = '200',
+    Henry_Arrow1 = '201',
+    Rudolf_Weapon = '202',
+    Deep_ball = '203',
+    Henry_wind = '204',
+    Dennis_ball = '205',
+    Woody_ball = '206',
+    Davis_ball = '207',
+    Henry_arrow2 = '208',
+    Freeze_ball = '209',
+    Firen_ball = '210',
+    Firen_flame = '211',
+    Freeze_column = '212',
+    Weapon7 = '213',
+    Weapon_Ice_sword = '213',
+    John_biscuit = '214',
+    Dennis_chase = '215',
+    Jack_ball = '216',
+    Jan_chaseh = '219',
+    Jan_chase = '220',
+    Firzen_chasef = '221',
+    Firzen_chasei = '222',
+    Firzen_ball = '223',
+    Bat_ball = '224',
+    Bat_chase = '225',
+    Justin_ball = '226',
+    Julian_ball = '228',
+    Julian_ball2 = '229',
+    Etc = '998',
+    Broken_weapon = '999',
   }
 
   export type TKeys = Record<GameKey, string>

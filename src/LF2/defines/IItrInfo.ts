@@ -1,8 +1,7 @@
-import { TNextFrame } from ".";
-import { IRect } from "./IRect";
-import { IRectPair } from "./IRectPair";
+import type { TNextFrame } from ".";
+import type { IRect } from "./IRect";
+import type { IRectPair } from "./IRectPair";
 import type { Defines } from "./defines";
-
 
 export interface IItrInfo extends IRect {
   /**

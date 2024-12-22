@@ -73,4 +73,12 @@ export interface INextFrame {
    * @type {?string[]}
    */
   sounds?: string[];
+
+  /**
+   *
+   *
+   * @type {number}
+   * @memberof INextFrame
+   */
+  blink_time?: number;
 }

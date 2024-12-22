@@ -40,4 +40,11 @@ export interface IBdyInfo extends IRect {
   break_act?: TNextFrame;
 
   hit_sounds: string[];
+
+  /**
+   * 若存在此值，则该bdy只允许被目标组的itr命中
+   * 
+   * @see {Defines.EntityGroup}
+   */
+  itr_groups?: string[];
 }
