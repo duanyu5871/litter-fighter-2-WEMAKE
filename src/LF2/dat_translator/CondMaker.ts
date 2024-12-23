@@ -6,7 +6,6 @@ export class CondMaker<T extends string = string> {
 
   private _parts: (string | CondMaker)[] = [];
   add(word: T, op: TBinaryOperator, value: any): this {
-    if (this._parts.length > 0) throw new Error('add should be call only one time!')
     this._parts.push(`${word}${op}${value}`);
     return this;
   }
