@@ -161,8 +161,8 @@ export class World {
 
   private _need_FPS: boolean = true;
   private _need_UPS: boolean = true;
-  private _FPS = new FPS(0.8)
-  private _UPS = new FPS(0.8);
+  private _FPS = new FPS(0.90)
+  private _UPS = new FPS(0.90);
   private _render_worker_id?: ReturnType<typeof Ditto.Render.add>;
   private _update_worker_id?: ReturnType<typeof Ditto.Interval.add>;
 
@@ -219,8 +219,8 @@ export class World {
   }
 
   private _prev_time: number = Date.now();
-  private _working_dt: number = Date.now();
   private _update_count: number = 0;
+  private _fix_radio: number = 1;
   start_update() {
     if (this.disposed) return;
     if (this._update_worker_id) Ditto.Interval.del(this._update_worker_id);
@@ -228,7 +228,7 @@ export class World {
     const on_update = () => {
       const time = Date.now();
       const real_dt = time - this._prev_time;
-      if (real_dt < this._ideally_dt)
+      if (real_dt < this._ideally_dt * this._fix_radio)
         return;
       this._update_count++;
       if (!this._paused) this.update_once()
@@ -236,11 +236,11 @@ export class World {
         this.render_once(real_dt)
         this._callbacks.emit('on_fps_update')(this._UPS.value / this._sync_render);
       }
+      this._UPS.update(real_dt);
+      this._fix_radio = this._UPS.value / 60
       if (this._need_UPS) {
-        this._UPS.update(real_dt);
         this._callbacks.emit('on_ups_update')(this._UPS.value, 0);
       }
-      this._working_dt = Date.now() - time
       this._prev_time = time;
     }
     this._update_worker_id = Ditto.Interval.add(on_update, 0);
