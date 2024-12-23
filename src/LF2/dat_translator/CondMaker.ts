@@ -4,14 +4,9 @@ export class CondMaker<T extends string = string> {
   readonly is_cond = true;
   static is = (v: any): v is CondMaker => v?.is_cond === true;
 
-  // static readonly get = <T extends string = string>() => new CondMaker<T>();
-  // static readonly add = <T extends string = string>(...args: Parameters<CondMaker<T>['add']>) => this.get<T>().add(...args);
-  // static readonly one_of = <T extends string = string>(...args: Parameters<CondMaker<T>['one_of']>) => this.get<T>().one_of(...args);
-  // static readonly not_in = <T extends string = string>(...args: Parameters<CondMaker<T>['not_in']>) => this.get<T>().not_in(...args);
-  // static readonly bracket = <T extends string = string>(...args: Parameters<CondMaker<T>['bracket']>) => this.get<T>().bracket(...args);
-
   private _parts: (string | CondMaker)[] = [];
   add(word: T, op: TBinaryOperator, value: any): this {
+    if (this._parts.length > 0) throw new Error('add should be call only one time!')
     this._parts.push(`${word}${op}${value}`);
     return this;
   }

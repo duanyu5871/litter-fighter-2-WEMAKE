@@ -589,6 +589,14 @@ export default class Entity {
     const entity = create(this.world, data)
     entity.controller = Factory.inst.get_ctrl_creator(entity.data.id)?.('', entity);
     entity.on_spawn(this, opoint, offset_velocity).attach();
+
+    for (const [k, v] of this.v_rests) {
+      /*
+      Note: 继承v_rests，避免重复反弹ball...
+      */
+      entity.v_rests.set(k, v);
+    }
+
     return entity
   }
 
