@@ -36,10 +36,7 @@
           "w": 43,
           "h": 62,
           "kind": 1003,
-          "test": "same_team==0&(attacker_type==character|attacker_type==weapon)&(itr_kind==0|itr_kind==5)",
-          "itr_groups": [
-            "CriminalSaver"
-          ]
+          "test": "same_team==0&((attacker_type==character&itr_kind==0)&(attacker_type==weapon&(itr_kind==5|attacker_oid==201|attacker_oid==202)))"
         }
       ],
       "state": 0,
@@ -70,10 +67,7 @@
           "w": 43,
           "h": 62,
           "kind": 1003,
-          "test": "same_team==0&(attacker_type==character|attacker_type==weapon)&(itr_kind==0|itr_kind==5)",
-          "itr_groups": [
-            "CriminalSaver"
-          ]
+          "test": "same_team==0&((attacker_type==character&itr_kind==0)&(attacker_type==weapon&(itr_kind==5|attacker_oid==201|attacker_oid==202)))"
         }
       ],
       "state": 0,
@@ -104,10 +98,7 @@
           "w": 43,
           "h": 62,
           "kind": 1003,
-          "test": "same_team==0&(attacker_type==character|attacker_type==weapon)&(itr_kind==0|itr_kind==5)",
-          "itr_groups": [
-            "CriminalSaver"
-          ]
+          "test": "same_team==0&((attacker_type==character&itr_kind==0)&(attacker_type==weapon&(itr_kind==5|attacker_oid==201|attacker_oid==202)))"
         }
       ],
       "state": 0,
@@ -202,10 +193,7 @@
           "w": 43,
           "h": 62,
           "kind": 1013,
-          "test": "same_team==0&(attacker_type==character|attacker_type==weapon)&(itr_kind==0|itr_kind==5)",
-          "itr_groups": [
-            "CriminalSaver"
-          ]
+          "test": "same_team==0&((attacker_type==character&itr_kind==0)&(attacker_type==weapon&(itr_kind==5|attacker_oid==201|attacker_oid==202)))"
         }
       ],
       "state": 0,
@@ -236,10 +224,7 @@
           "w": 43,
           "h": 62,
           "kind": 1013,
-          "test": "same_team==0&(attacker_type==character|attacker_type==weapon)&(itr_kind==0|itr_kind==5)",
-          "itr_groups": [
-            "CriminalSaver"
-          ]
+          "test": "same_team==0&((attacker_type==character&itr_kind==0)&(attacker_type==weapon&(itr_kind==5|attacker_oid==201|attacker_oid==202)))"
         }
       ],
       "state": 0,
@@ -270,10 +255,7 @@
           "w": 43,
           "h": 62,
           "kind": 1013,
-          "test": "same_team==0&(attacker_type==character|attacker_type==weapon)&(itr_kind==0|itr_kind==5)",
-          "itr_groups": [
-            "CriminalSaver"
-          ]
+          "test": "same_team==0&((attacker_type==character&itr_kind==0)&(attacker_type==weapon&(itr_kind==5|attacker_oid==201|attacker_oid==202)))"
         }
       ],
       "state": 0,
@@ -368,10 +350,7 @@
           "w": 43,
           "h": 62,
           "kind": 1023,
-          "test": "same_team==0&(attacker_type==character|attacker_type==weapon)&(itr_kind==0|itr_kind==5)",
-          "itr_groups": [
-            "CriminalSaver"
-          ]
+          "test": "same_team==0&((attacker_type==character&itr_kind==0)&(attacker_type==weapon&(itr_kind==5|attacker_oid==201|attacker_oid==202)))"
         }
       ],
       "state": 0,
@@ -402,10 +381,7 @@
           "w": 43,
           "h": 62,
           "kind": 1023,
-          "test": "same_team==0&(attacker_type==character|attacker_type==weapon)&(itr_kind==0|itr_kind==5)",
-          "itr_groups": [
-            "CriminalSaver"
-          ]
+          "test": "same_team==0&((attacker_type==character&itr_kind==0)&(attacker_type==weapon&(itr_kind==5|attacker_oid==201|attacker_oid==202)))"
         }
       ],
       "state": 0,
@@ -436,10 +412,7 @@
           "w": 43,
           "h": 62,
           "kind": 1023,
-          "test": "same_team==0&(attacker_type==character|attacker_type==weapon)&(itr_kind==0|itr_kind==5)",
-          "itr_groups": [
-            "CriminalSaver"
-          ]
+          "test": "same_team==0&((attacker_type==character&itr_kind==0)&(attacker_type==weapon&(itr_kind==5|attacker_oid==201|attacker_oid==202)))"
         }
       ],
       "state": 0,
@@ -534,10 +507,7 @@
           "w": 43,
           "h": 62,
           "kind": 1033,
-          "test": "same_team==0&(attacker_type==character|attacker_type==weapon)&(itr_kind==0|itr_kind==5)",
-          "itr_groups": [
-            "CriminalSaver"
-          ]
+          "test": "same_team==0&((attacker_type==character&itr_kind==0)&(attacker_type==weapon&(itr_kind==5|attacker_oid==201|attacker_oid==202)))"
         }
       ],
       "state": 0,
@@ -568,10 +538,7 @@
           "w": 43,
           "h": 62,
           "kind": 1033,
-          "test": "same_team==0&(attacker_type==character|attacker_type==weapon)&(itr_kind==0|itr_kind==5)",
-          "itr_groups": [
-            "CriminalSaver"
-          ]
+          "test": "same_team==0&((attacker_type==character&itr_kind==0)&(attacker_type==weapon&(itr_kind==5|attacker_oid==201|attacker_oid==202)))"
         }
       ],
       "state": 0,
@@ -602,10 +569,7 @@
           "w": 43,
           "h": 62,
           "kind": 1033,
-          "test": "same_team==0&(attacker_type==character|attacker_type==weapon)&(itr_kind==0|itr_kind==5)",
-          "itr_groups": [
-            "CriminalSaver"
-          ]
+          "test": "same_team==0&((attacker_type==character&itr_kind==0)&(attacker_type==weapon&(itr_kind==5|attacker_oid==201|attacker_oid==202)))"
         }
       ],
       "state": 0,
@@ -700,10 +664,7 @@
           "w": 43,
           "h": 62,
           "kind": 1043,
-          "test": "same_team==0&(attacker_type==character|attacker_type==weapon)&(itr_kind==0|itr_kind==5)",
-          "itr_groups": [
-            "CriminalSaver"
-          ]
+          "test": "same_team==0&((attacker_type==character&itr_kind==0)&(attacker_type==weapon&(itr_kind==5|attacker_oid==201|attacker_oid==202)))"
         }
       ],
       "state": 0,
@@ -734,10 +695,7 @@
           "w": 43,
           "h": 62,
           "kind": 1043,
-          "test": "same_team==0&(attacker_type==character|attacker_type==weapon)&(itr_kind==0|itr_kind==5)",
-          "itr_groups": [
-            "CriminalSaver"
-          ]
+          "test": "same_team==0&((attacker_type==character&itr_kind==0)&(attacker_type==weapon&(itr_kind==5|attacker_oid==201|attacker_oid==202)))"
         }
       ],
       "state": 0,
@@ -768,10 +726,7 @@
           "w": 43,
           "h": 62,
           "kind": 1043,
-          "test": "same_team==0&(attacker_type==character|attacker_type==weapon)&(itr_kind==0|itr_kind==5)",
-          "itr_groups": [
-            "CriminalSaver"
-          ]
+          "test": "same_team==0&((attacker_type==character&itr_kind==0)&(attacker_type==weapon&(itr_kind==5|attacker_oid==201|attacker_oid==202)))"
         }
       ],
       "state": 0,
@@ -866,10 +821,7 @@
           "w": 43,
           "h": 62,
           "kind": 1053,
-          "test": "same_team==0&(attacker_type==character|attacker_type==weapon)&(itr_kind==0|itr_kind==5)",
-          "itr_groups": [
-            "CriminalSaver"
-          ]
+          "test": "same_team==0&((attacker_type==character&itr_kind==0)&(attacker_type==weapon&(itr_kind==5|attacker_oid==201|attacker_oid==202)))"
         }
       ],
       "state": 0,
@@ -900,10 +852,7 @@
           "w": 43,
           "h": 62,
           "kind": 1053,
-          "test": "same_team==0&(attacker_type==character|attacker_type==weapon)&(itr_kind==0|itr_kind==5)",
-          "itr_groups": [
-            "CriminalSaver"
-          ]
+          "test": "same_team==0&((attacker_type==character&itr_kind==0)&(attacker_type==weapon&(itr_kind==5|attacker_oid==201|attacker_oid==202)))"
         }
       ],
       "state": 0,
@@ -934,10 +883,7 @@
           "w": 43,
           "h": 62,
           "kind": 1053,
-          "test": "same_team==0&(attacker_type==character|attacker_type==weapon)&(itr_kind==0|itr_kind==5)",
-          "itr_groups": [
-            "CriminalSaver"
-          ]
+          "test": "same_team==0&((attacker_type==character&itr_kind==0)&(attacker_type==weapon&(itr_kind==5|attacker_oid==201|attacker_oid==202)))"
         }
       ],
       "state": 0,
@@ -1032,10 +978,7 @@
           "w": 43,
           "h": 62,
           "kind": 1063,
-          "test": "same_team==0&(attacker_type==character|attacker_type==weapon)&(itr_kind==0|itr_kind==5)",
-          "itr_groups": [
-            "CriminalSaver"
-          ]
+          "test": "same_team==0&((attacker_type==character&itr_kind==0)&(attacker_type==weapon&(itr_kind==5|attacker_oid==201|attacker_oid==202)))"
         }
       ],
       "state": 0,
@@ -1066,10 +1009,7 @@
           "w": 43,
           "h": 62,
           "kind": 1063,
-          "test": "same_team==0&(attacker_type==character|attacker_type==weapon)&(itr_kind==0|itr_kind==5)",
-          "itr_groups": [
-            "CriminalSaver"
-          ]
+          "test": "same_team==0&((attacker_type==character&itr_kind==0)&(attacker_type==weapon&(itr_kind==5|attacker_oid==201|attacker_oid==202)))"
         }
       ],
       "state": 0,
@@ -1100,10 +1040,7 @@
           "w": 43,
           "h": 62,
           "kind": 1063,
-          "test": "same_team==0&(attacker_type==character|attacker_type==weapon)&(itr_kind==0|itr_kind==5)",
-          "itr_groups": [
-            "CriminalSaver"
-          ]
+          "test": "same_team==0&((attacker_type==character&itr_kind==0)&(attacker_type==weapon&(itr_kind==5|attacker_oid==201|attacker_oid==202)))"
         }
       ],
       "state": 0,

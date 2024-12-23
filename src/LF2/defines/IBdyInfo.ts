@@ -42,13 +42,6 @@ export interface IBdyInfo extends IRect {
 
   hit_sounds: string[];
 
-  /**
-   * 若存在此值，则该bdy只允许被目标组的itr命中
-   * 
-   * @see {Defines.EntityGroup}
-   */
-  itr_groups?: string[];
-
   test?: string;
 
   tester?: IExpression<any>;

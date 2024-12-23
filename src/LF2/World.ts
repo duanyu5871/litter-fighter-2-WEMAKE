@@ -441,15 +441,6 @@ export class World {
   }
 
   collision_test(attacker: Entity, aframe: IFrameInfo, itr: IItrInfo, victim: Entity, vframe: IFrameInfo, bdy: IBdyInfo) {
-    const a_group = attacker.holder?.data.base.group ?? attacker.data.base.group;
-    const v_group = bdy.itr_groups
-    if (v_group?.length) {
-      if (!a_group?.length)
-        return;
-      const intersect = v_group.find(v => a_group.indexOf(v) >= 0);
-      if (!intersect)
-        return;
-    }
     switch (aframe.state) {
       case Defines.State.Weapon_OnHand: {
         const atk = attacker.holder?.frame.wpoint?.attacking;
@@ -499,19 +490,6 @@ export class World {
         )
           return;
         break;
-    }
-    if (
-      bdy.kind >= BdyKind.GotoMin &&
-      bdy.kind <= BdyKind.GotoMax
-    ) {
-      if (attacker.same_team(victim))
-        return;
-      if (
-        itr.kind !== ItrKind.Normal &&
-        itr.kind !== ItrKind.WeaponSwing
-      ) {
-        return;
-      }
     }
 
     if (!(itr.friendly_fire || bdy.friendly_fire) && attacker.same_team(victim))

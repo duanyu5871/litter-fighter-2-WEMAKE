@@ -28,8 +28,7 @@
     "hp": 1000,
     "group": [
       "VsRegularWeapon",
-      "StageRegularWeapon",
-      "CriminalSaver"
+      "StageRegularWeapon"
     ]
   },
   "itr_prefabs": {

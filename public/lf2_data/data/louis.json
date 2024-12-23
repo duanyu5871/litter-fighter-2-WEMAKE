@@ -39,8 +39,7 @@
     "dash_distancez": 5,
     "rowing_distance": 2.5,
     "group": [
-      "1000",
-      "CriminalSaver"
+      "1000"
     ],
     "armor": {
       "hit_sounds": [

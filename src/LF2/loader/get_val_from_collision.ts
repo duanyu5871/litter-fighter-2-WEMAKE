@@ -28,7 +28,7 @@ export function get_val_from_collision(word: CollisionVal | string, collision: I
       return collision.attacker.holding ? 1 : 0
     case CollisionVal.VictimHasHolding:
       return collision.victim.holding ? 1 : 0
-    case CollisionVal.AttackerOId:
+    case CollisionVal.AttackerOID:
       return collision.attacker.data.id
     case CollisionVal.VictimOID:
       return collision.victim.data.id

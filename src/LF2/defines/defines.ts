@@ -373,8 +373,6 @@ export namespace Defines {
      */
     _3000 = '3000',
 
-    CriminalSaver = 'CriminalSaver',
-
     /** 
      * 对战模式常规武器
      * 对战模式应当掉落属于这组的武器

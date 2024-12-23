@@ -54,8 +54,7 @@
     "rowing_distance": 2.5,
     "group": [
       "hidden",
-      "3000",
-      "CriminalSaver"
+      "3000"
     ],
     "fall_value": 140,
     "defend_value": 120

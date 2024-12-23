@@ -39,8 +39,7 @@
     "dash_distancez": 5,
     "rowing_distance": 3,
     "group": [
-      "hidden",
-      "CriminalSaver"
+      "hidden"
     ],
     "ce": 2,
     "fall_value": 140,

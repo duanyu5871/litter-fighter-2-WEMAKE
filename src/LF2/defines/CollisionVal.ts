@@ -19,6 +19,6 @@ export enum CollisionVal {
   AttackerHasHolding = 'attacker_has_holding',
   VictimHasHolding = 'victim_has_holding',
   SameTeam = 'same_team',
-  AttackerOId = 'attacker_oid',
+  AttackerOID = 'attacker_oid',
   VictimOID = 'victim_oid',
 }
