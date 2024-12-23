@@ -1,4 +1,5 @@
 import type { TNextFrame } from ".";
+import { IExpression } from "../base/Expression";
 import type { IRect } from "./IRect";
 import type { IRectPair } from "./IRectPair";
 import type { Defines } from "./defines";
@@ -78,5 +79,8 @@ export interface IItrInfo extends IRect {
   /** 命中后，自己跳转至什么帧 */
   hit_act?: TNextFrame;
   hit_sounds?: string[];
+
+  test?: string;
+  tester?: IExpression<any>;
 }
 

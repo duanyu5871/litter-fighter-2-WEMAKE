@@ -53,6 +53,7 @@ export function cook_frame(lf2: LF2, data: IEntityData, frame: IFrameInfo) {
       if (itr.hit_act) cook_next_frame(itr.hit_act);
       if (itr.catchingact) cook_next_frame(itr.catchingact);
       if (itr.caughtact) cook_next_frame(itr.caughtact);
+      if (itr.test) itr.tester = new Expression(itr.test, get_val_from_collision)
     }
   }
 

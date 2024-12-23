@@ -37,7 +37,10 @@ export enum ItrKind {
    * 用于：
    * * [X] LF2
    * * [X] WEMAKE
-   *
+   * 
+   * WEMAKE中，该碰撞判定通过IItrInfo.test设置。
+   * 
+   * @see {IItrInfo.test}
    * @see {Defines.State.Weapon_OnGround}
    * @see {Defines.State.HeavyWeapon_OnGround}
    */
@@ -95,7 +98,10 @@ export enum ItrKind {
    * 用于：
    * * [X] LF2
    * * [X] WEMAKE
+   * 
+   * WEMAKE中，该碰撞判定通过IItrInfo.test设置。
    *
+   * @see {IItrInfo.test}
    * @see {Defines.State.Weapon_OnGround}
    */
   PickSecretly = 7,

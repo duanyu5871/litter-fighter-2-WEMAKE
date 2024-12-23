@@ -475,20 +475,6 @@ export class World {
       case ItrKind.CharacterThrew:
       case ItrKind.MagicFlute:
         return; // todo
-      case ItrKind.Pick:
-        if (
-          attacker.holding || victim.holder || (
-            vframe.state !== Defines.State.Weapon_OnGround &&
-            vframe.state !== Defines.State.HeavyWeapon_OnGround
-          )
-        ) return;
-        break;
-      case ItrKind.PickSecretly:
-        if (
-          attacker.holding || victim.holder ||
-          vframe.state !== Defines.State.Weapon_OnGround
-        ) return;
-        break;
       case ItrKind.ForceCatch:
         if (is_character(victim)) break;
         return;
@@ -578,7 +564,11 @@ export class World {
         b_cube
       }
       if (bdy.tester && !bdy.tester.run(collision))
-        return; 
+        return;
+      if (itr.tester && !itr.tester.run(collision))
+        return;
+
+
       const a = attacker.state?.before_collision?.(collision)
       switch (a) {
         case void 0: debugger; break;

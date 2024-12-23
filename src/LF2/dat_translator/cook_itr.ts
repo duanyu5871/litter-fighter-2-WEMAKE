@@ -1,6 +1,8 @@
 import { IItrInfo, ItrEffect, ItrKind } from '../defines';
+import { CollisionVal } from '../defines/CollisionVal';
 import { Defines } from '../defines/defines';
 import { is_num, is_positive, not_zero_num } from '../utils/type_check';
+import { CondMaker } from './CondMaker';
 import { get_next_frame_by_raw_id } from './get_the_next';
 import { take } from './take';
 export default function cook_itr(unsafe_itr?: Partial<IItrInfo>) {
@@ -36,8 +38,30 @@ export default function cook_itr(unsafe_itr?: Partial<IItrInfo>) {
     }
   }
   switch (unsafe_itr.kind) {
-    case ItrKind.Pick:
-    case ItrKind.PickSecretly:
+    case ItrKind.Pick: {
+      unsafe_itr.friendly_fire = 1;
+      unsafe_itr.motionless = 0;
+      unsafe_itr.shaking = 0;
+      if (is_positive(vrest)) unsafe_itr.vrest = vrest + 2;
+      unsafe_itr.test = new CondMaker<CollisionVal>()
+        .add(CollisionVal.AttackerHasHolder, '==', 0)
+        .and(CollisionVal.VictimHasHolder, '==', 0)
+        .and().one_of(CollisionVal.VictimState, Defines.State.Weapon_OnGround, Defines.State.HeavyWeapon_OnGround)
+        .done()
+      break;
+    }
+    case ItrKind.PickSecretly: {
+      unsafe_itr.friendly_fire = 1;
+      unsafe_itr.motionless = 0;
+      unsafe_itr.shaking = 0;
+      if (is_positive(vrest)) unsafe_itr.vrest = vrest + 2;
+      unsafe_itr.test = new CondMaker<CollisionVal>()
+        .add(CollisionVal.AttackerHasHolder, '==', 0)
+        .and(CollisionVal.VictimHasHolder, '==', 0)
+        .and(CollisionVal.VictimState, '==', Defines.State.Weapon_OnGround)
+        .done()
+      break;
+    }
     case ItrKind.SuperPunchMe: {
       unsafe_itr.motionless = 0;
       unsafe_itr.shaking = 0;
@@ -57,7 +81,7 @@ export default function cook_itr(unsafe_itr?: Partial<IItrInfo>) {
     case ItrKind.Block:
       unsafe_itr.friendly_fire = 1;
       unsafe_itr.motionless = 0;
-      unsafe_itr.shaking = 0;      
+      unsafe_itr.shaking = 0;
       delete unsafe_itr.hit_act;
       delete unsafe_itr.hit_sounds;
       break;
