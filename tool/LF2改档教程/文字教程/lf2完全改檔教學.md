@@ -207,7 +207,8 @@ itr打波反弹与否，分很多情况的。Itr kind 0 的话，要看攻击物
 〈特别发现〉武器的投掷方法是由id决定的。
 
 id特性：
-1.id：201、202的武器不受itr kind：10、15影响，且能与bdy kind：1XXX作用。
+1.id：201、202的武器不受itr kind：10、15影响，
+1.1 id：201、202能与bdy kind：1XXX作用。
 2.id：6 HP＜1/3时才能hit_ja:300。
 id：7、8 HP各小于1/5时才能合体为id：51的人，跳到frame290。
 ※在没有hit_ja：的frame中按DJA就能解除。

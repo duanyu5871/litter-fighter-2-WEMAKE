@@ -475,23 +475,9 @@ export class World {
       case ItrKind.CharacterThrew:
       case ItrKind.MagicFlute:
         return; // todo
-      case ItrKind.ForceCatch:
-        if (is_character(victim)) break;
-        return;
-      case ItrKind.Catch:
-        if (is_character(victim) && vframe.state === Defines.State.Tired) break;
-        return;
-      case ItrKind.SuperPunchMe:
-        if (is_character(victim) && !victim.holding) break;
-        return;
       case ItrKind.Normal:
         if (is_character(attacker) && vframe.state === Defines.State.Weapon_OnGround) return;
         break
-      case ItrKind.JohnShield:
-        if (is_character(victim) && attacker.same_team(victim)) return;
-        break;
-      case ItrKind.Heal:
-      case ItrKind.Wind:
     }
     switch (itr.effect) {
       case ItrEffect.MFire1:

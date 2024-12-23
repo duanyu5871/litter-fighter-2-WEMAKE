@@ -90,7 +90,6 @@ export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string, fil
       ...fields,
     };
     if (error) (frame as any).__ERROR__ = error
-    cook_frame_indicator_info(frame)
     if (
       (raw_next >= 1100 && raw_next <= 1299) ||
       (raw_next <= -1100 && raw_next >= -1299)

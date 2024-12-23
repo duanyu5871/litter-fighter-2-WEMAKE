@@ -1,9 +1,27 @@
-import { IBdyInfo } from '../defines';
+import { Defines, IBdyInfo, ItrKind } from '../defines';
+import { BdyKind } from '../defines/BdyKind';
+import { CollisionVal as C_Val } from '../defines/CollisionVal';
 import { is_num } from '../utils/type_check';
+import { CondMaker } from './CondMaker';
 import { take } from './take';
 
-export default function cook_bdy(unsafe_bdy?: Partial<IBdyInfo>): void {
-  if (!unsafe_bdy) return;
-  const kind = take(unsafe_bdy, 'kind');
-  if (is_num(kind)) unsafe_bdy.kind = kind;
+export default function cook_bdy(bdy?: Partial<IBdyInfo>): void {
+  if (!bdy) return;
+  const kind = take(bdy, 'kind');
+  if (is_num(kind)) bdy.kind = kind;
+  if (
+    bdy.kind &&
+    bdy.kind >= BdyKind.GotoMin &&
+    bdy.kind <= BdyKind.GotoMax
+  ) {
+    bdy.test = new CondMaker<C_Val>()
+      .add(C_Val.SameTeam, '==', 0)
+      .and(c => c
+        .add(C_Val.AttackerType, '==', Defines.EntityEnum.Character)
+        .or(C_Val.AttackerType, '==', Defines.EntityEnum.Weapon)
+      ).and(c => c
+        .add(C_Val.ItrKind, '==', ItrKind.Normal)
+        .or(C_Val.ItrKind, '==', ItrKind.WeaponSwing)
+      ).done()
+  }
 }

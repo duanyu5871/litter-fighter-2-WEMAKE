@@ -1,0 +1,1202 @@
+{
+  "id": "300",
+  "type": "entity",
+  "base": {
+    "files": {
+      "0": {
+        "id": "0",
+        "path": "sprite/sys/criminal.png",
+        "row": 10,
+        "col": 7,
+        "cell_w": 79,
+        "cell_h": 79
+      }
+    },
+    "name": "entity_300"
+  },
+  "frames": {
+    "0": {
+      "id": "0",
+      "name": "monk",
+      "pic": {
+        "tex": "0",
+        "x": 160,
+        "y": 0,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 15,
+      "next": {
+        "id": "1"
+      },
+      "bdy": [
+        {
+          "x": 21,
+          "y": 18,
+          "w": 43,
+          "h": 62,
+          "kind": 1003,
+          "test": "same_team==0&(attacker_type==character|attacker_type==weapon)&(itr_kind==0|itr_kind==5)",
+          "itr_groups": [
+            "CriminalSaver"
+          ]
+        }
+      ],
+      "state": 0,
+      "centerx": 38,
+      "centery": 78,
+      "hit_a": 0,
+      "hit_d": 0,
+      "hit_j": 0
+    },
+    "1": {
+      "id": "1",
+      "name": "monk",
+      "pic": {
+        "tex": "0",
+        "x": 80,
+        "y": 0,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 11,
+      "next": {
+        "id": "2"
+      },
+      "bdy": [
+        {
+          "x": 21,
+          "y": 18,
+          "w": 43,
+          "h": 62,
+          "kind": 1003,
+          "test": "same_team==0&(attacker_type==character|attacker_type==weapon)&(itr_kind==0|itr_kind==5)",
+          "itr_groups": [
+            "CriminalSaver"
+          ]
+        }
+      ],
+      "state": 0,
+      "centerx": 38,
+      "centery": 78,
+      "hit_a": 0,
+      "hit_d": 0,
+      "hit_j": 0
+    },
+    "2": {
+      "id": "2",
+      "name": "monk",
+      "pic": {
+        "tex": "0",
+        "x": 0,
+        "y": 0,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 21,
+      "next": {
+        "id": "auto"
+      },
+      "bdy": [
+        {
+          "x": 21,
+          "y": 18,
+          "w": 43,
+          "h": 62,
+          "kind": 1003,
+          "test": "same_team==0&(attacker_type==character|attacker_type==weapon)&(itr_kind==0|itr_kind==5)",
+          "itr_groups": [
+            "CriminalSaver"
+          ]
+        }
+      ],
+      "state": 0,
+      "centerx": 38,
+      "centery": 78,
+      "hit_a": 0,
+      "hit_d": 0,
+      "hit_j": 0
+    },
+    "3": {
+      "id": "3",
+      "name": "monk",
+      "pic": {
+        "tex": "0",
+        "x": 240,
+        "y": 0,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "4"
+      },
+      "state": 0,
+      "centerx": 38,
+      "centery": 78,
+      "hit_a": 0,
+      "hit_d": 0,
+      "hit_j": 0,
+      "sound": "data/013.wav.mp3"
+    },
+    "4": {
+      "id": "4",
+      "name": "monk",
+      "pic": {
+        "tex": "0",
+        "x": 320,
+        "y": 0,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "5"
+      },
+      "state": 0,
+      "centerx": 38,
+      "centery": 78,
+      "hit_a": 0,
+      "hit_d": 0,
+      "hit_j": 0
+    },
+    "5": {
+      "id": "5",
+      "name": "monk",
+      "pic": {
+        "tex": "0",
+        "x": 320,
+        "y": 0,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "auto"
+      },
+      "state": 8035,
+      "centerx": 38,
+      "centery": 78,
+      "hit_a": 0,
+      "hit_d": 0,
+      "hit_j": 0
+    },
+    "10": {
+      "id": "10",
+      "name": "mark",
+      "pic": {
+        "tex": "0",
+        "x": 400,
+        "y": 0,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 15,
+      "next": {
+        "id": "11"
+      },
+      "bdy": [
+        {
+          "x": 21,
+          "y": 18,
+          "w": 43,
+          "h": 62,
+          "kind": 1013,
+          "test": "same_team==0&(attacker_type==character|attacker_type==weapon)&(itr_kind==0|itr_kind==5)",
+          "itr_groups": [
+            "CriminalSaver"
+          ]
+        }
+      ],
+      "state": 0,
+      "centerx": 38,
+      "centery": 78,
+      "hit_a": 0,
+      "hit_d": 0,
+      "hit_j": 0
+    },
+    "11": {
+      "id": "11",
+      "name": "mark",
+      "pic": {
+        "tex": "0",
+        "x": 480,
+        "y": 0,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 11,
+      "next": {
+        "id": "12"
+      },
+      "bdy": [
+        {
+          "x": 21,
+          "y": 18,
+          "w": 43,
+          "h": 62,
+          "kind": 1013,
+          "test": "same_team==0&(attacker_type==character|attacker_type==weapon)&(itr_kind==0|itr_kind==5)",
+          "itr_groups": [
+            "CriminalSaver"
+          ]
+        }
+      ],
+      "state": 0,
+      "centerx": 38,
+      "centery": 78,
+      "hit_a": 0,
+      "hit_d": 0,
+      "hit_j": 0
+    },
+    "12": {
+      "id": "12",
+      "name": "mark",
+      "pic": {
+        "tex": "0",
+        "x": 560,
+        "y": 0,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 21,
+      "next": {
+        "id": "10"
+      },
+      "bdy": [
+        {
+          "x": 21,
+          "y": 18,
+          "w": 43,
+          "h": 62,
+          "kind": 1013,
+          "test": "same_team==0&(attacker_type==character|attacker_type==weapon)&(itr_kind==0|itr_kind==5)",
+          "itr_groups": [
+            "CriminalSaver"
+          ]
+        }
+      ],
+      "state": 0,
+      "centerx": 38,
+      "centery": 78,
+      "hit_a": 0,
+      "hit_d": 0,
+      "hit_j": 0
+    },
+    "13": {
+      "id": "13",
+      "name": "mark",
+      "pic": {
+        "tex": "0",
+        "x": 640,
+        "y": 0,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "14"
+      },
+      "state": 0,
+      "centerx": 38,
+      "centery": 78,
+      "hit_a": 0,
+      "hit_d": 0,
+      "hit_j": 0,
+      "sound": "data/013.wav.mp3"
+    },
+    "14": {
+      "id": "14",
+      "name": "mark",
+      "pic": {
+        "tex": "0",
+        "x": 720,
+        "y": 0,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "15"
+      },
+      "state": 0,
+      "centerx": 38,
+      "centery": 78,
+      "hit_a": 0,
+      "hit_d": 0,
+      "hit_j": 0
+    },
+    "15": {
+      "id": "15",
+      "name": "mark",
+      "pic": {
+        "tex": "0",
+        "x": 720,
+        "y": 0,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "auto"
+      },
+      "state": 8032,
+      "centerx": 38,
+      "centery": 78,
+      "hit_a": 0,
+      "hit_d": 0,
+      "hit_j": 0
+    },
+    "20": {
+      "id": "20",
+      "name": "jack",
+      "pic": {
+        "tex": "0",
+        "x": 0,
+        "y": 80,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 15,
+      "next": {
+        "id": "21"
+      },
+      "bdy": [
+        {
+          "x": 21,
+          "y": 18,
+          "w": 43,
+          "h": 62,
+          "kind": 1023,
+          "test": "same_team==0&(attacker_type==character|attacker_type==weapon)&(itr_kind==0|itr_kind==5)",
+          "itr_groups": [
+            "CriminalSaver"
+          ]
+        }
+      ],
+      "state": 0,
+      "centerx": 38,
+      "centery": 78,
+      "hit_a": 0,
+      "hit_d": 0,
+      "hit_j": 0
+    },
+    "21": {
+      "id": "21",
+      "name": "jack",
+      "pic": {
+        "tex": "0",
+        "x": 80,
+        "y": 80,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 11,
+      "next": {
+        "id": "22"
+      },
+      "bdy": [
+        {
+          "x": 21,
+          "y": 18,
+          "w": 43,
+          "h": 62,
+          "kind": 1023,
+          "test": "same_team==0&(attacker_type==character|attacker_type==weapon)&(itr_kind==0|itr_kind==5)",
+          "itr_groups": [
+            "CriminalSaver"
+          ]
+        }
+      ],
+      "state": 0,
+      "centerx": 38,
+      "centery": 78,
+      "hit_a": 0,
+      "hit_d": 0,
+      "hit_j": 0
+    },
+    "22": {
+      "id": "22",
+      "name": "jack",
+      "pic": {
+        "tex": "0",
+        "x": 160,
+        "y": 80,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 21,
+      "next": {
+        "id": "20"
+      },
+      "bdy": [
+        {
+          "x": 21,
+          "y": 18,
+          "w": 43,
+          "h": 62,
+          "kind": 1023,
+          "test": "same_team==0&(attacker_type==character|attacker_type==weapon)&(itr_kind==0|itr_kind==5)",
+          "itr_groups": [
+            "CriminalSaver"
+          ]
+        }
+      ],
+      "state": 0,
+      "centerx": 38,
+      "centery": 78,
+      "hit_a": 0,
+      "hit_d": 0,
+      "hit_j": 0
+    },
+    "23": {
+      "id": "23",
+      "name": "jack",
+      "pic": {
+        "tex": "0",
+        "x": 240,
+        "y": 80,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "24"
+      },
+      "state": 0,
+      "centerx": 38,
+      "centery": 78,
+      "hit_a": 0,
+      "hit_d": 0,
+      "hit_j": 0,
+      "sound": "data/013.wav.mp3"
+    },
+    "24": {
+      "id": "24",
+      "name": "jack",
+      "pic": {
+        "tex": "0",
+        "x": 320,
+        "y": 80,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "25"
+      },
+      "state": 0,
+      "centerx": 38,
+      "centery": 78,
+      "hit_a": 0,
+      "hit_d": 0,
+      "hit_j": 0
+    },
+    "25": {
+      "id": "25",
+      "name": "jack",
+      "pic": {
+        "tex": "0",
+        "x": 320,
+        "y": 80,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "auto"
+      },
+      "state": 8033,
+      "centerx": 38,
+      "centery": 78,
+      "hit_a": 0,
+      "hit_d": 0,
+      "hit_j": 0
+    },
+    "30": {
+      "id": "30",
+      "name": "sorcerer",
+      "pic": {
+        "tex": "0",
+        "x": 400,
+        "y": 80,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 15,
+      "next": {
+        "id": "31"
+      },
+      "bdy": [
+        {
+          "x": 21,
+          "y": 18,
+          "w": 43,
+          "h": 62,
+          "kind": 1033,
+          "test": "same_team==0&(attacker_type==character|attacker_type==weapon)&(itr_kind==0|itr_kind==5)",
+          "itr_groups": [
+            "CriminalSaver"
+          ]
+        }
+      ],
+      "state": 0,
+      "centerx": 38,
+      "centery": 78,
+      "hit_a": 0,
+      "hit_d": 0,
+      "hit_j": 0
+    },
+    "31": {
+      "id": "31",
+      "name": "sorcerer",
+      "pic": {
+        "tex": "0",
+        "x": 480,
+        "y": 80,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 11,
+      "next": {
+        "id": "32"
+      },
+      "bdy": [
+        {
+          "x": 21,
+          "y": 18,
+          "w": 43,
+          "h": 62,
+          "kind": 1033,
+          "test": "same_team==0&(attacker_type==character|attacker_type==weapon)&(itr_kind==0|itr_kind==5)",
+          "itr_groups": [
+            "CriminalSaver"
+          ]
+        }
+      ],
+      "state": 0,
+      "centerx": 38,
+      "centery": 78,
+      "hit_a": 0,
+      "hit_d": 0,
+      "hit_j": 0
+    },
+    "32": {
+      "id": "32",
+      "name": "sorcerer",
+      "pic": {
+        "tex": "0",
+        "x": 560,
+        "y": 80,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 21,
+      "next": {
+        "id": "30"
+      },
+      "bdy": [
+        {
+          "x": 21,
+          "y": 18,
+          "w": 43,
+          "h": 62,
+          "kind": 1033,
+          "test": "same_team==0&(attacker_type==character|attacker_type==weapon)&(itr_kind==0|itr_kind==5)",
+          "itr_groups": [
+            "CriminalSaver"
+          ]
+        }
+      ],
+      "state": 0,
+      "centerx": 38,
+      "centery": 78,
+      "hit_a": 0,
+      "hit_d": 0,
+      "hit_j": 0
+    },
+    "33": {
+      "id": "33",
+      "name": "sorcerer",
+      "pic": {
+        "tex": "0",
+        "x": 640,
+        "y": 80,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "34"
+      },
+      "state": 0,
+      "centerx": 38,
+      "centery": 78,
+      "hit_a": 0,
+      "hit_d": 0,
+      "hit_j": 0,
+      "sound": "data/013.wav.mp3"
+    },
+    "34": {
+      "id": "34",
+      "name": "sorcerer",
+      "pic": {
+        "tex": "0",
+        "x": 720,
+        "y": 80,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "35"
+      },
+      "state": 0,
+      "centerx": 38,
+      "centery": 78,
+      "hit_a": 0,
+      "hit_d": 0,
+      "hit_j": 0
+    },
+    "35": {
+      "id": "35",
+      "name": "sorcerer",
+      "pic": {
+        "tex": "0",
+        "x": 720,
+        "y": 80,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "auto"
+      },
+      "state": 8034,
+      "centerx": 38,
+      "centery": 78,
+      "hit_a": 0,
+      "hit_d": 0,
+      "hit_j": 0
+    },
+    "40": {
+      "id": "40",
+      "name": "bandit",
+      "pic": {
+        "tex": "0",
+        "x": 0,
+        "y": 160,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 15,
+      "next": {
+        "id": "41"
+      },
+      "bdy": [
+        {
+          "x": 21,
+          "y": 18,
+          "w": 43,
+          "h": 62,
+          "kind": 1043,
+          "test": "same_team==0&(attacker_type==character|attacker_type==weapon)&(itr_kind==0|itr_kind==5)",
+          "itr_groups": [
+            "CriminalSaver"
+          ]
+        }
+      ],
+      "state": 0,
+      "centerx": 38,
+      "centery": 78,
+      "hit_a": 0,
+      "hit_d": 0,
+      "hit_j": 0
+    },
+    "41": {
+      "id": "41",
+      "name": "bandit",
+      "pic": {
+        "tex": "0",
+        "x": 80,
+        "y": 160,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 11,
+      "next": {
+        "id": "42"
+      },
+      "bdy": [
+        {
+          "x": 21,
+          "y": 18,
+          "w": 43,
+          "h": 62,
+          "kind": 1043,
+          "test": "same_team==0&(attacker_type==character|attacker_type==weapon)&(itr_kind==0|itr_kind==5)",
+          "itr_groups": [
+            "CriminalSaver"
+          ]
+        }
+      ],
+      "state": 0,
+      "centerx": 38,
+      "centery": 78,
+      "hit_a": 0,
+      "hit_d": 0,
+      "hit_j": 0
+    },
+    "42": {
+      "id": "42",
+      "name": "bandit",
+      "pic": {
+        "tex": "0",
+        "x": 160,
+        "y": 160,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 21,
+      "next": {
+        "id": "40"
+      },
+      "bdy": [
+        {
+          "x": 21,
+          "y": 18,
+          "w": 43,
+          "h": 62,
+          "kind": 1043,
+          "test": "same_team==0&(attacker_type==character|attacker_type==weapon)&(itr_kind==0|itr_kind==5)",
+          "itr_groups": [
+            "CriminalSaver"
+          ]
+        }
+      ],
+      "state": 0,
+      "centerx": 38,
+      "centery": 78,
+      "hit_a": 0,
+      "hit_d": 0,
+      "hit_j": 0
+    },
+    "43": {
+      "id": "43",
+      "name": "bandit",
+      "pic": {
+        "tex": "0",
+        "x": 240,
+        "y": 160,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "44"
+      },
+      "state": 0,
+      "centerx": 38,
+      "centery": 78,
+      "hit_a": 0,
+      "hit_d": 0,
+      "hit_j": 0,
+      "sound": "data/013.wav.mp3"
+    },
+    "44": {
+      "id": "44",
+      "name": "bandit",
+      "pic": {
+        "tex": "0",
+        "x": 320,
+        "y": 160,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "45"
+      },
+      "state": 0,
+      "centerx": 38,
+      "centery": 78,
+      "hit_a": 0,
+      "hit_d": 0,
+      "hit_j": 0
+    },
+    "45": {
+      "id": "45",
+      "name": "bandit",
+      "pic": {
+        "tex": "0",
+        "x": 320,
+        "y": 160,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "auto"
+      },
+      "state": 8030,
+      "centerx": 38,
+      "centery": 78,
+      "hit_a": 0,
+      "hit_d": 0,
+      "hit_j": 0
+    },
+    "50": {
+      "id": "50",
+      "name": "hunter",
+      "pic": {
+        "tex": "0",
+        "x": 400,
+        "y": 160,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 15,
+      "next": {
+        "id": "51"
+      },
+      "bdy": [
+        {
+          "x": 21,
+          "y": 18,
+          "w": 43,
+          "h": 62,
+          "kind": 1053,
+          "test": "same_team==0&(attacker_type==character|attacker_type==weapon)&(itr_kind==0|itr_kind==5)",
+          "itr_groups": [
+            "CriminalSaver"
+          ]
+        }
+      ],
+      "state": 0,
+      "centerx": 38,
+      "centery": 78,
+      "hit_a": 0,
+      "hit_d": 0,
+      "hit_j": 0
+    },
+    "51": {
+      "id": "51",
+      "name": "hunter",
+      "pic": {
+        "tex": "0",
+        "x": 480,
+        "y": 160,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 11,
+      "next": {
+        "id": "52"
+      },
+      "bdy": [
+        {
+          "x": 21,
+          "y": 18,
+          "w": 43,
+          "h": 62,
+          "kind": 1053,
+          "test": "same_team==0&(attacker_type==character|attacker_type==weapon)&(itr_kind==0|itr_kind==5)",
+          "itr_groups": [
+            "CriminalSaver"
+          ]
+        }
+      ],
+      "state": 0,
+      "centerx": 38,
+      "centery": 78,
+      "hit_a": 0,
+      "hit_d": 0,
+      "hit_j": 0
+    },
+    "52": {
+      "id": "52",
+      "name": "hunter",
+      "pic": {
+        "tex": "0",
+        "x": 560,
+        "y": 160,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 21,
+      "next": {
+        "id": "50"
+      },
+      "bdy": [
+        {
+          "x": 21,
+          "y": 18,
+          "w": 43,
+          "h": 62,
+          "kind": 1053,
+          "test": "same_team==0&(attacker_type==character|attacker_type==weapon)&(itr_kind==0|itr_kind==5)",
+          "itr_groups": [
+            "CriminalSaver"
+          ]
+        }
+      ],
+      "state": 0,
+      "centerx": 38,
+      "centery": 78,
+      "hit_a": 0,
+      "hit_d": 0,
+      "hit_j": 0
+    },
+    "53": {
+      "id": "53",
+      "name": "hunter",
+      "pic": {
+        "tex": "0",
+        "x": 640,
+        "y": 160,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "54"
+      },
+      "state": 0,
+      "centerx": 38,
+      "centery": 78,
+      "hit_a": 0,
+      "hit_d": 0,
+      "hit_j": 0,
+      "sound": "data/013.wav.mp3"
+    },
+    "54": {
+      "id": "54",
+      "name": "hunter",
+      "pic": {
+        "tex": "0",
+        "x": 720,
+        "y": 160,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "55"
+      },
+      "state": 0,
+      "centerx": 38,
+      "centery": 78,
+      "hit_a": 0,
+      "hit_d": 0,
+      "hit_j": 0
+    },
+    "55": {
+      "id": "55",
+      "name": "hunter",
+      "pic": {
+        "tex": "0",
+        "x": 720,
+        "y": 160,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "auto"
+      },
+      "state": 8031,
+      "centerx": 38,
+      "centery": 78,
+      "hit_a": 0,
+      "hit_d": 0,
+      "hit_j": 0
+    },
+    "60": {
+      "id": "60",
+      "name": "jan",
+      "pic": {
+        "tex": "0",
+        "x": 0,
+        "y": 240,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 15,
+      "next": {
+        "id": "61"
+      },
+      "bdy": [
+        {
+          "x": 21,
+          "y": 18,
+          "w": 43,
+          "h": 62,
+          "kind": 1063,
+          "test": "same_team==0&(attacker_type==character|attacker_type==weapon)&(itr_kind==0|itr_kind==5)",
+          "itr_groups": [
+            "CriminalSaver"
+          ]
+        }
+      ],
+      "state": 0,
+      "centerx": 38,
+      "centery": 78,
+      "hit_a": 0,
+      "hit_d": 0,
+      "hit_j": 0
+    },
+    "61": {
+      "id": "61",
+      "name": "jan",
+      "pic": {
+        "tex": "0",
+        "x": 80,
+        "y": 240,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 11,
+      "next": {
+        "id": "62"
+      },
+      "bdy": [
+        {
+          "x": 21,
+          "y": 18,
+          "w": 43,
+          "h": 62,
+          "kind": 1063,
+          "test": "same_team==0&(attacker_type==character|attacker_type==weapon)&(itr_kind==0|itr_kind==5)",
+          "itr_groups": [
+            "CriminalSaver"
+          ]
+        }
+      ],
+      "state": 0,
+      "centerx": 38,
+      "centery": 78,
+      "hit_a": 0,
+      "hit_d": 0,
+      "hit_j": 0
+    },
+    "62": {
+      "id": "62",
+      "name": "jan",
+      "pic": {
+        "tex": "0",
+        "x": 160,
+        "y": 240,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 21,
+      "next": {
+        "id": "60"
+      },
+      "bdy": [
+        {
+          "x": 21,
+          "y": 18,
+          "w": 43,
+          "h": 62,
+          "kind": 1063,
+          "test": "same_team==0&(attacker_type==character|attacker_type==weapon)&(itr_kind==0|itr_kind==5)",
+          "itr_groups": [
+            "CriminalSaver"
+          ]
+        }
+      ],
+      "state": 0,
+      "centerx": 38,
+      "centery": 78,
+      "hit_a": 0,
+      "hit_d": 0,
+      "hit_j": 0
+    },
+    "63": {
+      "id": "63",
+      "name": "jan",
+      "pic": {
+        "tex": "0",
+        "x": 240,
+        "y": 240,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "64"
+      },
+      "state": 0,
+      "centerx": 38,
+      "centery": 78,
+      "hit_a": 0,
+      "hit_d": 0,
+      "hit_j": 0,
+      "sound": "data/013.wav.mp3"
+    },
+    "64": {
+      "id": "64",
+      "name": "jan",
+      "pic": {
+        "tex": "0",
+        "x": 320,
+        "y": 240,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "65"
+      },
+      "state": 0,
+      "centerx": 38,
+      "centery": 78,
+      "hit_a": 0,
+      "hit_d": 0,
+      "hit_j": 0
+    },
+    "65": {
+      "id": "65",
+      "name": "jan",
+      "pic": {
+        "tex": "0",
+        "x": 320,
+        "y": 240,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "auto"
+      },
+      "state": 8036,
+      "centerx": 38,
+      "centery": 78,
+      "hit_a": 0,
+      "hit_d": 0,
+      "hit_j": 0
+    },
+    "399": {
+      "id": "399",
+      "name": "come_here",
+      "pic": {
+        "tex": "0",
+        "x": 0,
+        "y": 0,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 121,
+      "next": {
+        "id": "gone"
+      },
+      "state": 0,
+      "centerx": 38,
+      "centery": 78,
+      "hit_a": 0,
+      "hit_d": 0,
+      "hit_j": 0
+    }
+  }
+}

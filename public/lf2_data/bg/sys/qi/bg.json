@@ -1,0 +1,147 @@
+{
+  "type": "background",
+  "id": "bg_6",
+  "base": {
+    "name": "Queen's Island",
+    "shadow": "bg/sys/qi/s.png",
+    "shadowsize": [
+      37,
+      9
+    ],
+    "left": 0,
+    "right": 2400,
+    "far": -500,
+    "near": -80
+  },
+  "layers": [
+    {
+      "width": 800,
+      "x": 0,
+      "file": "bg/sys/qi/qi1.png",
+      "y": 421,
+      "z": -15
+    },
+    {
+      "width": 800,
+      "x": 215,
+      "file": "bg/sys/qi/qie.png",
+      "y": 340,
+      "z": -14
+    },
+    {
+      "width": 800,
+      "x": 218,
+      "file": "bg/sys/qi/qi7.png",
+      "y": 421,
+      "z": -13,
+      "cc": 40,
+      "c1": 0,
+      "c2": 9
+    },
+    {
+      "width": 800,
+      "x": 218,
+      "file": "bg/sys/qi/qi8.png",
+      "y": 421,
+      "z": -12,
+      "cc": 40,
+      "c1": 10,
+      "c2": 19
+    },
+    {
+      "width": 800,
+      "x": 218,
+      "file": "bg/sys/qi/qi9.png",
+      "y": 421,
+      "z": -11,
+      "cc": 40,
+      "c1": 20,
+      "c2": 29
+    },
+    {
+      "width": 800,
+      "x": 27,
+      "file": "bg/sys/qi/qia.png",
+      "y": 421,
+      "z": -10,
+      "cc": 24,
+      "c1": 0,
+      "c2": 11
+    },
+    {
+      "width": 800,
+      "x": 321,
+      "file": "bg/sys/qi/qib.png",
+      "y": 421,
+      "z": -9,
+      "cc": 24,
+      "c1": 6,
+      "c2": 17
+    },
+    {
+      "width": 800,
+      "x": 545,
+      "file": "bg/sys/qi/qic.png",
+      "y": 369,
+      "z": -8,
+      "cc": 24,
+      "c1": 12,
+      "c2": 23
+    },
+    {
+      "width": 800,
+      "x": 605,
+      "file": "bg/sys/qi/qid.png",
+      "y": 384,
+      "z": -7,
+      "cc": 24,
+      "c1": 2,
+      "c2": 13
+    },
+    {
+      "width": 1200,
+      "x": 0,
+      "file": "bg/sys/qi/qi2.png",
+      "y": 416,
+      "z": -6
+    },
+    {
+      "width": 997,
+      "x": 796,
+      "file": "bg/sys/qi/qi4.png",
+      "y": 329,
+      "z": -5
+    },
+    {
+      "width": 997,
+      "x": 869,
+      "file": "bg/sys/qi/qi5.png",
+      "y": 320,
+      "z": -4
+    },
+    {
+      "width": 997,
+      "x": 869,
+      "file": "bg/sys/qi/qi6.png",
+      "y": 343,
+      "z": -3
+    },
+    {
+      "width": 2300,
+      "x": 0,
+      "loop": 800,
+      "file": "bg/sys/qi/qi3.png",
+      "y": 289,
+      "z": -2
+    },
+    {
+      "x": 0,
+      "width": 794,
+      "height": 231,
+      "y": 254,
+      "z": -1,
+      "absolute": 1,
+      "color": "rgb(66,56,24)"
+    }
+  ]
+}

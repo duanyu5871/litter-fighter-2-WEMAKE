@@ -10,6 +10,9 @@ const get_keys = <V extends {}>(v: V): (keyof V)[] => {
   return Object.keys(v) as (keyof V)[]
 }
 export function cook_frame(lf2: LF2, data: IEntityData, frame: IFrameInfo) {
+
+  cook_frame_indicator_info(frame);
+  
   if (frame.sound && !lf2.sounds.has(frame.sound))
     lf2.sounds.load(frame.sound, frame.sound);
 
@@ -101,3 +104,7 @@ export function cook_frame(lf2: LF2, data: IEntityData, frame: IFrameInfo) {
   }
 }
 cook_frame.TAG = 'cook_frame'
+
+function cook_frame_indicator_info(frame: IFrameInfo) {
+  throw new Error('Function not implemented.');
+}

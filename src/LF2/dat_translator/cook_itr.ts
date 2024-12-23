@@ -1,5 +1,5 @@
 import { IItrInfo, ItrEffect, ItrKind } from '../defines';
-import { CollisionVal } from '../defines/CollisionVal';
+import { CollisionVal as C_Val } from '../defines/CollisionVal';
 import { Defines } from '../defines/defines';
 import { is_num, is_positive, not_zero_num } from '../utils/type_check';
 import { CondMaker } from './CondMaker';
@@ -43,10 +43,10 @@ export default function cook_itr(unsafe_itr?: Partial<IItrInfo>) {
       unsafe_itr.motionless = 0;
       unsafe_itr.shaking = 0;
       if (is_positive(vrest)) unsafe_itr.vrest = vrest + 2;
-      unsafe_itr.test = new CondMaker<CollisionVal>()
-        .add(CollisionVal.AttackerHasHolder, '==', 0)
-        .and(CollisionVal.VictimHasHolder, '==', 0)
-        .and().one_of(CollisionVal.VictimState, Defines.State.Weapon_OnGround, Defines.State.HeavyWeapon_OnGround)
+      unsafe_itr.test = new CondMaker<C_Val>()
+        .add(C_Val.AttackerHasHolder, '==', 0)
+        .and(C_Val.VictimHasHolder, '==', 0)
+        .and().one_of(C_Val.VictimState, Defines.State.Weapon_OnGround, Defines.State.HeavyWeapon_OnGround)
         .done()
       break;
     }
@@ -55,10 +55,10 @@ export default function cook_itr(unsafe_itr?: Partial<IItrInfo>) {
       unsafe_itr.motionless = 0;
       unsafe_itr.shaking = 0;
       if (is_positive(vrest)) unsafe_itr.vrest = vrest + 2;
-      unsafe_itr.test = new CondMaker<CollisionVal>()
-        .add(CollisionVal.AttackerHasHolder, '==', 0)
-        .and(CollisionVal.VictimHasHolder, '==', 0)
-        .and(CollisionVal.VictimState, '==', Defines.State.Weapon_OnGround)
+      unsafe_itr.test = new CondMaker<C_Val>()
+        .add(C_Val.AttackerHasHolder, '==', 0)
+        .and(C_Val.VictimHasHolder, '==', 0)
+        .and(C_Val.VictimState, '==', Defines.State.Weapon_OnGround)
         .done()
       break;
     }
@@ -66,9 +66,24 @@ export default function cook_itr(unsafe_itr?: Partial<IItrInfo>) {
       unsafe_itr.motionless = 0;
       unsafe_itr.shaking = 0;
       if (is_positive(vrest)) unsafe_itr.vrest = vrest + 2;
+      unsafe_itr.test = new CondMaker<C_Val>()
+        .add(C_Val.VictimType, '==', 'character')
+        .done()
       break;
     }
-    case ItrKind.ForceCatch:
+    case ItrKind.ForceCatch: {
+      unsafe_itr.motionless = 0;
+      unsafe_itr.shaking = 0;
+      if (unsafe_itr.vrest) {
+        unsafe_itr.arest = unsafe_itr.vrest;
+        delete unsafe_itr.vrest;
+      }
+      unsafe_itr.test = new CondMaker<C_Val>()
+        .and(C_Val.VictimType, '==', 'character')
+        .and(C_Val.VictimState, '!=', Defines.State.Falling)
+        .done()
+      break;
+    }
     case ItrKind.Catch: {
       unsafe_itr.motionless = 0;
       unsafe_itr.shaking = 0;
@@ -76,6 +91,10 @@ export default function cook_itr(unsafe_itr?: Partial<IItrInfo>) {
         unsafe_itr.arest = unsafe_itr.vrest;
         delete unsafe_itr.vrest;
       }
+      unsafe_itr.test = new CondMaker<C_Val>()
+        .and(C_Val.VictimType, '==', 'character')
+        .and(C_Val.VictimState, '==', Defines.State.Tired)
+        .done()
       break;
     }
     case ItrKind.Block:
@@ -87,21 +106,37 @@ export default function cook_itr(unsafe_itr?: Partial<IItrInfo>) {
       break;
     case ItrKind.JohnShield:
       unsafe_itr.friendly_fire = 1;
+      unsafe_itr.test = new CondMaker<C_Val>()
+        .and(C_Val.VictimType, '!=', 'character')
+        .or(C_Val.SameTeam, '!=', 1)
+        .done()
       break;
     case ItrKind.Heal: {
-      if (src_dvx) unsafe_itr.hit_act = get_next_frame_by_raw_id(src_dvx)
       unsafe_itr.friendly_fire = 1 // 允许治疗队友
+      if (src_dvx) unsafe_itr.hit_act = get_next_frame_by_raw_id(src_dvx);
+      unsafe_itr.test = new CondMaker<C_Val>()
+        .and(C_Val.VictimType, '==', 'character')
+        .done()
       break;
     }
     case ItrKind.Freeze: {
+      unsafe_itr.friendly_fire = 1;
       unsafe_itr.shaking = 0;
       unsafe_itr.motionless = 0;
       unsafe_itr.dvx = 0;
       unsafe_itr.dvy = 0;
       unsafe_itr.dvz = 0;
+      unsafe_itr.test = new CondMaker<C_Val>()
+        .add(C_Val.VictimType, '==', 'character')
+        .and(c => c
+          .add(C_Val.SameTeam, '==', 0)
+          .or(C_Val.VictimState, '==', Defines.State.Frozen)
+        )
+        .done()
       break;
     }
     case ItrKind.Wind: {
+      unsafe_itr.friendly_fire = 1;
       unsafe_itr.shaking = 0;
       unsafe_itr.motionless = 0;
       unsafe_itr.vrest = 1;
@@ -109,6 +144,18 @@ export default function cook_itr(unsafe_itr?: Partial<IItrInfo>) {
       unsafe_itr.dvx = 0;
       unsafe_itr.dvy = 0;
       unsafe_itr.dvz = 0;
+      unsafe_itr.test = new CondMaker<C_Val>()
+        .bracket(c => c
+          .add(C_Val.VictimType, '==', 'weapon')
+          .and(C_Val.VictimOID, '!=', Defines.BuiltIn_OID.Henry_Arrow1)
+          .and(C_Val.VictimOID, '!=', Defines.BuiltIn_OID.Rudolf)
+        ).or(c => c
+          .add(C_Val.VictimType, '==', 'character')
+          .and(c => c
+            .add(C_Val.SameTeam, '==', 0)
+            .or(C_Val.VictimState, '==', Defines.State.Frozen)
+          )
+        ).done()
       break;
     }
   }

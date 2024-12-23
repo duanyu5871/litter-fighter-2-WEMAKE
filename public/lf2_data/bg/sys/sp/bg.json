@@ -1,0 +1,156 @@
+{
+  "type": "background",
+  "id": "bg_3",
+  "base": {
+    "name": "Stanley Prison",
+    "shadow": "bg/sys/sp/s.png",
+    "shadowsize": [
+      37,
+      9
+    ],
+    "left": 0,
+    "right": 2400,
+    "far": -516,
+    "near": -110
+  },
+  "layers": [
+    {
+      "width": 2400,
+      "x": 0,
+      "loop": 277,
+      "file": "bg/sys/sp/wall.png",
+      "y": 422,
+      "z": -13
+    },
+    {
+      "x": 0,
+      "width": 794,
+      "height": 203,
+      "y": 242,
+      "z": -12,
+      "absolute": 1,
+      "color": "rgb(90,78,75)"
+    },
+    {
+      "width": 2400,
+      "x": -41,
+      "loop": 277,
+      "file": "bg/sys/sp/wall4.png",
+      "y": 422,
+      "z": -11,
+      "cc": 12,
+      "c1": 0,
+      "c2": 5
+    },
+    {
+      "width": 2400,
+      "x": -57,
+      "loop": 277,
+      "file": "bg/sys/sp/wall2.png",
+      "y": 281,
+      "z": -10,
+      "cc": 32,
+      "c1": 16,
+      "c2": 23
+    },
+    {
+      "width": 2400,
+      "x": -57,
+      "loop": 277,
+      "file": "bg/sys/sp/wall3.png",
+      "y": 281,
+      "z": -9,
+      "cc": 32,
+      "c1": 8,
+      "c2": 15
+    },
+    {
+      "width": 2400,
+      "x": -57,
+      "loop": 277,
+      "file": "bg/sys/sp/wall3.png",
+      "y": 281,
+      "z": -8,
+      "cc": 32,
+      "c1": 24,
+      "c2": 31
+    },
+    {
+      "width": 2400,
+      "x": 0,
+      "loop": 277,
+      "file": "bg/sys/sp/fire1.png",
+      "y": 422,
+      "z": -7,
+      "cc": 28,
+      "c1": 0,
+      "c2": 3
+    },
+    {
+      "width": 2400,
+      "x": 0,
+      "loop": 277,
+      "file": "bg/sys/sp/fire2.png",
+      "y": 422,
+      "z": -6,
+      "cc": 28,
+      "c1": 4,
+      "c2": 7
+    },
+    {
+      "width": 2400,
+      "x": 0,
+      "loop": 277,
+      "file": "bg/sys/sp/fire3.png",
+      "y": 422,
+      "z": -5,
+      "cc": 28,
+      "c1": 8,
+      "c2": 11
+    },
+    {
+      "width": 2400,
+      "x": 0,
+      "loop": 277,
+      "file": "bg/sys/sp/fire4.png",
+      "y": 422,
+      "z": -4,
+      "cc": 28,
+      "c1": 12,
+      "c2": 15
+    },
+    {
+      "width": 2400,
+      "x": 0,
+      "loop": 277,
+      "file": "bg/sys/sp/fire5.png",
+      "y": 422,
+      "z": -3,
+      "cc": 28,
+      "c1": 16,
+      "c2": 19
+    },
+    {
+      "width": 2400,
+      "x": 0,
+      "loop": 277,
+      "file": "bg/sys/sp/fire6.png",
+      "y": 422,
+      "z": -2,
+      "cc": 28,
+      "c1": 20,
+      "c2": 23
+    },
+    {
+      "width": 2400,
+      "x": 0,
+      "loop": 277,
+      "file": "bg/sys/sp/fire7.png",
+      "y": 422,
+      "z": -1,
+      "cc": 28,
+      "c1": 24,
+      "c2": 27
+    }
+  ]
+}

@@ -1,0 +1,212 @@
+{
+  "id": "998",
+  "type": "entity",
+  "base": {
+    "files": {
+      "0": {
+        "id": "0",
+        "path": "sprite/sys/etc.png",
+        "row": 10,
+        "col": 7,
+        "cell_w": 79,
+        "cell_h": 79
+      }
+    },
+    "name": "entity_998"
+  },
+  "frames": {
+    "0": {
+      "id": "0",
+      "name": "come_here",
+      "pic": {
+        "tex": "0",
+        "x": 0,
+        "y": 0,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 3,
+      "next": {
+        "id": "1"
+      },
+      "state": 9997,
+      "centerx": 38,
+      "centery": 105,
+      "hit_a": 0,
+      "hit_d": 0,
+      "hit_j": 0
+    },
+    "1": {
+      "id": "1",
+      "name": "come_here",
+      "pic": {
+        "tex": "0",
+        "x": 0,
+        "y": 0,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 121,
+      "next": {
+        "id": "gone"
+      },
+      "state": 9997,
+      "centerx": 38,
+      "centery": 105,
+      "hit_a": 0,
+      "hit_d": 0,
+      "hit_j": 0,
+      "sound": "data/080.wav.mp3"
+    },
+    "2": {
+      "id": "2",
+      "name": "stay",
+      "pic": {
+        "tex": "0",
+        "x": 80,
+        "y": 0,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 3,
+      "next": {
+        "id": "3"
+      },
+      "state": 9997,
+      "centerx": 38,
+      "centery": 105,
+      "hit_a": 0,
+      "hit_d": 0,
+      "hit_j": 0
+    },
+    "3": {
+      "id": "3",
+      "name": "stay",
+      "pic": {
+        "tex": "0",
+        "x": 80,
+        "y": 0,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 121,
+      "next": {
+        "id": "gone"
+      },
+      "state": 9997,
+      "centerx": 38,
+      "centery": 105,
+      "hit_a": 0,
+      "hit_d": 0,
+      "hit_j": 0,
+      "sound": "data/081.wav.mp3"
+    },
+    "4": {
+      "id": "4",
+      "name": "move",
+      "pic": {
+        "tex": "0",
+        "x": 160,
+        "y": 0,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 3,
+      "next": {
+        "id": "5"
+      },
+      "state": 9997,
+      "centerx": 38,
+      "centery": 105,
+      "hit_a": 0,
+      "hit_d": 0,
+      "hit_j": 0
+    },
+    "5": {
+      "id": "5",
+      "name": "move",
+      "pic": {
+        "tex": "0",
+        "x": 160,
+        "y": 0,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 121,
+      "next": {
+        "id": "gone"
+      },
+      "state": 9997,
+      "centerx": 38,
+      "centery": 105,
+      "hit_a": 0,
+      "hit_d": 0,
+      "hit_j": 0,
+      "sound": "data/082.wav.mp3"
+    },
+    "6": {
+      "id": "6",
+      "name": "join",
+      "pic": {
+        "tex": "0",
+        "x": 240,
+        "y": 0,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 3,
+      "next": {
+        "id": "7"
+      },
+      "state": 9997,
+      "centerx": 38,
+      "centery": 105,
+      "hit_a": 0,
+      "hit_d": 0,
+      "hit_j": 0
+    },
+    "7": {
+      "id": "7",
+      "name": "join",
+      "pic": {
+        "tex": "0",
+        "x": 240,
+        "y": 0,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 121,
+      "next": {
+        "id": "gone"
+      },
+      "state": 9997,
+      "centerx": 38,
+      "centery": 105,
+      "hit_a": 0,
+      "hit_d": 0,
+      "hit_j": 0,
+      "sound": "data/093.wav.mp3"
+    },
+    "399": {
+      "id": "399",
+      "name": "come_here",
+      "pic": {
+        "tex": "0",
+        "x": 0,
+        "y": 0,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 121,
+      "next": {
+        "id": "gone"
+      },
+      "state": 9997,
+      "centerx": 38,
+      "centery": 105,
+      "hit_a": 0,
+      "hit_d": 0,
+      "hit_j": 0
+    }
+  }
+}

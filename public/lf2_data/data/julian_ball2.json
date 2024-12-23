@@ -1,0 +1,1380 @@
+{
+  "id": "229",
+  "type": "ball",
+  "base": {
+    "files": {
+      "0": {
+        "id": "0",
+        "path": "sprite/sys/julian_ball2.png",
+        "row": 4,
+        "col": 2,
+        "cell_w": 109,
+        "cell_h": 99
+      },
+      "1": {
+        "id": "1",
+        "path": "sprite/sys/julian_col.png",
+        "row": 4,
+        "col": 1,
+        "cell_w": 199,
+        "cell_h": 404
+      },
+      "2": {
+        "id": "2",
+        "path": "sprite/sys/julian_col2.png",
+        "row": 4,
+        "col": 1,
+        "cell_w": 159,
+        "cell_h": 404
+      },
+      "3": {
+        "id": "3",
+        "path": "sprite/sys/julian_exp.png",
+        "row": 5,
+        "col": 3,
+        "cell_w": 159,
+        "cell_h": 159
+      }
+    },
+    "hp": 500,
+    "dead_sounds": [
+      "data/020.wav.mp3"
+    ],
+    "drop_sounds": [
+      "data/020.wav.mp3"
+    ],
+    "hit_sounds": [
+      "data/020.wav.mp3"
+    ],
+    "name": "ball_229"
+  },
+  "frames": {
+    "0": {
+      "id": "0",
+      "name": "flying",
+      "pic": {
+        "tex": "0",
+        "x": 0,
+        "y": 0,
+        "w": 109,
+        "h": 99
+      },
+      "wait": 3,
+      "next": {
+        "id": "1"
+      },
+      "bdy": [
+        {
+          "x": -16,
+          "y": 8,
+          "w": 122,
+          "h": 85,
+          "kind": 0,
+          "hit_act": [
+            {
+              "id": "20",
+              "expression": "hit_by_state{{3005|hit_by_state{{3006|hit_by_itr_kind{{9"
+            }
+          ]
+        }
+      ],
+      "itr": [
+        {
+          "kind": 0,
+          "x": -16,
+          "y": 8,
+          "w": 122,
+          "h": 85,
+          "injury": 75,
+          "vrest": 24,
+          "dvx": 15,
+          "fall": 140,
+          "bdefend": 200,
+          "hit_sounds": [
+            "data/020.wav.mp3"
+          ],
+          "hit_act": [
+            {
+              "id": "20",
+              "expression": "hit_on_state{{3005|hit_on_state{{3006"
+            }
+          ]
+        }
+      ],
+      "state": 3006,
+      "centerx": 50,
+      "centery": 49,
+      "dvx": 9,
+      "hp": 3,
+      "on_dead": {
+        "id": "2"
+      },
+      "speedz": 2
+    },
+    "1": {
+      "id": "1",
+      "name": "flying",
+      "pic": {
+        "tex": "0",
+        "x": 110,
+        "y": 0,
+        "w": 109,
+        "h": 99
+      },
+      "wait": 3,
+      "next": {
+        "id": "auto"
+      },
+      "bdy": [
+        {
+          "x": -16,
+          "y": 8,
+          "w": 122,
+          "h": 85,
+          "kind": 0,
+          "hit_act": [
+            {
+              "id": "20",
+              "expression": "hit_by_state{{3005|hit_by_state{{3006|hit_by_itr_kind{{9"
+            }
+          ]
+        }
+      ],
+      "itr": [
+        {
+          "kind": 0,
+          "x": -16,
+          "y": 8,
+          "w": 122,
+          "h": 85,
+          "injury": 75,
+          "vrest": 24,
+          "dvx": 15,
+          "fall": 140,
+          "bdefend": 200,
+          "hit_sounds": [
+            "data/020.wav.mp3"
+          ],
+          "hit_act": [
+            {
+              "id": "20",
+              "expression": "hit_on_state{{3005|hit_on_state{{3006"
+            }
+          ]
+        }
+      ],
+      "state": 3006,
+      "centerx": 50,
+      "centery": 49,
+      "dvx": 9,
+      "hp": 3,
+      "on_dead": {
+        "id": "3"
+      },
+      "speedz": 2
+    },
+    "2": {
+      "id": "2",
+      "name": "flying",
+      "pic": {
+        "tex": "0",
+        "x": 0,
+        "y": 0,
+        "w": 109,
+        "h": 99
+      },
+      "wait": 3,
+      "next": {
+        "id": "3"
+      },
+      "bdy": [
+        {
+          "x": -16,
+          "y": 8,
+          "w": 122,
+          "h": 85,
+          "kind": 0,
+          "test": "itr_kind!=9&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))",
+          "hit_act": [
+            {
+              "id": "20",
+              "sounds": [
+                "data/020.wav.mp3"
+              ]
+            }
+          ]
+        },
+        {
+          "x": -16,
+          "y": 8,
+          "w": 122,
+          "h": 85,
+          "kind": 0,
+          "test": "(friendly_fire==0&attacker_type==character&itr_kind==0&itr_effect!=3)|(friendly_fire==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(friendly_fire==1&same_facing==0&itr_kind==5)|(friendly_fire==0&itr_kind==5)",
+          "hit_act": {
+            "id": "30",
+            "sounds": [
+              "data/020.wav.mp3"
+            ]
+          },
+          "friendly_fire": 1
+        }
+      ],
+      "itr": [
+        {
+          "kind": 0,
+          "x": -16,
+          "y": 8,
+          "w": 122,
+          "h": 85,
+          "injury": 75,
+          "vrest": 24,
+          "dvx": 15,
+          "fall": 140,
+          "bdefend": 200,
+          "hit_sounds": [
+            "data/020.wav.mp3"
+          ],
+          "hit_act": [
+            {
+              "id": "10"
+            }
+          ]
+        }
+      ],
+      "state": 3000,
+      "centerx": 50,
+      "centery": 49,
+      "dvx": 9,
+      "hp": 12.5,
+      "on_dead": {
+        "id": "2"
+      }
+    },
+    "3": {
+      "id": "3",
+      "name": "flying",
+      "pic": {
+        "tex": "0",
+        "x": 110,
+        "y": 0,
+        "w": 109,
+        "h": 99
+      },
+      "wait": 3,
+      "next": {
+        "id": "2"
+      },
+      "bdy": [
+        {
+          "x": -16,
+          "y": 8,
+          "w": 122,
+          "h": 85,
+          "kind": 0,
+          "test": "itr_kind!=9&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))",
+          "hit_act": [
+            {
+              "id": "20",
+              "sounds": [
+                "data/020.wav.mp3"
+              ]
+            }
+          ]
+        },
+        {
+          "x": -16,
+          "y": 8,
+          "w": 122,
+          "h": 85,
+          "kind": 0,
+          "test": "(friendly_fire==0&attacker_type==character&itr_kind==0&itr_effect!=3)|(friendly_fire==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(friendly_fire==1&same_facing==0&itr_kind==5)|(friendly_fire==0&itr_kind==5)",
+          "hit_act": {
+            "id": "30",
+            "sounds": [
+              "data/020.wav.mp3"
+            ]
+          },
+          "friendly_fire": 1
+        }
+      ],
+      "itr": [
+        {
+          "kind": 0,
+          "x": -16,
+          "y": 8,
+          "w": 122,
+          "h": 85,
+          "injury": 75,
+          "vrest": 24,
+          "dvx": 15,
+          "fall": 140,
+          "bdefend": 200,
+          "hit_sounds": [
+            "data/020.wav.mp3"
+          ],
+          "hit_act": [
+            {
+              "id": "10"
+            }
+          ]
+        }
+      ],
+      "state": 3000,
+      "centerx": 50,
+      "centery": 49,
+      "dvx": 9,
+      "hp": 12.5,
+      "on_dead": {
+        "id": "3"
+      }
+    },
+    "10": {
+      "id": "10",
+      "name": "explosion",
+      "pic": {
+        "tex": "3",
+        "x": 0,
+        "y": 0,
+        "w": 159,
+        "h": 159
+      },
+      "wait": 3,
+      "next": {
+        "id": "111"
+      },
+      "itr": [
+        {
+          "kind": 0,
+          "x": 23,
+          "y": 36,
+          "w": 112,
+          "h": 110,
+          "injury": 75,
+          "zwidth": 37,
+          "effect": 23,
+          "vrest": 594,
+          "dvx": -6,
+          "dvy": 9.36,
+          "fall": 140,
+          "bdefend": 32,
+          "motionless": 0,
+          "friendly_fire": 1,
+          "hit_sounds": [
+            "data/020.wav.mp3"
+          ]
+        }
+      ],
+      "state": 18,
+      "centerx": 78,
+      "centery": 103,
+      "sound": "data/089.wav.mp3"
+    },
+    "11": {
+      "id": "11",
+      "name": "hiting",
+      "pic": {
+        "tex": "0",
+        "x": 110,
+        "y": 100,
+        "w": 109,
+        "h": 99
+      },
+      "wait": 3,
+      "next": {
+        "id": "12"
+      },
+      "state": 3001,
+      "centerx": 50,
+      "centery": 49
+    },
+    "12": {
+      "id": "12",
+      "name": "hiting",
+      "pic": {
+        "tex": "0",
+        "x": 220,
+        "y": 100,
+        "w": 109,
+        "h": 99
+      },
+      "wait": 3,
+      "next": {
+        "id": "13"
+      },
+      "state": 3001,
+      "centerx": 50,
+      "centery": 49
+    },
+    "13": {
+      "id": "13",
+      "name": "hiting",
+      "pic": {
+        "tex": "0",
+        "x": 330,
+        "y": 100,
+        "w": 109,
+        "h": 99
+      },
+      "wait": 3,
+      "next": {
+        "id": "gone"
+      },
+      "state": 3001,
+      "centerx": 50,
+      "centery": 49
+    },
+    "20": {
+      "id": "20",
+      "name": "explosion",
+      "pic": {
+        "tex": "3",
+        "x": 0,
+        "y": 0,
+        "w": 159,
+        "h": 159
+      },
+      "wait": 3,
+      "next": {
+        "id": "111"
+      },
+      "itr": [
+        {
+          "kind": 0,
+          "x": 23,
+          "y": 36,
+          "w": 112,
+          "h": 110,
+          "injury": 75,
+          "zwidth": 37,
+          "effect": 23,
+          "vrest": 594,
+          "dvx": -6,
+          "dvy": 9.36,
+          "fall": 140,
+          "bdefend": 32,
+          "motionless": 0,
+          "friendly_fire": 1,
+          "hit_sounds": [
+            "data/020.wav.mp3"
+          ]
+        }
+      ],
+      "state": 18,
+      "centerx": 78,
+      "centery": 103,
+      "sound": "data/089.wav.mp3"
+    },
+    "21": {
+      "id": "21",
+      "name": "hit",
+      "pic": {
+        "tex": "0",
+        "x": 110,
+        "y": 100,
+        "w": 109,
+        "h": 99
+      },
+      "wait": 3,
+      "next": {
+        "id": "22"
+      },
+      "state": 3002,
+      "centerx": 50,
+      "centery": 49
+    },
+    "22": {
+      "id": "22",
+      "name": "hit",
+      "pic": {
+        "tex": "0",
+        "x": 220,
+        "y": 100,
+        "w": 109,
+        "h": 99
+      },
+      "wait": 3,
+      "next": {
+        "id": "23"
+      },
+      "state": 3002,
+      "centerx": 50,
+      "centery": 49
+    },
+    "23": {
+      "id": "23",
+      "name": "hit",
+      "pic": {
+        "tex": "0",
+        "x": 330,
+        "y": 100,
+        "w": 109,
+        "h": 99
+      },
+      "wait": 3,
+      "next": {
+        "id": "gone"
+      },
+      "state": 3002,
+      "centerx": 50,
+      "centery": 49
+    },
+    "30": {
+      "id": "30",
+      "name": "explosion",
+      "pic": {
+        "tex": "3",
+        "x": 0,
+        "y": 0,
+        "w": 159,
+        "h": 159
+      },
+      "wait": 3,
+      "next": {
+        "id": "111"
+      },
+      "itr": [
+        {
+          "kind": 0,
+          "x": 23,
+          "y": 36,
+          "w": 112,
+          "h": 110,
+          "injury": 75,
+          "zwidth": 37,
+          "effect": 23,
+          "vrest": 594,
+          "dvx": -6,
+          "dvy": 9.36,
+          "fall": 140,
+          "bdefend": 32,
+          "motionless": 0,
+          "friendly_fire": 1,
+          "hit_sounds": [
+            "data/020.wav.mp3"
+          ]
+        }
+      ],
+      "state": 18,
+      "centerx": 78,
+      "centery": 103,
+      "sound": "data/089.wav.mp3"
+    },
+    "31": {
+      "id": "31",
+      "name": "rebounding",
+      "pic": {
+        "tex": "0",
+        "x": 110,
+        "y": 100,
+        "w": 109,
+        "h": 99
+      },
+      "wait": 3,
+      "next": {
+        "id": "32"
+      },
+      "state": 3003,
+      "centerx": 50,
+      "centery": 49
+    },
+    "32": {
+      "id": "32",
+      "name": "rebounding",
+      "pic": {
+        "tex": "0",
+        "x": 220,
+        "y": 100,
+        "w": 109,
+        "h": 99
+      },
+      "wait": 3,
+      "next": {
+        "id": "33"
+      },
+      "state": 3003,
+      "centerx": 50,
+      "centery": 49
+    },
+    "33": {
+      "id": "33",
+      "name": "rebounding",
+      "pic": {
+        "tex": "0",
+        "x": 330,
+        "y": 100,
+        "w": 109,
+        "h": 99
+      },
+      "wait": 3,
+      "next": {
+        "id": "gone"
+      },
+      "state": 3003,
+      "centerx": 50,
+      "centery": 49
+    },
+    "40": {
+      "id": "40",
+      "name": "col",
+      "pic": {
+        "tex": "1",
+        "x": 0,
+        "y": 0,
+        "w": 199,
+        "h": 404
+      },
+      "wait": 7,
+      "next": {
+        "id": "41"
+      },
+      "itr": [
+        {
+          "kind": 0,
+          "x": 10,
+          "y": 0,
+          "w": 180,
+          "h": 405,
+          "injury": 135,
+          "zwidth": 37,
+          "effect": 23,
+          "vrest": 54,
+          "dvx": -5,
+          "dvy": 18.2,
+          "fall": 140,
+          "bdefend": 200,
+          "motionless": 0,
+          "hit_sounds": [
+            "data/020.wav.mp3"
+          ]
+        }
+      ],
+      "state": 15,
+      "centerx": 100,
+      "centery": 390,
+      "sound": "data/089.wav.mp3"
+    },
+    "41": {
+      "id": "41",
+      "name": "col",
+      "pic": {
+        "tex": "1",
+        "x": 200,
+        "y": 0,
+        "w": 199,
+        "h": 404
+      },
+      "wait": 3,
+      "next": {
+        "id": "42"
+      },
+      "itr": [
+        {
+          "kind": 0,
+          "x": 10,
+          "y": 0,
+          "w": 180,
+          "h": 405,
+          "injury": 135,
+          "zwidth": 37,
+          "effect": 23,
+          "vrest": 54,
+          "dvx": -5,
+          "dvy": 18.2,
+          "fall": 140,
+          "bdefend": 200,
+          "motionless": 0,
+          "hit_sounds": [
+            "data/020.wav.mp3"
+          ]
+        }
+      ],
+      "state": 15,
+      "centerx": 100,
+      "centery": 390,
+      "sound": "data/071.wav.mp3"
+    },
+    "42": {
+      "id": "42",
+      "name": "col",
+      "pic": {
+        "tex": "1",
+        "x": 400,
+        "y": 0,
+        "w": 199,
+        "h": 404
+      },
+      "wait": 1,
+      "next": {
+        "id": "43"
+      },
+      "itr": [
+        {
+          "kind": 0,
+          "x": 10,
+          "y": 0,
+          "w": 180,
+          "h": 405,
+          "injury": 135,
+          "zwidth": 37,
+          "effect": 23,
+          "vrest": 54,
+          "dvx": -5,
+          "dvy": 18.2,
+          "fall": 140,
+          "bdefend": 200,
+          "motionless": 0,
+          "hit_sounds": [
+            "data/020.wav.mp3"
+          ]
+        }
+      ],
+      "state": 15,
+      "centerx": 100,
+      "centery": 390
+    },
+    "43": {
+      "id": "43",
+      "name": "col",
+      "pic": {
+        "tex": "1",
+        "x": 200,
+        "y": 0,
+        "w": 199,
+        "h": 404
+      },
+      "wait": 3,
+      "next": {
+        "id": "44"
+      },
+      "itr": [
+        {
+          "kind": 0,
+          "x": 10,
+          "y": 0,
+          "w": 180,
+          "h": 405,
+          "injury": 135,
+          "zwidth": 37,
+          "effect": 23,
+          "vrest": 54,
+          "dvx": -5,
+          "dvy": 18.2,
+          "fall": 140,
+          "bdefend": 200,
+          "motionless": 0,
+          "hit_sounds": [
+            "data/020.wav.mp3"
+          ]
+        }
+      ],
+      "state": 15,
+      "centerx": 100,
+      "centery": 390
+    },
+    "44": {
+      "id": "44",
+      "name": "col",
+      "pic": {
+        "tex": "1",
+        "x": 400,
+        "y": 0,
+        "w": 199,
+        "h": 404
+      },
+      "wait": 1,
+      "next": {
+        "id": "45"
+      },
+      "itr": [
+        {
+          "kind": 0,
+          "x": 10,
+          "y": 0,
+          "w": 180,
+          "h": 405,
+          "injury": 135,
+          "zwidth": 37,
+          "effect": 23,
+          "vrest": 54,
+          "dvx": -5,
+          "dvy": 18.2,
+          "fall": 140,
+          "bdefend": 200,
+          "motionless": 0,
+          "hit_sounds": [
+            "data/020.wav.mp3"
+          ]
+        }
+      ],
+      "state": 15,
+      "centerx": 100,
+      "centery": 390
+    },
+    "45": {
+      "id": "45",
+      "name": "col",
+      "pic": {
+        "tex": "1",
+        "x": 600,
+        "y": 0,
+        "w": 199,
+        "h": 404
+      },
+      "wait": 1,
+      "next": {
+        "id": "46"
+      },
+      "itr": [
+        {
+          "kind": 0,
+          "x": 10,
+          "y": 0,
+          "w": 180,
+          "h": 405,
+          "injury": 135,
+          "zwidth": 37,
+          "effect": 23,
+          "vrest": 54,
+          "dvx": -5,
+          "dvy": 18.2,
+          "fall": 140,
+          "bdefend": 200,
+          "motionless": 0,
+          "hit_sounds": [
+            "data/020.wav.mp3"
+          ]
+        }
+      ],
+      "state": 15,
+      "centerx": 100,
+      "centery": 390
+    },
+    "46": {
+      "id": "46",
+      "name": "col",
+      "pic": {
+        "tex": "1",
+        "x": 400,
+        "y": 0,
+        "w": 199,
+        "h": 404
+      },
+      "wait": 3,
+      "next": {
+        "id": "47"
+      },
+      "itr": [
+        {
+          "kind": 0,
+          "x": 10,
+          "y": 0,
+          "w": 180,
+          "h": 405,
+          "injury": 135,
+          "zwidth": 37,
+          "effect": 23,
+          "vrest": 54,
+          "dvx": -5,
+          "dvy": 18.2,
+          "fall": 140,
+          "bdefend": 200,
+          "motionless": 0,
+          "hit_sounds": [
+            "data/020.wav.mp3"
+          ]
+        }
+      ],
+      "state": 15,
+      "centerx": 100,
+      "centery": 390
+    },
+    "47": {
+      "id": "47",
+      "name": "col",
+      "pic": {
+        "tex": "1",
+        "x": 600,
+        "y": 0,
+        "w": 199,
+        "h": 404
+      },
+      "wait": 1,
+      "next": {
+        "id": "48"
+      },
+      "itr": [
+        {
+          "kind": 0,
+          "x": 10,
+          "y": 0,
+          "w": 180,
+          "h": 405,
+          "injury": 135,
+          "zwidth": 37,
+          "effect": 23,
+          "vrest": 54,
+          "dvx": -5,
+          "dvy": 18.2,
+          "fall": 140,
+          "bdefend": 200,
+          "motionless": 0,
+          "hit_sounds": [
+            "data/020.wav.mp3"
+          ]
+        }
+      ],
+      "state": 15,
+      "centerx": 100,
+      "centery": 390
+    },
+    "48": {
+      "id": "48",
+      "name": "col",
+      "pic": {
+        "tex": "2",
+        "x": 0,
+        "y": 0,
+        "w": 159,
+        "h": 404
+      },
+      "wait": 3,
+      "next": {
+        "id": "49"
+      },
+      "state": 15,
+      "centerx": 80,
+      "centery": 390
+    },
+    "49": {
+      "id": "49",
+      "name": "col",
+      "pic": {
+        "tex": "2",
+        "x": 160,
+        "y": 0,
+        "w": 159,
+        "h": 404
+      },
+      "wait": 1,
+      "next": {
+        "id": "50"
+      },
+      "state": 15,
+      "centerx": 80,
+      "centery": 390
+    },
+    "50": {
+      "id": "50",
+      "name": "col",
+      "pic": {
+        "tex": "2",
+        "x": 320,
+        "y": 0,
+        "w": 159,
+        "h": 404
+      },
+      "wait": 1,
+      "next": {
+        "id": "51"
+      },
+      "state": 15,
+      "centerx": 80,
+      "centery": 390
+    },
+    "51": {
+      "id": "51",
+      "name": "col",
+      "pic": {
+        "tex": "2",
+        "x": 480,
+        "y": 0,
+        "w": 159,
+        "h": 404
+      },
+      "wait": 1,
+      "next": {
+        "id": "gone"
+      },
+      "state": 15,
+      "centerx": 80,
+      "centery": 390
+    },
+    "110": {
+      "id": "110",
+      "name": "explosion",
+      "pic": {
+        "tex": "3",
+        "x": 0,
+        "y": 0,
+        "w": 159,
+        "h": 159
+      },
+      "wait": 3,
+      "next": {
+        "id": "111"
+      },
+      "itr": [
+        {
+          "kind": 0,
+          "x": 23,
+          "y": 36,
+          "w": 112,
+          "h": 110,
+          "injury": 75,
+          "zwidth": 37,
+          "effect": 23,
+          "vrest": 594,
+          "dvx": -6,
+          "dvy": 9.36,
+          "fall": 140,
+          "bdefend": 32,
+          "motionless": 0,
+          "friendly_fire": 1,
+          "hit_sounds": [
+            "data/020.wav.mp3"
+          ]
+        }
+      ],
+      "state": 18,
+      "centerx": 78,
+      "centery": 103,
+      "sound": "data/089.wav.mp3"
+    },
+    "111": {
+      "id": "111",
+      "name": "explosion",
+      "pic": {
+        "tex": "3",
+        "x": 160,
+        "y": 0,
+        "w": 159,
+        "h": 159
+      },
+      "wait": 3,
+      "next": {
+        "id": "112"
+      },
+      "itr": [
+        {
+          "kind": 0,
+          "x": 20,
+          "y": 16,
+          "w": 122,
+          "h": 135,
+          "injury": 75,
+          "zwidth": 37,
+          "effect": 23,
+          "vrest": 594,
+          "dvx": -6,
+          "dvy": 9.36,
+          "fall": 140,
+          "bdefend": 32,
+          "motionless": 0,
+          "friendly_fire": 1,
+          "hit_sounds": [
+            "data/020.wav.mp3"
+          ]
+        }
+      ],
+      "state": 18,
+      "centerx": 78,
+      "centery": 103,
+      "sound": "data/071.wav.mp3"
+    },
+    "112": {
+      "id": "112",
+      "name": "explosion",
+      "pic": {
+        "tex": "3",
+        "x": 320,
+        "y": 0,
+        "w": 159,
+        "h": 159
+      },
+      "wait": 3,
+      "next": {
+        "id": "113"
+      },
+      "itr": [
+        {
+          "kind": 0,
+          "x": 19,
+          "y": 18,
+          "w": 127,
+          "h": 131,
+          "injury": 75,
+          "zwidth": 37,
+          "effect": 23,
+          "vrest": 594,
+          "dvx": -6,
+          "dvy": 9.36,
+          "fall": 140,
+          "bdefend": 32,
+          "motionless": 0,
+          "friendly_fire": 1,
+          "hit_sounds": [
+            "data/020.wav.mp3"
+          ]
+        }
+      ],
+      "state": 18,
+      "centerx": 78,
+      "centery": 103
+    },
+    "113": {
+      "id": "113",
+      "name": "explosion",
+      "pic": {
+        "tex": "3",
+        "x": 480,
+        "y": 0,
+        "w": 159,
+        "h": 159
+      },
+      "wait": 3,
+      "next": {
+        "id": "114"
+      },
+      "itr": [
+        {
+          "kind": 0,
+          "x": 7,
+          "y": 16,
+          "w": 146,
+          "h": 132,
+          "injury": 75,
+          "zwidth": 37,
+          "effect": 23,
+          "vrest": 594,
+          "dvx": -6,
+          "dvy": 9.36,
+          "fall": 140,
+          "bdefend": 32,
+          "motionless": 0,
+          "friendly_fire": 1,
+          "hit_sounds": [
+            "data/020.wav.mp3"
+          ]
+        }
+      ],
+      "state": 18,
+      "centerx": 78,
+      "centery": 103
+    },
+    "114": {
+      "id": "114",
+      "name": "explosion",
+      "pic": {
+        "tex": "3",
+        "x": 640,
+        "y": 0,
+        "w": 159,
+        "h": 159
+      },
+      "wait": 3,
+      "next": {
+        "id": "115"
+      },
+      "itr": [
+        {
+          "kind": 0,
+          "x": 13,
+          "y": 13,
+          "w": 137,
+          "h": 132,
+          "injury": 75,
+          "zwidth": 37,
+          "effect": 23,
+          "vrest": 594,
+          "dvx": -6,
+          "dvy": 9.36,
+          "fall": 140,
+          "bdefend": 32,
+          "motionless": 0,
+          "friendly_fire": 1,
+          "hit_sounds": [
+            "data/020.wav.mp3"
+          ]
+        }
+      ],
+      "state": 18,
+      "centerx": 78,
+      "centery": 105
+    },
+    "115": {
+      "id": "115",
+      "name": "explosion",
+      "pic": {
+        "tex": "3",
+        "x": 0,
+        "y": 160,
+        "w": 159,
+        "h": 159
+      },
+      "wait": 3,
+      "next": {
+        "id": "116"
+      },
+      "itr": [
+        {
+          "kind": 0,
+          "x": 7,
+          "y": 14,
+          "w": 145,
+          "h": 117,
+          "injury": 75,
+          "zwidth": 37,
+          "effect": 23,
+          "vrest": 594,
+          "dvx": -6,
+          "dvy": 9.36,
+          "fall": 140,
+          "bdefend": 32,
+          "motionless": 0,
+          "friendly_fire": 1,
+          "hit_sounds": [
+            "data/020.wav.mp3"
+          ]
+        }
+      ],
+      "state": 18,
+      "centerx": 78,
+      "centery": 110
+    },
+    "116": {
+      "id": "116",
+      "name": "explosion",
+      "pic": {
+        "tex": "3",
+        "x": 160,
+        "y": 160,
+        "w": 159,
+        "h": 159
+      },
+      "wait": 3,
+      "next": {
+        "id": "117"
+      },
+      "itr": [
+        {
+          "kind": 0,
+          "x": 15,
+          "y": 6,
+          "w": 128,
+          "h": 123,
+          "injury": 75,
+          "zwidth": 37,
+          "effect": 23,
+          "vrest": 594,
+          "dvx": -6,
+          "dvy": 9.36,
+          "fall": 140,
+          "bdefend": 32,
+          "motionless": 0,
+          "friendly_fire": 1,
+          "hit_sounds": [
+            "data/020.wav.mp3"
+          ]
+        }
+      ],
+      "state": 18,
+      "centerx": 78,
+      "centery": 112
+    },
+    "117": {
+      "id": "117",
+      "name": "explosion",
+      "pic": {
+        "tex": "3",
+        "x": 320,
+        "y": 160,
+        "w": 159,
+        "h": 159
+      },
+      "wait": 3,
+      "next": {
+        "id": "118"
+      },
+      "itr": [
+        {
+          "kind": 0,
+          "x": 15,
+          "y": 6,
+          "w": 128,
+          "h": 123,
+          "injury": 75,
+          "zwidth": 37,
+          "effect": 23,
+          "vrest": 594,
+          "dvx": -6,
+          "dvy": 9.36,
+          "fall": 140,
+          "bdefend": 32,
+          "motionless": 0,
+          "friendly_fire": 1,
+          "hit_sounds": [
+            "data/020.wav.mp3"
+          ]
+        }
+      ],
+      "state": 18,
+      "centerx": 78,
+      "centery": 119
+    },
+    "118": {
+      "id": "118",
+      "name": "explosion",
+      "pic": {
+        "tex": "3",
+        "x": 480,
+        "y": 160,
+        "w": 159,
+        "h": 159
+      },
+      "wait": 3,
+      "next": {
+        "id": "119"
+      },
+      "state": 18,
+      "centerx": 78,
+      "centery": 126
+    },
+    "119": {
+      "id": "119",
+      "name": "explosion",
+      "pic": {
+        "tex": "3",
+        "x": 640,
+        "y": 160,
+        "w": 159,
+        "h": 159
+      },
+      "wait": 3,
+      "next": {
+        "id": "120"
+      },
+      "state": 18,
+      "centerx": 78,
+      "centery": 132
+    },
+    "120": {
+      "id": "120",
+      "name": "explosion",
+      "pic": {
+        "tex": "3",
+        "x": 0,
+        "y": 320,
+        "w": 159,
+        "h": 159
+      },
+      "wait": 3,
+      "next": {
+        "id": "gone"
+      },
+      "state": 18,
+      "centerx": 76,
+      "centery": 127
+    }
+  }
+}

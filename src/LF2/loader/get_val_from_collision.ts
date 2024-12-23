@@ -11,6 +11,7 @@ export function get_val_from_collision(word: CollisionVal | string, collision: I
       return collision.itr.kind;
     case CollisionVal.ItrEffect:
       return collision.itr.effect;
+    case CollisionVal.SameTeam:
     case CollisionVal.FriendlyFire:
       return collision.attacker.same_team(collision.victim) ? 1 : 0;
     case CollisionVal.SameFacing:
@@ -27,7 +28,10 @@ export function get_val_from_collision(word: CollisionVal | string, collision: I
       return collision.attacker.holding ? 1 : 0
     case CollisionVal.VictimHasHolding:
       return collision.victim.holding ? 1 : 0
-
+    case CollisionVal.AttackerOId:
+      return collision.attacker.data.id
+    case CollisionVal.VictimOID:
+      return collision.victim.data.id
   }
   return word;
 }

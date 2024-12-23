@@ -1,0 +1,137 @@
+{
+  "type": "background",
+  "id": "bg_0",
+  "base": {
+    "name": "Tai Hom Village",
+    "shadow": "bg/sys/thv/s.png",
+    "shadowsize": [
+      37,
+      9
+    ],
+    "left": 0,
+    "right": 1600,
+    "far": -360,
+    "near": -120
+  },
+  "layers": [
+    {
+      "width": 800,
+      "x": 0,
+      "file": "bg/sys/thv/5.png",
+      "y": 422,
+      "z": -17
+    },
+    {
+      "width": 840,
+      "x": 245,
+      "file": "bg/sys/thv/4.png",
+      "y": 422,
+      "z": -16
+    },
+    {
+      "width": 852,
+      "x": 176,
+      "file": "bg/sys/thv/3.png",
+      "y": 388,
+      "z": -15
+    },
+    {
+      "width": 1255,
+      "x": 0,
+      "file": "bg/sys/thv/2al.png",
+      "y": 353,
+      "z": -14
+    },
+    {
+      "width": 1255,
+      "x": 0,
+      "file": "bg/sys/thv/2bl.png",
+      "y": 304,
+      "z": -13
+    },
+    {
+      "width": 1255,
+      "x": 800,
+      "file": "bg/sys/thv/2ar.png",
+      "y": 353,
+      "z": -12
+    },
+    {
+      "width": 1255,
+      "x": 800,
+      "file": "bg/sys/thv/2br.png",
+      "y": 304,
+      "z": -11
+    },
+    {
+      "width": 1350,
+      "x": -175,
+      "file": "bg/sys/thv/1al.png",
+      "y": 359,
+      "z": -10
+    },
+    {
+      "width": 1350,
+      "x": -175,
+      "file": "bg/sys/thv/1bl.png",
+      "y": 267,
+      "z": -9
+    },
+    {
+      "width": 1400,
+      "x": 0,
+      "file": "bg/sys/thv/1cl.png",
+      "y": 187,
+      "z": -8
+    },
+    {
+      "width": 1520,
+      "x": 0,
+      "file": "bg/sys/thv/1dl.png",
+      "y": 172,
+      "z": -7
+    },
+    {
+      "width": 1600,
+      "x": 0,
+      "file": "bg/sys/thv/1el.png",
+      "y": 147,
+      "z": -6
+    },
+    {
+      "width": 1350,
+      "x": 625,
+      "file": "bg/sys/thv/1ar.png",
+      "y": 359,
+      "z": -5
+    },
+    {
+      "width": 1350,
+      "x": 625,
+      "file": "bg/sys/thv/1br.png",
+      "y": 267,
+      "z": -4
+    },
+    {
+      "width": 1400,
+      "x": 800,
+      "file": "bg/sys/thv/1cr.png",
+      "y": 187,
+      "z": -3
+    },
+    {
+      "width": 1520,
+      "x": 800,
+      "file": "bg/sys/thv/1dr.png",
+      "y": 172,
+      "z": -2
+    },
+    {
+      "width": 1600,
+      "x": 800,
+      "file": "bg/sys/thv/1er.png",
+      "y": 147,
+      "z": -1
+    }
+  ]
+}

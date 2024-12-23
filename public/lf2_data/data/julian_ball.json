@@ -1,0 +1,1358 @@
+{
+  "id": "228",
+  "type": "ball",
+  "base": {
+    "files": {
+      "0": {
+        "id": "0",
+        "path": "sprite/sys/julian_ball.png",
+        "row": 4,
+        "col": 4,
+        "cell_w": 81,
+        "cell_h": 82
+      }
+    },
+    "hp": 500,
+    "dead_sounds": [
+      "data/090.wav.mp3"
+    ],
+    "drop_sounds": [
+      "data/090.wav.mp3"
+    ],
+    "hit_sounds": [
+      "data/090.wav.mp3"
+    ],
+    "name": "ball_228"
+  },
+  "frames": {
+    "0": {
+      "id": "0",
+      "name": "flying",
+      "pic": {
+        "tex": "0",
+        "x": 0,
+        "y": 0,
+        "w": 81,
+        "h": 82
+      },
+      "wait": 3,
+      "next": {
+        "id": "1"
+      },
+      "bdy": [
+        {
+          "x": 18,
+          "y": 19,
+          "w": 56,
+          "h": 51,
+          "kind": 0,
+          "test": "itr_kind!=9&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))",
+          "hit_act": [
+            {
+              "id": "20",
+              "sounds": [
+                "data/090.wav.mp3"
+              ]
+            }
+          ]
+        },
+        {
+          "x": 18,
+          "y": 19,
+          "w": 56,
+          "h": 51,
+          "kind": 0,
+          "test": "(friendly_fire==0&attacker_type==character&itr_kind==0&itr_effect!=3)|(friendly_fire==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(friendly_fire==1&same_facing==0&itr_kind==5)|(friendly_fire==0&itr_kind==5)",
+          "hit_act": {
+            "id": "30",
+            "sounds": [
+              "data/090.wav.mp3"
+            ]
+          },
+          "friendly_fire": 1
+        }
+      ],
+      "itr": [
+        {
+          "kind": 0,
+          "x": 18,
+          "y": 19,
+          "w": 56,
+          "h": 51,
+          "injury": 40,
+          "vrest": 14,
+          "dvx": 5,
+          "fall": 40,
+          "bdefend": 20,
+          "hit_sounds": [
+            "data/090.wav.mp3"
+          ],
+          "hit_act": [
+            {
+              "id": "10"
+            }
+          ]
+        }
+      ],
+      "state": 3000,
+      "centerx": 40,
+      "centery": 41,
+      "behavior": 14,
+      "hp": 7
+    },
+    "1": {
+      "id": "1",
+      "name": "flying",
+      "pic": {
+        "tex": "0",
+        "x": 82,
+        "y": 0,
+        "w": 81,
+        "h": 82
+      },
+      "wait": 3,
+      "next": {
+        "id": "2"
+      },
+      "bdy": [
+        {
+          "x": 10,
+          "y": 19,
+          "w": 56,
+          "h": 51,
+          "kind": 0,
+          "test": "itr_kind!=9&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))",
+          "hit_act": [
+            {
+              "id": "20",
+              "sounds": [
+                "data/090.wav.mp3"
+              ]
+            }
+          ]
+        },
+        {
+          "x": 10,
+          "y": 19,
+          "w": 56,
+          "h": 51,
+          "kind": 0,
+          "test": "(friendly_fire==0&attacker_type==character&itr_kind==0&itr_effect!=3)|(friendly_fire==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(friendly_fire==1&same_facing==0&itr_kind==5)|(friendly_fire==0&itr_kind==5)",
+          "hit_act": {
+            "id": "30",
+            "sounds": [
+              "data/090.wav.mp3"
+            ]
+          },
+          "friendly_fire": 1
+        }
+      ],
+      "itr": [
+        {
+          "kind": 0,
+          "x": 10,
+          "y": 19,
+          "w": 56,
+          "h": 51,
+          "injury": 40,
+          "vrest": 14,
+          "dvx": 5,
+          "fall": 40,
+          "bdefend": 20,
+          "hit_sounds": [
+            "data/090.wav.mp3"
+          ],
+          "hit_act": [
+            {
+              "id": "10"
+            }
+          ]
+        }
+      ],
+      "state": 3000,
+      "centerx": 32,
+      "centery": 42,
+      "behavior": 14,
+      "hp": 7,
+      "on_dead": {
+        "id": "1"
+      }
+    },
+    "2": {
+      "id": "2",
+      "name": "flying",
+      "pic": {
+        "tex": "0",
+        "x": 164,
+        "y": 0,
+        "w": 81,
+        "h": 82
+      },
+      "wait": 3,
+      "next": {
+        "id": "3"
+      },
+      "bdy": [
+        {
+          "x": 18,
+          "y": 19,
+          "w": 56,
+          "h": 51,
+          "kind": 0,
+          "test": "itr_kind!=9&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))",
+          "hit_act": [
+            {
+              "id": "20",
+              "sounds": [
+                "data/090.wav.mp3"
+              ]
+            }
+          ]
+        },
+        {
+          "x": 18,
+          "y": 19,
+          "w": 56,
+          "h": 51,
+          "kind": 0,
+          "test": "(friendly_fire==0&attacker_type==character&itr_kind==0&itr_effect!=3)|(friendly_fire==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(friendly_fire==1&same_facing==0&itr_kind==5)|(friendly_fire==0&itr_kind==5)",
+          "hit_act": {
+            "id": "30",
+            "sounds": [
+              "data/090.wav.mp3"
+            ]
+          },
+          "friendly_fire": 1
+        }
+      ],
+      "itr": [
+        {
+          "kind": 0,
+          "x": 18,
+          "y": 19,
+          "w": 56,
+          "h": 51,
+          "injury": 40,
+          "vrest": 14,
+          "dvx": 5,
+          "fall": 40,
+          "bdefend": 20,
+          "hit_sounds": [
+            "data/090.wav.mp3"
+          ],
+          "hit_act": [
+            {
+              "id": "10"
+            }
+          ]
+        }
+      ],
+      "state": 3000,
+      "centerx": 39,
+      "centery": 42,
+      "behavior": 14,
+      "hp": 7,
+      "on_dead": {
+        "id": "2"
+      }
+    },
+    "3": {
+      "id": "3",
+      "name": "flying",
+      "pic": {
+        "tex": "0",
+        "x": 246,
+        "y": 0,
+        "w": 81,
+        "h": 82
+      },
+      "wait": 3,
+      "next": {
+        "id": "4"
+      },
+      "bdy": [
+        {
+          "x": 10,
+          "y": 19,
+          "w": 56,
+          "h": 51,
+          "kind": 0,
+          "test": "itr_kind!=9&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))",
+          "hit_act": [
+            {
+              "id": "20",
+              "sounds": [
+                "data/090.wav.mp3"
+              ]
+            }
+          ]
+        },
+        {
+          "x": 10,
+          "y": 19,
+          "w": 56,
+          "h": 51,
+          "kind": 0,
+          "test": "(friendly_fire==0&attacker_type==character&itr_kind==0&itr_effect!=3)|(friendly_fire==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(friendly_fire==1&same_facing==0&itr_kind==5)|(friendly_fire==0&itr_kind==5)",
+          "hit_act": {
+            "id": "30",
+            "sounds": [
+              "data/090.wav.mp3"
+            ]
+          },
+          "friendly_fire": 1
+        }
+      ],
+      "itr": [
+        {
+          "kind": 0,
+          "x": 10,
+          "y": 19,
+          "w": 56,
+          "h": 51,
+          "injury": 40,
+          "vrest": 14,
+          "dvx": 5,
+          "fall": 40,
+          "bdefend": 20,
+          "hit_sounds": [
+            "data/090.wav.mp3"
+          ],
+          "hit_act": [
+            {
+              "id": "10"
+            }
+          ]
+        }
+      ],
+      "state": 3000,
+      "centerx": 33,
+      "centery": 41,
+      "behavior": 14,
+      "hp": 7,
+      "on_dead": {
+        "id": "3"
+      }
+    },
+    "4": {
+      "id": "4",
+      "name": "flying",
+      "pic": {
+        "tex": "0",
+        "x": 164,
+        "y": 0,
+        "w": 81,
+        "h": 82
+      },
+      "wait": 3,
+      "next": {
+        "id": "5"
+      },
+      "bdy": [
+        {
+          "x": 18,
+          "y": 19,
+          "w": 56,
+          "h": 51,
+          "kind": 0,
+          "test": "itr_kind!=9&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))",
+          "hit_act": [
+            {
+              "id": "20",
+              "sounds": [
+                "data/090.wav.mp3"
+              ]
+            }
+          ]
+        },
+        {
+          "x": 18,
+          "y": 19,
+          "w": 56,
+          "h": 51,
+          "kind": 0,
+          "test": "(friendly_fire==0&attacker_type==character&itr_kind==0&itr_effect!=3)|(friendly_fire==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(friendly_fire==1&same_facing==0&itr_kind==5)|(friendly_fire==0&itr_kind==5)",
+          "hit_act": {
+            "id": "30",
+            "sounds": [
+              "data/090.wav.mp3"
+            ]
+          },
+          "friendly_fire": 1
+        }
+      ],
+      "itr": [
+        {
+          "kind": 0,
+          "x": 18,
+          "y": 19,
+          "w": 56,
+          "h": 51,
+          "injury": 40,
+          "vrest": 14,
+          "dvx": 5,
+          "fall": 40,
+          "bdefend": 20,
+          "hit_sounds": [
+            "data/090.wav.mp3"
+          ],
+          "hit_act": [
+            {
+              "id": "10"
+            }
+          ]
+        }
+      ],
+      "state": 3000,
+      "centerx": 38,
+      "centery": 42,
+      "behavior": 14,
+      "hp": 7,
+      "on_dead": {
+        "id": "4"
+      }
+    },
+    "5": {
+      "id": "5",
+      "name": "flying",
+      "pic": {
+        "tex": "0",
+        "x": 82,
+        "y": 0,
+        "w": 81,
+        "h": 82
+      },
+      "wait": 3,
+      "next": {
+        "id": "auto"
+      },
+      "bdy": [
+        {
+          "x": 10,
+          "y": 19,
+          "w": 56,
+          "h": 51,
+          "kind": 0,
+          "test": "itr_kind!=9&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))",
+          "hit_act": [
+            {
+              "id": "20",
+              "sounds": [
+                "data/090.wav.mp3"
+              ]
+            }
+          ]
+        },
+        {
+          "x": 10,
+          "y": 19,
+          "w": 56,
+          "h": 51,
+          "kind": 0,
+          "test": "(friendly_fire==0&attacker_type==character&itr_kind==0&itr_effect!=3)|(friendly_fire==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(friendly_fire==1&same_facing==0&itr_kind==5)|(friendly_fire==0&itr_kind==5)",
+          "hit_act": {
+            "id": "30",
+            "sounds": [
+              "data/090.wav.mp3"
+            ]
+          },
+          "friendly_fire": 1
+        }
+      ],
+      "itr": [
+        {
+          "kind": 0,
+          "x": 10,
+          "y": 19,
+          "w": 56,
+          "h": 51,
+          "injury": 40,
+          "vrest": 14,
+          "dvx": 5,
+          "fall": 40,
+          "bdefend": 20,
+          "hit_sounds": [
+            "data/090.wav.mp3"
+          ],
+          "hit_act": [
+            {
+              "id": "10"
+            }
+          ]
+        }
+      ],
+      "state": 3000,
+      "centerx": 31,
+      "centery": 41,
+      "behavior": 14,
+      "hp": 7,
+      "on_dead": {
+        "id": "5"
+      }
+    },
+    "10": {
+      "id": "10",
+      "name": "hiting",
+      "pic": {
+        "tex": "0",
+        "x": 0,
+        "y": 83,
+        "w": 81,
+        "h": 82
+      },
+      "wait": 5,
+      "next": {
+        "id": "11"
+      },
+      "state": 3001,
+      "centerx": 34,
+      "centery": 36
+    },
+    "11": {
+      "id": "11",
+      "name": "hiting",
+      "pic": {
+        "tex": "0",
+        "x": 82,
+        "y": 83,
+        "w": 81,
+        "h": 82
+      },
+      "wait": 5,
+      "next": {
+        "id": "12"
+      },
+      "state": 3001,
+      "centerx": 33,
+      "centery": 36
+    },
+    "12": {
+      "id": "12",
+      "name": "hiting",
+      "pic": {
+        "tex": "0",
+        "x": 164,
+        "y": 83,
+        "w": 81,
+        "h": 82
+      },
+      "wait": 5,
+      "next": {
+        "id": "13"
+      },
+      "state": 3001,
+      "centerx": 35,
+      "centery": 36
+    },
+    "13": {
+      "id": "13",
+      "name": "hiting",
+      "pic": {
+        "tex": "0",
+        "x": 246,
+        "y": 83,
+        "w": 81,
+        "h": 82
+      },
+      "wait": 3,
+      "next": {
+        "id": "gone"
+      },
+      "state": 3001,
+      "centerx": 28,
+      "centery": 41
+    },
+    "20": {
+      "id": "20",
+      "name": "hit",
+      "pic": {
+        "tex": "0",
+        "x": 0,
+        "y": 83,
+        "w": 81,
+        "h": 82
+      },
+      "wait": 3,
+      "next": {
+        "id": "21"
+      },
+      "state": 3002,
+      "centerx": 38,
+      "centery": 41
+    },
+    "21": {
+      "id": "21",
+      "name": "hit",
+      "pic": {
+        "tex": "0",
+        "x": 82,
+        "y": 83,
+        "w": 81,
+        "h": 82
+      },
+      "wait": 3,
+      "next": {
+        "id": "22"
+      },
+      "state": 3002,
+      "centerx": 33,
+      "centery": 41
+    },
+    "22": {
+      "id": "22",
+      "name": "hit",
+      "pic": {
+        "tex": "0",
+        "x": 164,
+        "y": 83,
+        "w": 81,
+        "h": 82
+      },
+      "wait": 3,
+      "next": {
+        "id": "23"
+      },
+      "state": 3002,
+      "centerx": 39,
+      "centery": 41
+    },
+    "23": {
+      "id": "23",
+      "name": "hit",
+      "pic": {
+        "tex": "0",
+        "x": 246,
+        "y": 83,
+        "w": 81,
+        "h": 82
+      },
+      "wait": 3,
+      "next": {
+        "id": "gone"
+      },
+      "state": 3002,
+      "centerx": 41,
+      "centery": 41
+    },
+    "30": {
+      "id": "30",
+      "name": "rebounding",
+      "pic": {
+        "tex": "0",
+        "x": 0,
+        "y": 83,
+        "w": 81,
+        "h": 82
+      },
+      "wait": 3,
+      "next": {
+        "id": "31"
+      },
+      "state": 3003,
+      "centerx": 37,
+      "centery": 41
+    },
+    "31": {
+      "id": "31",
+      "name": "rebounding",
+      "pic": {
+        "tex": "0",
+        "x": 82,
+        "y": 83,
+        "w": 81,
+        "h": 82
+      },
+      "wait": 3,
+      "next": {
+        "id": "32"
+      },
+      "state": 3003,
+      "centerx": 31,
+      "centery": 41
+    },
+    "32": {
+      "id": "32",
+      "name": "rebounding",
+      "pic": {
+        "tex": "0",
+        "x": 164,
+        "y": 83,
+        "w": 81,
+        "h": 82
+      },
+      "wait": 3,
+      "next": {
+        "id": "33"
+      },
+      "state": 3003,
+      "centerx": 38,
+      "centery": 41
+    },
+    "33": {
+      "id": "33",
+      "name": "rebounding",
+      "pic": {
+        "tex": "0",
+        "x": 246,
+        "y": 83,
+        "w": 81,
+        "h": 82
+      },
+      "wait": 3,
+      "next": {
+        "id": "gone"
+      },
+      "state": 3003,
+      "centerx": 37,
+      "centery": 41
+    },
+    "40": {
+      "id": "40",
+      "name": "disappearing",
+      "pic": {
+        "tex": "0",
+        "x": 82,
+        "y": 83,
+        "w": 81,
+        "h": 82
+      },
+      "wait": 3,
+      "next": {
+        "id": "41"
+      },
+      "state": 3004,
+      "centerx": 37,
+      "centery": 41
+    },
+    "41": {
+      "id": "41",
+      "name": "disappearing",
+      "pic": {
+        "tex": "0",
+        "x": 164,
+        "y": 83,
+        "w": 81,
+        "h": 82
+      },
+      "wait": 3,
+      "next": {
+        "id": "42"
+      },
+      "state": 3004,
+      "centerx": 37,
+      "centery": 41
+    },
+    "42": {
+      "id": "42",
+      "name": "disappearing",
+      "pic": {
+        "tex": "0",
+        "x": 246,
+        "y": 83,
+        "w": 81,
+        "h": 82
+      },
+      "wait": 3,
+      "next": {
+        "id": "gone"
+      },
+      "state": 3004,
+      "centerx": 28,
+      "centery": 41
+    },
+    "50": {
+      "id": "50",
+      "name": "flying",
+      "pic": {
+        "tex": "0",
+        "x": 0,
+        "y": 166,
+        "w": 81,
+        "h": 82
+      },
+      "wait": 3,
+      "next": {
+        "id": "51"
+      },
+      "bdy": [
+        {
+          "x": 18,
+          "y": 19,
+          "w": 56,
+          "h": 51,
+          "kind": 0,
+          "test": "itr_kind!=9&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))",
+          "hit_act": [
+            {
+              "id": "20",
+              "sounds": [
+                "data/090.wav.mp3"
+              ]
+            }
+          ]
+        },
+        {
+          "x": 18,
+          "y": 19,
+          "w": 56,
+          "h": 51,
+          "kind": 0,
+          "test": "(friendly_fire==0&attacker_type==character&itr_kind==0&itr_effect!=3)|(friendly_fire==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(friendly_fire==1&same_facing==0&itr_kind==5)|(friendly_fire==0&itr_kind==5)",
+          "hit_act": {
+            "id": "30",
+            "sounds": [
+              "data/090.wav.mp3"
+            ]
+          },
+          "friendly_fire": 1
+        }
+      ],
+      "itr": [
+        {
+          "kind": 0,
+          "x": 18,
+          "y": 19,
+          "w": 56,
+          "h": 51,
+          "injury": 40,
+          "vrest": 14,
+          "dvx": 5,
+          "fall": 40,
+          "bdefend": 20,
+          "hit_sounds": [
+            "data/090.wav.mp3"
+          ],
+          "hit_act": [
+            {
+              "id": "10"
+            }
+          ]
+        }
+      ],
+      "state": 3000,
+      "centerx": 40,
+      "centery": 41,
+      "behavior": 14,
+      "hp": 7,
+      "on_dead": {
+        "id": "1"
+      }
+    },
+    "51": {
+      "id": "51",
+      "name": "flying",
+      "pic": {
+        "tex": "0",
+        "x": 82,
+        "y": 166,
+        "w": 81,
+        "h": 82
+      },
+      "wait": 3,
+      "next": {
+        "id": "52"
+      },
+      "bdy": [
+        {
+          "x": 10,
+          "y": 19,
+          "w": 56,
+          "h": 51,
+          "kind": 0,
+          "test": "itr_kind!=9&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))",
+          "hit_act": [
+            {
+              "id": "20",
+              "sounds": [
+                "data/090.wav.mp3"
+              ]
+            }
+          ]
+        },
+        {
+          "x": 10,
+          "y": 19,
+          "w": 56,
+          "h": 51,
+          "kind": 0,
+          "test": "(friendly_fire==0&attacker_type==character&itr_kind==0&itr_effect!=3)|(friendly_fire==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(friendly_fire==1&same_facing==0&itr_kind==5)|(friendly_fire==0&itr_kind==5)",
+          "hit_act": {
+            "id": "30",
+            "sounds": [
+              "data/090.wav.mp3"
+            ]
+          },
+          "friendly_fire": 1
+        }
+      ],
+      "itr": [
+        {
+          "kind": 0,
+          "x": 10,
+          "y": 19,
+          "w": 56,
+          "h": 51,
+          "injury": 40,
+          "vrest": 14,
+          "dvx": 5,
+          "fall": 40,
+          "bdefend": 20,
+          "hit_sounds": [
+            "data/090.wav.mp3"
+          ],
+          "hit_act": [
+            {
+              "id": "10"
+            }
+          ]
+        }
+      ],
+      "state": 3000,
+      "centerx": 32,
+      "centery": 42,
+      "behavior": 14,
+      "hp": 7,
+      "on_dead": {
+        "id": "1"
+      }
+    },
+    "52": {
+      "id": "52",
+      "name": "flying",
+      "pic": {
+        "tex": "0",
+        "x": 164,
+        "y": 166,
+        "w": 81,
+        "h": 82
+      },
+      "wait": 3,
+      "next": {
+        "id": "53"
+      },
+      "bdy": [
+        {
+          "x": 18,
+          "y": 19,
+          "w": 56,
+          "h": 51,
+          "kind": 0,
+          "test": "itr_kind!=9&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))",
+          "hit_act": [
+            {
+              "id": "20",
+              "sounds": [
+                "data/090.wav.mp3"
+              ]
+            }
+          ]
+        },
+        {
+          "x": 18,
+          "y": 19,
+          "w": 56,
+          "h": 51,
+          "kind": 0,
+          "test": "(friendly_fire==0&attacker_type==character&itr_kind==0&itr_effect!=3)|(friendly_fire==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(friendly_fire==1&same_facing==0&itr_kind==5)|(friendly_fire==0&itr_kind==5)",
+          "hit_act": {
+            "id": "30",
+            "sounds": [
+              "data/090.wav.mp3"
+            ]
+          },
+          "friendly_fire": 1
+        }
+      ],
+      "itr": [
+        {
+          "kind": 0,
+          "x": 18,
+          "y": 19,
+          "w": 56,
+          "h": 51,
+          "injury": 40,
+          "vrest": 14,
+          "dvx": 5,
+          "fall": 40,
+          "bdefend": 20,
+          "hit_sounds": [
+            "data/090.wav.mp3"
+          ],
+          "hit_act": [
+            {
+              "id": "10"
+            }
+          ]
+        }
+      ],
+      "state": 3000,
+      "centerx": 39,
+      "centery": 42,
+      "behavior": 14,
+      "hp": 7,
+      "on_dead": {
+        "id": "2"
+      }
+    },
+    "53": {
+      "id": "53",
+      "name": "flying",
+      "pic": {
+        "tex": "0",
+        "x": 246,
+        "y": 166,
+        "w": 81,
+        "h": 82
+      },
+      "wait": 3,
+      "next": {
+        "id": "54"
+      },
+      "bdy": [
+        {
+          "x": 10,
+          "y": 19,
+          "w": 56,
+          "h": 51,
+          "kind": 0,
+          "test": "itr_kind!=9&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))",
+          "hit_act": [
+            {
+              "id": "20",
+              "sounds": [
+                "data/090.wav.mp3"
+              ]
+            }
+          ]
+        },
+        {
+          "x": 10,
+          "y": 19,
+          "w": 56,
+          "h": 51,
+          "kind": 0,
+          "test": "(friendly_fire==0&attacker_type==character&itr_kind==0&itr_effect!=3)|(friendly_fire==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(friendly_fire==1&same_facing==0&itr_kind==5)|(friendly_fire==0&itr_kind==5)",
+          "hit_act": {
+            "id": "30",
+            "sounds": [
+              "data/090.wav.mp3"
+            ]
+          },
+          "friendly_fire": 1
+        }
+      ],
+      "itr": [
+        {
+          "kind": 0,
+          "x": 10,
+          "y": 19,
+          "w": 56,
+          "h": 51,
+          "injury": 40,
+          "vrest": 14,
+          "dvx": 5,
+          "fall": 40,
+          "bdefend": 20,
+          "hit_sounds": [
+            "data/090.wav.mp3"
+          ],
+          "hit_act": [
+            {
+              "id": "10"
+            }
+          ]
+        }
+      ],
+      "state": 3000,
+      "centerx": 33,
+      "centery": 41,
+      "behavior": 14,
+      "hp": 7,
+      "on_dead": {
+        "id": "3"
+      }
+    },
+    "54": {
+      "id": "54",
+      "name": "flying",
+      "pic": {
+        "tex": "0",
+        "x": 164,
+        "y": 166,
+        "w": 81,
+        "h": 82
+      },
+      "wait": 3,
+      "next": {
+        "id": "55"
+      },
+      "bdy": [
+        {
+          "x": 18,
+          "y": 19,
+          "w": 56,
+          "h": 51,
+          "kind": 0,
+          "test": "itr_kind!=9&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))",
+          "hit_act": [
+            {
+              "id": "20",
+              "sounds": [
+                "data/090.wav.mp3"
+              ]
+            }
+          ]
+        },
+        {
+          "x": 18,
+          "y": 19,
+          "w": 56,
+          "h": 51,
+          "kind": 0,
+          "test": "(friendly_fire==0&attacker_type==character&itr_kind==0&itr_effect!=3)|(friendly_fire==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(friendly_fire==1&same_facing==0&itr_kind==5)|(friendly_fire==0&itr_kind==5)",
+          "hit_act": {
+            "id": "30",
+            "sounds": [
+              "data/090.wav.mp3"
+            ]
+          },
+          "friendly_fire": 1
+        }
+      ],
+      "itr": [
+        {
+          "kind": 0,
+          "x": 18,
+          "y": 19,
+          "w": 56,
+          "h": 51,
+          "injury": 40,
+          "vrest": 14,
+          "dvx": 5,
+          "fall": 40,
+          "bdefend": 20,
+          "hit_sounds": [
+            "data/090.wav.mp3"
+          ],
+          "hit_act": [
+            {
+              "id": "10"
+            }
+          ]
+        }
+      ],
+      "state": 3000,
+      "centerx": 38,
+      "centery": 42,
+      "behavior": 14,
+      "hp": 7,
+      "on_dead": {
+        "id": "4"
+      }
+    },
+    "55": {
+      "id": "55",
+      "name": "flying",
+      "pic": {
+        "tex": "0",
+        "x": 82,
+        "y": 166,
+        "w": 81,
+        "h": 82
+      },
+      "wait": 3,
+      "next": {
+        "id": "50"
+      },
+      "bdy": [
+        {
+          "x": 10,
+          "y": 19,
+          "w": 56,
+          "h": 51,
+          "kind": 0,
+          "test": "itr_kind!=9&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))",
+          "hit_act": [
+            {
+              "id": "20",
+              "sounds": [
+                "data/090.wav.mp3"
+              ]
+            }
+          ]
+        },
+        {
+          "x": 10,
+          "y": 19,
+          "w": 56,
+          "h": 51,
+          "kind": 0,
+          "test": "(friendly_fire==0&attacker_type==character&itr_kind==0&itr_effect!=3)|(friendly_fire==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(friendly_fire==1&same_facing==0&itr_kind==5)|(friendly_fire==0&itr_kind==5)",
+          "hit_act": {
+            "id": "30",
+            "sounds": [
+              "data/090.wav.mp3"
+            ]
+          },
+          "friendly_fire": 1
+        }
+      ],
+      "itr": [
+        {
+          "kind": 0,
+          "x": 10,
+          "y": 19,
+          "w": 56,
+          "h": 51,
+          "injury": 45,
+          "vrest": 14,
+          "dvx": 8,
+          "fall": 120,
+          "bdefend": 32,
+          "hit_sounds": [
+            "data/090.wav.mp3"
+          ],
+          "hit_act": [
+            {
+              "id": "10"
+            }
+          ]
+        }
+      ],
+      "state": 3000,
+      "centerx": 31,
+      "centery": 41,
+      "behavior": 14,
+      "hp": 7,
+      "on_dead": {
+        "id": "5"
+      }
+    },
+    "60": {
+      "id": "60",
+      "name": "disappearing2",
+      "pic": {
+        "tex": "0",
+        "x": 82,
+        "y": 249,
+        "w": 81,
+        "h": 82
+      },
+      "wait": 3,
+      "next": {
+        "id": "61"
+      },
+      "state": 3004,
+      "centerx": 37,
+      "centery": 41,
+      "sound": "data/020.wav.mp3"
+    },
+    "61": {
+      "id": "61",
+      "name": "disappearing2",
+      "pic": {
+        "tex": "0",
+        "x": 164,
+        "y": 249,
+        "w": 81,
+        "h": 82
+      },
+      "wait": 3,
+      "next": {
+        "id": "62"
+      },
+      "state": 3004,
+      "centerx": 37,
+      "centery": 41
+    },
+    "62": {
+      "id": "62",
+      "name": "disappearing2",
+      "pic": {
+        "tex": "0",
+        "x": 246,
+        "y": 249,
+        "w": 81,
+        "h": 82
+      },
+      "wait": 3,
+      "next": {
+        "id": "gone"
+      },
+      "state": 3004,
+      "centerx": 28,
+      "centery": 41
+    },
+    "100": {
+      "id": "100",
+      "name": "start",
+      "pic": {
+        "tex": "0",
+        "x": 246,
+        "y": 83,
+        "w": 81,
+        "h": 82
+      },
+      "wait": 3,
+      "next": {
+        "id": "101"
+      },
+      "state": 3005,
+      "centerx": 40,
+      "centery": 82,
+      "no_shadow": 1,
+      "speedz": 0
+    },
+    "101": {
+      "id": "101",
+      "name": "start",
+      "pic": {
+        "tex": "0",
+        "x": 246,
+        "y": 83,
+        "w": 81,
+        "h": 82
+      },
+      "wait": 3,
+      "next": {
+        "id": "102"
+      },
+      "state": 3005,
+      "centerx": 0,
+      "centery": 0,
+      "no_shadow": 1,
+      "opoint": [
+        {
+          "kind": 1,
+          "oid": "228",
+          "x": 0,
+          "y": 0,
+          "action": {
+            "id": "50"
+          }
+        }
+      ],
+      "speedz": 0
+    },
+    "102": {
+      "id": "102",
+      "name": "start",
+      "pic": {
+        "tex": "0",
+        "x": 246,
+        "y": 83,
+        "w": 81,
+        "h": 82
+      },
+      "wait": 3,
+      "next": {
+        "id": "gone"
+      },
+      "state": 3005,
+      "centerx": 40,
+      "centery": 82,
+      "no_shadow": 1,
+      "speedz": 0
+    }
+  }
+}

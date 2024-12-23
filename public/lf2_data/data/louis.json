@@ -1,0 +1,10567 @@
+{
+  "id": "6",
+  "type": "character",
+  "base": {
+    "name": "Louis",
+    "head": "sprite/sys/louis_f.png",
+    "small": "sprite/sys/louis_s.png",
+    "files": {
+      "0": {
+        "id": "0",
+        "path": "sprite/sys/louis_0.png",
+        "row": 10,
+        "col": 7,
+        "cell_w": 79,
+        "cell_h": 79
+      },
+      "1": {
+        "id": "1",
+        "path": "sprite/sys/louis_1.png",
+        "row": 10,
+        "col": 7,
+        "cell_w": 79,
+        "cell_h": 79
+      },
+      "2": {
+        "id": "2",
+        "path": "sprite/sys/louis_2.png",
+        "row": 10,
+        "col": 7,
+        "cell_w": 79,
+        "cell_h": 79
+      }
+    },
+    "jump_height": 100,
+    "jump_distance": 5,
+    "jump_distancez": 3.75,
+    "dash_height": 54,
+    "dash_distance": 8.75,
+    "dash_distancez": 5,
+    "rowing_distance": 2.5,
+    "group": [
+      "1000",
+      "CriminalSaver"
+    ],
+    "armor": {
+      "hit_sounds": [
+        "data/085.wav.mp3"
+      ],
+      "type": "times",
+      "toughness": 1
+    },
+    "fall_value": 140,
+    "defend_value": 120
+  },
+  "indexes": {
+    "standing": "0",
+    "heavy_obj_walk": [
+      "heavy_obj_walk_0"
+    ],
+    "picking_light": "115",
+    "picking_heavy": "117",
+    "ice": "200",
+    "fire": [
+      "203",
+      "205"
+    ],
+    "injured": {
+      "1": "222",
+      "-1": "220"
+    },
+    "dizzy": "226",
+    "lying": {
+      "1": "231",
+      "-1": "230"
+    },
+    "grand_injured": {
+      "1": [
+        "222"
+      ],
+      "-1": [
+        "220"
+      ]
+    },
+    "in_the_sky": "212",
+    "critical_hit": {
+      "1": [
+        "186"
+      ],
+      "-1": [
+        "180"
+      ]
+    },
+    "falling": {
+      "1": [
+        "187",
+        "188",
+        "189"
+      ],
+      "-1": [
+        "181",
+        "182",
+        "183"
+      ]
+    },
+    "bouncing": {
+      "1": [
+        "190",
+        "191"
+      ],
+      "-1": [
+        "184",
+        "185"
+      ]
+    },
+    "landing_1": "215",
+    "landing_2": "219"
+  },
+  "frames": {
+    "0": {
+      "id": "0",
+      "name": "standing",
+      "pic": {
+        "tex": "0",
+        "x": 0,
+        "y": 0,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 19,
+      "next": {
+        "id": "1"
+      },
+      "bdy": [
+        {
+          "x": 21,
+          "y": 18,
+          "w": 43,
+          "h": 62,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 34,
+        "y": 55,
+        "weaponact": 22,
+        "cover": 0
+      },
+      "bpoint": {
+        "x": 44,
+        "y": 35
+      },
+      "state": 0,
+      "centerx": 42,
+      "centery": 79,
+      "hit": {
+        "sequences": {
+          "La": {
+            "id": "235",
+            "mp": 150,
+            "facing": -1
+          },
+          "Ra": {
+            "id": "235",
+            "mp": 150,
+            "facing": 1
+          },
+          "Lj": {
+            "id": "247",
+            "mp": 50,
+            "facing": -1
+          },
+          "Rj": {
+            "id": "247",
+            "mp": 50,
+            "facing": 1
+          },
+          "Uj": {
+            "id": "275",
+            "mp": 100
+          },
+          "ja": {
+            "id": "300",
+            "expression": "hp_p<=33|lf2_net_on==1"
+          }
+        },
+        "a": [
+          {
+            "id": "45",
+            "facing": 3,
+            "expression": "weapon_type==4|(weapon_type==3&press_F_B!=0)"
+          },
+          {
+            "id": [
+              "20",
+              "25"
+            ],
+            "facing": 3,
+            "expression": "weapon_type==3|weapon_type==1"
+          },
+          {
+            "id": "55",
+            "expression": "weapon_type==5",
+            "facing": 3
+          },
+          {
+            "id": "70",
+            "expression": "super_punch==1"
+          },
+          {
+            "id": [
+              "60",
+              "65"
+            ],
+            "facing": 3
+          }
+        ],
+        "j": {
+          "id": "210"
+        },
+        "d": {
+          "id": "110"
+        },
+        "B": {
+          "id": "walking_0",
+          "facing": 2
+        },
+        "D": {
+          "id": "walking_0"
+        },
+        "U": {
+          "id": "walking_0"
+        },
+        "F": {
+          "id": "walking_0"
+        },
+        "FF": {
+          "id": "running_0"
+        }
+      },
+      "hold": {
+        "B": {
+          "id": "walking_0",
+          "facing": 2
+        },
+        "D": {
+          "id": "walking_0"
+        },
+        "U": {
+          "id": "walking_0"
+        },
+        "F": {
+          "id": "walking_0"
+        }
+      }
+    },
+    "1": {
+      "id": "1",
+      "name": "standing",
+      "pic": {
+        "tex": "0",
+        "x": 80,
+        "y": 0,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 7,
+      "next": {
+        "id": "2"
+      },
+      "bdy": [
+        {
+          "x": 21,
+          "y": 18,
+          "w": 43,
+          "h": 62,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 34,
+        "y": 54,
+        "weaponact": 22,
+        "cover": 0
+      },
+      "bpoint": {
+        "x": 44,
+        "y": 35
+      },
+      "state": 0,
+      "centerx": 42,
+      "centery": 79,
+      "hit": {
+        "sequences": {
+          "La": {
+            "id": "235",
+            "mp": 150,
+            "facing": -1
+          },
+          "Ra": {
+            "id": "235",
+            "mp": 150,
+            "facing": 1
+          },
+          "Lj": {
+            "id": "247",
+            "mp": 50,
+            "facing": -1
+          },
+          "Rj": {
+            "id": "247",
+            "mp": 50,
+            "facing": 1
+          },
+          "Uj": {
+            "id": "275",
+            "mp": 100
+          },
+          "ja": {
+            "id": "300",
+            "expression": "hp_p<=33|lf2_net_on==1"
+          }
+        },
+        "a": [
+          {
+            "id": "45",
+            "facing": 3,
+            "expression": "weapon_type==4|(weapon_type==3&press_F_B!=0)"
+          },
+          {
+            "id": [
+              "20",
+              "25"
+            ],
+            "facing": 3,
+            "expression": "weapon_type==3|weapon_type==1"
+          },
+          {
+            "id": "55",
+            "expression": "weapon_type==5",
+            "facing": 3
+          },
+          {
+            "id": "70",
+            "expression": "super_punch==1"
+          },
+          {
+            "id": [
+              "60",
+              "65"
+            ],
+            "facing": 3
+          }
+        ],
+        "j": {
+          "id": "210"
+        },
+        "d": {
+          "id": "110"
+        },
+        "B": {
+          "id": "walking_0",
+          "facing": 2
+        },
+        "D": {
+          "id": "walking_0"
+        },
+        "U": {
+          "id": "walking_0"
+        },
+        "F": {
+          "id": "walking_0"
+        },
+        "FF": {
+          "id": "running_0"
+        }
+      },
+      "hold": {
+        "B": {
+          "id": "walking_0",
+          "facing": 2
+        },
+        "D": {
+          "id": "walking_0"
+        },
+        "U": {
+          "id": "walking_0"
+        },
+        "F": {
+          "id": "walking_0"
+        }
+      }
+    },
+    "2": {
+      "id": "2",
+      "name": "standing",
+      "pic": {
+        "tex": "0",
+        "x": 160,
+        "y": 0,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 9,
+      "next": {
+        "id": "3"
+      },
+      "bdy": [
+        {
+          "x": 21,
+          "y": 18,
+          "w": 43,
+          "h": 62,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 34,
+        "y": 54,
+        "weaponact": 22,
+        "cover": 0
+      },
+      "bpoint": {
+        "x": 44,
+        "y": 35
+      },
+      "state": 0,
+      "centerx": 42,
+      "centery": 79,
+      "hit": {
+        "sequences": {
+          "La": {
+            "id": "235",
+            "mp": 150,
+            "facing": -1
+          },
+          "Ra": {
+            "id": "235",
+            "mp": 150,
+            "facing": 1
+          },
+          "Lj": {
+            "id": "247",
+            "mp": 50,
+            "facing": -1
+          },
+          "Rj": {
+            "id": "247",
+            "mp": 50,
+            "facing": 1
+          },
+          "Uj": {
+            "id": "275",
+            "mp": 100
+          },
+          "ja": {
+            "id": "300",
+            "expression": "hp_p<=33|lf2_net_on==1"
+          }
+        },
+        "a": [
+          {
+            "id": "45",
+            "facing": 3,
+            "expression": "weapon_type==4|(weapon_type==3&press_F_B!=0)"
+          },
+          {
+            "id": [
+              "20",
+              "25"
+            ],
+            "facing": 3,
+            "expression": "weapon_type==3|weapon_type==1"
+          },
+          {
+            "id": "55",
+            "expression": "weapon_type==5",
+            "facing": 3
+          },
+          {
+            "id": "70",
+            "expression": "super_punch==1"
+          },
+          {
+            "id": [
+              "60",
+              "65"
+            ],
+            "facing": 3
+          }
+        ],
+        "j": {
+          "id": "210"
+        },
+        "d": {
+          "id": "110"
+        },
+        "B": {
+          "id": "walking_0",
+          "facing": 2
+        },
+        "D": {
+          "id": "walking_0"
+        },
+        "U": {
+          "id": "walking_0"
+        },
+        "F": {
+          "id": "walking_0"
+        },
+        "FF": {
+          "id": "running_0"
+        }
+      },
+      "hold": {
+        "B": {
+          "id": "walking_0",
+          "facing": 2
+        },
+        "D": {
+          "id": "walking_0"
+        },
+        "U": {
+          "id": "walking_0"
+        },
+        "F": {
+          "id": "walking_0"
+        }
+      }
+    },
+    "3": {
+      "id": "3",
+      "name": "standing",
+      "pic": {
+        "tex": "0",
+        "x": 240,
+        "y": 0,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 11,
+      "next": {
+        "id": "auto"
+      },
+      "bdy": [
+        {
+          "x": 21,
+          "y": 18,
+          "w": 43,
+          "h": 62,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 33,
+        "y": 54,
+        "weaponact": 22,
+        "cover": 0
+      },
+      "bpoint": {
+        "x": 44,
+        "y": 34
+      },
+      "state": 0,
+      "centerx": 42,
+      "centery": 79,
+      "hit": {
+        "sequences": {
+          "La": {
+            "id": "235",
+            "mp": 150,
+            "facing": -1
+          },
+          "Ra": {
+            "id": "235",
+            "mp": 150,
+            "facing": 1
+          },
+          "Lj": {
+            "id": "247",
+            "mp": 50,
+            "facing": -1
+          },
+          "Rj": {
+            "id": "247",
+            "mp": 50,
+            "facing": 1
+          },
+          "Uj": {
+            "id": "275",
+            "mp": 100
+          },
+          "ja": {
+            "id": "300",
+            "expression": "hp_p<=33|lf2_net_on==1"
+          }
+        },
+        "a": [
+          {
+            "id": "45",
+            "facing": 3,
+            "expression": "weapon_type==4|(weapon_type==3&press_F_B!=0)"
+          },
+          {
+            "id": [
+              "20",
+              "25"
+            ],
+            "facing": 3,
+            "expression": "weapon_type==3|weapon_type==1"
+          },
+          {
+            "id": "55",
+            "expression": "weapon_type==5",
+            "facing": 3
+          },
+          {
+            "id": "70",
+            "expression": "super_punch==1"
+          },
+          {
+            "id": [
+              "60",
+              "65"
+            ],
+            "facing": 3
+          }
+        ],
+        "j": {
+          "id": "210"
+        },
+        "d": {
+          "id": "110"
+        },
+        "B": {
+          "id": "walking_0",
+          "facing": 2
+        },
+        "D": {
+          "id": "walking_0"
+        },
+        "U": {
+          "id": "walking_0"
+        },
+        "F": {
+          "id": "walking_0"
+        },
+        "FF": {
+          "id": "running_0"
+        }
+      },
+      "hold": {
+        "B": {
+          "id": "walking_0",
+          "facing": 2
+        },
+        "D": {
+          "id": "walking_0"
+        },
+        "U": {
+          "id": "walking_0"
+        },
+        "F": {
+          "id": "walking_0"
+        }
+      }
+    },
+    "19": {
+      "id": "19",
+      "name": "heavy_stop_run",
+      "pic": {
+        "tex": "1",
+        "x": 640,
+        "y": 400,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 15,
+      "next": {
+        "id": "auto"
+      },
+      "bdy": [
+        {
+          "x": 19,
+          "y": 9,
+          "w": 38,
+          "h": 72,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 30,
+        "y": 26,
+        "weaponact": 10,
+        "cover": 0
+      },
+      "bpoint": {
+        "x": 34,
+        "y": 38
+      },
+      "state": 15,
+      "centerx": 30,
+      "centery": 79,
+      "sound": "data/009.wav.mp3",
+      "dvx": 1
+    },
+    "20": {
+      "id": "20",
+      "name": "normal_weapon_atck",
+      "pic": {
+        "tex": "1",
+        "x": 0,
+        "y": 0,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 3,
+      "next": {
+        "id": "21"
+      },
+      "bdy": [
+        {
+          "x": 27,
+          "y": 20,
+          "w": 32,
+          "h": 60,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 16,
+        "y": 32,
+        "weaponact": 31,
+        "cover": 0
+      },
+      "state": 3,
+      "centerx": 44,
+      "centery": 79
+    },
+    "21": {
+      "id": "21",
+      "name": "normal_weapon_atck",
+      "pic": {
+        "tex": "1",
+        "x": 80,
+        "y": 0,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 3,
+      "next": {
+        "id": "22"
+      },
+      "bdy": [
+        {
+          "x": 30,
+          "y": 19,
+          "w": 28,
+          "h": 61,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 24,
+        "y": 18,
+        "weaponact": 31,
+        "cover": 0
+      },
+      "state": 3,
+      "centerx": 41,
+      "centery": 79,
+      "sound": "data/008.wav.mp3"
+    },
+    "22": {
+      "id": "22",
+      "name": "normal_weapon_atck",
+      "pic": {
+        "tex": "1",
+        "x": 160,
+        "y": 0,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 3,
+      "next": {
+        "id": "23"
+      },
+      "bdy": [
+        {
+          "x": 17,
+          "y": 12,
+          "w": 33,
+          "h": 68,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 51,
+        "y": 48,
+        "weaponact": 23,
+        "cover": 0,
+        "attacking": "1"
+      },
+      "state": 3,
+      "centerx": 24,
+      "centery": 79
+    },
+    "23": {
+      "id": "23",
+      "name": "normal_weapon_atck",
+      "pic": {
+        "tex": "1",
+        "x": 240,
+        "y": 0,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 3,
+      "next": {
+        "id": "auto"
+      },
+      "bdy": [
+        {
+          "x": 19,
+          "y": 10,
+          "w": 31,
+          "h": 70,
+          "kind": 0
+        },
+        {
+          "x": 25,
+          "y": 61,
+          "w": 17,
+          "h": 18,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 42,
+        "y": 59,
+        "weaponact": 24,
+        "cover": 0
+      },
+      "state": 3,
+      "centerx": 21,
+      "centery": 79
+    },
+    "25": {
+      "id": "25",
+      "name": "normal_weapon_atck",
+      "pic": {
+        "tex": "1",
+        "x": 320,
+        "y": 0,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 3,
+      "next": {
+        "id": "26"
+      },
+      "bdy": [
+        {
+          "x": 29,
+          "y": 16,
+          "w": 29,
+          "h": 63,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 50,
+        "y": 39,
+        "weaponact": 33,
+        "cover": 1
+      },
+      "state": 3,
+      "centerx": 29,
+      "centery": 79
+    },
+    "26": {
+      "id": "26",
+      "name": "normal_weapon_atck",
+      "pic": {
+        "tex": "1",
+        "x": 400,
+        "y": 0,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 3,
+      "next": {
+        "id": "27"
+      },
+      "bdy": [
+        {
+          "x": 29,
+          "y": 16,
+          "w": 29,
+          "h": 63,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 61,
+        "y": 38,
+        "weaponact": 32,
+        "cover": 1
+      },
+      "state": 3,
+      "centerx": 30,
+      "centery": 79,
+      "sound": "data/008.wav.mp3"
+    },
+    "27": {
+      "id": "27",
+      "name": "normal_weapon_atck",
+      "pic": {
+        "tex": "1",
+        "x": 480,
+        "y": 0,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 3,
+      "next": {
+        "id": "28"
+      },
+      "bdy": [
+        {
+          "x": 28,
+          "y": 12,
+          "w": 31,
+          "h": 66,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 63,
+        "y": 53,
+        "weaponact": 24,
+        "cover": 0,
+        "attacking": "1"
+      },
+      "state": 3,
+      "centerx": 27,
+      "centery": 79
+    },
+    "28": {
+      "id": "28",
+      "name": "normal_weapon_atck",
+      "pic": {
+        "tex": "1",
+        "x": 560,
+        "y": 0,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 3,
+      "next": {
+        "id": "auto"
+      },
+      "bdy": [
+        {
+          "x": 24,
+          "y": 14,
+          "w": 29,
+          "h": 67,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 12,
+        "y": 55,
+        "weaponact": 25,
+        "cover": 0
+      },
+      "state": 3,
+      "centerx": 39,
+      "centery": 79
+    },
+    "30": {
+      "id": "30",
+      "name": "jump_weapon_atck",
+      "pic": {
+        "tex": "1",
+        "x": 0,
+        "y": 80,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 3,
+      "next": {
+        "id": "31"
+      },
+      "bdy": [
+        {
+          "x": 26,
+          "y": 7,
+          "w": 32,
+          "h": 58,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 14,
+        "y": 26,
+        "weaponact": 30,
+        "cover": 0
+      },
+      "state": 3,
+      "centerx": 39,
+      "centery": 79
+    },
+    "31": {
+      "id": "31",
+      "name": "jump_weapon_atck",
+      "pic": {
+        "tex": "1",
+        "x": 80,
+        "y": 80,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 3,
+      "next": {
+        "id": "32"
+      },
+      "bdy": [
+        {
+          "x": 26,
+          "y": 7,
+          "w": 26,
+          "h": 39,
+          "kind": 0
+        },
+        {
+          "x": 13,
+          "y": 40,
+          "w": 24,
+          "h": 30,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 28,
+        "y": 9,
+        "weaponact": 33,
+        "cover": 0,
+        "attacking": "2"
+      },
+      "state": 3,
+      "centerx": 34,
+      "centery": 79,
+      "sound": "data/008.wav.mp3"
+    },
+    "32": {
+      "id": "32",
+      "name": "jump_weapon_atck",
+      "pic": {
+        "tex": "1",
+        "x": 160,
+        "y": 80,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 3,
+      "next": {
+        "id": "33"
+      },
+      "bdy": [
+        {
+          "x": 11,
+          "y": 32,
+          "w": 33,
+          "h": 43,
+          "kind": 0
+        },
+        {
+          "x": 29,
+          "y": 12,
+          "w": 26,
+          "h": 38,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 54,
+        "y": 43,
+        "weaponact": 24,
+        "cover": 0,
+        "attacking": "2"
+      },
+      "state": 3,
+      "centerx": 20,
+      "centery": 78
+    },
+    "33": {
+      "id": "33",
+      "name": "jump_weapon_atck",
+      "pic": {
+        "tex": "1",
+        "x": 240,
+        "y": 80,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 9,
+      "next": {
+        "id": "auto"
+      },
+      "bdy": [
+        {
+          "x": 11,
+          "y": 32,
+          "w": 33,
+          "h": 43,
+          "kind": 0
+        },
+        {
+          "x": 26,
+          "y": 9,
+          "w": 26,
+          "h": 37,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 49,
+        "y": 53,
+        "weaponact": 25,
+        "cover": 0,
+        "attacking": "2"
+      },
+      "state": 3,
+      "centerx": 23,
+      "centery": 77
+    },
+    "35": {
+      "id": "35",
+      "name": "run_weapon_atck",
+      "pic": {
+        "tex": "1",
+        "x": 320,
+        "y": 80,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 3,
+      "next": {
+        "id": "36"
+      },
+      "bdy": [
+        {
+          "x": 21,
+          "y": 15,
+          "w": 31,
+          "h": 65,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 9,
+        "y": 32,
+        "weaponact": 31,
+        "cover": 0
+      },
+      "state": 3,
+      "centerx": 40,
+      "centery": 79,
+      "dvx": 3
+    },
+    "36": {
+      "id": "36",
+      "name": "run_weapon_atck",
+      "pic": {
+        "tex": "1",
+        "x": 400,
+        "y": 80,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 3,
+      "next": {
+        "id": "37"
+      },
+      "bdy": [
+        {
+          "x": 23,
+          "y": 15,
+          "w": 34,
+          "h": 65,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 57,
+        "y": 24,
+        "weaponact": 34,
+        "cover": 0,
+        "attacking": "3"
+      },
+      "state": 3,
+      "centerx": 37,
+      "centery": 79,
+      "sound": "data/008.wav.mp3",
+      "dvx": 2
+    },
+    "37": {
+      "id": "37",
+      "name": "run_weapon_atck",
+      "pic": {
+        "tex": "1",
+        "x": 480,
+        "y": 80,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 13,
+      "next": {
+        "id": "auto"
+      },
+      "bdy": [
+        {
+          "x": 19,
+          "y": 17,
+          "w": 34,
+          "h": 64,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 50,
+        "y": 62,
+        "weaponact": 24,
+        "cover": 0,
+        "attacking": "3"
+      },
+      "state": 3,
+      "centerx": 33,
+      "centery": 79
+    },
+    "40": {
+      "id": "40",
+      "name": "dash_weapon_atck",
+      "pic": {
+        "tex": "1",
+        "x": 0,
+        "y": 160,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 3,
+      "next": {
+        "id": "41"
+      },
+      "bdy": [
+        {
+          "x": 25,
+          "y": 10,
+          "w": 35,
+          "h": 52,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 15,
+        "y": 25,
+        "weaponact": 30,
+        "cover": 0
+      },
+      "state": 3,
+      "centerx": 40,
+      "centery": 79
+    },
+    "41": {
+      "id": "41",
+      "name": "dash_weapon_atck",
+      "pic": {
+        "tex": "1",
+        "x": 80,
+        "y": 160,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 3,
+      "next": {
+        "id": "42"
+      },
+      "bdy": [
+        {
+          "x": 21,
+          "y": 41,
+          "w": 25,
+          "h": 27,
+          "kind": 0
+        },
+        {
+          "x": 23,
+          "y": 8,
+          "w": 34,
+          "h": 33,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 28,
+        "y": 8,
+        "weaponact": 33,
+        "cover": 0,
+        "attacking": "4"
+      },
+      "state": 3,
+      "centerx": 30,
+      "centery": 81,
+      "sound": "data/008.wav.mp3"
+    },
+    "42": {
+      "id": "42",
+      "name": "dash_weapon_atck",
+      "pic": {
+        "tex": "1",
+        "x": 160,
+        "y": 160,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 3,
+      "next": {
+        "id": "43"
+      },
+      "bdy": [
+        {
+          "x": 16,
+          "y": 33,
+          "w": 30,
+          "h": 41,
+          "kind": 0
+        },
+        {
+          "x": 27,
+          "y": 13,
+          "w": 30,
+          "h": 33,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 56,
+        "y": 43,
+        "weaponact": 24,
+        "cover": 0,
+        "attacking": "4"
+      },
+      "state": 3,
+      "centerx": 23,
+      "centery": 75
+    },
+    "43": {
+      "id": "43",
+      "name": "dash_weapon_atck",
+      "pic": {
+        "tex": "1",
+        "x": 240,
+        "y": 160,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 17,
+      "next": {
+        "id": "auto"
+      },
+      "bdy": [
+        {
+          "x": 18,
+          "y": 44,
+          "w": 29,
+          "h": 30,
+          "kind": 0
+        },
+        {
+          "x": 23,
+          "y": 13,
+          "w": 31,
+          "h": 37,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 47,
+        "y": 51,
+        "weaponact": 25,
+        "cover": 0,
+        "attacking": "4"
+      },
+      "state": 3,
+      "centerx": 23,
+      "centery": 74
+    },
+    "45": {
+      "id": "45",
+      "name": "light_weapon_thw",
+      "pic": {
+        "tex": "1",
+        "x": 320,
+        "y": 160,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 7,
+      "next": {
+        "id": "46"
+      },
+      "bdy": [
+        {
+          "x": 19,
+          "y": 15,
+          "w": 34,
+          "h": 65,
+          "kind": 0
+        },
+        {
+          "x": 9,
+          "y": 36,
+          "w": 17,
+          "h": 18,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 8,
+        "y": 33,
+        "weaponact": 30,
+        "cover": 0
+      },
+      "state": 15,
+      "centerx": 39,
+      "centery": 79
+    },
+    "46": {
+      "id": "46",
+      "name": "light_weapon_thw",
+      "pic": {
+        "tex": "1",
+        "x": 400,
+        "y": 160,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 3,
+      "next": {
+        "id": "47"
+      },
+      "bdy": [
+        {
+          "x": 24,
+          "y": 22,
+          "w": 32,
+          "h": 57,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 53,
+        "y": 23,
+        "weaponact": 33,
+        "cover": 0
+      },
+      "state": 15,
+      "centerx": 37,
+      "centery": 79,
+      "sound": "data/008.wav.mp3"
+    },
+    "47": {
+      "id": "47",
+      "name": "light_weapon_thw",
+      "pic": {
+        "tex": "1",
+        "x": 480,
+        "y": 160,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 19,
+      "next": {
+        "id": "auto"
+      },
+      "bdy": [
+        {
+          "x": 36,
+          "y": 14,
+          "w": 31,
+          "h": 52,
+          "kind": 0
+        },
+        {
+          "x": 17,
+          "y": 46,
+          "w": 37,
+          "h": 29,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 109,
+        "y": 60,
+        "weaponact": 35,
+        "cover": 0,
+        "dvx": 9.5,
+        "dvz": 3,
+        "dvy": 2
+      },
+      "state": 15,
+      "centerx": 32,
+      "centery": 79
+    },
+    "50": {
+      "id": "50",
+      "name": "heavy_weapon_thw",
+      "pic": {
+        "tex": "0",
+        "x": 560,
+        "y": 160,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 9,
+      "next": {
+        "id": "51"
+      },
+      "bdy": [
+        {
+          "x": 28,
+          "y": 19,
+          "w": 30,
+          "h": 62,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 40,
+        "y": 25,
+        "weaponact": 10,
+        "cover": 0
+      },
+      "state": 15,
+      "centerx": 32,
+      "centery": 79
+    },
+    "51": {
+      "id": "51",
+      "name": "heavy_weapon_thw",
+      "pic": {
+        "tex": "0",
+        "x": 640,
+        "y": 160,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 15,
+      "next": {
+        "id": "auto"
+      },
+      "bdy": [
+        {
+          "x": 36,
+          "y": 13,
+          "w": 35,
+          "h": 54,
+          "kind": 0
+        },
+        {
+          "x": 19,
+          "y": 56,
+          "w": 30,
+          "h": 24,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 100,
+        "y": 27,
+        "weaponact": 10,
+        "cover": 0,
+        "dvx": 4.5,
+        "dvz": 2,
+        "dvy": 2
+      },
+      "state": 15,
+      "centerx": 26,
+      "centery": 79,
+      "sound": "data/007.wav.mp3"
+    },
+    "52": {
+      "id": "52",
+      "name": "sky_lgt_wp_thw",
+      "pic": {
+        "tex": "1",
+        "x": 560,
+        "y": 160,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 7,
+      "next": {
+        "id": "53"
+      },
+      "bdy": [
+        {
+          "x": 15,
+          "y": 9,
+          "w": 29,
+          "h": 54,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 8,
+        "y": 24,
+        "weaponact": 31,
+        "cover": 0
+      },
+      "state": 15,
+      "centerx": 32,
+      "centery": 77
+    },
+    "53": {
+      "id": "53",
+      "name": "sky_lgt_wp_thw",
+      "pic": {
+        "tex": "1",
+        "x": 640,
+        "y": 160,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 3,
+      "next": {
+        "id": "54"
+      },
+      "bdy": [
+        {
+          "x": 35,
+          "y": 10,
+          "w": 36,
+          "h": 23,
+          "kind": 0
+        },
+        {
+          "x": 15,
+          "y": 18,
+          "w": 30,
+          "h": 43,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 27,
+        "y": 9,
+        "weaponact": 33,
+        "cover": 0
+      },
+      "state": 15,
+      "centerx": 35,
+      "centery": 77,
+      "sound": "data/008.wav.mp3",
+      "dvy": 0.5
+    },
+    "54": {
+      "id": "54",
+      "name": "sky_lgt_wp_thw",
+      "pic": {
+        "tex": "1",
+        "x": 720,
+        "y": 160,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 19,
+      "next": {
+        "id": "auto"
+      },
+      "bdy": [
+        {
+          "x": 22,
+          "y": 15,
+          "w": 38,
+          "h": 38,
+          "kind": 0
+        },
+        {
+          "x": 15,
+          "y": 45,
+          "w": 29,
+          "h": 26,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 75,
+        "y": 65,
+        "weaponact": 23,
+        "cover": 0,
+        "dvx": 8,
+        "dvz": 3,
+        "dvy": -4
+      },
+      "state": 15,
+      "centerx": 28,
+      "centery": 73
+    },
+    "55": {
+      "id": "55",
+      "name": "weapon_drink",
+      "pic": {
+        "tex": "1",
+        "x": 560,
+        "y": 480,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 7,
+      "next": {
+        "id": "56"
+      },
+      "bdy": [
+        {
+          "x": 15,
+          "y": 12,
+          "w": 37,
+          "h": 67,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 55,
+        "y": 26,
+        "weaponact": 31,
+        "cover": 0
+      },
+      "state": 17,
+      "centerx": 39,
+      "centery": 79,
+      "sound": "data/042.wav.mp3",
+      "hit": {
+        "d": {
+          "id": "auto"
+        }
+      }
+    },
+    "56": {
+      "id": "56",
+      "name": "weapon_drink",
+      "pic": {
+        "tex": "1",
+        "x": 640,
+        "y": 480,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 7,
+      "next": {
+        "id": "57"
+      },
+      "bdy": [
+        {
+          "x": 16,
+          "y": 20,
+          "w": 36,
+          "h": 59,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 55,
+        "y": 25,
+        "weaponact": 31,
+        "cover": 0
+      },
+      "state": 17,
+      "centerx": 39,
+      "centery": 79,
+      "hit": {
+        "d": {
+          "id": "auto"
+        }
+      }
+    },
+    "57": {
+      "id": "57",
+      "name": "weapon_drink",
+      "pic": {
+        "tex": "1",
+        "x": 720,
+        "y": 480,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 7,
+      "next": {
+        "id": "58"
+      },
+      "bdy": [
+        {
+          "x": 17,
+          "y": 17,
+          "w": 32,
+          "h": 63,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 55,
+        "y": 25,
+        "weaponact": 31,
+        "cover": 0
+      },
+      "state": 17,
+      "centerx": 39,
+      "centery": 79,
+      "hit": {
+        "d": {
+          "id": "auto"
+        }
+      }
+    },
+    "58": {
+      "id": "58",
+      "name": "weapon_drink",
+      "pic": {
+        "tex": "1",
+        "x": 640,
+        "y": 480,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 7,
+      "next": {
+        "id": "55"
+      },
+      "bdy": [
+        {
+          "x": 16,
+          "y": 13,
+          "w": 36,
+          "h": 65,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 55,
+        "y": 26,
+        "weaponact": 31,
+        "cover": 0
+      },
+      "state": 17,
+      "centerx": 39,
+      "centery": 79,
+      "hit": {
+        "d": {
+          "id": "auto"
+        }
+      }
+    },
+    "60": {
+      "id": "60",
+      "name": "punch",
+      "pic": {
+        "tex": "0",
+        "x": 0,
+        "y": 80,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 9,
+      "next": {
+        "id": "61"
+      },
+      "bdy": [
+        {
+          "x": 26,
+          "y": 12,
+          "w": 27,
+          "h": 68,
+          "kind": 0
+        }
+      ],
+      "itr": [
+        {
+          "kind": 2,
+          "x": 21,
+          "y": 57,
+          "w": 37,
+          "h": 24,
+          "vrest": 9,
+          "friendly_fire": 1,
+          "motionless": 0,
+          "shaking": 0,
+          "test": "attacker_has_holder==0&victim_has_holder==0&(victim_state==1004|victim_state==2004)"
+        }
+      ],
+      "state": 3,
+      "centerx": 40,
+      "centery": 79,
+      "dvx": 0.5
+    },
+    "61": {
+      "id": "61",
+      "name": "punch",
+      "pic": {
+        "tex": "0",
+        "x": 80,
+        "y": 80,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "auto"
+      },
+      "bdy": [
+        {
+          "x": 28,
+          "y": 12,
+          "w": 36,
+          "h": 68,
+          "kind": 0
+        }
+      ],
+      "itr": [
+        {
+          "kind": 0,
+          "x": 26,
+          "y": 37,
+          "w": 52,
+          "h": 14,
+          "injury": 20,
+          "dvx": 1,
+          "bdefend": 32
+        }
+      ],
+      "state": 3,
+      "centerx": 40,
+      "centery": 79,
+      "sound": "data/007.wav.mp3"
+    },
+    "65": {
+      "id": "65",
+      "name": "punch",
+      "pic": {
+        "tex": "0",
+        "x": 160,
+        "y": 80,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 9,
+      "next": {
+        "id": "66"
+      },
+      "bdy": [
+        {
+          "x": 26,
+          "y": 12,
+          "w": 27,
+          "h": 68,
+          "kind": 0
+        }
+      ],
+      "itr": [
+        {
+          "kind": 2,
+          "x": 16,
+          "y": 59,
+          "w": 35,
+          "h": 21,
+          "vrest": 9,
+          "friendly_fire": 1,
+          "motionless": 0,
+          "shaking": 0,
+          "test": "attacker_has_holder==0&victim_has_holder==0&(victim_state==1004|victim_state==2004)"
+        }
+      ],
+      "state": 3,
+      "centerx": 40,
+      "centery": 79,
+      "dvx": 0.5
+    },
+    "66": {
+      "id": "66",
+      "name": "punch",
+      "pic": {
+        "tex": "0",
+        "x": 240,
+        "y": 80,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "auto"
+      },
+      "bdy": [
+        {
+          "x": 22,
+          "y": 7,
+          "w": 41,
+          "h": 73,
+          "kind": 0
+        }
+      ],
+      "itr": [
+        {
+          "kind": 0,
+          "x": 29,
+          "y": 37,
+          "w": 47,
+          "h": 21,
+          "injury": 20,
+          "dvx": 1,
+          "bdefend": 32
+        }
+      ],
+      "state": 3,
+      "centerx": 40,
+      "centery": 79,
+      "sound": "data/007.wav.mp3"
+    },
+    "70": {
+      "id": "70",
+      "name": "super_punch",
+      "pic": {
+        "tex": "0",
+        "x": 320,
+        "y": 80,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "71"
+      },
+      "bdy": [
+        {
+          "x": 25,
+          "y": 13,
+          "w": 25,
+          "h": 58,
+          "kind": 0
+        }
+      ],
+      "state": 3,
+      "centerx": 27,
+      "centery": 80,
+      "sound": "data/007.wav.mp3"
+    },
+    "71": {
+      "id": "71",
+      "name": "super_punch",
+      "pic": {
+        "tex": "0",
+        "x": 400,
+        "y": 80,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "72"
+      },
+      "bdy": [
+        {
+          "x": 24,
+          "y": 10,
+          "w": 31,
+          "h": 57,
+          "kind": 0
+        }
+      ],
+      "state": 3,
+      "centerx": 22,
+      "centery": 79
+    },
+    "72": {
+      "id": "72",
+      "name": "super_punch",
+      "pic": {
+        "tex": "0",
+        "x": 480,
+        "y": 80,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "73"
+      },
+      "bdy": [
+        {
+          "x": 30,
+          "y": 7,
+          "w": 28,
+          "h": 61,
+          "kind": 0
+        }
+      ],
+      "itr": [
+        {
+          "kind": 0,
+          "x": 34,
+          "y": 34,
+          "w": 44,
+          "h": 27,
+          "injury": 55,
+          "arest": 144,
+          "dvx": 6,
+          "fall": 140,
+          "bdefend": 120
+        }
+      ],
+      "state": 3,
+      "centerx": 25,
+      "centery": 79
+    },
+    "73": {
+      "id": "73",
+      "name": "super_punch",
+      "pic": {
+        "tex": "0",
+        "x": 560,
+        "y": 80,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 3,
+      "next": {
+        "id": "74"
+      },
+      "bdy": [
+        {
+          "x": 33,
+          "y": 9,
+          "w": 36,
+          "h": 64,
+          "kind": 0
+        }
+      ],
+      "itr": [
+        {
+          "kind": 0,
+          "x": 39,
+          "y": 30,
+          "w": 29,
+          "h": 30,
+          "injury": 55,
+          "arest": 144,
+          "dvx": 6,
+          "fall": 140,
+          "bdefend": 120
+        }
+      ],
+      "state": 3,
+      "centerx": 38,
+      "centery": 79
+    },
+    "74": {
+      "id": "74",
+      "name": "super_punch",
+      "pic": {
+        "tex": "0",
+        "x": 640,
+        "y": 80,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "auto"
+      },
+      "bdy": [
+        {
+          "x": 23,
+          "y": 14,
+          "w": 40,
+          "h": 67,
+          "kind": 0
+        }
+      ],
+      "state": 3,
+      "centerx": 44,
+      "centery": 79
+    },
+    "75": {
+      "id": "75",
+      "name": "run_attack",
+      "pic": {
+        "tex": "1",
+        "x": 400,
+        "y": 240,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 7,
+      "next": {
+        "id": "auto"
+      },
+      "bdy": [
+        {
+          "x": 20,
+          "y": 31,
+          "w": 16,
+          "h": 49,
+          "kind": 0
+        },
+        {
+          "x": 30,
+          "y": 11,
+          "w": 30,
+          "h": 66,
+          "kind": 0
+        }
+      ],
+      "state": 3,
+      "centerx": 39,
+      "centery": 79
+    },
+    "80": {
+      "id": "80",
+      "name": "jump_attack",
+      "pic": {
+        "tex": "0",
+        "x": 320,
+        "y": 80,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "81"
+      },
+      "bdy": [
+        {
+          "x": 25,
+          "y": 13,
+          "w": 25,
+          "h": 58,
+          "kind": 0
+        }
+      ],
+      "state": 3,
+      "centerx": 25,
+      "centery": 80,
+      "sound": "data/007.wav.mp3"
+    },
+    "81": {
+      "id": "81",
+      "name": "jump_attack",
+      "pic": {
+        "tex": "0",
+        "x": 400,
+        "y": 80,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "82"
+      },
+      "bdy": [
+        {
+          "x": 24,
+          "y": 10,
+          "w": 31,
+          "h": 57,
+          "kind": 0
+        }
+      ],
+      "state": 3,
+      "centerx": 21,
+      "centery": 79
+    },
+    "82": {
+      "id": "82",
+      "name": "jump_attack",
+      "pic": {
+        "tex": "0",
+        "x": 480,
+        "y": 80,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "83"
+      },
+      "bdy": [
+        {
+          "x": 23,
+          "y": 10,
+          "w": 37,
+          "h": 67,
+          "kind": 0
+        }
+      ],
+      "itr": [
+        {
+          "kind": 0,
+          "x": 32,
+          "y": 30,
+          "w": 47,
+          "h": 28,
+          "injury": 45,
+          "arest": 144,
+          "dvx": 6,
+          "fall": 140,
+          "bdefend": 120
+        }
+      ],
+      "state": 3,
+      "centerx": 25,
+      "centery": 79
+    },
+    "83": {
+      "id": "83",
+      "name": "jump_attack",
+      "pic": {
+        "tex": "0",
+        "x": 560,
+        "y": 80,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 3,
+      "next": {
+        "id": "84"
+      },
+      "bdy": [
+        {
+          "x": 33,
+          "y": 9,
+          "w": 36,
+          "h": 64,
+          "kind": 0
+        }
+      ],
+      "itr": [
+        {
+          "kind": 0,
+          "x": 35,
+          "y": 30,
+          "w": 30,
+          "h": 30,
+          "injury": 45,
+          "arest": 144,
+          "dvx": 6,
+          "fall": 140,
+          "bdefend": 120
+        }
+      ],
+      "state": 3,
+      "centerx": 38,
+      "centery": 79
+    },
+    "84": {
+      "id": "84",
+      "name": "jump_attack",
+      "pic": {
+        "tex": "0",
+        "x": 640,
+        "y": 80,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "auto"
+      },
+      "bdy": [
+        {
+          "x": 23,
+          "y": 13,
+          "w": 39,
+          "h": 66,
+          "kind": 0
+        }
+      ],
+      "state": 3,
+      "centerx": 44,
+      "centery": 79
+    },
+    "85": {
+      "id": "85",
+      "name": "run_attack",
+      "pic": {
+        "tex": "1",
+        "x": 0,
+        "y": 240,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 3,
+      "next": {
+        "id": "86"
+      },
+      "bdy": [
+        {
+          "x": 23,
+          "y": 9,
+          "w": 38,
+          "h": 71,
+          "kind": 0
+        }
+      ],
+      "state": 3,
+      "centerx": 41,
+      "centery": 79,
+      "sound": "data/031.wav.mp3",
+      "dvx": 3
+    },
+    "86": {
+      "id": "86",
+      "name": "run_attack",
+      "pic": {
+        "tex": "1",
+        "x": 80,
+        "y": 240,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "87"
+      },
+      "bdy": [
+        {
+          "x": 23,
+          "y": 12,
+          "w": 41,
+          "h": 68,
+          "kind": 0
+        }
+      ],
+      "state": 3,
+      "centerx": 42,
+      "centery": 79,
+      "dvx": 2
+    },
+    "87": {
+      "id": "87",
+      "name": "run_attack",
+      "pic": {
+        "tex": "1",
+        "x": 160,
+        "y": 240,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 9,
+      "next": {
+        "id": "88"
+      },
+      "bdy": [
+        {
+          "x": 27,
+          "y": 15,
+          "w": 35,
+          "h": 64,
+          "kind": 0
+        },
+        {
+          "x": 15,
+          "y": 31,
+          "w": 21,
+          "h": 50,
+          "kind": 0
+        }
+      ],
+      "itr": [
+        {
+          "kind": 0,
+          "x": 18,
+          "y": 30,
+          "w": 61,
+          "h": 31,
+          "injury": 65,
+          "vrest": 8,
+          "dvx": 7,
+          "fall": 140,
+          "bdefend": 32
+        }
+      ],
+      "state": 3,
+      "centerx": 35,
+      "centery": 79,
+      "dvx": 6
+    },
+    "88": {
+      "id": "88",
+      "name": "run_attack",
+      "pic": {
+        "tex": "1",
+        "x": 240,
+        "y": 240,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "89"
+      },
+      "bdy": [
+        {
+          "x": 18,
+          "y": 29,
+          "w": 27,
+          "h": 54,
+          "kind": 0
+        },
+        {
+          "x": 31,
+          "y": 12,
+          "w": 33,
+          "h": 65,
+          "kind": 0
+        }
+      ],
+      "itr": [
+        {
+          "kind": 0,
+          "x": 17,
+          "y": 34,
+          "w": 55,
+          "h": 21,
+          "injury": 65,
+          "vrest": 8,
+          "dvx": 7,
+          "fall": 140,
+          "bdefend": 32
+        }
+      ],
+      "state": 3,
+      "centerx": 35,
+      "centery": 79,
+      "dvx": 6
+    },
+    "89": {
+      "id": "89",
+      "name": "run_attack",
+      "pic": {
+        "tex": "1",
+        "x": 320,
+        "y": 240,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "75"
+      },
+      "bdy": [
+        {
+          "x": 32,
+          "y": 9,
+          "w": 35,
+          "h": 73,
+          "kind": 0
+        },
+        {
+          "x": 19,
+          "y": 34,
+          "w": 23,
+          "h": 46,
+          "kind": 0
+        }
+      ],
+      "state": 3,
+      "centerx": 36,
+      "centery": 79
+    },
+    "90": {
+      "id": "90",
+      "name": "dash_attack",
+      "pic": {
+        "tex": "1",
+        "x": 160,
+        "y": 480,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 3,
+      "next": {
+        "id": "91"
+      },
+      "bdy": [
+        {
+          "x": 19,
+          "y": 8,
+          "w": 27,
+          "h": 61,
+          "kind": 0
+        },
+        {
+          "x": 11,
+          "y": 31,
+          "w": 43,
+          "h": 22,
+          "kind": 0
+        }
+      ],
+      "state": 15,
+      "centerx": 38,
+      "centery": 73,
+      "sound": "data/031.wav.mp3",
+      "dvx": -0.5,
+      "dvy": 0.25
+    },
+    "91": {
+      "id": "91",
+      "name": "dash_attack",
+      "pic": {
+        "tex": "1",
+        "x": 160,
+        "y": 480,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "92"
+      },
+      "bdy": [
+        {
+          "x": 19,
+          "y": 16,
+          "w": 28,
+          "h": 53,
+          "kind": 0
+        },
+        {
+          "x": 10,
+          "y": 32,
+          "w": 46,
+          "h": 20,
+          "kind": 0
+        }
+      ],
+      "state": 15,
+      "centerx": 39,
+      "centery": 74
+    },
+    "92": {
+      "id": "92",
+      "name": "dash_attack",
+      "pic": {
+        "tex": "1",
+        "x": 240,
+        "y": 480,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "93"
+      },
+      "bdy": [
+        {
+          "x": 27,
+          "y": 11,
+          "w": 25,
+          "h": 55,
+          "kind": 0
+        },
+        {
+          "x": 22,
+          "y": 25,
+          "w": 39,
+          "h": 31,
+          "kind": 0
+        }
+      ],
+      "state": 15,
+      "centerx": 31,
+      "centery": 73
+    },
+    "93": {
+      "id": "93",
+      "name": "dash_attack",
+      "pic": {
+        "tex": "1",
+        "x": 320,
+        "y": 480,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 181,
+      "next": {
+        "id": "94"
+      },
+      "bdy": [
+        {
+          "x": 29,
+          "y": 19,
+          "w": 39,
+          "h": 45,
+          "kind": 0
+        },
+        {
+          "x": 16,
+          "y": 38,
+          "w": 36,
+          "h": 29,
+          "kind": 0
+        }
+      ],
+      "itr": [
+        {
+          "kind": 0,
+          "x": 28,
+          "y": 34,
+          "w": 57,
+          "h": 45,
+          "injury": 80,
+          "vrest": 10,
+          "dvx": 6,
+          "fall": 140,
+          "bdefend": 120
+        }
+      ],
+      "state": 100,
+      "centerx": 31,
+      "centery": 73,
+      "dvx": 11.5,
+      "dvy": -0.5
+    },
+    "94": {
+      "id": "94",
+      "name": "dash_attack",
+      "pic": {
+        "tex": "1",
+        "x": 400,
+        "y": 480,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "95"
+      },
+      "bdy": [
+        {
+          "x": 42,
+          "y": 24,
+          "w": 32,
+          "h": 52,
+          "kind": 0
+        },
+        {
+          "x": 18,
+          "y": 50,
+          "w": 47,
+          "h": 28,
+          "kind": 0
+        }
+      ],
+      "state": 15,
+      "centerx": 41,
+      "centery": 77
+    },
+    "95": {
+      "id": "95",
+      "name": "dash_attack",
+      "pic": {
+        "tex": "1",
+        "x": 480,
+        "y": 480,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "auto"
+      },
+      "bdy": [
+        {
+          "x": 38,
+          "y": 24,
+          "w": 24,
+          "h": 55,
+          "kind": 0
+        },
+        {
+          "x": 15,
+          "y": 46,
+          "w": 34,
+          "h": 32,
+          "kind": 0
+        }
+      ],
+      "state": 15,
+      "centerx": 31,
+      "centery": 74
+    },
+    "100": {
+      "id": "100",
+      "name": "rowing",
+      "pic": {
+        "tex": "0",
+        "x": 480,
+        "y": 480,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "101"
+      },
+      "wpoint": {
+        "kind": 1,
+        "x": 36,
+        "y": 42,
+        "weaponact": 32,
+        "cover": 1
+      },
+      "state": 6,
+      "centerx": 39,
+      "centery": 79,
+      "sound": "data/017.wav.mp3"
+    },
+    "101": {
+      "id": "101",
+      "name": "rowing",
+      "pic": {
+        "tex": "0",
+        "x": 400,
+        "y": 480,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 13,
+      "next": {},
+      "wpoint": {
+        "kind": 1,
+        "x": 25,
+        "y": 71,
+        "weaponact": 24,
+        "cover": 0
+      },
+      "state": 6,
+      "centerx": 39,
+      "centery": 79
+    },
+    "102": {
+      "id": "102",
+      "name": "rowing",
+      "pic": {
+        "tex": "0",
+        "x": 640,
+        "y": 400,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "103"
+      },
+      "itr": [
+        {
+          "kind": 7,
+          "x": 36,
+          "y": 54,
+          "w": 13,
+          "h": 25,
+          "vrest": 9,
+          "friendly_fire": 1,
+          "motionless": 0,
+          "shaking": 0,
+          "test": "attacker_has_holder==0&victim_has_holder==0&victim_state==1004"
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 42,
+        "y": 75,
+        "weaponact": 22,
+        "cover": 1
+      },
+      "state": 6,
+      "centerx": 39,
+      "centery": 79,
+      "dvx": 4.5
+    },
+    "103": {
+      "id": "103",
+      "name": "rowing",
+      "pic": {
+        "tex": "0",
+        "x": 720,
+        "y": 400,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "104"
+      },
+      "itr": [
+        {
+          "kind": 7,
+          "x": 36,
+          "y": 54,
+          "w": 13,
+          "h": 25,
+          "vrest": 9,
+          "friendly_fire": 1,
+          "motionless": 0,
+          "shaking": 0,
+          "test": "attacker_has_holder==0&victim_has_holder==0&victim_state==1004"
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 42,
+        "y": 45,
+        "weaponact": 31,
+        "cover": 1
+      },
+      "state": 6,
+      "centerx": 39,
+      "centery": 79,
+      "dvx": 4.5
+    },
+    "104": {
+      "id": "104",
+      "name": "rowing",
+      "pic": {
+        "tex": "0",
+        "x": 720,
+        "y": 320,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "105"
+      },
+      "itr": [
+        {
+          "kind": 7,
+          "x": 36,
+          "y": 54,
+          "w": 13,
+          "h": 25,
+          "vrest": 9,
+          "friendly_fire": 1,
+          "motionless": 0,
+          "shaking": 0,
+          "test": "attacker_has_holder==0&victim_has_holder==0&victim_state==1004"
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 30,
+        "y": 59,
+        "weaponact": 25,
+        "cover": 1
+      },
+      "state": 6,
+      "centerx": 39,
+      "centery": 79,
+      "dvx": 4.5
+    },
+    "105": {
+      "id": "105",
+      "name": "rowing",
+      "pic": {
+        "tex": "0",
+        "x": 640,
+        "y": 400,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "219"
+      },
+      "itr": [
+        {
+          "kind": 7,
+          "x": 36,
+          "y": 54,
+          "w": 13,
+          "h": 25,
+          "vrest": 9,
+          "friendly_fire": 1,
+          "motionless": 0,
+          "shaking": 0,
+          "test": "attacker_has_holder==0&victim_has_holder==0&victim_state==1004"
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 44,
+        "y": 74,
+        "weaponact": 22,
+        "cover": 1
+      },
+      "state": 6,
+      "centerx": 39,
+      "centery": 79,
+      "dvx": 4.5
+    },
+    "106": {
+      "id": "106",
+      "name": "rowing",
+      "pic": {
+        "tex": "0",
+        "x": 720,
+        "y": 400,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "219"
+      },
+      "itr": [
+        {
+          "kind": 7,
+          "x": 36,
+          "y": 54,
+          "w": 13,
+          "h": 25,
+          "vrest": 9,
+          "friendly_fire": 1,
+          "motionless": 0,
+          "shaking": 0,
+          "test": "attacker_has_holder==0&victim_has_holder==0&victim_state==1004"
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 42,
+        "y": 48,
+        "weaponact": 30,
+        "cover": 1
+      },
+      "state": 6,
+      "centerx": 39,
+      "centery": 79,
+      "dvx": 4.5
+    },
+    "107": {
+      "id": "107",
+      "name": "rowing",
+      "pic": {
+        "tex": "0",
+        "x": 720,
+        "y": 320,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "219"
+      },
+      "itr": [
+        {
+          "kind": 7,
+          "x": 36,
+          "y": 54,
+          "w": 13,
+          "h": 25,
+          "vrest": 9,
+          "friendly_fire": 1,
+          "motionless": 0,
+          "shaking": 0,
+          "test": "attacker_has_holder==0&victim_has_holder==0&victim_state==1004"
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 32,
+        "y": 59,
+        "weaponact": 25,
+        "cover": 1
+      },
+      "state": 6,
+      "centerx": 39,
+      "centery": 79,
+      "dvx": 4.5
+    },
+    "108": {
+      "id": "108",
+      "name": "rowing",
+      "pic": {
+        "tex": "1",
+        "x": 560,
+        "y": 320,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 7,
+      "next": {
+        "id": "109"
+      },
+      "wpoint": {
+        "kind": 1,
+        "x": 37,
+        "y": 34,
+        "weaponact": 35,
+        "cover": 0
+      },
+      "state": 6,
+      "centerx": 45,
+      "centery": 62,
+      "sound": "data/017.wav.mp3"
+    },
+    "109": {
+      "id": "109",
+      "name": "rowing",
+      "pic": {
+        "tex": "1",
+        "x": 640,
+        "y": 320,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 13,
+      "next": {},
+      "wpoint": {
+        "kind": 1,
+        "x": 35,
+        "y": 44,
+        "weaponact": 21,
+        "cover": 0
+      },
+      "state": 6,
+      "centerx": 39,
+      "centery": 79
+    },
+    "110": {
+      "id": "110",
+      "name": "defend",
+      "pic": {
+        "tex": "0",
+        "x": 480,
+        "y": 400,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 25,
+      "next": {
+        "id": "auto"
+      },
+      "bdy": [
+        {
+          "x": 20,
+          "y": 19,
+          "w": 38,
+          "h": 60,
+          "kind": 2000,
+          "break_act": {
+            "id": "112"
+          },
+          "hit_act": {
+            "id": "111"
+          }
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 46,
+        "y": 51,
+        "weaponact": 21,
+        "cover": 0
+      },
+      "state": 7,
+      "centerx": 37,
+      "centery": 79,
+      "hit": {
+        "sequences": {
+          "La": {
+            "id": "235",
+            "mp": 150,
+            "facing": -1
+          },
+          "Ra": {
+            "id": "235",
+            "mp": 150,
+            "facing": 1
+          },
+          "Lj": {
+            "id": "247",
+            "mp": 50,
+            "facing": -1
+          },
+          "Rj": {
+            "id": "247",
+            "mp": 50,
+            "facing": 1
+          },
+          "Uj": {
+            "id": "275",
+            "mp": 100
+          },
+          "ja": {
+            "id": "300",
+            "expression": "hp_p<=33|lf2_net_on==1"
+          }
+        },
+        "B": {
+          "id": "",
+          "wait": "i",
+          "facing": 2
+        }
+      },
+      "hold": {
+        "B": {
+          "id": "",
+          "wait": "i",
+          "facing": 2
+        }
+      }
+    },
+    "111": {
+      "id": "111",
+      "name": "defend",
+      "pic": {
+        "tex": "0",
+        "x": 560,
+        "y": 400,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 1,
+      "next": {
+        "id": "110"
+      },
+      "bdy": [
+        {
+          "x": 16,
+          "y": 19,
+          "w": 42,
+          "h": 60,
+          "kind": 2000,
+          "break_act": {
+            "id": "112"
+          },
+          "hit_act": {
+            "id": "111"
+          }
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 40,
+        "y": 51,
+        "weaponact": 21,
+        "cover": 0
+      },
+      "state": 7,
+      "centerx": 35,
+      "centery": 79,
+      "hit": {
+        "B": {
+          "id": "",
+          "wait": "i",
+          "facing": 2
+        }
+      },
+      "hold": {
+        "B": {
+          "id": "",
+          "wait": "i",
+          "facing": 2
+        }
+      }
+    },
+    "112": {
+      "id": "112",
+      "name": "broken_defend",
+      "pic": {
+        "tex": "0",
+        "x": 480,
+        "y": 320,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "113"
+      },
+      "bdy": [
+        {
+          "x": 5,
+          "y": 17,
+          "w": 64,
+          "h": 65,
+          "kind": 0
+        }
+      ],
+      "itr": [
+        {
+          "kind": 6,
+          "x": -9,
+          "y": 16,
+          "w": 85,
+          "h": 65,
+          "vrest": 9,
+          "motionless": 0,
+          "shaking": 0,
+          "test": "victim_type==character"
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 5,
+        "y": 32,
+        "weaponact": 21,
+        "cover": 0
+      },
+      "state": 8,
+      "centerx": 39,
+      "centery": 79,
+      "dvx": -1
+    },
+    "113": {
+      "id": "113",
+      "name": "broken_defend",
+      "pic": {
+        "tex": "0",
+        "x": 560,
+        "y": 320,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "114"
+      },
+      "bdy": [
+        {
+          "x": 5,
+          "y": 17,
+          "w": 64,
+          "h": 65,
+          "kind": 0
+        }
+      ],
+      "itr": [
+        {
+          "kind": 6,
+          "x": -9,
+          "y": 16,
+          "w": 85,
+          "h": 65,
+          "vrest": 9,
+          "motionless": 0,
+          "shaking": 0,
+          "test": "victim_type==character"
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 6,
+        "y": 51,
+        "weaponact": 35,
+        "cover": 0
+      },
+      "state": 8,
+      "centerx": 39,
+      "centery": 79,
+      "dvx": -1
+    },
+    "114": {
+      "id": "114",
+      "name": "broken_defend",
+      "pic": {
+        "tex": "0",
+        "x": 640,
+        "y": 320,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "auto"
+      },
+      "bdy": [
+        {
+          "x": 5,
+          "y": 17,
+          "w": 64,
+          "h": 65,
+          "kind": 0
+        }
+      ],
+      "itr": [
+        {
+          "kind": 6,
+          "x": -9,
+          "y": 16,
+          "w": 85,
+          "h": 65,
+          "vrest": 9,
+          "motionless": 0,
+          "shaking": 0,
+          "test": "victim_type==character"
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 11,
+        "y": 60,
+        "weaponact": 22,
+        "cover": 0
+      },
+      "state": 8,
+      "centerx": 39,
+      "centery": 79,
+      "dvx": -1
+    },
+    "115": {
+      "id": "115",
+      "name": "picking_light",
+      "pic": {
+        "tex": "0",
+        "x": 480,
+        "y": 240,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 9,
+      "next": {
+        "id": "auto"
+      },
+      "bdy": [
+        {
+          "x": 24,
+          "y": 43,
+          "w": 33,
+          "h": 37,
+          "kind": 0
+        },
+        {
+          "x": 32,
+          "y": 24,
+          "w": 28,
+          "h": 28,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 44,
+        "y": 74,
+        "weaponact": 24,
+        "cover": 0
+      },
+      "state": 15,
+      "centerx": 46,
+      "centery": 76,
+      "sound": "data/009.wav.mp3"
+    },
+    "116": {
+      "id": "116",
+      "name": "picking_heavy",
+      "pic": {
+        "tex": "0",
+        "x": 480,
+        "y": 240,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "117"
+      },
+      "bdy": [
+        {
+          "x": 24,
+          "y": 43,
+          "w": 33,
+          "h": 37,
+          "kind": 0
+        },
+        {
+          "x": 36,
+          "y": 26,
+          "w": 26,
+          "h": 25,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 42,
+        "y": 79,
+        "weaponact": 10,
+        "cover": 0
+      },
+      "state": 15,
+      "centerx": 46,
+      "centery": 79,
+      "sound": "data/009.wav.mp3"
+    },
+    "117": {
+      "id": "117",
+      "name": "picking_heavy",
+      "pic": {
+        "tex": "0",
+        "x": 480,
+        "y": 240,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "auto"
+      },
+      "bdy": [
+        {
+          "x": 24,
+          "y": 43,
+          "w": 33,
+          "h": 37,
+          "kind": 0
+        },
+        {
+          "x": 34,
+          "y": 19,
+          "w": 26,
+          "h": 37,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 42,
+        "y": 70,
+        "weaponact": 10,
+        "cover": 0
+      },
+      "state": 15,
+      "centerx": 46,
+      "centery": 79
+    },
+    "120": {
+      "id": "120",
+      "name": "catching",
+      "pic": {
+        "tex": "0",
+        "x": 80,
+        "y": 400,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "121"
+      },
+      "bdy": [
+        {
+          "x": 19,
+          "y": 15,
+          "w": 28,
+          "h": 65,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 55,
+        "y": 39,
+        "weaponact": 35,
+        "cover": 0
+      },
+      "cpoint": {
+        "kind": 1,
+        "x": 71,
+        "y": 39,
+        "hurtable": 1,
+        "decrease": 7,
+        "vaction": {
+          "id": "131",
+          "facing": 5
+        }
+      },
+      "state": 9,
+      "centerx": 36,
+      "centery": 79,
+      "sound": "data/015.wav.mp3"
+    },
+    "121": {
+      "id": "121",
+      "name": "catching",
+      "pic": {
+        "tex": "0",
+        "x": 0,
+        "y": 400,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 1,
+      "next": {},
+      "bdy": [
+        {
+          "x": 19,
+          "y": 15,
+          "w": 28,
+          "h": 65,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 57,
+        "y": 40,
+        "weaponact": 35,
+        "cover": 0
+      },
+      "cpoint": {
+        "kind": 1,
+        "x": 65,
+        "y": 39,
+        "hurtable": 1,
+        "decrease": -7,
+        "vaction": {
+          "id": "130",
+          "facing": 5
+        }
+      },
+      "state": 9,
+      "centerx": 39,
+      "centery": 79,
+      "hit": {
+        "j": {
+          "id": "260",
+          "facing": 2,
+          "mp": 75
+        },
+        "a": [
+          {
+            "id": "232",
+            "facing": 3,
+            "expression": "catching==1&(press_F_B!=0|press_U_D!=0)"
+          },
+          {
+            "id": "122",
+            "expression": "catching==1"
+          }
+        ]
+      }
+    },
+    "122": {
+      "id": "122",
+      "name": "catching",
+      "pic": {
+        "tex": "0",
+        "x": 80,
+        "y": 400,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 11,
+      "next": {
+        "id": "123"
+      },
+      "bdy": [
+        {
+          "x": 19,
+          "y": 15,
+          "w": 28,
+          "h": 65,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 56,
+        "y": 40,
+        "weaponact": 35,
+        "cover": 0
+      },
+      "cpoint": {
+        "kind": 1,
+        "x": 66,
+        "y": 39,
+        "hurtable": 1,
+        "decrease": 7,
+        "vaction": {
+          "id": "130",
+          "facing": 5
+        }
+      },
+      "state": 9,
+      "centerx": 38,
+      "centery": 79
+    },
+    "123": {
+      "id": "123",
+      "name": "catching",
+      "pic": {
+        "tex": "0",
+        "x": 160,
+        "y": 400,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 7,
+      "next": {
+        "id": "121"
+      },
+      "bdy": [
+        {
+          "x": 19,
+          "y": 15,
+          "w": 28,
+          "h": 65,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 56,
+        "y": 40,
+        "weaponact": 35,
+        "cover": 0
+      },
+      "cpoint": {
+        "kind": 1,
+        "x": 64,
+        "y": 38,
+        "hurtable": 1,
+        "decrease": 3,
+        "injury": 15,
+        "shaking": 6,
+        "vaction": {
+          "id": "132",
+          "facing": 5
+        }
+      },
+      "state": 9,
+      "centerx": 39,
+      "centery": 79,
+      "sound": "data/014.wav.mp3"
+    },
+    "130": {
+      "id": "130",
+      "name": "picked_caught",
+      "pic": {
+        "tex": "0",
+        "x": 240,
+        "y": 400,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 7,
+      "next": {},
+      "bdy": [
+        {
+          "x": 26,
+          "y": 14,
+          "w": 28,
+          "h": 66,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 29,
+        "y": 53,
+        "weaponact": 31,
+        "cover": 0
+      },
+      "cpoint": {
+        "kind": 2,
+        "x": 42,
+        "y": 39,
+        "fronthurtact": 132,
+        "backhurtact": 131
+      },
+      "state": 10,
+      "centerx": 39,
+      "centery": 79
+    },
+    "131": {
+      "id": "131",
+      "name": "picked_caught",
+      "pic": {
+        "tex": "0",
+        "x": 320,
+        "y": 400,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 7,
+      "next": {},
+      "bdy": [
+        {
+          "x": 26,
+          "y": 14,
+          "w": 28,
+          "h": 66,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 32,
+        "y": 56,
+        "weaponact": 30,
+        "cover": 0
+      },
+      "cpoint": {
+        "kind": 2,
+        "x": 43,
+        "y": 39,
+        "fronthurtact": 132,
+        "backhurtact": 132
+      },
+      "state": 10,
+      "centerx": 39,
+      "centery": 79
+    },
+    "132": {
+      "id": "132",
+      "name": "picked_caught",
+      "pic": {
+        "tex": "0",
+        "x": 400,
+        "y": 400,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 7,
+      "next": {},
+      "bdy": [
+        {
+          "x": 26,
+          "y": 14,
+          "w": 28,
+          "h": 66,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 25,
+        "y": 53,
+        "weaponact": 31,
+        "cover": 0
+      },
+      "cpoint": {
+        "kind": 2,
+        "x": 41,
+        "y": 39,
+        "fronthurtact": 131,
+        "backhurtact": 131
+      },
+      "state": 10,
+      "centerx": 39,
+      "centery": 79
+    },
+    "133": {
+      "id": "133",
+      "name": "picked_caught",
+      "pic": {
+        "tex": "0",
+        "x": 0,
+        "y": 240,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 7,
+      "next": {},
+      "wpoint": {
+        "kind": 1,
+        "x": 35,
+        "y": 46,
+        "weaponact": 22,
+        "cover": 0
+      },
+      "cpoint": {
+        "kind": 2,
+        "x": 33,
+        "y": 36
+      },
+      "state": 10,
+      "centerx": 39,
+      "centery": 79
+    },
+    "134": {
+      "id": "134",
+      "name": "picked_caught",
+      "pic": {
+        "tex": "0",
+        "x": 80,
+        "y": 240,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 7,
+      "next": {},
+      "wpoint": {
+        "kind": 1,
+        "x": 39,
+        "y": 39,
+        "weaponact": 21,
+        "cover": 0
+      },
+      "cpoint": {
+        "kind": 2,
+        "x": 37,
+        "y": 28
+      },
+      "state": 10,
+      "centerx": 39,
+      "centery": 79
+    },
+    "135": {
+      "id": "135",
+      "name": "picked_caught",
+      "pic": {
+        "tex": "0",
+        "x": 160,
+        "y": 240,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 7,
+      "next": {},
+      "wpoint": {
+        "kind": 1,
+        "x": 34,
+        "y": 46,
+        "weaponact": 21,
+        "cover": 0
+      },
+      "cpoint": {
+        "kind": 2,
+        "x": 31,
+        "y": 22
+      },
+      "state": 10,
+      "centerx": 39,
+      "centery": 79
+    },
+    "136": {
+      "id": "136",
+      "name": "picked_caught",
+      "pic": {
+        "tex": "0",
+        "x": 240,
+        "y": 240,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 7,
+      "next": {},
+      "wpoint": {
+        "kind": 1,
+        "x": 36,
+        "y": 38,
+        "weaponact": 33,
+        "cover": 1
+      },
+      "cpoint": {
+        "kind": 2,
+        "x": 27,
+        "y": 46
+      },
+      "state": 10,
+      "centerx": 39,
+      "centery": 79
+    },
+    "137": {
+      "id": "137",
+      "name": "picked_caught",
+      "pic": {
+        "tex": "0",
+        "x": 320,
+        "y": 240,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 7,
+      "next": {},
+      "wpoint": {
+        "kind": 1,
+        "x": 36,
+        "y": 75,
+        "weaponact": 32,
+        "cover": 0
+      },
+      "cpoint": {
+        "kind": 2,
+        "x": 33,
+        "y": 68
+      },
+      "state": 10,
+      "centerx": 39,
+      "centery": 69
+    },
+    "138": {
+      "id": "138",
+      "name": "picked_caught",
+      "pic": {
+        "tex": "0",
+        "x": 400,
+        "y": 240,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 7,
+      "next": {},
+      "wpoint": {
+        "kind": 1,
+        "x": 33,
+        "y": 70,
+        "weaponact": 31,
+        "cover": 0
+      },
+      "cpoint": {
+        "kind": 2,
+        "x": 34,
+        "y": 54
+      },
+      "state": 10,
+      "centerx": 39,
+      "centery": 79
+    },
+    "139": {
+      "id": "139",
+      "name": "picked_caught",
+      "pic": {
+        "tex": "0",
+        "x": 0,
+        "y": 320,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 7,
+      "next": {},
+      "wpoint": {
+        "kind": 1,
+        "x": 26,
+        "y": 50,
+        "weaponact": 35,
+        "cover": 0
+      },
+      "cpoint": {
+        "kind": 2,
+        "x": 40,
+        "y": 36
+      },
+      "state": 10,
+      "centerx": 39,
+      "centery": 79
+    },
+    "140": {
+      "id": "140",
+      "name": "picked_caught",
+      "pic": {
+        "tex": "0",
+        "x": 80,
+        "y": 320,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 7,
+      "next": {},
+      "wpoint": {
+        "kind": 1,
+        "x": 24,
+        "y": 45,
+        "weaponact": 20,
+        "cover": 0
+      },
+      "cpoint": {
+        "kind": 2,
+        "x": 36,
+        "y": 38
+      },
+      "state": 10,
+      "centerx": 39,
+      "centery": 79
+    },
+    "141": {
+      "id": "141",
+      "name": "picked_caught",
+      "pic": {
+        "tex": "0",
+        "x": 160,
+        "y": 320,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 7,
+      "next": {},
+      "wpoint": {
+        "kind": 1,
+        "x": 21,
+        "y": 38,
+        "weaponact": 23,
+        "cover": 0
+      },
+      "cpoint": {
+        "kind": 2,
+        "x": 44,
+        "y": 40
+      },
+      "state": 10,
+      "centerx": 39,
+      "centery": 79
+    },
+    "142": {
+      "id": "142",
+      "name": "picked_caught",
+      "pic": {
+        "tex": "0",
+        "x": 240,
+        "y": 320,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 7,
+      "next": {},
+      "wpoint": {
+        "kind": 1,
+        "x": 18,
+        "y": 50,
+        "weaponact": 26,
+        "cover": 0
+      },
+      "cpoint": {
+        "kind": 2,
+        "x": 46,
+        "y": 51
+      },
+      "state": 10,
+      "centerx": 39,
+      "centery": 79
+    },
+    "143": {
+      "id": "143",
+      "name": "picked_caught",
+      "pic": {
+        "tex": "0",
+        "x": 320,
+        "y": 320,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 7,
+      "next": {},
+      "wpoint": {
+        "kind": 1,
+        "x": 43,
+        "y": 77,
+        "weaponact": 24,
+        "cover": 0
+      },
+      "cpoint": {
+        "kind": 2,
+        "x": 45,
+        "y": 66
+      },
+      "state": 10,
+      "centerx": 39,
+      "centery": 77
+    },
+    "144": {
+      "id": "144",
+      "name": "picked_caught",
+      "pic": {
+        "tex": "0",
+        "x": 400,
+        "y": 320,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 7,
+      "next": {},
+      "wpoint": {
+        "kind": 1,
+        "x": 28,
+        "y": 51,
+        "weaponact": 25,
+        "cover": 0
+      },
+      "cpoint": {
+        "kind": 2,
+        "x": 42,
+        "y": 55
+      },
+      "state": 10,
+      "centerx": 39,
+      "centery": 79
+    },
+    "180": {
+      "id": "180",
+      "name": "falling",
+      "pic": {
+        "tex": "0",
+        "x": 0,
+        "y": 240,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 7,
+      "next": {},
+      "bdy": [
+        {
+          "x": 25,
+          "y": 25,
+          "w": 21,
+          "h": 20,
+          "kind": 0
+        }
+      ],
+      "itr": [
+        {
+          "kind": 4,
+          "x": 21,
+          "y": 14,
+          "w": 29,
+          "h": 44,
+          "injury": 30,
+          "vrest": 34,
+          "dvx": 1,
+          "fall": 140,
+          "bdefend": 20
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 34,
+        "y": 50,
+        "weaponact": 21,
+        "cover": 0
+      },
+      "state": 12,
+      "centerx": 39,
+      "centery": 79
+    },
+    "181": {
+      "id": "181",
+      "name": "falling",
+      "pic": {
+        "tex": "0",
+        "x": 80,
+        "y": 240,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 7,
+      "next": {},
+      "bdy": [
+        {
+          "x": 22,
+          "y": 20,
+          "w": 24,
+          "h": 23,
+          "kind": 0
+        }
+      ],
+      "itr": [
+        {
+          "kind": 4,
+          "x": 15,
+          "y": 11,
+          "w": 42,
+          "h": 26,
+          "injury": 30,
+          "vrest": 34,
+          "dvx": 1,
+          "fall": 140,
+          "bdefend": 20
+        },
+        {
+          "kind": 4,
+          "x": 35,
+          "y": 30,
+          "w": 27,
+          "h": 29,
+          "injury": 30,
+          "vrest": 34,
+          "dvx": 1,
+          "fall": 140,
+          "bdefend": 20
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 38,
+        "y": 39,
+        "weaponact": 21,
+        "cover": 0
+      },
+      "state": 12,
+      "centerx": 39,
+      "centery": 79
+    },
+    "182": {
+      "id": "182",
+      "name": "falling",
+      "pic": {
+        "tex": "0",
+        "x": 160,
+        "y": 240,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 7,
+      "next": {},
+      "bdy": [
+        {
+          "x": 27,
+          "y": 22,
+          "w": 20,
+          "h": 18,
+          "kind": 0
+        }
+      ],
+      "itr": [
+        {
+          "kind": 4,
+          "x": 13,
+          "y": 18,
+          "w": 46,
+          "h": 26,
+          "injury": 30,
+          "vrest": 34,
+          "dvx": 1,
+          "fall": 140,
+          "bdefend": 20
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 33,
+        "y": 45,
+        "weaponact": 21,
+        "cover": 0
+      },
+      "state": 12,
+      "centerx": 39,
+      "centery": 79,
+      "hit": {
+        "j": [
+          {
+            "id": "100",
+            "expression": "hp>0"
+          }
+        ]
+      }
+    },
+    "183": {
+      "id": "183",
+      "name": "falling",
+      "pic": {
+        "tex": "0",
+        "x": 240,
+        "y": 240,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 7,
+      "next": {},
+      "bdy": [
+        {
+          "x": 22,
+          "y": 30,
+          "w": 27,
+          "h": 21,
+          "kind": 0
+        }
+      ],
+      "itr": [
+        {
+          "kind": 4,
+          "x": 32,
+          "y": 18,
+          "w": 33,
+          "h": 27,
+          "injury": 30,
+          "vrest": 34,
+          "dvx": 1,
+          "fall": 140,
+          "bdefend": 20
+        },
+        {
+          "kind": 4,
+          "x": 10,
+          "y": 38,
+          "w": 38,
+          "h": 21,
+          "injury": 30,
+          "vrest": 34,
+          "dvx": 1,
+          "fall": 140,
+          "bdefend": 20
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 26,
+        "y": 33,
+        "weaponact": 33,
+        "cover": 0
+      },
+      "state": 12,
+      "centerx": 39,
+      "centery": 79
+    },
+    "184": {
+      "id": "184",
+      "name": "falling",
+      "pic": {
+        "tex": "0",
+        "x": 320,
+        "y": 240,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 7,
+      "next": {},
+      "wpoint": {
+        "kind": 1,
+        "x": 36,
+        "y": 74,
+        "weaponact": 32,
+        "cover": 0
+      },
+      "state": 12,
+      "centerx": 39,
+      "centery": 72
+    },
+    "185": {
+      "id": "185",
+      "name": "falling",
+      "pic": {
+        "tex": "0",
+        "x": 400,
+        "y": 240,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 7,
+      "next": {},
+      "wpoint": {
+        "kind": 1,
+        "x": 35,
+        "y": 70,
+        "weaponact": 31,
+        "cover": 0
+      },
+      "state": 12,
+      "centerx": 39,
+      "centery": 79
+    },
+    "186": {
+      "id": "186",
+      "name": "falling",
+      "pic": {
+        "tex": "0",
+        "x": 0,
+        "y": 320,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 7,
+      "next": {},
+      "bdy": [
+        {
+          "x": 31,
+          "y": 24,
+          "w": 25,
+          "h": 23,
+          "kind": 0
+        }
+      ],
+      "itr": [
+        {
+          "kind": 4,
+          "x": 22,
+          "y": 12,
+          "w": 36,
+          "h": 50,
+          "injury": 30,
+          "vrest": 34,
+          "dvx": 1,
+          "fall": 140,
+          "bdefend": 20
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 24,
+        "y": 47,
+        "weaponact": 34,
+        "cover": 0
+      },
+      "state": 12,
+      "centerx": 39,
+      "centery": 79
+    },
+    "187": {
+      "id": "187",
+      "name": "falling",
+      "pic": {
+        "tex": "0",
+        "x": 80,
+        "y": 320,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 7,
+      "next": {},
+      "bdy": [
+        {
+          "x": 28,
+          "y": 27,
+          "w": 24,
+          "h": 26,
+          "kind": 0
+        }
+      ],
+      "itr": [
+        {
+          "kind": 4,
+          "x": 33,
+          "y": 6,
+          "w": 26,
+          "h": 46,
+          "injury": 30,
+          "vrest": 34,
+          "dvx": 1,
+          "fall": 140,
+          "bdefend": 20
+        },
+        {
+          "kind": 4,
+          "x": 26,
+          "y": 43,
+          "w": 21,
+          "h": 29,
+          "injury": 30,
+          "vrest": 34,
+          "dvx": 1,
+          "fall": 140,
+          "bdefend": 20
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 24,
+        "y": 44,
+        "weaponact": 20,
+        "cover": 0
+      },
+      "state": 12,
+      "centerx": 39,
+      "centery": 79
+    },
+    "188": {
+      "id": "188",
+      "name": "falling",
+      "pic": {
+        "tex": "0",
+        "x": 160,
+        "y": 320,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 7,
+      "next": {},
+      "bdy": [
+        {
+          "x": 30,
+          "y": 31,
+          "w": 24,
+          "h": 21,
+          "kind": 0
+        }
+      ],
+      "itr": [
+        {
+          "kind": 4,
+          "x": 14,
+          "y": 29,
+          "w": 58,
+          "h": 23,
+          "injury": 30,
+          "vrest": 34,
+          "dvx": 1,
+          "fall": 140,
+          "bdefend": 20
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 21,
+        "y": 37,
+        "weaponact": 22,
+        "cover": 0
+      },
+      "state": 12,
+      "centerx": 39,
+      "centery": 79,
+      "hit": {
+        "j": [
+          {
+            "id": "108",
+            "expression": "hp>0"
+          }
+        ]
+      }
+    },
+    "189": {
+      "id": "189",
+      "name": "falling",
+      "pic": {
+        "tex": "0",
+        "x": 240,
+        "y": 320,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 7,
+      "next": {},
+      "bdy": [
+        {
+          "x": 30,
+          "y": 39,
+          "w": 23,
+          "h": 21,
+          "kind": 0
+        }
+      ],
+      "itr": [
+        {
+          "kind": 4,
+          "x": 24,
+          "y": 27,
+          "w": 26,
+          "h": 28,
+          "injury": 30,
+          "vrest": 34,
+          "dvx": 1,
+          "fall": 140,
+          "bdefend": 20
+        },
+        {
+          "kind": 4,
+          "x": 37,
+          "y": 45,
+          "w": 31,
+          "h": 28,
+          "injury": 30,
+          "vrest": 34,
+          "dvx": 1,
+          "fall": 140,
+          "bdefend": 20
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 16,
+        "y": 51,
+        "weaponact": 25,
+        "cover": 0
+      },
+      "state": 12,
+      "centerx": 39,
+      "centery": 79
+    },
+    "190": {
+      "id": "190",
+      "name": "falling",
+      "pic": {
+        "tex": "0",
+        "x": 320,
+        "y": 320,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 7,
+      "next": {},
+      "wpoint": {
+        "kind": 1,
+        "x": 49,
+        "y": 76,
+        "weaponact": 24,
+        "cover": 0
+      },
+      "state": 12,
+      "centerx": 39,
+      "centery": 75
+    },
+    "191": {
+      "id": "191",
+      "name": "falling",
+      "pic": {
+        "tex": "0",
+        "x": 400,
+        "y": 320,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 7,
+      "next": {},
+      "wpoint": {
+        "kind": 1,
+        "x": 26,
+        "y": 49,
+        "weaponact": 25,
+        "cover": 0
+      },
+      "state": 12,
+      "centerx": 39,
+      "centery": 79
+    },
+    "200": {
+      "id": "200",
+      "name": "ice",
+      "pic": {
+        "tex": "0",
+        "x": 640,
+        "y": 0,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "201"
+      },
+      "bdy": [
+        {
+          "x": 10,
+          "y": 9,
+          "w": 55,
+          "h": 68,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 18,
+        "y": 45,
+        "weaponact": 20,
+        "cover": 0
+      },
+      "state": 15,
+      "centerx": 39,
+      "centery": 79
+    },
+    "201": {
+      "id": "201",
+      "name": "ice",
+      "pic": {
+        "tex": "0",
+        "x": 720,
+        "y": 0,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 181,
+      "next": {
+        "id": "202",
+        "blink_time": 60
+      },
+      "bdy": [
+        {
+          "x": 8,
+          "y": 6,
+          "w": 67,
+          "h": 73,
+          "kind": 0
+        }
+      ],
+      "itr": [
+        {
+          "kind": 14,
+          "x": 8,
+          "y": 6,
+          "w": 67,
+          "h": 73,
+          "vrest": 2,
+          "friendly_fire": 1,
+          "motionless": 0,
+          "shaking": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 20,
+        "y": 55,
+        "weaponact": 35,
+        "cover": 0
+      },
+      "state": 13,
+      "centerx": 39,
+      "centery": 79
+    },
+    "202": {
+      "id": "202",
+      "name": "ice",
+      "pic": {
+        "tex": "0",
+        "x": 640,
+        "y": 0,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 3,
+      "next": {
+        "id": "182"
+      },
+      "bdy": [
+        {
+          "x": 8,
+          "y": 6,
+          "w": 67,
+          "h": 73,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 18,
+        "y": 44,
+        "weaponact": 20,
+        "cover": 0
+      },
+      "state": 15,
+      "centerx": 39,
+      "centery": 79,
+      "dvx": -2,
+      "dvy": 0.75
+    },
+    "203": {
+      "id": "203",
+      "name": "fire",
+      "pic": {
+        "tex": "1",
+        "x": 640,
+        "y": 0,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 3,
+      "next": {
+        "id": "204"
+      },
+      "bdy": [
+        {
+          "x": 22,
+          "y": 35,
+          "w": 26,
+          "h": 19,
+          "kind": 0
+        }
+      ],
+      "itr": [
+        {
+          "kind": 0,
+          "x": 22,
+          "y": 35,
+          "w": 26,
+          "h": 19,
+          "injury": 30,
+          "effect": 20,
+          "vrest": 134,
+          "dvx": -3,
+          "dvy": 3.12,
+          "fall": 140,
+          "bdefend": 32,
+          "friendly_fire": 1
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 42,
+        "y": 46,
+        "weaponact": 21,
+        "cover": 0
+      },
+      "state": 18,
+      "centerx": 39,
+      "centery": 79
+    },
+    "204": {
+      "id": "204",
+      "name": "fire",
+      "pic": {
+        "tex": "1",
+        "x": 720,
+        "y": 0,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 3,
+      "next": {
+        "id": "203"
+      },
+      "bdy": [
+        {
+          "x": 22,
+          "y": 35,
+          "w": 26,
+          "h": 19,
+          "kind": 0
+        }
+      ],
+      "itr": [
+        {
+          "kind": 0,
+          "x": 22,
+          "y": 35,
+          "w": 26,
+          "h": 19,
+          "injury": 30,
+          "effect": 20,
+          "vrest": 134,
+          "dvx": -3,
+          "dvy": 3.12,
+          "fall": 140,
+          "bdefend": 32,
+          "friendly_fire": 1
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 42,
+        "y": 46,
+        "weaponact": 21,
+        "cover": 0
+      },
+      "state": 18,
+      "centerx": 39,
+      "centery": 79
+    },
+    "205": {
+      "id": "205",
+      "name": "fire",
+      "pic": {
+        "tex": "1",
+        "x": 640,
+        "y": 80,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 3,
+      "next": {
+        "id": "206"
+      },
+      "bdy": [
+        {
+          "x": 22,
+          "y": 35,
+          "w": 26,
+          "h": 19,
+          "kind": 0
+        }
+      ],
+      "itr": [
+        {
+          "kind": 0,
+          "x": 22,
+          "y": 35,
+          "w": 26,
+          "h": 19,
+          "injury": 30,
+          "effect": 20,
+          "vrest": 134,
+          "dvx": -3,
+          "dvy": 3.12,
+          "fall": 140,
+          "bdefend": 32,
+          "friendly_fire": 1
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 30,
+        "y": 33,
+        "weaponact": 20,
+        "cover": 0
+      },
+      "state": 18,
+      "centerx": 39,
+      "centery": 79
+    },
+    "206": {
+      "id": "206",
+      "name": "fire",
+      "pic": {
+        "tex": "1",
+        "x": 720,
+        "y": 80,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 3,
+      "next": {
+        "id": "205"
+      },
+      "bdy": [
+        {
+          "x": 22,
+          "y": 35,
+          "w": 26,
+          "h": 19,
+          "kind": 0
+        }
+      ],
+      "itr": [
+        {
+          "kind": 0,
+          "x": 22,
+          "y": 35,
+          "w": 26,
+          "h": 19,
+          "injury": 30,
+          "effect": 20,
+          "vrest": 134,
+          "dvx": -3,
+          "dvy": 3.12,
+          "fall": 140,
+          "bdefend": 32,
+          "friendly_fire": 1
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 30,
+        "y": 33,
+        "weaponact": 20,
+        "cover": 0
+      },
+      "state": 18,
+      "centerx": 39,
+      "centery": 79
+    },
+    "207": {
+      "id": "207",
+      "name": "tired",
+      "pic": {
+        "tex": "0",
+        "x": 720,
+        "y": 480,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {},
+      "bdy": [
+        {
+          "x": 44,
+          "y": 28,
+          "w": 22,
+          "h": 37,
+          "kind": 0
+        },
+        {
+          "x": 28,
+          "y": 47,
+          "w": 28,
+          "h": 35,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 42,
+        "y": 64,
+        "weaponact": 22,
+        "cover": 0
+      },
+      "state": 15,
+      "centerx": 39,
+      "centery": 79
+    },
+    "210": {
+      "id": "210",
+      "name": "jump",
+      "pic": {
+        "tex": "0",
+        "x": 0,
+        "y": 480,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 3,
+      "next": {
+        "id": "211"
+      },
+      "bdy": [
+        {
+          "x": 22,
+          "y": 24,
+          "w": 35,
+          "h": 58,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 45,
+        "y": 71,
+        "weaponact": 22,
+        "cover": 0
+      },
+      "state": 4,
+      "centerx": 47,
+      "centery": 79,
+      "hit": {
+        "B": {
+          "facing": 3
+        }
+      },
+      "hold": {
+        "B": {
+          "facing": 3
+        }
+      }
+    },
+    "211": {
+      "id": "211",
+      "name": "jump",
+      "pic": {
+        "tex": "0",
+        "x": 80,
+        "y": 480,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 3,
+      "next": {
+        "id": "212"
+      },
+      "bdy": [
+        {
+          "x": 26,
+          "y": 26,
+          "w": 34,
+          "h": 56,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 45,
+        "y": 72,
+        "weaponact": 22,
+        "cover": 0
+      },
+      "state": 4,
+      "centerx": 48,
+      "centery": 79,
+      "sound": "data/017.wav.mp3",
+      "hit": {
+        "B": {
+          "facing": 3
+        }
+      },
+      "hold": {
+        "B": {
+          "facing": 3
+        }
+      },
+      "jump_flag": 1
+    },
+    "212": {
+      "id": "212",
+      "name": "jump",
+      "pic": {
+        "tex": "0",
+        "x": 160,
+        "y": 480,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 3,
+      "next": {},
+      "bdy": [
+        {
+          "x": 28,
+          "y": 3,
+          "w": 23,
+          "h": 65,
+          "kind": 0
+        },
+        {
+          "x": 18,
+          "y": 29,
+          "w": 48,
+          "h": 17,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 39,
+        "y": 42,
+        "weaponact": 21,
+        "cover": 0
+      },
+      "bpoint": {
+        "x": 51,
+        "y": 31
+      },
+      "state": 4,
+      "centerx": 39,
+      "centery": 79,
+      "hit": {
+        "B": {
+          "facing": 3
+        },
+        "a": [
+          {
+            "id": "52",
+            "facing": 3,
+            "expression": "(weapon_type==4|weapon_type==5)|(press_F_B!=0&weapon_type!=0)"
+          },
+          {
+            "id": "30",
+            "facing": 3,
+            "expression": "weapon_type==3|weapon_type==1"
+          },
+          {
+            "id": "80",
+            "facing": 3
+          }
+        ]
+      },
+      "hold": {
+        "B": {
+          "facing": 3
+        }
+      }
+    },
+    "213": {
+      "id": "213",
+      "name": "dash",
+      "pic": {
+        "tex": "0",
+        "x": 240,
+        "y": 480,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 17,
+      "next": {
+        "id": "216"
+      },
+      "bdy": [
+        {
+          "x": 43,
+          "y": 5,
+          "w": 23,
+          "h": 33,
+          "kind": 0
+        },
+        {
+          "x": 28,
+          "y": 29,
+          "w": 21,
+          "h": 33,
+          "kind": 0
+        },
+        {
+          "x": 18,
+          "y": 48,
+          "w": 27,
+          "h": 21,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 44,
+        "y": 41,
+        "weaponact": 21,
+        "cover": 0
+      },
+      "bpoint": {
+        "x": 49,
+        "y": 32
+      },
+      "state": 5,
+      "centerx": 39,
+      "centery": 79,
+      "hit": {
+        "B": {
+          "id": "214",
+          "wait": "i",
+          "facing": 2
+        },
+        "a": [
+          {
+            "id": "52",
+            "facing": 3,
+            "expression": "weapon_type==4|weapon_type==5"
+          },
+          {
+            "id": "40",
+            "facing": 3,
+            "expression": "weapon_type==3|weapon_type==1"
+          },
+          {
+            "id": "90"
+          }
+        ]
+      }
+    },
+    "214": {
+      "id": "214",
+      "name": "dash",
+      "pic": {
+        "tex": "0",
+        "x": 320,
+        "y": 480,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 17,
+      "next": {
+        "id": "217"
+      },
+      "bdy": [
+        {
+          "x": 20,
+          "y": 5,
+          "w": 27,
+          "h": 38,
+          "kind": 0
+        },
+        {
+          "x": 16,
+          "y": 37,
+          "w": 36,
+          "h": 22,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 32,
+        "y": 41,
+        "weaponact": 22,
+        "cover": 0
+      },
+      "bpoint": {
+        "x": 37,
+        "y": 34
+      },
+      "state": 5,
+      "centerx": 39,
+      "centery": 79,
+      "hit": {
+        "B": {
+          "id": "213",
+          "wait": "i",
+          "facing": 2
+        }
+      }
+    },
+    "215": {
+      "id": "215",
+      "name": "crouch",
+      "pic": {
+        "tex": "0",
+        "x": 0,
+        "y": 480,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "auto"
+      },
+      "bdy": [
+        {
+          "x": 25,
+          "y": 26,
+          "w": 31,
+          "h": 54,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 44,
+        "y": 69,
+        "weaponact": 23,
+        "cover": 0
+      },
+      "bpoint": {
+        "x": 48,
+        "y": 46
+      },
+      "state": 15,
+      "centerx": 39,
+      "centery": 79,
+      "sound": "data/012.wav.mp3",
+      "hit": {
+        "d": {
+          "id": "102",
+          "facing": 3
+        },
+        "j": [
+          {
+            "id": "213",
+            "expression": "press_L_R==-1",
+            "facing": -1
+          },
+          {
+            "id": "213",
+            "expression": "press_L_R==1",
+            "facing": 1
+          },
+          {
+            "id": "214",
+            "expression": "trend_x==-1"
+          },
+          {
+            "id": "213",
+            "expression": "trend_x==1"
+          }
+        ]
+      }
+    },
+    "216": {
+      "id": "216",
+      "name": "dash",
+      "pic": {
+        "tex": "1",
+        "x": 160,
+        "y": 320,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {},
+      "bdy": [
+        {
+          "x": 35,
+          "y": 8,
+          "w": 27,
+          "h": 27,
+          "kind": 0
+        },
+        {
+          "x": 16,
+          "y": 30,
+          "w": 39,
+          "h": 37,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 43,
+        "y": 42,
+        "weaponact": 22,
+        "cover": 0
+      },
+      "bpoint": {
+        "x": 48,
+        "y": 31
+      },
+      "state": 5,
+      "centerx": 39,
+      "centery": 79,
+      "hit": {
+        "B": {
+          "id": "217",
+          "wait": "i",
+          "facing": 2
+        },
+        "a": [
+          {
+            "id": "52",
+            "facing": 3,
+            "expression": "weapon_type==4|weapon_type==5"
+          },
+          {
+            "id": "40",
+            "facing": 3,
+            "expression": "weapon_type==3|weapon_type==1"
+          },
+          {
+            "id": "90"
+          }
+        ]
+      }
+    },
+    "217": {
+      "id": "217",
+      "name": "dash",
+      "pic": {
+        "tex": "1",
+        "x": 240,
+        "y": 320,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {},
+      "bdy": [
+        {
+          "x": 18,
+          "y": 13,
+          "w": 29,
+          "h": 51,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 31,
+        "y": 44,
+        "weaponact": 22,
+        "cover": 0
+      },
+      "bpoint": {
+        "x": 36,
+        "y": 34
+      },
+      "state": 5,
+      "centerx": 39,
+      "centery": 79,
+      "hit": {
+        "B": {
+          "id": "216",
+          "wait": "i",
+          "facing": 2
+        }
+      }
+    },
+    "218": {
+      "id": "218",
+      "name": "stop_running",
+      "pic": {
+        "tex": "1",
+        "x": 320,
+        "y": 320,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 11,
+      "next": {
+        "id": "auto"
+      },
+      "bdy": [
+        {
+          "x": 17,
+          "y": 25,
+          "w": 30,
+          "h": 55,
+          "kind": 0
+        },
+        {
+          "x": 45,
+          "y": 47,
+          "w": 16,
+          "h": 32,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 18,
+        "y": 58,
+        "weaponact": 23,
+        "cover": 0
+      },
+      "bpoint": {
+        "x": 37,
+        "y": 39
+      },
+      "state": 15,
+      "centerx": 39,
+      "centery": 79,
+      "sound": "data/009.wav.mp3",
+      "dvx": 0.5
+    },
+    "219": {
+      "id": "219",
+      "name": "crouch2",
+      "pic": {
+        "tex": "0",
+        "x": 0,
+        "y": 480,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "auto"
+      },
+      "bdy": [
+        {
+          "x": 26,
+          "y": 36,
+          "w": 29,
+          "h": 44,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 43,
+        "y": 69,
+        "weaponact": 23,
+        "cover": 0
+      },
+      "state": 15,
+      "centerx": 39,
+      "centery": 79,
+      "sound": "data/012.wav.mp3"
+    },
+    "220": {
+      "id": "220",
+      "name": "injured",
+      "pic": {
+        "tex": "1",
+        "x": 0,
+        "y": 400,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "221"
+      },
+      "bdy": [
+        {
+          "x": 25,
+          "y": 17,
+          "w": 29,
+          "h": 61,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 22,
+        "y": 58,
+        "weaponact": 24,
+        "cover": 0
+      },
+      "state": 11,
+      "centerx": 35,
+      "centery": 79
+    },
+    "221": {
+      "id": "221",
+      "name": "injured",
+      "pic": {
+        "tex": "1",
+        "x": 80,
+        "y": 400,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 7,
+      "next": {
+        "id": "auto"
+      },
+      "bdy": [
+        {
+          "x": 32,
+          "y": 16,
+          "w": 27,
+          "h": 63,
+          "kind": 0
+        },
+        {
+          "x": 22,
+          "y": 37,
+          "w": 26,
+          "h": 42,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 31,
+        "y": 56,
+        "weaponact": 22,
+        "cover": 0
+      },
+      "state": 11,
+      "centerx": 35,
+      "centery": 79
+    },
+    "222": {
+      "id": "222",
+      "name": "injured",
+      "pic": {
+        "tex": "1",
+        "x": 240,
+        "y": 400,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "223"
+      },
+      "bdy": [
+        {
+          "x": 11,
+          "y": 24,
+          "w": 39,
+          "h": 31,
+          "kind": 0
+        },
+        {
+          "x": 25,
+          "y": 53,
+          "w": 40,
+          "h": 27,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 15,
+        "y": 58,
+        "weaponact": 23,
+        "cover": 0
+      },
+      "state": 11,
+      "centerx": 39,
+      "centery": 79
+    },
+    "223": {
+      "id": "223",
+      "name": "injured",
+      "pic": {
+        "tex": "1",
+        "x": 320,
+        "y": 400,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 7,
+      "next": {
+        "id": "auto"
+      },
+      "bdy": [
+        {
+          "x": 12,
+          "y": 23,
+          "w": 40,
+          "h": 37,
+          "kind": 0
+        },
+        {
+          "x": 27,
+          "y": 56,
+          "w": 36,
+          "h": 24,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 17,
+        "y": 56,
+        "weaponact": 24,
+        "cover": 0
+      },
+      "state": 11,
+      "centerx": 39,
+      "centery": 79
+    },
+    "224": {
+      "id": "224",
+      "name": "injured",
+      "pic": {
+        "tex": "1",
+        "x": 0,
+        "y": 480,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "225"
+      },
+      "bdy": [
+        {
+          "x": 32,
+          "y": 18,
+          "w": 28,
+          "h": 60,
+          "kind": 0
+        },
+        {
+          "x": 52,
+          "y": 38,
+          "w": 20,
+          "h": 19,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 26,
+        "y": 56,
+        "weaponact": 24,
+        "cover": 0
+      },
+      "state": 11,
+      "centerx": 30,
+      "centery": 77
+    },
+    "225": {
+      "id": "225",
+      "name": "injured",
+      "pic": {
+        "tex": "1",
+        "x": 80,
+        "y": 480,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 7,
+      "next": {
+        "id": "auto"
+      },
+      "bdy": [
+        {
+          "x": 24,
+          "y": 18,
+          "w": 35,
+          "h": 63,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 31,
+        "y": 57,
+        "weaponact": 24,
+        "cover": 0
+      },
+      "state": 11,
+      "centerx": 42,
+      "centery": 77
+    },
+    "226": {
+      "id": "226",
+      "name": "injured",
+      "pic": {
+        "tex": "1",
+        "x": 0,
+        "y": 400,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 13,
+      "next": {
+        "id": "227"
+      },
+      "bdy": [
+        {
+          "x": 27,
+          "y": 22,
+          "w": 42,
+          "h": 58,
+          "kind": 0
+        }
+      ],
+      "itr": [
+        {
+          "kind": 6,
+          "x": 6,
+          "y": 12,
+          "w": 85,
+          "h": 68,
+          "vrest": 13,
+          "motionless": 0,
+          "shaking": 0,
+          "test": "victim_type==character"
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 21,
+        "y": 59,
+        "weaponact": 23,
+        "cover": 0
+      },
+      "state": 16,
+      "centerx": 36,
+      "centery": 79
+    },
+    "227": {
+      "id": "227",
+      "name": "injured",
+      "pic": {
+        "tex": "1",
+        "x": 160,
+        "y": 400,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 13,
+      "next": {
+        "id": "228"
+      },
+      "bdy": [
+        {
+          "x": 28,
+          "y": 24,
+          "w": 39,
+          "h": 57,
+          "kind": 0
+        }
+      ],
+      "itr": [
+        {
+          "kind": 6,
+          "x": 6,
+          "y": 12,
+          "w": 85,
+          "h": 68,
+          "vrest": 13,
+          "motionless": 0,
+          "shaking": 0,
+          "test": "victim_type==character"
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 22,
+        "y": 56,
+        "weaponact": 25,
+        "cover": 0
+      },
+      "state": 16,
+      "centerx": 39,
+      "centery": 79
+    },
+    "228": {
+      "id": "228",
+      "name": "injured",
+      "pic": {
+        "tex": "1",
+        "x": 80,
+        "y": 400,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 13,
+      "next": {
+        "id": "229"
+      },
+      "bdy": [
+        {
+          "x": 28,
+          "y": 23,
+          "w": 37,
+          "h": 58,
+          "kind": 0
+        }
+      ],
+      "itr": [
+        {
+          "kind": 6,
+          "x": 6,
+          "y": 12,
+          "w": 85,
+          "h": 68,
+          "vrest": 13,
+          "motionless": 0,
+          "shaking": 0,
+          "test": "victim_type==character"
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 30,
+        "y": 55,
+        "weaponact": 23,
+        "cover": 0
+      },
+      "state": 16,
+      "centerx": 37,
+      "centery": 79
+    },
+    "229": {
+      "id": "229",
+      "name": "injured",
+      "pic": {
+        "tex": "1",
+        "x": 160,
+        "y": 400,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 13,
+      "next": {
+        "id": "auto"
+      },
+      "bdy": [
+        {
+          "x": 29,
+          "y": 26,
+          "w": 37,
+          "h": 53,
+          "kind": 0
+        }
+      ],
+      "itr": [
+        {
+          "kind": 6,
+          "x": 6,
+          "y": 12,
+          "w": 85,
+          "h": 68,
+          "vrest": 13,
+          "motionless": 0,
+          "shaking": 0,
+          "test": "victim_type==character"
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 23,
+        "y": 56,
+        "weaponact": 24,
+        "cover": 0
+      },
+      "state": 16,
+      "centerx": 39,
+      "centery": 79
+    },
+    "230": {
+      "id": "230",
+      "name": "lying",
+      "pic": {
+        "tex": "0",
+        "x": 320,
+        "y": 240,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 61,
+      "next": {
+        "id": "219"
+      },
+      "wpoint": {
+        "kind": 1,
+        "x": 35,
+        "y": 74,
+        "weaponact": 32,
+        "cover": 0
+      },
+      "state": 14,
+      "centerx": 39,
+      "centery": 72
+    },
+    "231": {
+      "id": "231",
+      "name": "lying",
+      "pic": {
+        "tex": "0",
+        "x": 320,
+        "y": 320,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 61,
+      "next": {
+        "id": "219"
+      },
+      "wpoint": {
+        "kind": 1,
+        "x": 32,
+        "y": 74,
+        "weaponact": 24,
+        "cover": 0
+      },
+      "state": 14,
+      "centerx": 39,
+      "centery": 75
+    },
+    "232": {
+      "id": "232",
+      "name": "throw_lying_man",
+      "pic": {
+        "tex": "0",
+        "x": 560,
+        "y": 160,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 7,
+      "next": {
+        "id": "233"
+      },
+      "bdy": [
+        {
+          "x": 18,
+          "y": 15,
+          "w": 36,
+          "h": 65,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 20,
+        "y": 26,
+        "weaponact": 31,
+        "cover": 1
+      },
+      "cpoint": {
+        "kind": 1,
+        "x": 28,
+        "y": 9,
+        "vaction": {
+          "id": "135",
+          "facing": 4
+        }
+      },
+      "state": 9,
+      "centerx": 39,
+      "centery": 79,
+      "hit": {
+        "B": {
+          "wait": "i",
+          "facing": 2
+        }
+      }
+    },
+    "233": {
+      "id": "233",
+      "name": "throw_lying_man",
+      "pic": {
+        "tex": "0",
+        "x": 640,
+        "y": 160,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 3,
+      "next": {
+        "id": "234"
+      },
+      "bdy": [
+        {
+          "x": 10,
+          "y": 28,
+          "w": 61,
+          "h": 28,
+          "kind": 0
+        },
+        {
+          "x": 19,
+          "y": 56,
+          "w": 30,
+          "h": 24,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 31,
+        "y": 51,
+        "weaponact": 25,
+        "cover": 1
+      },
+      "cpoint": {
+        "kind": 1,
+        "x": 72,
+        "y": 53,
+        "throwvx": 6.5,
+        "throwvy": 3.5,
+        "throwvz": 3,
+        "throwinjury": 30,
+        "vaction": {
+          "id": "181",
+          "facing": 4
+        }
+      },
+      "state": 9,
+      "centerx": 45,
+      "centery": 79,
+      "sound": "data/007.wav.mp3"
+    },
+    "234": {
+      "id": "234",
+      "name": "throw_lying_man",
+      "pic": {
+        "tex": "0",
+        "x": 640,
+        "y": 160,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 9,
+      "next": {
+        "id": "auto"
+      },
+      "bdy": [
+        {
+          "x": 13,
+          "y": 30,
+          "w": 57,
+          "h": 28,
+          "kind": 0
+        },
+        {
+          "x": 19,
+          "y": 56,
+          "w": 30,
+          "h": 24,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 31,
+        "y": 51,
+        "weaponact": 25,
+        "cover": 1
+      },
+      "state": 9,
+      "centerx": 44,
+      "centery": 79
+    },
+    "235": {
+      "id": "235",
+      "name": "blastpush",
+      "pic": {
+        "tex": "1",
+        "x": 400,
+        "y": 320,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 3,
+      "next": {
+        "id": "236"
+      },
+      "bdy": [
+        {
+          "x": 23,
+          "y": 14,
+          "w": 35,
+          "h": 64,
+          "kind": 0
+        },
+        {
+          "x": 13,
+          "y": 43,
+          "w": 39,
+          "h": 19,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 38,
+        "y": 48,
+        "weaponact": 30,
+        "cover": 1
+      },
+      "state": 3,
+      "centerx": 44,
+      "centery": 79
+    },
+    "236": {
+      "id": "236",
+      "name": "blastpush",
+      "pic": {
+        "tex": "1",
+        "x": 480,
+        "y": 320,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "237"
+      },
+      "bdy": [
+        {
+          "x": 23,
+          "y": 14,
+          "w": 35,
+          "h": 64,
+          "kind": 0
+        },
+        {
+          "x": 13,
+          "y": 43,
+          "w": 39,
+          "h": 19,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 40,
+        "y": 48,
+        "weaponact": 30,
+        "cover": 1
+      },
+      "state": 3,
+      "centerx": 46,
+      "centery": 78
+    },
+    "237": {
+      "id": "237",
+      "name": "blastpush",
+      "pic": {
+        "tex": "1",
+        "x": 480,
+        "y": 240,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "238"
+      },
+      "bdy": [
+        {
+          "x": 23,
+          "y": 14,
+          "w": 35,
+          "h": 64,
+          "kind": 0
+        },
+        {
+          "x": 13,
+          "y": 43,
+          "w": 39,
+          "h": 19,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 41,
+        "y": 47,
+        "weaponact": 30,
+        "cover": 1
+      },
+      "state": 3,
+      "centerx": 46,
+      "centery": 78,
+      "sound": "data/097.wav.mp3"
+    },
+    "238": {
+      "id": "238",
+      "name": "blastpush",
+      "pic": {
+        "tex": "1",
+        "x": 560,
+        "y": 240,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 3,
+      "next": {
+        "id": "239"
+      },
+      "bdy": [
+        {
+          "x": 23,
+          "y": 14,
+          "w": 35,
+          "h": 64,
+          "kind": 0
+        },
+        {
+          "x": 13,
+          "y": 43,
+          "w": 39,
+          "h": 19,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 33,
+        "y": 48,
+        "weaponact": 30,
+        "cover": 1
+      },
+      "opoint": [
+        {
+          "kind": 1,
+          "x": 73,
+          "y": 44,
+          "oid": "204",
+          "action": {
+            "id": "50",
+            "facing": 0
+          }
+        }
+      ],
+      "state": 3,
+      "centerx": 41,
+      "centery": 78,
+      "sound": "data/020.wav.mp3"
+    },
+    "239": {
+      "id": "239",
+      "name": "blastpush",
+      "pic": {
+        "tex": "1",
+        "x": 560,
+        "y": 240,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 3,
+      "next": {
+        "id": "240"
+      },
+      "bdy": [
+        {
+          "x": 23,
+          "y": 14,
+          "w": 35,
+          "h": 64,
+          "kind": 0
+        },
+        {
+          "x": 13,
+          "y": 43,
+          "w": 39,
+          "h": 19,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 33,
+        "y": 48,
+        "weaponact": 30,
+        "cover": 1
+      },
+      "opoint": [
+        {
+          "kind": 1,
+          "x": 1,
+          "y": 44,
+          "oid": "204",
+          "action": {
+            "id": "51",
+            "facing": 2
+          }
+        }
+      ],
+      "state": 3,
+      "centerx": 41,
+      "centery": 78
+    },
+    "240": {
+      "id": "240",
+      "name": "blastpush",
+      "pic": {
+        "tex": "1",
+        "x": 640,
+        "y": 240,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "241"
+      },
+      "bdy": [
+        {
+          "x": 23,
+          "y": 14,
+          "w": 35,
+          "h": 64,
+          "kind": 0
+        },
+        {
+          "x": 13,
+          "y": 43,
+          "w": 39,
+          "h": 19,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 32,
+        "y": 48,
+        "weaponact": 30,
+        "cover": 1
+      },
+      "state": 3,
+      "centerx": 40,
+      "centery": 79
+    },
+    "241": {
+      "id": "241",
+      "name": "blastpush",
+      "pic": {
+        "tex": "1",
+        "x": 720,
+        "y": 240,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "242"
+      },
+      "bdy": [
+        {
+          "x": 23,
+          "y": 14,
+          "w": 35,
+          "h": 64,
+          "kind": 0
+        },
+        {
+          "x": 13,
+          "y": 43,
+          "w": 39,
+          "h": 19,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 33,
+        "y": 48,
+        "weaponact": 30,
+        "cover": 1
+      },
+      "state": 3,
+      "centerx": 42,
+      "centery": 79
+    },
+    "242": {
+      "id": "242",
+      "name": "blastpush",
+      "pic": {
+        "tex": "1",
+        "x": 720,
+        "y": 320,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "243"
+      },
+      "bdy": [
+        {
+          "x": 23,
+          "y": 14,
+          "w": 35,
+          "h": 64,
+          "kind": 0
+        },
+        {
+          "x": 13,
+          "y": 43,
+          "w": 39,
+          "h": 19,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 33,
+        "y": 49,
+        "weaponact": 30,
+        "cover": 1
+      },
+      "state": 3,
+      "centerx": 42,
+      "centery": 79
+    },
+    "243": {
+      "id": "243",
+      "name": "blastpush",
+      "pic": {
+        "tex": "1",
+        "x": 720,
+        "y": 400,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 7,
+      "next": {
+        "id": "auto"
+      },
+      "bdy": [
+        {
+          "x": 23,
+          "y": 14,
+          "w": 35,
+          "h": 64,
+          "kind": 0
+        },
+        {
+          "x": 13,
+          "y": 43,
+          "w": 39,
+          "h": 19,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 34,
+        "y": 47,
+        "weaponact": 30,
+        "cover": 1
+      },
+      "state": 3,
+      "centerx": 43,
+      "centery": 79
+    },
+    "245": {
+      "id": "245",
+      "name": "1000foot",
+      "pic": {
+        "tex": "2",
+        "x": 0,
+        "y": 0,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 3,
+      "next": {
+        "id": "246"
+      },
+      "bdy": [
+        {
+          "x": 23,
+          "y": 14,
+          "w": 35,
+          "h": 64,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 38,
+        "y": 47,
+        "weaponact": 30,
+        "cover": 1
+      },
+      "state": 3,
+      "centerx": 44,
+      "centery": 79
+    },
+    "246": {
+      "id": "246",
+      "name": "1000foot",
+      "pic": {
+        "tex": "2",
+        "x": 80,
+        "y": 0,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "247"
+      },
+      "bdy": [
+        {
+          "x": 23,
+          "y": 14,
+          "w": 35,
+          "h": 64,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 23,
+        "y": 47,
+        "weaponact": 30,
+        "cover": 1
+      },
+      "state": 3,
+      "centerx": 27,
+      "centery": 79
+    },
+    "247": {
+      "id": "247",
+      "name": "1000foot",
+      "pic": {
+        "tex": "2",
+        "x": 160,
+        "y": 0,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 3,
+      "next": {
+        "id": "248"
+      },
+      "bdy": [
+        {
+          "x": 24,
+          "y": 21,
+          "w": 44,
+          "h": 54,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 34,
+        "y": 47,
+        "weaponact": 30,
+        "cover": 1
+      },
+      "state": 3,
+      "centerx": 23,
+      "centery": 81,
+      "sound": "data/003.wav.mp3",
+      "dvx": 1
+    },
+    "248": {
+      "id": "248",
+      "name": "1000foot",
+      "pic": {
+        "tex": "2",
+        "x": 240,
+        "y": 0,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 3,
+      "next": {
+        "id": "249"
+      },
+      "bdy": [
+        {
+          "x": 18,
+          "y": 18,
+          "w": 53,
+          "h": 41,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 47,
+        "y": 31,
+        "weaponact": 32,
+        "cover": 1
+      },
+      "state": 3,
+      "centerx": 28,
+      "centery": 78,
+      "dvx": 4
+    },
+    "249": {
+      "id": "249",
+      "name": "1000foot",
+      "pic": {
+        "tex": "2",
+        "x": 320,
+        "y": 0,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 3,
+      "next": {
+        "id": "250"
+      },
+      "bdy": [
+        {
+          "x": 10,
+          "y": 17,
+          "w": 43,
+          "h": 46,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 32,
+        "y": 31,
+        "weaponact": 27,
+        "cover": 1
+      },
+      "state": 3,
+      "centerx": 24,
+      "centery": 84,
+      "dvx": 6
+    },
+    "250": {
+      "id": "250",
+      "name": "1000foot",
+      "pic": {
+        "tex": "2",
+        "x": 400,
+        "y": 0,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "251"
+      },
+      "bdy": [
+        {
+          "x": 13,
+          "y": 6,
+          "w": 41,
+          "h": 40,
+          "kind": 0
+        }
+      ],
+      "itr": [
+        {
+          "kind": 0,
+          "x": 11,
+          "y": 31,
+          "w": 68,
+          "h": 27,
+          "injury": 20,
+          "vrest": 8,
+          "dvx": 6.5,
+          "fall": 2,
+          "bdefend": 10
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 33,
+        "y": 31,
+        "weaponact": 29,
+        "cover": 1
+      },
+      "state": 3,
+      "centerx": 38,
+      "centery": 78,
+      "sound": "data/007.wav.mp3",
+      "dvx": 6
+    },
+    "251": {
+      "id": "251",
+      "name": "1000foot",
+      "pic": {
+        "tex": "2",
+        "x": 480,
+        "y": 0,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "252"
+      },
+      "bdy": [
+        {
+          "x": 9,
+          "y": 7,
+          "w": 45,
+          "h": 38,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 33,
+        "y": 31,
+        "weaponact": 29,
+        "cover": 1
+      },
+      "state": 3,
+      "centerx": 38,
+      "centery": 77,
+      "sound": "data/069.wav.mp3",
+      "dvx": 6
+    },
+    "252": {
+      "id": "252",
+      "name": "1000foot",
+      "pic": {
+        "tex": "2",
+        "x": 560,
+        "y": 0,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "253"
+      },
+      "bdy": [
+        {
+          "x": 9,
+          "y": 8,
+          "w": 45,
+          "h": 35,
+          "kind": 0
+        }
+      ],
+      "itr": [
+        {
+          "kind": 0,
+          "x": 11,
+          "y": 31,
+          "w": 68,
+          "h": 27,
+          "injury": 20,
+          "vrest": 8,
+          "dvx": 6.5,
+          "fall": 2,
+          "bdefend": 10
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 33,
+        "y": 31,
+        "weaponact": 29,
+        "cover": 1
+      },
+      "state": 3,
+      "centerx": 38,
+      "centery": 78,
+      "sound": "data/007.wav.mp3",
+      "dvx": 6
+    },
+    "253": {
+      "id": "253",
+      "name": "1000foot",
+      "pic": {
+        "tex": "2",
+        "x": 640,
+        "y": 0,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "254"
+      },
+      "bdy": [
+        {
+          "x": 10,
+          "y": 9,
+          "w": 44,
+          "h": 33,
+          "kind": 0
+        }
+      ],
+      "itr": [
+        {
+          "kind": 0,
+          "x": 11,
+          "y": 31,
+          "w": 68,
+          "h": 27,
+          "injury": 20,
+          "vrest": 8,
+          "dvx": 6.5,
+          "fall": 2,
+          "bdefend": 10
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 33,
+        "y": 31,
+        "weaponact": 29,
+        "cover": 1
+      },
+      "state": 3,
+      "centerx": 38,
+      "centery": 77,
+      "sound": "data/069.wav.mp3",
+      "dvx": 6
+    },
+    "254": {
+      "id": "254",
+      "name": "1000foot",
+      "pic": {
+        "tex": "2",
+        "x": 400,
+        "y": 0,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "255"
+      },
+      "bdy": [
+        {
+          "x": 10,
+          "y": 10,
+          "w": 38,
+          "h": 37,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 33,
+        "y": 31,
+        "weaponact": 29,
+        "cover": 1
+      },
+      "state": 3,
+      "centerx": 38,
+      "centery": 78,
+      "sound": "data/007.wav.mp3",
+      "dvx": 6
+    },
+    "255": {
+      "id": "255",
+      "name": "1000foot",
+      "pic": {
+        "tex": "2",
+        "x": 480,
+        "y": 0,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "256"
+      },
+      "bdy": [
+        {
+          "x": 9,
+          "y": 9,
+          "w": 40,
+          "h": 35,
+          "kind": 0
+        }
+      ],
+      "itr": [
+        {
+          "kind": 0,
+          "x": 11,
+          "y": 31,
+          "w": 68,
+          "h": 27,
+          "injury": 20,
+          "vrest": 8,
+          "dvx": 6.5,
+          "fall": 2,
+          "bdefend": 10
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 33,
+        "y": 31,
+        "weaponact": 29,
+        "cover": 1
+      },
+      "state": 3,
+      "centerx": 38,
+      "centery": 77,
+      "sound": "data/069.wav.mp3",
+      "dvx": 6
+    },
+    "256": {
+      "id": "256",
+      "name": "1000foot",
+      "pic": {
+        "tex": "2",
+        "x": 560,
+        "y": 0,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "257"
+      },
+      "bdy": [
+        {
+          "x": 7,
+          "y": 8,
+          "w": 36,
+          "h": 37,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 33,
+        "y": 31,
+        "weaponact": 29,
+        "cover": 1
+      },
+      "state": 3,
+      "centerx": 38,
+      "centery": 78,
+      "sound": "data/007.wav.mp3",
+      "dvx": 6
+    },
+    "257": {
+      "id": "257",
+      "name": "1000foot",
+      "pic": {
+        "tex": "2",
+        "x": 640,
+        "y": 0,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "258"
+      },
+      "bdy": [
+        {
+          "x": 9,
+          "y": 8,
+          "w": 40,
+          "h": 38,
+          "kind": 0
+        }
+      ],
+      "itr": [
+        {
+          "kind": 0,
+          "x": 9,
+          "y": 22,
+          "w": 81,
+          "h": 35,
+          "injury": 30,
+          "vrest": 8,
+          "dvx": 8.5,
+          "dvy": 3.64,
+          "fall": 140,
+          "bdefend": 120
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 33,
+        "y": 31,
+        "weaponact": 29,
+        "cover": 1
+      },
+      "state": 3,
+      "centerx": 38,
+      "centery": 77,
+      "sound": "data/069.wav.mp3",
+      "dvx": 6
+    },
+    "258": {
+      "id": "258",
+      "name": "1000foot",
+      "pic": {
+        "tex": "2",
+        "x": 720,
+        "y": 0,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "115"
+      },
+      "bdy": [
+        {
+          "x": 16,
+          "y": 13,
+          "w": 48,
+          "h": 54,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 41,
+        "y": 34,
+        "weaponact": 30,
+        "cover": 1
+      },
+      "state": 3,
+      "centerx": 46,
+      "centery": 70,
+      "dvx": 2.5
+    },
+    "260": {
+      "id": "260",
+      "name": "c-throw",
+      "pic": {
+        "tex": "2",
+        "x": 0,
+        "y": 80,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "261"
+      },
+      "bdy": [
+        {
+          "x": 19,
+          "y": 13,
+          "w": 47,
+          "h": 67,
+          "kind": 0
+        }
+      ],
+      "itr": [
+        {
+          "kind": 0,
+          "x": 28,
+          "y": 24,
+          "w": 99,
+          "h": 57,
+          "injury": 65,
+          "vrest": 144,
+          "dvx": 7,
+          "fall": 140,
+          "bdefend": 32
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 37,
+        "y": 46,
+        "weaponact": 30,
+        "cover": 0
+      },
+      "cpoint": {
+        "kind": 1,
+        "x": 83,
+        "y": 45,
+        "cover": 10,
+        "vaction": {
+          "id": "134",
+          "facing": 4
+        }
+      },
+      "state": 9,
+      "centerx": 39,
+      "centery": 79,
+      "hit": {
+        "F": {
+          "wait": "i",
+          "facing": 2
+        }
+      }
+    },
+    "261": {
+      "id": "261",
+      "name": "c-throw",
+      "pic": {
+        "tex": "2",
+        "x": 80,
+        "y": 80,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "262"
+      },
+      "bdy": [
+        {
+          "x": 16,
+          "y": 12,
+          "w": 45,
+          "h": 65,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 31,
+        "y": 45,
+        "weaponact": 29,
+        "cover": 0
+      },
+      "cpoint": {
+        "kind": 1,
+        "x": 66,
+        "y": 59,
+        "cover": 11,
+        "injury": 20,
+        "vaction": {
+          "id": "136",
+          "facing": 4
+        }
+      },
+      "state": 9,
+      "centerx": 39,
+      "centery": 79,
+      "dvx": 0.5
+    },
+    "262": {
+      "id": "262",
+      "name": "c-throw",
+      "pic": {
+        "tex": "2",
+        "x": 160,
+        "y": 80,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 3,
+      "next": {
+        "id": "263"
+      },
+      "bdy": [
+        {
+          "x": 15,
+          "y": 12,
+          "w": 42,
+          "h": 70,
+          "kind": 0
+        }
+      ],
+      "itr": [
+        {
+          "kind": 0,
+          "x": -48,
+          "y": 22,
+          "w": 107,
+          "h": 57,
+          "injury": 65,
+          "vrest": 144,
+          "dvx": -7,
+          "fall": 140,
+          "bdefend": 32
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 43,
+        "y": 43,
+        "weaponact": 26,
+        "cover": 0
+      },
+      "cpoint": {
+        "kind": 1,
+        "x": -4,
+        "y": 38,
+        "cover": 10,
+        "decrease": 10,
+        "vaction": {
+          "id": "133",
+          "facing": 4
+        }
+      },
+      "state": 9,
+      "centerx": 34,
+      "centery": 79,
+      "sound": "data/007.wav.mp3",
+      "dvx": 0.5
+    },
+    "263": {
+      "id": "263",
+      "name": "c-throw",
+      "pic": {
+        "tex": "2",
+        "x": 240,
+        "y": 80,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "264"
+      },
+      "bdy": [
+        {
+          "x": 23,
+          "y": 9,
+          "w": 42,
+          "h": 70,
+          "kind": 0
+        }
+      ],
+      "itr": [
+        {
+          "kind": 0,
+          "x": -35,
+          "y": -19,
+          "w": 109,
+          "h": 60,
+          "injury": 65,
+          "vrest": 144,
+          "dvx": -7,
+          "fall": 140,
+          "bdefend": 32
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 53,
+        "y": 44,
+        "weaponact": 27,
+        "cover": 0
+      },
+      "cpoint": {
+        "kind": 1,
+        "x": 12,
+        "y": 19,
+        "cover": 10,
+        "decrease": 10,
+        "vaction": {
+          "id": "144",
+          "facing": 4
+        }
+      },
+      "state": 9,
+      "centerx": 40,
+      "centery": 79,
+      "hit": {
+        "F": {
+          "wait": "i",
+          "facing": 2
+        }
+      }
+    },
+    "264": {
+      "id": "264",
+      "name": "c-throw",
+      "pic": {
+        "tex": "2",
+        "x": 320,
+        "y": 80,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "265"
+      },
+      "bdy": [
+        {
+          "x": 16,
+          "y": 11,
+          "w": 41,
+          "h": 69,
+          "kind": 0
+        }
+      ],
+      "itr": [
+        {
+          "kind": 0,
+          "x": 14,
+          "y": -16,
+          "w": 107,
+          "h": 67,
+          "injury": 65,
+          "vrest": 144,
+          "dvx": 7,
+          "fall": 140,
+          "bdefend": 32
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 41,
+        "y": 43,
+        "weaponact": 27,
+        "cover": 0
+      },
+      "cpoint": {
+        "kind": 1,
+        "x": 71,
+        "y": 19,
+        "cover": 10,
+        "vaction": {
+          "id": "142",
+          "facing": 4
+        }
+      },
+      "state": 9,
+      "centerx": 38,
+      "centery": 79,
+      "dvx": -1
+    },
+    "265": {
+      "id": "265",
+      "name": "c-throw",
+      "pic": {
+        "tex": "2",
+        "x": 400,
+        "y": 80,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 3,
+      "next": {
+        "id": "266"
+      },
+      "bdy": [
+        {
+          "x": 11,
+          "y": 11,
+          "w": 45,
+          "h": 69,
+          "kind": 0
+        }
+      ],
+      "itr": [
+        {
+          "kind": 0,
+          "x": 18,
+          "y": 10,
+          "w": 106,
+          "h": 65,
+          "injury": 65,
+          "vrest": 144,
+          "dvx": 7,
+          "fall": 140,
+          "bdefend": 32
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 31,
+        "y": 47,
+        "weaponact": 29,
+        "cover": 0
+      },
+      "cpoint": {
+        "kind": 1,
+        "x": 74,
+        "y": 53,
+        "cover": 11,
+        "vaction": {
+          "id": "136",
+          "facing": 4
+        }
+      },
+      "state": 9,
+      "centerx": 39,
+      "centery": 79,
+      "dvx": -0.5
+    },
+    "266": {
+      "id": "266",
+      "name": "c-throw",
+      "pic": {
+        "tex": "2",
+        "x": 400,
+        "y": 80,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 3,
+      "next": {
+        "id": "267"
+      },
+      "bdy": [
+        {
+          "x": 11,
+          "y": 11,
+          "w": 45,
+          "h": 69,
+          "kind": 0
+        }
+      ],
+      "itr": [
+        {
+          "kind": 0,
+          "x": 16,
+          "y": 11,
+          "w": 108,
+          "h": 64,
+          "injury": 65,
+          "vrest": 144,
+          "dvx": 7,
+          "fall": 140,
+          "bdefend": 32
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 31,
+        "y": 47,
+        "weaponact": 29,
+        "cover": 0
+      },
+      "cpoint": {
+        "kind": 1,
+        "x": 74,
+        "y": 53,
+        "cover": 11,
+        "vaction": {
+          "id": "136",
+          "facing": 4
+        }
+      },
+      "state": 9,
+      "centerx": 39,
+      "centery": 79,
+      "dvx": -0.5,
+      "hit": {
+        "j": {
+          "id": "261",
+          "mp": 75
+        }
+      }
+    },
+    "267": {
+      "id": "267",
+      "name": "c-throw",
+      "pic": {
+        "tex": "2",
+        "x": 80,
+        "y": 80,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 3,
+      "next": {
+        "id": "268"
+      },
+      "bdy": [
+        {
+          "x": 18,
+          "y": 11,
+          "w": 42,
+          "h": 68,
+          "kind": 0
+        }
+      ],
+      "itr": [
+        {
+          "kind": 0,
+          "x": -15,
+          "y": 16,
+          "w": 119,
+          "h": 65,
+          "injury": 65,
+          "vrest": 144,
+          "dvx": 7,
+          "fall": 140,
+          "bdefend": 32
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 39,
+        "y": 48,
+        "weaponact": 30,
+        "cover": 0
+      },
+      "cpoint": {
+        "kind": 1,
+        "x": 66,
+        "y": 57,
+        "cover": 11,
+        "vaction": {
+          "id": "138",
+          "facing": 4
+        }
+      },
+      "state": 9,
+      "centerx": 39,
+      "centery": 79
+    },
+    "268": {
+      "id": "268",
+      "name": "c-throw",
+      "pic": {
+        "tex": "2",
+        "x": 160,
+        "y": 80,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 3,
+      "next": {
+        "id": "269"
+      },
+      "bdy": [
+        {
+          "x": 9,
+          "y": 8,
+          "w": 49,
+          "h": 72,
+          "kind": 0
+        }
+      ],
+      "itr": [
+        {
+          "kind": 0,
+          "x": -49,
+          "y": 0,
+          "w": 123,
+          "h": 55,
+          "injury": 65,
+          "vrest": 144,
+          "dvx": -7,
+          "fall": 140,
+          "bdefend": 32
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 41,
+        "y": 47,
+        "weaponact": 26,
+        "cover": 0
+      },
+      "cpoint": {
+        "kind": 1,
+        "x": -5,
+        "y": 24,
+        "cover": 10,
+        "vaction": {
+          "id": "141",
+          "facing": 4
+        }
+      },
+      "state": 9,
+      "centerx": 36,
+      "centery": 79
+    },
+    "269": {
+      "id": "269",
+      "name": "c-throw",
+      "pic": {
+        "tex": "2",
+        "x": 480,
+        "y": 80,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 3,
+      "next": {
+        "id": "270"
+      },
+      "bdy": [
+        {
+          "x": 19,
+          "y": 15,
+          "w": 28,
+          "h": 65,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 48,
+        "y": 49,
+        "weaponact": 26,
+        "cover": 0
+      },
+      "cpoint": {
+        "kind": 1,
+        "x": 9,
+        "y": 49,
+        "cover": 11,
+        "throwvx": -8,
+        "throwvy": 4,
+        "throwvz": 3,
+        "throwinjury": 30,
+        "vaction": {
+          "id": "181",
+          "facing": 4
+        }
+      },
+      "state": 9,
+      "centerx": 43,
+      "centery": 79,
+      "sound": "data/007.wav.mp3"
+    },
+    "270": {
+      "id": "270",
+      "name": "c-throw",
+      "pic": {
+        "tex": "2",
+        "x": 480,
+        "y": 80,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 7,
+      "next": {
+        "id": "auto",
+        "facing": 2
+      },
+      "bdy": [
+        {
+          "x": 19,
+          "y": 15,
+          "w": 28,
+          "h": 65,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 48,
+        "y": 49,
+        "weaponact": 26,
+        "cover": 0
+      },
+      "state": 9,
+      "centerx": 43,
+      "centery": 79
+    },
+    "275": {
+      "id": "275",
+      "name": "r-catch",
+      "pic": {
+        "tex": "2",
+        "x": 0,
+        "y": 160,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 7,
+      "next": {
+        "id": "276"
+      },
+      "bdy": [
+        {
+          "x": 25,
+          "y": 12,
+          "w": 47,
+          "h": 68,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 48,
+        "y": 49,
+        "weaponact": 26,
+        "cover": 0
+      },
+      "state": 9,
+      "centerx": 43,
+      "centery": 79
+    },
+    "276": {
+      "id": "276",
+      "name": "r-catch",
+      "pic": {
+        "tex": "2",
+        "x": 80,
+        "y": 160,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "277"
+      },
+      "bdy": [
+        {
+          "x": 26,
+          "y": 10,
+          "w": 45,
+          "h": 72,
+          "kind": 0
+        }
+      ],
+      "itr": [
+        {
+          "kind": 3,
+          "x": 21,
+          "y": 34,
+          "w": 40,
+          "h": 28,
+          "motionless": 0,
+          "shaking": 0,
+          "arest": 8,
+          "test": "victim_type==character&victim_state!=12",
+          "catchingact": {
+            "id": "279"
+          },
+          "caughtact": {
+            "id": "132",
+            "facing": 5
+          }
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 48,
+        "y": 49,
+        "weaponact": 26,
+        "cover": 0
+      },
+      "state": 9,
+      "centerx": 43,
+      "centery": 79,
+      "sound": "data/003.wav.mp3",
+      "dvx": 4
+    },
+    "277": {
+      "id": "277",
+      "name": "r-catch",
+      "pic": {
+        "tex": "2",
+        "x": 160,
+        "y": 160,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "278"
+      },
+      "bdy": [
+        {
+          "x": 28,
+          "y": 12,
+          "w": 48,
+          "h": 65,
+          "kind": 0
+        }
+      ],
+      "itr": [
+        {
+          "kind": 3,
+          "x": 21,
+          "y": 29,
+          "w": 43,
+          "h": 30,
+          "motionless": 0,
+          "shaking": 0,
+          "arest": 8,
+          "test": "victim_type==character&victim_state!=12",
+          "catchingact": {
+            "id": "279"
+          },
+          "caughtact": {
+            "id": "132",
+            "facing": 5
+          }
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 48,
+        "y": 49,
+        "weaponact": 26,
+        "cover": 0
+      },
+      "state": 9,
+      "centerx": 43,
+      "centery": 79,
+      "sound": "data/004.wav.mp3",
+      "dvx": 4
+    },
+    "278": {
+      "id": "278",
+      "name": "r-catch",
+      "pic": {
+        "tex": "2",
+        "x": 80,
+        "y": 160,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 7,
+      "next": {
+        "id": "auto"
+      },
+      "bdy": [
+        {
+          "x": 25,
+          "y": 12,
+          "w": 47,
+          "h": 68,
+          "kind": 0
+        }
+      ],
+      "itr": [
+        {
+          "kind": 3,
+          "x": 21,
+          "y": 29,
+          "w": 43,
+          "h": 30,
+          "motionless": 0,
+          "shaking": 0,
+          "arest": 8,
+          "test": "victim_type==character&victim_state!=12",
+          "catchingact": {
+            "id": "279"
+          },
+          "caughtact": {
+            "id": "132",
+            "facing": 5
+          }
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 48,
+        "y": 49,
+        "weaponact": 26,
+        "cover": 0
+      },
+      "state": 9,
+      "centerx": 43,
+      "centery": 79
+    },
+    "279": {
+      "id": "279",
+      "name": "c-throw",
+      "pic": {
+        "tex": "2",
+        "x": 0,
+        "y": 80,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "261"
+      },
+      "bdy": [
+        {
+          "x": 19,
+          "y": 13,
+          "w": 47,
+          "h": 67,
+          "kind": 0
+        }
+      ],
+      "itr": [
+        {
+          "kind": 0,
+          "x": 18,
+          "y": 24,
+          "w": 103,
+          "h": 56,
+          "injury": 65,
+          "vrest": 144,
+          "dvx": 7,
+          "fall": 140,
+          "bdefend": 32
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 37,
+        "y": 46,
+        "weaponact": 30,
+        "cover": 0
+      },
+      "cpoint": {
+        "kind": 1,
+        "x": 83,
+        "y": 43,
+        "vaction": {
+          "id": "134",
+          "facing": 4
+        }
+      },
+      "state": 9,
+      "centerx": 39,
+      "centery": 79,
+      "sound": "data/015.wav.mp3",
+      "hit": {
+        "F": {
+          "wait": "i",
+          "facing": 2
+        }
+      }
+    },
+    "300": {
+      "id": "300",
+      "name": "transform",
+      "pic": {
+        "tex": "2",
+        "x": 0,
+        "y": 240,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "301"
+      },
+      "wpoint": {
+        "kind": 1,
+        "x": 37,
+        "y": 46,
+        "weaponact": 30,
+        "cover": 0
+      },
+      "state": 15,
+      "centerx": 39,
+      "centery": 79,
+      "sound": "data/063.wav.mp3"
+    },
+    "301": {
+      "id": "301",
+      "name": "transform",
+      "pic": {
+        "tex": "2",
+        "x": 80,
+        "y": 240,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "302"
+      },
+      "wpoint": {
+        "kind": 1,
+        "x": 37,
+        "y": 46,
+        "weaponact": 30,
+        "cover": 0
+      },
+      "state": 15,
+      "centerx": 39,
+      "centery": 80
+    },
+    "302": {
+      "id": "302",
+      "name": "transform",
+      "pic": {
+        "tex": "2",
+        "x": 160,
+        "y": 240,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "303"
+      },
+      "wpoint": {
+        "kind": 1,
+        "x": 37,
+        "y": 46,
+        "weaponact": 30,
+        "cover": 0
+      },
+      "state": 15,
+      "centerx": 41,
+      "centery": 82
+    },
+    "303": {
+      "id": "303",
+      "name": "transform",
+      "pic": {
+        "tex": "2",
+        "x": 240,
+        "y": 240,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 3,
+      "next": {
+        "id": "320"
+      },
+      "wpoint": {
+        "kind": 1,
+        "x": 37,
+        "y": 46,
+        "weaponact": 30,
+        "cover": 0
+      },
+      "state": 15,
+      "centerx": 40,
+      "centery": 84,
+      "sound": "data/097.wav.mp3"
+    },
+    "304": {
+      "id": "304",
+      "name": "transform",
+      "pic": {
+        "tex": "2",
+        "x": 320,
+        "y": 240,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 7,
+      "next": {
+        "id": "305"
+      },
+      "wpoint": {
+        "kind": 1,
+        "x": 37,
+        "y": 46,
+        "weaponact": 30,
+        "cover": 0
+      },
+      "opoint": [
+        {
+          "kind": 1,
+          "x": 73,
+          "y": 44,
+          "oid": "204",
+          "action": {
+            "id": "50",
+            "facing": 0
+          }
+        },
+        {
+          "kind": 1,
+          "x": 39,
+          "y": 79,
+          "oid": "218",
+          "dvy": 5,
+          "action": {
+            "id": "auto"
+          }
+        },
+        {
+          "kind": 1,
+          "x": 39,
+          "y": 79,
+          "oid": "217",
+          "dvy": 4,
+          "dvx": 8,
+          "action": {
+            "id": "auto",
+            "facing": 2
+          },
+          "multi": 2
+        },
+        {
+          "kind": 1,
+          "x": 39,
+          "y": 79,
+          "oid": "217",
+          "dvy": 4,
+          "dvx": 8,
+          "action": {
+            "id": "auto"
+          },
+          "multi": 2
+        }
+      ],
+      "state": 9996,
+      "centerx": 39,
+      "centery": 84,
+      "sound": "data/020.wav.mp3"
+    },
+    "305": {
+      "id": "305",
+      "name": "transform",
+      "pic": {
+        "tex": "2",
+        "x": 400,
+        "y": 240,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 7,
+      "next": {
+        "id": "306"
+      },
+      "wpoint": {
+        "kind": 1,
+        "x": 37,
+        "y": 46,
+        "weaponact": 30,
+        "cover": 0
+      },
+      "state": 15,
+      "centerx": 41,
+      "centery": 80
+    },
+    "306": {
+      "id": "306",
+      "name": "transform",
+      "pic": {
+        "tex": "2",
+        "x": 480,
+        "y": 240,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "307"
+      },
+      "wpoint": {
+        "kind": 1,
+        "x": 37,
+        "y": 46,
+        "weaponact": 30,
+        "cover": 0
+      },
+      "state": 15,
+      "centerx": 38,
+      "centery": 77
+    },
+    "307": {
+      "id": "307",
+      "name": "transform",
+      "pic": {
+        "tex": "2",
+        "x": 560,
+        "y": 240,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "308"
+      },
+      "wpoint": {
+        "kind": 1,
+        "x": 37,
+        "y": 46,
+        "weaponact": 30,
+        "cover": 0
+      },
+      "state": 15,
+      "centerx": 39,
+      "centery": 79
+    },
+    "308": {
+      "id": "308",
+      "name": "transform",
+      "pic": {
+        "tex": "2",
+        "x": 640,
+        "y": 240,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 9,
+      "next": {
+        "id": "309"
+      },
+      "wpoint": {
+        "kind": 1,
+        "x": 37,
+        "y": 46,
+        "weaponact": 30,
+        "cover": 0
+      },
+      "state": 15,
+      "centerx": 39,
+      "centery": 79,
+      "sound": "data/007.wav.mp3"
+    },
+    "309": {
+      "id": "309",
+      "name": "transform",
+      "pic": {
+        "tex": "2",
+        "x": 720,
+        "y": 240,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 7,
+      "next": {
+        "id": "310"
+      },
+      "wpoint": {
+        "kind": 1,
+        "x": 37,
+        "y": 46,
+        "weaponact": 30,
+        "cover": 0
+      },
+      "state": 15,
+      "centerx": 34,
+      "centery": 78
+    },
+    "310": {
+      "id": "310",
+      "name": "transform",
+      "pic": {
+        "tex": "2",
+        "x": 0,
+        "y": 320,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "311"
+      },
+      "wpoint": {
+        "kind": 1,
+        "x": 37,
+        "y": 46,
+        "weaponact": 30,
+        "cover": 0
+      },
+      "state": 15,
+      "centerx": 34,
+      "centery": 78,
+      "sound": "data/083.wav.mp3"
+    },
+    "311": {
+      "id": "311",
+      "name": "transform",
+      "pic": {
+        "tex": "2",
+        "x": 80,
+        "y": 320,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 3,
+      "next": {
+        "id": "312"
+      },
+      "wpoint": {
+        "kind": 1,
+        "x": 37,
+        "y": 46,
+        "weaponact": 30,
+        "cover": 0
+      },
+      "state": 15,
+      "centerx": 34,
+      "centery": 78,
+      "sound": "data/083.wav.mp3"
+    },
+    "312": {
+      "id": "312",
+      "name": "transform",
+      "pic": {
+        "tex": "2",
+        "x": 160,
+        "y": 320,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 3,
+      "next": {
+        "id": "313"
+      },
+      "wpoint": {
+        "kind": 1,
+        "x": 37,
+        "y": 46,
+        "weaponact": 30,
+        "cover": 0
+      },
+      "state": 15,
+      "centerx": 34,
+      "centery": 78
+    },
+    "313": {
+      "id": "313",
+      "name": "transform",
+      "pic": {
+        "tex": "2",
+        "x": 240,
+        "y": 320,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 3,
+      "next": {
+        "id": "314"
+      },
+      "wpoint": {
+        "kind": 1,
+        "x": 37,
+        "y": 46,
+        "weaponact": 30,
+        "cover": 0
+      },
+      "state": 15,
+      "centerx": 34,
+      "centery": 78,
+      "sound": "data/083.wav.mp3"
+    },
+    "314": {
+      "id": "314",
+      "name": "transform",
+      "pic": {
+        "tex": "2",
+        "x": 320,
+        "y": 320,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 3,
+      "next": {
+        "id": "315"
+      },
+      "wpoint": {
+        "kind": 1,
+        "x": 37,
+        "y": 46,
+        "weaponact": 30,
+        "cover": 0
+      },
+      "state": 15,
+      "centerx": 34,
+      "centery": 78
+    },
+    "315": {
+      "id": "315",
+      "name": "transform",
+      "pic": {
+        "tex": "2",
+        "x": 400,
+        "y": 320,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 3,
+      "next": {
+        "id": "316"
+      },
+      "wpoint": {
+        "kind": 1,
+        "x": 37,
+        "y": 46,
+        "weaponact": 30,
+        "cover": 0
+      },
+      "state": 15,
+      "centerx": 34,
+      "centery": 78,
+      "sound": "data/083.wav.mp3"
+    },
+    "316": {
+      "id": "316",
+      "name": "transform",
+      "pic": {
+        "tex": "2",
+        "x": 480,
+        "y": 320,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "317"
+      },
+      "wpoint": {
+        "kind": 1,
+        "x": 37,
+        "y": 46,
+        "weaponact": 30,
+        "cover": 0
+      },
+      "state": 15,
+      "centerx": 27,
+      "centery": 77,
+      "sound": "data/007.wav.mp3"
+    },
+    "317": {
+      "id": "317",
+      "name": "transform",
+      "pic": {
+        "tex": "2",
+        "x": 560,
+        "y": 320,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 5,
+      "next": {
+        "id": "318"
+      },
+      "wpoint": {
+        "kind": 1,
+        "x": 37,
+        "y": 46,
+        "weaponact": 30,
+        "cover": 0
+      },
+      "state": 15,
+      "centerx": 26,
+      "centery": 77
+    },
+    "318": {
+      "id": "318",
+      "name": "transform",
+      "pic": {
+        "tex": "2",
+        "x": 640,
+        "y": 320,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 11,
+      "next": {
+        "id": "319"
+      },
+      "wpoint": {
+        "kind": 1,
+        "x": 37,
+        "y": 46,
+        "weaponact": 30,
+        "cover": 0
+      },
+      "state": 15,
+      "centerx": 26,
+      "centery": 77
+    },
+    "319": {
+      "id": "319",
+      "name": "transform",
+      "pic": {
+        "tex": "2",
+        "x": 640,
+        "y": 320,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 21,
+      "next": {
+        "id": "auto"
+      },
+      "wpoint": {
+        "kind": 1,
+        "x": 37,
+        "y": 46,
+        "weaponact": 30,
+        "cover": 0
+      },
+      "state": 9995,
+      "centerx": 26,
+      "centery": 77
+    },
+    "320": {
+      "id": "320",
+      "name": "transform",
+      "pic": {
+        "tex": "2",
+        "x": 240,
+        "y": 240,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 3,
+      "next": {
+        "id": "304"
+      },
+      "wpoint": {
+        "kind": 1,
+        "x": 37,
+        "y": 46,
+        "weaponact": 30,
+        "cover": 0
+      },
+      "opoint": [
+        {
+          "kind": 1,
+          "x": 1,
+          "y": 44,
+          "oid": "204",
+          "action": {
+            "id": "51",
+            "facing": 2
+          }
+        }
+      ],
+      "state": 15,
+      "centerx": 40,
+      "centery": 84
+    },
+    "399": {
+      "id": "399",
+      "name": "dummy",
+      "pic": {
+        "tex": "0",
+        "x": 0,
+        "y": 0,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 1,
+      "next": {},
+      "bdy": [
+        {
+          "x": 21,
+          "y": 18,
+          "w": 43,
+          "h": 62,
+          "kind": 0
+        }
+      ],
+      "state": 0,
+      "centerx": 42,
+      "centery": 79,
+      "hit": {
+        "a": [
+          {
+            "id": "45",
+            "facing": 3,
+            "expression": "weapon_type==4|(weapon_type==3&press_F_B!=0)"
+          },
+          {
+            "id": [
+              "20",
+              "25"
+            ],
+            "facing": 3,
+            "expression": "weapon_type==3|weapon_type==1"
+          },
+          {
+            "id": "55",
+            "expression": "weapon_type==5",
+            "facing": 3
+          },
+          {
+            "id": "70",
+            "expression": "super_punch==1"
+          },
+          {
+            "id": [
+              "60",
+              "65"
+            ],
+            "facing": 3
+          }
+        ],
+        "j": {
+          "id": "210"
+        },
+        "d": {
+          "id": "110"
+        },
+        "B": {
+          "id": "walking_0",
+          "facing": 2
+        },
+        "D": {
+          "id": "walking_0"
+        },
+        "U": {
+          "id": "walking_0"
+        },
+        "F": {
+          "id": "walking_0"
+        },
+        "FF": {
+          "id": "running_0"
+        }
+      },
+      "hold": {
+        "B": {
+          "id": "walking_0",
+          "facing": 2
+        },
+        "D": {
+          "id": "walking_0"
+        },
+        "U": {
+          "id": "walking_0"
+        },
+        "F": {
+          "id": "walking_0"
+        }
+      }
+    },
+    "walking_0": {
+      "id": "walking_0",
+      "name": "walking",
+      "pic": {
+        "tex": "0",
+        "x": 320,
+        "y": 0,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 6,
+      "next": {
+        "id": "walking_1"
+      },
+      "bdy": [
+        {
+          "x": 28,
+          "y": 15,
+          "w": 27,
+          "h": 65,
+          "kind": 0
+        }
+      ],
+      "itr": [
+        {
+          "kind": 1,
+          "x": 40,
+          "y": 16,
+          "w": 25,
+          "h": 65,
+          "motionless": 0,
+          "shaking": 0,
+          "test": "victim_type==character&victim_state==16",
+          "catchingact": {
+            "id": "120"
+          },
+          "caughtact": {
+            "id": "130",
+            "facing": 5
+          }
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 33,
+        "y": 55,
+        "weaponact": 22,
+        "cover": 0
+      },
+      "bpoint": {
+        "x": 44,
+        "y": 35
+      },
+      "state": 1,
+      "centerx": 42,
+      "centery": 79,
+      "hit": {
+        "sequences": {
+          "La": {
+            "id": "235",
+            "mp": 150,
+            "facing": -1
+          },
+          "Ra": {
+            "id": "235",
+            "mp": 150,
+            "facing": 1
+          },
+          "Lj": {
+            "id": "247",
+            "mp": 50,
+            "facing": -1
+          },
+          "Rj": {
+            "id": "247",
+            "mp": 50,
+            "facing": 1
+          },
+          "Uj": {
+            "id": "275",
+            "mp": 100
+          },
+          "ja": {
+            "id": "300",
+            "expression": "hp_p<=33|lf2_net_on==1"
+          }
+        },
+        "B": {
+          "id": "",
+          "wait": "i",
+          "facing": 2
+        },
+        "a": [
+          {
+            "id": [
+              "45"
+            ],
+            "facing": 3,
+            "expression": "weapon_type==4|(weapon_type==3&press_F_B!=0)"
+          },
+          {
+            "id": [
+              "20",
+              "25"
+            ],
+            "facing": 3,
+            "expression": "weapon_type==3|weapon_type==1"
+          },
+          {
+            "id": "55",
+            "expression": "weapon_type==5",
+            "facing": 3
+          },
+          {
+            "id": "70",
+            "expression": "super_punch==1"
+          },
+          {
+            "id": [
+              "60",
+              "65"
+            ],
+            "facing": 3
+          }
+        ],
+        "j": {
+          "id": "210"
+        },
+        "d": {
+          "id": "110"
+        },
+        "FF": {
+          "id": "running_0"
+        }
+      },
+      "hold": {
+        "B": {
+          "id": "",
+          "wait": "i",
+          "facing": 2
+        }
+      },
+      "speedx": 2.5,
+      "speedz": 2.5
+    },
+    "walking_1": {
+      "id": "walking_1",
+      "name": "walking",
+      "pic": {
+        "tex": "0",
+        "x": 400,
+        "y": 0,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 6,
+      "next": {
+        "id": "walking_2"
+      },
+      "bdy": [
+        {
+          "x": 28,
+          "y": 15,
+          "w": 27,
+          "h": 65,
+          "kind": 0
+        }
+      ],
+      "itr": [
+        {
+          "kind": 1,
+          "x": 40,
+          "y": 16,
+          "w": 25,
+          "h": 65,
+          "motionless": 0,
+          "shaking": 0,
+          "test": "victim_type==character&victim_state==16",
+          "catchingact": {
+            "id": "120"
+          },
+          "caughtact": {
+            "id": "130",
+            "facing": 5
+          }
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 33,
+        "y": 54,
+        "weaponact": 22,
+        "cover": 0
+      },
+      "bpoint": {
+        "x": 44,
+        "y": 34
+      },
+      "state": 1,
+      "centerx": 42,
+      "centery": 79,
+      "hit": {
+        "sequences": {
+          "La": {
+            "id": "235",
+            "mp": 150,
+            "facing": -1
+          },
+          "Ra": {
+            "id": "235",
+            "mp": 150,
+            "facing": 1
+          },
+          "Lj": {
+            "id": "247",
+            "mp": 50,
+            "facing": -1
+          },
+          "Rj": {
+            "id": "247",
+            "mp": 50,
+            "facing": 1
+          },
+          "Uj": {
+            "id": "275",
+            "mp": 100
+          },
+          "ja": {
+            "id": "300",
+            "expression": "hp_p<=33|lf2_net_on==1"
+          }
+        },
+        "B": {
+          "id": "",
+          "wait": "i",
+          "facing": 2
+        },
+        "a": [
+          {
+            "id": [
+              "45"
+            ],
+            "facing": 3,
+            "expression": "weapon_type==4|(weapon_type==3&press_F_B!=0)"
+          },
+          {
+            "id": [
+              "20",
+              "25"
+            ],
+            "facing": 3,
+            "expression": "weapon_type==3|weapon_type==1"
+          },
+          {
+            "id": "55",
+            "expression": "weapon_type==5",
+            "facing": 3
+          },
+          {
+            "id": "70",
+            "expression": "super_punch==1"
+          },
+          {
+            "id": [
+              "60",
+              "65"
+            ],
+            "facing": 3
+          }
+        ],
+        "j": {
+          "id": "210"
+        },
+        "d": {
+          "id": "110"
+        },
+        "FF": {
+          "id": "running_0"
+        }
+      },
+      "hold": {
+        "B": {
+          "id": "",
+          "wait": "i",
+          "facing": 2
+        }
+      },
+      "speedx": 2.5,
+      "speedz": 2.5
+    },
+    "walking_2": {
+      "id": "walking_2",
+      "name": "walking",
+      "pic": {
+        "tex": "0",
+        "x": 480,
+        "y": 0,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 6,
+      "next": {
+        "id": "walking_3"
+      },
+      "bdy": [
+        {
+          "x": 28,
+          "y": 15,
+          "w": 27,
+          "h": 65,
+          "kind": 0
+        }
+      ],
+      "itr": [
+        {
+          "kind": 1,
+          "x": 40,
+          "y": 16,
+          "w": 25,
+          "h": 65,
+          "motionless": 0,
+          "shaking": 0,
+          "test": "victim_type==character&victim_state==16",
+          "catchingact": {
+            "id": "120"
+          },
+          "caughtact": {
+            "id": "130",
+            "facing": 5
+          }
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 32,
+        "y": 54,
+        "weaponact": 22,
+        "cover": 0
+      },
+      "bpoint": {
+        "x": 44,
+        "y": 34
+      },
+      "state": 1,
+      "centerx": 42,
+      "centery": 79,
+      "hit": {
+        "sequences": {
+          "La": {
+            "id": "235",
+            "mp": 150,
+            "facing": -1
+          },
+          "Ra": {
+            "id": "235",
+            "mp": 150,
+            "facing": 1
+          },
+          "Lj": {
+            "id": "247",
+            "mp": 50,
+            "facing": -1
+          },
+          "Rj": {
+            "id": "247",
+            "mp": 50,
+            "facing": 1
+          },
+          "Uj": {
+            "id": "275",
+            "mp": 100
+          },
+          "ja": {
+            "id": "300",
+            "expression": "hp_p<=33|lf2_net_on==1"
+          }
+        },
+        "B": {
+          "id": "",
+          "wait": "i",
+          "facing": 2
+        },
+        "a": [
+          {
+            "id": [
+              "45"
+            ],
+            "facing": 3,
+            "expression": "weapon_type==4|(weapon_type==3&press_F_B!=0)"
+          },
+          {
+            "id": [
+              "20",
+              "25"
+            ],
+            "facing": 3,
+            "expression": "weapon_type==3|weapon_type==1"
+          },
+          {
+            "id": "55",
+            "expression": "weapon_type==5",
+            "facing": 3
+          },
+          {
+            "id": "70",
+            "expression": "super_punch==1"
+          },
+          {
+            "id": [
+              "60",
+              "65"
+            ],
+            "facing": 3
+          }
+        ],
+        "j": {
+          "id": "210"
+        },
+        "d": {
+          "id": "110"
+        },
+        "FF": {
+          "id": "running_0"
+        }
+      },
+      "hold": {
+        "B": {
+          "id": "",
+          "wait": "i",
+          "facing": 2
+        }
+      },
+      "speedx": 2.5,
+      "speedz": 2.5
+    },
+    "walking_3": {
+      "id": "walking_3",
+      "name": "walking",
+      "pic": {
+        "tex": "0",
+        "x": 560,
+        "y": 0,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 6,
+      "next": {
+        "id": "walking_4"
+      },
+      "bdy": [
+        {
+          "x": 28,
+          "y": 15,
+          "w": 27,
+          "h": 65,
+          "kind": 0
+        }
+      ],
+      "itr": [
+        {
+          "kind": 1,
+          "x": 40,
+          "y": 16,
+          "w": 25,
+          "h": 65,
+          "motionless": 0,
+          "shaking": 0,
+          "test": "victim_type==character&victim_state==16",
+          "catchingact": {
+            "id": "120"
+          },
+          "caughtact": {
+            "id": "130",
+            "facing": 5
+          }
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 32,
+        "y": 54,
+        "weaponact": 22,
+        "cover": 0
+      },
+      "bpoint": {
+        "x": 44,
+        "y": 34
+      },
+      "state": 1,
+      "centerx": 42,
+      "centery": 79,
+      "hit": {
+        "sequences": {
+          "La": {
+            "id": "235",
+            "mp": 150,
+            "facing": -1
+          },
+          "Ra": {
+            "id": "235",
+            "mp": 150,
+            "facing": 1
+          },
+          "Lj": {
+            "id": "247",
+            "mp": 50,
+            "facing": -1
+          },
+          "Rj": {
+            "id": "247",
+            "mp": 50,
+            "facing": 1
+          },
+          "Uj": {
+            "id": "275",
+            "mp": 100
+          },
+          "ja": {
+            "id": "300",
+            "expression": "hp_p<=33|lf2_net_on==1"
+          }
+        },
+        "B": {
+          "id": "",
+          "wait": "i",
+          "facing": 2
+        },
+        "a": [
+          {
+            "id": [
+              "45"
+            ],
+            "facing": 3,
+            "expression": "weapon_type==4|(weapon_type==3&press_F_B!=0)"
+          },
+          {
+            "id": [
+              "20",
+              "25"
+            ],
+            "facing": 3,
+            "expression": "weapon_type==3|weapon_type==1"
+          },
+          {
+            "id": "55",
+            "expression": "weapon_type==5",
+            "facing": 3
+          },
+          {
+            "id": "70",
+            "expression": "super_punch==1"
+          },
+          {
+            "id": [
+              "60",
+              "65"
+            ],
+            "facing": 3
+          }
+        ],
+        "j": {
+          "id": "210"
+        },
+        "d": {
+          "id": "110"
+        },
+        "FF": {
+          "id": "running_0"
+        }
+      },
+      "hold": {
+        "B": {
+          "id": "",
+          "wait": "i",
+          "facing": 2
+        }
+      },
+      "speedx": 2.5,
+      "speedz": 2.5
+    },
+    "walking_4": {
+      "id": "walking_4",
+      "name": "walking",
+      "pic": {
+        "tex": "0",
+        "x": 480,
+        "y": 0,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 6,
+      "next": {
+        "id": "walking_5"
+      },
+      "bdy": [
+        {
+          "x": 28,
+          "y": 15,
+          "w": 27,
+          "h": 65,
+          "kind": 0
+        }
+      ],
+      "itr": [
+        {
+          "kind": 1,
+          "x": 40,
+          "y": 16,
+          "w": 25,
+          "h": 65,
+          "motionless": 0,
+          "shaking": 0,
+          "test": "victim_type==character&victim_state==16",
+          "catchingact": {
+            "id": "120"
+          },
+          "caughtact": {
+            "id": "130",
+            "facing": 5
+          }
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 32,
+        "y": 54,
+        "weaponact": 22,
+        "cover": 0
+      },
+      "bpoint": {
+        "x": 44,
+        "y": 34
+      },
+      "state": 1,
+      "centerx": 42,
+      "centery": 79,
+      "hit": {
+        "sequences": {
+          "La": {
+            "id": "235",
+            "mp": 150,
+            "facing": -1
+          },
+          "Ra": {
+            "id": "235",
+            "mp": 150,
+            "facing": 1
+          },
+          "Lj": {
+            "id": "247",
+            "mp": 50,
+            "facing": -1
+          },
+          "Rj": {
+            "id": "247",
+            "mp": 50,
+            "facing": 1
+          },
+          "Uj": {
+            "id": "275",
+            "mp": 100
+          },
+          "ja": {
+            "id": "300",
+            "expression": "hp_p<=33|lf2_net_on==1"
+          }
+        },
+        "B": {
+          "id": "",
+          "wait": "i",
+          "facing": 2
+        },
+        "a": [
+          {
+            "id": [
+              "45"
+            ],
+            "facing": 3,
+            "expression": "weapon_type==4|(weapon_type==3&press_F_B!=0)"
+          },
+          {
+            "id": [
+              "20",
+              "25"
+            ],
+            "facing": 3,
+            "expression": "weapon_type==3|weapon_type==1"
+          },
+          {
+            "id": "55",
+            "expression": "weapon_type==5",
+            "facing": 3
+          },
+          {
+            "id": "70",
+            "expression": "super_punch==1"
+          },
+          {
+            "id": [
+              "60",
+              "65"
+            ],
+            "facing": 3
+          }
+        ],
+        "j": {
+          "id": "210"
+        },
+        "d": {
+          "id": "110"
+        },
+        "FF": {
+          "id": "running_0"
+        }
+      },
+      "hold": {
+        "B": {
+          "id": "",
+          "wait": "i",
+          "facing": 2
+        }
+      },
+      "speedx": 2.5,
+      "speedz": 2.5
+    },
+    "walking_5": {
+      "id": "walking_5",
+      "name": "walking",
+      "pic": {
+        "tex": "0",
+        "x": 400,
+        "y": 0,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 6,
+      "next": {
+        "id": "walking_0"
+      },
+      "bdy": [
+        {
+          "x": 28,
+          "y": 15,
+          "w": 27,
+          "h": 65,
+          "kind": 0
+        }
+      ],
+      "itr": [
+        {
+          "kind": 1,
+          "x": 40,
+          "y": 16,
+          "w": 25,
+          "h": 65,
+          "motionless": 0,
+          "shaking": 0,
+          "test": "victim_type==character&victim_state==16",
+          "catchingact": {
+            "id": "120"
+          },
+          "caughtact": {
+            "id": "130",
+            "facing": 5
+          }
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 33,
+        "y": 54,
+        "weaponact": 22,
+        "cover": 0
+      },
+      "bpoint": {
+        "x": 44,
+        "y": 34
+      },
+      "state": 1,
+      "centerx": 42,
+      "centery": 79,
+      "hit": {
+        "sequences": {
+          "La": {
+            "id": "235",
+            "mp": 150,
+            "facing": -1
+          },
+          "Ra": {
+            "id": "235",
+            "mp": 150,
+            "facing": 1
+          },
+          "Lj": {
+            "id": "247",
+            "mp": 50,
+            "facing": -1
+          },
+          "Rj": {
+            "id": "247",
+            "mp": 50,
+            "facing": 1
+          },
+          "Uj": {
+            "id": "275",
+            "mp": 100
+          },
+          "ja": {
+            "id": "300",
+            "expression": "hp_p<=33|lf2_net_on==1"
+          }
+        },
+        "B": {
+          "id": "",
+          "wait": "i",
+          "facing": 2
+        },
+        "a": [
+          {
+            "id": [
+              "45"
+            ],
+            "facing": 3,
+            "expression": "weapon_type==4|(weapon_type==3&press_F_B!=0)"
+          },
+          {
+            "id": [
+              "20",
+              "25"
+            ],
+            "facing": 3,
+            "expression": "weapon_type==3|weapon_type==1"
+          },
+          {
+            "id": "55",
+            "expression": "weapon_type==5",
+            "facing": 3
+          },
+          {
+            "id": "70",
+            "expression": "super_punch==1"
+          },
+          {
+            "id": [
+              "60",
+              "65"
+            ],
+            "facing": 3
+          }
+        ],
+        "j": {
+          "id": "210"
+        },
+        "d": {
+          "id": "110"
+        },
+        "FF": {
+          "id": "running_0"
+        }
+      },
+      "hold": {
+        "B": {
+          "id": "",
+          "wait": "i",
+          "facing": 2
+        }
+      },
+      "speedx": 2.5,
+      "speedz": 2.5
+    },
+    "running_0": {
+      "id": "running_0",
+      "name": "running",
+      "pic": {
+        "tex": "0",
+        "x": 0,
+        "y": 160,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 6,
+      "next": {
+        "id": "running_1"
+      },
+      "bdy": [
+        {
+          "x": 25,
+          "y": 19,
+          "w": 38,
+          "h": 60,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 55,
+        "y": 52,
+        "weaponact": 21,
+        "cover": 0
+      },
+      "bpoint": {
+        "x": 57,
+        "y": 39
+      },
+      "state": 2,
+      "centerx": 48,
+      "centery": 79,
+      "sound": "data/003.wav.mp3",
+      "hit": {
+        "a": [
+          {
+            "id": [
+              "45"
+            ],
+            "expression": "weapon_type==4|(press_F_B==1&weapon_type!=0)"
+          },
+          {
+            "id": "55",
+            "expression": "weapon_type==5"
+          },
+          {
+            "id": "35",
+            "expression": "weapon_type==3|weapon_type==1",
+            "facing": 3
+          },
+          {
+            "id": "85"
+          }
+        ],
+        "j": {
+          "id": "213"
+        },
+        "d": {
+          "id": "102"
+        },
+        "B": {
+          "id": "218"
+        }
+      },
+      "hold": {
+        "B": {
+          "id": "218"
+        }
+      },
+      "dvx": 4.5,
+      "speedz": 1.54
+    },
+    "running_1": {
+      "id": "running_1",
+      "name": "running",
+      "pic": {
+        "tex": "0",
+        "x": 80,
+        "y": 160,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 6,
+      "next": {
+        "id": "running_2"
+      },
+      "bdy": [
+        {
+          "x": 25,
+          "y": 19,
+          "w": 38,
+          "h": 60,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 40,
+        "y": 51,
+        "weaponact": 22,
+        "cover": 0
+      },
+      "bpoint": {
+        "x": 57,
+        "y": 39
+      },
+      "state": 2,
+      "centerx": 51,
+      "centery": 79,
+      "hit": {
+        "a": [
+          {
+            "id": [
+              "45"
+            ],
+            "expression": "weapon_type==4|(press_F_B==1&weapon_type!=0)"
+          },
+          {
+            "id": "55",
+            "expression": "weapon_type==5"
+          },
+          {
+            "id": "35",
+            "expression": "weapon_type==3|weapon_type==1",
+            "facing": 3
+          },
+          {
+            "id": "85"
+          }
+        ],
+        "j": {
+          "id": "213"
+        },
+        "d": {
+          "id": "102"
+        },
+        "B": {
+          "id": "218"
+        }
+      },
+      "hold": {
+        "B": {
+          "id": "218"
+        }
+      },
+      "dvx": 4.5,
+      "speedz": 1.54
+    },
+    "running_2": {
+      "id": "running_2",
+      "name": "running",
+      "pic": {
+        "tex": "0",
+        "x": 160,
+        "y": 160,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 6,
+      "next": {
+        "id": "running_3"
+      },
+      "bdy": [
+        {
+          "x": 25,
+          "y": 19,
+          "w": 38,
+          "h": 60,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 33,
+        "y": 52,
+        "weaponact": 23,
+        "cover": 0
+      },
+      "bpoint": {
+        "x": 57,
+        "y": 39
+      },
+      "state": 2,
+      "centerx": 50,
+      "centery": 79,
+      "sound": "data/004.wav.mp3",
+      "hit": {
+        "a": [
+          {
+            "id": [
+              "45"
+            ],
+            "expression": "weapon_type==4|(press_F_B==1&weapon_type!=0)"
+          },
+          {
+            "id": "55",
+            "expression": "weapon_type==5"
+          },
+          {
+            "id": "35",
+            "expression": "weapon_type==3|weapon_type==1",
+            "facing": 3
+          },
+          {
+            "id": "85"
+          }
+        ],
+        "j": {
+          "id": "213"
+        },
+        "d": {
+          "id": "102"
+        },
+        "B": {
+          "id": "218"
+        }
+      },
+      "hold": {
+        "B": {
+          "id": "218"
+        }
+      },
+      "dvx": 4.5,
+      "speedz": 1.54
+    },
+    "running_3": {
+      "id": "running_3",
+      "name": "running",
+      "pic": {
+        "tex": "0",
+        "x": 80,
+        "y": 160,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 6,
+      "next": {
+        "id": "running_0"
+      },
+      "bdy": [
+        {
+          "x": 25,
+          "y": 19,
+          "w": 38,
+          "h": 60,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 40,
+        "y": 51,
+        "weaponact": 22,
+        "cover": 0
+      },
+      "bpoint": {
+        "x": 57,
+        "y": 39
+      },
+      "state": 2,
+      "centerx": 51,
+      "centery": 79,
+      "hit": {
+        "a": [
+          {
+            "id": [
+              "45"
+            ],
+            "expression": "weapon_type==4|(press_F_B==1&weapon_type!=0)"
+          },
+          {
+            "id": "55",
+            "expression": "weapon_type==5"
+          },
+          {
+            "id": "35",
+            "expression": "weapon_type==3|weapon_type==1",
+            "facing": 3
+          },
+          {
+            "id": "85"
+          }
+        ],
+        "j": {
+          "id": "213"
+        },
+        "d": {
+          "id": "102"
+        },
+        "B": {
+          "id": "218"
+        }
+      },
+      "hold": {
+        "B": {
+          "id": "218"
+        }
+      },
+      "dvx": 4.5,
+      "speedz": 1.54
+    },
+    "heavy_obj_walk_0": {
+      "id": "heavy_obj_walk_0",
+      "name": "heavy_obj_walk",
+      "pic": {
+        "tex": "0",
+        "x": 240,
+        "y": 160,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 7,
+      "next": {
+        "id": "heavy_obj_walk_1"
+      },
+      "bdy": [
+        {
+          "x": 29,
+          "y": 15,
+          "w": 28,
+          "h": 64,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 45,
+        "y": 22,
+        "weaponact": 10,
+        "cover": 0
+      },
+      "bpoint": {
+        "x": 45,
+        "y": 35
+      },
+      "state": 1,
+      "centerx": 42,
+      "centery": 79,
+      "hit": {
+        "B": {
+          "id": "",
+          "wait": "i",
+          "facing": 2
+        },
+        "FF": {
+          "id": "heavy_obj_run_0"
+        },
+        "a": {
+          "id": "50",
+          "facing": 3
+        }
+      },
+      "hold": {
+        "B": {
+          "id": "",
+          "wait": "i",
+          "facing": 2
+        }
+      },
+      "speedx": 1.85,
+      "speedz": 1.85
+    },
+    "heavy_obj_walk_1": {
+      "id": "heavy_obj_walk_1",
+      "name": "heavy_obj_walk",
+      "pic": {
+        "tex": "0",
+        "x": 320,
+        "y": 160,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 7,
+      "next": {
+        "id": "heavy_obj_walk_2"
+      },
+      "bdy": [
+        {
+          "x": 29,
+          "y": 15,
+          "w": 28,
+          "h": 64,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 45,
+        "y": 21,
+        "weaponact": 10,
+        "cover": 0
+      },
+      "bpoint": {
+        "x": 45,
+        "y": 35
+      },
+      "state": 1,
+      "centerx": 42,
+      "centery": 79,
+      "hit": {
+        "B": {
+          "id": "",
+          "wait": "i",
+          "facing": 2
+        },
+        "FF": {
+          "id": "heavy_obj_run_0"
+        },
+        "a": {
+          "id": "50",
+          "facing": 3
+        }
+      },
+      "hold": {
+        "B": {
+          "id": "",
+          "wait": "i",
+          "facing": 2
+        }
+      },
+      "speedx": 1.85,
+      "speedz": 1.85
+    },
+    "heavy_obj_walk_2": {
+      "id": "heavy_obj_walk_2",
+      "name": "heavy_obj_walk",
+      "pic": {
+        "tex": "0",
+        "x": 400,
+        "y": 160,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 7,
+      "next": {
+        "id": "heavy_obj_walk_3"
+      },
+      "bdy": [
+        {
+          "x": 29,
+          "y": 15,
+          "w": 28,
+          "h": 64,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 45,
+        "y": 21,
+        "weaponact": 10,
+        "cover": 0
+      },
+      "bpoint": {
+        "x": 45,
+        "y": 35
+      },
+      "state": 1,
+      "centerx": 42,
+      "centery": 79,
+      "hit": {
+        "B": {
+          "id": "",
+          "wait": "i",
+          "facing": 2
+        },
+        "FF": {
+          "id": "heavy_obj_run_0"
+        },
+        "a": {
+          "id": "50",
+          "facing": 3
+        }
+      },
+      "hold": {
+        "B": {
+          "id": "",
+          "wait": "i",
+          "facing": 2
+        }
+      },
+      "speedx": 1.85,
+      "speedz": 1.85
+    },
+    "heavy_obj_walk_3": {
+      "id": "heavy_obj_walk_3",
+      "name": "heavy_obj_walk",
+      "pic": {
+        "tex": "0",
+        "x": 480,
+        "y": 160,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 7,
+      "next": {
+        "id": "heavy_obj_walk_4"
+      },
+      "bdy": [
+        {
+          "x": 29,
+          "y": 15,
+          "w": 28,
+          "h": 64,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 45,
+        "y": 21,
+        "weaponact": 10,
+        "cover": 0
+      },
+      "bpoint": {
+        "x": 45,
+        "y": 35
+      },
+      "state": 1,
+      "centerx": 42,
+      "centery": 79,
+      "hit": {
+        "B": {
+          "id": "",
+          "wait": "i",
+          "facing": 2
+        },
+        "FF": {
+          "id": "heavy_obj_run_0"
+        },
+        "a": {
+          "id": "50",
+          "facing": 3
+        }
+      },
+      "hold": {
+        "B": {
+          "id": "",
+          "wait": "i",
+          "facing": 2
+        }
+      },
+      "speedx": 1.85,
+      "speedz": 1.85
+    },
+    "heavy_obj_walk_4": {
+      "id": "heavy_obj_walk_4",
+      "name": "heavy_obj_walk",
+      "pic": {
+        "tex": "0",
+        "x": 400,
+        "y": 160,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 7,
+      "next": {
+        "id": "heavy_obj_walk_5"
+      },
+      "bdy": [
+        {
+          "x": 29,
+          "y": 15,
+          "w": 28,
+          "h": 64,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 45,
+        "y": 21,
+        "weaponact": 10,
+        "cover": 0
+      },
+      "bpoint": {
+        "x": 45,
+        "y": 35
+      },
+      "state": 1,
+      "centerx": 42,
+      "centery": 79,
+      "hit": {
+        "B": {
+          "id": "",
+          "wait": "i",
+          "facing": 2
+        },
+        "FF": {
+          "id": "heavy_obj_run_0"
+        },
+        "a": {
+          "id": "50",
+          "facing": 3
+        }
+      },
+      "hold": {
+        "B": {
+          "id": "",
+          "wait": "i",
+          "facing": 2
+        }
+      },
+      "speedx": 1.85,
+      "speedz": 1.85
+    },
+    "heavy_obj_walk_5": {
+      "id": "heavy_obj_walk_5",
+      "name": "heavy_obj_walk",
+      "pic": {
+        "tex": "0",
+        "x": 320,
+        "y": 160,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 7,
+      "next": {
+        "id": "heavy_obj_walk_0"
+      },
+      "bdy": [
+        {
+          "x": 29,
+          "y": 15,
+          "w": 28,
+          "h": 64,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 45,
+        "y": 21,
+        "weaponact": 10,
+        "cover": 0
+      },
+      "bpoint": {
+        "x": 45,
+        "y": 35
+      },
+      "state": 1,
+      "centerx": 42,
+      "centery": 79,
+      "hit": {
+        "B": {
+          "id": "",
+          "wait": "i",
+          "facing": 2
+        },
+        "FF": {
+          "id": "heavy_obj_run_0"
+        },
+        "a": {
+          "id": "50",
+          "facing": 3
+        }
+      },
+      "hold": {
+        "B": {
+          "id": "",
+          "wait": "i",
+          "facing": 2
+        }
+      },
+      "speedx": 1.85,
+      "speedz": 1.85
+    },
+    "heavy_obj_run_0": {
+      "id": "heavy_obj_run_0",
+      "name": "heavy_obj_run",
+      "pic": {
+        "tex": "1",
+        "x": 400,
+        "y": 400,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 7,
+      "next": {
+        "id": "heavy_obj_run_1"
+      },
+      "bdy": [
+        {
+          "x": 34,
+          "y": 12,
+          "w": 31,
+          "h": 67,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 54,
+        "y": 22,
+        "weaponact": 10,
+        "cover": 0
+      },
+      "bpoint": {
+        "x": 57,
+        "y": 38
+      },
+      "state": 2,
+      "centerx": 44,
+      "centery": 79,
+      "sound": "data/003.wav.mp3",
+      "hit": {
+        "B": {
+          "id": "19"
+        },
+        "a": {
+          "id": "50"
+        }
+      },
+      "hold": {
+        "B": {
+          "id": "19"
+        }
+      },
+      "dvx": 3.1,
+      "speedz": 1
+    },
+    "heavy_obj_run_1": {
+      "id": "heavy_obj_run_1",
+      "name": "heavy_obj_run",
+      "pic": {
+        "tex": "1",
+        "x": 480,
+        "y": 400,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 7,
+      "next": {
+        "id": "heavy_obj_run_2"
+      },
+      "bdy": [
+        {
+          "x": 38,
+          "y": 15,
+          "w": 26,
+          "h": 65,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 54,
+        "y": 22,
+        "weaponact": 10,
+        "cover": 0
+      },
+      "bpoint": {
+        "x": 57,
+        "y": 38
+      },
+      "state": 2,
+      "centerx": 46,
+      "centery": 79,
+      "hit": {
+        "B": {
+          "id": "19"
+        },
+        "a": {
+          "id": "50"
+        }
+      },
+      "hold": {
+        "B": {
+          "id": "19"
+        }
+      },
+      "dvx": 3.1,
+      "speedz": 1
+    },
+    "heavy_obj_run_2": {
+      "id": "heavy_obj_run_2",
+      "name": "heavy_obj_run",
+      "pic": {
+        "tex": "1",
+        "x": 560,
+        "y": 400,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 7,
+      "next": {
+        "id": "heavy_obj_run_3"
+      },
+      "bdy": [
+        {
+          "x": 35,
+          "y": 13,
+          "w": 30,
+          "h": 68,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 54,
+        "y": 22,
+        "weaponact": 10,
+        "cover": 0
+      },
+      "bpoint": {
+        "x": 57,
+        "y": 38
+      },
+      "state": 2,
+      "centerx": 49,
+      "centery": 79,
+      "sound": "data/004.wav.mp3",
+      "hit": {
+        "B": {
+          "id": "19"
+        },
+        "a": {
+          "id": "50"
+        }
+      },
+      "hold": {
+        "B": {
+          "id": "19"
+        }
+      },
+      "dvx": 3.1,
+      "speedz": 1
+    },
+    "heavy_obj_run_3": {
+      "id": "heavy_obj_run_3",
+      "name": "heavy_obj_run",
+      "pic": {
+        "tex": "1",
+        "x": 480,
+        "y": 400,
+        "w": 79,
+        "h": 79
+      },
+      "wait": 7,
+      "next": {
+        "id": "heavy_obj_run_0"
+      },
+      "bdy": [
+        {
+          "x": 38,
+          "y": 15,
+          "w": 26,
+          "h": 65,
+          "kind": 0
+        }
+      ],
+      "wpoint": {
+        "kind": 1,
+        "x": 54,
+        "y": 22,
+        "weaponact": 10,
+        "cover": 0
+      },
+      "bpoint": {
+        "x": 57,
+        "y": 38
+      },
+      "state": 2,
+      "centerx": 46,
+      "centery": 79,
+      "hit": {
+        "B": {
+          "id": "19"
+        },
+        "a": {
+          "id": "50"
+        }
+      },
+      "hold": {
+        "B": {
+          "id": "19"
+        }
+      },
+      "dvx": 3.1,
+      "speedz": 1
+    }
+  }
+}

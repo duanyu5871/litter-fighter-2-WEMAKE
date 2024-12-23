@@ -1,0 +1,599 @@
+{
+  "id": "208",
+  "type": "ball",
+  "base": {
+    "files": {
+      "0": {
+        "id": "0",
+        "path": "sprite/sys/henry_arrow2.png",
+        "row": 6,
+        "col": 2,
+        "cell_w": 48,
+        "cell_h": 47
+      }
+    },
+    "hp": 500,
+    "dead_sounds": [
+      "data/020.wav.mp3"
+    ],
+    "drop_sounds": [
+      "data/020.wav.mp3"
+    ],
+    "hit_sounds": [
+      "data/020.wav.mp3"
+    ],
+    "name": "ball_208"
+  },
+  "frames": {
+    "0": {
+      "id": "0",
+      "name": "flying",
+      "pic": {
+        "tex": "0",
+        "x": 0,
+        "y": 0,
+        "w": 48,
+        "h": 47
+      },
+      "wait": 3,
+      "next": {
+        "id": "1"
+      },
+      "bdy": [
+        {
+          "x": -1,
+          "y": 12,
+          "w": 51,
+          "h": 24,
+          "kind": 0,
+          "hit_act": [
+            {
+              "id": "20",
+              "expression": "hit_by_state{{3005|hit_by_state{{3006|hit_by_itr_kind{{9"
+            }
+          ]
+        }
+      ],
+      "itr": [
+        {
+          "kind": 0,
+          "x": -1,
+          "y": 12,
+          "w": 51,
+          "h": 24,
+          "injury": 50,
+          "effect": 1,
+          "vrest": 24,
+          "dvx": 10,
+          "fall": 140,
+          "bdefend": 120,
+          "hit_sounds": [
+            "data/020.wav.mp3"
+          ],
+          "hit_act": [
+            {
+              "id": "20",
+              "expression": "hit_on_state{{3005|hit_on_state{{3006"
+            }
+          ]
+        }
+      ],
+      "state": 3006,
+      "centerx": 19,
+      "centery": 24,
+      "dvx": 11,
+      "speedz": 2
+    },
+    "1": {
+      "id": "1",
+      "name": "flying",
+      "pic": {
+        "tex": "0",
+        "x": 49,
+        "y": 0,
+        "w": 48,
+        "h": 47
+      },
+      "wait": 3,
+      "next": {
+        "id": "2"
+      },
+      "bdy": [
+        {
+          "x": -1,
+          "y": 12,
+          "w": 51,
+          "h": 24,
+          "kind": 0,
+          "hit_act": [
+            {
+              "id": "20",
+              "expression": "hit_by_state{{3005|hit_by_state{{3006|hit_by_itr_kind{{9"
+            }
+          ]
+        }
+      ],
+      "itr": [
+        {
+          "kind": 0,
+          "x": -1,
+          "y": 12,
+          "w": 51,
+          "h": 24,
+          "injury": 50,
+          "effect": 1,
+          "vrest": 24,
+          "dvx": 10,
+          "fall": 140,
+          "bdefend": 120,
+          "hit_sounds": [
+            "data/020.wav.mp3"
+          ],
+          "hit_act": [
+            {
+              "id": "20",
+              "expression": "hit_on_state{{3005|hit_on_state{{3006"
+            }
+          ]
+        }
+      ],
+      "state": 3006,
+      "centerx": 19,
+      "centery": 24,
+      "dvx": 11,
+      "speedz": 2
+    },
+    "2": {
+      "id": "2",
+      "name": "flying",
+      "pic": {
+        "tex": "0",
+        "x": 98,
+        "y": 0,
+        "w": 48,
+        "h": 47
+      },
+      "wait": 3,
+      "next": {
+        "id": "3"
+      },
+      "bdy": [
+        {
+          "x": -1,
+          "y": 12,
+          "w": 51,
+          "h": 24,
+          "kind": 0,
+          "hit_act": [
+            {
+              "id": "20",
+              "expression": "hit_by_state{{3005|hit_by_state{{3006|hit_by_itr_kind{{9"
+            }
+          ]
+        }
+      ],
+      "itr": [
+        {
+          "kind": 0,
+          "x": -1,
+          "y": 12,
+          "w": 51,
+          "h": 24,
+          "injury": 50,
+          "effect": 1,
+          "vrest": 24,
+          "dvx": 10,
+          "fall": 140,
+          "bdefend": 120,
+          "hit_sounds": [
+            "data/020.wav.mp3"
+          ],
+          "hit_act": [
+            {
+              "id": "20",
+              "expression": "hit_on_state{{3005|hit_on_state{{3006"
+            }
+          ]
+        }
+      ],
+      "state": 3006,
+      "centerx": 19,
+      "centery": 24,
+      "dvx": 11,
+      "speedz": 2
+    },
+    "3": {
+      "id": "3",
+      "name": "flying",
+      "pic": {
+        "tex": "0",
+        "x": 147,
+        "y": 0,
+        "w": 48,
+        "h": 47
+      },
+      "wait": 3,
+      "next": {
+        "id": "4"
+      },
+      "bdy": [
+        {
+          "x": -1,
+          "y": 12,
+          "w": 51,
+          "h": 24,
+          "kind": 0,
+          "hit_act": [
+            {
+              "id": "20",
+              "expression": "hit_by_state{{3005|hit_by_state{{3006|hit_by_itr_kind{{9"
+            }
+          ]
+        }
+      ],
+      "itr": [
+        {
+          "kind": 0,
+          "x": -1,
+          "y": 12,
+          "w": 51,
+          "h": 24,
+          "injury": 50,
+          "effect": 1,
+          "vrest": 24,
+          "dvx": 10,
+          "fall": 140,
+          "bdefend": 120,
+          "hit_sounds": [
+            "data/020.wav.mp3"
+          ],
+          "hit_act": [
+            {
+              "id": "20",
+              "expression": "hit_on_state{{3005|hit_on_state{{3006"
+            }
+          ]
+        }
+      ],
+      "state": 3006,
+      "centerx": 19,
+      "centery": 24,
+      "dvx": 11,
+      "speedz": 2
+    },
+    "4": {
+      "id": "4",
+      "name": "flying",
+      "pic": {
+        "tex": "0",
+        "x": 196,
+        "y": 0,
+        "w": 48,
+        "h": 47
+      },
+      "wait": 3,
+      "next": {
+        "id": "5"
+      },
+      "bdy": [
+        {
+          "x": -1,
+          "y": 12,
+          "w": 51,
+          "h": 24,
+          "kind": 0,
+          "hit_act": [
+            {
+              "id": "20",
+              "expression": "hit_by_state{{3005|hit_by_state{{3006|hit_by_itr_kind{{9"
+            }
+          ]
+        }
+      ],
+      "itr": [
+        {
+          "kind": 0,
+          "x": -1,
+          "y": 12,
+          "w": 51,
+          "h": 24,
+          "injury": 50,
+          "effect": 1,
+          "vrest": 24,
+          "dvx": 10,
+          "fall": 140,
+          "bdefend": 120,
+          "hit_sounds": [
+            "data/020.wav.mp3"
+          ],
+          "hit_act": [
+            {
+              "id": "20",
+              "expression": "hit_on_state{{3005|hit_on_state{{3006"
+            }
+          ]
+        }
+      ],
+      "state": 3006,
+      "centerx": 19,
+      "centery": 24,
+      "dvx": 11,
+      "speedz": 2
+    },
+    "5": {
+      "id": "5",
+      "name": "flying",
+      "pic": {
+        "tex": "0",
+        "x": 245,
+        "y": 0,
+        "w": 48,
+        "h": 47
+      },
+      "wait": 3,
+      "next": {
+        "id": "auto"
+      },
+      "bdy": [
+        {
+          "x": -1,
+          "y": 12,
+          "w": 51,
+          "h": 24,
+          "kind": 0,
+          "hit_act": [
+            {
+              "id": "20",
+              "expression": "hit_by_state{{3005|hit_by_state{{3006|hit_by_itr_kind{{9"
+            }
+          ]
+        }
+      ],
+      "itr": [
+        {
+          "kind": 0,
+          "x": -1,
+          "y": 12,
+          "w": 51,
+          "h": 24,
+          "injury": 50,
+          "effect": 1,
+          "vrest": 24,
+          "dvx": 10,
+          "fall": 140,
+          "bdefend": 120,
+          "hit_sounds": [
+            "data/020.wav.mp3"
+          ],
+          "hit_act": [
+            {
+              "id": "20",
+              "expression": "hit_on_state{{3005|hit_on_state{{3006"
+            }
+          ]
+        }
+      ],
+      "state": 3006,
+      "centerx": 19,
+      "centery": 24,
+      "dvx": 11,
+      "speedz": 2
+    },
+    "10": {
+      "id": "10",
+      "name": "hiting",
+      "pic": {
+        "tex": "0",
+        "x": 0,
+        "y": 48,
+        "w": 48,
+        "h": 47
+      },
+      "wait": 3,
+      "next": {
+        "id": "11"
+      },
+      "state": 3001,
+      "centerx": 19,
+      "centery": 24
+    },
+    "11": {
+      "id": "11",
+      "name": "hiting",
+      "pic": {
+        "tex": "0",
+        "x": 49,
+        "y": 48,
+        "w": 48,
+        "h": 47
+      },
+      "wait": 3,
+      "next": {
+        "id": "12"
+      },
+      "state": 3001,
+      "centerx": 19,
+      "centery": 24
+    },
+    "12": {
+      "id": "12",
+      "name": "hiting",
+      "pic": {
+        "tex": "0",
+        "x": 98,
+        "y": 48,
+        "w": 48,
+        "h": 47
+      },
+      "wait": 3,
+      "next": {
+        "id": "13"
+      },
+      "state": 3001,
+      "centerx": 19,
+      "centery": 24
+    },
+    "13": {
+      "id": "13",
+      "name": "hiting",
+      "pic": {
+        "tex": "0",
+        "x": 147,
+        "y": 48,
+        "w": 48,
+        "h": 47
+      },
+      "wait": 3,
+      "next": {
+        "id": "gone"
+      },
+      "state": 3001,
+      "centerx": 19,
+      "centery": 24
+    },
+    "20": {
+      "id": "20",
+      "name": "hit",
+      "pic": {
+        "tex": "0",
+        "x": 0,
+        "y": 48,
+        "w": 48,
+        "h": 47
+      },
+      "wait": 3,
+      "next": {
+        "id": "21"
+      },
+      "state": 3002,
+      "centerx": 19,
+      "centery": 24
+    },
+    "21": {
+      "id": "21",
+      "name": "hit",
+      "pic": {
+        "tex": "0",
+        "x": 49,
+        "y": 48,
+        "w": 48,
+        "h": 47
+      },
+      "wait": 3,
+      "next": {
+        "id": "22"
+      },
+      "state": 3002,
+      "centerx": 19,
+      "centery": 24
+    },
+    "22": {
+      "id": "22",
+      "name": "hit",
+      "pic": {
+        "tex": "0",
+        "x": 98,
+        "y": 48,
+        "w": 48,
+        "h": 47
+      },
+      "wait": 3,
+      "next": {
+        "id": "23"
+      },
+      "state": 3002,
+      "centerx": 19,
+      "centery": 24
+    },
+    "23": {
+      "id": "23",
+      "name": "hit",
+      "pic": {
+        "tex": "0",
+        "x": 147,
+        "y": 48,
+        "w": 48,
+        "h": 47
+      },
+      "wait": 3,
+      "next": {
+        "id": "gone"
+      },
+      "state": 3002,
+      "centerx": 19,
+      "centery": 24
+    },
+    "30": {
+      "id": "30",
+      "name": "rebounding",
+      "pic": {
+        "tex": "0",
+        "x": 98,
+        "y": 384,
+        "w": 48,
+        "h": 47
+      },
+      "wait": 3,
+      "next": {
+        "id": "31"
+      },
+      "state": 3003,
+      "centerx": 19,
+      "centery": 24
+    },
+    "31": {
+      "id": "31",
+      "name": "rebounding",
+      "pic": {
+        "tex": "0",
+        "x": 49,
+        "y": 48,
+        "w": 48,
+        "h": 47
+      },
+      "wait": 3,
+      "next": {
+        "id": "32"
+      },
+      "state": 3003,
+      "centerx": 19,
+      "centery": 24
+    },
+    "32": {
+      "id": "32",
+      "name": "rebounding",
+      "pic": {
+        "tex": "0",
+        "x": 98,
+        "y": 48,
+        "w": 48,
+        "h": 47
+      },
+      "wait": 3,
+      "next": {
+        "id": "33"
+      },
+      "state": 3003,
+      "centerx": 19,
+      "centery": 24
+    },
+    "33": {
+      "id": "33",
+      "name": "rebounding",
+      "pic": {
+        "tex": "0",
+        "x": 147,
+        "y": 48,
+        "w": 48,
+        "h": 47
+      },
+      "wait": 3,
+      "next": {
+        "id": "gone"
+      },
+      "state": 3003,
+      "centerx": 19,
+      "centery": 24
+    }
+  }
+}
