@@ -9,6 +9,8 @@ import { Defines } from "../defines/defines";
 import { traversal } from "../utils/container_help/traversal";
 import { to_num } from "../utils/type_cast/to_num";
 import { CondMaker } from "./CondMaker";
+import { copy_bdy_info } from "./copy_bdy_info";
+import { edit_bdy_info } from "./edit_bdy_info";
 import { get_next_frame_by_raw_id } from "./get_the_next";
 import { take, take_str } from "./take";
 
@@ -181,7 +183,6 @@ export function make_ball_data(info: IEntityInfo, frames: Record<string, IFrameI
 }
 
 function cook_state_frame_3000(frame: IFrameInfo, frames: Record<string, IFrameInfo>, weapon_broken_sound: string | undefined) {
-
   if (frame.bdy && frames[20]) {
     const more_bdy: IBdyInfo[] = [];
     for (const bdy of frame.bdy) {
@@ -249,11 +250,4 @@ function cook_state_frame_3000(frame: IFrameInfo, frames: Record<string, IFrameI
       }
     }
   }
-}
-
-function copy_bdy_info(src: IBdyInfo, edit: Partial<IBdyInfo>): IBdyInfo {
-  return { ...JSON.parse(JSON.stringify(src)) as any, ...edit }
-}
-function edit_bdy_info(src: IBdyInfo, ...edit: Partial<IBdyInfo>[]): void {
-  Object.assign(src, ...edit)
 }
