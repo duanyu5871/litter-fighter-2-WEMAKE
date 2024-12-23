@@ -1,7 +1,6 @@
 import { IBdyInfo, ICpointInfo, IEntityPictureInfo, IFramePictureInfo, IItrInfo, IOpointInfo, ItrKind, IWpointInfo } from '../defines';
 import { IEntityInfo } from "../defines/IEntityInfo";
 import { IFrameInfo } from "../defines/IFrameInfo";
-import { IRect } from '../defines/IRect';
 import { OpointKind } from '../defines/OpointKind';
 import { Defines } from '../defines/defines';
 import { match_all } from '../utils/string_parser/match_all';
@@ -124,8 +123,8 @@ export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string, fil
     else if (not_zero_num(dvx)) frame.dvx = dvx * 0.5;
 
     if (
-      frame.state === Defines.State._3 ||
-      frame.state === Defines.State._6
+      frame.state === Defines.State.Attacking ||
+      frame.state === Defines.State.Rowing
     ) {
       const dvz = take(frame, 'dvz');
       if (dvz === 550) frame.dvz = dvz;
@@ -198,49 +197,4 @@ export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string, fil
     }
   }
   return frames;
-}
-
-function cook_frame_indicator_info(frame: IFrameInfo) {
-  const { pic, bdy, itr } = frame;
-  if (!pic || !('w' in pic)) return;
-  const f_rect_1: IRect = {
-    x: -frame.centerx,
-    y: frame.centery - pic.h,
-    w: pic.w,
-    h: pic.h
-  };
-  const f_rect_2: IRect = {
-    ...f_rect_1,
-    x: frame.centerx - f_rect_1.w
-  };
-  frame.indicator_info = {
-    1: f_rect_1,
-    [-1]: f_rect_2
-  };
-  bdy?.forEach(o => {
-    const rect_1: IRect = {
-      w: o.w,
-      h: o.h,
-      x: f_rect_1.x + o.x,
-      y: f_rect_1.y + f_rect_1.h - o.y - o.h,
-    };
-    const rect_2: IRect = {
-      ...rect_1,
-      x: f_rect_2.x + f_rect_1.w - o.w - o.x,
-    };
-    o.indicator_info = { 1: rect_1, [-1]: rect_2 };
-  });
-  itr?.forEach(o => {
-    const rect_1: IRect = {
-      w: o.w,
-      h: o.h,
-      x: f_rect_1.x + o.x,
-      y: f_rect_1.y + f_rect_1.h - o.y - o.h,
-    };
-    const rect_2: IRect = {
-      ...rect_1,
-      x: f_rect_2.x + f_rect_1.w - o.w - o.x,
-    };
-    o.indicator_info = { 1: rect_1, [-1]: rect_2 };
-  });
 }

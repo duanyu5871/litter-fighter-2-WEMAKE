@@ -1,6 +1,7 @@
 import { Warn } from '../../Log';
 import LF2 from '../LF2';
 import Expression from '../base/Expression';
+import { cook_frame_indicator_info } from '../dat_translator/cook_frame_indicator_info';
 import { IEntityData, IEntityPictureInfo, IFrameInfo, ITexturePieceInfo } from '../defines';
 import read_nums from '../layout/utils/read_nums';
 import { traversal } from '../utils/container_help/traversal';
@@ -104,7 +105,3 @@ export function cook_frame(lf2: LF2, data: IEntityData, frame: IFrameInfo) {
   }
 }
 cook_frame.TAG = 'cook_frame'
-
-function cook_frame_indicator_info(frame: IFrameInfo) {
-  throw new Error('Function not implemented.');
-}
