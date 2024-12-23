@@ -1,4 +1,5 @@
-import { IEntityData, ItrEffect, ItrKind } from "../defines";
+import { IBdyInfo, IEntityData, ItrEffect, ItrKind } from "../defines";
+import { CollisionVal } from "../defines/CollisionVal";
 import { EntityVal } from "../defines/EntityVal";
 import { IDatIndex } from "../defines/IDatIndex";
 import { IEntityInfo } from "../defines/IEntityInfo";
@@ -85,7 +86,7 @@ export function make_ball_data(info: IEntityInfo, frames: Record<string, IFrameI
           if (hit_d) {
             itr.hit_act = [{
               id: hit_d,
-              expression: CondMaker
+              expression: new CondMaker<EntityVal>()
                 .add(EntityVal.HitOnCharacter, '==', 1)
                 .done()
             }]
@@ -102,53 +103,15 @@ export function make_ball_data(info: IEntityInfo, frames: Record<string, IFrameI
       }
     }
     if (frame.state === Defines.State.Ball_Flying) {
-      if (frame.bdy && frames[20]) {
-        for (const bdy of frame.bdy) {
-          bdy.friendly_fire = 1;
-          bdy.hit_act = [{
-            id: '20',
-            sounds: weapon_broken_sound ? [weapon_broken_sound] : void 0,
-            expression: CondMaker
-              .add<EntityVal>(EntityVal.HitByBall, '==', 1)
-              .and(EntityVal.HitByItrKind, '!{', ItrKind.JohnShield)
-              .and(EntityVal.HitByItrKind, '!{', ItrKind.Block)
-              .and(EntityVal.HitByItrEffect, '!{', ItrEffect.Ice2)
-              .done()
-          }, {
-            id: '30', // 反弹逻辑
-            sounds: weapon_broken_sound ? [weapon_broken_sound] : void 0,
-            expression: CondMaker
-              .add(EntityVal.HitByItrKind, '{{', ItrKind.WeaponSwing)
-              .or(EntityVal.HitByItrKind, '{{', ItrKind.JohnShield)
-              .or(c => c
-                .add(EntityVal.HitOnSth, '==', 0)
-                .and(c => c
-                  .add(EntityVal.HitByCharacter, '==', 1)
-                  .and(EntityVal.HitByItrKind, '{{', ItrKind.Normal)
-                ))
-              .done()
-          }]
-        }
-      }
-      if (frame.itr && frames[10]) {
-        for (const itr of frame.itr) {
-          switch (itr.kind) {
-            case ItrKind.Block:
-              break;
-            default:
-              itr.hit_act = [{ id: '10' }]
-          }
-
-        }
-      }
+      cook_state_frame_3000(frame, frames, weapon_broken_sound);
     } else if (frame.state === Defines.State.Ball_3005) {
       frame.speedz = 0;
       if (frame.bdy && frames[20]) {
         for (const bdy of frame.bdy) {
           bdy.hit_act = [{
             id: '20',
-            expression: CondMaker
-              .add<EntityVal>(EntityVal.HitByState, '{{', 3005)
+            expression: new CondMaker<EntityVal>()
+              .add(EntityVal.HitByState, '{{', 3005)
               .or(EntityVal.HitByItrKind, '{{', ItrKind.JohnShield)
               .done()
           }]
@@ -158,7 +121,7 @@ export function make_ball_data(info: IEntityInfo, frames: Record<string, IFrameI
         for (const itr of frame.itr) {
           itr.hit_act = [{
             id: '20',
-            expression: CondMaker
+            expression: new CondMaker<EntityVal>()
               .add(EntityVal.HitOnState, '{{', 3005)
               .done()
           }]
@@ -171,8 +134,8 @@ export function make_ball_data(info: IEntityInfo, frames: Record<string, IFrameI
         for (const bdy of frame.bdy) {
           bdy.hit_act = [{
             id: '20',
-            expression: CondMaker
-              .add<EntityVal>(EntityVal.HitByState, '{{', 3005)
+            expression: new CondMaker<EntityVal>()
+              .add(EntityVal.HitByState, '{{', 3005)
               .or(EntityVal.HitByState, '{{', 3006)
               .or(EntityVal.HitByItrKind, '{{', ItrKind.JohnShield)
               .done()
@@ -183,7 +146,7 @@ export function make_ball_data(info: IEntityInfo, frames: Record<string, IFrameI
         for (const itr of frame.itr) {
           itr.hit_act = [{
             id: '20',
-            expression: CondMaker
+            expression: new CondMaker<EntityVal>()
               .add(EntityVal.HitOnState, '{{', 3005)
               .or(EntityVal.HitOnState, '{{', 3006)
               .done()
@@ -205,7 +168,6 @@ export function make_ball_data(info: IEntityInfo, frames: Record<string, IFrameI
         frame.no_shadow = 1;
         break;
     }
-
     // 223、224
     // frame.hp = (50 to_num(take(frame, 'hit_a'), 0)) / 2
   }
@@ -216,4 +178,82 @@ export function make_ball_data(info: IEntityInfo, frames: Record<string, IFrameI
     frames: frames
   };
   return ret
+}
+
+function cook_state_frame_3000(frame: IFrameInfo, frames: Record<string, IFrameInfo>, weapon_broken_sound: string | undefined) {
+
+  if (frame.bdy && frames[20]) {
+    const more_bdy: IBdyInfo[] = [];
+    for (const bdy of frame.bdy) {
+
+      edit_bdy_info(bdy, {
+        /* 受攻击判定 */
+        test: new CondMaker<CollisionVal>().bracket(c => c
+          /** 被john盾牌之外的气功波击中 */
+          .add(CollisionVal.AttackerType, '==', 'ball')
+          .and(CollisionVal.ItrKind, '==', ItrKind.JohnShield)
+        ).or(c => c
+          /** 被武器s击中 */
+          .add(CollisionVal.AttackerType, '==', 'weapon')
+          .and(CollisionVal.ItrKind, '!=', ItrKind.WeaponSwing)
+        ).done(),
+        hit_act: [{
+          id: '20',
+          sounds: weapon_broken_sound ? [weapon_broken_sound] : void 0
+        }]
+      })
+
+      more_bdy.push(copy_bdy_info(bdy, {
+        /* 反弹判定 */
+        friendly_fire: 1,
+        test: new CondMaker<CollisionVal>().bracket(c => c
+          // 地方角色的攻击反弹气功波
+          .add(CollisionVal.FriendlyFire, '==', 0)
+          .and(CollisionVal.AttackerType, '==', 'character')
+          .add(CollisionVal.ItrKind, '==', ItrKind.Normal)
+          .add(CollisionVal.ItrEffect, '!=', ItrEffect.Ice)
+        ).or(c => c
+          // 队友角色的攻击必须相向才能反弹气功波
+          .add(CollisionVal.FriendlyFire, '==', 1)
+          .and(CollisionVal.AttackerType, '==', 'character')
+          .and(CollisionVal.SameFacing, '==', 0)
+          .add(CollisionVal.ItrKind, '==', ItrKind.Normal)
+          .add(CollisionVal.ItrEffect, '!=', ItrEffect.Ice)
+        ).or(
+          CollisionVal.ItrKind, '==', ItrKind.JohnShield
+        ).or(c => c
+          // 队友角色的攻击 挥动武器 必须相向 反弹气功波
+          .add(CollisionVal.FriendlyFire, '==', 1)
+          .and(CollisionVal.SameFacing, '==', 0)
+          .add(CollisionVal.ItrKind, '==', ItrKind.WeaponSwing)
+        ).or(c => c
+          // 敌人角色的攻击 挥动武器 反弹气功波
+          .add(CollisionVal.FriendlyFire, '==', 0)
+          .add(CollisionVal.ItrKind, '==', ItrKind.WeaponSwing)
+        ).done(),
+        hit_act: {
+          id: '30', // 反弹
+          sounds: weapon_broken_sound ? [weapon_broken_sound] : void 0
+        }
+      }));
+    }
+    frame.bdy.push(...more_bdy);
+  }
+  if (frame.itr && frames[10]) {
+    for (const itr of frame.itr) {
+      switch (itr.kind) {
+        case ItrKind.Block:
+          break;
+        default:
+          itr.hit_act = [{ id: '10' }];
+      }
+    }
+  }
+}
+
+function copy_bdy_info(src: IBdyInfo, edit: Partial<IBdyInfo>): IBdyInfo {
+  return { ...JSON.parse(JSON.stringify(src)) as any, ...edit }
+}
+function edit_bdy_info(src: IBdyInfo, ...edit: Partial<IBdyInfo>[]): void {
+  Object.assign(src, ...edit)
 }

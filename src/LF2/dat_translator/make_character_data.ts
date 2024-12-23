@@ -110,7 +110,7 @@ export function make_character_data(info: IEntityInfo, frames: Record<string, IF
           {
             id: ['45'],
             facing: FacingFlag.Ctrl,
-            expression: CondMaker
+            expression: new CondMaker<EntityVal>()
               .add(EntityVal.WeaponType, '==', WeaponType.Baseball)
               .or(v => v
                 .add(EntityVal.WeaponType, '==', WeaponType.Knife)
@@ -120,13 +120,13 @@ export function make_character_data(info: IEntityInfo, frames: Record<string, IF
           {
             id: ['20', '25'],
             facing: FacingFlag.Ctrl,
-            expression: CondMaker.one_of(EntityVal.WeaponType, WeaponType.Knife, WeaponType.Stick).done()
+            expression: new CondMaker<EntityVal>().one_of(EntityVal.WeaponType, WeaponType.Knife, WeaponType.Stick).done()
           }, // drink
           {
-            id: '55', expression: CondMaker.one_of(EntityVal.WeaponType, WeaponType.Drink).done(),
+            id: '55', expression: new CondMaker<EntityVal>().one_of(EntityVal.WeaponType, WeaponType.Drink).done(),
             facing: FacingFlag.Ctrl,
           },
-          { id: '70', expression: CondMaker.add(EntityVal.RequireSuperPunch, '==', 1).done() },
+          { id: '70', expression: new CondMaker<EntityVal>().add(EntityVal.RequireSuperPunch, '==', 1).done() },
           { id: ['60', '65'], facing: Defines.FacingFlag.Ctrl }
         ]; // punch
         frame.hit.j = { id: '210' }; // jump
@@ -144,7 +144,8 @@ export function make_character_data(info: IEntityInfo, frames: Record<string, IF
         frame.hit.a = [
           { // 丢出武器
             id: ['45'],
-            expression: CondMaker.add(EntityVal.WeaponType, '==', WeaponType.Baseball)
+            expression: new CondMaker<EntityVal>()
+              .add(EntityVal.WeaponType, '==', WeaponType.Baseball)
               .or(v => v
                 .add(EntityVal.PressFB, '==', 1)
                 .and(EntityVal.WeaponType, '!=', WeaponType.None)
@@ -152,10 +153,10 @@ export function make_character_data(info: IEntityInfo, frames: Record<string, IF
               .done(),
           }, // drink
           {
-            id: '55', expression: CondMaker.one_of(EntityVal.WeaponType, WeaponType.Drink).done()
+            id: '55', expression: new CondMaker<EntityVal>().one_of(EntityVal.WeaponType, WeaponType.Drink).done()
           },
           {
-            id: '35', expression: CondMaker.one_of(EntityVal.WeaponType, WeaponType.Knife, WeaponType.Stick).done(),
+            id: '35', expression: new CondMaker<EntityVal>().one_of(EntityVal.WeaponType, WeaponType.Knife, WeaponType.Stick).done(),
             facing: FacingFlag.Ctrl,
           },
           { id: '85' }
@@ -220,7 +221,7 @@ export function make_character_data(info: IEntityInfo, frames: Record<string, IF
             {
               id: '52', // 角色跳跃丢出武器
               facing: FacingFlag.Ctrl,
-              expression: CondMaker.one_of(
+              expression: new CondMaker<EntityVal>().one_of(
                 EntityVal.WeaponType, WeaponType.Baseball, WeaponType.Drink
               ).or(v => v
                 .add(EntityVal.PressFB, '!=', 0)
@@ -230,7 +231,7 @@ export function make_character_data(info: IEntityInfo, frames: Record<string, IF
             {
               id: '30', // 角色跳跃用武器攻击
               facing: FacingFlag.Ctrl,
-              expression: CondMaker.one_of(
+              expression: new CondMaker<EntityVal>().one_of(
                 EntityVal.WeaponType,
                 WeaponType.Knife,
                 WeaponType.Stick
@@ -259,12 +260,12 @@ export function make_character_data(info: IEntityInfo, frames: Record<string, IF
             {
               id: '52',
               facing: FacingFlag.Ctrl,
-              expression: CondMaker.one_of(EntityVal.WeaponType, WeaponType.Baseball, WeaponType.Drink).done(),
+              expression: new CondMaker<EntityVal>().one_of(EntityVal.WeaponType, WeaponType.Baseball, WeaponType.Drink).done(),
             },
             {
               id: '40',
               facing: FacingFlag.Ctrl,
-              expression: CondMaker.one_of(EntityVal.WeaponType, WeaponType.Knife, WeaponType.Stick).done()
+              expression: new CondMaker<EntityVal>().one_of(EntityVal.WeaponType, WeaponType.Knife, WeaponType.Stick).done()
             },
             { id: '90' }]; // dash_atk
         }
@@ -285,8 +286,8 @@ export function make_character_data(info: IEntityInfo, frames: Record<string, IF
               {
                 ...get_next_frame_by_raw_id(t_action),
                 facing: FacingFlag.Ctrl,
-                expression: CondMaker
-                  .add<EntityVal>(EntityVal.Catching, '==', 1).and().bracket(c => {
+                expression: new CondMaker<EntityVal>()
+                  .add(EntityVal.Catching, '==', 1).and().bracket(c => {
                     return c.add(EntityVal.PressFB, '!=', 0).or(EntityVal.PressUD, '!=', 0)
                   }).done()
               }
@@ -295,8 +296,8 @@ export function make_character_data(info: IEntityInfo, frames: Record<string, IF
           if (a_action)
             a_hit_a = {
               ...get_next_frame_by_raw_id(a_action),
-              expression: CondMaker
-                .add<EntityVal>(EntityVal.Catching, '==', 1)
+              expression: new CondMaker<EntityVal>()
+                .add(EntityVal.Catching, '==', 1)
                 .done()
             }
           if (Array.isArray(s_hit_a)) {
@@ -339,8 +340,8 @@ export function make_character_data(info: IEntityInfo, frames: Record<string, IF
         if (!frame.hit) frame.hit = {}
         frame.hit.j = push_next_frame(frame.hit.j, {
           id: '100',
-          expression: CondMaker
-            .add<EntityVal>(EntityVal.HP, '>', 0)
+          expression: new CondMaker<EntityVal>()
+            .add(EntityVal.HP, '>', 0)
             .done()
         })
         break;
@@ -357,8 +358,8 @@ export function make_character_data(info: IEntityInfo, frames: Record<string, IF
         if (!frame.hit) frame.hit = {}
         frame.hit.j = push_next_frame(frame.hit.j, {
           id: '108',
-          expression: CondMaker
-            .add<EntityVal>(EntityVal.HP, '>', 0)
+          expression: new CondMaker<EntityVal>()
+            .add(EntityVal.HP, '>', 0)
             .done()
         })
         break;
@@ -371,27 +372,27 @@ export function make_character_data(info: IEntityInfo, frames: Record<string, IF
         const to_dash_frame: TNextFrame = [
           {
             id: '213',
-            expression: CondMaker
+            expression: new CondMaker<EntityVal>()
               .add(EntityVal.PressLR, '==', -1)
               .done(),
             facing: FacingFlag.Left
           },
           {
             id: '213',
-            expression: CondMaker
+            expression: new CondMaker<EntityVal>()
               .add(EntityVal.PressLR, '==', 1)
               .done(),
             facing: FacingFlag.Right
           },
           {
             id: '214',
-            expression: CondMaker
+            expression: new CondMaker<EntityVal>()
               .add(EntityVal.TrendX, '==', -1)
               .done()
           },
           {
             id: '213',
-            expression: CondMaker
+            expression: new CondMaker<EntityVal>()
               .add(EntityVal.TrendX, '==', 1)
               .done()
           }
@@ -422,7 +423,7 @@ export function make_character_data(info: IEntityInfo, frames: Record<string, IF
           {
             id: '45',
             facing: FacingFlag.Ctrl,
-            expression: CondMaker
+            expression: new CondMaker<EntityVal>()
               .add(EntityVal.WeaponType, '==', WeaponType.Baseball)
               .or(v => v
                 .add(EntityVal.WeaponType, '==', WeaponType.Knife)
@@ -432,13 +433,13 @@ export function make_character_data(info: IEntityInfo, frames: Record<string, IF
           {
             id: ['20', '25'],
             facing: FacingFlag.Ctrl,
-            expression: CondMaker.one_of(EntityVal.WeaponType, WeaponType.Knife, WeaponType.Stick).done()
+            expression: new CondMaker<EntityVal>().one_of(EntityVal.WeaponType, WeaponType.Knife, WeaponType.Stick).done()
           },
           {
-            id: '55', expression: CondMaker.one_of(EntityVal.WeaponType, WeaponType.Drink).done(),
+            id: '55', expression: new CondMaker<EntityVal>().one_of(EntityVal.WeaponType, WeaponType.Drink).done(),
             facing: FacingFlag.Ctrl,
           },
-          { id: '70', expression: CondMaker.add(EntityVal.RequireSuperPunch, '==', 1).done() },
+          { id: '70', expression: new CondMaker<EntityVal>().add(EntityVal.RequireSuperPunch, '==', 1).done() },
           { id: ['60', '65'], facing: Defines.FacingFlag.Ctrl }
         ]; // punch
         frame.hit.j = { id: '210' }; // jump
@@ -473,7 +474,7 @@ export function make_character_data(info: IEntityInfo, frames: Record<string, IF
             {
               id: ['45'],
               facing: FacingFlag.Ctrl,
-              expression: CondMaker
+              expression: new CondMaker<EntityVal>()
                 .add(EntityVal.WeaponType, '==', WeaponType.Baseball)
                 .or(v => v
                   .add(EntityVal.WeaponType, '==', WeaponType.Knife)
@@ -483,13 +484,13 @@ export function make_character_data(info: IEntityInfo, frames: Record<string, IF
             {
               id: ['20', '25'],
               facing: FacingFlag.Ctrl,
-              expression: CondMaker.one_of(EntityVal.WeaponType, WeaponType.Knife, WeaponType.Stick).done()
+              expression: new CondMaker<EntityVal>().one_of(EntityVal.WeaponType, WeaponType.Knife, WeaponType.Stick).done()
             }, // drink
             {
-              id: '55', expression: CondMaker.one_of(EntityVal.WeaponType, WeaponType.Drink).done(),
+              id: '55', expression: new CondMaker<EntityVal>().one_of(EntityVal.WeaponType, WeaponType.Drink).done(),
               facing: FacingFlag.Ctrl,
             },
-            { id: '70', expression: CondMaker.add(EntityVal.RequireSuperPunch, '==', 1).done() },
+            { id: '70', expression: new CondMaker<EntityVal>().add(EntityVal.RequireSuperPunch, '==', 1).done() },
             { id: ['60', '65'], facing: Defines.FacingFlag.Ctrl }
           ]; // punch
           frame.hit.j = { id: '210' }; // jump
@@ -516,7 +517,7 @@ export function make_character_data(info: IEntityInfo, frames: Record<string, IF
           frame.hit.a = [
             { // 丢出武器
               id: ['45'],
-              expression: CondMaker.add(EntityVal.WeaponType, '==', WeaponType.Baseball)
+              expression: new CondMaker<EntityVal>().add(EntityVal.WeaponType, '==', WeaponType.Baseball)
                 .or(v => v
                   .add(EntityVal.PressFB, '==', 1)
                   .and(EntityVal.WeaponType, '!=', WeaponType.None)
@@ -524,10 +525,10 @@ export function make_character_data(info: IEntityInfo, frames: Record<string, IF
                 .done(),
             }, // drink
             {
-              id: '55', expression: CondMaker.one_of(EntityVal.WeaponType, WeaponType.Drink).done()
+              id: '55', expression: new CondMaker<EntityVal>().one_of(EntityVal.WeaponType, WeaponType.Drink).done()
             },
             {
-              id: '35', expression: CondMaker.one_of(EntityVal.WeaponType, WeaponType.Knife, WeaponType.Stick).done(),
+              id: '35', expression: new CondMaker<EntityVal>().one_of(EntityVal.WeaponType, WeaponType.Knife, WeaponType.Stick).done(),
               facing: FacingFlag.Ctrl,
             },
             { id: '85' }

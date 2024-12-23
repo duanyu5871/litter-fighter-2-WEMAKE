@@ -4,23 +4,23 @@ export class CondMaker<T extends string = string> {
   readonly is_cond = true;
   static is = (v: any): v is CondMaker => v?.is_cond === true;
 
-  static readonly get = <T extends string = string>() => new CondMaker<T>();
-  static readonly add = <T extends string = string>(...args: Parameters<CondMaker<T>['add']>) => this.get<T>().add(...args);
-  static readonly one_of = <T extends string = string>(...args: Parameters<CondMaker<T>['one_of']>) => this.get<T>().one_of(...args);
-  static readonly not_in = <T extends string = string>(...args: Parameters<CondMaker<T>['not_in']>) => this.get<T>().not_in(...args);
-  static readonly bracket = <T extends string = string>(...args: Parameters<CondMaker<T>['bracket']>) => this.get<T>().bracket(...args);
+  // static readonly get = <T extends string = string>() => new CondMaker<T>();
+  // static readonly add = <T extends string = string>(...args: Parameters<CondMaker<T>['add']>) => this.get<T>().add(...args);
+  // static readonly one_of = <T extends string = string>(...args: Parameters<CondMaker<T>['one_of']>) => this.get<T>().one_of(...args);
+  // static readonly not_in = <T extends string = string>(...args: Parameters<CondMaker<T>['not_in']>) => this.get<T>().not_in(...args);
+  // static readonly bracket = <T extends string = string>(...args: Parameters<CondMaker<T>['bracket']>) => this.get<T>().bracket(...args);
 
   private _parts: (string | CondMaker)[] = [];
   add(word: T, op: TBinaryOperator, value: any): this {
     this._parts.push(`${word}${op}${value}`);
     return this;
   }
-  not_bracket(func: (c: CondMaker) => CondMaker): this {
-    this._parts.push('!', func(CondMaker.get()));
+  not_bracket(func: (c: CondMaker<T>) => CondMaker<T>): this {
+    this._parts.push('!', func(new CondMaker()));
     return this;
   }
-  bracket(func: (c: CondMaker) => CondMaker): this {
-    this._parts.push(func(CondMaker.get()));
+  bracket(func: (c: CondMaker<T>) => CondMaker<T>): this {
+    this._parts.push(func(new CondMaker()));
     return this;
   }
   one_of(word: T, ...values: (string | number)[]): this {
@@ -35,7 +35,7 @@ export class CondMaker<T extends string = string> {
       return c;
     });
   }
-  private _any(word?: T | ((c: CondMaker) => CondMaker), op?: TBinaryOperator | (string | number)[], value?: any): this {
+  private _any(word?: T | ((c: CondMaker<T>) => CondMaker<T>), op?: TBinaryOperator | (string | number)[], value?: any): this {
     if (typeof word === 'function')
       return this.bracket(word);
     else if (word !== void 0)
@@ -46,17 +46,17 @@ export class CondMaker<T extends string = string> {
     return this;
   }
   or(): this;
-  or(func: (c: CondMaker) => CondMaker): this;
+  or(func: (c: CondMaker<T>) => CondMaker<T>): this;
   or(word: T, op: TBinaryOperator, value: any): this;
-  or(word?: T | ((c: CondMaker) => CondMaker), op?: TBinaryOperator | (string | number)[], value?: any): this {
+  or(word?: T | ((c: CondMaker<T>) => CondMaker<T>), op?: TBinaryOperator | (string | number)[], value?: any): this {
     this._parts.length && this._parts.push('|');
     return this._any(word, op, value);
   }
 
   and(): this;
-  and(func: (c: CondMaker) => CondMaker): this;
+  and(func: (c: CondMaker<T>) => CondMaker<T>): this;
   and(word: T, op: TBinaryOperator, value: any): this;
-  and(word?: T | ((c: CondMaker) => CondMaker), op?: TBinaryOperator, value?: any): this {
+  and(word?: T | ((c: CondMaker<T>) => CondMaker<T>), op?: TBinaryOperator, value?: any): this {
     this._parts.length && this._parts.push('&');
     return this._any(word, op, value);
   }
