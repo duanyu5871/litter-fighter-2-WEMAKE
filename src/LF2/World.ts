@@ -13,7 +13,7 @@ import { Defines } from './defines/defines';
 import Ditto from './ditto';
 import Entity from './entity/Entity';
 import { Factory } from './entity/Factory';
-import { ICollisionInfo } from './entity/ICollisionInfo';
+import { ICollision } from './entity/ICollision';
 import { is_ball, is_base_ctrl, is_character, is_local_ctrl, is_weapon } from './entity/type_check';
 import { EntityRender } from './renderer/EntityRender';
 import Stage from './stage/Stage';
@@ -440,8 +440,8 @@ export class World {
     }
   }
 
-  collision_test(a: Entity, af: IFrameInfo, itr: IItrInfo, b: Entity, bf: IFrameInfo, bdy: IBdyInfo) {
-    const a_group = a.holder?.data.base.group ?? a.data.base.group;
+  collision_test(attacker: Entity, aframe: IFrameInfo, itr: IItrInfo, victim: Entity, vframe: IFrameInfo, bdy: IBdyInfo) {
+    const a_group = attacker.holder?.data.base.group ?? attacker.data.base.group;
     const v_group = bdy.itr_groups
     if (v_group?.length) {
       if (!a_group?.length)
@@ -450,18 +450,17 @@ export class World {
       if (!intersect)
         return;
     }
-
-    switch (af.state) {
+    switch (aframe.state) {
       case Defines.State.Weapon_OnHand: {
-        const atk = a.holder?.frame.wpoint?.attacking;
+        const atk = attacker.holder?.frame.wpoint?.attacking;
         if (!atk) return;
-        const itr_prefab = a.data.itr_prefabs?.[atk];
+        const itr_prefab = attacker.data.itr_prefabs?.[atk];
         if (!itr_prefab) return;
         itr = { ...itr, ...itr_prefab }
         break;
       }
       case Defines.State.BurnRun: {
-        if (bf.state === Defines.State.Burning) return;
+        if (vframe.state === Defines.State.Burning) return;
         break;
       }
       case Defines.State.Weapon_Rebounding: {
@@ -478,96 +477,143 @@ export class World {
         return; // todo
       case ItrKind.Pick:
         if (
-          a.holding || b.holder || (
-            bf.state !== Defines.State.Weapon_OnGround &&
-            bf.state !== Defines.State.HeavyWeapon_OnGround
+          attacker.holding || victim.holder || (
+            vframe.state !== Defines.State.Weapon_OnGround &&
+            vframe.state !== Defines.State.HeavyWeapon_OnGround
           )
         ) return;
         break;
       case ItrKind.PickSecretly:
         if (
-          a.holding || b.holder ||
-          bf.state !== Defines.State.Weapon_OnGround
+          attacker.holding || victim.holder ||
+          vframe.state !== Defines.State.Weapon_OnGround
         ) return;
         break;
       case ItrKind.ForceCatch:
-        if (is_character(b)) break;
+        if (is_character(victim)) break;
         return;
       case ItrKind.Catch:
-        if (is_character(b) && bf.state === Defines.State.Tired) break;
+        if (is_character(victim) && vframe.state === Defines.State.Tired) break;
         return;
       case ItrKind.SuperPunchMe:
-        if (is_character(b) && !b.holding) break;
+        if (is_character(victim) && !victim.holding) break;
         return;
       case ItrKind.Normal:
-        if (is_character(a) && bf.state === Defines.State.Weapon_OnGround) return;
+        if (is_character(attacker) && vframe.state === Defines.State.Weapon_OnGround) return;
         break
       case ItrKind.JohnShield:
-        if (is_character(b) && a.same_team(b)) return;
+        if (is_character(victim) && attacker.same_team(victim)) return;
         break;
-      // case ItrKind.Ice: {
-      //   if (b.frame.state === Defines.State.Frozen) return;
-      // }
       case ItrKind.Heal:
       case ItrKind.Wind:
     }
     switch (itr.effect) {
       case ItrEffect.MFire1:
       case ItrEffect.MFire2:
-        if (bf.state === Defines.State.BurnRun) return;
-        if (bf.state === Defines.State.Burning) return;
+        if (vframe.state === Defines.State.BurnRun) return;
+        if (vframe.state === Defines.State.Burning) return;
         break;
       case ItrEffect.Fire:
-        if (af.state === Defines.State.BurnRun)
+        if (aframe.state === Defines.State.BurnRun)
           return;
         break;
       case ItrEffect.Through:
-        if (is_character(b)) return;
+        if (is_character(victim)) return;
         break;
       case ItrEffect.Ice2:
         if (
-          b.frame.state === Defines.State.Frozen ||
-          b.frame.id === b.data.indexes?.ice
+          victim.frame.state === Defines.State.Frozen ||
+          victim.frame.id === victim.data.indexes?.ice
         )
           return;
         break;
     }
-
     if (
       bdy.kind >= BdyKind.GotoMin &&
       bdy.kind <= BdyKind.GotoMax
     ) {
-      if (a.same_team(b))
+      if (attacker.same_team(victim))
         return;
-      if (itr.kind !== ItrKind.Normal && itr.kind !== ItrKind.WeaponSwing)
+      if (
+        itr.kind !== ItrKind.Normal &&
+        itr.kind !== ItrKind.WeaponSwing
+      ) {
         return;
+      }
     }
 
-    if (!(itr.friendly_fire || bdy.friendly_fire) && a.same_team(b))
+    if (!(itr.friendly_fire || bdy.friendly_fire) && attacker.same_team(victim))
       return;
 
-    switch (bf.state) {
+    switch (vframe.state) {
       case Defines.State.Falling: {
         if (!itr.fall || itr.fall < 60)
           return;
         break;
       }
     }
-    if (!itr.vrest && a.a_rest)
+    if (!itr.vrest && attacker.a_rest)
       return;
-    if (itr.vrest && b.get_v_rest(a.id) > 0)
+    if (itr.vrest && victim.get_v_rest(attacker.id) > 0)
       return;
-    const r0 = this.get_cube(a, af, itr);
-    const r1 = this.get_cube(b, bf, bdy);
+    const a_cube = this.get_cube(attacker, aframe, itr);
+    const b_cube = this.get_cube(victim, vframe, bdy);
     if (
-      r0.left <= r1.right &&
-      r0.right >= r1.left &&
-      r0.bottom <= r1.top &&
-      r0.top >= r1.bottom &&
-      r0.far <= r1.near &&
-      r0.near >= r1.far
+      a_cube.left <= b_cube.right &&
+      a_cube.right >= b_cube.left &&
+      a_cube.bottom <= b_cube.top &&
+      a_cube.top >= b_cube.bottom &&
+      a_cube.far <= b_cube.near &&
+      a_cube.near >= b_cube.far
     ) {
-      this.handle_collision(a, itr, r0, b, bdy, r1);
+      const collision: ICollision = {
+        v_rest: !itr.arest && itr.vrest ? itr.vrest : void 0,
+        victim,
+        attacker,
+        itr,
+        bdy,
+        aframe: aframe,
+        bframe: vframe,
+        a_cube,
+        b_cube
+      }
+      if (bdy.tester && !bdy.tester.run(collision))
+        return; 
+      const a = attacker.state?.before_collision?.(collision)
+      switch (a) {
+        case void 0: debugger; break;
+        case WhatNext.OnlyState:
+          attacker.state?.on_collision?.(collision);
+          break;
+        case WhatNext.OnlyEntity:
+          attacker.on_collision(collision);
+          break;
+        case WhatNext.SkipAll:
+          break;
+        case WhatNext.Continue:
+        default:
+          attacker.on_collision(collision);
+          attacker.state?.on_collision?.(collision);
+          break;
+      }
+
+      const b = victim.state?.before_be_collided?.(collision)
+      switch (b) {
+        case void 0: debugger; break;
+        case WhatNext.OnlyState:
+          victim.state?.on_be_collided?.(collision);
+          break;
+        case WhatNext.OnlyEntity:
+          victim.on_be_collided(collision);
+          break;
+        case WhatNext.SkipAll:
+          break;
+        case WhatNext.Continue:
+        default:
+          victim.on_be_collided(collision);
+          victim.state?.on_be_collided?.(collision);
+          break;
+      }
     }
   }
 
@@ -588,58 +634,6 @@ export class World {
     e.attach()
   }
 
-  handle_collision(
-    attacker: Entity, itr: IItrInfo, a_cube: ICube,
-    victim: Entity, bdy: IBdyInfo, b_cube: ICube,
-  ) {
-    const collision: ICollisionInfo = {
-      v_rest: !itr.arest && itr.vrest ? itr.vrest : void 0,
-      victim,
-      attacker,
-      itr,
-      bdy,
-      aframe: attacker.frame,
-      bframe: victim.frame,
-      a_cube,
-      b_cube
-    }
-
-    const a = attacker.state?.before_collision?.(collision)
-    switch (a) {
-      case void 0: debugger; break;
-      case WhatNext.OnlyState:
-        attacker.state?.on_collision?.(collision);
-        break;
-      case WhatNext.OnlyEntity:
-        attacker.on_collision(collision);
-        break;
-      case WhatNext.SkipAll:
-        break;
-      case WhatNext.Continue:
-      default:
-        attacker.on_collision(collision);
-        attacker.state?.on_collision?.(collision);
-        break;
-    }
-
-    const b = victim.state?.before_be_collided?.(collision)
-    switch (b) {
-      case void 0: debugger; break;
-      case WhatNext.OnlyState:
-        victim.state?.on_be_collided?.(collision);
-        break;
-      case WhatNext.OnlyEntity:
-        victim.on_be_collided(collision);
-        break;
-      case WhatNext.SkipAll:
-        break;
-      case WhatNext.Continue:
-      default:
-        victim.on_be_collided(collision);
-        victim.state?.on_be_collided?.(collision);
-        break;
-    }
-  }
   get_cube(e: Entity, f: IFrameInfo, i: IItrInfo | IBdyInfo): ICube {
     const left = e.facing > 0 ?
       e.position.x - f.centerx + i.x :

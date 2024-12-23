@@ -1,4 +1,5 @@
 import type { TNextFrame } from ".";
+import { IExpression } from "../base/Expression";
 import type { Defines } from "./defines";
 import type { IRect } from "./IRect";
 import type { IRectPair } from "./IRectPair";
@@ -47,4 +48,8 @@ export interface IBdyInfo extends IRect {
    * @see {Defines.EntityGroup}
    */
   itr_groups?: string[];
+
+  test?: string;
+
+  tester?: IExpression<any>;
 }

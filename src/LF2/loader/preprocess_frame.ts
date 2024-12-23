@@ -1,8 +1,10 @@
 import { Warn } from '../../Log';
 import LF2 from '../LF2';
+import Expression from '../base/Expression';
 import { IEntityData, IEntityPictureInfo, IFrameInfo, ITexturePieceInfo } from '../defines';
 import read_nums from '../layout/utils/read_nums';
 import { traversal } from '../utils/container_help/traversal';
+import { get_val_from_collision } from './get_val_from_collision';
 import { cook_next_frame } from './preprocess_next_frame';
 const get_keys = <V extends {}>(v: V): (keyof V)[] => {
   return Object.keys(v) as (keyof V)[]
@@ -39,6 +41,7 @@ export function cook_frame(lf2: LF2, data: IEntityData, frame: IFrameInfo) {
       if (prefab) bdy = frame.bdy[i] = { ...prefab, ...bdy };
       if (bdy.break_act) cook_next_frame(bdy.break_act);
       if (bdy.hit_act) cook_next_frame(bdy.hit_act);
+      if (bdy.test) bdy.tester = new Expression(bdy.test, get_val_from_collision)
     }
   }
   if (frame.itr?.length) {

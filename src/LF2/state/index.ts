@@ -1,7 +1,7 @@
 import { IFrameInfo, TNextFrame } from "../defines";
 import { Defines } from "../defines/defines";
 import Entity from "../entity/Entity";
-import { ICollisionInfo } from "../entity/ICollisionInfo";
+import { ICollision } from "../entity/ICollision";
 import { is_ball, is_character, is_weapon } from "../entity/type_check";
 import BallState_Base from "./BallState_Base";
 import CharacterState_Base from "./CharacterState_Base";
@@ -113,17 +113,17 @@ ENTITY_STATES.set(Defines.State.Normal, new (class State_15 extends State_Base i
   override get_auto_frame(e: Entity): IFrameInfo | undefined {
     return this.get_proxy(e).get_auto_frame?.(e)
   }
-  override before_collision(collision: ICollisionInfo): WhatNext {
+  override before_collision(collision: ICollision): WhatNext {
     return this.get_proxy(collision.attacker).before_collision?.(collision) || WhatNext.Continue;
   }
 
-  override before_be_collided(collision: ICollisionInfo): WhatNext {
+  override before_be_collided(collision: ICollision): WhatNext {
     return this.get_proxy(collision.attacker).before_be_collided?.(collision) || WhatNext.Continue;
   }
-  override on_collision(collision: ICollisionInfo): void {
+  override on_collision(collision: ICollision): void {
     this.get_proxy(collision.attacker).on_collision?.(collision)
   }
-  override on_be_collided(collision: ICollisionInfo): void {
+  override on_be_collided(collision: ICollision): void {
     this.get_proxy(collision.victim).on_be_collided?.(collision)
   }
   override get_sudden_death_frame(target: Entity): TNextFrame | undefined {

@@ -1,10 +1,10 @@
 import { Defines, IFrameInfo, ItrKind } from "../defines";
 import type Entity from "../entity/Entity";
-import { ICollisionInfo } from "../entity/ICollisionInfo";
+import { ICollision } from "../entity/ICollision";
 import State_Base, { WhatNext } from "./State_Base";
 
 export default class WeaponState_Base extends State_Base {
-  override on_collision(collision: ICollisionInfo): void {
+  override on_collision(collision: ICollision): void {
     const { attacker } = collision
     if (attacker.frame.state === Defines.State.Weapon_OnHand) {
       return;
@@ -17,7 +17,7 @@ export default class WeaponState_Base extends State_Base {
     attacker.enter_frame(attacker.data.indexes?.in_the_sky)
   }
 
-  override before_be_collided(collision: ICollisionInfo): WhatNext {
+  override before_be_collided(collision: ICollision): WhatNext {
     const { itr, attacker, victim } = collision
     if (
       itr.kind === ItrKind.Pick ||
@@ -33,7 +33,7 @@ export default class WeaponState_Base extends State_Base {
     return super.before_be_collided(collision)
   }
 
-  override on_be_collided(collision: ICollisionInfo): void {
+  override on_be_collided(collision: ICollision): void {
     const { itr, attacker, victim, a_cube, b_cube } = collision
     const spark_x = (Math.max(a_cube.left, b_cube.left) + Math.min(a_cube.right, b_cube.right)) / 2;
     const spark_y = (Math.min(a_cube.top, b_cube.top) + Math.max(a_cube.bottom, b_cube.bottom)) / 2;

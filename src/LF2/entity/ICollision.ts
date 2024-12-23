@@ -2,7 +2,7 @@ import type { IBdyInfo, IFrameInfo, IItrInfo } from '../defines';
 import type { ICube } from '../World';
 import type Entity from './Entity';
 
-export interface ICollisionInfo {
+export interface ICollision {
 
   /**
    * 攻击方

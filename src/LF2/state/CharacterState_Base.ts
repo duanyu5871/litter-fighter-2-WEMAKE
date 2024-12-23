@@ -3,7 +3,7 @@ import { BdyKind } from '../defines/BdyKind';
 import { ItrEffect } from '../defines/ItrEffect';
 import type Entity from '../entity/Entity';
 import { same_face, turn_face } from '../entity/face_helper';
-import { ICollisionInfo } from '../entity/ICollisionInfo';
+import { ICollision } from '../entity/ICollision';
 import { is_character, is_weapon } from '../entity/type_check';
 import State_Base, { WhatNext } from "./State_Base";
 
@@ -31,7 +31,7 @@ export default class CharacterState_Base extends State_Base {
     return e.data.frames[fid];
   }
 
-  override before_collision(collision: ICollisionInfo): WhatNext {
+  override before_collision(collision: ICollision): WhatNext {
     const { itr, attacker, victim } = collision
     switch (itr.kind) {
       case ItrKind.Catch: {
@@ -63,7 +63,7 @@ export default class CharacterState_Base extends State_Base {
     }
   }
 
-  override before_be_collided(collision: ICollisionInfo): WhatNext {
+  override before_be_collided(collision: ICollision): WhatNext {
     const { itr, attacker, victim, } = collision
     if (itr.kind === ItrKind.Heal)
       return WhatNext.SkipAll; // TODO.
@@ -79,7 +79,7 @@ export default class CharacterState_Base extends State_Base {
     return super.before_be_collided(collision)
   }
 
-  override on_be_collided(collision: ICollisionInfo): void {
+  override on_be_collided(collision: ICollision): void {
     const { itr, bdy, attacker, victim, a_cube, b_cube } = collision
     switch (bdy.kind) {
       case BdyKind.Defend: {
@@ -260,7 +260,7 @@ export default class CharacterState_Base extends State_Base {
     victim.next_frame = { id: victim.data.indexes?.ice };
   }
 
-  fall(collision: ICollisionInfo) {
+  fall(collision: ICollision) {
     const { itr, attacker, victim, a_cube, b_cube } = collision;
     const aface: TFace = ItrEffect.Explosion === itr.effect ?
       (victim.position.x > attacker.position.x ? -1 : 1) :

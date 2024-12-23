@@ -1,6 +1,6 @@
 import { Defines, IFrameInfo, ItrKind } from "../defines";
 import Entity from "../entity/Entity";
-import { ICollisionInfo } from "../entity/ICollisionInfo";
+import { ICollision } from "../entity/ICollision";
 import { is_character, is_weapon } from "../entity/type_check";
 import State_Base from "./State_Base";
 
@@ -77,7 +77,7 @@ export default class BallState_Base extends State_Base {
         break;
     }
   }
-  override on_collision(collision: ICollisionInfo): void {
+  override on_collision(collision: ICollision): void {
     const { attacker, victim } = collision;
     if (is_character(victim) || is_weapon(victim)) {
       attacker.velocities.length = 1
@@ -89,7 +89,7 @@ export default class BallState_Base extends State_Base {
       }
     }
   }
-  override on_be_collided(collision: ICollisionInfo): void {
+  override on_be_collided(collision: ICollision): void {
     const { victim } = collision;
     victim.shaking = 0;
     victim.velocities.length = 1

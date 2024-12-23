@@ -21,7 +21,7 @@ import WeaponState_Base from '../state/WeaponState_Base';
 import { random_get } from '../utils/math/random';
 import { is_positive, is_str } from '../utils/type_check';
 import { Factory } from './Factory';
-import { ICollisionInfo } from './ICollisionInfo';
+import { ICollision } from './ICollision';
 import type IEntityCallbacks from './IEntityCallbacks';
 import { turn_face } from './face_helper';
 import { is_ball, is_character, is_weapon_data } from './type_check';
@@ -170,7 +170,7 @@ export default class Entity {
   protected _emitter?: Entity;
   protected _emitter_opoint?: IOpointInfo;
   protected _a_rest: number = 0;
-  public v_rests = new Map<string, ICollisionInfo>();
+  public v_rests = new Map<string, ICollision>();
 
   public motionless: number = 0
   public shaking: number = 0;
@@ -1054,38 +1054,38 @@ export default class Entity {
   /**
    * 最近一次攻击信息
    *
-   * @type {ICollisionInfo}
+   * @type {ICollision}
    * @memberof Entity
    */
-  lastest_collision?: ICollisionInfo;
+  lastest_collision?: ICollision;
 
   /**
    * 最近一次被攻击信息
    * 
-   * @type {ICollisionInfo}
+   * @type {ICollision}
    * @memberof Entity
    */
-  lastest_collided?: ICollisionInfo;
+  lastest_collided?: ICollision;
 
   /**
    * 当前tick碰撞信息
    * 
    * - 会在update后置空
    *
-   * @type {ICollisionInfo[]}
+   * @type {ICollision[]}
    * @memberof Entity
    */
-  readonly collision_list: ICollisionInfo[] = [];
+  readonly collision_list: ICollision[] = [];
 
   /**
    * 当前tick被碰撞信息
    * 
    * - 会在update后置空
    * 
-   * @type {ICollisionInfo[]}
+   * @type {ICollision[]}
    * @memberof Entity
    */
-  readonly collided_list: ICollisionInfo[] = [];
+  readonly collided_list: ICollision[] = [];
 
   start_catch(target: Entity, itr: IItrInfo) {
     if (itr.catchingact === void 0) {
@@ -1109,7 +1109,7 @@ export default class Entity {
     this.next_frame = itr.caughtact;
   }
 
-  on_collision(collision: ICollisionInfo): void {
+  on_collision(collision: ICollision): void {
     this.collision_list.push(this.lastest_collision = collision)
     const { itr, bdy } = collision;
 
@@ -1155,7 +1155,7 @@ export default class Entity {
     )
   }
 
-  on_be_collided(collision: ICollisionInfo): void {
+  on_be_collided(collision: ICollision): void {
     this.collided_list.push(this.lastest_collided = collision);
     const { itr, bdy } = collision
     this.shaking = itr.shaking ?? Defines.DEFAULT_ITR_SHAKEING;

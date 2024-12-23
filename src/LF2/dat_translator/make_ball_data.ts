@@ -1,4 +1,5 @@
 import { IEntityData, ItrEffect, ItrKind } from "../defines";
+import { EntityVal } from "../defines/EntityVal";
 import { IDatIndex } from "../defines/IDatIndex";
 import { IEntityInfo } from "../defines/IEntityInfo";
 import { IFrameInfo } from "../defines/IFrameInfo";
@@ -85,7 +86,7 @@ export function make_ball_data(info: IEntityInfo, frames: Record<string, IFrameI
             itr.hit_act = [{
               id: hit_d,
               expression: CondMaker
-                .add(Defines.ValWord.HitOnCharacter, '==', 1)
+                .add(EntityVal.HitOnCharacter, '==', 1)
                 .done()
             }]
           }
@@ -108,22 +109,22 @@ export function make_ball_data(info: IEntityInfo, frames: Record<string, IFrameI
             id: '20',
             sounds: weapon_broken_sound ? [weapon_broken_sound] : void 0,
             expression: CondMaker
-              .add<Defines.ValWord>(Defines.ValWord.HitByBall, '==', 1)
-              .and(Defines.ValWord.HitByItrKind, '!{', ItrKind.JohnShield)
-              .and(Defines.ValWord.HitByItrKind, '!{', ItrKind.Block)
-              .and(Defines.ValWord.HitByItrEffect, '!{', ItrEffect.Ice2)
+              .add<EntityVal>(EntityVal.HitByBall, '==', 1)
+              .and(EntityVal.HitByItrKind, '!{', ItrKind.JohnShield)
+              .and(EntityVal.HitByItrKind, '!{', ItrKind.Block)
+              .and(EntityVal.HitByItrEffect, '!{', ItrEffect.Ice2)
               .done()
           }, {
             id: '30', // 反弹逻辑
             sounds: weapon_broken_sound ? [weapon_broken_sound] : void 0,
             expression: CondMaker
-              .add(Defines.ValWord.HitByItrKind, '{{', ItrKind.WeaponSwing)
-              .or(Defines.ValWord.HitByItrKind, '{{', ItrKind.JohnShield)
+              .add(EntityVal.HitByItrKind, '{{', ItrKind.WeaponSwing)
+              .or(EntityVal.HitByItrKind, '{{', ItrKind.JohnShield)
               .or(c => c
-                .add(Defines.ValWord.HitOnSth, '==', 0)
+                .add(EntityVal.HitOnSth, '==', 0)
                 .and(c => c
-                  .add(Defines.ValWord.HitByCharacter, '==', 1)
-                  .and(Defines.ValWord.HitByItrKind, '{{', ItrKind.Normal)
+                  .add(EntityVal.HitByCharacter, '==', 1)
+                  .and(EntityVal.HitByItrKind, '{{', ItrKind.Normal)
                 ))
               .done()
           }]
@@ -147,8 +148,8 @@ export function make_ball_data(info: IEntityInfo, frames: Record<string, IFrameI
           bdy.hit_act = [{
             id: '20',
             expression: CondMaker
-              .add<Defines.ValWord>(Defines.ValWord.HitByState, '{{', 3005)
-              .or(Defines.ValWord.HitByItrKind, '{{', ItrKind.JohnShield)
+              .add<EntityVal>(EntityVal.HitByState, '{{', 3005)
+              .or(EntityVal.HitByItrKind, '{{', ItrKind.JohnShield)
               .done()
           }]
         }
@@ -158,7 +159,7 @@ export function make_ball_data(info: IEntityInfo, frames: Record<string, IFrameI
           itr.hit_act = [{
             id: '20',
             expression: CondMaker
-              .add(Defines.ValWord.HitOnState, '{{', 3005)
+              .add(EntityVal.HitOnState, '{{', 3005)
               .done()
           }]
         }
@@ -171,9 +172,9 @@ export function make_ball_data(info: IEntityInfo, frames: Record<string, IFrameI
           bdy.hit_act = [{
             id: '20',
             expression: CondMaker
-              .add<Defines.ValWord>(Defines.ValWord.HitByState, '{{', 3005)
-              .or(Defines.ValWord.HitByState, '{{', 3006)
-              .or(Defines.ValWord.HitByItrKind, '{{', ItrKind.JohnShield)
+              .add<EntityVal>(EntityVal.HitByState, '{{', 3005)
+              .or(EntityVal.HitByState, '{{', 3006)
+              .or(EntityVal.HitByItrKind, '{{', ItrKind.JohnShield)
               .done()
           }]
         }
@@ -183,8 +184,8 @@ export function make_ball_data(info: IEntityInfo, frames: Record<string, IFrameI
           itr.hit_act = [{
             id: '20',
             expression: CondMaker
-              .add(Defines.ValWord.HitOnState, '{{', 3005)
-              .or(Defines.ValWord.HitOnState, '{{', 3006)
+              .add(EntityVal.HitOnState, '{{', 3005)
+              .or(EntityVal.HitOnState, '{{', 3006)
               .done()
           }]
         }

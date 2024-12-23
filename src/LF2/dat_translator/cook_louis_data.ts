@@ -1,12 +1,13 @@
-import { Defines, IEntityData } from "../defines";
+import { IEntityData } from "../defines";
+import { EntityVal } from "../defines/EntityVal";
 import { CondMaker } from "./CondMaker";
 
 export function cook_louis_data(cdata: IEntityData) {
   for (const k in cdata.frames) {
     const ja = cdata.frames[k].hit?.sequences?.['ja'];
     if (!ja || !('id' in ja) || ja.id !== '300') continue;
-    ja.expression = new CondMaker().add(Defines.ValWord.HP_P, '<=', 33)
-      .or(Defines.ValWord.LF2_NET_ON, '==', 1)
+    ja.expression = new CondMaker().add(EntityVal.HP_P, '<=', 33)
+      .or(EntityVal.LF2_NET_ON, '==', 1)
       .done()
   }
 }

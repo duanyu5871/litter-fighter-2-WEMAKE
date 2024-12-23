@@ -17,28 +17,20 @@ export enum BinaryOperatorEnum {
   NotIncludedBy = '!}',
   NotInclude = '!{'
 }
-
-
-
 export interface IJudger<T> {
   run(arg: T): boolean;
   readonly text: string;
   readonly err?: string;
 }
-
 export interface IExpression<T> extends IJudger<T> {
   readonly is_expression: true;
   readonly children: Array<IExpression<T> | IJudger<T> | '|' | '&'>;
   readonly get_val: (word: string, e: T) => string | number | boolean;
   before: string;
 }
-
 export interface IValGetter<T> {
   (word: string, e: T): string | number | boolean
 }
-
-
-
 const predicate_maps: Record<BinaryOperatorEnum, (a: any, b: any) => boolean> = {
   // eslint-disable-next-line eqeqeq
   '==': (a, b) => a == b,
