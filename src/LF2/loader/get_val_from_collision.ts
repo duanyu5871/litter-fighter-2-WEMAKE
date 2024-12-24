@@ -21,8 +21,8 @@ const map: Record<CollisionVal, IValGetter<ICollision>> = {
   [CollisionVal.VictimFrameId]: (collision: ICollision) => collision.bframe.id,
   [CollisionVal.VictimFrameIndex_ICE]: (collision: ICollision) => collision.victim.data.indexes?.ice,
   [CollisionVal.ItrFall]: (collision: ICollision) => collision.itr.fall,
-  [CollisionVal.AttackerThrew]: (collision: ICollision) => collision.attacker.throwinjury,
-  [CollisionVal.VictimThrew]: (collision: ICollision) => collision.victim.throwinjury,
+  [CollisionVal.AttackerThrew]: (collision: ICollision) => collision.attacker.throwinjury !== void 0 ? 1 : 0,
+  [CollisionVal.VictimThrew]: (collision: ICollision) => collision.victim.throwinjury !== void 0 ? 1 : 0,
 }
 export const get_val_geter_from_collision: IValGetterGetter<ICollision> = (word: string): IValGetter<ICollision> | undefined => {
   return (map as any)[word]

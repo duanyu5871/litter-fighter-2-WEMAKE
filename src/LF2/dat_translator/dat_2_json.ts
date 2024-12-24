@@ -133,6 +133,12 @@ export default function dat_to_json(
     case '5':
       ret = make_entity_data(base, make_frames(full_str, base.files));
       break;
+    case '6':
+      base.type = Defines.WeaponType.Drink;
+      base.bounce = 0.45;
+      base.name = datIndex.hash ?? datIndex.file.replace(/[^a-z|A-Z|0-9|_]/g, '')
+      ret = make_weapon_data(base, full_str, make_frames(full_str, base.files));
+      break;
     default:
       console.warn('[dat_to_json] unknow dat type:', JSON.stringify(datIndex.type))
       ret = make_entity_data(base, make_frames(full_str, base.files));

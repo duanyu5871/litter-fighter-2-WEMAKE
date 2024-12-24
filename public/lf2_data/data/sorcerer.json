@@ -3924,7 +3924,9 @@
           "vrest": 34,
           "dvx": 1,
           "fall": 140,
-          "bdefend": 20
+          "bdefend": 20,
+          "friendly_fire": 1,
+          "test": "attacker_threw==1&attacker_type==character"
         }
       ],
       "wpoint": {
@@ -3971,7 +3973,9 @@
           "vrest": 34,
           "dvx": 1,
           "fall": 140,
-          "bdefend": 20
+          "bdefend": 20,
+          "friendly_fire": 1,
+          "test": "attacker_threw==1&attacker_type==character"
         },
         {
           "kind": 4,
@@ -3983,7 +3987,9 @@
           "vrest": 34,
           "dvx": 1,
           "fall": 140,
-          "bdefend": 20
+          "bdefend": 20,
+          "friendly_fire": 1,
+          "test": "attacker_threw==1&attacker_type==character"
         }
       ],
       "wpoint": {
@@ -4030,7 +4036,9 @@
           "vrest": 34,
           "dvx": 1,
           "fall": 140,
-          "bdefend": 20
+          "bdefend": 20,
+          "friendly_fire": 1,
+          "test": "attacker_threw==1&attacker_type==character"
         }
       ],
       "wpoint": {
@@ -4085,7 +4093,9 @@
           "vrest": 34,
           "dvx": 1,
           "fall": 140,
-          "bdefend": 20
+          "bdefend": 20,
+          "friendly_fire": 1,
+          "test": "attacker_threw==1&attacker_type==character"
         },
         {
           "kind": 4,
@@ -4097,7 +4107,9 @@
           "vrest": 34,
           "dvx": 1,
           "fall": 140,
-          "bdefend": 20
+          "bdefend": 20,
+          "friendly_fire": 1,
+          "test": "attacker_threw==1&attacker_type==character"
         }
       ],
       "wpoint": {
@@ -4190,7 +4202,9 @@
           "vrest": 34,
           "dvx": 1,
           "fall": 140,
-          "bdefend": 20
+          "bdefend": 20,
+          "friendly_fire": 1,
+          "test": "attacker_threw==1&attacker_type==character"
         }
       ],
       "wpoint": {
@@ -4237,7 +4251,9 @@
           "vrest": 34,
           "dvx": 1,
           "fall": 140,
-          "bdefend": 20
+          "bdefend": 20,
+          "friendly_fire": 1,
+          "test": "attacker_threw==1&attacker_type==character"
         },
         {
           "kind": 4,
@@ -4249,7 +4265,9 @@
           "vrest": 34,
           "dvx": 1,
           "fall": 140,
-          "bdefend": 20
+          "bdefend": 20,
+          "friendly_fire": 1,
+          "test": "attacker_threw==1&attacker_type==character"
         }
       ],
       "wpoint": {
@@ -4296,7 +4314,9 @@
           "vrest": 34,
           "dvx": 1,
           "fall": 140,
-          "bdefend": 20
+          "bdefend": 20,
+          "friendly_fire": 1,
+          "test": "attacker_threw==1&attacker_type==character"
         }
       ],
       "wpoint": {
@@ -4351,7 +4371,9 @@
           "vrest": 34,
           "dvx": 1,
           "fall": 140,
-          "bdefend": 20
+          "bdefend": 20,
+          "friendly_fire": 1,
+          "test": "attacker_threw==1&attacker_type==character"
         },
         {
           "kind": 4,
@@ -4363,7 +4385,9 @@
           "vrest": 34,
           "dvx": 1,
           "fall": 140,
-          "bdefend": 20
+          "bdefend": 20,
+          "friendly_fire": 1,
+          "test": "attacker_threw==1&attacker_type==character"
         }
       ],
       "wpoint": {
