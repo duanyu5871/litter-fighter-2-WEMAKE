@@ -6,9 +6,7 @@ import LF2 from './LF2';
 import Callbacks from './base/Callbacks';
 import FPS from './base/FPS';
 import { NoEmitCallbacks } from "./base/NoEmitCallbacks";
-import { IBdyInfo, IFrameInfo, IItrInfo, ItrKind } from './defines';
-import { BdyKind } from './defines/BdyKind';
-import { ItrEffect } from './defines/ItrEffect';
+import { IBdyInfo, IFrameInfo, IItrInfo } from './defines';
 import { Defines } from './defines/defines';
 import Ditto from './ditto';
 import Entity from './entity/Entity';
@@ -440,7 +438,7 @@ export class World {
     }
   }
 
-  collision_test(attacker: Entity, aframe: IFrameInfo, itr: IItrInfo, victim: Entity, vframe: IFrameInfo, bdy: IBdyInfo) {
+  collision_test(attacker: Entity, aframe: IFrameInfo, itr: IItrInfo, victim: Entity, bframe: IFrameInfo, bdy: IBdyInfo) {
     switch (aframe.state) {
       case Defines.State.Weapon_OnHand: {
         const atk = attacker.holder?.frame.wpoint?.attacking;
@@ -450,52 +448,18 @@ export class World {
         itr = { ...itr, ...itr_prefab }
         break;
       }
-      case Defines.State.BurnRun: {
-        if (vframe.state === Defines.State.Burning) return;
-        break;
-      }
       case Defines.State.Weapon_Rebounding: {
         return;
       }
     }
-    switch (itr.effect) {
-      case ItrEffect.MFire1:
-      case ItrEffect.MFire2:
-        if (vframe.state === Defines.State.BurnRun) return;
-        if (vframe.state === Defines.State.Burning) return;
-        break;
-      case ItrEffect.Fire:
-        if (aframe.state === Defines.State.BurnRun)
-          return;
-        break;
-      case ItrEffect.Through:
-        if (is_character(victim)) return;
-        break;
-      case ItrEffect.Ice2:
-        if (
-          victim.frame.state === Defines.State.Frozen ||
-          victim.frame.id === victim.data.indexes?.ice
-        )
-          return;
-        break;
-    }
-
     if (!(itr.friendly_fire || bdy.friendly_fire) && attacker.same_team(victim))
       return;
-
-    switch (vframe.state) {
-      case Defines.State.Falling: {
-        if (!itr.fall || itr.fall < 60)
-          return;
-        break;
-      }
-    }
     if (!itr.vrest && attacker.a_rest)
       return;
     if (itr.vrest && victim.get_v_rest(attacker.id) > 0)
       return;
     const a_cube = this.get_cube(attacker, aframe, itr);
-    const b_cube = this.get_cube(victim, vframe, bdy);
+    const b_cube = this.get_cube(victim, bframe, bdy);
     if (
       a_cube.left <= b_cube.right &&
       a_cube.right >= b_cube.left &&
@@ -505,22 +469,20 @@ export class World {
       a_cube.near >= b_cube.far
     ) {
       const collision: ICollision = {
-        v_rest: !itr.arest && itr.vrest ? itr.vrest : void 0,
+        v_rest: (!itr.arest && itr.vrest) ? itr.vrest : void 0,
         victim,
         attacker,
         itr,
         bdy,
-        aframe: aframe,
-        bframe: vframe,
+        aframe,
+        bframe,
         a_cube,
-        b_cube
+        b_cube,
       }
-      if (bdy.tester && !bdy.tester.run(collision))
-        return;
-      if (itr.tester && !itr.tester.run(collision))
-        return;
-
-
+      if (
+        bdy.tester?.run(collision) === false ||
+        itr.tester?.run(collision) === false
+      ) return;
       const a = attacker.state?.before_collision?.(collision)
       switch (a) {
         case void 0: debugger; break;

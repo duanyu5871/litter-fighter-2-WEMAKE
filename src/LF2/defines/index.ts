@@ -1,3 +1,4 @@
+import { EntityEnum } from "./EntityEnum";
 import { IBdyInfo } from "./IBdyInfo";
 import { IBgData } from "./IBgData";
 import { IEntityInfo } from "./IEntityInfo";
@@ -16,8 +17,8 @@ export * from './IDatIndex';
 export * from './IEntityInfo';
 export * from './IHitKeyCollection';
 export * from "./IStageInfo";
-export * from './ItrKind'
-export * from './ItrEffect'
+export * from './ItrEffect';
+export * from './ItrKind';
 
 /**
  * 实体图片信息
@@ -92,10 +93,10 @@ export interface IBaseData<I = any> {
 }
 export interface IDataMap {
   'background': IBgData;
-  'entity': IEntityData;
-  'character': IEntityData;
-  'weapon': IEntityData;
-  'ball': IEntityData;
+  [EntityEnum.Character]: IEntityData;
+  [EntityEnum.Weapon]: IEntityData;
+  [EntityEnum.Ball]: IEntityData;
+  [EntityEnum.Entity]: IEntityData;
 }
 
 export interface IEntityData extends IBaseData<IEntityInfo> {

@@ -2,6 +2,7 @@ import {
   IBaseData, IBgData, IEntityData,
   IEntityPictureInfo, IFrameInfo, IStageInfo
 } from '../defines';
+import { EntityEnum } from '../defines/EntityEnum';
 import { IDatIndex } from "../defines/IDatIndex";
 import { IEntityInfo } from "../defines/IEntityInfo";
 import { Defines } from '../defines/defines';
@@ -174,7 +175,7 @@ export default function dat_to_json(
       break;
   }
   if (ret) ret.id = datIndex.id;
-  if (ret.type === 'weapon') make_weapon_special(ret as any)
+  if (ret.type === EntityEnum.Weapon) make_weapon_special(ret as any)
   if (!ret.base.name) ret.base.name = ret.type + '_' + ret.id;
 
   return ret;

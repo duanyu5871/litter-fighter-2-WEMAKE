@@ -1,6 +1,7 @@
 import { Defines, IBdyInfo, ItrKind } from '../defines';
 import { BdyKind } from '../defines/BdyKind';
 import { CollisionVal as C_Val } from '../defines/CollisionVal';
+import { EntityEnum } from '../defines/EntityEnum';
 import { is_num } from '../utils/type_check';
 import { CondMaker } from './CondMaker';
 import { take } from './take';
@@ -18,10 +19,10 @@ export default function cook_bdy(bdy?: Partial<IBdyInfo>): void {
       .add(C_Val.SameTeam, '==', 0)
       .and(c => c
         .bracket(c => c
-          .add(C_Val.AttackerType, '==', Defines.EntityEnum.Character)
+          .add(C_Val.AttackerType, '==', EntityEnum.Character)
           .and(C_Val.ItrKind, '==', ItrKind.Normal)
         ).or(c => c
-          .add(C_Val.AttackerType, '==', Defines.EntityEnum.Weapon)
+          .add(C_Val.AttackerType, '==', EntityEnum.Weapon)
           .and(c => c
             .add(C_Val.ItrKind, '==', ItrKind.WeaponSwing)
             .or(C_Val.AttackerOID, '==', Defines.BuiltIn_OID.Henry_Arrow1)

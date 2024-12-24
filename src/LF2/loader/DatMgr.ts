@@ -3,7 +3,8 @@ import LF2 from '../LF2';
 import { BallController } from '../controller/BallController';
 import { BotController } from '../controller/BotController';
 import { InvalidController } from '../controller/InvalidController';
-import { IBgData, IEntityData, IDataMap, IStageInfo } from '../defines';
+import { IBgData, IDataMap, IEntityData, IStageInfo } from '../defines';
+import { EntityEnum } from '../defines/EntityEnum';
 import { Defines } from '../defines/defines';
 import { TData } from '../entity/Entity';
 import { Factory } from '../entity/Factory';
@@ -15,10 +16,10 @@ import { cook_next_frame } from './preprocess_next_frame';
 
 export interface IDataListMap {
   'background': IBgData[];
-  'entity': IEntityData[];
-  'character': IEntityData[];
-  'weapon': IEntityData[];
-  'ball': IEntityData[];
+  [EntityEnum.Entity]: IEntityData[];
+  [EntityEnum.Character]: IEntityData[];
+  [EntityEnum.Weapon]: IEntityData[];
+  [EntityEnum.Ball]: IEntityData[];
   'all': TData[]
 }
 

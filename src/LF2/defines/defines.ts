@@ -3,7 +3,6 @@ import type { IBgData } from "./IBgData";
 import type { IStageInfo } from "./IStageInfo";
 import type { IBdyInfo } from "./IBdyInfo";
 import type { IItrInfo } from "./IItrInfo";
-
 export namespace Defines {
   export enum OpointSpreading {
     Normal = 0,
@@ -347,12 +346,6 @@ export namespace Defines {
 
     TransformToLouisEx = 9996,
     _9995 = 9995,
-  }
-
-  export enum EntityEnum {
-    Character = 'character',
-    Weapon = 'weapon',
-    Ball = 'ball',
   }
 
   export enum EntityGroup {

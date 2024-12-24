@@ -8,6 +8,7 @@ import { IExpression } from '../base/Expression';
 import { BaseController } from '../controller/BaseController';
 import { IBaseData, ICpointInfo, IEntityData, IFrameInfo, IItrInfo, INextFrameResult, IOpointInfo, ITexturePieceInfo, ItrKind, TFace, TNextFrame } from '../defines';
 import { BdyKind } from '../defines/BdyKind';
+import { EntityEnum } from '../defines/EntityEnum';
 import { OpointKind } from '../defines/OpointKind';
 import { SpeedMode } from '../defines/SpeedMode';
 import { Defines } from '../defines/defines';
@@ -55,7 +56,7 @@ export const GONE_FRAME_INFO: IFrameInfo = {
 };
 export type TData = IBaseData | IEntityData | IEntityData | IEntityData | IEntityData
 export default class Entity {
-  static readonly TAG: string = 'Entity';
+  static readonly TAG: string = EntityEnum.Entity;
 
   id: string = new_id();
   wait: number = 0;
@@ -386,7 +387,7 @@ export default class Entity {
       this._mp_max = data.base.mp ?? Defines.DEFAULT_MP;
     }
 
-    if (data.type === 'character') {
+    if (data.type === EntityEnum.Character) {
       this._mp_r_spd_min = data.base.mp_r_min_spd ?? Defines.DEFAULT_MP_RECOVERY_MIN_SPEED;
       this._mp_r_spd_max = data.base.mp_r_max_spd ?? Defines.DEFAULT_MP_RECOVERY_MAX_SPEED;
     } else {
@@ -531,16 +532,16 @@ export default class Entity {
         next_state = this.states.get(next_state_key)
         if (!next_state) {
           switch (this.data.type) {
-            case 'character':
+            case EntityEnum.Character:
               this.states.set(next_state_key, next_state = new CharacterState_Base());
               break;
-            case 'weapon':
+            case EntityEnum.Weapon:
               this.states.set(next_state_key, next_state = new WeaponState_Base());
               break;
-            case 'ball':
+            case EntityEnum.Ball:
               this.states.set(next_state_key, next_state = new BallState_Base());
               break;
-            case 'entity':
+            case EntityEnum.Entity:
             default:
               this.states.set(next_state_key, next_state = new State_Base());
               break;
@@ -1075,6 +1076,7 @@ export default class Entity {
    */
   lastest_collided?: ICollision;
 
+
   /**
    * 当前tick碰撞信息
    * 
@@ -1425,7 +1427,7 @@ export default class Entity {
   }
 }
 
-Factory.inst.set_entity_creator('entity', (...args) => new Entity(...args));
-Factory.inst.set_entity_creator('ball', (...args) => new Entity(...args));
-Factory.inst.set_entity_creator('weapon', (...args) => new Entity(...args));
-Factory.inst.set_entity_creator('character', (...args) => new Entity(...args));
+Factory.inst.set_entity_creator(EntityEnum.Ball, (...args) => new Entity(...args));
+Factory.inst.set_entity_creator(EntityEnum.Weapon, (...args) => new Entity(...args));
+Factory.inst.set_entity_creator(EntityEnum.Entity, (...args) => new Entity(...args));
+Factory.inst.set_entity_creator(EntityEnum.Character, (...args) => new Entity(...args));

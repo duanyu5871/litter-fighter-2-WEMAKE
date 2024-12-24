@@ -194,7 +194,7 @@ export default class CharacterState_Base extends State_Base {
           victim.hp <= 0 ||
           victim.frame.state === Defines.State.Frozen
         ) || (
-            victim.fall_value <= 80
+            victim.fall_value <= (victim.fall_value_max - Defines.DEFAULT_FALL_VALUE_DIZZY)
             && (
               Defines.State.Caught === victim.frame.state ||
               victim.velocities[0].y > 0 ||

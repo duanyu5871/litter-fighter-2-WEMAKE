@@ -1,5 +1,6 @@
 import { IEntityData, IEntityInfo, IFrameInfo, TNextFrame } from '../defines';
 import { BdyKind } from '../defines/BdyKind';
+import { EntityEnum } from '../defines/EntityEnum';
 import { EntityVal } from '../defines/EntityVal';
 import { IFrameIndexes } from "../defines/IFrameIndexes";
 import { INextFrame } from "../defines/INextFrame";
@@ -612,7 +613,7 @@ export function make_character_data(info: IEntityInfo, frames: Record<string, IF
 
   const ret: IEntityData = {
     id: '',
-    type: 'character',
+    type: EntityEnum.Character,
     base: info,
     indexes,
     frames

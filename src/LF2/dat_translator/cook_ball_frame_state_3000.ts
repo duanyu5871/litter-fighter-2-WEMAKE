@@ -1,5 +1,6 @@
-import { IFrameInfo, IBdyInfo, ItrKind, ItrEffect } from "../defines";
+import { IBdyInfo, IFrameInfo, ItrEffect, ItrKind } from "../defines";
 import { CollisionVal } from "../defines/CollisionVal";
+import { EntityEnum } from "../defines/EntityEnum";
 import { CondMaker } from "./CondMaker";
 import { copy_bdy_info } from "./copy_bdy_info";
 import { edit_bdy_info } from "./edit_bdy_info";
@@ -15,10 +16,10 @@ export function cook_ball_frame_state_3000(frame: IFrameInfo, frames: Record<str
             CollisionVal.ItrKind, '!=', ItrKind.JohnShield
           ).and(c => c
             .add(
-              CollisionVal.AttackerType, '==', 'ball'
+              CollisionVal.AttackerType, '==', EntityEnum.Ball
             ).or(c => c
               /** 被武器s击中 */
-              .add(CollisionVal.AttackerType, '==', 'weapon')
+              .add(CollisionVal.AttackerType, '==', EntityEnum.Weapon)
               .and(CollisionVal.ItrKind, '!=', ItrKind.WeaponSwing)
             )
           ).done(),
@@ -35,13 +36,13 @@ export function cook_ball_frame_state_3000(frame: IFrameInfo, frames: Record<str
         test: new CondMaker<CollisionVal>().bracket(c => c
           // 敌方角色的攻击反弹气功波
           .add(CollisionVal.SameTeam, '==', 0)
-          .and(CollisionVal.AttackerType, '==', 'character')
+          .and(CollisionVal.AttackerType, '==', EntityEnum.Character)
           .and(CollisionVal.ItrKind, '==', ItrKind.Normal)
           .and(CollisionVal.ItrEffect, '!=', ItrEffect.Ice)
         ).or(c => c
           // 队友角色的攻击必须相向才能反弹气功波
           .add(CollisionVal.SameTeam, '==', 1)
-          .and(CollisionVal.AttackerType, '==', 'character')
+          .and(CollisionVal.AttackerType, '==', EntityEnum.Character)
           .and(CollisionVal.SameFacing, '==', 0)
           .and(CollisionVal.ItrKind, '==', ItrKind.Normal)
           .and(CollisionVal.ItrEffect, '!=', ItrEffect.Ice)

@@ -1,4 +1,5 @@
 import { IEntityData } from "../defines";
+import { EntityEnum } from "../defines/EntityEnum";
 import { IStageObjectInfo } from "../defines/IStageObjectInfo";
 import { Defines } from "../defines/defines";
 import Entity from "../entity/Entity";
@@ -55,7 +56,7 @@ export default class Item {
       const { characters, weapons, entity } = this.lf2.datas.find_group(oid);
       this.data_list.push(...characters, ...weapons, ...entity);
     }
-    this.is_enemies = !this.data_list.find(v => v.type !== 'character');
+    this.is_enemies = !this.data_list.find(v => v.type !== EntityEnum.Character);
     let waiting_data_list = [...this.data_list];
     this.get_oid = () => {
       if (!waiting_data_list.length) waiting_data_list = [...this.data_list]

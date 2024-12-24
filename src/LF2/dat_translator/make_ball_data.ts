@@ -1,4 +1,5 @@
 import { IEntityData, ItrKind } from "../defines";
+import { EntityEnum } from "../defines/EntityEnum";
 import { EntityVal } from "../defines/EntityVal";
 import { IDatIndex } from "../defines/IDatIndex";
 import { IEntityInfo } from "../defines/IEntityInfo";
@@ -173,7 +174,7 @@ export function make_ball_data(info: IEntityInfo, frames: Record<string, IFrameI
   }
   const ret: IEntityData = {
     id: '',
-    type: 'ball',
+    type: EntityEnum.Ball,
     base: info,
     frames: frames
   };

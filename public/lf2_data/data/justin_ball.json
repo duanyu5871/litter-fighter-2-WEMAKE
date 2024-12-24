@@ -84,7 +84,7 @@
           "dvx": 8,
           "fall": 140,
           "bdefend": 32,
-          "test": "victim_state!=1004",
+          "test": "victim_state!=1004|attacker_type!=character",
           "hit_sounds": [
             "data/020.wav.mp3"
           ],
@@ -163,7 +163,7 @@
           "dvx": 8,
           "fall": 140,
           "bdefend": 32,
-          "test": "victim_state!=1004",
+          "test": "victim_state!=1004|attacker_type!=character",
           "hit_sounds": [
             "data/020.wav.mp3"
           ],

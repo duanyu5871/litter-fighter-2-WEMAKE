@@ -1,4 +1,5 @@
 import { IEntityData, IEntityInfo, IOpointInfo } from '../defines';
+import { EntityEnum } from '../defines/EntityEnum';
 import { IFrameIndexes } from '../defines/IFrameIndexes';
 import { IFrameInfo } from "../defines/IFrameInfo";
 import { OpointKind } from '../defines/OpointKind';
@@ -75,7 +76,7 @@ export function make_weapon_data(info: IEntityInfo, full_str: string, frames: Re
   return {
     id: '',
     on_dead: { id: Defines.FrameId.Gone },
-    type: 'weapon',
+    type: EntityEnum.Weapon,
     base: info,
     itr_prefabs,
     frames,

@@ -1,4 +1,6 @@
 import { IBdyInfo, ICpointInfo, IEntityPictureInfo, IFramePictureInfo, IItrInfo, IOpointInfo, ItrKind, IWpointInfo } from '../defines';
+import { BdyKind } from '../defines/BdyKind';
+import { CollisionVal as C_Val } from '../defines/CollisionVal';
 import { IEntityInfo } from "../defines/IEntityInfo";
 import { IFrameInfo } from "../defines/IFrameInfo";
 import { OpointKind } from '../defines/OpointKind';
@@ -8,6 +10,7 @@ import { match_colon_value } from '../utils/string_parser/match_colon_value';
 import take_sections from '../utils/string_parser/take_sections';
 import { to_num } from '../utils/type_cast/to_num';
 import { not_zero_num } from '../utils/type_check';
+import { CondMaker } from './CondMaker';
 import cook_bdy from './cook_bdy';
 import { cook_cpoint } from './cook_cpoint';
 import cook_itr from './cook_itr';
@@ -185,6 +188,15 @@ export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string, fil
           action: { id: 'auto' },
           multi: 2
         })
+        break;
+      case Defines.State.Falling:
+        if (frame.bdy)
+          for (const bdy of frame.bdy) {
+            if (bdy.kind === BdyKind.Normal) {
+              bdy.test = new CondMaker<C_Val>()
+                .add(C_Val.ItrFall, '>=', Defines.DEFAULT_FALL_VALUE_MAX - Defines.DEFAULT_FALL_VALUE_DIZZY).done()
+            }
+          }
         break;
     }
 

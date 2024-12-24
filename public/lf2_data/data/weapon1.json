@@ -127,7 +127,7 @@
           "dvy": 3.64,
           "fall": 140,
           "bdefend": 60,
-          "test": "victim_state!=1004"
+          "test": "victim_state!=1004|attacker_type!=character"
         }
       ],
       "state": 2000,
@@ -170,7 +170,7 @@
           "dvy": 3.64,
           "fall": 140,
           "bdefend": 60,
-          "test": "victim_state!=1004"
+          "test": "victim_state!=1004|attacker_type!=character"
         }
       ],
       "state": 2000,
@@ -213,7 +213,7 @@
           "dvy": 3.64,
           "fall": 140,
           "bdefend": 60,
-          "test": "victim_state!=1004"
+          "test": "victim_state!=1004|attacker_type!=character"
         }
       ],
       "state": 2000,
@@ -256,7 +256,7 @@
           "dvy": 3.64,
           "fall": 140,
           "bdefend": 60,
-          "test": "victim_state!=1004"
+          "test": "victim_state!=1004|attacker_type!=character"
         }
       ],
       "state": 2000,
@@ -299,7 +299,7 @@
           "dvy": 3.64,
           "fall": 140,
           "bdefend": 60,
-          "test": "victim_state!=1004"
+          "test": "victim_state!=1004|attacker_type!=character"
         }
       ],
       "state": 2000,
@@ -342,7 +342,7 @@
           "dvy": 3.64,
           "fall": 140,
           "bdefend": 60,
-          "test": "victim_state!=1004"
+          "test": "victim_state!=1004|attacker_type!=character"
         }
       ],
       "state": 2000,
@@ -439,7 +439,7 @@
           "dvy": 3.64,
           "fall": 140,
           "bdefend": 60,
-          "test": "victim_state!=1004"
+          "test": "victim_state!=1004|attacker_type!=character"
         }
       ],
       "state": 2000,

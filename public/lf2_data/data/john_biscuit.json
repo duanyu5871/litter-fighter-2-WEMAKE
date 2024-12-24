@@ -67,7 +67,7 @@
           "dvx": 7,
           "fall": 140,
           "bdefend": 40,
-          "test": "victim_state!=1004",
+          "test": "victim_state!=1004|attacker_type!=character",
           "hit_sounds": [
             "data/020.wav.mp3"
           ],
@@ -132,7 +132,7 @@
           "dvx": 7,
           "fall": 140,
           "bdefend": 40,
-          "test": "victim_state!=1004",
+          "test": "victim_state!=1004|attacker_type!=character",
           "hit_sounds": [
             "data/020.wav.mp3"
           ],
@@ -196,7 +196,7 @@
           "dvx": 7,
           "fall": 140,
           "bdefend": 40,
-          "test": "victim_state!=1004",
+          "test": "victim_state!=1004|attacker_type!=character",
           "hit_sounds": [
             "data/020.wav.mp3"
           ],
@@ -260,7 +260,7 @@
           "dvx": 7,
           "fall": 140,
           "bdefend": 40,
-          "test": "victim_state!=1004",
+          "test": "victim_state!=1004|attacker_type!=character",
           "hit_sounds": [
             "data/020.wav.mp3"
           ],
@@ -324,7 +324,7 @@
           "dvx": 7,
           "fall": 140,
           "bdefend": 40,
-          "test": "victim_state!=1004",
+          "test": "victim_state!=1004|attacker_type!=character",
           "hit_sounds": [
             "data/020.wav.mp3"
           ],
@@ -385,7 +385,7 @@
           "dvx": 7,
           "fall": 140,
           "bdefend": 40,
-          "test": "victim_state!=1004",
+          "test": "victim_state!=1004|attacker_type!=character",
           "hit_sounds": [
             "data/020.wav.mp3"
           ],
@@ -445,7 +445,7 @@
           "dvx": 7,
           "fall": 140,
           "bdefend": 40,
-          "test": "victim_state!=1004",
+          "test": "victim_state!=1004|attacker_type!=character",
           "hit_sounds": [
             "data/020.wav.mp3"
           ],
@@ -505,7 +505,7 @@
           "dvx": 7,
           "fall": 140,
           "bdefend": 40,
-          "test": "victim_state!=1004",
+          "test": "victim_state!=1004|attacker_type!=character",
           "hit_sounds": [
             "data/020.wav.mp3"
           ],
@@ -856,7 +856,7 @@
           "dvx": 7,
           "fall": 140,
           "bdefend": 40,
-          "test": "victim_state!=1004",
+          "test": "victim_state!=1004|attacker_type!=character",
           "hit_sounds": [
             "data/020.wav.mp3"
           ],
