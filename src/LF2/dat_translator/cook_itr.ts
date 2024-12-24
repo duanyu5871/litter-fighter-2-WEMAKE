@@ -41,8 +41,7 @@ export default function cook_itr(unsafe_itr?: Partial<IItrInfo>) {
   switch (unsafe_itr.kind) {
     case ItrKind.Normal: {
       unsafe_itr.test = new CondMaker<C_Val>()
-        .add(C_Val.AttackerType, '!=', Defines.EntityEnum.Character)
-        .or(C_Val.VictimState, '!=', Defines.State.Weapon_OnGround )
+        .add(C_Val.VictimState, '!=', Defines.State.Weapon_OnGround )
         .done()
       break;
     }
