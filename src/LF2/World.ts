@@ -458,15 +458,6 @@ export class World {
         return;
       }
     }
-    switch (itr.kind) {
-      case ItrKind.CharacterThrew:
-      case ItrKind.MagicFlute:
-        return; // todo
-      case ItrKind.Normal:
-        if (is_character(attacker) && vframe.state === Defines.State.Weapon_OnGround) 
-          return;
-        break
-    }
     switch (itr.effect) {
       case ItrEffect.MFire1:
       case ItrEffect.MFire2:
