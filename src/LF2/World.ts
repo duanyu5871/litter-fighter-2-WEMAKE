@@ -459,15 +459,12 @@ export class World {
       }
     }
     switch (itr.kind) {
-      case ItrKind.Block:
-        if (bdy.kind !== BdyKind.Normal)
-          return;
-        break;
       case ItrKind.CharacterThrew:
       case ItrKind.MagicFlute:
         return; // todo
       case ItrKind.Normal:
-        if (is_character(attacker) && vframe.state === Defines.State.Weapon_OnGround) return;
+        if (is_character(attacker) && vframe.state === Defines.State.Weapon_OnGround) 
+          return;
         break
     }
     switch (itr.effect) {

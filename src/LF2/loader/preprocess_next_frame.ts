@@ -1,6 +1,6 @@
 import Expression from '../base/Expression';
 import { INextFrame } from "../defines";
-import { get_val_from_entity } from './get_val_from_entity';
+import { get_val_getter_from_entity } from './get_val_from_entity';
 
 export function cook_next_frame(i: INextFrame | INextFrame[]): void {
   if (Array.isArray(i)) {
@@ -8,7 +8,7 @@ export function cook_next_frame(i: INextFrame | INextFrame[]): void {
     return;
   }
   if (typeof i.expression !== 'string') return;
-  i.judger = new Expression(i.expression, get_val_from_entity);
+  i.judger = new Expression(i.expression, void 0, get_val_getter_from_entity);
 }
 
 

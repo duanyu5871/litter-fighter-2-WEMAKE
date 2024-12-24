@@ -421,7 +421,7 @@ export default class Layout {
     if (is_num(opacity)) {
       this._opacity.default_value = opacity;
     } else if (is_str(opacity)) {
-      this._opacity.default_value = () => Number(get_val(opacity, this)) || 0;
+      this._opacity.default_value = () => Number(get_val(this, opacity, '==')) || 0;
     }
 
     this._img_infos.default_value = this.data.img_infos;
@@ -434,7 +434,7 @@ export default class Layout {
     if (!img_infos?.length) return;
     const { which } = this.data;
     if (is_str(which)) {
-      return this._img_idx = () => Number(get_val(which, this)) || 0;
+      return this._img_idx = () => Number(get_val(this, which, '==')) || 0;
     }
     if (is_num(which)) {
       const img_idx = which % img_infos.length

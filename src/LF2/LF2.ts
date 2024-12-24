@@ -590,7 +590,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     return this._layout_infos;
   }
 
-  layout_val_getter = (word: string, item: Layout) => {
+  layout_val_getter = (item: Layout, word: string) => {
     if (word === 'mouse_on_me')
       return item.state.mouse_on_me;
     if (word === "paused")

@@ -5,7 +5,7 @@ import { cook_frame_indicator_info } from '../dat_translator/cook_frame_indicato
 import { IEntityData, IEntityPictureInfo, IFrameInfo, ITexturePieceInfo } from '../defines';
 import read_nums from '../layout/utils/read_nums';
 import { traversal } from '../utils/container_help/traversal';
-import { get_val_from_collision } from './get_val_from_collision';
+import { get_val_geter_from_collision } from './get_val_from_collision';
 import { cook_next_frame } from './preprocess_next_frame';
 const get_keys = <V extends {}>(v: V): (keyof V)[] => {
   return Object.keys(v) as (keyof V)[]
@@ -13,7 +13,7 @@ const get_keys = <V extends {}>(v: V): (keyof V)[] => {
 export function cook_frame(lf2: LF2, data: IEntityData, frame: IFrameInfo) {
 
   cook_frame_indicator_info(frame);
-  
+
   if (frame.sound && !lf2.sounds.has(frame.sound))
     lf2.sounds.load(frame.sound, frame.sound);
 
@@ -45,7 +45,7 @@ export function cook_frame(lf2: LF2, data: IEntityData, frame: IFrameInfo) {
       if (prefab) bdy = frame.bdy[i] = { ...prefab, ...bdy };
       if (bdy.break_act) cook_next_frame(bdy.break_act);
       if (bdy.hit_act) cook_next_frame(bdy.hit_act);
-      if (bdy.test) bdy.tester = new Expression(bdy.test, get_val_from_collision)
+      if (bdy.test) bdy.tester = new Expression(bdy.test, void 0, get_val_geter_from_collision)
     }
   }
   if (frame.itr?.length) {
@@ -57,7 +57,7 @@ export function cook_frame(lf2: LF2, data: IEntityData, frame: IFrameInfo) {
       if (itr.hit_act) cook_next_frame(itr.hit_act);
       if (itr.catchingact) cook_next_frame(itr.catchingact);
       if (itr.caughtact) cook_next_frame(itr.caughtact);
-      if (itr.test) itr.tester = new Expression(itr.test, get_val_from_collision)
+      if (itr.test) itr.tester = new Expression(itr.test, void 0, get_val_geter_from_collision)
     }
   }
 

@@ -21,4 +21,5 @@ export enum CollisionVal {
   SameTeam = 'same_team',
   AttackerOID = 'attacker_oid',
   VictimOID = 'victim_oid',
+  BdyKind = "bdy_kind",
 }

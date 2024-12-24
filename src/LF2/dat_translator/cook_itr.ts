@@ -1,4 +1,5 @@
 import { IItrInfo, ItrEffect, ItrKind } from '../defines';
+import { BdyKind } from '../defines/BdyKind';
 import { CollisionVal as C_Val } from '../defines/CollisionVal';
 import { Defines } from '../defines/defines';
 import { is_num, is_positive, not_zero_num } from '../utils/type_check';
@@ -38,6 +39,13 @@ export default function cook_itr(unsafe_itr?: Partial<IItrInfo>) {
     }
   }
   switch (unsafe_itr.kind) {
+    case ItrKind.Normal: {
+      unsafe_itr.test = new CondMaker<C_Val>()
+        .add(C_Val.AttackerType, '!=', Defines.EntityEnum.Character)
+        .or(C_Val.VictimState, '!=', Defines.State.Weapon_OnGround )
+        .done()
+      break;
+    }
     case ItrKind.Pick: {
       unsafe_itr.friendly_fire = 1;
       unsafe_itr.motionless = 0;
@@ -103,6 +111,9 @@ export default function cook_itr(unsafe_itr?: Partial<IItrInfo>) {
       unsafe_itr.shaking = 0;
       delete unsafe_itr.hit_act;
       delete unsafe_itr.hit_sounds;
+      unsafe_itr.test = new CondMaker<C_Val>().add(
+        C_Val.BdyKind, '==', BdyKind.Normal
+      ).done()
       break;
     case ItrKind.JohnShield:
       unsafe_itr.friendly_fire = 1;
