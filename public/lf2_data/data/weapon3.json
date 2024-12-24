@@ -126,7 +126,8 @@
           "dvx": 2.5,
           "dvy": 3.64,
           "fall": 140,
-          "bdefend": 60
+          "bdefend": 60,
+          "test": "attacker_type!=character|victim_state!=1004"
         }
       ],
       "state": 2000,
@@ -168,7 +169,8 @@
           "dvx": 2.5,
           "dvy": 3.64,
           "fall": 140,
-          "bdefend": 60
+          "bdefend": 60,
+          "test": "attacker_type!=character|victim_state!=1004"
         }
       ],
       "state": 2000,
@@ -210,7 +212,8 @@
           "dvx": 2.5,
           "dvy": 3.64,
           "fall": 140,
-          "bdefend": 60
+          "bdefend": 60,
+          "test": "attacker_type!=character|victim_state!=1004"
         }
       ],
       "state": 2000,
@@ -252,7 +255,8 @@
           "dvx": 2.5,
           "dvy": 3.64,
           "fall": 140,
-          "bdefend": 60
+          "bdefend": 60,
+          "test": "attacker_type!=character|victim_state!=1004"
         }
       ],
       "state": 2000,
@@ -294,7 +298,8 @@
           "dvx": 2.5,
           "dvy": 3.64,
           "fall": 140,
-          "bdefend": 60
+          "bdefend": 60,
+          "test": "attacker_type!=character|victim_state!=1004"
         }
       ],
       "state": 2000,
@@ -336,7 +341,8 @@
           "dvx": 2.5,
           "dvy": 3.64,
           "fall": 140,
-          "bdefend": 60
+          "bdefend": 60,
+          "test": "attacker_type!=character|victim_state!=1004"
         }
       ],
       "state": 2000,
@@ -398,7 +404,8 @@
           "vrest": 2,
           "friendly_fire": 1,
           "motionless": 0,
-          "shaking": 0
+          "shaking": 0,
+          "test": "bdy_kind==0"
         }
       ],
       "state": 2004,
@@ -431,7 +438,8 @@
           "dvx": 2.5,
           "dvy": 3.64,
           "fall": 140,
-          "bdefend": 60
+          "bdefend": 60,
+          "test": "attacker_type!=character|victim_state!=1004"
         }
       ],
       "state": 2000,

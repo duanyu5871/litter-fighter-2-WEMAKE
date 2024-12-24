@@ -62,7 +62,7 @@
           "w": 55,
           "h": 27,
           "kind": 0,
-          "test": "(friendly_fire==0&attacker_type==character&itr_kind==0&itr_effect!=3)|(friendly_fire==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(friendly_fire==1&same_facing==0&itr_kind==5)|(friendly_fire==0&itr_kind==5)",
+          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
           "hit_act": {
             "id": "30",
             "sounds": [
@@ -85,6 +85,7 @@
           "dvy": 4.16,
           "fall": 140,
           "bdefend": 32,
+          "test": "attacker_type!=character|victim_state!=1004",
           "hit_sounds": [
             "data/020.wav.mp3"
           ],
@@ -138,7 +139,7 @@
           "w": 55,
           "h": 27,
           "kind": 0,
-          "test": "(friendly_fire==0&attacker_type==character&itr_kind==0&itr_effect!=3)|(friendly_fire==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(friendly_fire==1&same_facing==0&itr_kind==5)|(friendly_fire==0&itr_kind==5)",
+          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
           "hit_act": {
             "id": "30",
             "sounds": [
@@ -161,6 +162,7 @@
           "dvy": 4.16,
           "fall": 140,
           "bdefend": 32,
+          "test": "attacker_type!=character|victim_state!=1004",
           "hit_sounds": [
             "data/020.wav.mp3"
           ],
@@ -214,7 +216,7 @@
           "w": 55,
           "h": 27,
           "kind": 0,
-          "test": "(friendly_fire==0&attacker_type==character&itr_kind==0&itr_effect!=3)|(friendly_fire==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(friendly_fire==1&same_facing==0&itr_kind==5)|(friendly_fire==0&itr_kind==5)",
+          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
           "hit_act": {
             "id": "30",
             "sounds": [
@@ -237,6 +239,7 @@
           "dvy": 4.16,
           "fall": 140,
           "bdefend": 32,
+          "test": "attacker_type!=character|victim_state!=1004",
           "hit_sounds": [
             "data/020.wav.mp3"
           ],
@@ -290,7 +293,7 @@
           "w": 55,
           "h": 27,
           "kind": 0,
-          "test": "(friendly_fire==0&attacker_type==character&itr_kind==0&itr_effect!=3)|(friendly_fire==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(friendly_fire==1&same_facing==0&itr_kind==5)|(friendly_fire==0&itr_kind==5)",
+          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
           "hit_act": {
             "id": "30",
             "sounds": [
@@ -313,6 +316,7 @@
           "dvy": 4.16,
           "fall": 140,
           "bdefend": 32,
+          "test": "attacker_type!=character|victim_state!=1004",
           "hit_sounds": [
             "data/020.wav.mp3"
           ],
@@ -366,7 +370,7 @@
           "w": 55,
           "h": 27,
           "kind": 0,
-          "test": "(friendly_fire==0&attacker_type==character&itr_kind==0&itr_effect!=3)|(friendly_fire==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(friendly_fire==1&same_facing==0&itr_kind==5)|(friendly_fire==0&itr_kind==5)",
+          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
           "hit_act": {
             "id": "30",
             "sounds": [
@@ -389,6 +393,7 @@
           "dvy": 4.16,
           "fall": 140,
           "bdefend": 32,
+          "test": "attacker_type!=character|victim_state!=1004",
           "hit_sounds": [
             "data/020.wav.mp3"
           ],
@@ -442,7 +447,7 @@
           "w": 55,
           "h": 27,
           "kind": 0,
-          "test": "(friendly_fire==0&attacker_type==character&itr_kind==0&itr_effect!=3)|(friendly_fire==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(friendly_fire==1&same_facing==0&itr_kind==5)|(friendly_fire==0&itr_kind==5)",
+          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
           "hit_act": {
             "id": "30",
             "sounds": [
@@ -465,6 +470,7 @@
           "dvy": 4.16,
           "fall": 140,
           "bdefend": 32,
+          "test": "attacker_type!=character|victim_state!=1004",
           "hit_sounds": [
             "data/020.wav.mp3"
           ],
@@ -746,7 +752,7 @@
           "w": 55,
           "h": 27,
           "kind": 0,
-          "test": "(friendly_fire==0&attacker_type==character&itr_kind==0&itr_effect!=3)|(friendly_fire==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(friendly_fire==1&same_facing==0&itr_kind==5)|(friendly_fire==0&itr_kind==5)",
+          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
           "hit_act": {
             "id": "30",
             "sounds": [
@@ -769,6 +775,7 @@
           "dvy": 4.16,
           "fall": 140,
           "bdefend": 32,
+          "test": "attacker_type!=character|victim_state!=1004",
           "hit_sounds": [
             "data/020.wav.mp3"
           ],
@@ -822,7 +829,7 @@
           "w": 55,
           "h": 27,
           "kind": 0,
-          "test": "(friendly_fire==0&attacker_type==character&itr_kind==0&itr_effect!=3)|(friendly_fire==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(friendly_fire==1&same_facing==0&itr_kind==5)|(friendly_fire==0&itr_kind==5)",
+          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
           "hit_act": {
             "id": "30",
             "sounds": [
@@ -845,6 +852,7 @@
           "dvy": 4.16,
           "fall": 140,
           "bdefend": 32,
+          "test": "attacker_type!=character|victim_state!=1004",
           "hit_sounds": [
             "data/020.wav.mp3"
           ],
@@ -898,7 +906,7 @@
           "w": 55,
           "h": 27,
           "kind": 0,
-          "test": "(friendly_fire==0&attacker_type==character&itr_kind==0&itr_effect!=3)|(friendly_fire==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(friendly_fire==1&same_facing==0&itr_kind==5)|(friendly_fire==0&itr_kind==5)",
+          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
           "hit_act": {
             "id": "30",
             "sounds": [
@@ -921,6 +929,7 @@
           "dvy": 4.16,
           "fall": 140,
           "bdefend": 32,
+          "test": "attacker_type!=character|victim_state!=1004",
           "hit_sounds": [
             "data/020.wav.mp3"
           ],
@@ -974,7 +983,7 @@
           "w": 55,
           "h": 27,
           "kind": 0,
-          "test": "(friendly_fire==0&attacker_type==character&itr_kind==0&itr_effect!=3)|(friendly_fire==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(friendly_fire==1&same_facing==0&itr_kind==5)|(friendly_fire==0&itr_kind==5)",
+          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
           "hit_act": {
             "id": "30",
             "sounds": [
@@ -997,6 +1006,7 @@
           "dvy": 4.16,
           "fall": 140,
           "bdefend": 32,
+          "test": "attacker_type!=character|victim_state!=1004",
           "hit_sounds": [
             "data/020.wav.mp3"
           ],
@@ -1050,7 +1060,7 @@
           "w": 55,
           "h": 27,
           "kind": 0,
-          "test": "(friendly_fire==0&attacker_type==character&itr_kind==0&itr_effect!=3)|(friendly_fire==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(friendly_fire==1&same_facing==0&itr_kind==5)|(friendly_fire==0&itr_kind==5)",
+          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
           "hit_act": {
             "id": "30",
             "sounds": [
@@ -1073,6 +1083,7 @@
           "dvy": 4.16,
           "fall": 140,
           "bdefend": 32,
+          "test": "attacker_type!=character|victim_state!=1004",
           "hit_sounds": [
             "data/020.wav.mp3"
           ],
@@ -1126,7 +1137,7 @@
           "w": 55,
           "h": 27,
           "kind": 0,
-          "test": "(friendly_fire==0&attacker_type==character&itr_kind==0&itr_effect!=3)|(friendly_fire==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(friendly_fire==1&same_facing==0&itr_kind==5)|(friendly_fire==0&itr_kind==5)",
+          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
           "hit_act": {
             "id": "30",
             "sounds": [
@@ -1149,6 +1160,7 @@
           "dvy": 4.16,
           "fall": 140,
           "bdefend": 32,
+          "test": "attacker_type!=character|victim_state!=1004",
           "hit_sounds": [
             "data/020.wav.mp3"
           ],
@@ -1202,7 +1214,7 @@
           "w": 55,
           "h": 27,
           "kind": 0,
-          "test": "(friendly_fire==0&attacker_type==character&itr_kind==0&itr_effect!=3)|(friendly_fire==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(friendly_fire==1&same_facing==0&itr_kind==5)|(friendly_fire==0&itr_kind==5)",
+          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
           "hit_act": {
             "id": "30",
             "sounds": [
@@ -1225,6 +1237,7 @@
           "dvy": 4.16,
           "fall": 140,
           "bdefend": 32,
+          "test": "attacker_type!=character|victim_state!=1004",
           "hit_sounds": [
             "data/020.wav.mp3"
           ],
@@ -1277,7 +1290,7 @@
           "w": 55,
           "h": 27,
           "kind": 0,
-          "test": "(friendly_fire==0&attacker_type==character&itr_kind==0&itr_effect!=3)|(friendly_fire==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(friendly_fire==1&same_facing==0&itr_kind==5)|(friendly_fire==0&itr_kind==5)",
+          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
           "hit_act": {
             "id": "30",
             "sounds": [
@@ -1300,6 +1313,7 @@
           "dvy": 4.16,
           "fall": 140,
           "bdefend": 32,
+          "test": "attacker_type!=character|victim_state!=1004",
           "hit_sounds": [
             "data/020.wav.mp3"
           ],
@@ -1352,7 +1366,7 @@
           "w": 55,
           "h": 27,
           "kind": 0,
-          "test": "(friendly_fire==0&attacker_type==character&itr_kind==0&itr_effect!=3)|(friendly_fire==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(friendly_fire==1&same_facing==0&itr_kind==5)|(friendly_fire==0&itr_kind==5)",
+          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
           "hit_act": {
             "id": "30",
             "sounds": [
@@ -1375,6 +1389,7 @@
           "dvy": 4.16,
           "fall": 140,
           "bdefend": 32,
+          "test": "attacker_type!=character|victim_state!=1004",
           "hit_sounds": [
             "data/020.wav.mp3"
           ],
@@ -1427,7 +1442,7 @@
           "w": 55,
           "h": 27,
           "kind": 0,
-          "test": "(friendly_fire==0&attacker_type==character&itr_kind==0&itr_effect!=3)|(friendly_fire==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(friendly_fire==1&same_facing==0&itr_kind==5)|(friendly_fire==0&itr_kind==5)",
+          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
           "hit_act": {
             "id": "30",
             "sounds": [
@@ -1450,6 +1465,7 @@
           "dvy": 4.16,
           "fall": 140,
           "bdefend": 32,
+          "test": "attacker_type!=character|victim_state!=1004",
           "hit_sounds": [
             "data/020.wav.mp3"
           ],
@@ -1502,7 +1518,7 @@
           "w": 55,
           "h": 27,
           "kind": 0,
-          "test": "(friendly_fire==0&attacker_type==character&itr_kind==0&itr_effect!=3)|(friendly_fire==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(friendly_fire==1&same_facing==0&itr_kind==5)|(friendly_fire==0&itr_kind==5)",
+          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
           "hit_act": {
             "id": "30",
             "sounds": [
@@ -1525,6 +1541,7 @@
           "dvy": 4.16,
           "fall": 140,
           "bdefend": 32,
+          "test": "attacker_type!=character|victim_state!=1004",
           "hit_sounds": [
             "data/020.wav.mp3"
           ],
@@ -1577,7 +1594,7 @@
           "w": 55,
           "h": 27,
           "kind": 0,
-          "test": "(friendly_fire==0&attacker_type==character&itr_kind==0&itr_effect!=3)|(friendly_fire==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(friendly_fire==1&same_facing==0&itr_kind==5)|(friendly_fire==0&itr_kind==5)",
+          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
           "hit_act": {
             "id": "30",
             "sounds": [
@@ -1600,6 +1617,7 @@
           "dvy": 4.16,
           "fall": 140,
           "bdefend": 32,
+          "test": "attacker_type!=character|victim_state!=1004",
           "hit_sounds": [
             "data/020.wav.mp3"
           ],

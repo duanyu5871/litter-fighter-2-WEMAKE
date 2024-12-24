@@ -23,7 +23,7 @@ export interface IJudger<T> {
   readonly err?: string;
 }
 export interface IValGetter<T> {
-  (e: T, word: string, op: TBinaryOperator): any[] | string | number | boolean | undefined | null
+  (e: T, word: string, op: TBinaryOperator): any
 }
 export interface IValGetterGetter<T> {
   (word: string): IValGetter<T> | undefined
@@ -65,6 +65,7 @@ export class Expression<T1, T2 = T1> implements IExpression<T1, T2> {
   constructor(run: IJudger<T1 | T2>, get_val?: IValGetter<T1 | T2>, get_val_getter?: IValGetterGetter<T1 | T2>);
   constructor(arg_0: string | IJudger<T1 | T2>, get_val?: IValGetter<T1 | T2>, get_val_getter?: IValGetterGetter<T1 | T2>) {
     this.get_val = get_val;
+    this.get_val_getter = get_val_getter;
     if (typeof arg_0 === 'string') {
       this.text = arg_0.replace(/\s|\n|\r/g, '');
       let p = 0;
@@ -136,6 +137,14 @@ export class Expression<T1, T2 = T1> implements IExpression<T1, T2> {
     if (op === '{{' || op === '}}' || op === '!{' || op === '!}') {
       if (!getter_1) val_1 = word_1.split(',')
       if (!getter_2) val_1 = word_2.split(',')
+    }
+    if (!getter_1 && !getter_2) {
+      const result = predicate(val_1, val_2);
+      console.warn('[Expression] warning,', JSON.stringify(text), 'always got', result)
+      return {
+        run: () => result,
+        text,
+      }
     }
     return {
       run: t => predicate(

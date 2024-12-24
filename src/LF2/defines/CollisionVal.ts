@@ -10,7 +10,6 @@ export enum CollisionVal {
   VictimType = "victim_type",
   ItrEffect = "itr_effect",
   ItrKind = "itr_kind",
-  FriendlyFire = "friendly_fire",
   SameFacing = "same_facing",
   AttackerState = 'attacker_state',
   VictimState = 'victim_state',

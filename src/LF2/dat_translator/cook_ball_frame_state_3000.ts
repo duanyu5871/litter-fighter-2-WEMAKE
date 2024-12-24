@@ -34,13 +34,13 @@ export function cook_ball_frame_state_3000(frame: IFrameInfo, frames: Record<str
         friendly_fire: 1,
         test: new CondMaker<CollisionVal>().bracket(c => c
           // 敌方角色的攻击反弹气功波
-          .add(CollisionVal.FriendlyFire, '==', 0)
+          .add(CollisionVal.SameTeam, '==', 0)
           .and(CollisionVal.AttackerType, '==', 'character')
           .and(CollisionVal.ItrKind, '==', ItrKind.Normal)
           .and(CollisionVal.ItrEffect, '!=', ItrEffect.Ice)
         ).or(c => c
           // 队友角色的攻击必须相向才能反弹气功波
-          .add(CollisionVal.FriendlyFire, '==', 1)
+          .add(CollisionVal.SameTeam, '==', 1)
           .and(CollisionVal.AttackerType, '==', 'character')
           .and(CollisionVal.SameFacing, '==', 0)
           .and(CollisionVal.ItrKind, '==', ItrKind.Normal)
@@ -49,12 +49,12 @@ export function cook_ball_frame_state_3000(frame: IFrameInfo, frames: Record<str
           CollisionVal.ItrKind, '==', ItrKind.JohnShield
         ).or(c => c
           // 队友角色的攻击 挥动武器 必须相向 反弹气功波
-          .add(CollisionVal.FriendlyFire, '==', 1)
+          .add(CollisionVal.SameTeam, '==', 1)
           .and(CollisionVal.SameFacing, '==', 0)
           .and(CollisionVal.ItrKind, '==', ItrKind.WeaponSwing)
         ).or(c => c
           // 敌人角色的攻击 挥动武器 反弹气功波
-          .add(CollisionVal.FriendlyFire, '==', 0)
+          .add(CollisionVal.SameTeam, '==', 0)
           .and(CollisionVal.ItrKind, '==', ItrKind.WeaponSwing)
         ).done(),
         hit_act: {

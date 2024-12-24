@@ -90,6 +90,7 @@
           "dvx": 15,
           "fall": 140,
           "bdefend": 200,
+          "test": "attacker_type!=character|victim_state!=1004",
           "hit_sounds": [
             "data/020.wav.mp3"
           ],
@@ -152,6 +153,7 @@
           "dvx": 15,
           "fall": 140,
           "bdefend": 200,
+          "test": "attacker_type!=character|victim_state!=1004",
           "hit_sounds": [
             "data/020.wav.mp3"
           ],
@@ -210,7 +212,7 @@
           "w": 122,
           "h": 85,
           "kind": 0,
-          "test": "(friendly_fire==0&attacker_type==character&itr_kind==0&itr_effect!=3)|(friendly_fire==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(friendly_fire==1&same_facing==0&itr_kind==5)|(friendly_fire==0&itr_kind==5)",
+          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
           "hit_act": {
             "id": "30",
             "sounds": [
@@ -232,6 +234,7 @@
           "dvx": 15,
           "fall": 140,
           "bdefend": 200,
+          "test": "attacker_type!=character|victim_state!=1004",
           "hit_sounds": [
             "data/020.wav.mp3"
           ],
@@ -288,7 +291,7 @@
           "w": 122,
           "h": 85,
           "kind": 0,
-          "test": "(friendly_fire==0&attacker_type==character&itr_kind==0&itr_effect!=3)|(friendly_fire==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(friendly_fire==1&same_facing==0&itr_kind==5)|(friendly_fire==0&itr_kind==5)",
+          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
           "hit_act": {
             "id": "30",
             "sounds": [
@@ -310,6 +313,7 @@
           "dvx": 15,
           "fall": 140,
           "bdefend": 200,
+          "test": "attacker_type!=character|victim_state!=1004",
           "hit_sounds": [
             "data/020.wav.mp3"
           ],
@@ -359,6 +363,7 @@
           "fall": 140,
           "bdefend": 32,
           "motionless": 0,
+          "test": "attacker_type!=character|victim_state!=1004",
           "friendly_fire": 1,
           "hit_sounds": [
             "data/020.wav.mp3"
@@ -454,6 +459,7 @@
           "fall": 140,
           "bdefend": 32,
           "motionless": 0,
+          "test": "attacker_type!=character|victim_state!=1004",
           "friendly_fire": 1,
           "hit_sounds": [
             "data/020.wav.mp3"
@@ -549,6 +555,7 @@
           "fall": 140,
           "bdefend": 32,
           "motionless": 0,
+          "test": "attacker_type!=character|victim_state!=1004",
           "friendly_fire": 1,
           "hit_sounds": [
             "data/020.wav.mp3"
@@ -644,6 +651,7 @@
           "fall": 140,
           "bdefend": 200,
           "motionless": 0,
+          "test": "attacker_type!=character|victim_state!=1004",
           "hit_sounds": [
             "data/020.wav.mp3"
           ]
@@ -684,6 +692,7 @@
           "fall": 140,
           "bdefend": 200,
           "motionless": 0,
+          "test": "attacker_type!=character|victim_state!=1004",
           "hit_sounds": [
             "data/020.wav.mp3"
           ]
@@ -724,6 +733,7 @@
           "fall": 140,
           "bdefend": 200,
           "motionless": 0,
+          "test": "attacker_type!=character|victim_state!=1004",
           "hit_sounds": [
             "data/020.wav.mp3"
           ]
@@ -763,6 +773,7 @@
           "fall": 140,
           "bdefend": 200,
           "motionless": 0,
+          "test": "attacker_type!=character|victim_state!=1004",
           "hit_sounds": [
             "data/020.wav.mp3"
           ]
@@ -802,6 +813,7 @@
           "fall": 140,
           "bdefend": 200,
           "motionless": 0,
+          "test": "attacker_type!=character|victim_state!=1004",
           "hit_sounds": [
             "data/020.wav.mp3"
           ]
@@ -841,6 +853,7 @@
           "fall": 140,
           "bdefend": 200,
           "motionless": 0,
+          "test": "attacker_type!=character|victim_state!=1004",
           "hit_sounds": [
             "data/020.wav.mp3"
           ]
@@ -880,6 +893,7 @@
           "fall": 140,
           "bdefend": 200,
           "motionless": 0,
+          "test": "attacker_type!=character|victim_state!=1004",
           "hit_sounds": [
             "data/020.wav.mp3"
           ]
@@ -919,6 +933,7 @@
           "fall": 140,
           "bdefend": 200,
           "motionless": 0,
+          "test": "attacker_type!=character|victim_state!=1004",
           "hit_sounds": [
             "data/020.wav.mp3"
           ]
@@ -1030,6 +1045,7 @@
           "fall": 140,
           "bdefend": 32,
           "motionless": 0,
+          "test": "attacker_type!=character|victim_state!=1004",
           "friendly_fire": 1,
           "hit_sounds": [
             "data/020.wav.mp3"
@@ -1071,6 +1087,7 @@
           "fall": 140,
           "bdefend": 32,
           "motionless": 0,
+          "test": "attacker_type!=character|victim_state!=1004",
           "friendly_fire": 1,
           "hit_sounds": [
             "data/020.wav.mp3"
@@ -1112,6 +1129,7 @@
           "fall": 140,
           "bdefend": 32,
           "motionless": 0,
+          "test": "attacker_type!=character|victim_state!=1004",
           "friendly_fire": 1,
           "hit_sounds": [
             "data/020.wav.mp3"
@@ -1152,6 +1170,7 @@
           "fall": 140,
           "bdefend": 32,
           "motionless": 0,
+          "test": "attacker_type!=character|victim_state!=1004",
           "friendly_fire": 1,
           "hit_sounds": [
             "data/020.wav.mp3"
@@ -1192,6 +1211,7 @@
           "fall": 140,
           "bdefend": 32,
           "motionless": 0,
+          "test": "attacker_type!=character|victim_state!=1004",
           "friendly_fire": 1,
           "hit_sounds": [
             "data/020.wav.mp3"
@@ -1232,6 +1252,7 @@
           "fall": 140,
           "bdefend": 32,
           "motionless": 0,
+          "test": "attacker_type!=character|victim_state!=1004",
           "friendly_fire": 1,
           "hit_sounds": [
             "data/020.wav.mp3"
@@ -1272,6 +1293,7 @@
           "fall": 140,
           "bdefend": 32,
           "motionless": 0,
+          "test": "attacker_type!=character|victim_state!=1004",
           "friendly_fire": 1,
           "hit_sounds": [
             "data/020.wav.mp3"
@@ -1312,6 +1334,7 @@
           "fall": 140,
           "bdefend": 32,
           "motionless": 0,
+          "test": "attacker_type!=character|victim_state!=1004",
           "friendly_fire": 1,
           "hit_sounds": [
             "data/020.wav.mp3"

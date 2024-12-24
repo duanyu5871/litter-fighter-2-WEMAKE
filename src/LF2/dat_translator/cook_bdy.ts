@@ -16,16 +16,18 @@ export default function cook_bdy(bdy?: Partial<IBdyInfo>): void {
   ) {
     bdy.test = new CondMaker<C_Val>()
       .add(C_Val.SameTeam, '==', 0)
-      .and(c => c.bracket(c => c
-        .add(C_Val.AttackerType, '==', Defines.EntityEnum.Character)
-        .and(C_Val.ItrKind, '==', ItrKind.Normal)
-      ).and(c => c
-        .add(C_Val.AttackerType, '==', Defines.EntityEnum.Weapon)
-        .and(c => c
-          .add(C_Val.ItrKind, '==', ItrKind.WeaponSwing)
-          .or(C_Val.AttackerOID, '==', Defines.BuiltIn_OID.Henry_Arrow1)
-          .or(C_Val.AttackerOID, '==', Defines.BuiltIn_OID.Rudolf_Weapon)
+      .and(c => c
+        .bracket(c => c
+          .add(C_Val.AttackerType, '==', Defines.EntityEnum.Character)
+          .and(C_Val.ItrKind, '==', ItrKind.Normal)
+        ).or(c => c
+          .add(C_Val.AttackerType, '==', Defines.EntityEnum.Weapon)
+          .and(c => c
+            .add(C_Val.ItrKind, '==', ItrKind.WeaponSwing)
+            .or(C_Val.AttackerOID, '==', Defines.BuiltIn_OID.Henry_Arrow1)
+            .or(C_Val.AttackerOID, '==', Defines.BuiltIn_OID.Rudolf_Weapon)
+          )
         )
-      )).done()
+      ).done()
   }
 }

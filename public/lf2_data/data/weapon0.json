@@ -1464,7 +1464,8 @@
           "injury": 85,
           "dvx": 4,
           "fall": 140,
-          "bdefend": 32
+          "bdefend": 32,
+          "test": "attacker_type!=character|victim_state!=1004"
         }
       ],
       "state": 1002,
@@ -1507,7 +1508,8 @@
           "injury": 50,
           "dvx": 4,
           "fall": 140,
-          "bdefend": 32
+          "bdefend": 32,
+          "test": "attacker_type!=character|victim_state!=1004"
         }
       ],
       "state": 1002,
@@ -1550,7 +1552,8 @@
           "injury": 50,
           "dvx": 4,
           "fall": 140,
-          "bdefend": 32
+          "bdefend": 32,
+          "test": "attacker_type!=character|victim_state!=1004"
         }
       ],
       "state": 1002,
@@ -1593,7 +1596,8 @@
           "injury": 50,
           "dvx": 4,
           "fall": 140,
-          "bdefend": 32
+          "bdefend": 32,
+          "test": "attacker_type!=character|victim_state!=1004"
         }
       ],
       "state": 1002,
@@ -1636,7 +1640,8 @@
           "injury": 50,
           "dvx": 4,
           "fall": 140,
-          "bdefend": 32
+          "bdefend": 32,
+          "test": "attacker_type!=character|victim_state!=1004"
         }
       ],
       "state": 1002,
@@ -1679,7 +1684,8 @@
           "injury": 50,
           "dvx": 4,
           "fall": 140,
-          "bdefend": 32
+          "bdefend": 32,
+          "test": "attacker_type!=character|victim_state!=1004"
         }
       ],
       "state": 1002,
@@ -1722,7 +1728,8 @@
           "injury": 50,
           "dvx": 4,
           "fall": 140,
-          "bdefend": 32
+          "bdefend": 32,
+          "test": "attacker_type!=character|victim_state!=1004"
         }
       ],
       "state": 1002,
@@ -1765,7 +1772,8 @@
           "injury": 50,
           "dvx": 4,
           "fall": 140,
-          "bdefend": 32
+          "bdefend": 32,
+          "test": "attacker_type!=character|victim_state!=1004"
         }
       ],
       "state": 1002,
@@ -1808,7 +1816,8 @@
           "injury": 50,
           "dvx": 4,
           "fall": 140,
-          "bdefend": 32
+          "bdefend": 32,
+          "test": "attacker_type!=character|victim_state!=1004"
         }
       ],
       "state": 1002,
@@ -1851,7 +1860,8 @@
           "injury": 50,
           "dvx": 4,
           "fall": 140,
-          "bdefend": 32
+          "bdefend": 32,
+          "test": "attacker_type!=character|victim_state!=1004"
         }
       ],
       "state": 1002,
@@ -1894,7 +1904,8 @@
           "injury": 50,
           "dvx": 4,
           "fall": 140,
-          "bdefend": 32
+          "bdefend": 32,
+          "test": "attacker_type!=character|victim_state!=1004"
         }
       ],
       "state": 1002,
@@ -1937,7 +1948,8 @@
           "injury": 50,
           "dvx": 4,
           "fall": 140,
-          "bdefend": 32
+          "bdefend": 32,
+          "test": "attacker_type!=character|victim_state!=1004"
         }
       ],
       "state": 1002,
@@ -1980,7 +1992,8 @@
           "injury": 50,
           "dvx": 4,
           "fall": 140,
-          "bdefend": 32
+          "bdefend": 32,
+          "test": "attacker_type!=character|victim_state!=1004"
         }
       ],
       "state": 1002,
@@ -2023,7 +2036,8 @@
           "injury": 50,
           "dvx": 4,
           "fall": 140,
-          "bdefend": 32
+          "bdefend": 32,
+          "test": "attacker_type!=character|victim_state!=1004"
         }
       ],
       "state": 1002,
@@ -2066,7 +2080,8 @@
           "injury": 50,
           "dvx": 4,
           "fall": 140,
-          "bdefend": 32
+          "bdefend": 32,
+          "test": "attacker_type!=character|victim_state!=1004"
         }
       ],
       "state": 1002,
@@ -2109,7 +2124,8 @@
           "injury": 50,
           "dvx": 4,
           "fall": 140,
-          "bdefend": 32
+          "bdefend": 32,
+          "test": "attacker_type!=character|victim_state!=1004"
         }
       ],
       "state": 1002,
@@ -2257,7 +2273,8 @@
           "arest": 26,
           "dvx": 1,
           "fall": 80,
-          "bdefend": 32
+          "bdefend": 32,
+          "test": "attacker_type!=character|victim_state!=1004"
         }
       ],
       "state": 1003,
@@ -2292,7 +2309,8 @@
           "arest": 26,
           "dvx": 1,
           "fall": 80,
-          "bdefend": 32
+          "bdefend": 32,
+          "test": "attacker_type!=character|victim_state!=1004"
         }
       ],
       "state": 1003,
@@ -2326,7 +2344,8 @@
           "arest": 26,
           "dvx": 1,
           "fall": 80,
-          "bdefend": 32
+          "bdefend": 32,
+          "test": "attacker_type!=character|victim_state!=1004"
         }
       ],
       "state": 1003,

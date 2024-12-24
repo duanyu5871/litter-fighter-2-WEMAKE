@@ -1276,7 +1276,8 @@
           "h": 19,
           "injury": 30,
           "fall": 120,
-          "bdefend": 32
+          "bdefend": 32,
+          "test": "attacker_type!=character|victim_state!=1004"
         }
       ],
       "state": 1002,
@@ -1318,7 +1319,8 @@
           "h": 19,
           "injury": 30,
           "fall": 120,
-          "bdefend": 32
+          "bdefend": 32,
+          "test": "attacker_type!=character|victim_state!=1004"
         }
       ],
       "state": 1002,
@@ -1360,7 +1362,8 @@
           "h": 19,
           "injury": 30,
           "fall": 120,
-          "bdefend": 32
+          "bdefend": 32,
+          "test": "attacker_type!=character|victim_state!=1004"
         }
       ],
       "state": 1002,
@@ -1402,7 +1405,8 @@
           "h": 19,
           "injury": 30,
           "fall": 120,
-          "bdefend": 32
+          "bdefend": 32,
+          "test": "attacker_type!=character|victim_state!=1004"
         }
       ],
       "state": 1002,
@@ -1444,7 +1448,8 @@
           "h": 19,
           "injury": 30,
           "fall": 120,
-          "bdefend": 32
+          "bdefend": 32,
+          "test": "attacker_type!=character|victim_state!=1004"
         }
       ],
       "state": 1002,
@@ -1486,7 +1491,8 @@
           "h": 19,
           "injury": 30,
           "fall": 120,
-          "bdefend": 32
+          "bdefend": 32,
+          "test": "attacker_type!=character|victim_state!=1004"
         }
       ],
       "state": 1002,
@@ -1528,7 +1534,8 @@
           "h": 19,
           "injury": 30,
           "fall": 120,
-          "bdefend": 32
+          "bdefend": 32,
+          "test": "attacker_type!=character|victim_state!=1004"
         }
       ],
       "state": 1002,
@@ -1570,7 +1577,8 @@
           "h": 19,
           "injury": 30,
           "fall": 120,
-          "bdefend": 32
+          "bdefend": 32,
+          "test": "attacker_type!=character|victim_state!=1004"
         }
       ],
       "state": 1002,
@@ -1612,7 +1620,8 @@
           "h": 19,
           "injury": 30,
           "fall": 120,
-          "bdefend": 32
+          "bdefend": 32,
+          "test": "attacker_type!=character|victim_state!=1004"
         }
       ],
       "state": 1002,
@@ -1654,7 +1663,8 @@
           "h": 19,
           "injury": 30,
           "fall": 120,
-          "bdefend": 32
+          "bdefend": 32,
+          "test": "attacker_type!=character|victim_state!=1004"
         }
       ],
       "state": 1002,
@@ -1696,7 +1706,8 @@
           "h": 19,
           "injury": 30,
           "fall": 120,
-          "bdefend": 32
+          "bdefend": 32,
+          "test": "attacker_type!=character|victim_state!=1004"
         }
       ],
       "state": 1002,
@@ -1738,7 +1749,8 @@
           "h": 19,
           "injury": 30,
           "fall": 120,
-          "bdefend": 32
+          "bdefend": 32,
+          "test": "attacker_type!=character|victim_state!=1004"
         }
       ],
       "state": 1002,
@@ -1780,7 +1792,8 @@
           "h": 19,
           "injury": 30,
           "fall": 120,
-          "bdefend": 32
+          "bdefend": 32,
+          "test": "attacker_type!=character|victim_state!=1004"
         }
       ],
       "state": 1002,
@@ -1822,7 +1835,8 @@
           "h": 19,
           "injury": 30,
           "fall": 120,
-          "bdefend": 32
+          "bdefend": 32,
+          "test": "attacker_type!=character|victim_state!=1004"
         }
       ],
       "state": 1002,
@@ -1864,7 +1878,8 @@
           "h": 19,
           "injury": 30,
           "fall": 120,
-          "bdefend": 32
+          "bdefend": 32,
+          "test": "attacker_type!=character|victim_state!=1004"
         }
       ],
       "state": 1002,
@@ -1906,7 +1921,8 @@
           "h": 19,
           "injury": 30,
           "fall": 120,
-          "bdefend": 32
+          "bdefend": 32,
+          "test": "attacker_type!=character|victim_state!=1004"
         }
       ],
       "state": 1002,

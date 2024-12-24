@@ -18,17 +18,10 @@ export enum BdyKind {
    *
    * - WEMAKE中：
    *    - kind: 1XXX, 被攻击时跳至“XXX”帧。
-   *    - 此bdy的friendly_fire无效
-   *    - itr.friendly_fire 对此无效
-   *    - 角色与id为210以及id为202的限制通过itr_groups实现
-   *    - 仅允许kind: 5与kind：0的itr击中此bdy
+   *    - 使用了bdy.test实现了原版中的其他限制
    *
-   * @see {IBdyInfo.itr_groups}
    * @see {BuiltIn_OID.Henry_Arrow1}
    * @see {BuiltIn_OID.Rudolf_Weapon}
-   * @see {EntityGroup.CriminalSaver}
-   * @see {IBdyInfo.friendly_fire}
-   * @see {IItrInfo.friendly_fire}
    */
   GotoMin = 1000,
 
