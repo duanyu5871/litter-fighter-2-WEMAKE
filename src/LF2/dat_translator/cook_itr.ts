@@ -10,9 +10,9 @@ import { take } from './take';
 export default function cook_itr(itr?: Partial<IItrInfo>) {
   if (!itr) return;
   const vrest = take(itr, 'vrest');
-  if (is_positive(vrest)) { itr.vrest = Math.max(2, 2 * vrest - Defines.DEFAULT_ITR_SHAKEING); }
+  if (is_positive(vrest)) { itr.vrest = Math.max(2, 2 * vrest - Defines.DEFAULT_ITR_MOTIONLESS); }
   const arest = take(itr, 'arest');
-  if (is_positive(arest)) { itr.arest = Math.max(2, 2 * arest - Defines.DEFAULT_ITR_MOTIONLESS); }
+  if (is_positive(arest)) { itr.arest = Math.max(2, 2 * (arest - Defines.DEFAULT_ITR_MOTIONLESS)); }
   const src_dvx = take(itr, 'dvx');
   if (not_zero_num(src_dvx)) itr.dvx = src_dvx * 0.5;
   const src_dvz = take(itr, 'dvz');
@@ -33,8 +33,10 @@ export default function cook_itr(itr?: Partial<IItrInfo>) {
   switch (itr.kind) {
     case ItrKind.Normal: {
       const cond_maker = new CondMaker<C_Val>()
-        .add(C_Val.VictimState, '!=', Defines.State.Weapon_OnGround)
-        .or(C_Val.AttackerType, '!=', EntityEnum.Character)
+        .bracket(c => c
+          .add(C_Val.VictimState, '!=', Defines.State.Weapon_OnGround)
+          .or(C_Val.AttackerType, '!=', EntityEnum.Character)
+        )
       switch (itr.effect) {
         case ItrEffect.MFire1:
         case ItrEffect.MFire2:
@@ -44,7 +46,7 @@ export default function cook_itr(itr?: Partial<IItrInfo>) {
           )
           break;
         case ItrEffect.Through:
-          cond_maker.and(C_Val.VictimType, '==', EntityEnum.Character)
+          cond_maker.and(C_Val.VictimType, '!=', EntityEnum.Character)
           break;
         case ItrEffect.Ice2:
           cond_maker.and(c => c

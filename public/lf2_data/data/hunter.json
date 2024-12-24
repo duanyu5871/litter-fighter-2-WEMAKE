@@ -4710,7 +4710,7 @@
           "dvy": 3.12,
           "fall": 140,
           "bdefend": 32,
-          "test": "victim_state!=1004|attacker_type!=character&(victim_state!=19&victim_state!=18)",
+          "test": "(victim_state!=1004|attacker_type!=character)&(victim_state!=19&victim_state!=18)",
           "friendly_fire": 1
         }
       ],
@@ -4762,7 +4762,7 @@
           "dvy": 3.12,
           "fall": 140,
           "bdefend": 32,
-          "test": "victim_state!=1004|attacker_type!=character&(victim_state!=19&victim_state!=18)",
+          "test": "(victim_state!=1004|attacker_type!=character)&(victim_state!=19&victim_state!=18)",
           "friendly_fire": 1
         }
       ],
@@ -4814,7 +4814,7 @@
           "dvy": 3.12,
           "fall": 140,
           "bdefend": 32,
-          "test": "victim_state!=1004|attacker_type!=character&(victim_state!=19&victim_state!=18)",
+          "test": "(victim_state!=1004|attacker_type!=character)&(victim_state!=19&victim_state!=18)",
           "friendly_fire": 1
         }
       ],
@@ -4866,7 +4866,7 @@
           "dvy": 3.12,
           "fall": 140,
           "bdefend": 32,
-          "test": "victim_state!=1004|attacker_type!=character&(victim_state!=19&victim_state!=18)",
+          "test": "(victim_state!=1004|attacker_type!=character)&(victim_state!=19&victim_state!=18)",
           "friendly_fire": 1
         }
       ],
@@ -5970,7 +5970,7 @@
         "y": 9,
         "vaction": {
           "id": "135",
-          "facing": 4
+          "facing": 5
         }
       },
       "state": 9,
@@ -6028,9 +6028,11 @@
         "throwvy": 4.5,
         "throwvz": 3,
         "throwinjury": 30,
+        "tx": 50,
+        "ty": 10,
         "vaction": {
           "id": "181",
-          "facing": 4
+          "facing": 5
         }
       },
       "state": 9,

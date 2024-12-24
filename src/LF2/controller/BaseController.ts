@@ -187,7 +187,10 @@ export class BaseController {
       return false;
     if (type === 'dbl')
       return this.is_db_hit(key)
-    return this.keys[key][`is_${type}`]();
+    if (type === 'hit')
+      return this.keys[key].is_hit() && !this.keys[key].used
+    else
+      return this.keys[key].is_hld();
   }
 
 
@@ -235,8 +238,7 @@ export class BaseController {
         /** 按键判定 */
         let act = hit[name];
         if (act && this.tst('hit', name) && !ret.time) {
-          key.use();
-          ret.set(act, key.time, name);
+          ret.set(act, key.use(), name);
         }
 
         /** 双击判定 */

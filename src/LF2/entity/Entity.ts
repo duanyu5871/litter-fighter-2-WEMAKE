@@ -730,7 +730,7 @@ export default class Entity {
       }
     }
     if (this.motionless <= 0)
-      this._a_rest > 1 ? this._a_rest-- : this._a_rest = 0;
+      this._a_rest >= 1 ? this._a_rest-- : this._a_rest = 0;
 
     if (this._invisible_duration > 0) {
       this._invisible_duration--;
@@ -936,7 +936,10 @@ export default class Entity {
 
   private prev_cpoint_a?: ICpointInfo;
   update_caught(): TNextFrame | undefined {
+
     if (!this._catcher) return;
+    /** "对齐颗粒度" */
+    this.follow_catcher();
     if (!this._catcher._catch_time) {
       delete this._catcher;
       this.prev_cpoint_a = void 0;
@@ -956,19 +959,21 @@ export default class Entity {
     this.prev_cpoint_a = cpoint_a;
 
     const { throwvx, throwvy, throwvz, throwinjury } = cpoint_a;
-
     if (throwvz) {
       this.velocities[0].z = throwvz * (this._catcher.controller?.UD || 0);
     }
     if (throwvx) {
-      this.velocities[0].x = throwvx * this.facing;
+      this.velocities[0].x = throwvx * this._catcher.facing;
     }
     if (throwvy) {
       this.velocities[0].y = throwvy;
     }
-    if (throwinjury) this.throwinjury = throwinjury;
 
+    if (throwinjury) this.throwinjury = throwinjury;
     if (throwvx || throwvy || throwvz) {
+      if (cpoint_a.tx) this.position.x += cpoint_a.tx * this._catcher.facing
+      if (cpoint_a.ty) this.position.y += cpoint_a.ty
+      if (cpoint_a.tz) this.position.y += cpoint_a.tz
       delete this._catcher;
       this.prev_cpoint_a = void 0;
     }
@@ -1013,17 +1018,23 @@ export default class Entity {
     }
 
     /** "对齐颗粒度" */
-    const { centerx: centerx_a, centery: centery_a } = this.frame;
-    const { centerx: centerx_b, centery: centery_b } = this._catching.frame;
-    const { x: caught_x, y: caught_y } = cpoint_b;
-    const face_a = this.facing;
-    const face_b = this._catching.facing;
-    const { x: px, y: py, z: pz } = this.position;
-    this._catching.position.x = px - face_a * (centerx_a - catch_x) + face_b * (centerx_b - caught_x);
-    this._catching.position.y = py + centery_a - catch_y + caught_y - centery_b;
-    this._catching.position.z = pz;
-    if (cover === 11) this._catching.position.z -= 0.5;
-    else if (cover === 10) this._catching.position.z += 0.5;
+    this.follow_catcher();
+  }
+
+  follow_catcher() {
+    if (!this._catcher) return;
+    const { centerx: centerx_a, centery: centery_a, cpoint: c_a } = this._catcher.frame;
+    const { centerx: centerx_b, centery: centery_b, cpoint: c_b } = this.frame;
+    if (!c_a || !c_b) return;
+    if (c_a.throwvx || c_a.throwvx || c_a.throwvx) return;
+    const face_a = this._catcher.facing;
+    const face_b = this.facing;
+    const { x: px, y: py, z: pz } = this._catcher.position;
+    this.position.x = px - face_a * (centerx_a - c_a.x) + face_b * (centerx_b - c_b.x);
+    this.position.y = py + centery_a - c_a.y + c_b.y - centery_b;
+    this.position.z = pz;
+    if (c_b.cover === 11) this.position.z -= 0.5;
+    else if (c_b.cover === 10) this.position.z += 0.5;
   }
 
   /**
@@ -1130,7 +1141,7 @@ export default class Entity {
     }
 
     if (itr.arest) {
-      this._a_rest = itr.arest - this.motionless;
+      this._a_rest = itr.arest - 2;
     } else if (!itr.vrest) {
       this._a_rest = this.wait + this.motionless;
     }

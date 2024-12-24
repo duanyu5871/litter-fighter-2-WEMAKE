@@ -1,6 +1,6 @@
 import { ICpointInfo } from '../defines';
 import { Defines } from '../defines/defines';
-import { is_num, not_zero_num, is_str } from '../utils/type_check';
+import { is_num, is_str, not_zero_num } from '../utils/type_check';
 import { get_next_frame_by_raw_id } from './get_the_next';
 import { take } from './take';
 
@@ -15,7 +15,11 @@ export function cook_cpoint(unsure_cpoint: ICpointInfo): void {
   if (not_zero_num(tvz) && tvz !== -842150451) unsure_cpoint.throwvz = tvz;
 
   const tvj = take(unsure_cpoint, 'throwinjury');
-  if (not_zero_num(tvj) && tvj !== -842150451) unsure_cpoint.throwinjury = tvj;
+  if (not_zero_num(tvj) && tvj !== -842150451) {
+    unsure_cpoint.throwinjury = tvj;
+    unsure_cpoint.tx = 50;
+    unsure_cpoint.ty = 10;
+  }
 
   const vaction = take(unsure_cpoint as any, 'vaction');
   const raw_injury = take(unsure_cpoint, 'injury');
@@ -30,4 +34,6 @@ export function cook_cpoint(unsure_cpoint: ICpointInfo): void {
       facing: Defines.FacingFlag.SameAsCatcher
     };
   }
+
+
 }

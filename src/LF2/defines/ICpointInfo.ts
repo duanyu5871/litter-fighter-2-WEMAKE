@@ -18,5 +18,9 @@ export interface ICpointInfo {
   cover: number;
   shaking?: number;
 
+  tx?: number;
+  ty?: number;
+  tz?: number;
+
   /*dircontrol*/
 }

@@ -1,8 +1,11 @@
 {
   "id": "122",
-  "type": "entity",
+  "on_dead": {
+    "id": "gone"
+  },
+  "type": "weapon",
   "base": {
-    "name": "entity_122",
+    "name": "milk",
     "files": {
       "0": {
         "id": "0",
@@ -13,11 +16,117 @@
         "cell_h": 48
       }
     },
-    "weapon_hp": 450,
-    "weapon_drop_hurt": 35,
-    "weapon_hit_sound": "data/041.wav",
-    "weapon_drop_sound": "data/041.wav",
-    "weapon_broken_sound": "data/040.wav"
+    "type": 5,
+    "bounce": 0.45,
+    "dead_sounds": [
+      "data/040.wav.mp3"
+    ],
+    "drop_sounds": [
+      "data/041.wav.mp3"
+    ],
+    "hit_sounds": [
+      "data/041.wav.mp3"
+    ],
+    "drop_hurt": 35,
+    "hp": 450,
+    "group": [
+      "VsRegularWeapon",
+      "StageRegularWeapon"
+    ],
+    "brokens": [
+      {
+        "kind": 1,
+        "x": 24,
+        "y": 24,
+        "action": {
+          "id": "70"
+        },
+        "oid": "999",
+        "dvy": 5,
+        "dvx": -1
+      },
+      {
+        "kind": 1,
+        "x": 24,
+        "y": 24,
+        "action": {
+          "id": "50"
+        },
+        "oid": "999",
+        "dvy": 5,
+        "dvx": 1
+      },
+      {
+        "kind": 1,
+        "x": 24,
+        "y": 24,
+        "action": {
+          "id": "80"
+        },
+        "oid": "999",
+        "dvy": 3
+      },
+      {
+        "kind": 1,
+        "x": 24,
+        "y": 24,
+        "action": {
+          "id": "50"
+        },
+        "oid": "999",
+        "dvy": 2,
+        "dvx": 2
+      },
+      {
+        "kind": 1,
+        "x": 24,
+        "y": 24,
+        "action": {
+          "id": "50"
+        },
+        "oid": "999",
+        "dvy": 2,
+        "dvx": -2
+      }
+    ]
+  },
+  "itr_prefabs": {
+    "1": {
+      "id": "1",
+      "name": "normal",
+      "injury": 40,
+      "vrest": 14,
+      "dvx": 1,
+      "fall": 80,
+      "bdefend": 32
+    },
+    "2": {
+      "id": "2",
+      "name": "jump",
+      "injury": 60,
+      "vrest": 14,
+      "dvx": 3.5,
+      "fall": 140,
+      "bdefend": 32
+    },
+    "3": {
+      "id": "3",
+      "name": "run",
+      "injury": 85,
+      "vrest": 14,
+      "dvx": 5,
+      "fall": 140,
+      "bdefend": 32
+    },
+    "4": {
+      "id": "4",
+      "name": "dash",
+      "injury": 100,
+      "vrest": 34,
+      "dvx": 6,
+      "fall": 140,
+      "bdefend": 120
+    }
   },
   "frames": {
     "0": {
@@ -2030,5 +2139,12 @@
       "hit_d": 0,
       "hit_j": 0
     }
+  },
+  "indexes": {
+    "in_the_sky": "0",
+    "on_ground": "60",
+    "just_on_ground": "70",
+    "throw_on_ground": "71",
+    "throwing": "40"
   }
 }

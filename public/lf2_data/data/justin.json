@@ -1698,7 +1698,7 @@
           "w": 56,
           "h": 41,
           "injury": 70,
-          "arest": 24,
+          "arest": 18,
           "dvx": 6,
           "dvy": 3.64,
           "fall": 140,
@@ -1823,7 +1823,7 @@
           "w": 45,
           "h": 31,
           "injury": 50,
-          "arest": 24,
+          "arest": 18,
           "dvx": 4,
           "dvy": 2.6,
           "fall": 140,
@@ -1923,7 +1923,7 @@
           "w": 48,
           "h": 33,
           "injury": 70,
-          "arest": 24,
+          "arest": 18,
           "dvx": 7,
           "dvy": 2.6,
           "fall": 140,
@@ -4160,7 +4160,7 @@
           "dvy": 3.12,
           "fall": 140,
           "bdefend": 32,
-          "test": "victim_state!=1004|attacker_type!=character&(victim_state!=19&victim_state!=18)",
+          "test": "(victim_state!=1004|attacker_type!=character)&(victim_state!=19&victim_state!=18)",
           "friendly_fire": 1
         }
       ],
@@ -4212,7 +4212,7 @@
           "dvy": 3.12,
           "fall": 140,
           "bdefend": 32,
-          "test": "victim_state!=1004|attacker_type!=character&(victim_state!=19&victim_state!=18)",
+          "test": "(victim_state!=1004|attacker_type!=character)&(victim_state!=19&victim_state!=18)",
           "friendly_fire": 1
         }
       ],
@@ -4264,7 +4264,7 @@
           "dvy": 3.12,
           "fall": 140,
           "bdefend": 32,
-          "test": "victim_state!=1004|attacker_type!=character&(victim_state!=19&victim_state!=18)",
+          "test": "(victim_state!=1004|attacker_type!=character)&(victim_state!=19&victim_state!=18)",
           "friendly_fire": 1
         }
       ],
@@ -4316,7 +4316,7 @@
           "dvy": 3.12,
           "fall": 140,
           "bdefend": 32,
-          "test": "victim_state!=1004|attacker_type!=character&(victim_state!=19&victim_state!=18)",
+          "test": "(victim_state!=1004|attacker_type!=character)&(victim_state!=19&victim_state!=18)",
           "friendly_fire": 1
         }
       ],
@@ -5263,7 +5263,7 @@
         "y": 9,
         "vaction": {
           "id": "135",
-          "facing": 4
+          "facing": 5
         }
       },
       "state": 9,
@@ -5321,9 +5321,11 @@
         "throwvy": 3.5,
         "throwvz": 3,
         "throwinjury": 30,
+        "tx": 50,
+        "ty": 10,
         "vaction": {
           "id": "181",
-          "facing": 4
+          "facing": 5
         }
       },
       "state": 9,

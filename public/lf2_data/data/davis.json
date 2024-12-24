@@ -1251,7 +1251,7 @@
           "w": 32,
           "h": 44,
           "injury": 40,
-          "arest": 24,
+          "arest": 18,
           "dvx": 3.5,
           "dvy": 6.76,
           "fall": 140,
@@ -2297,7 +2297,7 @@
           "w": 35,
           "h": 45,
           "injury": 40,
-          "arest": 24,
+          "arest": 18,
           "dvx": 1.5,
           "dvy": 5.2,
           "fall": 140,
@@ -2533,7 +2533,7 @@
           "w": 52,
           "h": 17,
           "injury": 60,
-          "arest": 24,
+          "arest": 18,
           "dvx": 4.5,
           "dvy": 2.6,
           "fall": 140,
@@ -2576,7 +2576,7 @@
           "w": 36,
           "h": 16,
           "injury": 60,
-          "arest": 24,
+          "arest": 18,
           "dvx": 4.5,
           "dvy": 2.6,
           "fall": 140,
@@ -2873,7 +2873,7 @@
           "w": 52,
           "h": 17,
           "injury": 80,
-          "arest": 12,
+          "arest": 6,
           "dvx": 7,
           "dvy": 2.6,
           "fall": 140,
@@ -2916,7 +2916,7 @@
           "w": 36,
           "h": 16,
           "injury": 80,
-          "arest": 12,
+          "arest": 6,
           "dvx": 7,
           "dvy": 2.6,
           "fall": 140,
@@ -5235,7 +5235,7 @@
           "dvy": 3.12,
           "fall": 140,
           "bdefend": 32,
-          "test": "victim_state!=1004|attacker_type!=character&(victim_state!=19&victim_state!=18)",
+          "test": "(victim_state!=1004|attacker_type!=character)&(victim_state!=19&victim_state!=18)",
           "friendly_fire": 1
         }
       ],
@@ -5287,7 +5287,7 @@
           "dvy": 3.12,
           "fall": 140,
           "bdefend": 32,
-          "test": "victim_state!=1004|attacker_type!=character&(victim_state!=19&victim_state!=18)",
+          "test": "(victim_state!=1004|attacker_type!=character)&(victim_state!=19&victim_state!=18)",
           "friendly_fire": 1
         }
       ],
@@ -5339,7 +5339,7 @@
           "dvy": 3.12,
           "fall": 140,
           "bdefend": 32,
-          "test": "victim_state!=1004|attacker_type!=character&(victim_state!=19&victim_state!=18)",
+          "test": "(victim_state!=1004|attacker_type!=character)&(victim_state!=19&victim_state!=18)",
           "friendly_fire": 1
         }
       ],
@@ -5391,7 +5391,7 @@
           "dvy": 3.12,
           "fall": 140,
           "bdefend": 32,
-          "test": "victim_state!=1004|attacker_type!=character&(victim_state!=19&victim_state!=18)",
+          "test": "(victim_state!=1004|attacker_type!=character)&(victim_state!=19&victim_state!=18)",
           "friendly_fire": 1
         }
       ],
@@ -6477,7 +6477,7 @@
         "y": 9,
         "vaction": {
           "id": "135",
-          "facing": 4
+          "facing": 5
         }
       },
       "state": 9,
@@ -6535,9 +6535,11 @@
         "throwvy": 3.5,
         "throwvz": 3,
         "throwinjury": 30,
+        "tx": 50,
+        "ty": 10,
         "vaction": {
           "id": "181",
-          "facing": 4
+          "facing": 5
         }
       },
       "state": 9,
@@ -7616,7 +7618,7 @@
           "dvx": 6,
           "fall": 140,
           "bdefend": 32,
-          "test": "victim_state!=1004|attacker_type!=character&victim_type==character"
+          "test": "(victim_state!=1004|attacker_type!=character)&victim_type!=character"
         },
         {
           "kind": 0,
@@ -7680,7 +7682,7 @@
           "dvx": 6,
           "fall": 140,
           "bdefend": 32,
-          "test": "victim_state!=1004|attacker_type!=character&victim_type==character"
+          "test": "(victim_state!=1004|attacker_type!=character)&victim_type!=character"
         }
       ],
       "wpoint": {
@@ -7732,7 +7734,7 @@
           "dvx": 6,
           "fall": 140,
           "bdefend": 32,
-          "test": "victim_state!=1004|attacker_type!=character&victim_type==character"
+          "test": "(victim_state!=1004|attacker_type!=character)&victim_type!=character"
         },
         {
           "kind": 0,
@@ -7796,7 +7798,7 @@
           "dvx": 6,
           "fall": 140,
           "bdefend": 32,
-          "test": "victim_state!=1004|attacker_type!=character&victim_type==character"
+          "test": "(victim_state!=1004|attacker_type!=character)&victim_type!=character"
         }
       ],
       "wpoint": {
@@ -7847,7 +7849,7 @@
           "dvx": 6,
           "fall": 140,
           "bdefend": 32,
-          "test": "victim_state!=1004|attacker_type!=character&victim_type==character"
+          "test": "(victim_state!=1004|attacker_type!=character)&victim_type!=character"
         }
       ],
       "wpoint": {
@@ -7899,7 +7901,7 @@
           "dvx": 6,
           "fall": 140,
           "bdefend": 32,
-          "test": "victim_state!=1004|attacker_type!=character&victim_type==character"
+          "test": "(victim_state!=1004|attacker_type!=character)&victim_type!=character"
         },
         {
           "kind": 0,
@@ -7963,7 +7965,7 @@
           "dvx": 6,
           "fall": 140,
           "bdefend": 32,
-          "test": "victim_state!=1004|attacker_type!=character&victim_type==character"
+          "test": "(victim_state!=1004|attacker_type!=character)&victim_type!=character"
         }
       ],
       "wpoint": {
@@ -8014,7 +8016,7 @@
           "dvx": 6,
           "fall": 140,
           "bdefend": 32,
-          "test": "victim_state!=1004|attacker_type!=character&victim_type==character"
+          "test": "(victim_state!=1004|attacker_type!=character)&victim_type!=character"
         }
       ],
       "wpoint": {
@@ -8073,7 +8075,7 @@
           "dvx": 6,
           "fall": 140,
           "bdefend": 32,
-          "test": "victim_state!=1004|attacker_type!=character&victim_type==character"
+          "test": "(victim_state!=1004|attacker_type!=character)&victim_type!=character"
         }
       ],
       "wpoint": {
@@ -8133,7 +8135,7 @@
           "dvx": 6,
           "fall": 140,
           "bdefend": 32,
-          "test": "victim_state!=1004|attacker_type!=character&victim_type==character"
+          "test": "(victim_state!=1004|attacker_type!=character)&victim_type!=character"
         },
         {
           "kind": 0,
@@ -8384,7 +8386,7 @@
           "w": 44,
           "h": 45,
           "injury": 50,
-          "arest": 18,
+          "arest": 12,
           "dvx": 11,
           "dvy": -7.800000000000001,
           "fall": 140,
