@@ -5,6 +5,7 @@
   },
   "type": "weapon",
   "base": {
+    "name": "henry_arrow",
     "files": {
       "0": {
         "id": "0",
@@ -17,7 +18,6 @@
     },
     "type": 1,
     "bounce": 0.2,
-    "name": "henry_arrow",
     "drop_sounds": [
       "data/025.wav.mp3"
     ],

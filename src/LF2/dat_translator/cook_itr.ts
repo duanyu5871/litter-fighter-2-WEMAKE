@@ -179,6 +179,14 @@ export default function cook_itr(itr?: Partial<IItrInfo>) {
         ).done()
       break;
     }
+    case ItrKind.CharacterThrew: {
+      itr.friendly_fire = 1;
+      itr.test = new CondMaker<C_Val>()
+        .add(C_Val.AttackerThrew, '==', 1)
+        .and(C_Val.AttackerType, '==', EntityEnum.Character)
+        .done()
+      break;
+    }
   }
   const catchingact = take(itr, 'catchingact');
   if (is_num(catchingact)) itr.catchingact = get_next_frame_by_raw_id(catchingact);

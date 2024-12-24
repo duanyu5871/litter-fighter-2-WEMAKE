@@ -3,8 +3,6 @@
   "type": "character",
   "base": {
     "name": "Jack",
-    "head": "sprite/sys/jack_f.png",
-    "small": "sprite/sys/jack_s.png",
     "files": {
       "0": {
         "id": "0",
@@ -45,6 +43,8 @@
         "cell_h": 79
       }
     },
+    "head": "sprite/sys/jack_f.png",
+    "small": "sprite/sys/jack_s.png",
     "jump_height": 76,
     "jump_distance": 5,
     "jump_distancez": 3.75,
@@ -52,11 +52,11 @@
     "dash_distance": 9,
     "dash_distancez": 5,
     "rowing_distance": 2.5,
+    "fall_value": 140,
+    "defend_value": 120,
     "group": [
       "hidden"
-    ],
-    "fall_value": 140,
-    "defend_value": 120
+    ]
   },
   "indexes": {
     "standing": "0",

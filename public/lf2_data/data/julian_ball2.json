@@ -2,6 +2,7 @@
   "id": "229",
   "type": "ball",
   "base": {
+    "name": "ball_229",
     "files": {
       "0": {
         "id": "0",
@@ -45,8 +46,7 @@
     ],
     "hit_sounds": [
       "data/020.wav.mp3"
-    ],
-    "name": "ball_229"
+    ]
   },
   "frames": {
     "0": {

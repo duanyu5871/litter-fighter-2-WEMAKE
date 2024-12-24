@@ -2,6 +2,7 @@
   "id": "999",
   "type": "entity",
   "base": {
+    "name": "entity_999",
     "files": {
       "0": {
         "id": "0",
@@ -19,8 +20,7 @@
         "cell_w": 27,
         "cell_h": 28
       }
-    },
-    "name": "entity_999"
+    }
   },
   "frames": {
     "0": {

@@ -3,8 +3,6 @@
   "type": "character",
   "base": {
     "name": "Julian",
-    "head": "sprite/sys/julian_f.png",
-    "small": "sprite/sys/julian_s.png",
     "files": {
       "0": {
         "id": "0",
@@ -31,6 +29,8 @@
         "cell_h": 99
       }
     },
+    "head": "sprite/sys/julian_f.png",
+    "small": "sprite/sys/julian_s.png",
     "jump_height": 86,
     "jump_distance": 5.5,
     "jump_distancez": 3.8,
@@ -38,6 +38,8 @@
     "dash_distance": 9.5,
     "dash_distancez": 5,
     "rowing_distance": 2.5,
+    "fall_value": 140,
+    "defend_value": 120,
     "group": [
       "hidden"
     ],
@@ -50,9 +52,7 @@
       ],
       "type": "times",
       "toughness": 3
-    },
-    "fall_value": 140,
-    "defend_value": 120
+    }
   },
   "indexes": {
     "standing": "0",

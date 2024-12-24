@@ -121,7 +121,6 @@ export default function dat_to_json(
       base.name = datIndex.hash ?? datIndex.file.replace(/[^a-z|A-Z|0-9|_]/g, '')
       ret = make_weapon_data(base, full_str, make_frames(full_str, base.files));
       break;
-
     case '3':
       ret = make_ball_data(base, make_frames(full_str, base.files), datIndex);
       break;

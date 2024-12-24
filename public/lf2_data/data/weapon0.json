@@ -5,6 +5,7 @@
   },
   "type": "weapon",
   "base": {
+    "name": "stick",
     "files": {
       "0": {
         "id": "0",
@@ -17,7 +18,6 @@
     },
     "type": 1,
     "bounce": 0.2,
-    "name": "stick",
     "dead_sounds": [
       "data/094.wav.mp3"
     ],

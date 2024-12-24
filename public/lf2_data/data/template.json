@@ -3,8 +3,6 @@
   "type": "character",
   "base": {
     "name": "Template",
-    "head": "sprite/template1/face.png",
-    "small": "sprite/template1/s.png",
     "files": {
       "0": {
         "id": "0",
@@ -26,6 +24,8 @@
         "cell_h": 79
       }
     },
+    "head": "sprite/template1/face.png",
+    "small": "sprite/template1/s.png",
     "jump_height": 76,
     "jump_distance": 4,
     "jump_distancez": 3,

@@ -5,6 +5,7 @@
   },
   "type": "weapon",
   "base": {
+    "name": "stone",
     "files": {
       "0": {
         "id": "0",
@@ -17,7 +18,6 @@
     },
     "type": 2,
     "bounce": 0.2,
-    "name": "stone",
     "dead_sounds": [
       "data/021.wav.mp3"
     ],

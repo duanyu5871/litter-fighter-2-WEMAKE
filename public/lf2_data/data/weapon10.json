@@ -5,6 +5,7 @@
   },
   "type": "weapon",
   "base": {
+    "name": "louis_limbs_armour",
     "files": {
       "0": {
         "id": "0",
@@ -17,7 +18,6 @@
     },
     "type": 2,
     "bounce": 0.1,
-    "name": "louis_limbs_armour",
     "dead_sounds": [
       "data/084.wav.mp3"
     ],

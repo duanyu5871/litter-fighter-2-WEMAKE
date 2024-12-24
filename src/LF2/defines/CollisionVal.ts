@@ -24,4 +24,6 @@ export enum CollisionVal {
   VictimFrameId = "victim_frame_id",
   VictimFrameIndex_ICE = "victim_frame_index_ice",
   ItrFall = "itr_fall",
+  AttackerThrew = "attacker_threw",
+  VictimThrew = "victim_threw",
 }
