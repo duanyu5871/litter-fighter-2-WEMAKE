@@ -47,3 +47,4 @@ electron/dist
 electron/output
 
 game_data_txt
+*.pem
