@@ -1,6 +1,7 @@
 import {
   IBaseData, IBgData, IEntityData,
-  IEntityPictureInfo, IFrameInfo, IStageInfo
+  IEntityPictureInfo,
+  IStageInfo
 } from '../defines';
 import { EntityEnum } from '../defines/EntityEnum';
 import { IDatIndex } from "../defines/IDatIndex";
@@ -9,15 +10,18 @@ import { Defines } from '../defines/defines';
 import { set_obj_field } from "../utils/container_help/set_obj_field";
 import { match_block_once } from '../utils/string_parser/match_block';
 import { match_colon_value } from '../utils/string_parser/match_colon_value';
-import { add_entity_groups } from './add_entity_to_group';
-import { cook_louis_data, cook_rudolf_data } from './cook_louis_data';
 import { make_ball_data } from './make_ball_data';
+import { make_ball_special } from './make_ball_special';
 import { make_bg_data } from './make_bg_data';
 import { make_character_data } from './make_character_data';
+import { make_character_special } from './make_character_special';
 import { make_entity_data } from './make_entity_data';
+import { make_entity_special } from './make_entity_special';
 import { make_frames } from './make_frames';
+import { make_frames_special } from './make_frames_special';
 import { make_stage_info_list as make_stage_infos } from './make_stage_info_list';
-import { make_weapon_data, make_weapon_special } from './make_weapon_data';
+import { make_weapon_data } from './make_weapon_data';
+import { make_weapon_special } from './make_weapon_special';
 
 export default function dat_to_json(
   full_str: string,
@@ -28,7 +32,12 @@ export default function dat_to_json(
   if (full_str.startsWith('name:')) return make_bg_data(full_str, datIndex);
   const infos_str = match_block_once(full_str, '<bmp_begin>', '<bmp_end>');
   if (!infos_str) { return; }
-  const base: any = {};
+
+  let ret: IEntityData | undefined = void 0;
+  const base: IEntityInfo = {
+    name: '',
+    files: {}
+  };
   for (const info_str of infos_str.trim().split('\n')) {
     let reg_result;
     reg_result = info_str.match(/name:\s*(\S*)/);
@@ -90,8 +99,10 @@ export default function dat_to_json(
     }
   }
 
-  let ret: IEntityData | undefined = void 0;
   switch ('' + datIndex.type) {
+    case '0':
+      ret = make_character_data(base, make_frames(full_str, base.files));
+      break;
     case '1':
       base.type = {
         '120': Defines.WeaponType.Knife, // Knife
@@ -110,73 +121,43 @@ export default function dat_to_json(
       base.name = datIndex.hash ?? datIndex.file.replace(/[^a-z|A-Z|0-9|_]/g, '')
       ret = make_weapon_data(base, full_str, make_frames(full_str, base.files));
       break;
+
+    case '3':
+      ret = make_ball_data(base, make_frames(full_str, base.files), datIndex);
+      break;
     case '4':
       base.type = Defines.WeaponType.Baseball;
       base.bounce = 0.45;
       base.name = datIndex.hash ?? datIndex.file.replace(/[^a-z|A-Z|0-9|_]/g, '')
       ret = make_weapon_data(base, full_str, make_frames(full_str, base.files));
       break;
-    case '6': {
-      base.type = Defines.WeaponType.Drink;
-      base.bounce = 0.4;
-      base.name = datIndex.hash ?? datIndex.file.replace(/[^a-z|A-Z|0-9|_]/g, '')
-      ret = make_weapon_data(base, full_str, make_frames(full_str, base.files));
+    case '5':
+      ret = make_entity_data(base, make_frames(full_str, base.files));
       break;
-    }
-    case '0': {
-      const info = base as IEntityInfo;
-      const num_id = Number(datIndex.id);
-
-      if (
-        (num_id >= 30 && num_id <= 39) ||
-        (num_id >= 50 && num_id <= 59)
-      ) {
-        add_entity_groups(info, Defines.EntityGroup.Hidden)
-      }
-      if (num_id >= 1 && num_id <= 29) {
-        add_entity_groups(info, Defines.EntityGroup.Regular)
-      }
-      if (datIndex.id === '52') {
-        info.ce = 3;
-        info.armor = {
-          fireproof: 1,
-          antifreeze: 1,
-          hit_sounds: ['data/002.wav.mp3'],
-          type: 'times',
-          toughness: 3,
-        }
-      } else if (datIndex.id === '51') {
-        info.ce = 2;
-      } else if (datIndex.id === '37') {
-        info.armor = {
-          hit_sounds: ['data/085.wav.mp3'],
-          type: 'times',
-          toughness: 3,
-        }
-      } else if (datIndex.id === '6') {
-        info.armor = {
-          hit_sounds: ['data/085.wav.mp3'],
-          type: 'times',
-          toughness: 1,
-        }
-      } else if (datIndex.id === '30' || datIndex.id === '31') {
-        add_entity_groups(info, Defines.EntityGroup._3000)
-      }
-      const cdata = ret = make_character_data(info, make_frames(full_str, info.files));
-      if (datIndex.id === '6') cook_louis_data(cdata);
-      if (datIndex.id === '5') cook_rudolf_data(cdata);
-      break;
-    }
-    case '3': ret = make_ball_data(base as IEntityInfo, make_frames<IFrameInfo>(full_str, base.files), datIndex); break;
-    case '5': ret = make_entity_data(base as IEntityInfo, make_frames(full_str, base.files)); break;
     default:
       console.warn('[dat_to_json] unknow dat type:', JSON.stringify(datIndex.type))
-      ret = make_entity_data(base as IEntityInfo, make_frames(full_str, base.files));
+      ret = make_entity_data(base, make_frames(full_str, base.files));
       break;
   }
   if (ret) ret.id = datIndex.id;
-  if (ret.type === EntityEnum.Weapon) make_weapon_special(ret as any)
   if (!ret.base.name) ret.base.name = ret.type + '_' + ret.id;
 
+  switch (ret.type) {
+    case EntityEnum.Entity:
+      make_entity_special(ret);
+      break;
+    case EntityEnum.Character:
+      make_character_special(ret);
+      break;
+    case EntityEnum.Weapon:
+      make_weapon_special(ret);
+      break;
+    case EntityEnum.Ball:
+      make_ball_special(ret);
+      break;
+  }
+  make_frames_special(ret);
   return ret;
-}        
+}
+
+

@@ -19,8 +19,8 @@ import { cook_wpoint } from './cook_wpoint';
 import { add_next_frame } from './edit_next_frame';
 import { get_next_frame_by_raw_id } from './get_the_next';
 import { take } from './take';
-export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string, files: IEntityInfo['files']): Record<string, F> {
-  const frames: Record<string, F> = {};
+export function make_frames(text: string, files: IEntityInfo['files']): Record<string, IFrameInfo> {
+  const frames: Record<string, IFrameInfo> = {};
   const frame_regexp = /<frame>\s+(.*?)\s+(.*)((.|\n)+?)<frame_end>/g;
   for (const [, frame_id, frame_name, content] of match_all(text, frame_regexp)) {
     let _content = content;
@@ -77,7 +77,7 @@ export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string, fil
     }
 
     const wait = take(fields, 'wait') * 2 + 1;
-    const frame: F = {
+    const frame: IFrameInfo = {
       id: frame_id,
       name: frame_name,
       pic: frame_pic_info,
@@ -199,7 +199,6 @@ export function make_frames<F extends IFrameInfo = IFrameInfo>(text: string, fil
           }
         break;
     }
-
     if (frame.itr) {
       for (const itr of frame.itr) {
         if (itr.kind === ItrKind.SuperPunchMe && (!itr.vrest || itr.vrest < frame.wait)) {

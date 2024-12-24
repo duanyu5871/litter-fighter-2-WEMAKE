@@ -128,7 +128,6 @@ export function make_ball_data(info: IEntityInfo, frames: Record<string, IFrameI
           }]
         }
       }
-
     } else if (frame.state === Defines.State.Ball_3006) {
       frame.speedz = 2;
       if (frame.bdy && frames[20]) {
@@ -154,23 +153,7 @@ export function make_ball_data(info: IEntityInfo, frames: Record<string, IFrameI
           }]
         }
       }
-    } else if (frame.state === Defines.State.Burning) {
-      if (frame.itr && Number(datIndex?.id) === 211) {
-        for (const itr of frame.itr) {
-          delete itr.friendly_fire;
-        }
-      }
     }
-
-    switch ('' + datIndex?.id) {
-      case '223':
-      case '224':
-        frame.speedz = 0;
-        frame.no_shadow = 1;
-        break;
-    }
-    // 223、224
-    // frame.hp = (50 to_num(take(frame, 'hit_a'), 0)) / 2
   }
   const ret: IEntityData = {
     id: '',
