@@ -654,6 +654,27 @@ export default class Entity {
     this.velocities[0].z = z;
   }
 
+  handle_velocity_decay(friction: number) {
+    let { x, z } = this.velocities[0];
+    if (x > 0) {
+      x -= friction
+      if (x < 0) x = 0; // 不能因为摩擦力反向加速
+    } else if (x < 0) {
+      x += friction;
+      if (x > 0) x = 0;  // 不能因为摩擦力反向加速
+    }
+
+    if (z > 0) {
+      z -= friction
+      if (z < 0) z = 0; // 不能因为摩擦力反向加速
+    } else if (z < 0) {
+      z += friction;
+      if (z > 0) z = 0; // 不能因为摩擦力反向加速
+    }
+
+    this.velocities[0].x = x;
+    this.velocities[0].z = z;
+  }
   /** 
    * 实体响应重力
    * 

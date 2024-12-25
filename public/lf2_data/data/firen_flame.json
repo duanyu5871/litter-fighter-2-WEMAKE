@@ -58,7 +58,9 @@
       "state": 3000,
       "centerx": 6,
       "centery": 46,
-      "dvx": 1.5
+      "dvx": 1.5,
+      "bdy": [],
+      "itr": []
     },
     "1": {
       "id": "1",
@@ -1102,7 +1104,9 @@
       },
       "state": 3000,
       "centerx": 78,
-      "centery": 148
+      "centery": 148,
+      "bdy": [],
+      "itr": []
     },
     "110": {
       "id": "110",

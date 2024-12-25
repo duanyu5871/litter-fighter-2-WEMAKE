@@ -126,6 +126,12 @@ export default class CharacterState_Base extends State_Base {
         break;
       case ItrKind.MagicFlute:
       case ItrKind.MagicFlute2: {
+        victim.merge_velocities()
+        if (victim.velocities[0].y < 3)
+          victim.velocities[0].y += 3;
+        if (victim.frame.state !== Defines.State.Falling)
+          victim.next_frame = victim.get_next_frame(victim.data.indexes?.falling?.[-1][0]!)?.frame;
+        victim.handle_velocity_decay(0.25)
         break;
       }
       default:

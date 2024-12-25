@@ -4392,7 +4392,7 @@
           "l": 40,
           "z": 20,
           "kind": 0,
-          "test": "itr_fall>=100"
+          "test": "itr_fall>=100|itr_kind==10|itr_kind==11"
         }
       ],
       "itr": [
@@ -4445,7 +4445,7 @@
           "l": 40,
           "z": 20,
           "kind": 0,
-          "test": "itr_fall>=100"
+          "test": "itr_fall>=100|itr_kind==10|itr_kind==11"
         }
       ],
       "itr": [
@@ -4514,7 +4514,7 @@
           "l": 40,
           "z": 20,
           "kind": 0,
-          "test": "itr_fall>=100"
+          "test": "itr_fall>=100|itr_kind==10|itr_kind==11"
         }
       ],
       "itr": [
@@ -4575,7 +4575,7 @@
           "l": 40,
           "z": 20,
           "kind": 0,
-          "test": "itr_fall>=100"
+          "test": "itr_fall>=100|itr_kind==10|itr_kind==11"
         }
       ],
       "itr": [
@@ -4690,7 +4690,7 @@
           "l": 40,
           "z": 20,
           "kind": 0,
-          "test": "itr_fall>=100"
+          "test": "itr_fall>=100|itr_kind==10|itr_kind==11"
         }
       ],
       "itr": [
@@ -4743,7 +4743,7 @@
           "l": 40,
           "z": 20,
           "kind": 0,
-          "test": "itr_fall>=100"
+          "test": "itr_fall>=100|itr_kind==10|itr_kind==11"
         }
       ],
       "itr": [
@@ -4812,7 +4812,7 @@
           "l": 40,
           "z": 20,
           "kind": 0,
-          "test": "itr_fall>=100"
+          "test": "itr_fall>=100|itr_kind==10|itr_kind==11"
         }
       ],
       "itr": [
@@ -4873,7 +4873,7 @@
           "l": 40,
           "z": 20,
           "kind": 0,
-          "test": "itr_fall>=100"
+          "test": "itr_fall>=100|itr_kind==10|itr_kind==11"
         }
       ],
       "itr": [

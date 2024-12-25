@@ -39,14 +39,14 @@ export default class CharacterState_Falling extends CharacterState_Base {
   update_falling(e: Entity): void {
     e.handle_gravity();
     e.handle_frame_velocity();
-    const { x, y } = e.velocity;
-
-    let falling_frame_idx = 1; // ---
-    if (y > 1) falling_frame_idx = 0; // ↗
-    if (y < -1) falling_frame_idx = 2; // ↘
-
-    const direction = x / e.facing >= 0 ? (1 as const) : (-1 as const);
-    e.enter_frame(e.data.indexes?.falling?.[direction][falling_frame_idx]);
+    if (e.wait <= 0) {
+      const { x, y } = e.velocity;
+      let falling_frame_idx = 1; // ---
+      if (y > 3) falling_frame_idx = 0; // ↗
+      if (y < -3) falling_frame_idx = 2; // ↘
+      const direction = x / e.facing > 0 ? (1 as const) : (-1 as const);
+      e.enter_frame(e.data.indexes?.falling?.[direction][falling_frame_idx]);
+    }
   }
 
   override on_landing(e: Entity): void {

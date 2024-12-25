@@ -789,7 +789,9 @@
       },
       "state": 3000,
       "centerx": 45,
-      "centery": 38
+      "centery": 38,
+      "bdy": [],
+      "itr": []
     },
     "41": {
       "id": "41",

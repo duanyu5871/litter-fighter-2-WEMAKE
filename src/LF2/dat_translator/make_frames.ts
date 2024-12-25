@@ -194,7 +194,10 @@ export function make_frames(text: string, files: IEntityInfo['files']): Record<s
           for (const bdy of frame.bdy) {
             if (bdy.kind === BdyKind.Normal) {
               bdy.test = new CondMaker<C_Val>()
-                .add(C_Val.ItrFall, '>=', Defines.DEFAULT_FALL_VALUE_MAX - Defines.DEFAULT_FALL_VALUE_DIZZY).done()
+                .add(C_Val.ItrFall, '>=', Defines.DEFAULT_FALL_VALUE_MAX - Defines.DEFAULT_FALL_VALUE_DIZZY)
+                .or(C_Val.ItrKind, '==', ItrKind.MagicFlute)
+                .or(C_Val.ItrKind, '==', ItrKind.MagicFlute2)
+                .done()
             }
           }
         break;

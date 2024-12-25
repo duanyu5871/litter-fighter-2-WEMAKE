@@ -56,7 +56,7 @@
           "l": 40,
           "z": 20,
           "kind": 0,
-          "test": "itr_kind!=9&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))",
+          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))",
           "hit_act": [
             {
               "id": "20",
@@ -91,7 +91,8 @@
       "hp": 3.5,
       "on_dead": {
         "id": "1"
-      }
+      },
+      "itr": []
     },
     "1": {
       "id": "1",
@@ -116,7 +117,7 @@
           "l": 40,
           "z": 20,
           "kind": 0,
-          "test": "itr_kind!=9&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))",
+          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))",
           "hit_act": [
             {
               "id": "20",
@@ -202,7 +203,7 @@
           "l": 40,
           "z": 20,
           "kind": 0,
-          "test": "itr_kind!=9&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))",
+          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))",
           "hit_act": [
             {
               "id": "20",
@@ -288,7 +289,7 @@
           "l": 40,
           "z": 20,
           "kind": 0,
-          "test": "itr_kind!=9&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))",
+          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))",
           "hit_act": [
             {
               "id": "20",
@@ -374,7 +375,7 @@
           "l": 40,
           "z": 20,
           "kind": 0,
-          "test": "itr_kind!=9&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))",
+          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))",
           "hit_act": [
             {
               "id": "20",
