@@ -2,7 +2,7 @@
 import { Warn } from '../../Log';
 import LF2 from '../LF2';
 import type { World } from '../World';
-import { ICube } from '../World';
+import { IBounding } from '../World';
 import { Callbacks, new_id, new_team, type NoEmitCallbacks } from '../base';
 import { IExpression } from '../base/Expression';
 import { BaseController } from '../controller/BaseController';
@@ -1153,7 +1153,7 @@ export default class Entity {
     }
   }
 
-  spark_point(r0: ICube, r1: ICube) {
+  spark_point(r0: IBounding, r1: IBounding) {
     const l = Math.max(r0.left, r1.left);
     const r = Math.min(r0.right, r1.right);
     const t = Math.min(r0.top, r1.top);

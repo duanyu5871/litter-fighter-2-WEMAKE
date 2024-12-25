@@ -126,7 +126,8 @@ export enum ItrKind {
    *  * [X] LF2
    *  * [X] WEMAKE
    */
-  MagicFlute = 10,//
+  MagicFlute = 10,
+  MagicFlute2 = 11,
 
 
   Block = 14,// 阻挡

@@ -61,6 +61,8 @@
           "y": 27,
           "w": 55,
           "h": 27,
+          "l": 40,
+          "z": 20,
           "kind": 0,
           "hit_act": [
             {
@@ -82,6 +84,8 @@
           "dvx": 12.5,
           "fall": 140,
           "bdefend": 120,
+          "l": 40,
+          "z": 20,
           "test": "victim_state!=1004|attacker_type!=character",
           "hit_sounds": [
             "data/020.wav.mp3"
@@ -121,6 +125,8 @@
           "y": 27,
           "w": 55,
           "h": 27,
+          "l": 40,
+          "z": 20,
           "kind": 0,
           "hit_act": [
             {
@@ -142,6 +148,8 @@
           "dvx": 9,
           "fall": 120,
           "bdefend": 72,
+          "l": 40,
+          "z": 20,
           "test": "victim_state!=1004|attacker_type!=character",
           "hit_sounds": [
             "data/020.wav.mp3"
@@ -181,6 +189,8 @@
           "y": 27,
           "w": 55,
           "h": 27,
+          "l": 40,
+          "z": 20,
           "kind": 0,
           "hit_act": [
             {
@@ -202,6 +212,8 @@
           "dvx": 6.5,
           "fall": 80,
           "bdefend": 32,
+          "l": 40,
+          "z": 20,
           "test": "victim_state!=1004|attacker_type!=character",
           "hit_sounds": [
             "data/020.wav.mp3"
@@ -241,6 +253,8 @@
           "y": 27,
           "w": 55,
           "h": 27,
+          "l": 40,
+          "z": 20,
           "kind": 0,
           "hit_act": [
             {
@@ -262,6 +276,8 @@
           "dvx": 4.5,
           "fall": 40,
           "bdefend": 32,
+          "l": 40,
+          "z": 20,
           "test": "victim_state!=1004|attacker_type!=character",
           "hit_sounds": [
             "data/020.wav.mp3"
@@ -644,6 +660,8 @@
           "y": 27,
           "w": 55,
           "h": 27,
+          "l": 40,
+          "z": 20,
           "kind": 0,
           "hit_act": [
             {
@@ -665,6 +683,8 @@
           "dvx": 12.5,
           "fall": 140,
           "bdefend": 120,
+          "l": 40,
+          "z": 20,
           "test": "victim_state!=1004|attacker_type!=character",
           "hit_sounds": [
             "data/020.wav.mp3"
@@ -969,6 +989,8 @@
           "y": 27,
           "w": 55,
           "h": 27,
+          "l": 40,
+          "z": 20,
           "kind": 0,
           "hit_act": [
             {
@@ -990,6 +1012,8 @@
           "dvx": 9.5,
           "fall": 140,
           "bdefend": 120,
+          "l": 40,
+          "z": 20,
           "test": "victim_state!=1004|attacker_type!=character",
           "hit_sounds": [
             "data/020.wav.mp3"
@@ -1029,6 +1053,8 @@
           "y": 27,
           "w": 55,
           "h": 27,
+          "l": 40,
+          "z": 20,
           "kind": 0,
           "hit_act": [
             {
@@ -1050,6 +1076,8 @@
           "dvx": 6,
           "fall": 120,
           "bdefend": 100,
+          "l": 40,
+          "z": 20,
           "test": "victim_state!=1004|attacker_type!=character",
           "hit_sounds": [
             "data/020.wav.mp3"

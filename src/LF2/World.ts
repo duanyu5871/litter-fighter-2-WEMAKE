@@ -19,7 +19,7 @@ import { WhatNext } from './state/State_Base';
 import { find } from './utils/container_help';
 import float_equal from './utils/math/float_equal';
 import { is_num } from './utils/type_check';
-export interface ICube {
+export interface IBounding {
   left: number;
   right: number;
   top: number;
@@ -458,8 +458,8 @@ export class World {
       return;
     if (itr.vrest && victim.get_v_rest(attacker.id) > 0)
       return;
-    const a_cube = this.get_cube(attacker, aframe, itr);
-    const b_cube = this.get_cube(victim, bframe, bdy);
+    const a_cube = this.get_bounding(attacker, aframe, itr);
+    const b_cube = this.get_bounding(victim, bframe, bdy);
     if (
       a_cube.left <= b_cube.right &&
       a_cube.right >= b_cube.left &&
@@ -538,15 +538,17 @@ export class World {
     e.attach()
   }
 
-  get_cube(e: Entity, f: IFrameInfo, i: IItrInfo | IBdyInfo): ICube {
+  get_bounding(e: Entity, f: IFrameInfo, i: IItrInfo | IBdyInfo): IBounding {
     const left = e.facing > 0 ?
       e.position.x - f.centerx + i.x :
       e.position.x + f.centerx - i.x - i.w;
     const top = e.position.y + f.centery - i.y;
-    const length = 30;
-    const far = e.position.z - length / 2;
-    const near = far + length;
-    return { left, right: left + i.w, top, bottom: top - i.h, near, far }
+    const far = e.position.z + i.z;
+    return {
+      left, right: left + i.w,
+      top, bottom: top - i.h,
+      far, near: far + i.l
+    }
   }
 
   private _ideally_dt: number = Math.floor(1000 / 60);

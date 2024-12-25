@@ -1,10 +1,11 @@
 import type { TNextFrame } from ".";
 import { IExpression } from "../base/Expression";
-import type { IRect } from "./IRect";
+import type { IQube } from "./IQube";
+import { IQubePair } from "./IQubePair";
 import type { IRectPair } from "./IRectPair";
 import type { Defines } from "./defines";
 
-export interface IItrInfo extends IRect {
+export interface IItrInfo extends IQube {
   /**
    * 预制信息id
    * 
@@ -72,7 +73,7 @@ export interface IItrInfo extends IRect {
    * @see {ItrEffect}
    */
   effect?: number;
-  indicator_info?: IRectPair;
+  indicator_info?: IQubePair;
   catchingact?: TNextFrame,
   caughtact?: TNextFrame
 

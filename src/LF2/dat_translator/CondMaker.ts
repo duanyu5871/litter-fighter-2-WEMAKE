@@ -5,33 +5,39 @@ export class CondMaker<T extends string = string> {
   static is = (v: any): v is CondMaker => v?.is_cond === true;
 
   private _parts: (string | CondMaker)[] = [];
-  add(word: T, op: TBinaryOperator, value: any): this {
-    this._parts.push(`${word}${op}${value}`);
+
+  add(func: (c: CondMaker<T>) => CondMaker<T>): this
+  add(word: T, op: TBinaryOperator, value: any): this
+  add(arg1: T | ((c: CondMaker<T>) => CondMaker<T>), op?: TBinaryOperator, value?: any): this {
+    if (typeof arg1 !== 'function')
+      this._parts.push(`${arg1}${op}${value}`);
+    else
+      this._parts.push(arg1(new CondMaker()));
     return this;
   }
-  not_bracket(func: (c: CondMaker<T>) => CondMaker<T>): this {
+  not(func: (c: CondMaker<T>) => CondMaker<T>): this {
     this._parts.push('!', func(new CondMaker()));
     return this;
   }
-  bracket(func: (c: CondMaker<T>) => CondMaker<T>): this {
+  wrap(func: (c: CondMaker<T>) => CondMaker<T>): this {
     this._parts.push(func(new CondMaker()));
     return this;
   }
   one_of(word: T, ...values: (string | number)[]): this {
-    return this.bracket(c => {
+    return this.wrap(c => {
       for (const v of values) c = c.or(word, '==', v);
       return c;
     });
   }
   not_in(word: T, ...values: (string | number)[]): this {
-    return this.bracket(c => {
+    return this.wrap(c => {
       for (const v of values) c.add(word, '!=', v);
       return c;
     });
   }
   private _any(word?: T | ((c: CondMaker<T>) => CondMaker<T>), op?: TBinaryOperator | (string | number)[], value?: any): this {
     if (typeof word === 'function')
-      return this.bracket(word);
+      return this.wrap(word);
     else if (word !== void 0)
       if (Array.isArray(op))
         return this.one_of(word, ...op);

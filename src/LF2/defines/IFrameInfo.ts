@@ -1,16 +1,16 @@
-import { TNextFrame } from ".";
+import type { TNextFrame } from ".";
 import type { INextFrame } from "../defines/INextFrame";
 import type { Defines } from './defines';
-import { IBdyInfo } from "./IBdyInfo";
-import { IBpointInfo } from "./IBpointInfo";
-import { ICpointInfo } from "./ICpointInfo";
-import { IFramePictureInfo } from "./IFramePictureInfo";
-import { IHitKeyCollection } from "./IHitKeyCollection";
-import { IHoldKeyCollection } from "./IHoldKeyCollection";
-import { IItrInfo } from "./IItrInfo";
-import { IOpointInfo } from "./IOpointInfo";
-import { IRectPair } from "./IRectPair";
-import { IWpointInfo } from "./IWpointInfo";
+import type { IBdyInfo } from "./IBdyInfo";
+import type { IBpointInfo } from "./IBpointInfo";
+import type { ICpointInfo } from "./ICpointInfo";
+import type { IFramePictureInfo } from "./IFramePictureInfo";
+import type { IHitKeyCollection } from "./IHitKeyCollection";
+import type { IHoldKeyCollection } from "./IHoldKeyCollection";
+import type { IItrInfo } from "./IItrInfo";
+import type { IOpointInfo } from "./IOpointInfo";
+import type { IQubePair } from "./IQubePair";
+import type { IWpointInfo } from "./IWpointInfo";
 import type { SpeedMode } from './SpeedMode';
 
 export interface IFrameInfo {
@@ -58,7 +58,7 @@ export interface IFrameInfo {
   bpoint?: IBpointInfo;
   opoint?: IOpointInfo[];
   cpoint?: ICpointInfo;
-  indicator_info?: IRectPair;
+  indicator_info?: IQubePair;
   invisible?: number;
   no_shadow?: number;
 

@@ -35,6 +35,8 @@
           "y": 18,
           "w": 43,
           "h": 62,
+          "l": 40,
+          "z": 20,
           "kind": 1003,
           "test": "same_team==0&((attacker_type==character&itr_kind==0)|(attacker_type==weapon&(itr_kind==5|attacker_oid==201|attacker_oid==202)))"
         }
@@ -66,6 +68,8 @@
           "y": 18,
           "w": 43,
           "h": 62,
+          "l": 40,
+          "z": 20,
           "kind": 1003,
           "test": "same_team==0&((attacker_type==character&itr_kind==0)|(attacker_type==weapon&(itr_kind==5|attacker_oid==201|attacker_oid==202)))"
         }
@@ -97,6 +101,8 @@
           "y": 18,
           "w": 43,
           "h": 62,
+          "l": 40,
+          "z": 20,
           "kind": 1003,
           "test": "same_team==0&((attacker_type==character&itr_kind==0)|(attacker_type==weapon&(itr_kind==5|attacker_oid==201|attacker_oid==202)))"
         }
@@ -192,6 +198,8 @@
           "y": 18,
           "w": 43,
           "h": 62,
+          "l": 40,
+          "z": 20,
           "kind": 1013,
           "test": "same_team==0&((attacker_type==character&itr_kind==0)|(attacker_type==weapon&(itr_kind==5|attacker_oid==201|attacker_oid==202)))"
         }
@@ -223,6 +231,8 @@
           "y": 18,
           "w": 43,
           "h": 62,
+          "l": 40,
+          "z": 20,
           "kind": 1013,
           "test": "same_team==0&((attacker_type==character&itr_kind==0)|(attacker_type==weapon&(itr_kind==5|attacker_oid==201|attacker_oid==202)))"
         }
@@ -254,6 +264,8 @@
           "y": 18,
           "w": 43,
           "h": 62,
+          "l": 40,
+          "z": 20,
           "kind": 1013,
           "test": "same_team==0&((attacker_type==character&itr_kind==0)|(attacker_type==weapon&(itr_kind==5|attacker_oid==201|attacker_oid==202)))"
         }
@@ -349,6 +361,8 @@
           "y": 18,
           "w": 43,
           "h": 62,
+          "l": 40,
+          "z": 20,
           "kind": 1023,
           "test": "same_team==0&((attacker_type==character&itr_kind==0)|(attacker_type==weapon&(itr_kind==5|attacker_oid==201|attacker_oid==202)))"
         }
@@ -380,6 +394,8 @@
           "y": 18,
           "w": 43,
           "h": 62,
+          "l": 40,
+          "z": 20,
           "kind": 1023,
           "test": "same_team==0&((attacker_type==character&itr_kind==0)|(attacker_type==weapon&(itr_kind==5|attacker_oid==201|attacker_oid==202)))"
         }
@@ -411,6 +427,8 @@
           "y": 18,
           "w": 43,
           "h": 62,
+          "l": 40,
+          "z": 20,
           "kind": 1023,
           "test": "same_team==0&((attacker_type==character&itr_kind==0)|(attacker_type==weapon&(itr_kind==5|attacker_oid==201|attacker_oid==202)))"
         }
@@ -506,6 +524,8 @@
           "y": 18,
           "w": 43,
           "h": 62,
+          "l": 40,
+          "z": 20,
           "kind": 1033,
           "test": "same_team==0&((attacker_type==character&itr_kind==0)|(attacker_type==weapon&(itr_kind==5|attacker_oid==201|attacker_oid==202)))"
         }
@@ -537,6 +557,8 @@
           "y": 18,
           "w": 43,
           "h": 62,
+          "l": 40,
+          "z": 20,
           "kind": 1033,
           "test": "same_team==0&((attacker_type==character&itr_kind==0)|(attacker_type==weapon&(itr_kind==5|attacker_oid==201|attacker_oid==202)))"
         }
@@ -568,6 +590,8 @@
           "y": 18,
           "w": 43,
           "h": 62,
+          "l": 40,
+          "z": 20,
           "kind": 1033,
           "test": "same_team==0&((attacker_type==character&itr_kind==0)|(attacker_type==weapon&(itr_kind==5|attacker_oid==201|attacker_oid==202)))"
         }
@@ -663,6 +687,8 @@
           "y": 18,
           "w": 43,
           "h": 62,
+          "l": 40,
+          "z": 20,
           "kind": 1043,
           "test": "same_team==0&((attacker_type==character&itr_kind==0)|(attacker_type==weapon&(itr_kind==5|attacker_oid==201|attacker_oid==202)))"
         }
@@ -694,6 +720,8 @@
           "y": 18,
           "w": 43,
           "h": 62,
+          "l": 40,
+          "z": 20,
           "kind": 1043,
           "test": "same_team==0&((attacker_type==character&itr_kind==0)|(attacker_type==weapon&(itr_kind==5|attacker_oid==201|attacker_oid==202)))"
         }
@@ -725,6 +753,8 @@
           "y": 18,
           "w": 43,
           "h": 62,
+          "l": 40,
+          "z": 20,
           "kind": 1043,
           "test": "same_team==0&((attacker_type==character&itr_kind==0)|(attacker_type==weapon&(itr_kind==5|attacker_oid==201|attacker_oid==202)))"
         }
@@ -820,6 +850,8 @@
           "y": 18,
           "w": 43,
           "h": 62,
+          "l": 40,
+          "z": 20,
           "kind": 1053,
           "test": "same_team==0&((attacker_type==character&itr_kind==0)|(attacker_type==weapon&(itr_kind==5|attacker_oid==201|attacker_oid==202)))"
         }
@@ -851,6 +883,8 @@
           "y": 18,
           "w": 43,
           "h": 62,
+          "l": 40,
+          "z": 20,
           "kind": 1053,
           "test": "same_team==0&((attacker_type==character&itr_kind==0)|(attacker_type==weapon&(itr_kind==5|attacker_oid==201|attacker_oid==202)))"
         }
@@ -882,6 +916,8 @@
           "y": 18,
           "w": 43,
           "h": 62,
+          "l": 40,
+          "z": 20,
           "kind": 1053,
           "test": "same_team==0&((attacker_type==character&itr_kind==0)|(attacker_type==weapon&(itr_kind==5|attacker_oid==201|attacker_oid==202)))"
         }
@@ -977,6 +1013,8 @@
           "y": 18,
           "w": 43,
           "h": 62,
+          "l": 40,
+          "z": 20,
           "kind": 1063,
           "test": "same_team==0&((attacker_type==character&itr_kind==0)|(attacker_type==weapon&(itr_kind==5|attacker_oid==201|attacker_oid==202)))"
         }
@@ -1008,6 +1046,8 @@
           "y": 18,
           "w": 43,
           "h": 62,
+          "l": 40,
+          "z": 20,
           "kind": 1063,
           "test": "same_team==0&((attacker_type==character&itr_kind==0)|(attacker_type==weapon&(itr_kind==5|attacker_oid==201|attacker_oid==202)))"
         }
@@ -1039,6 +1079,8 @@
           "y": 18,
           "w": 43,
           "h": 62,
+          "l": 40,
+          "z": 20,
           "kind": 1063,
           "test": "same_team==0&((attacker_type==character&itr_kind==0)|(attacker_type==weapon&(itr_kind==5|attacker_oid==201|attacker_oid==202)))"
         }

@@ -12,9 +12,9 @@ export function cook_ball_frame_state_3000(frame: IFrameInfo, frames: Record<str
       edit_bdy_info(bdy, {
         /* 受攻击判定 */
         test: new CondMaker<CollisionVal>()
-          .add(
-            CollisionVal.ItrKind, '!=', ItrKind.JohnShield
-          ).and(c => c
+          .add(CollisionVal.ItrKind, '!=', ItrKind.JohnShield)
+          .and(CollisionVal.ItrKind, '!=', ItrKind.Block)
+          .and(c => c
             .add(
               CollisionVal.AttackerType, '==', EntityEnum.Ball
             ).or(c => c
@@ -33,7 +33,7 @@ export function cook_ball_frame_state_3000(frame: IFrameInfo, frames: Record<str
       more_bdy.push(copy_bdy_info(bdy, {
         /* 反弹判定 */
         friendly_fire: 1,
-        test: new CondMaker<CollisionVal>().bracket(c => c
+        test: new CondMaker<CollisionVal>().wrap(c => c
           // 敌方角色的攻击反弹气功波
           .add(CollisionVal.SameTeam, '==', 0)
           .and(CollisionVal.AttackerType, '==', EntityEnum.Character)

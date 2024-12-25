@@ -23,6 +23,15 @@ export default function cook_itr(itr?: Partial<IItrInfo>) {
   if (not_zero_num(fall)) itr.fall = fall * 2;
   const bdefend = take(itr, 'bdefend');
   if (not_zero_num(bdefend)) itr.bdefend = bdefend * 2;
+
+  const zwidth = take(itr, 'zwidth');
+  if (not_zero_num(zwidth)) {
+    itr.l = zwidth
+    itr.z = zwidth / 2
+  } else {
+    itr.l = Defines.DAFUALT_QUBE_LENGTH
+    itr.z = Defines.DAFUALT_QUBE_LENGTH / 2
+  }
   switch (itr.effect) {
     case ItrEffect.FireExplosion:
     case ItrEffect.Explosion: {
@@ -33,7 +42,7 @@ export default function cook_itr(itr?: Partial<IItrInfo>) {
   switch (itr.kind) {
     case ItrKind.Normal: {
       const cond_maker = new CondMaker<C_Val>()
-        .bracket(c => c
+        .wrap(c => c
           .add(C_Val.VictimState, '!=', Defines.State.Weapon_OnGround)
           .or(C_Val.AttackerType, '!=', EntityEnum.Character)
         )
@@ -90,6 +99,20 @@ export default function cook_itr(itr?: Partial<IItrInfo>) {
         .add(C_Val.VictimType, '==', EntityEnum.Character)
         .done()
       break;
+    }
+    case ItrKind.MagicFlute:
+    case ItrKind.MagicFlute2: {
+      itr.motionless = 0;
+      itr.shaking = 0;
+      itr.test = new CondMaker<C_Val>()
+        .add(C_Val.VictimType, '==', EntityEnum.Character)
+        .or(c => c
+          .add(C_Val.VictimType, '==', EntityEnum.Weapon)
+          .and(C_Val.VictimOID, '!=', Defines.BuiltIn_OID.Henry_Arrow1)
+          .and(C_Val.VictimOID, '!=', Defines.BuiltIn_OID.Rudolf_Weapon)
+        )
+        .done()
+      return;
     }
     case ItrKind.ForceCatch: {
       itr.motionless = 0;
@@ -168,7 +191,7 @@ export default function cook_itr(itr?: Partial<IItrInfo>) {
       itr.dvy = 0;
       itr.dvz = 0;
       itr.test = new CondMaker<C_Val>()
-        .bracket(c => c
+        .wrap(c => c
           .add(C_Val.VictimType, '==', EntityEnum.Weapon)
           .and(C_Val.VictimOID, '!=', Defines.BuiltIn_OID.Henry_Arrow1)
           .and(C_Val.VictimOID, '!=', Defines.BuiltIn_OID.Rudolf)

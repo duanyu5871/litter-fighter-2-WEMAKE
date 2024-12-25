@@ -45,6 +45,8 @@
           "y": 12,
           "w": 51,
           "h": 24,
+          "l": 40,
+          "z": 20,
           "kind": 0,
           "hit_act": [
             {
@@ -67,6 +69,8 @@
           "dvx": 10,
           "fall": 140,
           "bdefend": 120,
+          "l": 40,
+          "z": 20,
           "test": "victim_state!=1004|attacker_type!=character",
           "hit_sounds": [
             "data/020.wav.mp3"
@@ -105,6 +109,8 @@
           "y": 12,
           "w": 51,
           "h": 24,
+          "l": 40,
+          "z": 20,
           "kind": 0,
           "hit_act": [
             {
@@ -127,6 +133,8 @@
           "dvx": 10,
           "fall": 140,
           "bdefend": 120,
+          "l": 40,
+          "z": 20,
           "test": "victim_state!=1004|attacker_type!=character",
           "hit_sounds": [
             "data/020.wav.mp3"
@@ -165,6 +173,8 @@
           "y": 12,
           "w": 51,
           "h": 24,
+          "l": 40,
+          "z": 20,
           "kind": 0,
           "hit_act": [
             {
@@ -187,6 +197,8 @@
           "dvx": 10,
           "fall": 140,
           "bdefend": 120,
+          "l": 40,
+          "z": 20,
           "test": "victim_state!=1004|attacker_type!=character",
           "hit_sounds": [
             "data/020.wav.mp3"
@@ -225,6 +237,8 @@
           "y": 12,
           "w": 51,
           "h": 24,
+          "l": 40,
+          "z": 20,
           "kind": 0,
           "hit_act": [
             {
@@ -247,6 +261,8 @@
           "dvx": 10,
           "fall": 140,
           "bdefend": 120,
+          "l": 40,
+          "z": 20,
           "test": "victim_state!=1004|attacker_type!=character",
           "hit_sounds": [
             "data/020.wav.mp3"
@@ -285,6 +301,8 @@
           "y": 12,
           "w": 51,
           "h": 24,
+          "l": 40,
+          "z": 20,
           "kind": 0,
           "hit_act": [
             {
@@ -307,6 +325,8 @@
           "dvx": 10,
           "fall": 140,
           "bdefend": 120,
+          "l": 40,
+          "z": 20,
           "test": "victim_state!=1004|attacker_type!=character",
           "hit_sounds": [
             "data/020.wav.mp3"
@@ -345,6 +365,8 @@
           "y": 12,
           "w": 51,
           "h": 24,
+          "l": 40,
+          "z": 20,
           "kind": 0,
           "hit_act": [
             {
@@ -367,6 +389,8 @@
           "dvx": 10,
           "fall": 140,
           "bdefend": 120,
+          "l": 40,
+          "z": 20,
           "test": "victim_state!=1004|attacker_type!=character",
           "hit_sounds": [
             "data/020.wav.mp3"

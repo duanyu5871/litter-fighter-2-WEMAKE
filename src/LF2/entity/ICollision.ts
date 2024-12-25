@@ -1,5 +1,5 @@
 import type { IBdyInfo, IFrameInfo, IItrInfo } from '../defines';
-import type { ICube } from '../World';
+import type { IBounding } from '../World';
 import type Entity from './Entity';
 
 export interface ICollision {
@@ -55,18 +55,18 @@ export interface ICollision {
   /**
    * 攻击方判定框
    *
-   * @type {ICube}
+   * @type {IBounding}
    * @memberof ICollisionInfo
    */
-  a_cube: ICube;
+  a_cube: IBounding;
 
   /**
    * 被攻击方的判定框
    *
-   * @type {ICube}
+   * @type {IBounding}
    * @memberof ICollisionInfo
    */
-  b_cube: ICube;
+  b_cube: IBounding;
 
   /**
    *

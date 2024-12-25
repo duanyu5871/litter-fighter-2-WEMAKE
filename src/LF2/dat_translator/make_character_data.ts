@@ -288,7 +288,7 @@ export function make_character_data(info: IEntityInfo, frames: Record<string, IF
                 ...get_next_frame_by_raw_id(t_action),
                 facing: FacingFlag.Ctrl,
                 expression: new CondMaker<EntityVal>()
-                  .add(EntityVal.Catching, '==', 1).and().bracket(c => {
+                  .add(EntityVal.Catching, '==', 1).and().wrap(c => {
                     return c.add(EntityVal.PressFB, '!=', 0).or(EntityVal.PressUD, '!=', 0)
                   }).done()
               }
@@ -367,6 +367,9 @@ export function make_character_data(info: IEntityInfo, frames: Record<string, IF
       case 189:
       case 190:
       case 191:
+        break;
+      case 200:
+        frame.state = Defines.State.Frozen;
         break;
       /** crouch */
       case 215:

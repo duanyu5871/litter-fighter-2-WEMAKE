@@ -1,10 +1,9 @@
 import type { TNextFrame } from ".";
-import { IExpression } from "../base/Expression";
-import type { Defines } from "./defines";
-import type { IRect } from "./IRect";
-import type { IRectPair } from "./IRectPair";
+import type { IExpression } from "../base/Expression";
+import type { IQube } from "./IQube";
+import type { IQubePair } from "./IQubePair";
 
-export interface IBdyInfo extends IRect {
+export interface IBdyInfo extends IQube {
   /**
    * 预制信息id
    * 
@@ -32,9 +31,9 @@ export interface IBdyInfo extends IRect {
   /**
    * [WEMAKE]
    *
-   * @type {?IRectPair}
+   * @type {?IQubePair}
    */
-  indicator_info?: IRectPair;
+  indicator_info?: IQubePair;
 
   hit_act?: TNextFrame;
 

@@ -76,6 +76,7 @@ export namespace Defines {
   export const DAFUALT_CATCH_TIME = 680;
   export const DEFAULT_ITR_FALL = 40
   export const DEFAULT_FALL_VALUE_DIZZY = 40;
+  export const DAFUALT_QUBE_LENGTH = 40;
 
   /**
    * 直接破防值
