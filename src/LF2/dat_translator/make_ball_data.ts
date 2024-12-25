@@ -114,13 +114,15 @@ export function make_ball_data(info: IEntityInfo, frames: Record<string, IFrameI
   };
 
   traversal(ret.frames, (_, frame) => {
-    if (frame.state === Defines.State._3000) {
-      cook_ball_frame_state_3000(ret, frame);
-    } else if (frame.state === Defines.State._3005) {
-      cook_ball_frame_state_3005(ret, frame);
-    } else if (frame.state === Defines.State.Ball_3006) {
-      cook_ball_frame_state_3006(ret, frame);
+    switch (frame.state) {
+      case Defines.State._3000:
+        return cook_ball_frame_state_3000(ret, frame);
+      case Defines.State._3005:
+        return cook_ball_frame_state_3005(ret, frame);
+      case Defines.State.Ball_3006:
+        return cook_ball_frame_state_3006(ret, frame);
     }
+
   })
   return ret
 }
