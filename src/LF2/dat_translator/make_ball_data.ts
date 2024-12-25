@@ -10,11 +10,12 @@ import { traversal } from "../utils/container_help/traversal";
 import { to_num } from "../utils/type_cast/to_num";
 import { CondMaker } from "./CondMaker";
 import { cook_ball_frame_state_3000 } from "./cook_ball_frame_state_3000";
+import { cook_ball_frame_state_3005 } from "./cook_ball_frame_state_3005";
+import { cook_ball_frame_state_3006 } from "./cook_ball_frame_state_3006";
 import { get_next_frame_by_raw_id } from "./get_the_next";
 import { take, take_str } from "./take";
 
 export function make_ball_data(info: IEntityInfo, frames: Record<string, IFrameInfo>, datIndex: IDatIndex): IEntityData {
-
   info.hp = 500;
 
   let weapon_broken_sound = take_str(info, 'weapon_broken_sound')
@@ -103,63 +104,25 @@ export function make_ball_data(info: IEntityInfo, frames: Record<string, IFrameI
         };
       }
     }
-    if (frame.state === Defines.State.Ball_Flying) {
-      cook_ball_frame_state_3000(frame, frames, weapon_broken_sound);
-    } else if (frame.state === Defines.State.Ball_3005) {
-      frame.speedz = 0;
-      if (frame.bdy && frames[20]) {
-        for (const bdy of frame.bdy) {
-          bdy.hit_act = [{
-            id: '20',
-            expression: new CondMaker<EntityVal>()
-              .add(EntityVal.HitByState, '{{', 3005)
-              .or(EntityVal.HitByItrKind, '{{', ItrKind.JohnShield)
-              .done()
-          }]
-        }
-      }
-      if (frame.itr && frames[20]) {
-        for (const itr of frame.itr) {
-          itr.hit_act = [{
-            id: '20',
-            expression: new CondMaker<EntityVal>()
-              .add(EntityVal.HitOnState, '{{', 3005)
-              .done()
-          }]
-        }
-      }
-    } else if (frame.state === Defines.State.Ball_3006) {
-      frame.speedz = 2;
-      if (frame.bdy && frames[20]) {
-        for (const bdy of frame.bdy) {
-          bdy.hit_act = [{
-            id: '20',
-            expression: new CondMaker<EntityVal>()
-              .add(EntityVal.HitByState, '{{', 3005)
-              .or(EntityVal.HitByState, '{{', 3006)
-              .or(EntityVal.HitByItrKind, '{{', ItrKind.JohnShield)
-              .done()
-          }]
-        }
-      }
-      if (frame.itr && frames[20]) {
-        for (const itr of frame.itr) {
-          itr.hit_act = [{
-            id: '20',
-            expression: new CondMaker<EntityVal>()
-              .add(EntityVal.HitOnState, '{{', 3005)
-              .or(EntityVal.HitOnState, '{{', 3006)
-              .done()
-          }]
-        }
-      }
-    }
+
   }
   const ret: IEntityData = {
-    id: '',
+    id: datIndex.id,
     type: EntityEnum.Ball,
     base: info,
     frames: frames
   };
+
+  traversal(ret.frames, (_, frame) => {
+    if (frame.state === Defines.State._3000) {
+      cook_ball_frame_state_3000(ret, frame);
+    } else if (frame.state === Defines.State._3005) {
+      cook_ball_frame_state_3005(ret, frame);
+    } else if (frame.state === Defines.State.Ball_3006) {
+      cook_ball_frame_state_3006(ret, frame);
+    }
+  })
   return ret
 }
+
+

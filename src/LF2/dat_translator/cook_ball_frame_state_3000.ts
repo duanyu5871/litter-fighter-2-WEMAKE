@@ -1,11 +1,11 @@
-import { IBdyInfo, IFrameInfo, ItrEffect, ItrKind } from "../defines";
+import { IBdyInfo, IEntityData, IFrameInfo, ItrEffect, ItrKind } from "../defines";
 import { CollisionVal } from "../defines/CollisionVal";
 import { EntityEnum } from "../defines/EntityEnum";
 import { CondMaker } from "./CondMaker";
 import { copy_bdy_info } from "./copy_bdy_info";
 import { edit_bdy_info } from "./edit_bdy_info";
 
-export function cook_ball_frame_state_3000(frame: IFrameInfo, frames: Record<string, IFrameInfo>, weapon_broken_sound: string | undefined) {
+export function cook_ball_frame_state_3000(e: IEntityData, frame: IFrameInfo) {
   const bdy_list = frame.bdy ? frame.bdy : (frame.bdy = []);
   const new_bdy: IBdyInfo[] = [];
   for (const bdy of bdy_list) {
@@ -26,7 +26,7 @@ export function cook_ball_frame_state_3000(frame: IFrameInfo, frames: Record<str
 
       hit_act: [{
         id: '20',
-        sounds: weapon_broken_sound ? [weapon_broken_sound] : void 0
+        sounds: e.base.dead_sounds
       }]
     });
 
@@ -60,7 +60,7 @@ export function cook_ball_frame_state_3000(frame: IFrameInfo, frames: Record<str
       ).done(),
       hit_act: {
         id: '30', // 反弹
-        sounds: weapon_broken_sound ? [weapon_broken_sound] : void 0
+        sounds: e.base.dead_sounds
       }
     }));
   }
