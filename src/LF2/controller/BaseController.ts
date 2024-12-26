@@ -133,8 +133,8 @@ export class BaseController {
     const { time, data: [f_0, f_1] } = this.dbc[k];
     if (
       (
-        f_0?.state === Defines.State.Standing ||
-        f_0?.state === Defines.State.Walking
+        f_0?.state !== Defines.State.Standing &&
+        f_0?.state !== Defines.State.Walking
       ) && (
         f_1?.state !== Defines.State.Standing &&
         f_1?.state !== Defines.State.Walking
