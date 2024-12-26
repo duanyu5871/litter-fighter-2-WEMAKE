@@ -4546,7 +4546,7 @@
           "bdefend": 32,
           "l": 40,
           "z": 20,
-          "test": "(victim_state!=1004|attacker_type!=character)&(victim_state!=19&victim_state!=18)",
+          "test": "(victim_state!=1004|attacker_type!=character)&(victim_state!=19&victim_state!=18&victim_type!=character)",
           "friendly_fire": 1
         }
       ],
@@ -4602,7 +4602,7 @@
           "bdefend": 32,
           "l": 40,
           "z": 20,
-          "test": "(victim_state!=1004|attacker_type!=character)&(victim_state!=19&victim_state!=18)",
+          "test": "(victim_state!=1004|attacker_type!=character)&(victim_state!=19&victim_state!=18&victim_type!=character)",
           "friendly_fire": 1
         }
       ],
@@ -4658,7 +4658,7 @@
           "bdefend": 32,
           "l": 40,
           "z": 20,
-          "test": "(victim_state!=1004|attacker_type!=character)&(victim_state!=19&victim_state!=18)",
+          "test": "(victim_state!=1004|attacker_type!=character)&(victim_state!=19&victim_state!=18&victim_type!=character)",
           "friendly_fire": 1
         }
       ],
@@ -4714,7 +4714,7 @@
           "bdefend": 32,
           "l": 40,
           "z": 20,
-          "test": "(victim_state!=1004|attacker_type!=character)&(victim_state!=19&victim_state!=18)",
+          "test": "(victim_state!=1004|attacker_type!=character)&(victim_state!=19&victim_state!=18&victim_type!=character)",
           "friendly_fire": 1
         }
       ],

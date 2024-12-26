@@ -22,7 +22,7 @@ import BallState_Base from '../state/BallState_Base';
 import CharacterState_Base from '../state/CharacterState_Base';
 import { State_Base } from '../state/State_Base';
 import WeaponState_Base from '../state/WeaponState_Base';
-import { random_get } from '../utils/math/random';
+import { mid, random_get, random_in } from '../utils/math/random';
 import { is_positive, is_str } from '../utils/type_check';
 import { Factory } from './Factory';
 import type IEntityCallbacks from './IEntityCallbacks';
@@ -1057,8 +1057,8 @@ export default class Entity {
     this.position.x = px - face_a * (centerx_a - c_a.x) + face_b * (centerx_b - c_b.x);
     this.position.y = py + centery_a - c_a.y + c_b.y - centery_b;
     this.position.z = pz;
-    if (c_b.cover === 11) this.position.z -= 0.5;
-    else if (c_b.cover === 10) this.position.z += 0.5;
+    if (c_b.cover === 11 || c_b.cover === 1) this.position.z -= 0.5;
+    else if (c_b.cover === 10 || c_b.cover === 0) this.position.z += 0.5;
   }
 
   /**
@@ -1178,15 +1178,17 @@ export default class Entity {
   }
 
   spark_point(r0: IBounding, r1: IBounding) {
-    const l = Math.max(r0.left, r1.left);
-    const r = Math.min(r0.right, r1.right);
-    const t = Math.min(r0.top, r1.top);
-    const b = Math.max(r0.bottom, r1.bottom);
-    const n = Math.min(r0.near, r1.near);
-    const f = Math.max(r0.far, r1.far);
-    const x = l + Math.random() * (r - l);
-    const y = t + Math.random() * (b - t);
-    const z = n + Math.random() * (f - n);
+    const {
+      left: l,
+      right: r,
+      top: t,
+      bottom: b,
+      near: n,
+      far: f
+    }: IBounding = cross_bounding(r0, r1)
+    const x = random_in(l, r)
+    const y = random_in(b, t)
+    const z = random_in(f, n)
     return [x, y, z] as const;
   }
 
@@ -1463,3 +1465,14 @@ Factory.inst.set_entity_creator(EntityEnum.Ball, (...args) => new Entity(...args
 Factory.inst.set_entity_creator(EntityEnum.Weapon, (...args) => new Entity(...args));
 Factory.inst.set_entity_creator(EntityEnum.Entity, (...args) => new Entity(...args));
 Factory.inst.set_entity_creator(EntityEnum.Character, (...args) => new Entity(...args));
+
+function cross_bounding(r0: IBounding, r1: IBounding): IBounding {
+  return {
+    left: Math.max(r0.left, r1.left),
+    right: Math.min(r0.right, r1.right),
+    bottom: Math.max(r0.bottom, r1.bottom),
+    top: Math.min(r0.top, r1.top),
+    far: Math.max(r0.far, r1.far),
+    near: Math.min(r0.near, r1.near),
+  };
+}

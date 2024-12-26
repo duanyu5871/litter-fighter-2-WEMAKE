@@ -15,7 +15,9 @@ export default function cook_opoint(opoint: IOpointInfo) {
       act.facing = facing % 2 ?
         Defines.FacingFlag.Backward :
         Defines.FacingFlag.None;
-      if (Math.abs(facing) >= 10) {
+      if (facing >= 2 && facing <= 19) {
+        act.facing = Defines.FacingFlag.Right
+      } else if (facing >= 20) {
         opoint.multi = Math.floor(facing / 10);
       }
     } else {

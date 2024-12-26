@@ -48,12 +48,14 @@ collision_handler.add(ItrKind.Freeze, [BdyKind.Normal, BdyKind.Defend], (c) => {
   const { itr, victim, attacker } = c
   victim.play_sound(["data/065.wav.mp3"]);
   victim.fall_value -= itr.fall ? itr.fall : Defines.DEFAULT_ITR_FALL;
-  const is_fall = victim.fall_value <= 0 || (victim.fall_value <= 80
+  const is_fall = victim.fall_value <= 0 || (
+    victim.fall_value <= Defines.DEFAULT_FALL_VALUE_DIZZY
     && (
       Defines.State.Caught === victim.frame.state ||
       victim.velocities[0].y > 0 ||
       victim.position.y > 0
-    ))
+    )
+  )
   if (is_fall && itr.dvy)
     victim.velocities[0].y = itr.dvy ?? 2;
   if (itr.dvz)

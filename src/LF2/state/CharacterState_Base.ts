@@ -122,6 +122,7 @@ export default class CharacterState_Base extends State_Base {
     }
     switch (itr.kind) {
       case ItrKind.Normal:
+      case ItrKind.CharacterThrew:
         this.handle_itr_kind_normal(collision)
         break;
       case ItrKind.MagicFlute:

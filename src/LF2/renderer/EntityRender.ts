@@ -137,7 +137,7 @@ export class EntityRender {
     this._shaking = entity.shaking
   }
   dispose(): void {
-    this.indicators.hide_box();
+    this.indicators.depose();
     this.entity_mesh.dispose();
     if (this.pictures)
       for (const [, pic] of this.pictures)

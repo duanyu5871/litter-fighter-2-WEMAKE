@@ -41,6 +41,7 @@ export function cook_ball_frame_state_3000(e: IEntityData, frame: IFrameInfo) {
         .and(C_Val.AttackerType, '==', EntityEnum.Character)
         .and(C_Val.ItrKind, '==', ItrKind.Normal)
         .and(C_Val.ItrEffect, '!=', ItrEffect.Ice)
+        .and(C_Val.ItrEffect, '!=', ItrEffect.MFire1)
       ).or(c => c
         // 队友角色的攻击必须相向才能反弹气功波
         .add(C_Val.SameTeam, '==', 1)

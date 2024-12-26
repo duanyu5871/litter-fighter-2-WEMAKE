@@ -48,6 +48,12 @@ export default function cook_itr(itr?: Partial<IItrInfo>) {
         )
       switch (itr.effect) {
         case ItrEffect.MFire1:
+          cond_maker.and(c => c
+            .add(C_Val.VictimState, '!=', Defines.State.BurnRun)
+            .and(C_Val.VictimState, '!=', Defines.State.Burning)
+            .and(C_Val.VictimType,  '!=', EntityEnum.Character)
+          )
+          break;
         case ItrEffect.MFire2:
           cond_maker.and(c => c
             .add(C_Val.VictimState, '!=', Defines.State.BurnRun)

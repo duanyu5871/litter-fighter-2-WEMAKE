@@ -66,7 +66,7 @@
           "l": 40,
           "z": 20,
           "kind": 0,
-          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
+          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
           "hit_act": {
             "id": "30",
             "sounds": [
@@ -147,7 +147,7 @@
           "l": 40,
           "z": 20,
           "kind": 0,
-          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
+          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
           "hit_act": {
             "id": "30",
             "sounds": [
@@ -228,7 +228,7 @@
           "l": 40,
           "z": 20,
           "kind": 0,
-          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
+          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
           "hit_act": {
             "id": "30",
             "sounds": [
@@ -309,7 +309,7 @@
           "l": 40,
           "z": 20,
           "kind": 0,
-          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
+          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
           "hit_act": {
             "id": "30",
             "sounds": [
@@ -390,7 +390,7 @@
           "l": 40,
           "z": 20,
           "kind": 0,
-          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
+          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
           "hit_act": {
             "id": "30",
             "sounds": [
@@ -471,7 +471,7 @@
           "l": 40,
           "z": 20,
           "kind": 0,
-          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
+          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
           "hit_act": {
             "id": "30",
             "sounds": [
