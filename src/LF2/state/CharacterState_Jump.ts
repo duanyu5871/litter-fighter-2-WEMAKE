@@ -29,6 +29,6 @@ export default class CharacterState_Jump extends CharacterState_Base {
     this._jumpings.add(character);
   }
   override on_landing(character: Entity): void {
-    character.enter_frame(character.data.indexes?.landing_1);
+    character.enter_frame({ id: character.data.indexes?.landing_1 });
   }
 }

@@ -1,4 +1,4 @@
-import { Defines, ItrEffect, ItrKind, TFace, type IFrameInfo, type TNextFrame } from "../defines";
+import { Defines, INextFrame, ItrEffect, ItrKind, TFace, type IFrameInfo } from "../defines";
 import { BdyKind } from "../defines/BdyKind";
 import type Entity from "../entity/Entity";
 import { same_face, turn_face } from "../entity/face_helper";
@@ -53,9 +53,9 @@ export class State_Base {
 
   get_auto_frame?(e: Entity): IFrameInfo | undefined;
 
-  get_sudden_death_frame?(e: Entity): TNextFrame | undefined;
+  get_sudden_death_frame?(e: Entity): INextFrame | undefined;
 
-  get_caught_end_frame?(e: Entity): TNextFrame | undefined;
+  get_caught_end_frame?(e: Entity): INextFrame | undefined;
 
   find_frame_by_id?(e: Entity, id: string | undefined): IFrameInfo | undefined
 
@@ -93,7 +93,7 @@ export class State_Base {
       case ItrEffect.Normal:
       case ItrEffect.Sharp:
       case void 0: {
-        const result = bdy.hit_act && victim.get_next_frame(bdy.hit_act, 1)
+        const result = bdy.hit_act && victim.get_next_frame(bdy.hit_act)
         if (result) victim.next_frame = result.frame;
         victim.fall_value -= itr.fall ? itr.fall : Defines.DEFAULT_ITR_FALL;
         victim.defend_value = 0;

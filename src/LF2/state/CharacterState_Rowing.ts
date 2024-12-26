@@ -20,6 +20,6 @@ export class CharacterState_Rowing extends CharacterState_Base {
     e.velocities[0].y = e.world.gravity * Math.sqrt(2 * h / e.world.gravity);
   }
   override on_landing(e: Entity): void {
-    e.enter_frame(e.data.indexes?.landing_1);
+    e.enter_frame({ id: e.data.indexes?.landing_1 });
   }
 }

@@ -28,14 +28,14 @@ export class CharacterState_Drink extends CharacterState_Base {
         e.holding.hp = 1;
 
         if (is_weapon(e.holding)) {
-          e.holding.enter_frame(e.holding.data.indexes?.in_the_sky);
+          e.holding.enter_frame({ id: e.holding.data.indexes?.in_the_sky });
           e.holding.velocities.length = 1;
           e.holding.velocities[0].set(3 * e.facing, 4, 0);
           e.holding.holder = void 0;
           e.holding.follow_holder();
           e.holding = void 0;
         }
-        e.enter_frame(Defines.FrameId.Auto);
+        e.enter_frame(Defines.NEXT_FRAME_AUTO);
       }
     }
   }

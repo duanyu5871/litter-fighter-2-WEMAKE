@@ -4,7 +4,6 @@ import type LF2 from '../LF2';
 import type { World } from '../World';
 import { IBounding } from '../World';
 import { Callbacks, new_id, new_team, type NoEmitCallbacks } from '../base';
-import { IExpression } from '../base/Expression';
 import { BaseController } from '../controller/BaseController';
 import { IBaseData, ICpointInfo, IEntityData, IFrameInfo, IItrInfo, INextFrame, INextFrameResult, IOpointInfo, ITexturePieceInfo, ItrKind, TFace, TNextFrame } from '../defines';
 import { BdyKind } from '../defines/BdyKind';
@@ -128,7 +127,7 @@ export default class Entity {
 
   frame: IFrameInfo = EMPTY_FRAME_INFO;
 
-  next_frame: TNextFrame | undefined = void 0;
+  next_frame: INextFrame | undefined = void 0;
   protected _prev_frame: IFrameInfo = EMPTY_FRAME_INFO;
   protected _catching?: Entity;
   protected _catcher?: Entity;
@@ -491,7 +490,7 @@ export default class Entity {
       dvx = dvx + Math.abs(ovz / 2);
     }
 
-    const result = this.get_next_frame(opoint.action, 1)
+    const result = this.get_next_frame(opoint.action)
     const facing = result?.which.facing ? this.handle_facing_flag(result.which.facing, result.frame) : emitter.facing;
     this.velocities[0].x = ovx + dvx * facing;
     this.velocities.push(
@@ -507,7 +506,7 @@ export default class Entity {
     if (opoint.hp) this.hp = opoint.hp;
     if (opoint.mp) this.mp = opoint.mp;
 
-    this.enter_frame(result?.which);
+    if (result) this.enter_frame(result.which);
 
     switch (opoint.kind) {
       case OpointKind.Pick:
@@ -604,7 +603,7 @@ export default class Entity {
   attach(): this {
     this.world.add_entities(this);
     if (EMPTY_FRAME_INFO === this.frame)
-      this.enter_frame(Defines.FrameId.Auto);
+      this.enter_frame(Defines.NEXT_FRAME_AUTO);
     return this;
   }
 
@@ -775,7 +774,7 @@ export default class Entity {
         const { dvx, dvy, dvz } = wpoint;
         if (dvx !== void 0 || dvy !== void 0 || dvz !== void 0) {
           this.follow_holder()
-          this.enter_frame(this.data.indexes?.throwing);
+          this.enter_frame({ id: this.data.indexes?.throwing });
           const vz = this.holder.controller ? this.holder.controller.UD * (dvz || 0) : 0;
           const vx = (dvx || 0 - Math.abs(vz / 2)) * this.facing
           this.velocities[0].set(vx, dvy || 0, vz)
@@ -796,7 +795,7 @@ export default class Entity {
       case Defines.State.Caught: {
         if (this.holding) {
           this.holding.follow_holder()
-          this.holding.enter_frame(this.data.indexes?.in_the_sky);
+          this.holding.enter_frame({ id: this.data.indexes?.in_the_sky });
           this.holding.holder = void 0;
           this.holding = void 0;
         }
@@ -832,7 +831,7 @@ export default class Entity {
   update(): void {
     if (this.next_frame) this.enter_frame(this.next_frame);
     if (this.wait > 0) { --this.wait; }
-    else { this.next_frame = this.frame.next; }
+    else { this.next_frame = this.get_next_frame(this.frame.next)?.which; }
     this.state?.update(this);
 
     let vx = 0;
@@ -892,8 +891,8 @@ export default class Entity {
         this.transfrom_to_another();
         this.controller.reset_key_list();
       } else if (next_frame) {
-        const result = this.get_next_frame(next_frame, 1);
-        if (result) this.next_frame = next_frame;
+        const result = this.get_next_frame(next_frame)?.which;
+        if (result) this.next_frame = result;
       }
     }
 
@@ -903,7 +902,7 @@ export default class Entity {
       this.velocities[0].y = 0;
 
       if (this.frame.on_landing) {
-        const result = this.get_next_frame(this.frame.on_landing, 1);
+        const result = this.get_next_frame(this.frame.on_landing);
         if (result) this.next_frame = result.frame;
       }
       this.state?.on_landing?.(this);
@@ -938,7 +937,7 @@ export default class Entity {
    * 
    * @returns 下帧信息 
    */
-  get_caught_end_frame(): TNextFrame {
+  get_caught_end_frame(): INextFrame {
     return this.state?.get_caught_end_frame?.(this) || { id: Defines.FrameId.Auto }
   }
 
@@ -950,13 +949,13 @@ export default class Entity {
    * 
    * @returns 下帧信息 
    */
-  get_caught_cancel_frame(): TNextFrame {
+  get_caught_cancel_frame(): INextFrame {
     if (this.position.y < 1) this.position.y = 1;
     return { id: Defines.FrameId.Auto }
   }
 
   private prev_cpoint_a?: ICpointInfo;
-  update_caught(): TNextFrame | undefined {
+  update_caught(): INextFrame | undefined {
 
     if (!this._catcher) return;
     /** "对齐颗粒度" */
@@ -999,10 +998,10 @@ export default class Entity {
       this.prev_cpoint_a = void 0;
     }
     if (cpoint_a.vaction)
-      return cpoint_a.vaction;
+      return this.get_next_frame(cpoint_a.vaction)?.which;
   }
 
-  update_catching(): TNextFrame | undefined {
+  update_catching(): INextFrame | undefined {
     if (!this._catching) return;
 
     if (!this._catch_time) {
@@ -1067,7 +1066,7 @@ export default class Entity {
    * 
    * @returns 下帧信息 
    */
-  get_catching_end_frame(): TNextFrame {
+  get_catching_end_frame(): INextFrame {
     return { id: Defines.FrameId.Auto }
   }
 
@@ -1080,7 +1079,7 @@ export default class Entity {
    * 
    * @returns 下帧信息 
    */
-  get_catching_cancel_frame(): TNextFrame {
+  get_catching_cancel_frame(): INextFrame {
     return { id: Defines.FrameId.Auto }
   }
 
@@ -1089,7 +1088,7 @@ export default class Entity {
     if (!transform_datas) return;
     const next_idx = (transform_datas.indexOf(this.data) + 1) % transform_datas.length;
     this.data = transform_datas[next_idx];
-    this.next_frame = this.get_next_frame('245', 1)?.frame;
+    this.next_frame = this.get_next_frame({ id: '245' })?.frame;
   }
 
   /**
@@ -1136,7 +1135,7 @@ export default class Entity {
     }
     this._catch_time = this._catch_time_max;
     this._catching = target;
-    this.next_frame = itr.catchingact
+    this.next_frame = this.get_next_frame(itr.catchingact)?.which
   }
 
   start_caught(attacker: Entity, itr: IItrInfo) {
@@ -1148,7 +1147,7 @@ export default class Entity {
     this.resting = 0;
     this.fall_value = this.fall_value_max;
     this.defend_value = this.defend_value_max;
-    this.next_frame = itr.caughtact;
+    this.next_frame = this.get_next_frame(itr.caughtact)?.which;
   }
 
   on_collision(collision: ICollision): void {
@@ -1170,7 +1169,7 @@ export default class Entity {
       this.play_sound(itr.hit_sounds);
     }
     if (itr.hit_act) {
-      this.next_frame = this.get_next_frame(itr.hit_act, 1)?.frame ?? this.next_frame;
+      this.next_frame = this.get_next_frame(itr.hit_act)?.frame ?? this.next_frame;
     }
   }
 
@@ -1208,12 +1207,12 @@ export default class Entity {
       bdy.kind >= BdyKind.GotoMin &&
       bdy.kind <= BdyKind.GotoMax
     ) {
-      const result = this.get_next_frame('' + (bdy.kind - 1000), 1)
+      const result = this.get_next_frame({ id: '' + (bdy.kind - 1000) })
       if (result) this.next_frame = result.frame
       return;
     }
     if (bdy.hit_act) {
-      this.next_frame = this.get_next_frame(bdy.hit_act, 1)?.frame ?? this.next_frame;
+      this.next_frame = this.get_next_frame(bdy.hit_act)?.frame ?? this.next_frame;
     }
     if (itr.kind !== ItrKind.Block) {
       const sounds = bdy.hit_sounds || this.data.base.hit_sounds
@@ -1299,23 +1298,24 @@ export default class Entity {
     this.world.nearest_enemy_requesters.delete(this)
   }
 
-  enter_frame(which?: TNextFrame | string): void {
-    if (!which || this.frame.id === Defines.FrameId.Gone) return;
-    const result = this.get_next_frame(which, 0);
+  enter_frame(which: TNextFrame): void {
+    if (this.frame.id === Defines.FrameId.Gone) {
+      return;
+    }
+    const result = this.get_next_frame(which);
     if (!result) {
       this.next_frame = void 0;
       return
     }
     const { frame, which: flags } = result;
-    const { sound } = frame;
     if (!this.world.lf2.infinity_mp) {
       const { mp, hp } = flags
       if (mp) this.mp -= mp
       if (hp) this.hp -= hp
     }
-    if (sound) {
+    if (frame.sound) {
       const { x, y, z } = this.position;
-      this.world.lf2.sounds.play(sound, x, y, z);
+      this.world.lf2.sounds.play(frame.sound, x, y, z);
     }
     this.set_frame(frame);
 
@@ -1370,33 +1370,23 @@ export default class Entity {
     }
   }
 
-  get_next_frame(which: TNextFrame | string, test_flag: 0 | 1 | 2): INextFrameResult | undefined {
+  get_next_frame(which: TNextFrame): INextFrameResult | undefined {
     if (Array.isArray(which)) {
       const l = which.length;
       for (let i = 0; i < l; ++i) {
-        const f = this.get_next_frame(which[i], test_flag);
+        const f = this.get_next_frame(which[i]);
         if (f) return f
       }
       return void 0;
     }
+    const id = which.id;
+    const judger = which.judger;
+    const use_hp = which.hp
+    const use_mp = which.mp
 
-    let id: string | string[] | undefined = void 0;
-    let judger: IExpression<any> | undefined = void 0;
-    let use_hp: number | undefined = void 0;
-    let use_mp: number | undefined = void 0;
-    // eslint-disable-next-line no-cond-assign
-    if (is_str(which)) {
-      id = which;
-    } else {
-      id = which.id;
-      judger = which.judger;
-      use_hp = which.hp
-      use_mp = which.mp
-    }
-    if (test_flag !== 2 && judger && !judger.run(this)) {
+    if (judger && !judger.run(this)) {
       return void 0
     }
-
     let frame: IFrameInfo | undefined
     if (id) {
       frame = this.find_frame_by_id(
@@ -1410,8 +1400,8 @@ export default class Entity {
     if (!this.world.lf2.infinity_mp) {
       if (this.frame.next === which) {
         // 用next 进入此动作，负数表示消耗，无视正数。若消耗完毕跳至按下防御键的指定跳转动作
-        if (use_mp && this._mp < use_mp) return this.get_next_frame(frame.hit?.d ?? Defines.FrameId.Auto, 2);
-        if (use_hp && this._hp < use_hp) return this.get_next_frame(frame.hit?.d ?? Defines.FrameId.Auto, 2);
+        if (use_mp && this._mp < use_mp) return this.get_next_frame(frame.hit?.d ?? Defines.NEXT_FRAME_AUTO);
+        if (use_hp && this._hp < use_hp) return this.get_next_frame(frame.hit?.d ?? Defines.NEXT_FRAME_AUTO);
       } else {
         if (use_mp && this._mp < use_mp) return void 0;
         if (use_hp && this._hp < use_hp) return void 0;
@@ -1421,10 +1411,6 @@ export default class Entity {
     let w: INextFrame;
     if (is_str(which)) {
       w = { id: which };
-    } else if (test_flag === 1) {
-      w = { ...which }
-      delete w.judger;
-      delete w.expression;
     } else {
       w = which;
     }

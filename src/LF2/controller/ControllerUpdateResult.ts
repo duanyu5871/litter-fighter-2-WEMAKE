@@ -1,5 +1,4 @@
-import { type TNextFrame, GameKey, TLooseGameKey } from '../defines';
-import Entity from '../entity/Entity';
+import { type TNextFrame, TLooseGameKey } from '../defines';
 
 export class ControllerUpdateResult {
   next_frame?: TNextFrame;

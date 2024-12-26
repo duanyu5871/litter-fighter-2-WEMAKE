@@ -1,4 +1,4 @@
-import { Defines, IFrameInfo, ItrKind, TNextFrame } from '../defines';
+import { Defines, IFrameInfo, INextFrame, ItrKind } from '../defines';
 import { BdyKind } from '../defines/BdyKind';
 import { ItrEffect } from '../defines/ItrEffect';
 import type Entity from '../entity/Entity';
@@ -14,7 +14,7 @@ export default class CharacterState_Base extends State_Base {
     e.handle_frame_velocity();
   }
   override on_landing(e: Entity): void {
-    e.enter_frame(e.data.indexes?.landing_2);
+    e.enter_frame({ id: e.data.indexes?.landing_2 });
   }
   override get_auto_frame(e: Entity): IFrameInfo | undefined {
     let fid: string | undefined;
@@ -99,7 +99,7 @@ export default class CharacterState_Base extends State_Base {
         if (victim.defend_value <= 0) { // 破防
           victim.defend_value = 0;
           victim.world.spark(...victim.spark_point(a_cube, b_cube), "broken_defend")
-          const result = bdy.break_act && victim.get_next_frame(bdy.break_act, 1)
+          const result = bdy.break_act && victim.get_next_frame(bdy.break_act)
           if (result) {
             victim.next_frame = result.frame
             return;
@@ -107,7 +107,7 @@ export default class CharacterState_Base extends State_Base {
         } else {
           if (itr.dvx) victim.velocities[0].x = itr.dvx * attacker.facing / 2;
           victim.world.spark(...victim.spark_point(a_cube, b_cube), "defend_hit")
-          const result = bdy.hit_act && victim.get_next_frame(bdy.hit_act, 1)
+          const result = bdy.hit_act && victim.get_next_frame(bdy.hit_act)
           if (result) victim.next_frame = result.frame
           return;
         }
@@ -130,10 +130,7 @@ export default class CharacterState_Base extends State_Base {
         if (victim.velocities[0].y < 3)
           victim.velocities[0].y += 3;
         if (victim.frame.state !== Defines.State.Falling) {
-          const frameId = victim.data.indexes?.falling?.[-1][0]
-          if (frameId) {
-            victim.next_frame = victim.get_next_frame(frameId, 1)?.frame;
-          }
+          victim.next_frame = victim.get_next_frame({ id: victim.data.indexes?.falling?.[-1][0] })?.frame;
         }
         victim.handle_velocity_decay(0.25)
         break;
@@ -143,9 +140,7 @@ export default class CharacterState_Base extends State_Base {
     }
   }
 
-
-
-  override get_sudden_death_frame(target: Entity): TNextFrame | undefined {
+  override get_sudden_death_frame(target: Entity): INextFrame | undefined {
     target.velocities[0].y = 2;
     target.velocities[0].x = 2 * target.facing;
     if (target.data.indexes?.falling)
@@ -153,7 +148,7 @@ export default class CharacterState_Base extends State_Base {
     return void 0;
   }
 
-  override get_caught_end_frame(target: Entity): TNextFrame | undefined {
+  override get_caught_end_frame(target: Entity): INextFrame | undefined {
     target.velocities[0].y = 2;
     target.velocities[0].x = -2 * target.facing;
     if (target.data.indexes?.falling)

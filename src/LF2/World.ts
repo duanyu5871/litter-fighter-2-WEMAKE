@@ -272,9 +272,9 @@ export class World {
     const { left, right, near, far } = this.bg.data.base;
     const { x, z } = e.position;
     if (x < left - 800)
-      e.enter_frame(Defines.FrameId.Gone)
+      e.enter_frame(Defines.NEXT_FRAME_GONE)
     else if (x > right + 800)
-      e.enter_frame(Defines.FrameId.Gone)
+      e.enter_frame(Defines.NEXT_FRAME_GONE)
     if (z < far)
       e.position.z = far;
     else if (z > near)
@@ -287,9 +287,9 @@ export class World {
     const { left, right, near, far } = this.bg.data.base;
     const { x, z } = e.position;
     if (x < left - 100)
-      e.enter_frame(Defines.FrameId.Gone)
+      e.enter_frame(Defines.NEXT_FRAME_GONE)
     else if (x > right + 100)
-      e.enter_frame(Defines.FrameId.Gone)
+      e.enter_frame(Defines.NEXT_FRAME_GONE)
     if (z < far)
       e.position.z = far;
     else if (z > near)
@@ -537,7 +537,7 @@ export class World {
     }
     const e = create(this, data)
     e.position.set(x, y, z)
-    e.enter_frame(f)
+    e.enter_frame({ id: f })
     e.attach()
   }
 

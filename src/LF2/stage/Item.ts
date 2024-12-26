@@ -100,8 +100,8 @@ export default class Item {
     e.team = this.stage.team;
     e.attach();
 
-    if (is_str(act)) e.enter_frame(act);
-    else e.enter_frame(Defines.FrameId.Auto);
+    if (is_str(act)) e.enter_frame({ id: act });
+    else e.enter_frame(Defines.NEXT_FRAME_AUTO);
 
     return true;
   }

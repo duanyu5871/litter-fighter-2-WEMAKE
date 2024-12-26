@@ -1,8 +1,7 @@
 import type { GameKey } from "./GameKey";
 import type { IBgData } from "./IBgData";
+import { INextFrame } from "./INextFrame";
 import type { IStageInfo } from "./IStageInfo";
-import type { IBdyInfo } from "./IBdyInfo";
-import type { IItrInfo } from "./IItrInfo";
 export namespace Defines {
   export enum OpointSpreading {
     Normal = 0,
@@ -127,6 +126,15 @@ export namespace Defines {
     Gone = "gone",
     Invisible_Min = "1100", // 1100 ~ 1299 隐身
     Invisible_Max = "1299", // 1100 ~ 1299 隐身
+  }
+  export const NEXT_FRAME_GONE: Readonly<INextFrame> = {
+    id: Defines.FrameId.Gone
+  }
+  export const NEXT_FRAME_AUTO: Readonly<INextFrame> = {
+    id: Defines.FrameId.Auto
+  }
+  export const NEXT_FRAME_SELF: Readonly<INextFrame> = {
+    id: Defines.FrameId.Self
   }
   export enum WeaponType {
     None = 0,

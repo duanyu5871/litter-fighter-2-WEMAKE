@@ -509,7 +509,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     character.facing = old_facing;
     character.name = player_info.name;
     character.team = player_info.team;
-    character.enter_frame(old_frame_id);
+    character.enter_frame({ id: old_frame_id });
     if (!old) {
       this.random_entity_info(character)
     }

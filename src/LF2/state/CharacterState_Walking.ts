@@ -15,16 +15,16 @@ export class CharacterState_Walking extends CharacterState_Base {
         if (is_weapon(e.holding) && e.holding?.data.base.type === Defines.WeaponType.Heavy) {
           e.wait = e.frame.wait
         } else {
-          e.enter_frame(e.data.indexes?.standing);
+          e.enter_frame({ id: e.data.indexes?.standing });
         }
       }
     } else {
-      e.enter_frame(e.data.indexes?.standing);
+      e.enter_frame({ id: e.data.indexes?.standing });
     }
     if (e.hp <= 0) {
       e.enter_frame(e.get_sudden_death_frame());
     } else if (e.position.y > 0) {
-      e.enter_frame(e.data.indexes?.in_the_sky );
+      e.enter_frame({ id: e.data.indexes?.in_the_sky });
     }
   }
 }

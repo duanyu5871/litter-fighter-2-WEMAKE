@@ -14,7 +14,7 @@ export default class WeaponState_Base extends State_Base {
       attacker.velocities[0].x = -0.3 * attacker.velocities[0].x;
       attacker.velocities[0].y = -0.3 * attacker.velocities[0].y;
     }
-    attacker.enter_frame(attacker.data.indexes?.in_the_sky)
+    attacker.enter_frame({ id: attacker.data.indexes?.in_the_sky })
   }
 
   override before_be_collided(collision: ICollision): WhatNext {
@@ -49,7 +49,7 @@ export default class WeaponState_Base extends State_Base {
         victim.velocities[0].x = vx / 2;
         victim.velocities[0].y = vy;
         victim.team = attacker.team;
-        victim.enter_frame(victim.data.indexes?.in_the_sky)
+        victim.enter_frame({ id: victim.data.indexes?.in_the_sky })
       }
     } else {
       const vx = itr.dvx ? itr.dvx * attacker.facing : 0;
@@ -57,7 +57,7 @@ export default class WeaponState_Base extends State_Base {
       victim.velocities[0].x = vx;
       victim.velocities[0].y = vy;
       victim.team = attacker.team;
-      victim.enter_frame(victim.data.indexes?.in_the_sky)
+      victim.enter_frame({ id: victim.data.indexes?.in_the_sky })
     }
   }
 

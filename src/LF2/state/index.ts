@@ -1,8 +1,6 @@
-import { IFrameInfo, TNextFrame } from "../defines";
+import { IFrameInfo } from "../defines";
 import { Defines } from "../defines/defines";
 import Entity from "../entity/Entity";
-import { ICollision } from "../entity/ICollision";
-import { is_ball, is_character, is_weapon } from "../entity/type_check";
 import BallState_Base from "./BallState_Base";
 import CharacterState_Base from "./CharacterState_Base";
 import CharacterState_Burning from "./CharacterState_Burning";
@@ -20,10 +18,11 @@ import CharacterState_Teleport2FarthestAlly from "./CharacterState_Teleport2Fart
 import CharacterState_Teleport2NearestEnemy from "./CharacterState_Teleport2NearestEnemy";
 import { CharacterState_TransformToLouisEX } from "./CharacterState_Transform2LouisEX";
 import { CharacterState_Walking } from "./CharacterState_Walking";
-import State_Base, { WhatNext } from "./State_Base";
+import State_Base from "./State_Base";
 import State_TransformTo8XXX from "./State_TransformTo8XXX";
 import { State_TransformToCatching } from "./State_TransformToCatching";
 import { State_WeaponBroken } from "./State_WeaponBroken";
+import { StateBase_Proxy } from "./StateBase_Proxy";
 import { States } from "./States";
 import WeaponState_Base from "./WeaponState_Base";
 import WeaponState_InTheSky from "./WeaponState_InTheSky";
@@ -86,57 +85,12 @@ ENTITY_STATES.set(Defines.State.TeleportToFarthestAlly, new CharacterState_Telep
 ENTITY_STATES.set(Defines.State.TransformToLouisEx, new CharacterState_TransformToLouisEX())
 ENTITY_STATES.set(Defines.State.Rowing, new CharacterState_Rowing())
 ENTITY_STATES.set(Defines.State.Drink, new CharacterState_Drink())
-ENTITY_STATES.set(Defines.State.Normal, new (class State_15 extends State_Base implements Required<State_Base> {
-  private character_proxy = new CharacterState_Base();
-  private weapon_proxy = new WeaponState_Base();
-  private ball_proxy = new BallState_Base();
-  private proxy = new State_Base();
-  get_proxy(e: Entity) {
-    if (is_character(e)) return this.character_proxy;
-    if (is_weapon(e)) return this.weapon_proxy;
-    if (is_ball(e)) return this.ball_proxy;
-    return this.proxy
-  }
+
+ENTITY_STATES.set(Defines.State.Normal, new (class State_15 extends StateBase_Proxy  {
   override enter(e: Entity, prev_frame: IFrameInfo): void {
     e.merge_velocities()
-    return this.get_proxy(e).enter?.(e, prev_frame)
+    return this.enter(e, prev_frame)
   }
-  override leave(e: Entity, next_frame: IFrameInfo): void {
-    return this.get_proxy(e).leave?.(e, next_frame)
-  }
-  override update(e: Entity): void {
-    return this.get_proxy(e).update(e)
-  }
-  override on_landing(e: Entity): void {
-    return this.get_proxy(e).on_landing?.(e)
-  }
-  override get_auto_frame(e: Entity): IFrameInfo | undefined {
-    return this.get_proxy(e).get_auto_frame?.(e)
-  }
-  override before_collision(collision: ICollision): WhatNext {
-    return this.get_proxy(collision.attacker).before_collision?.(collision) || WhatNext.Continue;
-  }
-
-  override before_be_collided(collision: ICollision): WhatNext {
-    return this.get_proxy(collision.attacker).before_be_collided?.(collision) || WhatNext.Continue;
-  }
-  override on_collision(collision: ICollision): void {
-    this.get_proxy(collision.attacker).on_collision?.(collision)
-  }
-  override on_be_collided(collision: ICollision): void {
-    this.get_proxy(collision.victim).on_be_collided?.(collision)
-  }
-  override get_sudden_death_frame(target: Entity): TNextFrame | undefined {
-    return this.get_proxy(target)?.get_sudden_death_frame?.(target)
-  }
-  override get_caught_end_frame(target: Entity): TNextFrame | undefined {
-    return this.get_proxy(target)?.get_caught_end_frame?.(target)
-  }
-  override find_frame_by_id(e: Entity, id: string | undefined): IFrameInfo | undefined {
-    return this.get_proxy(e)?.find_frame_by_id?.(e, id)
-  }
-
-
 })())
 
 ENTITY_STATES.set(Defines.State.Injured, new class extends CharacterState_Base {

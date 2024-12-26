@@ -8,7 +8,7 @@ export default class CharacterState_Standing extends CharacterState_Base {
     if (e.hp <= 0) {
       e.enter_frame(e.get_sudden_death_frame());
     } else if (e.position.y > 0) {
-      e.enter_frame(e.data.indexes?.in_the_sky);
+      e.enter_frame({ id: e.data.indexes?.in_the_sky });
     }
   }
 }
