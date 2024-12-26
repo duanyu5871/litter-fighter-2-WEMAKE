@@ -54,7 +54,7 @@ export class FrameIndicators {
   }
 
   protected _new_indicator(k: keyof typeof this._indicators_map, idx: number) {
-    const ret = this._indicators_map[k][idx] = new Ditto.LineSegmentsNode(this._entity.lf2, { color: INDICATORS_COLOR[k] });
+    const ret = this._indicators_map[k][idx] = new Ditto.LineSegmentsNode(this._entity.lf2, { color: INDICATORS_COLOR[k], linewidth: 100 });
     this.scene.add(ret);
     return ret;
   }
@@ -115,7 +115,7 @@ export class FrameIndicators {
   }
   show_box() {
     if (this._box) return;
-    this._box = new Ditto.LineSegmentsNode(this._entity.lf2, { color: INDICATORS_COLOR.main });
+    this._box = new Ditto.LineSegmentsNode(this._entity.lf2, { color: INDICATORS_COLOR.main, linewidth: 100 });
     this.scene.add(this._box);
   }
   hide_box() {
