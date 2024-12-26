@@ -10,7 +10,15 @@ export interface IFrameIndexes {
   picking_light?: string;
   in_the_sky?: string;
   falling?: TFrameIdListPair;
+
+  /**
+   * 速度叫快的摔到地上时，需要弹起来
+   * 
+   * - "-1": 角色面部朝上
+   * - "1": 角色面部朝下
+   */
   bouncing?: TFrameIdListPair;
+
   critical_hit?: TFrameIdListPair;
   injured?: TFrameIdPair;
   grand_injured?: TFrameIdListPair;

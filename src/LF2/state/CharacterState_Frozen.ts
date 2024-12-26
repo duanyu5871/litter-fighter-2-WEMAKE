@@ -42,11 +42,11 @@ export default class CharacterState_Frozen extends CharacterState_Base {
     super.leave?.(e, next_frame)
   }
   override on_landing(e: Entity): void {
-    const { facing, data: { indexes } } = e;
+    const { data: { indexes } } = e;
     const { y: vy } = e.velocity;
-    if (vy <= -4) {
-      e.enter_frame({ id: indexes?.bouncing?.[facing][1] });
-      e.velocities[0].y = 2;
+    if (vy <= e.world.character_bouncing_test_speed) {
+      e.enter_frame({ id: indexes?.bouncing?.[-1][0] });
+      e.velocities[0].y = e.world.character_bouncing_speed;
     }
   }
 }

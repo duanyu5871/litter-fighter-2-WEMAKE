@@ -140,7 +140,7 @@ export enum ItrKind {
    *  * [X] WEMAKE
    * 
    */
-  Wind = 15, _15 = 15,
+  Whirlwind = 15, _15 = 15,
 
   Freeze = 16, _16 = 16,
 

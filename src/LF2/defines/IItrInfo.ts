@@ -35,7 +35,7 @@ export interface IItrInfo extends IQube {
    * - 命中后，目标停顿多少帧（伴随震动）
    * - 不设置时存在默认值，见Defines.DEFAULT_ITR_MOTIONLESS
    * 
-   * @see {Defines.DEFAULT_ITR_SHAKEING}
+   * @see {Defines.DEFAULT_ITR_SHAKING}
    */
   shaking?: number;
 

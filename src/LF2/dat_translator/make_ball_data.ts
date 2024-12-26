@@ -97,7 +97,7 @@ export function make_ball_data(info: IEntityInfo, frames: Record<string, IFrameI
         }
         if (
           weapon_hit_sound &&
-          itr.kind !== ItrKind.Wind &&
+          itr.kind !== ItrKind.Whirlwind &&
           itr.kind !== ItrKind.Freeze &&
           itr.kind !== ItrKind.Block
         ) {

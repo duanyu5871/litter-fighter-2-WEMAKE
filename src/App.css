@@ -161,6 +161,7 @@
   word-break: keep-all;
   white-space: nowrap;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 .name_content {

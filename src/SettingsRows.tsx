@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Button } from './Component/Button';
 import CharacterSelect from './Component/CharacterSelect';
+import Combine from './Component/Combine';
 import { Input } from './Component/Input';
 import Select from './Component/Select';
 import Show from './Component/Show';
@@ -14,9 +15,9 @@ import { InvalidController } from './LF2/controller/InvalidController';
 import { IStageInfo } from "./LF2/defines/IStageInfo";
 import { IStagePhaseInfo } from "./LF2/defines/IStagePhaseInfo";
 import { Defines } from './LF2/defines/defines';
+import Entity from './LF2/entity/Entity';
 import Stage from './LF2/stage/Stage';
 import { useLocalNumber, useLocalString } from './useLocalStorage';
-import Entity from './LF2/entity/Entity';
 const bot_controllers: { [x in string]?: (e: Entity) => BaseController } = {
   'OFF': (e: Entity) => new InvalidController('', e),
   'enemy chaser': (e: Entity) => new BotController('', e)
@@ -29,6 +30,7 @@ export interface ISettingsRowsProps {
   show_bg_settings?: boolean;
   show_weapon_settings?: boolean;
   show_bot_settings?: boolean;
+  show_world_tuning?: boolean;
 }
 
 export default function SettingsRows(props: ISettingsRowsProps) {
@@ -44,7 +46,7 @@ export default function SettingsRows(props: ISettingsRowsProps) {
   const [stage_phase_list, set_stage_phases] = useState<IStagePhaseInfo[]>(_stage_data?.phases ?? []);
   const [stage_phase_idx, set_stage_phase_idx] = useState<number>(_stage?.cur_phase ?? -1);
   const [difficulty, set_difficulty] = useState<Defines.Difficulty>(lf2?.difficulty ?? Defines.Difficulty.Difficult);
-
+  const [world_writable_properties, set_world_writable_properties] = useState<{ name: string, value: number }[]>()
   useEffect(() => {
     set_bgm(lf2?.sounds.bgm() ?? '')
     set_difficulty(lf2?.difficulty ?? Defines.Difficulty.Difficult)
@@ -70,6 +72,7 @@ export default function SettingsRows(props: ISettingsRowsProps) {
       }),
       lf2.world.callbacks.add({ on_stage_change })
     ]
+    set_world_writable_properties(lf2.world.list_writable_properties())
     return () => a.forEach(b => b())
   }, [lf2])
 
@@ -217,6 +220,29 @@ export default function SettingsRows(props: ISettingsRowsProps) {
           />
         </Titled>
         <Button onClick={on_click_add_bot}>添加</Button>
+      </Show.Div>
+
+      <Show.Div className='settings_row' show={props.show_world_tuning !== false}>
+        {world_writable_properties?.map((v, idx) => {
+          let ref: HTMLInputElement | null = null;
+          return <Titled title={v.name} key={v.name + '_' + idx}>
+            <Combine>
+              <Input
+                _ref={(r) => ref = r}
+                type='number'
+                style={{ width: 80 }}
+                step={0.01}
+                defaultValue={v.value}
+                onChange={e => (lf2.world as any)[v.name] = Number(e.target.value)} />
+              <Button onClick={_ => {
+                (lf2.world as any)[v.name] = Number(v.value)
+                ref!.value = '' + v.value
+              }}>
+                重置
+              </Button>
+            </Combine>
+          </Titled>
+        })}
       </Show.Div>
     </>
   );

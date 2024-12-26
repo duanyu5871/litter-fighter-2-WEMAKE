@@ -92,7 +92,7 @@ function App() {
 
   const [editor_open, set_editor_open] = useState(false);
   const [game_overlay, set_game_overlay] = useLocalBoolean('game_overlay', false);
-  const [showing_panel, set_showing_panel] = useLocalString<'stage' | 'bg' | 'weapon' | 'bot' | 'player' | ''>('showing_panel', '');
+  const [showing_panel, set_showing_panel] = useLocalString<'world_tuning' | 'stage' | 'bg' | 'weapon' | 'bot' | 'player' | ''>('showing_panel', '');
   const [control_panel_visible, set_control_panel_visible] = useLocalBoolean('control_panel', false);
 
   const [cheat_1, _set_cheat_1] = useLocalBoolean('cheat_1', false);
@@ -626,6 +626,12 @@ function App() {
               <>玩家面板</>
               <>玩家面板✓</>
             </ToggleButton>
+            <ToggleButton
+              onChange={() => set_showing_panel(v => v === 'world_tuning' ? '' : 'world_tuning')}
+              value={showing_panel === 'world_tuning'}>
+              <>世界微调</>
+              <>世界微调✓</>
+            </ToggleButton>
           </Combine>
           <StatusButton
             value={touch_pad_on}
@@ -665,7 +671,8 @@ function App() {
           show_stage_settings={showing_panel === 'stage'}
           show_bg_settings={showing_panel === 'bg'}
           show_weapon_settings={showing_panel === 'weapon'}
-          show_bot_settings={showing_panel === 'bot'} />
+          show_bot_settings={showing_panel === 'bot'}
+          show_world_tuning={showing_panel === 'world_tuning'} />
       </Show.Div>
       <EditorView open={editor_open} onClose={() => set_editor_open(false)} />
       <img

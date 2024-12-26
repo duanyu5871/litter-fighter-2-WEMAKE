@@ -110,18 +110,26 @@ export class EntityRender {
 
       const { centerx, centery } = frame
       const offset_x = entity.facing === 1 ? centerx : entity_mesh.scale_x - centerx
-      entity_mesh.set_position(x - offset_x, y - z / 2 + centery, z);
+      entity_mesh.set_position(
+        Math.round(x - offset_x),
+        Math.round(y - z / 2 + centery),
+        Math.round(z)
+      );
 
       const is_visible = !entity.invisible;
       const is_blinking = !!entity.blinking;
       entity_mesh.visible = is_visible;
 
-      shadow.mesh.set_position(x, - z / 2, z - 550);
+      shadow.mesh.set_position(
+        Math.round(x),
+        Math.round(- z / 2),
+        Math.round(z - 550)
+      );
       shadow.visible = is_visible && !frame.no_shadow;
       this._info_sprite.visible = is_visible;
 
       if (is_blinking && is_visible) {
-        entity_mesh.visible = 0 === Math.floor(entity.blinking / 6) % 2;
+        entity_mesh.visible = 0 === Math.floor(entity.blinking / 4) % 2;
       }
 
       this._info_sprite.update_position();

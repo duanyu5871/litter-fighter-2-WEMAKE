@@ -3,9 +3,7 @@ import CharacterState_Base from "./CharacterState_Base";
 
 export default class CharacterState_Running extends CharacterState_Base {
   override update(e: Entity): void {
-    e.handle_gravity();
-    e.handle_ground_velocity_decay();
-    e.handle_frame_velocity();
+    super.update(e);
     if (e.velocities[0].z) {
       const dz = Math.abs(e.velocities[0].z / 4);
       if (e.velocities[0].x > 0) {

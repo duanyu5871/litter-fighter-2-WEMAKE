@@ -6,7 +6,6 @@ import CharacterState_Base from "./CharacterState_Base";
 export default class CharacterState_Falling extends CharacterState_Base {
   _bouncing_frames_map = new Map<string, Set<string>>();
   _begin_velocty_y_map = new Map<string, number>();
-
   override enter(e: Entity, prev_frame: IFrameInfo): void {
     if (!this._bouncing_frames_map.has(e.data.id) && e.data.indexes?.bouncing) {
       this._bouncing_frames_map.set(e.data.id, new Set([
@@ -16,11 +15,9 @@ export default class CharacterState_Falling extends CharacterState_Base {
     }
     this._begin_velocty_y_map.set(e.data.id, e.velocities[0].y);
   }
-
   is_bouncing_frame(e: Entity) {
     return !!this._bouncing_frames_map.get(e.data.id)?.has(e.frame.id);
   }
-
   override update(e: Entity): void {
     if (e.shaking > 0) return;
     if (this.is_bouncing_frame(e)) {
@@ -56,9 +53,9 @@ export default class CharacterState_Falling extends CharacterState_Base {
       find_direction(f, indexes?.falling) ||
       find_direction(f, indexes?.critical_hit) || facing;
     const { y: vy } = e.velocity;
-    if (vy <= -4) {
+    if (vy <= e.world.character_bouncing_test_speed) {
       e.enter_frame({ id: indexes?.bouncing?.[d][1] });
-      e.velocities[0].y = 2;
+      e.velocities[0].y = e.world.character_bouncing_speed;
     } else {
       e.enter_frame({ id: indexes?.lying?.[d] });
     }

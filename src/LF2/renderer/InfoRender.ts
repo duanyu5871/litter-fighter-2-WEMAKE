@@ -145,7 +145,7 @@ export class InfoRender implements IEntityCallbacks {
   }
 
   protected on_mount(entity: Entity) {
-    if (entity.in_player_slot) 
+    if (entity.in_player_slot)
       entity.world.scene.add(this.bars_node, this.mesh);
     entity.callbacks.add(this);
     this.update_name_sprite(entity, entity.name, entity.team);
@@ -210,12 +210,16 @@ export class InfoRender implements IEntityCallbacks {
 
     const _x = Math.floor(x);
     const name_y = Math.floor(-z / 2 - this.mesh.scale_y)
-    this.set_name_position(Math.floor(_x), Math.floor(name_y), z);
+    this.set_name_position(Math.floor(_x), Math.floor(name_y), Math.floor(z));
 
     const bar_y = Math.floor(y - z / 2 + 79 + BAR_BG_H + 5);
     const bar_x = _x - BAR_BG_W / 2
 
-    this.set_bars_position(Math.floor(bar_x), Math.floor(bar_y), z)
+    this.set_bars_position(
+      Math.floor(bar_x),
+      Math.floor(bar_y),
+      Math.floor(z)
+    )
   }
 
   set_name_position(x: number, y: number, z: number) {
@@ -224,7 +228,11 @@ export class InfoRender implements IEntityCallbacks {
     const cam_r = cam_l + this.entity.world.screen_w;
     if (x + hw > cam_r) x = cam_r - hw;
     else if (x - hw < cam_l) x = cam_l + hw;
-    this.mesh.set_position(x, y, z);
+    this.mesh.set_position(
+      Math.round(x),
+      Math.round(y),
+      Math.round(z)
+    );
   }
 
   set_bars_position(x?: number, y?: number, z?: number) {

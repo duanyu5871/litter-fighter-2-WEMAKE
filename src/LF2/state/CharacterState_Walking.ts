@@ -6,9 +6,7 @@ import CharacterState_Base from "./CharacterState_Base";
 
 export class CharacterState_Walking extends CharacterState_Base {
   override update(e: Entity): void {
-    e.handle_gravity();
-    e.handle_ground_velocity_decay();
-    e.handle_frame_velocity();
+    super.update(e);
     if (e.controller) {
       const { UD, LR } = e.controller;
       if (!UD && !LR && !e.wait) {

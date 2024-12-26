@@ -19,12 +19,12 @@ export namespace Defines {
   export const DEFAULT_BEER_MP = 154;
   export const DEFAULT_FALL_VALUE_MAX = 140
   export const DEFAULT_DEFEND_VALUE_MAX = 120
-  export const DEFAULT_ITR_SHAKEING = 6;
-  export const DEFAULT_ITR_MOTIONLESS = 6;
+  export const DEFAULT_ITR_SHAKING = 4;
+  export const DEFAULT_ITR_MOTIONLESS = 4;
   export const DAFUALT_CATCH_TIME = 680;
   export const DEFAULT_ITR_FALL = 40
   export const DEFAULT_FALL_VALUE_DIZZY = 40;
-  export const DAFUALT_QUBE_LENGTH = 40;
+  export const DAFUALT_QUBE_LENGTH = 24;
 
   /**
    * 直接破防值
@@ -402,10 +402,13 @@ export namespace Defines {
    * @type {number}
    */
   export const KEY_HIT_DURATION: number = 20;
-  export const GRAVITY: number = 0.38;
-  export const FRICTION_FACTOR: number = 0.95//0.894427191;
-  export const FRICTION: number = 0.2;
-
+  export const GRAVITY: number = 0.5; // 0.38;
+  export const FRICTION_FACTOR: number = 1 // 0.894427191;
+  export const FRICTION: number = 0.35 // 0.35 // 0.65; // 0.2
+  export const CHARACTER_BOUNCING_SPD: number = 2;
+  export const CHARACTER_BOUNCING_TEST_SPD: number = -2.6;
+  
+  
   export enum Difficulty {
     Easy = 1,
     Normal = 2,

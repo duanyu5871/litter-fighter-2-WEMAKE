@@ -17,15 +17,15 @@ export function cook_cpoint(unsure_cpoint: ICpointInfo): void {
   const tvj = take(unsure_cpoint, 'throwinjury');
   if (not_zero_num(tvj) && tvj !== -842150451) {
     unsure_cpoint.throwinjury = tvj;
-    unsure_cpoint.tx = 50;
-    unsure_cpoint.ty = 10;
+    unsure_cpoint.tx = 60;
+    unsure_cpoint.ty = 15;
   }
 
   const vaction = take(unsure_cpoint as any, 'vaction');
   const raw_injury = take(unsure_cpoint, 'injury');
   if (is_num(raw_injury)) {
     unsure_cpoint.injury = Math.abs(raw_injury);
-    if (raw_injury > 0) unsure_cpoint.shaking = Defines.DEFAULT_ITR_SHAKEING;
+    if (raw_injury > 0) unsure_cpoint.shaking = Defines.DEFAULT_ITR_SHAKING;
   }
 
   if (is_str(vaction) || is_num(vaction)) {

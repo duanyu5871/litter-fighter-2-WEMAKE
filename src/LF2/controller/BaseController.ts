@@ -258,6 +258,14 @@ export class BaseController {
     }
 
     const seqs = hit?.sequences
+    this.check_hit_seqs(seqs, ret);
+    
+    /** 这里不想支持过长的指令 */
+    if (this._key_list && this._key_list.length >= 10) this._key_list = void 0;
+    return ret
+  }
+
+  private check_hit_seqs(seqs: IHitKeyCollection['sequences'], ret: ControllerUpdateResult) {
     if (seqs) do {
 
       /** 同时按键 判定 */
@@ -269,23 +277,19 @@ export class BaseController {
           this._key_list = void 0;
           break;
         } else {
-          ret.key_list = this._key_list
+          ret.key_list = this._key_list;
         }
       }
 
       /** 顺序按键 判定 */
       if (this._key_list && this._key_list.length >= 2 && seqs[this._key_list]) {
-        ret.set(seqs[this._key_list], this._time, void 0, this._key_list)
+        ret.set(seqs[this._key_list], this._time, void 0, this._key_list);
         this._key_list = void 0;
         break;
       } else {
         ret.key_list = this._key_list;
       }
-    } while (0)
-
-    /** 这里不想支持过长的指令 */
-    if (this._key_list && this._key_list.length >= 10) this._key_list = void 0;
-    return ret
+    } while (0);
   }
 
   private seq_test(str: string): boolean {

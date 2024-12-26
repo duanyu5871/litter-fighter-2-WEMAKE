@@ -17,7 +17,7 @@ export class CharacterState_Rowing extends CharacterState_Base {
     } else {
       e.velocities[0].x = -dx;
     }
-    e.velocities[0].y = e.world.gravity * Math.sqrt(2 * h / e.world.gravity);
+    e.velocities[0].y = e.world.gravity * Math.sqrt(6 * h / e.world.gravity);
   }
   override on_landing(e: Entity): void {
     e.enter_frame({ id: e.data.indexes?.landing_1 });

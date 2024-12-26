@@ -684,6 +684,24 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     const next = (difficulty % max) + 1;
     this.difficulty = next
   }
+
+  list_writable_properties(prototype: any = this, ret: (PropertyDescriptor & { name: string })[] = []) {
+    const obj = Object.getOwnPropertyDescriptors(prototype)
+    for (const name in obj) {
+      if (name.startsWith('_')) continue;
+      const desc = obj[name];
+      const { value, writable, enumerable, set, get } = desc
+      if (set && typeof get?.call(this) === 'number')
+        ret.push({ name, ...desc })
+      else if (writable && enumerable && is_num(value))
+        ret.push({ name, ...desc })
+    }
+    const next = Object.getPrototypeOf(prototype)
+    if (next.constructor.name !== 'Object') {
+      this.list_writable_properties(next, ret)
+    }
+    return ret;
+  }
 }
 interface ILayoutTreeNode {
   name: string;

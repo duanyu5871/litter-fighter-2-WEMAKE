@@ -1,10 +1,11 @@
 import { IBdyInfo, ICpointInfo, IFramePictureInfo, IItrInfo, IOpointInfo, ItrKind, IWpointInfo } from '../defines';
-import { IEntityPictureInfo } from '../defines/IEntityPictureInfo';
 import { BdyKind } from '../defines/BdyKind';
 import { CollisionVal as C_Val } from '../defines/CollisionVal';
 import { IEntityInfo } from "../defines/IEntityInfo";
+import { IEntityPictureInfo } from '../defines/IEntityPictureInfo';
 import { IFrameInfo } from "../defines/IFrameInfo";
 import { OpointKind } from '../defines/OpointKind';
+import { SpeedMode } from '../defines/SpeedMode';
 import { Defines } from '../defines/defines';
 import { match_all } from '../utils/string_parser/match_all';
 import { match_colon_value } from '../utils/string_parser/match_colon_value';
@@ -124,24 +125,63 @@ export function make_frames(text: string, files: IEntityInfo['files']): Record<s
 
     const dvx = take(frame, 'dvx');
     if (dvx === 550) frame.dvx = dvx;
-    else if (not_zero_num(dvx)) frame.dvx = dvx * 0.5;
-
+    else if (not_zero_num(dvx)) {
+      if (dvx >= 501 && dvx <= 549) {
+        frame.dvx = (dvx - 550) * 0.5;
+        frame.vxm = SpeedMode.FixedLf2;
+      } else if (dvx >= 551) {
+        frame.dvx = (dvx - 550) * 0.5;
+        frame.vxm = SpeedMode.FixedLf2;
+      } else {
+        frame.dvx = dvx * 0.5;
+      }
+    }
     if (
       frame.state === Defines.State.Attacking ||
       frame.state === Defines.State.Rowing
     ) {
       const dvz = take(frame, 'dvz');
       if (dvz === 550) frame.dvz = dvz;
-      else if (not_zero_num(dvz)) frame.speedz = dvz;
+      else if (not_zero_num(dvz)) {
+        if (dvz >= 501 && dvz <= 549) {
+          frame.dvz = dvz - 550;
+          frame.vzm = SpeedMode.FixedLf2;
+        } else if (dvz >= 551) {
+          frame.dvz = dvz - 550;
+          frame.vzm = SpeedMode.FixedLf2;
+        } else { 
+          frame.speedz = dvz; 
+        }
+      }
     } else {
       const dvz = take(frame, 'dvz');
       if (dvz === 550) frame.dvz = dvz;
-      else if (not_zero_num(dvz)) frame.dvz = dvz * 0.5;
+      else if (not_zero_num(dvz)) {
+        if (dvz >= 501 && dvz <= 549) {
+          frame.dvz = (dvz - 550) * 0.5;
+          frame.vzm = SpeedMode.FixedLf2;
+        } else if (dvz >= 551) {
+          frame.dvz = (dvz - 550) * 0.5;
+          frame.vzm = SpeedMode.FixedLf2;
+        } else {
+          frame.dvz = dvz * 0.5;
+        }
+      }
     }
 
     const dvy = take(frame, 'dvy');
     if (dvy === 550) frame.dvy = dvy;
-    else if (not_zero_num(dvy)) frame.dvy = dvy * -0.25;
+    else if (not_zero_num(dvy)) {
+      if (dvy >= 501 && dvy <= 549) {
+        frame.dvy = (dvy - 550) * -0.285;
+        frame.vym = SpeedMode.FixedLf2;
+      } else if (dvy >= 551) {
+        frame.dvy = (dvy - 550) * -0.285;
+        frame.vym = SpeedMode.FixedLf2;
+      } else {
+        frame.dvy = dvy * -0.285;
+      }
+    }
 
     switch (frame.state) {
       case Defines.State.Ball_3005:

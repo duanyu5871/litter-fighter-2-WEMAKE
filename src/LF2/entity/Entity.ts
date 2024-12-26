@@ -22,15 +22,25 @@ import BallState_Base from '../state/BallState_Base';
 import CharacterState_Base from '../state/CharacterState_Base';
 import { State_Base } from '../state/State_Base';
 import WeaponState_Base from '../state/WeaponState_Base';
-import { mid, random_get, random_in } from '../utils/math/random';
+import { random_get, random_in } from '../utils/math/random';
 import { is_positive, is_str } from '../utils/type_check';
 import { Factory } from './Factory';
 import type IEntityCallbacks from './IEntityCallbacks';
 import { turn_face } from './face_helper';
 import { is_ball, is_character, is_weapon_data } from './type_check';
-const calc_v = (a: number, b: number, c: number) => {
-  if (c === 1) return a + b
-  return (b > 0 && a < b) || (b < 0 && a > b) ? b : a
+const calc_v = (a: number, b: number, c: SpeedMode, f: number = 1) => {
+  switch (c) {
+    case SpeedMode.FixedAdd:
+      return a + b;
+    case SpeedMode.Add:
+      return a + b * f;
+    case SpeedMode.FixedLf2:
+      return (b > 0 && a < b) || (b < 0 && a > b) ? b : a
+    case SpeedMode.LF2:
+    default:
+      b *= f;
+      return (b > 0 && a < b) || (b < 0 && a > b) ? b : a
+  }
 }
 export const EMPTY_PIECE: ITexturePieceInfo = {
   tex: '', x: 0, y: 0, w: 0, h: 0,
@@ -66,6 +76,7 @@ export default class Entity {
   variant: number = 0;
   reserve?: number = 0;
   data: IEntityData;
+  // attacking: boolean = false;
   transform_datas?: [IEntityData, IEntityData];
   readonly world: World;
   readonly position = new Ditto.Vector3(0, 0, 0);
@@ -471,7 +482,6 @@ export default class Entity {
     const shotter_frame = emitter.frame;
 
     if (emitter.frame.state === Defines.State.Ball_Rebounding) {
-      if (!emitter.lastest_collided) debugger
       this.team = emitter.lastest_collided?.attacker.team || new_team();
       this.facing = emitter.facing;
     } else {
@@ -559,6 +569,18 @@ export default class Entity {
     }
     if (!v.cpoint)
       delete this._catching;
+
+
+    const attacking = !!this.frame.itr?.find(v => {
+      return (
+        v.kind !== ItrKind.Pick &&
+        v.kind !== ItrKind.PickSecretly &&
+        v.kind !== ItrKind.Catch &&
+        v.kind !== ItrKind.ForceCatch
+      )
+    })
+    if (!attacking)
+      this._a_rest = 0;
   }
 
   apply_opoints(opoints: IOpointInfo[]) {
@@ -716,13 +738,13 @@ export default class Entity {
       y: vy,
       z: vz
     } = this.velocities[0];
-    if (dvx) vx = calc_v(vx, this.facing * dvx, vxm)
-    if (dvy) vy = calc_v(vy, dvy, vym)
-    if (dvz) vz = calc_v(vz, dvz, vzm);
+    if (dvx) vx = calc_v(vx, dvx * this.world.fvx_f, vxm, this.facing)
+    if (dvy) vy = calc_v(vy, dvy * this.world.fvy_f, vym)
+    if (dvz) vz = calc_v(vz, dvz * this.world.fvz_f, vzm);
     if (this._controller) {
       const { UD, LR } = this._controller;
-      if (LR && speedx && speedx !== 550) vx = calc_v(vx, LR * speedx, speedxm);
-      if (UD && speedz && speedz !== 550) vz = calc_v(vz, UD * speedz, speedzm);
+      if (LR && speedx && speedx !== 550) vx = calc_v(vx, speedx, speedxm, LR);
+      if (UD && speedz && speedz !== 550) vz = calc_v(vz, speedz, speedzm, UD);
     }
     if (dvx === 550) vx = 0;
     if (dvz === 550) vz = 0;
@@ -900,17 +922,15 @@ export default class Entity {
       }
     }
 
-    if (this.position.y <= 0 && this.velocity.y < 0) {
+    if (this.position.y <= 0 && this.velocity.y < 0 && !this.shaking && !this.motionless) {
       this.position.y = 0;
       this.play_sound(this.data.base.drop_sounds)
       this.velocities[0].y = 0;
-
       if (this.frame.on_landing) {
         const result = this.get_next_frame(this.frame.on_landing);
         if (result) this.next_frame = result.frame;
       }
       this.state?.on_landing?.(this);
-
       if (this.throwinjury !== void 0) {
         this.hp -= this.throwinjury;
         delete this.throwinjury;
@@ -984,13 +1004,13 @@ export default class Entity {
 
     const { throwvx, throwvy, throwvz, throwinjury } = cpoint_a;
     if (throwvz) {
-      this.velocities[0].z = throwvz * (this._catcher.controller?.UD || 0);
+      this.velocities[0].z = (throwvz * this.world.tvz_f) * (this._catcher.controller?.UD || 0);
     }
     if (throwvx) {
-      this.velocities[0].x = throwvx * this._catcher.facing;
+      this.velocities[0].x = (throwvx * this.world.tvx_f) * this._catcher.facing;
     }
     if (throwvy) {
-      this.velocities[0].y = throwvy;
+      this.velocities[0].y = (throwvy * this.world.tvy_f);
     }
 
     if (throwinjury) this.throwinjury = throwinjury;
@@ -1020,7 +1040,7 @@ export default class Entity {
       return this.get_catching_cancel_frame();
     }
 
-    const { throwvx, throwvy, throwvz, x: catch_x, y: catch_y, cover, throwinjury } = cpoint_a;
+    const { throwvx, throwvy, throwvz, throwinjury } = cpoint_a;
     if (throwinjury !== void 0) {
       if (throwinjury > 0) {
         // TODO：丢出后，被丢的人落地后的受到的伤害
@@ -1159,15 +1179,15 @@ export default class Entity {
     const { itr, bdy } = collision;
 
     if (is_ball(collision.victim)) {
-      this.shaking = itr.motionless ?? Defines.DEFAULT_ITR_MOTIONLESS;
+      this.shaking = itr.motionless ?? collision.victim.world.itr_motionless;
     } else {
-      this.motionless = itr.motionless ?? Defines.DEFAULT_ITR_MOTIONLESS;
+      this.motionless = itr.motionless ?? collision.victim.world.itr_motionless;
     }
 
     if (itr.arest) {
-      this._a_rest = itr.arest - 2;
+      this._a_rest = itr.arest + this.world.arest_offset;
     } else if (!itr.vrest) {
-      this._a_rest = this.wait + this.motionless;
+      this._a_rest = this.wait + this.motionless + 2 + this.world.arest_offset_2;
     }
     if (bdy.kind !== BdyKind.Defend && itr.kind !== ItrKind.Block) {
       this.play_sound(itr.hit_sounds);
@@ -1205,7 +1225,7 @@ export default class Entity {
   on_be_collided(collision: ICollision): void {
     this.collided_list.push(this.lastest_collided = collision);
     const { itr, bdy } = collision
-    this.shaking = itr.shaking ?? Defines.DEFAULT_ITR_SHAKEING;
+    this.shaking = itr.shaking ?? collision.attacker.world.itr_shaking;
     if (collision.v_rest !== void 0) {
       this.v_rests.set(collision.attacker.id, collision);
     }
@@ -1242,14 +1262,6 @@ export default class Entity {
     this._after_blink = Defines.FrameId.Gone;
   }
 
-  /**
-   * 开始闪烁
-   *
-   * @param {number} duration 闪烁持续帧数
-   */
-  blink(duration: number) {
-    this._blinking_duration = duration;
-  }
 
   /**
    * 开始隐身
@@ -1332,20 +1344,20 @@ export default class Entity {
     if (flags.wait !== void 0) {
       this.wait = this.handle_wait_flag(flags.wait, frame);
     } else {
-      this.wait = frame.wait;
+      this.wait = frame.wait + this.world.frame_wait_offset;
     }
     if (flags.sounds?.length)
       this.play_sound(flags.sounds)
 
     if (flags.blink_time)
-      this.blink(flags.blink_time)
+      this.blinking = flags.blink_time
   }
 
   handle_wait_flag(wait: string | number, frame: IFrameInfo): number {
     if (wait === 'i') return this.wait;
     if (wait === 'd') return Math.max(0, frame.wait - this.frame.wait + this.wait);
     if (is_positive(wait)) return wait;
-    return frame.wait;
+    return frame.wait + this.world.frame_wait_offset;
   }
 
   /**

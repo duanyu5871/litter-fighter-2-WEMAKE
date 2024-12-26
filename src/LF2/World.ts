@@ -7,11 +7,11 @@ import Callbacks from './base/Callbacks';
 import FPS from './base/FPS';
 import { NoEmitCallbacks } from "./base/NoEmitCallbacks";
 import { IBdyInfo, IFrameInfo, IItrInfo } from './defines';
+import { ICollision } from './defines/ICollision';
 import { Defines } from './defines/defines';
 import Ditto from './ditto';
 import Entity from './entity/Entity';
 import { Factory } from './entity/Factory';
-import { ICollision } from './defines/ICollision';
 import { is_ball, is_base_ctrl, is_character, is_local_ctrl, is_weapon } from './entity/type_check';
 import { EntityRender } from './renderer/EntityRender';
 import Stage from './stage/Stage';
@@ -31,6 +31,27 @@ export class World {
   static readonly TAG = 'World';
   readonly lf2: LF2
   readonly _callbacks = new Callbacks<IWorldCallbacks>();
+  itr_shaking: number = Defines.DEFAULT_ITR_SHAKING;
+  itr_motionless: number = Defines.DEFAULT_ITR_MOTIONLESS;
+  fvy_f: number = 1;
+  fvx_f: number = 1;
+  fvz_f: number = 1;
+  ivy_f: number = 1;
+  ivz_f: number = 1;
+  ivx_f: number = 1;
+  ivy_d: number = 5.5;
+  ivx_d: number = 4;
+  tvz_f: number = 1;
+  tvx_f: number = 1;
+  tvy_f: number = 1.3;
+  player_begin_blinking_time: number = 144;
+  player_lying_blinking_time: number = 32;
+  com_disappear_blinking_time: number = 56;
+  vrest_offset: number = 0;
+  arest_offset: number = 0;
+  arest_offset_2: number = 0;
+  frame_wait_offset: number = 0;
+
 
   get callbacks(): NoEmitCallbacks<IWorldCallbacks> {
     return this._callbacks
@@ -62,6 +83,9 @@ export class World {
   friction = Defines.FRICTION;
   scene: ISceneNode;
   camera: IOrthographicCameraNode;
+
+  character_bouncing_speed: number = Defines.CHARACTER_BOUNCING_SPD;
+  character_bouncing_test_speed: number = Defines.CHARACTER_BOUNCING_TEST_SPD;
 
   private _stage: Stage;
   entities = new Set<Entity>();
@@ -469,7 +493,7 @@ export class World {
       a_cube.near >= b_cube.far
     ) {
       const collision: ICollision = {
-        v_rest: (!itr.arest && itr.vrest) ? itr.vrest : void 0,
+        v_rest: (!itr.arest && itr.vrest) ? (itr.vrest - this.vrest_offset) : void 0,
         victim,
         attacker,
         itr,
@@ -592,5 +616,26 @@ export class World {
     this.stop_render();
     this.del_entities(Array.from(this.entities));
     this.scene.dispose();
+  }
+
+  list_writable_properties(prototype: any = this, ret: { name: string, value: number }[] = []) {
+    const obj = Object.getOwnPropertyDescriptors(prototype)
+    for (const name in obj) {
+      if (name.startsWith('_')) continue;
+      const desc = obj[name];
+      const { value, writable, enumerable, set, get } = desc
+      if (set && get) {
+        const value = get.call(this);
+        if (is_num(value))
+          ret.push({ name, value })
+      } else if (writable && enumerable && is_num(value)) {
+        ret.push({ name, value })
+      }
+    }
+    const next = Object.getPrototypeOf(prototype)
+    if (next.constructor.name !== 'Object') {
+      this.list_writable_properties(next, ret)
+    }
+    return ret;
   }
 }

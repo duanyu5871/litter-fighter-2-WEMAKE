@@ -1,10 +1,10 @@
-import { Defines, IFrameInfo, INextFrame, ItrKind } from '../defines';
+import { collisions_keeper } from '../collision/CollisionKeeper';
+import { Defines, IFrameInfo, IItrInfo, INextFrame, ItrKind } from '../defines';
 import { BdyKind } from '../defines/BdyKind';
+import { ICollision } from '../defines/ICollision';
 import { ItrEffect } from '../defines/ItrEffect';
 import type Entity from '../entity/Entity';
-import { ICollision } from '../defines/ICollision';
 import { is_character, is_weapon } from '../entity/type_check';
-import { collision_handler } from './CollisionHandler';
 import State_Base, { WhatNext } from "./State_Base";
 
 export default class CharacterState_Base extends State_Base {
@@ -84,18 +84,26 @@ export default class CharacterState_Base extends State_Base {
     switch (bdy.kind) {
       case BdyKind.Defend: {
         if (
-          ItrEffect.FireExplosion === itr.effect ||
-          ItrEffect.Explosion === itr.effect
-        ) {
-          // 爆炸伤害允许不需要方向
-        } else if (attacker.facing === victim.facing) {
           // 默认仅允许抵御来自前方的伤害
+          (
+            ItrEffect.FireExplosion !== itr.effect &&
+            ItrEffect.Explosion !== itr.effect &&
+            attacker.facing === victim.facing
+          ) ||
+          (
+            itr.bdefend &&
+            itr.bdefend >= Defines.DEFAULT_FORCE_BREAK_DEFEND_VALUE
+          )
+        ) {
+          collisions_keeper.get(itr.kind!, BdyKind.Normal)?.(collision)
           break;
         }
-        if (itr.bdefend && itr.bdefend >= Defines.DEFAULT_FORCE_BREAK_DEFEND_VALUE)
-          break;
         if (itr.bdefend)
           victim.defend_value -= itr.bdefend;
+
+
+        this.take_injury(itr, victim, attacker, 0.1);
+
         if (victim.defend_value <= 0) { // 破防
           victim.defend_value = 0;
           victim.world.spark(...victim.spark_point(a_cube, b_cube), "broken_defend")
@@ -114,17 +122,8 @@ export default class CharacterState_Base extends State_Base {
         break;
       }
     }
-    if (itr.injury) {
-      victim.defend_value = 0;
-      victim.hp -= itr.injury;
-      attacker.add_damage_sum(itr.injury);
-      if (victim.hp <= 0) attacker.add_kill_sum(1);
-    }
+    this.take_injury(itr, victim, attacker);
     switch (itr.kind) {
-      case ItrKind.Normal:
-      case ItrKind.CharacterThrew:
-        this.handle_itr_kind_normal(collision)
-        break;
       case ItrKind.MagicFlute:
       case ItrKind.MagicFlute2: {
         victim.merge_velocities()
@@ -137,8 +136,17 @@ export default class CharacterState_Base extends State_Base {
         break;
       }
       default:
-        collision_handler.handle(collision)
+        collisions_keeper.handle(collision)
     }
+  }
+
+  private take_injury(itr: IItrInfo, victim: Entity, attacker: Entity, scale: number = 1) {
+    if (!itr.injury) return;
+    const inj = Math.round(itr.injury*scale)
+    victim.defend_value = 0;
+    victim.hp -= inj;
+    attacker.add_damage_sum(inj);
+    if (victim.hp <= 0) attacker.add_kill_sum(1);
   }
 
   override get_sudden_death_frame(target: Entity): INextFrame | undefined {

@@ -45,8 +45,8 @@
           "y": 12,
           "w": 51,
           "h": 24,
-          "l": 40,
-          "z": 20,
+          "l": 24,
+          "z": 12,
           "kind": 0,
           "hit_act": [
             {
@@ -65,12 +65,12 @@
           "h": 24,
           "injury": 50,
           "effect": 1,
-          "vrest": 24,
+          "vrest": 26,
           "dvx": 10,
           "fall": 140,
           "bdefend": 120,
-          "l": 40,
-          "z": 20,
+          "l": 24,
+          "z": 12,
           "test": "victim_state!=1004|attacker_type!=character",
           "hit_sounds": [
             "data/020.wav.mp3"
@@ -109,8 +109,8 @@
           "y": 12,
           "w": 51,
           "h": 24,
-          "l": 40,
-          "z": 20,
+          "l": 24,
+          "z": 12,
           "kind": 0,
           "hit_act": [
             {
@@ -129,12 +129,12 @@
           "h": 24,
           "injury": 50,
           "effect": 1,
-          "vrest": 24,
+          "vrest": 26,
           "dvx": 10,
           "fall": 140,
           "bdefend": 120,
-          "l": 40,
-          "z": 20,
+          "l": 24,
+          "z": 12,
           "test": "victim_state!=1004|attacker_type!=character",
           "hit_sounds": [
             "data/020.wav.mp3"
@@ -173,8 +173,8 @@
           "y": 12,
           "w": 51,
           "h": 24,
-          "l": 40,
-          "z": 20,
+          "l": 24,
+          "z": 12,
           "kind": 0,
           "hit_act": [
             {
@@ -193,12 +193,12 @@
           "h": 24,
           "injury": 50,
           "effect": 1,
-          "vrest": 24,
+          "vrest": 26,
           "dvx": 10,
           "fall": 140,
           "bdefend": 120,
-          "l": 40,
-          "z": 20,
+          "l": 24,
+          "z": 12,
           "test": "victim_state!=1004|attacker_type!=character",
           "hit_sounds": [
             "data/020.wav.mp3"
@@ -237,8 +237,8 @@
           "y": 12,
           "w": 51,
           "h": 24,
-          "l": 40,
-          "z": 20,
+          "l": 24,
+          "z": 12,
           "kind": 0,
           "hit_act": [
             {
@@ -257,12 +257,12 @@
           "h": 24,
           "injury": 50,
           "effect": 1,
-          "vrest": 24,
+          "vrest": 26,
           "dvx": 10,
           "fall": 140,
           "bdefend": 120,
-          "l": 40,
-          "z": 20,
+          "l": 24,
+          "z": 12,
           "test": "victim_state!=1004|attacker_type!=character",
           "hit_sounds": [
             "data/020.wav.mp3"
@@ -301,8 +301,8 @@
           "y": 12,
           "w": 51,
           "h": 24,
-          "l": 40,
-          "z": 20,
+          "l": 24,
+          "z": 12,
           "kind": 0,
           "hit_act": [
             {
@@ -321,12 +321,12 @@
           "h": 24,
           "injury": 50,
           "effect": 1,
-          "vrest": 24,
+          "vrest": 26,
           "dvx": 10,
           "fall": 140,
           "bdefend": 120,
-          "l": 40,
-          "z": 20,
+          "l": 24,
+          "z": 12,
           "test": "victim_state!=1004|attacker_type!=character",
           "hit_sounds": [
             "data/020.wav.mp3"
@@ -365,8 +365,8 @@
           "y": 12,
           "w": 51,
           "h": 24,
-          "l": 40,
-          "z": 20,
+          "l": 24,
+          "z": 12,
           "kind": 0,
           "hit_act": [
             {
@@ -385,12 +385,12 @@
           "h": 24,
           "injury": 50,
           "effect": 1,
-          "vrest": 24,
+          "vrest": 26,
           "dvx": 10,
           "fall": 140,
           "bdefend": 120,
-          "l": 40,
-          "z": 20,
+          "l": 24,
+          "z": 12,
           "test": "victim_state!=1004|attacker_type!=character",
           "hit_sounds": [
             "data/020.wav.mp3"

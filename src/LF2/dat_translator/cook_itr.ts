@@ -10,20 +10,19 @@ import { take } from './take';
 export default function cook_itr(itr?: Partial<IItrInfo>) {
   if (!itr) return;
   const vrest = take(itr, 'vrest');
-  if (is_positive(vrest)) { itr.vrest = Math.max(2, 2 * vrest - Defines.DEFAULT_ITR_MOTIONLESS); }
+  if (is_positive(vrest)) { itr.vrest = Math.max(2, 2 * vrest - Defines.DEFAULT_ITR_SHAKING); }
   const arest = take(itr, 'arest');
-  if (is_positive(arest)) { itr.arest = Math.max(2, 2 * (arest - Defines.DEFAULT_ITR_MOTIONLESS)); }
+  if (is_positive(arest)) { itr.arest = Math.max(2, 2 * arest + 2); }
   const src_dvx = take(itr, 'dvx');
   if (not_zero_num(src_dvx)) itr.dvx = src_dvx * 0.5;
   const src_dvz = take(itr, 'dvz');
   if (not_zero_num(src_dvz)) itr.dvz = src_dvz * 0.5;
   const src_dvy = take(itr, 'dvy');
-  if (not_zero_num(src_dvy)) itr.dvy = src_dvy * -0.52;
+  if (not_zero_num(src_dvy)) itr.dvy = src_dvy * -0.59;
   const fall = take(itr, 'fall');
   if (not_zero_num(fall)) itr.fall = fall * 2;
   const bdefend = take(itr, 'bdefend');
   if (not_zero_num(bdefend)) itr.bdefend = bdefend * 2;
-
   const zwidth = take(itr, 'zwidth');
   if (not_zero_num(zwidth)) {
     itr.l = zwidth
@@ -51,7 +50,7 @@ export default function cook_itr(itr?: Partial<IItrInfo>) {
           cond_maker.and(c => c
             .add(C_Val.VictimState, '!=', Defines.State.BurnRun)
             .and(C_Val.VictimState, '!=', Defines.State.Burning)
-            .and(C_Val.VictimType,  '!=', EntityEnum.Character)
+            .and(C_Val.VictimType, '!=', EntityEnum.Character)
           )
           break;
         case ItrEffect.MFire2:
@@ -187,7 +186,7 @@ export default function cook_itr(itr?: Partial<IItrInfo>) {
         .done()
       break;
     }
-    case ItrKind.Wind: {
+    case ItrKind.Whirlwind: {
       itr.friendly_fire = 1;
       itr.shaking = 0;
       itr.motionless = 0;
