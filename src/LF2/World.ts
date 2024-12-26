@@ -483,40 +483,43 @@ export class World {
         bdy.tester?.run(collision) === false ||
         itr.tester?.run(collision) === false
       ) return;
-      const a = attacker.state?.before_collision?.(collision)
-      switch (a) {
-        case void 0: debugger; break;
-        case WhatNext.OnlyState:
-          attacker.state?.on_collision?.(collision);
-          break;
-        case WhatNext.OnlyEntity:
-          attacker.on_collision(collision);
-          break;
-        case WhatNext.SkipAll:
-          break;
-        case WhatNext.Continue:
-        default:
-          attacker.on_collision(collision);
-          attacker.state?.on_collision?.(collision);
-          break;
-      }
 
+      const a = attacker.state?.before_collision?.(collision)
       const b = victim.state?.before_be_collided?.(collision)
-      switch (b) {
-        case void 0: debugger; break;
-        case WhatNext.OnlyState:
-          victim.state?.on_be_collided?.(collision);
+
+      switch (a) {
+        case WhatNext.SkipAll: break;
+        case WhatNext.OnlyState: {
+          attacker.state?.on_collision?.(collision);
           break;
-        case WhatNext.OnlyEntity:
-          victim.on_be_collided(collision);
+        }
+        case WhatNext.OnlyEntity: {
+          attacker.on_collision(collision);
           break;
-        case WhatNext.SkipAll:
-          break;
+        }
         case WhatNext.Continue:
-        default:
+        default: {
+          attacker.on_collision(collision);
+          attacker.state?.on_collision?.(collision);
+          break;
+        }
+      }
+      switch (b) {
+        case WhatNext.SkipAll: break;
+        case WhatNext.OnlyState: {
+          victim.state?.on_be_collided?.(collision);
+          break;
+        }
+        case WhatNext.OnlyEntity: {
+          victim.on_be_collided(collision);
+          break;
+        }
+        case WhatNext.Continue:
+        default: {
           victim.on_be_collided(collision);
           victim.state?.on_be_collided?.(collision);
           break;
+        }
       }
     }
   }

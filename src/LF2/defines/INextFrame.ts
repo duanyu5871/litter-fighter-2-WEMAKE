@@ -1,7 +1,7 @@
 import type { IFrameInfo } from "./IFrameInfo";
 import type { IExpression } from "../base/Expression";
 import type { Defines } from "./defines"
-export interface INextFrameResult {
+export interface INextFrameResult<T = any> {
   frame: IFrameInfo;
   which: INextFrame;
 }

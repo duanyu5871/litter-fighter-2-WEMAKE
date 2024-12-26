@@ -35,7 +35,9 @@ export interface IExpression<T1, T2 = T1> extends IJudger<T1 | T2> {
   readonly get_val_getter?: IValGetterGetter<T1 | T2>;
   before: string;
 }
-const a_included_b = (a: any[], b: any[]) => !b.length || b.findIndex(i => a.indexOf(i) < 0) === -1;
+const a_included_b = (a: any[], b: any[]) => { 
+  return !b.length || b.findIndex(i => a.indexOf(i) < 0) === -1 
+};
 const predicate_maps: Record<BinaryOperatorEnum, (a: any, b: any) => boolean> = {
   // eslint-disable-next-line eqeqeq
   '==': (a, b) => a == b,
@@ -136,7 +138,7 @@ export class Expression<T1, T2 = T1> implements IExpression<T1, T2> {
     let val_2: any = word_2;
     if (op === '{{' || op === '}}' || op === '!{' || op === '!}') {
       if (!getter_1) val_1 = word_1.split(',')
-      if (!getter_2) val_1 = word_2.split(',')
+      if (!getter_2) val_2 = word_2.split(',')
     }
     if (!getter_1 && !getter_2) {
       const result = predicate(val_1, val_2);

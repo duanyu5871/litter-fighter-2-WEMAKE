@@ -1,6 +1,6 @@
 
 import { Warn } from '../../Log';
-import LF2 from '../LF2';
+import type LF2 from '../LF2';
 import type { World } from '../World';
 import { IBounding } from '../World';
 import { Callbacks, new_id, new_team, type NoEmitCallbacks } from '../base';
@@ -1215,7 +1215,6 @@ export default class Entity {
     if (bdy.hit_act) {
       this.next_frame = this.get_next_frame(bdy.hit_act)?.frame ?? this.next_frame;
     }
-
     if (itr.kind !== ItrKind.Block) {
       const sounds = bdy.hit_sounds || this.data.base.hit_sounds
       this.play_sound(sounds)
