@@ -1,4 +1,4 @@
-import { IEntityData } from '../defines';
+import { IEntityData } from "../defines/IEntityData";
 import { traversal } from '../utils/container_help/traversal';
 
 export function make_ball_special(data: IEntityData) {

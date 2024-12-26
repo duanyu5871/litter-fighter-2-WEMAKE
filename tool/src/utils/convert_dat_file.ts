@@ -1,7 +1,8 @@
 import fs from 'fs/promises';
 import dat_to_json from '../../../src/LF2/dat_translator/dat_2_json';
-import { IDataLists, IEntityData } from '../../../src/LF2/defines';
+import { IDataLists } from '../../../src/LF2/defines';
 import { read_lf2_dat_file } from './read_lf2_dat_file';
+import { IEntityData } from '../../../src/LF2/defines/IEntityData';
 
 export type IRet = ReturnType<typeof dat_to_json>
 function get_dst_path(

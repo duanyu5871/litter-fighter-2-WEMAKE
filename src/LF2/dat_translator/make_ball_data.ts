@@ -1,4 +1,5 @@
-import { IEntityData, ItrKind } from "../defines";
+import { ItrKind } from "../defines";
+import { IEntityData } from "../defines/IEntityData";
 import { EntityEnum } from "../defines/EntityEnum";
 import { EntityVal } from "../defines/EntityVal";
 import { IDatIndex } from "../defines/IDatIndex";

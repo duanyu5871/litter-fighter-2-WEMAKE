@@ -1,4 +1,5 @@
-import { IBdyInfo, ICpointInfo, IEntityPictureInfo, IFramePictureInfo, IItrInfo, IOpointInfo, ItrKind, IWpointInfo } from '../defines';
+import { IBdyInfo, ICpointInfo, IFramePictureInfo, IItrInfo, IOpointInfo, ItrKind, IWpointInfo } from '../defines';
+import { IEntityPictureInfo } from '../defines/IEntityPictureInfo';
 import { BdyKind } from '../defines/BdyKind';
 import { CollisionVal as C_Val } from '../defines/CollisionVal';
 import { IEntityInfo } from "../defines/IEntityInfo";

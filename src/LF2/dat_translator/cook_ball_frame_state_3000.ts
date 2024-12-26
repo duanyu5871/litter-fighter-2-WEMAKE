@@ -1,4 +1,5 @@
-import { IBdyInfo, IEntityData, IFrameInfo, IItrInfo, ItrEffect, ItrKind } from "../defines";
+import { IBdyInfo, IFrameInfo, IItrInfo, ItrEffect, ItrKind } from "../defines";
+import { IEntityData } from "../defines/IEntityData";
 import { CollisionVal as C_Val } from "../defines/CollisionVal";
 import { EntityEnum } from "../defines/EntityEnum";
 import { CondMaker } from "./CondMaker";

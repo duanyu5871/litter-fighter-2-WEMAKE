@@ -1,4 +1,4 @@
-import { IEntityData } from "../defines";
+import { IEntityData } from "../defines/IEntityData";
 import { EntityVal } from "../defines/EntityVal";
 import { CondMaker } from "./CondMaker";
 

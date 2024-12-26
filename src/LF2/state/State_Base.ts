@@ -2,7 +2,7 @@ import { Defines, INextFrame, ItrEffect, ItrKind, TFace, type IFrameInfo } from 
 import { BdyKind } from "../defines/BdyKind";
 import type Entity from "../entity/Entity";
 import { same_face, turn_face } from "../entity/face_helper";
-import { ICollision } from "../entity/ICollision";
+import { ICollision } from "../defines/ICollision";
 import { is_character } from "../entity/type_check";
 import { collision_handler } from "./CollisionHandler";
 export enum WhatNext {

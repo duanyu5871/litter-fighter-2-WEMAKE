@@ -113,7 +113,7 @@ export interface IFrameInfo {
    * 原ball的hit_Fa
    *
    * @type {?number}
-   * @see {Defines.FrameBehavior}
+   * @see {FrameBehavior}
    */
   behavior?: number;
 }

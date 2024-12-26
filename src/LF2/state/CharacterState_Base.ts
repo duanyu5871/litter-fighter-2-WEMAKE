@@ -2,7 +2,7 @@ import { Defines, IFrameInfo, INextFrame, ItrKind } from '../defines';
 import { BdyKind } from '../defines/BdyKind';
 import { ItrEffect } from '../defines/ItrEffect';
 import type Entity from '../entity/Entity';
-import { ICollision } from '../entity/ICollision';
+import { ICollision } from '../defines/ICollision';
 import { is_character, is_weapon } from '../entity/type_check';
 import { collision_handler } from './CollisionHandler';
 import State_Base, { WhatNext } from "./State_Base";

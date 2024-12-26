@@ -1,5 +1,5 @@
-import Expression from '../base/Expression';
-import { INextFrame } from "../defines";
+import { Expression } from "../base/Expression";
+ import { INextFrame } from "../defines";
 import { get_val_getter_from_entity } from './get_val_from_entity';
 
 export function cook_next_frame(i: INextFrame | INextFrame[]): void {

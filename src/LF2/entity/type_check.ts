@@ -1,7 +1,8 @@
 import type { BaseController } from "../controller/BaseController";
 import type { BotController } from "../controller/BotController";
 import type { LocalController } from "../controller/LocalController";
-import type { IBgData, IEntityData } from "../defines";
+import type { IBgData } from "../defines";
+import type { IEntityData } from "../defines/IEntityData";
 import { EntityEnum } from "../defines/EntityEnum";
 export const is_character_data = (v: any) => v?.type === EntityEnum.Character
 export const is_weapon_data = (v: any) => v?.type === EntityEnum.Weapon

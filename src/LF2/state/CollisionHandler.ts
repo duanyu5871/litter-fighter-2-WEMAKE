@@ -1,6 +1,6 @@
 import { Defines, ItrKind } from "../defines";
 import { BdyKind } from "../defines/BdyKind";
-import { ICollision } from "../entity/ICollision";
+import { ICollision } from "../defines/ICollision";
 
 export class CollisionHandler {
   protected pair_map: Map<string, (collision: ICollision) => void> = new Map();

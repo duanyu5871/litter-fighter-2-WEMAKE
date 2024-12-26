@@ -97,7 +97,7 @@ export class GameOverlay {
     if (!this.ctx_cam_bar) return;
     const { left, width } = this.ele_cam_bar.getBoundingClientRect();
     const s_width = this.world.stage.width;
-    const w = Math.floor(width * Defines.OLD_SCREEN_WIDTH / s_width);
+    const w = Math.floor(width * Defines.CLASSIC_SCREEN_WIDTH / s_width);
     const x = Math.min(width - w - 3, Math.max(0, Math.floor(e.pageX - left - w / 2)));
     this.world.lock_cam_x = s_width * x / width;
   }
@@ -105,7 +105,7 @@ export class GameOverlay {
   draw_cam_bar(x: number) {
     if (!this.ctx_cam_bar) return;
     const background_w = this.world.stage.width;
-    const screen_w = Defines.OLD_SCREEN_WIDTH;
+    const screen_w = Defines.CLASSIC_SCREEN_WIDTH;
     const { width: bar_width, height } = this.ele_cam_bar;
     const { player_left, player_right } = this.world.stage;
     const x_l = Math.floor(bar_width * player_left / background_w);

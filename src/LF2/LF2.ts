@@ -12,10 +12,10 @@ import { KEY_NAME_LIST } from './controller/BaseController';
 import LocalController from "./controller/LocalController";
 import {
   Defines, IBgData,
-  IEntityData,
   IStageInfo,
   TFace
 } from './defines';
+import { IEntityData } from "./defines/IEntityData";
 import ditto, {
   IKeyboard,
   IKeyboardCallback,

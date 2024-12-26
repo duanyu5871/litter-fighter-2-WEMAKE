@@ -3,7 +3,7 @@ import { create_img_ele } from '../../Utils/create_img_ele';
 import { get_blob } from '../../Utils/get_blob';
 import type LF2 from "../LF2";
 import AsyncValuesKeeper from "../base/AsyncValuesKeeper";
-import { IEntityPictureInfo } from '../defines';
+import { IEntityPictureInfo } from '../defines/IEntityPictureInfo';
 import type IPicture from '../defines/IPicture';
 import type IStyle from "../defines/IStyle";
 import Ditto from '../ditto';

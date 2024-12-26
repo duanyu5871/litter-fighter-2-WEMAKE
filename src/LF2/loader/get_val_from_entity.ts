@@ -1,4 +1,4 @@
-import { IValGetter, IValGetterGetter } from '../base/Expression';
+import { IValGetter, IValGetterGetter } from '../defines/IExpression';
 import { Defines, ItrKind } from '../defines';
 import { EntityVal } from '../defines/EntityVal';
 import Entity from '../entity/Entity';

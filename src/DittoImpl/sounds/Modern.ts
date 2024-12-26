@@ -176,14 +176,14 @@ export class __Modern extends BaseSounds {
   }
 
   protected get_l_r_vol(x?: number): number[] {
-    const edge_w = Defines.OLD_SCREEN_WIDTH / 2;
+    const edge_w = Defines.CLASSIC_SCREEN_WIDTH / 2;
     const viewer_x = this.lf2.world.camera.x + edge_w;
     const sound_x = x ?? viewer_x;
     const muted = this._muted || this._sound_muted;
     return [
       sound_x,
-      (muted ? 0 : (this._volume * this._sound_volume)) * Math.max(0, 1 - Math.abs((sound_x - viewer_x + edge_w) / Defines.OLD_SCREEN_WIDTH)),
-      (muted ? 0 : (this._volume * this._sound_volume)) * Math.max(0, 1 - Math.abs((sound_x - viewer_x - edge_w) / Defines.OLD_SCREEN_WIDTH))
+      (muted ? 0 : (this._volume * this._sound_volume)) * Math.max(0, 1 - Math.abs((sound_x - viewer_x + edge_w) / Defines.CLASSIC_SCREEN_WIDTH)),
+      (muted ? 0 : (this._volume * this._sound_volume)) * Math.max(0, 1 - Math.abs((sound_x - viewer_x - edge_w) / Defines.CLASSIC_SCREEN_WIDTH))
     ]
   }
   override play(name: string, x?: number, y?: number, z?: number): string {

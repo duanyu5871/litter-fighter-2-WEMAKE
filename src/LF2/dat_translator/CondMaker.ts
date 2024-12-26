@@ -1,4 +1,5 @@
-import { TBinaryOperator } from '../base/Expression';
+
+import type { TBinOp } from '../defines/BinOp';
 import { is_str } from '../utils/type_check';
 export class CondMaker<T extends string = string> {
   readonly is_cond = true;
@@ -7,8 +8,8 @@ export class CondMaker<T extends string = string> {
   private _parts: (string | CondMaker)[] = [];
 
   add(func: (c: CondMaker<T>) => CondMaker<T>): this
-  add(word: T, op: TBinaryOperator, value: any): this
-  add(arg1: T | ((c: CondMaker<T>) => CondMaker<T>), op?: TBinaryOperator, value?: any): this {
+  add(word: T, op: TBinOp, value: any): this
+  add(arg1: T | ((c: CondMaker<T>) => CondMaker<T>), op?: TBinOp, value?: any): this {
     if (typeof arg1 !== 'function')
       this._parts.push(`${arg1}${op}${value}`);
     else
@@ -35,7 +36,7 @@ export class CondMaker<T extends string = string> {
       return c;
     });
   }
-  private _any(word?: T | ((c: CondMaker<T>) => CondMaker<T>), op?: TBinaryOperator | (string | number)[], value?: any): this {
+  private _any(word?: T | ((c: CondMaker<T>) => CondMaker<T>), op?: TBinOp | (string | number)[], value?: any): this {
     if (typeof word === 'function')
       return this.wrap(word);
     else if (word !== void 0)
@@ -47,16 +48,16 @@ export class CondMaker<T extends string = string> {
   }
   or(): this;
   or(func: (c: CondMaker<T>) => CondMaker<T>): this;
-  or(word: T, op: TBinaryOperator, value: any): this;
-  or(word?: T | ((c: CondMaker<T>) => CondMaker<T>), op?: TBinaryOperator | (string | number)[], value?: any): this {
+  or(word: T, op: TBinOp, value: any): this;
+  or(word?: T | ((c: CondMaker<T>) => CondMaker<T>), op?: TBinOp | (string | number)[], value?: any): this {
     this._parts.length && this._parts.push('|');
     return this._any(word, op, value);
   }
 
   and(): this;
   and(func: (c: CondMaker<T>) => CondMaker<T>): this;
-  and(word: T, op: TBinaryOperator, value: any): this;
-  and(word?: T | ((c: CondMaker<T>) => CondMaker<T>), op?: TBinaryOperator, value?: any): this {
+  and(word: T, op: TBinOp, value: any): this;
+  and(word?: T | ((c: CondMaker<T>) => CondMaker<T>), op?: TBinOp, value?: any): this {
     this._parts.length && this._parts.push('&');
     return this._any(word, op, value);
   }

@@ -1,6 +1,6 @@
 import { Defines, IFrameInfo, ItrKind } from "../defines";
 import type Entity from "../entity/Entity";
-import { ICollision } from "../entity/ICollision";
+import { ICollision } from "../defines/ICollision";
 import State_Base, { WhatNext } from "./State_Base";
 
 export default class WeaponState_Base extends State_Base {

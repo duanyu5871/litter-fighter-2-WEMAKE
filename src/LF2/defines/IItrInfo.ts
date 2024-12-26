@@ -1,8 +1,7 @@
 import type { TNextFrame } from ".";
-import { IExpression } from "../base/Expression";
+import type { IExpression } from "./IExpression";
 import type { IQube } from "./IQube";
-import { IQubePair } from "./IQubePair";
-import type { IRectPair } from "./IRectPair";
+import type { IQubePair } from "./IQubePair";
 import type { Defines } from "./defines";
 
 export interface IItrInfo extends IQube {

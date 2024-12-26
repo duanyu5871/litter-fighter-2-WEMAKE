@@ -1,4 +1,5 @@
-import { IEntityData, IEntityInfo } from '../defines';
+import { IEntityInfo } from '../defines';
+import { IEntityData } from "../defines/IEntityData";
 import { EntityEnum } from '../defines/EntityEnum';
 import { IFrameIndexes } from '../defines/IFrameIndexes';
 import { IFrameInfo } from "../defines/IFrameInfo";

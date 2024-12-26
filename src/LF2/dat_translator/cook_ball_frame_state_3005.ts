@@ -1,4 +1,5 @@
-import { IEntityData, IFrameInfo, ItrKind } from "../defines";
+import { IFrameInfo, ItrKind } from "../defines";
+import { IEntityData } from "../defines/IEntityData";
 import { EntityVal } from "../defines/EntityVal";
 import { CondMaker } from "./CondMaker";
 

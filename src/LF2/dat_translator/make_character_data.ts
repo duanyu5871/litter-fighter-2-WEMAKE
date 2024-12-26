@@ -1,4 +1,5 @@
-import { IEntityData, IEntityInfo, IFrameInfo, TNextFrame } from '../defines';
+import { IEntityInfo, IFrameInfo, TNextFrame } from '../defines';
+import { IEntityData } from "../defines/IEntityData";
 import { BdyKind } from '../defines/BdyKind';
 import { EntityEnum } from '../defines/EntityEnum';
 import { EntityVal } from '../defines/EntityVal';

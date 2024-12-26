@@ -2,18 +2,17 @@ import { readFileSync } from 'fs';
 import fs, { readFile } from 'fs/promises';
 import path, { join } from 'path';
 import { ColonValueReader } from '../../src/LF2/dat_translator/ColonValueReader';
-import { IEntityPictureInfo } from '../../src/LF2/defines';
+import { IEntityPictureInfo } from '../../src/LF2/defines/IEntityPictureInfo';
 import { CacheInfos } from './utils/cache_infos';
 import { check_is_str_ok } from './utils/check_is_str_ok';
 import { classify } from './utils/classify';
 import { convert_dat_file } from './utils/convert_dat_file';
 import { convert_data_txt } from './utils/convert_data_txt';
+import { convert_pic, convert_pic_2 } from './utils/convert_pic';
 import { convert_sound } from './utils/convert_sound';
 import { make_zip_and_json } from './utils/make_zip_and_json';
 import { read_lf2_dat_file } from './utils/read_lf2_dat_file';
 import { write_file } from './utils/write_file';
-import { convert_pic, convert_pic_2 } from './utils/convert_pic';
-import { read_text_file } from './utils/read_text_file';
 const {
   RAW_LF2_PATH, DATA_DIR_PATH, OUT_DIR, DATA_ZIP_NAME, PREL_DIR_PATH, PREL_ZIP_NAME,
   TXT_LF2_PATH

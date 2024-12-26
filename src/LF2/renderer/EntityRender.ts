@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { IMeshNode } from "../3d";
-import { IFrameInfo, IEntityData, ITexturePieceInfo, TFace } from "../defines";
+import { IFrameInfo, ITexturePieceInfo, TFace } from "../defines";
+import { IEntityData } from "../defines/IEntityData";
 import IPicture from "../defines/IPicture";
 import Ditto from "../ditto";
 import Entity from "../entity/Entity";

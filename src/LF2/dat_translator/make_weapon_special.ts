@@ -1,4 +1,5 @@
-import { IEntityData, IOpointInfo, Defines } from '../defines';
+import { IOpointInfo, Defines } from '../defines';
+import { IEntityData } from "../defines/IEntityData";
 import { OpointKind } from '../defines/OpointKind';
 import { add_entity_groups } from './add_entity_to_group';
 

@@ -5,10 +5,14 @@ import type { World } from '../World';
 import { IBounding } from '../World';
 import { Callbacks, new_id, new_team, type NoEmitCallbacks } from '../base';
 import { BaseController } from '../controller/BaseController';
-import { IBaseData, ICpointInfo, IEntityData, IFrameInfo, IItrInfo, INextFrame, INextFrameResult, IOpointInfo, ITexturePieceInfo, ItrKind, TFace, TNextFrame } from '../defines';
+import { ICpointInfo, IFrameInfo, IItrInfo, INextFrame, INextFrameResult, IOpointInfo, ITexturePieceInfo, ItrKind, TFace, TNextFrame } from '../defines';
 import { BdyKind } from '../defines/BdyKind';
 import { EntityEnum } from '../defines/EntityEnum';
+import { IBaseData } from "../defines/IBaseData";
+import { ICollision } from '../defines/ICollision';
+import { IEntityData } from "../defines/IEntityData";
 import { OpointKind } from '../defines/OpointKind';
+import { OpointSpreading } from '../defines/OpointSpreading';
 import { SpeedMode } from '../defines/SpeedMode';
 import { Defines } from '../defines/defines';
 import Ditto from '../ditto';
@@ -21,7 +25,6 @@ import WeaponState_Base from '../state/WeaponState_Base';
 import { random_get } from '../utils/math/random';
 import { is_positive, is_str } from '../utils/type_check';
 import { Factory } from './Factory';
-import { ICollision } from './ICollision';
 import type IEntityCallbacks from './IEntityCallbacks';
 import { turn_face } from './face_helper';
 import { is_ball, is_character, is_weapon_data } from './type_check';
@@ -565,10 +568,11 @@ export default class Entity {
         const v = new Ditto.Vector3(0, 0, 0);
         switch (opoint.spreading) {
           case void 0:
-          case Defines.OpointSpreading.Normal:
+          case OpointSpreading.Normal:
             v.z = i - (count - 1) / 2;
             break;
-          case Defines.OpointSpreading.Bat:
+          case OpointSpreading.Bat:
+            break;
         }
         this.spawn_entity(opoint, v)
       }

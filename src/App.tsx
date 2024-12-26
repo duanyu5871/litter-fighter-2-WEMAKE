@@ -19,6 +19,7 @@ import { __ObjectNode } from './DittoImpl/3d/ObjectNode';
 import { __SceneNode } from './DittoImpl/3d/SceneNode';
 import __SpriteNode from './DittoImpl/3d/SpriteNode';
 import { __Text } from './DittoImpl/3d/TextNode';
+import { __Camera_P_Node } from './DittoImpl/3d/__Camera_P_Node';
 import { __BillboardNode } from './DittoImpl/BillboardNode';
 import EditorView from './EditorView';
 import { GameOverlay } from './GameOverlay';
@@ -52,7 +53,6 @@ import img_btn_3_2 from './assets/btn_3_2.png';
 import './game_ui.css';
 import './init';
 import { useLocalBoolean, useLocalNumber, useLocalString } from './useLocalStorage';
-import { __Camera_P_Node } from './DittoImpl/3d/__Camera_P_Node';
 
 const loading_img = new LoadingImg();
 Ditto.setup({

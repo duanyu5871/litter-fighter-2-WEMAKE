@@ -1,44 +1,13 @@
 import { Warn } from '../../Log';
-function ALWAY_FALSE<T = unknown>(text: string, err?: string): IJudger<T> {
+import { BinOp, TBinOp } from "../defines/BinOp";
+import { IExpression, IJudger, IValGetter, IValGetterGetter } from '../defines/IExpression';
+export function ALWAY_FALSE<T = unknown>(text: string, err?: string): IJudger<T> {
   return { run: () => false, text, err }
 }
-
-
-export type TBinaryOperator = '==' | '>=' | '<=' | '!=' | '<' | '>' | '{{' | '}}' | '!{' | '!}' | BinaryOperatorEnum
-export enum BinaryOperatorEnum {
-  LESS = '<',
-  LESS_OR_EQUAL = '<=',
-  EQUAL = '==',
-  GREATER_OR_EQUAL = '>=',
-  GREATER = ">",
-  NOT_EQUAL = '!=',
-  IncludedBy = '}}',
-  Include = '{{',
-  NotIncludedBy = '!}',
-  NotInclude = '!{'
-}
-export interface IJudger<T> {
-  run(arg: T): boolean;
-  readonly text: string;
-  readonly err?: string;
-}
-export interface IValGetter<T> {
-  (e: T, word: string, op: TBinaryOperator): any
-}
-export interface IValGetterGetter<T> {
-  (word: string): IValGetter<T> | undefined
-}
-export interface IExpression<T1, T2 = T1> extends IJudger<T1 | T2> {
-  readonly is_expression: true;
-  readonly children: Array<IExpression<T1> | IJudger<T1 | T2> | '|' | '&'>;
-  readonly get_val?: IValGetter<T1 | T2>;
-  readonly get_val_getter?: IValGetterGetter<T1 | T2>;
-  before: string;
-}
-const a_included_b = (a: any[], b: any[]) => { 
-  return !b.length || b.findIndex(i => a.indexOf(i) < 0) === -1 
+const a_included_b = (a: any[], b: any[]) => {
+  return !b.length || b.findIndex(i => a.indexOf(i) < 0) === -1
 };
-const predicate_maps: Record<BinaryOperatorEnum, (a: any, b: any) => boolean> = {
+export const predicate_maps: Record<BinOp, (a: any, b: any) => boolean> = {
   // eslint-disable-next-line eqeqeq
   '==': (a, b) => a == b,
   // eslint-disable-next-line eqeqeq
@@ -81,20 +50,20 @@ export class Expression<T1, T2 = T1> implements IExpression<T1, T2> {
           const child = new Expression<T1, T2>(this.text.substring(i + 2), get_val, get_val_getter);
           child.not = true;
           child.before = before;
-          i += child.text.length + 2
+          i += child.text.length + 2;
           p = i + 2;
           this.children.push(child);
         } else if ('(' === letter) {
           const child = new Expression<T1, T2>(this.text.substring(i + 1), get_val, get_val_getter);
           child.before = before;
-          i += child.text.length + 1
+          i += child.text.length + 1;
           p = i + 1;
           this.children.push(child);
         } else if ('|' === letter || '&' === letter) {
           if (p < i) {
-            const sub_str = this.text.substring(p, i).replace(/\)*$/g, '')
-            const judger = this.gen_judger(sub_str)
-            const child = new Expression<T1, T2>(judger, get_val, get_val_getter)
+            const sub_str = this.text.substring(p, i).replace(/\)*$/g, '');
+            const judger = this.gen_judger(sub_str);
+            const child = new Expression<T1, T2>(judger, get_val, get_val_getter);
             child.before = before;
             this.children.push(child);
             before = letter;
@@ -113,7 +82,7 @@ export class Expression<T1, T2 = T1> implements IExpression<T1, T2> {
           break;
         }
       }
-      this.text = this.text.substring(0, i)
+      this.text = this.text.substring(0, i);
     } else {
       Object.assign(this, arg_0);
     }
@@ -127,7 +96,7 @@ export class Expression<T1, T2 = T1> implements IExpression<T1, T2> {
     const [, word_1, op, word_2] = reg_result;
     if (!word_1 || !word_2)
       return ALWAY_FALSE(text, `[wrong expression: ${text}]`);
-    const predicate = predicate_maps[op as TBinaryOperator];
+    const predicate = predicate_maps[op as TBinOp];
     if (!predicate) {
       Warn.print('gen_single_judge_func', `wrong operator: ${op}`);
       return ALWAY_FALSE(text, `wrong operator: ${op}`);
@@ -137,21 +106,21 @@ export class Expression<T1, T2 = T1> implements IExpression<T1, T2> {
     let val_1: any = word_1;
     let val_2: any = word_2;
     if (op === '{{' || op === '}}' || op === '!{' || op === '!}') {
-      if (!getter_1) val_1 = word_1.split(',')
-      if (!getter_2) val_2 = word_2.split(',')
+      if (!getter_1) val_1 = word_1.split(',');
+      if (!getter_2) val_2 = word_2.split(',');
     }
     if (!getter_1 && !getter_2) {
       const result = predicate(val_1, val_2);
-      console.warn('[Expression] warning,', JSON.stringify(text), 'always got', result)
+      console.warn('[Expression] warning,', JSON.stringify(text), 'always got', result);
       return {
         run: () => result,
         text,
-      }
+      };
     }
     return {
       run: t => predicate(
-        getter_1 ? getter_1(t, word_1, op as BinaryOperatorEnum) : val_1,
-        getter_2 ? getter_2(t, word_2, op as BinaryOperatorEnum) : val_2
+        getter_1 ? getter_1(t, word_1, op as BinOp) : val_1,
+        getter_2 ? getter_2(t, word_2, op as BinOp) : val_2
       ),
       text
     };
@@ -170,6 +139,5 @@ export class Expression<T1, T2 = T1> implements IExpression<T1, T2> {
       }
     }
     return this.not ? !ret : ret;
-  }
+  };
 }
-export default Expression;

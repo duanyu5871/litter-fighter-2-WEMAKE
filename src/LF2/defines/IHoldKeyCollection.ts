@@ -1,6 +1,4 @@
 import { TNextFrame } from ".";
-import Entity from "../entity/Entity";
-
 export interface IHoldKeyCollection {
   a?: TNextFrame;
   d?: TNextFrame;

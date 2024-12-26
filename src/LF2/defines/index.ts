@@ -1,15 +1,4 @@
-import { EntityEnum } from "./EntityEnum";
-import { IBdyInfo } from "./IBdyInfo";
-import { IBgData } from "./IBgData";
-import { IEntityInfo } from "./IEntityInfo";
-import { IFrameIndexes } from "./IFrameIndexes";
-import { IFrameInfo } from "./IFrameInfo";
-import { IItrInfo } from "./IItrInfo";
-import { INextFrame } from "./INextFrame";
-export type TTODO = any;
-export type TFace = -1 | 1;
-export type TTrend = -1 | 0 | 1;
-export type BOOL = 1 | 0;
+
 export * from './defines';
 export * from './GameKey';
 export * from './IDataLists';
@@ -19,53 +8,6 @@ export * from './IHitKeyCollection';
 export * from "./IStageInfo";
 export * from './ItrEffect';
 export * from './ItrKind';
-
-/**
- * 实体图片信息
- * 
- * TODO 补充说明
- *
- * @export
- * @interface IEntityPictureInfo
- */
-export interface IEntityPictureInfo {
-  id: string;
-
-  path: string;
-
-  /**
-   * 行数
-   * 
-   * @type {number}
-   */
-  row: number;
-
-  /**
-   * 列数
-   * 
-   * @type {number}
-   */
-  col: number;
-
-  /**
-   * 格宽
-   *
-   * @type {number}
-   */
-  cell_w: number;
-
-  /**
-   * 格高
-   *
-   * @type {number}
-   */
-  cell_h: number;
-
-  variants?: string[];
-}
-
-export type TNextFrame = INextFrame | INextFrame[]
-
 export * from './IBdyInfo';
 export * from './IBgData';
 export * from './IBgInfo';
@@ -82,45 +24,3 @@ export * from './IStageObjectInfo';
 export * from './IStagePhaseInfo';
 export * from './ITexturePieceInfo';
 export * from './IWpointInfo';
-
-export interface IBaseData<I = any> {
-  id: string;
-  /**
-   * @see {IDataMap}
-   */
-  type: string;
-  base: I;
-}
-export interface IDataMap {
-  'background': IBgData;
-  [EntityEnum.Character]: IEntityData;
-  [EntityEnum.Weapon]: IEntityData;
-  [EntityEnum.Ball]: IEntityData;
-  [EntityEnum.Entity]: IEntityData;
-}
-
-export interface IEntityData extends IBaseData<IEntityInfo> {
-  type: 'entity' | 'character' | 'weapon' | 'ball';
-  on_dead?: TNextFrame;
-  on_exhaustion?: TNextFrame;
-  indexes?: IFrameIndexes;
-  bdy_prefabs?: { [x in string]?: IBdyPrefab };
-  itr_prefabs?: { [x in string]?: IItrPrefab };
-  frames: Record<string, IFrameInfo>;
-}
-export interface IBdyPrefab extends Partial<IBdyInfo> {
-  id: string;
-  name?: string;
-}
-export interface IItrPrefab extends Partial<IItrInfo> {
-  id: string;
-  name?: string;
-}
-export type TFrameIdPair = {
-  [-1]: string,
-  1: string,
-}
-export type TFrameIdListPair = {
-  [-1]: string[],
-  1: string[],
-}

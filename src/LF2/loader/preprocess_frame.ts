@@ -1,12 +1,14 @@
 import { Warn } from '../../Log';
 import LF2 from '../LF2';
-import Expression from '../base/Expression';
 import { cook_frame_indicator_info } from '../dat_translator/cook_frame_indicator_info';
-import { IEntityData, IEntityPictureInfo, IFrameInfo, ITexturePieceInfo } from '../defines';
+import { IFrameInfo, ITexturePieceInfo } from '../defines';
+import { IEntityPictureInfo } from '../defines/IEntityPictureInfo';
+import { IEntityData } from "../defines/IEntityData";
 import read_nums from '../layout/utils/read_nums';
 import { traversal } from '../utils/container_help/traversal';
 import { get_val_geter_from_collision } from './get_val_from_collision';
 import { cook_next_frame } from './preprocess_next_frame';
+import { Expression } from '../base/Expression';
 const get_keys = <V extends {}>(v: V): (keyof V)[] => {
   return Object.keys(v) as (keyof V)[]
 }

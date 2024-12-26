@@ -1,6 +1,6 @@
 import { IBgInfo } from "./IBgInfo";
 import { IBgLayerInfo } from "./IBgLayerInfo";
-import { IBaseData } from ".";
+import { IBaseData } from "./IBaseData";
 
 
 export interface IBgData extends IBaseData<IBgInfo> {

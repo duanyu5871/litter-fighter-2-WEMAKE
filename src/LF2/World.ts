@@ -11,7 +11,7 @@ import { Defines } from './defines/defines';
 import Ditto from './ditto';
 import Entity from './entity/Entity';
 import { Factory } from './entity/Factory';
-import { ICollision } from './entity/ICollision';
+import { ICollision } from './defines/ICollision';
 import { is_ball, is_base_ctrl, is_character, is_local_ctrl, is_weapon } from './entity/type_check';
 import { EntityRender } from './renderer/EntityRender';
 import Stage from './stage/Stage';
@@ -90,8 +90,8 @@ export class World {
   get depth() { return this.bg.depth || 0 };
   get middle() { return this.bg.middle || { x: 0, z: 0 } }
 
-  protected _screen_w: number = Defines.OLD_SCREEN_WIDTH;
-  protected _screen_h: number = Defines.OLD_SCREEN_HEIGHT;
+  protected _screen_w: number = Defines.CLASSIC_SCREEN_WIDTH;
+  protected _screen_h: number = Defines.CLASSIC_SCREEN_HEIGHT;
 
   get screen_w(): number { return this._screen_w; }
   get screen_h(): number { return this._screen_h; }
@@ -105,7 +105,7 @@ export class World {
   }
   constructor(lf2: LF2, canvas: HTMLCanvasElement) {
     this.lf2 = lf2;
-    const w = this._screen_w = Defines.OLD_SCREEN_WIDTH;
+    const w = this._screen_w = Defines.CLASSIC_SCREEN_WIDTH;
     const h = this._screen_h = 450;// Defines.OLD_SCREEN_HEIGHT;
 
     this.scene = new Ditto.SceneNode(lf2, canvas).set_size(w * 4, h * 4);

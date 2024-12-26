@@ -43,12 +43,12 @@ export default class Layer {
     }
     if (!inner_w || !inner_h) return;
     const bg_width = this.bg.width;
-    if (bg_width <= Defines.OLD_SCREEN_WIDTH) return;
+    if (bg_width <= Defines.CLASSIC_SCREEN_WIDTH) return;
     const cam_x = this.bg.world.camera.x;
     if (absolute)
       this.mesh.set_x(x + cam_x)
     else
-      this.mesh.set_x(x + (bg_width - width) * cam_x / (bg_width - Defines.OLD_SCREEN_WIDTH));
+      this.mesh.set_x(x + (bg_width - width) * cam_x / (bg_width - Defines.CLASSIC_SCREEN_WIDTH));
   }
 
   fade_out(duration: number, delay: number = 0): void {

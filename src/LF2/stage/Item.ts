@@ -1,4 +1,4 @@
-import { IEntityData } from "../defines";
+import { IEntityData } from "../defines/IEntityData";
 import { EntityEnum } from "../defines/EntityEnum";
 import { IStageObjectInfo } from "../defines/IStageObjectInfo";
 import { Defines } from "../defines/defines";

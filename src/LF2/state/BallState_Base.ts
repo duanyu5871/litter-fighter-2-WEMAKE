@@ -1,15 +1,16 @@
 import { Defines, IFrameInfo, ItrKind } from "../defines";
 import Entity from "../entity/Entity";
-import { ICollision } from "../entity/ICollision";
+import { ICollision } from "../defines/ICollision";
 import { is_character, is_weapon } from "../entity/type_check";
 import State_Base from "./State_Base";
+import { FrameBehavior } from "../defines/FrameBehavior";
 
 export default class BallState_Base extends State_Base {
   override enter(e: Entity, _prev_frame: IFrameInfo): void {
     switch (e.frame.behavior) {
-      case Defines.FrameBehavior._01:
-      case Defines.FrameBehavior._02:
-      case Defines.FrameBehavior._03:
+      case FrameBehavior._01:
+      case FrameBehavior._02:
+      case FrameBehavior._03:
         e.unsubscribe_nearest_enemy();
         break;
     }
@@ -29,9 +30,9 @@ export default class BallState_Base extends State_Base {
   }
   override leave(e: Entity, _next_frame: IFrameInfo): void {
     switch (e.frame.behavior) {
-      case Defines.FrameBehavior._01:
-      case Defines.FrameBehavior._02:
-      case Defines.FrameBehavior._03:
+      case FrameBehavior._01:
+      case FrameBehavior._02:
+      case FrameBehavior._03:
         e.unsubscribe_nearest_enemy();
         break;
     }

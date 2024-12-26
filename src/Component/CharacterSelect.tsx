@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import type LF2 from '../LF2/LF2';
-import { Defines, type IEntityData } from '../LF2/defines';
+import { Defines } from '../LF2/defines';
+import { type IEntityData } from "../LF2/defines/IEntityData";
 import Select, { ISelectProps } from './Select';
 
 export interface CharacterSelectProps extends ISelectProps<IEntityData, string> {

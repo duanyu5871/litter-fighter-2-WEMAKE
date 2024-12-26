@@ -1,8 +1,10 @@
 import {
-  IBaseData, IBgData, IEntityData,
-  IEntityPictureInfo,
+  IBgData, 
   IStageInfo
 } from '../defines';
+import { IEntityPictureInfo } from '../defines/IEntityPictureInfo';
+import { IBaseData } from "../defines/IBaseData";
+import { IEntityData } from "../defines/IEntityData";
 import { EntityEnum } from '../defines/EntityEnum';
 import { IDatIndex } from "../defines/IDatIndex";
 import { IEntityInfo } from "../defines/IEntityInfo";

@@ -1,7 +1,7 @@
 import command_exists from 'command-exists';
 import fs from 'fs/promises';
-import type { IEntityPictureInfo } from '../../../src/LF2/defines';
 import { exec_cmd } from "./exec_cmd";
+import { IEntityPictureInfo } from '../../../src/LF2/defines/IEntityPictureInfo';
 function get_dst_path(
   out_dir: string,
   src_dir: string,

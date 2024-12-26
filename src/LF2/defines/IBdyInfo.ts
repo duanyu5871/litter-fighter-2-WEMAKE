@@ -1,6 +1,5 @@
 import type { TNextFrame } from ".";
-import type { IExpression } from "../base/Expression";
-import { ICollision } from "../entity/ICollision";
+import type { IExpression } from "./IExpression";
 import type { IQube } from "./IQube";
 import type { IQubePair } from "./IQubePair";
 
@@ -44,5 +43,5 @@ export interface IBdyInfo extends IQube {
 
   test?: string;
 
-  tester?: IExpression<ICollision>;
+  tester?: IExpression<any>;
 }

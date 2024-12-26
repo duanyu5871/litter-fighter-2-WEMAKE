@@ -45,8 +45,8 @@ export function make_bg_data(full_str: string, datIndex?: IDatIndex): IBgData | 
   const [a, b] = take(fields, 'zboundary');
   fields.left = 0;
   fields.right = width;
-  fields.far = 2 * (a - Defines.OLD_SCREEN_HEIGHT);
-  fields.near = 2 * (b - Defines.OLD_SCREEN_HEIGHT);
+  fields.far = 2 * (a - Defines.CLASSIC_SCREEN_HEIGHT);
+  fields.near = 2 * (b - Defines.CLASSIC_SCREEN_HEIGHT);
 
   const ret: IBgData = {
     type: 'background',
@@ -57,7 +57,7 @@ export function make_bg_data(full_str: string, datIndex?: IDatIndex): IBgData | 
   ret.base.name = ret.base.name.replace(/_/g, ' ');
   ret.base.shadow = ret.base.shadow.replace(/.bmp$/, '.png')
   const blocks = take_blocks(full_str, 'layer:', 'layer_end', v => full_str = v);
-  let min_y = Defines.OLD_SCREEN_HEIGHT;
+  let min_y = Defines.CLASSIC_SCREEN_HEIGHT;
   for (const block_str of blocks) {
     const [file, remains] = block_str.trim().split(/\n|\r/g).filter(v => v).map(v => v.trim());
     const fields: any = {};
@@ -73,7 +73,7 @@ export function make_bg_data(full_str: string, datIndex?: IDatIndex): IBgData | 
     const layer: IBgLayerInfo = {
       ...fields,
       file: file.replace(/.bmp$/, '.png'),
-      y: Defines.OLD_SCREEN_HEIGHT - y,
+      y: Defines.CLASSIC_SCREEN_HEIGHT - y,
       z: ret.layers.length - blocks.length,
     };
     min_y = Math.min(layer.y, min_y)

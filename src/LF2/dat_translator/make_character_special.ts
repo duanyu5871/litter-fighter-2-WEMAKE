@@ -1,4 +1,5 @@
-import { Defines, IEntityData } from '../defines';
+import { Defines } from '../defines';
+import { IEntityData } from "../defines/IEntityData";
 import { add_entity_groups } from './add_entity_to_group';
 import { make_louis_data, make_rudolf_data } from './cook_louis_data';
 
