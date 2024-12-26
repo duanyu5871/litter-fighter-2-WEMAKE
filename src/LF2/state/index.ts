@@ -1,4 +1,3 @@
-import { IFrameInfo } from "../defines";
 import { Defines } from "../defines/defines";
 import Entity from "../entity/Entity";
 import BallState_Base from "./BallState_Base";
@@ -18,11 +17,11 @@ import CharacterState_Teleport2FarthestAlly from "./CharacterState_Teleport2Fart
 import CharacterState_Teleport2NearestEnemy from "./CharacterState_Teleport2NearestEnemy";
 import { CharacterState_TransformToLouisEX } from "./CharacterState_Transform2LouisEX";
 import { CharacterState_Walking } from "./CharacterState_Walking";
+import { State_15 } from "./State_15";
 import State_Base from "./State_Base";
 import State_TransformTo8XXX from "./State_TransformTo8XXX";
 import { State_TransformToCatching } from "./State_TransformToCatching";
 import { State_WeaponBroken } from "./State_WeaponBroken";
-import { StateBase_Proxy } from "./StateBase_Proxy";
 import { States } from "./States";
 import WeaponState_Base from "./WeaponState_Base";
 import WeaponState_InTheSky from "./WeaponState_InTheSky";
@@ -85,13 +84,7 @@ ENTITY_STATES.set(Defines.State.TeleportToFarthestAlly, new CharacterState_Telep
 ENTITY_STATES.set(Defines.State.TransformToLouisEx, new CharacterState_TransformToLouisEX())
 ENTITY_STATES.set(Defines.State.Rowing, new CharacterState_Rowing())
 ENTITY_STATES.set(Defines.State.Drink, new CharacterState_Drink())
-
-ENTITY_STATES.set(Defines.State.Normal, new (class State_15 extends StateBase_Proxy  {
-  override enter(e: Entity, prev_frame: IFrameInfo): void {
-    e.merge_velocities()
-    return this.enter(e, prev_frame)
-  }
-})())
+ENTITY_STATES.set(Defines.State.Normal, new State_15())
 
 ENTITY_STATES.set(Defines.State.Injured, new class extends CharacterState_Base {
   override on_landing(e: Entity): void { }
