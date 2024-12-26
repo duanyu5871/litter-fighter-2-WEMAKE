@@ -3,6 +3,7 @@ import { IMeshNode, IObjectNode } from '../3d';
 import { IRect } from '../defines/IRect';
 import Ditto from '../ditto';
 import Entity from '../entity/Entity';
+import { traversal } from '../utils/container_help/traversal';
 export const EMPTY_ARR = [] as const;
 export const INDICATORS_COLOR = {
   bdy: 0x00ff00,
@@ -122,6 +123,13 @@ export class FrameIndicators {
     if (!this._box) return;
     this.scene.del(this._box);
     delete this._box;
+  }
+  depose() {
+    if (this._box) this.scene.del(this._box);
+    traversal(this._indicators_map, (_, list) => {
+      list.forEach(item => this.scene.del(item))
+      list.length = 0
+    })
   }
   update() {
     if (!this._show) return;
