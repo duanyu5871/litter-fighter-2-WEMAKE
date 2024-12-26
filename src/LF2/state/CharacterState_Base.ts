@@ -99,7 +99,7 @@ export default class CharacterState_Base extends State_Base {
         if (victim.defend_value <= 0) { // 破防
           victim.defend_value = 0;
           victim.world.spark(...victim.spark_point(a_cube, b_cube), "broken_defend")
-          const result = bdy.break_act && victim.get_next_frame(bdy.break_act)
+          const result = bdy.break_act && victim.get_next_frame(bdy.break_act, 1)
           if (result) {
             victim.next_frame = result.frame
             return;
@@ -107,7 +107,7 @@ export default class CharacterState_Base extends State_Base {
         } else {
           if (itr.dvx) victim.velocities[0].x = itr.dvx * attacker.facing / 2;
           victim.world.spark(...victim.spark_point(a_cube, b_cube), "defend_hit")
-          const result = bdy.hit_act && victim.get_next_frame(bdy.hit_act)
+          const result = bdy.hit_act && victim.get_next_frame(bdy.hit_act, 1)
           if (result) victim.next_frame = result.frame
           return;
         }
@@ -129,8 +129,12 @@ export default class CharacterState_Base extends State_Base {
         victim.merge_velocities()
         if (victim.velocities[0].y < 3)
           victim.velocities[0].y += 3;
-        if (victim.frame.state !== Defines.State.Falling)
-          victim.next_frame = victim.get_next_frame(victim.data.indexes?.falling?.[-1][0]!)?.frame;
+        if (victim.frame.state !== Defines.State.Falling) {
+          const frameId = victim.data.indexes?.falling?.[-1][0]
+          if (frameId) {
+            victim.next_frame = victim.get_next_frame(frameId, 1)?.frame;
+          }
+        }
         victim.handle_velocity_decay(0.25)
         break;
       }

@@ -6,7 +6,7 @@ import { IBounding } from '../World';
 import { Callbacks, new_id, new_team, type NoEmitCallbacks } from '../base';
 import { IExpression } from '../base/Expression';
 import { BaseController } from '../controller/BaseController';
-import { IBaseData, ICpointInfo, IEntityData, IFrameInfo, IItrInfo, INextFrameResult, IOpointInfo, ITexturePieceInfo, ItrKind, TFace, TNextFrame } from '../defines';
+import { IBaseData, ICpointInfo, IEntityData, IFrameInfo, IItrInfo, INextFrame, INextFrameResult, IOpointInfo, ITexturePieceInfo, ItrKind, TFace, TNextFrame } from '../defines';
 import { BdyKind } from '../defines/BdyKind';
 import { EntityEnum } from '../defines/EntityEnum';
 import { OpointKind } from '../defines/OpointKind';
@@ -491,7 +491,7 @@ export default class Entity {
       dvx = dvx + Math.abs(ovz / 2);
     }
 
-    const result = this.get_next_frame(opoint.action)
+    const result = this.get_next_frame(opoint.action, 1)
     const facing = result?.which.facing ? this.handle_facing_flag(result.which.facing, result.frame) : emitter.facing;
     this.velocities[0].x = ovx + dvx * facing;
     this.velocities.push(
@@ -892,7 +892,7 @@ export default class Entity {
         this.transfrom_to_another();
         this.controller.reset_key_list();
       } else if (next_frame) {
-        const result = this.get_next_frame(next_frame);
+        const result = this.get_next_frame(next_frame, 1);
         if (result) this.next_frame = next_frame;
       }
     }
@@ -903,7 +903,7 @@ export default class Entity {
       this.velocities[0].y = 0;
 
       if (this.frame.on_landing) {
-        const result = this.get_next_frame(this.frame.on_landing);
+        const result = this.get_next_frame(this.frame.on_landing, 1);
         if (result) this.next_frame = result.frame;
       }
       this.state?.on_landing?.(this);
@@ -1089,7 +1089,7 @@ export default class Entity {
     if (!transform_datas) return;
     const next_idx = (transform_datas.indexOf(this.data) + 1) % transform_datas.length;
     this.data = transform_datas[next_idx];
-    this.next_frame = this.get_next_frame('245')?.frame;
+    this.next_frame = this.get_next_frame('245', 1)?.frame;
   }
 
   /**
@@ -1170,7 +1170,7 @@ export default class Entity {
       this.play_sound(itr.hit_sounds);
     }
     if (itr.hit_act) {
-      this.next_frame = this.get_next_frame(itr.hit_act)?.frame ?? this.next_frame;
+      this.next_frame = this.get_next_frame(itr.hit_act, 1)?.frame ?? this.next_frame;
     }
   }
 
@@ -1208,12 +1208,12 @@ export default class Entity {
       bdy.kind >= BdyKind.GotoMin &&
       bdy.kind <= BdyKind.GotoMax
     ) {
-      const result = this.get_next_frame('' + (bdy.kind - 1000))
+      const result = this.get_next_frame('' + (bdy.kind - 1000), 1)
       if (result) this.next_frame = result.frame
       return;
     }
     if (bdy.hit_act) {
-      this.next_frame = this.get_next_frame(bdy.hit_act)?.frame ?? this.next_frame;
+      this.next_frame = this.get_next_frame(bdy.hit_act, 1)?.frame ?? this.next_frame;
     }
     if (itr.kind !== ItrKind.Block) {
       const sounds = bdy.hit_sounds || this.data.base.hit_sounds
@@ -1301,7 +1301,7 @@ export default class Entity {
 
   enter_frame(which?: TNextFrame | string): void {
     if (!which || this.frame.id === Defines.FrameId.Gone) return;
-    const result = this.get_next_frame(which);
+    const result = this.get_next_frame(which, 0);
     if (!result) {
       this.next_frame = void 0;
       return
@@ -1370,11 +1370,11 @@ export default class Entity {
     }
   }
 
-  get_next_frame(which: TNextFrame | string): INextFrameResult | undefined {
+  get_next_frame(which: TNextFrame | string, test_flag: 0 | 1 | 2): INextFrameResult | undefined {
     if (Array.isArray(which)) {
       const l = which.length;
       for (let i = 0; i < l; ++i) {
-        const f = this.get_next_frame(which[i]);
+        const f = this.get_next_frame(which[i], test_flag);
         if (f) return f
       }
       return void 0;
@@ -1393,8 +1393,7 @@ export default class Entity {
       use_hp = which.hp
       use_mp = which.mp
     }
-
-    if (judger && !judger.run(this)) {
+    if (test_flag !== 2 && judger && !judger.run(this)) {
       return void 0
     }
 
@@ -1411,14 +1410,26 @@ export default class Entity {
     if (!this.world.lf2.infinity_mp) {
       if (this.frame.next === which) {
         // 用next 进入此动作，负数表示消耗，无视正数。若消耗完毕跳至按下防御键的指定跳转动作
-        if (use_mp && this._mp < use_mp) return this.get_next_frame(frame.hit?.d ?? Defines.FrameId.Auto);
-        if (use_hp && this._hp < use_hp) return this.get_next_frame(frame.hit?.d ?? Defines.FrameId.Auto);
+        if (use_mp && this._mp < use_mp) return this.get_next_frame(frame.hit?.d ?? Defines.FrameId.Auto, 2);
+        if (use_hp && this._hp < use_hp) return this.get_next_frame(frame.hit?.d ?? Defines.FrameId.Auto, 2);
       } else {
         if (use_mp && this._mp < use_mp) return void 0;
         if (use_hp && this._hp < use_hp) return void 0;
       }
     }
-    return { frame, which: is_str(which) ? { id: which } : which };
+
+    let w: INextFrame;
+    if (is_str(which)) {
+      w = { id: which };
+    } else if (test_flag === 1) {
+      w = { ...which }
+      delete w.judger;
+      delete w.expression;
+    } else {
+      w = which;
+    }
+
+    return { frame, which: w };
   }
 
   find_frame_by_id(id: string | undefined): IFrameInfo | undefined {

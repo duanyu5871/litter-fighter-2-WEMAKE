@@ -93,7 +93,7 @@ export class State_Base {
       case ItrEffect.Normal:
       case ItrEffect.Sharp:
       case void 0: {
-        const result = bdy.hit_act && victim.get_next_frame(bdy.hit_act)
+        const result = bdy.hit_act && victim.get_next_frame(bdy.hit_act, 1)
         if (result) victim.next_frame = result.frame;
         victim.fall_value -= itr.fall ? itr.fall : Defines.DEFAULT_ITR_FALL;
         victim.defend_value = 0;
