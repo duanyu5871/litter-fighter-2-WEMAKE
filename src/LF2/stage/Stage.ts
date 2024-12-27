@@ -143,7 +143,7 @@ export default class Stage {
     if (spawn_count <= 0 || !times) return;
 
 
-    while ((--spawn_count) >= 0) {
+    while ((--spawn_count) > 0) {
       const stage_object = new Item(this, obj_info);
       stage_object.spawn();
       this.items.add(stage_object)
