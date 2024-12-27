@@ -112,7 +112,7 @@
           "w": 44,
           "h": 46,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "kind": 0
         }
       ],
@@ -130,7 +130,7 @@
           "fall": 140,
           "bdefend": 60,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "test": "victim_state!=1004|attacker_type!=character"
         }
       ],
@@ -159,7 +159,7 @@
           "w": 44,
           "h": 46,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "kind": 0
         }
       ],
@@ -177,7 +177,7 @@
           "fall": 140,
           "bdefend": 60,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "test": "victim_state!=1004|attacker_type!=character"
         }
       ],
@@ -206,7 +206,7 @@
           "w": 44,
           "h": 46,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "kind": 0
         }
       ],
@@ -224,7 +224,7 @@
           "fall": 140,
           "bdefend": 60,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "test": "victim_state!=1004|attacker_type!=character"
         }
       ],
@@ -253,7 +253,7 @@
           "w": 44,
           "h": 46,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "kind": 0
         }
       ],
@@ -271,7 +271,7 @@
           "fall": 140,
           "bdefend": 60,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "test": "victim_state!=1004|attacker_type!=character"
         }
       ],
@@ -300,7 +300,7 @@
           "w": 44,
           "h": 46,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "kind": 0
         }
       ],
@@ -318,7 +318,7 @@
           "fall": 140,
           "bdefend": 60,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "test": "victim_state!=1004|attacker_type!=character"
         }
       ],
@@ -347,7 +347,7 @@
           "w": 44,
           "h": 46,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "kind": 0
         }
       ],
@@ -365,7 +365,7 @@
           "fall": 140,
           "bdefend": 60,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "test": "victim_state!=1004|attacker_type!=character"
         }
       ],
@@ -416,7 +416,7 @@
           "w": 36,
           "h": 50,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "kind": 0
         }
       ],
@@ -429,7 +429,7 @@
           "h": 18,
           "vrest": 2,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "friendly_fire": 1,
           "motionless": 0,
           "shaking": 0,
@@ -468,7 +468,7 @@
           "fall": 140,
           "bdefend": 60,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "test": "victim_state!=1004|attacker_type!=character"
         }
       ],
@@ -497,7 +497,7 @@
           "w": 46,
           "h": 15,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "kind": 0
         }
       ],

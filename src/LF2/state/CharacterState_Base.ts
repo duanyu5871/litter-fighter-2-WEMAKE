@@ -95,15 +95,17 @@ export default class CharacterState_Base extends State_Base {
             itr.bdefend >= Defines.DEFAULT_FORCE_BREAK_DEFEND_VALUE
           )
         ) {
-          collisions_keeper.get(itr.kind!, BdyKind.Normal)?.(collision)
+          collisions_keeper.get(
+            attacker.type, 
+            itr.kind!, 
+            victim.type, 
+            BdyKind.Normal
+          )?.(collision)
           break;
         }
         if (itr.bdefend)
           victim.defend_value -= itr.bdefend;
-
-
         this.take_injury(itr, victim, attacker, 0.1);
-
         if (victim.defend_value <= 0) { // 破防
           victim.defend_value = 0;
           victim.world.spark(...victim.spark_point(a_cube, b_cube), "broken_defend")
@@ -123,27 +125,13 @@ export default class CharacterState_Base extends State_Base {
       }
     }
     this.take_injury(itr, victim, attacker);
-    switch (itr.kind) {
-      case ItrKind.MagicFlute:
-      case ItrKind.MagicFlute2: {
-        victim.merge_velocities()
-        if (victim.velocities[0].y < 3)
-          victim.velocities[0].y += 3;
-        if (victim.frame.state !== Defines.State.Falling) {
-          victim.next_frame = victim.get_next_frame({ id: victim.data.indexes?.falling?.[-1][0] })?.frame;
-        }
-        victim.handle_velocity_decay(0.25)
-        break;
-      }
-      default:
-        collisions_keeper.handle(collision)
-    }
+    victim.defend_value = 0;
+    collisions_keeper.handle(collision)
   }
 
   private take_injury(itr: IItrInfo, victim: Entity, attacker: Entity, scale: number = 1) {
     if (!itr.injury) return;
-    const inj = Math.round(itr.injury*scale)
-    victim.defend_value = 0;
+    const inj = Math.round(itr.injury * scale)
     victim.hp -= inj;
     attacker.add_damage_sum(inj);
     if (victim.hp <= 0) attacker.add_kill_sum(1);

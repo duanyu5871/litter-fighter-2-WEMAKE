@@ -54,7 +54,7 @@
           "w": 42,
           "h": 51,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "kind": 0
         }
       ],
@@ -73,7 +73,7 @@
           "fall": 40,
           "bdefend": 32,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "test": "(victim_state!=1004|attacker_type!=character)&(victim_state!=13&victim_frame_id!=victim_frame_index_ice)",
           "hit_sounds": [
             "data/072.wav.mp3"
@@ -105,7 +105,7 @@
           "w": 66,
           "h": 101,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "kind": 0
         }
       ],
@@ -124,7 +124,7 @@
           "fall": 40,
           "bdefend": 32,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "test": "(victim_state!=1004|attacker_type!=character)&(victim_state!=13&victim_frame_id!=victim_frame_index_ice)",
           "hit_sounds": [
             "data/072.wav.mp3"
@@ -157,7 +157,7 @@
           "w": 70,
           "h": 95,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "kind": 0
         }
       ],
@@ -176,7 +176,7 @@
           "fall": 40,
           "bdefend": 32,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "test": "(victim_state!=1004|attacker_type!=character)&(victim_state!=13&victim_frame_id!=victim_frame_index_ice)",
           "hit_sounds": [
             "data/072.wav.mp3"
@@ -208,7 +208,7 @@
           "w": 66,
           "h": 98,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "kind": 0
         }
       ],
@@ -227,7 +227,7 @@
           "fall": 40,
           "bdefend": 32,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "test": "(victim_state!=1004|attacker_type!=character)&(victim_state!=13&victim_frame_id!=victim_frame_index_ice)",
           "hit_sounds": [
             "data/072.wav.mp3"
@@ -259,7 +259,7 @@
           "w": 74,
           "h": 98,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "kind": 0,
           "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))",
           "hit_act": [
@@ -277,7 +277,7 @@
           "w": 74,
           "h": 98,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "kind": 0,
           "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
           "hit_act": {
@@ -298,7 +298,7 @@
           "h": 98,
           "vrest": 2,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "friendly_fire": 1,
           "motionless": 0,
           "shaking": 0,
@@ -330,7 +330,7 @@
           "w": 62,
           "h": 95,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "kind": 0,
           "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))",
           "hit_act": [
@@ -348,7 +348,7 @@
           "w": 62,
           "h": 95,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "kind": 0,
           "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
           "hit_act": {
@@ -369,7 +369,7 @@
           "h": 95,
           "vrest": 2,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "friendly_fire": 1,
           "motionless": 0,
           "shaking": 0,
@@ -491,7 +491,7 @@
           "w": 42,
           "h": 51,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "kind": 0
         }
       ],
@@ -510,7 +510,7 @@
           "fall": 40,
           "bdefend": 32,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "test": "(victim_state!=1004|attacker_type!=character)&(victim_state!=13&victim_frame_id!=victim_frame_index_ice)",
           "hit_sounds": [
             "data/072.wav.mp3"
@@ -542,7 +542,7 @@
           "w": 57,
           "h": 87,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "kind": 0
         }
       ],
@@ -561,7 +561,7 @@
           "fall": 40,
           "bdefend": 32,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "test": "(victim_state!=1004|attacker_type!=character)&(victim_state!=13&victim_frame_id!=victim_frame_index_ice)",
           "hit_sounds": [
             "data/072.wav.mp3"
@@ -594,7 +594,7 @@
           "w": 65,
           "h": 84,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "kind": 0
         }
       ],
@@ -613,7 +613,7 @@
           "fall": 40,
           "bdefend": 32,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "test": "(victim_state!=1004|attacker_type!=character)&(victim_state!=13&victim_frame_id!=victim_frame_index_ice)",
           "hit_sounds": [
             "data/072.wav.mp3"
@@ -645,7 +645,7 @@
           "w": 68,
           "h": 90,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "kind": 0
         }
       ],
@@ -664,7 +664,7 @@
           "fall": 40,
           "bdefend": 32,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "test": "(victim_state!=1004|attacker_type!=character)&(victim_state!=13&victim_frame_id!=victim_frame_index_ice)",
           "hit_sounds": [
             "data/072.wav.mp3"
@@ -696,7 +696,7 @@
           "w": 66,
           "h": 91,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "kind": 0,
           "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))",
           "hit_act": [
@@ -714,7 +714,7 @@
           "w": 66,
           "h": 91,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "kind": 0,
           "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
           "hit_act": {
@@ -735,7 +735,7 @@
           "h": 91,
           "vrest": 2,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "friendly_fire": 1,
           "motionless": 0,
           "shaking": 0,
@@ -767,7 +767,7 @@
           "w": 64,
           "h": 89,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "kind": 0,
           "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))",
           "hit_act": [
@@ -785,7 +785,7 @@
           "w": 64,
           "h": 89,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "kind": 0,
           "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
           "hit_act": {
@@ -806,7 +806,7 @@
           "h": 89,
           "vrest": 2,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "friendly_fire": 1,
           "motionless": 0,
           "shaking": 0,
@@ -856,7 +856,7 @@
           "w": 26,
           "h": 25,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "kind": 0
         }
       ],
@@ -875,7 +875,7 @@
           "fall": 40,
           "bdefend": 32,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "test": "(victim_state!=1004|attacker_type!=character)&(victim_state!=13&victim_frame_id!=victim_frame_index_ice)",
           "hit_sounds": [
             "data/072.wav.mp3"
@@ -907,7 +907,7 @@
           "w": 41,
           "h": 64,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "kind": 0
         }
       ],
@@ -926,7 +926,7 @@
           "fall": 40,
           "bdefend": 32,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "test": "(victim_state!=1004|attacker_type!=character)&(victim_state!=13&victim_frame_id!=victim_frame_index_ice)",
           "hit_sounds": [
             "data/072.wav.mp3"
@@ -959,7 +959,7 @@
           "w": 54,
           "h": 58,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "kind": 0
         }
       ],
@@ -978,7 +978,7 @@
           "fall": 40,
           "bdefend": 32,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "test": "(victim_state!=1004|attacker_type!=character)&(victim_state!=13&victim_frame_id!=victim_frame_index_ice)",
           "hit_sounds": [
             "data/072.wav.mp3"
@@ -1010,7 +1010,7 @@
           "w": 54,
           "h": 79,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "kind": 0
         }
       ],
@@ -1029,7 +1029,7 @@
           "fall": 40,
           "bdefend": 32,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "test": "(victim_state!=1004|attacker_type!=character)&(victim_state!=13&victim_frame_id!=victim_frame_index_ice)",
           "hit_sounds": [
             "data/072.wav.mp3"
@@ -1061,7 +1061,7 @@
           "w": 56,
           "h": 78,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "kind": 0,
           "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))",
           "hit_act": [
@@ -1079,7 +1079,7 @@
           "w": 56,
           "h": 78,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "kind": 0,
           "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
           "hit_act": {
@@ -1100,7 +1100,7 @@
           "h": 78,
           "vrest": 2,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "friendly_fire": 1,
           "motionless": 0,
           "shaking": 0,
@@ -1132,7 +1132,7 @@
           "w": 50,
           "h": 75,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "kind": 0,
           "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))",
           "hit_act": [
@@ -1150,7 +1150,7 @@
           "w": 50,
           "h": 75,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "kind": 0,
           "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
           "hit_act": {
@@ -1171,7 +1171,7 @@
           "h": 75,
           "vrest": 2,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "friendly_fire": 1,
           "motionless": 0,
           "shaking": 0,
@@ -1221,7 +1221,7 @@
           "w": 26,
           "h": 25,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "kind": 0
         }
       ],
@@ -1240,7 +1240,7 @@
           "fall": 40,
           "bdefend": 32,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "test": "(victim_state!=1004|attacker_type!=character)&(victim_state!=13&victim_frame_id!=victim_frame_index_ice)",
           "hit_sounds": [
             "data/072.wav.mp3"
@@ -1272,7 +1272,7 @@
           "w": 26,
           "h": 47,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "kind": 0
         }
       ],
@@ -1291,7 +1291,7 @@
           "fall": 40,
           "bdefend": 32,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "test": "(victim_state!=1004|attacker_type!=character)&(victim_state!=13&victim_frame_id!=victim_frame_index_ice)",
           "hit_sounds": [
             "data/072.wav.mp3"
@@ -1324,7 +1324,7 @@
           "w": 30,
           "h": 56,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "kind": 0
         }
       ],
@@ -1343,7 +1343,7 @@
           "fall": 40,
           "bdefend": 32,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "test": "(victim_state!=1004|attacker_type!=character)&(victim_state!=13&victim_frame_id!=victim_frame_index_ice)",
           "hit_sounds": [
             "data/072.wav.mp3"
@@ -1375,7 +1375,7 @@
           "w": 38,
           "h": 57,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "kind": 0
         }
       ],
@@ -1394,7 +1394,7 @@
           "fall": 40,
           "bdefend": 32,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "test": "(victim_state!=1004|attacker_type!=character)&(victim_state!=13&victim_frame_id!=victim_frame_index_ice)",
           "hit_sounds": [
             "data/072.wav.mp3"
@@ -1426,7 +1426,7 @@
           "w": 36,
           "h": 57,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "kind": 0,
           "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))",
           "hit_act": [
@@ -1444,7 +1444,7 @@
           "w": 36,
           "h": 57,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "kind": 0,
           "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
           "hit_act": {
@@ -1465,7 +1465,7 @@
           "h": 57,
           "vrest": 2,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "friendly_fire": 1,
           "motionless": 0,
           "shaking": 0,
@@ -1497,7 +1497,7 @@
           "w": 38,
           "h": 58,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "kind": 0,
           "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))",
           "hit_act": [
@@ -1515,7 +1515,7 @@
           "w": 38,
           "h": 58,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "kind": 0,
           "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
           "hit_act": {
@@ -1536,7 +1536,7 @@
           "h": 58,
           "vrest": 2,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "friendly_fire": 1,
           "motionless": 0,
           "shaking": 0,
@@ -1780,8 +1780,8 @@
           "dvy": 0,
           "fall": 140,
           "bdefend": 32,
-          "l": 30,
-          "z": 15,
+          "l": 60,
+          "z": -30,
           "friendly_fire": 1,
           "shaking": 0,
           "motionless": 0,
@@ -1820,8 +1820,8 @@
           "dvy": 0,
           "fall": 140,
           "bdefend": 32,
-          "l": 30,
-          "z": 15,
+          "l": 60,
+          "z": -30,
           "friendly_fire": 1,
           "shaking": 0,
           "motionless": 0,
@@ -1860,8 +1860,8 @@
           "dvy": 0,
           "fall": 140,
           "bdefend": 32,
-          "l": 30,
-          "z": 15,
+          "l": 60,
+          "z": -30,
           "friendly_fire": 1,
           "shaking": 0,
           "motionless": 0,
@@ -1900,8 +1900,8 @@
           "dvy": 0,
           "fall": 140,
           "bdefend": 32,
-          "l": 30,
-          "z": 15,
+          "l": 60,
+          "z": -30,
           "friendly_fire": 1,
           "shaking": 0,
           "motionless": 0,
@@ -1940,8 +1940,8 @@
           "dvy": 0,
           "fall": 140,
           "bdefend": 32,
-          "l": 30,
-          "z": 15,
+          "l": 60,
+          "z": -30,
           "friendly_fire": 1,
           "shaking": 0,
           "motionless": 0,
@@ -2023,8 +2023,8 @@
           "dvy": 0,
           "fall": 140,
           "bdefend": 32,
-          "l": 30,
-          "z": 15,
+          "l": 60,
+          "z": -30,
           "friendly_fire": 1,
           "shaking": 0,
           "motionless": 0,
@@ -2056,7 +2056,7 @@
           "w": 43,
           "h": 62,
           "l": 24,
-          "z": 12,
+          "z": -12,
           "kind": 0
         }
       ],

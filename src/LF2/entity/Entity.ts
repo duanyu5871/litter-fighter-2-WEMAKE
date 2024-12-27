@@ -81,6 +81,7 @@ export default class Entity {
   readonly world: World;
   readonly position = new Ditto.Vector3(0, 0, 0);
   protected _resting = 0;
+  get type() { return this.data.type }
   get resting() { return this._resting; }
   set resting(v: number) {
     const o = this._resting
@@ -1240,7 +1241,12 @@ export default class Entity {
     if (bdy.hit_act) {
       this.next_frame = this.get_next_frame(bdy.hit_act)?.frame ?? this.next_frame;
     }
-    if (itr.kind !== ItrKind.Block) {
+    if (
+      itr.kind !== ItrKind.Block &&
+      itr.kind !== ItrKind.Whirlwind &&
+      itr.kind !== ItrKind.MagicFlute &&
+      itr.kind !== ItrKind.MagicFlute2
+    ) {
       const sounds = bdy.hit_sounds || this.data.base.hit_sounds
       this.play_sound(sounds)
     }

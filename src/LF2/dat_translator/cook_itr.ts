@@ -25,11 +25,11 @@ export default function cook_itr(itr?: Partial<IItrInfo>) {
   if (not_zero_num(bdefend)) itr.bdefend = bdefend * 2;
   const zwidth = take(itr, 'zwidth');
   if (not_zero_num(zwidth)) {
-    itr.l = zwidth
-    itr.z = zwidth / 2
+    itr.l = 2 * zwidth
+    itr.z = -zwidth
   } else {
     itr.l = Defines.DAFUALT_QUBE_LENGTH
-    itr.z = Defines.DAFUALT_QUBE_LENGTH / 2
+    itr.z = -Defines.DAFUALT_QUBE_LENGTH / 2
   }
   switch (itr.effect) {
     case ItrEffect.FireExplosion:

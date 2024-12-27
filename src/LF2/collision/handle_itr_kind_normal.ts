@@ -48,13 +48,23 @@ export function handle_itr_kind_normal(collision: ICollision) {
       break;
     }
     case ItrEffect.Ice2:
-      collisions_keeper.get(ItrKind.Freeze, BdyKind.Normal)?.(collision);
+      collisions_keeper.get(
+        attacker.type,
+        ItrKind.Freeze, 
+        victim.type,
+        BdyKind.Normal
+      )?.(collision);
       break;
     case ItrEffect.Ice: {
       if (victim.frame.state === Defines.State.Frozen) {
         fall(collision);
       } else {
-        collisions_keeper.get(ItrKind.Freeze, BdyKind.Normal)?.(collision);
+        collisions_keeper.get(
+          attacker.type,
+          ItrKind.Freeze, 
+          victim.type,
+          BdyKind.Normal
+        )?.(collision);
       }
       break;
     }

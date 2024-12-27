@@ -2,6 +2,7 @@ import { Defines, IFrameInfo, ItrKind } from "../defines";
 import type Entity from "../entity/Entity";
 import { ICollision } from "../defines/ICollision";
 import State_Base, { WhatNext } from "./State_Base";
+import { collisions_keeper } from "../collision/CollisionKeeper";
 
 export default class WeaponState_Base extends State_Base {
   override on_collision(collision: ICollision): void {
@@ -35,29 +36,38 @@ export default class WeaponState_Base extends State_Base {
 
   override on_be_collided(collision: ICollision): void {
     const { itr, attacker, victim, a_cube, b_cube } = collision
-    const spark_x = (Math.max(a_cube.left, b_cube.left) + Math.min(a_cube.right, b_cube.right)) / 2;
-    const spark_y = (Math.min(a_cube.top, b_cube.top) + Math.max(a_cube.bottom, b_cube.bottom)) / 2;
-    const spark_z = Math.max(a_cube.far, b_cube.far);
-    if (itr.bdefend && itr.bdefend >= Defines.DEFAULT_FORCE_BREAK_DEFEND_VALUE) victim.hp = 0;
-    else if (itr.injury) victim.hp -= itr.injury;
-    const spark_frame_name = (itr.fall && itr.fall >= Defines.DEFAULT_FALL_VALUE_MAX - Defines.DEFAULT_FALL_VALUE_DIZZY) ? 'slient_critical_hit' : 'slient_hit';
-    victim.world.spark(spark_x, spark_y, spark_z, spark_frame_name)
-    if (victim.data.base.type === Defines.WeaponType.Heavy) {
-      if (itr.fall && itr.fall >= 120) {
-        const vx = itr.dvx ? itr.dvx * attacker.facing : 0;
-        const vy = itr.dvy ? itr.dvy : 3;
-        victim.velocities[0].x = vx / 2;
-        victim.velocities[0].y = vy;
-        victim.team = attacker.team;
-        victim.enter_frame({ id: victim.data.indexes?.in_the_sky })
-      }
-    } else {
-      const vx = itr.dvx ? itr.dvx * attacker.facing : 0;
-      const vy = itr.dvy ? itr.dvy : 3;
-      victim.velocities[0].x = vx;
-      victim.velocities[0].y = vy;
-      victim.team = attacker.team;
-      victim.enter_frame({ id: victim.data.indexes?.in_the_sky })
+    switch (itr.kind) {
+      case ItrKind.Normal:
+      case ItrKind.CharacterThrew:
+        const spark_x = (Math.max(a_cube.left, b_cube.left) + Math.min(a_cube.right, b_cube.right)) / 2;
+        const spark_y = (Math.min(a_cube.top, b_cube.top) + Math.max(a_cube.bottom, b_cube.bottom)) / 2;
+        const spark_z = Math.max(a_cube.far, b_cube.far);
+        if (itr.bdefend && itr.bdefend >= Defines.DEFAULT_FORCE_BREAK_DEFEND_VALUE) victim.hp = 0;
+        else if (itr.injury) victim.hp -= itr.injury;
+        const is_fly = itr.fall && itr.fall >= Defines.DEFAULT_FALL_VALUE_MAX - Defines.DEFAULT_FALL_VALUE_DIZZY
+        const spark_frame_name = is_fly ? 'slient_critical_hit' : 'slient_hit';
+        victim.world.spark(spark_x, spark_y, spark_z, spark_frame_name)
+        if (victim.data.base.type === Defines.WeaponType.Heavy) {
+          if (is_fly) {
+            const vx = itr.dvx ? itr.dvx * attacker.facing : 0;
+            const vy = itr.dvy ? itr.dvy : 3;
+            victim.velocities[0].x = vx / 2;
+            victim.velocities[0].y = vy;
+            victim.team = attacker.team;
+            victim.next_frame = { id: victim.data.indexes?.in_the_sky }
+          }
+        } else {
+          const vx = itr.dvx ? itr.dvx * attacker.facing : 0;
+          const vy = itr.dvy ? itr.dvy : 3;
+          victim.velocities[0].x = vx;
+          victim.velocities[0].y = vy;
+          victim.team = attacker.team;
+          victim.next_frame = { id: victim.data.indexes?.in_the_sky }
+        }
+        break;
+      default:
+        collisions_keeper.handle(collision)
+        break;
     }
   }
 

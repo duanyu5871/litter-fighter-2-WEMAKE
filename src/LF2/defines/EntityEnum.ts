@@ -4,3 +4,10 @@ export enum EntityEnum {
   Ball = 'ball',
   Entity = 'entity'
 }
+export type TEntityEnum = EntityEnum | 'character' | 'weapon' | 'ball' | 'entity'
+export const ALL_ENTITY_ENUM: EntityEnum[] = [
+  EntityEnum.Character,
+  EntityEnum.Weapon,
+  EntityEnum.Ball,
+  EntityEnum.Entity
+]
