@@ -13,6 +13,7 @@ export enum WhatNext {
 }
 export class State_Base {
   state: number | string = '';
+  pre_update(e: Entity): void { };
   update(e: Entity): void { };
   enter?(e: Entity, prev_frame: IFrameInfo): void;
   leave?(e: Entity, next_frame: IFrameInfo): void;

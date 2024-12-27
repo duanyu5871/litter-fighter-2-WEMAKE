@@ -334,7 +334,6 @@ export default class Entity {
 
   protected _state: State_Base | undefined;
 
-
   set state(v: State_Base | undefined) {
     if (this._state === v) return;
     this._state?.leave?.(this, this.frame)
@@ -816,42 +815,48 @@ export default class Entity {
       }
     }
 
+    this.state?.pre_update?.(this)
     switch (this.frame.state) {
-      case Defines.State.Falling:
-      case Defines.State.Lying:
-      case Defines.State.Caught: {
-        if (this.holding) {
-          this.holding.follow_holder()
-          this.holding.enter_frame({ id: this.data.indexes?.in_the_sky });
-          this.holding.holder = void 0;
-          this.holding = void 0;
-        }
+      case Defines.State.Falling: {
+        this.drop_holding();
         break;
       }
-      case Defines.State.Burning:
-      case Defines.State.Frozen:
+      case Defines.State.Lying: {
+        this.update_resting();
+        this.drop_holding();
+        break;
+      }
+      case Defines.State.Caught: {
+        this.drop_holding();
+        break;
+      }
       case Defines.State.Injured:
         break;
-      case Defines.State.Defend:
-      case Defines.State.BrokenDefend:
-        if (this.resting > 0) {
-          this.resting--;
-        } else if (this.fall_value < this.fall_value_max) {
-          this.fall_value += 1;
-        }
-        break;
       default: {
-        if (this.resting > 0) {
-          this.resting--;
-        } else {
-          if (this.fall_value < this.fall_value_max) {
-            this.fall_value += 1;
-          }
-          if (this.defend_value < this.defend_value_max) {
-            this.defend_value += 1;
-          }
-        }
+        this.update_resting();
       }
+    }
+  }
+
+  private update_resting() {
+    if (this.resting > 0) {
+      this.resting--;
+    } else {
+      if (this.fall_value < this.fall_value_max) {
+        this.fall_value += 1;
+      }
+      if (this.defend_value < this.defend_value_max) {
+        this.defend_value += 1;
+      }
+    }
+  }
+
+  private drop_holding() {
+    if (this.holding) {
+      this.holding.follow_holder();
+      this.holding.enter_frame({ id: this.data.indexes?.in_the_sky });
+      this.holding.holder = void 0;
+      this.holding = void 0;
     }
   }
 

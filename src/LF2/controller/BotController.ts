@@ -19,6 +19,15 @@ export enum DummyEnum {
   LockAtMid_dRa = '12',
   LockAtMid_dRj = '13',
   LockAtMid_dja = '14',
+  LockAtMid_dUa_auto = '15',
+  LockAtMid_dUj_auto = '16',
+  LockAtMid_dDa_auto = '17',
+  LockAtMid_dDj_auto = '18',
+  LockAtMid_dLa_auto = '18',
+  LockAtMid_dLj_auto = '19',
+  LockAtMid_dRa_auto = '20',
+  LockAtMid_dRj_auto = '21',
+  LockAtMid_dja_auto = '22',
 }
 export class BotController extends BaseController {
   readonly is_bot_enemy_chaser = true;
@@ -344,50 +353,62 @@ export class BotController extends BaseController {
         break;
       }
       case DummyEnum.LockAtMid_dUa: {
-        const h = this.lock_when_stand_and_rest() && this.time % 60 === 0
+        const h = this.lock_when_stand_and_rest()
         this[h ? 'start' : 'end'](GameKey.d, GameKey.U, GameKey.a)
         break;
       }
       case DummyEnum.LockAtMid_dUj: {
-        const h = this.lock_when_stand_and_rest() && this.time % 60 === 0
+        const h = this.lock_when_stand_and_rest()
         this[h ? 'start' : 'end'](GameKey.d, GameKey.U, GameKey.j)
         break;
       }
       case DummyEnum.LockAtMid_dDa: {
-        const h = this.lock_when_stand_and_rest() && this.time % 60 === 0
+        const h = this.lock_when_stand_and_rest()
         this[h ? 'start' : 'end'](GameKey.d, GameKey.D, GameKey.a)
         break;
       }
       case DummyEnum.LockAtMid_dDj: {
-        const h = this.lock_when_stand_and_rest() && this.time % 60 === 0
+        const h = this.lock_when_stand_and_rest()
         this[h ? 'start' : 'end'](GameKey.d, GameKey.D, GameKey.j)
         break;
       }
       case DummyEnum.LockAtMid_dLa: {
-        const h = this.lock_when_stand_and_rest() && this.time % 60 === 0
-        this[h ? 'start' : 'end'](GameKey.d, GameKey.L, GameKey.a)
+        const h = this.lock_when_stand_and_rest()
+        if (h) this.start(GameKey.d, GameKey.L, GameKey.a)
+        else if (this.entity.frame.hit?.a) this.start(GameKey.a)
+        else this[h ? 'start' : 'end'](GameKey.d, GameKey.L, GameKey.a)
         break;
       }
       case DummyEnum.LockAtMid_dLj: {
-        const h = this.lock_when_stand_and_rest() && this.time % 60 === 0
+        const h = this.lock_when_stand_and_rest()
         this[h ? 'start' : 'end'](GameKey.d, GameKey.L, GameKey.j)
         break;
       }
       case DummyEnum.LockAtMid_dRa: {
-        const h = this.lock_when_stand_and_rest() && this.time % 60 === 0
-        this[h ? 'start' : 'end'](GameKey.d, GameKey.R, GameKey.a)
+        const h = this.lock_when_stand_and_rest()
+        if (h) this.start(GameKey.d, GameKey.R, GameKey.a)
+        else if (this.entity.frame.hit?.a) this.start(GameKey.a)
+        else this[h ? 'start' : 'end'](GameKey.d, GameKey.R, GameKey.a)
         break;
       }
       case DummyEnum.LockAtMid_dRj: {
-        const h = this.lock_when_stand_and_rest() && this.time % 60 === 0
+        const h = this.lock_when_stand_and_rest()
         this[h ? 'start' : 'end'](GameKey.d, GameKey.R, GameKey.j)
         break;
       }
       case DummyEnum.LockAtMid_dja: {
-        const h = this.lock_when_stand_and_rest() && this.time % 60 === 0
+        const h = this.lock_when_stand_and_rest()
         this[h ? 'start' : 'end'](GameKey.d, GameKey.j, GameKey.a)
         break;
       }
+      case DummyEnum.LockAtMid_dUa_auto:
+      case DummyEnum.LockAtMid_dUj_auto:
+      case DummyEnum.LockAtMid_dDa_auto:
+      case DummyEnum.LockAtMid_dDj_auto:
+      case DummyEnum.LockAtMid_dLj_auto:
+      case DummyEnum.LockAtMid_dRa_auto:
+      case DummyEnum.LockAtMid_dRj_auto:
+      case DummyEnum.LockAtMid_dja_auto:
       default:
         break;
     }
