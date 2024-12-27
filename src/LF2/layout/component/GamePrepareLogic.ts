@@ -271,7 +271,7 @@ export default class GamePrepareLogic extends LayoutComponent {
       }
       character.position.z = random_in(far, near);
       character.position.x = random_in(left, right);
-      character.blinking = this.world.player_begin_blinking_time;
+      character.blinking = this.world.begin_blink_time;
       character.attach();
     }
 

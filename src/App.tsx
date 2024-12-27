@@ -94,45 +94,32 @@ function App() {
   const [game_overlay, set_game_overlay] = useLocalBoolean('game_overlay', false);
   const [showing_panel, set_showing_panel] = useLocalString<'world_tuning' | 'stage' | 'bg' | 'weapon' | 'bot' | 'player' | ''>('showing_panel', '');
   const [control_panel_visible, set_control_panel_visible] = useLocalBoolean('control_panel', false);
-
   const [cheat_1, _set_cheat_1] = useLocalBoolean('cheat_1', false);
   const [cheat_2, _set_cheat_2] = useLocalBoolean('cheat_2', false);
   const [cheat_3, _set_cheat_3] = useLocalBoolean('cheat_3', false);
-
   const [loading, set_loading] = useState(false);
   const [loaded, set_loaded] = useState(false);
   const [paused, _set_paused] = useState(false);
-
+  const [bg_id, _set_bg_id] = useState(Defines.VOID_BG.id);
   const [muted, _set_muted] = useLocalBoolean('total_muted', false);
-
   const [bgm_muted, _set_bgm_muted] = useLocalBoolean('bgm_muted', false);
   const [sound_muted, _set_sound_muted] = useLocalBoolean('sound_muted', false);
   const [volume, _set_volume] = useLocalNumber<number>('total_volume', 1);
   const [bgm_volume, _set_bgm_volume] = useLocalNumber<number>('bgm_volume', 1);
   const [sound_volume, _set_sound_volume] = useLocalNumber<number>('sound_volume', 1);
-
-  const [bg_id, _set_bg_id] = useState(Defines.VOID_BG.id);
-
   const [render_size_mode, set_render_size_mode] = useLocalString<'fixed' | 'fill' | 'cover' | 'contain'>('render_size_mode', 'contain');
   const [render_fixed_scale, set_render_fixed_scale] = useLocalNumber<number>('render_fixed_scale', 1);
   const [custom_render_fixed_scale, set_custom_render_fixed_scale] = useLocalNumber<number>('custom_render_fixed_scale', 1);
-  const [v_align, set_v_align] = useLocalNumber<number>('v_align', 0.5);
+  const [v_align, set_v_align] = useLocalNumber<number>('v_align', document.body.parentElement!.className.indexOf("portrait") >= 0 ? 0.3 : 0.5);
   const [h_align, set_h_align] = useLocalNumber<number>('h_align', 0.5);
   const [custom_h_align, set_custom_h_align] = useLocalNumber<number>('custom_h_align', 0.5);
   const [custom_v_align, set_custom_v_align] = useLocalNumber<number>('custom_v_align', 0.5);
   const [debug_ui_pos, set_debug_ui_pos] = useLocalString<'left' | 'right' | 'top' | 'bottom'>('debug_ui_pos', 'bottom');
   const [touch_pad_on, set_touch_pad_on] = useLocalString<string>('touch_pad_on', '');
   const [is_fullscreen, _set_is_fullscreen] = useState(false);
-  const [gravity, _set_gravity] = useState(0);
-
+  const [gravity, _set_gravity] = useLocalNumber<number>('gravity', 0);
   const [sync_render, set_sync_render] = useLocalNumber<0 | 1 | 2>('sync_render', 0);
-
-  const cln = document.body.parentElement?.className;
-  useEffect(() => {
-    if (!cln) return;
-    if (cln.indexOf("portrait") >= 0)
-      set_v_align(0.3);
-  }, [cln, set_v_align])
+  const [indicator_flags, set_indicator_flags] = useLocalNumber<number>('indicator_flags', 0);
 
   const update_once = () => {
     const lf2 = lf2_ref.current;
@@ -140,12 +127,11 @@ function App() {
     lf2?.world.update_once();
   }
 
-  const [show_indicators, set_show_indicators] = useState(false);
   useEffect(() => {
     const lf2 = lf2_ref.current;
     if (!lf2) return;
-    lf2.world.show_indicators = show_indicators;
-  }, [show_indicators])
+    lf2.world.indicator_flags = indicator_flags;
+  }, [indicator_flags])
 
   const [fast_forward, set_fast_forward] = useState(false);
   useEffect(() => {
@@ -346,7 +332,7 @@ function App() {
 
   useShortcut('F11', 0, () => toggle_fullscreen());
   useShortcut('ctrl+F1', 0, () => set_control_panel_visible(v => !v));
-  useShortcut('ctrl+F2', 0, () => set_show_indicators(v => !v));
+  // useShortcut('ctrl+F2', 0, () => set_indicator_flags(v => !v));
   useShortcut('ctrl+F3', 0, () => set_game_overlay(v => !v));
 
   useEffect(() => {
@@ -573,10 +559,25 @@ function App() {
             <>不限速度</>
             <>不限速度✓</>
           </ToggleButton>
-          <ToggleButton title='ctrl+F2' value={show_indicators} onClick={() => set_show_indicators(v => !v)}>
-            <>指示器</>
-            <>指示器✓</>
+          <ToggleButton
+            value={!!(indicator_flags & 1)}
+            onClick={() => set_indicator_flags(v => (v & 1) ? (v ^ 1) : (v | 1))}>
+            <>FrameBox</>
+            <>FrameBox✓</>
           </ToggleButton>
+          <ToggleButton
+            value={!!(indicator_flags & 2)}
+            onClick={() => set_indicator_flags(v => (v & 2) ? (v ^ 2) : (v | 2))}>
+            <>ItrBox</>
+            <>ItrBox✓</>
+          </ToggleButton>
+          <ToggleButton
+            value={!!(indicator_flags & 4)}
+            onClick={() => set_indicator_flags(v => (v & 4) ? (v ^ 4) : (v | 4))}>
+            <>BdyBox</>
+            <>BdyBox✓</>
+          </ToggleButton>
+
           <ToggleButton title='ctrl+F3' value={game_overlay} onChange={set_game_overlay} >
             <>游戏覆盖</>
             <>游戏覆盖✓</>

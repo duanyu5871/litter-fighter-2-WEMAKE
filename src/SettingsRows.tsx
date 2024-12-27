@@ -230,15 +230,15 @@ export default function SettingsRows(props: ISettingsRowsProps) {
               <Input
                 _ref={(r) => ref = r}
                 type='number'
-                style={{ width: 80 }}
+                style={{ width: 50 }}
                 step={0.01}
                 defaultValue={v.value}
                 onChange={e => (lf2.world as any)[v.name] = Number(e.target.value)} />
               <Button onClick={_ => {
                 (lf2.world as any)[v.name] = Number(v.value)
                 ref!.value = '' + v.value
-              }}>
-                重置
+              }} >
+                ×
               </Button>
             </Combine>
           </Titled>

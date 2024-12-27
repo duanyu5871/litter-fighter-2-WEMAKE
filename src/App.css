@@ -168,7 +168,12 @@
   display: inline-flex;
   flex-wrap: nowrap;
   align-items: center;
+}
 
+.name_content>*:first-child {
+  font-weight: lighter;
+  opacity: 0.8;
+  font-size: 0.5em;
 }
 
 .name_content>*:first-child:not(:last-child) {

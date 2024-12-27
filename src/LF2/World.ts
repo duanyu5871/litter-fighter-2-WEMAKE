@@ -44,13 +44,15 @@ export class World {
   tvz_f: number = 1;
   tvx_f: number = 1;
   tvy_f: number = 1.3;
-  player_begin_blinking_time: number = 144;
-  player_lying_blinking_time: number = 32;
-  com_disappear_blinking_time: number = 56;
+  begin_blink_time: number = 144;
+  lying_blink_time: number = 32;
+  gone_blink_time: number = 56;
   vrest_offset: number = 0;
   arest_offset: number = 0;
   arest_offset_2: number = 0;
   frame_wait_offset: number = 0;
+  cha_bc_spd: number = Defines.CHARACTER_BOUNCING_SPD;
+  cha_bc_tst_spd: number = Defines.CHARACTER_BOUNCING_TEST_SPD;
 
 
   get callbacks(): NoEmitCallbacks<IWorldCallbacks> {
@@ -83,9 +85,6 @@ export class World {
   friction = Defines.FRICTION;
   scene: ISceneNode;
   camera: IOrthographicCameraNode;
-
-  character_bouncing_speed: number = Defines.CHARACTER_BOUNCING_SPD;
-  character_bouncing_test_speed: number = Defines.CHARACTER_BOUNCING_TEST_SPD;
 
   private _stage: Stage;
   entities = new Set<Entity>();
@@ -155,7 +154,7 @@ export class World {
       const render = new EntityRender(entity).set_entity(entity);
       render.attach()
       this.entity_renders.set(entity, render);
-      render.indicators.show = this._show_indicators;
+      render.indicators.flags = this._indicator_flags;
     }
   }
 
@@ -493,7 +492,7 @@ export class World {
       a_cube.near >= b_cube.far
     ) {
       const collision: ICollision = {
-        v_rest: (!itr.arest && itr.vrest) ? (itr.vrest - this.vrest_offset) : void 0,
+        v_rest: (!itr.arest && itr.vrest) ? (itr.vrest + this.vrest_offset) : void 0,
         victim,
         attacker,
         itr,
@@ -600,13 +599,13 @@ export class World {
     this._callbacks.emit('on_pause_change')(v);
   }
 
-  private _show_indicators = false;
-  get show_indicators() { return this._show_indicators }
-  set show_indicators(v: boolean) {
-    if (this._show_indicators === v) return;
-    this._show_indicators = v;
+  private _indicator_flags: number = 0;
+  get indicator_flags() { return this._indicator_flags }
+  set indicator_flags(v: number) {
+    if (this._indicator_flags === v) return;
+    this._indicator_flags = v;
     for (const [, r] of this.entity_renders) {
-      r.indicators.show = v;
+      r.indicators.flags = v;
     }
   }
   dispose() {

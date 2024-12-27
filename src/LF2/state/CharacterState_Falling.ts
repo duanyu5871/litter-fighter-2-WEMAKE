@@ -53,9 +53,9 @@ export default class CharacterState_Falling extends CharacterState_Base {
       find_direction(f, indexes?.falling) ||
       find_direction(f, indexes?.critical_hit) || facing;
     const { y: vy } = e.velocity;
-    if (vy <= e.world.character_bouncing_test_speed) {
+    if (vy <= e.world.cha_bc_tst_spd) {
       e.enter_frame({ id: indexes?.bouncing?.[d][1] });
-      e.velocities[0].y = e.world.character_bouncing_speed;
+      e.velocities[0].y = e.world.cha_bc_spd;
     } else {
       e.enter_frame({ id: indexes?.lying?.[d] });
     }
