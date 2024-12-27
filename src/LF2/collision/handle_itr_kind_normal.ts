@@ -81,7 +81,7 @@ export function handle_itr_kind_normal(collision: ICollision) {
         victim.hp <= 0 ||
         victim.frame.state === Defines.State.Frozen
       ) || (
-          victim.fall_value <= (victim.fall_value_max - Defines.DEFAULT_FALL_VALUE_DIZZY)
+          victim.fall_value <= Defines.DEFAULT_FALL_VALUE_DIZZY
           && (
             Defines.State.Caught === victim.frame.state ||
             victim.velocities[0].y > 0 ||

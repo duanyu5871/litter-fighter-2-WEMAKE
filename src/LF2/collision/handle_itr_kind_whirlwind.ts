@@ -1,3 +1,5 @@
+import { Defines } from "../defines";
+import { EntityEnum } from "../defines/EntityEnum";
 import { ICollision } from "../defines/ICollision";
 
 export function handle_itr_kind_whirlwind(c: ICollision) {
@@ -12,4 +14,16 @@ export function handle_itr_kind_whirlwind(c: ICollision) {
   x += d * 0.5;
   z += l * 0.5;
   victim.velocities[0].set(x, y, z);
+  switch (victim.type) {
+    case EntityEnum.Weapon:
+      switch (victim.frame.state) {
+        case Defines.State.Weapon_InTheSky:
+        case Defines.State.HeavyWeapon_InTheSky:
+          break;
+        default:
+          victim.next_frame = { id: victim.data.indexes?.in_the_sky }
+          break;
+      }
+      break;
+  }
 }
