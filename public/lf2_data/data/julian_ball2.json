@@ -509,7 +509,9 @@
       },
       "state": 3002,
       "centerx": 50,
-      "centery": 49
+      "centery": 49,
+      "bdy": [],
+      "itr": []
     },
     "22": {
       "id": "22",
@@ -527,7 +529,9 @@
       },
       "state": 3002,
       "centerx": 50,
-      "centery": 49
+      "centery": 49,
+      "bdy": [],
+      "itr": []
     },
     "23": {
       "id": "23",
@@ -545,7 +549,9 @@
       },
       "state": 3002,
       "centerx": 50,
-      "centery": 49
+      "centery": 49,
+      "bdy": [],
+      "itr": []
     },
     "30": {
       "id": "30",

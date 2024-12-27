@@ -2,15 +2,21 @@ import { useEffect, useState } from 'react';
 import { Button } from './Component/Button';
 import CharacterSelect from './Component/CharacterSelect';
 import { Input } from './Component/Input';
+import Select from './Component/Select';
 import TeamSelect from './Component/TeamSelect';
 import Titled from './Component/Titled';
 import { ToggleButton } from './Component/ToggleButton';
+import { DummyEnum } from './LF2/controller/BotController';
 import { Defines } from './LF2/defines/defines';
 import GameKey from './LF2/defines/GameKey';
-import { is_local_ctrl } from './LF2/entity/type_check';
+import { is_bot_ctrl, is_local_ctrl } from './LF2/entity/type_check';
 import LF2 from './LF2/LF2';
 import { PlayerInfo } from './LF2/PlayerInfo';
 import { random_get } from './LF2/utils/math/random';
+import Combine from './Component/Combine';
+import { Factory } from './LF2/entity/Factory';
+import { new_id } from './LF2/base';
+import LocalController from './LF2/controller/LocalController';
 
 const key_names: Record<GameKey, string> = {
   U: '上',
@@ -120,24 +126,21 @@ export function PlayerRow(props: Props) {
 
   return (
     <div className='settings_row'>
-      <span className='settings_row_title'>玩家{info.id}</span>
-      <Titled title='名称'>
-        <Input
-          type='text'
-          maxLength={50}
-          style={{ width: 75 }}
-          placeholder='enter player name'
-          value={player_name}
-          onChange={e => info.set_name(e.target.value)}
-          onBlur={e => info.set_name(e.target.value.trim() || info.id).save()} />
-      </Titled>
-      <Titled title='角色'>
-        <CharacterSelect lf2={lf2} value={character_id} on_changed={v => info.set_character(v).save()} show_all={show_hidden} />
-      </Titled>
-      {/* <Checkbox value={show_hidden} onChanged={set_show_hidden} title='显示隐藏角色' /> */}
-      <Titled title='TEAM'>
-        <TeamSelect value={team} on_changed={v => info.set_team(v).save()} />
-      </Titled>
+      <span className='settings_row_title'>玩家</span>
+      <Input
+        type='text'
+        maxLength={50}
+        style={{ width: 50 }}
+        title='enter player name'
+        value={player_name}
+        onChange={e => info.set_name(e.target.value)}
+        onBlur={e => info.set_name(e.target.value.trim() || info.id).save()} />
+      <CharacterSelect
+        lf2={lf2}
+        value={character_id}
+        on_changed={v => info.set_character(v).save()}
+        show_all={show_hidden} />
+      <TeamSelect value={team} on_changed={v => info.set_team(v).save()} />
       <Button onClick={on_click_add}>{added ? '移除' : '加入'}</Button>
       <ToggleButton
         value={touch_pad_on}
@@ -145,16 +148,59 @@ export function PlayerRow(props: Props) {
         <>触摸板</>
         <>触摸板✓</>
       </ToggleButton>
-      <Titled title={<Button onClick={() => set_key_settings_show(v => !v)}>键位</Button>}>
+      <Combine>
+        <Button onClick={() => set_key_settings_show(v => !v)}>键位</Button>
         {!key_settings_show ? null :
           key_name_arr.map(k => {
             const on_click = () => set_editing_key(v => v === k ? void 0 : k);
             const name = key_names[k]
             const value = editing_key === k ? '编辑中...' : keys[k]
-            return <Button key={k} onClick={on_click}>{name}: {value.toUpperCase()}</Button>
+            return (
+              <Button key={k} onClick={on_click}>
+                {name}: {
+                  {
+                    "ARROWUP": "↑",
+                    "ARROWDOWN": "↓",
+                    "ARROWLEFT": "←",
+                    "ARROWRIGHT": "→",
+                    "DELETE": "DEL",
+                    "PAGEDOWN": "P↓",
+                    "PAGEUP": "P↑",
+                  }[value.toUpperCase()] || value.toUpperCase()
+                }
+              </Button>
+            )
           })
         }
-      </Titled>
+      </Combine>
+      <Combine>
+        <Button onClick={() => {
+          const character = lf2.player_characters.get(info.id)
+          if (!character) return;
+          const ctrl = character.controller
+          if (is_bot_ctrl(ctrl)) {
+            character.controller = new LocalController(info.id, character, info.keys)
+          } else {
+            const cls = Factory.inst.get_ctrl_creator(character.id);
+            if (cls) character.controller = cls(info.id, character);
+          }
+          ctrl?.dispose()
+
+        }}>
+          <>Bot</>
+        </Button>
+        <Select
+          items={['', ...Object.keys(DummyEnum)]}
+          style={{ width: 100 }}
+          option={(k) => [k && (DummyEnum as any)[k], k || 'not dummy']}
+          onChange={(v) => {
+            const ctrl = lf2.player_characters.get(info.id)?.controller;
+            if (is_bot_ctrl(ctrl)) {
+              ctrl.dummy = v.target.value ? v.target.value as any : void 0;
+            }
+          }}
+        />
+      </Combine>
     </div >
   );
 }

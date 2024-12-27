@@ -37,6 +37,7 @@ export class LoadingImg {
     const { img } = this;
     if (!img) return;
     img.style.opacity = '0'
+    window.clearTimeout(this.tid);
   }
   show() {
     const { img } = this;

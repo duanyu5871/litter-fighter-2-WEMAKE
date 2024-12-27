@@ -599,7 +599,9 @@
       },
       "state": 3002,
       "centerx": 58,
-      "centery": 23
+      "centery": 23,
+      "bdy": [],
+      "itr": []
     },
     "21": {
       "id": "21",
@@ -617,7 +619,9 @@
       },
       "state": 3002,
       "centerx": 54,
-      "centery": 23
+      "centery": 23,
+      "bdy": [],
+      "itr": []
     },
     "22": {
       "id": "22",
@@ -635,7 +639,9 @@
       },
       "state": 3002,
       "centerx": 51,
-      "centery": 21
+      "centery": 21,
+      "bdy": [],
+      "itr": []
     },
     "23": {
       "id": "23",
@@ -653,7 +659,9 @@
       },
       "state": 3002,
       "centerx": 45,
-      "centery": 23
+      "centery": 23,
+      "bdy": [],
+      "itr": []
     },
     "30": {
       "id": "30",

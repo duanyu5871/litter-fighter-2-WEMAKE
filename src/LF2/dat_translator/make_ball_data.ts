@@ -118,9 +118,11 @@ export function make_ball_data(info: IEntityInfo, frames: Record<string, IFrameI
     switch (frame.state) {
       case Defines.State._3000:
         return cook_ball_frame_state_3000(ret, frame);
+      case Defines.State._3002:
+        return cook_ball_frame_state_3000(ret, frame);
       case Defines.State._3005:
         return cook_ball_frame_state_3005(ret, frame);
-      case Defines.State.Ball_3006:
+      case Defines.State._3006:
         return cook_ball_frame_state_3006(ret, frame);
     }
 

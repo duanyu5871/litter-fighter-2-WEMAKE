@@ -4,14 +4,30 @@ import Entity from "../entity/Entity";
 import { is_character } from "../entity/type_check";
 import { BaseController } from "./BaseController";
 
+export enum DummyEnum {
+  LockAtMid_Stand = '1',
+  LockAtMid_Defend = '2',
+  LockAtMid_RowingWhenFalling = '3',
+  LockAtMid_JumpAndRowingWhenFalling = '4',
+  AvoidEnemyAllTheTime = '5',
+  LockAtMid_dUa = '6',
+  LockAtMid_dUj = '7',
+  LockAtMid_dDa = '8',
+  LockAtMid_dDj = '9',
+  LockAtMid_dLa = '10',
+  LockAtMid_dLj = '11',
+  LockAtMid_dRa = '12',
+  LockAtMid_dRj = '13',
+  LockAtMid_dja = '14',
+}
 export class BotController extends BaseController {
   readonly is_bot_enemy_chaser = true;
   _count = 0;
   chasing_enemy: Entity | undefined;
   avoiding_enemy: Entity | undefined;
   want_to_jump = false;
-  private _dummy?: number;
-  get dummy(): number | undefined {
+  private _dummy?: DummyEnum;
+  get dummy(): DummyEnum | undefined {
     return this._dummy;
   }
   set dummy(v) {
@@ -71,7 +87,7 @@ export class BotController extends BaseController {
         }
       }
     }
-    if (this.dummy === 7) {
+    if (this.dummy === DummyEnum.AvoidEnemyAllTheTime) {
       this.avoiding_enemy = this.chasing_enemy;
     }
   }
@@ -273,25 +289,25 @@ export class BotController extends BaseController {
   }
 
   override update() {
-    switch (this._dummy) {
+    switch (this._dummy!) {
       case void 0: {
         if (this.time % 10 === 0) this.update_nearest();
         if (!this.chase_enemy() && !this.avoid_enemy()) {
-          this.is_end(GameKey.L) || this.end(GameKey.L)
-          this.is_end(GameKey.R) || this.end(GameKey.R)
-          this.is_end(GameKey.U) || this.end(GameKey.U)
-          this.is_end(GameKey.D) || this.end(GameKey.D)
+          if (!this.is_end(GameKey.L)) this.end(GameKey.L)
+          if (!this.is_end(GameKey.R)) this.end(GameKey.R)
+          if (!this.is_end(GameKey.U)) this.end(GameKey.U)
+          if (!this.is_end(GameKey.D)) this.end(GameKey.D)
         }
         break;
       }
-      case 1: {
+      case DummyEnum.LockAtMid_Stand: {
         if (this.entity.frame.state === Defines.State.Standing && this.entity.resting <= 0) {
           this.entity.position.x = this.world.bg.width / 2;
           this.entity.position.z = (this.world.bg.near + this.world.far) / 2
         }
         break;
       }
-      case 2: {
+      case DummyEnum.LockAtMid_Defend: {
         if (this.entity.frame.state === Defines.State.Standing && this.entity.resting <= 0) {
           this.entity.position.x = this.world.bg.width / 2;
           this.entity.position.z = (this.world.bg.near + this.world.far) / 2
@@ -299,7 +315,7 @@ export class BotController extends BaseController {
         this.start(GameKey.d)
         break;
       }
-      case 3: {
+      case DummyEnum.LockAtMid_RowingWhenFalling: {
         if (this.entity.frame.state === Defines.State.Standing && this.entity.resting <= 0) {
           this.entity.position.x = this.world.bg.width / 2;
           this.entity.position.z = (this.world.bg.near + this.world.far) / 2
@@ -309,19 +325,8 @@ export class BotController extends BaseController {
         }
         break;
       }
-      case 4: {
-        if (this.entity.frame.state === Defines.State.Standing && this.entity.resting <= 0) {
-          this.entity.position.x = this.world.bg.width / 2;
-          this.entity.position.z = (this.world.bg.near + this.world.far) / 2
-        }
-        if (this.entity.frame.state === Defines.State.Standing && this.time % 60 === 0) {
-          this.start(GameKey.d, GameKey.U, GameKey.a)
-        } else {
-          this.end(GameKey.d, GameKey.U, GameKey.a)
-        }
-        break;
-      }
-      case 5: {
+
+      case DummyEnum.LockAtMid_JumpAndRowingWhenFalling: {
         if (this.entity.frame.state === Defines.State.Standing) {
           this.entity.position.x = this.world.bg.width / 2;
           this.entity.position.z = (this.world.bg.near + this.world.far) / 2
@@ -333,17 +338,54 @@ export class BotController extends BaseController {
         }
         break;
       }
-      case 6: {
-        if (this.entity.frame.state === Defines.State.Standing) {
-          this.entity.position.x = this.world.bg.width / 2;
-          this.entity.position.z = (this.world.bg.near + this.world.far) / 2
-          this.start(GameKey.d)
-        }
-        break;
-      }
-      case 7: {
+      case DummyEnum.AvoidEnemyAllTheTime: {
         if (this.time % 10 === 0) this.update_nearest();
         this.avoid_enemy();
+        break;
+      }
+      case DummyEnum.LockAtMid_dUa: {
+        const h = this.lock_when_stand_and_rest() && this.time % 60 === 0
+        this[h ? 'start' : 'end'](GameKey.d, GameKey.U, GameKey.a)
+        break;
+      }
+      case DummyEnum.LockAtMid_dUj: {
+        const h = this.lock_when_stand_and_rest() && this.time % 60 === 0
+        this[h ? 'start' : 'end'](GameKey.d, GameKey.U, GameKey.j)
+        break;
+      }
+      case DummyEnum.LockAtMid_dDa: {
+        const h = this.lock_when_stand_and_rest() && this.time % 60 === 0
+        this[h ? 'start' : 'end'](GameKey.d, GameKey.D, GameKey.a)
+        break;
+      }
+      case DummyEnum.LockAtMid_dDj: {
+        const h = this.lock_when_stand_and_rest() && this.time % 60 === 0
+        this[h ? 'start' : 'end'](GameKey.d, GameKey.D, GameKey.j)
+        break;
+      }
+      case DummyEnum.LockAtMid_dLa: {
+        const h = this.lock_when_stand_and_rest() && this.time % 60 === 0
+        this[h ? 'start' : 'end'](GameKey.d, GameKey.L, GameKey.a)
+        break;
+      }
+      case DummyEnum.LockAtMid_dLj: {
+        const h = this.lock_when_stand_and_rest() && this.time % 60 === 0
+        this[h ? 'start' : 'end'](GameKey.d, GameKey.L, GameKey.j)
+        break;
+      }
+      case DummyEnum.LockAtMid_dRa: {
+        const h = this.lock_when_stand_and_rest() && this.time % 60 === 0
+        this[h ? 'start' : 'end'](GameKey.d, GameKey.R, GameKey.a)
+        break;
+      }
+      case DummyEnum.LockAtMid_dRj: {
+        const h = this.lock_when_stand_and_rest() && this.time % 60 === 0
+        this[h ? 'start' : 'end'](GameKey.d, GameKey.R, GameKey.j)
+        break;
+      }
+      case DummyEnum.LockAtMid_dja: {
+        const h = this.lock_when_stand_and_rest() && this.time % 60 === 0
+        this[h ? 'start' : 'end'](GameKey.d, GameKey.j, GameKey.a)
         break;
       }
       default:
@@ -351,4 +393,13 @@ export class BotController extends BaseController {
     }
     return super.update();
   }
+  lock_when_stand_and_rest() {
+    if (this.entity.frame.state === Defines.State.Standing && this.entity.resting <= 0) {
+      this.entity.position.x = this.world.bg.width / 2;
+      this.entity.position.z = (this.world.bg.near + this.world.far) / 2
+      return true
+    }
+    return false
+  }
 }
+
