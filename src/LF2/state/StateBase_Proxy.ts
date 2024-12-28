@@ -24,6 +24,9 @@ export class StateBase_Proxy extends State_Base implements Required<State_Base> 
   override leave(e: Entity, next_frame: IFrameInfo): void {
     return this.get_proxy(e).leave?.(e, next_frame);
   }
+  override pre_update(e: Entity): void {
+    return this.get_proxy(e).pre_update?.(e);
+  }
   override update(e: Entity): void {
     return this.get_proxy(e).update(e);
   }

@@ -6,6 +6,7 @@ import CharacterState_Base from "./CharacterState_Base";
 export default class CharacterState_Falling extends CharacterState_Base {
   _bouncing_frames_map = new Map<string, Set<string>>();
   _begin_velocty_y_map = new Map<string, number>();
+
   override enter(e: Entity, prev_frame: IFrameInfo): void {
     if (!this._bouncing_frames_map.has(e.data.id) && e.data.indexes?.bouncing) {
       this._bouncing_frames_map.set(e.data.id, new Set([
@@ -14,6 +15,7 @@ export default class CharacterState_Falling extends CharacterState_Base {
       ]));
     }
     this._begin_velocty_y_map.set(e.data.id, e.velocities[0].y);
+    e.drop_holding();
   }
   is_bouncing_frame(e: Entity) {
     return !!this._bouncing_frames_map.get(e.data.id)?.has(e.frame.id);

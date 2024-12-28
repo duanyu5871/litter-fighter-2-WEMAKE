@@ -1,10 +1,6 @@
-import { Defines, INextFrame, ItrEffect, ItrKind, TFace, type IFrameInfo } from "../defines";
-import { BdyKind } from "../defines/BdyKind";
-import type Entity from "../entity/Entity";
-import { same_face, turn_face } from "../entity/face_helper";
+import { INextFrame, ItrKind, type IFrameInfo } from "../defines";
 import { ICollision } from "../defines/ICollision";
-import { is_character } from "../entity/type_check";
-import { collisions_keeper } from "../collision/CollisionKeeper";
+import type Entity from "../entity/Entity";
 export enum WhatNext {
   OnlyState = 3,
   OnlyEntity = 2,
@@ -13,7 +9,7 @@ export enum WhatNext {
 }
 export class State_Base {
   state: number | string = '';
-  pre_update(e: Entity): void { };
+  pre_update?(e: Entity): void;
   update(e: Entity): void { };
   enter?(e: Entity, prev_frame: IFrameInfo): void;
   leave?(e: Entity, next_frame: IFrameInfo): void;

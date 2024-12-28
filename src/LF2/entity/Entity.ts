@@ -816,29 +816,9 @@ export default class Entity {
     }
 
     this.state?.pre_update?.(this)
-    switch (this.frame.state) {
-      case Defines.State.Falling: {
-        this.drop_holding();
-        break;
-      }
-      case Defines.State.Lying: {
-        this.update_resting();
-        this.drop_holding();
-        break;
-      }
-      case Defines.State.Caught: {
-        this.drop_holding();
-        break;
-      }
-      case Defines.State.Injured:
-        break;
-      default: {
-        this.update_resting();
-      }
-    }
   }
 
-  private update_resting() {
+  update_resting() {
     if (this.resting > 0) {
       this.resting--;
     } else {
@@ -851,13 +831,12 @@ export default class Entity {
     }
   }
 
-  private drop_holding() {
-    if (this.holding) {
-      this.holding.follow_holder();
-      this.holding.enter_frame({ id: this.data.indexes?.in_the_sky });
-      this.holding.holder = void 0;
-      this.holding = void 0;
-    }
+  drop_holding() {
+    if (!this.holding) return;
+    this.holding.follow_holder();
+    this.holding.enter_frame({ id: this.data.indexes?.in_the_sky });
+    this.holding.holder = void 0;
+    this.holding = void 0;
   }
 
   update(): void {

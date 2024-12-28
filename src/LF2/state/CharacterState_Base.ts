@@ -8,6 +8,9 @@ import { is_character, is_weapon } from '../entity/type_check';
 import State_Base, { WhatNext } from "./State_Base";
 
 export default class CharacterState_Base extends State_Base {
+  override pre_update(e: Entity): void {
+    e.update_resting();
+  }
   override update(e: Entity): void {
     e.handle_gravity();
     e.handle_ground_velocity_decay();
@@ -96,9 +99,9 @@ export default class CharacterState_Base extends State_Base {
           )
         ) {
           collisions_keeper.get(
-            attacker.type, 
-            itr.kind!, 
-            victim.type, 
+            attacker.type,
+            itr.kind!,
+            victim.type,
             BdyKind.Normal
           )?.(collision)
           break;

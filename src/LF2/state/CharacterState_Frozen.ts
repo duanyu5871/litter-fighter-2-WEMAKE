@@ -44,7 +44,7 @@ export default class CharacterState_Frozen extends CharacterState_Base {
   override on_landing(e: Entity): void {
     const { data: { indexes } } = e;
     const { y: vy } = e.velocity;
-    if (vy <= e.world.cha_bc_tst_spd) {
+    if (vy <= e.world.cha_bc_tst_spd * 2) {
       e.enter_frame({ id: indexes?.bouncing?.[-1][0] });
       e.velocities[0].y = e.world.cha_bc_spd;
     }
