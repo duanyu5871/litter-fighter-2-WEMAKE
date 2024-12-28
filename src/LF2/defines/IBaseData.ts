@@ -1,4 +1,3 @@
-
 export interface IBaseData<I = any> {
   id: string;
   /**

@@ -1,4 +1,3 @@
-
 /**
  * 从object中，取出指定名称的数据，并将其从object中移除;
  *
@@ -9,7 +8,10 @@
  * @param {K} key object的某个键
  * @returns {O[K]} object[key]
  */
-export function take<O extends {} = any, K extends keyof O = keyof O>(any: O, key: K): O[K];
+export function take<O extends {} = any, K extends keyof O = keyof O>(
+  any: O,
+  key: K,
+): O[K];
 
 /**
  * 从object中，取出指定名称的数据，并将其从object中移除;
@@ -20,7 +22,6 @@ export function take<O extends {} = any, K extends keyof O = keyof O>(any: O, ke
  * @returns {*} object[key]
  */
 export function take(any: any, key: string | number | symbol): any;
-
 
 /**
  * 从object中，取出指定名称的数据，并将其从object中移除;
@@ -35,13 +36,16 @@ export function take(any: any, key: string | number | symbol): any {
   const ret = any[key];
   delete any[key];
   return ret;
-};
+}
 
-export function take_str(any: any, key: string | number | symbol): string | undefined {
-  if (typeof any[key] === 'string') {
+export function take_str(
+  any: any,
+  key: string | number | symbol,
+): string | undefined {
+  if (typeof any[key] === "string") {
     const ret = any[key];
     delete any[key];
     return ret;
   }
-  return void 0
+  return void 0;
 }

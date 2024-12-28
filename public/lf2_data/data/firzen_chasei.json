@@ -88,8 +88,8 @@
       "centerx": 41,
       "centery": 43,
       "behavior": 7,
-      "dvy": -4,
-      "acc_y": -0.1,
+      "dvy": -6,
+      "acc_y": -0.25,
       "vym": 4,
       "on_hit_ground": {
         "id": "60"
@@ -181,8 +181,8 @@
       "centerx": 44,
       "centery": 42,
       "behavior": 7,
-      "dvy": -4,
-      "acc_y": -0.1,
+      "dvy": -6,
+      "acc_y": -0.25,
       "vym": 4,
       "on_hit_ground": {
         "id": "60"
@@ -273,8 +273,8 @@
       "centerx": 41,
       "centery": 43,
       "behavior": 7,
-      "dvy": -4,
-      "acc_y": -0.1,
+      "dvy": -6,
+      "acc_y": -0.25,
       "vym": 4,
       "on_hit_ground": {
         "id": "60"
@@ -365,8 +365,8 @@
       "centerx": 41,
       "centery": 43,
       "behavior": 7,
-      "dvy": -4,
-      "acc_y": -0.1,
+      "dvy": -6,
+      "acc_y": -0.25,
       "vym": 4,
       "on_hit_ground": {
         "id": "60"
@@ -457,8 +457,8 @@
       "centerx": 41,
       "centery": 43,
       "behavior": 7,
-      "dvy": -4,
-      "acc_y": -0.1,
+      "dvy": -6,
+      "acc_y": -0.25,
       "vym": 4,
       "on_hit_ground": {
         "id": "60"

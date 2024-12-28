@@ -2,7 +2,6 @@ import type { NoEmitCallbacks } from "../../base/NoEmitCallbacks";
 import type { ISoundsCallback } from "./ISoundsCallback";
 
 export interface ISounds {
-
   get callbacks(): NoEmitCallbacks<ISoundsCallback>;
 
   /**
@@ -11,7 +10,6 @@ export interface ISounds {
    * @returns {number} [0,1]
    */
   bgm_volume(): number;
-
 
   /**
    * 设置
@@ -27,7 +25,6 @@ export interface ISounds {
    */
   sound_volume(): number;
 
-
   /**
    * 设置
    *
@@ -40,8 +37,7 @@ export interface ISounds {
    *
    * @returns {boolean}
    */
-  bgm_muted(): boolean
-
+  bgm_muted(): boolean;
 
   /**
    * 设置是否禁音
@@ -55,8 +51,7 @@ export interface ISounds {
    *
    * @returns {boolean}
    */
-  sound_muted(): boolean
-
+  sound_muted(): boolean;
 
   /**
    * 设置是否禁音
@@ -70,8 +65,7 @@ export interface ISounds {
    *
    * @returns {boolean}
    */
-  muted(): boolean
-
+  muted(): boolean;
 
   /**
    * 设置是否禁音
@@ -80,14 +74,12 @@ export interface ISounds {
    */
   set_muted(v: boolean): void;
 
-
   /**
    * 音量
    *
    * @returns {number} [0,1]
    */
   volume(): number;
-
 
   /**
    * 设置
@@ -96,13 +88,11 @@ export interface ISounds {
    */
   set_volume(v: number): void;
 
-
   /**
    * 停止背景音乐
    * @date 4/12/2024 - 10:22:30 AM
    */
   stop_bgm(): void;
-
 
   /**
    * 播放背景音乐
@@ -114,14 +104,12 @@ export interface ISounds {
    */
   play_bgm(name: string, restart?: boolean | undefined): () => void;
 
-
   /**
    * 当前播放中的背景音乐
    *
    * @returns {(string | null)}
    */
   bgm(): string | null;
-
 
   /**
    * 预加载声音资源
@@ -132,7 +120,6 @@ export interface ISounds {
    * @returns {Promise<any>}
    */
   load(name: string, src: string): Promise<any>;
-
 
   /**
    * 对应名称声音是否存在
@@ -155,7 +142,6 @@ export interface ISounds {
    */
   play(name: string, x?: number, y?: number, z?: number): string;
 
-
   /**
    * 停止播放音效
    *
@@ -163,16 +149,24 @@ export interface ISounds {
    */
   stop(id: string): void;
 
-
   /**
    * 释放
    */
   dispose(): void;
 
+  play_with_load(
+    src: string,
+    x?: number,
+    y?: number,
+    z?: number,
+  ): Promise<string>;
 
-  play_with_load(src: string, x?: number, y?: number, z?: number): Promise<string>;
-
-  play_preset(t: 'cancel' | 'end' | 'join' | 'ok' | 'pass', x?: number, y?: number, z?: number): void;
-  play_preset(t: string, x?: number, y?: number, z?: number): void
+  play_preset(
+    t: "cancel" | "end" | "join" | "ok" | "pass",
+    x?: number,
+    y?: number,
+    z?: number,
+  ): void;
+  play_preset(t: string, x?: number, y?: number, z?: number): void;
 }
-export default ISounds
+export default ISounds;

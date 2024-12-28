@@ -4,25 +4,25 @@
   border: none;
 }
 
-.lf2ui_img_button>.inner_div {
+.lf2ui_img_button > .inner_div {
   position: relative;
 }
 
-.lf2ui_img_button>.inner_div>.inner_0 {
+.lf2ui_img_button > .inner_div > .inner_0 {
   opacity: 1;
 }
 
-.lf2ui_img_button>.inner_div>.inner_0.false {
+.lf2ui_img_button > .inner_div > .inner_0.false {
   opacity: 0;
 }
 
-.lf2ui_img_button>.inner_div>.inner_1 {
+.lf2ui_img_button > .inner_div > .inner_1 {
   position: absolute;
   top: 0px;
   left: 0px;
   opacity: 0;
 }
 
-.lf2ui_img_button>.inner_div>.inner_1.false {
+.lf2ui_img_button > .inner_div > .inner_1.false {
   opacity: 1;
 }

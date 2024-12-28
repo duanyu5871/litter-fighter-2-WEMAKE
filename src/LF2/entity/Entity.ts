@@ -1,82 +1,113 @@
-
-import { Warn } from '../../Log';
-import type LF2 from '../LF2';
-import type { World } from '../World';
-import { IBounding } from '../World';
-import { Callbacks, new_id, new_team, type NoEmitCallbacks } from '../base';
-import { BaseController } from '../controller/BaseController';
-import { ICpointInfo, IFrameInfo, IItrInfo, INextFrame, INextFrameResult, IOpointInfo, ITexturePieceInfo, ItrKind, TFace, TNextFrame } from '../defines';
-import { BdyKind } from '../defines/BdyKind';
-import { EntityEnum } from '../defines/EntityEnum';
+import { Warn } from "../../Log";
+import type LF2 from "../LF2";
+import type { World } from "../World";
+import { IBounding } from "../World";
+import { Callbacks, new_id, new_team, type NoEmitCallbacks } from "../base";
+import { BaseController } from "../controller/BaseController";
+import {
+  ICpointInfo,
+  IFrameInfo,
+  IItrInfo,
+  INextFrame,
+  INextFrameResult,
+  IOpointInfo,
+  ITexturePieceInfo,
+  ItrKind,
+  TFace,
+  TNextFrame,
+} from "../defines";
+import { BdyKind } from "../defines/BdyKind";
+import { EntityEnum } from "../defines/EntityEnum";
 import { IBaseData } from "../defines/IBaseData";
-import { ICollision } from '../defines/ICollision';
+import { ICollision } from "../defines/ICollision";
 import { IEntityData } from "../defines/IEntityData";
-import { OpointKind } from '../defines/OpointKind';
-import { OpointMultiEnum } from '../defines/OpointMultiEnum';
-import { OpointSpreading } from '../defines/OpointSpreading';
-import { SpeedMode } from '../defines/SpeedMode';
-import { Defines } from '../defines/defines';
-import Ditto from '../ditto';
-import { IVector3 } from '../ditto/IVector3';
-import { ENTITY_STATES, States } from '../state';
-import BallState_Base from '../state/BallState_Base';
-import CharacterState_Base from '../state/CharacterState_Base';
-import { State_Base } from '../state/State_Base';
-import WeaponState_Base from '../state/WeaponState_Base';
-import { random_get, random_in } from '../utils/math/random';
-import { is_num, is_positive, is_str } from '../utils/type_check';
-import { Factory } from './Factory';
-import type IEntityCallbacks from './IEntityCallbacks';
-import { turn_face } from './face_helper';
-import { is_ball, is_character, is_weapon_data } from './type_check';
-function calc_v(old: number, speed: number, mode: SpeedMode, acc: number | undefined, direction: 1 | -1 = 1): number {
+import { OpointKind } from "../defines/OpointKind";
+import { OpointMultiEnum } from "../defines/OpointMultiEnum";
+import { OpointSpreading } from "../defines/OpointSpreading";
+import { SpeedMode } from "../defines/SpeedMode";
+import { Defines } from "../defines/defines";
+import Ditto from "../ditto";
+import { IVector3 } from "../ditto/IVector3";
+import { ENTITY_STATES, States } from "../state";
+import BallState_Base from "../state/BallState_Base";
+import CharacterState_Base from "../state/CharacterState_Base";
+import { State_Base } from "../state/State_Base";
+import WeaponState_Base from "../state/WeaponState_Base";
+import { random_get, random_in } from "../utils/math/random";
+import { is_num, is_positive, is_str } from "../utils/type_check";
+import { Factory } from "./Factory";
+import type IEntityCallbacks from "./IEntityCallbacks";
+import { turn_face } from "./face_helper";
+import { is_ball, is_character, is_weapon_data } from "./type_check";
+function calc_v(
+  old: number,
+  speed: number,
+  mode: SpeedMode,
+  acc: number | undefined,
+  direction: 1 | -1 = 1,
+): number {
   switch (mode) {
     case SpeedMode.FixedAcc:
       return old + speed;
     case SpeedMode.Acc:
       return old + speed * direction;
     case SpeedMode.FixedLf2:
-      return (speed > 0 && old < speed) || (speed < 0 && old > speed) ? speed : old;
+      return (speed > 0 && old < speed) || (speed < 0 && old > speed)
+        ? speed
+        : old;
     case SpeedMode.AccToSpeed:
       if (
-        (!acc) ||
+        !acc ||
         (speed > 0 && old >= speed) ||
         (speed < 0 && old <= speed) ||
         (speed > old && acc < 0) ||
         (speed < old && acc > 0)
-      ) return old;
+      )
+        return old;
       return old + acc;
     case SpeedMode.LF2:
     default:
       speed *= direction;
-      return (speed > 0 && old < speed) || (speed < 0 && old > speed) ? speed : old;
+      return (speed > 0 && old < speed) || (speed < 0 && old > speed)
+        ? speed
+        : old;
   }
 }
 export const EMPTY_PIECE: ITexturePieceInfo = {
-  tex: '', x: 0, y: 0, w: 0, h: 0,
-  pixel_h: 0, pixel_w: 0,
-}
+  tex: "",
+  x: 0,
+  y: 0,
+  w: 0,
+  h: 0,
+  pixel_h: 0,
+  pixel_w: 0,
+};
 export const EMPTY_FRAME_INFO: IFrameInfo = {
   id: Defines.FrameId.None,
-  name: '',
-  pic: { tex: '', x: 0, y: 0, w: 0, h: 0 },
+  name: "",
+  pic: { tex: "", x: 0, y: 0, w: 0, h: 0 },
   state: NaN,
   wait: 0,
   next: { id: Defines.FrameId.Auto },
   centerx: 0,
-  centery: 0
+  centery: 0,
 };
 export const GONE_FRAME_INFO: IFrameInfo = {
   id: Defines.FrameId.Gone,
-  name: 'GONE_FRAME_INFO',
-  pic: { tex: '', x: 0, y: 0, w: 0, h: 0 },
+  name: "GONE_FRAME_INFO",
+  pic: { tex: "", x: 0, y: 0, w: 0, h: 0 },
   state: NaN,
   wait: 0,
   next: { id: Defines.FrameId.Gone },
   centerx: 0,
-  centery: 0
+  centery: 0,
 };
-export type TData = IBaseData | IEntityData | IEntityData | IEntityData | IEntityData
+export type TData =
+  | IBaseData
+  | IEntityData
+  | IEntityData
+  | IEntityData
+  | IEntityData;
 export default class Entity {
   static readonly TAG: string = EntityEnum.Entity;
 
@@ -91,59 +122,76 @@ export default class Entity {
   readonly world: World;
   readonly position = new Ditto.Vector3(0, 0, 0);
   protected _resting = 0;
-  get type() { return this.data.type }
-  get resting() { return this._resting; }
+  get type() {
+    return this.data.type;
+  }
+  get resting() {
+    return this._resting;
+  }
   set resting(v: number) {
-    const o = this._resting
+    const o = this._resting;
     if (o === v) return;
     this._resting = v;
-    this._callbacks.emit('on_resting_changed')(this, v, o)
+    this._callbacks.emit("on_resting_changed")(this, v, o);
   }
 
   private _fall_value = Defines.DEFAULT_FALL_VALUE_MAX;
-  get fall_value(): number { return this._fall_value; }
+  get fall_value(): number {
+    return this._fall_value;
+  }
   set fall_value(v: number) {
-    const o = this._fall_value
+    const o = this._fall_value;
     if (o === v) return;
     this._fall_value = v;
     if (v < o) this.resting = 30;
-    this._callbacks.emit('on_fall_value_changed')(this, v, o)
+    this._callbacks.emit("on_fall_value_changed")(this, v, o);
   }
 
   private _fall_value_max = Defines.DEFAULT_FALL_VALUE_MAX;
-  get fall_value_max(): number { return this._fall_value_max; }
+  get fall_value_max(): number {
+    return this._fall_value_max;
+  }
   set fall_value_max(v: number) {
     const o = this._fall_value_max;
     if (o === v) return;
     this._fall_value_max = v;
-    this._callbacks.emit('on_fall_value_max_changed')(this, v, o)
+    this._callbacks.emit("on_fall_value_max_changed")(this, v, o);
   }
 
-
   private _defend_value = Defines.DEFAULT_DEFEND_VALUE_MAX;
-  get defend_value(): number { return this._defend_value; }
+  get defend_value(): number {
+    return this._defend_value;
+  }
   set defend_value(v: number) {
     const o = this._defend_value;
     if (o === v) return;
     this._defend_value = v;
     if (v < o) this.resting = 30;
-    this._callbacks.emit('on_defend_value_changed')(this, v, o)
+    this._callbacks.emit("on_defend_value_changed")(this, v, o);
   }
 
   private _defend_value_max = Defines.DEFAULT_DEFEND_VALUE_MAX;
-  get defend_value_max(): number { return this._defend_value_max; }
+  get defend_value_max(): number {
+    return this._defend_value_max;
+  }
   set defend_value_max(v: number) {
     const o = this._defend_value_max;
     if (o === v) return;
     this._defend_value_max = v;
-    this._callbacks.emit('on_defend_value_max_changed')(this, v, o)
+    this._callbacks.emit("on_defend_value_max_changed")(this, v, o);
   }
 
   throwinjury?: number;
 
-  get catching() { return this._catching; }
-  get catcher() { return this._catcher; }
-  get lf2(): LF2 { return this.world.lf2 }
+  get catching() {
+    return this._catching;
+  }
+  get catcher() {
+    return this._catcher;
+  }
+  get lf2(): LF2 {
+    return this.world.lf2;
+  }
 
   // private ___facing: TFace = 1;
   // get facing(): TFace { return this.___facing; }
@@ -152,11 +200,19 @@ export default class Entity {
 
   frame: IFrameInfo = EMPTY_FRAME_INFO;
 
-  next_frame: INextFrame | undefined = void 0;
+  // next_frame: INextFrame | undefined = void 0;
+  private ___next_frame: INextFrame | undefined = void 0;
+  get next_frame(): INextFrame | undefined {
+    return this.___next_frame;
+  }
+  set next_frame(v: INextFrame | undefined) {
+    this.___next_frame = v;
+  }
+
   protected _prev_frame: IFrameInfo = EMPTY_FRAME_INFO;
   protected _catching?: Entity;
   protected _catcher?: Entity;
-  readonly is_entity = true
+  readonly is_entity = true;
   readonly states: States;
 
   /**
@@ -167,7 +223,7 @@ export default class Entity {
    * @readonly
    * @type {IVector3}
    */
-  readonly velocity: IVector3 = new Ditto.Vector3(0, 0, 0)
+  readonly velocity: IVector3 = new Ditto.Vector3(0, 0, 0);
 
   /**
    * 速度向量数组
@@ -177,8 +233,8 @@ export default class Entity {
    */
   readonly velocities: IVector3[] = [new Ditto.Vector3(0, 0, 0)];
 
-  protected _callbacks = new Callbacks<IEntityCallbacks>()
-  protected _name: string = '';
+  protected _callbacks = new Callbacks<IEntityCallbacks>();
+  protected _name: string = "";
   protected _team: string = new_team();
 
   protected _mp: number = Defines.DEFAULT_MP;
@@ -197,16 +253,16 @@ export default class Entity {
   protected _a_rest: number = 0;
   public v_rests = new Map<string, ICollision>();
 
-  public motionless: number = 0
+  public motionless: number = 0;
   public shaking: number = 0;
 
-  /** 
+  /**
    * 抓人剩余值
-   * 
+   *
    * 当抓住一个被击晕的人时，此值充满。
    */
   protected _catch_time = Defines.DAFUALT_CATCH_TIME;
-  protected _catch_time_max = Defines.DAFUALT_CATCH_TIME
+  protected _catch_time_max = Defines.DAFUALT_CATCH_TIME;
 
   /**
    * 隐身计数，每帧-1
@@ -250,31 +306,49 @@ export default class Entity {
    */
   protected _kill_sum: number = 0;
 
-  get picking_sum() { return this._picking_sum; }
+  get picking_sum() {
+    return this._picking_sum;
+  }
 
-  get damage_sum() { return this._damage_sum; }
+  get damage_sum() {
+    return this._damage_sum;
+  }
 
-  get kill_sum() { return this._kill_sum; }
+  get kill_sum() {
+    return this._kill_sum;
+  }
 
-  get holder(): Entity | undefined { return this._holder }
+  get holder(): Entity | undefined {
+    return this._holder;
+  }
 
-  set holder(v: Entity | undefined) { this.set_holder(v) }
+  set holder(v: Entity | undefined) {
+    this.set_holder(v);
+  }
 
-  get holding(): Entity | undefined { return this._holding }
+  get holding(): Entity | undefined {
+    return this._holding;
+  }
 
-  set holding(v: Entity | undefined) { this.set_holding(v) }
+  set holding(v: Entity | undefined) {
+    this.set_holding(v);
+  }
 
-  get name(): string { return this._name; }
+  get name(): string {
+    return this._name;
+  }
 
   set name(v: string) {
     const o = this._name;
-    this._callbacks.emit('on_name_changed')(this, this._name = v, o)
+    this._callbacks.emit("on_name_changed")(this, (this._name = v), o);
   }
 
-  get mp(): number { return this._mp; }
+  get mp(): number {
+    return this._mp;
+  }
   set mp(v: number) {
     const o = this._mp;
-    this._callbacks.emit('on_mp_changed')(this, this._mp = v, o)
+    this._callbacks.emit("on_mp_changed")(this, (this._mp = v), o);
 
     if (o > 0 && v <= 0) {
       const nf = this.frame.on_exhaustion ?? this.data.on_exhaustion;
@@ -282,14 +356,16 @@ export default class Entity {
     }
   }
 
-  get hp(): number { return this._hp; }
+  get hp(): number {
+    return this._hp;
+  }
   set hp(v: number) {
     const o = this._hp;
-    this._callbacks.emit('on_hp_changed')(this, this._hp = v, o)
+    this._callbacks.emit("on_hp_changed")(this, (this._hp = v), o);
     this.update_mp_r_spd();
 
     if (o > 0 && v <= 0) {
-      this._callbacks.emit('on_dead')(this);
+      this._callbacks.emit("on_dead")(this);
 
       if (this.data.base.brokens?.length) {
         this.apply_opoints(this.data.base.brokens);
@@ -302,56 +378,75 @@ export default class Entity {
 
   play_sound(sounds: string[] | undefined) {
     if (!sounds?.length) return;
-    const sound = random_get(sounds)
+    const sound = random_get(sounds);
     if (!sound) return;
     const { x, y, z } = this.position;
-    this.lf2.sounds.play(sound, x, y, z)
+    this.lf2.sounds.play(sound, x, y, z);
   }
 
-  get mp_max(): number { return this._mp_max; }
+  get mp_max(): number {
+    return this._mp_max;
+  }
   set mp_max(v: number) {
     const o = this._mp_max;
-    this._callbacks.emit('on_mp_max_changed')(this, this._mp_max = v, o)
+    this._callbacks.emit("on_mp_max_changed")(this, (this._mp_max = v), o);
   }
 
-  get hp_max(): number { return this._hp_max; }
+  get hp_max(): number {
+    return this._hp_max;
+  }
   set hp_max(v: number) {
     const o = this._hp_max;
-    this._callbacks.emit('on_hp_max_changed')(this, this._hp_max = v, o)
+    this._callbacks.emit("on_hp_max_changed")(this, (this._hp_max = v), o);
     this.update_mp_r_spd();
   }
 
-  get mp_r_spd_min(): number { return this._mp_r_spd_min; }
-  set mp_r_spd_min(v: number) { this._mp_r_spd_min = v; }
-  get mp_r_spd_max(): number { return this._mp_r_spd_max; }
-  set mp_r_spd_max(v: number) { this._mp_r_spd_max = v; }
-
-  get team(): string { return this._team || this.starter?.team || '' }
-  set team(v) {
-    const o = this._team;
-    this._callbacks.emit('on_team_changed')(this, this._team = v, o)
+  get mp_r_spd_min(): number {
+    return this._mp_r_spd_min;
+  }
+  set mp_r_spd_min(v: number) {
+    this._mp_r_spd_min = v;
+  }
+  get mp_r_spd_max(): number {
+    return this._mp_r_spd_max;
+  }
+  set mp_r_spd_max(v: number) {
+    this._mp_r_spd_max = v;
   }
 
-  get emitter() { return this._emitter }
+  get team(): string {
+    return this._team || this.starter?.team || "";
+  }
+  set team(v) {
+    const o = this._team;
+    this._callbacks.emit("on_team_changed")(this, (this._team = v), o);
+  }
+
+  get emitter() {
+    return this._emitter;
+  }
   get starter() {
     if (!this._emitter) return null;
     let e = this._emitter;
     while (e._emitter) e = e._emitter;
     return e;
   }
-  get a_rest(): number { return this._a_rest }
-
+  get a_rest(): number {
+    return this._a_rest;
+  }
 
   protected _state: State_Base | undefined;
 
   set state(v: State_Base | undefined) {
     if (this._state === v) return;
-    this._state?.leave?.(this, this.frame)
+    this._state?.leave?.(this, this.frame);
     this._state = v;
-    this._state?.enter?.(this, this.get_prev_frame())
+    this._state?.enter?.(this, this.get_prev_frame());
   }
 
-  get state() { return this._state; }
+  get state() {
+    return this._state;
+  }
 
   /**
    * 闪烁计数F
@@ -359,9 +454,12 @@ export default class Entity {
    * @readonly
    * @type {number}
    */
-  get blinking() { return this._blinking_duration }
-  set blinking(v: number) { this._blinking_duration = Math.max(0, v) }
-
+  get blinking() {
+    return this._blinking_duration;
+  }
+  set blinking(v: number) {
+    this._blinking_duration = Math.max(0, v);
+  }
 
   /**
    * 隐身计数
@@ -369,16 +467,21 @@ export default class Entity {
    * @readonly
    * @type {number}
    */
-  get invisible() { return this._invisible_duration }
-  set invisible(v: number) { this._invisible_duration = Math.max(0, v) }
-
+  get invisible() {
+    return this._invisible_duration;
+  }
+  set invisible(v: number) {
+    this._invisible_duration = Math.max(0, v);
+  }
 
   get callbacks(): NoEmitCallbacks<IEntityCallbacks> {
-    return this._callbacks
+    return this._callbacks;
   }
 
   protected _controller?: BaseController;
-  get controller() { return this._controller; }
+  get controller() {
+    return this._controller;
+  }
   set controller(v) {
     if (this._controller === v) return;
     this._controller?.dispose();
@@ -392,8 +495,8 @@ export default class Entity {
    * @type {boolean}
    */
   get in_player_slot(): boolean {
-    const player_id = this.controller?.player_id
-    return !!(player_id && this.world.player_slot_characters.has(player_id))
+    const player_id = this.controller?.player_id;
+    return !!(player_id && this.world.player_slot_characters.has(player_id));
   }
 
   constructor(world: World, data: IEntityData, states: States = ENTITY_STATES) {
@@ -402,17 +505,19 @@ export default class Entity {
     this.states = states;
     this._hp_max = data.base.hp ?? Defines.DAFUALT_HP;
 
-    if (is_weapon_data(data) && data.id === '122') {
+    if (is_weapon_data(data) && data.id === "122") {
       this._mp_max = data.base.mp ?? Defines.DEFAULT_MILK_MP;
-    } else if (is_weapon_data(data) && data.id === '123') {
+    } else if (is_weapon_data(data) && data.id === "123") {
       this._mp_max = data.base.mp ?? Defines.DEFAULT_BEER_MP;
     } else {
       this._mp_max = data.base.mp ?? Defines.DEFAULT_MP;
     }
 
     if (data.type === EntityEnum.Character) {
-      this._mp_r_spd_min = data.base.mp_r_min_spd ?? Defines.DEFAULT_MP_RECOVERY_MIN_SPEED;
-      this._mp_r_spd_max = data.base.mp_r_max_spd ?? Defines.DEFAULT_MP_RECOVERY_MAX_SPEED;
+      this._mp_r_spd_min =
+        data.base.mp_r_min_spd ?? Defines.DEFAULT_MP_RECOVERY_MIN_SPEED;
+      this._mp_r_spd_max =
+        data.base.mp_r_max_spd ?? Defines.DEFAULT_MP_RECOVERY_MAX_SPEED;
     } else {
       this._mp_r_spd_min = data.base.mp_r_min_spd ?? 0;
       this._mp_r_spd_max = data.base.mp_r_max_spd ?? 0;
@@ -420,20 +525,22 @@ export default class Entity {
 
     this._catch_time_max = data.base.catch_time ?? Defines.DAFUALT_CATCH_TIME;
     this.update_mp_r_spd();
-    this.fall_value_max = this.data.base.fall_value ?? Defines.DEFAULT_FALL_VALUE_MAX;
-    this.defend_value_max = this.data.base.defend_value ?? Defines.DEFAULT_DEFEND_VALUE_MAX;
-    this.fall_value = this.fall_value_max
-    this.defend_value = this.defend_value_max
-    this._hp = this._hp_max
-    this._mp = this._mp_max
+    this.fall_value_max =
+      this.data.base.fall_value ?? Defines.DEFAULT_FALL_VALUE_MAX;
+    this.defend_value_max =
+      this.data.base.defend_value ?? Defines.DEFAULT_DEFEND_VALUE_MAX;
+    this.fall_value = this.fall_value_max;
+    this.defend_value = this.defend_value_max;
+    this._hp = this._hp_max;
+    this._mp = this._mp_max;
     this._catch_time = this._catch_time_max;
   }
 
   set_holder(v: Entity | undefined): this {
     if (this._holder === v) return this;
-    const old = this._holder
+    const old = this._holder;
     this._holder = v;
-    this._callbacks.emit("on_holder_changed")(this, v, old)
+    this._callbacks.emit("on_holder_changed")(this, v, old);
     return this;
   }
 
@@ -441,54 +548,56 @@ export default class Entity {
     if (this._holding === v) return this;
     const old = this._holding;
     this._holding = v;
-    this._callbacks.emit("on_holding_changed")(this, v, old)
+    this._callbacks.emit("on_holding_changed")(this, v, old);
 
     if (v) {
       this._picking_sum += 1;
-      this._callbacks.emit("on_picking_sum_changed")(this, this._picking_sum, this._picking_sum - 1)
+      this._callbacks.emit("on_picking_sum_changed")(
+        this,
+        this._picking_sum,
+        this._picking_sum - 1,
+      );
     }
     return this;
   }
 
   add_damage_sum(v: number): this {
-    const old = this._damage_sum
+    const old = this._damage_sum;
     this._damage_sum += v;
-    this._callbacks.emit("on_damage_sum_changed")(this, this._damage_sum, old)
+    this._callbacks.emit("on_damage_sum_changed")(this, this._damage_sum, old);
     this.emitter?.add_damage_sum(v);
-    return this
+    return this;
   }
 
   add_kill_sum(v: number): this {
-    const old = this._kill_sum
+    const old = this._kill_sum;
     this._kill_sum += v;
-    this._callbacks.emit("on_kill_sum_changed")(this, this._kill_sum, old)
+    this._callbacks.emit("on_kill_sum_changed")(this, this._kill_sum, old);
     this.emitter?.add_kill_sum(v);
-    return this
+    return this;
   }
 
   get_v_rest(id: string): number {
     const v = this.v_rests.get(id);
-    return v?.v_rest ?? 0
+    return v?.v_rest ?? 0;
   }
 
   find_auto_frame(): IFrameInfo {
     return (
-      this.state?.get_auto_frame?.(this) ??
-      this.data.frames['0'] ??
-      this.frame
-    )  // FIXME: fix this 'as'.
+      this.state?.get_auto_frame?.(this) ?? this.data.frames["0"] ?? this.frame
+    ); // FIXME: fix this 'as'.
   }
 
   find_emitter(fn: (e: Entity) => boolean): Entity | undefined {
     if (!this.emitter) return void 0;
     if (fn(this.emitter)) return this.emitter;
-    return this.emitter.find_emitter(fn)
+    return this.emitter.find_emitter(fn);
   }
 
   on_spawn(
     emitter: Entity,
     opoint: IOpointInfo,
-    offset_velocity: IVector3 = new Ditto.Vector3(0, 0, 0)
+    offset_velocity: IVector3 = new Ditto.Vector3(0, 0, 0),
   ) {
     this._emitter = emitter;
     this._emitter_opoint = opoint;
@@ -511,7 +620,7 @@ export default class Entity {
     this.position.set(x, y, z);
 
     let { dvx = 0, dvy = 0, dvz = 0, speedz = 3 } = opoint;
-    let ud = emitter.controller?.UD || 0
+    let ud = emitter.controller?.UD || 0;
     let { x: ovx, y: ovy, z: ovz } = offset_velocity;
     if (dvx > 0) {
       dvx = dvx - Math.abs(ovz / 2);
@@ -519,16 +628,18 @@ export default class Entity {
       dvx = dvx + Math.abs(ovz / 2);
     }
 
-    const result = this.get_next_frame(opoint.action)
-    const facing = result?.which.facing ? this.handle_facing_flag(result.which.facing, result.frame) : emitter.facing;
+    const result = this.get_next_frame(opoint.action);
+    const facing = result?.which.facing
+      ? this.handle_facing_flag(result.which.facing, result.frame)
+      : emitter.facing;
     this.velocities[0].x = ovx + dvx * facing;
     this.velocities.push(
       new Ditto.Vector3(
         offset_velocity.x,
         offset_velocity.y + ovy + dvy,
-        offset_velocity.z + ovz + dvz + speedz * ud
-      )
-    )
+        offset_velocity.z + ovz + dvz + speedz * ud,
+      ),
+    );
 
     if (opoint.max_hp) this.hp_max = opoint.max_hp;
     if (opoint.max_mp) this.mp_max = opoint.max_mp;
@@ -539,8 +650,8 @@ export default class Entity {
 
     switch (opoint.kind) {
       case OpointKind.Pick:
-        this.holder = emitter
-        this.holder.holding = this
+        this.holder = emitter;
+        this.holder.holding = this;
         break;
     }
     return this;
@@ -553,50 +664,55 @@ export default class Entity {
     const next_state_code = this.frame.state;
 
     if (prev_state_code !== next_state_code) {
-      let next_state = this.states.get(next_state_code)
+      let next_state = this.states.get(next_state_code);
       if (!next_state) {
         // debugger;
-        const next_state_key = this.data.type + next_state_code
-        next_state = this.states.get(next_state_key)
+        const next_state_key = this.data.type + next_state_code;
+        next_state = this.states.get(next_state_key);
         if (!next_state) {
           switch (this.data.type) {
             case EntityEnum.Character:
-              this.states.set(next_state_key, next_state = new CharacterState_Base());
+              this.states.set(
+                next_state_key,
+                (next_state = new CharacterState_Base()),
+              );
               break;
             case EntityEnum.Weapon:
-              this.states.set(next_state_key, next_state = new WeaponState_Base());
+              this.states.set(
+                next_state_key,
+                (next_state = new WeaponState_Base()),
+              );
               break;
             case EntityEnum.Ball:
-              this.states.set(next_state_key, next_state = new BallState_Base());
+              this.states.set(
+                next_state_key,
+                (next_state = new BallState_Base()),
+              );
               break;
             case EntityEnum.Entity:
             default:
-              this.states.set(next_state_key, next_state = new State_Base());
+              this.states.set(next_state_key, (next_state = new State_Base()));
               break;
           }
         }
       }
       this.state = next_state;
     }
-    if (v.invisible)
-      this.invisibility(v.invisible)
+    if (v.invisible) this.invisibility(v.invisible);
     if (v.opoint) {
-      this.apply_opoints(v.opoint)
+      this.apply_opoints(v.opoint);
     }
-    if (!v.cpoint)
-      delete this._catching;
+    if (!v.cpoint) delete this._catching;
 
-
-    const attacking = !!this.frame.itr?.find(v => {
+    const attacking = !!this.frame.itr?.find((v) => {
       return (
         v.kind !== ItrKind.Pick &&
         v.kind !== ItrKind.PickSecretly &&
         v.kind !== ItrKind.Catch &&
         v.kind !== ItrKind.ForceCatch
-      )
-    })
-    if (!attacking)
-      this._a_rest = 0;
+      );
+    });
+    if (!attacking) this._a_rest = 0;
   }
 
   apply_opoints(opoints: IOpointInfo[]) {
@@ -609,22 +725,28 @@ export default class Entity {
           case OpointMultiEnum.AccordingEnemies:
             for (const other of this.world.entities) {
               if (
-                !other.same_team(this) && is_character(other) &&
-                this.find_emitter(emitter => is_character(emitter) && emitter !== other)
+                !other.same_team(this) &&
+                is_character(other) &&
+                this.find_emitter(
+                  (emitter) => is_character(emitter) && emitter !== other,
+                )
               )
                 ++count;
             }
-            count = Math.max(opoint.multi.min, count)
+            count = Math.max(opoint.multi.min, count);
             break;
           case OpointMultiEnum.AccordingTeammates:
             for (const other of this.world.entities) {
               if (
-                other.same_team(this) && is_character(other) &&
-                this.find_emitter(emitter => is_character(emitter) && emitter !== other)
+                other.same_team(this) &&
+                is_character(other) &&
+                this.find_emitter(
+                  (emitter) => is_character(emitter) && emitter !== other,
+                )
               )
                 ++count;
             }
-            count = Math.max(opoint.multi.min, count)
+            count = Math.max(opoint.multi.min, count);
             break;
         }
       } else if (opoint.multi === void 0) {
@@ -640,29 +762,43 @@ export default class Entity {
           case OpointSpreading.Bat:
             break;
         }
-        this.spawn_entity(opoint, v)
+        this.spawn_entity(opoint, v);
       }
     }
   }
 
-  spawn_entity(opoint: IOpointInfo, offset_velocity: IVector3 = new Ditto.Vector3(0, 0, 0)): Entity | undefined {
-    const oid = Array.isArray(opoint.oid) ? random_get(opoint.oid) : opoint.oid
+  spawn_entity(
+    opoint: IOpointInfo,
+    offset_velocity: IVector3 = new Ditto.Vector3(0, 0, 0),
+  ): Entity | undefined {
+    const oid = Array.isArray(opoint.oid) ? random_get(opoint.oid) : opoint.oid;
     if (!oid) {
-      Warn.print(Entity.TAG + '::spawn_object', 'oid got', oid);
+      Warn.print(Entity.TAG + "::spawn_object", "oid got", oid);
       return;
     }
     const data = this.world.lf2.datas.find(oid);
     if (!data) {
-      Warn.print(Entity.TAG + '::spawn_object', 'data not found! opoint:', opoint);
+      Warn.print(
+        Entity.TAG + "::spawn_object",
+        "data not found! opoint:",
+        opoint,
+      );
       return;
     }
     const create = Factory.inst.get_entity_creator(data.type);
     if (!create) {
-      Warn.print(Entity.TAG + '::spawn_object', `creator of "${data.type}" not found! opoint:`, opoint);
+      Warn.print(
+        Entity.TAG + "::spawn_object",
+        `creator of "${data.type}" not found! opoint:`,
+        opoint,
+      );
       return;
     }
-    const entity = create(this.world, data)
-    entity.controller = Factory.inst.get_ctrl_creator(entity.data.id)?.('', entity);
+    const entity = create(this.world, data);
+    entity.controller = Factory.inst.get_ctrl_creator(entity.data.id)?.(
+      "",
+      entity,
+    );
     entity.on_spawn(this, opoint, offset_velocity).attach();
 
     for (const [k, v] of this.v_rests) {
@@ -672,7 +808,7 @@ export default class Entity {
       entity.v_rests.set(k, v);
     }
 
-    return entity
+    return entity;
   }
 
   attach(): this {
@@ -684,21 +820,21 @@ export default class Entity {
 
   /**
    * 实体响应地面速度衰减（x轴方向与z轴方向的速度）的衰减
-   * 
+   *
    * 速度衰减逻辑如下，
    * - ```v *= 当前衰减系数*世界摩擦系数```
    * - ```v -= 世界摩擦力（使v向0的方向变化，直至归0）```
-   * 
+   *
    * 以下情况不响应:
    * - 实体处于地面以上(不含地面，即：position.y > 0）
    * - 角色处于shaking中（即实体被某物击中, see IItrInfo.shaking）
    * - 角色处于motionless中，（即实体击中某物时, see IItrInfo.motionless）
-   * 
+   *
    * @see {IItrInfo.shaking} 目标停顿值
    * @see {IItrInfo.motionless} 自身停顿值
    * @see {World.friction_factor} 世界摩擦系数
    * @see {World.friction} 世界摩擦力
-   * 
+   *
    * @param {number} [factor=1] 当前衰减系数
    */
   handle_ground_velocity_decay(factor: number = 1) {
@@ -709,15 +845,15 @@ export default class Entity {
     z *= factor;
 
     if (x > 0) {
-      x -= this.world.friction
+      x -= this.world.friction;
       if (x < 0) x = 0; // 不能因为摩擦力反向加速
     } else if (x < 0) {
       x += this.world.friction;
-      if (x > 0) x = 0;  // 不能因为摩擦力反向加速
+      if (x > 0) x = 0; // 不能因为摩擦力反向加速
     }
 
     if (z > 0) {
-      z -= this.world.friction
+      z -= this.world.friction;
       if (z < 0) z = 0; // 不能因为摩擦力反向加速
     } else if (z < 0) {
       z += this.world.friction;
@@ -731,15 +867,15 @@ export default class Entity {
   handle_velocity_decay(friction: number) {
     let { x, z } = this.velocities[0];
     if (x > 0) {
-      x -= friction
+      x -= friction;
       if (x < 0) x = 0; // 不能因为摩擦力反向加速
     } else if (x < 0) {
       x += friction;
-      if (x > 0) x = 0;  // 不能因为摩擦力反向加速
+      if (x > 0) x = 0; // 不能因为摩擦力反向加速
     }
 
     if (z > 0) {
-      z -= friction
+      z -= friction;
       if (z < 0) z = 0; // 不能因为摩擦力反向加速
     } else if (z < 0) {
       z += friction;
@@ -749,20 +885,20 @@ export default class Entity {
     this.velocities[0].x = x;
     this.velocities[0].z = z;
   }
-  /** 
+  /**
    * 实体响应重力
-   * 
+   *
    * 本质就是增加y轴方向向下的速度，
    * 有`velocity.y -= State_Base.get_gravity() ?? World.gravity`
-   * 
+   *
    * 以下情况不响应重力:
-   * 
+   *
    * - 实体处于地面或地面以下（position.y <= 0）
-   * 
+   *
    * - 角色处于shaking中（即实体被某物击中, see IItrInfo.shaking）
-   * 
+   *
    * - 角色处于motionless中，（即实体击中某物时, see IItrInfo.motionless）
-   * 
+   *
    * @see {IItrInfo.shaking}
    * @see {IItrInfo.motionless}
    * @see {State_Base.get_gravity}
@@ -790,20 +926,17 @@ export default class Entity {
       speedxm = SpeedMode.LF2,
       speedzm = SpeedMode.LF2,
     } = this.frame;
-    let {
-      x: vx,
-      y: vy,
-      z: vz
-    } = this.velocities[0];
+    let { x: vx, y: vy, z: vz } = this.velocities[0];
 
-
-    if (dvx) vx = calc_v(vx, dvx * this.world.fvx_f, vxm, acc_x, this.facing)
-    if (dvy) vy = calc_v(vy, dvy * this.world.fvy_f, vym, acc_y, 1)
+    if (dvx) vx = calc_v(vx, dvx * this.world.fvx_f, vxm, acc_x, this.facing);
+    if (dvy) vy = calc_v(vy, dvy * this.world.fvy_f, vym, acc_y, 1);
     if (dvz) vz = calc_v(vz, dvz * this.world.fvz_f, vzm, acc_z, 1);
     if (this._controller) {
       const { UD, LR } = this._controller;
-      if (LR && speedx && speedx !== 550) vx = calc_v(vx, speedx, speedxm, void 0, LR);
-      if (UD && speedz && speedz !== 550) vz = calc_v(vz, speedz, speedzm, void 0, UD);
+      if (LR && speedx && speedx !== 550)
+        vx = calc_v(vx, speedx, speedxm, void 0, LR);
+      if (UD && speedz && speedz !== 550)
+        vz = calc_v(vz, speedz, speedzm, void 0, UD);
     }
     if (dvx === 550) vx = 0;
     if (dvz === 550) vz = 0;
@@ -817,8 +950,7 @@ export default class Entity {
     if (this.next_frame) this.enter_frame(this.next_frame);
     if (this._mp < this._mp_max)
       this.mp = Math.min(this._mp_max, this._mp + this._mp_r_spd);
-    if (this.frame.hp)
-      this.hp -= this.frame.hp
+    if (this.frame.hp) this.hp -= this.frame.hp;
     const { cpoint } = this.frame;
     if (cpoint) {
       if (cpoint?.decrease) {
@@ -835,7 +967,7 @@ export default class Entity {
       }
     }
     if (this.motionless <= 0)
-      this._a_rest >= 1 ? this._a_rest-- : this._a_rest = 0;
+      this._a_rest >= 1 ? this._a_rest-- : (this._a_rest = 0);
 
     if (this._invisible_duration > 0) {
       this._invisible_duration--;
@@ -855,26 +987,29 @@ export default class Entity {
 
     if (this.holder) {
       const { wpoint } = this.holder.frame;
-      if (wpoint) { // 被丢出
+      if (wpoint) {
+        // 被丢出
         const { dvx, dvy, dvz } = wpoint;
         if (dvx !== void 0 || dvy !== void 0 || dvz !== void 0) {
-          this.follow_holder()
+          this.follow_holder();
           this.enter_frame({ id: this.data.indexes?.throwing });
-          const vz = this.holder.controller ? this.holder.controller.UD * (dvz || 0) : 0;
-          const vx = (dvx || 0 - Math.abs(vz / 2)) * this.facing
-          this.velocities[0].set(vx, dvy || 0, vz)
+          const vz = this.holder.controller
+            ? this.holder.controller.UD * (dvz || 0)
+            : 0;
+          const vx = (dvx || 0 - Math.abs(vz / 2)) * this.facing;
+          this.velocities[0].set(vx, dvy || 0, vz);
           this.holder.holding = void 0;
           this.holder = void 0;
         }
       }
       if (this.hp <= 0 && this.holder) {
-        this.follow_holder()
+        this.follow_holder();
         this.holder.holding = void 0;
         this.holder = void 0;
       }
     }
 
-    this.state?.pre_update?.(this)
+    this.state?.pre_update?.(this);
   }
 
   update_resting() {
@@ -900,8 +1035,11 @@ export default class Entity {
 
   update(): void {
     if (this.next_frame) this.enter_frame(this.next_frame);
-    if (this.wait > 0) { --this.wait; }
-    else { this.next_frame = this.get_next_frame(this.frame.next)?.which; }
+    if (this.wait > 0) {
+      --this.wait;
+    } else {
+      this.next_frame = this.get_next_frame(this.frame.next)?.which;
+    }
     this.state?.update(this);
 
     let vx = 0;
@@ -929,7 +1067,7 @@ export default class Entity {
       }
     }
     this.velocity.set(vx, vy, vz);
-    this.merge_velocities()
+    this.merge_velocities();
     if (!this.shaking && !this.motionless) {
       this.position.x += vx;
       this.position.y += vy;
@@ -950,14 +1088,12 @@ export default class Entity {
     if (this.controller) {
       const { next_frame, key_list } = this.controller.update();
       if (
-        key_list === 'ja' &&
+        key_list === "ja" &&
         this.transform_datas &&
         this.transform_datas[1] === this.data &&
-        (
-          this.frame?.state === Defines.State.Walking ||
+        (this.frame?.state === Defines.State.Walking ||
           this.frame?.state === Defines.State.Standing ||
-          this.frame?.state === Defines.State.Defend
-        )
+          this.frame?.state === Defines.State.Defend)
       ) {
         this.transfrom_to_another();
         this.controller.reset_key_list();
@@ -968,16 +1104,21 @@ export default class Entity {
     }
     if (this.frame.on_hit_ground && this.frame.itr && this.velocity.y < 0) {
       for (const itr of this.frame.itr) {
-        const { bottom } = this.world.get_bounding(this, this.frame, itr)
+        const { bottom } = this.world.get_bounding(this, this.frame, itr);
         if (bottom > 0) continue;
         const result = this.get_next_frame(this.frame.on_hit_ground);
-        if (result) this.next_frame = result.frame;
-        break
+        if (result) this.enter_frame(result.frame);
+        break;
       }
     }
-    if (this.position.y <= 0 && this.velocity.y < 0 && !this.shaking && !this.motionless) {
+    if (
+      this.position.y <= 0 &&
+      this.velocity.y < 0 &&
+      !this.shaking &&
+      !this.motionless
+    ) {
       this.position.y = 0;
-      this.play_sound(this.data.base.drop_sounds)
+      this.play_sound(this.data.base.drop_sounds);
       this.velocities[0].y = 0;
       if (this.frame.on_landing) {
         const result = this.get_next_frame(this.frame.on_landing);
@@ -990,9 +1131,8 @@ export default class Entity {
       }
     }
     if (this.update_id === Number.MAX_SAFE_INTEGER)
-      this.update_id = Number.MIN_SAFE_INTEGER
-    else
-      ++this.update_id;
+      this.update_id = Number.MIN_SAFE_INTEGER;
+    else ++this.update_id;
     this.world.restrict(this);
     this.collision_list.length = 0;
     this.collided_list.length = 0;
@@ -1000,40 +1140,43 @@ export default class Entity {
 
   /**
    * hp意外归0时，应该去的地方
-   * @returns 
+   * @returns
    */
   get_sudden_death_frame(): TNextFrame {
-    return this.state?.get_sudden_death_frame?.(this) || { id: Defines.FrameId.Auto }
+    return (
+      this.state?.get_sudden_death_frame?.(this) || { id: Defines.FrameId.Auto }
+    );
   }
 
   /**
    * 获取“被抓结束”帧
-   * 
+   *
    * 被抓后，抓人者的“抓取值”降至0时，视为“被抓结束”，
    * 此时被抓者跳去的帧即为“被抓结束”帧
-   * 
-   * @returns 下帧信息 
+   *
+   * @returns 下帧信息
    */
   get_caught_end_frame(): INextFrame {
-    return this.state?.get_caught_end_frame?.(this) || { id: Defines.FrameId.Auto }
+    return (
+      this.state?.get_caught_end_frame?.(this) || { id: Defines.FrameId.Auto }
+    );
   }
 
   /**
    * 获取“被抓取消”帧
-   * 
+   *
    * 被抓后，抓人者的“抓取值”未降至0，且任意一方的帧缺少cpoint时，视为“被抓取消”，
    * 此时跳去的帧即为“被抓结束”帧
-   * 
-   * @returns 下帧信息 
+   *
+   * @returns 下帧信息
    */
   get_caught_cancel_frame(): INextFrame {
     if (this.position.y < 1) this.position.y = 1;
-    return { id: Defines.FrameId.Auto }
+    return { id: Defines.FrameId.Auto };
   }
 
   private prev_cpoint_a?: ICpointInfo;
   update_caught(): INextFrame | undefined {
-
     if (!this._catcher) return;
     /** "对齐颗粒度" */
     this.follow_catcher();
@@ -1047,35 +1190,36 @@ export default class Entity {
     if (!cpoint_a || !cpoint_b) {
       delete this._catcher;
       this.prev_cpoint_a = void 0;
-      return this.get_caught_cancel_frame()
+      return this.get_caught_cancel_frame();
     }
     if (this.prev_cpoint_a !== cpoint_a) {
       if (cpoint_a.injury) this.hp -= cpoint_a.injury;
-      if (cpoint_a.shaking && cpoint_a.shaking > 0) this.shaking = cpoint_a.shaking;
+      if (cpoint_a.shaking && cpoint_a.shaking > 0)
+        this.shaking = cpoint_a.shaking;
     }
     this.prev_cpoint_a = cpoint_a;
 
     const { throwvx, throwvy, throwvz, throwinjury } = cpoint_a;
     if (throwvz) {
-      this.velocities[0].z = (throwvz * this.world.tvz_f) * (this._catcher.controller?.UD || 0);
+      this.velocities[0].z =
+        throwvz * this.world.tvz_f * (this._catcher.controller?.UD || 0);
     }
     if (throwvx) {
-      this.velocities[0].x = (throwvx * this.world.tvx_f) * this._catcher.facing;
+      this.velocities[0].x = throwvx * this.world.tvx_f * this._catcher.facing;
     }
     if (throwvy) {
-      this.velocities[0].y = (throwvy * this.world.tvy_f);
+      this.velocities[0].y = throwvy * this.world.tvy_f;
     }
 
     if (throwinjury) this.throwinjury = throwinjury;
     if (throwvx || throwvy || throwvz) {
-      if (cpoint_a.tx) this.position.x += cpoint_a.tx * this._catcher.facing
-      if (cpoint_a.ty) this.position.y += cpoint_a.ty
-      if (cpoint_a.tz) this.position.y += cpoint_a.tz
+      if (cpoint_a.tx) this.position.x += cpoint_a.tx * this._catcher.facing;
+      if (cpoint_a.ty) this.position.y += cpoint_a.ty;
+      if (cpoint_a.tz) this.position.y += cpoint_a.tz;
       delete this._catcher;
       this.prev_cpoint_a = void 0;
     }
-    if (cpoint_a.vaction)
-      return this.get_next_frame(cpoint_a.vaction)?.which;
+    if (cpoint_a.vaction) return this.get_next_frame(cpoint_a.vaction)?.which;
   }
 
   update_catching(): INextFrame | undefined {
@@ -1106,7 +1250,7 @@ export default class Entity {
           return this.find_auto_frame();
         }
       } else {
-        return GONE_FRAME_INFO
+        return GONE_FRAME_INFO;
       }
     }
     if (throwvx || throwvy || throwvz) {
@@ -1120,14 +1264,19 @@ export default class Entity {
 
   follow_catcher() {
     if (!this._catcher) return;
-    const { centerx: centerx_a, centery: centery_a, cpoint: c_a } = this._catcher.frame;
+    const {
+      centerx: centerx_a,
+      centery: centery_a,
+      cpoint: c_a,
+    } = this._catcher.frame;
     const { centerx: centerx_b, centery: centery_b, cpoint: c_b } = this.frame;
     if (!c_a || !c_b) return;
     if (c_a.throwvx || c_a.throwvx || c_a.throwvx) return;
     const face_a = this._catcher.facing;
     const face_b = this.facing;
     const { x: px, y: py, z: pz } = this._catcher.position;
-    this.position.x = px - face_a * (centerx_a - c_a.x) + face_b * (centerx_b - c_b.x);
+    this.position.x =
+      px - face_a * (centerx_a - c_a.x) + face_b * (centerx_b - c_b.x);
     this.position.y = py + centery_a - c_a.y + c_b.y - centery_b;
     this.position.z = pz;
     if (c_b.cover === 11 || c_b.cover === 1) this.position.z -= 0.5;
@@ -1136,36 +1285,37 @@ export default class Entity {
 
   /**
    * 获取“抓人结束”帧
-   * 
+   *
    * 抓人后，“抓取值”降至0时，视为“抓人结束”，
-   * 
+   *
    * 此时跳去的帧即为“抓人结束”帧
-   * 
-   * @returns 下帧信息 
+   *
+   * @returns 下帧信息
    */
   get_catching_end_frame(): INextFrame {
-    return { id: Defines.FrameId.Auto }
+    return { id: Defines.FrameId.Auto };
   }
 
   /**
    * 获取“抓人取消”帧
-   * 
+   *
    * 抓人后，“抓取值”未降至0，且任意一方的帧缺少cpoint时，视为“抓人取消”，
-   * 
+   *
    * 此时跳去的帧即为“抓人取消”帧
-   * 
-   * @returns 下帧信息 
+   *
+   * @returns 下帧信息
    */
   get_catching_cancel_frame(): INextFrame {
-    return { id: Defines.FrameId.Auto }
+    return { id: Defines.FrameId.Auto };
   }
 
   transfrom_to_another() {
-    const { transform_datas } = this
+    const { transform_datas } = this;
     if (!transform_datas) return;
-    const next_idx = (transform_datas.indexOf(this.data) + 1) % transform_datas.length;
+    const next_idx =
+      (transform_datas.indexOf(this.data) + 1) % transform_datas.length;
     this.data = transform_datas[next_idx];
-    this.next_frame = this.get_next_frame({ id: '245' })?.frame;
+    this.next_frame = this.get_next_frame({ id: "245" })?.frame;
   }
 
   /**
@@ -1178,16 +1328,15 @@ export default class Entity {
 
   /**
    * 最近一次被攻击信息
-   * 
+   *
    * @type {ICollision}
    * @memberof Entity
    */
   lastest_collided?: ICollision;
 
-
   /**
    * 当前tick碰撞信息
-   * 
+   *
    * - 会在update后置空
    *
    * @type {ICollision[]}
@@ -1197,9 +1346,9 @@ export default class Entity {
 
   /**
    * 当前tick被碰撞信息
-   * 
+   *
    * - 会在update后置空
-   * 
+   *
    * @type {ICollision[]}
    * @memberof Entity
    */
@@ -1207,17 +1356,25 @@ export default class Entity {
 
   start_catch(target: Entity, itr: IItrInfo) {
     if (itr.catchingact === void 0) {
-      Warn.print(Entity.TAG + '::start_catch', 'cannot catch, catchingact got', itr.catchingact)
+      Warn.print(
+        Entity.TAG + "::start_catch",
+        "cannot catch, catchingact got",
+        itr.catchingact,
+      );
       return;
     }
     this._catch_time = this._catch_time_max;
     this._catching = target;
-    this.next_frame = this.get_next_frame(itr.catchingact)?.which
+    this.next_frame = this.get_next_frame(itr.catchingact)?.which;
   }
 
   start_caught(attacker: Entity, itr: IItrInfo) {
     if (itr.caughtact === void 0) {
-      Warn.print(Entity.TAG + '::start_caught', 'cannot be caught, caughtact got', itr.caughtact)
+      Warn.print(
+        Entity.TAG + "::start_caught",
+        "cannot be caught, caughtact got",
+        itr.caughtact,
+      );
       return;
     }
     this._catcher = attacker;
@@ -1228,7 +1385,7 @@ export default class Entity {
   }
 
   on_collision(collision: ICollision): void {
-    this.collision_list.push(this.lastest_collision = collision)
+    this.collision_list.push((this.lastest_collision = collision));
     const { itr, bdy } = collision;
 
     if (is_ball(collision.victim)) {
@@ -1240,13 +1397,15 @@ export default class Entity {
     if (itr.arest) {
       this._a_rest = itr.arest + this.world.arest_offset;
     } else if (!itr.vrest) {
-      this._a_rest = this.wait + this.motionless + 2 + this.world.arest_offset_2;
+      this._a_rest =
+        this.wait + this.motionless + 2 + this.world.arest_offset_2;
     }
     if (bdy.kind !== BdyKind.Defend && itr.kind !== ItrKind.Block) {
       this.play_sound(itr.hit_sounds);
     }
     if (itr.hit_act) {
-      this.next_frame = this.get_next_frame(itr.hit_act)?.frame ?? this.next_frame;
+      this.next_frame =
+        this.get_next_frame(itr.hit_act)?.frame ?? this.next_frame;
     }
   }
 
@@ -1257,41 +1416,38 @@ export default class Entity {
       top: t,
       bottom: b,
       near: n,
-      far: f
-    }: IBounding = cross_bounding(r0, r1)
-    const x = random_in(l, r)
-    const y = random_in(b, t)
-    const z = random_in(f, n)
+      far: f,
+    }: IBounding = cross_bounding(r0, r1);
+    const x = random_in(l, r);
+    const y = random_in(b, t);
+    const z = random_in(f, n);
     return [x, y, z] as const;
   }
 
   dizzy_catch_test(target: Entity): boolean {
     return (
       is_character(this) &&
-      is_character(target) && (
-        (this.velocities[0].x > 0 && target.position.x > this.position.x) ||
-        (this.velocities[0].x < 0 && target.position.x < this.position.x)
-      )
-    )
+      is_character(target) &&
+      ((this.velocities[0].x > 0 && target.position.x > this.position.x) ||
+        (this.velocities[0].x < 0 && target.position.x < this.position.x))
+    );
   }
 
   on_be_collided(collision: ICollision): void {
-    this.collided_list.push(this.lastest_collided = collision);
-    const { itr, bdy } = collision
+    this.collided_list.push((this.lastest_collided = collision));
+    const { itr, bdy } = collision;
     this.shaking = itr.shaking ?? collision.attacker.world.itr_shaking;
     if (collision.v_rest !== void 0) {
       this.v_rests.set(collision.attacker.id, collision);
     }
-    if (
-      bdy.kind >= BdyKind.GotoMin &&
-      bdy.kind <= BdyKind.GotoMax
-    ) {
-      const result = this.get_next_frame({ id: '' + (bdy.kind - 1000) })
-      if (result) this.next_frame = result.frame
+    if (bdy.kind >= BdyKind.GotoMin && bdy.kind <= BdyKind.GotoMax) {
+      const result = this.get_next_frame({ id: "" + (bdy.kind - 1000) });
+      if (result) this.next_frame = result.frame;
       return;
     }
     if (bdy.hit_act) {
-      this.next_frame = this.get_next_frame(bdy.hit_act)?.frame ?? this.next_frame;
+      this.next_frame =
+        this.get_next_frame(bdy.hit_act)?.frame ?? this.next_frame;
     }
     if (
       itr.kind !== ItrKind.Block &&
@@ -1299,15 +1455,15 @@ export default class Entity {
       itr.kind !== ItrKind.MagicFlute &&
       itr.kind !== ItrKind.MagicFlute2
     ) {
-      const sounds = bdy.hit_sounds || this.data.base.hit_sounds
-      this.play_sound(sounds)
+      const sounds = bdy.hit_sounds || this.data.base.hit_sounds;
+      this.play_sound(sounds);
     }
   }
 
   dispose(): void {
-    this.world.del_entity(this)
+    this.world.del_entity(this);
     this.controller = void 0;
-    this._callbacks.emit('on_disposed')(this);
+    this._callbacks.emit("on_disposed")(this);
   }
 
   /**
@@ -1320,7 +1476,6 @@ export default class Entity {
     this._after_blink = Defines.FrameId.Gone;
   }
 
-
   /**
    * 开始隐身
    *
@@ -1331,7 +1486,10 @@ export default class Entity {
   }
 
   protected update_mp_r_spd(): void {
-    this._mp_r_spd = this._mp_r_spd_min + (this._mp_r_spd_max - this._mp_r_spd_min) * (this._hp_max - this._hp) / this._hp_max
+    this._mp_r_spd =
+      this._mp_r_spd_min +
+      ((this._mp_r_spd_max - this._mp_r_spd_min) * (this._hp_max - this._hp)) /
+        this._hp_max;
   }
 
   same_team(other: Entity): boolean {
@@ -1341,14 +1499,22 @@ export default class Entity {
   follow_holder() {
     const holder = this.holder;
     if (!holder) return;
-    const { wpoint: wpoint_a, centerx: centerx_a, centery: centery_a } = holder.frame;
+    const {
+      wpoint: wpoint_a,
+      centerx: centerx_a,
+      centery: centery_a,
+    } = holder.frame;
 
     if (!wpoint_a) return;
 
     if (wpoint_a.weaponact !== this.frame.id) {
-      this.enter_frame({ id: wpoint_a.weaponact })
+      this.enter_frame({ id: wpoint_a.weaponact });
     }
-    const { wpoint: wpoint_b, centerx: centerx_b, centery: centery_b } = this.frame;
+    const {
+      wpoint: wpoint_b,
+      centerx: centerx_b,
+      centery: centery_b,
+    } = this.frame;
     if (!wpoint_b) return;
 
     const { x, y, z } = holder.position;
@@ -1361,17 +1527,18 @@ export default class Entity {
     );
   }
 
-
   protected _nearest_enemy: Entity | null = null;
-  get nearest_enemy(): Entity | null { return this._nearest_enemy }
+  get nearest_enemy(): Entity | null {
+    return this._nearest_enemy;
+  }
   set_nearest_enemy(e: Entity) {
     this._nearest_enemy = e;
   }
   subscribe_nearest_enemy() {
-    this.world.nearest_enemy_requesters.add(this)
+    this.world.nearest_enemy_requesters.add(this);
   }
   unsubscribe_nearest_enemy() {
-    this.world.nearest_enemy_requesters.delete(this)
+    this.world.nearest_enemy_requesters.delete(this);
   }
 
   enter_frame(which: TNextFrame): void {
@@ -1381,13 +1548,13 @@ export default class Entity {
     const result = this.get_next_frame(which);
     if (!result) {
       this.next_frame = void 0;
-      return
+      return;
     }
     const { frame, which: flags } = result;
     if (!this.world.lf2.infinity_mp) {
-      const { mp, hp } = flags
-      if (mp) this.mp -= mp
-      if (hp) this.hp -= hp
+      const { mp, hp } = flags;
+      if (mp) this.mp -= mp;
+      if (hp) this.hp -= hp;
     }
     if (frame.sound) {
       const { x, y, z } = this.position;
@@ -1404,23 +1571,22 @@ export default class Entity {
     } else {
       this.wait = frame.wait + this.world.frame_wait_offset;
     }
-    if (flags.sounds?.length)
-      this.play_sound(flags.sounds)
+    if (flags.sounds?.length) this.play_sound(flags.sounds);
 
-    if (flags.blink_time)
-      this.blinking = flags.blink_time
+    if (flags.blink_time) this.blinking = flags.blink_time;
   }
 
   handle_wait_flag(wait: string | number, frame: IFrameInfo): number {
-    if (wait === 'i') return this.wait;
-    if (wait === 'd') return Math.max(0, frame.wait - this.frame.wait + this.wait);
+    if (wait === "i") return this.wait;
+    if (wait === "d")
+      return Math.max(0, frame.wait - this.frame.wait + this.wait);
     if (is_positive(wait)) return wait;
     return frame.wait + this.world.frame_wait_offset;
   }
 
   /**
    * 进入下一帧时，需要处理朝向
-   * 
+   *
    * @see {Defines.FacingFlag}
    * @param facing 目标朝向, 可参考Defines.FacingFlag
    * @param frame 帧
@@ -1431,7 +1597,9 @@ export default class Entity {
       case Defines.FacingFlag.Ctrl:
         return this.controller?.LR || this.facing;
       case Defines.FacingFlag.AntiCtrl:
-        return this.controller?.LR ? turn_face(this.controller.LR) : this.facing;
+        return this.controller?.LR
+          ? turn_face(this.controller.LR)
+          : this.facing;
       case Defines.FacingFlag.SameAsCatcher:
         return this._catcher?.facing || this.facing;
       case Defines.FacingFlag.OpposingCatcher:
@@ -1451,24 +1619,22 @@ export default class Entity {
       const l = which.length;
       for (let i = 0; i < l; ++i) {
         const f = this.get_next_frame(which[i]);
-        if (f) return f
+        if (f) return f;
       }
       return void 0;
     }
     const id = which.id;
     const judger = which.judger;
-    const use_hp = which.hp
-    const use_mp = which.mp
+    const use_hp = which.hp;
+    const use_mp = which.mp;
 
     if (judger && !judger.run(this)) {
-      return void 0
+      return void 0;
     }
-    let frame: IFrameInfo | undefined
+    let frame: IFrameInfo | undefined;
     if (id) {
-      frame = this.find_frame_by_id(
-        Array.isArray(id) ? random_get(id) : id
-      );
-      if (!frame) return void 0
+      frame = this.find_frame_by_id(Array.isArray(id) ? random_get(id) : id);
+      if (!frame) return void 0;
     } else {
       frame = this.frame;
     }
@@ -1476,8 +1642,10 @@ export default class Entity {
     if (!this.world.lf2.infinity_mp) {
       if (this.frame.next === which) {
         // 用next 进入此动作，负数表示消耗，无视正数。若消耗完毕跳至按下防御键的指定跳转动作
-        if (use_mp && this._mp < use_mp) return this.get_next_frame(frame.hit?.d ?? Defines.NEXT_FRAME_AUTO);
-        if (use_hp && this._hp < use_hp) return this.get_next_frame(frame.hit?.d ?? Defines.NEXT_FRAME_AUTO);
+        if (use_mp && this._mp < use_mp)
+          return this.get_next_frame(frame.hit?.d ?? Defines.NEXT_FRAME_AUTO);
+        if (use_hp && this._hp < use_hp)
+          return this.get_next_frame(frame.hit?.d ?? Defines.NEXT_FRAME_AUTO);
       } else {
         if (use_mp && this._mp < use_mp) return void 0;
         if (use_hp && this._hp < use_hp) return void 0;
@@ -1496,28 +1664,36 @@ export default class Entity {
 
   find_frame_by_id(id: string | undefined): IFrameInfo | undefined {
     const r = this.state?.find_frame_by_id?.(this, id);
-    if (r) return r
+    if (r) return r;
 
     switch (id) {
       case void 0:
       case Defines.FrameId.None:
-      case Defines.FrameId.Self: return this.frame;
-      case Defines.FrameId.Auto: return this.find_auto_frame();
-      case Defines.FrameId.Gone: return GONE_FRAME_INFO;
+      case Defines.FrameId.Self:
+        return this.frame;
+      case Defines.FrameId.Auto:
+        return this.find_auto_frame();
+      case Defines.FrameId.Gone:
+        return GONE_FRAME_INFO;
     }
     if (!this.data.frames[id]) {
-      console.warn(Entity.TAG + '::find_frame_by_id', 'frame not find! id:', id);
+      console.warn(
+        Entity.TAG + "::find_frame_by_id",
+        "frame not find! id:",
+        id,
+      );
       debugger;
       return EMPTY_FRAME_INFO;
     }
     return this.data.frames[id];
   }
 
-  get_prev_frame() { return this._prev_frame; }
+  get_prev_frame() {
+    return this._prev_frame;
+  }
 
   merge_velocities() {
-    if (this.velocities.length <= 1)
-      return;
+    if (this.velocities.length <= 1) return;
     let vx = 0;
     let vy = 0;
     let vz = 0;
@@ -1527,14 +1703,26 @@ export default class Entity {
       vz += v.z;
     }
     this.velocities.length = 1;
-    this.velocities[0].set(vx, vy, vz)
+    this.velocities[0].set(vx, vy, vz);
   }
 }
 
-Factory.inst.set_entity_creator(EntityEnum.Ball, (...args) => new Entity(...args));
-Factory.inst.set_entity_creator(EntityEnum.Weapon, (...args) => new Entity(...args));
-Factory.inst.set_entity_creator(EntityEnum.Entity, (...args) => new Entity(...args));
-Factory.inst.set_entity_creator(EntityEnum.Character, (...args) => new Entity(...args));
+Factory.inst.set_entity_creator(
+  EntityEnum.Ball,
+  (...args) => new Entity(...args),
+);
+Factory.inst.set_entity_creator(
+  EntityEnum.Weapon,
+  (...args) => new Entity(...args),
+);
+Factory.inst.set_entity_creator(
+  EntityEnum.Entity,
+  (...args) => new Entity(...args),
+);
+Factory.inst.set_entity_creator(
+  EntityEnum.Character,
+  (...args) => new Entity(...args),
+);
 
 function cross_bounding(r0: IBounding, r1: IBounding): IBounding {
   return {

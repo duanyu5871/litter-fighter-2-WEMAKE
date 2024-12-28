@@ -1,34 +1,42 @@
-import { ITextNode } from '../../3d/ITextNode';
-import Invoker from '../../base/Invoker';
-import GameKey from '../../defines/GameKey';
-import Ditto from '../../ditto';
+import { ITextNode } from "../../3d/ITextNode";
+import Invoker from "../../base/Invoker";
+import GameKey from "../../defines/GameKey";
+import Ditto from "../../ditto";
 import { IKeyboardCallback } from "../../ditto/keyboard/IKeyboardCallback";
 import { IPointingsCallback } from "../../ditto/pointings/IPointingsCallback";
-import Layout from '../Layout';
-import { LayoutComponent } from './LayoutComponent';
+import Layout from "../Layout";
+import { LayoutComponent } from "./LayoutComponent";
 
 export default class PlayerKeyEditor extends LayoutComponent {
-  get player_id() { return this.args[0] || '' };
-  get key_name() { return this.args[1] || '' };
-  get player() { return this.lf2.player_infos.get(this.player_id) }
+  get player_id() {
+    return this.args[0] || "";
+  }
+  get key_name() {
+    return this.args[1] || "";
+  }
+  get player() {
+    return this.lf2.player_infos.get(this.player_id);
+  }
   protected _sprite: ITextNode;
   protected _unmount_jobs = new Invoker();
 
   constructor(layout: Layout, f_name: string) {
     super(layout, f_name);
-    const [w, h] = this.layout.size
+    const [w, h] = this.layout.size;
     this._sprite = new Ditto.TextNode(this.lf2)
       .set_position(Math.ceil(w / 2), Math.ceil(-h / 2), 1)
       .set_center(0.5, 0.5)
       .set_name(PlayerKeyEditor.name)
-      .set_style({ font: '16px Arial' })
-      .apply()
+      .set_style({ font: "16px Arial" })
+      .apply();
   }
 
   override on_click() {
-    this.lf2.keyboard.callback.add(this.l)
-    this.lf2.pointings.callback.add(this.r)
-    this._sprite.set_style({ ...this._sprite.style, fill_style: 'blue' }).apply()
+    this.lf2.keyboard.callback.add(this.l);
+    this.lf2.pointings.callback.add(this.r);
+    this._sprite
+      .set_style({ ...this._sprite.style, fill_style: "blue" })
+      .apply();
     return true;
   }
 
@@ -37,11 +45,11 @@ export default class PlayerKeyEditor extends LayoutComponent {
     this.layout.sprite.add(this._sprite);
     this._unmount_jobs.add(
       this.player?.callbacks.add({
-        on_key_changed: () => this.update_sprite()
+        on_key_changed: () => this.update_sprite(),
       }),
       () => this._sprite.del_self(),
-      () => this._on_cancel()
-    )
+      () => this._on_cancel(),
+    );
     this.update_sprite();
   }
 
@@ -51,27 +59,29 @@ export default class PlayerKeyEditor extends LayoutComponent {
   }
 
   private l: IKeyboardCallback = {
-    on_key_down: e => {
-      if ('escape' !== e.key.toLowerCase())
+    on_key_down: (e) => {
+      if ("escape" !== e.key.toLowerCase())
         this.player?.set_key(this.key_name, e.key).save();
       this._on_cancel();
-    }
-  }
+    },
+  };
 
   private r: IPointingsCallback = {
-    on_pointer_down: () => this._on_cancel()
-  }
+    on_pointer_down: () => this._on_cancel(),
+  };
 
   private _on_cancel = () => {
     this.lf2.keyboard.callback.del(this.l);
     this.lf2.pointings.callback.del(this.r);
-    this._sprite?.set_style({ ...this._sprite.style, fill_style: 'white' }).apply()
-  }
+    this._sprite
+      ?.set_style({ ...this._sprite.style, fill_style: "white" })
+      .apply();
+  };
 
   async update_sprite() {
     const { player } = this;
     if (!player) return;
     const keycode = player.keys[this.key_name as GameKey];
-    this._sprite.set_text(keycode ?? '').apply()
+    this._sprite.set_text(keycode ?? "").apply();
   }
 }

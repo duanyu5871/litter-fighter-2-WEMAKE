@@ -7,7 +7,10 @@ import CharacterState_Base from "./CharacterState_Base";
 import State_Base, { WhatNext } from "./State_Base";
 import WeaponState_Base from "./WeaponState_Base";
 
-export class StateBase_Proxy extends State_Base implements Required<State_Base> {
+export class StateBase_Proxy
+  extends State_Base
+  implements Required<State_Base>
+{
   private character_proxy = new CharacterState_Base();
   private weapon_proxy = new WeaponState_Base();
   private ball_proxy = new BallState_Base();
@@ -37,10 +40,16 @@ export class StateBase_Proxy extends State_Base implements Required<State_Base> 
     return this.get_proxy(e).get_auto_frame?.(e);
   }
   override before_collision(collision: ICollision): WhatNext {
-    return this.get_proxy(collision.attacker).before_collision?.(collision) || WhatNext.Continue;
+    return (
+      this.get_proxy(collision.attacker).before_collision?.(collision) ||
+      WhatNext.Continue
+    );
   }
   override before_be_collided(collision: ICollision): WhatNext {
-    return this.get_proxy(collision.attacker).before_be_collided?.(collision) || WhatNext.Continue;
+    return (
+      this.get_proxy(collision.attacker).before_be_collided?.(collision) ||
+      WhatNext.Continue
+    );
   }
   override on_collision(collision: ICollision): void {
     this.get_proxy(collision.attacker).on_collision?.(collision);
@@ -54,7 +63,10 @@ export class StateBase_Proxy extends State_Base implements Required<State_Base> 
   override get_caught_end_frame(target: Entity): INextFrame | undefined {
     return this.get_proxy(target)?.get_caught_end_frame?.(target);
   }
-  override find_frame_by_id(e: Entity, id: string | undefined): IFrameInfo | undefined {
+  override find_frame_by_id(
+    e: Entity,
+    id: string | undefined,
+  ): IFrameInfo | undefined {
     return this.get_proxy(e)?.find_frame_by_id?.(e, id);
   }
 }

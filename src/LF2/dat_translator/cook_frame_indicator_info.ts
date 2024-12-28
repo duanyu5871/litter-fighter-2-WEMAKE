@@ -1,10 +1,9 @@
-import { IFrameInfo } from '../defines';
+import { IFrameInfo } from "../defines";
 import { IQube } from "../defines/IQube";
-
 
 export function cook_frame_indicator_info(frame: IFrameInfo) {
   const { pic, bdy, itr } = frame;
-  if (!pic || !('w' in pic)) return;
+  if (!pic || !("w" in pic)) return;
   const f_qube_1: IQube = {
     x: -frame.centerx,
     y: frame.centery - pic.h,
@@ -15,20 +14,20 @@ export function cook_frame_indicator_info(frame: IFrameInfo) {
   };
   const f_qube_2: IQube = {
     ...f_qube_1,
-    x: frame.centerx - f_qube_1.w
+    x: frame.centerx - f_qube_1.w,
   };
   frame.indicator_info = {
     1: f_qube_1,
-    [-1]: f_qube_2
+    [-1]: f_qube_2,
   };
-  bdy?.forEach(o => {
+  bdy?.forEach((o) => {
     const rect_1: IQube = {
       w: o.w,
       h: o.h,
       x: f_qube_1.x + o.x,
       y: f_qube_1.y + f_qube_1.h - o.y - o.h,
       z: o.z,
-      l: o.l
+      l: o.l,
     };
     const rect_2: IQube = {
       ...rect_1,
@@ -36,14 +35,14 @@ export function cook_frame_indicator_info(frame: IFrameInfo) {
     };
     o.indicator_info = { 1: rect_1, [-1]: rect_2 };
   });
-  itr?.forEach(o => {
+  itr?.forEach((o) => {
     const rect_1: IQube = {
       w: o.w,
       h: o.h,
       x: f_qube_1.x + o.x,
       y: f_qube_1.y + f_qube_1.h - o.y - o.h,
       z: o.z,
-      l: o.l
+      l: o.l,
     };
     const rect_2: IQube = {
       ...rect_1,

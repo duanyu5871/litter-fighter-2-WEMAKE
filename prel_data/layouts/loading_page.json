@@ -1,12 +1,7 @@
 {
   "name": "加载页",
   "id": "loading",
-  "key_press_actions": [
-    [
-      "escape",
-      "set_layout(entry)"
-    ]
-  ],
+  "key_press_actions": [["escape", "set_layout(entry)"]],
   "items": [
     {
       "id": "bg_wait",

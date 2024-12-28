@@ -1,3 +1,2 @@
-export * from './ICache';
-export * from './ICacheData';
-
+export * from "./ICache";
+export * from "./ICacheData";

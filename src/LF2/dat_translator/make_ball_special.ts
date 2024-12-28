@@ -1,22 +1,20 @@
 import { IEntityData } from "../defines/IEntityData";
-import { traversal } from '../utils/container_help/traversal';
+import { traversal } from "../utils/container_help/traversal";
 
 export function make_ball_special(data: IEntityData) {
   switch (data.id) {
-    case '211': {
+    case "211": {
       traversal(data.frames, (_, frame) => {
-        if (frame.itr)
-          for (const itr of frame.itr)
-            delete itr.friendly_fire;
-      })
+        if (frame.itr) for (const itr of frame.itr) delete itr.friendly_fire;
+      });
       break;
     }
-    case '223':
-    case '224': {
+    case "223":
+    case "224": {
       traversal(data.frames, (_, frame) => {
         frame.speedz = 0;
         frame.no_shadow = 1;
-      })
+      });
       break;
     }
   }

@@ -2,27 +2,26 @@ import type { GameKey } from "./GameKey";
 import type { IBgData } from "./IBgData";
 import type { INextFrame } from "./INextFrame";
 import type { IStageInfo } from "./IStageInfo";
-import type { IPairByFace } from './IPairByFace';
-export interface TFrameIdPair extends IPairByFace<string> { }
-export interface TFrameIdListPair extends IPairByFace<string[]> { }
+import type { IPairByFace } from "./IPairByFace";
+export interface TFrameIdPair extends IPairByFace<string> {}
+export interface TFrameIdListPair extends IPairByFace<string[]> {}
 export type TTODO = any;
 export type TFace = -1 | 1;
 export type TTrend = -1 | 0 | 1;
 export type BOOL = 1 | 0;
 export namespace Defines {
-
   export const CLASSIC_SCREEN_WIDTH = 794;
   export const CLASSIC_SCREEN_HEIGHT = 550;
   export const DAFUALT_HP = 500;
   export const DEFAULT_MP = 500;
   export const DEFAULT_MILK_MP = 249;
   export const DEFAULT_BEER_MP = 154;
-  export const DEFAULT_FALL_VALUE_MAX = 140
-  export const DEFAULT_DEFEND_VALUE_MAX = 120
+  export const DEFAULT_FALL_VALUE_MAX = 140;
+  export const DEFAULT_DEFEND_VALUE_MAX = 120;
   export const DEFAULT_ITR_SHAKING = 4;
   export const DEFAULT_ITR_MOTIONLESS = 4;
   export const DAFUALT_CATCH_TIME = 680;
-  export const DEFAULT_ITR_FALL = 40
+  export const DEFAULT_ITR_FALL = 40;
   export const DEFAULT_FALL_VALUE_DIZZY = 40;
   export const DAFUALT_QUBE_LENGTH = 24;
 
@@ -51,22 +50,22 @@ export namespace Defines {
     bg: "VOID",
     id: "VOID_STAGE",
     name: "VOID_STAGE",
-    phases: []
-  }
+    phases: [],
+  };
   export const VOID_BG: IBgData = {
-    type: 'background',
+    type: "background",
     layers: [],
-    id: 'VOID_BG',
+    id: "VOID_BG",
     base: {
-      name: 'VOID_BG',
-      shadow: '',
+      name: "VOID_BG",
+      shadow: "",
       shadowsize: [0, 0],
       left: 0,
       right: 794,
       far: -468,
       near: -216,
-    }
-  }
+    },
+  };
 
   export enum FrameId {
     None = "",
@@ -77,20 +76,20 @@ export namespace Defines {
     Invisible_Max = "1299", // 1100 ~ 1299 隐身
   }
   export const NEXT_FRAME_GONE: Readonly<INextFrame> = {
-    id: Defines.FrameId.Gone
-  }
+    id: Defines.FrameId.Gone,
+  };
   export const NEXT_FRAME_AUTO: Readonly<INextFrame> = {
-    id: Defines.FrameId.Auto
-  }
+    id: Defines.FrameId.Auto,
+  };
   export const NEXT_FRAME_SELF: Readonly<INextFrame> = {
-    id: Defines.FrameId.Self
-  }
+    id: Defines.FrameId.Self,
+  };
   export enum WeaponType {
     None = 0,
 
-    /** 
+    /**
      * 棍棒
-     * 
+     *
      * - 丢出方式：
      *    - 奔跑: 前 + 攻击
      *    - 空中: 前 + 攻击
@@ -100,7 +99,7 @@ export namespace Defines {
     /** 重物类 */
     Heavy = 2,
 
-    /** 
+    /**
      * 小刀类。
      * - 丢出方式：
      *    - 奔跑: 前 + 攻击
@@ -109,14 +108,14 @@ export namespace Defines {
      */
     Knife = 3,
 
-    /** 
+    /**
      * 棒球类
      */
     Baseball = 4,
 
     /**
      * 饮料
-     * 
+     *
      * - 丢出方式：
      *    - 奔跑: 前 + 攻击
      *    - 空中: 前 + 攻击
@@ -144,7 +143,7 @@ export namespace Defines {
 
     /**
      * 跟随控制器
-     * 
+     *
      * - entity.controller.LR == -1时，向左
      * - entity.controller.LR == 1时，向右
      * - 否则维持原方向
@@ -159,7 +158,7 @@ export namespace Defines {
 
     /**
      * 反向跟随控制器
-     * 
+     *
      * - entity.controller.LR == -1时，向右
      * - entity.controller.LR == 1时，向左
      * - 否则维持原方向
@@ -174,79 +173,98 @@ export namespace Defines {
     _Weapon_Base = -3,
     _Ball_Base = -4,
 
+    Standing = 0,
+    _0 = 0,
+    Walking = 1,
+    _1 = 1,
+    Running = 2,
+    _2 = 2,
+    _3 = 3,
+    Attacking = 3,
+    _4 = 4,
+    Jump = 4,
+    _5 = 5,
+    Dash = 5,
+    _6 = 6,
+    Rowing = 6,
 
-    Standing = 0, _0 = 0,
-    Walking = 1, _1 = 1,
-    Running = 2, _2 = 2,
-    _3 = 3, Attacking = 3,
-    _4 = 4, Jump = 4,
-    _5 = 5, Dash = 5,
-    _6 = 6, Rowing = 6,
-
-
-    /** 
+    /**
      * [LF2 & WEMAKE]
      * 防御状态
-     * 
+     *
      * 此状态下：
      *    - 防御值不会恢复
-     * 
+     *
      * @see {Entity.self_update}
      */
-    Defend = 7, _7 = 7,
+    Defend = 7,
+    _7 = 7,
 
-    /** 
+    /**
      * [LF2 & WEMAKE]
      * 破防
-     * 
+     *
      * 此状态下：
      *    - 防御值不会恢复
-     * 
+     *
      * @see {Entity.self_update}
      */
-    BrokenDefend = 8, _8 = 8,
+    BrokenDefend = 8,
+    _8 = 8,
 
-    _9 = 9, Catching = 9,
-    _10 = 10, Caught = 10,
-    _11 = 11, Injured = 11,
-    _12 = 12, Falling = 12,
-    _13 = 13, Frozen = 13,
-    _14 = 14, Lying = 14,
+    _9 = 9,
+    Catching = 9,
+    _10 = 10,
+    Caught = 10,
+    _11 = 11,
+    Injured = 11,
+    _12 = 12,
+    Falling = 12,
+    _13 = 13,
+    Frozen = 13,
+    _14 = 14,
+    Lying = 14,
 
-    Normal = 15, _15 = 15,
-    _16 = 16, Tired = 16,
+    Normal = 15,
+    _15 = 15,
+    _16 = 16,
+    Tired = 16,
 
     /**
      * 消耗手中物品
      */
-    Drink = 17, _17 = 17,
-    _18 = 18, Burning = 18,
+    Drink = 17,
+    _17 = 17,
+    _18 = 18,
+    Burning = 18,
 
     /**
      * 原版中：此state，支持根据上下键与dvz控制角色Z轴移动，比如Firen的D>J。
-     * 
+     *
      * WEMAKE中，实现方式有所变动：
      *    改成上下键与speedz配合，控制角色Z轴移动速度。
      *    speedz可用于任意帧中。
      */
-    BurnRun = 19, _19 = 19,
+    BurnRun = 19,
+    _19 = 19,
 
-
-    /** 
+    /**
      * 此状态下，在空中时(position.y > 0)，wait结束不会进入到next中.
-     * 
+     *
      * 但会在落地(position.y == 0)时进入next
      */
-    NextAsLanding = 100, _100 = 100,
+    NextAsLanding = 100,
+    _100 = 100,
 
     /**
      * 原版中：此state，用于支持根据上下键与dvz控制角色Z轴移动，比如Deep的D>J。
-     * 
+     *
      * WEMAKE中，实现方式有所变动：
      *    改成上下键与speedz配合，控制角色Z轴移动速度。
      *    speedz可用于任意帧中。
      */
-    Z_Moveable = 301, _301 = 301,
+    Z_Moveable = 301,
+    _301 = 301,
 
     TeleportToNearestEnemy = 400,
     TeleportToFarthestAlly = 401,
@@ -259,20 +277,29 @@ export namespace Defines {
 
     HeavyWeapon_InTheSky = 2000,
     HeavyWeapon_OnHand = 2001,
-    HeavyWeapon_Throwing = 2002,//= 重型武器在地上
-    HeavyWeapon_OnGround = 2004,//= 与itr kind2作用
+    HeavyWeapon_Throwing = 2002, //= 重型武器在地上
+    HeavyWeapon_OnGround = 2004, //= 与itr kind2作用
 
-    Ball_Flying = 3000, _3000 = 3000,
-    Ball_Hitting = 3001, _3001 = 3001,
-    Ball_Hit = 3002, _3002 = 3002,
-    Ball_Rebounding = 3003, _3003 = 3003,
-    Ball_Disappear = 3004, _3004 = 3004,
-    Ball_3005 = 3005, _3005 = 3005,
-    Ball_3006 = 3006, _3006 = 3006,
+    Ball_Flying = 3000,
+    _3000 = 3000,
+    Ball_Hitting = 3001,
+    _3001 = 3001,
+    Ball_Hit = 3002,
+    _3002 = 3002,
+    Ball_Rebounding = 3003,
+    _3003 = 3003,
+    Ball_Disappear = 3004,
+    _3004 = 3004,
+    Ball_3005 = 3005,
+    _3005 = 3005,
+    Ball_3006 = 3006,
+    _3006 = 3006,
 
-    TransformTo_Min = 8001, _8001 = 8001,
+    TransformTo_Min = 8001,
+    _8001 = 8001,
 
-    TransformTo_Max = 8999, _8999 = 8999,
+    TransformTo_Max = 8999,
+    _8999 = 8999,
 
     TurnIntoLouisEX = 9995,
     Gone = 9998,
@@ -283,14 +310,13 @@ export namespace Defines {
     /**
      * 被存在变过的人时，此才允许进入state为500的frame。
      * rudolf抓人变身后，才能dja，你懂的。
-     * 
+     *
      * 但现在Wemake中，改为has_transform_data判断。
      */
     TransformToCatching_Begin = 500,
     _500 = 500,
 
-
-    /** 
+    /**
      * 变成最后一次曾经变过的人（rudolf的变身效果）
      */
     TransformToCatching_End = 501,
@@ -300,31 +326,32 @@ export namespace Defines {
      * 原LF2的Louis爆甲
      * 但现在Wemake中，爆甲是通过opoint实现的。
      */
-    LouisCastOff = 9996, _9996 = 9996,
+    LouisCastOff = 9996,
+    _9996 = 9996,
 
     TransformToLouisEx = 9996,
     _9995 = 9995,
   }
 
   export enum EntityGroup {
-    /** 
-     * 隐藏角色 
+    /**
+     * 隐藏角色
      */
-    Hidden = 'hidden',
+    Hidden = "hidden",
 
-    /** 
-     * 常规角色 
+    /**
+     * 常规角色
      * 属于此组的角色才可被随机到
      */
-    Regular = '1000',
+    Regular = "1000",
 
-    /** 
-     * 最杂的杂鱼 
+    /**
+     * 最杂的杂鱼
      * 默认只有30和31的角色
      */
-    _3000 = '3000',
+    _3000 = "3000",
 
-    /** 
+    /**
      * 对战模式常规武器
      * 对战模式应当掉落属于这组的武器
      */
@@ -335,8 +362,6 @@ export namespace Defines {
      * 闯关模式应当掉落属于这组的武器
      */
     StageRegularWeapon = "StageRegularWeapon",
-
-
   }
 
   export enum CPointKind {
@@ -352,22 +377,22 @@ export namespace Defines {
   }
 
   export enum Cheats {
-    LF2_NET = 'LF2_NET',
-    HERO_FT = 'HERO_FT',
-    GIM_INK = 'GIM_INK'
+    LF2_NET = "LF2_NET",
+    HERO_FT = "HERO_FT",
+    GIM_INK = "GIM_INK",
   }
 
   export const CheatKeys: Record<Cheats, string> = {
     [Cheats.LF2_NET]: "lf2.net",
     [Cheats.HERO_FT]: "herofighter.com",
-    [Cheats.GIM_INK]: "gim.ink"
-  }
+    [Cheats.GIM_INK]: "gim.ink",
+  };
 
   export const CheatSounds: Record<Cheats, string> = {
     [Cheats.LF2_NET]: "data/m_pass.wav.mp3",
     [Cheats.HERO_FT]: "data/m_end.wav.mp3",
-    [Cheats.GIM_INK]: "data/093_r.wav.mp3"
-  }
+    [Cheats.GIM_INK]: "data/093_r.wav.mp3",
+  };
 
   export interface ICheatInfo {
     keys: string;
@@ -376,26 +401,25 @@ export namespace Defines {
 
   export const Sounds = {
     StagePass: "data/m_pass.wav.mp3",
-    BattleEnd: "data/m_end.wav.mp3"
-  } as const
-
+    BattleEnd: "data/m_end.wav.mp3",
+  } as const;
 
   /**
    * 按键“双击”判定间隔，单位（帧数）
-   * 
+   *
    * 当同个按键在“双击判定间隔”之内按下两次，
    * 且中途未按下其对应冲突按键，视为“双击”。
-   * 
+   *
    * @type {number}
    */
   export const DOUBLE_CLICK_INTERVAL: number = 30;
 
   /**
    * 按键“按下”/“双击”的判定持续帧，单位：帧数
-   * 
+   *
    * 当某按键被“按下”（不松开），接下来的数帧（数值key_hit_duration）内，均判定为“按下”。
    * 此时若存在对应的“按键‘按下’跳转动作”，且满足跳转条件，角色将会进入对应的“按键‘按下’跳转动作”。
-   * 
+   *
    * 当某双击后，接下来的数帧（数值key_hit_duration）内，均判定为“双击”。
    * 此时若存在对应的“按键‘双击’跳转动作”，且满足跳转条件，角色将会进入对应的“按键‘双击’跳转动作”。
    *
@@ -403,12 +427,11 @@ export namespace Defines {
    */
   export const KEY_HIT_DURATION: number = 20;
   export const GRAVITY: number = 0.5; // 0.38;
-  export const FRICTION_FACTOR: number = 1 // 0.894427191;
-  export const FRICTION: number = 0.35 // 0.35 // 0.65; // 0.2
+  export const FRICTION_FACTOR: number = 1; // 0.894427191;
+  export const FRICTION: number = 0.35; // 0.35 // 0.65; // 0.2
   export const CHARACTER_BOUNCING_SPD: number = 2;
   export const CHARACTER_BOUNCING_TEST_SPD: number = -2.6;
-  
-  
+
   export enum Difficulty {
     Easy = 1,
     Normal = 2,
@@ -419,19 +442,19 @@ export namespace Defines {
     [Difficulty.Easy]: "Easy",
     [Difficulty.Normal]: "Normal",
     [Difficulty.Difficult]: "Difficult",
-    [Difficulty.Crazy]: "Crazy!"
-  }
+    [Difficulty.Crazy]: "Crazy!",
+  };
   export interface ITeamInfo {
     name: string;
     txt_color: string;
     txt_shadow_color: string;
   }
   export enum TeamEnum {
-    Independent = '',
-    Team_1 = '1',
-    Team_2 = '2',
-    Team_3 = '3',
-    Team_4 = '4',
+    Independent = "",
+    Team_1 = "1",
+    Team_2 = "2",
+    Team_3 = "3",
+    Team_4 = "4",
   }
   export interface ITeamInfoMap {
     [TeamEnum.Independent]: ITeamInfo;
@@ -447,146 +470,157 @@ export namespace Defines {
     Defines.TeamEnum.Team_2,
     Defines.TeamEnum.Team_3,
     Defines.TeamEnum.Team_4,
-  ]
+  ];
   export const TeamInfoMap: ITeamInfoMap = {
     [TeamEnum.Independent]: {
-      name: 'Independent',
-      txt_color: '#ffffff',
-      txt_shadow_color: '#000000',
+      name: "Independent",
+      txt_color: "#ffffff",
+      txt_shadow_color: "#000000",
     },
     [TeamEnum.Team_1]: {
-      name: 'Team 1',
-      txt_color: '#4f9bff',
-      txt_shadow_color: '#001e46',
+      name: "Team 1",
+      txt_color: "#4f9bff",
+      txt_shadow_color: "#001e46",
     },
     [TeamEnum.Team_2]: {
-      name: 'Team 2',
-      txt_color: '#ff4f4f',
-      txt_shadow_color: '#460000',
+      name: "Team 2",
+      txt_color: "#ff4f4f",
+      txt_shadow_color: "#460000",
     },
     [TeamEnum.Team_3]: {
-      name: 'Team 3',
-      txt_color: '#3cad0f',
-      txt_shadow_color: '#154103',
+      name: "Team 3",
+      txt_color: "#3cad0f",
+      txt_shadow_color: "#154103",
     },
     [TeamEnum.Team_4]: {
-      name: 'Team 4',
-      txt_color: '#ffd34c',
-      txt_shadow_color: '#9a5700',
+      name: "Team 4",
+      txt_color: "#ffd34c",
+      txt_shadow_color: "#9a5700",
     },
-  }
+  };
 
   export enum BuiltIn_Imgs {
-    RFACE = 'sprite/RFACE.png',
-    CM5 = 'sprite/CM5.png',
-    CM4 = 'sprite/CM4.png',
-    CM3 = 'sprite/CM3.png',
-    CM2 = 'sprite/CM2.png',
-    CM1 = 'sprite/CM1.png',
-    CMA = 'sprite/CMA.png',
-    CHARACTER_THUMB = 'sprite/CHARACTER_THUMB.png',
+    RFACE = "sprite/RFACE.png",
+    CM5 = "sprite/CM5.png",
+    CM4 = "sprite/CM4.png",
+    CM3 = "sprite/CM3.png",
+    CM2 = "sprite/CM2.png",
+    CM1 = "sprite/CM1.png",
+    CMA = "sprite/CMA.png",
+    CHARACTER_THUMB = "sprite/CHARACTER_THUMB.png",
   }
   export enum BuiltIn_Dats {
-    Spark = 'data/spark.json',
+    Spark = "data/spark.json",
   }
   export enum BuiltIn_Broadcast {
-    ResetGPL = 'reset_gpl',
-    UpdateRandom = 'update_random',
-    StartGame = 'start_game',
-    SwitchStage = 'switch_stage',
-    SwitchBackground = 'switch_background'
+    ResetGPL = "reset_gpl",
+    UpdateRandom = "update_random",
+    StartGame = "start_game",
+    SwitchStage = "switch_stage",
+    SwitchBackground = "switch_background",
   }
   export enum BuiltIn_OID {
-    Template = '0',
-    Julian = '52',
-    Firzen = '51',
-    LouisEX = '50',
-    Bat = '38',
-    Justin = '39',
-    Knight = '37',
-    Jan = '36',
-    Monk = '35',
-    Sorcerer = '34',
-    Jack = '33',
-    Mark = '32',
-    Hunter = '31',
-    Bandit = '30',
-    Deep = '1',
-    John = '2',
-    Henry = '4',
-    Rudolf = '5',
-    Louis = '6',
-    Firen = '7',
-    Freeze = '8',
-    Dennis = '9',
-    Woody = '10',
-    Davis = '11',
-    Weapon0 = '100',
-    Weapon_Stick = '100',
-    Weapon2 = '101',
-    Weapon_Hoe = '101',
-    Weapon4 = '120',
-    Weapon_Knife = '120',
-    Weapon5 = '121',
-    Weapon_baseball = '121',
-    Weapon6 = '122',
-    Weapon_milk = '122',
-    Weapon1 = '150',
-    Weapon_Stone = '150',
-    Weapon3 = '151',
-    Weapon_Wooden_box = '151',
-    Weapon8 = '123',
-    Weapon_Beer = '123',
-    Weapon9 = '124',
-    Weapon_Boomerang = '124',
-    Weapon10 = '217',
-    Weapon_Louis_Armour_A = '217',
-    Weapon11 = '218',
-    Weapon_Louis_Armour_B = '218',
-    Criminal = '300',
-    John_ball = '200',
-    Henry_Arrow1 = '201',
-    Rudolf_Weapon = '202',
-    Deep_ball = '203',
-    Henry_wind = '204',
-    Dennis_ball = '205',
-    Woody_ball = '206',
-    Davis_ball = '207',
-    Henry_arrow2 = '208',
-    Freeze_ball = '209',
-    Firen_ball = '210',
-    Firen_flame = '211',
-    Freeze_column = '212',
-    Weapon7 = '213',
-    Weapon_Ice_sword = '213',
-    John_biscuit = '214',
-    Dennis_chase = '215',
-    Jack_ball = '216',
-    Jan_chaseh = '219',
-    Jan_chase = '220',
-    Firzen_chasef = '221',
-    Firzen_chasei = '222',
-    Firzen_ball = '223',
-    Bat_ball = '224',
-    Bat_chase = '225',
-    Justin_ball = '226',
-    Julian_ball = '228',
-    Julian_ball2 = '229',
-    Etc = '998',
-    Broken_weapon = '999',
+    Template = "0",
+    Julian = "52",
+    Firzen = "51",
+    LouisEX = "50",
+    Bat = "38",
+    Justin = "39",
+    Knight = "37",
+    Jan = "36",
+    Monk = "35",
+    Sorcerer = "34",
+    Jack = "33",
+    Mark = "32",
+    Hunter = "31",
+    Bandit = "30",
+    Deep = "1",
+    John = "2",
+    Henry = "4",
+    Rudolf = "5",
+    Louis = "6",
+    Firen = "7",
+    Freeze = "8",
+    Dennis = "9",
+    Woody = "10",
+    Davis = "11",
+    Weapon0 = "100",
+    Weapon_Stick = "100",
+    Weapon2 = "101",
+    Weapon_Hoe = "101",
+    Weapon4 = "120",
+    Weapon_Knife = "120",
+    Weapon5 = "121",
+    Weapon_baseball = "121",
+    Weapon6 = "122",
+    Weapon_milk = "122",
+    Weapon1 = "150",
+    Weapon_Stone = "150",
+    Weapon3 = "151",
+    Weapon_Wooden_box = "151",
+    Weapon8 = "123",
+    Weapon_Beer = "123",
+    Weapon9 = "124",
+    Weapon_Boomerang = "124",
+    Weapon10 = "217",
+    Weapon_Louis_Armour_A = "217",
+    Weapon11 = "218",
+    Weapon_Louis_Armour_B = "218",
+    Criminal = "300",
+    John_ball = "200",
+    Henry_Arrow1 = "201",
+    Rudolf_Weapon = "202",
+    Deep_ball = "203",
+    Henry_wind = "204",
+    Dennis_ball = "205",
+    Woody_ball = "206",
+    Davis_ball = "207",
+    Henry_arrow2 = "208",
+    Freeze_ball = "209",
+    Firen_ball = "210",
+    Firen_flame = "211",
+    Freeze_column = "212",
+    Weapon7 = "213",
+    Weapon_Ice_sword = "213",
+    John_biscuit = "214",
+    Dennis_chase = "215",
+    Jack_ball = "216",
+    Jan_chaseh = "219",
+    Jan_chase = "220",
+    Firzen_chasef = "221",
+    Firzen_chasei = "222",
+    Firzen_ball = "223",
+    Bat_ball = "224",
+    Bat_chase = "225",
+    Justin_ball = "226",
+    Julian_ball = "228",
+    Julian_ball2 = "229",
+    Etc = "998",
+    Broken_weapon = "999",
   }
 
-  export type TKeys = Record<GameKey, string>
+  export type TKeys = Record<GameKey, string>;
   const default_keys_map = new Map<string, TKeys>([
-    ['1', { L: 'a', R: 'd', U: 'w', D: 's', a: 'j', j: 'k', d: 'l' }],
-    ['2', { L: 'arrowleft', R: 'arrowright', U: 'arrowup', D: 'arrowdown', a: '0', j: '.', d: 'enter' }],
-    ['3', { L: '', R: '', U: '', D: '', a: '', j: '', d: '' }],
-    ['4', { L: '', R: '', U: '', D: '', a: '', j: '', d: '' }],
-    ['_', { L: '', R: '', U: '', D: '', a: '', j: '', d: '' }]
-  ])
+    ["1", { L: "a", R: "d", U: "w", D: "s", a: "j", j: "k", d: "l" }],
+    [
+      "2",
+      {
+        L: "arrowleft",
+        R: "arrowright",
+        U: "arrowup",
+        D: "arrowdown",
+        a: "0",
+        j: ".",
+        d: "enter",
+      },
+    ],
+    ["3", { L: "", R: "", U: "", D: "", a: "", j: "", d: "" }],
+    ["4", { L: "", R: "", U: "", D: "", a: "", j: "", d: "" }],
+    ["_", { L: "", R: "", U: "", D: "", a: "", j: "", d: "" }],
+  ]);
 
   export function get_default_keys(player_id: string): TKeys {
-    return default_keys_map.get(player_id) || default_keys_map.get('_')!;
+    return default_keys_map.get(player_id) || default_keys_map.get("_")!;
   }
 }
 export default Defines;

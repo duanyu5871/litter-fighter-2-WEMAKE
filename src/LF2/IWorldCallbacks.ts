@@ -1,5 +1,5 @@
-import { World } from './World';
-import type Stage from './stage/Stage';
+import { World } from "./World";
+import type Stage from "./stage/Stage";
 
 export interface IWorldCallbacks {
   on_disposed?(): void;
@@ -12,9 +12,8 @@ export interface IWorldCallbacks {
    */
   on_stage_change?(curr: Stage, prev: Stage): void;
 
-
   /**
-   * 
+   *
    * @todo 这个回调比较高频似乎不应该放在此处
    * @param {number} x
    */
@@ -31,7 +30,6 @@ export interface IWorldCallbacks {
    * @param {number} fps
    */
   on_fps_update?(fps: number): void;
-
 
   /**
    * 更新帧率变化回调

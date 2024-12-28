@@ -1,23 +1,35 @@
-import command_exists from 'command-exists';
-import fs from 'fs/promises';
-import { exec_cmd } from './exec_cmd';
+import command_exists from "command-exists";
+import fs from "fs/promises";
+import { exec_cmd } from "./exec_cmd";
 
 function get_dst_path(
   out_dir: string,
   src_dir: string,
-  src_path: string
+  src_path: string,
 ): string {
-  return src_path.replace(src_dir, out_dir) + '.mp3';
+  return src_path.replace(src_dir, out_dir) + ".mp3";
 }
 export async function convert_sound(dst_path: string, src_path: string) {
-  console.log('convert', src_path, '=>', dst_path);
+  console.log("convert", src_path, "=>", dst_path);
   await fs.rm(dst_path, { recursive: true, force: true }).catch(() => void 0);
 
-  if (!command_exists.sync('ffmpeg'))
-    throw new Error("ffmpeg not found, download it from: https://ffmpeg.org/download.html");
+  if (!command_exists.sync("ffmpeg"))
+    throw new Error(
+      "ffmpeg not found, download it from: https://ffmpeg.org/download.html",
+    );
 
-  const args = ['-i', src_path, '-codec:a', 'libmp3lame', '-b:a', '64k', '-ar', '44100', dst_path];
-  return await exec_cmd('ffmpeg', ...args)
+  const args = [
+    "-i",
+    src_path,
+    "-codec:a",
+    "libmp3lame",
+    "-b:a",
+    "64k",
+    "-ar",
+    "44100",
+    dst_path,
+  ];
+  return await exec_cmd("ffmpeg", ...args);
 }
 
-convert_sound.get_dst_path = get_dst_path
+convert_sound.get_dst_path = get_dst_path;

@@ -19,110 +19,121 @@ import { FrameBehavior } from "../defines/FrameBehavior";
 import { OpointMultiEnum } from "../defines/OpointMultiEnum";
 import { SpeedMode } from "../defines/SpeedMode";
 
-export function make_ball_data(info: IEntityInfo, frames: Record<string, IFrameInfo>, datIndex: IDatIndex): IEntityData {
+export function make_ball_data(
+  info: IEntityInfo,
+  frames: Record<string, IFrameInfo>,
+  datIndex: IDatIndex,
+): IEntityData {
   info.hp = 500;
 
-  let weapon_broken_sound = take_str(info, 'weapon_broken_sound')
-  if (weapon_broken_sound) { weapon_broken_sound += '.mp3'; info.dead_sounds = [weapon_broken_sound] }
+  let weapon_broken_sound = take_str(info, "weapon_broken_sound");
+  if (weapon_broken_sound) {
+    weapon_broken_sound += ".mp3";
+    info.dead_sounds = [weapon_broken_sound];
+  }
 
-  let weapon_drop_sound = take_str(info, 'weapon_drop_sound')
-  if (weapon_drop_sound) { weapon_drop_sound += '.mp3'; info.drop_sounds = [weapon_drop_sound] }
+  let weapon_drop_sound = take_str(info, "weapon_drop_sound");
+  if (weapon_drop_sound) {
+    weapon_drop_sound += ".mp3";
+    info.drop_sounds = [weapon_drop_sound];
+  }
 
-  let weapon_hit_sound = take_str(info, 'weapon_hit_sound');
-  if (weapon_hit_sound) { weapon_hit_sound += '.mp3'; info.hit_sounds = [weapon_hit_sound] }
+  let weapon_hit_sound = take_str(info, "weapon_hit_sound");
+  if (weapon_hit_sound) {
+    weapon_hit_sound += ".mp3";
+    info.hit_sounds = [weapon_hit_sound];
+  }
 
   for (const [, frame] of traversal(frames)) {
-
-    const hit_j = take(frame, 'hit_j');
+    const hit_j = take(frame, "hit_j");
     if (hit_j !== 0) frame.dvz = to_num(hit_j, 50) - 50;
 
-
-    const hit_a = take(frame, 'hit_a');
-    const hit_d = take(frame, 'hit_d');
-    const hit_Fa = take(frame, 'hit_Fa')
+    const hit_a = take(frame, "hit_a");
+    const hit_d = take(frame, "hit_d");
+    const hit_Fa = take(frame, "hit_Fa");
     if (hit_Fa) frame.behavior = hit_Fa;
     switch (hit_Fa as FrameBehavior) {
       case FrameBehavior._01:
+        break;
       case FrameBehavior._02:
+        break;
       case FrameBehavior._03:
+        break;
       case FrameBehavior._04:
+        break;
       case FrameBehavior._05:
+        break;
       case FrameBehavior._06:
         break;
       case FrameBehavior._07:
-        frame.dvy = -4;
-        frame.acc_y = -0.1;
+        frame.dvy = -6;
+        frame.acc_y = -0.25;
         frame.vym = SpeedMode.AccToSpeed;
         switch (datIndex.id) {
           case Defines.BuiltIn_OID.Firzen_chasef:
           case Defines.BuiltIn_OID.Firzen_chasei:
-            frame.on_hit_ground = { id: "60" }
+            frame.on_hit_ground = { id: "60" };
             break;
           case Defines.BuiltIn_OID.Jan_chaseh:
-            frame.on_hit_ground = { id: "10" }
+            frame.on_hit_ground = { id: "10" };
             break;
         }
         break;
       case FrameBehavior.BatStart:
       case FrameBehavior._08:
-        frame.opoint = frame.opoint || []
+        frame.opoint = frame.opoint || [];
         frame.opoint.push({
           kind: OpointKind.Normal,
           oid: Defines.BuiltIn_OID.Bat_chase,
           x: frame.centerx,
           y: frame.centery,
-          action: { id: '0' },
-          multi: 3
-        })
+          action: { id: "0" },
+          multi: 3,
+        });
         break;
       case FrameBehavior.FirzenDisasterStart:
       case FrameBehavior._09:
-        frame.opoint = frame.opoint || []
-        frame.opoint.push({
-          kind: OpointKind.Normal,
-          oid: [
-            Defines.BuiltIn_OID.Firzen_chasef,
-            Defines.BuiltIn_OID.Firzen_chasei,
-          ],
-          x: frame.centerx,
-          y: frame.centery,
-          dvy: 4,
-          action: { id: '0' },
-          multi: { type: OpointMultiEnum.AccordingEnemies, min: 4 }
-        })
+        firzen_disater_start(frame);
         break;
       case FrameBehavior._10:
+        break;
+      case FrameBehavior.FirzenVolcanoStart:
       case FrameBehavior._11:
+        firzen_disater_start(frame);
+        break;
       case FrameBehavior._12:
         break;
       case FrameBehavior.JulianBallStart:
       case FrameBehavior._13:
-        frame.opoint = frame.opoint || []
+        frame.opoint = frame.opoint || [];
         frame.opoint.push({
           kind: OpointKind.Normal,
           oid: Defines.BuiltIn_OID.Julian_ball,
           x: frame.centerx,
           y: frame.centery,
-          action: { id: '50' }
-        })
+          action: { id: "50" },
+        });
         break;
       case FrameBehavior.JulianBall:
       case FrameBehavior._14:
         break;
     }
     if (hit_a) frame.hp = hit_a / 2;
-    if (hit_d) frame.on_dead = get_next_frame_by_raw_id(hit_d);
+    if (hit_d && hit_d !== frame.id)
+      frame.on_dead = get_next_frame_by_raw_id(hit_d);
 
     if (frame.itr) {
       for (const itr of frame.itr) {
         if (itr.kind === ItrKind.JohnShield) {
           if (hit_d) {
-            itr.hit_act = [{
-              id: hit_d,
-              expression: new CondMaker<EntityVal>()
-                .add(EntityVal.HitOnCharacter, '==', 1)
-                .done()
-            }]
+            itr.hit_act = [
+              {
+                id: hit_d,
+                expression: new CondMaker<EntityVal>()
+                  .add(EntityVal.HitOnCharacter, "==", 1)
+                  .done(),
+              },
+            ];
           }
         }
         if (
@@ -131,17 +142,16 @@ export function make_ball_data(info: IEntityInfo, frames: Record<string, IFrameI
           itr.kind !== ItrKind.Freeze &&
           itr.kind !== ItrKind.Block
         ) {
-          itr.hit_sounds = [weapon_hit_sound]
-        };
+          itr.hit_sounds = [weapon_hit_sound];
+        }
       }
     }
-
   }
   const ret: IEntityData = {
     id: datIndex.id,
     type: EntityEnum.Ball,
     base: info,
-    frames: frames
+    frames: frames,
   };
 
   traversal(ret.frames, (_, frame) => {
@@ -155,9 +165,19 @@ export function make_ball_data(info: IEntityInfo, frames: Record<string, IFrameI
       case Defines.State._3006:
         return cook_ball_frame_state_3006(ret, frame);
     }
-
-  })
-  return ret
+  });
+  return ret;
 }
 
-
+function firzen_disater_start(frame: IFrameInfo) {
+  frame.opoint = frame.opoint || [];
+  frame.opoint.push({
+    kind: OpointKind.Normal,
+    oid: [Defines.BuiltIn_OID.Firzen_chasef, Defines.BuiltIn_OID.Firzen_chasei],
+    x: frame.centerx,
+    y: frame.centery,
+    dvy: 6,
+    action: { id: "0" },
+    multi: { type: OpointMultiEnum.AccordingEnemies, min: 4 },
+  });
+}

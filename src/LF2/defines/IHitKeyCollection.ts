@@ -1,6 +1,5 @@
 import type { TNextFrame } from ".";
 
-
 export interface IHitKeyCollection {
   sequences?: {
     [x in string]?: TNextFrame;

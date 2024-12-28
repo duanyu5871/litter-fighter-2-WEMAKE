@@ -1,19 +1,22 @@
-import { ITextNode } from '../../3d/ITextNode';
-import Invoker from '../../base/Invoker';
-import { IBgData } from '../../defines';
-import { Defines } from '../../defines/defines';
-import Ditto from '../../ditto';
-import Layout from '../Layout';
+import { ITextNode } from "../../3d/ITextNode";
+import Invoker from "../../base/Invoker";
+import { IBgData } from "../../defines";
+import { Defines } from "../../defines/defines";
+import Ditto from "../../ditto";
+import Layout from "../Layout";
 import { LayoutComponent } from "./LayoutComponent";
 
 export default class BackgroundNameText extends LayoutComponent {
   private _background: IBgData = Defines.VOID_BG;
 
   get backgrounds(): IBgData[] {
-    return this.lf2.datas.backgrounds?.filter(v => v.id !== Defines.VOID_BG.id) || []
+    return (
+      this.lf2.datas.backgrounds?.filter((v) => v.id !== Defines.VOID_BG.id) ||
+      []
+    );
   }
   get background(): IBgData {
-    return this._background
+    return this._background;
   }
   get text(): string {
     return this._background.base.name;
@@ -22,14 +25,14 @@ export default class BackgroundNameText extends LayoutComponent {
   protected _unmount_jobs = new Invoker();
 
   constructor(layout: Layout, f_name: string) {
-    super(layout, f_name)
+    super(layout, f_name);
     this._mesh = new Ditto.TextNode(this.lf2)
       .set_center(0, 0.5)
       .set_name(BackgroundNameText.name)
       .set_style({
-        fill_style: '#9b9bff',
-        font: '14px Arial',
-      })
+        fill_style: "#9b9bff",
+        font: "14px Arial",
+      });
   }
 
   override on_resume(): void {
@@ -42,12 +45,12 @@ export default class BackgroundNameText extends LayoutComponent {
       this.lf2.callbacks.add({
         on_broadcast: (v) => {
           if (v === Defines.BuiltIn_Broadcast.SwitchBackground)
-            this.switch_background()
-        }
+            this.switch_background();
+        },
       }),
       () => this._mesh.del_self(),
-    )
-    this._mesh.set_text(this.text).apply()
+    );
+    this._mesh.set_text(this.text).apply();
   }
 
   override on_pause(): void {
@@ -58,9 +61,10 @@ export default class BackgroundNameText extends LayoutComponent {
   protected switch_background() {
     const { backgrounds } = this;
     const background_id = this.background.id;
-    const idx = (backgrounds.findIndex(v => v.id === background_id) + 1) % backgrounds.length;
+    const idx =
+      (backgrounds.findIndex((v) => v.id === background_id) + 1) %
+      backgrounds.length;
     this._background = backgrounds[idx];
-    this._mesh.set_text(this.text).apply()
+    this._mesh.set_text(this.text).apply();
   }
-
 }

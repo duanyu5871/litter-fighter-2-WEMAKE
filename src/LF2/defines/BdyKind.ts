@@ -44,5 +44,5 @@ export enum BdyKind {
    *      - 若bdy.break_act存在，则进入bdy.break_act;
    *      - 若bdy.break_act不存在，则视为被直接击中
    */
-  Defend = 2000
+  Defend = 2000,
 }

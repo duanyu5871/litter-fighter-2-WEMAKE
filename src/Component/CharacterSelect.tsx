@@ -1,36 +1,46 @@
-import { useEffect, useMemo, useState } from 'react';
-import type LF2 from '../LF2/LF2';
-import { Defines } from '../LF2/defines';
+import { useEffect, useMemo, useState } from "react";
+import type LF2 from "../LF2/LF2";
+import { Defines } from "../LF2/defines";
 import { type IEntityData } from "../LF2/defines/IEntityData";
-import Select, { ISelectProps } from './Select';
+import Select, { ISelectProps } from "./Select";
 
-export interface CharacterSelectProps extends ISelectProps<IEntityData, string> {
+export interface CharacterSelectProps
+  extends ISelectProps<IEntityData, string> {
   lf2: LF2;
   show_all?: boolean;
 }
 export default function CharacterSelect(props: CharacterSelectProps) {
   const { lf2, disabled, show_all = false, ...remains } = props;
-  const [characters, set_characters] = useState<IEntityData[]>(lf2.datas.characters);
+  const [characters, set_characters] = useState<IEntityData[]>(
+    lf2.datas.characters,
+  );
 
   useEffect(() => {
     set_characters(lf2.datas.characters);
     return lf2.callbacks.add({
       on_loading_end: () => set_characters(lf2.datas.characters),
-    })
-  }, [lf2])
+    });
+  }, [lf2]);
 
-  const items = useMemo(() => show_all ? characters : characters.filter(v => {
-    const r = v.base.group?.indexOf(Defines.EntityGroup.Hidden);
-    return r === void 0 || r === -1;
-  }), [characters, show_all])
+  const items = useMemo(
+    () =>
+      show_all
+        ? characters
+        : characters.filter((v) => {
+            const r = v.base.group?.indexOf(Defines.EntityGroup.Hidden);
+            return r === void 0 || r === -1;
+          }),
+    [characters, show_all],
+  );
 
   return (
     <Select
       items={items}
       disabled={!characters?.length || disabled}
-      option={i => [i.id, i.base.name]}
-      {...remains}>
-      <option value=''>Random</option>
+      option={(i) => [i.id, i.base.name]}
+      {...remains}
+    >
+      <option value="">Random</option>
     </Select>
   );
 }

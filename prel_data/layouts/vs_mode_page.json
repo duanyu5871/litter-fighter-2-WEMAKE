@@ -1,15 +1,8 @@
 {
   "name": "对战模式页",
   "id": "vs_mode_page",
-  "component": [
-    "vs_mode_logic()"
-  ],
-  "key_press_actions": [
-    [
-      "escape",
-      "set_layout(entry)"
-    ]
-  ],
+  "component": ["vs_mode_logic()"],
+  "key_press_actions": [["escape", "set_layout(entry)"]],
   "items": [
     {
       "pos": "0,0,5",
@@ -41,9 +34,6 @@
     }
   ],
   "actions": {
-    "stop": [
-      "remove_all_entities()",
-      "destory_stage()"
-    ]
+    "stop": ["remove_all_entities()", "destory_stage()"]
   }
 }

@@ -1,11 +1,9 @@
-
-
 import { BufferGeometry, Material, MeshBasicMaterial } from "three";
 import { IObjectNode } from "./IObjectNode";
 export { BufferGeometry, Material, MeshBasicMaterial } from "three";
 export interface IMeshInfo {
-  geometry?: BufferGeometry
-  material?: MeshBasicMaterial
+  geometry?: BufferGeometry;
+  material?: MeshBasicMaterial;
 }
 export interface IMeshNode extends IObjectNode {
   set geometry(v: BufferGeometry);
@@ -22,9 +20,8 @@ export interface IMeshNode extends IObjectNode {
   set_depth_test(v: boolean): this;
   set_depth_write(v: boolean): this;
 
-
   get render_order(): number;
   set render_order(v: number);
 }
 export const is_mesh_node = (v: any): v is IMeshNode =>
-  v?.is_mesh_node === true
+  v?.is_mesh_node === true;

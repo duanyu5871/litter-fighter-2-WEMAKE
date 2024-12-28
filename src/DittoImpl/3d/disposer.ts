@@ -1,6 +1,6 @@
-import type * as THREE from 'three';
+import type * as THREE from "three";
 const isMeshBasicMaterial = (v: any): v is THREE.MeshBasicMaterial =>
-  true === v.isMeshBasicMaterial
+  true === v.isMeshBasicMaterial;
 
 export function dispose_material(m: THREE.Material) {
   if (isMeshBasicMaterial(m)) m.map?.dispose();
@@ -9,10 +9,7 @@ export function dispose_material(m: THREE.Material) {
 export function dispose_mesh(mesh: THREE.Mesh) {
   mesh.removeFromParent();
   const m = mesh.material;
-  if (Array.isArray(m))
-    for (const i of m)
-      dispose_material(i);
-  else
-    dispose_material(m)
+  if (Array.isArray(m)) for (const i of m) dispose_material(i);
+  else dispose_material(m);
   mesh.geometry.dispose();
 }

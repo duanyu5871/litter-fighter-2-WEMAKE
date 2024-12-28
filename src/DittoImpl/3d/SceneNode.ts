@@ -1,8 +1,9 @@
 import * as THREE from "three";
 import {
   IObjectNode,
-  IOrthographicCameraNode, is_orthographic_camera_node,
-  ISceneNode
+  IOrthographicCameraNode,
+  is_orthographic_camera_node,
+  ISceneNode,
 } from "../../LF2/3d";
 import LF2 from "../../LF2/LF2";
 import { __ObjectNode } from "./ObjectNode";
@@ -14,20 +15,18 @@ export class __SceneNode extends __ObjectNode implements ISceneNode {
 
   constructor(lf2: LF2, canvas: HTMLCanvasElement) {
     super(lf2, new THREE.Scene());
-    this._renderer = new THREE.WebGLRenderer({ canvas })
+    this._renderer = new THREE.WebGLRenderer({ canvas });
   }
   override add(...nodes: IObjectNode[]): this {
     super.add(...nodes);
     for (const n of nodes)
-      if (is_orthographic_camera_node(n))
-        this._cameras.add(n)
+      if (is_orthographic_camera_node(n)) this._cameras.add(n);
     return this;
   }
   override del(...nodes: IObjectNode[]): this {
     super.del(...nodes);
     for (const n of nodes)
-      if (is_orthographic_camera_node(n))
-        this._cameras.delete(n)
+      if (is_orthographic_camera_node(n)) this._cameras.delete(n);
     return this;
   }
   override set_size(w?: number | undefined, h?: number | undefined): this {
@@ -48,4 +47,3 @@ export class __SceneNode extends __ObjectNode implements ISceneNode {
     }
   }
 }
-

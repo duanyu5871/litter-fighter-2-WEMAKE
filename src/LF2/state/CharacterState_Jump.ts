@@ -1,4 +1,4 @@
-import type Entity from '../entity/Entity';
+import type Entity from "../entity/Entity";
 import CharacterState_Base from "./CharacterState_Base";
 
 export default class CharacterState_Jump extends CharacterState_Base {
@@ -18,14 +18,18 @@ export default class CharacterState_Jump extends CharacterState_Base {
       return;
     }
     const { LR: LR1 = 0, UD: UD1 = 0 } = character.controller || {};
-    const { jump_height: h = 0, jump_distance: dx = 0, jump_distancez: dz = 0 } = character.data.base;
-    const g_acc = character.world.gravity
+    const {
+      jump_height: h = 0,
+      jump_distance: dx = 0,
+      jump_distancez: dz = 0,
+    } = character.data.base;
+    const g_acc = character.world.gravity;
     const vz = UD1 * dz;
     character.velocities[0].set(
       LR1 * (dx - Math.abs(vz / 4)),
-      g_acc * Math.sqrt(2 * h / g_acc),
-      vz
-    )
+      g_acc * Math.sqrt((2 * h) / g_acc),
+      vz,
+    );
     this._jumpings.add(character);
   }
   override on_landing(character: Entity): void {

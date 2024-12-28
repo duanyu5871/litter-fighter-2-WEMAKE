@@ -1,3 +1,1 @@
-import 'current-device';
-
-
+import "current-device";

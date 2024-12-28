@@ -3,32 +3,43 @@ import __SpriteNode from "./SpriteNode";
 import { ITextNode } from "../../LF2/3d/ITextNode";
 
 export class __Text extends __SpriteNode implements ITextNode {
-
   readonly is_text_node = true;
   protected _style: IStyle = {};
-  protected _text: string = '';
+  protected _text: string = "";
   protected _jid: number = 0;
   protected _changed: boolean = true;
 
-  get style(): IStyle { return this._style; }
-  set style(v: IStyle) { this.set_style(v); }
-  get text(): string { return this._text; }
-  set text(v: string) { this.set_text(v); }
+  get style(): IStyle {
+    return this._style;
+  }
+  set style(v: IStyle) {
+    this.set_style(v);
+  }
+  get text(): string {
+    return this._text;
+  }
+  set text(v: string) {
+    this.set_text(v);
+  }
 
-  get_style() { return this._style }
+  get_style() {
+    return this._style;
+  }
   set_style(v: IStyle): this {
     this._style = v;
     return this;
   }
 
-  get_text(): string { return this._text; }
+  get_text(): string {
+    return this._text;
+  }
   set_text(v: string): this {
     this._text = v;
     return this;
   }
 
   protected async update_text(text: string, style: IStyle, jid: number) {
-    const out_of_date = () => jid !== this._jid
+    const out_of_date = () => jid !== this._jid;
     if (out_of_date()) return;
     const pic = await this.lf2.images.create_pic_by_text(text, style);
     if (out_of_date()) {

@@ -1,35 +1,39 @@
-import { IItrInfo, ItrEffect, ItrKind } from '../defines';
-import { BdyKind } from '../defines/BdyKind';
-import { CollisionVal as C_Val } from '../defines/CollisionVal';
-import { Defines } from '../defines/defines';
-import { EntityEnum } from '../defines/EntityEnum';
-import { is_num, is_positive, not_zero_num } from '../utils/type_check';
-import { CondMaker } from './CondMaker';
-import { get_next_frame_by_raw_id } from './get_the_next';
-import { take } from './take';
+import { IItrInfo, ItrEffect, ItrKind } from "../defines";
+import { BdyKind } from "../defines/BdyKind";
+import { CollisionVal as C_Val } from "../defines/CollisionVal";
+import { Defines } from "../defines/defines";
+import { EntityEnum } from "../defines/EntityEnum";
+import { is_num, is_positive, not_zero_num } from "../utils/type_check";
+import { CondMaker } from "./CondMaker";
+import { get_next_frame_by_raw_id } from "./get_the_next";
+import { take } from "./take";
 export default function cook_itr(itr?: Partial<IItrInfo>) {
   if (!itr) return;
-  const vrest = take(itr, 'vrest');
-  if (is_positive(vrest)) { itr.vrest = Math.max(2, 2 * vrest - Defines.DEFAULT_ITR_SHAKING); }
-  const arest = take(itr, 'arest');
-  if (is_positive(arest)) { itr.arest = Math.max(2, 2 * arest + 2); }
-  const src_dvx = take(itr, 'dvx');
+  const vrest = take(itr, "vrest");
+  if (is_positive(vrest)) {
+    itr.vrest = Math.max(2, 2 * vrest - Defines.DEFAULT_ITR_SHAKING);
+  }
+  const arest = take(itr, "arest");
+  if (is_positive(arest)) {
+    itr.arest = Math.max(2, 2 * arest + 2);
+  }
+  const src_dvx = take(itr, "dvx");
   if (not_zero_num(src_dvx)) itr.dvx = src_dvx * 0.5;
-  const src_dvz = take(itr, 'dvz');
+  const src_dvz = take(itr, "dvz");
   if (not_zero_num(src_dvz)) itr.dvz = src_dvz * 0.5;
-  const src_dvy = take(itr, 'dvy');
+  const src_dvy = take(itr, "dvy");
   if (not_zero_num(src_dvy)) itr.dvy = src_dvy * -0.59;
-  const fall = take(itr, 'fall');
+  const fall = take(itr, "fall");
   if (not_zero_num(fall)) itr.fall = fall * 2;
-  const bdefend = take(itr, 'bdefend');
+  const bdefend = take(itr, "bdefend");
   if (not_zero_num(bdefend)) itr.bdefend = bdefend * 2;
-  const zwidth = take(itr, 'zwidth');
+  const zwidth = take(itr, "zwidth");
   if (not_zero_num(zwidth)) {
-    itr.l = 2 * zwidth
-    itr.z = -zwidth
+    itr.l = 2 * zwidth;
+    itr.z = -zwidth;
   } else {
-    itr.l = Defines.DAFUALT_QUBE_LENGTH
-    itr.z = -Defines.DAFUALT_QUBE_LENGTH / 2
+    itr.l = Defines.DAFUALT_QUBE_LENGTH;
+    itr.z = -Defines.DAFUALT_QUBE_LENGTH / 2;
   }
   switch (itr.effect) {
     case ItrEffect.FireExplosion:
@@ -40,36 +44,39 @@ export default function cook_itr(itr?: Partial<IItrInfo>) {
   }
   switch (itr.kind) {
     case ItrKind.Normal: {
-      const cond_maker = new CondMaker<C_Val>()
-        .wrap(c => c
-          .add(C_Val.VictimState, '!=', Defines.State.Weapon_OnGround)
-          .or(C_Val.AttackerType, '!=', EntityEnum.Character)
-        )
+      const cond_maker = new CondMaker<C_Val>().wrap((c) =>
+        c
+          .add(C_Val.VictimState, "!=", Defines.State.Weapon_OnGround)
+          .or(C_Val.AttackerType, "!=", EntityEnum.Character),
+      );
       switch (itr.effect) {
         case ItrEffect.MFire1:
-          cond_maker.and(c => c
-            .add(C_Val.VictimState, '!=', Defines.State.BurnRun)
-            .and(C_Val.VictimState, '!=', Defines.State.Burning)
-            .and(C_Val.VictimType, '!=', EntityEnum.Character)
-          )
+          cond_maker.and((c) =>
+            c
+              .add(C_Val.VictimState, "!=", Defines.State.BurnRun)
+              .and(C_Val.VictimState, "!=", Defines.State.Burning)
+              .and(C_Val.VictimType, "!=", EntityEnum.Character),
+          );
           break;
         case ItrEffect.MFire2:
-          cond_maker.and(c => c
-            .add(C_Val.VictimState, '!=', Defines.State.BurnRun)
-            .and(C_Val.VictimState, '!=', Defines.State.Burning)
-          )
+          cond_maker.and((c) =>
+            c
+              .add(C_Val.VictimState, "!=", Defines.State.BurnRun)
+              .and(C_Val.VictimState, "!=", Defines.State.Burning),
+          );
           break;
         case ItrEffect.Through:
-          cond_maker.and(C_Val.VictimType, '!=', EntityEnum.Character)
+          cond_maker.and(C_Val.VictimType, "!=", EntityEnum.Character);
           break;
         case ItrEffect.Ice2:
-          cond_maker.and(c => c
-            .add(C_Val.VictimState, '!=', Defines.State.Frozen)
-            .and(C_Val.VictimFrameId, '!=', C_Val.VictimFrameIndex_ICE)
-          )
+          cond_maker.and((c) =>
+            c
+              .add(C_Val.VictimState, "!=", Defines.State.Frozen)
+              .and(C_Val.VictimFrameId, "!=", C_Val.VictimFrameIndex_ICE),
+          );
           break;
       }
-      itr.test = cond_maker.done()
+      itr.test = cond_maker.done();
       break;
     }
     case ItrKind.Pick: {
@@ -78,10 +85,15 @@ export default function cook_itr(itr?: Partial<IItrInfo>) {
       itr.shaking = 0;
       if (is_positive(vrest)) itr.vrest = vrest + 2;
       itr.test = new CondMaker<C_Val>()
-        .add(C_Val.AttackerHasHolder, '==', 0)
-        .and(C_Val.VictimHasHolder, '==', 0)
-        .and().one_of(C_Val.VictimState, Defines.State.Weapon_OnGround, Defines.State.HeavyWeapon_OnGround)
-        .done()
+        .add(C_Val.AttackerHasHolder, "==", 0)
+        .and(C_Val.VictimHasHolder, "==", 0)
+        .and()
+        .one_of(
+          C_Val.VictimState,
+          Defines.State.Weapon_OnGround,
+          Defines.State.HeavyWeapon_OnGround,
+        )
+        .done();
       break;
     }
     case ItrKind.PickSecretly: {
@@ -90,10 +102,10 @@ export default function cook_itr(itr?: Partial<IItrInfo>) {
       itr.shaking = 0;
       if (is_positive(vrest)) itr.vrest = vrest + 2;
       itr.test = new CondMaker<C_Val>()
-        .add(C_Val.AttackerHasHolder, '==', 0)
-        .and(C_Val.VictimHasHolder, '==', 0)
-        .and(C_Val.VictimState, '==', Defines.State.Weapon_OnGround)
-        .done()
+        .add(C_Val.AttackerHasHolder, "==", 0)
+        .and(C_Val.VictimHasHolder, "==", 0)
+        .and(C_Val.VictimState, "==", Defines.State.Weapon_OnGround)
+        .done();
       break;
     }
     case ItrKind.SuperPunchMe: {
@@ -101,8 +113,8 @@ export default function cook_itr(itr?: Partial<IItrInfo>) {
       itr.shaking = 0;
       if (is_positive(vrest)) itr.vrest = vrest + 2;
       itr.test = new CondMaker<C_Val>()
-        .add(C_Val.VictimType, '==', EntityEnum.Character)
-        .done()
+        .add(C_Val.VictimType, "==", EntityEnum.Character)
+        .done();
       break;
     }
     case ItrKind.MagicFlute:
@@ -110,13 +122,14 @@ export default function cook_itr(itr?: Partial<IItrInfo>) {
       itr.motionless = 0;
       itr.shaking = 0;
       itr.test = new CondMaker<C_Val>()
-        .add(C_Val.VictimType, '==', EntityEnum.Character)
-        .or(c => c
-          .add(C_Val.VictimType, '==', EntityEnum.Weapon)
-          .and(C_Val.VictimOID, '!=', Defines.BuiltIn_OID.Henry_Arrow1)
-          .and(C_Val.VictimOID, '!=', Defines.BuiltIn_OID.Rudolf_Weapon)
+        .add(C_Val.VictimType, "==", EntityEnum.Character)
+        .or((c) =>
+          c
+            .add(C_Val.VictimType, "==", EntityEnum.Weapon)
+            .and(C_Val.VictimOID, "!=", Defines.BuiltIn_OID.Henry_Arrow1)
+            .and(C_Val.VictimOID, "!=", Defines.BuiltIn_OID.Rudolf_Weapon),
         )
-        .done()
+        .done();
       return;
     }
     case ItrKind.ForceCatch: {
@@ -127,9 +140,9 @@ export default function cook_itr(itr?: Partial<IItrInfo>) {
         delete itr.vrest;
       }
       itr.test = new CondMaker<C_Val>()
-        .and(C_Val.VictimType, '==', EntityEnum.Character)
-        .and(C_Val.VictimState, '!=', Defines.State.Falling)
-        .done()
+        .and(C_Val.VictimType, "==", EntityEnum.Character)
+        .and(C_Val.VictimState, "!=", Defines.State.Falling)
+        .done();
       break;
     }
     case ItrKind.Catch: {
@@ -140,9 +153,9 @@ export default function cook_itr(itr?: Partial<IItrInfo>) {
         delete itr.vrest;
       }
       itr.test = new CondMaker<C_Val>()
-        .and(C_Val.VictimType, '==', EntityEnum.Character)
-        .and(C_Val.VictimState, '==', Defines.State.Tired)
-        .done()
+        .and(C_Val.VictimType, "==", EntityEnum.Character)
+        .and(C_Val.VictimState, "==", Defines.State.Tired)
+        .done();
       break;
     }
     case ItrKind.Block:
@@ -151,23 +164,23 @@ export default function cook_itr(itr?: Partial<IItrInfo>) {
       itr.shaking = 0;
       delete itr.hit_act;
       delete itr.hit_sounds;
-      itr.test = new CondMaker<C_Val>().add(
-        C_Val.BdyKind, '==', BdyKind.Normal
-      ).done()
+      itr.test = new CondMaker<C_Val>()
+        .add(C_Val.BdyKind, "==", BdyKind.Normal)
+        .done();
       break;
     case ItrKind.JohnShield:
       itr.friendly_fire = 1;
       itr.test = new CondMaker<C_Val>()
-        .and(C_Val.VictimType, '!=', EntityEnum.Character)
-        .or(C_Val.SameTeam, '!=', 1)
-        .done()
+        .and(C_Val.VictimType, "!=", EntityEnum.Character)
+        .or(C_Val.SameTeam, "!=", 1)
+        .done();
       break;
     case ItrKind.Heal: {
-      itr.friendly_fire = 1 // 允许治疗队友
+      itr.friendly_fire = 1; // 允许治疗队友
       if (src_dvx) itr.hit_act = get_next_frame_by_raw_id(src_dvx);
       itr.test = new CondMaker<C_Val>()
-        .and(C_Val.VictimType, '==', EntityEnum.Character)
-        .done()
+        .and(C_Val.VictimType, "==", EntityEnum.Character)
+        .done();
       break;
     }
     case ItrKind.Freeze: {
@@ -178,12 +191,13 @@ export default function cook_itr(itr?: Partial<IItrInfo>) {
       itr.dvy = 0;
       itr.dvz = 0;
       itr.test = new CondMaker<C_Val>()
-        .add(C_Val.VictimType, '==', EntityEnum.Character)
-        .and(c => c
-          .add(C_Val.SameTeam, '==', 0)
-          .or(C_Val.VictimState, '==', Defines.State.Frozen)
+        .add(C_Val.VictimType, "==", EntityEnum.Character)
+        .and((c) =>
+          c
+            .add(C_Val.SameTeam, "==", 0)
+            .or(C_Val.VictimState, "==", Defines.State.Frozen),
         )
-        .done()
+        .done();
       break;
     }
     case ItrKind.Whirlwind: {
@@ -196,34 +210,41 @@ export default function cook_itr(itr?: Partial<IItrInfo>) {
       itr.dvy = 0;
       itr.dvz = 0;
       itr.test = new CondMaker<C_Val>()
-        .wrap(c => c
-          .add(C_Val.VictimType, '==', EntityEnum.Weapon)
-          .and(C_Val.VictimOID, '!=', Defines.BuiltIn_OID.Henry_Arrow1)
-          .and(C_Val.VictimOID, '!=', Defines.BuiltIn_OID.Rudolf)
-        ).or(c => c
-          .add(C_Val.VictimType, '==', EntityEnum.Character)
-          .and(c => c
-            .add(C_Val.SameTeam, '==', 0)
-            .or(C_Val.VictimState, '==', Defines.State.Frozen)
-          )
-        ).done()
+        .wrap((c) =>
+          c
+            .add(C_Val.VictimType, "==", EntityEnum.Weapon)
+            .and(C_Val.VictimOID, "!=", Defines.BuiltIn_OID.Henry_Arrow1)
+            .and(C_Val.VictimOID, "!=", Defines.BuiltIn_OID.Rudolf),
+        )
+        .or((c) =>
+          c
+            .add(C_Val.VictimType, "==", EntityEnum.Character)
+            .and((c) =>
+              c
+                .add(C_Val.SameTeam, "==", 0)
+                .or(C_Val.VictimState, "==", Defines.State.Frozen),
+            ),
+        )
+        .done();
       break;
     }
     case ItrKind.CharacterThrew: {
       itr.friendly_fire = 1;
       itr.test = new CondMaker<C_Val>()
-        .add(C_Val.AttackerThrew, '==', 1)
-        .and(C_Val.AttackerType, '==', EntityEnum.Character)
-        .done()
+        .add(C_Val.AttackerThrew, "==", 1)
+        .and(C_Val.AttackerType, "==", EntityEnum.Character)
+        .done();
       break;
     }
   }
-  const catchingact = take(itr, 'catchingact');
-  if (is_num(catchingact)) itr.catchingact = get_next_frame_by_raw_id(catchingact);
+  const catchingact = take(itr, "catchingact");
+  if (is_num(catchingact))
+    itr.catchingact = get_next_frame_by_raw_id(catchingact);
 
-  const caughtact = take(itr, 'caughtact');
-  if (is_num(caughtact)) itr.caughtact = {
-    ...get_next_frame_by_raw_id(caughtact),
-    facing: Defines.FacingFlag.OpposingCatcher,
-  };
+  const caughtact = take(itr, "caughtact");
+  if (is_num(caughtact))
+    itr.caughtact = {
+      ...get_next_frame_by_raw_id(caughtact),
+      facing: Defines.FacingFlag.OpposingCatcher,
+    };
 }

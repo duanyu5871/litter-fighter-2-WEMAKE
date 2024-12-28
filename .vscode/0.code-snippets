@@ -2,8 +2,6 @@
   "auto re export": {
     "prefix": "#auto re-export",
     "scope": "typescript",
-    "body": [
-      "/* auto re-export */\n"
-    ]
-  }
+    "body": ["/* auto re-export */\n"],
+  },
 }

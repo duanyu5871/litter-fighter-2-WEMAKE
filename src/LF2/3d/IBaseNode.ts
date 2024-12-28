@@ -30,7 +30,7 @@ export interface IBaseNode {
 
   merge_user_data(v: Record<string, any>): this;
 
-  get_object_3d(): any
+  get_object_3d(): any;
 }
 export const is_base_node = (v: any): v is IBaseNode =>
-  v?.is_base_node === true
+  v?.is_base_node === true;

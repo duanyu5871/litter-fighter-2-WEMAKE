@@ -9,12 +9,23 @@ export class __Modern extends BaseSounds {
   readonly ctx = new AudioContext();
   protected _req_id: number = 0;
   protected _prev_bgm_url: string | null = null;
-  protected _bgm_node: { src_node: AudioBufferSourceNode, gain_node: GainNode } | null = null;
+  protected _bgm_node: {
+    src_node: AudioBufferSourceNode;
+    gain_node: GainNode;
+  } | null = null;
 
   protected _r = new AsyncValuesKeeper<AudioBuffer>();
   protected _bgm_name: string | null = null;
   protected _sound_id = 0;
-  protected _playings = new Map<string, { src_node: AudioBufferSourceNode, l_gain_node: GainNode, r_gain_node: GainNode, sound_x: number }>()
+  protected _playings = new Map<
+    string,
+    {
+      src_node: AudioBufferSourceNode;
+      l_gain_node: GainNode;
+      r_gain_node: GainNode;
+      sound_x: number;
+    }
+  >();
   protected _muted: boolean = false;
   protected _volume: number = 0.3;
   protected _bgm_volume: number = 1;
@@ -23,7 +34,7 @@ export class __Modern extends BaseSounds {
   protected _sound_muted: boolean = false;
 
   override bgm_volume(): number {
-    return this._bgm_volume
+    return this._bgm_volume;
   }
   override set_bgm_volume(v: number): void {
     v = clamp(v, 0, 1);
@@ -31,18 +42,18 @@ export class __Modern extends BaseSounds {
     if (float_equal(v, prev)) return;
     this._bgm_volume = v;
     this.apply_bgm_volume();
-    this._callbacks.emit('on_bgm_volume_changed')(v, prev, this)
+    this._callbacks.emit("on_bgm_volume_changed")(v, prev, this);
   }
   override sound_volume(): number {
-    return this._sound_volume
+    return this._sound_volume;
   }
   override set_sound_volume(v: number): void {
     v = clamp(v, 0, 1);
-    const prev = this.sound_volume()
+    const prev = this.sound_volume();
     if (float_equal(v, prev)) return;
     this._sound_volume = v;
     this.apply_sound_volume();
-    this._callbacks.emit('on_sound_volume_changed')(v, prev, this)
+    this._callbacks.emit("on_sound_volume_changed")(v, prev, this);
   }
 
   override muted(): boolean {
@@ -53,7 +64,7 @@ export class __Modern extends BaseSounds {
     if (v === this.muted()) return;
     this._muted = v;
     this.apply_volume();
-    this._callbacks.emit('on_muted_changed')(v, this)
+    this._callbacks.emit("on_muted_changed")(v, this);
   }
 
   override bgm_muted(): boolean {
@@ -64,7 +75,7 @@ export class __Modern extends BaseSounds {
     if (v === this.bgm_muted()) return;
     this._bgm_muted = v;
     this.apply_bgm_volume();
-    this._callbacks.emit('on_bgm_muted_changed')(v, this)
+    this._callbacks.emit("on_bgm_muted_changed")(v, this);
   }
 
   override sound_muted(): boolean {
@@ -75,7 +86,7 @@ export class __Modern extends BaseSounds {
     if (v === this.sound_muted()) return;
     this._sound_muted = v;
     this.apply_sound_volume();
-    this._callbacks.emit('on_sound_muted_changed')(v, this)
+    this._callbacks.emit("on_sound_muted_changed")(v, this);
   }
 
   override volume(): number {
@@ -83,11 +94,11 @@ export class __Modern extends BaseSounds {
   }
   override set_volume(v: number): void {
     v = clamp(v, 0, 1);
-    const prev = this.volume()
+    const prev = this.volume();
     if (float_equal(v, prev)) return;
     this._volume = v;
     this.apply_volume();
-    this._callbacks.emit('on_volume_changed')(v, prev, this)
+    this._callbacks.emit("on_volume_changed")(v, prev, this);
   }
 
   protected apply_volume(): void {
@@ -106,7 +117,9 @@ export class __Modern extends BaseSounds {
   protected apply_bgm_volume(): void {
     if (!this._bgm_node) return;
     const muted = this._muted || this._bgm_muted;
-    this._bgm_node.gain_node.gain.value = muted ? 0 : (this._volume * this._bgm_volume);
+    this._bgm_node.gain_node.gain.value = muted
+      ? 0
+      : this._volume * this._bgm_volume;
   }
 
   override bgm(): string | null {
@@ -121,11 +134,12 @@ export class __Modern extends BaseSounds {
     return this._r.get(name, async () => {
       this.lf2.on_loading_content(`${name}`, 0);
       const [url] = await this.lf2.import_resource(src);
-      const buf = await axios.get<ArrayBuffer>(url, { responseType: 'arraybuffer' })
-        .then(v => this.ctx.decodeAudioData(v.data));
+      const buf = await axios
+        .get<ArrayBuffer>(url, { responseType: "arraybuffer" })
+        .then((v) => this.ctx.decodeAudioData(v.data));
       this.lf2.on_loading_content(`${name}`, 100);
-      return buf
-    })
+      return buf;
+    });
   }
 
   override stop_bgm(): void {
@@ -134,11 +148,11 @@ export class __Modern extends BaseSounds {
     this._bgm_name = null;
     this._bgm_node.src_node.stop();
     this._prev_bgm_url = null;
-    this._callbacks.emit('on_bgm_changed')(null, prev, this);
+    this._callbacks.emit("on_bgm_changed")(null, prev, this);
   }
 
   override play_bgm(name: string, restart?: boolean | undefined): () => void {
-    if (!restart && this._prev_bgm_url === name) return () => { };
+    if (!restart && this._prev_bgm_url === name) return () => {};
 
     const prev = this.bgm();
 
@@ -155,24 +169,24 @@ export class __Modern extends BaseSounds {
       src_node.buffer = buf;
       src_node.start();
 
-      const gain_node = this.ctx.createGain()
-      gain_node.connect(ctx.destination)
-      src_node.connect(gain_node)
+      const gain_node = this.ctx.createGain();
+      gain_node.connect(ctx.destination);
+      src_node.connect(gain_node);
       src_node.loop = true;
       this._bgm_node = {
         src_node,
-        gain_node
-      }
-      this.apply_bgm_volume()
+        gain_node,
+      };
+      this.apply_bgm_volume();
     };
     if (buf) {
       start(buf);
     } else {
-      this.load(name, name).then(start)
+      this.load(name, name).then(start);
     }
 
-    this._callbacks.emit('on_bgm_changed')(name, prev, this);
-    return () => (req_id === this._req_id) && this.stop_bgm();
+    this._callbacks.emit("on_bgm_changed")(name, prev, this);
+    return () => req_id === this._req_id && this.stop_bgm();
   }
 
   protected get_l_r_vol(x?: number): number[] {
@@ -182,23 +196,37 @@ export class __Modern extends BaseSounds {
     const muted = this._muted || this._sound_muted;
     return [
       sound_x,
-      (muted ? 0 : (this._volume * this._sound_volume)) * Math.max(0, 1 - Math.abs((sound_x - viewer_x + edge_w) / Defines.CLASSIC_SCREEN_WIDTH)),
-      (muted ? 0 : (this._volume * this._sound_volume)) * Math.max(0, 1 - Math.abs((sound_x - viewer_x - edge_w) / Defines.CLASSIC_SCREEN_WIDTH))
-    ]
+      (muted ? 0 : this._volume * this._sound_volume) *
+        Math.max(
+          0,
+          1 -
+            Math.abs(
+              (sound_x - viewer_x + edge_w) / Defines.CLASSIC_SCREEN_WIDTH,
+            ),
+        ),
+      (muted ? 0 : this._volume * this._sound_volume) *
+        Math.max(
+          0,
+          1 -
+            Math.abs(
+              (sound_x - viewer_x - edge_w) / Defines.CLASSIC_SCREEN_WIDTH,
+            ),
+        ),
+    ];
   }
   override play(name: string, x?: number, y?: number, z?: number): string {
     const buf = this._r.values.get(name);
     if (!buf) {
       this.load(name, name)
         .then(() => this.play(name, x, y, z))
-        .catch(e => {
+        .catch((e) => {
           debugger;
           console.error(e);
-        })
-      return '';
-    };
+        });
+      return "";
+    }
 
-    const id = '' + (++this._sound_id);
+    const id = "" + ++this._sound_id;
     const [sound_x, l_vol, r_vol] = this.get_l_r_vol(x);
 
     const ctx = this.ctx;
@@ -228,7 +256,7 @@ export class __Modern extends BaseSounds {
       l_gain_node,
       r_gain_node,
       sound_x,
-    })
+    });
     src_node.onended = () => this._playings.delete(id);
     return id;
   }
@@ -237,13 +265,13 @@ export class __Modern extends BaseSounds {
     const n = this._playings.get(id);
     if (!n) return;
     n.src_node.stop();
-    this._playings.delete(id)
+    this._playings.delete(id);
   }
 
   override dispose(): void {
     super.dispose();
     this._r.clean();
-    this._playings.forEach(v => v.src_node.stop())
+    this._playings.forEach((v) => v.src_node.stop());
     this._playings.clear();
   }
 }

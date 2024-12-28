@@ -7,5 +7,5 @@ export enum OpointKind {
   /**
    * 生成后拿在手上
    */
-  Pick = 2
+  Pick = 2,
 }

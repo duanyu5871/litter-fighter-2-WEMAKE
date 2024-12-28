@@ -1,48 +1,57 @@
-import axios from 'axios';
-import JSZIP from 'jszip';
-import { IZip, IZipObject } from '../LF2/ditto';
-import { is_str } from '../LF2/utils/type_check';
+import axios from "axios";
+import JSZIP from "jszip";
+import { IZip, IZipObject } from "../LF2/ditto";
+import { is_str } from "../LF2/utils/type_check";
 
 export class ZipObject implements IZipObject {
   protected inner: JSZIP.JSZipObject;
-  get name() { return this.inner.name }
+  get name() {
+    return this.inner.name;
+  }
 
   constructor(inner: JSZIP.JSZipObject) {
     this.inner = inner;
   }
   async text(): Promise<string> {
-    return this.inner.async('text');
+    return this.inner.async("text");
   }
   async json(): Promise<any> {
     return this.text().then(JSON.parse);
   }
   async blob(): Promise<Blob> {
-    return this.inner.async('blob');
+    return this.inner.async("blob");
   }
   async blob_url(): Promise<string> {
-    return URL.createObjectURL(await this.blob())
+    return URL.createObjectURL(await this.blob());
   }
 }
 
 export class __Zip implements IZip {
   static async read_file(file: File): Promise<IZip> {
-    const buf = await file.arrayBuffer().then(raw => new Uint8Array(raw))
-    const jszip = await JSZIP.loadAsync(buf)
-    return new __Zip(jszip, buf)
+    const buf = await file.arrayBuffer().then((raw) => new Uint8Array(raw));
+    const jszip = await JSZIP.loadAsync(buf);
+    return new __Zip(jszip, buf);
   }
   static async read_buf(buf: Uint8Array): Promise<IZip> {
-    const jszip = await JSZIP.loadAsync(buf)
-    return new __Zip(jszip, buf)
+    const jszip = await JSZIP.loadAsync(buf);
+    return new __Zip(jszip, buf);
   }
-  static async download(url: string, on_progress: (progress: number, size: number) => void): Promise<IZip> {
-    const buf = await axios.get<ArrayBuffer>(url, {
-      responseType: 'arraybuffer',
-      onDownloadProgress: (e_1) => {
-        const progress_1 = e_1.total ? Math.round(100 * e_1.loaded / e_1.total) : 100;
-        on_progress(progress_1, e_1.total ?? e_1.loaded);
-      }
-    }).then(resp => new Uint8Array(resp.data));
-    const jszip = await JSZIP.loadAsync(buf)
+  static async download(
+    url: string,
+    on_progress: (progress: number, size: number) => void,
+  ): Promise<IZip> {
+    const buf = await axios
+      .get<ArrayBuffer>(url, {
+        responseType: "arraybuffer",
+        onDownloadProgress: (e_1) => {
+          const progress_1 = e_1.total
+            ? Math.round((100 * e_1.loaded) / e_1.total)
+            : 100;
+          on_progress(progress_1, e_1.total ?? e_1.loaded);
+        },
+      })
+      .then((resp) => new Uint8Array(resp.data));
+    const jszip = await JSZIP.loadAsync(buf);
     return new __Zip(jszip, buf);
   }
 
@@ -53,14 +62,14 @@ export class __Zip implements IZip {
     this.buf = buf;
   }
 
-  file(path: string): ZipObject | null
-  file(path: RegExp): ZipObject[]
+  file(path: string): ZipObject | null;
+  file(path: RegExp): ZipObject[];
   file(path: string | RegExp): ZipObject | null | ZipObject[] {
     if (is_str(path)) {
-      const obj = this.inner.file(path)
+      const obj = this.inner.file(path);
       return obj ? new ZipObject(obj) : null;
     } else {
-      return this.inner.file(path).map(v => new ZipObject(v));
+      return this.inner.file(path).map((v) => new ZipObject(v));
     }
   }
 }

@@ -26,7 +26,6 @@ export interface IArmorInfo {
   type: string; // hp? times? fall? defend?
 
   fall_value?: number;
-  
-  defend_value?: number;
 
+  defend_value?: number;
 }

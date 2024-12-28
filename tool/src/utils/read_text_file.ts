@@ -1,6 +1,11 @@
-import fs from 'fs/promises';
+import fs from "fs/promises";
 
-export const read_text_file = (path: string) => fs.readFile(path)
-  .then(v => v.toString())
-  .then(v => v?.replace(/\r/g, '').replace(/\\/g, '/'))
-  .catch(e => { console.error(e); return null; });
+export const read_text_file = (path: string) =>
+  fs
+    .readFile(path)
+    .then((v) => v.toString())
+    .then((v) => v?.replace(/\r/g, "").replace(/\\/g, "/"))
+    .catch((e) => {
+      console.error(e);
+      return null;
+    });

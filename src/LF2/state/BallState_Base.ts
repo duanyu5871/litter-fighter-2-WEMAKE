@@ -21,7 +21,7 @@ export default class BallState_Base extends State_Base {
       case Defines.State.Ball_Disappear:
         e.shaking = 0;
         e.motionless = 0;
-        e.velocities.length = 1
+        e.velocities.length = 1;
         e.velocities[0].x = 0;
         e.velocities[0].z = 0;
         e.velocities[0].y = 0;
@@ -44,8 +44,8 @@ export default class BallState_Base extends State_Base {
     const min_speed_x = -5;
     const max_speed_z = 2.5;
     const min_speed_z = -2.5;
-    const acc_x = .1;
-    const acc_z = .05;
+    const acc_x = 0.1;
+    const acc_z = 0.05;
 
     switch (frame.behavior) {
       case FrameBehavior._01:
@@ -53,24 +53,24 @@ export default class BallState_Base extends State_Base {
         const { nearest_enemy } = e;
         if (!nearest_enemy) break;
         const pos_1 = e.position;
-        const pos_2 = nearest_enemy.position
+        const pos_2 = nearest_enemy.position;
         if (pos_2.x > pos_1.x) {
-          e.velocities[0].x += acc_x
+          e.velocities[0].x += acc_x;
           if (e.velocities[0].x > 0) e.facing = 1;
-          if (e.velocities[0].x > max_speed_x) e.velocities[0].x = max_speed_x
+          if (e.velocities[0].x > max_speed_x) e.velocities[0].x = max_speed_x;
         } else if (pos_2.x < pos_1.x) {
-          e.velocities[0].x -= acc_x
+          e.velocities[0].x -= acc_x;
           if (e.velocities[0].x < 0) e.facing = -1;
-          if (e.velocities[0].x < min_speed_x) e.velocities[0].x = min_speed_x
+          if (e.velocities[0].x < min_speed_x) e.velocities[0].x = min_speed_x;
         }
         if (pos_2.z > pos_1.z) {
-          e.velocities[0].z += acc_z
-          if (e.velocities[0].z > max_speed_z) e.velocities[0].z = max_speed_z
+          e.velocities[0].z += acc_z;
+          if (e.velocities[0].z > max_speed_z) e.velocities[0].z = max_speed_z;
         } else if (pos_2.z < pos_1.z) {
-          e.velocities[0].z -= acc_z
-          if (e.velocities[0].z < min_speed_z) e.velocities[0].z = min_speed_z
+          e.velocities[0].z -= acc_z;
+          if (e.velocities[0].z < min_speed_z) e.velocities[0].z = min_speed_z;
         }
-        break
+        break;
       }
       default:
         e.handle_frame_velocity();
@@ -80,11 +80,16 @@ export default class BallState_Base extends State_Base {
   override on_collision(collision: ICollision): void {
     const { attacker, victim } = collision;
     if (is_character(victim) || is_weapon(victim)) {
-      attacker.velocities.length = 1
+      attacker.velocities.length = 1;
       switch (attacker.frame.state) {
         case ItrKind.JohnShield:
         case Defines.State.Ball_Flying:
-          attacker.hp = 0;
+          const { victim } = collision;
+          victim.shaking = 0;
+          victim.velocities.length = 1;
+          victim.velocities[0].x = 0;
+          victim.velocities[0].z = 0;
+          victim.velocities[0].y = 0;
           break;
       }
     }
@@ -92,7 +97,7 @@ export default class BallState_Base extends State_Base {
   override on_be_collided(collision: ICollision): void {
     const { victim } = collision;
     victim.shaking = 0;
-    victim.velocities.length = 1
+    victim.velocities.length = 1;
     victim.velocities[0].x = 0;
     victim.velocities[0].z = 0;
     victim.velocities[0].y = 0;

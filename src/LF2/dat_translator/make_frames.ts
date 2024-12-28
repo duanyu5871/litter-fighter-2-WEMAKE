@@ -1,61 +1,105 @@
-import { IBdyInfo, ICpointInfo, IFramePictureInfo, IItrInfo, IOpointInfo, ItrKind, IWpointInfo } from '../defines';
-import { BdyKind } from '../defines/BdyKind';
-import { CollisionVal as C_Val } from '../defines/CollisionVal';
+import {
+  IBdyInfo,
+  ICpointInfo,
+  IFramePictureInfo,
+  IItrInfo,
+  IOpointInfo,
+  ItrKind,
+  IWpointInfo,
+} from "../defines";
+import { BdyKind } from "../defines/BdyKind";
+import { CollisionVal as C_Val } from "../defines/CollisionVal";
 import { IEntityInfo } from "../defines/IEntityInfo";
-import { IEntityPictureInfo } from '../defines/IEntityPictureInfo';
+import { IEntityPictureInfo } from "../defines/IEntityPictureInfo";
 import { IFrameInfo } from "../defines/IFrameInfo";
-import { OpointKind } from '../defines/OpointKind';
-import { SpeedMode } from '../defines/SpeedMode';
-import { Defines } from '../defines/defines';
-import { match_all } from '../utils/string_parser/match_all';
-import { match_colon_value } from '../utils/string_parser/match_colon_value';
-import take_sections from '../utils/string_parser/take_sections';
-import { to_num } from '../utils/type_cast/to_num';
-import { not_zero_num } from '../utils/type_check';
-import { CondMaker } from './CondMaker';
-import cook_bdy from './cook_bdy';
-import { cook_cpoint } from './cook_cpoint';
-import cook_itr from './cook_itr';
-import cook_opoint from './cook_opoint';
-import { cook_wpoint } from './cook_wpoint';
-import { add_next_frame } from './edit_next_frame';
-import { get_next_frame_by_raw_id } from './get_the_next';
-import { take } from './take';
-export function make_frames(text: string, files: IEntityInfo['files']): Record<string, IFrameInfo> {
+import { OpointKind } from "../defines/OpointKind";
+import { SpeedMode } from "../defines/SpeedMode";
+import { Defines } from "../defines/defines";
+import { match_all } from "../utils/string_parser/match_all";
+import { match_colon_value } from "../utils/string_parser/match_colon_value";
+import take_sections from "../utils/string_parser/take_sections";
+import { to_num } from "../utils/type_cast/to_num";
+import { not_zero_num } from "../utils/type_check";
+import { CondMaker } from "./CondMaker";
+import cook_bdy from "./cook_bdy";
+import { cook_cpoint } from "./cook_cpoint";
+import cook_itr from "./cook_itr";
+import cook_opoint from "./cook_opoint";
+import { cook_wpoint } from "./cook_wpoint";
+import { add_next_frame } from "./edit_next_frame";
+import { get_next_frame_by_raw_id } from "./get_the_next";
+import { take } from "./take";
+export function make_frames(
+  text: string,
+  files: IEntityInfo["files"],
+): Record<string, IFrameInfo> {
   const frames: Record<string, IFrameInfo> = {};
   const frame_regexp = /<frame>\s+(.*?)\s+(.*)((.|\n)+?)<frame_end>/g;
-  for (const [, frame_id, frame_name, content] of match_all(text, frame_regexp)) {
+  for (const [, frame_id, frame_name, content] of match_all(
+    text,
+    frame_regexp,
+  )) {
     let _content = content;
-    const bdy_list = take_sections<IBdyInfo>(_content, 'bdy:', 'bdy_end:', r => _content = r);
-    for (const bdy of bdy_list) cook_bdy(bdy)
+    const bdy_list = take_sections<IBdyInfo>(
+      _content,
+      "bdy:",
+      "bdy_end:",
+      (r) => (_content = r),
+    );
+    for (const bdy of bdy_list) cook_bdy(bdy);
 
-    const itr_list = take_sections<IItrInfo>(_content, 'itr:', 'itr_end:', r => _content = r);
-    for (const itr of itr_list) cook_itr(itr)
+    const itr_list = take_sections<IItrInfo>(
+      _content,
+      "itr:",
+      "itr_end:",
+      (r) => (_content = r),
+    );
+    for (const itr of itr_list) cook_itr(itr);
 
-    const opoint_list = take_sections<IOpointInfo>(_content, 'opoint:', 'opoint_end:', r => _content = r);
+    const opoint_list = take_sections<IOpointInfo>(
+      _content,
+      "opoint:",
+      "opoint_end:",
+      (r) => (_content = r),
+    );
     for (const opoint of opoint_list) cook_opoint(opoint);
 
-    const wpoint_list = take_sections<IWpointInfo>(_content, 'wpoint:', 'wpoint_end:', r => _content = r);
+    const wpoint_list = take_sections<IWpointInfo>(
+      _content,
+      "wpoint:",
+      "wpoint_end:",
+      (r) => (_content = r),
+    );
     for (const wpoint of wpoint_list) cook_wpoint(wpoint);
 
-    const bpoint_list = take_sections(_content, 'bpoint:', 'bpoint_end:', r => _content = r);
+    const bpoint_list = take_sections(
+      _content,
+      "bpoint:",
+      "bpoint_end:",
+      (r) => (_content = r),
+    );
 
-    const cpoint_list = take_sections<ICpointInfo>(_content, 'cpoint:', 'cpoint_end:', r => _content = r);
+    const cpoint_list = take_sections<ICpointInfo>(
+      _content,
+      "cpoint:",
+      "cpoint_end:",
+      (r) => (_content = r),
+    );
     for (const cpoint of cpoint_list) cook_cpoint(cpoint);
 
     const fields: any = {};
     for (const [name, value] of match_colon_value(_content))
       fields[name] = to_num(value) ?? value;
 
-    const raw_next = take(fields, 'next');
+    const raw_next = take(fields, "next");
     const next = get_next_frame_by_raw_id(raw_next);
-    const pic_idx = take(fields, 'pic');
+    const pic_idx = take(fields, "pic");
     let frame_pic_info: IFramePictureInfo | undefined = void 0;
     let entity_pic_info: IEntityPictureInfo | undefined = void 0;
 
     let pic = pic_idx;
     for (const key in files) {
-      const { row, col } = entity_pic_info = files[key];
+      const { row, col } = (entity_pic_info = files[key]);
       if (pic < row * col) break;
       pic -= row * col;
     }
@@ -69,16 +113,16 @@ export function make_frames(text: string, files: IEntityInfo['files']): Record<s
         y: (cell_h + 1) * Math.floor(pic / row),
         w: cell_w,
         h: cell_h,
-      }
+      };
     } else {
       error = {
-        msg: 'entity_pic_info not found!',
+        msg: "entity_pic_info not found!",
         files,
         pic_idx,
-      }
+      };
     }
 
-    const wait = take(fields, 'wait') * 2 + 1;
+    const wait = take(fields, "wait") * 2 + 1;
     const frame: IFrameInfo = {
       id: frame_id,
       name: frame_name,
@@ -93,7 +137,7 @@ export function make_frames(text: string, files: IEntityInfo['files']): Record<s
       cpoint: cpoint_list[0],
       ...fields,
     };
-    if (error) (frame as any).__ERROR__ = error
+    if (error) (frame as any).__ERROR__ = error;
     if (
       (raw_next >= 1100 && raw_next <= 1299) ||
       (raw_next <= -1100 && raw_next >= -1299)
@@ -108,22 +152,27 @@ export function make_frames(text: string, files: IEntityInfo['files']): Record<s
     if (!frame.bpoint) delete frame.bpoint;
     if (!frame.cpoint) delete frame.cpoint;
 
-    const sound = take(frame, 'sound');
-    if (sound) frame.sound = sound + '.mp3';
+    const sound = take(frame, "sound");
+    if (sound) frame.sound = sound + ".mp3";
     frames[frame_id] = frame;
 
-    const dircontrol = take(cpoint_list[0], 'dircontrol');
+    const dircontrol = take(cpoint_list[0], "dircontrol");
     if (dircontrol) {
-      frame.hit = frame.hit || {}
+      frame.hit = frame.hit || {};
       if (dircontrol === 1) {
-        frame.hit.B = add_next_frame(frame.hit.B, { wait: 'i', facing: Defines.FacingFlag.Backward })
+        frame.hit.B = add_next_frame(frame.hit.B, {
+          wait: "i",
+          facing: Defines.FacingFlag.Backward,
+        });
       } else {
-        frame.hit.F = add_next_frame(frame.hit.F, { wait: 'i', facing: Defines.FacingFlag.Backward })
+        frame.hit.F = add_next_frame(frame.hit.F, {
+          wait: "i",
+          facing: Defines.FacingFlag.Backward,
+        });
       }
     }
 
-
-    const dvx = take(frame, 'dvx');
+    const dvx = take(frame, "dvx");
     if (dvx === 550) frame.dvx = dvx;
     else if (not_zero_num(dvx)) {
       if (dvx >= 501 && dvx <= 549) {
@@ -140,7 +189,7 @@ export function make_frames(text: string, files: IEntityInfo['files']): Record<s
       frame.state === Defines.State.Attacking ||
       frame.state === Defines.State.Rowing
     ) {
-      const dvz = take(frame, 'dvz');
+      const dvz = take(frame, "dvz");
       if (dvz === 550) frame.dvz = dvz;
       else if (not_zero_num(dvz)) {
         if (dvz >= 501 && dvz <= 549) {
@@ -149,12 +198,12 @@ export function make_frames(text: string, files: IEntityInfo['files']): Record<s
         } else if (dvz >= 551) {
           frame.dvz = dvz - 550;
           frame.vzm = SpeedMode.FixedLf2;
-        } else { 
-          frame.speedz = dvz; 
+        } else {
+          frame.speedz = dvz;
         }
       }
     } else {
-      const dvz = take(frame, 'dvz');
+      const dvz = take(frame, "dvz");
       if (dvz === 550) frame.dvz = dvz;
       else if (not_zero_num(dvz)) {
         if (dvz >= 501 && dvz <= 549) {
@@ -169,7 +218,7 @@ export function make_frames(text: string, files: IEntityInfo['files']): Record<s
       }
     }
 
-    const dvy = take(frame, 'dvy');
+    const dvy = take(frame, "dvy");
     if (dvy === 550) frame.dvy = dvy;
     else if (not_zero_num(dvy)) {
       if (dvy >= 501 && dvy <= 549) {
@@ -203,49 +252,61 @@ export function make_frames(text: string, files: IEntityInfo['files']): Record<s
       }
       case Defines.State.LouisCastOff:
         frame.opoint = frame.opoint || [];
-        frame.opoint.push({
-          kind: OpointKind.Normal,
-          x: 39,
-          y: 79,
-          oid: '218',
-          dvy: 5,
-          action: { id: 'auto' }
-        }, {
-          kind: OpointKind.Normal,
-          x: 39,
-          y: 79,
-          oid: '217',
-          dvy: 4,
-          dvx: 8,
-          action: { id: 'auto', facing: Defines.FacingFlag.Backward },
-          multi: 2
-        }, {
-          kind: OpointKind.Normal,
-          x: 39,
-          y: 79,
-          oid: '217',
-          dvy: 4,
-          dvx: 8,
-          action: { id: 'auto' },
-          multi: 2
-        })
+        frame.opoint.push(
+          {
+            kind: OpointKind.Normal,
+            x: 39,
+            y: 79,
+            oid: "218",
+            dvy: 5,
+            action: { id: "auto" },
+          },
+          {
+            kind: OpointKind.Normal,
+            x: 39,
+            y: 79,
+            oid: "217",
+            dvy: 4,
+            dvx: 8,
+            action: { id: "auto", facing: Defines.FacingFlag.Backward },
+            multi: 2,
+          },
+          {
+            kind: OpointKind.Normal,
+            x: 39,
+            y: 79,
+            oid: "217",
+            dvy: 4,
+            dvx: 8,
+            action: { id: "auto" },
+            multi: 2,
+          },
+        );
         break;
       case Defines.State.Falling:
         if (frame.bdy)
           for (const bdy of frame.bdy) {
             if (bdy.kind === BdyKind.Normal) {
               bdy.test = new CondMaker<C_Val>()
-                .add(C_Val.ItrFall, '>=', Defines.DEFAULT_FALL_VALUE_MAX - Defines.DEFAULT_FALL_VALUE_DIZZY)
-                .or(C_Val.ItrKind, '==', ItrKind.MagicFlute)
-                .or(C_Val.ItrKind, '==', ItrKind.MagicFlute2)
-                .done()
+                .add(
+                  C_Val.ItrFall,
+                  ">=",
+                  Defines.DEFAULT_FALL_VALUE_MAX -
+                    Defines.DEFAULT_FALL_VALUE_DIZZY,
+                )
+                .or(C_Val.ItrKind, "==", ItrKind.MagicFlute)
+                .or(C_Val.ItrKind, "==", ItrKind.MagicFlute2)
+                .done();
             }
           }
         break;
     }
     if (frame.itr) {
       for (const itr of frame.itr) {
-        if (itr.kind === ItrKind.SuperPunchMe && (!itr.vrest || itr.vrest < frame.wait)) {
+        if (
+          itr.kind === ItrKind.SuperPunchMe &&
+          (!itr.vrest || itr.vrest < frame.wait)
+        ) {
           itr.vrest = frame.wait;
         }
       }

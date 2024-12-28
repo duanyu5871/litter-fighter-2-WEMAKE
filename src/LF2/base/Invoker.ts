@@ -1,4 +1,3 @@
-
 /**
  * 函数批量调用器
  *
@@ -38,7 +37,7 @@ export default class Invoker<F extends (...args: any[]) => any = () => void> {
    * @returns {ReturnType<F>[]}
    */
   invoke(...args: Parameters<F>): ReturnType<F>[] {
-    const ret: ReturnType<F>[] = []
+    const ret: ReturnType<F>[] = [];
     for (const f of this._f_list) ret.push(f(...args));
     return ret;
   }
@@ -58,5 +57,7 @@ export default class Invoker<F extends (...args: any[]) => any = () => void> {
     this.clear();
   }
 
-  clear_fn = () => { this.clear() }
+  clear_fn = () => {
+    this.clear();
+  };
 }

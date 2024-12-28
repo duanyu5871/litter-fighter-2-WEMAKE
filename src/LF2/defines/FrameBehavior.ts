@@ -31,38 +31,39 @@ export enum FrameBehavior {
    *    - 此值不会有任何作用（但依旧保留）
    *    - 生成将通过opoint被实现
    */
-  BatStart = 8, _08 = 8,
-
+  BatStart = 8,
+  _08 = 8,
 
   /**
    * 用于：
    * * [X] LF2
    * * [X] WEMAKE
-   * 
+   *
    * 殃殒天降的开始(视敌人数目而增加，基本数值是四个)
-   * 
+   *
    * - WEMAKE中：
    *    - 此值不会有任何作用（但依旧保留）
    *    - 生成将通过opoint被实现
    */
-  FirzenDisasterStart = 9, _09 = 9,
-  _10 = 10,//= 加速(从慢变快)
-  _11 = 11,//= 极地火山
-  _12 = 12,//= 吸血蝙蝠
+  FirzenDisasterStart = 9,
+  _09 = 9,
+  _10 = 10, //= 加速(从慢变快)
 
+  /**
+   * 用于：
+   * * [X] LF2
+   * * [X] WEMAKE
+   *
+   * 极地火山的开始
+   *
+   * - WEMAKE中：
+   *    - 此值不会有任何作用（但依旧保留）
+   *    - 生成将通过opoint被实现
+   */
+  FirzenVolcanoStart,
+  _11 = 11,
 
-
-
-
-
-
-
-
-
-
-
-
-
+  _12 = 12, //= 吸血蝙蝠
 
   /**
    * 用于：
@@ -78,10 +79,12 @@ export enum FrameBehavior {
    *    - 此值不会有任何作用（但依旧保留）
    *    - 生成将通过opoint被实现
    */
-  JulianBallStart = 13, _13 = 13,
+  JulianBallStart = 13,
+  _13 = 13,
 
   /**
    * 连环重炮
    */
-  JulianBall = 14, _14 = 14
+  JulianBall = 14,
+  _14 = 14,
 }

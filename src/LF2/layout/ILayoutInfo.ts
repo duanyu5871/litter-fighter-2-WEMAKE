@@ -1,7 +1,7 @@
 import IStyle from "../defines/IStyle";
 
 export interface ILayoutInfo {
-  values?: { [x in string]?: any },
+  values?: { [x in string]?: any };
   id?: string;
   name?: string;
   img?: string[] | string;

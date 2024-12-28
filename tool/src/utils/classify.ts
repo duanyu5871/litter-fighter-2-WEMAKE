@@ -1,16 +1,16 @@
-import fs from 'fs/promises';
+import fs from "fs/promises";
 export interface ClassifyResult {
-  directories: string[],
-  unknown: string[],
+  directories: string[];
+  unknown: string[];
   file: {
-    dat: string[],
-    wma: string[],
-    wav: string[],
-    png: string[],
-    bmp: string[],
-    lfr: string[],
-    exe: string[],
-  }
+    dat: string[];
+    wma: string[];
+    wav: string[];
+    png: string[];
+    bmp: string[];
+    lfr: string[];
+    exe: string[];
+  };
 }
 const get_default_result = (): ClassifyResult => ({
   directories: [],
@@ -23,19 +23,24 @@ const get_default_result = (): ClassifyResult => ({
     bmp: [],
     lfr: [],
     exe: [],
-  }
-})
-const known_extensions = Object.keys(get_default_result().file) as (keyof ClassifyResult['file'])[]
+  },
+});
+const known_extensions = Object.keys(
+  get_default_result().file,
+) as (keyof ClassifyResult["file"])[];
 
-export async function classify(cur_dir_path: string, result?: ClassifyResult): Promise<ClassifyResult> {
+export async function classify(
+  cur_dir_path: string,
+  result?: ClassifyResult,
+): Promise<ClassifyResult> {
   result = result ?? get_default_result();
   for (const name of await fs.readdir(cur_dir_path)) {
-    const sub_path = cur_dir_path + '/' + name;
+    const sub_path = cur_dir_path + "/" + name;
     const stat = await fs.stat(sub_path);
     if (stat.isFile()) {
-      let known = false
+      let known = false;
       for (const key of known_extensions) {
-        if (name.endsWith('.' + key)) {
+        if (name.endsWith("." + key)) {
           result.file[key].push(sub_path);
           known = true;
           break;

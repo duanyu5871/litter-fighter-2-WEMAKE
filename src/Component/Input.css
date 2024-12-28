@@ -1,6 +1,6 @@
 .lf2ui_input {
-  color: #5A73D6;
-  border: 2px #5A73D6 solid;
+  color: #5a73d6;
+  border: 2px #5a73d6 solid;
   border-radius: 3px;
   padding: 2px 4px;
   background-color: transparent;
@@ -14,14 +14,14 @@
 }
 
 .lf2ui_input:hover {
-  color: #FFFFFF;
-  border-color: #FFFFFF;
+  color: #ffffff;
+  border-color: #ffffff;
 }
 
 .lf2ui_input:active {
-  color: #FFFFFF;
-  border-color: #FFFFFF;
-  background-color: #5A73D655;
+  color: #ffffff;
+  border-color: #ffffff;
+  background-color: #5a73d655;
 }
 
 .lf2ui_input:disabled {

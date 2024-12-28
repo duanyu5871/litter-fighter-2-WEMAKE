@@ -13,7 +13,7 @@ import LaunchPageLogic from "./LaunchPageLogic";
 import { LayoutComponent } from "./LayoutComponent";
 import LoadingFileNameDisplayer from "./LoadingFileNameDisplayer";
 import OpacityHover from "./OpacityHover";
-import PlayerCharacterHead from './PlayerCharacterHead';
+import PlayerCharacterHead from "./PlayerCharacterHead";
 import PlayerCharacterName from "./PlayerCharacterName";
 import PlayerCharacterThumb from "./PlayerCharacterThumb";
 import PlayerKeyEditor from "./PlayerKeyEditor";
@@ -32,68 +32,71 @@ import VerticalLayout from "./VerticalLayout";
 import VsModeLogic from "./VsModeLogic";
 
 class Factory {
-  static readonly TAG = `Layout Component Factory`
+  static readonly TAG = `Layout Component Factory`;
   private _component_map = new Map<string, typeof LayoutComponent>([
-    ['game_loading_file_name', LoadingFileNameDisplayer],
-    ['key_set', PlayerKeyEditor],
-    ['key_txt', PlayerKeyText],
-    ['stage_transitions', StageTransitions],
-    ['player_c_sel_logic', CharacterSelLogic],
-    ['player_c_head', PlayerCharacterHead],
-    ['player_c_thumb', PlayerCharacterThumb],
-    ['player_c_name', PlayerCharacterName],
-    ['player_name', PlayerName],
-    ['player_t_name', PlayerTeamName],
-    ['game_prepare_logic', GamePrepareLogic],
-    ['com_number', ComNumButton],
-    ['stage_title_show', StageTitleShow],
-    ['reachable_layout_group', ReachableLayoutGroup],
-    ['reachable_layout', ReachableLayout],
-    ['launch_page', LaunchPageLogic],
-    ['difficulty_text', DifficultyText],
-    ['stage_name_text', StageNameText],
-    ['background_name_text', BackgroundNameText],
-    ['opacity_hover', OpacityHover],
-    ['vertical_layout', VerticalLayout],
-    ['player_score', PlayerScore],
-    ['player_score_cell', PlayerScoreCell],
-    ['vs_mode_logic', VsModeLogic],
-    ['demo_mode_logic', DemoModeLogic],
-    ['playing_time', PlayingTimeText],
-    ['random_img_on_layout_resume', RandomImgOnLayoutResume]
-  ])
-  create(layout: Layout, components: ILayoutInfo['component']): LayoutComponent[] {
+    ["game_loading_file_name", LoadingFileNameDisplayer],
+    ["key_set", PlayerKeyEditor],
+    ["key_txt", PlayerKeyText],
+    ["stage_transitions", StageTransitions],
+    ["player_c_sel_logic", CharacterSelLogic],
+    ["player_c_head", PlayerCharacterHead],
+    ["player_c_thumb", PlayerCharacterThumb],
+    ["player_c_name", PlayerCharacterName],
+    ["player_name", PlayerName],
+    ["player_t_name", PlayerTeamName],
+    ["game_prepare_logic", GamePrepareLogic],
+    ["com_number", ComNumButton],
+    ["stage_title_show", StageTitleShow],
+    ["reachable_layout_group", ReachableLayoutGroup],
+    ["reachable_layout", ReachableLayout],
+    ["launch_page", LaunchPageLogic],
+    ["difficulty_text", DifficultyText],
+    ["stage_name_text", StageNameText],
+    ["background_name_text", BackgroundNameText],
+    ["opacity_hover", OpacityHover],
+    ["vertical_layout", VerticalLayout],
+    ["player_score", PlayerScore],
+    ["player_score_cell", PlayerScoreCell],
+    ["vs_mode_logic", VsModeLogic],
+    ["demo_mode_logic", DemoModeLogic],
+    ["playing_time", PlayingTimeText],
+    ["random_img_on_layout_resume", RandomImgOnLayoutResume],
+  ]);
+  create(
+    layout: Layout,
+    components: ILayoutInfo["component"],
+  ): LayoutComponent[] {
     if (!components?.length) return [];
-    if (is_str(components)) components = [components]
+    if (is_str(components)) components = [components];
     const ret: LayoutComponent[] = [];
     for (const component_expression of components) {
       const [func_name, args] = read_call_func_expression(component_expression);
       if (!func_name) {
         Warn.print(
-          Factory.TAG + '::create',
-          'expression not correct! expression:',
-          component_expression
-        )
+          Factory.TAG + "::create",
+          "expression not correct! expression:",
+          component_expression,
+        );
         continue;
       }
       const Cls = this._component_map.get(func_name);
       if (!Cls) {
         Warn.print(
-          Factory.TAG + '::create',
-          'Component class not found! expression:',
-          component_expression
-        )
+          Factory.TAG + "::create",
+          "Component class not found! expression:",
+          component_expression,
+        );
         continue;
       }
 
       const component = new Cls(layout, func_name).init(...args);
       ret.push(component);
     }
-    return ret
+    return ret;
   }
   register(key: string, Cls: typeof LayoutComponent) {
     this._component_map.set(key, Cls);
   }
 }
 const factory = new Factory();
-export default factory
+export default factory;

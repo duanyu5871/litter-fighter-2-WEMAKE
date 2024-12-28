@@ -1,4 +1,3 @@
-
 export interface IBgInfo {
   name: string;
   shadow: string;

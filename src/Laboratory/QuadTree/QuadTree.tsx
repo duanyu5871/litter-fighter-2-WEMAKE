@@ -1,11 +1,7 @@
-
 export class QuadTree<Item = any> {
-  children: [
-    QuadTree<Item>,
-    QuadTree<Item>,
-    QuadTree<Item>,
-    QuadTree<Item>
-  ] | null = null;
+  children:
+    | [QuadTree<Item>, QuadTree<Item>, QuadTree<Item>, QuadTree<Item>]
+    | null = null;
   parents: QuadTree<Item>[] = [];
   index: number = 0;
   x: number = 0;
@@ -16,7 +12,7 @@ export class QuadTree<Item = any> {
   items: Item[] = [];
 
   protected _root: QuadTree<Item> = this;
-  protected _warn: (...args: any[]) => void = () => { } // only of root
+  protected _warn: (...args: any[]) => void = () => {}; // only of root
   protected _dirties: QuadTree[] = []; // only of root
   protected _wild_items: Item[] = []; // only of root
   protected _capacity: number = 1; // only of root
@@ -52,7 +48,14 @@ export class QuadTree<Item = any> {
     this._root._max_depth = num;
     this._root._dirties = [this.root];
   }
-  constructor(x: number, y: number, w: number, h: number, capacity: number, max_depth: number) {
+  constructor(
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    capacity: number,
+    max_depth: number,
+  ) {
     this.x = Math.floor(x);
     this.y = Math.floor(y);
     this.w = Math.max(Math.ceil(w), 2);
@@ -66,9 +69,22 @@ export class QuadTree<Item = any> {
   is_parent_of(node: QuadTree<Item>) {
     return node.parents.indexOf(this) >= 0;
   }
-  contains: (x: number, y: number, w: number, h: number, item: Item) => boolean = () => false;
-  node_changed: (item: Item, node: QuadTree<Item>) => void = () => { };
-  new_child = (x: number, y: number, w: number, h: number, c: number, d: number) => new QuadTree(x, y, w, h, c, d)
+  contains: (
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    item: Item,
+  ) => boolean = () => false;
+  node_changed: (item: Item, node: QuadTree<Item>) => void = () => {};
+  new_child = (
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    c: number,
+    d: number,
+  ) => new QuadTree(x, y, w, h, c, d);
   reallocate() {
     const items = this.all_items;
     this.children = null;
@@ -77,7 +93,7 @@ export class QuadTree<Item = any> {
     for (const item of items) {
       const node = this.root.insert(item);
       if (!node) {
-        this.warn('can not insert ??', item, this);
+        this.warn("can not insert ??", item, this);
         debugger;
       }
     }
@@ -94,8 +110,7 @@ export class QuadTree<Item = any> {
   }
   not_empty_parant(): QuadTree<Item> | null {
     for (const parent of this.parents) {
-      if (!parent.empty)
-        return parent;
+      if (!parent.empty) return parent;
     }
     return null;
   }
@@ -104,16 +119,21 @@ export class QuadTree<Item = any> {
     if (idx < 0) return false;
     this.items.splice(idx, 1);
     const node = this.not_empty_parant() || this.root;
-    if (!this.root._dirties.find(other => other.is_parent_of(node) || other === node)) {
-      this.root._dirties = this.root._dirties.filter(other => !other.is_child_of(node));
+    if (
+      !this.root._dirties.find(
+        (other) => other.is_parent_of(node) || other === node,
+      )
+    ) {
+      this.root._dirties = this.root._dirties.filter(
+        (other) => !other.is_child_of(node),
+      );
       this.root._dirties.unshift(node);
     }
-    --this.root._item_count
+    --this.root._item_count;
     return true;
   }
   get count(): number {
-    if (this.children)
-      return this.children.reduce((n, c) => n + c.count, 0);
+    if (this.children) return this.children.reduce((n, c) => n + c.count, 0);
     return this.items.length;
   }
   insert(item: Item): QuadTree<Item> | null {
@@ -121,17 +141,21 @@ export class QuadTree<Item = any> {
     if (!this.contains(x, y, w, h, item)) {
       return null;
     }
-    if (!this.children &&
-      (this.items.length < this.capacity || this.depth >= this._max_depth || this.w < 2 || this.h < 2)
+    if (
+      !this.children &&
+      (this.items.length < this.capacity ||
+        this.depth >= this._max_depth ||
+        this.w < 2 ||
+        this.h < 2)
     ) {
       this.items.push(item);
       this.node_changed(item, this);
-      this.root._item_count++
+      this.root._item_count++;
       return this;
     }
     const children = this.children || this.divide();
 
-    this.root._item_count -= this.items.length
+    this.root._item_count -= this.items.length;
     for (const item of this.items) {
       let node =
         children[0].insert(item) ||
@@ -140,7 +164,7 @@ export class QuadTree<Item = any> {
         children[3].insert(item) ||
         this.root.insert(item);
       if (!node) {
-        this.warn('can not insert ??', item, this);
+        this.warn("can not insert ??", item, this);
         debugger;
       }
     }
@@ -152,7 +176,7 @@ export class QuadTree<Item = any> {
       children[3].insert(item) ||
       this.root.insert(item);
     if (!node) {
-      this.warn('can not insert ??', item, this);
+      this.warn("can not insert ??", item, this);
       debugger;
     }
     return node;
@@ -185,8 +209,7 @@ export class QuadTree<Item = any> {
     return this.children;
   }
   get all_items(): Item[] {
-    if (!this.children)
-      return this.items;
+    if (!this.children) return this.items;
     return [
       ...this.children[0].all_items,
       ...this.children[1].all_items,
@@ -203,8 +226,7 @@ export class QuadTree<Item = any> {
         out.push(item);
       }
     }
-    if (!this.children)
-      return out;
+    if (!this.children) return out;
     this.children[0].query(x, y, w, h, out);
     this.children[1].query(x, y, w, h, out);
     this.children[2].query(x, y, w, h, out);
@@ -244,7 +266,7 @@ export class QuadTree<Item = any> {
       for (const item of this._wild_items) {
         const node = this.insert(item);
         if (!node) {
-          this.warn('can not insert ??', item, this);
+          this.warn("can not insert ??", item, this);
           debugger;
         }
       }

@@ -18,5 +18,5 @@
 .lf2ui_checkbox_inner_hide {
   transition: all 200ms;
   opacity: 0;
-  transform: rotate(-10deg) scale(.5);
+  transform: rotate(-10deg) scale(0.5);
 }

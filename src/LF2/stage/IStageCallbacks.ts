@@ -5,6 +5,6 @@ export default interface IStageCallbacks {
   on_phase_changed?(
     stage: Stage,
     curr: IStagePhaseInfo | undefined,
-    prev: IStagePhaseInfo | undefined
+    prev: IStagePhaseInfo | undefined,
   ): void;
 }

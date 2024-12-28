@@ -1,11 +1,15 @@
 import React, { useMemo } from "react";
-import './Button.css';
-import { IStatusButtonProps, IStatusItem, StatusButton } from './StatusButton';
+import "./Button.css";
+import { IStatusButtonProps, IStatusItem, StatusButton } from "./StatusButton";
 
-export interface IToggleButtonProps extends Omit<IStatusButtonProps<boolean>, 'onChange'> {
-  children?: [React.ReactNode, React.ReactNode] | [React.ReactNode] | React.ReactNode;
+export interface IToggleButtonProps
+  extends Omit<IStatusButtonProps<boolean>, "onChange"> {
+  children?:
+    | [React.ReactNode, React.ReactNode]
+    | [React.ReactNode]
+    | React.ReactNode;
   onChange?: (v: boolean) => void;
-};
+}
 export function ToggleButton(props: IToggleButtonProps) {
   const { children, onChange, items, ..._p } = props;
 
@@ -15,15 +19,16 @@ export function ToggleButton(props: IToggleButtonProps) {
       const [a, b = a] = children;
       return [
         { value: false, label: a },
-        { value: true, label: b }
-      ]
+        { value: true, label: b },
+      ];
     }
     return [
       { value: false, label: children },
-      { value: true, label: children }
-    ]
-  }, [items, children])
+      { value: true, label: children },
+    ];
+  }, [items, children]);
 
-  return <StatusButton {..._p} items={_items} onChange={v => onChange?.(!!v)} />
+  return (
+    <StatusButton {..._p} items={_items} onChange={(v) => onChange?.(!!v)} />
+  );
 }
-

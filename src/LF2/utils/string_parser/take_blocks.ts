@@ -1,8 +1,13 @@
-import { match_all } from './match_all';
+import { match_all } from "./match_all";
 
-export function take_blocks(text: string, start: string, end: string, f?: (remains: string) => void): string[] {
-  const regexp = new RegExp(`${start.trim()}((.|\\n)+?)${end.trim()}`, 'g');
-  if (!f) return match_all(text, regexp).map(v => v[1]);
+export function take_blocks(
+  text: string,
+  start: string,
+  end: string,
+  f?: (remains: string) => void,
+): string[] {
+  const regexp = new RegExp(`${start.trim()}((.|\\n)+?)${end.trim()}`, "g");
+  if (!f) return match_all(text, regexp).map((v) => v[1]);
 
   const positions: [number, number][] = [];
   const ret = match_all(text, regexp).map((v) => {
@@ -10,13 +15,13 @@ export function take_blocks(text: string, start: string, end: string, f?: (remai
     return v[1];
   });
   if (positions.length) {
-    let remains = '';
+    let remains = "";
     let start = 0;
     for (const [from, to] of positions) {
-      remains += text.substring(start, from)
+      remains += text.substring(start, from);
       start = to;
     }
-    remains += text.substring(start)
+    remains += text.substring(start);
     f(remains);
   } else {
     f(text);

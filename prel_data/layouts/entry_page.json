@@ -2,9 +2,7 @@
   "name": "入口页",
   "id": "entry",
   "bg_color": "rgb(16, 32, 108)",
-  "component": [
-    "reachable_layout_group(main,ud)"
-  ],
+  "component": ["reachable_layout_group(main,ud)"],
   "items": [
     {
       "id": "bg_left",
@@ -24,9 +22,7 @@
         "sprite/MENU_BACK13.png"
       ],
       "size": "0, 450",
-      "component": [
-        "random_img_on_layout_resume(entry_page)"
-      ]
+      "component": ["random_img_on_layout_resume(entry_page)"]
     },
     {
       "id": "bg_right",
@@ -49,9 +45,7 @@
       "center": "1, 0",
       "pos": "794, 0",
       "flip_x": true,
-      "component": [
-        "random_img_on_layout_resume(entry_page)"
-      ]
+      "component": ["random_img_on_layout_resume(entry_page)"]
     },
     {
       "id": "main_title",
@@ -74,10 +68,7 @@
           "center": "0.5, 0",
           "pos": "1, -46",
           "auto_focus": true,
-          "component": [
-            "opacity_hover(0,1)",
-            "reachable_layout(main)"
-          ],
+          "component": ["opacity_hover(0,1)", "reachable_layout(main)"],
           "actions": {
             "click": [
               "sound(ok)",
@@ -93,15 +84,9 @@
           "rect": "535, 137, 256, 26",
           "center": "0.5, 0",
           "pos": "1, -14",
-          "component": [
-            "opacity_hover(0,1)",
-            "reachable_layout(main)"
-          ],
+          "component": ["opacity_hover(0,1)", "reachable_layout(main)"],
           "actions": {
-            "click": [
-              "sound(ok)",
-              "alert(还没想好呢)"
-            ]
+            "click": ["sound(ok)", "alert(还没想好呢)"]
           }
         },
         {
@@ -110,15 +95,9 @@
           "rect": "535, 168, 256, 26",
           "center": "0.5, 0",
           "pos": "1, 17",
-          "component": [
-            "opacity_hover(0,1)",
-            "reachable_layout(main)"
-          ],
+          "component": ["opacity_hover(0,1)", "reachable_layout(main)"],
           "actions": {
-            "click": [
-              "sound(ok)",
-              "push_layout(ctrl_settings)"
-            ]
+            "click": ["sound(ok)", "push_layout(ctrl_settings)"]
           }
         }
       ]

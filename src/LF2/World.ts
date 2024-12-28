@@ -1,24 +1,30 @@
-import { Warn } from '../Log';
-import { IOrthographicCameraNode } from './3d/IOrthographicCamera';
-import { ISceneNode } from './3d/ISceneNode';
-import { IWorldCallbacks } from './IWorldCallbacks';
-import LF2 from './LF2';
-import Callbacks from './base/Callbacks';
-import FPS from './base/FPS';
+import { Warn } from "../Log";
+import { IOrthographicCameraNode } from "./3d/IOrthographicCamera";
+import { ISceneNode } from "./3d/ISceneNode";
+import { IWorldCallbacks } from "./IWorldCallbacks";
+import LF2 from "./LF2";
+import Callbacks from "./base/Callbacks";
+import FPS from "./base/FPS";
 import { NoEmitCallbacks } from "./base/NoEmitCallbacks";
-import { IBdyInfo, IFrameInfo, IItrInfo } from './defines';
-import { ICollision } from './defines/ICollision';
-import { Defines } from './defines/defines';
-import Ditto from './ditto';
-import Entity from './entity/Entity';
-import { Factory } from './entity/Factory';
-import { is_ball, is_base_ctrl, is_character, is_local_ctrl, is_weapon } from './entity/type_check';
-import { EntityRender } from './renderer/EntityRender';
-import Stage from './stage/Stage';
-import { WhatNext } from './state/State_Base';
-import { find } from './utils/container_help';
-import float_equal from './utils/math/float_equal';
-import { is_num } from './utils/type_check';
+import { IBdyInfo, IFrameInfo, IItrInfo } from "./defines";
+import { ICollision } from "./defines/ICollision";
+import { Defines } from "./defines/defines";
+import Ditto from "./ditto";
+import Entity from "./entity/Entity";
+import { Factory } from "./entity/Factory";
+import {
+  is_ball,
+  is_base_ctrl,
+  is_character,
+  is_local_ctrl,
+  is_weapon,
+} from "./entity/type_check";
+import { EntityRender } from "./renderer/EntityRender";
+import Stage from "./stage/Stage";
+import { WhatNext } from "./state/State_Base";
+import { find } from "./utils/container_help";
+import float_equal from "./utils/math/float_equal";
+import { is_num } from "./utils/type_check";
 export interface IBounding {
   left: number;
   right: number;
@@ -28,8 +34,8 @@ export interface IBounding {
   far: number;
 }
 export class World {
-  static readonly TAG = 'World';
-  readonly lf2: LF2
+  static readonly TAG = "World";
+  readonly lf2: LF2;
   readonly _callbacks = new Callbacks<IWorldCallbacks>();
   itr_shaking: number = Defines.DEFAULT_ITR_SHAKING;
   itr_motionless: number = Defines.DEFAULT_ITR_MOTIONLESS;
@@ -54,30 +60,29 @@ export class World {
   cha_bc_spd: number = Defines.CHARACTER_BOUNCING_SPD;
   cha_bc_tst_spd: number = Defines.CHARACTER_BOUNCING_TEST_SPD;
 
-
   get callbacks(): NoEmitCallbacks<IWorldCallbacks> {
-    return this._callbacks
+    return this._callbacks;
   }
 
   /**
    * 按键“双击”判定间隔，单位（帧数）
-   * 
+   *
    * 当同个按键在“双击判定间隔”之内按下两次，
    * 且中途未按下其对应冲突按键，视为“双击”。
-   * 
+   *
    */
   double_click_interval = Defines.DOUBLE_CLICK_INTERVAL;
 
-  /** 
+  /**
    * 按键“按下”/“双击”的判定持续帧，单位：帧数
-   * 
+   *
    * 当某按键被“按下”（不松开），接下来的数帧（数值key_hit_duration）内，均判定为“按下”。
    * 此时若存在对应的“按键‘按下’跳转动作”，且满足跳转条件，角色将会进入对应的“按键‘按下’跳转动作”。
-   * 
+   *
    * 当某双击后，接下来的数帧（数值key_hit_duration）内，均判定为“双击”。
    * 此时若存在对应的“按键‘双击’跳转动作”，且满足跳转条件，角色将会进入对应的“按键‘双击’跳转动作”。
    */
-  key_hit_duration = Defines.KEY_HIT_DURATION
+  key_hit_duration = Defines.KEY_HIT_DURATION;
 
   protected _gravity = Defines.GRAVITY;
 
@@ -93,50 +98,76 @@ export class World {
   readonly player_slot_characters = new Map<string, Entity>();
   readonly nearest_enemy_requesters = new Set<Entity>();
 
-  get stage() { return this._stage }
+  get stage() {
+    return this._stage;
+  }
   set stage(v) {
     if (v === this._stage) return;
     const o = this._stage;
     this._stage = v;
-    this._callbacks.emit('on_stage_change')(v, o);
+    this._callbacks.emit("on_stage_change")(v, o);
     o.dispose();
-    v.enter_phase(0)
+    v.enter_phase(0);
   }
 
-  get bg() { return this._stage.bg }
+  get bg() {
+    return this._stage.bg;
+  }
 
-  get left() { return this.bg.left || 0 }
-  get right() { return this.bg.right || 0 }
-  get near() { return this.bg.near || 0 }
-  get far() { return this.bg.far || 0 }
-  get width() { return this.bg.width || 0 }
-  get depth() { return this.bg.depth || 0 };
-  get middle() { return this.bg.middle || { x: 0, z: 0 } }
+  get left() {
+    return this.bg.left || 0;
+  }
+  get right() {
+    return this.bg.right || 0;
+  }
+  get near() {
+    return this.bg.near || 0;
+  }
+  get far() {
+    return this.bg.far || 0;
+  }
+  get width() {
+    return this.bg.width || 0;
+  }
+  get depth() {
+    return this.bg.depth || 0;
+  }
+  get middle() {
+    return this.bg.middle || { x: 0, z: 0 };
+  }
 
   protected _screen_w: number = Defines.CLASSIC_SCREEN_WIDTH;
   protected _screen_h: number = Defines.CLASSIC_SCREEN_HEIGHT;
 
-  get screen_w(): number { return this._screen_w; }
-  get screen_h(): number { return this._screen_h; }
-  get gravity(): number { return this._gravity; }
-  set gravity(v: number) { this.set_gravity(v); }
+  get screen_w(): number {
+    return this._screen_w;
+  }
+  get screen_h(): number {
+    return this._screen_h;
+  }
+  get gravity(): number {
+    return this._gravity;
+  }
+  set gravity(v: number) {
+    this.set_gravity(v);
+  }
   set_gravity(v: number) {
-    const prev = this._gravity
+    const prev = this._gravity;
     if (float_equal(v, prev)) return;
     this._gravity = v;
-    this._callbacks.emit('on_gravity_change')(v, prev, this)
+    this._callbacks.emit("on_gravity_change")(v, prev, this);
   }
   constructor(lf2: LF2, canvas: HTMLCanvasElement) {
     this.lf2 = lf2;
-    const w = this._screen_w = Defines.CLASSIC_SCREEN_WIDTH;
-    const h = this._screen_h = 450;// Defines.OLD_SCREEN_HEIGHT;
+    const w = (this._screen_w = Defines.CLASSIC_SCREEN_WIDTH);
+    const h = (this._screen_h = 450); // Defines.OLD_SCREEN_HEIGHT;
 
     this.scene = new Ditto.SceneNode(lf2, canvas).set_size(w * 4, h * 4);
     this.camera = new Ditto.OrthographicCamera(lf2)
       .setup(0, w, h, 0)
       .set_position(void 0, void 0, 10)
       .set_name("default_orthographic_camera")
-      .apply()
+      .apply();
     this.scene.add(this.camera);
     this._stage = new Stage(this, Defines.VOID_BG);
   }
@@ -145,48 +176,53 @@ export class World {
 
   add_entities(...entities: Entity[]) {
     for (const entity of entities) {
-      if (is_character(entity) && is_base_ctrl(entity.controller) && this.lf2.player_infos.has(entity.controller.player_id)) {
+      if (
+        is_character(entity) &&
+        is_base_ctrl(entity.controller) &&
+        this.lf2.player_infos.has(entity.controller.player_id)
+      ) {
         this.player_slot_characters.set(entity.controller.player_id, entity);
-        this._callbacks.emit('on_player_character_add')(entity.controller.player_id)
+        this._callbacks.emit("on_player_character_add")(
+          entity.controller.player_id,
+        );
       }
 
-      this.entities.add(entity)
+      this.entities.add(entity);
       const render = new EntityRender(entity).set_entity(entity);
-      render.attach()
+      render.attach();
       this.entity_renders.set(entity, render);
       render.indicators.flags = this._indicator_flags;
     }
   }
 
   del_entity(e: Entity) {
-    if (!this.entities.delete(e))
-      return false;
+    if (!this.entities.delete(e)) return false;
     if (e.controller?.player_id) {
-      const ok = this.player_slot_characters.delete(e.controller.player_id)
-      if (ok) this._callbacks.emit('on_player_character_del')(e.controller.player_id)
+      const ok = this.player_slot_characters.delete(e.controller.player_id);
+      if (ok)
+        this._callbacks.emit("on_player_character_del")(e.controller.player_id);
     }
     const r = this.entity_renders.get(e);
     if (r) {
       r.dispose();
       this.entity_renders.delete(e);
     }
-    e.dispose()
+    e.dispose();
     return true;
   }
 
   del_entities(entities: Entity[]) {
     for (const e of entities) {
-      this.del_entity(e)
+      this.del_entity(e);
     }
   }
 
   private _need_FPS: boolean = true;
   private _need_UPS: boolean = true;
-  private _FPS = new FPS(0.90)
-  private _UPS = new FPS(0.90);
+  private _FPS = new FPS(0.9);
+  private _UPS = new FPS(0.9);
   private _render_worker_id?: ReturnType<typeof Ditto.Render.add>;
   private _update_worker_id?: ReturnType<typeof Ditto.Interval.add>;
-
 
   /**
    * 同步渲染
@@ -196,18 +232,18 @@ export class World {
    */
   private _sync_render: 0 | 1 | 2 = 0;
   get sync_render(): number {
-    return this._sync_render
+    return this._sync_render;
   }
   set sync_render(v: number) {
-    this.set_sync_render(v)
+    this.set_sync_render(v);
   }
   set_sync_render(v: number = this._sync_render + 1) {
     if (this._sync_render === v) return;
-    const prev = this._sync_render
-    const curr = this._sync_render = Math.floor(v) % 3 as 0 | 1 | 2;
+    const prev = this._sync_render;
+    const curr = (this._sync_render = (Math.floor(v) % 3) as 0 | 1 | 2);
     this.start_render();
     this.start_update();
-    this._callbacks.emit('on_is_sync_render_changed')(curr, prev)
+    this._callbacks.emit("on_is_sync_render_changed")(curr, prev);
   }
   stop_render() {
     this._render_worker_id && Ditto.Render.del(this._render_worker_id);
@@ -220,16 +256,16 @@ export class World {
     if (this._sync_render) return;
     let _r_prev_time = 0;
     const on_render = (time: number) => {
-      const dt = time - _r_prev_time
+      const dt = time - _r_prev_time;
       if (_r_prev_time !== 0) {
-        this.render_once(dt)
+        this.render_once(dt);
       }
       if (_r_prev_time !== 0 && this._need_FPS) {
         this._FPS.update(dt);
-        this._callbacks.emit('on_fps_update')(this._FPS.value)
+        this._callbacks.emit("on_fps_update")(this._FPS.value);
       }
-      _r_prev_time = time
-    }
+      _r_prev_time = time;
+    };
     this._render_worker_id && Ditto.Render.del(this._render_worker_id);
     this._render_worker_id = Ditto.Render.add(on_render);
   }
@@ -249,24 +285,24 @@ export class World {
     const on_update = () => {
       const time = Date.now();
       const real_dt = time - this._prev_time;
-      if (real_dt < this._ideally_dt * this._fix_radio)
-        return;
+      if (real_dt < this._ideally_dt * this._fix_radio) return;
       this._update_count++;
-      if (!this._paused) this.update_once()
+      if (!this._paused) this.update_once();
       if (0 === this._update_count % this._sync_render) {
-        this.render_once(real_dt)
-        this._callbacks.emit('on_fps_update')(this._UPS.value / this._sync_render);
+        this.render_once(real_dt);
+        this._callbacks.emit("on_fps_update")(
+          this._UPS.value / this._sync_render,
+        );
       }
       this._UPS.update(real_dt);
-      this._fix_radio = this._UPS.value / 60
+      this._fix_radio = this._UPS.value / 60;
       if (this._need_UPS) {
-        this._callbacks.emit('on_ups_update')(this._UPS.value, 0);
+        this._callbacks.emit("on_ups_update")(this._UPS.value, 0);
       }
       this._prev_time = time;
-    }
+    };
     this._update_worker_id = Ditto.Interval.add(on_update, 0);
   }
-
 
   restrict_character(e: Entity) {
     if (this.disposed) return;
@@ -278,15 +314,11 @@ export class World {
     const r = is_player ? player_right : right;
 
     const { x, z } = e.position;
-    if (x < l)
-      e.position.x = l;
-    else if (x > r)
-      e.position.x = r;
+    if (x < l) e.position.x = l;
+    else if (x > r) e.position.x = r;
 
-    if (z < far)
-      e.position.z = far;
-    else if (z > near)
-      e.position.z = near;
+    if (z < far) e.position.z = far;
+    else if (z > near) e.position.z = near;
   }
 
   restrict_ball(e: Entity) {
@@ -294,14 +326,10 @@ export class World {
     if (!this.bg) return;
     const { left, right, near, far } = this.bg.data.base;
     const { x, z } = e.position;
-    if (x < left - 800)
-      e.enter_frame(Defines.NEXT_FRAME_GONE)
-    else if (x > right + 800)
-      e.enter_frame(Defines.NEXT_FRAME_GONE)
-    if (z < far)
-      e.position.z = far;
-    else if (z > near)
-      e.position.z = near;
+    if (x < left - 800) e.enter_frame(Defines.NEXT_FRAME_GONE);
+    else if (x > right + 800) e.enter_frame(Defines.NEXT_FRAME_GONE);
+    if (z < far) e.position.z = far;
+    else if (z > near) e.position.z = near;
   }
 
   restrict_weapon(e: Entity) {
@@ -309,14 +337,10 @@ export class World {
     if (!this.bg) return;
     const { left, right, near, far } = this.bg.data.base;
     const { x, z } = e.position;
-    if (x < left - 100)
-      e.enter_frame(Defines.NEXT_FRAME_GONE)
-    else if (x > right + 100)
-      e.enter_frame(Defines.NEXT_FRAME_GONE)
-    if (z < far)
-      e.position.z = far;
-    else if (z > near)
-      e.position.z = near;
+    if (x < left - 100) e.enter_frame(Defines.NEXT_FRAME_GONE);
+    else if (x > right + 100) e.enter_frame(Defines.NEXT_FRAME_GONE);
+    if (z < far) e.position.z = far;
+    else if (z > near) e.position.z = near;
   }
   restrict(e: Entity) {
     if (is_character(e)) {
@@ -338,11 +362,10 @@ export class World {
     for (const e of this.entities) {
       e.self_update();
       for (const r of this.nearest_enemy_requesters) {
-        if (is_character(e) || r.same_team(e) || e.hp <= 0)
-          continue;
-        const prev = r.nearest_enemy
+        if (is_character(e) || r.same_team(e) || e.hp <= 0) continue;
+        const prev = r.nearest_enemy;
         if (!prev || this.manhattan(prev, r) > this.manhattan(e, r)) {
-          r.set_nearest_enemy(e)
+          r.set_nearest_enemy(e);
         }
       }
     }
@@ -356,7 +379,7 @@ export class World {
         this.gone_entities.push(e);
       }
     }
-    this.del_entities(this.gone_entities)
+    this.del_entities(this.gone_entities);
     this.collision_detections();
 
     this.update_camera();
@@ -369,13 +392,13 @@ export class World {
       r.update();
     }
     this.lf2.layout?.on_render(dt);
-    this.scene.render()
+    this.scene.render();
   }
   cam_speed = 0;
   lock_cam_x: number | undefined = void 0;
 
   update_camera() {
-    const old_cam_x = Math.floor(this.camera.x)
+    const old_cam_x = Math.floor(this.camera.x);
     const { player_left, left, player_right, right } = this.stage;
     const max_cam_left = is_num(this.lock_cam_x) ? left : player_left;
     const max_cam_right = is_num(this.lock_cam_x) ? right : player_right;
@@ -387,15 +410,17 @@ export class World {
       max_speed_ratio = 1000;
       acc_ratio = 10;
     } else if (this.player_slot_characters.size) {
-      let l = 0
+      let l = 0;
       new_x = 0;
 
-      const has_human_player = find(this.player_slot_characters, ([_, p]) => is_local_ctrl(p.controller) && p.hp > 0)
+      const has_human_player = find(
+        this.player_slot_characters,
+        ([_, p]) => is_local_ctrl(p.controller) && p.hp > 0,
+      );
       for (const [, player] of this.player_slot_characters) {
         const c = player.controller;
-        if (!is_local_ctrl(c) && has_human_player)
-          continue;
-        new_x += player.position.x - 794 / 2 + player.facing * 794 / 6;
+        if (!is_local_ctrl(c) && has_human_player) continue;
+        new_x += player.position.x - 794 / 2 + (player.facing * 794) / 6;
         ++l;
       }
       new_x = Math.floor(new_x / l);
@@ -404,35 +429,35 @@ export class World {
     if (new_x > max_cam_right - 794) new_x = max_cam_right - 794;
 
     let cur_x = this.camera.x;
-    const acc = Math.min(acc_ratio, acc_ratio * Math.abs(cur_x - new_x) / this._screen_w);
-    const max_speed = max_speed_ratio * acc
+    const acc = Math.min(
+      acc_ratio,
+      (acc_ratio * Math.abs(cur_x - new_x)) / this._screen_w,
+    );
+    const max_speed = max_speed_ratio * acc;
 
     if (cur_x > new_x) {
       if (this.cam_speed > 0) this.cam_speed = 0;
       else if (this.cam_speed > -max_speed) this.cam_speed -= acc;
       else this.cam_speed = -max_speed;
       this.camera.x += this.cam_speed;
-      if (this.camera.x < new_x)
-        this.camera.x = new_x;
-    }
-    else if (cur_x < new_x) {
+      if (this.camera.x < new_x) this.camera.x = new_x;
+    } else if (cur_x < new_x) {
       if (this.cam_speed < 0) this.cam_speed = 0;
       else if (this.cam_speed < max_speed) this.cam_speed += acc;
       else this.cam_speed = max_speed;
       this.camera.x += this.cam_speed;
-      if (this.camera.x > new_x)
-        this.camera.x = new_x;
+      if (this.camera.x > new_x) this.camera.x = new_x;
     }
 
-    const new_cam_x = Math.floor(this.camera.x)
+    const new_cam_x = Math.floor(this.camera.x);
     if (old_cam_x !== new_cam_x) {
-      this._callbacks.emit('on_cam_move')(new_cam_x);
+      this._callbacks.emit("on_cam_move")(new_cam_x);
     }
   }
 
   private _temp_entitis_set = new Set<Entity>();
   collision_detections() {
-    this._temp_entitis_set.clear()
+    this._temp_entitis_set.clear();
     for (const a of this.entities) {
       for (const b of this._temp_entitis_set) {
         this.collision_detection(a, b);
@@ -443,32 +468,36 @@ export class World {
   }
 
   collision_detection(a: Entity, b: Entity) {
-    if (b.blinking || b.invisible)
-      return;
+    if (b.blinking || b.invisible) return;
     const af = a.frame;
     const bf = b.frame;
-    if (!af.itr?.length || !bf.bdy?.length)
-      return;
+    if (!af.itr?.length || !bf.bdy?.length) return;
     const b_catcher = b.catcher;
-    if (b_catcher && b_catcher.frame.cpoint?.hurtable !== 1)
-      return;
+    if (b_catcher && b_catcher.frame.cpoint?.hurtable !== 1) return;
     const l0 = af.itr.length;
     const l1 = bf.bdy.length;
     for (let i = 0; i < l0; ++i) {
       for (let j = 0; j < l1; ++j) {
-        this.collision_test(a, af, af.itr[i], b, bf, bf.bdy[j])
+        this.collision_test(a, af, af.itr[i], b, bf, bf.bdy[j]);
       }
     }
   }
 
-  collision_test(attacker: Entity, aframe: IFrameInfo, itr: IItrInfo, victim: Entity, bframe: IFrameInfo, bdy: IBdyInfo) {
+  collision_test(
+    attacker: Entity,
+    aframe: IFrameInfo,
+    itr: IItrInfo,
+    victim: Entity,
+    bframe: IFrameInfo,
+    bdy: IBdyInfo,
+  ) {
     switch (aframe.state) {
       case Defines.State.Weapon_OnHand: {
         const atk = attacker.holder?.frame.wpoint?.attacking;
         if (!atk) return;
         const itr_prefab = attacker.data.itr_prefabs?.[atk];
         if (!itr_prefab) return;
-        itr = { ...itr, ...itr_prefab }
+        itr = { ...itr, ...itr_prefab };
         break;
       }
       case Defines.State.Weapon_Rebounding: {
@@ -477,10 +506,8 @@ export class World {
     }
     if (!(itr.friendly_fire || bdy.friendly_fire) && attacker.same_team(victim))
       return;
-    if (!itr.vrest && attacker.a_rest)
-      return;
-    if (itr.vrest && victim.get_v_rest(attacker.id) > 0)
-      return;
+    if (!itr.vrest && attacker.a_rest) return;
+    if (itr.vrest && victim.get_v_rest(attacker.id) > 0) return;
     const a_cube = this.get_bounding(attacker, aframe, itr);
     const b_cube = this.get_bounding(victim, bframe, bdy);
     if (
@@ -492,7 +519,8 @@ export class World {
       a_cube.near >= b_cube.far
     ) {
       const collision: ICollision = {
-        v_rest: (!itr.arest && itr.vrest) ? (itr.vrest + this.vrest_offset) : void 0,
+        v_rest:
+          !itr.arest && itr.vrest ? itr.vrest + this.vrest_offset : void 0,
         victim,
         attacker,
         itr,
@@ -501,17 +529,19 @@ export class World {
         bframe,
         a_cube,
         b_cube,
-      }
+      };
       if (
         bdy.tester?.run(collision) === false ||
         itr.tester?.run(collision) === false
-      ) return;
+      )
+        return;
 
-      const a = attacker.state?.before_collision?.(collision)
-      const b = victim.state?.before_be_collided?.(collision)
+      const a = attacker.state?.before_collision?.(collision);
+      const b = victim.state?.before_be_collided?.(collision);
 
       switch (a) {
-        case WhatNext.SkipAll: break;
+        case WhatNext.SkipAll:
+          break;
         case WhatNext.OnlyState: {
           attacker.state?.on_collision?.(collision);
           break;
@@ -528,7 +558,8 @@ export class World {
         }
       }
       switch (b) {
-        case WhatNext.SkipAll: break;
+        case WhatNext.SkipAll:
+          break;
         case WhatNext.OnlyState: {
           victim.state?.on_be_collided?.(collision);
           break;
@@ -550,39 +581,48 @@ export class World {
   spark(x: number, y: number, z: number, f: string) {
     const data = this.lf2.datas.find(Defines.BuiltIn_Dats.Spark);
     if (!data) {
-      Warn.print(World.TAG + '::spark', `data of "${Defines.BuiltIn_Dats.Spark}" not found!`);
+      Warn.print(
+        World.TAG + "::spark",
+        `data of "${Defines.BuiltIn_Dats.Spark}" not found!`,
+      );
       return;
     }
     const create = Factory.inst.get_entity_creator(data.type);
     if (!create) {
-      Warn.print(World.TAG + '::spark', `creator of "${data.type}" not found!`);
+      Warn.print(World.TAG + "::spark", `creator of "${data.type}" not found!`);
       return;
     }
-    const e = create(this, data)
-    e.position.set(x, y, z)
-    e.enter_frame({ id: f })
-    e.attach()
+    const e = create(this, data);
+    e.position.set(x, y, z);
+    e.enter_frame({ id: f });
+    e.attach();
   }
 
   get_bounding(e: Entity, f: IFrameInfo, i: IItrInfo | IBdyInfo): IBounding {
-    const left = e.facing > 0 ?
-      e.position.x - f.centerx + i.x :
-      e.position.x + f.centerx - i.x - i.w;
+    const left =
+      e.facing > 0
+        ? e.position.x - f.centerx + i.x
+        : e.position.x + f.centerx - i.x - i.w;
     const top = e.position.y + f.centery - i.y;
     const far = e.position.z + i.z;
     return {
-      left, right: left + i.w,
-      top, bottom: top - i.h,
-      far, near: far + i.l
-    }
+      left,
+      right: left + i.w,
+      top,
+      bottom: top - i.h,
+      far,
+      near: far + i.l,
+    };
   }
 
   private _ideally_dt: number = Math.floor(1000 / 60);
   private _playrate: number = 1;
 
-  get playrate() { return this._playrate }
+  get playrate() {
+    return this._playrate;
+  }
   set playrate(v: number) {
-    if (v <= 0) throw new Error('playrate must be larger than 0')
+    if (v <= 0) throw new Error("playrate must be larger than 0");
     if (v === this._playrate) return;
     this._playrate = v;
     this._ideally_dt = Math.floor(1000 / 60) / this._playrate;
@@ -590,17 +630,23 @@ export class World {
   }
 
   private _paused = false;
-  get paused() { return this._paused }
-  set paused(v: boolean) { this.set_paused(v) }
+  get paused() {
+    return this._paused;
+  }
+  set paused(v: boolean) {
+    this.set_paused(v);
+  }
 
   set_paused(v: boolean) {
     if (this._paused === v) return;
     this._paused = v;
-    this._callbacks.emit('on_pause_change')(v);
+    this._callbacks.emit("on_pause_change")(v);
   }
 
   private _indicator_flags: number = 0;
-  get indicator_flags() { return this._indicator_flags }
+  get indicator_flags() {
+    return this._indicator_flags;
+  }
   set indicator_flags(v: number) {
     if (this._indicator_flags === v) return;
     this._indicator_flags = v;
@@ -609,7 +655,7 @@ export class World {
     }
   }
   dispose() {
-    this._callbacks.emit('on_disposed')();
+    this._callbacks.emit("on_disposed")();
     this.bg.dispose();
     this.stop_update();
     this.stop_render();
@@ -617,23 +663,25 @@ export class World {
     this.scene.dispose();
   }
 
-  list_writable_properties(prototype: any = this, ret: { name: string, value: number }[] = []) {
-    const obj = Object.getOwnPropertyDescriptors(prototype)
+  list_writable_properties(
+    prototype: any = this,
+    ret: { name: string; value: number }[] = [],
+  ) {
+    const obj = Object.getOwnPropertyDescriptors(prototype);
     for (const name in obj) {
-      if (name.startsWith('_')) continue;
+      if (name.startsWith("_")) continue;
       const desc = obj[name];
-      const { value, writable, enumerable, set, get } = desc
+      const { value, writable, enumerable, set, get } = desc;
       if (set && get) {
         const value = get.call(this);
-        if (is_num(value))
-          ret.push({ name, value })
+        if (is_num(value)) ret.push({ name, value });
       } else if (writable && enumerable && is_num(value)) {
-        ret.push({ name, value })
+        ret.push({ name, value });
       }
     }
-    const next = Object.getPrototypeOf(prototype)
-    if (next.constructor.name !== 'Object') {
-      this.list_writable_properties(next, ret)
+    const next = Object.getPrototypeOf(prototype);
+    if (next.constructor.name !== "Object") {
+      this.list_writable_properties(next, ret);
     }
     return ret;
   }

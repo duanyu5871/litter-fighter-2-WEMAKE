@@ -1,67 +1,77 @@
-import command_exists from 'command-exists';
-import fs from 'fs/promises';
+import command_exists from "command-exists";
+import fs from "fs/promises";
 import { exec_cmd } from "./exec_cmd";
-import { IEntityPictureInfo } from '../../../src/LF2/defines/IEntityPictureInfo';
-function get_dst_path(
-  out_dir: string,
-  src_dir: string,
-  src_path: string,
-) {
-  return src_path.replace(src_dir, out_dir).replace(/(.bmp)$/, '.png');
+import { IEntityPictureInfo } from "../../../src/LF2/defines/IEntityPictureInfo";
+function get_dst_path(out_dir: string, src_dir: string, src_path: string) {
+  return src_path.replace(src_dir, out_dir).replace(/(.bmp)$/, ".png");
 }
 export async function convert_pic(
   out_dir: string,
   src_dir: string,
-  src_path: string
+  src_path: string,
 ) {
   const dst_path = get_dst_path(out_dir, src_dir, src_path);
-  if (!command_exists.sync('magick'))
-    throw new Error("magick not found, download it from: https://imagemagick.org/script/download.php")
-  await fs.rm(dst_path, { recursive: true, force: true }).catch(e => void 0);
-  console.log('convert', src_path, '=>', dst_path)
-  await exec_cmd('magick',
+  if (!command_exists.sync("magick"))
+    throw new Error(
+      "magick not found, download it from: https://imagemagick.org/script/download.php",
+    );
+  await fs.rm(dst_path, { recursive: true, force: true }).catch((e) => void 0);
+  console.log("convert", src_path, "=>", dst_path);
+  await exec_cmd(
+    "magick",
     src_path,
     "-alpha",
     "set",
-    "-fill", "rgba(0,0,0,0)",
-    "-opaque", "rgb(0,0,0)",
-    'PNG8:' + dst_path
-  )
-
+    "-fill",
+    "rgba(0,0,0,0)",
+    "-opaque",
+    "rgb(0,0,0)",
+    "PNG8:" + dst_path,
+  );
 }
 convert_pic.get_dst_path = get_dst_path;
 
 export function get_dst_path_2(out_dir: string, pic: IEntityPictureInfo) {
-  return out_dir + '/' + pic.path;
+  return out_dir + "/" + pic.path;
 }
-export async function convert_pic_2(dst_path: string, src_path: string, pic: IEntityPictureInfo) {
-  if (!command_exists.sync('magick'))
-    throw new Error("magick not found, download it from: https://imagemagick.org/script/download.php")
-  const { col: row, row: col, cell_w, cell_h } = pic
+export async function convert_pic_2(
+  dst_path: string,
+  src_path: string,
+  pic: IEntityPictureInfo,
+) {
+  if (!command_exists.sync("magick"))
+    throw new Error(
+      "magick not found, download it from: https://imagemagick.org/script/download.php",
+    );
+  const { col: row, row: col, cell_w, cell_h } = pic;
   const w = (cell_w + 1) * col;
   const h = (cell_h + 1) * row;
-  console.log('convert', src_path, '=>', dst_path)
+  console.log("convert", src_path, "=>", dst_path);
   const remove_lines: string[] = [];
   for (let col_idx = 0; col_idx < col; ++col_idx) {
-    const x = (cell_w + 1) * (col_idx + 1) - 1
-    remove_lines.push('-draw', `line ${x},0 ${x},${h}`)
+    const x = (cell_w + 1) * (col_idx + 1) - 1;
+    remove_lines.push("-draw", `line ${x},0 ${x},${h}`);
   }
   for (let row_idx = 0; row_idx < row; ++row_idx) {
-    const y = (cell_h + 1) * (row_idx + 1) - 1
-    remove_lines.push('-draw', `line 0,${y} ${w},${y}`)
+    const y = (cell_h + 1) * (row_idx + 1) - 1;
+    remove_lines.push("-draw", `line 0,${y} ${w},${y}`);
   }
   const args = [
     src_path,
-    "-stroke", "rgba(0,0,0,0)",
-    "-strokewidth", "1",
+    "-stroke",
+    "rgba(0,0,0,0)",
+    "-strokewidth",
+    "1",
     ...remove_lines,
     "-alpha",
     "set",
-    "-fill", "rgba(0,0,0,0)",
-    "-opaque", "rgb(0,0,0)",
-    'PNG8:' + dst_path
-  ]
-  await exec_cmd('magick', ...args)
+    "-fill",
+    "rgba(0,0,0,0)",
+    "-opaque",
+    "rgb(0,0,0)",
+    "PNG8:" + dst_path,
+  ];
+  await exec_cmd("magick", ...args);
 }
 
-convert_pic_2.get_dst_path = get_dst_path_2
+convert_pic_2.get_dst_path = get_dst_path_2;

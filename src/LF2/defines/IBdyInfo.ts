@@ -6,7 +6,7 @@ import type { IQubePair } from "./IQubePair";
 export interface IBdyInfo extends IQube {
   /**
    * 预制信息id
-   * 
+   *
    * @see {?string}
    */
   prefab_id?: string;
@@ -15,7 +15,7 @@ export interface IBdyInfo extends IQube {
    * [WEMAKE]
    * 是否判定同队Itr
    * 0=关闭（默认），1=开启
-   * 
+   *
    * @type {?number}
    */
   friendly_fire?: number;

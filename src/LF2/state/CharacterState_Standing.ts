@@ -1,6 +1,5 @@
-import type Entity from '../entity/Entity';
+import type Entity from "../entity/Entity";
 import CharacterState_Base from "./CharacterState_Base";
-
 
 export default class CharacterState_Standing extends CharacterState_Base {
   override update(e: Entity): void {

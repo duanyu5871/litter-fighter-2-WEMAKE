@@ -1,23 +1,24 @@
-import type { IItrInfo } from './IItrInfo';
+import type { IItrInfo } from "./IItrInfo";
 export enum ItrKind {
-  /** 
+  /**
    * 拳击
    * 可配合effect
-   * 
+   *
    * 用于：
    * * [X] LF2
    * * [X] WEMAKE
    */
-  Normal = 0, _0 = 0,
+  Normal = 0,
+  _0 = 0,
 
   /**
    * 抓起眩晕的角色
-   * 
+   *
    * 当角色1的itr与角色2的bdy碰撞，且角色2的frame.state为16(Tired)时
    * 角色1捉起角色2
    * 然后角色1进入抓人动作
    * 然后角色2进入被抓动作
-   * 
+   *
    * 用于：
    * * [X] LF2
    * * [X] WEMAKE
@@ -30,16 +31,16 @@ export enum ItrKind {
 
   /**
    * 捡起武器，且进入捡武器的动作
-   * 
+   *
    * 当角色的itr与武器的bdy碰撞，
    * 且武器的frame.state为1004(Weapon_OnGround)或2004(HeavyWeapon_OnGround)时
-   * 
+   *
    * 用于：
    * * [X] LF2
    * * [X] WEMAKE
-   * 
+   *
    * WEMAKE中，该碰撞判定通过IItrInfo.test设置。
-   * 
+   *
    * @see {IItrInfo.test}
    * @see {Defines.State.Weapon_OnGround}
    * @see {Defines.State.HeavyWeapon_OnGround}
@@ -53,7 +54,7 @@ export enum ItrKind {
    * 角色2进入被抓动作
    *
    * 强制抓人
-   * 
+   *
    * 用于：
    * * [X] LF2
    * * [X] WEMAKE
@@ -63,18 +64,18 @@ export enum ItrKind {
    */
   ForceCatch = 3,
 
-  /** 
-   * 被丢出时，此itr才生效 
-   * 
+  /**
+   * 被丢出时，此itr才生效
+   *
    * 用于：
    * * [X] LF2
    * * [X] WEMAKE
    */
   CharacterThrew = 4,
 
-  /** 
-   * 武器挥动 
-   * 
+  /**
+   * 武器挥动
+   *
    * 用于：
    * * [X] LF2
    * * [X] WEMAKE
@@ -83,7 +84,7 @@ export enum ItrKind {
 
   /**
    * 敌人按A使用重击
-   * 
+   *
    * 用于：
    * * [X] LF2
    * * [X] WEMAKE
@@ -92,13 +93,13 @@ export enum ItrKind {
 
   /**
    * 立刻捡起武器
-   * 
+   *
    * 当角色的itr与武器的bdy碰撞，且武器的frame.state为1004(Weapon_OnGround)时
-   * 
+   *
    * 用于：
    * * [X] LF2
    * * [X] WEMAKE
-   * 
+   *
    * WEMAKE中，该碰撞判定通过IItrInfo.test设置。
    *
    * @see {IItrInfo.test}
@@ -106,7 +107,7 @@ export enum ItrKind {
    */
   PickSecretly = 7,
 
-  Heal = 8,// injury数值变成治疗多少hp，动作跳至dvx ?
+  Heal = 8, // injury数值变成治疗多少hp，动作跳至dvx ?
 
   /*
    * 用于：
@@ -117,11 +118,12 @@ export enum ItrKind {
    *    - 打中敌人自己hp归0(如John的防护罩)
    *    - 反弹state3000与3002的ball
    */
-  JohnShield = 9, _9 = 9,
+  JohnShield = 9,
+  _9 = 9,
 
   /**
    *  henry d^j
-   * 
+   *
    *  用于：
    *  * [X] LF2
    *  * [X] WEMAKE
@@ -129,19 +131,19 @@ export enum ItrKind {
   MagicFlute = 10,
   MagicFlute2 = 11,
 
-
-  Block = 14,// 阻挡
+  Block = 14, // 阻挡
 
   /**
    *  freeze d^j 飞起来的效果
-   * 
+   *
    *  用于：
    *  * [X] LF2
    *  * [X] WEMAKE
-   * 
+   *
    */
-  Whirlwind = 15, _15 = 15,
+  Whirlwind = 15,
+  _15 = 15,
 
-  Freeze = 16, _16 = 16,
-
+  Freeze = 16,
+  _16 = 16,
 }

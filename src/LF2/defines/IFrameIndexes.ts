@@ -2,7 +2,7 @@ import { TFrameIdListPair, TFrameIdPair } from ".";
 
 export interface IFrameIndexes {
   standing?: string;
-  heavy_obj_walk?: string[],
+  heavy_obj_walk?: string[];
   landing_2?: string;
   landing_1?: string;
   dizzy?: string;
@@ -13,7 +13,7 @@ export interface IFrameIndexes {
 
   /**
    * 速度叫快的摔到地上时，需要弹起来
-   * 
+   *
    * - "-1": 角色面部朝上
    * - "1": 角色面部朝下
    */
@@ -30,12 +30,12 @@ export interface IFrameIndexes {
 
   on_ground?: string;
 
-  just_on_ground?: string
+  just_on_ground?: string;
 
   /**
    * for weapon
    *
    * @type {string}
    */
-  throw_on_ground?: string
+  throw_on_ground?: string;
 }

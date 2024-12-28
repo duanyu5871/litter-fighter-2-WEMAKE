@@ -1,9 +1,9 @@
-import { ITextNode } from '../../3d/ITextNode';
-import Invoker from '../../base/Invoker';
-import { IStageInfo } from '../../defines';
-import { Defines } from '../../defines/defines';
-import Ditto from '../../ditto';
-import Layout from '../Layout';
+import { ITextNode } from "../../3d/ITextNode";
+import Invoker from "../../base/Invoker";
+import { IStageInfo } from "../../defines";
+import { Defines } from "../../defines/defines";
+import Ditto from "../../ditto";
+import Layout from "../Layout";
 import { LayoutComponent } from "./LayoutComponent";
 
 export default class StageNameText extends LayoutComponent {
@@ -14,13 +14,14 @@ export default class StageNameText extends LayoutComponent {
   }
 
   get stages(): IStageInfo[] {
-    const ret = this.lf2.stages?.filter(v => v.id !== Defines.VOID_STAGE.id) || [];
+    const ret =
+      this.lf2.stages?.filter((v) => v.id !== Defines.VOID_STAGE.id) || [];
     if (this.show_all) return ret;
-    return ret.filter(v => v.is_starting);
+    return ret.filter((v) => v.is_starting);
   }
 
   get stage(): IStageInfo {
-    return this._stage
+    return this._stage;
   }
   get text(): string {
     if (this.show_all) return this._stage.name;
@@ -30,32 +31,31 @@ export default class StageNameText extends LayoutComponent {
   protected _unmount_jobs = new Invoker();
 
   constructor(layout: Layout, f_name: string) {
-    super(layout, f_name)
+    super(layout, f_name);
     this._mesh = new Ditto.TextNode(this.lf2)
       .set_center(0.5, 0.5)
       .set_name(StageNameText.name)
       .set_style({
-        fill_style: '#9b9bff',
-        font: '14px Arial',
-      })
+        fill_style: "#9b9bff",
+        font: "14px Arial",
+      });
   }
 
   override on_resume(): void {
     super.on_resume();
-    this.switch_stage()
+    this.switch_stage();
     this.layout.sprite.add(this._mesh);
     this._unmount_jobs.add(
       this.lf2.callbacks.add({
         on_broadcast: (v) => {
-          if (v === Defines.BuiltIn_Broadcast.SwitchStage)
-            this.switch_stage()
+          if (v === Defines.BuiltIn_Broadcast.SwitchStage) this.switch_stage();
         },
         on_cheat_changed: () => this.switch_stage(),
         on_loading_end: () => this.switch_stage(),
       }),
       () => this._mesh.del_self(),
-    )
-    this._mesh.set_text(this.text).apply()
+    );
+    this._mesh.set_text(this.text).apply();
   }
 
   override on_pause(): void {
@@ -67,13 +67,12 @@ export default class StageNameText extends LayoutComponent {
     const { stages } = this;
     if (!stages.length) {
       this._stage = Defines.VOID_STAGE;
-      return
+      return;
     }
     const state_id = this.stage.id;
-    const curr_idx = stages.findIndex(v => v.id === state_id)
+    const curr_idx = stages.findIndex((v) => v.id === state_id);
     const next_idx = (curr_idx + 1) % stages.length;
     this._stage = stages[next_idx];
-    this._mesh.set_text(this.text).apply()
+    this._mesh.set_text(this.text).apply();
   }
-
 }

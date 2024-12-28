@@ -13,8 +13,12 @@ import Stage from "./Stage";
 export default class Item {
   readonly is_enemies: boolean = false;
   times: number | undefined;
-  get lf2() { return this.stage.lf2; }
-  get world() { return this.stage.world; }
+  get lf2() {
+    return this.stage.lf2;
+  }
+  get world() {
+    return this.stage.world;
+  }
   readonly info: Readonly<IStageObjectInfo>;
   readonly entities = new Set<Entity>();
   readonly stage: Stage;
@@ -43,8 +47,8 @@ export default class Item {
       if (this.stage.all_enemies_dead()) {
         this.stage.enter_next_phase();
       }
-    }
-  }
+    },
+  };
 
   constructor(stage: Stage, info: IStageObjectInfo) {
     this.stage = stage;
@@ -52,40 +56,54 @@ export default class Item {
     this.times = info.times;
     for (const oid of this.info.id) {
       const data = this.lf2.datas.find(oid);
-      if (data) { this.data_list.push(data); continue; }
+      if (data) {
+        this.data_list.push(data);
+        continue;
+      }
       const { characters, weapons, entity } = this.lf2.datas.find_group(oid);
       this.data_list.push(...characters, ...weapons, ...entity);
     }
-    this.is_enemies = !this.data_list.find(v => v.type !== EntityEnum.Character);
+    this.is_enemies = !this.data_list.find(
+      (v) => v.type !== EntityEnum.Character,
+    );
     let waiting_data_list = [...this.data_list];
     this.get_oid = () => {
-      if (!waiting_data_list.length) waiting_data_list = [...this.data_list]
+      if (!waiting_data_list.length) waiting_data_list = [...this.data_list];
       return random_take(waiting_data_list)?.id!;
-    }
+    };
   }
 
   spawn(
     range_x: number = 100,
     range_y: number = 0,
-    range_z: number = 0
+    range_z: number = 0,
   ): boolean {
     const { lf2 } = this;
     const oid = this.get_oid();
-    if (!oid) { debugger; return false; }
+    if (!oid) {
+      debugger;
+      return false;
+    }
     const data = lf2.datas.find(oid);
-    if (!data) { debugger; return false; }
+    if (!data) {
+      debugger;
+      return false;
+    }
     const creator = Factory.inst.get_entity_creator(data.type);
-    if (!creator) { debugger; return false; }
+    if (!creator) {
+      debugger;
+      return false;
+    }
 
     const { hp, act, x, y, z, reserve } = this.info;
     if (this.times) this.times--;
     const e = creator(this.world, data);
-    e.controller = Factory.inst.get_ctrl_creator(e.data.id)?.('', e);
+    e.controller = Factory.inst.get_ctrl_creator(e.data.id)?.("", e);
     e.reserve = reserve;
     e.position.x = random_in(x, x + range_x);
-    e.position.z = is_num(z) ?
-      random_in(z - range_z, z + range_z) :
-      random_in(this.stage.near, this.stage.far);
+    e.position.z = is_num(z)
+      ? random_in(z - range_z, z + range_z)
+      : random_in(this.stage.near, this.stage.far);
 
     if (is_num(hp)) e.hp = hp;
     if (is_num(y)) e.position.y = y;

@@ -19,7 +19,7 @@ export default class FPS {
 
   /**
    * 帧率
-   * 
+   *
    * @private
    * @type {number}
    */
@@ -27,7 +27,7 @@ export default class FPS {
 
   /**
    * 帧间隔时间
-   * 
+   *
    * @private
    * @type {number}
    */
@@ -48,15 +48,15 @@ export default class FPS {
    * @param {number} [retention=0.99] 保留率，范围[0, 0.99] 保留率越大，fps的波动越平缓。
    */
   constructor(retention: number = 0.99) {
-    this._retention = clamp(retention, 0, 0.99)
+    this._retention = clamp(retention, 0, 0.99);
   }
 
   update(dt: number) {
     // if (dt <= 0) return;
     if (this._duration)
-      this._duration = this._duration * this._retention + dt * (1 - this._retention);
-    else
-      this._duration = dt;
+      this._duration =
+        this._duration * this._retention + dt * (1 - this._retention);
+    else this._duration = dt;
     this._value = 1000 / this._duration;
   }
 

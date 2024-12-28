@@ -1,26 +1,19 @@
-import * as THREE from 'three';
-import { IMeshNode, IObjectNode } from '../3d';
-import Ditto from '../ditto';
-import Entity from '../entity/Entity';
-import { traversal } from '../utils/container_help/traversal';
+import * as THREE from "three";
+import { IMeshNode, IObjectNode } from "../3d";
+import Ditto from "../ditto";
+import Entity from "../entity/Entity";
+import { traversal } from "../utils/container_help/traversal";
 export const EMPTY_ARR = [] as const;
 export const INDICATORS_COLOR = {
   bdy: 0x00ff00,
   itr: 0xff0000,
   main: 0xffff00,
-}
+};
 const geometry = new THREE.BufferGeometry();
 const vertices = new Float32Array([
-  0, 1, 1,
-  1, 1, 1,
-  1, 1, 1,
-  1, 0, 1,
-  1, 0, 1,
-  0, 0, 1,
-  0, 0, 1,
-  0, 1, 1,
+  0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 1,
 ]);
-geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+geometry.setAttribute("position", new THREE.BufferAttribute(vertices, 3));
 
 export class FrameIndicators {
   protected _entity: Entity;
@@ -32,9 +25,15 @@ export class FrameIndicators {
   private _x: number = 0;
   private _y: number = 0;
   private _z: number = 0;
-  get scene() { return this._entity.world.scene; };
-  get frame() { return this._entity.frame; }
-  get face() { return this._entity.facing; }
+  get scene() {
+    return this._entity.world.scene;
+  }
+  get frame() {
+    return this._entity.frame;
+  }
+  get face() {
+    return this._entity.facing;
+  }
   private _flags: number = 0;
   set flags(v: number) {
     if (this._flags === v) return;
@@ -47,15 +46,17 @@ export class FrameIndicators {
   }
 
   protected _new_indicator(k: keyof typeof this._indicators_map, idx: number) {
-    const ret = this._indicators_map[k][idx] = new Ditto.LineSegmentsNode(this._entity.lf2, { color: INDICATORS_COLOR[k], linewidth: 100 });
+    const ret = (this._indicators_map[k][idx] = new Ditto.LineSegmentsNode(
+      this._entity.lf2,
+      { color: INDICATORS_COLOR[k], linewidth: 100 },
+    ));
     this.scene.add(ret);
     return ret;
   }
 
-
   protected _del_indicator(k: keyof typeof this._indicators_map, idx: number) {
     const [indicator] = this._indicators_map[k].splice(idx, 1);
-    indicator && this.scene.del(indicator)
+    indicator && this.scene.del(indicator);
   }
 
   private _unsafe_update_box() {
@@ -65,7 +66,7 @@ export class FrameIndicators {
     const y = this._y + ii.y;
     const x = this._x + ii.x;
     if (!this._box) return;
-    this._box.set_position(x, y, this._z)
+    this._box.set_position(x, y, this._z);
     this._box.set_scale(ii.w, ii.h, 1);
   }
 
@@ -83,28 +84,26 @@ export class FrameIndicators {
         this._del_indicator(name, i);
         continue;
       }
-      const indicator = this._indicators_map[name][i] ?? this._new_indicator(name, i);
+      const indicator =
+        this._indicators_map[name][i] ?? this._new_indicator(name, i);
       const y = this._y + info.y;
       const x = this._x + info.x;
-      indicator.set_position(x, y, this._z)
+      indicator.set_position(x, y, this._z);
       indicator.set_scale(info.w, info.h, 1);
     }
   }
 
   hide_indicators(k: keyof typeof this._indicators_map) {
-    for (const i of this._indicators_map[k])
-      this.scene.del(i)
-    this._indicators_map[k].length = 0
+    for (const i of this._indicators_map[k]) this.scene.del(i);
+    this._indicators_map[k].length = 0;
   }
 
   show_box() {
     if (!this._box) {
-      this._box = new Ditto.LineSegmentsNode(
-        this._entity.lf2,
-        {
-          color: INDICATORS_COLOR.main,
-          linewidth: 100
-        });
+      this._box = new Ditto.LineSegmentsNode(this._entity.lf2, {
+        color: INDICATORS_COLOR.main,
+        linewidth: 100,
+      });
       this.scene.add(this._box);
     }
     this._unsafe_update_box();
@@ -118,10 +117,9 @@ export class FrameIndicators {
   depose() {
     if (this._box) this.scene.del(this._box);
     traversal(this._indicators_map, (_, list) => {
-
-      list.forEach(item => this.scene.del(item))
-      list.length = 0
-    })
+      list.forEach((item) => this.scene.del(item));
+      list.length = 0;
+    });
   }
   update() {
     if (!this._flags) return;
@@ -129,8 +127,11 @@ export class FrameIndicators {
     this._x = game_x;
     this._y = game_y - game_z / 2;
     this._z = game_z;
-    if (this._flags & 1) this.show_box(); else this.hide_box();
-    if (this._flags & 2) this.show_indicators('itr'); else this.hide_indicators('itr');
-    if (this._flags & 4) this.show_indicators('bdy'); else this.hide_indicators('bdy');
+    if (this._flags & 1) this.show_box();
+    else this.hide_box();
+    if (this._flags & 2) this.show_indicators("itr");
+    else this.hide_indicators("itr");
+    if (this._flags & 4) this.show_indicators("bdy");
+    else this.hide_indicators("bdy");
   }
 }

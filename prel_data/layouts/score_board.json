@@ -1,8 +1,6 @@
 {
   "id": "score_board",
-  "component": [
-    "vertical_layout()"
-  ],
+  "component": ["vertical_layout()"],
   "items": [
     {
       "img": "sprite/SCORE_BOARD1.png"

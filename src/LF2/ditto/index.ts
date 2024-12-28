@@ -37,8 +37,11 @@ export interface IDittoPack {
   Zip: {
     read_file(file: File): Promise<IZip>;
     read_buf(buf: Uint8Array): Promise<IZip>;
-    download(url: string, on_progress: (progress: number, size: number) => void): Promise<IZip>;
-  }
+    download(
+      url: string,
+      on_progress: (progress: number, size: number) => void,
+    ): Promise<IZip>;
+  };
   Sounds: new (...args: any[]) => ISounds;
   Keyboard: new (...args: any[]) => IKeyboard;
   Pointings: new (...args: any[]) => IPointings;
@@ -46,17 +49,20 @@ export interface IDittoPack {
   Importer: IImporter;
   Cache: ICache;
 
-  ObjectNode: new (lf2: LF2) => IObjectNode
-  TextNode: new (lf2: LF2) => ITextNode
-  SceneNode: new (lf2: LF2, canvas: HTMLCanvasElement) => ISceneNode,
-  OrthographicCamera: new (lf2: LF2) => IOrthographicCameraNode,
-  PerspectiveCamera: new (lf2: LF2) => IPerspectiveCamera,
-  SpriteNode: new (lf2: LF2, info?: ISpriteInfo) => ISpriteNode,
-  LineSegmentsNode: new (lf2: LF2, info?: ILineSegmentsInfo) => ILineSegmentsNode,
-  MeshNode: new (lf2: LF2, info?: IMeshInfo) => IMeshNode,
-  BillboardNode: new (lf2: LF2, info?: IBillboardInfo) => IBillboardNode,
-  Vector3: new (x?: number, y?: number, z?: number) => IVector3,
-  Vector2: new (x?: number, y?: number) => IVector2,
+  ObjectNode: new (lf2: LF2) => IObjectNode;
+  TextNode: new (lf2: LF2) => ITextNode;
+  SceneNode: new (lf2: LF2, canvas: HTMLCanvasElement) => ISceneNode;
+  OrthographicCamera: new (lf2: LF2) => IOrthographicCameraNode;
+  PerspectiveCamera: new (lf2: LF2) => IPerspectiveCamera;
+  SpriteNode: new (lf2: LF2, info?: ISpriteInfo) => ISpriteNode;
+  LineSegmentsNode: new (
+    lf2: LF2,
+    info?: ILineSegmentsInfo,
+  ) => ILineSegmentsNode;
+  MeshNode: new (lf2: LF2, info?: IMeshInfo) => IMeshNode;
+  BillboardNode: new (lf2: LF2, info?: IBillboardInfo) => IBillboardNode;
+  Vector3: new (x?: number, y?: number, z?: number) => IVector3;
+  Vector2: new (x?: number, y?: number) => IVector2;
 }
 
 export interface IDitto extends IDittoPack {
@@ -66,7 +72,7 @@ const Ditto: Partial<IDitto> = {
   Importer: new BaseImporter(),
   Sounds: BaseSounds,
   setup(pack: IDittoPack) {
-    Object.assign(this, pack)
-  }
-}
+    Object.assign(this, pack);
+  },
+};
 export default Ditto as IDitto;

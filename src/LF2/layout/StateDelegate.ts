@@ -1,23 +1,21 @@
-import { is_fun } from '../utils/type_check';
+import { is_fun } from "../utils/type_check";
 
-export type TStateValueInfo<T> = { is_func: true, v: () => T } | { is_func: false, v: T }
+export type TStateValueInfo<T> =
+  | { is_func: true; v: () => T }
+  | { is_func: false; v: T };
 export default class StateDelegate<T> {
-
   protected _default_value: TStateValueInfo<T>;
   protected _values: (TStateValueInfo<T> | undefined)[] = [];
   protected state_to_value(v: TStateValueInfo<T>) {
     return v.is_func ? v.v() : v.v;
   }
   protected value_to_state(v: T | (() => T)): TStateValueInfo<T> {
-    return is_fun(v) ?
-      { is_func: true, v: v } :
-      { is_func: false, v: v };
+    return is_fun(v) ? { is_func: true, v: v } : { is_func: false, v: v };
   }
 
   get value(): T {
     for (const val of this._values)
-      if (val !== void 0)
-        return this.state_to_value(val);
+      if (val !== void 0) return this.state_to_value(val);
     return this.state_to_value(this._default_value);
   }
   get default_value(): T {

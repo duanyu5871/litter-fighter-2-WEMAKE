@@ -18,7 +18,7 @@ import type IStageCallbacks from "./IStageCallbacks";
 import Item from "./Item";
 
 export default class Stage {
-  static readonly TAG: string = 'Stage';
+  static readonly TAG: string = "Stage";
   readonly world: World;
   readonly data: IStageInfo;
   readonly bg: Background;
@@ -29,27 +29,51 @@ export default class Stage {
   private _cur_phase_idx = -1;
   private _time: number = 0;
 
-  get name(): string { return this.data.name }
-  get cur_phase(): number { return this._cur_phase_idx }
-  get left(): number { return this.bg.left }
-  get right(): number { return this.bg.right }
-  get near(): number { return this.bg.near }
-  get far(): number { return this.bg.far }
-  get width(): number { return this.bg.width }
-  get depth(): number { return this.bg.depth }
-  get middle() { return this.bg.middle }
-  get lf2() { return this.world.lf2 }
-  get callbacks(): NoEmitCallbacks<IStageCallbacks> {
-    return this._callbacks
+  get name(): string {
+    return this.data.name;
   }
-  get time() { return this._time }
+  get cur_phase(): number {
+    return this._cur_phase_idx;
+  }
+  get left(): number {
+    return this.bg.left;
+  }
+  get right(): number {
+    return this.bg.right;
+  }
+  get near(): number {
+    return this.bg.near;
+  }
+  get far(): number {
+    return this.bg.far;
+  }
+  get width(): number {
+    return this.bg.width;
+  }
+  get depth(): number {
+    return this.bg.depth;
+  }
+  get middle() {
+    return this.bg.middle;
+  }
+  get lf2() {
+    return this.world.lf2;
+  }
+  get callbacks(): NoEmitCallbacks<IStageCallbacks> {
+    return this._callbacks;
+  }
+  get time() {
+    return this._time;
+  }
   /**
    * 玩家角色的地图左边界
    *
    * @readonly
    * @type {number}
    */
-  get player_left(): number { return this.bg.left }
+  get player_left(): number {
+    return this.bg.left;
+  }
 
   /**
    * 玩家角色的地图右边界
@@ -57,36 +81,43 @@ export default class Stage {
    * @readonly
    * @type {number}
    */
-  get player_right(): number { return this.data.phases[this._cur_phase_idx]?.bound ?? this.bg.right }
+  get player_right(): number {
+    return this.data.phases[this._cur_phase_idx]?.bound ?? this.bg.right;
+  }
 
   constructor(world: World, data: IStageInfo | IBgData) {
     this.world = world;
-    if ('type' in data && data.type === 'background') {
+    if ("type" in data && data.type === "background") {
       this.data = Defines.VOID_STAGE;
       this.bg = new Background(world, data);
-    } else if ('bg' in data) {
+    } else if ("bg" in data) {
       this.data = data;
-      const bg_id = this.data.bg
-      const bg_data = this.world.lf2.datas.backgrounds.find(v => v.id === bg_id || v.id === 'bg_' + bg_id)// FIXME;
-      if (!bg_data) Warn.print(Stage.TAG + '::constructor', `bg_data not found, id: ${bg_id}`)
+      const bg_id = this.data.bg;
+      const bg_data = this.world.lf2.datas.backgrounds.find(
+        (v) => v.id === bg_id || v.id === "bg_" + bg_id,
+      ); // FIXME;
+      if (!bg_data)
+        Warn.print(
+          Stage.TAG + "::constructor",
+          `bg_data not found, id: ${bg_id}`,
+        );
       this.bg = new Background(world, bg_data ?? Defines.VOID_BG);
     } else {
       this.data = Defines.VOID_STAGE;
       this.bg = new Background(world, Defines.VOID_BG);
     }
-    this.team = new_team()
+    this.team = new_team();
   }
 
   private _stop_bgm?: () => void;
 
   private async play_phase_bgm() {
-    const phase_info = this.data.phases[this._cur_phase_idx]
+    const phase_info = this.data.phases[this._cur_phase_idx];
     if (!phase_info) return;
     const { lf2 } = this;
     const { music } = phase_info;
     if (!music) return;
-    if (!lf2.sounds.has(music))
-      await lf2.sounds.load(music, music)
+    if (!lf2.sounds.has(music)) await lf2.sounds.load(music, music);
     if (this._disposed) return;
     this._stop_bgm = lf2.sounds.play_bgm(music);
   }
@@ -97,12 +128,14 @@ export default class Stage {
 
   enter_phase(idx: number) {
     if (this._cur_phase_idx === idx) return;
-    const old: IStagePhaseInfo | undefined = this.data.phases[this._cur_phase_idx]
-    const phase: IStagePhaseInfo | undefined = this.data.phases[this._cur_phase_idx = idx]
-    this._callbacks.emit('on_phase_changed')(this, phase, old);
+    const old: IStagePhaseInfo | undefined =
+      this.data.phases[this._cur_phase_idx];
+    const phase: IStagePhaseInfo | undefined =
+      this.data.phases[(this._cur_phase_idx = idx)];
+    this._callbacks.emit("on_phase_changed")(this, phase, old);
     if (!phase) return;
     const { objects } = phase;
-    this.play_phase_bgm()
+    this.play_phase_bgm();
     for (const object of objects) {
       this.spawn_object(object);
     }
@@ -115,7 +148,7 @@ export default class Stage {
 
       const player_teams = new Set<string>();
       for (const [, v] of this.lf2.world.player_slot_characters) {
-        player_teams.add(v.team)
+        player_teams.add(v.team);
       }
       for (const entity of this.world.entities) {
         if (is_character(entity) && player_teams.has(entity.team))
@@ -128,7 +161,7 @@ export default class Stage {
       this.enter_phase(this._cur_phase_idx + 1);
       return;
     }
-    this.lf2.goto_next_stage()
+    this.lf2.goto_next_stage();
   }
 
   readonly items = new Set<Item>();
@@ -145,7 +178,7 @@ export default class Stage {
     while (spawn_count > 0) {
       const stage_object = new Item(this, obj_info);
       stage_object.spawn();
-      this.items.add(stage_object)
+      this.items.add(stage_object);
       --spawn_count;
     }
   }
@@ -188,28 +221,26 @@ export default class Stage {
     this._disposed = true;
     for (const f of this._disposers) f();
     this.bg.dispose();
-    for (const item of this.items)
-      item.dispose();
+    for (const item of this.items) item.dispose();
 
-    const temp: Entity[] = []
+    const temp: Entity[] = [];
     const player_teams = new Set<string>();
     for (const [, v] of this.lf2.world.player_slot_characters) {
-      player_teams.add(v.team)
+      player_teams.add(v.team);
     }
     for (const e of this.world.entities) {
-      if (is_character(e) && player_teams.has(e.team))
-        continue;
+      if (is_character(e) && player_teams.has(e.team)) continue;
       else if (is_weapon(e) && e.holder && player_teams.has(e.holder.team))
         continue;
-      temp.push(e)
+      temp.push(e);
     }
-    this.world.del_entities(temp)
+    this.world.del_entities(temp);
   }
   all_boss_dead(): boolean {
-    return !find(this.items, i => i.info.is_boss)
+    return !find(this.items, (i) => i.info.is_boss);
   }
   all_enemies_dead(): boolean {
-    return !find(this.items, i => i.is_enemies)
+    return !find(this.items, (i) => i.is_enemies);
   }
   is_last_phase(): boolean {
     return this._cur_phase_idx >= this.data.phases.length - 1;

@@ -1,1 +1,1 @@
-declare module 'electron-connect'
+declare module "electron-connect";

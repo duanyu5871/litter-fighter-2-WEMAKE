@@ -7,7 +7,7 @@ import { IFrameInfo } from "./IFrameInfo";
 import { TNextFrame } from "./INextFrame";
 
 export interface IEntityData extends IBaseData<IEntityInfo> {
-  type: 'entity' | 'character' | 'weapon' | 'ball';
+  type: "entity" | "character" | "weapon" | "ball";
   on_dead?: TNextFrame;
   on_exhaustion?: TNextFrame;
   indexes?: IFrameIndexes;

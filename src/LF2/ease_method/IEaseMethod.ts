@@ -1,4 +1,3 @@
-
 /**
  * 缓动函数
  * @date 4/3/2024 - 4:25:28 PM
@@ -21,7 +20,6 @@ export interface IEaseMethod<Factor = number, Value = number> {
    */
   (factor: Factor, from?: Value, to?: Value): Value;
 
-  
   /**
    * 缓动函数逆函数
    * @date 4/3/2024 - 4:27:56 PM

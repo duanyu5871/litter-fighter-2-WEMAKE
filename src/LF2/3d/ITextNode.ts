@@ -14,4 +14,4 @@ export interface ITextNode extends ISpriteNode {
   set_text(v: string): this;
 }
 export const is_text_node = (v: any): v is ITextNode =>
-  v?.is_text_node === true
+  v?.is_text_node === true;

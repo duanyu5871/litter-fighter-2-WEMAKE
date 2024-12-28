@@ -11,15 +11,9 @@
       "rect": "407,183,126,21",
       "pos": "89,13",
       "auto_focus": true,
-      "component": [
-        "opacity_hover(0,1)",
-        "reachable_layout(menu)"
-      ],
+      "component": ["opacity_hover(0,1)", "reachable_layout(menu)"],
       "actions": {
-        "click": [
-          "broadcast(start_game)",
-          "sound(ok)"
-        ]
+        "click": ["broadcast(start_game)", "sound(ok)"]
       }
     },
     {
@@ -27,15 +21,9 @@
       "img": "sprite/MENU_CLIP3.png",
       "rect": "379,206,186,21",
       "pos": "61,36",
-      "component": [
-        "opacity_hover(0,1)",
-        "reachable_layout(menu)"
-      ],
+      "component": ["opacity_hover(0,1)", "reachable_layout(menu)"],
       "actions": {
-        "click": [
-          "broadcast(reset_gpl)",
-          "sound(ok)"
-        ]
+        "click": ["broadcast(reset_gpl)", "sound(ok)"]
       }
     },
     {
@@ -43,15 +31,9 @@
       "img": "sprite/MENU_CLIP3.png",
       "rect": "355,231,235,21",
       "pos": "37,61",
-      "component": [
-        "opacity_hover(0,1)",
-        "reachable_layout(menu)"
-      ],
+      "component": ["opacity_hover(0,1)", "reachable_layout(menu)"],
       "actions": {
-        "click": [
-          "broadcast(update_random)",
-          "sound(ok)"
-        ]
+        "click": ["broadcast(update_random)", "sound(ok)"]
       }
     },
     {
@@ -59,22 +41,14 @@
       "img": "sprite/MENU_CLIP3.png",
       "rect": "330,254,279,22",
       "pos": "12,84",
-      "component": [
-        "opacity_hover(0,1)",
-        "reachable_layout(menu)"
-      ],
+      "component": ["opacity_hover(0,1)", "reachable_layout(menu)"],
       "actions": {
-        "click": [
-          "broadcast(switch_background)",
-          "sound(ok)"
-        ]
+        "click": ["broadcast(switch_background)", "sound(ok)"]
       },
       "items": [
         {
           "pos": "157,12,0.1",
-          "component": [
-            "background_name_text()"
-          ]
+          "component": ["background_name_text()"]
         }
       ]
     },
@@ -90,22 +64,14 @@
           "img": "sprite/MENU_CLIP3.png",
           "rect": "330,332,279,22",
           "pos": "0,0",
-          "component": [
-            "opacity_hover(0,1)",
-            "reachable_layout(menu)"
-          ],
+          "component": ["opacity_hover(0,1)", "reachable_layout(menu)"],
           "actions": {
-            "click": [
-              "broadcast(switch_stage)",
-              "sound(ok)"
-            ]
+            "click": ["broadcast(switch_stage)", "sound(ok)"]
           },
           "items": [
             {
               "pos": "186,12,0.1",
-              "component": [
-                "stage_name_text()"
-              ]
+              "component": ["stage_name_text()"]
             }
           ]
         }
@@ -116,22 +82,14 @@
       "img": "sprite/MENU_CLIP3.png",
       "rect": "352,278,228,22",
       "pos": "34,108",
-      "component": [
-        "opacity_hover(0,1)",
-        "reachable_layout(menu)"
-      ],
+      "component": ["opacity_hover(0,1)", "reachable_layout(menu)"],
       "actions": {
-        "click": [
-          "switch_difficulty()",
-          "sound(ok)"
-        ]
+        "click": ["switch_difficulty()", "sound(ok)"]
       },
       "items": [
         {
           "pos": "134,12,0.1",
-          "component": [
-            "difficulty_text()"
-          ]
+          "component": ["difficulty_text()"]
         }
       ]
     },
@@ -140,15 +98,9 @@
       "img": "sprite/MENU_CLIP3.png",
       "rect": "416,304,111,19",
       "pos": "98,134",
-      "component": [
-        "opacity_hover(0,1)",
-        "reachable_layout(menu)"
-      ],
+      "component": ["opacity_hover(0,1)", "reachable_layout(menu)"],
       "actions": {
-        "click": [
-          "pop_layout()",
-          "sound(cancel)"
-        ]
+        "click": ["pop_layout()", "sound(cancel)"]
       }
     }
   ]

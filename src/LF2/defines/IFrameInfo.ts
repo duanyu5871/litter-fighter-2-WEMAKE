@@ -1,6 +1,6 @@
 import type { TNextFrame } from ".";
 import type { INextFrame } from "../defines/INextFrame";
-import type { Defines } from './defines';
+import type { Defines } from "./defines";
 import type { IBdyInfo } from "./IBdyInfo";
 import type { IBpointInfo } from "./IBpointInfo";
 import type { ICpointInfo } from "./ICpointInfo";
@@ -11,7 +11,7 @@ import type { IItrInfo } from "./IItrInfo";
 import type { IOpointInfo } from "./IOpointInfo";
 import type { IQubePair } from "./IQubePair";
 import type { IWpointInfo } from "./IWpointInfo";
-import type { SpeedMode } from './SpeedMode';
+import type { SpeedMode } from "./SpeedMode";
 
 export interface IFrameInfo {
   id: string;
@@ -47,9 +47,9 @@ export interface IFrameInfo {
 
   /**
    * 此frame消耗的血量，每帧都会扣
-   * 
+   *
    * 原版的角色消耗mp与hp见INextFrame
-   * 
+   *
    * @see {INextFrame}
    */
   hp?: number;
@@ -82,12 +82,12 @@ export interface IFrameInfo {
 
   /**
    * 起跳标志（角色专用）
-   * 
+   *
    * 从state为```Defines.State.Jump```的frame，
    * 跳至state为```Defines.State.Jump```的frame时，
    * 若前（frame.jump_flag == 1）且后（frame.jump_flag == 0）或空。
    * 此时将会计算跳跃速度，让角色跳起来。
-   *  
+   *
    * @see {Defines.State.Jump}
    * @type {?number}
    */
@@ -95,15 +95,14 @@ export interface IFrameInfo {
 
   /**
    * 死亡后跳转
-   * 
+   *
    * hp从正数降至小于等于0时，跳转至on_dead中符合条件的帧
-   * 
+   *
    * @type {?TNextFrame}
    */
   on_dead?: TNextFrame;
 
   on_exhaustion?: TNextFrame;
-
 
   /**
    * Description placeholder
@@ -111,7 +110,6 @@ export interface IFrameInfo {
    * @type {?TNextFrame}
    */
   on_landing?: TNextFrame;
-
 
   /**
    * 原ball的hit_Fa

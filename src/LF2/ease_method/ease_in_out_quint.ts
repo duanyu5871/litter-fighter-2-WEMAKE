@@ -1,10 +1,9 @@
 import { IEaseMethod } from "./IEaseMethod";
 
 function ease_in_out_quint(factor: number, from = 0, to = 1): number {
-  const ratio = (factor < 0.5) ?
-    16 * factor ** 5 :
-    1 - Math.pow(-2 * factor + 2, 5) / 2;
-  return from + ratio * (to - from)
+  const ratio =
+    factor < 0.5 ? 16 * factor ** 5 : 1 - Math.pow(-2 * factor + 2, 5) / 2;
+  return from + ratio * (to - from);
 }
 
 ease_in_out_quint.backward = function (v: number, from = 0, to = 1): number {
@@ -14,7 +13,7 @@ ease_in_out_quint.backward = function (v: number, from = 0, to = 1): number {
   if (v > max) v = max;
   const ratio = (v - from) / (to - from);
   return Math.acos(-2 * ratio + 1) / Math.PI;
-}
+};
 
-const exported: IEaseMethod = ease_in_out_quint
+const exported: IEaseMethod = ease_in_out_quint;
 export default exported;

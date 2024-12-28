@@ -1,9 +1,8 @@
-import type { IBdyInfo, IFrameInfo, IItrInfo } from '.';
-import type { IBounding } from '../World';
-import type Entity from '../entity/Entity';
+import type { IBdyInfo, IFrameInfo, IItrInfo } from ".";
+import type { IBounding } from "../World";
+import type Entity from "../entity/Entity";
 
 export interface ICollision {
-
   /**
    * 攻击方
    *
@@ -36,7 +35,7 @@ export interface ICollision {
    */
   bdy: IBdyInfo;
 
-  /** 
+  /**
    * 攻击方的frame
    *
    * @type {IFrameInfo}

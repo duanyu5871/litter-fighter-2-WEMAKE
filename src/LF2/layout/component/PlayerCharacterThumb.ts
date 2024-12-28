@@ -1,13 +1,12 @@
 import { ISpriteNode } from "../../3d";
 import { SineAnimation } from "../../animation/SineAnimation";
 import Invoker from "../../base/Invoker";
-import { Defines } from '../../defines/defines';
+import { Defines } from "../../defines/defines";
 import Ditto from "../../ditto";
 import Layout from "../Layout";
 import GamePrepareLogic from "./GamePrepareLogic";
 import { LayoutComponent } from "./LayoutComponent";
 import PlayerScore from "./PlayerScore";
-
 
 /**
  * 显示玩家角色选择的角色小头像
@@ -19,39 +18,42 @@ import PlayerScore from "./PlayerScore";
 export default class PlayerCharacterThumb extends LayoutComponent {
   private _player_id?: string;
 
-  get player_id() { return this.args[0] || this._player_id || ''; }
+  get player_id() {
+    return this.args[0] || this._player_id || "";
+  }
 
-  get character() { return this.lf2.player_characters.get(this.player_id) }
+  get character() {
+    return this.lf2.player_characters.get(this.player_id);
+  }
 
   get thumb_url(): string {
-    return this.character?.data.base.small ?? Defines.BuiltIn_Imgs.CHARACTER_THUMB;
+    return (
+      this.character?.data.base.small ?? Defines.BuiltIn_Imgs.CHARACTER_THUMB
+    );
   }
 
   protected _opacity: SineAnimation = new SineAnimation(0.65, 1, 1 / 25);
   protected readonly _mesh_thumb: ISpriteNode;
 
-
   get gpl(): GamePrepareLogic | undefined {
-    return this.layout.root.find_component(GamePrepareLogic)
-  };
+    return this.layout.root.find_component(GamePrepareLogic);
+  }
 
   protected _unmount_jobs = new Invoker();
 
   constructor(layout: Layout, f_name: string) {
-    super(layout, f_name)
+    super(layout, f_name);
     this._mesh_thumb = new Ditto.SpriteNode(this.lf2)
-      .set_center(.5, .5)
+      .set_center(0.5, 0.5)
       .set_position(this.layout.w / 2, -this.layout.h / 2, 0.1)
-      .set_name('thumb')
+      .set_name("thumb")
       .apply();
   }
   override on_resume(): void {
     super.on_resume();
-    this._player_id = this.layout.lookup_component(PlayerScore)?.player_id
+    this._player_id = this.layout.lookup_component(PlayerScore)?.player_id;
     this.layout.sprite.add(this._mesh_thumb);
-    this._unmount_jobs.add(
-      () => this.layout.sprite.del(this._mesh_thumb),
-    )
+    this._unmount_jobs.add(() => this.layout.sprite.del(this._mesh_thumb));
   }
 
   override on_show(): void {
@@ -65,15 +67,14 @@ export default class PlayerCharacterThumb extends LayoutComponent {
 
   protected handle_changed() {
     const { thumb_url } = this;
-    const img = this.lf2.images.find(thumb_url)
+    const img = this.lf2.images.find(thumb_url);
     if (img) {
       const pic = this.lf2.images.create_pic_by_img_info(img);
       this._mesh_thumb.set_info(pic).apply();
     } else {
-      this.lf2.images.create_pic(thumb_url, thumb_url).then(pic => {
+      this.lf2.images.create_pic(thumb_url, thumb_url).then((pic) => {
         this._mesh_thumb.set_info(pic).apply();
-      })
+      });
     }
-
   }
 }

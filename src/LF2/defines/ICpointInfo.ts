@@ -1,6 +1,5 @@
 import { TNextFrame } from ".";
 
-
 export interface ICpointInfo {
   kind: 1 | 2;
   x: number;

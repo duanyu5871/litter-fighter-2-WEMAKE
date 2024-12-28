@@ -2,15 +2,11 @@
   "name": "主页",
   "id": "main_page",
   "bg_color": "rgb(16, 32, 108)",
-  "component": [
-    "reachable_layout_group(main,ud)"
-  ],
+  "component": ["reachable_layout_group(main,ud)"],
   "items": [
     {
       "id": "bg_left",
-      "component": [
-        "random_img_on_layout_resume(entry_page)"
-      ],
+      "component": ["random_img_on_layout_resume(entry_page)"],
       "img": [
         "sprite/MENU_BACK1.png",
         "sprite/MENU_BACK2.png",
@@ -30,9 +26,7 @@
     },
     {
       "id": "bg_right",
-      "component": [
-        "random_img_on_layout_resume(entry_page)"
-      ],
+      "component": ["random_img_on_layout_resume(entry_page)"],
       "img": [
         "sprite/MENU_BACK1.png",
         "sprite/MENU_BACK2.png",
@@ -75,15 +69,9 @@
           "center": "0.5, 0",
           "pos": "-3,-108",
           "auto_focus": true,
-          "component": [
-            "opacity_hover(0,1)",
-            "reachable_layout(main)"
-          ],
+          "component": ["opacity_hover(0,1)", "reachable_layout(main)"],
           "actions": {
-            "click": [
-              "push_layout(vs_mode_prepare_page)",
-              "sound(ok)"
-            ]
+            "click": ["push_layout(vs_mode_prepare_page)", "sound(ok)"]
           }
         },
         {
@@ -92,15 +80,9 @@
           "rect": "18, 358, 238, 24",
           "center": "0.5, 0",
           "pos": "-3,-81",
-          "component": [
-            "opacity_hover(0,1)",
-            "reachable_layout(main)"
-          ],
+          "component": ["opacity_hover(0,1)", "reachable_layout(main)"],
           "actions": {
-            "click": [
-              "push_layout(stage_mode_prepare_page)",
-              "sound(ok)"
-            ]
+            "click": ["push_layout(stage_mode_prepare_page)", "sound(ok)"]
           }
         },
         {
@@ -109,15 +91,9 @@
           "rect": "0, 385, 275, 23",
           "center": "0.5, 0",
           "pos": "-2,-54",
-          "component": [
-            "opacity_hover(0,1)",
-            "reachable_layout(main)"
-          ],
+          "component": ["opacity_hover(0,1)", "reachable_layout(main)"],
           "actions": {
-            "click": [
-              "alert(还没写)",
-              "sound(ok)"
-            ]
+            "click": ["alert(还没写)", "sound(ok)"]
           }
         },
         {
@@ -126,15 +102,9 @@
           "rect": "0, 412, 275, 24",
           "center": "0.5, 0",
           "pos": "-2,-27",
-          "component": [
-            "opacity_hover(0,1)",
-            "reachable_layout(main)"
-          ],
+          "component": ["opacity_hover(0,1)", "reachable_layout(main)"],
           "actions": {
-            "click": [
-              "alert(还没写)",
-              "sound(ok)"
-            ]
+            "click": ["alert(还没写)", "sound(ok)"]
           }
         },
         {
@@ -143,15 +113,9 @@
           "rect": "32, 438, 207, 24",
           "center": "0.5, 0",
           "pos": "-4,-1",
-          "component": [
-            "opacity_hover(0,1)",
-            "reachable_layout(main)"
-          ],
+          "component": ["opacity_hover(0,1)", "reachable_layout(main)"],
           "actions": {
-            "click": [
-              "alert(还没写)",
-              "sound(ok)"
-            ]
+            "click": ["alert(还没写)", "sound(ok)"]
           }
         },
         {
@@ -160,15 +124,9 @@
           "rect": "42, 466, 188, 23",
           "center": "0.5, 0",
           "pos": "-4,27",
-          "component": [
-            "opacity_hover(0,1)",
-            "reachable_layout(main)"
-          ],
+          "component": ["opacity_hover(0,1)", "reachable_layout(main)"],
           "actions": {
-            "click": [
-              "push_layout(demo_mode_page)",
-              "sound(ok)"
-            ]
+            "click": ["push_layout(demo_mode_page)", "sound(ok)"]
           }
         },
         {
@@ -177,15 +135,9 @@
           "rect": "55, 521, 165, 23",
           "center": "0.5, 0",
           "pos": "-2,82",
-          "component": [
-            "opacity_hover(0,1)",
-            "reachable_layout(main)"
-          ],
+          "component": ["opacity_hover(0,1)", "reachable_layout(main)"],
           "actions": {
-            "click": [
-              "exit()",
-              "sound(ok)"
-            ]
+            "click": ["exit()", "sound(ok)"]
           }
         }
       ]

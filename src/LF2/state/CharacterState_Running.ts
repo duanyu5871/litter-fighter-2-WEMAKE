@@ -1,4 +1,4 @@
-import type Entity from '../entity/Entity';
+import type Entity from "../entity/Entity";
 import CharacterState_Base from "./CharacterState_Base";
 
 export default class CharacterState_Running extends CharacterState_Base {
@@ -7,7 +7,7 @@ export default class CharacterState_Running extends CharacterState_Base {
     if (e.velocities[0].z) {
       const dz = Math.abs(e.velocities[0].z / 4);
       if (e.velocities[0].x > 0) {
-        e.velocities[0].x -= dz
+        e.velocities[0].x -= dz;
       } else if (e.velocities[0].x < 0) {
         e.velocities[0].x += dz;
       }

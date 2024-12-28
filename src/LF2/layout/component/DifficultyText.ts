@@ -1,26 +1,26 @@
-import { ITextNode } from '../../3d/ITextNode';
-import Invoker from '../../base/Invoker';
-import { Defines } from '../../defines/defines';
-import Ditto from '../../ditto';
-import Layout from '../Layout';
+import { ITextNode } from "../../3d/ITextNode";
+import Invoker from "../../base/Invoker";
+import { Defines } from "../../defines/defines";
+import Ditto from "../../ditto";
+import Layout from "../Layout";
 import { LayoutComponent } from "./LayoutComponent";
 
 export default class DifficultyText extends LayoutComponent {
   protected get text(): string {
-    return Defines.DifficultyLabels[this.lf2.difficulty]
+    return Defines.DifficultyLabels[this.lf2.difficulty];
   }
   protected _mesh: ITextNode;
   protected _unmount_jobs = new Invoker();
 
   constructor(layout: Layout, f_name: string) {
-    super(layout, f_name)
+    super(layout, f_name);
     this._mesh = new Ditto.TextNode(this.lf2)
       .set_center(0, 0.5)
       .set_name(DifficultyText.name)
       .set_style({
-        fill_style: '#9b9bff',
-        font: '14px Arial',
-      })
+        fill_style: "#9b9bff",
+        font: "14px Arial",
+      });
   }
 
   override on_resume(): void {
@@ -29,10 +29,10 @@ export default class DifficultyText extends LayoutComponent {
     this.layout.sprite.add(this._mesh);
     this._unmount_jobs.add(
       this.lf2.callbacks.add({
-        on_difficulty_changed: () => this.handle_changed()
+        on_difficulty_changed: () => this.handle_changed(),
       }),
       () => this._mesh.del_self(),
-    )
+    );
     this.handle_changed();
   }
 
@@ -42,7 +42,6 @@ export default class DifficultyText extends LayoutComponent {
   }
 
   protected handle_changed() {
-    this._mesh.set_text(this.text).apply()
+    this._mesh.set_text(this.text).apply();
   }
-
 }

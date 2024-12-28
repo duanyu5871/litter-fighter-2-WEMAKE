@@ -7,14 +7,18 @@
  * @throws 当无法到达终点值，将抛出Error:[arithmetic_progression] dead loop!
  * @returns {number[]} 等差数列
  */
-export const arithmetic_progression = (from: number, to: number, gap: number = 1): number[] => {
+export const arithmetic_progression = (
+  from: number,
+  to: number,
+  gap: number = 1,
+): number[] => {
   if (gap === 0 || (to - from) / gap < 0)
-    throw new Error('[arithmetic_progression] dead loop!')
+    throw new Error("[arithmetic_progression] dead loop!");
 
   const ret = [];
   for (let i = 0; true; ++i) {
     const v = from + i * gap;
-    if ((gap > 0) ? (v >= to) : (v <= to)) break;
+    if (gap > 0 ? v >= to : v <= to) break;
     ret.push(v);
   }
   return ret;

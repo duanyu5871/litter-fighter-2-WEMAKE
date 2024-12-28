@@ -1,4 +1,3 @@
-
 export interface ITexturePieceInfo {
   /** 纹理ID */
   tex: string;

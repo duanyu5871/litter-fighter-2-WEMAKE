@@ -17,16 +17,8 @@
     "char_minus": "722, 124, 29, 40",
     "stage_clear": "12, 552, 386, 40"
   },
-  "component": [
-    "vs_mode_logic()",
-    "stage_title_show()"
-  ],
-  "key_press_actions": [
-    [
-      "escape",
-      "set_layout(entry)"
-    ]
-  ],
+  "component": ["vs_mode_logic()", "stage_title_show()"],
+  "key_press_actions": [["escape", "set_layout(entry)"]],
   "items": [
     {
       "visible": "paused==1",
@@ -44,9 +36,6 @@
     }
   ],
   "actions": {
-    "stop": [
-      "remove_all_entities()",
-      "destory_stage()"
-    ]
+    "stop": ["remove_all_entities()", "destory_stage()"]
   }
 }

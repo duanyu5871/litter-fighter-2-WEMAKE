@@ -1,8 +1,8 @@
-import { ITextNode } from '../../3d/ITextNode';
-import Invoker from '../../base/Invoker';
-import Ditto from '../../ditto';
-import Layout from '../Layout';
-import { LayoutComponent } from './LayoutComponent';
+import { ITextNode } from "../../3d/ITextNode";
+import Invoker from "../../base/Invoker";
+import Ditto from "../../ditto";
+import Layout from "../Layout";
+import { LayoutComponent } from "./LayoutComponent";
 
 export default class LoadingFileNameDisplayer extends LayoutComponent {
   protected _unmount_job = new Invoker();
@@ -15,19 +15,20 @@ export default class LoadingFileNameDisplayer extends LayoutComponent {
       .set_center(...this.layout.center)
       .set_style(this.layout.style)
       .set_name(LoadingFileNameDisplayer.name)
-      .apply()
+      .apply();
   }
 
   override on_resume(): void {
     super.on_resume();
-    this.layout.sprite.add(this._mesh)
+    this.layout.sprite.add(this._mesh);
     this._unmount_job.add(
       () => this._mesh?.del_self(),
       this.lf2.callbacks.add({
-        on_loading_content: (content, progress) => this.update_sprite(content, progress),
-        on_loading_end: (): void => this.lf2.set_layout('main_page')
-      })
-    )
+        on_loading_content: (content, progress) =>
+          this.update_sprite(content, progress),
+        on_loading_end: (): void => this.lf2.set_layout("main_page"),
+      }),
+    );
   }
 
   override on_pause(): void {

@@ -9,7 +9,7 @@ export class CharacterState_Drink extends CharacterState_Base {
     // FIXME: 更通用的补充机制。而不是写死。 -Gim
     if (e.holding) {
       e.holding.mp -= 1;
-      if (e.holding.data.id === '122') {
+      if (e.holding.data.id === "122") {
         const next_hp = e.hp + 2;
         if (next_hp < e.hp_max) {
           e.hp = next_hp;
@@ -18,7 +18,7 @@ export class CharacterState_Drink extends CharacterState_Base {
         if (next_mp < e.mp_max) {
           e.mp = next_mp;
         }
-      } else if (e.holding.data.id === '123') {
+      } else if (e.holding.data.id === "123") {
         const next_mp = e.mp + 5;
         if (next_mp < e.mp_max) {
           e.mp = next_mp;

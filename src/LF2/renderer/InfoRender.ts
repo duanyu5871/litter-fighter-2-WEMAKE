@@ -1,11 +1,11 @@
-import * as T from 'three';
-import { IBillboardNode, IMeshNode, IObjectNode } from '../3d';
-import LF2 from '../LF2';
-import { get_team_shadow_color } from '../base/get_team_shadow_color';
-import { get_team_text_color } from '../base/get_team_text_color';
-import Ditto from '../ditto';
-import type Entity from '../entity/Entity';
-import type IEntityCallbacks from '../entity/IEntityCallbacks';
+import * as T from "three";
+import { IBillboardNode, IMeshNode, IObjectNode } from "../3d";
+import LF2 from "../LF2";
+import { get_team_shadow_color } from "../base/get_team_shadow_color";
+import { get_team_text_color } from "../base/get_team_text_color";
+import Ditto from "../ditto";
+import type Entity from "../entity/Entity";
+import type IEntityCallbacks from "../entity/IEntityCallbacks";
 
 const BAR_W = 40;
 const BAR_H = 3;
@@ -17,19 +17,29 @@ const geo_map = new Map<string, T.PlaneGeometry>();
 function get_bar_geo(w: number, h: number, ax: number, ay: number) {
   const key = `w_h_a_${w}_${h}`;
   let ret = geo_map.get(key);
-  if (!ret) geo_map.set(key, ret = new T.PlaneGeometry(w, h).translate(ax * w, ay * h, 0))
+  if (!ret)
+    geo_map.set(
+      key,
+      (ret = new T.PlaneGeometry(w, h).translate(ax * w, ay * h, 0)),
+    );
   return ret;
 }
 
 const material_map = new Map<T.ColorRepresentation, T.MeshBasicMaterial>();
 function get_color_material(color: T.ColorRepresentation) {
-  const key = (
-    typeof color === 'string' ||
-    typeof color === 'number'
-  ) ? `c_${color}` : color ? color : 'c_void';
+  const key =
+    typeof color === "string" || typeof color === "number"
+      ? `c_${color}`
+      : color
+        ? color
+        : "c_void";
 
   let ret = material_map.get(key);
-  if (!ret) material_map.set(key, ret = new T.MeshBasicMaterial({ visible: true, color }))
+  if (!ret)
+    material_map.set(
+      key,
+      (ret = new T.MeshBasicMaterial({ visible: true, color })),
+    );
   return ret;
 }
 class Bar {
@@ -47,22 +57,24 @@ class Bar {
     this.mesh.set_scale_x(this._val / this._max);
   }
 
-  constructor(lf2: LF2, color: T.ColorRepresentation,
+  constructor(
+    lf2: LF2,
+    color: T.ColorRepresentation,
     w: number,
     h: number,
     ax: number,
-    ay: number
+    ay: number,
   ) {
     this.mesh = new Ditto.MeshNode(lf2, {
       geometry: get_bar_geo(w, h, ax, ay),
-      material: get_color_material(color)
-    })
+      material: get_color_material(color),
+    });
   }
 
   set(val: number, max: number) {
     this._max = max;
     this._val = val;
-    this.mesh.set_scale_x(this._val / this._max)
+    this.mesh.set_scale_x(this._val / this._max);
   }
 }
 
@@ -82,7 +94,9 @@ export class InfoRender implements IEntityCallbacks {
 
   protected entity: Entity;
 
-  get visible() { return this.mesh.visible; }
+  get visible() {
+    return this.mesh.visible;
+  }
   set visible(v) {
     this.mesh.visible = this.bars_node.visible = v;
   }
@@ -90,40 +104,54 @@ export class InfoRender implements IEntityCallbacks {
   constructor(entity: Entity, entity_mesh: IMeshNode) {
     const { lf2 } = entity.world;
     this.mesh = new Ditto.BillboardNode(lf2, {
-      material: new T.SpriteMaterial({ visible: false })
+      material: new T.SpriteMaterial({ visible: false }),
     });
-    this.bars_node = new Ditto.ObjectNode(lf2)
-    this.bars_bg = new Bar(lf2, 'rgb(0,0,0)', BAR_BG_W, BAR_BG_H, .5, 0);
+    this.bars_node = new Ditto.ObjectNode(lf2);
+    this.bars_bg = new Bar(lf2, "rgb(0,0,0)", BAR_BG_W, BAR_BG_H, 0.5, 0);
 
-    this.self_healing_hp_bar = new Bar(lf2, 'rgb(111,8,31)', BAR_W, BAR_H, .5, 1);
-    this.hp_bar = new Bar(lf2, 'rgb(255,0,0)', BAR_W, BAR_H, .5, 1);
+    this.self_healing_hp_bar = new Bar(
+      lf2,
+      "rgb(111,8,31)",
+      BAR_W,
+      BAR_H,
+      0.5,
+      1,
+    );
+    this.hp_bar = new Bar(lf2, "rgb(255,0,0)", BAR_W, BAR_H, 0.5, 1);
 
-    this.self_healing_mp_bar = new Bar(lf2, 'rgb(31,8,111)', BAR_W, BAR_H, .5, 1);
-    this.mp_bar = new Bar(lf2, 'rgb(0,0,255)', BAR_W, BAR_H, .5, 1);
+    this.self_healing_mp_bar = new Bar(
+      lf2,
+      "rgb(31,8,111)",
+      BAR_W,
+      BAR_H,
+      0.5,
+      1,
+    );
+    this.mp_bar = new Bar(lf2, "rgb(0,0,255)", BAR_W, BAR_H, 0.5, 1);
 
-    this.fall_value_bar = new Bar(lf2, 'rgb(216, 115, 0)', BAR_W, 1, .5, 1);
-    this.defend_value_bar = new Bar(lf2, 'rgb(0, 122, 71)', BAR_W, 1, .5, 1);
+    this.fall_value_bar = new Bar(lf2, "rgb(216, 115, 0)", BAR_W, 1, 0.5, 1);
+    this.defend_value_bar = new Bar(lf2, "rgb(0, 122, 71)", BAR_W, 1, 0.5, 1);
 
     this.mesh.name = InfoRender.name;
     this.mesh.render_order = 0;
     this.entity = entity;
-    entity_mesh.on('added', () => this.on_mount(entity));
-    entity_mesh.on('removed', () => this.on_unmount(entity));
+    entity_mesh.on("added", () => this.on_mount(entity));
+    entity_mesh.on("removed", () => this.on_unmount(entity));
 
     let y = -1;
 
     this.bars_bg.mesh.set_position(-1, -2);
-    this.bars_node.add(this.bars_bg.mesh)
+    this.bars_node.add(this.bars_bg.mesh);
 
     this.self_healing_hp_bar.mesh.set_position(0, y);
-    this.bars_node.add(this.self_healing_hp_bar.mesh)
+    this.bars_node.add(this.self_healing_hp_bar.mesh);
 
     this.hp_bar.mesh.set_position(0, y);
-    this.bars_node.add(this.hp_bar.mesh)
+    this.bars_node.add(this.hp_bar.mesh);
     y = y - 1 - BAR_H;
 
     this.self_healing_mp_bar.mesh.set_position(0, y);
-    this.bars_node.add(this.self_healing_mp_bar.mesh)
+    this.bars_node.add(this.self_healing_mp_bar.mesh);
 
     this.mp_bar.mesh.set_position(0, y);
     this.bars_node.add(this.mp_bar.mesh);
@@ -154,32 +182,52 @@ export class InfoRender implements IEntityCallbacks {
   protected on_unmount(entity: Entity) {
     this.bars_node.del_self();
     this.mesh.del_self();
-    entity.callbacks.del(this)
+    entity.callbacks.del(this);
   }
 
   on_name_changed(entity: Entity, name: string): void {
-    this.update_name_sprite(entity, name, entity.team)
+    this.update_name_sprite(entity, name, entity.team);
   }
 
   on_team_changed(entity: Entity, team: string): void {
-    this.update_name_sprite(entity, entity.name, team)
+    this.update_name_sprite(entity, entity.name, team);
   }
 
-  on_hp_changed(_e: Entity, value: number): void { this.hp_bar.val = value; }
-  on_hp_max_changed(_e: Entity, value: number): void { this.self_healing_hp_bar.max = value; }
-  on_mp_changed(_e: Entity, value: number): void { this.mp_bar.val = value; }
-  on_mp_max_changed(_e: Entity, value: number): void { this.self_healing_mp_bar.max = value; }
+  on_hp_changed(_e: Entity, value: number): void {
+    this.hp_bar.val = value;
+  }
+  on_hp_max_changed(_e: Entity, value: number): void {
+    this.self_healing_hp_bar.max = value;
+  }
+  on_mp_changed(_e: Entity, value: number): void {
+    this.mp_bar.val = value;
+  }
+  on_mp_max_changed(_e: Entity, value: number): void {
+    this.self_healing_mp_bar.max = value;
+  }
 
-  on_self_healing_hp_changed(_e: Entity, value: number): void { this.self_healing_hp_bar.val = value; }
-  on_self_healing_mp_changed(_e: Entity, value: number): void { this.self_healing_mp_bar.val = value; }
+  on_self_healing_hp_changed(_e: Entity, value: number): void {
+    this.self_healing_hp_bar.val = value;
+  }
+  on_self_healing_mp_changed(_e: Entity, value: number): void {
+    this.self_healing_mp_bar.val = value;
+  }
 
-  on_fall_value_changed(_e: Entity, value: number): void { this.fall_value_bar.val = value; }
-  on_fall_value_max_changed(_e: Entity, value: number): void { this.fall_value_bar.max = value; }
-  on_defend_value_changed(_e: Entity, value: number): void { this.defend_value_bar.val = value; }
-  on_defend_value_max_changed(_e: Entity, value: number): void { this.defend_value_bar.max = value; }
+  on_fall_value_changed(_e: Entity, value: number): void {
+    this.fall_value_bar.val = value;
+  }
+  on_fall_value_max_changed(_e: Entity, value: number): void {
+    this.fall_value_bar.max = value;
+  }
+  on_defend_value_changed(_e: Entity, value: number): void {
+    this.defend_value_bar.val = value;
+  }
+  on_defend_value_max_changed(_e: Entity, value: number): void {
+    this.defend_value_bar.max = value;
+  }
 
   private update_name_sprite(e: Entity, name: string, team: string) {
-    const fillStyle = get_team_text_color(team)
+    const fillStyle = get_team_text_color(team);
     const strokeStyle = get_team_shadow_color(team);
     const world = e.world;
     const lf2 = world.lf2;
@@ -188,7 +236,12 @@ export class InfoRender implements IEntityCallbacks {
       this.mesh.material.map = null;
       return;
     }
-    lf2.images.load_text(name, { shadow_color: strokeStyle, fill_style: fillStyle, smoothing: false })
+    lf2.images
+      .load_text(name, {
+        shadow_color: strokeStyle,
+        fill_style: fillStyle,
+        smoothing: false,
+      })
       .then((i) => lf2.images.create_pic_by_img_key(i.key))
       .then((p) => {
         if (name !== e.name) return;
@@ -201,7 +254,7 @@ export class InfoRender implements IEntityCallbacks {
         this.mesh.material.needsUpdate = true;
 
         this.mesh.set_scale(p.w, p.h, 1);
-        this.mesh.name = 'name sprite'
+        this.mesh.name = "name sprite";
       });
   }
 
@@ -209,33 +262,25 @@ export class InfoRender implements IEntityCallbacks {
     const { x, z, y } = this.entity.position;
 
     const _x = Math.floor(x);
-    const name_y = Math.floor(-z / 2 - this.mesh.scale_y)
+    const name_y = Math.floor(-z / 2 - this.mesh.scale_y);
     this.set_name_position(Math.floor(_x), Math.floor(name_y), Math.floor(z));
 
     const bar_y = Math.floor(y - z / 2 + 79 + BAR_BG_H + 5);
-    const bar_x = _x - BAR_BG_W / 2
+    const bar_x = _x - BAR_BG_W / 2;
 
-    this.set_bars_position(
-      Math.floor(bar_x),
-      Math.floor(bar_y),
-      Math.floor(z)
-    )
+    this.set_bars_position(Math.floor(bar_x), Math.floor(bar_y), Math.floor(z));
   }
 
   set_name_position(x: number, y: number, z: number) {
-    const hw = (this.mesh.scale_x + 10) / 2
+    const hw = (this.mesh.scale_x + 10) / 2;
     const { x: cam_l } = this.entity.world.camera;
     const cam_r = cam_l + this.entity.world.screen_w;
     if (x + hw > cam_r) x = cam_r - hw;
     else if (x - hw < cam_l) x = cam_l + hw;
-    this.mesh.set_position(
-      Math.round(x),
-      Math.round(y),
-      Math.round(z)
-    );
+    this.mesh.set_position(Math.round(x), Math.round(y), Math.round(z));
   }
 
   set_bars_position(x?: number, y?: number, z?: number) {
-    this.bars_node.set_position(x, y, z)
+    this.bars_node.set_position(x, y, z);
   }
 }

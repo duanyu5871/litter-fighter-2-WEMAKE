@@ -2,7 +2,7 @@ export enum CollisionVal {
   /**
    * 攻击者类型
    */
-  AttackerType = 'attacker_type',
+  AttackerType = "attacker_type",
 
   /**
    * 被攻击者类型
@@ -11,15 +11,15 @@ export enum CollisionVal {
   ItrEffect = "itr_effect",
   ItrKind = "itr_kind",
   SameFacing = "same_facing",
-  AttackerState = 'attacker_state',
-  VictimState = 'victim_state',
-  AttackerHasHolder = 'attacker_has_holder',
-  VictimHasHolder = 'victim_has_holder',
-  AttackerHasHolding = 'attacker_has_holding',
-  VictimHasHolding = 'victim_has_holding',
-  SameTeam = 'same_team',
-  AttackerOID = 'attacker_oid',
-  VictimOID = 'victim_oid',
+  AttackerState = "attacker_state",
+  VictimState = "victim_state",
+  AttackerHasHolder = "attacker_has_holder",
+  VictimHasHolder = "victim_has_holder",
+  AttackerHasHolding = "attacker_has_holding",
+  VictimHasHolding = "victim_has_holding",
+  SameTeam = "same_team",
+  AttackerOID = "attacker_oid",
+  VictimOID = "victim_oid",
   BdyKind = "bdy_kind",
   VictimFrameId = "victim_frame_id",
   VictimFrameIndex_ICE = "victim_frame_index_ice",

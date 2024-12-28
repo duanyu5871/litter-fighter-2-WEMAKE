@@ -15,5 +15,3 @@ export class State_WeaponBroken extends State_Base {
     e.enter_frame(GONE_FRAME_INFO);
   }
 }
-
-

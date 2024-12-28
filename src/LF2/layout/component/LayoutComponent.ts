@@ -1,7 +1,6 @@
-import GameKey from '../../defines/GameKey';
-import Defines from '../../defines/defines';
-import Layout from '../Layout';
-
+import GameKey from "../../defines/GameKey";
+import Defines from "../../defines/defines";
+import Layout from "../Layout";
 
 /**
  * 布局组件基类
@@ -10,15 +9,22 @@ import Layout from '../Layout';
  * @class LayoutComponent
  */
 export class LayoutComponent {
-
   readonly layout: Layout;
   readonly f_name: string;
   private _mounted: boolean = false;
   private _args: readonly string[] = [];
-  get mounted() { return this._mounted }
-  get lf2() { return this.layout.lf2 }
-  get world() { return this.layout.lf2.world }
-  get args(): readonly string[] { return this._args }
+  get mounted() {
+    return this._mounted;
+  }
+  get lf2() {
+    return this.layout.lf2;
+  }
+  get world() {
+    return this.layout.lf2.world;
+  }
+  get args(): readonly string[] {
+    return this._args;
+  }
   /**
    * 布局组件基类构造函数
    *
@@ -41,9 +47,13 @@ export class LayoutComponent {
   on_start?(): void;
   on_stop?(): void;
 
-  on_resume(): void { this._mounted = true }
-  on_after_resume(): void { }
-  on_pause(): void { this._mounted = false }
+  on_resume(): void {
+    this._mounted = true;
+  }
+  on_after_resume(): void {}
+  on_pause(): void {
+    this._mounted = false;
+  }
 
   on_show?(): void;
   on_hide?(): void;

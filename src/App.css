@@ -1,6 +1,7 @@
-.App {}
+.App {
+}
 
-.App>* {
+.App > * {
   z-index: 1;
   position: relative;
   overflow: hidden;
@@ -11,7 +12,6 @@
   width: 794px;
   height: 450px;
 }
-
 
 .game_canvas {
   position: absolute;
@@ -58,9 +58,9 @@
   bottom: 0px;
   display: flex;
   flex-direction: column;
-  background-color: #10206C;
+  background-color: #10206c;
   padding: 5px;
-  gap: 5px
+  gap: 5px;
 }
 
 .editor_view .top {
@@ -117,7 +117,7 @@
   max-width: 100vw;
   display: flex;
   flex-direction: column;
-  background-color: #10206C;
+  background-color: #10206c;
   padding: 5px;
   transition: height 200ms;
   overflow: auto;
@@ -154,7 +154,6 @@
   padding-bottom: 20px;
 }
 
-
 .settings_row {
   display: flex;
   gap: 5px;
@@ -170,20 +169,20 @@
   align-items: center;
 }
 
-.name_content>*:first-child {
+.name_content > *:first-child {
   font-weight: lighter;
   opacity: 0.8;
   font-size: 0.5em;
 }
 
-.name_content>*:first-child:not(:last-child) {
+.name_content > *:first-child:not(:last-child) {
   margin-right: 3px;
 }
 
 .portrait .settings_row {
   flex-wrap: wrap;
   padding-bottom: 3px;
-  border-bottom: #5A73D655 1px solid;
+  border-bottom: #5a73d655 1px solid;
 }
 
 .portrait .settings_row .settings_row_title {
@@ -195,6 +194,6 @@
   width: 45px;
 }
 
-.render_align>input {
+.render_align > input {
   width: 45px;
 }

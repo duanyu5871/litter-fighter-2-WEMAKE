@@ -5,4 +5,4 @@ export interface ISceneNode extends IObjectNode {
   render(): void;
 }
 export const is_scene_node = (v: any): v is ISceneNode =>
-  v?.is_scene_node === true
+  v?.is_scene_node === true;

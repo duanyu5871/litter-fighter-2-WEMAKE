@@ -3,16 +3,29 @@ import { IPerspectiveCamera } from "../../LF2/3d/IPerspectiveCamera";
 import LF2 from "../../LF2/LF2";
 import { __ObjectNode } from "./ObjectNode";
 
-
-
-export class __Camera_P_Node extends __ObjectNode implements IPerspectiveCamera {
+export class __Camera_P_Node
+  extends __ObjectNode
+  implements IPerspectiveCamera
+{
   readonly is_perspective_camera_node = true;
-  get aspect(): number { return this.inner.aspect; }
-  set aspect(v: number) { this.inner.aspect = v; }
-  get far(): number { return this.inner.far; }
-  set far(v: number) { this.inner.far = v; }
-  get near(): number { return this.inner.near; }
-  set near(v: number) { this.inner.near = v; }
+  get aspect(): number {
+    return this.inner.aspect;
+  }
+  set aspect(v: number) {
+    this.inner.aspect = v;
+  }
+  get far(): number {
+    return this.inner.far;
+  }
+  set far(v: number) {
+    this.inner.far = v;
+  }
+  get near(): number {
+    return this.inner.near;
+  }
+  set near(v: number) {
+    this.inner.near = v;
+  }
 
   override get inner(): THREE.PerspectiveCamera {
     return this._inner as THREE.PerspectiveCamera;

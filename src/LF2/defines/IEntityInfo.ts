@@ -1,8 +1,7 @@
-import type { IEntityPictureInfo } from './IEntityPictureInfo';
+import type { IEntityPictureInfo } from "./IEntityPictureInfo";
 import type { Defines } from "./defines";
 import { IArmorInfo } from "./IArmorInfo";
 import type { IOpointInfo } from "./IOpointInfo";
-
 
 export interface IEntityInfo {
   type?: number;
@@ -13,27 +12,26 @@ export interface IEntityInfo {
    */
   name: string;
 
-
   /**
    * 角色强度系数
-   * 
+   *
    * 用于闯关模式
-   * 
+   *
    * 若一个角色强度等级为3，使用该角色进入闯关，敌方将视此角色为3个人
-   * 
+   *
    * 默认：1
    * @type {?number}
    */
   ce?: number;
 
-  /** 
-   * 头像 
+  /**
+   * 头像
    * @type {string}
    */
   head?: string;
 
-  /** 
-   * 缩略图 
+  /**
+   * 缩略图
    * @type {string}
    */
   small?: string;
@@ -46,7 +44,7 @@ export interface IEntityInfo {
   group?: string[];
 
   files: Record<string, IEntityPictureInfo>;
-  
+
   depth_test?: boolean;
 
   depth_write?: boolean;
@@ -62,9 +60,9 @@ export interface IEntityInfo {
    *
    * - 默认值：
    *    - 角色、武器、波：Defines.DAFUALT_HP
-   * 
+   *
    * 原版中，武器和波的hp是通过weapon_hp设置的
-   * 
+   *
    * @see Defines.DAFUALT_HP 默认值
    * @type {?number}
    */
@@ -72,14 +70,14 @@ export interface IEntityInfo {
 
   /**
    * 默认蓝量
-   * 
+   *
    * WEMAKE里，牛奶与啤酒恢复的总量通过此值控制。
-   * 
+   *
    * - 默认值：
    *    - 啤酒：154
    *    - 牛奶：249，闯关模式下
    *    - 角色、武器、波：Defines.DEFAULT_MP
-   * 
+   *
    * @see Defines.DEFAULT_MP 默认值
    * @type {?number}
    */
@@ -88,11 +86,11 @@ export interface IEntityInfo {
   /**
    * MP最大恢复速度（每帧）
    * 血量越低，MP恢复速度 越接近MP最大恢复速度
-   * 
+   *
    * - 默认值：
    *    - 角色：Defines.DEFAULT_MP_RECOVERY_MAX_SPEED
    *    - 武器、波：0
-   * 
+   *
    * @see Defines.DEFAULT_MP_RECOVERY_MAX_SPEED
    * @type {?number}
    */
@@ -105,8 +103,8 @@ export interface IEntityInfo {
    * - 默认值：
    *    - 角色：Defines.DEFAULT_MP_RECOVERY_MIN_SPEED
    *    - 武器、波：0
-   *    
-   * @see Defines.DEFAULT_MP_RECOVERY_MIN_SPEED 
+   *
+   * @see Defines.DEFAULT_MP_RECOVERY_MIN_SPEED
    * @type {?number}
    */
   mp_r_min_spd?: number;
@@ -147,21 +145,20 @@ export interface IEntityInfo {
 
   /**
    * 落地伤害
-   * 
+   *
    * 目前只有武器会用到
-   * 
+   *
    * @type {?number}
    */
   drop_hurt?: number;
 
-
   /**
    * 被打到的声音
-   * 
+   *
    * 替代了：
    *    - LF2原版 ball类的weapon_hit_sound
    *    - LF2原版 weapon类的weapon_hit_sound
-   * 
+   *
    * 注意：
    *    - WEMAKE 中任意实体都支持该值
    *
@@ -169,14 +166,13 @@ export interface IEntityInfo {
    */
   hit_sounds?: string[];
 
-
   /**
    * 落地声音
-   * 
+   *
    * 替代了：
    *    - LF2原版 ball类的weapon_drop_sound
    *    - LF2原版 weapon类的weapon_drop_sound
-   * 
+   *
    * 注意：
    *    - WEMAKE 中任意实体都支持该值
    *
@@ -184,17 +180,16 @@ export interface IEntityInfo {
    */
   drop_sounds?: string[];
 
-
   /**
    * hp降至0时，发出的声音（会随机挑选一个播放）
-   * 
+   *
    * 替代了：
    *    - LF2原版 ball类的weapon_broken_sound
    *    - LF2原版 weapon类的weapon_broken_sound
-   * 
+   *
    * 注意：
    *    - WEMAKE 中任意实体都支持该值
-   * 
+   *
    * @type {?string[]}
    */
   dead_sounds?: string[];
@@ -232,6 +227,5 @@ export interface IEntityInfo {
    */
   rowing_distance?: number;
 
-  
   armor?: IArmorInfo;
 }

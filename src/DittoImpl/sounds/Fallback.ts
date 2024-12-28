@@ -4,13 +4,13 @@ import { clamp } from "../../LF2/utils/math/clamp";
 import float_equal from "../../LF2/utils/math/float_equal";
 
 export class __Fallback extends BaseSounds {
-  static readonly TAG = '__Fallback';
+  static readonly TAG = "__Fallback";
   protected _r = new Map<string, string>();
   protected _prev_bgm_url: string | null = null;
   protected _bgm_ele?: HTMLAudioElement;
   protected _req_id: number = 0;
   protected _sound_id = 0;
-  protected _playings = new Map<string, HTMLAudioElement>()
+  protected _playings = new Map<string, HTMLAudioElement>();
   protected _muted: boolean = true;
   protected _volume: number = 0.3;
   protected _bgm_volume: number = 1;
@@ -19,7 +19,7 @@ export class __Fallback extends BaseSounds {
   protected _sound_muted: boolean = false;
 
   override bgm_volume(): number {
-    return this._bgm_volume
+    return this._bgm_volume;
   }
   override set_bgm_volume(v: number): void {
     v = clamp(v, 0, 1);
@@ -27,18 +27,18 @@ export class __Fallback extends BaseSounds {
     if (float_equal(v, prev)) return;
     this._bgm_volume = v;
     this.apply_bgm_volume();
-    this._callbacks.emit('on_bgm_volume_changed')(v, prev, this)
+    this._callbacks.emit("on_bgm_volume_changed")(v, prev, this);
   }
   override sound_volume(): number {
-    return this._sound_volume
+    return this._sound_volume;
   }
   override set_sound_volume(v: number): void {
     v = clamp(v, 0, 1);
-    const prev = this.sound_volume()
+    const prev = this.sound_volume();
     if (float_equal(v, prev)) return;
     this._sound_volume = v;
     this.apply_sound_volume();
-    this._callbacks.emit('on_sound_volume_changed')(v, prev, this)
+    this._callbacks.emit("on_sound_volume_changed")(v, prev, this);
   }
   override muted(): boolean {
     return this._muted;
@@ -56,7 +56,7 @@ export class __Fallback extends BaseSounds {
     if (v === this.bgm_muted()) return;
     this._bgm_muted = v;
     this.apply_bgm_volume();
-    this._callbacks.emit('on_bgm_muted_changed')(v, this)
+    this._callbacks.emit("on_bgm_muted_changed")(v, this);
   }
   override sound_muted(): boolean {
     return this._sound_muted;
@@ -65,7 +65,7 @@ export class __Fallback extends BaseSounds {
     if (v === this.sound_muted()) return;
     this._sound_muted = v;
     this.apply_sound_volume();
-    this._callbacks.emit('on_sound_muted_changed')(v, this)
+    this._callbacks.emit("on_sound_muted_changed")(v, this);
   }
 
   private apply_bgm_volume(): void {
@@ -88,12 +88,12 @@ export class __Fallback extends BaseSounds {
 
   override set_volume(v: number): void {
     v = clamp(v, 0, 1);
-    const prev = this.volume()
+    const prev = this.volume();
     if (float_equal(v, prev)) return;
     this._volume = v;
     this.apply_bgm_volume();
     this.apply_sound_volume();
-    this._callbacks.emit('on_volume_changed')(v, prev, this)
+    this._callbacks.emit("on_volume_changed")(v, prev, this);
   }
 
   override bgm(): string | null {
@@ -112,12 +112,12 @@ export class __Fallback extends BaseSounds {
   }
 
   override play_bgm(name: string, restart?: boolean | undefined): () => void {
-    if (!restart && this._prev_bgm_url === name) return () => { };
+    if (!restart && this._prev_bgm_url === name) return () => {};
     const prev = this.bgm();
     if (this._bgm_ele) this.stop_bgm();
-    this._bgm_ele = document.createElement('audio');
-    this._bgm_ele?.setAttribute("bgm_name", name)
-    this._bgm_ele.src = '' + this._r.get(name);
+    this._bgm_ele = document.createElement("audio");
+    this._bgm_ele?.setAttribute("bgm_name", name);
+    this._bgm_ele.src = "" + this._r.get(name);
     this._bgm_ele.controls = false;
     this._bgm_ele.loop = true;
     this._bgm_ele.play();
@@ -126,11 +126,10 @@ export class __Fallback extends BaseSounds {
     ++this._req_id;
     const req_id = this._req_id;
     this._prev_bgm_url = name;
-    this._callbacks.emit('on_bgm_changed')(name, prev, this);
+    this._callbacks.emit("on_bgm_changed")(name, prev, this);
     return () => {
       if (req_id === this._req_id) this.stop_bgm();
     };
-
   }
 
   override async load(name: string, src: string): Promise<void> {
@@ -140,21 +139,26 @@ export class __Fallback extends BaseSounds {
 
   override play(name: string, x?: number, y?: number, z?: number): string {
     const src_audio = this._r.get(name);
-    if (!src_audio) return '';
-    const audio = document.createElement('audio');
+    if (!src_audio) return "";
+    const audio = document.createElement("audio");
     audio.src = src_audio;
     audio.controls = false;
     audio.volume = this._volume * this._sound_volume;
     audio.muted = this._muted;
 
-    const id = '' + (++this._sound_id);
-    this._playings.set(id, audio)
+    const id = "" + ++this._sound_id;
+    this._playings.set(id, audio);
 
-    audio.onerror = e => {
-      Warn.print(__Fallback.TAG + '::play -> audio.onerror', ', failed:', name, e);
-      this._playings.delete(id)
+    audio.onerror = (e) => {
+      Warn.print(
+        __Fallback.TAG + "::play -> audio.onerror",
+        ", failed:",
+        name,
+        e,
+      );
+      this._playings.delete(id);
     };
-    audio.onended = () => this._playings.delete(id)
+    audio.onended = () => this._playings.delete(id);
     return id;
   }
 
@@ -162,11 +166,11 @@ export class __Fallback extends BaseSounds {
     const n = this._playings.get(id);
     if (!n) return;
     n.pause();
-    this._playings.delete(id)
+    this._playings.delete(id);
   }
 
   override dispose(): void {
-    this._playings.forEach(v => v.pause());
+    this._playings.forEach((v) => v.pause());
     this._playings.clear();
 
     this._bgm_ele?.pause();

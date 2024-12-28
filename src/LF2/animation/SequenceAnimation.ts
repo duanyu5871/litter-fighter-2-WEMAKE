@@ -1,5 +1,5 @@
-import { clamp } from '../utils/math/clamp';
-import { is_num } from '../utils/type_check';
+import { clamp } from "../utils/math/clamp";
+import { is_num } from "../utils/type_check";
 interface IChildAnimation {
   get value(): number;
   get duration(): number;
@@ -14,13 +14,17 @@ class Delay implements IChildAnimation {
   time: number = 0;
   reverse: boolean = false;
   owner: SequenceAnimation;
-  get value(): number { return this.owner.value };
+  get value(): number {
+    return this.owner.value;
+  }
   constructor(owner: SequenceAnimation, duration: number) {
     this.owner = owner;
     this.duration = duration;
   }
-  calc(): this { return this }
-  end(): void { }
+  calc(): this {
+    return this;
+  }
+  end(): void {}
 }
 
 export default class SequenceAnimation {
@@ -31,14 +35,26 @@ export default class SequenceAnimation {
   protected _duration: number = 0;
   protected _value: number = 0;
 
-  get value(): number { return this._value; }
-  get is_finish(): boolean { return this._time >= this._duration; }
+  get value(): number {
+    return this._value;
+  }
+  get is_finish(): boolean {
+    return this._time >= this._duration;
+  }
 
-  get reverse(): boolean { return this._reverse; }
-  set reverse(v: boolean) { this._reverse = v; }
+  get reverse(): boolean {
+    return this._reverse;
+  }
+  set reverse(v: boolean) {
+    this._reverse = v;
+  }
 
-  get time(): number { return this._time; }
-  set time(v: number) { this._time = clamp(v, 0, this._duration); }
+  get time(): number {
+    return this._time;
+  }
+  set time(v: number) {
+    this._time = clamp(v, 0, this._duration);
+  }
 
   constructor(...animations: (IChildAnimation | number)[]) {
     for (const a of animations) {
@@ -46,7 +62,7 @@ export default class SequenceAnimation {
       this._anims.push(anim);
       this._r_anims.unshift(anim);
       this._duration += anim.duration;
-    };
+    }
     this.calc();
   }
 

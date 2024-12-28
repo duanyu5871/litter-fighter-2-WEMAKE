@@ -4,7 +4,9 @@ export class KeyStatus {
   readonly ctrl: BaseController;
   private _t: number = 0;
   private _u: 0 | 1 = 0;
-  get time(): number { return this._t };
+  get time(): number {
+    return this._t;
+  }
 
   /**
    * 按键是否被消耗
@@ -12,7 +14,9 @@ export class KeyStatus {
    * @type {(0 | 1)}
    * @memberof KeyStatus
    */
-  get used(): 0 | 1 { return this._u };
+  get used(): 0 | 1 {
+    return this._u;
+  }
 
   constructor(ctrl: BaseController) {
     this.ctrl = ctrl;
@@ -22,12 +26,14 @@ export class KeyStatus {
     return this._t;
   }
   is_start(): boolean {
-    const { _t } = this
+    const { _t } = this;
     return !!_t && _t === this.ctrl.time - 1;
   }
   is_hit(): boolean {
     const { _t } = this;
-    return !!_t && this.ctrl.time - _t <= this.ctrl.entity.world.key_hit_duration;
+    return (
+      !!_t && this.ctrl.time - _t <= this.ctrl.entity.world.key_hit_duration
+    );
   }
   is_hld(): boolean {
     return !this.is_hit() && !!this._t;

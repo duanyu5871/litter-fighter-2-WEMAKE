@@ -10,22 +10,24 @@ export default class WeaponState_Throwing extends WeaponState_Base {
    */
   protected _unhurt_weapons: Set<Entity> = new Set<Entity>();
   override get_gravity(e: Entity) {
-    return e.world.gravity * 0.5
-  };
+    return e.world.gravity * 0.5;
+  }
   override enter(e: Entity, prev_frame: IFrameInfo): void {
     this._unhurt_weapons.add(e);
-    e.merge_velocities()
+    e.merge_velocities();
   }
   override leave(e: Entity, next_frame: IFrameInfo): void {
     this._unhurt_weapons.delete(e);
   }
   override on_landing(e: Entity): void {
     const { y: vy } = e.velocity;
-    const { base, indexes } = e.data
+    const { base, indexes } = e.data;
     const dvy = Math.floor(-vy * (base.bounce ?? 0));
     const min_bounce_vy = 2;
     if (dvy < min_bounce_vy) {
-      e.enter_frame({ id: indexes?.throw_on_ground || indexes?.just_on_ground })
+      e.enter_frame({
+        id: indexes?.throw_on_ground || indexes?.just_on_ground,
+      });
     } else {
       e.velocities[0].y = dvy;
     }

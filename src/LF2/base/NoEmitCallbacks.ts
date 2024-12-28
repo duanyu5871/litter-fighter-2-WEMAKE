@@ -1,7 +1,6 @@
 import list_fn from "../utils/container_help/list_fn";
 
 export class NoEmitCallbacks<F> {
-
   /**
    * 回调对象map
    *
@@ -18,16 +17,17 @@ export class NoEmitCallbacks<F> {
    */
   add(v: F): () => void {
     const any_keys = list_fn(v);
-    if (!any_keys.size) return () => { };
+    if (!any_keys.size) return () => {};
 
     for (const key of any_keys) {
       let set = this._map.get(key);
-      if (!set) this._map.set(key, set = new Set());
+      if (!set) this._map.set(key, (set = new Set()));
       set.add(v);
     }
-    return () => { this.del(v); };
+    return () => {
+      this.del(v);
+    };
   }
-
 
   /**
    * 移除回调对象

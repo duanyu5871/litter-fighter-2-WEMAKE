@@ -7,5 +7,5 @@ export * from "./Keyboard";
 export * from "./Pointings";
 export * from "./FullScreen";
 export * from "./cache";
-export * from "./sounds"
-export * from "./Importer"
+export * from "./sounds";
+export * from "./Importer";

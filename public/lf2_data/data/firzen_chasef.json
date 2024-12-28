@@ -97,8 +97,8 @@
       "centerx": 46,
       "centery": 26,
       "behavior": 7,
-      "dvy": -4,
-      "acc_y": -0.1,
+      "dvy": -6,
+      "acc_y": -0.25,
       "vym": 4,
       "on_hit_ground": {
         "id": "60"
@@ -190,8 +190,8 @@
       "centerx": 42,
       "centery": 36,
       "behavior": 7,
-      "dvy": -4,
-      "acc_y": -0.1,
+      "dvy": -6,
+      "acc_y": -0.25,
       "vym": 4,
       "on_hit_ground": {
         "id": "60"
@@ -282,8 +282,8 @@
       "centerx": 50,
       "centery": 48,
       "behavior": 7,
-      "dvy": -4,
-      "acc_y": -0.1,
+      "dvy": -6,
+      "acc_y": -0.25,
       "vym": 4,
       "on_hit_ground": {
         "id": "60"
@@ -372,8 +372,8 @@
       "centerx": 44,
       "centery": 45,
       "behavior": 7,
-      "dvy": -4,
-      "acc_y": -0.1,
+      "dvy": -6,
+      "acc_y": -0.25,
       "vym": 4,
       "on_hit_ground": {
         "id": "60"
@@ -944,7 +944,7 @@
           ],
           "x": 15,
           "y": 25,
-          "dvy": 4,
+          "dvy": 6,
           "action": {
             "id": "0"
           },
@@ -1140,6 +1140,25 @@
       "centery": 27,
       "no_shadow": 1,
       "behavior": 11,
+      "opoint": [
+        {
+          "kind": 1,
+          "oid": [
+            "221",
+            "222"
+          ],
+          "x": 42,
+          "y": 27,
+          "dvy": 6,
+          "action": {
+            "id": "0"
+          },
+          "multi": {
+            "type": 0,
+            "min": 4
+          }
+        }
+      ],
       "speedz": 0
     },
     "81": {
@@ -1170,7 +1189,7 @@
           ],
           "x": 42,
           "y": 27,
-          "dvy": 4,
+          "dvy": 6,
           "action": {
             "id": "0"
           },

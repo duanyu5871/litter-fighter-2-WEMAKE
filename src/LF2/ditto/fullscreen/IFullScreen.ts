@@ -1,7 +1,6 @@
 import { NoEmitCallbacks } from "../../base/NoEmitCallbacks";
 import { IFullScreenCallback } from "./IFullScreenCallback";
 
-
 export interface IFullScreen<T extends any = any> {
   get callbacks(): NoEmitCallbacks<IFullScreenCallback<T>>;
   get is_fullscreen(): boolean;

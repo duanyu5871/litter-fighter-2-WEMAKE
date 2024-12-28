@@ -11,4 +11,4 @@ export interface ISpriteNode extends IObjectNode {
   get_info(): ISpriteInfo;
 }
 export const is_sprite_node = (v: any): v is ISpriteNode =>
-  v?.is_sprite_node === true
+  v?.is_sprite_node === true;

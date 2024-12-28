@@ -1,21 +1,28 @@
-import * as T from 'three';
-import { IMeshNode } from '../3d/IMeshNode';
-import Ditto from '../ditto';
-import type { IWorldCallbacks } from '../IWorldCallbacks';
-import type Stage from '../stage/Stage';
-import type Entity from '../entity/Entity';
+import * as T from "three";
+import { IMeshNode } from "../3d/IMeshNode";
+import Ditto from "../ditto";
+import type { IWorldCallbacks } from "../IWorldCallbacks";
+import type Stage from "../stage/Stage";
+import type Entity from "../entity/Entity";
 
 /**
  * 场上物品的阴影
  */
 export default class Shadow {
   protected world_listener: IWorldCallbacks = {
-    on_stage_change: v => this.on_stage_change(v)
-  }
+    on_stage_change: (v) => this.on_stage_change(v),
+  };
   mesh: IMeshNode;
-  protected material = new T.MeshBasicMaterial({ transparent: true, opacity: 0 });
-  get visible() { return this.mesh.visible; }
-  set visible(v) { this.mesh.visible = v; }
+  protected material = new T.MeshBasicMaterial({
+    transparent: true,
+    opacity: 0,
+  });
+  get visible() {
+    return this.mesh.visible;
+  }
+  set visible(v) {
+    this.mesh.visible = v;
+  }
   constructor(entity: Entity, entity_mesh: IMeshNode) {
     const { lf2 } = entity;
     this.mesh = new Ditto.MeshNode(lf2, {
@@ -24,24 +31,24 @@ export default class Shadow {
     });
     this.mesh.name = Shadow.name;
     this.mesh.render_order = 0;
-    entity_mesh.on('added', () => this.on_mount(entity))
-    entity_mesh.on('removed', () => this.on_unmount(entity))
+    entity_mesh.on("added", () => this.on_mount(entity));
+    entity_mesh.on("removed", () => this.on_unmount(entity));
   }
 
   protected on_mount(entity: Entity) {
-    entity.world.scene.add(this.mesh)
+    entity.world.scene.add(this.mesh);
     entity.world.callbacks.add(this.world_listener);
     this.on_stage_change(entity.world.stage);
   }
 
   protected on_unmount(entity: Entity) {
-    this.mesh.dispose()
+    this.mesh.dispose();
     entity.world.callbacks.del(this.world_listener);
   }
 
   protected on_stage_change(stage: Stage): void {
-    const bg = stage.bg
-    const pic = bg.get_shadow()
+    const bg = stage.bg;
+    const pic = bg.get_shadow();
     if (bg !== stage.bg) return;
     const [sw, sh] = bg.data.base.shadowsize || [30, 30];
     this.mesh.geometry = new T.PlaneGeometry(sw, sh);

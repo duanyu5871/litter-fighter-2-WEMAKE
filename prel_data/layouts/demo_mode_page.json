@@ -1,16 +1,9 @@
 {
   "name": "DEMO模式页",
   "id": "demo_mode_page",
-  "component": [
-    "demo_mode_logic()"
-  ],
-  "key_press_actions": [
-    [
-      "escape",
-      "set_layout(entry)"
-    ]
-  ],
-  "items": [ 
+  "component": ["demo_mode_logic()"],
+  "key_press_actions": [["escape", "set_layout(entry)"]],
+  "items": [
     {
       "pos": "0,0,5",
       "visible": false,
@@ -29,9 +22,6 @@
     }
   ],
   "actions": {
-    "stop": [
-      "remove_all_entities()",
-      "destory_stage()"
-    ]
+    "stop": ["remove_all_entities()", "destory_stage()"]
   }
 }

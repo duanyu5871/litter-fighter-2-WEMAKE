@@ -14,38 +14,43 @@ export default function EditorView(props: IEditorViewProps) {
   const _ref_textarea_dat = useRef<HTMLTextAreaElement>(null);
   const _ref_textarea_json = useRef<HTMLTextAreaElement>(null);
 
-  const _ref_txt_dat = useRef<string>('');
-  const _ref_txt_json = useRef<string>('');
+  const _ref_txt_dat = useRef<string>("");
+  const _ref_txt_json = useRef<string>("");
 
   const on_click_read_dat = async () => {
-    const [file] = await open_file({ accept: '.dat' });
-    const buf = await read_file(file, { as: 'ArrayBuffer' });
-    const str_dat = await decode_lf2_dat(buf)
+    const [file] = await open_file({ accept: ".dat" });
+    const buf = await read_file(file, { as: "ArrayBuffer" });
+    const str_dat = await decode_lf2_dat(buf);
     const data = await dat_to_json(str_dat, {
       id: "",
       type: "",
-      file: ""
+      file: "",
     });
     _ref_txt_dat.current = str_dat;
     _ref_txt_json.current = JSON.stringify(data, null, 2);
-    if (_ref_textarea_dat.current) _ref_textarea_dat.current.value = _ref_txt_dat.current
-    if (_ref_textarea_json.current) _ref_textarea_json.current.value = _ref_txt_json.current
-  }
-  if (!open) return <></>
+    if (_ref_textarea_dat.current)
+      _ref_textarea_dat.current.value = _ref_txt_dat.current;
+    if (_ref_textarea_json.current)
+      _ref_textarea_json.current.value = _ref_txt_json.current;
+  };
+  if (!open) return <></>;
   return (
-    <div className='editor_view'>
-      <div className='top'>
+    <div className="editor_view">
+      <div className="top">
         <Button onClick={onClose} disabled={loading}>
           ✕
         </Button>
-        <Button onClick={() => on_click_read_dat().catch(console.warn)} disabled={loading}>
+        <Button
+          onClick={() => on_click_read_dat().catch(console.warn)}
+          disabled={loading}
+        >
           打开
         </Button>
       </div>
-      <div className='main'>
+      <div className="main">
         <TextArea ref={_ref_textarea_dat} wrap="off" />
         <TextArea ref={_ref_textarea_json} wrap="off" />
       </div>
     </div>
-  )
+  );
 }

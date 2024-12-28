@@ -7,4 +7,6 @@ export function same_face(ref: Entity, target: Entity): TFace {
 
 export function turn_face(f: TFace): TFace;
 export function turn_face(f?: TFace): TFace | undefined;
-export function turn_face(f?: TFace): TFace | undefined { return (f === void 0) ? void 0 : (f === 1) ? -1 : 1 }
+export function turn_face(f?: TFace): TFace | undefined {
+  return f === void 0 ? void 0 : f === 1 ? -1 : 1;
+}
