@@ -88,6 +88,12 @@
       "centerx": 41,
       "centery": 43,
       "behavior": 7,
+      "dvy": -4,
+      "acc_y": -0.1,
+      "vym": 4,
+      "on_hit_ground": {
+        "id": "60"
+      },
       "hp": 3.5,
       "on_dead": {
         "id": "1"
@@ -175,6 +181,12 @@
       "centerx": 44,
       "centery": 42,
       "behavior": 7,
+      "dvy": -4,
+      "acc_y": -0.1,
+      "vym": 4,
+      "on_hit_ground": {
+        "id": "60"
+      },
       "hp": 3.5,
       "on_dead": {
         "id": "1"
@@ -261,6 +273,12 @@
       "centerx": 41,
       "centery": 43,
       "behavior": 7,
+      "dvy": -4,
+      "acc_y": -0.1,
+      "vym": 4,
+      "on_hit_ground": {
+        "id": "60"
+      },
       "hp": 3.5,
       "on_dead": {
         "id": "2"
@@ -347,6 +365,12 @@
       "centerx": 41,
       "centery": 43,
       "behavior": 7,
+      "dvy": -4,
+      "acc_y": -0.1,
+      "vym": 4,
+      "on_hit_ground": {
+        "id": "60"
+      },
       "hp": 3.5,
       "on_dead": {
         "id": "4"
@@ -433,6 +457,12 @@
       "centerx": 41,
       "centery": 43,
       "behavior": 7,
+      "dvy": -4,
+      "acc_y": -0.1,
+      "vym": 4,
+      "on_hit_ground": {
+        "id": "60"
+      },
       "hp": 3.5,
       "on_dead": {
         "id": "3"

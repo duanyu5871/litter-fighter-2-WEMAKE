@@ -12,6 +12,7 @@ import { IBaseData } from "../defines/IBaseData";
 import { ICollision } from '../defines/ICollision';
 import { IEntityData } from "../defines/IEntityData";
 import { OpointKind } from '../defines/OpointKind';
+import { OpointMultiEnum } from '../defines/OpointMultiEnum';
 import { OpointSpreading } from '../defines/OpointSpreading';
 import { SpeedMode } from '../defines/SpeedMode';
 import { Defines } from '../defines/defines';
@@ -23,23 +24,32 @@ import CharacterState_Base from '../state/CharacterState_Base';
 import { State_Base } from '../state/State_Base';
 import WeaponState_Base from '../state/WeaponState_Base';
 import { random_get, random_in } from '../utils/math/random';
-import { is_positive, is_str } from '../utils/type_check';
+import { is_num, is_positive, is_str } from '../utils/type_check';
 import { Factory } from './Factory';
 import type IEntityCallbacks from './IEntityCallbacks';
 import { turn_face } from './face_helper';
 import { is_ball, is_character, is_weapon_data } from './type_check';
-const calc_v = (a: number, b: number, c: SpeedMode, f: number = 1) => {
-  switch (c) {
-    case SpeedMode.FixedAdd:
-      return a + b;
-    case SpeedMode.Add:
-      return a + b * f;
+function calc_v(old: number, speed: number, mode: SpeedMode, acc: number | undefined, direction: 1 | -1 = 1): number {
+  switch (mode) {
+    case SpeedMode.FixedAcc:
+      return old + speed;
+    case SpeedMode.Acc:
+      return old + speed * direction;
     case SpeedMode.FixedLf2:
-      return (b > 0 && a < b) || (b < 0 && a > b) ? b : a
+      return (speed > 0 && old < speed) || (speed < 0 && old > speed) ? speed : old;
+    case SpeedMode.AccToSpeed:
+      if (
+        (!acc) ||
+        (speed > 0 && old >= speed) ||
+        (speed < 0 && old <= speed) ||
+        (speed > old && acc < 0) ||
+        (speed < old && acc > 0)
+      ) return old;
+      return old + acc;
     case SpeedMode.LF2:
     default:
-      b *= f;
-      return (b > 0 && a < b) || (b < 0 && a > b) ? b : a
+      speed *= direction;
+      return (speed > 0 && old < speed) || (speed < 0 && old > speed) ? speed : old;
   }
 }
 export const EMPTY_PIECE: ITexturePieceInfo = {
@@ -469,6 +479,12 @@ export default class Entity {
     )  // FIXME: fix this 'as'.
   }
 
+  find_emitter(fn: (e: Entity) => boolean): Entity | undefined {
+    if (!this.emitter) return void 0;
+    if (fn(this.emitter)) return this.emitter;
+    return this.emitter.find_emitter(fn)
+  }
+
   on_spawn(
     emitter: Entity,
     opoint: IOpointInfo,
@@ -585,7 +601,35 @@ export default class Entity {
 
   apply_opoints(opoints: IOpointInfo[]) {
     for (const opoint of opoints) {
-      const count = opoint.multi ?? 1
+      let count = 0;
+      if (is_num(opoint.multi)) {
+        count = opoint.multi;
+      } else if (opoint.multi) {
+        switch (opoint.multi.type) {
+          case OpointMultiEnum.AccordingEnemies:
+            for (const other of this.world.entities) {
+              if (
+                !other.same_team(this) && is_character(other) &&
+                this.find_emitter(emitter => is_character(emitter) && emitter !== other)
+              )
+                ++count;
+            }
+            count = Math.max(opoint.multi.min, count)
+            break;
+          case OpointMultiEnum.AccordingTeammates:
+            for (const other of this.world.entities) {
+              if (
+                other.same_team(this) && is_character(other) &&
+                this.find_emitter(emitter => is_character(emitter) && emitter !== other)
+              )
+                ++count;
+            }
+            count = Math.max(opoint.multi.min, count)
+            break;
+        }
+      } else if (opoint.multi === void 0) {
+        count = 1;
+      }
       for (let i = 0; i < count; ++i) {
         const v = new Ditto.Vector3(0, 0, 0);
         switch (opoint.spreading) {
@@ -602,7 +646,12 @@ export default class Entity {
   }
 
   spawn_entity(opoint: IOpointInfo, offset_velocity: IVector3 = new Ditto.Vector3(0, 0, 0)): Entity | undefined {
-    const data = this.world.lf2.datas.find(opoint.oid);
+    const oid = Array.isArray(opoint.oid) ? random_get(opoint.oid) : opoint.oid
+    if (!oid) {
+      Warn.print(Entity.TAG + '::spawn_object', 'oid got', oid);
+      return;
+    }
+    const data = this.world.lf2.datas.find(oid);
     if (!data) {
       Warn.print(Entity.TAG + '::spawn_object', 'data not found! opoint:', opoint);
       return;
@@ -726,9 +775,17 @@ export default class Entity {
 
   handle_frame_velocity() {
     if (this.shaking || this.motionless) return;
-    const { dvx, dvy, dvz, speedz, speedx,
+    const {
+      acc_x,
+      acc_y,
+      acc_z,
+      dvx,
+      dvy,
+      dvz,
+      speedz,
+      speedx,
       vxm = SpeedMode.LF2,
-      vym = SpeedMode.Add,
+      vym = SpeedMode.Acc,
       vzm = SpeedMode.LF2,
       speedxm = SpeedMode.LF2,
       speedzm = SpeedMode.LF2,
@@ -738,13 +795,15 @@ export default class Entity {
       y: vy,
       z: vz
     } = this.velocities[0];
-    if (dvx) vx = calc_v(vx, dvx * this.world.fvx_f, vxm, this.facing)
-    if (dvy) vy = calc_v(vy, dvy * this.world.fvy_f, vym)
-    if (dvz) vz = calc_v(vz, dvz * this.world.fvz_f, vzm);
+
+
+    if (dvx) vx = calc_v(vx, dvx * this.world.fvx_f, vxm, acc_x, this.facing)
+    if (dvy) vy = calc_v(vy, dvy * this.world.fvy_f, vym, acc_y, 1)
+    if (dvz) vz = calc_v(vz, dvz * this.world.fvz_f, vzm, acc_z, 1);
     if (this._controller) {
       const { UD, LR } = this._controller;
-      if (LR && speedx && speedx !== 550) vx = calc_v(vx, speedx, speedxm, LR);
-      if (UD && speedz && speedz !== 550) vz = calc_v(vz, speedz, speedzm, UD);
+      if (LR && speedx && speedx !== 550) vx = calc_v(vx, speedx, speedxm, void 0, LR);
+      if (UD && speedz && speedz !== 550) vz = calc_v(vz, speedz, speedzm, void 0, UD);
     }
     if (dvx === 550) vx = 0;
     if (dvz === 550) vz = 0;
@@ -870,6 +929,7 @@ export default class Entity {
       }
     }
     this.velocity.set(vx, vy, vz);
+    this.merge_velocities()
     if (!this.shaking && !this.motionless) {
       this.position.x += vx;
       this.position.y += vy;
@@ -906,7 +966,15 @@ export default class Entity {
         if (result) this.next_frame = result;
       }
     }
-
+    if (this.frame.on_hit_ground && this.frame.itr && this.velocity.y < 0) {
+      for (const itr of this.frame.itr) {
+        const { bottom } = this.world.get_bounding(this, this.frame, itr)
+        if (bottom > 0) continue;
+        const result = this.get_next_frame(this.frame.on_hit_ground);
+        if (result) this.next_frame = result.frame;
+        break
+      }
+    }
     if (this.position.y <= 0 && this.velocity.y < 0 && !this.shaking && !this.motionless) {
       this.position.y = 0;
       this.play_sound(this.data.base.drop_sounds)

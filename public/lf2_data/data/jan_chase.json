@@ -88,6 +88,9 @@
       "centerx": 45,
       "centery": 38,
       "behavior": 7,
+      "dvy": -4,
+      "acc_y": -0.1,
+      "vym": 4,
       "hp": 3.5,
       "on_dead": {
         "id": "1"
@@ -174,6 +177,9 @@
       "centerx": 41,
       "centery": 41,
       "behavior": 7,
+      "dvy": -4,
+      "acc_y": -0.1,
+      "vym": 4,
       "hp": 3.5,
       "on_dead": {
         "id": "1"
@@ -259,6 +265,9 @@
       "centerx": 41,
       "centery": 41,
       "behavior": 7,
+      "dvy": -4,
+      "acc_y": -0.1,
+      "vym": 4,
       "hp": 3.5,
       "on_dead": {
         "id": "2"
@@ -342,6 +351,9 @@
       "centerx": 41,
       "centery": 40,
       "behavior": 7,
+      "dvy": -4,
+      "acc_y": -0.1,
+      "vym": 4,
       "hp": 3.5,
       "on_dead": {
         "id": "3"

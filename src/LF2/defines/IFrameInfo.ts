@@ -30,6 +30,10 @@ export interface IFrameInfo {
   dvy?: number;
   dvz?: number;
 
+  acc_x?: number;
+  acc_y?: number;
+  acc_z?: number;
+
   /** @see {SpeedMode} */
   vxm?: number;
   /** @see {SpeedMode} */
@@ -116,4 +120,6 @@ export interface IFrameInfo {
    * @see {FrameBehavior}
    */
   behavior?: number;
+
+  on_hit_ground?: TNextFrame;
 }

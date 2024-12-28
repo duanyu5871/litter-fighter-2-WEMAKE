@@ -1,7 +1,8 @@
 
 export enum SpeedMode {
   LF2 = 0,
-  Add = 1,
+  Acc = 1,
   FixedLf2 = 2,
-  FixedAdd = 3,
+  FixedAcc = 3,
+  AccToSpeed = 4,
 }

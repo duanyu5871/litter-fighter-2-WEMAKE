@@ -1413,6 +1413,7 @@
       "centerx": 0,
       "centery": 0,
       "no_shadow": 1,
+      "behavior": 13,
       "opoint": [
         {
           "kind": 1,

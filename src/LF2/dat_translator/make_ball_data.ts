@@ -15,6 +15,9 @@ import { cook_ball_frame_state_3005 } from "./cook_ball_frame_state_3005";
 import { cook_ball_frame_state_3006 } from "./cook_ball_frame_state_3006";
 import { get_next_frame_by_raw_id } from "./get_the_next";
 import { take, take_str } from "./take";
+import { FrameBehavior } from "../defines/FrameBehavior";
+import { OpointMultiEnum } from "../defines/OpointMultiEnum";
+import { SpeedMode } from "../defines/SpeedMode";
 
 export function make_ball_data(info: IEntityInfo, frames: Record<string, IFrameInfo>, datIndex: IDatIndex): IEntityData {
   info.hp = 500;
@@ -33,53 +36,80 @@ export function make_ball_data(info: IEntityInfo, frames: Record<string, IFrameI
     const hit_j = take(frame, 'hit_j');
     if (hit_j !== 0) frame.dvz = to_num(hit_j, 50) - 50;
 
+
     const hit_a = take(frame, 'hit_a');
     const hit_d = take(frame, 'hit_d');
     const hit_Fa = take(frame, 'hit_Fa')
-
-    if ('' + hit_Fa === '13') {
-      /*
-      13 = 連環重炮的開始
-       其实就是放出一个id为228的实体
-      */
-      frame.opoint = frame.opoint || []
-      frame.opoint.push({
-        kind: OpointKind.Normal,
-        oid: '228',
-        x: frame.centerx,
-        y: frame.centery,
-        action: { id: '50' }
-      })
-    } else if ('' + hit_Fa === '8') {
-      frame.opoint = frame.opoint || []
-      frame.opoint.push({
-        kind: OpointKind.Normal,
-        oid: '225',
-        x: frame.centerx,
-        y: frame.centery,
-        action: { id: '0' },
-        multi: 3
-      })
-    } else if (hit_Fa) {
-      frame.behavior = hit_Fa;
+    if (hit_Fa) frame.behavior = hit_Fa;
+    switch (hit_Fa as FrameBehavior) {
+      case FrameBehavior._01:
+      case FrameBehavior._02:
+      case FrameBehavior._03:
+      case FrameBehavior._04:
+      case FrameBehavior._05:
+      case FrameBehavior._06:
+        break;
+      case FrameBehavior._07:
+        frame.dvy = -4;
+        frame.acc_y = -0.1;
+        frame.vym = SpeedMode.AccToSpeed;
+        switch (datIndex.id) {
+          case Defines.BuiltIn_OID.Firzen_chasef:
+          case Defines.BuiltIn_OID.Firzen_chasei:
+            frame.on_hit_ground = { id: "60" }
+            break;
+          case Defines.BuiltIn_OID.Jan_chaseh:
+            frame.on_hit_ground = { id: "10" }
+            break;
+        }
+        break;
+      case FrameBehavior.BatStart:
+      case FrameBehavior._08:
+        frame.opoint = frame.opoint || []
+        frame.opoint.push({
+          kind: OpointKind.Normal,
+          oid: Defines.BuiltIn_OID.Bat_chase,
+          x: frame.centerx,
+          y: frame.centery,
+          action: { id: '0' },
+          multi: 3
+        })
+        break;
+      case FrameBehavior.FirzenDisasterStart:
+      case FrameBehavior._09:
+        frame.opoint = frame.opoint || []
+        frame.opoint.push({
+          kind: OpointKind.Normal,
+          oid: [
+            Defines.BuiltIn_OID.Firzen_chasef,
+            Defines.BuiltIn_OID.Firzen_chasei,
+          ],
+          x: frame.centerx,
+          y: frame.centery,
+          dvy: 4,
+          action: { id: '0' },
+          multi: { type: OpointMultiEnum.AccordingEnemies, min: 4 }
+        })
+        break;
+      case FrameBehavior._10:
+      case FrameBehavior._11:
+      case FrameBehavior._12:
+        break;
+      case FrameBehavior.JulianBallStart:
+      case FrameBehavior._13:
+        frame.opoint = frame.opoint || []
+        frame.opoint.push({
+          kind: OpointKind.Normal,
+          oid: Defines.BuiltIn_OID.Julian_ball,
+          x: frame.centerx,
+          y: frame.centery,
+          action: { id: '50' }
+        })
+        break;
+      case FrameBehavior.JulianBall:
+      case FrameBehavior._14:
+        break;
     }
-
-    /*
-      1= 追敵人的center(因為敵人站在地面，所以會下飄)
-      2= 水平追敵
-      3= 加速法追敵(追縱力較差)
-      4= 天使之祝福(別的dat檔用了無效)
-      5= 天使之祝福的開始(會追我方的人物很久)
-      6= 惡魔之審判的開始(視敵人數目而增加，基本上是一個)
-      7= 惡魔之審判,殃殞天降(可以做出打到地面的追蹤波)
-      8= 吸血蝙蝠的開始(視敵人數目而增加，基本數值是三個，別的dat檔用了無效)
-      9= 殃殞天降的開始(視敵人數目而增加，基本數值是四個)
-      10= 加速(從慢變快)
-      11= 極地火山
-      12= 吸血蝙蝠
-      14= 連環重炮
-    */
-
     if (hit_a) frame.hp = hit_a / 2;
     if (hit_d) frame.on_dead = get_next_frame_by_raw_id(hit_d);
 

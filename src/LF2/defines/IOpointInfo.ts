@@ -1,5 +1,6 @@
-import type { INextFrame, TNextFrame, Defines } from ".";
+import type { Defines, INextFrame, TNextFrame } from ".";
 import type { OpointKind } from "./OpointKind";
+import { OpointMultiEnum } from "./OpointMultiEnum";
 export interface IOpointInfo {
 
   /**
@@ -25,9 +26,9 @@ export interface IOpointInfo {
   /**
    * 实体数据ID
    *
-   * @type {string}
+   * @type {string | string[]}
    */
-  oid: string;
+  oid: string | string[];
 
   /**
    * 用于：
@@ -70,7 +71,7 @@ export interface IOpointInfo {
    * @see {Defines.FacingFlag}
    * @type {?number}
    */
-  multi?: number;
+  multi?: number | { type: OpointMultiEnum, min: number };
 
   max_hp?: number;
   hp?: number;

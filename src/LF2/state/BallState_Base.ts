@@ -1,9 +1,9 @@
 import { Defines, IFrameInfo, ItrKind } from "../defines";
-import Entity from "../entity/Entity";
+import { FrameBehavior } from "../defines/FrameBehavior";
 import { ICollision } from "../defines/ICollision";
+import Entity from "../entity/Entity";
 import { is_character, is_weapon } from "../entity/type_check";
 import State_Base from "./State_Base";
-import { FrameBehavior } from "../defines/FrameBehavior";
 
 export default class BallState_Base extends State_Base {
   override enter(e: Entity, _prev_frame: IFrameInfo): void {
@@ -40,7 +40,6 @@ export default class BallState_Base extends State_Base {
   override update(e: Entity): void {
     e.handle_ground_velocity_decay();
     const frame = e.frame;
-
     const max_speed_x = 5;
     const min_speed_x = -5;
     const max_speed_z = 2.5;
@@ -49,8 +48,8 @@ export default class BallState_Base extends State_Base {
     const acc_z = .05;
 
     switch (frame.behavior) {
-      case 1:
-      case 2: {
+      case FrameBehavior._01:
+      case FrameBehavior._02: {
         const { nearest_enemy } = e;
         if (!nearest_enemy) break;
         const pos_1 = e.position;
