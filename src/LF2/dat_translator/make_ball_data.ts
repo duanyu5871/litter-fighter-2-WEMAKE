@@ -62,8 +62,10 @@ export function make_ball_data(
       case FrameBehavior._04:
         break;
       case FrameBehavior._05:
+        jan_chaseh_start(frame);
         break;
       case FrameBehavior._06:
+        jan_chase_start(frame);
         break;
       case FrameBehavior._07:
         frame.dvy = -6;
@@ -74,7 +76,7 @@ export function make_ball_data(
           case Defines.BuiltIn_OID.Firzen_chasei:
             frame.on_hit_ground = { id: "60" };
             break;
-          case Defines.BuiltIn_OID.Jan_chaseh:
+          case Defines.BuiltIn_OID.Jan_chase:
             frame.on_hit_ground = { id: "10" };
             break;
         }
@@ -202,5 +204,26 @@ function firzen_disater_start(frame: IFrameInfo, x: number = frame.centerx, y: n
     dvy: 6,
     action: { id: "0" },
     multi: { type: OpointMultiEnum.AccordingEnemies, min: 4 },
+  });
+}
+function jan_chaseh_start(frame: IFrameInfo, x: number = frame.centerx, y: number = frame.centery) {
+  frame.opoint = frame.opoint || [];
+  frame.opoint.push({
+    kind: OpointKind.Normal,
+    oid: Defines.BuiltIn_OID.Jan_chaseh,
+    x,
+    y,
+    action: { id: "0" },
+    multi: { type: OpointMultiEnum.AccordingTeammates, min: 1 },
+  });
+}
+function jan_chase_start(frame: IFrameInfo, x: number = frame.centerx, y: number = frame.centery) {
+  frame.opoint = frame.opoint || [];
+  frame.opoint.push({
+    kind: OpointKind.Normal,
+    oid: Defines.BuiltIn_OID.Jan_chase,
+    x, y, dvy: 6,
+    action: { id: "0" },
+    multi: { type: OpointMultiEnum.AccordingEnemies, min: 1 },
   });
 }

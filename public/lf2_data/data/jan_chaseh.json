@@ -451,6 +451,22 @@
       "centery": 38,
       "no_shadow": 1,
       "behavior": 5,
+      "opoint": [
+        {
+          "kind": 1,
+          "oid": "219",
+          "x": 45,
+          "y": 38,
+          "dvy": 6,
+          "action": {
+            "id": "0"
+          },
+          "multi": {
+            "type": 1,
+            "min": 1
+          }
+        }
+      ],
       "speedz": 0
     },
     "52": {

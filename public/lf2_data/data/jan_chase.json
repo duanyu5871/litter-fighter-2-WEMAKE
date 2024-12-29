@@ -91,6 +91,9 @@
       "dvy": -6,
       "acc_y": -0.25,
       "vym": 4,
+      "on_hit_ground": {
+        "id": "10"
+      },
       "hp": 3.5,
       "on_dead": {
         "id": "1"
@@ -180,6 +183,9 @@
       "dvy": -6,
       "acc_y": -0.25,
       "vym": 4,
+      "on_hit_ground": {
+        "id": "10"
+      },
       "hp": 3.5,
       "on_dead": {
         "id": "1"
@@ -268,6 +274,9 @@
       "dvy": -6,
       "acc_y": -0.25,
       "vym": 4,
+      "on_hit_ground": {
+        "id": "10"
+      },
       "hp": 3.5,
       "on_dead": {
         "id": "2"
@@ -354,6 +363,9 @@
       "dvy": -6,
       "acc_y": -0.25,
       "vym": 4,
+      "on_hit_ground": {
+        "id": "10"
+      },
       "hp": 3.5,
       "on_dead": {
         "id": "3"
@@ -650,6 +662,22 @@
       "centery": 38,
       "no_shadow": 1,
       "behavior": 6,
+      "opoint": [
+        {
+          "kind": 1,
+          "oid": "220",
+          "x": 45,
+          "y": 38,
+          "dvy": 6,
+          "action": {
+            "id": "0"
+          },
+          "multi": {
+            "type": 0,
+            "min": 1
+          }
+        }
+      ],
       "speedz": 0
     },
     "52": {
