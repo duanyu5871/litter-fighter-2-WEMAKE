@@ -361,6 +361,9 @@
       "centery": 38,
       "sound": "data/076.wav.mp3",
       "behavior": 10,
+      "dvx": 20,
+      "acc_x": 5,
+      "vxm": 4,
       "speedz": 2
     },
     "5": {
@@ -425,6 +428,9 @@
       "centerx": 45,
       "centery": 38,
       "behavior": 10,
+      "dvx": 20,
+      "acc_x": 5,
+      "vxm": 4,
       "speedz": 2
     },
     "6": {
@@ -489,6 +495,9 @@
       "centerx": 45,
       "centery": 38,
       "behavior": 10,
+      "dvx": 20,
+      "acc_x": 5,
+      "vxm": 4,
       "speedz": 2
     },
     "7": {
@@ -553,6 +562,9 @@
       "centerx": 45,
       "centery": 38,
       "behavior": 10,
+      "dvx": 20,
+      "acc_x": 5,
+      "vxm": 4,
       "speedz": 2
     },
     "10": {

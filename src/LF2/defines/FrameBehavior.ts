@@ -1,14 +1,19 @@
 export enum FrameBehavior {
   /** 追敌人的center(因为敌人站在地面，所以会下飘) */
   _01 = 1,
+
   /** 水平追敌 */
   _02 = 2,
+
   /** 加速法追敌(追纵力较差) */
   _03 = 3,
+
   /** 天使之祝福(别的dat档用了无效) */
   _04 = 4,
+
   /** 天使之祝福的开始(会追我方的人物很久) */
   _05 = 5,
+
   /** 恶魔之审判的开始(视敌人数目而增加，基本上是一个) */
   _06 = 6,
 
@@ -31,8 +36,7 @@ export enum FrameBehavior {
    *    - 此值不会有任何作用（但依旧保留）
    *    - 生成将通过opoint被实现
    */
-  BatStart = 8,
-  _08 = 8,
+  BatStart = 8, _08 = 8,
 
   /**
    * 用于：
@@ -45,9 +49,20 @@ export enum FrameBehavior {
    *    - 此值不会有任何作用（但依旧保留）
    *    - 生成将通过opoint被实现
    */
-  FirzenDisasterStart = 9,
-  _09 = 9,
-  _10 = 10, //= 加速(从慢变快)
+  FirzenDisasterStart = 9, _09 = 9,
+
+  /**
+   * 用于：
+   * * [X] LF2
+   * * [X] WEMAKE
+   *
+   * 加速(从慢变快), john 盘子失去跟踪
+   * 
+   * - WEMAKE中：
+   *    - 此值不会有任何作用（但依旧保留）
+   *    - 通过dvx: 15 acc_x: 2 vxm: 4实现
+   */
+  JohnBiscuitLeaving = 10, _10 = 10,
 
   /**
    * 用于：
@@ -60,10 +75,16 @@ export enum FrameBehavior {
    *    - 此值不会有任何作用（但依旧保留）
    *    - 生成将通过opoint被实现
    */
-  FirzenVolcanoStart,
-  _11 = 11,
+  FirzenVolcanoStart = 11, _11 = 11,
 
-  _12 = 12, //= 吸血蝙蝠
+  /**
+   * 用于：
+   * * [X] LF2
+   * * [X] WEMAKE
+   *
+   * 吸血蝙蝠
+   */
+  Bat = 12, _12 = 12,
 
   /**
    * 用于：

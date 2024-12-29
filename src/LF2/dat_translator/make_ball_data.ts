@@ -1,11 +1,14 @@
 import { ItrKind } from "../defines";
-import { IEntityData } from "../defines/IEntityData";
 import { EntityEnum } from "../defines/EntityEnum";
 import { EntityVal } from "../defines/EntityVal";
+import { FrameBehavior } from "../defines/FrameBehavior";
 import { IDatIndex } from "../defines/IDatIndex";
+import { IEntityData } from "../defines/IEntityData";
 import { IEntityInfo } from "../defines/IEntityInfo";
 import { IFrameInfo } from "../defines/IFrameInfo";
 import { OpointKind } from "../defines/OpointKind";
+import { OpointMultiEnum } from "../defines/OpointMultiEnum";
+import { SpeedMode } from "../defines/SpeedMode";
 import { Defines } from "../defines/defines";
 import { traversal } from "../utils/container_help/traversal";
 import { to_num } from "../utils/type_cast/to_num";
@@ -15,9 +18,6 @@ import { cook_ball_frame_state_3005 } from "./cook_ball_frame_state_3005";
 import { cook_ball_frame_state_3006 } from "./cook_ball_frame_state_3006";
 import { get_next_frame_by_raw_id } from "./get_the_next";
 import { take, take_str } from "./take";
-import { FrameBehavior } from "../defines/FrameBehavior";
-import { OpointMultiEnum } from "../defines/OpointMultiEnum";
-import { SpeedMode } from "../defines/SpeedMode";
 
 export function make_ball_data(
   info: IEntityInfo,
@@ -98,6 +98,9 @@ export function make_ball_data(
         firzen_disater_start(frame);
         break;
       case FrameBehavior._10:
+        frame.dvx = 15;
+        frame.acc_x = 2;
+        frame.vxm = SpeedMode.AccToSpeed;
         break;
       case FrameBehavior.FirzenVolcanoStart:
       case FrameBehavior._11:

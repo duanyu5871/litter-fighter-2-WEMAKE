@@ -56,6 +56,8 @@ function calc_v(
         ? speed
         : old;
     case SpeedMode.AccToSpeed:
+      speed *= direction;
+      acc = acc ? acc * direction : void 0;
       if (
         !acc ||
         (speed > 0 && old >= speed) ||
@@ -754,7 +756,7 @@ export default class Entity {
         switch (opoint.spreading) {
           case void 0:
           case OpointSpreading.Normal:
-            v.z = i - (count - 1) / 2;
+            v.z = (i - (count - 1) / 2) * 2;
             break;
           case OpointSpreading.Bat:
             break;
