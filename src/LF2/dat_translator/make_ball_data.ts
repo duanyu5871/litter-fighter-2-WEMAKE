@@ -99,7 +99,27 @@ export function make_ball_data(
         break;
       case FrameBehavior.FirzenVolcanoStart:
       case FrameBehavior._11:
-        firzen_disater_start(frame);
+        firzen_disater_start(frame, frame.centerx, -79);
+        frame.opoint = frame.opoint || [];
+        frame.opoint.push({
+          kind: OpointKind.Normal,
+          oid: Defines.BuiltIn_OID.Firen_flame,
+          x: frame.centerx,
+          y: 26,
+          action: { id: "109" },
+        }, {
+          kind: OpointKind.Normal,
+          oid: Defines.BuiltIn_OID.Freeze_column,
+          x: 135,
+          y: 26,
+          action: { id: "100" },
+        }, {
+          kind: OpointKind.Normal,
+          oid: Defines.BuiltIn_OID.Freeze_column,
+          x: -45,
+          y: 26,
+          action: { id: "100", facing: Defines.FacingFlag.Backward },
+        });
         break;
       case FrameBehavior._12:
         break;
@@ -169,13 +189,16 @@ export function make_ball_data(
   return ret;
 }
 
-function firzen_disater_start(frame: IFrameInfo) {
+function firzen_disater_start(frame: IFrameInfo, x: number = frame.centerx, y: number = frame.centery) {
   frame.opoint = frame.opoint || [];
   frame.opoint.push({
     kind: OpointKind.Normal,
-    oid: [Defines.BuiltIn_OID.Firzen_chasef, Defines.BuiltIn_OID.Firzen_chasei],
-    x: frame.centerx,
-    y: frame.centery,
+    oid: [
+      Defines.BuiltIn_OID.Firzen_chasef,
+      Defines.BuiltIn_OID.Firzen_chasei
+    ],
+    x,
+    y,
     dvy: 6,
     action: { id: "0" },
     multi: { type: OpointMultiEnum.AccordingEnemies, min: 4 },
