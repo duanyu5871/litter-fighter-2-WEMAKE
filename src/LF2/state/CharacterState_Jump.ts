@@ -17,7 +17,7 @@ export default class CharacterState_Jump extends CharacterState_Base {
     if (this._jumpings.has(character)) {
       return;
     }
-    const { LR: LR1 = 0, UD: UD1 = 0 } = character.controller || {};
+    const { LR: LR1 = 0, UD: UD1 = 0 } = character.ctrl || {};
     const {
       jump_height: h = 0,
       jump_distance: dx = 0,

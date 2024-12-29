@@ -295,11 +295,13 @@ export default class GamePrepareLogic extends LayoutComponent {
       character.facing = Math.random() < 0.5 ? 1 : -1;
 
       if (player.is_com) {
-        character.controller = Factory.inst.get_ctrl_creator(
+        character.ctrl = Factory.inst.get_ctrl(
           character_data.id,
-        )?.(player.id, character);
+          player.id, 
+          character
+        );
       } else {
-        character.controller = new LocalController(
+        character.ctrl = new LocalController(
           player.id,
           character,
           player.keys,

@@ -83,7 +83,8 @@ export class DemoModeLogic extends LayoutComponent implements IEntityCallbacks {
 
       const { far, near, left, right } = this.lf2.world.bg;
 
-      character.controller = Factory.inst.get_ctrl_creator(character_data.id)?.(
+      character.ctrl = Factory.inst.get_ctrl(
+        character_data.id,
         player.id,
         character,
       );
@@ -117,5 +118,5 @@ export class DemoModeLogic extends LayoutComponent implements IEntityCallbacks {
     if (score_board) score_board.visible = true;
   }
 
-  override on_show(): void {}
+  override on_show(): void { }
 }

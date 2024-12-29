@@ -1,22 +1,20 @@
 import { useEffect, useState } from "react";
 import { Button } from "./Component/Button";
 import CharacterSelect from "./Component/CharacterSelect";
+import Combine from "./Component/Combine";
 import { Input } from "./Component/Input";
 import Select from "./Component/Select";
 import TeamSelect from "./Component/TeamSelect";
-import Titled from "./Component/Titled";
 import { ToggleButton } from "./Component/ToggleButton";
 import { DummyEnum } from "./LF2/controller/BotController";
+import LocalController from "./LF2/controller/LocalController";
 import { Defines } from "./LF2/defines/defines";
 import GameKey from "./LF2/defines/GameKey";
+import { Factory } from "./LF2/entity/Factory";
 import { is_bot_ctrl, is_local_ctrl } from "./LF2/entity/type_check";
 import LF2 from "./LF2/LF2";
 import { PlayerInfo } from "./LF2/PlayerInfo";
 import { random_get } from "./LF2/utils/math/random";
-import Combine from "./Component/Combine";
-import { Factory } from "./LF2/entity/Factory";
-import { new_id } from "./LF2/base";
-import LocalController from "./LF2/controller/LocalController";
 
 const key_names: Record<GameKey, string> = {
   U: "上",
@@ -71,8 +69,8 @@ export function PlayerRow(props: Props) {
         set_keys((v) => {
           const ks = { ...v, [name]: key };
           const character = lf2.get_player_character(info.id);
-          if (character && is_local_ctrl(character.controller))
-            character.controller.set_key_code_map(ks);
+          if (character && is_local_ctrl(character.ctrl))
+            character.ctrl.set_key_code_map(ks);
           return ks;
         });
       },
@@ -110,27 +108,27 @@ export function PlayerRow(props: Props) {
 
   const on_click_add = added
     ? () => {
-        lf2.del_player_character(info.id); // 移除玩家对应的角色
-      }
+      lf2.del_player_character(info.id); // 移除玩家对应的角色
+    }
     : () => {
-        const real_character_id =
-          character_id || random_get(lf2.datas.characters)?.id;
-        if (!real_character_id) {
-          debugger;
-          return;
-        }
-        const character = lf2.add_player_character(info.id, real_character_id);
-        if (!character) {
-          debugger;
-          return;
-        }
+      const real_character_id =
+        character_id || random_get(lf2.datas.characters)?.id;
+      if (!real_character_id) {
+        debugger;
+        return;
+      }
+      const character = lf2.add_player_character(info.id, real_character_id);
+      if (!character) {
+        debugger;
+        return;
+      }
 
-        set_added(true);
-        character.callbacks.add({
-          on_disposed: () => set_added(false),
-          on_team_changed: (_, team) => set_team("" + team),
-        });
-      };
+      set_added(true);
+      character.callbacks.add({
+        on_disposed: () => set_added(false),
+        on_team_changed: (_, team) => set_team("" + team),
+      });
+    };
 
   return (
     <div className="settings_row">
@@ -161,41 +159,40 @@ export function PlayerRow(props: Props) {
         {!key_settings_show
           ? null
           : key_name_arr.map((k) => {
-              const on_click = () =>
-                set_editing_key((v) => (v === k ? void 0 : k));
-              const name = key_names[k];
-              const value = editing_key === k ? "编辑中..." : keys[k];
-              return (
-                <Button key={k} onClick={on_click}>
-                  {name}:{" "}
-                  {{
-                    ARROWUP: "↑",
-                    ARROWDOWN: "↓",
-                    ARROWLEFT: "←",
-                    ARROWRIGHT: "→",
-                    DELETE: "DEL",
-                    PAGEDOWN: "P↓",
-                    PAGEUP: "P↑",
-                  }[value.toUpperCase()] || value.toUpperCase()}
-                </Button>
-              );
-            })}
+            const on_click = () =>
+              set_editing_key((v) => (v === k ? void 0 : k));
+            const name = key_names[k];
+            const value = editing_key === k ? "编辑中..." : keys[k];
+            return (
+              <Button key={k} onClick={on_click}>
+                {name}:{" "}
+                {{
+                  ARROWUP: "↑",
+                  ARROWDOWN: "↓",
+                  ARROWLEFT: "←",
+                  ARROWRIGHT: "→",
+                  DELETE: "DEL",
+                  PAGEDOWN: "P↓",
+                  PAGEUP: "P↑",
+                }[value.toUpperCase()] || value.toUpperCase()}
+              </Button>
+            );
+          })}
       </Combine>
       <Combine>
         <Button
           onClick={() => {
             const character = lf2.player_characters.get(info.id);
             if (!character) return;
-            const ctrl = character.controller;
+            const ctrl = character.ctrl;
             if (is_bot_ctrl(ctrl)) {
-              character.controller = new LocalController(
+              character.ctrl = new LocalController(
                 info.id,
                 character,
                 info.keys,
               );
             } else {
-              const cls = Factory.inst.get_ctrl_creator(character.id);
-              if (cls) character.controller = cls(info.id, character);
+              character.ctrl = Factory.inst.get_ctrl(character.id, info.id, character);
             }
             ctrl?.dispose();
           }}
@@ -207,7 +204,7 @@ export function PlayerRow(props: Props) {
           style={{ width: 100 }}
           option={(k) => [k && (DummyEnum as any)[k], k || "not dummy"]}
           onChange={(v) => {
-            const ctrl = lf2.player_characters.get(info.id)?.controller;
+            const ctrl = lf2.player_characters.get(info.id)?.ctrl;
             if (is_bot_ctrl(ctrl)) {
               ctrl.dummy = v.target.value ? (v.target.value as any) : void 0;
             }

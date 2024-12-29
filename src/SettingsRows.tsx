@@ -116,7 +116,7 @@ export default function SettingsRows(props: ISettingsRowsProps) {
     ).forEach((e) => {
       e.name = "bot";
       const controller_creator = bot_controllers[bot_ctrl];
-      if (controller_creator) e.controller = controller_creator(e);
+      if (controller_creator) e.ctrl = controller_creator(e);
     });
   };
   const phase_desc = stage_phase_list[stage_phase_idx]?.desc;

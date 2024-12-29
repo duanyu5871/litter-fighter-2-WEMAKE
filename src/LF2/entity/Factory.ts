@@ -37,8 +37,8 @@ export class Factory {
   ): EntityCreators[K] | undefined {
     return _entity_creators[type];
   }
-  get_ctrl_creator(id: string): ControllerCreator | undefined {
-    return _ctrl_creators[id];
+  get_ctrl(id: string, ...args: Parameters<ControllerCreator>): BaseController | undefined {
+    return _ctrl_creators[id]?.(...args);
   }
   set_ctrl_creator(id: string, creator: ControllerCreator) {
     return (_ctrl_creators[id] = creator);

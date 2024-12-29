@@ -6,8 +6,8 @@ import CharacterState_Base from "./CharacterState_Base";
 export class CharacterState_Walking extends CharacterState_Base {
   override update(e: Entity): void {
     super.update(e);
-    if (e.controller) {
-      const { UD, LR } = e.controller;
+    if (e.ctrl) {
+      const { UD, LR } = e.ctrl;
       if (!UD && !LR && !e.wait) {
         if (
           is_weapon(e.holding) &&

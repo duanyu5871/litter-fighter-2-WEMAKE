@@ -18,11 +18,11 @@ export const get_val_getter_from_entity: IValGetterGetter<Entity> = (
       };
     case EntityVal.PressFB:
       return (e) => {
-        return e.controller ? e.controller.LR * e.facing : 0;
+        return e.ctrl ? e.ctrl.LR * e.facing : 0;
       };
     case EntityVal.PressLR:
       return (e) => {
-        return e.controller ? e.controller.LR : 0;
+        return e.ctrl ? e.ctrl.LR : 0;
       };
     case EntityVal.RequireSuperPunch:
       return (e) => {
@@ -31,10 +31,10 @@ export const get_val_getter_from_entity: IValGetterGetter<Entity> = (
             itr.kind === ItrKind.SuperPunchMe &&
             ((attacker.position.x > e.position.x &&
               e.facing === 1 &&
-              e.controller?.LR !== -1) ||
+              e.ctrl?.LR !== -1) ||
               (attacker.position.x < e.position.x &&
                 e.facing === -1 &&
-                e.controller?.LR !== 1))
+                e.ctrl?.LR !== 1))
           ) {
             return 1;
           }
@@ -43,7 +43,7 @@ export const get_val_getter_from_entity: IValGetterGetter<Entity> = (
       };
     case EntityVal.PressUD:
       return (e) => {
-        return e.controller ? e.controller.UD : 0;
+        return e.ctrl ? e.ctrl.UD : 0;
       };
     case EntityVal.HP_P:
       return (e) => {

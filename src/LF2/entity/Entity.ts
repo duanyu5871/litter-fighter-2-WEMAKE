@@ -478,14 +478,14 @@ export default class Entity {
     return this._callbacks;
   }
 
-  protected _controller?: BaseController;
-  get controller() {
-    return this._controller;
+  protected _ctrl?: BaseController;
+  get ctrl() {
+    return this._ctrl;
   }
-  set controller(v) {
-    if (this._controller === v) return;
-    this._controller?.dispose();
-    this._controller = v;
+  set ctrl(v) {
+    if (this._ctrl === v) return;
+    this._ctrl?.dispose();
+    this._ctrl = v;
   }
 
   /**
@@ -495,7 +495,7 @@ export default class Entity {
    * @type {boolean}
    */
   get in_player_slot(): boolean {
-    const player_id = this.controller?.player_id;
+    const player_id = this.ctrl?.player_id;
     return !!(player_id && this.world.player_slot_characters.has(player_id));
   }
 
@@ -602,10 +602,7 @@ export default class Entity {
     this._emitter = emitter;
     this._emitter_opoint = opoint;
 
-    this.velocities[1] = offset_velocity;
-
     const shotter_frame = emitter.frame;
-
     if (emitter.frame.state === Defines.State.Ball_Rebounding) {
       this.team = emitter.lastest_collided?.attacker.team || new_team();
       this.facing = emitter.facing;
@@ -620,7 +617,7 @@ export default class Entity {
     this.position.set(x, y, z);
 
     let { dvx = 0, dvy = 0, dvz = 0, speedz = 3 } = opoint;
-    let ud = emitter.controller?.UD || 0;
+    let ud = emitter.ctrl?.UD || 0;
     let { x: ovx, y: ovy, z: ovz } = offset_velocity;
     if (dvx > 0) {
       dvx = dvx - Math.abs(ovz / 2);
@@ -632,13 +629,13 @@ export default class Entity {
     const facing = result?.which.facing
       ? this.handle_facing_flag(result.which.facing, result.frame)
       : emitter.facing;
-    this.velocities[0].x = ovx + dvx * facing;
+    this.velocities[0].set(
+      ovx + dvx * facing,
+      ovy + dvy,
+      dvz
+    )
     this.velocities.push(
-      new Ditto.Vector3(
-        offset_velocity.x,
-        offset_velocity.y + ovy + dvy,
-        offset_velocity.z + ovz + dvz + speedz * ud,
-      ),
+      new Ditto.Vector3(0, 0, ovz + speedz * ud),
     );
 
     if (opoint.max_hp) this.hp_max = opoint.max_hp;
@@ -795,7 +792,8 @@ export default class Entity {
       return;
     }
     const entity = create(this.world, data);
-    entity.controller = Factory.inst.get_ctrl_creator(entity.data.id)?.(
+    entity.ctrl = Factory.inst.get_ctrl(
+      entity.data.id,
       "",
       entity,
     );
@@ -931,8 +929,8 @@ export default class Entity {
     if (dvx) vx = calc_v(vx, dvx * this.world.fvx_f, vxm, acc_x, this.facing);
     if (dvy) vy = calc_v(vy, dvy * this.world.fvy_f, vym, acc_y, 1);
     if (dvz) vz = calc_v(vz, dvz * this.world.fvz_f, vzm, acc_z, 1);
-    if (this._controller) {
-      const { UD, LR } = this._controller;
+    if (this._ctrl) {
+      const { UD, LR } = this._ctrl;
       if (LR && speedx && speedx !== 550)
         vx = calc_v(vx, speedx, speedxm, void 0, LR);
       if (UD && speedz && speedz !== 550)
@@ -993,8 +991,8 @@ export default class Entity {
         if (dvx !== void 0 || dvy !== void 0 || dvz !== void 0) {
           this.follow_holder();
           this.enter_frame({ id: this.data.indexes?.throwing });
-          const vz = this.holder.controller
-            ? this.holder.controller.UD * (dvz || 0)
+          const vz = this.holder.ctrl
+            ? this.holder.ctrl.UD * (dvz || 0)
             : 0;
           const vx = (dvx || 0 - Math.abs(vz / 2)) * this.facing;
           this.velocities[0].set(vx, dvy || 0, vz);
@@ -1067,7 +1065,7 @@ export default class Entity {
       }
     }
     this.velocity.set(vx, vy, vz);
-    this.merge_velocities();
+    // this.merge_velocities();
     if (!this.shaking && !this.motionless) {
       this.position.x += vx;
       this.position.y += vy;
@@ -1085,8 +1083,8 @@ export default class Entity {
     const next_frame_2 = this.update_caught();
     this.next_frame = next_frame_2 || next_frame_1 || this.next_frame;
 
-    if (this.controller) {
-      const { next_frame, key_list } = this.controller.update();
+    if (this.ctrl) {
+      const { next_frame, key_list } = this.ctrl.update();
       if (
         key_list === "ja" &&
         this.transform_datas &&
@@ -1096,7 +1094,7 @@ export default class Entity {
           this.frame?.state === Defines.State.Defend)
       ) {
         this.transfrom_to_another();
-        this.controller.reset_key_list();
+        this.ctrl.reset_key_list();
       } else if (next_frame) {
         const result = this.get_next_frame(next_frame)?.which;
         if (result) this.next_frame = result;
@@ -1202,7 +1200,7 @@ export default class Entity {
     const { throwvx, throwvy, throwvz, throwinjury } = cpoint_a;
     if (throwvz) {
       this.velocities[0].z =
-        throwvz * this.world.tvz_f * (this._catcher.controller?.UD || 0);
+        throwvz * this.world.tvz_f * (this._catcher.ctrl?.UD || 0);
     }
     if (throwvx) {
       this.velocities[0].x = throwvx * this.world.tvx_f * this._catcher.facing;
@@ -1462,7 +1460,7 @@ export default class Entity {
 
   dispose(): void {
     this.world.del_entity(this);
-    this.controller = void 0;
+    this.ctrl = void 0;
     this._callbacks.emit("on_disposed")(this);
   }
 
@@ -1489,7 +1487,7 @@ export default class Entity {
     this._mp_r_spd =
       this._mp_r_spd_min +
       ((this._mp_r_spd_max - this._mp_r_spd_min) * (this._hp_max - this._hp)) /
-        this._hp_max;
+      this._hp_max;
   }
 
   same_team(other: Entity): boolean {
@@ -1595,10 +1593,10 @@ export default class Entity {
   handle_facing_flag(facing: number, frame: IFrameInfo): -1 | 1 {
     switch (facing) {
       case Defines.FacingFlag.Ctrl:
-        return this.controller?.LR || this.facing;
+        return this.ctrl?.LR || this.facing;
       case Defines.FacingFlag.AntiCtrl:
-        return this.controller?.LR
-          ? turn_face(this.controller.LR)
+        return this.ctrl?.LR
+          ? turn_face(this.ctrl.LR)
           : this.facing;
       case Defines.FacingFlag.SameAsCatcher:
         return this._catcher?.facing || this.facing;

@@ -557,7 +557,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     if (!old) {
       this.random_entity_info(character);
     }
-    character.controller = new LocalController(
+    character.ctrl = new LocalController(
       player_id,
       character,
       player_info?.keys,

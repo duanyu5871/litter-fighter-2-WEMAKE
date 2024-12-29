@@ -178,12 +178,12 @@ export class World {
     for (const entity of entities) {
       if (
         is_character(entity) &&
-        is_base_ctrl(entity.controller) &&
-        this.lf2.player_infos.has(entity.controller.player_id)
+        is_base_ctrl(entity.ctrl) &&
+        this.lf2.player_infos.has(entity.ctrl.player_id)
       ) {
-        this.player_slot_characters.set(entity.controller.player_id, entity);
+        this.player_slot_characters.set(entity.ctrl.player_id, entity);
         this._callbacks.emit("on_player_character_add")(
-          entity.controller.player_id,
+          entity.ctrl.player_id,
         );
       }
 
@@ -197,10 +197,10 @@ export class World {
 
   del_entity(e: Entity) {
     if (!this.entities.delete(e)) return false;
-    if (e.controller?.player_id) {
-      const ok = this.player_slot_characters.delete(e.controller.player_id);
+    if (e.ctrl?.player_id) {
+      const ok = this.player_slot_characters.delete(e.ctrl.player_id);
       if (ok)
-        this._callbacks.emit("on_player_character_del")(e.controller.player_id);
+        this._callbacks.emit("on_player_character_del")(e.ctrl.player_id);
     }
     const r = this.entity_renders.get(e);
     if (r) {
@@ -309,7 +309,7 @@ export class World {
     if (!this.bg) return;
     const { left, right, near, far, player_left, player_right } = this.stage;
 
-    const is_player = is_local_ctrl(e.controller);
+    const is_player = is_local_ctrl(e.ctrl);
     const l = is_player ? player_left : left;
     const r = is_player ? player_right : right;
 
@@ -415,10 +415,10 @@ export class World {
 
       const has_human_player = find(
         this.player_slot_characters,
-        ([_, p]) => is_local_ctrl(p.controller) && p.hp > 0,
+        ([_, p]) => is_local_ctrl(p.ctrl) && p.hp > 0,
       );
       for (const [, player] of this.player_slot_characters) {
-        const c = player.controller;
+        const c = player.ctrl;
         if (!is_local_ctrl(c) && has_human_player) continue;
         new_x += player.position.x - 794 / 2 + (player.facing * 794) / 6;
         ++l;

@@ -98,7 +98,7 @@ export default class Item {
     const { hp, act, x, y, z, reserve } = this.info;
     if (this.times) this.times--;
     const e = creator(this.world, data);
-    e.controller = Factory.inst.get_ctrl_creator(e.data.id)?.("", e);
+    e.ctrl = Factory.inst.get_ctrl(e.data.id,"", e);
     e.reserve = reserve;
     e.position.x = random_in(x, x + range_x);
     e.position.z = is_num(z)

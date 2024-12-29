@@ -11,7 +11,7 @@ export default class CharacterState_Dash extends CharacterState_Base {
       dash_height: h = 0,
     } = e.data.base;
     e.velocities[0].y = e.world.gravity * Math.sqrt((2 * h) / e.world.gravity);
-    const { UD: UD1 = 0, LR: LR1 = 0 } = e.controller || {};
+    const { UD: UD1 = 0, LR: LR1 = 0 } = e.ctrl || {};
 
     if (UD1) e.velocities[0].z = UD1 * dz;
 
