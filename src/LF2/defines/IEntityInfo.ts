@@ -55,6 +55,8 @@ export interface IEntityInfo {
 
   defend_value?: number;
 
+  resting?: number;
+  
   /**
    * 默认血量
    *

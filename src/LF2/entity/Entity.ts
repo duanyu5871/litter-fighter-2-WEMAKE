@@ -123,10 +123,23 @@ export default class Entity {
   transform_datas?: [IEntityData, IEntityData];
   readonly world: World;
   readonly position = new Ditto.Vector3(0, 0, 0);
-  protected _resting = 0;
+
   get type() {
     return this.data.type;
   }
+
+  private _resting_max = Defines.DEFAULT_RESTING_MAX;
+  get resting_max(): number {
+    return this._resting_max;
+  }
+  set resting_max(v: number) {
+    const o = this._resting_max;
+    if (o === v) return;
+    this._resting_max = v;
+    this._callbacks.emit("on_resting_max_changed")(this, v, o);
+  }
+
+  protected _resting = 0;
   get resting() {
     return this._resting;
   }
@@ -145,7 +158,7 @@ export default class Entity {
     const o = this._fall_value;
     if (o === v) return;
     this._fall_value = v;
-    if (v < o) this.resting = 30;
+    if (v < o) this.resting = this.resting_max;
     this._callbacks.emit("on_fall_value_changed")(this, v, o);
   }
 
@@ -168,7 +181,7 @@ export default class Entity {
     const o = this._defend_value;
     if (o === v) return;
     this._defend_value = v;
-    if (v < o) this.resting = 30;
+    if (v < o) this.resting = this.resting_max;
     this._callbacks.emit("on_defend_value_changed")(this, v, o);
   }
 
@@ -531,6 +544,9 @@ export default class Entity {
       this.data.base.fall_value ?? Defines.DEFAULT_FALL_VALUE_MAX;
     this.defend_value_max =
       this.data.base.defend_value ?? Defines.DEFAULT_DEFEND_VALUE_MAX;
+    this.resting_max =
+      this.data.base.resting ?? Defines.DEFAULT_RESTING_MAX;
+
     this.fall_value = this.fall_value_max;
     this.defend_value = this.defend_value_max;
     this._hp = this._hp_max;

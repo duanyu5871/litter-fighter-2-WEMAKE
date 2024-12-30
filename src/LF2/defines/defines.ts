@@ -24,6 +24,7 @@ export namespace Defines {
   export const DEFAULT_ITR_FALL = 40;
   export const DEFAULT_FALL_VALUE_DIZZY = 40;
   export const DAFUALT_QUBE_LENGTH = 24;
+  export const DEFAULT_RESTING_MAX = 30;
 
   /**
    * 直接破防值

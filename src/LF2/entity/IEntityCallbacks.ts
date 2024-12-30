@@ -164,4 +164,6 @@ export default interface IEntityCallbacks<E extends Entity = Entity> {
    * @param {number} prev 上一次值
    */
   on_resting_changed?(e: E, value: number, prev: number): void;
+
+  on_resting_max_changed?(e: E, value: number, prev: number): void;
 }
