@@ -3,4 +3,6 @@ export interface IVector2 {
   y: number;
   set(x: number, y: number): void;
   add(o: IVector2): void;
+  clone(): IVector2;
+  normalize(): this;
 }

@@ -199,7 +199,7 @@ export function make_frames(
           frame.dvz = dvz - 550;
           frame.vzm = SpeedMode.FixedLf2;
         } else {
-          frame.speedz = dvz;
+          frame.ctrl_spd_z = dvz;
         }
       }
     } else {

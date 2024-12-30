@@ -8,9 +8,10 @@ export enum WhatNext {
   Continue = 0,
 }
 export class State_Base {
+  on_frame_changed?(e: Entity, frame: IFrameInfo, prev_frame: IFrameInfo): void;
   state: number | string = "";
   pre_update?(e: Entity): void;
-  update(e: Entity): void {}
+  update(e: Entity): void { }
   enter?(e: Entity, prev_frame: IFrameInfo): void;
   leave?(e: Entity, next_frame: IFrameInfo): void;
   on_landing?(e: Entity): void;

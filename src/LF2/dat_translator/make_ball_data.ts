@@ -54,8 +54,26 @@ export function make_ball_data(
     if (hit_Fa) frame.behavior = hit_Fa;
     switch (hit_Fa as FrameBehavior) {
       case FrameBehavior._01:
+        frame.ctrl_spd_x = 5;
+        frame.ctrl_acc_x = 0.1;
+        frame.ctrl_spd_x_m = SpeedMode.AccToSpeed;
+        frame.ctrl_spd_z = 5;
+        frame.ctrl_acc_z = 0.2;
+        frame.ctrl_spd_z_m = SpeedMode.AccToSpeed;
+        frame.ctrl_spd_y = 1;
+        frame.ctrl_acc_y = 0.01;
+        frame.ctrl_spd_y_m = SpeedMode.AccToSpeed;
         break;
       case FrameBehavior._02:
+        frame.ctrl_spd_x = 5;
+        frame.ctrl_acc_x = 0.1;
+        frame.ctrl_spd_x_m = SpeedMode.AccToSpeed;
+        frame.ctrl_spd_z = 5;
+        frame.ctrl_acc_z = 0.2;
+        frame.ctrl_spd_z_m = SpeedMode.AccToSpeed;
+        frame.ctrl_spd_y = 1;
+        frame.ctrl_acc_y = 0.01;
+        frame.ctrl_spd_y_m = SpeedMode.AccToSpeed;
         break;
       case FrameBehavior._03:
         break;
@@ -68,6 +86,15 @@ export function make_ball_data(
         jan_chase_start(frame);
         break;
       case FrameBehavior._07:
+        frame.ctrl_spd_x = 5;
+        frame.ctrl_acc_x = 0.1;
+        frame.ctrl_spd_x_m = SpeedMode.AccToSpeed;
+        frame.ctrl_spd_z = 5;
+        frame.ctrl_acc_z = 0.2;
+        frame.ctrl_spd_z_m = SpeedMode.AccToSpeed;
+        frame.ctrl_spd_y = 1;
+        frame.ctrl_acc_y = 0.01;
+        frame.ctrl_spd_y_m = SpeedMode.AccToSpeed;
         frame.dvy = -6;
         frame.acc_y = -0.25;
         frame.vym = SpeedMode.AccToSpeed;
@@ -126,7 +153,17 @@ export function make_ball_data(
           action: { id: "100", facing: Defines.FacingFlag.Backward },
         });
         break;
+      case FrameBehavior.Bat:
       case FrameBehavior._12:
+        frame.ctrl_spd_x = 5;
+        frame.ctrl_acc_x = 0.1;
+        frame.ctrl_spd_x_m = SpeedMode.AccToSpeed;
+        frame.ctrl_spd_z = 5;
+        frame.ctrl_acc_z = 0.2;
+        frame.ctrl_spd_z_m = SpeedMode.AccToSpeed;
+        frame.ctrl_spd_y = 1;
+        frame.ctrl_acc_y = 0.01;
+        frame.ctrl_spd_y_m = SpeedMode.AccToSpeed;
         break;
       case FrameBehavior.JulianBallStart:
       case FrameBehavior._13:

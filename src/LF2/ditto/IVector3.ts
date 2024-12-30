@@ -5,4 +5,5 @@ export interface IVector3 {
   set(x: number, y: number, z: number): void;
   add(o: IVector3): void;
   clone(): IVector3;
+  normalize(): this;
 }

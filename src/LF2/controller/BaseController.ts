@@ -75,6 +75,12 @@ export class BaseController {
     return U === D ? 0 : D ? 1 : -1;
   }
 
+  get jd(): 0 | 1 | -1 {
+    const d = !!this.keys.d.time;
+    const j = !!this.keys.j.time;
+    return d === j ? 0 : d ? 1 : -1;
+  }
+  
   private _key_list: string | undefined = void 0;
   reset_key_list() {
     this._key_list = void 0;
@@ -174,7 +180,14 @@ export class BaseController {
   is_start(k: TLooseGameKey): boolean {
     return !!this.keys[k]?.is_start();
   }
-
+  press(...keys: TLooseGameKey[]) {
+    for (const k of keys) if (this.is_end(k)) this.start(k);
+    return this;
+  }
+  release(...keys: TLooseGameKey[]) {
+    for (const k of keys) if (!this.is_end(k)) this.end(k);
+    return this;
+  }
   constructor(player_id: string, character: Entity) {
     this._player_id = player_id;
     this.entity = character;

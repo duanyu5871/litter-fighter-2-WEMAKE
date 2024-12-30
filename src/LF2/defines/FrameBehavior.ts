@@ -17,8 +17,18 @@ export enum FrameBehavior {
   /** 恶魔之审判的开始(视敌人数目而增加，基本上是一个) */
   _06 = 6,
 
-  /** 恶魔之审判,殃殒天降(可以做出打到地面的追踪波) */
-  _07 = 7,
+  /** 
+   * * 用于：
+   * * [X] LF2
+   * * [X] WEMAKE
+   * 
+   * 恶魔之审判,殃殒天降(可以做出打到地面的追踪波) 
+   * 
+   * - WEMAKE中：
+   *    - 跟踪效果在BallController, 配合frame.speedx, frame.speedz实现
+   *    - 下落打到地面得效果通过 dvy, acc_y, vym, on_hit_ground实现
+   */
+  AlwaysChasingSameEnemy = 7, _07 = 7,
 
   /**
    * 用于：

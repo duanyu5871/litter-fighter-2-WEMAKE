@@ -4,7 +4,7 @@ import { EntityVal } from "../defines/EntityVal";
 import { CondMaker } from "./CondMaker";
 
 export function cook_ball_frame_state_3005(e: IEntityData, frame: IFrameInfo) {
-  frame.speedz = 0;
+  frame.ctrl_spd_z = 0;
   if (frame.bdy) {
     for (const bdy of frame.bdy) {
       bdy.hit_act = [

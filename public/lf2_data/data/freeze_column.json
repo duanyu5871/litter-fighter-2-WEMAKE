@@ -1617,7 +1617,7 @@
       "centery": 0,
       "dvx": 3,
       "no_shadow": 1,
-      "speedz": 0
+      "ctrl_spd_z": 0
     },
     "102": {
       "id": "102",
@@ -1650,7 +1650,7 @@
       "centery": 0,
       "dvx": 3,
       "no_shadow": 1,
-      "speedz": 0
+      "ctrl_spd_z": 0
     },
     "103": {
       "id": "103",
@@ -1682,7 +1682,7 @@
       "centery": 0,
       "dvx": 3,
       "no_shadow": 1,
-      "speedz": 0
+      "ctrl_spd_z": 0
     },
     "150": {
       "id": "150",

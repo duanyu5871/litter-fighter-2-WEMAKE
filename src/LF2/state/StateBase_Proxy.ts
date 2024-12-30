@@ -1,7 +1,7 @@
 import { IFrameInfo, INextFrame } from "../defines";
-import Entity from "../entity/Entity";
 import { ICollision } from "../defines/ICollision";
-import { is_character, is_weapon, is_ball } from "../entity/type_check";
+import Entity from "../entity/Entity";
+import { is_ball, is_character, is_weapon } from "../entity/type_check";
 import BallState_Base from "./BallState_Base";
 import CharacterState_Base from "./CharacterState_Base";
 import State_Base, { WhatNext } from "./State_Base";
@@ -9,8 +9,7 @@ import WeaponState_Base from "./WeaponState_Base";
 
 export class StateBase_Proxy
   extends State_Base
-  implements Required<State_Base>
-{
+  implements Required<State_Base> {
   private character_proxy = new CharacterState_Base();
   private weapon_proxy = new WeaponState_Base();
   private ball_proxy = new BallState_Base();
@@ -20,6 +19,9 @@ export class StateBase_Proxy
     if (is_weapon(e)) return this.weapon_proxy;
     if (is_ball(e)) return this.ball_proxy;
     return this.proxy;
+  }
+  override on_frame_changed(e: Entity, frame: IFrameInfo, prev_frame: IFrameInfo): void {
+    return this.get_proxy(e).on_frame_changed?.(e, frame, prev_frame);
   }
   override enter(e: Entity, prev_frame: IFrameInfo): void {
     return this.get_proxy(e).enter?.(e, prev_frame);

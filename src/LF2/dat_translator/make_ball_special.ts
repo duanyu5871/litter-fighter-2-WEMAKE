@@ -12,7 +12,7 @@ export function make_ball_special(data: IEntityData) {
     case "223":
     case "224": {
       traversal(data.frames, (_, frame) => {
-        frame.speedz = 0;
+        frame.ctrl_spd_z = 0;
         frame.no_shadow = 1;
       });
       break;

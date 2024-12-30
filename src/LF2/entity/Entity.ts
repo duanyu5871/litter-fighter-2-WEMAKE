@@ -661,7 +661,6 @@ export default class Entity {
     this.frame = v;
     const prev_state_code = this._prev_frame.state;
     const next_state_code = this.frame.state;
-
     if (prev_state_code !== next_state_code) {
       let next_state = this.states.get(next_state_code);
       if (!next_state) {
@@ -697,12 +696,14 @@ export default class Entity {
       }
       this.state = next_state;
     }
+    if (this._prev_frame !== this.frame) {
+      this.state?.on_frame_changed?.(this, this.frame, this._prev_frame)
+    }
     if (v.invisible) this.invisibility(v.invisible);
     if (v.opoint) {
       this.apply_opoints(v.opoint);
     }
     if (!v.cpoint) delete this._catching;
-
     const attacking = !!this.frame.itr?.find((v) => {
       return (
         v.kind !== ItrKind.Pick &&
@@ -918,13 +919,20 @@ export default class Entity {
       dvx,
       dvy,
       dvz,
-      speedz,
-      speedx,
       vxm = SpeedMode.LF2,
       vym = SpeedMode.Acc,
       vzm = SpeedMode.LF2,
-      speedxm = SpeedMode.LF2,
-      speedzm = SpeedMode.LF2,
+      ctrl_spd_x_m = SpeedMode.LF2,
+      ctrl_acc_x,
+      ctrl_spd_x,
+
+      ctrl_spd_z_m = SpeedMode.LF2,
+      ctrl_acc_z,
+      ctrl_spd_z,
+
+      ctrl_spd_y_m = SpeedMode.LF2,
+      ctrl_acc_y,
+      ctrl_spd_y,
     } = this.frame;
     let { x: vx, y: vy, z: vz } = this.velocities[0];
 
@@ -932,11 +940,13 @@ export default class Entity {
     if (dvy) vy = calc_v(vy, dvy * this.world.fvy_f, vym, acc_y, 1);
     if (dvz) vz = calc_v(vz, dvz * this.world.fvz_f, vzm, acc_z, 1);
     if (this._ctrl) {
-      const { UD, LR } = this._ctrl;
-      if (LR && speedx && speedx !== 550)
-        vx = calc_v(vx, speedx, speedxm, void 0, LR);
-      if (UD && speedz && speedz !== 550)
-        vz = calc_v(vz, speedz, speedzm, void 0, UD);
+      const { UD, LR, jd } = this._ctrl;
+      if (LR && ctrl_spd_x && ctrl_spd_x !== 550)
+        vx = calc_v(vx, ctrl_spd_x, ctrl_spd_x_m, ctrl_acc_x, LR);
+      if (UD && ctrl_spd_z && ctrl_spd_z !== 550)
+        vz = calc_v(vz, ctrl_spd_z, ctrl_spd_z_m, ctrl_acc_z, UD);
+      if (jd && ctrl_spd_y && ctrl_spd_y !== 550)
+        vy = calc_v(vy, ctrl_spd_y, ctrl_spd_y_m, ctrl_acc_y, jd);
     }
     if (dvx === 550) vx = 0;
     if (dvz === 550) vz = 0;
@@ -1527,19 +1537,11 @@ export default class Entity {
     );
   }
 
-  protected _nearest_enemy: Entity | null = null;
-  get nearest_enemy(): Entity | null {
-    return this._nearest_enemy;
-  }
-  set_nearest_enemy(e: Entity) {
-    this._nearest_enemy = e;
-  }
-  subscribe_nearest_enemy() {
-    this.world.nearest_enemy_requesters.add(this);
-  }
-  unsubscribe_nearest_enemy() {
-    this.world.nearest_enemy_requesters.delete(this);
-  }
+  protected _chasing_target?: Entity;
+  get chasing_target(): Entity | undefined { return this._chasing_target; }
+  set chasing_target(e: Entity | undefined) { this._chasing_target = e; }
+
+
 
   enter_frame(which: TNextFrame): void {
     if (this.frame.id === Defines.FrameId.Gone) {

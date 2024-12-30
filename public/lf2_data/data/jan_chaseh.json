@@ -350,7 +350,7 @@
       "centery": 40,
       "dvx": 1.5,
       "no_shadow": 1,
-      "speedz": 0
+      "ctrl_spd_z": 0
     },
     "41": {
       "id": "41",
@@ -370,7 +370,7 @@
       "centerx": 40,
       "centery": 40,
       "no_shadow": 1,
-      "speedz": 0
+      "ctrl_spd_z": 0
     },
     "42": {
       "id": "42",
@@ -390,7 +390,7 @@
       "centerx": 40,
       "centery": 40,
       "no_shadow": 1,
-      "speedz": 0
+      "ctrl_spd_z": 0
     },
     "43": {
       "id": "43",
@@ -410,7 +410,7 @@
       "centerx": 40,
       "centery": 40,
       "no_shadow": 1,
-      "speedz": 0
+      "ctrl_spd_z": 0
     },
     "50": {
       "id": "50",
@@ -430,7 +430,7 @@
       "centerx": 45,
       "centery": 38,
       "no_shadow": 1,
-      "speedz": 0
+      "ctrl_spd_z": 0
     },
     "51": {
       "id": "51",
@@ -466,7 +466,7 @@
           }
         }
       ],
-      "speedz": 0
+      "ctrl_spd_z": 0
     },
     "52": {
       "id": "52",
@@ -486,7 +486,7 @@
       "centerx": 45,
       "centery": 38,
       "no_shadow": 1,
-      "speedz": 0
+      "ctrl_spd_z": 0
     },
     "60": {
       "id": "60",
@@ -506,7 +506,7 @@
       "centerx": 40,
       "centery": 40,
       "no_shadow": 1,
-      "speedz": 0
+      "ctrl_spd_z": 0
     },
     "61": {
       "id": "61",
@@ -527,7 +527,7 @@
       "centery": 40,
       "sound": "data/049.wav.mp3",
       "no_shadow": 1,
-      "speedz": 0
+      "ctrl_spd_z": 0
     },
     "62": {
       "id": "62",
@@ -547,7 +547,7 @@
       "centerx": 40,
       "centery": 40,
       "no_shadow": 1,
-      "speedz": 0
+      "ctrl_spd_z": 0
     },
     "63": {
       "id": "63",
@@ -567,7 +567,7 @@
       "centerx": 40,
       "centery": 40,
       "no_shadow": 1,
-      "speedz": 0
+      "ctrl_spd_z": 0
     },
     "70": {
       "id": "70",
@@ -587,7 +587,7 @@
       "centerx": 40,
       "centery": 40,
       "no_shadow": 1,
-      "speedz": 0
+      "ctrl_spd_z": 0
     },
     "71": {
       "id": "71",
@@ -607,7 +607,7 @@
       "centerx": 40,
       "centery": 40,
       "no_shadow": 1,
-      "speedz": 0
+      "ctrl_spd_z": 0
     },
     "72": {
       "id": "72",
@@ -627,7 +627,7 @@
       "centerx": 40,
       "centery": 40,
       "no_shadow": 1,
-      "speedz": 0
+      "ctrl_spd_z": 0
     },
     "73": {
       "id": "73",
@@ -647,7 +647,7 @@
       "centerx": 40,
       "centery": 40,
       "no_shadow": 1,
-      "speedz": 0
+      "ctrl_spd_z": 0
     }
   }
 }

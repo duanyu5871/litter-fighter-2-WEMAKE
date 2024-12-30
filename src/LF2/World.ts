@@ -96,7 +96,6 @@ export class World {
   disposed = false;
 
   readonly player_slot_characters = new Map<string, Entity>();
-  readonly nearest_enemy_requesters = new Set<Entity>();
 
   get stage() {
     return this._stage;
@@ -357,15 +356,30 @@ export class World {
     return Math.abs(p1.x - p2.x) + Math.abs(p1.z - p2.z);
   }
   private gone_entities: Entity[] = [];
+
+  private _entity_chasers = new Set<Entity>();
+  add_entity_chaser(entity: Entity) {
+    this._entity_chasers.add(entity);
+  }
+  del_entity_chaser(entity: Entity) {
+    this._entity_chasers.delete(entity);
+    entity.chasing_target = void 0;
+  }
   update_once() {
     if (this.disposed) return;
     for (const e of this.entities) {
       e.self_update();
-      for (const r of this.nearest_enemy_requesters) {
-        if (is_character(e) || r.same_team(e) || e.hp <= 0) continue;
-        const prev = r.nearest_enemy;
-        if (!prev || this.manhattan(prev, r) > this.manhattan(e, r)) {
-          r.set_nearest_enemy(e);
+
+      if (e.chasing_target && !e.chasing_target.ctrl) {
+        e.chasing_target = void 0;
+      }
+
+      for (const chaser of this._entity_chasers) {
+        if (!is_character(e) || chaser.same_team(e) || e.hp <= 0)
+          continue;
+        const prev = chaser.chasing_target;
+        if (!prev || this.manhattan(prev, chaser) > this.manhattan(e, chaser)) {
+          chaser.chasing_target = e;
         }
       }
     }

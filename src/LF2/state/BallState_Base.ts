@@ -6,14 +6,33 @@ import { is_character, is_weapon } from "../entity/type_check";
 import State_Base from "./State_Base";
 
 export default class BallState_Base extends State_Base {
-  override enter(e: Entity, _prev_frame: IFrameInfo): void {
-    switch (e.frame.behavior) {
-      case FrameBehavior._01:
-      case FrameBehavior._02:
-      case FrameBehavior._03:
-        e.unsubscribe_nearest_enemy();
-        break;
+  override on_frame_changed(e: Entity, frame: IFrameInfo, prev_frame: IFrameInfo): void {
+    if (prev_frame.behavior !== frame.behavior) {
+      switch (prev_frame.behavior as FrameBehavior) {
+        case FrameBehavior._01:
+        case FrameBehavior._02:
+        case FrameBehavior._03:
+        case FrameBehavior._04:
+        case FrameBehavior.AlwaysChasingSameEnemy:
+        case FrameBehavior.Bat:
+        case FrameBehavior.JulianBall:
+          e.world.del_entity_chaser(e);
+          break;
+      }
+      switch (prev_frame.behavior as FrameBehavior) {
+        case FrameBehavior._01:
+        case FrameBehavior._02:
+        case FrameBehavior._03:
+        case FrameBehavior._04:
+        case FrameBehavior.AlwaysChasingSameEnemy:
+        case FrameBehavior.Bat:
+        case FrameBehavior.JulianBall:
+          e.world.add_entity_chaser(e);
+          break;
+      }
     }
+  }
+  override enter(e: Entity, _prev_frame: IFrameInfo): void {
     switch (e.frame.state) {
       case Defines.State.Ball_Hitting:
       case Defines.State.Ball_Hit:
@@ -28,54 +47,9 @@ export default class BallState_Base extends State_Base {
         break;
     }
   }
-  override leave(e: Entity, _next_frame: IFrameInfo): void {
-    switch (e.frame.behavior) {
-      case FrameBehavior._01:
-      case FrameBehavior._02:
-      case FrameBehavior._03:
-        e.unsubscribe_nearest_enemy();
-        break;
-    }
-  }
   override update(e: Entity): void {
-    e.handle_ground_velocity_decay();
-    const frame = e.frame;
-    const max_speed_x = 5;
-    const min_speed_x = -5;
-    const max_speed_z = 2.5;
-    const min_speed_z = -2.5;
-    const acc_x = 0.1;
-    const acc_z = 0.05;
-
-    switch (frame.behavior) {
-      case FrameBehavior._01:
-      case FrameBehavior._02: {
-        const { nearest_enemy } = e;
-        if (!nearest_enemy) break;
-        const pos_1 = e.position;
-        const pos_2 = nearest_enemy.position;
-        if (pos_2.x > pos_1.x) {
-          e.velocities[0].x += acc_x;
-          if (e.velocities[0].x > 0) e.facing = 1;
-          if (e.velocities[0].x > max_speed_x) e.velocities[0].x = max_speed_x;
-        } else if (pos_2.x < pos_1.x) {
-          e.velocities[0].x -= acc_x;
-          if (e.velocities[0].x < 0) e.facing = -1;
-          if (e.velocities[0].x < min_speed_x) e.velocities[0].x = min_speed_x;
-        }
-        if (pos_2.z > pos_1.z) {
-          e.velocities[0].z += acc_z;
-          if (e.velocities[0].z > max_speed_z) e.velocities[0].z = max_speed_z;
-        } else if (pos_2.z < pos_1.z) {
-          e.velocities[0].z -= acc_z;
-          if (e.velocities[0].z < min_speed_z) e.velocities[0].z = min_speed_z;
-        }
-        break;
-      }
-      default:
-        e.handle_frame_velocity();
-        break;
-    }
+    // e.handle_ground_velocity_decay();
+    e.handle_frame_velocity();
   }
   override on_collision(collision: ICollision): void {
     const { attacker, victim } = collision;

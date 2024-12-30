@@ -84,7 +84,6 @@ Ditto.setup({
   Vector3: THREE.Vector3,
   Vector2: THREE.Vector2,
 });
-
 function App() {
   const [fullscreen] = useState(() => new Ditto.FullScreen());
   const _overlay_ref = useRef<HTMLDivElement>(null);

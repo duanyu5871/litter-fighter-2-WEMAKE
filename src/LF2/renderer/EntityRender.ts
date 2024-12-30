@@ -1,13 +1,13 @@
 import * as THREE from "three";
 import { IMeshNode } from "../3d";
-import { IFrameInfo, ITexturePieceInfo, TFace } from "../defines";
+import { Defines, IFrameInfo, ITexturePieceInfo, TFace } from "../defines";
 import { IEntityData } from "../defines/IEntityData";
 import IPicture from "../defines/IPicture";
 import Ditto from "../ditto";
 import Entity from "../entity/Entity";
-import { InfoRender } from "./InfoRender";
 import create_pictures from "../loader/create_pictures";
 import { FrameIndicators } from "./FrameIndicators";
+import { InfoRender } from "./InfoRender";
 import Shadow from "./ShadowRender";
 export const EMPTY_PIECE: ITexturePieceInfo = {
   tex: "0",
@@ -82,6 +82,9 @@ export class EntityRender {
   };
   update() {
     const { entity, entity_mesh, entity_material, pictures, shadow } = this;
+    if (entity.frame.id === Defines.FrameId.Gone) {
+      return;
+    }
     const {
       frame,
       position: { x, y, z },

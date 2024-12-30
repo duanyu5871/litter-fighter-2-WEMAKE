@@ -1393,7 +1393,7 @@
       "centerx": 40,
       "centery": 82,
       "no_shadow": 1,
-      "speedz": 0
+      "ctrl_spd_z": 0
     },
     "101": {
       "id": "101",
@@ -1425,7 +1425,7 @@
           }
         }
       ],
-      "speedz": 0
+      "ctrl_spd_z": 0
     },
     "102": {
       "id": "102",
@@ -1445,7 +1445,7 @@
       "centerx": 40,
       "centery": 82,
       "no_shadow": 1,
-      "speedz": 0
+      "ctrl_spd_z": 0
     }
   }
 }
