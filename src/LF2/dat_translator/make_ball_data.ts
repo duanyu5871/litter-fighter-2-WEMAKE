@@ -49,9 +49,15 @@ export function make_ball_data(
     if (hit_j !== 0) frame.dvz = to_num(hit_j, 50) - 50;
 
     const hit_a = take(frame, "hit_a");
+    if (hit_a) frame.hp = hit_a / 2;
+    
     const hit_d = take(frame, "hit_d");
+    if (hit_d && hit_d !== frame.id)
+      frame.on_dead = get_next_frame_by_raw_id(hit_d);
+
     const hit_Fa = take(frame, "hit_Fa");
     if (hit_Fa) frame.behavior = hit_Fa;
+    
     switch (hit_Fa as FrameBehavior) {
       case FrameBehavior._01:
         frame.ctrl_spd_x = 5;
@@ -74,6 +80,7 @@ export function make_ball_data(
         frame.ctrl_spd_y = 1;
         frame.ctrl_acc_y = 0.01;
         frame.ctrl_spd_y_m = SpeedMode.AccToSpeed;
+        frame.on_dead = { id: '5' }
         break;
       case FrameBehavior._03:
         break;
@@ -173,17 +180,23 @@ export function make_ball_data(
           oid: Defines.BuiltIn_OID.Julian_ball,
           x: frame.centerx,
           y: frame.centery,
+          dvx: 8,
           action: { id: "50" },
         });
         break;
       case FrameBehavior.JulianBall:
       case FrameBehavior._14:
+        frame.ctrl_spd_x = 5;
+        frame.ctrl_acc_x = 0.1;
+        frame.ctrl_spd_x_m = SpeedMode.AccToSpeed;
+        frame.ctrl_spd_z = 3;
+        frame.ctrl_acc_z = 0.1;
+        frame.ctrl_spd_z_m = SpeedMode.AccToSpeed;
+        frame.ctrl_spd_y = 1;
+        frame.ctrl_acc_y = 0.01;
+        frame.ctrl_spd_y_m = SpeedMode.AccToSpeed;
         break;
     }
-    if (hit_a) frame.hp = hit_a / 2;
-    if (hit_d && hit_d !== frame.id)
-      frame.on_dead = get_next_frame_by_raw_id(hit_d);
-
     if (frame.itr) {
       for (const itr of frame.itr) {
         if (itr.kind === ItrKind.JohnShield) {

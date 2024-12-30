@@ -741,21 +741,25 @@ export default class Entity {
           case OpointMultiEnum.AccordingEnemies:
             for (const other of this.world.entities) {
               if (
-                !other.same_team(this) &&
                 is_character(other) &&
+                !other.same_team(this) &&
+                other.hp > 0 &&
                 this.find_emitter(
                   (emitter) => is_character(emitter) && emitter !== other,
                 )
-              )
+              ) {
                 ++count;
+              }
             }
-            count = Math.max(opoint.multi.min, count);
+            if (count)
+              count = Math.max(opoint.multi.min, count);
             break;
           case OpointMultiEnum.AccordingTeammates:
             for (const other of this.world.entities) {
               if (
-                other.same_team(this) &&
                 is_character(other) &&
+                other.same_team(this) &&
+                other.hp > 0 &&
                 this.find_emitter(
                   (emitter) => is_character(emitter) && emitter !== other,
                 )
@@ -1064,7 +1068,9 @@ export default class Entity {
     if (this.wait > 0) {
       --this.wait;
     } else {
-      this.next_frame = this.get_next_frame(this.frame.next)?.which;
+      const nf = this.get_next_frame(this.frame.next);
+      if (nf) this.next_frame = { ...nf.which, judger: void 0 }
+      else this.next_frame = this.find_auto_frame()
     }
     this.state?.update(this);
 

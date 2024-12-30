@@ -96,6 +96,10 @@
       "state": 3000,
       "centerx": 46,
       "centery": 26,
+      "hp": 3.5,
+      "on_dead": {
+        "id": "1"
+      },
       "behavior": 7,
       "ctrl_spd_x": 5,
       "ctrl_acc_x": 0.1,
@@ -111,10 +115,6 @@
       "vym": 4,
       "on_hit_ground": {
         "id": "60"
-      },
-      "hp": 3.5,
-      "on_dead": {
-        "id": "1"
       },
       "itr": []
     },
@@ -198,6 +198,10 @@
       "state": 3000,
       "centerx": 42,
       "centery": 36,
+      "hp": 3.5,
+      "on_dead": {
+        "id": "1"
+      },
       "behavior": 7,
       "ctrl_spd_x": 5,
       "ctrl_acc_x": 0.1,
@@ -213,10 +217,6 @@
       "vym": 4,
       "on_hit_ground": {
         "id": "60"
-      },
-      "hp": 3.5,
-      "on_dead": {
-        "id": "1"
       }
     },
     "2": {
@@ -299,6 +299,10 @@
       "state": 3000,
       "centerx": 50,
       "centery": 48,
+      "hp": 3.5,
+      "on_dead": {
+        "id": "2"
+      },
       "behavior": 7,
       "ctrl_spd_x": 5,
       "ctrl_acc_x": 0.1,
@@ -314,10 +318,6 @@
       "vym": 4,
       "on_hit_ground": {
         "id": "60"
-      },
-      "hp": 3.5,
-      "on_dead": {
-        "id": "2"
       }
     },
     "3": {
@@ -398,6 +398,10 @@
       "state": 3000,
       "centerx": 44,
       "centery": 45,
+      "hp": 3.5,
+      "on_dead": {
+        "id": "3"
+      },
       "behavior": 7,
       "ctrl_spd_x": 5,
       "ctrl_acc_x": 0.1,
@@ -413,10 +417,6 @@
       "vym": 4,
       "on_hit_ground": {
         "id": "60"
-      },
-      "hp": 3.5,
-      "on_dead": {
-        "id": "3"
       }
     },
     "10": {

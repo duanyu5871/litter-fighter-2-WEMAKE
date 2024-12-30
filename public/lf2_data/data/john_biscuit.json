@@ -87,6 +87,10 @@
       "centerx": 45,
       "centery": 38,
       "sound": "data/076.wav.mp3",
+      "hp": 3.5,
+      "on_dead": {
+        "id": "4"
+      },
       "behavior": 1,
       "ctrl_spd_x": 5,
       "ctrl_acc_x": 0.1,
@@ -96,11 +100,7 @@
       "ctrl_spd_z_m": 4,
       "ctrl_spd_y": 1,
       "ctrl_acc_y": 0.01,
-      "ctrl_spd_y_m": 4,
-      "hp": 3.5,
-      "on_dead": {
-        "id": "4"
-      }
+      "ctrl_spd_y_m": 4
     },
     "1": {
       "id": "1",
@@ -163,6 +163,10 @@
       "state": 3006,
       "centerx": 45,
       "centery": 38,
+      "hp": 3.5,
+      "on_dead": {
+        "id": "4"
+      },
       "behavior": 1,
       "ctrl_spd_x": 5,
       "ctrl_acc_x": 0.1,
@@ -172,11 +176,7 @@
       "ctrl_spd_z_m": 4,
       "ctrl_spd_y": 1,
       "ctrl_acc_y": 0.01,
-      "ctrl_spd_y_m": 4,
-      "hp": 3.5,
-      "on_dead": {
-        "id": "4"
-      }
+      "ctrl_spd_y_m": 4
     },
     "2": {
       "id": "2",
@@ -239,6 +239,10 @@
       "state": 3006,
       "centerx": 45,
       "centery": 38,
+      "hp": 3.5,
+      "on_dead": {
+        "id": "4"
+      },
       "behavior": 1,
       "ctrl_spd_x": 5,
       "ctrl_acc_x": 0.1,
@@ -248,11 +252,7 @@
       "ctrl_spd_z_m": 4,
       "ctrl_spd_y": 1,
       "ctrl_acc_y": 0.01,
-      "ctrl_spd_y_m": 4,
-      "hp": 3.5,
-      "on_dead": {
-        "id": "4"
-      }
+      "ctrl_spd_y_m": 4
     },
     "3": {
       "id": "3",
@@ -315,6 +315,10 @@
       "state": 3006,
       "centerx": 45,
       "centery": 38,
+      "hp": 3.5,
+      "on_dead": {
+        "id": "4"
+      },
       "behavior": 1,
       "ctrl_spd_x": 5,
       "ctrl_acc_x": 0.1,
@@ -324,11 +328,7 @@
       "ctrl_spd_z_m": 4,
       "ctrl_spd_y": 1,
       "ctrl_acc_y": 0.01,
-      "ctrl_spd_y_m": 4,
-      "hp": 3.5,
-      "on_dead": {
-        "id": "4"
-      }
+      "ctrl_spd_y_m": 4
     },
     "4": {
       "id": "4",

@@ -42,11 +42,11 @@
       "state": 3000,
       "centerx": 45,
       "centery": 38,
-      "behavior": 4,
       "hp": 1.5,
       "on_dead": {
         "id": "1"
       },
+      "behavior": 4,
       "bdy": [],
       "itr": []
     },
@@ -67,11 +67,11 @@
       "state": 3000,
       "centerx": 49,
       "centery": 40,
-      "behavior": 4,
       "hp": 1.5,
       "on_dead": {
         "id": "1"
       },
+      "behavior": 4,
       "bdy": [],
       "itr": []
     },
@@ -92,11 +92,11 @@
       "state": 3000,
       "centerx": 43,
       "centery": 43,
-      "behavior": 4,
       "hp": 1.5,
       "on_dead": {
         "id": "2"
       },
+      "behavior": 4,
       "bdy": [],
       "itr": []
     },
@@ -117,11 +117,11 @@
       "state": 3000,
       "centerx": 43,
       "centery": 45,
-      "behavior": 4,
       "hp": 1.5,
       "on_dead": {
         "id": "3"
       },
+      "behavior": 4,
       "bdy": [],
       "itr": []
     },
