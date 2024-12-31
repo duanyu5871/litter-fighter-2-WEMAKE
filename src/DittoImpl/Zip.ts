@@ -72,4 +72,11 @@ export class __Zip implements IZip {
       return this.inner.file(path).map((v) => new ZipObject(v));
     }
   }
+  get files(): { [key in string]?: ZipObject } {
+    const ret: { [key in string]?: ZipObject } = {};
+    for (const key in this.inner.files) {
+      ret[key] = new ZipObject(this.inner.files[key])
+    }
+    return ret;
+  }
 }

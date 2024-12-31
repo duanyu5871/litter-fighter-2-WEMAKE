@@ -2,6 +2,7 @@ export class LoadingImg {
   tid = 0;
   img: HTMLImageElement | null = null;
   set_element(img: HTMLImageElement | null) {
+    if (this.img === img) return;
     this.img = img;
     if (!img) window.clearTimeout(this.tid);
     else this.start();
@@ -21,6 +22,7 @@ export class LoadingImg {
     img.style.margin = "auto";
     img.style.display = "block";
     img.style.transition = "opacity 1000ms";
+    img.style.opacity = '1'
     img.style.left = img.style.right = img.style.top = img.style.bottom = "0";
     let i = 0;
     const update = () => {

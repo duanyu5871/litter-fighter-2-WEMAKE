@@ -1,6 +1,8 @@
 .App {
 }
-
+.loading_img{
+  opacity: 0;
+}
 .App > * {
   z-index: 1;
   position: relative;

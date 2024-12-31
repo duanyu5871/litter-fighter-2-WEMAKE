@@ -104,6 +104,8 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
 
   private _zips: IZip[] = []; // [game data zip, preliminary data zip]
 
+  get zips() { return this._zips }
+
   private _player_infos = new Map([
     ["1", new PlayerInfo("1")],
     ["2", new PlayerInfo("2")],
@@ -320,7 +322,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     }
   }
 
-  on_pointer_up(e: IPointingEvent) {}
+  on_pointer_up(e: IPointingEvent) { }
 
   private _curr_key_list: string = "";
   private readonly _cheats_map = new Map<string, Defines.ICheatInfo>([
@@ -718,10 +720,6 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
 
   on_loading_content(content: string, progress: number) {
     this._callbacks.emit("on_loading_content")(content, progress);
-    Log.print(
-      LF2.TAG + "::on_loading_content",
-      `loading: ${progress ? content + `${progress}%` : content}`,
-    );
   }
   broadcast(message: string): void {
     this._callbacks.emit("on_broadcast")(message);

@@ -21,7 +21,7 @@ import __SpriteNode from "./DittoImpl/3d/SpriteNode";
 import { __Text } from "./DittoImpl/3d/TextNode";
 import { __Camera_P_Node } from "./DittoImpl/3d/__Camera_P_Node";
 import { __BillboardNode } from "./DittoImpl/BillboardNode";
-import EditorView from "./EditorView";
+import DatViewer from "./DatViewer";
 import { GameOverlay } from "./GameOverlay";
 import GamePad from "./GamePad";
 import LF2 from "./LF2/LF2";
@@ -57,6 +57,7 @@ import {
   useLocalNumber,
   useLocalString,
 } from "./useLocalStorage";
+import EditorView from "./EditorView";
 
 const loading_img = new LoadingImg();
 Ditto.setup({
@@ -92,6 +93,7 @@ function App() {
 
   const lf2_ref = useRef<LF2 | undefined>();
 
+  const [dat_viewer_open, set_dat_viewer_open] = useState(false);
   const [editor_open, set_editor_open] = useState(false);
   const [game_overlay, set_game_overlay] = useLocalBoolean(
     "game_overlay",
@@ -404,7 +406,7 @@ function App() {
   useShortcut("ctrl+F1", 0, () => set_control_panel_visible((v) => !v));
   // useShortcut('ctrl+F2', 0, () => set_indicator_flags(v => !v));
   useShortcut("ctrl+F3", 0, () => set_game_overlay((v) => !v));
-
+  const ref_loading_img = useRef<HTMLImageElement>(null);
   useEffect(() => {
     const ele = _game_contiainer_ref.current;
     if (!ele) return;
@@ -418,7 +420,9 @@ function App() {
       return () => clearTimeout(tid);
     } else {
       ele.style.opacity = "0";
-      const tid = setTimeout(() => loading_img.show(), 1000);
+      const tid = setTimeout(() => {
+        loading_img.set_element(ref_loading_img.current!)
+      }, 1000);
       return () => clearTimeout(tid);
     }
   }, [layout_id]);
@@ -509,7 +513,7 @@ function App() {
           <Button onClick={on_click_load_builtin} disabled={loading}>
             加载内置数据
           </Button>
-          <Button onClick={() => set_editor_open(true)}>查看dat文件</Button>
+          <Button onClick={() => set_dat_viewer_open(true)}>查看dat文件</Button>
           <Select
             items={["top", "bottom", "left", "right"] as const}
             option={(v) => [v, "位置：" + v]}
@@ -866,11 +870,13 @@ function App() {
           show_world_tuning={showing_panel === "world_tuning"}
         />
       </Show.Div>
-      <EditorView open={editor_open} onClose={() => set_editor_open(false)} />
+      <DatViewer open={dat_viewer_open} onClose={() => set_dat_viewer_open(false)} />
+      <EditorView open={editor_open} onClose={() => set_dat_viewer_open(false)} lf2={lf2} />
       <img
         src="lf2_built_in_data/launch/SMALL_LOADING@4x.png"
+        className="loading_img"
         alt="loading..."
-        ref={(r) => loading_img.set_element(r)}
+        ref={ref_loading_img}
       />
     </div>
   );

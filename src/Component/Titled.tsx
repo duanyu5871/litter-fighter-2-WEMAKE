@@ -1,10 +1,16 @@
 import React from "react";
-export default function Titled(
-  props: React.PropsWithChildren<{ title: React.ReactNode }>,
-) {
+
+export interface ITitledProps extends React.HTMLAttributes<HTMLSpanElement> {
+
+}
+export default function Titled(props: ITitledProps) {
+  const { className, ...p } = props;
+  const cn = ["name_content", className].filter(Boolean).join(' ')
   return (
-    <span className="name_content">
-      <span>{props.title}</span>
+    <span {...p} className={cn}>
+      <div style={{ display: 'inline-block' }}>
+        {props.title}
+      </div>
       {props.children}
     </span>
   );
