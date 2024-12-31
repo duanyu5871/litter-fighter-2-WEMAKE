@@ -514,6 +514,7 @@ function App() {
             加载内置数据
           </Button>
           <Button onClick={() => set_dat_viewer_open(true)}>查看dat文件</Button>
+          <Button onClick={() => set_editor_open(true)}>查看数据包</Button>
           <Select
             items={["top", "bottom", "left", "right"] as const}
             option={(v) => [v, "位置：" + v]}

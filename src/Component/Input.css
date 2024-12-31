@@ -36,3 +36,8 @@
   border: solid 2px white;
   border-radius: 10 px;
 }
+
+.lf2ui_input::placeholder {
+  color: white;
+  opacity: 0.2;
+}

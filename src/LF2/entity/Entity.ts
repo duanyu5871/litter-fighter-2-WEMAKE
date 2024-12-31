@@ -55,7 +55,7 @@ function calc_v(
       return (speed > 0 && old < speed) || (speed < 0 && old > speed)
         ? speed
         : old;
-    case SpeedMode.AccToSpeed:
+    case SpeedMode.AccTo:
       speed *= direction;
       acc = acc ? acc * direction : void 0;
       if (

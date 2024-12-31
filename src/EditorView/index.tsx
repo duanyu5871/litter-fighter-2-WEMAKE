@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "../Component/Button";
 import { TextArea } from "../Component/TextArea";
 import { EntityEnum } from "../LF2/defines/EntityEnum";
@@ -6,10 +6,12 @@ import { IEntityData } from "../LF2/defines/IEntityData";
 import Ditto, { IZip } from "../LF2/ditto";
 import LF2 from "../LF2/LF2";
 import open_file from "../Utils/open_file";
+import { shared_ctx } from './Context';
 import { EntityEditorView } from "./EntityEditorView";
 import styles from "./styles.module.css";
 import { ITreeNode, TreeNodeView } from "./TreeNodeView";
-import { shared_ctx } from './Context';
+import { Checkbox } from "../Component/Checkbox";
+import Titled from "../Component/Titled";
 export interface IEditorViewProps extends React.HTMLAttributes<HTMLDivElement> {
   onClose?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   loading?: boolean;
@@ -26,7 +28,58 @@ export default function EditorView(props: IEditorViewProps) {
 
   const [entity_editor_view, set_entity_editor_view] = useState<React.ReactNode>();
   const [textarea, set_textarea] = useState<React.ReactNode>();
-  useEffect(() => console.log(entity_editor_view), [entity_editor_view])
+
+  const [state, set_state] = useState({
+    mp3: false,
+    flat: true,
+    json: true,
+    img: false,
+    others: true
+  })
+
+  const filters_tree = useMemo(() => {
+    const handle_tree_node = (src: ITreeNode): ITreeNode | undefined => {
+      if (!src.children) {
+        if (src.name.endsWith('.mp3')) {
+          if (!state.mp3) return;
+        } else if (src.name.endsWith('.json')) {
+          if (!state.json) return;
+        } else if (src.name.endsWith('.png')) {
+          if (!state.img) return;
+        } else if (src.name.endsWith('.webp')) {
+          if (!state.img) return;
+        } else if (!state.others) {
+          return;
+        }
+      }
+      const ret: ITreeNode = { ...src }
+      if (!src.children) return ret;
+      const children: ITreeNode[] = ret.children = []
+      for (const child of src.children) {
+        const o = handle_tree_node(child)
+        if (o) children.push(o)
+      }
+      return ret;
+    }
+
+    const ret = tree ? handle_tree_node(tree) : void 0;
+    if (ret && state.flat) {
+      const children: ITreeNode[] = []
+      const flat = (i: ITreeNode) => {
+        if (!i.children) return;
+        for (const child of i.children) {
+          if (!child.children) children.push({ ...child, name: child.path });
+          else flat(child)
+        }
+      }
+      flat(ret)
+      ret.children = children;
+    }
+    return ret
+  }, [tree, state])
+
+
+
   const on_click_read_zip = async () => {
     const [file] = await open_file({ accept: ".zip" });
     const zip = await Ditto.Zip.read_file(file);
@@ -48,7 +101,7 @@ export default function EditorView(props: IEditorViewProps) {
       }
     }
     set_zip(zip);
-    set_opens(['#'])
+    set_opens([root.path])
     set_tree(root);
   };
 
@@ -67,18 +120,22 @@ export default function EditorView(props: IEditorViewProps) {
         case EntityEnum.Ball:
         case EntityEnum.Entity:
           zip?.file(node.path)?.json().then(r => {
-            console.log(r)
-            set_entity_editor_view(<EntityEditorView data={r as IEntityData} />)
+            set_entity_editor_view(<EntityEditorView key={node.path + '_eev'} data={r as IEntityData} />)
+            set_textarea(<TextArea ref={_ref_textarea_json} key={node.path + '_txt'} wrap="off" defaultValue={JSON.stringify(r, null, 2)} />)
           });
           break;
         default: {
           zip?.file(node.path)?.text().then(r => {
-            set_textarea(
-              <TextArea ref={_ref_textarea_json} wrap="off" defaultValue={r} />
-            )
+            set_entity_editor_view(void 0)
+            set_textarea(<TextArea ref={_ref_textarea_json} key={node.path + '_txt'} wrap="off" defaultValue={r} />)
           });
         }
       }
+    } else if (node.name.endsWith('.txt') || node.name.endsWith('.json')) {
+      zip?.file(node.path)?.text().then(r => {
+        set_entity_editor_view(void 0)
+        set_textarea(<TextArea ref={_ref_textarea_json} key={node.path + '_txt'} wrap="off" defaultValue={r} />)
+      });
     }
   }
   return !open ? <></> : (
@@ -98,14 +155,21 @@ export default function EditorView(props: IEditorViewProps) {
         </div>
         <div className="main" style={{ height: '100%', overflow: 'hidden' }}>
           <div className={`${styles.tree_item_view_wrapper} lf2_hoverable_border`}>
+            <div style={{ display: 'flex', gap: 5, padding: 5 }}>
+              <Titled title="mp3"><Checkbox value={state.mp3} onChanged={v => set_state(o => ({ ...o, mp3: v }))} /></Titled>
+              <Titled title="flat"><Checkbox value={state.flat} onChanged={v => set_state(o => ({ ...o, flat: v }))} /></Titled>
+              <Titled title="json"><Checkbox value={state.json} onChanged={v => set_state(o => ({ ...o, json: v }))} /></Titled>
+              <Titled title="img"><Checkbox value={state.img} onChanged={v => set_state(o => ({ ...o, img: v }))} /></Titled>
+              <Titled title="others"><Checkbox value={state.others} onChanged={v => set_state(o => ({ ...o, others: v }))} /></Titled>
+            </div>
             <TreeNodeView
-              node={tree}
+              node={filters_tree}
               opens={opens}
               on_click_item={on_click_item}
               className={styles.tree_item_view_root} />
           </div>
-          {textarea}
           {entity_editor_view}
+          {textarea}
         </div>
       </div>
     </shared_ctx.Provider>

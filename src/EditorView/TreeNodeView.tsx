@@ -56,7 +56,7 @@ export function TreeNodeView(props: ITreeNodeViewProps) {
         {node.children?.map(node => (
           <TreeNodeView
             opens={opens}
-            key={node.name}
+            key={node.path}
             node={node}
             on_click_item={on_click_item}
             depth={depth + 1} />

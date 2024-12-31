@@ -62,24 +62,24 @@ export function make_ball_data(
       case FrameBehavior._01:
         frame.ctrl_spd_x = 5;
         frame.ctrl_acc_x = 0.1;
-        frame.ctrl_spd_x_m = SpeedMode.AccToSpeed;
+        frame.ctrl_spd_x_m = SpeedMode.AccTo;
         frame.ctrl_spd_z = 5;
         frame.ctrl_acc_z = 0.2;
-        frame.ctrl_spd_z_m = SpeedMode.AccToSpeed;
+        frame.ctrl_spd_z_m = SpeedMode.AccTo;
         frame.ctrl_spd_y = 1;
         frame.ctrl_acc_y = 0.01;
-        frame.ctrl_spd_y_m = SpeedMode.AccToSpeed;
+        frame.ctrl_spd_y_m = SpeedMode.AccTo;
         break;
       case FrameBehavior._02:
         frame.ctrl_spd_x = 5;
         frame.ctrl_acc_x = 0.1;
-        frame.ctrl_spd_x_m = SpeedMode.AccToSpeed;
+        frame.ctrl_spd_x_m = SpeedMode.AccTo;
         frame.ctrl_spd_z = 5;
         frame.ctrl_acc_z = 0.2;
-        frame.ctrl_spd_z_m = SpeedMode.AccToSpeed;
+        frame.ctrl_spd_z_m = SpeedMode.AccTo;
         frame.ctrl_spd_y = 1;
         frame.ctrl_acc_y = 0.01;
-        frame.ctrl_spd_y_m = SpeedMode.AccToSpeed;
+        frame.ctrl_spd_y_m = SpeedMode.AccTo;
         frame.on_dead = { id: '5' }
         break;
       case FrameBehavior._03:
@@ -95,16 +95,16 @@ export function make_ball_data(
       case FrameBehavior._07:
         frame.ctrl_spd_x = 5;
         frame.ctrl_acc_x = 0.1;
-        frame.ctrl_spd_x_m = SpeedMode.AccToSpeed;
+        frame.ctrl_spd_x_m = SpeedMode.AccTo;
         frame.ctrl_spd_z = 5;
         frame.ctrl_acc_z = 0.2;
-        frame.ctrl_spd_z_m = SpeedMode.AccToSpeed;
+        frame.ctrl_spd_z_m = SpeedMode.AccTo;
         frame.ctrl_spd_y = 1;
         frame.ctrl_acc_y = 0.01;
-        frame.ctrl_spd_y_m = SpeedMode.AccToSpeed;
+        frame.ctrl_spd_y_m = SpeedMode.AccTo;
         frame.dvy = -6;
         frame.acc_y = -0.25;
-        frame.vym = SpeedMode.AccToSpeed;
+        frame.vym = SpeedMode.AccTo;
         switch (datIndex.id) {
           case Defines.BuiltIn_OID.Firzen_chasef:
           case Defines.BuiltIn_OID.Firzen_chasei:
@@ -134,7 +134,7 @@ export function make_ball_data(
       case FrameBehavior._10:
         frame.dvx = 15;
         frame.acc_x = 2;
-        frame.vxm = SpeedMode.AccToSpeed;
+        frame.vxm = SpeedMode.AccTo;
         break;
       case FrameBehavior.FirzenVolcanoStart:
       case FrameBehavior._11:
@@ -164,13 +164,13 @@ export function make_ball_data(
       case FrameBehavior._12:
         frame.ctrl_spd_x = 5;
         frame.ctrl_acc_x = 0.1;
-        frame.ctrl_spd_x_m = SpeedMode.AccToSpeed;
+        frame.ctrl_spd_x_m = SpeedMode.AccTo;
         frame.ctrl_spd_z = 5;
         frame.ctrl_acc_z = 0.2;
-        frame.ctrl_spd_z_m = SpeedMode.AccToSpeed;
+        frame.ctrl_spd_z_m = SpeedMode.AccTo;
         frame.ctrl_spd_y = 1;
         frame.ctrl_acc_y = 0.01;
-        frame.ctrl_spd_y_m = SpeedMode.AccToSpeed;
+        frame.ctrl_spd_y_m = SpeedMode.AccTo;
         break;
       case FrameBehavior.JulianBallStart:
       case FrameBehavior._13:
@@ -188,13 +188,13 @@ export function make_ball_data(
       case FrameBehavior._14:
         frame.ctrl_spd_x = 5;
         frame.ctrl_acc_x = 0.1;
-        frame.ctrl_spd_x_m = SpeedMode.AccToSpeed;
+        frame.ctrl_spd_x_m = SpeedMode.AccTo;
         frame.ctrl_spd_z = 3;
         frame.ctrl_acc_z = 0.1;
-        frame.ctrl_spd_z_m = SpeedMode.AccToSpeed;
+        frame.ctrl_spd_z_m = SpeedMode.AccTo;
         frame.ctrl_spd_y = 1;
         frame.ctrl_acc_y = 0.01;
-        frame.ctrl_spd_y_m = SpeedMode.AccToSpeed;
+        frame.ctrl_spd_y_m = SpeedMode.AccTo;
         break;
     }
     if (frame.itr) {
