@@ -149,8 +149,23 @@ export class FrameDrawer {
       })
     }
     return new Promise<HTMLImageElement>((resolve, reject) => {
+      let remain = 0;
+      const resolving = () => {
+        if (img.width && img.height) {
+          resolve(img)
+        } else if (remain <= 5) {
+          ++remain;
+          setTimeout(() => resolving(), remain * 10)
+        } else {
+          reject(new Error('width or height got zero'))
+        }
+      }
+      if (img.complete) {
+        resolving()
+        return;
+      }
       const on_load = () => {
-        setTimeout(() => resolve(img), 100)
+        resolving()
         img.removeEventListener('load', on_load);
         img.removeEventListener('error', on_error);
       }
@@ -159,12 +174,9 @@ export class FrameDrawer {
         img.removeEventListener('load', on_load);
         img.removeEventListener('error', on_error);
       }
-      if (img.complete) {
-        resolve(img)
-      } else {
-        img.addEventListener('load', on_load, { once: true });
-        img.addEventListener('error', on_error, { once: true });
-      }
+      img.addEventListener('load', on_load, { once: true });
+      img.addEventListener('error', on_error, { once: true });
+
     })
   }
   async draw(ctx: CanvasRenderingContext2D, zip: IZip, data: IEntityData, frame: IFrameInfo) {
@@ -191,7 +203,6 @@ export class FrameDrawer {
 
     if (frame.pic) this.draw_frame_bound(ctx, frame.pic);
     if (img) ctx.drawImage(img, pic.x, pic.y, pic.w, pic.h, 0, 0, pic.w, pic.h);
-
     if (frame.itr) loop_arr(frame.itr, itr => this.draw_itr(ctx, itr))
     if (frame.bdy) loop_arr(frame.bdy, bdy => this.draw_bdy(ctx, bdy))
     if (frame.opoint) loop_arr(frame.opoint, opoint => this.draw_opoint(ctx, opoint))
