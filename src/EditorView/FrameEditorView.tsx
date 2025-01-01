@@ -39,7 +39,7 @@ export function EntityFrameEditorView(props: { frame: IFrameInfo; data: IEntityD
         }
         const render = () => {
           if (!is_appear()) return;
-          drawer?.draw(zip, data, frame)
+          drawer?.draw(ctx, zip, data, frame)
           pp.removeEventListener('scroll', render)
         }
         if (is_appear()) {
@@ -99,7 +99,7 @@ export function EntityFrameEditorView(props: { frame: IFrameInfo; data: IEntityD
         </Combine>
       </Titled>
       <Titled title='　　　　预览' style={{ marginRight: 5 }}>
-        <canvas ref={ref_canvas} className="lf2_hoverable_border"/>
+        <canvas ref={ref_canvas} className="lf2_hoverable_border" />
       </Titled>
       <Show show={editing} >
         <Titled title='　　　　状态' style={{ marginRight: 5 }}>
