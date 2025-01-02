@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ISelectProps } from "../../Component/Select";
 import { Space } from "../../Component/Space";
-import { Defines, IFrameInfo } from "../../LF2/defines";
+import { Defines, IFrameInfo, INextFrame } from "../../LF2/defines";
 import { IEntityData } from "../../LF2/defines/IEntityData";
 import { SpeedMode } from "../../LF2/defines/SpeedMode";
 import { FrameEditorView } from "../FrameEditorView";
@@ -12,7 +12,7 @@ const make_num_enum_select_props = (t: any): ISelectProps<string, number> => ({
     if (!Number.isNaN(Number(key))) return false;
     return true;
   }),
-  option: (k: string) => {
+  parse: (k: string) => {
     const value = (t as any)[k];
     const label = `${k}(${value})`;
     return [value, label]
@@ -24,15 +24,22 @@ export const SPEED_MODE_SELECT_PROPS = make_num_enum_select_props(SpeedMode);
 export interface IEntityEditorViewProps extends React.HTMLAttributes<HTMLDivElement> {
   src: IEntityData;
   on_click_frame?(frame: IFrameInfo, data: IEntityData): void
+  on_frame_change?(frame: IFrameInfo, data: IEntityData): void
+  on_click_goto_next_frame?(next_frame: INextFrame, data: IEntityData): void;
 }
+
 export function EntityEditorView(props: IEntityEditorViewProps) {
-  const { src, on_click_frame, ..._p } = props;
+  const { src, on_click_frame, on_frame_change, on_click_goto_next_frame, ..._p } = props;
   const [data, set_data] = useState(() => ({ ...src }));
   useEffect(() => {
     set_data(src)
   }, [src]);
   const ref_on_click_frame = useRef(on_click_frame);
   ref_on_click_frame.current = on_click_frame;
+  const ref_on_frame_change = useRef(on_frame_change);
+  ref_on_frame_change.current = on_frame_change;
+  const ref_on_click_goto_next_frame = useRef(on_click_goto_next_frame);
+  ref_on_click_goto_next_frame.current = on_click_goto_next_frame;
 
   const frame_views = useMemo(() => {
     const ret: React.ReactNode[] = [];
@@ -44,7 +51,9 @@ export function EntityEditorView(props: IEntityEditorViewProps) {
           key={frame.id}
           src={frame}
           data={data}
-          onClick={() => ref_on_click_frame.current?.(frame, data)} />
+          on_frame_change={(...a) => ref_on_frame_change.current?.(...a)}
+          on_click_frame={(...a) => ref_on_click_frame.current?.(...a)}
+          on_click_goto_next_frame={(...a) => ref_on_click_goto_next_frame.current?.(...a)} />
       );
     }
     return ret;

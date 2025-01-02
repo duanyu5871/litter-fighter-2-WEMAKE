@@ -1,4 +1,4 @@
-import { IShapeData, Resizable, Shape, ShapeData } from "@fimagine/writeboard";
+import { Resizable, Shape, ShapeData } from "@fimagine/writeboard";
 import { IBdyInfo, ICpointInfo, IFrameInfo, IFramePictureInfo, IItrInfo, IOpointInfo, IWpointInfo } from "../LF2/defines";
 import { IEntityData } from "../LF2/defines/IEntityData";
 import { IRect } from "../LF2/defines/IRect";
@@ -26,36 +26,30 @@ export class FrameDrawerData extends ShapeData {
   }
 }
 export class FrameDrawer extends Shape<FrameDrawerData> {
-  override get resizable(): Resizable {
-    return Resizable.None;
-  }
-  get_size() {
-    const { frame } = this.data;
-    if (!frame) return { w: 0, h: 0 };
-    const { pic: { w = 0, h = 0 } = {} } = frame;
-    const { l, r, t, b } = this.get_bounding(frame)
+  static get_size(f: IFrameInfo) {
+    const { pic: { w = 0, h = 0 } = {} } = f;
+    const { l, r, t, b } = this.get_bounding(f)
     return { w: w - l + r, h: h - t + b }
   }
-  get_bounding(f: IFrameInfo) {
+  static get_bounding(f: IFrameInfo) {
     const { pic = { w: 0, h: 0 } } = f;
-    let l = 0;
-    let t = 0;
-    let r = 0;
-    let b = 0;
+    let l = -20;
+    let t = -20;
+    let r = 20;
+    let b = 20;
     const check_rect = ({ x, y, w, h }: IRect) => {
-      l = Math.min(x, l);
-      t = Math.min(t, y);
-      r = Math.max((x + w) - pic.w, r);
-      b = Math.max((y + h) - pic.h, b);
-    };
-    const check_vec2 = ({ x, y }: { x: number, y: number }) => {
-      const w = 50;
-      const h = 20;
-      x -= 20;
       l = Math.min(x, l);
       t = Math.min(y, t);
       r = Math.max((x + w) - pic.w, r);
       b = Math.max((y + h) - pic.h, b);
+    };
+    const check_vec2 = ({ x, y }: { x: number, y: number }) => {
+      x -= 20;
+      y -= 20
+      l = Math.min(x, l);
+      t = Math.min(y, t);
+      r = Math.max((x + 40) - pic.w, r);
+      b = Math.max((y + 40) - pic.h, b);
     };
 
     check_vec2({ x: f.centerx, y: f.centery })
@@ -64,8 +58,10 @@ export class FrameDrawer extends Shape<FrameDrawerData> {
     if (f.opoint) loop_arr(f.opoint, opoint => check_vec2(opoint))
     if (f.cpoint) check_vec2(f.cpoint);
     if (f.bpoint) check_vec2(f.bpoint)
-
     return { l, r, t, b };
+  }
+  override get resizable(): Resizable {
+    return Resizable.None;
   }
   draw_center(ctx: CanvasRenderingContext2D, frame: IFrameInfo) {
     const { centerx, centery } = frame;
@@ -207,13 +203,21 @@ export class FrameDrawer extends Shape<FrameDrawerData> {
   }
   override render(ctx: CanvasRenderingContext2D): void {
     this.beginDraw(ctx);
-    const { frame, img, data, zip } = this.data;
-    if (frame) {
-      if (!img && frame.pic?.tex && data && zip) this.get_img(zip, data, frame.pic?.tex).then((img) => {
+
+    const { frame, data, zip } = this.data;
+
+    if (!this.data.img && frame?.pic?.tex && data && zip) {
+      this.get_img(zip, data, frame.pic.tex).then((img) => {
         this.beginDirty()
         this.data.img = img;
         this.endDirty()
       })
+    }
+    const { img } = this.data;
+    if (frame) {
+
+      const { l, t } = FrameDrawer.get_bounding(frame);
+      ctx.translate(-l, -t);
       const { pic } = frame;
       if (pic) this.draw_frame_bound(ctx, pic);
       if (img && pic) ctx.drawImage(img, pic.x, pic.y, pic.w, pic.h, 0, 0, pic.w, pic.h);

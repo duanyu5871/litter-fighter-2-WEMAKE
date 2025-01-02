@@ -202,7 +202,7 @@ export function PlayerRow(props: Props) {
         <Select
           items={["", ...Object.keys(DummyEnum)]}
           style={{ width: 100 }}
-          option={(k) => [k && (DummyEnum as any)[k], k || "not dummy"]}
+          parse={(k) => [k && (DummyEnum as any)[k], k || "not dummy"]}
           onChange={(v) => {
             const ctrl = lf2.player_characters.get(info.id)?.ctrl;
             if (is_bot_ctrl(ctrl)) {

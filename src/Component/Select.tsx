@@ -7,13 +7,13 @@ export interface ISelectProps<T, V>
   items?: readonly T[];
   auto_blur?: boolean;
   on_changed?: (value: V) => void;
-  option?: (item: T, idx: number, items: readonly T[]) => [V, React.ReactNode];
+  parse?: (item: T, idx: number, items: readonly T[]) => [V, React.ReactNode];
 }
 
 export default function Select<T, V>(props: ISelectProps<T, V>) {
   const {
     items,
-    option,
+    parse: option,
     auto_blur = true,
     children,
     onChange,

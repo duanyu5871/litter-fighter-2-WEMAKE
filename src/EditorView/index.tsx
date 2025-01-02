@@ -1,23 +1,22 @@
+import { Board, FactoryEnum, Gaia, ToolEnum } from "@fimagine/writeboard";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "../Component/Buttons/Button";
-import { TextArea } from "../Component/TextArea";
+import { Checkbox } from "../Component/Checkbox";
+import Show from "../Component/Show";
+import { Space } from "../Component/Space";
+import Titled from "../Component/Titled";
+import { Defines, IFrameInfo } from "../LF2/defines";
 import { EntityEnum } from "../LF2/defines/EntityEnum";
 import { IEntityData } from "../LF2/defines/IEntityData";
 import Ditto, { IZip } from "../LF2/ditto";
 import LF2 from "../LF2/LF2";
 import open_file from "../Utils/open_file";
 import { shared_ctx } from './Context';
+import { EditorShapeEnum } from "./EditorShapeEnum";
 import { EntityEditorView } from "./EntityEditorView";
+import { FrameDrawer, FrameDrawerData } from "./FrameDrawer";
 import styles from "./styles.module.css";
 import { ITreeNode, TreeNodeView } from "./TreeNodeView";
-import { Checkbox } from "../Component/Checkbox";
-import Titled from "../Component/Titled";
-import { Space } from "../Component/Space";
-import Show from "../Component/Show";
-import { FactoryEnum, Gaia, ShapeEnum, ToolEnum, Board } from "@fimagine/writeboard";
-import { FrameDrawer, FrameDrawerData } from "./FrameDrawer";
-import { EditorShapeEnum } from "./EditorShapeEnum";
-import { IFrameInfo } from "../LF2/defines";
 
 Gaia.registerShape(
   EditorShapeEnum.LF2_FRAME,
@@ -35,7 +34,8 @@ export interface IEditorViewProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 export default function EditorView(props: IEditorViewProps) {
   const ref_div = useRef<HTMLDivElement>(null);
-  const ref_board = useRef<Board>()
+  const ref_board = useRef<Board>();
+
   const { onClose, loading, open, lf2, ..._p } = props;
   const _ref_textarea_dat = useRef<HTMLTextAreaElement>(null);
   const _ref_textarea_json = useRef<HTMLTextAreaElement>(null);
@@ -119,7 +119,7 @@ export default function EditorView(props: IEditorViewProps) {
     set_tree(root);
   };
 
-  const on_click_frame = (frame: IFrameInfo, data: IEntityData) => {
+  const on_frame_change = (frame: IFrameInfo, data: IEntityData) => {
     const board = ref_board.current!;
     const shape_data = factory.newShapeData(EditorShapeEnum.LF2_FRAME) as FrameDrawerData;
     shape_data.frame = frame;
@@ -128,19 +128,26 @@ export default function EditorView(props: IEditorViewProps) {
     shape_data.layer = board.layer().id;
     shape_data.id = 'frame';
     shape_data.z = factory.newZ(shape_data);
+    Object.assign(shape_data, FrameDrawer.get_size(frame))
+
     let shape = board.shapes().find(v => v.data.id === 'frame') as FrameDrawer | undefined;
     if (!shape) {
       shape = factory.newShape(shape_data) as FrameDrawer;
-      Object.assign(shape.data, shape.get_size())
       board.add(shape);
     } else {
-      const { x, y } = shape;
+      let { x, y } = shape;
+      if (shape.data.frame) {
+        const a = FrameDrawer.get_bounding(shape.data.frame)
+        const b = FrameDrawer.get_bounding(shape_data.frame)
+        x += (a.l + shape.data.frame.centerx) - (b.l + shape_data.frame.centerx)
+        y += (a.t + shape.data.frame.centery) - (b.t + shape_data.frame.centery)
+      }
+      shape_data.x = x
+      shape_data.y = y
       shape.merge(shape_data)
-      shape.beginDirty();
-      Object.assign(shape.data, shape.get_size(), { x, y })
-      shape.endDirty();
     }
   }
+
   const on_click_item = (node: ITreeNode) => {
     if (node.children) {
       set_opens((old = []) => {
@@ -161,10 +168,24 @@ export default function EditorView(props: IEditorViewProps) {
               <EntityEditorView
                 key={node.path + '_eev'}
                 src={data}
-                on_click_frame={on_click_frame}
+                on_click_frame={on_frame_change}
+                on_frame_change={on_frame_change}
+                on_click_goto_next_frame={(nf, data) => {
+                  let ele: HTMLElement | null;
+                  if (nf.id === Defines.FrameId.Auto) {
+                    ele = document.getElementById(`${data.id}###0`)
+                  } else {
+                    ele = document.getElementById(`${data.id}###${nf.id}`)
+                  }
+                  if (ele) {
+                    ele.click();
+                    console.log(ele)
+                    document.getElementsByClassName('entity_editor_view').item(0)
+                      ?.scrollTo(0, ele.offsetTop)
+                  }
+                }}
               />
             )
-            on_click_frame(data.frames['0'], data);
           });
           break;
         default: {
@@ -195,6 +216,7 @@ export default function EditorView(props: IEditorViewProps) {
       const { width, height } = container.getBoundingClientRect();
       board.width = width;
       board.height = height;
+      board.markDirty({ x: 0, y: 0, w: width, h: height })
     })
     ob.observe(container)
 
@@ -202,13 +224,12 @@ export default function EditorView(props: IEditorViewProps) {
       board.layer().destory();
       ob.disconnect();
     }
-
   }, [])
 
   return !open ? <></> : (
     <shared_ctx.Provider value={{ zip }}>
       <Space direction='column' {..._p} >
-        <Space>
+        <Space onClick={e => { e.stopPropagation(); e.preventDefault() }}>
           <Show show={!!onClose}>
             <Button onClick={onClose} disabled={loading}>
               ✕
@@ -220,39 +241,50 @@ export default function EditorView(props: IEditorViewProps) {
             打开
           </Button>
         </Space>
-        <Space.Item style={{ flex: 1 }}>
-          <Space style={{ width: '100%', height: '100%' }}>
-            <Space.Item className={`${styles.tree_item_view_wrapper} lf2_hoverable_border`}
-              space
-              style={{ display: 'flex', flexDirection: 'column', flexFlow: 'column' }}>
-              <Space>
-                <Titled title="mp3"><Checkbox value={state.mp3} onChanged={v => set_state(o => ({ ...o, mp3: v }))} /></Titled>
-                <Titled title="flat"><Checkbox value={state.flat} onChanged={v => set_state(o => ({ ...o, flat: v }))} /></Titled>
-                <Titled title="json"><Checkbox value={state.json} onChanged={v => set_state(o => ({ ...o, json: v }))} /></Titled>
-                <Titled title="img"><Checkbox value={state.img} onChanged={v => set_state(o => ({ ...o, img: v }))} /></Titled>
-                <Titled title="others"><Checkbox value={state.others} onChanged={v => set_state(o => ({ ...o, others: v }))} /></Titled>
-              </Space>
-              <Space.Item style={{
-                flexGrow: 1,
-                flexShrink: 0,
-                flexBasis: 0,
-                overflow: 'auto'
-              }}>
-                <TreeNodeView
-                  node={filters_tree}
-                  opens={opens}
-                  on_click_item={on_click_item}
-                />
-              </Space.Item>
-
+        <Space.Item space direction='row' style={{ flex: 1, display: 'flex' }} onClick={e => { e.stopPropagation(); e.preventDefault() }}>
+          <Space.Item className={`${styles.tree_item_view_wrapper} lf2_hoverable_border`}
+            space
+            style={{ display: 'flex', flexDirection: 'column', flexFlow: 'column' }}>
+            <Space>
+              <Titled title="mp3"><Checkbox value={state.mp3} onChanged={v => set_state(o => ({ ...o, mp3: v }))} /></Titled>
+              <Titled title="flat"><Checkbox value={state.flat} onChanged={v => set_state(o => ({ ...o, flat: v }))} /></Titled>
+              <Titled title="json"><Checkbox value={state.json} onChanged={v => set_state(o => ({ ...o, json: v }))} /></Titled>
+              <Titled title="img"><Checkbox value={state.img} onChanged={v => set_state(o => ({ ...o, img: v }))} /></Titled>
+              <Titled title="others"><Checkbox value={state.others} onChanged={v => set_state(o => ({ ...o, others: v }))} /></Titled>
+            </Space>
+            <Space.Item style={{
+              flexGrow: 1,
+              flexShrink: 0,
+              flexBasis: 0,
+              overflow: 'auto'
+            }}>
+              <TreeNodeView
+                node={filters_tree}
+                opens={opens}
+                on_click_item={on_click_item}
+              />
             </Space.Item>
+          </Space.Item>
+          <Space.Item
+            space className='lf2_hoverable_border'
+            style={{
+              position: 'relative',
+              resize: 'horizontal',
+              flex: 1,
+              minWidth: 10,
+              display: 'flex',
+              flexDirection: 'column'
+            }}>
+            <Space.Item _ref={ref_div} style={{ flex: 1 }}>
+            </Space.Item>
+          </Space.Item>
+          <Space.Item style={{
+            overflow: 'hidden', display: 'flex',
+            position: 'relative', flexDirection: 'column'
+          }}>
             {entity_editor_view}
-            {textarea}
-            <Space.Item
-              space className='lf2_hoverable_border'
-              style={{ position: 'relative', flex: 1 }}
-              _ref={ref_div} />
-          </Space>
+          </Space.Item>
+          {textarea}
         </Space.Item>
       </Space>
     </shared_ctx.Provider>

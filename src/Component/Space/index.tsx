@@ -47,12 +47,12 @@ export interface ISpaceItemProps extends ISpaceProps {
 }
 
 function Item(props: ISpaceItemProps) {
-  const { className, space, ..._p } = props || {};
+  const { className, space, _ref, ..._p } = props || {};
   const root_cls_name = useMemo(() => ["item", className].filter(Boolean).join(' '), [className])
   return (
     space ?
-      <Space className={root_cls_name} {..._p} /> :
-      <div className={root_cls_name} {..._p} />
+      <Space className={root_cls_name} {..._p} _ref={_ref} /> :
+      <div className={root_cls_name} {..._p} ref={_ref} />
   )
 }
 Space.Item = Item

@@ -2,9 +2,15 @@
 
 .lf2ui_frame {
   @extend .lf2_hoverable_border;
-  padding: 5px;
-  padding-top: 18px;
-  position   : relative;
+  padding : 5px;
+  position: relative;
+
+  &.with_label {
+    padding-top: 18px;
+  }
+
+
+
 
   &>.label:first-child {
     position   : absolute;

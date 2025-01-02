@@ -133,7 +133,7 @@ export default function SettingsRows(props: ISettingsRowsProps) {
             value={stage_id}
             on_changed={(id: string) => lf2.change_stage(id)}
             items={stage_list}
-            option={(i) => [i.id, i.name]}
+            parse={(i) => [i.id, i.name]}
           />
         </Titled>
         <Button onClick={() => lf2.world.stage.kill_all_enemies()}>
@@ -151,7 +151,7 @@ export default function SettingsRows(props: ISettingsRowsProps) {
               on_changed={set_stage_phase_idx}
               value={stage_phase_idx}
               items={stage_phase_list}
-              option={(i, idx) => [
+              parse={(i, idx) => [
                 idx,
                 [`No.${1 + idx}, bound: ${i.bound}`].filter((v) => v).join(" "),
               ]}
@@ -171,7 +171,7 @@ export default function SettingsRows(props: ISettingsRowsProps) {
             value={bg_id}
             on_changed={(bg_id: string) => lf2.change_bg(bg_id)}
             items={lf2.datas.backgrounds}
-            option={(i) => [i.id, i.base.name]}
+            parse={(i) => [i.id, i.base.name]}
           />
         </Titled>
         <Titled title="BGM">
@@ -179,7 +179,7 @@ export default function SettingsRows(props: ISettingsRowsProps) {
             value={bgm}
             on_changed={set_bgm}
             items={bgm_list}
-            option={(i) => [i, i || "OFF"]}
+            parse={(i) => [i, i || "OFF"]}
           />
         </Titled>
         <Titled title="难度">
@@ -192,7 +192,7 @@ export default function SettingsRows(props: ISettingsRowsProps) {
               Defines.Difficulty.Difficult,
               Defines.Difficulty.Crazy,
             ]}
-            option={(i) => [i, Defines.DifficultyLabels[i]]}
+            parse={(i) => [i, Defines.DifficultyLabels[i]]}
           />
         </Titled>
         <Button onClick={(v) => lf2.remove_all_entities()}>清场</Button>
@@ -224,7 +224,7 @@ export default function SettingsRows(props: ISettingsRowsProps) {
             value={weapon_id}
             on_changed={set_weapon_id}
             items={lf2.datas.weapons}
-            option={(i) => [i.id, i.base.name]}
+            parse={(i) => [i.id, i.base.name]}
           >
             <option value="">Random</option>
           </Select>
@@ -272,7 +272,7 @@ export default function SettingsRows(props: ISettingsRowsProps) {
             value={bot_ctrl}
             on_changed={set_bot_ctrl}
             items={Object.keys(bot_controllers)}
-            option={(i) => [i, i]}
+            parse={(i) => [i, i]}
           />
         </Titled>
         <Button onClick={on_click_add_bot}>添加</Button>

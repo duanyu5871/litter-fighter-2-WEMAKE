@@ -37,7 +37,7 @@ export default function CharacterSelect(props: CharacterSelectProps) {
     <Select
       items={items}
       disabled={!characters?.length || disabled}
-      option={(i) => [i.id, i.base.name]}
+      parse={(i) => [i.id, i.base.name]}
       {...remains}
     >
       <option value="">Random</option>

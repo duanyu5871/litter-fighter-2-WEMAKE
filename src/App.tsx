@@ -481,7 +481,7 @@ function App() {
           <Button onClick={() => set_editor_open(true)}>查看数据包</Button>
           <Select
             items={["top", "bottom", "left", "right"] as const}
-            option={(v) => [v, "位置：" + v]}
+            parse={(v) => [v, "位置：" + v]}
             value={debug_ui_pos}
             on_changed={set_debug_ui_pos}
           />
@@ -581,7 +581,7 @@ function App() {
             value={layout_id}
             on_changed={(v: string) => lf2?.set_layout(v)}
             items={layouts}
-            option={(o) => [o.id!, o.name]}
+            parse={(o) => [o.id!, o.name]}
           />
           <Titled title="Mode">
             <Select
@@ -597,7 +597,7 @@ function App() {
                   value={render_fixed_scale}
                   on_changed={set_render_fixed_scale}
                   items={arithmetic_progression(0, 4, 0.5)}
-                  option={(i) => [i, "✕" + (i || "?")]}
+                  parse={(i) => [i, "✕" + (i || "?")]}
                 />
                 <Show show={!render_fixed_scale}>
                   <Input
@@ -622,7 +622,7 @@ function App() {
                   value={v_align}
                   on_changed={set_v_align}
                   items={[-2, 0, 0.5, 1]}
-                  option={(v, idx) => [
+                  parse={(v, idx) => [
                     v,
                     v <= -1 ? "?" : ["上", "中", "下"][idx - 1],
                   ]}
@@ -641,7 +641,7 @@ function App() {
                   value={h_align}
                   on_changed={set_h_align}
                   items={[-2, 0, 0.5, 1]}
-                  option={(v, idx) => [
+                  parse={(v, idx) => [
                     v,
                     v <= -1 ? "?" : ["左", "中", "右"][idx - 1],
                   ]}
