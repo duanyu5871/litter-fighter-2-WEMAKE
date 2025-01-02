@@ -1,0 +1,46 @@
+@import "../styles/lf2_hoverable_border.scss";
+
+.lf2ui_input {
+  @extend .lf2_hoverable_border;
+  color           : #5a73d6;
+  border-radius   : 3px;
+  padding         : 2px 4px;
+  background-color: transparent;
+  font-weight     : bold;
+  outline         : none;
+  box-sizing      : border-box;
+  transition      :
+    color 200ms,
+    border-color 200ms,
+    background-color 200ms,
+    border-radius 500ms;
+
+  &:hover {
+    color       : #ffffff;
+    border-color: #ffffff;
+  }
+
+  &:active {
+    color           : #ffffff;
+    border-color    : #ffffff;
+    background-color: #5a73d655;
+  }
+
+  &:disabled {
+    color           : #384888;
+    border          : 2px #384888 solid;
+    background-color: transparent;
+    cursor          : not-allowed;
+  }
+
+  &:focus-within,
+  &:active {
+    border       : solid 2px white;
+    border-radius: 10 px;
+  }
+
+  &::placeholder {
+    color  : white;
+    opacity: 0.2;
+  }
+}

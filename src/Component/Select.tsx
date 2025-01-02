@@ -1,5 +1,3 @@
-import { useMemo } from "react";
-import { WTF } from "./_no_id";
 import { is_num } from "../LF2/utils/type_check";
 
 export interface ISelectProps<T, V>
@@ -8,42 +6,41 @@ export interface ISelectProps<T, V>
   auto_blur?: boolean;
   on_changed?: (value: V) => void;
   parse?: (item: T, idx: number, items: readonly T[]) => [V, React.ReactNode];
+  placeholder?: string;
 }
 
 export default function Select<T, V>(props: ISelectProps<T, V>) {
   const {
     items,
-    parse: option,
+    parse,
     auto_blur = true,
     children,
     onChange,
-    on_changed: onChanged,
-    ...remain_props
+    on_changed,
+    placeholder,
+    ..._p
   } = props;
-  const default_id = useMemo(() => "no_id_select_" + WTF.new_id(), []);
   const is_num_value = is_num(
-    items?.length && option?.(items[0], 0, items)?.[0],
+    items?.length && parse?.(items[0], 0, items)?.[0],
   );
   const on_change: React.ChangeEventHandler<HTMLSelectElement> = (e) => {
     onChange?.(e);
     if (auto_blur) e.target.blur();
-    if (onChanged) {
+    if (on_changed) {
       const v: any = e.target.value;
-      onChanged(is_num_value ? Number(v) : v);
+      on_changed(is_num_value ? Number(v) : v);
     }
   };
   const options_children = items?.map((item, idx, items) => {
-    const [v, n] = option?.(item, idx, items) || ["" + item, "" + item];
+    const [v, n] = parse?.(item, idx, items) || ["" + item, "" + item];
     return (
-      <option key={idx} value={"" + v}>
-        {" "}
-        {n}{" "}
-      </option>
+      <option key={idx} value={"" + v}>{n}</option>
     );
   });
   return (
-    <select id={default_id} {...remain_props} onChange={on_change}>
+    <select {..._p} onChange={on_change} >
       {children}
+      <option hidden />
       {options_children}
     </select>
   );

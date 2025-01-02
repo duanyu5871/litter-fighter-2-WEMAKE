@@ -4,6 +4,7 @@ import Frame from "../Frame";
 import { Space } from "../Space";
 import { StatusButton } from "../Buttons/StatusButton";
 import { ToggleButton } from "../Buttons/ToggleButton";
+import Select from "../Select";
 
 export default function ComponentDemo() {
   return (
@@ -163,6 +164,12 @@ export default function ComponentDemo() {
               T
             </Button>
           </Combine>
+        </Space>
+      </Frame>
+
+      <Frame label='Select'>
+        <Space>
+          <Select items={['option 0', 'option 1']}/>
         </Space>
       </Frame>
     </Space>

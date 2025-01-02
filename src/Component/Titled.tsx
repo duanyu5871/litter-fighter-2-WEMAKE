@@ -10,7 +10,7 @@ export default function Titled(props: ITitledProps) {
   const cn = ["name_content", className].filter(Boolean).join(' ')
   return (
     <div {...p} className={cn}>
-      <div style={{ display: 'inline-block', whiteSpace: 'nowrap', wordBreak: 'keep-all' }}>
+      <div>
         {label ?? title}
       </div>
       {children}

@@ -3,7 +3,7 @@
 .lf2ui_button {
   @extend .lf2_hoverable_border;
   min-height      : 25px;
-  min-width       : max(fit-content, 25px);
+  min-width       : 25px;
   user-select     : none;
   color           : #5a73d6;
   border-radius   : 5px;
