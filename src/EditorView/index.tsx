@@ -18,6 +18,8 @@ import { EntityEditorView } from "./EntityEditorView";
 import { FrameDrawer, FrameDrawerData } from "./FrameDrawer";
 import styles from "./styles.module.css";
 import { ITreeNode, TreeNodeView } from "./TreeNodeView";
+import Select from "../Component/Select";
+import { is_num } from "../LF2/utils/type_check";
 
 Gaia.registerShape(
   EditorShapeEnum.LF2_FRAME,
@@ -41,14 +43,12 @@ export default function EditorView(props: IEditorViewProps) {
   const _ref_textarea_dat = useRef<HTMLTextAreaElement>(null);
   const _ref_textarea_json = useRef<HTMLTextAreaElement>(null);
   const [zip_name, set_zip_name] = useState('');
+  const [zips, set_zips] = useState<IZip[]>();
   const [zip, set_zip] = useState<IZip>();
   useEffect(() => {
     if (!lf2) return;
     const cb: ILf2Callback = {
-      on_loading_end() {
-        set_zip(lf2.zips.at(0))
-        set_zip_name('?')
-      }
+      on_zips_changed: (zips) => set_zips(zips)
     }
     lf2.callbacks.add(cb);
     return () => lf2.callbacks.del(cb);
@@ -226,16 +226,12 @@ export default function EditorView(props: IEditorViewProps) {
       });
     }
   }
-
   useEffect(() => {
     const container = ref_div.current;
-    if (!container) return;
-
+    if (!container || !open) return;
     const board = ref_board.current = factory.newWhiteBoard({ element: container });
-
     board.setToolType(ToolEnum.Selector);
     (window as any).board = board;
-
     const ob = new ResizeObserver(() => {
       const { width, height } = container.getBoundingClientRect();
       board.width = width;
@@ -243,12 +239,11 @@ export default function EditorView(props: IEditorViewProps) {
       board.markDirty({ x: 0, y: 0, w: width, h: height })
     })
     ob.observe(container)
-
     return () => {
       board.layer().destory();
       ob.disconnect();
     }
-  }, [])
+  }, [open])
 
   return !open ? <></> : (
     <shared_ctx.Provider value={{ zip }}>
@@ -264,6 +259,15 @@ export default function EditorView(props: IEditorViewProps) {
             disabled={loading}>
             打开
           </Button>
+          <Show show={!!zips?.length}>
+            <Select
+              items={zips}
+              parse={i => [zips?.indexOf(i), i.name]}
+              value={zip ? zips?.indexOf(zip) : void 0}
+              on_changed={(i) => {
+                set_zip(is_num(i) ? zips?.at(i) : void 0)
+              }} />
+          </Show>
         </Space>
         <Space.Item space direction='row' style={{ flex: 1, display: 'flex' }} onClick={e => { e.stopPropagation(); e.preventDefault() }}>
           <Space.Item className={`${styles.tree_item_view_wrapper} lf2_hoverable_border`}

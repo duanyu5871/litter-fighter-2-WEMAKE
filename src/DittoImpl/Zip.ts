@@ -30,11 +30,11 @@ export class __Zip implements IZip {
   static async read_file(file: File): Promise<IZip> {
     const buf = await file.arrayBuffer().then((raw) => new Uint8Array(raw));
     const jszip = await JSZIP.loadAsync(buf);
-    return new __Zip(jszip, buf);
+    return new __Zip(file.name, jszip, buf);
   }
-  static async read_buf(buf: Uint8Array): Promise<IZip> {
+  static async read_buf(name: string, buf: Uint8Array): Promise<IZip> {
     const jszip = await JSZIP.loadAsync(buf);
-    return new __Zip(jszip, buf);
+    return new __Zip(name, jszip, buf);
   }
   static async download(
     url: string,
@@ -52,14 +52,16 @@ export class __Zip implements IZip {
       })
       .then((resp) => new Uint8Array(resp.data));
     const jszip = await JSZIP.loadAsync(buf);
-    return new __Zip(jszip, buf);
+    return new __Zip(url, jszip, buf);
   }
 
   readonly buf: Uint8Array;
+  readonly name: string;
   private inner: JSZIP;
-  private constructor(inner: JSZIP, buf: Uint8Array) {
+  private constructor(name: string, inner: JSZIP, buf: Uint8Array) {
     this.inner = inner;
     this.buf = buf;
+    this.name = name;
   }
 
   file(path: string): ZipObject | null;

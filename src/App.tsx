@@ -55,6 +55,7 @@ function App() {
   const _canvas_ref = useRef<HTMLCanvasElement>(null);
   const _game_contiainer_ref = useRef<HTMLDivElement>(null);
 
+  const [lf2, set_lf2] = useState<LF2 | undefined>()
   const lf2_ref = useRef<LF2 | undefined>();
 
   const [dat_viewer_open, set_dat_viewer_open] = useState(false);
@@ -160,6 +161,7 @@ function App() {
 
     if (!lf2_ref.current) {
       const lf2 = ((window as any).lf2 = lf2_ref.current = new LF2(ele_canvas));
+      set_lf2(lf2)
       new GameOverlay(lf2.world, ele_overlay);
     }
     const lf2 = lf2_ref.current;
@@ -334,7 +336,6 @@ function App() {
     custom_v_align,
   ]);
 
-  const lf2 = lf2_ref.current;
   const player_infos = lf2?.player_infos;
   const players = useMemo(() => {
     if (!player_infos) return [];

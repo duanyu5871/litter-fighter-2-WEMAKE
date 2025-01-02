@@ -1,6 +1,7 @@
 import Layout, { ICookedLayoutInfo } from "../LF2/layout/Layout";
 import { PlayerInfo } from "./PlayerInfo";
 import { Defines } from "./defines/defines";
+import { IZip } from "./ditto";
 
 export interface ILf2Callback {
   on_layout_changed?(
@@ -35,4 +36,6 @@ export interface ILf2Callback {
 
   on_broadcast?(message: string): void;
   on_infinity_mp?(enabled: boolean): void;
+
+  on_zips_changed?(zips: IZip[]): void;
 }

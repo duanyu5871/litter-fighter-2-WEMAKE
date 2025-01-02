@@ -419,6 +419,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   async load_prel_data_zip(url: string): Promise<IZip> {
     const ret = await this.load_zip_from_info_url(url);
     this._zips.unshift(ret);
+    this._callbacks.emit("on_zips_changed")(this._zips);
     await this.load_layouts();
     this._callbacks.emit("on_prel_data_loaded")();
     return ret;
@@ -433,7 +434,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
       const nums = [];
       for (var i = 0, j = exists.data.length; i < j; ++i)
         nums.push(exists.data.charCodeAt(i));
-      ret = await ditto.Zip.read_buf(new Uint8Array(nums));
+      ret = await ditto.Zip.read_buf(exists.name, new Uint8Array(nums));
     } else {
       ret = await ditto.Zip.download(url, (progress, full_size) =>
         this.on_loading_file(url, progress, full_size),
@@ -465,7 +466,10 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   }
 
   private async load_data(zip?: IZip) {
-    if (zip) this._zips.unshift(zip);
+    if (zip) {
+      this._zips.unshift(zip);
+      this._callbacks.emit("on_zips_changed")(this._zips);
+    }
     await this.datas.load();
     if (this._disposed) this.datas.dispose();
     for (const d of this.datas.characters) {

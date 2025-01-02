@@ -36,7 +36,7 @@ export interface IDittoPack {
   MD5: (...args: string[]) => string;
   Zip: {
     read_file(file: File): Promise<IZip>;
-    read_buf(buf: Uint8Array): Promise<IZip>;
+    read_buf(name: string, buf: Uint8Array): Promise<IZip>;
     download(
       url: string,
       on_progress: (progress: number, size: number) => void,
