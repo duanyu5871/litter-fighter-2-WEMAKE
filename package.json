@@ -165,6 +165,7 @@
     "@types/spark-md5": "3.0.4",
     "@types/ssh2": "1.15.0",
     "@types/three": "0.161.2",
+    "classnames": "^2.5.1",
     "command-exists": "1.2.9",
     "sass": "^1.83.0",
     "ssh2": "1.15.0",

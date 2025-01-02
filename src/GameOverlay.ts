@@ -4,7 +4,7 @@ import { ILf2Callback } from "./LF2/ILf2Callback";
 import type { IWorldCallbacks } from "./LF2/IWorldCallbacks";
 import type { World } from "./LF2/World";
 import "./game_overlay.css";
-import { Button } from "./Component/Button";
+import { Button } from "./Component/Buttons/Button";
 const ele = document.createElement.bind(document);
 export class GameOverlay {
   readonly world: World;

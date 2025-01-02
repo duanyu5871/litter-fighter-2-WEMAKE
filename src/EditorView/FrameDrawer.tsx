@@ -1,17 +1,41 @@
+import { IShapeData, Resizable, Shape, ShapeData } from "@fimagine/writeboard";
 import { IBdyInfo, ICpointInfo, IFrameInfo, IFramePictureInfo, IItrInfo, IOpointInfo, IWpointInfo } from "../LF2/defines";
 import { IEntityData } from "../LF2/defines/IEntityData";
 import { IRect } from "../LF2/defines/IRect";
 import { IZip } from "../LF2/ditto";
 import { loop_arr } from "../LF2/utils/array/loop_arr";
+import { EditorShapeEnum } from "./EditorShapeEnum";
 import { img_map } from "./FrameEditorView";
 
-export class FrameDrawer {
-  canvas: HTMLCanvasElement;
-  scale = 2
-  constructor(canvas: HTMLCanvasElement) {
-    this.canvas = canvas;
+export class FrameDrawerData extends ShapeData {
+  constructor() {
+    super();
+    this.type = EditorShapeEnum.LF2_FRAME
   }
-
+  img?: HTMLImageElement;
+  frame?: IFrameInfo;
+  data?: IEntityData;
+  zip?: IZip;
+  override read(o: Partial<FrameDrawerData>): this {
+    super.read(o);
+    this.img = o.img;
+    this.frame = o.frame;
+    this.data = o.data;
+    this.zip = o.zip;
+    return this;
+  }
+}
+export class FrameDrawer extends Shape<FrameDrawerData> {
+  override get resizable(): Resizable {
+    return Resizable.None;
+  }
+  get_size() {
+    const { frame } = this.data;
+    if (!frame) return { w: 0, h: 0 };
+    const { pic: { w = 0, h = 0 } = {} } = frame;
+    const { l, r, t, b } = this.get_bounding(frame)
+    return { w: w - l + r, h: h - t + b }
+  }
   get_bounding(f: IFrameInfo) {
     const { pic = { w: 0, h: 0 } } = f;
     let l = 0;
@@ -34,10 +58,13 @@ export class FrameDrawer {
       b = Math.max((y + h) - pic.h, b);
     };
 
+    check_vec2({ x: f.centerx, y: f.centery })
     if (f.bdy) loop_arr(f.bdy, bdy => check_rect(bdy))
     if (f.itr) loop_arr(f.itr, itr => check_rect(itr))
     if (f.opoint) loop_arr(f.opoint, opoint => check_vec2(opoint))
     if (f.cpoint) check_vec2(f.cpoint);
+    if (f.bpoint) check_vec2(f.bpoint)
+
     return { l, r, t, b };
   }
   draw_center(ctx: CanvasRenderingContext2D, frame: IFrameInfo) {
@@ -126,22 +153,21 @@ export class FrameDrawer {
     ctx.fillText('' + point.oid, x + 2, y - 5)
   }
   draw_frame_bound(ctx: CanvasRenderingContext2D, pic: IFramePictureInfo) {
-    ctx.strokeStyle = '#FFFFFF33';
+    ctx.strokeStyle = '#FFFFFFaa';
     ctx.lineWidth = 1;
     ctx.setLineDash([2, 2]);
     ctx.beginPath();
-    ctx.rect(0, 0, pic.w, pic.h);
+    ctx.rect(0.5, 0.5, pic.w - 1, pic.h - 1);
     ctx.closePath();
     ctx.stroke();
   }
-
   get_img(zip: IZip, data: IEntityData, tex: string): Promise<HTMLImageElement> {
     const { base: { files } } = data;
     const pic = files[tex];
     if (!pic) {
       return Promise.reject(new Error('pic not found: ' + tex))
     }
-    const img = img_map.get(pic.path) || new Image();
+    const img = this.data.img = img_map.get(pic.path) || new Image();
     if (!img_map.has(pic.path)) {
       img_map.set(pic.path, img);
       zip.file(pic.path)?.blob_url().then((r) => {
@@ -179,36 +205,26 @@ export class FrameDrawer {
 
     })
   }
-  async draw(ctx: CanvasRenderingContext2D, zip: IZip, data: IEntityData, frame: IFrameInfo) {
-
-    const { canvas } = this;
-    const { pic } = frame;
-    if (!pic || !canvas || !ctx) return;
-
-    const img = await this.get_img(zip, data, pic.tex).catch(e => void 0)
-
-    const { l, r, t, b } = this.get_bounding(frame);
-    canvas.width = (pic.w - l + r + 10) * this.scale;
-    canvas.height = (pic.h - t + b + 10) * this.scale;
-    canvas.style.width = canvas.width + 'px'
-    canvas.style.height = canvas.height + 'px'
-
-    ctx.strokeStyle = 'black';
-    ctx.beginPath();
-    ctx.rect(0, 0, canvas.width, canvas.height);
-    ctx.closePath();
-    ctx.fill();
-    ctx.scale(this.scale, this.scale);
-    ctx.translate(5 - l, 5 - t);
-
-    if (frame.pic) this.draw_frame_bound(ctx, frame.pic);
-    if (img) ctx.drawImage(img, pic.x, pic.y, pic.w, pic.h, 0, 0, pic.w, pic.h);
-    if (frame.itr) loop_arr(frame.itr, itr => this.draw_itr(ctx, itr))
-    if (frame.bdy) loop_arr(frame.bdy, bdy => this.draw_bdy(ctx, bdy))
-    if (frame.opoint) loop_arr(frame.opoint, opoint => this.draw_opoint(ctx, opoint))
-    if (frame.cpoint) this.draw_cpoint(ctx, frame.cpoint);
-    if (frame.wpoint) this.draw_wpoint(ctx, frame.wpoint);
-    this.draw_center(ctx, frame);
-
+  override render(ctx: CanvasRenderingContext2D): void {
+    this.beginDraw(ctx);
+    const { frame, img, data, zip } = this.data;
+    if (frame) {
+      if (!img && frame.pic?.tex && data && zip) this.get_img(zip, data, frame.pic?.tex).then((img) => {
+        this.beginDirty()
+        this.data.img = img;
+        this.endDirty()
+      })
+      const { pic } = frame;
+      if (pic) this.draw_frame_bound(ctx, pic);
+      if (img && pic) ctx.drawImage(img, pic.x, pic.y, pic.w, pic.h, 0, 0, pic.w, pic.h);
+      if (frame.itr) loop_arr(frame.itr, itr => this.draw_itr(ctx, itr))
+      if (frame.bdy) loop_arr(frame.bdy, bdy => this.draw_bdy(ctx, bdy))
+      if (frame.opoint) loop_arr(frame.opoint, opoint => this.draw_opoint(ctx, opoint))
+      if (frame.cpoint) this.draw_cpoint(ctx, frame.cpoint);
+      if (frame.wpoint) this.draw_wpoint(ctx, frame.wpoint);
+      this.draw_center(ctx, frame);
+    }
+    this.endDraw(ctx);
+    super.render(ctx)
   }
 }

@@ -1,9 +1,10 @@
-.App {
-}
-.loading_img{
+.App {}
+
+.loading_img {
   opacity: 0;
 }
-.App > * {
+
+.App>* {
   z-index: 1;
   position: relative;
   overflow: hidden;
@@ -165,22 +166,6 @@
   flex-wrap: wrap;
 }
 
-.name_content {
-  display: inline-flex;
-  flex-wrap: nowrap;
-  align-items: center;
-}
-
-.name_content > *:first-child {
-  font-weight: lighter;
-  opacity: 0.8;
-  font-size: 0.5em;
-}
-
-.name_content > *:first-child:not(:last-child) {
-  margin-right: 3px;
-}
-
 .portrait .settings_row {
   flex-wrap: wrap;
   padding-bottom: 3px;
@@ -196,6 +181,6 @@
   width: 45px;
 }
 
-.render_align > input {
+.render_align>input {
   width: 45px;
 }

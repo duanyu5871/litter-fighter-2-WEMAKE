@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { IToggleImgProps, ToggleImgButton } from "./Component/ToggleImgButton";
+import { IToggleImgProps, ToggleImgButton } from "./Component/Buttons/ToggleImgButton";
 import "./GamePad.css";
 import LF2 from "./LF2/LF2";
 import { BaseController } from "./LF2/controller/BaseController";

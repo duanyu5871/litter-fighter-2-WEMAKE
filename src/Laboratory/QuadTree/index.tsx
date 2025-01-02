@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Vector2 as __Vector2, Vector2 } from "three";
-import { Button } from "../../Component/Button";
+import { Button } from "../../Component/Buttons/Button";
 import Combine from "../../Component/Combine";
 import { Input } from "../../Component/Input";
 import Titled from "../../Component/Titled";

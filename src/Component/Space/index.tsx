@@ -1,27 +1,58 @@
-import { useMemo } from "react";
-import './styles.scss'
+import React, { useMemo } from "react";
+import Show, { Div } from "../Show";
+import './styles.scss';
 export interface ISpaceProps extends React.HTMLAttributes<HTMLDivElement> {
-  item_props?: React.HTMLAttributes<HTMLDivElement>
+  item_props?: React.HTMLAttributes<HTMLDivElement>;
+  direction?: 'column' | 'row';
+  _ref?: React.RefObject<HTMLDivElement>;
 }
 export function Space(props: ISpaceProps) {
-  const { className, children, item_props, ..._p } = props;
-  const root_cls_name = useMemo(() => ["lf2ui_space", className].filter(Boolean).join(' '), [className])
-
-  const { className: i_cls_name, ...i_p } = item_props || {};
-  const item_cls_name = useMemo(() => ["item", i_cls_name].filter(Boolean).join(' '), [i_cls_name])
-
+  const { className, children, item_props, direction = 'row', _ref, ..._p } = props;
+  const root_cls_name = useMemo(() => {
+    return [
+      "lf2ui_space", direction, className
+    ].filter(Boolean).join(' ')
+  }, [className, direction])
   const items = Array.isArray(children) ? children : children ? [children] : void 0
   return (
-    <div className={root_cls_name} {..._p}>
+    <div className={root_cls_name} {..._p} ref={_ref}>
       {
         items?.map((v, i) => {
           switch (v) {
             case void 0: case null: case true: case false:
               return null
           }
-          return <div className={item_cls_name} {...i_p} key={i}>{v}</div>
+          if (React.isValidElement<{ show: any }>(v)) {
+            if (v.type === Show && !v.props.show)
+              return null
+            if (v.type === Div && !v.props.show)
+              return null
+            if (v.type === Item)
+              return v;
+          }
+          return (
+            <Item {...item_props} key={i}>
+              {v}
+            </Item>
+          )
         })
       }
     </div>
   )
 }
+
+export interface ISpaceItemProps extends ISpaceProps {
+  direction?: 'column' | 'row';
+  space?: boolean;
+}
+
+function Item(props: ISpaceItemProps) {
+  const { className, space, ..._p } = props || {};
+  const root_cls_name = useMemo(() => ["item", className].filter(Boolean).join(' '), [className])
+  return (
+    space ?
+      <Space className={root_cls_name} {..._p} /> :
+      <div className={root_cls_name} {..._p} />
+  )
+}
+Space.Item = Item

@@ -1,0 +1,24 @@
+@import "./lf2_border.scss";
+
+.lf2_hoverable_border {
+  @extend .lf2_border;
+  transition:
+    color 200ms,
+    border-color 200ms,
+    border-radius 500ms;
+  border       : 2px #5a73d6 solid;
+  border-radius: 3px;
+
+  &:hover {
+    border-color: #ffffff;
+  }
+
+  &:disabled {
+    border: 2px #384888 solid;
+  }
+
+  &:focus {
+    background-color: #FFFFFF22;
+    border-style: dashed;
+  }
+}

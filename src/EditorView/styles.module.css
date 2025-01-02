@@ -1,12 +1,4 @@
 
-.tree_item_view_root {
-  max-height: 100%;
-  max-width: 100%;
-  height: fit-content;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
 .tree_item_view_wrapper {
   max-height: 100%;
   width: 250px;

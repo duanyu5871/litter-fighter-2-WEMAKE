@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import "./index.css";
+import "./index.scss";
 import "./LF2/defines/defines";
 import './init'
 import reportWebVitals from "./reportWebVitals";

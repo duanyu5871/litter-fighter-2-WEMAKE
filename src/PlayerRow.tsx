@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { Button } from "./Component/Button";
+import { Button } from "./Component/Buttons/Button";
 import CharacterSelect from "./Component/CharacterSelect";
 import Combine from "./Component/Combine";
 import { Input } from "./Component/Input";
 import Select from "./Component/Select";
 import TeamSelect from "./Component/TeamSelect";
-import { ToggleButton } from "./Component/ToggleButton";
+import { ToggleButton } from "./Component/Buttons/ToggleButton";
 import { DummyEnum } from "./LF2/controller/BotController";
 import LocalController from "./LF2/controller/LocalController";
 import { Defines } from "./LF2/defines/defines";

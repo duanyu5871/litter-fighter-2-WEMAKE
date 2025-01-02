@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button } from "./Component/Button";
+import { Button } from "./Component/Buttons/Button";
 import CharacterSelect from "./Component/CharacterSelect";
 import Combine from "./Component/Combine";
 import { Input } from "./Component/Input";

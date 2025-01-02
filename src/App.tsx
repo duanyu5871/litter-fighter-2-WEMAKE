@@ -1,14 +1,14 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import "./App.css";
-import { Button } from "./Component/Button";
+import { Button } from "./Component/Buttons/Button";
 import Combine from "./Component/Combine";
 import { Input } from "./Component/Input";
 import Select from "./Component/Select";
 import Show from "./Component/Show";
-import { StatusButton } from "./Component/StatusButton";
+import { StatusButton } from "./Component/Buttons/StatusButton";
 import Titled from "./Component/Titled";
-import { ToggleButton } from "./Component/ToggleButton";
-import { ToggleImgButton } from "./Component/ToggleImgButton";
+import { ToggleButton } from "./Component/Buttons/ToggleButton";
+import { ToggleImgButton } from "./Component/Buttons/ToggleImgButton";
 import { useShortcut } from "./Component/useShortcut";
 import DatViewer from "./DatViewer";
 import { GameOverlay } from "./GameOverlay";
@@ -723,6 +723,7 @@ function App() {
               { value: 1, label: "同步渲染✓" },
               { value: 2, label: "同步渲染(x0.5)✓" },
             ]}
+            parse={i => [i.value, i.label]}
             value={sync_render}
             onClick={() => lf2?.world.set_sync_render()}
           />
@@ -789,6 +790,7 @@ function App() {
           <StatusButton
             value={touch_pad_on}
             items={touch_pad_player_items}
+            parse={i => [i.value, i.label]}
             onChange={(v) => set_touch_pad_on(v!)}
           />
           <ToggleButton

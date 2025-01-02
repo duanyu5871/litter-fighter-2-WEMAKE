@@ -1,5 +1,5 @@
-import { useContext, useEffect, useMemo, useRef, useState } from "react";
-import { Button } from "../Component/Button";
+import { useContext, useEffect, useRef, useState } from "react";
+import { Button } from "../Component/Buttons/Button";
 import Combine from "../Component/Combine";
 import { Input, InputProps } from "../Component/Input";
 import Select from "../Component/Select";
@@ -9,16 +9,18 @@ import { IFrameInfo } from "../LF2/defines";
 import { IEntityData } from "../LF2/defines/IEntityData";
 import { shared_ctx } from "./Context";
 import { SPEED_MODE_SELECT_PROPS, STATE_SELECT_PROPS } from "./EntityEditorView";
-import { FrameDrawer } from "./FrameDrawer";
 export const img_map = (window as any).img_map = new Map<string, HTMLImageElement>();
-
-export function EntityFrameEditorView(props: { frame: IFrameInfo; data: IEntityData; }) {
+export interface IFrameEditorViewProps extends React.HTMLAttributes<HTMLDivElement> {
+  src: IFrameInfo;
+  data: IEntityData;
+}
+export function FrameEditorView(props: IFrameEditorViewProps) {
   const { zip } = useContext(shared_ctx);
-  const { frame: src, data } = props;
+  const { src, data, ..._p } = props;
   const ref_canvas = useRef<HTMLCanvasElement>(null);
   const [frame, set_frame] = useState(() => JSON.parse(JSON.stringify(src)) as IFrameInfo);
   const canvas = ref_canvas.current;
-  const drawer = useMemo(() => canvas ? new FrameDrawer(canvas) : null, [canvas])
+  // const drawer = useMemo(() => canvas ? new FrameDrawer(canvas) : null, [canvas])
 
   useEffect(() => { set_frame(src) }, [src]);
   const { pic, bdy, itr, centerx, centery } = frame;
@@ -39,7 +41,7 @@ export function EntityFrameEditorView(props: { frame: IFrameInfo; data: IEntityD
         }
         const render = () => {
           if (!is_appear()) return;
-          drawer?.draw(ctx, zip, data, frame)
+          // drawer?.draw(ctx, zip, data, frame)
           pp.removeEventListener('scroll', render)
         }
         if (is_appear()) {
@@ -52,7 +54,7 @@ export function EntityFrameEditorView(props: { frame: IFrameInfo; data: IEntityD
       p = p.parentElement;
     }
 
-  }, [pic, files, zip, centerx, centery, bdy, itr, drawer, data, frame]);
+  }, [pic, files, zip, centerx, centery, bdy, itr, data, frame]);
 
   const edit_string = (key: keyof IFrameInfo): InputProps => ({
     value: ('' + frame[key] as any) || '',
@@ -81,11 +83,13 @@ export function EntityFrameEditorView(props: { frame: IFrameInfo; data: IEntityD
   return (
     <div
       className="lf2_hoverable_border"
+      tabIndex={-1}
       style={{
         padding: 5, overflow: 'hidden',
         flexShrink: 0, display: 'flex', flexDirection: 'column',
         gap: 5
-      }}>
+      }}
+      {..._p}>
       <Titled title='　　　　　帧' style={{ marginRight: 5 }}>
         <Combine>
           <Input {...edit_string('id')} disabled={!editing} style={{ width: 100, boxSizing: 'border-box' }} />

@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { Button } from "./Component/Button";
+import { Button } from "./Component/Buttons/Button";
 import { TextArea } from "./Component/TextArea";
 import open_file, { read_file } from "./Utils/open_file";
 import dat_to_json from "./LF2/dat_translator/dat_2_json";
