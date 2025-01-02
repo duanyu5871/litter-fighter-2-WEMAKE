@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./Button.css";
+import "./Button.scss";
 import "./Checkbox.css";
 import { useForwardedRef } from "./useForwardedRef";
 import { TShortcut, useShortcut } from "./useShortcut";

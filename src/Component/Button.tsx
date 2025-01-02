@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useForwardedRef } from "./useForwardedRef";
 import { TShortcut, useShortcut } from "./useShortcut";
 import device from "current-device";
-import "./Button.css";
+import "./Button.scss";
 const is_desktop = device.desktop();
 
 export interface IButtonProps

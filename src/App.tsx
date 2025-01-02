@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import * as THREE from "three";
 import "./App.css";
 import { Button } from "./Component/Button";
 import Combine from "./Component/Combine";
@@ -11,16 +10,6 @@ import Titled from "./Component/Titled";
 import { ToggleButton } from "./Component/ToggleButton";
 import { ToggleImgButton } from "./Component/ToggleImgButton";
 import { useShortcut } from "./Component/useShortcut";
-import * as dom from "./DittoImpl";
-import { __Camera_O_Node } from "./DittoImpl/3d/Camera_O";
-import { __LineSegmentsNode } from "./DittoImpl/3d/LineSegmentsNode";
-import { __MeshNode } from "./DittoImpl/3d/MeshNode";
-import { __ObjectNode } from "./DittoImpl/3d/ObjectNode";
-import { __SceneNode } from "./DittoImpl/3d/SceneNode";
-import __SpriteNode from "./DittoImpl/3d/SpriteNode";
-import { __Text } from "./DittoImpl/3d/TextNode";
-import { __Camera_P_Node } from "./DittoImpl/3d/__Camera_P_Node";
-import { __BillboardNode } from "./DittoImpl/BillboardNode";
 import DatViewer from "./DatViewer";
 import { GameOverlay } from "./GameOverlay";
 import GamePad from "./GamePad";
@@ -60,31 +49,6 @@ import {
 import EditorView from "./EditorView";
 
 const loading_img = new LoadingImg();
-Ditto.setup({
-  Timeout: dom.__Timeout,
-  Interval: dom.__Interval,
-  Render: dom.__Render,
-  Keyboard: dom.__Keyboard,
-  Pointings: dom.__Pointings,
-  FullScreen: dom.__FullScreen,
-  Sounds: dom.__Sounds,
-  Cache: dom.__Cache,
-  Zip: dom.__Zip,
-  MD5: dom.__MD5,
-  Importer: new dom.__Importer(),
-
-  ObjectNode: __ObjectNode,
-  TextNode: __Text,
-  SceneNode: __SceneNode,
-  OrthographicCamera: __Camera_O_Node,
-  PerspectiveCamera: __Camera_P_Node,
-  SpriteNode: __SpriteNode,
-  LineSegmentsNode: __LineSegmentsNode,
-  MeshNode: __MeshNode,
-  BillboardNode: __BillboardNode,
-  Vector3: THREE.Vector3,
-  Vector2: THREE.Vector2,
-});
 function App() {
   const [fullscreen] = useState(() => new Ditto.FullScreen());
   const _overlay_ref = useRef<HTMLDivElement>(null);

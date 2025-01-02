@@ -1,18 +1,18 @@
-import React, { useMemo } from "react";
-import "./Button.css";
+import React, { useMemo, useState } from "react";
+import "./Button.scss";
 import { IStatusButtonProps, IStatusItem, StatusButton } from "./StatusButton";
 
 export interface IToggleButtonProps
   extends Omit<IStatusButtonProps<boolean>, "onChange"> {
   children?:
-    | [React.ReactNode, React.ReactNode]
-    | [React.ReactNode]
-    | React.ReactNode;
+  | [React.ReactNode, React.ReactNode]
+  | [React.ReactNode]
+  | React.ReactNode;
   onChange?: (v: boolean) => void;
 }
 export function ToggleButton(props: IToggleButtonProps) {
-  const { children, onChange, items, ..._p } = props;
-
+  const { children, onChange, items, value, ..._p } = props;
+  const [v, set_v] = useState(false)
   const _items = useMemo<IStatusItem<boolean>[]>(() => {
     if (items) return items;
     if (Array.isArray(children)) {
@@ -29,6 +29,10 @@ export function ToggleButton(props: IToggleButtonProps) {
   }, [items, children]);
 
   return (
-    <StatusButton {..._p} items={_items} onChange={(v) => onChange?.(!!v)} />
+    <StatusButton
+      {..._p}
+      items={_items}
+      value={value ?? v}
+      onChange={(v) => (onChange ?? set_v)(!!v)} />
   );
 }

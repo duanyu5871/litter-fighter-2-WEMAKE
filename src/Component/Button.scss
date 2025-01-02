@@ -1,0 +1,38 @@
+.lf2ui_button {
+  min-height      : 25px;
+  min-width       : max(fit-content, 25px);
+  user-select     : none;
+  color           : #5a73d6;
+  border          : 2px #5a73d6 solid;
+  border-radius   : 5px;
+  padding         : 2px 4px;
+  background-color: transparent;
+  font-weight     : bold;
+  outline         : none;
+  line-height     : 15px;
+  box-sizing      : border-box;
+  transition      : color 200ms, border-color 200ms, background-color 200ms;
+
+  &:hover {
+    color       : #ffffff;
+    border-color: #ffffff;
+  }
+
+  &:active {
+    color           : #ffffff;
+    border-color    : #ffffff;
+    background-color: #5a73d655;
+  }
+
+  &:disabled {
+    color           : #384888;
+    border          : 2px #384888 solid;
+    background-color: transparent;
+    cursor          : not-allowed;
+  }
+
+  &:focus-within {
+    border       : solid 2px white;
+    border-radius: 10 px;
+  }
+}

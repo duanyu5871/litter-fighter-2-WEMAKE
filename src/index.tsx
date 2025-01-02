@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
 import "./LF2/defines/defines";
+import './init'
 import reportWebVitals from "./reportWebVitals";
 
 const router = createBrowserRouter([
@@ -14,6 +15,15 @@ const router = createBrowserRouter([
     path: "/bebavior_net_test",
     Component: React.lazy(() => import("./Laboratory/BehaviorNet")),
   },
+  {
+    path: "/component_demos",
+    Component: React.lazy(() => import("./Component/Demo")),
+  },
+  {
+    path: "/editor",
+    Component: React.lazy(() => import("./Editor")),
+  },
+
   // { path: '*', Component: React.lazy(() => import('./App')) },
   // { path: '/mne', Component: React.lazy(() => import('./Laboratory/BounceTales/react')) },
   { path: "*", Component: React.lazy(() => import("./App")) },

@@ -5,6 +5,7 @@
   "dependencies": {
     "@babel/core": "7.16.0",
     "@fimagine/logger": "1.2.1",
+    "@fimagine/writeboard": "^0.0.11",
     "@pmmmwh/react-refresh-webpack-plugin": "0.5.3",
     "@svgr/webpack": "5.5.0",
     "@testing-library/jest-dom": "5.17.0",
@@ -165,6 +166,7 @@
     "@types/ssh2": "1.15.0",
     "@types/three": "0.161.2",
     "command-exists": "1.2.9",
+    "sass": "^1.83.0",
     "ssh2": "1.15.0",
     "terser-webpack-plugin": "5.3.10",
     "typescript": "5.5.2"
