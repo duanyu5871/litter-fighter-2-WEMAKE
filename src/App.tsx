@@ -838,7 +838,11 @@ function App() {
         />
       </Show.Div>
       <DatViewer open={dat_viewer_open} onClose={() => set_dat_viewer_open(false)} />
-      <EditorView open={editor_open} onClose={() => set_dat_viewer_open(false)} lf2={lf2} />
+      <EditorView
+        open={editor_open}
+        onClose={() => set_editor_open(false)}
+        style={{ background: 'black', position: 'fixed', left: 0, top: 0, right: 0, bottom: 0 }}
+        lf2={lf2} />
       <img
         src="lf2_built_in_data/launch/SMALL_LOADING@4x.png"
         className="loading_img"

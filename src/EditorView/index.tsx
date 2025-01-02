@@ -9,6 +9,7 @@ import { Defines, IFrameInfo } from "../LF2/defines";
 import { EntityEnum } from "../LF2/defines/EntityEnum";
 import { IEntityData } from "../LF2/defines/IEntityData";
 import Ditto, { IZip } from "../LF2/ditto";
+import { ILf2Callback } from "../LF2/ILf2Callback";
 import LF2 from "../LF2/LF2";
 import open_file from "../Utils/open_file";
 import { shared_ctx } from './Context';
@@ -39,7 +40,20 @@ export default function EditorView(props: IEditorViewProps) {
   const { onClose, loading, open, lf2, ..._p } = props;
   const _ref_textarea_dat = useRef<HTMLTextAreaElement>(null);
   const _ref_textarea_json = useRef<HTMLTextAreaElement>(null);
+  const [zip_name, set_zip_name] = useState('');
   const [zip, set_zip] = useState<IZip>();
+  useEffect(() => {
+    if (!lf2) return;
+    const cb: ILf2Callback = {
+      on_loading_end() {
+        set_zip(lf2.zips.at(0))
+        set_zip_name('?')
+      }
+    }
+    lf2.callbacks.add(cb);
+    return () => lf2.callbacks.del(cb);
+
+  }, [lf2])
   const [opens, set_opens] = useState<string[]>()
   const [tree, set_tree] = useState<ITreeNode>();
 
@@ -97,27 +111,37 @@ export default function EditorView(props: IEditorViewProps) {
   const on_click_read_zip = async () => {
     const [file] = await open_file({ accept: ".zip" });
     const zip = await Ditto.Zip.read_file(file);
-    const root: ITreeNode = { name: file.name, path: '' }
+    // await load_zip(file.name, zip);
+    set_zip(zip);
+    set_zip_name(file.name)
+  };
+
+  const load_zip = async (name: string, zip: IZip) => {
+    const root: ITreeNode = { name, path: '' };
     for (const key in zip.files) {
       let node = root;
       const parts = key.split('/');
       const j = await zip.file(key)?.json().catch(v => void 0);
       for (let part_idx = 0; part_idx < parts.length; part_idx++) {
         const part = parts[part_idx];
-        const children = node.children = node.children || []
-        const idx = children.findIndex(v => v.name === part)
+        const children = node.children = node.children || [];
+        const idx = children.findIndex(v => v.name === part);
         if (idx >= 0) node = children[idx];
         else children.push(node = {
           name: part,
           path: parts.slice(0, part_idx + 1).join('/'),
           lf2_type: j?.type
-        })
+        });
       }
     }
-    set_zip(zip);
-    set_opens([root.path])
+    set_opens([root.path]);
     set_tree(root);
-  };
+  }
+
+  useEffect(() => {
+    if (zip) load_zip(zip_name, zip)
+  }, [zip_name, zip])
+
 
   const on_frame_change = (frame: IFrameInfo, data: IEntityData) => {
     const board = ref_board.current!;
@@ -289,4 +313,5 @@ export default function EditorView(props: IEditorViewProps) {
       </Space>
     </shared_ctx.Provider>
   );
+
 }
