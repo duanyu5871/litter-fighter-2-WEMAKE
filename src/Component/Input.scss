@@ -21,18 +21,7 @@ $secondry_color: #5a73d6aa;
 
   }
 
-  &>.stepper {
-    display       : flex;
-    flex-direction: column;
-    position      : relative;
-    opacity       : 0;
-    transition    : all 200ms;
 
-    &>svg {
-      flex      : 1;
-      transition: all 200ms;
-    }
-  }
 
   &>.lf2ui_input_suffix {
     padding        : 0px 4px 0px 0px;
@@ -88,50 +77,69 @@ $secondry_color: #5a73d6aa;
     }
   }
 
-
-
-  &>.lf2ui_input_clear_icon {
-    border          : none;
-    outline         : none;
-    padding         : 0px;
-    $size           : 16px;
-    background-color: $secondry_color;
-    color           : white;
-    display         : inline-block;
-    border-radius   : 50% 50%;
-    width           : $size;
-    height          : $size;
-    line-height     : $size;
-    text-align      : center;
-    position        : absolute;
-    right           : 2px;
-    top             : 0px;
-    bottom          : 0px;
-    margin          : auto 0;
-    opacity         : 0;
-    transition      : all 200ms;
-  }
-
-  &:hover {
+  &>.fix_right_zone {
+    position   : absolute;
+    right      : 2px;
+    top        : 0px;
+    bottom     : 0px;
+    display    : flex;
+    align-items: center;
 
     &>.stepper {
-      opacity: 1;
+      display       : flex;
+      flex-direction: column;
+      position      : relative;
+      opacity       : 0;
+      transition    : all 200ms;
+      align-self    : stretch;
 
-      &>svg:hover {
-        color : white;
-        stroke: red;
+      &>svg {
+        flex      : 1;
+        transition: all 200ms;
       }
     }
 
     &>.lf2ui_input_clear_icon {
-      opacity: 1;
+      border          : none;
+      outline         : none;
+      padding         : 0px;
+      $size           : 16px;
+      background-color: $secondry_color;
+      color           : white;
+      display         : inline-block;
+      border-radius   : 50% 50%;
+      width           : $size;
+      height          : $size;
+      line-height     : $size;
+      text-align      : center;
+      margin          : auto 0;
+      opacity         : 0;
+      transition      : all 200ms;
+    }
+  }
 
-      &:hover {
-        background-color: #5a73d6;
+  &:hover {
+
+    &>.fix_right_zone {
+      &>.stepper {
+        opacity: 1;
+
+        &>svg:hover {
+          color : white;
+          stroke: red;
+        }
       }
 
-      &:active {
-        background-color: $secondry_color;
+      &>.lf2ui_input_clear_icon {
+        opacity: 1;
+
+        &:hover {
+          background-color: #5a73d6;
+        }
+
+        &:active {
+          background-color: $secondry_color;
+        }
       }
     }
 
@@ -139,7 +147,6 @@ $secondry_color: #5a73d6aa;
       opacity: 0;
     }
   }
-
 
   &>* {
     font-size  : 14px;

@@ -7,3 +7,5 @@ export const is_finite = (v: any): v is number => Number.isFinite(v);
 export const is_nagtive = (v: any): v is number => is_num(v) && v < 0;
 export const is_positive = (v: any): v is number => is_num(v) && v > 0;
 export const not_zero_num = (v: any): v is number => is_num(v) && v !== 0;
+
+export const num_or = <V>(v: any, or: V) => is_num(v) ? v : or;

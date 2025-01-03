@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import "./Input.scss";
 
 export type BaseProps = React.InputHTMLAttributes<HTMLInputElement>
@@ -46,7 +46,7 @@ function _Input(props: InputProps, forwarded_Ref: React.ForwardedRef<InputRef>) 
   const ref_input = useRef<HTMLInputElement>(null);
   const ref_root = useRef<HTMLSpanElement>(null);
   const ref_icon = useRef<HTMLButtonElement>(null);
-  const [is_empty, set_is_emtpy] = useState<boolean>(!(props.value || props.defaultValue));
+
 
   useMemo<InputRef>(() => {
     const ret = {
@@ -71,7 +71,11 @@ function _Input(props: InputProps, forwarded_Ref: React.ForwardedRef<InputRef>) 
         setTimeout(() => ele_input.focus(), 1)
     }
     ele_root.addEventListener('pointerdown', on_root_pointerdown)
-    const on_input_change = () => set_is_emtpy(!ele_input.value.length)
+    const on_input_change = () => {
+      const ele = ref_icon.current;
+      if (!ele) return;
+      ele.style.display = ele_input.value.length ? 'inline' : 'none';
+    }
     ele_input.addEventListener('input', on_input_change)
     return () => {
       ele_root.removeEventListener('pointerdown', on_root_pointerdown)
@@ -104,32 +108,33 @@ function _Input(props: InputProps, forwarded_Ref: React.ForwardedRef<InputRef>) 
     }
   }
 
+  const steppers = (!step || type !== 'number') ? null :
+    <span className='stepper'>
+      <svg xmlns="http://www.w3.org/2000/svg" width={12} height={5} viewBox="0, 0, 12, 5" onClick={() => add_step(1)}>
+        <path d="M 2 5 L 6 1 L 10 5" stroke="currentColor" strokeWidth={1} />
+      </svg>
+      <svg xmlns="http://www.w3.org/2000/svg" width={12} height={5} viewBox="0, 0, 12, 5" onClick={() => add_step(-1)}>
+        <path d="M 2 0 L 6 4 L 10 0" stroke="currentColor" strokeWidth={1} />
+      </svg>
+    </span>
 
+  const icon = !(clearable && clear_icon) ? null :
+    <button className={clear_icon_cls_name} ref={ref_icon} tabIndex={-1}
+      onClick={() => direct_set_value(ref_input.current, '')}>
+      {clear_icon}
+    </button>
 
+  if ('value' in _p && _p.value === void 0) _p.value = ""
 
   return (
     <span className={root_cls_name} ref={ref_root} style={style}>
       {prefix ? <span className={prefix_cls_name}>{prefix}</span> : null}
       <input className={input_cls_name} ref={ref_input} {..._p} />
       {suffix ? <span className={suffix_cls_name}>{suffix}</span> : null}
-      {
-        (!step && type === 'number') ? null :
-          <span className='stepper'>
-            <svg xmlns="http://www.w3.org/2000/svg" width={12} height={5} viewBox="0, 0, 12, 5" onClick={() => add_step(1)}>
-              <path d="M 2 5 L 6 1 L 10 5" stroke="currentColor" strokeWidth={1} />
-            </svg>
-            <svg xmlns="http://www.w3.org/2000/svg" width={12} height={5} viewBox="0, 0, 12, 5" onClick={() => add_step(-1)}>
-              <path d="M 2 0 L 6 4 L 10 0" stroke="currentColor" strokeWidth={1} />
-            </svg>
-          </span>
-      }
-      {
-        !(!is_empty && clearable && clear_icon) ? null :
-          <button className={clear_icon_cls_name} ref={ref_icon} tabIndex={-1}
-            onClick={() => direct_set_value(ref_input.current, '')}>
-            {clear_icon}
-          </button>
-      }
+      <span className="fix_right_zone">
+        {icon}
+        {steppers}
+      </span>
     </span>
   )
 }

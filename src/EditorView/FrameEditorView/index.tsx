@@ -17,6 +17,7 @@ import { shared_ctx } from "../Context";
 import { ITR_KIND_SELECT_PROPS, SPEED_MODE_SELECT_PROPS, STATE_SELECT_PROPS } from "../EntityEditorView";
 import { ItrEditorView } from "./ItrEditorView";
 import styles from "./styles.module.scss";
+import { is_num, num_or } from "../../LF2/utils/type_check";
 
 enum TabEnum {
   Base = 'base',
@@ -117,13 +118,20 @@ export function FrameEditorView(props: IFrameEditorViewProps) {
   const edit_number_00 = (key: keyof IFrameInfo): InputProps => ({
     type: 'number',
     step: 0.01,
-    value: (frame[key] as any) || '',
-    onChange: e => set_frame(p => ({ ...p, [key]: Number(e.target.value.trim()) }))
+    value: num_or(frame[key], void 0),
+    onChange: e => {
+      if (!e.target.value) {
+        set_frame(p => ({ ...p, [key]: void 0 }))
+      } else {
+        const num = Number(Number(e.target.value.trim()).toFixed(2))
+        set_frame(p => ({ ...p, [key]: num }))
+      }
+    }
   });
   const edit_int = (key: keyof IFrameInfo): InputProps => ({
     type: 'number',
     step: 1,
-    value: (frame[key] as any) || '',
+    value: num_or(frame[key], void 0),
     onChange: e => set_frame(p => ({ ...p, [key]: Number(e.target.value.trim()) })),
     placeholder: key,
   });
@@ -131,12 +139,12 @@ export function FrameEditorView(props: IFrameEditorViewProps) {
     type: 'number',
     step: 1,
     min: 0,
-    value: (frame[key] as any) || '',
+    value: num_or(frame[key], void 0),
     onChange: e => set_frame(p => ({ ...p, [key]: Number(e.target.value.trim()) })),
     placeholder: key,
   });
   const edit_num_select = (key: keyof IFrameInfo) => ({
-    value: frame[key] as any,
+    value: num_or(frame[key], void 0),
     onChange: (e: React.ChangeEvent<HTMLSelectElement>) => set_frame(p => ({ ...p, [key]: Number(e.target.value.trim()) })),
     placeholder: key,
   });
@@ -201,8 +209,6 @@ export function FrameEditorView(props: IFrameEditorViewProps) {
         const ele = e.target as HTMLElement;
         if (ele.tagName === 'DIV')
           ref_on_click_frame.current?.(frame, data)
-        else
-          console.log(ele.tagName)
       }}>
       <Frame
         style={{
