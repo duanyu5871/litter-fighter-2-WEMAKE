@@ -128,7 +128,7 @@ export default function SettingsRows(props: ISettingsRowsProps) {
         show={props.show_stage_settings !== false}
       >
         <div className="settings_row_title">切换关卡</div>
-        <Titled title="关卡">
+        <Titled label="关卡">
           <Select
             value={stage_id}
             on_changed={(id: string) => lf2.change_stage(id)}
@@ -166,7 +166,7 @@ export default function SettingsRows(props: ISettingsRowsProps) {
         show={props.show_bg_settings !== false}
       >
         <div className="settings_row_title">切换背景</div>
-        <Titled title="背景">
+        <Titled label="背景">
           <Select
             value={bg_id}
             on_changed={(bg_id: string) => lf2.change_bg(bg_id)}
@@ -174,7 +174,7 @@ export default function SettingsRows(props: ISettingsRowsProps) {
             parse={(i) => [i.id, i.base.name]}
           />
         </Titled>
-        <Titled title="BGM">
+        <Titled label="BGM">
           <Select
             value={bgm}
             on_changed={set_bgm}
@@ -182,7 +182,7 @@ export default function SettingsRows(props: ISettingsRowsProps) {
             parse={(i) => [i, i || "OFF"]}
           />
         </Titled>
-        <Titled title="难度">
+        <Titled label="难度">
           <Select
             value={difficulty}
             on_changed={set_difficulty}
@@ -203,7 +203,7 @@ export default function SettingsRows(props: ISettingsRowsProps) {
         show={props.show_weapon_settings !== false}
       >
         <div className="settings_row_title">添加武器</div>
-        <Titled title="数量">
+        <Titled label="数量">
           <Input
             type="number"
             style={{ width: 40 }}
@@ -219,7 +219,7 @@ export default function SettingsRows(props: ISettingsRowsProps) {
             }
           />
         </Titled>
-        <Titled title="类型">
+        <Titled label="类型">
           <Select
             value={weapon_id}
             on_changed={set_weapon_id}
@@ -238,7 +238,7 @@ export default function SettingsRows(props: ISettingsRowsProps) {
       >
         <div className="settings_row_title">添加BOT</div>
 
-        <Titled title="数量">
+        <Titled label="数量">
           <Input
             type="number"
             style={{ width: 40 }}
@@ -255,7 +255,7 @@ export default function SettingsRows(props: ISettingsRowsProps) {
           />
         </Titled>
 
-        <Titled title="角色">
+        <Titled label="角色">
           <CharacterSelect
             lf2={lf2}
             value={c_id}
@@ -263,11 +263,11 @@ export default function SettingsRows(props: ISettingsRowsProps) {
           />
         </Titled>
 
-        <Titled title="队伍">
+        <Titled label="队伍">
           <TeamSelect value={team} on_changed={set_team} />
         </Titled>
 
-        <Titled title="AI">
+        <Titled label="AI">
           <Select
             value={bot_ctrl}
             on_changed={set_bot_ctrl}
@@ -285,7 +285,7 @@ export default function SettingsRows(props: ISettingsRowsProps) {
         {world_writable_properties?.map((v, idx) => {
           let ref: InputRef | null = null;
           return (
-            <Titled title={v.name} key={v.name + "_" + idx}>
+            <Titled label={v.name} key={v.name + "_" + idx}>
               <Combine>
                 <Input
                   ref={(r) => (ref = r)}

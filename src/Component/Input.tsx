@@ -1,6 +1,7 @@
 import classNames from "classnames";
 import React, { useEffect, useMemo, useRef } from "react";
 import "./Input.scss";
+import { clamp } from "three/src/math/MathUtils";
 
 export type BaseProps = React.InputHTMLAttributes<HTMLInputElement>
 export interface InputProps extends Omit<BaseProps, 'prefix' | 'step'> {
@@ -103,17 +104,71 @@ function _Input(props: InputProps, forwarded_Ref: React.ForwardedRef<InputRef>) 
       } else {
         direct_set_value(ele, num_max)
       }
+    } else if (!Number.isNaN(num_min) && num + num_step < num_min) {
+      direct_set_value(ele, num_min)
+    } else if (!Number.isNaN(num_max) && num + num_step > num_max) {
+      direct_set_value(ele, num_max)
     } else {
       direct_set_value(ele, num + num_step)
     }
   }
 
+  const ref_tid = useRef<number>(0);
+
   const steppers = (!step || type !== 'number') ? null :
     <span className='stepper'>
-      <svg xmlns="http://www.w3.org/2000/svg" width={12} height={5} viewBox="0, 0, 12, 5" onClick={() => add_step(1)}>
+      <svg xmlns="http://www.w3.org/2000/svg"
+        width={12} height={5} viewBox="0, 0, 12, 5" onClick={() => add_step(1)}
+        onPointerDown={e => {
+          window.clearTimeout(ref_tid.current)
+          window.clearInterval(ref_tid.current)
+          ref_tid.current = window.setTimeout(() => {
+            window.clearTimeout(ref_tid.current)
+            window.clearInterval(ref_tid.current)
+            ref_tid.current = window.setInterval(() => {
+              add_step(1)
+            }, 50)
+          }, 500)
+        }}
+        onPointerCancel={() => {
+          window.clearTimeout(ref_tid.current)
+          window.clearInterval(ref_tid.current)
+        }}
+        onPointerUp={() => {
+          window.clearTimeout(ref_tid.current)
+          window.clearInterval(ref_tid.current)
+        }}
+        onPointerOut={() => {
+          window.clearTimeout(ref_tid.current)
+          window.clearInterval(ref_tid.current)
+        }}>
         <path d="M 2 5 L 6 1 L 10 5" stroke="currentColor" strokeWidth={1} />
       </svg>
-      <svg xmlns="http://www.w3.org/2000/svg" width={12} height={5} viewBox="0, 0, 12, 5" onClick={() => add_step(-1)}>
+      <svg xmlns="http://www.w3.org/2000/svg"
+        width={12} height={5} viewBox="0, 0, 12, 5" onClick={() => add_step(-1)}
+        onPointerDown={e => {
+          window.clearTimeout(ref_tid.current)
+          window.clearInterval(ref_tid.current)
+          ref_tid.current = window.setTimeout(() => {
+            window.clearTimeout(ref_tid.current)
+            window.clearInterval(ref_tid.current)
+            ref_tid.current = window.setInterval(() => {
+              add_step(-1)
+            }, 100)
+          }, 500)
+        }}
+        onPointerCancel={() => {
+          window.clearTimeout(ref_tid.current)
+          window.clearInterval(ref_tid.current)
+        }}
+        onPointerUp={() => {
+          window.clearTimeout(ref_tid.current)
+          window.clearInterval(ref_tid.current)
+        }}
+        onPointerOut={() => {
+          window.clearTimeout(ref_tid.current)
+          window.clearInterval(ref_tid.current)
+        }}>
         <path d="M 2 0 L 6 4 L 10 0" stroke="currentColor" strokeWidth={1} />
       </svg>
     </span>

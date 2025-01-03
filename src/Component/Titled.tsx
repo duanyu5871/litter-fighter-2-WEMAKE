@@ -1,17 +1,16 @@
 import React from "react";
 import "./Titled.scss";
 
-export interface ITitledProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, 'label' | 'title'> {
+export interface ITitledProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, 'label'> {
   label?: React.ReactNode;
-  title?: React.ReactNode;
 }
 export default function Titled(props: ITitledProps) {
-  const { className, label, title, children, ...p } = props;
+  const { className, label, children, ...p } = props;
   const cn = ["name_content", className].filter(Boolean).join(' ')
   return (
     <div {...p} className={cn}>
       <div>
-        {label ?? title}
+        {label}
       </div>
       {children}
     </div>

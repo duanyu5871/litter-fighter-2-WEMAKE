@@ -6,27 +6,25 @@ import Select from "../../Component/Select";
 import { Space } from "../../Component/Space";
 import { TextArea } from "../../Component/TextArea";
 import Titled from "../../Component/Titled";
-import { IItrInfo } from "../../LF2/defines";
-import { ITR_EFFECT_SELECT_PROPS, ITR_KIND_SELECT_PROPS } from "../EntityEditorView";
-export interface IItrEditorViewProps {
+import { IBdyInfo } from "../../LF2/defines";
+import { BDY_KIND_SELECT_PROPS } from "../EntityEditorView";
+
+export interface IBdyEditorViewProps {
   label: string;
-  value: IItrInfo;
-  onChange?(value: IItrInfo): void;
+  value: IBdyInfo;
+  onChange?(value: IBdyInfo): void;
   onRemove?(): void;
 }
-export function ItrEditorView(props: IItrEditorViewProps) {
-  const { value, onRemove, onChange, label } = props;
+export function BdyEditorView(props: IBdyEditorViewProps) {
+  const { label, value, onRemove, onChange } = props;
   return (
-    <Frame tabIndex={-1} label={label}>
+    <Frame key={label} label={label} tabIndex={-1}>
       <Button style={{ position: 'absolute', right: 0, top: 0, border: 'none' }} onClick={onRemove}>
         🗑️
       </Button>
       <Space direction="column">
         <Titled label='　　状态'>
-          <Select {...ITR_KIND_SELECT_PROPS} value={value.kind} on_changed={v => onChange?.({ ...value, kind: v })} />
-        </Titled>
-        <Titled label='　　效果'>
-          <Select {...ITR_EFFECT_SELECT_PROPS} value={value.effect} on_changed={v => onChange?.({ ...value, effect: v })} />
+          <Select {...BDY_KIND_SELECT_PROPS} />
         </Titled>
         <Titled label='碰撞测试' style={{ display: 'flex' }}>
           <TextArea style={{ flex: 1, resize: 'vertical' }} value={value.test} onChange={e => onChange?.({ ...value, test: e.target.value })} />

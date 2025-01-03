@@ -152,7 +152,8 @@ export default function EditorView(props: IEditorViewProps) {
     shape_data.layer = board.layer().id;
     shape_data.id = 'frame';
     shape_data.z = factory.newZ(shape_data);
-    Object.assign(shape_data, FrameDrawer.get_size(frame))
+    const { w, h } = FrameDrawer.get_size(frame);
+    Object.assign(shape_data, { w: w * 2, h: h * 2 })
 
     let shape = board.shapes().find(v => v.data.id === 'frame') as FrameDrawer | undefined;
     if (!shape) {
@@ -163,8 +164,8 @@ export default function EditorView(props: IEditorViewProps) {
       if (shape.data.frame) {
         const a = FrameDrawer.get_bounding(shape.data.frame)
         const b = FrameDrawer.get_bounding(shape_data.frame)
-        x += (a.l + shape.data.frame.centerx) - (b.l + shape_data.frame.centerx)
-        y += (a.t + shape.data.frame.centery) - (b.t + shape_data.frame.centery)
+        x += ((a.l + shape.data.frame.centerx) - (b.l + shape_data.frame.centerx)) * 2
+        y += ((a.t + shape.data.frame.centery) - (b.t + shape_data.frame.centery)) * 2
       }
       shape_data.x = x
       shape_data.y = y
@@ -274,11 +275,11 @@ export default function EditorView(props: IEditorViewProps) {
             space
             style={{ display: 'flex', flexDirection: 'column', flexFlow: 'column' }}>
             <Space>
-              <Titled title="mp3"><Checkbox value={state.mp3} onChanged={v => set_state(o => ({ ...o, mp3: v }))} /></Titled>
-              <Titled title="flat"><Checkbox value={state.flat} onChanged={v => set_state(o => ({ ...o, flat: v }))} /></Titled>
-              <Titled title="json"><Checkbox value={state.json} onChanged={v => set_state(o => ({ ...o, json: v }))} /></Titled>
-              <Titled title="img"><Checkbox value={state.img} onChanged={v => set_state(o => ({ ...o, img: v }))} /></Titled>
-              <Titled title="others"><Checkbox value={state.others} onChanged={v => set_state(o => ({ ...o, others: v }))} /></Titled>
+              <Titled label="mp3"><Checkbox value={state.mp3} onChanged={v => set_state(o => ({ ...o, mp3: v }))} /></Titled>
+              <Titled label="flat"><Checkbox value={state.flat} onChanged={v => set_state(o => ({ ...o, flat: v }))} /></Titled>
+              <Titled label="json"><Checkbox value={state.json} onChanged={v => set_state(o => ({ ...o, json: v }))} /></Titled>
+              <Titled label="img"><Checkbox value={state.img} onChanged={v => set_state(o => ({ ...o, img: v }))} /></Titled>
+              <Titled label="others"><Checkbox value={state.others} onChanged={v => set_state(o => ({ ...o, others: v }))} /></Titled>
             </Space>
             <Space.Item style={{
               flexGrow: 1,

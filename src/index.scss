@@ -87,11 +87,10 @@ textarea {
   background-color: transparent;
   font-weight     : bold;
   outline         : none;
-  transition      :
-    color 200ms,
-    border-color 200ms,
-    background-color 200ms,
-    border-radius 500ms;
+  transition      : color 200ms, border-color 200ms, background-color 200ms, border-radius 500ms;
+  min-height      : 25px;
+  height          : 25px;
+  box-sizing      : border-box;
 }
 
 textarea {

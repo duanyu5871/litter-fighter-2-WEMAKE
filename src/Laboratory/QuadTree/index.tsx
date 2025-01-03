@@ -230,15 +230,15 @@ export default function QuadTreeView() {
   return (
     <div>
       <div style={{ display: "flex", gap: 5 }}>
-        <Titled title="fps:">
+        <Titled label="fps:">
           {" "}
           <div ref={ref_div_fps} />{" "}
         </Titled>
-        <Titled title="count:">
+        <Titled label="count:">
           {" "}
           <div ref={ref_div_count} />{" "}
         </Titled>
-        <Titled title="capacity:">
+        <Titled label="capacity:">
           <Input
             placeholder="capacity"
             type="number"
@@ -254,7 +254,7 @@ export default function QuadTreeView() {
             }}
           />
         </Titled>
-        <Titled title="add:">
+        <Titled label="add:">
           <Combine>
             <Input type="number" ref={ref_input_num_of_add} />
             <Button

@@ -18,9 +18,11 @@ import { ITR_KIND_SELECT_PROPS, SPEED_MODE_SELECT_PROPS, STATE_SELECT_PROPS } fr
 import { ItrEditorView } from "./ItrEditorView";
 import styles from "./styles.module.scss";
 import { is_num, num_or } from "../../LF2/utils/type_check";
+import { BdyEditorView } from "./BdyEditorView";
 
 enum TabEnum {
   Base = 'base',
+  Spd = 'spd',
   Itr = 'itr',
   Bdy = 'bdy',
   Cpoint = 'cpoint',
@@ -29,6 +31,7 @@ enum TabEnum {
 }
 const tab_labels: Record<TabEnum, string> = {
   [TabEnum.Base]: "基础",
+  [TabEnum.Spd]: "速度",
   [TabEnum.Itr]: "攻击",
   [TabEnum.Bdy]: "身体",
   [TabEnum.Cpoint]: "持械",
@@ -219,7 +222,7 @@ export function FrameEditorView(props: IFrameEditorViewProps) {
           flexDirection: 'column',
           gap: 5
         }}>
-        <Titled title='　　　　动作'>
+        <Titled label='　　　　动作'>
           <Combine>
             <Input {...edit_string('id')} disabled={!editing} style={{ width: 80 }} />
             <Input {...edit_string('name')} disabled={!editing} style={{ width: 150 }} />
@@ -238,66 +241,73 @@ export function FrameEditorView(props: IFrameEditorViewProps) {
           parse={v => [v, tab_labels[v]]}
           onChange={v => set_editing(prev => v === prev ? void 0 : v)} />
         <Show show={editing === 'base'}>
-          <Titled title='　　　　状态'>
+          <Titled label='　　状态'>
             <Combine>
               <Select
                 {...STATE_SELECT_PROPS}
                 {...edit_num_select('state')} />
             </Combine>
           </Titled>
-          <Titled title='　　　　锚点'>
-            <Combine>
-              <Input {...edit_int('centerx')} placeholder="x" style={{ width: 80 }} />
-              <Input {...edit_int('centery')} placeholder="y" style={{ width: 80 }} />
-            </Combine>
-          </Titled>
-          <Titled title='　　　　下帧'>
-            <Combine>
-              <Input {...edit_uint('wait')}
-                title="当前动作持续多少帧数"
+          <Space direction="row">
+            <Titled label='　　锚点'>
+              <Combine>
+                <Input {...edit_int('centerx')} placeholder="x" style={{ width: 50 }} clearable={false} />
+                <Input {...edit_int('centery')} placeholder="y" style={{ width: 50 }} clearable={false} />
+              </Combine>
+            </Titled>
+            <Titled label='持续帧数' title="当前动作持续多少帧数">
+              <Input
+                {...edit_uint('wait')}
                 placeholder="wait"
+                clearable={false}
                 style={{ width: 50, boxSizing: 'border-box' }} />
+            </Titled>
+          </Space>
+          <Titled label='持续帧数'>
+            <Combine>
               <Combine direction='column'>
                 {next_frame_selects}
               </Combine>
             </Combine>
           </Titled>
-          <Titled title='　　　　速度'>
+        </Show>
+        <Show show={editing === TabEnum.Spd}>
+          <Titled label='　　　　速度'>
             <Combine>
               <Input {...edit_number_00('dvx')} prefix="x" style={{ width: 80 }} />
               <Input {...edit_number_00('dvy')} prefix="y" style={{ width: 80 }} />
               <Input {...edit_number_00('dvz')} prefix="z" style={{ width: 80 }} />
             </Combine>
           </Titled>
-          <Titled title='　　　加速度'>
+          <Titled label='　　　加速度'>
             <Combine>
               <Input {...edit_number_00('acc_x')} prefix="x" style={{ width: 80 }} />
               <Input {...edit_number_00('acc_y')} prefix="y" style={{ width: 80 }} />
               <Input {...edit_number_00('acc_z')} prefix="z" style={{ width: 80 }} />
             </Combine>
           </Titled>
-          <Titled title='　　速度模式'>
+          <Titled label='　　速度模式'>
             <Combine>
               <Select {...SPEED_MODE_SELECT_PROPS} {...edit_num_select('vxm')} style={{ width: 80, boxSizing: 'border-box' }} />
               <Select {...SPEED_MODE_SELECT_PROPS} {...edit_num_select('vym')} style={{ width: 80, boxSizing: 'border-box' }} />
               <Select {...SPEED_MODE_SELECT_PROPS} {...edit_num_select('vzm')} style={{ width: 80, boxSizing: 'border-box' }} />
             </Combine>
           </Titled>
-          <Titled title='　　操作速度'>
+          <Titled label='　　操作速度'>
             <Combine>
               <Input {...edit_number_00('ctrl_spd_x')} prefix="x" style={{ width: 80 }} />
               <Input {...edit_number_00('ctrl_spd_y')} prefix="y" style={{ width: 80 }} />
               <Input {...edit_number_00('ctrl_spd_z')} prefix="z" style={{ width: 80 }} />
             </Combine>
           </Titled>
-          <Titled title='　操作加速度'>
+          <Titled label='　操作加速度'>
             <Combine>
               <Input {...edit_number_00('ctrl_acc_x')} prefix="x" style={{ width: 80 }} />
               <Input {...edit_number_00('ctrl_acc_y')} prefix="y" style={{ width: 80 }} />
               <Input {...edit_number_00('ctrl_acc_z')} prefix="z" style={{ width: 80 }} />
             </Combine>
           </Titled>
-          <Titled title='操作速度模式'>
+          <Titled label='操作速度模式'>
             <Combine>
               <Select {...SPEED_MODE_SELECT_PROPS} {...edit_num_select('ctrl_spd_x_m')} style={{ width: 80, boxSizing: 'border-box' }} />
               <Select {...SPEED_MODE_SELECT_PROPS} {...edit_num_select('ctrl_spd_y_m')} style={{ width: 80, boxSizing: 'border-box' }} />
@@ -319,7 +329,7 @@ export function FrameEditorView(props: IFrameEditorViewProps) {
           </Button>
           {
             frame.itr && map_arr(frame.itr, (itr, idx) => {
-              const name = `itr_${idx}`;
+              const name = `itr[${idx}]`;
               const on_change = (itr: IItrInfo) => set_frame(prev => {
                 const next: IFrameInfo = { ...prev }
                 if (next.itr) {
@@ -364,48 +374,34 @@ export function FrameEditorView(props: IFrameEditorViewProps) {
           </Button>
           {
             frame.bdy && map_arr(frame.bdy, (bdy, idx) => {
-              const name = `bdy_${idx}`
+              const name = `bdy[${idx}]`;
+              const on_change = (bdy: IBdyInfo) => set_frame(prev => {
+                const next: IFrameInfo = { ...prev }
+                if (next.bdy) {
+                  next.bdy[idx] = bdy
+                  next.bdy = [...next.bdy]
+                }
+                return next
+              })
+              const on_remove = () => set_frame(prev => {
+                const next: IFrameInfo = { ...prev };
+                next.bdy?.splice(idx, 1)
+                if (next.bdy?.length) next.bdy = [...next.bdy]
+                if (!next.bdy?.length) delete next.bdy;
+                return next;
+              })
               return (
-                <Frame key={name} label={name} tabIndex={-1}>
-                  <Button style={{ position: 'absolute', right: 0, top: 0, border: 'none' }}
-                    onClick={() => {
-                      set_frame(prev => {
-                        const next: IFrameInfo = { ...prev };
-                        next.bdy?.splice(idx, 1)
-                        if (next.bdy?.length) next.bdy = [...next.bdy]
-                        if (!next.bdy?.length) delete next.bdy;
-                        return next;
-                      })
-                    }}>
-                    🗑️
-                  </Button>
-                  <Space direction="column">
-                    <Titled title='　状态'>
-                      <Select {...ITR_KIND_SELECT_PROPS} />
-                    </Titled>
-                    <Titled title='　　盒'>
-                      <Combine direction="column">
-                        <Combine>
-                          <Input type="number" value={bdy.x} title="x" placeholder="x" style={{ width: 80 }} />
-                          <Input type="number" value={bdy.y} title="y" placeholder="y" style={{ width: 80 }} />
-                          <Input type="number" value={bdy.z} title="z" placeholder="z" style={{ width: 80 }} />
-                        </Combine>
-                        <Combine>
-                          <Input type="number" value={bdy.w} title="w" placeholder="w" style={{ width: 80 }} />
-                          <Input type="number" value={bdy.h} title="h" placeholder="h" style={{ width: 80 }} />
-                          <Input type="number" value={bdy.l} title="l" placeholder="l" style={{ width: 80 }} />
-                        </Combine>
-                      </Combine>
-                    </Titled>
-                  </Space>
-                </Frame>
+                <BdyEditorView
+                  key={name}
+                  label={name}
+                  value={bdy}
+                  onChange={on_change}
+                  onRemove={on_remove} />
               )
             })
           }
-
         </Show>
       </Frame>
     </Combine>
   );
 }
-

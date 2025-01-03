@@ -1,7 +1,6 @@
-import { Resizable, Shape, ShapeData } from "@fimagine/writeboard";
+import { IRect, Resizable, Shape, ShapeData } from "@fimagine/writeboard";
 import { IBdyInfo, ICpointInfo, IFrameInfo, IFramePictureInfo, IItrInfo, IOpointInfo, IWpointInfo } from "../LF2/defines";
 import { IEntityData } from "../LF2/defines/IEntityData";
-import { IRect } from "../LF2/defines/IRect";
 import { IZip } from "../LF2/ditto";
 import { loop_arr } from "../LF2/utils/array/loop_arr";
 import { EditorShapeEnum } from "./EditorShapeEnum";
@@ -198,14 +197,13 @@ export class FrameDrawer extends Shape<FrameDrawerData> {
       }
       img.addEventListener('load', on_load, { once: true });
       img.addEventListener('error', on_error, { once: true });
-
     })
   }
+
   override render(ctx: CanvasRenderingContext2D): void {
     this.beginDraw(ctx);
-
+    ctx.scale(2, 2);
     const { frame, data, zip } = this.data;
-
     if (!this.data.img && frame?.pic?.tex && data && zip) {
       this.get_img(zip, data, frame.pic.tex).then((img) => {
         this.beginDirty()
@@ -229,6 +227,7 @@ export class FrameDrawer extends Shape<FrameDrawerData> {
       this.draw_center(ctx, frame);
     }
     this.endDraw(ctx);
+
     super.render(ctx)
   }
 }

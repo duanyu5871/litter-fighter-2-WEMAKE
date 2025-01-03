@@ -557,7 +557,7 @@ function App() {
               />
             </Show>
           </Combine>
-          <Titled title="重力">
+          <Titled label="重力">
             <Combine>
               <Input
                 type="number"
@@ -584,7 +584,7 @@ function App() {
             items={layouts}
             parse={(o) => [o.id!, o.name]}
           />
-          <Titled title="Mode">
+          <Titled label="Mode">
             <Select
               value={render_size_mode}
               on_changed={set_render_size_mode}
@@ -592,7 +592,7 @@ function App() {
             />
           </Titled>
           <Show show={render_size_mode === "fixed"}>
-            <Titled title="缩放">
+            <Titled label="缩放">
               <Combine>
                 <Select
                   value={render_fixed_scale}
@@ -617,7 +617,7 @@ function App() {
           </Show>
 
           <Show show={render_size_mode !== "fill"}>
-            <Titled title="对齐">
+            <Titled label="对齐">
               <Combine className="render_align">
                 <Select
                   value={v_align}
