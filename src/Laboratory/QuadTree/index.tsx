@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Vector2 as __Vector2, Vector2 } from "three";
 import { Button } from "../../Component/Buttons/Button";
 import Combine from "../../Component/Combine";
-import { Input } from "../../Component/Input";
+import { Input, InputRef } from "../../Component/Input";
 import Titled from "../../Component/Titled";
 import { __Render } from "../../DittoImpl";
 import FPS from "../../LF2/base/FPS";
@@ -128,7 +128,7 @@ export default function QuadTreeView() {
   const ref_mouse_down_pos = useRef(new Vector2());
   const ref_mouse_pos = useRef(new Vector2());
   const ref_buggy_items = useRef<Item[]>([]);
-  const ref_input_num_of_add = useRef<HTMLInputElement>(null);
+  const ref_input_num_of_add = useRef<InputRef>(null);
   const ref_div_fps = useRef<HTMLDivElement>(null);
   const ref_div_count = useRef<HTMLDivElement>(null);
 
@@ -227,7 +227,6 @@ export default function QuadTreeView() {
       document.removeEventListener("mouseup", on_mouseup);
     };
   }, [render_once]);
-  const ref_input_capacity = useRef<HTMLInputElement>(null);
   return (
     <div>
       <div style={{ display: "flex", gap: 5 }}>
@@ -242,7 +241,6 @@ export default function QuadTreeView() {
         <Titled title="capacity:">
           <Input
             placeholder="capacity"
-            _ref={ref_input_capacity}
             type="number"
             defaultValue={CAPACITY}
             min={0}
@@ -258,7 +256,7 @@ export default function QuadTreeView() {
         </Titled>
         <Titled title="add:">
           <Combine>
-            <Input type="number" _ref={ref_input_num_of_add} />
+            <Input type="number" ref={ref_input_num_of_add} />
             <Button
               onClick={() => {
                 const len = Number(ref_input_num_of_add.current?.value);

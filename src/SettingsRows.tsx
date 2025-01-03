@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Button } from "./Component/Buttons/Button";
 import CharacterSelect from "./Component/CharacterSelect";
 import Combine from "./Component/Combine";
-import { Input } from "./Component/Input";
+import { Input, InputRef } from "./Component/Input";
 import Select from "./Component/Select";
 import Show from "./Component/Show";
 import TeamSelect from "./Component/TeamSelect";
@@ -283,12 +283,12 @@ export default function SettingsRows(props: ISettingsRowsProps) {
         show={props.show_world_tuning !== false}
       >
         {world_writable_properties?.map((v, idx) => {
-          let ref: HTMLInputElement | null = null;
+          let ref: InputRef | null = null;
           return (
             <Titled title={v.name} key={v.name + "_" + idx}>
               <Combine>
                 <Input
-                  _ref={(r) => (ref = r)}
+                  ref={(r) => (ref = r)}
                   type="number"
                   style={{ width: 50 }}
                   step={0.01}

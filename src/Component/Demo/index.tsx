@@ -5,6 +5,7 @@ import { Space } from "../Space";
 import { StatusButton } from "../Buttons/StatusButton";
 import { ToggleButton } from "../Buttons/ToggleButton";
 import Select from "../Select";
+import { Input } from "../Input";
 
 export default function ComponentDemo() {
   return (
@@ -18,11 +19,9 @@ export default function ComponentDemo() {
             <>切换1</>
             <>切换2</>
           </ToggleButton>
-
           <StatusButton items={['状态1', '状态2', '状态3']} defaultValue="状态1" />
         </Space>
       </Frame>
-
       <Frame label='Combine'>
         <Space>
           <Combine direction='column'>
@@ -169,7 +168,22 @@ export default function ComponentDemo() {
 
       <Frame label='Select'>
         <Space>
-          <Select items={['option 0', 'option 1']}/>
+          <Select items={['option 0', 'option 1']} />
+        </Space>
+      </Frame>
+
+      <Frame label='Input'>
+        <Space direction='column'>
+          <Input
+            prefix='prefix'
+            placeholder="placeholder"
+            suffix="suffix" />
+          <Input
+            prefix='prefix'
+            placeholder="placeholder"
+            suffix="suffix"
+            onChange={e => console.log(e)} />
+          <Input />
         </Space>
       </Frame>
     </Space>
