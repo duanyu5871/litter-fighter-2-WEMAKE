@@ -56,7 +56,7 @@ function _Input(props: InputProps, forwarded_Ref: React.ForwardedRef<InputRef>) 
     }
     ele_root.addEventListener('pointerdown', on_root_pointerdown)
 
-    const on_input_change = () => set_is_emtpy(!!ele_input.value.length)
+    const on_input_change = () => set_is_emtpy(!ele_input.value.length)
     ele_input.addEventListener('input', on_input_change)
 
     return () => {
