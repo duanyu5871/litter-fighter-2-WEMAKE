@@ -1,13 +1,14 @@
 import classNames from "classnames";
-import React, { ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import "./Input.scss";
 
 export type BaseProps = React.InputHTMLAttributes<HTMLInputElement>
-export interface InputProps extends Omit<BaseProps, 'prefix'> {
+export interface InputProps extends Omit<BaseProps, 'prefix' | 'step'> {
   prefix?: React.ReactNode;
   suffix?: React.ReactNode;
   clear_icon?: React.ReactNode;
   clearable?: boolean;
+  step?: number;
   clazz?: {
     suffix?: string;
     prefix?: string;
@@ -19,9 +20,24 @@ export interface InputRef {
   readonly input: HTMLInputElement | null;
   value: string | undefined;
 }
+
+function direct_set_value(ele: HTMLInputElement | null, value: string | number) {
+  if (!ele) return;
+  const { set } = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value") || {};
+  if (set) {
+    set?.call(ele, '' + value);
+  } else {
+    ele.value = '' + value;
+  }
+  const ev = new InputEvent('input', { bubbles: true });
+  (ev as any).simulated = true;
+  ele.dispatchEvent(ev);
+
+}
+
 function _Input(props: InputProps, forwarded_Ref: React.ForwardedRef<InputRef>) {
-  const { className, prefix, suffix, clear_icon = '×', clazz, clearable = true, ..._p } = props;
-  const root_cls_name = classNames('lf2ui_input', className);
+  const { className, prefix, suffix, clear_icon = '×', style, clazz, clearable = true, ..._p } = props;
+  const root_cls_name = classNames('lf2_hoverable_border', 'lf2ui_input', className);
   const prefix_cls_name = classNames('lf2ui_input_prefix', clazz?.prefix);
   const input_cls_name = classNames('lf2ui_input_input', clazz?.input);
   const suffix_cls_name = classNames('lf2ui_input_suffix', clazz?.suffix);
@@ -30,7 +46,7 @@ function _Input(props: InputProps, forwarded_Ref: React.ForwardedRef<InputRef>) 
   const ref_input = useRef<HTMLInputElement>(null);
   const ref_root = useRef<HTMLSpanElement>(null);
   const ref_icon = useRef<HTMLButtonElement>(null);
-  const [is_empty, set_is_emtpy] = useState<boolean>(!!props.value || !!props.defaultValue);
+  const [is_empty, set_is_emtpy] = useState<boolean>(!(props.value || props.defaultValue));
 
   useMemo<InputRef>(() => {
     const ret = {
@@ -55,40 +71,62 @@ function _Input(props: InputProps, forwarded_Ref: React.ForwardedRef<InputRef>) 
         setTimeout(() => ele_input.focus(), 1)
     }
     ele_root.addEventListener('pointerdown', on_root_pointerdown)
-
     const on_input_change = () => set_is_emtpy(!ele_input.value.length)
     ele_input.addEventListener('input', on_input_change)
-
     return () => {
       ele_root.removeEventListener('pointerdown', on_root_pointerdown)
       ele_input.removeEventListener('input', on_input_change)
     }
   }, []);
 
-  const on_click_clear = () => {
+  const { type, step, min, max } = props;
+  const add_step = (direction: -1 | 1) => {
+    if (!step) return;
     const ele = ref_input.current;
-    if (ele) {
-      const { set } = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value") || {};
-      if (set) {
-        set?.call(ele, '');
+    const num = Number(ref_input.current?.value);
+    const num_min = Number(min)
+    const num_max = Number(max)
+    const num_step = step * direction
+    if (Number.isNaN(num)) {
+      if (num_step > 0) {
+        if (Number.isNaN(num_min)) {
+          direct_set_value(ele, '0')
+        } else {
+          direct_set_value(ele, num_min)
+        }
+      } else if (Number.isNaN(num_max)) {
+        direct_set_value(ele, '0')
       } else {
-        ele.value = ''
+        direct_set_value(ele, num_max)
       }
-      const ev = new InputEvent('input', { bubbles: true });
-      (ev as any).simulated = true;
-      ele.dispatchEvent(ev);
+    } else {
+      direct_set_value(ele, num + num_step)
     }
   }
 
+
+
+
   return (
-    <span className={root_cls_name} ref={ref_root}>
+    <span className={root_cls_name} ref={ref_root} style={style}>
       {prefix ? <span className={prefix_cls_name}>{prefix}</span> : null}
       <input className={input_cls_name} ref={ref_input} {..._p} />
       {suffix ? <span className={suffix_cls_name}>{suffix}</span> : null}
       {
+        (!step && type === 'number') ? null :
+          <span className='stepper'>
+            <svg xmlns="http://www.w3.org/2000/svg" width={12} height={5} viewBox="0, 0, 12, 5" onClick={() => add_step(1)}>
+              <path d="M 2 5 L 6 1 L 10 5" stroke="currentColor" strokeWidth={1} />
+            </svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width={12} height={5} viewBox="0, 0, 12, 5" onClick={() => add_step(-1)}>
+              <path d="M 2 0 L 6 4 L 10 0" stroke="currentColor" strokeWidth={1} />
+            </svg>
+          </span>
+      }
+      {
         !(!is_empty && clearable && clear_icon) ? null :
           <button className={clear_icon_cls_name} ref={ref_icon} tabIndex={-1}
-            onClick={on_click_clear}>
+            onClick={() => direct_set_value(ref_input.current, '')}>
             {clear_icon}
           </button>
       }

@@ -5,11 +5,23 @@ import { Space } from "../Space";
 import { StatusButton } from "../Buttons/StatusButton";
 import { ToggleButton } from "../Buttons/ToggleButton";
 import Select from "../Select";
-import { Input } from "../Input";
+import { Input, InputProps } from "../Input";
 
 export default function ComponentDemo() {
   return (
     <Space>
+
+      <Frame label='Input'>
+        <Space direction='column'>
+          <Input type="number" step={1} />
+          <Input type="number" step={1} prefix='prefix' />
+          <Input type="number" step={1} placeholder="placeholder" />
+          <Input type="number" step={1} suffix="placeholder" />
+          <Input type="number" step={1} prefix='prefix' placeholder="placeholder" />
+          <Input type="number" step={1} placeholder="placeholder" suffix="suffix" />
+          <Input type="number" step={1} prefix='prefix' placeholder="placeholder" suffix="suffix" />
+        </Space>
+      </Frame>
       <Frame label='Button'>
         <Space>
           <Button>
@@ -165,28 +177,22 @@ export default function ComponentDemo() {
           </Combine>
         </Space>
       </Frame>
-
       <Frame label='Select'>
         <Space>
           <Select items={['option 0', 'option 1']} />
         </Space>
       </Frame>
-
       <Frame label='Input'>
         <Space direction='column'>
-          <Input
-            prefix='prefix'
-            placeholder="placeholder"
-            suffix="suffix" />
-          <Input
-            prefix='prefix'
-            placeholder="placeholder"
-            suffix="suffix"
-            onChange={e => console.log(e)} />
           <Input />
+          <Input prefix='prefix' />
+          <Input placeholder="placeholder" />
+          <Input suffix="placeholder" />
+          <Input prefix='prefix' placeholder="placeholder" />
+          <Input placeholder="placeholder" suffix="suffix" />
+          <Input prefix='prefix' placeholder="placeholder" suffix="suffix" />
         </Space>
       </Frame>
     </Space>
-
   )
 }
