@@ -2044,7 +2044,7 @@
           "vrest": 3,
           "l": 24,
           "z": -12,
-          "friendly_fire": 1,
+          "ally_flags": 1,
           "motionless": 0,
           "shaking": 0,
           "test": "attacker_has_holder==0&victim_has_holder==0&(victim_state==1004|victim_state==2004)"
@@ -2144,7 +2144,7 @@
           "vrest": 3,
           "l": 24,
           "z": -12,
-          "friendly_fire": 1,
+          "ally_flags": 1,
           "motionless": 0,
           "shaking": 0,
           "test": "attacker_has_holder==0&victim_has_holder==0&(victim_state==1004|victim_state==2004)"
@@ -2786,9 +2786,14 @@
           "l": 24,
           "z": -12,
           "kind": 2000,
-          "break_act": {
-            "id": "112"
-          }
+          "actions": [
+            {
+              "type": "broken_defend",
+              "data": {
+                "id": "112"
+              }
+            }
+          ]
         },
         {
           "x": 28,
@@ -2798,9 +2803,14 @@
           "l": 24,
           "z": -12,
           "kind": 2000,
-          "break_act": {
-            "id": "112"
-          }
+          "actions": [
+            {
+              "type": "broken_defend",
+              "data": {
+                "id": "112"
+              }
+            }
+          ]
         }
       ],
       "wpoint": {
@@ -2887,7 +2897,7 @@
           "vrest": 3,
           "l": 24,
           "z": -12,
-          "friendly_fire": 1,
+          "ally_flags": 1,
           "motionless": 0,
           "shaking": 0,
           "test": "attacker_has_holder==0&victim_has_holder==0&victim_state==1004"
@@ -2929,7 +2939,7 @@
           "vrest": 3,
           "l": 24,
           "z": -12,
-          "friendly_fire": 1,
+          "ally_flags": 1,
           "motionless": 0,
           "shaking": 0,
           "test": "attacker_has_holder==0&victim_has_holder==0&victim_state==1004"
@@ -2971,7 +2981,7 @@
           "vrest": 3,
           "l": 24,
           "z": -12,
-          "friendly_fire": 1,
+          "ally_flags": 1,
           "motionless": 0,
           "shaking": 0,
           "test": "attacker_has_holder==0&victim_has_holder==0&victim_state==1004"
@@ -3013,7 +3023,7 @@
           "vrest": 3,
           "l": 24,
           "z": -12,
-          "friendly_fire": 1,
+          "ally_flags": 1,
           "motionless": 0,
           "shaking": 0,
           "test": "attacker_has_holder==0&victim_has_holder==0&victim_state==1004"
@@ -3055,7 +3065,7 @@
           "vrest": 3,
           "l": 24,
           "z": -12,
-          "friendly_fire": 1,
+          "ally_flags": 1,
           "motionless": 0,
           "shaking": 0,
           "test": "attacker_has_holder==0&victim_has_holder==0&victim_state==1004"
@@ -3097,7 +3107,7 @@
           "vrest": 3,
           "l": 24,
           "z": -12,
-          "friendly_fire": 1,
+          "ally_flags": 1,
           "motionless": 0,
           "shaking": 0,
           "test": "attacker_has_holder==0&victim_has_holder==0&victim_state==1004"
@@ -3187,12 +3197,20 @@
           "l": 24,
           "z": -12,
           "kind": 2000,
-          "break_act": {
-            "id": "112"
-          },
-          "hit_act": {
-            "id": "111"
-          }
+          "actions": [
+            {
+              "type": "broken_defend",
+              "data": {
+                "id": "112"
+              }
+            },
+            {
+              "type": "defend",
+              "data": {
+                "id": "111"
+              }
+            }
+          ]
         }
       ],
       "wpoint": {
@@ -3277,12 +3295,20 @@
           "l": 24,
           "z": -12,
           "kind": 2000,
-          "break_act": {
-            "id": "112"
-          },
-          "hit_act": {
-            "id": "111"
-          }
+          "actions": [
+            {
+              "type": "broken_defend",
+              "data": {
+                "id": "112"
+              }
+            },
+            {
+              "type": "defend",
+              "data": {
+                "id": "111"
+              }
+            }
+          ]
         }
       ],
       "wpoint": {
@@ -4303,7 +4329,7 @@
           "bdefend": 20,
           "l": 24,
           "z": -12,
-          "friendly_fire": 1,
+          "ally_flags": 1,
           "test": "attacker_threw==1&attacker_type==character"
         }
       ],
@@ -4356,7 +4382,7 @@
           "bdefend": 20,
           "l": 24,
           "z": -12,
-          "friendly_fire": 1,
+          "ally_flags": 1,
           "test": "attacker_threw==1&attacker_type==character"
         },
         {
@@ -4372,7 +4398,7 @@
           "bdefend": 20,
           "l": 24,
           "z": -12,
-          "friendly_fire": 1,
+          "ally_flags": 1,
           "test": "attacker_threw==1&attacker_type==character"
         }
       ],
@@ -4425,7 +4451,7 @@
           "bdefend": 20,
           "l": 24,
           "z": -12,
-          "friendly_fire": 1,
+          "ally_flags": 1,
           "test": "attacker_threw==1&attacker_type==character"
         }
       ],
@@ -4486,7 +4512,7 @@
           "bdefend": 20,
           "l": 24,
           "z": -12,
-          "friendly_fire": 1,
+          "ally_flags": 1,
           "test": "attacker_threw==1&attacker_type==character"
         },
         {
@@ -4502,7 +4528,7 @@
           "bdefend": 20,
           "l": 24,
           "z": -12,
-          "friendly_fire": 1,
+          "ally_flags": 1,
           "test": "attacker_threw==1&attacker_type==character"
         }
       ],
@@ -4601,7 +4627,7 @@
           "bdefend": 20,
           "l": 24,
           "z": -12,
-          "friendly_fire": 1,
+          "ally_flags": 1,
           "test": "attacker_threw==1&attacker_type==character"
         }
       ],
@@ -4654,7 +4680,7 @@
           "bdefend": 20,
           "l": 24,
           "z": -12,
-          "friendly_fire": 1,
+          "ally_flags": 1,
           "test": "attacker_threw==1&attacker_type==character"
         },
         {
@@ -4670,7 +4696,7 @@
           "bdefend": 20,
           "l": 24,
           "z": -12,
-          "friendly_fire": 1,
+          "ally_flags": 1,
           "test": "attacker_threw==1&attacker_type==character"
         }
       ],
@@ -4723,7 +4749,7 @@
           "bdefend": 20,
           "l": 24,
           "z": -12,
-          "friendly_fire": 1,
+          "ally_flags": 1,
           "test": "attacker_threw==1&attacker_type==character"
         }
       ],
@@ -4784,7 +4810,7 @@
           "bdefend": 20,
           "l": 24,
           "z": -12,
-          "friendly_fire": 1,
+          "ally_flags": 1,
           "test": "attacker_threw==1&attacker_type==character"
         },
         {
@@ -4800,7 +4826,7 @@
           "bdefend": 20,
           "l": 24,
           "z": -12,
-          "friendly_fire": 1,
+          "ally_flags": 1,
           "test": "attacker_threw==1&attacker_type==character"
         }
       ],
@@ -4933,7 +4959,7 @@
           "vrest": 2,
           "l": 24,
           "z": -12,
-          "friendly_fire": 1,
+          "ally_flags": 1,
           "motionless": 0,
           "shaking": 0,
           "test": "bdy_kind==0"
@@ -5030,7 +5056,7 @@
           "l": 24,
           "z": -12,
           "test": "(victim_state!=1004|attacker_type!=character)&victim_type!=character|(victim_state!=19&victim_state!=18)",
-          "friendly_fire": 1
+          "ally_flags": 1
         }
       ],
       "wpoint": {
@@ -5086,7 +5112,7 @@
           "l": 24,
           "z": -12,
           "test": "(victim_state!=1004|attacker_type!=character)&victim_type!=character|(victim_state!=19&victim_state!=18)",
-          "friendly_fire": 1
+          "ally_flags": 1
         }
       ],
       "wpoint": {
@@ -5142,7 +5168,7 @@
           "l": 24,
           "z": -12,
           "test": "(victim_state!=1004|attacker_type!=character)&victim_type!=character|(victim_state!=19&victim_state!=18)",
-          "friendly_fire": 1
+          "ally_flags": 1
         }
       ],
       "wpoint": {
@@ -5198,7 +5224,7 @@
           "l": 24,
           "z": -12,
           "test": "(victim_state!=1004|attacker_type!=character)&victim_type!=character|(victim_state!=19&victim_state!=18)",
-          "friendly_fire": 1
+          "ally_flags": 1
         }
       ],
       "wpoint": {

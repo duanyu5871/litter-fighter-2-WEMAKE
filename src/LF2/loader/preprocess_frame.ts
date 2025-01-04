@@ -47,14 +47,29 @@ export function cook_frame(lf2: LF2, data: IEntityData, frame: IFrameInfo) {
       const prefab =
         bdy.prefab_id !== void 0 ? data.bdy_prefabs?.[bdy.prefab_id] : void 0;
       if (prefab) bdy = frame.bdy[i] = { ...prefab, ...bdy };
-      if (bdy.break_act) cook_next_frame(bdy.break_act);
-      if (bdy.hit_act) cook_next_frame(bdy.hit_act);
+
       if (bdy.test)
         bdy.tester = new Expression(
           bdy.test,
           void 0,
           get_val_geter_from_collision,
         );
+
+      bdy.actions?.forEach(action => {
+        if (action.test) {
+          action.tester = new Expression(
+            action.test, void 0, get_val_geter_from_collision,
+          )
+        }
+        switch (action.type) {
+          case "next_frame":
+          case "defend":
+          case "broken_defend":
+            cook_next_frame(action.data)
+            break;
+        }
+      })
+
     }
   }
   if (frame.itr?.length) {
@@ -63,8 +78,6 @@ export function cook_frame(lf2: LF2, data: IEntityData, frame: IFrameInfo) {
       const prefab =
         itr.prefab_id !== void 0 ? data.itr_prefabs?.[itr.prefab_id] : void 0;
       if (prefab) itr = frame.itr[i] = { ...prefab, ...itr };
-
-      if (itr.hit_act) cook_next_frame(itr.hit_act);
       if (itr.catchingact) cook_next_frame(itr.catchingact);
       if (itr.caughtact) cook_next_frame(itr.caughtact);
       if (itr.test)
@@ -73,6 +86,21 @@ export function cook_frame(lf2: LF2, data: IEntityData, frame: IFrameInfo) {
           void 0,
           get_val_geter_from_collision,
         );
+
+      itr.actions?.forEach(action => {
+        if (action.test) {
+          action.tester = new Expression(
+            action.test, void 0, get_val_geter_from_collision,
+          )
+        }
+        switch (action.type) {
+          case "next_frame":
+          case "defend":
+          case "broken_defend":
+            cook_next_frame(action.data)
+            break;
+        }
+      })
     }
   }
 

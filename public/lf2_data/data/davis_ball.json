@@ -48,11 +48,17 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))",
-          "hit_act": [
+          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))&(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
+          "actions": [
             {
-              "id": "20",
-              "sounds": [
+              "type": "next_frame",
+              "data": {
+                "id": "20"
+              }
+            },
+            {
+              "type": "sound",
+              "path": [
                 "data/020.wav.mp3"
               ]
             }
@@ -66,14 +72,22 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
-          "hit_act": {
-            "id": "30",
-            "sounds": [
-              "data/020.wav.mp3"
-            ]
-          },
-          "friendly_fire": 1
+          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)&(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
+          "actions": [
+            {
+              "type": "next_frame",
+              "data": {
+                "id": "30"
+              }
+            },
+            {
+              "type": "sound",
+              "path": [
+                "data/020.wav.mp3"
+              ]
+            }
+          ],
+          "ally_flags": 1
         }
       ],
       "itr": [
@@ -91,12 +105,12 @@
           "l": 24,
           "z": -12,
           "test": "victim_state!=1004|attacker_type!=character",
-          "hit_sounds": [
-            "data/020.wav.mp3"
-          ],
-          "hit_act": [
+          "actions": [
             {
-              "id": "10"
+              "type": "next_frame",
+              "data": {
+                "id": "10"
+              }
             }
           ]
         }
@@ -129,11 +143,17 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))",
-          "hit_act": [
+          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))&(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
+          "actions": [
             {
-              "id": "20",
-              "sounds": [
+              "type": "next_frame",
+              "data": {
+                "id": "20"
+              }
+            },
+            {
+              "type": "sound",
+              "path": [
                 "data/020.wav.mp3"
               ]
             }
@@ -147,14 +167,22 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
-          "hit_act": {
-            "id": "30",
-            "sounds": [
-              "data/020.wav.mp3"
-            ]
-          },
-          "friendly_fire": 1
+          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)&(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
+          "actions": [
+            {
+              "type": "next_frame",
+              "data": {
+                "id": "30"
+              }
+            },
+            {
+              "type": "sound",
+              "path": [
+                "data/020.wav.mp3"
+              ]
+            }
+          ],
+          "ally_flags": 1
         }
       ],
       "itr": [
@@ -172,12 +200,12 @@
           "l": 24,
           "z": -12,
           "test": "victim_state!=1004|attacker_type!=character",
-          "hit_sounds": [
-            "data/020.wav.mp3"
-          ],
-          "hit_act": [
+          "actions": [
             {
-              "id": "10"
+              "type": "next_frame",
+              "data": {
+                "id": "10"
+              }
             }
           ]
         }
@@ -210,11 +238,17 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))",
-          "hit_act": [
+          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))&(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
+          "actions": [
             {
-              "id": "20",
-              "sounds": [
+              "type": "next_frame",
+              "data": {
+                "id": "20"
+              }
+            },
+            {
+              "type": "sound",
+              "path": [
                 "data/020.wav.mp3"
               ]
             }
@@ -228,14 +262,22 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
-          "hit_act": {
-            "id": "30",
-            "sounds": [
-              "data/020.wav.mp3"
-            ]
-          },
-          "friendly_fire": 1
+          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)&(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
+          "actions": [
+            {
+              "type": "next_frame",
+              "data": {
+                "id": "30"
+              }
+            },
+            {
+              "type": "sound",
+              "path": [
+                "data/020.wav.mp3"
+              ]
+            }
+          ],
+          "ally_flags": 1
         }
       ],
       "itr": [
@@ -253,12 +295,12 @@
           "l": 24,
           "z": -12,
           "test": "victim_state!=1004|attacker_type!=character",
-          "hit_sounds": [
-            "data/020.wav.mp3"
-          ],
-          "hit_act": [
+          "actions": [
             {
-              "id": "10"
+              "type": "next_frame",
+              "data": {
+                "id": "10"
+              }
             }
           ]
         }
@@ -291,11 +333,17 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))",
-          "hit_act": [
+          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))&(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
+          "actions": [
             {
-              "id": "20",
-              "sounds": [
+              "type": "next_frame",
+              "data": {
+                "id": "20"
+              }
+            },
+            {
+              "type": "sound",
+              "path": [
                 "data/020.wav.mp3"
               ]
             }
@@ -309,14 +357,22 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
-          "hit_act": {
-            "id": "30",
-            "sounds": [
-              "data/020.wav.mp3"
-            ]
-          },
-          "friendly_fire": 1
+          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)&(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
+          "actions": [
+            {
+              "type": "next_frame",
+              "data": {
+                "id": "30"
+              }
+            },
+            {
+              "type": "sound",
+              "path": [
+                "data/020.wav.mp3"
+              ]
+            }
+          ],
+          "ally_flags": 1
         }
       ],
       "itr": [
@@ -334,12 +390,12 @@
           "l": 24,
           "z": -12,
           "test": "victim_state!=1004|attacker_type!=character",
-          "hit_sounds": [
-            "data/020.wav.mp3"
-          ],
-          "hit_act": [
+          "actions": [
             {
-              "id": "10"
+              "type": "next_frame",
+              "data": {
+                "id": "10"
+              }
             }
           ]
         }
@@ -372,11 +428,17 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))",
-          "hit_act": [
+          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))&(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
+          "actions": [
             {
-              "id": "20",
-              "sounds": [
+              "type": "next_frame",
+              "data": {
+                "id": "20"
+              }
+            },
+            {
+              "type": "sound",
+              "path": [
                 "data/020.wav.mp3"
               ]
             }
@@ -390,14 +452,22 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
-          "hit_act": {
-            "id": "30",
-            "sounds": [
-              "data/020.wav.mp3"
-            ]
-          },
-          "friendly_fire": 1
+          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)&(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
+          "actions": [
+            {
+              "type": "next_frame",
+              "data": {
+                "id": "30"
+              }
+            },
+            {
+              "type": "sound",
+              "path": [
+                "data/020.wav.mp3"
+              ]
+            }
+          ],
+          "ally_flags": 1
         }
       ],
       "itr": [
@@ -415,12 +485,12 @@
           "l": 24,
           "z": -12,
           "test": "victim_state!=1004|attacker_type!=character",
-          "hit_sounds": [
-            "data/020.wav.mp3"
-          ],
-          "hit_act": [
+          "actions": [
             {
-              "id": "10"
+              "type": "next_frame",
+              "data": {
+                "id": "10"
+              }
             }
           ]
         }
@@ -453,11 +523,17 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))",
-          "hit_act": [
+          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))&(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
+          "actions": [
             {
-              "id": "20",
-              "sounds": [
+              "type": "next_frame",
+              "data": {
+                "id": "20"
+              }
+            },
+            {
+              "type": "sound",
+              "path": [
                 "data/020.wav.mp3"
               ]
             }
@@ -471,14 +547,22 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
-          "hit_act": {
-            "id": "30",
-            "sounds": [
-              "data/020.wav.mp3"
-            ]
-          },
-          "friendly_fire": 1
+          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)&(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
+          "actions": [
+            {
+              "type": "next_frame",
+              "data": {
+                "id": "30"
+              }
+            },
+            {
+              "type": "sound",
+              "path": [
+                "data/020.wav.mp3"
+              ]
+            }
+          ],
+          "ally_flags": 1
         }
       ],
       "itr": [
@@ -496,12 +580,12 @@
           "l": 24,
           "z": -12,
           "test": "victim_state!=1004|attacker_type!=character",
-          "hit_sounds": [
-            "data/020.wav.mp3"
-          ],
-          "hit_act": [
+          "actions": [
             {
-              "id": "10"
+              "type": "next_frame",
+              "data": {
+                "id": "10"
+              }
             }
           ]
         }
@@ -534,11 +618,17 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))",
-          "hit_act": [
+          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))&(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
+          "actions": [
             {
-              "id": "20",
-              "sounds": [
+              "type": "next_frame",
+              "data": {
+                "id": "20"
+              }
+            },
+            {
+              "type": "sound",
+              "path": [
                 "data/020.wav.mp3"
               ]
             }
@@ -552,14 +642,22 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
-          "hit_act": {
-            "id": "30",
-            "sounds": [
-              "data/020.wav.mp3"
-            ]
-          },
-          "friendly_fire": 1
+          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)&(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
+          "actions": [
+            {
+              "type": "next_frame",
+              "data": {
+                "id": "30"
+              }
+            },
+            {
+              "type": "sound",
+              "path": [
+                "data/020.wav.mp3"
+              ]
+            }
+          ],
+          "ally_flags": 1
         }
       ],
       "itr": [
@@ -577,12 +675,12 @@
           "l": 24,
           "z": -12,
           "test": "victim_state!=1004|attacker_type!=character",
-          "hit_sounds": [
-            "data/020.wav.mp3"
-          ],
-          "hit_act": [
+          "actions": [
             {
-              "id": "10"
+              "type": "next_frame",
+              "data": {
+                "id": "10"
+              }
             }
           ]
         }
@@ -615,11 +713,17 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))",
-          "hit_act": [
+          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))&(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
+          "actions": [
             {
-              "id": "20",
-              "sounds": [
+              "type": "next_frame",
+              "data": {
+                "id": "20"
+              }
+            },
+            {
+              "type": "sound",
+              "path": [
                 "data/020.wav.mp3"
               ]
             }
@@ -633,14 +737,22 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
-          "hit_act": {
-            "id": "30",
-            "sounds": [
-              "data/020.wav.mp3"
-            ]
-          },
-          "friendly_fire": 1
+          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)&(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
+          "actions": [
+            {
+              "type": "next_frame",
+              "data": {
+                "id": "30"
+              }
+            },
+            {
+              "type": "sound",
+              "path": [
+                "data/020.wav.mp3"
+              ]
+            }
+          ],
+          "ally_flags": 1
         }
       ],
       "itr": [
@@ -658,12 +770,12 @@
           "l": 24,
           "z": -12,
           "test": "victim_state!=1004|attacker_type!=character",
-          "hit_sounds": [
-            "data/020.wav.mp3"
-          ],
-          "hit_act": [
+          "actions": [
             {
-              "id": "10"
+              "type": "next_frame",
+              "data": {
+                "id": "10"
+              }
             }
           ]
         }
@@ -696,11 +808,17 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))",
-          "hit_act": [
+          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))&(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
+          "actions": [
             {
-              "id": "20",
-              "sounds": [
+              "type": "next_frame",
+              "data": {
+                "id": "20"
+              }
+            },
+            {
+              "type": "sound",
+              "path": [
                 "data/020.wav.mp3"
               ]
             }
@@ -714,14 +832,22 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
-          "hit_act": {
-            "id": "30",
-            "sounds": [
-              "data/020.wav.mp3"
-            ]
-          },
-          "friendly_fire": 1
+          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)&(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
+          "actions": [
+            {
+              "type": "next_frame",
+              "data": {
+                "id": "30"
+              }
+            },
+            {
+              "type": "sound",
+              "path": [
+                "data/020.wav.mp3"
+              ]
+            }
+          ],
+          "ally_flags": 1
         }
       ],
       "itr": [
@@ -739,12 +865,12 @@
           "l": 24,
           "z": -12,
           "test": "victim_state!=1004|attacker_type!=character",
-          "hit_sounds": [
-            "data/020.wav.mp3"
-          ],
-          "hit_act": [
+          "actions": [
             {
-              "id": "10"
+              "type": "next_frame",
+              "data": {
+                "id": "10"
+              }
             }
           ]
         }
@@ -777,11 +903,17 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))",
-          "hit_act": [
+          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))&(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
+          "actions": [
             {
-              "id": "20",
-              "sounds": [
+              "type": "next_frame",
+              "data": {
+                "id": "20"
+              }
+            },
+            {
+              "type": "sound",
+              "path": [
                 "data/020.wav.mp3"
               ]
             }
@@ -795,14 +927,22 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
-          "hit_act": {
-            "id": "30",
-            "sounds": [
-              "data/020.wav.mp3"
-            ]
-          },
-          "friendly_fire": 1
+          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)&(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
+          "actions": [
+            {
+              "type": "next_frame",
+              "data": {
+                "id": "30"
+              }
+            },
+            {
+              "type": "sound",
+              "path": [
+                "data/020.wav.mp3"
+              ]
+            }
+          ],
+          "ally_flags": 1
         }
       ],
       "itr": [
@@ -820,12 +960,12 @@
           "l": 24,
           "z": -12,
           "test": "victim_state!=1004|attacker_type!=character",
-          "hit_sounds": [
-            "data/020.wav.mp3"
-          ],
-          "hit_act": [
+          "actions": [
             {
-              "id": "10"
+              "type": "next_frame",
+              "data": {
+                "id": "10"
+              }
             }
           ]
         }
@@ -1148,11 +1288,17 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))",
-          "hit_act": [
+          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))&(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
+          "actions": [
             {
-              "id": "20",
-              "sounds": [
+              "type": "next_frame",
+              "data": {
+                "id": "20"
+              }
+            },
+            {
+              "type": "sound",
+              "path": [
                 "data/020.wav.mp3"
               ]
             }
@@ -1166,14 +1312,22 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
-          "hit_act": {
-            "id": "30",
-            "sounds": [
-              "data/020.wav.mp3"
-            ]
-          },
-          "friendly_fire": 1
+          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)&(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
+          "actions": [
+            {
+              "type": "next_frame",
+              "data": {
+                "id": "30"
+              }
+            },
+            {
+              "type": "sound",
+              "path": [
+                "data/020.wav.mp3"
+              ]
+            }
+          ],
+          "ally_flags": 1
         }
       ],
       "itr": [
@@ -1191,12 +1345,12 @@
           "l": 24,
           "z": -12,
           "test": "victim_state!=1004|attacker_type!=character",
-          "hit_sounds": [
-            "data/020.wav.mp3"
-          ],
-          "hit_act": [
+          "actions": [
             {
-              "id": "10"
+              "type": "next_frame",
+              "data": {
+                "id": "10"
+              }
             }
           ]
         }
@@ -1230,11 +1384,17 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))",
-          "hit_act": [
+          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))&(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
+          "actions": [
             {
-              "id": "20",
-              "sounds": [
+              "type": "next_frame",
+              "data": {
+                "id": "20"
+              }
+            },
+            {
+              "type": "sound",
+              "path": [
                 "data/020.wav.mp3"
               ]
             }
@@ -1248,14 +1408,22 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
-          "hit_act": {
-            "id": "30",
-            "sounds": [
-              "data/020.wav.mp3"
-            ]
-          },
-          "friendly_fire": 1
+          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)&(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
+          "actions": [
+            {
+              "type": "next_frame",
+              "data": {
+                "id": "30"
+              }
+            },
+            {
+              "type": "sound",
+              "path": [
+                "data/020.wav.mp3"
+              ]
+            }
+          ],
+          "ally_flags": 1
         }
       ],
       "itr": [
@@ -1273,12 +1441,12 @@
           "l": 24,
           "z": -12,
           "test": "victim_state!=1004|attacker_type!=character",
-          "hit_sounds": [
-            "data/020.wav.mp3"
-          ],
-          "hit_act": [
+          "actions": [
             {
-              "id": "10"
+              "type": "next_frame",
+              "data": {
+                "id": "10"
+              }
             }
           ]
         }
@@ -1312,11 +1480,17 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))",
-          "hit_act": [
+          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))&(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
+          "actions": [
             {
-              "id": "20",
-              "sounds": [
+              "type": "next_frame",
+              "data": {
+                "id": "20"
+              }
+            },
+            {
+              "type": "sound",
+              "path": [
                 "data/020.wav.mp3"
               ]
             }
@@ -1330,14 +1504,22 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
-          "hit_act": {
-            "id": "30",
-            "sounds": [
-              "data/020.wav.mp3"
-            ]
-          },
-          "friendly_fire": 1
+          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)&(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
+          "actions": [
+            {
+              "type": "next_frame",
+              "data": {
+                "id": "30"
+              }
+            },
+            {
+              "type": "sound",
+              "path": [
+                "data/020.wav.mp3"
+              ]
+            }
+          ],
+          "ally_flags": 1
         }
       ],
       "itr": [
@@ -1355,12 +1537,12 @@
           "l": 24,
           "z": -12,
           "test": "victim_state!=1004|attacker_type!=character",
-          "hit_sounds": [
-            "data/020.wav.mp3"
-          ],
-          "hit_act": [
+          "actions": [
             {
-              "id": "10"
+              "type": "next_frame",
+              "data": {
+                "id": "10"
+              }
             }
           ]
         }
@@ -1394,11 +1576,17 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))",
-          "hit_act": [
+          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))&(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
+          "actions": [
             {
-              "id": "20",
-              "sounds": [
+              "type": "next_frame",
+              "data": {
+                "id": "20"
+              }
+            },
+            {
+              "type": "sound",
+              "path": [
                 "data/020.wav.mp3"
               ]
             }
@@ -1412,14 +1600,22 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
-          "hit_act": {
-            "id": "30",
-            "sounds": [
-              "data/020.wav.mp3"
-            ]
-          },
-          "friendly_fire": 1
+          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)&(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
+          "actions": [
+            {
+              "type": "next_frame",
+              "data": {
+                "id": "30"
+              }
+            },
+            {
+              "type": "sound",
+              "path": [
+                "data/020.wav.mp3"
+              ]
+            }
+          ],
+          "ally_flags": 1
         }
       ],
       "itr": [
@@ -1437,12 +1633,12 @@
           "l": 24,
           "z": -12,
           "test": "victim_state!=1004|attacker_type!=character",
-          "hit_sounds": [
-            "data/020.wav.mp3"
-          ],
-          "hit_act": [
+          "actions": [
             {
-              "id": "10"
+              "type": "next_frame",
+              "data": {
+                "id": "10"
+              }
             }
           ]
         }
@@ -1476,11 +1672,17 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))",
-          "hit_act": [
+          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))&(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
+          "actions": [
             {
-              "id": "20",
-              "sounds": [
+              "type": "next_frame",
+              "data": {
+                "id": "20"
+              }
+            },
+            {
+              "type": "sound",
+              "path": [
                 "data/020.wav.mp3"
               ]
             }
@@ -1494,14 +1696,22 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
-          "hit_act": {
-            "id": "30",
-            "sounds": [
-              "data/020.wav.mp3"
-            ]
-          },
-          "friendly_fire": 1
+          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)&(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
+          "actions": [
+            {
+              "type": "next_frame",
+              "data": {
+                "id": "30"
+              }
+            },
+            {
+              "type": "sound",
+              "path": [
+                "data/020.wav.mp3"
+              ]
+            }
+          ],
+          "ally_flags": 1
         }
       ],
       "itr": [
@@ -1519,12 +1729,12 @@
           "l": 24,
           "z": -12,
           "test": "victim_state!=1004|attacker_type!=character",
-          "hit_sounds": [
-            "data/020.wav.mp3"
-          ],
-          "hit_act": [
+          "actions": [
             {
-              "id": "10"
+              "type": "next_frame",
+              "data": {
+                "id": "10"
+              }
             }
           ]
         }
@@ -1558,11 +1768,17 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))",
-          "hit_act": [
+          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))&(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
+          "actions": [
             {
-              "id": "20",
-              "sounds": [
+              "type": "next_frame",
+              "data": {
+                "id": "20"
+              }
+            },
+            {
+              "type": "sound",
+              "path": [
                 "data/020.wav.mp3"
               ]
             }
@@ -1576,14 +1792,22 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
-          "hit_act": {
-            "id": "30",
-            "sounds": [
-              "data/020.wav.mp3"
-            ]
-          },
-          "friendly_fire": 1
+          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)&(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
+          "actions": [
+            {
+              "type": "next_frame",
+              "data": {
+                "id": "30"
+              }
+            },
+            {
+              "type": "sound",
+              "path": [
+                "data/020.wav.mp3"
+              ]
+            }
+          ],
+          "ally_flags": 1
         }
       ],
       "itr": [
@@ -1601,12 +1825,12 @@
           "l": 24,
           "z": -12,
           "test": "victim_state!=1004|attacker_type!=character",
-          "hit_sounds": [
-            "data/020.wav.mp3"
-          ],
-          "hit_act": [
+          "actions": [
             {
-              "id": "10"
+              "type": "next_frame",
+              "data": {
+                "id": "10"
+              }
             }
           ]
         }
@@ -1640,11 +1864,17 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))",
-          "hit_act": [
+          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))&(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
+          "actions": [
             {
-              "id": "20",
-              "sounds": [
+              "type": "next_frame",
+              "data": {
+                "id": "20"
+              }
+            },
+            {
+              "type": "sound",
+              "path": [
                 "data/020.wav.mp3"
               ]
             }
@@ -1658,14 +1888,22 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
-          "hit_act": {
-            "id": "30",
-            "sounds": [
-              "data/020.wav.mp3"
-            ]
-          },
-          "friendly_fire": 1
+          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)&(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
+          "actions": [
+            {
+              "type": "next_frame",
+              "data": {
+                "id": "30"
+              }
+            },
+            {
+              "type": "sound",
+              "path": [
+                "data/020.wav.mp3"
+              ]
+            }
+          ],
+          "ally_flags": 1
         }
       ],
       "itr": [
@@ -1683,12 +1921,12 @@
           "l": 24,
           "z": -12,
           "test": "victim_state!=1004|attacker_type!=character",
-          "hit_sounds": [
-            "data/020.wav.mp3"
-          ],
-          "hit_act": [
+          "actions": [
             {
-              "id": "10"
+              "type": "next_frame",
+              "data": {
+                "id": "10"
+              }
             }
           ]
         }
@@ -1722,11 +1960,17 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))",
-          "hit_act": [
+          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))&(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
+          "actions": [
             {
-              "id": "20",
-              "sounds": [
+              "type": "next_frame",
+              "data": {
+                "id": "20"
+              }
+            },
+            {
+              "type": "sound",
+              "path": [
                 "data/020.wav.mp3"
               ]
             }
@@ -1740,14 +1984,22 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
-          "hit_act": {
-            "id": "30",
-            "sounds": [
-              "data/020.wav.mp3"
-            ]
-          },
-          "friendly_fire": 1
+          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)&(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
+          "actions": [
+            {
+              "type": "next_frame",
+              "data": {
+                "id": "30"
+              }
+            },
+            {
+              "type": "sound",
+              "path": [
+                "data/020.wav.mp3"
+              ]
+            }
+          ],
+          "ally_flags": 1
         }
       ],
       "itr": [
@@ -1765,12 +2017,12 @@
           "l": 24,
           "z": -12,
           "test": "victim_state!=1004|attacker_type!=character",
-          "hit_sounds": [
-            "data/020.wav.mp3"
-          ],
-          "hit_act": [
+          "actions": [
             {
-              "id": "10"
+              "type": "next_frame",
+              "data": {
+                "id": "10"
+              }
             }
           ]
         }
@@ -1804,11 +2056,17 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))",
-          "hit_act": [
+          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))&(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
+          "actions": [
             {
-              "id": "20",
-              "sounds": [
+              "type": "next_frame",
+              "data": {
+                "id": "20"
+              }
+            },
+            {
+              "type": "sound",
+              "path": [
                 "data/020.wav.mp3"
               ]
             }
@@ -1822,14 +2080,22 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
-          "hit_act": {
-            "id": "30",
-            "sounds": [
-              "data/020.wav.mp3"
-            ]
-          },
-          "friendly_fire": 1
+          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)&(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
+          "actions": [
+            {
+              "type": "next_frame",
+              "data": {
+                "id": "30"
+              }
+            },
+            {
+              "type": "sound",
+              "path": [
+                "data/020.wav.mp3"
+              ]
+            }
+          ],
+          "ally_flags": 1
         }
       ],
       "itr": [
@@ -1847,12 +2113,12 @@
           "l": 24,
           "z": -12,
           "test": "victim_state!=1004|attacker_type!=character",
-          "hit_sounds": [
-            "data/020.wav.mp3"
-          ],
-          "hit_act": [
+          "actions": [
             {
-              "id": "10"
+              "type": "next_frame",
+              "data": {
+                "id": "10"
+              }
             }
           ]
         }
@@ -1886,11 +2152,17 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))",
-          "hit_act": [
+          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))&(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
+          "actions": [
             {
-              "id": "20",
-              "sounds": [
+              "type": "next_frame",
+              "data": {
+                "id": "20"
+              }
+            },
+            {
+              "type": "sound",
+              "path": [
                 "data/020.wav.mp3"
               ]
             }
@@ -1904,14 +2176,22 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
-          "hit_act": {
-            "id": "30",
-            "sounds": [
-              "data/020.wav.mp3"
-            ]
-          },
-          "friendly_fire": 1
+          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)&(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
+          "actions": [
+            {
+              "type": "next_frame",
+              "data": {
+                "id": "30"
+              }
+            },
+            {
+              "type": "sound",
+              "path": [
+                "data/020.wav.mp3"
+              ]
+            }
+          ],
+          "ally_flags": 1
         }
       ],
       "itr": [
@@ -1929,12 +2209,12 @@
           "l": 24,
           "z": -12,
           "test": "victim_state!=1004|attacker_type!=character",
-          "hit_sounds": [
-            "data/020.wav.mp3"
-          ],
-          "hit_act": [
+          "actions": [
             {
-              "id": "10"
+              "type": "next_frame",
+              "data": {
+                "id": "10"
+              }
             }
           ]
         }
@@ -1968,11 +2248,17 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))",
-          "hit_act": [
+          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))&(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
+          "actions": [
             {
-              "id": "20",
-              "sounds": [
+              "type": "next_frame",
+              "data": {
+                "id": "20"
+              }
+            },
+            {
+              "type": "sound",
+              "path": [
                 "data/020.wav.mp3"
               ]
             }
@@ -1986,14 +2272,22 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
-          "hit_act": {
-            "id": "30",
-            "sounds": [
-              "data/020.wav.mp3"
-            ]
-          },
-          "friendly_fire": 1
+          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)&(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
+          "actions": [
+            {
+              "type": "next_frame",
+              "data": {
+                "id": "30"
+              }
+            },
+            {
+              "type": "sound",
+              "path": [
+                "data/020.wav.mp3"
+              ]
+            }
+          ],
+          "ally_flags": 1
         }
       ],
       "itr": [
@@ -2011,12 +2305,12 @@
           "l": 24,
           "z": -12,
           "test": "victim_state!=1004|attacker_type!=character",
-          "hit_sounds": [
-            "data/020.wav.mp3"
-          ],
-          "hit_act": [
+          "actions": [
             {
-              "id": "10"
+              "type": "next_frame",
+              "data": {
+                "id": "10"
+              }
             }
           ]
         }
@@ -2050,11 +2344,17 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))",
-          "hit_act": [
+          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))&(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
+          "actions": [
             {
-              "id": "20",
-              "sounds": [
+              "type": "next_frame",
+              "data": {
+                "id": "20"
+              }
+            },
+            {
+              "type": "sound",
+              "path": [
                 "data/020.wav.mp3"
               ]
             }
@@ -2068,14 +2368,22 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
-          "hit_act": {
-            "id": "30",
-            "sounds": [
-              "data/020.wav.mp3"
-            ]
-          },
-          "friendly_fire": 1
+          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)&(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
+          "actions": [
+            {
+              "type": "next_frame",
+              "data": {
+                "id": "30"
+              }
+            },
+            {
+              "type": "sound",
+              "path": [
+                "data/020.wav.mp3"
+              ]
+            }
+          ],
+          "ally_flags": 1
         }
       ],
       "itr": [
@@ -2093,12 +2401,12 @@
           "l": 24,
           "z": -12,
           "test": "victim_state!=1004|attacker_type!=character",
-          "hit_sounds": [
-            "data/020.wav.mp3"
-          ],
-          "hit_act": [
+          "actions": [
             {
-              "id": "10"
+              "type": "next_frame",
+              "data": {
+                "id": "10"
+              }
             }
           ]
         }
@@ -2132,11 +2440,17 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))",
-          "hit_act": [
+          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))&(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
+          "actions": [
             {
-              "id": "20",
-              "sounds": [
+              "type": "next_frame",
+              "data": {
+                "id": "20"
+              }
+            },
+            {
+              "type": "sound",
+              "path": [
                 "data/020.wav.mp3"
               ]
             }
@@ -2150,14 +2464,22 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
-          "hit_act": {
-            "id": "30",
-            "sounds": [
-              "data/020.wav.mp3"
-            ]
-          },
-          "friendly_fire": 1
+          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)&(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
+          "actions": [
+            {
+              "type": "next_frame",
+              "data": {
+                "id": "30"
+              }
+            },
+            {
+              "type": "sound",
+              "path": [
+                "data/020.wav.mp3"
+              ]
+            }
+          ],
+          "ally_flags": 1
         }
       ],
       "itr": [
@@ -2175,12 +2497,12 @@
           "l": 24,
           "z": -12,
           "test": "victim_state!=1004|attacker_type!=character",
-          "hit_sounds": [
-            "data/020.wav.mp3"
-          ],
-          "hit_act": [
+          "actions": [
             {
-              "id": "10"
+              "type": "next_frame",
+              "data": {
+                "id": "10"
+              }
             }
           ]
         }
@@ -2214,11 +2536,17 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))",
-          "hit_act": [
+          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))&(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
+          "actions": [
             {
-              "id": "20",
-              "sounds": [
+              "type": "next_frame",
+              "data": {
+                "id": "20"
+              }
+            },
+            {
+              "type": "sound",
+              "path": [
                 "data/020.wav.mp3"
               ]
             }
@@ -2232,14 +2560,22 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
-          "hit_act": {
-            "id": "30",
-            "sounds": [
-              "data/020.wav.mp3"
-            ]
-          },
-          "friendly_fire": 1
+          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)&(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
+          "actions": [
+            {
+              "type": "next_frame",
+              "data": {
+                "id": "30"
+              }
+            },
+            {
+              "type": "sound",
+              "path": [
+                "data/020.wav.mp3"
+              ]
+            }
+          ],
+          "ally_flags": 1
         }
       ],
       "itr": [
@@ -2257,12 +2593,12 @@
           "l": 24,
           "z": -12,
           "test": "victim_state!=1004|attacker_type!=character",
-          "hit_sounds": [
-            "data/020.wav.mp3"
-          ],
-          "hit_act": [
+          "actions": [
             {
-              "id": "10"
+              "type": "next_frame",
+              "data": {
+                "id": "10"
+              }
             }
           ]
         }
@@ -2296,11 +2632,17 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))",
-          "hit_act": [
+          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))&(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
+          "actions": [
             {
-              "id": "20",
-              "sounds": [
+              "type": "next_frame",
+              "data": {
+                "id": "20"
+              }
+            },
+            {
+              "type": "sound",
+              "path": [
                 "data/020.wav.mp3"
               ]
             }
@@ -2314,14 +2656,22 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
-          "hit_act": {
-            "id": "30",
-            "sounds": [
-              "data/020.wav.mp3"
-            ]
-          },
-          "friendly_fire": 1
+          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)&(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
+          "actions": [
+            {
+              "type": "next_frame",
+              "data": {
+                "id": "30"
+              }
+            },
+            {
+              "type": "sound",
+              "path": [
+                "data/020.wav.mp3"
+              ]
+            }
+          ],
+          "ally_flags": 1
         }
       ],
       "itr": [
@@ -2339,12 +2689,12 @@
           "l": 24,
           "z": -12,
           "test": "victim_state!=1004|attacker_type!=character",
-          "hit_sounds": [
-            "data/020.wav.mp3"
-          ],
-          "hit_act": [
+          "actions": [
             {
-              "id": "10"
+              "type": "next_frame",
+              "data": {
+                "id": "10"
+              }
             }
           ]
         }
@@ -2378,11 +2728,17 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))",
-          "hit_act": [
+          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))&(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
+          "actions": [
             {
-              "id": "20",
-              "sounds": [
+              "type": "next_frame",
+              "data": {
+                "id": "20"
+              }
+            },
+            {
+              "type": "sound",
+              "path": [
                 "data/020.wav.mp3"
               ]
             }
@@ -2396,14 +2752,22 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
-          "hit_act": {
-            "id": "30",
-            "sounds": [
-              "data/020.wav.mp3"
-            ]
-          },
-          "friendly_fire": 1
+          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)&(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
+          "actions": [
+            {
+              "type": "next_frame",
+              "data": {
+                "id": "30"
+              }
+            },
+            {
+              "type": "sound",
+              "path": [
+                "data/020.wav.mp3"
+              ]
+            }
+          ],
+          "ally_flags": 1
         }
       ],
       "itr": [
@@ -2421,12 +2785,12 @@
           "l": 24,
           "z": -12,
           "test": "victim_state!=1004|attacker_type!=character",
-          "hit_sounds": [
-            "data/020.wav.mp3"
-          ],
-          "hit_act": [
+          "actions": [
             {
-              "id": "10"
+              "type": "next_frame",
+              "data": {
+                "id": "10"
+              }
             }
           ]
         }
@@ -2460,11 +2824,17 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))",
-          "hit_act": [
+          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))&(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
+          "actions": [
             {
-              "id": "20",
-              "sounds": [
+              "type": "next_frame",
+              "data": {
+                "id": "20"
+              }
+            },
+            {
+              "type": "sound",
+              "path": [
                 "data/020.wav.mp3"
               ]
             }
@@ -2478,14 +2848,22 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
-          "hit_act": {
-            "id": "30",
-            "sounds": [
-              "data/020.wav.mp3"
-            ]
-          },
-          "friendly_fire": 1
+          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)&(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
+          "actions": [
+            {
+              "type": "next_frame",
+              "data": {
+                "id": "30"
+              }
+            },
+            {
+              "type": "sound",
+              "path": [
+                "data/020.wav.mp3"
+              ]
+            }
+          ],
+          "ally_flags": 1
         }
       ],
       "itr": [
@@ -2503,12 +2881,12 @@
           "l": 24,
           "z": -12,
           "test": "victim_state!=1004|attacker_type!=character",
-          "hit_sounds": [
-            "data/020.wav.mp3"
-          ],
-          "hit_act": [
+          "actions": [
             {
-              "id": "10"
+              "type": "next_frame",
+              "data": {
+                "id": "10"
+              }
             }
           ]
         }
@@ -2542,11 +2920,17 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))",
-          "hit_act": [
+          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))&(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
+          "actions": [
             {
-              "id": "20",
-              "sounds": [
+              "type": "next_frame",
+              "data": {
+                "id": "20"
+              }
+            },
+            {
+              "type": "sound",
+              "path": [
                 "data/020.wav.mp3"
               ]
             }
@@ -2560,14 +2944,22 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
-          "hit_act": {
-            "id": "30",
-            "sounds": [
-              "data/020.wav.mp3"
-            ]
-          },
-          "friendly_fire": 1
+          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)&(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
+          "actions": [
+            {
+              "type": "next_frame",
+              "data": {
+                "id": "30"
+              }
+            },
+            {
+              "type": "sound",
+              "path": [
+                "data/020.wav.mp3"
+              ]
+            }
+          ],
+          "ally_flags": 1
         }
       ],
       "itr": [
@@ -2585,12 +2977,12 @@
           "l": 24,
           "z": -12,
           "test": "victim_state!=1004|attacker_type!=character",
-          "hit_sounds": [
-            "data/020.wav.mp3"
-          ],
-          "hit_act": [
+          "actions": [
             {
-              "id": "10"
+              "type": "next_frame",
+              "data": {
+                "id": "10"
+              }
             }
           ]
         }
@@ -2624,11 +3016,17 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))",
-          "hit_act": [
+          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))&(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
+          "actions": [
             {
-              "id": "20",
-              "sounds": [
+              "type": "next_frame",
+              "data": {
+                "id": "20"
+              }
+            },
+            {
+              "type": "sound",
+              "path": [
                 "data/020.wav.mp3"
               ]
             }
@@ -2642,14 +3040,22 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
-          "hit_act": {
-            "id": "30",
-            "sounds": [
-              "data/020.wav.mp3"
-            ]
-          },
-          "friendly_fire": 1
+          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)&(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
+          "actions": [
+            {
+              "type": "next_frame",
+              "data": {
+                "id": "30"
+              }
+            },
+            {
+              "type": "sound",
+              "path": [
+                "data/020.wav.mp3"
+              ]
+            }
+          ],
+          "ally_flags": 1
         }
       ],
       "itr": [
@@ -2667,12 +3073,12 @@
           "l": 24,
           "z": -12,
           "test": "victim_state!=1004|attacker_type!=character",
-          "hit_sounds": [
-            "data/020.wav.mp3"
-          ],
-          "hit_act": [
+          "actions": [
             {
-              "id": "10"
+              "type": "next_frame",
+              "data": {
+                "id": "10"
+              }
             }
           ]
         }
@@ -2706,11 +3112,17 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))",
-          "hit_act": [
+          "test": "itr_kind!=9&itr_kind!=14&(attacker_type==ball|(attacker_type==weapon&itr_kind!=5))&(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
+          "actions": [
             {
-              "id": "20",
-              "sounds": [
+              "type": "next_frame",
+              "data": {
+                "id": "20"
+              }
+            },
+            {
+              "type": "sound",
+              "path": [
                 "data/020.wav.mp3"
               ]
             }
@@ -2724,14 +3136,22 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)",
-          "hit_act": {
-            "id": "30",
-            "sounds": [
-              "data/020.wav.mp3"
-            ]
-          },
-          "friendly_fire": 1
+          "test": "(same_team==0&attacker_type==character&itr_kind==0&itr_effect!=3&itr_effect!=20)|(same_team==1&attacker_type==character&same_facing==0&itr_kind==0&itr_effect!=3)|itr_kind==9|(same_team==1&same_facing==0&itr_kind==5)|(same_team==0&itr_kind==5)&(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
+          "actions": [
+            {
+              "type": "next_frame",
+              "data": {
+                "id": "30"
+              }
+            },
+            {
+              "type": "sound",
+              "path": [
+                "data/020.wav.mp3"
+              ]
+            }
+          ],
+          "ally_flags": 1
         }
       ],
       "itr": [
@@ -2749,12 +3169,12 @@
           "l": 24,
           "z": -12,
           "test": "victim_state!=1004|attacker_type!=character",
-          "hit_sounds": [
-            "data/020.wav.mp3"
-          ],
-          "hit_act": [
+          "actions": [
             {
-              "id": "10"
+              "type": "next_frame",
+              "data": {
+                "id": "10"
+              }
             }
           ]
         }

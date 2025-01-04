@@ -38,8 +38,10 @@ import { random_get, random_in } from "../utils/math/random";
 import { is_num, is_positive, is_str } from "../utils/type_check";
 import { Factory } from "./Factory";
 import type IEntityCallbacks from "./IEntityCallbacks";
+import { bdy_action_handlers, itr_action_handlers } from "./bdy_action_handlers";
 import { turn_face } from "./face_helper";
 import { is_ball, is_character, is_weapon_data } from "./type_check";
+
 function calc_v(
   old: number,
   speed: number,
@@ -461,7 +463,6 @@ export default class Entity {
     return this._team;
   }
   set team(v) {
-    console.log('team:', v)
     const o = this._team;
     this._team = v
     this._callbacks.emit("on_team_changed")(this, v, o);
@@ -766,7 +767,7 @@ export default class Entity {
             for (const other of this.world.entities) {
               if (
                 is_character(other) &&
-                !other.same_team(this) &&
+                !other.is_ally(this) &&
                 other.hp > 0 &&
                 this.find_emitter(
                   (emitter) => is_character(emitter) && emitter !== other,
@@ -778,11 +779,11 @@ export default class Entity {
             if (count)
               count = Math.max(opoint.multi.min, count);
             break;
-          case OpointMultiEnum.AccordingTeammates:
+          case OpointMultiEnum.AccordingAllies:
             for (const other of this.world.entities) {
               if (
                 is_character(other) &&
-                other.same_team(this) &&
+                other.is_ally(this) &&
                 other.hp > 0 &&
                 this.find_emitter(
                   (emitter) => is_character(emitter) && emitter !== other,
@@ -1463,7 +1464,7 @@ export default class Entity {
 
   on_collision(collision: ICollision): void {
     this.collision_list.push((this.lastest_collision = collision));
-    const { itr, bdy } = collision;
+    const { itr } = collision;
 
     if (is_ball(collision.victim)) {
       this.shaking = itr.motionless ?? collision.victim.world.itr_motionless;
@@ -1477,12 +1478,13 @@ export default class Entity {
       this._a_rest =
         this.wait + this.motionless + 2 + this.world.arest_offset_2;
     }
-    if (bdy.kind !== BdyKind.Defend && itr.kind !== ItrKind.Block) {
-      this.play_sound(itr.hit_sounds);
-    }
-    if (itr.hit_act) {
-      this.next_frame =
-        this.get_next_frame(itr.hit_act)?.frame ?? this.next_frame;
+
+    if (itr.actions?.length) {
+      for (const action of itr.actions) {
+        if (action.tester?.run(collision) === false)
+          continue;
+        itr_action_handlers[action.type](action, collision)
+      }
     }
   }
 
@@ -1510,6 +1512,7 @@ export default class Entity {
     );
   }
 
+
   on_be_collided(collision: ICollision): void {
     this.collided_list.push((this.lastest_collided = collision));
     const { itr, bdy } = collision;
@@ -1527,28 +1530,8 @@ export default class Entity {
       for (const action of bdy.actions) {
         if (action.tester?.run(collision) === false)
           continue;
-        switch (action.type) {
-          case "sound":
-            if (
-              itr.kind !== ItrKind.Block &&
-              itr.kind !== ItrKind.Whirlwind &&
-              itr.kind !== ItrKind.MagicFlute &&
-              itr.kind !== ItrKind.MagicFlute2
-            ) {
-              this.play_sound(action.path, action.pos);
-            }
-            break;
-          case "next_frame":
-            this.next_frame = this.get_next_frame(action.data)?.frame ?? this.next_frame
-            break;
-        }
+        bdy_action_handlers[action.type](action, collision)
       }
-    }
-
-
-    if (bdy.hit_act) {
-      this.next_frame =
-        this.get_next_frame(bdy.hit_act)?.frame ?? this.next_frame;
     }
     if (
       itr.kind !== ItrKind.Block &&
@@ -1593,7 +1576,7 @@ export default class Entity {
       this._hp_max;
   }
 
-  same_team(other: Entity): boolean {
+  is_ally(other: Entity): boolean {
     return this.team === other.team;
   }
 

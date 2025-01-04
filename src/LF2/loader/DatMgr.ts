@@ -119,16 +119,8 @@ class Inner {
       if (frames) {
         traversal(frames, (_, frame) => {
           cook_frame(this.lf2, data, frame);
-          if (frame.itr)
-            for (const itr of frame.itr) {
-              if (itr.hit_sounds)
-                for (const sound of itr.hit_sounds) {
-                  (not_blank_str(sound) && sounds.has(sound)) ||
-                    jobs.push(sounds.load(sound, sound));
-                }
-            }
-
-          if (frame.bdy)
+ 
+          if (frame.bdy) {
             for (const bdy of frame.bdy) {
               bdy.actions?.forEach(action => {
                 if (action.type === 'sound') {
@@ -139,6 +131,19 @@ class Inner {
                 }
               })
             }
+          }
+          if (frame.itr) {
+            for (const itr of frame.itr) {
+              itr.actions?.forEach(action => {
+                if (action.type === 'sound') {
+                  for (const sound of action.path) {
+                    (not_blank_str(sound) && sounds.has(sound)) ||
+                      jobs.push(sounds.load(sound, sound));
+                  }
+                }
+              })
+            }
+          }
         });
       }
     }

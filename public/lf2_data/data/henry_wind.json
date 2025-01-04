@@ -64,10 +64,13 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "hit_act": [
+          "actions": [
             {
-              "id": "20",
-              "expression": "hit_by_state{{3005|hit_by_itr_kind{{9"
+              "type": "next_frame",
+              "test": "attacker_state==3005|itr_kind==9",
+              "data": {
+                "id": "20"
+              }
             }
           ]
         }
@@ -87,13 +90,19 @@
           "l": 24,
           "z": -12,
           "test": "victim_state!=1004|attacker_type!=character",
-          "hit_sounds": [
-            "data/020.wav.mp3"
-          ],
-          "hit_act": [
+          "actions": [
             {
-              "id": "20",
-              "expression": "hit_on_state{{3005"
+              "type": "sound",
+              "path": [
+                "data/020.wav.mp3"
+              ]
+            },
+            {
+              "type": "next_frame",
+              "test": "victim_state==3005",
+              "data": {
+                "id": "20"
+              }
             }
           ]
         }
@@ -128,10 +137,13 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "hit_act": [
+          "actions": [
             {
-              "id": "20",
-              "expression": "hit_by_state{{3005|hit_by_itr_kind{{9"
+              "type": "next_frame",
+              "test": "attacker_state==3005|itr_kind==9",
+              "data": {
+                "id": "20"
+              }
             }
           ]
         }
@@ -151,13 +163,19 @@
           "l": 24,
           "z": -12,
           "test": "victim_state!=1004|attacker_type!=character",
-          "hit_sounds": [
-            "data/020.wav.mp3"
-          ],
-          "hit_act": [
+          "actions": [
             {
-              "id": "20",
-              "expression": "hit_on_state{{3005"
+              "type": "sound",
+              "path": [
+                "data/020.wav.mp3"
+              ]
+            },
+            {
+              "type": "next_frame",
+              "test": "victim_state==3005",
+              "data": {
+                "id": "20"
+              }
             }
           ]
         }
@@ -192,10 +210,13 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "hit_act": [
+          "actions": [
             {
-              "id": "20",
-              "expression": "hit_by_state{{3005|hit_by_itr_kind{{9"
+              "type": "next_frame",
+              "test": "attacker_state==3005|itr_kind==9",
+              "data": {
+                "id": "20"
+              }
             }
           ]
         }
@@ -215,13 +236,19 @@
           "l": 24,
           "z": -12,
           "test": "victim_state!=1004|attacker_type!=character",
-          "hit_sounds": [
-            "data/020.wav.mp3"
-          ],
-          "hit_act": [
+          "actions": [
             {
-              "id": "20",
-              "expression": "hit_on_state{{3005"
+              "type": "sound",
+              "path": [
+                "data/020.wav.mp3"
+              ]
+            },
+            {
+              "type": "next_frame",
+              "test": "victim_state==3005",
+              "data": {
+                "id": "20"
+              }
             }
           ]
         }
@@ -256,10 +283,13 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "hit_act": [
+          "actions": [
             {
-              "id": "20",
-              "expression": "hit_by_state{{3005|hit_by_itr_kind{{9"
+              "type": "next_frame",
+              "test": "attacker_state==3005|itr_kind==9",
+              "data": {
+                "id": "20"
+              }
             }
           ]
         }
@@ -279,13 +309,19 @@
           "l": 24,
           "z": -12,
           "test": "victim_state!=1004|attacker_type!=character",
-          "hit_sounds": [
-            "data/020.wav.mp3"
-          ],
-          "hit_act": [
+          "actions": [
             {
-              "id": "20",
-              "expression": "hit_on_state{{3005"
+              "type": "sound",
+              "path": [
+                "data/020.wav.mp3"
+              ]
+            },
+            {
+              "type": "next_frame",
+              "test": "victim_state==3005",
+              "data": {
+                "id": "20"
+              }
             }
           ]
         }
@@ -671,10 +707,13 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "hit_act": [
+          "actions": [
             {
-              "id": "20",
-              "expression": "hit_by_state{{3005|hit_by_itr_kind{{9"
+              "type": "next_frame",
+              "test": "attacker_state==3005|itr_kind==9",
+              "data": {
+                "id": "20"
+              }
             }
           ]
         }
@@ -694,13 +733,19 @@
           "l": 24,
           "z": -12,
           "test": "victim_state!=1004|attacker_type!=character",
-          "hit_sounds": [
-            "data/020.wav.mp3"
-          ],
-          "hit_act": [
+          "actions": [
             {
-              "id": "20",
-              "expression": "hit_on_state{{3005"
+              "type": "sound",
+              "path": [
+                "data/020.wav.mp3"
+              ]
+            },
+            {
+              "type": "next_frame",
+              "test": "victim_state==3005",
+              "data": {
+                "id": "20"
+              }
             }
           ]
         }
@@ -1000,10 +1045,13 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "hit_act": [
+          "actions": [
             {
-              "id": "20",
-              "expression": "hit_by_state{{3005|hit_by_itr_kind{{9"
+              "type": "next_frame",
+              "test": "attacker_state==3005|itr_kind==9",
+              "data": {
+                "id": "20"
+              }
             }
           ]
         }
@@ -1023,13 +1071,19 @@
           "l": 24,
           "z": -12,
           "test": "victim_state!=1004|attacker_type!=character",
-          "hit_sounds": [
-            "data/020.wav.mp3"
-          ],
-          "hit_act": [
+          "actions": [
             {
-              "id": "20",
-              "expression": "hit_on_state{{3005"
+              "type": "sound",
+              "path": [
+                "data/020.wav.mp3"
+              ]
+            },
+            {
+              "type": "next_frame",
+              "test": "victim_state==3005",
+              "data": {
+                "id": "20"
+              }
             }
           ]
         }
@@ -1064,10 +1118,13 @@
           "l": 24,
           "z": -12,
           "kind": 0,
-          "hit_act": [
+          "actions": [
             {
-              "id": "20",
-              "expression": "hit_by_state{{3005|hit_by_itr_kind{{9"
+              "type": "next_frame",
+              "test": "attacker_state==3005|itr_kind==9",
+              "data": {
+                "id": "20"
+              }
             }
           ]
         }
@@ -1087,13 +1144,19 @@
           "l": 24,
           "z": -12,
           "test": "victim_state!=1004|attacker_type!=character",
-          "hit_sounds": [
-            "data/020.wav.mp3"
-          ],
-          "hit_act": [
+          "actions": [
             {
-              "id": "20",
-              "expression": "hit_on_state{{3005"
+              "type": "sound",
+              "path": [
+                "data/020.wav.mp3"
+              ]
+            },
+            {
+              "type": "next_frame",
+              "test": "victim_state==3005",
+              "data": {
+                "id": "20"
+              }
             }
           ]
         }

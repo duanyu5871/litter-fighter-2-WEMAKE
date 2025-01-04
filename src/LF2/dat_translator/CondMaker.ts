@@ -33,7 +33,7 @@ export class CondMaker<T extends string = string> {
   }
   not_in(word: T, ...values: (string | number)[]): this {
     return this.wrap((c) => {
-      for (const v of values) c.add(word, "!=", v);
+      for (const v of values) c.and(word, "!=", v);
       return c;
     });
   }

@@ -378,7 +378,7 @@ export class World {
       }
 
       for (const chaser of this._entity_chasers) {
-        if (!is_character(e) || chaser.same_team(e) || e.hp <= 0)
+        if (!is_character(e) || chaser.is_ally(e) || e.hp <= 0)
           continue;
         const prev = chaser.chasing_target;
         if (!prev || this.manhattan(prev, chaser) > this.manhattan(e, chaser)) {
@@ -521,8 +521,15 @@ export class World {
         return;
       }
     }
-    if (!(itr.friendly_fire || bdy.friendly_fire) && attacker.same_team(victim))
-      return;
+    const is_ally = attacker.is_ally(victim);
+    if (is_ally) {
+      if (!itr.ally_flags && !bdy.ally_flags)
+        return;
+    } else {
+      if (itr.ally_flags === 2 || bdy.ally_flags === 2)
+        return;
+    }
+
     if (!itr.vrest && attacker.a_rest) return;
     if (itr.vrest && victim.get_v_rest(attacker.id) > 0) return;
     const a_cube = this.get_bounding(attacker, aframe, itr);

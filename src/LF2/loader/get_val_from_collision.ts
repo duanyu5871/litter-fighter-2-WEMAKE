@@ -10,7 +10,7 @@ const map: Record<CollisionVal, IValGetter<ICollision>> = {
   [CollisionVal.ItrKind]: (collision: ICollision) => collision.itr.kind,
   [CollisionVal.ItrEffect]: (collision: ICollision) => collision.itr.effect,
   [CollisionVal.SameTeam]: (collision: ICollision) =>
-    collision.attacker.same_team(collision.victim) ? 1 : 0,
+    collision.attacker.is_ally(collision.victim) ? 1 : 0,
   [CollisionVal.SameFacing]: (collision: ICollision) =>
     collision.attacker.facing === collision.victim.facing ? 1 : 0,
   [CollisionVal.AttackerState]: (collision: ICollision) =>

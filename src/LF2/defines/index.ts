@@ -23,3 +23,4 @@ export * from "./IStageObjectInfo";
 export * from "./IStagePhaseInfo";
 export * from "./ITexturePieceInfo";
 export * from "./IWpointInfo";
+export * from "./Action"

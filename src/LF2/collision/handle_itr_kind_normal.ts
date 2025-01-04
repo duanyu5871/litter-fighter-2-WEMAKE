@@ -86,8 +86,6 @@ export function handle_itr_kind_normal(collision: ICollision) {
     case ItrEffect.Normal:
     case ItrEffect.Sharp:
     case void 0: {
-      const result = bdy.hit_act && victim.get_next_frame(bdy.hit_act);
-      if (result) victim.next_frame = result.frame;
       victim.fall_value -= itr.fall ? itr.fall : Defines.DEFAULT_ITR_FALL;
       victim.defend_value = 0;
       const is_fall =

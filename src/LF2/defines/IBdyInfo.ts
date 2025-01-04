@@ -1,9 +1,7 @@
-import type { TNextFrame } from ".";
+import { TAction } from "./Action";
 import type { IExpression } from "./IExpression";
-import { IPos } from "./IPos";
 import type { IQube } from "./IQube";
 import type { IQubePair } from "./IQubePair";
-import { IRect } from "./IRect";
 
 export interface IBdyInfo extends IQube {
   /**
@@ -16,11 +14,13 @@ export interface IBdyInfo extends IQube {
   /**
    * [WEMAKE]
    * 是否判定同队Itr
-   * 0=关闭（默认），1=开启
-   *
+   * - 0: 仅判定敌人（默认）
+   * - 1: 判定队友与敌人
+   * - 2: 仅判定队友
+   * 
    * @type {?number}
    */
-  friendly_fire?: number;
+  ally_flags?: number;
 
   /**
    * [LF2][WEMAKE]
@@ -37,29 +37,9 @@ export interface IBdyInfo extends IQube {
    */
   indicator_info?: IQubePair;
 
-  break_act?: TNextFrame;
-
-
-  /** @deprecated */ hit_act?: TNextFrame;
-
-  actions?: TAction[]
+  actions?: TAction[];
 
   test?: string;
 
   tester?: IExpression<any>;
 }
-
-interface IAction_Base {
-  test?: string;
-  tester?: IExpression<any>;
-}
-interface IAction_Sound extends IAction_Base {
-  type: 'sound';
-  path: string[];
-  pos?: IPos;
-}
-interface IAction_NextFrame extends IAction_Base {
-  type: 'next_frame';
-  data: TNextFrame;
-}
-type TAction = IAction_Sound | IAction_NextFrame

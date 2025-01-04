@@ -1,4 +1,4 @@
-import type { TNextFrame } from ".";
+import type { TAction, TNextFrame } from ".";
 import type { IExpression } from "./IExpression";
 import type { IQube } from "./IQube";
 import type { IQubePair } from "./IQubePair";
@@ -19,7 +19,7 @@ export interface IItrInfo extends IQube {
    *
    * @type {?number}
    */
-  friendly_fire?: number;
+  ally_flags?: number;
 
   /**
    * 自身停顿值
@@ -75,8 +75,9 @@ export interface IItrInfo extends IQube {
   caughtact?: TNextFrame;
 
   /** 命中后，自己跳转至什么帧 */
-  hit_act?: TNextFrame;
-  hit_sounds?: string[];
+  // hit_act?: TNextFrame;
+  // hit_sounds?: string[];
+  actions?: TAction[];
 
   test?: string;
   tester?: IExpression<any>;

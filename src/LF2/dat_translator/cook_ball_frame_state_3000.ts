@@ -16,66 +16,92 @@ export function cook_ball_frame_state_3000(e: IEntityData, frame: IFrameInfo) {
       test: new CondMaker<C_Val>()
         .add(C_Val.ItrKind, "!=", ItrKind.JohnShield)
         .and(C_Val.ItrKind, "!=", ItrKind.Block)
-        .and((c) =>
-          c.add(C_Val.AttackerType, "==", EntityEnum.Ball).or((c) =>
-            c
-              /** 被武器s击中 */
-              .add(C_Val.AttackerType, "==", EntityEnum.Weapon)
-              .and(C_Val.ItrKind, "!=", ItrKind.WeaponSwing),
+        .and((c) => c
+          .add(C_Val.AttackerType, "==", EntityEnum.Ball).or((c) => c
+            /** 被武器s击中 */
+            .add(C_Val.AttackerType, "==", EntityEnum.Weapon)
+            .and(C_Val.ItrKind, "!=", ItrKind.WeaponSwing),
           ),
+        ).and().not_in(
+          C_Val.ItrKind,
+          ItrKind.Block,
+          ItrKind.MagicFlute,
+          ItrKind.MagicFlute2,
+          ItrKind.Pick,
+          ItrKind.PickSecretly,
         )
-        .done(),
-
-      hit_act: [
-        {
-          id: "20",
-          sounds: e.base.dead_sounds,
-        },
-      ],
+        .and().not_in(
+          C_Val.ItrEffect,
+          ItrEffect.Ice2,
+          ItrEffect.MFire1
+        ).done(),
+      actions: [{
+        type: 'next_frame',
+        data: {
+          id: "20"
+        }
+      }, {
+        type: 'sound',
+        path: e.base.dead_sounds || []
+      }]
     });
 
     new_bdy.push(
       copy_bdy_info(bdy, {
         /* 反弹判定 */
-        friendly_fire: 1,
+        ally_flags: 1,
         test: new CondMaker<C_Val>()
-          .wrap((c) =>
-            c
-              // 敌方角色的攻击反弹气功波
-              .add(C_Val.SameTeam, "==", 0)
-              .and(C_Val.AttackerType, "==", EntityEnum.Character)
-              .and(C_Val.ItrKind, "==", ItrKind.Normal)
-              .and(C_Val.ItrEffect, "!=", ItrEffect.Ice)
-              .and(C_Val.ItrEffect, "!=", ItrEffect.MFire1),
+          .wrap((c) => c
+            // 敌方角色的攻击反弹气功波
+            .add(C_Val.SameTeam, "==", 0)
+            .and(C_Val.AttackerType, "==", EntityEnum.Character)
+            .and(C_Val.ItrKind, "==", ItrKind.Normal)
+            .and(C_Val.ItrEffect, "!=", ItrEffect.Ice)
+            .and(C_Val.ItrEffect, "!=", ItrEffect.MFire1),
           )
-          .or((c) =>
-            c
-              // 队友角色的攻击必须相向才能反弹气功波
-              .add(C_Val.SameTeam, "==", 1)
-              .and(C_Val.AttackerType, "==", EntityEnum.Character)
-              .and(C_Val.SameFacing, "==", 0)
-              .and(C_Val.ItrKind, "==", ItrKind.Normal)
-              .and(C_Val.ItrEffect, "!=", ItrEffect.Ice),
+          .or((c) => c
+            // 队友角色的攻击必须相向才能反弹气功波
+            .add(C_Val.SameTeam, "==", 1)
+            .and(C_Val.AttackerType, "==", EntityEnum.Character)
+            .and(C_Val.SameFacing, "==", 0)
+            .and(C_Val.ItrKind, "==", ItrKind.Normal)
+            .and(C_Val.ItrEffect, "!=", ItrEffect.Ice),
           )
           .or(C_Val.ItrKind, "==", ItrKind.JohnShield)
-          .or((c) =>
-            c
-              // 队友角色的攻击 挥动武器(必须相向) 反弹气功波
-              .add(C_Val.SameTeam, "==", 1)
-              .and(C_Val.SameFacing, "==", 0)
-              .and(C_Val.ItrKind, "==", ItrKind.WeaponSwing),
+          .or((c) => c
+            // 队友角色的攻击 挥动武器(必须相向) 反弹气功波
+            .add(C_Val.SameTeam, "==", 1)
+            .and(C_Val.SameFacing, "==", 0)
+            .and(C_Val.ItrKind, "==", ItrKind.WeaponSwing),
           )
-          .or((c) =>
-            c
-              // 敌人角色的攻击 挥动武器 反弹气功波
-              .add(C_Val.SameTeam, "==", 0)
-              .and(C_Val.ItrKind, "==", ItrKind.WeaponSwing),
+          .or((c) => c
+            // 敌人角色的攻击 挥动武器 反弹气功波
+            .add(C_Val.SameTeam, "==", 0)
+            .and(C_Val.ItrKind, "==", ItrKind.WeaponSwing),
+          )
+          .and().not_in(
+            C_Val.ItrKind,
+            ItrKind.Block,
+            ItrKind.MagicFlute,
+            ItrKind.MagicFlute2,
+            ItrKind.Pick,
+            ItrKind.PickSecretly,
+          )
+          .and().not_in(
+            C_Val.ItrEffect,
+            ItrEffect.Ice2,
+            ItrEffect.MFire1
           )
           .done(),
-        hit_act: {
-          id: "30", // 反弹
-          sounds: e.base.dead_sounds,
-        },
+        actions: [{
+          type: 'next_frame',
+          data: {
+            id: "30"
+          }
+        }, {
+          type: 'sound',
+          path: e.base.dead_sounds || []
+        }]
       }),
     );
   }
@@ -86,14 +112,53 @@ export function cook_ball_frame_state_3000(e: IEntityData, frame: IFrameInfo) {
   for (const itr of itr_list) {
     switch (itr.kind) {
       case ItrKind.Block:
+        bdy_list.push({
+          kind: 0,
+          ally_flags: 2,
+          test: new CondMaker<C_Val>()
+            .not_in(
+              C_Val.ItrKind,
+              ItrKind.Block,
+              ItrKind.MagicFlute,
+              ItrKind.MagicFlute2,
+              ItrKind.Pick,
+              ItrKind.PickSecretly,
+            )
+            .and().not_in(
+              C_Val.ItrEffect,
+              ItrEffect.Ice2,
+              ItrEffect.MFire1
+            )
+            .done(),
+          z: itr.z,
+          l: itr.l,
+          x: itr.x,
+          y: itr.y,
+          w: itr.w,
+          h: itr.h,
+          actions: [{
+            type: 'next_frame',
+            data: {
+              id: "30"
+            }
+          }, {
+            type: 'sound',
+            path: e.base.dead_sounds || []
+          }]
+        })
         break;
       case ItrKind.Normal:
         edit_itr_info(itr, {
-          // test: new CondMaker<C_Val>().done(),
-          hit_act: [{ id: "10" }],
+          actions: [{
+            type: 'next_frame',
+            data: { id: "10" }
+          }],
         });
         break;
     }
   }
   itr_list.push(...new_itr);
+
+
+
 }

@@ -268,8 +268,11 @@ export function make_character_data(
         set_hold_turn_back(frame);
         if (frame.bdy?.length)
           for (const bdy of frame.bdy) {
-            bdy.break_act = { id: "112" };
-            bdy.hit_act = { id: "111" };
+            bdy.actions = bdy.actions || []
+            bdy.actions.push(
+              { type: 'broken_defend', data: { id: "112" } },
+              { type: 'defend', data: { id: "111" } }
+            );
           }
         break;
       }
@@ -579,7 +582,7 @@ export function make_character_data(
           frame.hold.F =
           frame.hold.U =
           frame.hold.D =
-            { id: "walking_0" }; // walking
+          { id: "walking_0" }; // walking
         frame.hit.FF = frame.hit.FF = { id: "running_0" };
         break;
       case State.BurnRun:
@@ -591,7 +594,10 @@ export function make_character_data(
         if (frame.bdy?.length)
           for (const bdy of frame.bdy) {
             bdy.kind = BdyKind.Defend;
-            bdy.break_act = { id: "112" };
+            if (!bdy.actions?.find(v => v.type === 'broken_defend')) {
+              bdy.actions = bdy.actions || []
+              bdy.actions = [{ type: 'broken_defend', data: { id: "112" } }];
+            }
           }
         break;
       }

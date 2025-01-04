@@ -7,7 +7,7 @@ export default class CharacterState_Teleport2FarthestAlly extends CharacterState
     let _dis: number = -1;
     let _tar: Entity | undefined;
     for (const o of m.world.entities) {
-      if (!is_character(o) || o === m || !o.same_team(m)) continue;
+      if (!is_character(o) || o === m || !o.is_ally(m)) continue;
 
       const dis =
         Math.abs(o.position.x - m.position.x) +

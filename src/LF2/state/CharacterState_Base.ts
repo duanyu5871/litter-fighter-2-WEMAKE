@@ -1,5 +1,5 @@
 import { collisions_keeper } from "../collision/CollisionKeeper";
-import { Defines, IFrameInfo, IItrInfo, INextFrame, ItrKind } from "../defines";
+import { Defines, IAction_Defend, IFrameInfo, IItrInfo, INextFrame, ItrKind } from "../defines";
 import { BdyKind } from "../defines/BdyKind";
 import { ICollision } from "../defines/ICollision";
 import { ItrEffect } from "../defines/ItrEffect";
@@ -113,10 +113,12 @@ export default class CharacterState_Base extends State_Base {
             ...victim.spark_point(a_cube, b_cube),
             "broken_defend",
           );
-          const result = bdy.break_act && victim.get_next_frame(bdy.break_act);
-          if (result) {
-            victim.next_frame = result.frame;
-            return;
+
+          
+          const action = bdy.actions?.find(v => v.type === 'broken_defend');
+          if (action) {
+            const result = victim.get_next_frame(action.data);
+            if (result) victim.next_frame = result.frame;
           }
         } else {
           if (itr.dvx) victim.velocities[0].x = (itr.dvx * attacker.facing) / 2;
@@ -124,8 +126,12 @@ export default class CharacterState_Base extends State_Base {
             ...victim.spark_point(a_cube, b_cube),
             "defend_hit",
           );
-          const result = bdy.hit_act && victim.get_next_frame(bdy.hit_act);
-          if (result) victim.next_frame = result.frame;
+
+          const action = bdy.actions?.find(v => v.type === 'defend');
+          if (action) {
+            const result = victim.get_next_frame(action.data);
+            if (result) victim.next_frame = result.frame;
+          }
           return;
         }
         break;

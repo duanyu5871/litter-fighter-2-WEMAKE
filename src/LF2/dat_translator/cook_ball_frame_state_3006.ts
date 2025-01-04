@@ -1,31 +1,34 @@
 import { IFrameInfo, ItrKind } from "../defines";
+import { CollisionVal as C_Val } from "../defines/CollisionVal";
 import { IEntityData } from "../defines/IEntityData";
-import { EntityVal } from "../defines/EntityVal";
+import { State } from "../defines/State";
 import { CondMaker } from "./CondMaker";
 
 export function cook_ball_frame_state_3006(e: IEntityData, frame: IFrameInfo) {
   frame.ctrl_spd_z = 2;
   for (const bdy of frame.bdy || []) {
-    bdy.hit_act = [
-      {
-        id: "20",
-        expression: new CondMaker<EntityVal>()
-          .add(EntityVal.HitByState, "{{", 3005)
-          .or(EntityVal.HitByState, "{{", 3006)
-          .or(EntityVal.HitByItrKind, "{{", ItrKind.JohnShield)
-          .done(),
-      },
-    ];
+    bdy.actions = bdy.actions || []
+    bdy.actions.push({
+      type: 'next_frame',
+      test: new CondMaker<C_Val>()
+        .one_of(C_Val.AttackerState, State.Ball_3005, State.Ball_3006)
+        .or(C_Val.ItrKind, "==", ItrKind.JohnShield)
+        .done(),
+      data: {
+        id: "20"
+      }
+    })
   }
   for (const itr of frame.itr || []) {
-    itr.hit_act = [
-      {
-        id: "20",
-        expression: new CondMaker<EntityVal>()
-          .add(EntityVal.HitOnState, "{{", 3005)
-          .or(EntityVal.HitOnState, "{{", 3006)
-          .done(),
-      },
-    ];
+    itr.actions = itr.actions || []
+    itr.actions.push({
+      type: 'next_frame',
+      test: new CondMaker<C_Val>()
+        .one_of(C_Val.VictimState, State.Ball_3005, State.Ball_3006)
+        .done(),
+      data: {
+        id: "20"
+      }
+    })
   }
 }

@@ -430,7 +430,7 @@
           "vrest": 2,
           "l": 24,
           "z": -12,
-          "friendly_fire": 1,
+          "ally_flags": 1,
           "motionless": 0,
           "shaking": 0,
           "test": "bdy_kind==0"

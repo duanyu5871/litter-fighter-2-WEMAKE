@@ -76,7 +76,7 @@ export class BotController extends BaseController {
       this.avoiding_enemy = void 0;
     }
     for (const e of c.world.entities) {
-      if (!is_character(e) || c.same_team(e)) continue;
+      if (!is_character(e) || c.is_ally(e)) continue;
       if (this.should_avoid(e)) {
         if (!this.avoiding_enemy) {
           this.avoiding_enemy = e;

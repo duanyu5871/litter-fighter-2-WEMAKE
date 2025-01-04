@@ -245,7 +245,7 @@ export function make_frames(
       case Defines.State.Burning: {
         if (frame.itr) {
           for (const itr of frame.itr) {
-            itr.friendly_fire = 1;
+            itr.ally_flags = 1;
           }
         }
         break;

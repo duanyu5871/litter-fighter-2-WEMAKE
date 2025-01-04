@@ -5,7 +5,7 @@ export function make_ball_special(data: IEntityData) {
   switch (data.id) {
     case "211": {
       traversal(data.frames, (_, frame) => {
-        if (frame.itr) for (const itr of frame.itr) delete itr.friendly_fire;
+        if (frame.itr) for (const itr of frame.itr) delete itr.ally_flags;
       });
       break;
     }

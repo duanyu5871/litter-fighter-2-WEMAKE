@@ -46,10 +46,10 @@ export enum ItrEffect {
    *    - 能攻击队友（着火的人烧到队友就是用此实现的）
    *
    * - WEMAKE中：
-   *    - 能不能攻击队友是通过itr.friendly_fire于bdy.friendly_fire决定的。
+   *    - 能不能攻击队友是通过itr.ally_flags于bdy.ally_flags决定的。
    *
-   * @see {IItrInfo.friendly_fire}
-   * @see {IBdyInfo.friendly_fire}
+   * @see {IItrInfo.ally_flags}
+   * @see {IBdyInfo.ally_flags}
    */
   MFire1 = 20,
 
