@@ -14,6 +14,7 @@ export interface IMeshNode extends IObjectNode {
   get_info(): IMeshInfo;
 
   get material(): Material | Material[];
+  set material(v: Material | Material[]);
   tran_opacity(arg0: number): this;
   set_opacity(arg0: number): this;
   update_all_material(): this;

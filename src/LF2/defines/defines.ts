@@ -3,8 +3,8 @@ import type { IBgData } from "./IBgData";
 import type { INextFrame } from "./INextFrame";
 import type { IStageInfo } from "./IStageInfo";
 import type { IPairByFace } from "./IPairByFace";
-export interface TFrameIdPair extends IPairByFace<string> {}
-export interface TFrameIdListPair extends IPairByFace<string[]> {}
+export interface TFrameIdPair extends IPairByFace<string> { }
+export interface TFrameIdListPair extends IPairByFace<string[]> { }
 export type TTODO = any;
 export type TFace = -1 | 1;
 export type TTrend = -1 | 0 | 1;
@@ -236,7 +236,7 @@ export namespace Defines {
      */
     Drink = 17,
     _17 = 17,
-    
+
     /**
      *
      */
@@ -435,6 +435,9 @@ export namespace Defines {
   export const FRICTION: number = 0.35; // 0.35 // 0.65; // 0.2
   export const CHARACTER_BOUNCING_SPD: number = 2;
   export const CHARACTER_BOUNCING_TEST_SPD: number = -2.6;
+  export const HP_RECOVERABILITY = 0.66;
+  export const HP_RECOVERY_SPD = 0.05;
+  export const HP_HEALING_SPD = 0.5;
 
   export enum Difficulty {
     Easy = 1,

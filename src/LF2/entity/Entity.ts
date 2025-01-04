@@ -196,6 +196,18 @@ export default class Entity {
     this._callbacks.emit("on_defend_value_max_changed")(this, v, o);
   }
 
+  private _healing: number = 0;
+  get healing(): number {
+    return this._healing;
+  }
+  set healing(v: number) {
+    const o = this._healing;
+    if (o === v) return;
+    this._healing = v;
+    this._callbacks.emit("on_healing_changed")(this, v, o);
+  }
+
+
   throwinjury?: number;
 
   get catching() {
@@ -996,8 +1008,18 @@ export default class Entity {
 
     if (this._hp > 0) {
       if (this._hp < this._hp_r) {
-        this.hp = Math.min(this._hp_r, this._hp + 0.05);
+        let offset = this.world.hp_recovery_spd;
+        if (this.healing > 0) {
+          this.healing -= this.world.hp_healing_spd
+          offset += this.world.hp_healing_spd
+        }
+        let next_hp = this._hp + offset
+        if (next_hp >= this._hp_r) {
+          next_hp = this._hp_r
+        }
+        this.hp = next_hp;
       }
+
       if (this._mp < this._mp_max)
         this.mp = Math.min(this._mp_max, this._mp + this._mp_r_spd);
     }
@@ -1181,7 +1203,7 @@ export default class Entity {
       this.state?.on_landing?.(this);
       if (this.throwinjury !== void 0) {
         this.hp -= this.throwinjury;
-        this.hp_r -= Math.floor(this.throwinjury / 2)
+        this.hp_r -= Math.floor(this.throwinjury * (1 - this.world.hp_recoverability))
         delete this.throwinjury;
       }
     }
@@ -1250,7 +1272,7 @@ export default class Entity {
     if (this.prev_cpoint_a !== cpoint_a) {
       if (cpoint_a.injury) {
         this.hp -= cpoint_a.injury;
-        this.hp_r -= Math.floor(cpoint_a.injury / 2)
+        this.hp_r -= Math.floor(cpoint_a.injury * (1 - this.world.hp_recoverability))
       }
       if (cpoint_a.shaking && cpoint_a.shaking > 0)
         this.shaking = cpoint_a.shaking;

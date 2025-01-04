@@ -56,6 +56,9 @@ class Bar {
     this._val = Math.max(0, v);
     this.mesh.set_scale_x(this._val / this._max);
   }
+  set color(color: string) {
+    this.mesh.material = get_color_material(color)
+  }
 
   constructor(
     lf2: LF2,
@@ -93,6 +96,7 @@ export class InfoRender implements IEntityCallbacks {
   protected defend_value_bar: Bar;
 
   protected entity: Entity;
+  protected heading: number = 0;
 
   get visible() {
     return this.mesh.visible;
@@ -205,11 +209,9 @@ export class InfoRender implements IEntityCallbacks {
   on_mp_max_changed(_e: Entity, value: number): void {
     this.self_healing_mp_bar.max = value;
   }
-
   on_hp_r_changed(_e: Entity, value: number): void {
     this.self_healing_hp_bar.val = value;
   }
-
   on_fall_value_changed(_e: Entity, value: number): void {
     this.fall_value_bar.val = value;
   }
@@ -221,6 +223,10 @@ export class InfoRender implements IEntityCallbacks {
   }
   on_defend_value_max_changed(_e: Entity, value: number): void {
     this.defend_value_bar.max = value;
+  }
+  on_healing_changed(e: Entity, value: number, prev: number): void {
+    this.heading = value;
+    this.hp_bar.color = Math.floor(value) % 2 ? "rgb(255, 130, 130)" : "rgb(255,0,0)"
   }
   private update_name_sprite(e: Entity, name: string, team: string) {
     const fillStyle = get_team_text_color(team);

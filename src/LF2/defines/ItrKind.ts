@@ -107,9 +107,26 @@ export enum ItrKind {
    */
   PickSecretly = 7,
 
-  Heal = 8, // injury数值变成治疗多少hp，动作跳至dvx ?
+  /**
+   * 
+   * 用于：
+   * * [X] LF2
+   * * [X] WEMAKE
+   * 
+   * 治疗
+   * 
+   * - 原版：
+   *    - injury数值变成治疗多少hp，动作跳至dvx ?
+   *    - 可治疗队友
+   * 
+   * - WEMAKE：
+   *    - injury数值变成治疗多少hp
+   *    - 可治疗队友：通过friendly_fire实现
+   *    - 动作跳转：通过hit_act实现
+   */
+  Heal = 8, 
 
-  /*
+  /**
    * 用于：
    * * [X] LF2
    * * [X] WEMAKE

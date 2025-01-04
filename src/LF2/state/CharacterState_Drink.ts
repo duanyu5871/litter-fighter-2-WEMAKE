@@ -13,15 +13,30 @@ export class CharacterState_Drink extends CharacterState_Base {
         const next_hp = e.hp + 2;
         if (next_hp < e.hp_max) {
           e.hp = next_hp;
+        } else {
+          e.hp = e.hp_max;
         }
+
+        const next_hp_r = e.hp_r + 1;
+        if (next_hp_r < e.hp_max) {
+          e.hp_r = next_hp_r;
+        } else {
+          e.hp_r = e.hp_max;
+        }
+
         const next_mp = e.mp + 0.25;
         if (next_mp < e.mp_max) {
           e.mp = next_mp;
+        } else {
+          e.mp = e.mp_max;
         }
+
       } else if (e.holding.data.id === "123") {
         const next_mp = e.mp + 5;
         if (next_mp < e.mp_max) {
           e.mp = next_mp;
+        } else {
+          e.mp = e.mp_max;
         }
       }
       if (e.holding.mp <= 0) {

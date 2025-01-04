@@ -157,4 +157,14 @@ export default interface IEntityCallbacks<E extends Entity = Entity> {
    * @param {number} prev 上一次值
    */
   on_hp_r_changed?(e: E, value: number, prev: number): void;
+
+
+  /**
+   * 
+   * @param {E} e
+   * @param {number} value 当前值
+   * @param {number} prev 上一次值
+   */
+  on_healing_changed?(e: E, value: number, prev: number): void;
+  
 }

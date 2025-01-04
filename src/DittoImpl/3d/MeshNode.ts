@@ -30,7 +30,9 @@ export class __MeshNode extends __ObjectNode implements IMeshNode {
   get material() {
     return this.inner.material;
   }
-
+  set material(v: Material | Material[]) {
+    this.inner.material = v;
+  }
   set_info(info: IMeshInfo): this {
     this.__info = info;
     return this;

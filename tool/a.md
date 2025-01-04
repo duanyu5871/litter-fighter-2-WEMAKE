@@ -439,23 +439,35 @@ h: y纵向向下围起来的范围
 
 #### itr.kind
 
-| 值 | 描述                                                                     |
-| -- | ------------------------------------------------------------------------ |
-| 0  | 拳击(或配合effect效果)                                                   |
-| 1  | 抓state:16的人(要配合catchingact和caughtact)                             |
-| 2  | 捡武器(type:1,2,4,6，state:1004,2004且有bdy的才被能捡)                   |
-| 3  | 强迫抓人(配合catchingact和caughtact)                                     |
-| 4  | 在falling动作有(被用cpoint丢出才有攻击力)                                |
-| 5  | 在武器的on_hand有(用人物wpoint的attacking来决定entry，攻击力在entry决定) |
-| 6  | 敌人在此范围内按攻击会至super_punch(act70)的动作                         |
-| 7  | 捡武器不影响动作(只能捡轻武器)                                           |
-| 8  | 治疗(可对同盟的bdy起作用，injury变成补多少hp，动作至dvx的动作码)         |
-| 9  | 打到人，自己的hp→0(打到气功，气功不失血)                                |
-| 10 | henry死亡之乐章效果                                                      |
-| 11 | 无                                                                       |
-| 14 | 阻挡(在此范围不能移动)                                                   |
-| 15 | 飞起来(freeze白色龙卷效果)                                               |
-| 16 | 结冻(freeze白色龙卷效果)                                                 |
+##### itr.kind：0  拳击(或配合effect效果)
+
+##### itr.kind：1  抓state:16的人(要配合catchingact和caughtact)
+
+##### itr.kind：2  捡武器(type:1,2,4,6，state:1004,2004且有bdy的才被能捡)
+
+##### itr.kind：3  强迫抓人(配合catchingact和caughtact)
+
+##### itr.kind：4  在falling动作有(被用cpoint丢出才有攻击力)
+
+##### itr.kind：5  在武器的on_hand有(用人物wpoint的attacking来决定entry，攻击力在entry决定
+
+##### itr.kind：6  敌人在此范围内按攻击会至super_punch(act70)的动作
+
+##### itr.kind：7  捡武器不影响动作(只能捡轻武器)
+
+##### itr.kind：8  治疗(可对同盟的bdy起作用，injury变成补多少hp，动作至dvx的动作码)
+
+##### itr.kind：9  打到人，自己的hp→0(打到气功，气功不失血)
+
+##### itr.kind：10 henry死亡之乐章效果
+
+##### itr.kind：11 无
+
+##### itr.kind：14 阻挡(在此范围不能移动)
+
+##### itr.kind：15 飞起来(freeze白色龙卷效果)
+
+##### itr.kind：16 结冻(freeze白色龙卷效果)
 
 #### itr.fall
 

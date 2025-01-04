@@ -68,7 +68,10 @@ export default class CharacterState_Base extends State_Base {
 
   override before_be_collided(collision: ICollision): WhatNext {
     const { itr, attacker, victim } = collision;
-    if (itr.kind === ItrKind.Heal) return WhatNext.SkipAll; // TODO.
+    if (itr.kind === ItrKind.Heal) {
+      if (itr.injury) victim.healing = itr.injury;
+      return WhatNext.SkipAll;
+    }
     if (itr.kind === ItrKind.SuperPunchMe) {
       victim.v_rests.set(attacker.id, collision);
       return WhatNext.SkipAll;
@@ -142,7 +145,7 @@ export default class CharacterState_Base extends State_Base {
     if (!itr.injury) return;
     const inj = Math.round(itr.injury * scale);
     victim.hp -= inj;
-    victim.hp_r -= Math.floor(inj / 2)
+    victim.hp_r -= Math.floor(inj * (1 - victim.world.hp_recoverability))
     attacker.add_damage_sum(inj);
     if (victim.hp <= 0) attacker.add_kill_sum(1);
   }

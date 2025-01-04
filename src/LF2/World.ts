@@ -59,6 +59,9 @@ export class World {
   frame_wait_offset: number = 0;
   cha_bc_spd: number = Defines.CHARACTER_BOUNCING_SPD;
   cha_bc_tst_spd: number = Defines.CHARACTER_BOUNCING_TEST_SPD;
+  hp_recoverability: number = Defines.HP_RECOVERABILITY;
+  hp_recovery_spd: number = Defines.HP_RECOVERY_SPD;
+  hp_healing_spd: number = Defines.HP_HEALING_SPD;
 
   get callbacks(): NoEmitCallbacks<IWorldCallbacks> {
     return this._callbacks;
