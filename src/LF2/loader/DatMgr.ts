@@ -127,13 +127,17 @@ class Inner {
                     jobs.push(sounds.load(sound, sound));
                 }
             }
+
           if (frame.bdy)
-            for (const itr of frame.bdy) {
-              if (itr.hit_sounds)
-                for (const sound of itr.hit_sounds) {
-                  (not_blank_str(sound) && sounds.has(sound)) ||
-                    jobs.push(sounds.load(sound, sound));
+            for (const bdy of frame.bdy) {
+              bdy.actions?.forEach(action => {
+                if (action.type === 'sound') {
+                  for (const sound of action.path) {
+                    (not_blank_str(sound) && sounds.has(sound)) ||
+                      jobs.push(sounds.load(sound, sound));
+                  }
                 }
+              })
             }
         });
       }
@@ -213,7 +217,7 @@ class Inner {
     ];
     this.lf2.on_loading_content(`${stage_file}`, 100);
   }
-  process_entity_data(data: IEntityData): void {}
+  process_entity_data(data: IEntityData): void { }
 }
 
 export default class DatMgr {

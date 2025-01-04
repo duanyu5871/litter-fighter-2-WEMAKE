@@ -21,6 +21,7 @@ import { EntityEnum } from "../defines/EntityEnum";
 import { IBaseData } from "../defines/IBaseData";
 import { ICollision } from "../defines/ICollision";
 import { IEntityData } from "../defines/IEntityData";
+import { IPos } from "../defines/IPos";
 import { OpointKind } from "../defines/OpointKind";
 import { OpointMultiEnum } from "../defines/OpointMultiEnum";
 import { OpointSpreading } from "../defines/OpointSpreading";
@@ -418,11 +419,11 @@ export default class Entity {
     }
   }
 
-  play_sound(sounds: string[] | undefined) {
+  play_sound(sounds: string[] | undefined, pos: IPos = this.position) {
     if (!sounds?.length) return;
     const sound = random_get(sounds);
     if (!sound) return;
-    const { x, y, z } = this.position;
+    const { x, y, z } = pos;
     this.lf2.sounds.play(sound, x, y, z);
   }
 
@@ -457,21 +458,17 @@ export default class Entity {
   }
 
   get team(): string {
-    return this._team || this.starter?.team || "";
+    return this._team;
   }
   set team(v) {
+    console.log('team:', v)
     const o = this._team;
-    this._callbacks.emit("on_team_changed")(this, (this._team = v), o);
+    this._team = v
+    this._callbacks.emit("on_team_changed")(this, v, o);
   }
 
   get emitter() {
     return this._emitter;
-  }
-  get starter() {
-    if (!this._emitter) return null;
-    let e = this._emitter;
-    while (e._emitter) e = e._emitter;
-    return e;
   }
   get a_rest(): number {
     return this._a_rest;
@@ -648,7 +645,7 @@ export default class Entity {
     this._emitter_opoint = opoint;
 
     const shotter_frame = emitter.frame;
-    if (emitter.frame.state === Defines.State.Ball_Rebounding) {
+    if (emitter.frame.state === Defines.State.Ball_Rebounding || emitter.frame.state === Defines.State.Ball_Flying) {
       this.team = (emitter.lastest_collided?.attacker ?? emitter).team;
       this.facing = emitter.facing;
     } else {
@@ -1525,6 +1522,30 @@ export default class Entity {
       if (result) this.next_frame = result.frame;
       return;
     }
+
+    if (bdy.actions?.length) {
+      for (const action of bdy.actions) {
+        if (action.tester?.run(collision) === false)
+          continue;
+        switch (action.type) {
+          case "sound":
+            if (
+              itr.kind !== ItrKind.Block &&
+              itr.kind !== ItrKind.Whirlwind &&
+              itr.kind !== ItrKind.MagicFlute &&
+              itr.kind !== ItrKind.MagicFlute2
+            ) {
+              this.play_sound(action.path, action.pos);
+            }
+            break;
+          case "next_frame":
+            this.next_frame = this.get_next_frame(action.data)?.frame ?? this.next_frame
+            break;
+        }
+      }
+    }
+
+
     if (bdy.hit_act) {
       this.next_frame =
         this.get_next_frame(bdy.hit_act)?.frame ?? this.next_frame;
@@ -1535,7 +1556,7 @@ export default class Entity {
       itr.kind !== ItrKind.MagicFlute &&
       itr.kind !== ItrKind.MagicFlute2
     ) {
-      const sounds = bdy.hit_sounds || this.data.base.hit_sounds;
+      const sounds = this.data.base.hit_sounds;
       this.play_sound(sounds);
     }
   }

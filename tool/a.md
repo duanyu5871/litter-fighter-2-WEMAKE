@@ -513,6 +513,8 @@ kind: #
 10##，##是被打后跳到的act(只有id:300 才有效用)
 x: y: w: h: 同上使用方式，body的范围
 
+#### bdy.kind
+
 #### bdy.kind: 0 普通
 
 #### bdy.kind: 1XXX 被打跳转
@@ -607,12 +609,17 @@ throwinjury完全说明
 
 ### bpoint
 
-bpoint:(流血指令开始)
+``` text
+bpoint:
 x: # y: #
-bpoint_end:(流血指令结束)
+bpoint_end:
+```
 
-- hp少于1/3时，嘴角才会流血。
-  x: y: 嘴角的位置
+- hp少于1/3时，嘴角流血。
+
+#### bpoint.x 流血位置X坐标
+
+#### bpoint.y 流血位置Y坐标
 
 ## Ball
 

@@ -105,15 +105,15 @@ export const get_val_getter_from_entity: IValGetterGetter<Entity> = (
       };
     case EntityVal.HitOnCharacter:
       return (e) => {
-        return find(e.collision_list, (c) => is_character(c.attacker)) ? 1 : 0;
+        return find(e.collision_list, (c) => is_character(c.victim)) ? 1 : 0;
       };
     case EntityVal.HitOnWeapon:
       return (e) => {
-        return find(e.collision_list, (c) => is_weapon(c.attacker)) ? 1 : 0;
+        return find(e.collision_list, (c) => is_weapon(c.victim)) ? 1 : 0;
       };
     case EntityVal.HitOnBall:
       return (e) => {
-        return find(e.collision_list, (c) => is_ball(c.attacker)) ? 1 : 0;
+        return find(e.collision_list, (c) => is_ball(c.victim)) ? 1 : 0;
       };
     case EntityVal.HitOnState:
       return (e) => {

@@ -1,7 +1,9 @@
 import { Defines, IFrameInfo, ItrKind } from "../defines";
 import { FrameBehavior } from "../defines/FrameBehavior";
 import { ICollision } from "../defines/ICollision";
+import { State } from "../defines/State";
 import Entity from "../entity/Entity";
+import { turn_face } from "../entity/face_helper";
 import { is_character, is_weapon } from "../entity/type_check";
 import State_Base from "./State_Base";
 
@@ -69,11 +71,18 @@ export default class BallState_Base extends State_Base {
     }
   }
   override on_be_collided(collision: ICollision): void {
-    const { victim } = collision;
+    const { victim, attacker } = collision;
     victim.shaking = 0;
     victim.velocities.length = 1;
     victim.velocities[0].x = 0;
     victim.velocities[0].z = 0;
     victim.velocities[0].y = 0;
+    switch (victim.frame.state) {
+      case State.Ball_Flying:
+      case State.Ball_Rebounding:
+        victim.team = attacker.team;
+        // victim.facing = attacker.facing;
+        break;
+    }
   }
 }

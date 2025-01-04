@@ -372,7 +372,6 @@ export function FrameEditorView(props: IFrameEditorViewProps) {
               const bdy: IBdyInfo = {
                 z: 0, l: 0, x: 0, y: 0, w: 0, h: 0,
                 kind: BdyKind.Normal,
-                hit_sounds: []
               }
               if (next.bdy) next.bdy = [bdy, ...next.bdy]
               else next.bdy = [bdy]
