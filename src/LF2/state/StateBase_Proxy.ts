@@ -7,13 +7,23 @@ import CharacterState_Base from "./CharacterState_Base";
 import State_Base, { WhatNext } from "./State_Base";
 import WeaponState_Base from "./WeaponState_Base";
 
-export class StateBase_Proxy
-  extends State_Base
-  implements Required<State_Base> {
-  private character_proxy = new CharacterState_Base();
-  private weapon_proxy = new WeaponState_Base();
-  private ball_proxy = new BallState_Base();
-  private proxy = new State_Base();
+export class StateBase_Proxy extends State_Base implements Required<State_Base> {
+  protected character_proxy = new CharacterState_Base();
+  protected weapon_proxy = new WeaponState_Base();
+  protected ball_proxy = new BallState_Base();
+  protected proxy = new State_Base();
+  constructor(
+    character_proxy = new CharacterState_Base(),
+    weapon_proxy = new WeaponState_Base(),
+    ball_proxy = new BallState_Base(),
+    proxy = new State_Base(),
+  ) {
+    super();
+    this.character_proxy = character_proxy
+    this.weapon_proxy = weapon_proxy
+    this.ball_proxy = ball_proxy
+    this.proxy = proxy
+  }
   get_proxy(e: Entity) {
     if (is_character(e)) return this.character_proxy;
     if (is_weapon(e)) return this.weapon_proxy;

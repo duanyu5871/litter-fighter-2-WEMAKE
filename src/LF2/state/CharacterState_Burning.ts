@@ -7,19 +7,16 @@ export default class CharacterState_Burning extends CharacterState_Base {
     if (e.fall_value <= 0) e.facing = e.velocities[0].x > 0 ? -1 : 1;
   }
   override on_landing(e: Entity): void {
-    if (e.fall_value > 0) {
-      super.on_landing(e);
+    const { y: vy } = e.velocity;
+    const {
+      data: { indexes },
+    } = e;
+    if (vy <= -4) {
+      e.enter_frame({ id: indexes?.bouncing?.[-1][1] });
+      e.velocities[0].y = 2;
     } else {
-      const { y: vy } = e.velocity;
-      const {
-        data: { indexes },
-      } = e;
-      if (vy <= -4) {
-        e.enter_frame({ id: indexes?.bouncing?.[-1][1] });
-        e.velocities[0].y = 2;
-      } else {
-        e.enter_frame({ id: indexes?.lying?.[-1] });
-      }
+      e.enter_frame({ id: indexes?.lying?.[-1] });
     }
   }
 }
+

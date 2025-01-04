@@ -64,24 +64,6 @@ export default interface IEntityCallbacks<E extends Entity = Entity> {
   on_mp_changed?(e: E, value: number, prev: number): void;
 
   /**
-   * Description placeholder
-   *
-   * @param {E} e
-   * @param {number} value 当前值
-   * @param {number} prev 上一次值
-   */
-  on_self_healing_hp_changed?(e: E, value: number, prev: number): void;
-
-  /**
-   * Description placeholder
-   *
-   * @param {E} e
-   * @param {number} value 当前值
-   * @param {number} prev 上一次值
-   */
-  on_self_healing_mp_changed?(e: E, value: number, prev: number): void;
-
-  /**
    * 队伍变化
    *
    * @param {E} e
@@ -166,4 +148,13 @@ export default interface IEntityCallbacks<E extends Entity = Entity> {
   on_resting_changed?(e: E, value: number, prev: number): void;
 
   on_resting_max_changed?(e: E, value: number, prev: number): void;
+
+  /**
+   * 
+   *
+   * @param {E} e
+   * @param {number} value 当前值
+   * @param {number} prev 上一次值
+   */
+  on_hp_r_changed?(e: E, value: number, prev: number): void;
 }

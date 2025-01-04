@@ -206,11 +206,8 @@ export class InfoRender implements IEntityCallbacks {
     this.self_healing_mp_bar.max = value;
   }
 
-  on_self_healing_hp_changed(_e: Entity, value: number): void {
+  on_hp_r_changed(_e: Entity, value: number): void {
     this.self_healing_hp_bar.val = value;
-  }
-  on_self_healing_mp_changed(_e: Entity, value: number): void {
-    this.self_healing_mp_bar.val = value;
   }
 
   on_fall_value_changed(_e: Entity, value: number): void {
@@ -225,7 +222,6 @@ export class InfoRender implements IEntityCallbacks {
   on_defend_value_max_changed(_e: Entity, value: number): void {
     this.defend_value_bar.max = value;
   }
-
   private update_name_sprite(e: Entity, name: string, team: string) {
     const fillStyle = get_team_text_color(team);
     const strokeStyle = get_team_shadow_color(team);

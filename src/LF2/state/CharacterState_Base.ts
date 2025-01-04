@@ -142,6 +142,7 @@ export default class CharacterState_Base extends State_Base {
     if (!itr.injury) return;
     const inj = Math.round(itr.injury * scale);
     victim.hp -= inj;
+    victim.hp_r -= Math.floor(inj / 2)
     attacker.add_damage_sum(inj);
     if (victim.hp <= 0) attacker.add_kill_sum(1);
   }

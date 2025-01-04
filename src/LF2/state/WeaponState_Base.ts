@@ -53,11 +53,14 @@ export default class WeaponState_Base extends State_Base {
           itr.bdefend >= Defines.DEFAULT_FORCE_BREAK_DEFEND_VALUE
         )
           victim.hp = 0;
-        else if (itr.injury) victim.hp -= itr.injury;
+        else if (itr.injury) {
+          victim.hp -= itr.injury;
+          victim.hp_r -= itr.injury;
+        }
         const is_fly =
           itr.fall &&
           itr.fall >=
-            Defines.DEFAULT_FALL_VALUE_MAX - Defines.DEFAULT_FALL_VALUE_DIZZY;
+          Defines.DEFAULT_FALL_VALUE_MAX - Defines.DEFAULT_FALL_VALUE_DIZZY;
         const spark_frame_name = is_fly ? "slient_critical_hit" : "slient_hit";
         victim.world.spark(spark_x, spark_y, spark_z, spark_frame_name);
         if (victim.data.base.type === Defines.WeaponType.Heavy) {

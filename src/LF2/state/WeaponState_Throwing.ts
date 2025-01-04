@@ -33,7 +33,10 @@ export default class WeaponState_Throwing extends WeaponState_Base {
     }
     if (this._unhurt_weapons.has(e)) {
       this._unhurt_weapons.delete(e);
-      if (base.drop_hurt) e.hp -= base.drop_hurt;
+      if (base.drop_hurt) {
+        e.hp -= base.drop_hurt;
+        e.hp_r -= base.drop_hurt;
+      }
     }
   }
   override update(e: Entity): void {

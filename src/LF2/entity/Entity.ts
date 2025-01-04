@@ -259,6 +259,7 @@ export default class Entity {
   protected _mp_r_spd: number = Defines.DEFAULT_MP_RECOVERY_MIN_SPEED;
 
   protected _hp: number = Defines.DAFUALT_HP;
+  protected _hp_r: number = Defines.DAFUALT_HP;
   protected _hp_max: number = Defines.DAFUALT_HP;
 
   protected _holder?: Entity;
@@ -363,12 +364,21 @@ export default class Entity {
   }
   set mp(v: number) {
     const o = this._mp;
+    if (o === v) return;
     this._callbacks.emit("on_mp_changed")(this, (this._mp = v), o);
-
     if (o > 0 && v <= 0) {
       const nf = this.frame.on_exhaustion ?? this.data.on_exhaustion;
       if (nf) this.enter_frame(nf);
     }
+  }
+
+  get hp_r(): number {
+    return this._hp_r;
+  }
+  set hp_r(v: number) {
+    const o = this._hp_r;
+    if (o === v) return;
+    this._callbacks.emit("on_hp_r_changed")(this, (this._hp_r = v), o);
   }
 
   get hp(): number {
@@ -376,6 +386,7 @@ export default class Entity {
   }
   set hp(v: number) {
     const o = this._hp;
+    if (o === v) return;
     this._callbacks.emit("on_hp_changed")(this, (this._hp = v), o);
     this.update_mp_r_spd();
 
@@ -388,6 +399,10 @@ export default class Entity {
       }
       const nf = this.frame.on_dead ?? this.data.on_dead;
       if (nf) this.enter_frame(nf);
+    }
+
+    if (v > this._hp_r) {
+      this.hp_r = v
     }
   }
 
@@ -549,7 +564,7 @@ export default class Entity {
 
     this.fall_value = this.fall_value_max;
     this.defend_value = this.defend_value_max;
-    this._hp = this._hp_max;
+    this._hp = this._hp_r = this._hp_max;
     this._mp = this._mp_max;
     this._catch_time = this._catch_time_max;
   }
@@ -978,8 +993,15 @@ export default class Entity {
 
   self_update(): void {
     if (this.next_frame) this.enter_frame(this.next_frame);
-    if (this._mp < this._mp_max)
-      this.mp = Math.min(this._mp_max, this._mp + this._mp_r_spd);
+
+    if (this._hp > 0) {
+      if (this._hp < this._hp_r) {
+        this.hp = Math.min(this._hp_r, this._hp + 0.05);
+      }
+      if (this._mp < this._mp_max)
+        this.mp = Math.min(this._mp_max, this._mp + this._mp_r_spd);
+    }
+
     if (this.frame.hp) this.hp -= this.frame.hp;
     const { cpoint } = this.frame;
     if (cpoint) {
@@ -1159,6 +1181,7 @@ export default class Entity {
       this.state?.on_landing?.(this);
       if (this.throwinjury !== void 0) {
         this.hp -= this.throwinjury;
+        this.hp_r -= Math.floor(this.throwinjury / 2)
         delete this.throwinjury;
       }
     }
@@ -1225,7 +1248,10 @@ export default class Entity {
       return this.get_caught_cancel_frame();
     }
     if (this.prev_cpoint_a !== cpoint_a) {
-      if (cpoint_a.injury) this.hp -= cpoint_a.injury;
+      if (cpoint_a.injury) {
+        this.hp -= cpoint_a.injury;
+        this.hp_r -= Math.floor(cpoint_a.injury / 2)
+      }
       if (cpoint_a.shaking && cpoint_a.shaking > 0)
         this.shaking = cpoint_a.shaking;
     }
