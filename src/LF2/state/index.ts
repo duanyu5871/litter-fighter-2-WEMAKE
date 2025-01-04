@@ -1,4 +1,4 @@
-import { Defines } from "../defines/defines";
+import { State } from "../defines/State";
 import Entity from "../entity/Entity";
 import BallState_Base from "./BallState_Base";
 import CharacterState_Base from "./CharacterState_Base";
@@ -31,59 +31,59 @@ import WeaponState_Throwing from "./WeaponState_Throwing";
 export * from "./States";
 export const ENTITY_STATES = new States();
 ENTITY_STATES.set_in_range(
-  Defines.State.TransformTo_Min,
-  Defines.State.TransformTo_Max,
+  State.TransformTo_Min,
+  State.TransformTo_Max,
   () => new State_TransformTo8XXX(),
 );
 ENTITY_STATES.add(new State_WeaponBroken(), new State_TransformToCatching());
-ENTITY_STATES.set(Defines.State.Weapon_Rebounding, new WeaponState_Base());
-ENTITY_STATES.set(Defines.State.Weapon_InTheSky, new WeaponState_InTheSky());
-ENTITY_STATES.set(Defines.State.Weapon_OnGround, new WeaponState_OnGround());
-ENTITY_STATES.set(Defines.State.Weapon_OnHand, new WeaponState_OnHand());
-ENTITY_STATES.set(Defines.State.Weapon_Throwing, new WeaponState_Throwing());
+ENTITY_STATES.set(State.Weapon_Rebounding, new WeaponState_Base());
+ENTITY_STATES.set(State.Weapon_InTheSky, new WeaponState_InTheSky());
+ENTITY_STATES.set(State.Weapon_OnGround, new WeaponState_OnGround());
+ENTITY_STATES.set(State.Weapon_OnHand, new WeaponState_OnHand());
+ENTITY_STATES.set(State.Weapon_Throwing, new WeaponState_Throwing());
 ENTITY_STATES.set(
-  Defines.State.HeavyWeapon_InTheSky,
+  State.HeavyWeapon_InTheSky,
   new WeaponState_InTheSky(),
 );
 ENTITY_STATES.set(
-  Defines.State.HeavyWeapon_OnGround,
+  State.HeavyWeapon_OnGround,
   new WeaponState_OnGround(),
 );
-ENTITY_STATES.set(Defines.State.HeavyWeapon_OnHand, new WeaponState_OnHand());
+ENTITY_STATES.set(State.HeavyWeapon_OnHand, new WeaponState_OnHand());
 ENTITY_STATES.set(
-  Defines.State.HeavyWeapon_Throwing,
+  State.HeavyWeapon_Throwing,
   new WeaponState_Throwing(),
 );
-ENTITY_STATES.set(Defines.State._Entity_Base, new State_Base());
+ENTITY_STATES.set(State._Entity_Base, new State_Base());
 
 ENTITY_STATES.set_all_of(
   [
-    Defines.State._Ball_Base,
-    Defines.State.Ball_3005,
-    Defines.State.Ball_3006,
-    Defines.State.Ball_Disappear,
-    Defines.State.Ball_Flying,
-    Defines.State.Ball_Hit,
-    Defines.State.Ball_Hitting,
+    State._Ball_Base,
+    State.Ball_3005,
+    State.Ball_3006,
+    State.Ball_Disappear,
+    State.Ball_Flying,
+    State.Ball_Hit,
+    State.Ball_Hitting,
   ],
   () => new BallState_Base(),
 );
 
-ENTITY_STATES.set(Defines.State._Weapon_Base, new WeaponState_Base());
-ENTITY_STATES.set(Defines.State._Character_Base, new CharacterState_Base());
-ENTITY_STATES.set(Defines.State.Standing, new CharacterState_Standing());
-ENTITY_STATES.set(Defines.State.Walking, new CharacterState_Walking());
-ENTITY_STATES.set(Defines.State.Running, new CharacterState_Running());
-ENTITY_STATES.set(Defines.State.Jump, new CharacterState_Jump());
-ENTITY_STATES.set(Defines.State.Dash, new CharacterState_Dash());
-ENTITY_STATES.set(Defines.State.Falling, new CharacterState_Falling());
-ENTITY_STATES.set(Defines.State.Burning, new State_Burning());
-ENTITY_STATES.set(Defines.State.Frozen, new CharacterState_Frozen());
-ENTITY_STATES.set(Defines.State.Lying, new CharacterState_Lying());
-ENTITY_STATES.set(Defines.State.Caught, new CharacterState_Caught());
-ENTITY_STATES.set(Defines.State.Z_Moveable, new CharacterState_Base());
+ENTITY_STATES.set(State._Weapon_Base, new WeaponState_Base());
+ENTITY_STATES.set(State._Character_Base, new CharacterState_Base());
+ENTITY_STATES.set(State.Standing, new CharacterState_Standing());
+ENTITY_STATES.set(State.Walking, new CharacterState_Walking());
+ENTITY_STATES.set(State.Running, new CharacterState_Running());
+ENTITY_STATES.set(State.Jump, new CharacterState_Jump());
+ENTITY_STATES.set(State.Dash, new CharacterState_Dash());
+ENTITY_STATES.set(State.Falling, new CharacterState_Falling());
+ENTITY_STATES.set(State.Burning, new State_Burning());
+ENTITY_STATES.set(State.Frozen, new CharacterState_Frozen());
+ENTITY_STATES.set(State.Lying, new CharacterState_Lying());
+ENTITY_STATES.set(State.Caught, new CharacterState_Caught());
+ENTITY_STATES.set(State.Z_Moveable, new CharacterState_Base());
 ENTITY_STATES.set(
-  Defines.State.NextAsLanding,
+  State.NextAsLanding,
   new (class extends CharacterState_Base {
     override on_landing(e: Entity): void {
       e.enter_frame(e.frame.next);
@@ -92,23 +92,23 @@ ENTITY_STATES.set(
 );
 
 ENTITY_STATES.set(
-  Defines.State.TeleportToNearestEnemy,
+  State.TeleportToNearestEnemy,
   new CharacterState_Teleport2NearestEnemy(),
 );
 ENTITY_STATES.set(
-  Defines.State.TeleportToFarthestAlly,
+  State.TeleportToFarthestAlly,
   new CharacterState_Teleport2FarthestAlly(),
 );
 ENTITY_STATES.set(
-  Defines.State.TransformToLouisEx,
+  State.TransformToLouisEx,
   new CharacterState_TransformToLouisEX(),
 );
-ENTITY_STATES.set(Defines.State.Rowing, new CharacterState_Rowing());
-ENTITY_STATES.set(Defines.State.Drink, new CharacterState_Drink());
-ENTITY_STATES.set(Defines.State.Normal, new State_15());
+ENTITY_STATES.set(State.Rowing, new CharacterState_Rowing());
+ENTITY_STATES.set(State.Drink, new CharacterState_Drink());
+ENTITY_STATES.set(State.Normal, new State_15());
 
 ENTITY_STATES.set(
-  Defines.State.Injured,
+  State.Injured,
   new (class extends CharacterState_Base {
     override on_landing(e: Entity): void {}
   })(),
