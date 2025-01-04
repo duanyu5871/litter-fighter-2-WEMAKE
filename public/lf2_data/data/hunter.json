@@ -4980,7 +4980,7 @@
           "bdefend": 32,
           "l": 24,
           "z": -12,
-          "test": "(victim_state!=1004|attacker_type!=character)&(victim_state!=19&victim_state!=18&victim_type!=character)",
+          "test": "(victim_state!=1004|attacker_type!=character)&victim_type!=character|(victim_state!=19&victim_state!=18)",
           "friendly_fire": 1
         }
       ],
@@ -5036,7 +5036,7 @@
           "bdefend": 32,
           "l": 24,
           "z": -12,
-          "test": "(victim_state!=1004|attacker_type!=character)&(victim_state!=19&victim_state!=18&victim_type!=character)",
+          "test": "(victim_state!=1004|attacker_type!=character)&victim_type!=character|(victim_state!=19&victim_state!=18)",
           "friendly_fire": 1
         }
       ],
@@ -5092,7 +5092,7 @@
           "bdefend": 32,
           "l": 24,
           "z": -12,
-          "test": "(victim_state!=1004|attacker_type!=character)&(victim_state!=19&victim_state!=18&victim_type!=character)",
+          "test": "(victim_state!=1004|attacker_type!=character)&victim_type!=character|(victim_state!=19&victim_state!=18)",
           "friendly_fire": 1
         }
       ],
@@ -5148,7 +5148,7 @@
           "bdefend": 32,
           "l": 24,
           "z": -12,
-          "test": "(victim_state!=1004|attacker_type!=character)&(victim_state!=19&victim_state!=18&victim_type!=character)",
+          "test": "(victim_state!=1004|attacker_type!=character)&victim_type!=character|(victim_state!=19&victim_state!=18)",
           "friendly_fire": 1
         }
       ],

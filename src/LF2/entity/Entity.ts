@@ -622,7 +622,7 @@ export default class Entity {
 
     const shotter_frame = emitter.frame;
     if (emitter.frame.state === Defines.State.Ball_Rebounding) {
-      this.team = emitter.lastest_collided?.attacker.team || new_team();
+      this.team = (emitter.lastest_collided?.attacker ?? emitter).team;
       this.facing = emitter.facing;
     } else {
       this.team = emitter.team;

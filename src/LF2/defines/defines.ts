@@ -236,8 +236,11 @@ export namespace Defines {
      */
     Drink = 17,
     _17 = 17,
-    _18 = 18,
-    Burning = 18,
+    
+    /**
+     *
+     */
+    Burning = 18, _18 = 18,
 
     /**
      * 原版中：此state，支持根据上下键与dvz控制角色Z轴移动，比如Firen的D>J。

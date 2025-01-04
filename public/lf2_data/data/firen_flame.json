@@ -617,7 +617,7 @@
           "bdefend": 6,
           "l": 24,
           "z": -12,
-          "test": "(victim_state!=1004|attacker_type!=character)&(victim_state!=19&victim_state!=18&victim_type!=character)",
+          "test": "(victim_state!=1004|attacker_type!=character)&victim_type!=character|(victim_state!=19&victim_state!=18)",
           "hit_sounds": [
             "data/068.wav.mp3"
           ]

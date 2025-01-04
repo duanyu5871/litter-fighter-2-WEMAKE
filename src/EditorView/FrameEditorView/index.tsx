@@ -13,12 +13,14 @@ import { Defines, IBdyInfo, IFrameInfo, IItrInfo, INextFrame } from "../../LF2/d
 import { BdyKind } from "../../LF2/defines/BdyKind";
 import { IEntityData } from "../../LF2/defines/IEntityData";
 import { map_arr } from "../../LF2/utils/array/map_arr";
+import { num_or } from "../../LF2/utils/type_check";
 import { shared_ctx } from "../Context";
-import { ITR_KIND_SELECT_PROPS, SPEED_MODE_SELECT_PROPS, STATE_SELECT_PROPS } from "../EntityEditorView";
+import { SPEED_MODE_SELECT_PROPS, STATE_SELECT_PROPS } from "../EntityEditorView";
+import { BdyEditorView } from "./BdyEditorView";
 import { ItrEditorView } from "./ItrEditorView";
 import styles from "./styles.module.scss";
-import { is_num, num_or } from "../../LF2/utils/type_check";
-import { BdyEditorView } from "./BdyEditorView";
+import Ditto from "../../LF2/ditto";
+import { AudioButton } from "./AudioButton";
 
 enum TabEnum {
   Base = 'base',
@@ -69,7 +71,7 @@ export function FrameEditorView(props: IFrameEditorViewProps) {
   const ref_on_click_play = useRef(on_click_play);
   ref_on_click_play.current = on_click_play;
 
-  const [editing, set_editing] = useState<TabEnum>();
+  const [editing, set_editing] = useState<TabEnum | undefined>(TabEnum.Base);
   const [changed, set_changed] = useState(false);
 
   const [frame, set_frame] = useState(() => JSON.parse(JSON.stringify(src)) as IFrameInfo);
@@ -115,7 +117,7 @@ export function FrameEditorView(props: IFrameEditorViewProps) {
 
   const edit_string = (key: keyof IFrameInfo): InputProps => ({
     value: (frame[key] as any) || '',
-    onChange: e => set_frame(p => ({ ...p, [key]: e.target.value.trim() })),
+    onChange: e => set_frame(p => ({ ...p, [key]: e.target.value.trim() || void 0 })),
     placeholder: key,
   });
   const edit_number_00 = (key: keyof IFrameInfo): InputProps => ({
@@ -201,6 +203,7 @@ export function FrameEditorView(props: IFrameEditorViewProps) {
     });
     return ret
   }, [frame, frames, data])
+
   return (
     <Combine
       id={`${data.id}###${frame.id}`}
@@ -268,6 +271,12 @@ export function FrameEditorView(props: IFrameEditorViewProps) {
               <Combine direction='column'>
                 {next_frame_selects}
               </Combine>
+            </Combine>
+          </Titled>
+          <Titled label='　　声音'>
+            <Combine >
+              <Input {...edit_string('sound')} />
+              {frame.sound ? <AudioButton zip={zip} path={frame.sound} /> : null}
             </Combine>
           </Titled>
         </Show>
@@ -405,3 +414,4 @@ export function FrameEditorView(props: IFrameEditorViewProps) {
     </Combine>
   );
 }
+

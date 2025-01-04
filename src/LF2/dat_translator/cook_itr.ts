@@ -44,25 +44,30 @@ export default function cook_itr(itr?: Partial<IItrInfo>) {
   }
   switch (itr.kind) {
     case ItrKind.Normal: {
-      const cond_maker = new CondMaker<C_Val>().wrap((c) =>
-        c
+      const cond_maker = new CondMaker<C_Val>()
+        .wrap((c) => c
           .add(C_Val.VictimState, "!=", Defines.State.Weapon_OnGround)
           .or(C_Val.AttackerType, "!=", EntityEnum.Character),
-      );
+        );
       switch (itr.effect) {
-        case ItrEffect.MFire1:
-          cond_maker.and((c) =>
-            c
-              .add(C_Val.VictimState, "!=", Defines.State.BurnRun)
-              .and(C_Val.VictimState, "!=", Defines.State.Burning)
-              .and(C_Val.VictimType, "!=", EntityEnum.Character),
+        case ItrEffect.Fire: 
+          cond_maker.and((c) => c
+            .add(C_Val.VictimState, "!=", Defines.State.Burning)
+            .or(C_Val.AttackerState, "!=", Defines.State.BurnRun)
           );
           break;
-        case ItrEffect.MFire2:
-          cond_maker.and((c) =>
-            c
+        case ItrEffect.MFire1:
+          cond_maker
+            .and(C_Val.VictimType, "!=", EntityEnum.Character)
+            .or((c) => c
               .add(C_Val.VictimState, "!=", Defines.State.BurnRun)
-              .and(C_Val.VictimState, "!=", Defines.State.Burning),
+              .and(C_Val.VictimState, "!=", Defines.State.Burning)
+            );
+          break;
+        case ItrEffect.MFire2:
+          cond_maker.and((c) => c
+            .add(C_Val.VictimState, "!=", Defines.State.BurnRun)
+            .and(C_Val.VictimState, "!=", Defines.State.Burning),
           );
           break;
         case ItrEffect.Through:

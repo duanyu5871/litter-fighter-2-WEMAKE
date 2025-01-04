@@ -184,7 +184,7 @@
           "bdefend": 40,
           "l": 24,
           "z": -12,
-          "test": "victim_state!=1004|attacker_type!=character",
+          "test": "(victim_state!=1004|attacker_type!=character)&(victim_state!=18|attacker_state!=19)",
           "hit_sounds": [
             "data/020.wav.mp3"
           ],
@@ -285,7 +285,7 @@
           "bdefend": 40,
           "l": 24,
           "z": -12,
-          "test": "victim_state!=1004|attacker_type!=character",
+          "test": "(victim_state!=1004|attacker_type!=character)&(victim_state!=18|attacker_state!=19)",
           "hit_sounds": [
             "data/020.wav.mp3"
           ],
@@ -384,7 +384,7 @@
           "bdefend": 40,
           "l": 24,
           "z": -12,
-          "test": "victim_state!=1004|attacker_type!=character",
+          "test": "(victim_state!=1004|attacker_type!=character)&(victim_state!=18|attacker_state!=19)",
           "hit_sounds": [
             "data/020.wav.mp3"
           ],
