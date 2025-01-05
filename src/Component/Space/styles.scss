@@ -3,6 +3,10 @@
   display    : flex;
   align-items: stretch;
 
+  &.item {
+    display: flex !important;
+  }
+
   &>.item {
     display    : inline-block;
     max-height : 100%;

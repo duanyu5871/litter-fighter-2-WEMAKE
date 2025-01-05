@@ -7,10 +7,22 @@ import { SpeedMode } from "../../LF2/defines/SpeedMode";
 import { FrameEditorView } from "../FrameEditorView";
 import './style.scss';
 import { BdyKind } from "../../LF2/defines/BdyKind";
+import { EntityEnum } from "../../LF2/defines/EntityEnum";
 const make_num_enum_select_props = (t: any): ISelectProps<string, number> => ({
   items: Object.keys(t).filter(key => {
     if (key.startsWith('_')) return false;
     if (!Number.isNaN(Number(key))) return false;
+    return true;
+  }),
+  parse: (k: string) => {
+    const value = (t as any)[k];
+    const label = `${k}(${value})`;
+    return [value, label]
+  }
+})
+const make_str_enum_select_props = (t: any): ISelectProps<string, string> => ({
+  items: Object.keys(t).filter(key => {
+    if (key.startsWith('_')) return false;
     return true;
   }),
   parse: (k: string) => {
@@ -24,7 +36,7 @@ export const SPEED_MODE_SELECT_PROPS = make_num_enum_select_props(SpeedMode);
 export const ITR_KIND_SELECT_PROPS = make_num_enum_select_props(ItrKind);
 export const ITR_EFFECT_SELECT_PROPS = make_num_enum_select_props(ItrEffect);
 export const BDY_KIND_SELECT_PROPS = make_num_enum_select_props(BdyKind);
-
+export const ENTITY_TYPE_SELECT_PROPS = make_str_enum_select_props(EntityEnum);
 export interface IEntityEditorViewProps extends React.HTMLAttributes<HTMLDivElement> {
   src: IEntityData;
   on_click_frame?(frame: IFrameInfo, data: IEntityData): void

@@ -4,14 +4,21 @@ import './styles.scss';
 export interface ISpaceProps extends React.HTMLAttributes<HTMLDivElement> {
   item_props?: React.HTMLAttributes<HTMLDivElement>;
   direction?: 'column' | 'row';
+  vertical?: boolean;
   _ref?: React.RefObject<HTMLDivElement>;
 }
 export function Space(props: ISpaceProps) {
-  const { className, children, item_props, direction = 'row', _ref, ..._p } = props;
+  const {
+    className,
+    children,
+    item_props,
+    vertical,
+    direction = vertical ? 'column' : 'row',
+    _ref,
+    ..._p
+  } = props;
   const root_cls_name = useMemo(() => {
-    return [
-      "lf2ui_space", direction, className
-    ].filter(Boolean).join(' ')
+    return ["lf2ui_space", direction, className].filter(Boolean).join(' ')
   }, [className, direction])
   const items = Array.isArray(children) ? children : children ? [children] : void 0
   return (

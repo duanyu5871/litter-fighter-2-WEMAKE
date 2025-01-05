@@ -17,9 +17,12 @@ import { is_num } from "../LF2/utils/type_check";
 import open_file from "../Utils/open_file";
 import { shared_ctx } from './Context';
 import { EditorShapeEnum } from "./EditorShapeEnum";
-import { EntityEditorView } from "./EntityEditorView";
+import { ENTITY_TYPE_SELECT_PROPS, EntityEditorView } from "./EntityEditorView";
 import { FrameDrawer, FrameDrawerData } from "./FrameDrawer";
 import styles from "./styles.module.scss";
+import Frame from "../Component/Frame";
+import { Input } from "../Component/Input";
+import { EntityDataEditorView } from "./EntityDataEditorView";
 
 Gaia.registerShape(
   EditorShapeEnum.LF2_FRAME,
@@ -70,8 +73,65 @@ export default function EditorView(props: IEditorViewProps) {
   const [opens, set_opens] = useState<string[]>()
   const [tree, set_tree] = useState<TTreeNode>();
 
-  const [entity_editor_view, set_entity_editor_view] = useState<React.ReactNode>();
   const [textarea, set_textarea] = useState<React.ReactNode>();
+  const [editing_data, set_editing_data] = useState<IEntityData>();
+
+  const entity_editor_view = useMemo(() => {
+    if (!editing_data) return void 0;
+
+    const on_frame_change = (frame: IFrameInfo, data: IEntityData) => {
+      const board = ref_board.current!;
+      const shape_data = factory.newShapeData(EditorShapeEnum.LF2_FRAME) as FrameDrawerData;
+      shape_data.frame = frame;
+      shape_data.zip = zip;
+      shape_data.data = data;
+      shape_data.layer = board.layer().id;
+      shape_data.id = 'frame';
+      shape_data.z = factory.newZ(shape_data);
+      const { w, h } = FrameDrawer.get_size(frame);
+      Object.assign(shape_data, { w: w * 2, h: h * 2 })
+
+      let shape = board.shapes().find(v => v.data.id === 'frame') as FrameDrawer | undefined;
+      if (!shape) {
+        shape = factory.newShape(shape_data) as FrameDrawer;
+        board.add(shape);
+      } else {
+        let { x, y } = shape;
+        if (shape.data.frame) {
+          const a = FrameDrawer.get_bounding(shape.data.frame)
+          const b = FrameDrawer.get_bounding(shape_data.frame)
+          x += ((a.l + shape.data.frame.centerx) - (b.l + shape_data.frame.centerx)) * 2
+          y += ((a.t + shape.data.frame.centery) - (b.t + shape_data.frame.centery)) * 2
+        }
+        shape_data.x = x
+        shape_data.y = y
+        shape.merge(shape_data)
+      }
+    }
+
+    return (
+      <EntityEditorView
+        src={editing_data}
+        on_click_frame={on_frame_change}
+        on_frame_change={on_frame_change}
+        on_click_goto_next_frame={(nf, data) => {
+          let ele: HTMLElement | null;
+          if (nf.id === Defines.FrameId.Auto) {
+            ele = document.getElementById(`${data.id}###0`)
+          } else {
+            ele = document.getElementById(`${data.id}###${nf.id}`)
+          }
+          if (ele) {
+            ele.click();
+            console.log(ele)
+            document.getElementsByClassName('entity_editor_view').item(0)
+              ?.scrollTo(0, ele.offsetTop)
+          }
+        }}
+      />
+    )
+  }, [editing_data, zip])
+
 
   const [state, set_state] = useState({
     mp3: false,
@@ -155,35 +215,6 @@ export default function EditorView(props: IEditorViewProps) {
   }, [zip_name, zip])
 
 
-  const on_frame_change = (frame: IFrameInfo, data: IEntityData) => {
-    const board = ref_board.current!;
-    const shape_data = factory.newShapeData(EditorShapeEnum.LF2_FRAME) as FrameDrawerData;
-    shape_data.frame = frame;
-    shape_data.zip = zip;
-    shape_data.data = data;
-    shape_data.layer = board.layer().id;
-    shape_data.id = 'frame';
-    shape_data.z = factory.newZ(shape_data);
-    const { w, h } = FrameDrawer.get_size(frame);
-    Object.assign(shape_data, { w: w * 2, h: h * 2 })
-
-    let shape = board.shapes().find(v => v.data.id === 'frame') as FrameDrawer | undefined;
-    if (!shape) {
-      shape = factory.newShape(shape_data) as FrameDrawer;
-      board.add(shape);
-    } else {
-      let { x, y } = shape;
-      if (shape.data.frame) {
-        const a = FrameDrawer.get_bounding(shape.data.frame)
-        const b = FrameDrawer.get_bounding(shape_data.frame)
-        x += ((a.l + shape.data.frame.centerx) - (b.l + shape_data.frame.centerx)) * 2
-        y += ((a.t + shape.data.frame.centery) - (b.t + shape_data.frame.centery)) * 2
-      }
-      shape_data.x = x
-      shape_data.y = y
-      shape.merge(shape_data)
-    }
-  }
 
   const on_click_item = (node: TTreeNode) => {
     if (node.children) {
@@ -199,44 +230,14 @@ export default function EditorView(props: IEditorViewProps) {
         case EntityEnum.Weapon:
         case EntityEnum.Ball:
         case EntityEnum.Entity:
-          zip?.file(node.path)?.json().then(r => {
-            const data = r as IEntityData;
-            set_entity_editor_view(
-              <EntityEditorView
-                key={node.path + '_eev'}
-                src={data}
-                on_click_frame={on_frame_change}
-                on_frame_change={on_frame_change}
-                on_click_goto_next_frame={(nf, data) => {
-                  let ele: HTMLElement | null;
-                  if (nf.id === Defines.FrameId.Auto) {
-                    ele = document.getElementById(`${data.id}###0`)
-                  } else {
-                    ele = document.getElementById(`${data.id}###${nf.id}`)
-                  }
-                  if (ele) {
-                    ele.click();
-                    console.log(ele)
-                    document.getElementsByClassName('entity_editor_view').item(0)
-                      ?.scrollTo(0, ele.offsetTop)
-                  }
-                }}
-              />
-            )
-          });
+          zip?.file(node.path)?.json().then(r => set_editing_data(r));
           break;
         default: {
-          zip?.file(node.path)?.text().then(r => {
-            set_entity_editor_view(void 0)
-            // set_textarea(<TextArea ref={_ref_textarea_json} key={node.path + '_txt'} wrap="off" defaultValue={r} />)
-          });
+          zip?.file(node.path)?.text().then(r => set_editing_data(void 0));
         }
       }
     } else if (node.name.endsWith('.txt') || node.name.endsWith('.json')) {
-      zip?.file(node.path)?.text().then(r => {
-        // set_entity_editor_view(void 0)
-        // set_textarea(<TextArea ref={_ref_textarea_json} key={node.path + '_txt'} wrap="off" defaultValue={r} />)
-      });
+      zip?.file(node.path)?.text().then(r => set_editing_data(void 0));
     }
   }
   useEffect(() => {
@@ -283,9 +284,7 @@ export default function EditorView(props: IEditorViewProps) {
           </Show>
         </Space>
         <Space.Item space direction='row' style={{ flex: 1, display: 'flex' }} onClick={e => { e.stopPropagation(); e.preventDefault() }}>
-          <Space.Item className={`${styles.tree_item_view_wrapper} lf2_hoverable_border`}
-            space
-            style={{ display: 'flex', flexDirection: 'column', flexFlow: 'column' }}>
+          <Space.Item className={styles.tree_item_view_wrapper} space vertical>
             <Space>
               <Titled label="mp3"><Checkbox value={state.mp3} onChanged={v => set_state(o => ({ ...o, mp3: v }))} /></Titled>
               <Titled label="flat"><Checkbox value={state.flat} onChanged={v => set_state(o => ({ ...o, flat: v }))} /></Titled>
@@ -293,12 +292,7 @@ export default function EditorView(props: IEditorViewProps) {
               <Titled label="img"><Checkbox value={state.img} onChanged={v => set_state(o => ({ ...o, img: v }))} /></Titled>
               <Titled label="others"><Checkbox value={state.others} onChanged={v => set_state(o => ({ ...o, others: v }))} /></Titled>
             </Space>
-            <Space.Item style={{
-              flexGrow: 1,
-              flexShrink: 0,
-              flexBasis: 0,
-              overflow: 'auto'
-            }}>
+            <Space.Item className={styles.scroll_zone}>
               <TreeNodeView
                 node={filters_tree}
                 opens={opens}
@@ -307,25 +301,15 @@ export default function EditorView(props: IEditorViewProps) {
               />
             </Space.Item>
           </Space.Item>
-          <Space.Item
-            space className='lf2_hoverable_border'
-            style={{
-              position: 'relative',
-              resize: 'horizontal',
-              flex: 1,
-              minWidth: 10,
-              display: 'flex',
-              flexDirection: 'column'
-            }}>
-            <Space.Item _ref={ref_div} style={{ flex: 1 }}>
-            </Space.Item>
+          <Space.Item space vertical style={{ flex: 1 }}>
+            <Show show={editing_data}>
+              <EntityDataEditorView
+                src={editing_data}
+                className={styles.entity_base_editor} />
+            </Show>
+            <Space.Item space _ref={ref_div} className={styles.frame_preview_view} />
           </Space.Item>
-          <Space.Item style={{
-            overflow: 'hidden',
-            display: 'flex',
-            position: 'relative',
-            flexDirection: 'column'
-          }}>
+          <Space.Item className={styles.entity_editor_view}>
             {entity_editor_view}
           </Space.Item>
           {textarea}
@@ -333,5 +317,5 @@ export default function EditorView(props: IEditorViewProps) {
       </Space>
     </shared_ctx.Provider>
   );
-
 }
+
