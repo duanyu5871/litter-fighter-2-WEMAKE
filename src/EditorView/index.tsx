@@ -2,24 +2,24 @@ import { Board, FactoryEnum, Gaia, ToolEnum } from "@fimagine/writeboard";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "../Component/Buttons/Button";
 import { Checkbox } from "../Component/Checkbox";
+import Select from "../Component/Select";
 import Show from "../Component/Show";
 import { Space } from "../Component/Space";
 import Titled from "../Component/Titled";
-import { Defines, IFrameInfo } from "../LF2/defines";
+import { ITreeNode, ITreeNodeGetIcon, TreeNodeView } from "../Component/TreeNodeView";
+import { Defines, IBgData, IFrameInfo } from "../LF2/defines";
 import { EntityEnum } from "../LF2/defines/EntityEnum";
 import { IEntityData } from "../LF2/defines/IEntityData";
 import Ditto, { IZip } from "../LF2/ditto";
 import { ILf2Callback } from "../LF2/ILf2Callback";
 import LF2 from "../LF2/LF2";
+import { is_num } from "../LF2/utils/type_check";
 import open_file from "../Utils/open_file";
 import { shared_ctx } from './Context';
 import { EditorShapeEnum } from "./EditorShapeEnum";
 import { EntityEditorView } from "./EntityEditorView";
 import { FrameDrawer, FrameDrawerData } from "./FrameDrawer";
-import styles from "./styles.module.css";
-import { ITreeNode, TreeNodeView } from "./TreeNodeView";
-import Select from "../Component/Select";
-import { is_num } from "../LF2/utils/type_check";
+import styles from "./styles.module.scss";
 
 Gaia.registerShape(
   EditorShapeEnum.LF2_FRAME,
@@ -35,13 +35,26 @@ export interface IEditorViewProps extends React.HTMLAttributes<HTMLDivElement> {
   open?: boolean;
   lf2?: LF2;
 }
+type TTreeNode = ITreeNode<IEntityData | IBgData | null>
+
+const dat_type_emoji_map: { [x in string]?: React.ReactNode } = {
+  [EntityEnum.Ball]: '🥏',
+  [EntityEnum.Weapon]: '🗡️',
+  [EntityEnum.Character]: '🏃‍➡️',
+  [EntityEnum.Entity]: '🌀',
+  'background': '⛰️'
+}
+const get_icon: ITreeNodeGetIcon<IEntityData | IBgData | null> = ({ node, depth }) => {
+  if (depth === 0) return '📦';
+  if (!node.data) return void 0;
+  const type = node.data.type;
+  return dat_type_emoji_map[type]
+}
 export default function EditorView(props: IEditorViewProps) {
   const ref_div = useRef<HTMLDivElement>(null);
   const ref_board = useRef<Board>();
 
   const { onClose, loading, open, lf2, ..._p } = props;
-  const _ref_textarea_dat = useRef<HTMLTextAreaElement>(null);
-  const _ref_textarea_json = useRef<HTMLTextAreaElement>(null);
   const [zip_name, set_zip_name] = useState('');
   const [zips, set_zips] = useState<IZip[]>();
   const [zip, set_zip] = useState<IZip>();
@@ -55,7 +68,7 @@ export default function EditorView(props: IEditorViewProps) {
 
   }, [lf2])
   const [opens, set_opens] = useState<string[]>()
-  const [tree, set_tree] = useState<ITreeNode>();
+  const [tree, set_tree] = useState<TTreeNode>();
 
   const [entity_editor_view, set_entity_editor_view] = useState<React.ReactNode>();
   const [textarea, set_textarea] = useState<React.ReactNode>();
@@ -68,7 +81,7 @@ export default function EditorView(props: IEditorViewProps) {
     others: true
   })
   const filters_tree = useMemo(() => {
-    const handle_tree_node = (src: ITreeNode): ITreeNode | undefined => {
+    const handle_tree_node = (src: TTreeNode): TTreeNode | undefined => {
       if (!src.children) {
         if (src.name.endsWith('.mp3')) {
           if (!state.mp3) return;
@@ -82,9 +95,9 @@ export default function EditorView(props: IEditorViewProps) {
           return;
         }
       }
-      const ret: ITreeNode = { ...src }
+      const ret: TTreeNode = { ...src }
       if (!src.children) return ret;
-      const children: ITreeNode[] = ret.children = []
+      const children: TTreeNode[] = ret.children = []
       for (const child of src.children) {
         const o = handle_tree_node(child)
         if (o) children.push(o)
@@ -94,8 +107,8 @@ export default function EditorView(props: IEditorViewProps) {
 
     const ret = tree ? handle_tree_node(tree) : void 0;
     if (ret && state.flat) {
-      const children: ITreeNode[] = []
-      const flat = (i: ITreeNode) => {
+      const children: TTreeNode[] = []
+      const flat = (i: TTreeNode) => {
         if (!i.children) return;
         for (const child of i.children) {
           if (!child.children) children.push({ ...child, name: child.path });
@@ -111,13 +124,12 @@ export default function EditorView(props: IEditorViewProps) {
   const on_click_read_zip = async () => {
     const [file] = await open_file({ accept: ".zip" });
     const zip = await Ditto.Zip.read_file(file);
-    // await load_zip(file.name, zip);
     set_zip(zip);
     set_zip_name(file.name)
   };
 
   const load_zip = async (name: string, zip: IZip) => {
-    const root: ITreeNode = { name, path: '' };
+    const root: TTreeNode = { name, path: '' };
     for (const key in zip.files) {
       let node = root;
       const parts = key.split('/');
@@ -130,7 +142,7 @@ export default function EditorView(props: IEditorViewProps) {
         else children.push(node = {
           name: part,
           path: parts.slice(0, part_idx + 1).join('/'),
-          lf2_type: j?.type
+          data: j
         });
       }
     }
@@ -173,7 +185,7 @@ export default function EditorView(props: IEditorViewProps) {
     }
   }
 
-  const on_click_item = (node: ITreeNode) => {
+  const on_click_item = (node: TTreeNode) => {
     if (node.children) {
       set_opens((old = []) => {
         const ret = old.filter(v => v !== node.path)
@@ -181,8 +193,8 @@ export default function EditorView(props: IEditorViewProps) {
           ret.push(node.path)
         return ret.length ? ret : void 0;
       })
-    } else if (node.lf2_type) {
-      switch (node.lf2_type) {
+    } else if (node.data?.type) {
+      switch (node.data?.type) {
         case EntityEnum.Character:
         case EntityEnum.Weapon:
         case EntityEnum.Ball:
@@ -291,6 +303,7 @@ export default function EditorView(props: IEditorViewProps) {
                 node={filters_tree}
                 opens={opens}
                 on_click_item={on_click_item}
+                get_icon={get_icon}
               />
             </Space.Item>
           </Space.Item>
@@ -308,8 +321,10 @@ export default function EditorView(props: IEditorViewProps) {
             </Space.Item>
           </Space.Item>
           <Space.Item style={{
-            overflow: 'hidden', display: 'flex',
-            position: 'relative', flexDirection: 'column'
+            overflow: 'hidden',
+            display: 'flex',
+            position: 'relative',
+            flexDirection: 'column'
           }}>
             {entity_editor_view}
           </Space.Item>
