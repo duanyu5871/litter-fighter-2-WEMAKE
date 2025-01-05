@@ -141,13 +141,13 @@ export default function EditorView(props: IEditorViewProps) {
   const filters_tree = useMemo(() => {
     const handle_tree_node = (src: TTreeNode): TTreeNode | undefined => {
       if (!src.children) {
-        if (src.name.endsWith('.mp3')) {
+        if (src.key.endsWith('.mp3')) {
           if (!state.mp3) return;
-        } else if (src.name.endsWith('.json')) {
+        } else if (src.key.endsWith('.json')) {
           if (!state.json) return;
-        } else if (src.name.endsWith('.png')) {
+        } else if (src.key.endsWith('.png')) {
           if (!state.img) return;
-        } else if (src.name.endsWith('.webp')) {
+        } else if (src.key.endsWith('.webp')) {
           if (!state.img) return;
         } else if (!state.others) {
           return;
@@ -169,7 +169,7 @@ export default function EditorView(props: IEditorViewProps) {
       const flat = (i: TTreeNode) => {
         if (!i.children) return;
         for (const child of i.children) {
-          if (!child.children) children.push({ ...child, name: child.path });
+          if (!child.children) children.push({ ...child, label: '' + child.title });
           else flat(child)
         }
       }
@@ -187,7 +187,7 @@ export default function EditorView(props: IEditorViewProps) {
   };
 
   const load_zip = async (name: string, zip: IZip) => {
-    const root: TTreeNode = { name, path: '' };
+    const root: TTreeNode = { key: '', label: name, title: '' };
     for (const key in zip.files) {
       let node = root;
       const parts = key.split('/');
@@ -195,16 +195,17 @@ export default function EditorView(props: IEditorViewProps) {
       for (let part_idx = 0; part_idx < parts.length; part_idx++) {
         const part = parts[part_idx];
         const children = node.children = node.children || [];
-        const idx = children.findIndex(v => v.name === part);
+        const idx = children.findIndex(v => v.label === part);
         if (idx >= 0) node = children[idx];
         else children.push(node = {
-          name: part,
-          path: parts.slice(0, part_idx + 1).join('/'),
+          key: parts.slice(0, part_idx + 1).join('/'),
+          label: part,
+          title: parts.slice(0, part_idx + 1).join('/'),
           data: j
         });
       }
     }
-    set_opens([root.path]);
+    set_opens([root.key]);
     set_tree(root);
   }
 
@@ -217,9 +218,9 @@ export default function EditorView(props: IEditorViewProps) {
   const on_click_item = (node: TTreeNode) => {
     if (node.children) {
       set_opens((old = []) => {
-        const ret = old.filter(v => v !== node.path)
+        const ret = old.filter(v => v !== node.title)
         if (ret.length === old.length)
-          ret.push(node.path)
+          ret.push(node.key)
         return ret.length ? ret : void 0;
       })
     } else if (node.data?.type) {
@@ -228,14 +229,14 @@ export default function EditorView(props: IEditorViewProps) {
         case EntityEnum.Weapon:
         case EntityEnum.Ball:
         case EntityEnum.Entity:
-          zip?.file(node.path)?.json().then(r => set_editing_data(r));
+          zip?.file(node.key)?.json().then(r => set_editing_data(r));
           break;
         default: {
-          zip?.file(node.path)?.text().then(r => set_editing_data(void 0));
+          zip?.file(node.key)?.text().then(r => set_editing_data(void 0));
         }
       }
-    } else if (node.name.endsWith('.txt') || node.name.endsWith('.json')) {
-      zip?.file(node.path)?.text().then(r => set_editing_data(void 0));
+    } else if (node.key.endsWith('.txt') || node.key.endsWith('.json')) {
+      zip?.file(node.key)?.text().then(r => set_editing_data(void 0));
     }
   }
   useEffect(() => {

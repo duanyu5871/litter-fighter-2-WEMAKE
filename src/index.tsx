@@ -2,32 +2,12 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.scss";
+import './init';
 import "./LF2/defines/defines";
-import './init'
+import { Paths } from "./Paths";
 import reportWebVitals from "./reportWebVitals";
 
-const router = createBrowserRouter([
-  {
-    path: "/quad_tree_test",
-    Component: React.lazy(() => import("./Laboratory/QuadTree")),
-  },
-  {
-    path: "/bebavior_net_test",
-    Component: React.lazy(() => import("./Laboratory/BehaviorNet")),
-  },
-  {
-    path: "/component_demos/*",
-    Component: React.lazy(() => import("./Component/Demo")),
-  },
-  {
-    path: "/editor",
-    Component: React.lazy(() => import("./Editor")),
-  },
-
-  // { path: '*', Component: React.lazy(() => import('./App')) },
-  // { path: '/mne', Component: React.lazy(() => import('./Laboratory/BounceTales/react')) },
-  { path: "*", Component: React.lazy(() => import("./App")) },
-]);
+const router = createBrowserRouter(Paths.Routes);
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <RouterProvider router={router} />

@@ -1,10 +1,12 @@
+import { useMemo } from "react";
 import Show from "../Show";
 import styles from "./styles.module.scss";
 
 export interface ITreeNode<D = any> {
-  path: string;
-  name: string;
+  key: string;
+  label: React.ReactNode;
   children?: ITreeNode<D>[];
+  title?: string;
   data?: D;
   icon?: React.ReactNode;
 }
@@ -16,6 +18,7 @@ export interface ITreeNodeOnClick<D> {
 }
 export interface ITreeNodeViewProps<D = any> extends React.HTMLAttributes<HTMLDivElement> {
   node?: ITreeNode<D>;
+  nodes?: ITreeNode<D>[];
   depth?: number;
   opens?: string[];
   on_click_item?: ITreeNodeOnClick<D>;
@@ -31,16 +34,20 @@ export const file_suffix_emoji_map: { [x in string]?: React.ReactNode } = {
 export function default_get_icon(data: { node: ITreeNode<any>, depth: number, open: boolean }): React.ReactNode {
   const { node, open: is_open } = data;
   if (node.children) return is_open ? '📂' : '📁'
-  const { name } = node;
+  const { label: name } = node;
+  if (typeof name !== 'string') return '📄'
   const lio = name.lastIndexOf('.');
   if (lio < 0) return '📄'
   const suffix = name.substring(+ 1).toLowerCase()
   return file_suffix_emoji_map[suffix] || '📄'
 }
 export function TreeView<D = any>(props: ITreeNodeViewProps<D>) {
+
+
   const {
-    node,
-    depth = 0,
+    nodes,
+    node: _node,
+    depth: _depth,
     opens,
     on_click_item,
     className,
@@ -48,18 +55,35 @@ export function TreeView<D = any>(props: ITreeNodeViewProps<D>) {
     show_icon = true,
     ...remains
   } = props;
+
+
+  const [node, is_invisible_root] = useMemo(() => {
+    if (_node) return [_node, false];
+    if (!nodes) return [void 0, true];
+    const ret: ITreeNode = {
+      key: "",
+      title: "",
+      label: "",
+      children: nodes,
+    }
+    return [ret, true]
+  }, [_node, nodes])
+
+  const depth = _depth ? _depth : is_invisible_root ? -1 : 0
+
   if (!node) return <></>
-  const open = opens?.find(v => v === node?.path) !== void 0;
+  const open = !opens ? true : opens.find(v => v === node.key) !== void 0;
   const icon = node.icon ?? get_icon?.({ node, depth, open }) ?? default_get_icon({ node, depth, open })
   const head_style = { paddingLeft: 12 * depth }
   const line_style = { left: 12 * depth + 8 }
   const root_classname = [className, styles.tree_item_view].filter(Boolean).join(' ');
   return (
     <div {...remains} className={root_classname}>
-      <div
+      <Show.Div
+        show={!is_invisible_root}
         className={styles.tree_item_head_view}
         style={head_style}
-        title={node.path}
+        title={node.title}
         onClick={(e) => on_click_item?.(node, e)}>
         {
           !show_icon ? null :
@@ -67,19 +91,20 @@ export function TreeView<D = any>(props: ITreeNodeViewProps<D>) {
               {icon}
             </div>
         }
-        {node.name}
-      </div>
+        {node.label}
+      </Show.Div>
       <Show show={open}>
         <div
           className={styles.tree_item_col_line}
           style={line_style} />
-        {node.children?.map(node => (
+        {node.children?.map((node, idx) => (
           <TreeView
             opens={opens}
             get_icon={get_icon}
-            key={node.path}
+            key={idx}
             node={node}
             on_click_item={on_click_item}
+            show_icon={show_icon}
             depth={depth + 1} />
         ))}
       </Show>

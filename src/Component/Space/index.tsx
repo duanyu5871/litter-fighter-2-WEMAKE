@@ -1,6 +1,7 @@
 import React, { useMemo } from "react";
 import Show, { Div } from "../Show";
 import './styles.scss';
+import classNames from "classnames";
 export interface ISpaceProps extends React.HTMLAttributes<HTMLDivElement> {
   item_props?: React.HTMLAttributes<HTMLDivElement>;
   direction?: 'column' | 'row';
@@ -51,11 +52,13 @@ export function Space(props: ISpaceProps) {
 export interface ISpaceItemProps extends ISpaceProps {
   direction?: 'column' | 'row';
   space?: boolean;
+  frame?: boolean;
+  hoverable_frame?: boolean;
 }
 
 function Item(props: ISpaceItemProps) {
-  const { className, space, _ref, ..._p } = props || {};
-  const root_cls_name = useMemo(() => ["item", className].filter(Boolean).join(' '), [className])
+  const { className, space, hoverable_frame, frame, _ref, ..._p } = props || {};
+  const root_cls_name = useMemo(() => classNames("item", { frame, hoverable_frame }, className), [className, frame, hoverable_frame])
   return (
     space ?
       <Space className={root_cls_name} {..._p} _ref={_ref} /> :

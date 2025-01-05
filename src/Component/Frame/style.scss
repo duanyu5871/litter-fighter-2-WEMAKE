@@ -2,10 +2,11 @@
 
 .lf2ui_frame {
   @extend .lf2_hoverable_border;
-  padding : 5px;
-  position: relative;
+  position  : relative;
+  box-sizing: border-box;
 
   &.with_label {
+    padding    : 5px;
     padding-top: 18px;
   }
 

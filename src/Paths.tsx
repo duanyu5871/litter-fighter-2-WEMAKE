@@ -1,0 +1,73 @@
+import React from "react"
+import { RouteObject } from "react-router"
+export namespace Paths {
+  export enum All {
+    _ = '',
+    game = '/',
+    quad_tree_test = '/quad_tree_test',
+    bebavior_net_test = '/bebavior_net_test',
+    editor = '/editor',
+    component_demos = '/component_demos',
+    component_demos_InputNumber = '/component_demos/InputNumber',
+    component_demos_index = '/component_demos/*',
+    component_demos_Button = "/component_demos/Button",
+    component_demos_Combine = "/component_demos/Combine",
+    component_demos_Select = "/component_demos/Select",
+    component_demos_Input = "/component_demos/Input"
+  }
+  export const Components: Record<All, React.ComponentType | null> = {
+    [All._]: null,
+    [All.game]: React.lazy(() => import("./App")),
+    [All.quad_tree_test]: React.lazy(() => import("./Laboratory/QuadTree")),
+    [All.bebavior_net_test]: React.lazy(() => import("./Laboratory/BehaviorNet")),
+    [All.editor]: React.lazy(() => import("./Editor")),
+    [All.component_demos]: React.lazy(() => import("./pages/component_demos")),
+    [All.component_demos_index]: () => <></>,
+    [All.component_demos_InputNumber]: React.lazy(() => import("./pages/component_demos/InputNumberDemo")),
+    [All.component_demos_Button]: React.lazy(() => import("./pages/component_demos/ButtonDemo")),
+    [All.component_demos_Combine]: React.lazy(() => import("./pages/component_demos/CombineDemo")),
+    [All.component_demos_Select]: React.lazy(() => import("./pages/component_demos/SelectDemo")),
+    [All.component_demos_Input]: React.lazy(() => import("./pages/component_demos/InputDemo")),
+  }
+  export const Relations: { [x in All]?: All[] } = {
+    [All._]: [
+      All.game,
+      All.quad_tree_test,
+      All.bebavior_net_test,
+      All.component_demos,
+      All.editor,
+    ],
+    [All.component_demos]: [
+      All.component_demos_InputNumber,
+      All.component_demos_Button,
+      All.component_demos_Combine,
+      All.component_demos_Select,
+      All.component_demos_Input,
+      All.component_demos_index,
+    ]
+  }
+
+  export const gen_route_obj = (path: All, parent?: All): RouteObject => {
+    let str_path: string = path
+    if (parent !== void 0) {
+      if (path.startsWith(parent)) {
+        str_path = path.replace(parent, '')
+      }
+      str_path = str_path.replace(/^\/(.*?)/, (_, a) => a)
+    }
+    const Component = Components[path] || (() => `component set as ${Components[path]}`);
+    const ret: RouteObject = {
+      path: str_path,
+      element: (
+        <React.Suspense>
+          <Component />
+        </React.Suspense>
+      )
+    }
+    if (Relations[path]) {
+      ret.children = Relations[path].map((child_path) => gen_route_obj(child_path, path))
+    }
+    return ret;
+  }
+  export const Routes: RouteObject[] = Paths.Relations[Paths.All._]!.map(c => gen_route_obj(c))
+}
