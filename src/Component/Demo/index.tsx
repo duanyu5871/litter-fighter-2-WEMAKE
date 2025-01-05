@@ -1,22 +1,23 @@
+import { Outlet } from "react-router";
 import { Button } from "../Buttons/Button";
-import Combine from "../Combine";
-import Frame from "../Frame";
-import { Space } from "../Space";
 import { StatusButton } from "../Buttons/StatusButton";
 import { ToggleButton } from "../Buttons/ToggleButton";
+import Combine from "../Combine";
+import Frame from "../Frame";
+import { Input } from "../Input";
 import Select from "../Select";
-import { Input, InputProps } from "../Input";
+import { Space } from "../Space";
 
 export default function ComponentDemo() {
   return (
-    <Space>
-
-      <Frame label='Input'>
+    <Space style={{ display: 'flex', width: '100%', height: '100%', alignItems: 'stretch' }}>
+      <Outlet />
+      <Frame label='InputNumber' >
         <Space direction='column'>
           <Input type="number" step={1} />
           <Input type="number" step={1} prefix='prefix' />
           <Input type="number" step={1} placeholder="placeholder" />
-          <Input type="number" step={1} suffix="placeholder" />
+          <Input type="number" step={1} suffix="suffix" />
           <Input type="number" step={1} prefix='prefix' placeholder="placeholder" />
           <Input type="number" step={1} placeholder="placeholder" suffix="suffix" />
           <Input type="number" step={1} prefix='prefix' placeholder="placeholder" suffix="suffix" />

@@ -1,0 +1,157 @@
+@import "../../styles/lf2_hoverable_border.scss";
+
+$secondry_color: #5a73d6aa;
+
+.lf2ui_input {
+  display    : inline-flex;
+  position   : relative;
+  overflow   : hidden;
+  box-sizing : border-box;
+  align-items: stretch;
+
+  &>.lf2ui_input_prefix {
+    padding        : 0px 0px 0px 4px;
+    display        : inline-block;
+    transition     : all 200ms;
+    color          : $secondry_color;
+    font-family    : 'Courier New', Courier, monospace;
+    display        : flex;
+    align-items    : center;
+    justify-content: center;
+
+  }
+
+
+
+  &>.lf2ui_input_suffix {
+    padding        : 0px 4px 0px 0px;
+    display        : inline-block;
+    transition     : all 200ms;
+    color          : $secondry_color;
+    font-family    : 'Courier New', Courier, monospace;
+    display        : flex;
+    align-items    : center;
+    justify-content: center;
+  }
+
+  &:disabled {
+    color           : #384888;
+    border          : 2px #384888 solid;
+    background-color: transparent;
+    cursor          : not-allowed;
+  }
+
+  &:focus-within,
+  &:active {
+    border       : solid 2px white;
+    border-radius: 10 px;
+  }
+
+  &::placeholder {
+    color  : white;
+    opacity: 0.2;
+  }
+
+  &>.lf2ui_input_input {
+    color           : #5a73d6;
+    border-radius   : none;
+    padding         : 2px 4px;
+    background-color: transparent;
+    box-sizing      : border-box;
+    outline         : none;
+    border          : none;
+    flex            : 1;
+    min-width       : 0px;
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none !important;
+    }
+
+    &[type='number'] {
+      appearance: textfield;
+    }
+
+    &::placeholder {
+      color: $secondry_color;
+    }
+  }
+
+  &>.fix_right_zone {
+    position   : absolute;
+    right      : 2px;
+    top        : 0px;
+    bottom     : 0px;
+    display    : flex;
+    align-items: center;
+
+    &>.stepper {
+      display       : flex;
+      flex-direction: column;
+      position      : relative;
+      opacity       : 0;
+      transition    : all 200ms;
+      align-self    : stretch;
+
+      &>svg {
+        flex      : 1;
+        transition: all 200ms;
+      }
+    }
+
+    &>.lf2ui_input_clear_icon {
+      border          : none;
+      outline         : none;
+      padding         : 0px;
+      $size           : 16px;
+      background-color: $secondry_color;
+      color           : white;
+      display         : inline-block;
+      border-radius   : 50% 50%;
+      width           : $size;
+      height          : $size;
+      text-align      : center;
+      margin          : auto 0;
+      opacity         : 0;
+      transition      : all 200ms;
+      display         : flex;
+      align-items     : center;
+      justify-content : center;
+    }
+  }
+
+  &:hover {
+
+    &>.fix_right_zone {
+      &>.stepper {
+        opacity: 1;
+
+        &>svg:hover {
+          color : white;
+          stroke: red;
+        }
+      }
+
+      &>.lf2ui_input_clear_icon {
+        opacity: 1;
+
+        &:hover {
+          background-color: #5a73d6;
+        }
+
+        &:active {
+          background-color: $secondry_color;
+        }
+      }
+    }
+
+    &>.lf2ui_input_suffix:not(:last-child) {
+      opacity: 0;
+    }
+  }
+
+  &>* {
+    font-size  : 14px;
+    font-weight: normal;
+  }
+}

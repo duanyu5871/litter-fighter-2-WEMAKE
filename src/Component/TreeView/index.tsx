@@ -6,6 +6,7 @@ export interface ITreeNode<D = any> {
   name: string;
   children?: ITreeNode<D>[];
   data?: D;
+  icon?: React.ReactNode;
 }
 export interface ITreeNodeGetIcon<D> {
   (data: { node: ITreeNode<D>, depth: number, open: boolean }): React.ReactNode
@@ -19,6 +20,7 @@ export interface ITreeNodeViewProps<D = any> extends React.HTMLAttributes<HTMLDi
   opens?: string[];
   on_click_item?: ITreeNodeOnClick<D>;
   get_icon?: ITreeNodeGetIcon<D>;
+  show_icon?: boolean;
 }
 export const file_suffix_emoji_map: { [x in string]?: React.ReactNode } = {
   zip: '📦',
@@ -35,20 +37,20 @@ export function default_get_icon(data: { node: ITreeNode<any>, depth: number, op
   const suffix = name.substring(+ 1).toLowerCase()
   return file_suffix_emoji_map[suffix] || '📄'
 }
-export function TreeNodeView<D = any>(props: ITreeNodeViewProps<D>) {
+export function TreeView<D = any>(props: ITreeNodeViewProps<D>) {
   const {
     node,
     depth = 0,
     opens,
-
     on_click_item,
     className,
     get_icon,
+    show_icon = true,
     ...remains
   } = props;
   if (!node) return <></>
   const open = opens?.find(v => v === node?.path) !== void 0;
-  const icon = get_icon?.({ node, depth, open }) ?? default_get_icon({ node, depth, open })
+  const icon = node.icon ?? get_icon?.({ node, depth, open }) ?? default_get_icon({ node, depth, open })
   const head_style = { paddingLeft: 12 * depth }
   const line_style = { left: 12 * depth + 8 }
   const root_classname = [className, styles.tree_item_view].filter(Boolean).join(' ');
@@ -59,9 +61,12 @@ export function TreeNodeView<D = any>(props: ITreeNodeViewProps<D>) {
         style={head_style}
         title={node.path}
         onClick={(e) => on_click_item?.(node, e)}>
-        <div className={styles.icon}>
-          {icon}
-        </div>
+        {
+          !show_icon ? null :
+            <div className={styles.icon}>
+              {icon}
+            </div>
+        }
         {node.name}
       </div>
       <Show show={open}>
@@ -69,7 +74,7 @@ export function TreeNodeView<D = any>(props: ITreeNodeViewProps<D>) {
           className={styles.tree_item_col_line}
           style={line_style} />
         {node.children?.map(node => (
-          <TreeNodeView
+          <TreeView
             opens={opens}
             get_icon={get_icon}
             key={node.path}

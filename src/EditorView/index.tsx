@@ -6,7 +6,7 @@ import Select from "../Component/Select";
 import Show from "../Component/Show";
 import { Space } from "../Component/Space";
 import Titled from "../Component/Titled";
-import { ITreeNode, ITreeNodeGetIcon, TreeNodeView } from "../Component/TreeNodeView";
+import { ITreeNode, ITreeNodeGetIcon, TreeView } from "../Component/TreeView";
 import { Defines, IBgData, IFrameInfo } from "../LF2/defines";
 import { EntityEnum } from "../LF2/defines/EntityEnum";
 import { IEntityData } from "../LF2/defines/IEntityData";
@@ -17,12 +17,10 @@ import { is_num } from "../LF2/utils/type_check";
 import open_file from "../Utils/open_file";
 import { shared_ctx } from './Context';
 import { EditorShapeEnum } from "./EditorShapeEnum";
-import { ENTITY_TYPE_SELECT_PROPS, EntityEditorView } from "./EntityEditorView";
+import { EntityDataEditorView } from "./EntityDataEditorView";
+import { EntityEditorView } from "./EntityEditorView";
 import { FrameDrawer, FrameDrawerData } from "./FrameDrawer";
 import styles from "./styles.module.scss";
-import Frame from "../Component/Frame";
-import { Input } from "../Component/Input";
-import { EntityDataEditorView } from "./EntityDataEditorView";
 
 Gaia.registerShape(
   EditorShapeEnum.LF2_FRAME,
@@ -293,7 +291,7 @@ export default function EditorView(props: IEditorViewProps) {
               <Titled label="others"><Checkbox value={state.others} onChanged={v => set_state(o => ({ ...o, others: v }))} /></Titled>
             </Space>
             <Space.Item className={styles.scroll_zone}>
-              <TreeNodeView
+              <TreeView
                 node={filters_tree}
                 opens={opens}
                 on_click_item={on_click_item}

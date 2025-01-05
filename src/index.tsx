@@ -16,7 +16,7 @@ const router = createBrowserRouter([
     Component: React.lazy(() => import("./Laboratory/BehaviorNet")),
   },
   {
-    path: "/component_demos",
+    path: "/component_demos/*",
     Component: React.lazy(() => import("./Component/Demo")),
   },
   {
