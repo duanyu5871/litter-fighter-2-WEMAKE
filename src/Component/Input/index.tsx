@@ -36,10 +36,10 @@ function direct_set_value(ele: HTMLInputElement | null, value: string | number) 
 }
 
 function _Input(props: InputProps, forwarded_Ref: React.ForwardedRef<InputRef>) {
-  const { 
-    className, prefix, suffix, clear_icon = '×', style, clazz, 
+  const {
+    className, prefix, suffix, clear_icon = '×', style, clazz,
     clearable = false,
-    ..._p 
+    ..._p
   } = props;
   const root_cls_name = classNames('lf2_hoverable_border', 'lf2ui_input', className);
   const prefix_cls_name = classNames('lf2ui_input_prefix', clazz?.prefix);
@@ -85,7 +85,7 @@ function _Input(props: InputProps, forwarded_Ref: React.ForwardedRef<InputRef>) 
       ele_root.removeEventListener('pointerdown', on_root_pointerdown)
       ele_input.removeEventListener('input', on_input_change)
     }
-  }, []);
+  }, [clearable]);
 
   const { type, step, min, max } = props;
   const add_step = (direction: -1 | 1) => {

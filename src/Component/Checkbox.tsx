@@ -5,7 +5,7 @@ import { useForwardedRef } from "./useForwardedRef";
 import { TShortcut, useShortcut } from "./useShortcut";
 export interface ICheckboxProps
   extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "value"> {
-  value: boolean;
+  value?: boolean;
   onChanged?(v: boolean): void;
   shortcut?: TShortcut;
   shortcutTarget?: Window | Document | Element;
