@@ -26,7 +26,6 @@
 
   &.row {
     flex-direction: row;
-
     &>.item:not(:last-child) {
       margin-right: 5px;
     }

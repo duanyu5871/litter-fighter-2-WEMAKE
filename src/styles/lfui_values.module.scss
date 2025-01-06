@@ -45,3 +45,7 @@ $primary_border_color_active           : #ffffff;
     border-radius: 10 px;
   }
 }
+.lfui_input_like.lfui_input_like_actived{
+  background-color: $primary_bg_color_active;
+  color           : $primary_text_color_active;
+}

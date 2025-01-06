@@ -11,6 +11,7 @@ export interface IButtonProps
   shortcut?: TShortcut;
   shortcutTarget?: Window | Document | Element;
   show_shortcut?: boolean;
+  actived?: boolean;
   _ref?: React.Ref<HTMLButtonElement>;
 }
 export function Button(props: IButtonProps) {
@@ -18,6 +19,7 @@ export function Button(props: IButtonProps) {
     shortcut,
     shortcutTarget = window,
     show_shortcut = true,
+    actived,
     children,
     className,
     type = "button",
@@ -37,7 +39,7 @@ export function Button(props: IButtonProps) {
   }, []);
 
   const _show_shortcut = show_shortcut ?? has_keyboard;
-  const root_className = classNames(styles.lfui_button, className)
+  const root_className = classNames(styles.lfui_button, { [styles.lfui_button_actived]: actived }, className)
   return (
     <button className={root_className} {..._p} type={type} ref={on_ref}>
       {children}

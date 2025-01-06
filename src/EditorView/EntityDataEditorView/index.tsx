@@ -13,29 +13,12 @@ export interface IEntityDataEditorViewProps extends IFrameProps {
   on_change?(data: IEntityData): void;
 }
 
+
 export function EntityDataEditorView(props: IEntityDataEditorViewProps) {
   const { src, on_change, ..._p } = props;
 
   const data = src;
   const set_data = on_change || (() => void 0);
-
-  // const [data, set_data] = useState<IEntityData>()
-  // useEffect(() => {
-  //   if (!src) { set_data(void 0) }
-  //   else set_data(JSON.parse(JSON.stringify(src)))
-  // }, [src])
-
-  const files = data?.base.files
-  const file_editor_views = useMemo(() => {
-    if (!files) return [];
-    const ret: React.ReactNode[] = []
-    traversal(files, (key, v) => {
-      ret.push(
-        <FileEditorView src={v} key={'FileEditorView_' + key} />
-      )
-    })
-    return ret;
-  }, [files])
 
   if (!data) return;
   const label_style: React.CSSProperties = { width: 30, textAlign: 'right' }

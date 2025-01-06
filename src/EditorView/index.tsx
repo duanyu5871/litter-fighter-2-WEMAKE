@@ -22,6 +22,8 @@ import { EntityEditorView } from "./EntityEditorView";
 import { FrameDrawer, FrameDrawerData } from "./FrameDrawer";
 import styles from "./styles.module.scss";
 import { TabButtons } from "../Component/TabButtons";
+import { traversal } from "../LF2/utils/container_help/traversal";
+import { FileEditorView } from "./EntityDataEditorView/FileEditorView";
 
 enum EntityEditing {
   base = '基础信息',
@@ -87,7 +89,7 @@ export default function EditorView(props: IEditorViewProps) {
 
   const [editing_node, set_editing_node] = useState<TTreeNode>();
   const [editing_data, set_editing_data] = useState<IEntityData>();
-
+  const [tab, set_tab] = useState<EntityEditing | undefined>(EntityEditing.base);
   ref_editing_node.current = editing_node;
   ref_editing_data.current = editing_data;
 
@@ -297,6 +299,45 @@ export default function EditorView(props: IEditorViewProps) {
     }
   }, [open])
 
+  const [change_flag, set_change_flag] = useState(0)
+  const files = editing_data?.base.files;
+  const file_editor_views = useMemo(() => {
+    if (!files) return [];
+    const views: React.ReactNode[] = []
+    traversal(files, (k, v) => {
+      views.push(
+        <FileEditorView
+          pic_info={v}
+          data={editing_data}
+          key={'FileEditorView_' + k}
+          on_changed={() => set_change_flag(v => ++v)}
+        />
+      )
+    })
+    views.push(
+      <Button key={views.length} style={{ width: '100%' }} onClick={() => {
+        let i = Object.keys(files).length;
+        while (('' + i) in files) ++i;
+        files['' + i] = {
+          row: 0,
+          col: 0,
+          id: '' + i,
+          path: '',
+          cell_w: 0,
+          cell_h: 0,
+        }
+        set_change_flag(v => ++v);
+      }}>
+        ➕
+      </Button>
+    )
+    return (
+      <Space.Item space vertical frame className={styles.file_editor_view} >
+        {views}
+      </Space.Item>
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [files, editing_data, change_flag])
 
   return !open ? <></> : (
     <shared_ctx.Provider value={{ zip }}>
@@ -347,13 +388,22 @@ export default function EditorView(props: IEditorViewProps) {
               on_change={set_editing_data}
               className={styles.entity_base_editor} />
             <TabButtons
+              value={tab}
               items={Object.values(EntityEditing)}
-              value={EntityEditing.base}
               parse={v => [v, v]}
+              onChange={v => set_tab(v)}
             />
-            <Space.Item className={styles.entity_editor_view}>
-              {frames_list_view}
-            </Space.Item>
+            {
+              tab === EntityEditing.frames ?
+                <Space.Item className={styles.entity_editor_view}>
+                  {frames_list_view}
+                </Space.Item> : null
+            }
+
+            {
+              tab === EntityEditing.pic ? file_editor_views : null
+            }
+
           </Space.Item>
           {textarea}
         </Space.Item>

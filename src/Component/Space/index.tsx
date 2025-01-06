@@ -18,9 +18,8 @@ export function Space(props: ISpaceProps) {
     _ref,
     ..._p
   } = props;
-  const root_cls_name = useMemo(() => {
-    return ["lf2ui_space", direction, className].filter(Boolean).join(' ')
-  }, [className, direction])
+  const root_cls_name = useMemo(() => classNames("lf2ui_space", direction, className), [className, direction])
+
   const items = Array.isArray(children) ? children : children ? [children] : void 0
   return (
     <div className={root_cls_name} {..._p} ref={_ref}>
