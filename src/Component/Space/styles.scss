@@ -1,4 +1,4 @@
-@import "../../styles/lf2_hoverable_border.scss";
+@import "../../styles/lfui_hoverable_border.scss";
 
 .lf2ui_space {
   overflow   : hidden;
@@ -21,7 +21,7 @@
   }
 
   &>.item.hoverable_frame {
-    @extend .lf2_hoverable_border;
+    @extend .lfui_hoverable_border;
   }
 
   &.row {

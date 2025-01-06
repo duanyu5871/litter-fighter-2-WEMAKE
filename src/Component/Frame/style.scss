@@ -1,7 +1,7 @@
-@import "../../styles/lf2_hoverable_border.scss";
+@import "../../styles/lfui_hoverable_border.scss";
 
 .lf2ui_frame {
-  @extend .lf2_hoverable_border;
+  @extend .lfui_hoverable_border;
   position  : relative;
   box-sizing: border-box;
 
@@ -12,8 +12,6 @@
 
   &>.label:first-child {
     position   : absolute;
-    font-size  : 12px;
-    font-weight: lighter;
     top        : 0px;
     left       : 2px
   }

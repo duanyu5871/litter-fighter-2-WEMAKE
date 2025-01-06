@@ -1,6 +1,5 @@
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import { Button, IButtonProps } from "./Button";
-import "./Button.scss";
 import { TShortcut } from "../useShortcut";
 
 export interface IStatusButtonProps<V = any, I = any>

@@ -2,10 +2,8 @@
   position: relative;
 
   &>.tree_item_head_view {
-    font-size     : 14px;
     padding-top   : 2px;
     padding-bottom: 2px;
-    font-weight   : normal;
     transition    : all 200ms;
     white-space   : nowrap;
     text-overflow : ellipsis;

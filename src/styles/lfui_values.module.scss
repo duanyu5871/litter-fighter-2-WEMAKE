@@ -1,0 +1,47 @@
+$min_input_width                       : 25px;
+$min_input_height                      : 25px;
+$primary_bg_color                      : #10206c;
+$primary_bg_color_disabled             : #10206c;
+$primary_bg_color_active               : #5a73d6;
+$primary_text_color                    : #5a73d6;
+$primary_text_color_disabled           : #5a73d6;
+$primary_text_color_active             : #ffffff;
+$primary_text_secondary_color          : #5a73d6;
+$primary_text_secondary_color_disabled : #495dad;
+$primary_text_secondary_color_active   : #c2c2c2;
+$primary_border_color                  : #5a73d6;
+$primary_border_color_disabled         : #5a73d6;
+$primary_border_color_active           : #ffffff;
+
+
+.lfui_min_input_size {
+  min-width : $min_input_width;
+  min-height: $min_input_height;
+}
+
+.lfui_input_like {
+  @extend .lfui_hoverable_border;
+  @extend .lfui_min_input_size;
+  transition: color 200ms, border-color 200ms, background-color 200ms;
+
+  background-color: $primary_bg_color;
+  color           : $primary_text_color;
+
+  &:hover {
+    background-color: $primary_bg_color_active;
+    color           : $primary_text_color_active;
+  }
+
+  &:active {
+    background-color: $primary_bg_color_active;
+    color           : $primary_text_color_active;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+
+  &:focus-within {
+    border-radius: 10 px;
+  }
+}

@@ -1,8 +1,9 @@
+import classNames from "classnames";
+import device from "current-device";
 import React, { useEffect, useState } from "react";
 import { useForwardedRef } from "../useForwardedRef";
 import { TShortcut, useShortcut } from "../useShortcut";
-import device from "current-device";
-import "./Button.scss";
+import styles from "./style.module.scss";
 const is_desktop = device.desktop();
 
 export interface IButtonProps
@@ -36,9 +37,7 @@ export function Button(props: IButtonProps) {
   }, []);
 
   const _show_shortcut = show_shortcut ?? has_keyboard;
-  const root_className = className
-    ? `${Button.default_class_name} ${className}`
-    : Button.default_class_name;
+  const root_className = classNames(styles.lfui_button, className)
   return (
     <button className={root_className} {..._p} type={type} ref={on_ref}>
       {children}
@@ -46,4 +45,4 @@ export function Button(props: IButtonProps) {
     </button>
   );
 }
-Button.default_class_name = "lf2ui_button";
+Button.default_class_name = styles.lfui_button;

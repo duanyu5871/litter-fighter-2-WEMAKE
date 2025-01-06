@@ -1,5 +1,4 @@
 import React, { useMemo, useState } from "react";
-import "./Button.scss";
 import { IStatusButtonProps, StatusButton } from "./StatusButton";
 
 export interface IToggleButtonProps

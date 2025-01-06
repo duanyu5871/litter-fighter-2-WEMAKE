@@ -1,0 +1,26 @@
+@import "./lf2_border.module.scss";
+@import "./lfui_values.module.scss";
+
+.lfui_hoverable_border {
+  @extend .lf2_border;
+  transition:
+    color 200ms,
+    border-color 200ms,
+    border-radius 500ms;
+
+  border       : 2px $primary_border_color solid;
+  border-radius: 5px;
+
+  &:hover {
+    border-color: $primary_border_color_active;
+  }
+
+  &:disabled {
+    border-color: $primary_border_color_disabled;
+  }
+
+  &:focus {
+    border-color: $primary_border_color_active;
+    border-style: dotted;
+  }
+}

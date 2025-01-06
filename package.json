@@ -171,6 +171,7 @@
     "sass": "^1.83.0",
     "ssh2": "1.15.0",
     "terser-webpack-plugin": "5.3.10",
-    "typescript": "5.5.2"
+    "typescript": "5.5.2",
+    "typescript-plugin-css-modules": "^5.1.0"
   }
 }

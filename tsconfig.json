@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
     "target": "es6",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -18,7 +22,15 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    // "plugins": [
+    //   {
+    //     "name": "typescript-plugin-css-modules"
+    //   }
+    // ]
   },
-  "include": ["src", "tool/src/common/lf2_type/defines.ts"]
+  "include": [
+    "src",
+    "tool/src/common/lf2_type/defines.ts"
+  ]
 }

@@ -1,31 +1,41 @@
-.lf2ui_combine {
+.lfui_combine {
   display    : inline-flex;
   flex-wrap  : nowrap;
   align-items: stretch;
+
+  &>* {
+    z-index   : 0;
+    position  : relative;
+    box-sizing: border-box;
+  }
+
+  &>*:hover,
+  &>*:focus,
+  &>*:active {
+    z-index: 1;
+  }
 
   &.row {
     flex-direction: row;
 
     &>*:not(:last-child) {
-      border-right-width        : 1px !important;
       border-top-right-radius   : 0px !important;
       border-bottom-right-radius: 0px !important;
     }
 
     &>*:not(:first-child) {
-      border-left-width        : 1px !important;
+      margin-left              : -2px;
       border-top-left-radius   : 0px !important;
       border-bottom-left-radius: 0px !important;
     }
 
-    &>.lf2ui_combine:not(:last-child)>* {
-      border-right-width        : 1px !important;
+    &>.lfui_combine:not(:last-child)>* {
+      margin-left               : -2px;
       border-top-right-radius   : 0px !important;
       border-bottom-right-radius: 0px !important;
     }
 
-    &>.lf2ui_combine:not(:first-child)>* {
-      border-left-width        : 1px !important;
+    &>.lfui_combine:not(:first-child)>* {
       border-top-left-radius   : 0px !important;
       border-bottom-left-radius: 0px !important;
     }
@@ -35,27 +45,27 @@
     flex-direction: column;
 
     &>*:not(:last-child) {
-      border-bottom-width       : 1px !important;
       border-bottom-left-radius : 0px !important;
       border-bottom-right-radius: 0px !important;
     }
 
     &>*:not(:first-child) {
-      border-top-width       : 1px !important;
+      margin-top             : -2px;
       border-top-left-radius : 0px !important;
       border-top-right-radius: 0px !important;
     }
 
-    &>.lf2ui_combine:not(:last-child)>* {
-      border-bottom-width       : 1px !important;
+    &>.lfui_combine:not(:last-child)>* {
       border-bottom-left-radius : 0px !important;
       border-bottom-right-radius: 0px !important;
     }
 
-    &>.lf2ui_combine:not(:first-child)>* {
-      border-top-width       : 1px !important;
+    &>.lfui_combine:not(:first-child)>* {
+      margin-top             : -2px;
       border-top-left-radius : 0px !important;
       border-top-right-radius: 0px !important;
     }
+
+
   }
 }

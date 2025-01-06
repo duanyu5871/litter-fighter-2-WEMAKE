@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import React, { useEffect, useMemo, useRef } from "react";
-import "./styles.scss";
+import styles from "./styles.module.scss";
 
 export type BaseProps = React.InputHTMLAttributes<HTMLInputElement>
 export interface InputProps extends Omit<BaseProps, 'prefix' | 'step'> {
@@ -41,11 +41,11 @@ function _Input(props: InputProps, forwarded_Ref: React.ForwardedRef<InputRef>) 
     clearable = false,
     ..._p
   } = props;
-  const root_cls_name = classNames('lf2_hoverable_border', 'lf2ui_input', className);
-  const prefix_cls_name = classNames('lf2ui_input_prefix', clazz?.prefix);
-  const input_cls_name = classNames('lf2ui_input_input', clazz?.input);
-  const suffix_cls_name = classNames('lf2ui_input_suffix', clazz?.suffix);
-  const clear_icon_cls_name = classNames('lf2ui_input_clear_icon', clazz?.icon);
+  const root_cls_name = classNames(styles.lfui_input, className);
+  const prefix_cls_name = classNames(styles.lfui_input_prefix, clazz?.prefix);
+  const input_cls_name = classNames(styles.lfui_input_input, clazz?.input);
+  const suffix_cls_name = classNames(styles.lfui_input_suffix, clazz?.suffix);
+  const clear_icon_cls_name = classNames(styles.lfui_input_clear_icon, clazz?.icon);
 
   const ref_input = useRef<HTMLInputElement>(null);
   const ref_root = useRef<HTMLSpanElement>(null);
@@ -119,9 +119,12 @@ function _Input(props: InputProps, forwarded_Ref: React.ForwardedRef<InputRef>) 
   const ref_tid = useRef<number>(0);
 
   const steppers = (!step || type !== 'number') ? null :
-    <span className='stepper'>
+    <span className={styles.stepper}>
       <svg xmlns="http://www.w3.org/2000/svg"
-        width={12} height={5} viewBox="0, 0, 12, 5" onClick={() => add_step(1)}
+        width={12}
+        height={5}
+        viewBox="0, 0, 12, 5"
+        onClick={() => add_step(1)}
         onPointerDown={e => {
           window.clearTimeout(ref_tid.current)
           window.clearInterval(ref_tid.current)
@@ -145,10 +148,13 @@ function _Input(props: InputProps, forwarded_Ref: React.ForwardedRef<InputRef>) 
           window.clearTimeout(ref_tid.current)
           window.clearInterval(ref_tid.current)
         }}>
-        <path d="M 2 5 L 6 1 L 10 5" stroke="currentColor" strokeWidth={1} />
+        <path d="M 2 5 L 6 1 L 10 5" stroke="currentColor" fill="none" strokeWidth={1} />
       </svg>
       <svg xmlns="http://www.w3.org/2000/svg"
-        width={12} height={5} viewBox="0, 0, 12, 5" onClick={() => add_step(-1)}
+        width={12}
+        height={5}
+        viewBox="0, 0, 12, 5"
+        onClick={() => add_step(-1)}
         onPointerDown={e => {
           window.clearTimeout(ref_tid.current)
           window.clearInterval(ref_tid.current)
@@ -172,7 +178,7 @@ function _Input(props: InputProps, forwarded_Ref: React.ForwardedRef<InputRef>) 
           window.clearTimeout(ref_tid.current)
           window.clearInterval(ref_tid.current)
         }}>
-        <path d="M 2 0 L 6 4 L 10 0" stroke="currentColor" strokeWidth={1} />
+        <path d="M 2 0 L 6 4 L 10 0" stroke="currentColor" fill="none" strokeWidth={1} />
       </svg>
     </span>
 
@@ -189,7 +195,7 @@ function _Input(props: InputProps, forwarded_Ref: React.ForwardedRef<InputRef>) 
       {prefix ? <span className={prefix_cls_name}>{prefix}</span> : null}
       <input className={input_cls_name} ref={ref_input} {..._p} />
       {suffix ? <span className={suffix_cls_name}>{suffix}</span> : null}
-      <span className="fix_right_zone">
+      <span className={styles.fix_right_zone}>
         {icon}
         {steppers}
       </span>

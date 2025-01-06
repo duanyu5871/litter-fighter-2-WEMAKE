@@ -1,6 +1,6 @@
 @import "./lf2_border.scss";
 
-.lf2_hoverable_border {
+.lfui_hoverable_border {
   @extend .lf2_border;
   transition:
     color 200ms,

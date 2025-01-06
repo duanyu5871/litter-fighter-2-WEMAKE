@@ -1,6 +1,10 @@
 {
   "eslint.nodeEnv": "development",
   "editor.minimap.autohide": false,
-  "editor.rulers": [80],
-  "files.eol": "\n"
+  "editor.rulers": [
+    80
+  ],
+  "files.eol": "\n",
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true
 }

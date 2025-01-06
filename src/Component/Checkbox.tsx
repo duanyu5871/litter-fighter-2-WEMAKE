@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import "./Buttons/Button.scss";
 import "./Checkbox.css";
 import { useForwardedRef } from "./useForwardedRef";
 import { TShortcut, useShortcut } from "./useShortcut";
@@ -34,8 +33,8 @@ export const Checkbox = React.forwardRef<HTMLButtonElement, ICheckboxProps>(
     const [ref_btn, on_ref] = useForwardedRef<HTMLButtonElement>(ref);
     useShortcut(shortcut, props.disabled, ref_btn, shortcutTarget);
     const root_className = className
-      ? `lf2ui_button lf2ui_checkbox ${className}`
-      : "lf2ui_button lf2ui_checkbox";
+      ? `lfui_button lf2ui_checkbox ${className}`
+      : "lfui_button lf2ui_checkbox";
     const inner_className =
       (value ?? _value)
         ? "lf2ui_checkbox_inner_show"

@@ -1,4 +1,4 @@
-@import "../styles/lf2_hoverable_border.scss";
+@import "../styles/lfui_hoverable_border.scss";
 
 .entity_base_editor {
   min-width : 50px;
@@ -7,7 +7,7 @@
 }
 
 .tree_item_view_wrapper {
-  @extend .lf2_hoverable_border;
+  @extend .lfui_hoverable_border;
   max-height    : 100%;
   width         : 250px;
   resize        : horizontal;
@@ -26,7 +26,7 @@
 }
 
 .frame_preview_view {
-  @extend .lf2_hoverable_border;
+  @extend .lfui_hoverable_border;
   position      : relative;
   resize        : horizontal;
   flex          : 1;

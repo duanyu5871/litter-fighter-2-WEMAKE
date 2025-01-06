@@ -24,6 +24,8 @@ export interface ITreeNodeViewProps<D = any> extends React.HTMLAttributes<HTMLDi
   on_click_item?: ITreeNodeOnClick<D>;
   get_icon?: ITreeNodeGetIcon<D>;
   show_icon?: boolean;
+  checkable?: boolean;
+  _ref?: React.RefObject<HTMLDivElement>;
 }
 export const file_suffix_emoji_map: { [x in string]?: React.ReactNode } = {
   zip: '📦',
@@ -42,8 +44,6 @@ export function default_get_icon(data: { node: ITreeNode<any>, depth: number, op
   return file_suffix_emoji_map[suffix] || '📄'
 }
 export function TreeView<D = any>(props: ITreeNodeViewProps<D>) {
-
-
   const {
     nodes,
     node: _node,
@@ -53,9 +53,9 @@ export function TreeView<D = any>(props: ITreeNodeViewProps<D>) {
     className,
     get_icon,
     show_icon = true,
+    _ref,
     ...remains
   } = props;
-
 
   const [node, is_invisible_root] = useMemo(() => {
     if (_node) return [_node, false];
@@ -78,7 +78,7 @@ export function TreeView<D = any>(props: ITreeNodeViewProps<D>) {
   const line_style = { left: 12 * depth + 8 }
   const root_classname = [className, styles.tree_item_view].filter(Boolean).join(' ');
   return (
-    <div {...remains} className={root_classname}>
+    <div {...remains} className={root_classname} ref={_ref}>
       <Show.Div
         show={!is_invisible_root}
         className={styles.tree_item_head_view}
