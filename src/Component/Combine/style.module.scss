@@ -1,13 +1,34 @@
+@import "../../styles/lfui_hoverable_border.module.scss";
+
 .lfui_combine {
+  @extend .lfui_hoverable_border;
+  position   : relative;
   display    : inline-flex;
   flex-wrap  : nowrap;
   align-items: stretch;
+  overflow   : hidden !important;
 
   &>* {
-    z-index   : 0;
-    position  : relative;
-    box-sizing: border-box;
+    z-index      : 0;
+    position     : relative;
+    box-sizing   : border-box;
+    border-width : 0px !important;
+    border-radius: 0px !important;
   }
+
+  .lfui_combine_split_line {
+    background-color: $primary_border_color;
+    position        : absolute;
+    z-index         : 2;
+    pointer-events  : none;
+  }
+
+  &:hover {
+    .lfui_combine_split_line {
+      background-color: $primary_border_color_active;
+    }
+  }
+
 
   &>*:hover,
   &>*:focus,
@@ -17,55 +38,9 @@
 
   &.row {
     flex-direction: row;
-
-    &>*:not(:last-child) {
-      border-top-right-radius   : 0px !important;
-      border-bottom-right-radius: 0px !important;
-    }
-
-    &>*:not(:first-child) {
-      margin-left              : -2px;
-      border-top-left-radius   : 0px !important;
-      border-bottom-left-radius: 0px !important;
-    }
-
-    &>.lfui_combine:not(:last-child)>* {
-      margin-left               : -2px;
-      border-top-right-radius   : 0px !important;
-      border-bottom-right-radius: 0px !important;
-    }
-
-    &>.lfui_combine:not(:first-child)>* {
-      border-top-left-radius   : 0px !important;
-      border-bottom-left-radius: 0px !important;
-    }
   }
 
   &.column {
     flex-direction: column;
-
-    &>*:not(:last-child) {
-      border-bottom-left-radius : 0px !important;
-      border-bottom-right-radius: 0px !important;
-    }
-
-    &>*:not(:first-child) {
-      margin-top             : -2px;
-      border-top-left-radius : 0px !important;
-      border-top-right-radius: 0px !important;
-    }
-
-    &>.lfui_combine:not(:last-child)>* {
-      border-bottom-left-radius : 0px !important;
-      border-bottom-right-radius: 0px !important;
-    }
-
-    &>.lfui_combine:not(:first-child)>* {
-      margin-top             : -2px;
-      border-top-left-radius : 0px !important;
-      border-top-right-radius: 0px !important;
-    }
-
-
   }
 }
