@@ -90,24 +90,24 @@ export function EntityDataEditorView(props: IEntityDataEditorViewProps) {
   }, [files])
 
   if (!data) return;
+  const label_style: React.CSSProperties = { width: 30, textAlign: 'right' }
   return (
-    <Frame {..._p}>
-      <Titled label='type'>
-        <Select
-          {...ENTITY_TYPE_SELECT_PROPS}
-          value={data.type}
-          on_changed={type => set_data({ ...data, type: type as any })} />
-      </Titled>
-      <Titled label='id'>
-        <Input value={data.id} onChange={e => set_data({ ...data, id: e.target.value })} />
-      </Titled>
-      <Titled label='name'>
-        <Input
-          value={data.base.name}
-          onChange={e => set_data({ ...data, base: { ...data.base, name: e.target.value } })} />
-      </Titled>
-      <Space vertical={false}>
-        {file_editor_views}
+    <Frame {..._p} label="实体数据">
+      <Space direction='column'>
+        <Titled label='type' label_style={label_style}>
+          <Select
+            {...ENTITY_TYPE_SELECT_PROPS}
+            value={data.type}
+            on_changed={type => set_data({ ...data, type: type as any })} />
+        </Titled>
+        <Titled label='id' label_style={label_style}>
+          <Input value={data.id} onChange={e => set_data({ ...data, id: e.target.value })} />
+        </Titled>
+        <Titled label='name' label_style={label_style}>
+          <Input
+            value={data.base.name}
+            onChange={e => set_data({ ...data, base: { ...data.base, name: e.target.value } })} />
+        </Titled>
       </Space>
     </Frame>
   )

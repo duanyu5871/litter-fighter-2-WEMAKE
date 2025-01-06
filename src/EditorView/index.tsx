@@ -21,7 +21,16 @@ import { EntityDataEditorView } from "./EntityDataEditorView";
 import { EntityEditorView } from "./EntityEditorView";
 import { FrameDrawer, FrameDrawerData } from "./FrameDrawer";
 import styles from "./styles.module.scss";
+import { TabButtons } from "../Component/TabButtons";
 
+enum EntityEditing {
+  base = '基础信息',
+  frame_index = '特定帧',
+  frames = '帧列表',
+  pic = '图片',
+  itr_pre = 'itr预设',
+  bdy_pre = 'bdy预设',
+}
 Gaia.registerShape(
   EditorShapeEnum.LF2_FRAME,
   () => new FrameDrawerData(),
@@ -74,7 +83,7 @@ export default function EditorView(props: IEditorViewProps) {
   const [textarea, set_textarea] = useState<React.ReactNode>();
   const [editing_data, set_editing_data] = useState<IEntityData>();
 
-  const entity_editor_view = useMemo(() => {
+  const frames_list_view = useMemo(() => {
     if (!editing_data) return void 0;
 
     const on_frame_change = (frame: IFrameInfo, data: IEntityData) => {
@@ -129,8 +138,6 @@ export default function EditorView(props: IEditorViewProps) {
       />
     )
   }, [editing_data, zip])
-
-
   const [state, set_state] = useState({
     mp3: false,
     flat: true,
@@ -258,6 +265,7 @@ export default function EditorView(props: IEditorViewProps) {
     }
   }, [open])
 
+
   return !open ? <></> : (
     <shared_ctx.Provider value={{ zip }}>
       <Space direction='column' {..._p} >
@@ -300,16 +308,19 @@ export default function EditorView(props: IEditorViewProps) {
               />
             </Space.Item>
           </Space.Item>
-          <Space.Item space vertical style={{ flex: 1 }}>
-            <Show show={editing_data}>
-              <EntityDataEditorView
-                src={editing_data}
-                className={styles.entity_base_editor} />
-            </Show>
-            <Space.Item space _ref={ref_div} className={styles.frame_preview_view} />
-          </Space.Item>
-          <Space.Item className={styles.entity_editor_view}>
-            {entity_editor_view}
+          <Space.Item space _ref={ref_div} className={styles.frame_preview_view} />
+          <Space.Item space direction="column">
+            <EntityDataEditorView
+              src={editing_data}
+              className={styles.entity_base_editor} />
+            <TabButtons
+              items={Object.values(EntityEditing)}
+              value={EntityEditing.base}
+              parse={v => [v, v]}
+            />
+            <Space.Item className={styles.entity_editor_view}>
+              {frames_list_view}
+            </Space.Item>
           </Space.Item>
           {textarea}
         </Space.Item>
@@ -317,4 +328,3 @@ export default function EditorView(props: IEditorViewProps) {
     </shared_ctx.Provider>
   );
 }
-

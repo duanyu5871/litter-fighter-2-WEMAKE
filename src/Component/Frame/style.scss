@@ -1,9 +1,11 @@
 @import "../../styles/lfui_hoverable_border.scss";
+@import "../../styles/lfui_values.module.scss";
 
 .lf2ui_frame {
   @extend .lfui_hoverable_border;
-  position  : relative;
-  box-sizing: border-box;
+  background-color: $primary_bg_color;
+  position        : relative;
+  box-sizing      : border-box;
 
   &.with_label {
     padding    : 5px;
@@ -11,8 +13,9 @@
   }
 
   &>.label:first-child {
-    position   : absolute;
-    top        : 0px;
-    left       : 2px
+    position : absolute;
+    font-size: 0.5em;
+    top      : 0px;
+    left     : 2px;
   }
 }
