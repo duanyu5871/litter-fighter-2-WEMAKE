@@ -202,6 +202,8 @@ export namespace Defines {
      * 闯关模式应当掉落属于这组的武器
      */
     StageRegularWeapon = "StageRegularWeapon",
+
+    FreezableBall = "FreezableBall"
   }
 
   export enum CPointKind {
