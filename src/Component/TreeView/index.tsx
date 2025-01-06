@@ -36,11 +36,12 @@ export const file_suffix_emoji_map: { [x in string]?: React.ReactNode } = {
 export function default_get_icon(data: { node: ITreeNode<any>, depth: number, open: boolean }): React.ReactNode {
   const { node, open: is_open } = data;
   if (node.children) return is_open ? '📂' : '📁'
-  const { label: name } = node;
-  if (typeof name !== 'string') return '📄'
-  const lio = name.lastIndexOf('.');
+  const { label } = node;
+  console.log(label)
+  if (typeof label !== 'string') return '📄'
+  const lio = label.lastIndexOf('.');
   if (lio < 0) return '📄'
-  const suffix = name.substring(+ 1).toLowerCase()
+  const suffix = label.substring(lio + 1).toLowerCase()
   return file_suffix_emoji_map[suffix] || '📄'
 }
 export function TreeView<D = any>(props: ITreeNodeViewProps<D>) {
