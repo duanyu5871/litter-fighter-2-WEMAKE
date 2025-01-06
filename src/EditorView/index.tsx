@@ -81,7 +81,16 @@ export default function EditorView(props: IEditorViewProps) {
   const [tree, set_tree] = useState<TTreeNode>();
 
   const [textarea, set_textarea] = useState<React.ReactNode>();
+
+  const ref_editing_node = useRef<TTreeNode>()
+  const ref_editing_data = useRef<IEntityData>()
+
+  const [editing_node, set_editing_node] = useState<TTreeNode>();
   const [editing_data, set_editing_data] = useState<IEntityData>();
+
+  ref_editing_node.current = editing_node;
+  ref_editing_data.current = editing_data;
+
 
   const frames_list_view = useMemo(() => {
     if (!editing_data) return void 0;
@@ -138,6 +147,7 @@ export default function EditorView(props: IEditorViewProps) {
       />
     )
   }, [editing_data, zip])
+
   const [state, set_state] = useState({
     mp3: false,
     flat: true,
@@ -220,8 +230,6 @@ export default function EditorView(props: IEditorViewProps) {
     if (zip) load_zip(zip_name, zip)
   }, [zip_name, zip])
 
-
-
   const on_click_item = (node: TTreeNode) => {
     if (node.children) {
       set_opens((old = []) => {
@@ -236,14 +244,38 @@ export default function EditorView(props: IEditorViewProps) {
         case EntityEnum.Weapon:
         case EntityEnum.Ball:
         case EntityEnum.Entity:
-          zip?.file(node.key)?.json().then(r => set_editing_data(r));
+          zip?.file(node.key)?.json().then(r => {
+            const editing_node = ref_editing_node.current;
+            const editing_data = ref_editing_data.current;
+            if (zip && editing_node && editing_data) {
+              zip.set(editing_node.key, JSON.stringify(editing_data))
+            }
+            set_editing_node(node)
+            set_editing_data(r)
+          });
           break;
         default: {
-          zip?.file(node.key)?.text().then(r => set_editing_data(void 0));
+          zip?.file(node.key)?.text().then(r => {
+            const editing_node = ref_editing_node.current;
+            const editing_data = ref_editing_data.current;
+            if (zip && editing_node && editing_data) {
+              zip.set(editing_node.key, JSON.stringify(editing_data))
+            }
+            set_editing_node(node)
+            set_editing_data(void 0)
+          });
         }
       }
     } else if (node.key.endsWith('.txt') || node.key.endsWith('.json')) {
-      zip?.file(node.key)?.text().then(r => set_editing_data(void 0));
+      zip?.file(node.key)?.text().then(r => {
+        const editing_node = ref_editing_node.current;
+        const editing_data = ref_editing_data.current;
+        if (zip && editing_node && editing_data) {
+          zip.set(editing_node.key, JSON.stringify(editing_data))
+        }
+        set_editing_node(node)
+        set_editing_data(void 0)
+      });
     }
   }
   useEffect(() => {
@@ -312,6 +344,7 @@ export default function EditorView(props: IEditorViewProps) {
           <Space.Item space direction="column">
             <EntityDataEditorView
               src={editing_data}
+              on_change={set_editing_data}
               className={styles.entity_base_editor} />
             <TabButtons
               items={Object.values(EntityEditing)}

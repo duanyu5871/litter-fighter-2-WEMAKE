@@ -37,7 +37,6 @@ export function default_get_icon(data: { node: ITreeNode<any>, depth: number, op
   const { node, open: is_open } = data;
   if (node.children) return is_open ? '📂' : '📁'
   const { label } = node;
-  console.log(label)
   if (typeof label !== 'string') return '📄'
   const lio = label.lastIndexOf('.');
   if (lio < 0) return '📄'

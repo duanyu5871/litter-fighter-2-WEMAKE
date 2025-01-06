@@ -51,7 +51,7 @@ function _Input(props: InputProps, forwarded_Ref: React.ForwardedRef<InputRef>) 
   const ref_root = useRef<HTMLSpanElement>(null);
   const ref_icon = useRef<HTMLButtonElement>(null);
 
-  useMemo<InputRef>(() => {
+  const ref = useMemo<InputRef>(() => {
     const ret = {
       get input() { return ref_input.current },
       get value() { return ref_input.current?.value },
@@ -64,6 +64,15 @@ function _Input(props: InputProps, forwarded_Ref: React.ForwardedRef<InputRef>) 
     }
     return ret;
   }, [forwarded_Ref])
+
+  const { defaultValue } = props;
+  const has_value = 'value' in props
+  useEffect(() => {
+    if (has_value) return;
+    if (!ref_input.current) return;
+    if (typeof defaultValue !== 'string') return;
+    ref_input.current.value = defaultValue;
+  }, [defaultValue, has_value])
 
   useEffect(() => {
     const ele_root = ref_root.current;
