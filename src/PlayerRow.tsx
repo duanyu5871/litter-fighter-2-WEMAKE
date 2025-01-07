@@ -203,10 +203,10 @@ export function PlayerRow(props: Props) {
           items={["", ...Object.keys(DummyEnum)]}
           style={{ width: 100 }}
           parse={(k) => [k && (DummyEnum as any)[k], k || "not dummy"]}
-          onChange={(v) => {
+          on_changed={(v) => {
             const ctrl = lf2.player_characters.get(info.id)?.ctrl;
             if (is_bot_ctrl(ctrl)) {
-              ctrl.dummy = v.target.value ? (v.target.value as any) : void 0;
+              ctrl.dummy = v;
             }
           }}
         />

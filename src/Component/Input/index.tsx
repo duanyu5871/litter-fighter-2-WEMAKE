@@ -1,5 +1,6 @@
 import classNames from "classnames";
 import React, { useEffect, useMemo, useRef } from "react";
+import { Clear } from "../Icons/Clear";
 import styles from "./styles.module.scss";
 
 export type BaseProps = React.InputHTMLAttributes<HTMLInputElement>
@@ -32,26 +33,32 @@ function direct_set_value(ele: HTMLInputElement | null, value: string | number) 
   const ev = new InputEvent('input', { bubbles: true });
   (ev as any).simulated = true;
   ele.dispatchEvent(ev);
-
 }
 
 function _Input(props: InputProps, forwarded_Ref: React.ForwardedRef<InputRef>) {
   const {
-    className, prefix, suffix, clear_icon = '×', style, clazz,
+    className, prefix, suffix, clear_icon = <Clear hoverable />, style, clazz,
     clearable = false,
     ..._p
   } = props;
+
+  const { type, step, min, max } = props;
+  const need_steppers = !!(step && type === 'number');
+  const need_clearer = !!(clearable && clear_icon);
   const root_cls_name = classNames(styles.lfui_input, className);
   const prefix_cls_name = classNames(styles.lfui_input_prefix, clazz?.prefix);
   const input_cls_name = classNames(styles.lfui_input_input, clazz?.input);
-  const suffix_cls_name = classNames(styles.lfui_input_suffix, clazz?.suffix);
+  const suffix_cls_name = classNames(styles.lfui_input_suffix, {
+    [styles.lfui_input_suffix_spacer]: need_clearer || need_steppers
+  }, clazz?.suffix);
   const clear_icon_cls_name = classNames(styles.lfui_input_clear_icon, clazz?.icon);
 
   const ref_input = useRef<HTMLInputElement>(null);
-  const ref_root = useRef<HTMLSpanElement>(null);
+  const ref_root = useRef<HTMLDivElement>(null);
+  const ref_spacer = useRef<HTMLSpanElement>(null);
   const ref_icon = useRef<HTMLButtonElement>(null);
 
-  const ref = useMemo<InputRef>(() => {
+  useMemo<InputRef>(() => {
     const ret = {
       get input() { return ref_input.current },
       get value() { return ref_input.current?.value },
@@ -65,14 +72,18 @@ function _Input(props: InputProps, forwarded_Ref: React.ForwardedRef<InputRef>) 
     return ret;
   }, [forwarded_Ref])
 
-  const { defaultValue } = props;
-  const has_value = 'value' in props
+  const { defaultValue, placeholder } = props;
+  const has_value = ('value' in props)
+
   useEffect(() => {
     if (has_value) return;
     if (!ref_input.current) return;
-    if (typeof defaultValue !== 'string') return;
-    ref_input.current.value = defaultValue;
-  }, [defaultValue, has_value])
+    if (!ref_spacer.current) return;
+    const _defaultValue = typeof defaultValue === 'string' ? defaultValue : '';
+    const _placeholder = typeof placeholder === 'string' ? placeholder : ''
+    ref_input.current.value = _defaultValue;
+    ref_spacer.current.innerText = _defaultValue.length > _placeholder.length ? _defaultValue : _placeholder;
+  }, [defaultValue, has_value, placeholder])
 
   useEffect(() => {
     const ele_root = ref_root.current;
@@ -86,17 +97,27 @@ function _Input(props: InputProps, forwarded_Ref: React.ForwardedRef<InputRef>) 
     const on_input_change = () => {
       const ele = ref_icon.current;
       if (!ele) return;
-      ele.style.display = ele_input.value.length ? 'inline' : 'none';
+      ele.style.display = ele_input.value.length ? '' : 'none';
     }
+    const on_value_change = () => {
+      const ele = ref_spacer.current;
+      if (!ele) return;
+
+      ele.innerText = ele_input.value.length > ele_input.placeholder.length ? ele_input.value : ele_input.placeholder;
+    }
+    on_value_change();
     on_input_change();
     ele_input.addEventListener('input', on_input_change)
+    ele_input.addEventListener('input', on_value_change)
+    ele_input.addEventListener('change', on_value_change)
     return () => {
       ele_root.removeEventListener('pointerdown', on_root_pointerdown)
       ele_input.removeEventListener('input', on_input_change)
+      ele_input.removeEventListener('input', on_value_change)
+      ele_input.removeEventListener('change', on_value_change)
     }
   }, [clearable]);
 
-  const { type, step, min, max } = props;
   const add_step = (direction: -1 | 1) => {
     if (!step) return;
     const ele = ref_input.current;
@@ -127,7 +148,8 @@ function _Input(props: InputProps, forwarded_Ref: React.ForwardedRef<InputRef>) 
 
   const ref_tid = useRef<number>(0);
 
-  const steppers = (!step || type !== 'number') ? null :
+
+  const steppers = !need_steppers ? null :
     <span className={styles.stepper}>
       <svg xmlns="http://www.w3.org/2000/svg"
         width={12}
@@ -191,24 +213,26 @@ function _Input(props: InputProps, forwarded_Ref: React.ForwardedRef<InputRef>) 
       </svg>
     </span>
 
-  const icon = !(clearable && clear_icon) ? null :
+  const icon = !need_clearer ? null :
     <button className={clear_icon_cls_name} ref={ref_icon} tabIndex={-1}
       onClick={() => direct_set_value(ref_input.current, '')}>
       {clear_icon}
     </button>
 
   if ('value' in _p && _p.value === void 0) _p.value = ""
-
   return (
-    <span className={root_cls_name} ref={ref_root} style={style}>
+    <div className={root_cls_name} ref={ref_root} style={style}>
       {prefix ? <span className={prefix_cls_name}>{prefix}</span> : null}
-      <input className={input_cls_name} ref={ref_input} {..._p} />
-      {suffix ? <span className={suffix_cls_name}>{suffix}</span> : null}
+      <div className={styles.lfui_input_spacer}>
+        <span ref={ref_spacer} />
+        <input className={input_cls_name} ref={ref_input} {..._p} />
+      </div>
+      <span className={suffix_cls_name}>{suffix}</span>
       <span className={styles.fix_right_zone}>
         {icon}
         {steppers}
       </span>
-    </span>
+    </div>
   )
 }
 

@@ -5,7 +5,7 @@ import { type IEntityData } from "../LF2/defines/IEntityData";
 import Select, { ISelectProps } from "./Select";
 
 export interface CharacterSelectProps
-  extends ISelectProps<IEntityData, string> {
+  extends Omit<ISelectProps<IEntityData, string>, 'parse'> {
   lf2: LF2;
   show_all?: boolean;
 }
@@ -27,9 +27,9 @@ export default function CharacterSelect(props: CharacterSelectProps) {
       show_all
         ? characters
         : characters.filter((v) => {
-            const r = v.base.group?.indexOf(Defines.EntityGroup.Hidden);
-            return r === void 0 || r === -1;
-          }),
+          const r = v.base.group?.indexOf(Defines.EntityGroup.Hidden);
+          return r === void 0 || r === -1;
+        }),
     [characters, show_all],
   );
 

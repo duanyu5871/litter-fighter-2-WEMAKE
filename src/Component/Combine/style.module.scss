@@ -19,7 +19,6 @@
   .lfui_combine_split_line {
     background-color: $primary_border_color;
     position        : absolute;
-    z-index         : 2;
     pointer-events  : none;
   }
 
@@ -30,11 +29,7 @@
   }
 
 
-  &>*:hover,
-  &>*:focus,
-  &>*:active {
-    z-index: 1;
-  }
+
 
   &.row {
     flex-direction: row;

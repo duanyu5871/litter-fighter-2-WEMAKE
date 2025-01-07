@@ -588,6 +588,7 @@ function App() {
             <Select
               value={render_size_mode}
               on_changed={set_render_size_mode}
+              parse={i => [i, i]}
               items={["fixed", "fill", "cover", "contain"] as const}
             />
           </Titled>

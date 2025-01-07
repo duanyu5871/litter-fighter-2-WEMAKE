@@ -1,0 +1,41 @@
+@import "../../../styles/lfui_values.module.scss";
+
+.ic {
+  &>.bg_stroke {
+    fill        : none;
+    stroke      : $primary_bg_color;
+    stroke-width: 1px;
+  }
+
+  &>.secondary_stroke {
+    fill        : none;
+    stroke      : $primary_text_secondary_color_active;
+    stroke-width: 1px;
+  }
+
+  &>.secondary_fill {
+    stroke: none;
+    fill  : $primary_text_secondary_color_active;
+  }
+
+  &>.main_stroke {
+    fill        : none;
+    stroke-width: 1px;
+    stroke      : $primary_text_color_active;
+  }
+
+  &>.text_stroke {
+    fill        : none;
+    stroke-width: 1px;
+    stroke      : $primary_text_color;
+
+  }
+}
+
+.ic.hoverable {
+  opacity: 0.5;
+
+  &:hover {
+    opacity: 1;
+  }
+}

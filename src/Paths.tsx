@@ -13,7 +13,8 @@ export namespace Paths {
     component_demos_Button = "/component_demos/Button",
     component_demos_Combine = "/component_demos/Combine",
     component_demos_Select = "/component_demos/Select",
-    component_demos_Input = "/component_demos/Input"
+    component_demos_Input = "/component_demos/Input",
+    component_demos_Icon = "/component_demos/Icon",
   }
   export const Components: Record<All, React.ComponentType | null> = {
     [All._]: null,
@@ -28,6 +29,7 @@ export namespace Paths {
     [All.component_demos_Combine]: React.lazy(() => import("./pages/component_demos/CombineDemo")),
     [All.component_demos_Select]: React.lazy(() => import("./pages/component_demos/SelectDemo")),
     [All.component_demos_Input]: React.lazy(() => import("./pages/component_demos/InputDemo")),
+    [All.component_demos_Icon]: React.lazy(() => import("./pages/component_demos/IconDemo")),
   }
   export const Relations: { [x in All]?: All[] } = {
     [All._]: [
@@ -44,6 +46,7 @@ export namespace Paths {
       All.component_demos_Select,
       All.component_demos_Input,
       All.component_demos_index,
+      All.component_demos_Icon,
     ]
   }
 

@@ -1,5 +1,6 @@
 @import "../../styles/lfui_hoverable_border.module.scss";
 @import "../../styles/lfui_values.module.scss";
+@import "../../styles/lfui_input_like.module.scss";
 
 .lfui_button {
   @extend .lfui_hoverable_border;
@@ -12,6 +13,7 @@
   line-height: 15px;
   box-sizing : border-box;
 }
+
 .lfui_button.lfui_button_actived {
   @extend .lfui_input_like_actived;
 }

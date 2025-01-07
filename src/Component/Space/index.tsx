@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { PropsWithChildren, useMemo } from "react";
 import Show, { Div } from "../Show";
 import './styles.scss';
 import classNames from "classnames";
@@ -36,6 +36,10 @@ export function Space(props: ISpaceProps) {
               return null
             if (v.type === Item)
               return v;
+            if (v.type === Broken)
+              return v
+          } else if (typeof v === 'object' && 'containerInfo' in v) {
+            return v;
           }
           return (
             <Item {...item_props} key={i}>
@@ -47,7 +51,9 @@ export function Space(props: ISpaceProps) {
     </div>
   )
 }
-
+export function Broken({ children }: PropsWithChildren) {
+  return children
+}
 export interface ISpaceItemProps extends ISpaceProps {
   direction?: 'column' | 'row';
   space?: boolean;
@@ -64,4 +70,5 @@ function Item(props: ISpaceItemProps) {
       <div className={root_cls_name} {..._p} ref={_ref} />
   )
 }
-Space.Item = Item
+Space.Item = Item;
+Space.Broken = Broken;

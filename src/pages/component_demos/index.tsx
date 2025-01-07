@@ -9,7 +9,7 @@ export const tree_root: ITreeNode[] = [
   { key: Paths.All.component_demos_Combine, label: 'Combine' },
   { key: Paths.All.component_demos_Select, label: 'Select' },
   { key: Paths.All.component_demos_Input, label: 'Input' },
-  { key: Paths.All.component_demos_Input, label: 'Input' },
+  { key: Paths.All.component_demos_Icon, label: 'Icon' },
 ]
 export default function ComponentDemo() {
   const nav = useNavigate();

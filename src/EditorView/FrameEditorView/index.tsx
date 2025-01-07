@@ -4,7 +4,7 @@ import { Button } from "../../Component/Buttons/Button";
 import Combine from "../../Component/Combine";
 import Frame from "../../Component/Frame";
 import { Input, InputNumber, InputProps } from "../../Component/Input";
-import Select from "../../Component/Select";
+import Select, { ISelectProps } from "../../Component/Select";
 import Show from "../../Component/Show";
 import { Space } from "../../Component/Space";
 import { TabButtons } from "../../Component/TabButtons";
@@ -145,9 +145,9 @@ export function FrameEditorView(props: IFrameEditorViewProps) {
     onChange: e => set_frame(p => ({ ...p, [key]: Number(e.target.value.trim()) })),
     placeholder: key,
   });
-  const edit_num_select = (key: keyof IFrameInfo) => ({
+  const edit_num_select = (key: keyof IFrameInfo): Partial<ISelectProps<any, any>> => ({
     value: num_or(frame[key], void 0),
-    onChange: (e: React.ChangeEvent<HTMLSelectElement>) => set_frame(p => ({ ...p, [key]: Number(e.target.value.trim()) })),
+    on_changed: (v) => set_frame(p => ({ ...p, [key]: v })),
     placeholder: key,
   });
 

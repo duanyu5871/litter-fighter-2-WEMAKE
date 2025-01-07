@@ -1,0 +1,90 @@
+@import "../../styles/lfui_hoverable_border.module.scss";
+@import "../../styles/lfui_values.module.scss";
+@import "../../styles/lfui_input_like.module.scss";
+
+.lfui_dropdown {
+  @extend .lfui_hoverable_border;
+  @extend .lfui_input_like;
+  @extend .lfui_min_input_size;
+  position   : relative;
+  box-sizing : border-box;
+  align-items: center;
+  overflow   : hidden;
+  display    : flex;
+
+  .tags>*:not(:last-child) {
+    margin-right: 2px !important;
+  }
+
+  &>.input {
+    border       : none;
+    border-radius: 0px;
+    min-height   : 0px;
+    min-width    : 0px;
+    flex         : 1;
+    width        : 100%;
+
+    input {
+      min-height: 0px;
+      min-width : 0px;
+      width     : 100%;
+      height    : 100%;
+    }
+  }
+
+  &>.arrow {
+    opacity   : 1;
+    transition: all 200ms;
+  }
+
+  &>.ic_clear {
+    position  : absolute;
+    margin    : 0 auto;
+    right     : 4px;
+    opacity   : 0;
+    transition: all 200ms;
+  }
+
+  &:hover {
+    &.arrow {
+      opacity: 0;
+    }
+
+    &>.ic_clear {
+      opacity: 1;
+    }
+  }
+}
+
+.lfui_dropdown_popover {
+  @extend .lfui_hoverable_border;
+  max-height      : calc(100% - 200px);
+  overflow        : auto;
+  background-color: $primary_bg_color;
+  box-sizing      : border-box;
+  position        : absolute;
+  left            : 0px;
+  top             : 0px;
+  opacity         : 0;
+
+  .option {
+    width      : 100%;
+    padding    : 0px 5px;
+    display    : flex;
+    align-items: center;
+
+    &>.label {
+      flex: 1;
+    }
+
+    &>.tick {
+      opacity   : 0;
+      transition: all 200ms;
+    }
+
+    &>.tick_checked {
+      opacity: 1;
+    }
+
+  }
+}

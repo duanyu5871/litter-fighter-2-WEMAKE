@@ -1,0 +1,16 @@
+@import "../../styles/lfui_values.module.scss";
+
+.lfui_tag {
+  background-color: $primary_border_color;
+  color           : $primary_bg_color;
+  padding         : 1px 4px;
+  border-radius   : $border_radius_s;
+
+  &>.label {
+    font-size     : 0.5em;
+  }
+}
+
+.lfui_tag.closeable {
+  padding-right: 0px;
+}

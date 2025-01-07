@@ -2,12 +2,12 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { ISelectProps } from "../../Component/Select";
 import { Space } from "../../Component/Space";
 import { Defines, IFrameInfo, INextFrame, ItrEffect, ItrKind } from "../../LF2/defines";
+import { BdyKind } from "../../LF2/defines/BdyKind";
+import { EntityEnum } from "../../LF2/defines/EntityEnum";
 import { IEntityData } from "../../LF2/defines/IEntityData";
 import { SpeedMode } from "../../LF2/defines/SpeedMode";
 import { FrameEditorView } from "../FrameEditorView";
 import './style.scss';
-import { BdyKind } from "../../LF2/defines/BdyKind";
-import { EntityEnum } from "../../LF2/defines/EntityEnum";
 const make_num_enum_select_props = (t: any): ISelectProps<string, number> => ({
   items: Object.keys(t).filter(key => {
     if (key.startsWith('_')) return false;
