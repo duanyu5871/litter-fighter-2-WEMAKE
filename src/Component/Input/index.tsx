@@ -213,3 +213,21 @@ function _Input(props: InputProps, forwarded_Ref: React.ForwardedRef<InputRef>) 
 }
 
 export const Input = React.forwardRef<InputRef, InputProps>(_Input)
+
+
+export interface InputNumberProps extends Omit<InputProps, 'type' | 'value' | 'defaultValue'> {
+  value?: number;
+  defaultValue?: number;
+  on_change?(v: number | undefined): void
+}
+function _InputNumber(props: InputNumberProps, forwarded_Ref: React.ForwardedRef<InputRef>) {
+  const { onChange, on_change, ..._p } = props;
+  const _on_change = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onChange?.(e);
+    const t = e.target.value.trim();
+    on_change?.(t ? void 0 : Number(e.target.value))
+  }
+  return <Input {..._p} type='number' ref={forwarded_Ref} onChange={_on_change} />
+}
+
+export const InputNumber = React.forwardRef<InputRef, InputNumberProps>(_InputNumber)

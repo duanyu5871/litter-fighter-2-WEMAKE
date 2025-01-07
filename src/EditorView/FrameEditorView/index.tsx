@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "../../Component/Buttons/Button";
 import Combine from "../../Component/Combine";
 import Frame from "../../Component/Frame";
-import { Input, InputProps } from "../../Component/Input";
+import { Input, InputNumber, InputProps } from "../../Component/Input";
 import Select from "../../Component/Select";
 import Show from "../../Component/Show";
 import { Space } from "../../Component/Space";
@@ -40,9 +40,6 @@ const tab_labels: Record<TabEnum, string> = {
   [TabEnum.Opoint]: "发射",
   [TabEnum.Bpoint]: "吐血"
 }
-
-
-
 export const img_map = (window as any).img_map = new Map<string, HTMLImageElement>();
 export interface IFrameEditorViewProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange'> {
   src: IFrameInfo;
@@ -223,6 +220,7 @@ export function FrameEditorView(props: IFrameEditorViewProps) {
         flexDirection: 'column',
         gap: 5
       }}>
+
       <Titled label='　　　　动作'>
         <Combine>
           <Input {...edit_string('id')} disabled={!editing} style={{ width: 80 }} />

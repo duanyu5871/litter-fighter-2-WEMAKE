@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { Button } from "./Component/Buttons/Button";
-import { TextArea } from "./Component/TextArea";
+import { ITextAreaRef, TextArea } from "./Component/TextArea";
 import open_file, { read_file } from "./Utils/open_file";
 import dat_to_json from "./LF2/dat_translator/dat_2_json";
 import decode_lf2_dat from "./LF2/dat_translator/decode_lf2_dat";
@@ -11,8 +11,8 @@ export interface IEditorViewProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 export default function DatViewer(props: IEditorViewProps) {
   const { onClose, loading, open } = props;
-  const _ref_textarea_dat = useRef<HTMLTextAreaElement>(null);
-  const _ref_textarea_json = useRef<HTMLTextAreaElement>(null);
+  const _ref_textarea_dat = useRef<ITextAreaRef>(null);
+  const _ref_textarea_json = useRef<ITextAreaRef>(null);
 
   const _ref_txt_dat = useRef<string>("");
   const _ref_txt_json = useRef<string>("");
