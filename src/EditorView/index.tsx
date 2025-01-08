@@ -28,6 +28,7 @@ import { FrameDrawer, FrameDrawerData } from "./FrameDrawer";
 import { ItrPrefabEditorView } from "./FrameEditorView/ItrPrefabEditorView";
 import { PicInfoEditorView } from "./PicInfoEditorView";
 import styles from "./styles.module.scss";
+import { FrameEditorView } from "./FrameEditorView";
 
 enum EntityEditing {
   base = '基础信息',
@@ -130,27 +131,42 @@ export default function EditorView(props: IEditorViewProps) {
         shape.merge(shape_data)
       }
     }
+    const frame_views: React.ReactNode[] = [];
+    const { frames } = editing_data;
+    for (const key in frames) {
+      const frame = frames[key];
+      frame_views.push(
+        <FrameEditorView
+          key={frame.id}
+          value={frame}
+          data={editing_data}
+        // on_frame_change={(...a) => ref_on_frame_change.current?.(...a)}
+        // on_click_frame={(...a) => ref_on_click_frame.current?.(...a)}
+        // on_click_goto_next_frame={(...a) => ref_on_click_goto_next_frame.current?.(...a)}
+        />
+      );
+    }
     return (
-      <EntityEditorView
-        src={editing_data}
-        className={styles.file_editor_view}
-        on_click_frame={on_frame_change}
-        on_frame_change={on_frame_change}
-        on_click_goto_next_frame={(nf, data) => {
-          let ele: HTMLElement | null;
-          if (nf.id === Defines.FrameId.Auto) {
-            ele = document.getElementById(`${data.id}###0`)
-          } else {
-            ele = document.getElementById(`${data.id}###${nf.id}`)
-          }
-          if (ele) {
-            ele.click();
-            console.log(ele)
-            document.getElementsByClassName('entity_editor_view').item(0)
-              ?.scrollTo(0, ele.offsetTop)
-          }
-        }}
-      />
+      <Space.Broken>
+        <Combine
+          direction='column'
+          className={styles.header_main_footer_view}
+          hoverable={false}>
+          <Combine direction='row' hoverable={false}>
+            <div style={{ flex: 1, textAlign: 'center' }}>
+              帧列表
+            </div>
+            <Button >
+              <Add />
+            </Button>
+          </Combine>
+          <div className={styles.content_zone}>
+            <Space.Item space vertical frame className={styles.file_editor_view}>
+              {frame_views}
+            </Space.Item>
+          </div>
+        </Combine>
+      </Space.Broken>
     )
   }, [editing_data, zip])
 
