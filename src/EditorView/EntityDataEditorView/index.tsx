@@ -7,7 +7,7 @@ import Titled from "../../Component/Titled";
 import { IEntityData } from "../../LF2/defines/IEntityData";
 import { traversal } from "../../LF2/utils/container_help/traversal";
 import { ENTITY_TYPE_SELECT_PROPS } from "../EntityEditorView";
-import { FileEditorView } from "./FileEditorView";
+import { PicInfoEditorView } from "./FileEditorView";
 export interface IEntityDataEditorViewProps extends IFrameProps {
   src?: IEntityData;
   on_change?(data: IEntityData): void;

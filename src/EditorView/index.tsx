@@ -20,7 +20,7 @@ import open_file from "../Utils/open_file";
 import { shared_ctx } from './Context';
 import { EditorShapeEnum } from "./EditorShapeEnum";
 import { EntityDataEditorView } from "./EntityDataEditorView";
-import { FileEditorView } from "./EntityDataEditorView/FileEditorView";
+import { PicInfoEditorView } from "./EntityDataEditorView/FileEditorView";
 import { EntityEditorView } from "./EntityEditorView";
 import { FrameDrawer, FrameDrawerData } from "./FrameDrawer";
 import { ItrEditorPrefabView } from "./FrameEditorView/ItrEditorPrefabView";
@@ -307,7 +307,7 @@ export default function EditorView(props: IEditorViewProps) {
     const views: React.ReactNode[] = []
     if (editing_data.base.files) traversal(editing_data.base.files, (k, v) => {
       views.push(
-        <FileEditorView
+        <PicInfoEditorView
           pic_info={v}
           data={editing_data}
           key={'FileEditorView_' + k}
@@ -434,7 +434,7 @@ export default function EditorView(props: IEditorViewProps) {
               parse={v => [v, v]}
               onChange={v => set_tab(v)}
             />
-            {tab === EntityEditing.frames ? frame_list_view : null}
+            {/* {tab === EntityEditing.frames ? frame_list_view : null} */}
             {tab === EntityEditing.pic ? pic_list_view : null}
             {tab === EntityEditing.itr_pre ? itr_prefab_list_view : null}
           </Space.Item>

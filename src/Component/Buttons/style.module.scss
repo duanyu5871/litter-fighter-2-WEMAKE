@@ -7,11 +7,14 @@
   @extend .lfui_input_like;
 
 
-  user-select: none;
-  padding    : 2px 4px;
-  outline    : none;
-  line-height: 15px;
-  box-sizing : border-box;
+  user-select    : none;
+  padding        : 2px 4px;
+  outline        : none;
+  line-height    : 15px;
+  box-sizing     : border-box;
+  display        : inline-flex;
+  align-items    : center;
+  justify-content: center;
 }
 
 .lfui_button.lfui_button_actived {

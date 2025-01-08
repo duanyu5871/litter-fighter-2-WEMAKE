@@ -1,12 +1,14 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
+import { Button } from "../../Component/Buttons/Button";
 import Combine from "../../Component/Combine";
-import { InputNumberProps, InputNumber, InputProps, Input } from "../../Component/Input";
+import { Add, Close3 } from "../../Component/Icons/Clear";
+import { Input, InputNumber, InputNumberProps, InputProps } from "../../Component/Input";
 import { TextArea } from "../../Component/TextArea";
 import Titled from "../../Component/Titled";
 
+const label_style: React.CSSProperties = { width: 50, textAlign: 'right' };
+const titled_style: React.CSSProperties = { display: 'flex' };
 export function useEditor<O extends {}>(value: O) {
-  const label_style: React.CSSProperties = { width: 50, textAlign: 'right' };
-  const titled_style: React.CSSProperties = { display: 'flex' };
   return useMemo(() => {
     const t_props = (field: any) => ({
       label: field.toString(),
@@ -82,7 +84,88 @@ export function useEditor<O extends {}>(value: O) {
             </Combine>
           </Titled>
         );
-      }
+      },
+      EditorStrList(props: { field: Field; }) {
+        const { field, } = props;
+        const list: string[] | undefined = (value as any)[field];
+        const [, set_change_flags] = useState(0);
+
+        const on_click_add = () => {
+          (value as any)[field] = (value as any)[field] || [];
+          (value as any)[field].push('');
+          set_change_flags(v => v + 1)
+        }
+        const on_click_del = (idx: number) => {
+          list?.splice(idx, 1);
+          set_change_flags(v => v + 1)
+        }
+        const on_blur = (idx: number, str: string) => {
+          (value as any)[field][idx] = str.trim();
+          set_change_flags(v => v + 1)
+        }
+        return (
+          <Titled {...t_props(field)}>
+            <Combine direction='column' style={{ flex: 1 }}>
+              {list?.map((value, idx) => {
+                return (
+                  <Combine>
+                    <Input
+                      style={{ flex: 1 }}
+                      defaultValue={value}
+                      onBlur={e => on_blur(idx, e.target.value)} />
+                    <Button >
+                      <Close3 onClick={() => on_click_del(idx)} />
+                    </Button>
+                  </Combine>
+                );
+              })}
+              <Button onClick={on_click_add}>
+                <Add />
+              </Button>
+            </Combine>
+          </Titled>
+        );
+      },
+      EditorIntList(props: { field: Field; }) {
+        const { field, } = props;
+        const list: number[] | undefined = (value as any)[field];
+        const [, set_change_flags] = useState(0);
+        const on_click_add = () => {
+          (value as any)[field] = (value as any)[field] || [];
+          (value as any)[field].push(void 0);
+          set_change_flags(v => v + 1);
+        }
+        const on_click_del = (idx: number) => {
+          list?.splice(idx, 1);
+          set_change_flags(v => v + 1);
+        }
+        const on_blur = (idx: number, num: number | undefined) => {
+          (value as any)[field][idx] = num;
+          set_change_flags(v => v + 1);
+        }
+        return (
+          <Titled {...t_props(field)}>
+            <Combine direction='column' style={{ flex: 1 }}>
+              {list?.map((value, idx) => {
+                return (
+                  <Combine>
+                    <InputNumber
+                      style={{ flex: 1 }}
+                      defaultValue={value}
+                      on_blur={v => on_blur(idx, v)} />
+                    <Button >
+                      <Close3 onClick={() => on_click_del(idx)} />
+                    </Button>
+                  </Combine>
+                );
+              })}
+              <Button onClick={on_click_add}>
+                <Add />
+              </Button>
+            </Combine>
+          </Titled>
+        );
+      },
     };
   }, [value]);
 }
