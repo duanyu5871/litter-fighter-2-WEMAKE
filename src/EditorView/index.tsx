@@ -26,6 +26,7 @@ import { ItrEditorPrefabView } from "./FrameEditorView/ItrEditorPrefabView";
 import { PicInfoEditorView } from "./PicInfoEditorView";
 import styles from "./styles.module.scss";
 import { Add } from "../Component/Icons/Clear";
+import Combine from "../Component/Combine";
 
 enum EntityEditing {
   base = '基础信息',
@@ -358,25 +359,27 @@ export default function EditorView(props: IEditorViewProps) {
           on_changed={() => set_change_flag(v => ++v)} />
       )
     })
-    views.push(
-      <Button key={views.length} style={{ width: '100%' }} onClick={() => {
-        if (itr_prefabs) {
-          let i = Object.keys(itr_prefabs).length;
-          while (('' + i) in itr_prefabs) ++i;
-          itr_prefabs['' + i] = { id: '' + i }
-        } else {
-          editing_data.itr_prefabs = {};
-          editing_data.itr_prefabs['0'] = { id: '0' }
-        }
-        set_change_flag(v => ++v);
-      }}>
-        <Add />
-      </Button>
-    )
     return (
-      <Space.Item space vertical frame className={styles.file_editor_view}>
-        {views}
-      </Space.Item>
+      <Space.Broken>
+        <Combine direction='column' className={styles.header_scrollview_footer_space} hoverable={false}>
+          <Button key={views.length} style={{ width: '100%' }} onClick={() => {
+            if (itr_prefabs) {
+              let i = Object.keys(itr_prefabs).length;
+              while (('' + i) in itr_prefabs) ++i;
+              itr_prefabs['' + i] = { id: '' + i }
+            } else {
+              editing_data.itr_prefabs = {};
+              editing_data.itr_prefabs['0'] = { id: '0' }
+            }
+            set_change_flag(v => ++v);
+          }}>
+            <Add />
+          </Button>
+          <Space vertical className={styles.file_editor_view}>
+            {views}
+          </Space>
+        </Combine>
+      </Space.Broken>
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [itr_prefabs, editing_data, change_flag])

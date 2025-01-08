@@ -206,6 +206,7 @@ export function Select<T, V>(props: ISelectProps<T, V> | IMultiSelectProps<T, V>
     e.stopPropagation()
   }
   const not_empty = !!checked_tree_nodes?.length;
+
   return (
     <Space className={classname} {..._p} _ref={ref_wrapper} onPointerDown={on_pointer_down}>
       <Space.Broken>
@@ -226,7 +227,7 @@ export function Select<T, V>(props: ISelectProps<T, V> | IMultiSelectProps<T, V>
           placeholder={not_empty ? void 0 : props.placeholder}
           suffix={
             <>
-              <Show.Div show={has_outer_arrow} >
+              <Show.Div show={has_outer_arrow}>
                 {arrow}
               </Show.Div>
               <Show show={!has_outer_arrow}>
@@ -235,8 +236,7 @@ export function Select<T, V>(props: ISelectProps<T, V> | IMultiSelectProps<T, V>
             </>
           }
           className={styles.input}
-          readOnly />
-
+          readOnly={true} />
         <Show show={clearable && value?.length}>
           <Clear className={styles.ic_clear} onPointerDown={on_clear} />
         </Show>

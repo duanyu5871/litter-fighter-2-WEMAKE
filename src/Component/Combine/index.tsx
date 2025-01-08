@@ -2,11 +2,14 @@ import classnames from "classnames";
 import styles from "./style.module.scss";
 import { Children, useEffect, useRef, useState } from "react";
 export interface ICombineProps extends React.HTMLAttributes<HTMLDivElement> {
-  direction?: 'row' | 'column'
+  direction?: 'row' | 'column',
+  hoverable?: boolean
 }
 export default function Combine(props: ICombineProps) {
-  const { className, direction = 'row', children, ..._p } = props;
-  const cls_name = classnames(styles.lfui_combine, className, styles[direction])
+  const { className, direction = 'row',
+    hoverable = true, children, ..._p } = props;
+  const cls_name = classnames(styles.lfui_combine, styles[direction],
+    { [styles.hoverable]: hoverable }, className)
   const ref = useRef<HTMLDivElement>(null)
   const [lines, set_lines] = useState<React.ReactNode[]>([])
   useEffect(() => {

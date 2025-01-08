@@ -35,6 +35,12 @@
   flex-direction: column;
 }
 
+.header_scrollview_footer_space {
+  flex          : 1;
+  overflow      : hidden;
+  position      : relative;
+}
+
 .file_editor_view {
   overflow      : auto;
   display       : flex;

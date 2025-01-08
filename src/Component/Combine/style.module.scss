@@ -1,7 +1,26 @@
 @import "../../styles/lfui_hoverable_border.module.scss";
+@import "../../styles/lfui_border.module.scss";
+
+.lfui_combine.hoverable {
+  @extend .lfui_hoverable_border;
+
+  &:hover {
+    .lfui_combine_split_line {
+      background-color: $primary_border_color_active;
+    }
+  }
+
+  &:not(:hover) {
+    .lfui_combine_split_line {
+      background-color: $primary_border_color;
+    }
+  }
+
+}
 
 .lfui_combine {
-  @extend .lfui_hoverable_border;
+  @extend .lfui_border;
+
   position   : relative;
   display    : inline-flex;
   flex-wrap  : nowrap;
@@ -16,20 +35,11 @@
     border-radius: 0px !important;
   }
 
-  .lfui_combine_split_line {
+  &>.lfui_combine_split_line {
     background-color: $primary_border_color;
     position        : absolute;
     pointer-events  : none;
   }
-
-  &:hover {
-    .lfui_combine_split_line {
-      background-color: $primary_border_color_active;
-    }
-  }
-
-
-
 
   &.row {
     flex-direction: row;
