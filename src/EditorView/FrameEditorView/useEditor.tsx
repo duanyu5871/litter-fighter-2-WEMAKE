@@ -109,7 +109,7 @@ export function useEditor<O extends {}>(value: O) {
             <Combine direction='column' style={{ flex: 1 }}>
               {list?.map((value, idx) => {
                 return (
-                  <Combine>
+                  <Combine key={idx}>
                     <Input
                       style={{ flex: 1 }}
                       defaultValue={value}
@@ -173,10 +173,7 @@ export function useEditor<O extends {}>(value: O) {
           <Titled {...t_props(field)}>
             <Select
               defaultValue={(value as any)[field]}
-              on_changed={v => {
-                alert('' + v);
-                (value as any)[field] = v
-              }}
+              on_changed={v => (value as any)[field] = v}
               clearable
               style={{ flex: 1 }}
               {..._p} />

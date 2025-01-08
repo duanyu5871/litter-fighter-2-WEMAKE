@@ -45,8 +45,13 @@ export function Select<T, V>(props: ISelectProps<T, V>): JSX.Element
 export function Select<T, V>(props: IMultiSelectProps<T, V>): JSX.Element
 export function Select<T, V>(props: ISelectProps<T, V> | IMultiSelectProps<T, V>): JSX.Element {
   const { className, items, parse, disabled, arrow, clearable, on_changed, defaultValue, ..._p } = props;
+  const [open, set_open] = useState(false);
+  const ref_popover = React.useRef<HTMLDivElement>(null);
+  const ref_wrapper = React.useRef<HTMLDivElement>(null);
+  const [gone, set_gone] = useState(false);
+
   const multi = (props as any).multi
-  const classname = classNames(styles.lfui_dropdown, className);
+  const classname = classNames(styles.lfui_dropdown, { [styles.open]: open }, className);
   const [value, set_value] = useState<V[] | undefined>(() => value_adapter(defaultValue));
 
   const has_value = 'value' in props
@@ -54,7 +59,6 @@ export function Select<T, V>(props: ISelectProps<T, V> | IMultiSelectProps<T, V>
     if (!has_value) set_value(value_adapter(defaultValue))
   }, [defaultValue, has_value])
 
-  const [open, set_open] = useState(false);
   const [tree_nodes, checked_tree_nodes] = useMemo(() => {
     if (!items) return [void 0, void 0];
     const checked_tree_nodes: ITreeNode<IOptionData<T, V>>[] = []
@@ -121,23 +125,76 @@ export function Select<T, V>(props: ISelectProps<T, V> | IMultiSelectProps<T, V>
       set_open(false);
     }
   }
-  const ref_popover = React.useRef<HTMLDivElement>(null);
-  const ref_wrapper = React.useRef<HTMLDivElement>(null);
+
   useEffect(() => {
+    if (!open && !gone) {
+      const popover = ref_popover.current;
+      if (!popover) return;
+      popover.style.maxHeight = '0px';
+      popover.style.opacity = '0'
+      const tid = setTimeout(() => set_gone(true), 1000)
+      return () => clearTimeout(tid);
+    } else if (open && gone) {
+      set_gone(false);
+      return;
+    }
+
     const wrapper = ref_wrapper.current;
     const popover = ref_popover.current;
-    if (!popover || !wrapper || !open) return;
+    if (!wrapper || !popover) return;
     popover.addEventListener('pointerdown', e => e.stopPropagation())
     document.addEventListener('pointerdown', () => set_open(false), { once: true })
-    const tid = setInterval(() => {
-      const rect1 = wrapper.getBoundingClientRect();
-      popover.style.left = rect1.x + 'px';
+    const rect1 = wrapper.getBoundingClientRect();
+    popover.style.left = rect1.x + 'px';
+    popover.style.maxHeight = '0px';
+    if (rect1.top < window.innerHeight * 0.6) {
       popover.style.top = (rect1.bottom + 5) + 'px';
-      popover.style.opacity = '1';
-      popover.style.maxHeight = `calc(100% - ${rect1.bottom + 5 + 20}px)`
-    }, 16)
-    return () => clearInterval(tid)
-  }, [open]);
+      popover.style.bottom = ''
+    } else {
+      popover.style.top = ''
+      popover.style.bottom = (window.innerHeight - rect1.top - 5) + 'px';
+    }
+    const rect2 = popover.getBoundingClientRect();
+    if (rect2.right > window.innerWidth - 5) {
+      popover.style.translate = '' + (window.innerWidth - rect2.right - 5) + 'px'
+    }
+    popover.style.opacity = '1';
+    if (rect1.top < window.innerHeight * 0.6) {
+      popover.style.maxHeight = `calc(100% - ${rect1.bottom + 25}px)`
+    } else {
+      popover.style.maxHeight = `${rect1.top - 10}px`;
+    }
+
+    let tid = setTimeout(() => {
+      tid = setInterval(() => {
+        const rect1 = wrapper.getBoundingClientRect();
+        if (rect1.top < window.innerHeight * 0.6) {
+          const top = `${rect1.bottom + 5}px`
+          popover.style.top = top;
+          popover.style.bottom = ''
+          popover.style.maxHeight = `calc(100% - ${rect1.bottom + 25}px)`
+        } else {
+          const bottom = `${5 + window.innerHeight - rect1.top}px`
+          popover.style.top = '';
+          popover.style.bottom = bottom;
+          popover.style.maxHeight = `${rect1.top - 25}px`;
+        }
+      }, 16)
+    }, 300)
+
+    const ob = new IntersectionObserver((e) => {
+      if (!e[0].isIntersecting) {
+        set_open(false)
+      }
+    })
+    ob.observe(wrapper);
+    return () => {
+      clearTimeout(tid);
+      clearInterval(tid);
+      ob.disconnect();
+    }
+  }, [open, gone]);
+
   const has_outer_arrow = 'arrow' in props;
   const on_clear = (e: React.PointerEvent) => {
     e.stopPropagation();
@@ -184,19 +241,16 @@ export function Select<T, V>(props: ISelectProps<T, V> | IMultiSelectProps<T, V>
           <Clear className={styles.ic_clear} onPointerDown={on_clear} />
         </Show>
       </Space.Broken>
-      {
-        open ?
-          createPortal(
-            <TreeView
-              className={styles.lfui_dropdown_popover}
-              nodes={tree_nodes}
-              show_icon={false}
-              on_click_item={on_click_item}
-              _ref={ref_popover}
-            />,
-            document.body
-          ) : null
-      }
+      {gone ? null : createPortal(
+        <TreeView
+          className={styles.lfui_dropdown_popover}
+          nodes={tree_nodes}
+          show_icon={false}
+          on_click_item={on_click_item}
+          _ref={ref_popover}
+        />,
+        document.body
+      )}
     </Space>
   )
 }

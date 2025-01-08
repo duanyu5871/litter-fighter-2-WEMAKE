@@ -68,7 +68,7 @@ export function PicInfoEditorView(props: IFileEditorViewProps) {
       <Close2 style={{ position: 'absolute', top: 0, right: 0 }} onClick={on_click_remove} hoverable />
       <Space vertical>
         <EditorStr field='id' onBlur={on_input_id_blur} />
-        <EditorSel field="path" items={img_list} parse={v => [v.name, v.name]} />
+        <EditorSel field="path" items={img_list} parse={v => [v.name, v.name]} clearable={false} />
         <EditorStrList field="variants" />
       </Space>
     </Frame>

@@ -25,6 +25,7 @@ import { FrameDrawer, FrameDrawerData } from "./FrameDrawer";
 import { ItrEditorPrefabView } from "./FrameEditorView/ItrEditorPrefabView";
 import { PicInfoEditorView } from "./PicInfoEditorView";
 import styles from "./styles.module.scss";
+import { Add } from "../Component/Icons/Clear";
 
 enum EntityEditing {
   base = '基础信息',
@@ -329,7 +330,7 @@ export default function EditorView(props: IEditorViewProps) {
         }
         set_change_flag(v => ++v);
       }}>
-        ➕
+        <Add />
       </Button>
     )
     return (
@@ -369,7 +370,7 @@ export default function EditorView(props: IEditorViewProps) {
         }
         set_change_flag(v => ++v);
       }}>
-        ➕
+        <Add />
       </Button>
     )
     return (
