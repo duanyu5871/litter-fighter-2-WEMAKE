@@ -3,39 +3,26 @@ import { Input } from "../../Component/Input";
 import Select from "../../Component/Select";
 import { Space } from "../../Component/Space";
 import Titled from "../../Component/Titled";
+import { IDatIndex } from "../../LF2/defines";
 import { IEntityData } from "../../LF2/defines/IEntityData";
 import { ENTITY_TYPE_SELECT_PROPS } from "../EntityEditorView";
+import { useEditor } from "../FrameEditorView/useEditor";
 export interface IEntityDataEditorViewProps extends IFrameProps {
-  src?: IEntityData;
-  on_change?(data: IEntityData): void;
+  value?: IEntityData;
+  on_changed?(): void;
 }
 export function EntityDataEditorView(props: IEntityDataEditorViewProps) {
-  const { src, on_change, ..._p } = props;
-
-  const data = src;
-  const set_data = on_change || (() => void 0);
-
+  const { value, on_changed, ..._p } = props;
+  const data = value;
+  const Editor1 = useEditor(data!, { width: 80 })
+  const Editor2 = useEditor(data?.base!, { width: 80 })
   if (!data) return;
-  const label_style: React.CSSProperties = { width: 30, textAlign: 'right' }
   return (
     <Frame {..._p} label="实体数据">
       <Space direction='column'>
-        <Titled label='type' label_style={label_style}>
-          <Select
-            {...ENTITY_TYPE_SELECT_PROPS}
-            defaultValue={data.type}
-            on_changed={type => data.base.type = Number(type)} />
-        </Titled>
-        <Titled label='id' label_style={label_style}>
-          <Input
-            defaultValue={data.id}
-            onChange={e => data.id = e.target.value} />
-        </Titled>
-        <Titled label='name' label_style={label_style}>
-          <Input
-            defaultValue={data.base.name}
-            onChange={e => data.base.name = e.target.value} />
-        </Titled>
+        <Editor1.EditorStr field="id" />
+        <Editor1.EditorSel {...ENTITY_TYPE_SELECT_PROPS} field='type' clearable={false} foo={data.id} on_changed={on_changed} />
+        <Editor2.EditorStr field="name" clearable={false} foo={data.base.name} />
       </Space>
     </Frame>
   )

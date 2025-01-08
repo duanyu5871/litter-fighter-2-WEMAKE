@@ -8,9 +8,10 @@ export default function Show(props: React.PropsWithChildren<{ show?: any }>) {
 
 export interface IShowDivProps extends React.HTMLAttributes<HTMLDivElement> {
   show?: any;
+  _ref?: React.LegacyRef<HTMLDivElement>
 }
 export const Div = (Show.Div = function (props: IShowDivProps) {
-  const { show, ...remain_props } = props;
+  const { show, children, _ref, ..._p } = props;
   if (!show) return <></>;
-  return <div {...remain_props}>{props.children}</div>;
+  return <div {..._p} ref={_ref}>{children}</div>;
 });

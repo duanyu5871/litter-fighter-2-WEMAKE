@@ -75,15 +75,14 @@ function _Input(props: InputProps, forwarded_Ref: React.ForwardedRef<InputRef>) 
 
   const { defaultValue, placeholder } = props;
   const has_value = ('value' in props)
-
   useEffect(() => {
     if (has_value) return;
     if (!ref_input.current) return;
     if (!ref_spacer.current) return;
-    const _defaultValue = typeof defaultValue === 'string' ? defaultValue : '';
-    const _placeholder = typeof placeholder === 'string' ? placeholder : ''
-    ref_input.current.value = _defaultValue;
-    ref_spacer.current.innerText = _defaultValue.length > _placeholder.length ? _defaultValue : _placeholder;
+    const _d = '' + (defaultValue !== void 0 ? defaultValue : '');
+    const _p = '' + (placeholder !== void 0 ? placeholder : '');
+    ref_input.current.value = _d;
+    ref_spacer.current.innerText = _d.length > _p.length ? _d : _p;
   }, [defaultValue, has_value, placeholder])
 
   useEffect(() => {
@@ -148,8 +147,6 @@ function _Input(props: InputProps, forwarded_Ref: React.ForwardedRef<InputRef>) 
   }
 
   const ref_tid = useRef<number>(0);
-
-
   const steppers = !need_steppers ? null :
     <span className={styles.stepper}>
       <svg xmlns="http://www.w3.org/2000/svg"

@@ -79,7 +79,7 @@ class Inner {
         data.base.fall_value ?? Defines.DEFAULT_FALL_VALUE_MAX;
       data.base.defend_value =
         data.base.defend_value ?? Defines.DEFAULT_DEFEND_VALUE_MAX;
-      data.base.hp = data.base.hp ?? Defines.DAFUALT_HP;
+      data.base.hp = data.base.hp ?? Defines.DEFAULT_HP;
       data.base.mp = data.base.mp ?? Defines.DEFAULT_MP;
       not_blank_str(small) && jobs.push(images.load_img(small, small));
       not_blank_str(head) && jobs.push(images.load_img(head, head));

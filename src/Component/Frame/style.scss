@@ -6,16 +6,21 @@
   background-color: $primary_bg_color;
   position        : relative;
   box-sizing      : border-box;
+  padding         : 10px 10px;
 
   &.with_label {
-    padding    : 5px;
-    padding-top: 18px;
+    padding-top: 25px;
   }
 
   &>.label:first-child {
     position : absolute;
-    font-size: 0.5em;
+    font-size: 9px;
     top      : 0px;
     left     : 2px;
+    z-index  : 0;
+  }
+
+  &>* {
+    z-index: 1px;
   }
 }

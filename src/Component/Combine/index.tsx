@@ -1,6 +1,6 @@
 import classnames from "classnames";
+import { CSSProperties, useEffect, useRef, useState } from "react";
 import styles from "./style.module.scss";
-import { Children, useEffect, useRef, useState } from "react";
 export interface ICombineProps extends React.HTMLAttributes<HTMLDivElement> {
   direction?: 'row' | 'column',
   hoverable?: boolean
@@ -24,17 +24,21 @@ export default function Combine(props: ICombineProps) {
         if (!++i) continue;
         if (child.getAttribute("split-line")) continue;
         const { offsetLeft: x, offsetTop: y } = (child as HTMLElement)
+        const style: React.CSSProperties = is_row ? {
+          left: `${x - 4}px`,
+          width: 2,
+          height: '100%',
+        } : {
+          top: `${y - 4}px`,
+          height: 2,
+          width: '100%',
+        }
         lines.push(
           <div
             split-line='true'
             key={'split-line-' + lines.length}
             className={styles.lfui_combine_split_line}
-            style={{
-              left: '' + x + 'px',
-              top: '' + y + 'px',
-              width: !is_row ? '100%' : 2,
-              height: is_row ? '100%' : 2,
-            }} />
+            style={style} />
         )
       }
       set_lines(lines)

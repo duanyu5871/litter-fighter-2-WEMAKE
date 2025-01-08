@@ -13,7 +13,7 @@ export type BOOL = 1 | 0;
 export namespace Defines {
   export const CLASSIC_SCREEN_WIDTH = 794;
   export const CLASSIC_SCREEN_HEIGHT = 550;
-  export const DAFUALT_HP = 500;
+  export const DEFAULT_HP = 500;
   export const DEFAULT_MP = 500;
   export const DEFAULT_MILK_MP = 249;
   export const DEFAULT_BEER_MP = 154;
@@ -21,7 +21,7 @@ export namespace Defines {
   export const DEFAULT_DEFEND_VALUE_MAX = 120;
   export const DEFAULT_ITR_SHAKING = 4;
   export const DEFAULT_ITR_MOTIONLESS = 4;
-  export const DAFUALT_CATCH_TIME = 680;
+  export const DEFAULT_CATCH_TIME = 680;
   export const DEFAULT_ITR_FALL = 40;
   export const DEFAULT_FALL_VALUE_DIZZY = 40;
   export const DAFUALT_QUBE_LENGTH = 24;

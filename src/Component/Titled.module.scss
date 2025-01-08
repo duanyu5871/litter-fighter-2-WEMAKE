@@ -1,0 +1,33 @@
+@import "../styles/lfui_values.module.scss";
+
+.titled {
+  flex-direction: row;
+  display       : inline-flex;
+  flex-wrap     : nowrap;
+  align-items   : center;
+  word-break    : keep-all;
+  white-space   : nowrap;
+  position      : relative;
+
+  &>.label {
+    opacity     : 0.8;
+    font-size   : 0.5em;
+    margin-right: 5px;
+    display     : inline-block;
+    white-space : nowrap;
+    word-break  : keep-all;
+  }
+
+  &>.float_label {
+    font-size  : 9px;
+    line-height: 9px;
+    opacity    : 1;
+    background : $primary_bg_color;
+    color      : $primary_text_color;
+    position   : absolute;
+    padding    : 0px 2px;
+    left       : 8px;
+    top        : 0;
+    translate  : 0px -7px;
+  }
+}

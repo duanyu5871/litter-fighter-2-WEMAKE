@@ -7,16 +7,13 @@ import { loop_arr } from "../../LF2/utils/array/loop_arr";
 import { traversal } from "../../LF2/utils/container_help/traversal";
 import { ITR_EFFECT_SELECT_PROPS, ITR_KIND_SELECT_PROPS } from "../EntityEditorView";
 import { useEditor } from "./useEditor";
-export interface IItrEditorViewProps {
+export interface IItrPrefabEditorViewProps {
   label: string;
   data: IEntityData;
   value: IItrPrefab;
   on_changed?(): void;
 }
-const label_style: React.CSSProperties = { width: 50, textAlign: 'right' };
-const titled_style: React.CSSProperties = { display: 'flex' };
-
-export function ItrEditorPrefabView(props: IItrEditorViewProps) {
+export function ItrPrefabEditorView(props: IItrPrefabEditorViewProps) {
   const { value, label, data, on_changed } = props;
 
   const on_remove = () => {

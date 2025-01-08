@@ -1,7 +1,6 @@
 @import "../../styles/lfui_hoverable_border.scss";
 
 .lf2ui_space {
-  overflow   : hidden;
   display    : flex;
   align-items: stretch;
   box-sizing : border-box;
@@ -35,7 +34,7 @@
     flex-direction: column;
 
     &>.item:not(:last-child) {
-      margin-bottom: 5px;
+      margin-bottom: 10px;
     }
   }
 

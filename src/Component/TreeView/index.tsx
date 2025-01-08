@@ -84,6 +84,8 @@ export function TreeView<D = any>(props: ITreeNodeViewProps<D>) {
         className={styles.tree_item_head_view}
         style={head_style}
         title={node.title}
+        autoFocus
+        tabIndex={1}
         onClick={(e) => on_click_item?.(node, e)}>
         {
           !show_icon ? null :

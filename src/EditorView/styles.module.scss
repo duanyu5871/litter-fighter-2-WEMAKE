@@ -1,4 +1,5 @@
 @import "../styles/lfui_hoverable_border.scss";
+@import "../styles/lfui_values.module.scss";
 
 .entity_base_editor {
   min-width : 50px;
@@ -35,10 +36,39 @@
   flex-direction: column;
 }
 
-.header_scrollview_footer_space {
-  flex          : 1;
-  overflow      : hidden;
-  position      : relative;
+.header_main_footer_view {
+  flex            : 1;
+  overflow        : hidden;
+  position        : relative;
+  background-color: $primary_bg_color;
+
+  &>.content_zone {
+    flex    : 1;
+    overflow: hidden;
+    display : flex;
+    position: relative;
+
+    &.inner_shadow_v {
+      z-index       : 1;
+      width         : 100%;
+      position      : absolute;
+      color         : transparent;
+      pointer-events: none;
+    }
+
+    &::before {
+      content   : '-';
+      background: linear-gradient(#00000088, #00000000);
+      @extend .inner_shadow_v;
+    }
+
+    &::after {
+      content   : '-';
+      bottom    : 0px;
+      background: linear-gradient(#00000000, #00000088);
+      @extend .inner_shadow_v;
+    }
+  }
 }
 
 .file_editor_view {
@@ -47,6 +77,6 @@
   position      : relative;
   flex-direction: column;
   flex          : 1;
-  padding       : 5px;
+  padding       : 10px 5px;
   align-items   : stretch;
 }

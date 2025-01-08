@@ -90,6 +90,7 @@ export function Select<T, V>(props: ISelectProps<T, V> | IMultiSelectProps<T, V>
     })
     return [tree_nodes, checked_tree_nodes];
   }, [items, parse, value]);
+
   const on_click_item = (item: ITreeNode<IOptionData<T, V>>, e: React.MouseEvent | React.PointerEvent) => {
     e.stopPropagation();
     e.preventDefault();
@@ -109,10 +110,12 @@ export function Select<T, V>(props: ISelectProps<T, V> | IMultiSelectProps<T, V>
           return ret;
         } else {
           let ret: typeof prev;
-          if (prev?.[0] === value && clearable)
+          if (prev?.[0] === value && clearable) {
             ret = void 0;
-          else
+          } else {
             ret = [value];
+            set_open(false);
+          }
           on_changed?.(ret?.at(0) as any)
           return ret;
         }
@@ -120,8 +123,6 @@ export function Select<T, V>(props: ISelectProps<T, V> | IMultiSelectProps<T, V>
     } else {
       set_value(void 0)
       on_changed?.(void 0)
-    }
-    if (multi) {
       set_open(false);
     }
   }
@@ -205,8 +206,16 @@ export function Select<T, V>(props: ISelectProps<T, V> | IMultiSelectProps<T, V>
     set_open(v => !v)
     e.stopPropagation()
   }
-  const not_empty = !!checked_tree_nodes?.length;
 
+  useEffect(() => {
+    const fn = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') set_open(false)
+    }
+    document.addEventListener('keydown', fn)
+    return () => document.removeEventListener('keydown', fn)
+  }, [])
+
+  const not_empty = !!checked_tree_nodes?.length;
   return (
     <Space className={classname} {..._p} _ref={ref_wrapper} onPointerDown={on_pointer_down}>
       <Space.Broken>

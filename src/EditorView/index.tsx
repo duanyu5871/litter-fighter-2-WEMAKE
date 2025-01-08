@@ -2,6 +2,8 @@ import { Board, FactoryEnum, Gaia, ToolEnum } from "@fimagine/writeboard";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "../Component/Buttons/Button";
 import { Checkbox } from "../Component/Checkbox";
+import Combine from "../Component/Combine";
+import { Add } from "../Component/Icons/Clear";
 import Select from "../Component/Select";
 import Show from "../Component/Show";
 import { Space } from "../Component/Space";
@@ -20,13 +22,12 @@ import open_file from "../Utils/open_file";
 import { shared_ctx } from './Context';
 import { EditorShapeEnum } from "./EditorShapeEnum";
 import { EntityDataEditorView } from "./EntityDataEditorView";
+import { EntityBaseDataEditorView } from "./EntityDataEditorView/EntityBaseDataEditorView";
 import { EntityEditorView } from "./EntityEditorView";
 import { FrameDrawer, FrameDrawerData } from "./FrameDrawer";
-import { ItrEditorPrefabView } from "./FrameEditorView/ItrEditorPrefabView";
+import { ItrPrefabEditorView } from "./FrameEditorView/ItrPrefabEditorView";
 import { PicInfoEditorView } from "./PicInfoEditorView";
 import styles from "./styles.module.scss";
-import { Add } from "../Component/Icons/Clear";
-import Combine from "../Component/Combine";
 
 enum EntityEditing {
   base = '基础信息',
@@ -304,6 +305,22 @@ export default function EditorView(props: IEditorViewProps) {
 
   const [change_flag, set_change_flag] = useState(0)
   // const files = editing_data?.base.files;
+
+  const base_data_view = useMemo(() => {
+    if (!editing_data) return;
+
+    return (
+      <Space.Broken>
+        <EntityBaseDataEditorView
+          value={editing_data}
+          on_changed={() => set_change_flag(change_flag + 1)}
+          style={{ flex: 1, overflow: 'auto', flexFlow: 'column' }}
+        />
+      </Space.Broken>
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editing_data, change_flag])
+
   const pic_list_view = useMemo(() => {
     if (!editing_data) return;
     const views: React.ReactNode[] = []
@@ -313,33 +330,46 @@ export default function EditorView(props: IEditorViewProps) {
           pic_info={v}
           data={editing_data}
           key={'FileEditorView_' + k}
-          on_changed={() => set_change_flag(v => ++v)}
+          on_changed={() => set_change_flag(change_flag + 1)}
         />
       )
     })
-    views.push(
-      <Button key={views.length} style={{ width: '100%' }} onClick={() => {
-        let i = Object.keys(editing_data.base.files).length;
-        while (('' + i) in editing_data.base.files) ++i;
-        editing_data.base.files['' + i] = {
-          row: 0,
-          col: 0,
-          id: '' + i,
-          path: '',
-          cell_w: 0,
-          cell_h: 0,
-        }
-        set_change_flag(v => ++v);
-      }}>
-        <Add />
-      </Button>
-    )
+
+    const add = () => {
+      let i = Object.keys(editing_data.base.files).length;
+      while (('' + i) in editing_data.base.files) ++i;
+      editing_data.base.files['' + i] = {
+        row: 0,
+        col: 0,
+        id: '' + i,
+        path: '',
+        cell_w: 0,
+        cell_h: 0,
+      }
+      set_change_flag(change_flag + 1);
+    }
     return (
-      <Space.Item space vertical frame className={styles.file_editor_view}>
-        {views}
-      </Space.Item>
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+      <Space.Broken >
+        <Combine
+          direction='column'
+          className={styles.header_main_footer_view}
+          hoverable={false}>
+          <Combine direction='row' hoverable={false}>
+            <div style={{ flex: 1, textAlign: 'center' }}>
+              实体图片
+            </div>
+            <Button key={views.length} onClick={add}>
+              <Add />
+            </Button>
+          </Combine>
+          <div className={styles.content_zone}>
+            <Space.Item space vertical frame className={styles.file_editor_view}>
+              {views}
+            </Space.Item>
+          </div>
+        </Combine>
+      </Space.Broken>
+    )
   }, [editing_data, change_flag])
 
 
@@ -351,37 +381,47 @@ export default function EditorView(props: IEditorViewProps) {
       if (!value) return;
       const label = `itr_prefabs: ${k}`
       views.push(
-        <ItrEditorPrefabView
+        <ItrPrefabEditorView
           label={label}
           value={value}
           data={editing_data}
           key={label}
-          on_changed={() => set_change_flag(v => ++v)} />
+          on_changed={() => set_change_flag(change_flag + 1)} />
       )
     })
+    const add = () => {
+      if (itr_prefabs) {
+        let i = Object.keys(itr_prefabs).length;
+        while (('' + i) in itr_prefabs) ++i;
+        itr_prefabs['' + i] = { id: '' + i }
+      } else {
+        editing_data.itr_prefabs = {};
+        editing_data.itr_prefabs['0'] = { id: '0' }
+      }
+      set_change_flag(change_flag + 1);
+    }
     return (
       <Space.Broken>
-        <Combine direction='column' className={styles.header_scrollview_footer_space} hoverable={false}>
-          <Button key={views.length} style={{ width: '100%' }} onClick={() => {
-            if (itr_prefabs) {
-              let i = Object.keys(itr_prefabs).length;
-              while (('' + i) in itr_prefabs) ++i;
-              itr_prefabs['' + i] = { id: '' + i }
-            } else {
-              editing_data.itr_prefabs = {};
-              editing_data.itr_prefabs['0'] = { id: '0' }
-            }
-            set_change_flag(v => ++v);
-          }}>
-            <Add />
-          </Button>
-          <Space vertical className={styles.file_editor_view}>
-            {views}
-          </Space>
+        <Combine
+          direction='column'
+          className={styles.header_main_footer_view}
+          hoverable={false}>
+          <Combine direction='row' hoverable={false}>
+            <div style={{ flex: 1, textAlign: 'center' }}>
+              ITR预设
+            </div>
+            <Button key={views.length} onClick={add}>
+              <Add />
+            </Button>
+          </Combine>
+          <div className={styles.content_zone}>
+            <Space vertical className={styles.file_editor_view}>
+              {views}
+            </Space>
+          </div>
         </Combine>
       </Space.Broken>
     );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [itr_prefabs, editing_data, change_flag])
 
   return !open ? <></> : (
@@ -427,10 +467,10 @@ export default function EditorView(props: IEditorViewProps) {
             </Space.Item>
           </Space.Item>
           <Space.Item space _ref={ref_div} className={styles.frame_preview_view} />
-          <Space.Item space direction="column">
+          <Space.Item space direction="column" style={{ height: '0', minHeight: '100%' }}>
             <EntityDataEditorView
-              src={editing_data}
-              on_change={set_editing_data}
+              value={editing_data}
+              on_changed={() => set_change_flag(change_flag + 1)}
               className={styles.entity_base_editor} />
             <TabButtons
               value={tab}
@@ -438,9 +478,12 @@ export default function EditorView(props: IEditorViewProps) {
               parse={v => [v, v]}
               onChange={v => set_tab(v)}
             />
-            {/* {tab === EntityEditing.frames ? frame_list_view : null} */}
-            {tab === EntityEditing.pic ? pic_list_view : null}
-            {tab === EntityEditing.itr_pre ? itr_prefab_list_view : null}
+            <Space.Broken>
+              {tab === EntityEditing.base ? base_data_view : null}
+              {/* {tab === EntityEditing.frames ? frame_list_view : null} */}
+              {tab === EntityEditing.pic ? pic_list_view : null}
+              {tab === EntityEditing.itr_pre ? itr_prefab_list_view : null}
+            </Space.Broken>
           </Space.Item>
           {textarea}
         </Space.Item>

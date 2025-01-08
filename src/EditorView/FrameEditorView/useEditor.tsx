@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { Button } from "../../Component/Buttons/Button";
 import Combine from "../../Component/Combine";
 import { Add, Close3 } from "../../Component/Icons/Clear";
@@ -6,19 +6,62 @@ import { Input, InputNumber, InputNumberProps, InputProps } from "../../Componen
 import { TextArea } from "../../Component/TextArea";
 import Titled from "../../Component/Titled";
 import Select, { ISelectProps } from "../../Component/Select";
+import { IZipObject } from "../../LF2/ditto";
+import { shared_ctx } from "../Context";
 
-const label_style: React.CSSProperties = { width: 50, textAlign: 'right' };
-const titled_style: React.CSSProperties = { display: 'flex' };
-export function useEditor<O extends {}>(value: O) {
+
+export function useEditor<O extends {}>(value: O, _label_style: React.CSSProperties = { width: 50, textAlign: 'right' }) {
+  const label_style: React.CSSProperties = useMemo(() => (
+    { width: 50, textAlign: 'right', ..._label_style }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  ), []);
+  const titled_style: React.CSSProperties = useMemo(() => (
+    { display: 'flex' }
+  ), []);
   return useMemo(() => {
     const t_props = (field: any) => ({
-      label: field.toString(),
+      float_label: field.toString(),
       label_style: label_style,
       style: titled_style,
     });
     type Field = keyof typeof value;
+    type Props = { field: Field; foo?: any }
     return {
-      EditorInt(props: { field: Field; } & InputNumberProps) {
+      EditorImg(props: Props & Partial<ISelectProps<IZipObject, string>>) {
+        const { field, ..._p } = props;
+        const { zip } = useContext(shared_ctx);
+        const [img_list, set_img_list] = useState<IZipObject[]>([])
+        useEffect(() => {
+          if (zip) set_img_list(zip.file(/.png$/))
+        }, [zip])
+        return (
+          <Titled {...t_props(field)}>
+            <Select
+              items={img_list}
+              parse={v => [v.name, v.name]}
+              defaultValue={(value as any)[field]}
+              on_changed={v => (value as any)[field] = v}
+              clearable
+              style={{ flex: 1 }}
+              {..._p} />
+          </Titled>
+        );
+      },
+      EditorFlt(props: Props & InputNumberProps) {
+        const { field, ..._p } = props;
+        return (
+          <Titled {...t_props(field)}>
+            <InputNumber
+              defaultValue={(value as any)[field]}
+              on_blur={v => (value as any)[field] = v}
+              style={{ flex: 1 }}
+              step={0.01}
+              clearable
+              {..._p} />
+          </Titled>
+        );
+      },
+      EditorInt(props: Props & InputNumberProps) {
         const { field, ..._p } = props;
         return (
           <Titled {...t_props(field)}>
@@ -32,7 +75,7 @@ export function useEditor<O extends {}>(value: O) {
           </Titled>
         );
       },
-      EditorTxt(props: { field: Field; }) {
+      EditorTxt(props: Props) {
         const { field } = props;
         return (
           <Titled {...t_props(field)}>
@@ -43,7 +86,7 @@ export function useEditor<O extends {}>(value: O) {
           </Titled>
         );
       },
-      EditorStr(props: { field: Field; } & InputProps) {
+      EditorStr(props: Props & InputProps) {
         const { field, ..._p } = props;
         return (
           <Titled {...t_props(field)}>
@@ -86,7 +129,7 @@ export function useEditor<O extends {}>(value: O) {
           </Titled>
         );
       },
-      EditorStrList(props: { field: Field; }) {
+      EditorStrList(props: Props) {
         const { field, } = props;
         const list: string[] | undefined = (value as any)[field];
         const [, set_change_flags] = useState(0);
@@ -127,7 +170,7 @@ export function useEditor<O extends {}>(value: O) {
           </Titled>
         );
       },
-      EditorIntList(props: { field: Field; }) {
+      EditorIntList(props: Props) {
         const { field, } = props;
         const list: number[] | undefined = (value as any)[field];
         const [, set_change_flags] = useState(0);
@@ -167,13 +210,13 @@ export function useEditor<O extends {}>(value: O) {
           </Titled>
         );
       },
-      EditorSel<T, V>(props: { field: Field; } & ISelectProps<T, V>) {
-        const { field, ..._p } = props;
+      EditorSel<T, V>(props: Props & ISelectProps<T, V>) {
+        const { field, on_changed, ..._p } = props;
         return (
           <Titled {...t_props(field)}>
             <Select
               defaultValue={(value as any)[field]}
-              on_changed={v => (value as any)[field] = v}
+              on_changed={v => { (value as any)[field] = v; on_changed?.(v) }}
               clearable
               style={{ flex: 1 }}
               {..._p} />
@@ -181,5 +224,5 @@ export function useEditor<O extends {}>(value: O) {
         )
       }
     };
-  }, [value]);
+  }, [value, label_style, titled_style]);
 }

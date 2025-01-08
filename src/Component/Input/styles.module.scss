@@ -86,12 +86,11 @@
       font-size       : inherit;
       pointer-events  : all;
       position        : absolute;
-      padding         : 0px;
       left            : 0;
       top             : 0;
       height          : 100%;
       width           : 100%;
-      padding         : 0px 2px;
+      padding         : 0px 0.25em;
       color           : $primary_text_color;
       border-radius   : none;
       background-color: transparent;

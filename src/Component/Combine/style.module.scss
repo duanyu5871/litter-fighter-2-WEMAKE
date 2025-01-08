@@ -43,9 +43,17 @@
 
   &.row {
     flex-direction: row;
+
+    &>*:not(:first-child) {
+      margin-left: 2px;
+    }
   }
 
   &.column {
     flex-direction: column;
+
+    &>*:not(:first-child) {
+      margin-top: 2px;
+    }
   }
 }

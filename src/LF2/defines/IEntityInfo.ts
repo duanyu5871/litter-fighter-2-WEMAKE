@@ -65,7 +65,7 @@ export interface IEntityInfo {
    *
    * 原版中，武器和波的hp是通过weapon_hp设置的
    *
-   * @see Defines.DAFUALT_HP 默认值
+   * @see Defines.DEFAULT_HP 默认值
    * @type {?number}
    */
   hp?: number;
@@ -121,7 +121,7 @@ export interface IEntityInfo {
   /**
    * 角色抓人能抓多久
    *
-   * @see {Defines.DAFUALT_CATCH_TIME} 默认值
+   * @see {Defines.DEFAULT_CATCH_TIME} 默认值
    * @type {?number}
    */
   catch_time?: number;

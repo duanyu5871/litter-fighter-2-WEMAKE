@@ -1,8 +1,6 @@
 @import "./lfui_border.module.scss";
 @import "./lfui_values.module.scss";
 
-
-
 .lfui_hoverable_border {
   @extend .lfui_border;
   transition:
@@ -12,18 +10,41 @@
 
   border       : 2px $primary_border_color solid;
   border-radius: 5px;
+
+  &>.float_label {
+    font-size  : 9px;
+    line-height: 9px;
+    opacity    : 1;
+    background : $primary_bg_color;
+    color      : $primary_text_color;
+    position   : absolute;
+    padding    : 0px 2px;
+    left       : 8px;
+    top        : 0;
+    translate  : 0px -7px;
+  }
 }
 
 .lfui_hoverable_border:hover,
 .lfui_hoverable_border_hover {
   @extend .lfui_hoverable_border;
   border-color: $primary_border_color_active;
+
+  &>.float_label {
+    background: $primary_bg_color_active;
+    color     : $primary_text_color_active;
+  }
 }
 
 .lfui_hoverable_border:disabled,
 .lfui_hoverable_border_disabled {
   @extend .lfui_hoverable_border;
   border-color: $primary_border_color_disabled;
+
+  &>.float_label {
+    background: $primary_bg_color_disabled;
+    color     : $primary_text_color_disabled;
+  }
 }
 
 .lfui_hoverable_border:focus,
@@ -31,4 +52,9 @@
   @extend .lfui_hoverable_border;
   border-color: $primary_border_color_active;
   border-style: dotted;
+
+  &>.float_label {
+    background: $primary_bg_color_active;
+    color     : $primary_text_color_active;
+  }
 }

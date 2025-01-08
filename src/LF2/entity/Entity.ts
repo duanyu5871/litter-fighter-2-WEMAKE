@@ -273,9 +273,9 @@ export default class Entity {
   protected _mp_r_spd_max: number = Defines.DEFAULT_MP_RECOVERY_MAX_SPEED;
   protected _mp_r_spd: number = Defines.DEFAULT_MP_RECOVERY_MIN_SPEED;
 
-  protected _hp: number = Defines.DAFUALT_HP;
-  protected _hp_r: number = Defines.DAFUALT_HP;
-  protected _hp_max: number = Defines.DAFUALT_HP;
+  protected _hp: number = Defines.DEFAULT_HP;
+  protected _hp_r: number = Defines.DEFAULT_HP;
+  protected _hp_max: number = Defines.DEFAULT_HP;
 
   protected _holder?: Entity;
   protected _holding?: Entity;
@@ -292,8 +292,8 @@ export default class Entity {
    *
    * 当抓住一个被击晕的人时，此值充满。
    */
-  protected _catch_time = Defines.DAFUALT_CATCH_TIME;
-  protected _catch_time_max = Defines.DAFUALT_CATCH_TIME;
+  protected _catch_time = Defines.DEFAULT_CATCH_TIME;
+  protected _catch_time_max = Defines.DEFAULT_CATCH_TIME;
 
   /**
    * 隐身计数，每帧-1
@@ -543,7 +543,7 @@ export default class Entity {
     this.data = data;
     this.world = world;
     this.states = states;
-    this._hp_max = data.base.hp ?? Defines.DAFUALT_HP;
+    this._hp_max = data.base.hp ?? Defines.DEFAULT_HP;
 
     if (is_weapon_data(data) && data.id === "122") {
       this._mp_max = data.base.mp ?? Defines.DEFAULT_MILK_MP;
@@ -563,7 +563,7 @@ export default class Entity {
       this._mp_r_spd_max = data.base.mp_r_max_spd ?? 0;
     }
 
-    this._catch_time_max = data.base.catch_time ?? Defines.DAFUALT_CATCH_TIME;
+    this._catch_time_max = data.base.catch_time ?? Defines.DEFAULT_CATCH_TIME;
     this.update_mp_r_spd();
     this.fall_value_max =
       this.data.base.fall_value ?? Defines.DEFAULT_FALL_VALUE_MAX;
