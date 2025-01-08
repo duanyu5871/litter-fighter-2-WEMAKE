@@ -5,6 +5,7 @@ import { Add, Close3 } from "../../Component/Icons/Clear";
 import { Input, InputNumber, InputNumberProps, InputProps } from "../../Component/Input";
 import { TextArea } from "../../Component/TextArea";
 import Titled from "../../Component/Titled";
+import Select, { ISelectProps } from "../../Component/Select";
 
 const label_style: React.CSSProperties = { width: 50, textAlign: 'right' };
 const titled_style: React.CSSProperties = { display: 'flex' };
@@ -166,6 +167,22 @@ export function useEditor<O extends {}>(value: O) {
           </Titled>
         );
       },
+      EditorSel<T, V>(props: { field: Field; } & ISelectProps<T, V>) {
+        const { field, ..._p } = props;
+        return (
+          <Titled {...t_props(field)}>
+            <Select
+              defaultValue={(value as any)[field]}
+              on_changed={v => {
+                alert('' + v);
+                (value as any)[field] = v
+              }}
+              clearable
+              style={{ flex: 1 }}
+              {..._p} />
+          </Titled>
+        )
+      }
     };
   }, [value]);
 }

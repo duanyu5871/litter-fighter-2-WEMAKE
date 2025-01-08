@@ -20,10 +20,10 @@ import open_file from "../Utils/open_file";
 import { shared_ctx } from './Context';
 import { EditorShapeEnum } from "./EditorShapeEnum";
 import { EntityDataEditorView } from "./EntityDataEditorView";
-import { PicInfoEditorView } from "./EntityDataEditorView/FileEditorView";
 import { EntityEditorView } from "./EntityEditorView";
 import { FrameDrawer, FrameDrawerData } from "./FrameDrawer";
 import { ItrEditorPrefabView } from "./FrameEditorView/ItrEditorPrefabView";
+import { PicInfoEditorView } from "./PicInfoEditorView";
 import styles from "./styles.module.scss";
 
 enum EntityEditing {

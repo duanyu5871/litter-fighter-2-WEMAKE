@@ -145,10 +145,10 @@ export function PlayerRow(props: Props) {
       <CharacterSelect
         lf2={lf2}
         value={character_id}
-        on_changed={(v) => info.set_character(v).save()}
+        on_changed={(v) => info.set_character(v!).save()}
         show_all={show_hidden}
       />
-      <TeamSelect value={team} on_changed={(v) => info.set_team(v).save()} />
+      <TeamSelect value={team} on_changed={(v) => info.set_team(v!).save()} />
       <Button onClick={on_click_add}>{added ? "移除" : "加入"}</Button>
       <ToggleButton value={touch_pad_on} onClick={on_click_toggle_touch_pad}>
         <>触摸板</>

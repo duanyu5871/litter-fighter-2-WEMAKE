@@ -131,7 +131,7 @@ export default function SettingsRows(props: ISettingsRowsProps) {
         <Titled label="关卡">
           <Select
             value={stage_id}
-            on_changed={(id: string) => lf2.change_stage(id)}
+            on_changed={v => lf2.change_stage(v!)}
             items={stage_list}
             parse={(i) => [i.id, i.name]}
           />
@@ -148,7 +148,7 @@ export default function SettingsRows(props: ISettingsRowsProps) {
           <>
             phases:
             <Select
-              on_changed={set_stage_phase_idx}
+              on_changed={v => set_stage_phase_idx(v!)}
               value={stage_phase_idx}
               items={stage_phase_list}
               parse={(i, idx) => [
@@ -169,7 +169,7 @@ export default function SettingsRows(props: ISettingsRowsProps) {
         <Titled label="背景">
           <Select
             value={bg_id}
-            on_changed={(bg_id: string) => lf2.change_bg(bg_id)}
+            on_changed={v => lf2.change_bg(v!)}
             items={lf2.datas.backgrounds}
             parse={(i) => [i.id, i.base.name]}
           />
@@ -177,7 +177,7 @@ export default function SettingsRows(props: ISettingsRowsProps) {
         <Titled label="BGM">
           <Select
             value={bgm}
-            on_changed={set_bgm}
+            on_changed={v => set_bgm(v!)}
             items={bgm_list}
             parse={(i) => [i, i || "OFF"]}
           />
@@ -185,7 +185,7 @@ export default function SettingsRows(props: ISettingsRowsProps) {
         <Titled label="难度">
           <Select
             value={difficulty}
-            on_changed={set_difficulty}
+            on_changed={v => set_difficulty(v!)}
             items={[
               Defines.Difficulty.Easy,
               Defines.Difficulty.Normal,
@@ -222,7 +222,7 @@ export default function SettingsRows(props: ISettingsRowsProps) {
         <Titled label="类型">
           <Select
             value={weapon_id}
-            on_changed={set_weapon_id}
+            on_changed={v => set_weapon_id(v!)}
             items={lf2.datas.weapons}
             parse={(i) => [i.id, i.base.name]}
           >
@@ -259,18 +259,18 @@ export default function SettingsRows(props: ISettingsRowsProps) {
           <CharacterSelect
             lf2={lf2}
             value={c_id}
-            on_changed={set_character_id}
+            on_changed={v => set_character_id(v!)}
           />
         </Titled>
 
         <Titled label="队伍">
-          <TeamSelect value={team} on_changed={set_team} />
+          <TeamSelect value={team} on_changed={v => set_team(v!)} />
         </Titled>
 
         <Titled label="AI">
           <Select
             value={bot_ctrl}
-            on_changed={set_bot_ctrl}
+            on_changed={v => set_bot_ctrl(v!)}
             items={Object.keys(bot_controllers)}
             parse={(i) => [i, i]}
           />

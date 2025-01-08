@@ -1,13 +1,13 @@
-import { useState } from "react";
-import Frame, { IFrameProps } from "../../Component/Frame";
-import { Close2 } from "../../Component/Icons/Clear";
-import { Input } from "../../Component/Input";
-import { Space } from "../../Component/Space";
-import Titled from "../../Component/Titled";
-import { IEntityData } from "../../LF2/defines/IEntityData";
-import { IEntityPictureInfo } from "../../LF2/defines/IEntityPictureInfo";
-import { traversal } from "../../LF2/utils/container_help/traversal";
-import { useEditor } from "../FrameEditorView/useEditor";
+import { useContext, useEffect, useState } from "react";
+import Frame, { IFrameProps } from "../Component/Frame";
+import { Close2 } from "../Component/Icons/Clear";
+import { Space } from "../Component/Space";
+import { IEntityData } from "../LF2/defines/IEntityData";
+import { IEntityPictureInfo } from "../LF2/defines/IEntityPictureInfo";
+import { traversal } from "../LF2/utils/container_help/traversal";
+import { shared_ctx } from "./Context";
+import { useEditor } from "./FrameEditorView/useEditor";
+import { IZipObject } from "../LF2/ditto/zip/IZipObject";
 export interface IFileEditorViewProps extends IFrameProps {
   data: IEntityData;
   pic_info: IEntityPictureInfo;
@@ -15,7 +15,13 @@ export interface IFileEditorViewProps extends IFrameProps {
 }
 export function PicInfoEditorView(props: IFileEditorViewProps) {
   const { data, pic_info, on_changed, ..._p } = props;
-  const label_style: React.CSSProperties = { width: 50, textAlign: 'right' };
+  const { zip } = useContext(shared_ctx);
+  const [img_list, set_png_list] = useState<IZipObject[]>([])
+
+  useEffect(() => {
+    if (zip) set_png_list(zip.file(/.png$/))
+  }, [zip])
+
   const on_input_id_blur = (e: React.FocusEvent<HTMLInputElement, Element>) => {
     const prev_id = pic_info.id;
     const next_id = e.target.value.trim();
@@ -56,15 +62,13 @@ export function PicInfoEditorView(props: IFileEditorViewProps) {
     delete data.base.files[pic_info.id]
     on_changed?.();
   }
-  const { EditorStr, EditorStrList } = useEditor(pic_info)
+  const { EditorStr, EditorStrList, EditorSel } = useEditor(pic_info)
   return (
     <Frame {..._p} label='pic'>
       <Close2 style={{ position: 'absolute', top: 0, right: 0 }} onClick={on_click_remove} hoverable />
       <Space vertical>
         <EditorStr field='id' onBlur={on_input_id_blur} />
-        <Titled label='file' label_style={label_style}>
-          <Input defaultValue={pic_info.path} onChange={e => pic_info.path = e.target.value} />
-        </Titled>
+        <EditorSel field="path" items={img_list} parse={v => [v.name, v.name]} />
         <EditorStrList field="variants" />
       </Space>
     </Frame>

@@ -1,16 +1,17 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import "./App.css";
 import { Button } from "./Component/Buttons/Button";
+import { StatusButton } from "./Component/Buttons/StatusButton";
+import { ToggleButton } from "./Component/Buttons/ToggleButton";
+import { ToggleImgButton } from "./Component/Buttons/ToggleImgButton";
 import Combine from "./Component/Combine";
 import { Input } from "./Component/Input";
 import Select from "./Component/Select";
 import Show from "./Component/Show";
-import { StatusButton } from "./Component/Buttons/StatusButton";
 import Titled from "./Component/Titled";
-import { ToggleButton } from "./Component/Buttons/ToggleButton";
-import { ToggleImgButton } from "./Component/Buttons/ToggleImgButton";
 import { useShortcut } from "./Component/useShortcut";
 import DatViewer from "./DatViewer";
+import EditorView from "./EditorView";
 import { GameOverlay } from "./GameOverlay";
 import GamePad from "./GamePad";
 import LF2 from "./LF2/LF2";
@@ -46,7 +47,6 @@ import {
   useLocalNumber,
   useLocalString,
 } from "./useLocalStorage";
-import EditorView from "./EditorView";
 
 const loading_img = new LoadingImg();
 function App() {
@@ -484,7 +484,7 @@ function App() {
             items={["top", "bottom", "left", "right"] as const}
             parse={(v) => [v, "位置：" + v]}
             value={debug_ui_pos}
-            on_changed={set_debug_ui_pos}
+            on_changed={v => set_debug_ui_pos(v!)}
           />
           <Button
             style={{ marginLeft: "auto" }}
@@ -580,14 +580,14 @@ function App() {
         <div className="settings_row">
           <Select
             value={layout_id}
-            on_changed={(v: string) => lf2?.set_layout(v)}
+            on_changed={v => lf2?.set_layout(v!)}
             items={layouts}
             parse={(o) => [o.id!, o.name]}
           />
           <Titled label="Mode">
             <Select
               value={render_size_mode}
-              on_changed={set_render_size_mode}
+              on_changed={v => set_render_size_mode(v!)}
               parse={i => [i, i]}
               items={["fixed", "fill", "cover", "contain"] as const}
             />
@@ -597,7 +597,7 @@ function App() {
               <Combine>
                 <Select
                   value={render_fixed_scale}
-                  on_changed={set_render_fixed_scale}
+                  on_changed={v => set_render_fixed_scale(v!)}
                   items={arithmetic_progression(0, 4, 0.5)}
                   parse={(i) => [i, "✕" + (i || "?")]}
                 />
@@ -622,7 +622,7 @@ function App() {
               <Combine className="render_align">
                 <Select
                   value={v_align}
-                  on_changed={set_v_align}
+                  on_changed={v => set_v_align(v!)}
                   items={[-2, 0, 0.5, 1]}
                   parse={(v, idx) => [
                     v,
@@ -641,7 +641,7 @@ function App() {
                 </Show>
                 <Select
                   value={h_align}
-                  on_changed={set_h_align}
+                  on_changed={v => set_h_align(v!)}
                   items={[-2, 0, 0.5, 1]}
                   parse={(v, idx) => [
                     v,

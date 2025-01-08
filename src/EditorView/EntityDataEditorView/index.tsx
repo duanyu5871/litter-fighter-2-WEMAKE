@@ -1,19 +1,14 @@
-import { useEffect, useMemo, useState } from "react";
 import Frame, { IFrameProps } from "../../Component/Frame";
 import { Input } from "../../Component/Input";
 import Select from "../../Component/Select";
 import { Space } from "../../Component/Space";
 import Titled from "../../Component/Titled";
 import { IEntityData } from "../../LF2/defines/IEntityData";
-import { traversal } from "../../LF2/utils/container_help/traversal";
 import { ENTITY_TYPE_SELECT_PROPS } from "../EntityEditorView";
-import { PicInfoEditorView } from "./FileEditorView";
 export interface IEntityDataEditorViewProps extends IFrameProps {
   src?: IEntityData;
   on_change?(data: IEntityData): void;
 }
-
-
 export function EntityDataEditorView(props: IEntityDataEditorViewProps) {
   const { src, on_change, ..._p } = props;
 

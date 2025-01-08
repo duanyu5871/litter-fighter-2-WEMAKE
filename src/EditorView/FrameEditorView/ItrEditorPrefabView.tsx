@@ -1,8 +1,6 @@
 import Frame from "../../Component/Frame";
 import { Close2 } from "../../Component/Icons/Clear";
-import Select from "../../Component/Select";
 import { Space } from "../../Component/Space";
-import Titled from "../../Component/Titled";
 import { IEntityData } from "../../LF2/defines/IEntityData";
 import { IItrPrefab } from "../../LF2/defines/IItrPrefab";
 import { loop_arr } from "../../LF2/utils/array/loop_arr";
@@ -51,7 +49,7 @@ export function ItrEditorPrefabView(props: IItrEditorViewProps) {
   }
 
   const {
-    EditorInt, EditorTxt, EditorStr, EditorVec3, EditorQube
+    EditorInt, EditorTxt, EditorStr, EditorVec3, EditorQube, EditorSel
   } = useEditor(value)
 
   return (
@@ -60,12 +58,8 @@ export function ItrEditorPrefabView(props: IItrEditorViewProps) {
       <Space direction="column" >
         <EditorStr field="id" onBlur={on_input_id_blur} />
         <EditorStr field="name" />
-        <Titled label='kind' label_style={label_style} style={titled_style}>
-          <Select {...ITR_KIND_SELECT_PROPS} defaultValue={value.kind} on_changed={v => value.kind = v} clearable style={{ flex: 1 }} />
-        </Titled>
-        <Titled label='effect' label_style={label_style} style={titled_style}>
-          <Select {...ITR_EFFECT_SELECT_PROPS} defaultValue={value.effect} on_changed={v => value.effect = v} clearable style={{ flex: 1 }} />
-        </Titled>
+        <EditorSel field="kind" {...ITR_KIND_SELECT_PROPS} />
+        <EditorSel field="effect" {...ITR_EFFECT_SELECT_PROPS} />
         <EditorInt field="injury" />
         <EditorInt field="arest" />
         <EditorInt field="vrest" />

@@ -12,7 +12,6 @@ import styles from "./styles.module.scss";
 export interface IBaseSelectProps<T, V> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'defaultValue'> {
   items?: readonly T[];
   auto_blur?: boolean;
-  on_changed?: (value: V) => void;
   parse(item: T, idx: number, items: readonly T[]): [V, React.ReactNode];
   placeholder?: string;
   disabled?: boolean;
@@ -23,10 +22,12 @@ export interface IMultiSelectProps<T, V> extends IBaseSelectProps<T, V> {
   multi: true;
   value?: V[];
   defaultValue?: V[];
+  on_changed?: (value: V[] | undefined) => void;
 }
 export interface ISelectProps<T, V> extends IBaseSelectProps<T, V> {
   value?: V;
   defaultValue?: V;
+  on_changed?: (value: V | undefined) => void;
 }
 export interface IOptionData<T, V> {
   value: V;
@@ -43,7 +44,7 @@ function value_adapter<V>(defaultValue: V | V[] | undefined | null): V[] | undef
 export function Select<T, V>(props: ISelectProps<T, V>): JSX.Element
 export function Select<T, V>(props: IMultiSelectProps<T, V>): JSX.Element
 export function Select<T, V>(props: ISelectProps<T, V> | IMultiSelectProps<T, V>): JSX.Element {
-  const { className, items, parse, disabled, arrow, clearable, defaultValue, ..._p } = props;
+  const { className, items, parse, disabled, arrow, clearable, on_changed, defaultValue, ..._p } = props;
   const multi = (props as any).multi
   const classname = classNames(styles.lfui_dropdown, className);
   const [value, set_value] = useState<V[] | undefined>(() => value_adapter(defaultValue));
@@ -92,18 +93,32 @@ export function Select<T, V>(props: ISelectProps<T, V> | IMultiSelectProps<T, V>
       const { value } = item.data;
       set_value(prev => {
         if (multi) {
-          if (!prev) return [value]
-          if (prev.indexOf(value) === -1) return [...prev, value]
-          const ret = prev.filter(v => v !== value)
-          return ret.length ? ret : void 0;
+          let ret: typeof prev;
+          if (!prev)
+            ret = [value]
+          else if (prev.indexOf(value) === -1)
+            ret = [...prev, value]
+          else
+            ret = prev.filter(v => v !== value);
+          ret = ret.length ? ret : void 0;
+          on_changed?.(ret as any)
+          return ret;
         } else {
-          set_open(false);
-          if (prev?.[0] === value && clearable) return void 0;
-          else return [value];
+          let ret: typeof prev;
+          if (prev?.[0] === value && clearable)
+            ret = void 0;
+          else
+            ret = [value];
+          on_changed?.(ret?.at(0) as any)
+          return ret;
         }
       })
     } else {
       set_value(void 0)
+      on_changed?.(void 0)
+    }
+    if (multi) {
+      set_open(false);
     }
   }
   const ref_popover = React.useRef<HTMLDivElement>(null);
