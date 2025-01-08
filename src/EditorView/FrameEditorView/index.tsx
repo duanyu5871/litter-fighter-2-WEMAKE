@@ -12,7 +12,7 @@ import { Defines, IFrameInfo, INextFrame } from "../../LF2/defines";
 import { IEntityData } from "../../LF2/defines/IEntityData";
 import { map_arr } from "../../LF2/utils/array/map_arr";
 import { shared_ctx } from "../Context";
-import { STATE_SELECT_PROPS } from "../EntityEditorView";
+import { SPEED_MODE_SELECT_PROPS, STATE_SELECT_PROPS } from "../EntityEditorView";
 import styles from "./styles.module.scss";
 import { useEditor } from "./useEditor";
 import { Space } from "../../Component/Space";
@@ -52,8 +52,6 @@ export function FrameEditorView(props: IFrameEditorViewProps) {
     selected, on_click_play, ..._p
   } = props;
 
-
-  const ref_canvas = useRef<HTMLCanvasElement>(null);
   const ref_on_click_frame = useRef(on_click_frame);
   ref_on_click_frame.current = on_click_frame;
   const ref_on_frame_change = useRef(on_frame_change);
@@ -66,39 +64,6 @@ export function FrameEditorView(props: IFrameEditorViewProps) {
   ref_on_click_play.current = on_click_play;
 
   const [editing, set_editing] = useState<TabEnum | undefined>(TabEnum.Base);
-
-  const { pic, bdy, itr, centerx, centery } = value;
-  const { base: { files } } = data;
-  useEffect(() => {
-    if (!pic || !zip || !files) { return }
-    const canvas = ref_canvas.current
-    const ctx = ref_canvas.current?.getContext('2d');
-    if (!canvas || !ctx) return;
-    let p = canvas.parentElement;
-    while (p) {
-      if ('auto' === getComputedStyle(p).overflowY) {
-        const pp = p;
-        const is_appear = () => {
-          const rect = canvas.getBoundingClientRect()
-          return (rect.top >= 0 && rect.top <= window.innerHeight) ||
-            (rect.bottom >= 0 && rect.bottom <= window.innerHeight)
-        }
-        const render = () => {
-          if (!is_appear()) return;
-          // drawer?.draw(ctx, zip, data, frame)
-          pp.removeEventListener('scroll', render)
-        }
-        if (is_appear()) {
-          render()
-        } else {
-          pp.addEventListener('scroll', render)
-          return () => pp.removeEventListener('scroll', render)
-        }
-      }
-      p = p.parentElement;
-    }
-
-  }, [pic, files, zip, centerx, centery, bdy, itr, data, value]);
 
   const { frames } = data;
   const next_frame_selects = useMemo(() => {
@@ -155,7 +120,6 @@ export function FrameEditorView(props: IFrameEditorViewProps) {
     <Frame
       id={`${data.id}###${value.id}`}
       className={classNames(styles.frame_editor_view, { selected })}
-      tabIndex={-1}
       {..._p}
       onClick={(e) => {
         const ele = e.target as HTMLElement;
@@ -192,10 +156,7 @@ export function FrameEditorView(props: IFrameEditorViewProps) {
                 </Combine>
               </Combine>
             </Titled>
-            <Editor.EditorVec2
-              name="锚点"
-              fields={['centerx', 'centery']}
-              style={{ width: '100%' }} />
+            <Editor.EditorVec2 name="锚点" fields={['centerx', 'centery']} />
             <Editor.EditorInt field="wait" clearable={false} title="当前动作持续多少帧数" />
             {/* <Titled label='持续帧数'>
           <Combine>
@@ -216,25 +177,24 @@ export function FrameEditorView(props: IFrameEditorViewProps) {
           <Space direction="column">
             <Editor.EditorVec3 name="速度" fields={['dvx', 'dvy', 'dvz']} />
             <Editor.EditorVec3 name="加速度" fields={['acc_x', 'acc_y', 'acc_z']} />
-            {/* <Titled label='　　速度模式'>
-          <Combine>
-            <Select {...SPEED_MODE_SELECT_PROPS} {...edit_num_select('vxm')} style={{ width: 80, boxSizing: 'border-box' }} />
-            <Select {...SPEED_MODE_SELECT_PROPS} {...edit_num_select('vym')} style={{ width: 80, boxSizing: 'border-box' }} />
-            <Select {...SPEED_MODE_SELECT_PROPS} {...edit_num_select('vzm')} style={{ width: 80, boxSizing: 'border-box' }} />
-          </Combine>
-        </Titled> */}
-            <Editor.EditorVec3 name="操作速度" fields={['ctrl_spd_x', 'ctrl_spd_y', 'ctrl_spd_z']} />
-            <Editor.EditorVec3 name="操作加速度" fields={['ctrl_acc_x', 'ctrl_acc_y', 'ctrl_acc_z']} />
-            {/* <Titled label='操作速度模式'>
-          <Combine>
-            <Select {...SPEED_MODE_SELECT_PROPS} {...edit_num_select('ctrl_spd_x_m')} style={{ width: 80, boxSizing: 'border-box' }} />
-            <Select {...SPEED_MODE_SELECT_PROPS} {...edit_num_select('ctrl_spd_y_m')} style={{ width: 80, boxSizing: 'border-box' }} />
-            <Select {...SPEED_MODE_SELECT_PROPS} {...edit_num_select('ctrl_spd_z_m')} style={{ width: 80, boxSizing: 'border-box' }} />
-          </Combine>
-        </Titled> */}
+            <Editor.EditorSel3
+              name="速度模式"
+              fields={['vxm', 'vym', 'vzm']}
+              placeholders={['x', 'y', 'z']}
+              select={SPEED_MODE_SELECT_PROPS} />
+            <Editor.EditorVec3
+              name="操作速度"
+              fields={['ctrl_spd_x', 'ctrl_spd_y', 'ctrl_spd_z']} />
+            <Editor.EditorVec3
+              name="操作加速度"
+              fields={['ctrl_acc_x', 'ctrl_acc_y', 'ctrl_acc_z']} />
+            <Editor.EditorSel3
+              name="操作速度模式"
+              fields={['ctrl_spd_x_m', 'ctrl_spd_y_m', 'ctrl_spd_z_m']}
+              placeholders={['x', 'y', 'z']}
+              select={SPEED_MODE_SELECT_PROPS} />
           </Space>
         </Show>
-
       </Space>
       {/* <Show show={editing === 'itr'}>
         <Button style={{ alignSelf: 'stretch' }} onClick={() => {

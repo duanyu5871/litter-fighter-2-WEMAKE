@@ -301,7 +301,45 @@ export function useEditor<O extends {}>(value: O, _label_style: React.CSSPropert
               {..._p} />
           </Titled>
         )
-      }
+      },
+      EditorSel3<T, V>(props: {
+        name: string;
+        fields: [Field, Field, Field];
+        placeholders?: [string, string, string]
+        clearable?: boolean;
+        select: ISelectProps<T, V>
+      } & ITitledProps) {
+        const { name, fields: [x, y, z], placeholders, clearable, select, ..._p } = props;
+        const combine_style: React.CSSProperties = { flex: 1 }
+        const select_style: React.CSSProperties = { flex: 1 }
+        return (
+          <Titled {...t_props(name)} {..._p}>
+            <Combine style={combine_style}>
+              <Select
+                defaultValue={(value as any)[x]}
+                on_changed={v => { (value as any)[x] = v; }}
+                placeholder={placeholders?.at(0)}
+                clearable
+                style={select_style}
+                {...select} />
+              <Select
+                defaultValue={(value as any)[y]}
+                on_changed={v => { (value as any)[y] = v; }}
+                placeholder={placeholders?.at(1)}
+                clearable
+                style={select_style}
+                {...select} />
+              <Select
+                defaultValue={(value as any)[z]}
+                on_changed={v => { (value as any)[z] = v; }}
+                placeholder={placeholders?.at(2)}
+                clearable
+                style={select_style}
+                {...select} />
+            </Combine>
+          </Titled>
+        );
+      },
     };
   }, [value, label_style, titled_style]);
 }
