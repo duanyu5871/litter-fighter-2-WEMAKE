@@ -9,7 +9,7 @@ import { Tag } from "../Tag";
 import { ITreeNode, TreeView } from "../TreeView";
 import styles from "./styles.module.scss";
 
-export interface IBaseSelectProps<T, V> extends React.HTMLAttributes<HTMLDivElement> {
+export interface IBaseSelectProps<T, V> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'defaultValue'> {
   items?: readonly T[];
   auto_blur?: boolean;
   on_changed?: (value: V) => void;
@@ -22,23 +22,37 @@ export interface IBaseSelectProps<T, V> extends React.HTMLAttributes<HTMLDivElem
 export interface IMultiSelectProps<T, V> extends IBaseSelectProps<T, V> {
   multi: true;
   value?: V[];
+  defaultValue?: V[];
 }
 export interface ISelectProps<T, V> extends IBaseSelectProps<T, V> {
   value?: V;
+  defaultValue?: V;
 }
-
 export interface IOptionData<T, V> {
   value: V;
   data: T;
   label: React.ReactNode;
 }
+
+function value_adapter<V>(defaultValue: V | V[] | undefined | null): V[] | undefined {
+  if (defaultValue === null || defaultValue === void 0) return void 0
+  else if (Array.isArray(defaultValue)) return defaultValue;
+  return [defaultValue];
+}
+
 export function Select<T, V>(props: ISelectProps<T, V>): JSX.Element
 export function Select<T, V>(props: IMultiSelectProps<T, V>): JSX.Element
 export function Select<T, V>(props: ISelectProps<T, V> | IMultiSelectProps<T, V>): JSX.Element {
-  const { className, items, parse, disabled, arrow, clearable, ..._p } = props;
+  const { className, items, parse, disabled, arrow, clearable, defaultValue, ..._p } = props;
   const multi = (props as any).multi
   const classname = classNames(styles.lfui_dropdown, className);
-  const [value, set_value] = useState<V[]>();
+  const [value, set_value] = useState<V[] | undefined>(() => value_adapter(defaultValue));
+
+  const has_value = 'value' in props
+  useEffect(() => {
+    if (!has_value) set_value(value_adapter(defaultValue))
+  }, [defaultValue, has_value])
+
   const [open, set_open] = useState(false);
   const [tree_nodes, checked_tree_nodes] = useMemo(() => {
     if (!items) return [void 0, void 0];

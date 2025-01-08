@@ -28,7 +28,12 @@
     fill        : none;
     stroke-width: 1px;
     stroke      : $primary_text_color;
+  }
 
+  &>.border_stroke {
+    fill        : none;
+    stroke-width: 1px;
+    stroke      : $primary_border_color;
   }
 }
 

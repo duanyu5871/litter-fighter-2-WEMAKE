@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "../../Component/Buttons/Button";
 import Combine from "../../Component/Combine";
 import Frame from "../../Component/Frame";
-import { Input, InputNumber, InputProps } from "../../Component/Input";
+import { Input, InputProps } from "../../Component/Input";
 import Select, { ISelectProps } from "../../Component/Select";
 import Show from "../../Component/Show";
 import { Space } from "../../Component/Space";
@@ -16,11 +16,10 @@ import { map_arr } from "../../LF2/utils/array/map_arr";
 import { num_or } from "../../LF2/utils/type_check";
 import { shared_ctx } from "../Context";
 import { SPEED_MODE_SELECT_PROPS, STATE_SELECT_PROPS } from "../EntityEditorView";
+import { AudioButton } from "./AudioButton";
 import { BdyEditorView } from "./BdyEditorView";
 import { ItrEditorView } from "./ItrEditorView";
 import styles from "./styles.module.scss";
-import Ditto from "../../LF2/ditto";
-import { AudioButton } from "./AudioButton";
 
 enum TabEnum {
   Base = 'base',

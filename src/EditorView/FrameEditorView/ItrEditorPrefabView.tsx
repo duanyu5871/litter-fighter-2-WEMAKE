@@ -1,53 +1,81 @@
-import { Button } from "../../Component/Buttons/Button";
-import Combine from "../../Component/Combine";
 import Frame from "../../Component/Frame";
-import { Input, InputNumber } from "../../Component/Input";
+import { Close2 } from "../../Component/Icons/Clear";
 import Select from "../../Component/Select";
 import { Space } from "../../Component/Space";
-import { TextArea } from "../../Component/TextArea";
 import Titled from "../../Component/Titled";
-import { IItrInfo } from "../../LF2/defines";
+import { IEntityData } from "../../LF2/defines/IEntityData";
+import { IItrPrefab } from "../../LF2/defines/IItrPrefab";
+import { loop_arr } from "../../LF2/utils/array/loop_arr";
+import { traversal } from "../../LF2/utils/container_help/traversal";
 import { ITR_EFFECT_SELECT_PROPS, ITR_KIND_SELECT_PROPS } from "../EntityEditorView";
+import { useEditor } from "./useEditor";
 export interface IItrEditorViewProps {
   label: string;
-  value: Partial<IItrInfo>;
-  onRemove?(): void;
+  data: IEntityData;
+  value: IItrPrefab;
+  on_changed?(): void;
 }
+const label_style: React.CSSProperties = { width: 50, textAlign: 'right' };
+const titled_style: React.CSSProperties = { display: 'flex' };
 
-export function ItrEditorView(props: IItrEditorViewProps) {
-  const { value: itr, onRemove, label } = props;
+export function ItrEditorPrefabView(props: IItrEditorViewProps) {
+  const { value, label, data, on_changed } = props;
+
+  const on_remove = () => {
+    if (!data.itr_prefabs) return;
+    delete data.itr_prefabs[value.id];
+    on_changed?.();
+  }
+  const on_input_id_blur = (e: React.FocusEvent<HTMLInputElement, Element>) => {
+    if (!data.itr_prefabs) return;
+    const prev_id = value.id;
+    const next_id = e.target.value.trim();
+    if (prev_id === next_id || !next_id) {
+      e.target.value = prev_id;
+      return;
+    }
+    if (next_id in data.itr_prefabs) {
+      alert('ID不可重复')
+      e.target.value = value.id;
+      return;
+    }
+    delete data.itr_prefabs[prev_id];
+    value.id = next_id;
+    data.itr_prefabs[next_id] = value;
+    traversal(data.frames, (_, { itr }) => loop_arr(itr, (itr) => {
+      if (!itr) return;
+      if (itr.prefab_id?.trim() === prev_id) {
+        itr.prefab_id = next_id;
+      }
+    }))
+  }
+
+  const {
+    EditorInt, EditorTxt, EditorStr, EditorVec3, EditorQube
+  } = useEditor(value)
+
   return (
-    <Frame tabIndex={-1} label={label}>
-      <Button style={{ position: 'absolute', right: 0, top: 0, border: 'none' }} onClick={onRemove}>
-        🗑️
-      </Button>
-      <Space direction="column">
-        <Titled label='　　状态'>
-          <Select {...ITR_KIND_SELECT_PROPS} value={itr.kind} on_changed={v => itr.kind = v} />
+    <Frame label={label}>
+      <Close2 style={{ position: 'absolute', right: 0, top: 0, border: 'none' }} onClick={on_remove} hoverable />
+      <Space direction="column" >
+        <EditorStr field="id" onBlur={on_input_id_blur} />
+        <EditorStr field="name" />
+        <Titled label='kind' label_style={label_style} style={titled_style}>
+          <Select {...ITR_KIND_SELECT_PROPS} defaultValue={value.kind} on_changed={v => value.kind = v} clearable style={{ flex: 1 }} />
         </Titled>
-        <Titled label='　　效果'>
-          <Select {...ITR_EFFECT_SELECT_PROPS} value={itr.effect} on_changed={v => itr.effect = v} />
+        <Titled label='effect' label_style={label_style} style={titled_style}>
+          <Select {...ITR_EFFECT_SELECT_PROPS} defaultValue={value.effect} on_changed={v => value.effect = v} clearable style={{ flex: 1 }} />
         </Titled>
-        <Titled label='碰撞测试' style={{ display: 'flex' }}>
-          <TextArea style={{ flex: 1, resize: 'vertical' }} defaultValue={itr.test} onChange={e => {
-            itr.test = e.target.value.trim();
-            if (!itr.test) delete itr.test;
-          }} />
-        </Titled>
-        <Titled label='　包围盒'>
-          <Combine direction="column">
-            <Combine>
-              <InputNumber defaultValue={itr.x} on_change={v => itr.x = v} title="x" prefix="x" style={{ width: 80 }} />
-              <InputNumber defaultValue={itr.y} on_change={v => itr.y = v} title="y" prefix="y" style={{ width: 80 }} />
-              <InputNumber defaultValue={itr.z} on_change={v => itr.z = v} title="z" prefix="z" style={{ width: 80 }} />
-            </Combine>
-            <Combine>
-              <InputNumber defaultValue={itr.w} on_change={v => itr.w = v} title="w" prefix="w" style={{ width: 80 }} />
-              <InputNumber defaultValue={itr.h} on_change={v => itr.h = v} title="h" prefix="h" style={{ width: 80 }} />
-              <InputNumber defaultValue={itr.l} on_change={v => itr.l = v} title="l" prefix="l" style={{ width: 80 }} />
-            </Combine>
-          </Combine>
-        </Titled>
+        <EditorInt field="injury" />
+        <EditorInt field="arest" />
+        <EditorInt field="vrest" />
+        <EditorInt field="motionless" />
+        <EditorInt field="shaking" />
+        <EditorInt field="fall" />
+        <EditorInt field="bdefend" />
+        <EditorTxt field="test" />
+        <EditorVec3 name="velocity" fields={['dvx', 'dvy', 'dvz']} />
+        <EditorQube name="bounding" fields={['x', 'y', 'z', 'w', 'h', 'l']} />
       </Space>
     </Frame>
   );

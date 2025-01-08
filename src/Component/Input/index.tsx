@@ -15,7 +15,8 @@ export interface InputProps extends Omit<BaseProps, 'prefix' | 'step'> {
     prefix?: string;
     input?: string;
     icon?: string;
-  }
+  };
+  on_changed?(v: string): void;
 }
 export interface InputRef {
   readonly input: HTMLInputElement | null;
@@ -38,7 +39,7 @@ function direct_set_value(ele: HTMLInputElement | null, value: string | number) 
 function _Input(props: InputProps, forwarded_Ref: React.ForwardedRef<InputRef>) {
   const {
     className, prefix, suffix, clear_icon = <Clear hoverable />, style, clazz,
-    clearable = false,
+    clearable = false, on_changed,
     ..._p
   } = props;
 
@@ -219,7 +220,7 @@ function _Input(props: InputProps, forwarded_Ref: React.ForwardedRef<InputRef>) 
       {clear_icon}
     </button>
 
-  if ('value' in _p && _p.value === void 0) _p.value = ""
+  if ('value' in _p && _p.value === void 0) _p.value = "";
   return (
     <div className={root_cls_name} ref={ref_root} style={style}>
       {prefix ? <span className={prefix_cls_name}>{prefix}</span> : null}
@@ -242,16 +243,22 @@ export const Input = React.forwardRef<InputRef, InputProps>(_Input)
 export interface InputNumberProps extends Omit<InputProps, 'type' | 'value' | 'defaultValue'> {
   value?: number;
   defaultValue?: number;
-  on_change?(v: number | undefined): void
+  on_change?(v: number | undefined): void;
+  on_blur?(v: number | undefined): void;
 }
 function _InputNumber(props: InputNumberProps, forwarded_Ref: React.ForwardedRef<InputRef>) {
-  const { onChange, on_change, ..._p } = props;
+  const { onChange, onBlur, on_change, on_blur, ..._p } = props;
   const _on_change = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange?.(e);
     const t = e.target.value.trim();
     on_change?.(t ? void 0 : Number(e.target.value))
   }
-  return <Input {..._p} type='number' ref={forwarded_Ref} onChange={_on_change} />
+  const _on_blur = (e: React.FocusEvent<HTMLInputElement>) => {
+    onBlur?.(e);
+    const t = e.target.value.trim();
+    on_blur?.(t ? void 0 : Number(e.target.value))
+  }
+  return <Input {..._p} type='number' ref={forwarded_Ref} onChange={_on_change} onBlur={_on_blur} />
 }
 
 export const InputNumber = React.forwardRef<InputRef, InputNumberProps>(_InputNumber)

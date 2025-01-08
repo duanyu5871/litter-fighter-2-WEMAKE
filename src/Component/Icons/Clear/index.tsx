@@ -42,3 +42,14 @@ export function Close(props: IIconProps) {
     </svg>
   )
 }
+export function Close2(props: IIconProps) {
+  const { className, hoverable, ..._p } = props;
+  const clz_name = classNames(styles.ic, { [styles.hoverable]: hoverable }, className)
+  return (
+    <svg width='1em' height='1em' className={clz_name} viewBox="0, 0, 12, 12" {..._p}>
+      <path className={styles.border_stroke} d="M 4 4 L 8 8" />
+      <path className={styles.border_stroke} d="M 4 8 L 8 4" />
+    </svg>
+  )
+}
+

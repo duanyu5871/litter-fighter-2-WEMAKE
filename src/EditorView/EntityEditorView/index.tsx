@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ISelectProps } from "../../Component/Select";
+import { IBaseSelectProps } from "../../Component/Select";
 import { Space } from "../../Component/Space";
 import { Defines, IFrameInfo, INextFrame, ItrEffect, ItrKind } from "../../LF2/defines";
 import { BdyKind } from "../../LF2/defines/BdyKind";
@@ -8,7 +8,8 @@ import { IEntityData } from "../../LF2/defines/IEntityData";
 import { SpeedMode } from "../../LF2/defines/SpeedMode";
 import { FrameEditorView } from "../FrameEditorView";
 import './style.scss';
-const make_num_enum_select_props = (t: any): ISelectProps<string, number> => ({
+import classNames from "classnames";
+const make_num_enum_select_props = (t: any): IBaseSelectProps<string, number> => ({
   items: Object.keys(t).filter(key => {
     if (key.startsWith('_')) return false;
     if (!Number.isNaN(Number(key))) return false;
@@ -20,7 +21,7 @@ const make_num_enum_select_props = (t: any): ISelectProps<string, number> => ({
     return [value, label]
   }
 })
-const make_str_enum_select_props = (t: any): ISelectProps<string, string> => ({
+const make_str_enum_select_props = (t: any): IBaseSelectProps<string, string> => ({
   items: Object.keys(t).filter(key => {
     if (key.startsWith('_')) return false;
     return true;
@@ -45,7 +46,7 @@ export interface IEntityEditorViewProps extends React.HTMLAttributes<HTMLDivElem
 }
 
 export function EntityEditorView(props: IEntityEditorViewProps) {
-  const { src, on_click_frame, on_frame_change, on_click_goto_next_frame, ..._p } = props;
+  const { src, on_click_frame, on_frame_change, on_click_goto_next_frame, className, ..._p } = props;
   const [data, set_data] = useState(() => ({ ...src }));
   useEffect(() => {
     set_data(src)
@@ -75,10 +76,7 @@ export function EntityEditorView(props: IEntityEditorViewProps) {
     return ret;
   }, [data]);
   return (
-    <Space
-      className="entity_editor_view"
-      direction="column"
-      {..._p}>
+    <Space className={classNames("entity_editor_view", className)} direction="column" {..._p}>
       {frame_views}
     </Space>
   );

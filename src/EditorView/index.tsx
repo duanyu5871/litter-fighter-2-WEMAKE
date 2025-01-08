@@ -5,6 +5,7 @@ import { Checkbox } from "../Component/Checkbox";
 import Select from "../Component/Select";
 import Show from "../Component/Show";
 import { Space } from "../Component/Space";
+import { TabButtons } from "../Component/TabButtons";
 import Titled from "../Component/Titled";
 import { ITreeNode, ITreeNodeGetIcon, TreeView } from "../Component/TreeView";
 import { Defines, IBgData, IFrameInfo } from "../LF2/defines";
@@ -13,17 +14,17 @@ import { IEntityData } from "../LF2/defines/IEntityData";
 import Ditto, { IZip } from "../LF2/ditto";
 import { ILf2Callback } from "../LF2/ILf2Callback";
 import LF2 from "../LF2/LF2";
+import { traversal } from "../LF2/utils/container_help/traversal";
 import { is_num } from "../LF2/utils/type_check";
 import open_file from "../Utils/open_file";
 import { shared_ctx } from './Context';
 import { EditorShapeEnum } from "./EditorShapeEnum";
 import { EntityDataEditorView } from "./EntityDataEditorView";
+import { FileEditorView } from "./EntityDataEditorView/FileEditorView";
 import { EntityEditorView } from "./EntityEditorView";
 import { FrameDrawer, FrameDrawerData } from "./FrameDrawer";
+import { ItrEditorPrefabView } from "./FrameEditorView/ItrEditorPrefabView";
 import styles from "./styles.module.scss";
-import { TabButtons } from "../Component/TabButtons";
-import { traversal } from "../LF2/utils/container_help/traversal";
-import { FileEditorView } from "./EntityDataEditorView/FileEditorView";
 
 enum EntityEditing {
   base = '基础信息',
@@ -94,9 +95,9 @@ export default function EditorView(props: IEditorViewProps) {
   ref_editing_data.current = editing_data;
 
 
-  const frames_list_view = useMemo(() => {
-    if (!editing_data) return void 0;
 
+  const frame_list_view = useMemo(() => {
+    if (!editing_data) return void 0;
     const on_frame_change = (frame: IFrameInfo, data: IEntityData) => {
       const board = ref_board.current!;
       const shape_data = factory.newShapeData(EditorShapeEnum.LF2_FRAME) as FrameDrawerData;
@@ -126,10 +127,10 @@ export default function EditorView(props: IEditorViewProps) {
         shape.merge(shape_data)
       }
     }
-
     return (
       <EntityEditorView
         src={editing_data}
+        className={styles.file_editor_view}
         on_click_frame={on_frame_change}
         on_frame_change={on_frame_change}
         on_click_goto_next_frame={(nf, data) => {
@@ -300,11 +301,11 @@ export default function EditorView(props: IEditorViewProps) {
   }, [open])
 
   const [change_flag, set_change_flag] = useState(0)
-  const files = editing_data?.base.files;
-  const file_editor_views = useMemo(() => {
-    if (!files) return [];
+  // const files = editing_data?.base.files;
+  const pic_list_view = useMemo(() => {
+    if (!editing_data) return;
     const views: React.ReactNode[] = []
-    traversal(files, (k, v) => {
+    if (editing_data.base.files) traversal(editing_data.base.files, (k, v) => {
       views.push(
         <FileEditorView
           pic_info={v}
@@ -316,9 +317,9 @@ export default function EditorView(props: IEditorViewProps) {
     })
     views.push(
       <Button key={views.length} style={{ width: '100%' }} onClick={() => {
-        let i = Object.keys(files).length;
-        while (('' + i) in files) ++i;
-        files['' + i] = {
+        let i = Object.keys(editing_data.base.files).length;
+        while (('' + i) in editing_data.base.files) ++i;
+        editing_data.base.files['' + i] = {
           row: 0,
           col: 0,
           id: '' + i,
@@ -332,12 +333,52 @@ export default function EditorView(props: IEditorViewProps) {
       </Button>
     )
     return (
-      <Space.Item space vertical frame className={styles.file_editor_view} >
+      <Space.Item space vertical frame className={styles.file_editor_view}>
         {views}
       </Space.Item>
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [files, editing_data, change_flag])
+  }, [editing_data, change_flag])
+
+
+  const itr_prefabs = editing_data?.itr_prefabs;
+  const itr_prefab_list_view = useMemo(() => {
+    if (!editing_data) return void 0;
+    const views: React.ReactNode[] = []
+    if (itr_prefabs) traversal(itr_prefabs, (k, value) => {
+      if (!value) return;
+      const label = `itr_prefabs: ${k}`
+      views.push(
+        <ItrEditorPrefabView
+          label={label}
+          value={value}
+          data={editing_data}
+          key={label}
+          on_changed={() => set_change_flag(v => ++v)} />
+      )
+    })
+    views.push(
+      <Button key={views.length} style={{ width: '100%' }} onClick={() => {
+        if (itr_prefabs) {
+          let i = Object.keys(itr_prefabs).length;
+          while (('' + i) in itr_prefabs) ++i;
+          itr_prefabs['' + i] = { id: '' + i }
+        } else {
+          editing_data.itr_prefabs = {};
+          editing_data.itr_prefabs['0'] = { id: '0' }
+        }
+        set_change_flag(v => ++v);
+      }}>
+        ➕
+      </Button>
+    )
+    return (
+      <Space.Item space vertical frame className={styles.file_editor_view}>
+        {views}
+      </Space.Item>
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [itr_prefabs, editing_data, change_flag])
 
   return !open ? <></> : (
     <shared_ctx.Provider value={{ zip }}>
@@ -393,17 +434,9 @@ export default function EditorView(props: IEditorViewProps) {
               parse={v => [v, v]}
               onChange={v => set_tab(v)}
             />
-            {
-              tab === EntityEditing.frames ?
-                <Space.Item className={styles.entity_editor_view}>
-                  {frames_list_view}
-                </Space.Item> : null
-            }
-
-            {
-              tab === EntityEditing.pic ? file_editor_views : null
-            }
-
+            {tab === EntityEditing.frames ? frame_list_view : null}
+            {tab === EntityEditing.pic ? pic_list_view : null}
+            {tab === EntityEditing.itr_pre ? itr_prefab_list_view : null}
           </Space.Item>
           {textarea}
         </Space.Item>
