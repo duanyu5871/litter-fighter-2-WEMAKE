@@ -4,10 +4,11 @@ import Combine from "../../Component/Combine";
 import { Add, Close3 } from "../../Component/Icons/Clear";
 import { Input, InputNumber, InputNumberProps, InputProps } from "../../Component/Input";
 import { TextArea } from "../../Component/TextArea";
-import Titled from "../../Component/Titled";
+import Titled, { ITitledProps } from "../../Component/Titled";
 import Select, { ISelectProps } from "../../Component/Select";
 import { IZipObject } from "../../LF2/ditto";
 import { shared_ctx } from "../Context";
+import { Space } from "../../Component/Space";
 
 
 export function useEditor<O extends {}>(value: O, _label_style: React.CSSProperties = { width: 50, textAlign: 'right' }) {
@@ -26,6 +27,7 @@ export function useEditor<O extends {}>(value: O, _label_style: React.CSSPropert
     });
     type Field = keyof typeof value;
     type Props = { field: Field; foo?: any }
+    type Props2 = { fields: [Field, Field]; foo?: any }
     return {
       EditorImg(props: Props & Partial<ISelectProps<IZipObject, string>>) {
         const { field, ..._p } = props;
@@ -98,32 +100,109 @@ export function useEditor<O extends {}>(value: O, _label_style: React.CSSPropert
           </Titled>
         );
       },
-      EditorVec3(props: { name: string; fields: [Field, Field, Field]; }) {
-        const { name, fields: [x, y, z] } = props;
+      EditorVec3(props: { name: string; fields: [Field, Field, Field]; clearable?: boolean } & ITitledProps) {
+        const { name, fields: [x, y, z], clearable, ..._p } = props;
+        const combine_style: React.CSSProperties = { flex: 1 }
+        const input_style: React.CSSProperties = { flex: 1 }
         return (
-          <Titled {...t_props(name)}>
-            <Combine>
-              <InputNumber defaultValue={(value as any)[x]} on_change={v => (value as any)[x] = v} title="x" prefix="x" style={{ width: 80 }} clearable />
-              <InputNumber defaultValue={(value as any)[y]} on_change={v => (value as any)[y] = v} title="y" prefix="y" style={{ width: 80 }} clearable />
-              <InputNumber defaultValue={(value as any)[z]} on_change={v => (value as any)[z] = v} title="z" prefix="z" style={{ width: 80 }} clearable />
+          <Titled {...t_props(name)} {..._p}>
+            <Combine style={combine_style}>
+              <InputNumber
+                defaultValue={(value as any)[x]}
+                on_change={v => (value as any)[x] = v}
+                title="x"
+                prefix="x"
+                style={input_style}
+                clearable={clearable} />
+              <InputNumber
+                defaultValue={(value as any)[y]}
+                on_change={v => (value as any)[y] = v}
+                title="y"
+                prefix="y"
+                style={input_style}
+                clearable={clearable} />
+              <InputNumber
+                defaultValue={(value as any)[z]}
+                on_change={v => (value as any)[z] = v}
+                title="z"
+                prefix="z"
+                style={input_style}
+                clearable={clearable} />
             </Combine>
           </Titled>
         );
       },
-      EditorQube(props: { name: string; fields: [Field, Field, Field, Field, Field, Field]; }) {
-        const { name, fields: [x, y, z, w, h, l] } = props;
+      EditorVec2(props: { name: string; fields: [Field, Field]; clearable?: boolean } & ITitledProps) {
+        const { name, fields: [x, y], clearable, ..._p } = props;
+        const combine_style: React.CSSProperties = { flex: 1 }
+        const input_style: React.CSSProperties = { flex: 1 }
         return (
-          <Titled {...t_props(name)}>
-            <Combine direction="column">
+          <Titled {...t_props(name)} {..._p}>
+            <Combine style={combine_style}>
+              <InputNumber
+                defaultValue={(value as any)[x]}
+                on_change={v => (value as any)[x] = v}
+                title="x"
+                prefix="x"
+                style={input_style}
+                clearable={clearable} />
+              <InputNumber
+                defaultValue={(value as any)[y]}
+                on_change={v => (value as any)[y] = v}
+                title="y"
+                prefix="y"
+                style={input_style}
+                clearable={clearable} />
+            </Combine>
+          </Titled>
+        );
+      },
+      EditorQube(props: { name: string; fields: [Field, Field, Field, Field, Field, Field]; clearable?: boolean } & ITitledProps) {
+        const { name, fields: [x, y, z, w, h, l], clearable, ..._p } = props;
+        const combine_style: React.CSSProperties = { flex: 1, alignItems: 'stretch' }
+        const input_style: React.CSSProperties = { flex: 1 }
+        return (
+          <Titled {...t_props(name)} {..._p}>
+            <Combine direction="column" style={combine_style}>
               <Combine>
-                <InputNumber defaultValue={(value as any)[x]} on_change={v => (value as any)[x] = v} title="x" prefix="x" style={{ width: 80 }} clearable />
-                <InputNumber defaultValue={(value as any)[y]} on_change={v => (value as any)[y] = v} title="y" prefix="y" style={{ width: 80 }} clearable />
-                <InputNumber defaultValue={(value as any)[z]} on_change={v => (value as any)[z] = v} title="z" prefix="z" style={{ width: 80 }} clearable />
+                <InputNumber
+                  defaultValue={(value as any)[x]}
+                  on_change={v => (value as any)[x] = v}
+                  title="x" prefix="x"
+                  style={input_style}
+                  clearable={clearable} />
+                <InputNumber
+                  defaultValue={(value as any)[y]}
+                  on_change={v => (value as any)[y] = v}
+                  title="y" prefix="y"
+                  style={input_style}
+                  clearable={clearable} />
+                <InputNumber
+                  defaultValue={(value as any)[z]}
+                  on_change={v => (value as any)[z] = v}
+                  title="z" prefix="z"
+                  style={input_style}
+                  clearable={clearable} />
               </Combine>
               <Combine>
-                <InputNumber defaultValue={(value as any)[w]} on_change={v => (value as any)[w] = v} title="w" prefix="w" style={{ width: 80 }} clearable />
-                <InputNumber defaultValue={(value as any)[h]} on_change={v => (value as any)[h] = v} title="h" prefix="h" style={{ width: 80 }} clearable />
-                <InputNumber defaultValue={(value as any)[l]} on_change={v => (value as any)[l] = v} title="l" prefix="l" style={{ width: 80 }} clearable />
+                <InputNumber
+                  defaultValue={(value as any)[w]}
+                  on_change={v => (value as any)[w] = v}
+                  title="w" prefix="w"
+                  style={input_style}
+                  clearable={clearable} />
+                <InputNumber
+                  defaultValue={(value as any)[h]}
+                  on_change={v => (value as any)[h] = v}
+                  title="h" prefix="h"
+                  style={input_style}
+                  clearable={clearable} />
+                <InputNumber
+                  defaultValue={(value as any)[l]}
+                  on_change={v => (value as any)[l] = v}
+                  title="l" prefix="l"
+                  style={input_style}
+                  clearable={clearable} />
               </Combine>
             </Combine>
           </Titled>

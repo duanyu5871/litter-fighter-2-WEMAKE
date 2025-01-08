@@ -480,7 +480,7 @@ export default function EditorView(props: IEditorViewProps) {
             />
             <Space.Broken>
               {tab === EntityEditing.base ? base_data_view : null}
-              {/* {tab === EntityEditing.frames ? frame_list_view : null} */}
+              {tab === EntityEditing.frames ? frame_list_view : null}
               {tab === EntityEditing.pic ? pic_list_view : null}
               {tab === EntityEditing.itr_pre ? itr_prefab_list_view : null}
             </Space.Broken>

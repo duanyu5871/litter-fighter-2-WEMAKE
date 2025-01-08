@@ -3,23 +3,19 @@ import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "../../Component/Buttons/Button";
 import Combine from "../../Component/Combine";
 import Frame from "../../Component/Frame";
-import { Input, InputProps } from "../../Component/Input";
-import Select, { ISelectProps } from "../../Component/Select";
+import { Input } from "../../Component/Input";
+import Select from "../../Component/Select";
 import Show from "../../Component/Show";
-import { Space } from "../../Component/Space";
 import { TabButtons } from "../../Component/TabButtons";
 import Titled from "../../Component/Titled";
-import { Defines, IBdyInfo, IFrameInfo, IItrInfo, INextFrame } from "../../LF2/defines";
-import { BdyKind } from "../../LF2/defines/BdyKind";
+import { Defines, IFrameInfo, INextFrame } from "../../LF2/defines";
 import { IEntityData } from "../../LF2/defines/IEntityData";
 import { map_arr } from "../../LF2/utils/array/map_arr";
-import { num_or } from "../../LF2/utils/type_check";
 import { shared_ctx } from "../Context";
-import { SPEED_MODE_SELECT_PROPS, STATE_SELECT_PROPS } from "../EntityEditorView";
-import { AudioButton } from "./AudioButton";
-import { BdyEditorView } from "./BdyEditorView";
-import { ItrEditorView } from "./ItrEditorView";
+import { STATE_SELECT_PROPS } from "../EntityEditorView";
 import styles from "./styles.module.scss";
+import { useEditor } from "./useEditor";
+import { Space } from "../../Component/Space";
 
 enum TabEnum {
   Base = 'base',
@@ -41,7 +37,7 @@ const tab_labels: Record<TabEnum, string> = {
 }
 export const img_map = (window as any).img_map = new Map<string, HTMLImageElement>();
 export interface IFrameEditorViewProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange'> {
-  src: IFrameInfo;
+  value: IFrameInfo;
   data: IEntityData;
   on_click_frame?(frame: IFrameInfo, data: IEntityData): void;
   on_frame_change?(frame: IFrameInfo, data: IEntityData): void;
@@ -52,9 +48,11 @@ export interface IFrameEditorViewProps extends Omit<React.HTMLAttributes<HTMLDiv
 export function FrameEditorView(props: IFrameEditorViewProps) {
   const { zip } = useContext(shared_ctx);
   const {
-    src, data, on_click_frame, on_frame_change, on_click_goto_next_frame,
+    value, data, on_click_frame, on_frame_change, on_click_goto_next_frame,
     selected, on_click_play, ..._p
   } = props;
+
+
   const ref_canvas = useRef<HTMLCanvasElement>(null);
   const ref_on_click_frame = useRef(on_click_frame);
   ref_on_click_frame.current = on_click_frame;
@@ -68,17 +66,8 @@ export function FrameEditorView(props: IFrameEditorViewProps) {
   ref_on_click_play.current = on_click_play;
 
   const [editing, set_editing] = useState<TabEnum | undefined>(TabEnum.Base);
-  const [changed, set_changed] = useState(false);
 
-  const [frame, set_frame] = useState(() => JSON.parse(JSON.stringify(src)) as IFrameInfo);
-  useEffect(() => { set_frame(src) }, [src]);
-
-  useEffect(() => {
-    ref_on_frame_change.current?.(frame, data)
-    set_changed(JSON.stringify(frame) !== JSON.stringify(src))
-  }, [data, frame, src])
-
-  const { pic, bdy, itr, centerx, centery } = frame;
+  const { pic, bdy, itr, centerx, centery } = value;
   const { base: { files } } = data;
   useEffect(() => {
     if (!pic || !zip || !files) { return }
@@ -109,46 +98,7 @@ export function FrameEditorView(props: IFrameEditorViewProps) {
       p = p.parentElement;
     }
 
-  }, [pic, files, zip, centerx, centery, bdy, itr, data, frame]);
-
-  const edit_string = (key: keyof IFrameInfo): InputProps => ({
-    value: (frame[key] as any) || '',
-    onChange: e => set_frame(p => ({ ...p, [key]: e.target.value.trim() || void 0 })),
-    placeholder: key,
-  });
-  const edit_number_00 = (key: keyof IFrameInfo): InputProps => ({
-    type: 'number',
-    step: 0.01,
-    value: num_or(frame[key], void 0),
-    onChange: e => {
-      if (!e.target.value) {
-        set_frame(p => ({ ...p, [key]: void 0 }))
-      } else {
-        const num = Number(Number(e.target.value.trim()).toFixed(2))
-        set_frame(p => ({ ...p, [key]: num }))
-      }
-    }
-  });
-  const edit_int = (key: keyof IFrameInfo): InputProps => ({
-    type: 'number',
-    step: 1,
-    value: num_or(frame[key], void 0),
-    onChange: e => set_frame(p => ({ ...p, [key]: Number(e.target.value.trim()) })),
-    placeholder: key,
-  });
-  const edit_uint = (key: keyof IFrameInfo): InputProps => ({
-    type: 'number',
-    step: 1,
-    min: 0,
-    value: num_or(frame[key], void 0),
-    onChange: e => set_frame(p => ({ ...p, [key]: Number(e.target.value.trim()) })),
-    placeholder: key,
-  });
-  const edit_num_select = (key: keyof IFrameInfo): Partial<ISelectProps<any, any>> => ({
-    value: num_or(frame[key], void 0),
-    on_changed: (v) => set_frame(p => ({ ...p, [key]: v })),
-    placeholder: key,
-  });
+  }, [pic, files, zip, centerx, centery, bdy, itr, data, value]);
 
   const { frames } = data;
   const next_frame_selects = useMemo(() => {
@@ -180,7 +130,7 @@ export function FrameEditorView(props: IFrameEditorViewProps) {
     for (const key in frames) {
       frame_list.push(frames[key])
     }
-    const ret: React.ReactNode[] = map_arr(frame.next, (n, idx) => {
+    const ret: React.ReactNode[] = map_arr(value.next, (n, idx) => {
       return (
         <Combine key={idx}>
           <Select
@@ -198,139 +148,95 @@ export function FrameEditorView(props: IFrameEditorViewProps) {
       )
     });
     return ret
-  }, [frame, frames, data])
+  }, [value, frames, data])
 
+  const Editor = useEditor(value)
   return (
     <Frame
-      id={`${data.id}###${frame.id}`}
+      id={`${data.id}###${value.id}`}
       className={classNames(styles.frame_editor_view, { selected })}
       tabIndex={-1}
       {..._p}
       onClick={(e) => {
         const ele = e.target as HTMLElement;
         if (ele.tagName === 'DIV')
-          ref_on_click_frame.current?.(frame, data)
+          ref_on_click_frame.current?.(value, data)
       }}
       style={{
-        padding: 5,
         overflow: 'hidden',
         flexShrink: 0,
         display: 'flex',
         flexDirection: 'column',
         gap: 5
       }}>
-
-      <Titled label='　　　　动作'>
-        <Combine>
-          <Input {...edit_string('id')} disabled={!editing} style={{ width: 80 }} />
-          <Input {...edit_string('name')} disabled={!editing} style={{ width: 150 }} />
-          {/* <Button onClick={() => set_editing(v => !v)}>编辑</Button> */}
-          <Show show={editing && changed}>
-            <Button onClick={() => set_frame(JSON.parse(JSON.stringify(src)) as IFrameInfo)} style={{ flex: 1 }}>
-              重置
-            </Button>
-          </Show>
-        </Combine>
-      </Titled>
-      <TabButtons
-        style={{ alignSelf: 'center' }}
-        value={editing}
-        items={Object.values(TabEnum)}
-        parse={v => [v, tab_labels[v]]}
-        onChange={v => set_editing(prev => v === prev ? void 0 : v)} />
-      <Show show={editing === 'base'}>
-        <Titled label='　　状态'>
-          <Combine>
-            <Select
-              {...STATE_SELECT_PROPS}
-              {...edit_num_select('state')} />
-          </Combine>
-        </Titled>
-        <Titled label='　　图片'>
-          <Combine direction='column'>
-            <Input value={frame.pic?.tex} prefix="tex" style={{ width: 240 }} />
-            <Combine>
-              <Input value={frame.pic?.x} prefix="x" style={{ width: 60 }} />
-              <Input value={frame.pic?.y} prefix="y" style={{ width: 60 }} />
-              <Input value={frame.pic?.w} prefix="w" style={{ width: 60 }} />
-              <Input value={frame.pic?.h} prefix="h" style={{ width: 60 }} />
-            </Combine>
-          </Combine>
-        </Titled>
-        <Space direction="row">
-          <Titled label='　　锚点'>
-            <Combine>
-              <Input {...edit_int('centerx')} placeholder="x" style={{ width: 50 }} clearable={false} />
-              <Input {...edit_int('centery')} placeholder="y" style={{ width: 50 }} clearable={false} />
-            </Combine>
-          </Titled>
-          <Titled label='持续帧数' title="当前动作持续多少帧数">
-            <Input
-              {...edit_uint('wait')}
-              placeholder="wait"
-              clearable={false}
-              style={{ width: 50, boxSizing: 'border-box' }} />
-          </Titled>
-        </Space>
-        <Titled label='持续帧数'>
+      <Space direction='column'>
+        <Editor.EditorStr field='id' />
+        <Editor.EditorStr field='name' />
+        <TabButtons
+          style={{ alignSelf: 'center' }}
+          value={editing}
+          items={Object.values(TabEnum)}
+          parse={v => [v, tab_labels[v]]}
+          onChange={v => set_editing(prev => v === prev ? void 0 : v)} />
+        <Show show={editing === 'base'}>
+          <Space direction="column">
+            <Editor.EditorSel {...STATE_SELECT_PROPS} field="state" />
+            <Titled float_label='图片' style={{ width: '100%' }}>
+              <Combine direction='column' style={{ flex: 1 }}>
+                <Input defaultValue={value.pic?.tex} prefix="tex" style={{ alignSelf: 'stretch' }} />
+                <Combine style={{ alignSelf: 'stretch' }}>
+                  <Input defaultValue={value.pic?.x} prefix="x" style={{ flex: 1 }} />
+                  <Input defaultValue={value.pic?.y} prefix="y" style={{ flex: 1 }} />
+                  <Input defaultValue={value.pic?.w} prefix="w" style={{ flex: 1 }} />
+                  <Input defaultValue={value.pic?.h} prefix="h" style={{ flex: 1 }} />
+                </Combine>
+              </Combine>
+            </Titled>
+            <Editor.EditorVec2
+              name="锚点"
+              fields={['centerx', 'centery']}
+              style={{ width: '100%' }} />
+            <Editor.EditorInt field="wait" clearable={false} title="当前动作持续多少帧数" />
+            {/* <Titled label='持续帧数'>
           <Combine>
             <Combine direction='column'>
               {next_frame_selects}
             </Combine>
           </Combine>
-        </Titled>
-        <Titled label='　　声音'>
+        </Titled> */}
+            {/* <Titled label='　　声音'>
           <Combine >
             <Input {...edit_string('sound')} />
-            {frame.sound ? <AudioButton zip={zip} path={frame.sound} /> : null}
+            {value.sound ? <AudioButton zip={zip} path={value.sound} /> : null}
           </Combine>
-        </Titled>
-      </Show>
-      <Show show={editing === TabEnum.Spd}>
-        <Titled label='　　　　速度'>
-          <Combine>
-            <Input {...edit_number_00('dvx')} prefix="x" style={{ width: 80 }} />
-            <Input {...edit_number_00('dvy')} prefix="y" style={{ width: 80 }} />
-            <Input {...edit_number_00('dvz')} prefix="z" style={{ width: 80 }} />
-          </Combine>
-        </Titled>
-        <Titled label='　　　加速度'>
-          <Combine>
-            <Input {...edit_number_00('acc_x')} prefix="x" style={{ width: 80 }} />
-            <Input {...edit_number_00('acc_y')} prefix="y" style={{ width: 80 }} />
-            <Input {...edit_number_00('acc_z')} prefix="z" style={{ width: 80 }} />
-          </Combine>
-        </Titled>
-        <Titled label='　　速度模式'>
+        </Titled> */}
+          </Space>
+        </Show>
+        <Show show={editing === TabEnum.Spd}>
+          <Space direction="column">
+            <Editor.EditorVec3 name="速度" fields={['dvx', 'dvy', 'dvz']} />
+            <Editor.EditorVec3 name="加速度" fields={['acc_x', 'acc_y', 'acc_z']} />
+            {/* <Titled label='　　速度模式'>
           <Combine>
             <Select {...SPEED_MODE_SELECT_PROPS} {...edit_num_select('vxm')} style={{ width: 80, boxSizing: 'border-box' }} />
             <Select {...SPEED_MODE_SELECT_PROPS} {...edit_num_select('vym')} style={{ width: 80, boxSizing: 'border-box' }} />
             <Select {...SPEED_MODE_SELECT_PROPS} {...edit_num_select('vzm')} style={{ width: 80, boxSizing: 'border-box' }} />
           </Combine>
-        </Titled>
-        <Titled label='　　操作速度'>
-          <Combine>
-            <Input {...edit_number_00('ctrl_spd_x')} prefix="x" style={{ width: 80 }} />
-            <Input {...edit_number_00('ctrl_spd_y')} prefix="y" style={{ width: 80 }} />
-            <Input {...edit_number_00('ctrl_spd_z')} prefix="z" style={{ width: 80 }} />
-          </Combine>
-        </Titled>
-        <Titled label='　操作加速度'>
-          <Combine>
-            <Input {...edit_number_00('ctrl_acc_x')} prefix="x" style={{ width: 80 }} />
-            <Input {...edit_number_00('ctrl_acc_y')} prefix="y" style={{ width: 80 }} />
-            <Input {...edit_number_00('ctrl_acc_z')} prefix="z" style={{ width: 80 }} />
-          </Combine>
-        </Titled>
-        <Titled label='操作速度模式'>
+        </Titled> */}
+            <Editor.EditorVec3 name="操作速度" fields={['ctrl_spd_x', 'ctrl_spd_y', 'ctrl_spd_z']} />
+            <Editor.EditorVec3 name="操作加速度" fields={['ctrl_acc_x', 'ctrl_acc_y', 'ctrl_acc_z']} />
+            {/* <Titled label='操作速度模式'>
           <Combine>
             <Select {...SPEED_MODE_SELECT_PROPS} {...edit_num_select('ctrl_spd_x_m')} style={{ width: 80, boxSizing: 'border-box' }} />
             <Select {...SPEED_MODE_SELECT_PROPS} {...edit_num_select('ctrl_spd_y_m')} style={{ width: 80, boxSizing: 'border-box' }} />
             <Select {...SPEED_MODE_SELECT_PROPS} {...edit_num_select('ctrl_spd_z_m')} style={{ width: 80, boxSizing: 'border-box' }} />
           </Combine>
-        </Titled>
-      </Show>
-      <Show show={editing === 'itr'}>
+        </Titled> */}
+          </Space>
+        </Show>
+
+      </Space>
+      {/* <Show show={editing === 'itr'}>
         <Button style={{ alignSelf: 'stretch' }} onClick={() => {
           set_frame(prev => {
             const next: IFrameInfo = { ...prev };
@@ -343,7 +249,7 @@ export function FrameEditorView(props: IFrameEditorViewProps) {
           add itr
         </Button>
         {
-          frame.itr && map_arr(frame.itr, (itr, idx) => {
+          value.itr && map_arr(value.itr, (itr, idx) => {
             const name = `itr[${idx}]`;
             const on_change = (itr: IItrInfo) => set_frame(prev => {
               const next: IFrameInfo = { ...prev }
@@ -387,7 +293,7 @@ export function FrameEditorView(props: IFrameEditorViewProps) {
           add bdy
         </Button>
         {
-          frame.bdy && map_arr(frame.bdy, (bdy, idx) => {
+          value.bdy && map_arr(value.bdy, (bdy, idx) => {
             const name = `bdy[${idx}]`;
             const on_change = (bdy: IBdyInfo) => set_frame(prev => {
               const next: IFrameInfo = { ...prev }
@@ -414,7 +320,7 @@ export function FrameEditorView(props: IFrameEditorViewProps) {
             )
           })
         }
-      </Show>
+      </Show> */}
     </Frame>
   );
 }

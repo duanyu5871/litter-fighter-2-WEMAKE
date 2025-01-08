@@ -66,7 +66,7 @@ export function EntityEditorView(props: IEntityEditorViewProps) {
       ret.push(
         <FrameEditorView
           key={frame.id}
-          src={frame}
+          value={frame}
           data={data}
           on_frame_change={(...a) => ref_on_frame_change.current?.(...a)}
           on_click_frame={(...a) => ref_on_click_frame.current?.(...a)}
