@@ -1,0 +1,46 @@
+@import "../../styles/lfui_values.module.scss";
+
+.header_main_footer_view {
+  flex            : 1;
+  overflow        : hidden;
+  position        : relative;
+  background-color: $primary_bg_color;
+
+  &>.head_zone {
+    content: ' ';
+
+    &>.title {
+      flex      : 1;
+      text-align: center;
+      align-self: center;
+    }
+  }
+
+  &>.content_zone {
+    flex    : 1;
+    overflow: hidden;
+    display : flex;
+    position: relative;
+
+    &.inner_shadow_v {
+      z-index       : 1;
+      width         : 100%;
+      position      : absolute;
+      color         : transparent;
+      pointer-events: none;
+    }
+
+    &::before {
+      content   : '-';
+      background: linear-gradient(#00000088, #00000000);
+      @extend .inner_shadow_v;
+    }
+
+    &::after {
+      content   : '-';
+      bottom    : 0px;
+      background: linear-gradient(#00000000, #00000088);
+      @extend .inner_shadow_v;
+    }
+  }
+}

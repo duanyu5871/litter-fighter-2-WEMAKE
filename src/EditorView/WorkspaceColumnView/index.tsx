@@ -1,0 +1,48 @@
+import { Button } from "../../Component/Buttons/Button";
+import Combine, { ICombineProps } from "../../Component/Combine";
+import { Add } from "../../Component/Icons/Clear";
+import { Space } from "../../Component/Space";
+import { Text } from "../../Component/Text";
+import styles from "./style.module.scss"
+
+export interface IWorkspaceColumnViewProps extends Omit<ICombineProps, "title"> {
+  title?: React.ReactNode;
+  header?: React.ReactNode;
+}
+export function WorkspaceColumnView(props: IWorkspaceColumnViewProps) {
+  const { title, header, ..._p } = props;
+  return (
+    <Combine
+      direction='column'
+      className={styles.header_main_footer_view}
+      hoverable={false}
+      {..._p}>
+      {
+        header ? header :
+          <Combine direction='row' hoverable={false} className={styles.head_zone}>
+            <Text size='m' className={styles.title}>
+              {title}
+            </Text>
+          </Combine>
+      }
+      <div className={styles.content_zone}>
+        {props.children}
+      </div>
+    </Combine>
+  )
+}
+
+export function TitleAndAdd(props: { title?: React.ReactNode; on_add?(e: React.MouseEvent): void }) {
+  const { title, on_add } = props;
+  return (
+    <Combine direction='row' hoverable={false} className={styles.head_zone}>
+      <Text size='m' className={styles.title}>
+        {title}
+      </Text>
+      <Button onClick={on_add}>
+        <Add />
+      </Button>
+    </Combine>
+  )
+}
+WorkspaceColumnView.TitleAndAdd = TitleAndAdd

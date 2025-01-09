@@ -8,9 +8,10 @@ import Select from "../Component/Select";
 import Show from "../Component/Show";
 import { Space } from "../Component/Space";
 import { TabButtons } from "../Component/TabButtons";
+import { Text } from "../Component/Text";
 import Titled from "../Component/Titled";
 import { ITreeNode, ITreeNodeGetIcon, TreeView } from "../Component/TreeView";
-import { Defines, IBgData, IFrameInfo } from "../LF2/defines";
+import { IBgData, IFrameInfo } from "../LF2/defines";
 import { EntityEnum } from "../LF2/defines/EntityEnum";
 import { IEntityData } from "../LF2/defines/IEntityData";
 import Ditto, { IZip } from "../LF2/ditto";
@@ -23,12 +24,12 @@ import { shared_ctx } from './Context';
 import { EditorShapeEnum } from "./EditorShapeEnum";
 import { EntityDataEditorView } from "./EntityDataEditorView";
 import { EntityBaseDataEditorView } from "./EntityDataEditorView/EntityBaseDataEditorView";
-import { EntityEditorView } from "./EntityEditorView";
 import { FrameDrawer, FrameDrawerData } from "./FrameDrawer";
+import { FrameEditorView } from "./FrameEditorView";
 import { ItrPrefabEditorView } from "./FrameEditorView/ItrPrefabEditorView";
 import { PicInfoEditorView } from "./PicInfoEditorView";
 import styles from "./styles.module.scss";
-import { FrameEditorView } from "./FrameEditorView";
+import { WorkspaceColumnView } from "./WorkspaceColumnView";
 
 enum EntityEditing {
   base = '基础信息',
@@ -146,26 +147,14 @@ export default function EditorView(props: IEditorViewProps) {
         />
       );
     }
+    const header = <WorkspaceColumnView.TitleAndAdd title="帧列表" />
     return (
       <Space.Broken>
-        <Combine
-          direction='column'
-          className={styles.header_main_footer_view}
-          hoverable={false}>
-          <Combine direction='row' hoverable={false}>
-            <div style={{ flex: 1, textAlign: 'center' }}>
-              帧列表
-            </div>
-            <Button >
-              <Add />
-            </Button>
-          </Combine>
-          <div className={styles.content_zone}>
-            <Space.Item space vertical frame className={styles.file_editor_view}>
-              {frame_views}
-            </Space.Item>
-          </div>
-        </Combine>
+        <WorkspaceColumnView header={header}>
+          <Space.Item space vertical frame className={styles.file_editor_view}>
+            {frame_views}
+          </Space.Item>
+        </WorkspaceColumnView>
       </Space.Broken>
     )
   }, [editing_data, zip])
@@ -364,31 +353,18 @@ export default function EditorView(props: IEditorViewProps) {
       }
       set_change_flag(change_flag + 1);
     }
+    const header = <WorkspaceColumnView.TitleAndAdd title="实体图片" on_add={add} />
     return (
-      <Space.Broken >
-        <Combine
-          direction='column'
-          className={styles.header_main_footer_view}
-          hoverable={false}>
-          <Combine direction='row' hoverable={false}>
-            <div style={{ flex: 1, textAlign: 'center' }}>
-              实体图片
-            </div>
-            <Button key={views.length} onClick={add}>
-              <Add />
-            </Button>
-          </Combine>
-          <div className={styles.content_zone}>
-            <Space.Item space vertical frame className={styles.file_editor_view}>
-              {views}
-            </Space.Item>
-          </div>
-        </Combine>
+      <Space.Broken>
+        <WorkspaceColumnView header={header}>
+          <Space.Item space vertical frame className={styles.file_editor_view}>
+            {views}
+          </Space.Item>
+        </WorkspaceColumnView>
       </Space.Broken>
     )
   }, [editing_data, change_flag])
-
-
+  
   const itr_prefabs = editing_data?.itr_prefabs;
   const itr_prefab_list_view = useMemo(() => {
     if (!editing_data) return void 0;
