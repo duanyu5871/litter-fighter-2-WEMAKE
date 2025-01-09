@@ -244,7 +244,7 @@ export default function EditorView(props: IEditorViewProps) {
   const on_click_item = (node: TTreeNode) => {
     if (node.children) {
       set_opens((old = []) => {
-        const ret = old.filter(v => v !== node.title)
+        const ret = old.filter(v => v !== node.key)
         if (ret.length === old.length)
           ret.push(node.key)
         return ret.length ? ret : void 0;
@@ -440,16 +440,22 @@ export default function EditorView(props: IEditorViewProps) {
               }} />
           </Show>
         </Space>
-        <Space.Item space direction='row' style={{ flex: 1, display: 'flex' }} onClick={e => { e.stopPropagation(); e.preventDefault() }}>
-          <Space.Item className={styles.tree_item_view_wrapper} space vertical>
-            <Space>
-              <Titled label="mp3"><Checkbox value={state.mp3} onChanged={v => set_state(o => ({ ...o, mp3: v }))} /></Titled>
-              <Titled label="flat"><Checkbox value={state.flat} onChanged={v => set_state(o => ({ ...o, flat: v }))} /></Titled>
-              <Titled label="json"><Checkbox value={state.json} onChanged={v => set_state(o => ({ ...o, json: v }))} /></Titled>
-              <Titled label="img"><Checkbox value={state.img} onChanged={v => set_state(o => ({ ...o, img: v }))} /></Titled>
-              <Titled label="others"><Checkbox value={state.others} onChanged={v => set_state(o => ({ ...o, others: v }))} /></Titled>
-            </Space>
-            <Space.Item className={styles.scroll_zone}>
+        <Space.Item space direction='row' style={{ flex: 1, display: 'flex', minHeight: '0px' }} onClick={e => { e.stopPropagation(); e.preventDefault() }}>
+          <WorkspaceColumnView
+            style={{ alignSelf: 'center', height: '100%' }}
+            header={
+              <WorkspaceColumnView.TitleAndAdd title={
+                <Space>
+                  <Titled label="mp3"><Checkbox value={state.mp3} onChanged={v => set_state(o => ({ ...o, mp3: v }))} /></Titled>
+                  <Titled label="flat"><Checkbox value={state.flat} onChanged={v => set_state(o => ({ ...o, flat: v }))} /></Titled>
+                  <Titled label="json"><Checkbox value={state.json} onChanged={v => set_state(o => ({ ...o, json: v }))} /></Titled>
+                  <Titled label="img"><Checkbox value={state.img} onChanged={v => set_state(o => ({ ...o, img: v }))} /></Titled>
+                  <Titled label="others"><Checkbox value={state.others} onChanged={v => set_state(o => ({ ...o, others: v }))} /></Titled>
+                </Space>
+              }>
+              </WorkspaceColumnView.TitleAndAdd>
+            }>
+            <Space.Item space vertical frame className={styles.file_editor_view}>
               <TreeView
                 node={filters_tree}
                 opens={opens}
@@ -457,26 +463,30 @@ export default function EditorView(props: IEditorViewProps) {
                 get_icon={get_icon}
               />
             </Space.Item>
-          </Space.Item>
+          </WorkspaceColumnView>
+
+          <Show show={!!editing_data}>
+            <Space.Item space direction="column" style={{ height: '0', minHeight: '100%' }}>
+              <EntityDataEditorView
+                value={editing_data}
+                on_changed={() => set_change_flag(change_flag + 1)}
+                className={styles.entity_base_editor} />
+              <TabButtons
+                value={tab}
+                items={Object.values(EntityEditing)}
+                parse={v => [v, v]}
+                onChange={v => set_tab(v)} />
+              <Space.Broken>
+                {tab === EntityEditing.base ? base_data_view : null}
+                {tab === EntityEditing.frames ? frame_list_view : null}
+                {tab === EntityEditing.pic ? pic_list_view : null}
+                {tab === EntityEditing.itr_pre ? itr_prefab_list_view : null}
+              </Space.Broken>
+            </Space.Item>
+          </Show>
+
+
           <Space.Item space _ref={ref_div} className={styles.frame_preview_view} />
-          <Space.Item space direction="column" style={{ height: '0', minHeight: '100%' }}>
-            <EntityDataEditorView
-              value={editing_data}
-              on_changed={() => set_change_flag(change_flag + 1)}
-              className={styles.entity_base_editor} />
-            <TabButtons
-              value={tab}
-              items={Object.values(EntityEditing)}
-              parse={v => [v, v]}
-              onChange={v => set_tab(v)}
-            />
-            <Space.Broken>
-              {tab === EntityEditing.base ? base_data_view : null}
-              {tab === EntityEditing.frames ? frame_list_view : null}
-              {tab === EntityEditing.pic ? pic_list_view : null}
-              {tab === EntityEditing.itr_pre ? itr_prefab_list_view : null}
-            </Space.Broken>
-          </Space.Item>
           {textarea}
         </Space.Item>
       </Space>
