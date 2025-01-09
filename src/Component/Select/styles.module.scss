@@ -56,9 +56,10 @@
   }
 }
 
-.lfui_dropdown.open{
+.lfui_dropdown.open {
   @extend .lfui_hoverable_border_hover;
 }
+
 .lfui_dropdown_popover {
   @extend .lfui_hoverable_border;
   overflow        : auto;

@@ -119,19 +119,12 @@ export function FrameEditorView(props: IFrameEditorViewProps) {
   return (
     <Frame
       id={`${data.id}###${value.id}`}
-      className={classNames(styles.frame_editor_view, { selected })}
+      label={`${data.id}###${value.id}`}
       {..._p}
       onClick={(e) => {
         const ele = e.target as HTMLElement;
         if (ele.tagName === 'DIV')
           ref_on_click_frame.current?.(value, data)
-      }}
-      style={{
-        overflow: 'hidden',
-        flexShrink: 0,
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 5
       }}>
       <Space direction='column'>
         <Editor.EditorStr field='id' />
@@ -159,18 +152,18 @@ export function FrameEditorView(props: IFrameEditorViewProps) {
             <Editor.EditorVec2 name="锚点" fields={['centerx', 'centery']} />
             <Editor.EditorInt field="wait" clearable={false} title="当前动作持续多少帧数" />
             {/* <Titled label='持续帧数'>
-          <Combine>
-            <Combine direction='column'>
-              {next_frame_selects}
-            </Combine>
-          </Combine>
-        </Titled> */}
-            {/* <Titled label='　　声音'>
-          <Combine >
-            <Input {...edit_string('sound')} />
-            {value.sound ? <AudioButton zip={zip} path={value.sound} /> : null}
-          </Combine>
-        </Titled> */}
+              <Combine>
+                <Combine direction='column'>
+                  {next_frame_selects}
+                </Combine>
+              </Combine>
+            </Titled>
+            <Titled label='　　声音'>
+              <Combine >
+                <Input {...edit_string('sound')} />
+                {value.sound ? <AudioButton zip={zip} path={value.sound} /> : null}
+              </Combine>
+            </Titled> */}
           </Space>
         </Show>
         <Show show={editing === TabEnum.Spd}>

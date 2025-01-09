@@ -58,11 +58,14 @@
     font-size         : inherit;
     font-family       : inherit;
     box-sizing        : border-box;
-    display           : flex;
+    display           : inline-flex;
     align-items       : center;
     justify-content   : center;
-    flex              : 1;
     overflow          : hidden;
+    min-height        : 0px;
+    flex              : 1;
+    flex-grow         : 1;
+    flex-shrink       : 0;
 
     &>span {
       font-family: inherit;
@@ -88,6 +91,8 @@
       position        : absolute;
       left            : 0;
       top             : 0;
+      width           : 0;
+      height          : 0;
       height          : 100%;
       width           : 100%;
       padding         : 0px 0.25em;
@@ -98,6 +103,8 @@
       outline         : none;
       border          : none;
       flex            : 1;
+      min-height      : 0px;
+      min-width       : 0px;
 
       &::-webkit-outer-spin-button,
       &::-webkit-inner-spin-button {
