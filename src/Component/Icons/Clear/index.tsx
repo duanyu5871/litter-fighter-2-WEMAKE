@@ -62,6 +62,7 @@ export function Close3(props: IIconProps) {
     </svg>
   )
 }
+
 export function Add(props: IIconProps) {
   const { className, hoverable, ..._p } = props;
   const clz_name = classNames(styles.ic, { [styles.hoverable]: hoverable }, className)
@@ -69,6 +70,17 @@ export function Add(props: IIconProps) {
     <svg width='1em' height='1em' className={clz_name} viewBox="0, 0, 12, 12" {..._p}>
       <path className={styles.text_stroke} d="M 6 0 L 6 12" />
       <path className={styles.text_stroke} d="M 0 6 L 12 6" />
+    </svg>
+  )
+}
+
+export function Search(props: IIconProps) {
+  const { className, hoverable, ..._p } = props;
+  const clz_name = classNames(styles.ic, { [styles.hoverable]: hoverable }, className)
+  return (
+    <svg width='1em' height='1em' className={clz_name} viewBox="0, 0, 12, 12" {..._p}>
+      <path className={styles.text_stroke} d="M 1 11 L 3.8 8.3" />
+      <circle className={styles.text_stroke} cx="7" cy="5" r="4.5" />
     </svg>
   )
 }
