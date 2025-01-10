@@ -69,13 +69,14 @@ const get_icon: ITreeNodeGetIcon<IEntityData | IBgData | null> = ({ node, depth 
   return dat_type_emoji_map[type]
 }
 export default function EditorView(props: IEditorViewProps) {
-  const ref_div = useRef<HTMLDivElement>(null);
   const ref_board = useRef<Board>();
+  const [board_wrapper, set_board_wrapper] = useState<HTMLDivElement>()
 
   const { onClose, loading, open, lf2, ..._p } = props;
   const [zip_name, set_zip_name] = useState('');
   const [zips, set_zips] = useState<IZip[]>();
   const [zip, set_zip] = useState<IZip>();
+
   useEffect(() => {
     if (!lf2) return;
     const cb: ILf2Callback = {
@@ -85,11 +86,10 @@ export default function EditorView(props: IEditorViewProps) {
     return () => lf2.callbacks.del(cb);
 
   }, [lf2])
+
   const [opens, set_opens] = useState<string[]>()
   const [tree, set_tree] = useState<TTreeNode>();
-
   const [textarea, set_textarea] = useState<React.ReactNode>();
-
   const ref_editing_node = useRef<TTreeNode>()
   const ref_editing_data = useRef<IEntityData>()
 
@@ -98,8 +98,6 @@ export default function EditorView(props: IEditorViewProps) {
   const [tab, set_tab] = useState<EntityEditing | undefined>(EntityEditing.base);
   ref_editing_node.current = editing_node;
   ref_editing_data.current = editing_data;
-
-
 
   const frame_list_view = useMemo(() => {
     if (!editing_data) return void 0;
@@ -290,7 +288,7 @@ export default function EditorView(props: IEditorViewProps) {
     }
   }
   useEffect(() => {
-    const container = ref_div.current;
+    const container = board_wrapper;
     if (!container || !open) return;
     const board = ref_board.current = factory.newWhiteBoard({ element: container });
     board.setToolType(ToolEnum.Selector);
@@ -306,7 +304,7 @@ export default function EditorView(props: IEditorViewProps) {
       board.layer().destory();
       ob.disconnect();
     }
-  }, [open])
+  }, [open, board_wrapper])
 
   const [change_flag, set_change_flag] = useState(0)
   // const files = editing_data?.base.files;
@@ -471,11 +469,15 @@ export default function EditorView(props: IEditorViewProps) {
                 value={editing_data}
                 on_changed={() => set_change_flag(change_flag + 1)}
                 className={styles.entity_base_editor} />
-              <TabButtons
-                value={tab}
-                items={Object.values(EntityEditing)}
-                parse={v => [v, v]}
-                onChange={v => set_tab(v)} />
+              <Space.Item style={{ display: 'flex' }}>
+                <TabButtons
+                  value={tab}
+                  items={Object.values(EntityEditing)}
+                  parse={v => [v, v]}
+                  onChange={v => set_tab(v)}
+                  style={{ flex: 1 }}
+                  styles={{ button: { flex: 1 } }} />
+              </Space.Item>
               <Space.Broken>
                 {tab === EntityEditing.base ? base_data_view : null}
                 {tab === EntityEditing.frames ? frame_list_view : null}
@@ -483,10 +485,8 @@ export default function EditorView(props: IEditorViewProps) {
                 {tab === EntityEditing.itr_pre ? itr_prefab_list_view : null}
               </Space.Broken>
             </Space.Item>
+            <Space.Item space ref={(r) => set_board_wrapper(prev => r || prev)} className={styles.frame_preview_view} />
           </Show>
-
-
-          <Space.Item space _ref={ref_div} className={styles.frame_preview_view} />
           {textarea}
         </Space.Item>
       </Space>

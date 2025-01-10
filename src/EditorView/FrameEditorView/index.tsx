@@ -118,8 +118,8 @@ export function FrameEditorView(props: IFrameEditorViewProps) {
   const Editor = useEditor(value)
   return (
     <Frame
-      id={`${data.id}###${value.id}`}
-      label={`${data.id}###${value.id}`}
+      id={`frame#${value.id}`}
+      label={`frame:${value.id}`}
       {..._p}
       onClick={(e) => {
         const ele = e.target as HTMLElement;
@@ -129,12 +129,15 @@ export function FrameEditorView(props: IFrameEditorViewProps) {
       <Space direction='column'>
         <Editor.EditorStr field='id' />
         <Editor.EditorStr field='name' />
-        <TabButtons
-          style={{ alignSelf: 'center' }}
-          value={editing}
-          items={Object.values(TabEnum)}
-          parse={v => [v, tab_labels[v]]}
-          onChange={v => set_editing(prev => v === prev ? void 0 : v)} />
+        <Space.Item style={{ display: 'flex' }}>
+          <TabButtons
+            style={{ flex: 1 }}
+            value={editing}
+            items={Object.values(TabEnum)}
+            parse={v => [v, tab_labels[v]]}
+            onChange={v => set_editing(prev => v === prev ? void 0 : v)}
+            styles={{ button: { flex: 1 } }} />
+        </Space.Item>
         <Show show={editing === 'base'}>
           <Space direction="column">
             <Editor.EditorSel {...STATE_SELECT_PROPS} field="state" />

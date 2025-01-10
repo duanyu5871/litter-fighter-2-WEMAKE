@@ -217,7 +217,7 @@ export function Select<T, V>(props: ISelectProps<T, V> | IMultiSelectProps<T, V>
 
   const not_empty = !!checked_tree_nodes?.length;
   return (
-    <Space className={classname} {..._p} _ref={ref_wrapper} onPointerDown={on_pointer_down}>
+    <Space className={classname} {..._p} ref={ref_wrapper} onPointerDown={on_pointer_down}>
       <Space.Broken>
         <Input
           prefix={

@@ -1,6 +1,7 @@
 import React from "react";
 
-export default function Show(props: React.PropsWithChildren<{ show?: any }>) {
+export interface IShowProps extends React.PropsWithChildren<{ show?: any }> { }
+export default function Show(props: IShowProps) {
   if (!("show" in props)) return <></>;
   if (!props.show) return <></>;
   return <>{props.children}</>;

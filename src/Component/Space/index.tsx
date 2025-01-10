@@ -1,59 +1,72 @@
-import React, { PropsWithChildren, useMemo } from "react";
-import Show, { Div } from "../Show";
-import './styles.scss';
 import classNames from "classnames";
+import React, { ForwardedRef, forwardRef, useMemo } from "react";
+import Show, { Div, IShowProps } from "../Show";
+import { Broken } from "./Broken";
+import './styles.scss';
+
+function make_space_children(node: any, item_props: React.HTMLAttributes<HTMLDivElement> | undefined, ret: React.ReactNode[]): React.ReactNode[] {
+  if (Array.isArray(node)) {
+    for (const child of node) {
+      make_space_children(child, item_props, ret)
+    }
+    return ret;
+  }
+  switch (node) {
+    case void 0: case null: case true: case false:
+      return ret
+  }
+  if (React.isValidElement<{ show: any }>(node)) {
+    if (node.type === Div && !node.props.show)
+      return ret
+    if (node.type === Show && !node.props.show)
+      return ret
+    if (node.type === Show) {
+      make_space_children((node.props as IShowProps).children, item_props, ret)
+      return ret;
+    }
+    if (node.type === React.Fragment) {
+      make_space_children((node.props as React.PropsWithChildren).children, item_props, ret)
+      return ret;
+    }
+    if (node.type === Space.Item || node.type === Space.Broken) {
+      ret.push(<React.Fragment key={ret.length}>{node}</React.Fragment>);
+      return ret;
+    }
+  } else if (typeof node === 'object' && 'containerInfo' in node) {
+    ret.push(<React.Fragment key={ret.length}>{node}</React.Fragment>);
+    return ret;
+  }
+  ret.push(
+    <Space.Item {...item_props} key={ret.length}>
+      {node}
+    </Space.Item>
+  )
+  return ret;
+}
 export interface ISpaceProps extends React.HTMLAttributes<HTMLDivElement> {
   item_props?: React.HTMLAttributes<HTMLDivElement>;
   direction?: 'column' | 'row';
   vertical?: boolean;
-  _ref?: React.RefObject<HTMLDivElement>;
 }
-export function Space(props: ISpaceProps) {
+
+function _Space(props: ISpaceProps, forwarded_ref: ForwardedRef<HTMLDivElement>) {
   const {
     className,
     children,
     item_props,
     vertical,
     direction = vertical ? 'column' : 'row',
-    _ref,
     ..._p
   } = props;
-  const root_cls_name = useMemo(() => classNames("lf2ui_space", direction, className), [className, direction])
 
-  const items = Array.isArray(children) ? children : children ? [children] : void 0
+  const root_cls_name = useMemo(() => classNames("lf2ui_space", direction, className), [className, direction]);
   return (
-    <div className={root_cls_name} {..._p} ref={_ref}>
-      {
-        items?.map((v, i) => {
-          switch (v) {
-            case void 0: case null: case true: case false:
-              return null
-          }
-          if (React.isValidElement<{ show: any }>(v)) {
-            if (v.type === Show && !v.props.show)
-              return null
-            if (v.type === Div && !v.props.show)
-              return null
-            if (v.type === Item)
-              return v;
-            if (v.type === Broken)
-              return v
-          } else if (typeof v === 'object' && 'containerInfo' in v) {
-            return v;
-          }
-          return (
-            <Item {...item_props} key={i}>
-              {v}
-            </Item>
-          )
-        })
-      }
+    <div className={root_cls_name} {..._p} ref={forwarded_ref}>
+      {make_space_children(children, item_props, [])}
     </div>
   )
 }
-export function Broken({ children }: PropsWithChildren) {
-  return children
-}
+
 export interface ISpaceItemProps extends ISpaceProps {
   direction?: 'column' | 'row';
   space?: boolean;
@@ -61,14 +74,21 @@ export interface ISpaceItemProps extends ISpaceProps {
   hoverable_frame?: boolean;
 }
 
-function Item(props: ISpaceItemProps) {
-  const { className, space, hoverable_frame, frame, _ref, ..._p } = props || {};
+function Item(props: ISpaceItemProps, forwarded_ref: ForwardedRef<HTMLDivElement>) {
+  const { className, space, hoverable_frame, frame, ..._p } = props || {};
   const root_cls_name = useMemo(() => classNames("item", { frame, hoverable_frame }, className), [className, frame, hoverable_frame])
   return (
     space ?
-      <Space className={root_cls_name} {..._p} _ref={_ref} /> :
-      <div className={root_cls_name} {..._p} ref={_ref} />
+      <Space className={root_cls_name} {..._p} ref={forwarded_ref} /> :
+      <div className={root_cls_name} {..._p} ref={forwarded_ref} />
   )
 }
-Space.Item = Item;
-Space.Broken = Broken;
+
+export const Space = Object.assign(
+  forwardRef<HTMLDivElement, ISpaceItemProps>(_Space),
+  {
+    Item: forwardRef<HTMLDivElement, ISpaceItemProps>(Item),
+    Broken: Broken
+  }
+)
+
