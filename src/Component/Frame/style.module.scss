@@ -1,12 +1,19 @@
-@import "../../styles/lfui_hoverable_border.scss";
+@import "../../styles/lfui_hoverable_border.module.scss";
 @import "../../styles/lfui_values.module.scss";
 
-.lf2ui_frame {
-  @extend .lfui_hoverable_border;
+.lfui_frame {
   background-color: $primary_bg_color;
   position        : relative;
   box-sizing      : border-box;
   padding         : 10px 10px;
+
+  &.hoverable{
+    @extend .lfui_hoverable_border;
+  }
+
+  &.active {
+    @extend .lfui_hoverable_border_focus;
+  }
 
   &.with_label {
     padding-top: 25px;

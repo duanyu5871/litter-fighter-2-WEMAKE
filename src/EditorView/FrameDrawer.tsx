@@ -32,10 +32,10 @@ export class FrameDrawer extends Shape<FrameDrawerData> {
   }
   static get_bounding(f: IFrameInfo) {
     const { pic = { w: 0, h: 0 } } = f;
-    let l = -20;
-    let t = -20;
-    let r = 20;
-    let b = 20;
+    let l = 0;
+    let t = 0;
+    let r = 0;
+    let b = 0;
     const check_rect = ({ x, y, w, h }: IRect) => {
       l = Math.min(x, l);
       t = Math.min(y, t);
@@ -57,6 +57,11 @@ export class FrameDrawer extends Shape<FrameDrawerData> {
     if (f.opoint) loop_arr(f.opoint, opoint => check_vec2(opoint))
     if (f.cpoint) check_vec2(f.cpoint);
     if (f.bpoint) check_vec2(f.bpoint)
+
+    l += 0;
+    t += 0;
+    r += 0;
+    b += 0;
     return { l, r, t, b };
   }
   override get resizable(): Resizable {

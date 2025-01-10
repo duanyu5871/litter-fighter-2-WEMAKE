@@ -1,21 +1,15 @@
-import classNames from "classnames";
-import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
-import { Button } from "../../Component/Buttons/Button";
+import React, { useRef, useState } from "react";
 import Combine from "../../Component/Combine";
-import Frame from "../../Component/Frame";
+import Frame, { IFrameProps } from "../../Component/Frame";
 import { Input } from "../../Component/Input";
-import Select from "../../Component/Select";
 import Show from "../../Component/Show";
+import { Space } from "../../Component/Space";
 import { TabButtons } from "../../Component/TabButtons";
 import Titled from "../../Component/Titled";
-import { Defines, IFrameInfo, INextFrame } from "../../LF2/defines";
+import { IFrameInfo } from "../../LF2/defines";
 import { IEntityData } from "../../LF2/defines/IEntityData";
-import { map_arr } from "../../LF2/utils/array/map_arr";
-import { shared_ctx } from "../Context";
 import { SPEED_MODE_SELECT_PROPS, STATE_SELECT_PROPS } from "../EntityEditorView";
-import styles from "./styles.module.scss";
 import { useEditor } from "./useEditor";
-import { Space } from "../../Component/Space";
 
 enum TabEnum {
   Base = 'base',
@@ -36,96 +30,18 @@ const tab_labels: Record<TabEnum, string> = {
   [TabEnum.Bpoint]: "吐血"
 }
 export const img_map = (window as any).img_map = new Map<string, HTMLImageElement>();
-export interface IFrameEditorViewProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange'> {
+export interface IFrameEditorViewProps extends Omit<IFrameProps, 'onChange'> {
   value: IFrameInfo;
   data: IEntityData;
-  on_click_frame?(frame: IFrameInfo, data: IEntityData): void;
-  on_frame_change?(frame: IFrameInfo, data: IEntityData): void;
-  on_click_goto_next_frame?(next_frame: INextFrame, data: IEntityData): void;
-  on_click_play?(frame: IFrameInfo, data: IEntityData): void;
   selected?: boolean;
 }
 export function FrameEditorView(props: IFrameEditorViewProps) {
-  const { zip } = useContext(shared_ctx);
-  const {
-    value, data, on_click_frame, on_frame_change, on_click_goto_next_frame,
-    selected, on_click_play, ..._p
-  } = props;
-
-  const ref_on_click_frame = useRef(on_click_frame);
-  ref_on_click_frame.current = on_click_frame;
-  const ref_on_frame_change = useRef(on_frame_change);
-  ref_on_frame_change.current = on_frame_change;
-
-  const ref_on_click_goto_next_frame = useRef(on_click_goto_next_frame);
-  ref_on_click_goto_next_frame.current = on_click_goto_next_frame;
-
-  const ref_on_click_play = useRef(on_click_play);
-  ref_on_click_play.current = on_click_play;
-
+  const { value, data, ..._p } = props;
   const [editing, set_editing] = useState<TabEnum | undefined>(TabEnum.Base);
-
-  const { frames } = data;
-  const next_frame_selects = useMemo(() => {
-    const frame_list: IFrameInfo[] = [{
-      id: Defines.FrameId.Auto,
-      name: "Auto",
-      state: 0,
-      wait: 0,
-      next: {},
-      centerx: 0,
-      centery: 0
-    }, {
-      id: Defines.FrameId.Gone,
-      name: "Gone",
-      state: 0,
-      wait: 0,
-      next: {},
-      centerx: 0,
-      centery: 0
-    }, {
-      id: Defines.FrameId.Self,
-      name: "Self",
-      state: 0,
-      wait: 0,
-      next: {},
-      centerx: 0,
-      centery: 0
-    }]
-    for (const key in frames) {
-      frame_list.push(frames[key])
-    }
-    const ret: React.ReactNode[] = map_arr(value.next, (n, idx) => {
-      return (
-        <Combine key={idx}>
-          <Select
-            key={idx}
-            title="下一帧"
-            value={n.id}
-            items={frame_list}
-            parse={i => [i.id, i.name + '(' + i.id + ')']}
-            style={{ width: 150, boxSizing: 'border-box' }}
-          />
-          <Button onClick={() => ref_on_click_goto_next_frame.current?.(n, data)}>
-            Go
-          </Button>
-        </Combine>
-      )
-    });
-    return ret
-  }, [value, frames, data])
-
   const Editor = useEditor(value)
+  const ref_root = useRef<HTMLDivElement>(null)
   return (
-    <Frame
-      id={`frame#${value.id}`}
-      label={`frame:${value.id}`}
-      {..._p}
-      onClick={(e) => {
-        const ele = e.target as HTMLElement;
-        if (ele.tagName === 'DIV')
-          ref_on_click_frame.current?.(value, data)
-      }}>
+    <Frame id={`frame#${value.id}`} label={`frame:${value.id}`} {..._p} ref={ref_root}>
       <Space direction='column'>
         <Editor.EditorStr field='id' />
         <Editor.EditorStr field='name' />

@@ -11,6 +11,7 @@
   border       : 2px $primary_border_color solid;
   border-radius: 5px;
 
+
   &>.float_label {
     font-size  : 9px;
     line-height: 9px;
@@ -48,13 +49,30 @@
 }
 
 .lfui_hoverable_border:focus,
-.lfui_hoverable_border_focus {
+.lfui_hoverable_border_focus,
+.lfui_hoverable_border:active,
+.lfui_hoverable_border_active {
   @extend .lfui_hoverable_border;
   border-color: $primary_border_color_active;
-  border-style: dotted;
+  animation   : breathe 0.1s infinite;
+  box-shadow  : 0px 0px 20px rgba(0, 0, 0, 0.5);
 
   &>.float_label {
     background: $primary_bg_color_active;
     color     : $primary_text_color_active;
+  }
+}
+
+@keyframes breathe {
+  0% {
+    border-color: $primary_border_color_active;
+  }
+
+  50% {
+    border-color: $primary_border_color;
+  }
+
+  100% {
+    border-color: $primary_border_color_active;
   }
 }

@@ -25,7 +25,7 @@ import { EditorShapeEnum } from "./EditorShapeEnum";
 import { EntityDataEditorView } from "./EntityDataEditorView";
 import { EntityBaseDataEditorView } from "./EntityDataEditorView/EntityBaseDataEditorView";
 import { FrameDrawer, FrameDrawerData } from "./FrameDrawer";
-import { FrameEditorView } from "./FrameEditorView";
+import { FrameEditorView, IFrameEditorViewProps } from "./FrameEditorView";
 import { ItrPrefabEditorView } from "./FrameEditorView/ItrPrefabEditorView";
 import { PicInfoEditorView } from "./PicInfoEditorView";
 import styles from "./styles.module.scss";
@@ -68,10 +68,136 @@ const get_icon: ITreeNodeGetIcon<IEntityData | IBgData | null> = ({ node, depth 
   const type = node.data.type;
   return dat_type_emoji_map[type]
 }
+export interface IFramesEditorViewProps {
+  data?: IEntityData;
+  zip?: IZip;
+  ref_board: React.RefObject<Board | undefined>
+}
+export function FramesEditorView(props: IFramesEditorViewProps) {
+  const { data, zip, ref_board } = props;
+
+  const [editing_frame, set_frame] = useState<IFrameInfo>()
+  const ref_next_frame = useRef<IFrameInfo>()
+  if (!data) return void 0;
+  const on_frame_change = (frame: IFrameInfo, data: IEntityData) => {
+    set_frame(frame)
+    const board = ref_board.current!;
+    const shape_data = factory.newShapeData(EditorShapeEnum.LF2_FRAME) as FrameDrawerData;
+    shape_data.frame = frame;
+    shape_data.zip = zip;
+    shape_data.data = data;
+    shape_data.layer = board.layer().id;
+    shape_data.id = 'frame';
+    shape_data.z = factory.newZ(shape_data);
+    const { w, h } = FrameDrawer.get_size(frame);
+    Object.assign(shape_data, { w: w * 2, h: h * 2 })
+    let shape = board.shapes().find(v => v.data.id === 'frame') as FrameDrawer | undefined;
+    if (!shape) {
+      shape = factory.newShape(shape_data) as FrameDrawer;
+      board.add(shape);
+    } else {
+      let { x, y } = shape;
+      if (shape.data.frame) {
+        const a = FrameDrawer.get_bounding(shape.data.frame)
+        const b = FrameDrawer.get_bounding(shape_data.frame)
+        console.log(a.l, b.l)
+        x += (b.l - a.l + shape.data.frame.centerx - shape_data.frame.centerx) * 2
+        y += (b.t - a.t + shape.data.frame.centery - shape_data.frame.centery) * 2
+      }
+      shape_data.x = x
+      shape_data.y = y
+      shape.merge(shape_data)
+      board.setSelects([shape])
+    }
+  }
+  const frame_views: React.ReactNode[] = [];
+  const frames: IFrameInfo[] = []
+  for (const key in data.frames) {
+    const frame = data.frames[key];
+    frames.push(frame)
+    const node = (
+      <Space.Item
+        key={frames.length}
+        tabIndex={-1}
+        onKeyUp={e => {
+          switch (e.key.toLowerCase()) {
+            case 'arrowdown':
+            case 'pagedown':
+            case 'arrowup':
+            case 'pageup': {
+              const next_frame = ref_next_frame.current;
+              if (next_frame) {
+                set_frame(next_frame)
+                on_frame_change(next_frame, data)
+                ref_next_frame.current = void 0;
+              }
+              break;
+            }
+          }
+        }}
+        onKeyDown={e => {
+          e.stopPropagation();
+          e.preventDefault();
+
+          switch (e.key.toLowerCase()) {
+            case 'enter': {
+              on_frame_change(frame, data)
+              return;
+            }
+          }
+          const ele = (e.target as HTMLElement);
+          const scroll_view = (ele.parentElement as HTMLElement | null)
+          if (!scroll_view) return;
+          const ele_collection = scroll_view.children;
+          const next_ele = ((ele.nextElementSibling ?? ele_collection.item(0)) as HTMLElement | null)
+          const prev_ele = ((ele.previousElementSibling ?? ele_collection.item(ele_collection.length - 1)) as HTMLElement | null)
+          const pt = parseInt(getComputedStyle(scroll_view).paddingTop)
+          switch (e.key.toLowerCase()) {
+            case 'arrowdown':
+            case 'pagedown': {
+              if (!next_ele) break;
+              scroll_view.scrollTo(0, next_ele.offsetTop - pt)
+              next_ele.focus()
+              const idx = (frames.indexOf(frame) + 1) % frames.length
+              ref_next_frame.current = frames[idx]
+              break;
+            }
+            case 'arrowup':
+            case 'pageup': {
+              if (!prev_ele) break;
+              scroll_view.scrollTo(0, prev_ele.offsetTop - pt)
+              prev_ele.focus()
+              const idx = (frames.indexOf(frame) + frames.length - 1) % frames.length
+              ref_next_frame.current = frames[idx]
+              break;
+            }
+          }
+        }}>
+        <FrameEditorView
+          key={frame.id}
+          value={frame}
+          data={data}
+          active={editing_frame === frame}
+          onClick={() => on_frame_change(frame, data)}
+        />
+      </Space.Item>
+    )
+    frame_views.push(node);
+  }
+  const header = <WorkspaceColumnView.TitleAndAdd title="帧列表" />
+  return (
+    <Space.Broken>
+      <WorkspaceColumnView header={header}>
+        <Space.Item space vertical frame className={styles.file_editor_view}>
+          {frame_views}
+        </Space.Item>
+      </WorkspaceColumnView>
+    </Space.Broken>
+  )
+}
 export default function EditorView(props: IEditorViewProps) {
   const ref_board = useRef<Board>();
   const [board_wrapper, set_board_wrapper] = useState<HTMLDivElement>()
-
   const { onClose, loading, open, lf2, ..._p } = props;
   const [zip_name, set_zip_name] = useState('');
   const [zips, set_zips] = useState<IZip[]>();
@@ -92,7 +218,6 @@ export default function EditorView(props: IEditorViewProps) {
   const [textarea, set_textarea] = useState<React.ReactNode>();
   const ref_editing_node = useRef<TTreeNode>()
   const ref_editing_data = useRef<IEntityData>()
-
   const [editing_node, set_editing_node] = useState<TTreeNode>();
   const [editing_data, set_editing_data] = useState<IEntityData>();
   const [tab, set_tab] = useState<EntityEditing | undefined>(EntityEditing.base);
@@ -100,60 +225,12 @@ export default function EditorView(props: IEditorViewProps) {
   ref_editing_data.current = editing_data;
 
   const frame_list_view = useMemo(() => {
-    if (!editing_data) return void 0;
-    const on_frame_change = (frame: IFrameInfo, data: IEntityData) => {
-      const board = ref_board.current!;
-      const shape_data = factory.newShapeData(EditorShapeEnum.LF2_FRAME) as FrameDrawerData;
-      shape_data.frame = frame;
-      shape_data.zip = zip;
-      shape_data.data = data;
-      shape_data.layer = board.layer().id;
-      shape_data.id = 'frame';
-      shape_data.z = factory.newZ(shape_data);
-      const { w, h } = FrameDrawer.get_size(frame);
-      Object.assign(shape_data, { w: w * 2, h: h * 2 })
-
-      let shape = board.shapes().find(v => v.data.id === 'frame') as FrameDrawer | undefined;
-      if (!shape) {
-        shape = factory.newShape(shape_data) as FrameDrawer;
-        board.add(shape);
-      } else {
-        let { x, y } = shape;
-        if (shape.data.frame) {
-          const a = FrameDrawer.get_bounding(shape.data.frame)
-          const b = FrameDrawer.get_bounding(shape_data.frame)
-          x += ((a.l + shape.data.frame.centerx) - (b.l + shape_data.frame.centerx)) * 2
-          y += ((a.t + shape.data.frame.centery) - (b.t + shape_data.frame.centery)) * 2
-        }
-        shape_data.x = x
-        shape_data.y = y
-        shape.merge(shape_data)
-      }
-    }
-    const frame_views: React.ReactNode[] = [];
-    const { frames } = editing_data;
-    for (const key in frames) {
-      const frame = frames[key];
-      frame_views.push(
-        <FrameEditorView
-          key={frame.id}
-          value={frame}
-          data={editing_data}
-        // on_frame_change={(...a) => ref_on_frame_change.current?.(...a)}
-        // on_click_frame={(...a) => ref_on_click_frame.current?.(...a)}
-        // on_click_goto_next_frame={(...a) => ref_on_click_goto_next_frame.current?.(...a)}
-        />
-      );
-    }
-    const header = <WorkspaceColumnView.TitleAndAdd title="帧列表" />
     return (
-      <Space.Broken>
-        <WorkspaceColumnView header={header}>
-          <Space.Item space vertical frame className={styles.file_editor_view}>
-            {frame_views}
-          </Space.Item>
-        </WorkspaceColumnView>
-      </Space.Broken>
+      <FramesEditorView
+        data={editing_data}
+        zip={zip}
+        ref_board={ref_board}
+      />
     )
   }, [editing_data, zip])
 
