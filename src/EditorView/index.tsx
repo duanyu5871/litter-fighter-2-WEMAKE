@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "../Component/Buttons/Button";
 import { Checkbox } from "../Component/Checkbox";
 import Combine from "../Component/Combine";
-import { Add } from "../Component/Icons/Clear";
+import { Add, Close3 } from "../Component/Icons/Clear";
 import Select from "../Component/Select";
 import Show from "../Component/Show";
 import { Space } from "../Component/Space";
@@ -30,6 +30,9 @@ import { ItrPrefabEditorView } from "./FrameEditorView/ItrPrefabEditorView";
 import { PicInfoEditorView } from "./PicInfoEditorView";
 import styles from "./styles.module.scss";
 import { WorkspaceColumnView } from "./WorkspaceColumnView";
+import { CellElement, Slot, WorkspaceKeeper } from "../Editor/WorkspaceKeeper";
+import { createPortal } from "react-dom";
+import Frame from "../Component/Frame";
 
 enum EntityEditing {
   base = '基础信息',
@@ -467,6 +470,7 @@ export default function EditorView(props: IEditorViewProps) {
       }
       set_change_flag(change_flag + 1);
     }
+
     return (
       <Space.Broken>
         <Combine
@@ -491,8 +495,122 @@ export default function EditorView(props: IEditorViewProps) {
     );
   }, [itr_prefabs, editing_data, change_flag])
 
+
+  const ref_wprkspace_container = useRef<HTMLDivElement>(null);
+  const [slot_changed_flag, set_slot_changed_flag] = useState(0)
+  const ref_workspace = useRef<WorkspaceKeeper>()
+  const [cells, set_cells] = useState<CellElement[]>([])
+
+  const views = useMemo(() => {
+    return (
+      cells.map(cell => {
+        switch (cell.id) {
+          case 'resources_cell':
+            return createPortal(
+              <WorkspaceColumnView
+                className={styles.cell_inner}
+                header={
+                  <WorkspaceColumnView.TitleAndAdd title={
+                    <Space>
+                      <Titled label="mp3"><Checkbox value={state.mp3} onChanged={v => set_state(o => ({ ...o, mp3: v }))} /></Titled>
+                      <Titled label="flat"><Checkbox value={state.flat} onChanged={v => set_state(o => ({ ...o, flat: v }))} /></Titled>
+                      <Titled label="json"><Checkbox value={state.json} onChanged={v => set_state(o => ({ ...o, json: v }))} /></Titled>
+                      <Titled label="img"><Checkbox value={state.img} onChanged={v => set_state(o => ({ ...o, img: v }))} /></Titled>
+                      <Titled label="others"><Checkbox value={state.others} onChanged={v => set_state(o => ({ ...o, others: v }))} /></Titled>
+                    </Space>
+                  }>
+                  </WorkspaceColumnView.TitleAndAdd>
+                }>
+                <Space.Item space vertical frame className={styles.file_editor_view}>
+                  <TreeView
+                    node={filters_tree}
+                    opens={opens}
+                    on_click_item={on_click_item}
+                    get_icon={get_icon}
+                  />
+                </Space.Item>
+              </WorkspaceColumnView>,
+              cell,
+              cell.id
+            )
+          case 'data_cell':
+            return createPortal(
+              <div
+                className={styles.cell_inner}
+                style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+                <EntityDataEditorView
+                  value={editing_data}
+                  on_changed={() => set_change_flag(change_flag + 1)}
+                  className={styles.entity_base_editor} />
+                <Space.Item style={{ display: 'flex' }}>
+                  <TabButtons
+                    value={tab}
+                    items={Object.values(EntityEditing)}
+                    parse={v => [v, v]}
+                    onChange={v => set_tab(v)}
+                    style={{ flex: 1 }}
+                    styles={{ button: { flex: 1 } }} />
+                </Space.Item>
+                <Space.Broken>
+                  {tab === EntityEditing.base ? base_data_view : null}
+                  {tab === EntityEditing.frames ? frame_list_view : null}
+                  {tab === EntityEditing.pic ? pic_list_view : null}
+                  {tab === EntityEditing.itr_pre ? itr_prefab_list_view : null}
+                </Space.Broken>
+              </div>,
+              cell,
+              cell.id
+            )
+          case 'preview_cell':
+            return createPortal(
+              <Frame
+                ref={(r) => set_board_wrapper(prev => r || prev)}
+                className={styles.cell_inner}
+                style={{ background: 'transparent' }} />,
+              cell,
+              cell.id
+            )
+        }
+        return (
+          createPortal(
+            <>
+              <Button onClick={() => ref_workspace.current!.del_slot(cell.i_slot)}>
+                <Close3 />
+              </Button>
+            </>,
+            cell,
+            cell.id
+          )
+        )
+      })
+    )
+  }, [cells, filters_tree, on_click_item, opens, state.flat, state.img, state.json, state.mp3, state.others])
+
+  useEffect(() => {
+    const container = ref_wprkspace_container.current
+    if (!container) return;
+    const workspace = ref_workspace.current ?
+      ref_workspace.current :
+      ref_workspace.current = new WorkspaceKeeper(container)
+    if (!workspace.root_slot) {
+      workspace.root_slot = new Slot({ id: 'root', t: 'h' }, [
+        new Slot({ id: 'resources_cell', t: 'v', f: 250 }),
+        new Slot({ id: 'data_cell', t: 'v', f: 250 }),
+        new Slot({ id: 'preview_cell', t: 'v', f: container.offsetWidth - 500 }),
+      ])
+    }
+    workspace.on_changed = () => set_cells(workspace.cells)
+    workspace.update();
+    const ob = new ResizeObserver(() => {
+      workspace.update()
+    })
+    ob.observe(container)
+    return () => ob.disconnect()
+  }, [])
+
   return !open ? <></> : (
     <shared_ctx.Provider value={{ zip }}>
+      {views}
       <Space direction='column' {..._p} >
         <Space onClick={e => { e.stopPropagation(); e.preventDefault() }}>
           <Show show={!!onClose}>
@@ -515,56 +633,8 @@ export default function EditorView(props: IEditorViewProps) {
               }} />
           </Show>
         </Space>
-        <Space.Item space direction='row' style={{ flex: 1, display: 'flex', minHeight: '0px' }} onClick={e => { e.stopPropagation(); e.preventDefault() }}>
-          <WorkspaceColumnView
-            style={{ alignSelf: 'center', height: '100%' }}
-            header={
-              <WorkspaceColumnView.TitleAndAdd title={
-                <Space>
-                  <Titled label="mp3"><Checkbox value={state.mp3} onChanged={v => set_state(o => ({ ...o, mp3: v }))} /></Titled>
-                  <Titled label="flat"><Checkbox value={state.flat} onChanged={v => set_state(o => ({ ...o, flat: v }))} /></Titled>
-                  <Titled label="json"><Checkbox value={state.json} onChanged={v => set_state(o => ({ ...o, json: v }))} /></Titled>
-                  <Titled label="img"><Checkbox value={state.img} onChanged={v => set_state(o => ({ ...o, img: v }))} /></Titled>
-                  <Titled label="others"><Checkbox value={state.others} onChanged={v => set_state(o => ({ ...o, others: v }))} /></Titled>
-                </Space>
-              }>
-              </WorkspaceColumnView.TitleAndAdd>
-            }>
-            <Space.Item space vertical frame className={styles.file_editor_view}>
-              <TreeView
-                node={filters_tree}
-                opens={opens}
-                on_click_item={on_click_item}
-                get_icon={get_icon}
-              />
-            </Space.Item>
-          </WorkspaceColumnView>
-
-          <Show show={!!editing_data}>
-            <Space.Item space direction="column" style={{ height: '0', minHeight: '100%' }}>
-              <EntityDataEditorView
-                value={editing_data}
-                on_changed={() => set_change_flag(change_flag + 1)}
-                className={styles.entity_base_editor} />
-              <Space.Item style={{ display: 'flex' }}>
-                <TabButtons
-                  value={tab}
-                  items={Object.values(EntityEditing)}
-                  parse={v => [v, v]}
-                  onChange={v => set_tab(v)}
-                  style={{ flex: 1 }}
-                  styles={{ button: { flex: 1 } }} />
-              </Space.Item>
-              <Space.Broken>
-                {tab === EntityEditing.base ? base_data_view : null}
-                {tab === EntityEditing.frames ? frame_list_view : null}
-                {tab === EntityEditing.pic ? pic_list_view : null}
-                {tab === EntityEditing.itr_pre ? itr_prefab_list_view : null}
-              </Space.Broken>
-            </Space.Item>
-            <Space.Item space ref={(r) => set_board_wrapper(prev => r || prev)} className={styles.frame_preview_view} />
-          </Show>
-          {textarea}
+        <Space.Item style={{ alignSelf: 'stretch', flex: 1, minHeight: '0px', position: 'relative' }}>
+          <div ref={ref_wprkspace_container} />
         </Space.Item>
       </Space>
     </shared_ctx.Provider>

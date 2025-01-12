@@ -1,6 +1,15 @@
 @import "../styles/lfui_hoverable_border.scss";
 @import "../styles/lfui_values.module.scss";
 
+.cell_inner {
+  position  : absolute;
+  width     : calc(100% - 4px);
+  height    : calc(100% - 4px);
+  left      : 2px;
+  top       : 2px;
+  box-sizing: border-box;
+}
+
 .entity_base_editor {
   min-width : 50px;
   min-height: 50px;

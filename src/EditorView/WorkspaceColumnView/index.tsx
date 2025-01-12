@@ -1,3 +1,4 @@
+import classNames from "classnames";
 import { Button } from "../../Component/Buttons/Button";
 import Combine, { ICombineProps } from "../../Component/Combine";
 import { Add } from "../../Component/Icons/Clear";
@@ -10,11 +11,11 @@ export interface IWorkspaceColumnViewProps extends Omit<ICombineProps, "title"> 
   header?: React.ReactNode;
 }
 export function WorkspaceColumnView(props: IWorkspaceColumnViewProps) {
-  const { title, header, ..._p } = props;
+  const { title, header, className, ..._p } = props;
   return (
     <Combine
       direction='column'
-      className={styles.header_main_footer_view}
+      className={classNames(styles.header_main_footer_view, className)}
       hoverable={false}
       {..._p}>
       {
