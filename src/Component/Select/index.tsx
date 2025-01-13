@@ -144,7 +144,10 @@ export function Select<T, V>(props: ISelectProps<T, V> | IMultiSelectProps<T, V>
     const popover = ref_popover.current;
     if (!wrapper || !popover) return;
     popover.addEventListener('pointerdown', e => e.stopPropagation())
-    document.addEventListener('pointerdown', () => set_open(false), { once: true })
+    document.addEventListener('pointerdown', () => {
+      setTimeout(() => set_open(false), 500);
+    }, { once: true, capture: true })
+
     const rect1 = wrapper.getBoundingClientRect();
     popover.style.left = rect1.x + 'px';
     popover.style.maxHeight = '0px';

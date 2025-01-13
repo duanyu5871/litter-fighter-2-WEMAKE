@@ -291,11 +291,16 @@ export function useEditor<O extends {}>(value: O, _label_style: React.CSSPropert
       },
       EditorSel<T, V>(props: Props & ISelectProps<T, V>) {
         const { field, on_changed, ..._p } = props;
+        const [, set_change_flags] = useState(0);
         return (
           <Titled {...t_props(field)}>
             <Select
               defaultValue={(value as any)[field]}
-              on_changed={v => { (value as any)[field] = v; on_changed?.(v) }}
+              on_changed={v => {
+                (value as any)[field] = v;
+                on_changed?.(v);
+                set_change_flags(v => ++v);
+              }}
               clearable
               style={{ flex: 1 }}
               {..._p} />
