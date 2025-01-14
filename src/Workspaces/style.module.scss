@@ -1,0 +1,69 @@
+.zone {
+  position: relative;
+  overflow: hidden;
+  width   : 100%;
+  height  : 100%;
+
+  &.zone_h_resizing {
+    cursor: ew-resize;
+
+    &>.v_line {
+      pointer-events: none;
+    }
+
+    &>.h_line {
+      pointer-events: none;
+    }
+  }
+
+  &.zone_v_resizing {
+    cursor: ns-resize;
+
+    &>.v_line {
+      pointer-events: none;
+    }
+
+    &>.h_line {
+      pointer-events: none;
+    }
+  }
+
+  &>.cell {
+    position      : absolute;
+    pointer-events: none;
+    box-sizing    : border-box;
+    overflow      : hidden;
+
+    &>* {
+      pointer-events: all;
+    }
+  }
+
+  &>._line {
+    background-color: white;
+    position        : absolute;
+    z-index         : 1;
+    opacity         : 0;
+    transition      : opacity 200ms, background-color 200ms;
+  }
+
+  &>.v_line {
+    @extend ._line;
+    cursor: ew-resize;
+    width : 4px;
+  }
+
+  &>.h_line {
+    @extend ._line;
+    cursor: ns-resize;
+    height: 4px;
+  }
+
+  &>.v_line._line_hover,
+  &>.h_line._line_hover,
+  &>._line:hover {
+    background-color: white;
+    opacity         : 1;
+    z-index         : 2;
+  }
+}

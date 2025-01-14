@@ -5,14 +5,13 @@ import { Button } from "../Component/Buttons/Button";
 import { Checkbox } from "../Component/Checkbox";
 import Combine from "../Component/Combine";
 import Frame from "../Component/Frame";
-import { Add, Close3 } from "../Component/Icons/Clear";
+import { Add } from "../Component/Icons/Clear";
 import Select from "../Component/Select";
 import Show from "../Component/Show";
 import { Space } from "../Component/Space";
 import { TabButtons } from "../Component/TabButtons";
 import Titled from "../Component/Titled";
 import { ITreeNode, ITreeNodeGetIcon, TreeView } from "../Component/TreeView";
-import { CellElement, Slot, WorkspaceKeeper } from "../Editor/WorkspaceKeeper";
 import { IBgData, IFrameInfo } from "../LF2/defines";
 import { EntityEnum } from "../LF2/defines/EntityEnum";
 import { IEntityData } from "../LF2/defines/IEntityData";
@@ -22,6 +21,8 @@ import LF2 from "../LF2/LF2";
 import { traversal } from "../LF2/utils/container_help/traversal";
 import { is_num } from "../LF2/utils/type_check";
 import open_file from "../Utils/open_file";
+import { Slot } from "../Workspaces/Slot";
+import { Workspaces } from "../Workspaces/Workspaces";
 import { shared_ctx } from './Context';
 import { EditorShapeEnum } from "./EditorShapeEnum";
 import { EntityDataEditorView } from "./EntityDataEditorView";
@@ -497,8 +498,8 @@ export default function EditorView(props: IEditorViewProps) {
 
   const ref_wprkspace_container = useRef<HTMLDivElement>(null);
   const [slot_changed_flag, set_slot_changed_flag] = useState(0)
-  const ref_workspace = useRef<WorkspaceKeeper>()
-  const [cells, set_cells] = useState<CellElement[]>([])
+  const ref_workspace = useRef<Workspaces>()
+  const [cells, set_cells] = useState<Readonly<HTMLElement[]>>([])
 
   const views = useMemo(() => {
     return (
@@ -570,17 +571,7 @@ export default function EditorView(props: IEditorViewProps) {
               cell.id
             )
         }
-        return (
-          createPortal(
-            <>
-              <Button onClick={() => ref_workspace.current!.del_slot(cell.i_slot)}>
-                <Close3 />
-              </Button>
-            </>,
-            cell,
-            cell.id
-          )
-        )
+        return null
       })
     )
   }, [cells, filters_tree, on_click_item, opens, state.flat, state.img, state.json, state.mp3, state.others])
@@ -590,7 +581,7 @@ export default function EditorView(props: IEditorViewProps) {
     if (!container) return;
     const workspace = ref_workspace.current ?
       ref_workspace.current :
-      ref_workspace.current = new WorkspaceKeeper(container)
+      ref_workspace.current = new Workspaces(container)
     if (!workspace.root) {
       workspace.set_root(
         new Slot({ id: 'root', t: 'h' }, [
