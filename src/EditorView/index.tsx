@@ -1,16 +1,18 @@
 import { Board, FactoryEnum, Gaia, ToolEnum } from "@fimagine/writeboard";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { Button } from "../Component/Buttons/Button";
 import { Checkbox } from "../Component/Checkbox";
 import Combine from "../Component/Combine";
+import Frame from "../Component/Frame";
 import { Add, Close3 } from "../Component/Icons/Clear";
 import Select from "../Component/Select";
 import Show from "../Component/Show";
 import { Space } from "../Component/Space";
 import { TabButtons } from "../Component/TabButtons";
-import { Text } from "../Component/Text";
 import Titled from "../Component/Titled";
 import { ITreeNode, ITreeNodeGetIcon, TreeView } from "../Component/TreeView";
+import { CellElement, Slot, WorkspaceKeeper } from "../Editor/WorkspaceKeeper";
 import { IBgData, IFrameInfo } from "../LF2/defines";
 import { EntityEnum } from "../LF2/defines/EntityEnum";
 import { IEntityData } from "../LF2/defines/IEntityData";
@@ -25,14 +27,11 @@ import { EditorShapeEnum } from "./EditorShapeEnum";
 import { EntityDataEditorView } from "./EntityDataEditorView";
 import { EntityBaseDataEditorView } from "./EntityDataEditorView/EntityBaseDataEditorView";
 import { FrameDrawer, FrameDrawerData } from "./FrameDrawer";
-import { FrameEditorView, IFrameEditorViewProps } from "./FrameEditorView";
+import { FrameEditorView } from "./FrameEditorView";
 import { ItrPrefabEditorView } from "./FrameEditorView/ItrPrefabEditorView";
 import { PicInfoEditorView } from "./PicInfoEditorView";
 import styles from "./styles.module.scss";
 import { WorkspaceColumnView } from "./WorkspaceColumnView";
-import { CellElement, Slot, WorkspaceKeeper } from "../Editor/WorkspaceKeeper";
-import { createPortal } from "react-dom";
-import Frame from "../Component/Frame";
 
 enum EntityEditing {
   base = '基础信息',
@@ -592,12 +591,14 @@ export default function EditorView(props: IEditorViewProps) {
     const workspace = ref_workspace.current ?
       ref_workspace.current :
       ref_workspace.current = new WorkspaceKeeper(container)
-    if (!workspace.root_slot) {
-      workspace.root_slot = new Slot({ id: 'root', t: 'h' }, [
-        new Slot({ id: 'resources_cell', t: 'v', f: 250 }),
-        new Slot({ id: 'data_cell', t: 'v', f: 250 }),
-        new Slot({ id: 'preview_cell', t: 'v', f: container.offsetWidth - 500 }),
-      ])
+    if (!workspace.root) {
+      workspace.set_root(
+        new Slot({ id: 'root', t: 'h' }, [
+          new Slot({ id: 'resources_cell', t: 'v', f: 250 }),
+          new Slot({ id: 'data_cell', t: 'v', f: 250 }),
+          new Slot({ id: 'preview_cell', t: 'v', f: container.offsetWidth - 500 }),
+        ])
+      )
     }
     workspace.on_changed = () => set_cells(workspace.cells)
     workspace.update();

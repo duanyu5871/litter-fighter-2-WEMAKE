@@ -62,6 +62,15 @@ export function Close3(props: IIconProps) {
     </svg>
   )
 }
+export function ArrorUp3(props: IIconProps) {
+  const { className, hoverable, ..._p } = props;
+  const clz_name = classNames(styles.ic, { [styles.hoverable]: hoverable }, className)
+  return (
+    <svg width='1em' height='1em' className={clz_name} viewBox="0, 0, 12, 12" {..._p}>
+      <path className={styles.text_stroke} d="M 1 11 L 6 3 L 11 11" />
+    </svg>
+  )
+}
 
 export function Add(props: IIconProps) {
   const { className, hoverable, ..._p } = props;

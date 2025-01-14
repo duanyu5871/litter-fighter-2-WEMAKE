@@ -1,5 +1,6 @@
 
 import { IRect } from "@fimagine/writeboard";
+import { new_id } from "../LF2/base";
 import styles from "./style.module.scss";
 export interface ISlot {
   id?: string;
@@ -32,29 +33,180 @@ export class Slot {
     Object.assign(ret, this)
     return ret;
   }
+  _handle_new_children(slots: Slot[]) {
+    const total_f = this.c.reduce((r, i) => (r + i.f), 0) || 1
+    const final_c_count = slots.length + this.c.length;
+    const avg_f = total_f / final_c_count;
+    const changed_f = (total_f - avg_f * slots.length)
+    const scale = changed_f / total_f
+    this.c.forEach(c => c.f *= scale)
+    slots.forEach(c => c.f = avg_f)
+    for (const slot of slots) {
+      slot.p = this
+      slot.t = this.t === 'h' ? 'v' : 'h';
+    }
+  }
+  insert(index: number, ...slots: Slot[]) {
+    if (!slots.length) return;
+    this._handle_new_children(slots)
+    this.c.splice(index, 0, ...slots)
+  }
+  unshift(...slots: Slot[]) {
+    if (!slots.length) return;
+    this._handle_new_children(slots)
+    this.c.unshift(...slots)
+  }
+  replace(index: number, ...slots: Slot[]): Slot {
+    if (index < 0 || index >= this.c.length) throw new Error(`[Slot::replace] index out of bounds, idx: ${index}, size: ${this.c.length}`)
+    const [ret] = this.c.splice(index, 1);
+    if (slots.length > 1) {
+      this.insert(index, ...slots);
+    } else if (slots.length === 1) {
+      const [slot] = slots
+      slot.f = ret.f;
+      slot.t = ret.t;
+      slot.p = this;
+      ret.p = null;
+      this.c.splice(index, 0, slot)
+    }
+    return ret;
+  }
+  push(...slots: Slot[]) {
+    if (!slots.length) return;
+    this._handle_new_children(slots)
+    this.c.push(...slots)
+  }
 }
 export interface CellElement extends HTMLDivElement {
   i_slot: Slot
 }
 export class WorkspaceKeeper {
-  root_slot?: Slot;
+  private _root?: Slot;
+  private _slots = new Map<string, Slot>();
+
+  get root(): Slot | undefined {
+    return this._root;
+  }
   container: HTMLDivElement;
   cells: CellElement[] = [];
+
   on_changed?: (self: WorkspaceKeeper) => void;
   constructor(container: HTMLDivElement) {
+    (window as any).wp = this
     this.container = container
     this.container.classList.add(styles.zone)
   }
+  set_root(root: Slot) {
+    this._root = root;
+    this.update()
+  }
+
   del_slot(s: Slot) {
-    const _del = (s: Slot) => {
-      if (s.p?.c) s.p.c = s.p.c.filter(v => v !== s);
+    if (!s.p) throw new Error(`[WorkspaceKeeper::add] can not delete root slot`)
+    const _job = (s: Slot) => {
+      if (!s.p) return
+      s.p.c = s.p.c.filter(v => v !== s);
       this.container.querySelector(`#${s.id}`)?.remove();
       this.container.querySelector(`[prev=${s.id}]`)?.remove();
       this.container.querySelector(`[next=${s.id}]`)?.remove();
-      if (s.p && !s.p.c.length) _del(s.p);
+      if (!s.p.c.length) {
+        _job(s.p);
+      } else if (s.p.c.length === 1) {
+        const remain_c = s.p.c.shift()!
+        remain_c.p = null;
+        let p: Slot = s.p;
+        let pp: Slot | null = s.p.p;
+        while (pp) {
+          if (pp.c.length > 1)
+            break;
+          p = pp;
+          pp = pp.p;
+        }
+        if (pp) {
+          pp.replace(pp.c.indexOf(p), remain_c)
+        } else {
+          this._root = remain_c;
+        }
+      }
     }
-    _del(s)
+    _job(s)
     this.update()
+  }
+  add(anchor_slot_id: string, pos: 'up' | 'down' | 'left' | 'right' | number, info: ISlot): Slot | undefined {
+    const anchor = this._slots.get(anchor_slot_id)
+    if (!anchor) throw new Error(`[WorkspaceKeeper::add] anchor_slot not found, id: ${anchor_slot_id}`)
+    const parent = anchor?.p;
+    const anchor_idx = parent?.c.indexOf(anchor);
+
+    const slot = new Slot(info)
+    if (this._slots.get(slot.id))
+      throw new Error('slot id repeated!')
+
+    const split_and_as_first = () => {
+      const wrapper = new Slot({ id: 'cell_' + new_id() })
+      if (parent) {
+        const taked_slot = parent.replace(anchor_idx!, wrapper)
+        wrapper.push(slot, taked_slot)
+      } else {
+        const old_root = this.root!;
+        if (typeof pos === 'string') {
+          switch (pos) {
+            case "up":
+            case "down": wrapper.t = 'v'; break;
+            case "left":
+            case "right": wrapper.t = 'h'; break;
+          }
+        }
+        this._root = wrapper;
+        wrapper.push(slot, old_root);
+      }
+    }
+    const split_and_as_last = () => {
+      const wrapper = new Slot({ id: 'cell_' + new_id() })
+      if (parent) {
+        const taked_slot = parent.replace(anchor_idx!, wrapper)
+        wrapper.push(taked_slot, slot);
+      } else {
+        const old_root = this.root!;
+        if (typeof pos === 'string') {
+          switch (pos) {
+            case "up":
+            case "down": wrapper.t = 'v'; break;
+            case "left":
+            case "right": wrapper.t = 'h'; break;
+          }
+        }
+        this._root = wrapper;
+        wrapper.push(old_root, slot);
+      }
+    }
+    if (typeof pos === 'string') {
+      if (anchor.t === 'v') {
+        switch (pos) {
+          case "up": split_and_as_first(); break;
+          case "down": split_and_as_last(); break;
+          case "left":
+            return this.add(anchor.p?.id!, anchor.p?.c.indexOf(anchor)!, info)
+          case "right":
+            return this.add(anchor.p?.id!, anchor.p?.c.indexOf(anchor)! + 1, info)
+        }
+      } else if (anchor.t === 'h') {
+        switch (pos) {
+          case "left": split_and_as_first(); break;
+          case "right": split_and_as_last(); break;
+          case "up":
+            return this.add(anchor.p?.id!, anchor.p?.c.indexOf(anchor)!, info)
+          case "down":
+            return this.add(anchor.p?.id!, anchor.p?.c.indexOf(anchor)! + 1, info)
+        }
+      }
+    } else {
+      anchor.insert(pos, slot);
+    }
+    this.container.querySelectorAll(`.${styles.v_line}`).forEach(v => v.remove())
+    this.container.querySelectorAll(`.${styles.v_line}`).forEach(v => v.remove())
+    this.update()
+    return slot
   }
   make_rect(r: IRect) {
     r.w = Math.max(50, r.w);
@@ -141,7 +293,7 @@ export class WorkspaceKeeper {
                 this.update()
                 return
               }
-              console.log(this.root_slot)
+              console.log(this._root)
             }
             const on_end = () => {
               document.removeEventListener('pointermove', on_move)
@@ -196,7 +348,7 @@ export class WorkspaceKeeper {
     slot.c.forEach(c => this.make_slot_factor(c))
   }
   update() {
-    const { container, root_slot } = this;
+    const { container, _root: root_slot } = this;
     const r = container.getBoundingClientRect();
     if (!root_slot) return;
     root_slot.r = this.make_rect({
@@ -208,7 +360,23 @@ export class WorkspaceKeeper {
     this.make_slot_factor(root_slot);
     this.make_slot_line(root_slot);
     this.cells = this.make_slot_ele(root_slot);
+
+
+    this._slots.clear();
+    if (this._root) {
+      const _job = (s: Slot) => {
+        this._slots.set(s.id, s)
+        s.c.forEach(_job)
+      }
+      _job(this._root)
+    }
+
+
+
     this.on_changed?.(this)
+
+
+
     return ok
   }
 }
