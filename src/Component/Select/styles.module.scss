@@ -45,11 +45,14 @@
   }
 
   &>.ic_clear {
-    position  : absolute;
-    margin    : 0 auto;
-    right     : 4px;
-    opacity   : 0;
-    transition: all 200ms;
+    position       : absolute;
+    margin         : 0 auto;
+    right          : 4px;
+    opacity        : 0;
+    transition     : all 200ms;
+    display        : flex;
+    align-items    : center;
+    justify-content: center;
   }
 
   &:hover {

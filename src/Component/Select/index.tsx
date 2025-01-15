@@ -10,6 +10,7 @@ import { Space } from "../Space";
 import { Tag } from "../Tag";
 import { ITreeNode, TreeView } from "../TreeView";
 import styles from "./styles.module.scss";
+import { Text } from "../Text";
 
 export interface IBaseSelectProps<T, V> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'defaultValue'> {
   items?: readonly T[];
@@ -271,7 +272,9 @@ export function Select<T, V>(props: ISelectProps<T, V> | IMultiSelectProps<T, V>
           className={styles.input}
           readOnly={true} />
         <Show show={clearable && value?.length}>
-          <CircleCross className={styles.ic_clear} onPointerDown={on_clear} />
+          <Text className={styles.ic_clear} size='s'>
+            <CircleCross onPointerDown={on_clear} />
+          </Text>
         </Show>
       </Space.Broken>
       {gone ? null : createPortal(
