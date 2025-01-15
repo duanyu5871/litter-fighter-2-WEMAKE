@@ -9,9 +9,9 @@ export function Search(props: IIconProps) {
   )
 }
 const o = Object.assign(Search, Base)
-Search.path = o.m(1, 11).l(3.8, 8.3).ok()
+Search.path = o.m(o.l, o.b).l(o.w * .38, o.h * .62).ok()
 Search.circle = {
-  cx: "7",
-  cy: "5",
-  r: "4.5",
+  cx: o.w * .6,
+  cy: o.h * .4,
+  r: "3.5",
 }

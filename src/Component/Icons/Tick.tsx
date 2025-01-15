@@ -9,7 +9,7 @@ export function Tick(props: IIconProps) {
 }
 const o = Object.assign(Tick, Base)
 Tick.path = o
-  .m(1, 6.5)
-  .l(4, 9.5)
-  .l(10, 3.5)
+  .m(o.l, 6.5)
+  .l(5, o.b - o.pad * .3)
+  .l(o.r, o.t + o.pad / 2)
   .ok()

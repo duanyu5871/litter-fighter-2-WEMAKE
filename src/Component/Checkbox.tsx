@@ -2,6 +2,7 @@ import classNames from "classnames";
 import React, { useState } from "react";
 import { Button, IButtonProps } from "./Buttons/Button";
 import styles from "./Checkbox.module.scss";
+import { Tick } from "./Icons/Tick";
 export interface ICheckboxProps extends Omit<IButtonProps, "value"> {
   value?: boolean;
   onChanged?(v: boolean): void;
@@ -23,7 +24,9 @@ export const Checkbox = React.forwardRef<HTMLButtonElement, ICheckboxProps>(
     })
     return (
       <Button {...remain_props} className={root_className} onClick={_on_click} _ref={ref}>
-        <span className={inner_className}>✓</span>
+        <span className={inner_className}>
+          <Tick />
+        </span>
       </Button>
     );
   },
