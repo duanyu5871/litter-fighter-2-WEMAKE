@@ -148,7 +148,7 @@ export function Select<T, V>(props: ISelectProps<T, V> | IMultiSelectProps<T, V>
     const on_pointerdown = (e: PointerEvent) => {
       let p = e.target as HTMLElement | null;
       while (p) {
-        if (p === popover)
+        if (p === ref_popover.current)
           return;
         p = p.parentElement
       }
