@@ -584,10 +584,10 @@ export default function EditorView(props: IEditorViewProps) {
       ref_workspace.current = new Workspaces(container)
 
     workspace.set_root(
-      new Slot(workspace, { id: 'root', t: 'h' }, [
-        new Slot(workspace, { id: 'resources_cell', t: 'v', f: 250 }),
-        new Slot(workspace, { id: 'data_cell', t: 'v', f: 250 }),
-        new Slot(workspace, { id: 'preview_cell', t: 'v', f: container.offsetWidth - 500 }),
+      new Slot(workspace, { id: 'root', type: 'h' }, [
+        new Slot(workspace, { id: 'resources_cell', type: 'v', weight: 250 }),
+        new Slot(workspace, { id: 'data_cell', type: 'v', weight: 250 }),
+        new Slot(workspace, { id: 'preview_cell', type: 'v', weight: container.offsetWidth - 500 }),
       ])
     )
     workspace.on_changed = () => set_cells(workspace.cells)

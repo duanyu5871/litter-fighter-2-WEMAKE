@@ -143,10 +143,17 @@ export function Select<T, V>(props: ISelectProps<T, V> | IMultiSelectProps<T, V>
     const wrapper = ref_wrapper.current;
     const popover = ref_popover.current;
     if (!wrapper || !popover) return;
-    popover.addEventListener('pointerdown', e => e.stopPropagation())
-    document.addEventListener('pointerdown', () => {
-      setTimeout(() => set_open(false), 500);
-    }, { once: true, capture: true })
+
+    const on_pointerdown = (e: PointerEvent) => {
+      let p = e.target as HTMLElement | null;
+      while (p) {
+        if (p === popover)
+          return;
+        p = p.parentElement
+      }
+      set_open(false)
+    }
+    document.addEventListener('pointerdown', on_pointerdown, { capture: true })
 
     const rect1 = wrapper.getBoundingClientRect();
     popover.style.left = rect1.x + 'px';
@@ -193,6 +200,7 @@ export function Select<T, V>(props: ISelectProps<T, V> | IMultiSelectProps<T, V>
     })
     ob.observe(wrapper);
     return () => {
+      document.removeEventListener('pointerdown', on_pointerdown, { capture: true })
       clearTimeout(tid);
       clearInterval(tid);
       ob.disconnect();

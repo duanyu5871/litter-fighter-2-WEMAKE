@@ -45,31 +45,31 @@ export class Workspaces {
     this.update()
   }
   del_slot(s: Slot) {
-    if (!s.p) throw new Error(`[WorkspaceKeeper::add] can not delete root slot`)
+    if (!s.parent) throw new Error(`[WorkspaceKeeper::add] can not delete root slot`)
     const _job = (s: Slot) => {
-      if (!s.p) return
-      s.p.c = s.p.c.filter(v => v !== s);
+      if (!s.parent) return
+      s.parent.children = s.parent.children.filter(v => v !== s);
       this.container.querySelector(`#${s.id}`)?.remove();
       this.container.querySelector(`[prev=${s.id}]`)?.remove();
       this.container.querySelector(`[next=${s.id}]`)?.remove();
-      if (!s.p.c.length) {
-        _job(s.p);
-      } else if (s.p.c.length === 1) {
-        const remain_c = s.p.c.shift()!
-        remain_c.p = null;
-        let p: Slot = s.p;
-        let pp: Slot | null = s.p.p;
+      if (!s.parent.children.length) {
+        _job(s.parent);
+      } else if (s.parent.children.length === 1) {
+        const remain_c = s.parent.children.shift()!
+        remain_c.parent = null;
+        let p: Slot = s.parent;
+        let pp: Slot | null = s.parent.parent;
         while (pp) {
-          if (pp.c.length > 1)
+          if (pp.children.length > 1)
             break;
           p = pp;
-          pp = pp.p;
+          pp = pp.parent;
         }
         if (pp) {
-          if (pp.t === remain_c.t) {
-            pp.replace(pp.c.indexOf(p), ...remain_c.c)
+          if (pp.type === remain_c.type) {
+            pp.replace(pp.children.indexOf(p), ...remain_c.children)
           } else {
-            pp.replace(pp.c.indexOf(p), remain_c)
+            pp.replace(pp.children.indexOf(p), remain_c)
           }
         } else {
           this._root = remain_c;
@@ -85,8 +85,8 @@ export class Workspaces {
       debugger;
       throw new Error(`[WorkspaceKeeper::add] anchor_slot not found, id: ${anchor_slot_id}`)
     }
-    const parent = anchor?.p;
-    const anchor_idx = parent?.c.indexOf(anchor);
+    const parent = anchor?.parent;
+    const anchor_idx = parent?.children.indexOf(anchor);
 
     const slot = new Slot(this, info)
     if (this._slots.get(slot.id))
@@ -104,9 +104,9 @@ export class Workspaces {
       if (typeof pos === 'string') {
         switch (pos) {
           case "up":
-          case "down": wrapper.t = 'v'; break;
+          case "down": wrapper.type = 'v'; break;
           case "left":
-          case "right": wrapper.t = 'h'; break;
+          case "right": wrapper.type = 'h'; break;
         }
       }
       this._root = wrapper;
@@ -146,7 +146,7 @@ export class Workspaces {
         split_as_last();
       }
     }
-    const shit = `${anchor.t} ${pos}` as const
+    const shit = `${anchor.type} ${pos}` as const
     switch (shit) {
       case "v up":
       case "h left": split_as_first(); break;
@@ -168,17 +168,17 @@ export class Workspaces {
     return r;
   }
   update_rects(slot: Slot, obj: { ok: boolean } = { ok: true }) {
-    if (!slot.c?.length) return obj.ok;
-    let { x, y, w, h } = slot.r;
-    const size_key = slot.t === 'h' ? 'w' : 'h';
-    const pos_key = slot.t === 'h' ? 'x' : 'y';
-    let pos = slot.t === 'h' ? x : y;
-    const total = slot.c.reduce((r, c) => r + c.f, 0)
-    let remain = slot.r[size_key];
+    if (!slot.children?.length) return obj.ok;
+    let { x, y, w, h } = slot.rect;
+    const size_key = slot.type === 'h' ? 'w' : 'h';
+    const pos_key = slot.type === 'h' ? 'x' : 'y';
+    let pos = slot.type === 'h' ? x : y;
+    const total = slot.children.reduce((r, c) => r + c.weight, 0)
+    let remain = slot.rect[size_key];
     const cell_size_list: number[] = []
-    for (let i = 0; i < slot.c.length; ++i) {
+    for (let i = 0; i < slot.children.length; ++i) {
       const f = Math.max(
-        slot.r[size_key] * slot.c[i].f / total,
+        slot.rect[size_key] * slot.children[i].weight / total,
         50
       );
       const cell_size = Math.floor(f)
@@ -192,13 +192,13 @@ export class Workspaces {
       }
     }
     if (remain < 0) obj.ok = false
-    slot.c.forEach((c, i) => {
+    slot.children.forEach((c, i) => {
       let cell_size = cell_size_list[i]
       const rect: IRect = { x, y, w, h }
       rect[size_key] = cell_size;
       rect[pos_key] = pos;
-      c.r = this.make_rect({ ...rect })
-      if (c.r[size_key] !== rect[size_key])
+      c.rect = this.make_rect({ ...rect })
+      if (c.rect[size_key] !== rect[size_key])
         obj.ok = false;
       this.update_rects(c, obj)
       pos += cell_size
@@ -207,7 +207,7 @@ export class Workspaces {
   }
   update_lines(slot: Slot) {
     const { container } = this;
-    slot.c.forEach((prev, i, arr) => {
+    slot.children.forEach((prev, i, arr) => {
       const next = arr.at(i + 1)
       if (!next) {
         this.update_lines(prev)
@@ -227,24 +227,24 @@ export class Workspaces {
           if (!wrapper) return;
 
           l.classList.add(styles._line_hover)
-          container.classList.add(wrapper.t === 'h' ? styles.zone_h_resizing : styles.zone_v_resizing)
+          container.classList.add(wrapper.type === 'h' ? styles.zone_h_resizing : styles.zone_v_resizing)
           const on_move = (e: PointerEvent) => {
             const r = l.parentElement?.getBoundingClientRect();
             if (!r) return;
-            const offset = wrapper.t === 'h' ?
+            const offset = wrapper.type === 'h' ?
               e.clientX - 2 - r.left - parseInt(l.style.left) :
               e.clientY - 2 - r.top - parseInt(l.style.top);
             let prev_slot = prev
             let next_slot = next
             if (!prev_slot || !next_slot)
               return
-            const prev_slot_f = prev_slot.f;
-            const next_slot_f = next_slot.f;
-            prev_slot.f = prev_slot.f + offset
-            next_slot.f = next_slot.f - offset
+            const prev_slot_f = prev_slot.weight;
+            const next_slot_f = next_slot.weight;
+            prev_slot.weight = prev_slot.weight + offset
+            next_slot.weight = next_slot.weight - offset
             if (!this.update()) {
-              prev_slot.f = prev_slot_f
-              next_slot.f = next_slot_f
+              prev_slot.weight = prev_slot_f
+              next_slot.weight = next_slot_f
               this.update()
               return
             }
@@ -261,28 +261,28 @@ export class Workspaces {
         })
         container.appendChild(l0)
       }
-      l0.className = slot.t === 'h' ? styles.v_line : styles.h_line
+      l0.className = slot.type === 'h' ? styles.v_line : styles.h_line
       l0.setAttribute('slot', slot.id)
       l0.setAttribute('prev', prev.id)
       l0.setAttribute('next', next.id)
-      if (slot.t === 'h') {
-        l0.style.height = '' + slot.r.h + 'px'
-        l0.style.left = '' + (next.r.x - 2) + 'px'
+      if (slot.type === 'h') {
+        l0.style.height = '' + slot.rect.h + 'px'
+        l0.style.left = '' + (next.rect.x - 2) + 'px'
         l0.style.width = ''
-        l0.style.top = '' + slot.r.y + 'px'
+        l0.style.top = '' + slot.rect.y + 'px'
       } else {
         l0.style.height = ''
-        l0.style.left = '' + slot.r.x + 'px'
-        l0.style.width = '' + slot.r.w + 'px'
-        l0.style.top = '' + (next.r.y - 2) + 'px'
+        l0.style.left = '' + slot.rect.x + 'px'
+        l0.style.width = '' + slot.rect.w + 'px'
+        l0.style.top = '' + (next.rect.y - 2) + 'px'
       }
       this.update_lines(prev)
     })
   }
   update_cells(slot: Slot, cells: HTMLElement[] = []) {
     const { container } = this;
-    if (slot.c.length) {
-      slot.c.forEach(c => this.update_cells(c, cells))
+    if (slot.children.length) {
+      slot.children.forEach(c => this.update_cells(c, cells))
       return cells
     }
     let cell = container.querySelector(`#${slot.id}`) as HTMLElement | null
@@ -292,25 +292,25 @@ export class Workspaces {
       cell.className = styles.cell
       container.appendChild(cell)
     }
-    cell.style.left = '' + slot.r.x + 'px'
-    cell.style.top = '' + slot.r.y + 'px'
-    cell.style.width = '' + slot.r.w + 'px'
-    cell.style.height = '' + slot.r.h + 'px'
+    cell.style.left = '' + slot.rect.x + 'px'
+    cell.style.top = '' + slot.rect.y + 'px'
+    cell.style.width = '' + slot.rect.w + 'px'
+    cell.style.height = '' + slot.rect.h + 'px'
     cells.push(cell)
     this._slot_cell_map.set(slot, cell)
     this._cell_slot_map.set(cell, slot)
     return cells
   }
   update_factors(slot: Slot) {
-    slot.f = slot.r[slot.p?.t === 'v' ? 'h' : 'w']
-    slot.c.forEach(c => this.update_factors(c))
+    slot.weight = slot.rect[slot.parent?.type === 'v' ? 'h' : 'w']
+    slot.children.forEach(c => this.update_factors(c))
   }
   update(): boolean {
     const { container, _root } = this;
     if (!_root) return false;
 
     const r = container.getBoundingClientRect();
-    _root.r = this.make_rect({
+    _root.rect = this.make_rect({
       x: 0, y: 0,
       w: r.width,
       h: r.height
@@ -325,7 +325,7 @@ export class Workspaces {
     this._slots.clear();
     const _job = (s: Slot) => {
       this._slots.set(s.id, s)
-      s.c.forEach(_job)
+      s.children.forEach(_job)
     }
     _job(_root)
     this.on_changed?.(this)

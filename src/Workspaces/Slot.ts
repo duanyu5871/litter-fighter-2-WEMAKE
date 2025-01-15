@@ -2,14 +2,14 @@
 import { ISlot } from "./ISlot";
 import type { Workspaces } from "./Workspaces";
 
-export class Slot {
+export class Slot implements ISlot {
   workspaces: Workspaces;
   id: string = '';
-  t: 'v' | 'h' = 'v';
-  c: Slot[] = [];
-  p: Slot | null = null;
-  f: number = 50;
-  r = {
+  type: 'v' | 'h' = 'v';
+  children: Slot[] = [];
+  parent: Slot | null = null;
+  weight: number = 50;
+  rect = {
     x: 0,
     y: 0,
     w: 0,
@@ -17,57 +17,55 @@ export class Slot {
   };
   constructor(workspaces: Workspaces, info: ISlot = {}, c: Slot[] = []) {
     this.workspaces = workspaces;
-    const { r, ..._info } = info;
+    const { rect, ..._info } = info;
     Object.assign(this, _info);
-    Object.assign(this.r, r);
-    this.c = c;
+    Object.assign(this.rect, rect);
+    this.children = c;
     if (!this.id) this.id = workspaces.new_slot_id()
-    c.forEach(c => c.p = this);
+    c.forEach(c => c.parent = this);
   }
   clone(): Slot {
-    const ret = new Slot(this.workspaces, this, this.c);
-    Object.assign(ret, this);
-    return ret;
+    return new Slot(this.workspaces, this, this.children);
   }
   _handle_new_children(slots: Slot[]) {
-    const total_f = this.c.reduce((r, i) => (r + i.f), 0) || 1;
-    const final_c_count = slots.length + this.c.length;
+    const total_f = this.children.reduce((r, i) => (r + i.weight), 0) || 1;
+    const final_c_count = slots.length + this.children.length;
     const avg_f = total_f / final_c_count;
     const changed_f = (total_f - avg_f * slots.length);
     const scale = changed_f / total_f;
-    this.c.forEach(c => c.f *= scale);
-    slots.forEach(c => c.f = avg_f);
+    this.children.forEach(c => c.weight *= scale);
+    slots.forEach(c => c.weight = avg_f);
     for (const slot of slots) {
-      slot.p = this;
-      slot.t = this.t === 'h' ? 'v' : 'h';
+      slot.parent = this;
+      slot.type = this.type === 'h' ? 'v' : 'h';
     }
   }
   insert(index: number, ...slots: Slot[]) {
     if (!slots.length) return;
     this._handle_new_children(slots);
-    this.c.splice(index, 0, ...slots);
+    this.children.splice(index, 0, ...slots);
   }
   unshift(...slots: Slot[]) {
     if (!slots.length) return;
     this._handle_new_children(slots);
-    this.c.unshift(...slots);
+    this.children.unshift(...slots);
   }
   replace(index: number, ...slots: Slot[]): Slot {
-    if (index < 0 || index >= this.c.length) throw new Error(`[Slot::replace] index out of bounds, idx: ${index}, size: ${this.c.length}`);
-    const [ret] = this.c.splice(index, 1);
-    const total_f = slots.reduce((r, i) => i.f + r, 0);
+    if (index < 0 || index >= this.children.length) throw new Error(`[Slot::replace] index out of bounds, idx: ${index}, size: ${this.children.length}`);
+    const [ret] = this.children.splice(index, 1);
+    const total_f = slots.reduce((r, i) => i.weight + r, 0);
     for (const slot of slots) {
-      slot.p = this;
-      slot.t = ret.t;
-      slot.f = ret.f * slot.f / total_f;
+      slot.parent = this;
+      slot.type = ret.type;
+      slot.weight = ret.weight * slot.weight / total_f;
     }
-    this.c.splice(index, 0, ...slots);
-    ret.p = null;
+    this.children.splice(index, 0, ...slots);
+    ret.parent = null;
     return ret;
   }
   push(...slots: Slot[]) {
     if (!slots.length) return;
     this._handle_new_children(slots);
-    this.c.push(...slots);
+    this.children.push(...slots);
   }
 }

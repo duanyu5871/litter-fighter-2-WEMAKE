@@ -4,8 +4,8 @@ import { Slot } from "./Slot";
 
 export interface ISlot {
   id?: string;
-  t?: 'v' | 'h';
-  p?: Slot | null;
-  r?: Partial<IRect>;
-  f?: number;
+  type?: 'v' | 'h';
+  parent?: Slot | null;
+  rect?: Partial<IRect>;
+  weight?: number;
 }
