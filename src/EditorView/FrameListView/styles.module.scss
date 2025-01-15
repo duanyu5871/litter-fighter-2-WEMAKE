@@ -1,0 +1,28 @@
+@import "../../styles/lfui_hoverable_border.module.scss";
+
+.frame_list_view {
+  width     : 100%;
+  height    : 100%;
+  padding   : 5px;
+  box-sizing: border-box;
+  overflow  : auto;
+
+  .frame_list_item_view {
+    @extend .lfui_hoverable_border;
+    border-color: transparent;
+    padding     : 0px 5px;
+    display     : flex;
+    align-items : center;
+    gap         : 5px;
+    overflow    : hidden;
+
+    >* {
+      pointer-events: none;
+    }
+  }
+
+  .frame_list_item_view:focus,
+  .frame_list_item_view:active {
+    @extend .lfui_hoverable_border_active;
+  }
+}

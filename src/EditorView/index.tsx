@@ -12,7 +12,7 @@ import { Space } from "../Component/Space";
 import { TabButtons } from "../Component/TabButtons";
 import Titled from "../Component/Titled";
 import { ITreeNode, ITreeNodeGetIcon, TreeView } from "../Component/TreeView";
-import { IBgData, IFrameInfo } from "../LF2/defines";
+import { IBgData } from "../LF2/defines";
 import { EntityEnum } from "../LF2/defines/EntityEnum";
 import { IEntityData } from "../LF2/defines/IEntityData";
 import Ditto, { IZip } from "../LF2/ditto";
@@ -28,12 +28,11 @@ import { EditorShapeEnum } from "./EditorShapeEnum";
 import { EntityDataEditorView } from "./EntityDataEditorView";
 import { EntityBaseDataEditorView } from "./EntityDataEditorView/EntityBaseDataEditorView";
 import { FrameDrawer, FrameDrawerData } from "./FrameDrawer";
-import { FrameEditorView } from "./FrameEditorView";
 import { ItrPrefabEditorView } from "./FrameEditorView/ItrPrefabEditorView";
+import { FrameListView } from "./FrameListView";
 import { PicInfoEditorView } from "./PicInfoEditorView";
 import styles from "./styles.module.scss";
 import { WorkspaceColumnView } from "./WorkspaceColumnView";
-
 enum EntityEditing {
   base = '基础信息',
   frame_index = '特定帧',
@@ -71,133 +70,7 @@ const get_icon: ITreeNodeGetIcon<IEntityData | IBgData | null> = ({ node, depth 
   const type = node.data.type;
   return dat_type_emoji_map[type]
 }
-export interface IFramesEditorViewProps {
-  data?: IEntityData;
-  zip?: IZip;
-  ref_board: React.RefObject<Board | undefined>
-}
-export function FramesEditorView(props: IFramesEditorViewProps) {
-  const { data, zip, ref_board } = props;
 
-  const [editing_frame, set_frame] = useState<IFrameInfo>()
-  const ref_next_frame = useRef<IFrameInfo>()
-  if (!data) return void 0;
-  const on_frame_change = (frame: IFrameInfo, data: IEntityData) => {
-    set_frame(frame)
-    const board = ref_board.current!;
-    const shape_data = factory.newShapeData(EditorShapeEnum.LF2_FRAME) as FrameDrawerData;
-    shape_data.frame = frame;
-    shape_data.zip = zip;
-    shape_data.data = data;
-    shape_data.layer = board.layer().id;
-    shape_data.id = 'frame';
-    shape_data.z = factory.newZ(shape_data);
-    const { w, h } = FrameDrawer.get_size(frame);
-    Object.assign(shape_data, { w: w * 2, h: h * 2 })
-    let shape = board.shapes().find(v => v.data.id === 'frame') as FrameDrawer | undefined;
-    if (!shape) {
-      shape = factory.newShape(shape_data) as FrameDrawer;
-      board.add(shape);
-    } else {
-      let { x, y } = shape;
-      if (shape.data.frame) {
-        const a = FrameDrawer.get_bounding(shape.data.frame)
-        const b = FrameDrawer.get_bounding(shape_data.frame)
-        console.log(a.l, b.l)
-        x += (b.l - a.l + shape.data.frame.centerx - shape_data.frame.centerx) * 2
-        y += (b.t - a.t + shape.data.frame.centery - shape_data.frame.centery) * 2
-      }
-      shape_data.x = x
-      shape_data.y = y
-      shape.merge(shape_data)
-      board.setSelects([shape])
-    }
-  }
-  const frame_views: React.ReactNode[] = [];
-  const frames: IFrameInfo[] = []
-  for (const key in data.frames) {
-    const frame = data.frames[key];
-    frames.push(frame)
-    const node = (
-      <Space.Item
-        key={frames.length}
-        tabIndex={-1}
-        onKeyUp={e => {
-          switch (e.key.toLowerCase()) {
-            case 'arrowdown':
-            case 'pagedown':
-            case 'arrowup':
-            case 'pageup': {
-              const next_frame = ref_next_frame.current;
-              if (next_frame) {
-                set_frame(next_frame)
-                on_frame_change(next_frame, data)
-                ref_next_frame.current = void 0;
-              }
-              break;
-            }
-          }
-        }}
-        onKeyDown={e => {
-          e.stopPropagation();
-          e.preventDefault();
-
-          switch (e.key.toLowerCase()) {
-            case 'enter': {
-              on_frame_change(frame, data)
-              return;
-            }
-          }
-          const ele = (e.target as HTMLElement);
-          const scroll_view = (ele.parentElement as HTMLElement | null)
-          if (!scroll_view) return;
-          const ele_collection = scroll_view.children;
-          const next_ele = ((ele.nextElementSibling ?? ele_collection.item(0)) as HTMLElement | null)
-          const prev_ele = ((ele.previousElementSibling ?? ele_collection.item(ele_collection.length - 1)) as HTMLElement | null)
-          const pt = parseInt(getComputedStyle(scroll_view).paddingTop)
-          switch (e.key.toLowerCase()) {
-            case 'arrowdown':
-            case 'pagedown': {
-              if (!next_ele) break;
-              scroll_view.scrollTo(0, next_ele.offsetTop - pt)
-              next_ele.focus()
-              const idx = (frames.indexOf(frame) + 1) % frames.length
-              ref_next_frame.current = frames[idx]
-              break;
-            }
-            case 'arrowup':
-            case 'pageup': {
-              if (!prev_ele) break;
-              scroll_view.scrollTo(0, prev_ele.offsetTop - pt)
-              prev_ele.focus()
-              const idx = (frames.indexOf(frame) + frames.length - 1) % frames.length
-              ref_next_frame.current = frames[idx]
-              break;
-            }
-          }
-        }}>
-        <FrameEditorView
-          key={frame.id}
-          value={frame}
-          data={data}
-          active={editing_frame === frame}
-          onClick={() => on_frame_change(frame, data)}
-        />
-      </Space.Item>
-    )
-    frame_views.push(node);
-  }
-  const header = <WorkspaceColumnView.TitleAndAdd title="帧列表" />
-  return (
-    <Space.Broken>
-      <WorkspaceColumnView header={header}>
-        <Space.Item space vertical frame className={styles.file_editor_view}>
-          {frame_views}
-        </Space.Item>
-      </WorkspaceColumnView>
-    </Space.Broken>
-  )
-}
 export default function EditorView(props: IEditorViewProps) {
   const ref_board = useRef<Board>();
   const [board_wrapper, set_board_wrapper] = useState<HTMLDivElement>()
@@ -229,7 +102,8 @@ export default function EditorView(props: IEditorViewProps) {
 
   const frame_list_view = useMemo(() => {
     return (
-      <FramesEditorView
+      <FrameListView
+        factory={factory}
         data={editing_data}
         zip={zip}
         ref_board={ref_board}

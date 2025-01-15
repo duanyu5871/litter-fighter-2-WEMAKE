@@ -9,7 +9,11 @@ export default function SelectDemo() {
   return (
     <Frame label='Select'>
       <Space>
-        <Select items={items} parse={v => [v, v]} placeholder="dropdown" clearable />
+        <Select
+          items={items}
+          parse={v => [v, v]}
+          placeholder="dropdown"
+          clearable />
       </Space>
     </Frame>
   );

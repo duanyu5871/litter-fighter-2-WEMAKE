@@ -20,3 +20,8 @@
 .lfui_button.lfui_button_actived {
   @extend .lfui_input_like_actived;
 }
+
+.lfui_button.lfui_no_border,
+.lfui_button.lfui_no_border:hover {
+  border-width: 0px
+}

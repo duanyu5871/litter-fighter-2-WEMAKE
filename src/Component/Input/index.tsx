@@ -10,6 +10,7 @@ export interface InputProps extends Omit<BaseProps, 'prefix' | 'step'> {
   clear_icon?: React.ReactNode;
   clearable?: boolean;
   step?: number;
+  variants?: 'no_border';
   clazz?: {
     suffix?: string;
     prefix?: string;
@@ -39,14 +40,16 @@ function direct_set_value(ele: HTMLInputElement | null, value: string | number) 
 function _Input(props: InputProps, forwarded_Ref: React.ForwardedRef<InputRef>) {
   const {
     className, prefix, suffix, clear_icon = <Clear hoverable />, style, clazz,
-    clearable = false, on_changed,
+    clearable = false, on_changed, variants,
     ..._p
   } = props;
 
   const { type, step, min, max } = props;
-  const need_steppers = !!(step && type === 'number');
-  const need_clearer = !!(clearable && clear_icon);
-  const root_cls_name = classNames(styles.lfui_input, className);
+  const need_steppers = !!(step && type === 'number' && !props.readOnly && !props.disabled);
+  const need_clearer = !!(clearable && clear_icon && !props.readOnly && !props.disabled);
+  const root_cls_name = classNames(styles.lfui_input, {
+    [styles.lfui_no_border]: variants === 'no_border'
+  }, className);
   const prefix_cls_name = classNames(styles.lfui_input_prefix, clazz?.prefix);
   const input_cls_name = classNames(styles.lfui_input_input, clazz?.input);
   const suffix_cls_name = classNames(styles.lfui_input_suffix, {

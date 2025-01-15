@@ -568,9 +568,7 @@ function App() {
                 onChange={(e) => lf2?.world.set_gravity(Number(e.target.value))}
               />
               <Show show={!float_equal(gravity, Defines.GRAVITY)}>
-                <Button
-                  onClick={(_) => lf2?.world.set_gravity(Defines.GRAVITY)}
-                >
+                <Button onClick={(_) => lf2?.world.set_gravity(Defines.GRAVITY)}>
                   重置
                 </Button>
               </Show>

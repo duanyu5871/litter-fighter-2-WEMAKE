@@ -53,7 +53,7 @@
   &>.lfui_input_spacer {
     position          : relative;
     // margin-right   : 20px;
-    pointer-events    : none;
+    // pointer-events    : none;
     user-select       : none;
     font-size         : inherit;
     font-family       : inherit;
@@ -87,7 +87,6 @@
     &>.lfui_input_input {
       font-family     : inherit;
       font-size       : inherit;
-      pointer-events  : all;
       position        : absolute;
       left            : 0;
       top             : 0;
@@ -190,4 +189,9 @@
       opacity: 0;
     }
   }
+}
+
+.lfui_input.lfui_no_border,
+.lfui_input.lfui_no_border:hover {
+  border-width: 0px
 }

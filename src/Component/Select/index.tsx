@@ -148,10 +148,11 @@ export function Select<T, V>(props: ISelectProps<T, V> | IMultiSelectProps<T, V>
     const on_pointerdown = (e: PointerEvent) => {
       let p = e.target as HTMLElement | null;
       while (p) {
-        if (p === ref_popover.current)
+        if (p === ref_popover.current || p === ref_wrapper.current)
           return;
         p = p.parentElement
       }
+      console.log("on_pointerdown")
       set_open(false)
     }
     document.addEventListener('pointerdown', on_pointerdown, { capture: true })
@@ -196,6 +197,7 @@ export function Select<T, V>(props: ISelectProps<T, V> | IMultiSelectProps<T, V>
 
     const ob = new IntersectionObserver((e) => {
       if (!e[0].isIntersecting) {
+        console.log("IntersectionObserver")
         set_open(false)
       }
     })
@@ -214,10 +216,6 @@ export function Select<T, V>(props: ISelectProps<T, V> | IMultiSelectProps<T, V>
     e.preventDefault();
     set_value(void 0);
   }
-  const on_pointer_down = (e: React.PointerEvent) => {
-    set_open(v => !v)
-    e.stopPropagation()
-  }
 
   useEffect(() => {
     const fn = (e: KeyboardEvent) => {
@@ -227,9 +225,20 @@ export function Select<T, V>(props: ISelectProps<T, V> | IMultiSelectProps<T, V>
     return () => document.removeEventListener('keydown', fn)
   }, [])
 
+  const on_pointer_down = (e: React.PointerEvent) => {
+    let p = e.target as HTMLElement | null;
+    while (p) {
+      if (p === ref_popover.current)
+        return;
+      p = p.parentElement
+    }
+    set_open(!open)
+    e.stopPropagation()
+  }
+
   const not_empty = !!checked_tree_nodes?.length;
   return (
-    <Space className={classname} {..._p} ref={ref_wrapper}>
+    <Space className={classname} {..._p} ref={ref_wrapper} onPointerDown={on_pointer_down}>
       <Space.Broken>
         <Input
           prefix={
@@ -257,8 +266,7 @@ export function Select<T, V>(props: ISelectProps<T, V> | IMultiSelectProps<T, V>
             </>
           }
           className={styles.input}
-          readOnly={true}
-          onPointerDown={on_pointer_down} />
+          readOnly={true} />
         <Show show={clearable && value?.length}>
           <Clear className={styles.ic_clear} onPointerDown={on_clear} />
         </Show>
