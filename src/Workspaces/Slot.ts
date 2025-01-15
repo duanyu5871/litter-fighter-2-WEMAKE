@@ -1,7 +1,9 @@
 
 import { ISlot } from "./ISlot";
+import type { Workspaces } from "./Workspaces";
 
 export class Slot {
+  workspaces: Workspaces;
   id: string = '';
   t: 'v' | 'h' = 'v';
   c: Slot[] = [];
@@ -13,15 +15,17 @@ export class Slot {
     w: 0,
     h: 0
   };
-  constructor(info: ISlot, c: Slot[] = []) {
+  constructor(workspaces: Workspaces, info: ISlot = {}, c: Slot[] = []) {
+    this.workspaces = workspaces;
     const { r, ..._info } = info;
     Object.assign(this, _info);
     Object.assign(this.r, r);
     this.c = c;
+    if (!this.id) this.id = workspaces.new_slot_id()
     c.forEach(c => c.p = this);
   }
   clone(): Slot {
-    const ret = new Slot(this, this.c);
+    const ret = new Slot(this.workspaces, this, this.c);
     Object.assign(ret, this);
     return ret;
   }

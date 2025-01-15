@@ -582,15 +582,14 @@ export default function EditorView(props: IEditorViewProps) {
     const workspace = ref_workspace.current ?
       ref_workspace.current :
       ref_workspace.current = new Workspaces(container)
-    if (!workspace.root) {
-      workspace.set_root(
-        new Slot({ id: 'root', t: 'h' }, [
-          new Slot({ id: 'resources_cell', t: 'v', f: 250 }),
-          new Slot({ id: 'data_cell', t: 'v', f: 250 }),
-          new Slot({ id: 'preview_cell', t: 'v', f: container.offsetWidth - 500 }),
-        ])
-      )
-    }
+
+    workspace.set_root(
+      new Slot(workspace, { id: 'root', t: 'h' }, [
+        new Slot(workspace, { id: 'resources_cell', t: 'v', f: 250 }),
+        new Slot(workspace, { id: 'data_cell', t: 'v', f: 250 }),
+        new Slot(workspace, { id: 'preview_cell', t: 'v', f: container.offsetWidth - 500 }),
+      ])
+    )
     workspace.on_changed = () => set_cells(workspace.cells)
     workspace.update();
     const ob = new ResizeObserver(() => {

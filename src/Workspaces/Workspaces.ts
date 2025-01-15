@@ -18,7 +18,7 @@ export class Workspaces {
   constructor(container: HTMLElement) {
     this.container = container
     this.container.classList.add(styles.zone)
-    this._root = new Slot({ id: this.new_slot_id() })
+    this._root = new Slot(this)
   }
   on_changed?: (self: Workspaces) => void;
   create_cell_element(): HTMLElement {
@@ -79,7 +79,7 @@ export class Workspaces {
     _job(s)
     this.update()
   }
-  add(anchor_slot_id: string, pos: 'up' | 'down' | 'left' | 'right' | number, info: ISlot) {
+  add(anchor_slot_id: string, pos: 'up' | 'down' | 'left' | 'right' | number, info: ISlot = {}): Slot {
     const anchor = this._slots.get(anchor_slot_id)
     if (!anchor) {
       debugger;
@@ -88,7 +88,7 @@ export class Workspaces {
     const parent = anchor?.p;
     const anchor_idx = parent?.c.indexOf(anchor);
 
-    const slot = new Slot(info)
+    const slot = new Slot(this, info)
     if (this._slots.get(slot.id))
       throw new Error('slot id repeated!')
 
@@ -97,7 +97,7 @@ export class Workspaces {
       this.container.querySelectorAll(`.${styles.v_line}`).forEach(v => v.remove())
       this.container.querySelectorAll(`.${styles.v_line}`).forEach(v => v.remove())
       this.update()
-      return
+      return slot
     }
     const split_root = (wrapper: Slot) => {
       const old_root = this.root!;
@@ -113,7 +113,7 @@ export class Workspaces {
       wrapper.push(old_root);
     }
     const split_as_first = () => {
-      const wrapper = new Slot({ id: this.new_slot_id() })
+      const wrapper = new Slot(this)
       if (parent) {
         const taken = parent.replace(anchor_idx!, wrapper)
         wrapper.push(slot, taken)
@@ -123,7 +123,7 @@ export class Workspaces {
       }
     }
     const split_as_last = () => {
-      const wrapper = new Slot({ id: this.new_slot_id() })
+      const wrapper = new Slot(this)
       if (parent) {
         const taken = parent.replace(anchor_idx!, wrapper)
         wrapper.push(taken, slot);
@@ -160,6 +160,7 @@ export class Workspaces {
     this.container.querySelectorAll(`.${styles.v_line}`).forEach(v => v.remove())
     this.container.querySelectorAll(`.${styles.h_line}`).forEach(v => v.remove())
     this.update()
+    return slot
   }
   make_rect(r: IRect) {
     r.w = Math.max(50, r.w);
@@ -208,63 +209,72 @@ export class Workspaces {
     const { container } = this;
     slot.c.forEach((prev, i, arr) => {
       const next = arr.at(i + 1)
-      if (next) {
-        let l0 = container.querySelector(`[prev=${prev.id}]`) as HTMLElement | null;
-        let l1 = container.querySelector(`[next=${next.id}]`) as HTMLElement | null;
-        if (!l0) {
-          const l = l0 = this.create_line_element()
-          l.className = slot.t === 'h' ? styles.v_line : styles.h_line
-          l.setAttribute('slot', slot.id)
-          l.setAttribute('prev', prev.id)
-          l.setAttribute('next', next.id)
-          l.addEventListener('pointerdown', () => {
-            l.classList.add(styles._line_hover)
-            container.classList.add(slot.t === 'h' ? styles.zone_h_resizing : styles.zone_v_resizing)
-            const on_move = (e: PointerEvent) => {
-              const r = l.parentElement?.getBoundingClientRect();
-              if (!r) return;
-              const offset = slot.t === 'h' ?
-                e.clientX - 2 - r.left - parseInt(l.style.left) :
-                e.clientY - 2 - r.top - parseInt(l.style.top);
-              let prev_slot = prev
-              let next_slot = next
-              if (!prev_slot || !next_slot)
-                return
-              const prev_slot_f = prev_slot.f;
-              const next_slot_f = next_slot.f;
-              prev_slot.f = prev_slot.f + offset
-              next_slot.f = next_slot.f - offset
-              if (!this.update()) {
-                prev_slot.f = prev_slot_f
-                next_slot.f = next_slot_f
-                this.update()
-                return
-              }
+      if (!next) {
+        this.update_lines(prev)
+        return
+      }
+      let l0 = container.querySelector(`[prev=${prev.id}]`) as HTMLElement | null;
+      if (!l0) {
+        const l = l0 = this.create_line_element()
+        l.addEventListener('pointerdown', () => {
+          const slot_id = l.getAttribute('slot')
+          const prev_slot_id = l.getAttribute('prev')
+          const next_slot_id = l.getAttribute('next')
+          if (!slot_id || !prev_slot_id || !next_slot_id) return
+          const prev = this._slots.get(prev_slot_id)
+          const next = this._slots.get(next_slot_id)
+          if (!slot) return;
+
+          l.classList.add(styles._line_hover)
+          container.classList.add(slot.t === 'h' ? styles.zone_h_resizing : styles.zone_v_resizing)
+          const on_move = (e: PointerEvent) => {
+            const r = l.parentElement?.getBoundingClientRect();
+            if (!r) return;
+            const offset = slot.t === 'h' ?
+              e.clientX - 2 - r.left - parseInt(l.style.left) :
+              e.clientY - 2 - r.top - parseInt(l.style.top);
+
+            let prev_slot = prev
+            let next_slot = next
+            if (!prev_slot || !next_slot)
+              return
+            const prev_slot_f = prev_slot.f;
+            const next_slot_f = next_slot.f;
+            prev_slot.f = prev_slot.f + offset
+            next_slot.f = next_slot.f - offset
+            if (!this.update()) {
+              prev_slot.f = prev_slot_f
+              next_slot.f = next_slot_f
+              this.update()
+              return
             }
-            const on_end = () => {
-              document.removeEventListener('pointermove', on_move)
-              l.classList.remove(styles._line_hover)
-              container.classList.remove(styles.zone_h_resizing, styles.zone_v_resizing)
-            }
-            document.addEventListener('pointermove', on_move)
-            document.addEventListener('pointercancel', on_end, { once: !0 })
-            document.addEventListener('pointerup', on_end, { once: !0 })
-            window.addEventListener('blur', on_end, { once: !0 })
-          })
-          container.appendChild(l0)
-          l1?.remove()
-        }
-        if (slot.t === 'h') {
-          l0.style.height = '' + slot.r.h + 'px'
-          l0.style.left = '' + (next.r.x - 2) + 'px'
-          l0.style.width = ''
-          l0.style.top = '' + slot.r.y + 'px'
-        } else {
-          l0.style.height = ''
-          l0.style.left = '' + slot.r.x + 'px'
-          l0.style.width = '' + slot.r.w + 'px'
-          l0.style.top = '' + (next.r.y - 2) + 'px'
-        }
+          }
+          const on_end = () => {
+            document.removeEventListener('pointermove', on_move)
+            l.classList.remove(styles._line_hover)
+            container.classList.remove(styles.zone_h_resizing, styles.zone_v_resizing)
+          }
+          document.addEventListener('pointermove', on_move)
+          document.addEventListener('pointercancel', on_end, { once: !0 })
+          document.addEventListener('pointerup', on_end, { once: !0 })
+          window.addEventListener('blur', on_end, { once: !0 })
+        })
+        container.appendChild(l0)
+      }
+      l0.className = slot.t === 'h' ? styles.v_line : styles.h_line
+      l0.setAttribute('slot', slot.id)
+      l0.setAttribute('prev', prev.id)
+      l0.setAttribute('next', next.id)
+      if (slot.t === 'h') {
+        l0.style.height = '' + slot.r.h + 'px'
+        l0.style.left = '' + (next.r.x - 2) + 'px'
+        l0.style.width = ''
+        l0.style.top = '' + slot.r.y + 'px'
+      } else {
+        l0.style.height = ''
+        l0.style.left = '' + slot.r.x + 'px'
+        l0.style.width = '' + slot.r.w + 'px'
+        l0.style.top = '' + (next.r.y - 2) + 'px'
       }
       this.update_lines(prev)
     })
