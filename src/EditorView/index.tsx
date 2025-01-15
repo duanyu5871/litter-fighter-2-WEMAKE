@@ -5,7 +5,7 @@ import { Button } from "../Component/Buttons/Button";
 import { Checkbox } from "../Component/Checkbox";
 import Combine from "../Component/Combine";
 import Frame from "../Component/Frame";
-import { Add } from "../Component/Icons/Clear";
+import { Plus } from '../Component/Icons/Plus';
 import Select from "../Component/Select";
 import Show from "../Component/Show";
 import { Space } from "../Component/Space";
@@ -482,7 +482,7 @@ export default function EditorView(props: IEditorViewProps) {
               ITR预设
             </div>
             <Button key={views.length} onClick={add}>
-              <Add />
+              <Plus />
             </Button>
           </Combine>
           <div className={styles.content_zone}>

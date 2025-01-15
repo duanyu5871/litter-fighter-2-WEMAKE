@@ -1,7 +1,8 @@
 import classNames from "classnames";
 import React, { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
-import { Clear, DropdownArrow, Tick } from "../Icons/Clear";
+import { Clear, DropdownArrow } from "../Icons/Clear";
+import { Tick } from '../Icons/Tick';
 import { Input } from "../Input";
 import Show from "../Show";
 import { Space } from "../Space";

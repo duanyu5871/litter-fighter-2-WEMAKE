@@ -3,10 +3,10 @@ import { createPortal } from "react-dom";
 import Frame from "../../Component/Frame";
 import { Workspaces } from "../../Workspaces";
 import { Button } from "../../Component/Buttons/Button";
-import { ArrowLeft3 } from "../../Component/Icons/ArrowLeft3";
-import { ArrowRight3 } from "../../Component/Icons/ArrowRight3";
-import { ArrowDown3 } from "../../Component/Icons/ArrowDown3";
-import { ArrowUp3 } from "../../Component/Icons/ArrowUp3";
+import { ArrowLeft } from "../../Component/Icons/ArrowLeft";
+import { ArrowRight } from "../../Component/Icons/ArrowRight";
+import { ArrowDown } from "../../Component/Icons/ArrowDown";
+import { ArrowUp } from "../../Component/Icons/ArrowUp";
 import { WorkspaceColumnView } from "../../EditorView/WorkspaceColumnView";
 
 export default function WorkspacesDemo() {
@@ -57,10 +57,10 @@ export default function WorkspacesDemo() {
                 e.preventDefault();
               }}
             >
-              <Button onClick={() => workspaces.add(slot.id, 'left')}><ArrowLeft3 /></Button>
-              <Button onClick={() => workspaces.add(slot.id, 'right')}><ArrowRight3 /></Button>
-              <Button onClick={() => workspaces.add(slot.id, 'up')}><ArrowUp3 /></Button>
-              <Button onClick={() => workspaces.add(slot.id, 'down')}><ArrowDown3 /></Button>
+              <Button onClick={() => workspaces.add(slot.id, 'left')}><ArrowLeft /></Button>
+              <Button onClick={() => workspaces.add(slot.id, 'right')}><ArrowRight /></Button>
+              <Button onClick={() => workspaces.add(slot.id, 'up')}><ArrowUp /></Button>
+              <Button onClick={() => workspaces.add(slot.id, 'down')}><ArrowDown /></Button>
             </Frame>,
             cell,
             cell.id

@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import { Button } from "../../Component/Buttons/Button";
 import Combine, { ICombineProps } from "../../Component/Combine";
-import { Add } from "../../Component/Icons/Clear";
+import { Plus } from '../../Component/Icons/Plus';
 import { Space } from "../../Component/Space";
 import { Text } from "../../Component/Text";
 import styles from "./style.module.scss"
@@ -41,7 +41,7 @@ export function TitleAndAdd(props: { title?: React.ReactNode; on_add?(e: React.M
         {title}
       </Text>
       <Button onClick={on_add}>
-        <Add />
+        <Plus />
       </Button>
     </Combine>
   )

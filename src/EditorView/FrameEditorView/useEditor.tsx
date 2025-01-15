@@ -1,7 +1,8 @@
 import { useContext, useEffect, useMemo, useState } from "react";
 import { Button } from "../../Component/Buttons/Button";
 import Combine from "../../Component/Combine";
-import { Add, Close3 } from "../../Component/Icons/Clear";
+import { Plus } from '../../Component/Icons/Plus';
+import { Cross } from '../../Component/Icons/Cross';
 import { Input, InputNumber, InputNumberProps, InputProps } from "../../Component/Input";
 import { TextArea } from "../../Component/TextArea";
 import Titled, { ITitledProps } from "../../Component/Titled";
@@ -237,13 +238,13 @@ export function useEditor<O extends {}>(value: O, _label_style: React.CSSPropert
                       defaultValue={value}
                       onBlur={e => on_blur(idx, e.target.value)} />
                     <Button >
-                      <Close3 onClick={() => on_click_del(idx)} />
+                      <Cross onClick={() => on_click_del(idx)} />
                     </Button>
                   </Combine>
                 );
               })}
               <Button onClick={on_click_add}>
-                <Add />
+                <Plus />
               </Button>
             </Combine>
           </Titled>
@@ -277,13 +278,13 @@ export function useEditor<O extends {}>(value: O, _label_style: React.CSSPropert
                       defaultValue={value}
                       on_blur={v => on_blur(idx, v)} />
                     <Button >
-                      <Close3 onClick={() => on_click_del(idx)} />
+                      <Cross onClick={() => on_click_del(idx)} />
                     </Button>
                   </Combine>
                 );
               })}
               <Button onClick={on_click_add}>
-                <Add />
+                <Plus />
               </Button>
             </Combine>
           </Titled>
