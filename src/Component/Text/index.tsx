@@ -1,7 +1,8 @@
 import classNames from "classnames";
 import styles from "./styles.module.scss"
+export type UiSize = 'ss' | 's' | 'm' | 'l'
 export interface ITextProps extends React.HTMLAttributes<HTMLSpanElement> {
-  size?: 's' | 'm' | 'l';
+  size?: UiSize;
 }
 export function Text(props: ITextProps) {
   const { className, size = 'm', ..._p } = props;
@@ -12,3 +13,8 @@ export function Strong(props: ITextProps) {
   return <strong className={classNames(styles.lfui_txt, styles[size], className)} {..._p} />
 }
 Text.Strong = Strong;
+
+
+export namespace Text {
+  export type UiSize = 'ss' | 's' | 'm' | 'l';
+}

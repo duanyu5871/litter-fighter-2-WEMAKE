@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import React, { useEffect, useMemo, useRef } from "react";
-import { Clear } from "../Icons/Clear";
+import { CircleCross } from '../Icons/CircleCross';
 import styles from "./styles.module.scss";
 
 export type BaseProps = React.InputHTMLAttributes<HTMLInputElement>
@@ -39,7 +39,7 @@ function direct_set_value(ele: HTMLInputElement | null, value: string | number) 
 
 function _Input(props: InputProps, forwarded_Ref: React.ForwardedRef<InputRef>) {
   const {
-    className, prefix, suffix, clear_icon = <Clear hoverable />, style, clazz,
+    className, prefix, suffix, clear_icon = <CircleCross hoverable />, style, clazz,
     clearable = false, on_changed, variants,
     ..._p
   } = props;
@@ -240,18 +240,18 @@ function _Input(props: InputProps, forwarded_Ref: React.ForwardedRef<InputRef>) 
 export const Input = React.forwardRef<InputRef, InputProps>(_Input)
 
 
-export interface InputNumberProps extends Omit<InputProps, 'type' | 'value' | 'defaultValue'> {
+export interface InputNumberProps extends Omit<InputProps, 'type' | 'value' | 'defaultValue' | 'on_changed'> {
   value?: number;
   defaultValue?: number;
-  on_change?(v: number | undefined): void;
+  on_changed?(v: number | undefined): void;
   on_blur?(v: number | undefined): void;
 }
 function _InputNumber(props: InputNumberProps, forwarded_Ref: React.ForwardedRef<InputRef>) {
-  const { onChange, onBlur, on_change, on_blur, ..._p } = props;
+  const { onChange, onBlur, on_changed, on_blur, ..._p } = props;
   const _on_change = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange?.(e);
     const t = e.target.value.trim();
-    on_change?.(t ? void 0 : Number(e.target.value))
+    on_changed?.(t === void 0 ? void 0 : Number(e.target.value))
   }
   const _on_blur = (e: React.FocusEvent<HTMLInputElement>) => {
     onBlur?.(e);

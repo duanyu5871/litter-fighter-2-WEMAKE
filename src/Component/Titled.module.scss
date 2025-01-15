@@ -10,12 +10,12 @@
   position      : relative;
 
   &>.label {
-    opacity     : 0.8;
+    opacity        : 0.8;
     // font-size   : 0.5em;
-    margin-right: 5px;
-    display     : inline-block;
-    white-space : nowrap;
-    word-break  : keep-all;
+    margin-right   : 5px;
+    display        : inline-block;
+    white-space    : nowrap;
+    word-break     : keep-all;
   }
 
   &>.float_label {
@@ -29,5 +29,6 @@
     left       : 8px;
     top        : 0;
     translate  : 0px -7px;
+    z-index    : 1;
   }
 }

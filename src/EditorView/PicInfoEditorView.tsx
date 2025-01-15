@@ -1,5 +1,5 @@
 import Frame, { IFrameProps } from "../Component/Frame";
-import { Close2 } from "../Component/Icons/Clear";
+import { Cross } from "../Component/Icons/Cross";
 import { Space } from "../Component/Space";
 import { IEntityData } from "../LF2/defines/IEntityData";
 import { IEntityPictureInfo } from "../LF2/defines/IEntityPictureInfo";
@@ -55,7 +55,7 @@ export function PicInfoEditorView(props: IFileEditorViewProps) {
   const { EditorStr, EditorStrList, EditorImg } = useEditor(pic_info)
   return (
     <Frame {..._p} label='pic'>
-      <Close2 style={{ position: 'absolute', top: 0, right: 0 }} onClick={on_click_remove} hoverable />
+      <Cross style={{ position: 'absolute', top: 0, right: 0 }} onClick={on_click_remove} hoverable />
       <Space vertical>
         <EditorStr field='id' onBlur={on_input_id_blur} />
         <EditorImg field='path' clearable={false} />

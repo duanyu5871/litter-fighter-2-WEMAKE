@@ -110,21 +110,21 @@ export function useEditor<O extends {}>(value: O, _label_style: React.CSSPropert
             <Combine style={combine_style}>
               <InputNumber
                 defaultValue={(value as any)[x]}
-                on_change={v => (value as any)[x] = v}
+                on_changed={v => (value as any)[x] = v}
                 title="x"
                 prefix="x"
                 style={input_style}
                 clearable={clearable} />
               <InputNumber
                 defaultValue={(value as any)[y]}
-                on_change={v => (value as any)[y] = v}
+                on_changed={v => (value as any)[y] = v}
                 title="y"
                 prefix="y"
                 style={input_style}
                 clearable={clearable} />
               <InputNumber
                 defaultValue={(value as any)[z]}
-                on_change={v => (value as any)[z] = v}
+                on_changed={v => (value as any)[z] = v}
                 title="z"
                 prefix="z"
                 style={input_style}
@@ -142,14 +142,14 @@ export function useEditor<O extends {}>(value: O, _label_style: React.CSSPropert
             <Combine style={combine_style}>
               <InputNumber
                 defaultValue={(value as any)[x]}
-                on_change={v => (value as any)[x] = v}
+                on_changed={v => (value as any)[x] = v}
                 title="x"
                 prefix="x"
                 style={input_style}
                 clearable={clearable} />
               <InputNumber
                 defaultValue={(value as any)[y]}
-                on_change={v => (value as any)[y] = v}
+                on_changed={v => (value as any)[y] = v}
                 title="y"
                 prefix="y"
                 style={input_style}
@@ -168,19 +168,19 @@ export function useEditor<O extends {}>(value: O, _label_style: React.CSSPropert
               <Combine>
                 <InputNumber
                   defaultValue={(value as any)[x]}
-                  on_change={v => (value as any)[x] = v}
+                  on_changed={v => (value as any)[x] = v}
                   title="x" prefix="x"
                   style={input_style}
                   clearable={clearable} />
                 <InputNumber
                   defaultValue={(value as any)[y]}
-                  on_change={v => (value as any)[y] = v}
+                  on_changed={v => (value as any)[y] = v}
                   title="y" prefix="y"
                   style={input_style}
                   clearable={clearable} />
                 <InputNumber
                   defaultValue={(value as any)[z]}
-                  on_change={v => (value as any)[z] = v}
+                  on_changed={v => (value as any)[z] = v}
                   title="z" prefix="z"
                   style={input_style}
                   clearable={clearable} />
@@ -188,19 +188,19 @@ export function useEditor<O extends {}>(value: O, _label_style: React.CSSPropert
               <Combine>
                 <InputNumber
                   defaultValue={(value as any)[w]}
-                  on_change={v => (value as any)[w] = v}
+                  on_changed={v => (value as any)[w] = v}
                   title="w" prefix="w"
                   style={input_style}
                   clearable={clearable} />
                 <InputNumber
                   defaultValue={(value as any)[h]}
-                  on_change={v => (value as any)[h] = v}
+                  on_changed={v => (value as any)[h] = v}
                   title="h" prefix="h"
                   style={input_style}
                   clearable={clearable} />
                 <InputNumber
                   defaultValue={(value as any)[l]}
-                  on_change={v => (value as any)[l] = v}
+                  on_changed={v => (value as any)[l] = v}
                   title="l" prefix="l"
                   style={input_style}
                   clearable={clearable} />

@@ -1,5 +1,4 @@
-import { Base } from './Base';
-import { IIconProps } from './Clear';
+import { Base, IIconProps } from './Base';
 
 export function ArrowLeft(props: IIconProps) {
   return (
@@ -10,7 +9,7 @@ export function ArrowLeft(props: IIconProps) {
 }
 const o = Object.assign(ArrowLeft, Base)
 ArrowLeft.path =
-  `M ${o.w - o.pad} ${o.pad} ` +
+  `M ${o.r} ${o.pad} ` +
   `L ${o.pad} ${o.h / 2} ` +
-  `L ${o.w - o.pad} ${o.h - o.pad} `
+  `L ${o.r} ${o.h - o.pad} `
 

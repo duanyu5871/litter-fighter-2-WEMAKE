@@ -5,16 +5,20 @@ import { ArrowDown } from "../../Component/Icons/ArrowDown";
 import { ArrowLeft } from "../../Component/Icons/ArrowLeft";
 import { ArrowRight } from "../../Component/Icons/ArrowRight";
 import { ArrowUp } from "../../Component/Icons/ArrowUp";
-import { Clear, DropdownArrow, IIconProps } from "../../Component/Icons/Clear";
-import { Plus } from '../../Component/Icons/Plus';
+import { IIconProps } from "../../Component/Icons/Base";
+import { CircleCross } from '../../Component/Icons/CircleCross';
 import { Cross } from '../../Component/Icons/Cross';
-import { Tick } from '../../Component/Icons/Tick';
+import { DropdownArrow } from '../../Component/Icons/DropdownArrow';
+import { Plus } from '../../Component/Icons/Plus';
 import { Search } from "../../Component/Icons/Search";
+import { Tick } from '../../Component/Icons/Tick';
+import { InputNumber } from "../../Component/Input";
 import { Space } from "../../Component/Space";
 import Titled from "../../Component/Titled";
 
 export default function IconDemo() {
-  const [hoverable, set_hoverable] = useState(true);
+  const [hoverable, set_hoverable] = useState(false);
+  const [font_size, set_font_size] = useState<number | undefined>(16)
   const c: IIconProps = { hoverable }
   return (
     <Frame label='Icon'>
@@ -22,11 +26,20 @@ export default function IconDemo() {
         <Titled label='hoverable'>
           <Checkbox value={hoverable} onChanged={set_hoverable} />
         </Titled>
+        <Titled float_label='font size'>
+          <InputNumber
+            step={1}
+            min={1}
+            max={70}
+            value={font_size}
+            on_changed={set_font_size}
+            placeholder="font size" />
+        </Titled>
       </Space>
 
-      <div style={{ display: 'flex', gap: 5, alignItems: 'center' }}>
+      <div style={{ display: 'flex', gap: 5, alignItems: 'center', fontSize: font_size, flexWrap: 'wrap' }}>
         HELLO 你好
-        <Clear {...c} />
+        <CircleCross {...c} />
         <DropdownArrow {...c} />
         <ArrowUp {...c} />
         <ArrowDown {...c} />

@@ -1,5 +1,4 @@
-import { Base } from "./Base";
-import { IIconProps } from "./Clear";
+import { Base, IIconProps } from "./Base";
 
 export function Search(props: IIconProps) {
   return (

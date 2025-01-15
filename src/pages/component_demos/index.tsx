@@ -3,14 +3,11 @@ import { Space } from "../../Component/Space";
 import { ITreeNode, TreeView } from "../../Component/TreeView";
 import { Paths } from "../../Paths";
 import styles from './styles.module.scss'
-export const tree_root: ITreeNode[] = [
-  { key: Paths.All.component_demos_InputNumber, label: 'InputNumber' },
-  { key: Paths.All.component_demos_Button, label: 'Button' },
-  { key: Paths.All.component_demos_Combine, label: 'Combine' },
-  { key: Paths.All.component_demos_Select, label: 'Select' },
-  { key: Paths.All.component_demos_Input, label: 'Input' },
-  { key: Paths.All.component_demos_Icon, label: 'Icon' },
-]
+
+export const tree_root: ITreeNode[] = Paths.Relations[Paths.All.component_demos]?.map<ITreeNode>(key => {
+  return { key, label: key.split('/').findLast(_ => 1) }
+}).filter(i => i.label !== '*') ?? []
+
 export default function ComponentDemo() {
   const nav = useNavigate();
   return (

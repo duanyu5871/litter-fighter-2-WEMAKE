@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import styles from './Clear/style.module.scss';
+import styles from './style.module.scss';
 export interface IIconProps extends React.SVGAttributes<SVGSVGElement> {
   hoverable?: boolean;
 }
@@ -17,6 +17,9 @@ const o = Base
 Base.pad = 2
 Base.w = 12;
 Base.h = 12;
+Base.l = Base.t = Base.pad
+Base.r = Base.w - Base.pad
+Base.b = Base.h - Base.pad
 Base.size = `0, 0, ${o.w}, ${o.h}`
 Base.Path = Path
 Base.styles = styles

@@ -1,7 +1,8 @@
 import classNames from "classnames";
 import React, { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
-import { Clear, DropdownArrow } from "../Icons/Clear";
+import { CircleCross } from '../Icons/CircleCross';
+import { DropdownArrow } from '../Icons/DropdownArrow';
 import { Tick } from '../Icons/Tick';
 import { Input } from "../Input";
 import Show from "../Show";
@@ -268,7 +269,7 @@ export function Select<T, V>(props: ISelectProps<T, V> | IMultiSelectProps<T, V>
           className={styles.input}
           readOnly={true} />
         <Show show={clearable && value?.length}>
-          <Clear className={styles.ic_clear} onPointerDown={on_clear} />
+          <CircleCross className={styles.ic_clear} onPointerDown={on_clear} />
         </Show>
       </Space.Broken>
       {gone ? null : createPortal(

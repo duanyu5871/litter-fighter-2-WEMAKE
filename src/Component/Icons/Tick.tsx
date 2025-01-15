@@ -1,5 +1,4 @@
-import { IIconProps } from "./Clear";
-import { Base } from "./Base";
+import { Base, IIconProps } from "./Base";
 
 export function Tick(props: IIconProps) {
   return (

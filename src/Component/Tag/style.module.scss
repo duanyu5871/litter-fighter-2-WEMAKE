@@ -5,9 +5,11 @@
   color           : $primary_bg_color;
   padding         : 1px 4px;
   border-radius   : $border_radius_s;
+  display         : inline-flex;
 
-  &>.label {
-    font-size     : 0.5em;
+  &>.close {
+    padding: 2px;
+    display: inline-block;
   }
 }
 

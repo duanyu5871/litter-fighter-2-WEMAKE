@@ -1,5 +1,4 @@
-import { IIconProps } from "./Clear";
-import { Base } from "./Base";
+import { Base, IIconProps } from "./Base";
 
 export function Plus(props: IIconProps) {
   return (
@@ -12,5 +11,5 @@ export function Plus(props: IIconProps) {
 const o = Object.assign(Plus, Base)
 Plus.paths = [
   o.m(o.w / 2, o.pad, o.w / 2, o.h - o.pad).ok(),
-  o.m(o.pad, o.h / 2, o.w - o.pad, o.h / 2).ok()
+  o.m(o.pad, o.h / 2, o.r, o.h / 2).ok()
 ]

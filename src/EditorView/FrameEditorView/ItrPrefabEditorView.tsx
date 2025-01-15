@@ -1,5 +1,5 @@
 import Frame from "../../Component/Frame";
-import { Close2 } from "../../Component/Icons/Clear";
+import { Cross } from "../../Component/Icons/Cross";
 import { Space } from "../../Component/Space";
 import { IEntityData } from "../../LF2/defines/IEntityData";
 import { IItrPrefab } from "../../LF2/defines/IItrPrefab";
@@ -51,7 +51,7 @@ export function ItrPrefabEditorView(props: IItrPrefabEditorViewProps) {
 
   return (
     <Frame label={label}>
-      <Close2 style={{ position: 'absolute', right: 0, top: 0, border: 'none' }} onClick={on_remove} hoverable />
+      <Cross style={{ position: 'absolute', right: 0, top: 0, border: 'none' }} onClick={on_remove} hoverable />
       <Space direction="column" >
         <EditorStr field="id" onBlur={on_input_id_blur} />
         <EditorStr field="name" />
