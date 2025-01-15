@@ -1,5 +1,3 @@
-
-
 import { IRect } from "./IRect";
 import { ISlot } from "./ISlot";
 import { Slot } from "./Slot";
@@ -10,16 +8,27 @@ export class Workspaces {
   private _slots = new Map<string, Slot>();
   private _slot_cell_map = new Map<Slot, HTMLElement>();
   private _cell_slot_map = new Map<HTMLElement, Slot>();
-  container: HTMLElement;
+  private _resize_ob: ResizeObserver;
+  private _container: HTMLElement;
+
   cells: Readonly<HTMLElement[]> = [];
   get root(): Slot | undefined {
     return this._root;
   }
   constructor(container: HTMLElement) {
-    this.container = container
-    this.container.classList.add(styles.zone)
-    this._root = new Slot(this)
+    this._container = container;
+    this._container.classList.add(styles.zone);
+    this._root = new Slot(this);
+    this._resize_ob = new ResizeObserver(this.on_resize)
+    this._resize_ob.observe(this._container)
   }
+  release() {
+    this._container.classList.remove(styles.zone, styles.zone_h_resizing, styles.zone_v_resizing)
+    this._container.innerHTML = '';
+    this._resize_ob.disconnect();
+  }
+  on_resize = () => this.update()
+  on_cell_changed?: (self: Workspaces) => void;
   on_changed?: (self: Workspaces) => void;
   create_cell_element(): HTMLElement {
     return document.createElement('div')
@@ -49,9 +58,9 @@ export class Workspaces {
     const _job = (s: Slot) => {
       if (!s.parent) return
       s.parent.children = s.parent.children.filter(v => v !== s);
-      this.container.querySelector(`#${s.id}`)?.remove();
-      this.container.querySelector(`[prev=${s.id}]`)?.remove();
-      this.container.querySelector(`[next=${s.id}]`)?.remove();
+      this._container.querySelector(`#${s.id}`)?.remove();
+      this._container.querySelector(`[prev=${s.id}]`)?.remove();
+      this._container.querySelector(`[next=${s.id}]`)?.remove();
       if (!s.parent.children.length) {
         _job(s.parent);
       } else if (s.parent.children.length === 1) {
@@ -79,6 +88,12 @@ export class Workspaces {
     _job(s)
     this.update()
   }
+  del(slot_id: string): Slot | undefined {
+    const slot = this._slots.get(slot_id)
+    if (!slot) return slot
+    this.del_slot(slot);
+    return slot
+  }
   add(anchor_slot_id: string, pos: 'up' | 'down' | 'left' | 'right' | number, info: ISlot = {}): Slot {
     const anchor = this._slots.get(anchor_slot_id)
     if (!anchor) {
@@ -94,8 +109,8 @@ export class Workspaces {
 
     if (typeof pos === 'number') {
       anchor.insert(pos, slot);
-      this.container.querySelectorAll(`.${styles.v_line}`).forEach(v => v.remove())
-      this.container.querySelectorAll(`.${styles.v_line}`).forEach(v => v.remove())
+      this._container.querySelectorAll(`.${styles.v_line}`).forEach(v => v.remove())
+      this._container.querySelectorAll(`.${styles.v_line}`).forEach(v => v.remove())
       this.update()
       return slot
     }
@@ -157,8 +172,8 @@ export class Workspaces {
       case "v right":
       case "h down": insert_after(); break;
     }
-    this.container.querySelectorAll(`.${styles.v_line}`).forEach(v => v.remove())
-    this.container.querySelectorAll(`.${styles.h_line}`).forEach(v => v.remove())
+    this._container.querySelectorAll(`.${styles.v_line}`).forEach(v => v.remove())
+    this._container.querySelectorAll(`.${styles.h_line}`).forEach(v => v.remove())
     this.update()
     return slot
   }
@@ -206,7 +221,7 @@ export class Workspaces {
     return obj.ok;
   }
   update_lines(slot: Slot) {
-    const { container } = this;
+    const { _container: container } = this;
     slot.children.forEach((prev, i, arr) => {
       const next = arr.at(i + 1)
       if (!next) {
@@ -280,7 +295,7 @@ export class Workspaces {
     })
   }
   update_cells(slot: Slot, cells: HTMLElement[] = []) {
-    const { container } = this;
+    const { _container: container } = this;
     if (slot.children.length) {
       slot.children.forEach(c => this.update_cells(c, cells))
       return cells
@@ -306,7 +321,7 @@ export class Workspaces {
     slot.children.forEach(c => this.update_factors(c))
   }
   update(): boolean {
-    const { container, _root } = this;
+    const { _container: container, _root } = this;
     if (!_root) return false;
 
     const r = container.getBoundingClientRect();
@@ -329,6 +344,15 @@ export class Workspaces {
     }
     _job(_root)
     this.on_changed?.(this)
+
+    if (this.on_cell_changed) {
+      const next_cell_ids = this.cells.map(v => v.id).sort().join()
+      if (this._prev_cell_ids !== next_cell_ids) {
+        this._prev_cell_ids = next_cell_ids;
+        this.on_cell_changed?.(this);
+      }
+    }
     return ok
   }
+  private _prev_cell_ids = ''
 }

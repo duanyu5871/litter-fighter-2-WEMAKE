@@ -229,7 +229,7 @@ export function Select<T, V>(props: ISelectProps<T, V> | IMultiSelectProps<T, V>
 
   const not_empty = !!checked_tree_nodes?.length;
   return (
-    <Space className={classname} {..._p} ref={ref_wrapper} onPointerDown={on_pointer_down}>
+    <Space className={classname} {..._p} ref={ref_wrapper}>
       <Space.Broken>
         <Input
           prefix={
@@ -257,7 +257,8 @@ export function Select<T, V>(props: ISelectProps<T, V> | IMultiSelectProps<T, V>
             </>
           }
           className={styles.input}
-          readOnly={true} />
+          readOnly={true}
+          onPointerDown={on_pointer_down} />
         <Show show={clearable && value?.length}>
           <Clear className={styles.ic_clear} onPointerDown={on_clear} />
         </Show>
