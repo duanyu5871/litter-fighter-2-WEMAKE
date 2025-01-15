@@ -217,23 +217,23 @@ export class Workspaces {
       if (!l0) {
         const l = l0 = this.create_line_element()
         l.addEventListener('pointerdown', () => {
-          const slot_id = l.getAttribute('slot')
+          const wrapper_slot_id = l.getAttribute('slot')
           const prev_slot_id = l.getAttribute('prev')
           const next_slot_id = l.getAttribute('next')
-          if (!slot_id || !prev_slot_id || !next_slot_id) return
+          if (!wrapper_slot_id || !prev_slot_id || !next_slot_id) return
+          const wrapper = this._slots.get(wrapper_slot_id)
           const prev = this._slots.get(prev_slot_id)
           const next = this._slots.get(next_slot_id)
-          if (!slot) return;
+          if (!wrapper) return;
 
           l.classList.add(styles._line_hover)
-          container.classList.add(slot.t === 'h' ? styles.zone_h_resizing : styles.zone_v_resizing)
+          container.classList.add(wrapper.t === 'h' ? styles.zone_h_resizing : styles.zone_v_resizing)
           const on_move = (e: PointerEvent) => {
             const r = l.parentElement?.getBoundingClientRect();
             if (!r) return;
-            const offset = slot.t === 'h' ?
+            const offset = wrapper.t === 'h' ?
               e.clientX - 2 - r.left - parseInt(l.style.left) :
               e.clientY - 2 - r.top - parseInt(l.style.top);
-
             let prev_slot = prev
             let next_slot = next
             if (!prev_slot || !next_slot)

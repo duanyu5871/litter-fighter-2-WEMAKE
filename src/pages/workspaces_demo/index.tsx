@@ -28,11 +28,11 @@ export default function WorkspacesDemo() {
           const slot = workspaces.get_slot(cell);
           if (!slot) return null;
           const margin = 2;
-          const size = `calc(100% - ${margin}px)`;
+          const size = `calc(100% - ${2*margin}px)`;
           return createPortal(
             <Frame
               style={{ width: size, height: size, margin }}
-              // draggable
+              draggable
               label={slot.id}
               onDragStart={(e) => dragging = (e.target as HTMLElement).parentElement}
               onDragEnd={(e) => dragging = null}

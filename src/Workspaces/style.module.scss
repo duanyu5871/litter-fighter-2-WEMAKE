@@ -4,39 +4,32 @@
   width   : 100%;
   height  : 100%;
 
-  &.zone_h_resizing {
-    cursor: ew-resize;
-
-    &>.v_line {
-      pointer-events: none;
-    }
-
-    &>.h_line {
-      pointer-events: none;
-    }
-  }
-
-  &.zone_v_resizing {
-    cursor: ns-resize;
-
-    &>.v_line {
-      pointer-events: none;
-    }
-
-    &>.h_line {
-      pointer-events: none;
-    }
-  }
-
   &>.cell {
     position      : absolute;
     pointer-events: none;
     box-sizing    : border-box;
     overflow      : hidden;
+  }
 
-    &>* {
-      pointer-events: all;
+  &>.cell>* {
+    pointer-events: all;
+  }
+
+
+  &._resizing {
+    * {
+      pointer-events: none;
     }
+  }
+
+  &.zone_h_resizing {
+    @extend ._resizing;
+    cursor: ew-resize;
+  }
+
+  &.zone_v_resizing {
+    @extend ._resizing;
+    cursor: ns-resize;
   }
 
   &>._line {
