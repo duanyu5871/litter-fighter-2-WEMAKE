@@ -18,6 +18,8 @@ import { Defines } from "./LF2/defines/defines";
 import Entity from "./LF2/entity/Entity";
 import Stage from "./LF2/stage/Stage";
 import { useLocalNumber, useLocalString } from "./useLocalStorage";
+import { Cross } from "./Component/Icons/Cross";
+import { is_str } from "./LF2/utils/type_check";
 const bot_controllers: { [x in string]?: (e: Entity) => BaseController } = {
   OFF: (e: Entity) => new InvalidController("", e),
   "enemy chaser": (e: Entity) => new BotController("", e),
@@ -284,26 +286,31 @@ export default function SettingsRows(props: ISettingsRowsProps) {
       >
         {world_writable_properties?.map((v, idx) => {
           let ref: InputRef | null = null;
+          const rec = world_tuning_title_map[v.name]
+          const r = Array.isArray(rec) ? rec : is_str(rec) ? [rec] as const : [v.name] as const;
+          const [title, desc = title] = r
           return (
-            <Titled label={v.name} key={v.name + "_" + idx}>
+            <Titled
+              float_label={title}
+              title={desc}
+              key={v.name + "_" + idx}>
               <Combine>
                 <Input
                   ref={(r) => (ref = r)}
                   type="number"
-                  style={{ width: 50 }}
+                  placeholder={v.name}
                   step={0.01}
                   defaultValue={v.value}
                   onChange={(e) =>
                     ((lf2.world as any)[v.name] = Number(e.target.value))
-                  }
-                />
+                  } />
                 <Button
+                  title="重置"
                   onClick={(_) => {
                     (lf2.world as any)[v.name] = Number(v.value);
                     ref!.value = "" + v.value;
-                  }}
-                >
-                  ×
+                  }}>
+                  <Cross />
                 </Button>
               </Combine>
             </Titled>
@@ -312,6 +319,17 @@ export default function SettingsRows(props: ISettingsRowsProps) {
       </Show.Div>
     </>
   );
+}
+
+const world_tuning_title_map: { [name in string]?: string | readonly [string] | readonly [string, string] } = {
+  gravity: "重力",
+  begin_blink_time: "入场闪烁时长",
+  gone_blink_time: "消失闪烁时长",
+  lying_blink_time: "起身闪烁时长",
+  double_click_interval: "双击判定时长",
+  key_hit_duration: "按键判定时长",
+  itr_shaking: "受伤摇晃时长",
+  itr_motionless: "命中停顿时长",
 }
 
 const empty_bgm_list = [""];

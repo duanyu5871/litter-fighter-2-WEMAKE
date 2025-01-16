@@ -140,9 +140,16 @@ export class GameOverlay {
   set SPS(v: number) {
     this.ele_sps.innerText = "SPS:" + v.toFixed(0);
   }
-
+  private ele_loading_tid: number = 0;
   set loading(v: string) {
     this.ele_loading.innerText = v;
+    this.ele_loading.style.transition = ''
+    this.ele_loading.style.opacity = '1'
+    window.clearTimeout(this.ele_loading_tid)
+    this.ele_loading_tid = window.setTimeout(() => {
+      this.ele_loading.style.transition = 'opacity 500ms'
+      this.ele_loading.style.opacity = '0'
+    }, 1000)
   }
 
   private update_timer: ReturnType<typeof setInterval> | undefined;

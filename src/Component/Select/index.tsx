@@ -47,20 +47,24 @@ function value_adapter<V>(defaultValue: V | V[] | undefined | null): V[] | undef
 export function Select<T, V>(props: ISelectProps<T, V>): JSX.Element
 export function Select<T, V>(props: IMultiSelectProps<T, V>): JSX.Element
 export function Select<T, V>(props: ISelectProps<T, V> | IMultiSelectProps<T, V>): JSX.Element {
-  const { className, items, parse, disabled, arrow, clearable, on_changed, defaultValue, ..._p } = props;
+  const { className, items, parse, disabled, arrow, clearable, on_changed, defaultValue, value: _value, ..._p } = props;
   const [open, set_open] = useState(false);
   const ref_popover = React.useRef<HTMLDivElement>(null);
   const ref_wrapper = React.useRef<HTMLDivElement>(null);
   const [gone, set_gone] = useState(false);
-
+  if (props.id === "layout_id_select") {
+    console.log(props.id, "value", props.value)
+  }
   const multi = (props as any).multi
   const classname = classNames(styles.lfui_dropdown, { [styles.open]: open }, className);
-  const [value, set_value] = useState<V[] | undefined>(() => value_adapter(defaultValue));
 
   const has_value = 'value' in props
+  const [value, set_value] = useState<V[] | undefined>(() => value_adapter(has_value ? _value : defaultValue));
+
   useEffect(() => {
-    if (!has_value) set_value(value_adapter(defaultValue))
-  }, [defaultValue, has_value])
+    if (has_value) set_value(value_adapter(_value)) 
+    else set_value(value_adapter(defaultValue))
+  }, [defaultValue, has_value, _value])
 
   const [tree_nodes, checked_tree_nodes] = useMemo(() => {
     if (!items) return [void 0, void 0];

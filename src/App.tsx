@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import "./App.css";
+import "./App.scss";
 import { Button } from "./Component/Buttons/Button";
 import { StatusButton } from "./Component/Buttons/StatusButton";
 import { ToggleButton } from "./Component/Buttons/ToggleButton";
@@ -499,7 +499,7 @@ function App() {
               onChange={(v) => lf2?.sounds.set_muted(v)}
               value={muted}
             >
-              <>音量✓</>
+              <>音量</>
               <>静音</>
             </ToggleButton>
             <Show show={!muted}>
@@ -514,14 +514,11 @@ function App() {
                 }
               />
             </Show>
-          </Combine>
-          <Combine>
             <ToggleButton
               onChange={(v) => lf2?.sounds.set_bgm_muted(v)}
-              value={bgm_muted}
-            >
-              <>BGM✓</>
-              <>BGM</>
+              value={bgm_muted}>
+              <>音乐</>
+              <>音乐(已禁用)</>
             </ToggleButton>
             <Show show={!bgm_muted}>
               <Input
@@ -535,14 +532,11 @@ function App() {
                 }
               />
             </Show>
-          </Combine>
-          <Combine>
             <ToggleButton
               onChange={(v) => lf2?.sounds.set_sound_muted(v)}
-              value={sound_muted}
-            >
-              <>Sound✓</>
-              <>Sound</>
+              value={sound_muted}>
+              <>音效</>
+              <>音效(已禁用)</>
             </ToggleButton>
             <Show show={!sound_muted}>
               <Input
@@ -557,41 +551,26 @@ function App() {
               />
             </Show>
           </Combine>
-          <Titled label="重力">
-            <Combine>
-              <Input
-                type="number"
-                min={0}
-                max={100}
-                step={0.01}
-                value={gravity}
-                onChange={(e) => lf2?.world.set_gravity(Number(e.target.value))}
-              />
-              <Show show={!float_equal(gravity, Defines.GRAVITY)}>
-                <Button onClick={(_) => lf2?.world.set_gravity(Defines.GRAVITY)}>
-                  重置
-                </Button>
-              </Show>
-            </Combine>
-          </Titled>
         </div>
         <div className="settings_row">
           <Select
+            placeholder="页面"
             value={layout_id}
             on_changed={v => lf2?.set_layout(v!)}
             items={layouts}
             parse={(o) => [o.id!, o.name]}
           />
-          <Titled label="Mode">
+          <Titled float_label="显示模式">
             <Select
               value={render_size_mode}
               on_changed={v => set_render_size_mode(v!)}
+              placeholder="显示模式"
               parse={i => [i, i]}
               items={["fixed", "fill", "cover", "contain"] as const}
             />
           </Titled>
           <Show show={render_size_mode === "fixed"}>
-            <Titled label="缩放">
+            <Titled float_label="缩放">
               <Combine>
                 <Select
                   value={render_fixed_scale}
@@ -608,23 +587,20 @@ function App() {
                     value={custom_render_fixed_scale}
                     onChange={(e) =>
                       set_custom_render_fixed_scale(Number(e.target.value))
-                    }
-                  />
+                    } />
                 </Show>
               </Combine>
             </Titled>
           </Show>
-
           <Show show={render_size_mode !== "fill"}>
-            <Titled label="对齐">
+            <Titled float_label="对齐">
               <Combine className="render_align">
                 <Select
                   value={v_align}
                   on_changed={v => set_v_align(v!)}
                   items={[-2, 0, 0.5, 1]}
                   parse={(v, idx) => [
-                    v,
-                    v <= -1 ? "?" : ["上", "中", "下"][idx - 1],
+                    v, v <= -1 ? "?" : ["上", "中", "下"][idx - 1],
                   ]}
                 />
                 <Show show={v_align < 0}>
@@ -661,72 +637,79 @@ function App() {
           </Show>
         </div>
         <div className="settings_row">
-          <ToggleButton
-            title="F1"
-            value={paused}
-            onClick={() => lf2?.world.set_paused(!paused)}
-          >
-            <>游戏暂停</>
-            <>游戏暂停✓</>
-          </ToggleButton>
-          <Button title="F2" onClick={update_once}>
-            更新一帧
-          </Button>
-          <ToggleButton
-            title="F5"
-            value={fast_forward}
-            onClick={() => set_fast_forward(!fast_forward)}
-          >
-            <>不限速度</>
-            <>不限速度✓</>
-          </ToggleButton>
-          <ToggleButton
-            value={!!(indicator_flags & 1)}
-            onClick={() => set_indicator_flags((v) => (v & 1 ? v ^ 1 : v | 1))}
-          >
-            <>FrameBox</>
-            <>FrameBox✓</>
-          </ToggleButton>
-          <ToggleButton
-            value={!!(indicator_flags & 2)}
-            onClick={() => set_indicator_flags((v) => (v & 2 ? v ^ 2 : v | 2))}
-          >
-            <>ItrBox</>
-            <>ItrBox✓</>
-          </ToggleButton>
-          <ToggleButton
-            value={!!(indicator_flags & 4)}
-            onClick={() => set_indicator_flags((v) => (v & 4 ? v ^ 4 : v | 4))}
-          >
-            <>BdyBox</>
-            <>BdyBox✓</>
-          </ToggleButton>
+          <Combine>
+            <ToggleButton
+              title="F1"
+              value={paused}
+              onClick={() => lf2?.world.set_paused(!paused)}
+            >
+              <>游戏暂停</>
+              <>游戏暂停✓</>
+            </ToggleButton>
+            <Button title="F2" onClick={update_once}>
+              更新一帧
+            </Button>
+            <ToggleButton
+              title="F5"
+              value={fast_forward}
+              onClick={() => set_fast_forward(!fast_forward)}
+            >
+              <>不限速度</>
+              <>不限速度✓</>
+            </ToggleButton>
+          </Combine>
 
-          <ToggleButton
-            title="ctrl+F3"
-            value={game_overlay}
-            onChange={set_game_overlay}
-          >
-            <>游戏覆盖</>
-            <>游戏覆盖✓</>
-          </ToggleButton>
-          <ToggleButton
-            onClick={toggle_fullscreen}
-            value={fullscreen.is_fullscreen}
-          >
-            <>全屏</>
-            <>全屏✓</>
-          </ToggleButton>
-          <StatusButton
-            items={[
-              { value: 0, label: "非同步渲染✓" },
-              { value: 1, label: "同步渲染✓" },
-              { value: 2, label: "同步渲染(x0.5)✓" },
-            ]}
-            parse={i => [i.value, i.label]}
-            value={sync_render}
-            onClick={() => lf2?.world.set_sync_render()}
-          />
+          <Combine>
+            <ToggleButton
+              value={!!(indicator_flags & 1)}
+              onClick={() => set_indicator_flags((v) => (v & 1 ? v ^ 1 : v | 1))}
+            >
+              <>FrameBox</>
+              <>FrameBox✓</>
+            </ToggleButton>
+            <ToggleButton
+              value={!!(indicator_flags & 2)}
+              onClick={() => set_indicator_flags((v) => (v & 2 ? v ^ 2 : v | 2))}
+            >
+              <>ItrBox</>
+              <>ItrBox✓</>
+            </ToggleButton>
+            <ToggleButton
+              value={!!(indicator_flags & 4)}
+              onClick={() => set_indicator_flags((v) => (v & 4 ? v ^ 4 : v | 4))}
+            >
+              <>BdyBox</>
+              <>BdyBox✓</>
+            </ToggleButton>
+          </Combine>
+          <Combine>
+            <ToggleButton
+              title="ctrl+F3"
+              value={game_overlay}
+              onChange={set_game_overlay}
+            >
+              <>游戏覆盖</>
+              <>游戏覆盖✓</>
+            </ToggleButton>
+            <ToggleButton
+              onClick={toggle_fullscreen}
+              value={fullscreen.is_fullscreen}
+            >
+              <>全屏</>
+              <>全屏✓</>
+            </ToggleButton>
+            <StatusButton
+              items={[
+                { value: 0, label: "非同步渲染✓" },
+                { value: 1, label: "同步渲染✓" },
+                { value: 2, label: "同步渲染(x0.5)✓" },
+              ]}
+              parse={i => [i.value, i.label]}
+              value={sync_render}
+              onClick={() => lf2?.world.set_sync_render()}
+            />
+
+          </Combine>
         </div>
         <div className="settings_row">
           <Combine>
@@ -781,39 +764,36 @@ function App() {
                   v === "world_tuning" ? "" : "world_tuning",
                 )
               }
-              value={showing_panel === "world_tuning"}
-            >
+              value={showing_panel === "world_tuning"}>
               <>世界微调</>
               <>世界微调✓</>
             </ToggleButton>
           </Combine>
-          <StatusButton
-            value={touch_pad_on}
-            items={touch_pad_player_items}
-            parse={i => [i.value, i.label]}
-            onChange={(v) => set_touch_pad_on(v!)}
-          />
-          <ToggleButton
-            onChange={() => lf2?.toggle_cheat_enabled(Defines.Cheats.LF2_NET)}
-            value={cheat_1}
-          >
-            <>LF2_NET</>
-            <>LF2_NET✓</>
-          </ToggleButton>
-          <ToggleButton
-            onChange={() => lf2?.toggle_cheat_enabled(Defines.Cheats.HERO_FT)}
-            value={cheat_2}
-          >
-            <>HERO_FT</>
-            <>HERO_FT✓</>
-          </ToggleButton>
-          <ToggleButton
-            onChange={() => lf2?.toggle_cheat_enabled(Defines.Cheats.GIM_INK)}
-            value={cheat_3}
-          >
-            <>GIM_INK</>
-            <>GIM_INK✓</>
-          </ToggleButton>
+          <Combine>
+            <StatusButton
+              value={touch_pad_on}
+              items={touch_pad_player_items}
+              parse={i => [i.value, i.label]}
+              onChange={(v) => set_touch_pad_on(v!)} />
+            <ToggleButton
+              onChange={() => lf2?.toggle_cheat_enabled(Defines.Cheats.LF2_NET)}
+              value={cheat_1}>
+              <>LF2_NET</>
+              <>LF2_NET✓</>
+            </ToggleButton>
+            <ToggleButton
+              onChange={() => lf2?.toggle_cheat_enabled(Defines.Cheats.HERO_FT)}
+              value={cheat_2}>
+              <>HERO_FT</>
+              <>HERO_FT✓</>
+            </ToggleButton>
+            <ToggleButton
+              onChange={() => lf2?.toggle_cheat_enabled(Defines.Cheats.GIM_INK)}
+              value={cheat_3}>
+              <>GIM_INK</>
+              <>GIM_INK✓</>
+            </ToggleButton>
+          </Combine>
         </div>
         <Show show={showing_panel === "player"}>
           {players.map((info, idx) => (
