@@ -18,7 +18,8 @@
 
   &>.lfui_input_prefix,
   &>.lfui_input_suffix {
-    color          : $primary_text_secondary_color;
+    color          : $primary_text_color;
+    opacity        : 0.8;
     display        : inline-block;
     transition     : all 200ms;
     display        : flex;
@@ -51,21 +52,21 @@
   }
 
   &>.lfui_input_spacer {
-    position          : relative;
+    position             : relative;
     // margin-right   : 20px;
     // pointer-events    : none;
-    user-select       : none;
-    font-size         : inherit;
-    font-family       : inherit;
-    box-sizing        : border-box;
-    display           : inline-flex;
-    align-items       : center;
-    justify-content   : center;
-    overflow          : hidden;
-    min-height        : 0px;
-    flex              : 1;
-    flex-grow         : 1;
-    flex-shrink       : 0;
+    user-select          : none;
+    font-size            : inherit;
+    font-family          : inherit;
+    box-sizing           : border-box;
+    display              : inline-flex;
+    align-items          : center;
+    justify-content      : center;
+    overflow             : hidden;
+    min-height           : 0px;
+    flex                 : 1;
+    flex-grow            : 1;
+    flex-shrink          : 0;
 
     &>span {
       font-family: inherit;

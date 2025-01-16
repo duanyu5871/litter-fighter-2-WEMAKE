@@ -15,6 +15,7 @@ import { is_bot_ctrl, is_local_ctrl } from "./LF2/entity/type_check";
 import LF2 from "./LF2/LF2";
 import { PlayerInfo } from "./LF2/PlayerInfo";
 import { random_get } from "./LF2/utils/math/random";
+import Titled from "./Component/Titled";
 
 const key_names: Record<GameKey, string> = {
   U: "上",
@@ -51,6 +52,15 @@ export function PlayerRow(props: Props) {
   const [character_id, set_character_id] = useState<string>(info.character);
   const [added, set_added] = useState(!!lf2.get_player_character(info.id));
   const [key_settings_show, set_key_settings_show] = useState(false);
+
+  const [dummy, set_dummy] = useState<DummyEnum | undefined | "">("")
+
+  useEffect(() => {
+    const ctrl = lf2.player_characters.get(info.id)?.ctrl;
+    if (is_bot_ctrl(ctrl)) {
+      ctrl.dummy = dummy ? dummy : void 0;
+    }
+  }, [dummy, info.id, lf2.player_characters])
 
   useEffect(() => {
     set_show_hidden(lf2.is_cheat_enabled("" + Defines.Cheats.LF2_NET));
@@ -122,7 +132,6 @@ export function PlayerRow(props: Props) {
         debugger;
         return;
       }
-
       set_added(true);
       character.callbacks.add({
         on_disposed: () => set_added(false),
@@ -130,30 +139,39 @@ export function PlayerRow(props: Props) {
       });
     };
 
+
   return (
     <div className="settings_row">
-      <span className="settings_row_title">玩家</span>
-      <Input
-        type="text"
-        maxLength={50}
-        style={{ width: 50 }}
-        title="enter player name"
-        value={player_name}
-        onChange={(e) => info.set_name(e.target.value)}
-        onBlur={(e) => info.set_name(e.target.value.trim() || info.id).save()}
-      />
-      <CharacterSelect
-        lf2={lf2}
-        value={character_id}
-        on_changed={(v) => info.set_character(v!).save()}
-        show_all={show_hidden}
-      />
-      <TeamSelect value={team} on_changed={(v) => info.set_team(v!).save()} />
-      <Button onClick={on_click_add}>{added ? "移除" : "加入"}</Button>
-      <ToggleButton value={touch_pad_on} onClick={on_click_toggle_touch_pad}>
-        <>触摸板</>
-        <>触摸板✓</>
-      </ToggleButton>
+      <Titled float_label={"玩家" + info.id}>
+        <Combine>
+          <Input
+            prefix="名称"
+            clearable
+            maxLength={50}
+            title="enter player name"
+            value={player_name}
+            onChange={(e) => info.set_name(e.target.value)}
+            onBlur={(e) => info.set_name(e.target.value.trim() || info.id).save()}
+          />
+          <CharacterSelect
+            lf2={lf2}
+            value={character_id}
+            placeholder="角色"
+            on_changed={(v) => info.set_character(v!).save()}
+            show_all={show_hidden}
+          />
+          <TeamSelect
+            placeholder="队伍"
+            value={team}
+            on_changed={(v) => info.set_team(v!).save()}
+          />
+          <Button onClick={on_click_add}>{added ? "移除" : "加入"}</Button>
+          <ToggleButton value={touch_pad_on} onClick={on_click_toggle_touch_pad}>
+            <>触摸板</>
+            <>触摸板✓</>
+          </ToggleButton>
+        </Combine>
+      </Titled>
       <Combine>
         <Button onClick={() => set_key_settings_show((v) => !v)}>键位</Button>
         {!key_settings_show
@@ -195,22 +213,18 @@ export function PlayerRow(props: Props) {
               character.ctrl = Factory.inst.get_ctrl(character.id, info.id, character);
             }
             ctrl?.dispose();
-          }}
-        >
+          }}>
           <>Bot</>
         </Button>
         <Select
           items={["", ...Object.keys(DummyEnum)]}
-          style={{ width: 100 }}
-          parse={(k) => [k && (DummyEnum as any)[k], k || "not dummy"]}
-          on_changed={(v) => {
-            const ctrl = lf2.player_characters.get(info.id)?.ctrl;
-            if (is_bot_ctrl(ctrl)) {
-              ctrl.dummy = v;
-            }
-          }}
+          parse={(k) => k ? [(DummyEnum as any)[k], k] : ["", "not dummy"]}
+          value={dummy}
+          on_changed={set_dummy}
         />
       </Combine>
     </div>
   );
+
+
 }

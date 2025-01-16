@@ -3,14 +3,15 @@ import type LF2 from "../LF2/LF2";
 import { Defines } from "../LF2/defines";
 import { type IEntityData } from "../LF2/defines/IEntityData";
 import Select, { ISelectProps } from "./Select";
+import { is_str } from "../LF2/utils/type_check";
 
 export interface CharacterSelectProps
-  extends Omit<ISelectProps<IEntityData, string>, 'parse'> {
+  extends Omit<ISelectProps<IEntityData | "", string>, 'parse'> {
   lf2: LF2;
   show_all?: boolean;
 }
 export default function CharacterSelect(props: CharacterSelectProps) {
-  const { lf2, disabled, show_all = false, ...remains } = props;
+  const { lf2, disabled, show_all = false, placeholder, ..._p } = props;
   const [characters, set_characters] = useState<IEntityData[]>(
     lf2.datas.characters,
   );
@@ -35,12 +36,11 @@ export default function CharacterSelect(props: CharacterSelectProps) {
 
   return (
     <Select
-      items={items}
+      items={["", ...items]}
       disabled={!characters?.length || disabled}
-      parse={(i) => [i.id, i.base.name]}
-      {...remains}
-    >
-      <option value="">Random</option>
-    </Select>
+      parse={(i) => is_str(i) ? ["", "Random"] : [i.id, i.base.name]}
+      placeholder={items.length ? placeholder : "未加载"}
+      {..._p}
+    />
   );
 }

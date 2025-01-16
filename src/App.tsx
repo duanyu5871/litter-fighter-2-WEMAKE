@@ -5,7 +5,7 @@ import { StatusButton } from "./Component/Buttons/StatusButton";
 import { ToggleButton } from "./Component/Buttons/ToggleButton";
 import { ToggleImgButton } from "./Component/Buttons/ToggleImgButton";
 import Combine from "./Component/Combine";
-import { Input } from "./Component/Input";
+import { InputNumber } from "./Component/Input";
 import Select from "./Component/Select";
 import Show from "./Component/Show";
 import Titled from "./Component/Titled";
@@ -22,7 +22,6 @@ import { is_weapon } from "./LF2/entity/type_check";
 import { ILayoutInfo } from "./LF2/layout/ILayoutInfo";
 import { fisrt } from "./LF2/utils/container_help";
 import { arithmetic_progression } from "./LF2/utils/math/arithmetic_progression";
-import float_equal from "./LF2/utils/math/float_equal";
 import { LoadingImg } from "./LoadingImg";
 import { Log } from "./Log";
 import { PlayerRow } from "./PlayerRow";
@@ -339,7 +338,7 @@ function App() {
   const player_infos = lf2?.player_infos;
   const players = useMemo(() => {
     if (!player_infos) return [];
-    return Array.from(player_infos.values()).splice(0, 4);
+    return Array.from(player_infos.values());
   }, [player_infos]);
 
   const touch_pad_player_items = useMemo(
@@ -503,8 +502,8 @@ function App() {
               <>静音</>
             </ToggleButton>
             <Show show={!muted}>
-              <Input
-                type="number"
+              <InputNumber
+                precision={0}
                 min={0}
                 max={100}
                 step={1}
@@ -521,8 +520,8 @@ function App() {
               <>音乐(已禁用)</>
             </ToggleButton>
             <Show show={!bgm_muted}>
-              <Input
-                type="number"
+              <InputNumber
+                precision={0}
                 min={0}
                 max={100}
                 step={1}
@@ -539,8 +538,8 @@ function App() {
               <>音效(已禁用)</>
             </ToggleButton>
             <Show show={!sound_muted}>
-              <Input
-                type="number"
+              <InputNumber
+                precision={0}
                 min={0}
                 max={100}
                 step={1}
@@ -579,9 +578,8 @@ function App() {
                   parse={(i) => [i, "✕" + (i || "?")]}
                 />
                 <Show show={!render_fixed_scale}>
-                  <Input
-                    className="render_scale_input"
-                    type="number"
+                  <InputNumber
+                    precision={2}
                     min={0}
                     step={custom_render_fixed_scale <= 0.5 ? 0.1 : 0.5}
                     value={custom_render_fixed_scale}
@@ -604,10 +602,10 @@ function App() {
                   ]}
                 />
                 <Show show={v_align < 0}>
-                  <Input
+                  <InputNumber
+                    precision={2}
                     min={-1}
                     max={2}
-                    type="number"
                     step={0.1}
                     value={custom_v_align}
                     onChange={(e) => set_custom_v_align(Number(e.target.value))}
@@ -623,10 +621,10 @@ function App() {
                   ]}
                 />
                 <Show show={h_align < 0}>
-                  <Input
+                  <InputNumber
+                    precision={2}
                     min={-1}
                     max={2}
-                    type="number"
                     step={0.1}
                     value={custom_h_align}
                     onChange={(e) => set_custom_h_align(Number(e.target.value))}

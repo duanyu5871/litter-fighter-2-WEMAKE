@@ -2,9 +2,11 @@ import classNames from "classnames";
 import React, { useEffect, useMemo, useRef } from "react";
 import { CircleCross } from '../Icons/CircleCross';
 import styles from "./styles.module.scss";
+import { is_positive } from "../../LF2/utils/type_check";
 
 export type BaseProps = React.InputHTMLAttributes<HTMLInputElement>
 export interface InputProps extends Omit<BaseProps, 'prefix' | 'step'> {
+  precision?: number;
   prefix?: React.ReactNode;
   suffix?: React.ReactNode;
   clear_icon?: React.ReactNode;
@@ -24,9 +26,14 @@ export interface InputRef {
   value: string | undefined;
 }
 
-function direct_set_value(ele: HTMLInputElement | null, value: string | number) {
+function direct_set_value(ele: HTMLInputElement | null, value: string | number | undefined, precision: number | undefined) {
   if (!ele) return;
   const { set } = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value") || {};
+
+  if (is_positive(precision) && value !== void 0) {
+    value = '' + Number(Number(value).toFixed(precision))
+  }
+
   if (set) {
     set?.call(ele, '' + value);
   } else {
@@ -40,7 +47,7 @@ function direct_set_value(ele: HTMLInputElement | null, value: string | number) 
 function _Input(props: InputProps, forwarded_Ref: React.ForwardedRef<InputRef>) {
   const {
     className, prefix, suffix, clear_icon = <CircleCross hoverable />, style, clazz,
-    clearable = false, on_changed, variants,
+    clearable = false, on_changed, variants, precision,
     ..._p
   } = props;
 
@@ -105,7 +112,6 @@ function _Input(props: InputProps, forwarded_Ref: React.ForwardedRef<InputRef>) 
     const on_value_change = () => {
       const ele = ref_spacer.current;
       if (!ele) return;
-
       ele.innerText = ele_input.value.length > ele_input.placeholder.length ? ele_input.value : ele_input.placeholder;
     }
     on_value_change();
@@ -128,24 +134,25 @@ function _Input(props: InputProps, forwarded_Ref: React.ForwardedRef<InputRef>) 
     const num_min = Number(min)
     const num_max = Number(max)
     const num_step = step * direction
+
     if (Number.isNaN(num)) {
       if (num_step > 0) {
         if (Number.isNaN(num_min)) {
-          direct_set_value(ele, '0')
+          direct_set_value(ele, '0', precision)
         } else {
-          direct_set_value(ele, num_min)
+          direct_set_value(ele, num_min, precision)
         }
       } else if (Number.isNaN(num_max)) {
-        direct_set_value(ele, '0')
+        direct_set_value(ele, '0', precision)
       } else {
-        direct_set_value(ele, num_max)
+        direct_set_value(ele, num_max, precision)
       }
     } else if (!Number.isNaN(num_min) && num + num_step < num_min) {
-      direct_set_value(ele, num_min)
+      direct_set_value(ele, num_min, precision)
     } else if (!Number.isNaN(num_max) && num + num_step > num_max) {
-      direct_set_value(ele, num_max)
+      direct_set_value(ele, num_max, precision)
     } else {
-      direct_set_value(ele, num + num_step)
+      direct_set_value(ele, num + num_step, precision)
     }
   }
 
@@ -216,7 +223,7 @@ function _Input(props: InputProps, forwarded_Ref: React.ForwardedRef<InputRef>) 
 
   const icon = !need_clearer ? null :
     <button className={clear_icon_cls_name} ref={ref_icon} tabIndex={-1}
-      onClick={() => direct_set_value(ref_input.current, '')}>
+      onClick={() => direct_set_value(ref_input.current, void 0, void 0)}>
       {clear_icon}
     </button>
 
@@ -251,7 +258,7 @@ function _InputNumber(props: InputNumberProps, forwarded_Ref: React.ForwardedRef
   const _on_change = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange?.(e);
     const t = e.target.value.trim();
-    on_changed?.(t === void 0 ? void 0 : Number(e.target.value))
+    on_changed?.(t ? void 0 : Number(e.target.value))
   }
   const _on_blur = (e: React.FocusEvent<HTMLInputElement>) => {
     onBlur?.(e);
