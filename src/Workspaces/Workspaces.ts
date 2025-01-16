@@ -51,7 +51,6 @@ export class Workspaces {
   }
   set_root(root: Slot) {
     this._root = root;
-    this.update()
   }
   del_slot(s: Slot) {
     if (!s.parent) throw new Error(`[WorkspaceKeeper::add] can not delete root slot`)
@@ -97,10 +96,23 @@ export class Workspaces {
     if (slot_id === 0) return this._root;
     return this._slots.get(slot_id)
   }
-  edits(slot_ids: (string | 0)[], fn: (slots: Slot[]) => void) {
+  edits(slot_ids: (string | 0)[], mode: 0, fn: (slots: (Slot | undefined)[]) => void): void;
+  edits(slot_ids: (string | 0)[], mode: 1, fn: (slots: Slot[]) => void): void;
+  edits(slot_ids: (string | 0)[], mode: 2, fn: (slots: Slot[]) => void): void;
+  edits(slot_ids: (string | 0)[], mode: 0 | 1 | 2, fn: ((slots: Slot[]) => void) | ((slots: (Slot | undefined)[]) => void)) {
     const slots = slot_ids.map(i => this.find(i))
-    if (slots.indexOf(void 0) >= 0) return;
-    return fn(slots as any);
+    switch (mode) {
+      case 0:
+        fn(slots as any)
+        return;
+      case 1:
+        if (slots.indexOf(void 0) < 0)
+          fn(slots as any);
+        return
+      case 2:
+        fn(slots.filter(Boolean) as any);
+        return
+    }
   }
   edit(slot_id: string | 0, fn: (slot: Slot) => void) {
     if (slot_id === 0) {
@@ -111,7 +123,7 @@ export class Workspaces {
       s && fn(s)
     }
   }
-  add(anchor_slot_id: string, pos: 'up' | 'down' | 'left' | 'right' | number, info: ISlot = {}, dont_throw = true): Slot | null {
+  add(anchor_slot_id: string, pos: 'up' | 'down' | 'left' | 'right' | number, info: Partial<ISlot> = {}, dont_throw = true): Slot | null {
     const anchor = this._slots.get(anchor_slot_id)
     if (!anchor) {
       const msg = `[WorkspaceKeeper::add] anchor_slot not found, id: ${anchor_slot_id}`
@@ -337,8 +349,8 @@ export class Workspaces {
     slot.children.forEach(c => this.update_factors(c))
   }
   confirm(): boolean {
-    this._container.querySelectorAll(`.${styles.v_line}`).forEach(v => v.remove())
-    this._container.querySelectorAll(`.${styles.h_line}`).forEach(v => v.remove())
+    Array.from(this._container.getElementsByClassName(styles.v_line)).forEach(v => v.remove())
+    Array.from(this._container.getElementsByClassName(styles.h_line)).forEach(v => v.remove())
     return this.update()
   }
   update(): boolean {

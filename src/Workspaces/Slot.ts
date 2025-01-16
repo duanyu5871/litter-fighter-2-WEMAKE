@@ -1,7 +1,31 @@
 
+import { IRect } from "./IRect";
 import { ISlot } from "./ISlot";
 import type { Workspaces } from "./Workspaces";
+export class SlotSnapshot {
+  rect(slot_id: string | 0): IRect | undefined {
+    return this.find(slot_id)?.rect
+  }
+  w(slot_id: string | 0, or: number): number {
+    return this.rect(slot_id)?.w ?? or
+  }
 
+  readonly slot: ISlot;
+  readonly slots: ReadonlyMap<string, ISlot>;
+  constructor(slot: ISlot) {
+    this.slot = slot;
+    const slots = this.slots = new Map<string, ISlot>();
+    const _job = (s: ISlot) => {
+      slots.set(s.id, s)
+      s.children.forEach(_job)
+    }
+    _job(slot)
+  }
+  find(slot_id: string | 0): ISlot | undefined {
+    if (slot_id === 0) return this.slot;
+    return this.slots.get(slot_id)
+  }
+}
 export class Slot implements ISlot {
   workspaces: Workspaces;
   id: string = '';
@@ -15,7 +39,7 @@ export class Slot implements ISlot {
     w: 0,
     h: 0
   };
-  constructor(workspaces: Workspaces, info: ISlot = {}, c: Slot[] = []) {
+  constructor(workspaces: Workspaces, info: Partial<ISlot> = {}, c: Slot[] = []) {
     this.workspaces = workspaces;
     const { rect, ..._info } = info;
     Object.assign(this, _info);
@@ -26,6 +50,21 @@ export class Slot implements ISlot {
   }
   clone(): Slot {
     return new Slot(this.workspaces, this, this.children);
+  }
+  snapshot(): SlotSnapshot {
+    return new SlotSnapshot(this._snapshot())
+  }
+  protected _snapshot(): ISlot {
+    const ret: ISlot = {
+      id: this.id,
+      type: this.type,
+      parent: null,
+      rect: { ...this.rect },
+      weight: this.weight,
+      children: this.children.map(v => v._snapshot())
+    }
+    ret.children.forEach(v => v.parent = ret)
+    return ret;
   }
   _handle_new_children(slots: Slot[]) {
     const total_f = this.children.reduce((r, i) => (r + i.weight), 0) || 1;

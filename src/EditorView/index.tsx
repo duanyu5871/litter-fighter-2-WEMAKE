@@ -376,7 +376,6 @@ export default function EditorView(props: IEditorViewProps) {
   const [slot_changed_flag, set_slot_changed_flag] = useState(0)
   const ref_workspace = useRef<Workspaces>()
   const [cells, set_cells] = useState<Readonly<HTMLElement[]>>([])
-
   const views = useMemo(() => {
     return (
       cells.map(cell => {
@@ -472,9 +471,6 @@ export default function EditorView(props: IEditorViewProps) {
       new Slot(workspace, { id: 'root', type: 'h' }, [
         new Slot(workspace, { id: 'res_tree_cell', weight: 250 }),
         new Slot(workspace, { id: 'empty', weight: container.offsetWidth - 250 }),
-        // new Slot(workspace, { id: 'entity_info_cell', weight: 250 }),
-        // new Slot(workspace, { id: 'frame_preview_cell', weight: container.offsetWidth - 750 }),
-        // new Slot(workspace, { id: 'frame_editor_cell', weight: 250 }),
       ])
     )
     workspace.on_changed = () => set_cells(workspace.cells)
@@ -489,33 +485,49 @@ export default function EditorView(props: IEditorViewProps) {
   useEffect(() => {
     const workspace = ref_workspace.current;
     if (!workspace) return;
+    const snapshot = workspace.root?.snapshot()
+    if (!snapshot) return;
+    const res_tree_slot = snapshot.find('res_tree_cell')
+    if (!res_tree_slot) return;
+    const { w: res_tree_slot_w } = res_tree_slot.rect
+    const { w: root_w } = snapshot.slot.rect;
+
     if (editing_data) {
+
       workspace.del('empty')
       workspace.add('res_tree_cell', 'right', { id: 'frame_preview_cell' })
       workspace.add('res_tree_cell', 'right', { id: 'entity_info_cell' })
+      if (editing_frame) {
+        workspace.add('frame_preview_cell', 'right', { id: 'frame_editor_cell' })
+      } else {
+        workspace.del('frame_editor_cell')
+      }
+
+      workspace.edit('res_tree_cell', (slot) => {
+        slot.weight = snapshot.w('res_tree_cell', 250)
+      })
+      workspace.edit('entity_info_cell', (slot) => {
+        slot.weight = snapshot.w('entity_info_cell', 350)
+      })
+      workspace.edit('frame_editor_cell', (slot) => {
+        slot.weight = snapshot.w('frame_editor_cell', 350)
+      })
+      workspace.edit('frame_preview_cell', (slot) => {
+        slot.weight = snapshot.w(0, 0) - snapshot.w('entity_info_cell', 0) - snapshot.w('frame_editor_cell', 0) - snapshot.w('res_tree_cell', 0);
+      })
+
     } else {
-      const root = workspace.root
-      const res_tree_slot = workspace.find('res_tree_cell')
-      if (!root || !res_tree_slot) return;
-
-      const { w: root_w } = root.rect;
-      const { w: res_tree_slot_w } = res_tree_slot.rect
-
       workspace.del('entity_info_cell')
       workspace.del('frame_preview_cell')
+      workspace.del('frame_editor_cell')
       workspace.add('res_tree_cell', 'right', { id: 'empty' })
-      workspace.edits([0, 'res_tree_cell', 'empty'], ([slot0, slot1, slot2]) => {
+      workspace.edits([0, 'res_tree_cell', 'empty'], 1, ([slot0, slot1, slot2]) => {
         slot0.rect.w = root_w
         slot1.weight = res_tree_slot_w
         slot2.weight = root_w - res_tree_slot_w
       })
-      workspace.confirm()
     }
-    if (editing_data && editing_frame) {
-      workspace.add('frame_preview_cell', 'right', { id: 'frame_editor_cell' })
-    } else {
-      workspace.del('frame_editor_cell')
-    }
+
     workspace.confirm()
   }, [editing_data, editing_frame])
 
