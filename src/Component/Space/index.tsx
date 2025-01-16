@@ -47,6 +47,7 @@ export interface ISpaceProps extends React.HTMLAttributes<HTMLDivElement> {
   item_props?: React.HTMLAttributes<HTMLDivElement>;
   direction?: 'column' | 'row';
   vertical?: boolean;
+  stretchs?: boolean;
 }
 
 function _Space(props: ISpaceProps, forwarded_ref: ForwardedRef<HTMLDivElement>) {
@@ -55,11 +56,12 @@ function _Space(props: ISpaceProps, forwarded_ref: ForwardedRef<HTMLDivElement>)
     children,
     item_props,
     vertical,
+    stretchs,
     direction = vertical ? 'column' : 'row',
     ..._p
   } = props;
 
-  const root_cls_name = useMemo(() => classNames("lf2ui_space", direction, className), [className, direction]);
+  const root_cls_name = useMemo(() => classNames("lf2ui_space", direction, { stretchs }, className), [className, direction, stretchs]);
   return (
     <div className={root_cls_name} {..._p} ref={forwarded_ref}>
       {make_space_children(children, item_props, [])}
@@ -76,7 +78,12 @@ export interface ISpaceItemProps extends ISpaceProps {
 
 function Item(props: ISpaceItemProps, forwarded_ref: ForwardedRef<HTMLDivElement>) {
   const { className, space, hoverable_frame, frame, ..._p } = props || {};
-  const root_cls_name = useMemo(() => classNames("item", { frame, hoverable_frame }, className), [className, frame, hoverable_frame])
+  const root_cls_name = useMemo(() => classNames("item",
+    {
+      frame,
+      hoverable_frame,
+    }, className
+  ), [className, frame, hoverable_frame])
   return (
     space ?
       <Space className={root_cls_name} {..._p} ref={forwarded_ref} /> :

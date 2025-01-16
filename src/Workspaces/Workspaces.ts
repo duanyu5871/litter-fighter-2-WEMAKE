@@ -86,7 +86,6 @@ export class Workspaces {
       }
     }
     _job(s)
-    this.update()
   }
   del(slot_id: string): Slot | undefined {
     const slot = this._slots.get(slot_id)
@@ -94,24 +93,43 @@ export class Workspaces {
     this.del_slot(slot);
     return slot
   }
-  add(anchor_slot_id: string, pos: 'up' | 'down' | 'left' | 'right' | number, info: ISlot = {}): Slot {
+  find(slot_id: string | 0): Slot | undefined {
+    if (slot_id === 0) return this._root;
+    return this._slots.get(slot_id)
+  }
+  edits(slot_ids: (string | 0)[], fn: (slots: Slot[]) => void) {
+    const slots = slot_ids.map(i => this.find(i))
+    if (slots.indexOf(void 0) >= 0) return;
+    return fn(slots as any);
+  }
+  edit(slot_id: string | 0, fn: (slot: Slot) => void) {
+    if (slot_id === 0) {
+      const s = this._root;
+      s && fn(s)
+    } else if (typeof slot_id === 'string') {
+      const s = this._slots.get(slot_id)
+      s && fn(s)
+    }
+  }
+  add(anchor_slot_id: string, pos: 'up' | 'down' | 'left' | 'right' | number, info: ISlot = {}, dont_throw = true): Slot | null {
     const anchor = this._slots.get(anchor_slot_id)
     if (!anchor) {
-      debugger;
-      throw new Error(`[WorkspaceKeeper::add] anchor_slot not found, id: ${anchor_slot_id}`)
+      const msg = `[WorkspaceKeeper::add] anchor_slot not found, id: ${anchor_slot_id}`
+      if (dont_throw) return null
+      throw new Error(msg)
     }
     const parent = anchor?.parent;
     const anchor_idx = parent?.children.indexOf(anchor);
 
     const slot = new Slot(this, info)
-    if (this._slots.get(slot.id))
-      throw new Error('slot id repeated!')
+    if (this._slots.get(slot.id)) {
+      if (dont_throw) return this._slots.get(slot.id)!
+      throw new Error(`slot id ${JSON.stringify(slot.id)} repeated!`)
+    }
 
+    this._slots.set(slot.id, slot)
     if (typeof pos === 'number') {
       anchor.insert(pos, slot);
-      this._container.querySelectorAll(`.${styles.v_line}`).forEach(v => v.remove())
-      this._container.querySelectorAll(`.${styles.v_line}`).forEach(v => v.remove())
-      this.update()
       return slot
     }
     const split_root = (wrapper: Slot) => {
@@ -172,11 +190,9 @@ export class Workspaces {
       case "v right":
       case "h down": insert_after(); break;
     }
-    this._container.querySelectorAll(`.${styles.v_line}`).forEach(v => v.remove())
-    this._container.querySelectorAll(`.${styles.h_line}`).forEach(v => v.remove())
-    this.update()
     return slot
   }
+
   make_rect(r: IRect) {
     r.w = Math.max(50, r.w);
     r.h = Math.max(50, r.h);
@@ -319,6 +335,11 @@ export class Workspaces {
   update_factors(slot: Slot) {
     slot.weight = slot.rect[slot.parent?.type === 'v' ? 'h' : 'w']
     slot.children.forEach(c => this.update_factors(c))
+  }
+  confirm(): boolean {
+    this._container.querySelectorAll(`.${styles.v_line}`).forEach(v => v.remove())
+    this._container.querySelectorAll(`.${styles.h_line}`).forEach(v => v.remove())
+    return this.update()
   }
   update(): boolean {
     const { _container: container, _root } = this;

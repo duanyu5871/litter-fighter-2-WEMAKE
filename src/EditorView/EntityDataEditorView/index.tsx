@@ -1,9 +1,5 @@
 import Frame, { IFrameProps } from "../../Component/Frame";
-import { Input } from "../../Component/Input";
-import Select from "../../Component/Select";
 import { Space } from "../../Component/Space";
-import Titled from "../../Component/Titled";
-import { IDatIndex } from "../../LF2/defines";
 import { IEntityData } from "../../LF2/defines/IEntityData";
 import { ENTITY_TYPE_SELECT_PROPS } from "../EntityEditorView";
 import { useEditor } from "../FrameEditorView/useEditor";
@@ -19,7 +15,7 @@ export function EntityDataEditorView(props: IEntityDataEditorViewProps) {
   if (!data) return;
   return (
     <Frame {..._p} label="实体数据">
-      <Space direction='column'>
+      <Space direction='column' stretchs>
         <Editor1.EditorStr field="id" />
         <Editor1.EditorSel {...ENTITY_TYPE_SELECT_PROPS} field='type' clearable={false} foo={data.id} on_changed={on_changed} />
         <Editor2.EditorStr field="name" clearable={false} foo={data.base.name} />

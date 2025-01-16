@@ -42,7 +42,7 @@ export function FrameEditorView(props: IFrameEditorViewProps) {
   const ref_root = useRef<HTMLDivElement>(null)
   return (
     <Frame id={`frame#${value.id}`} label={`frame:${value.id}`} {..._p} ref={ref_root}>
-      <Space direction='column'>
+      <Space direction='column' stretchs>
         <Editor.EditorStr field='id' />
         <Editor.EditorStr field='name' />
         <Space.Item style={{ display: 'flex' }}>
@@ -55,7 +55,7 @@ export function FrameEditorView(props: IFrameEditorViewProps) {
             styles={{ button: { flex: 1 } }} />
         </Space.Item>
         <Show show={editing === 'base'}>
-          <Space direction="column">
+          <Space direction="column" stretchs>
             <Editor.EditorSel {...STATE_SELECT_PROPS} field="state" />
             <Titled float_label='图片' style={{ width: '100%' }}>
               <Combine direction='column' style={{ flex: 1 }}>
@@ -86,7 +86,7 @@ export function FrameEditorView(props: IFrameEditorViewProps) {
           </Space>
         </Show>
         <Show show={editing === TabEnum.Spd}>
-          <Space direction="column">
+          <Space direction="column" stretchs>
             <Editor.EditorVec3 name="速度" fields={['dvx', 'dvy', 'dvz']} />
             <Editor.EditorVec3 name="加速度" fields={['acc_x', 'acc_y', 'acc_z']} />
             <Editor.EditorSel3

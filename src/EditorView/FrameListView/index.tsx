@@ -16,16 +16,15 @@ export interface IFrameListViewProps {
   zip?: IZip;
   ref_board: React.RefObject<Board | undefined>;
   factory: IFactory;
+  on_pick_frame?(frame: IFrameInfo): void;
 }
 
 
 export function FrameListView(props: IFrameListViewProps) {
-  const { data, zip, ref_board, factory } = props;
-  const [editing_frame, set_frame] = useState<IFrameInfo>()
+  const { data, zip, ref_board, factory, on_pick_frame } = props;
   const ref_next_frame = useRef<IFrameInfo>()
   if (!data) return void 0;
   const on_frame_change = (frame: IFrameInfo, data: IEntityData) => {
-    set_frame(frame)
     const board = ref_board.current!;
     const shape_data = factory.newShapeData(EditorShapeEnum.LF2_FRAME) as FrameDrawerData;
     shape_data.frame = frame;
@@ -65,6 +64,7 @@ export function FrameListView(props: IFrameListViewProps) {
     e.preventDefault();
     switch (e.key.toLowerCase()) {
       case 'enter': {
+        on_pick_frame?.(frame)
         on_frame_change(frame, data)
         return;
       }
@@ -105,7 +105,7 @@ export function FrameListView(props: IFrameListViewProps) {
       case 'pageup': {
         const next_frame = ref_next_frame.current;
         if (next_frame) {
-          set_frame(next_frame)
+          on_pick_frame?.(next_frame)
           on_frame_change(next_frame, data)
           ref_next_frame.current = void 0;
         }
@@ -125,7 +125,10 @@ export function FrameListView(props: IFrameListViewProps) {
               <div
                 tabIndex={-1}
                 className={styles.frame_list_item_view}
-                onClick={() => on_frame_change(frame, data)}
+                onClick={() => {
+                  on_pick_frame?.(frame)
+                  on_frame_change(frame, data)
+                }}
                 onKeyUp={on_key_up}
                 onKeyDown={e => on_key_down(e, frame)}>
                 <Text>{frame.id}</Text>
@@ -137,74 +140,6 @@ export function FrameListView(props: IFrameListViewProps) {
                   clearable />
               </div>
             )
-            // console.log(frame.name)
-            // return (
-            //   <Space.Item
-            //     key={frames.length}
-            //     tabIndex={-1}
-            //     onKeyUp={e => {
-            //       switch (e.key.toLowerCase()) {
-            //         case 'arrowdown':
-            //         case 'pagedown':
-            //         case 'arrowup':
-            //         case 'pageup': {
-            //           const next_frame = ref_next_frame.current;
-            //           if (next_frame) {
-            //             set_frame(next_frame)
-            //             on_frame_change(next_frame, data)
-            //             ref_next_frame.current = void 0;
-            //           }
-            //           break;
-            //         }
-            //       }
-            //     }}
-            //     onKeyDown={e => {
-            //       e.stopPropagation();
-            //       e.preventDefault();
-
-            //       switch (e.key.toLowerCase()) {
-            //         case 'enter': {
-            //           on_frame_change(frame, data)
-            //           return;
-            //         }
-            //       }
-            //       const ele = (e.target as HTMLElement);
-            //       const scroll_view = (ele.parentElement as HTMLElement | null)
-            //       if (!scroll_view) return;
-            //       const ele_collection = scroll_view.children;
-            //       const next_ele = ((ele.nextElementSibling ?? ele_collection.item(0)) as HTMLElement | null)
-            //       const prev_ele = ((ele.previousElementSibling ?? ele_collection.item(ele_collection.length - 1)) as HTMLElement | null)
-            //       const pt = parseInt(getComputedStyle(scroll_view).paddingTop)
-            //       switch (e.key.toLowerCase()) {
-            //         case 'arrowdown':
-            //         case 'pagedown': {
-            //           if (!next_ele) break;
-            //           scroll_view.scrollTo(0, next_ele.offsetTop - pt)
-            //           next_ele.focus()
-            //           const idx = (frames.indexOf(frame) + 1) % frames.length
-            //           ref_next_frame.current = frames[idx]
-            //           break;
-            //         }
-            //         case 'arrowup':
-            //         case 'pageup': {
-            //           if (!prev_ele) break;
-            //           scroll_view.scrollTo(0, prev_ele.offsetTop - pt)
-            //           prev_ele.focus()
-            //           const idx = (frames.indexOf(frame) + frames.length - 1) % frames.length
-            //           ref_next_frame.current = frames[idx]
-            //           break;
-            //         }
-            //       }
-            //     }}>
-            //     <FrameEditorView
-            //       key={frame.id}
-            //       value={frame}
-            //       data={data}
-            //       active={editing_frame === frame}
-            //       onClick={() => on_frame_change(frame, data)}
-            //     />
-            //   </Space.Item>
-            // )
           }}
         </VirtualList>
       </WorkspaceColumnView>

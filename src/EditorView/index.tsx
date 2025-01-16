@@ -12,7 +12,7 @@ import { Space } from "../Component/Space";
 import { TabButtons } from "../Component/TabButtons";
 import Titled from "../Component/Titled";
 import { ITreeNode, ITreeNodeGetIcon, TreeView } from "../Component/TreeView";
-import { IBgData } from "../LF2/defines";
+import { IBgData, IFrameInfo } from "../LF2/defines";
 import { EntityEnum } from "../LF2/defines/EntityEnum";
 import { IEntityData } from "../LF2/defines/IEntityData";
 import Ditto, { IZip } from "../LF2/ditto";
@@ -28,6 +28,7 @@ import { EditorShapeEnum } from "./EditorShapeEnum";
 import { EntityDataEditorView } from "./EntityDataEditorView";
 import { EntityBaseDataEditorView } from "./EntityDataEditorView/EntityBaseDataEditorView";
 import { FrameDrawer, FrameDrawerData } from "./FrameDrawer";
+import { FrameEditorView } from "./FrameEditorView";
 import { ItrPrefabEditorView } from "./FrameEditorView/ItrPrefabEditorView";
 import { FrameListView } from "./FrameListView";
 import { PicInfoEditorView } from "./PicInfoEditorView";
@@ -91,7 +92,6 @@ export default function EditorView(props: IEditorViewProps) {
 
   const [opens, set_opens] = useState<string[]>()
   const [tree, set_tree] = useState<TTreeNode>();
-  const [textarea, set_textarea] = useState<React.ReactNode>();
   const ref_editing_node = useRef<TTreeNode>()
   const ref_editing_data = useRef<IEntityData>()
   const [editing_node, set_editing_node] = useState<TTreeNode>();
@@ -99,12 +99,14 @@ export default function EditorView(props: IEditorViewProps) {
   const [tab, set_tab] = useState<EntityEditing | undefined>(EntityEditing.base);
   ref_editing_node.current = editing_node;
   ref_editing_data.current = editing_data;
+  const [editing_frame, set_editing_frame] = useState<IFrameInfo>()
 
   const frame_list_view = useMemo(() => {
     return (
       <FrameListView
         factory={factory}
         data={editing_data}
+        on_pick_frame={set_editing_frame}
         zip={zip}
         ref_board={ref_board}
       />
@@ -379,7 +381,7 @@ export default function EditorView(props: IEditorViewProps) {
     return (
       cells.map(cell => {
         switch (cell.id) {
-          case 'resources_cell':
+          case 'res_tree_cell':
             return createPortal(
               <WorkspaceColumnView
                 className={styles.cell_inner}
@@ -407,7 +409,7 @@ export default function EditorView(props: IEditorViewProps) {
               cell,
               cell.id
             )
-          case 'data_cell':
+          case 'entity_info_cell':
             return createPortal(
               <div
                 className={styles.cell_inner}
@@ -435,7 +437,7 @@ export default function EditorView(props: IEditorViewProps) {
               cell,
               cell.id
             )
-          case 'preview_cell':
+          case 'frame_preview_cell':
             return createPortal(
               <Frame
                 ref={(r) => set_board_wrapper(prev => r || prev)}
@@ -444,11 +446,21 @@ export default function EditorView(props: IEditorViewProps) {
               cell,
               cell.id
             )
+          case 'frame_editor_cell':
+            if (!editing_frame || !editing_data)
+              return null;
+            return createPortal(
+              <FrameEditorView
+                value={editing_frame}
+                data={editing_data} />,
+              cell,
+              cell.id
+            )
         }
         return null
       })
     )
-  }, [cells, filters_tree, on_click_item, opens, state.flat, state.img, state.json, state.mp3, state.others])
+  }, [base_data_view, cells, change_flag, editing_data, editing_frame, filters_tree, frame_list_view, itr_prefab_list_view, on_click_item, opens, pic_list_view, state.flat, state.img, state.json, state.mp3, state.others, tab])
 
   useEffect(() => {
     const container = ref_wprkspace_container.current
@@ -456,12 +468,13 @@ export default function EditorView(props: IEditorViewProps) {
     const workspace = ref_workspace.current ?
       ref_workspace.current :
       ref_workspace.current = new Workspaces(container)
-
     workspace.set_root(
       new Slot(workspace, { id: 'root', type: 'h' }, [
-        new Slot(workspace, { id: 'resources_cell', type: 'v', weight: 250 }),
-        new Slot(workspace, { id: 'data_cell', type: 'v', weight: 250 }),
-        new Slot(workspace, { id: 'preview_cell', type: 'v', weight: container.offsetWidth - 500 }),
+        new Slot(workspace, { id: 'res_tree_cell', weight: 250 }),
+        new Slot(workspace, { id: 'empty', weight: container.offsetWidth - 250 }),
+        // new Slot(workspace, { id: 'entity_info_cell', weight: 250 }),
+        // new Slot(workspace, { id: 'frame_preview_cell', weight: container.offsetWidth - 750 }),
+        // new Slot(workspace, { id: 'frame_editor_cell', weight: 250 }),
       ])
     )
     workspace.on_changed = () => set_cells(workspace.cells)
@@ -472,6 +485,39 @@ export default function EditorView(props: IEditorViewProps) {
     ob.observe(container)
     return () => ob.disconnect()
   }, [])
+
+  useEffect(() => {
+    const workspace = ref_workspace.current;
+    if (!workspace) return;
+    if (editing_data) {
+      workspace.del('empty')
+      workspace.add('res_tree_cell', 'right', { id: 'frame_preview_cell' })
+      workspace.add('res_tree_cell', 'right', { id: 'entity_info_cell' })
+    } else {
+      const root = workspace.root
+      const res_tree_slot = workspace.find('res_tree_cell')
+      if (!root || !res_tree_slot) return;
+
+      const { w: root_w } = root.rect;
+      const { w: res_tree_slot_w } = res_tree_slot.rect
+
+      workspace.del('entity_info_cell')
+      workspace.del('frame_preview_cell')
+      workspace.add('res_tree_cell', 'right', { id: 'empty' })
+      workspace.edits([0, 'res_tree_cell', 'empty'], ([slot0, slot1, slot2]) => {
+        slot0.rect.w = root_w
+        slot1.weight = res_tree_slot_w
+        slot2.weight = root_w - res_tree_slot_w
+      })
+      workspace.confirm()
+    }
+    if (editing_data && editing_frame) {
+      workspace.add('frame_preview_cell', 'right', { id: 'frame_editor_cell' })
+    } else {
+      workspace.del('frame_editor_cell')
+    }
+    workspace.confirm()
+  }, [editing_data, editing_frame])
 
   return !open ? <></> : (
     <shared_ctx.Provider value={{ zip }}>
