@@ -25,7 +25,7 @@ export default function WorkspacesDemo() {
           const size = `calc(100% - ${2 * margin}px)`;
           return createPortal(
             <Frame
-              style={{ width: size, height: size, margin }}
+              style={{ width: size, height: size, margin, overflow: 'hidden' }}
               draggable
               label={slot.id}
               onDragStart={(e) => dragging = (e.target as HTMLElement).parentElement}

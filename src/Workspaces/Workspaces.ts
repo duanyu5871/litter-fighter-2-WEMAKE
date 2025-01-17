@@ -15,9 +15,7 @@ export class Workspaces {
   private _container: HTMLElement;
 
   cells: Readonly<HTMLElement[]> = [];
-
   get container() { return this._container }
-
   get root(): Slot | undefined {
     return this._root;
   }
@@ -26,7 +24,8 @@ export class Workspaces {
     this._container.classList.add(styles.zone);
     this._root = new Slot(this);
     this._resize_ob = new ResizeObserver(this.on_resize)
-    this._resize_ob.observe(this._container)
+    this._resize_ob.observe(this._container);
+    (window as any).w = this
   }
   release() {
     this._container.classList.remove(styles.zone, styles.zone_h_resizing, styles.zone_v_resizing)
@@ -216,11 +215,6 @@ export class Workspaces {
     return slot
   }
 
-  make_rect(r: IRect) {
-    r.w = Math.max(50, r.w);
-    r.h = Math.max(50, r.h);
-    return r;
-  }
   update_rects(slot: Slot, obj: { ok: boolean } = { ok: true }) {
     if (!slot.children?.length) return obj.ok;
     let { x, y, w, h } = slot.rect;
@@ -230,10 +224,12 @@ export class Workspaces {
     const total = slot.children.reduce((r, c) => r + c.weight, 0)
     let remain = slot.rect[size_key];
     const cell_size_list: number[] = []
+
     for (let i = 0; i < slot.children.length; ++i) {
+      const child = slot.children[i]
       const f = Math.max(
-        slot.rect[size_key] * slot.children[i].weight / total,
-        50
+        slot.rect[size_key] * child.weight / total,
+        50 * child.places
       );
       const cell_size = Math.floor(f)
       cell_size_list.push(cell_size);
@@ -251,7 +247,8 @@ export class Workspaces {
       const rect: IRect = { x, y, w, h }
       rect[size_key] = cell_size;
       rect[pos_key] = pos;
-      c.rect = this.make_rect({ ...rect })
+      // c.rect = this.make_rect({ ...rect })
+      c.rect = { ...rect }
       if (c.rect[size_key] !== rect[size_key])
         obj.ok = false;
       this.update_rects(c, obj)
@@ -312,16 +309,27 @@ export class Workspaces {
     this._next_line_map.clear()
     return this.update()
   }
+  update_places(slot: Slot): number {
+    const nums = slot.children.map(v => {
+      this.update_places(v)
+      if (v.children.length <= 1) return 1;
+      return v.children.reduce((r, i) => r + i.places, 0)
+    })
+    return slot.places = Math.max(...nums, 1)
+  }
   update(): boolean {
     const { _container: container, _root } = this;
     if (!_root) return false;
 
     const r = container.getBoundingClientRect();
-    _root.rect = this.make_rect({
+
+    _root.rect = {
       x: 0, y: 0,
       w: r.width,
       h: r.height
-    });
+    };
+
+    this.update_places(_root)
     const ok = this.update_rects(_root);
 
     this.update_factors(_root);
@@ -348,7 +356,7 @@ export class Workspaces {
   }
   slots_dirty() {
     for (const [, l] of this._prev_line_map) {
-      if(l.actived) l.on_end()
+      if (l.actived) l.on_end()
     }
   }
   private _prev_cell_ids = ''

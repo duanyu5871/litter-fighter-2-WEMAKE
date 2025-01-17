@@ -7,16 +7,16 @@ export class Slot implements ISlot {
   readonly workspaces: Workspaces;
   readonly id: string = '';
   private _parent: Slot | null = null;
-  private _prev: ISlot | null = null;
-  private _next: ISlot | null = null;
+  private _prev: Slot | null = null;
+  private _next: Slot | null = null;
   private _type: 'v' | 'h' = 'v';
-
   get type(): 'v' | 'h' { return this._type }
   set type(v: 'v' | 'h') { this._type = v }
   get children(): Readonly<Slot[]> { return this._children }
   get parent(): Slot | null { return this._parent }
-  get prev(): ISlot | null { return this._prev }
-  get next(): ISlot | null { return this._next }
+  get prev(): Slot | null { return this._prev }
+  get next(): Slot | null { return this._next }
+  places: number = 1;
   weight: number = 50;
   rect = {
     x: 0,
@@ -31,7 +31,7 @@ export class Slot implements ISlot {
     Object.assign(this.rect, rect);
     this._children = c;
     if (!this.id) this.id = workspaces.new_slot_id()
-    c.forEach(c => c._parent = this);
+    this._link_up()
   }
   confirm(): void {
     this.workspaces.confirm()
@@ -66,13 +66,13 @@ export class Slot implements ISlot {
       next: null,
     }
     if (!no_children) {
-      let _prev = null
+      let _prev: ISlot | null = null
       for (const v of this.children) {
         const c = v._snapshot()
         c.parent = ret
         c.prev = _prev;
-        if (_prev) _prev._next = c
-        _prev = v
+        if (_prev) _prev.next = c
+        _prev = c
         children.push(c)
       }
     }

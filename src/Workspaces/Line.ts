@@ -7,14 +7,12 @@ export class Line {
   slot!: Slot;
   prev!: Slot;
   next!: Slot;
-  private prev_snapshot?: SlotSnapshot;
-  private next_snapshot?: SlotSnapshot;
+  private snapshots = new Map<Slot, SlotSnapshot>();
+  private ok_weights = new Map<Slot, number>();
   readonly workspaces: Workspaces;
   readonly element: HTMLElement;
   get actived() { return this._actived }
   private _actived: boolean = false;
-  private _prev_ok_weight: number = 1;
-  private _next_ok_weight: number = 1;
   private _down = { x: 0, y: 0 }
   private _offset = { x: 0, y: 0 }
   private _move = { x: 0, y: 0 }
@@ -23,11 +21,14 @@ export class Line {
     this._down.y = e.clientY;
     this._offset.x = e.offsetX;
     this._offset.y = e.offsetY;
-    this.prev_snapshot = this.prev.snapshot(true)
-    this.next_snapshot = this.next.snapshot(true)
-    const { element, workspaces, prev, next, slot } = this
-    this._prev_ok_weight = prev.weight
-    this._next_ok_weight = next.weight
+
+    this.snapshots.clear();
+    this.ok_weights.clear();
+    for (const child of this.slot.children) {
+      this.snapshots.set(child, child.snapshot(true))
+    }
+    this.save_weights(this.slot)
+    const { element, workspaces, slot } = this
     const { container } = workspaces
     element.classList.add(styles._line_hover)
     container.classList.add(slot.type === 'h' ? styles.zone_h_resizing : styles.zone_v_resizing)
@@ -37,25 +38,95 @@ export class Line {
     window.addEventListener('blur', this.on_end, { once: !0 })
     this._actived = true;
   }
+  save_weights(slot: Slot) {
+    this.ok_weights.set(slot, slot.weight)
+    for (const child of slot.children) {
+      this.save_weights(child);
+    }
+  }
+  restore_weights(slot: Slot) {
+    slot.weight = this.ok_weights.get(slot)!
+    for (const child of slot.children) {
+      this.restore_weights(child);
+    }
+  }
+
   readonly on_move = (e: PointerEvent) => {
     const { workspaces } = this
-    const { prev, next, slot, prev_snapshot, next_snapshot } = this
-    if (!next_snapshot || !prev_snapshot) return;
+    const { prev, next, slot } = this
+
     this._move.x = e.clientX + this._offset.x
     this._move.y = e.clientY + this._offset.y
-    const diff = slot.type === 'h' ?
+    let diff = slot.type === 'h' ?
       this._move.x - this._down.x :
       this._move.y - this._down.y;
-    prev.weight = prev_snapshot.weight() + diff
-    next.weight = next_snapshot.weight() - diff
+
+
+    const _p_w = this.snapshots.get(prev)!.weight() + diff
+    const _n_w = this.snapshots.get(next)!.weight() - diff
+    const min_p_w = 50 * prev.places;
+    const min_n_w = 50 * next.places;
+    prev.weight = Math.max(_p_w, min_p_w);
+    next.weight = Math.max(_n_w, min_n_w);
+
     if (workspaces.update()) {
-      this._prev_ok_weight = prev.weight
-      this._next_ok_weight = next.weight
-    } else {
-      prev.weight = this._prev_ok_weight
-      next.weight = this._next_ok_weight
-      workspaces.update()
+      this.save_weights(this.slot)
+      console.log('!!')
+      return
     }
+    if (_p_w < min_p_w) {
+      let need_space = min_p_w - _p_w;
+      let temp: Slot | null = prev.prev;
+      while (need_space > 0 && temp) {
+        if (temp.weight <= temp.places * 50) {
+          temp = prev.prev
+          continue;
+        }
+        temp.weight -= 1
+        --need_space;
+        temp = prev.prev
+      }
+      if (need_space) {
+        this.restore_weights(this.slot)
+        workspaces.update()
+        return;
+      }
+    }
+    if (_n_w < min_n_w) {
+      let need_space = min_n_w - _n_w;
+      let temp: Slot | null = next.next;
+      while (need_space > 0 && temp) {
+        if (temp.weight <= temp.places * 50) {
+          temp = next.next
+          continue;
+        }
+        temp.weight -= 1
+        --need_space;
+        temp = next.next
+      }
+      if (need_space) {
+        this.restore_weights(this.slot)
+        workspaces.update()
+        return;
+      }
+    }
+    if (workspaces.update()) {
+      this.save_weights(this.slot)
+      return
+    }
+
+
+    // for (const child of this.slot.children) {
+    //   child.weight = this.ok_weights.get(child)!
+    //   if (child.weight === void 0) console.warn('weight lost ???')
+    // }
+
+    // workspaces.update()
+    // let begin = 0;
+    // let end = 1;
+    // do {
+    //   diff = diff*0.5;
+    // } while (Math.abs(diff) > 1)
   }
 
   readonly on_end = () => {
