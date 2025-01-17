@@ -71,7 +71,6 @@ export class Line {
 
     if (workspaces.update()) {
       this.save_weights(this.slot)
-      console.log('!!')
       return
     }
     if (_p_w < min_p_w) {
