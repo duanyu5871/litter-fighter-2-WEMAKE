@@ -1,3 +1,4 @@
+import { IRect } from "./IRect";
 import { Slot } from "./Slot";
 import { SlotSnapshot } from "./SlotSnapshot";
 import { Workspaces } from "./Workspaces";
@@ -8,7 +9,7 @@ export class Line {
   prev!: Slot;
   next!: Slot;
   private snapshots = new Map<Slot, SlotSnapshot>();
-  private ok_weights = new Map<Slot, number>();
+  private ok_weights = new Map<Slot, { f: number, r: IRect }>();
   readonly workspaces: Workspaces;
   readonly element: HTMLElement;
   get actived() { return this._actived }
@@ -39,13 +40,18 @@ export class Line {
     this._actived = true;
   }
   save_weights(slot: Slot) {
-    this.ok_weights.set(slot, slot.weight)
+    this.ok_weights.set(slot, { f: slot.weight, r: { ...slot.rect } })
     for (const child of slot.children) {
       this.save_weights(child);
     }
   }
   restore_weights(slot: Slot) {
-    slot.weight = this.ok_weights.get(slot)!
+    const { f, r } = this.ok_weights.get(slot)!
+    slot.weight = f;
+    slot.rect.x = r.x
+    slot.rect.y = r.y
+    slot.rect.w = r.w
+    slot.rect.h = r.h
     for (const child of slot.children) {
       this.restore_weights(child);
     }
@@ -66,9 +72,9 @@ export class Line {
     const _n_w = this.snapshots.get(next)!.weight() - diff
     const min_p_w = 50 * prev.places;
     const min_n_w = 50 * next.places;
+    console.log(prev.weight, Math.max(_p_w, min_p_w), _p_w < min_p_w)
     prev.weight = Math.max(_p_w, min_p_w);
     next.weight = Math.max(_n_w, min_n_w);
-
     if (workspaces.update()) {
       this.save_weights(this.slot)
       return
@@ -78,12 +84,16 @@ export class Line {
       let temp: Slot | null = prev.prev;
       while (need_space > 0 && temp) {
         if (temp.weight <= temp.places * 50) {
-          temp = prev.prev
+          temp = temp.prev
           continue;
         }
-        temp.weight -= 1
+        if (temp.children.length) {
+          next.weight += 1
+        } else {
+          temp.weight -= 1
+        }
         --need_space;
-        temp = prev.prev
+        temp = temp.prev
       }
       if (need_space) {
         this.restore_weights(this.slot)
@@ -92,16 +102,17 @@ export class Line {
       }
     }
     if (_n_w < min_n_w) {
+      console.log('next_')
       let need_space = min_n_w - _n_w;
       let temp: Slot | null = next.next;
       while (need_space > 0 && temp) {
         if (temp.weight <= temp.places * 50) {
-          temp = next.next
+          temp = temp.next
           continue;
         }
         temp.weight -= 1
         --need_space;
-        temp = next.next
+        temp = temp.next
       }
       if (need_space) {
         this.restore_weights(this.slot)
@@ -113,19 +124,6 @@ export class Line {
       this.save_weights(this.slot)
       return
     }
-
-
-    // for (const child of this.slot.children) {
-    //   child.weight = this.ok_weights.get(child)!
-    //   if (child.weight === void 0) console.warn('weight lost ???')
-    // }
-
-    // workspaces.update()
-    // let begin = 0;
-    // let end = 1;
-    // do {
-    //   diff = diff*0.5;
-    // } while (Math.abs(diff) > 1)
   }
 
   readonly on_end = () => {
