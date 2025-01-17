@@ -1,10 +1,13 @@
 import { IRect } from "./IRect";
 import { ISlot } from "./ISlot";
+import { Line } from "./Line";
 import { Slot } from "./Slot";
 import styles from "./style.module.scss";
 export class Workspaces {
   private _new_slot_id = 0;
   private _root: Slot;
+  private _prev_line_map = new Map<string, Line>()
+  private _next_line_map = new Map<string, Line>()
   private _slots = new Map<string, Slot>();
   private _slot_cell_map = new Map<Slot, HTMLElement>();
   private _cell_slot_map = new Map<HTMLElement, Slot>();
@@ -12,6 +15,9 @@ export class Workspaces {
   private _container: HTMLElement;
 
   cells: Readonly<HTMLElement[]> = [];
+
+  get container() { return this._container }
+
   get root(): Slot | undefined {
     return this._root;
   }
@@ -53,35 +59,40 @@ export class Workspaces {
     this._root = root;
   }
   del_slot(s: Slot) {
-    if (!s.parent) throw new Error(`[WorkspaceKeeper::add] can not delete root slot`)
+    if (!s.parent) throw new Error(`[Workspaces::add] can not delete root slot`)
     const _job = (s: Slot) => {
-      if (!s.parent) return
-      s.parent.children = s.parent.children.filter(v => v !== s);
-      this._container.querySelector(`#${s.id}`)?.remove();
-      this._container.querySelector(`[prev=${s.id}]`)?.remove();
-      this._container.querySelector(`[next=${s.id}]`)?.remove();
-      if (!s.parent.children.length) {
-        _job(s.parent);
-      } else if (s.parent.children.length === 1) {
-        const remain_c = s.parent.children.shift()!
-        remain_c.parent = null;
-        let p: Slot = s.parent;
-        let pp: Slot | null = s.parent.parent;
-        while (pp) {
-          if (pp.children.length > 1)
-            break;
-          p = pp;
-          pp = pp.parent;
-        }
-        if (pp) {
-          if (pp.type === remain_c.type) {
-            pp.replace(pp.children.indexOf(p), ...remain_c.children)
-          } else {
-            pp.replace(pp.children.indexOf(p), remain_c)
-          }
-        } else {
-          this._root = remain_c;
-        }
+      const s_parent = s.remove_self();
+      if (!s_parent) return;
+      this.get_cell(s)?.remove()
+
+      this._prev_line_map.get(s.id)?.release()
+      this._next_line_map.get(s.id)?.release()
+
+      if (s_parent.children.length > 1)
+        return;
+
+      if (s_parent.children.length === 0)
+        return _job(s_parent);
+
+      const remain_c = s_parent.shift()!
+      let child: Slot = s_parent;
+      let parent: Slot | null = s_parent.parent;
+      while (parent) {
+        if (parent.children.length > 1)
+          break;
+        child = parent;
+        parent = parent.parent;
+      }
+      if (!parent) {
+        this._root = remain_c;
+        return
+      }
+      if (parent.type !== remain_c.type) {
+        parent.replace(child, remain_c)
+        return;
+      }
+      if (remain_c.children.length) {
+        parent.replace(child, ...remain_c.children)
       }
     }
     _job(s)
@@ -126,7 +137,7 @@ export class Workspaces {
   add(anchor_slot_id: string, pos: 'up' | 'down' | 'left' | 'right' | number, info: Partial<ISlot> = {}, dont_throw = true): Slot | null {
     const anchor = this._slots.get(anchor_slot_id)
     if (!anchor) {
-      const msg = `[WorkspaceKeeper::add] anchor_slot not found, id: ${anchor_slot_id}`
+      const msg = `[Workspaces::add] anchor_slot not found, id: ${anchor_slot_id}`
       if (dont_throw) return null
       throw new Error(msg)
     }
@@ -160,7 +171,7 @@ export class Workspaces {
     const split_as_first = () => {
       const wrapper = new Slot(this)
       if (parent) {
-        const taken = parent.replace(anchor_idx!, wrapper)
+        const taken = parent.replace(anchor_idx!, wrapper)!
         wrapper.push(slot, taken)
       } else {
         split_root(wrapper)
@@ -170,7 +181,7 @@ export class Workspaces {
     const split_as_last = () => {
       const wrapper = new Slot(this)
       if (parent) {
-        const taken = parent.replace(anchor_idx!, wrapper)
+        const taken = parent.replace(anchor_idx!, wrapper)!
         wrapper.push(taken, slot);
       } else {
         split_root(wrapper)
@@ -248,78 +259,24 @@ export class Workspaces {
     })
     return obj.ok;
   }
+
+
   update_lines(slot: Slot) {
-    const { _container: container } = this;
     slot.children.forEach((prev, i, arr) => {
       const next = arr.at(i + 1)
-      if (!next) {
-        this.update_lines(prev)
-        return
-      }
-      let l0 = container.querySelector(`[prev=${prev.id}]`) as HTMLElement | null;
-      if (!l0) {
-        const l = l0 = this.create_line_element()
-        l.addEventListener('pointerdown', () => {
-          const wrapper_slot_id = l.getAttribute('slot')
-          const prev_slot_id = l.getAttribute('prev')
-          const next_slot_id = l.getAttribute('next')
-          if (!wrapper_slot_id || !prev_slot_id || !next_slot_id) return
-          const wrapper = this._slots.get(wrapper_slot_id)
-          const prev = this._slots.get(prev_slot_id)
-          const next = this._slots.get(next_slot_id)
-          if (!wrapper) return;
-
-          l.classList.add(styles._line_hover)
-          container.classList.add(wrapper.type === 'h' ? styles.zone_h_resizing : styles.zone_v_resizing)
-          const on_move = (e: PointerEvent) => {
-            const r = l.parentElement?.getBoundingClientRect();
-            if (!r) return;
-            const offset = wrapper.type === 'h' ?
-              e.clientX - 2 - r.left - parseInt(l.style.left) :
-              e.clientY - 2 - r.top - parseInt(l.style.top);
-            let prev_slot = prev
-            let next_slot = next
-            if (!prev_slot || !next_slot)
-              return
-            const prev_slot_f = prev_slot.weight;
-            const next_slot_f = next_slot.weight;
-            prev_slot.weight = prev_slot.weight + offset
-            next_slot.weight = next_slot.weight - offset
-            if (!this.update()) {
-              prev_slot.weight = prev_slot_f
-              next_slot.weight = next_slot_f
-              this.update()
-              return
-            }
-          }
-          const on_end = () => {
-            document.removeEventListener('pointermove', on_move)
-            l.classList.remove(styles._line_hover)
-            container.classList.remove(styles.zone_h_resizing, styles.zone_v_resizing)
-          }
-          document.addEventListener('pointermove', on_move)
-          document.addEventListener('pointercancel', on_end, { once: !0 })
-          document.addEventListener('pointerup', on_end, { once: !0 })
-          window.addEventListener('blur', on_end, { once: !0 })
-        })
-        container.appendChild(l0)
-      }
-      l0.className = slot.type === 'h' ? styles.v_line : styles.h_line
-      l0.setAttribute('slot', slot.id)
-      l0.setAttribute('prev', prev.id)
-      l0.setAttribute('next', next.id)
-      if (slot.type === 'h') {
-        l0.style.height = '' + slot.rect.h + 'px'
-        l0.style.left = '' + (next.rect.x - 2) + 'px'
-        l0.style.width = ''
-        l0.style.top = '' + slot.rect.y + 'px'
-      } else {
-        l0.style.height = ''
-        l0.style.left = '' + slot.rect.x + 'px'
-        l0.style.width = '' + slot.rect.w + 'px'
-        l0.style.top = '' + (next.rect.y - 2) + 'px'
-      }
       this.update_lines(prev)
+      if (!next) return
+
+      let line = this._prev_line_map.get(prev.id)
+      if (!line) {
+        line = new Line(this, slot, prev, next)
+      } else {
+        this._prev_line_map.delete(prev.id)
+        this._next_line_map.delete(next.id)
+        line.set_slots(slot, prev, next)
+      }
+      this._prev_line_map.set(prev.id, line)
+      this._next_line_map.set(next.id, line)
     })
   }
   update_cells(slot: Slot, cells: HTMLElement[] = []) {
@@ -349,8 +306,10 @@ export class Workspaces {
     slot.children.forEach(c => this.update_factors(c))
   }
   confirm(): boolean {
-    Array.from(this._container.getElementsByClassName(styles.v_line)).forEach(v => v.remove())
-    Array.from(this._container.getElementsByClassName(styles.h_line)).forEach(v => v.remove())
+    for (const [, v] of this._prev_line_map)
+      v.release();
+    this._prev_line_map.clear()
+    this._next_line_map.clear()
     return this.update()
   }
   update(): boolean {
@@ -386,6 +345,11 @@ export class Workspaces {
       }
     }
     return ok
+  }
+  slots_dirty() {
+    for (const [, l] of this._prev_line_map) {
+      if(l.actived) l.on_end()
+    }
   }
   private _prev_cell_ids = ''
 }

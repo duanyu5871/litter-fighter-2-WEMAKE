@@ -1,37 +1,22 @@
 
-import { IRect } from "./IRect";
 import { ISlot } from "./ISlot";
+import { SlotSnapshot } from "./SlotSnapshot";
 import type { Workspaces } from "./Workspaces";
-export class SlotSnapshot {
-  rect(slot_id: string | 0): IRect | undefined {
-    return this.find(slot_id)?.rect
-  }
-  w(slot_id: string | 0, or: number): number {
-    return this.rect(slot_id)?.w ?? or
-  }
-
-  readonly slot: ISlot;
-  readonly slots: ReadonlyMap<string, ISlot>;
-  constructor(slot: ISlot) {
-    this.slot = slot;
-    const slots = this.slots = new Map<string, ISlot>();
-    const _job = (s: ISlot) => {
-      slots.set(s.id, s)
-      s.children.forEach(_job)
-    }
-    _job(slot)
-  }
-  find(slot_id: string | 0): ISlot | undefined {
-    if (slot_id === 0) return this.slot;
-    return this.slots.get(slot_id)
-  }
-}
 export class Slot implements ISlot {
-  workspaces: Workspaces;
-  id: string = '';
-  type: 'v' | 'h' = 'v';
-  children: Slot[] = [];
-  parent: Slot | null = null;
+  private _children: Slot[] = [];
+  readonly workspaces: Workspaces;
+  readonly id: string = '';
+  private _parent: Slot | null = null;
+  private _prev: ISlot | null = null;
+  private _next: ISlot | null = null;
+  private _type: 'v' | 'h' = 'v';
+
+  get type(): 'v' | 'h' { return this._type }
+  set type(v: 'v' | 'h') { this._type = v }
+  get children(): Readonly<Slot[]> { return this._children }
+  get parent(): Slot | null { return this._parent }
+  get prev(): ISlot | null { return this._prev }
+  get next(): ISlot | null { return this._next }
   weight: number = 50;
   rect = {
     x: 0,
@@ -44,26 +29,53 @@ export class Slot implements ISlot {
     const { rect, ..._info } = info;
     Object.assign(this, _info);
     Object.assign(this.rect, rect);
-    this.children = c;
+    this._children = c;
     if (!this.id) this.id = workspaces.new_slot_id()
-    c.forEach(c => c.parent = this);
+    c.forEach(c => c._parent = this);
+  }
+  confirm(): void {
+    this.workspaces.confirm()
   }
   clone(): Slot {
-    return new Slot(this.workspaces, this, this.children);
+    return new Slot(this.workspaces, this, this._children);
   }
-  snapshot(): SlotSnapshot {
-    return new SlotSnapshot(this._snapshot())
+  snapshot(no_children: boolean = false): SlotSnapshot {
+    return new SlotSnapshot(this._snapshot(no_children))
   }
-  protected _snapshot(): ISlot {
+  protected _link_up() {
+    let _prev: Slot | null = null
+    for (const c of this.children) {
+      c._type = this._type === 'h' ? 'v' : 'h';
+      c._parent = this
+      c._prev = _prev;
+      if (_prev) _prev._next = c
+      _prev = c
+    }
+    this.workspaces.slots_dirty()
+  }
+  protected _snapshot(no_children: boolean = false): ISlot {
+    const children: ISlot[] = []
     const ret: ISlot = {
       id: this.id,
       type: this.type,
       parent: null,
       rect: { ...this.rect },
       weight: this.weight,
-      children: this.children.map(v => v._snapshot())
+      children: children,
+      prev: null,
+      next: null,
     }
-    ret.children.forEach(v => v.parent = ret)
+    if (!no_children) {
+      let _prev = null
+      for (const v of this.children) {
+        const c = v._snapshot()
+        c.parent = ret
+        c.prev = _prev;
+        if (_prev) _prev._next = c
+        _prev = v
+        children.push(c)
+      }
+    }
     return ret;
   }
   _handle_new_children(slots: Slot[]) {
@@ -74,37 +86,79 @@ export class Slot implements ISlot {
     const scale = changed_f / total_f;
     this.children.forEach(c => c.weight *= scale);
     slots.forEach(c => c.weight = avg_f);
-    for (const slot of slots) {
-      slot.parent = this;
-      slot.type = this.type === 'h' ? 'v' : 'h';
-    }
   }
   insert(index: number, ...slots: Slot[]) {
     if (!slots.length) return;
     this._handle_new_children(slots);
-    this.children.splice(index, 0, ...slots);
+    this._children.splice(index, 0, ...slots);
+    this._link_up()
   }
   unshift(...slots: Slot[]) {
     if (!slots.length) return;
     this._handle_new_children(slots);
-    this.children.unshift(...slots);
+    this._children.unshift(...slots);
+    this._link_up();
   }
-  replace(index: number, ...slots: Slot[]): Slot {
-    if (index < 0 || index >= this.children.length) throw new Error(`[Slot::replace] index out of bounds, idx: ${index}, size: ${this.children.length}`);
-    const [ret] = this.children.splice(index, 1);
-    const total_f = slots.reduce((r, i) => i.weight + r, 0);
-    for (const slot of slots) {
-      slot.parent = this;
-      slot.type = ret.type;
-      slot.weight = ret.weight * slot.weight / total_f;
-    }
-    this.children.splice(index, 0, ...slots);
-    ret.parent = null;
+  shift(): Slot | undefined {
+    const ret = this._children.shift()
+    if (!ret) return ret;
+    ret._parent = null;
+    ret._prev = null;
+    ret._next = null;
+    this._link_up();
     return ret;
   }
+  remove(slot: Slot) {
+    const index = this._children.indexOf(slot);
+    if (index < 0) return false;
+    this._children.splice(index, 1)
+    slot._parent = null;
+    slot._prev = null;
+    slot._next = null;
+    this._link_up()
+    return true;
+  }
+
+  replace(index: number, ...slots: Slot[]): Slot | undefined
+  replace(slot: Slot, ...slots: Slot[]): Slot | undefined
+  replace(index: number | Slot, ...slots: Slot[]): Slot | undefined {
+    if (typeof index !== 'number')
+      index = this.children.indexOf(index)
+    if (index < 0 || index >= this.children.length) {
+      console.warn(`[Slot::replace] index out of bounds, idx: ${index}, size: ${this.children.length}`);
+      return void 0;
+    }
+    if (!slots.length) {
+      const ret = this.children[index];
+      this.remove(ret)
+      return ret
+    }
+
+    const [ret] = this._children.splice(index, 1);
+    const total_f = slots.reduce((r, i) => i.weight + r, 0);
+    for (const slot of slots) {
+      slot._parent = this;
+      slot._type = ret.type;
+      slot.weight = ret.weight * slot.weight / total_f;
+    }
+    ret._parent = null;
+    ret._prev = null;
+    ret._next = null;
+    this._children.splice(index, 0, ...slots);
+    this._link_up()
+    return ret;
+  }
+
   push(...slots: Slot[]) {
     if (!slots.length) return;
     this._handle_new_children(slots);
-    this.children.push(...slots);
+    this._children.push(...slots);
+    this._link_up();
+  }
+
+  remove_self(): Slot | null {
+    const { parent } = this
+    parent?.remove(this)
+    return parent
   }
 }

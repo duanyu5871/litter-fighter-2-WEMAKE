@@ -51,11 +51,11 @@ export default function WorkspacesDemo() {
                 e.preventDefault();
               }}
             >
-              <Button onClick={() => workspaces.add(slot.id, 'left')}><ArrowLeft /></Button>
-              <Button onClick={() => workspaces.add(slot.id, 'right')}><ArrowRight /></Button>
-              <Button onClick={() => workspaces.add(slot.id, 'up')}><ArrowUp /></Button>
-              <Button onClick={() => workspaces.add(slot.id, 'down')}><ArrowDown /></Button>
-              <Button onClick={() => workspaces.del(slot.id)}><Cross /></Button>
+              <Button onClick={() => workspaces.add(slot.id, 'left')?.confirm()}><ArrowLeft /></Button>
+              <Button onClick={() => workspaces.add(slot.id, 'right')?.confirm()}><ArrowRight /></Button>
+              <Button onClick={() => workspaces.add(slot.id, 'up')?.confirm()}><ArrowUp /></Button>
+              <Button onClick={() => workspaces.add(slot.id, 'down')?.confirm()}><ArrowDown /></Button>
+              <Button onClick={() => workspaces.del(slot.id)?.confirm()}><Cross /></Button>
             </Frame>,
             cell,
             cell.id

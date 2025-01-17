@@ -7,5 +7,7 @@ export interface ISlot {
   parent: ISlot | null;
   rect: IRect;
   weight: number;
-  children: ISlot[]
+  children: Readonly<ISlot[]>;
+  prev: ISlot | null;
+  next: ISlot | null;
 }
