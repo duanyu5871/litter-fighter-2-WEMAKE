@@ -1,4 +1,5 @@
 
+import { IRect } from "@fimagine/writeboard";
 import { ISlot } from "./ISlot";
 import { SlotSnapshot } from "./SlotSnapshot";
 import type { Workspaces } from "./Workspaces";
@@ -16,9 +17,17 @@ export class Slot implements ISlot {
   get parent(): Slot | null { return this._parent }
   get prev(): Slot | null { return this._prev }
   get next(): Slot | null { return this._next }
-  places: number = 1;
-  weight: number = 50;
-  rect = {
+  get size(): [number, number] {
+    return [
+      this.crosscut,
+      this.slitting
+    ]
+  }
+  crosscut: number = 1
+  slitting: number = 1
+  weight: number = 50
+
+  rect: IRect = {
     x: 0,
     y: 0,
     w: 0,
@@ -42,6 +51,57 @@ export class Slot implements ISlot {
   snapshot(no_children: boolean = false): SlotSnapshot {
     return new SlotSnapshot(this._snapshot(no_children))
   }
+  update_dimension(): readonly [number, number] {
+    const _job = (slot: Slot): readonly [number, number] => {
+      if (slot.children.length <= 1) {
+        return [
+          slot.crosscut = 1,
+          slot.slitting = 1
+        ]
+      }
+      const crosscuts: number[] = [];
+      for (const child of slot.children) {
+        _job(child)
+        crosscuts.push(child.children.reduce((r, i) => r + i.crosscut, 0))
+      }
+      return [
+        slot.crosscut = Math.max(...crosscuts, 1),
+        slot.slitting = slot.children.reduce((r, i) => r + i.crosscut, 0)
+      ]
+    }
+    return _job(this)
+  }
+
+  update_rect(rect: IRect) {
+    const _job = (slot: Slot, rect: IRect) => {
+      const pos_key = slot._type === 'v' ? 'y' : 'x'
+      const size_key = slot._type === 'v' ? 'h' : 'w'
+      const dimension = (
+        slot._type === 'v' ?
+          [slot.crosscut, slot.slitting] as const :
+          [slot.slitting, slot.crosscut] as const
+      )
+      slot.rect.x = rect.x;
+      slot.rect.y = rect.y;
+      slot.rect.w = Math.max(rect.w, dimension[0] * 50);
+      slot.rect.h = Math.max(rect.h, dimension[1] * 50);
+      const to_small = slot._type === 'v' ?
+        rect.w < dimension[0] * 50 :
+        rect.h < dimension[1] * 50;
+      const weight_sum = slot.children.reduce((r, i) => r + i.weight, 0);
+      let pos = slot.rect[pos_key]
+      for (const child of slot.children) {
+        const child_rect = { ...slot.rect }
+        child_rect[pos_key] = pos;
+        child_rect[size_key] = slot.rect[size_key] * child.weight / weight_sum
+        _job(child, child_rect)
+        pos += child.rect[size_key]
+      }
+      return to_small;
+    }
+    return _job(this, rect)
+  }
+
   protected _link_up() {
     let _prev: Slot | null = null
     for (const c of this.children) {

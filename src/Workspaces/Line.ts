@@ -60,70 +60,66 @@ export class Line {
   readonly on_move = (e: PointerEvent) => {
     const { workspaces } = this
     const { prev, next, slot } = this
-
     this._move.x = e.clientX + this._offset.x
     this._move.y = e.clientY + this._offset.y
     let diff = slot.type === 'h' ?
       this._move.x - this._down.x :
       this._move.y - this._down.y;
-
-
     const _p_w = this.snapshots.get(prev)!.weight() + diff
     const _n_w = this.snapshots.get(next)!.weight() - diff
-    const min_p_w = 50 * prev.places;
-    const min_n_w = 50 * next.places;
-    console.log(prev.weight, Math.max(_p_w, min_p_w), _p_w < min_p_w)
+    const min_p_w = 50 * (slot.type === 'h' ? prev.crosscut : prev.slitting);
+    const min_n_w = 50 * (slot.type === 'h' ? next.crosscut : next.slitting);
     prev.weight = Math.max(_p_w, min_p_w);
     next.weight = Math.max(_n_w, min_n_w);
     if (workspaces.update()) {
-      this.save_weights(this.slot)
+      // this.save_weights(this.slot)
       return
     }
-    if (_p_w < min_p_w) {
-      let need_space = min_p_w - _p_w;
-      let temp: Slot | null = prev.prev;
-      while (need_space > 0 && temp) {
-        if (temp.weight <= temp.places * 50) {
-          temp = temp.prev
-          continue;
-        }
-        if (temp.children.length) {
-          next.weight += 1
-        } else {
-          temp.weight -= 1
-        }
-        --need_space;
-        temp = temp.prev
-      }
-      if (need_space) {
-        this.restore_weights(this.slot)
-        workspaces.update()
-        return;
-      }
-    }
-    if (_n_w < min_n_w) {
-      console.log('next_')
-      let need_space = min_n_w - _n_w;
-      let temp: Slot | null = next.next;
-      while (need_space > 0 && temp) {
-        if (temp.weight <= temp.places * 50) {
-          temp = temp.next
-          continue;
-        }
-        temp.weight -= 1
-        --need_space;
-        temp = temp.next
-      }
-      if (need_space) {
-        this.restore_weights(this.slot)
-        workspaces.update()
-        return;
-      }
-    }
-    if (workspaces.update()) {
-      this.save_weights(this.slot)
-      return
-    }
+    // if (_p_w < min_p_w) {
+    //   let need_space = min_p_w - _p_w;
+    //   let temp: Slot | null = prev.prev;
+    //   while (need_space > 0 && temp) {
+    //     if (temp.weight <= temp.crosscut * 50) {
+    //       temp = temp.prev
+    //       continue;
+    //     }
+    //     if (temp.children.length) {
+    //       next.weight += 1
+    //     } else {
+    //       temp.weight -= 1
+    //     }
+    //     --need_space;
+    //     temp = temp.prev
+    //   }
+    //   if (need_space) {
+    //     this.restore_weights(this.slot)
+    //     workspaces.update()
+    //     return;
+    //   }
+    // }
+    // if (_n_w < min_n_w) {
+    //   console.log('next_')
+    //   let need_space = min_n_w - _n_w;
+    //   let temp: Slot | null = next.next;
+    //   while (need_space > 0 && temp) {
+    //     if (temp.weight <= temp.crosscut * 50) {
+    //       temp = temp.next
+    //       continue;
+    //     }
+    //     temp.weight -= 1
+    //     --need_space;
+    //     temp = temp.next
+    //   }
+    //   if (need_space) {
+    //     this.restore_weights(this.slot)
+    //     workspaces.update()
+    //     return;
+    //   }
+    // }
+    // if (workspaces.update()) {
+    //   this.save_weights(this.slot)
+    //   return
+    // }
   }
 
   readonly on_end = () => {

@@ -55,7 +55,12 @@ export class Workspaces {
     return this._slot_cell_map.get(slot)
   }
   set_root(root: Slot) {
+    const r = this.container.getBoundingClientRect();
     this._root = root;
+    this._root.rect.x = 0;
+    this._root.rect.y = 0;
+    this._root.rect.w = r.width;
+    this._root.rect.h = r.height;
   }
   del_slot(s: Slot) {
     if (!s.parent) throw new Error(`[Workspaces::add] can not delete root slot`)
@@ -229,7 +234,7 @@ export class Workspaces {
       const child = slot.children[i]
       const f = Math.max(
         slot.rect[size_key] * child.weight / total,
-        50 * child.places
+        50 * child.crosscut
       );
       const cell_size = Math.floor(f)
       cell_size_list.push(cell_size);
@@ -309,29 +314,19 @@ export class Workspaces {
     this._next_line_map.clear()
     return this.update()
   }
-  update_places(slot: Slot): number {
-    const nums = slot.children.map(v => {
-      this.update_places(v)
-      if (v.children.length <= 1) return 1;
-      return v.children.reduce((r, i) => r + i.places, 0)
-    })
-    return slot.places = Math.max(...nums, 1)
-  }
   update(): boolean {
     const { _container: container, _root } = this;
     if (!_root) return false;
 
     const r = container.getBoundingClientRect();
-
-    _root.rect = {
-      x: 0, y: 0,
+    _root.update_dimension()
+    const ok = _root.update_rect({
+      x: 0, 
+      y: 0,
       w: r.width,
       h: r.height
-    };
-
-    this.update_places(_root)
-    const ok = this.update_rects(_root);
-
+    })
+    console.log("ok",ok)
     this.update_factors(_root);
     this.update_lines(_root);
     this._slot_cell_map.clear();
