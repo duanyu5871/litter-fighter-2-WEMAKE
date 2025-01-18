@@ -502,7 +502,6 @@ export default function EditorView(props: IEditorViewProps) {
       } else {
         workspace.del('frame_editor_cell')
       }
-
       workspace.edit('res_tree_cell', (slot) => {
         slot.weight = snapshot.w('res_tree_cell', 250)
       })

@@ -11,6 +11,7 @@ export class Slot implements ISlot {
   private _prev: Slot | null = null;
   private _next: Slot | null = null;
   private _type: 'v' | 'h' = 'v';
+  private _weight_dirty = true;
   get type(): 'v' | 'h' { return this._type }
   set type(v: 'v' | 'h') { this._type = v }
   get children(): Readonly<Slot[]> { return this._children }
@@ -71,37 +72,54 @@ export class Slot implements ISlot {
     }
     return _job(this)
   }
-
+  update_weight() {
+    const _job = (slot: Slot) => {
+      slot.weight = slot.rect[slot.parent?.type === 'v' ? 'h' : 'w']
+      slot.children.forEach(c => _job(c))
+    }
+    _job(this);
+  }
   update_rect(rect: IRect) {
+    this._weight_dirty = this._weight_dirty ||
+      (this.rect.w !== rect.w && this.type === 'h') ||
+      (this.rect.h !== rect.h && this.type === 'v')
+
     const _job = (slot: Slot, rect: IRect) => {
       const pos_key = slot._type === 'v' ? 'y' : 'x'
       const size_key = slot._type === 'v' ? 'h' : 'w'
-      const dimension = (
+      const [w_size, h_size] = (
         slot._type === 'v' ?
           [slot.crosscut, slot.slitting] as const :
           [slot.slitting, slot.crosscut] as const
       )
       slot.rect.x = rect.x;
       slot.rect.y = rect.y;
-      slot.rect.w = Math.max(rect.w, dimension[0] * 50);
-      slot.rect.h = Math.max(rect.h, dimension[1] * 50);
-      const to_small = slot._type === 'v' ?
-        rect.w < dimension[0] * 50 :
-        rect.h < dimension[1] * 50;
+      slot.rect.w = Math.max(rect.w, w_size * 50);
+      slot.rect.h = Math.max(rect.h, h_size * 50);
       const weight_sum = slot.children.reduce((r, i) => r + i.weight, 0);
       let pos = slot.rect[pos_key]
       for (const child of slot.children) {
         const child_rect = { ...slot.rect }
         child_rect[pos_key] = pos;
-        child_rect[size_key] = slot.rect[size_key] * child.weight / weight_sum
+        if (slot._weight_dirty) {
+          child_rect[size_key] = slot.rect[size_key] * child.weight / weight_sum;
+        } else {
+          child_rect[size_key] = child.weight
+        }
         _job(child, child_rect)
         pos += child.rect[size_key]
       }
-      return to_small;
     }
-    return _job(this, rect)
+    _job(this, rect)
+    if (this._weight_dirty)
+      this.update_weight();
+    this._weight_dirty = false
   }
-
+  get root() {
+    let p: Slot = this;
+    while (p?.parent) p = p.parent;
+    return p;
+  }
   protected _link_up() {
     let _prev: Slot | null = null
     for (const c of this.children) {
@@ -111,6 +129,7 @@ export class Slot implements ISlot {
       if (_prev) _prev._next = c
       _prev = c
     }
+    this.root._weight_dirty = true
     this.workspaces.slots_dirty()
   }
   protected _snapshot(no_children: boolean = false): ISlot {

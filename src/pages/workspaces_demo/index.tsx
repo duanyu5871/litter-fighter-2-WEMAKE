@@ -14,7 +14,7 @@ export default function WorkspacesDemo() {
   const [views, set_views] = useState<React.ReactNode[]>([]);
   useEffect(() => {
     const workspaces = new Workspaces(ref_container.current!)
-    workspaces.on_cell_changed = () => {
+    workspaces.on_changed = () => {
       let dragging: HTMLElement | null = null;
       let dropping: HTMLElement | null = null;
       set_views(
@@ -27,7 +27,7 @@ export default function WorkspacesDemo() {
             <Frame
               style={{ width: size, height: size, margin, overflow: 'hidden' }}
               draggable
-              label={slot.id}
+              label={slot.id + ' ' + slot.weight.toFixed(3)}
               onDragStart={(e) => dragging = (e.target as HTMLElement).parentElement}
               onDragEnd={(e) => dragging = null}
               onDragEnter={(e) => {
@@ -68,7 +68,7 @@ export default function WorkspacesDemo() {
   }, [])
 
   return <>
-    <div ref={ref_container} style={{ width: '100vw', height: '100vh' }} />
+    <div ref={ref_container} style={{ width: '100vw', height: '100vh', resize: 'both' }} />
     {views}
   </>
 }

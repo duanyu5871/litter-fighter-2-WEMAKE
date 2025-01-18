@@ -303,31 +303,26 @@ export class Workspaces {
     this._cell_slot_map.set(cell, slot)
     return cells
   }
-  update_factors(slot: Slot) {
-    slot.weight = slot.rect[slot.parent?.type === 'v' ? 'h' : 'w']
-    slot.children.forEach(c => this.update_factors(c))
-  }
-  confirm(): boolean {
+
+  confirm() {
     for (const [, v] of this._prev_line_map)
       v.release();
     this._prev_line_map.clear()
     this._next_line_map.clear()
-    return this.update()
+    this.update()
   }
-  update(): boolean {
+  update() {
     const { _container: container, _root } = this;
     if (!_root) return false;
-
     const r = container.getBoundingClientRect();
     _root.update_dimension()
-    const ok = _root.update_rect({
-      x: 0, 
+    _root.update_rect({
+      x: 0,
       y: 0,
       w: r.width,
       h: r.height
     })
-    console.log("ok",ok)
-    this.update_factors(_root);
+
     this.update_lines(_root);
     this._slot_cell_map.clear();
     this._cell_slot_map.clear();
@@ -339,7 +334,6 @@ export class Workspaces {
     }
     _job(_root)
     this.on_changed?.(this)
-
     if (this.on_cell_changed) {
       const next_cell_ids = this.cells.map(v => v.id).sort().join()
       if (this._prev_cell_ids !== next_cell_ids) {
@@ -347,7 +341,6 @@ export class Workspaces {
         this.on_cell_changed?.(this);
       }
     }
-    return ok
   }
   slots_dirty() {
     for (const [, l] of this._prev_line_map) {

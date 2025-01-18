@@ -15,13 +15,10 @@ export class Line {
   get actived() { return this._actived }
   private _actived: boolean = false;
   private _down = { x: 0, y: 0 }
-  private _offset = { x: 0, y: 0 }
   private _move = { x: 0, y: 0 }
   readonly on_pointerdown = (e: PointerEvent) => {
     this._down.x = e.clientX;
     this._down.y = e.clientY;
-    this._offset.x = e.offsetX;
-    this._offset.y = e.offsetY;
 
     this.snapshots.clear();
     this.ok_weights.clear();
@@ -59,67 +56,70 @@ export class Line {
 
   readonly on_move = (e: PointerEvent) => {
     const { workspaces } = this
-    const { prev, next, slot } = this
-    this._move.x = e.clientX + this._offset.x
-    this._move.y = e.clientY + this._offset.y
+    const { slot } = this
+    this._move.x = e.clientX
+    this._move.y = e.clientY
     let diff = slot.type === 'h' ?
       this._move.x - this._down.x :
       this._move.y - this._down.y;
-    const _p_w = this.snapshots.get(prev)!.weight() + diff
-    const _n_w = this.snapshots.get(next)!.weight() - diff
-    const min_p_w = 50 * (slot.type === 'h' ? prev.crosscut : prev.slitting);
-    const min_n_w = 50 * (slot.type === 'h' ? next.crosscut : next.slitting);
-    prev.weight = Math.max(_p_w, min_p_w);
-    next.weight = Math.max(_n_w, min_n_w);
-    if (workspaces.update()) {
-      // this.save_weights(this.slot)
-      return
+    if (diff === 0) return;
+
+    const size_key = slot.type === 'h' ? 'w' : 'h'
+    const dime_key = slot.type === 'h' ? 'crosscut' : 'slitting'
+    const glow_name = diff > 0 ? 'prev' : 'next'
+    const shrink_name = diff > 0 ? 'next' : 'prev'
+
+    let shrink_value = Math.abs(diff);
+
+    const glowing_slot = this[glow_name]
+    let weight = this.snapshots.get(glowing_slot)!.weight(0) + shrink_value
+    const rect1 = { ...glowing_slot.rect }
+    rect1[size_key] = weight
+    glowing_slot.update_rect(rect1)
+    glowing_slot.weight = weight;
+
+    let changeless_slot = glowing_slot[glow_name]
+    while (changeless_slot) {
+      const ss = this.snapshots.get(changeless_slot)!
+      changeless_slot.weight = ss.weight(0)
+      const { x, y, w, h } = ss.rect(0)
+      changeless_slot.rect.x = x
+      changeless_slot.rect.y = y
+      changeless_slot.rect.w = w
+      changeless_slot.rect.h = h
+      changeless_slot = changeless_slot[glow_name]
     }
-    // if (_p_w < min_p_w) {
-    //   let need_space = min_p_w - _p_w;
-    //   let temp: Slot | null = prev.prev;
-    //   while (need_space > 0 && temp) {
-    //     if (temp.weight <= temp.crosscut * 50) {
-    //       temp = temp.prev
-    //       continue;
-    //     }
-    //     if (temp.children.length) {
-    //       next.weight += 1
-    //     } else {
-    //       temp.weight -= 1
-    //     }
-    //     --need_space;
-    //     temp = temp.prev
-    //   }
-    //   if (need_space) {
-    //     this.restore_weights(this.slot)
-    //     workspaces.update()
-    //     return;
-    //   }
-    // }
-    // if (_n_w < min_n_w) {
-    //   console.log('next_')
-    //   let need_space = min_n_w - _n_w;
-    //   let temp: Slot | null = next.next;
-    //   while (need_space > 0 && temp) {
-    //     if (temp.weight <= temp.crosscut * 50) {
-    //       temp = temp.next
-    //       continue;
-    //     }
-    //     temp.weight -= 1
-    //     --need_space;
-    //     temp = temp.next
-    //   }
-    //   if (need_space) {
-    //     this.restore_weights(this.slot)
-    //     workspaces.update()
-    //     return;
-    //   }
-    // }
-    // if (workspaces.update()) {
-    //   this.save_weights(this.slot)
-    //   return
-    // }
+
+    let shrink_slot = this[shrink_name];
+    do {
+      let weight = this.snapshots.get(shrink_slot)!.weight(0) - shrink_value
+      const min_size = shrink_slot[dime_key] * 50
+      if (weight < min_size) {
+        shrink_value = min_size - weight;
+        weight = min_size;
+      } else {
+        shrink_value = 0
+      }
+      const rect2 = { ...shrink_slot.rect }
+      rect2[size_key] = weight
+      shrink_slot.update_rect(rect2)
+      shrink_slot.weight = weight
+      if (!shrink_slot[shrink_name] || shrink_value <= 0)
+        break;
+      shrink_slot = shrink_slot[shrink_name]
+    } while (shrink_slot && shrink_value > 0)
+
+
+    const src_weight_sum = slot.children.reduce((r, i) => r + this.snapshots.get(i)!.weight(0), 0)
+    const cur_weigth_sum = slot.children.reduce((r, i) => r + i.weight, 0)
+
+    if (cur_weigth_sum !== src_weight_sum) {
+      const rect1 = { ...glowing_slot.rect }
+      rect1[size_key] -= cur_weigth_sum - src_weight_sum
+      glowing_slot.update_rect(rect1)
+      glowing_slot.weight -= cur_weigth_sum - src_weight_sum;
+    }
+    workspaces.update()
   }
 
   readonly on_end = () => {
