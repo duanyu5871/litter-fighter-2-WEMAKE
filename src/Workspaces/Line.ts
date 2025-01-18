@@ -111,13 +111,13 @@ export class Line {
 
 
     const src_weight_sum = slot.children.reduce((r, i) => r + this.snapshots.get(i)!.weight(0), 0)
-    const cur_weigth_sum = slot.children.reduce((r, i) => r + i.weight, 0)
-
-    if (cur_weigth_sum !== src_weight_sum) {
+    const cur_weigth_sum = slot.children.reduce((r, i) => r + i.weight, 0);
+    if (cur_weigth_sum > src_weight_sum) {
+      const w = src_weight_sum - (cur_weigth_sum - glowing_slot.weight)
       const rect1 = { ...glowing_slot.rect }
-      rect1[size_key] -= cur_weigth_sum - src_weight_sum
+      rect1[size_key] = w
       glowing_slot.update_rect(rect1)
-      glowing_slot.weight -= cur_weigth_sum - src_weight_sum;
+      glowing_slot.weight = w
     }
     workspaces.update()
   }
