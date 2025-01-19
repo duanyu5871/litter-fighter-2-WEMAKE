@@ -6,8 +6,8 @@ import { ArrowDown } from "../../Component/Icons/ArrowDown";
 import { ArrowLeft } from "../../Component/Icons/ArrowLeft";
 import { ArrowRight } from "../../Component/Icons/ArrowRight";
 import { ArrowUp } from "../../Component/Icons/ArrowUp";
-import { Workspaces } from "../../Workspaces";
 import { Cross } from "../../Component/Icons/Cross";
+import { Workspaces } from "../../splittings/src";
 
 export default function WorkspacesDemo() {
   const ref_container = useRef<HTMLDivElement>(null)
