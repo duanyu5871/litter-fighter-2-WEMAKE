@@ -80,10 +80,6 @@ export class Slot implements ISlot {
     _job(this);
   }
   update_rect(rect: IRect) {
-    // this._weight_dirty = this._weight_dirty ||
-    //   (this.rect.w !== rect.w && this.type === 'h') ||
-    //   (this.rect.h !== rect.h && this.type === 'v')
-
     const _job = (slot: Slot, rect: IRect) => {
       const pos_key = slot._type === 'v' ? 'y' : 'x'
       const size_key = slot._type === 'v' ? 'h' : 'w'
@@ -101,19 +97,13 @@ export class Slot implements ISlot {
       for (const child of slot.children) {
         const child_rect = { ...slot.rect }
         child_rect[pos_key] = pos;
-        // if (this._weight_dirty) {
         child_rect[size_key] = slot.rect[size_key] * child.weight / weight_sum;
-        // } else {
-        //   child_rect[size_key] = child.weight
-        // }
         _job(child, child_rect)
         pos += child.rect[size_key]
       }
     }
     _job(this, rect)
-    // if (this._weight_dirty)
     this.update_weight();
-    // this._weight_dirty = false
   }
   get root() {
     let p: Slot = this;
