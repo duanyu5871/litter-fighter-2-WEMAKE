@@ -92,15 +92,37 @@ export class Slot implements ISlot {
       slot.rect.y = rect.y;
       slot.rect.w = Math.max(rect.w, w_size * 50);
       slot.rect.h = Math.max(rect.h, h_size * 50);
+      if (slot.parent === slot.root && slot.parent.children.indexOf(slot) === 0) {
+        console.log(slot, {
+          w_size,
+          h_size,
+          rect,
+          'slot.rect.x': slot.rect.x,
+          'slot.rect.y': slot.rect.y,
+          'slot.rect.w': slot.rect.w,
+          'slot.rect.h': slot.rect.h,
+        })
+      }
+
+      const diff = Math.max(0, slot.rect[size_key] - rect[size_key])
       const weight_sum = slot.children.reduce((r, i) => r + i.weight, 0);
-      let pos = slot.rect[pos_key]
+
+      if (weight_sum - slot.rect[size_key] > Number.EPSILON && diff) {
+        console.log(weight_sum, slot.rect[size_key], diff)
+      }
+
+
+
+      let pos = slot.rect[pos_key];
       for (const child of slot.children) {
-        const child_rect = { ...slot.rect }
-        child_rect[pos_key] = pos;
-        child_rect[size_key] = slot.rect[size_key] * child.weight / weight_sum;
-        _job(child, child_rect)
+        const rect = { ...slot.rect }
+        rect[pos_key] = pos;
+        rect[size_key] = slot.rect[size_key] * child.weight / weight_sum;
+        _job(child, rect)
         pos += child.rect[size_key]
       }
+
+      return diff
     }
     _job(this, rect)
     this.update_weight();

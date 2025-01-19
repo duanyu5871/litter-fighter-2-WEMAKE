@@ -65,7 +65,6 @@ export class Line {
     if (diff === 0) return;
 
     const size_key = slot.type === 'h' ? 'w' : 'h'
-    const dime_key = slot.type === 'h' ? 'crosscut' : 'slitting'
     const glow_name = diff > 0 ? 'prev' : 'next'
     const shrink_name = diff > 0 ? 'next' : 'prev'
 
@@ -93,7 +92,7 @@ export class Line {
     let shrink_slot = this[shrink_name];
     do {
       let weight = this.snapshots.get(shrink_slot)!.weight(0) - shrink_value
-      const min_size = shrink_slot[dime_key] * 50
+      const min_size = shrink_slot.crosscut * 50
       if (weight < min_size) {
         shrink_value = min_size - weight;
         weight = min_size;
