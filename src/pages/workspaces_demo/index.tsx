@@ -14,7 +14,12 @@ export default function WorkspacesDemo() {
   const [views, set_views] = useState<React.ReactNode[]>([]);
   useEffect(() => {
     const workspaces = new Workspaces(ref_container.current!)
-    workspaces.on_changed = () => {
+    // const indexes: number[] = []
+    // for (let i = 0; i < 10; ++i) {
+    //   workspaces.add(indexes, i % 2 ? 'left' : 'down')
+    //   indexes.push(0)
+    // }
+    workspaces.on_cell_changed = () => {
       let dragging: HTMLElement | null = null;
       let dropping: HTMLElement | null = null;
       set_views(
@@ -63,7 +68,7 @@ export default function WorkspacesDemo() {
         })
       )
     }
-    workspaces.update()
+    workspaces.confirm()
     return () => workspaces.release()
   }, [])
 
