@@ -33,6 +33,7 @@ import { PicInfoEditorView } from "./PicInfoEditorView";
 import styles from "./styles.module.scss";
 import { WorkspaceColumnView } from "./WorkspaceColumnView";
 import { Slot, Workspaces } from "../splittings/src";
+import { DomAdapter } from "../splittings/src/DomAdapter";
 enum EntityEditing {
   base = '基础信息',
   frame_index = '特定帧',
@@ -465,7 +466,7 @@ export default function EditorView(props: IEditorViewProps) {
     if (!container) return;
     const workspace = ref_workspace.current ?
       ref_workspace.current :
-      ref_workspace.current = new Workspaces(container)
+      ref_workspace.current = new Workspaces(new DomAdapter(container))
     workspace.set_root(
       new Slot(workspace, { id: 'root', type: 'h' }, [
         new Slot(workspace, { id: 'res_tree_cell', weight: 250 }),

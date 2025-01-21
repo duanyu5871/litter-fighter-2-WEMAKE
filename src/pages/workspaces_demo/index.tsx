@@ -8,12 +8,13 @@ import { ArrowRight } from "../../Component/Icons/ArrowRight";
 import { ArrowUp } from "../../Component/Icons/ArrowUp";
 import { Cross } from "../../Component/Icons/Cross";
 import { Workspaces } from "../../splittings/src";
+import { DomAdapter } from "../../splittings/src/DomAdapter";
 
 export default function WorkspacesDemo() {
   const ref_container = useRef<HTMLDivElement>(null)
   const [views, set_views] = useState<React.ReactNode[]>([]);
   useEffect(() => {
-    const workspaces = new Workspaces(ref_container.current!)
+    const workspaces = new Workspaces(new DomAdapter(ref_container.current!))
     // const indexes: number[] = []
     // for (let i = 0; i < 10; ++i) {
     //   workspaces.add(indexes, i % 2 ? 'left' : 'down')
