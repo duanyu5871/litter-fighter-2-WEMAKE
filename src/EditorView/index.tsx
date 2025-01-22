@@ -20,6 +20,8 @@ import { ILf2Callback } from "../LF2/ILf2Callback";
 import LF2 from "../LF2/LF2";
 import { traversal } from "../LF2/utils/container_help/traversal";
 import { is_num } from "../LF2/utils/type_check";
+import { Slot, Workspaces } from "../splittings/src";
+import { DomAdapter } from "../splittings/src/DomAdapter";
 import open_file from "../Utils/open_file";
 import { shared_ctx } from './Context';
 import { EditorShapeEnum } from "./EditorShapeEnum";
@@ -32,8 +34,6 @@ import { FrameListView } from "./FrameListView";
 import { PicInfoEditorView } from "./PicInfoEditorView";
 import styles from "./styles.module.scss";
 import { WorkspaceColumnView } from "./WorkspaceColumnView";
-import { Slot, Workspaces } from "../splittings/src";
-import { DomAdapter } from "../splittings/src/DomAdapter";
 enum EntityEditing {
   base = '基础信息',
   frame_index = '特定帧',
@@ -373,12 +373,13 @@ export default function EditorView(props: IEditorViewProps) {
 
 
   const ref_wprkspace_container = useRef<HTMLDivElement>(null);
-  const [slot_changed_flag, set_slot_changed_flag] = useState(0)
   const ref_workspace = useRef<Workspaces>()
-  const [cells, set_cells] = useState<Readonly<HTMLElement[]>>([])
+  const ref_adapter = useRef<DomAdapter>()
+  const [cells, set_cells] = useState<Readonly<(HTMLElement | undefined)[]>>([])
   const views = useMemo(() => {
     return (
       cells.map(cell => {
+        if (!cell) return null;
         switch (cell.id) {
           case 'res_tree_cell':
             return createPortal(
@@ -464,16 +465,20 @@ export default function EditorView(props: IEditorViewProps) {
   useEffect(() => {
     const container = ref_wprkspace_container.current
     if (!container) return;
+
+    const adpater = ref_adapter.current ? ref_adapter.current :
+      ref_adapter.current = new DomAdapter(container)
+
     const workspace = ref_workspace.current ?
       ref_workspace.current :
-      ref_workspace.current = new Workspaces(new DomAdapter(container))
+      ref_workspace.current = new Workspaces(adpater)
     workspace.set_root(
       new Slot(workspace, { id: 'root', type: 'h' }, [
         new Slot(workspace, { id: 'res_tree_cell', weight: 250 }),
         new Slot(workspace, { id: 'empty', weight: container.offsetWidth - 250 }),
       ])
     )
-    workspace.on_changed = () => set_cells(workspace.cells)
+    workspace.on_changed = () => set_cells(workspace.leaves.map(slots => adpater.get_cell(slots)))
     workspace.update();
     const ob = new ResizeObserver(() => {
       workspace.update()

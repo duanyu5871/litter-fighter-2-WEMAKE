@@ -14,19 +14,20 @@ export default function WorkspacesDemo() {
   const ref_container = useRef<HTMLDivElement>(null)
   const [views, set_views] = useState<React.ReactNode[]>([]);
   useEffect(() => {
-    const workspaces = new Workspaces(new DomAdapter(ref_container.current!))
+    const adapter = new DomAdapter(ref_container.current!)
+    const workspaces = new Workspaces(adapter)
     // const indexes: number[] = []
     // for (let i = 0; i < 10; ++i) {
     //   workspaces.add(indexes, i % 2 ? 'left' : 'down')
     //   indexes.push(0)
     // }
-    workspaces.on_cell_changed = () => {
+    workspaces.on_leaves_changed = () => {
       let dragging: HTMLElement | null = null;
       let dropping: HTMLElement | null = null;
       set_views(
-        workspaces.cells.map(cell => {
-          const slot = workspaces.get_slot(cell);
-          if (!slot) return null;
+        workspaces.leaves.map(slot => {
+          const cell = adapter.get_cell(slot);
+          if (!cell) return null;
           const margin = 2;
           const size = `calc(100% - ${2 * margin}px)`;
           return createPortal(
@@ -50,8 +51,8 @@ export default function WorkspacesDemo() {
               }}
               onDrop={(e) => {
                 if (dragging && dropping) {
-                  const dragging_slot = workspaces.get_slot(dragging)
-                  const dropping_slot = workspaces.get_slot(dropping)
+                  const dragging_slot = adapter.get_slot(dragging)
+                  const dropping_slot = adapter.get_slot(dropping)
                   console.log(dragging_slot, dropping_slot)
                 }
                 e.preventDefault();
