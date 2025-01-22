@@ -34,7 +34,7 @@ export default function WorkspacesDemo() {
             <Frame
               style={{ width: size, height: size, margin, overflow: 'hidden' }}
               draggable
-              label={slot.id + ' ' + slot.weight.toFixed(3)}
+              label={slot.id + ' ' + slot.weight.toFixed(3) + ' ' + slot.min_size.w + 'x' + slot.min_size.h}
               onDragStart={(e) => dragging = (e.target as HTMLElement).parentElement}
               onDragEnd={(e) => dragging = null}
               onDragEnter={(e) => {
