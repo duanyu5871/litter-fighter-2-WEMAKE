@@ -8,7 +8,7 @@ import { ArrowRight } from "../../Component/Icons/ArrowRight";
 import { ArrowUp } from "../../Component/Icons/ArrowUp";
 import { Cross } from "../../Component/Icons/Cross";
 import { Workspaces } from "../../splittings/src";
-import { DomAdapter } from "../../splittings/src/DomAdapter";
+import { DomAdapter } from "../../splittings/src/dom/DomAdapter";
 
 export default function WorkspacesDemo() {
   const ref_container = useRef<HTMLDivElement>(null)
