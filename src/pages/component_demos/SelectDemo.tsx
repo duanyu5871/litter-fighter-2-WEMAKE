@@ -1,6 +1,8 @@
+import Combine from "../../Component/Combine";
 import Frame from "../../Component/Frame";
 import { Select } from "../../Component/Select";
 import { Space } from "../../Component/Space";
+import Titled from "../../Component/Titled";
 const items: string[] = []
 for (let i = 0; i < 100; ++i) {
   items.push('option ' + i);
@@ -15,6 +17,22 @@ export default function SelectDemo() {
           placeholder="dropdown"
           clearable />
       </Space>
+      <Combine style={{ overflow: 'visible' }}>
+        <Titled >
+          <Select
+            items={items}
+            parse={v => [v, v]}
+            placeholder="dropdown"
+            clearable />
+        </Titled>
+        <Titled >
+          <Select
+            items={items}
+            parse={v => [v, v]}
+            placeholder="dropdown"
+            clearable />
+        </Titled>
+      </Combine>
     </Frame>
   );
 }

@@ -1,5 +1,5 @@
 import classnames from "classnames";
-import { CSSProperties, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styles from "./style.module.scss";
 export interface ICombineProps extends React.HTMLAttributes<HTMLDivElement> {
   direction?: 'row' | 'column',

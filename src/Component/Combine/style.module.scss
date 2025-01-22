@@ -1,5 +1,6 @@
 @import "../../styles/lfui_hoverable_border.module.scss";
 @import "../../styles/lfui_border.module.scss";
+@import "../Titled.module.scss";
 
 .lfui_combine.hoverable {
   @extend .lfui_hoverable_border;

@@ -62,7 +62,7 @@ export function Select<T, V>(props: ISelectProps<T, V> | IMultiSelectProps<T, V>
   const [value, set_value] = useState<V[] | undefined>(() => value_adapter(has_value ? _value : defaultValue));
 
   useEffect(() => {
-    if (has_value) set_value(value_adapter(_value)) 
+    if (has_value) set_value(value_adapter(_value))
     else set_value(value_adapter(defaultValue))
   }, [defaultValue, has_value, _value])
 
@@ -244,46 +244,52 @@ export function Select<T, V>(props: ISelectProps<T, V> | IMultiSelectProps<T, V>
 
   const not_empty = !!checked_tree_nodes?.length;
   return (
-    <Space className={classname} {..._p} ref={ref_wrapper} onPointerDown={on_pointer_down}>
-      <Space.Broken>
-        <Input
-          prefix={
-            <Space className={styles.tags}>
-              {
-                checked_tree_nodes?.map((node, idx) => {
-                  return (
-                    <Space.Item key={idx}>
-                      <Tag closeable={multi} on_close={(e) => on_click_item(node, e)}>
-                        {node.data?.label}
-                      </Tag>
-                    </Space.Item>
-                  )
-                })
-              }
-            </Space>
-          }
-          placeholder={not_empty ? void 0 : props.placeholder}
-          suffix={
-            <>
-              <Show.Div show={has_outer_arrow}>
-                {arrow}
-              </Show.Div>
-              <Show show={!has_outer_arrow}>
-                <DropdownArrow className={styles.arrow} />
-              </Show>
-            </>
-          }
-          className={styles.input}
-          readOnly={true} />
-        <Show show={clearable && value?.length}>
-          <Text className={styles.ic_clear} size='s'>
-            <CircleCross onPointerDown={on_clear} />
-          </Text>
-        </Show>
-      </Space.Broken>
+    <>
+      <Space
+        className={classname}
+        {..._p}
+        ref={ref_wrapper}
+        onPointerDown={on_pointer_down}>
+        <Space.Broken>
+          <Input
+            prefix={
+              <Space className={styles.tags}>
+                {
+                  checked_tree_nodes?.map((node, idx) => {
+                    return (
+                      <Space.Item key={idx}>
+                        <Tag closeable={multi} on_close={(e) => on_click_item(node, e)}>
+                          {node.data?.label}
+                        </Tag>
+                      </Space.Item>
+                    )
+                  })
+                }
+              </Space>
+            }
+            placeholder={not_empty ? void 0 : props.placeholder}
+            suffix={
+              <>
+                <Show.Div show={has_outer_arrow}>
+                  {arrow}
+                </Show.Div>
+                <Show show={!has_outer_arrow}>
+                  <DropdownArrow className={styles.arrow} />
+                </Show>
+              </>
+            }
+            className={styles.input}
+            readOnly={true} />
+          <Show show={clearable && value?.length}>
+            <Text className={styles.ic_clear} size='s'>
+              <CircleCross onPointerDown={on_clear} />
+            </Text>
+          </Show>
+        </Space.Broken>
+      </Space>
       {gone ? null : createPortal(
         <TreeView
-          className={styles.lfui_dropdown_popover}
+          className={styles.lfui_popover}
           nodes={tree_nodes}
           show_icon={false}
           on_click_item={on_click_item}
@@ -291,7 +297,7 @@ export function Select<T, V>(props: ISelectProps<T, V> | IMultiSelectProps<T, V>
         />,
         document.body
       )}
-    </Space>
+    </>
   )
 }
 
