@@ -4,16 +4,28 @@ import Frame from "../../Component/Frame";
 import { Input } from "../../Component/Input";
 import { Space } from "../../Component/Space";
 import Titled from "../../Component/Titled";
+import { Variant } from "../../Component/StyleBase/Variant";
+import Select from "../../Component/Select";
 
 export default function InputDemo() {
   const [clearable, set_clearable] = useState(false);
   const [prefix, set_prefix] = useState('prefix:');
   const [placeholder, set_placeholder] = useState('placeholder');
   const [suffix, set_suffix] = useState('suffix');
+  const [variants, set_variants] = useState<Variant[] | undefined>();
+
   return (
     <Frame label='Input'>
       <Space direction='column'>
-        <Input prefix={prefix} placeholder={placeholder} suffix={suffix} clearable={clearable} />
+        <Input prefix={prefix} placeholder={placeholder} suffix={suffix} clearable={clearable} variants={variants}/>
+        <Titled label="variants">
+          <Select
+            multi
+            value={variants}
+            items={Object.values(Variant)}
+            parse={i => [i, '' + i]}
+            on_changed={set_variants} />
+        </Titled>
         <Titled label="clearable">
           <Checkbox value={clearable} onChanged={set_clearable} />
         </Titled>

@@ -3,18 +3,30 @@
   border-radius: 3px;
 }
 
+@mixin lfui_no_border {
+  border-width: 0px
+}
+
+@mixin lfui_no_round {
+  border-radius: 0px
+}
+
+._lfui_no_border,
 .lfui_no_border,
 .lfui_no_border:hover,
 .lfui_no_border:focus,
 .lfui_no_border:active,
 .lfui_no_border:disabled {
-  border-width: 0px
+  @include lfui_no_border
 }
 
+._lfui_no_round,
 .lfui_no_round,
 .lfui_no_round:hover,
 .lfui_no_round:focus,
 .lfui_no_round:active,
 .lfui_no_round:disabled {
-  border-radius: 0px
+  @include lfui_no_round
 }
+
+

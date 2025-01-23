@@ -3,16 +3,17 @@ import React, { useEffect, useMemo, useRef } from "react";
 import { CircleCross } from '../Icons/CircleCross';
 import styles from "./styles.module.scss";
 import { is_positive } from "../../LF2/utils/type_check";
+import { IStyleProps } from "../StyleBase/IStyleProps";
+import { useStyleBase } from "../StyleBase/useStyleBase";
 
 export type BaseProps = React.InputHTMLAttributes<HTMLInputElement>
-export interface InputProps extends Omit<BaseProps, 'prefix' | 'step'> {
+export interface InputProps extends Omit<BaseProps, 'prefix' | 'step'>, IStyleProps {
   precision?: number;
   prefix?: React.ReactNode;
   suffix?: React.ReactNode;
   clear_icon?: React.ReactNode;
   clearable?: boolean;
   step?: number;
-  variants?: 'no_border';
   clazz?: {
     suffix?: string;
     prefix?: string;
@@ -54,9 +55,10 @@ function _Input(props: InputProps, forwarded_Ref: React.ForwardedRef<InputRef>) 
   const { type, step, min, max } = props;
   const need_steppers = !!(step && type === 'number' && !props.readOnly && !props.disabled);
   const need_clearer = !!(clearable && clear_icon && !props.readOnly && !props.disabled);
-  const root_cls_name = classNames(styles.lfui_input, {
-    [styles.lfui_no_border]: variants === 'no_border'
-  }, className);
+
+  const { className: cls_name } = useStyleBase(variants);
+
+  const root_cls_name = useMemo(() => classNames(styles.lfui_input, cls_name, className), [className, cls_name])
   const prefix_cls_name = classNames(styles.lfui_input_prefix, clazz?.prefix);
   const input_cls_name = classNames(styles.lfui_input_input, clazz?.input);
   const suffix_cls_name = classNames(styles.lfui_input_suffix, {

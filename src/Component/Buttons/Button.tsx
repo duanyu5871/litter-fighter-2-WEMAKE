@@ -1,15 +1,15 @@
 import classNames from "classnames";
 import device from "current-device";
 import React, { useEffect, useMemo, useState } from "react";
-import { IProps } from "../StyleBase/IProps";
+import { IStyleProps } from "../StyleBase/IStyleProps";
+import { useStyleBase } from "../StyleBase/useStyleBase";
 import { useForwardedRef } from "../useForwardedRef";
 import { TShortcut, useShortcut } from "../useShortcut";
 import styles from "./style.module.scss";
-import { useStyleBase } from "../StyleBase/useStyleBase";
 const is_desktop = device.desktop();
 
 export interface IButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>, IProps {
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>, IStyleProps {
   shortcut?: TShortcut;
   shortcutTarget?: Window | Document | Element;
   show_shortcut?: boolean;
@@ -44,12 +44,12 @@ export function _Button(props: IButtonProps, ref: React.ForwardedRef<HTMLButtonE
   const _show_shortcut = show_shortcut ?? has_keyboard;
   const { className: cls_name } = useStyleBase(variants);
   
-  const root_className = useMemo(() => classNames(styles.lfui_button, {
+  const root_cls_name = useMemo(() => classNames(styles.lfui_button, {
     [styles.lfui_button_actived]: actived
   }, cls_name, className), [actived, className, cls_name])
 
   return (
-    <button className={root_className} {..._p} type={type} ref={on_ref}>
+    <button className={root_cls_name} {..._p} type={type} ref={on_ref}>
       {children}
       {shortcut && _show_shortcut ? `(${shortcut})` : null}
     </button>

@@ -12,7 +12,7 @@ import { ITreeNode, TreeView } from "../TreeView";
 import styles from "./styles.module.scss";
 import { Text } from "../Text";
 
-export interface IBaseSelectProps<T, V> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'defaultValue'> {
+export interface IBaseSelectProps<T, V> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'defaultValue' | 'multiply'> {
   items?: readonly T[];
   auto_blur?: boolean;
   parse(item: T, idx: number, items: readonly T[]): [V, React.ReactNode];

@@ -1,9 +1,9 @@
 import classNames from "classnames";
 import { useMemo } from "react";
 import styles from "../../styles/lfui_border.module.scss";
-import { Variant } from "./Variant";
+import { TVariant } from "./Variant";
 
-export function useStyleBase(variants?: Variant[] | string) {
+export function useStyleBase(variants?: TVariant[] | string) {
   return {
     className: useMemo(() => classNames({
       [styles.lfui_no_border]: variants?.includes('no_border'),

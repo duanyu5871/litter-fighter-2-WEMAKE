@@ -4,6 +4,7 @@
 
 .lfui_input {
   @extend .lfui_input_like;
+
   display    : inline-flex;
   position   : relative;
   overflow   : hidden;
@@ -190,9 +191,4 @@
       opacity: 0;
     }
   }
-}
-
-.lfui_input.lfui_no_border,
-.lfui_input.lfui_no_border:hover {
-  border-width: 0px
 }
