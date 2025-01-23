@@ -2,3 +2,19 @@
   border       : 2px #5a73d6 solid;
   border-radius: 3px;
 }
+
+.lfui_no_border,
+.lfui_no_border:hover,
+.lfui_no_border:focus,
+.lfui_no_border:active,
+.lfui_no_border:disabled {
+  border-width: 0px
+}
+
+.lfui_no_round,
+.lfui_no_round:hover,
+.lfui_no_round:focus,
+.lfui_no_round:active,
+.lfui_no_round:disabled {
+  border-radius: 0px
+}

@@ -1,6 +1,10 @@
 @import "../styles/lfui_hoverable_border.scss";
 @import "../styles/lfui_values.module.scss";
 
+.top_bar {
+  align-self: stretch;
+}
+
 .cell_inner {
   position  : absolute;
   width     : calc(100% - 4px);

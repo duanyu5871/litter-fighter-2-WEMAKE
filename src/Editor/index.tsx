@@ -2,6 +2,6 @@ import EditorView from "../EditorView";
 
 export default function Editor() {
   return (
-    <EditorView style={{ width: '100%', height: '100%', overflow: 'hidden', position: 'relative', padding: 5 }} open />
+    <EditorView style={{ width: '100%', height: '100%', overflow: 'hidden', position: 'relative' }} open />
   )
 }
