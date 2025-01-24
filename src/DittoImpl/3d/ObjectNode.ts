@@ -1,4 +1,4 @@
-import * as THREE from "three";
+import * as THREE from "./_t";
 import { IBaseNode } from "../../LF2/3d/IBaseNode";
 import { IObjectNode, ObjectEventKey } from "../../LF2/3d/IObjectNode";
 import LF2 from "../../LF2/LF2";

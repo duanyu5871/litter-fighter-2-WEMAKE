@@ -1,4 +1,4 @@
-import * as THREE from "three";
+import * as THREE from "./_t";
 import { IMeshNode, IObjectNode } from "../3d";
 import Ditto from "../ditto";
 import Entity from "../entity/Entity";

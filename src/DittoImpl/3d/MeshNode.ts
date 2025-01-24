@@ -1,4 +1,4 @@
-import { Material, Mesh, Object3D, Object3DEventMap } from "three";
+import { Material, Mesh, Object3D, Object3DEventMap } from "./_t";
 import { BufferGeometry, IMeshInfo, IMeshNode } from "../../LF2/3d/IMeshNode";
 import LF2 from "../../LF2/LF2";
 import { __ObjectNode } from "./ObjectNode";

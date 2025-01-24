@@ -1,4 +1,4 @@
-import type * as THREE from "three";
+import type * as THREE from "./_t";
 const isMeshBasicMaterial = (v: any): v is THREE.MeshBasicMaterial =>
   true === v.isMeshBasicMaterial;
 

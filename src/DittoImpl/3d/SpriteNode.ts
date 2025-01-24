@@ -1,4 +1,4 @@
-import * as THREE from "three";
+import * as THREE from "./_t";
 import LF2 from "../../LF2/LF2";
 import { dispose_mesh } from "./disposer";
 import { empty_texture } from "../../LF2/loader/loader";

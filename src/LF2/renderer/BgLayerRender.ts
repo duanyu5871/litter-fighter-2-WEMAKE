@@ -1,4 +1,4 @@
-import * as THREE from "three";
+import * as THREE from "./_t";
 import { IMeshNode } from "../3d";
 import Layer from "../bg/Layer";
 import Ditto from "../ditto";

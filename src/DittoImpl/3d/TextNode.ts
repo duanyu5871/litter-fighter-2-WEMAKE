@@ -1,6 +1,6 @@
+import { ITextNode } from "../../LF2/3d/ITextNode";
 import IStyle from "../../LF2/defines/IStyle";
 import __SpriteNode from "./SpriteNode";
-import { ITextNode } from "../../LF2/3d/ITextNode";
 
 export class __Text extends __SpriteNode implements ITextNode {
   readonly is_text_node = true;

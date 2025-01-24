@@ -1,4 +1,4 @@
-import * as THREE from "three";
+import * as THREE from "./_t";
 import LF2 from "../../LF2/LF2";
 import { __ObjectNode } from "./ObjectNode";
 import { IOrthographicCameraNode } from "../../LF2/3d/IOrthographicCamera";

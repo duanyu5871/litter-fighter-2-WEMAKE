@@ -1,4 +1,4 @@
-import * as T from "three";
+import * as T from "./_t";
 import { IBillboardNode, IMeshNode, IObjectNode } from "../3d";
 import LF2 from "../LF2";
 import { get_team_shadow_color } from "../base/get_team_shadow_color";
