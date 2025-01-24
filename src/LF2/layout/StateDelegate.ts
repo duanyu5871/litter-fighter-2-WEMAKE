@@ -1,5 +1,3 @@
-import { is_fun } from "../utils/type_check";
-
 export type TStateValueInfo<T> =
   | { is_func: true; v: () => T }
   | { is_func: false; v: T };
@@ -10,7 +8,7 @@ export default class StateDelegate<T> {
     return v.is_func ? v.v() : v.v;
   }
   protected value_to_state(v: T | (() => T)): TStateValueInfo<T> {
-    return is_fun(v) ? { is_func: true, v: v } : { is_func: false, v: v };
+    return (typeof v === 'function') ? { is_func: true, v: v as () => T } : { is_func: false, v: v };
   }
 
   get value(): T {
