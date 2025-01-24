@@ -1,7 +1,7 @@
 export type TStateValueInfo<T> =
   | { is_func: true; v: () => T }
   | { is_func: false; v: T };
-export default class StateDelegate<T> {
+export class StateDelegate<T> {
   protected _default_value: TStateValueInfo<T>;
   protected _values: (TStateValueInfo<T> | undefined)[] = [];
   protected state_to_value(v: TStateValueInfo<T>) {
@@ -24,8 +24,6 @@ export default class StateDelegate<T> {
     this._default_value = this.value_to_state(v);
   }
 
-  constructor(default_value: () => T);
-  constructor(default_value: T);
   constructor(default_value: T | (() => T)) {
     this._default_value = this.value_to_state(default_value);
   }
@@ -34,3 +32,4 @@ export default class StateDelegate<T> {
     this._values[index] = this.value_to_state(v);
   }
 }
+export default StateDelegate
