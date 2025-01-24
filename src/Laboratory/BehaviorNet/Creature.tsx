@@ -1,11 +1,11 @@
-import { Vector2 } from "three";
 import { clamp } from "three/src/math/MathUtils";
 import { Behavior } from "../../LF2/behavior";
+import Ditto from "../../LF2/ditto";
 import { Ground } from "./Ground";
 
 export class Creature {
   ground?: Ground;
-  pos = new Vector2(0, 0);
+  pos = new Ditto.Vector2(0, 0);
   name = "Creature";
   color = "red";
   actor = new Behavior.Actor();

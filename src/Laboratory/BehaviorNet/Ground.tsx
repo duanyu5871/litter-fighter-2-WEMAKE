@@ -1,9 +1,9 @@
-import { Vector2 } from "three";
+import Ditto from "../../LF2/ditto";
 import { Creature } from "./Creature";
 
 export class Ground {
-  pos = new Vector2(0, 0);
-  size = new Vector2(0, 0);
+  pos = new Ditto.Vector2(0, 0);
+  size = new Ditto.Vector2(0, 0);
   creatures = new Array<Creature>();
   add_creature(...creatures: Creature[]) {
     this.creatures.push(...creatures);
