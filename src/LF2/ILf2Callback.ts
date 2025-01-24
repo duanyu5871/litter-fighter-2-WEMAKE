@@ -1,4 +1,5 @@
-import Layout, { ICookedLayoutInfo } from "../LF2/layout/Layout";
+import Layout from "../LF2/layout/Layout";
+import { ICookedLayoutInfo } from "./layout/ICookedLayoutInfo";
 import { PlayerInfo } from "./PlayerInfo";
 import { Defines } from "./defines/defines";
 import { IZip } from "./ditto";

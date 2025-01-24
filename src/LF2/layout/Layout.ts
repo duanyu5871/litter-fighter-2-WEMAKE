@@ -21,29 +21,10 @@ import actor from "./action/Actor";
 import factory from "./component/Factory";
 import { LayoutComponent } from "./component/LayoutComponent";
 import read_nums from "./utils/read_nums";
+import { ICookedLayoutInfo } from "./ICookedLayoutInfo";
+import { ILayoutCallback } from "./ILayoutCallback";
 
-export interface ICookedLayoutInfo extends ILayoutInfo {
-  pos: [number, number, number];
-  center: [number, number, number];
-  rect: [number, number, number, number];
-  parent?: ICookedLayoutInfo;
-  items?: ICookedLayoutInfo[];
-  img_infos: TImageInfo[];
-  size: [number, number];
-  left_top: [number, number];
-}
-
-export interface ILayoutCallback {
-  on_click?(): void;
-  on_show?(layout: Layout): void;
-  on_hide?(layout: Layout): void;
-  on_foucs_changed?(layout: Layout): void;
-  on_foucs_item_changed?(
-    foucs: Layout | undefined,
-    blur: Layout | undefined,
-  ): void;
-}
-export default class Layout {
+export class Layout {
   protected _callbacks = new Callbacks<ILayoutCallback>();
   get callbacks(): NoEmitCallbacks<ILayoutCallback> {
     return this._callbacks;
@@ -323,9 +304,9 @@ export default class Layout {
     return l <= x && t <= y && l + w >= x && t + h >= y;
   }
 
-  on_mouse_leave() {}
+  on_mouse_leave() { }
 
-  on_mouse_enter() {}
+  on_mouse_enter() { }
 
   on_start() {
     this._state = {};
@@ -778,5 +759,6 @@ export default class Layout {
     for (const c of this._components) c.on_blur?.();
   }
 }
+export default Layout;
 type TCls<R = any> = abstract new (...args: any) => R;
 type TCond<T extends TCls> = (c: InstanceType<T>) => unknown;
