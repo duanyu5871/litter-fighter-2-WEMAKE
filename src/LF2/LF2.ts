@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { Log, Warn } from "../Log";
+import { Warn } from "../Log";
 import { ILf2Callback } from "./ILf2Callback";
 import { PlayerInfo } from "./PlayerInfo";
 import { World } from "./World";
@@ -25,23 +25,23 @@ import ditto, {
 
 import { BallsHelper } from "./BallsHelper";
 import { CharactersHelper } from "./CharactersHelper";
+import { EntitiesHelper } from "./EntitiesHelper";
 import { WeaponsHelper } from "./WeaponsHelper";
 import Ditto from "./ditto";
 import Entity from "./entity/Entity";
+import { Factory } from "./entity/Factory";
 import { ILayoutInfo } from "./layout/ILayoutInfo";
 import Layout, { ICookedLayoutInfo } from "./layout/Layout";
 import DatMgr from "./loader/DatMgr";
 import get_import_fallbacks from "./loader/get_import_fallbacks";
 import { ImageMgr } from "./loader/loader";
 import Stage from "./stage/Stage";
+import { PIO } from "./utils/PromisesInOne";
 import { fisrt, last } from "./utils/container_help";
 import { arithmetic_progression } from "./utils/math/arithmetic_progression";
 import float_equal from "./utils/math/float_equal";
 import { random_get, random_in, random_take } from "./utils/math/random";
 import { is_arr, is_num, is_str, not_empty_str } from "./utils/type_check";
-import { PIO } from "./utils/PromisesInOne";
-import { EntitiesHelper } from "./EntitiesHelper";
-import { Factory } from "./entity/Factory";
 
 const cheat_info_pair = (n: Defines.Cheats) =>
   [

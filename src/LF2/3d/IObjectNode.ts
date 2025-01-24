@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import type LF2 from "../LF2";
 import { IBaseNode } from "./IBaseNode";
+import { IQuaternion } from "../ditto/IQuaternion";
 export type ObjectEventKey = "added" | "removed";
 export interface IObjectNode extends IBaseNode {
   readonly is_object_node: true;
@@ -53,7 +54,7 @@ export interface IObjectNode extends IBaseNode {
   apply(): this;
 
   set_rgb(r: number, g: number, b: number): this;
-  rotation_from_quaternion(q: THREE.Quaternion): this;
+  rotation_from_quaternion(q: IQuaternion): this;
   intersects_from_raycaster(
     raycaster: THREE.Raycaster,
     recursive?: boolean,

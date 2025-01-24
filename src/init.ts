@@ -32,4 +32,5 @@ Ditto.setup({
   BillboardNode: __BillboardNode,
   Vector3: THREE.Vector3,
   Vector2: THREE.Vector2,
+  Quaternion: THREE.Quaternion,
 });

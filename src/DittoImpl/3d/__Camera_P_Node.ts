@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { IPerspectiveCamera } from "../../LF2/3d/IPerspectiveCamera";
 import LF2 from "../../LF2/LF2";
 import { __ObjectNode } from "./ObjectNode";
+import { IQuaternion } from "../../LF2/ditto/IQuaternion";
 
 export class __Camera_P_Node
   extends __ObjectNode
@@ -46,8 +47,8 @@ export class __Camera_P_Node
     inner.far = f;
     return this;
   }
-  world_quaternion(q: THREE.Quaternion): this {
-    this.inner.getWorldQuaternion(q);
+  world_quaternion(q: IQuaternion): this {
+    this.inner.getWorldQuaternion(q as THREE.Quaternion);
     return this;
   }
   raycaster(r: THREE.Raycaster, coords: THREE.Vector2): this {

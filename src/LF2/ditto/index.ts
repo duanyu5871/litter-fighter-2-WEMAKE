@@ -15,6 +15,7 @@ import type { IRender } from "./IRender";
 import type { ITimeout } from "./ITimeout";
 import { IVector2 } from "./IVector2";
 import { IVector3 } from "./IVector3";
+import { IQuaternion } from "./IQuaternion";
 import type { IKeyboard } from "./keyboard/IKeyboard";
 import type { IPointings } from "./pointings";
 import BaseSounds from "./sounds/BaseSounds";
@@ -63,6 +64,7 @@ export interface IDittoPack {
   BillboardNode: new (lf2: LF2, info?: IBillboardInfo) => IBillboardNode;
   Vector3: new (x?: number, y?: number, z?: number) => IVector3;
   Vector2: new (x?: number, y?: number) => IVector2;
+  Quaternion: new (x?: number, y?: number, z?: number, w?: number) => IQuaternion;
 }
 
 export interface IDitto extends IDittoPack {

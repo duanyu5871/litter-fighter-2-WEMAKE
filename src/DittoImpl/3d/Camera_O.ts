@@ -2,11 +2,11 @@ import * as THREE from "three";
 import LF2 from "../../LF2/LF2";
 import { __ObjectNode } from "./ObjectNode";
 import { IOrthographicCameraNode } from "../../LF2/3d/IOrthographicCamera";
+import { IQuaternion } from "../../LF2/ditto/IQuaternion";
 
 export class __Camera_O_Node
   extends __ObjectNode
-  implements IOrthographicCameraNode
-{
+  implements IOrthographicCameraNode {
   readonly is_orthographic_camera_node = true;
   get left(): number {
     return this.inner.left;
@@ -74,8 +74,8 @@ export class __Camera_O_Node
     inner.far = f;
     return this;
   }
-  world_quaternion(q: THREE.Quaternion): this {
-    this.inner.getWorldQuaternion(q);
+  world_quaternion(q: IQuaternion): this {
+    this.inner.getWorldQuaternion(q as THREE.Quaternion);
     return this;
   }
   raycaster(r: THREE.Raycaster, coords: THREE.Vector2): this {

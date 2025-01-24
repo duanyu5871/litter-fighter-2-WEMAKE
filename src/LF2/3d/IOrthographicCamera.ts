@@ -1,3 +1,4 @@
+import { IQuaternion } from "../ditto/IQuaternion";
 import { IVector2 } from "../ditto/IVector2";
 import { IObjectNode } from "./IObjectNode";
 
@@ -23,7 +24,7 @@ export interface IOrthographicCameraNode extends IObjectNode {
     n?: number,
     f?: number,
   ): this;
-  world_quaternion(q: THREE.Quaternion): this;
+  world_quaternion(q: IQuaternion): this;
   raycaster(raycaster: THREE.Raycaster, coords: IVector2): this;
 }
 export const is_orthographic_camera_node = (

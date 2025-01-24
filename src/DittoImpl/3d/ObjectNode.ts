@@ -3,6 +3,7 @@ import { IBaseNode } from "../../LF2/3d/IBaseNode";
 import { IObjectNode, ObjectEventKey } from "../../LF2/3d/IObjectNode";
 import LF2 from "../../LF2/LF2";
 import { is_num } from "../../LF2/utils/type_check";
+import { IQuaternion } from "../../LF2/ditto/IQuaternion";
 
 export class __ObjectNode implements IObjectNode {
   readonly is_object_node = true;
@@ -83,7 +84,7 @@ export class __ObjectNode implements IObjectNode {
   get opacity(): number {
     return 1;
   }
-  set opacity(v: number) {}
+  set opacity(v: number) { }
   get w(): number {
     return is_num(this._w) ? this._w : 0;
   }
@@ -222,8 +223,8 @@ export class __ObjectNode implements IObjectNode {
     this.inner.scale.z = v;
     return this;
   }
-  rotation_from_quaternion(q: THREE.Quaternion): this {
-    this.inner.rotation.setFromQuaternion(q);
+  rotation_from_quaternion(q: IQuaternion): this {
+    this.inner.rotation.setFromQuaternion(q as THREE.Quaternion);
     return this;
   }
   intersects_from_raycaster(

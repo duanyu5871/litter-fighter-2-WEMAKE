@@ -1,12 +1,12 @@
-import * as THREE from "three";
+import { IObjectNode } from "../3d/IObjectNode";
 import { World } from "../World";
 import { IBgData } from "../defines";
 import { IBgLayerInfo } from "../defines/IBgLayerInfo";
 import { Defines } from "../defines/defines";
+import Ditto from "../ditto";
+import { IQuaternion } from "../ditto/IQuaternion";
 import { TPicture } from "../loader/loader";
 import Layer from "./Layer";
-import { IObjectNode } from "../3d/IObjectNode";
-import Ditto from "../ditto";
 
 export interface ILayerUserData {
   x: number;
@@ -43,10 +43,13 @@ export default class Background {
   readonly middle: { x: number; z: number };
   readonly obj_3d: IObjectNode;
   readonly world: World;
+  private _update_times = 0;
+  private _q: IQuaternion;
 
   constructor(world: World, data: IBgData) {
     this.data = data;
     this.world = world;
+    this._q = new Ditto.Quaternion()
 
     this.width = this.data.base.right - this.data.base.left;
     this.depth = this.data.base.near - this.data.base.far;
@@ -96,8 +99,6 @@ export default class Background {
     this._disposers.forEach((f) => f());
   }
 
-  private _update_times = 0;
-  private _q = new THREE.Quaternion();
   update() {
     this._update_times++;
     for (const layer of this._layers) layer.update(this._update_times);
