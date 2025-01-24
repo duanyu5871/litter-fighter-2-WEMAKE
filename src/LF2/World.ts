@@ -19,6 +19,7 @@ import {
   is_local_ctrl,
   is_weapon,
 } from "./entity/type_check";
+import { BgRender } from "./renderer/BgRender";
 import { EntityRender } from "./renderer/EntityRender";
 import Stage from "./stage/Stage";
 import { WhatNext } from "./state/State_Base";
@@ -96,7 +97,6 @@ export class World {
 
   private _stage: Stage;
   entities = new Set<Entity>();
-  disposed = false;
 
   readonly player_slot_characters = new Map<string, Entity>();
 
@@ -175,7 +175,6 @@ export class World {
   }
 
   entity_renders = new Map<Entity, EntityRender>();
-
   add_entities(...entities: Entity[]) {
     for (const entity of entities) {
       if (
@@ -253,7 +252,6 @@ export class World {
   }
 
   start_render() {
-    if (this.disposed) return;
     if (this._render_worker_id) Ditto.Render.del(this._render_worker_id);
     if (this._sync_render) return;
     let _r_prev_time = 0;
@@ -281,7 +279,6 @@ export class World {
   private _update_count: number = 0;
   private _fix_radio: number = 1;
   start_update() {
-    if (this.disposed) return;
     if (this._update_worker_id) Ditto.Interval.del(this._update_worker_id);
 
     const on_update = () => {
@@ -307,7 +304,6 @@ export class World {
   }
 
   restrict_character(e: Entity) {
-    if (this.disposed) return;
     if (!this.bg) return;
     const { left, right, near, far, player_left, player_right } = this.stage;
 
@@ -324,7 +320,6 @@ export class World {
   }
 
   restrict_ball(e: Entity) {
-    if (this.disposed) return;
     if (!this.bg) return;
     const { left, right, near, far } = this.bg.data.base;
     const { x, z } = e.position;
@@ -335,7 +330,6 @@ export class World {
   }
 
   restrict_weapon(e: Entity) {
-    if (this.disposed) return;
     if (!this.bg) return;
     const { left, right, near, far } = this.bg.data.base;
     const { x, z } = e.position;
@@ -369,7 +363,6 @@ export class World {
     entity.chasing_target = void 0;
   }
   update_once() {
-    if (this.disposed) return;
     for (const e of this.entities) {
       e.self_update();
 
@@ -403,11 +396,13 @@ export class World {
     this.bg.update();
     this.stage.update();
   }
+
+  bg_render: BgRender = new BgRender(this);
+
   render_once(dt: number) {
-    if (this.disposed) return;
-    for (const [, r] of this.entity_renders) {
+    this.bg_render.update();
+    for (const [, r] of this.entity_renders)
       r.update();
-    }
     this.lf2.layout?.on_render(dt);
     this.scene.render();
   }
@@ -680,11 +675,11 @@ export class World {
   }
   dispose() {
     this._callbacks.emit("on_disposed")();
-    this.bg.dispose();
     this.stop_update();
     this.stop_render();
     this.del_entities(Array.from(this.entities));
     this.scene.dispose();
+    this.bg_render.release();
   }
 
   list_writable_properties(

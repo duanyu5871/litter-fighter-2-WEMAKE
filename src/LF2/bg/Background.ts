@@ -1,13 +1,11 @@
 import { World } from "../World";
 import { IBgData } from "../defines";
 import { IBgLayerInfo } from "../defines/IBgLayerInfo";
-import { TPicture } from "../loader/loader";
-import { BgRender } from "../renderer/BgRender";
 import Layer from "./Layer";
 
 export default class Background {
+
   readonly data: Readonly<IBgData>;
-  private _disposers: (() => void)[] = [];
   private _layers: Layer[] = [];
 
   get id(): string {
@@ -35,8 +33,6 @@ export default class Background {
   readonly world: World;
   private _update_times = 0;
 
-  readonly render: BgRender;
-
   constructor(world: World, data: IBgData) {
     this.data = data;
     this.world = world;
@@ -49,41 +45,38 @@ export default class Background {
     };
     for (const info of data.layers)
       this.add_layer(info);
-    this.render = new BgRender(this);
-    this._disposers.push(() => this.fade_out());
   }
 
   private add_layer(info: IBgLayerInfo) {
     let { x, loop = 0 } = info;
     do {
       this._layers.push(
-        new Layer(this, { ...info, x: x += loop })
+        new Layer(this, { ...info, x })
       );
+      x += loop
     } while (loop > 0 && x < this.width);
   }
 
-  fade_out(): void {
-    const max_delay = 50;
-    const duration = 120;
-    for (const layer of this._layers) {
-      layer.fade_out(250, Math.random() * max_delay);
-    }
-    setTimeout(() => {
-      this.render.release();
-    }, duration + max_delay);
-  }
-  get_shadow(): TPicture {
-    return this.world.lf2.images.create_pic_by_img_key(this.data.base.shadow);
+  fade_out(duration: number, delay_max_offset: number, delay: number): void {
+    for (const layer of this._layers)
+      layer.fade_out(duration, Math.random() * delay_max_offset + delay);
   }
 
-  dispose() {
-    this._disposers.forEach(f => f());
+  fade_in(duration: number, delay_max_offset: number, delay: number): void {
+    for (const layer of this._layers)
+      layer.fade_in(duration, Math.random() * delay_max_offset + delay);
   }
+
   update() {
     this._update_times++;
     for (const layer of this._layers)
       layer.update(this._update_times);
-    this.render.render();
+  }
+
+  dispose() {
+    for (const layer of this._layers)
+      layer.dispose()
+    this._layers.length = 0
   }
 }
 

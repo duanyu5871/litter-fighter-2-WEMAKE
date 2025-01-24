@@ -4,41 +4,77 @@ import Ditto from "../ditto";
 import { IQuaternion } from "../ditto/IQuaternion";
 import Background from "../bg/Background";
 import { BgLayerRender } from "./BgLayerRender";
+import { World } from "../World";
 
+interface BgRenderPack {
+  readonly bg: Background | null;
+  readonly mesh: IObjectNode | null;
+  readonly layers: BgLayerRender[];
+}
+export class BgRender implements BgRenderPack {
+  readonly world: World;
+  private _bg: Background | null = null;
+  private _mesh: IObjectNode | null = null;
+  private _layers: BgLayerRender[] = [];
+  private quaternion: IQuaternion;
+  private old_packs = new Set<BgRenderPack>();
+  get bg(): Background | null { return this._bg }
+  get mesh(): IObjectNode | null { return this._mesh }
+  get layers(): BgLayerRender[] { return this._layers }
 
-export class BgRender {
-  readonly bg: Background;
-  readonly obj_3d: IObjectNode;
-  private _q: IQuaternion;
-  readonly layer_renders: BgLayerRender[] = [];
+  constructor(world: World) {
+    this.world = world;
+    this.quaternion = new Ditto.Quaternion()
+  }
 
-  constructor(bg: Background) {
-    this.bg = bg;
-    const { world } = bg;
-    this._q = new Ditto.Quaternion()
+  private set_bg(bg: Background) {
+    const { world } = this;
+    const pack: BgRenderPack = {
+      bg: this._bg,
+      mesh: this._mesh,
+      layers: [...this._layers]
+    }
+    this.old_packs.add(pack)
+    pack.bg?.fade_out(250, 100, 0);
+    setTimeout(() => {
+      pack.mesh?.dispose()
+      this.old_packs.delete(pack)
+    }, 500)
 
-    this.obj_3d = new Ditto.ObjectNode(world.lf2);
-    this.obj_3d.z = -2 * Defines.CLASSIC_SCREEN_HEIGHT;
-    this.obj_3d.name = Background.name + ":" + this.bg.data.base.name;
+    this._bg = bg;
+    this._mesh = new Ditto.ObjectNode(world.lf2);
+    this._mesh.z = -2 * Defines.CLASSIC_SCREEN_HEIGHT;
+    this._mesh.name = Background.name + ":" + this._bg.data.base.name;
+    this._layers.length = 0;
+    this._bg.fade_in(250, 100, 350)
 
     for (const layer of bg.layers) {
       const layer_render = new BgLayerRender(layer)
-      this.layer_renders.push(layer_render);
-      this.obj_3d.add(layer_render.mesh);
+      this._layers.push(layer_render);
+      this._mesh.add(layer_render.mesh);
     }
-
-    world.scene.add(this.obj_3d);
+    world.scene.add(this._mesh);
   }
 
   release() {
-    this.obj_3d.del_self();
+    this._mesh?.dispose();
   }
 
-  render() {
-    this.bg.world.camera.world_quaternion(this._q);
-    this.obj_3d.rotation_from_quaternion(this._q);
-    for (const layer_render of this.layer_renders) {
-      layer_render.render();
-    }
+  private render_pack({ bg, mesh, layers }: BgRenderPack, with_update = false) {
+    if (with_update) bg?.update()
+    bg?.world.camera.world_quaternion(this.quaternion);
+    mesh?.rotation_from_quaternion(this.quaternion);
+    for (const render of layers)
+      render.update();
+  }
+
+  update() {
+    if (this._bg !== this.world.bg)
+      this.set_bg(this.world.bg)
+
+    for (const pack of this.old_packs)
+      this.render_pack(pack, true);
+
+    this.render_pack(this);
   }
 }

@@ -1,9 +1,9 @@
 import * as T from "three";
 import { IMeshNode } from "../3d/IMeshNode";
 import Ditto from "../ditto";
+import type Entity from "../entity/Entity";
 import type { IWorldCallbacks } from "../IWorldCallbacks";
 import type Stage from "../stage/Stage";
-import type Entity from "../entity/Entity";
 
 /**
  * 场上物品的阴影
@@ -48,7 +48,7 @@ export default class Shadow {
 
   protected on_stage_change(stage: Stage): void {
     const bg = stage.bg;
-    const pic = bg.get_shadow();
+    const pic = stage.lf2.images.create_pic_by_img_key(bg.data.base.shadow);
     if (bg !== stage.bg) return;
     const [sw, sh] = bg.data.base.shadowsize || [30, 30];
     this.mesh.geometry = new T.PlaneGeometry(sw, sh);
