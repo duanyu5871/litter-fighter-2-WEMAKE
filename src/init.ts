@@ -6,7 +6,7 @@ import { __Camera_P_Node } from "./DittoImpl/3d/__Camera_P_Node";
 import { __LineSegmentsNode } from "./DittoImpl/3d/LineSegmentsNode";
 import { __MeshNode } from "./DittoImpl/3d/MeshNode";
 import __SpriteNode from "./DittoImpl/3d/SpriteNode";
-import { __BillboardNode } from "./DittoImpl/BillboardNode";
+import { __BillboardNode } from "./DittoImpl/3d/BillboardNode";
 import Ditto from "./LF2/ditto";
 
 Ditto.setup({
