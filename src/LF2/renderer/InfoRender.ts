@@ -249,7 +249,7 @@ export class InfoRender implements IEntityCallbacks {
         if (name !== e.name) return;
         if (team !== e.team) return;
 
-        this.mesh.material.visible = true;
+        this.mesh.visible = true;
 
         this.mesh.material.map?.dispose();
         this.mesh.material.map = p.texture;

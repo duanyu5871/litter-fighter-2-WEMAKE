@@ -17,12 +17,6 @@ export class __BillboardNode extends __ObjectNode implements IBillboardNode {
   override get inner() {
     return this._inner as Sprite;
   }
-  set geometry(v: BufferGeometry<NormalBufferAttributes>) {
-    throw new Error("Method not implemented.");
-  }
-  get geometry(): BufferGeometry<NormalBufferAttributes> {
-    throw new Error("Method not implemented.");
-  }
   get material(): SpriteMaterial {
     return this.inner.material;
   }
