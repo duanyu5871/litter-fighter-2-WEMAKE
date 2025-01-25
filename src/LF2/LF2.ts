@@ -53,7 +53,7 @@ const cheat_info_pair = (n: Defines.Cheats) =>
     },
   ] as const;
 
-export default class LF2 implements IKeyboardCallback, IPointingsCallback {
+export class LF2 implements IKeyboardCallback, IPointingsCallback {
   static readonly TAG = "LF2";
   private _disposed: boolean = false;
   private _callbacks = new Callbacks<ILf2Callback>();
@@ -726,27 +726,9 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
   on_loading_content(content: string, progress: number) {
     this._callbacks.emit("on_loading_content")(content, progress);
   }
+
   broadcast(message: string): void {
     this._callbacks.emit("on_broadcast")(message);
-  }
-
-  get_layout_tree(layout: Layout): ILayoutTreeNode;
-  get_layout_tree(layout?: Layout | undefined): ILayoutTreeNode | null;
-  get_layout_tree(
-    layout: Layout | undefined = last(this._layout_stacks),
-  ): ILayoutTreeNode | null {
-    if (!layout) return null;
-    const ret: ILayoutTreeNode = {
-      name: layout.name
-        ? `name: ${layout.name}`
-        : layout.id
-          ? `id: ${layout.id}`
-          : "<no_name>",
-      children: layout.children.map((v) => this.get_layout_tree(v)),
-      inst: layout,
-    };
-    if (ret.children?.length === 0) delete ret.children;
-    return ret;
   }
 
   switch_difficulty(): void {
@@ -755,30 +737,7 @@ export default class LF2 implements IKeyboardCallback, IPointingsCallback {
     const next = (difficulty % max) + 1;
     this.difficulty = next;
   }
+}
 
-  list_writable_properties(
-    prototype: any = this,
-    ret: (PropertyDescriptor & { name: string })[] = [],
-  ) {
-    const obj = Object.getOwnPropertyDescriptors(prototype);
-    for (const name in obj) {
-      if (name.startsWith("_")) continue;
-      const desc = obj[name];
-      const { value, writable, enumerable, set, get } = desc;
-      if (set && typeof get?.call(this) === "number")
-        ret.push({ name, ...desc });
-      else if (writable && enumerable && is_num(value))
-        ret.push({ name, ...desc });
-    }
-    const next = Object.getPrototypeOf(prototype);
-    if (next.constructor.name !== "Object") {
-      this.list_writable_properties(next, ret);
-    }
-    return ret;
-  }
-}
-interface ILayoutTreeNode {
-  name: string;
-  children?: ILayoutTreeNode[];
-  inst: Layout;
-}
+
+export default LF2

@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { Button } from "./Component/Buttons/Button";
 import CharacterSelect from "./Component/CharacterSelect";
 import Combine from "./Component/Combine";
-import { Input, InputNumber, InputRef } from "./Component/Input";
+import { Cross } from "./Component/Icons/Cross";
+import { InputNumber, InputRef } from "./Component/Input";
 import Select from "./Component/Select";
 import Show from "./Component/Show";
 import TeamSelect from "./Component/TeamSelect";
@@ -17,9 +18,9 @@ import { IStagePhaseInfo } from "./LF2/defines/IStagePhaseInfo";
 import { Defines } from "./LF2/defines/defines";
 import Entity from "./LF2/entity/Entity";
 import Stage from "./LF2/stage/Stage";
-import { useLocalNumber, useLocalString } from "./useLocalStorage";
-import { Cross } from "./Component/Icons/Cross";
+import list_writable_properties, { TProperty } from "./LF2/utils/list_writable_properties";
 import { is_num, is_str } from "./LF2/utils/type_check";
+import { useLocalNumber, useLocalString } from "./useLocalStorage";
 const bot_controllers: { [x in string]?: (e: Entity) => BaseController } = {
   OFF: (e: Entity) => new InvalidController("", e),
   "enemy chaser": (e: Entity) => new BotController("", e),
@@ -54,8 +55,7 @@ export default function SettingsRows(props: ISettingsRowsProps) {
   const [difficulty, set_difficulty] = useState<Defines.Difficulty>(
     lf2?.difficulty ?? Defines.Difficulty.Difficult,
   );
-  const [world_writable_properties, set_world_writable_properties] =
-    useState<{ name: string; value: number }[]>();
+  const [world_properties, set_world_properties] = useState<TProperty[]>();
   useEffect(() => {
     set_bgm(lf2?.sounds.bgm() ?? "");
     set_difficulty(lf2?.difficulty ?? Defines.Difficulty.Difficult);
@@ -81,7 +81,7 @@ export default function SettingsRows(props: ISettingsRowsProps) {
       }),
       lf2.world.callbacks.add({ on_stage_change }),
     ];
-    set_world_writable_properties(lf2.world.list_writable_properties());
+    set_world_properties(list_writable_properties(lf2.world));
     return () => a.forEach((b) => b());
   }, [lf2]);
 
@@ -259,7 +259,7 @@ export default function SettingsRows(props: ISettingsRowsProps) {
         className="settings_row"
         show={props.show_world_tuning !== false}
       >
-        {world_writable_properties?.map((v, idx) => {
+        {world_properties?.map((v, idx) => {
           let ref: InputRef | null = null;
           const rec = world_tuning_title_map[v.name]
           const r = Array.isArray(rec) ? rec : is_str(rec) ? [rec] as const : [v.name] as const;

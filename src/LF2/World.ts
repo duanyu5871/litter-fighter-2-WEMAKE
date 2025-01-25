@@ -34,12 +34,14 @@ export interface IBounding {
   near: number;
   far: number;
 }
+
 export class World {
   static readonly TAG = "World";
   readonly lf2: LF2;
   readonly _callbacks = new Callbacks<IWorldCallbacks>();
   itr_shaking: number = Defines.DEFAULT_ITR_SHAKING;
   itr_motionless: number = Defines.DEFAULT_ITR_MOTIONLESS;
+
   fvy_f: number = 1;
   fvx_f: number = 1;
   fvz_f: number = 1;
@@ -151,9 +153,6 @@ export class World {
     return this._gravity;
   }
   set gravity(v: number) {
-    this.set_gravity(v);
-  }
-  set_gravity(v: number) {
     const prev = this._gravity;
     if (float_equal(v, prev)) return;
     this._gravity = v;
@@ -649,12 +648,8 @@ export class World {
   }
 
   private _paused = false;
-  get paused() {
-    return this._paused;
-  }
-  set paused(v: boolean) {
-    this.set_paused(v);
-  }
+  get paused() { return this._paused; }
+  set paused(v: boolean) { this.set_paused(v); }
 
   set_paused(v: boolean) {
     if (this._paused === v) return;
@@ -680,28 +675,5 @@ export class World {
     this.del_entities(Array.from(this.entities));
     this.scene.dispose();
     this.bg_render.release();
-  }
-
-  list_writable_properties(
-    prototype: any = this,
-    ret: { name: string; value: number }[] = [],
-  ) {
-    const obj = Object.getOwnPropertyDescriptors(prototype);
-    for (const name in obj) {
-      if (name.startsWith("_")) continue;
-      const desc = obj[name];
-      const { value, writable, enumerable, set, get } = desc;
-      if (set && get) {
-        const value = get.call(this);
-        if (is_num(value)) ret.push({ name, value });
-      } else if (writable && enumerable && is_num(value)) {
-        ret.push({ name, value });
-      }
-    }
-    const next = Object.getPrototypeOf(prototype);
-    if (next.constructor.name !== "Object") {
-      this.list_writable_properties(next, ret);
-    }
-    return ret;
   }
 }
