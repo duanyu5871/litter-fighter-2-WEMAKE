@@ -7,9 +7,9 @@ import { ArrowLeft } from "../../Component/Icons/ArrowLeft";
 import { ArrowRight } from "../../Component/Icons/ArrowRight";
 import { ArrowUp } from "../../Component/Icons/ArrowUp";
 import { Cross } from "../../Component/Icons/Cross";
-import { Workspaces } from "../../splittings/src";
-import { DomAdapter } from "../../splittings/src/dom/DomAdapter";
-
+import { Workspaces } from "splittings/dist/es/splittings";
+import { DomAdapter } from "splittings-dom/dist/es/splittings-dom";
+import "splittings-dom/dist/es/splittings-dom.css"
 export default function WorkspacesDemo() {
   const ref_container = useRef<HTMLDivElement>(null)
   const [views, set_views] = useState<React.ReactNode[]>([]);
