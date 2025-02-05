@@ -8,7 +8,7 @@ function make_ice_piece(victim: Entity, id: string): IOpointInfo {
     kind: 0,
     x: victim.frame.centerx,
     y: victim.frame.centery / 2,
-    oid: Defines.BuiltIn_OID.Broken_weapon,
+    oid: Defines.BuiltIn_OID.BrokenWeapon,
     action: { id, facing: random_get([-1, 1]) },
     dvx: random_in(-2, 2),
     dvz: random_in(-2, 2),

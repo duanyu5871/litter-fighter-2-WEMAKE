@@ -28,11 +28,11 @@ export default function cook_bdy(bdy?: Partial<IBdyInfo>): void {
               .and((c) =>
                 c
                   .add(C_Val.ItrKind, "==", ItrKind.WeaponSwing)
-                  .or(C_Val.AttackerOID, "==", Defines.BuiltIn_OID.Henry_Arrow1)
+                  .or(C_Val.AttackerOID, "==", Defines.BuiltIn_OID.HenryArrow1)
                   .or(
                     C_Val.AttackerOID,
                     "==",
-                    Defines.BuiltIn_OID.Rudolf_Weapon,
+                    Defines.BuiltIn_OID.RudolfWeapon,
                   ),
               ),
           ),

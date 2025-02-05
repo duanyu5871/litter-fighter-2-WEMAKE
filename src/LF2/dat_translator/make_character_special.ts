@@ -11,32 +11,41 @@ export function make_character_special(data: IEntityData) {
   if (num_id >= 1 && num_id <= 29) {
     add_entity_groups(data.base, Defines.EntityGroup.Regular);
   }
-  if (data.id === "52") {
-    data.base.ce = 3;
-    data.base.armor = {
-      fireproof: 1,
-      antifreeze: 1,
-      hit_sounds: ["data/002.wav.mp3"],
-      type: "times",
-      toughness: 3,
-    };
-  } else if (data.id === "51") {
-    data.base.ce = 2;
-  } else if (data.id === "37") {
-    data.base.armor = {
-      hit_sounds: ["data/085.wav.mp3"],
-      type: "times",
-      toughness: 3,
-    };
-  } else if (data.id === "6") {
-    data.base.armor = {
-      hit_sounds: ["data/085.wav.mp3"],
-      type: "times",
-      toughness: 1,
-    };
-  } else if (data.id === "30" || data.id === "31") {
-    add_entity_groups(data.base, Defines.EntityGroup._3000);
+  switch (data.id) {
+    case Defines.BuiltIn_OID.Julian:
+      data.base.ce = 3;
+      data.base.armor = {
+        fireproof: 1,
+        antifreeze: 1,
+        hit_sounds: ["data/002.wav.mp3"],
+        type: "times",
+        toughness: 3,
+      };
+      break;
+    case Defines.BuiltIn_OID.Firzen:
+      data.base.ce = 2;
+      break;
+    case Defines.BuiltIn_OID.Knight:
+      data.base.armor = {
+        hit_sounds: ["data/085.wav.mp3"],
+        type: "times",
+        toughness: 3,
+      };
+      break;
+    case Defines.BuiltIn_OID.Louis:
+      data.base.armor = {
+        hit_sounds: ["data/085.wav.mp3"],
+        type: "times",
+        toughness: 1,
+      };
+      make_louis_data(data)
+      break;
+    case Defines.BuiltIn_OID.Bandit: 
+    case Defines.BuiltIn_OID.Hunter:
+      add_entity_groups(data.base, Defines.EntityGroup._3000);
+      break;
+    case Defines.BuiltIn_OID.Rudolf:
+      make_rudolf_data(data);
+      break;
   }
-  if (data.id === "6") make_louis_data(data);
-  if (data.id === "5") make_rudolf_data(data);
 }

@@ -107,11 +107,11 @@ export function make_ball_data(
         frame.acc_y = -0.25;
         frame.vym = SpeedMode.AccTo;
         switch (datIndex.id) {
-          case Defines.BuiltIn_OID.Firzen_chasef:
-          case Defines.BuiltIn_OID.Firzen_chasei:
+          case Defines.BuiltIn_OID.FirzenChasef:
+          case Defines.BuiltIn_OID.FirzenChasei:
             frame.on_hit_ground = { id: "60" };
             break;
-          case Defines.BuiltIn_OID.Jan_chase:
+          case Defines.BuiltIn_OID.JanChase:
             frame.on_hit_ground = { id: "10" };
             break;
         }
@@ -121,7 +121,7 @@ export function make_ball_data(
         frame.opoint = frame.opoint || [];
         frame.opoint.push({
           kind: OpointKind.Normal,
-          oid: Defines.BuiltIn_OID.Bat_chase,
+          oid: Defines.BuiltIn_OID.BatChase,
           x: frame.centerx,
           y: frame.centery,
           action: { id: "0" },
@@ -146,19 +146,19 @@ export function make_ball_data(
         frame.opoint = frame.opoint || [];
         frame.opoint.push({
           kind: OpointKind.Normal,
-          oid: Defines.BuiltIn_OID.Firen_flame,
+          oid: Defines.BuiltIn_OID.FirenFlame,
           x: frame.centerx,
           y: 26,
           action: { id: "109" },
         }, {
           kind: OpointKind.Normal,
-          oid: Defines.BuiltIn_OID.Freeze_column,
+          oid: Defines.BuiltIn_OID.FreezeColumn,
           x: 135,
           y: 26,
           action: { id: "100" },
         }, {
           kind: OpointKind.Normal,
-          oid: Defines.BuiltIn_OID.Freeze_column,
+          oid: Defines.BuiltIn_OID.FreezeColumn,
           x: -45,
           y: 26,
           action: { id: "100", facing: Defines.FacingFlag.Backward },
@@ -181,7 +181,7 @@ export function make_ball_data(
         frame.opoint = frame.opoint || [];
         frame.opoint.push({
           kind: OpointKind.Normal,
-          oid: Defines.BuiltIn_OID.Julian_ball,
+          oid: Defines.BuiltIn_OID.JulianBall,
           x: frame.centerx,
           y: frame.centery,
           dvx: 8,
@@ -254,8 +254,8 @@ function firzen_disater_start(frame: IFrameInfo, x: number = frame.centerx, y: n
   frame.opoint.push({
     kind: OpointKind.Normal,
     oid: [
-      Defines.BuiltIn_OID.Firzen_chasef,
-      Defines.BuiltIn_OID.Firzen_chasei
+      Defines.BuiltIn_OID.FirzenChasef,
+      Defines.BuiltIn_OID.FirzenChasei
     ],
     x,
     y,
@@ -268,7 +268,7 @@ function jan_chaseh_start(frame: IFrameInfo, x: number = frame.centerx, y: numbe
   frame.opoint = frame.opoint || [];
   frame.opoint.push({
     kind: OpointKind.Normal,
-    oid: Defines.BuiltIn_OID.Jan_chaseh,
+    oid: Defines.BuiltIn_OID.JanChaseh,
     x,
     y,
     action: { id: "0" },
@@ -279,7 +279,7 @@ function jan_chase_start(frame: IFrameInfo, x: number = frame.centerx, y: number
   frame.opoint = frame.opoint || [];
   frame.opoint.push({
     kind: OpointKind.Normal,
-    oid: Defines.BuiltIn_OID.Jan_chase,
+    oid: Defines.BuiltIn_OID.JanChase,
     x, y, dvy: 6,
     action: { id: "0" },
     multi: { type: OpointMultiEnum.AccordingEnemies, min: 1 },

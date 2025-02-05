@@ -131,8 +131,8 @@ export default function cook_itr(itr?: Partial<IItrInfo>) {
         .or((c) =>
           c
             .add(C_Val.VictimType, "==", EntityEnum.Weapon)
-            .and(C_Val.VictimOID, "!=", Defines.BuiltIn_OID.Henry_Arrow1)
-            .and(C_Val.VictimOID, "!=", Defines.BuiltIn_OID.Rudolf_Weapon),
+            .and(C_Val.VictimOID, "!=", Defines.BuiltIn_OID.HenryArrow1)
+            .and(C_Val.VictimOID, "!=", Defines.BuiltIn_OID.RudolfWeapon),
         )
         .done();
       return;
@@ -224,7 +224,7 @@ export default function cook_itr(itr?: Partial<IItrInfo>) {
         .wrap((c) =>
           c
             .add(C_Val.VictimType, "==", EntityEnum.Weapon)
-            .and(C_Val.VictimOID, "!=", Defines.BuiltIn_OID.Henry_Arrow1)
+            .and(C_Val.VictimOID, "!=", Defines.BuiltIn_OID.HenryArrow1)
             .and(C_Val.VictimOID, "!=", Defines.BuiltIn_OID.Rudolf),
         )
         .or((c) =>
