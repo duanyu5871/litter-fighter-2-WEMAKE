@@ -40,51 +40,36 @@ export function make_frames(
     frame_regexp,
   )) {
     let _content = content;
-    const bdy_list = take_sections<IBdyInfo>(
-      _content,
-      "bdy:",
-      "bdy_end:",
-      (r) => (_content = r),
-    );
+    const r1 = take_sections<IBdyInfo>(_content, "bdy:", "bdy_end:");
+    const bdy_list = r1.sections;
+    _content = r1.remains;
+
     for (const bdy of bdy_list) cook_bdy(bdy);
 
-    const itr_list = take_sections<IItrInfo>(
-      _content,
-      "itr:",
-      "itr_end:",
-      (r) => (_content = r),
-    );
+    const r2 = take_sections<IItrInfo>(_content, "itr:", "itr_end:");
+    const itr_list = r2.sections;
+    _content = r2.remains;
+
     for (const itr of itr_list) cook_itr(itr);
 
-    const opoint_list = take_sections<IOpointInfo>(
-      _content,
-      "opoint:",
-      "opoint_end:",
-      (r) => (_content = r),
-    );
+    const r3 = take_sections<IOpointInfo>(_content, "opoint:", "opoint_end:");
+    const opoint_list = r3.sections;
+    _content = r3.remains;
     for (const opoint of opoint_list) cook_opoint(opoint);
 
-    const wpoint_list = take_sections<IWpointInfo>(
-      _content,
-      "wpoint:",
-      "wpoint_end:",
-      (r) => (_content = r),
-    );
+    const r4 = take_sections<IWpointInfo>(_content, "wpoint:", "wpoint_end:");
+    const wpoint_list = r4.sections;
+    _content = r4.remains;
     for (const wpoint of wpoint_list) cook_wpoint(wpoint);
 
-    const bpoint_list = take_sections(
-      _content,
-      "bpoint:",
-      "bpoint_end:",
-      (r) => (_content = r),
-    );
+    const r5 = take_sections(_content, "bpoint:", "bpoint_end:");
+    const bpoint_list = r5.sections;
+    _content = r5.remains;
 
-    const cpoint_list = take_sections<ICpointInfo>(
-      _content,
-      "cpoint:",
-      "cpoint_end:",
-      (r) => (_content = r),
-    );
+
+    const r6 = take_sections<ICpointInfo>(_content, "cpoint:", "cpoint_end:");
+    const cpoint_list = r6.sections;
+    _content = r6.remains;
     for (const cpoint of cpoint_list) cook_cpoint(cpoint);
 
     const fields: any = {};
@@ -292,7 +277,7 @@ export function make_frames(
                   C_Val.ItrFall,
                   ">=",
                   Defines.DEFAULT_FALL_VALUE_MAX -
-                    Defines.DEFAULT_FALL_VALUE_DIZZY,
+                  Defines.DEFAULT_FALL_VALUE_DIZZY,
                 )
                 .or(C_Val.ItrKind, "==", ItrKind.MagicFlute)
                 .or(C_Val.ItrKind, "==", ItrKind.MagicFlute2)
