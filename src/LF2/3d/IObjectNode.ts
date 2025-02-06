@@ -2,6 +2,7 @@ import * as THREE from "three";
 import type LF2 from "../LF2";
 import { IBaseNode } from "./IBaseNode";
 import { IQuaternion } from "../ditto/IQuaternion";
+import { IRaycaster } from "./IRaycaster";
 export type ObjectEventKey = "added" | "removed";
 export interface IObjectNode extends IBaseNode {
   readonly is_object_node: true;
@@ -56,11 +57,11 @@ export interface IObjectNode extends IBaseNode {
   set_rgb(r: number, g: number, b: number): this;
   rotation_from_quaternion(q: IQuaternion): this;
   intersects_from_raycaster(
-    raycaster: THREE.Raycaster,
+    raycaster: IRaycaster,
     recursive?: boolean,
   ): THREE.Intersection<THREE.Object3D<THREE.Object3DEventMap>>[];
   intersect_from_raycaster(
-    raycaster: THREE.Raycaster,
+    raycaster: IRaycaster,
     recursive?: boolean,
   ): THREE.Intersection<THREE.Object3D<THREE.Object3DEventMap>>[];
   on(key: ObjectEventKey, fn: () => void): this;

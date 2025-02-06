@@ -73,12 +73,9 @@ export function make_bg_data(
   };
   ret.base.name = ret.base.name.replace(/_/g, " ");
   ret.base.shadow = ret.base.shadow.replace(/.bmp$/, ".png");
-  const blocks = take_blocks(
-    full_str,
-    "layer:",
-    "layer_end",
-    (v) => (full_str = v),
-  );
+  const { blocks, remains } = take_blocks(full_str, "layer:", "layer_end");
+  full_str = remains
+
   let min_y = Defines.CLASSIC_SCREEN_HEIGHT;
   for (const block_str of blocks) {
     const [file, remains] = block_str

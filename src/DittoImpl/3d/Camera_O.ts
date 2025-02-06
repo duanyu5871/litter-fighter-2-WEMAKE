@@ -1,8 +1,9 @@
-import * as THREE from "./_t";
+import * as _T from "./_t";
 import LF2 from "../../LF2/LF2";
 import { __ObjectNode } from "./ObjectNode";
 import { IOrthographicCameraNode } from "../../LF2/3d/IOrthographicCamera";
 import { IQuaternion } from "../../LF2/ditto/IQuaternion";
+import { IRaycaster } from "../../LF2/3d/IRaycaster";
 
 export class __Camera_O_Node
   extends __ObjectNode
@@ -45,12 +46,12 @@ export class __Camera_O_Node
     this.inner.near = v;
   }
 
-  override get inner(): THREE.OrthographicCamera {
-    return this._inner as THREE.OrthographicCamera;
+  override get inner(): _T.OrthographicCamera {
+    return this._inner as _T.OrthographicCamera;
   }
   constructor(lf2: LF2) {
     super(lf2);
-    this._inner = new THREE.OrthographicCamera();
+    this._inner = new _T.OrthographicCamera();
   }
   override apply(): this {
     super.apply();
@@ -75,11 +76,11 @@ export class __Camera_O_Node
     return this;
   }
   world_quaternion(q: IQuaternion): this {
-    this.inner.getWorldQuaternion(q as THREE.Quaternion);
+    this.inner.getWorldQuaternion(q as _T.Quaternion);
     return this;
   }
-  raycaster(r: THREE.Raycaster, coords: THREE.Vector2): this {
-    r.setFromCamera(coords, this.inner);
+  raycaster(r: IRaycaster, coords: _T.Vector2): this {
+    (r as _T.Raycaster).setFromCamera(coords, this.inner);
     return this;
   }
 }

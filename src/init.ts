@@ -33,4 +33,5 @@ Ditto.setup({
   Vector3: THREE.Vector3,
   Vector2: THREE.Vector2,
   Quaternion: THREE.Quaternion,
+  Raycaster: THREE.Raycaster,
 });

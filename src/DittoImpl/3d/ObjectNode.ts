@@ -1,9 +1,10 @@
-import * as THREE from "./_t";
+import * as _T from "./_t";
 import { IBaseNode } from "../../LF2/3d/IBaseNode";
 import { IObjectNode, ObjectEventKey } from "../../LF2/3d/IObjectNode";
 import LF2 from "../../LF2/LF2";
 import { is_num } from "../../LF2/utils/type_check";
 import { IQuaternion } from "../../LF2/ditto/IQuaternion";
+import { IRaycaster } from "../../LF2/3d/IRaycaster";
 
 export class __ObjectNode implements IObjectNode {
   readonly is_object_node = true;
@@ -11,7 +12,7 @@ export class __ObjectNode implements IObjectNode {
   readonly lf2: LF2;
   protected _parent?: IObjectNode;
   protected _children: IBaseNode[] = [];
-  protected _inner: THREE.Object3D;
+  protected _inner: _T.Object3D;
   protected _rgb: [number, number, number] = [255, 255, 255];
   protected _w?: number;
   protected _h?: number;
@@ -19,9 +20,9 @@ export class __ObjectNode implements IObjectNode {
   protected _c_y: number = 0;
   protected _c_z: number = 0;
   protected _opacity: number = 1;
-  constructor(lf2: LF2, inner?: THREE.Object3D) {
+  constructor(lf2: LF2, inner?: _T.Object3D) {
     this.lf2 = lf2;
-    this._inner = inner || new THREE.Object3D();
+    this._inner = inner || new _T.Object3D();
   }
   get scale_x(): number {
     return this._inner.scale.x;
@@ -110,7 +111,7 @@ export class __ObjectNode implements IObjectNode {
     this.set_rgb(r, g, b);
     this.apply();
   }
-  get inner(): THREE.Object3D {
+  get inner(): _T.Object3D {
     return this._inner;
   }
 
@@ -224,20 +225,20 @@ export class __ObjectNode implements IObjectNode {
     return this;
   }
   rotation_from_quaternion(q: IQuaternion): this {
-    this.inner.rotation.setFromQuaternion(q as THREE.Quaternion);
+    this.inner.rotation.setFromQuaternion(q as _T.Quaternion);
     return this;
   }
   intersects_from_raycaster(
-    raycaster: THREE.Raycaster,
+    raycaster: IRaycaster,
     recursive?: boolean,
-  ): THREE.Intersection<THREE.Object3D<THREE.Object3DEventMap>>[] {
-    return raycaster.intersectObjects(this.inner.children, recursive);
+  ): _T.Intersection<_T.Object3D<_T.Object3DEventMap>>[] {
+    return (raycaster as _T.Raycaster).intersectObjects(this.inner.children, recursive);
   }
   intersect_from_raycaster(
-    raycaster: THREE.Raycaster,
+    raycaster: IRaycaster,
     recursive?: boolean,
-  ): THREE.Intersection<THREE.Object3D<THREE.Object3DEventMap>>[] {
-    return raycaster.intersectObject(this.inner, recursive);
+  ): _T.Intersection<_T.Object3D<_T.Object3DEventMap>>[] {
+    return (raycaster as _T.Raycaster).intersectObject(this.inner, recursive);
   }
   on(key: ObjectEventKey, fn: () => void) {
     this._inner.addEventListener(key, fn);

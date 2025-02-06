@@ -1,4 +1,3 @@
-import * as THREE from "three";
 import { Warn } from "../Log";
 import { ILf2Callback } from "./ILf2Callback";
 import { PlayerInfo } from "./PlayerInfo";
@@ -30,15 +29,15 @@ import { WeaponsHelper } from "./WeaponsHelper";
 import Ditto from "./ditto";
 import Entity from "./entity/Entity";
 import { Factory } from "./entity/Factory";
+import { ICookedLayoutInfo } from "./layout/ICookedLayoutInfo";
 import { ILayoutInfo } from "./layout/ILayoutInfo";
 import Layout from "./layout/Layout";
-import { ICookedLayoutInfo } from "./layout/ICookedLayoutInfo";
 import DatMgr from "./loader/DatMgr";
 import get_import_fallbacks from "./loader/get_import_fallbacks";
 import { ImageMgr } from "./loader/loader";
 import Stage from "./stage/Stage";
 import { PIO } from "./utils/PromisesInOne";
-import { fisrt, last } from "./utils/container_help";
+import { fisrt } from "./utils/container_help";
 import { arithmetic_progression } from "./utils/math/arithmetic_progression";
 import float_equal from "./utils/math/float_equal";
 import { random_get, random_in, random_take } from "./utils/math/random";
@@ -62,6 +61,9 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
   private _loaded: boolean = false;
   private _difficulty: Defines.Difficulty = Defines.Difficulty.Difficult;
   private _infinity_mp: boolean = false;
+  private _mouse_on_layouts = new Set<Layout>();
+  private _pointer_raycaster = new Ditto.Raycaster();
+  private _pointer_vec_2 = new Ditto.Vector2();
   get callbacks(): NoEmitCallbacks<ILf2Callback> {
     return this._callbacks;
   }
@@ -241,10 +243,6 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
     }
     return ret;
   }
-
-  private _mouse_on_layouts = new Set<Layout>();
-  private _pointer_raycaster = new THREE.Raycaster();
-  private _pointer_vec_2 = new Ditto.Vector2();
 
   on_pointer_move(e: IPointingEvent) {
     const { layout } = this;

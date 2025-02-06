@@ -21,6 +21,7 @@ import type { IPointings } from "./pointings";
 import BaseSounds from "./sounds/BaseSounds";
 import type ISounds from "./sounds/ISounds";
 import type { IZip } from "./zip/IZip";
+import { IRaycaster } from "../3d/IRaycaster";
 export * from "./cache";
 export * from "./fullscreen";
 export * from "./IRender";
@@ -64,6 +65,7 @@ export interface IDittoPack {
   BillboardNode: new (lf2: LF2, info?: IBillboardInfo) => IBillboardNode;
   Vector3: new (x?: number, y?: number, z?: number) => IVector3;
   Vector2: new (x?: number, y?: number) => IVector2;
+  Raycaster: new () => IRaycaster;
   Quaternion: new (x?: number, y?: number, z?: number, w?: number) => IQuaternion;
 }
 
