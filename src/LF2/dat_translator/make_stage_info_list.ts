@@ -12,24 +12,18 @@ export function make_stage_info_list(full_str: string): IStageInfo[] | void {
     "<phase_end><stage_end><stage>",
   );
   const stage_infos: IStageInfo[] = [];
-  for (let stage_str of take_blocks(
-    full_str,
-    "<stage>",
-    "<stage_end>",
-    (v) => (full_str = v),
-  )) {
+  const r_0 = take_blocks(full_str, "<stage>", "<stage_end>")
+  full_str = r_0.remains;
+  for (let stage_str of r_0.blocks) {
     const stage_info: IStageInfo = {
       bg: "0",
       id: "",
       name: "",
       phases: [],
     };
-    for (let phase_str of take_blocks(
-      stage_str,
-      "<phase>",
-      "<phase_end>",
-      (v) => (stage_str = v),
-    )) {
+    const r1 = take_blocks(stage_str, "<phase>", "<phase_end>")
+    stage_str = r1.remains
+    for (let phase_str of r1.blocks) {
       const phase_info: IStagePhaseInfo = {
         bound: 0,
         desc: "",
