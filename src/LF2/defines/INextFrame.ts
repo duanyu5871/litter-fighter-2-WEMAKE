@@ -1,3 +1,4 @@
+import { FacingFlag } from "./FacingFlag";
 import type { IExpression } from "./IExpression";
 import type { IFrameInfo } from "./IFrameInfo";
 export interface INextFrameResult {
@@ -26,7 +27,7 @@ export interface INextFrame {
    *
    * @type {FacingFlag}
    */
-  facing?: number;
+  facing?: number | FacingFlag;
 
   /**
    * 进入帧的判断表达式

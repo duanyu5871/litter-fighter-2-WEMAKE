@@ -32,7 +32,7 @@ export enum FacingFlag {
   OpposingCatcher = 5,
 
   /**
-   * 反向跟随控制器
+   * 与控制器相反
    *
    * - entity.controller.LR == -1时，向右
    * - entity.controller.LR == 1时，向左

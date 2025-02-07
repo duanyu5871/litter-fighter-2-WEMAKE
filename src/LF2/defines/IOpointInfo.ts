@@ -1,4 +1,4 @@
-import type { Defines, INextFrame, TNextFrame } from ".";
+import type { FacingFlag, INextFrame, TNextFrame } from ".";
 import type { OpointKind } from "./OpointKind";
 import { OpointMultiEnum } from "./OpointMultiEnum";
 export interface IOpointInfo {
@@ -8,7 +8,7 @@ export interface IOpointInfo {
    * @memberof IOpointInfo
    * @see {OpointKind}
    */
-  kind: number;
+  kind: number | OpointKind;
 
   /**
    * 实体产生的X坐标（相对frame矩形左上角）
@@ -42,7 +42,6 @@ export interface IOpointInfo {
    * - 在WEMAKE中：
    *    - action是INextFrame(或多个INextFrame)
    *
-   * @see {INextFrame}
    * @type {TNextFrame}
    */
   action: TNextFrame;
@@ -66,11 +65,10 @@ export interface IOpointInfo {
    *    - multi即代表生成数量，默认为1，若小于1，则什么都不会生成。
    *    - 生成物的朝向见通过action的facing决定
    *
-   * @see {INextFrame.facing}
    * @see {FacingFlag}
    * @type {?number}
    */
-  multi?: number | { type: OpointMultiEnum; min: number };
+  multi?: number | { type: OpointMultiEnum; min: number } | FacingFlag;
 
   max_hp?: number;
   hp?: number;
