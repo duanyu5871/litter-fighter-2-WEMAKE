@@ -304,19 +304,3 @@ const world_tuning_title_map: { [name in string]?: string | readonly [string] | 
   itr_shaking: "受伤摇晃时长",
   itr_motionless: "命中停顿时长",
 }
-
-const empty_bgm_list = [""];
-function useBgmList(lf2?: LF2 | null): string[] {
-  const [bgm_list, set_bgm_list] = useState<string[]>(empty_bgm_list);
-  useEffect(() => {
-    if (!lf2) return;
-    lf2.bgms.need_load && lf2.bgms.load();
-    lf2.bgms.need_load || set_bgm_list(["", ...(lf2.bgms.data ?? [])]);
-    const lf2_callbacks: ILf2Callback = {
-      on_bgms_loaded: (names) => set_bgm_list(["", ...names]),
-      on_bgms_clear: () => set_bgm_list(empty_bgm_list),
-    };
-    return lf2.callbacks.add(lf2_callbacks);
-  }, [lf2]);
-  return bgm_list;
-}
