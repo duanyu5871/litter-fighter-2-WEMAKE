@@ -546,6 +546,9 @@ module.exports = function (webpackEnv) {
                   },
                 },
                 "sass-loader",
+                {
+                  sassOptions: { api: "modern-compiler" }
+                }
               ),
             },
             // "file" loader makes sure those assets get served by WebpackDevServer.
