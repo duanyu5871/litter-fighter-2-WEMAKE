@@ -46,7 +46,7 @@ export class BallController extends BaseController {
       // }
       const p1 = this.entity.position;
       const p2 = this.entity.chasing_target.position;
-      const b = new Ditto.Vector2(p2.x - p1.x, p2.z - p1.z).normalize();
+      // const b = new Ditto.Vector2(p2.x - p1.x, p2.z - p1.z).normalize();
       const a = new Ditto.Vector2(this.entity.velocity.x, this.entity.velocity.z).normalize();
       if (this.entity.hp > 0) {
         this.entity.merge_velocities();

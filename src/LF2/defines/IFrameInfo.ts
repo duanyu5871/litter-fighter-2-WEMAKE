@@ -1,5 +1,7 @@
 import type { TNextFrame } from ".";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { INextFrame } from "../defines/INextFrame";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { Defines } from "./defines";
 import type { IBdyInfo } from "./IBdyInfo";
 import type { IBpointInfo } from "./IBpointInfo";
@@ -35,11 +37,11 @@ export interface IFrameInfo {
   acc_z?: number;
 
   /** @see {SpeedMode} */
-  vxm?: number;
+  vxm?: number | SpeedMode;
   /** @see {SpeedMode} */
-  vym?: number;
+  vym?: number | SpeedMode;
   /** @see {SpeedMode} */
-  vzm?: number;
+  vzm?: number | SpeedMode;
 
   centerx: number;
   centery: number;

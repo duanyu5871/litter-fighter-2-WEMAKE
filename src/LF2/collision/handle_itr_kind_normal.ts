@@ -36,7 +36,7 @@ function fall(collision: ICollision) {
     victim.next_frame = { id: victim.data.indexes.critical_hit[direction][0] };
 }
 export function handle_itr_kind_normal(collision: ICollision) {
-  const { itr, bdy, attacker, victim, a_cube, b_cube } = collision;
+  const { itr, attacker, victim, a_cube, b_cube } = collision;
   switch (itr.effect) {
     case ItrEffect.Fire:
     case ItrEffect.MFire1:

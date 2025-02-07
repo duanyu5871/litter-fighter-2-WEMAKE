@@ -85,8 +85,6 @@ export default function SettingsRows(props: ISettingsRowsProps) {
     return () => a.forEach((b) => b());
   }, [lf2]);
 
-  const bgm_list = useBgmList(lf2);
-
   useEffect(() => {
     if (!lf2) return;
     if (!bgm) lf2.sounds.stop_bgm();

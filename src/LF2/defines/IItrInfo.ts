@@ -2,6 +2,7 @@ import type { TAction, TNextFrame } from ".";
 import type { IExpression } from "./IExpression";
 import type { IQube } from "./IQube";
 import type { IQubePair } from "./IQubePair";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { Defines } from "./defines";
 
 export interface IItrInfo extends IQube {

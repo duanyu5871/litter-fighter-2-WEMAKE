@@ -1,4 +1,5 @@
-import type { FacingFlag, INextFrame, TNextFrame } from ".";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { FacingFlag, TNextFrame } from ".";
 import type { OpointKind } from "./OpointKind";
 import { OpointMultiEnum } from "./OpointMultiEnum";
 export interface IOpointInfo {
@@ -68,7 +69,7 @@ export interface IOpointInfo {
    * @see {FacingFlag}
    * @type {?number}
    */
-  multi?: number | { type: OpointMultiEnum; min: number } | FacingFlag;
+  multi?: number | { type: OpointMultiEnum; min: number };
 
   max_hp?: number;
   hp?: number;

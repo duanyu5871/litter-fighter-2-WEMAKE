@@ -224,11 +224,3 @@ export class PlayerInfo {
     return this._info.keys[name];
   }
 }
-interface IScoreInfo {
-  kill: number;
-  attack: number;
-  hp_lost: number;
-  mp_usage: number;
-  picking: number;
-  status: string;
-}

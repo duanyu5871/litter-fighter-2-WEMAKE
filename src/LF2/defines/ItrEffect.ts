@@ -1,4 +1,6 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { IBdyInfo } from "./IBdyInfo";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { IItrInfo } from "./IItrInfo";
 export enum ItrEffect {
   /**

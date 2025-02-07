@@ -196,54 +196,7 @@ export default function EditorView(props: IEditorViewProps) {
     if (zip) load_zip(zip_name, zip)
   }, [zip_name, zip])
 
-  const on_click_item = (node: TTreeNode) => {
-    if (node.children) {
-      set_opens((old = []) => {
-        const ret = old.filter(v => v !== node.key)
-        if (ret.length === old.length)
-          ret.push(node.key)
-        return ret.length ? ret : void 0;
-      })
-    } else if (node.data?.type) {
-      switch (node.data?.type) {
-        case EntityEnum.Character:
-        case EntityEnum.Weapon:
-        case EntityEnum.Ball:
-        case EntityEnum.Entity:
-          zip?.file(node.key)?.json().then(r => {
-            const editing_node = ref_editing_node.current;
-            const editing_data = ref_editing_data.current;
-            if (zip && editing_node && editing_data) {
-              zip.set(editing_node.key, JSON.stringify(editing_data))
-            }
-            set_editing_node(node)
-            set_editing_data(r)
-          });
-          break;
-        default: {
-          zip?.file(node.key)?.text().then(r => {
-            const editing_node = ref_editing_node.current;
-            const editing_data = ref_editing_data.current;
-            if (zip && editing_node && editing_data) {
-              zip.set(editing_node.key, JSON.stringify(editing_data))
-            }
-            set_editing_node(node)
-            set_editing_data(void 0)
-          });
-        }
-      }
-    } else if (node.key.endsWith('.txt') || node.key.endsWith('.json')) {
-      zip?.file(node.key)?.text().then(r => {
-        const editing_node = ref_editing_node.current;
-        const editing_data = ref_editing_data.current;
-        if (zip && editing_node && editing_data) {
-          zip.set(editing_node.key, JSON.stringify(editing_data))
-        }
-        set_editing_node(node)
-        set_editing_data(void 0)
-      });
-    }
-  }
+
   useEffect(() => {
     const container = board_wrapper;
     if (!container || !open) return;
@@ -378,6 +331,54 @@ export default function EditorView(props: IEditorViewProps) {
   const ref_adapter = useRef<DomAdapter>()
   const [cells, set_cells] = useState<Readonly<(HTMLElement | undefined)[]>>([])
   const views = useMemo(() => {
+    const on_click_item = (node: TTreeNode) => {
+      if (node.children) {
+        set_opens((old = []) => {
+          const ret = old.filter(v => v !== node.key)
+          if (ret.length === old.length)
+            ret.push(node.key)
+          return ret.length ? ret : void 0;
+        })
+      } else if (node.data?.type) {
+        switch (node.data?.type) {
+          case EntityEnum.Character:
+          case EntityEnum.Weapon:
+          case EntityEnum.Ball:
+          case EntityEnum.Entity:
+            zip?.file(node.key)?.json().then(r => {
+              const editing_node = ref_editing_node.current;
+              const editing_data = ref_editing_data.current;
+              if (zip && editing_node && editing_data) {
+                zip.set(editing_node.key, JSON.stringify(editing_data))
+              }
+              set_editing_node(node)
+              set_editing_data(r)
+            });
+            break;
+          default: {
+            zip?.file(node.key)?.text().then(r => {
+              const editing_node = ref_editing_node.current;
+              const editing_data = ref_editing_data.current;
+              if (zip && editing_node && editing_data) {
+                zip.set(editing_node.key, JSON.stringify(editing_data))
+              }
+              set_editing_node(node)
+              set_editing_data(void 0)
+            });
+          }
+        }
+      } else if (node.key.endsWith('.txt') || node.key.endsWith('.json')) {
+        zip?.file(node.key)?.text().then(r => {
+          const editing_node = ref_editing_node.current;
+          const editing_data = ref_editing_data.current;
+          if (zip && editing_node && editing_data) {
+            zip.set(editing_node.key, JSON.stringify(editing_data))
+          }
+          set_editing_node(node)
+          set_editing_data(void 0)
+        });
+      }
+    }
     return (
       cells.map(cell => {
         if (!cell) return null;
@@ -461,7 +462,10 @@ export default function EditorView(props: IEditorViewProps) {
         return null
       })
     )
-  }, [base_data_view, cells, change_flag, editing_data, editing_frame, filters_tree, frame_list_view, itr_prefab_list_view, on_click_item, opens, pic_list_view, state.flat, state.img, state.json, state.mp3, state.others, tab])
+  }, [base_data_view, cells, change_flag, editing_data, editing_frame, zip,
+    filters_tree, frame_list_view, itr_prefab_list_view, opens, pic_list_view,
+    state.flat, state.img, state.json, state.mp3, state.others, tab
+  ])
 
   useEffect(() => {
     const container = ref_wprkspace_container.current
