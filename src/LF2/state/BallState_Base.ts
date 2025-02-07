@@ -3,7 +3,6 @@ import { FrameBehavior } from "../defines/FrameBehavior";
 import { ICollision } from "../defines/ICollision";
 import { State } from "../defines/State";
 import Entity from "../entity/Entity";
-import { turn_face } from "../entity/face_helper";
 import { is_character, is_weapon } from "../entity/type_check";
 import State_Base from "./State_Base";
 

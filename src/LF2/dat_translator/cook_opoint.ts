@@ -1,6 +1,5 @@
+import { FacingFlag, IOpointInfo } from "../defines";
 import { is_num, not_zero_num } from "../utils/type_check";
-import { IOpointInfo } from "../defines";
-import { Defines } from "../defines/defines";
 import { get_next_frame_by_raw_id } from "./get_the_next";
 import { take } from "./take";
 
@@ -13,14 +12,14 @@ export default function cook_opoint(opoint: IOpointInfo) {
     const facing = take(opoint, "facing");
     if (is_num(facing)) {
       act.facing =
-        facing % 2 ? Defines.FacingFlag.Backward : Defines.FacingFlag.None;
+        facing % 2 ? FacingFlag.Backward : FacingFlag.None;
       if (facing >= 2 && facing <= 19) {
-        act.facing = Defines.FacingFlag.Right;
+        act.facing = FacingFlag.Right;
       } else if (facing >= 20) {
         opoint.multi = Math.floor(facing / 10);
       }
     } else {
-      act.facing = Defines.FacingFlag.None;
+      act.facing = FacingFlag.None;
     }
     opoint.action = act;
   }

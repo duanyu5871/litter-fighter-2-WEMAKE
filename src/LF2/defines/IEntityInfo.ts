@@ -1,5 +1,4 @@
 import type { IEntityPictureInfo } from "./IEntityPictureInfo";
-import type { Defines } from "./defines";
 import { IArmorInfo } from "./IArmorInfo";
 import type { IOpointInfo } from "./IOpointInfo";
 

@@ -1,7 +1,6 @@
-import { ItrKind } from "../defines";
+import { FacingFlag, ItrKind } from "../defines";
 import { CollisionVal as C_Val } from "../defines/CollisionVal";
 import { EntityEnum } from "../defines/EntityEnum";
-import { EntityVal } from "../defines/EntityVal";
 import { FrameBehavior } from "../defines/FrameBehavior";
 import { IDatIndex } from "../defines/IDatIndex";
 import { IEntityData } from "../defines/IEntityData";
@@ -161,7 +160,7 @@ export function make_ball_data(
           oid: Defines.BuiltIn_OID.FreezeColumn,
           x: -45,
           y: 26,
-          action: { id: "100", facing: Defines.FacingFlag.Backward },
+          action: { id: "100", facing: FacingFlag.Backward },
         });
         break;
       case FrameBehavior.Bat:

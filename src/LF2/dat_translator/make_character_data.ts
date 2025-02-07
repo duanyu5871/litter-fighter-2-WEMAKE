@@ -1,4 +1,4 @@
-import { IEntityInfo, IFrameInfo, TNextFrame } from "../defines";
+import { FacingFlag, IEntityInfo, IFrameInfo, TNextFrame } from "../defines";
 import { IEntityData } from "../defines/IEntityData";
 import { BdyKind } from "../defines/BdyKind";
 import { EntityEnum } from "../defines/EntityEnum";
@@ -29,7 +29,7 @@ function push_next_frame(
   if (Array.isArray(src)) return [...src, ...list];
   return [src, ...list];
 }
-const { FacingFlag, WeaponType, State } = Defines;
+const { WeaponType, State } = Defines;
 const set_hit_turn_back = (frame: IFrameInfo, back_frame_id: string = "") => {
   frame.hit = frame.hit || {};
   frame.hit.B = { id: back_frame_id, wait: "i", facing: FacingFlag.Backward };
@@ -182,7 +182,7 @@ export function make_character_data(
               .add(EntityVal.RequireSuperPunch, "==", 1)
               .done(),
           },
-          { id: ["60", "65"], facing: Defines.FacingFlag.Ctrl },
+          { id: ["60", "65"], facing: FacingFlag.Ctrl },
         ]; // punch
         frame.hit.j = { id: "210" }; // jump
         frame.hit.d = { id: "110" }; // defend
@@ -568,7 +568,7 @@ export function make_character_data(
               .add(EntityVal.RequireSuperPunch, "==", 1)
               .done(),
           },
-          { id: ["60", "65"], facing: Defines.FacingFlag.Ctrl },
+          { id: ["60", "65"], facing: FacingFlag.Ctrl },
         ]; // punch
         frame.hit.j = { id: "210" }; // jump
         frame.hit.d = { id: "110" }; // defend
@@ -647,7 +647,7 @@ export function make_character_data(
                 .add(EntityVal.RequireSuperPunch, "==", 1)
                 .done(),
             },
-            { id: ["60", "65"], facing: Defines.FacingFlag.Ctrl },
+            { id: ["60", "65"], facing: FacingFlag.Ctrl },
           ]; // punch
           frame.hit.j = { id: "210" }; // jump
           frame.hit.d = { id: "110" }; // defend

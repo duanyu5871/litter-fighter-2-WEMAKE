@@ -1,4 +1,4 @@
-import { IItrInfo, ItrEffect, ItrKind } from "../defines";
+import { FacingFlag, IItrInfo, ItrEffect, ItrKind } from "../defines";
 import { BdyKind } from "../defines/BdyKind";
 import { CollisionVal as C_Val } from "../defines/CollisionVal";
 import { Defines } from "../defines/defines";
@@ -256,6 +256,6 @@ export default function cook_itr(itr?: Partial<IItrInfo>) {
   if (is_num(caughtact))
     itr.caughtact = {
       ...get_next_frame_by_raw_id(caughtact),
-      facing: Defines.FacingFlag.OpposingCatcher,
+      facing: FacingFlag.OpposingCatcher,
     };
 }

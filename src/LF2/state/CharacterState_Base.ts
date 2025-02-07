@@ -1,5 +1,5 @@
 import { collisions_keeper } from "../collision/CollisionKeeper";
-import { Defines, IAction_Defend, IFrameInfo, IItrInfo, INextFrame, ItrKind } from "../defines";
+import { Defines, IFrameInfo, IItrInfo, INextFrame, ItrKind } from "../defines";
 import { BdyKind } from "../defines/BdyKind";
 import { ICollision } from "../defines/ICollision";
 import { ItrEffect } from "../defines/ItrEffect";

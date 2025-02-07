@@ -1,6 +1,9 @@
 import { Board, FactoryEnum, Gaia, ToolEnum } from "@fimagine/writeboard";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { DomAdapter } from "splittings-dom/dist/es/splittings-dom";
+import "splittings-dom/dist/es/splittings-dom.css";
+import { Slot, Workspaces } from "splittings/dist/es/splittings";
 import { Button } from "../Component/Buttons/Button";
 import { Checkbox } from "../Component/Checkbox";
 import Combine from "../Component/Combine";
@@ -20,9 +23,6 @@ import { ILf2Callback } from "../LF2/ILf2Callback";
 import LF2 from "../LF2/LF2";
 import { traversal } from "../LF2/utils/container_help/traversal";
 import { is_num } from "../LF2/utils/type_check";
-import { Slot, Workspaces } from "splittings/dist/es/splittings";
-import { DomAdapter } from "splittings-dom/dist/es/splittings-dom";
-import "splittings-dom/dist/es/splittings-dom.css"
 import open_file from "../Utils/open_file";
 import { shared_ctx } from './Context';
 import { EditorShapeEnum } from "./EditorShapeEnum";

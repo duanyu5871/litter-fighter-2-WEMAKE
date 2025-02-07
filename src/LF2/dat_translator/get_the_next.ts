@@ -1,5 +1,5 @@
 import { INextFrame } from "../defines/INextFrame";
-import { Defines } from "../defines/defines";
+import { Defines, FacingFlag } from "../defines";
 
 export function cook_next_frame_mp_hp(
   ret: INextFrame,
@@ -26,7 +26,7 @@ export const get_next_frame_by_raw_id = (
   if ("" + id === "1000") return { id: Defines.FrameId.Gone };
   if ("" + id === "999") return { id: Defines.FrameId.Auto };
   if ("" + id === "-999")
-    return { id: Defines.FrameId.Auto, facing: Defines.FacingFlag.Backward };
+    return { id: Defines.FrameId.Auto, facing: FacingFlag.Backward };
   if ("" + id === "0") return {};
 
   if (typeof id === "number") {
@@ -36,12 +36,12 @@ export const get_next_frame_by_raw_id = (
     }
     if (id <= -1100 && id >= -1299) {
       // 外部需要处理隐身逻辑。
-      return { id: Defines.FrameId.Auto, facing: Defines.FacingFlag.Backward };
+      return { id: Defines.FrameId.Auto, facing: FacingFlag.Backward };
     }
     if (id < 0) {
       const ret: INextFrame = {
         id: "" + -id,
-        facing: Defines.FacingFlag.Backward,
+        facing: FacingFlag.Backward,
       };
       cook_next_frame_mp_hp(ret, type, frame_mp_hp_map);
       return ret;
@@ -50,7 +50,7 @@ export const get_next_frame_by_raw_id = (
   if (typeof id === "string" && id.startsWith("-")) {
     const ret: INextFrame = {
       id: id.substring(1),
-      facing: Defines.FacingFlag.Backward,
+      facing: FacingFlag.Backward,
     };
     cook_next_frame_mp_hp(ret, type, frame_mp_hp_map);
     return ret;

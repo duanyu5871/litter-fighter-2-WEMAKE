@@ -1,4 +1,3 @@
-import Entity from "../../entity/Entity";
 import IEntityCallbacks from "../../entity/IEntityCallbacks";
 import { is_character } from "../../entity/type_check";
 import { LayoutComponent } from "./LayoutComponent";

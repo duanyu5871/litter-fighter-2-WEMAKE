@@ -1,12 +1,7 @@
-import {
-  BufferGeometry,
-  NormalBufferAttributes,
-  Sprite,
-  SpriteMaterial,
-} from "./_t";
+import { __ObjectNode } from ".";
 import { IBillboardInfo, IBillboardNode } from "../../LF2/3d";
 import LF2 from "../../LF2/LF2";
-import { __ObjectNode } from ".";
+import { Sprite, SpriteMaterial } from "./_t";
 
 export class __BillboardNode extends __ObjectNode implements IBillboardNode {
   readonly is_billboard_node = true;

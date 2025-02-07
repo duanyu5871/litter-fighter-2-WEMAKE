@@ -2,9 +2,9 @@ import { useCallback, useEffect, useMemo, useRef } from "react";
 import { __Render } from "../../DittoImpl";
 import FPS from "../../LF2/base/FPS";
 import { Behavior } from "../../LF2/behavior";
+import { Cat } from "./Cat";
 import { Creature } from "./Creature";
 import { Ground } from "./Ground";
-import { Cat } from "./Cat";
 const CANVAS_PADDING = 100;
 const GROUND_W = 500;
 const GROUND_H = 500;
@@ -16,12 +16,6 @@ human.name = "You";
 human.color = "white";
 human.pos.x = GROUND_W / 2;
 human.pos.y = GROUND_H / 2;
-
-enum CatBehaviorEnum {
-  escaping_from_human = "escaping from you",
-  interested_in_human = "interested in you",
-  looking_at_human = "looking at you",
-}
 
 enum HumanBehaviorEnum {
   Moving = "moving",

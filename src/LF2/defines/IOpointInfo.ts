@@ -67,7 +67,7 @@ export interface IOpointInfo {
    *    - 生成物的朝向见通过action的facing决定
    *
    * @see {INextFrame.facing}
-   * @see {Defines.FacingFlag}
+   * @see {FacingFlag}
    * @type {?number}
    */
   multi?: number | { type: OpointMultiEnum; min: number };

@@ -2,9 +2,8 @@ import classNames from "classnames";
 import { Button } from "../../Component/Buttons/Button";
 import Combine, { ICombineProps } from "../../Component/Combine";
 import { Plus } from '../../Component/Icons/Plus';
-import { Space } from "../../Component/Space";
 import { Text } from "../../Component/Text";
-import styles from "./style.module.scss"
+import styles from "./style.module.scss";
 
 export interface IWorkspaceColumnViewProps extends Omit<ICombineProps, "title"> {
   title?: React.ReactNode;

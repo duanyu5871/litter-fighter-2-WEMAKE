@@ -1,5 +1,4 @@
-import { IIconProps, Base } from "./Base";
-import { Cross } from "./Cross";
+import { Base, IIconProps } from "./Base";
 
 export function CircleCross(props: IIconProps) {
   return (

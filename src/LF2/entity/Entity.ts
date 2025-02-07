@@ -5,6 +5,7 @@ import { IBounding } from "../World";
 import { Callbacks, new_id, new_team, type NoEmitCallbacks } from "../base";
 import { BaseController } from "../controller/BaseController";
 import {
+  FacingFlag,
   ICpointInfo,
   IFrameInfo,
   IItrInfo,
@@ -1663,27 +1664,27 @@ export default class Entity {
   /**
    * 进入下一帧时，需要处理朝向
    *
-   * @see {Defines.FacingFlag}
-   * @param facing 目标朝向, 可参考Defines.FacingFlag
+   * @see {FacingFlag}
+   * @param facing 目标朝向, 可参考FacingFlag
    * @param frame 帧
    * @returns 返回新的朝向
    */
   handle_facing_flag(facing: number, frame: IFrameInfo): -1 | 1 {
     switch (facing) {
-      case Defines.FacingFlag.Ctrl:
+      case FacingFlag.Ctrl:
         return this.ctrl?.LR || this.facing;
-      case Defines.FacingFlag.AntiCtrl:
+      case FacingFlag.AntiCtrl:
         return this.ctrl?.LR
           ? turn_face(this.ctrl.LR)
           : this.facing;
-      case Defines.FacingFlag.SameAsCatcher:
+      case FacingFlag.SameAsCatcher:
         return this._catcher?.facing || this.facing;
-      case Defines.FacingFlag.OpposingCatcher:
+      case FacingFlag.OpposingCatcher:
         return turn_face(this._catcher?.facing) || this.facing;
-      case Defines.FacingFlag.Backward:
+      case FacingFlag.Backward:
         return turn_face(this.facing);
-      case Defines.FacingFlag.Left:
-      case Defines.FacingFlag.Right:
+      case FacingFlag.Left:
+      case FacingFlag.Right:
         return facing;
       default:
         return this.facing;

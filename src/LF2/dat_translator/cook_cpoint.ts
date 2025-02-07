@@ -1,4 +1,4 @@
-import { ICpointInfo } from "../defines";
+import { FacingFlag, ICpointInfo } from "../defines";
 import { Defines } from "../defines/defines";
 import { is_num, is_str, not_zero_num } from "../utils/type_check";
 import { get_next_frame_by_raw_id } from "./get_the_next";
@@ -33,7 +33,7 @@ export function cook_cpoint(unsure_cpoint: ICpointInfo): void {
   if (is_str(vaction) || is_num(vaction)) {
     unsure_cpoint.vaction = {
       ...get_next_frame_by_raw_id(vaction),
-      facing: Defines.FacingFlag.SameAsCatcher,
+      facing: FacingFlag.SameAsCatcher,
     };
   }
 }

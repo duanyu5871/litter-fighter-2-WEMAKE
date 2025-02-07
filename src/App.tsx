@@ -116,7 +116,6 @@ function App() {
     "",
   );
   const [is_fullscreen, _set_is_fullscreen] = useState(false);
-  const [gravity, _set_gravity] = useLocalNumber<number>("gravity", 0);
   const [sync_render, set_sync_render] = useLocalNumber<0 | 1 | 2>(
     "sync_render",
     0,
@@ -171,7 +170,6 @@ function App() {
     lf2.sounds.set_sound_muted(sound_muted);
     lf2.sounds.set_sound_volume(sound_volume);
     lf2.world.sync_render = sync_render;
-    _set_gravity(lf2.world.gravity);
     _set_cheat_1(lf2.is_cheat_enabled(Defines.Cheats.LF2_NET));
     _set_cheat_2(lf2.is_cheat_enabled(Defines.Cheats.HERO_FT));
     _set_cheat_3(lf2.is_cheat_enabled(Defines.Cheats.GIM_INK));
@@ -196,7 +194,6 @@ function App() {
         lf2.world.callbacks.add({
           on_stage_change: (s) => _set_bg_id(s.bg.id),
           on_pause_change: (v) => _set_paused(v),
-          on_gravity_change: (v) => _set_gravity(v),
           on_is_sync_render_changed: (v) => set_sync_render(v),
         }),
         lf2.callbacks.add({

@@ -1,4 +1,5 @@
 import {
+  FacingFlag,
   IBdyInfo,
   ICpointInfo,
   IFramePictureInfo,
@@ -147,12 +148,12 @@ export function make_frames(
       if (dircontrol === 1) {
         frame.hit.B = add_next_frame(frame.hit.B, {
           wait: "i",
-          facing: Defines.FacingFlag.Backward,
+          facing: FacingFlag.Backward,
         });
       } else {
         frame.hit.F = add_next_frame(frame.hit.F, {
           wait: "i",
-          facing: Defines.FacingFlag.Backward,
+          facing: FacingFlag.Backward,
         });
       }
     }
@@ -253,7 +254,7 @@ export function make_frames(
             oid: "217",
             dvy: 4,
             dvx: 8,
-            action: { id: "auto", facing: Defines.FacingFlag.Backward },
+            action: { id: "auto", facing: FacingFlag.Backward },
             multi: 2,
           },
           {

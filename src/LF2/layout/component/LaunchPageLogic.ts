@@ -1,5 +1,4 @@
 import { ISpriteNode } from "../../3d/ISpriteNode";
-import __SpriteNode from "../../../DittoImpl/3d/SpriteNode";
 import NumberAnimation from "../../animation/NumberAnimation";
 import SequenceAnimation from "../../animation/SequenceAnimation";
 import { SineAnimation } from "../../animation/SineAnimation";
@@ -7,7 +6,6 @@ import Invoker from "../../base/Invoker";
 import GameKey from "../../defines/GameKey";
 import Ditto from "../../ditto";
 import ease_linearity from "../../ease_method/ease_linearity";
-import LF2 from "../../LF2";
 import { TPicture } from "../../loader/loader";
 import { make_arr } from "../../utils/array/make_arr";
 import Layout from "../Layout";

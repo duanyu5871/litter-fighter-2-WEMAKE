@@ -1,16 +1,14 @@
 import { useContext, useEffect, useMemo, useState } from "react";
 import { Button } from "../../Component/Buttons/Button";
 import Combine from "../../Component/Combine";
-import { Plus } from '../../Component/Icons/Plus';
 import { Cross } from '../../Component/Icons/Cross';
+import { Plus } from '../../Component/Icons/Plus';
 import { Input, InputNumber, InputNumberProps, InputProps } from "../../Component/Input";
+import Select, { ISelectProps } from "../../Component/Select";
 import { TextArea } from "../../Component/TextArea";
 import Titled, { ITitledProps } from "../../Component/Titled";
-import Select, { ISelectProps } from "../../Component/Select";
 import { IZipObject } from "../../LF2/ditto";
 import { shared_ctx } from "../Context";
-import { Space } from "../../Component/Space";
-
 
 export function useEditor<O extends {}>(value: O, _label_style: React.CSSProperties = { width: 50, textAlign: 'right' }) {
   const label_style: React.CSSProperties = useMemo(() => (

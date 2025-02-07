@@ -1,6 +1,6 @@
 import { Board, IFactory } from "@fimagine/writeboard";
 import VirtualList from "rc-virtual-list";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { Input } from "../../Component/Input";
 import { Space } from "../../Component/Space";
 import { Text } from "../../Component/Text";
@@ -10,7 +10,7 @@ import { IZip } from "../../LF2/ditto";
 import { EditorShapeEnum } from "../EditorShapeEnum";
 import { FrameDrawer, FrameDrawerData } from "../FrameDrawer";
 import { WorkspaceColumnView } from "../WorkspaceColumnView";
-import styles from "./styles.module.scss"
+import styles from "./styles.module.scss";
 export interface IFrameListViewProps {
   data?: IEntityData;
   zip?: IZip;

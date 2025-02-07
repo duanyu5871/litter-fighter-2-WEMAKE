@@ -1,4 +1,3 @@
-import type { Defines } from "./defines";
 import type { IExpression } from "./IExpression";
 import type { IFrameInfo } from "./IFrameInfo";
 export interface INextFrameResult {
@@ -25,7 +24,7 @@ export interface INextFrame {
    * 下帧转向
    * @date 2/23/2024 - 1:37:05 PM
    *
-   * @type {Defines.FacingFlag}
+   * @type {FacingFlag}
    */
   facing?: number;
 
