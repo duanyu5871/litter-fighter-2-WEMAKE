@@ -25,7 +25,8 @@ export function FrameListView(props: IFrameListViewProps) {
   const ref_next_frame = useRef<IFrameInfo>()
   if (!data) return void 0;
   const on_frame_change = (frame: IFrameInfo, data: IEntityData) => {
-    const board = ref_board.current!;
+    const board = ref_board.current;
+    if(!board) return;
     const shape_data = factory.newShapeData(EditorShapeEnum.LF2_FRAME) as FrameDrawerData;
     shape_data.frame = frame;
     shape_data.zip = zip;

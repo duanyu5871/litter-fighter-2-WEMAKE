@@ -1,8 +1,6 @@
 .app {
   .game_contiainer {
     position: fixed;
-    width   : 794px;
-    height  : 450px;
 
     .game_canvas {
       position   : absolute;
@@ -14,6 +12,7 @@
       display    : block;
       user-select: none;
     }
+
     .game_overlay {
       position      : absolute;
       left          : 0px;
@@ -22,8 +21,13 @@
       bottom        : 0px;
       pointer-events: none;
       user-select   : none;
+
+      &.gone {
+        display: none;
+      }
     }
   }
+
   .game_overlay_ui {
     position       : fixed;
     right          : 10px;
@@ -34,7 +38,7 @@
     justify-content: flex-end;
     align-items    : flex-start;
   }
-  
+
   .game_overlay_ui button {
     pointer-events: all;
   }

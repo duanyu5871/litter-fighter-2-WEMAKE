@@ -75,13 +75,13 @@ export const ToggleImgButton: React.FC<IToggleImgProps> = React.forwardRef<
       <div className={styles.inner_div}>
         <img
           draggable={false}
-          className={`${styles.inner_0} ${"" + checked}`}
+          className={classNames(styles.inner_0, styles["" + checked])}
           src={unchecked_src}
           alt={alt_0}
         />
         <img
           draggable={false}
-          className={`${styles.inner_1} ${"" + checked}`}
+          className={classNames(styles.inner_1, styles["" + checked])}
           src={checked_src}
           alt={alt_1}
         />

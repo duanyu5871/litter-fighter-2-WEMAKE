@@ -140,7 +140,8 @@ export default function GamePad(props: IGamePadProps) {
     const find_touch_index = (touch_id: number) => {
       return touches.findIndex((v) => v.id === touch_id);
     };
-    const pad_text = ref_pad_text.current!;
+    const pad_text = ref_pad_text.current;
+    if(!pad_text) return;
     const handle_touchs = () => {
       const curr_pressings = new Map([
         [GameKey.L, false],
@@ -226,7 +227,8 @@ export default function GamePad(props: IGamePadProps) {
     const find_touch_index = (touch_id: number) => {
       return touches.findIndex((v) => v.id === touch_id);
     };
-    const pad_text = ref_pad_text.current!;
+    const pad_text = ref_pad_text.current;
+    if(!pad_text) return;
     const handle_touchs = () => {
       const curr_pressings = new Map([
         [GameKey.a, false],

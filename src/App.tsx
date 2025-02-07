@@ -49,6 +49,7 @@ import {
 import classNames from "classnames";
 import { DomAdapter } from "splittings-dom/dist/es/splittings-dom";
 import { Slot, Workspaces } from "splittings/dist/es/splittings";
+import { createPortal } from "react-dom";
 
 const loading_img = new LoadingImg();
 function App() {
@@ -157,8 +158,11 @@ function App() {
     { id: "", name: "无页面" },
   ]);
   useEffect(() => {
-    const ele_canvas = _canvas_ref.current!;
-    const ele_overlay = _overlay_ref.current!;
+    const ele_canvas = _canvas_ref.current;
+    if (!ele_canvas) return;
+
+    const ele_overlay = _overlay_ref.current;
+    if (!ele_overlay) return;
 
     if (!lf2_ref.current) {
       const lf2 = ((window as any).lf2 = lf2_ref.current = new LF2(ele_canvas));
@@ -374,7 +378,6 @@ function App() {
   useEffect(() => {
     const ele = _game_contiainer_ref.current;
     if (!ele) return;
-
     if (layout_id) {
       loading_img.hide();
       const tid = setTimeout(() => {
@@ -385,7 +388,7 @@ function App() {
     } else {
       ele.style.opacity = "0";
       const tid = setTimeout(() => {
-        loading_img.set_element(ref_loading_img.current!)
+        loading_img.set_element(ref_loading_img.current)
       }, 1000);
       return () => clearTimeout(tid);
     }
@@ -393,16 +396,42 @@ function App() {
 
   const ref_root = useRef<HTMLDivElement>(null)
 
+  const [[workspace, adpater], set_workspace] =
+    useState<[Workspaces | null, DomAdapter | null]>([null, null])
+
   useEffect(() => {
-    const adpater = new DomAdapter(ref_root.current!)
+    if (!ref_root.current) return;
+    const adpater = new DomAdapter(ref_root.current)
     const workspace = new Workspaces(adpater)
-    workspace.add(0, "right", { id: 'panel' })
+    workspace.on_leaves_changed = () => {
+
+    }
     workspace.confirm()
-    return () => workspace.release()
+    set_workspace([workspace, adpater])
+    return () => {
+      workspace.root.release()
+      workspace.release()
+    }
   }, [])
 
+  useEffect(() => {
+    if (!workspace) return;
+    workspace.del("panel")?.confirm();
+    if (control_panel_visible) {
+      switch (debug_ui_pos) {
+        case "left": workspace.add(0, debug_ui_pos, { id: "panel" }); break;
+        case "right": workspace.add(0, debug_ui_pos, { id: "panel" }); break;
+        case "top": workspace.add(0, "up", { id: "panel" }); break;
+        case "bottom": workspace.add(0, "down", { id: "panel" }); break;
+      }
+    }
+    workspace.confirm()
+  }, [workspace, debug_ui_pos, control_panel_visible])
+
+
   return (
-    <div className={styles.app} ref={ref_root}>
+    <div className={styles.app}>
+      <div style={{ position: 'fixed', width: '100vw', height: '100vh' }} ref={ref_root} />
       <div className={styles.game_contiainer} ref={_game_contiainer_ref}>
         <canvas
           ref={_canvas_ref}
@@ -413,9 +442,8 @@ function App() {
           draggable={false}
         />
         <div
-          className={styles.game_overlay}
           ref={_overlay_ref}
-          style={{ display: !game_overlay ? "none" : void 0 }}
+          className={classNames(styles.game_overlay, { [styles.gone]: !game_overlay })}
         />
         <GamePad player_id={touch_pad_on} lf2={lf2} />
         <div className={styles.game_overlay_ui}>
@@ -822,8 +850,6 @@ function App() {
           show_world_tuning={showing_panel === "world_tuning"}
         />
       </Show.Div>
-
-
       <DatViewer open={dat_viewer_open} onClose={() => set_dat_viewer_open(false)} />
       <EditorView
         open={editor_open}

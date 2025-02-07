@@ -14,7 +14,8 @@ export default function WorkspacesDemo() {
   const ref_container = useRef<HTMLDivElement>(null)
   const [views, set_views] = useState<React.ReactNode[]>([]);
   useEffect(() => {
-    const adapter = new DomAdapter(ref_container.current!)
+    if(!ref_container.current) return;
+    const adapter = new DomAdapter(ref_container.current)
     const workspaces = new Workspaces(adapter)
     // const indexes: number[] = []
     // for (let i = 0; i < 10; ++i) {
