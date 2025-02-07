@@ -1,35 +1,35 @@
-.app {
-  .game_contiainer {
-    position: fixed;
+.game_contiainer {
+  position: absolute;
+  width   : 100%;
+  height  : 100%;
 
-    .game_canvas {
-      position   : absolute;
-      left       : 0px;
-      top        : 0px;
-      width      : 100%;
-      height     : 100%;
-      outline    : none;
-      display    : block;
-      user-select: none;
-    }
+  .game_canvas {
+    position   : absolute;
+    left       : 0px;
+    top        : 0px;
+    width      : 100%;
+    height     : 100%;
+    outline    : none;
+    display    : block;
+    user-select: none;
+  }
 
-    .game_overlay {
-      position      : absolute;
-      left          : 0px;
-      right         : 0px;
-      top           : 0px;
-      bottom        : 0px;
-      pointer-events: none;
-      user-select   : none;
+  .game_overlay {
+    position      : absolute;
+    left          : 0px;
+    right         : 0px;
+    top           : 0px;
+    bottom        : 0px;
+    pointer-events: none;
+    user-select   : none;
 
-      &.gone {
-        display: none;
-      }
+    &.gone {
+      display: none;
     }
   }
 
-  .game_overlay_ui {
-    position       : fixed;
+  .debug_pannel {
+    position       : absolute;
     right          : 10px;
     top            : 10px;
     pointer-events : none;
@@ -39,13 +39,19 @@
     align-items    : flex-start;
   }
 
-  .game_overlay_ui button {
+  .debug_pannel button {
     pointer-events: all;
   }
 }
 
 .loading_img {
-  opacity: 0;
+  opacity    : 0;
+  transition : opacity 1000ms;
+  object-fit : none;
+  user-select: none;
+  position   : absolute;
+  margin     : auto;
+  display    : block;
 }
 
 .app>* {
@@ -96,30 +102,12 @@
   resize: none;
 }
 
-.debug_ui_left {
-  left  : 0px;
-  height: 100vh;
-}
-
-.debug_ui_right {
-  right : 0px;
-  height: 100vh;
-}
-
-.debug_ui_top {
-  top  : 0px;
-  width: 100vw;
-}
-
-.debug_ui_bottom {
-  bottom: 0px;
-  width : 100vw;
-}
-
 .debug_ui {
-  position        : fixed;
-  max-height      : 100vh;
-  max-width       : 100vw;
+  position        : absolute;
+  height          : 100%;
+  width           : 100%;
+  max-height      : 100%;
+  max-width       : 100%;
   display         : flex;
   flex-direction  : column;
   background-color: #10206c;

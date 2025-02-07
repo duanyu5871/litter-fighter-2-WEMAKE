@@ -11,11 +11,22 @@ import { __ObjectNode } from "./ObjectNode";
 export class __SceneNode extends __ObjectNode implements ISceneNode {
   readonly is_scene_node = true;
   protected _cameras = new Set<IOrthographicCameraNode>();
-  protected _renderer: THREE.WebGLRenderer;
-
-  constructor(lf2: LF2, canvas: HTMLCanvasElement) {
+  protected _renderer?: THREE.WebGLRenderer;
+  constructor(lf2: LF2) {
     super(lf2, new THREE.Scene());
-    this._renderer = new THREE.WebGLRenderer({ canvas });
+  }
+  set_canvas(canvas: HTMLCanvasElement | null | undefined) {
+    if (this._renderer) {
+      if (canvas === this._renderer.domElement)
+        return;
+      this._renderer.clear();
+      this._renderer.dispose();
+    }
+    this._renderer = void 0;
+    if (canvas) {
+      this._renderer = new THREE.WebGLRenderer({ canvas });
+      this._renderer.setSize(this.w, this.h, false);
+    }
   }
   override add(...nodes: IObjectNode[]): this {
     super.add(...nodes);
@@ -31,18 +42,19 @@ export class __SceneNode extends __ObjectNode implements ISceneNode {
   }
   override set_size(w?: number | undefined, h?: number | undefined): this {
     super.set_size(w, h);
-    this._renderer.setSize(this.w, this.h, false);
+    this._renderer?.setSize(this.w, this.h, false);
     return this;
   }
   override dispose(): void {
-    this._renderer.clear();
-    this._renderer.dispose();
+    this._renderer?.clear();
+    this._renderer?.dispose();
+    this._renderer = void 0;
     super.dispose();
   }
   render(): void {
     const { inner } = this;
+    if (!this._renderer) return;
     for (const camera of this._cameras) {
-      // FIXME: AVOID ANY
       this._renderer.render(inner, (camera as any).inner);
     }
   }

@@ -7,8 +7,16 @@ import styles from "./game_overlay.module.scss";
 import { Button } from "./Component/Buttons/Button";
 const ele = document.createElement.bind(document);
 export class GameOverlay {
+  release(): void {
+    this.ele_fps.remove();
+    this.ele_ups.remove();
+    this.ele_sps.remove();
+    this.ele_cam_bar.remove();
+    this.ele_loading.remove();
+    this.ele_btn_free_cam.remove();
+  }
   readonly world: World;
-  protected ele: HTMLDivElement | null | undefined;
+  protected ele: HTMLElement | null | undefined;
   protected ele_fps: HTMLElement;
   protected ele_ups: HTMLElement;
   protected ele_sps: HTMLElement;
@@ -36,7 +44,7 @@ export class GameOverlay {
     this.handle_cam_ctrl_pointer_event(e);
   };
 
-  constructor(world: World, container: HTMLDivElement | null | undefined) {
+  constructor(world: World, container: HTMLElement | null | undefined) {
     this.world = world;
     this.ele = container;
     this.ele_fps = ele("span");

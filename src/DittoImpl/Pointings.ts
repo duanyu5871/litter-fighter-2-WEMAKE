@@ -1,34 +1,11 @@
 import Callbacks from "../LF2/base/Callbacks";
 import { NoEmitCallbacks } from "../LF2/base/NoEmitCallbacks";
-import { IPointingEvent, IPointings, IPointingsCallback } from "../LF2/ditto";
+import { IPointings, IPointingsCallback } from "../LF2/ditto";
+import { __PointingEvent } from "./__PointingEvent";
 
-class __PointingEvent implements IPointingEvent {
-  readonly is_pointing_event = true;
-  protected _element: HTMLElement;
-  x: number;
-  y: number;
-  scene_x: number;
-  scene_y: number;
-  constructor(element: HTMLElement, event: PointerEvent | MouseEvent) {
-    this._element = element;
-    this.x = event.offsetX;
-    this.y = event.offsetY;
-    const { width, height } = element.getBoundingClientRect();
-    this.scene_x = (this.x / width) * 2 - 1;
-    this.scene_y = -(this.y / height) * 2 + 1;
-  }
-  init(element: HTMLElement, event: PointerEvent | MouseEvent) {
-    this._element = element;
-    this.x = event.offsetX;
-    this.y = event.offsetY;
-    const { width, height } = element.getBoundingClientRect();
-    this.scene_x = (this.x / width) * 2 - 1;
-    this.scene_y = -(this.y / height) * 2 + 1;
-  }
-}
 export class __Pointings implements IPointings {
   protected _callback = new Callbacks<IPointingsCallback>();
-  protected _ele: HTMLElement;
+  protected _ele?: HTMLElement;
   get callback(): NoEmitCallbacks<IPointingsCallback> {
     return this._callback;
   }
@@ -42,17 +19,27 @@ export class __Pointings implements IPointings {
   private _on_click = (e: MouseEvent) =>
     this._callback.emit("on_click")(new __PointingEvent(this._ele, e));
 
-  constructor(element: HTMLElement) {
-    this._ele = element;
-    element.addEventListener("click", this._on_click);
-    element.addEventListener("pointermove", this._on_pointer_move);
-    element.addEventListener("pointerdown", this._on_pointer_down);
-    element.addEventListener("pointerup", this._on_pointer_up);
-  }
   dispose() {
-    this._ele.removeEventListener("click", this._on_click);
-    this._ele.removeEventListener("pointermove", this._on_pointer_move);
-    this._ele.removeEventListener("pointerdown", this._on_pointer_down);
-    this._ele.removeEventListener("pointerup", this._on_pointer_up);
+    this._ele?.removeEventListener("click", this._on_click);
+    this._ele?.removeEventListener("pointermove", this._on_pointer_move);
+    this._ele?.removeEventListener("pointerdown", this._on_pointer_down);
+    this._ele?.removeEventListener("pointerup", this._on_pointer_up);
+  }
+
+  set_element(element: HTMLElement | null | undefined) {
+    if (this._ele === element) return;
+    this._ele?.removeEventListener("click", this._on_click);
+    this._ele?.removeEventListener("pointermove", this._on_pointer_move);
+    this._ele?.removeEventListener("pointerdown", this._on_pointer_down);
+    this._ele?.removeEventListener("pointerup", this._on_pointer_up);
+    this._ele = void 0;
+    if (element) {
+      this._ele = element;
+      element.addEventListener("click", this._on_click);
+      element.addEventListener("pointermove", this._on_pointer_move);
+      element.addEventListener("pointerdown", this._on_pointer_down);
+      element.addEventListener("pointerup", this._on_pointer_up);
+    }
+
   }
 }

@@ -1,4 +1,10 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import classNames from "classnames";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
+import { DomAdapter } from "splittings-dom/dist/es/splittings-dom";
+import "splittings-dom/dist/es/splittings-dom.css";
+import { Workspaces } from "splittings/dist/es/splittings";
+import styles from "./App.module.scss";
 import { Button } from "./Component/Buttons/Button";
 import { StatusButton } from "./Component/Buttons/StatusButton";
 import { ToggleButton } from "./Component/Buttons/ToggleButton";
@@ -10,6 +16,8 @@ import Show from "./Component/Show";
 import Titled from "./Component/Titled";
 import { useShortcut } from "./Component/useShortcut";
 import DatViewer from "./DatViewer";
+import { __Pointings } from "./DittoImpl";
+import { __SceneNode } from "./DittoImpl/3d";
 import EditorView from "./EditorView";
 import { GameOverlay } from "./GameOverlay";
 import GamePad from "./GamePad";
@@ -38,29 +46,21 @@ import img_btn_2_3 from "./assets/btn_2_3.png";
 import img_btn_3_0 from "./assets/btn_3_0.png";
 import img_btn_3_1 from "./assets/btn_3_1.png";
 import img_btn_3_2 from "./assets/btn_3_2.png";
-import "splittings-dom/dist/es/splittings-dom.css"
 import "./init";
-import styles from "./App.module.scss";
 import {
   useLocalBoolean,
   useLocalNumber,
   useLocalString,
 } from "./useLocalStorage";
-import classNames from "classnames";
-import { DomAdapter } from "splittings-dom/dist/es/splittings-dom";
-import { Slot, Workspaces } from "splittings/dist/es/splittings";
-import { createPortal } from "react-dom";
 
 const loading_img = new LoadingImg();
 function App() {
   const [fullscreen] = useState(() => new Ditto.FullScreen());
-  const _overlay_ref = useRef<HTMLDivElement>(null);
-  const _canvas_ref = useRef<HTMLCanvasElement>(null);
-  const _game_contiainer_ref = useRef<HTMLDivElement>(null);
-
   const [lf2, set_lf2] = useState<LF2 | undefined>()
-  const lf2_ref = useRef<LF2 | undefined>();
-
+  const [ele_game_canvas, set_ele_game_canvas] = useState<HTMLCanvasElement | null>(null)
+  const [ele_game_overlay, set_ele_game_overlay] = useState<HTMLElement | null>(null)
+  const [ele_loading_img, set_ele_loading_img] = useState<HTMLImageElement | null>(null)
+  const ref_lf2 = useRef<LF2 | undefined>();
   const [dat_viewer_open, set_dat_viewer_open] = useState(false);
   const [editor_open, set_editor_open] = useState(false);
   const [game_overlay, set_game_overlay] = useLocalBoolean(
@@ -130,46 +130,47 @@ function App() {
   );
 
   const update_once = () => {
-    const lf2 = lf2_ref.current;
+    const lf2 = ref_lf2.current;
     lf2?.world.set_paused(true);
     lf2?.world.update_once();
   };
 
   useEffect(() => {
-    const lf2 = lf2_ref.current;
+    const lf2 = ref_lf2.current;
     if (!lf2) return;
     lf2.world.indicator_flags = indicator_flags;
   }, [indicator_flags]);
 
   const [fast_forward, set_fast_forward] = useState(false);
   useEffect(() => {
-    const lf2 = lf2_ref.current;
+    const lf2 = ref_lf2.current;
     if (!lf2) return;
     lf2.world.playrate = fast_forward ? 100 : 1;
   }, [fast_forward]);
 
-  const toggle_fullscreen = () => {
+  const toggle_fullscreen = useCallback(() => {
     if (fullscreen.is_fullscreen) fullscreen.exit();
     else fullscreen.enter(document.body.parentElement!);
-  };
+  }, [fullscreen]);
 
   const [layout_id, _set_layout] = useState<string | undefined>(void 0);
   const [layouts, set_layouts] = useState<Readonly<ILayoutInfo>[]>([
     { id: "", name: "无页面" },
   ]);
+
   useEffect(() => {
-    const ele_canvas = _canvas_ref.current;
-    if (!ele_canvas) return;
+    if (!lf2 || !ele_game_overlay) return;
 
-    const ele_overlay = _overlay_ref.current;
-    if (!ele_overlay) return;
+    const ele = new GameOverlay(lf2.world, ele_game_overlay);
+    return () => ele.release()
+  }, [lf2, ele_game_overlay])
 
-    if (!lf2_ref.current) {
-      const lf2 = ((window as any).lf2 = lf2_ref.current = new LF2(ele_canvas));
+  useEffect(() => {
+    if (!ref_lf2.current) {
+      const lf2 = ((window as any).lf2 = ref_lf2.current = new LF2());
       set_lf2(lf2)
-      new GameOverlay(lf2.world, ele_overlay);
     }
-    const lf2 = lf2_ref.current;
+    const lf2 = ref_lf2.current;
     lf2.sounds.set_muted(muted);
     lf2.sounds.set_volume(volume);
     lf2.sounds.set_bgm_muted(bgm_muted);
@@ -245,11 +246,10 @@ function App() {
         }),
       )
       .clear_fn();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const on_click_load_local_zip = () => {
-    const lf2 = lf2_ref.current;
+    const lf2 = ref_lf2.current;
     if (!lf2) return;
     open_file({ accept: ".zip" })
       .then((v) => Ditto.Zip.read_file(v[0]))
@@ -265,7 +265,7 @@ function App() {
   };
 
   const on_click_load_builtin = async () => {
-    const lf2 = lf2_ref.current;
+    const lf2 = ref_lf2.current;
     if (!lf2) return;
     lf2
       .load("data.zip.json")
@@ -280,14 +280,16 @@ function App() {
   };
 
   useEffect(() => {
-    const ele = _game_contiainer_ref.current;
-    if (!ele) return;
+    const ele = ele_game_canvas;
+    const contaner = ele?.parentElement
+    if (!ele || !contaner) return;
     const scale: number = render_fixed_scale || custom_render_fixed_scale;
     const on_resize = () => {
       const screen_w = 794;
       const screen_h = 450;
-      const win_w = Math.floor(window.innerWidth);
-      const win_h = Math.floor(window.innerHeight);
+      const { width, height } = contaner.getBoundingClientRect()
+      const win_w = Math.floor(width);
+      const win_h = Math.floor(height);
       let view_w = win_w;
       let view_h = win_h;
       const s_1 = screen_w / screen_h;
@@ -337,6 +339,7 @@ function App() {
     h_align,
     custom_h_align,
     custom_v_align,
+    ele_game_canvas
   ]);
 
   const player_infos = lf2?.player_infos;
@@ -374,9 +377,8 @@ function App() {
   useShortcut("ctrl+F1", 0, () => set_control_panel_visible((v) => !v));
   // useShortcut('ctrl+F2', 0, () => set_indicator_flags(v => !v));
   useShortcut("ctrl+F3", 0, () => set_game_overlay((v) => !v));
-  const ref_loading_img = useRef<HTMLImageElement>(null);
   useEffect(() => {
-    const ele = _game_contiainer_ref.current;
+    const ele = ele_game_canvas;
     if (!ele) return;
     if (layout_id) {
       loading_img.hide();
@@ -388,31 +390,47 @@ function App() {
     } else {
       ele.style.opacity = "0";
       const tid = setTimeout(() => {
-        loading_img.set_element(ref_loading_img.current)
+        loading_img.set_element(ele_loading_img)
       }, 1000);
       return () => clearTimeout(tid);
     }
-  }, [layout_id]);
-
-  const ref_root = useRef<HTMLDivElement>(null)
-
-  const [[workspace, adpater], set_workspace] =
-    useState<[Workspaces | null, DomAdapter | null]>([null, null])
+  }, [layout_id, ele_game_canvas, ele_loading_img]);
 
   useEffect(() => {
-    if (!ref_root.current) return;
-    const adpater = new DomAdapter(ref_root.current)
-    const workspace = new Workspaces(adpater)
-    workspace.on_leaves_changed = () => {
+    if (!lf2) return;
+    (lf2.pointings as __Pointings).set_element(ele_game_canvas);
+    (lf2.world.scene as __SceneNode).set_canvas(ele_game_canvas);
+  }, [lf2, ele_game_canvas])
 
+  const [ele_root, set_ele_root] = useState<HTMLDivElement | null>(null)
+  const [[workspace, , game_cell, pannel_cell], set_workspace] = useState<
+    [Workspaces | null, DomAdapter | null, HTMLElement | null, HTMLElement | null]
+  >([null, null, null, null])
+
+  useEffect(() => {
+    if (!ele_root) return;
+    const adpater = new DomAdapter(ele_root)
+    const workspace = new Workspaces(adpater)
+    const game_slot = workspace.root;
+    workspace.on_leaves_changed = () => {
+      const pannel_slot = workspace.find("panel")
+      console.log(adpater.get_cell(game_slot))
+      set_workspace([
+        workspace,
+        adpater,
+        adpater.get_cell(game_slot) ?? null,
+        pannel_slot ? adpater.get_cell(pannel_slot) || null : null
+      ])
     }
     workspace.confirm()
-    set_workspace([workspace, adpater])
+    set_workspace([workspace, adpater, null, null])
+
     return () => {
       workspace.root.release()
       workspace.release()
     }
-  }, [])
+
+  }, [ele_root])
 
   useEffect(() => {
     if (!workspace) return;
@@ -429,440 +447,443 @@ function App() {
   }, [workspace, debug_ui_pos, control_panel_visible])
 
 
-  return (
-    <div className={styles.app}>
-      <div style={{ position: 'fixed', width: '100vw', height: '100vh' }} ref={ref_root} />
-      <div className={styles.game_contiainer} ref={_game_contiainer_ref}>
-        <canvas
-          ref={_canvas_ref}
-          tabIndex={-1}
-          className={styles.game_canvas}
-          width={794}
-          height={450}
-          draggable={false}
-        />
-        <div
-          ref={_overlay_ref}
-          className={classNames(styles.game_overlay, { [styles.gone]: !game_overlay })}
-        />
-        <GamePad player_id={touch_pad_on} lf2={lf2} />
-        <div className={styles.game_overlay_ui}>
-          <Show show={lf2?.is_cheat_enabled(Defines.Cheats.GIM_INK) || true}>
-            <ToggleImgButton
-              checked={control_panel_visible}
-              onClick={() => set_control_panel_visible((v) => !v)}
-              src={[img_btn_1_2, img_btn_1_3]}
-            />
-          </Show>
-          <ToggleImgButton
-            checked={is_fullscreen}
-            onClick={() => toggle_fullscreen()}
-            src={[img_btn_3_1, img_btn_3_2]}
-          />
-          <ToggleImgButton
-            checked={bgm_muted}
-            onClick={() => lf2?.sounds?.set_bgm_muted(!bgm_muted)}
-            src={[img_btn_2_0, img_btn_3_0]}
-          />
-          <ToggleImgButton
-            checked={sound_muted}
-            onClick={() => lf2?.sounds?.set_sound_muted(!sound_muted)}
-            src={[img_btn_0_3, img_btn_1_0]}
-          />
-          <Show
-            show={bg_id !== Defines.VOID_BG.id && layout_id !== "ctrl_settings"}
-          >
-            <ToggleImgButton
-              checked={paused}
-              onClick={() => lf2?.world.set_paused(!paused)}
-              src={[img_btn_2_1, img_btn_2_2]}
-            />
-          </Show>
-          <Show
-            show={
-              layouts.length > 1 &&
-              !loading &&
-              layout_id !== "launch" &&
-              layout_id !== "ctrl_settings"
-            }
-          >
-            <ToggleImgButton
-              onClick={() => {
-                lf2?.world.set_paused(true);
-                lf2?.push_layout("ctrl_settings");
-              }}
-              src={[img_btn_1_1, img_btn_1_1]}
-            />
-          </Show>
-          <Show show={layout_id && Number(lf2?.layout_stacks.length) > 1}>
-            <ToggleImgButton
-              shortcut="F4"
-              onClick={() => lf2?.pop_layout()}
-              src={[img_btn_2_3]}
-            />
-          </Show>
-        </div>
-      </div>
-      <Show.Div className={classNames(styles.debug_ui, styles["debug_ui_" + debug_ui_pos])} show={control_panel_visible}>
-        <div className={styles.settings_row}>
-          <Button onClick={on_click_download_zip}>下载数据包</Button>
-          <Button onClick={on_click_load_local_zip} disabled={loading}>
-            加载数据包
-          </Button>
-          <Button onClick={on_click_load_builtin} disabled={loading}>
-            加载内置数据
-          </Button>
-          <Button onClick={() => set_dat_viewer_open(true)}>查看dat文件</Button>
-          <Button onClick={() => set_editor_open(true)}>查看数据包</Button>
-          <Select
-            items={["top", "bottom", "left", "right"] as const}
-            parse={(v) => [v, "位置：" + v]}
-            value={debug_ui_pos}
-            on_changed={v => set_debug_ui_pos(v!)}
-          />
-          <Button
-            style={{ marginLeft: "auto" }}
-            onClick={() => set_control_panel_visible(false)}
-          >
-            ✕
-          </Button>
-        </div>
-        <div className={styles.settings_row}>
-          <Combine>
-            <ToggleButton
-              onChange={(v) => lf2?.sounds.set_muted(v)}
-              value={muted}
-            >
-              <>音量</>
-              <>静音</>
-            </ToggleButton>
-            <Show show={!muted}>
-              <InputNumber
-                precision={0}
-                min={0}
-                max={100}
-                step={1}
-                value={Math.ceil(volume * 100)}
-                onChange={(e) =>
-                  lf2?.sounds.set_volume(Number(e.target.value) / 100)
-                }
-              />
-            </Show>
-            <ToggleButton
-              onChange={(v) => lf2?.sounds.set_bgm_muted(v)}
-              value={bgm_muted}>
-              <>音乐</>
-              <>音乐(已禁用)</>
-            </ToggleButton>
-            <Show show={!bgm_muted}>
-              <InputNumber
-                precision={0}
-                min={0}
-                max={100}
-                step={1}
-                value={Math.ceil(bgm_volume * 100)}
-                onChange={(e) =>
-                  lf2?.sounds.set_bgm_volume(Number(e.target.value) / 100)
-                }
-              />
-            </Show>
-            <ToggleButton
-              onChange={(v) => lf2?.sounds.set_sound_muted(v)}
-              value={sound_muted}>
-              <>音效</>
-              <>音效(已禁用)</>
-            </ToggleButton>
-            <Show show={!sound_muted}>
-              <InputNumber
-                precision={0}
-                min={0}
-                max={100}
-                step={1}
-                value={Math.ceil(sound_volume * 100)}
-                onChange={(e) =>
-                  lf2?.sounds.set_sound_volume(Number(e.target.value) / 100)
-                }
-              />
-            </Show>
-          </Combine>
-        </div>
-        <div className={styles.settings_row}>
-          <Select
-            placeholder="页面"
-            value={layout_id}
-            on_changed={v => lf2?.set_layout(v!)}
-            items={layouts}
-            parse={(o) => [o.id!, o.name]}
-          />
-          <Titled float_label="显示模式">
-            <Select
-              value={render_size_mode}
-              on_changed={v => set_render_size_mode(v!)}
-              placeholder="显示模式"
-              parse={i => [i, i]}
-              items={["fixed", "fill", "cover", "contain"] as const}
-            />
-          </Titled>
-          <Show show={render_size_mode === "fixed"}>
-            <Titled float_label="缩放">
-              <Combine>
-                <Select
-                  value={render_fixed_scale}
-                  on_changed={v => set_render_fixed_scale(v!)}
-                  items={arithmetic_progression(0, 4, 0.5)}
-                  parse={(i) => [i, "✕" + (i || "?")]}
-                />
-                <Show show={!render_fixed_scale}>
-                  <InputNumber
-                    precision={2}
-                    min={0}
-                    step={custom_render_fixed_scale <= 0.5 ? 0.1 : 0.5}
-                    value={custom_render_fixed_scale}
-                    onChange={(e) =>
-                      set_custom_render_fixed_scale(Number(e.target.value))
-                    } />
-                </Show>
-              </Combine>
-            </Titled>
-          </Show>
-          <Show show={render_size_mode !== "fill"}>
-            <Titled float_label="对齐">
-              <Combine>
-                <Select
-                  value={v_align}
-                  on_changed={v => set_v_align(v!)}
-                  items={[-2, 0, 0.5, 1]}
-                  parse={(v, idx) => [
-                    v, v <= -1 ? "?" : ["上", "中", "下"][idx - 1],
-                  ]}
-                />
-                <Show show={v_align < 0}>
-                  <InputNumber
-                    precision={2}
-                    min={-1}
-                    max={2}
-                    step={0.1}
-                    value={custom_v_align}
-                    onChange={(e) => set_custom_v_align(Number(e.target.value))}
-                  />
-                </Show>
-                <Select
-                  value={h_align}
-                  on_changed={v => set_h_align(v!)}
-                  items={[-2, 0, 0.5, 1]}
-                  parse={(v, idx) => [
-                    v,
-                    v <= -1 ? "?" : ["左", "中", "右"][idx - 1],
-                  ]}
-                />
-                <Show show={h_align < 0}>
-                  <InputNumber
-                    precision={2}
-                    min={-1}
-                    max={2}
-                    step={0.1}
-                    value={custom_h_align}
-                    onChange={(e) => set_custom_h_align(Number(e.target.value))}
-                  />
-                </Show>
-              </Combine>
-            </Titled>
-          </Show>
-        </div>
-        <div className={styles.settings_row}>
-          <Combine>
-            <ToggleButton
-              title="F1"
-              value={paused}
-              onClick={() => lf2?.world.set_paused(!paused)}
-            >
-              <>游戏暂停</>
-              <>游戏暂停✓</>
-            </ToggleButton>
-            <Button title="F2" onClick={update_once}>
-              更新一帧
-            </Button>
-            <ToggleButton
-              title="F5"
-              value={fast_forward}
-              onClick={() => set_fast_forward(!fast_forward)}
-            >
-              <>不限速度</>
-              <>不限速度✓</>
-            </ToggleButton>
-          </Combine>
-
-          <Combine>
-            <ToggleButton
-              value={!!(indicator_flags & 1)}
-              onClick={() => set_indicator_flags((v) => (v & 1 ? v ^ 1 : v | 1))}
-            >
-              <>FrameBox</>
-              <>FrameBox✓</>
-            </ToggleButton>
-            <ToggleButton
-              value={!!(indicator_flags & 2)}
-              onClick={() => set_indicator_flags((v) => (v & 2 ? v ^ 2 : v | 2))}
-            >
-              <>ItrBox</>
-              <>ItrBox✓</>
-            </ToggleButton>
-            <ToggleButton
-              value={!!(indicator_flags & 4)}
-              onClick={() => set_indicator_flags((v) => (v & 4 ? v ^ 4 : v | 4))}
-            >
-              <>BdyBox</>
-              <>BdyBox✓</>
-            </ToggleButton>
-          </Combine>
-          <Combine>
-            <ToggleButton
-              title="ctrl+F3"
-              value={game_overlay}
-              onChange={set_game_overlay}
-            >
-              <>游戏覆盖</>
-              <>游戏覆盖✓</>
-            </ToggleButton>
-            <ToggleButton
-              onClick={toggle_fullscreen}
-              value={fullscreen.is_fullscreen}
-            >
-              <>全屏</>
-              <>全屏✓</>
-            </ToggleButton>
-            <StatusButton
-              items={[
-                { value: 0, label: "非同步渲染✓" },
-                { value: 1, label: "同步渲染✓" },
-                { value: 2, label: "同步渲染(x0.5)✓" },
-              ]}
-              parse={i => [i.value, i.label]}
-              value={sync_render}
-              onClick={() => lf2?.world.set_sync_render()}
-            />
-
-          </Combine>
-        </div>
-        <div className={styles.settings_row}>
-          <Combine>
-            <ToggleButton
-              onChange={() =>
-                set_showing_panel((v) => (v === "stage" ? "" : "stage"))
-              }
-              value={showing_panel === "stage"}
-            >
-              <>关卡面板</>
-              <>关卡面板✓</>
-            </ToggleButton>
-            <ToggleButton
-              onChange={() =>
-                set_showing_panel((v) => (v === "bg" ? "" : "bg"))
-              }
-              value={showing_panel === "bg"}
-            >
-              <>背景面板</>
-              <>背景面板✓</>
-            </ToggleButton>
-            <ToggleButton
-              onChange={() =>
-                set_showing_panel((v) => (v === "weapon" ? "" : "weapon"))
-              }
-              value={showing_panel === "weapon"}
-            >
-              <>武器面板</>
-              <>武器面板✓</>
-            </ToggleButton>
-            <ToggleButton
-              onChange={() =>
-                set_showing_panel((v) => (v === "bot" ? "" : "bot"))
-              }
-              value={showing_panel === "bot"}
-            >
-              <>Bot面板</>
-              <>Bot面板✓</>
-            </ToggleButton>
-            <ToggleButton
-              onChange={() =>
-                set_showing_panel((v) => (v === "player" ? "" : "player"))
-              }
-              value={showing_panel === "player"}
-            >
-              <>玩家面板</>
-              <>玩家面板✓</>
-            </ToggleButton>
-            <ToggleButton
-              onChange={() =>
-                set_showing_panel((v) =>
-                  v === "world_tuning" ? "" : "world_tuning",
-                )
-              }
-              value={showing_panel === "world_tuning"}>
-              <>世界微调</>
-              <>世界微调✓</>
-            </ToggleButton>
-          </Combine>
-          <Combine>
-            <StatusButton
-              value={touch_pad_on}
-              items={touch_pad_player_items}
-              parse={i => [i.value, i.label]}
-              onChange={(v) => set_touch_pad_on(v!)} />
-            <ToggleButton
-              onChange={() => lf2?.toggle_cheat_enabled(Defines.Cheats.LF2_NET)}
-              value={cheat_1}>
-              <>LF2_NET</>
-              <>LF2_NET✓</>
-            </ToggleButton>
-            <ToggleButton
-              onChange={() => lf2?.toggle_cheat_enabled(Defines.Cheats.HERO_FT)}
-              value={cheat_2}>
-              <>HERO_FT</>
-              <>HERO_FT✓</>
-            </ToggleButton>
-            <ToggleButton
-              onChange={() => lf2?.toggle_cheat_enabled(Defines.Cheats.GIM_INK)}
-              value={cheat_3}>
-              <>GIM_INK</>
-              <>GIM_INK✓</>
-            </ToggleButton>
-          </Combine>
-        </div>
-        <Show show={showing_panel === "player"}>
-          {players.map((info, idx) => (
-            <PlayerRow
-              key={idx}
-              lf2={lf2!}
-              info={info}
-              touch_pad_on={touch_pad_on === info.id}
-              on_click_toggle_touch_pad={() =>
-                set_touch_pad_on(touch_pad_on === info.id ? "" : info.id)
-              }
-            />
-          ))}
-        </Show>
-        <SettingsRows
-          lf2={lf2}
-          show_stage_settings={showing_panel === "stage"}
-          show_bg_settings={showing_panel === "bg"}
-          show_weapon_settings={showing_panel === "weapon"}
-          show_bot_settings={showing_panel === "bot"}
-          show_world_tuning={showing_panel === "world_tuning"}
-        />
-      </Show.Div>
-      <DatViewer open={dat_viewer_open} onClose={() => set_dat_viewer_open(false)} />
-      <EditorView
-        open={editor_open}
-        onClose={() => set_editor_open(false)}
-        style={{ background: 'black', position: 'fixed', left: 0, top: 0, right: 0, bottom: 0 }}
-        lf2={lf2} />
+  const game_cell_view = game_cell ? createPortal(
+    <div className={styles.game_contiainer}>
+      <canvas
+        ref={set_ele_game_canvas}
+        tabIndex={-1}
+        className={styles.game_canvas}
+        width={794}
+        height={450}
+        draggable={false}
+      />
+      <div ref={set_ele_game_overlay} className={classNames(styles.game_overlay, { [styles.gone]: !game_overlay })} />
+      <GamePad player_id={touch_pad_on} lf2={lf2} />
       <img
         src="lf2_built_in_data/launch/SMALL_LOADING@4x.png"
         className={styles.loading_img}
         alt="loading..."
-        ref={ref_loading_img}
+        ref={set_ele_loading_img} />
+      <div className={styles.debug_pannel}>
+        <Show show={lf2?.is_cheat_enabled(Defines.Cheats.GIM_INK) || true}>
+          <ToggleImgButton
+            checked={control_panel_visible}
+            onClick={() => set_control_panel_visible((v) => !v)}
+            src={[img_btn_1_2, img_btn_1_3]}
+          />
+        </Show>
+        <ToggleImgButton
+          checked={is_fullscreen}
+          onClick={() => toggle_fullscreen()}
+          src={[img_btn_3_1, img_btn_3_2]}
+        />
+        <ToggleImgButton
+          checked={bgm_muted}
+          onClick={() => lf2?.sounds?.set_bgm_muted(!bgm_muted)}
+          src={[img_btn_2_0, img_btn_3_0]}
+        />
+        <ToggleImgButton
+          checked={sound_muted}
+          onClick={() => lf2?.sounds?.set_sound_muted(!sound_muted)}
+          src={[img_btn_0_3, img_btn_1_0]}
+        />
+        <Show
+          show={bg_id !== Defines.VOID_BG.id && layout_id !== "ctrl_settings"}
+        >
+          <ToggleImgButton
+            checked={paused}
+            onClick={() => lf2?.world.set_paused(!paused)}
+            src={[img_btn_2_1, img_btn_2_2]}
+          />
+        </Show>
+        <Show
+          show={
+            layouts.length > 1 &&
+            !loading &&
+            layout_id !== "launch" &&
+            layout_id !== "ctrl_settings"
+          }
+        >
+          <ToggleImgButton
+            onClick={() => {
+              lf2?.world.set_paused(true);
+              lf2?.push_layout("ctrl_settings");
+            }}
+            src={[img_btn_1_1, img_btn_1_1]}
+          />
+        </Show>
+        <Show show={layout_id && Number(lf2?.layout_stacks.length) > 1}>
+          <ToggleImgButton
+            shortcut="F4"
+            onClick={() => lf2?.pop_layout()}
+            src={[img_btn_2_3]}
+          />
+        </Show>
+      </div>
+    </div>, game_cell, null) : null
+  console.log('render', game_cell)
+  
+  const pannel_cell_view = pannel_cell ? createPortal(
+    <div className={classNames(styles.debug_ui, styles["debug_ui_" + debug_ui_pos])}>
+      <div className={styles.settings_row}>
+        <Button onClick={on_click_download_zip}>下载数据包</Button>
+        <Button onClick={on_click_load_local_zip} disabled={loading}>
+          加载数据包
+        </Button>
+        <Button onClick={on_click_load_builtin} disabled={loading}>
+          加载内置数据
+        </Button>
+        <Button onClick={() => set_dat_viewer_open(true)}>查看dat文件</Button>
+        <Button onClick={() => set_editor_open(true)}>查看数据包</Button>
+        <Select
+          items={["top", "bottom", "left", "right"] as const}
+          parse={(v) => [v, "位置：" + v]}
+          value={debug_ui_pos}
+          on_changed={v => set_debug_ui_pos(v!)}
+        />
+        <Button
+          style={{ marginLeft: "auto" }}
+          onClick={() => set_control_panel_visible(false)}
+        >
+          ✕
+        </Button>
+      </div>
+      <div className={styles.settings_row}>
+        <Combine>
+          <ToggleButton
+            onChange={(v) => lf2?.sounds.set_muted(v)}
+            value={muted}
+          >
+            <>音量</>
+            <>静音</>
+          </ToggleButton>
+          <Show show={!muted}>
+            <InputNumber
+              precision={0}
+              min={0}
+              max={100}
+              step={1}
+              value={Math.ceil(volume * 100)}
+              onChange={(e) =>
+                lf2?.sounds.set_volume(Number(e.target.value) / 100)
+              }
+            />
+          </Show>
+          <ToggleButton
+            onChange={(v) => lf2?.sounds.set_bgm_muted(v)}
+            value={bgm_muted}>
+            <>音乐</>
+            <>音乐(已禁用)</>
+          </ToggleButton>
+          <Show show={!bgm_muted}>
+            <InputNumber
+              precision={0}
+              min={0}
+              max={100}
+              step={1}
+              value={Math.ceil(bgm_volume * 100)}
+              onChange={(e) =>
+                lf2?.sounds.set_bgm_volume(Number(e.target.value) / 100)
+              }
+            />
+          </Show>
+          <ToggleButton
+            onChange={(v) => lf2?.sounds.set_sound_muted(v)}
+            value={sound_muted}>
+            <>音效</>
+            <>音效(已禁用)</>
+          </ToggleButton>
+          <Show show={!sound_muted}>
+            <InputNumber
+              precision={0}
+              min={0}
+              max={100}
+              step={1}
+              value={Math.ceil(sound_volume * 100)}
+              onChange={(e) =>
+                lf2?.sounds.set_sound_volume(Number(e.target.value) / 100)
+              }
+            />
+          </Show>
+        </Combine>
+      </div>
+      <div className={styles.settings_row}>
+        <Select
+          placeholder="页面"
+          value={layout_id}
+          on_changed={v => lf2?.set_layout(v!)}
+          items={layouts}
+          parse={(o) => [o.id!, o.name]}
+        />
+        <Titled float_label="显示模式">
+          <Select
+            value={render_size_mode}
+            on_changed={v => set_render_size_mode(v!)}
+            placeholder="显示模式"
+            parse={i => [i, i]}
+            items={["fixed", "fill", "cover", "contain"] as const}
+          />
+        </Titled>
+        <Show show={render_size_mode === "fixed"}>
+          <Titled float_label="缩放">
+            <Combine>
+              <Select
+                value={render_fixed_scale}
+                on_changed={v => set_render_fixed_scale(v!)}
+                items={arithmetic_progression(0, 4, 0.5)}
+                parse={(i) => [i, "✕" + (i || "?")]}
+              />
+              <Show show={!render_fixed_scale}>
+                <InputNumber
+                  precision={2}
+                  min={0}
+                  step={custom_render_fixed_scale <= 0.5 ? 0.1 : 0.5}
+                  value={custom_render_fixed_scale}
+                  onChange={(e) =>
+                    set_custom_render_fixed_scale(Number(e.target.value))
+                  } />
+              </Show>
+            </Combine>
+          </Titled>
+        </Show>
+        <Show show={render_size_mode !== "fill"}>
+          <Titled float_label="对齐">
+            <Combine>
+              <Select
+                value={v_align}
+                on_changed={v => set_v_align(v!)}
+                items={[-2, 0, 0.5, 1]}
+                parse={(v, idx) => [
+                  v, v <= -1 ? "?" : ["上", "中", "下"][idx - 1],
+                ]}
+              />
+              <Show show={v_align < 0}>
+                <InputNumber
+                  precision={2}
+                  min={-1}
+                  max={2}
+                  step={0.1}
+                  value={custom_v_align}
+                  onChange={(e) => set_custom_v_align(Number(e.target.value))}
+                />
+              </Show>
+              <Select
+                value={h_align}
+                on_changed={v => set_h_align(v!)}
+                items={[-2, 0, 0.5, 1]}
+                parse={(v, idx) => [
+                  v,
+                  v <= -1 ? "?" : ["左", "中", "右"][idx - 1],
+                ]}
+              />
+              <Show show={h_align < 0}>
+                <InputNumber
+                  precision={2}
+                  min={-1}
+                  max={2}
+                  step={0.1}
+                  value={custom_h_align}
+                  onChange={(e) => set_custom_h_align(Number(e.target.value))}
+                />
+              </Show>
+            </Combine>
+          </Titled>
+        </Show>
+      </div>
+      <div className={styles.settings_row}>
+        <Combine>
+          <ToggleButton
+            title="F1"
+            value={paused}
+            onClick={() => lf2?.world.set_paused(!paused)}
+          >
+            <>游戏暂停</>
+            <>游戏暂停✓</>
+          </ToggleButton>
+          <Button title="F2" onClick={update_once}>
+            更新一帧
+          </Button>
+          <ToggleButton
+            title="F5"
+            value={fast_forward}
+            onClick={() => set_fast_forward(!fast_forward)}
+          >
+            <>不限速度</>
+            <>不限速度✓</>
+          </ToggleButton>
+        </Combine>
+
+        <Combine>
+          <ToggleButton
+            value={!!(indicator_flags & 1)}
+            onClick={() => set_indicator_flags((v) => (v & 1 ? v ^ 1 : v | 1))}
+          >
+            <>FrameBox</>
+            <>FrameBox✓</>
+          </ToggleButton>
+          <ToggleButton
+            value={!!(indicator_flags & 2)}
+            onClick={() => set_indicator_flags((v) => (v & 2 ? v ^ 2 : v | 2))}
+          >
+            <>ItrBox</>
+            <>ItrBox✓</>
+          </ToggleButton>
+          <ToggleButton
+            value={!!(indicator_flags & 4)}
+            onClick={() => set_indicator_flags((v) => (v & 4 ? v ^ 4 : v | 4))}
+          >
+            <>BdyBox</>
+            <>BdyBox✓</>
+          </ToggleButton>
+        </Combine>
+        <Combine>
+          <ToggleButton
+            title="ctrl+F3"
+            value={game_overlay}
+            onChange={set_game_overlay}
+          >
+            <>游戏覆盖</>
+            <>游戏覆盖✓</>
+          </ToggleButton>
+          <ToggleButton
+            onClick={toggle_fullscreen}
+            value={fullscreen.is_fullscreen}
+          >
+            <>全屏</>
+            <>全屏✓</>
+          </ToggleButton>
+          <StatusButton
+            items={[
+              { value: 0, label: "非同步渲染✓" },
+              { value: 1, label: "同步渲染✓" },
+              { value: 2, label: "同步渲染(x0.5)✓" },
+            ]}
+            parse={i => [i.value, i.label]}
+            value={sync_render}
+            onClick={() => lf2?.world.set_sync_render()}
+          />
+
+        </Combine>
+      </div>
+      <div className={styles.settings_row}>
+        <Combine>
+          <ToggleButton
+            onChange={() =>
+              set_showing_panel((v) => (v === "stage" ? "" : "stage"))
+            }
+            value={showing_panel === "stage"}
+          >
+            <>关卡面板</>
+            <>关卡面板✓</>
+          </ToggleButton>
+          <ToggleButton
+            onChange={() =>
+              set_showing_panel((v) => (v === "bg" ? "" : "bg"))
+            }
+            value={showing_panel === "bg"}
+          >
+            <>背景面板</>
+            <>背景面板✓</>
+          </ToggleButton>
+          <ToggleButton
+            onChange={() =>
+              set_showing_panel((v) => (v === "weapon" ? "" : "weapon"))
+            }
+            value={showing_panel === "weapon"}
+          >
+            <>武器面板</>
+            <>武器面板✓</>
+          </ToggleButton>
+          <ToggleButton
+            onChange={() =>
+              set_showing_panel((v) => (v === "bot" ? "" : "bot"))
+            }
+            value={showing_panel === "bot"}
+          >
+            <>Bot面板</>
+            <>Bot面板✓</>
+          </ToggleButton>
+          <ToggleButton
+            onChange={() =>
+              set_showing_panel((v) => (v === "player" ? "" : "player"))
+            }
+            value={showing_panel === "player"}
+          >
+            <>玩家面板</>
+            <>玩家面板✓</>
+          </ToggleButton>
+          <ToggleButton
+            onChange={() =>
+              set_showing_panel((v) =>
+                v === "world_tuning" ? "" : "world_tuning",
+              )
+            }
+            value={showing_panel === "world_tuning"}>
+            <>世界微调</>
+            <>世界微调✓</>
+          </ToggleButton>
+        </Combine>
+        <Combine>
+          <StatusButton
+            value={touch_pad_on}
+            items={touch_pad_player_items}
+            parse={i => [i.value, i.label]}
+            onChange={(v) => set_touch_pad_on(v!)} />
+          <ToggleButton
+            onChange={() => lf2?.toggle_cheat_enabled(Defines.Cheats.LF2_NET)}
+            value={cheat_1}>
+            <>LF2_NET</>
+            <>LF2_NET✓</>
+          </ToggleButton>
+          <ToggleButton
+            onChange={() => lf2?.toggle_cheat_enabled(Defines.Cheats.HERO_FT)}
+            value={cheat_2}>
+            <>HERO_FT</>
+            <>HERO_FT✓</>
+          </ToggleButton>
+          <ToggleButton
+            onChange={() => lf2?.toggle_cheat_enabled(Defines.Cheats.GIM_INK)}
+            value={cheat_3}>
+            <>GIM_INK</>
+            <>GIM_INK✓</>
+          </ToggleButton>
+        </Combine>
+      </div>
+      <Show show={showing_panel === "player"}>
+        {players.map((info, idx) => (
+          <PlayerRow
+            key={idx}
+            lf2={lf2!}
+            info={info}
+            touch_pad_on={touch_pad_on === info.id}
+            on_click_toggle_touch_pad={() =>
+              set_touch_pad_on(touch_pad_on === info.id ? "" : info.id)
+            }
+          />
+        ))}
+      </Show>
+      <SettingsRows
+        lf2={lf2}
+        show_stage_settings={showing_panel === "stage"}
+        show_bg_settings={showing_panel === "bg"}
+        show_weapon_settings={showing_panel === "weapon"}
+        show_bot_settings={showing_panel === "bot"}
+        show_world_tuning={showing_panel === "world_tuning"}
       />
-    </div>
+    </div>, pannel_cell, null) : null
+
+  return (
+    <>
+      <div className={styles.app} ref={set_ele_root} />
+      {game_cell_view}
+      {pannel_cell_view}
+      <DatViewer open={dat_viewer_open} onClose={() => set_dat_viewer_open(false)} />
+      <EditorView
+        open={editor_open}
+        onClose={() => set_editor_open(false)}
+        style={{ background: 'black', position: 'fixed', left: 0, top: 0, right: 0, bottom: 0, zIndex: 1 }}
+        lf2={lf2} />
+    </>
   );
 }
 

@@ -16,12 +16,6 @@ export class LoadingImg {
     img.width = w;
     img.height = h;
     img.draggable = false;
-    img.style.objectFit = "none";
-    img.style.userSelect = "none";
-    img.style.position = "fixed";
-    img.style.margin = "auto";
-    img.style.display = "block";
-    img.style.transition = "opacity 1000ms";
     img.style.opacity = '1'
     img.style.left = img.style.right = img.style.top = img.style.bottom = "0";
     let i = 0;

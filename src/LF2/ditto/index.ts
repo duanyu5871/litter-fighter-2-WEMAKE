@@ -53,7 +53,7 @@ export interface IDittoPack {
 
   ObjectNode: new (lf2: LF2) => IObjectNode;
   TextNode: new (lf2: LF2) => ITextNode;
-  SceneNode: new (lf2: LF2, canvas: HTMLCanvasElement) => ISceneNode;
+  SceneNode: new (lf2: LF2) => ISceneNode;
   OrthographicCamera: new (lf2: LF2) => IOrthographicCameraNode;
   PerspectiveCamera: new (lf2: LF2) => IPerspectiveCamera;
   SpriteNode: new (lf2: LF2, info?: ISpriteInfo) => ISpriteNode;

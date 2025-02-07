@@ -186,14 +186,14 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
     return ditto.Importer.import_as_blob_url(paths);
   }
 
-  constructor(canvas: HTMLCanvasElement) {
-    this.world = new World(this, canvas);
+  constructor() {
+    this.world = new World(this);
     this.datas = new DatMgr(this);
     this.sounds = new ditto.Sounds(this);
     this.images = new ImageMgr(this);
     this.keyboard = new ditto.Keyboard();
     this.keyboard.callback.add(this);
-    this.pointings = new ditto.Pointings(canvas);
+    this.pointings = new ditto.Pointings();
     this.pointings.callback.add(this);
     this.world.start_update();
     this.world.start_render();

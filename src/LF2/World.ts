@@ -158,12 +158,12 @@ export class World {
     this._gravity = v;
     this._callbacks.emit("on_gravity_change")(v, prev, this);
   }
-  constructor(lf2: LF2, canvas: HTMLCanvasElement) {
+  constructor(lf2: LF2) {
     this.lf2 = lf2;
     const w = (this._screen_w = Defines.CLASSIC_SCREEN_WIDTH);
     const h = (this._screen_h = 450); // Defines.OLD_SCREEN_HEIGHT;
 
-    this.scene = new Ditto.SceneNode(lf2, canvas).set_size(w * 4, h * 4);
+    this.scene = new Ditto.SceneNode(lf2).set_size(w * 4, h * 4);
     this.camera = new Ditto.OrthographicCamera(lf2)
       .setup(0, w, h, 0)
       .set_position(void 0, void 0, 10)
