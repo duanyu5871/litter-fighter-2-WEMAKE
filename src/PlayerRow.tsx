@@ -16,7 +16,7 @@ import LF2 from "./LF2/LF2";
 import { PlayerInfo } from "./LF2/PlayerInfo";
 import { random_get } from "./LF2/utils/math/random";
 import Titled from "./Component/Titled";
-
+import styles from "./App.module.scss"
 const key_names: Record<GameKey, string> = {
   U: "上",
   D: "下",
@@ -141,7 +141,7 @@ export function PlayerRow(props: Props) {
 
 
   return (
-    <div className="settings_row">
+    <div className={styles.settings_row}>
       <Titled float_label={"玩家" + info.id}>
         <Combine>
           <Input

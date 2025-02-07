@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import styles from "./App.module.scss";
 import { Button } from "./Component/Buttons/Button";
 import CharacterSelect from "./Component/CharacterSelect";
 import Combine from "./Component/Combine";
@@ -8,7 +9,6 @@ import Select from "./Component/Select";
 import Show from "./Component/Show";
 import TeamSelect from "./Component/TeamSelect";
 import Titled from "./Component/Titled";
-import { ILf2Callback } from "./LF2/ILf2Callback";
 import LF2 from "./LF2/LF2";
 import { BaseController } from "./LF2/controller/BaseController";
 import { BotController } from "./LF2/controller/BotController";
@@ -124,7 +124,7 @@ export default function SettingsRows(props: ISettingsRowsProps) {
   return (
     <>
       <Show.Div
-        className="settings_row"
+        className={styles.settings_row}
         show={props.show_stage_settings !== false}
       >
         <Titled float_label="关卡">
@@ -161,7 +161,7 @@ export default function SettingsRows(props: ISettingsRowsProps) {
         </Combine>
       </Show.Div>
 
-      <Show.Div className="settings_row" show={props.show_bg_settings !== false}>
+      <Show.Div className={styles.settings_row} show={props.show_bg_settings !== false}>
         <Titled float_label="背景">
           <Select
             value={bg_id}
@@ -187,7 +187,7 @@ export default function SettingsRows(props: ISettingsRowsProps) {
       </Show.Div>
 
       <Show.Div
-        className="settings_row"
+        className={styles.settings_row}
         show={props.show_weapon_settings !== false}
       >
 
@@ -221,7 +221,7 @@ export default function SettingsRows(props: ISettingsRowsProps) {
       </Show.Div>
 
       <Show.Div
-        className="settings_row"
+        className={styles.settings_row}
         show={props.show_bot_settings !== false}
       >
         <Titled float_label="添加BOT">
@@ -254,7 +254,7 @@ export default function SettingsRows(props: ISettingsRowsProps) {
       </Show.Div >
 
       <Show.Div
-        className="settings_row"
+        className={styles.settings_row}
         show={props.show_world_tuning !== false}
       >
         {world_properties?.map((v, idx) => {

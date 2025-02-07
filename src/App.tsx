@@ -41,11 +41,13 @@ import img_btn_3_1 from "./assets/btn_3_1.png";
 import img_btn_3_2 from "./assets/btn_3_2.png";
 import "./game_ui.css";
 import "./init";
+import styles from "./App.module.scss";
 import {
   useLocalBoolean,
   useLocalNumber,
   useLocalString,
 } from "./useLocalStorage";
+import classNames from "classnames";
 
 const loading_img = new LoadingImg();
 function App() {
@@ -389,24 +391,24 @@ function App() {
   }, [layout_id]);
 
   return (
-    <div className="App">
-      <div className="game_contiainer" ref={_game_contiainer_ref}>
+    <div className={styles.app}>
+      <div className={styles.game_contiainer} ref={_game_contiainer_ref}>
         <canvas
           ref={_canvas_ref}
           tabIndex={-1}
-          className="game_canvas"
+          className={styles.game_canvas}
           width={794}
           height={450}
           draggable={false}
         />
         <div
-          className="game_overlay"
+          className={styles.game_overlay}
           ref={_overlay_ref}
           style={{ display: !game_overlay ? "none" : void 0 }}
         />
         <GamePad player_id={touch_pad_on} lf2={lf2} />
       </div>
-      <div className="game_overlay_ui">
+      <div className={styles.game_overlay_ui}>
         <Show show={lf2?.is_cheat_enabled(Defines.Cheats.GIM_INK) || true}>
           <ToggleImgButton
             checked={control_panel_visible}
@@ -462,11 +464,9 @@ function App() {
           />
         </Show>
       </div>
-      <Show.Div
-        className={"debug_ui debug_ui_" + debug_ui_pos}
-        show={control_panel_visible}
-      >
-        <div className="settings_row">
+      <Show.Div className={
+        classNames(styles.debug_ui, styles["debug_ui_" + debug_ui_pos])} show={control_panel_visible}>
+        <div className={styles.settings_row}>
           <Button onClick={on_click_download_zip}>下载数据包</Button>
           <Button onClick={on_click_load_local_zip} disabled={loading}>
             加载数据包
@@ -489,7 +489,7 @@ function App() {
             ✕
           </Button>
         </div>
-        <div className="settings_row">
+        <div className={styles.settings_row}>
           <Combine>
             <ToggleButton
               onChange={(v) => lf2?.sounds.set_muted(v)}
@@ -548,7 +548,7 @@ function App() {
             </Show>
           </Combine>
         </div>
-        <div className="settings_row">
+        <div className={styles.settings_row}>
           <Select
             placeholder="页面"
             value={layout_id}
@@ -589,7 +589,7 @@ function App() {
           </Show>
           <Show show={render_size_mode !== "fill"}>
             <Titled float_label="对齐">
-              <Combine className="render_align">
+              <Combine>
                 <Select
                   value={v_align}
                   on_changed={v => set_v_align(v!)}
@@ -631,7 +631,7 @@ function App() {
             </Titled>
           </Show>
         </div>
-        <div className="settings_row">
+        <div className={styles.settings_row}>
           <Combine>
             <ToggleButton
               title="F1"
@@ -706,7 +706,7 @@ function App() {
 
           </Combine>
         </div>
-        <div className="settings_row">
+        <div className={styles.settings_row}>
           <Combine>
             <ToggleButton
               onChange={() =>
@@ -820,7 +820,7 @@ function App() {
         lf2={lf2} />
       <img
         src="lf2_built_in_data/launch/SMALL_LOADING@4x.png"
-        className="loading_img"
+        className={styles.loading_img}
         alt="loading..."
         ref={ref_loading_img}
       />

@@ -2,7 +2,8 @@ import device from "current-device";
 import React, { useEffect, useRef, useState } from "react";
 import { useForwardedRef } from "../useForwardedRef";
 import { TShortcut, useShortcut } from "../useShortcut";
-import "./ToggleImgButton.scss";
+import styles from "./ToggleImgButton.module.scss";
+import classNames from "classnames";
 const is_desktop = device.desktop();
 
 export interface IToggleImgProps
@@ -61,9 +62,7 @@ export const ToggleImgButton: React.FC<IToggleImgProps> = React.forwardRef<
   }, []);
 
   const _show_shortcut = show_shortcut ?? has_keyboard;
-  const root_className = className
-    ? `lf2ui_img_button ${className}`
-    : "lf2ui_img_button";
+  const root_className = classNames(styles.lf2ui_img_button, className)
   return (
     <button
       {...remain_props}
@@ -73,16 +72,16 @@ export const ToggleImgButton: React.FC<IToggleImgProps> = React.forwardRef<
       onClick={_onClick}
       title={_show_shortcut ? shortcut : ""}
     >
-      <div className="inner_div">
+      <div className={styles.inner_div}>
         <img
           draggable={false}
-          className={`inner_0 ${"" + checked}`}
+          className={`${styles.inner_0} ${"" + checked}`}
           src={unchecked_src}
           alt={alt_0}
         />
         <img
           draggable={false}
-          className={`inner_1 ${"" + checked}`}
+          className={`${styles.inner_1} ${"" + checked}`}
           src={checked_src}
           alt={alt_1}
         />

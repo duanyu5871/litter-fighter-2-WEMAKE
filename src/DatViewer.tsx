@@ -4,6 +4,8 @@ import { ITextAreaRef, TextArea } from "./Component/TextArea";
 import open_file, { read_file } from "./Utils/open_file";
 import dat_to_json from "./LF2/dat_translator/dat_2_json";
 import decode_lf2_dat from "./LF2/dat_translator/decode_lf2_dat";
+import styles from "./App.module.scss";
+
 export interface IEditorViewProps extends React.HTMLAttributes<HTMLDivElement> {
   onClose?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   loading?: boolean;
@@ -35,8 +37,8 @@ export default function DatViewer(props: IEditorViewProps) {
   };
   if (!open) return <></>;
   return (
-    <div className="editor_view">
-      <div className="top">
+    <div className={styles.editor_view}>
+      <div className={styles.top}>
         <Button onClick={onClose} disabled={loading}>
           ✕
         </Button>
@@ -47,7 +49,7 @@ export default function DatViewer(props: IEditorViewProps) {
           打开
         </Button>
       </div>
-      <div className="main">
+      <div className={styles.main}>
         <TextArea ref={_ref_textarea_dat} wrap="off" />
         <TextArea ref={_ref_textarea_json} wrap="off" />
       </div>

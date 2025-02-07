@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { IToggleImgProps, ToggleImgButton } from "./Component/Buttons/ToggleImgButton";
-import "./GamePad.css";
+import styles from "./GamePad.module.scss";
 import LF2 from "./LF2/LF2";
 import { BaseController } from "./LF2/controller/BaseController";
 import GameKey from "./LF2/defines/GameKey";
@@ -301,10 +301,10 @@ export default function GamePad(props: IGamePadProps) {
   };
   return (
     <div {..._p}>
-      <div className="pad_text" ref={ref_pad_text} />
-      <div className="left_pad" ref={ref_left_pad}>
+      <div className={styles.pad_text} ref={ref_pad_text} />
+      <div className={styles.left_pad} ref={ref_left_pad}>
         <ToggleImgButton
-          className="btn_up"
+          className={styles.btn_up}
           ref={ref_btn_U}
           {...touch_props(GameKey.U)}
           src={[img_touch_btn_arrow]}
@@ -312,7 +312,7 @@ export default function GamePad(props: IGamePadProps) {
           draggable={false}
         />
         <ToggleImgButton
-          className="btn_down"
+          className={styles.btn_down}
           ref={ref_btn_D}
           {...touch_props(GameKey.D)}
           src={[img_touch_btn_arrow]}
@@ -320,7 +320,7 @@ export default function GamePad(props: IGamePadProps) {
           draggable={false}
         />
         <ToggleImgButton
-          className="btn_left"
+          className={styles.btn_left}
           ref={ref_btn_L}
           {...touch_props(GameKey.L)}
           src={[img_touch_btn_arrow]}
@@ -328,7 +328,7 @@ export default function GamePad(props: IGamePadProps) {
           draggable={false}
         />
         <ToggleImgButton
-          className="btn_right"
+          className={styles.btn_right}
           ref={ref_btn_R}
           {...touch_props(GameKey.R)}
           src={[img_touch_btn_arrow]}
@@ -336,9 +336,9 @@ export default function GamePad(props: IGamePadProps) {
           draggable={false}
         />
       </div>
-      <div className="right_pad" ref={ref_right_pad}>
+      <div className={styles.right_pad} ref={ref_right_pad}>
         <ToggleImgButton
-          className="btn_attack"
+          className={styles.btn_attack}
           ref={ref_btn_a}
           {...touch_props(GameKey.a)}
           src={[img_touch_btn_a]}
@@ -346,7 +346,7 @@ export default function GamePad(props: IGamePadProps) {
           draggable={false}
         />
         <ToggleImgButton
-          className="btn_jump"
+          className={styles.btn_jump}
           ref={ref_btn_j}
           {...touch_props(GameKey.j)}
           src={[img_touch_btn_j]}
@@ -354,7 +354,7 @@ export default function GamePad(props: IGamePadProps) {
           draggable={false}
         />
         <ToggleImgButton
-          className="btn_defense"
+          className={styles.btn_defense}
           ref={ref_btn_d}
           {...touch_props(GameKey.d)}
           src={[img_touch_btn_d]}

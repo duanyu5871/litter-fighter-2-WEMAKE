@@ -3,7 +3,7 @@ import { is_num } from "./LF2/utils/type_check";
 import { ILf2Callback } from "./LF2/ILf2Callback";
 import type { IWorldCallbacks } from "./LF2/IWorldCallbacks";
 import type { World } from "./LF2/World";
-import "./game_overlay.css";
+import styles from "./game_overlay.module.scss";
 import { Button } from "./Component/Buttons/Button";
 const ele = document.createElement.bind(document);
 export class GameOverlay {
@@ -40,13 +40,13 @@ export class GameOverlay {
     this.world = world;
     this.ele = container;
     this.ele_fps = ele("span");
-    this.ele_fps.className = "txt_game_overlay";
+    this.ele_fps.className = styles.txt_game_overlay;
     this.ele_ups = ele("span");
-    this.ele_ups.className = "txt_game_overlay";
+    this.ele_ups.className = styles.txt_game_overlay;
     this.ele_sps = ele("span");
-    this.ele_sps.className = "txt_game_overlay";
+    this.ele_sps.className = styles.txt_game_overlay;
     this.ele_loading = ele("span");
-    this.ele_loading.className = "txt_game_overlay";
+    this.ele_loading.className = styles.txt_game_overlay;
     this.ele_cam_bar = ele("canvas");
     this.ele_btn_free_cam = ele("button");
     this.init_ele_btn_free_cam();
@@ -70,7 +70,7 @@ export class GameOverlay {
   }
   init_ele_btn_free_cam() {
     this.ele_btn_free_cam.style.display = "none";
-    this.ele_btn_free_cam.className = `${Button.default_class_name} btn_free_cam`;
+    this.ele_btn_free_cam.className = `${Button.default_class_name} ${styles.btn_free_cam}`;
     this.ele_btn_free_cam.innerText = "释放";
     this.ele_btn_free_cam.type = "button";
 
@@ -84,7 +84,7 @@ export class GameOverlay {
   }
   init_ele_cam_bar() {
     this.ele_cam_bar.style.display = "none";
-    this.ele_cam_bar.className = `${Button.default_class_name} camera_ctrl `;
+    this.ele_cam_bar.className = `${Button.default_class_name} ${styles.camera_ctrl}`;
 
     this.ctx_cam_bar = this.ele_cam_bar.getContext("2d");
     this.ele_cam_bar.addEventListener("pointerdown", this._pointer_down);
