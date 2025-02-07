@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import "./App.scss";
 import { Button } from "./Component/Buttons/Button";
 import { StatusButton } from "./Component/Buttons/StatusButton";
 import { ToggleButton } from "./Component/Buttons/ToggleButton";
@@ -39,7 +38,7 @@ import img_btn_2_3 from "./assets/btn_2_3.png";
 import img_btn_3_0 from "./assets/btn_3_0.png";
 import img_btn_3_1 from "./assets/btn_3_1.png";
 import img_btn_3_2 from "./assets/btn_3_2.png";
-import "./game_ui.css";
+import "splittings-dom/dist/es/splittings-dom.css"
 import "./init";
 import styles from "./App.module.scss";
 import {
@@ -48,6 +47,8 @@ import {
   useLocalString,
 } from "./useLocalStorage";
 import classNames from "classnames";
+import { DomAdapter } from "splittings-dom/dist/es/splittings-dom";
+import { Slot, Workspaces } from "splittings/dist/es/splittings";
 
 const loading_img = new LoadingImg();
 function App() {
@@ -390,8 +391,18 @@ function App() {
     }
   }, [layout_id]);
 
+  const ref_root = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const adpater = new DomAdapter(ref_root.current!)
+    const workspace = new Workspaces(adpater)
+    workspace.add(0, "right", { id: 'panel' })
+    workspace.confirm()
+    return () => workspace.release()
+  }, [])
+
   return (
-    <div className={styles.app}>
+    <div className={styles.app} ref={ref_root}>
       <div className={styles.game_contiainer} ref={_game_contiainer_ref}>
         <canvas
           ref={_canvas_ref}
@@ -407,65 +418,64 @@ function App() {
           style={{ display: !game_overlay ? "none" : void 0 }}
         />
         <GamePad player_id={touch_pad_on} lf2={lf2} />
+        <div className={styles.game_overlay_ui}>
+          <Show show={lf2?.is_cheat_enabled(Defines.Cheats.GIM_INK) || true}>
+            <ToggleImgButton
+              checked={control_panel_visible}
+              onClick={() => set_control_panel_visible((v) => !v)}
+              src={[img_btn_1_2, img_btn_1_3]}
+            />
+          </Show>
+          <ToggleImgButton
+            checked={is_fullscreen}
+            onClick={() => toggle_fullscreen()}
+            src={[img_btn_3_1, img_btn_3_2]}
+          />
+          <ToggleImgButton
+            checked={bgm_muted}
+            onClick={() => lf2?.sounds?.set_bgm_muted(!bgm_muted)}
+            src={[img_btn_2_0, img_btn_3_0]}
+          />
+          <ToggleImgButton
+            checked={sound_muted}
+            onClick={() => lf2?.sounds?.set_sound_muted(!sound_muted)}
+            src={[img_btn_0_3, img_btn_1_0]}
+          />
+          <Show
+            show={bg_id !== Defines.VOID_BG.id && layout_id !== "ctrl_settings"}
+          >
+            <ToggleImgButton
+              checked={paused}
+              onClick={() => lf2?.world.set_paused(!paused)}
+              src={[img_btn_2_1, img_btn_2_2]}
+            />
+          </Show>
+          <Show
+            show={
+              layouts.length > 1 &&
+              !loading &&
+              layout_id !== "launch" &&
+              layout_id !== "ctrl_settings"
+            }
+          >
+            <ToggleImgButton
+              onClick={() => {
+                lf2?.world.set_paused(true);
+                lf2?.push_layout("ctrl_settings");
+              }}
+              src={[img_btn_1_1, img_btn_1_1]}
+            />
+          </Show>
+          <Show show={layout_id && Number(lf2?.layout_stacks.length) > 1}>
+            <ToggleImgButton
+              shortcut="F4"
+              onClick={() => lf2?.pop_layout()}
+              src={[img_btn_2_3]}
+            />
+          </Show>
+        </div>
       </div>
-      <div className={styles.game_overlay_ui}>
-        <Show show={lf2?.is_cheat_enabled(Defines.Cheats.GIM_INK) || true}>
-          <ToggleImgButton
-            checked={control_panel_visible}
-            onClick={() => set_control_panel_visible((v) => !v)}
-            src={[img_btn_1_2, img_btn_1_3]}
-          />
-        </Show>
-        <ToggleImgButton
-          checked={is_fullscreen}
-          onClick={() => toggle_fullscreen()}
-          src={[img_btn_3_1, img_btn_3_2]}
-        />
-        <ToggleImgButton
-          checked={bgm_muted}
-          onClick={() => lf2?.sounds?.set_bgm_muted(!bgm_muted)}
-          src={[img_btn_2_0, img_btn_3_0]}
-        />
-        <ToggleImgButton
-          checked={sound_muted}
-          onClick={() => lf2?.sounds?.set_sound_muted(!sound_muted)}
-          src={[img_btn_0_3, img_btn_1_0]}
-        />
-        <Show
-          show={bg_id !== Defines.VOID_BG.id && layout_id !== "ctrl_settings"}
-        >
-          <ToggleImgButton
-            checked={paused}
-            onClick={() => lf2?.world.set_paused(!paused)}
-            src={[img_btn_2_1, img_btn_2_2]}
-          />
-        </Show>
-        <Show
-          show={
-            layouts.length > 1 &&
-            !loading &&
-            layout_id !== "launch" &&
-            layout_id !== "ctrl_settings"
-          }
-        >
-          <ToggleImgButton
-            onClick={() => {
-              lf2?.world.set_paused(true);
-              lf2?.push_layout("ctrl_settings");
-            }}
-            src={[img_btn_1_1, img_btn_1_1]}
-          />
-        </Show>
-        <Show show={layout_id && Number(lf2?.layout_stacks.length) > 1}>
-          <ToggleImgButton
-            shortcut="F4"
-            onClick={() => lf2?.pop_layout()}
-            src={[img_btn_2_3]}
-          />
-        </Show>
-      </div>
-      <Show.Div className={
-        classNames(styles.debug_ui, styles["debug_ui_" + debug_ui_pos])} show={control_panel_visible}>
+      <Show.Div className={classNames(styles.debug_ui, styles["debug_ui_" + debug_ui_pos])} show={control_panel_visible}>
         <div className={styles.settings_row}>
           <Button onClick={on_click_download_zip}>下载数据包</Button>
           <Button onClick={on_click_load_local_zip} disabled={loading}>
@@ -812,6 +822,8 @@ function App() {
           show_world_tuning={showing_panel === "world_tuning"}
         />
       </Show.Div>
+
+
       <DatViewer open={dat_viewer_open} onClose={() => set_dat_viewer_open(false)} />
       <EditorView
         open={editor_open}
