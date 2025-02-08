@@ -61,6 +61,11 @@ function App() {
   const [ele_game_canvas, set_ele_game_canvas] = useState<HTMLCanvasElement | null>(null)
   const [ele_game_overlay, set_ele_game_overlay] = useState<HTMLElement | null>(null)
   const [ele_loading_img, set_ele_loading_img] = useState<HTMLImageElement | null>(null)
+  const [ele_root, set_ele_root] = useState<HTMLDivElement | null>(null)
+  const [[workspace, , game_cell, pannel_cell], set_workspace] = useState<
+    [Workspaces | null, DomAdapter | null, HTMLElement | null, HTMLElement | null]
+  >([null, null, null, null])
+
   const ref_lf2 = useRef<LF2 | undefined>();
   const [dat_viewer_open, set_dat_viewer_open] = useState(false);
   const [editor_open, set_editor_open] = useState(false);
@@ -331,8 +336,16 @@ function App() {
     };
     window.addEventListener("resize", on_resize);
     on_resize();
-    return () => window.removeEventListener("resize", on_resize);
+
+    const resize_ob = new ResizeObserver(on_resize)
+    if (game_cell) resize_ob.observe(game_cell)
+
+    return () => {
+      window.removeEventListener("resize", on_resize)
+      resize_ob.disconnect()
+    };
   }, [
+    game_cell,
     render_size_mode,
     render_fixed_scale,
     custom_render_fixed_scale,
@@ -403,11 +416,6 @@ function App() {
     (lf2.world.scene as __SceneNode).set_canvas(ele_game_canvas);
   }, [lf2, ele_game_canvas])
 
-  const [ele_root, set_ele_root] = useState<HTMLDivElement | null>(null)
-  const [[workspace, , game_cell, pannel_cell], set_workspace] = useState<
-    [Workspaces | null, DomAdapter | null, HTMLElement | null, HTMLElement | null]
-  >([null, null, null, null])
-
   useEffect(() => {
     if (!ele_root) return;
     const adpater = new DomAdapter(ele_root)
@@ -415,7 +423,6 @@ function App() {
     const game_slot = workspace.root;
     workspace.on_leaves_changed = () => {
       const pannel_slot = workspace.find("panel")
-      console.log(adpater.get_cell(game_slot))
       set_workspace([
         workspace,
         adpater,
@@ -424,8 +431,6 @@ function App() {
       ])
     }
     workspace.confirm()
-    set_workspace([workspace, adpater, null, null])
-
     return () => {
       workspace.root.release()
       workspace.release()
@@ -522,8 +527,7 @@ function App() {
         </Show>
       </div>
     </div>, game_cell, null) : null
-  console.log('render', game_cell)
-  
+
   const pannel_cell_view = pannel_cell ? createPortal(
     <div className={classNames(styles.debug_ui, styles["debug_ui_" + debug_ui_pos])}>
       <div className={styles.settings_row}>
