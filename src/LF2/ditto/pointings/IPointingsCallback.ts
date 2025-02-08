@@ -1,4 +1,4 @@
-import { type IPointingEvent } from "./IPointingEvent";
+import type { IPointingEvent } from "./IPointingEvent";
 
 export interface IPointingsCallback {
   on_pointer_down?(e: IPointingEvent): void;

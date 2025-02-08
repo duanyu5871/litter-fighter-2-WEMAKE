@@ -43,6 +43,7 @@
     "postcss-loader": "6.2.1",
     "postcss-normalize": "10.0.1",
     "postcss-preset-env": "7.0.1",
+    "promise-in-one": "^1.0.0",
     "prompts": "2.4.2",
     "rc-virtual-list": "^3.17.0",
     "react": "18.2.0",

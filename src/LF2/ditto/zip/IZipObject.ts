@@ -1,4 +1,3 @@
-/* auto re-export */
 export interface IZipObject {
   name: string;
   text(): Promise<string>;

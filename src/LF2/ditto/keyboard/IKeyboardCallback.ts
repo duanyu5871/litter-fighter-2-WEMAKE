@@ -1,4 +1,3 @@
-/* auto re-export */
 import { type IKeyEvent } from "./IKeyEvent";
 
 export interface IKeyboardCallback {

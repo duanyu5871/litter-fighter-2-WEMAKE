@@ -1,4 +1,3 @@
-/* auto re-export */
 import { type IZipObject } from "./IZipObject";
 
 export interface IZip {
