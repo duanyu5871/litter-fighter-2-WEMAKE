@@ -17,6 +17,7 @@ import { PlayerInfo } from "./LF2/PlayerInfo";
 import { random_get } from "./LF2/utils/math/random";
 import Titled from "./Component/Titled";
 import styles from "./App.module.scss"
+import { CheatType } from "./LF2/defines";
 const key_names: Record<GameKey, string> = {
   U: "上",
   D: "下",
@@ -63,10 +64,10 @@ export function PlayerRow(props: Props) {
   }, [dummy, info.id, lf2.player_characters])
 
   useEffect(() => {
-    set_show_hidden(lf2.is_cheat_enabled("" + Defines.Cheats.LF2_NET));
+    set_show_hidden(lf2.is_cheat_enabled("" + CheatType.LF2_NET));
     return lf2.callbacks.add({
       on_cheat_changed: (name, enabled) => {
-        if (name === "" + Defines.Cheats.LF2_NET) set_show_hidden(enabled);
+        if (name === "" + CheatType.LF2_NET) set_show_hidden(enabled);
       },
     });
   }, [lf2]);

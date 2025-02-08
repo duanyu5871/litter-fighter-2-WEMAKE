@@ -1,4 +1,4 @@
-import { IOpointInfo, Defines } from "../defines";
+import { IOpointInfo, Defines, EntityGroup } from "../defines";
 import { IEntityData } from "../defines/IEntityData";
 import { OpointKind } from "../defines/OpointKind";
 import { add_entity_groups } from "./add_entity_to_group";
@@ -33,8 +33,8 @@ export function make_weapon_special(data: IEntityData) {
   if (num_data_id >= 100 || num_data_id <= 199) {
     add_entity_groups(
       data.base,
-      Defines.EntityGroup.VsRegularWeapon,
-      Defines.EntityGroup.StageRegularWeapon,
+      EntityGroup.VsRegularWeapon,
+      EntityGroup.StageRegularWeapon,
     );
   }
   switch (data.id) {
@@ -52,7 +52,7 @@ export function make_weapon_special(data: IEntityData) {
       break;
     case "122": // #milk
       data.base.brokens = ooo("70", "50", "80", "50", "50");
-      add_entity_groups(data.base, Defines.EntityGroup.VsRegularWeapon);
+      add_entity_groups(data.base, EntityGroup.VsRegularWeapon);
       break;
     case "150": // #stone
       data.base.brokens = ooo("0", "0", "4", "4", "4");
@@ -62,7 +62,7 @@ export function make_weapon_special(data: IEntityData) {
       break;
     case "123": // #beer
       data.base.brokens = ooo("160", "164", "164", "164", "164");
-      add_entity_groups(data.base, Defines.EntityGroup.VsRegularWeapon);
+      add_entity_groups(data.base, EntityGroup.VsRegularWeapon);
       break;
     case "124": // #<
       data.base.brokens = ooo("170", "170", "170");

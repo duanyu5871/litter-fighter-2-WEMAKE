@@ -1,9 +1,8 @@
-import type { Defines } from "../defines";
-import type { IEntityInfo } from "../defines/IEntityInfo";
+import type { EntityGroup, IEntityInfo } from "../defines";
 
 export function add_entity_groups(
   info: IEntityInfo,
-  ...groups: Defines.EntityGroup[]
+  ...groups: EntityGroup[]
 ) {
   if (!groups.length) return;
   info.group = info.group || [];

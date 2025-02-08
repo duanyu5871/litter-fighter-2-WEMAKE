@@ -1,5 +1,5 @@
 import { collisions_keeper } from "../collision/CollisionKeeper";
-import { Defines, IFrameInfo, ItrKind, StateEnum } from "../defines";
+import { Defines, IFrameInfo, ItrKind, StateEnum, WeaponType } from "../defines";
 import { ICollision } from "../defines/ICollision";
 import type Entity from "../entity/Entity";
 import State_Base, { WhatNext } from "./State_Base";
@@ -11,7 +11,7 @@ export default class WeaponState_Base extends State_Base {
       return;
     }
     if (
-      attacker.data.base.type !== Defines.WeaponType.Heavy &&
+      attacker.data.base.type !== WeaponType.Heavy &&
       attacker.frame.state === StateEnum.Weapon_Throwing
     ) {
       // TODO: 这里是击中的反弹，如何更合适？ -Gim
@@ -63,7 +63,7 @@ export default class WeaponState_Base extends State_Base {
           Defines.DEFAULT_FALL_VALUE_MAX - Defines.DEFAULT_FALL_VALUE_DIZZY;
         const spark_frame_name = is_fly ? "slient_critical_hit" : "slient_hit";
         victim.world.spark(spark_x, spark_y, spark_z, spark_frame_name);
-        if (victim.data.base.type === Defines.WeaponType.Heavy) {
+        if (victim.data.base.type === WeaponType.Heavy) {
           if (is_fly) {
             const vx = itr.dvx ? itr.dvx * attacker.facing : 0;
             const vy = itr.dvy ? itr.dvy : 3;

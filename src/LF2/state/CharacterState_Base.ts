@@ -1,5 +1,5 @@
 import { collisions_keeper } from "../collision/CollisionKeeper";
-import { BdyKind, Defines, ICollision, IFrameInfo, IItrInfo, INextFrame, ItrEffect, ItrKind } from "../defines";
+import { BdyKind, Defines, ICollision, IFrameInfo, IItrInfo, INextFrame, ItrEffect, ItrKind, StateEnum, WeaponType } from "../defines";
 import type Entity from "../entity/Entity";
 import { is_character, is_weapon } from "../entity/type_check";
 import State_Base, { WhatNext } from "./State_Base";
@@ -18,7 +18,7 @@ export default class CharacterState_Base extends State_Base {
   }
   override get_auto_frame(e: Entity): IFrameInfo | undefined {
     let fid: string | undefined;
-    if (e.holding?.data.base.type === Defines.WeaponType.Heavy) {
+    if (e.holding?.data.base.type === WeaponType.Heavy) {
       fid = e.data.indexes?.heavy_obj_walk?.[0];
     } else if (e.position.y > 0) {
       fid = e.data.indexes?.in_the_sky?.[0];
@@ -46,7 +46,7 @@ export default class CharacterState_Base extends State_Base {
       }
       case ItrKind.Pick: {
         if (is_weapon(victim)) {
-          if (victim.data.base.type === Defines.WeaponType.Heavy) {
+          if (victim.data.base.type === WeaponType.Heavy) {
             attacker.next_frame = { id: attacker.data.indexes?.picking_heavy };
           } else {
             attacker.next_frame = { id: attacker.data.indexes?.picking_light };

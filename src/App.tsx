@@ -23,6 +23,7 @@ import { GameOverlay } from "./GameOverlay";
 import GamePad from "./GamePad";
 import LF2 from "./LF2/LF2";
 import Invoker from "./LF2/base/Invoker";
+import { CheatType } from "./LF2/defines";
 import { Defines } from "./LF2/defines/defines";
 import Ditto from "./LF2/ditto";
 import { is_weapon } from "./LF2/entity/type_check";
@@ -178,9 +179,9 @@ function App() {
     lf2.sounds.set_sound_muted(sound_muted);
     lf2.sounds.set_sound_volume(sound_volume);
     lf2.world.sync_render = sync_render;
-    _set_cheat_1(lf2.is_cheat_enabled(Defines.Cheats.LF2_NET));
-    _set_cheat_2(lf2.is_cheat_enabled(Defines.Cheats.HERO_FT));
-    _set_cheat_3(lf2.is_cheat_enabled(Defines.Cheats.GIM_INK));
+    _set_cheat_1(lf2.is_cheat_enabled(CheatType.LF2_NET));
+    _set_cheat_2(lf2.is_cheat_enabled(CheatType.HERO_FT));
+    _set_cheat_3(lf2.is_cheat_enabled(CheatType.GIM_INK));
     _set_bg_id(lf2.world.stage.bg.id);
     const on_touchstart = () => {
       set_touch_pad_on(fisrt(lf2.player_infos.keys())!);
@@ -224,13 +225,13 @@ function App() {
           },
           on_cheat_changed: (cheat_name, enabled) => {
             switch (cheat_name) {
-              case Defines.Cheats.LF2_NET:
+              case CheatType.LF2_NET:
                 _set_cheat_1(enabled);
                 break;
-              case Defines.Cheats.HERO_FT:
+              case CheatType.HERO_FT:
                 _set_cheat_2(enabled);
                 break;
-              case Defines.Cheats.GIM_INK:
+              case CheatType.GIM_INK:
                 _set_cheat_3(enabled);
                 break;
             }
@@ -465,7 +466,7 @@ function App() {
         alt="loading..."
         ref={set_ele_loading_img} />
       <div className={styles.debug_pannel}>
-        <Show show={lf2?.is_cheat_enabled(Defines.Cheats.GIM_INK) || true}>
+        <Show show={lf2?.is_cheat_enabled(CheatType.GIM_INK) || true}>
           <ToggleImgButton
             checked={control_panel_visible}
             onClick={() => set_control_panel_visible((v) => !v)}
@@ -830,19 +831,19 @@ function App() {
             parse={i => [i.value, i.label]}
             onChange={(v) => set_touch_pad_on(v!)} />
           <ToggleButton
-            onChange={() => lf2?.toggle_cheat_enabled(Defines.Cheats.LF2_NET)}
+            onChange={() => lf2?.toggle_cheat_enabled(CheatType.LF2_NET)}
             value={cheat_1}>
             <>LF2_NET</>
             <>LF2_NET✓</>
           </ToggleButton>
           <ToggleButton
-            onChange={() => lf2?.toggle_cheat_enabled(Defines.Cheats.HERO_FT)}
+            onChange={() => lf2?.toggle_cheat_enabled(CheatType.HERO_FT)}
             value={cheat_2}>
             <>HERO_FT</>
             <>HERO_FT✓</>
           </ToggleButton>
           <ToggleButton
-            onChange={() => lf2?.toggle_cheat_enabled(Defines.Cheats.GIM_INK)}
+            onChange={() => lf2?.toggle_cheat_enabled(CheatType.GIM_INK)}
             value={cheat_3}>
             <>GIM_INK</>
             <>GIM_INK✓</>

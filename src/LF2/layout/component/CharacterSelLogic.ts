@@ -1,5 +1,6 @@
 import type { PlayerInfo } from "../../PlayerInfo";
 import Invoker from "../../base/Invoker";
+import { CheatType, EntityGroup } from "../../defines";
 import GameKey from "../../defines/GameKey";
 import { Defines } from "../../defines/defines";
 import GamePrepareLogic, { GamePrepareState } from "./GamePrepareLogic";
@@ -68,12 +69,12 @@ export default class CharacterSelLogic extends LayoutComponent {
       this.lf2.callbacks.add({
         on_cheat_changed: (cheat_name, enabled) => {
           // 当前选择的角色被隐藏时，让玩家选随机
-          if (cheat_name === Defines.Cheats.LF2_NET && !enabled)
+          if (cheat_name === CheatType.LF2_NET && !enabled)
             this.handle_hidden_character();
         },
       }),
     );
-    if (!this.lf2.is_cheat_enabled(Defines.Cheats.LF2_NET))
+    if (!this.lf2.is_cheat_enabled(CheatType.LF2_NET))
       this.handle_hidden_character();
   }
 
@@ -86,9 +87,9 @@ export default class CharacterSelLogic extends LayoutComponent {
   }
 
   get characters() {
-    return this.lf2.is_cheat_enabled(Defines.Cheats.LF2_NET)
+    return this.lf2.is_cheat_enabled(CheatType.LF2_NET)
       ? this.lf2.datas.characters
-      : this.lf2.datas.get_characters_not_in_group(Defines.EntityGroup.Hidden);
+      : this.lf2.datas.get_characters_not_in_group(EntityGroup.Hidden);
   }
 
   override on_player_key_down(player_id: string, key: GameKey): void {

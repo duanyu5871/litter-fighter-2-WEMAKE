@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import type LF2 from "../LF2/LF2";
-import { Defines } from "../LF2/defines";
+import { EntityGroup } from "../LF2/defines";
 import { type IEntityData } from "../LF2/defines/IEntityData";
-import Select, { ISelectProps } from "./Select";
 import { is_str } from "../LF2/utils/type_check";
+import Select, { ISelectProps } from "./Select";
 
 export interface CharacterSelectProps
   extends Omit<ISelectProps<IEntityData | "", string>, 'parse'> {
@@ -28,7 +28,7 @@ export default function CharacterSelect(props: CharacterSelectProps) {
       show_all
         ? characters
         : characters.filter((v) => {
-          const r = v.base.group?.indexOf(Defines.EntityGroup.Hidden);
+          const r = v.base.group?.indexOf(EntityGroup.Hidden);
           return r === void 0 || r === -1;
         }),
     [characters, show_all],

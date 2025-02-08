@@ -5,7 +5,7 @@ import { World } from "./World";
 import { Callbacks, get_short_file_size_txt, Loader, new_id, new_team, NoEmitCallbacks } from "./base";
 import { KEY_NAME_LIST } from "./controller/BaseController";
 import LocalController from "./controller/LocalController";
-import { Builtin_FrameId, Defines, Difficulty, IBgData, IEntityData, IStageInfo, TFace } from "./defines";
+import { Builtin_FrameId, CheatType, Defines, Difficulty, IBgData, IEntityData, IStageInfo, TFace } from "./defines";
 import ditto, {
   IKeyboard,
   IKeyboardCallback,
@@ -38,12 +38,12 @@ import float_equal from "./utils/math/float_equal";
 import { random_get, random_in, random_take } from "./utils/math/random";
 import { is_arr, is_num, is_str, not_empty_str } from "./utils/type_check";
 
-const cheat_info_pair = (n: Defines.Cheats) =>
+const cheat_info_pair = (n: CheatType) =>
   [
     "" + n,
     {
       keys: Defines.CheatKeys[n],
-      sound: Defines.CheatSounds[n],
+      sound: Defines.CheatTypeSounds[n],
     },
   ] as const;
 
@@ -319,18 +319,18 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
   on_pointer_up(e: IPointingEvent) { }
 
   private _curr_key_list: string = "";
-  private readonly _cheats_map = new Map<string, Defines.ICheatInfo>([
-    cheat_info_pair(Defines.Cheats.LF2_NET),
-    cheat_info_pair(Defines.Cheats.HERO_FT),
-    cheat_info_pair(Defines.Cheats.GIM_INK),
+  private readonly _CheatType_map = new Map<string, Defines.ICheatInfo>([
+    cheat_info_pair(CheatType.LF2_NET),
+    cheat_info_pair(CheatType.HERO_FT),
+    cheat_info_pair(CheatType.GIM_INK),
   ]);
-  private readonly _cheats_enable_map = new Map<string, boolean>();
+  private readonly _CheatType_enable_map = new Map<string, boolean>();
   private readonly _cheat_sound_id_map = new Map<string, string>();
-  is_cheat_enabled(name: string | Defines.Cheats) {
-    return !!this._cheats_enable_map.get("" + name);
+  is_cheat_enabled(name: string | CheatType) {
+    return !!this._CheatType_enable_map.get("" + name);
   }
-  toggle_cheat_enabled(cheat_name: string | Defines.Cheats) {
-    const cheat_info = this._cheats_map.get(cheat_name);
+  toggle_cheat_enabled(cheat_name: string | CheatType) {
+    const cheat_info = this._CheatType_map.get(cheat_name);
     if (!cheat_info) return;
     const { sound: s } = cheat_info;
     const sound_id = this._cheat_sound_id_map.get(cheat_name);
@@ -338,8 +338,8 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
     this.sounds
       .play_with_load(s)
       .then((v) => this._cheat_sound_id_map.set(cheat_name, v));
-    const enabled = !this._cheats_enable_map.get(cheat_name);
-    this._cheats_enable_map.set(cheat_name, enabled);
+    const enabled = !this._CheatType_enable_map.get(cheat_name);
+    this._CheatType_enable_map.set(cheat_name, enabled);
     this._callbacks.emit("on_cheat_changed")(cheat_name, enabled);
     this._curr_key_list = "";
   }
@@ -348,7 +348,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
     const key_code = e.key?.toLowerCase() ?? "";
     this._curr_key_list += key_code;
     let match = false;
-    for (const [cheat_name, { keys: k }] of this._cheats_map) {
+    for (const [cheat_name, { keys: k }] of this._CheatType_map) {
       if (k.startsWith(this._curr_key_list)) match = true;
       if (k !== this._curr_key_list) continue;
       this.toggle_cheat_enabled(cheat_name);
@@ -726,7 +726,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
 
   switch_difficulty(): void {
     const { difficulty } = this;
-    const max = this.is_cheat_enabled(Defines.Cheats.LF2_NET) ? 4 : 3;
+    const max = this.is_cheat_enabled(CheatType.LF2_NET) ? 4 : 3;
     const next = (difficulty % max) + 1;
     this.difficulty = next;
   }

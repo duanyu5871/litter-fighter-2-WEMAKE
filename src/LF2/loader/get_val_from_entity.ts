@@ -1,6 +1,6 @@
-import { IValGetter, IValGetterGetter } from "../defines/IExpression";
-import { Defines, ItrKind } from "../defines";
+import { CheatType, ItrKind } from "../defines";
 import { EntityVal } from "../defines/EntityVal";
+import { IValGetter, IValGetterGetter } from "../defines/IExpression";
 import Entity from "../entity/Entity";
 import { is_ball, is_character, is_weapon } from "../entity/type_check";
 import { find } from "../utils/container_help";
@@ -51,15 +51,15 @@ export const get_val_getter_from_entity: IValGetterGetter<Entity> = (
       };
     case EntityVal.LF2_NET_ON:
       return (e) => {
-        return e.lf2.is_cheat_enabled(Defines.Cheats.LF2_NET) ? 1 : 0;
+        return e.lf2.is_cheat_enabled(CheatType.LF2_NET) ? 1 : 0;
       };
     case EntityVal.HERO_FT_ON:
       return (e) => {
-        return e.lf2.is_cheat_enabled(Defines.Cheats.HERO_FT) ? 1 : 0;
+        return e.lf2.is_cheat_enabled(CheatType.HERO_FT) ? 1 : 0;
       };
     case EntityVal.GIM_INK_ON:
       return (e) => {
-        return e.lf2.is_cheat_enabled(Defines.Cheats.GIM_INK) ? 1 : 0;
+        return e.lf2.is_cheat_enabled(CheatType.GIM_INK) ? 1 : 0;
       };
     case EntityVal.WeaponType:
       return (e) => {

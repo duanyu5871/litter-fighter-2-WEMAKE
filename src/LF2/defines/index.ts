@@ -45,3 +45,7 @@ export * from "./OpointMultiEnum";
 export * from "./OpointSpreading";
 export * from "./SpeedMode";
 export * from "./StateEnum";
+export * from "./WeaponType";
+export * from "./EntityGroup";
+export * from "./CPointKind";
+export * from "./CheatType";

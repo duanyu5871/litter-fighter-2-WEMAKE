@@ -1,4 +1,4 @@
-import { IBgData, IStageInfo } from "../defines";
+import { IBgData, IStageInfo, WeaponType } from "../defines";
 import { IEntityPictureInfo } from "../defines/IEntityPictureInfo";
 import { IBaseData } from "../defines/IBaseData";
 import { IEntityData } from "../defines/IEntityData";
@@ -116,16 +116,16 @@ export default function dat_to_json(
     case "1":
       base.type =
         {
-          "120": Defines.WeaponType.Knife, // Knife
-          "124": Defines.WeaponType.Knife, // Boomerang
-        }["" + datIndex.id] ?? Defines.WeaponType.Stick;
+          "120": WeaponType.Knife, // Knife
+          "124": WeaponType.Knife, // Boomerang
+        }["" + datIndex.id] ?? WeaponType.Stick;
       base.bounce = 0.2;
       base.name =
         datIndex.hash ?? datIndex.file.replace(/[^a-z|A-Z|0-9|_]/g, "");
       ret = make_weapon_data(base, full_str, make_frames(full_str, base.files));
       break;
     case "2":
-      base.type = Defines.WeaponType.Heavy;
+      base.type = WeaponType.Heavy;
       switch (datIndex.id) {
         case "150":
           base.bounce = 0.2;
@@ -142,7 +142,7 @@ export default function dat_to_json(
       ret = make_ball_data(base, make_frames(full_str, base.files), datIndex);
       break;
     case "4":
-      base.type = Defines.WeaponType.Baseball;
+      base.type = WeaponType.Baseball;
       base.bounce = 0.45;
       base.name =
         datIndex.hash ?? datIndex.file.replace(/[^a-z|A-Z|0-9|_]/g, "");
@@ -152,7 +152,7 @@ export default function dat_to_json(
       ret = make_entity_data(base, make_frames(full_str, base.files));
       break;
     case "6":
-      base.type = Defines.WeaponType.Drink;
+      base.type = WeaponType.Drink;
       base.bounce = 0.45;
       base.name =
         datIndex.hash ?? datIndex.file.replace(/[^a-z|A-Z|0-9|_]/g, "");

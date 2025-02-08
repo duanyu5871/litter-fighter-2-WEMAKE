@@ -1,5 +1,5 @@
 import { new_team } from "../../base";
-import { Defines } from "../../defines";
+import { Defines, EntityGroup } from "../../defines";
 import { Factory } from "../../entity/Factory";
 import IEntityCallbacks from "../../entity/IEntityCallbacks";
 import { is_character } from "../../entity/type_check";
@@ -14,7 +14,7 @@ export class DemoModeLogic extends LayoutComponent implements IEntityCallbacks {
     if (bg_data) this.lf2.change_bg(bg_data);
 
     const character_datas = this.lf2.datas.get_characters_of_group(
-      Defines.EntityGroup.Regular,
+      EntityGroup.Regular,
     );
     const player_count = Math.floor(random_in(2, 8));
     const player_teams: string[] = [];

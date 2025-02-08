@@ -4,6 +4,7 @@ import FSM, { IReadonlyFSM } from "../../base/FSM";
 import Invoker from "../../base/Invoker";
 import { NoEmitCallbacks } from "../../base/NoEmitCallbacks";
 import LocalController from "../../controller/LocalController";
+import { EntityGroup } from "../../defines";
 import GameKey from "../../defines/GameKey";
 import { Defines } from "../../defines/defines";
 import Entity from "../../entity/Entity";
@@ -213,7 +214,7 @@ export default class GamePrepareLogic extends LayoutComponent {
     for (const { player: p } of this.player_slots) {
       if (!p?.joined || !p.is_random) continue;
       const { characters } = this.lf2.datas.find_group(
-        Defines.EntityGroup.Regular,
+        EntityGroup.Regular,
       );
       p.set_random_character(random_get(characters)?.id ?? "");
     }

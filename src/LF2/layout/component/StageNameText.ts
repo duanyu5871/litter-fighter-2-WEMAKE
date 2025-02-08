@@ -1,6 +1,6 @@
 import { ITextNode } from "../../3d/ITextNode";
 import Invoker from "../../base/Invoker";
-import { IStageInfo } from "../../defines";
+import { CheatType, IStageInfo } from "../../defines";
 import { Defines } from "../../defines/defines";
 import Ditto from "../../ditto";
 import Layout from "../Layout";
@@ -10,7 +10,7 @@ export default class StageNameText extends LayoutComponent {
   private _stage: IStageInfo = Defines.VOID_STAGE;
 
   get show_all(): boolean {
-    return this.lf2.is_cheat_enabled(Defines.Cheats.GIM_INK);
+    return this.lf2.is_cheat_enabled(CheatType.GIM_INK);
   }
 
   get stages(): IStageInfo[] {

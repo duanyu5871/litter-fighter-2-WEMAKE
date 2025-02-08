@@ -1,4 +1,4 @@
-import { FacingFlag, IEntityInfo, IFrameInfo, StateEnum, TNextFrame } from "../defines";
+import { FacingFlag, IEntityInfo, IFrameInfo, StateEnum, TNextFrame, WeaponType } from "../defines";
 import { BdyKind } from "../defines/BdyKind";
 import { EntityEnum } from "../defines/EntityEnum";
 import { EntityVal } from "../defines/EntityVal";
@@ -29,7 +29,6 @@ function push_next_frame(
   if (Array.isArray(src)) return [...src, ...list];
   return [src, ...list];
 }
-const { WeaponType, StateEnum: State } = Defines;
 const set_hit_turn_back = (frame: IFrameInfo, back_frame_id: string = "") => {
   frame.hit = frame.hit || {};
   frame.hit.B = { id: back_frame_id, wait: "i", facing: FacingFlag.Backward };
@@ -522,17 +521,17 @@ export function make_character_data(
         break;
     }
     switch (frame.state) {
-      case State.Frozen:
+      case StateEnum.Frozen:
         edit_next_frame(frame.next, (i) => {
           const f = typeof i.id === "string" && frames[i.id];
           if (!f) return;
-          if (f.state !== State.Frozen) {
+          if (f.state !== StateEnum.Frozen) {
             i.blink_time = 60;
           }
         });
         break;
 
-      case State.Standing:
+      case StateEnum.Standing:
         frame.hit = frame.hit || {};
         frame.hold = frame.hold || {};
         frame.hit.a = [
@@ -585,12 +584,12 @@ export function make_character_data(
           { id: "walking_0" }; // walking
         frame.hit.FF = frame.hit.FF = { id: "running_0" };
         break;
-      case State.BurnRun:
-      case State.Z_Moveable:
+      case StateEnum.BurnRun:
+      case StateEnum.Z_Moveable:
         frame.dvz = void 0;
         frame.ctrl_spd_z = running_speedz;
         break;
-      case State.Defend: {
+      case StateEnum.Defend: {
         if (frame.bdy?.length)
           for (const bdy of frame.bdy) {
             bdy.kind = BdyKind.Defend;
@@ -601,7 +600,7 @@ export function make_character_data(
           }
         break;
       }
-      case State.Walking:
+      case StateEnum.Walking:
         /** heavy_obj_walk */
         if (
           frame_id !== "12" &&
@@ -663,7 +662,7 @@ export function make_character_data(
         round_trip_frames_map[frame.name].push(frame);
         delete frames[frame_id];
         break;
-      case State.Running: {
+      case StateEnum.Running: {
         /** heavy_obj_run */
         if (frame_id !== "16" && frame_id !== "17" && frame_id !== "18") {
           frame.hit = frame.hit || {};

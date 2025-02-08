@@ -1,4 +1,5 @@
 import { Builtin_FrameId } from "./Builtin_FrameId";
+import { CheatType } from "./CheatType";
 import { Difficulty } from "./Difficulty";
 import type { GameKey } from "./GameKey";
 import type { IBgData } from "./IBgData";
@@ -11,7 +12,6 @@ export type TTODO = any;
 export type TFace = -1 | 1;
 export type TTrend = -1 | 0 | 1;
 export type BOOL = 1 | 0;
-
 export namespace Defines {
   export const CLASSIC_SCREEN_WIDTH = 794;
   export const CLASSIC_SCREEN_HEIGHT = 550;
@@ -80,107 +80,17 @@ export namespace Defines {
   export const NEXT_FRAME_SELF: Readonly<INextFrame> = {
     id: Builtin_FrameId.Self,
   };
-  export enum WeaponType {
-    None = 0,
-
-    /**
-     * 棍棒
-     *
-     * - 丢出方式：
-     *    - 奔跑: 前 + 攻击
-     *    - 空中: 前 + 攻击
-     */
-    Stick = 1,
-
-    /** 重物类 */
-    Heavy = 2,
-
-    /**
-     * 小刀类。
-     * - 丢出方式：
-     *    - 奔跑: 前 + 攻击
-     *    - 空中: 前 + 攻击
-     *    - 站立: 前 + 攻击
-     */
-    Knife = 3,
-
-    /**
-     * 棒球类
-     */
-    Baseball = 4,
-
-    /**
-     * 饮料
-     *
-     * - 丢出方式：
-     *    - 奔跑: 前 + 攻击
-     *    - 空中: 前 + 攻击
-     *    - 冲跳: 前 + 攻击
-     */
-    Drink = 5,
-  }
-
-  export enum EntityGroup {
-    /**
-     * 隐藏角色
-     */
-    Hidden = "hidden",
-
-    /**
-     * 常规角色
-     * 属于此组的角色才可被随机到
-     */
-    Regular = "1000",
-
-    /**
-     * 最杂的杂鱼
-     * 默认只有30和31的角色
-     */
-    _3000 = "3000",
-
-    /**
-     * 对战模式常规武器
-     * 对战模式应当掉落属于这组的武器
-     */
-    VsRegularWeapon = "VsRegularWeapon",
-
-    /**
-     * 闯关常规武器
-     * 闯关模式应当掉落属于这组的武器
-     */
-    StageRegularWeapon = "StageRegularWeapon",
-
-    FreezableBall = "FreezableBall"
-  }
-
-  export enum CPointKind {
-    /**
-     * 抓人的
-     */
-    Attacker = 1,
-
-    /**
-     * 被抓的
-     */
-    Victim = 2,
-  }
-
-  export enum Cheats {
-    LF2_NET = "LF2_NET",
-    HERO_FT = "HERO_FT",
-    GIM_INK = "GIM_INK",
-  }
-
-  export const CheatKeys: Record<Cheats, string> = {
-    [Cheats.LF2_NET]: "lf2.net",
-    [Cheats.HERO_FT]: "herofighter.com",
-    [Cheats.GIM_INK]: "gim.ink",
+  
+  export const CheatKeys: Record<CheatType, string> = {
+    [CheatType.LF2_NET]: "lf2.net",
+    [CheatType.HERO_FT]: "herofighter.com",
+    [CheatType.GIM_INK]: "gim.ink",
   };
 
-  export const CheatSounds: Record<Cheats, string> = {
-    [Cheats.LF2_NET]: "data/m_pass.wav.mp3",
-    [Cheats.HERO_FT]: "data/m_end.wav.mp3",
-    [Cheats.GIM_INK]: "data/093_r.wav.mp3",
+  export const CheatTypeSounds: Record<CheatType, string> = {
+    [CheatType.LF2_NET]: "data/m_pass.wav.mp3",
+    [CheatType.HERO_FT]: "data/m_end.wav.mp3",
+    [CheatType.GIM_INK]: "data/093_r.wav.mp3",
   };
 
   export interface ICheatInfo {

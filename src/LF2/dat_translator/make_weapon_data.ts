@@ -1,4 +1,4 @@
-import { Builtin_FrameId, IEntityInfo } from "../defines";
+import { Builtin_FrameId, IEntityInfo, WeaponType } from "../defines";
 import { IEntityData } from "../defines/IEntityData";
 import { EntityEnum } from "../defines/EntityEnum";
 import { IFrameIndexes } from "../defines/IFrameIndexes";
@@ -7,43 +7,43 @@ import { Defines } from "../defines/defines";
 import { make_itr_prefabs } from "./make_itr_prefabs";
 import { take } from "./take";
 
-const indexes_map: Record<Defines.WeaponType, IFrameIndexes> = {
-  [Defines.WeaponType.None]: {
+const indexes_map: Record<WeaponType, IFrameIndexes> = {
+  [WeaponType.None]: {
     in_the_sky: "",
     on_ground: "",
     just_on_ground: "",
     throw_on_ground: "",
     throwing: "",
   },
-  [Defines.WeaponType.Stick]: {
+  [WeaponType.Stick]: {
     in_the_sky: "0",
     on_ground: "60",
     just_on_ground: "70",
     throw_on_ground: "71",
     throwing: "40",
   },
-  [Defines.WeaponType.Heavy]: {
+  [WeaponType.Heavy]: {
     in_the_sky: "0",
     on_ground: "20",
     just_on_ground: "21",
     throw_on_ground: "71",
     throwing: "0",
   },
-  [Defines.WeaponType.Knife]: {
+  [WeaponType.Knife]: {
     in_the_sky: "0",
     on_ground: "60",
     just_on_ground: "70",
     throw_on_ground: "71",
     throwing: "40",
   },
-  [Defines.WeaponType.Baseball]: {
+  [WeaponType.Baseball]: {
     in_the_sky: "0",
     on_ground: "60",
     just_on_ground: "70",
     throw_on_ground: "71",
     throwing: "40",
   },
-  [Defines.WeaponType.Drink]: {
+  [WeaponType.Drink]: {
     in_the_sky: "0",
     on_ground: "60",
     just_on_ground: "70",
@@ -59,8 +59,8 @@ export function make_weapon_data(
 ): IEntityData {
   const itr_prefabs = make_itr_prefabs(full_str);
   const indexes =
-    indexes_map[info.type as Defines.WeaponType] ??
-    indexes_map[Defines.WeaponType.None];
+    indexes_map[info.type as WeaponType] ??
+    indexes_map[WeaponType.None];
   const sound_1 = take(info, "weapon_broken_sound");
   if (sound_1) info.dead_sounds = [sound_1 + ".mp3"];
 

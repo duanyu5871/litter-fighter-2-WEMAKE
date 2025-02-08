@@ -1,4 +1,4 @@
-import { BuiltIn_OID, Defines } from "../defines";
+import { BuiltIn_OID, Defines, EntityGroup } from "../defines";
 import { IEntityData } from "../defines/IEntityData";
 import { add_entity_groups } from "./add_entity_to_group";
 import { make_louis_data, make_rudolf_data } from "./cook_louis_data";
@@ -6,10 +6,10 @@ import { make_louis_data, make_rudolf_data } from "./cook_louis_data";
 export function make_character_special(data: IEntityData) {
   const num_id = Number(data.id);
   if ((num_id >= 30 && num_id <= 39) || (num_id >= 50 && num_id <= 59)) {
-    add_entity_groups(data.base, Defines.EntityGroup.Hidden);
+    add_entity_groups(data.base, EntityGroup.Hidden);
   }
   if (num_id >= 1 && num_id <= 29) {
-    add_entity_groups(data.base, Defines.EntityGroup.Regular);
+    add_entity_groups(data.base, EntityGroup.Regular);
   }
   switch (data.id) {
     case BuiltIn_OID.Julian:
@@ -42,7 +42,7 @@ export function make_character_special(data: IEntityData) {
       break;
     case BuiltIn_OID.Bandit:
     case BuiltIn_OID.Hunter:
-      add_entity_groups(data.base, Defines.EntityGroup._3000);
+      add_entity_groups(data.base, EntityGroup._3000);
       break;
     case BuiltIn_OID.Rudolf:
       make_rudolf_data(data);
