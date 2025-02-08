@@ -1,5 +1,5 @@
-import { IQuaternion } from "../ditto/IQuaternion";
-import { IVector2 } from "../ditto/IVector2";
+import { IQuaternion } from "../defines/IQuaternion";
+import { IVector2 } from "../defines/IVector2";
 import { IObjectNode } from "./IObjectNode";
 import { IRaycaster } from "./IRaycaster";
 

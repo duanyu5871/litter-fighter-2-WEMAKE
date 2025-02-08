@@ -1,6 +1,6 @@
 import __SpriteNode from "../../../DittoImpl/3d/SpriteNode";
-import NumberAnimation from "../../animation/NumberAnimation";
-import SequenceAnimation from "../../animation/SequenceAnimation";
+import Easing from "../../animation/Easing";
+import Sequence from "../../animation/Sequence";
 import Invoker from "../../base/Invoker";
 import Ditto from "../../ditto";
 import Stage from "../../stage/Stage";
@@ -10,10 +10,10 @@ import { LayoutComponent } from "./LayoutComponent";
 
 export default class StageTitleShow extends LayoutComponent {
   protected _unmount_jobs = new Invoker();
-  private _opactiy: SequenceAnimation = new SequenceAnimation(
-    new NumberAnimation(0, 1, 500),
+  private _opactiy: Sequence = new Sequence(
+    new Easing(0, 1, 500),
     3000,
-    new NumberAnimation(1, 0, 500),
+    new Easing(1, 0, 500),
   );
   private _sprites: __SpriteNode[] = [];
 

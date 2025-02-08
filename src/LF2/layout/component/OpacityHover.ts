@@ -1,9 +1,9 @@
-import NumberAnimation from "../../animation/NumberAnimation";
+import Easing from "../../animation/Easing";
 import { is_nan } from "../../utils/type_check";
 import { LayoutComponent } from "./LayoutComponent";
 
 export default class OpacityHover extends LayoutComponent {
-  protected anim = new NumberAnimation(0, 1, 150);
+  protected anim = new Easing(0, 1, 150);
   override init(...args: string[]): this {
     const a = Number(args[0]);
     const b = Number(args[1]);

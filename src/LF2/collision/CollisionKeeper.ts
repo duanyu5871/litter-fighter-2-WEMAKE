@@ -1,11 +1,4 @@
-import { ItrKind } from "../defines";
-import { BdyKind } from "../defines/BdyKind";
-import {
-  ALL_ENTITY_ENUM,
-  EntityEnum,
-  TEntityEnum,
-} from "../defines/EntityEnum";
-import { ICollision } from "../defines/ICollision";
+import { ALL_ENTITY_ENUM, BdyKind, EntityEnum, ICollision, ItrKind, TEntityEnum } from "../defines";
 import { ICollisionHandler } from "../defines/ICollisionHandler";
 import { handle_itr_kind_catch } from "./handle_itr_kind_catch";
 import { handle_itr_kind_force_catch } from "./handle_itr_kind_force_catch";

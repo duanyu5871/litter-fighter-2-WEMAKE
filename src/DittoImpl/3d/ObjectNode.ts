@@ -3,7 +3,7 @@ import { IBaseNode } from "../../LF2/3d/IBaseNode";
 import { IObjectNode, ObjectEventKey } from "../../LF2/3d/IObjectNode";
 import LF2 from "../../LF2/LF2";
 import { is_num } from "../../LF2/utils/type_check";
-import { IQuaternion } from "../../LF2/ditto/IQuaternion";
+import { IQuaternion } from "../../LF2/defines/IQuaternion";
 import { IRaycaster } from "../../LF2/3d/IRaycaster";
 
 export class __ObjectNode implements IObjectNode {

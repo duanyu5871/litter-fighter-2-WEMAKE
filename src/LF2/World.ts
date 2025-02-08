@@ -1,14 +1,7 @@
 import { Warn } from "../Log";
-import { IOrthographicCameraNode } from "./3d/IOrthographicCamera";
-import { ISceneNode } from "./3d/ISceneNode";
-import { IWorldCallbacks } from "./IWorldCallbacks";
-import LF2 from "./LF2";
-import Callbacks from "./base/Callbacks";
-import FPS from "./base/FPS";
-import { NoEmitCallbacks } from "./base/NoEmitCallbacks";
-import { IBdyInfo, IFrameInfo, IItrInfo } from "./defines";
-import { ICollision } from "./defines/ICollision";
-import { Defines } from "./defines/defines";
+import { IOrthographicCameraNode, ISceneNode } from "./3d";
+import { Callbacks, FPS, NoEmitCallbacks } from "./base";
+import { Defines, IBdyInfo, IBounding, ICollision, IFrameInfo, IItrInfo } from "./defines";
 import Ditto from "./ditto";
 import Entity from "./entity/Entity";
 import { Factory } from "./entity/Factory";
@@ -19,6 +12,8 @@ import {
   is_local_ctrl,
   is_weapon,
 } from "./entity/type_check";
+import { IWorldCallbacks } from "./IWorldCallbacks";
+import LF2 from "./LF2";
 import { BgRender } from "./renderer/BgRender";
 import { EntityRender } from "./renderer/EntityRender";
 import Stage from "./stage/Stage";
@@ -26,15 +21,6 @@ import { WhatNext } from "./state/State_Base";
 import { find } from "./utils/container_help";
 import float_equal from "./utils/math/float_equal";
 import { is_num } from "./utils/type_check";
-export interface IBounding {
-  left: number;
-  right: number;
-  top: number;
-  bottom: number;
-  near: number;
-  far: number;
-}
-
 export class World {
   static readonly TAG = "World";
   readonly lf2: LF2;

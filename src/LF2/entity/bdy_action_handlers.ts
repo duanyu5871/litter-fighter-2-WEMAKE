@@ -1,6 +1,5 @@
-import type { IAction_NextFrame, IAction_SetProp, IAction_Sound, TAction } from "../defines/Action";
-import type { ICollision } from "../defines/ICollision";
-import { ItrKind } from "../defines/ItrKind";
+import type { IAction_NextFrame, IAction_SetProp, IAction_Sound, ICollision, TAction } from "../defines";
+import { ItrKind } from "../defines";
 
 export const bdy_action_handlers: Record<TAction['type'], (action: TAction, collision: ICollision) => any> = {
   sound: (action: TAction, { itr, victim }: ICollision) => {

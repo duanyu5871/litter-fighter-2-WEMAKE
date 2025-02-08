@@ -1,7 +1,7 @@
 import axios, { AxiosResponse, RawAxiosRequestHeaders } from "axios";
 import { IImporter } from "../LF2/ditto/importer/IImporter";
 import { ImportError } from "../LF2/ditto/importer/ImportError";
-import { PIO } from "../LF2/utils/PromisesInOne";
+import { PIO } from "../LF2/base/PromisesInOne";
 
 const roots = ["lf2_built_in_data"];
 function get_possible_url_list(list: string[]): string[] {

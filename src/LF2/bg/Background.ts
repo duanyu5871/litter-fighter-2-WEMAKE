@@ -1,6 +1,5 @@
 import { World } from "../World";
-import { IBgData } from "../defines";
-import { IBgLayerInfo } from "../defines/IBgLayerInfo";
+import { IBgData, IBgLayerInfo } from "../defines";
 import Layer from "./Layer";
 
 export default class Background {
@@ -56,6 +55,7 @@ export default class Background {
       x += loop
     } while (loop > 0 && x < this.width);
   }
+
 
   fade_out(duration: number, delay_max_offset: number, delay: number): void {
     for (const layer of this._layers)

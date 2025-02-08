@@ -1,4 +1,4 @@
-export default interface IPicture<T> {
+export interface IPicture<T> {
   id: string;
   w: number;
   h: number;
@@ -8,3 +8,4 @@ export default interface IPicture<T> {
   col: number;
   texture: T;
 }
+export default IPicture

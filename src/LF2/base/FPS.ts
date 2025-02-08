@@ -6,7 +6,7 @@ import { clamp } from "../utils/math/clamp";
  * @export
  * @class FPS
  */
-export default class FPS {
+export class FPS {
   /**
    * 帧率
    *
@@ -65,3 +65,5 @@ export default class FPS {
     this._duration = 0;
   }
 }
+
+export default FPS;

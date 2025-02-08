@@ -1,11 +1,11 @@
 import { ISpriteNode } from "../../3d/ISpriteNode";
-import NumberAnimation from "../../animation/NumberAnimation";
-import SequenceAnimation from "../../animation/SequenceAnimation";
+import Easing from "../../animation/Easing";
+import Sequence from "../../animation/Sequence";
 import { SineAnimation } from "../../animation/SineAnimation";
 import Invoker from "../../base/Invoker";
 import GameKey from "../../defines/GameKey";
 import Ditto from "../../ditto";
-import ease_linearity from "../../ease_method/ease_linearity";
+import ease_linearity from "../../utils/ease_method/ease_linearity";
 import { TPicture } from "../../loader/loader";
 import { make_arr } from "../../utils/array/make_arr";
 import Layout from "../Layout";
@@ -24,30 +24,30 @@ export default class LaunchPageLogic extends LayoutComponent {
 
   protected _layouts_loaded: boolean = false;
   protected _dispose_jobs = new Invoker();
-  protected _offset_x = new SequenceAnimation(
+  protected _offset_x = new Sequence(
     1000,
-    new NumberAnimation(0, 80, 500),
+    new Easing(0, 80, 500),
   );
-  protected _scale = new SequenceAnimation(
+  protected _scale = new Sequence(
     1000,
-    new NumberAnimation(0, 2, 250),
-    new NumberAnimation(2, 1, 250),
+    new Easing(0, 2, 250),
+    new Easing(2, 1, 250),
   );
-  protected _opacity = new SequenceAnimation(
+  protected _opacity = new Sequence(
     1000,
-    new NumberAnimation(0, 1, 500),
+    new Easing(0, 1, 500),
     250,
   );
   protected _unmount_jobs = new Invoker();
   protected _skipped = false;
 
   protected _tap_hints_opacity = new SineAnimation(0.1, 1, 0.002);
-  protected _tap_hints_fadeout_opacity = new NumberAnimation(1, 0, 255);
+  protected _tap_hints_fadeout_opacity = new Easing(1, 0, 255);
   protected state: number = 0;
 
   protected _loading_sprite: ISpriteNode;
   protected _loading_imgs: TPicture[] = [];
-  protected _loading_idx_anim = new NumberAnimation(
+  protected _loading_idx_anim = new Easing(
     0,
     44,
     2000,

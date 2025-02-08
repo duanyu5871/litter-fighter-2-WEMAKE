@@ -1,5 +1,4 @@
-import type { IFrameInfo } from "../defines";
-import { Defines } from "../defines/defines";
+import { Defines, type IFrameInfo } from "../defines";
 import type Entity from "../entity/Entity";
 import CharacterState_Base from "./CharacterState_Base";
 export default class CharacterState_Dash extends CharacterState_Base {

@@ -1,13 +1,14 @@
-import { fade_in } from "../../Utils/fade_in";
-import fade_out from "../../Utils/fade_out";
+import Easing from "../animation/Easing";
+import IAnimation from "../animation/IBase";
+import Sequence from "../animation/Sequence";
 import type { IBgLayerInfo } from "../defines/IBgLayerInfo";
 import Background from "./Background.js";
 export class Layer {
   readonly bg: Background;
   readonly info: IBgLayerInfo;
+  private _fade_anim?: IAnimation;
   opacity = 0;
   visible = false;
-  private _cancel_anim?: () => void;
   constructor(bg: Background, info: IBgLayerInfo) {
     this.bg = bg;
     this.info = info;
@@ -20,16 +21,18 @@ export class Layer {
     } else {
       this.visible = true;
     }
+    if (this._fade_anim) {
+      this._fade_anim.time++;
+      this.opacity = this._fade_anim.calc().value
+      if (this._fade_anim.time >= this._fade_anim.duration)
+        this._fade_anim = void 0;
+    }
   }
   fade_out(duration: number = 255, delay: number = 0): void {
-    this._cancel_anim?.()
-    this._cancel_anim = fade_out(o => this.opacity = o, duration, delay);
+    this._fade_anim = new Sequence(delay / 16, new Easing(this.opacity, 0, duration / 16))
   }
   fade_in(duration: number = 255, delay: number = 0): void {
-    this._cancel_anim?.()
-    this._cancel_anim = fade_in(o => {
-      this.opacity = o
-    }, duration, delay);
+    this._fade_anim = new Sequence(delay / 16, new Easing(this.opacity, 1, duration / 16))
   }
   dispose() {
   }

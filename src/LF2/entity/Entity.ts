@@ -1,35 +1,21 @@
 import { Warn } from "../../Log";
 import type LF2 from "../LF2";
 import type { World } from "../World";
-import { IBounding } from "../World";
 import { Callbacks, new_id, new_team, type NoEmitCallbacks } from "../base";
 import { BaseController } from "../controller/BaseController";
 import {
-  FacingFlag,
-  ICpointInfo,
-  IFrameInfo,
+  BdyKind, Defines, EntityEnum, FacingFlag, IBaseData, IBounding,
+  ICollision, ICpointInfo, IEntityData, IFrameInfo,
   IItrInfo,
   INextFrame,
   INextFrameResult,
-  IOpointInfo,
-  ITexturePieceInfo,
+  IOpointInfo, IPos, ITexturePieceInfo,
   ItrKind,
-  TFace,
-  TNextFrame,
+  IVector3,
+  OpointKind, OpointMultiEnum, OpointSpreading, SpeedMode, TFace,
+  TNextFrame
 } from "../defines";
-import { BdyKind } from "../defines/BdyKind";
-import { EntityEnum } from "../defines/EntityEnum";
-import { IBaseData } from "../defines/IBaseData";
-import { ICollision } from "../defines/ICollision";
-import { IEntityData } from "../defines/IEntityData";
-import { IPos } from "../defines/IPos";
-import { OpointKind } from "../defines/OpointKind";
-import { OpointMultiEnum } from "../defines/OpointMultiEnum";
-import { OpointSpreading } from "../defines/OpointSpreading";
-import { SpeedMode } from "../defines/SpeedMode";
-import { Defines } from "../defines/defines";
 import Ditto from "../ditto";
-import { IVector3 } from "../ditto/IVector3";
 import { ENTITY_STATES, States } from "../state";
 import BallState_Base from "../state/BallState_Base";
 import CharacterState_Base from "../state/CharacterState_Base";
@@ -114,7 +100,7 @@ export type TData =
   | IEntityData
   | IEntityData
   | IEntityData;
-export default class Entity {
+export class Entity {
   static readonly TAG: string = EntityEnum.Entity;
 
   id: string = new_id();
@@ -1811,3 +1797,5 @@ function cross_bounding(r0: IBounding, r1: IBounding): IBounding {
     near: Math.min(r0.near, r1.near),
   };
 }
+
+export default Entity;

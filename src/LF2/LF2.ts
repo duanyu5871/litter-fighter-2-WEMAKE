@@ -2,15 +2,10 @@ import { Warn } from "../Log";
 import { ILf2Callback } from "./ILf2Callback";
 import { PlayerInfo } from "./PlayerInfo";
 import { World } from "./World";
-import Callbacks from "./base/Callbacks";
-import { Loader } from "./base/Loader";
-import { NoEmitCallbacks } from "./base/NoEmitCallbacks";
-import { get_short_file_size_txt } from "./base/get_short_file_size_txt";
-import { new_id, new_team } from "./base/new_id";
+import { Callbacks, get_short_file_size_txt, Loader, new_id, new_team, NoEmitCallbacks } from "./base";
 import { KEY_NAME_LIST } from "./controller/BaseController";
 import LocalController from "./controller/LocalController";
-import { Defines, IBgData, IStageInfo, TFace } from "./defines";
-import { IEntityData } from "./defines/IEntityData";
+import { Defines, IBgData, IEntityData, IStageInfo, TFace } from "./defines";
 import ditto, {
   IKeyboard,
   IKeyboardCallback,
@@ -22,13 +17,13 @@ import ditto, {
   IZip,
 } from "./ditto";
 
-import { BallsHelper } from "./BallsHelper";
-import { CharactersHelper } from "./CharactersHelper";
-import { EntitiesHelper } from "./EntitiesHelper";
-import { WeaponsHelper } from "./WeaponsHelper";
 import Ditto from "./ditto";
 import Entity from "./entity/Entity";
 import { Factory } from "./entity/Factory";
+import { BallsHelper } from "./helper/BallsHelper";
+import { CharactersHelper } from "./helper/CharactersHelper";
+import { EntitiesHelper } from "./helper/EntitiesHelper";
+import { WeaponsHelper } from "./helper/WeaponsHelper";
 import { ICookedLayoutInfo } from "./layout/ICookedLayoutInfo";
 import { ILayoutInfo } from "./layout/ILayoutInfo";
 import Layout from "./layout/Layout";
@@ -36,7 +31,7 @@ import DatMgr from "./loader/DatMgr";
 import get_import_fallbacks from "./loader/get_import_fallbacks";
 import { ImageMgr } from "./loader/loader";
 import Stage from "./stage/Stage";
-import { PIO } from "./utils/PromisesInOne";
+import { PIO } from "./base/PromisesInOne";
 import { fisrt } from "./utils/container_help";
 import { arithmetic_progression } from "./utils/math/arithmetic_progression";
 import float_equal from "./utils/math/float_equal";

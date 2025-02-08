@@ -1,4 +1,4 @@
-import { IVector2 } from "../ditto/IVector2";
+import { IVector2 } from "../defines/IVector2";
 import { IObjectNode } from "./IObjectNode";
 
 export interface IPerspectiveCamera extends IObjectNode {

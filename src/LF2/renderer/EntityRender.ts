@@ -1,11 +1,9 @@
-import * as THREE from "./_t";
 import { IMeshNode } from "../3d";
-import { Defines, IFrameInfo, ITexturePieceInfo, TFace } from "../defines";
-import { IEntityData } from "../defines/IEntityData";
-import IPicture from "../defines/IPicture";
+import { Defines, IEntityData, IFrameInfo, IPicture, ITexturePieceInfo, TFace } from "../defines";
 import Ditto from "../ditto";
 import Entity from "../entity/Entity";
 import create_pictures from "../loader/create_pictures";
+import * as THREE from "./_t";
 import { FrameIndicators } from "./FrameIndicators";
 import { InfoRender } from "./InfoRender";
 import Shadow from "./ShadowRender";

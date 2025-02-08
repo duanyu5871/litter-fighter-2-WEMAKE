@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import type LF2 from "../LF2";
 import { IBaseNode } from "./IBaseNode";
-import { IQuaternion } from "../ditto/IQuaternion";
+import { IQuaternion } from "../defines/IQuaternion";
 import { IRaycaster } from "./IRaycaster";
 export type ObjectEventKey = "added" | "removed";
 export interface IObjectNode extends IBaseNode {

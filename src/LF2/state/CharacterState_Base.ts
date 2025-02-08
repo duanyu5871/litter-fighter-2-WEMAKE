@@ -1,8 +1,5 @@
 import { collisions_keeper } from "../collision/CollisionKeeper";
-import { Defines, IFrameInfo, IItrInfo, INextFrame, ItrKind } from "../defines";
-import { BdyKind } from "../defines/BdyKind";
-import { ICollision } from "../defines/ICollision";
-import { ItrEffect } from "../defines/ItrEffect";
+import { BdyKind, Defines, ICollision, IFrameInfo, IItrInfo, INextFrame, ItrEffect, ItrKind } from "../defines";
 import type Entity from "../entity/Entity";
 import { is_character, is_weapon } from "../entity/type_check";
 import State_Base, { WhatNext } from "./State_Base";

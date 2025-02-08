@@ -1,8 +1,5 @@
-import { IEntityData } from "../defines/IEntityData";
-import { EntityEnum } from "../defines/EntityEnum";
-import { IStageObjectInfo } from "../defines/IStageObjectInfo";
-import { Defines } from "../defines/defines";
-import Entity from "../entity/Entity";
+import { Defines, EntityEnum, IEntityData, IStageObjectInfo } from "../defines";
+import { Entity } from "../entity/Entity";
 import { Factory } from "../entity/Factory";
 import IEntityCallbacks from "../entity/IEntityCallbacks";
 import { is_character, is_weapon } from "../entity/type_check";
@@ -98,7 +95,7 @@ export default class Item {
     const { hp, act, x, y, z, reserve } = this.info;
     if (this.times) this.times--;
     const e = creator(this.world, data);
-    e.ctrl = Factory.inst.get_ctrl(e.data.id,"", e);
+    e.ctrl = Factory.inst.get_ctrl(e.data.id, "", e);
     e.reserve = reserve;
     e.position.x = random_in(x, x + range_x);
     e.position.z = is_num(z)

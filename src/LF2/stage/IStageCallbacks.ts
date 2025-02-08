@@ -1,4 +1,4 @@
-import type { IStagePhaseInfo } from "../defines/IStagePhaseInfo";
+import type { IStagePhaseInfo } from "../defines";
 import type Stage from "./Stage";
 
 export default interface IStageCallbacks {

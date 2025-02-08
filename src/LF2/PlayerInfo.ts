@@ -1,9 +1,7 @@
 import { Warn } from "../Log";
-import Callbacks from "./base/Callbacks";
-import { NoEmitCallbacks } from "./base/NoEmitCallbacks";
+import { Callbacks, NoEmitCallbacks } from "./base";
 import type { TKeys } from "./controller/BaseController";
-import Defines from "./defines/defines";
-import GameKey from "./defines/GameKey";
+import { Defines, GameKey } from "./defines";
 import { is_str } from "./utils/type_check";
 
 export interface IPlayerInfoCallback {
@@ -17,7 +15,7 @@ export interface IPlayerInfoCallback {
   on_is_com_changed?(is_com: boolean): void;
   on_random_character_changed?(character_id: string, prev: string): void;
 }
-export interface PurePlayerInfo {
+export interface IPurePlayerInfo {
   id: string;
   name: string;
   keys: TKeys;
@@ -27,7 +25,7 @@ export interface PurePlayerInfo {
 }
 export class PlayerInfo {
   protected _callbacks = new Callbacks<IPlayerInfoCallback>();
-  protected _info: PurePlayerInfo;
+  protected _info: IPurePlayerInfo;
   protected _joined: boolean = false;
   protected _is_com: boolean = false;
   protected _team_decided: boolean = false;
@@ -125,7 +123,7 @@ export class PlayerInfo {
     try {
       const { name, keys, team, version, character } = JSON.parse(
         str,
-      ) as Partial<PurePlayerInfo>;
+      ) as Partial<IPurePlayerInfo>;
       if (version !== this._info.version) {
         Warn.print(PlayerInfo.TAG + "::load", "version changed");
         return false;

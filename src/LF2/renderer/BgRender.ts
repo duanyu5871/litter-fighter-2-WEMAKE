@@ -1,10 +1,9 @@
 import { IObjectNode } from "../3d";
-import { Defines } from "../defines";
-import Ditto from "../ditto";
-import { IQuaternion } from "../ditto/IQuaternion";
 import Background from "../bg/Background";
-import { BgLayerRender } from "./BgLayerRender";
+import { Defines, IQuaternion } from "../defines";
+import Ditto from "../ditto";
 import { World } from "../World";
+import { BgLayerRender } from "./BgLayerRender";
 
 interface BgRenderPack {
   readonly bg: Background | null;

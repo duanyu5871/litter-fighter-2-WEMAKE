@@ -2,7 +2,7 @@ import * as _T from "./_t";
 import LF2 from "../../LF2/LF2";
 import { __ObjectNode } from "./ObjectNode";
 import { IOrthographicCameraNode } from "../../LF2/3d/IOrthographicCamera";
-import { IQuaternion } from "../../LF2/ditto/IQuaternion";
+import { IQuaternion } from "../../LF2/defines/IQuaternion";
 import { IRaycaster } from "../../LF2/3d/IRaycaster";
 
 export class __Camera_O_Node
