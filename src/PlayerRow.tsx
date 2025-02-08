@@ -1,23 +1,22 @@
 import { useEffect, useState } from "react";
+import styles from "./App.module.scss";
 import { Button } from "./Component/Buttons/Button";
+import { ToggleButton } from "./Component/Buttons/ToggleButton";
 import CharacterSelect from "./Component/CharacterSelect";
 import Combine from "./Component/Combine";
 import { Input } from "./Component/Input";
 import Select from "./Component/Select";
 import TeamSelect from "./Component/TeamSelect";
-import { ToggleButton } from "./Component/Buttons/ToggleButton";
+import Titled from "./Component/Titled";
 import { DummyEnum } from "./LF2/controller/BotController";
 import LocalController from "./LF2/controller/LocalController";
-import { Defines } from "./LF2/defines/defines";
+import { CheatType } from "./LF2/defines";
 import GameKey from "./LF2/defines/GameKey";
 import { Factory } from "./LF2/entity/Factory";
 import { is_bot_ctrl, is_local_ctrl } from "./LF2/entity/type_check";
 import LF2 from "./LF2/LF2";
 import { PlayerInfo } from "./LF2/PlayerInfo";
 import { random_get } from "./LF2/utils/math/random";
-import Titled from "./Component/Titled";
-import styles from "./App.module.scss"
-import { CheatType } from "./LF2/defines";
 const key_names: Record<GameKey, string> = {
   U: "上",
   D: "下",

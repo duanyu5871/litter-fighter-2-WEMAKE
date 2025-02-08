@@ -1,5 +1,4 @@
-import { INextFrame } from "../defines/INextFrame";
-import { Builtin_FrameId, Defines, FacingFlag } from "../defines";
+import { Builtin_FrameId, FacingFlag, INextFrame } from "../defines";
 
 export function cook_next_frame_mp_hp(
   ret: INextFrame,

@@ -1,5 +1,5 @@
 import { IMeshNode } from "../3d";
-import { Builtin_FrameId, Defines, IEntityData, IFrameInfo, IPicture, ITexturePieceInfo, TFace } from "../defines";
+import { Builtin_FrameId, IEntityData, IFrameInfo, IPicture, ITexturePieceInfo, TFace } from "../defines";
 import Ditto from "../ditto";
 import Entity from "../entity/Entity";
 import create_pictures from "../loader/create_pictures";

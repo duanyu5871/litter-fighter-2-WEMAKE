@@ -1,5 +1,4 @@
-import { Builtin_FrameId, StateEnum } from "../defines";
-import GameKey from "../defines/GameKey";
+import { Builtin_FrameId, GameKey, StateEnum } from "../defines";
 import Entity from "../entity/Entity";
 import { is_character } from "../entity/type_check";
 import { BaseController } from "./BaseController";

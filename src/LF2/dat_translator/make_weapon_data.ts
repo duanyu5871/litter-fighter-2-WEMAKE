@@ -1,9 +1,8 @@
 import { Builtin_FrameId, IEntityInfo, WeaponType } from "../defines";
-import { IEntityData } from "../defines/IEntityData";
 import { EntityEnum } from "../defines/EntityEnum";
+import { IEntityData } from "../defines/IEntityData";
 import { IFrameIndexes } from "../defines/IFrameIndexes";
 import { IFrameInfo } from "../defines/IFrameInfo";
-import { Defines } from "../defines/defines";
 import { make_itr_prefabs } from "./make_itr_prefabs";
 import { take } from "./take";
 

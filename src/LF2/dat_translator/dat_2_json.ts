@@ -1,11 +1,10 @@
 import { IBgData, IStageInfo, WeaponType } from "../defines";
-import { IEntityPictureInfo } from "../defines/IEntityPictureInfo";
-import { IBaseData } from "../defines/IBaseData";
-import { IEntityData } from "../defines/IEntityData";
 import { EntityEnum } from "../defines/EntityEnum";
+import { IBaseData } from "../defines/IBaseData";
 import { IDatIndex } from "../defines/IDatIndex";
+import { IEntityData } from "../defines/IEntityData";
 import { IEntityInfo } from "../defines/IEntityInfo";
-import { Defines } from "../defines/defines";
+import { IEntityPictureInfo } from "../defines/IEntityPictureInfo";
 import { set_obj_field } from "../utils/container_help/set_obj_field";
 import { match_block_once } from "../utils/string_parser/match_block";
 import { match_colon_value } from "../utils/string_parser/match_colon_value";
