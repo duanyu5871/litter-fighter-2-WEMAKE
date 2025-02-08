@@ -34,7 +34,7 @@ export class BgRender implements BgRenderPack {
       layers: [...this._layers]
     }
     this.old_packs.add(pack)
-    pack.bg?.fade_out(250, 100, 0);
+    pack.bg?.fade_out(16, 6, 0);
     setTimeout(() => {
       pack.mesh?.dispose()
       this.old_packs.delete(pack)
@@ -45,7 +45,7 @@ export class BgRender implements BgRenderPack {
     this._mesh.z = -2 * Defines.CLASSIC_SCREEN_HEIGHT;
     this._mesh.name = Background.name + ":" + this._bg.data.base.name;
     this._layers.length = 0;
-    this._bg.fade_in(250, 100, 350)
+    this._bg.fade_in(16, 6, 21)
 
     for (const layer of bg.layers) {
       const layer_render = new BgLayerRender(layer)

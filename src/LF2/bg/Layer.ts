@@ -28,11 +28,11 @@ export class Layer {
         this._fade_anim = void 0;
     }
   }
-  fade_out(duration: number = 255, delay: number = 0): void {
-    this._fade_anim = new Sequence(delay / 16, new Easing(this.opacity, 0, duration / 16))
+  fade_out(duration: number = 16, delay: number = 0): void {
+    this._fade_anim = new Sequence(delay, new Easing(this.opacity, 0, duration))
   }
-  fade_in(duration: number = 255, delay: number = 0): void {
-    this._fade_anim = new Sequence(delay / 16, new Easing(this.opacity, 1, duration / 16))
+  fade_in(duration: number = 16, delay: number = 0): void {
+    this._fade_anim = new Sequence(delay, new Easing(this.opacity, 1, duration))
   }
   dispose() {
   }
