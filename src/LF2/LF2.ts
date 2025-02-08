@@ -2,10 +2,14 @@ import { Warn } from "../Log";
 import { ILf2Callback } from "./ILf2Callback";
 import { PlayerInfo } from "./PlayerInfo";
 import { World } from "./World";
-import { Callbacks, get_short_file_size_txt, Loader, new_id, new_team, NoEmitCallbacks } from "./base";
-import { KEY_NAME_LIST } from "./controller/BaseController";
-import LocalController from "./controller/LocalController";
-import { Builtin_FrameId, CheatType, Defines, Difficulty, IBgData, IEntityData, IStageInfo, TFace } from "./defines";
+import {
+  Callbacks, get_short_file_size_txt, Loader, new_id, new_team, NoEmitCallbacks
+} from "./base";
+import { KEY_NAME_LIST, LocalController } from "./controller";
+import {
+  Builtin_FrameId, CheatType, Defines, Difficulty, IBgData, IEntityData,
+  IStageInfo, TFace
+} from "./defines";
 import ditto, {
   IKeyboard,
   IKeyboardCallback,
@@ -16,27 +20,21 @@ import ditto, {
   ISounds,
   IZip,
 } from "./ditto";
-
-import { PIO } from "./base/PromisesInOne";
+import { PIO } from "./base";
 import Ditto from "./ditto";
-import Entity from "./entity/Entity";
-import { Factory } from "./entity/Factory";
-import { BallsHelper } from "./helper/BallsHelper";
-import { CharactersHelper } from "./helper/CharactersHelper";
-import { EntitiesHelper } from "./helper/EntitiesHelper";
-import { WeaponsHelper } from "./helper/WeaponsHelper";
+import { Entity, Factory } from "./entity";
+import { BallsHelper, CharactersHelper, EntitiesHelper, WeaponsHelper } from "./helper";
 import { ICookedLayoutInfo } from "./layout/ICookedLayoutInfo";
 import { ILayoutInfo } from "./layout/ILayoutInfo";
 import Layout from "./layout/Layout";
 import DatMgr from "./loader/DatMgr";
 import get_import_fallbacks from "./loader/get_import_fallbacks";
 import { ImageMgr } from "./loader/loader";
-import Stage from "./stage/Stage";
-import { fisrt } from "./utils/container_help";
-import { arithmetic_progression } from "./utils/math/arithmetic_progression";
-import float_equal from "./utils/math/float_equal";
-import { random_get, random_in, random_take } from "./utils/math/random";
-import { is_arr, is_num, is_str, not_empty_str } from "./utils/type_check";
+import { Stage } from "./stage";
+import {
+  arithmetic_progression, fisrt, float_equal, is_arr, is_num, is_str,
+  not_empty_str, random_get, random_in, random_take
+} from "./utils";
 
 const cheat_info_pair = (n: CheatType) =>
   [

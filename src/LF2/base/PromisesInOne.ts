@@ -1,11 +1,9 @@
+import { PromiseInOne } from "promise-in-one/dist/es/pio";
 import Ditto from "../ditto";
-import { PromiseInOne } from "promise-in-one/dist/es/pio"
 
 const pio = new PromiseInOne(
   ([type, args]: [string, any]) => type + Ditto.MD5(JSON.stringify(args))
 );
-
-
 export function PIO<T extends Object, K extends keyof T>(
   target: T,
   key: K,

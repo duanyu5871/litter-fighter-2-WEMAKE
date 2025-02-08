@@ -13,7 +13,7 @@ import { is_num } from "../utils/type_check";
 import type IStageCallbacks from "./IStageCallbacks";
 import Item from "./Item";
 
-export default class Stage {
+export class Stage {
   static readonly TAG: string = "Stage";
   readonly world: World;
   readonly data: IStageInfo;
@@ -265,3 +265,4 @@ export default class Stage {
     this._time++;
   }
 }
+export default Stage;

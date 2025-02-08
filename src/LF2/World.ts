@@ -3,15 +3,13 @@ import { IOrthographicCameraNode, ISceneNode } from "./3d";
 import { Callbacks, FPS, NoEmitCallbacks } from "./base";
 import { Builtin_FrameId, Defines, IBdyInfo, IBounding, ICollision, IFrameInfo, IItrInfo, StateEnum } from "./defines";
 import Ditto from "./ditto";
-import Entity from "./entity/Entity";
-import { Factory } from "./entity/Factory";
 import {
-  is_ball,
+  Entity, Factory, is_ball,
   is_base_ctrl,
   is_character,
   is_local_ctrl,
-  is_weapon,
-} from "./entity/type_check";
+  is_weapon
+} from "./entity";
 import { IWorldCallbacks } from "./IWorldCallbacks";
 import LF2 from "./LF2";
 import { BgRender } from "./renderer/BgRender";
