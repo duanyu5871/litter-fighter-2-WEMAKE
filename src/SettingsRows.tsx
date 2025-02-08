@@ -13,6 +13,7 @@ import LF2 from "./LF2/LF2";
 import { BaseController } from "./LF2/controller/BaseController";
 import { BotController } from "./LF2/controller/BotController";
 import { InvalidController } from "./LF2/controller/InvalidController";
+import { Difficulty } from "./LF2/defines";
 import { IStageInfo } from "./LF2/defines/IStageInfo";
 import { IStagePhaseInfo } from "./LF2/defines/IStagePhaseInfo";
 import { Defines } from "./LF2/defines/defines";
@@ -52,13 +53,13 @@ export default function SettingsRows(props: ISettingsRowsProps) {
   const [stage_phase_idx, set_stage_phase_idx] = useState<number>(
     _stage?.cur_phase ?? -1,
   );
-  const [difficulty, set_difficulty] = useState<Defines.Difficulty>(
-    lf2?.difficulty ?? Defines.Difficulty.Difficult,
+  const [difficulty, set_difficulty] = useState<Difficulty>(
+    lf2?.difficulty ?? Difficulty.Difficult,
   );
   const [world_properties, set_world_properties] = useState<TProperty[]>();
   useEffect(() => {
     set_bgm(lf2?.sounds.bgm() ?? "");
-    set_difficulty(lf2?.difficulty ?? Defines.Difficulty.Difficult);
+    set_difficulty(lf2?.difficulty ?? Difficulty.Difficult);
     set_stage_list(lf2?.stages);
     const on_stage_change = (stage: Stage | undefined) => {
       set_stage_id(stage?.data.id ?? Defines.VOID_STAGE.id);
@@ -175,10 +176,10 @@ export default function SettingsRows(props: ISettingsRowsProps) {
             value={difficulty}
             on_changed={v => set_difficulty(v!)}
             items={[
-              Defines.Difficulty.Easy,
-              Defines.Difficulty.Normal,
-              Defines.Difficulty.Difficult,
-              Defines.Difficulty.Crazy,
+              Difficulty.Easy,
+              Difficulty.Normal,
+              Difficulty.Difficult,
+              Difficulty.Crazy,
             ]}
             parse={(i) => [i, Defines.DifficultyLabels[i]]}
           />

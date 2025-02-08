@@ -42,4 +42,5 @@ export * from "./OpointSpreading";
 export * from "./SpeedMode";
 export * from "./State";
 export * from "./IPicture";
-
+export * from "./BuiltIn_OID"
+export * from "./Difficulty"

@@ -1,8 +1,6 @@
-import Easing from "../animation/Easing";
-import IAnimation from "../animation/IBase";
-import Sequence from "../animation/Sequence";
+import { Easing, IAnimation, Sequence } from "../animation";
 import type { IBgLayerInfo } from "../defines/IBgLayerInfo";
-import Background from "./Background.js";
+import type Background from "./Background.js";
 export class Layer {
   readonly bg: Background;
   readonly info: IBgLayerInfo;

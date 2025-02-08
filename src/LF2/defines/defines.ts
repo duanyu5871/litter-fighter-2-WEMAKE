@@ -4,6 +4,7 @@ import type { INextFrame } from "./INextFrame";
 import type { IStageInfo } from "./IStageInfo";
 import type { IPairByFace } from "./IPairByFace";
 import { State as _State } from "./State";
+import { Difficulty } from "./Difficulty";
 export interface TFrameIdPair extends IPairByFace<string> { }
 export interface TFrameIdListPair extends IPairByFace<string[]> { }
 export type TTODO = any;
@@ -234,12 +235,7 @@ export namespace Defines {
   export const HP_RECOVERY_SPD = 0.05;
   export const HP_HEALING_SPD = 0.5;
 
-  export enum Difficulty {
-    Easy = 1,
-    Normal = 2,
-    Difficult = 3,
-    Crazy = 4,
-  }
+
   export const DifficultyLabels: Record<Difficulty, string> = {
     [Difficulty.Easy]: "Easy",
     [Difficulty.Normal]: "Normal",
@@ -320,85 +316,6 @@ export namespace Defines {
     StartGame = "start_game",
     SwitchStage = "switch_stage",
     SwitchBackground = "switch_background",
-  }
-  export enum BuiltIn_OID {
-    Template = "0",
-    Julian = "52",
-    Firzen = "51",
-    LouisEX = "50",
-    Bat = "38",
-    Justin = "39",
-    Knight = "37",
-    Jan = "36",
-    Monk = "35",
-    Sorcerer = "34",
-    Jack = "33",
-    Mark = "32",
-    Hunter = "31",
-    Bandit = "30",
-    Deep = "1",
-    John = "2",
-    Henry = "4",
-    Rudolf = "5",
-    Louis = "6",
-    Firen = "7",
-    Freeze = "8",
-    Dennis = "9",
-    Woody = "10",
-    Davis = "11",
-    Weapon0 = "100",
-    Weapon_Stick = "100",
-    Weapon2 = "101",
-    Weapon_Hoe = "101",
-    Weapon4 = "120",
-    Weapon_Knife = "120",
-    Weapon5 = "121",
-    Weapon_baseball = "121",
-    Weapon6 = "122",
-    Weapon_milk = "122",
-    Weapon1 = "150",
-    Weapon_Stone = "150",
-    Weapon3 = "151",
-    Weapon_WoodenBox = "151",
-    Weapon8 = "123",
-    Weapon_Beer = "123",
-    Weapon9 = "124",
-    Weapon_Boomerang = "124",
-    Weapon10 = "217",
-    Weapon_LouisArmourA = "217",
-    Weapon11 = "218",
-    Weapon_LouisArmourB = "218",
-    Criminal = "300",
-    JohnBall = "200",
-    HenryArrow1 = "201",
-    RudolfWeapon = "202",
-    DeepBall = "203",
-    HenryWind = "204",
-    DennisBall = "205",
-    WoodyBall = "206",
-    DavisBall = "207",
-    HenryArrow2 = "208",
-    FreezeBall = "209",
-    FirenBall = "210",
-    FirenFlame = "211",
-    FreezeColumn = "212",
-    Weapon7 = "213",
-    Weapon_IceSword = "213",
-    JohnBiscuit = "214",
-    DennisChase = "215",
-    JackBall = "216",
-    JanChaseh = "219",
-    JanChase = "220",
-    FirzenChasef = "221",
-    FirzenChasei = "222",
-    FirzenBall = "223",
-    BatBall = "224",
-    BatChase = "225",
-    JustinBall = "226",
-    JulianBall = "228",
-    JulianBall2 = "229",
-    Etc = "998",
-    BrokenWeapon = "999",
   }
 
   export type TKeys = Record<GameKey, string>;

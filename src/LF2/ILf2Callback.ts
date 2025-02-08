@@ -1,8 +1,8 @@
 import Layout from "../LF2/layout/Layout";
+import { Difficulty } from "./defines";
+import { IZip } from "./ditto";
 import { ICookedLayoutInfo } from "./layout/ICookedLayoutInfo";
 import { PlayerInfo } from "./PlayerInfo";
-import { Defines } from "./defines/defines";
-import { IZip } from "./ditto";
 
 export interface ILf2Callback {
   on_layout_changed?(
@@ -27,8 +27,8 @@ export interface ILf2Callback {
 
   on_dispose?(): void;
   on_difficulty_changed?(
-    value: Defines.Difficulty,
-    prev: Defines.Difficulty,
+    value: Difficulty,
+    prev: Difficulty,
   ): void;
 
   on_layouts_loaded?(layouts: ICookedLayoutInfo[]): void;

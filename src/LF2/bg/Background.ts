@@ -1,4 +1,4 @@
-import { World } from "../World";
+import type { World } from "../World";
 import { IBgData, IBgLayerInfo } from "../defines";
 import Layer from "./Layer";
 

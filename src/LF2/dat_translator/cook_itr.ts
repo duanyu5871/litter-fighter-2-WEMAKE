@@ -1,4 +1,4 @@
-import { FacingFlag, IItrInfo, ItrEffect, ItrKind } from "../defines";
+import { BuiltIn_OID, FacingFlag, IItrInfo, ItrEffect, ItrKind } from "../defines";
 import { BdyKind } from "../defines/BdyKind";
 import { CollisionVal as C_Val } from "../defines/CollisionVal";
 import { Defines } from "../defines/defines";
@@ -131,8 +131,8 @@ export default function cook_itr(itr?: Partial<IItrInfo>) {
         .or((c) =>
           c
             .add(C_Val.VictimType, "==", EntityEnum.Weapon)
-            .and(C_Val.VictimOID, "!=", Defines.BuiltIn_OID.HenryArrow1)
-            .and(C_Val.VictimOID, "!=", Defines.BuiltIn_OID.RudolfWeapon),
+            .and(C_Val.VictimOID, "!=", BuiltIn_OID.HenryArrow1)
+            .and(C_Val.VictimOID, "!=", BuiltIn_OID.RudolfWeapon),
         )
         .done();
       return;
@@ -224,8 +224,8 @@ export default function cook_itr(itr?: Partial<IItrInfo>) {
         .wrap((c) =>
           c
             .add(C_Val.VictimType, "==", EntityEnum.Weapon)
-            .and(C_Val.VictimOID, "!=", Defines.BuiltIn_OID.HenryArrow1)
-            .and(C_Val.VictimOID, "!=", Defines.BuiltIn_OID.Rudolf),
+            .and(C_Val.VictimOID, "!=", BuiltIn_OID.HenryArrow1)
+            .and(C_Val.VictimOID, "!=", BuiltIn_OID.Rudolf),
         )
         .or((c) =>
           c

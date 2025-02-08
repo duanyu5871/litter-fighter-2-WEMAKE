@@ -5,7 +5,7 @@ import { World } from "./World";
 import { Callbacks, get_short_file_size_txt, Loader, new_id, new_team, NoEmitCallbacks } from "./base";
 import { KEY_NAME_LIST } from "./controller/BaseController";
 import LocalController from "./controller/LocalController";
-import { Defines, IBgData, IEntityData, IStageInfo, TFace } from "./defines";
+import { Defines, Difficulty, IBgData, IEntityData, IStageInfo, TFace } from "./defines";
 import ditto, {
   IKeyboard,
   IKeyboardCallback,
@@ -17,6 +17,7 @@ import ditto, {
   IZip,
 } from "./ditto";
 
+import { PIO } from "./base/PromisesInOne";
 import Ditto from "./ditto";
 import Entity from "./entity/Entity";
 import { Factory } from "./entity/Factory";
@@ -31,7 +32,6 @@ import DatMgr from "./loader/DatMgr";
 import get_import_fallbacks from "./loader/get_import_fallbacks";
 import { ImageMgr } from "./loader/loader";
 import Stage from "./stage/Stage";
-import { PIO } from "./base/PromisesInOne";
 import { fisrt } from "./utils/container_help";
 import { arithmetic_progression } from "./utils/math/arithmetic_progression";
 import float_equal from "./utils/math/float_equal";
@@ -54,7 +54,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
   private _layout_stacks: Layout[] = [];
   private _loading: boolean = false;
   private _loaded: boolean = false;
-  private _difficulty: Defines.Difficulty = Defines.Difficulty.Difficult;
+  private _difficulty: Difficulty = Difficulty.Difficult;
   private _infinity_mp: boolean = false;
   private _mouse_on_layouts = new Set<Layout>();
   private _pointer_raycaster = new Ditto.Raycaster();
@@ -78,10 +78,10 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
   get layout() {
     return this._layout_stacks[this._layout_stacks.length - 1];
   }
-  get difficulty(): Defines.Difficulty {
+  get difficulty(): Difficulty {
     return this._difficulty;
   }
-  set difficulty(v: Defines.Difficulty) {
+  set difficulty(v: Difficulty) {
     if (this._difficulty === v) return;
     const old = this._difficulty;
     this._difficulty = v;
