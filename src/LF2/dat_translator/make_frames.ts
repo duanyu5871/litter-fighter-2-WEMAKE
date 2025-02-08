@@ -7,6 +7,7 @@ import {
   IOpointInfo,
   ItrKind,
   IWpointInfo,
+  StateEnum,
 } from "../defines";
 import { BdyKind } from "../defines/BdyKind";
 import { CollisionVal as C_Val } from "../defines/CollisionVal";
@@ -172,8 +173,8 @@ export function make_frames(
       }
     }
     if (
-      frame.state === Defines.State.Attacking ||
-      frame.state === Defines.State.Rowing
+      frame.state === StateEnum.Attacking ||
+      frame.state === StateEnum.Rowing
     ) {
       const dvz = take(frame, "dvz");
       if (dvz === 550) frame.dvz = dvz;
@@ -219,16 +220,16 @@ export function make_frames(
     }
 
     switch (frame.state) {
-      case Defines.State.Ball_3005:
+      case StateEnum.Ball_3005:
         frame.no_shadow = 1;
         break;
-      case Defines.State.HeavyWeapon_OnHand:
+      case StateEnum.HeavyWeapon_OnHand:
         frame.no_shadow = 1;
         break;
-      case Defines.State.Weapon_OnHand:
+      case StateEnum.Weapon_OnHand:
         frame.no_shadow = 1;
         break;
-      case Defines.State.Burning: {
+      case StateEnum.Burning: {
         if (frame.itr) {
           for (const itr of frame.itr) {
             itr.ally_flags = 1;
@@ -236,7 +237,7 @@ export function make_frames(
         }
         break;
       }
-      case Defines.State.LouisCastOff:
+      case StateEnum.LouisCastOff:
         frame.opoint = frame.opoint || [];
         frame.opoint.push(
           {
@@ -269,7 +270,7 @@ export function make_frames(
           },
         );
         break;
-      case Defines.State.Falling:
+      case StateEnum.Falling:
         if (frame.bdy)
           for (const bdy of frame.bdy) {
             if (bdy.kind === BdyKind.Normal) {

@@ -1,5 +1,5 @@
+import { Builtin_FrameId, StateEnum } from "../defines";
 import GameKey from "../defines/GameKey";
-import { Defines } from "../defines/defines";
 import Entity from "../entity/Entity";
 import { is_character } from "../entity/type_check";
 import { BaseController } from "./BaseController";
@@ -50,18 +50,18 @@ export class BotController extends BaseController {
   }
   should_avoid(e?: Entity | null) {
     if (!e) return false;
-    if (e.frame.id === Defines.FrameId.Gone) return false;
+    if (e.frame.id === Builtin_FrameId.Gone) return false;
     return (
       e.hp > 0 &&
-      (e.frame.state === Defines.State.Lying || e.invisible || e.blinking)
+      (e.frame.state === StateEnum.Lying || e.invisible || e.blinking)
     );
   }
   should_chase(e?: Entity | null) {
     if (!e) return false;
-    if (e.frame.id === Defines.FrameId.Gone) return false;
+    if (e.frame.id === Builtin_FrameId.Gone) return false;
     return (
       e.hp > 0 &&
-      e.frame.state !== Defines.State.Lying &&
+      e.frame.state !== StateEnum.Lying &&
       !e.invisible &&
       !e.blinking
     );
@@ -106,15 +106,15 @@ export class BotController extends BaseController {
     let x = px + vx;
     let z = pz + vz;
     switch (entity.frame.state) {
-      case Defines.State.Jump:
+      case StateEnum.Jump:
         x += 2 * vx;
         z += 2 * vz;
         break;
-      case Defines.State.Running:
+      case StateEnum.Running:
         x += 4 * vx;
         z += 4 * vz;
         break;
-      case Defines.State.Dash:
+      case StateEnum.Dash:
         x += 8 * vx;
         z += 8 * vz;
         break;
@@ -138,7 +138,7 @@ export class BotController extends BaseController {
     const RUN_ZONE = 300;
     const { facing } = me;
     const { state } = me.frame;
-    const is_running = state === Defines.State.Running;
+    const is_running = state === StateEnum.Running;
     let is_x_reach = false;
     let is_z_reach = false;
 
@@ -190,8 +190,8 @@ export class BotController extends BaseController {
     }
     if (is_x_reach && is_z_reach) {
       if (
-        this.entity.frame.state === Defines.State.Standing ||
-        this.entity.frame.state === Defines.State.Walking
+        this.entity.frame.state === StateEnum.Standing ||
+        this.entity.frame.state === StateEnum.Walking
       ) {
         if (my_z < enemy_z + 10) {
           if (this.is_end(GameKey.D)) {
@@ -305,7 +305,7 @@ export class BotController extends BaseController {
       }
       case DummyEnum.LockAtMid_Stand: {
         if (
-          this.entity.frame.state === Defines.State.Standing &&
+          this.entity.frame.state === StateEnum.Standing &&
           this.entity.resting <= 0
         ) {
           this.entity.position.x = this.world.bg.width / 2;
@@ -315,7 +315,7 @@ export class BotController extends BaseController {
       }
       case DummyEnum.LockAtMid_Defend: {
         if (
-          this.entity.frame.state === Defines.State.Standing &&
+          this.entity.frame.state === StateEnum.Standing &&
           this.entity.resting <= 0
         ) {
           this.entity.position.x = this.world.bg.width / 2;
@@ -326,24 +326,24 @@ export class BotController extends BaseController {
       }
       case DummyEnum.LockAtMid_RowingWhenFalling: {
         if (
-          this.entity.frame.state === Defines.State.Standing &&
+          this.entity.frame.state === StateEnum.Standing &&
           this.entity.resting <= 0
         ) {
           this.entity.position.x = this.world.bg.width / 2;
           this.entity.position.z = (this.world.bg.near + this.world.far) / 2;
         }
-        if (this.entity.frame.state === Defines.State.Falling) {
+        if (this.entity.frame.state === StateEnum.Falling) {
           this.start(GameKey.j);
         }
         break;
       }
 
       case DummyEnum.LockAtMid_JumpAndRowingWhenFalling: {
-        if (this.entity.frame.state === Defines.State.Standing) {
+        if (this.entity.frame.state === StateEnum.Standing) {
           this.entity.position.x = this.world.bg.width / 2;
           this.entity.position.z = (this.world.bg.near + this.world.far) / 2;
           this.start(GameKey.j);
-        } else if (this.entity.frame.state === Defines.State.Falling) {
+        } else if (this.entity.frame.state === StateEnum.Falling) {
           this.start(GameKey.j);
         } else {
           this.end(GameKey.j);
@@ -419,7 +419,7 @@ export class BotController extends BaseController {
   }
   lock_when_stand_and_rest() {
     if (
-      this.entity.frame.state === Defines.State.Standing &&
+      this.entity.frame.state === StateEnum.Standing &&
       this.entity.resting <= 0
     ) {
       this.entity.position.x = this.world.bg.width / 2;

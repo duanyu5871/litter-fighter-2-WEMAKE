@@ -1,4 +1,4 @@
-import { Defines } from "../defines";
+import { Defines, StateEnum } from "../defines";
 import { ICollision } from "../defines/ICollision";
 
 export function handle_itr_kind_freeze(c: ICollision) {
@@ -8,7 +8,7 @@ export function handle_itr_kind_freeze(c: ICollision) {
   const is_fall =
     victim.fall_value <= 0 ||
     (victim.fall_value <= Defines.DEFAULT_FALL_VALUE_DIZZY &&
-      (Defines.State.Caught === victim.frame.state ||
+      (StateEnum.Caught === victim.frame.state ||
         victim.velocities[0].y > 0 ||
         victim.position.y > 0));
   if (is_fall && itr.dvy)

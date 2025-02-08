@@ -1,7 +1,7 @@
 import { Warn } from "../Log";
 import { IOrthographicCameraNode, ISceneNode } from "./3d";
 import { Callbacks, FPS, NoEmitCallbacks } from "./base";
-import { Defines, IBdyInfo, IBounding, ICollision, IFrameInfo, IItrInfo } from "./defines";
+import { Builtin_FrameId, Defines, IBdyInfo, IBounding, ICollision, IFrameInfo, IItrInfo, StateEnum } from "./defines";
 import Ditto from "./ditto";
 import Entity from "./entity/Entity";
 import { Factory } from "./entity/Factory";
@@ -368,8 +368,8 @@ export class World {
     for (const e of this.entities) {
       e.update();
       if (
-        e.frame.id === Defines.FrameId.Gone ||
-        e.frame.state === Defines.State.Gone
+        e.frame.id === Builtin_FrameId.Gone ||
+        e.frame.state === StateEnum.Gone
       ) {
         this.gone_entities.push(e);
       }
@@ -489,7 +489,7 @@ export class World {
     bdy: IBdyInfo,
   ) {
     switch (aframe.state) {
-      case Defines.State.Weapon_OnHand: {
+      case StateEnum.Weapon_OnHand: {
         const atk = attacker.holder?.frame.wpoint?.attacking;
         if (!atk) return;
         const itr_prefab = attacker.data.itr_prefabs?.[atk];
@@ -497,7 +497,7 @@ export class World {
         itr = { ...itr, ...itr_prefab };
         break;
       }
-      case Defines.State.Weapon_Rebounding: {
+      case StateEnum.Weapon_Rebounding: {
         return;
       }
     }

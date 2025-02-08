@@ -1,7 +1,7 @@
 import { IFrameInfo, ItrKind } from "../defines";
 import { CollisionVal as C_Val } from "../defines/CollisionVal";
 import { IEntityData } from "../defines/IEntityData";
-import { State } from "../defines/State";
+import { StateEnum } from "../defines/StateEnum";
 import { CondMaker } from "./CondMaker";
 
 export function cook_ball_frame_state_3006(e: IEntityData, frame: IFrameInfo) {
@@ -11,7 +11,7 @@ export function cook_ball_frame_state_3006(e: IEntityData, frame: IFrameInfo) {
     bdy.actions.push({
       type: 'next_frame',
       test: new CondMaker<C_Val>()
-        .one_of(C_Val.AttackerState, State.Ball_3005, State.Ball_3006)
+        .one_of(C_Val.AttackerState, StateEnum.Ball_3005, StateEnum.Ball_3006)
         .or(C_Val.ItrKind, "==", ItrKind.JohnShield)
         .done(),
       data: {
@@ -24,7 +24,7 @@ export function cook_ball_frame_state_3006(e: IEntityData, frame: IFrameInfo) {
     itr.actions.push({
       type: 'next_frame',
       test: new CondMaker<C_Val>()
-        .one_of(C_Val.VictimState, State.Ball_3005, State.Ball_3006)
+        .one_of(C_Val.VictimState, StateEnum.Ball_3005, StateEnum.Ball_3006)
         .done(),
       data: {
         id: "20"

@@ -1,4 +1,4 @@
-import { Defines, type IFrameInfo } from "../defines";
+import { Defines, StateEnum, type IFrameInfo } from "../defines";
 import type Entity from "../entity/Entity";
 import CharacterState_Base from "./CharacterState_Base";
 export default class CharacterState_Dash extends CharacterState_Base {
@@ -14,7 +14,7 @@ export default class CharacterState_Dash extends CharacterState_Base {
 
     if (UD1) e.velocities[0].z = UD1 * dz;
 
-    if (prev_frame.state === Defines.State.Running) {
+    if (prev_frame.state === StateEnum.Running) {
       e.velocities[0].x = e.facing * dx;
     } else if (LR1) e.velocities[0].x = LR1 * dx;
     else if (e.velocities[0].x > 0) e.velocities[0].x = dx;

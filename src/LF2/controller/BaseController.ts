@@ -1,5 +1,5 @@
 import type { IFrameInfo, IHitKeyCollection, TLooseGameKey } from "../defines";
-import { Defines, GameKey } from "../defines";
+import { GameKey, StateEnum } from "../defines";
 import type Entity from "../entity/Entity";
 import { ControllerUpdateResult } from "./ControllerUpdateResult";
 import DoubleClick from "./DoubleClick";
@@ -152,10 +152,10 @@ export class BaseController {
       data: [f_0, f_1],
     } = this.dbc[k];
     if (
-      f_0?.state !== Defines.State.Standing &&
-      f_0?.state !== Defines.State.Walking &&
-      f_1?.state !== Defines.State.Standing &&
-      f_1?.state !== Defines.State.Walking &&
+      f_0?.state !== StateEnum.Standing &&
+      f_0?.state !== StateEnum.Walking &&
+      f_1?.state !== StateEnum.Standing &&
+      f_1?.state !== StateEnum.Walking &&
       (k === GameKey.L || k === GameKey.R)
     ) {
       /*

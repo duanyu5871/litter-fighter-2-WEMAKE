@@ -176,7 +176,7 @@ export default class CharacterState_Base extends State_Base {
     if (
       e.hp <= 0 &&
       e.position.y <= 0 &&
-      e.frame.state === Defines.State.Lying
+      e.frame.state === StateEnum.Lying
     ) {
       return e.frame;
     }

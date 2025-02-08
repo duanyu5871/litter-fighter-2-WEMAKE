@@ -104,7 +104,7 @@ export interface IFrameInfo {
    * 若前（frame.jump_flag == 1）且后（frame.jump_flag == 0）或空。
    * 此时将会计算跳跃速度，让角色跳起来。
    *
-   * @see {Defines.State.Jump}
+   * @see {StateEnum.Jump}
    * @type {?number}
    */
   jump_flag?: number;

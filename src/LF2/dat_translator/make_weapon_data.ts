@@ -1,4 +1,4 @@
-import { IEntityInfo } from "../defines";
+import { Builtin_FrameId, IEntityInfo } from "../defines";
 import { IEntityData } from "../defines/IEntityData";
 import { EntityEnum } from "../defines/EntityEnum";
 import { IFrameIndexes } from "../defines/IFrameIndexes";
@@ -78,7 +78,7 @@ export function make_weapon_data(
 
   return {
     id: "",
-    on_dead: { id: Defines.FrameId.Gone },
+    on_dead: { id: Builtin_FrameId.Gone },
     type: EntityEnum.Weapon,
     base: info,
     itr_prefabs,

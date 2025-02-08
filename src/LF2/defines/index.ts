@@ -1,6 +1,9 @@
 export * from "./Action";
 export * from "./BdyKind";
+export * from "./Builtin_FrameId";
+export * from "./BuiltIn_OID";
 export * from "./defines";
+export * from "./Difficulty";
 export * from "./EntityEnum";
 export * from "./FacingFlag";
 export * from "./FrameBehavior";
@@ -25,6 +28,7 @@ export * from "./IHitKeyCollection";
 export * from "./IItrInfo";
 export * from "./INextFrame";
 export * from "./IOpointInfo";
+export * from "./IPicture";
 export * from "./IPos";
 export * from "./IQuaternion";
 export * from "./IStageInfo";
@@ -40,7 +44,4 @@ export * from "./OpointKind";
 export * from "./OpointMultiEnum";
 export * from "./OpointSpreading";
 export * from "./SpeedMode";
-export * from "./State";
-export * from "./IPicture";
-export * from "./BuiltIn_OID"
-export * from "./Difficulty"
+export * from "./StateEnum";

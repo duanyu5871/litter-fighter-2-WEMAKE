@@ -1,5 +1,5 @@
 
-export enum State {
+export enum StateEnum {
   _Entity_Base = -1, _Character_Base = -2, _Weapon_Base = -3, _Ball_Base = -4,
 
   Standing = 0, _0 = 0,

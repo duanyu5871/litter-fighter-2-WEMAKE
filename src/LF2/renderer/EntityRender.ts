@@ -1,5 +1,5 @@
 import { IMeshNode } from "../3d";
-import { Defines, IEntityData, IFrameInfo, IPicture, ITexturePieceInfo, TFace } from "../defines";
+import { Builtin_FrameId, Defines, IEntityData, IFrameInfo, IPicture, ITexturePieceInfo, TFace } from "../defines";
 import Ditto from "../ditto";
 import Entity from "../entity/Entity";
 import create_pictures from "../loader/create_pictures";
@@ -80,7 +80,7 @@ export class EntityRender {
   };
   update() {
     const { entity, entity_mesh, entity_material, pictures, shadow } = this;
-    if (entity.frame.id === Defines.FrameId.Gone) {
+    if (entity.frame.id === Builtin_FrameId.Gone) {
       return;
     }
     const {

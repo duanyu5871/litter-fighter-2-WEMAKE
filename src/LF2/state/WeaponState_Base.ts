@@ -1,18 +1,18 @@
-import { Defines, IFrameInfo, ItrKind } from "../defines";
-import type Entity from "../entity/Entity";
-import { ICollision } from "../defines/ICollision";
-import State_Base, { WhatNext } from "./State_Base";
 import { collisions_keeper } from "../collision/CollisionKeeper";
+import { Defines, IFrameInfo, ItrKind, StateEnum } from "../defines";
+import { ICollision } from "../defines/ICollision";
+import type Entity from "../entity/Entity";
+import State_Base, { WhatNext } from "./State_Base";
 
 export default class WeaponState_Base extends State_Base {
   override on_collision(collision: ICollision): void {
     const { attacker } = collision;
-    if (attacker.frame.state === Defines.State.Weapon_OnHand) {
+    if (attacker.frame.state === StateEnum.Weapon_OnHand) {
       return;
     }
     if (
       attacker.data.base.type !== Defines.WeaponType.Heavy &&
-      attacker.frame.state === Defines.State.Weapon_Throwing
+      attacker.frame.state === StateEnum.Weapon_Throwing
     ) {
       // TODO: 这里是击中的反弹，如何更合适？ -Gim
       attacker.velocities[0].x = -0.3 * attacker.velocities[0].x;

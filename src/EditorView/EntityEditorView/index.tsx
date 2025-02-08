@@ -27,7 +27,7 @@ const make_str_enum_select_props = (t: any): IBaseSelectProps<string, string> =>
     return [value, label]
   }
 })
-export const STATE_SELECT_PROPS = make_num_enum_select_props(Defines.State);
+export const STATE_SELECT_PROPS = make_num_enum_select_props(StateEnum);
 export const SPEED_MODE_SELECT_PROPS = make_num_enum_select_props(SpeedMode);
 export const ITR_KIND_SELECT_PROPS = make_num_enum_select_props(ItrKind);
 export const ITR_EFFECT_SELECT_PROPS = make_num_enum_select_props(ItrEffect);

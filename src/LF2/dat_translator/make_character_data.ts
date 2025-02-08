@@ -1,8 +1,8 @@
-import { FacingFlag, IEntityInfo, IFrameInfo, TNextFrame } from "../defines";
-import { IEntityData } from "../defines/IEntityData";
+import { FacingFlag, IEntityInfo, IFrameInfo, StateEnum, TNextFrame } from "../defines";
 import { BdyKind } from "../defines/BdyKind";
 import { EntityEnum } from "../defines/EntityEnum";
 import { EntityVal } from "../defines/EntityVal";
+import { IEntityData } from "../defines/IEntityData";
 import { IFrameIndexes } from "../defines/IFrameIndexes";
 import { INextFrame } from "../defines/INextFrame";
 import { Defines } from "../defines/defines";
@@ -29,7 +29,7 @@ function push_next_frame(
   if (Array.isArray(src)) return [...src, ...list];
   return [src, ...list];
 }
-const { WeaponType, State } = Defines;
+const { WeaponType, StateEnum: State } = Defines;
 const set_hit_turn_back = (frame: IFrameInfo, back_frame_id: string = "") => {
   frame.hit = frame.hit || {};
   frame.hit.B = { id: back_frame_id, wait: "i", facing: FacingFlag.Backward };
@@ -481,7 +481,7 @@ export function make_character_data(
       case 191:
         break;
       case 200:
-        frame.state = Defines.State.Frozen;
+        frame.state = StateEnum.Frozen;
         break;
       /** crouch */
       case 215:
@@ -724,7 +724,7 @@ export function make_character_data(
         delete frames[frame_id];
         break;
       }
-      case Defines.State.NextAsLanding: {
+      case StateEnum.NextAsLanding: {
         frame.next = { id: "" + (Number(frame.id) + 1) };
         break;
       }
@@ -801,7 +801,7 @@ function cook_transform_begin_expression_to_hit<
   const transform_begin_frame_id_list: string[] = [];
   for (const k in frames) {
     const { state, id } = frames[k];
-    if (state === Defines.State.TransformToCatching_Begin) {
+    if (state === StateEnum.TransformToCatching_Begin) {
       transform_begin_frame_id_list.push(id);
     }
   }

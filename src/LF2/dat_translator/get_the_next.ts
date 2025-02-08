@@ -1,5 +1,5 @@
 import { INextFrame } from "../defines/INextFrame";
-import { Defines, FacingFlag } from "../defines";
+import { Builtin_FrameId, Defines, FacingFlag } from "../defines";
 
 export function cook_next_frame_mp_hp(
   ret: INextFrame,
@@ -23,20 +23,20 @@ export const get_next_frame_by_raw_id = (
   type?: "next" | "hit",
   frame_mp_hp_map?: Map<string, [number, number]>,
 ): INextFrame => {
-  if ("" + id === "1000") return { id: Defines.FrameId.Gone };
-  if ("" + id === "999") return { id: Defines.FrameId.Auto };
+  if ("" + id === "1000") return { id: Builtin_FrameId.Gone };
+  if ("" + id === "999") return { id: Builtin_FrameId.Auto };
   if ("" + id === "-999")
-    return { id: Defines.FrameId.Auto, facing: FacingFlag.Backward };
+    return { id: Builtin_FrameId.Auto, facing: FacingFlag.Backward };
   if ("" + id === "0") return {};
 
   if (typeof id === "number") {
     if (id >= 1100 && id <= 1299) {
       // 外部需要处理隐身逻辑。
-      return { id: Defines.FrameId.Auto };
+      return { id: Builtin_FrameId.Auto };
     }
     if (id <= -1100 && id >= -1299) {
       // 外部需要处理隐身逻辑。
-      return { id: Defines.FrameId.Auto, facing: FacingFlag.Backward };
+      return { id: Builtin_FrameId.Auto, facing: FacingFlag.Backward };
     }
     if (id < 0) {
       const ret: INextFrame = {

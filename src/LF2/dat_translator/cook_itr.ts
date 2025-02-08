@@ -1,4 +1,4 @@
-import { BuiltIn_OID, FacingFlag, IItrInfo, ItrEffect, ItrKind } from "../defines";
+import { BuiltIn_OID, FacingFlag, IItrInfo, ItrEffect, ItrKind, StateEnum } from "../defines";
 import { BdyKind } from "../defines/BdyKind";
 import { CollisionVal as C_Val } from "../defines/CollisionVal";
 import { Defines } from "../defines/defines";
@@ -46,28 +46,28 @@ export default function cook_itr(itr?: Partial<IItrInfo>) {
     case ItrKind.Normal: {
       const cond_maker = new CondMaker<C_Val>()
         .wrap((c) => c
-          .add(C_Val.VictimState, "!=", Defines.State.Weapon_OnGround)
+          .add(C_Val.VictimState, "!=", StateEnum.Weapon_OnGround)
           .or(C_Val.AttackerType, "!=", EntityEnum.Character),
         );
       switch (itr.effect) {
         case ItrEffect.Fire:
           cond_maker.and((c) => c
-            .add(C_Val.VictimState, "!=", Defines.State.Burning)
-            .or(C_Val.AttackerState, "!=", Defines.State.BurnRun)
+            .add(C_Val.VictimState, "!=", StateEnum.Burning)
+            .or(C_Val.AttackerState, "!=", StateEnum.BurnRun)
           );
           break;
         case ItrEffect.MFire1:
           cond_maker
             .and(C_Val.VictimType, "!=", EntityEnum.Character)
             .or((c) => c
-              .add(C_Val.VictimState, "!=", Defines.State.BurnRun)
-              .and(C_Val.VictimState, "!=", Defines.State.Burning)
+              .add(C_Val.VictimState, "!=", StateEnum.BurnRun)
+              .and(C_Val.VictimState, "!=", StateEnum.Burning)
             );
           break;
         case ItrEffect.MFire2:
           cond_maker.and((c) => c
-            .add(C_Val.VictimState, "!=", Defines.State.BurnRun)
-            .and(C_Val.VictimState, "!=", Defines.State.Burning),
+            .add(C_Val.VictimState, "!=", StateEnum.BurnRun)
+            .and(C_Val.VictimState, "!=", StateEnum.Burning),
           );
           break;
         case ItrEffect.Through:
@@ -76,7 +76,7 @@ export default function cook_itr(itr?: Partial<IItrInfo>) {
         case ItrEffect.Ice2:
           cond_maker.and((c) =>
             c
-              .add(C_Val.VictimState, "!=", Defines.State.Frozen)
+              .add(C_Val.VictimState, "!=", StateEnum.Frozen)
               .and(C_Val.VictimFrameId, "!=", C_Val.VictimFrameIndex_ICE),
           );
           break;
@@ -95,8 +95,8 @@ export default function cook_itr(itr?: Partial<IItrInfo>) {
         .and()
         .one_of(
           C_Val.VictimState,
-          Defines.State.Weapon_OnGround,
-          Defines.State.HeavyWeapon_OnGround,
+          StateEnum.Weapon_OnGround,
+          StateEnum.HeavyWeapon_OnGround,
         )
         .done();
       break;
@@ -109,7 +109,7 @@ export default function cook_itr(itr?: Partial<IItrInfo>) {
       itr.test = new CondMaker<C_Val>()
         .add(C_Val.AttackerHasHolder, "==", 0)
         .and(C_Val.VictimHasHolder, "==", 0)
-        .and(C_Val.VictimState, "==", Defines.State.Weapon_OnGround)
+        .and(C_Val.VictimState, "==", StateEnum.Weapon_OnGround)
         .done();
       break;
     }
@@ -146,7 +146,7 @@ export default function cook_itr(itr?: Partial<IItrInfo>) {
       }
       itr.test = new CondMaker<C_Val>()
         .and(C_Val.VictimType, "==", EntityEnum.Character)
-        .and(C_Val.VictimState, "!=", Defines.State.Falling)
+        .and(C_Val.VictimState, "!=", StateEnum.Falling)
         .done();
       break;
     }
@@ -159,7 +159,7 @@ export default function cook_itr(itr?: Partial<IItrInfo>) {
       }
       itr.test = new CondMaker<C_Val>()
         .and(C_Val.VictimType, "==", EntityEnum.Character)
-        .and(C_Val.VictimState, "==", Defines.State.Tired)
+        .and(C_Val.VictimState, "==", StateEnum.Tired)
         .done();
       break;
     }
@@ -206,7 +206,7 @@ export default function cook_itr(itr?: Partial<IItrInfo>) {
         .and((c) =>
           c
             .add(C_Val.SameTeam, "==", 0)
-            .or(C_Val.VictimState, "==", Defines.State.Frozen),
+            .or(C_Val.VictimState, "==", StateEnum.Frozen),
         )
         .done();
       break;
@@ -233,7 +233,7 @@ export default function cook_itr(itr?: Partial<IItrInfo>) {
             .and((c) =>
               c
                 .add(C_Val.SameTeam, "==", 0)
-                .or(C_Val.VictimState, "==", Defines.State.Frozen),
+                .or(C_Val.VictimState, "==", StateEnum.Frozen),
             ),
         )
         .done();

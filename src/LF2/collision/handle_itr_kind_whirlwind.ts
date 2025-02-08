@@ -1,4 +1,4 @@
-import { Defines } from "../defines";
+import { StateEnum } from "../defines";
 import { EntityEnum } from "../defines/EntityEnum";
 import { ICollision } from "../defines/ICollision";
 
@@ -17,8 +17,8 @@ export function handle_itr_kind_whirlwind(c: ICollision) {
   switch (victim.type) {
     case EntityEnum.Weapon:
       switch (victim.frame.state) {
-        case Defines.State.Weapon_InTheSky:
-        case Defines.State.HeavyWeapon_InTheSky:
+        case StateEnum.Weapon_InTheSky:
+        case StateEnum.HeavyWeapon_InTheSky:
           break;
         default:
           victim.next_frame = { id: victim.data.indexes?.in_the_sky };

@@ -5,7 +5,7 @@ import { World } from "./World";
 import { Callbacks, get_short_file_size_txt, Loader, new_id, new_team, NoEmitCallbacks } from "./base";
 import { KEY_NAME_LIST } from "./controller/BaseController";
 import LocalController from "./controller/LocalController";
-import { Defines, Difficulty, IBgData, IEntityData, IStageInfo, TFace } from "./defines";
+import { Builtin_FrameId, Defines, Difficulty, IBgData, IEntityData, IStageInfo, TFace } from "./defines";
 import ditto, {
   IKeyboard,
   IKeyboardCallback,
@@ -528,7 +528,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
     let vy = 0;
     let vz = 0;
     let old_facing: TFace = 1;
-    let old_frame_id: string = Defines.FrameId.Auto;
+    let old_frame_id: string = Builtin_FrameId.Auto;
     const old = this.player_characters.get(player_id);
     if (old) {
       x = old.position.x;

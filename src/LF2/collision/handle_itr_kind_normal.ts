@@ -1,4 +1,4 @@
-import { Defines, ItrEffect, ItrKind, TFace } from "../defines";
+import { Defines, ItrEffect, ItrKind, StateEnum, TFace } from "../defines";
 import { BdyKind } from "../defines/BdyKind";
 import { ICollision } from "../defines/ICollision";
 import { same_face, turn_face } from "../entity/face_helper";
@@ -70,7 +70,7 @@ export function handle_itr_kind_normal(collision: ICollision) {
       )?.(collision);
       break;
     case ItrEffect.Ice: {
-      if (victim.frame.state === Defines.State.Frozen) {
+      if (victim.frame.state === StateEnum.Frozen) {
         fall(collision);
       } else {
         collisions_keeper.get(
@@ -91,9 +91,9 @@ export function handle_itr_kind_normal(collision: ICollision) {
       const is_fall =
         victim.fall_value <= 0 ||
         victim.hp <= 0 ||
-        victim.frame.state === Defines.State.Frozen ||
+        victim.frame.state === StateEnum.Frozen ||
         (victim.fall_value <= Defines.DEFAULT_FALL_VALUE_DIZZY &&
-          (Defines.State.Caught === victim.frame.state ||
+          (StateEnum.Caught === victim.frame.state ||
             victim.velocities[0].y > 0 ||
             victim.position.y > 0));
       if (is_fall) {
@@ -113,7 +113,7 @@ export function handle_itr_kind_normal(collision: ICollision) {
             "slient_hit",
           );
         }
-        if (Defines.State.Caught === victim.frame.state) {
+        if (StateEnum.Caught === victim.frame.state) {
           if (victim.frame.cpoint) {
             const { backhurtact, fronthurtact } = victim.frame.cpoint;
             if (attacker.facing === victim.facing && backhurtact) {

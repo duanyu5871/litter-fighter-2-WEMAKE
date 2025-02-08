@@ -4,7 +4,7 @@ import type { World } from "../World";
 import { Callbacks, new_id, new_team, type NoEmitCallbacks } from "../base";
 import { BaseController } from "../controller/BaseController";
 import {
-  BdyKind, Defines, EntityEnum, FacingFlag, IBaseData, IBounding,
+  BdyKind, Builtin_FrameId, Defines, EntityEnum, FacingFlag, IBaseData, IBounding,
   ICollision, ICpointInfo, IEntityData, IFrameInfo,
   IItrInfo,
   INextFrame,
@@ -12,7 +12,7 @@ import {
   IOpointInfo, IPos, ITexturePieceInfo,
   ItrKind,
   IVector3,
-  OpointKind, OpointMultiEnum, OpointSpreading, SpeedMode, TFace,
+  OpointKind, OpointMultiEnum, OpointSpreading, SpeedMode, StateEnum, TFace,
   TNextFrame
 } from "../defines";
 import Ditto from "../ditto";
@@ -75,22 +75,22 @@ export const EMPTY_PIECE: ITexturePieceInfo = {
   pixel_w: 0,
 };
 export const EMPTY_FRAME_INFO: IFrameInfo = {
-  id: Defines.FrameId.None,
+  id: Builtin_FrameId.None,
   name: "",
   pic: { tex: "", x: 0, y: 0, w: 0, h: 0 },
   state: NaN,
   wait: 0,
-  next: { id: Defines.FrameId.Auto },
+  next: { id: Builtin_FrameId.Auto },
   centerx: 0,
   centery: 0,
 };
 export const GONE_FRAME_INFO: IFrameInfo = {
-  id: Defines.FrameId.Gone,
+  id: Builtin_FrameId.Gone,
   name: "GONE_FRAME_INFO",
   pic: { tex: "", x: 0, y: 0, w: 0, h: 0 },
   state: NaN,
   wait: 0,
-  next: { id: Defines.FrameId.Gone },
+  next: { id: Builtin_FrameId.Gone },
   centerx: 0,
   centery: 0,
 };
@@ -633,7 +633,7 @@ export class Entity {
     this._emitter_opoint = opoint;
 
     const shotter_frame = emitter.frame;
-    if (emitter.frame.state === Defines.State.Ball_Rebounding || emitter.frame.state === Defines.State.Ball_Flying) {
+    if (emitter.frame.state === StateEnum.Ball_Rebounding || emitter.frame.state === StateEnum.Ball_Flying) {
       this.team = (emitter.lastest_collided?.attacker ?? emitter).team;
       this.facing = emitter.facing;
     } else {
@@ -1037,7 +1037,7 @@ export class Entity {
     if (this._blinking_duration > 0) {
       this._blinking_duration--;
       if (this._blinking_duration <= 0) {
-        if (this._after_blink === Defines.FrameId.Gone) {
+        if (this._after_blink === Builtin_FrameId.Gone) {
           this.next_frame = void 0;
           this.frame = GONE_FRAME_INFO;
         }
@@ -1152,9 +1152,9 @@ export class Entity {
         key_list === "ja" &&
         this.transform_datas &&
         this.transform_datas[1] === this.data &&
-        (this.frame?.state === Defines.State.Walking ||
-          this.frame?.state === Defines.State.Standing ||
-          this.frame?.state === Defines.State.Defend)
+        (this.frame?.state === StateEnum.Walking ||
+          this.frame?.state === StateEnum.Standing ||
+          this.frame?.state === StateEnum.Defend)
       ) {
         this.transfrom_to_another();
         this.ctrl.reset_key_list();
@@ -1206,7 +1206,7 @@ export class Entity {
    */
   get_sudden_death_frame(): TNextFrame {
     return (
-      this.state?.get_sudden_death_frame?.(this) || { id: Defines.FrameId.Auto }
+      this.state?.get_sudden_death_frame?.(this) || { id: Builtin_FrameId.Auto }
     );
   }
 
@@ -1220,7 +1220,7 @@ export class Entity {
    */
   get_caught_end_frame(): INextFrame {
     return (
-      this.state?.get_caught_end_frame?.(this) || { id: Defines.FrameId.Auto }
+      this.state?.get_caught_end_frame?.(this) || { id: Builtin_FrameId.Auto }
     );
   }
 
@@ -1234,7 +1234,7 @@ export class Entity {
    */
   get_caught_cancel_frame(): INextFrame {
     if (this.position.y < 1) this.position.y = 1;
-    return { id: Defines.FrameId.Auto };
+    return { id: Builtin_FrameId.Auto };
   }
 
   private prev_cpoint_a?: ICpointInfo;
@@ -1358,7 +1358,7 @@ export class Entity {
    * @returns 下帧信息
    */
   get_catching_end_frame(): INextFrame {
-    return { id: Defines.FrameId.Auto };
+    return { id: Builtin_FrameId.Auto };
   }
 
   /**
@@ -1371,7 +1371,7 @@ export class Entity {
    * @returns 下帧信息
    */
   get_catching_cancel_frame(): INextFrame {
-    return { id: Defines.FrameId.Auto };
+    return { id: Builtin_FrameId.Auto };
   }
 
   transfrom_to_another() {
@@ -1544,7 +1544,7 @@ export class Entity {
    */
   blink_and_gone(duration: number) {
     this._blinking_duration = duration;
-    this._after_blink = Defines.FrameId.Gone;
+    this._after_blink = Builtin_FrameId.Gone;
   }
 
   /**
@@ -1605,7 +1605,7 @@ export class Entity {
 
 
   enter_frame(which: TNextFrame): void {
-    if (this.frame.id === Defines.FrameId.Gone) {
+    if (this.frame.id === Builtin_FrameId.Gone) {
       return;
     }
     const result = this.get_next_frame(which);
@@ -1731,12 +1731,12 @@ export class Entity {
 
     switch (id) {
       case void 0:
-      case Defines.FrameId.None:
-      case Defines.FrameId.Self:
+      case Builtin_FrameId.None:
+      case Builtin_FrameId.Self:
         return this.frame;
-      case Defines.FrameId.Auto:
+      case Builtin_FrameId.Auto:
         return this.find_auto_frame();
-      case Defines.FrameId.Gone:
+      case Builtin_FrameId.Gone:
         return GONE_FRAME_INFO;
     }
     if (!this.data.frames[id]) {

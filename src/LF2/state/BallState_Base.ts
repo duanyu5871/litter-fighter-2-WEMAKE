@@ -1,4 +1,4 @@
-import { Defines, FrameBehavior, ICollision, IFrameInfo, ItrKind, State } from "../defines";
+import { Defines, FrameBehavior, ICollision, IFrameInfo, ItrKind, StateEnum } from "../defines";
 import Entity from "../entity/Entity";
 import { is_character, is_weapon } from "../entity/type_check";
 import State_Base from "./State_Base";
@@ -32,10 +32,10 @@ export default class BallState_Base extends State_Base {
   }
   override enter(e: Entity, _prev_frame: IFrameInfo): void {
     switch (e.frame.state) {
-      case Defines.State.Ball_Hitting:
-      case Defines.State.Ball_Hit:
-      case Defines.State.Ball_Rebounding:
-      case Defines.State.Ball_Disappear:
+      case StateEnum.Ball_Hitting:
+      case StateEnum.Ball_Hit:
+      case StateEnum.Ball_Rebounding:
+      case StateEnum.Ball_Disappear:
         e.shaking = 0;
         e.motionless = 0;
         e.velocities.length = 1;
@@ -55,7 +55,7 @@ export default class BallState_Base extends State_Base {
       attacker.velocities.length = 1;
       switch (attacker.frame.state) {
         case ItrKind.JohnShield:
-        case Defines.State.Ball_Flying:
+        case StateEnum.Ball_Flying:
           const { victim } = collision;
           victim.shaking = 0;
           victim.velocities.length = 1;
@@ -74,8 +74,8 @@ export default class BallState_Base extends State_Base {
     victim.velocities[0].z = 0;
     victim.velocities[0].y = 0;
     switch (victim.frame.state) {
-      case State.Ball_Flying:
-      case State.Ball_Rebounding:
+      case StateEnum.Ball_Flying:
+      case StateEnum.Ball_Rebounding:
         victim.team = attacker.team;
         // victim.facing = attacker.facing;
         break;

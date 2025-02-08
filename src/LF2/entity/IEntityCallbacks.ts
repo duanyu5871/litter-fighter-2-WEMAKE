@@ -86,7 +86,7 @@ export default interface IEntityCallbacks<E extends Entity = Entity> {
    *
    * 当角色hp为0，且状态处于Lying时触发
    *
-   * @see {Defines.State.Lying}
+   * @see {StateEnum.Lying}
    * @param {E} e
    */
   on_dead?(e: E): void;

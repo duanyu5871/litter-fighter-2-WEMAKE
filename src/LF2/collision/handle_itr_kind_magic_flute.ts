@@ -1,4 +1,4 @@
-import { Defines } from "../defines";
+import { StateEnum } from "../defines";
 import { EntityEnum } from "../defines/EntityEnum";
 import { ICollision } from "../defines/ICollision";
 
@@ -8,14 +8,14 @@ export function handle_itr_kind_magic_flute(collision: ICollision): void {
   if (victim.velocities[0].y < 3) victim.velocities[0].y += 3;
   switch (victim.data.type) {
     case EntityEnum.Character:
-      if (victim.frame.state !== Defines.State.Falling) {
+      if (victim.frame.state !== StateEnum.Falling) {
         victim.next_frame = { id: victim.data.indexes?.falling?.[-1][0] };
       }
       break;
     case EntityEnum.Weapon:
       switch (victim.frame.state) {
-        case Defines.State.Weapon_InTheSky:
-        case Defines.State.HeavyWeapon_InTheSky:
+        case StateEnum.Weapon_InTheSky:
+        case StateEnum.HeavyWeapon_InTheSky:
           break;
         default:
           victim.next_frame = { id: victim.data.indexes?.in_the_sky };

@@ -1,4 +1,4 @@
-import { BuiltIn_OID, FacingFlag, ItrKind } from "../defines";
+import { BuiltIn_OID, FacingFlag, ItrKind, StateEnum } from "../defines";
 import { CollisionVal as C_Val } from "../defines/CollisionVal";
 import { EntityEnum } from "../defines/EntityEnum";
 import { FrameBehavior } from "../defines/FrameBehavior";
@@ -9,7 +9,6 @@ import { IFrameInfo } from "../defines/IFrameInfo";
 import { OpointKind } from "../defines/OpointKind";
 import { OpointMultiEnum } from "../defines/OpointMultiEnum";
 import { SpeedMode } from "../defines/SpeedMode";
-import { Defines } from "../defines/defines";
 import { traversal } from "../utils/container_help/traversal";
 import { to_num } from "../utils/type_cast/to_num";
 import { CondMaker } from "./CondMaker";
@@ -235,13 +234,13 @@ export function make_ball_data(
 
   traversal(ret.frames, (_, frame) => {
     switch (frame.state) {
-      case Defines.State._3000:
+      case StateEnum._3000:
         return cook_ball_frame_state_3000(ret, frame);
-      case Defines.State._3002:
+      case StateEnum._3002:
         return cook_ball_frame_state_3000(ret, frame);
-      case Defines.State._3005:
+      case StateEnum._3005:
         return cook_ball_frame_state_3005(ret, frame);
-      case Defines.State._3006:
+      case StateEnum._3006:
         return cook_ball_frame_state_3006(ret, frame);
     }
   });

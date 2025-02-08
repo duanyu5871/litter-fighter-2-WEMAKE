@@ -1,5 +1,5 @@
 import { new_team } from "../base";
-import { Defines } from "../defines/defines";
+import { Builtin_FrameId } from "../defines";
 import type Entity from "../entity/Entity";
 import { Factory } from "../entity/Factory";
 import State_Base from "./State_Base";
@@ -26,6 +26,6 @@ export default class State_TransformTo8XXX extends State_Base {
         new_entity.attach();
       }
     }
-    e.enter_frame({ id: Defines.FrameId.Gone });
+    e.enter_frame({ id: Builtin_FrameId.Gone });
   }
 }

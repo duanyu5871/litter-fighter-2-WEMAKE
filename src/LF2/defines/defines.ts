@@ -1,10 +1,10 @@
+import { Builtin_FrameId } from "./Builtin_FrameId";
+import { Difficulty } from "./Difficulty";
 import type { GameKey } from "./GameKey";
 import type { IBgData } from "./IBgData";
 import type { INextFrame } from "./INextFrame";
-import type { IStageInfo } from "./IStageInfo";
 import type { IPairByFace } from "./IPairByFace";
-import { State as _State } from "./State";
-import { Difficulty } from "./Difficulty";
+import type { IStageInfo } from "./IStageInfo";
 export interface TFrameIdPair extends IPairByFace<string> { }
 export interface TFrameIdListPair extends IPairByFace<string[]> { }
 export type TTODO = any;
@@ -71,22 +71,14 @@ export namespace Defines {
     },
   };
 
-  export enum FrameId {
-    None = "",
-    Auto = "auto",
-    Self = "self",
-    Gone = "gone",
-    Invisible_Min = "1100", // 1100 ~ 1299 隐身
-    Invisible_Max = "1299", // 1100 ~ 1299 隐身
-  }
   export const NEXT_FRAME_GONE: Readonly<INextFrame> = {
-    id: Defines.FrameId.Gone,
+    id: Builtin_FrameId.Gone,
   };
   export const NEXT_FRAME_AUTO: Readonly<INextFrame> = {
-    id: Defines.FrameId.Auto,
+    id: Builtin_FrameId.Auto,
   };
   export const NEXT_FRAME_SELF: Readonly<INextFrame> = {
-    id: Defines.FrameId.Self,
+    id: Builtin_FrameId.Self,
   };
   export enum WeaponType {
     None = 0,
@@ -127,9 +119,6 @@ export namespace Defines {
      */
     Drink = 5,
   }
-
-  export const State = _State;
-  export type State = typeof _State;
 
   export enum EntityGroup {
     /**
