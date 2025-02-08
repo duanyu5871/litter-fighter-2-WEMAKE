@@ -40,7 +40,7 @@ export function make_character_special(data: IEntityData) {
       };
       make_louis_data(data)
       break;
-    case BuiltIn_OID.Bandit:
+    case BuiltIn_OID.Bandit: 
     case BuiltIn_OID.Hunter:
       add_entity_groups(data.base, EntityGroup._3000);
       break;
