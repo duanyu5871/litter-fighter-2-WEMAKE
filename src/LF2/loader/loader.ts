@@ -262,8 +262,6 @@ export class ImageMgr {
   create_pic_by_img_info(img_info: TImageInfo) {
     const picture = err_pic_info(img_info.key);
     const ret = _create_pic(img_info, picture);
-    picture.cell_w = ret.w;
-    picture.cell_h = ret.h;
     return ret;
   }
 
@@ -275,12 +273,7 @@ export class ImageMgr {
 
   create_pic_by_e_pic_info(e_pic_info: IEntityPictureInfo) {
     const img_info = this.find_by_pic_info(e_pic_info);
-    const { cell_w, cell_h, row, col } = e_pic_info;
     const picture = err_pic_info();
-    picture.cell_w = cell_w;
-    picture.cell_h = cell_h;
-    picture.row = row;
-    picture.col = col;
     if (!img_info) return picture;
     return _create_pic(img_info, picture);
   }
@@ -318,10 +311,6 @@ export function err_pic_info(id: string = ""): TPicture {
     id,
     w: 0,
     h: 0,
-    cell_w: 0,
-    cell_h: 0,
-    row: 1,
-    col: 1,
     texture: error_texture(),
   };
 }
