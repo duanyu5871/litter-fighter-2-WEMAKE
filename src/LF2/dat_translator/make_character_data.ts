@@ -1,4 +1,4 @@
-import { FacingFlag, IEntityInfo, IFrameInfo, StateEnum, TNextFrame, WeaponType } from "../defines";
+import { FacingFlag, IEntityInfo, IFrameInfo, StateEnum, TNextFrame, WeaponType } from "../defines/js";
 import { BdyKind } from "../defines/BdyKind";
 import { EntityEnum } from "../defines/EntityEnum";
 import { EntityVal } from "../defines/EntityVal";

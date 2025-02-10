@@ -1,4 +1,4 @@
-import type { TAction, TNextFrame } from ".";
+import type { TAction, TNextFrame } from "./js";
 import type { IExpression } from "./IExpression";
 import type { IQube } from "./IQube";
 import type { IQubePair } from "./IQubePair";

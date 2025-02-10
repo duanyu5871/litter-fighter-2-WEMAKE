@@ -1,4 +1,4 @@
-import { Builtin_FrameId, FacingFlag, INextFrame } from "../defines";
+import { Builtin_FrameId, FacingFlag, INextFrame } from "../defines/js";
 
 export function cook_next_frame_mp_hp(
   ret: INextFrame,

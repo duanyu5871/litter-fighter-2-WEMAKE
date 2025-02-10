@@ -1,4 +1,4 @@
-import { IItrInfo } from "../defines";
+import { IItrInfo } from "../defines/js";
 
 export function edit_itr_info(
   src: IItrInfo,

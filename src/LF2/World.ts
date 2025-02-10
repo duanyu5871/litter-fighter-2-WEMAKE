@@ -1,7 +1,7 @@
 import { Warn } from "../Log";
 import { IOrthographicCameraNode, ISceneNode } from "./3d";
-import { Callbacks, FPS, NoEmitCallbacks } from "./base";
-import { Builtin_FrameId, Defines, IBdyInfo, IBounding, ICollision, IFrameInfo, IItrInfo, StateEnum } from "./defines";
+import { Callbacks, FPS, ICollision, NoEmitCallbacks } from "./base";
+import { Builtin_FrameId, Defines, IBdyInfo, IBounding, IFrameInfo, IItrInfo, StateEnum } from "./defines";
 import Ditto from "./ditto";
 import {
   Entity, Factory, is_ball,

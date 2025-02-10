@@ -1,4 +1,4 @@
-import { IFrameInfo } from "../defines";
+import { IFrameInfo } from "../defines/IFrameInfo";
 import { IQube } from "../defines/IQube";
 
 export function cook_frame_indicator_info(frame: IFrameInfo) {

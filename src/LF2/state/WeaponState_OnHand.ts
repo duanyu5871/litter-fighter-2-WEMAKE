@@ -1,4 +1,4 @@
-import { ICollision } from "../defines/ICollision";
+import { ICollision } from "../base/ICollision";
 import WeaponState_Base from "./WeaponState_Base";
 
 export default class WeaponState_OnHand extends WeaponState_Base {

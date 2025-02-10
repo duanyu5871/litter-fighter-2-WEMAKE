@@ -1,4 +1,4 @@
-import { BuiltIn_OID } from "../defines";
+import { BuiltIn_OID } from "../defines/js";
 import { IEntityData } from "../defines/IEntityData";
 import { traversal } from "../utils/container_help/traversal";
 

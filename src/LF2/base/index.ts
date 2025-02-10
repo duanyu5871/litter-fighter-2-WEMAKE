@@ -5,3 +5,5 @@ export * from "./Loader";
 export * from "./new_id";
 export * from "./NoEmitCallbacks";
 export * from "./PromisesInOne";
+export * from "./ICollision";
+export * from "./ICollisionHandler"

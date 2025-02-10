@@ -1,4 +1,4 @@
-import { IBdyInfo } from "../defines";
+import { IBdyInfo } from "../defines/js";
 export function edit_bdy_info(
   src: IBdyInfo,
   ...edit: Partial<IBdyInfo>[]

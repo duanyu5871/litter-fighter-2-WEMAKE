@@ -1,4 +1,4 @@
-import { BuiltIn_OID, EntityGroup } from "../defines";
+import { BuiltIn_OID, EntityGroup } from "../defines/js";
 import { IEntityData } from "../defines/IEntityData";
 import { add_entity_groups } from "./add_entity_to_group";
 import { make_louis_data, make_rudolf_data } from "./cook_louis_data";

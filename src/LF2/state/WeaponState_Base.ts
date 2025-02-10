@@ -1,6 +1,6 @@
 import { collisions_keeper } from "../collision/CollisionKeeper";
 import { Defines, IFrameInfo, ItrKind, StateEnum, WeaponType } from "../defines";
-import { ICollision } from "../defines/ICollision";
+import { ICollision } from "../base/ICollision";
 import type Entity from "../entity/Entity";
 import State_Base, { WhatNext } from "./State_Base";
 

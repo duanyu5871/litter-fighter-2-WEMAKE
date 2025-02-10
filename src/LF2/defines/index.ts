@@ -15,8 +15,6 @@ export * from "./IBgInfo";
 export * from "./IBgLayerInfo";
 export * from "./IBounding";
 export * from "./IBpointInfo";
-export * from "./ICollision";
-export * from "./ICollisionHandler";
 export * from "./ICpointInfo";
 export * from "./IDataLists";
 export * from "./IDatIndex";

@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { FacingFlag, TNextFrame } from ".";
+import type { FacingFlag, TNextFrame } from "./js";
 import type { OpointKind } from "./OpointKind";
 import { OpointMultiEnum } from "./OpointMultiEnum";
 export interface IOpointInfo {

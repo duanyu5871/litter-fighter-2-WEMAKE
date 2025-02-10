@@ -8,7 +8,7 @@ import {
   ItrKind,
   IWpointInfo,
   StateEnum,
-} from "../defines";
+} from "../defines/js";
 import { BdyKind } from "../defines/BdyKind";
 import { CollisionVal as C_Val } from "../defines/CollisionVal";
 import { IEntityInfo } from "../defines/IEntityInfo";

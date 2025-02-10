@@ -1,4 +1,5 @@
-import { ALL_ENTITY_ENUM, BdyKind, EntityEnum, ICollision, ICollisionHandler, ItrKind, TEntityEnum } from "../defines";
+import { ICollision, ICollisionHandler } from "../base";
+import { ALL_ENTITY_ENUM, BdyKind, EntityEnum, ItrKind, TEntityEnum } from "../defines";
 import { handle_itr_kind_catch } from "./handle_itr_kind_catch";
 import { handle_itr_kind_force_catch } from "./handle_itr_kind_force_catch";
 import { handle_itr_kind_freeze } from "./handle_itr_kind_freeze";

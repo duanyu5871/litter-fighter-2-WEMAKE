@@ -1,4 +1,5 @@
-import { FacingFlag, ICpointInfo } from "../defines";
+import { FacingFlag } from "../defines/FacingFlag";
+import { ICpointInfo } from "../defines/ICpointInfo";
 import { Defines } from "../defines/defines";
 import { is_num, is_str, not_zero_num } from "../utils/type_check";
 import { get_next_frame_by_raw_id } from "./get_the_next";

@@ -12,11 +12,12 @@ export function PIO<T extends Object, K extends keyof T>(
   const old = descriptor.value as any;
   if (typeof old !== "function") return descriptor;
   const name = target.constructor.name + "." + key.toString() + ".";
-  descriptor.value = function (...args: Parameters<typeof old>) {
+  descriptor.value = function (this: any, ...args: Parameters<typeof old>) {
+    const that = this;
     return new Promise<any>((resolve, reject) => {
       const [pid, existed] = pio.check([name, args], resolve, reject);
       if (existed) return;
-      const real_promise = old.apply(this, args);
+      const real_promise = old.apply(that, args);
       pio.handle(pid, real_promise);
     });
   } as any;

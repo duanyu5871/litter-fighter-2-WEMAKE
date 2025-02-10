@@ -1,6 +1,6 @@
 import { IValGetter, IValGetterGetter } from "../defines/IExpression";
 import { CollisionVal } from "../defines/CollisionVal";
-import { ICollision } from "../defines/ICollision";
+import { ICollision } from "../base/ICollision";
 
 const map: Record<CollisionVal, IValGetter<ICollision>> = {
   [CollisionVal.AttackerType]: (collision: ICollision) =>

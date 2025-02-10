@@ -1,4 +1,5 @@
-import { IFrameInfo, ItrKind } from "../defines";
+import { IFrameInfo } from "../defines/IFrameInfo";
+import { ItrKind } from "../defines/ItrKind";
 import { CollisionVal as C_Val } from "../defines/CollisionVal";
 import { IEntityData } from "../defines/IEntityData";
 import { StateEnum } from "../defines/StateEnum";

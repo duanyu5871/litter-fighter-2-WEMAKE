@@ -1,6 +1,6 @@
 import fs from "fs/promises";
 import { read_indexes } from "../../../src/LF2/dat_translator/read_indexes";
-import { IDataLists } from "../../../src/LF2/defines";
+import { IDataLists } from "../../../src/LF2/defines/IDataLists";
 import { read_text_file } from "./read_text_file";
 
 async function parse_indexes(

@@ -1,5 +1,5 @@
 import { INextFrame, ItrKind, type IFrameInfo } from "../defines";
-import { ICollision } from "../defines/ICollision";
+import { ICollision } from "../base/ICollision";
 import type Entity from "../entity/Entity";
 export enum WhatNext {
   OnlyState = 3,

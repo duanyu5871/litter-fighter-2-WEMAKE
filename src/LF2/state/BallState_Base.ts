@@ -1,4 +1,5 @@
-import { FrameBehavior, ICollision, IFrameInfo, ItrKind, StateEnum } from "../defines";
+import { FrameBehavior, IFrameInfo, ItrKind, StateEnum } from "../defines";
+import { ICollision } from "../base";
 import Entity from "../entity/Entity";
 import { is_character, is_weapon } from "../entity/type_check";
 import State_Base from "./State_Base";

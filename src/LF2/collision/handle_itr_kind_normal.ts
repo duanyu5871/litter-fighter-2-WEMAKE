@@ -1,6 +1,6 @@
 import { Defines, ItrEffect, ItrKind, StateEnum, TFace } from "../defines";
 import { BdyKind } from "../defines/BdyKind";
-import { ICollision } from "../defines/ICollision";
+import { ICollision } from "../base/ICollision";
 import { same_face, turn_face } from "../entity/face_helper";
 import { is_character } from "../entity/type_check";
 import { collisions_keeper } from "./CollisionKeeper";

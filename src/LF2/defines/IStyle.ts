@@ -1,3 +1,15 @@
+type CanvasLineCap = string;
+type CanvasLineJoin = string;
+type CanvasGradient = string;
+type CanvasPattern = string;
+type CanvasDirection = string;
+type CanvasFontKerning = string;
+type CanvasFontStretch = string;
+type CanvasFontVariantCaps = string;
+type CanvasTextAlign = "left" | "right" | "center" | "end" | "start";
+type CanvasTextBaseline = string;
+type CanvasTextRendering = string;
+
 export default interface IStyle {
   padding_t?: number;
   padding_b?: number;

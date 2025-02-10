@@ -1,4 +1,8 @@
-import { IBdyInfo, IFrameInfo, IItrInfo, ItrEffect, ItrKind } from "../defines";
+import { IBdyInfo } from "../defines/IBdyInfo";
+import { IFrameInfo } from "../defines/IFrameInfo";
+import { IItrInfo } from "../defines/IItrInfo";
+import { ItrEffect } from "../defines/ItrEffect";
+import { ItrKind } from "../defines/ItrKind";
 import { IEntityData } from "../defines/IEntityData";
 import { CollisionVal as C_Val } from "../defines/CollisionVal";
 import { EntityEnum } from "../defines/EntityEnum";

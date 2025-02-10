@@ -1,5 +1,5 @@
-import type { EntityGroup, IEntityInfo } from "../defines";
-
+import type { EntityGroup } from "../defines/EntityGroup";
+import type { IEntityInfo } from "../defines/IEntityInfo";
 export function add_entity_groups(
   info: IEntityInfo,
   ...groups: EntityGroup[]

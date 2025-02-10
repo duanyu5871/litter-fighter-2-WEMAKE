@@ -1,4 +1,4 @@
-import { BuiltIn_OID, FacingFlag, ItrKind, StateEnum } from "../defines";
+import { BuiltIn_OID, FacingFlag, ItrKind, StateEnum } from "../defines/js";
 import { CollisionVal as C_Val } from "../defines/CollisionVal";
 import { EntityEnum } from "../defines/EntityEnum";
 import { FrameBehavior } from "../defines/FrameBehavior";

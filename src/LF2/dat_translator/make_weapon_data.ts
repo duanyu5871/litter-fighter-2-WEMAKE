@@ -1,4 +1,4 @@
-import { Builtin_FrameId, IEntityInfo, WeaponType } from "../defines";
+import { Builtin_FrameId, IEntityInfo, WeaponType } from "../defines/js";
 import { EntityEnum } from "../defines/EntityEnum";
 import { IEntityData } from "../defines/IEntityData";
 import { IFrameIndexes } from "../defines/IFrameIndexes";

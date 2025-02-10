@@ -5,7 +5,7 @@ import { Callbacks, new_id, new_team, type NoEmitCallbacks } from "../base";
 import { BaseController } from "../controller/BaseController";
 import {
   BdyKind, Builtin_FrameId, Defines, EntityEnum, FacingFlag, IBaseData, IBounding,
-  ICollision, ICpointInfo, IEntityData, IFrameInfo,
+  ICpointInfo, IEntityData, IFrameInfo,
   IItrInfo,
   INextFrame,
   INextFrameResult,
@@ -28,6 +28,8 @@ import type IEntityCallbacks from "./IEntityCallbacks";
 import { bdy_action_handlers, itr_action_handlers } from "./bdy_action_handlers";
 import { turn_face } from "./face_helper";
 import { is_ball, is_character, is_weapon_data } from "./type_check";
+import { ICollision } from "../base";
+
 
 function calc_v(
   old: number,

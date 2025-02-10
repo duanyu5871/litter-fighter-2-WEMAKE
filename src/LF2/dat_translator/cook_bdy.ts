@@ -1,7 +1,10 @@
-import { BuiltIn_OID, Defines, IBdyInfo, ItrKind } from "../defines";
 import { BdyKind } from "../defines/BdyKind";
+import { BuiltIn_OID } from "../defines/BuiltIn_OID";
 import { CollisionVal as C_Val } from "../defines/CollisionVal";
+import { Defines } from "../defines/defines";
 import { EntityEnum } from "../defines/EntityEnum";
+import { IBdyInfo } from "../defines/IBdyInfo";
+import { ItrKind } from "../defines/ItrKind";
 import { is_num } from "../utils/type_check";
 import { CondMaker } from "./CondMaker";
 import { take } from "./take";

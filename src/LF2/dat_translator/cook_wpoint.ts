@@ -1,4 +1,4 @@
-import { IWpointInfo } from "../defines";
+import { IWpointInfo } from "../defines/js";
 import { not_zero_num } from "../utils/type_check";
 import { take } from "./take";
 

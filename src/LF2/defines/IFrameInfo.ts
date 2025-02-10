@@ -1,8 +1,3 @@
-import type { TNextFrame } from ".";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { INextFrame } from "../defines/INextFrame";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { Defines } from "./defines";
 import type { IBdyInfo } from "./IBdyInfo";
 import type { IBpointInfo } from "./IBpointInfo";
 import type { ICpointInfo } from "./ICpointInfo";
@@ -10,6 +5,7 @@ import type { IFramePictureInfo } from "./IFramePictureInfo";
 import type { IHitKeyCollection } from "./IHitKeyCollection";
 import type { IHoldKeyCollection } from "./IHoldKeyCollection";
 import type { IItrInfo } from "./IItrInfo";
+import type { TNextFrame } from "./INextFrame";
 import type { IOpointInfo } from "./IOpointInfo";
 import type { IQubePair } from "./IQubePair";
 import type { IWpointInfo } from "./IWpointInfo";
