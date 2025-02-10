@@ -234,7 +234,7 @@ export class InfoRender implements IEntityCallbacks {
     const world = e.world;
     const lf2 = world.lf2;
     if (!name) {
-      this.mesh.material.visible = false;
+      this.mesh.visible = false;
       this.mesh.material.map = null;
       return;
     }

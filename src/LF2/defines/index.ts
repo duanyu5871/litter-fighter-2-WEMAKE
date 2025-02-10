@@ -49,3 +49,4 @@ export * from "./WeaponType";
 export * from "./EntityGroup";
 export * from "./CPointKind";
 export * from "./CheatType";
+export * from "./IRaycaster";

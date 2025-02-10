@@ -1,4 +1,4 @@
-import __SpriteNode from "../../../DittoImpl/3d/SpriteNode";
+import __Sprite from "../../../DittoImpl/3d/__Sprite";
 import Easing from "../../animation/Easing";
 import Sequence from "../../animation/Sequence";
 import Invoker from "../../base/Invoker";
@@ -15,7 +15,7 @@ export default class StageTitleShow extends LayoutComponent {
     3000,
     new Easing(1, 0, 500),
   );
-  private _sprites: __SpriteNode[] = [];
+  private _sprites: __Sprite[] = [];
 
   private depose_all_mesh() {
     for (const mesh of this._sprites) mesh.dispose();
@@ -78,7 +78,7 @@ export default class StageTitleShow extends LayoutComponent {
       return;
     }
 
-    this._sprites = sps.filter((v) => v) as __SpriteNode[];
+    this._sprites = sps.filter((v) => v) as __Sprite[];
     let total_w = 0;
     let total_h = 0;
     for (const mesh of this._sprites) {

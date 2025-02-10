@@ -80,7 +80,7 @@ export namespace Defines {
   export const NEXT_FRAME_SELF: Readonly<INextFrame> = {
     id: Builtin_FrameId.Self,
   };
-  
+
   export const CheatKeys: Record<CheatType, string> = {
     [CheatType.LF2_NET]: "lf2.net",
     [CheatType.HERO_FT]: "herofighter.com",
@@ -218,7 +218,7 @@ export namespace Defines {
   }
 
   export type TKeys = Record<GameKey, string>;
-  const default_keys_map = new Map<string, TKeys>([
+  export const default_keys_map: ReadonlyMap<string, TKeys> = new Map<string, TKeys>([
     ["1", { L: "a", R: "d", U: "w", D: "s", a: "j", j: "k", d: "l" }],
     [
       "2",

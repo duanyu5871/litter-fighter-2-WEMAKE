@@ -4,7 +4,7 @@ import { IMeshInfo, IMeshNode } from "../3d/IMeshNode";
 import type { IObjectNode } from "../3d/IObjectNode";
 import { IOrthographicCameraNode } from "../3d/IOrthographicCamera";
 import { IPerspectiveCamera } from "../3d/IPerspectiveCamera";
-import { IRaycaster } from "../3d/IRaycaster";
+import { IRaycaster } from "../defines/IRaycaster";
 import { ISceneNode } from "../3d/ISceneNode";
 import { ISpriteInfo, ISpriteNode } from "../3d/ISpriteNode";
 import { ITextNode } from "../3d/ITextNode";

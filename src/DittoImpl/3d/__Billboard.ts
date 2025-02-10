@@ -1,9 +1,9 @@
-import { __ObjectNode } from ".";
-import { IBillboardInfo, IBillboardNode } from "../../LF2/3d";
+import { __Object } from "./__Object";
+import type { IBillboardInfo, IBillboardNode } from "../../LF2/3d";
 import LF2 from "../../LF2/LF2";
 import { Sprite, SpriteMaterial } from "./_t";
 
-export class __BillboardNode extends __ObjectNode implements IBillboardNode {
+export class __Billboard extends __Object implements IBillboardNode {
   readonly is_billboard_node = true;
   readonly is_mesh_node = true;
   constructor(lf2: LF2, info?: IBillboardInfo) {
@@ -20,5 +20,9 @@ export class __BillboardNode extends __ObjectNode implements IBillboardNode {
   }
   set render_order(v: number) {
     this.inner.renderOrder = v;
+  }
+  override set_visible(v: boolean): this {
+    this.material.visible = false;
+    return this;
   }
 }
