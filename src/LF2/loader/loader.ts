@@ -3,10 +3,11 @@ import { create_img_ele } from "../../Utils/create_img_ele";
 import { get_blob } from "../../Utils/get_blob";
 import type LF2 from "../LF2";
 import AsyncValuesKeeper from "../base/AsyncValuesKeeper";
-import { IEntityPictureInfo } from "../defines/IEntityPictureInfo";
+import { ILegacyPictureInfo } from "../defines/ILegacyPictureInfo";
 import type IPicture from "../defines/IPicture";
 import type IStyle from "../defines/IStyle";
 import Ditto from "../ditto";
+import { IPictureInfo } from "../defines/IPictureInfo";
 
 export type TPicture = IPicture<THREE.Texture>;
 
@@ -160,7 +161,7 @@ export class ImageMgr {
     return this._requesters.values.get(key);
   }
 
-  find_by_pic_info(f: IEntityPictureInfo): TImageInfo | undefined {
+  find_by_pic_info(f: IPictureInfo | ILegacyPictureInfo): TImageInfo | undefined {
     return this._requesters.values.get(this._gen_key(f));
   }
 
@@ -186,10 +187,17 @@ export class ImageMgr {
     return;
   }
 
-  protected _gen_key = (f: IEntityPictureInfo) =>
-    `${f.path}#${f.cell_w || 0}_${f.cell_h || 0}_${f.row}_${f.col}`;
-  async load_by_e_pic_info(f: IEntityPictureInfo): Promise<TImageInfo> {
+  protected _gen_key = (f: ILegacyPictureInfo | IPictureInfo) => {
+    if ('row' in f)
+      return `${f.path}#${f.cell_w || 0}_${f.cell_h || 0}_${f.row}_${f.col}`;
+    return f.path;
+  }
+  async load_by_e_pic_info(f: ILegacyPictureInfo | IPictureInfo): Promise<TImageInfo> {
     const key = this._gen_key(f);
+
+    if (!("cell_w" in f)) {
+      return this.load_img(key, f.path);
+    }
     const { path, cell_w, cell_h } = f;
     if (!path.endsWith("bmp") || !cell_w || !cell_h)
       return this.load_img(key, f.path);
@@ -271,7 +279,7 @@ export class ImageMgr {
     return this.create_pic_by_img_info(img_info);
   }
 
-  create_pic_by_e_pic_info(e_pic_info: IEntityPictureInfo) {
+  create_pic_by_e_pic_info(e_pic_info: ILegacyPictureInfo) {
     const img_info = this.find_by_pic_info(e_pic_info);
     const picture = err_pic_info();
     if (!img_info) return picture;

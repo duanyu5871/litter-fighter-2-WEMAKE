@@ -4,7 +4,7 @@ import { IBaseData } from "../defines/IBaseData";
 import { IDatIndex } from "../defines/IDatIndex";
 import { IEntityData } from "../defines/IEntityData";
 import { IEntityInfo } from "../defines/IEntityInfo";
-import { IEntityPictureInfo } from "../defines/IEntityPictureInfo";
+import { ILegacyPictureInfo } from "../defines/ILegacyPictureInfo";
 import { set_obj_field } from "../utils/container_help/set_obj_field";
 import { match_block_once } from "../utils/string_parser/match_block";
 import { match_colon_value } from "../utils/string_parser/match_colon_value";
@@ -57,7 +57,7 @@ export default function dat_to_json(
     }
     if (info_str.startsWith("file(")) {
       const file_id = base.files ? Object.keys(base.files).length : 0;
-      const file: IEntityPictureInfo = {
+      const file: ILegacyPictureInfo = {
         id: "" + file_id,
         path: "",
         row: 0,

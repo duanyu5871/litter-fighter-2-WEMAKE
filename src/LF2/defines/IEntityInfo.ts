@@ -1,6 +1,7 @@
-import type { IEntityPictureInfo } from "./IEntityPictureInfo";
+import type { IPictureInfo } from "./IPictureInfo";
 import { IArmorInfo } from "./IArmorInfo";
 import type { IOpointInfo } from "./IOpointInfo";
+import { ILegacyPictureInfo } from "./ILegacyPictureInfo";
 
 export interface IEntityInfo {
   type?: number;
@@ -42,7 +43,7 @@ export interface IEntityInfo {
    */
   group?: string[];
 
-  files: Record<string, IEntityPictureInfo>;
+  files: Record<string, IPictureInfo | ILegacyPictureInfo>;
 
   depth_test?: boolean;
 
@@ -55,7 +56,7 @@ export interface IEntityInfo {
   defend_value?: number;
 
   resting?: number;
-  
+
   /**
    * 默认血量
    *

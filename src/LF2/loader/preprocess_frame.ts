@@ -1,14 +1,14 @@
 import { Warn } from "../../Log";
 import LF2 from "../LF2";
+import { Expression } from "../base/Expression";
 import { cook_frame_indicator_info } from "../dat_translator/cook_frame_indicator_info";
 import { IFrameInfo, ITexturePieceInfo } from "../defines";
-import { IEntityPictureInfo } from "../defines/IEntityPictureInfo";
 import { IEntityData } from "../defines/IEntityData";
+import { IPictureInfo } from "../defines/IPictureInfo";
 import read_nums from "../layout/utils/read_nums";
 import { traversal } from "../utils/container_help/traversal";
 import { get_val_geter_from_collision } from "./get_val_from_collision";
 import { cook_next_frame } from "./preprocess_next_frame";
-import { Expression } from "../base/Expression";
 const get_keys = <V extends {}>(v: V): (keyof V)[] => {
   return Object.keys(v) as (keyof V)[];
 };
@@ -116,7 +116,7 @@ export function cook_frame(lf2: LF2, data: IEntityData, frame: IFrameInfo) {
     }
   }
   let pic = frame.pic;
-  let pic_info: IEntityPictureInfo | undefined = void 0;
+  let pic_info: IPictureInfo | undefined = void 0;
   if (pic && !("1" in pic)) {
     for (const key in data.base.files) {
       if (data.base.files[key].id === pic.tex) {

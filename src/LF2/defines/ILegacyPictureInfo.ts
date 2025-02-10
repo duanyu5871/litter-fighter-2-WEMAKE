@@ -1,3 +1,5 @@
+import { IPictureInfo } from "./IPictureInfo";
+
 /**
  * 实体图片信息
  *
@@ -6,8 +8,7 @@
  * @export
  * @interface ILegacyPictureInfo
  */
-
-export interface ILegacyPictureInfo {
+export interface ILegacyPictureInfo extends IPictureInfo {
   id: string;
 
   path: string;

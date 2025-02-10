@@ -1,11 +1,12 @@
-import { FacingFlag, IEntityInfo, IFrameInfo, StateEnum, TNextFrame, WeaponType } from "../defines/js";
 import { BdyKind } from "../defines/BdyKind";
 import { EntityEnum } from "../defines/EntityEnum";
 import { EntityVal } from "../defines/EntityVal";
 import { IEntityData } from "../defines/IEntityData";
 import { IFrameIndexes } from "../defines/IFrameIndexes";
+import { ILegacyPictureInfo } from "../defines/ILegacyPictureInfo";
 import { INextFrame } from "../defines/INextFrame";
 import { Defines } from "../defines/defines";
+import { FacingFlag, IEntityInfo, IFrameInfo, StateEnum, TNextFrame, WeaponType } from "../defines/js";
 import { set_obj_field } from "../utils/container_help/set_obj_field";
 import { take_number } from "../utils/container_help/take_number";
 import { traversal } from "../utils/container_help/traversal";
@@ -837,8 +838,8 @@ function cook_file_variants(ret: IEntityData) {
     file_keys.sort();
     let has_variant = true;
     for (let i = 0; i < file_keys.length / 2; ++i) {
-      const file_1 = ret.base.files[file_keys[i]];
-      const file_2 = ret.base.files[file_keys[i + file_keys.length / 2]];
+      const file_1 = ret.base.files[file_keys[i]] as ILegacyPictureInfo;
+      const file_2 = ret.base.files[file_keys[i + file_keys.length / 2]] as ILegacyPictureInfo;
       if (
         file_1.cell_w !== file_2.cell_w ||
         file_1.cell_h !== file_2.cell_h ||

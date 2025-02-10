@@ -2,12 +2,12 @@ import Frame, { IFrameProps } from "../Component/Frame";
 import { Cross } from "../Component/Icons/Cross";
 import { Space } from "../Component/Space";
 import { IEntityData } from "../LF2/defines/IEntityData";
-import { IEntityPictureInfo } from "../LF2/defines/IEntityPictureInfo";
+import { ILegacyPictureInfo } from "../LF2/defines/ILegacyPictureInfo";
 import { traversal } from "../LF2/utils/container_help/traversal";
 import { useEditor } from "./FrameEditorView/useEditor";
 export interface IFileEditorViewProps extends IFrameProps {
   data: IEntityData;
-  pic_info: IEntityPictureInfo;
+  pic_info: ILegacyPictureInfo;
   on_changed?(): void;
 }
 export function PicInfoEditorView(props: IFileEditorViewProps) {

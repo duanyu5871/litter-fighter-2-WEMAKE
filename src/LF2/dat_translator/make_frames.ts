@@ -12,7 +12,7 @@ import {
 import { BdyKind } from "../defines/BdyKind";
 import { CollisionVal as C_Val } from "../defines/CollisionVal";
 import { IEntityInfo } from "../defines/IEntityInfo";
-import { IEntityPictureInfo } from "../defines/IEntityPictureInfo";
+import { ILegacyPictureInfo } from "../defines/ILegacyPictureInfo";
 import { IFrameInfo } from "../defines/IFrameInfo";
 import { OpointKind } from "../defines/OpointKind";
 import { SpeedMode } from "../defines/SpeedMode";
@@ -82,11 +82,11 @@ export function make_frames(
     const next = get_next_frame_by_raw_id(raw_next);
     const pic_idx = take(fields, "pic");
     let frame_pic_info: IFramePictureInfo | undefined = void 0;
-    let entity_pic_info: IEntityPictureInfo | undefined = void 0;
+    let entity_pic_info: ILegacyPictureInfo | undefined = void 0;
 
     let pic = pic_idx;
     for (const key in files) {
-      const { row, col } = (entity_pic_info = files[key]);
+      const { row, col } = (entity_pic_info = files[key] as ILegacyPictureInfo);
       if (pic < row * col) break;
       pic -= row * col;
     }

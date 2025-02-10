@@ -1,7 +1,7 @@
 import command_exists from "command-exists";
 import fs from "fs/promises";
 import { exec_cmd } from "./exec_cmd";
-import { IEntityPictureInfo } from "../../../src/LF2/defines/IEntityPictureInfo";
+import { ILegacyPictureInfo } from "../../../src/LF2/defines/ILegacyPictureInfo";
 function get_dst_path(out_dir: string, src_dir: string, src_path: string) {
   return src_path.replace(src_dir, out_dir).replace(/(.bmp)$/, ".png");
 }
@@ -31,13 +31,13 @@ export async function convert_pic(
 }
 convert_pic.get_dst_path = get_dst_path;
 
-export function get_dst_path_2(out_dir: string, pic: IEntityPictureInfo) {
+export function get_dst_path_2(out_dir: string, pic: ILegacyPictureInfo) {
   return out_dir + "/" + pic.path;
 }
 export async function convert_pic_2(
   dst_path: string,
   src_path: string,
-  pic: IEntityPictureInfo,
+  pic: ILegacyPictureInfo,
 ) {
   if (!command_exists.sync("magick"))
     throw new Error(

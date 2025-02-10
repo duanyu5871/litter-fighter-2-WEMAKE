@@ -2,7 +2,7 @@ import { readFileSync } from "fs";
 import fs, { readFile } from "fs/promises";
 import path, { join } from "path";
 import { ColonValueReader } from "../../src/LF2/dat_translator/ColonValueReader";
-import { IEntityPictureInfo } from "../../src/LF2/defines/IEntityPictureInfo";
+import { ILegacyPictureInfo } from "../../src/LF2/defines/ILegacyPictureInfo";
 import { CacheInfos } from "./utils/cache_infos";
 import { check_is_str_ok } from "./utils/check_is_str_ok";
 import { classify } from "./utils/classify";
@@ -68,7 +68,7 @@ async function main() {
     await fs.mkdir(dst_path, { recursive: true }).catch((_) => void 0);
   }
 
-  const pic_list_map = new Map<string, IEntityPictureInfo[]>();
+  const pic_list_map = new Map<string, ILegacyPictureInfo[]>();
   const indexes = await convert_data_txt(RAW_LF2_PATH, DATA_DIR_PATH);
   if (indexes) {
     for (const src_path of ress.file.dat) {

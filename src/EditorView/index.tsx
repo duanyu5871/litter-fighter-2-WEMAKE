@@ -35,6 +35,7 @@ import { FrameListView } from "./FrameListView";
 import { PicInfoEditorView } from "./PicInfoEditorView";
 import styles from "./styles.module.scss";
 import { WorkspaceColumnView } from "./WorkspaceColumnView";
+import { ILegacyPictureInfo } from "../LF2/defines/ILegacyPictureInfo";
 enum EntityEditing {
   base = '基础信息',
   frame_index = '特定帧',
@@ -240,7 +241,7 @@ export default function EditorView(props: IEditorViewProps) {
     if (editing_data.base.files) traversal(editing_data.base.files, (k, v) => {
       views.push(
         <PicInfoEditorView
-          pic_info={v}
+          pic_info={v as ILegacyPictureInfo}
           data={editing_data}
           key={'FileEditorView_' + k}
           on_changed={() => set_change_flag(change_flag + 1)}
@@ -251,7 +252,7 @@ export default function EditorView(props: IEditorViewProps) {
     const add = () => {
       let i = Object.keys(editing_data.base.files).length;
       while (('' + i) in editing_data.base.files) ++i;
-      editing_data.base.files['' + i] = {
+      const pic_info: ILegacyPictureInfo = {
         row: 0,
         col: 0,
         id: '' + i,
@@ -259,6 +260,7 @@ export default function EditorView(props: IEditorViewProps) {
         cell_w: 0,
         cell_h: 0,
       }
+      editing_data.base.files['' + i] = pic_info
       set_change_flag(change_flag + 1);
     }
     const header = <WorkspaceColumnView.TitleAndAdd title="实体图片" on_add={add} />
