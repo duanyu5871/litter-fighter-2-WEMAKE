@@ -1,4 +1,3 @@
-import * as THREE from "three";
 import { IQuaternion, IRaycaster } from "../defines";
 import type LF2 from "../LF2";
 import { IBaseNode } from "./IBaseNode";
@@ -55,16 +54,15 @@ export interface IObjectNode extends IBaseNode {
 
   set_rgb(r: number, g: number, b: number): this;
   rotation_from_quaternion(q: IQuaternion): this;
-  intersects_from_raycaster(
-    raycaster: IRaycaster,
-    recursive?: boolean,
-  ): THREE.Intersection<THREE.Object3D<THREE.Object3DEventMap>>[];
   intersect_from_raycaster(
     raycaster: IRaycaster,
     recursive?: boolean,
-  ): THREE.Intersection<THREE.Object3D<THREE.Object3DEventMap>>[];
+  ): IIntersection[];
   on(key: ObjectEventKey, fn: () => void): this;
   off(key: ObjectEventKey, fn: () => void): this;
+}
+export interface IIntersection {
+  object: IObjectNode;
 }
 export const is_object_node = (v: any): v is IObjectNode =>
   v?.is_object_node === true;

@@ -61,6 +61,7 @@ export class __Sprite extends __Object implements ISpriteNode {
     mp.map = this._texture;
     mp.color = new THREE.Color(r / 255, g / 255, b / 255);
     this._inner = new THREE.Mesh(geo, new THREE.MeshBasicMaterial(mp));
+    this.update_inner();
   }
 
   override set_opacity(v: number): this {

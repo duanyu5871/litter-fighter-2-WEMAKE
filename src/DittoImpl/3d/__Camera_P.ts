@@ -30,6 +30,7 @@ export class __Camera_P extends __Object implements IPerspectiveCamera {
   constructor(lf2: LF2) {
     super(lf2);
     this._inner = new _T.PerspectiveCamera();
+    this.update_inner();
   }
   override apply(): this {
     super.apply();

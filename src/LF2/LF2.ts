@@ -3,14 +3,17 @@ import { ILf2Callback } from "./ILf2Callback";
 import { PlayerInfo } from "./PlayerInfo";
 import { World } from "./World";
 import {
-  Callbacks, get_short_file_size_txt, Loader, new_id, new_team, NoEmitCallbacks
+  Callbacks, get_short_file_size_txt, Loader, new_id, new_team, NoEmitCallbacks,
+  PIO
 } from "./base";
 import { KEY_NAME_LIST, LocalController } from "./controller";
 import {
   Builtin_FrameId, CheatType, Defines, Difficulty, IBgData, IEntityData,
   IStageInfo, TFace
 } from "./defines";
-import ditto, {
+import {
+  default as ditto,
+  default as Ditto,
   IKeyboard,
   IKeyboardCallback,
   IKeyEvent,
@@ -20,8 +23,6 @@ import ditto, {
   ISounds,
   IZip,
 } from "./ditto";
-import { PIO } from "./base";
-import Ditto from "./ditto";
 import { Entity, Factory } from "./entity";
 import { BallsHelper, CharactersHelper, EntitiesHelper, WeaponsHelper } from "./helper";
 import { ICookedLayoutInfo } from "./layout/ICookedLayoutInfo";
@@ -32,7 +33,8 @@ import get_import_fallbacks from "./loader/get_import_fallbacks";
 import { ImageMgr } from "./loader/loader";
 import { Stage } from "./stage";
 import {
-  arithmetic_progression, fisrt, float_equal, is_arr, is_num, is_str,
+  arithmetic_progression, fisrt,
+  is_arr, is_num, is_str,
   not_empty_str, random_get, random_in, random_take
 } from "./utils";
 
@@ -54,7 +56,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
   private _loaded: boolean = false;
   private _difficulty: Difficulty = Difficulty.Difficult;
   private _infinity_mp: boolean = false;
-  private _mouse_on_layouts = new Set<Layout>();
+  private _pointer_on_layouts = new Set<Layout>();
   private _pointer_raycaster = new Ditto.Raycaster();
   private _pointer_vec_2 = new Ditto.Vector2();
   get callbacks(): NoEmitCallbacks<ILf2Callback> {
@@ -249,25 +251,32 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
       this._pointer_raycaster,
       true,
     );
-    this._mouse_on_layouts.clear();
-    for (const {
-      object: {
-        userData: { owner },
-      },
-    } of intersections) {
-      if (owner instanceof Layout) this._mouse_on_layouts.add(owner);
-    }
-    for (const layout of this._mouse_on_layouts) {
-      if (!this._mouse_on_layouts.has(layout)) {
-        layout.on_mouse_enter();
-        layout.state.mouse_on_me = "1";
+    const leave_layouts = this._pointer_on_layouts;
+    const stay_layouts = new Set<Layout>();
+    const enter_layouts = new Set<Layout>();
+    for (const { object } of intersections) {
+      const layout = object.user_data.owner;
+      if (layout instanceof Layout && layout.global_visible) {
+        if (leave_layouts.has(layout)) {
+          leave_layouts.delete(layout)
+          stay_layouts.add(layout)
+        } else {
+          enter_layouts.add(layout);
+        }
       }
     }
-    for (const layout of this._mouse_on_layouts) {
-      if (!this._mouse_on_layouts.has(layout)) {
-        layout.on_mouse_leave();
-        layout.state.mouse_on_me = "0";
-      }
+    for (const layout of leave_layouts) {
+      layout.on_mouse_leave();
+      layout.state.mouse_on_me = "0";
+    }
+    this._pointer_on_layouts.clear();
+    for (const layout of enter_layouts) {
+      layout.on_mouse_enter();
+      layout.state.mouse_on_me = "1";
+      this._pointer_on_layouts.add(layout)
+    }
+    for (const layout of stay_layouts) {
+      this._pointer_on_layouts.add(layout)
     }
   }
 
@@ -275,9 +284,9 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
     this._pointer_vec_2.x = e.scene_x;
     this._pointer_vec_2.y = e.scene_y;
     this.world.camera.raycaster(this._pointer_raycaster, this._pointer_vec_2);
-    const intersections = this.world.scene.intersects_from_raycaster(
-      this._pointer_raycaster,
-    );
+    // const intersections = this.world.scene.intersect_from_raycaster(
+    //   this._pointer_raycaster,
+    // );
     // if (!intersections.length) {
     //   this.pick_intersection(void 0)
     // } else {
@@ -296,20 +305,13 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
       const { sprite } = layout;
       if (!sprite) return;
       this.world.camera.raycaster(this._pointer_raycaster, this._pointer_vec_2);
-      const intersections = sprite.intersects_from_raycaster(
+      const intersections = sprite.intersect_from_raycaster(
         this._pointer_raycaster,
         true,
       );
       const layouts = intersections
-        .filter((v) => v.object.userData.owner instanceof Layout)
-        .map((v) => v.object.userData.owner as Layout)
-        .filter((v) => v.global_visible && !v.global_disabled)
-        .sort((a, b) => {
-          const { global_z: z_a, depth: d_a } = a;
-          const { global_z: z_b, depth: d_b } = b;
-          if (!float_equal(z_a, d_a)) return z_b - z_a;
-          return d_b - d_a;
-        });
+        .map((v) => v.object.get_user_data('owner') as Layout)
+        .filter((v) => v && v.global_visible && !v.global_disabled)
       for (const layout of layouts) if (layout.on_click()) break;
     }
   }

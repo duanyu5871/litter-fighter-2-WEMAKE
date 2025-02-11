@@ -192,6 +192,8 @@ export default class LaunchPageLogic extends LayoutComponent {
       } else if (this.lf2.layout_infos.find((v) => v.id === "entry")) {
         this.long_text_2.opacity = this._tap_hints_opacity.update(dt);
       }
+      this.long_text.visible = this.long_text.opacity > 0;
+      this.long_text_2.visible = this.long_text_2.opacity > 0;
 
       if (this._opacity.is_finish && this._layouts_loaded) {
         if (this._opacity.reverse) {

@@ -49,6 +49,7 @@ export class __Camera_O extends __Object implements IOrthographicCameraNode {
   constructor(lf2: LF2) {
     super(lf2);
     this._inner = new _T.OrthographicCamera();
+    this.update_inner();
   }
   override apply(): this {
     super.apply();

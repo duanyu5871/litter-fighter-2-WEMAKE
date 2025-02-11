@@ -1,5 +1,5 @@
 import { IBaseNode } from "../../LF2/3d/IBaseNode";
-import type { IObjectNode, ObjectEventKey } from "../../LF2/3d/IObjectNode";
+import type { IIntersection, IObjectNode, ObjectEventKey } from "../../LF2/3d/IObjectNode";
 import type { IQuaternion, IRaycaster } from "../../LF2/defines";
 import LF2 from "../../LF2/LF2";
 import { is_num } from "../../LF2/utils/type_check";
@@ -22,6 +22,10 @@ export class __Object implements IObjectNode {
   constructor(lf2: LF2, inner?: _T.Object3D) {
     this.lf2 = lf2;
     this._inner = inner || new _T.Object3D();
+    this.update_inner();
+  }
+  protected update_inner() {
+    this._inner.userData.__wrapper = this;
   }
   get scale_x(): number {
     return this._inner.scale.x;
@@ -227,17 +231,17 @@ export class __Object implements IObjectNode {
     this.inner.rotation.setFromQuaternion(q as _T.Quaternion);
     return this;
   }
-  intersects_from_raycaster(
-    raycaster: IRaycaster,
-    recursive?: boolean,
-  ): _T.Intersection<_T.Object3D<_T.Object3DEventMap>>[] {
-    return (raycaster as _T.Raycaster).intersectObjects(this.inner.children, recursive);
-  }
   intersect_from_raycaster(
     raycaster: IRaycaster,
     recursive?: boolean,
-  ): _T.Intersection<_T.Object3D<_T.Object3DEventMap>>[] {
-    return (raycaster as _T.Raycaster).intersectObject(this.inner, recursive);
+  ): IIntersection[] {
+    const ret: IIntersection[] = [];
+    const temp = (raycaster as _T.Raycaster).intersectObject(this.inner, recursive);
+    for (const i of temp) {
+      const wrapper = i.object.userData.__wrapper
+      if (wrapper) ret.push({ object: wrapper })
+    }
+    return ret;
   }
   on(key: ObjectEventKey, fn: () => void) {
     this._inner.addEventListener(key, fn);
