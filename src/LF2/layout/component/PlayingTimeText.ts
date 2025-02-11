@@ -1,9 +1,9 @@
-import { ITextNode } from "../../3d/ITextNode";
+import { IText } from "../../3d/IText";
 import Ditto from "../../ditto";
 import { LayoutComponent } from "./LayoutComponent";
 
 export class PlayingTimeText extends LayoutComponent {
-  private _txt?: ITextNode;
+  private _txt?: IText;
 
   override on_start(): void {
     super.on_start?.();

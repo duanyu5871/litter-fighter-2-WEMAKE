@@ -1,4 +1,4 @@
-import { ISpriteNode } from "../../3d";
+import { ISprite } from "../../3d";
 import { SineAnimation } from "../../animation/SineAnimation";
 import Invoker from "../../base/Invoker";
 import { Defines } from "../../defines/defines";
@@ -33,7 +33,7 @@ export default class PlayerCharacterThumb extends LayoutComponent {
   }
 
   protected _opacity: SineAnimation = new SineAnimation(0.65, 1, 1 / 25);
-  protected readonly _mesh_thumb: ISpriteNode;
+  protected readonly _mesh_thumb: ISprite;
 
   get gpl(): GamePrepareLogic | undefined {
     return this.layout.root.find_component(GamePrepareLogic);

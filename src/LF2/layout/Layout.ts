@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { ISpriteInfo, ISpriteNode } from "../3d";
+import { ISpriteInfo, ISprite } from "../3d";
 import LF2 from "../LF2";
 import Callbacks from "../base/Callbacks";
 import { Expression } from "../base/Expression";
@@ -262,7 +262,7 @@ export class Layout {
     return this;
   }
 
-  protected _sprite: ISpriteNode;
+  protected _sprite: ISprite;
 
   constructor(lf2: LF2, data: ICookedLayoutInfo, parent?: Layout) {
     this.lf2 = lf2;

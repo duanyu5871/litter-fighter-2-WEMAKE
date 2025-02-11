@@ -1,5 +1,5 @@
 import type IPicture from "../defines/IPicture";
-import type { IObjectNode } from "./IObjectNode";
+import type { IObjectNode } from "./IObject";
 export interface IBillboardInfo {
   visible?: boolean;
 }

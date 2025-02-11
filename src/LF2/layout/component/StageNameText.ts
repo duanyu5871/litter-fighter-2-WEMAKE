@@ -1,4 +1,4 @@
-import { ITextNode } from "../../3d/ITextNode";
+import { IText } from "../../3d/IText";
 import Invoker from "../../base/Invoker";
 import { CheatType, IStageInfo } from "../../defines";
 import { Defines } from "../../defines/defines";
@@ -27,7 +27,7 @@ export default class StageNameText extends LayoutComponent {
     if (this.show_all) return this._stage.name;
     return this._stage.starting_name ?? this._stage.name;
   }
-  protected _mesh: ITextNode;
+  protected _mesh: IText;
   protected _unmount_jobs = new Invoker();
 
   constructor(layout: Layout, f_name: string) {

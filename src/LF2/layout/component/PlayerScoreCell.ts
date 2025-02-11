@@ -1,4 +1,4 @@
-import { ITextNode } from "../../3d/ITextNode";
+import { IText } from "../../3d/IText";
 import IStyle from "../../defines/IStyle";
 import Ditto from "../../ditto";
 import { LayoutComponent } from "./LayoutComponent";
@@ -10,7 +10,7 @@ export default class PlayerScoreCell extends LayoutComponent {
   get player_score() {
     return this.layout.lookup_component(PlayerScore);
   }
-  private _txt?: ITextNode;
+  private _txt?: IText;
 
   override on_start(): void {
     super.on_start?.();

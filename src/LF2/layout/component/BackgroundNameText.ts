@@ -1,4 +1,4 @@
-import { ITextNode } from "../../3d/ITextNode";
+import { IText } from "../../3d/IText";
 import Invoker from "../../base/Invoker";
 import { IBgData } from "../../defines";
 import { Defines } from "../../defines/defines";
@@ -21,7 +21,7 @@ export default class BackgroundNameText extends LayoutComponent {
   get text(): string {
     return this._background.base.name;
   }
-  protected _mesh: ITextNode;
+  protected _mesh: IText;
   protected _unmount_jobs = new Invoker();
 
   constructor(layout: Layout, f_name: string) {

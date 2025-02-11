@@ -1,4 +1,4 @@
-import { ITextNode } from "../../3d/ITextNode";
+import { IText } from "../../3d/IText";
 import Invoker from "../../base/Invoker";
 import Ditto from "../../ditto";
 import Layout from "../Layout";
@@ -6,7 +6,7 @@ import { LayoutComponent } from "./LayoutComponent";
 
 export default class LoadingFileNameDisplayer extends LayoutComponent {
   protected _unmount_job = new Invoker();
-  protected _mesh: ITextNode;
+  protected _mesh: IText;
 
   constructor(layout: Layout, f_name: string) {
     super(layout, f_name);

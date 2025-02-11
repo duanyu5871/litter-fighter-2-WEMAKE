@@ -1,4 +1,4 @@
-import { ITextNode } from "../../3d/ITextNode";
+import { IText } from "../../3d/IText";
 import Invoker from "../../base/Invoker";
 import { Defines } from "../../defines/defines";
 import Ditto from "../../ditto";
@@ -9,7 +9,7 @@ export default class DifficultyText extends LayoutComponent {
   protected get text(): string {
     return Defines.DifficultyLabels[this.lf2.difficulty];
   }
-  protected _mesh: ITextNode;
+  protected _mesh: IText;
   protected _unmount_jobs = new Invoker();
 
   constructor(layout: Layout, f_name: string) {

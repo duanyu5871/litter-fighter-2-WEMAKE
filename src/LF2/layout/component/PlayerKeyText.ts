@@ -1,4 +1,4 @@
-import { ITextNode } from "../../3d/ITextNode";
+import { IText } from "../../3d/IText";
 import Invoker from "../../base/Invoker";
 import GameKey from "../../defines/GameKey";
 import Ditto from "../../ditto";
@@ -16,7 +16,7 @@ export default class PlayerKeyText extends LayoutComponent {
   get player() {
     return this.lf2.player_infos.get(this.player_id);
   }
-  protected _sprite: ITextNode;
+  protected _sprite: IText;
   protected _unmount_jobs = new Invoker();
 
   constructor(layout: Layout, f_name: string) {

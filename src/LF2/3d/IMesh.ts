@@ -1,5 +1,5 @@
 import { BufferGeometry, Material, MeshBasicMaterial } from "three";
-import { IObjectNode } from "./IObjectNode";
+import { IObjectNode } from "./IObject";
 export { BufferGeometry, Material, MeshBasicMaterial } from "three";
 export interface IMeshInfo {
   geometry?: BufferGeometry;

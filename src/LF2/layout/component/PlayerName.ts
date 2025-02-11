@@ -1,4 +1,4 @@
-import { ITextNode } from "../../3d/ITextNode";
+import { IText } from "../../3d/IText";
 import { SineAnimation } from "../../animation/SineAnimation";
 import Invoker from "../../base/Invoker";
 import Ditto from "../../ditto";
@@ -41,7 +41,7 @@ export default class PlayerName extends LayoutComponent {
     if (this.can_join) return "Join?";
     return "";
   }
-  protected _mesh: ITextNode;
+  protected _mesh: IText;
   protected _opacity: SineAnimation = new SineAnimation(0.65, 0.35, 1 / 25);
   protected _unmount_jobs = new Invoker();
 

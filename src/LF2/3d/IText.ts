@@ -1,7 +1,7 @@
 import type IStyle from "../defines/IStyle";
-import type { ISpriteNode } from "./ISpriteNode";
+import type { ISprite } from "./ISprite";
 
-export interface ITextNode extends ISpriteNode {
+export interface IText extends ISprite {
   readonly is_text_node: true;
   get style(): IStyle;
   set style(v: IStyle);
@@ -13,5 +13,5 @@ export interface ITextNode extends ISpriteNode {
   get_text(): string;
   set_text(v: string): this;
 }
-export const is_text_node = (v: any): v is ITextNode =>
+export const is_text_node = (v: any): v is IText =>
   v?.is_text_node === true;

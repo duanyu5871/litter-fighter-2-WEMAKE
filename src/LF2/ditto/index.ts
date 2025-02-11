@@ -1,13 +1,13 @@
 import { ILineSegmentsInfo, ILineSegmentsNode } from "../3d";
-import { IBillboardInfo, IBillboardNode } from "../3d/IBillboardNode";
-import { IMeshInfo, IMeshNode } from "../3d/IMeshNode";
-import type { IObjectNode } from "../3d/IObjectNode";
+import { IBillboardInfo, IBillboardNode } from "../3d/IBillboard";
+import { IMeshInfo, IMeshNode } from "../3d/IMesh";
+import type { IObjectNode } from "../3d/IObject";
 import { IOrthographicCameraNode } from "../3d/IOrthographicCamera";
 import { IPerspectiveCamera } from "../3d/IPerspectiveCamera";
 import { IRaycaster } from "../defines/IRaycaster";
-import { ISceneNode } from "../3d/ISceneNode";
-import { ISpriteInfo, ISpriteNode } from "../3d/ISpriteNode";
-import { ITextNode } from "../3d/ITextNode";
+import { IScene } from "../3d/IScene";
+import { ISpriteInfo, ISprite } from "../3d/ISprite";
+import { IText } from "../3d/IText";
 import { IQuaternion, IVector2, IVector3 } from "../defines";
 import type LF2 from "../LF2";
 import type { ICache } from "./cache";
@@ -50,11 +50,11 @@ export interface IDittoPack {
   Cache: ICache;
 
   ObjectNode: new (lf2: LF2) => IObjectNode;
-  TextNode: new (lf2: LF2) => ITextNode;
-  SceneNode: new (lf2: LF2) => ISceneNode;
+  TextNode: new (lf2: LF2) => IText;
+  SceneNode: new (lf2: LF2) => IScene;
   OrthographicCamera: new (lf2: LF2) => IOrthographicCameraNode;
   PerspectiveCamera: new (lf2: LF2) => IPerspectiveCamera;
-  SpriteNode: new (lf2: LF2, info?: ISpriteInfo) => ISpriteNode;
+  SpriteNode: new (lf2: LF2, info?: ISpriteInfo) => ISprite;
   LineSegmentsNode: new (
     lf2: LF2,
     info?: ILineSegmentsInfo,

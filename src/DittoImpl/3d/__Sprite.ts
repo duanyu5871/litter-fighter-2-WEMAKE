@@ -4,9 +4,9 @@ import { dispose_mesh } from "./disposer";
 import { empty_texture } from "../../LF2/loader/loader";
 import { is_num } from "../../LF2/utils/type_check";
 import { __Object } from "./__Object";
-import { ISpriteInfo, ISpriteNode } from "../../LF2/3d/ISpriteNode";
+import { ISpriteInfo, ISprite } from "../../LF2/3d/ISprite";
 
-export class __Sprite extends __Object implements ISpriteNode {
+export class __Sprite extends __Object implements ISprite {
   readonly is_sprite_node = true;
   protected _info: ISpriteInfo = { w: 0, h: 0 };
   protected _texture: THREE.Texture = empty_texture();

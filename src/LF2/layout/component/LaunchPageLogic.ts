@@ -1,4 +1,4 @@
-import { ISpriteNode } from "../../3d/ISpriteNode";
+import { ISprite } from "../../3d/ISprite";
 import Easing from "../../animation/Easing";
 import Sequence from "../../animation/Sequence";
 import { SineAnimation } from "../../animation/SineAnimation";
@@ -45,7 +45,7 @@ export default class LaunchPageLogic extends LayoutComponent {
   protected _tap_hints_fadeout_opacity = new Easing(1, 0, 255);
   protected state: number = 0;
 
-  protected _loading_sprite: ISpriteNode;
+  protected _loading_sprite: ISprite;
   protected _loading_imgs: TPicture[] = [];
   protected _loading_idx_anim = new Easing(
     0,

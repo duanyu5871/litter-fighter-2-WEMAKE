@@ -1,4 +1,4 @@
-import { ITextNode } from "../../3d/ITextNode";
+import { IText } from "../../3d/IText";
 import { SineAnimation } from "../../animation/SineAnimation";
 import Invoker from "../../base/Invoker";
 import { Defines } from "../../defines/defines";
@@ -31,7 +31,7 @@ export default class PlayerTeamName extends LayoutComponent {
     return true === this.player?.is_com;
   }
 
-  protected _mesh: ITextNode;
+  protected _mesh: IText;
   protected _opacity: SineAnimation = new SineAnimation(0.65, 1, 1 / 25);
   protected _unmount_jobs = new Invoker();
 

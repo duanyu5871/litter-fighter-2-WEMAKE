@@ -1,4 +1,4 @@
-import { ISpriteNode } from "../../3d/ISpriteNode";
+import { ISprite } from "../../3d/ISprite";
 import { SineAnimation } from "../../animation/SineAnimation";
 import Invoker from "../../base/Invoker";
 import { Defines } from "../../defines/defines";
@@ -30,9 +30,9 @@ export default class PlayerCharacterHead extends LayoutComponent {
   }
 
   protected _opacity: SineAnimation = new SineAnimation(0.65, 1, 1 / 25);
-  protected readonly _mesh_head: ISpriteNode;
-  protected readonly _mesh_hints: ISpriteNode;
-  protected readonly _mesh_cd: ISpriteNode;
+  protected readonly _mesh_head: ISprite;
+  protected readonly _mesh_hints: ISprite;
+  protected readonly _mesh_cd: ISprite;
 
   get gpl(): GamePrepareLogic | undefined {
     return this.layout.root.find_component(GamePrepareLogic);

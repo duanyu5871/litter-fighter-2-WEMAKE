@@ -1,5 +1,5 @@
 import { Warn } from "../Log";
-import { IOrthographicCameraNode, ISceneNode } from "./3d";
+import { IOrthographicCameraNode, IScene } from "./3d";
 import { Callbacks, FPS, ICollision, NoEmitCallbacks } from "./base";
 import { Builtin_FrameId, Defines, IBdyInfo, IBounding, IFrameInfo, IItrInfo, StateEnum } from "./defines";
 import Ditto from "./ditto";
@@ -78,7 +78,7 @@ export class World {
 
   friction_factor = Defines.FRICTION_FACTOR;
   friction = Defines.FRICTION;
-  scene: ISceneNode;
+  scene: IScene;
   camera: IOrthographicCameraNode;
 
   private _stage: Stage;
