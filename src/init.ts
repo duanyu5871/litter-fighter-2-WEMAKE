@@ -5,6 +5,8 @@ import { __Billboard as __Billboard, __Camera_O, __Camera_P, __LineSegments, __O
 import { __Mesh } from "./DittoImpl/3d/__Mesh";
 import __Sprite from "./DittoImpl/3d/__Sprite";
 import Ditto from "./LF2/ditto";
+import { BgLayerRender } from "./DittoImpl/renderer/BgLayerRender";
+import { BgRender } from "./DittoImpl/renderer/BgRender";
 
 Ditto.setup({
   Timeout: dom.__Timeout,
@@ -31,4 +33,6 @@ Ditto.setup({
   Vector2: THREE.Vector2,
   Quaternion: THREE.Quaternion,
   Raycaster: THREE.Raycaster,
+  BgLayerRender: BgLayerRender,
+  BgRender: BgRender
 });
