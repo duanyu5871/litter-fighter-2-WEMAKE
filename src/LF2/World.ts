@@ -1,11 +1,11 @@
 import { Warn } from "../Log";
 import { IOrthographicCameraNode, IScene } from "./3d";
 import { Callbacks, FPS, ICollision, NoEmitCallbacks } from "./base";
-import { Builtin_FrameId, Defines, IBdyInfo, IBounding, IFrameInfo, IItrInfo, StateEnum } from "./defines";
+import { Builtin_FrameId, Defines, IBdyInfo, IBounding, IEntityData, IFrameInfo, IItrInfo, StateEnum } from "./defines";
 import Ditto from "./ditto";
 import { IBgRender } from "./ditto/render/IBgRender";
 import {
-  Entity, Factory, is_ball,
+  Entity, Factory, ICreator, is_ball,
   is_base_ctrl,
   is_character,
   is_local_ctrl,
@@ -14,7 +14,6 @@ import {
 import { IWorldCallbacks } from "./IWorldCallbacks";
 import LF2 from "./LF2";
 import { EntityRender } from "./renderer/EntityRender";
-import ShadowRender from "./renderer/ShadowRender";
 import Stage from "./stage/Stage";
 import { WhatNext } from "./state/State_Base";
 import { find } from "./utils/container_help";
@@ -24,6 +23,8 @@ export class World {
   static readonly TAG = "World";
   readonly lf2: LF2;
   readonly _callbacks = new Callbacks<IWorldCallbacks>();
+  private _spark_data?: IEntityData;
+  private _spark_creator?: ICreator<Entity, typeof Entity>;
   itr_shaking: number = Defines.DEFAULT_ITR_SHAKING;
   itr_motionless: number = Defines.DEFAULT_ITR_MOTIONLESS;
 
@@ -582,21 +583,26 @@ export class World {
     }
   }
 
+  init_spark_data() {
+    this._spark_data = this.lf2.datas.find(Defines.BuiltIn_Dats.Spark);
+    this._spark_creator = this._spark_data ? Factory.inst.get_entity_creator(this._spark_data.type) : void 0;
+  }
+  
   spark(x: number, y: number, z: number, f: string) {
-    const data = this.lf2.datas.find(Defines.BuiltIn_Dats.Spark);
-    if (!data) {
+    if (!this._spark_data)
+      this.init_spark_data();
+    if (!this._spark_data) {
       Warn.print(
         World.TAG + "::spark",
         `data of "${Defines.BuiltIn_Dats.Spark}" not found!`,
       );
       return;
     }
-    const create = Factory.inst.get_entity_creator(data.type);
-    if (!create) {
-      Warn.print(World.TAG + "::spark", `creator of "${data.type}" not found!`);
+    if (!this._spark_creator) {
+      Warn.print(World.TAG + "::spark", `creator of "${this._spark_data.type}" not found!`);
       return;
     }
-    const e = create(this, data);
+    const e = this._spark_creator(this, this._spark_data);
     e.position.set(x, y, z);
     e.enter_frame({ id: f });
     e.attach();
