@@ -1,5 +1,5 @@
-import { IQuaternion, IRaycaster, IVector2 } from "../defines";
-import { IObjectNode } from "./IObjectNode";
+import type { IQuaternion, IRaycaster, IVector2 } from "../defines";
+import type { IObjectNode } from "./IObjectNode";
 
 export interface IPerspectiveCamera extends IObjectNode {
   readonly is_perspective_camera_node: true;

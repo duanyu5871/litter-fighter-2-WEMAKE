@@ -1,5 +1,5 @@
-import { IQuaternion, IRaycaster, IVector2 } from "../defines";
-import { IObjectNode } from "./IObjectNode";
+import type { IQuaternion, IRaycaster, IVector2 } from "../defines";
+import type { IObjectNode } from "./IObjectNode";
 
 export interface IOrthographicCameraNode extends IObjectNode {
   readonly is_orthographic_camera_node: true;

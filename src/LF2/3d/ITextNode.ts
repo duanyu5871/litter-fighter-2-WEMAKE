@@ -1,5 +1,5 @@
-import IStyle from "../defines/IStyle";
-import { ISpriteNode } from "./ISpriteNode";
+import type IStyle from "../defines/IStyle";
+import type { ISpriteNode } from "./ISpriteNode";
 
 export interface ITextNode extends ISpriteNode {
   readonly is_text_node: true;
