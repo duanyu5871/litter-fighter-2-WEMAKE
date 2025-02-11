@@ -23,7 +23,7 @@ export class EntityRender {
   protected entity_material!: THREE.MeshBasicMaterial;
   protected variants = new Map<string, string[]>();
   protected piece: ITexturePieceInfo = EMPTY_PIECE;
-  protected shadow!: ShadowRender;
+  protected shadow: ShadowRender;
   readonly indicators!: FrameIndicators;
   protected _prev_update_count?: number;
   protected _shaking?: number;
@@ -137,13 +137,10 @@ export class EntityRender {
       );
       shadow.visible = is_visible && !frame.no_shadow;
       this._info_sprite.visible = is_visible;
-
       if (is_blinking && is_visible) {
         entity_mesh.visible = 0 === Math.floor(entity.blinking / 4) % 2;
       }
-
       this._info_sprite.update_position();
-      entity.holding?.follow_holder();
     }
 
     if (entity.shaking) {

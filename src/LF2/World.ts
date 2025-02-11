@@ -14,6 +14,7 @@ import {
 import { IWorldCallbacks } from "./IWorldCallbacks";
 import LF2 from "./LF2";
 import { EntityRender } from "./renderer/EntityRender";
+import ShadowRender from "./renderer/ShadowRender";
 import Stage from "./stage/Stage";
 import { WhatNext } from "./state/State_Base";
 import { find } from "./utils/container_help";
@@ -174,6 +175,7 @@ export class World {
       this.entities.add(entity);
       const render = new EntityRender(entity).set_entity(entity);
       render.attach();
+
       this.entity_renders.set(entity, render);
       render.indicators.flags = this._indicator_flags;
     }
