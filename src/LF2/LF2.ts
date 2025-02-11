@@ -206,39 +206,6 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
     return e;
   }
 
-  add_character(
-    data: IEntityData | string | undefined,
-    num: number,
-    team?: string,
-  ): Entity[] {
-    if (typeof data === "string") data = this.datas.find_character(data);
-    if (!data) return [];
-    return this.add_entity(data, num, team);
-  }
-
-  add_weapon(
-    data?: IEntityData | string,
-    num: number = 1,
-    team?: string,
-  ): Entity[] {
-    if (typeof data === "string") data = this.datas.find_weapon(data);
-    if (!data) return [];
-    return this.add_entity(data, num, team);
-  }
-
-  add_entity(data: IEntityData, num: number = 1, team?: string): Entity[] {
-    const creator = Factory.inst.get_entity_creator(data.type);
-    if (!creator) return [];
-    const ret: Entity[] = [];
-    while (--num >= 0) {
-      const entity = creator(this.world, data);
-      entity.team = not_empty_str(team) ? team : new_team();
-      this.random_entity_info(entity).attach();
-      ret.push(entity);
-    }
-    return ret;
-  }
-
   on_pointer_move(e: IPointingEvent) {
     const { layout } = this;
     if (!layout) return;
@@ -380,31 +347,6 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
     }
   }
 
-  remove_all_entities() {
-    this.world.del_entities(Array.from(this.world.entities));
-  }
-  add_random_weapon(num = 1, duplicate = false): Entity[] {
-    const src_arr = [...this.datas.weapons];
-    let tmp_arr = [...src_arr];
-    const ret: Entity[] = [];
-    while (--num >= 0) {
-      const d = duplicate ? random_get(tmp_arr) : random_take(tmp_arr);
-      if (!tmp_arr.length) tmp_arr = [...src_arr];
-      if (!d) continue;
-      ret.push(...this.add_weapon(d, 1));
-    }
-    return ret;
-  }
-  add_random_character(num = 1, team?: string): Entity[] {
-    const ret: Entity[] = [];
-    while (--num >= 0) {
-      const d = random_get(this.datas.characters);
-      if (!d) continue;
-      ret.push(...this.add_character(d, 1, team));
-    }
-    return ret;
-  }
-
   private on_loading_file(url: string, progress: number, full_size: number) {
     const txt = `${url}(${get_short_file_size_txt(full_size)})`;
     this.on_loading_content(txt, progress);
@@ -469,26 +411,26 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
     for (const d of this.datas.characters) {
       const name = d.base.name?.toLowerCase() ?? d.type + "_id_" + d.id;
       (this.characters as any)[`add_${name}`] = (num = 1, team = void 0) =>
-        this.add_character(d, num, team);
+        this.characters.add(d, num, team);
       (this.entities as any)[`add_${name}`] = (num = 1, team_1 = void 0) =>
-        this.add_character(d, num, team_1);
+        this.characters.add(d, num, team_1);
     }
     for (const d of this.datas.weapons) {
       const name = d.base.name?.toLowerCase() ?? d.type + "_id_" + d.id;
       (this.weapons as any)[`add_${name}`] = (num = 1, team_1 = void 0) =>
-        this.add_weapon(d, num, team_1);
+        this.weapons.add(d, num, team_1);
       (this.entities as any)[`add_${name}`] = (num = 1, team_1 = void 0) =>
-        this.add_weapon(d, num, team_1);
+        this.weapons.add(d, num, team_1);
     }
     for (const d of this.datas.balls) {
       const name = d.base.name?.toLowerCase() ?? d.type + "_id_" + d.id;
       (this.entities as any)[`add_${name}`] = (num = 1, team_1 = void 0) =>
-        this.add_entity(d, num, team_1);
+        this.entities.add(d, num, team_1);
     }
     for (const d of this.datas.entity) {
       const name = d.base.name?.toLowerCase() ?? d.type + "_id_" + d.id;
       (this.entities as any)[`add_${name}`] = (num = 1, team_1 = void 0) =>
-        this.add_entity(d, num, team_1);
+        this.entities.add(d, num, team_1);
     }
   }
 

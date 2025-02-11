@@ -36,7 +36,7 @@ class Actor {
     ["sound", ({ lf2 }, name) => name && lf2.sounds.play_preset(name)],
     ["switch_difficulty", ({ lf2 }) => lf2.switch_difficulty()],
     ["destory_stage", ({ lf2 }) => lf2.remove_stage()],
-    ["remove_all_entities", ({ lf2 }) => lf2.remove_all_entities()],
+    ["remove_all_entities", ({ lf2 }) => lf2.entities.del_all()],
     [
       "exit",
       () => {

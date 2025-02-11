@@ -381,7 +381,7 @@ function App() {
   useShortcut("F7", 0, () => {
     if (lf2) for (const e of lf2.world.entities) e.hp = e.hp_max;
   });
-  useShortcut("F8", 0, () => lf2?.add_random_weapon(9));
+  useShortcut("F8", 0, () => lf2?.weapons.add_random(9));
   useShortcut("F9", 0, () => lf2?.world.stage.kill_all_enemies());
   useShortcut("F10", 0, () => {
     if (lf2) for (const e of lf2.world.entities) if (is_weapon(e)) e.hp = 0;

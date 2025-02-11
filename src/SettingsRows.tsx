@@ -108,12 +108,12 @@ export default function SettingsRows(props: ISettingsRowsProps) {
   if (!lf2 || visible === false) return <></>;
 
   const on_click_add_weapon = () => {
-    weapon_id ? lf2.add_weapon(weapon_id, rwn) : lf2.add_random_weapon(rwn);
+    weapon_id ? lf2.weapons.add(weapon_id, rwn) : lf2.weapons.add_random(rwn);
   };
   const on_click_add_bot = () => {
     (c_id
-      ? lf2.add_character(c_id, rcn, team)
-      : lf2.add_random_character(rcn, team)
+      ? lf2.characters.add(c_id, rcn, team)
+      : lf2.characters.add_random(rcn, team)
     ).forEach((e) => {
       e.name = "bot";
       const controller_creator = bot_controllers[bot_ctrl];
@@ -184,7 +184,7 @@ export default function SettingsRows(props: ISettingsRowsProps) {
             parse={(i) => [i, Defines.DifficultyLabels[i]]}
           />
         </Titled>
-        <Button onClick={(v) => lf2.remove_all_entities()}>清场</Button>
+        <Button onClick={(v) => lf2.entities.del_all()}>清场</Button>
       </Show.Div>
 
       <Show.Div
