@@ -1,4 +1,4 @@
-export interface IPicture<T> {
+export interface IPicture<T = any> {
   id: string;
   w: number;
   h: number;

@@ -107,9 +107,7 @@ export class InfoRender implements IEntityCallbacks {
 
   constructor(entity: Entity, entity_mesh: IMeshNode) {
     const { lf2 } = entity.world;
-    this.mesh = new Ditto.BillboardNode(lf2, {
-      material: new T.SpriteMaterial({ visible: false }),
-    });
+    this.mesh = new Ditto.BillboardNode(lf2, { visible: false });
     this.bars_node = new Ditto.ObjectNode(lf2);
     this.bars_bg = new Bar(lf2, "rgb(0,0,0)", BAR_BG_W, BAR_BG_H, 0.5, 0);
 
@@ -235,7 +233,7 @@ export class InfoRender implements IEntityCallbacks {
     const lf2 = world.lf2;
     if (!name) {
       this.mesh.visible = false;
-      this.mesh.material.map = null;
+      this.mesh.clear_material().update_material();
       return;
     }
     lf2.images
@@ -250,12 +248,10 @@ export class InfoRender implements IEntityCallbacks {
         if (team !== e.team) return;
 
         this.mesh.visible = true;
-
-        this.mesh.material.map?.dispose();
-        this.mesh.material.map = p.texture;
-        this.mesh.material.needsUpdate = true;
-
-        this.mesh.set_scale(p.w, p.h, 1);
+        this.mesh
+          .set_texture(p)
+          .update_material()
+          .set_scale(p.w, p.h, 1);
         this.mesh.name = "name sprite";
       });
   }
