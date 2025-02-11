@@ -1,6 +1,6 @@
-import { IQuaternion, IRaycaster } from "../defines";
+import type { IQuaternion, IRaycaster } from "../defines";
 import type LF2 from "../LF2";
-import { IBaseNode } from "./IBaseNode";
+import type { IBaseNode } from "./IBaseNode";
 export type ObjectEventKey = "added" | "removed";
 export interface IObjectNode extends IBaseNode {
   readonly is_object_node: true;

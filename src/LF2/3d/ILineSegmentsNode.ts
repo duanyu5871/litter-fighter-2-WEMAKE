@@ -1,4 +1,4 @@
-import { IObjectNode } from "./IObjectNode";
+import type { IObjectNode } from "./IObjectNode";
 
 export interface ILineSegmentsInfo {
   color?: string | number;
