@@ -4,11 +4,12 @@ import Ditto from "../ditto";
 import type Entity from "../entity/Entity";
 import type { IWorldCallbacks } from "../IWorldCallbacks";
 import type Stage from "../stage/Stage";
+import { IShadowRender } from "../ditto/render/IShadowRender";
 
 /**
  * 场上物品的阴影
  */
-export default class Shadow {
+export class ShadowRender implements IShadowRender {
   protected world_listener: IWorldCallbacks = {
     on_stage_change: (v) => this.on_stage_change(v),
   };
@@ -29,24 +30,24 @@ export default class Shadow {
       geometry: new T.PlaneGeometry(0, 0),
       material: this.material,
     });
-    this.mesh.name = Shadow.name;
+    this.mesh.name = ShadowRender.name;
     this.mesh.render_order = 0;
     entity_mesh.on("added", () => this.on_mount(entity));
     entity_mesh.on("removed", () => this.on_unmount(entity));
   }
 
-  protected on_mount(entity: Entity) {
+  on_mount(entity: Entity) {
     entity.world.scene.add(this.mesh);
     entity.world.callbacks.add(this.world_listener);
     this.on_stage_change(entity.world.stage);
   }
 
-  protected on_unmount(entity: Entity) {
+  on_unmount(entity: Entity) {
     this.mesh.dispose();
     entity.world.callbacks.del(this.world_listener);
   }
 
-  protected on_stage_change(stage: Stage): void {
+  on_stage_change(stage: Stage): void {
     const bg = stage.bg;
     const pic = stage.lf2.images.create_pic_by_img_key(bg.data.base.shadow);
     if (bg !== stage.bg) return;
@@ -57,3 +58,5 @@ export default class Shadow {
     this.material.needsUpdate = true;
   }
 }
+
+export default ShadowRender

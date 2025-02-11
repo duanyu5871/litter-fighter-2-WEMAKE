@@ -1,15 +1,17 @@
-import { ILineSegmentsInfo, ILineSegmentsNode } from "../3d";
-import { IBillboardInfo, IBillboardNode } from "../3d/IBillboard";
-import { IMeshInfo, IMeshNode } from "../3d/IMesh";
+import type { ILineSegmentsInfo, ILineSegmentsNode } from "../3d";
+import type { IBillboardInfo, IBillboardNode } from "../3d/IBillboard";
+import type { IMeshInfo, IMeshNode } from "../3d/IMesh";
 import type { IObjectNode } from "../3d/IObject";
-import { IOrthographicCameraNode } from "../3d/IOrthographicCamera";
-import { IPerspectiveCamera } from "../3d/IPerspectiveCamera";
-import { IRaycaster } from "../defines/IRaycaster";
-import { IScene } from "../3d/IScene";
-import { ISpriteInfo, ISprite } from "../3d/ISprite";
-import { IText } from "../3d/IText";
-import { IQuaternion, IVector2, IVector3 } from "../defines";
+import type { IOrthographicCameraNode } from "../3d/IOrthographicCamera";
+import type { IPerspectiveCamera } from "../3d/IPerspectiveCamera";
+import type { IScene } from "../3d/IScene";
+import type { ISprite, ISpriteInfo } from "../3d/ISprite";
+import type { IText } from "../3d/IText";
+import type { Layer } from "../bg/Layer";
+import type { IQuaternion, IVector2, IVector3 } from "../defines";
+import type { IRaycaster } from "../defines/IRaycaster";
 import type LF2 from "../LF2";
+import { World } from "../World";
 import type { ICache } from "./cache";
 import type { IFullScreen } from "./fullscreen";
 import { BaseImporter, type IImporter } from "./importer";
@@ -17,6 +19,8 @@ import type { IRender } from "./IRender";
 import type { ITimeout } from "./ITimeout";
 import type { IKeyboard } from "./keyboard/IKeyboard";
 import type { IPointings } from "./pointings";
+import type { IBgLayerRender } from "./render/IBgLayerRender";
+import type { IBgRender } from "./render/IBgRender";
 import BaseSounds from "./sounds/BaseSounds";
 import type ISounds from "./sounds/ISounds";
 import type { IZip } from "./zip/IZip";
@@ -65,6 +69,8 @@ export interface IDittoPack {
   Vector2: new (x?: number, y?: number) => IVector2;
   Raycaster: new () => IRaycaster;
   Quaternion: new (x?: number, y?: number, z?: number, w?: number) => IQuaternion;
+  BgLayerRender: new (layer: Layer) => IBgLayerRender;
+  BgRender: new (world: World) => IBgRender;
 }
 
 export interface IDitto extends IDittoPack {

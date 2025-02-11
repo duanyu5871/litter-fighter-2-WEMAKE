@@ -6,7 +6,7 @@ import create_pictures from "../loader/create_pictures";
 import * as THREE from "./_t";
 import { FrameIndicators } from "./FrameIndicators";
 import { InfoRender } from "./InfoRender";
-import Shadow from "./ShadowRender";
+import ShadowRender from "./ShadowRender";
 export const EMPTY_PIECE: ITexturePieceInfo = {
   tex: "0",
   x: 0,
@@ -23,7 +23,7 @@ export class EntityRender {
   protected entity_material!: THREE.MeshBasicMaterial;
   protected variants = new Map<string, string[]>();
   protected piece: ITexturePieceInfo = EMPTY_PIECE;
-  protected shadow!: Shadow;
+  protected shadow!: ShadowRender;
   readonly indicators!: FrameIndicators;
   protected _prev_update_count?: number;
   protected _shaking?: number;
@@ -31,7 +31,7 @@ export class EntityRender {
   protected _info_sprite: InfoRender;
   constructor(entity: Entity) {
     this.set_entity(entity);
-    this.shadow = new Shadow(entity, this.entity_mesh);
+    this.shadow = new ShadowRender(entity, this.entity_mesh);
     this.indicators = new FrameIndicators(entity, this.entity_mesh);
     this._info_sprite = new InfoRender(entity, this.entity_mesh);
   }

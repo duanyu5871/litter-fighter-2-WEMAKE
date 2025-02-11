@@ -3,6 +3,7 @@ import { IOrthographicCameraNode, IScene } from "./3d";
 import { Callbacks, FPS, ICollision, NoEmitCallbacks } from "./base";
 import { Builtin_FrameId, Defines, IBdyInfo, IBounding, IFrameInfo, IItrInfo, StateEnum } from "./defines";
 import Ditto from "./ditto";
+import { IBgRender } from "./ditto/render/IBgRender";
 import {
   Entity, Factory, is_ball,
   is_base_ctrl,
@@ -12,7 +13,6 @@ import {
 } from "./entity";
 import { IWorldCallbacks } from "./IWorldCallbacks";
 import LF2 from "./LF2";
-import { BgRender } from "./renderer/BgRender";
 import { EntityRender } from "./renderer/EntityRender";
 import Stage from "./stage/Stage";
 import { WhatNext } from "./state/State_Base";
@@ -380,7 +380,7 @@ export class World {
     this.stage.update();
   }
 
-  bg_render: BgRender = new BgRender(this);
+  bg_render: IBgRender = new Ditto.BgRender(this);
 
   render_once(dt: number) {
     this.bg_render.update();

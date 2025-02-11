@@ -9,11 +9,10 @@ import type IEntityCallbacks from "../entity/IEntityCallbacks";
 
 const BAR_W = 40;
 const BAR_H = 3;
-
 const BAR_BG_W = BAR_W + 2;
 const BAR_BG_H = 1 + (BAR_H + 1) * 2 + 4;
-
 const geo_map = new Map<string, T.PlaneGeometry>();
+
 function get_bar_geo(w: number, h: number, ax: number, ay: number) {
   const key = `w_h_a_${w}_${h}`;
   let ret = geo_map.get(key);

@@ -1,16 +1,17 @@
-import { IObjectNode } from "../3d";
-import Background from "../bg/Background";
-import { Defines, IQuaternion } from "../defines";
-import Ditto from "../ditto";
-import { World } from "../World";
+import { IObjectNode } from "../../LF2/3d";
+import Background from "../../LF2/bg/Background";
+import { Defines, IQuaternion } from "../../LF2/defines";
+import Ditto from "../../LF2/ditto";
+import { World } from "../../LF2/World";
 import { BgLayerRender } from "./BgLayerRender";
+import { IBgRender } from "../../LF2/ditto/render/IBgRender";
 
 interface BgRenderPack {
   readonly bg: Background | null;
   readonly mesh: IObjectNode | null;
   readonly layers: BgLayerRender[];
 }
-export class BgRender implements BgRenderPack {
+export class BgRender implements BgRenderPack, IBgRender {
   readonly world: World;
   private _bg: Background | null = null;
   private _mesh: IObjectNode | null = null;
@@ -18,6 +19,7 @@ export class BgRender implements BgRenderPack {
   private quaternion: IQuaternion;
   private old_packs = new Set<BgRenderPack>();
   get bg(): Background | null { return this._bg }
+  set bg(v: Background | null) { this.set_bg(v) }
   get mesh(): IObjectNode | null { return this._mesh }
   get layers(): BgLayerRender[] { return this._layers }
 
@@ -26,7 +28,7 @@ export class BgRender implements BgRenderPack {
     this.quaternion = new Ditto.Quaternion()
   }
 
-  private set_bg(bg: Background) {
+  private set_bg(bg: Background | null) {
     const { world } = this;
     const pack: BgRenderPack = {
       bg: this._bg,
@@ -41,22 +43,19 @@ export class BgRender implements BgRenderPack {
     }, 500)
 
     this._bg = bg;
-    this._mesh = new Ditto.ObjectNode(world.lf2);
-    this._mesh.z = -2 * Defines.CLASSIC_SCREEN_HEIGHT;
-    this._mesh.name = Background.name + ":" + this._bg.data.base.name;
-    this._layers.length = 0;
-    this._bg.fade_in(16, 6, 21)
-
-    for (const layer of bg.layers) {
-      const layer_render = new BgLayerRender(layer)
-      this._layers.push(layer_render);
-      this._mesh.add(layer_render.mesh);
+    if (this._bg) {
+      this._mesh = new Ditto.ObjectNode(world.lf2);
+      this._mesh.z = -2 * Defines.CLASSIC_SCREEN_HEIGHT;
+      this._layers.length = 0;
+      this._mesh.name = Background.name + ":" + this._bg.data.base.name;
+      this._bg.fade_in(16, 6, 21)
+      for (const layer of this._bg.layers) {
+        const layer_render = new BgLayerRender(layer)
+        this._layers.push(layer_render);
+        this._mesh.add(layer_render.mesh);
+      }
+      world.scene.add(this._mesh);
     }
-    world.scene.add(this._mesh);
-  }
-
-  release() {
-    this._mesh?.dispose();
   }
 
   private render_pack({ bg, mesh, layers }: BgRenderPack, with_update = false) {
@@ -69,11 +68,15 @@ export class BgRender implements BgRenderPack {
 
   update() {
     if (this._bg !== this.world.bg)
-      this.set_bg(this.world.bg)
+      this.bg = this.world.bg
 
     for (const pack of this.old_packs)
       this.render_pack(pack, true);
 
     this.render_pack(this);
+  }
+
+  release() {
+    this._mesh?.dispose();
   }
 }

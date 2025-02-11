@@ -1,11 +1,13 @@
 import * as THREE from "./_t";
-import { IMeshNode } from "../3d";
-import Layer from "../bg/Layer";
-import Ditto from "../ditto";
-import { TPicture } from "../loader/loader";
+import { IMeshNode } from "../../LF2/3d";
+import Layer from "../../LF2/bg/Layer";
+import Ditto from "../../LF2/ditto";
+import { TPicture } from "../../LF2/loader/loader";
+import { IBgLayerRender } from "../../LF2/ditto/render/IBgLayerRender";
 
 const pic_map = new Map<string, TPicture>()
-export class BgLayerRender {
+
+export class BgLayerRender implements IBgLayerRender {
   readonly mesh: IMeshNode;
   readonly layer: Layer;
   readonly pic: TPicture | undefined;
@@ -53,5 +55,9 @@ export class BgLayerRender {
         x + (bg.width - width) * cam_x
 
     this.mesh.set_x(_x);
+  }
+
+  release(): void {
+
   }
 }
