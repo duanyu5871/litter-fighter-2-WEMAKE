@@ -254,7 +254,7 @@ export class InfoRender implements IEntityCallbacks {
       });
   }
 
-  update_position() {
+  update() {
     const { x, z, y } = this.entity.position;
 
     const _x = Math.floor(x);

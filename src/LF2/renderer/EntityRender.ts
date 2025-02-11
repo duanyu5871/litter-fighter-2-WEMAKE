@@ -140,7 +140,7 @@ export class EntityRender {
       if (is_blinking && is_visible) {
         entity_mesh.visible = 0 === Math.floor(entity.blinking / 4) % 2;
       }
-      this._info_sprite.update_position();
+      this._info_sprite.update();
     }
 
     if (entity.shaking) {
