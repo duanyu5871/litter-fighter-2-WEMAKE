@@ -224,6 +224,7 @@ export class World {
   set sync_render(v: number) {
     this.set_sync_render(v);
   }
+
   set_sync_render(v: number = this._sync_render + 1) {
     if (this._sync_render === v) return;
     const prev = this._sync_render;
@@ -232,6 +233,7 @@ export class World {
     this.start_update();
     this._callbacks.emit("on_is_sync_render_changed")(curr, prev);
   }
+
   stop_render() {
     this._render_worker_id && Ditto.Render.del(this._render_worker_id);
     this._render_worker_id = 0;
@@ -324,6 +326,7 @@ export class World {
     if (z < far) e.position.z = far;
     else if (z > near) e.position.z = near;
   }
+
   restrict(e: Entity) {
     if (is_character(e)) {
       this.restrict_character(e);
@@ -333,6 +336,7 @@ export class World {
       this.restrict_weapon(e);
     }
   }
+  
   manhattan(e1: Entity, e2: Entity) {
     const p1 = e1.position;
     const p2 = e2.position;
@@ -587,7 +591,7 @@ export class World {
     this._spark_data = this.lf2.datas.find(Defines.BuiltIn_Dats.Spark);
     this._spark_creator = this._spark_data ? Factory.inst.get_entity_creator(this._spark_data.type) : void 0;
   }
-  
+
   spark(x: number, y: number, z: number, f: string) {
     if (!this._spark_data)
       this.init_spark_data();
