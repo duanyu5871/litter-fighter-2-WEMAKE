@@ -14,7 +14,7 @@ import {
 } from "./entity";
 import { IWorldCallbacks } from "./IWorldCallbacks";
 import LF2 from "./LF2";
-import { EntityRender } from "./renderer/EntityRender";
+import { EntityRender } from "../DittoImpl/renderer/EntityRender";
 import Stage from "./stage/Stage";
 import { WhatNext } from "./state/State_Base";
 import { find } from "./utils/container_help";
@@ -160,7 +160,7 @@ export class World {
     this._stage = new Stage(this, Defines.VOID_BG);
   }
 
-  entity_renderer_packs = new Map<Entity, [EntityRender, IEntityRenderer, IEntityRenderer]>();
+  entity_renderer_packs = new Map<Entity, [IEntityRenderer, IEntityRenderer, IEntityRenderer]>();
   add_entities(...entities: Entity[]) {
     for (const entity of entities) {
       if (
@@ -175,7 +175,7 @@ export class World {
       }
 
       this.entities.add(entity);
-      const entity_renderer = new EntityRender(entity);
+      const entity_renderer = new Ditto.EntityRender(entity);
       entity_renderer.on_mount();
 
       const shadow_renderer = new Ditto.EntityShadowRender(entity);
@@ -186,7 +186,7 @@ export class World {
 
       this.entity_renderer_packs.set(entity, [entity_renderer, shadow_renderer, info_renderer]);
 
-      entity_renderer.indicators.flags = this._indicator_flags;
+      // entity_renderer.indicators.flags = this._indicator_flags;
     }
   }
 
@@ -674,9 +674,9 @@ export class World {
   set indicator_flags(v: number) {
     if (this._indicator_flags === v) return;
     this._indicator_flags = v;
-    for (const [, [r]] of this.entity_renderer_packs) {
-      r.indicators.flags = v;
-    }
+    // for (const [, [r]] of this.entity_renderer_packs) {
+    //   r.indicators.flags = v;
+    // }
   }
   dispose() {
     this._callbacks.emit("on_disposed")();

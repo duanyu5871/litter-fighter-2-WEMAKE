@@ -75,6 +75,7 @@ export interface IDittoPack {
   BgRender: new (world: World) => IBgRender;
   EntityShadowRender: new (entity: Entity) => IEntityRenderer
   EntityInfoRender: new (entity: Entity) => IEntityRenderer
+  EntityRender: new (entity: Entity) => IEntityRenderer
 }
 
 export interface IDitto extends IDittoPack {

@@ -6,9 +6,10 @@ import { __Mesh } from "./DittoImpl/3d/__Mesh";
 import __Sprite from "./DittoImpl/3d/__Sprite";
 import { BgLayerRender } from "./DittoImpl/renderer/BgLayerRender";
 import { BgRender } from "./DittoImpl/renderer/BgRender";
+import { EntityInfoRender } from "./DittoImpl/renderer/EntityInfoRender";
+import { EntityRender } from "./DittoImpl/renderer/EntityRender";
 import { EntityShadowRender } from "./DittoImpl/renderer/EntityShadowRender";
 import Ditto from "./LF2/ditto";
-import { EntityInfoRender } from "./DittoImpl/renderer/EntityInfoRender";
 
 Ditto.setup({
   Timeout: dom.__Timeout,
@@ -39,4 +40,5 @@ Ditto.setup({
   BgRender: BgRender,
   EntityShadowRender: EntityShadowRender,
   EntityInfoRender: EntityInfoRender,
+  EntityRender: EntityRender,
 });
