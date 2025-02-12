@@ -1,11 +1,11 @@
 import { IMeshNode } from "../../LF2/3d/IMesh";
 import Ditto from "../../LF2/ditto";
-import { IShadowRender } from "../../LF2/ditto/render/IShadowRender";
+import { IEntityRenderer } from "../../LF2/ditto/render/IEntityRenderer";
 import type Entity from "../../LF2/entity/Entity";
 import type Stage from "../../LF2/stage/Stage";
 import * as T from "./_t";
 
-export class ShadowRender implements IShadowRender {
+export class EntityShadowRender implements IEntityRenderer {
   mesh: IMeshNode;
   entity: Entity;
   protected material = new T.MeshBasicMaterial({
@@ -25,7 +25,7 @@ export class ShadowRender implements IShadowRender {
       geometry: new T.PlaneGeometry(0, 0),
       material: this.material,
     });
-    this.mesh.name = ShadowRender.name;
+    this.mesh.name = EntityShadowRender.name;
     this.mesh.render_order = 0;
   }
 
@@ -65,4 +65,4 @@ export class ShadowRender implements IShadowRender {
   }
 }
 
-export default ShadowRender
+export default EntityShadowRender

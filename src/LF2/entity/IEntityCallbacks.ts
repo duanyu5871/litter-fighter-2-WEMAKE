@@ -1,8 +1,7 @@
-import type { Defines } from "../defines";
 import type { Unsafe } from "../utils/type_check";
 import type Entity from "./Entity";
 
-export default interface IEntityCallbacks<E extends Entity = Entity> {
+export interface IEntityCallbacks<E extends Entity = Entity> {
   on_holder_changed?(e: E, value: Unsafe<Entity>, prev: Unsafe<Entity>): void;
 
   on_holding_changed?(e: E, value: Unsafe<Entity>, prev: Unsafe<Entity>): void;
@@ -168,3 +167,4 @@ export default interface IEntityCallbacks<E extends Entity = Entity> {
   on_healing_changed?(e: E, value: number, prev: number): void;
   
 }
+export default IEntityCallbacks

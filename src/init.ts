@@ -1,13 +1,14 @@
 import "current-device";
 import * as THREE from "three";
 import * as dom from "./DittoImpl";
-import { __Billboard as __Billboard, __Camera_O, __Camera_P, __LineSegments, __Object, __Scene, __Text } from "./DittoImpl/3d";
+import { __Billboard, __Camera_O, __Camera_P, __LineSegments, __Object, __Scene, __Text } from "./DittoImpl/3d";
 import { __Mesh } from "./DittoImpl/3d/__Mesh";
 import __Sprite from "./DittoImpl/3d/__Sprite";
-import Ditto from "./LF2/ditto";
 import { BgLayerRender } from "./DittoImpl/renderer/BgLayerRender";
 import { BgRender } from "./DittoImpl/renderer/BgRender";
-import { ShadowRender } from "./DittoImpl/renderer/ShadowRender";
+import { EntityShadowRender } from "./DittoImpl/renderer/EntityShadowRender";
+import Ditto from "./LF2/ditto";
+import { EntityInfoRender } from "./DittoImpl/renderer/EntityInfoRender";
 
 Ditto.setup({
   Timeout: dom.__Timeout,
@@ -36,5 +37,6 @@ Ditto.setup({
   Raycaster: THREE.Raycaster,
   BgLayerRender: BgLayerRender,
   BgRender: BgRender,
-  ShadowRender: ShadowRender
+  EntityShadowRender: EntityShadowRender,
+  EntityInfoRender: EntityInfoRender,
 });

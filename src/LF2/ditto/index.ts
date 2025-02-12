@@ -22,7 +22,7 @@ import type { IKeyboard } from "./keyboard/IKeyboard";
 import type { IPointings } from "./pointings";
 import type { IBgLayerRender } from "./render/IBgLayerRender";
 import type { IBgRender } from "./render/IBgRender";
-import { IShadowRender } from "./render/IShadowRender";
+import { IEntityRenderer } from "./render/IEntityRenderer";
 import BaseSounds from "./sounds/BaseSounds";
 import type ISounds from "./sounds/ISounds";
 import type { IZip } from "./zip/IZip";
@@ -73,7 +73,8 @@ export interface IDittoPack {
   Quaternion: new (x?: number, y?: number, z?: number, w?: number) => IQuaternion;
   BgLayerRender: new (layer: Layer) => IBgLayerRender;
   BgRender: new (world: World) => IBgRender;
-  ShadowRender: new (entity: Entity) => IShadowRender
+  EntityShadowRender: new (entity: Entity) => IEntityRenderer
+  EntityInfoRender: new (entity: Entity) => IEntityRenderer
 }
 
 export interface IDitto extends IDittoPack {

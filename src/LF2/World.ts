@@ -4,7 +4,7 @@ import { Callbacks, FPS, ICollision, NoEmitCallbacks } from "./base";
 import { Builtin_FrameId, Defines, IBdyInfo, IBounding, IEntityData, IFrameInfo, IItrInfo, StateEnum } from "./defines";
 import Ditto from "./ditto";
 import { IBgRender } from "./ditto/render/IBgRender";
-import { IShadowRender } from "./ditto/render/IShadowRender";
+import { IEntityRenderer } from "./ditto/render/IEntityRenderer";
 import {
   Entity, Factory, ICreator, is_ball,
   is_base_ctrl,
@@ -160,7 +160,7 @@ export class World {
     this._stage = new Stage(this, Defines.VOID_BG);
   }
 
-  entity_renderer_packs = new Map<Entity, [EntityRender, IShadowRender]>();
+  entity_renderer_packs = new Map<Entity, [EntityRender, IEntityRenderer, IEntityRenderer]>();
   add_entities(...entities: Entity[]) {
     for (const entity of entities) {
       if (
@@ -178,10 +178,13 @@ export class World {
       const entity_renderer = new EntityRender(entity);
       entity_renderer.on_mount();
 
-      const shadow_renderer = new Ditto.ShadowRender(entity);
+      const shadow_renderer = new Ditto.EntityShadowRender(entity);
       shadow_renderer.on_mount()
 
-      this.entity_renderer_packs.set(entity, [entity_renderer, shadow_renderer]);
+      const info_renderer = new Ditto.EntityInfoRender(entity);
+      info_renderer.on_mount()
+
+      this.entity_renderer_packs.set(entity, [entity_renderer, shadow_renderer, info_renderer]);
 
       entity_renderer.indicators.flags = this._indicator_flags;
     }
@@ -196,9 +199,10 @@ export class World {
     }
     const pack = this.entity_renderer_packs.get(e);
     if (pack) {
-      const [r1, r2] = pack
+      const [r1, r2, r3] = pack
       r1.on_unmount();
       r2.on_unmount();
+      r3.on_unmount();
       this.entity_renderer_packs.delete(e);
     }
     e.dispose();
@@ -398,9 +402,10 @@ export class World {
 
   render_once(dt: number) {
     this.bg_render.update();
-    for (const [, [r1, r2]] of this.entity_renderer_packs) {
+    for (const [, [r1, r2, r3]] of this.entity_renderer_packs) {
       r1.update();
       r2.update();
+      r3.update();
     }
     this.lf2.layout?.on_render(dt);
     this.scene.render();

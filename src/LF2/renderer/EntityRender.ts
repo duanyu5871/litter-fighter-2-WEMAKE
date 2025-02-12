@@ -1,12 +1,10 @@
 import { IMeshNode } from "../3d";
 import { Builtin_FrameId, IEntityData, IFrameInfo, IPicture, ITexturePieceInfo, TFace } from "../defines";
 import Ditto from "../ditto";
-import { IShadowRender } from "../ditto/render/IShadowRender";
 import Entity from "../entity/Entity";
 import create_pictures from "../loader/create_pictures";
 import * as THREE from "./_t";
 import { FrameIndicators } from "./FrameIndicators";
-import { InfoRender } from "./InfoRender";
 export const EMPTY_PIECE: ITexturePieceInfo = {
   tex: "0",
   x: 0,
@@ -27,11 +25,9 @@ export class EntityRender {
   protected _prev_update_count?: number;
   protected _shaking?: number;
   protected _prev_data?: IEntityData;
-  protected _info_sprite: InfoRender;
   constructor(entity: Entity) {
     this.set_entity(entity);
     this.indicators = new FrameIndicators(entity, this.entity_mesh);
-    this._info_sprite = new InfoRender(entity, this.entity_mesh);
   }
   set_entity(entity: Entity): EntityRender {
     const { world, lf2, data } = (this.entity = entity);
@@ -114,7 +110,6 @@ export class EntityRender {
           }
         }
       }
-
       const { centerx, centery } = frame;
       const offset_x =
         entity.facing === 1 ? centerx : entity_mesh.scale_x - centerx;
@@ -127,12 +122,9 @@ export class EntityRender {
       const is_visible = !entity.invisible;
       const is_blinking = !!entity.blinking;
       entity_mesh.visible = is_visible;
-
-      this._info_sprite.visible = is_visible;
       if (is_blinking && is_visible) {
         entity_mesh.visible = 0 === Math.floor(entity.blinking / 4) % 2;
       }
-      this._info_sprite.update();
     }
 
     if (entity.shaking) {
