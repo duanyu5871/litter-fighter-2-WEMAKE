@@ -1,8 +1,9 @@
-import * as THREE from "./_t";
-import { IMeshNode, IObjectNode } from "../3d";
+import { IObjectNode } from "../3d";
 import Ditto from "../ditto";
+import { IEntityRenderer } from "../ditto/render/IEntityRenderer";
 import Entity from "../entity/Entity";
 import { traversal } from "../utils/container_help/traversal";
+import * as THREE from "./_t";
 export const EMPTY_ARR = [] as const;
 export const INDICATORS_COLOR = {
   bdy: 0x00ff00,
@@ -15,7 +16,8 @@ const vertices = new Float32Array([
 ]);
 geometry.setAttribute("position", new THREE.BufferAttribute(vertices, 3));
 
-export class FrameIndicators {
+export class FrameIndicators implements IEntityRenderer {
+  readonly renderer_type: string = "FrameIndicators";
   protected _entity: Entity;
   protected _box?: IObjectNode;
   protected _indicators_map = {
@@ -41,8 +43,14 @@ export class FrameIndicators {
     this.update();
   }
 
-  constructor(entity: Entity, entity_mesh: IMeshNode) {
+  constructor(entity: Entity) {
     this._entity = entity;
+  }
+  get visible(): boolean {
+    throw new Error("Method not implemented.");
+  }
+  set visible(v: boolean) {
+    throw new Error("Method not implemented.");
   }
 
   protected _new_indicator(k: keyof typeof this._indicators_map, idx: number) {
@@ -114,13 +122,19 @@ export class FrameIndicators {
     this.scene.del(this._box);
     delete this._box;
   }
-  depose() {
+  
+  on_mount(): void {
+    
+  }
+
+  on_unmount() {
     if (this._box) this.scene.del(this._box);
     traversal(this._indicators_map, (_, list) => {
       list.forEach((item) => this.scene.del(item));
       list.length = 0;
     });
   }
+  
   update() {
     if (!this._flags) return;
     const { x: game_x, y: game_y, z: game_z } = this._entity.position;

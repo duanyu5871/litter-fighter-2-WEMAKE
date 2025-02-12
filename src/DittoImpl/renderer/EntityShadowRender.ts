@@ -6,6 +6,7 @@ import type Stage from "../../LF2/stage/Stage";
 import * as T from "./_t";
 
 export class EntityShadowRender implements IEntityRenderer {
+  readonly renderer_type: string = "Shadow";
   mesh: IMeshNode;
   entity: Entity;
   protected material = new T.MeshBasicMaterial({

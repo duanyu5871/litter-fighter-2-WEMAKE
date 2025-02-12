@@ -16,19 +16,20 @@ export const EMPTY_PIECE: ITexturePieceInfo = {
   pixel_w: 0,
 };
 export class EntityRender implements IEntityRenderer {
+  readonly renderer_type: string = "Entity";
   protected pictures!: Map<string, IPicture<THREE.Texture>>;
   protected entity!: Entity;
   protected entity_mesh!: IMeshNode;
   protected entity_material!: THREE.MeshBasicMaterial;
   protected variants = new Map<string, string[]>();
   protected piece: ITexturePieceInfo = EMPTY_PIECE;
-  readonly indicators!: FrameIndicators;
+  // readonly indicators!: FrameIndicators;
   protected _prev_update_count?: number;
   protected _shaking?: number;
   protected _prev_data?: IEntityData;
   constructor(entity: Entity) {
     this.set_entity(entity);
-    this.indicators = new FrameIndicators(entity, this.entity_mesh);
+    // this.indicators = new FrameIndicators(entity, this.entity_mesh);
   }
   
   set_entity(entity: Entity): EntityRender {
@@ -76,7 +77,7 @@ export class EntityRender implements IEntityRenderer {
     this.entity.world.scene.add(this.entity_mesh!);
   }
   on_unmount(): void {
-    this.indicators.depose();
+    // this.indicators.depose();
     this.entity_mesh.dispose();
     if (this.pictures)
       for (const [, pic] of this.pictures) pic.texture.dispose();
@@ -100,7 +101,7 @@ export class EntityRender implements IEntityRenderer {
       this.set_entity(entity);
     }
     if (this._prev_update_count !== entity.update_id) {
-      this.indicators.update();
+      // this.indicators.update();
       this._prev_update_count = entity.update_id;
       if (this._previous.face !== facing || this._previous.frame !== frame) {
         this._previous.face = facing;
