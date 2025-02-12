@@ -5,6 +5,7 @@ import { Builtin_FrameId, Defines, IBdyInfo, IBounding, IEntityData, IFrameInfo,
 import Ditto from "./ditto";
 import { IBgRender } from "./ditto/render/IBgRender";
 import { IEntityRenderer } from "./ditto/render/IEntityRenderer";
+import { IFrameIndicators } from "./ditto/render/IFrameIndicators";
 import {
   Entity, Factory, ICreator, is_ball,
   is_base_ctrl,
@@ -14,7 +15,6 @@ import {
 } from "./entity";
 import { IWorldCallbacks } from "./IWorldCallbacks";
 import LF2 from "./LF2";
-import { EntityRender } from "../DittoImpl/renderer/EntityRender";
 import Stage from "./stage/Stage";
 import { WhatNext } from "./state/State_Base";
 import { find } from "./utils/container_help";
@@ -160,7 +160,9 @@ export class World {
     this._stage = new Stage(this, Defines.VOID_BG);
   }
 
-  entity_renderer_packs = new Map<Entity, [IEntityRenderer, IEntityRenderer, IEntityRenderer]>();
+  entity_renderer_packs = new Map<Entity, [
+    IEntityRenderer, IEntityRenderer, IEntityRenderer, IFrameIndicators
+  ]>();
   add_entities(...entities: Entity[]) {
     for (const entity of entities) {
       if (
@@ -184,7 +186,12 @@ export class World {
       const info_renderer = new Ditto.EntityInfoRender(entity);
       info_renderer.on_mount()
 
-      this.entity_renderer_packs.set(entity, [entity_renderer, shadow_renderer, info_renderer]);
+      const frame_indicators = new Ditto.FrameIndicators(entity);
+      frame_indicators.on_mount()
+
+      this.entity_renderer_packs.set(entity, [
+        entity_renderer, shadow_renderer, info_renderer, frame_indicators
+      ]);
 
       // entity_renderer.indicators.flags = this._indicator_flags;
     }
@@ -199,10 +206,11 @@ export class World {
     }
     const pack = this.entity_renderer_packs.get(e);
     if (pack) {
-      const [r1, r2, r3] = pack
+      const [r1, r2, r3, r4] = pack
       r1.on_unmount();
       r2.on_unmount();
       r3.on_unmount();
+      r4.on_unmount();
       this.entity_renderer_packs.delete(e);
     }
     e.dispose();
@@ -402,10 +410,11 @@ export class World {
 
   render_once(dt: number) {
     this.bg_render.update();
-    for (const [, [r1, r2, r3]] of this.entity_renderer_packs) {
+    for (const [, [r1, r2, r3, r4]] of this.entity_renderer_packs) {
       r1.update();
       r2.update();
       r3.update();
+      r4.update();
     }
     this.lf2.layout?.on_render(dt);
     this.scene.render();
@@ -674,9 +683,9 @@ export class World {
   set indicator_flags(v: number) {
     if (this._indicator_flags === v) return;
     this._indicator_flags = v;
-    // for (const [, [r]] of this.entity_renderer_packs) {
-    //   r.indicators.flags = v;
-    // }
+    for (const [, [, , , r4]] of this.entity_renderer_packs) {
+      r4.flags = v;
+    }
   }
   dispose() {
     this._callbacks.emit("on_disposed")();

@@ -4,8 +4,7 @@ import Ditto from "../../LF2/ditto";
 import { IEntityRenderer } from "../../LF2/ditto/render/IEntityRenderer";
 import Entity from "../../LF2/entity/Entity";
 import create_pictures from "../../LF2/loader/create_pictures";
-import * as THREE from "../../LF2/renderer/_t";
-import { FrameIndicators } from "../../LF2/renderer/FrameIndicators";
+import * as THREE from "./_t";
 export const EMPTY_PIECE: ITexturePieceInfo = {
   tex: "0",
   x: 0,
@@ -23,13 +22,11 @@ export class EntityRender implements IEntityRenderer {
   protected entity_material!: THREE.MeshBasicMaterial;
   protected variants = new Map<string, string[]>();
   protected piece: ITexturePieceInfo = EMPTY_PIECE;
-  // readonly indicators!: FrameIndicators;
   protected _prev_update_count?: number;
   protected _shaking?: number;
   protected _prev_data?: IEntityData;
   constructor(entity: Entity) {
     this.set_entity(entity);
-    // this.indicators = new FrameIndicators(entity, this.entity_mesh);
   }
   
   set_entity(entity: Entity): EntityRender {
@@ -77,7 +74,6 @@ export class EntityRender implements IEntityRenderer {
     this.entity.world.scene.add(this.entity_mesh!);
   }
   on_unmount(): void {
-    // this.indicators.depose();
     this.entity_mesh.dispose();
     if (this.pictures)
       for (const [, pic] of this.pictures) pic.texture.dispose();
@@ -101,7 +97,6 @@ export class EntityRender implements IEntityRenderer {
       this.set_entity(entity);
     }
     if (this._prev_update_count !== entity.update_id) {
-      // this.indicators.update();
       this._prev_update_count = entity.update_id;
       if (this._previous.face !== facing || this._previous.frame !== frame) {
         this._previous.face = facing;

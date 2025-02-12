@@ -83,6 +83,7 @@ class Bar {
 }
 
 export class EntityInfoRender implements IEntityCallbacks, IEntityRenderer {
+  readonly renderer_type: string = "Info";
   protected mesh: IBillboardNode;
   protected bars_node: IObjectNode;
   protected bars_bg: Bar;

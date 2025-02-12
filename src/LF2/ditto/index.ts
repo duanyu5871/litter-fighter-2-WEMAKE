@@ -23,6 +23,7 @@ import type { IPointings } from "./pointings";
 import type { IBgLayerRender } from "./render/IBgLayerRender";
 import type { IBgRender } from "./render/IBgRender";
 import { IEntityRenderer } from "./render/IEntityRenderer";
+import { IFrameIndicators } from "./render/IFrameIndicators";
 import BaseSounds from "./sounds/BaseSounds";
 import type ISounds from "./sounds/ISounds";
 import type { IZip } from "./zip/IZip";
@@ -76,6 +77,7 @@ export interface IDittoPack {
   EntityShadowRender: new (entity: Entity) => IEntityRenderer
   EntityInfoRender: new (entity: Entity) => IEntityRenderer
   EntityRender: new (entity: Entity) => IEntityRenderer
+  FrameIndicators: new (entity: Entity) => IFrameIndicators
 }
 
 export interface IDitto extends IDittoPack {
