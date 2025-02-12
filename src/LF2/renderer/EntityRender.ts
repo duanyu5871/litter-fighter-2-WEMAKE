@@ -1,12 +1,12 @@
 import { IMeshNode } from "../3d";
 import { Builtin_FrameId, IEntityData, IFrameInfo, IPicture, ITexturePieceInfo, TFace } from "../defines";
 import Ditto from "../ditto";
+import { IShadowRender } from "../ditto/render/IShadowRender";
 import Entity from "../entity/Entity";
 import create_pictures from "../loader/create_pictures";
 import * as THREE from "./_t";
 import { FrameIndicators } from "./FrameIndicators";
 import { InfoRender } from "./InfoRender";
-import ShadowRender from "./ShadowRender";
 export const EMPTY_PIECE: ITexturePieceInfo = {
   tex: "0",
   x: 0,
@@ -23,7 +23,6 @@ export class EntityRender {
   protected entity_material!: THREE.MeshBasicMaterial;
   protected variants = new Map<string, string[]>();
   protected piece: ITexturePieceInfo = EMPTY_PIECE;
-  protected shadow: ShadowRender;
   readonly indicators!: FrameIndicators;
   protected _prev_update_count?: number;
   protected _shaking?: number;
@@ -31,7 +30,6 @@ export class EntityRender {
   protected _info_sprite: InfoRender;
   constructor(entity: Entity) {
     this.set_entity(entity);
-    this.shadow = new ShadowRender(entity, this.entity_mesh);
     this.indicators = new FrameIndicators(entity, this.entity_mesh);
     this._info_sprite = new InfoRender(entity, this.entity_mesh);
   }
@@ -70,7 +68,7 @@ export class EntityRender {
     }
     return this;
   }
-  attach() {
+  on_mount() {
     this.entity.world.scene.add(this.entity_mesh!);
   }
   private _previous = {
@@ -79,7 +77,7 @@ export class EntityRender {
     variant: 0,
   };
   update() {
-    const { entity, entity_mesh, entity_material, pictures, shadow } = this;
+    const { entity, entity_mesh, entity_material, pictures } = this;
     if (entity.frame.id === Builtin_FrameId.Gone) {
       return;
     }
@@ -130,12 +128,6 @@ export class EntityRender {
       const is_blinking = !!entity.blinking;
       entity_mesh.visible = is_visible;
 
-      shadow.mesh.set_position(
-        Math.round(x),
-        Math.round(-z / 2),
-        Math.round(z - 550),
-      );
-      shadow.visible = is_visible && !frame.no_shadow;
       this._info_sprite.visible = is_visible;
       if (is_blinking && is_visible) {
         entity_mesh.visible = 0 === Math.floor(entity.blinking / 4) % 2;
@@ -151,7 +143,7 @@ export class EntityRender {
     }
     this._shaking = entity.shaking;
   }
-  dispose(): void {
+  on_unmount(): void {
     this.indicators.depose();
     this.entity_mesh.dispose();
     if (this.pictures)

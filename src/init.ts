@@ -7,6 +7,7 @@ import __Sprite from "./DittoImpl/3d/__Sprite";
 import Ditto from "./LF2/ditto";
 import { BgLayerRender } from "./DittoImpl/renderer/BgLayerRender";
 import { BgRender } from "./DittoImpl/renderer/BgRender";
+import { ShadowRender } from "./DittoImpl/renderer/ShadowRender";
 
 Ditto.setup({
   Timeout: dom.__Timeout,
@@ -34,5 +35,6 @@ Ditto.setup({
   Quaternion: THREE.Quaternion,
   Raycaster: THREE.Raycaster,
   BgLayerRender: BgLayerRender,
-  BgRender: BgRender
+  BgRender: BgRender,
+  ShadowRender: ShadowRender
 });

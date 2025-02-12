@@ -1,9 +1,12 @@
-import type { Entity } from "../../entity";
 import type { Stage } from "../../stage";
-
+/**
+ * 场上物品的阴影
+ */
 export interface IShadowRender {
-  visible: boolean;
-  on_mount(entity: Entity): void;
-  on_unmount(entity: Entity): void;
-  on_stage_change(stage: Stage): void;
+  get visible(): boolean;
+  set visible(v: boolean);
+  on_mount(): void;
+  on_unmount(): void;
+  on_stage_change?(stage: Stage): void;
+  update(): void;
 }

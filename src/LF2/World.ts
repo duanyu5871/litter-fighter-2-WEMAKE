@@ -4,6 +4,7 @@ import { Callbacks, FPS, ICollision, NoEmitCallbacks } from "./base";
 import { Builtin_FrameId, Defines, IBdyInfo, IBounding, IEntityData, IFrameInfo, IItrInfo, StateEnum } from "./defines";
 import Ditto from "./ditto";
 import { IBgRender } from "./ditto/render/IBgRender";
+import { IShadowRender } from "./ditto/render/IShadowRender";
 import {
   Entity, Factory, ICreator, is_ball,
   is_base_ctrl,
@@ -159,7 +160,7 @@ export class World {
     this._stage = new Stage(this, Defines.VOID_BG);
   }
 
-  entity_renders = new Map<Entity, EntityRender>();
+  entity_renderer_packs = new Map<Entity, [EntityRender, IShadowRender]>();
   add_entities(...entities: Entity[]) {
     for (const entity of entities) {
       if (
@@ -174,11 +175,15 @@ export class World {
       }
 
       this.entities.add(entity);
-      const render = new EntityRender(entity).set_entity(entity);
-      render.attach();
+      const entity_renderer = new EntityRender(entity);
+      entity_renderer.on_mount();
 
-      this.entity_renders.set(entity, render);
-      render.indicators.flags = this._indicator_flags;
+      const shadow_renderer = new Ditto.ShadowRender(entity);
+      shadow_renderer.on_mount()
+
+      this.entity_renderer_packs.set(entity, [entity_renderer, shadow_renderer]);
+
+      entity_renderer.indicators.flags = this._indicator_flags;
     }
   }
 
@@ -189,10 +194,12 @@ export class World {
       if (ok)
         this._callbacks.emit("on_player_character_del")(e.ctrl.player_id);
     }
-    const r = this.entity_renders.get(e);
-    if (r) {
-      r.dispose();
-      this.entity_renders.delete(e);
+    const pack = this.entity_renderer_packs.get(e);
+    if (pack) {
+      const [r1, r2] = pack
+      r1.on_unmount();
+      r2.on_unmount();
+      this.entity_renderer_packs.delete(e);
     }
     e.dispose();
     return true;
@@ -336,7 +343,7 @@ export class World {
       this.restrict_weapon(e);
     }
   }
-  
+
   manhattan(e1: Entity, e2: Entity) {
     const p1 = e1.position;
     const p2 = e2.position;
@@ -391,8 +398,10 @@ export class World {
 
   render_once(dt: number) {
     this.bg_render.update();
-    for (const [, r] of this.entity_renders)
-      r.update();
+    for (const [, [r1, r2]] of this.entity_renderer_packs) {
+      r1.update();
+      r2.update();
+    }
     this.lf2.layout?.on_render(dt);
     this.scene.render();
   }
@@ -660,7 +669,7 @@ export class World {
   set indicator_flags(v: number) {
     if (this._indicator_flags === v) return;
     this._indicator_flags = v;
-    for (const [, r] of this.entity_renders) {
+    for (const [, [r]] of this.entity_renderer_packs) {
       r.indicators.flags = v;
     }
   }

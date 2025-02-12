@@ -10,6 +10,7 @@ import type { IText } from "../3d/IText";
 import type { Layer } from "../bg/Layer";
 import type { IQuaternion, IVector2, IVector3 } from "../defines";
 import type { IRaycaster } from "../defines/IRaycaster";
+import Entity from "../entity/Entity";
 import type LF2 from "../LF2";
 import { World } from "../World";
 import type { ICache } from "./cache";
@@ -21,6 +22,7 @@ import type { IKeyboard } from "./keyboard/IKeyboard";
 import type { IPointings } from "./pointings";
 import type { IBgLayerRender } from "./render/IBgLayerRender";
 import type { IBgRender } from "./render/IBgRender";
+import { IShadowRender } from "./render/IShadowRender";
 import BaseSounds from "./sounds/BaseSounds";
 import type ISounds from "./sounds/ISounds";
 import type { IZip } from "./zip/IZip";
@@ -71,6 +73,7 @@ export interface IDittoPack {
   Quaternion: new (x?: number, y?: number, z?: number, w?: number) => IQuaternion;
   BgLayerRender: new (layer: Layer) => IBgLayerRender;
   BgRender: new (world: World) => IBgRender;
+  ShadowRender: new (entity: Entity) => IShadowRender
 }
 
 export interface IDitto extends IDittoPack {
