@@ -1,4 +1,3 @@
-import { BinOp } from "../defines/BinOp";
 import { Expression } from "./Expression";
 
 const expression_result_pairs: [1 | 0, string, any][] = [

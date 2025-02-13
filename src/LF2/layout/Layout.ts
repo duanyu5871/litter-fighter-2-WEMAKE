@@ -98,7 +98,7 @@ export class Layout {
     this.set_pos(v);
   }
   set_pos(v: [number, number, number]): this {
-    this._pos.set(0, v);
+    this._pos.set(1, v);
     this._sprite.set_position(v[0], -v[1], v[2]);
     return this;
   }
@@ -166,7 +166,7 @@ export class Layout {
     this.set_visible(v);
   }
   set_visible(v: boolean): this {
-    this._visible.set(0, v);
+    this._visible.set(1, v);
     return this;
   }
 
@@ -177,7 +177,7 @@ export class Layout {
     this.set_disabled(v);
   }
   set_disabled(v: boolean): this {
-    this._disabled.set(0, v);
+    this._disabled.set(1, v);
     return this;
   }
 
@@ -188,7 +188,7 @@ export class Layout {
     this.set_center(v);
   }
   set_center(v: [number, number, number]): this {
-    this._center.set(0, v);
+    this._center.set(1, v);
     return this;
   }
 
@@ -199,7 +199,7 @@ export class Layout {
     this.set_opacity(v);
   }
   set_opacity(v: number): this {
-    this._opacity.set(0, v);
+    this._opacity.set(1, v);
     return this;
   }
 
@@ -220,7 +220,7 @@ export class Layout {
     this.set_size(v);
   }
   set_size(v: [number, number]): this {
-    this._size.set(0, v);
+    this._size.set(1, v);
     return this;
   }
 
@@ -258,7 +258,7 @@ export class Layout {
     this.set_img_infos(v);
   }
   set_img_infos(v: TImageInfo[]): this {
-    this._img_infos.set(0, v);
+    this._img_infos.set(1, v);
     return this;
   }
 
