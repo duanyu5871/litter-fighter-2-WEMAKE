@@ -101,12 +101,13 @@ export default class StageTitleShow extends LayoutComponent {
     const char_num_img = this.layout.get_value("char_num_img");
     if (!is_str(char_num_img)) return;
     const key = char_num_img + rect_name;
-    const num_pic = await this.lf2.images.create_pic(key, char_num_img, {
-      src_x: x,
-      src_y: y,
-      src_w: w,
-      src_h: h,
-    });
+    const num_pic = await this.lf2.images.create_pic(key, char_num_img, [{
+      type: 'crop',
+      x: x,
+      y: y,
+      w: w,
+      h: h,
+    }]);
     const num_mesh = new Ditto.SpriteNode(this.lf2, num_pic)
       .set_opacity(0)
       .set_size(w, h);

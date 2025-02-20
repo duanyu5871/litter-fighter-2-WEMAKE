@@ -1,3 +1,4 @@
+import { ISize } from "splittings/dist/es/splittings";
 import * as THREE from "three";
 import { create_img_ele } from "../../Utils/create_img_ele";
 import { get_blob } from "../../Utils/get_blob";
@@ -5,9 +6,13 @@ import type LF2 from "../LF2";
 import AsyncValuesKeeper from "../base/AsyncValuesKeeper";
 import { ILegacyPictureInfo } from "../defines/ILegacyPictureInfo";
 import type IPicture from "../defines/IPicture";
-import type IStyle from "../defines/IStyle";
-import Ditto from "../ditto";
 import { IPictureInfo } from "../defines/IPictureInfo";
+import { IRect } from "../defines/IRect";
+import type IStyle from "../defines/IStyle";
+import { MagnificationTextureFilter } from "../defines/MagnificationTextureFilter";
+import { MinificationTextureFilter } from "../defines/MinificationTextureFilter";
+import { TextureWrapping } from "../defines/TextureWrapping";
+import Ditto from "../ditto";
 
 export type TPicture = IPicture<THREE.Texture>;
 
@@ -21,11 +26,11 @@ export type TImageInfo = {
   w: number;
   /** 图片高度（像素） */
   h: number;
-  min_filter?: THREE.MinificationTextureFilter;
-  mag_filter?: THREE.MagnificationTextureFilter;
+  min_filter?: MinificationTextureFilter;
+  mag_filter?: MagnificationTextureFilter;
   img: CanvasImageSource;
-  wrap_s?: THREE.Wrapping;
-  wrap_t?: THREE.Wrapping;
+  wrap_s?: TextureWrapping;
+  wrap_t?: TextureWrapping;
 };
 export type ITextImageInfo = TImageInfo & {
   text: string;
@@ -55,7 +60,7 @@ export class ImageMgr {
   protected async _make_img_info(
     key: string,
     src: string,
-    paint?: PaintFunc,
+    operations?: ImageOperation[],
   ): Promise<TImageInfo> {
     const [blob_url, src_url] = await this.lf2.import_resource(src);
     const img = await create_img_ele(blob_url);
@@ -64,7 +69,7 @@ export class ImageMgr {
       src_url.match(/@(\d)[x|X]\/(.*)(.png|.webp)$/) ?? ["", "1"];
 
     const scale = Math.max(1, Number(txt_scale));
-    if (!paint) {
+    if (!operations?.length) {
       return {
         key,
         url: blob_url,
@@ -75,15 +80,16 @@ export class ImageMgr {
         img: img,
       };
     }
-    const cvs = document.createElement("canvas");
-    const ctx = cvs.getContext("2d", { willReadFrequently: true });
-    if (!ctx) throw new Error("can not get context from canvas");
-    paint(img, cvs, ctx);
-    const blob = await get_blob(cvs).catch((e) => {
+
+    let cvs: HTMLCanvasElement | null = null//document.createElement('canvas')
+    for (const op of operations) cvs = this.edit_image(cvs || img, op)
+
+    // debugger;
+    const blob = await get_blob(cvs!).catch((e) => {
       throw new Error(e.message + " key:" + key, { cause: e.cause });
     });
     const url = URL.createObjectURL(blob);
-    return { key, url, src_url, scale, w: cvs.width, h: cvs.height, img: cvs };
+    return { key, url, src_url, scale, w: cvs!.width, h: cvs!.height, img: cvs! };
   }
 
   protected async _make_img_info_by_text(
@@ -171,10 +177,10 @@ export class ImageMgr {
     return this._requesters.get(key, fn);
   }
 
-  load_img(key: string, src: string, paint?: PaintFunc): Promise<TImageInfo> {
+  load_img(key: string, src: string, operations?: ImageOperation[]): Promise<TImageInfo> {
     const fn = async () => {
       this.lf2.on_loading_content(`${key}`, 0);
-      const info = await this._make_img_info(key, src, paint);
+      const info = await this._make_img_info(key, src, operations);
       return info;
     };
     return this._requesters.get(key, fn);
@@ -194,76 +200,15 @@ export class ImageMgr {
   }
   async load_by_e_pic_info(f: ILegacyPictureInfo | IPictureInfo): Promise<TImageInfo> {
     const key = this._gen_key(f);
-
-    if (!("cell_w" in f)) {
-      return this.load_img(key, f.path);
-    }
-    const { path, cell_w, cell_h } = f;
-    if (!path.endsWith("bmp") || !cell_w || !cell_h)
-      return this.load_img(key, f.path);
-
-    return this.load_img(key, f.path, (img, cvs, ctx) => {
-      const { width: w, height: h } = img;
-      cvs.width = w;
-      cvs.height = h;
-      ctx.fillStyle = "#000000";
-      ctx.fillRect(0, 0, w, h);
-      ctx.drawImage(img, 0, 0);
-      const img_data = ctx.getImageData(0, 0, w, h);
-      for (let i = 0; i < img_data.data.length; i += 4) {
-        const pidx = i / 4;
-        if (pidx % (cell_w + 1) === cell_w) {
-          img_data.data[i + 3] = 0;
-          continue;
-        } else if (Math.floor(pidx / w) % (cell_h + 1) === cell_h) {
-          img_data.data[i + 3] = 0;
-          continue;
-        }
-        if (
-          img_data.data[i + 0] === 0 &&
-          img_data.data[i + 1] === 0 &&
-          img_data.data[i + 2] === 0
-        ) {
-          img_data.data[i + 3] = 0;
-        }
-      }
-      ctx.putImageData(img_data, 0, 0);
-    });
+    return this.load_img(key, f.path);
   }
 
   async create_pic(
     key: string,
     src: string,
-    params?: IPaintParams,
+    operations?: ImageOperation[],
   ): Promise<TPicture> {
-    const paint: PaintFunc | undefined =
-      params &&
-      ((img, cvs, ctx) => {
-        const {
-          src_x = 0,
-          src_y = 0,
-          src_w = img.width,
-          src_h = img.height,
-          dst_x = 0,
-          dst_y = 0,
-          dst_w = src_w,
-          dst_h = src_h,
-        } = params;
-        cvs.width = dst_w;
-        cvs.height = dst_h;
-        ctx.drawImage(
-          img,
-          src_x,
-          src_y,
-          src_w,
-          src_h,
-          dst_x,
-          dst_y,
-          dst_w,
-          dst_h,
-        );
-      });
-    const img_info = await this.load_img(key, src, paint);
+    const img_info = await this.load_img(key, src, operations);
     return this.create_pic_by_img_key(img_info.key);
   }
 
@@ -294,19 +239,54 @@ export class ImageMgr {
   dispose() {
     // TODO
   }
+
+  edit_image(src: HTMLCanvasElement | HTMLImageElement, op: ImageOperation): HTMLCanvasElement {
+    // debugger
+    switch (op.type) {
+      case 'crop': {
+        // debugger;
+        const ret = document.createElement("canvas")
+        const w = op.dst_size?.w ?? op.w
+        const h = op.dst_size?.h ?? op.h
+        const dw = ret.width = w > 0 ? w : src.width;
+        const dh = ret.height = h > 0 ? h : src.height;
+        const sw = op.w > 0 ? op.w : src.width;
+        const sh = op.h > 0 ? op.h : src.height;
+        const dst_ctx = ret.getContext('2d');
+        dst_ctx?.drawImage(src, op.x, op.y, sw, sh, 0, 0, dw, dh)
+        return ret;
+      }
+      case 'resize': {
+        const ret = document.createElement("canvas")
+        ret.width = op.w > 0 ? op.w : src.width
+        ret.height = op.h > 0 ? op.h : src.height
+        const dst_ctx = ret.getContext('2d');
+        dst_ctx?.drawImage(src, 0, 0, ret.width, ret.height, 0, 0, src.width, src.height)
+        return ret;
+      }
+    }
+  }
 }
 
 function _create_pic(
   img_info: TImageInfo,
   pic_info: TPicture = err_pic_info(img_info.key),
 ): TPicture {
-  const { url, w, h, min_filter, mag_filter, wrap_s, wrap_t, scale } = img_info;
+  const {
+    url, w, h,
+    min_filter = THREE.NearestFilter,
+    mag_filter = THREE.NearestFilter,
+    wrap_s = THREE.MirroredRepeatWrapping,
+    wrap_t = THREE.MirroredRepeatWrapping,
+    scale
+  } = img_info;
+
   const texture = texture_loader.load(url);
   texture.colorSpace = THREE.SRGBColorSpace;
-  texture.minFilter = min_filter ?? THREE.NearestFilter;
-  texture.magFilter = mag_filter ?? THREE.NearestFilter;
-  texture.wrapS = wrap_s ?? THREE.MirroredRepeatWrapping;
-  texture.wrapT = wrap_t ?? THREE.MirroredRepeatWrapping;
+  texture.minFilter = min_filter;
+  texture.magFilter = mag_filter;
+  texture.wrapS = wrap_s;
+  texture.wrapT = wrap_t;
   texture.userData = img_info;
   pic_info.w = w / scale;
   pic_info.h = h / scale;
@@ -331,3 +311,13 @@ export function white_texture() {
 export function error_texture() {
   return texture_loader.load(require("./error.png"));
 }
+interface ImageOperation_Resize extends ISize {
+  type: 'resize';
+}
+interface ImageOperation_Crop extends IRect {
+  type: 'crop';
+  dst_size?: ISize;
+}
+
+type ImageOperation = ImageOperation_Crop | ImageOperation_Resize;
+

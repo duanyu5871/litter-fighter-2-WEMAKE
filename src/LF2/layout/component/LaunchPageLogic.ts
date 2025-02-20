@@ -76,11 +76,10 @@ export default class LaunchPageLogic extends LayoutComponent {
       const info = await this.lf2.images.load_img(
         "SMALL_LOADING_" + i,
         "launch/SMALL_LOADING.png",
-        (img, canvas, ctx) => {
-          const w = (canvas.width = cell_w);
-          const h = (canvas.height = cell_h);
-          ctx.drawImage(img, x, y, w, h, 0, 0, w, h);
-        },
+        [{
+          type: 'crop',
+          x, y, w: cell_w, h: cell_h,
+        }]
       );
       return this.lf2.images.create_pic_by_img_info(info);
     });

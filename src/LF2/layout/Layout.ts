@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { ISpriteInfo, ISprite } from "../3d";
+import { ISprite, ISpriteInfo } from "../3d";
 import LF2 from "../LF2";
 import Callbacks from "../base/Callbacks";
 import { Expression } from "../base/Expression";
@@ -15,14 +15,14 @@ import {
 } from "../loader/loader";
 import { filter, find } from "../utils/container_help";
 import { is_arr, is_bool, is_num, is_str } from "../utils/type_check";
+import { ICookedLayoutInfo } from "./ICookedLayoutInfo";
+import { ILayoutCallback } from "./ILayoutCallback";
 import type { ILayoutInfo } from "./ILayoutInfo";
 import StateDelegate from "./StateDelegate";
 import actor from "./action/Actor";
 import factory from "./component/Factory";
 import { LayoutComponent } from "./component/LayoutComponent";
 import read_nums from "./utils/read_nums";
-import { ICookedLayoutInfo } from "./ICookedLayoutInfo";
-import { ILayoutCallback } from "./ILayoutCallback";
 
 export class Layout {
   protected _callbacks = new Callbacks<ILayoutCallback>();
@@ -411,7 +411,6 @@ export class Layout {
       img_infos: [],
       items: void 0,
     };
-
     const { img, txt, style } = raw_info;
     if (img) {
       const img_paths = !is_arr(img)
@@ -422,11 +421,14 @@ export class Layout {
         const img_key = `${img_path}?${sx}_${sy}_${sw}_${sh}`;
         const img_info = lf2.images.find(img_key);
         if (img_info) return img_info;
-        return await lf2.images.load_img(img_key, img_path, (img, cvs, ctx) => {
-          const w = (cvs.width = sw || img.width);
-          const h = (cvs.height = sh || img.height);
-          ctx.drawImage(img, sx, sy, w, h, 0, 0, w, h);
-        });
+          
+        return await lf2.images.load_img(img_key, img_path, [{
+          type: 'crop',
+          x: sx,
+          y: sy,
+          w: sw,
+          h: sh
+        }]);
       };
       for (const p of img_paths) {
         if (p) ret.img_infos.push(await preload(p));

@@ -3,12 +3,13 @@ import { ILf2Callback } from "./ILf2Callback";
 import { PlayerInfo } from "./PlayerInfo";
 import { World } from "./World";
 import {
-  Callbacks, get_short_file_size_txt, Loader, new_id, new_team, NoEmitCallbacks,
+  Callbacks, get_short_file_size_txt, Loader, new_id,
+  NoEmitCallbacks,
   PIO
 } from "./base";
 import { KEY_NAME_LIST, LocalController } from "./controller";
 import {
-  Builtin_FrameId, CheatType, Defines, Difficulty, IBgData, IEntityData,
+  Builtin_FrameId, CheatType, Defines, Difficulty, IBgData,
   IStageInfo, TFace
 } from "./defines";
 import {
@@ -23,7 +24,7 @@ import {
   ISounds,
   IZip,
 } from "./ditto";
-import { Entity, Factory } from "./entity";
+import { Entity } from "./entity";
 import { BallsHelper, CharactersHelper, EntitiesHelper, WeaponsHelper } from "./helper";
 import { ICookedLayoutInfo } from "./layout/ICookedLayoutInfo";
 import { ILayoutInfo } from "./layout/ILayoutInfo";
@@ -35,7 +36,7 @@ import { Stage } from "./stage";
 import {
   arithmetic_progression, fisrt,
   is_arr, is_num, is_str,
-  not_empty_str, random_get, random_in, random_take
+  random_in, random_take
 } from "./utils";
 
 const cheat_info_pair = (n: CheatType) =>
