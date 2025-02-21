@@ -35,21 +35,6 @@ export type TImageInfo = {
 export type ITextImageInfo = TImageInfo & {
   text: string;
 };
-export interface IPaintParams {
-  src_x?: number;
-  src_y?: number;
-  src_w?: number;
-  src_h?: number;
-  dst_x?: number;
-  dst_y?: number;
-  dst_w?: number;
-  dst_h?: number;
-}
-export type PaintFunc = (
-  img: HTMLImageElement,
-  cvs: HTMLCanvasElement,
-  ctx: CanvasRenderingContext2D,
-) => void;
 export class ImageMgr {
   readonly lf2: LF2;
   protected _requesters = new AsyncValuesKeeper<TImageInfo>();
@@ -203,11 +188,7 @@ export class ImageMgr {
     return this.load_img(key, f.path);
   }
 
-  async create_pic(
-    key: string,
-    src: string,
-    operations?: ImageOperation[],
-  ): Promise<TPicture> {
+  async create_pic(key: string, src: string, operations?: ImageOperation[]): Promise<TPicture> {
     const img_info = await this.load_img(key, src, operations);
     return this.create_pic_by_img_key(img_info.key);
   }
@@ -311,13 +292,12 @@ export function white_texture() {
 export function error_texture() {
   return texture_loader.load(require("./error.png"));
 }
-interface ImageOperation_Resize extends ISize {
+export interface ImageOperation_Resize extends ISize {
   type: 'resize';
 }
-interface ImageOperation_Crop extends IRect {
+export interface ImageOperation_Crop extends IRect {
   type: 'crop';
   dst_size?: ISize;
 }
-
-type ImageOperation = ImageOperation_Crop | ImageOperation_Resize;
+export type ImageOperation = ImageOperation_Crop | ImageOperation_Resize;
 

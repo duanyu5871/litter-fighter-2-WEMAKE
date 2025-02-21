@@ -1,3 +1,5 @@
+import { PromiseInOne } from "promise-in-one/dist/es/pio";
+
 /**
  * 异步值管理
  *
@@ -7,38 +9,30 @@
  */
 export default class AsyncValuesKeeper<V> {
   readonly values = new Map<string, V>();
-  protected _f_map = new Map<
-    string,
-    [(v: V) => void, (reason: any) => void][]
-  >();
+  protected _pio = new PromiseInOne<string, string, V>(v => v)
+
 
   del(key: string): void {
     this.values.delete(key);
   }
 
   get(key: string, job: () => Promise<V>): Promise<V> {
-    if (this.values.has(key)) return Promise.resolve(this.values.get(key)!);
+    const value = this.values.get(key);
+    if (value)
+      return Promise.resolve(value);
 
-    return new Promise((a, b) => {
-      const has_job = this._f_map.has(key);
-      has_job
-        ? this._f_map.get(key)?.push([a, b])
-        : this._f_map.set(key, [[a, b]]);
-      if (has_job) return;
-
-      job()
-        .then((v) => {
-          this.values.set(key, v);
-          for (const [f] of this._f_map.get(key)!) f(v);
-        })
-        .catch((v) => {
-          for (const [, f] of this._f_map.get(key)!) f(v);
-        });
+    return new Promise((resolve, reject) => {
+      const [pid, exist] = this._pio.check(key, resolve, reject)
+      if (exist) return;
+      this._pio.handle(pid, job().then(value => {
+        this.values.set(key, value)
+        return value
+      }))
     });
   }
 
   clean(): void {
-    this._f_map.clear();
+    this.values.clear()
   }
 
   take(key: string): V | undefined {
