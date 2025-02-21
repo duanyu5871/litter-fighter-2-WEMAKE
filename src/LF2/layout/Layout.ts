@@ -8,10 +8,10 @@ import GameKey from "../defines/GameKey";
 import { IValGetter } from "../defines/IExpression";
 import IStyle from "../defines/IStyle";
 import Ditto from "../ditto";
+import { type IImageInfo } from "../loader/IImageInfo";
 import {
   empty_texture,
   white_texture,
-  type TImageInfo,
 } from "../loader/loader";
 import { filter, find } from "../utils/container_help";
 import { is_arr, is_bool, is_num, is_str } from "../utils/type_check";
@@ -48,7 +48,7 @@ export class Layout {
   protected _visible: StateDelegate<boolean> = new StateDelegate(true);
   protected _disabled: StateDelegate<boolean> = new StateDelegate(false);
   protected _opacity: StateDelegate<number> = new StateDelegate(1);
-  protected _img_infos: StateDelegate<TImageInfo[]> = new StateDelegate([]);
+  protected _img_infos: StateDelegate<IImageInfo[]> = new StateDelegate([]);
   protected _size: StateDelegate<[number, number]> = new StateDelegate([0, 0]);
   protected _center: StateDelegate<[number, number, number]> =
     new StateDelegate([0, 0, 0]);
@@ -254,10 +254,10 @@ export class Layout {
   get img_infos() {
     return this._img_infos.value;
   }
-  set img_infos(v: TImageInfo[]) {
+  set img_infos(v: IImageInfo[]) {
     this.set_img_infos(v);
   }
-  set_img_infos(v: TImageInfo[]): this {
+  set_img_infos(v: IImageInfo[]): this {
     this._img_infos.set(1, v);
     return this;
   }
@@ -421,7 +421,7 @@ export class Layout {
         const img_key = `${img_path}?${sx}_${sy}_${sw}_${sh}`;
         const img_info = lf2.images.find(img_key);
         if (img_info) return img_info;
-          
+
         return await lf2.images.load_img(img_key, img_path, [{
           type: 'crop',
           x: sx,

@@ -13,31 +13,15 @@ import { MagnificationTextureFilter } from "../defines/MagnificationTextureFilte
 import { MinificationTextureFilter } from "../defines/MinificationTextureFilter";
 import { TextureWrapping } from "../defines/TextureWrapping";
 import Ditto from "../ditto";
+import { ImageInfo } from "./ImageInfo";
+import { TextImageInfo } from "./TextImageInfo";
+import { IImageInfo } from "./IImageInfo";
 
 export type TPicture = IPicture<THREE.Texture>;
-
 export const texture_loader = new THREE.TextureLoader();
-export type TImageInfo = {
-  key: string;
-  url: string;
-  src_url: string;
-  scale: number;
-  /** 图片宽度（像素） */
-  w: number;
-  /** 图片高度（像素） */
-  h: number;
-  min_filter?: MinificationTextureFilter;
-  mag_filter?: MagnificationTextureFilter;
-  img: CanvasImageSource;
-  wrap_s?: TextureWrapping;
-  wrap_t?: TextureWrapping;
-};
-export type ITextImageInfo = TImageInfo & {
-  text: string;
-};
 export class ImageMgr {
   readonly lf2: LF2;
-  protected _requesters = new AsyncValuesKeeper<TImageInfo>();
+  protected _requesters = new AsyncValuesKeeper<ImageInfo>();
   constructor(lf2: LF2) {
     this.lf2 = lf2;
   }
@@ -46,7 +30,7 @@ export class ImageMgr {
     key: string,
     src: string,
     operations?: ImageOperation[],
-  ): Promise<TImageInfo> {
+  ): Promise<ImageInfo> {
     const [blob_url, src_url] = await this.lf2.import_resource(src);
     const img = await create_img_ele(blob_url);
 
@@ -55,15 +39,14 @@ export class ImageMgr {
 
     const scale = Math.max(1, Number(txt_scale));
     if (!operations?.length) {
-      return {
+      return new ImageInfo().merge({
         key,
         url: blob_url,
         src_url,
         scale,
         w: img.width,
         h: img.height,
-        img: img,
-      };
+      });
     }
 
     let cvs: HTMLCanvasElement | null = null//document.createElement('canvas')
@@ -74,14 +57,14 @@ export class ImageMgr {
       throw new Error(e.message + " key:" + key, { cause: e.cause });
     });
     const url = URL.createObjectURL(blob);
-    return { key, url, src_url, scale, w: cvs!.width, h: cvs!.height, img: cvs! };
+    return new ImageInfo().merge({ key, url, src_url, scale, w: cvs!.width, h: cvs!.height });
   }
 
   protected async _make_img_info_by_text(
     key: string,
     text: string,
     style: IStyle = {},
-  ): Promise<ITextImageInfo> {
+  ): Promise<TextImageInfo> {
     const cvs = document.createElement("canvas");
     const ctx = cvs.getContext("2d");
     if (!ctx) throw new Error("can not get context from canvas");
@@ -136,33 +119,32 @@ export class ImageMgr {
       throw new Error(e.message + " key:" + key, { cause: e.cause });
     });
     const url = URL.createObjectURL(blob);
-    return {
+    return new TextImageInfo().merge({
       key,
       url,
       scale: scale,
       src_url: url,
       w: cvs.width,
       h: cvs.height,
-      img: cvs,
       text: text,
-    };
+    });
   }
 
-  find(key: string): TImageInfo | undefined {
+  find(key: string): ImageInfo | undefined {
     return this._requesters.values.get(key);
   }
 
-  find_by_pic_info(f: IPictureInfo | ILegacyPictureInfo): TImageInfo | undefined {
+  find_by_pic_info(f: IPictureInfo | ILegacyPictureInfo): ImageInfo | undefined {
     return this._requesters.values.get(this._gen_key(f));
   }
 
-  load_text(text: string, style: IStyle = {}): Promise<TImageInfo> {
+  load_text(text: string, style: IStyle = {}): Promise<ImageInfo> {
     const key = Ditto.MD5(text, JSON.stringify(style));
     const fn = () => this._make_img_info_by_text(key, text, style);
     return this._requesters.get(key, fn);
   }
 
-  load_img(key: string, src: string, operations?: ImageOperation[]): Promise<TImageInfo> {
+  load_img(key: string, src: string, operations?: ImageOperation[]): Promise<ImageInfo> {
     const fn = async () => {
       this.lf2.on_loading_content(`${key}`, 0);
       const info = await this._make_img_info(key, src, operations);
@@ -183,7 +165,8 @@ export class ImageMgr {
       return `${f.path}#${f.cell_w || 0}_${f.cell_h || 0}_${f.row}_${f.col}`;
     return f.path;
   }
-  async load_by_e_pic_info(f: ILegacyPictureInfo | IPictureInfo): Promise<TImageInfo> {
+
+  async load_by_e_pic_info(f: ILegacyPictureInfo | IPictureInfo): Promise<ImageInfo> {
     const key = this._gen_key(f);
     return this.load_img(key, f.path);
   }
@@ -193,7 +176,7 @@ export class ImageMgr {
     return this.create_pic_by_img_key(img_info.key);
   }
 
-  create_pic_by_img_info(img_info: TImageInfo) {
+  create_pic_by_img_info(img_info: IImageInfo): TPicture {
     const picture = err_pic_info(img_info.key);
     const ret = _create_pic(img_info, picture);
     return ret;
@@ -250,18 +233,17 @@ export class ImageMgr {
 }
 
 function _create_pic(
-  img_info: TImageInfo,
+  img_info: IImageInfo,
   pic_info: TPicture = err_pic_info(img_info.key),
 ): TPicture {
   const {
     url, w, h,
-    min_filter = THREE.NearestFilter,
-    mag_filter = THREE.NearestFilter,
-    wrap_s = THREE.MirroredRepeatWrapping,
-    wrap_t = THREE.MirroredRepeatWrapping,
+    min_filter = MinificationTextureFilter.Nearest,
+    mag_filter = MagnificationTextureFilter.Nearest,
+    wrap_s = TextureWrapping.MirroredRepeat,
+    wrap_t = TextureWrapping.MirroredRepeat,
     scale
   } = img_info;
-
   const texture = texture_loader.load(url);
   texture.colorSpace = THREE.SRGBColorSpace;
   texture.minFilter = min_filter;
