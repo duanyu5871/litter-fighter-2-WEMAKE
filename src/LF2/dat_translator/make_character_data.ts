@@ -14,9 +14,9 @@ import { is_num, is_str } from "../utils/type_check";
 import { CondMaker } from "./CondMaker";
 import { edit_next_frame } from "./edit_next_frame";
 import {
-  cook_next_frame_mp_hp,
   get_next_frame_by_raw_id,
 } from "./get_the_next";
+import { cook_next_frame_mp_hp } from "./cook_next_frame_mp_hp";
 import { take } from "./take";
 import { take_raw_frame_mp } from "./take_raw_frame_mp";
 const k_9 = ["Fa", "Fj", "Da", "Dj", "Ua", "Uj", "ja"] as const;
