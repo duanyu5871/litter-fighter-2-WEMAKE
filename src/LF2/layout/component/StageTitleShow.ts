@@ -113,7 +113,10 @@ export default class StageTitleShow extends LayoutComponent {
       .set_size(w, h);
     return num_mesh;
   }
-
+  override on_start(): void {
+    super.on_start?.();
+    this.on_stage_change(this.world.stage)
+  }
   override on_resume(): void {
     super.on_resume();
     this._unmount_jobs.add(
