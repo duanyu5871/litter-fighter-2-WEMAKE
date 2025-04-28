@@ -3,10 +3,9 @@ import type LF2 from "../LF2";
 export interface IBaseNode {
   readonly is_base_node: true;
   readonly lf2: LF2;
+  get children(): readonly IBaseNode[];
 
   parent: IBaseNode | undefined;
-
-  get children(): readonly IBaseNode[];
 
   name: string;
 

@@ -44,7 +44,6 @@ export class LayoutComponent {
   on_click?(): boolean | void;
 
   on_start?(): void;
-  on_stop?(): void;
 
   on_resume(): void {
     this._mounted = true;
@@ -53,6 +52,7 @@ export class LayoutComponent {
   on_pause(): void {
     this._mounted = false;
   }
+  on_stop?(): void;
 
   on_show?(): void;
   on_hide?(): void;

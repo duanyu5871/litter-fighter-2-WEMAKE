@@ -25,6 +25,10 @@ import { LayoutComponent } from "./component/LayoutComponent";
 import read_nums from "./utils/read_nums";
 
 export class Layout {
+  readonly lf2: LF2;
+  readonly id_layout_map: Map<string, Layout>;
+  readonly name_layout_map: Map<string, Layout>;
+
   protected _callbacks = new Callbacks<ILayoutCallback>();
   get callbacks(): NoEmitCallbacks<ILayoutCallback> {
     return this._callbacks;
@@ -37,9 +41,6 @@ export class Layout {
    */
   protected _root: Layout;
   protected _focused_item?: Layout;
-  readonly id_layout_map: Map<string, Layout>;
-  readonly name_layout_map: Map<string, Layout>;
-
   protected _pos: StateDelegate<[number, number, number]> = new StateDelegate(
     () => this.data.pos,
   );
@@ -59,7 +60,6 @@ export class Layout {
   protected _index: number = 0;
   protected readonly data: Readonly<ICookedLayoutInfo>;
 
-  lf2: LF2;
   get focused(): boolean {
     return this._root._focused_item === this;
   }
@@ -146,15 +146,19 @@ export class Layout {
     for (; l?._parent; l = l.parent) ++depth;
     return depth;
   }
+
   get index() {
     return this._index;
   }
+
   get state() {
     return this._state;
   }
+
   get img_idx() {
     return this._img_idx();
   }
+
   set img_idx(v: number) {
     this._img_idx = () => v;
   }
@@ -162,9 +166,11 @@ export class Layout {
   get visible(): boolean {
     return this._visible.value;
   }
+
   set visible(v: boolean) {
     this.set_visible(v);
   }
+
   set_visible(v: boolean): this {
     this._visible.set(1, v);
     return this;
@@ -203,46 +209,22 @@ export class Layout {
     return this;
   }
 
-  get parent() {
-    return this._parent;
-  }
-  get children() {
-    return this._children;
-  }
-  set children(v) {
-    this._children = v;
-  }
+  get parent() { return this._parent; }
+  get children(): Readonly<Layout[]> { return this._children; }
 
-  get size(): [number, number] {
-    return this._size.value;
-  }
-  set size(v: [number, number]) {
-    this.set_size(v);
-  }
-  set_size(v: [number, number]): this {
-    this._size.set(1, v);
-    return this;
-  }
+  get size(): [number, number] { return this._size.value; }
+  set size(v: [number, number]) { this.set_size(v); }
 
-  get w(): number {
-    return this.size[0];
-  }
-  set w(v: number) {
-    this.set_w(v);
-  }
-  set_w(v: number): this {
-    return this.set_size([v, this.h]);
-  }
+  get w(): number { return this.size[0]; }
+  set w(v: number) { this.set_w(v); }
 
-  get h(): number {
-    return this.size[1];
-  }
-  set h(v: number) {
-    this.set_h(v);
-  }
-  set_h(v: number): this {
-    return this.set_size([this.w, v]);
-  }
+  get h(): number { return this.size[1]; }
+  set h(v: number) { this.set_h(v); }
+
+
+  set_size(v: [number, number]): this { this._size.set(1, v); return this; }
+  set_w(v: number): this { return this.set_size([v, this.h]); }
+  set_h(v: number): this { return this.set_size([this.w, v]); }
 
   get components() {
     return this._components;
@@ -266,17 +248,13 @@ export class Layout {
 
   constructor(lf2: LF2, data: ICookedLayoutInfo, parent?: Layout) {
     this.lf2 = lf2;
-    this._sprite = new Ditto.SpriteNode(this.lf2).add_user_data("owner", this);
     this.data = Object.freeze(data);
     this._parent = parent;
-    this._root = parent ? parent.root : this;
-    if (this._root === this) {
-      this.id_layout_map = new Map();
-      this.name_layout_map = new Map();
-    }
-
+    this._root = parent?.root ?? this;
     this.id_layout_map = parent?.id_layout_map ?? new Map();
     this.name_layout_map = parent?.name_layout_map ?? new Map();
+
+    this._sprite = new Ditto.SpriteNode(this.lf2).add_user_data("owner", this);
   }
 
   get x_on_root(): number {
@@ -288,6 +266,7 @@ export class Layout {
     } while (node);
     return x;
   }
+
   get y_on_root(): number {
     let ret = 0;
     let node: Layout | undefined = this;
@@ -322,7 +301,6 @@ export class Layout {
     for (const c of this.components) c.on_stop?.();
     for (const l of this.children) l.on_stop();
     this.parent?.sprite.del(this._sprite);
-
     const { stop } = this.data.actions || {};
     stop && actor.act(this, stop);
   }
@@ -485,16 +463,27 @@ export class Layout {
     ret._cook_img_idx(get_val);
     ret._cook_component();
 
-    if (info.items)
+    if (info.items) {
       for (const item_info of info.items) {
         const cooked_item = Layout.cook(lf2, item_info, get_val, ret);
         if (cooked_item.id) ret.id_layout_map.set(cooked_item.id, cooked_item);
         if (cooked_item.name)
           ret.name_layout_map.set(cooked_item.name, cooked_item);
         cooked_item._index = ret.children.length;
-        ret.children.push(cooked_item);
+        ret.add_child(cooked_item)
       }
+    }
     return ret;
+  }
+
+  add_child(layout: Layout): this {
+    this._children.push(layout);
+    return this;
+  }
+
+  add_children(...layout: Layout[]): this {
+    layout.forEach(l => this.add_child(l))
+    return this;
   }
 
   private _cook_component() {

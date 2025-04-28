@@ -9,9 +9,7 @@ export interface IObjectNode extends IBaseNode {
   x: number;
   y: number;
   z: number;
-
   visible: boolean;
-
   opacity: number;
 
   get w(): number;
@@ -42,8 +40,11 @@ export interface IObjectNode extends IBaseNode {
   set_position(x?: number, y?: number, z?: number): this;
 
   set_scale(x?: number, y?: number, z?: number): this;
+
   set_scale_x(v: number): this;
+
   set_scale_y(v: number): this;
+
   set_scale_z(v: number): this;
 
   set_size(w?: number, h?: number): this;
@@ -53,11 +54,14 @@ export interface IObjectNode extends IBaseNode {
   apply(): this;
 
   set_rgb(r: number, g: number, b: number): this;
+
   rotation_from_quaternion(q: IQuaternion): this;
+
   intersect_from_raycaster(
     raycaster: IRaycaster,
     recursive?: boolean,
   ): IIntersection[];
+
   on(key: ObjectEventKey, fn: () => void): this;
   off(key: ObjectEventKey, fn: () => void): this;
 }
