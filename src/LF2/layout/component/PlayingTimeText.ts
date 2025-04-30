@@ -1,13 +1,13 @@
 import { IText } from "../../3d/IText";
 import Ditto from "../../ditto";
-import { LayoutComponent } from "./LayoutComponent";
+import { Component } from "./Component";
 
-export class PlayingTimeText extends LayoutComponent {
+export class PlayingTimeText extends Component {
   private _txt?: IText;
 
   override on_start(): void {
     super.on_start?.();
-    this.layout.sprite.add(
+    this.node.sprite.add(
       (this._txt = new Ditto.TextNode(this.lf2).set_center(0.5, 0.5).apply()),
     );
   }
@@ -19,7 +19,7 @@ export class PlayingTimeText extends LayoutComponent {
 
   override on_show(): void {
     super.on_show?.();
-    this._txt?.set_style(this.layout.style).set_text(this.get_txt()).apply();
+    this._txt?.set_style(this.node.style).set_text(this.get_txt()).apply();
   }
 
   protected get_txt(): string {

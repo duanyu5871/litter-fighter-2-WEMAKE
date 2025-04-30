@@ -14,7 +14,7 @@ import { map_no_void } from "../../utils/container_help/map_no_void";
 import { random_get, random_in } from "../../utils/math/random";
 import BackgroundNameText from "./BackgroundNameText";
 import CharacterSelLogic from "./CharacterSelLogic";
-import { LayoutComponent } from "./LayoutComponent";
+import { Component } from "./Component";
 import StageNameText from "./StageNameText";
 
 export interface IGamePrepareLogicCallback {
@@ -28,7 +28,7 @@ export enum GamePrepareState {
   GameSetting = "GameSetting",
 }
 
-export default class GamePrepareLogic extends LayoutComponent {
+export default class GamePrepareLogic extends Component {
   get game_mode(): string {
     return this.args[0];
   }
@@ -45,8 +45,8 @@ export default class GamePrepareLogic extends LayoutComponent {
 
   override on_resume(): void {
     super.on_resume();
-    const btn_switch_bg = this.layout.find_layout("btn_switch_bg");
-    const btn_switch_stage = this.layout.find_layout("btn_switch_stage");
+    const btn_switch_bg = this.node.find_layout("btn_switch_bg");
+    const btn_switch_stage = this.node.find_layout("btn_switch_stage");
 
     if (this.game_mode === "vs_mode") {
       btn_switch_bg?.set_visible(true).set_disabled(false);
@@ -127,7 +127,7 @@ export default class GamePrepareLogic extends LayoutComponent {
     }
   }
 
-  override on_render(dt: number): void {
+  override update(dt: number): void {
     this._fsm.update(dt);
   }
   get fsm(): IReadonlyFSM<GamePrepareState> {
@@ -180,10 +180,10 @@ export default class GamePrepareLogic extends LayoutComponent {
             this._min_com_num = joined_num <= 1 ? 1 : 0;
 
           this._max_com_num = not_joined_num;
-          this.layout.find_layout("how_many_computer")?.set_visible(true);
+          this.node.find_layout("how_many_computer")?.set_visible(true);
         },
         leave: () =>
-          this.layout.find_layout("how_many_computer")?.set_visible(false),
+          this.node.find_layout("how_many_computer")?.set_visible(false),
       },
       {
         key: GamePrepareState.ComputerCharacterSel,
@@ -192,12 +192,12 @@ export default class GamePrepareLogic extends LayoutComponent {
         key: GamePrepareState.GameSetting,
         enter: () => {
           this.update_random();
-          this.layout.find_layout("menu")?.set_visible(true);
+          this.node.find_layout("menu")?.set_visible(true);
         },
         leave: () => {
           for (const { player: p } of this.player_slots)
             p?.set_random_character("");
-          this.layout.find_layout("menu")?.set_visible(false);
+          this.node.find_layout("menu")?.set_visible(false);
         },
       },
     )
@@ -235,33 +235,33 @@ export default class GamePrepareLogic extends LayoutComponent {
 
   get player_slots(): CharacterSelLogic[] {
     // 全部“玩家槽”
-    return this.layout.root.search_components(CharacterSelLogic);
+    return this.node.root.search_components(CharacterSelLogic);
   }
   get joined_com_infos(): CharacterSelLogic[] {
     // 已加入的“电脑槽”
     return filter(
-      this.layout.root.search_components(CharacterSelLogic),
+      this.node.root.search_components(CharacterSelLogic),
       (v) => v.player?.is_com && v.player.joined,
     );
   }
   get com_slots(): CharacterSelLogic[] {
     // 电脑槽”
     return filter(
-      this.layout.root.search_components(CharacterSelLogic),
+      this.node.root.search_components(CharacterSelLogic),
       (v) => v.player?.is_com,
     );
   }
   get used_player_slots(): CharacterSelLogic[] {
     // 未使用玩家槽
     return filter(
-      this.layout.root.search_components(CharacterSelLogic),
+      this.node.root.search_components(CharacterSelLogic),
       (v) => v.player?.joined,
     );
   }
   get empty_player_slots(): CharacterSelLogic[] {
     // 未使用玩家槽
     return filter(
-      this.layout.root.search_components(CharacterSelLogic),
+      this.node.root.search_components(CharacterSelLogic),
       (v) => !v.player?.joined,
     );
   }
@@ -314,13 +314,13 @@ export default class GamePrepareLogic extends LayoutComponent {
       character.attach();
     }
 
-    const stage_name_text = this.layout.root.search_component(
+    const stage_name_text = this.node.root.search_component(
       StageNameText,
-      (v) => v.layout.global_visible && !v.layout.global_disabled,
+      (v) => v.node.global_visible && !v.node.global_disabled,
     );
-    const background_name_text = this.layout.root.search_component(
+    const background_name_text = this.node.root.search_component(
       BackgroundNameText,
-      (v) => v.layout.global_visible && !v.layout.global_disabled,
+      (v) => v.node.global_visible && !v.node.global_disabled,
     );
     if (stage_name_text) this.lf2.change_stage(stage_name_text.stage);
     if (background_name_text)

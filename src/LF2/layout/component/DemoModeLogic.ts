@@ -4,9 +4,9 @@ import { Factory } from "../../entity/Factory";
 import IEntityCallbacks from "../../entity/IEntityCallbacks";
 import { is_character } from "../../entity/type_check";
 import { random_get, random_in, random_take } from "../../utils/math/random";
-import { LayoutComponent } from "./LayoutComponent";
+import { Component } from "./Component";
 
-export class DemoModeLogic extends LayoutComponent implements IEntityCallbacks {
+export class DemoModeLogic extends Component implements IEntityCallbacks {
   override on_start(): void {
     super.on_start?.();
 
@@ -114,7 +114,7 @@ export class DemoModeLogic extends LayoutComponent implements IEntityCallbacks {
     const i = team_alives.get("") || 0;
     if (i > 1) return;
     this.lf2.sounds.play_preset("end");
-    const score_board = this.layout.find_layout("score_board");
+    const score_board = this.node.find_layout("score_board");
     if (score_board) score_board.visible = true;
   }
 

@@ -1,20 +1,20 @@
 import { IText } from "../../3d/IText";
 import IStyle from "../../defines/IStyle";
 import Ditto from "../../ditto";
-import { LayoutComponent } from "./LayoutComponent";
+import { Component } from "./Component";
 import PlayerScore from "./PlayerScore";
-export default class PlayerScoreCell extends LayoutComponent {
+export default class PlayerScoreCell extends Component {
   get kind() {
     return this.args[0];
   }
   get player_score() {
-    return this.layout.lookup_component(PlayerScore);
+    return this.node.lookup_component(PlayerScore);
   }
   private _txt?: IText;
 
   override on_start(): void {
     super.on_start?.();
-    this.layout.sprite.add(
+    this.node.sprite.add(
       (this._txt = new Ditto.TextNode(this.lf2).set_center(0.5, 0.5).apply()),
     );
   }
@@ -32,15 +32,15 @@ export default class PlayerScoreCell extends LayoutComponent {
   protected get_style(): IStyle {
     const s = this.player_score;
     const c = this.player_score?.character;
-    if (!s || !c) return this.layout.style;
+    if (!s || !c) return this.node.style;
     if (this.kind === "status") {
-      let clr = this.layout.style.fill_style;
-      if (c.hp > 0) clr = this.layout.get_value("win_alive_color");
-      else if (s.lose) clr = this.layout.get_value("lose_color");
-      else clr = this.layout.get_value("win_dead_color");
-      return { ...this.layout.style, fill_style: clr };
+      let clr = this.node.style.fill_style;
+      if (c.hp > 0) clr = this.node.get_value("win_alive_color");
+      else if (s.lose) clr = this.node.get_value("lose_color");
+      else clr = this.node.get_value("win_dead_color");
+      return { ...this.node.style, fill_style: clr };
     }
-    return this.layout.style;
+    return this.node.style;
   }
   protected get_txt() {
     const s = this.player_score;
@@ -58,9 +58,9 @@ export default class PlayerScoreCell extends LayoutComponent {
       case "picking":
         return "" + c.picking_sum;
       case "status": {
-        if (c.hp > 0) return this.layout.get_value("win_alive_txt");
-        else if (s.lose) return this.layout.get_value("lose_txt");
-        else return this.layout.get_value("win_dead_txt");
+        if (c.hp > 0) return this.node.get_value("win_alive_txt");
+        else if (s.lose) return this.node.get_value("lose_txt");
+        else return this.node.get_value("win_dead_txt");
         // "win_alive_txt"
         // "win_dead_txt"
         // "lose_txt"

@@ -1,12 +1,12 @@
 import GamePrepareLogic from "./GamePrepareLogic";
-import { LayoutComponent } from "./LayoutComponent";
+import { Component } from "./Component";
 
-export default class ComNumButton extends LayoutComponent {
+export default class ComNumButton extends Component {
   get num(): number {
     return Number(this.args[0] || "");
   }
   get gpl() {
-    return this.layout.root.search_component(GamePrepareLogic);
+    return this.node.root.search_component(GamePrepareLogic);
   }
   override on_click(): void {
     this.gpl?.set_com_num(this.num);
@@ -16,6 +16,6 @@ export default class ComNumButton extends LayoutComponent {
     const { gpl, num } = this;
     if (!gpl) return;
     const { min_com_num, max_com_num } = gpl;
-    this.layout.disabled = num < min_com_num || num > max_com_num;
+    this.node.disabled = num < min_com_num || num > max_com_num;
   }
 }

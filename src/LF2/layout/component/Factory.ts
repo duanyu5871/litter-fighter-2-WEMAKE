@@ -1,7 +1,7 @@
 import { Warn } from "../../../Log";
 import { is_str } from "../../utils/type_check";
 import { ILayoutInfo } from "../ILayoutInfo";
-import type Layout from "../Layout";
+import type Node from "../Node";
 import { read_call_func_expression } from "../utils/read_func_args";
 import BackgroundNameText from "./BackgroundNameText";
 import CharacterSelLogic from "./CharacterSelLogic";
@@ -10,7 +10,7 @@ import { DemoModeLogic } from "./DemoModeLogic";
 import DifficultyText from "./DifficultyText";
 import GamePrepareLogic from "./GamePrepareLogic";
 import LaunchPageLogic from "./LaunchPageLogic";
-import { LayoutComponent } from "./LayoutComponent";
+import { Component } from "./Component";
 import LoadingFileNameDisplayer from "./LoadingFileNameDisplayer";
 import OpacityHover from "./OpacityHover";
 import PlayerCharacterHead from "./PlayerCharacterHead";
@@ -33,7 +33,7 @@ import VsModeLogic from "./VsModeLogic";
 
 class Factory {
   static readonly TAG = `Layout Component Factory`;
-  private _component_map = new Map<string, typeof LayoutComponent>([
+  private _component_map = new Map<string, typeof Component>([
     ["game_loading_file_name", LoadingFileNameDisplayer],
     ["key_set", PlayerKeyEditor],
     ["key_txt", PlayerKeyText],
@@ -62,13 +62,14 @@ class Factory {
     ["playing_time", PlayingTimeText],
     ["random_img_on_layout_resume", RandomImgOnLayoutResume],
   ]);
+
   create(
-    layout: Layout,
+    layout: Node,
     components: ILayoutInfo["component"],
-  ): LayoutComponent[] {
+  ): Component[] {
     if (!components?.length) return [];
     if (is_str(components)) components = [components];
-    const ret: LayoutComponent[] = [];
+    const ret: Component[] = [];
     for (const component_expression of components) {
       const [func_name, args] = read_call_func_expression(component_expression);
       if (!func_name) {
@@ -94,7 +95,8 @@ class Factory {
     }
     return ret;
   }
-  register(key: string, Cls: typeof LayoutComponent) {
+
+  register(key: string, Cls: typeof Component) {
     this._component_map.set(key, Cls);
   }
 }

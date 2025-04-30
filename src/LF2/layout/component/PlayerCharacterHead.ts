@@ -3,18 +3,18 @@ import { SineAnimation } from "../../animation/SineAnimation";
 import Invoker from "../../base/Invoker";
 import { Defines } from "../../defines/defines";
 import Ditto from "../../ditto";
-import Layout from "../Layout";
+import Node from "../Node";
 import GamePrepareLogic, { GamePrepareState } from "./GamePrepareLogic";
-import { LayoutComponent } from "./LayoutComponent";
+import { Component } from "./Component";
 
 /**
  * 显示玩家角色选择的角色头像
  *
  * @export
  * @class PlayerCharacterHead
- * @extends {LayoutComponent}
+ * @extends {Component}
  */
-export default class PlayerCharacterHead extends LayoutComponent {
+export default class PlayerCharacterHead extends Component {
   get player_id() {
     return this.args[0] || "";
   }
@@ -35,7 +35,7 @@ export default class PlayerCharacterHead extends LayoutComponent {
   protected readonly _mesh_cd: ISprite;
 
   get gpl(): GamePrepareLogic | undefined {
-    return this.layout.root.find_component(GamePrepareLogic);
+    return this.node.root.find_component(GamePrepareLogic);
   }
   get joined(): boolean {
     return !!this.player?.joined;
@@ -43,22 +43,22 @@ export default class PlayerCharacterHead extends LayoutComponent {
 
   protected _unmount_jobs = new Invoker();
 
-  constructor(layout: Layout, f_name: string) {
+  constructor(layout: Node, f_name: string) {
     super(layout, f_name);
 
     this._mesh_head = new Ditto.SpriteNode(this.lf2)
       .set_center(0.5, 0.5)
-      .set_position(this.layout.w / 2, -this.layout.h / 2, 0.1)
+      .set_position(this.node.w / 2, -this.node.h / 2, 0.1)
       .set_name("head")
       .apply();
     this._mesh_hints = new Ditto.SpriteNode(this.lf2)
       .set_center(0.5, 0.5)
-      .set_position(this.layout.w / 2, -this.layout.h / 2, 0.1)
+      .set_position(this.node.w / 2, -this.node.h / 2, 0.1)
       .set_name("hints")
       .apply();
     this._mesh_cd = new Ditto.SpriteNode(this.lf2)
       .set_center(0.5, 0.5)
-      .set_position(this.layout.w / 2, -this.layout.h / 2, 0.1)
+      .set_position(this.node.w / 2, -this.node.h / 2, 0.1)
       .set_name("countdown");
   }
   override on_resume(): void {
@@ -70,10 +70,10 @@ export default class PlayerCharacterHead extends LayoutComponent {
       .set_info(hint_pic)
       .set_visible(!this.player?.joined)
       .apply();
-    this.layout.sprite.add(this._mesh_cd, this._mesh_hints, this._mesh_head);
+    this.node.sprite.add(this._mesh_cd, this._mesh_hints, this._mesh_head);
     this._unmount_jobs.add(
       () =>
-        this.layout.sprite.del(
+        this.node.sprite.del(
           this._mesh_cd,
           this._mesh_hints,
           this._mesh_head,
@@ -121,7 +121,7 @@ export default class PlayerCharacterHead extends LayoutComponent {
     }
   }
 
-  override on_render(dt: number): void {
+  override update(dt: number): void {
     this._opacity.update(dt);
     if (this._mesh_hints) this._mesh_hints.opacity = this._opacity.value;
   }

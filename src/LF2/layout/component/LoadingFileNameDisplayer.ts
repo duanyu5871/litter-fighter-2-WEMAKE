@@ -1,10 +1,10 @@
 import { IText } from "../../3d/IText";
 import Invoker from "../../base/Invoker";
 import Ditto from "../../ditto";
-import Layout from "../Layout";
-import { LayoutComponent } from "./LayoutComponent";
+import Layout from "../Node";
+import { Component } from "./Component";
 
-export default class LoadingFileNameDisplayer extends LayoutComponent {
+export default class LoadingFileNameDisplayer extends Component {
   protected _unmount_job = new Invoker();
   protected _mesh: IText;
 
@@ -12,15 +12,15 @@ export default class LoadingFileNameDisplayer extends LayoutComponent {
     super(layout, f_name);
     this._mesh = new Ditto.TextNode(this.lf2)
       .set_position(0, 0, 1)
-      .set_center(...this.layout.center)
-      .set_style(this.layout.style)
+      .set_center(...this.node.center)
+      .set_style(this.node.style)
       .set_name(LoadingFileNameDisplayer.name)
       .apply();
   }
 
   override on_resume(): void {
     super.on_resume();
-    this.layout.sprite.add(this._mesh);
+    this.node.sprite.add(this._mesh);
     this._unmount_job.add(
       () => this._mesh?.del_self(),
       this.lf2.callbacks.add({

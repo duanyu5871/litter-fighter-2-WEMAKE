@@ -1,6 +1,6 @@
 import { Warn } from "../../../Log";
 import { is_str } from "../../utils/type_check";
-import type Layout from "../Layout";
+import type Layout from "../Node";
 import { read_call_func_expression } from "../utils/read_func_args";
 
 interface IActionHandler {

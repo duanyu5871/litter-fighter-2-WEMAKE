@@ -1,8 +1,8 @@
 import GameKey from "../../defines/GameKey";
-import Layout from "../Layout";
-import { LayoutComponent } from "./LayoutComponent";
+import Node from "../Node";
+import { Component } from "./Component";
 
-export class ReachableLayoutGroup extends LayoutComponent {
+export class ReachableLayoutGroup extends Component {
   get name(): string {
     return this.args[0] || "";
   }
@@ -10,10 +10,10 @@ export class ReachableLayoutGroup extends LayoutComponent {
     return this.args[1] || "";
   }
 
-  get binded_layout(): Layout {
+  get binded_layout(): Node {
     const lid = this.args[2];
-    if (!lid) return this.layout;
-    return this.layout.root.find_layout(lid) || this.layout;
+    if (!lid) return this.node;
+    return this.node.root.find_layout(lid) || this.node;
   }
 
   override on_player_key_down(_player_id: string, key: GameKey): void {
@@ -29,39 +29,39 @@ export class ReachableLayoutGroup extends LayoutComponent {
       default:
         return;
     }
-    const items = this.layout.root.search_components(ReachableLayout, (v) => {
+    const items = this.node.root.search_components(ReachableLayout, (v) => {
       return (
         v.group_name === this.name &&
-        v.layout.global_visible &&
-        !v.layout.global_disabled
+        v.node.global_visible &&
+        !v.node.global_disabled
       );
     });
     if (items.length <= 0) return;
 
     if (this.direction === "lr")
-      items.sort((a, b) => a.layout.x_on_root - b.layout.x_on_root);
+      items.sort((a, b) => a.node.x_on_root - b.node.x_on_root);
     else if (this.direction === "ud")
-      items.sort((a, b) => a.layout.y_on_root - b.layout.y_on_root);
+      items.sort((a, b) => a.node.y_on_root - b.node.y_on_root);
 
-    const focused_layout = this.layout.focused_item;
+    const focused_layout = this.node.focused_item;
     if (key === "L" || key === "U") {
-      const idx = items.findIndex((v) => v.layout === focused_layout);
+      const idx = items.findIndex((v) => v.node === focused_layout);
       const next_idx = (Math.max(idx, 0) + items.length - 1) % items.length;
-      items[next_idx].layout.focused = true;
+      items[next_idx].node.focused = true;
     } else if (key === "R" || key === "D") {
-      const idx = items.findIndex((v) => v.layout === focused_layout);
+      const idx = items.findIndex((v) => v.node === focused_layout);
       const next_idx = (idx + 1) % items.length;
-      items[next_idx].layout.focused = true;
+      items[next_idx].node.focused = true;
     }
   }
 }
 
-export class ReachableLayout extends LayoutComponent {
+export class ReachableLayout extends Component {
   get group_name(): string {
     return this.args[0];
   }
   get group(): ReachableLayoutGroup | undefined {
-    return this.layout.root.find_component(
+    return this.node.root.find_component(
       ReachableLayoutGroup,
       (v) => v.name === this.group_name,
     );

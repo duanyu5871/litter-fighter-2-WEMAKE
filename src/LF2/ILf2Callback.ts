@@ -1,4 +1,4 @@
-import Layout from "../LF2/layout/Layout";
+import Node from "./layout/Node";
 import { Difficulty } from "./defines";
 import { IZip } from "./ditto";
 import { ICookedLayoutInfo } from "./layout/ICookedLayoutInfo";
@@ -6,8 +6,8 @@ import { PlayerInfo } from "./PlayerInfo";
 
 export interface ILf2Callback {
   on_layout_changed?(
-    layout: Layout | undefined,
-    prev_layout: Layout | undefined,
+    layout: Node | undefined,
+    prev_layout: Node | undefined,
   ): void;
 
   on_loading_start?(): void;

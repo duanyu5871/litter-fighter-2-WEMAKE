@@ -2,18 +2,18 @@ import { IText } from "../../3d/IText";
 import { SineAnimation } from "../../animation/SineAnimation";
 import Invoker from "../../base/Invoker";
 import Ditto from "../../ditto";
-import Layout from "../Layout";
+import Node from "../Node";
 import GamePrepareLogic, { GamePrepareState } from "./GamePrepareLogic";
-import { LayoutComponent } from "./LayoutComponent";
+import { Component } from "./Component";
 
 /**
  * 显示玩家名称
  *
  * @export
  * @class PlayerCharacterHead
- * @extends {LayoutComponent}
+ * @extends {Component}
  */
-export default class PlayerName extends LayoutComponent {
+export default class PlayerName extends Component {
   get player_id() {
     return this.args[0] || "";
   }
@@ -30,7 +30,7 @@ export default class PlayerName extends LayoutComponent {
     return true === this.player?.is_com;
   }
   get gpl(): GamePrepareLogic | undefined {
-    return this.layout.root.find_component(GamePrepareLogic);
+    return this.node.root.find_component(GamePrepareLogic);
   }
   get can_join(): boolean {
     return this.gpl?.state === GamePrepareState.PlayerCharacterSel;
@@ -45,9 +45,9 @@ export default class PlayerName extends LayoutComponent {
   protected _opacity: SineAnimation = new SineAnimation(0.65, 0.35, 1 / 25);
   protected _unmount_jobs = new Invoker();
 
-  constructor(layout: Layout, f_name: string) {
+  constructor(layout: Node, f_name: string) {
     super(layout, f_name);
-    const [w, h] = this.layout.size;
+    const [w, h] = this.node.size;
     this._mesh = new Ditto.TextNode(this.lf2)
       .set_position(w / 2, -h / 2)
       .set_center(0.5, 0.5)
@@ -61,7 +61,7 @@ export default class PlayerName extends LayoutComponent {
   override on_resume(): void {
     super.on_resume();
 
-    this.layout.sprite.add(this._mesh);
+    this.node.sprite.add(this._mesh);
     this._unmount_jobs.add(
       this.player?.callbacks.add({
         on_is_com_changed: () => this.handle_changed(),
@@ -91,7 +91,7 @@ export default class PlayerName extends LayoutComponent {
       .apply();
   }
 
-  override on_render(dt: number): void {
+  override update(dt: number): void {
     this._opacity.update(dt);
     this._mesh.opacity = this.joined ? 1 : this._opacity.value;
   }

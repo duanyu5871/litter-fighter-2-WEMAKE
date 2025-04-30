@@ -6,9 +6,9 @@ import Ditto from "../../ditto";
 import Stage from "../../stage/Stage";
 import { is_str } from "../../utils/type_check";
 import read_nums from "../utils/read_nums";
-import { LayoutComponent } from "./LayoutComponent";
+import { Component } from "./Component";
 
-export default class StageTitleShow extends LayoutComponent {
+export default class StageTitleShow extends Component {
   protected _unmount_jobs = new Invoker();
   private _opactiy: Sequence = new Sequence(
     new Easing(0, 1, 500),
@@ -26,7 +26,7 @@ export default class StageTitleShow extends LayoutComponent {
     this.lf2.sounds.play_preset("pass");
     this.depose_all_mesh();
     const meshs = [await this.create_sp(`stage_clear`)];
-    const parent_mesh = this.layout.sprite;
+    const parent_mesh = this.node.sprite;
     if (!parent_mesh || meshs.indexOf(void 0) >= 0 || !this.mounted) {
       for (const mesh of meshs) mesh?.dispose();
       return;
@@ -38,8 +38,8 @@ export default class StageTitleShow extends LayoutComponent {
       total_w += mesh.w;
       total_h = Math.max(total_h, mesh.h);
     }
-    let x = this.layout.w / 2 - total_w / 2;
-    let y = -(this.layout.h / 2 - total_h / 2);
+    let x = this.node.w / 2 - total_w / 2;
+    let y = -(this.node.h / 2 - total_h / 2);
     for (const sprite of this._sprites) {
       sprite.set_position(x, y);
       x += sprite.w;
@@ -67,7 +67,7 @@ export default class StageTitleShow extends LayoutComponent {
       await this.create_sp(`char_num_${sub_num}`),
     ];
 
-    const parent_sprite = this.layout.sprite;
+    const parent_sprite = this.node.sprite;
     if (
       !parent_sprite ||
       sps.indexOf(void 0) >= 0 ||
@@ -85,8 +85,8 @@ export default class StageTitleShow extends LayoutComponent {
       total_w += mesh.w;
       total_h = Math.max(total_h, mesh.h);
     }
-    let x = this.layout.w / 2 - total_w / 2;
-    let y = -(this.layout.h / 2 - total_h / 2);
+    let x = this.node.w / 2 - total_w / 2;
+    let y = -(this.node.h / 2 - total_h / 2);
     for (const sprite of this._sprites) {
       sprite.set_position(x, y);
       x += sprite.w;
@@ -95,10 +95,10 @@ export default class StageTitleShow extends LayoutComponent {
     this._opactiy.play(false);
   }
   async create_sp(rect_name: string) {
-    const raw_rect = this.layout.get_value(rect_name);
+    const raw_rect = this.node.get_value(rect_name);
     const [x, y, w, h] = read_nums(raw_rect, 4);
     if (w <= 0 || h <= 0) return;
-    const char_num_img = this.layout.get_value("char_num_img");
+    const char_num_img = this.node.get_value("char_num_img");
     if (!is_str(char_num_img)) return;
     const key = char_num_img + rect_name;
     const num_pic = await this.lf2.images.create_pic(key, char_num_img, [{
@@ -132,7 +132,7 @@ export default class StageTitleShow extends LayoutComponent {
     this.depose_all_mesh();
   }
 
-  override on_render(dt: number): void {
+  override update(dt: number): void {
     if (this._sprites.length) {
       this._opactiy.update(dt);
       for (const m of this._sprites) m.opacity = this._opactiy.value;

@@ -1,8 +1,8 @@
 import Easing from "../../animation/Easing";
 import { is_nan } from "../../utils/type_check";
-import { LayoutComponent } from "./LayoutComponent";
+import { Component } from "./Component";
 
-export default class OpacityHover extends LayoutComponent {
+export default class OpacityHover extends Component {
   protected anim = new Easing(0, 1, 150);
   override init(...args: string[]): this {
     const a = Number(args[0]);
@@ -16,12 +16,12 @@ export default class OpacityHover extends LayoutComponent {
     );
     return super.init(...args);
   }
-  override on_render(dt: number): void {
-    const r = this.layout.state.mouse_on_me !== "1" && !this.layout.focused;
+  override update(dt: number): void {
+    const r = this.node.state.mouse_on_me !== "1" && !this.node.focused;
     if (this.anim.reverse !== r) {
       this.anim.reverse = r;
       this.anim.time = this.anim.duration - this.anim.time;
     }
-    this.layout.opacity = this.anim.update(dt);
+    this.node.opacity = this.anim.update(dt);
   }
 }

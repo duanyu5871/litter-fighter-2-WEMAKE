@@ -3,9 +3,9 @@ import { SineAnimation } from "../../animation/SineAnimation";
 import Invoker from "../../base/Invoker";
 import { Defines } from "../../defines/defines";
 import Ditto from "../../ditto";
-import Layout from "../Layout";
+import Node from "../Node";
 import GamePrepareLogic from "./GamePrepareLogic";
-import { LayoutComponent } from "./LayoutComponent";
+import { Component } from "./Component";
 import PlayerScore from "./PlayerScore";
 
 /**
@@ -13,9 +13,9 @@ import PlayerScore from "./PlayerScore";
  *
  * @export
  * @class PlayerCharacterThumb
- * @extends {LayoutComponent}
+ * @extends {Component}
  */
-export default class PlayerCharacterThumb extends LayoutComponent {
+export default class PlayerCharacterThumb extends Component {
   private _player_id?: string;
 
   get player_id() {
@@ -36,24 +36,24 @@ export default class PlayerCharacterThumb extends LayoutComponent {
   protected readonly _mesh_thumb: ISprite;
 
   get gpl(): GamePrepareLogic | undefined {
-    return this.layout.root.find_component(GamePrepareLogic);
+    return this.node.root.find_component(GamePrepareLogic);
   }
 
   protected _unmount_jobs = new Invoker();
 
-  constructor(layout: Layout, f_name: string) {
+  constructor(layout: Node, f_name: string) {
     super(layout, f_name);
     this._mesh_thumb = new Ditto.SpriteNode(this.lf2)
       .set_center(0.5, 0.5)
-      .set_position(this.layout.w / 2, -this.layout.h / 2, 0.1)
+      .set_position(this.node.w / 2, -this.node.h / 2, 0.1)
       .set_name("thumb")
       .apply();
   }
   override on_resume(): void {
     super.on_resume();
-    this._player_id = this.layout.lookup_component(PlayerScore)?.player_id;
-    this.layout.sprite.add(this._mesh_thumb);
-    this._unmount_jobs.add(() => this.layout.sprite.del(this._mesh_thumb));
+    this._player_id = this.node.lookup_component(PlayerScore)?.player_id;
+    this.node.sprite.add(this._mesh_thumb);
+    this._unmount_jobs.add(() => this.node.sprite.del(this._mesh_thumb));
   }
 
   override on_show(): void {

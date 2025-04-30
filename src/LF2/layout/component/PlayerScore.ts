@@ -1,8 +1,8 @@
 import Invoker from "../../base/Invoker";
 import Entity from "../../entity/Entity";
-import { LayoutComponent } from "./LayoutComponent";
+import { Component } from "./Component";
 
-export default class PlayerScore extends LayoutComponent {
+export default class PlayerScore extends Component {
   private _hp_lost: number = 0;
   private _mp_usage: number = 0;
   private _lose: boolean = false;
@@ -26,7 +26,7 @@ export default class PlayerScore extends LayoutComponent {
 
   override on_resume(): void {
     super.on_resume();
-    this.layout.visible = !!this.character;
+    this.node.visible = !!this.character;
     this.character?.callbacks.add({
       on_hp_changed: (e, value, prev) => {
         if (value < prev) this._hp_lost += prev - value;

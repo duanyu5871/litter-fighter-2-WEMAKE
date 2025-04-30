@@ -28,7 +28,7 @@ import { Entity } from "./entity";
 import { BallsHelper, CharactersHelper, EntitiesHelper, WeaponsHelper } from "./helper";
 import { ICookedLayoutInfo } from "./layout/ICookedLayoutInfo";
 import { ILayoutInfo } from "./layout/ILayoutInfo";
-import Layout from "./layout/Layout";
+import Node from "./layout/Node";
 import DatMgr from "./loader/DatMgr";
 import get_import_fallbacks from "./loader/get_import_fallbacks";
 import { ImageMgr } from "./loader/loader";
@@ -52,12 +52,12 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
   static readonly TAG = "LF2";
   private _disposed: boolean = false;
   private _callbacks = new Callbacks<ILf2Callback>();
-  private _layout_stacks: Layout[] = [];
+  private _layout_stacks: Node[] = [];
   private _loading: boolean = false;
   private _loaded: boolean = false;
   private _difficulty: Difficulty = Difficulty.Difficult;
   private _infinity_mp: boolean = false;
-  private _pointer_on_layouts = new Set<Layout>();
+  private _pointer_on_layouts = new Set<Node>();
   private _pointer_raycaster = new Ditto.Raycaster();
   private _pointer_vec_2 = new Ditto.Vector2();
   get callbacks(): NoEmitCallbacks<ILf2Callback> {
@@ -220,11 +220,11 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
       true,
     );
     const leave_layouts = this._pointer_on_layouts;
-    const stay_layouts = new Set<Layout>();
-    const enter_layouts = new Set<Layout>();
+    const stay_layouts = new Set<Node>();
+    const enter_layouts = new Set<Node>();
     for (const { object } of intersections) {
       const layout = object.user_data.owner;
-      if (layout instanceof Layout && layout.global_visible) {
+      if (layout instanceof Node && layout.global_visible) {
         if (leave_layouts.has(layout)) {
           leave_layouts.delete(layout)
           stay_layouts.add(layout)
@@ -278,7 +278,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
         true,
       );
       const layouts = intersections
-        .map((v) => v.object.get_user_data('owner') as Layout)
+        .map((v) => v.object.get_user_data('owner') as Node)
         .filter((v) => v && v.global_visible && !v.global_disabled)
       for (const layout of layouts) if (layout.on_click()) break;
     }
@@ -574,7 +574,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
         );
     }
     for (const path of paths) {
-      const cooked_layout_data = await Layout.cook_layout_info(this, path);
+      const cooked_layout_data = await Node.cook_layout_info(this, path);
       this._layout_infos.push(cooked_layout_data);
       if (path === paths[0]) this.set_layout(cooked_layout_data);
     }
@@ -587,7 +587,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
     return this._layout_infos;
   }
 
-  layout_val_getter = (item: Layout, word: string) => {
+  layout_val_getter = (item: Node, word: string) => {
     if (word === "mouse_on_me") return item.state.mouse_on_me;
     if (word === "paused") return this.world.paused ? 1 : 0;
     if (word.startsWith("f:")) {
@@ -624,7 +624,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
     const info = is_str(arg)
       ? this._layout_infos?.find((v) => v.id === arg)
       : arg;
-    const curr = info && Layout.cook(this, info, this.layout_val_getter);
+    const curr = info && Node.cook(this, info, this.layout_val_getter);
     curr && this._layout_stacks.push(curr);
     curr?.on_start();
     curr?.on_resume();
@@ -652,7 +652,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
     const info = is_str(arg)
       ? this._layout_infos?.find((v) => v.id === arg)
       : arg;
-    const curr = info && Layout.cook(this, info, this.layout_val_getter);
+    const curr = info && Node.cook(this, info, this.layout_val_getter);
     curr && this._layout_stacks.push(curr);
     curr?.on_start();
     curr?.on_resume();

@@ -1,8 +1,8 @@
-import { LayoutComponent } from "./LayoutComponent";
+import { Component } from "./Component";
 
 const img_idx_list_map = new Map<string, number[]>();
 
-export class RandomImgOnLayoutResume extends LayoutComponent {
+export class RandomImgOnLayoutResume extends Component {
   private _img_idx_list: number[] = [];
   group?: string;
 
@@ -22,9 +22,9 @@ export class RandomImgOnLayoutResume extends LayoutComponent {
   override on_resume(): void {
     super.on_resume?.();
     const l = this.img_idx_list;
-    if (!l.length) this.layout.img_infos.forEach((_, i) => l.push(i));
+    if (!l.length) this.node.img_infos.forEach((_, i) => l.push(i));
     if (!l.length) return;
-    this.layout.img_idx = Math.floor(Math.random() * l.length);
-    this.layout.update_img();
+    this.node.img_idx = Math.floor(Math.random() * l.length);
+    this.node.update_img();
   }
 }

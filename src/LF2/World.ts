@@ -416,7 +416,7 @@ export class World {
       r3.update();
       r4.update();
     }
-    this.lf2.layout?.on_render(dt);
+    this.lf2.layout?.update(dt);
     this.scene.render();
   }
   cam_speed = 0;

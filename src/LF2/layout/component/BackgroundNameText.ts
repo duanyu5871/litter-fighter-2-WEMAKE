@@ -3,10 +3,10 @@ import Invoker from "../../base/Invoker";
 import { IBgData } from "../../defines";
 import { Defines } from "../../defines/defines";
 import Ditto from "../../ditto";
-import Layout from "../Layout";
-import { LayoutComponent } from "./LayoutComponent";
+import Layout from "../Node";
+import { Component } from "./Component";
 
-export default class BackgroundNameText extends LayoutComponent {
+export default class BackgroundNameText extends Component {
   private _background: IBgData = Defines.VOID_BG;
 
   get backgrounds(): IBgData[] {
@@ -40,7 +40,7 @@ export default class BackgroundNameText extends LayoutComponent {
 
     this._background = this.backgrounds[0] ?? Defines.VOID_STAGE;
 
-    this.layout.sprite.add(this._mesh);
+    this.node.sprite.add(this._mesh);
     this._unmount_jobs.add(
       this.lf2.callbacks.add({
         on_broadcast: (v) => {

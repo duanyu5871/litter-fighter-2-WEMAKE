@@ -1,8 +1,8 @@
 import { ILf2Callback } from "../../ILf2Callback";
-import { LayoutComponent } from "./LayoutComponent";
+import { Component } from "./Component";
 
 export default class StageTransitions
-  extends LayoutComponent
+  extends Component
   implements ILf2Callback
 {
   override on_resume(): void {

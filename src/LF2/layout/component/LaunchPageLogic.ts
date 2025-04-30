@@ -8,19 +8,19 @@ import Ditto from "../../ditto";
 import ease_linearity from "../../utils/ease_method/ease_linearity";
 import { TPicture } from "../../loader/loader";
 import { make_arr } from "../../utils/array/make_arr";
-import Layout from "../Layout";
-import { LayoutComponent } from "./LayoutComponent";
+import Node from "../Node";
+import { Component } from "./Component";
 
-export default class LaunchPageLogic extends LayoutComponent {
+export default class LaunchPageLogic extends Component {
   get entry_name(): string {
     return this.args[0] || "";
   }
-  protected tap_to_launch!: Layout;
-  protected yeonface!: Layout;
-  protected bearface!: Layout;
-  protected long_text!: Layout;
-  protected long_text_2!: Layout;
-  protected sound_warning!: Layout;
+  protected tap_to_launch!: Node;
+  protected yeonface!: Node;
+  protected bearface!: Node;
+  protected long_text!: Node;
+  protected long_text_2!: Node;
+  protected sound_warning!: Node;
 
   protected _layouts_loaded: boolean = false;
   protected _dispose_jobs = new Invoker();
@@ -53,7 +53,7 @@ export default class LaunchPageLogic extends LayoutComponent {
     2000,
   ).set_ease_method(ease_linearity);
 
-  constructor(layout: Layout, f_name: string) {
+  constructor(layout: Node, f_name: string) {
     super(layout, f_name);
     this._loading_sprite = new Ditto.SpriteNode(this.lf2);
   }
@@ -84,10 +84,10 @@ export default class LaunchPageLogic extends LayoutComponent {
       return this.lf2.images.create_pic_by_img_info(info);
     });
     Promise.all(jobs).then((s) => (this._loading_imgs = s));
-    this.layout.sprite.add(
+    this.node.sprite.add(
       this._loading_sprite.set_position(
-        this.layout.w - 33,
-        -this.layout.h + 21,
+        this.node.w - 33,
+        -this.node.h + 21,
         0,
       ),
     );
@@ -107,12 +107,12 @@ export default class LaunchPageLogic extends LayoutComponent {
   override on_resume(): void {
     super.on_resume();
     this._skipped = false;
-    this.bearface = this.layout.find_layout("bearface")!;
-    this.yeonface = this.layout.find_layout("yeonface")!;
-    this.tap_to_launch = this.layout.find_layout("tap_to_launch")!;
-    this.sound_warning = this.layout.find_layout("sound_warning")!;
-    this.long_text = this.layout.find_layout("long_text")!;
-    this.long_text_2 = this.layout.find_layout("long_text_2")!;
+    this.bearface = this.node.find_layout("bearface")!;
+    this.yeonface = this.node.find_layout("yeonface")!;
+    this.tap_to_launch = this.node.find_layout("tap_to_launch")!;
+    this.sound_warning = this.node.find_layout("sound_warning")!;
+    this.long_text = this.node.find_layout("long_text")!;
+    this.long_text_2 = this.node.find_layout("long_text_2")!;
 
     this.state = 0;
     this._tap_hints_opacity.time = 0;
@@ -150,7 +150,7 @@ export default class LaunchPageLogic extends LayoutComponent {
     this._unmount_jobs.invoke_and_clear();
   }
 
-  override on_render(dt: number): void {
+  override update(dt: number): void {
     if (this._loading_imgs.length && !this._loading_idx_anim.is_finish) {
       const idx = Math.floor(this._loading_idx_anim.update(dt));
       const pic = this._loading_imgs[idx];

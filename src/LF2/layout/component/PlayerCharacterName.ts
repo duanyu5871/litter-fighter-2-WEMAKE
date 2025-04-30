@@ -2,17 +2,17 @@ import { IText } from "../../3d/IText";
 import { SineAnimation } from "../../animation/SineAnimation";
 import Invoker from "../../base/Invoker";
 import Ditto from "../../ditto";
-import Layout from "../Layout";
-import { LayoutComponent } from "./LayoutComponent";
+import Node from "../Node";
+import { Component } from "./Component";
 
 /**
  * 显示玩家角色选择的角色名称
  *
  * @export
  * @class PlayerCharacterHead
- * @extends {LayoutComponent}
+ * @extends {Component}
  */
-export default class PlayerCharacterName extends LayoutComponent {
+export default class PlayerCharacterName extends Component {
   get player_id() {
     return this.args[0] || "";
   }
@@ -38,9 +38,9 @@ export default class PlayerCharacterName extends LayoutComponent {
   protected _mesh: IText;
   protected _opacity: SineAnimation = new SineAnimation(0.65, 1, 1 / 25);
   protected _unmount_jobs = new Invoker();
-  constructor(layout: Layout, f_name: string) {
+  constructor(layout: Node, f_name: string) {
     super(layout, f_name);
-    const [w, h] = this.layout.size;
+    const [w, h] = this.node.size;
     this._mesh = new Ditto.TextNode(this.lf2)
       .set_position(w / 2, -h / 2)
       .set_center(0.5, 0.5)
@@ -54,7 +54,7 @@ export default class PlayerCharacterName extends LayoutComponent {
   override on_resume(): void {
     super.on_resume();
 
-    this.layout.sprite.add(this._mesh);
+    this.node.sprite.add(this._mesh);
     this._unmount_jobs.add(
       this.player?.callbacks.add({
         on_is_com_changed: () => this.handle_changed(),
@@ -83,7 +83,7 @@ export default class PlayerCharacterName extends LayoutComponent {
       .apply();
   }
 
-  override on_render(dt: number): void {
+  override update(dt: number): void {
     this._opacity.update(dt);
     this._mesh.opacity = this.decided ? 1 : this._opacity.value;
   }

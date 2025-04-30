@@ -2,11 +2,11 @@ import { IText } from "../../3d/IText";
 import Invoker from "../../base/Invoker";
 import GameKey from "../../defines/GameKey";
 import Ditto from "../../ditto";
-import Layout from "../Layout";
-import { LayoutComponent } from "./LayoutComponent";
+import Node from "../Node";
+import { Component } from "./Component";
 import PlayerKeyEditor from "./PlayerKeyEditor";
 
-export default class PlayerKeyText extends LayoutComponent {
+export default class PlayerKeyText extends Component {
   get player_id() {
     return this.args[0] || "";
   }
@@ -19,9 +19,9 @@ export default class PlayerKeyText extends LayoutComponent {
   protected _sprite: IText;
   protected _unmount_jobs = new Invoker();
 
-  constructor(layout: Layout, f_name: string) {
+  constructor(layout: Node, f_name: string) {
     super(layout, f_name);
-    const [w, h] = this.layout.size;
+    const [w, h] = this.node.size;
     this._sprite = new Ditto.TextNode(this.lf2)
       .set_position(Math.ceil(w / 2), Math.ceil(-h / 2), 1)
       .set_center(0.5, 0.5)
@@ -32,7 +32,7 @@ export default class PlayerKeyText extends LayoutComponent {
 
   override on_resume() {
     super.on_resume();
-    this.layout.sprite.add(this._sprite);
+    this.node.sprite.add(this._sprite);
     this._unmount_jobs.add(
       this.player?.callbacks.add({
         on_key_changed: () => this.update_sprite(),

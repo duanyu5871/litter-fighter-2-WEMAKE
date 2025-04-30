@@ -4,16 +4,16 @@ import { CheatType, EntityGroup } from "../../defines";
 import GameKey from "../../defines/GameKey";
 import { Defines } from "../../defines/defines";
 import GamePrepareLogic, { GamePrepareState } from "./GamePrepareLogic";
-import { LayoutComponent } from "./LayoutComponent";
+import { Component } from "./Component";
 
 /**
  * 角色选择逻辑
  *
  * @export
  * @class CharacterSelLogic
- * @extends {LayoutComponent}
+ * @extends {Component}
  */
-export default class CharacterSelLogic extends LayoutComponent {
+export default class CharacterSelLogic extends Component {
   get player_id() {
     return this.args[0] || "";
   }
@@ -60,7 +60,7 @@ export default class CharacterSelLogic extends LayoutComponent {
   protected _unmount_jobs = new Invoker();
 
   get gpl() {
-    return this.layout.root.find_component(GamePrepareLogic);
+    return this.node.root.find_component(GamePrepareLogic);
   }
 
   override on_resume(): void {
