@@ -40,13 +40,51 @@ export class World {
   tvz_f: number = 1;
   tvx_f: number = 1;
   tvy_f: number = 1.3;
+  
+  /**
+   * 角色进入场地时的闪烁无敌时间
+   *
+   * @type {number}
+   */
   begin_blink_time: number = 144;
+
+  /**
+   * 倒地起身后的闪烁无敌时间
+   *
+   * @type {number}
+   */
   lying_blink_time: number = 32;
+
+  /**
+   * “非玩家槽角色”死亡时后的闪烁时间
+   * 
+   * 闪烁完成后，非玩家槽角色应当被移除
+   *
+   * @type {number}
+   * @memberof World
+   */
   gone_blink_time: number = 56;
+
   vrest_offset: number = 0;
   arest_offset: number = 0;
   arest_offset_2: number = 0;
+
+  /**
+   * “帧等待数”偏移值
+   * 
+   * @note
+   * “帧等待数”会在每次更新中减一
+   * 每一帧会在“帧等待数”归零时，尝试进入下一帧。
+   * 
+   * 有：“帧等待数” = “帧本身的帧等待数” + “帧等待数”偏移值
+   * 
+   * @see {IFrameInfo.wait} 帧本身的“帧等待数”
+   * 
+   * @type {number}
+   * @memberof World
+   */
   frame_wait_offset: number = 0;
+
   cha_bc_spd: number = Defines.CHARACTER_BOUNCING_SPD;
   cha_bc_tst_spd: number = Defines.CHARACTER_BOUNCING_TEST_SPD;
   hp_recoverability: number = Defines.HP_RECOVERABILITY;
@@ -310,7 +348,14 @@ export class World {
     this._update_worker_id = Ditto.Interval.add(on_update, 0);
   }
 
-  restrict_character(e: Entity) {
+  /**
+   * 限制角色位置
+   * 
+   * @param {Entity} e 角色实体
+   * @return {void} 
+   * @memberof World
+   */
+  restrict_character(e: Entity): void {
     if (!this.bg) return;
     const { left, right, near, far, player_left, player_right } = this.stage;
 
@@ -326,7 +371,16 @@ export class World {
     else if (z > near) e.position.z = near;
   }
 
-  restrict_ball(e: Entity) {
+  /**
+   * 限制“波”位置
+   *
+   * 当“波”离开地图太远，直接标记为移除
+   * 
+   * @param {Entity} e “波”
+   * @return {void}
+   * @memberof World
+   */
+  restrict_ball(e: Entity): void {
     if (!this.bg) return;
     const { left, right, near, far } = this.bg.data.base;
     const { x, z } = e.position;
@@ -336,7 +390,16 @@ export class World {
     else if (z > near) e.position.z = near;
   }
 
-  restrict_weapon(e: Entity) {
+  /**
+   * 限制“武器”位置
+   *
+   * 当“武器”离开地图太远，直接标记为移除
+   * 
+   * @param {Entity} e “武器”
+   * @return {void}
+   * @memberof World
+   */
+  restrict_weapon(e: Entity): void {
     if (!this.bg) return;
     const { left, right, near, far } = this.bg.data.base;
     const { x, z } = e.position;
@@ -346,7 +409,13 @@ export class World {
     else if (z > near) e.position.z = near;
   }
 
-  restrict(e: Entity) {
+  /**
+   * 限制“实体”位置
+   *
+   * @param {Entity} e
+   * @memberof World
+   */
+  restrict(e: Entity): void {
     if (is_character(e)) {
       this.restrict_character(e);
     } else if (is_ball(e)) {
@@ -361,8 +430,8 @@ export class World {
     const p2 = e2.position;
     return Math.abs(p1.x - p2.x) + Math.abs(p1.z - p2.z);
   }
-  private gone_entities: Entity[] = [];
 
+  private gone_entities: Entity[] = [];
   private _entity_chasers = new Set<Entity>();
   add_entity_chaser(entity: Entity) {
     this._entity_chasers.add(entity);
@@ -615,7 +684,17 @@ export class World {
     this._spark_creator = this._spark_data ? Factory.inst.get_entity_creator(this._spark_data.type) : void 0;
   }
 
-  spark(x: number, y: number, z: number, f: string) {
+  /**
+   * 火花特效
+   *
+   * @param {number} x x坐标
+   * @param {number} y y坐标
+   * @param {number} z z坐标
+   * @param {string} f 帧ID
+   * @return {void}
+   * @memberof World
+   */
+  spark(x: number, y: number, z: number, f: string): void {
     if (!this._spark_data)
       this.init_spark_data();
     if (!this._spark_data) {
@@ -687,6 +766,7 @@ export class World {
       r4.flags = v;
     }
   }
+
   dispose() {
     this._callbacks.emit("on_disposed")();
     this.stop_update();

@@ -10,12 +10,47 @@ import type { IOpointInfo } from "./IOpointInfo";
 import type { IQubePair } from "./IQubePair";
 import type { IWpointInfo } from "./IWpointInfo";
 import type { SpeedMode } from "./SpeedMode";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { StateEnum } from "./StateEnum";
 
 export interface IFrameInfo {
+
+  /**
+   * 帧ID
+   * 
+   * 每个实体的帧ID不允许重复
+   *
+   * @type {string}
+   * @memberof IFrameInfo
+   */
   id: string;
+
+  /**
+   * 帧名
+   *
+   * @type {string}
+   * @memberof IFrameInfo
+   */
   name: string;
+
   pic?: IFramePictureInfo;
+
+  /**
+   *
+   * @see {StateEnum}
+   * @type {number}
+   * @memberof IFrameInfo
+   */
   state: number;
+
+  /**
+   * 帧等待数
+   * 
+   * 本帧持续多长时间
+   * 
+   * @type {number}
+   * @memberof IFrameInfo
+   */
   wait: number;
 
   /**
@@ -95,8 +130,8 @@ export interface IFrameInfo {
   /**
    * 起跳标志（角色专用）
    *
-   * 从state为```Defines.State.Jump```的frame，
-   * 跳至state为```Defines.State.Jump```的frame时，
+   * 从state为```StateEnum.Jump```的frame，
+   * 跳至state为```StateEnum.Jump```的frame时，
    * 若前（frame.jump_flag == 1）且后（frame.jump_flag == 0）或空。
    * 此时将会计算跳跃速度，让角色跳起来。
    *
