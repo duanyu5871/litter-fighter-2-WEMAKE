@@ -7,7 +7,7 @@ export interface IBdyInfo extends IQube {
   /**
    * 预制信息id
    *
-   * @see {?string}
+   * @type {?string}
    */
   prefab_id?: string;
 
