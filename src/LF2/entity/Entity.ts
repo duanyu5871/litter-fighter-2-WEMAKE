@@ -670,10 +670,10 @@ export class Entity {
       new Ditto.Vector3(0, 0, ovz + speedz * ud),
     );
 
-    if (opoint.max_hp) this.hp_max = opoint.max_hp;
-    if (opoint.max_mp) this.mp_max = opoint.max_mp;
-    if (opoint.hp) this.hp = opoint.hp;
-    if (opoint.mp) this.mp = opoint.mp;
+    if (is_num(opoint.max_hp)) this.hp_max = opoint.max_hp;
+    if (is_num(opoint.max_mp)) this.mp_max = opoint.max_mp;
+    if (is_num(opoint.hp)) this.hp = opoint.hp;
+    if (is_num(opoint.mp)) this.mp = opoint.mp;
 
     if (result) this.enter_frame(result.which);
 

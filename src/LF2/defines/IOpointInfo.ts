@@ -47,8 +47,19 @@ export interface IOpointInfo {
    */
   action: TNextFrame;
 
+  /**
+   * 发射初速度
+   */
   dvx?: number;
+
+  /**
+   * 发射初速度
+   */
   dvy?: number;
+
+  /**
+   * 发射初速度
+   */
   dvz?: number;
 
   /**
@@ -71,9 +82,20 @@ export interface IOpointInfo {
    */
   multi?: number | { type: OpointMultiEnum; min: number };
 
+  /**
+   * 最大血量
+   * 将覆盖原实体的最大血量
+   */
   max_hp?: number;
+
+  /**
+   * 血量
+   * 将覆盖原实体的血量
+   */
   hp?: number;
+
   max_mp?: number;
+
   mp?: number;
 
   speedz?: number;
