@@ -1,6 +1,6 @@
 import { StateEnum } from "../defines";
 import type Entity from "../entity/Entity";
-import { GONE_FRAME_INFO } from "../entity/Entity";
+import { GONE_FRAME_INFO } from "../entity/GONE_FRAME_INFO";
 import State_Base from "./State_Base";
 
 export class State_WeaponBroken extends State_Base {

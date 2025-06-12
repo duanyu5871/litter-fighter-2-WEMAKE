@@ -1,7 +1,7 @@
 import { Warn } from "../../Log";
 import type LF2 from "../LF2";
 import type { World } from "../World";
-import { Callbacks, new_id, new_team, type NoEmitCallbacks } from "../base";
+import { Callbacks, ICollision, new_id, new_team, type NoEmitCallbacks } from "../base";
 import { BaseController } from "../controller/BaseController";
 import {
   BdyKind, Builtin_FrameId, Defines, EntityEnum, FacingFlag, IBaseData, IBounding,
@@ -9,7 +9,7 @@ import {
   IItrInfo,
   INextFrame,
   INextFrameResult,
-  IOpointInfo, IPos, ITexturePieceInfo,
+  IOpointInfo, IPos,
   ItrKind,
   IVector3,
   OpointKind, OpointMultiEnum, OpointSpreading, SpeedMode, StateEnum, TFace,
@@ -23,13 +23,14 @@ import { State_Base } from "../state/State_Base";
 import WeaponState_Base from "../state/WeaponState_Base";
 import { random_get, random_in } from "../utils/math/random";
 import { is_num, is_positive, is_str } from "../utils/type_check";
+import { EMPTY_FRAME_INFO } from "./EMPTY_FRAME_INFO";
 import { Factory } from "./Factory";
+import { GONE_FRAME_INFO } from "./GONE_FRAME_INFO";
 import type IEntityCallbacks from "./IEntityCallbacks";
 import { bdy_action_handlers, itr_action_handlers } from "./bdy_action_handlers";
+import { cross_bounding } from "../utils/cross_bounding";
 import { turn_face } from "./face_helper";
 import { is_ball, is_character, is_weapon_data } from "./type_check";
-import { ICollision } from "../base";
-
 
 function calc_v(
   old: number,
@@ -67,41 +68,7 @@ function calc_v(
         : old;
   }
 }
-export const EMPTY_PIECE: ITexturePieceInfo = {
-  tex: "",
-  x: 0,
-  y: 0,
-  w: 0,
-  h: 0,
-  pixel_h: 0,
-  pixel_w: 0,
-};
-export const EMPTY_FRAME_INFO: IFrameInfo = {
-  id: Builtin_FrameId.None,
-  name: "",
-  pic: { tex: "", x: 0, y: 0, w: 0, h: 0 },
-  state: NaN,
-  wait: 0,
-  next: { id: Builtin_FrameId.Auto },
-  centerx: 0,
-  centery: 0,
-};
-export const GONE_FRAME_INFO: IFrameInfo = {
-  id: Builtin_FrameId.Gone,
-  name: "GONE_FRAME_INFO",
-  pic: { tex: "", x: 0, y: 0, w: 0, h: 0 },
-  state: NaN,
-  wait: 0,
-  next: { id: Builtin_FrameId.Gone },
-  centerx: 0,
-  centery: 0,
-};
-export type TData =
-  | IBaseData
-  | IEntityData
-  | IEntityData
-  | IEntityData
-  | IEntityData;
+export type TData = IBaseData | IEntityData;
 export class Entity {
   static readonly TAG: string = EntityEnum.Entity;
 
@@ -111,7 +78,6 @@ export class Entity {
   variant: number = 0;
   reserve?: number = 0;
   data: IEntityData;
-  // attacking: boolean = false;
   transform_datas?: [IEntityData, IEntityData];
   readonly world: World;
   readonly position = new Ditto.Vector3(0, 0, 0);
@@ -120,7 +86,7 @@ export class Entity {
     return this.data.type;
   }
 
-  private _resting_max = Defines.DEFAULT_RESTING_MAX;
+  protected _resting_max = Defines.DEFAULT_RESTING_MAX;
   get resting_max(): number {
     return this._resting_max;
   }
@@ -686,53 +652,40 @@ export class Entity {
     return this;
   }
 
+  set_state(next_state_code: number) {
+    let next_state = this.states.get(next_state_code);
+    if (!next_state) {
+      // state not found!
+      // debugger; 
+      const next_state_key = this.data.type + next_state_code;
+      next_state = this.states.get(next_state_key);
+      if (!next_state) {
+        let State: typeof State_Base;
+        switch (this.data.type) {
+          case EntityEnum.Character: State = CharacterState_Base; break;
+          case EntityEnum.Weapon: State = WeaponState_Base; break;
+          case EntityEnum.Ball: State = BallState_Base; break;
+          case EntityEnum.Entity: default: State = State_Base; break;
+        }
+        this.states.set(next_state_key, (next_state = new State()));
+      }
+    }
+    this.state = next_state;
+  }
+
   set_frame(v: IFrameInfo) {
     this._prev_frame = this.frame;
     this.frame = v;
     const prev_state_code = this._prev_frame.state;
     const next_state_code = this.frame.state;
     if (prev_state_code !== next_state_code) {
-      let next_state = this.states.get(next_state_code);
-      if (!next_state) {
-        // debugger;
-        const next_state_key = this.data.type + next_state_code;
-        next_state = this.states.get(next_state_key);
-        if (!next_state) {
-          switch (this.data.type) {
-            case EntityEnum.Character:
-              this.states.set(
-                next_state_key,
-                (next_state = new CharacterState_Base()),
-              );
-              break;
-            case EntityEnum.Weapon:
-              this.states.set(
-                next_state_key,
-                (next_state = new WeaponState_Base()),
-              );
-              break;
-            case EntityEnum.Ball:
-              this.states.set(
-                next_state_key,
-                (next_state = new BallState_Base()),
-              );
-              break;
-            case EntityEnum.Entity:
-            default:
-              this.states.set(next_state_key, (next_state = new State_Base()));
-              break;
-          }
-        }
-      }
-      this.state = next_state;
+      this.set_state(next_state_code)
     }
     if (this._prev_frame !== this.frame) {
       this.state?.on_frame_changed?.(this, this.frame, this._prev_frame)
     }
     if (v.invisible) this.invisibility(v.invisible);
-    if (v.opoint) {
-      this.apply_opoints(v.opoint);
-    }
+    if (v.opoint) this.apply_opoints(v.opoint);
     if (!v.cpoint) delete this._catching;
     const attacking = !!this.frame.itr?.find((v) => {
       return (
@@ -920,6 +873,7 @@ export class Entity {
     this.velocities[0].x = x;
     this.velocities[0].z = z;
   }
+
   /**
    * 实体响应重力
    *
@@ -1076,17 +1030,23 @@ export class Entity {
   update_resting() {
     if (this.resting > 0) {
       this.resting--;
-    } else {
-      if (this.fall_value < this.fall_value_max) {
-        this.fall_value += 1;
-      }
-      if (this.defend_value < this.defend_value_max) {
-        this.defend_value += 1;
-      }
+      return;
+    }
+    if (this.fall_value < this.fall_value_max) {
+      this.fall_value += 1;
+    }
+    if (this.defend_value < this.defend_value_max) {
+      this.defend_value += 1;
     }
   }
 
-  drop_holding() {
+  /**
+   * 持有物脱手
+   *
+   * @return {undefined}
+   * @memberof Entity
+   */
+  drop_holding(): void {
     if (!this.holding) return;
     this.holding.follow_holder();
     this.holding.enter_frame({ id: this.data.indexes?.in_the_sky });
@@ -1788,16 +1748,5 @@ Factory.inst.set_entity_creator(
   EntityEnum.Character,
   (...args) => new Entity(...args),
 );
-
-function cross_bounding(r0: IBounding, r1: IBounding): IBounding {
-  return {
-    left: Math.max(r0.left, r1.left),
-    right: Math.min(r0.right, r1.right),
-    bottom: Math.max(r0.bottom, r1.bottom),
-    top: Math.min(r0.top, r1.top),
-    far: Math.max(r0.far, r1.far),
-    near: Math.min(r0.near, r1.near),
-  };
-}
 
 export default Entity;
