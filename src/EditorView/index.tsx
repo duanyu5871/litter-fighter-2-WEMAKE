@@ -47,7 +47,7 @@ enum EntityEditing {
 Gaia.registerShape(
   EditorShapeEnum.LF2_FRAME,
   () => new FrameDrawerData(),
-  (d) => new FrameDrawer(d, FrameDrawerData),
+  (d) => new FrameDrawer(d),
   { desc: 'lf2 frame drawer' }
 )
 const factory = Gaia.factory(FactoryEnum.Default)();
