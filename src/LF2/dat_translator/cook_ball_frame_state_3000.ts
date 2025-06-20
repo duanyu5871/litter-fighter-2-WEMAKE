@@ -10,6 +10,7 @@ import { CondMaker } from "./CondMaker";
 import { copy_bdy_info } from "./copy_bdy_info";
 import { edit_bdy_info } from "./edit_bdy_info";
 import { edit_itr_info } from "./edit_itr_info";
+import { AllyFlag } from "../defines/AllyFlag";
 
 export function cook_ball_frame_state_3000(e: IEntityData, frame: IFrameInfo) {
   const bdy_list = frame.bdy ? frame.bdy : (frame.bdy = []);
@@ -53,7 +54,7 @@ export function cook_ball_frame_state_3000(e: IEntityData, frame: IFrameInfo) {
     new_bdy.push(
       copy_bdy_info(bdy, {
         /* 反弹判定 */
-        ally_flags: 1,
+        ally_flags: AllyFlag.Both,
         test: new CondMaker<C_Val>()
           .wrap((c) => c
             // 敌方角色的攻击反弹气功波
@@ -118,7 +119,7 @@ export function cook_ball_frame_state_3000(e: IEntityData, frame: IFrameInfo) {
       case ItrKind.Block:
         bdy_list.push({
           kind: 0,
-          ally_flags: 2,
+          ally_flags: AllyFlag.Both,
           test: new CondMaker<C_Val>()
             .not_in(
               C_Val.ItrKind,

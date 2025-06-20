@@ -1,3 +1,4 @@
+import { AllyFlag } from "../defines/AllyFlag";
 import { BdyKind } from "../defines/BdyKind";
 import { BuiltIn_OID } from "../defines/BuiltIn_OID";
 import { CollisionVal as C_Val } from "../defines/CollisionVal";
@@ -11,6 +12,8 @@ import { take } from "./take";
 
 export default function cook_bdy(bdy?: Partial<IBdyInfo>): void {
   if (!bdy) return;
+
+  bdy.ally_flags = AllyFlag.Enemy;
   bdy.l = Defines.DAFUALT_QUBE_LENGTH;
   bdy.z = -Defines.DAFUALT_QUBE_LENGTH / 2;
   const kind = take(bdy, "kind");

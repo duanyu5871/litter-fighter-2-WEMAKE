@@ -128,6 +128,7 @@
           "y": 18,
           "w": 43,
           "h": 62,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -268,6 +269,7 @@
           "y": 18,
           "w": 43,
           "h": 62,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -408,6 +410,7 @@
           "y": 18,
           "w": 43,
           "h": 62,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -548,6 +551,7 @@
           "y": 18,
           "w": 43,
           "h": 62,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -688,6 +692,7 @@
           "y": 15,
           "w": 45,
           "h": 65,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -730,6 +735,7 @@
           "y": 11,
           "w": 33,
           "h": 69,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -766,6 +772,7 @@
           "y": 13,
           "w": 33,
           "h": 66,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -803,6 +810,7 @@
           "y": 11,
           "w": 36,
           "h": 68,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -840,6 +848,7 @@
           "y": 9,
           "w": 36,
           "h": 66,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -849,6 +858,7 @@
           "y": 61,
           "w": 17,
           "h": 18,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -885,6 +895,7 @@
           "y": 11,
           "w": 30,
           "h": 69,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -921,6 +932,7 @@
           "y": 11,
           "w": 32,
           "h": 68,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -958,6 +970,7 @@
           "y": 10,
           "w": 36,
           "h": 71,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -995,6 +1008,7 @@
           "y": 11,
           "w": 34,
           "h": 68,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -1031,6 +1045,7 @@
           "y": 7,
           "w": 32,
           "h": 58,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -1067,6 +1082,7 @@
           "y": 7,
           "w": 26,
           "h": 39,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -1076,6 +1092,7 @@
           "y": 40,
           "w": 24,
           "h": 30,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -1114,6 +1131,7 @@
           "y": 32,
           "w": 33,
           "h": 43,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -1123,6 +1141,7 @@
           "y": 12,
           "w": 26,
           "h": 38,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -1160,6 +1179,7 @@
           "y": 32,
           "w": 33,
           "h": 43,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -1169,6 +1189,7 @@
           "y": 9,
           "w": 26,
           "h": 37,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -1206,6 +1227,7 @@
           "y": 15,
           "w": 31,
           "h": 65,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -1243,6 +1265,7 @@
           "y": 15,
           "w": 34,
           "h": 65,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -1282,6 +1305,7 @@
           "y": 17,
           "w": 34,
           "h": 64,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -1319,6 +1343,7 @@
           "y": 10,
           "w": 35,
           "h": 52,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -1355,6 +1380,7 @@
           "y": 32,
           "w": 33,
           "h": 45,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -1364,6 +1390,7 @@
           "y": 8,
           "w": 34,
           "h": 33,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -1402,6 +1429,7 @@
           "y": 32,
           "w": 33,
           "h": 45,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -1411,6 +1439,7 @@
           "y": 13,
           "w": 30,
           "h": 33,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -1448,6 +1477,7 @@
           "y": 32,
           "w": 33,
           "h": 45,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -1457,6 +1487,7 @@
           "y": 13,
           "w": 31,
           "h": 37,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -1494,6 +1525,7 @@
           "y": 15,
           "w": 34,
           "h": 65,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -1503,6 +1535,7 @@
           "y": 36,
           "w": 17,
           "h": 18,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -1539,6 +1572,7 @@
           "y": 22,
           "w": 32,
           "h": 57,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -1576,6 +1610,7 @@
           "y": 38,
           "w": 54,
           "h": 21,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -1585,6 +1620,7 @@
           "y": 55,
           "w": 32,
           "h": 26,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -1624,6 +1660,7 @@
           "y": 19,
           "w": 30,
           "h": 62,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -1660,6 +1697,7 @@
           "y": 39,
           "w": 61,
           "h": 23,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -1669,6 +1707,7 @@
           "y": 56,
           "w": 30,
           "h": 24,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -1709,6 +1748,7 @@
           "y": 9,
           "w": 29,
           "h": 54,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -1745,6 +1785,7 @@
           "y": 10,
           "w": 36,
           "h": 23,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -1754,6 +1795,7 @@
           "y": 18,
           "w": 30,
           "h": 43,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -1792,6 +1834,7 @@
           "y": 15,
           "w": 38,
           "h": 38,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -1801,6 +1844,7 @@
           "y": 37,
           "w": 34,
           "h": 26,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -1840,6 +1884,7 @@
           "y": 26,
           "w": 37,
           "h": 53,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -1882,6 +1927,7 @@
           "y": 26,
           "w": 37,
           "h": 53,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -1923,6 +1969,7 @@
           "y": 26,
           "w": 37,
           "h": 53,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -1964,6 +2011,7 @@
           "y": 26,
           "w": 37,
           "h": 53,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -2005,6 +2053,7 @@
           "y": 12,
           "w": 27,
           "h": 68,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -2017,10 +2066,10 @@
           "y": 57,
           "w": 37,
           "h": 24,
+          "ally_flags": 3,
           "vrest": 3,
           "l": 24,
           "z": -12,
-          "ally_flags": 1,
           "motionless": 0,
           "shaking": 0,
           "test": "attacker_has_holder==0&victim_has_holder==0&(victim_state==1004|victim_state==2004)"
@@ -2051,6 +2100,7 @@
           "y": 19,
           "w": 33,
           "h": 59,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -2064,6 +2114,7 @@
           "w": 54,
           "h": 23,
           "injury": 30,
+          "ally_flags": 1,
           "dvx": 1,
           "fall": 50,
           "bdefend": 60,
@@ -2097,6 +2148,7 @@
           "y": 20,
           "w": 33,
           "h": 61,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -2126,6 +2178,7 @@
           "y": 9,
           "w": 36,
           "h": 71,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -2155,6 +2208,7 @@
           "y": 12,
           "w": 27,
           "h": 68,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -2167,10 +2221,10 @@
           "y": 59,
           "w": 35,
           "h": 21,
+          "ally_flags": 3,
           "vrest": 3,
           "l": 24,
           "z": -12,
-          "ally_flags": 1,
           "motionless": 0,
           "shaking": 0,
           "test": "attacker_has_holder==0&victim_has_holder==0&(victim_state==1004|victim_state==2004)"
@@ -2201,6 +2255,7 @@
           "y": 19,
           "w": 32,
           "h": 62,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -2214,6 +2269,7 @@
           "w": 60,
           "h": 19,
           "injury": 30,
+          "ally_flags": 1,
           "dvx": 1,
           "fall": 50,
           "bdefend": 60,
@@ -2247,6 +2303,7 @@
           "y": 15,
           "w": 37,
           "h": 64,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -2276,6 +2333,7 @@
           "y": 15,
           "w": 34,
           "h": 65,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -2305,6 +2363,7 @@
           "y": 14,
           "w": 30,
           "h": 65,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -2336,6 +2395,7 @@
           "y": 12,
           "w": 26,
           "h": 65,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -2366,6 +2426,7 @@
           "y": 12,
           "w": 42,
           "h": 68,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -2396,6 +2457,7 @@
           "y": 20,
           "w": 37,
           "h": 55,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -2409,6 +2471,7 @@
           "w": 84,
           "h": 28,
           "injury": 70,
+          "ally_flags": 1,
           "arest": 32,
           "dvx": 7.5,
           "dvy": 3.54,
@@ -2444,6 +2507,7 @@
           "y": 17,
           "w": 36,
           "h": 61,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -2474,6 +2538,7 @@
           "y": 17,
           "w": 36,
           "h": 61,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -2526,6 +2591,7 @@
           "y": 17,
           "w": 43,
           "h": 52,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -2556,6 +2622,7 @@
           "y": 19,
           "w": 43,
           "h": 49,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -2569,6 +2636,7 @@
           "w": 58,
           "h": 17,
           "injury": 35,
+          "ally_flags": 1,
           "arest": 32,
           "dvx": 3.5,
           "fall": 140,
@@ -2602,6 +2670,7 @@
           "y": 17,
           "w": 40,
           "h": 52,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -2631,6 +2700,7 @@
           "y": 17,
           "w": 37,
           "h": 62,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -2661,6 +2731,7 @@
           "y": 15,
           "w": 39,
           "h": 64,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -2692,6 +2763,7 @@
           "y": 16,
           "w": 38,
           "h": 62,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -2705,6 +2777,7 @@
           "w": 68,
           "h": 18,
           "injury": 50,
+          "ally_flags": 1,
           "arest": 32,
           "dvx": 5,
           "fall": 120,
@@ -2738,6 +2811,7 @@
           "y": 16,
           "w": 34,
           "h": 63,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -2751,6 +2825,7 @@
           "w": 42,
           "h": 25,
           "injury": 50,
+          "ally_flags": 1,
           "arest": 32,
           "dvx": 5,
           "fall": 120,
@@ -2806,6 +2881,7 @@
           "y": 11,
           "w": 36,
           "h": 67,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -2860,6 +2936,7 @@
           "y": 20,
           "w": 47,
           "h": 51,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -2889,6 +2966,7 @@
           "y": 20,
           "w": 41,
           "h": 48,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -2902,6 +2980,7 @@
           "w": 55,
           "h": 39,
           "injury": 70,
+          "ally_flags": 1,
           "arest": 42,
           "dvx": 6,
           "fall": 140,
@@ -2936,6 +3015,7 @@
           "y": 22,
           "w": 55,
           "h": 42,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -2963,6 +3043,7 @@
           "y": 19,
           "w": 28,
           "h": 36,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 2000,
@@ -2980,6 +3061,7 @@
           "y": 37,
           "w": 24,
           "h": 34,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 2000,
@@ -3074,10 +3156,10 @@
           "y": 54,
           "w": 13,
           "h": 25,
+          "ally_flags": 3,
           "vrest": 3,
           "l": 24,
           "z": -12,
-          "ally_flags": 1,
           "motionless": 0,
           "shaking": 0,
           "test": "attacker_has_holder==0&victim_has_holder==0&victim_state==1004"
@@ -3116,10 +3198,10 @@
           "y": 54,
           "w": 13,
           "h": 25,
+          "ally_flags": 3,
           "vrest": 3,
           "l": 24,
           "z": -12,
-          "ally_flags": 1,
           "motionless": 0,
           "shaking": 0,
           "test": "attacker_has_holder==0&victim_has_holder==0&victim_state==1004"
@@ -3158,10 +3240,10 @@
           "y": 54,
           "w": 13,
           "h": 25,
+          "ally_flags": 3,
           "vrest": 3,
           "l": 24,
           "z": -12,
-          "ally_flags": 1,
           "motionless": 0,
           "shaking": 0,
           "test": "attacker_has_holder==0&victim_has_holder==0&victim_state==1004"
@@ -3200,10 +3282,10 @@
           "y": 54,
           "w": 13,
           "h": 25,
+          "ally_flags": 3,
           "vrest": 3,
           "l": 24,
           "z": -12,
-          "ally_flags": 1,
           "motionless": 0,
           "shaking": 0,
           "test": "attacker_has_holder==0&victim_has_holder==0&victim_state==1004"
@@ -3242,10 +3324,10 @@
           "y": 198,
           "w": 1,
           "h": 1,
+          "ally_flags": 3,
           "vrest": 3,
           "l": 24,
           "z": -12,
-          "ally_flags": 1,
           "motionless": 0,
           "shaking": 0,
           "test": "attacker_has_holder==0&victim_has_holder==0&victim_state==1004"
@@ -3284,10 +3366,10 @@
           "y": 54,
           "w": 13,
           "h": 25,
+          "ally_flags": 3,
           "vrest": 3,
           "l": 24,
           "z": -12,
-          "ally_flags": 1,
           "motionless": 0,
           "shaking": 0,
           "test": "attacker_has_holder==0&victim_has_holder==0&victim_state==1004"
@@ -3374,6 +3456,7 @@
           "y": 19,
           "w": 38,
           "h": 60,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 2000,
@@ -3468,6 +3551,7 @@
           "y": 19,
           "w": 42,
           "h": 60,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 2000,
@@ -3532,6 +3616,7 @@
           "y": 17,
           "w": 64,
           "h": 65,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -3544,6 +3629,7 @@
           "y": 16,
           "w": 85,
           "h": 65,
+          "ally_flags": 1,
           "vrest": 3,
           "l": 24,
           "z": -12,
@@ -3584,6 +3670,7 @@
           "y": 17,
           "w": 64,
           "h": 65,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -3596,6 +3683,7 @@
           "y": 16,
           "w": 85,
           "h": 65,
+          "ally_flags": 1,
           "vrest": 5,
           "l": 24,
           "z": -12,
@@ -3636,6 +3724,7 @@
           "y": 17,
           "w": 64,
           "h": 65,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -3648,6 +3737,7 @@
           "y": 16,
           "w": 85,
           "h": 65,
+          "ally_flags": 1,
           "vrest": 7,
           "l": 24,
           "z": -12,
@@ -3688,6 +3778,7 @@
           "y": 43,
           "w": 33,
           "h": 37,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -3697,6 +3788,7 @@
           "y": 24,
           "w": 28,
           "h": 28,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -3734,6 +3826,7 @@
           "y": 43,
           "w": 33,
           "h": 37,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -3743,6 +3836,7 @@
           "y": 26,
           "w": 26,
           "h": 25,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -3780,6 +3874,7 @@
           "y": 43,
           "w": 33,
           "h": 37,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -3789,6 +3884,7 @@
           "y": 19,
           "w": 26,
           "h": 37,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -3825,6 +3921,7 @@
           "y": 15,
           "w": 28,
           "h": 65,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -3871,6 +3968,7 @@
           "y": 15,
           "w": 28,
           "h": 65,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -3951,6 +4049,7 @@
           "y": 15,
           "w": 28,
           "h": 65,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -3998,6 +4097,7 @@
           "y": 15,
           "w": 28,
           "h": 65,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -4046,6 +4146,7 @@
           "y": 14,
           "w": 28,
           "h": 66,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -4087,6 +4188,7 @@
           "y": 14,
           "w": 28,
           "h": 66,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -4128,6 +4230,7 @@
           "y": 14,
           "w": 28,
           "h": 66,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -4505,6 +4608,7 @@
           "y": 25,
           "w": 21,
           "h": 20,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0,
@@ -4519,13 +4623,13 @@
           "w": 29,
           "h": 44,
           "injury": 30,
+          "ally_flags": 3,
           "vrest": 36,
           "dvx": 1,
           "fall": 140,
           "bdefend": 20,
           "l": 24,
           "z": -12,
-          "ally_flags": 1,
           "test": "attacker_threw==1&attacker_type==character"
         }
       ],
@@ -4558,6 +4662,7 @@
           "y": 20,
           "w": 24,
           "h": 23,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0,
@@ -4572,13 +4677,13 @@
           "w": 30,
           "h": 32,
           "injury": 30,
+          "ally_flags": 3,
           "vrest": 36,
           "dvx": 1,
           "fall": 140,
           "bdefend": 20,
           "l": 24,
           "z": -12,
-          "ally_flags": 1,
           "test": "attacker_threw==1&attacker_type==character"
         },
         {
@@ -4588,13 +4693,13 @@
           "w": 28,
           "h": 21,
           "injury": 30,
+          "ally_flags": 3,
           "vrest": 36,
           "dvx": 1,
           "fall": 140,
           "bdefend": 20,
           "l": 24,
           "z": -12,
-          "ally_flags": 1,
           "test": "attacker_threw==1&attacker_type==character"
         }
       ],
@@ -4627,6 +4732,7 @@
           "y": 22,
           "w": 20,
           "h": 18,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0,
@@ -4641,13 +4747,13 @@
           "w": 46,
           "h": 26,
           "injury": 30,
+          "ally_flags": 3,
           "vrest": 36,
           "dvx": 1,
           "fall": 140,
           "bdefend": 20,
           "l": 24,
           "z": -12,
-          "ally_flags": 1,
           "test": "attacker_threw==1&attacker_type==character"
         }
       ],
@@ -4688,6 +4794,7 @@
           "y": 30,
           "w": 27,
           "h": 21,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0,
@@ -4702,13 +4809,13 @@
           "w": 33,
           "h": 27,
           "injury": 30,
+          "ally_flags": 3,
           "vrest": 36,
           "dvx": 1,
           "fall": 140,
           "bdefend": 20,
           "l": 24,
           "z": -12,
-          "ally_flags": 1,
           "test": "attacker_threw==1&attacker_type==character"
         },
         {
@@ -4718,13 +4825,13 @@
           "w": 38,
           "h": 21,
           "injury": 30,
+          "ally_flags": 3,
           "vrest": 36,
           "dvx": 1,
           "fall": 140,
           "bdefend": 20,
           "l": 24,
           "z": -12,
-          "ally_flags": 1,
           "test": "attacker_threw==1&attacker_type==character"
         }
       ],
@@ -4803,6 +4910,7 @@
           "y": 24,
           "w": 25,
           "h": 23,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0,
@@ -4817,13 +4925,13 @@
           "w": 36,
           "h": 50,
           "injury": 30,
+          "ally_flags": 3,
           "vrest": 36,
           "dvx": 1,
           "fall": 140,
           "bdefend": 20,
           "l": 24,
           "z": -12,
-          "ally_flags": 1,
           "test": "attacker_threw==1&attacker_type==character"
         }
       ],
@@ -4856,6 +4964,7 @@
           "y": 27,
           "w": 24,
           "h": 26,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0,
@@ -4870,13 +4979,13 @@
           "w": 26,
           "h": 46,
           "injury": 30,
+          "ally_flags": 3,
           "vrest": 36,
           "dvx": 1,
           "fall": 140,
           "bdefend": 20,
           "l": 24,
           "z": -12,
-          "ally_flags": 1,
           "test": "attacker_threw==1&attacker_type==character"
         },
         {
@@ -4886,13 +4995,13 @@
           "w": 21,
           "h": 29,
           "injury": 30,
+          "ally_flags": 3,
           "vrest": 36,
           "dvx": 1,
           "fall": 140,
           "bdefend": 20,
           "l": 24,
           "z": -12,
-          "ally_flags": 1,
           "test": "attacker_threw==1&attacker_type==character"
         }
       ],
@@ -4925,6 +5034,7 @@
           "y": 31,
           "w": 24,
           "h": 21,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0,
@@ -4939,13 +5049,13 @@
           "w": 58,
           "h": 23,
           "injury": 30,
+          "ally_flags": 3,
           "vrest": 36,
           "dvx": 1,
           "fall": 140,
           "bdefend": 20,
           "l": 24,
           "z": -12,
-          "ally_flags": 1,
           "test": "attacker_threw==1&attacker_type==character"
         }
       ],
@@ -4986,6 +5096,7 @@
           "y": 39,
           "w": 23,
           "h": 21,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0,
@@ -5000,13 +5111,13 @@
           "w": 26,
           "h": 28,
           "injury": 30,
+          "ally_flags": 3,
           "vrest": 36,
           "dvx": 1,
           "fall": 140,
           "bdefend": 20,
           "l": 24,
           "z": -12,
-          "ally_flags": 1,
           "test": "attacker_threw==1&attacker_type==character"
         },
         {
@@ -5016,13 +5127,13 @@
           "w": 31,
           "h": 28,
           "injury": 30,
+          "ally_flags": 3,
           "vrest": 36,
           "dvx": 1,
           "fall": 140,
           "bdefend": 20,
           "l": 24,
           "z": -12,
-          "ally_flags": 1,
           "test": "attacker_threw==1&attacker_type==character"
         }
       ],
@@ -5103,6 +5214,7 @@
           "y": 9,
           "w": 55,
           "h": 68,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -5140,6 +5252,7 @@
           "y": 6,
           "w": 67,
           "h": 73,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -5152,10 +5265,10 @@
           "y": 6,
           "w": 67,
           "h": 73,
+          "ally_flags": 3,
           "vrest": 2,
           "l": 24,
           "z": -12,
-          "ally_flags": 1,
           "motionless": 0,
           "shaking": 0,
           "test": "bdy_kind==0"
@@ -5192,6 +5305,7 @@
           "y": 6,
           "w": 67,
           "h": 73,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -5230,6 +5344,7 @@
           "y": 35,
           "w": 26,
           "h": 19,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -5244,6 +5359,7 @@
           "h": 19,
           "injury": 30,
           "effect": 20,
+          "ally_flags": 3,
           "vrest": 16,
           "dvx": -3,
           "dvy": 3.54,
@@ -5251,8 +5367,7 @@
           "bdefend": 32,
           "l": 24,
           "z": -12,
-          "test": "(victim_state!=1004|attacker_type!=character)&victim_type!=character|(victim_state!=19&victim_state!=18)",
-          "ally_flags": 1
+          "test": "(victim_state!=1004|attacker_type!=character)&victim_type!=character|(victim_state!=19&victim_state!=18)"
         }
       ],
       "wpoint": {
@@ -5286,6 +5401,7 @@
           "y": 35,
           "w": 26,
           "h": 19,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -5300,6 +5416,7 @@
           "h": 19,
           "injury": 30,
           "effect": 20,
+          "ally_flags": 3,
           "vrest": 16,
           "dvx": -3,
           "dvy": 3.54,
@@ -5307,8 +5424,7 @@
           "bdefend": 32,
           "l": 24,
           "z": -12,
-          "test": "(victim_state!=1004|attacker_type!=character)&victim_type!=character|(victim_state!=19&victim_state!=18)",
-          "ally_flags": 1
+          "test": "(victim_state!=1004|attacker_type!=character)&victim_type!=character|(victim_state!=19&victim_state!=18)"
         }
       ],
       "wpoint": {
@@ -5342,6 +5458,7 @@
           "y": 35,
           "w": 26,
           "h": 19,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -5356,6 +5473,7 @@
           "h": 19,
           "injury": 30,
           "effect": 20,
+          "ally_flags": 3,
           "vrest": 16,
           "dvx": -3,
           "dvy": 3.54,
@@ -5363,8 +5481,7 @@
           "bdefend": 32,
           "l": 24,
           "z": -12,
-          "test": "(victim_state!=1004|attacker_type!=character)&victim_type!=character|(victim_state!=19&victim_state!=18)",
-          "ally_flags": 1
+          "test": "(victim_state!=1004|attacker_type!=character)&victim_type!=character|(victim_state!=19&victim_state!=18)"
         }
       ],
       "wpoint": {
@@ -5398,6 +5515,7 @@
           "y": 35,
           "w": 26,
           "h": 19,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -5412,6 +5530,7 @@
           "h": 19,
           "injury": 30,
           "effect": 20,
+          "ally_flags": 3,
           "vrest": 16,
           "dvx": -3,
           "dvy": 3.54,
@@ -5419,8 +5538,7 @@
           "bdefend": 32,
           "l": 24,
           "z": -12,
-          "test": "(victim_state!=1004|attacker_type!=character)&victim_type!=character|(victim_state!=19&victim_state!=18)",
-          "ally_flags": 1
+          "test": "(victim_state!=1004|attacker_type!=character)&victim_type!=character|(victim_state!=19&victim_state!=18)"
         }
       ],
       "wpoint": {
@@ -5452,6 +5570,7 @@
           "y": 28,
           "w": 22,
           "h": 37,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -5461,6 +5580,7 @@
           "y": 47,
           "w": 28,
           "h": 35,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -5497,6 +5617,7 @@
           "y": 24,
           "w": 35,
           "h": 58,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -5543,6 +5664,7 @@
           "y": 26,
           "w": 34,
           "h": 56,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -5589,6 +5711,7 @@
           "y": 11,
           "w": 29,
           "h": 61,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -5655,6 +5778,7 @@
           "y": 5,
           "w": 23,
           "h": 33,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -5664,6 +5788,7 @@
           "y": 29,
           "w": 21,
           "h": 33,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -5673,6 +5798,7 @@
           "y": 48,
           "w": 27,
           "h": 21,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -5735,6 +5861,7 @@
           "y": 5,
           "w": 27,
           "h": 38,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -5744,6 +5871,7 @@
           "y": 37,
           "w": 36,
           "h": 22,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -5791,6 +5919,7 @@
           "y": 26,
           "w": 31,
           "h": 54,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -5856,6 +5985,7 @@
           "y": 8,
           "w": 27,
           "h": 27,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -5865,6 +5995,7 @@
           "y": 30,
           "w": 39,
           "h": 37,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -5925,6 +6056,7 @@
           "y": 13,
           "w": 29,
           "h": 51,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -5972,6 +6104,7 @@
           "y": 25,
           "w": 30,
           "h": 55,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -5981,6 +6114,7 @@
           "y": 47,
           "w": 16,
           "h": 32,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -6023,6 +6157,7 @@
           "y": 36,
           "w": 29,
           "h": 44,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -6060,6 +6195,7 @@
           "y": 17,
           "w": 29,
           "h": 61,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -6096,6 +6232,7 @@
           "y": 16,
           "w": 27,
           "h": 63,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -6105,6 +6242,7 @@
           "y": 37,
           "w": 26,
           "h": 42,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -6141,6 +6279,7 @@
           "y": 24,
           "w": 39,
           "h": 31,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -6150,6 +6289,7 @@
           "y": 53,
           "w": 40,
           "h": 27,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -6186,6 +6326,7 @@
           "y": 23,
           "w": 40,
           "h": 37,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -6195,6 +6336,7 @@
           "y": 56,
           "w": 36,
           "h": 24,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -6231,6 +6373,7 @@
           "y": 13,
           "w": 30,
           "h": 65,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -6267,6 +6410,7 @@
           "y": 18,
           "w": 35,
           "h": 63,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -6303,6 +6447,7 @@
           "y": 22,
           "w": 42,
           "h": 58,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -6315,6 +6460,7 @@
           "y": 12,
           "w": 85,
           "h": 68,
+          "ally_flags": 1,
           "vrest": 13,
           "l": 24,
           "z": -12,
@@ -6354,6 +6500,7 @@
           "y": 24,
           "w": 39,
           "h": 57,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -6366,6 +6513,7 @@
           "y": 12,
           "w": 85,
           "h": 68,
+          "ally_flags": 1,
           "vrest": 13,
           "l": 24,
           "z": -12,
@@ -6405,6 +6553,7 @@
           "y": 23,
           "w": 37,
           "h": 58,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -6417,6 +6566,7 @@
           "y": 12,
           "w": 85,
           "h": 68,
+          "ally_flags": 1,
           "vrest": 13,
           "l": 24,
           "z": -12,
@@ -6456,6 +6606,7 @@
           "y": 26,
           "w": 37,
           "h": 53,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -6468,6 +6619,7 @@
           "y": 12,
           "w": 85,
           "h": 68,
+          "ally_flags": 1,
           "vrest": 13,
           "l": 24,
           "z": -12,
@@ -6557,6 +6709,7 @@
           "y": 15,
           "w": 36,
           "h": 65,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -6608,6 +6761,7 @@
           "y": 28,
           "w": 61,
           "h": 28,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -6617,6 +6771,7 @@
           "y": 56,
           "w": 30,
           "h": 24,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -6669,6 +6824,7 @@
           "y": 30,
           "w": 57,
           "h": 28,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -6678,6 +6834,7 @@
           "y": 56,
           "w": 30,
           "h": 24,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -6714,6 +6871,7 @@
           "y": 12,
           "w": 27,
           "h": 68,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -6750,6 +6908,7 @@
           "y": 12,
           "w": 27,
           "h": 68,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -6786,6 +6945,7 @@
           "y": 12,
           "w": 27,
           "h": 68,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -6823,6 +6983,7 @@
           "y": 19,
           "w": 39,
           "h": 62,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -6860,6 +7021,7 @@
           "y": 21,
           "w": 36,
           "h": 60,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -6907,6 +7069,7 @@
           "y": 19,
           "w": 36,
           "h": 60,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -6943,6 +7106,7 @@
           "y": 20,
           "w": 39,
           "h": 59,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -6985,6 +7149,7 @@
           "y": 20,
           "w": 39,
           "h": 58,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -7021,6 +7186,7 @@
           "y": 18,
           "w": 41,
           "h": 60,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -7058,6 +7224,7 @@
           "y": 19,
           "w": 34,
           "h": 58,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -7095,6 +7262,7 @@
           "y": 13,
           "w": 30,
           "h": 64,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -7143,6 +7311,7 @@
           "y": 13,
           "w": 30,
           "h": 68,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -7185,6 +7354,7 @@
           "y": 15,
           "w": 32,
           "h": 66,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -7221,6 +7391,7 @@
           "y": 15,
           "w": 30,
           "h": 64,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -7257,6 +7428,7 @@
           "y": 13,
           "w": 34,
           "h": 67,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -7293,6 +7465,7 @@
           "y": 12,
           "w": 27,
           "h": 68,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -7330,6 +7503,7 @@
           "y": 12,
           "w": 35,
           "h": 68,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -7367,6 +7541,7 @@
           "y": 15,
           "w": 36,
           "h": 65,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -7414,6 +7589,7 @@
           "y": 19,
           "w": 39,
           "h": 61,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -7451,6 +7627,7 @@
           "y": 29,
           "w": 42,
           "h": 49,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -7488,6 +7665,7 @@
           "y": 29,
           "w": 42,
           "h": 49,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -7536,6 +7714,7 @@
           "y": 27,
           "w": 37,
           "h": 51,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -7572,6 +7751,7 @@
           "y": 19,
           "w": 36,
           "h": 61,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -7608,6 +7788,7 @@
           "y": 16,
           "w": 30,
           "h": 64,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -7649,6 +7830,7 @@
           "y": 17,
           "w": 33,
           "h": 63,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -7685,6 +7867,7 @@
           "y": 17,
           "w": 33,
           "h": 63,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -7722,6 +7905,7 @@
           "y": 14,
           "w": 35,
           "h": 65,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -7735,6 +7919,7 @@
           "w": 68,
           "h": 17,
           "injury": 27,
+          "ally_flags": 1,
           "vrest": 10,
           "dvx": 1,
           "fall": 2,
@@ -7777,6 +7962,7 @@
           "y": 17,
           "w": 33,
           "h": 63,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -7791,6 +7977,7 @@
           "h": 64,
           "injury": 45,
           "effect": 4,
+          "ally_flags": 1,
           "vrest": 10,
           "dvx": 6,
           "fall": 140,
@@ -7832,6 +8019,7 @@
           "y": 18,
           "w": 39,
           "h": 59,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -7845,6 +8033,7 @@
           "w": 63,
           "h": 15,
           "injury": 27,
+          "ally_flags": 1,
           "vrest": 10,
           "dvx": 1,
           "fall": 2,
@@ -7887,6 +8076,7 @@
           "y": 18,
           "w": 43,
           "h": 61,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -7901,6 +8091,7 @@
           "h": 64,
           "injury": 45,
           "effect": 4,
+          "ally_flags": 1,
           "vrest": 10,
           "dvx": 6,
           "fall": 140,
@@ -7942,6 +8133,7 @@
           "y": 19,
           "w": 32,
           "h": 62,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -7955,6 +8147,7 @@
           "w": 61,
           "h": 13,
           "injury": 27,
+          "ally_flags": 1,
           "vrest": 10,
           "dvx": 1,
           "fall": 2,
@@ -7997,6 +8190,7 @@
           "y": 17,
           "w": 33,
           "h": 63,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -8011,6 +8205,7 @@
           "h": 64,
           "injury": 45,
           "effect": 4,
+          "ally_flags": 1,
           "vrest": 10,
           "dvx": 6,
           "fall": 140,
@@ -8052,6 +8247,7 @@
           "y": 14,
           "w": 36,
           "h": 65,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -8066,6 +8262,7 @@
           "h": 64,
           "injury": 45,
           "effect": 4,
+          "ally_flags": 1,
           "vrest": 10,
           "dvx": 6,
           "fall": 140,
@@ -8108,6 +8305,7 @@
           "y": 15,
           "w": 35,
           "h": 66,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -8121,6 +8319,7 @@
           "w": 56,
           "h": 60,
           "injury": 27,
+          "ally_flags": 1,
           "vrest": 26,
           "dvx": 7.5,
           "dvy": -2.9499999999999997,
@@ -8163,6 +8362,7 @@
           "y": 17,
           "w": 40,
           "h": 64,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -8199,6 +8399,7 @@
           "y": 17,
           "w": 39,
           "h": 66,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -8235,6 +8436,7 @@
           "y": 17,
           "w": 33,
           "h": 63,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -8271,6 +8473,7 @@
           "y": 21,
           "w": 32,
           "h": 58,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -8307,6 +8510,7 @@
           "y": 12,
           "w": 31,
           "h": 62,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -8343,6 +8547,7 @@
           "y": 3,
           "w": 41,
           "h": 37,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -8357,6 +8562,7 @@
           "h": 73,
           "injury": 45,
           "effect": 4,
+          "ally_flags": 1,
           "vrest": 10,
           "dvx": 1,
           "fall": 140,
@@ -8372,6 +8578,7 @@
           "w": 64,
           "h": 58,
           "injury": 35,
+          "ally_flags": 1,
           "vrest": 10,
           "dvx": 6.5,
           "fall": 40,
@@ -8413,6 +8620,7 @@
           "y": 5,
           "w": 37,
           "h": 37,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -8427,6 +8635,7 @@
           "h": 60,
           "injury": 45,
           "effect": 4,
+          "ally_flags": 1,
           "vrest": 10,
           "dvx": 6,
           "fall": 40,
@@ -8468,6 +8677,7 @@
           "y": 9,
           "w": 32,
           "h": 35,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -8482,6 +8692,7 @@
           "h": 71,
           "injury": 45,
           "effect": 4,
+          "ally_flags": 1,
           "vrest": 10,
           "dvx": 9,
           "fall": 140,
@@ -8497,6 +8708,7 @@
           "w": 62,
           "h": 65,
           "injury": 35,
+          "ally_flags": 1,
           "vrest": 10,
           "dvx": -2,
           "fall": 40,
@@ -8549,6 +8761,7 @@
           "y": 6,
           "w": 31,
           "h": 35,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -8563,6 +8776,7 @@
           "h": 64,
           "injury": 45,
           "effect": 4,
+          "ally_flags": 1,
           "vrest": 10,
           "dvx": 9,
           "fall": 140,
@@ -8614,6 +8828,7 @@
           "y": 11,
           "w": 32,
           "h": 30,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -8628,6 +8843,7 @@
           "h": 64,
           "injury": 45,
           "effect": 4,
+          "ally_flags": 1,
           "vrest": 10,
           "dvx": 6,
           "fall": 140,
@@ -8643,6 +8859,7 @@
           "w": 61,
           "h": 56,
           "injury": 35,
+          "ally_flags": 1,
           "vrest": 10,
           "dvx": 6.5,
           "fall": 40,
@@ -8693,6 +8910,7 @@
           "y": 11,
           "w": 31,
           "h": 32,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -8707,6 +8925,7 @@
           "h": 70,
           "injury": 45,
           "effect": 4,
+          "ally_flags": 1,
           "vrest": 10,
           "dvx": 6,
           "fall": 40,
@@ -8757,6 +8976,7 @@
           "y": 10,
           "w": 37,
           "h": 30,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -8794,6 +9014,7 @@
           "y": 19,
           "w": 34,
           "h": 61,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -8831,6 +9052,7 @@
           "y": 20,
           "w": 36,
           "h": 60,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -8867,6 +9089,7 @@
           "y": 20,
           "w": 36,
           "h": 60,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -8903,6 +9126,7 @@
           "y": 20,
           "w": 36,
           "h": 60,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -8940,6 +9164,7 @@
           "y": 20,
           "w": 36,
           "h": 60,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -8976,6 +9201,7 @@
           "y": 20,
           "w": 36,
           "h": 60,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -9024,6 +9250,7 @@
           "y": 20,
           "w": 36,
           "h": 60,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -9060,6 +9287,7 @@
           "y": 20,
           "w": 36,
           "h": 60,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -9096,6 +9324,7 @@
           "y": 20,
           "w": 36,
           "h": 60,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -9131,6 +9360,7 @@
           "y": 18,
           "w": 43,
           "h": 62,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -9230,6 +9460,7 @@
           "y": 15,
           "w": 27,
           "h": 65,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -9242,6 +9473,7 @@
           "y": 16,
           "w": 25,
           "h": 65,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "motionless": 0,
@@ -9379,6 +9611,7 @@
           "y": 15,
           "w": 27,
           "h": 65,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -9391,6 +9624,7 @@
           "y": 16,
           "w": 25,
           "h": 65,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "motionless": 0,
@@ -9528,6 +9762,7 @@
           "y": 15,
           "w": 27,
           "h": 65,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -9540,6 +9775,7 @@
           "y": 16,
           "w": 25,
           "h": 65,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "motionless": 0,
@@ -9677,6 +9913,7 @@
           "y": 15,
           "w": 27,
           "h": 65,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -9689,6 +9926,7 @@
           "y": 16,
           "w": 25,
           "h": 65,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "motionless": 0,
@@ -9826,6 +10064,7 @@
           "y": 15,
           "w": 27,
           "h": 65,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -9838,6 +10077,7 @@
           "y": 16,
           "w": 25,
           "h": 65,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "motionless": 0,
@@ -9975,6 +10215,7 @@
           "y": 15,
           "w": 27,
           "h": 65,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -9987,6 +10228,7 @@
           "y": 16,
           "w": 25,
           "h": 65,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "motionless": 0,
@@ -10124,6 +10366,7 @@
           "y": 19,
           "w": 38,
           "h": 60,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -10203,6 +10446,7 @@
           "y": 19,
           "w": 38,
           "h": 60,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -10281,6 +10525,7 @@
           "y": 19,
           "w": 38,
           "h": 60,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -10360,6 +10605,7 @@
           "y": 19,
           "w": 38,
           "h": 60,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -10438,6 +10684,7 @@
           "y": 15,
           "w": 28,
           "h": 64,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -10501,6 +10748,7 @@
           "y": 15,
           "w": 28,
           "h": 64,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -10564,6 +10812,7 @@
           "y": 15,
           "w": 28,
           "h": 64,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -10627,6 +10876,7 @@
           "y": 15,
           "w": 28,
           "h": 64,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -10690,6 +10940,7 @@
           "y": 15,
           "w": 28,
           "h": 64,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -10753,6 +11004,7 @@
           "y": 15,
           "w": 28,
           "h": 64,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -10816,6 +11068,7 @@
           "y": 15,
           "w": 28,
           "h": 64,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -10872,6 +11125,7 @@
           "y": 15,
           "w": 28,
           "h": 64,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -10927,6 +11181,7 @@
           "y": 15,
           "w": 28,
           "h": 64,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -10983,6 +11238,7 @@
           "y": 15,
           "w": 28,
           "h": 64,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0

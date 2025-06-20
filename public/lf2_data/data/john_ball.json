@@ -45,6 +45,7 @@
           "y": 27,
           "w": 55,
           "h": 27,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0,
@@ -69,6 +70,7 @@
           "y": 27,
           "w": 55,
           "h": 27,
+          "ally_flags": 3,
           "l": 24,
           "z": -12,
           "kind": 0,
@@ -86,8 +88,7 @@
                 "data/020.wav.mp3"
               ]
             }
-          ],
-          "ally_flags": 1
+          ]
         }
       ],
       "itr": [
@@ -98,6 +99,7 @@
           "w": 55,
           "h": 27,
           "injury": 55,
+          "ally_flags": 1,
           "vrest": 16,
           "dvx": 4.5,
           "fall": 140,
@@ -140,6 +142,7 @@
           "y": 27,
           "w": 55,
           "h": 27,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0,
@@ -164,6 +167,7 @@
           "y": 27,
           "w": 55,
           "h": 27,
+          "ally_flags": 3,
           "l": 24,
           "z": -12,
           "kind": 0,
@@ -181,8 +185,7 @@
                 "data/020.wav.mp3"
               ]
             }
-          ],
-          "ally_flags": 1
+          ]
         }
       ],
       "itr": [
@@ -193,6 +196,7 @@
           "w": 55,
           "h": 27,
           "injury": 55,
+          "ally_flags": 1,
           "vrest": 16,
           "dvx": 4.5,
           "fall": 140,
@@ -235,6 +239,7 @@
           "y": 27,
           "w": 55,
           "h": 27,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0,
@@ -259,6 +264,7 @@
           "y": 27,
           "w": 55,
           "h": 27,
+          "ally_flags": 3,
           "l": 24,
           "z": -12,
           "kind": 0,
@@ -276,8 +282,7 @@
                 "data/020.wav.mp3"
               ]
             }
-          ],
-          "ally_flags": 1
+          ]
         }
       ],
       "itr": [
@@ -288,6 +293,7 @@
           "w": 55,
           "h": 27,
           "injury": 55,
+          "ally_flags": 1,
           "vrest": 16,
           "dvx": 4.5,
           "fall": 140,
@@ -330,6 +336,7 @@
           "y": 27,
           "w": 55,
           "h": 27,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0,
@@ -354,6 +361,7 @@
           "y": 27,
           "w": 55,
           "h": 27,
+          "ally_flags": 3,
           "l": 24,
           "z": -12,
           "kind": 0,
@@ -371,8 +379,7 @@
                 "data/020.wav.mp3"
               ]
             }
-          ],
-          "ally_flags": 1
+          ]
         }
       ],
       "itr": [
@@ -383,6 +390,7 @@
           "w": 55,
           "h": 27,
           "injury": 55,
+          "ally_flags": 1,
           "vrest": 16,
           "dvx": 4.5,
           "fall": 140,
@@ -425,6 +433,7 @@
           "y": 27,
           "w": 55,
           "h": 27,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0,
@@ -449,6 +458,7 @@
           "y": 27,
           "w": 55,
           "h": 27,
+          "ally_flags": 3,
           "l": 24,
           "z": -12,
           "kind": 0,
@@ -466,8 +476,7 @@
                 "data/020.wav.mp3"
               ]
             }
-          ],
-          "ally_flags": 1
+          ]
         }
       ],
       "itr": [
@@ -478,6 +487,7 @@
           "w": 55,
           "h": 27,
           "injury": 55,
+          "ally_flags": 1,
           "vrest": 16,
           "dvx": 4.5,
           "fall": 140,
@@ -520,6 +530,7 @@
           "y": 27,
           "w": 55,
           "h": 27,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0,
@@ -544,6 +555,7 @@
           "y": 27,
           "w": 55,
           "h": 27,
+          "ally_flags": 3,
           "l": 24,
           "z": -12,
           "kind": 0,
@@ -561,8 +573,7 @@
                 "data/020.wav.mp3"
               ]
             }
-          ],
-          "ally_flags": 1
+          ]
         }
       ],
       "itr": [
@@ -573,6 +584,7 @@
           "w": 55,
           "h": 27,
           "injury": 55,
+          "ally_flags": 1,
           "vrest": 16,
           "dvx": 4.5,
           "fall": 140,
@@ -1025,10 +1037,10 @@
           "w": 32,
           "h": 34,
           "injury": 100,
+          "ally_flags": 3,
           "dvx": 20,
           "l": 24,
           "z": -12,
-          "ally_flags": 1,
           "actions": [
             {
               "type": "next_frame",
@@ -1077,10 +1089,10 @@
           "w": 32,
           "h": 34,
           "injury": 100,
+          "ally_flags": 3,
           "dvx": 20,
           "l": 24,
           "z": -12,
-          "ally_flags": 1,
           "actions": [
             {
               "type": "next_frame",
@@ -1141,10 +1153,10 @@
           "w": 32,
           "h": 34,
           "injury": 100,
+          "ally_flags": 3,
           "dvx": 20,
           "l": 24,
           "z": -12,
-          "ally_flags": 1,
           "actions": [
             {
               "type": "next_frame",
@@ -1205,10 +1217,10 @@
           "w": 32,
           "h": 34,
           "injury": 100,
+          "ally_flags": 3,
           "dvx": 20,
           "l": 24,
           "z": -12,
-          "ally_flags": 1,
           "actions": [
             {
               "type": "next_frame",
@@ -1257,10 +1269,10 @@
           "w": 32,
           "h": 34,
           "injury": 100,
+          "ally_flags": 3,
           "dvx": 20,
           "l": 24,
           "z": -12,
-          "ally_flags": 1,
           "actions": [
             {
               "type": "next_frame",
@@ -1381,12 +1393,12 @@
           "w": 10,
           "h": 32,
           "injury": 40,
+          "ally_flags": 3,
           "vrest": 12,
           "dvx": 5,
           "fall": 140,
           "l": 24,
           "z": -12,
-          "ally_flags": 1,
           "test": "victim_type!=character|same_team!=1",
           "actions": [
             {
@@ -1436,12 +1448,12 @@
           "w": 19,
           "h": 47,
           "injury": 40,
+          "ally_flags": 3,
           "vrest": 12,
           "dvx": 5,
           "fall": 140,
           "l": 24,
           "z": -12,
-          "ally_flags": 1,
           "test": "victim_type!=character|same_team!=1",
           "actions": [
             {
@@ -1491,12 +1503,12 @@
           "w": 26,
           "h": 55,
           "injury": 40,
+          "ally_flags": 3,
           "vrest": 12,
           "dvx": 5,
           "fall": 140,
           "l": 24,
           "z": -12,
-          "ally_flags": 1,
           "test": "victim_type!=character|same_team!=1",
           "actions": [
             {
@@ -1547,12 +1559,12 @@
           "w": 21,
           "h": 53,
           "injury": 40,
+          "ally_flags": 3,
           "vrest": 12,
           "dvx": 5,
           "fall": 140,
           "l": 24,
           "z": -12,
-          "ally_flags": 1,
           "test": "victim_type!=character|same_team!=1",
           "actions": [
             {
@@ -1602,12 +1614,12 @@
           "w": 23,
           "h": 55,
           "injury": 40,
+          "ally_flags": 3,
           "vrest": 12,
           "dvx": 5,
           "fall": 140,
           "l": 24,
           "z": -12,
-          "ally_flags": 1,
           "test": "victim_type!=character|same_team!=1",
           "actions": [
             {
@@ -1657,12 +1669,12 @@
           "w": 23,
           "h": 54,
           "injury": 40,
+          "ally_flags": 3,
           "vrest": 12,
           "dvx": 5,
           "fall": 140,
           "l": 24,
           "z": -12,
-          "ally_flags": 1,
           "test": "victim_type!=character|same_team!=1",
           "actions": [
             {

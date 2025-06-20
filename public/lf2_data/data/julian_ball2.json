@@ -69,6 +69,7 @@
           "y": 8,
           "w": 122,
           "h": 85,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0,
@@ -91,6 +92,7 @@
           "w": 122,
           "h": 85,
           "injury": 75,
+          "ally_flags": 1,
           "vrest": 26,
           "dvx": 15,
           "fall": 140,
@@ -145,6 +147,7 @@
           "y": 8,
           "w": 122,
           "h": 85,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0,
@@ -167,6 +170,7 @@
           "w": 122,
           "h": 85,
           "injury": 75,
+          "ally_flags": 1,
           "vrest": 26,
           "dvx": 15,
           "fall": 140,
@@ -221,6 +225,7 @@
           "y": 8,
           "w": 122,
           "h": 85,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0,
@@ -245,6 +250,7 @@
           "y": 8,
           "w": 122,
           "h": 85,
+          "ally_flags": 3,
           "l": 24,
           "z": -12,
           "kind": 0,
@@ -262,8 +268,7 @@
                 "data/020.wav.mp3"
               ]
             }
-          ],
-          "ally_flags": 1
+          ]
         }
       ],
       "itr": [
@@ -274,6 +279,7 @@
           "w": 122,
           "h": 85,
           "injury": 75,
+          "ally_flags": 1,
           "vrest": 26,
           "dvx": 15,
           "fall": 140,
@@ -320,6 +326,7 @@
           "y": 8,
           "w": 122,
           "h": 85,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0,
@@ -344,6 +351,7 @@
           "y": 8,
           "w": 122,
           "h": 85,
+          "ally_flags": 3,
           "l": 24,
           "z": -12,
           "kind": 0,
@@ -361,8 +369,7 @@
                 "data/020.wav.mp3"
               ]
             }
-          ],
-          "ally_flags": 1
+          ]
         }
       ],
       "itr": [
@@ -373,6 +380,7 @@
           "w": 122,
           "h": 85,
           "injury": 75,
+          "ally_flags": 1,
           "vrest": 26,
           "dvx": 15,
           "fall": 140,
@@ -422,6 +430,7 @@
           "h": 110,
           "injury": 75,
           "effect": 23,
+          "ally_flags": 3,
           "vrest": 596,
           "dvx": -6,
           "dvy": 10.62,
@@ -431,7 +440,6 @@
           "z": -37,
           "motionless": 0,
           "test": "victim_state!=1004|attacker_type!=character",
-          "ally_flags": 1,
           "actions": [
             {
               "type": "sound",
@@ -524,6 +532,7 @@
           "h": 110,
           "injury": 75,
           "effect": 23,
+          "ally_flags": 3,
           "vrest": 596,
           "dvx": -6,
           "dvy": 10.62,
@@ -533,7 +542,6 @@
           "z": -37,
           "motionless": 0,
           "test": "victim_state!=1004|attacker_type!=character",
-          "ally_flags": 1,
           "actions": [
             {
               "type": "sound",
@@ -632,6 +640,7 @@
           "h": 110,
           "injury": 75,
           "effect": 23,
+          "ally_flags": 3,
           "vrest": 596,
           "dvx": -6,
           "dvy": 10.62,
@@ -641,7 +650,6 @@
           "z": -37,
           "motionless": 0,
           "test": "victim_state!=1004|attacker_type!=character",
-          "ally_flags": 1,
           "actions": [
             {
               "type": "sound",
@@ -734,6 +742,7 @@
           "h": 405,
           "injury": 135,
           "effect": 23,
+          "ally_flags": 1,
           "vrest": 56,
           "dvx": -5,
           "dvy": 20.65,
@@ -781,6 +790,7 @@
           "h": 405,
           "injury": 135,
           "effect": 23,
+          "ally_flags": 1,
           "vrest": 56,
           "dvx": -5,
           "dvy": 20.65,
@@ -828,6 +838,7 @@
           "h": 405,
           "injury": 135,
           "effect": 23,
+          "ally_flags": 1,
           "vrest": 56,
           "dvx": -5,
           "dvy": 20.65,
@@ -874,6 +885,7 @@
           "h": 405,
           "injury": 135,
           "effect": 23,
+          "ally_flags": 1,
           "vrest": 56,
           "dvx": -5,
           "dvy": 20.65,
@@ -920,6 +932,7 @@
           "h": 405,
           "injury": 135,
           "effect": 23,
+          "ally_flags": 1,
           "vrest": 56,
           "dvx": -5,
           "dvy": 20.65,
@@ -966,6 +979,7 @@
           "h": 405,
           "injury": 135,
           "effect": 23,
+          "ally_flags": 1,
           "vrest": 56,
           "dvx": -5,
           "dvy": 20.65,
@@ -1012,6 +1026,7 @@
           "h": 405,
           "injury": 135,
           "effect": 23,
+          "ally_flags": 1,
           "vrest": 56,
           "dvx": -5,
           "dvy": 20.65,
@@ -1058,6 +1073,7 @@
           "h": 405,
           "injury": 135,
           "effect": 23,
+          "ally_flags": 1,
           "vrest": 56,
           "dvx": -5,
           "dvy": 20.65,
@@ -1176,6 +1192,7 @@
           "h": 110,
           "injury": 75,
           "effect": 23,
+          "ally_flags": 3,
           "vrest": 596,
           "dvx": -6,
           "dvy": 10.62,
@@ -1185,7 +1202,6 @@
           "z": -37,
           "motionless": 0,
           "test": "victim_state!=1004|attacker_type!=character",
-          "ally_flags": 1,
           "actions": [
             {
               "type": "sound",
@@ -1224,6 +1240,7 @@
           "h": 135,
           "injury": 75,
           "effect": 23,
+          "ally_flags": 3,
           "vrest": 596,
           "dvx": -6,
           "dvy": 10.62,
@@ -1233,7 +1250,6 @@
           "z": -37,
           "motionless": 0,
           "test": "victim_state!=1004|attacker_type!=character",
-          "ally_flags": 1,
           "actions": [
             {
               "type": "sound",
@@ -1272,6 +1288,7 @@
           "h": 131,
           "injury": 75,
           "effect": 23,
+          "ally_flags": 3,
           "vrest": 596,
           "dvx": -6,
           "dvy": 10.62,
@@ -1281,7 +1298,6 @@
           "z": -37,
           "motionless": 0,
           "test": "victim_state!=1004|attacker_type!=character",
-          "ally_flags": 1,
           "actions": [
             {
               "type": "sound",
@@ -1319,6 +1335,7 @@
           "h": 132,
           "injury": 75,
           "effect": 23,
+          "ally_flags": 3,
           "vrest": 596,
           "dvx": -6,
           "dvy": 10.62,
@@ -1328,7 +1345,6 @@
           "z": -37,
           "motionless": 0,
           "test": "victim_state!=1004|attacker_type!=character",
-          "ally_flags": 1,
           "actions": [
             {
               "type": "sound",
@@ -1366,6 +1382,7 @@
           "h": 132,
           "injury": 75,
           "effect": 23,
+          "ally_flags": 3,
           "vrest": 596,
           "dvx": -6,
           "dvy": 10.62,
@@ -1375,7 +1392,6 @@
           "z": -37,
           "motionless": 0,
           "test": "victim_state!=1004|attacker_type!=character",
-          "ally_flags": 1,
           "actions": [
             {
               "type": "sound",
@@ -1413,6 +1429,7 @@
           "h": 117,
           "injury": 75,
           "effect": 23,
+          "ally_flags": 3,
           "vrest": 596,
           "dvx": -6,
           "dvy": 10.62,
@@ -1422,7 +1439,6 @@
           "z": -37,
           "motionless": 0,
           "test": "victim_state!=1004|attacker_type!=character",
-          "ally_flags": 1,
           "actions": [
             {
               "type": "sound",
@@ -1460,6 +1476,7 @@
           "h": 123,
           "injury": 75,
           "effect": 23,
+          "ally_flags": 3,
           "vrest": 596,
           "dvx": -6,
           "dvy": 10.62,
@@ -1469,7 +1486,6 @@
           "z": -37,
           "motionless": 0,
           "test": "victim_state!=1004|attacker_type!=character",
-          "ally_flags": 1,
           "actions": [
             {
               "type": "sound",
@@ -1507,6 +1523,7 @@
           "h": 123,
           "injury": 75,
           "effect": 23,
+          "ally_flags": 3,
           "vrest": 596,
           "dvx": -6,
           "dvy": 10.62,
@@ -1516,7 +1533,6 @@
           "z": -37,
           "motionless": 0,
           "test": "victim_state!=1004|attacker_type!=character",
-          "ally_flags": 1,
           "actions": [
             {
               "type": "sound",

@@ -53,6 +53,7 @@
           "y": 59,
           "w": 42,
           "h": 51,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -67,6 +68,7 @@
           "h": 51,
           "injury": 60,
           "effect": 30,
+          "ally_flags": 1,
           "vrest": 96,
           "dvx": 3.5,
           "dvy": 5.8999999999999995,
@@ -109,6 +111,7 @@
           "y": 7,
           "w": 66,
           "h": 101,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -123,6 +126,7 @@
           "h": 101,
           "injury": 60,
           "effect": 30,
+          "ally_flags": 1,
           "vrest": 96,
           "dvx": 3.5,
           "dvy": 5.8999999999999995,
@@ -166,6 +170,7 @@
           "y": 15,
           "w": 70,
           "h": 95,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -180,6 +185,7 @@
           "h": 95,
           "injury": 60,
           "effect": 30,
+          "ally_flags": 1,
           "vrest": 96,
           "dvx": 3.5,
           "dvy": 5.8999999999999995,
@@ -222,6 +228,7 @@
           "y": 12,
           "w": 66,
           "h": 98,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -236,6 +243,7 @@
           "h": 95,
           "injury": 60,
           "effect": 30,
+          "ally_flags": 1,
           "vrest": 96,
           "dvx": 3.5,
           "dvy": 5.8999999999999995,
@@ -278,6 +286,7 @@
           "y": 7,
           "w": 74,
           "h": 98,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0,
@@ -302,6 +311,7 @@
           "y": 7,
           "w": 74,
           "h": 98,
+          "ally_flags": 3,
           "l": 24,
           "z": -12,
           "kind": 0,
@@ -319,12 +329,11 @@
                 "data/072.wav.mp3"
               ]
             }
-          ],
-          "ally_flags": 1
+          ]
         },
         {
           "kind": 0,
-          "ally_flags": 2,
+          "ally_flags": 3,
           "test": "(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
           "z": -12,
           "l": 24,
@@ -355,10 +364,10 @@
           "y": 7,
           "w": 74,
           "h": 98,
+          "ally_flags": 3,
           "vrest": 2,
           "l": 24,
           "z": -12,
-          "ally_flags": 1,
           "motionless": 0,
           "shaking": 0,
           "test": "bdy_kind==0"
@@ -388,6 +397,7 @@
           "y": 13,
           "w": 62,
           "h": 95,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0,
@@ -412,6 +422,7 @@
           "y": 13,
           "w": 62,
           "h": 95,
+          "ally_flags": 3,
           "l": 24,
           "z": -12,
           "kind": 0,
@@ -429,12 +440,11 @@
                 "data/072.wav.mp3"
               ]
             }
-          ],
-          "ally_flags": 1
+          ]
         },
         {
           "kind": 0,
-          "ally_flags": 2,
+          "ally_flags": 3,
           "test": "(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
           "z": -12,
           "l": 24,
@@ -465,10 +475,10 @@
           "y": 13,
           "w": 62,
           "h": 95,
+          "ally_flags": 3,
           "vrest": 2,
           "l": 24,
           "z": -12,
-          "ally_flags": 1,
           "motionless": 0,
           "shaking": 0,
           "test": "bdy_kind==0"
@@ -588,6 +598,7 @@
           "y": 59,
           "w": 42,
           "h": 51,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -602,6 +613,7 @@
           "h": 51,
           "injury": 60,
           "effect": 30,
+          "ally_flags": 1,
           "vrest": 96,
           "dvx": 3.5,
           "dvy": 5.8999999999999995,
@@ -644,6 +656,7 @@
           "y": 20,
           "w": 57,
           "h": 87,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -658,6 +671,7 @@
           "h": 87,
           "injury": 60,
           "effect": 30,
+          "ally_flags": 1,
           "vrest": 96,
           "dvx": 3.5,
           "dvy": 5.8999999999999995,
@@ -701,6 +715,7 @@
           "y": 26,
           "w": 65,
           "h": 84,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -715,6 +730,7 @@
           "h": 84,
           "injury": 60,
           "effect": 30,
+          "ally_flags": 1,
           "vrest": 96,
           "dvx": 3.5,
           "dvy": 5.8999999999999995,
@@ -757,6 +773,7 @@
           "y": 20,
           "w": 68,
           "h": 90,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -771,6 +788,7 @@
           "h": 84,
           "injury": 60,
           "effect": 30,
+          "ally_flags": 1,
           "vrest": 96,
           "dvx": 3.5,
           "dvy": 5.8999999999999995,
@@ -813,6 +831,7 @@
           "y": 19,
           "w": 66,
           "h": 91,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0,
@@ -837,6 +856,7 @@
           "y": 19,
           "w": 66,
           "h": 91,
+          "ally_flags": 3,
           "l": 24,
           "z": -12,
           "kind": 0,
@@ -854,12 +874,11 @@
                 "data/072.wav.mp3"
               ]
             }
-          ],
-          "ally_flags": 1
+          ]
         },
         {
           "kind": 0,
-          "ally_flags": 2,
+          "ally_flags": 3,
           "test": "(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
           "z": -12,
           "l": 24,
@@ -890,10 +909,10 @@
           "y": 19,
           "w": 66,
           "h": 91,
+          "ally_flags": 3,
           "vrest": 2,
           "l": 24,
           "z": -12,
-          "ally_flags": 1,
           "motionless": 0,
           "shaking": 0,
           "test": "bdy_kind==0"
@@ -923,6 +942,7 @@
           "y": 19,
           "w": 64,
           "h": 89,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0,
@@ -947,6 +967,7 @@
           "y": 19,
           "w": 64,
           "h": 89,
+          "ally_flags": 3,
           "l": 24,
           "z": -12,
           "kind": 0,
@@ -964,12 +985,11 @@
                 "data/072.wav.mp3"
               ]
             }
-          ],
-          "ally_flags": 1
+          ]
         },
         {
           "kind": 0,
-          "ally_flags": 2,
+          "ally_flags": 3,
           "test": "(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
           "z": -12,
           "l": 24,
@@ -1000,10 +1020,10 @@
           "y": 19,
           "w": 64,
           "h": 89,
+          "ally_flags": 3,
           "vrest": 2,
           "l": 24,
           "z": -12,
-          "ally_flags": 1,
           "motionless": 0,
           "shaking": 0,
           "test": "bdy_kind==0"
@@ -1051,6 +1071,7 @@
           "y": 83,
           "w": 26,
           "h": 25,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -1065,6 +1086,7 @@
           "h": 25,
           "injury": 60,
           "effect": 30,
+          "ally_flags": 1,
           "vrest": 96,
           "dvx": 3.5,
           "dvy": 5.8999999999999995,
@@ -1107,6 +1129,7 @@
           "y": 44,
           "w": 41,
           "h": 64,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -1121,6 +1144,7 @@
           "h": 64,
           "injury": 60,
           "effect": 30,
+          "ally_flags": 1,
           "vrest": 96,
           "dvx": 3.5,
           "dvy": 5.8999999999999995,
@@ -1164,6 +1188,7 @@
           "y": 44,
           "w": 54,
           "h": 58,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -1178,6 +1203,7 @@
           "h": 58,
           "injury": 60,
           "effect": 30,
+          "ally_flags": 1,
           "vrest": 96,
           "dvx": 3.5,
           "dvy": 5.8999999999999995,
@@ -1220,6 +1246,7 @@
           "y": 28,
           "w": 54,
           "h": 79,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -1234,6 +1261,7 @@
           "h": 79,
           "injury": 60,
           "effect": 30,
+          "ally_flags": 1,
           "vrest": 96,
           "dvx": 3.5,
           "dvy": 5.8999999999999995,
@@ -1276,6 +1304,7 @@
           "y": 29,
           "w": 56,
           "h": 78,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0,
@@ -1300,6 +1329,7 @@
           "y": 29,
           "w": 56,
           "h": 78,
+          "ally_flags": 3,
           "l": 24,
           "z": -12,
           "kind": 0,
@@ -1317,12 +1347,11 @@
                 "data/072.wav.mp3"
               ]
             }
-          ],
-          "ally_flags": 1
+          ]
         },
         {
           "kind": 0,
-          "ally_flags": 2,
+          "ally_flags": 3,
           "test": "(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
           "z": -12,
           "l": 24,
@@ -1353,10 +1382,10 @@
           "y": 29,
           "w": 56,
           "h": 78,
+          "ally_flags": 3,
           "vrest": 2,
           "l": 24,
           "z": -12,
-          "ally_flags": 1,
           "motionless": 0,
           "shaking": 0,
           "test": "bdy_kind==0"
@@ -1386,6 +1415,7 @@
           "y": 30,
           "w": 50,
           "h": 75,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0,
@@ -1410,6 +1440,7 @@
           "y": 30,
           "w": 50,
           "h": 75,
+          "ally_flags": 3,
           "l": 24,
           "z": -12,
           "kind": 0,
@@ -1427,12 +1458,11 @@
                 "data/072.wav.mp3"
               ]
             }
-          ],
-          "ally_flags": 1
+          ]
         },
         {
           "kind": 0,
-          "ally_flags": 2,
+          "ally_flags": 3,
           "test": "(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
           "z": -12,
           "l": 24,
@@ -1463,10 +1493,10 @@
           "y": 30,
           "w": 50,
           "h": 75,
+          "ally_flags": 3,
           "vrest": 2,
           "l": 24,
           "z": -12,
-          "ally_flags": 1,
           "motionless": 0,
           "shaking": 0,
           "test": "bdy_kind==0"
@@ -1514,6 +1544,7 @@
           "y": 83,
           "w": 26,
           "h": 25,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -1528,6 +1559,7 @@
           "h": 25,
           "injury": 40,
           "effect": 30,
+          "ally_flags": 1,
           "vrest": 96,
           "dvx": 3.5,
           "dvy": 5.8999999999999995,
@@ -1570,6 +1602,7 @@
           "y": 63,
           "w": 26,
           "h": 47,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -1584,6 +1617,7 @@
           "h": 48,
           "injury": 40,
           "effect": 30,
+          "ally_flags": 1,
           "vrest": 96,
           "dvx": 3.5,
           "dvy": 5.8999999999999995,
@@ -1627,6 +1661,7 @@
           "y": 55,
           "w": 30,
           "h": 56,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -1641,6 +1676,7 @@
           "h": 57,
           "injury": 40,
           "effect": 30,
+          "ally_flags": 1,
           "vrest": 96,
           "dvx": 3.5,
           "dvy": 5.8999999999999995,
@@ -1683,6 +1719,7 @@
           "y": 53,
           "w": 38,
           "h": 57,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -1697,6 +1734,7 @@
           "h": 58,
           "injury": 40,
           "effect": 30,
+          "ally_flags": 1,
           "vrest": 96,
           "dvx": 3.5,
           "dvy": 5.8999999999999995,
@@ -1739,6 +1777,7 @@
           "y": 49,
           "w": 36,
           "h": 57,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0,
@@ -1763,6 +1802,7 @@
           "y": 49,
           "w": 36,
           "h": 57,
+          "ally_flags": 3,
           "l": 24,
           "z": -12,
           "kind": 0,
@@ -1780,12 +1820,11 @@
                 "data/072.wav.mp3"
               ]
             }
-          ],
-          "ally_flags": 1
+          ]
         },
         {
           "kind": 0,
-          "ally_flags": 2,
+          "ally_flags": 3,
           "test": "(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
           "z": -12,
           "l": 24,
@@ -1816,10 +1855,10 @@
           "y": 51,
           "w": 35,
           "h": 57,
+          "ally_flags": 3,
           "vrest": 2,
           "l": 24,
           "z": -12,
-          "ally_flags": 1,
           "motionless": 0,
           "shaking": 0,
           "test": "bdy_kind==0"
@@ -1849,6 +1888,7 @@
           "y": 51,
           "w": 38,
           "h": 58,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0,
@@ -1873,6 +1913,7 @@
           "y": 51,
           "w": 38,
           "h": 58,
+          "ally_flags": 3,
           "l": 24,
           "z": -12,
           "kind": 0,
@@ -1890,12 +1931,11 @@
                 "data/072.wav.mp3"
               ]
             }
-          ],
-          "ally_flags": 1
+          ]
         },
         {
           "kind": 0,
-          "ally_flags": 2,
+          "ally_flags": 3,
           "test": "(itr_kind!=14&itr_kind!=10&itr_kind!=11&itr_kind!=2&itr_kind!=7)&(itr_effect!=30&itr_effect!=20)",
           "z": -12,
           "l": 24,
@@ -1926,10 +1966,10 @@
           "y": 51,
           "w": 38,
           "h": 58,
+          "ally_flags": 3,
           "vrest": 2,
           "l": 24,
           "z": -12,
-          "ally_flags": 1,
           "motionless": 0,
           "shaking": 0,
           "test": "bdy_kind==0"
@@ -2167,6 +2207,7 @@
           "y": 21,
           "w": 128,
           "h": 170,
+          "ally_flags": 3,
           "vrest": 1,
           "dvx": 0,
           "dvy": 0,
@@ -2174,7 +2215,6 @@
           "bdefend": 32,
           "l": 60,
           "z": -30,
-          "ally_flags": 1,
           "shaking": 0,
           "motionless": 0,
           "dvz": 0,
@@ -2207,6 +2247,7 @@
           "y": 21,
           "w": 128,
           "h": 170,
+          "ally_flags": 3,
           "vrest": 1,
           "dvx": 0,
           "dvy": 0,
@@ -2214,7 +2255,6 @@
           "bdefend": 32,
           "l": 60,
           "z": -30,
-          "ally_flags": 1,
           "shaking": 0,
           "motionless": 0,
           "dvz": 0,
@@ -2247,6 +2287,7 @@
           "y": 21,
           "w": 128,
           "h": 170,
+          "ally_flags": 3,
           "vrest": 1,
           "dvx": 0,
           "dvy": 0,
@@ -2254,7 +2295,6 @@
           "bdefend": 32,
           "l": 60,
           "z": -30,
-          "ally_flags": 1,
           "shaking": 0,
           "motionless": 0,
           "dvz": 0,
@@ -2287,6 +2327,7 @@
           "y": 21,
           "w": 128,
           "h": 170,
+          "ally_flags": 3,
           "vrest": 1,
           "dvx": 0,
           "dvy": 0,
@@ -2294,7 +2335,6 @@
           "bdefend": 32,
           "l": 60,
           "z": -30,
-          "ally_flags": 1,
           "shaking": 0,
           "motionless": 0,
           "dvz": 0,
@@ -2327,6 +2367,7 @@
           "y": 21,
           "w": 128,
           "h": 170,
+          "ally_flags": 3,
           "vrest": 1,
           "dvx": 0,
           "dvy": 0,
@@ -2334,7 +2375,6 @@
           "bdefend": 32,
           "l": 60,
           "z": -30,
-          "ally_flags": 1,
           "shaking": 0,
           "motionless": 0,
           "dvz": 0,
@@ -2410,6 +2450,7 @@
           "w": 128,
           "h": 170,
           "injury": 75,
+          "ally_flags": 3,
           "vrest": 196,
           "dvx": 0,
           "dvy": 0,
@@ -2417,7 +2458,6 @@
           "bdefend": 32,
           "l": 60,
           "z": -30,
-          "ally_flags": 1,
           "shaking": 0,
           "motionless": 0,
           "dvz": 0,
@@ -2447,6 +2487,7 @@
           "y": 18,
           "w": 43,
           "h": 62,
+          "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 0

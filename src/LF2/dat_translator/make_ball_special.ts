@@ -1,12 +1,14 @@
 import { BuiltIn_OID } from "../defines/js";
 import { IEntityData } from "../defines/IEntityData";
 import { traversal } from "../utils/container_help/traversal";
+import { AllyFlag } from "../defines/AllyFlag";
 
 export function make_ball_special(data: IEntityData) {
   switch (data.id) {
     case BuiltIn_OID.FirenFlame:
       traversal(data.frames, (_, frame) => {
-        if (frame.itr) for (const itr of frame.itr) delete itr.ally_flags;
+        if (frame.itr) for (const itr of frame.itr) 
+          itr.ally_flags = AllyFlag.Enemy;
       });
       break;
     case BuiltIn_OID.FirzenBall:

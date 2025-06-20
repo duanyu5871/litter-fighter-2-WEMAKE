@@ -1,9 +1,11 @@
-import type { TAction, TNextFrame } from "./js";
 import type { IExpression } from "./IExpression";
 import type { IQube } from "./IQube";
 import type { IQubePair } from "./IQubePair";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { TAction, TNextFrame } from "./js";
+import { TAllyFlag } from "./AllyFlag";
 import type { Defines } from "./defines";
+
+export type DEFAULT_ITR_MOTIONLESS = typeof Defines.DEFAULT_ITR_MOTIONLESS
 
 export interface IItrInfo extends IQube {
   /**
@@ -14,13 +16,10 @@ export interface IItrInfo extends IQube {
   prefab_id?: string;
 
   /**
-   * 是否判定同队Bdy
    *
-   * 0=关闭（默认），1=开启
-   *
-   * @type {?number}
+   * @type {TAllyFlag}
    */
-  ally_flags?: number;
+  ally_flags: TAllyFlag;
 
   /**
    * 自身停顿值

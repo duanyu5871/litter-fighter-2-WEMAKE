@@ -31,6 +31,7 @@ import { cook_wpoint } from "./cook_wpoint";
 import { add_next_frame } from "./edit_next_frame";
 import { get_next_frame_by_raw_id } from "./get_the_next";
 import { take } from "./take";
+import { AllyFlag } from "../defines/AllyFlag";
 export function make_frames(
   text: string,
   files: IEntityInfo["files"],
@@ -232,7 +233,7 @@ export function make_frames(
       case StateEnum.Burning: {
         if (frame.itr) {
           for (const itr of frame.itr) {
-            itr.ally_flags = 1;
+            itr.ally_flags = AllyFlag.Both;
           }
         }
         break;

@@ -1,7 +1,9 @@
 import { TAction } from "./Action";
+import { TAllyFlag } from "./AllyFlag";
 import type { IExpression } from "./IExpression";
 import type { IQube } from "./IQube";
 import type { IQubePair } from "./IQubePair";
+
 
 export interface IBdyInfo extends IQube {
   /**
@@ -13,14 +15,10 @@ export interface IBdyInfo extends IQube {
 
   /**
    * [WEMAKE]
-   * 是否判定同队Itr
-   * - 0: 仅判定敌人（默认）
-   * - 1: 判定队友与敌人
-   * - 2: 仅判定队友
    * 
-   * @type {?number}
+   * @type {TAllyFlag}
    */
-  ally_flags?: number;
+  ally_flags: TAllyFlag;
 
   /**
    * [LF2][WEMAKE]

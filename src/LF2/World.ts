@@ -2,6 +2,7 @@ import { Warn } from "../Log";
 import { IOrthographicCameraNode, IScene } from "./3d";
 import { Callbacks, FPS, ICollision, NoEmitCallbacks } from "./base";
 import { Builtin_FrameId, Defines, IBdyInfo, IBounding, IEntityData, IFrameInfo, IItrInfo, StateEnum } from "./defines";
+import { AllyFlag } from "./defines/AllyFlag";
 import Ditto from "./ditto";
 import { IBgRender } from "./ditto/render/IBgRender";
 import { IEntityRenderer } from "./ditto/render/IEntityRenderer";
@@ -40,7 +41,7 @@ export class World {
   tvz_f: number = 1;
   tvx_f: number = 1;
   tvy_f: number = 1.3;
-  
+
   /**
    * 角色进入场地时的闪烁无敌时间
    *
@@ -599,12 +600,16 @@ export class World {
       }
     }
     const is_ally = attacker.is_ally(victim);
-    if (is_ally) {
-      if (!itr.ally_flags && !bdy.ally_flags)
-        return;
-    } else {
-      if (itr.ally_flags === 2 || bdy.ally_flags === 2)
-        return;
+    if (
+      (
+        itr.ally_flags !== AllyFlag.Both &&
+        bdy.ally_flags !== AllyFlag.Both
+      ) && (is_ally ?
+        (itr.ally_flags !== AllyFlag.Ally || bdy.ally_flags !== AllyFlag.Ally) :
+        (itr.ally_flags !== AllyFlag.Enemy || bdy.ally_flags !== AllyFlag.Enemy)
+      )
+    ) {
+      return;
     }
 
     if (!itr.vrest && attacker.a_rest) return;
