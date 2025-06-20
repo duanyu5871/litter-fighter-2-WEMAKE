@@ -208,16 +208,25 @@ export interface IEntityInfo {
    * TODO:
    */
   jump_distancez?: number;
+
   /**
-   * TODO:
+   * 冲跳高度
+   * 
+   * @memberof IEntityInfo
    */
   dash_height?: number;
+
   /**
-   * TODO:
+   * 冲跳X轴速度
+   * 
+   * @memberof IEntityInfo
    */
   dash_distance?: number;
+
   /**
-   * TODO:
+   * 冲跳Z轴速度
+   * 
+   * @memberof IEntityInfo
    */
   dash_distancez?: number;
   /**

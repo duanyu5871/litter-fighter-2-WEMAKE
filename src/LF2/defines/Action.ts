@@ -2,7 +2,7 @@ import { IExpression } from "./IExpression";
 import { TNextFrame } from "./INextFrame";
 import { IPos } from "./IPos";
 /**
- * 条件动作接口
+ * 条件动作
  * 
  * 简单的来说，就是满足条件时，做点什么
  */
@@ -30,13 +30,32 @@ export interface IAction_Base {
   tester?: IExpression<any>;
 }
 
+/**
+ * 动作: 播放声音
+ */
 export interface IAction_Sound extends IAction_Base {
   type: 'sound';
+
+  /**
+   * 声音文件路径
+   */
   path: string[];
+
+  /**
+   * 播放位置
+   */
   pos?: IPos;
 }
+
+/**
+ * 动作: 进入指定帧数
+ */
 export interface IAction_NextFrame extends IAction_Base {
   type: 'next_frame';
+
+  /**
+   * 指定帧
+   */
   data: TNextFrame;
 }
 export interface IAction_SetProp extends IAction_Base {
