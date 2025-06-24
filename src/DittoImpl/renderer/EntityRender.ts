@@ -1,8 +1,9 @@
-import { IMeshNode } from "../../LF2/3d";
-import { Builtin_FrameId, IEntityData, IFrameInfo, IPicture, ITexturePieceInfo, TFace } from "../../LF2/defines";
+import type { IMeshNode } from "../../LF2/3d";
+import type { IEntityData, IFrameInfo, IPicture, ITexturePieceInfo, TFace } from "../../LF2/defines";
+import { Builtin_FrameId } from "../../LF2/defines";
 import Ditto from "../../LF2/ditto";
-import { IEntityRenderer } from "../../LF2/ditto/render/IEntityRenderer";
-import Entity from "../../LF2/entity/Entity";
+import type { IEntityRenderer } from "../../LF2/ditto/render/IEntityRenderer";
+import type Entity from "../../LF2/entity/Entity";
 import create_pictures from "../../LF2/loader/create_pictures";
 import * as THREE from "./_t";
 export const EMPTY_PIECE: ITexturePieceInfo = {
@@ -28,7 +29,7 @@ export class EntityRender implements IEntityRenderer {
   constructor(entity: Entity) {
     this.set_entity(entity);
   }
-  
+
   set_entity(entity: Entity): EntityRender {
     const { world, lf2, data } = (this.entity = entity);
     this.variants.clear();

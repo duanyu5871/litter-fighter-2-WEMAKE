@@ -1,6 +1,6 @@
-import { IMeshNode } from "../../LF2/3d/IMesh";
+import type { IMeshNode } from "../../LF2/3d/IMesh";
 import Ditto from "../../LF2/ditto";
-import { IEntityRenderer } from "../../LF2/ditto/render/IEntityRenderer";
+import type { IEntityRenderer } from "../../LF2/ditto/render/IEntityRenderer";
 import type Entity from "../../LF2/entity/Entity";
 import type Stage from "../../LF2/stage/Stage";
 import * as T from "./_t";

@@ -1,10 +1,10 @@
-import { IObjectNode } from "../../LF2/3d";
-import Background from "../../LF2/bg/Background";
-import { Defines, IQuaternion } from "../../LF2/defines";
+import type { IObjectNode } from "../../LF2/3d";
+import type Background from "../../LF2/bg/Background";
+import { Defines, type IQuaternion } from "../../LF2/defines";
 import Ditto from "../../LF2/ditto";
-import { World } from "../../LF2/World";
+import type { IBgRender } from "../../LF2/ditto/render/IBgRender";
+import type { World } from "../../LF2/World";
 import { BgLayerRender } from "./BgLayerRender";
-import { IBgRender } from "../../LF2/ditto/render/IBgRender";
 
 interface BgRenderPack {
   readonly bg: Background | null;
@@ -47,7 +47,7 @@ export class BgRender implements BgRenderPack, IBgRender {
       this._mesh = new Ditto.ObjectNode(world.lf2);
       this._mesh.z = -2 * Defines.CLASSIC_SCREEN_HEIGHT;
       this._layers.length = 0;
-      this._mesh.name = Background.name + ":" + this._bg.data.base.name;
+      this._mesh.name = "Background:" + this._bg.data.base.name;
       this._bg.fade_in(16, 6, 21)
       for (const layer of this._bg.layers) {
         const layer_render = new BgLayerRender(layer)

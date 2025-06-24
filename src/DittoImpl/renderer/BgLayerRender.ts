@@ -1,9 +1,9 @@
 import * as THREE from "./_t";
-import { IMeshNode } from "../../LF2/3d";
-import Layer from "../../LF2/bg/Layer";
+import type { IMeshNode } from "../../LF2/3d";
+import type Layer from "../../LF2/bg/Layer";
 import Ditto from "../../LF2/ditto";
-import { TPicture } from "../../LF2/loader/loader";
-import { IBgLayerRender } from "../../LF2/ditto/render/IBgLayerRender";
+import type { TPicture } from "../../LF2/loader/loader";
+import type { IBgLayerRender } from "../../LF2/ditto/render/IBgLayerRender";
 
 const pic_map = new Map<string, TPicture>()
 
@@ -39,7 +39,7 @@ export class BgLayerRender implements IBgLayerRender {
       geometry: new THREE.PlaneGeometry(w, h).translate(w / 2, -h / 2, 0),
       material: new THREE.MeshBasicMaterial(params),
     });
-    this.mesh.name = "bg layer: " + Layer.name;
+    this.mesh.name = "bg layer";
     this.mesh.set_position(x, y, z);
   }
 

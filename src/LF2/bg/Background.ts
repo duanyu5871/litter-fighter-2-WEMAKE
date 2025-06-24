@@ -1,5 +1,5 @@
 import type { World } from "../World";
-import { IBgData, IBgLayerInfo } from "../defines";
+import type { IBgData, IBgLayerInfo } from "../defines";
 import Layer from "./Layer";
 
 export default class Background {

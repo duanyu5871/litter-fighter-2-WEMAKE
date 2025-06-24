@@ -1,11 +1,11 @@
-import { IBillboardNode, IMeshNode, IObjectNode } from "../../LF2/3d";
+import type { IBillboardNode, IMeshNode, IObjectNode } from "../../LF2/3d";
 import { get_team_shadow_color } from "../../LF2/base/get_team_shadow_color";
 import { get_team_text_color } from "../../LF2/base/get_team_text_color";
 import Ditto from "../../LF2/ditto";
-import { IEntityRenderer } from "../../LF2/ditto/render/IEntityRenderer";
-import { Entity } from "../../LF2/entity/Entity";
-import IEntityCallbacks from "../../LF2/entity/IEntityCallbacks";
-import LF2 from "../../LF2/LF2";
+import type { IEntityRenderer } from "../../LF2/ditto/render/IEntityRenderer";
+import type { Entity } from "../../LF2/entity/Entity";
+import type IEntityCallbacks from "../../LF2/entity/IEntityCallbacks";
+import type LF2 from "../../LF2/LF2";
 import * as T from "./_t";
 
 
