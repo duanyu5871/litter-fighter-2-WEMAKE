@@ -1,7 +1,7 @@
 import type { IPictureInfo } from "./IPictureInfo";
-import { IArmorInfo } from "./IArmorInfo";
+import type { IArmorInfo } from "./IArmorInfo";
 import type { IOpointInfo } from "./IOpointInfo";
-import { ILegacyPictureInfo } from "./ILegacyPictureInfo";
+import type { ILegacyPictureInfo } from "./ILegacyPictureInfo";
 
 export interface IEntityInfo {
   type?: number;

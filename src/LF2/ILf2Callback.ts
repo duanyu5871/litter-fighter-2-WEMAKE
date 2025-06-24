@@ -1,8 +1,8 @@
-import Node from "./layout/Node";
-import { Difficulty } from "./defines";
-import { IZip } from "./ditto";
-import { ICookedLayoutInfo } from "./layout/ICookedLayoutInfo";
-import { PlayerInfo } from "./PlayerInfo";
+import type { Difficulty } from "./defines";
+import type { IZip } from "./ditto";
+import type { ICookedLayoutInfo } from "./layout/ICookedLayoutInfo";
+import type Node from "./layout/Node";
+import type { PlayerInfo } from "./PlayerInfo";
 
 export interface ILf2Callback {
   on_layout_changed?(

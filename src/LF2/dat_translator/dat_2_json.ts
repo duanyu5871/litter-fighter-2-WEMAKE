@@ -1,4 +1,4 @@
-import { IBgData, IStageInfo, WeaponType } from "../defines/js";
+import { IBgData, IStageInfo, WeaponType } from "../defines";
 import { EntityEnum } from "../defines/EntityEnum";
 import { IBaseData } from "../defines/IBaseData";
 import { IDatIndex } from "../defines/IDatIndex";

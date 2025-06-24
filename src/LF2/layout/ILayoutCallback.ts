@@ -1,6 +1,4 @@
-import Node from "./Node";
-
-
+import type Node from "./Node";
 export interface ILayoutCallback {
   on_click?(): void;
   on_show?(layout: Node): void;

@@ -1,4 +1,4 @@
-import { IPictureInfo } from "./IPictureInfo";
+import type { IPictureInfo } from "./IPictureInfo";
 
 /**
  * 实体图片信息

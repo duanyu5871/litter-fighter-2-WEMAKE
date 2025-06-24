@@ -1,10 +1,10 @@
-import { IBaseData } from "./IBaseData";
-import { IBdyPrefab } from "./IBdyPrefab";
-import { IItrPrefab } from "./IItrPrefab";
-import { IEntityInfo } from "./IEntityInfo";
-import { IFrameIndexes } from "./IFrameIndexes";
-import { IFrameInfo } from "./IFrameInfo";
-import { TNextFrame } from "./INextFrame";
+import type { IBaseData } from "./IBaseData";
+import type { IBdyPrefab } from "./IBdyPrefab";
+import type { IItrPrefab } from "./IItrPrefab";
+import type { IEntityInfo } from "./IEntityInfo";
+import type { IFrameIndexes } from "./IFrameIndexes";
+import type { IFrameInfo } from "./IFrameInfo";
+import type { TNextFrame } from "./INextFrame";
 export type TItrPrefabs = {
   [x in string]?: IItrPrefab;
 }

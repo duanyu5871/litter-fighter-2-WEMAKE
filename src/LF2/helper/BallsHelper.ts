@@ -7,11 +7,18 @@ export class BallsHelper {
   constructor(lf2: LF2) {
     this.lf2 = lf2;
   }
+  /**
+   * 列出场地上类型为Ball的实体
+   *
+   * @return {Entity[]}
+   * @memberof BallsHelper
+   */
   list(): Entity[] {
     const ret: Entity[] = [];
     this.lf2.world.entities.forEach((v) => is_ball(v) && ret.push(v));
     return ret;
   }
+  
   at(idx: number): Entity | undefined {
     return this.list()[idx];
   }

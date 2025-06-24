@@ -1,9 +1,10 @@
+import type { TAction } from "./Action";
+import type { TAllyFlag } from "./AllyFlag";
+import type { Defines } from "./defines";
 import type { IExpression } from "./IExpression";
+import type { TNextFrame } from "./INextFrame";
 import type { IQube } from "./IQube";
 import type { IQubePair } from "./IQubePair";
-import type { TAction, TNextFrame } from "./js";
-import { TAllyFlag } from "./AllyFlag";
-import type { Defines } from "./defines";
 
 export type DEFAULT_ITR_MOTIONLESS = typeof Defines.DEFAULT_ITR_MOTIONLESS
 

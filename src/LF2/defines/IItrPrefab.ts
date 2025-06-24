@@ -1,4 +1,4 @@
-import { IItrInfo } from "./IItrInfo";
+import type { IItrInfo } from "./IItrInfo";
 
 export interface IItrPrefab extends Partial<IItrInfo> {
   id: string;

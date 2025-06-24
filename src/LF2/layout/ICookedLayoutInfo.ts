@@ -1,7 +1,6 @@
 import type { IImageInfo } from "../loader/IImageInfo";
 import type { ILayoutInfo } from "./ILayoutInfo";
 
-
 export interface ICookedLayoutInfo extends ILayoutInfo {
   pos: [number, number, number];
   center: [number, number, number];

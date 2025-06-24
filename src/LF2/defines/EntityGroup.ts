@@ -28,5 +28,8 @@ export enum EntityGroup {
    */
   StageRegularWeapon = "StageRegularWeapon",
 
+  /**
+   * 可被反弹为冰ball的ball
+   */
   FreezableBall = "FreezableBall"
 }

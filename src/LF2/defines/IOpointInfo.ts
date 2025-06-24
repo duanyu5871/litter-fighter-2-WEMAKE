@@ -1,7 +1,8 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { FacingFlag, TNextFrame } from "./js";
+import type { FacingFlag } from "./FacingFlag";
+import type { TNextFrame } from "./INextFrame";
 import type { OpointKind } from "./OpointKind";
-import { OpointMultiEnum } from "./OpointMultiEnum";
+import type { OpointMultiEnum } from "./OpointMultiEnum";
+export type __KEEP_FacingFlag = FacingFlag;
 export interface IOpointInfo {
   /**
    *
@@ -89,11 +90,15 @@ export interface IOpointInfo {
   max_hp?: number;
 
   /**
-   * 血量
+   * 生成后的血量
    * 将覆盖原实体的血量
    */
   hp?: number;
 
+  /**
+   * 生成后的最大血量
+   * 将覆盖原实体的最大血量
+   */
   max_mp?: number;
 
   mp?: number;

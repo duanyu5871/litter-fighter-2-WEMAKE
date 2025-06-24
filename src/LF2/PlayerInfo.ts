@@ -2,6 +2,7 @@ import { Warn } from "../Log";
 import { Callbacks, NoEmitCallbacks } from "./base";
 import type { TKeys } from "./controller/BaseController";
 import { Defines, GameKey } from "./defines";
+import { IPurePlayerInfo } from "./defines/IPurePlayerInfo";
 import { is_str } from "./utils/type_check";
 
 export interface IPlayerInfoCallback {
@@ -14,14 +15,6 @@ export interface IPlayerInfoCallback {
   on_team_decided?(is_decided: boolean): void;
   on_is_com_changed?(is_com: boolean): void;
   on_random_character_changed?(character_id: string, prev: string): void;
-}
-export interface IPurePlayerInfo {
-  id: string;
-  name: string;
-  keys: TKeys;
-  team: string;
-  character: string;
-  version: number;
 }
 export class PlayerInfo {
   protected _callbacks = new Callbacks<IPlayerInfoCallback>();

@@ -1,4 +1,4 @@
-import { FacingFlag, IOpointInfo } from "../defines/js";
+import { FacingFlag, IOpointInfo } from "../defines";
 import { is_num, not_zero_num } from "../utils/type_check";
 import { get_next_frame_by_raw_id } from "./get_the_next";
 import { take } from "./take";

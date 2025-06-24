@@ -1,4 +1,4 @@
-import { IBdyInfo } from "../defines/js";
+import { IBdyInfo } from "../defines";
 
 export function copy_bdy_info(
   src: IBdyInfo,

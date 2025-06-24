@@ -1,6 +1,6 @@
-import { IExpression } from "./IExpression";
-import { TNextFrame } from "./INextFrame";
-import { IPos } from "./IPos";
+import type { IExpression } from "./IExpression";
+import type { TNextFrame } from "./INextFrame";
+import type { IPos } from "./IPos";
 /**
  * 条件动作
  * 

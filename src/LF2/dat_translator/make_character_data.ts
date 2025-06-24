@@ -6,7 +6,7 @@ import { IFrameIndexes } from "../defines/IFrameIndexes";
 import { ILegacyPictureInfo } from "../defines/ILegacyPictureInfo";
 import { INextFrame } from "../defines/INextFrame";
 import { Defines } from "../defines/defines";
-import { FacingFlag, IEntityInfo, IFrameInfo, StateEnum, TNextFrame, WeaponType } from "../defines/js";
+import { FacingFlag, IEntityInfo, IFrameInfo, StateEnum, TNextFrame, WeaponType } from "../defines";
 import { set_obj_field } from "../utils/container_help/set_obj_field";
 import { take_number } from "../utils/container_help/take_number";
 import { traversal } from "../utils/container_help/traversal";

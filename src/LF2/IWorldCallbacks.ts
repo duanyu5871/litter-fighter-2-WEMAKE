@@ -1,4 +1,4 @@
-import { World } from "./World";
+import type { World } from "./World";
 import type Stage from "./stage/Stage";
 
 export interface IWorldCallbacks {

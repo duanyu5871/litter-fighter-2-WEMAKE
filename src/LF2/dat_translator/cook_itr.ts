@@ -1,4 +1,4 @@
-import { BuiltIn_OID, FacingFlag, IItrInfo, ItrEffect, ItrKind, StateEnum } from "../defines/js";
+import { BuiltIn_OID, FacingFlag, IItrInfo, ItrEffect, ItrKind, StateEnum } from "../defines";
 import { BdyKind } from "../defines/BdyKind";
 import { CollisionVal as C_Val } from "../defines/CollisionVal";
 import { Defines } from "../defines/defines";

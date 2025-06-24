@@ -6,6 +6,7 @@ import type { IBgData } from "./IBgData";
 import type { INextFrame } from "./INextFrame";
 import type { IPairByFace } from "./IPairByFace";
 import type { IStageInfo } from "./IStageInfo";
+import { TeamEnum as _TeamEnum } from "./TeamEnum";
 export interface TFrameIdPair extends IPairByFace<string> { }
 export interface TFrameIdListPair extends IPairByFace<string[]> { }
 export type TTODO = any;
@@ -13,6 +14,8 @@ export type TFace = -1 | 1;
 export type TTrend = -1 | 0 | 1;
 export type BOOL = 1 | 0;
 export namespace Defines {
+  export const TeamEnum = _TeamEnum;
+  export type TeamEnum = _TeamEnum;
   export const CLASSIC_SCREEN_WIDTH = 794;
   export const CLASSIC_SCREEN_HEIGHT = 550;
   export const DEFAULT_HP = 500;
@@ -146,13 +149,7 @@ export namespace Defines {
     txt_color: string;
     txt_shadow_color: string;
   }
-  export enum TeamEnum {
-    Independent = "",
-    Team_1 = "1",
-    Team_2 = "2",
-    Team_3 = "3",
-    Team_4 = "4",
-  }
+
   export interface ITeamInfoMap {
     [TeamEnum.Independent]: ITeamInfo;
     [TeamEnum.Team_1]: ITeamInfo;

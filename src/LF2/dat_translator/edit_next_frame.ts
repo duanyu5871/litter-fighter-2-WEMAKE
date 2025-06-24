@@ -1,4 +1,4 @@
-import { INextFrame, TNextFrame } from "../defines/js";
+import { INextFrame, TNextFrame } from "../defines";
 
 export function edit_next_frame(
   nexts: TNextFrame,

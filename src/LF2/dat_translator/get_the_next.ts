@@ -1,4 +1,4 @@
-import { Builtin_FrameId, FacingFlag, INextFrame } from "../defines/js";
+import { Builtin_FrameId, FacingFlag, INextFrame } from "../defines";
 import { cook_next_frame_mp_hp } from "./cook_next_frame_mp_hp";
 
 export const get_next_frame_by_raw_id = (

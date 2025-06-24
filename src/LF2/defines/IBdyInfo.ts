@@ -1,5 +1,5 @@
-import { TAction } from "./Action";
-import { TAllyFlag } from "./AllyFlag";
+import type { TAction } from "./Action";
+import type { TAllyFlag } from "./AllyFlag";
 import type { IExpression } from "./IExpression";
 import type { IQube } from "./IQube";
 import type { IQubePair } from "./IQubePair";

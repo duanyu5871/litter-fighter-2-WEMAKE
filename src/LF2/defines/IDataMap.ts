@@ -1,6 +1,6 @@
 import { EntityEnum } from "./EntityEnum";
-import { IBgData } from "./IBgData";
-import { IEntityData } from "./IEntityData";
+import type { IBgData } from "./IBgData";
+import type { IEntityData } from "./IEntityData";
 
 export interface IDataMap {
   background: IBgData;

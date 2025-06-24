@@ -1,4 +1,4 @@
-import { IDatIndex } from "./IDatIndex";
+import type { IDatIndex } from "./IDatIndex";
 
 export interface IDataLists {
   objects: IDatIndex[];

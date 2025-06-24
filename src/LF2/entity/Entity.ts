@@ -27,7 +27,8 @@ import { EMPTY_FRAME_INFO } from "./EMPTY_FRAME_INFO";
 import { Factory } from "./Factory";
 import { GONE_FRAME_INFO } from "./GONE_FRAME_INFO";
 import type IEntityCallbacks from "./IEntityCallbacks";
-import { bdy_action_handlers, itr_action_handlers } from "./bdy_action_handlers";
+import { bdy_action_handlers } from "./bdy_action_handlers";
+import { itr_action_handlers } from "./itr_action_handlers";
 import { cross_bounding } from "../utils/cross_bounding";
 import { turn_face } from "./face_helper";
 import { is_ball, is_character, is_weapon_data } from "./type_check";
@@ -701,10 +702,11 @@ export class Entity {
   apply_opoints(opoints: IOpointInfo[]) {
     for (const opoint of opoints) {
       let count = 0;
-      if (is_num(opoint.multi)) {
-        count = opoint.multi;
-      } else if (opoint.multi) {
-        switch (opoint.multi.type) {
+      const multi = opoint.multi ?? 1;
+      if (is_num(multi)) {
+        count = multi;
+      } else if (multi) {
+        switch (multi.type) {
           case OpointMultiEnum.AccordingEnemies:
             for (const other of this.world.entities) {
               if (
@@ -719,7 +721,7 @@ export class Entity {
               }
             }
             if (count)
-              count = Math.max(opoint.multi.min, count);
+              count = Math.max(multi.min, count);
             break;
           case OpointMultiEnum.AccordingAllies:
             for (const other of this.world.entities) {
@@ -733,11 +735,9 @@ export class Entity {
               )
                 ++count;
             }
-            count = Math.max(opoint.multi.min, count);
+            count = Math.max(multi.min, count);
             break;
         }
-      } else if (opoint.multi === void 0) {
-        count = 1;
       }
       for (let i = 0; i < count; ++i) {
         const v = new Ditto.Vector3(0, 0, 0);

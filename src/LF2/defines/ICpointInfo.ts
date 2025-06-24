@@ -1,4 +1,4 @@
-import { TNextFrame } from ".";
+import type { TNextFrame } from "./INextFrame";
 
 export interface ICpointInfo {
   kind: 1 | 2;

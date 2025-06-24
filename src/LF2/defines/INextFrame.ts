@@ -1,4 +1,4 @@
-import { FacingFlag } from "./FacingFlag";
+import type { FacingFlag } from "./FacingFlag";
 import type { IExpression } from "./IExpression";
 import type { IFrameInfo } from "./IFrameInfo";
 export interface INextFrameResult {

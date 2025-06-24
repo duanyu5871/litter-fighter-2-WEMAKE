@@ -1,4 +1,4 @@
-import { BuiltIn_OID } from "../defines/js";
+import { BuiltIn_OID } from "../defines";
 import { IEntityData } from "../defines/IEntityData";
 import { traversal } from "../utils/container_help/traversal";
 import { AllyFlag } from "../defines/AllyFlag";
