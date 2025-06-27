@@ -5,7 +5,16 @@ import { get_val_geter_from_collision } from "./get_val_from_collision";
 import { preprocess_action } from "./preprocess_action";
 import { preprocess_next_frame } from "./preprocess_next_frame";
 
-export function preprocess_itr(itr: IItrInfo, data: IEntityData) {
+
+/**
+ * Description placeholder
+ *
+ * @export
+ * @param {IItrInfo} itr 处理前的itr
+ * @param {IEntityData} data 
+ * @returns {IItrInfo} 处理后的itr
+ */
+export function preprocess_itr(itr: IItrInfo, data: IEntityData): IItrInfo {
   const prefab = itr.prefab_id !== void 0 ? data.itr_prefabs?.[itr.prefab_id] : void 0;
   if (prefab) itr = { ...prefab, ...itr };
   if (itr.catchingact) preprocess_next_frame(itr.catchingact);

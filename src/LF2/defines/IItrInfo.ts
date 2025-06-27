@@ -5,6 +5,7 @@ import type { IExpression } from "./IExpression";
 import type { TNextFrame } from "./INextFrame";
 import type { IQube } from "./IQube";
 import type { IQubePair } from "./IQubePair";
+import { ItrKind } from "./ItrKind";
 
 export type DEFAULT_ITR_MOTIONLESS = typeof Defines.DEFAULT_ITR_MOTIONLESS
 
@@ -45,7 +46,7 @@ export interface IItrInfo extends IQube {
    * 详细效果见ItrKind
    * @see {ItrKind}
    */
-  kind?: number;
+  kind?: number | ItrKind;
   dvx?: number;
   dvy?: number;
   dvz?: number;
@@ -72,7 +73,26 @@ export interface IItrInfo extends IQube {
    */
   effect?: number;
   indicator_info?: IQubePair;
+
+
+  /**
+   * 该itr抓到人时，攻击者进入的动作
+   *
+   * @type {?TNextFrame}
+   * 
+   * @see {ItrKind.Catch}
+   * @see {ItrKind.ForceCatch}
+   */
   catchingact?: TNextFrame;
+
+  /**
+   * 该itr抓到人时，被抓者进入的动作
+   *
+   * @type {?TNextFrame}
+   * 
+   * @see {ItrKind.Catch}
+   * @see {ItrKind.ForceCatch}
+   */
   caughtact?: TNextFrame;
 
   /** 命中后，自己跳转至什么帧 */
@@ -80,6 +100,21 @@ export interface IItrInfo extends IQube {
   // hit_sounds?: string[];
   actions?: TAction[];
 
+  /**
+   * 测试表达式字符串
+   */
   test?: string;
+
+  /**
+   * 测试碰撞是否满足条件
+   * 
+   * 当tester运行结果为false时，碰撞将不生效
+   * 
+   * tester根据test字符串，在读取数据时生成。
+   *
+   * @type {?IExpression<any>}
+   * @type {?IExpression<any>['run']}
+   * @see {IItrInfo.test}
+   */
   tester?: IExpression<any>;
 }
