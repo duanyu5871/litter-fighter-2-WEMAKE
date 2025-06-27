@@ -19,8 +19,8 @@ import {
 } from "../entity/type_check";
 import { traversal } from "../utils/container_help/traversal";
 import { is_str, not_blank_str } from "../utils/type_check";
-import { cook_frame } from "./preprocess_frame";
-import { cook_next_frame } from "./preprocess_next_frame";
+import { preprocess_frame } from "./preprocess_frame";
+import { preprocess_next_frame } from "./preprocess_next_frame";
 
 export interface IDataListMap {
   background: IBgData[];
@@ -105,8 +105,8 @@ class Inner {
           -(not_blank_str(i) && sounds.has(i)) || jobs.push(sounds.load(i, i)),
       );
 
-      if (data.on_dead) cook_next_frame(data.on_dead);
-      if (data.on_exhaustion) cook_next_frame(data.on_exhaustion);
+      if (data.on_dead) preprocess_next_frame(data.on_dead);
+      if (data.on_exhaustion) preprocess_next_frame(data.on_exhaustion);
 
       const {
         frames,
@@ -118,7 +118,7 @@ class Inner {
       if (jobs.length) await Promise.all(jobs);
       if (frames) {
         traversal(frames, (_, frame) => {
-          cook_frame(this.lf2, data, frame);
+          preprocess_frame(this.lf2, data, frame);
  
           if (frame.bdy) {
             for (const bdy of frame.bdy) {

@@ -601,16 +601,14 @@ export class World {
     }
     const is_ally = attacker.is_ally(victim);
     if (
-      (
-        itr.ally_flags !== AllyFlag.Both &&
-        bdy.ally_flags !== AllyFlag.Both
-      ) && (is_ally ?
-        (itr.ally_flags !== AllyFlag.Ally || bdy.ally_flags !== AllyFlag.Ally) :
-        (itr.ally_flags !== AllyFlag.Enemy || bdy.ally_flags !== AllyFlag.Enemy)
+      is_ally ? (
+        !(itr.ally_flags & AllyFlag.Ally) &&
+        !(bdy.ally_flags & AllyFlag.Ally)
+      ) : (
+        !(itr.ally_flags & AllyFlag.Enemy) &&
+        !(bdy.ally_flags & AllyFlag.Enemy)
       )
-    ) {
-      return;
-    }
+    ) return;
 
     if (!itr.vrest && attacker.a_rest) return;
     if (itr.vrest && victim.get_v_rest(attacker.id) > 0) return;
