@@ -34,7 +34,7 @@ export default function cook_opoint(opoint: IOpointInfo) {
   if (not_zero_num(dvy)) opoint.dvy = dvy * -0.5;
 
   switch (opoint.oid) {
-    case BuiltIn_OID.FirenBall:
+    case BuiltIn_OID.FirzenBall:
     case BuiltIn_OID.Bat:
     case BuiltIn_OID.BatBall:
       opoint.speedz = 0;
