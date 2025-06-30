@@ -6758,7 +6758,8 @@
           "oid": "210",
           "action": {
             "facing": 0
-          }
+          },
+          "speedz": 0
         }
       ],
       "state": 15,

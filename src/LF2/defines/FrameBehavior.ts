@@ -131,12 +131,10 @@ export enum FrameBehavior {
    *    - 此值不会有任何作用（但依旧保留）
    *    - 生成将通过opoint被实现
    */
-  JulianBallStart = 13,
-  _13 = 13,
+  JulianBallStart = 13, _13 = 13,
 
   /**
    * 连环重炮
    */
-  JulianBall = 14,
-  _14 = 14,
+  JulianBall = 14, _14 = 14,
 }

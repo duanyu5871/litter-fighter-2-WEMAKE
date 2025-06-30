@@ -602,7 +602,10 @@ export class Entity {
     this._emitter_opoint = opoint;
 
     const shotter_frame = emitter.frame;
-    if (emitter.frame.state === StateEnum.Ball_Rebounding || emitter.frame.state === StateEnum.Ball_Flying) {
+    if (
+      emitter.frame.state === StateEnum.Ball_Rebounding || 
+      emitter.frame.state === StateEnum.Ball_Flying
+    ) {
       this.team = (emitter.lastest_collided?.attacker ?? emitter).team;
       this.facing = emitter.facing;
     } else {

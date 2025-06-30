@@ -1,4 +1,4 @@
-import { FacingFlag, IOpointInfo } from "../defines";
+import { BuiltIn_OID, FacingFlag, IOpointInfo } from "../defines";
 import { is_num, not_zero_num } from "../utils/type_check";
 import { get_next_frame_by_raw_id } from "./get_the_next";
 import { take } from "./take";
@@ -32,4 +32,12 @@ export default function cook_opoint(opoint: IOpointInfo) {
 
   const dvy = take(opoint, "dvy");
   if (not_zero_num(dvy)) opoint.dvy = dvy * -0.5;
+
+  switch (opoint.oid) {
+    case BuiltIn_OID.FirenBall:
+    case BuiltIn_OID.Bat:
+    case BuiltIn_OID.BatBall:
+      opoint.speedz = 0;
+      break;
+  }
 }
