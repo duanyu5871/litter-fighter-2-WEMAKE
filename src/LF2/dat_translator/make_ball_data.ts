@@ -184,6 +184,12 @@ export function make_ball_data(
           y: frame.centery,
           dvx: 8,
           action: { id: "50" },
+        },{
+          kind: OpointKind.Normal,
+          oid: BuiltIn_OID.JulianBall,
+          x: frame.centerx,
+          y: frame.centery,
+          action: { id: "10" },
         });
         break;
       case FrameBehavior.JulianBall:
