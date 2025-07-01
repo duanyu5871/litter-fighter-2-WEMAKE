@@ -14,7 +14,7 @@ export default class PlayerKeyText extends Component {
     return this.args[1] || "";
   }
   get player() {
-    return this.lf2.player_infos.get(this.player_id);
+    return this.lf2.players.get(this.player_id);
   }
   protected _sprite: IText;
   protected _unmount_jobs = new Invoker();

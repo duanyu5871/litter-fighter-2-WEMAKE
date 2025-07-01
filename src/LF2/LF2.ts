@@ -101,11 +101,11 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
 
   readonly world: World;
 
-  private _zips: IZip[] = []; // [game data zip, preliminary data zip]
+  private _zips: IZip[] = [];
 
   get zips() { return this._zips }
 
-  private _player_infos = new Map([
+  readonly players: ReadonlyMap<string, PlayerInfo> = new Map([
     ["1", new PlayerInfo("1")],
     ["2", new PlayerInfo("2")],
     ["3", new PlayerInfo("3")],
@@ -115,10 +115,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
     ["7", new PlayerInfo("7")],
     ["8", new PlayerInfo("8")],
   ]);
-  get player_infos() {
-    return this._player_infos;
-  }
-
+  
   get player_characters() {
     return this.world.player_slot_characters;
   }
@@ -326,7 +323,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
       const { layout } = this;
       if (layout) {
         for (const key_name of KEY_NAME_LIST) {
-          for (const [player_id, player_info] of this._player_infos) {
+          for (const [player_id, player_info] of this.players) {
             if (player_info.keys[key_name] === key_code)
               layout.on_player_key_down(player_id, key_name);
           }
@@ -340,7 +337,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
     const { layout } = this;
     if (layout) {
       for (const key_name of KEY_NAME_LIST) {
-        for (const [player_id, player_info] of this._player_infos) {
+        for (const [player_id, player_info] of this.players) {
           if (player_info.keys[key_name] === key_code)
             layout.on_player_key_up(player_id, key_name);
         }
@@ -379,7 +376,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
       let data: string = "";
       for (const c of ret.buf) data += String.fromCharCode(c);
       await ditto.Cache.del(info_url, "");
-      await ditto.Cache.put(md5, 0, info_url, data);
+      await ditto.Cache.put({ name: md5, version: 0, data });
     }
     this.on_loading_content(`${url}`, 100);
     return ret;
@@ -453,7 +450,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
   }
 
   add_player_character(player_id: string, character_id: string) {
-    const player_info = this.player_infos.get(player_id);
+    const player_info = this.players.get(player_id);
     if (!player_info) {
       debugger;
       return;

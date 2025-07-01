@@ -60,22 +60,14 @@ export const __Cache: ICache = {
       .catch((_) => void 0)
       .then(() => db.tbl_lf2_data.where("name").equals(name).first());
   },
-  async put(
-    name: string,
-    version: number,
-    url: string,
-    data: string,
-  ): Promise<number | void> {
+  async put(data: Omit<ICacheData, 'id' | 'create_date'>): Promise<number | void> {
     return db
       .open()
       .catch((_) => void 0)
       .then(() =>
         db.tbl_lf2_data.put({
-          name,
-          version,
-          data,
+          ...data,
           create_date: Date.now(),
-          url,
         }),
       );
   },

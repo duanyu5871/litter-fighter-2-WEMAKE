@@ -17,7 +17,7 @@ export default class PlayerCharacterName extends Component {
     return this.args[0] || "";
   }
   get player() {
-    return this.lf2.player_infos.get(this.player_id);
+    return this.lf2.players.get(this.player_id);
   }
   get decided() {
     return !!this.player?.character_decided;

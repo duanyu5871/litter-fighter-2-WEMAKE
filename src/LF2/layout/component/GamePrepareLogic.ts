@@ -58,7 +58,7 @@ export default class GamePrepareLogic extends Component {
 
     this._fsm.use(GamePrepareState.PlayerCharacterSel);
     this._unmount_jobs.add(
-      ...map_no_void(this.lf2.player_infos.values(), (v) =>
+      ...map_no_void(this.lf2.players.values(), (v) =>
         v.callbacks.add({
           on_joined_changed: () => this.on_someone_changed(),
           on_team_decided: () => this.on_someone_changed(),
@@ -110,7 +110,7 @@ export default class GamePrepareLogic extends Component {
   protected on_someone_changed() {
     let joined_num = 0;
     let ready_num = 0;
-    for (const [, p] of this.lf2.player_infos) {
+    for (const [, p] of this.lf2.players) {
       if (p.joined || p.is_com) joined_num += 1; // 已加入人数
       if (p.team_decided) ready_num += 1; // 已准备人数
     }
@@ -139,11 +139,11 @@ export default class GamePrepareLogic extends Component {
         key: GamePrepareState.PlayerCharacterSel,
         enter: () => {
           this._com_num = 0;
-          for (const [, player] of this.lf2.player_infos) {
-            if (player.is_com) player.joined = false;
-            player.team_decided = false;
-            player.character_decided = false;
-            player.is_com = false;
+          for (const [, player] of this.lf2.players) {
+            if (player.is_com) player.set_joined(false, true);
+            player.set_team_decided(false, true);
+            player.set_character_decided(false, true);
+            player.set_is_com(false, true);
           }
         },
       },
@@ -167,10 +167,10 @@ export default class GamePrepareLogic extends Component {
         enter: () => {
           for (const { player: p } of this.com_slots) {
             p
-              ?.set_is_com(false)
-              .set_joined(false)
-              .set_team_decided(false)
-              .set_random_character("");
+              ?.set_is_com(false, true)
+              .set_joined(false, true)
+              .set_team_decided(false, true)
+              .set_random_character("", true);
           }
           const { player_slots } = this;
           const joined_num = filter(player_slots, (v) => v.joined).length;
@@ -196,7 +196,7 @@ export default class GamePrepareLogic extends Component {
         },
         leave: () => {
           for (const { player: p } of this.player_slots)
-            p?.set_random_character("");
+            p?.set_random_character("", true);
           this.node.find_layout("menu")?.set_visible(false);
         },
       },
@@ -216,7 +216,7 @@ export default class GamePrepareLogic extends Component {
       const { characters } = this.lf2.datas.find_group(
         EntityGroup.Regular,
       );
-      p.set_random_character(random_get(characters)?.id ?? "");
+      p.set_random_character(random_get(characters)?.id ?? "", true);
     }
   }
 
@@ -274,7 +274,7 @@ export default class GamePrepareLogic extends Component {
       const { empty_player_slots } = this;
       this.handling_com = empty_player_slots[0];
       while (num > 0 && empty_player_slots.length) {
-        empty_player_slots.shift()?.player?.set_is_com(true);
+        empty_player_slots.shift()?.player?.set_is_com(true, true);
         num -= 1;
       }
       this._fsm.use(GamePrepareState.ComputerCharacterSel);
@@ -298,7 +298,7 @@ export default class GamePrepareLogic extends Component {
       if (player.is_com) {
         character.ctrl = Factory.inst.get_ctrl(
           character_data.id,
-          player.id, 
+          player.id,
           character
         );
       } else {

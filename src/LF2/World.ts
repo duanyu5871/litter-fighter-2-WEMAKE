@@ -207,7 +207,7 @@ export class World {
       if (
         is_character(entity) &&
         is_base_ctrl(entity.ctrl) &&
-        this.lf2.player_infos.has(entity.ctrl.player_id)
+        this.lf2.players.has(entity.ctrl.player_id)
       ) {
         this.player_slot_characters.set(entity.ctrl.player_id, entity);
         this._callbacks.emit("on_player_character_add")(

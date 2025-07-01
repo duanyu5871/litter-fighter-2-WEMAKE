@@ -1,4 +1,4 @@
-import { Behavior } from "../../LF2/behavior";
+import { Behavior } from "../../behavior";
 import { Creature } from "./Creature";
 
 export enum CatBehaviorEnum {

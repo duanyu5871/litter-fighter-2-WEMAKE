@@ -189,7 +189,7 @@ function App() {
     _set_cheat_3(lf2.is_cheat_enabled(CheatType.GIM_INK));
     _set_bg_id(lf2.world.stage.bg.id);
     const on_touchstart = () => {
-      set_touch_pad_on(fisrt(lf2.player_infos.keys())!);
+      set_touch_pad_on(fisrt(lf2.players.keys())!);
     };
     const on_keydown = () => {
       set_touch_pad_on("");
@@ -356,7 +356,7 @@ function App() {
     ele_game_canvas
   ]);
 
-  const player_infos = lf2?.player_infos;
+  const player_infos = lf2?.players;
   const players = useMemo(() => {
     if (!player_infos) return [];
     return Array.from(player_infos.values());

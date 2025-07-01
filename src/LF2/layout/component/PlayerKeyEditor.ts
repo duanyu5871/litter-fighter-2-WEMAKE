@@ -15,7 +15,7 @@ export default class PlayerKeyEditor extends Component {
     return this.args[1] || "";
   }
   get player() {
-    return this.lf2.player_infos.get(this.player_id);
+    return this.lf2.players.get(this.player_id);
   }
   protected _sprite: IText;
   protected _unmount_jobs = new Invoker();
@@ -61,7 +61,7 @@ export default class PlayerKeyEditor extends Component {
   private l: IKeyboardCallback = {
     on_key_down: (e) => {
       if ("escape" !== e.key.toLowerCase())
-        this.player?.set_key(this.key_name, e.key).save();
+        this.player?.set_key(this.key_name, e.key, true).save();
       this._on_cancel();
     },
   };

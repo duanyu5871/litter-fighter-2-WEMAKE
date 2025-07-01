@@ -64,7 +64,7 @@ export class DemoModeLogic extends Component implements IEntityCallbacks {
         break;
       }
     }
-    const player_infos = Array.from(this.lf2.player_infos.values());
+    const player_infos = Array.from(this.lf2.players.values());
     for (let i = 0; i < player_count; i++) {
       const player = player_infos[i]!;
       if (!player) continue;

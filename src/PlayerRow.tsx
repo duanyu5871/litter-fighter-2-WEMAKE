@@ -106,7 +106,7 @@ export function PlayerRow(props: Props) {
       e.stopPropagation();
       const key = e.key?.toLocaleLowerCase();
       if (key && key !== "escape") {
-        info.set_key(editing_key, e.key.toLowerCase()).save();
+        info.set_key(editing_key, e.key.toLowerCase(), true).save();
       }
       set_editing_key(void 0);
     };
@@ -150,20 +150,20 @@ export function PlayerRow(props: Props) {
             maxLength={50}
             title="enter player name"
             value={player_name}
-            onChange={(e) => info.set_name(e.target.value)}
-            onBlur={(e) => info.set_name(e.target.value.trim() || info.id).save()}
+            onChange={(e) => info.set_name(e.target.value, true)}
+            onBlur={(e) => info.set_name(e.target.value.trim() || info.id, true).save()}
           />
           <CharacterSelect
             lf2={lf2}
             value={character_id}
             placeholder="角色"
-            on_changed={(v) => info.set_character(v!).save()}
+            on_changed={(v) => info.set_character(v!, true).save()}
             show_all={show_hidden}
           />
           <TeamSelect
             placeholder="队伍"
             value={team}
-            on_changed={(v) => info.set_team(v!).save()}
+            on_changed={(v) => info.set_team(v!, true).save()}
           />
           <Button onClick={on_click_add}>{added ? "移除" : "加入"}</Button>
           <ToggleButton value={touch_pad_on} onClick={on_click_toggle_touch_pad}>

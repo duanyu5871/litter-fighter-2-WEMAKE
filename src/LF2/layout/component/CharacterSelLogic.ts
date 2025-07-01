@@ -19,42 +19,42 @@ export default class CharacterSelLogic extends Component {
   }
 
   get player(): PlayerInfo | undefined {
-    return this.lf2.player_infos.get(this.player_id);
+    return this.lf2.players.get(this.player_id);
   }
 
   get character(): string {
     return this.player?.character || "";
   }
   set character(v: string) {
-    if (this.player) this.player.character = v;
+    if (this.player) this.player.set_character(v, true);
   }
 
   get character_decided() {
     return !!this.player?.character_decided;
   }
   set character_decided(v: boolean) {
-    if (this.player) this.player.character_decided = v;
+    if (this.player) this.player.set_character_decided(v, true);
   }
 
   get team_decided(): boolean {
     return !!this.player?.team_decided;
   }
   set team_decided(v: boolean) {
-    if (this.player) this.player.team_decided = v;
+    if (this.player) this.player.set_team_decided(v, true);
   }
 
   get team(): string {
     return this.player?.team ?? "";
   }
   set team(v: string) {
-    if (this.player) this.player.team = v;
+    if (this.player) this.player.set_team(v, true);
   }
 
   get joined(): boolean {
     return !!this.player?.joined;
   }
   set joined(v: boolean) {
-    if (this.player) this.player.joined = v;
+    if (this.player) this.player.set_joined(v, true);
   }
 
   protected _unmount_jobs = new Invoker();
@@ -183,6 +183,6 @@ export default class CharacterSelLogic extends Component {
   protected handle_hidden_character() {
     const { characters } = this;
     const idx = characters.findIndex((v) => v.id === this.character);
-    this.player?.set_character(characters[idx]?.id ?? "");
+    this.player?.set_character(characters[idx]?.id ?? "", true);
   }
 }
