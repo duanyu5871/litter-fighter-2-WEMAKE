@@ -13,15 +13,15 @@ import { MagnificationTextureFilter } from "../defines/MagnificationTextureFilte
 import { MinificationTextureFilter } from "../defines/MinificationTextureFilter";
 import { TextureWrapping } from "../defines/TextureWrapping";
 import Ditto from "../ditto";
+import { IImageInfo } from "./IImageInfo";
 import { ImageInfo } from "./ImageInfo";
 import { TextImageInfo } from "./TextImageInfo";
-import { IImageInfo } from "./IImageInfo";
 
 export type TPicture = IPicture<THREE.Texture>;
 export const texture_loader = new THREE.TextureLoader();
 export class ImageMgr {
   readonly lf2: LF2;
-  protected _requesters = new AsyncValuesKeeper<ImageInfo>();
+  protected infos = new AsyncValuesKeeper<ImageInfo>();
   constructor(lf2: LF2) {
     this.lf2 = lf2;
   }
@@ -131,17 +131,17 @@ export class ImageMgr {
   }
 
   find(key: string): ImageInfo | undefined {
-    return this._requesters.values.get(key);
+    return this.infos.values.get(key);
   }
 
   find_by_pic_info(f: IPictureInfo | ILegacyPictureInfo): ImageInfo | undefined {
-    return this._requesters.values.get(this._gen_key(f));
+    return this.infos.values.get(this._gen_key(f));
   }
 
   load_text(text: string, style: IStyle = {}): Promise<ImageInfo> {
     const key = Ditto.MD5(text, JSON.stringify(style));
     const fn = () => this._make_img_info_by_text(key, text, style);
-    return this._requesters.get(key, fn);
+    return this.infos.get(key, fn);
   }
 
   load_img(key: string, src: string, operations?: ImageOperation[]): Promise<ImageInfo> {
@@ -150,11 +150,11 @@ export class ImageMgr {
       const info = await this._make_img_info(key, src, operations);
       return info;
     };
-    return this._requesters.get(key, fn);
+    return this.infos.get(key, fn);
   }
 
   remove_img(key: string) {
-    const img = this._requesters.del(key);
+    const img = this.infos.del(key);
     if (!img) return;
     if (img.url.startsWith("blob:")) URL.revokeObjectURL(img.url);
     return;
@@ -173,31 +173,41 @@ export class ImageMgr {
 
   async create_pic(key: string, src: string, operations?: ImageOperation[]): Promise<TPicture> {
     const img_info = await this.load_img(key, src, operations);
-    return this.create_pic_by_img_key(img_info.key);
+    return this.p_create_pic_by_img_key(img_info.key);
   }
 
-  create_pic_by_img_info(img_info: IImageInfo): TPicture {
+  create_pic_by_img_info(img_info: IImageInfo, onLoad?: (d: TPicture) => void, onError?: (err: unknown) => void): TPicture {
     const picture = err_pic_info(img_info.key);
-    const ret = _create_pic(img_info, picture);
+    const ret = _create_pic(img_info, picture, onLoad, void 0, onError);
     return ret;
   }
 
-  create_pic_by_img_key(img_key: string) {
-    const img_info = this.find(img_key);
-    if (!img_info) return err_pic_info();
-    return this.create_pic_by_img_info(img_info);
+  p_create_pic_by_img_info(img_info: IImageInfo): Promise<TPicture> {
+    return new Promise((a, b) => this.create_pic_by_img_info(img_info, a, b))
   }
 
-  create_pic_by_e_pic_info(e_pic_info: ILegacyPictureInfo) {
+  create_pic_by_img_key(img_key: string, onLoad?: (d: TPicture) => void, onError?: (err: unknown) => void): TPicture {
+    const img_info = this.find(img_key);
+    if (!img_info) return err_pic_info();
+    return this.create_pic_by_img_info(img_info, onLoad, onError);
+  }
+  p_create_pic_by_img_key(img_key: string): Promise<TPicture> {
+    return new Promise((a, b) => this.create_pic_by_img_key(img_key, a, b))
+  }
+
+  create_pic_by_e_pic_info(e_pic_info: ILegacyPictureInfo, onLoad?: (d: TPicture) => void, onError?: (err: unknown) => void): TPicture {
     const img_info = this.find_by_pic_info(e_pic_info);
     const picture = err_pic_info();
     if (!img_info) return picture;
-    return _create_pic(img_info, picture);
+    return _create_pic(img_info, picture, onLoad, void 0, onError);
+  }
+  p_create_pic_by_e_pic_info(e_pic_info: ILegacyPictureInfo): Promise<TPicture> {
+    return new Promise((a, b) => this.create_pic_by_e_pic_info(e_pic_info, a, b))
   }
 
   async create_pic_by_text(text: string, style: IStyle = {}) {
     const img_info = await this.load_text(text, style);
-    return this.create_pic_by_img_key(img_info.key);
+    return this.p_create_pic_by_img_key(img_info.key);
   }
 
   dispose() {
@@ -235,6 +245,9 @@ export class ImageMgr {
 function _create_pic(
   img_info: IImageInfo,
   pic_info: TPicture = err_pic_info(img_info.key),
+  onLoad?: (data: TPicture) => void,
+  onProgress?: (event: ProgressEvent) => void,
+  onError?: (err: unknown) => void
 ): TPicture {
   const {
     url, w, h,
@@ -244,7 +257,7 @@ function _create_pic(
     wrap_t = TextureWrapping.MirroredRepeat,
     scale
   } = img_info;
-  const texture = texture_loader.load(url);
+  const texture = texture_loader.load(url, onLoad ? () => onLoad(pic_info) : void 0, onProgress, onError);
   texture.colorSpace = THREE.SRGBColorSpace;
   texture.minFilter = min_filter;
   texture.magFilter = mag_filter;

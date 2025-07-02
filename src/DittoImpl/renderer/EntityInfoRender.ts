@@ -84,7 +84,7 @@ class Bar {
 
 export class EntityInfoRender implements IEntityCallbacks, IEntityRenderer {
   readonly renderer_type: string = "Info";
-  protected mesh: IBillboardNode;
+  protected name_node: IBillboardNode;
   protected bars_node: IObjectNode;
   protected bars_bg: Bar;
 
@@ -101,15 +101,15 @@ export class EntityInfoRender implements IEntityCallbacks, IEntityRenderer {
   protected heading: number = 0;
 
   get visible() {
-    return this.mesh.visible;
+    return this.name_node.visible;
   }
   set visible(v) {
-    this.mesh.visible = this.bars_node.visible = v;
+    this.name_node.visible = this.bars_node.visible = v;
   }
 
   constructor(entity: Entity) {
     const { lf2 } = entity.world;
-    this.mesh = new Ditto.BillboardNode(lf2, { visible: false });
+    this.name_node = new Ditto.BillboardNode(lf2, { visible: false });
     this.bars_node = new Ditto.ObjectNode(lf2);
     this.bars_bg = new Bar(lf2, "rgb(0,0,0)", BAR_BG_W, BAR_BG_H, 0.5, 0);
     this.self_healing_hp_bar = new Bar(
@@ -135,8 +135,8 @@ export class EntityInfoRender implements IEntityCallbacks, IEntityRenderer {
     this.fall_value_bar = new Bar(lf2, "rgb(216, 115, 0)", BAR_W, 1, 0.5, 1);
     this.defend_value_bar = new Bar(lf2, "rgb(0, 122, 71)", BAR_W, 1, 0.5, 1);
 
-    this.mesh.name = EntityInfoRender.name;
-    this.mesh.render_order = 0;
+    this.name_node.name = EntityInfoRender.name;
+    this.name_node.render_order = 0;
     this.entity = entity;
 
     let y = -1;
@@ -176,7 +176,7 @@ export class EntityInfoRender implements IEntityCallbacks, IEntityRenderer {
   on_mount() {
     const { entity } = this;
     if (entity.in_player_slot)
-      entity.world.scene.add(this.bars_node, this.mesh);
+      entity.world.scene.add(this.bars_node, this.name_node);
     entity.callbacks.add(this);
     this.update_name_sprite(entity, entity.name, entity.team);
   }
@@ -184,7 +184,7 @@ export class EntityInfoRender implements IEntityCallbacks, IEntityRenderer {
   on_unmount() {
     const { entity } = this;
     this.bars_node.del_self();
-    this.mesh.del_self();
+    this.name_node.del_self();
     entity.callbacks.del(this);
   }
 
@@ -233,8 +233,8 @@ export class EntityInfoRender implements IEntityCallbacks, IEntityRenderer {
     const world = e.world;
     const lf2 = world.lf2;
     if (!name) {
-      this.mesh.visible = false;
-      this.mesh.clear_material().update_material();
+      this.name_node.visible = false;
+      this.name_node.clear_material().update_material();
       return;
     }
     lf2.images
@@ -243,16 +243,17 @@ export class EntityInfoRender implements IEntityCallbacks, IEntityRenderer {
         fill_style: fillStyle,
         smoothing: false,
       })
-      .then((i) => lf2.images.create_pic_by_img_key(i.key))
+      .then((i) => lf2.images.p_create_pic_by_img_key(i.key))
       .then((p) => {
         if (name !== e.name) return;
         if (team !== e.team) return;
-        this.mesh.visible = true;
-        this.mesh
+        console.log(p.texture.image)
+        this.name_node.visible = true;
+        this.name_node
           .set_texture(p)
           .update_material()
-          .set_scale(p.w, p.h, 1);
-        this.mesh.name = "name sprite";
+          // .set_scale(p.w, p.h, 1);
+        this.name_node.name = "name sprite";
       });
   }
 
@@ -262,7 +263,7 @@ export class EntityInfoRender implements IEntityCallbacks, IEntityRenderer {
     this.visible = !invisible;
 
     const _x = Math.floor(x);
-    const name_y = Math.floor(-z / 2 - this.mesh.scale_y);
+    const name_y = Math.floor(-z / 2 - this.name_node.scale_y);
     this.set_name_position(Math.floor(_x), Math.floor(name_y), Math.floor(z));
 
     const bar_y = Math.floor(y - z / 2 + 79 + BAR_BG_H + 5);
@@ -272,12 +273,12 @@ export class EntityInfoRender implements IEntityCallbacks, IEntityRenderer {
   }
 
   set_name_position(x: number, y: number, z: number) {
-    const hw = (this.mesh.scale_x + 10) / 2;
+    const hw = (this.name_node.scale_x + 10) / 2;
     const { x: cam_l } = this.entity.world.camera;
     const cam_r = cam_l + this.entity.world.screen_w;
     if (x + hw > cam_r) x = cam_r - hw;
     else if (x - hw < cam_l) x = cam_l + hw;
-    this.mesh.set_position(Math.round(x), Math.round(y), Math.round(z));
+    this.name_node.set_position(Math.round(x), Math.round(y), Math.round(z));
   }
 
   set_bars_position(x?: number, y?: number, z?: number) {
