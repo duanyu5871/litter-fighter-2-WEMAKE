@@ -14,7 +14,7 @@ export default function WorkspacesDemo() {
   const ref_container = useRef<HTMLDivElement>(null)
   const [views, set_views] = useState<React.ReactNode[]>([]);
   useEffect(() => {
-    if(!ref_container.current) return;
+    if (!ref_container.current) return;
     const adapter = new DomAdapter(ref_container.current)
     const workspaces = new Workspaces(adapter)
     // const indexes: number[] = []
@@ -59,11 +59,11 @@ export default function WorkspacesDemo() {
                 e.preventDefault();
               }}
             >
-              <Button onClick={() => workspaces.add(slot.id, 'left')?.confirm()}><ArrowLeft /></Button>
-              <Button onClick={() => workspaces.add(slot.id, 'right')?.confirm()}><ArrowRight /></Button>
-              <Button onClick={() => workspaces.add(slot.id, 'up')?.confirm()}><ArrowUp /></Button>
-              <Button onClick={() => workspaces.add(slot.id, 'down')?.confirm()}><ArrowDown /></Button>
-              <Button onClick={() => workspaces.del(slot.id)?.confirm()}><Cross /></Button>
+              <Button onClick={() => { workspaces.add(slot.id, 'left'); workspaces.confirm() }}><ArrowLeft /></Button>
+              <Button onClick={() => { workspaces.add(slot.id, 'right'); workspaces.confirm() }}><ArrowRight /></Button>
+              <Button onClick={() => { workspaces.add(slot.id, 'up'); workspaces.confirm() }}><ArrowUp /></Button>
+              <Button onClick={() => { workspaces.add(slot.id, 'down'); workspaces.confirm() }}><ArrowDown /></Button>
+              <Button onClick={() => { workspaces.del(slot.id); workspaces.confirm() }}><Cross /></Button>
             </Frame>,
             cell,
             cell.id

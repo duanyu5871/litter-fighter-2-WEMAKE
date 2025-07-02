@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { DomAdapter } from "splittings-dom/dist/es/splittings-dom";
 import "splittings-dom/dist/es/splittings-dom.css";
-import { Slot, Workspaces } from "splittings/dist/es/splittings";
+import { Workspaces } from "splittings/dist/es/splittings";
 import { Button } from "../Component/Buttons/Button";
 import { Checkbox } from "../Component/Checkbox";
 import Combine from "../Component/Combine";
@@ -18,6 +18,7 @@ import { ITreeNode, ITreeNodeGetIcon, TreeView } from "../Component/TreeView";
 import { IBgData, IFrameInfo } from "../LF2/defines";
 import { EntityEnum } from "../LF2/defines/EntityEnum";
 import { IEntityData } from "../LF2/defines/IEntityData";
+import { ILegacyPictureInfo } from "../LF2/defines/ILegacyPictureInfo";
 import Ditto, { IZip } from "../LF2/ditto";
 import { ILf2Callback } from "../LF2/ILf2Callback";
 import LF2 from "../LF2/LF2";
@@ -35,7 +36,6 @@ import { FrameListView } from "./FrameListView";
 import { PicInfoEditorView } from "./PicInfoEditorView";
 import styles from "./styles.module.scss";
 import { WorkspaceColumnView } from "./WorkspaceColumnView";
-import { ILegacyPictureInfo } from "../LF2/defines/ILegacyPictureInfo";
 enum EntityEditing {
   base = '基础信息',
   frame_index = '特定帧',
@@ -206,8 +206,8 @@ export default function EditorView(props: IEditorViewProps) {
     (window as any).board = board;
     const ob = new ResizeObserver(() => {
       const { width, height } = container.getBoundingClientRect();
-      board.width = width;
-      board.height = height;
+      board.width = width || 1;
+      board.height = height || 1;
       board.markDirty({ x: 0, y: 0, w: width, h: height })
     })
     ob.observe(container)
@@ -329,7 +329,7 @@ export default function EditorView(props: IEditorViewProps) {
 
 
   const ref_wprkspace_container = useRef<HTMLDivElement>(null);
-  const ref_workspace = useRef<Workspaces>()
+  const ref_workspace = useRef<Workspaces<DomAdapter>>()
   const ref_adapter = useRef<DomAdapter>()
   const [cells, set_cells] = useState<Readonly<(HTMLElement | undefined)[]>>([])
   const views = useMemo(() => {
@@ -476,20 +476,29 @@ export default function EditorView(props: IEditorViewProps) {
     const adpater = ref_adapter.current ? ref_adapter.current :
       ref_adapter.current = new DomAdapter(container)
 
-    const workspace = ref_workspace.current ?
-      ref_workspace.current :
-      ref_workspace.current = new Workspaces(adpater)
+    const workspace = (window as any).workspace = (
+      ref_workspace.current ?
+        ref_workspace.current :
+        ref_workspace.current = new Workspaces(adpater)
+    );
+    workspace.slots.clear()
+
     workspace.set_root(
-      new Slot(workspace, { id: 'root', type: 'h' }, [
-        new Slot(workspace, { id: 'res_tree_cell', weight: 250 }),
-        new Slot(workspace, { id: 'empty', weight: container.offsetWidth - 250 }),
-      ])
+      workspace.new_slot(workspace, { id: 'root', type: 'h', children: [{ id: 'res_tree_cell', weight: 250, keep: true }, { id: 'empty', weight: container.offsetWidth - 250 }] })
     )
-    workspace.on_changed = () => set_cells(workspace.leaves.map(slots => adpater.get_cell(slots)))
+    workspace.on_changed = () => {
+      const cells: HTMLElement[] = []
+      for (const leave of workspace.leaves) {
+        const cell = adpater.get_cell(leave);
+        if (!cell) { debugger; continue; }
+        if (!cell.parentElement) workspace.adapter.container.append(cell)
+        cells.push(cell)
+      }
+      set_cells(cells)
+    }
+
     workspace.update();
-    const ob = new ResizeObserver(() => {
-      workspace.update()
-    })
+    const ob = new ResizeObserver(() => workspace.update())
     ob.observe(container)
     return () => ob.disconnect()
   }, [])
@@ -501,16 +510,20 @@ export default function EditorView(props: IEditorViewProps) {
     if (!snapshot) return;
     const res_tree_slot = snapshot.find('res_tree_cell')
     if (!res_tree_slot) return;
-    const { w: res_tree_slot_w } = res_tree_slot.rect
-    const { w: root_w } = snapshot.slot.rect;
+    const { w: res_tree_slot_w } = res_tree_slot.rect!
+    const { w: root_w } = snapshot.slot.rect!;
 
     if (editing_data) {
+      if (!workspace.slots.get('frame_preview_cell'))
+        workspace.add('res_tree_cell', 'right', { id: 'frame_preview_cell' })
 
+      if (!workspace.slots.get('entity_info_cell'))
+        workspace.add('res_tree_cell', 'right', { id: 'entity_info_cell' })
       workspace.del('empty')
-      workspace.add('res_tree_cell', 'right', { id: 'frame_preview_cell' })
-      workspace.add('res_tree_cell', 'right', { id: 'entity_info_cell' })
+
       if (editing_frame) {
-        workspace.add('frame_preview_cell', 'right', { id: 'frame_editor_cell' })
+        if (!workspace.slots.get('frame_editor_cell'))
+          workspace.add('frame_preview_cell', 'right', { id: 'frame_editor_cell' })
       } else {
         workspace.del('frame_editor_cell')
       }
@@ -526,12 +539,16 @@ export default function EditorView(props: IEditorViewProps) {
       workspace.edit('frame_preview_cell', (slot) => {
         slot.weight = snapshot.w() - snapshot.w('entity_info_cell', 0) - snapshot.w('frame_editor_cell', 0) - snapshot.w('res_tree_cell', 0);
       })
-
     } else {
+      // workspace.del('empty')
       workspace.del('entity_info_cell')
       workspace.del('frame_preview_cell')
       workspace.del('frame_editor_cell')
-      workspace.add('res_tree_cell', 'right', { id: 'empty' })
+
+      if (!workspace.slots.get('empty')) {
+        workspace.add('res_tree_cell', 'right', { id: 'empty' })
+      }
+
       workspace.edits([0, 'res_tree_cell', 'empty'], 1, ([slot0, slot1, slot2]) => {
         slot0.rect.w = root_w
         slot1.weight = res_tree_slot_w
