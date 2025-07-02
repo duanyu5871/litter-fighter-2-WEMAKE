@@ -1,21 +1,20 @@
 import { Expression } from "../base/Expression";
 import { IBdyInfo, IEntityData } from "../defines";
 import { AllyFlag } from "../defines/AllyFlag";
+import type LF2 from "../LF2";
 import { get_val_geter_from_collision } from "./get_val_from_collision";
 import { preprocess_action } from "./preprocess_action";
 
-export function preprocess_bdy(bdy: IBdyInfo, data: IEntityData) {
+export function preprocess_bdy(lf2: LF2, bdy: IBdyInfo, data: IEntityData, jobs: Promise<void>[]): IBdyInfo {
   const prefab = bdy.prefab_id ? data.bdy_prefabs?.[bdy.prefab_id] : void 0;
   if (prefab) bdy = { ...prefab, ...bdy };
   bdy.ally_flags = bdy.ally_flags ?? AllyFlag.Enemy
-  if (bdy.test)
-    bdy.tester = new Expression(
-      bdy.test,
-      void 0,
-      get_val_geter_from_collision
-    );
-
-  bdy.actions?.forEach(n => preprocess_action(n));
+  bdy.tester = bdy.test ? new Expression(
+    bdy.test,
+    void 0,
+    get_val_geter_from_collision
+  ) : void 0;
+  bdy.actions?.forEach((n, i, l) => l[i] = preprocess_action(lf2, n, jobs));
   return bdy;
 }
 

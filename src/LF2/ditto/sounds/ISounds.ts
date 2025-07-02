@@ -113,6 +113,9 @@ export interface ISounds {
 
   /**
    * 预加载声音资源
+   * 
+   * @note 实现该函数时，应考虑对相同资源重复load的问题
+   * 
    * @date 4/12/2024 - 10:25:37 AM
    *
    * @param {string} name 声音名

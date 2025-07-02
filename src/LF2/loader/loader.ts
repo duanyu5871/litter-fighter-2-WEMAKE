@@ -154,7 +154,7 @@ export class ImageMgr {
   }
 
   remove_img(key: string) {
-    const img = this._requesters.take(key);
+    const img = this._requesters.del(key);
     if (!img) return;
     if (img.url.startsWith("blob:")) URL.revokeObjectURL(img.url);
     return;

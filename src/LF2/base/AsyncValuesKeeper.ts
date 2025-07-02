@@ -11,15 +11,17 @@ export default class AsyncValuesKeeper<V> {
   readonly values = new Map<string, V>();
   protected _pio = new PromiseInOne<string, string, V>(v => v)
 
-
-  del(key: string): void {
-    this.values.delete(key);
-  }
-
+  /**
+   * 取值
+   *
+   * @param {string} key 键
+   * @param {() => Promise<V>} job get函数首次调用时被调用，get函数返回的结果将被贮存
+   * @return {Promise<V>}
+   * @memberof AsyncValuesKeeper
+   */
   get(key: string, job: () => Promise<V>): Promise<V> {
     const value = this.values.get(key);
-    if (value)
-      return Promise.resolve(value);
+    if (value) return Promise.resolve(value);
 
     return new Promise((resolve, reject) => {
       const [pid, exist] = this._pio.check(key, resolve, reject)
@@ -35,7 +37,7 @@ export default class AsyncValuesKeeper<V> {
     this.values.clear()
   }
 
-  take(key: string): V | undefined {
+  del(key: string): V | undefined {
     const ret = this.values.get(key);
     this.values.delete(key);
     return ret;

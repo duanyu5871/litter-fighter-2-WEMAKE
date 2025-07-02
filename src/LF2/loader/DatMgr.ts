@@ -1,15 +1,11 @@
 import { Log } from "../../Log";
 import LF2 from "../LF2";
-import { BallController } from "../controller/BallController";
-import { BotController } from "../controller/BotController";
-import { InvalidController } from "../controller/InvalidController";
 import { IBgData, IStageInfo } from "../defines";
 import { IDataMap } from "../defines/IDataMap";
 import { IEntityData } from "../defines/IEntityData";
 import { EntityEnum } from "../defines/EntityEnum";
 import { Defines } from "../defines/defines";
 import { TData } from "../entity/Entity";
-import { Factory } from "../entity/Factory";
 import {
   is_ball_data,
   is_bg_data,
@@ -17,10 +13,15 @@ import {
   is_entity_data,
   is_weapon_data,
 } from "../entity/type_check";
-import { traversal } from "../utils/container_help/traversal";
 import { is_str, not_blank_str } from "../utils/type_check";
-import { preprocess_frame } from "./preprocess_frame";
-import { preprocess_next_frame } from "./preprocess_next_frame";
+import { preprocess_bg_data } from "./preprocess_bg_data";
+import { ISounds } from "../ditto";
+import { ImageMgr } from "./loader";
+import { preprocess_entity_data } from "./preprocess_entity_data";
+import { BallController } from "../controller/BallController";
+import { BotController } from "../controller/BotController";
+import { InvalidController } from "../controller/InvalidController";
+import { Factory } from "../entity";
 
 export interface IDataListMap {
   background: IBgData[];
@@ -59,94 +60,16 @@ class Inner {
   }
 
   private async _cook_data(data: TData): Promise<TData> {
-    const jobs: Promise<unknown>[] = [];
-    const { images, sounds } = this.lf2;
-
-    if (is_ball_data(data)) {
-      Factory.inst.set_ctrl_creator(
-        data.id,
-        (a, b) => new BallController(a, b),
-      );
-    } else if (is_weapon_data(data)) {
-      Factory.inst.set_ctrl_creator(
-        data.id,
-        (a, b) => new InvalidController(a, b),
-      );
-    } else if (is_character_data(data)) {
+    const jobs: Promise<any>[] = [];
+    if (is_bg_data(data)) data = preprocess_bg_data(this.lf2, data, jobs)
+    if (is_ball_data(data))
+      Factory.inst.set_ctrl_creator(data.id, (a, b) => new BallController(a, b));
+    else if (is_weapon_data(data))
+      Factory.inst.set_ctrl_creator(data.id, (a, b) => new InvalidController(a, b));
+    else if (is_character_data(data))
       Factory.inst.set_ctrl_creator(data.id, (a, b) => new BotController(a, b));
-      const { small, head } = data.base;
-      data.base.fall_value =
-        data.base.fall_value ?? Defines.DEFAULT_FALL_VALUE_MAX;
-      data.base.defend_value =
-        data.base.defend_value ?? Defines.DEFAULT_DEFEND_VALUE_MAX;
-      data.base.hp = data.base.hp ?? Defines.DEFAULT_HP;
-      data.base.mp = data.base.mp ?? Defines.DEFAULT_MP;
-      not_blank_str(small) && jobs.push(images.load_img(small, small));
-      not_blank_str(head) && jobs.push(images.load_img(head, head));
-    }
-    if (is_bg_data(data)) {
-      const {
-        layers,
-        base: { shadow },
-      } = data;
-      not_blank_str(shadow) && jobs.push(images.load_img(shadow, shadow));
-      for (const { file } of layers) {
-        not_blank_str(file) && jobs.push(images.load_img(file, file));
-      }
-    }
-    if (is_entity_data(data)) {
-      const { dead_sounds: a, drop_sounds: b, hit_sounds: c } = data.base;
-      const l = new Set<string>();
-      a?.forEach((i) => l.add(i));
-      b?.forEach((i) => l.add(i));
-      c?.forEach((i) => l.add(i));
-      l.forEach(
-        (i) =>
-          -(not_blank_str(i) && sounds.has(i)) || jobs.push(sounds.load(i, i)),
-      );
 
-      if (data.on_dead) preprocess_next_frame(data.on_dead);
-      if (data.on_exhaustion) preprocess_next_frame(data.on_exhaustion);
-
-      const {
-        frames,
-        base: { files },
-      } = data;
-      traversal(files, (_, v) => {
-        jobs.push(images.load_by_e_pic_info(v));
-      });
-      if (jobs.length) await Promise.all(jobs);
-      if (frames) {
-        traversal(frames, (_, frame) => {
-          preprocess_frame(this.lf2, data, frame);
- 
-          if (frame.bdy) {
-            for (const bdy of frame.bdy) {
-              bdy.actions?.forEach(action => {
-                if (action.type === 'sound') {
-                  for (const sound of action.path) {
-                    (not_blank_str(sound) && sounds.has(sound)) ||
-                      jobs.push(sounds.load(sound, sound));
-                  }
-                }
-              })
-            }
-          }
-          if (frame.itr) {
-            for (const itr of frame.itr) {
-              itr.actions?.forEach(action => {
-                if (action.type === 'sound') {
-                  for (const sound of action.path) {
-                    (not_blank_str(sound) && sounds.has(sound)) ||
-                      jobs.push(sounds.load(sound, sound));
-                  }
-                }
-              })
-            }
-          }
-        });
-      }
-    }
+    if (is_entity_data(data)) data = await preprocess_entity_data(this.lf2, data, jobs);
     return data;
   }
 
@@ -337,3 +260,4 @@ export default class DatMgr {
 interface IFindPredicate<T> {
   (value: T, index: number, obj: T[]): unknown;
 }
+

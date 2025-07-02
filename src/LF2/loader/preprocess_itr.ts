@@ -1,10 +1,10 @@
 import { Expression } from "../base/Expression";
-import { IEntityData, IItrInfo } from "../defines";
+import type { IEntityData, IItrInfo } from "../defines";
 import { AllyFlag } from "../defines/AllyFlag";
+import type LF2 from "../LF2";
 import { get_val_geter_from_collision } from "./get_val_from_collision";
 import { preprocess_action } from "./preprocess_action";
 import { preprocess_next_frame } from "./preprocess_next_frame";
-
 
 /**
  * Description placeholder
@@ -14,7 +14,7 @@ import { preprocess_next_frame } from "./preprocess_next_frame";
  * @param {IEntityData} data 
  * @returns {IItrInfo} 处理后的itr
  */
-export function preprocess_itr(itr: IItrInfo, data: IEntityData): IItrInfo {
+export function preprocess_itr(lf2: LF2, itr: IItrInfo, data: IEntityData, jobs: Promise<void>[]): IItrInfo {
   const prefab = itr.prefab_id !== void 0 ? data.itr_prefabs?.[itr.prefab_id] : void 0;
   if (prefab) itr = { ...prefab, ...itr };
   if (itr.catchingact) preprocess_next_frame(itr.catchingact);
@@ -26,7 +26,7 @@ export function preprocess_itr(itr: IItrInfo, data: IEntityData): IItrInfo {
       get_val_geter_from_collision
     );
   itr.ally_flags = itr.ally_flags ?? AllyFlag.Enemy
-  itr.actions?.forEach(n => preprocess_action(n));
+  itr.actions?.forEach((n, i, l) => l[i] = preprocess_action(lf2, n, jobs));
   return itr;
 }
 

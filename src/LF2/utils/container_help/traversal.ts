@@ -14,18 +14,18 @@ export function traversal<K extends TKey, V>(
 ): [K, V, Record<K, V>][];
 
 export function traversal<O>(
-  r: O,
+  r: O | undefined,
   func: (k: keyof O, v: O[typeof k], r: O) => void,
 ): void;
 
 export function traversal<K extends TKey, V>(
-  r: Record<K, V>,
+  r: Record<K, V> | undefined,
   func?: (k: K, v: V, r: Record<K, V>) => void,
 ): (readonly [K, V, Record<K, V>])[] | void {
-  const items = Object.keys(r).map((_k) => {
+  const items = r ? Object.keys(r).map((_k) => {
     const k = _k as K;
     func?.(k, r[k], r);
     return [k, r[k], r] as const;
-  });
+  }) : [];
   if (!func) return items;
 }
