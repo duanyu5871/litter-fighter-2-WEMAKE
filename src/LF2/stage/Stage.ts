@@ -92,11 +92,8 @@ export class Stage {
       const bg_data = this.world.lf2.datas.backgrounds.find(
         (v) => v.id === bg_id || v.id === "bg_" + bg_id,
       ); // FIXME;
-      if (!bg_data)
-        Warn.print(
-          Stage.TAG + "::constructor",
-          `bg_data not found, id: ${bg_id}`,
-        );
+      if (!bg_data && bg_id !== Defines.VOID_BG.id)
+        Warn.print(Stage.TAG + "::constructor", `bg_data not found, id: ${bg_id}`);
       this.bg = new Background(world, bg_data ?? Defines.VOID_BG);
     } else {
       this.data = Defines.VOID_STAGE;

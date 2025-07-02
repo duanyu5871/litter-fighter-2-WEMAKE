@@ -53,12 +53,6 @@ export namespace Defines {
 
   export const DEFAULT_HP_RECOVERY_SPEED = 0.2;
 
-  export const VOID_STAGE: IStageInfo = {
-    bg: "VOID",
-    id: "VOID_STAGE",
-    name: "VOID_STAGE",
-    phases: [],
-  };
   export const VOID_BG: IBgData = {
     type: "background",
     layers: [],
@@ -72,6 +66,12 @@ export namespace Defines {
       far: -468,
       near: -216,
     },
+  };
+  export const VOID_STAGE: IStageInfo = {
+    bg: VOID_BG.id,
+    id: "VOID_STAGE",
+    name: "VOID_STAGE",
+    phases: [],
   };
 
   export const NEXT_FRAME_GONE: Readonly<INextFrame> = {
