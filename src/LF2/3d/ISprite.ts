@@ -2,7 +2,7 @@ import type { IObjectNode } from "./IObject";
 export interface ISpriteInfo {
   w: number;
   h: number;
-  texture?: THREE.Texture;
+  texture?: any;
   color?: string;
 }
 export interface ISprite extends IObjectNode {
