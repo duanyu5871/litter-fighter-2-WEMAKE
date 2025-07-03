@@ -7,18 +7,16 @@ import { EditorShapeEnum } from "./EditorShapeEnum";
 import { img_map } from "./FrameEditorView";
 
 export class FrameDrawerData extends ShapeData {
-  
+  img?: HTMLImageElement;
+  frame?: IFrameInfo;
+  data?: IEntityData;
+  zip?: IZip;
   constructor(o?: Partial<FrameDrawerData>) {
     super()
     this.type = EditorShapeEnum.LF2_FRAME
     if (o) this.read(o)
   }
-  img?: HTMLImageElement;
-  frame?: IFrameInfo;
-  data?: IEntityData;
-  zip?: IZip;
   override read(o: Partial<FrameDrawerData>): this {
-
     super.read(o);
     this.img = o.img;
     this.frame = o.frame;
@@ -27,10 +25,10 @@ export class FrameDrawerData extends ShapeData {
     return this;
   }
 }
+
 export class FrameDrawer extends Shape<FrameDrawerData> {
   constructor(data: Partial<FrameDrawerData>) {
     super(data, FrameDrawerData)
-    console.log(data)
   }
   static get_size(f: IFrameInfo) {
     const { pic: { w = 0, h = 0 } = {} } = f;

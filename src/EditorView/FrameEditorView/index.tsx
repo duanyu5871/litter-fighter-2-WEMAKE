@@ -6,10 +6,12 @@ import Show from "../../Component/Show";
 import { Space } from "../../Component/Space";
 import { TabButtons } from "../../Component/TabButtons";
 import Titled from "../../Component/Titled";
-import { IFrameInfo } from "../../LF2/defines";
+import { IFrameInfo, IItrInfo } from "../../LF2/defines";
 import { IEntityData } from "../../LF2/defines/IEntityData";
 import { SPEED_MODE_SELECT_PROPS, STATE_SELECT_PROPS } from "../EntityEditorView";
 import { useEditor } from "./useEditor";
+import { Button } from "../../Component/Buttons/Button";
+import { map_arr } from "../../LF2/utils/array/map_arr";
 
 enum TabEnum {
   Base = 'base',
@@ -38,13 +40,13 @@ export interface IFrameEditorViewProps extends Omit<IFrameProps, 'onChange'> {
 export function FrameEditorView(props: IFrameEditorViewProps) {
   const { value, data, ..._p } = props;
   const [editing, set_editing] = useState<TabEnum | undefined>(TabEnum.Base);
-  const Editor = useEditor(value)
+  const Editor = useEditor<IFrameInfo>(value)
   const ref_root = useRef<HTMLDivElement>(null)
   return (
     <Frame id={`frame#${value.id}`} label={`frame:${value.id}`} {..._p} ref={ref_root}>
       <Space direction='column' stretchs>
-        <Editor.EditorStr field='id' />
-        <Editor.EditorStr field='name' />
+        <Editor.String field='id' />
+        <Editor.String field='name' />
         <Space.Item style={{ display: 'flex' }}>
           <TabButtons
             style={{ flex: 1 }}
@@ -69,7 +71,7 @@ export function FrameEditorView(props: IFrameEditorViewProps) {
               </Combine>
             </Titled>
             <Editor.EditorVec2 name="锚点" fields={['centerx', 'centery']} />
-            <Editor.EditorInt field="wait" clearable={false} title="当前动作持续多少帧数" />
+            <Editor.Number field="wait" clearable={false} title="当前动作持续多少帧数" />
             {/* <Titled label='持续帧数'>
               <Combine>
                 <Combine direction='column'>
@@ -87,17 +89,17 @@ export function FrameEditorView(props: IFrameEditorViewProps) {
         </Show>
         <Show show={editing === TabEnum.Spd}>
           <Space direction="column" stretchs>
-            <Editor.EditorVec3 name="速度" fields={['dvx', 'dvy', 'dvz']} />
-            <Editor.EditorVec3 name="加速度" fields={['acc_x', 'acc_y', 'acc_z']} />
+            <Editor.Number3 name="速度" fields={['dvx', 'dvy', 'dvz']} />
+            <Editor.Number3 name="加速度" fields={['acc_x', 'acc_y', 'acc_z']} />
             <Editor.EditorSel3
               name="速度模式"
               fields={['vxm', 'vym', 'vzm']}
               placeholders={['x', 'y', 'z']}
               select={SPEED_MODE_SELECT_PROPS} />
-            <Editor.EditorVec3
+            <Editor.Number3
               name="操作速度"
               fields={['ctrl_spd_x', 'ctrl_spd_y', 'ctrl_spd_z']} />
-            <Editor.EditorVec3
+            <Editor.Number3
               name="操作加速度"
               fields={['ctrl_acc_x', 'ctrl_acc_y', 'ctrl_acc_z']} />
             <Editor.EditorSel3
@@ -108,6 +110,7 @@ export function FrameEditorView(props: IFrameEditorViewProps) {
           </Space>
         </Show>
       </Space>
+
       {/* <Show show={editing === 'itr'}>
         <Button style={{ alignSelf: 'stretch' }} onClick={() => {
           set_frame(prev => {
@@ -148,8 +151,10 @@ export function FrameEditorView(props: IFrameEditorViewProps) {
             )
           })
         }
-      </Show>
-      <Show show={editing === 'bdy'}>
+      </Show> */}
+
+
+      {/* <Show show={editing === 'bdy'}>
         <Button style={{ alignSelf: 'stretch' }} onClick={() => {
           set_frame(prev => {
             const next: IFrameInfo = { ...prev };

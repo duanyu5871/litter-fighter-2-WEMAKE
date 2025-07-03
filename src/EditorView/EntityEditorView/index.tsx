@@ -1,5 +1,5 @@
 import { IBaseSelectProps } from "../../Component/Select";
-import { Defines, ItrEffect, ItrKind, StateEnum } from "../../LF2/defines";
+import { ItrEffect, ItrKind, StateEnum } from "../../LF2/defines";
 import { BdyKind } from "../../LF2/defines/BdyKind";
 import { EntityEnum } from "../../LF2/defines/EntityEnum";
 import { SpeedMode } from "../../LF2/defines/SpeedMode";

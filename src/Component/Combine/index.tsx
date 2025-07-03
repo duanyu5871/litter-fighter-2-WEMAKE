@@ -1,5 +1,5 @@
 import classnames from "classnames";
-import { useEffect, useRef, useState } from "react";
+import React, { isValidElement, useMemo, useRef } from "react";
 import styles from "./style.module.scss";
 export interface ICombineProps extends React.HTMLAttributes<HTMLDivElement> {
   direction?: 'row' | 'column',
@@ -8,65 +8,28 @@ export interface ICombineProps extends React.HTMLAttributes<HTMLDivElement> {
 export default function Combine(props: ICombineProps) {
   const { className, direction = 'row',
     hoverable = true, children, ..._p } = props;
-  const cls_name = classnames(styles.lfui_combine, styles[direction],
-    { [styles.hoverable]: hoverable }, className)
+  const cls_name = classnames(
+    styles.lfui_combine,
+    styles[direction],
+    { [styles.hoverable]: hoverable },
+    className
+  )
   const ref = useRef<HTMLDivElement>(null)
-  const [lines, set_lines] = useState<React.ReactNode[]>([])
-  useEffect(() => {
-    const ele = ref.current;
-    if (!ele) return;
-
-    const update = () => {
-      const lines: React.ReactNode[] = []
-      const is_row = getComputedStyle(ele).flexDirection === 'row';
-      let i = -1
-      for (const child of ele.children) {
-        if (!++i) continue;
-        if (child.getAttribute("split-line")) continue;
-        const { offsetLeft: x, offsetTop: y } = (child as HTMLElement)
-        const style: React.CSSProperties = is_row ? {
-          left: `${x - 4}px`,
-          width: 2,
-          height: '100%',
-        } : {
-          top: `${y - 4}px`,
-          height: 2,
-          width: '100%',
-        }
-        lines.push(
-          <div
-            split-line='true'
-            key={'split-line-' + lines.length}
-            className={styles.lfui_combine_split_line}
-            style={style} />
-        )
+  const _children = useMemo(() => {
+    if (!children || !Array.isArray(children)) return children;
+    return children.map((child, index) => {
+      if (!isValidElement<any>(child)) {
+        return <div key={index} className={styles.item}>{child}</div>
       }
-      set_lines(lines)
-    }
-
-    const ob_1 = new ResizeObserver(update);
-    ob_1.observe(ele)
-    update();
-
-    const watch_children = () => {
-      for (const child of ele.children) {
-        if (child.getAttribute("split-line")) continue;
-        ob_1.observe(child)
+      const style: React.CSSProperties = {
+        flex: child.props['data-flex'] ?? void 0
       }
-    }
-    const ob_2 = new MutationObserver(watch_children)
-    ob_2.observe(ele, { childList: true })
-    watch_children();
-    return () => {
-      ob_1.disconnect();
-      ob_2.disconnect();
-    }
-  }, [])
-
+      return <div key={index} className={styles.item} style={style}>{child}</div>
+    })
+  }, [children])
   return (
     <div className={cls_name} {..._p} ref={ref}>
-      {children}
-      {lines}
+      {_children}
     </div>
   );
 }

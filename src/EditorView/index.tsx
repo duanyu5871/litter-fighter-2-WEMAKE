@@ -222,7 +222,6 @@ export default function EditorView(props: IEditorViewProps) {
 
   const base_data_view = useMemo(() => {
     if (!editing_data) return;
-
     return (
       <Space.Broken>
         <EntityBaseDataEditorView
@@ -398,8 +397,7 @@ export default function EditorView(props: IEditorViewProps) {
                       <Titled label="img"><Checkbox value={state.img} onChanged={v => set_state(o => ({ ...o, img: v }))} /></Titled>
                       <Titled label="others"><Checkbox value={state.others} onChanged={v => set_state(o => ({ ...o, others: v }))} /></Titled>
                     </Space>
-                  }>
-                  </WorkspaceColumnView.TitleAndAdd>
+                  } />
                 }>
                 <Space.Item space vertical frame className={styles.file_editor_view}>
                   <TreeView

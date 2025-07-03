@@ -20,12 +20,12 @@ export function WorkspaceColumnView(props: IWorkspaceColumnViewProps) {
       {
         header ? header :
           <Combine direction='row' hoverable={false} className={styles.head_zone}>
-            <Text size='m' className={styles.title}>
+            <Text size='m' className={styles.title} data-flex={1}>
               {title}
             </Text>
           </Combine>
       }
-      <div className={styles.content_zone}>
+      <div className={styles.content_zone} data-flex={1}>
         {props.children}
       </div>
     </Combine>
@@ -36,7 +36,7 @@ export function TitleAndAdd(props: { title?: React.ReactNode; on_add?(e: React.M
   const { title, on_add } = props;
   return (
     <Combine direction='row' hoverable={false} className={styles.head_zone}>
-      <Text size='m' className={styles.title}>
+      <Text size='m' className={styles.title} data-flex={1}>
         {title}
       </Text>
       <Button onClick={on_add}>

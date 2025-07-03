@@ -10,51 +10,76 @@ import Titled, { ITitledProps } from "../../Component/Titled";
 import { IZipObject } from "../../LF2/ditto";
 import { shared_ctx } from "../Context";
 
-export function useEditor<O extends {}>(value: O, _label_style: React.CSSProperties = { width: 50, textAlign: 'right' }) {
-  const label_style: React.CSSProperties = useMemo(() => (
-    { width: 50, textAlign: 'right', ..._label_style }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  ), []);
+type Field<O> = (keyof O) | (string | number)[];
+interface CommonProps<O extends {}> {
+  name?: string;
+  field: Field<O>;
+  foo?: any
+}
+export function useEditor<O extends {}>(value: O, label_style: React.CSSProperties = {}) {
+
   const titled_style: React.CSSProperties = useMemo(() => (
     { display: 'flex' }
   ), []);
+
   return useMemo(() => {
-    const t_props = (field: any) => ({
+    const t_props = (field: any): ITitledProps => ({
       float_label: field.toString(),
-      label_style: label_style,
+      styles: { label: label_style },
       style: titled_style,
     });
-    type Field = keyof typeof value;
-    type Props = { field: Field; foo?: any }
-    type Props2 = { fields: [Field, Field]; foo?: any }
+    const get_value = (f: CommonProps<O>['field']) => {
+      if (!Array.isArray(f)) return (value as any)[f]
+      let r = value;
+      for (const k of f) {
+        if (!r) continue;
+        r = (r as any)[k]
+      }
+      return r;
+    }
+    const set_value = (f: CommonProps<O>['field'], v: any) => {
+      if (!Array.isArray(f)) {
+        (value as any)[f] = v;
+        return;
+      }
+      let temp = value;
+      f.forEach((k, i, a) => {
+        if (!temp) return;
+        if (i < a.length - 1) {
+          temp = (temp as any)[k]
+        } else {
+          (temp as any)[k] = v;
+        }
+      })
+    }
     return {
-      EditorImg(props: Props & Partial<ISelectProps<IZipObject, string>>) {
-        const { field, ..._p } = props;
+      EditorImg(props: CommonProps<O> & Partial<ISelectProps<IZipObject, string>>) {
+        const { field, name, ..._p } = props;
         const { zip } = useContext(shared_ctx);
         const [img_list, set_img_list] = useState<IZipObject[]>([])
         useEffect(() => {
           if (zip) set_img_list(zip.file(/.png$/))
         }, [zip])
         return (
-          <Titled {...t_props(field)}>
+          <Titled {...t_props(name ?? field)}>
             <Select
               items={img_list}
               parse={v => [v.name, v.name]}
-              defaultValue={(value as any)[field]}
-              on_changed={v => (value as any)[field] = v}
+              defaultValue={get_value(field)}
+              on_changed={v => set_value(field, v)}
               clearable
               style={{ flex: 1 }}
               {..._p} />
           </Titled>
         );
       },
-      EditorFlt(props: Props & InputNumberProps) {
-        const { field, ..._p } = props;
+      Number(props: CommonProps<O> & InputNumberProps) {
+        const { field, name, ..._p } = props;
         return (
-          <Titled {...t_props(field)}>
+          <Titled {...t_props(name ?? field)}>
             <InputNumber
-              defaultValue={(value as any)[field]}
-              on_blur={v => (value as any)[field] = v}
+              defaultValue={get_value(field)}
+              on_blur={v => set_value(field, v)}
               style={{ flex: 1 }}
               step={0.01}
               clearable
@@ -62,44 +87,30 @@ export function useEditor<O extends {}>(value: O, _label_style: React.CSSPropert
           </Titled>
         );
       },
-      EditorInt(props: Props & InputNumberProps) {
-        const { field, ..._p } = props;
+      EditorTxt(props: CommonProps<O>) {
+        const { name, field } = props;
         return (
-          <Titled {...t_props(field)}>
-            <InputNumber
-              defaultValue={(value as any)[field]}
-              on_blur={v => (value as any)[field] = v}
-              style={{ flex: 1 }}
-              step={1}
-              clearable
-              {..._p} />
-          </Titled>
-        );
-      },
-      EditorTxt(props: Props) {
-        const { field } = props;
-        return (
-          <Titled {...t_props(field)}>
+          <Titled {...t_props(name ?? field)}>
             <TextArea
               style={{ flex: 1, resize: 'vertical' }}
-              defaultValue={(value as any)[field]}
-              onBlur={e => (value as any)[field] = e.target.value.trim() || void 0} />
+              defaultValue={get_value(field)}
+              onBlur={e => set_value(field, e.target.value.trim() || void 0)} />
           </Titled>
         );
       },
-      EditorStr(props: Props & InputProps) {
-        const { field, ..._p } = props;
+      String(props: CommonProps<O> & InputProps) {
+        const { name, field, ..._p } = props;
         return (
-          <Titled {...t_props(field)}>
+          <Titled {...t_props(name ?? field)}>
             <Input
               style={{ flex: 1 }}
-              defaultValue={(value as any)[field]}
-              onBlur={e => (value as any)[field] = e.target.value.trim() || void 0}
+              defaultValue={get_value(field)}
+              onBlur={e => set_value(field, e.target.value.trim() || void 0)}
               {..._p} />
           </Titled>
         );
       },
-      EditorVec3(props: { name: string; fields: [Field, Field, Field]; clearable?: boolean } & ITitledProps) {
+      Number3(props: { name: string; fields: [Field<O>, Field<O>, Field<O>]; clearable?: boolean } & ITitledProps) {
         const { name, fields: [x, y, z], clearable, ..._p } = props;
         const combine_style: React.CSSProperties = { flex: 1 }
         const input_style: React.CSSProperties = { flex: 1 }
@@ -107,22 +118,22 @@ export function useEditor<O extends {}>(value: O, _label_style: React.CSSPropert
           <Titled {...t_props(name)} {..._p}>
             <Combine style={combine_style}>
               <InputNumber
-                defaultValue={(value as any)[x]}
-                on_changed={v => (value as any)[x] = v}
+                defaultValue={get_value(x)}
+                on_changed={v => set_value(x, v)}
                 title="x"
                 prefix="x"
                 style={input_style}
                 clearable={clearable} />
               <InputNumber
-                defaultValue={(value as any)[y]}
-                on_changed={v => (value as any)[y] = v}
+                defaultValue={get_value(y)}
+                on_changed={v => set_value(y, v)}
                 title="y"
                 prefix="y"
                 style={input_style}
                 clearable={clearable} />
               <InputNumber
-                defaultValue={(value as any)[z]}
-                on_changed={v => (value as any)[z] = v}
+                defaultValue={get_value(z)}
+                on_changed={v => set_value(z, v)}
                 title="z"
                 prefix="z"
                 style={input_style}
@@ -131,7 +142,7 @@ export function useEditor<O extends {}>(value: O, _label_style: React.CSSPropert
           </Titled>
         );
       },
-      EditorVec2(props: { name: string; fields: [Field, Field]; clearable?: boolean } & ITitledProps) {
+      EditorVec2(props: { name: string; fields: [Field<O>, Field<O>]; clearable?: boolean } & ITitledProps) {
         const { name, fields: [x, y], clearable, ..._p } = props;
         const combine_style: React.CSSProperties = { flex: 1 }
         const input_style: React.CSSProperties = { flex: 1 }
@@ -139,15 +150,15 @@ export function useEditor<O extends {}>(value: O, _label_style: React.CSSPropert
           <Titled {...t_props(name)} {..._p}>
             <Combine style={combine_style}>
               <InputNumber
-                defaultValue={(value as any)[x]}
-                on_changed={v => (value as any)[x] = v}
+                defaultValue={get_value(x)}
+                on_changed={v => set_value(x, v)}
                 title="x"
                 prefix="x"
                 style={input_style}
                 clearable={clearable} />
               <InputNumber
-                defaultValue={(value as any)[y]}
-                on_changed={v => (value as any)[y] = v}
+                defaultValue={get_value(y)}
+                on_changed={v => set_value(y, v)}
                 title="y"
                 prefix="y"
                 style={input_style}
@@ -156,7 +167,7 @@ export function useEditor<O extends {}>(value: O, _label_style: React.CSSPropert
           </Titled>
         );
       },
-      EditorQube(props: { name: string; fields: [Field, Field, Field, Field, Field, Field]; clearable?: boolean } & ITitledProps) {
+      EditorQube(props: { name: string; fields: [Field<O>, Field<O>, Field<O>, Field<O>, Field<O>, Field<O>]; clearable?: boolean } & ITitledProps) {
         const { name, fields: [x, y, z, w, h, l], clearable, ..._p } = props;
         const combine_style: React.CSSProperties = { flex: 1, alignItems: 'stretch' }
         const input_style: React.CSSProperties = { flex: 1 }
@@ -165,40 +176,40 @@ export function useEditor<O extends {}>(value: O, _label_style: React.CSSPropert
             <Combine direction="column" style={combine_style}>
               <Combine>
                 <InputNumber
-                  defaultValue={(value as any)[x]}
-                  on_changed={v => (value as any)[x] = v}
+                  defaultValue={get_value(x)}
+                  on_changed={v => set_value(x, v)}
                   title="x" prefix="x"
                   style={input_style}
                   clearable={clearable} />
                 <InputNumber
-                  defaultValue={(value as any)[y]}
-                  on_changed={v => (value as any)[y] = v}
+                  defaultValue={get_value(y)}
+                  on_changed={v => set_value(y, v)}
                   title="y" prefix="y"
                   style={input_style}
                   clearable={clearable} />
                 <InputNumber
-                  defaultValue={(value as any)[z]}
-                  on_changed={v => (value as any)[z] = v}
+                  defaultValue={get_value(z)}
+                  on_changed={v => set_value(z, v)}
                   title="z" prefix="z"
                   style={input_style}
                   clearable={clearable} />
               </Combine>
               <Combine>
                 <InputNumber
-                  defaultValue={(value as any)[w]}
-                  on_changed={v => (value as any)[w] = v}
+                  defaultValue={get_value(w)}
+                  on_changed={v => set_value(w, v)}
                   title="w" prefix="w"
                   style={input_style}
                   clearable={clearable} />
                 <InputNumber
-                  defaultValue={(value as any)[h]}
-                  on_changed={v => (value as any)[h] = v}
+                  defaultValue={get_value(h)}
+                  on_changed={v => set_value(h, v)}
                   title="h" prefix="h"
                   style={input_style}
                   clearable={clearable} />
                 <InputNumber
-                  defaultValue={(value as any)[l]}
-                  on_changed={v => (value as any)[l] = v}
+                  defaultValue={get_value(l)}
+                  on_changed={v => set_value(l, v)}
                   title="l" prefix="l"
                   style={input_style}
                   clearable={clearable} />
@@ -207,8 +218,8 @@ export function useEditor<O extends {}>(value: O, _label_style: React.CSSPropert
           </Titled>
         );
       },
-      EditorStrList(props: Props) {
-        const { field, } = props;
+      Strings(props: CommonProps<O> & InputProps) {
+        const { name, field, placeholder, title } = props;
         const list: string[] | undefined = (value as any)[field];
         const [, set_change_flags] = useState(0);
 
@@ -225,31 +236,36 @@ export function useEditor<O extends {}>(value: O, _label_style: React.CSSPropert
           (value as any)[field][idx] = str.trim();
           set_change_flags(v => v + 1)
         }
-        return (
-          <Titled {...t_props(field)}>
-            <Combine direction='column' style={{ flex: 1 }}>
-              {list?.map((value, idx) => {
-                return (
-                  <Combine key={idx}>
-                    <Input
-                      style={{ flex: 1 }}
-                      defaultValue={value}
-                      onBlur={e => on_blur(idx, e.target.value)} />
-                    <Button >
-                      <Cross onClick={() => on_click_del(idx)} />
-                    </Button>
-                  </Combine>
-                );
-              })}
-              <Button onClick={on_click_add}>
-                <Plus />
+        const children = list?.map((value, idx) => {
+          return (
+            <Combine key={idx} style={{ flex: 1 }}>
+              <Input
+                defaultValue={value}
+                placeholder={placeholder}
+                onBlur={e => on_blur(idx, e.target.value)}
+                data-flex={1}
+                style={{ flex: 1 }} />
+              <Button onClick={() => on_click_del(idx)} >
+                <Cross />
               </Button>
+            </Combine>
+          );
+        }) ?? []
+        children.push(
+          <Button onClick={on_click_add} style={{ flex: 1 }} key={children.length}>
+            <Plus />
+          </Button>
+        )
+        return (
+          <Titled {...t_props(name ?? field)} title={title}>
+            <Combine direction='column' style={{ flex: 1 }}>
+              {children}
             </Combine>
           </Titled>
         );
       },
-      EditorIntList(props: Props) {
-        const { field, } = props;
+      EditorIntList(props: CommonProps<O>) {
+        const { name, field, } = props;
         const list: number[] | undefined = (value as any)[field];
         const [, set_change_flags] = useState(0);
         const on_click_add = () => {
@@ -266,7 +282,7 @@ export function useEditor<O extends {}>(value: O, _label_style: React.CSSPropert
           set_change_flags(v => v + 1);
         }
         return (
-          <Titled {...t_props(field)}>
+          <Titled {...t_props(name ?? field)}>
             <Combine direction='column' style={{ flex: 1 }}>
               {list?.map((value, idx) => {
                 return (
@@ -288,13 +304,13 @@ export function useEditor<O extends {}>(value: O, _label_style: React.CSSPropert
           </Titled>
         );
       },
-      EditorSel<T, V>(props: Props & ISelectProps<T, V>) {
-        const { field, on_changed, ..._p } = props;
+      EditorSel<T, V>(props: CommonProps<O> & ISelectProps<T, V>) {
+        const { name, field, on_changed, ..._p } = props;
         const [, set_change_flags] = useState(0);
         return (
-          <Titled {...t_props(field)}>
+          <Titled {...t_props(name ?? field)}>
             <Select
-              defaultValue={(value as any)[field]}
+              defaultValue={get_value(field)}
               on_changed={v => {
                 (value as any)[field] = v;
                 on_changed?.(v);
@@ -308,7 +324,7 @@ export function useEditor<O extends {}>(value: O, _label_style: React.CSSPropert
       },
       EditorSel3<T, V>(props: {
         name: string;
-        fields: [Field, Field, Field];
+        fields: [Field<O>, Field<O>, Field<O>];
         placeholders?: [string, string, string]
         clearable?: boolean;
         select: ISelectProps<T, V>
@@ -320,22 +336,22 @@ export function useEditor<O extends {}>(value: O, _label_style: React.CSSPropert
           <Titled {...t_props(name)} {..._p}>
             <Combine style={combine_style}>
               <Select
-                defaultValue={(value as any)[x]}
-                on_changed={v => { (value as any)[x] = v; }}
+                defaultValue={get_value(x)}
+                on_changed={v => { set_value(x, v) }}
                 placeholder={placeholders?.at(0)}
                 clearable
                 style={select_style}
                 {...select} />
               <Select
-                defaultValue={(value as any)[y]}
-                on_changed={v => { (value as any)[y] = v; }}
+                defaultValue={get_value(y)}
+                on_changed={v => { set_value(y, v) }}
                 placeholder={placeholders?.at(1)}
                 clearable
                 style={select_style}
                 {...select} />
               <Select
-                defaultValue={(value as any)[z]}
-                on_changed={v => { (value as any)[z] = v; }}
+                defaultValue={get_value(z)}
+                on_changed={v => { set_value(z, v) }}
                 placeholder={placeholders?.at(2)}
                 clearable
                 style={select_style}

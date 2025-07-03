@@ -43,23 +43,24 @@ export function PicInfoEditorView(props: IFileEditorViewProps) {
     on_changed?.();
   }
   const on_click_remove = () => {
+
     for (const k in data.frames) {
       if (data.frames[k].pic?.tex.trim() === pic_info.id) {
-        alert('正在被使用，不能删除!')
+        alert(`已经被帧:${k}引用，不能删除!`)
         return;
       }
     }
     delete data.base.files[pic_info.id]
     on_changed?.();
   }
-  const { EditorStr, EditorStrList, EditorImg } = useEditor(pic_info)
+  const { String, Strings, EditorImg } = useEditor(pic_info)
   return (
-    <Frame {..._p} label='pic'>
+    <Frame {..._p} label='图片索引信息'>
       <Cross style={{ position: 'absolute', top: 0, right: 0 }} onClick={on_click_remove} hoverable />
-      <Space vertical>
-        <EditorStr field='id' onBlur={on_input_id_blur} />
-        <EditorImg field='path' clearable={false} />
-        <EditorStrList field="variants" />
+      <Space vertical stretchs>
+        <String field='id' name='图片索引id' onBlur={on_input_id_blur} />
+        <EditorImg field='path' name='图片路径' clearable={false} />
+        <Strings field="variants" placeholder="图片索引id" title="变体"/>
       </Space>
     </Frame>
   );

@@ -29,7 +29,8 @@ export function TabButtons<V extends number | string, I>(props: ITabButtonsProps
               key={idx}
               onClick={(e) => v === value ? void 0 : onChange?.(v, e)}
               actived={v === value}
-              disabled={disabled}>
+              disabled={disabled}
+              data-flex={1}>
               {label}
             </Button>
           )

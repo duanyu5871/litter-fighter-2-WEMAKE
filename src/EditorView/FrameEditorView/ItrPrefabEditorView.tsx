@@ -46,7 +46,7 @@ export function ItrPrefabEditorView(props: IItrPrefabEditorViewProps) {
   }
 
   const {
-    EditorInt, EditorTxt, EditorStr, EditorVec3, EditorQube, EditorSel
+    Number: EditorInt, EditorTxt, String: EditorStr, Number3: EditorVec3, EditorQube, EditorSel
   } = useEditor(value)
 
   return (
