@@ -53,7 +53,7 @@ export function PicInfoEditorView(props: IFileEditorViewProps) {
     delete data.base.files[pic_info.id]
     on_changed?.();
   }
-  const { String, Strings, EditorImg } = useEditor(pic_info)
+  const { String, Strings, ImageFile: EditorImg } = useEditor(pic_info)
   return (
     <Frame {..._p} label='图片索引信息'>
       <Cross style={{ position: 'absolute', top: 0, right: 0 }} onClick={on_click_remove} hoverable />

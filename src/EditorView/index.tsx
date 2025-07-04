@@ -27,15 +27,17 @@ import { is_num } from "../LF2/utils/type_check";
 import open_file from "../Utils/open_file";
 import { shared_ctx } from './Context';
 import { EditorShapeEnum } from "./EditorShapeEnum";
+import { EntityBaseDataView } from "./EntityBaseDataView";
 import { EntityDataEditorView } from "./EntityDataEditorView";
-import { EntityBaseDataEditorView } from "./EntityDataEditorView/EntityBaseDataEditorView";
 import { FrameDrawer, FrameDrawerData } from "./FrameDrawer";
 import { FrameEditorView } from "./FrameEditorView";
-import { ItrPrefabEditorView } from "./FrameEditorView/ItrPrefabEditorView";
+import { ItrPrefabView } from "./FrameEditorView/ItrPrefabView";
 import { FrameListView } from "./FrameListView";
 import { PicInfoEditorView } from "./PicInfoEditorView";
 import styles from "./styles.module.scss";
 import { WorkspaceColumnView } from "./WorkspaceColumnView";
+
+
 enum EntityEditing {
   base = '基础信息',
   frame_index = '特定帧',
@@ -224,7 +226,7 @@ export default function EditorView(props: IEditorViewProps) {
     if (!editing_data) return;
     return (
       <Space.Broken>
-        <EntityBaseDataEditorView
+        <EntityBaseDataView
           value={editing_data}
           on_changed={() => set_change_flag(change_flag + 1)}
           style={{ flex: 1, overflow: 'auto', flexFlow: 'column' }}
@@ -282,7 +284,7 @@ export default function EditorView(props: IEditorViewProps) {
       if (!value) return;
       const label = `itr_prefabs: ${k}`
       views.push(
-        <ItrPrefabEditorView
+        <ItrPrefabView
           label={label}
           value={value}
           data={editing_data}
@@ -304,24 +306,15 @@ export default function EditorView(props: IEditorViewProps) {
 
     return (
       <Space.Broken>
-        <Combine
-          direction='column'
-          className={styles.header_main_footer_view}
-          hoverable={false}>
-          <Combine direction='row' hoverable={false}>
-            <div style={{ flex: 1, textAlign: 'center' }}>
-              ITR预设
-            </div>
-            <Button key={views.length} onClick={add}>
-              <Plus />
-            </Button>
-          </Combine>
-          <div className={styles.content_zone}>
+        <WorkspaceColumnView header={
+          <WorkspaceColumnView.TitleAndAdd title='ITR预设' on_add={add} />
+        }>
+          <div style={{ overflow: 'scroll', width: '100%', height: '100%' }}>
             <Space vertical className={styles.file_editor_view}>
               {views}
             </Space>
           </div>
-        </Combine>
+        </WorkspaceColumnView>
       </Space.Broken>
     );
   }, [itr_prefabs, editing_data, change_flag])
@@ -481,9 +474,20 @@ export default function EditorView(props: IEditorViewProps) {
     );
     workspace.slots.clear()
 
+
     workspace.set_root(
-      workspace.new_slot(workspace, { id: 'root', type: 'h', children: [{ id: 'res_tree_cell', weight: 250, keep: true }, { id: 'empty', weight: container.offsetWidth - 250 }] })
+      workspace.new_slot(workspace, {
+        id: 'root',
+        type: 'h',
+        children: [
+          { id: 'res_tree_cell' },
+          { id: 'empty' }
+        ]
+      })
     )
+    workspace.edit('res_tree_cell', s => s.weight = 250)
+    workspace.edit('empty', s => s.weight = container.offsetWidth - 250)
+
     workspace.on_changed = () => {
       const cells: HTMLElement[] = []
       for (const leave of workspace.leaves) {
@@ -495,8 +499,8 @@ export default function EditorView(props: IEditorViewProps) {
       set_cells(cells)
     }
 
-    workspace.update();
-    const ob = new ResizeObserver(() => workspace.update())
+    workspace.confirm();
+    const ob = new ResizeObserver(() => workspace.confirm())
     ob.observe(container)
     return () => ob.disconnect()
   }, [])

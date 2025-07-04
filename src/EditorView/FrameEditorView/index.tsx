@@ -12,6 +12,7 @@ import { SPEED_MODE_SELECT_PROPS, STATE_SELECT_PROPS } from "../EntityEditorView
 import { useEditor } from "./useEditor";
 import { Button } from "../../Component/Buttons/Button";
 import { map_arr } from "../../LF2/utils/array/map_arr";
+import { ItrEditorView } from "./ItrEditorView";
 
 enum TabEnum {
   Base = 'base',
@@ -43,7 +44,7 @@ export function FrameEditorView(props: IFrameEditorViewProps) {
   const Editor = useEditor<IFrameInfo>(value)
   const ref_root = useRef<HTMLDivElement>(null)
   return (
-    <Frame id={`frame#${value.id}`} label={`frame:${value.id}`} {..._p} ref={ref_root}>
+    <Frame label={`frame:${value.id}`} {..._p} ref={ref_root}>
       <Space direction='column' stretchs>
         <Editor.String field='id' />
         <Editor.String field='name' />
@@ -61,12 +62,12 @@ export function FrameEditorView(props: IFrameEditorViewProps) {
             <Editor.EditorSel {...STATE_SELECT_PROPS} field="state" />
             <Titled float_label='图片' style={{ width: '100%' }}>
               <Combine direction='column' style={{ flex: 1 }}>
-                <Input defaultValue={value.pic?.tex} prefix="tex" style={{ alignSelf: 'stretch' }} />
-                <Combine style={{ alignSelf: 'stretch' }}>
-                  <Input defaultValue={value.pic?.x} prefix="x" style={{ flex: 1 }} />
-                  <Input defaultValue={value.pic?.y} prefix="y" style={{ flex: 1 }} />
-                  <Input defaultValue={value.pic?.w} prefix="w" style={{ flex: 1 }} />
-                  <Input defaultValue={value.pic?.h} prefix="h" style={{ flex: 1 }} />
+                <Input defaultValue={value.pic?.tex} prefix="tex" style={{ flex: 1 }} data-flex={1} />
+                <Combine style={{ flex: 1 }} data-flex={1}>
+                  <Input defaultValue={value.pic?.x} prefix="x" style={{ flex: 1 }} data-flex={1} />
+                  <Input defaultValue={value.pic?.y} prefix="y" style={{ flex: 1 }} data-flex={1} />
+                  <Input defaultValue={value.pic?.w} prefix="w" style={{ flex: 1 }} data-flex={1} />
+                  <Input defaultValue={value.pic?.h} prefix="h" style={{ flex: 1 }} data-flex={1} />
                 </Combine>
               </Combine>
             </Titled>
@@ -91,7 +92,7 @@ export function FrameEditorView(props: IFrameEditorViewProps) {
           <Space direction="column" stretchs>
             <Editor.Number3 name="速度" fields={['dvx', 'dvy', 'dvz']} />
             <Editor.Number3 name="加速度" fields={['acc_x', 'acc_y', 'acc_z']} />
-            <Editor.EditorSel3
+            <Editor.Sel3
               name="速度模式"
               fields={['vxm', 'vym', 'vzm']}
               placeholders={['x', 'y', 'z']}
@@ -102,7 +103,7 @@ export function FrameEditorView(props: IFrameEditorViewProps) {
             <Editor.Number3
               name="操作加速度"
               fields={['ctrl_acc_x', 'ctrl_acc_y', 'ctrl_acc_z']} />
-            <Editor.EditorSel3
+            <Editor.Sel3
               name="操作速度模式"
               fields={['ctrl_spd_x_m', 'ctrl_spd_y_m', 'ctrl_spd_z_m']}
               placeholders={['x', 'y', 'z']}
@@ -110,9 +111,8 @@ export function FrameEditorView(props: IFrameEditorViewProps) {
           </Space>
         </Show>
       </Space>
-
-      {/* <Show show={editing === 'itr'}>
-        <Button style={{ alignSelf: 'stretch' }} onClick={() => {
+      <Show show={editing === 'itr'}>
+        {/* <Button style={{ alignSelf: 'stretch' }} onClick={() => {
           set_frame(prev => {
             const next: IFrameInfo = { ...prev };
             const itr: IItrInfo = { z: 0, l: 0, x: 0, y: 0, w: 0, h: 0 }
@@ -122,38 +122,37 @@ export function FrameEditorView(props: IFrameEditorViewProps) {
           })
         }}>
           add itr
-        </Button>
+        </Button> */}
         {
-          value.itr && map_arr(value.itr, (itr, idx) => {
+          map_arr(value.itr ?? [], (itr, idx) => {
             const name = `itr[${idx}]`;
-            const on_change = (itr: IItrInfo) => set_frame(prev => {
-              const next: IFrameInfo = { ...prev }
-              if (next.itr) {
-                next.itr[idx] = itr
-                next.itr = [...next.itr]
-              }
-              return next
-            })
-            const on_remove = () => set_frame(prev => {
-              const next: IFrameInfo = { ...prev };
-              next.itr?.splice(idx, 1)
-              if (next.itr?.length) next.itr = [...next.itr]
-              if (!next.itr?.length) delete next.itr;
-              return next;
-            })
+            // const on_change = (itr: IItrInfo) => set_frame(prev => {
+            //   const next: IFrameInfo = { ...prev }
+            //   if (next.itr) {
+            //     next.itr[idx] = itr
+            //     next.itr = [...next.itr]
+            //   }
+            //   return next
+            // })
+            // const on_remove = () => set_frame(prev => {
+            //   const next: IFrameInfo = { ...prev };
+            //   next.itr?.splice(idx, 1)
+            //   if (next.itr?.length) next.itr = [...next.itr]
+            //   if (!next.itr?.length) delete next.itr;
+            //   return next;
+            // })
             return (
               <ItrEditorView
                 key={name}
                 label={name}
                 value={itr}
-                onChange={on_change}
-                onRemove={on_remove} />
+              // onChange={on_change}
+              // onRemove={on_remove} 
+              />
             )
           })
         }
-      </Show> */}
-
-
+      </Show>
       {/* <Show show={editing === 'bdy'}>
         <Button style={{ alignSelf: 'stretch' }} onClick={() => {
           set_frame(prev => {

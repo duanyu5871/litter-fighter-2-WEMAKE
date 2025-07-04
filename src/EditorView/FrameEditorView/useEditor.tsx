@@ -53,7 +53,7 @@ export function useEditor<O extends {}>(value: O, label_style: React.CSSProperti
       })
     }
     return {
-      EditorImg(props: CommonProps<O> & Partial<ISelectProps<IZipObject, string>>) {
+      ImageFile(props: CommonProps<O> & Partial<ISelectProps<IZipObject, string>>) {
         const { field, name, ..._p } = props;
         const { zip } = useContext(shared_ctx);
         const [img_list, set_img_list] = useState<IZipObject[]>([])
@@ -87,7 +87,7 @@ export function useEditor<O extends {}>(value: O, label_style: React.CSSProperti
           </Titled>
         );
       },
-      EditorTxt(props: CommonProps<O>) {
+      Text(props: CommonProps<O>) {
         const { name, field } = props;
         return (
           <Titled {...t_props(name ?? field)}>
@@ -123,21 +123,24 @@ export function useEditor<O extends {}>(value: O, label_style: React.CSSProperti
                 title="x"
                 prefix="x"
                 style={input_style}
-                clearable={clearable} />
+                clearable={clearable}
+                data-flex={1} />
               <InputNumber
                 defaultValue={get_value(y)}
                 on_changed={v => set_value(y, v)}
                 title="y"
                 prefix="y"
                 style={input_style}
-                clearable={clearable} />
+                clearable={clearable}
+                data-flex={1} />
               <InputNumber
                 defaultValue={get_value(z)}
                 on_changed={v => set_value(z, v)}
                 title="z"
                 prefix="z"
                 style={input_style}
-                clearable={clearable} />
+                clearable={clearable}
+                data-flex={1} />
             </Combine>
           </Titled>
         );
@@ -155,64 +158,67 @@ export function useEditor<O extends {}>(value: O, label_style: React.CSSProperti
                 title="x"
                 prefix="x"
                 style={input_style}
-                clearable={clearable} />
+                clearable={clearable}
+                data-flex={1} />
               <InputNumber
                 defaultValue={get_value(y)}
                 on_changed={v => set_value(y, v)}
                 title="y"
                 prefix="y"
                 style={input_style}
-                clearable={clearable} />
+                clearable={clearable}
+                data-flex={1} />
             </Combine>
           </Titled>
         );
       },
-      EditorQube(props: { name: string; fields: [Field<O>, Field<O>, Field<O>, Field<O>, Field<O>, Field<O>]; clearable?: boolean } & ITitledProps) {
+      Qube(props: { name: string; fields: [Field<O>, Field<O>, Field<O>, Field<O>, Field<O>, Field<O>]; clearable?: boolean } & ITitledProps) {
         const { name, fields: [x, y, z, w, h, l], clearable, ..._p } = props;
         const combine_style: React.CSSProperties = { flex: 1, alignItems: 'stretch' }
         const input_style: React.CSSProperties = { flex: 1 }
         return (
           <Titled {...t_props(name)} {..._p}>
             <Combine direction="column" style={combine_style}>
-              <Combine>
+              <Combine data-flex={1} style={{ flex: 1 }}>
                 <InputNumber
                   defaultValue={get_value(x)}
                   on_changed={v => set_value(x, v)}
-                  title="x" prefix="x"
+                  title="x"
+                  prefix="x"
                   style={input_style}
-                  clearable={clearable} />
+                  clearable={clearable} data-flex={1} />
                 <InputNumber
                   defaultValue={get_value(y)}
                   on_changed={v => set_value(y, v)}
                   title="y" prefix="y"
                   style={input_style}
-                  clearable={clearable} />
+                  clearable={clearable} data-flex={1} />
                 <InputNumber
                   defaultValue={get_value(z)}
                   on_changed={v => set_value(z, v)}
                   title="z" prefix="z"
                   style={input_style}
-                  clearable={clearable} />
+                  clearable={clearable} data-flex={1} />
               </Combine>
-              <Combine>
+              <Combine data-flex={1} style={{ flex: 1 }}>
                 <InputNumber
                   defaultValue={get_value(w)}
                   on_changed={v => set_value(w, v)}
                   title="w" prefix="w"
                   style={input_style}
-                  clearable={clearable} />
+                  clearable={clearable} data-flex={1} />
                 <InputNumber
                   defaultValue={get_value(h)}
                   on_changed={v => set_value(h, v)}
                   title="h" prefix="h"
                   style={input_style}
-                  clearable={clearable} />
+                  clearable={clearable} data-flex={1} />
                 <InputNumber
                   defaultValue={get_value(l)}
                   on_changed={v => set_value(l, v)}
                   title="l" prefix="l"
                   style={input_style}
-                  clearable={clearable} />
+                  clearable={clearable} data-flex={1} />
               </Combine>
             </Combine>
           </Titled>
@@ -322,7 +328,7 @@ export function useEditor<O extends {}>(value: O, label_style: React.CSSProperti
           </Titled>
         )
       },
-      EditorSel3<T, V>(props: {
+      Sel3<T, V>(props: {
         name: string;
         fields: [Field<O>, Field<O>, Field<O>];
         placeholders?: [string, string, string]
@@ -341,21 +347,24 @@ export function useEditor<O extends {}>(value: O, label_style: React.CSSProperti
                 placeholder={placeholders?.at(0)}
                 clearable
                 style={select_style}
-                {...select} />
+                {...select}
+                data-flex={1} />
               <Select
                 defaultValue={get_value(y)}
                 on_changed={v => { set_value(y, v) }}
                 placeholder={placeholders?.at(1)}
                 clearable
                 style={select_style}
-                {...select} />
+                {...select}
+                data-flex={1} />
               <Select
                 defaultValue={get_value(z)}
                 on_changed={v => { set_value(z, v) }}
                 placeholder={placeholders?.at(2)}
                 clearable
                 style={select_style}
-                {...select} />
+                {...select}
+                data-flex={1} />
             </Combine>
           </Titled>
         );

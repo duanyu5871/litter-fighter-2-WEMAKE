@@ -7,13 +7,13 @@ import { loop_arr } from "../../LF2/utils/array/loop_arr";
 import { traversal } from "../../LF2/utils/container_help/traversal";
 import { ITR_EFFECT_SELECT_PROPS, ITR_KIND_SELECT_PROPS } from "../EntityEditorView";
 import { useEditor } from "./useEditor";
-export interface IItrPrefabEditorViewProps {
+export interface IItrPrefabViewProps {
   label: string;
   data: IEntityData;
   value: IItrPrefab;
   on_changed?(): void;
 }
-export function ItrPrefabEditorView(props: IItrPrefabEditorViewProps) {
+export function ItrPrefabView(props: IItrPrefabViewProps) {
   const { value, label, data, on_changed } = props;
 
   const on_remove = () => {
@@ -46,27 +46,27 @@ export function ItrPrefabEditorView(props: IItrPrefabEditorViewProps) {
   }
 
   const {
-    Number: EditorInt, EditorTxt, String: EditorStr, Number3: EditorVec3, EditorQube, EditorSel
+    Number, Text, String, Number3, Qube, EditorSel
   } = useEditor(value)
 
   return (
-    <Frame label={label}>
+    <Frame label={label} >
       <Cross style={{ position: 'absolute', right: 0, top: 0, border: 'none' }} onClick={on_remove} hoverable />
-      <Space direction="column" >
-        <EditorStr field="id" onBlur={on_input_id_blur} />
-        <EditorStr field="name" />
+      <Space direction="column" stretchs>
+        <String field="id" onBlur={on_input_id_blur} />
+        <String field="name" />
         <EditorSel field="kind" {...ITR_KIND_SELECT_PROPS} />
         <EditorSel field="effect" {...ITR_EFFECT_SELECT_PROPS} />
-        <EditorInt field="injury" />
-        <EditorInt field="arest" />
-        <EditorInt field="vrest" />
-        <EditorInt field="motionless" />
-        <EditorInt field="shaking" />
-        <EditorInt field="fall" />
-        <EditorInt field="bdefend" />
-        <EditorTxt field="test" />
-        <EditorVec3 name="velocity" fields={['dvx', 'dvy', 'dvz']} />
-        <EditorQube name="bounding" fields={['x', 'y', 'z', 'w', 'h', 'l']} />
+        <Number field="injury" />
+        <Number field="arest" />
+        <Number field="vrest" />
+        <Number field="motionless" />
+        <Number field="shaking" />
+        <Number field="fall" />
+        <Number field="bdefend" />
+        <Text field="test" />
+        <Number3 name="velocity" fields={['dvx', 'dvy', 'dvz']} />
+        <Qube name="bounding" fields={['x', 'y', 'z', 'w', 'h', 'l']} />
       </Space>
     </Frame>
   );
