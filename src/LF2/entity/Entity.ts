@@ -32,7 +32,7 @@ import { itr_action_handlers } from "./itr_action_handlers";
 import { cross_bounding } from "../utils/cross_bounding";
 import { turn_face } from "./face_helper";
 import { is_ball, is_character, is_weapon_data } from "./type_check";
-
+const { max, min, round, abs } = Math
 function calc_v(
   old: number,
   speed: number,
@@ -454,7 +454,7 @@ export class Entity {
     return this._blinking_duration;
   }
   set blinking(v: number) {
-    this._blinking_duration = Math.max(0, v);
+    this._blinking_duration = max(0, v);
   }
 
   /**
@@ -467,7 +467,7 @@ export class Entity {
     return this._invisible_duration;
   }
   set invisible(v: number) {
-    this._invisible_duration = Math.max(0, v);
+    this._invisible_duration = max(0, v);
   }
 
   get callbacks(): NoEmitCallbacks<IEntityCallbacks> {
@@ -603,7 +603,7 @@ export class Entity {
 
     const shotter_frame = emitter.frame;
     if (
-      emitter.frame.state === StateEnum.Ball_Rebounding || 
+      emitter.frame.state === StateEnum.Ball_Rebounding ||
       emitter.frame.state === StateEnum.Ball_Flying
     ) {
       this.team = (emitter.lastest_collided?.attacker ?? emitter).team;
@@ -616,15 +616,19 @@ export class Entity {
     let { x, y, z } = emitter.position;
     y = y + shotter_frame.centery - opoint.y;
     x = x - emitter.facing * (shotter_frame.centerx - opoint.x);
-    this.position.set(x, y, z);
+    this.position.set(
+      round(x),
+      round(y),
+      round(z)
+    );
 
     let { dvx = 0, dvy = 0, dvz = 0, speedz = 3 } = opoint;
     let ud = emitter.ctrl?.UD || 0;
     let { x: ovx, y: ovy, z: ovz } = offset_velocity;
     if (dvx > 0) {
-      dvx = dvx - Math.abs(ovz / 2);
+      dvx = dvx - abs(ovz / 2);
     } else {
-      dvx = dvx + Math.abs(ovz / 2);
+      dvx = dvx + abs(ovz / 2);
     }
 
     const result = this.get_next_frame(opoint.action);
@@ -724,7 +728,7 @@ export class Entity {
               }
             }
             if (count)
-              count = Math.max(multi.min, count);
+              count = max(multi.min, count);
             break;
           case OpointMultiEnum.AccordingAllies:
             for (const other of this.world.entities) {
@@ -738,7 +742,7 @@ export class Entity {
               )
                 ++count;
             }
-            count = Math.max(multi.min, count);
+            count = max(multi.min, count);
             break;
         }
       }
@@ -965,14 +969,14 @@ export class Entity {
       }
 
       if (this._mp < this._mp_max)
-        this.mp = Math.min(this._mp_max, this._mp + this._mp_r_spd);
+        this.mp = min(this._mp_max, this._mp + this._mp_r_spd);
     }
 
     if (this.frame.hp) this.hp -= this.frame.hp;
     const { cpoint } = this.frame;
     if (cpoint) {
       if (cpoint?.decrease) {
-        this._catch_time -= Math.abs(cpoint.decrease);
+        this._catch_time -= abs(cpoint.decrease);
         if (this._catch_time < 0) this._catch_time = 0;
       } else {
         this._catch_time = this._catch_time_max;
@@ -1014,7 +1018,7 @@ export class Entity {
           const vz = this.holder.ctrl
             ? this.holder.ctrl.UD * (dvz || 0)
             : 0;
-          const vx = (dvx || 0 - Math.abs(vz / 2)) * this.facing;
+          const vx = (dvx || 0 - abs(vz / 2)) * this.facing;
           this.velocities[0].set(vx, dvy || 0, vz);
           this.holder.holding = void 0;
           this.holder = void 0;
@@ -1093,11 +1097,10 @@ export class Entity {
       }
     }
     this.velocity.set(vx, vy, vz);
-    // this.merge_velocities();
     if (!this.shaking && !this.motionless) {
-      this.position.x += vx;
-      this.position.y += vy;
-      this.position.z += vz;
+      this.position.x = Number((this.position.x + vx).toPrecision(4));
+      this.position.y = Number((this.position.y + vy).toPrecision(4));
+      this.position.z = Number((this.position.z + vz).toPrecision(4));
     }
     if (this.motionless > 0) {
       ++this.wait;
@@ -1153,7 +1156,7 @@ export class Entity {
       this.state?.on_landing?.(this);
       if (this.throwinjury !== void 0) {
         this.hp -= this.throwinjury;
-        this.hp_r -= Math.floor(this.throwinjury * (1 - this.world.hp_recoverability))
+        this.hp_r -= round(this.throwinjury * (1 - this.world.hp_recoverability))
         delete this.throwinjury;
       }
     }
@@ -1222,7 +1225,7 @@ export class Entity {
     if (this.prev_cpoint_a !== cpoint_a) {
       if (cpoint_a.injury) {
         this.hp -= cpoint_a.injury;
-        this.hp_r -= Math.floor(cpoint_a.injury * (1 - this.world.hp_recoverability))
+        this.hp_r -= round(cpoint_a.injury * (1 - this.world.hp_recoverability))
       }
       if (cpoint_a.shaking && cpoint_a.shaking > 0)
         this.shaking = cpoint_a.shaking;
@@ -1243,9 +1246,9 @@ export class Entity {
 
     if (throwinjury) this.throwinjury = throwinjury;
     if (throwvx || throwvy || throwvz) {
-      if (cpoint_a.tx) this.position.x += cpoint_a.tx * this._catcher.facing;
-      if (cpoint_a.ty) this.position.y += cpoint_a.ty;
-      if (cpoint_a.tz) this.position.y += cpoint_a.tz;
+      if (cpoint_a.tx) this.position.x = this.position.x + cpoint_a.tx * this._catcher.facing;
+      if (cpoint_a.ty) this.position.y = this.position.y + cpoint_a.ty;
+      if (cpoint_a.tz) this.position.z = this.position.z + cpoint_a.tz;
       delete this._catcher;
       this.prev_cpoint_a = void 0;
     }
@@ -1307,8 +1310,8 @@ export class Entity {
     const { x: px, y: py, z: pz } = this._catcher.position;
     this.position.x =
       px - face_a * (centerx_a - c_a.x) + face_b * (centerx_b - c_b.x);
-    this.position.y = py + centery_a - c_a.y + c_b.y - centery_b;
-    this.position.z = pz;
+    this.position.y = round(py + centery_a - c_a.y + c_b.y - centery_b);
+    this.position.z = round(pz);
     if (c_b.cover === 11 || c_b.cover === 1) this.position.z -= 0.5;
     else if (c_b.cover === 10 || c_b.cover === 0) this.position.z += 0.5;
   }
@@ -1557,9 +1560,9 @@ export class Entity {
     this.facing = holder.facing;
 
     this.position.set(
-      x + this.facing * (wpoint_a.x - centerx_a + centerx_b - wpoint_b.x),
-      y + centery_a - wpoint_a.y - centery_b + wpoint_b.y,
-      z - wpoint_a.cover / 2,
+      round(x + this.facing * (wpoint_a.x - centerx_a + centerx_b - wpoint_b.x)),
+      round(y + centery_a - wpoint_a.y - centery_b + wpoint_b.y),
+      round(z - wpoint_a.cover / 2),
     );
   }
 
@@ -1607,7 +1610,7 @@ export class Entity {
   handle_wait_flag(wait: string | number, frame: IFrameInfo): number {
     if (wait === "i") return this.wait;
     if (wait === "d")
-      return Math.max(0, frame.wait - this.frame.wait + this.wait);
+      return max(0, frame.wait - this.frame.wait + this.wait);
     if (is_positive(wait)) return wait;
     return frame.wait + this.world.frame_wait_offset;
   }

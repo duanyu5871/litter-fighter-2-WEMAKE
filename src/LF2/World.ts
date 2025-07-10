@@ -712,7 +712,7 @@ export class World {
       return;
     }
     const e = this._spark_creator(this, this._spark_data);
-    e.position.set(x, y, z);
+    e.position.set(Math.round(x), Math.round(y), Math.round(z));
     e.enter_frame({ id: f });
     e.attach();
   }

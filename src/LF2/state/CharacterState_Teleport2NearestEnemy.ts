@@ -21,8 +21,8 @@ export default class CharacterState_Teleport2NearestEnemy extends CharacterState
       m.position.y = 0;
       return;
     }
-    m.position.x = _tar.position.x - m.facing * 120;
-    m.position.z = _tar.position.z;
+    m.position.x = Math.round(_tar.position.x - m.facing * 120);
+    m.position.z = Math.round(_tar.position.z);
     m.position.y = 0;
   }
 }

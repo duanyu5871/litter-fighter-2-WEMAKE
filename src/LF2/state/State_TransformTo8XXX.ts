@@ -3,7 +3,6 @@ import { Builtin_FrameId } from "../defines";
 import type Entity from "../entity/Entity";
 import { Factory } from "../entity/Factory";
 import State_Base from "./State_Base";
-
 export default class State_TransformTo8XXX extends State_Base {
   override enter(e: Entity): void {
     if (typeof this.state !== "number") return;
@@ -20,7 +19,11 @@ export default class State_TransformTo8XXX extends State_Base {
           e.ctrl?.player_id ?? "",
           new_entity,
         );
-        new_entity.position.set(e.position.x, e.position.y, e.position.z);
+        new_entity.position.set(
+          Math.round(e.position.x),
+          Math.round(e.position.y),
+          Math.round(e.position.z)
+        );
         new_entity.variant = 1;
         new_entity.reserve = e.reserve;
         new_entity.attach();

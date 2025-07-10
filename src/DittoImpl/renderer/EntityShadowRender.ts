@@ -58,9 +58,9 @@ export class EntityShadowRender implements IEntityRenderer {
       invisible
     } = this.entity;
     this.mesh.set_position(
-      Math.round(x),
-      Math.round(-z / 2),
-      Math.round(z - 550),
+      Math.floor(x),
+      Math.floor(-z / 2),
+      Math.floor(z - 550),
     );
     this.mesh.visible = !invisible && !frame.no_shadow;
   }
