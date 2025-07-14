@@ -80,7 +80,7 @@ export class BaseController {
     const j = !!this.keys.j.time;
     return d === j ? 0 : d ? 1 : -1;
   }
-  
+
   private _key_list: string | undefined = void 0;
   reset_key_list() {
     this._key_list = void 0;
@@ -91,13 +91,7 @@ export class BaseController {
    * @returns {this}
    */
   start(...keys: TLooseGameKey[]): this {
-    for (const k of keys) {
-      this.keys[k].hit(this._time);
-      const ck = CONFLICTS_KEY_MAP[k];
-      if (ck) this.dbc[ck].reset();
-
-      this.dbc[k].press(this._time, this.entity.frame);
-    }
+    this.queue.push(...keys.map(k => [1, k] as const))
     return this;
   }
 
@@ -107,8 +101,7 @@ export class BaseController {
    * @returns {this}
    */
   hold(...keys: TLooseGameKey[]): this {
-    for (const k of keys)
-      this.keys[k].hit(this._time - this.entity.world.key_hit_duration);
+    this.queue.push(...keys.map(k => [2, k] as const))
     return this;
   }
 
@@ -118,7 +111,7 @@ export class BaseController {
    * @returns {this}
    */
   end(...keys: TLooseGameKey[]): this {
-    for (const k of keys) this.keys[k].end();
+    this.queue.push(...keys.map(k => [0, k] as const))
     return this;
   }
 
@@ -212,8 +205,31 @@ export class BaseController {
     else return this.keys[key].is_hld();
   }
 
-  result = new ControllerUpdateResult();
+  protected result = new ControllerUpdateResult();
+  readonly queue: (readonly [0 | 1 | 2, TLooseGameKey])[] = []
   update(): ControllerUpdateResult {
+    if (this.queue.length) {
+      for (const [status, k] of this.queue) {
+        switch (status) {
+          case 0:
+            if (!this.is_end(k))
+              this.keys[k].end();
+            break;
+          case 1:
+            if (!this.is_end(k)) break;
+            this.keys[k].hit(this._time);
+            const ck = CONFLICTS_KEY_MAP[k];
+            if (ck) this.dbc[ck].reset();
+            this.dbc[k].press(this._time, this.entity.frame);
+            break;
+          case 2:
+            this.keys[k].hit(this._time - this.entity.world.key_hit_duration);
+            break;
+        }
+      }
+      this.queue.length = 0;
+    }
+
     ++this._time;
     const entity = this.entity;
     const frame = entity.frame;
