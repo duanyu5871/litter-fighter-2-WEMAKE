@@ -22,7 +22,7 @@ export interface IFrameListViewProps {
 
 export function FrameListView(props: IFrameListViewProps) {
   const { data, zip, ref_board, factory, on_pick_frame } = props;
-  const ref_next_frame = useRef<IFrameInfo>()
+  const ref_next_frame = useRef<IFrameInfo>(undefined)
   if (!data) return void 0;
   const on_frame_change = (frame: IFrameInfo, data: IEntityData) => {
     const board = ref_board.current;

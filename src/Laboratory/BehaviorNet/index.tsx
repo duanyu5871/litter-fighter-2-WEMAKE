@@ -34,7 +34,7 @@ groud.add_creature(cat, human);
 
 export default function BehaviorNetView() {
   const ref_canvas = useRef<HTMLCanvasElement>(null);
-  const ref_ctx = useRef<CanvasRenderingContext2D | null>();
+  const ref_ctx = useRef<CanvasRenderingContext2D | null | undefined>(null);
   const ref_pause = useRef(false);
   const ref_time = useRef(0);
   const ref_div_fps = useRef<HTMLDivElement>(null);

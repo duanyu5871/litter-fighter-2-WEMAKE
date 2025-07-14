@@ -14,12 +14,12 @@ export interface IGamePadProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 type TRect = { l: number; r: number; t: number; b: number };
 type TCirc = { x: number; y: number; r: number };
-const get_rect = (ele: React.RefObject<HTMLButtonElement>): TRect => {
+const get_rect = (ele: React.RefObject<HTMLButtonElement | null>): TRect => {
   if (!ele.current) return { l: 0, t: 0, r: 0, b: 0 };
   const { x, y, width, height } = ele.current.getBoundingClientRect();
   return { l: x, t: y, r: x + width, b: y + height };
 };
-const get_circ = (ele: React.RefObject<HTMLButtonElement>): TCirc => {
+const get_circ = (ele: React.RefObject<HTMLButtonElement | null>): TCirc => {
   if (!ele.current) return { x: 0, y: 0, r: 0 };
   const { x, y, width, height } = ele.current.getBoundingClientRect();
   return { x: x + width / 2, y: y + height / 2, r: width / 2 };
@@ -38,13 +38,13 @@ export default function GamePad(props: IGamePadProps) {
   const [controller, set_controller] = useState<BaseController | undefined>(
     void 0,
   );
-  const ref_btn_U = useRef<HTMLButtonElement>(null);
-  const ref_btn_D = useRef<HTMLButtonElement>(null);
-  const ref_btn_L = useRef<HTMLButtonElement>(null);
-  const ref_btn_R = useRef<HTMLButtonElement>(null);
-  const ref_btn_a = useRef<HTMLButtonElement>(null);
-  const ref_btn_j = useRef<HTMLButtonElement>(null);
-  const ref_btn_d = useRef<HTMLButtonElement>(null);
+  const ref_btn_U = useRef<HTMLButtonElement | null>(null);
+  const ref_btn_D = useRef<HTMLButtonElement | null>(null);
+  const ref_btn_L = useRef<HTMLButtonElement | null>(null);
+  const ref_btn_R = useRef<HTMLButtonElement | null>(null);
+  const ref_btn_a = useRef<HTMLButtonElement | null>(null);
+  const ref_btn_j = useRef<HTMLButtonElement | null>(null);
+  const ref_btn_d = useRef<HTMLButtonElement | null>(null);
   const ref_left_pad = useRef<HTMLDivElement>(null);
   const ref_right_pad = useRef<HTMLDivElement>(null);
   const ref_pad_text = useRef<HTMLDivElement>(null);
@@ -141,7 +141,7 @@ export default function GamePad(props: IGamePadProps) {
       return touches.findIndex((v) => v.id === touch_id);
     };
     const pad_text = ref_pad_text.current;
-    if(!pad_text) return;
+    if (!pad_text) return;
     const handle_touchs = () => {
       const curr_pressings = new Map([
         [GameKey.L, false],
@@ -154,7 +154,7 @@ export default function GamePad(props: IGamePadProps) {
           curr_pressings.set(
             k,
             Math.pow(circ.x - t.x, 2) + Math.pow(circ.y - t.y, 2) <
-              Math.pow(t.r + circ.r, 2),
+            Math.pow(t.r + circ.r, 2),
           );
         }
       }
@@ -228,7 +228,7 @@ export default function GamePad(props: IGamePadProps) {
       return touches.findIndex((v) => v.id === touch_id);
     };
     const pad_text = ref_pad_text.current;
-    if(!pad_text) return;
+    if (!pad_text) return;
     const handle_touchs = () => {
       const curr_pressings = new Map([
         [GameKey.a, false],
@@ -240,7 +240,7 @@ export default function GamePad(props: IGamePadProps) {
           curr_pressings.set(
             k,
             Math.pow(circ.x - t.x, 2) + Math.pow(circ.y - t.y, 2) <
-              Math.pow(t.r + circ.r, 2),
+            Math.pow(t.r + circ.r, 2),
           );
         }
       }

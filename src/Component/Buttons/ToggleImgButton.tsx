@@ -7,7 +7,7 @@ import classNames from "classnames";
 const is_desktop = device.desktop();
 
 export interface IToggleImgProps
-  extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "children"> {
+  extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "children" | "onToggle"> {
   checked?: boolean;
   alt?: [string, string] | string;
   onToggle?(v: boolean): void;

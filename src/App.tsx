@@ -66,7 +66,7 @@ function App() {
     [Workspaces | null, DomAdapter | null, HTMLElement | null, HTMLElement | null]
   >([null, null, null, null])
 
-  const ref_lf2 = useRef<LF2 | undefined>();
+  const ref_lf2 = useRef<LF2>(undefined);
   const [dat_viewer_open, set_dat_viewer_open] = useState(false);
   const [editor_open, set_editor_open] = useState(false);
   const [game_overlay, set_game_overlay] = useLocalBoolean(

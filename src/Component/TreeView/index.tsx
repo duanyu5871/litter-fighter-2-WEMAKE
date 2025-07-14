@@ -25,7 +25,7 @@ export interface ITreeNodeViewProps<D = any> extends React.HTMLAttributes<HTMLDi
   get_icon?: ITreeNodeGetIcon<D>;
   show_icon?: boolean;
   checkable?: boolean;
-  _ref?: React.RefObject<HTMLDivElement>;
+  _ref?: React.RefObject<HTMLDivElement | null>;
 }
 export const file_suffix_emoji_map: { [x in string]?: React.ReactNode } = {
   zip: '📦',

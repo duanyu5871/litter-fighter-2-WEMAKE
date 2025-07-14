@@ -77,7 +77,7 @@ const get_icon: ITreeNodeGetIcon<IEntityData | IBgData | null> = ({ node, depth 
 }
 
 export default function EditorView(props: IEditorViewProps) {
-  const ref_board = useRef<Board>();
+  const ref_board = useRef<Board>(undefined);
   const [board_wrapper, set_board_wrapper] = useState<HTMLDivElement>()
   const { onClose, loading, open, lf2, ..._p } = props;
   const [zip_name, set_zip_name] = useState('');
@@ -96,8 +96,8 @@ export default function EditorView(props: IEditorViewProps) {
 
   const [opens, set_opens] = useState<string[]>()
   const [tree, set_tree] = useState<TTreeNode>();
-  const ref_editing_node = useRef<TTreeNode>()
-  const ref_editing_data = useRef<IEntityData>()
+  const ref_editing_node = useRef<TTreeNode>(undefined)
+  const ref_editing_data = useRef<IEntityData>(undefined)
   const [editing_node, set_editing_node] = useState<TTreeNode>();
   const [editing_data, set_editing_data] = useState<IEntityData>();
   const [tab, set_tab] = useState<EntityEditing | undefined>(EntityEditing.base);
@@ -321,8 +321,8 @@ export default function EditorView(props: IEditorViewProps) {
 
 
   const ref_wprkspace_container = useRef<HTMLDivElement>(null);
-  const ref_workspace = useRef<Workspaces<DomAdapter>>()
-  const ref_adapter = useRef<DomAdapter>()
+  const ref_workspace = useRef<Workspaces<DomAdapter> | undefined>(void 0)
+  const ref_adapter = useRef<DomAdapter | undefined>(void 0)
   const [cells, set_cells] = useState<Readonly<(HTMLElement | undefined)[]>>([])
   const views = useMemo(() => {
     const on_click_item = (node: TTreeNode) => {

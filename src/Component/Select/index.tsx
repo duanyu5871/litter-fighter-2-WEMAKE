@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { ReactElement, useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { CircleCross } from '../Icons/CircleCross';
 import { DropdownArrow } from '../Icons/DropdownArrow';
@@ -8,9 +8,9 @@ import { Input } from "../Input";
 import Show from "../Show";
 import { Space } from "../Space";
 import { Tag } from "../Tag";
+import { Text } from "../Text";
 import { ITreeNode, TreeView } from "../TreeView";
 import styles from "./styles.module.scss";
-import { Text } from "../Text";
 
 export interface IBaseSelectProps<T, V> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'defaultValue' | 'multiply'> {
   items?: readonly T[];
@@ -44,13 +44,13 @@ function value_adapter<V>(defaultValue: V | V[] | undefined | null): V[] | undef
   return [defaultValue];
 }
 
-export function Select<T, V>(props: ISelectProps<T, V>): JSX.Element
-export function Select<T, V>(props: IMultiSelectProps<T, V>): JSX.Element
-export function Select<T, V>(props: ISelectProps<T, V> | IMultiSelectProps<T, V>): JSX.Element {
+export function Select<T, V>(props: ISelectProps<T, V>): ReactElement
+export function Select<T, V>(props: IMultiSelectProps<T, V>): ReactElement
+export function Select<T, V>(props: ISelectProps<T, V> | IMultiSelectProps<T, V>): ReactElement {
   const { className, items, parse, disabled, arrow, clearable, on_changed, defaultValue, value: _value, ..._p } = props;
   const [open, set_open] = useState(false);
-  const ref_popover = React.useRef<HTMLDivElement>(null);
-  const ref_wrapper = React.useRef<HTMLDivElement>(null);
+  const ref_popover = React.useRef<HTMLDivElement | null>(null);
+  const ref_wrapper = React.useRef<HTMLDivElement | null>(null);
   const [gone, set_gone] = useState(false);
   if (props.id === "layout_id_select") {
     console.log(props.id, "value", props.value)
@@ -123,7 +123,7 @@ export function Select<T, V>(props: ISelectProps<T, V> | IMultiSelectProps<T, V>
             ret = [value];
             set_open(false);
           }
-          on_changed?.(ret?.at(0) as any)
+          on_changed?.(ret?.[0] as any)
           return ret;
         }
       })

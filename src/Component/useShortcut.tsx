@@ -29,7 +29,7 @@ export function useShortcut(
   arg?: React.MutableRefObject<HTMLElement | null> | (() => void),
   target: Window | Document | Element = window,
 ): void {
-  const ref_fn = useRef<() => void>();
+  const ref_fn = useRef<() => void>(undefined);
   ref_fn.current = () => {
     if (typeof arg === "function") return arg();
     arg?.current?.focus();

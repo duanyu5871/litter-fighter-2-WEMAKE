@@ -271,7 +271,7 @@ export default function SettingsRows(props: ISettingsRowsProps) {
               <Combine>
                 <InputNumber
                   precision={2}
-                  ref={(r) => (ref = r)}
+                  ref={(r) => { ref = r }}
                   placeholder={v.name}
                   step={0.01}
                   defaultValue={v.value}
