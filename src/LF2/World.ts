@@ -479,14 +479,14 @@ export class World {
   bg_render: IBgRender = new Ditto.BgRender(this);
 
   render_once(dt: number) {
-    this.bg_render.update();
+    this.bg_render.render();
     for (const [, [r1, r2, r3, r4]] of this.entity_renderer_packs) {
-      r1.update();
-      r2.update();
-      r3.update();
-      r4.update();
+      r1.render();
+      r2.render();
+      r3.render();
+      r4.render();
     }
-    this.lf2.layout?.update(dt);
+    this.lf2.layout?.render(dt);
     this.scene.render();
   }
   cam_speed = 0;

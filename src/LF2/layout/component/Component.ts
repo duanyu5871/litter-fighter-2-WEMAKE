@@ -76,7 +76,7 @@ export class Component {
 
   on_foucs?(): void;
 
-  update?(dt: number): void;
+  render?(dt: number): void;
 
   on_player_key_down?(player_id: string, key: GameKey): void;
 

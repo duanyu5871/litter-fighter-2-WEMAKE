@@ -36,7 +36,9 @@ import { Stage } from "./stage";
 import {
   arithmetic_progression, fisrt,
   is_arr, is_num, is_str,
-  random_in, random_take
+  random_get,
+  random_in,
+  random_take
 } from "./utils";
 
 const cheat_info_pair = (n: CheatType) =>
@@ -115,7 +117,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
     ["7", new PlayerInfo("7")],
     ["8", new PlayerInfo("8")],
   ]);
-  
+
   get player_characters() {
     return this.world.player_slot_characters;
   }
@@ -601,7 +603,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
           if (!is_arr(arr) || !arr.length)
             arr = item.parent.state["random_int_arr" + group_id] =
               arithmetic_progression(begin, end, 1);
-          return (item.state.img_idx = random_take(arr));
+          return (item.state.img_idx = this.random_take(arr));
         } else {
           return (item.state.img_idx = Math.floor(
             random_in(begin, end) % (end + 1),
@@ -669,6 +671,18 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
     const max = this.is_cheat_enabled(CheatType.LF2_NET) ? 4 : 3;
     const next = (difficulty % max) + 1;
     this.difficulty = next;
+  }
+
+  random_get<T>(a: T | T[] | undefined): T | undefined {
+    if (Array.isArray(a)) return random_get(a);
+    return a
+  }
+  random_take<T>(a: T | T[] | undefined): T | undefined {
+    if (Array.isArray(a)) return random_take(a);
+    return a
+  }
+  random_in(l: number, r: number) {
+    return random_in(l, r)
   }
 }
 

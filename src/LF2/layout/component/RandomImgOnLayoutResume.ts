@@ -1,3 +1,4 @@
+import { local_random } from "../../utils/math/random";
 import { Component } from "./Component";
 
 const img_idx_list_map = new Map<string, number[]>();
@@ -24,7 +25,7 @@ export class RandomImgOnLayoutResume extends Component {
     const l = this.img_idx_list;
     if (!l.length) this.node.img_infos.forEach((_, i) => l.push(i));
     if (!l.length) return;
-    this.node.img_idx = Math.floor(Math.random() * l.length);
+    this.node.img_idx = Math.floor(local_random() * l.length);
     this.node.update_img();
   }
 }

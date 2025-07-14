@@ -150,7 +150,7 @@ export default class LaunchPageLogic extends Component {
     this._unmount_jobs.invoke_and_clear();
   }
 
-  override update(dt: number): void {
+  override render(dt: number): void {
     if (this._loading_imgs.length && !this._loading_idx_anim.is_finish) {
       const idx = Math.floor(this._loading_idx_anim.update(dt));
       const pic = this._loading_imgs[idx];

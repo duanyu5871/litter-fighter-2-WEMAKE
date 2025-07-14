@@ -1,6 +1,5 @@
 import { BuiltIn_OID, IFrameInfo, IOpointInfo } from "../defines";
 import type Entity from "../entity/Entity";
-import { random_get, random_in } from "../utils/math/random";
 import CharacterState_Base from "./CharacterState_Base";
 
 function make_ice_piece(victim: Entity, id: string): IOpointInfo {
@@ -9,10 +8,10 @@ function make_ice_piece(victim: Entity, id: string): IOpointInfo {
     x: victim.frame.centerx,
     y: victim.frame.centery / 2,
     oid: BuiltIn_OID.BrokenWeapon,
-    action: { id, facing: random_get([-1, 1]) },
-    dvx: random_in(-2, 2),
-    dvz: random_in(-2, 2),
-    dvy: random_in(0, 5),
+    action: { id, facing: victim.lf2.random_get([-1, 1]) },
+    dvx: victim.lf2.random_in(-2, 2),
+    dvz: victim.lf2.random_in(-2, 2),
+    dvy: victim.lf2.random_in(0, 5),
   };
 }
 

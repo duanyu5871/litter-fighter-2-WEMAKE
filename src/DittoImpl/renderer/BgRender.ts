@@ -66,7 +66,7 @@ export class BgRender implements BgRenderPack, IBgRender {
       render.update();
   }
 
-  update() {
+  render() {
     if (this._bg !== this.world.bg)
       this.bg = this.world.bg
 

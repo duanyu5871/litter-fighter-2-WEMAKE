@@ -84,7 +84,7 @@ export class EntityRender implements IEntityRenderer {
     frame: void 0 as IFrameInfo | undefined,
     variant: 0,
   };
-  update() {
+  render() {
     const { entity, entity_mesh, entity_material, pictures } = this;
     if (entity.frame.id === Builtin_FrameId.Gone) {
       return;

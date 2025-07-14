@@ -3,20 +3,19 @@ import { Defines, EntityGroup } from "../../defines";
 import { Factory } from "../../entity/Factory";
 import IEntityCallbacks from "../../entity/IEntityCallbacks";
 import { is_character } from "../../entity/type_check";
-import { random_get, random_in, random_take } from "../../utils/math/random";
 import { Component } from "./Component";
 
 export class DemoModeLogic extends Component implements IEntityCallbacks {
   override on_start(): void {
     super.on_start?.();
 
-    const bg_data = random_get(this.lf2.datas.backgrounds);
+    const bg_data = this.lf2.random_get(this.lf2.datas.backgrounds);
     if (bg_data) this.lf2.change_bg(bg_data);
 
     const character_datas = this.lf2.datas.get_characters_of_group(
       EntityGroup.Regular,
     );
-    const player_count = Math.floor(random_in(2, 8));
+    const player_count = Math.floor(this.lf2.random_in(2, 8));
     const player_teams: string[] = [];
 
     for (let i = 0; i < player_count; i++) {
@@ -24,14 +23,14 @@ export class DemoModeLogic extends Component implements IEntityCallbacks {
     }
     switch (player_count) {
       case 4: {
-        if (random_take([0, 1])) {
+        if (this.lf2.random_take([0, 1])) {
           player_teams.fill(Defines.TeamEnum.Team_1, 0, 2);
           player_teams.fill(Defines.TeamEnum.Team_2, 2, 4);
         }
         break;
       }
       case 6: {
-        switch (random_take([0, 1, 2])) {
+        switch (this.lf2.random_take([0, 1, 2])) {
           case 1: {
             player_teams.fill(Defines.TeamEnum.Team_1, 0, 3);
             player_teams.fill(Defines.TeamEnum.Team_2, 3, 6);
@@ -47,7 +46,7 @@ export class DemoModeLogic extends Component implements IEntityCallbacks {
         break;
       }
       case 8: {
-        switch (random_take([0, 1, 2])) {
+        switch (this.lf2.random_take([0, 1, 2])) {
           case 1: {
             player_teams.fill(Defines.TeamEnum.Team_1, 0, 4);
             player_teams.fill(Defines.TeamEnum.Team_2, 4, 8);
@@ -69,7 +68,7 @@ export class DemoModeLogic extends Component implements IEntityCallbacks {
       const player = player_infos[i]!;
       if (!player) continue;
 
-      const character_data = random_take(character_datas);
+      const character_data = this.lf2.random_take(character_datas);
       if (!character_data) continue;
 
       const creator = Factory.inst.get_entity_creator(character_data.type);
@@ -88,8 +87,8 @@ export class DemoModeLogic extends Component implements IEntityCallbacks {
         player.id,
         character,
       );
-      character.position.z = random_in(far, near);
-      character.position.x = random_in(left, right);
+      character.position.z = this.lf2.random_in(far, near);
+      character.position.x = this.lf2.random_in(left, right);
       character.blinking = this.world.begin_blink_time;
       character.attach();
     }

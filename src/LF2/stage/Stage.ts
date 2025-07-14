@@ -8,7 +8,6 @@ import { Defines, IBgData, IStageInfo, IStageObjectInfo, IStagePhaseInfo } from 
 import Entity from "../entity/Entity";
 import { is_character, is_weapon } from "../entity/type_check";
 import { find } from "../utils/container_help/find";
-import { random_in } from "../utils/math/random";
 import { is_num } from "../utils/type_check";
 import type IStageCallbacks from "./IStageCallbacks";
 import Item from "./Item";
@@ -145,7 +144,7 @@ export class Stage {
       }
       for (const entity of this.world.entities) {
         if (is_character(entity) && player_teams.has(entity.team))
-          entity.position.x = random_in(x, x + 50);
+          entity.position.x = this.lf2.random_in(x, x + 50);
       }
     }
   }

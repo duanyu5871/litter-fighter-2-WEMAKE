@@ -257,7 +257,7 @@ export class EntityInfoRender implements IEntityCallbacks, IEntityRenderer {
       });
   }
 
-  update() {
+  render() {
     const { invisible, position: { x, z, y } } = this.entity;
 
     this.visible = !invisible;

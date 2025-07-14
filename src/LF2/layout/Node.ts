@@ -627,7 +627,7 @@ export class Node {
     }
   }
 
-  update(dt: number) {
+  render(dt: number) {
     if (this._root === this) this._sprite.x = this.lf2.world.camera.x;
     const { visible } = this;
     if (visible !== this._sprite.visible) {
@@ -635,8 +635,8 @@ export class Node {
       this.invoke_visible_callback();
     }
     this._sprite.opacity = this.opacity;
-    for (const i of this.children) i.update(dt);
-    for (const c of this._components) c.update?.(dt);
+    for (const i of this.children) i.render(dt);
+    for (const c of this._components) c.render?.(dt);
   }
 
   on_player_key_down(player_id: string, key: GameKey) {

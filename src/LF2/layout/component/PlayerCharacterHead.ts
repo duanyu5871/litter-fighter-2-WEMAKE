@@ -121,7 +121,7 @@ export default class PlayerCharacterHead extends Component {
     }
   }
 
-  override update(dt: number): void {
+  override render(dt: number): void {
     this._opacity.update(dt);
     if (this._mesh_hints) this._mesh_hints.opacity = this._opacity.value;
   }

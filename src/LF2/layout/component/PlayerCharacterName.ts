@@ -83,7 +83,7 @@ export default class PlayerCharacterName extends Component {
       .apply();
   }
 
-  override update(dt: number): void {
+  override render(dt: number): void {
     this._opacity.update(dt);
     this._mesh.opacity = this.decided ? 1 : this._opacity.value;
   }

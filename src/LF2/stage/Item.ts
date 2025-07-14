@@ -3,7 +3,6 @@ import { Entity } from "../entity/Entity";
 import { Factory } from "../entity/Factory";
 import IEntityCallbacks from "../entity/IEntityCallbacks";
 import { is_character, is_weapon } from "../entity/type_check";
-import { random_in, random_take } from "../utils/math/random";
 import { is_num, is_str } from "../utils/type_check";
 import Stage from "./Stage";
 
@@ -66,7 +65,7 @@ export default class Item {
     let waiting_data_list = [...this.data_list];
     this.get_oid = () => {
       if (!waiting_data_list.length) waiting_data_list = [...this.data_list];
-      return random_take(waiting_data_list)?.id!;
+      return this.lf2.random_take(waiting_data_list)?.id!;
     };
   }
 
@@ -97,10 +96,10 @@ export default class Item {
     const e = creator(this.world, data);
     e.ctrl = Factory.inst.get_ctrl(e.data.id, "", e);
     e.reserve = reserve;
-    e.position.x = random_in(x, x + range_x);
+    e.position.x = this.lf2.random_in(x, x + range_x);
     e.position.z = is_num(z)
-      ? random_in(z - range_z, z + range_z)
-      : random_in(this.stage.near, this.stage.far);
+      ? this.lf2.random_in(z - range_z, z + range_z)
+      : this.lf2.random_in(this.stage.near, this.stage.far);
 
     if (is_num(hp)) e.hp = hp;
     if (is_num(y)) e.position.y = y;

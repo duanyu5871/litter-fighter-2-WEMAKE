@@ -21,16 +21,15 @@ import BallState_Base from "../state/BallState_Base";
 import CharacterState_Base from "../state/CharacterState_Base";
 import { State_Base } from "../state/State_Base";
 import WeaponState_Base from "../state/WeaponState_Base";
-import { random_get, random_in } from "../utils/math/random";
+import { cross_bounding } from "../utils/cross_bounding";
 import { is_num, is_positive, is_str } from "../utils/type_check";
 import { EMPTY_FRAME_INFO } from "./EMPTY_FRAME_INFO";
 import { Factory } from "./Factory";
 import { GONE_FRAME_INFO } from "./GONE_FRAME_INFO";
 import type IEntityCallbacks from "./IEntityCallbacks";
 import { bdy_action_handlers } from "./bdy_action_handlers";
-import { itr_action_handlers } from "./itr_action_handlers";
-import { cross_bounding } from "../utils/cross_bounding";
 import { turn_face } from "./face_helper";
+import { itr_action_handlers } from "./itr_action_handlers";
 import { is_ball, is_character, is_weapon_data } from "./type_check";
 const { max, min, round, abs } = Math
 function calc_v(
@@ -379,7 +378,7 @@ export class Entity {
 
   play_sound(sounds: string[] | undefined, pos: IPos = this.position) {
     if (!sounds?.length) return;
-    const sound = random_get(sounds);
+    const sound = this.lf2.random_get(sounds);
     if (!sound) return;
     const { x, y, z } = pos;
     this.lf2.sounds.play(sound, x, y, z);
@@ -765,7 +764,7 @@ export class Entity {
     opoint: IOpointInfo,
     offset_velocity: IVector3 = new Ditto.Vector3(0, 0, 0),
   ): Entity | undefined {
-    const oid = Array.isArray(opoint.oid) ? random_get(opoint.oid) : opoint.oid;
+    const oid = this.lf2.random_get(opoint.oid);
     if (!oid) {
       Warn.print(Entity.TAG + "::spawn_object", "oid got", oid);
       return;
@@ -1452,9 +1451,9 @@ export class Entity {
       near: n,
       far: f,
     }: IBounding = cross_bounding(r0, r1);
-    const x = random_in(l, r);
-    const y = random_in(b, t);
-    const z = random_in(f, n);
+    const x = this.lf2.random_in(l, r);
+    const y = this.lf2.random_in(b, t);
+    const z = this.lf2.random_in(f, n);
     return [x, y, z] as const;
   }
 
@@ -1664,7 +1663,7 @@ export class Entity {
     }
     let frame: IFrameInfo | undefined;
     if (id) {
-      frame = this.find_frame_by_id(Array.isArray(id) ? random_get(id) : id);
+      frame = this.find_frame_by_id(this.lf2.random_get(id));
       if (!frame) return void 0;
     } else {
       frame = this.frame;

@@ -39,7 +39,7 @@ export class FrameIndicators implements IFrameIndicators {
   set flags(v: number) {
     if (this._flags === v) return;
     this._flags = v;
-    this.update();
+    this.render();
   }
 
   constructor(entity: Entity) {
@@ -136,7 +136,7 @@ export class FrameIndicators implements IFrameIndicators {
     });
   }
 
-  update() {
+  render() {
     if (!this._flags) return;
     const { x: game_x, y: game_y, z: game_z } = this._entity.position;
     this._x = game_x;

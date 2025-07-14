@@ -51,7 +51,7 @@ export class EntityShadowRender implements IEntityRenderer {
     this.material.needsUpdate = true;
   }
 
-  update() {
+  render() {
     const {
       frame,
       position: { x, z },

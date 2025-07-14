@@ -11,7 +11,6 @@ import Entity from "../../entity/Entity";
 import { Factory } from "../../entity/Factory";
 import { filter } from "../../utils/container_help";
 import { map_no_void } from "../../utils/container_help/map_no_void";
-import { random_get, random_in } from "../../utils/math/random";
 import BackgroundNameText from "./BackgroundNameText";
 import CharacterSelLogic from "./CharacterSelLogic";
 import { Component } from "./Component";
@@ -127,7 +126,7 @@ export default class GamePrepareLogic extends Component {
     }
   }
 
-  override update(dt: number): void {
+  override render(dt: number): void {
     this._fsm.update(dt);
   }
   get fsm(): IReadonlyFSM<GamePrepareState> {
@@ -216,7 +215,7 @@ export default class GamePrepareLogic extends Component {
       const { characters } = this.lf2.datas.find_group(
         EntityGroup.Regular,
       );
-      p.set_random_character(random_get(characters)?.id ?? "", true);
+      p.set_random_character(this.lf2.random_get(characters)?.id ?? "", true);
     }
   }
 
@@ -308,8 +307,8 @@ export default class GamePrepareLogic extends Component {
           player.keys,
         );
       }
-      character.position.z = random_in(far, near);
-      character.position.x = random_in(left, right);
+      character.position.z = this.lf2.random_in(far, near);
+      character.position.x = this.lf2.random_in(left, right);
       character.blinking = this.world.begin_blink_time;
       character.attach();
     }

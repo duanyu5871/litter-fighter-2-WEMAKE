@@ -739,6 +739,7 @@ module.exports = function (webpackEnv) {
         failOnError: !(isEnvDevelopment && emitErrorsAsWarnings),
         context: paths.appSrc,
         cache: true,
+        exclude: ["LF2"],
         cacheLocation: path.resolve(
           paths.appNodeModules,
           ".cache/.eslintcache",

@@ -2,7 +2,6 @@ import { IEntityData } from "../defines/IEntityData";
 import { Entity } from "../entity/Entity";
 import { is_weapon } from "../entity/type_check";
 import LF2 from "../LF2";
-import { random_get, random_take } from "../utils";
 
 export class WeaponsHelper {
   readonly lf2: LF2;
@@ -32,7 +31,7 @@ export class WeaponsHelper {
     let tmp_arr = [...src_arr];
     const ret: Entity[] = [];
     while (--num >= 0) {
-      const d = duplicate ? random_get(tmp_arr) : random_take(tmp_arr);
+      const d = duplicate ? this.lf2.random_get(tmp_arr) : this.lf2.random_take(tmp_arr);
       if (!tmp_arr.length) tmp_arr = [...src_arr];
       if (!d) continue;
       ret.push(...this.add(d, 1));
