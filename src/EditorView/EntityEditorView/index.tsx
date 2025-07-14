@@ -1,35 +1,37 @@
 import { IBaseSelectProps } from "../../Component/Select";
-import { ItrEffect, ItrKind, StateEnum } from "../../LF2/defines";
+import { ItrEffect, ItrKind, ItrKindDescriptionMap, StateEnum } from "../../LF2/defines";
 import { BdyKind } from "../../LF2/defines/BdyKind";
 import { EntityEnum } from "../../LF2/defines/EntityEnum";
 import { SpeedMode } from "../../LF2/defines/SpeedMode";
 import './style.scss';
-const make_num_enum_select_props = (t: any): IBaseSelectProps<string, number> => ({
-  items: Object.keys(t).filter(key => {
+const make_num_enum_select_props = (enum_obj: any, value_title_map?: any): IBaseSelectProps<string, number> => ({
+  items: Object.keys(enum_obj).filter(key => {
     if (key.startsWith('_')) return false;
     if (!Number.isNaN(Number(key))) return false;
     return true;
   }),
   parse: (k: string) => {
-    const value = (t as any)[k];
+    const value = (enum_obj as any)[k];
     const label = `${k}(${value})`;
-    return [value, label]
+    if (!value_title_map) return [value, label]
+    return [value, label, { title: value_title_map[value] }]
   }
 })
-const make_str_enum_select_props = (t: any): IBaseSelectProps<string, string> => ({
-  items: Object.keys(t).filter(key => {
+const make_str_enum_select_props = (enum_obj: any, value_desc_map?: any): IBaseSelectProps<string, string> => ({
+  items: Object.keys(enum_obj).filter(key => {
     if (key.startsWith('_')) return false;
     return true;
   }),
   parse: (k: string) => {
-    const value = (t as any)[k];
+    const value = (enum_obj as any)[k];
     const label = `${k}(${value})`;
-    return [value, label]
+    if (!value_desc_map) return [value, label]
+    return [value, label, { title: value_desc_map[value] }]
   }
 })
 export const STATE_SELECT_PROPS = make_num_enum_select_props(StateEnum);
 export const SPEED_MODE_SELECT_PROPS = make_num_enum_select_props(SpeedMode);
-export const ITR_KIND_SELECT_PROPS = make_num_enum_select_props(ItrKind);
+export const ITR_KIND_SELECT_PROPS = make_num_enum_select_props(ItrKind, ItrKindDescriptionMap);
 export const ITR_EFFECT_SELECT_PROPS = make_num_enum_select_props(ItrEffect);
 export const BDY_KIND_SELECT_PROPS = make_num_enum_select_props(BdyKind);
 export const ENTITY_TYPE_SELECT_PROPS = make_str_enum_select_props(EntityEnum);

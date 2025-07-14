@@ -17,7 +17,7 @@ export function EntityDataEditorView(props: IEntityDataEditorViewProps) {
     <Frame {..._p} label="实体数据">
       <Space direction='column' stretchs>
         <Editor1.String field="id" />
-        <Editor1.EditorSel {...ENTITY_TYPE_SELECT_PROPS} field='type' clearable={false} on_changed={on_changed} />
+        <Editor1.Select {...ENTITY_TYPE_SELECT_PROPS} field='type' clearable={false} on_changed={on_changed} />
         <Editor2.String field="name" clearable={false} />
       </Space>
     </Frame>

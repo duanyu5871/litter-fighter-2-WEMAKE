@@ -11,11 +11,11 @@ import { Tag } from "../Tag";
 import { Text } from "../Text";
 import { ITreeNode, TreeView } from "../TreeView";
 import styles from "./styles.module.scss";
-
+export type TItemInfo<V> = [V, React.ReactNode] | [V, React.ReactNode, React.HTMLAttributes<HTMLDivElement>]
 export interface IBaseSelectProps<T, V> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'defaultValue' | 'multiply'> {
   items?: readonly T[];
   auto_blur?: boolean;
-  parse(item: T, idx: number, items: readonly T[]): [V, React.ReactNode];
+  parse(item: T, idx: number, items: readonly T[]): TItemInfo<V>;
   placeholder?: string;
   disabled?: boolean;
   clearable?: boolean;
@@ -70,10 +70,11 @@ export function Select<T, V>(props: ISelectProps<T, V> | IMultiSelectProps<T, V>
     if (!items) return [void 0, void 0];
     const checked_tree_nodes: ITreeNode<IOptionData<T, V>>[] = []
     const tree_nodes = items.map((data, idx, items) => {
-      const [v, label] = parse(data, idx, items);
+      const [v, label, props] = parse(data, idx, items);
       const checked = value ? value.indexOf(v) >= 0 : false
       const option: ITreeNode<IOptionData<T, V>> = {
         key: "" + v,
+        title: props?.title,
         label: (
           <Space className={styles.option}>
             <Space.Item className={styles.label}>

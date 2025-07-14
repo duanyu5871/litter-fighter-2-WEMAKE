@@ -1,13 +1,9 @@
 import { Button } from "../../Component/Buttons/Button";
-import Combine from "../../Component/Combine";
 import Frame from "../../Component/Frame";
-import { Input } from "../../Component/Input";
-import Select from "../../Component/Select";
 import { Space } from "../../Component/Space";
-import { TextArea } from "../../Component/TextArea";
-import Titled from "../../Component/Titled";
 import { IItrInfo } from "../../LF2/defines";
 import { ITR_EFFECT_SELECT_PROPS, ITR_KIND_SELECT_PROPS } from "../EntityEditorView";
+import { useEditor } from "./useEditor";
 export interface IItrEditorViewProps {
   label: string;
   value: IItrInfo;
@@ -16,35 +12,17 @@ export interface IItrEditorViewProps {
 }
 export function ItrEditorView(props: IItrEditorViewProps) {
   const { value, onRemove, onChange, label } = props;
+  const { Select, Qube, Text } = useEditor(value);
   return (
     <Frame tabIndex={-1} label={label}>
       <Button style={{ position: 'absolute', right: 0, top: 0, border: 'none' }} onClick={onRemove}>
         🗑️
       </Button>
-      <Space direction="column">
-        <Titled label='　　状态'>
-          <Select {...ITR_KIND_SELECT_PROPS} value={value.kind} on_changed={v => onChange?.({ ...value, kind: v })} />
-        </Titled>
-        <Titled label='　　效果'>
-          <Select {...ITR_EFFECT_SELECT_PROPS} value={value.effect} on_changed={v => onChange?.({ ...value, effect: v })} />
-        </Titled>
-        <Titled label='碰撞测试' style={{ display: 'flex' }}>
-          <TextArea style={{ flex: 1, resize: 'vertical' }} value={value.test} onChange={e => onChange?.({ ...value, test: e.target.value })} />
-        </Titled>
-        <Titled label='　包围盒'>
-          <Combine direction="column">
-            <Combine>
-              <Input type="number" value={value.x} onChange={e => onChange?.({ ...value, x: Number(e.target.value) })} title="x" prefix="x" style={{ width: 80 }} />
-              <Input type="number" value={value.y} onChange={e => onChange?.({ ...value, y: Number(e.target.value) })} title="y" prefix="y" style={{ width: 80 }} />
-              <Input type="number" value={value.z} onChange={e => onChange?.({ ...value, z: Number(e.target.value) })} title="z" prefix="z" style={{ width: 80 }} />
-            </Combine>
-            <Combine>
-              <Input type="number" value={value.w} onChange={e => onChange?.({ ...value, w: Number(e.target.value) })} title="w" prefix="w" style={{ width: 80 }} />
-              <Input type="number" value={value.h} onChange={e => onChange?.({ ...value, h: Number(e.target.value) })} title="h" prefix="h" style={{ width: 80 }} />
-              <Input type="number" value={value.l} onChange={e => onChange?.({ ...value, l: Number(e.target.value) })} title="l" prefix="l" style={{ width: 80 }} />
-            </Combine>
-          </Combine>
-        </Titled>
+      <Space vertical stretchs>
+        <Select title='状态' field='kind' {...ITR_KIND_SELECT_PROPS} />
+        <Select title='效果' field='effect' {...ITR_EFFECT_SELECT_PROPS} />
+        <Text title='碰撞测试' field='test' />
+        <Qube title='包围盒' fields={['x', 'y', 'z', 'w', 'h', 'l']} />
       </Space>
     </Frame>
   );

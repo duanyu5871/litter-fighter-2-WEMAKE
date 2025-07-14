@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
 import Combine from "../../Component/Combine";
 import Frame, { IFrameProps } from "../../Component/Frame";
 import { Input } from "../../Component/Input";
@@ -6,13 +6,13 @@ import Show from "../../Component/Show";
 import { Space } from "../../Component/Space";
 import { TabButtons } from "../../Component/TabButtons";
 import Titled from "../../Component/Titled";
-import { IFrameInfo, IItrInfo } from "../../LF2/defines";
+import { IFrameInfo } from "../../LF2/defines";
 import { IEntityData } from "../../LF2/defines/IEntityData";
-import { SPEED_MODE_SELECT_PROPS, STATE_SELECT_PROPS } from "../EntityEditorView";
-import { useEditor } from "./useEditor";
-import { Button } from "../../Component/Buttons/Button";
 import { map_arr } from "../../LF2/utils/array/map_arr";
+import { SPEED_MODE_SELECT_PROPS, STATE_SELECT_PROPS } from "../EntityEditorView";
 import { ItrEditorView } from "./ItrEditorView";
+import { useEditor } from "./useEditor";
+import { useThrough } from "./useThrough";
 
 enum TabEnum {
   Base = 'base',
@@ -38,13 +38,21 @@ export interface IFrameEditorViewProps extends Omit<IFrameProps, 'onChange'> {
   data: IEntityData;
   selected?: boolean;
 }
+const TAG = 'FrameEditorView'
 export function FrameEditorView(props: IFrameEditorViewProps) {
-  const { value, data, ..._p } = props;
+  const { value, data, onBlur, onFocus, ..._p } = props;
   const [editing, set_editing] = useState<TabEnum | undefined>(TabEnum.Base);
   const Editor = useEditor<IFrameInfo>(value)
   const ref_root = useRef<HTMLDivElement>(null)
+  const label = `frame:${value.id}`
+  const on_blur = useThrough(onBlur, () => {
+    console.log(`[${TAG}>>on_blur] called.`)
+  })
+  const on_focus = useThrough(onFocus, () => {
+    console.log(`[${TAG}>>on_focus] called.`)
+  })
   return (
-    <Frame label={`frame:${value.id}`} {..._p} ref={ref_root}>
+    <Frame label={label} {..._p} ref={ref_root} tabIndex={-1} onBlur={on_blur} onFocus={on_focus}>
       <Space direction='column' stretchs>
         <Editor.String field='id' />
         <Editor.String field='name' />
@@ -59,7 +67,7 @@ export function FrameEditorView(props: IFrameEditorViewProps) {
         </Space.Item>
         <Show show={editing === 'base'}>
           <Space direction="column" stretchs>
-            <Editor.EditorSel {...STATE_SELECT_PROPS} field="state" />
+            <Editor.Select {...STATE_SELECT_PROPS} field="state" />
             <Titled float_label='图片' style={{ width: '100%' }}>
               <Combine direction='column' style={{ flex: 1 }}>
                 <Input defaultValue={value.pic?.tex} prefix="tex" style={{ flex: 1 }} data-flex={1} />
@@ -72,20 +80,7 @@ export function FrameEditorView(props: IFrameEditorViewProps) {
               </Combine>
             </Titled>
             <Editor.EditorVec2 name="锚点" fields={['centerx', 'centery']} />
-            <Editor.Number field="wait" clearable={false} title="当前动作持续多少帧数" />
-            {/* <Titled label='持续帧数'>
-              <Combine>
-                <Combine direction='column'>
-                  {next_frame_selects}
-                </Combine>
-              </Combine>
-            </Titled>
-            <Titled label='　　声音'>
-              <Combine >
-                <Input {...edit_string('sound')} />
-                {value.sound ? <AudioButton zip={zip} path={value.sound} /> : null}
-              </Combine>
-            </Titled> */}
+            <Editor.Number defaultValue={value.wait} field="wait" clearable={false} title="当前动作持续多少帧数" />
           </Space>
         </Show>
         <Show show={editing === TabEnum.Spd}>

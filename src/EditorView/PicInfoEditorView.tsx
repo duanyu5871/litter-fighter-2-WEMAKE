@@ -58,8 +58,8 @@ export function PicInfoEditorView(props: IFileEditorViewProps) {
     <Frame {..._p} label='图片索引信息'>
       <Cross style={{ position: 'absolute', top: 0, right: 0 }} onClick={on_click_remove} hoverable />
       <Space vertical stretchs>
-        <String field='id' name='图片索引id' onBlur={on_input_id_blur} />
-        <EditorImg field='path' name='图片路径' clearable={false} />
+        <String field='id' title='图片索引id' onBlur={on_input_id_blur} />
+        <EditorImg field='path' title='图片路径' clearable={false} />
         <Strings field="variants" placeholder="图片索引id" title="变体"/>
       </Space>
     </Frame>

@@ -125,7 +125,7 @@ export enum ItrKind {
    *    - 可治疗队友：通过ally_flags实现
    *    - 动作跳转：通过hit_act实现
    */
-  Heal = 8, 
+  Heal = 8,
 
   /**
    * 用于：
@@ -164,4 +164,21 @@ export enum ItrKind {
 
   Freeze = 16,
   _16 = 16,
+}
+export const ItrKindDescriptionMap: Record<ItrKind, string> = {
+  [ItrKind.Normal]: "普通（可配合effect）",
+  [ItrKind.Catch]: "",
+  [ItrKind.Pick]: "",
+  [ItrKind.ForceCatch]: "",
+  [ItrKind.CharacterThrew]: "",
+  [ItrKind.WeaponSwing]: "",
+  [ItrKind.SuperPunchMe]: "",
+  [ItrKind.PickSecretly]: "",
+  [ItrKind.Heal]: "",
+  [ItrKind.JohnShield]: "",
+  [ItrKind.MagicFlute]: "",
+  [ItrKind.MagicFlute2]: "",
+  [ItrKind.Block]: "",
+  [ItrKind.Whirlwind]: "",
+  [ItrKind.Freeze]: ""
 }

@@ -46,7 +46,7 @@ export function ItrPrefabView(props: IItrPrefabViewProps) {
   }
 
   const {
-    Number, Text, String, Number3, Qube, EditorSel
+    Number, Text, String, Number3, Qube, Select
   } = useEditor(value)
 
   return (
@@ -55,8 +55,8 @@ export function ItrPrefabView(props: IItrPrefabViewProps) {
       <Space direction="column" stretchs>
         <String field="id" onBlur={on_input_id_blur} />
         <String field="name" />
-        <EditorSel field="kind" {...ITR_KIND_SELECT_PROPS} />
-        <EditorSel field="effect" {...ITR_EFFECT_SELECT_PROPS} />
+        <Select field="kind" {...ITR_KIND_SELECT_PROPS} />
+        <Select field="effect" {...ITR_EFFECT_SELECT_PROPS} />
         <Number field="injury" />
         <Number field="arest" />
         <Number field="vrest" />
@@ -66,7 +66,7 @@ export function ItrPrefabView(props: IItrPrefabViewProps) {
         <Number field="bdefend" />
         <Text field="test" />
         <Number3 name="velocity" fields={['dvx', 'dvy', 'dvz']} />
-        <Qube name="bounding" fields={['x', 'y', 'z', 'w', 'h', 'l']} />
+        <Qube title="bounding" fields={['x', 'y', 'z', 'w', 'h', 'l']} />
       </Space>
     </Frame>
   );

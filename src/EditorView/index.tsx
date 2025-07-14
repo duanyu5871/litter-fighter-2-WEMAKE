@@ -564,13 +564,12 @@ export default function EditorView(props: IEditorViewProps) {
   return !open ? <></> : (
     <shared_ctx.Provider value={{ zip }}>
       {views}
-      <Space direction='column' {..._p} >
-        <Space.Item space onClick={e => { e.stopPropagation(); e.preventDefault() }} className={styles.top_bar}>
-          <Show show={!!onClose}>
-            <Button onClick={onClose} disabled={loading}>
-              ✕
-            </Button>
-          </Show>
+      <Space direction='column' {..._p} stretchs>
+        <Combine onClick={e => { e.stopPropagation(); e.preventDefault() }} className={styles.top_bar}>
+
+          <Button onClick={onClose} disabled={loading}>
+            ✕
+          </Button>
           <Button
             onClick={() => on_click_read_zip().catch(console.warn)}
             disabled={loading}
@@ -586,7 +585,7 @@ export default function EditorView(props: IEditorViewProps) {
                 set_zip(is_num(i) ? zips?.at(i) : void 0)
               }} />
           </Show>
-        </Space.Item>
+        </Combine>
         <Space.Item style={{ alignSelf: 'stretch', flex: 1, minHeight: '0px', position: 'relative' }}>
           <div ref={ref_wprkspace_container} />
         </Space.Item>

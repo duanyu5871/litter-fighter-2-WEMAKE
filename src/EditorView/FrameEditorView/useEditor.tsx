@@ -12,7 +12,7 @@ import { shared_ctx } from "../Context";
 
 type Field<O> = (keyof O) | (string | number)[];
 interface CommonProps<O extends {}> {
-  name?: string;
+  title?: string;
   field: Field<O>;
   foo?: any
 }
@@ -54,7 +54,7 @@ export function useEditor<O extends {}>(value: O, label_style: React.CSSProperti
     }
     return {
       ImageFile(props: CommonProps<O> & Partial<ISelectProps<IZipObject, string>>) {
-        const { field, name, ..._p } = props;
+        const { field, title: name, ..._p } = props;
         const { zip } = useContext(shared_ctx);
         const [img_list, set_img_list] = useState<IZipObject[]>([])
         useEffect(() => {
@@ -74,21 +74,20 @@ export function useEditor<O extends {}>(value: O, label_style: React.CSSProperti
         );
       },
       Number(props: CommonProps<O> & InputNumberProps) {
-        const { field, name, ..._p } = props;
+        const { field, title: name, ..._p } = props;
         return (
           <Titled {...t_props(name ?? field)}>
             <InputNumber
               defaultValue={get_value(field)}
               on_blur={v => set_value(field, v)}
               style={{ flex: 1 }}
-              step={0.01}
               clearable
               {..._p} />
           </Titled>
         );
       },
       Text(props: CommonProps<O>) {
-        const { name, field } = props;
+        const { title: name, field } = props;
         return (
           <Titled {...t_props(name ?? field)}>
             <TextArea
@@ -99,7 +98,7 @@ export function useEditor<O extends {}>(value: O, label_style: React.CSSProperti
         );
       },
       String(props: CommonProps<O> & InputProps) {
-        const { name, field, ..._p } = props;
+        const { title: name, field, ..._p } = props;
         return (
           <Titled {...t_props(name ?? field)}>
             <Input
@@ -172,8 +171,8 @@ export function useEditor<O extends {}>(value: O, label_style: React.CSSProperti
           </Titled>
         );
       },
-      Qube(props: { name: string; fields: [Field<O>, Field<O>, Field<O>, Field<O>, Field<O>, Field<O>]; clearable?: boolean } & ITitledProps) {
-        const { name, fields: [x, y, z, w, h, l], clearable, ..._p } = props;
+      Qube(props: { title: string; fields: [Field<O>, Field<O>, Field<O>, Field<O>, Field<O>, Field<O>]; clearable?: boolean } & ITitledProps) {
+        const { title: name, fields: [x, y, z, w, h, l], clearable, ..._p } = props;
         const combine_style: React.CSSProperties = { flex: 1, alignItems: 'stretch' }
         const input_style: React.CSSProperties = { flex: 1 }
         return (
@@ -225,7 +224,7 @@ export function useEditor<O extends {}>(value: O, label_style: React.CSSProperti
         );
       },
       Strings(props: CommonProps<O> & InputProps) {
-        const { name, field, placeholder, title } = props;
+        const { title: name, field, placeholder, title } = props;
         const list: string[] | undefined = (value as any)[field];
         const [, set_change_flags] = useState(0);
 
@@ -271,7 +270,7 @@ export function useEditor<O extends {}>(value: O, label_style: React.CSSProperti
         );
       },
       EditorIntList(props: CommonProps<O>) {
-        const { name, field, } = props;
+        const { title: name, field, } = props;
         const list: number[] | undefined = (value as any)[field];
         const [, set_change_flags] = useState(0);
         const on_click_add = () => {
@@ -310,8 +309,8 @@ export function useEditor<O extends {}>(value: O, label_style: React.CSSProperti
           </Titled>
         );
       },
-      EditorSel<T, V>(props: CommonProps<O> & ISelectProps<T, V>) {
-        const { name, field, on_changed, ..._p } = props;
+      Select<T, V>(props: CommonProps<O> & ISelectProps<T, V>) {
+        const { title: name, field, on_changed, ..._p } = props;
         const [, set_change_flags] = useState(0);
         return (
           <Titled {...t_props(name ?? field)}>
