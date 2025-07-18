@@ -29,7 +29,6 @@ export class World {
   private _spark_creator?: ICreator<Entity, typeof Entity>;
   itr_shaking: number = Defines.DEFAULT_ITR_SHAKING;
   itr_motionless: number = Defines.DEFAULT_ITR_MOTIONLESS;
-
   fvy_f: number = 1;
   fvx_f: number = 1;
   fvz_f: number = 1;
@@ -47,14 +46,14 @@ export class World {
    *
    * @type {number}
    */
-  begin_blink_time: number = 144;
+  begin_blink_time: number = Defines.DEFAULT_BEGIN_BLINK_TIME;
 
   /**
    * 倒地起身后的闪烁无敌时间
    *
    * @type {number}
    */
-  lying_blink_time: number = 32;
+  lying_blink_time: number = Defines.DEFAULT_LYING_BLINK_TIME;
 
   /**
    * “非玩家槽角色”死亡时后的闪烁时间
@@ -64,7 +63,7 @@ export class World {
    * @type {number}
    * @memberof World
    */
-  gone_blink_time: number = 56;
+  gone_blink_time: number = Defines.DEFAULT_GONE_BLINK_TIME;
 
   vrest_offset: number = 0;
   arest_offset: number = 0;

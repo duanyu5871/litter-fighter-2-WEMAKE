@@ -79,71 +79,64 @@ export class EntityRender implements IEntityRenderer {
     if (this.pictures)
       for (const [, pic] of this.pictures) pic.texture.dispose();
   }
-  private _previous = {
-    face: void 0 as TFace | undefined,
-    frame: void 0 as IFrameInfo | undefined,
-    variant: 0,
-  };
-  render() {
-    const { entity, entity_mesh, entity_material, pictures } = this;
-    if (entity.frame.id === Builtin_FrameId.Gone) {
-      return;
+  private _prev_tex?: ITexturePieceInfo
+
+  apply_tex(entity: Entity, info: ITexturePieceInfo | undefined) {
+    const { pictures, entity_material, entity_mesh } = this
+    if (info) {
+      const { x, y, w, h, tex, pixel_w, pixel_h } = info;
+      const real_tex = this.variants.get(tex)?.at(entity.variant) ?? tex;
+      const pic = pictures.get(real_tex);
+      if (pic) {
+        pic.texture.offset.set(x, y);
+        pic.texture.repeat.set(w, h);
+        if (pic.texture !== entity_material.map) {
+          entity_material.map = pic.texture;
+        }
+        entity_mesh.update_all_material();
+      }
+      entity_mesh.set_scale(pixel_w, pixel_h, 0);
+    } else {
+      entity_mesh.set_scale(0, 0, 0);
     }
-    const {
-      frame,
-      position: { x, y, z },
-      facing,
-    } = entity;
+  }
+
+  render() {
+    const { entity, entity_mesh } = this;
+    if (entity.frame.id === Builtin_FrameId.Gone) return;
+    const { frame, position: { x, y, z }, facing } = entity;
     if (entity.data !== this._prev_data) {
       this.set_entity(entity);
     }
-    if (this._prev_update_count !== entity.update_id) {
-      this._prev_update_count = entity.update_id;
-      if (this._previous.face !== facing || this._previous.frame !== frame) {
-        this._previous.face = facing;
-        this._previous.frame = frame;
-        const frame_pic = frame.pic;
-        if (frame_pic && "-1" in frame_pic) {
-          if (this.piece !== frame_pic[facing] && frame_pic[facing]) {
-            const { x, y, w, h, tex, pixel_w, pixel_h } = (this.piece =
-              frame_pic[facing]);
-            const real_tex = this.variants.get(tex)?.at(entity.variant) ?? tex;
-            const pic = pictures.get(real_tex);
-            if (pic) {
-              pic.texture.offset.set(x, y);
-              pic.texture.repeat.set(w, h);
-              if (pic.texture !== entity_material.map) {
-                entity_material.map = pic.texture;
-              }
-              entity_mesh.update_all_material();
-            }
-            entity_mesh.set_scale(pixel_w, pixel_h, 0);
-          }
-        }
-      }
-      const { centerx, centery } = frame;
-      const offset_x =
-        entity.facing === 1 ? centerx : entity_mesh.scale_x - centerx;
-      entity_mesh.set_position(
-        Math.round(x - offset_x),
-        Math.round(y - z / 2 + centery),
-        Math.round(z),
-      );
-
-      const is_visible = !entity.invisible;
-      const is_blinking = !!entity.blinking;
-      entity_mesh.visible = is_visible;
-      if (is_blinking && is_visible) {
-        entity_mesh.visible = 0 === Math.floor(entity.blinking / 4) % 2;
-      }
+    if (this._prev_update_count === entity.update_id)
+      return;
+    this._prev_update_count = entity.update_id;
+    
+    const tex = frame.pic?.[facing]
+    if (this._prev_tex !== tex) {
+      this.apply_tex(entity, this._prev_tex = tex)
     }
 
-    if (entity.shaking) {
-      if (this._shaking !== entity.shaking) {
-        const x = entity.shaking % 2 ? -4 : 4;
-        entity_mesh.x += facing * x;
-      }
+    const { centerx, centery } = frame;
+    const offset_x = entity.facing === 1 ? centerx : entity_mesh.scale_x - centerx;
+    entity_mesh.set_position(
+      Math.round(x - offset_x),
+      Math.round(y - z / 2 + centery),
+      Math.round(z),
+    );
+    const is_visible = !entity.invisible;
+    const is_blinking = !!entity.blinking;
+    entity_mesh.visible = is_visible;
+    if (is_blinking && is_visible) {
+      entity_mesh.visible = 0 === Math.floor(entity.blinking / 4) % 2;
+    }
+
+    if (entity.shaking && this._shaking !== entity.shaking) {
+      const x = entity.shaking % 2 ? -4 : 4;
+      entity_mesh.x += facing * x;
     }
     this._shaking = entity.shaking;
+
+
   }
 }

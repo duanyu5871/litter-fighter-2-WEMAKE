@@ -33,6 +33,28 @@ export namespace Defines {
   export const DEFAULT_RESTING_MAX = 30;
 
   /**
+   * 默认值：角色进入场地时的闪烁无敌时间
+   *
+   * @type {number}
+   */
+  export const DEFAULT_BEGIN_BLINK_TIME: number = 144;
+
+  /**
+   * 默认值：倒地起身后的闪烁无敌时间
+   *
+   * @type {number}
+   */
+  export const DEFAULT_LYING_BLINK_TIME: number = 32;
+
+  /**
+   * 默认值：“非玩家角色”死亡时后的闪烁时间
+   *
+   * @type {number}
+   */
+  export const DEFAULT_GONE_BLINK_TIME: number = 56;
+
+
+  /**
    * 直接破防值
    */
   export const DEFAULT_FORCE_BREAK_DEFEND_VALUE = 200;

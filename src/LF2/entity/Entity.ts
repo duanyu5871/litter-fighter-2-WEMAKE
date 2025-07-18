@@ -444,7 +444,7 @@ export class Entity {
   }
 
   /**
-   * 闪烁计数F
+   * 闪烁计数
    *
    * @readonly
    * @type {number}
