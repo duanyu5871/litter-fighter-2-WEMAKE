@@ -24,13 +24,26 @@ export namespace Defines {
   export const DEFAULT_BEER_MP = 154;
   export const DEFAULT_FALL_VALUE_MAX = 140;
   export const DEFAULT_DEFEND_VALUE_MAX = 120;
-  export const DEFAULT_ITR_SHAKING = 4;
-  export const DEFAULT_ITR_MOTIONLESS = 4;
-  export const DEFAULT_CATCH_TIME = 680;
-  export const DEFAULT_ITR_FALL = 40;
-  export const DEFAULT_FALL_VALUE_DIZZY = 40;
-  export const DAFUALT_QUBE_LENGTH = 24;
-  export const DEFAULT_RESTING_MAX = 30;
+
+  /**
+   * 默认值：被击中的对象晃动多少帧
+   *
+   * @type {number}
+   */
+  export const DEFAULT_ITR_SHAKING: number = 4;
+
+  /**
+   * 默认值：击中敌人的对象停顿多少帧
+   *
+   * @type {number}
+   * @memberof World
+   */
+  export const DEFAULT_ITR_MOTIONLESS: number = 4;
+  export const DEFAULT_CATCH_TIME: number = 680;
+  export const DEFAULT_ITR_FALL: number = 40;
+  export const DEFAULT_FALL_VALUE_DIZZY: number = 40;
+  export const DAFUALT_QUBE_LENGTH: number = 24;
+  export const DEFAULT_RESTING_MAX: number = 30;
 
   /**
    * 默认值：角色进入场地时的闪烁无敌时间
@@ -74,6 +87,51 @@ export namespace Defines {
   export const DEFAULT_MP_RECOVERY_MIN_SPEED: number = 0.25;
 
   export const DEFAULT_HP_RECOVERY_SPEED = 0.2;
+  /**
+   * 默认值：dvx缩放系数
+   *
+   * @type {number}
+   * @memberof World
+   */
+  export const DEFAULT_FVX_F: number = 1;
+
+  /**
+   * 默认值：dvy缩放系数
+   *
+   * @type {number}
+   * @memberof World
+   */
+  export const DEFAULT_FVY_F: number = 1;
+  
+  /**
+   * 默认值：dvz缩放系数
+   *
+   * @type {number}
+   * @memberof World
+   */
+  export const DEFAULT_FVZ_F: number = 1;
+
+  /**
+   * 默认值：X轴丢人初速度缩放系数
+   *
+   * @type {number}
+   */
+  export const DEFAULT_TVX_F: number = 1;
+
+  /**
+   * 默认值：Y轴丢人初速度缩放系数
+   *
+   * @type {number}
+   */
+  export const DEFAULT_TVY_F: number = 1.3;
+
+  /**
+   * 默认值：Z轴丢人初速度缩放系数
+   *
+   * @type {number}
+   */
+  export const DEFAULT_TVZ_F: number = 1;
+
 
   export const VOID_BG: IBgData = {
     type: "background",

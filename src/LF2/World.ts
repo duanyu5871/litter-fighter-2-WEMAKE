@@ -27,19 +27,73 @@ export class World {
   readonly _callbacks = new Callbacks<IWorldCallbacks>();
   private _spark_data?: IEntityData;
   private _spark_creator?: ICreator<Entity, typeof Entity>;
+
+  /**
+   * 被击中的对象晃动多少帧
+   *
+   * @type {number}
+   * @memberof World
+   */
   itr_shaking: number = Defines.DEFAULT_ITR_SHAKING;
+
+  /**
+   * 击中敌人的对象停顿多少帧
+   *
+   * @type {number}
+   * @memberof World
+   */
   itr_motionless: number = Defines.DEFAULT_ITR_MOTIONLESS;
-  fvy_f: number = 1;
-  fvx_f: number = 1;
-  fvz_f: number = 1;
+
+  /**
+   * dvx缩放系数
+   *
+   * @type {number}
+   * @memberof World
+   */
+  fvx_f: number = Defines.DEFAULT_FVX_F;
+
+  /**
+   * dvy缩放系数
+   *
+   * @type {number}
+   * @memberof World
+   */
+  fvy_f: number = Defines.DEFAULT_FVY_F;
+
+  /**
+   * dvz缩放系数
+   *
+   * @type {number}
+   * @memberof World
+   */
+  fvz_f: number = Defines.DEFAULT_FVZ_F;
+
   ivy_f: number = 1;
   ivz_f: number = 1;
   ivx_f: number = 1;
   ivy_d: number = 5.5;
   ivx_d: number = 4;
-  tvz_f: number = 1;
-  tvx_f: number = 1;
-  tvy_f: number = 1.3;
+
+  /**
+   * X轴丢人初速度缩放系数
+   *
+   * @type {number}
+   */
+  tvx_f: number = Defines.DEFAULT_TVX_F;
+
+  /**
+   * Y轴丢人初速度缩放系数
+   *
+   * @type {number}
+   */
+  tvy_f: number = Defines.DEFAULT_TVY_F;
+
+  /**
+   * Z轴丢人初速度缩放系数
+   *
+   * @type {number}
+   */
+  tvz_f: number = Defines.DEFAULT_TVZ_F;
 
   /**
    * 角色进入场地时的闪烁无敌时间
