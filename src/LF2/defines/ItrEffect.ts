@@ -5,18 +5,29 @@ export type __KEEP_IItrInfo = IItrInfo;
 export enum ItrEffect {
   /**
    * 普通效果
+   * 
+   * 用于：
+   * * [X] LF2
+   * * [X] WEMAKE
+   * 
    */
   Normal = 0,
 
   /**
-   * 利器
-   *
-   * 攻击效果是血花
+   * 利器，攻击效果是血花
+   * 
+   * 用于：
+   * * [X] LF2
+   * * [X] WEMAKE
    */
   Sharp = 1,
 
   /**
    * 着火
+   * 
+   * 用于：
+   * * [X] LF2
+   * * [X] WEMAKE
    */
   Fire = 2,
 

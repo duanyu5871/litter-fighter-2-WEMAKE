@@ -5,7 +5,8 @@ import type { IExpression } from "./IExpression";
 import type { TNextFrame } from "./INextFrame";
 import type { IQube } from "./IQube";
 import type { IQubePair } from "./IQubePair";
-import { ItrKind } from "./ItrKind";
+import type { ItrEffect } from "./ItrEffect";
+import type { ItrKind } from "./ItrKind";
 
 export type DEFAULT_ITR_MOTIONLESS = typeof Defines.DEFAULT_ITR_MOTIONLESS
 
@@ -71,7 +72,7 @@ export interface IItrInfo extends IQube {
   /**
    * @see {ItrEffect}
    */
-  effect?: number;
+  effect?: number | ItrEffect;
   indicator_info?: IQubePair;
 
 
