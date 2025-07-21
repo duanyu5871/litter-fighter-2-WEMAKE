@@ -273,7 +273,7 @@ export class World {
       if (ok)
         this._callbacks.emit("on_player_character_del")(e.ctrl.player_id);
     }
-    this.renderer.add_entity(e);
+    this.renderer.del_entity(e);
     e.dispose();
     return true;
   }

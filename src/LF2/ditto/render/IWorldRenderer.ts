@@ -8,6 +8,7 @@ export interface IWorldRenderer {
   get camera(): IOrthographicCameraNode;
   indicator_flags: number;
   add_entity(entity: Entity): void;
+  del_entity(entity: Entity): void;
   render(): void;
   dispose(): void;
 }
