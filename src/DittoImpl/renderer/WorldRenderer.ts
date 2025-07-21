@@ -5,8 +5,8 @@ import type { IEntityRenderer } from "../../LF2/ditto/render/IEntityRenderer";
 import type { IFrameIndicators } from "../../LF2/ditto/render/IFrameIndicators";
 import type { IWorldRenderer } from "../../LF2/ditto/render/IWorldRenderer";
 import type { Entity } from "../../LF2/entity";
-import type LF2 from "../../LF2/LF2";
 import { World } from "../../LF2/World";
+
 
 export class WorldRenderer implements IWorldRenderer {
   world: World;

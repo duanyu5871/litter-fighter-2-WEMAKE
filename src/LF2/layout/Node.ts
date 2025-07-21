@@ -1,5 +1,4 @@
-import * as THREE from "three";
-import { ISprite, ISpriteInfo } from "../3d";
+import { INodeRenderer, NodeRenderer } from "../../DittoImpl/renderer/NodeRenderer";
 import LF2 from "../LF2";
 import Callbacks from "../base/Callbacks";
 import { Expression } from "../base/Expression";
@@ -7,12 +6,7 @@ import { NoEmitCallbacks } from "../base/NoEmitCallbacks";
 import GameKey from "../defines/GameKey";
 import { IValGetter } from "../defines/IExpression";
 import IStyle from "../defines/IStyle";
-import Ditto from "../ditto";
 import { type IImageInfo } from "../loader/IImageInfo";
-import {
-  empty_texture,
-  white_texture,
-} from "../loader/loader";
 import { filter, find } from "../utils/container_help";
 import { is_arr, is_bool, is_num, is_str } from "../utils/type_check";
 import { ICookedLayoutInfo } from "./ICookedLayoutInfo";
@@ -58,7 +52,7 @@ export class Node {
   protected _parent?: Node;
   protected _children: Node[] = [];
   protected _index: number = 0;
-  protected readonly data: Readonly<ICookedLayoutInfo>;
+  readonly data: Readonly<ICookedLayoutInfo>;
 
   get focused(): boolean {
     return this._root._focused_item === this;
@@ -99,7 +93,6 @@ export class Node {
   }
   set_pos(v: [number, number, number]): this {
     this._pos.set(1, v);
-    this._sprite.set_position(v[0], -v[1], v[2]);
     return this;
   }
 
@@ -209,7 +202,7 @@ export class Node {
     return this;
   }
 
-  get parent() { return this._parent; }
+  get parent(): Node | undefined { return this._parent; }
   get children(): Readonly<Node[]> { return this._children; }
 
   get size(): [number, number] { return this._size.value; }
@@ -244,8 +237,7 @@ export class Node {
     return this;
   }
 
-  protected _sprite: ISprite;
-
+  renderer: INodeRenderer;
   constructor(lf2: LF2, data: ICookedLayoutInfo, parent?: Node) {
     this.lf2 = lf2;
     this.data = Object.freeze(data);
@@ -254,7 +246,7 @@ export class Node {
     this.id_layout_map = parent?.id_layout_map ?? new Map();
     this.name_layout_map = parent?.name_layout_map ?? new Map();
 
-    this._sprite = new Ditto.SpriteNode(this.lf2).add_user_data("owner", this);
+    this.renderer = new NodeRenderer(this);
   }
 
   get x_on_root(): number {
@@ -289,10 +281,9 @@ export class Node {
 
   on_start() {
     this._state = {};
-    this.init_sprite();
+    this.renderer.on_start();
     for (const c of this._components) c.on_start?.();
     for (const i of this.children) i.on_start();
-
     const { start } = this.data.actions || {};
     start && actor.act(this, start);
   }
@@ -300,7 +291,7 @@ export class Node {
   on_stop(): void {
     for (const c of this.components) c.on_stop?.();
     for (const l of this.children) l.on_stop();
-    this.parent?.sprite.del(this._sprite);
+    this.renderer.on_stop();
     const { stop } = this.data.actions || {};
     stop && actor.act(this, stop);
   }
@@ -325,7 +316,7 @@ export class Node {
       this._state.focused_item = this.focused_item;
       console.log("on_pause focused_item", this.focused_item);
     }
-    if (this.root === this) this._sprite.del_self();
+    if (this.root === this) this.renderer.del_self();
 
     if (this.global_visible && !this.parent) this.invoke_all_on_hide();
 
@@ -535,50 +526,8 @@ export class Node {
     }
   }
 
-  protected create_texture(): THREE.Texture | undefined {
-    const img_idx = this.img_idx;
-    const img_info = this.img_infos?.[img_idx];
-    if (!img_info)
-      return this.data.bg_color ? white_texture() : empty_texture();
-    const { flip_x, flip_y } = this.data;
-    const texture = this.lf2.images.create_pic_by_img_info(img_info).texture;
-    texture.offset.set(flip_x ? 1 : 0, flip_y ? 1 : 0);
-    return texture;
-  }
-
   get sprite() {
-    return this._sprite;
-  }
-
-  protected init_sprite() {
-    const [x, y, z] = this.data.pos;
-    const p = this.create_sprite_info();
-    this._sprite
-      .set_info(p)
-      .set_center(...this.center)
-      .set_position(x, -y, z)
-      .set_opacity(p.texture || p.color ? 1 : 0)
-      .set_visible(this.visible)
-      .set_name(`layout(name= ${this.name}, id=${this.id})`)
-      .apply();
-    this.parent?.sprite.add(this._sprite);
-  }
-
-  create_sprite_info(): ISpriteInfo {
-    const [w, h] = this.size;
-    const texture = this.create_texture();
-    const p: ISpriteInfo = {
-      w,
-      h,
-      texture,
-      color: this.data.bg_color,
-    };
-    return p;
-  }
-
-  update_img() {
-    const p = this.create_sprite_info();
-    this._sprite.set_info(p).apply();
+    return this.renderer.sprite;
   }
 
   on_click(): boolean {
@@ -628,13 +577,9 @@ export class Node {
   }
 
   render(dt: number) {
-    if (this._root === this) this._sprite.x = this.lf2.world.renderer.cam_x;
-    const { visible } = this;
-    if (visible !== this._sprite.visible) {
-      this._sprite.visible = visible;
-      this.invoke_visible_callback();
-    }
-    this._sprite.opacity = this.opacity;
+    const visible_changed = this.visible != this.renderer.visible
+    this.renderer.render()
+    if (visible_changed) this.invoke_visible_callback();
     for (const i of this.children) i.render(dt);
     for (const c of this._components) c.render?.(dt);
   }

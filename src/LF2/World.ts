@@ -236,7 +236,7 @@ export class World {
 
   cam_speed = 0;
   lock_cam_x: number | undefined = void 0;
-  renderer: IWorldRenderer
+  public renderer: IWorldRenderer
   get scene(): IScene { return this.renderer.scene }
   get camera(): IOrthographicCameraNode { return this.renderer.camera }
 

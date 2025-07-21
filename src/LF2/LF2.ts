@@ -252,36 +252,19 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
     this._pointer_vec_2.x = e.scene_x;
     this._pointer_vec_2.y = e.scene_y;
     this.world.camera.raycaster(this._pointer_raycaster, this._pointer_vec_2);
-    // const intersections = this.world.scene.intersect_from_raycaster(
-    //   this._pointer_raycaster,
-    // );
-    // if (!intersections.length) {
-    //   this.pick_intersection(void 0)
-    // } else {
-    //   if (this._intersection) {
-    //     const idx = intersections.findIndex(v => v.object === this._intersection?.object);
-    //     const iii = intersections.find((v, i) => i > idx && v.object.userData.owner);
-    //     this.pick_intersection(iii)
-    //   } else {
-    //     const iii = intersections.find(v => v.object.userData.owner)
-    //     this.pick_intersection(iii)
-    //   }
-    // }
-    {
-      const { layout } = this;
-      if (!layout) return;
-      const { sprite } = layout;
-      if (!sprite) return;
-      this.world.camera.raycaster(this._pointer_raycaster, this._pointer_vec_2);
-      const intersections = sprite.intersect_from_raycaster(
-        this._pointer_raycaster,
-        true,
-      );
-      const layouts = intersections
-        .map((v) => v.object.get_user_data('owner') as Node)
-        .filter((v) => v && v.global_visible && !v.global_disabled)
-      for (const layout of layouts) if (layout.on_click()) break;
-    }
+    const { layout } = this;
+    if (!layout) return;
+    const { sprite } = layout;
+    if (!sprite) return;
+    this.world.camera.raycaster(this._pointer_raycaster, this._pointer_vec_2);
+    const intersections = sprite.intersect_from_raycaster(
+      this._pointer_raycaster,
+      true,
+    );
+    const layouts = intersections
+      .map((v) => v.object.get_user_data('owner') as Node)
+      .filter((v) => v && v.global_visible && !v.global_disabled)
+    for (const layout of layouts) if (layout.on_click()) break;
   }
 
   on_pointer_up(e: IPointingEvent) { }
