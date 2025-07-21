@@ -218,7 +218,7 @@ export class Entity {
    */
   readonly velocities: IVector3[] = [new Ditto.Vector3(0, 0, 0)];
   get velocity_0(): IVector3 {
-    if (this.velocities.length) return this.velocity_0!;
+    if (this.velocities.length) return this.velocities[0];
     return this.velocities[0] = new Ditto.Vector3(0, 0, 0);
   }
   

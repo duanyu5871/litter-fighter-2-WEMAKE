@@ -4,9 +4,7 @@ import { Callbacks, FPS, ICollision, NoEmitCallbacks } from "./base";
 import { Builtin_FrameId, Defines, IBdyInfo, IBounding, IEntityData, IFrameInfo, IItrInfo, StateEnum } from "./defines";
 import { AllyFlag } from "./defines/AllyFlag";
 import Ditto from "./ditto";
-import { IBgRender } from "./ditto/render/IBgRender";
-import { IEntityRenderer } from "./ditto/render/IEntityRenderer";
-import { IFrameIndicators } from "./ditto/render/IFrameIndicators";
+import { IWorldRenderer } from "./ditto/render/IWorldRenderer";
 import {
   Entity, Factory, ICreator, is_ball,
   is_base_ctrl,
@@ -173,8 +171,6 @@ export class World {
 
   friction_factor = Defines.FRICTION_FACTOR;
   friction = Defines.FRICTION;
-  scene: IScene;
-  camera: IOrthographicCameraNode;
 
   private _stage: Stage;
   entities = new Set<Entity>();
@@ -237,24 +233,21 @@ export class World {
     this._gravity = v;
     this._callbacks.emit("on_gravity_change")(v, prev, this);
   }
+
+  cam_speed = 0;
+  lock_cam_x: number | undefined = void 0;
+  renderer: IWorldRenderer
+  get scene(): IScene { return this.renderer.scene }
+  get camera(): IOrthographicCameraNode { return this.renderer.camera }
+
   constructor(lf2: LF2) {
     this.lf2 = lf2;
-    const w = (this._screen_w = Defines.CLASSIC_SCREEN_WIDTH);
-    const h = (this._screen_h = 450); // Defines.OLD_SCREEN_HEIGHT;
-
-    this.scene = new Ditto.SceneNode(lf2).set_size(w * 4, h * 4);
-    this.camera = new Ditto.OrthographicCamera(lf2)
-      .setup(0, w, h, 0)
-      .set_position(void 0, void 0, 10)
-      .set_name("default_orthographic_camera")
-      .apply();
-    this.scene.add(this.camera);
+    this._screen_w = Defines.CLASSIC_SCREEN_WIDTH;
+    this._screen_h = 450;
     this._stage = new Stage(this, Defines.VOID_BG);
+    this.renderer = new Ditto.WorldRender(this);
   }
 
-  entity_renderer_packs = new Map<Entity, [
-    IEntityRenderer, IEntityRenderer, IEntityRenderer, IFrameIndicators
-  ]>();
   add_entities(...entities: Entity[]) {
     for (const entity of entities) {
       if (
@@ -269,23 +262,7 @@ export class World {
       }
 
       this.entities.add(entity);
-      const entity_renderer = new Ditto.EntityRender(entity);
-      entity_renderer.on_mount();
-
-      const shadow_renderer = new Ditto.EntityShadowRender(entity);
-      shadow_renderer.on_mount()
-
-      const info_renderer = new Ditto.EntityInfoRender(entity);
-      info_renderer.on_mount()
-
-      const frame_indicators = new Ditto.FrameIndicators(entity);
-      frame_indicators.on_mount()
-
-      this.entity_renderer_packs.set(entity, [
-        entity_renderer, shadow_renderer, info_renderer, frame_indicators
-      ]);
-
-      // entity_renderer.indicators.flags = this._indicator_flags;
+      this.renderer.add_entity(entity);
     }
   }
 
@@ -296,15 +273,7 @@ export class World {
       if (ok)
         this._callbacks.emit("on_player_character_del")(e.ctrl.player_id);
     }
-    const pack = this.entity_renderer_packs.get(e);
-    if (pack) {
-      const [r1, r2, r3, r4] = pack
-      r1.on_unmount();
-      r2.on_unmount();
-      r3.on_unmount();
-      r4.on_unmount();
-      this.entity_renderer_packs.delete(e);
-    }
+    this.renderer.add_entity(e);
     e.dispose();
     return true;
   }
@@ -529,21 +498,11 @@ export class World {
     this.stage.update();
   }
 
-  bg_render: IBgRender = new Ditto.BgRender(this);
 
   render_once(dt: number) {
-    this.bg_render.render();
-    for (const [, [r1, r2, r3, r4]] of this.entity_renderer_packs) {
-      r1.render();
-      r2.render();
-      r3.render();
-      r4.render();
-    }
+    this.renderer.render();
     this.lf2.layout?.render(dt);
-    this.scene.render();
   }
-  cam_speed = 0;
-  lock_cam_x: number | undefined = void 0;
 
   update_camera() {
     const old_cam_x = Math.floor(this.camera.x);
@@ -560,7 +519,6 @@ export class World {
     } else if (this.player_slot_characters.size) {
       let l = 0;
       new_x = 0;
-
       const has_human_player = find(
         this.player_slot_characters,
         ([_, p]) => is_local_ctrl(p.ctrl) && p.hp > 0,
@@ -574,8 +532,7 @@ export class World {
       new_x = Math.floor(new_x / l);
     }
     if (new_x < max_cam_left) new_x = max_cam_left;
-    if (new_x > max_cam_right - 794) new_x = max_cam_right - 794;
-
+    if (new_x > max_cam_right - this.screen_w) new_x = max_cam_right - this.screen_w;
     let cur_x = this.camera.x;
     const acc = Math.min(
       acc_ratio,
@@ -804,6 +761,7 @@ export class World {
   private _paused = false;
   get paused() { return this._paused; }
   set paused(v: boolean) { this.set_paused(v); }
+  indicator_flags: number = 0;
 
   set_paused(v: boolean) {
     if (this._paused === v) return;
@@ -811,24 +769,11 @@ export class World {
     this._callbacks.emit("on_pause_change")(v);
   }
 
-  private _indicator_flags: number = 0;
-  get indicator_flags() {
-    return this._indicator_flags;
-  }
-  set indicator_flags(v: number) {
-    if (this._indicator_flags === v) return;
-    this._indicator_flags = v;
-    for (const [, [, , , r4]] of this.entity_renderer_packs) {
-      r4.flags = v;
-    }
-  }
-
   dispose() {
     this._callbacks.emit("on_disposed")();
     this.stop_update();
     this.stop_render();
     this.del_entities(Array.from(this.entities));
-    this.scene.dispose();
-    this.bg_render.release();
+    this.renderer.dispose();
   }
 }

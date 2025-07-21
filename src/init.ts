@@ -11,6 +11,7 @@ import { EntityRender } from "./DittoImpl/renderer/EntityRender";
 import { EntityShadowRender } from "./DittoImpl/renderer/EntityShadowRender";
 import Ditto from "./LF2/ditto";
 import { FrameIndicators } from "./DittoImpl/renderer/FrameIndicators";
+import { WorldRenderer } from "./DittoImpl/renderer/WorldRenderer";
 
 Ditto.setup({
   Timeout: dom.__Timeout,
@@ -43,4 +44,5 @@ Ditto.setup({
   EntityInfoRender: EntityInfoRender,
   EntityRender: EntityRender,
   FrameIndicators: FrameIndicators,
+  WorldRender: WorldRenderer,
 });
