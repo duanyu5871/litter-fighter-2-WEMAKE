@@ -274,7 +274,7 @@ export class EntityInfoRender implements IEntityCallbacks, IEntityRenderer {
 
   set_name_position(x: number, y: number, z: number) {
     const hw = (this.name_node.scale_x + 10) / 2;
-    const { x: cam_l } = this.entity.world.camera;
+    const { cam_x: cam_l } = this.entity.world.renderer;
     const cam_r = cam_l + this.entity.world.screen_w;
     if (x + hw > cam_r) x = cam_r - hw;
     else if (x - hw < cam_l) x = cam_l + hw;

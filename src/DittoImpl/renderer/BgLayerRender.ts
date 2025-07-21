@@ -47,7 +47,7 @@ export class BgLayerRender implements IBgLayerRender {
     const { opacity, visible, info: { x, absolute, width }, bg } = this.layer;
     this.mesh.set_opacity(opacity);
     this.mesh.visible = visible;
-    const cam_x = bg.world.camera.x;
+    const cam_x = bg.world.renderer.cam_x;
     const _x = absolute ?
       x + cam_x :
       bg.width > bg.world.screen_w ?

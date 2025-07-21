@@ -628,7 +628,7 @@ export class Node {
   }
 
   render(dt: number) {
-    if (this._root === this) this._sprite.x = this.lf2.world.camera.x;
+    if (this._root === this) this._sprite.x = this.lf2.world.renderer.cam_x;
     const { visible } = this;
     if (visible !== this._sprite.visible) {
       this._sprite.visible = visible;

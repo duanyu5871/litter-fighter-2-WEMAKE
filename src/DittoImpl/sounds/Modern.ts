@@ -191,7 +191,7 @@ export class __Modern extends BaseSounds {
 
   protected get_l_r_vol(x?: number): number[] {
     const edge_w = Defines.CLASSIC_SCREEN_WIDTH / 2;
-    const viewer_x = this.lf2.world.camera.x + edge_w;
+    const viewer_x = this.lf2.world.renderer.cam_x + edge_w;
     const sound_x = x ?? viewer_x;
     const muted = this._muted || this._sound_muted;
     return [

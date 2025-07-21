@@ -505,11 +505,11 @@ export class World {
   }
 
   update_camera() {
-    const old_cam_x = Math.floor(this.camera.x);
+    const old_cam_x = Math.floor(this.renderer.cam_x);
     const { player_left, left, player_right, right } = this.stage;
     const max_cam_left = is_num(this.lock_cam_x) ? left : player_left;
     const max_cam_right = is_num(this.lock_cam_x) ? right : player_right;
-    let new_x = this.camera.x;
+    let new_x = this.renderer.cam_x;
     let max_speed_ratio = 50;
     let acc_ratio = 1;
     if (is_num(this.lock_cam_x)) {
@@ -533,7 +533,7 @@ export class World {
     }
     if (new_x < max_cam_left) new_x = max_cam_left;
     if (new_x > max_cam_right - this.screen_w) new_x = max_cam_right - this.screen_w;
-    let cur_x = this.camera.x;
+    let cur_x = this.renderer.cam_x;
     const acc = Math.min(
       acc_ratio,
       (acc_ratio * Math.abs(cur_x - new_x)) / this._screen_w,
@@ -544,17 +544,17 @@ export class World {
       if (this.cam_speed > 0) this.cam_speed = 0;
       else if (this.cam_speed > -max_speed) this.cam_speed -= acc;
       else this.cam_speed = -max_speed;
-      this.camera.x += this.cam_speed;
-      if (this.camera.x < new_x) this.camera.x = new_x;
+      this.renderer.cam_x += this.cam_speed;
+      if (this.renderer.cam_x < new_x) this.renderer.cam_x = new_x;
     } else if (cur_x < new_x) {
       if (this.cam_speed < 0) this.cam_speed = 0;
       else if (this.cam_speed < max_speed) this.cam_speed += acc;
       else this.cam_speed = max_speed;
-      this.camera.x += this.cam_speed;
-      if (this.camera.x > new_x) this.camera.x = new_x;
+      this.renderer.cam_x += this.cam_speed;
+      if (this.renderer.cam_x > new_x) this.renderer.cam_x = new_x;
     }
 
-    const new_cam_x = Math.floor(this.camera.x);
+    const new_cam_x = Math.floor(this.renderer.cam_x);
     if (old_cam_x !== new_cam_x) {
       this._callbacks.emit("on_cam_move")(new_cam_x);
     }

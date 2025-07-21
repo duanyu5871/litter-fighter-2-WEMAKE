@@ -132,7 +132,7 @@ export class Stage {
       this.spawn_object(object);
     }
     if (is_num(phase.cam_jump_to_x)) {
-      this.world.camera.x = phase.cam_jump_to_x;
+      this.world.renderer.cam_x = phase.cam_jump_to_x;
     }
 
     if (is_num(phase.player_jump_to_x)) {

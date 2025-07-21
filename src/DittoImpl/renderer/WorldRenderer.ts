@@ -28,6 +28,12 @@ export class WorldRenderer implements IWorldRenderer {
       r4.flags = v;
     }
   }
+  get cam_x(): number {
+    return this.camera.x
+  }
+  set cam_x(v: number) {
+    this.camera.x = v;
+  }
   constructor(world: World) {
     this.world = world;
     const w = world.screen_w;
