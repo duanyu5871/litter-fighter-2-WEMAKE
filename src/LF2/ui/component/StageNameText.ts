@@ -72,7 +72,7 @@ export default class StageNameText extends UIComponent {
     const state_id = this.stage.id;
     const curr_idx = stages.findIndex((v) => v.id === state_id);
     const next_idx = (curr_idx + 1) % stages.length;
-    this._stage = stages[next_idx];
+    this._stage = stages[next_idx]!;
     this._mesh.set_text(this.text).apply();
   }
 }

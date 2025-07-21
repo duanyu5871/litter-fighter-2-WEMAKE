@@ -1,4 +1,4 @@
-import { Warn } from "../../../Log";
+import Ditto from "../../ditto";
 import { is_str } from "../../utils/type_check";
 import { IUIInfo } from "../IUIInfo";
 import type { UINode } from "../UINode";
@@ -10,7 +10,6 @@ import { DemoModeLogic } from "./DemoModeLogic";
 import DifficultyText from "./DifficultyText";
 import GamePrepareLogic from "./GamePrepareLogic";
 import LaunchPageLogic from "./LaunchPageLogic";
-import { UIComponent } from "./UIComponent";
 import LoadingFileNameDisplayer from "./LoadingFileNameDisplayer";
 import OpacityHover from "./OpacityHover";
 import PlayerCharacterHead from "./PlayerCharacterHead";
@@ -28,6 +27,7 @@ import { ReachableLayout, ReachableLayoutGroup } from "./ReachableLayoutGroup";
 import StageNameText from "./StageNameText";
 import StageTitleShow from "./StageTitleShow";
 import StageTransitions from "./StageTransitions";
+import { UIComponent } from "./UIComponent";
 import VerticalLayout from "./VerticalLayout";
 import VsModeLogic from "./VsModeLogic";
 
@@ -73,7 +73,7 @@ class Factory {
     for (const component_expression of components) {
       const [func_name, args] = read_call_func_expression(component_expression);
       if (!func_name) {
-        Warn.print(
+        Ditto.Warn(
           Factory.TAG + "::create",
           "expression not correct! expression:",
           component_expression,
@@ -82,7 +82,7 @@ class Factory {
       }
       const Cls = this._component_map.get(func_name);
       if (!Cls) {
-        Warn.print(
+        Ditto.Warn(
           Factory.TAG + "::create",
           "Component class not found! expression:",
           component_expression,

@@ -1,5 +1,5 @@
-import { Warn } from "../../Log";
 import { IEntityData, IFrameInfo, IFramePictureInfo, ITexturePieceInfo } from "../defines";
+import Ditto from "../ditto";
 import LF2 from "../LF2";
 import { find } from "../utils";
 import { ImageInfo } from "./ImageInfo";
@@ -14,12 +14,12 @@ export function preprocess_frame_pic(lf2: LF2, data: IEntityData, frame: IFrameI
 
   const pic_info = find(data.base.files, (v) => v.id === pic.tex);
   if (pic_info === void 0) {
-    Warn.print(preprocess_frame_pic.TAG, "file info not found, pic:", pic);
+    Ditto.Warn(preprocess_frame_pic.TAG, "file info not found, pic:", pic);
     return pic;
   }
   const p = lf2.images.find_by_pic_info(pic_info);
   if (!p) {
-    Warn.print(preprocess_frame_pic.TAG, "img info not found", pic_info);
+    Ditto.Warn(preprocess_frame_pic.TAG, "img info not found", pic_info);
     return pic;
   };
   const ck = cache_key(pic, p)

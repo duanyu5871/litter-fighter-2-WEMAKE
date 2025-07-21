@@ -2,15 +2,14 @@ import typescript from 'rollup-plugin-typescript2';
 import { dts } from "rollup-plugin-dts"
 
 let targets = [
-  { dir: './dist', tsconfig: "./tsconfig.json" },
-  { dir: './es5', tsconfig: "./tsconfig.es5.json" }
+  { dir: './dist', tsconfig: "./tsconfig.json" }
 ]
 // let formats = ['amd', 'cjs', 'es', 'iife', 'system', 'umd', 'commonjs', 'esm', 'module', 'systemjs']
-let formats = ['module']
+let formats = ['es']
 const configs = [];
 if (process.argv.indexOf('-w') !== -1) {
   targets = [{ dir: 'dist', tsconfig: "./tsconfig.json" }]
-  formats = ['module']
+  // formats = ['es']
 }
 for (const format of formats) {
   for (const { dir, tsconfig } of targets) {

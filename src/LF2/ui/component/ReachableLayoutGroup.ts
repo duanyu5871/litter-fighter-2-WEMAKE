@@ -44,21 +44,22 @@ export class ReachableLayoutGroup extends UIComponent {
       items.sort((a, b) => a.node.y_on_root - b.node.y_on_root);
 
     const focused_layout = this.node.focused_item;
+    
     if (key === "L" || key === "U") {
       const idx = items.findIndex((v) => v.node === focused_layout);
       const next_idx = (Math.max(idx, 0) + items.length - 1) % items.length;
-      items[next_idx].node.focused = true;
+      items[next_idx]!.node.focused = true;
     } else if (key === "R" || key === "D") {
       const idx = items.findIndex((v) => v.node === focused_layout);
       const next_idx = (idx + 1) % items.length;
-      items[next_idx].node.focused = true;
+      items[next_idx]!.node.focused = true;
     }
   }
 }
 
 export class ReachableLayout extends UIComponent {
   get group_name(): string {
-    return this.args[0];
+    return this.args[0] || '';
   }
   get group(): ReachableLayoutGroup | undefined {
     return this.node.root.find_component(

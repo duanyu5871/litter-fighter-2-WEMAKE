@@ -1,4 +1,4 @@
-import * as THREE from "./_t";
+import * as THREE from "../3d/_t";
 import {
   IObjectNode,
   IOrthographicCameraNode,

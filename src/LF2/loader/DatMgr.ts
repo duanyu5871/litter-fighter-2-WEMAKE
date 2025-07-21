@@ -1,10 +1,14 @@
-import { Log } from "../../Log";
 import LF2 from "../LF2";
+import { BallController } from "../controller/BallController";
+import { BotController } from "../controller/BotController";
+import { InvalidController } from "../controller/InvalidController";
 import { IBgData, IStageInfo } from "../defines";
+import { EntityEnum } from "../defines/EntityEnum";
 import { IDataMap } from "../defines/IDataMap";
 import { IEntityData } from "../defines/IEntityData";
-import { EntityEnum } from "../defines/EntityEnum";
 import { Defines } from "../defines/defines";
+import Ditto from "../ditto";
+import { Factory } from "../entity";
 import { TData } from "../entity/Entity";
 import {
   is_ball_data,
@@ -15,13 +19,7 @@ import {
 } from "../entity/type_check";
 import { is_str, not_blank_str } from "../utils/type_check";
 import { preprocess_bg_data } from "./preprocess_bg_data";
-import { ISounds } from "../ditto";
-import { ImageMgr } from "./loader";
 import { preprocess_entity_data } from "./preprocess_entity_data";
-import { BallController } from "../controller/BallController";
-import { BotController } from "../controller/BotController";
-import { InvalidController } from "../controller/InvalidController";
-import { Factory } from "../entity";
 
 export interface IDataListMap {
   background: IBgData[];
@@ -79,7 +77,7 @@ class Inner {
     const _data_id = "" + data.id;
     if (_data_id === "spark") debugger;
     if (_data_id !== _index_id) {
-      Log.print(
+      Ditto.Warn(
         DatMgr.TAG + "::_add_data",
         `index_id not equal to data_id,`,
         `index_id: ${_index_id}, data_id: ${_data_id},`,
@@ -87,7 +85,7 @@ class Inner {
       );
     }
     if (this.data_map.has(_index_id)) {
-      Log.print(
+      Ditto.Warn(
         DatMgr.TAG + "::_add_data",
         "id duplicated, old data will be overwritten!",
         "old data:",

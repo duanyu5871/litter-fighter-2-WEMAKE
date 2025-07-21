@@ -1,10 +1,10 @@
-import { Warn } from "../../Log";
 import type { World } from "../World";
 import Callbacks from "../base/Callbacks";
 import { NoEmitCallbacks } from "../base/NoEmitCallbacks";
 import { new_team } from "../base/new_id";
 import Background from "../bg/Background";
 import { Defines, IBgData, IStageInfo, IStageObjectInfo, IStagePhaseInfo } from "../defines";
+import Ditto from "../ditto";
 import { Entity } from "../entity/Entity";
 import { is_character, is_weapon } from "../entity/type_check";
 import { find } from "../utils/container_help/find";
@@ -92,7 +92,7 @@ export class Stage {
         (v) => v.id === bg_id || v.id === "bg_" + bg_id,
       ); // FIXME;
       if (!bg_data && bg_id !== Defines.VOID_BG.id)
-        Warn.print(Stage.TAG + "::constructor", `bg_data not found, id: ${bg_id}`);
+        Ditto.Warn(Stage.TAG + "::constructor", `bg_data not found, id: ${bg_id}`);
       this.bg = new Background(world, bg_data ?? Defines.VOID_BG);
     } else {
       this.data = Defines.VOID_STAGE;

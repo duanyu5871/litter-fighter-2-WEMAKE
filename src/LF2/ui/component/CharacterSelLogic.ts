@@ -127,12 +127,12 @@ export default class CharacterSelLogic extends UIComponent {
         const idx = Defines.Teams.findIndex((v) => v === this.team);
         const next_idx =
           (idx + Defines.Teams.length - 1) % Defines.Teams.length;
-        this.team = Defines.Teams[next_idx];
+        this.team = Defines.Teams[next_idx]!;
       } else if ("R" === key) {
         // 下一个队伍
         const idx = Defines.Teams.findIndex((v) => v === this.team);
         const next_idx = (idx + 1) % Defines.Teams.length;
-        this.team = Defines.Teams[next_idx];
+        this.team = Defines.Teams[next_idx]!;
       }
     } else if (this.joined) {
       if ("a" === key) {

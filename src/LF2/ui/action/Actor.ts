@@ -1,4 +1,4 @@
-import { Warn } from "../../../Log";
+import Ditto from "../../ditto";
 import { is_str } from "../../utils/type_check";
 import type { UINode } from "../UINode";
 import { read_call_func_expression } from "../utils/read_func_args";
@@ -28,7 +28,7 @@ class UIActor {
         lf2
           .load(url)
           .catch((e) =>
-            Warn.print(UIActor.TAG + "::load_data", `${url} not exists`, e),
+            Ditto.Warn(UIActor.TAG + "::load_data", `${url} not exists`, e),
           );
       },
     ],

@@ -1,8 +1,8 @@
-import { Warn } from "../Log";
 import { Callbacks, NoEmitCallbacks } from "./base";
 import type { TKeys } from "./controller/BaseController";
 import { Defines, GameKey } from "./defines";
 import { IPurePlayerInfo } from "./defines/IPurePlayerInfo";
+import Ditto from "./ditto";
 import { IPlayerInfoCallback } from "./IPlayerInfoCallback";
 import { is_str } from "./utils/type_check";
 
@@ -57,7 +57,7 @@ export class PlayerInfo {
     try {
       const { name, keys, team, version, character } = JSON.parse(str) as Partial<IPurePlayerInfo>;
       if (version !== this._info.version) {
-        Warn.print(PlayerInfo.TAG + "::load", "version changed");
+        Ditto.Warn(PlayerInfo.TAG + "::load", "version changed");
         return false;
       }
       this._info.name = is_str(name) ? name : this._info.name;
@@ -68,7 +68,7 @@ export class PlayerInfo {
         : this._info.character;
       return true;
     } catch (e) {
-      Warn.print(PlayerInfo.TAG + "::load", "load failed, ", e);
+      Ditto.Warn(PlayerInfo.TAG + "::load", "load failed, ", e);
       return false;
     }
   }

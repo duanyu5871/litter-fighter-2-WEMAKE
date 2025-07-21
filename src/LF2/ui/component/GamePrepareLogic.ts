@@ -29,7 +29,7 @@ export enum GamePrepareState {
 
 export default class GamePrepareLogic extends UIComponent {
   get game_mode(): string {
-    return this.args[0];
+    return this.args[0] || '';
   }
   protected _unmount_jobs = new Invoker();
   protected _callbacks = new Callbacks<IGamePrepareLogicCallback>();

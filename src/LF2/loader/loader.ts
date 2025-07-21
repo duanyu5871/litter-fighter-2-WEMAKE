@@ -54,7 +54,9 @@ export class ImageMgr {
 
     // debugger;
     const blob = await get_blob(cvs!).catch((e) => {
-      throw new Error(e.message + " key:" + key, { cause: e.cause });
+      const err = new Error(e.message + " key:" + key);
+      Object.assign(err, { cause: e.cause })
+      throw err
     });
     const url = URL.createObjectURL(blob);
     return new ImageInfo().merge({ key, url, src_url, scale, w: cvs!.width, h: cvs!.height });
@@ -116,7 +118,9 @@ export class ImageMgr {
     }
     ctx.restore();
     const blob = await get_blob(cvs).catch((e) => {
-      throw new Error(e.message + " key:" + key, { cause: e.cause });
+      const err = new Error(e.message + " key:" + key);
+      Object.assign(err, { cause: e.cause })
+      throw err
     });
     const url = URL.createObjectURL(blob);
     return new TextImageInfo().merge({

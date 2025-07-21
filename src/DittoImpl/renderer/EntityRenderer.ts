@@ -5,7 +5,7 @@ import Ditto from "../../LF2/ditto";
 import type { IEntityRenderer } from "../../LF2/ditto/render/IEntityRenderer";
 import type { Entity } from "../../LF2/entity/Entity";
 import create_pictures from "../../LF2/loader/create_pictures";
-import * as THREE from "./_t";
+import * as THREE from "../3d/_t";
 export const EMPTY_PIECE: ITexturePieceInfo = {
   tex: "0",
   x: 0,
@@ -113,7 +113,7 @@ export class EntityRenderer implements IEntityRenderer {
     if (this._prev_update_count === entity.update_id)
       return;
     this._prev_update_count = entity.update_id;
-    
+
     const tex = frame.pic?.[facing]
     if (this._prev_tex !== tex) {
       this.apply_tex(entity, this._prev_tex = tex)

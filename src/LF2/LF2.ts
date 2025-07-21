@@ -1,4 +1,3 @@
-import { Warn } from "../Log";
 import { ILf2Callback } from "./ILf2Callback";
 import { PlayerInfo } from "./PlayerInfo";
 import { World } from "./World";
@@ -26,13 +25,13 @@ import {
 } from "./ditto";
 import { Entity } from "./entity";
 import { BallsHelper, CharactersHelper, EntitiesHelper, WeaponsHelper } from "./helper";
-import { ICookedUIInfo } from "./ui/ICookedLayoutInfo";
-import { IUIInfo } from "./ui/IUIInfo";
-import { UINode } from "./ui/UINode";
 import DatMgr from "./loader/DatMgr";
 import get_import_fallbacks from "./loader/get_import_fallbacks";
 import { ImageMgr } from "./loader/loader";
 import { Stage } from "./stage";
+import { ICookedUIInfo } from "./ui/ICookedLayoutInfo";
+import { IUIInfo } from "./ui/IUIInfo";
+import { UINode } from "./ui/UINode";
 import {
   arithmetic_progression, fisrt,
   is_arr, is_num, is_str,
@@ -549,7 +548,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
     for (const element of array) {
       if (is_str(element)) paths.push(element);
       else
-        Warn.print(
+        Ditto.Warn(
           LF2.TAG + "::load_layouts",
           "layouts/index.json",
           "element is not a string! got:",
@@ -616,7 +615,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
 
   pop_layout(): void {
     if (this._layout_stacks.length <= 1) {
-      Warn.print(LF2.TAG + "::pop_layout", "can not pop top layout!");
+      Ditto.Warn(LF2.TAG + "::pop_layout", "can not pop top layout!");
       return;
     }
     const popped = this._layout_stacks.pop();

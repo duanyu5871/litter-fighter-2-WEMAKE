@@ -16,7 +16,7 @@ export class StateDelegate<T> {
     this.set(0, v);
   }
   get default_value(): T {
-    return this.get_value(this._values[0])!;
+    return this.get_value(this._values[0]!)!;
   }
   set value(v: Value<Unsafe<T>>) {
     this.set(Math.min(1, this._values.length - 1), v);
@@ -24,7 +24,7 @@ export class StateDelegate<T> {
   get value(): T {
     const len = this._values.length;
     for (let i = len - 1; i > 0; --i) {
-      const value = this.get_value(this._values[i]);
+      const value = this.get_value(this._values[i]!);
       if (value !== null && value !== void 0)
         return value
     }

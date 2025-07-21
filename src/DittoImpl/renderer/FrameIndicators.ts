@@ -3,7 +3,7 @@ import Ditto from "../../LF2/ditto";
 import type { IFrameIndicators } from "../../LF2/ditto/render/IFrameIndicators";
 import { Entity } from "../../LF2/entity/Entity";
 import { traversal } from "../../LF2/utils/container_help/traversal";
-import * as THREE from "./_t";
+import * as THREE from "../3d/_t";
 export const EMPTY_ARR = [] as const;
 export const INDICATORS_COLOR = {
   bdy: 0x00ff00,

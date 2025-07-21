@@ -83,6 +83,7 @@ export interface IDittoPack {
   FrameIndicators: new (entity: Entity) => IFrameIndicators
   WorldRender: new (world: World) => IWorldRenderer,
   UINodeRenderer: new (uinode: UINode) => IUINodeRenderer,
+  Warn(...args: any[]): unknown;
 }
 
 export interface IDitto extends IDittoPack {

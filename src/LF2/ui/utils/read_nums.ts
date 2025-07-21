@@ -1,4 +1,4 @@
-import { is_nan, is_str } from "../../utils/type_check";
+import { is_nan, is_num, is_str } from "../../utils/type_check";
 
 export default function read_nums(
   src: string | number[] | null | undefined,
@@ -35,7 +35,11 @@ export default function read_nums(
 
   while (ret.length < len) {
     const num: number | undefined = src[ret.length];
-    ret.push(num === void 0 || Number.isNaN(num) ? fallbacks[ret.length] : num);
+    if (is_num(num)) {
+      ret.push(num);
+    } else {
+      ret.push(fallbacks[ret.length]!);
+    }
   }
   return ret;
 }

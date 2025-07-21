@@ -38,7 +38,7 @@ export default class BackgroundNameText extends UIComponent {
   override on_resume(): void {
     super.on_resume();
 
-    this._background = this.backgrounds[0] ?? Defines.VOID_STAGE;
+    this._background = this.backgrounds[0] || Defines.VOID_BG;
 
     this.node.sprite.add(this._mesh);
     this._unmount_jobs.add(
@@ -60,11 +60,12 @@ export default class BackgroundNameText extends UIComponent {
 
   protected switch_background() {
     const { backgrounds } = this;
+    if (!backgrounds.length) return;
     const background_id = this.background.id;
     const idx =
       (backgrounds.findIndex((v) => v.id === background_id) + 1) %
       backgrounds.length;
-    this._background = backgrounds[idx];
+    this._background = backgrounds[idx]!;
     this._mesh.set_text(this.text).apply();
   }
 }

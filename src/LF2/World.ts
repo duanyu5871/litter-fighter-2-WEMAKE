@@ -1,4 +1,3 @@
-import { Warn } from "../Log";
 import { IOrthographicCameraNode, IScene } from "./3d";
 import { Callbacks, FPS, ICollision, NoEmitCallbacks } from "./base";
 import { Builtin_FrameId, Defines, IBdyInfo, IBounding, IEntityData, IFrameInfo, IItrInfo, StateEnum } from "./defines";
@@ -583,7 +582,7 @@ export class World {
     const l1 = bf.bdy.length;
     for (let i = 0; i < l0; ++i) {
       for (let j = 0; j < l1; ++j) {
-        this.collision_test(a, af, af.itr[i], b, bf, bf.bdy[j]);
+        this.collision_test(a, af, af.itr[i]!, b, bf, bf.bdy[j]!);
       }
     }
   }
@@ -711,14 +710,14 @@ export class World {
     if (!this._spark_data)
       this.init_spark_data();
     if (!this._spark_data) {
-      Warn.print(
+      Ditto.Warn(
         World.TAG + "::spark",
         `data of "${Defines.BuiltIn_Dats.Spark}" not found!`,
       );
       return;
     }
     if (!this._spark_creator) {
-      Warn.print(World.TAG + "::spark", `creator of "${this._spark_data.type}" not found!`);
+      Ditto.Warn(World.TAG + "::spark", `creator of "${this._spark_data.type}" not found!`);
       return;
     }
     const e = this._spark_creator(this, this._spark_data);

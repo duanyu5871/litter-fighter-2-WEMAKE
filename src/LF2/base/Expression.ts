@@ -1,4 +1,3 @@
-import { Warn } from "../../Log";
 import { BinOp, TBinOp } from "../defines/BinOp";
 import {
   IExpression,
@@ -6,6 +5,7 @@ import {
   IValGetter,
   IValGetterGetter,
 } from "../defines/IExpression";
+import Ditto from "../ditto";
 export function ALWAY_FALSE<T = unknown>(
   text: string,
   err?: string,
@@ -65,7 +65,7 @@ export class Expression<T1, T2 = T1> implements IExpression<T1, T2> {
       let letter: string = "";
       let before: string = "";
       for (; i < count; ++i) {
-        letter = this.text[i];
+        letter = this.text[i] || '';
         if ("!" === letter && this.text[i] === "(") {
           const child = new Expression<T1, T2>(
             this.text.substring(i + 2),
@@ -134,7 +134,7 @@ export class Expression<T1, T2 = T1> implements IExpression<T1, T2> {
       return ALWAY_FALSE(text, `[wrong expression: ${text}]`);
     const predicate = predicate_maps[op as TBinOp];
     if (!predicate) {
-      Warn.print("gen_single_judge_func", `wrong operator: ${op}`);
+      Ditto.Warn("gen_single_judge_func", `wrong operator: ${op}`);
       return ALWAY_FALSE(text, `wrong operator: ${op}`);
     }
     const getter_1 = this.get_val_getter?.(word_1) ?? this.get_val;
@@ -171,7 +171,7 @@ export class Expression<T1, T2 = T1> implements IExpression<T1, T2> {
     let ret = false;
     const len = this.children.length;
     for (let i = 0; i < len; ++i) {
-      const child = this.children[i];
+      const child = this.children[i]!;
       if (!child.before) {
         ret = child.run(e);
       } else if (child.before === "|") {

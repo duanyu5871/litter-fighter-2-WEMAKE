@@ -1,4 +1,4 @@
-import { Warn } from "../../Log";
+import Ditto from "../../LF2/ditto";
 import BaseSounds from "../../LF2/ditto/sounds/BaseSounds";
 import { clamp } from "../../LF2/utils/math/clamp";
 import float_equal from "../../LF2/utils/math/float_equal";
@@ -150,7 +150,7 @@ export class __Fallback extends BaseSounds {
     this._playings.set(id, audio);
 
     audio.onerror = (e) => {
-      Warn.print(
+      Ditto.Warn(
         __Fallback.TAG + "::play -> audio.onerror",
         ", failed:",
         name,

@@ -1,7 +1,7 @@
 import type LF2 from "../../LF2/LF2";
+import Ditto from "../../LF2/ditto";
 import BaseSounds from "../../LF2/ditto/sounds/BaseSounds";
 import type ISounds from "../../LF2/ditto/sounds/ISounds";
-import { Warn } from "../../Log";
 import { __Fallback } from "./Fallback";
 import { __Modern } from "./Modern";
 
@@ -21,7 +21,7 @@ export class __Sounds implements ISounds {
         this.inner = new cls(lf2);
         break;
       } catch (e) {
-        Warn.print(
+        Ditto.Warn(
           __Sounds.TAG + "::constructor",
           "can not use " + cls.name,
           e,

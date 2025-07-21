@@ -1,4 +1,3 @@
-import { Warn } from "../../Log";
 import type LF2 from "../LF2";
 import type { World } from "../World";
 import { Callbacks, ICollision, new_id, new_team, type NoEmitCallbacks } from "../base";
@@ -219,7 +218,7 @@ export class Entity {
    */
   readonly velocities: IVector3[] = [new Ditto.Vector3(0, 0, 0)];
   get velocity_0(): IVector3 {
-    if (this.velocities.length) return this.velocities[0];
+    if (this.velocities.length) return this.velocities[0]!;
     return this.velocities[0] = new Ditto.Vector3(0, 0, 0);
   }
 
@@ -773,12 +772,12 @@ export class Entity {
   ): Entity | undefined {
     const oid = this.lf2.random_get(opoint.oid);
     if (!oid) {
-      Warn.print(Entity.TAG + "::spawn_object", "oid got", oid);
+      Ditto.Warn(Entity.TAG + "::spawn_object", "oid got", oid);
       return;
     }
     const data = this.world.lf2.datas.find(oid);
     if (!data) {
-      Warn.print(
+      Ditto.Warn(
         Entity.TAG + "::spawn_object",
         "data not found! opoint:",
         opoint,
@@ -787,7 +786,7 @@ export class Entity {
     }
     const create = Factory.inst.get_entity_creator(data.type);
     if (!create) {
-      Warn.print(
+      Ditto.Warn(
         Entity.TAG + "::spawn_object",
         `creator of "${data.type}" not found! opoint:`,
         opoint,
@@ -1347,9 +1346,8 @@ export class Entity {
   transfrom_to_another() {
     const { transform_datas } = this;
     if (!transform_datas) return;
-    const next_idx =
-      (transform_datas.indexOf(this.data) + 1) % transform_datas.length;
-    this.data = transform_datas[next_idx];
+    const next_idx = (transform_datas.indexOf(this.data) + 1) % transform_datas.length;
+    this.data = transform_datas[next_idx]!;
     this.next_frame = this.get_next_frame({ id: "245" })?.frame;
   }
 
@@ -1391,7 +1389,7 @@ export class Entity {
 
   start_catch(target: Entity, itr: IItrInfo) {
     if (itr.catchingact === void 0) {
-      Warn.print(
+      Ditto.Warn(
         Entity.TAG + "::start_catch",
         "cannot catch, catchingact got",
         itr.catchingact,
@@ -1405,7 +1403,7 @@ export class Entity {
 
   start_caught(attacker: Entity, itr: IItrInfo) {
     if (itr.caughtact === void 0) {
-      Warn.print(
+      Ditto.Warn(
         Entity.TAG + "::start_caught",
         "cannot be caught, caughtact got",
         itr.caughtact,
@@ -1651,7 +1649,9 @@ export class Entity {
     if (Array.isArray(which)) {
       const l = which.length;
       for (let i = 0; i < l; ++i) {
-        const f = this.get_next_frame(which[i]);
+        const nf: INextFrame | undefined = which[i];
+        if (!nf) continue;
+        const f = this.get_next_frame(nf);
         if (f) return f;
       }
       return void 0;

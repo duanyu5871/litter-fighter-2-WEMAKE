@@ -6,8 +6,7 @@ import type { IEntityRenderer } from "../../LF2/ditto/render/IEntityRenderer";
 import type { Entity } from "../../LF2/entity/Entity";
 import type IEntityCallbacks from "../../LF2/entity/IEntityCallbacks";
 import type LF2 from "../../LF2/LF2";
-import * as T from "./_t";
-
+import * as T from "../3d/_t";
 
 const BAR_W = 40;
 const BAR_H = 3;
@@ -252,7 +251,7 @@ export class EntityInfoRender implements IEntityCallbacks, IEntityRenderer {
         this.name_node
           .set_texture(p)
           .update_material()
-          // .set_scale(p.w, p.h, 1);
+        // .set_scale(p.w, p.h, 1);
         this.name_node.name = "name sprite";
       });
   }

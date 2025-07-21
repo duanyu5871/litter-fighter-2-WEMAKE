@@ -1,6 +1,7 @@
-import { BufferGeometry, Material, MeshBasicMaterial } from "three";
 import { IObjectNode } from "./IObject";
-export { BufferGeometry, Material, MeshBasicMaterial } from "three";
+type BufferGeometry = any
+type MeshBasicMaterial = any
+type Material = any
 export interface IMeshInfo {
   geometry?: BufferGeometry;
   material?: MeshBasicMaterial;
