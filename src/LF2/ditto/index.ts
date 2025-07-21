@@ -30,6 +30,7 @@ import type { IWorldRenderer } from "./render/IWorldRenderer";
 import BaseSounds from "./sounds/BaseSounds";
 import type ISounds from "./sounds/ISounds";
 import type { IZip } from "./zip/IZip";
+import { IKeyEvent } from "./keyboard";
 export * from "./cache";
 export * from "./fullscreen";
 export * from "./IRender";
@@ -84,6 +85,8 @@ export interface IDittoPack {
   WorldRender: new (world: World) => IWorldRenderer,
   UINodeRenderer: new (uinode: UINode) => IUINodeRenderer,
   Warn(...args: any[]): unknown;
+  Log(...args: any[]): unknown;
+  Debug(...args: any[]): unknown;
 }
 
 export interface IDitto extends IDittoPack {

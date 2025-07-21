@@ -41,5 +41,6 @@ export class __Keyboard implements IKeyboard {
   dispose() {
     window.removeEventListener("keydown", this._on_key_down);
     window.removeEventListener("keyup", this._on_key_up);
+    this._callback.clear()
   }
 }

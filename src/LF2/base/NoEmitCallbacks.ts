@@ -9,6 +9,10 @@ export class NoEmitCallbacks<F> {
    */
   protected _map: Map<any, Set<F>> = new Map<any, Set<F>>();
 
+  clear() {
+    this._map.clear()
+  }
+
   /**
    * 添加回调对象
    *
@@ -17,7 +21,7 @@ export class NoEmitCallbacks<F> {
    */
   add(v: F): () => void {
     const any_keys = list_fn(v);
-    if (!any_keys.size) return () => {};
+    if (!any_keys.size) return () => { };
 
     for (const key of any_keys) {
       let set = this._map.get(key);

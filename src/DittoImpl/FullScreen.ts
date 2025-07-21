@@ -19,6 +19,7 @@ export class __FullScreen<T extends Element = any> implements IFullScreen<T> {
 
   depose(): void {
     document.removeEventListener("fullscreenchange", this.on_fullscreenchange);
+    this._callbacks.clear()
   }
 
   private on_fullscreenchange = () => {

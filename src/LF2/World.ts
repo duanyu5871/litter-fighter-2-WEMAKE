@@ -1,6 +1,6 @@
 import { IOrthographicCameraNode, IScene } from "./3d";
 import { Callbacks, FPS, ICollision, NoEmitCallbacks } from "./base";
-import { Builtin_FrameId, Defines, IBdyInfo, IBounding, IEntityData, IFrameInfo, IItrInfo, StateEnum } from "./defines";
+import { Builtin_FrameId, Defines, IBdyInfo, IBounding, IEntityData, IFrameInfo, IItrInfo, ItrKind, StateEnum } from "./defines";
 import { AllyFlag } from "./defines/AllyFlag";
 import Ditto from "./ditto";
 import { IWorldRenderer } from "./ditto/render/IWorldRenderer";
@@ -594,7 +594,7 @@ export class World {
     victim: Entity,
     bframe: IFrameInfo,
     bdy: IBdyInfo,
-  ) {
+  ): void {
     switch (aframe.state) {
       case StateEnum.Weapon_OnHand: {
         const atk = attacker.holder?.frame.wpoint?.attacking;
@@ -608,6 +608,18 @@ export class World {
         return;
       }
     }
+
+    const a_cube = this.get_bounding(attacker, aframe, itr);
+    const b_cube = this.get_bounding(victim, bframe, bdy);
+    if (!(
+      a_cube.left <= b_cube.right &&
+      a_cube.right >= b_cube.left &&
+      a_cube.bottom <= b_cube.top &&
+      a_cube.top >= b_cube.bottom &&
+      a_cube.far <= b_cube.near &&
+      a_cube.near >= b_cube.far
+    )) return;
+
     const is_ally = attacker.is_ally(victim);
     if (
       is_ally ? (
@@ -621,72 +633,60 @@ export class World {
 
     if (!itr.vrest && attacker.a_rest) return;
     if (itr.vrest && victim.get_v_rest(attacker.id) > 0) return;
-    const a_cube = this.get_bounding(attacker, aframe, itr);
-    const b_cube = this.get_bounding(victim, bframe, bdy);
+
+    const collision: ICollision = {
+      v_rest: !itr.arest && itr.vrest ? itr.vrest + this.vrest_offset : void 0,
+      victim,
+      attacker,
+      itr,
+      bdy,
+      aframe,
+      bframe,
+      a_cube,
+      b_cube,
+    };
     if (
-      a_cube.left <= b_cube.right &&
-      a_cube.right >= b_cube.left &&
-      a_cube.bottom <= b_cube.top &&
-      a_cube.top >= b_cube.bottom &&
-      a_cube.far <= b_cube.near &&
-      a_cube.near >= b_cube.far
-    ) {
-      const collision: ICollision = {
-        v_rest:
-          !itr.arest && itr.vrest ? itr.vrest + this.vrest_offset : void 0,
-        victim,
-        attacker,
-        itr,
-        bdy,
-        aframe,
-        bframe,
-        a_cube,
-        b_cube,
-      };
-      if (
-        bdy.tester?.run(collision) === false ||
-        itr.tester?.run(collision) === false
-      )
-        return;
+      bdy.tester?.run(collision) === false ||
+      itr.tester?.run(collision) === false
+    ) return;
 
-      const a = attacker.state?.before_collision?.(collision);
-      const b = victim.state?.before_be_collided?.(collision);
+    const a = attacker.state?.before_collision?.(collision);
+    const b = victim.state?.before_be_collided?.(collision);
 
-      switch (a) {
-        case WhatNext.SkipAll:
-          break;
-        case WhatNext.OnlyState: {
-          attacker.state?.on_collision?.(collision);
-          break;
-        }
-        case WhatNext.OnlyEntity: {
-          attacker.on_collision(collision);
-          break;
-        }
-        case WhatNext.Continue:
-        default: {
-          attacker.on_collision(collision);
-          attacker.state?.on_collision?.(collision);
-          break;
-        }
+    switch (a) {
+      case WhatNext.SkipAll:
+        break;
+      case WhatNext.OnlyState: {
+        attacker.state?.on_collision?.(collision);
+        break;
       }
-      switch (b) {
-        case WhatNext.SkipAll:
-          break;
-        case WhatNext.OnlyState: {
-          victim.state?.on_be_collided?.(collision);
-          break;
-        }
-        case WhatNext.OnlyEntity: {
-          victim.on_be_collided(collision);
-          break;
-        }
-        case WhatNext.Continue:
-        default: {
-          victim.on_be_collided(collision);
-          victim.state?.on_be_collided?.(collision);
-          break;
-        }
+      case WhatNext.OnlyEntity: {
+        attacker.on_collision(collision);
+        break;
+      }
+      case WhatNext.Continue:
+      default: {
+        attacker.on_collision(collision);
+        attacker.state?.on_collision?.(collision);
+        break;
+      }
+    }
+    switch (b) {
+      case WhatNext.SkipAll:
+        break;
+      case WhatNext.OnlyState: {
+        victim.state?.on_be_collided?.(collision);
+        break;
+      }
+      case WhatNext.OnlyEntity: {
+        victim.on_be_collided(collision);
+        break;
+      }
+      case WhatNext.Continue:
+      default: {
+        victim.on_be_collided(collision);
+        victim.state?.on_be_collided?.(collision);
+        break;
       }
     }
   }
@@ -774,5 +774,6 @@ export class World {
     this.stop_render();
     this.del_entities(Array.from(this.entities));
     this.renderer.dispose();
+    this._callbacks.clear()
   }
 }

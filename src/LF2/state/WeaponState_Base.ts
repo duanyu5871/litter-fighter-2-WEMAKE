@@ -22,14 +22,11 @@ export default class WeaponState_Base extends State_Base {
   }
 
   override before_be_collided(collision: ICollision): WhatNext {
-    const { itr, attacker, victim } = collision;
-    if (itr.kind === ItrKind.Pick || itr.kind === ItrKind.PickSecretly) {
-      if (!attacker.holding) {
-        victim.holder = attacker;
-        attacker.holding = victim;
-        victim.team = attacker.team;
-      }
-      return WhatNext.SkipAll;
+    const { itr } = collision;
+    switch (itr.kind) {
+      case ItrKind.Pick:
+      case ItrKind.PickSecretly:
+        return WhatNext.SkipAll;
     }
     return super.before_be_collided(collision);
   }

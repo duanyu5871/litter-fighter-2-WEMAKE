@@ -57,6 +57,7 @@ import {
 const loading_img = new LoadingImg();
 function App() {
   const [fullscreen] = useState(() => new Ditto.FullScreen());
+  const ref_lf2 = useRef<LF2 | undefined>(void 0)
   const [lf2, set_lf2] = useState<LF2 | undefined>()
   const [ele_game_canvas, set_ele_game_canvas] = useState<HTMLCanvasElement | null>(null)
   const [ele_game_overlay, set_ele_game_overlay] = useState<HTMLElement | null>(null)
@@ -66,7 +67,6 @@ function App() {
     [Workspaces | null, DomAdapter | null, HTMLElement | null, HTMLElement | null]
   >([null, null, null, null])
 
-  const ref_lf2 = useRef<LF2>(undefined);
   const [dat_viewer_open, set_dat_viewer_open] = useState(false);
   const [editor_open, set_editor_open] = useState(false);
   const [game_overlay, set_game_overlay] = useLocalBoolean(
@@ -136,20 +136,17 @@ function App() {
   );
 
   const update_once = () => {
-    const lf2 = ref_lf2.current;
     lf2?.world.set_paused(true);
     lf2?.world.update_once();
   };
 
   useEffect(() => {
-    const lf2 = ref_lf2.current;
     if (!lf2) return;
     lf2.world.indicator_flags = indicator_flags;
   }, [indicator_flags]);
 
   const [fast_forward, set_fast_forward] = useState(false);
   useEffect(() => {
-    const lf2 = ref_lf2.current;
     if (!lf2) return;
     lf2.world.playrate = fast_forward ? 100 : 1;
   }, [fast_forward]);
@@ -172,7 +169,8 @@ function App() {
   }, [lf2, ele_game_overlay])
 
   useEffect(() => {
-    const lf2 = ((window as any).lf2 = ref_lf2.current = new LF2());
+    if (ref_lf2.current) return;
+    const lf2 = ref_lf2.current = new LF2();
     set_lf2(lf2)
     lf2.sounds.set_muted(muted);
     lf2.sounds.set_volume(volume);
@@ -195,7 +193,7 @@ function App() {
     window.addEventListener("keydown", on_keydown);
     _set_is_fullscreen(!!fullscreen.target);
     _set_paused(lf2.world.paused);
-    return new Invoker()
+    new Invoker()
       .add(
         () => window.removeEventListener("keydown", on_keydown),
         () => window.removeEventListener("touchstart", on_touchstart),
@@ -247,12 +245,12 @@ function App() {
           on_bgm_volume_changed: _set_bgm_volume,
           on_sound_volume_changed: _set_sound_volume,
         }),
+        () => lf2.dispose(),
       )
-      .clear_fn();
-  }, [LF2]);
+    // .clear_fn;
+  }, []);
 
   const on_click_load_local_zip = () => {
-    const lf2 = ref_lf2.current;
     if (!lf2) return;
     open_file({ accept: ".zip" })
       .then((v) => Ditto.Zip.read_file(v[0]))
@@ -268,7 +266,6 @@ function App() {
   };
 
   const on_click_load_builtin = async () => {
-    const lf2 = ref_lf2.current;
     if (!lf2) return;
     lf2
       .load("data.zip.json")

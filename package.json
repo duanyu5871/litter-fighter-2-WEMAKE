@@ -15,7 +15,7 @@
     "make_prel_zip": "npm run build_tool && node ./tool --make-prel-zip"
   },
   "dependencies": {
-    "@fimagine/logger": "1.2.1",
+    "@fimagine/logger": "^1.2.1",
     "@fimagine/writeboard": "^0.0.12",
     "axios": "^1.10.0",
     "compressing": "1.10.1",

@@ -1009,12 +1009,11 @@ export class Entity {
     }
 
     if (this.holder) {
+      this.follow_holder();
       const { wpoint } = this.holder.frame;
       if (wpoint) {
-        // 被丢出
         const { dvx, dvy, dvz } = wpoint;
         if (dvx !== void 0 || dvy !== void 0 || dvz !== void 0) {
-          this.follow_holder();
           this.enter_frame({ id: this.data.indexes?.throwing });
           const vz = this.holder.ctrl
             ? this.holder.ctrl.UD * (dvz || 0)
@@ -1026,7 +1025,6 @@ export class Entity {
         }
       }
       if (this.hp <= 0 && this.holder) {
-        this.follow_holder();
         this.holder.holding = void 0;
         this.holder = void 0;
       }
@@ -1461,7 +1459,7 @@ export class Entity {
   dizzy_catch_test(target: Entity): boolean {
     return (
       is_character(this) &&
-      is_character(target) &&
+      is_character(target) && target.frame.state === StateEnum.Tired &&
       ((this.velocity_0.x > 0 && target.position.x > this.position.x) ||
         (this.velocity_0.x < 0 && target.position.x < this.position.x))
     );
@@ -1503,6 +1501,7 @@ export class Entity {
     this.world.del_entity(this);
     this.ctrl.dispose();
     this._callbacks.emit("on_disposed")(this);
+    this._callbacks.clear()
   }
 
   /**
@@ -1543,7 +1542,7 @@ export class Entity {
       centerx: centerx_a,
       centery: centery_a,
     } = holder.frame;
-
+    if (!wpoint_a) Ditto.Debug(`[${Entity.TAG}::follow_holder]failed! holder.frame.wpoint got ${wpoint_a}`)
     if (!wpoint_a) return;
 
     if (wpoint_a.weaponact !== this.frame.id) {
@@ -1554,6 +1553,7 @@ export class Entity {
       centerx: centerx_b,
       centery: centery_b,
     } = this.frame;
+    if (!wpoint_b) Ditto.Debug(`[${Entity.TAG}::follow_holder]failed! this.frame.wpoint got ${wpoint_b}`)
     if (!wpoint_b) return;
 
     const { x, y, z } = holder.position;

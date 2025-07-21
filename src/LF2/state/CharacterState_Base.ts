@@ -2,7 +2,7 @@ import { ICollision } from "../base";
 import { collisions_keeper } from "../collision/CollisionKeeper";
 import { BdyKind, Defines, IFrameInfo, IItrInfo, INextFrame, ItrEffect, ItrKind, StateEnum, WeaponType } from "../defines";
 import type { Entity } from "../entity/Entity";
-import { is_character, is_weapon } from "../entity/type_check";
+import { is_character } from "../entity/type_check";
 import State_Base, { WhatNext } from "./State_Base";
 
 export default class CharacterState_Base extends State_Base {
@@ -33,29 +33,21 @@ export default class CharacterState_Base extends State_Base {
   }
 
   override before_collision(collision: ICollision): WhatNext {
-    const { itr, attacker, victim } = collision;
+    const { itr } = collision;
     switch (itr.kind) {
-      case ItrKind.Catch: {
-        if (attacker.dizzy_catch_test(victim)) {
-          attacker.start_catch(victim, itr);
-        }
-        return WhatNext.SkipAll;
-      }
-      case ItrKind.ForceCatch: {
-        attacker.start_catch(victim, itr);
-        return WhatNext.SkipAll;
-      }
-      case ItrKind.Pick: {
-        if (is_weapon(victim)) {
-          if (victim.data.base.type === WeaponType.Heavy) {
-            attacker.next_frame = { id: attacker.data.indexes?.picking_heavy };
-          } else {
-            attacker.next_frame = { id: attacker.data.indexes?.picking_light };
-          }
-        }
-        return WhatNext.SkipAll;
-      }
+      case ItrKind.Pick:
       case ItrKind.PickSecretly:
+        collisions_keeper.get(
+          collision.attacker.type,
+          collision.itr.kind!,
+          collision.victim.type,
+          collision.bdy.kind,
+        )?.(collision)
+        // do nothing
+        return WhatNext.SkipAll;
+
+      case ItrKind.Catch:
+      case ItrKind.ForceCatch:
         // do nothing
         return WhatNext.SkipAll;
       default: {
@@ -112,7 +104,7 @@ export default class CharacterState_Base extends State_Base {
             "broken_defend",
           );
 
-          
+
           const action = bdy.actions?.find(v => v.type === 'broken_defend');
           if (action) {
             const result = victim.get_next_frame(action.data);

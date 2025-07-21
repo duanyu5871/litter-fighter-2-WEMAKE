@@ -13,7 +13,7 @@ import { FrameIndicators } from "./DittoImpl/renderer/FrameIndicators";
 import { UINodeRenderer } from "./DittoImpl/renderer/UINodeRenderer";
 import { WorldRenderer } from "./DittoImpl/renderer/WorldRenderer";
 import Ditto from "./LF2/ditto";
-import { Log } from "./Log";
+import { Debug, Log, Warn } from "./Log";
 
 Ditto.setup({
   Timeout: dom.__Timeout,
@@ -48,5 +48,7 @@ Ditto.setup({
   FrameIndicators: FrameIndicators,
   WorldRender: WorldRenderer,
   UINodeRenderer: UINodeRenderer,
-  Warn: Log.print
+  Warn: Warn.print,
+  Log: Log.print,
+  Debug: Debug.print,
 });

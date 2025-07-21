@@ -227,6 +227,7 @@ export class Stage {
       temp.push(e);
     }
     this.world.del_entities(temp);
+    this._callbacks.clear()
   }
   all_boss_dead(): boolean {
     return !find(this.items, (i) => i.info.is_boss);

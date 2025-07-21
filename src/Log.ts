@@ -14,7 +14,15 @@ export const Warn = Object.assign(
   L.Warn.Clone({ showArgs: true, showRet: true, disabled: false }),
   {
     print(...args: any[]) {
-      return console.warn(...args);
+      return console.debug(...args);
+    },
+  },
+);
+export const Debug = Object.assign(
+  L.Debug.Clone({ showArgs: true, showRet: true, disabled: false }),
+  {
+    print(...args: any[]) {
+      return console.debug(...args);
     },
   },
 );

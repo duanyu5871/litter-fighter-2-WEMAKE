@@ -16,32 +16,32 @@ export default class BaseSounds implements ISounds {
   bgm_volume(): number {
     return 0;
   }
-  set_bgm_volume(v: number): void {}
+  set_bgm_volume(v: number): void { }
   sound_volume(): number {
     return 0;
   }
-  set_sound_volume(v: number): void {}
+  set_sound_volume(v: number): void { }
   bgm_muted(): boolean {
     return true;
   }
-  set_bgm_muted(v: boolean): void {}
+  set_bgm_muted(v: boolean): void { }
   sound_muted(): boolean {
     return true;
   }
-  set_sound_muted(v: boolean): void {}
+  set_sound_muted(v: boolean): void { }
   muted(): boolean {
     return true;
   }
-  set_muted(v: boolean): void {}
+  set_muted(v: boolean): void { }
   volume(): number {
     return 0;
   }
-  set_volume(v: number): void {}
+  set_volume(v: number): void { }
 
   has(name: string): boolean {
     return false;
   }
-  stop_bgm(): void {}
+  stop_bgm(): void { }
   bgm(): string | null {
     return null;
   }
@@ -54,8 +54,10 @@ export default class BaseSounds implements ISounds {
   play(name: string, x?: number, y?: number, z?: number): string {
     return "";
   }
-  stop(id: string): void {}
-  dispose(): void {}
+  stop(id: string): void { }
+  dispose(): void {
+    this._callbacks.clear()
+  }
   async play_with_load(
     src: string,
     x?: number,

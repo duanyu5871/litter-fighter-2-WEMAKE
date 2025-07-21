@@ -5,6 +5,8 @@ import { handle_itr_kind_force_catch } from "./handle_itr_kind_force_catch";
 import { handle_itr_kind_freeze } from "./handle_itr_kind_freeze";
 import { handle_itr_kind_magic_flute } from "./handle_itr_kind_magic_flute";
 import { handle_itr_kind_normal } from "./handle_itr_kind_normal";
+import { handle_itr_kind_pick } from "./handle_itr_kind_pick";
+import { handle_itr_kind_pick_secretly } from "./handle_itr_kind_pick_secretly";
 import { handle_itr_kind_whirlwind } from "./handle_itr_kind_whirlwind";
 
 export class CollisionKeeper {
@@ -108,3 +110,18 @@ collisions_keeper.add(
   [BdyKind.Normal, BdyKind.Defend],
   handle_itr_kind_magic_flute,
 );
+collisions_keeper.add(
+  [EntityEnum.Character],
+  [ItrKind.Pick],
+  [EntityEnum.Weapon],
+  [BdyKind.Normal],
+  handle_itr_kind_pick,
+);
+collisions_keeper.add(
+  [EntityEnum.Character],
+  [ItrKind.PickSecretly],
+  [EntityEnum.Weapon],
+  [BdyKind.Normal],
+  handle_itr_kind_pick_secretly,
+);
+
