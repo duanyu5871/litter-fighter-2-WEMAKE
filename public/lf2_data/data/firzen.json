@@ -7569,7 +7569,8 @@
           "oid": "223",
           "action": {
             "facing": 0
-          }
+          },
+          "speedz": 0
         }
       ],
       "state": 3,
@@ -7674,7 +7675,8 @@
           "action": {
             "id": "2",
             "facing": 0
-          }
+          },
+          "speedz": 0
         }
       ],
       "state": 3,

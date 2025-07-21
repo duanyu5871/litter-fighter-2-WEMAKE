@@ -14,11 +14,9 @@ using node v22.16.0
 
 ### 1.依赖安装 `npm i`
 
-install deps
-
 ### 2.构建数据 `npm run build_data`
 
-根据lf2原数据生成lf2:wemake的数据
+本步骤将会根据lf2原数据生成lf2:wemake的数据
 
 - require
   - [ffmpeg](https://ffmpeg.org/download.html): 用于音频文件转格式

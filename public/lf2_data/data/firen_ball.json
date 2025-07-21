@@ -811,8 +811,7 @@
           "oid": "210",
           "action": {
             "facing": 2
-          },
-          "speedz": 0
+          }
         }
       ],
       "state": 3003,
