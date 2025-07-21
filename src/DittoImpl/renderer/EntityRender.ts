@@ -3,7 +3,7 @@ import type { IEntityData, IFrameInfo, IPicture, ITexturePieceInfo, TFace } from
 import { Builtin_FrameId } from "../../LF2/defines";
 import Ditto from "../../LF2/ditto";
 import type { IEntityRenderer } from "../../LF2/ditto/render/IEntityRenderer";
-import type Entity from "../../LF2/entity/Entity";
+import type { Entity } from "../../LF2/entity/Entity";
 import create_pictures from "../../LF2/loader/create_pictures";
 import * as THREE from "./_t";
 export const EMPTY_PIECE: ITexturePieceInfo = {

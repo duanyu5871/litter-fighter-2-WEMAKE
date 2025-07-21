@@ -1,4 +1,4 @@
-import Entity from "../entity/Entity";
+import { Entity } from "../entity/Entity";
 import { is_character } from "../entity/type_check";
 import CharacterState_Base from "./CharacterState_Base";
 

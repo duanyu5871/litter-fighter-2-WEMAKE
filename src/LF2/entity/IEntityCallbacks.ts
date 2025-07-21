@@ -1,5 +1,5 @@
 import type { Unsafe } from "../utils/type_check";
-import type Entity from "./Entity";
+import type { Entity } from "./Entity";
 
 export interface IEntityCallbacks<E extends Entity = Entity> {
   on_holder_changed?(e: E, value: Unsafe<Entity>, prev: Unsafe<Entity>): void;

@@ -1,5 +1,5 @@
 import { IEntityData } from "../defines";
-import Entity from "../entity/Entity";
+import { Entity } from "../entity/Entity";
 import { is_character } from "../entity/type_check";
 import LF2 from "../LF2";
 

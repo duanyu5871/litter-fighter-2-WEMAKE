@@ -4,7 +4,7 @@ import { Factory } from "../entity/Factory";
 import IEntityCallbacks from "../entity/IEntityCallbacks";
 import { is_character, is_weapon } from "../entity/type_check";
 import { is_num, is_str } from "../utils/type_check";
-import Stage from "./Stage";
+import { Stage } from "./Stage";
 
 export default class Item {
   readonly is_enemies: boolean = false;

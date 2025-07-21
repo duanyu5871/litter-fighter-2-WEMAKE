@@ -1,5 +1,5 @@
 import type { IFrameInfo } from "../defines";
-import type Entity from "../entity/Entity";
+import type { Entity } from "../entity/Entity";
 import find_direction from "../entity/find_frame_direction";
 import CharacterState_Base from "./CharacterState_Base";
 

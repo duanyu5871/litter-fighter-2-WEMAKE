@@ -2,7 +2,7 @@ import LF2 from "../LF2";
 import { cook_frame_indicator_info } from "../dat_translator/cook_frame_indicator_info";
 import { IFrameInfo } from "../defines";
 import { IEntityData } from "../defines/IEntityData";
-import read_nums from "../layout/utils/read_nums";
+import read_nums from "../ui/utils/read_nums";
 import { traversal } from "../utils/container_help/traversal";
 import { preprocess_bdy } from "./preprocess_bdy";
 import { preprocess_frame_pic } from "./preprocess_frame_pic";

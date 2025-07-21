@@ -1,7 +1,7 @@
 import { CheatType, ItrKind } from "../defines";
 import { EntityVal } from "../defines/EntityVal";
 import { IValGetter, IValGetterGetter } from "../defines/IExpression";
-import Entity from "../entity/Entity";
+import { Entity } from "../entity/Entity";
 import { is_ball, is_character, is_weapon } from "../entity/type_check";
 import { find } from "../utils/container_help";
 import { clamp } from "../utils/math";

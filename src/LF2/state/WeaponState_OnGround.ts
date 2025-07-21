@@ -1,6 +1,6 @@
 import { new_team } from "../base";
 import type { IFrameInfo } from "../defines";
-import type Entity from "../entity/Entity";
+import type { Entity } from "../entity/Entity";
 import WeaponState_Base from "./WeaponState_Base";
 
 export default class WeaponState_OnGround extends WeaponState_Base {

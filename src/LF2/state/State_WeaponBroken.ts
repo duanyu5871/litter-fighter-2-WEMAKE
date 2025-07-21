@@ -1,5 +1,5 @@
 import { StateEnum } from "../defines";
-import type Entity from "../entity/Entity";
+import type { Entity } from "../entity/Entity";
 import { GONE_FRAME_INFO } from "../entity/GONE_FRAME_INFO";
 import State_Base from "./State_Base";
 

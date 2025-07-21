@@ -1,6 +1,6 @@
 import { new_team } from "../base";
 import { Builtin_FrameId } from "../defines";
-import type Entity from "../entity/Entity";
+import type { Entity } from "../entity/Entity";
 import { Factory } from "../entity/Factory";
 import State_Base from "./State_Base";
 export default class State_TransformTo8XXX extends State_Base {

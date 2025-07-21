@@ -1,6 +1,6 @@
 import type { IFrameInfo, IHitKeyCollection, TLooseGameKey } from "../defines";
 import { GameKey, StateEnum } from "../defines";
-import type Entity from "../entity/Entity";
+import type { Entity } from "../entity/Entity";
 import { ControllerUpdateResult } from "./ControllerUpdateResult";
 import DoubleClick from "./DoubleClick";
 import { KeyStatus } from "./KeyStatus";

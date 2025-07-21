@@ -1,5 +1,5 @@
 import type { IStagePhaseInfo } from "../defines";
-import type Stage from "./Stage";
+import type { Stage } from "./Stage";
 
 export default interface IStageCallbacks {
   on_phase_changed?(

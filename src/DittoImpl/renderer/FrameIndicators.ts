@@ -1,7 +1,7 @@
 import type { IObjectNode } from "../../LF2/3d";
 import Ditto from "../../LF2/ditto";
 import type { IFrameIndicators } from "../../LF2/ditto/render/IFrameIndicators";
-import Entity from "../../LF2/entity/Entity";
+import { Entity } from "../../LF2/entity/Entity";
 import { traversal } from "../../LF2/utils/container_help/traversal";
 import * as THREE from "./_t";
 export const EMPTY_ARR = [] as const;

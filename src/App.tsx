@@ -27,7 +27,7 @@ import { CheatType } from "./LF2/defines";
 import { Defines } from "./LF2/defines/defines";
 import Ditto from "./LF2/ditto";
 import { is_weapon } from "./LF2/entity/type_check";
-import { ILayoutInfo } from "./LF2/layout/ILayoutInfo";
+import { IUIInfo } from "./LF2/ui/IUIInfo";
 import { fisrt } from "./LF2/utils/container_help";
 import { arithmetic_progression } from "./LF2/utils/math/arithmetic_progression";
 import { LoadingImg } from "./LoadingImg";
@@ -160,7 +160,7 @@ function App() {
   }, [fullscreen]);
 
   const [layout_id, _set_layout] = useState<string | undefined>(void 0);
-  const [layouts, set_layouts] = useState<Readonly<ILayoutInfo>[]>([
+  const [layouts, set_layouts] = useState<Readonly<IUIInfo>[]>([
     { id: "", name: "无页面" },
   ]);
 

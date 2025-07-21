@@ -1,4 +1,4 @@
-import Entity from "../entity/Entity";
+import { Entity } from "../entity/Entity";
 import CharacterState_Base from "./CharacterState_Base";
 
 export class CharacterState_Caught extends CharacterState_Base {

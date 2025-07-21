@@ -5,7 +5,7 @@ import { NoEmitCallbacks } from "../base/NoEmitCallbacks";
 import { new_team } from "../base/new_id";
 import Background from "../bg/Background";
 import { Defines, IBgData, IStageInfo, IStageObjectInfo, IStagePhaseInfo } from "../defines";
-import Entity from "../entity/Entity";
+import { Entity } from "../entity/Entity";
 import { is_character, is_weapon } from "../entity/type_check";
 import { find } from "../utils/container_help/find";
 import { is_num } from "../utils/type_check";
@@ -261,4 +261,3 @@ export class Stage {
     this._time++;
   }
 }
-export default Stage;

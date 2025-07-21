@@ -1,5 +1,5 @@
 import { IFrameInfo } from "../defines";
-import type Entity from "../entity/Entity";
+import type { Entity } from "../entity/Entity";
 import WeaponState_Base from "./WeaponState_Base";
 
 export default class WeaponState_InTheSky extends WeaponState_Base {

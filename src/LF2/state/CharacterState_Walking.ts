@@ -1,5 +1,5 @@
 import { WeaponType } from "../defines";
-import type Entity from "../entity/Entity";
+import type { Entity } from "../entity/Entity";
 import { is_weapon } from "../entity/type_check";
 import CharacterState_Base from "./CharacterState_Base";
 

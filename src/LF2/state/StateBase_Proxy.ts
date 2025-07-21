@@ -1,6 +1,6 @@
 import { IFrameInfo, INextFrame } from "../defines";
 import { ICollision } from "../base/ICollision";
-import Entity from "../entity/Entity";
+import { Entity } from "../entity/Entity";
 import { is_ball, is_character, is_weapon } from "../entity/type_check";
 import BallState_Base from "./BallState_Base";
 import CharacterState_Base from "./CharacterState_Base";

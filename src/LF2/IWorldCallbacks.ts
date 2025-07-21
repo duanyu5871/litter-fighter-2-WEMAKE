@@ -1,5 +1,5 @@
 import type { World } from "./World";
-import type Stage from "./stage/Stage";
+import type { Stage } from "./stage/Stage";
 
 export interface IWorldCallbacks {
   on_disposed?(): void;

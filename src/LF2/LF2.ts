@@ -26,9 +26,9 @@ import {
 } from "./ditto";
 import { Entity } from "./entity";
 import { BallsHelper, CharactersHelper, EntitiesHelper, WeaponsHelper } from "./helper";
-import { ICookedLayoutInfo } from "./layout/ICookedLayoutInfo";
-import { ILayoutInfo } from "./layout/ILayoutInfo";
-import UINode from "./layout/UINode";
+import { ICookedUIInfo } from "./ui/ICookedLayoutInfo";
+import { IUIInfo } from "./ui/IUIInfo";
+import { UINode } from "./ui/UINode";
 import DatMgr from "./loader/DatMgr";
 import get_import_fallbacks from "./loader/get_import_fallbacks";
 import { ImageMgr } from "./loader/loader";
@@ -531,17 +531,17 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
   }
 
   private _layout_infos_loaded = false;
-  private _layout_infos: ICookedLayoutInfo[] = [];
-  get layout_infos(): readonly ICookedLayoutInfo[] {
+  private _layout_infos: ICookedUIInfo[] = [];
+  get layout_infos(): readonly ICookedUIInfo[] {
     return this._layout_infos;
   }
   get layout_infos_loaded() {
     return this._layout_infos_loaded;
   }
 
-  protected _layout_info_map = new Map<string, ILayoutInfo>();
+  protected _layout_info_map = new Map<string, IUIInfo>();
 
-  async load_layouts(): Promise<ICookedLayoutInfo[]> {
+  async load_layouts(): Promise<ICookedUIInfo[]> {
     if (this._layout_infos.length) return this._layout_infos;
     const array = await this.import_json("layouts/index.json").catch((e) => []);
     this._layout_infos_loaded = false;
@@ -598,9 +598,9 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
     return word;
   };
 
-  set_layout(layout_info?: ICookedLayoutInfo): void;
+  set_layout(layout_info?: ICookedUIInfo): void;
   set_layout(id?: string): void;
-  set_layout(arg: string | ICookedLayoutInfo | undefined): void {
+  set_layout(arg: string | ICookedUIInfo | undefined): void {
     const prev = this._layout_stacks.pop();
     prev?.on_pause();
 
@@ -626,9 +626,9 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
     this._callbacks.emit("on_layout_changed")(this.layout, popped);
   }
 
-  push_layout(layout_info?: ICookedLayoutInfo): void;
+  push_layout(layout_info?: ICookedUIInfo): void;
   push_layout(id?: string): void;
-  push_layout(arg: string | ICookedLayoutInfo | undefined): void {
+  push_layout(arg: string | ICookedUIInfo | undefined): void {
     const prev = this.layout;
     prev?.on_pause();
 

@@ -1,5 +1,5 @@
 import type { ISprite } from "../../3d/ISprite";
-import type { UINode } from "../../layout/UINode";
+import type { UINode } from "../../ui/UINode";
 
 export interface IUINodeRenderer {
   /** @deprecated get rip of it */ sprite: ISprite;

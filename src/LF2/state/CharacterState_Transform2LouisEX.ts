@@ -1,4 +1,4 @@
-import type Entity from "../entity/Entity";
+import type { Entity } from "../entity/Entity";
 import State_Base from "./State_Base";
 
 export class CharacterState_TransformToLouisEX extends State_Base {

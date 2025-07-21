@@ -14,7 +14,7 @@ import {
 } from "./entity";
 import { IWorldCallbacks } from "./IWorldCallbacks";
 import LF2 from "./LF2";
-import Stage from "./stage/Stage";
+import { Stage } from "./stage/Stage";
 import { WhatNext } from "./state/State_Base";
 import { find } from "./utils/container_help";
 import float_equal from "./utils/math/float_equal";

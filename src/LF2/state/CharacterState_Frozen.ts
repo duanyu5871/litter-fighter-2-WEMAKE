@@ -1,5 +1,5 @@
 import { BuiltIn_OID, IFrameInfo, IOpointInfo } from "../defines";
-import type Entity from "../entity/Entity";
+import type { Entity } from "../entity/Entity";
 import CharacterState_Base from "./CharacterState_Base";
 
 function make_ice_piece(victim: Entity, id: string): IOpointInfo {

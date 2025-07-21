@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import type { ISprite, ISpriteInfo } from "../../LF2/3d/ISprite";
 import Ditto from "../../LF2/ditto";
-import type { UINode } from "../../LF2/layout/UINode";
+import type { UINode } from "../../LF2/ui/UINode";
 import { empty_texture, white_texture } from "../../LF2/loader/loader";
 import { IUINodeRenderer } from "../../LF2/ditto/render/IUINodeRenderer";
 

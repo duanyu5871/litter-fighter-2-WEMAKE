@@ -1,8 +1,8 @@
 import type { IMeshNode } from "../../LF2/3d/IMesh";
 import Ditto from "../../LF2/ditto";
 import type { IEntityRenderer } from "../../LF2/ditto/render/IEntityRenderer";
-import type Entity from "../../LF2/entity/Entity";
-import type Stage from "../../LF2/stage/Stage";
+import type { Entity } from "../../LF2/entity/Entity";
+import type { Stage } from "../../LF2/stage/Stage";
 import * as T from "./_t";
 
 export class EntityShadowRender implements IEntityRenderer {

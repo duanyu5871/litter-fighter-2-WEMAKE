@@ -1,5 +1,5 @@
 import { IFrameInfo } from "../defines";
-import Entity from "../entity/Entity";
+import { Entity } from "../entity/Entity";
 import CharacterState_Base from "./CharacterState_Base";
 
 export class CharacterState_Rowing extends CharacterState_Base {

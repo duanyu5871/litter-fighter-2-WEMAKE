@@ -1,6 +1,6 @@
 import type { IBdyInfo, IFrameInfo, IItrInfo } from "../defines";
 import type { IBounding } from "../defines/IBounding";
-import type Entity from "../entity/Entity";
+import type { Entity } from "../entity/Entity";
 
 export interface ICollision {
   /**

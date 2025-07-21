@@ -1,7 +1,7 @@
 import type { Difficulty } from "./defines";
 import type { IZip } from "./ditto";
-import type { ICookedLayoutInfo } from "./layout/ICookedLayoutInfo";
-import type UINode from "./layout/UINode";
+import type { ICookedUIInfo } from "./ui/ICookedLayoutInfo";
+import type { UINode } from "./ui/UINode";
 import type { PlayerInfo } from "./PlayerInfo";
 
 export interface ILf2Callback {
@@ -31,7 +31,7 @@ export interface ILf2Callback {
     prev: Difficulty,
   ): void;
 
-  on_layouts_loaded?(layouts: ICookedLayoutInfo[]): void;
+  on_layouts_loaded?(layouts: ICookedUIInfo[]): void;
 
   on_prel_data_loaded?(): void;
 

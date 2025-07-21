@@ -1756,5 +1756,3 @@ Factory.inst.set_entity_creator(
   EntityEnum.Character,
   (...args) => new Entity(...args),
 );
-
-export default Entity;

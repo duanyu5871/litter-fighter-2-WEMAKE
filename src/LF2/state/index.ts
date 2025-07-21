@@ -1,5 +1,5 @@
 import { StateEnum } from "../defines/StateEnum";
-import Entity from "../entity/Entity";
+import { Entity } from "../entity/Entity";
 import BallState_Base from "./BallState_Base";
 import CharacterState_Base from "./CharacterState_Base";
 import { CharacterState_Caught } from "./CharacterState_Caught";
