@@ -8,9 +8,15 @@ import { PromiseInOne } from "promise-in-one/dist/es/pio";
  * @template V
  */
 export default class AsyncValuesKeeper<V> {
+
   readonly values = new Map<string, V>();
   protected _pio = new PromiseInOne<string, string, V>(v => v)
-
+  get(key: string): V | undefined {
+    return this.values.get(key)
+  }
+  has(key: string): boolean {
+    return this.values.has(key)
+  }
   /**
    * 取值
    *
@@ -19,7 +25,7 @@ export default class AsyncValuesKeeper<V> {
    * @return {Promise<V>}
    * @memberof AsyncValuesKeeper
    */
-  get(key: string, job: () => Promise<V>): Promise<V> {
+  fetch(key: string, job: () => Promise<V>): Promise<V> {
     const value = this.values.get(key);
     if (value) return Promise.resolve(value);
 

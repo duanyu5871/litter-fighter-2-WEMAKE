@@ -127,11 +127,11 @@ export class __Modern extends BaseSounds {
   }
 
   override has(name: string): boolean {
-    return this._r.values.has(name);
+    return this._r.has(name);
   }
 
   override load(name: string, src: string): Promise<AudioBuffer> {
-    return this._r.get(name, async () => {
+    return this._r.fetch(name, async () => {
       this.lf2.on_loading_content(`${name}`, 0);
       const [url] = await this.lf2.import_resource(src);
       const buf = await axios
@@ -163,7 +163,7 @@ export class __Modern extends BaseSounds {
 
     const req_id = this._req_id;
     const ctx = this.ctx;
-    const buf = this._r.values.get(name);
+    const buf = this._r.get(name);
     const start = (buf: AudioBuffer) => {
       const src_node = ctx.createBufferSource();
       src_node.buffer = buf;
@@ -215,7 +215,7 @@ export class __Modern extends BaseSounds {
     ];
   }
   override play(name: string, x?: number, y?: number, z?: number): string {
-    const buf = this._r.values.get(name);
+    const buf = this._r.get(name);
     if (!buf) {
       this.load(name, name)
         .then(() => this.play(name, x, y, z))

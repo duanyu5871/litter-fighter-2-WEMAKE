@@ -135,17 +135,17 @@ export class ImageMgr {
   }
 
   find(key: string): ImageInfo | undefined {
-    return this.infos.values.get(key);
+    return this.infos.get(key);
   }
 
   find_by_pic_info(f: IPictureInfo | ILegacyPictureInfo): ImageInfo | undefined {
-    return this.infos.values.get(this._gen_key(f));
+    return this.infos.get(this._gen_key(f));
   }
 
   load_text(text: string, style: IStyle = {}): Promise<ImageInfo> {
     const key = Ditto.MD5(text, JSON.stringify(style));
     const fn = () => this._make_img_info_by_text(key, text, style);
-    return this.infos.get(key, fn);
+    return this.infos.fetch(key, fn);
   }
 
   load_img(key: string, src: string, operations?: ImageOperation[]): Promise<ImageInfo> {
@@ -154,7 +154,7 @@ export class ImageMgr {
       const info = await this._make_img_info(key, src, operations);
       return info;
     };
-    return this.infos.get(key, fn);
+    return this.infos.fetch(key, fn);
   }
 
   remove_img(key: string) {
@@ -274,7 +274,7 @@ function _create_pic(
   return pic_info;
 }
 
-export function err_pic_info(id: string = ""): TPicture {
+function err_pic_info(id: string = ""): TPicture {
   return {
     id,
     w: 0,
@@ -288,7 +288,7 @@ export function empty_texture() {
 export function white_texture() {
   return texture_loader.load(require("./white.png"));
 }
-export function error_texture() {
+function error_texture() {
   return texture_loader.load(require("./error.png"));
 }
 export interface ImageOperation_Resize extends ISize {

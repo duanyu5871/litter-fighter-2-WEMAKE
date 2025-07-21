@@ -6,7 +6,7 @@ import Invoker from "../../base/Invoker";
 import GameKey from "../../defines/GameKey";
 import Ditto from "../../ditto";
 import ease_linearity from "../../utils/ease_method/ease_linearity";
-import { TPicture } from "../../loader/loader";
+import { TPicture } from "../../loader/ImageMgr";
 import { make_arr } from "../../utils/array/make_arr";
 import type { UINode } from "../UINode";
 import { UIComponent } from "./UIComponent";

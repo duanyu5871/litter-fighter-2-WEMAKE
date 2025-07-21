@@ -1,7 +1,7 @@
 import * as THREE from "../3d/_t";
 import LF2 from "../../LF2/LF2";
 import { dispose_mesh } from "./disposer";
-import { empty_texture } from "../../LF2/loader/loader";
+import { empty_texture } from "../../LF2/loader/ImageMgr";
 import { is_num } from "../../LF2/utils/type_check";
 import { __Object } from "./__Object";
 import { ISpriteInfo, ISprite } from "../../LF2/3d/ISprite";

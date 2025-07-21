@@ -27,7 +27,7 @@ import { Entity } from "./entity";
 import { BallsHelper, CharactersHelper, EntitiesHelper, WeaponsHelper } from "./helper";
 import DatMgr from "./loader/DatMgr";
 import get_import_fallbacks from "./loader/get_import_fallbacks";
-import { ImageMgr } from "./loader/loader";
+import { ImageMgr } from "./loader/ImageMgr";
 import { Stage } from "./stage";
 import { ICookedUIInfo } from "./ui/ICookedLayoutInfo";
 import { IUIInfo } from "./ui/IUIInfo";
