@@ -74,8 +74,6 @@ export class WorldRenderer implements IWorldRenderer {
     const { indicator_flags } = this.world;
     if (indicator_flags != this.indicator_flags)
       this.indicator_flags = indicator_flags;
-
-
     this.bg_render.render();
     for (const [, [r1, r2, r3, r4]] of this.entity_renderer_packs) {
       r1.render();

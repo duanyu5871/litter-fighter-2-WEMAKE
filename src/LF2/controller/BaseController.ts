@@ -181,17 +181,17 @@ export class BaseController {
     for (const k of keys) if (!this.is_end(k)) this.end(k);
     return this;
   }
-  constructor(player_id: string, character: Entity) {
+  constructor(player_id: string, entity: Entity) {
     this._player_id = player_id;
-    this.entity = character;
+    this.entity = entity;
     this.dbc = {
-      d: new DoubleClick("d", character.world.double_click_interval),
-      a: new DoubleClick("a", character.world.double_click_interval),
-      j: new DoubleClick("j", character.world.double_click_interval),
-      L: new DoubleClick("L", character.world.double_click_interval),
-      R: new DoubleClick("R", character.world.double_click_interval),
-      U: new DoubleClick("U", character.world.double_click_interval),
-      D: new DoubleClick("D", character.world.double_click_interval),
+      d: new DoubleClick("d", entity.world.double_click_interval),
+      a: new DoubleClick("a", entity.world.double_click_interval),
+      j: new DoubleClick("j", entity.world.double_click_interval),
+      L: new DoubleClick("L", entity.world.double_click_interval),
+      R: new DoubleClick("R", entity.world.double_click_interval),
+      U: new DoubleClick("U", entity.world.double_click_interval),
+      D: new DoubleClick("D", entity.world.double_click_interval),
     };
   }
   dispose(): void {

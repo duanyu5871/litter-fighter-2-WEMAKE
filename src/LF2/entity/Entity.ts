@@ -3,6 +3,7 @@ import type LF2 from "../LF2";
 import type { World } from "../World";
 import { Callbacks, ICollision, new_id, new_team, type NoEmitCallbacks } from "../base";
 import { BaseController } from "../controller/BaseController";
+import { InvalidController } from "../controller/InvalidController";
 import {
   BdyKind, Builtin_FrameId, Defines, EntityEnum, FacingFlag, IBaseData, IBounding,
   ICpointInfo, IEntityData, IFrameInfo,
@@ -221,7 +222,7 @@ export class Entity {
     if (this.velocities.length) return this.velocities[0];
     return this.velocities[0] = new Ditto.Vector3(0, 0, 0);
   }
-  
+
   protected _callbacks = new Callbacks<IEntityCallbacks>();
   protected _name: string = "";
   protected _team: string = new_team();
@@ -477,11 +478,12 @@ export class Entity {
     return this._callbacks;
   }
 
-  protected _ctrl?: BaseController;
-  get ctrl() {
+  protected _ctrl: BaseController;
+  get ctrl(): BaseController {
     return this._ctrl;
   }
-  set ctrl(v) {
+  set ctrl(v: BaseController | undefined) {
+    if (!v) return;
     if (this._ctrl === v) return;
     this._ctrl?.dispose();
     this._ctrl = v;
@@ -503,6 +505,7 @@ export class Entity {
     this.world = world;
     this.states = states;
     this._hp_max = data.base.hp ?? Defines.DEFAULT_HP;
+    this._ctrl = new InvalidController("", this);
 
     if (is_weapon_data(data) && data.id === "122") {
       this._mp_max = data.base.mp ?? Defines.DEFAULT_MILK_MP;
@@ -792,11 +795,7 @@ export class Entity {
       return;
     }
     const entity = create(this.world, data);
-    entity.ctrl = Factory.inst.get_ctrl(
-      entity.data.id,
-      "",
-      entity,
-    );
+    entity.ctrl = Factory.inst.get_ctrl(entity.data.id, "", entity,) ?? entity.ctrl;
     entity.on_spawn(this, opoint, offset_velocity).attach();
 
     for (const [k, v] of this.v_rests) {
@@ -1504,7 +1503,7 @@ export class Entity {
 
   dispose(): void {
     this.world.del_entity(this);
-    this.ctrl = void 0;
+    this.ctrl.dispose();
     this._callbacks.emit("on_disposed")(this);
   }
 
