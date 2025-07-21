@@ -182,7 +182,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
   }
 
   constructor() {
-    Ditto.Log(`[${LF2.TAG}::constructor]`)
+    Ditto.Debug(`[${LF2.TAG}::constructor]`)
     this.world = new World(this);
     this.datas = new DatMgr(this);
     this.sounds = new ditto.Sounds(this);
@@ -296,7 +296,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
   }
 
   on_key_down(e: IKeyEvent) {
-    Ditto.Log(`[${LF2.TAG}::on_key_down]`, e)
+    Ditto.Debug(`[${LF2.TAG}::on_key_down]`, e)
     const key_code = e.key?.toLowerCase() ?? "";
     this._curr_key_list += key_code;
     let match = false;
@@ -420,7 +420,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
   }
 
   dispose() {
-    Ditto.Log(`[${LF2.TAG}::dispose]`)
+    Ditto.Debug(`[${LF2.TAG}::dispose]`)
     this._disposed = true;
     this._callbacks.emit("on_dispose")();
     this._callbacks.clear()

@@ -103,7 +103,7 @@ export class Expression<T1, T2 = T1> implements IExpression<T1, T2> {
             before = letter;
           }
           p = i + 1;
-        } else if (")" === letter || void 0 === letter) {
+        } else if (")" === letter || '' === letter) {
           if (p < i) {
             const sub_str = this.text.substring(p, i);
             const judger = this.gen_judger(sub_str);

@@ -416,6 +416,11 @@ function App() {
     const workspace = new Workspaces(adpater)
     const game_slot = workspace.root;
     workspace.on_leaves_changed = () => {
+      for (const leaf of workspace.leaves) {
+        const cell = workspace.adapter.get_cell(leaf)
+        if (!cell || cell.children.length) continue;
+        if (!cell.parentElement) workspace.adapter.container.appendChild(cell)
+      }
       const pannel_slot = workspace.find("panel")
       set_workspace([
         workspace,
@@ -429,18 +434,17 @@ function App() {
       workspace.root.release()
       workspace.release()
     }
-
   }, [ele_root])
 
   useEffect(() => {
     if (!workspace) return;
-    workspace.del("panel")?.confirm();
+    workspace.del("panel", false);
     if (control_panel_visible) {
       switch (debug_ui_pos) {
-        case "left": workspace.add(0, debug_ui_pos, { id: "panel" }); break;
-        case "right": workspace.add(0, debug_ui_pos, { id: "panel" }); break;
-        case "top": workspace.add(0, "up", { id: "panel" }); break;
-        case "bottom": workspace.add(0, "down", { id: "panel" }); break;
+        case "left": workspace.add("slot_1", debug_ui_pos, { id: "panel" }); break;
+        case "right": workspace.add("slot_1", debug_ui_pos, { id: "panel" }); break;
+        case "top": workspace.add("slot_1", "up", { id: "panel" }); break;
+        case "bottom": workspace.add("slot_1", "down", { id: "panel" }); break;
       }
     }
     workspace.confirm()

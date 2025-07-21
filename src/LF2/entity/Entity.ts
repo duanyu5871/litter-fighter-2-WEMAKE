@@ -1386,12 +1386,9 @@ export class Entity {
   readonly collided_list: ICollision[] = [];
 
   start_catch(target: Entity, itr: IItrInfo) {
+    Ditto.Debug(`[${Entity.TAG}::start_catch]`)
     if (itr.catchingact === void 0) {
-      Ditto.Warn(
-        Entity.TAG + "::start_catch",
-        "cannot catch, catchingact got",
-        itr.catchingact,
-      );
+      Ditto.Warn(`[${Entity.TAG}::start_catch] cannot catch, catchingact got ${itr.catchingact}`);
       return;
     }
     this._catch_time = this._catch_time_max;
@@ -1400,12 +1397,9 @@ export class Entity {
   }
 
   start_caught(attacker: Entity, itr: IItrInfo) {
+    Ditto.Debug(`[${Entity.TAG}::start_caught]`)
     if (itr.caughtact === void 0) {
-      Ditto.Warn(
-        Entity.TAG + "::start_caught",
-        "cannot be caught, caughtact got",
-        itr.caughtact,
-      );
+      Ditto.Warn(`[${Entity.TAG}::start_caught] cannot be caught, caughtact got ${itr.caughtact}`)
       return;
     }
     this._catcher = attacker;
