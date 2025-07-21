@@ -9,9 +9,10 @@ import { BgRender } from "./DittoImpl/renderer/BgRender";
 import { EntityInfoRender } from "./DittoImpl/renderer/EntityInfoRender";
 import { EntityRender } from "./DittoImpl/renderer/EntityRender";
 import { EntityShadowRender } from "./DittoImpl/renderer/EntityShadowRender";
-import Ditto from "./LF2/ditto";
 import { FrameIndicators } from "./DittoImpl/renderer/FrameIndicators";
+import { UINodeRenderer } from "./DittoImpl/renderer/UINodeRenderer";
 import { WorldRenderer } from "./DittoImpl/renderer/WorldRenderer";
+import Ditto from "./LF2/ditto";
 
 Ditto.setup({
   Timeout: dom.__Timeout,
@@ -45,4 +46,5 @@ Ditto.setup({
   EntityRender: EntityRender,
   FrameIndicators: FrameIndicators,
   WorldRender: WorldRenderer,
+  UINodeRenderer: UINodeRenderer,
 });

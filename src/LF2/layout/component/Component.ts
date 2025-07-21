@@ -1,5 +1,5 @@
 import GameKey from "../../defines/GameKey";
-import Node from "../Node";
+import UINode from "../UINode";
 
 /**
  * 组件
@@ -8,7 +8,7 @@ import Node from "../Node";
  * @class Component
  */
 export class Component {
-  readonly node: Node;
+  readonly node: UINode;
   readonly f_name: string;
   get lf2() {
     return this.node.lf2;
@@ -32,10 +32,10 @@ export class Component {
    *
    * @constructor
    * @protected
-   * @param {Node} layout 布局对象
+   * @param {UINode} layout 布局对象
    * @param {string} f_name 组件在工厂中的名字
    */
-  constructor(layout: Node, f_name: string) {
+  constructor(layout: UINode, f_name: string) {
     this.node = layout;
     this.f_name = f_name;
   }

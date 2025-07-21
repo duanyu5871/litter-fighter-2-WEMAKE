@@ -2,7 +2,7 @@ import { IText } from "../../3d/IText";
 import Invoker from "../../base/Invoker";
 import { Defines } from "../../defines/defines";
 import Ditto from "../../ditto";
-import Node from "../Node";
+import UINode from "../UINode";
 import { Component } from "./Component";
 
 export default class DifficultyText extends Component {
@@ -12,7 +12,7 @@ export default class DifficultyText extends Component {
   protected _mesh: IText;
   protected _unmount_jobs = new Invoker();
 
-  constructor(layout: Node, f_name: string) {
+  constructor(layout: UINode, f_name: string) {
     super(layout, f_name);
     this._mesh = new Ditto.TextNode(this.lf2)
       .set_center(0, 0.5)

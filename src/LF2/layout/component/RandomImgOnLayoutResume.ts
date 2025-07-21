@@ -26,6 +26,5 @@ export class RandomImgOnLayoutResume extends Component {
     if (!l.length) this.node.img_infos.forEach((_, i) => l.push(i));
     if (!l.length) return;
     this.node.img_idx = Math.floor(local_random() * l.length);
-    this.node.update_img();
   }
 }

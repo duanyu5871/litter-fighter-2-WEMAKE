@@ -10,9 +10,10 @@ import type { IText } from "../3d/IText";
 import type { Layer } from "../bg/Layer";
 import type { IQuaternion, IVector2, IVector3 } from "../defines";
 import type { IRaycaster } from "../defines/IRaycaster";
-import Entity from "../entity/Entity";
+import type Entity from "../entity/Entity";
+import type UINode from "../layout/UINode";
 import type LF2 from "../LF2";
-import { World } from "../World";
+import type { World } from "../World";
 import type { ICache } from "./cache";
 import type { IFullScreen } from "./fullscreen";
 import { BaseImporter, type IImporter } from "./importer";
@@ -22,9 +23,10 @@ import type { IKeyboard } from "./keyboard/IKeyboard";
 import type { IPointings } from "./pointings";
 import type { IBgLayerRender } from "./render/IBgLayerRender";
 import type { IBgRender } from "./render/IBgRender";
-import { IEntityRenderer } from "./render/IEntityRenderer";
-import { IFrameIndicators } from "./render/IFrameIndicators";
-import { IWorldRenderer } from "./render/IWorldRenderer";
+import type { IEntityRenderer } from "./render/IEntityRenderer";
+import type { IFrameIndicators } from "./render/IFrameIndicators";
+import type { IUINodeRenderer } from "./render/IUINodeRenderer";
+import type { IWorldRenderer } from "./render/IWorldRenderer";
 import BaseSounds from "./sounds/BaseSounds";
 import type ISounds from "./sounds/ISounds";
 import type { IZip } from "./zip/IZip";
@@ -80,6 +82,7 @@ export interface IDittoPack {
   EntityRender: new (entity: Entity) => IEntityRenderer
   FrameIndicators: new (entity: Entity) => IFrameIndicators
   WorldRender: new (world: World) => IWorldRenderer,
+  UINodeRenderer: new (uinode: UINode) => IUINodeRenderer,
 }
 
 export interface IDitto extends IDittoPack {

@@ -2,7 +2,7 @@ import { IText } from "../../3d/IText";
 import Invoker from "../../base/Invoker";
 import GameKey from "../../defines/GameKey";
 import Ditto from "../../ditto";
-import Node from "../Node";
+import UINode from "../UINode";
 import { Component } from "./Component";
 import PlayerKeyEditor from "./PlayerKeyEditor";
 
@@ -19,7 +19,7 @@ export default class PlayerKeyText extends Component {
   protected _sprite: IText;
   protected _unmount_jobs = new Invoker();
 
-  constructor(layout: Node, f_name: string) {
+  constructor(layout: UINode, f_name: string) {
     super(layout, f_name);
     const [w, h] = this.node.size;
     this._sprite = new Ditto.TextNode(this.lf2)

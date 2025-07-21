@@ -1,5 +1,5 @@
 import GameKey from "../../defines/GameKey";
-import Node from "../Node";
+import UINode from "../UINode";
 import { Component } from "./Component";
 
 export class ReachableLayoutGroup extends Component {
@@ -10,7 +10,7 @@ export class ReachableLayoutGroup extends Component {
     return this.args[1] || "";
   }
 
-  get binded_layout(): Node {
+  get binded_layout(): UINode {
     const lid = this.args[2];
     if (!lid) return this.node;
     return this.node.root.find_layout(lid) || this.node;

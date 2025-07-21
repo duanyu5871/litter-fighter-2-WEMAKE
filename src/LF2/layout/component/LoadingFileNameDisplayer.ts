@@ -1,7 +1,7 @@
 import { IText } from "../../3d/IText";
 import Invoker from "../../base/Invoker";
 import Ditto from "../../ditto";
-import Layout from "../Node";
+import Layout from "../UINode";
 import { Component } from "./Component";
 
 export default class LoadingFileNameDisplayer extends Component {

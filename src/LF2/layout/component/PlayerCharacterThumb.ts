@@ -3,7 +3,7 @@ import { SineAnimation } from "../../animation/SineAnimation";
 import Invoker from "../../base/Invoker";
 import { Defines } from "../../defines/defines";
 import Ditto from "../../ditto";
-import Node from "../Node";
+import UINode from "../UINode";
 import GamePrepareLogic from "./GamePrepareLogic";
 import { Component } from "./Component";
 import PlayerScore from "./PlayerScore";
@@ -41,7 +41,7 @@ export default class PlayerCharacterThumb extends Component {
 
   protected _unmount_jobs = new Invoker();
 
-  constructor(layout: Node, f_name: string) {
+  constructor(layout: UINode, f_name: string) {
     super(layout, f_name);
     this._mesh_thumb = new Ditto.SpriteNode(this.lf2)
       .set_center(0.5, 0.5)

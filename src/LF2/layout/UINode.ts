@@ -1,4 +1,3 @@
-import { INodeRenderer, NodeRenderer } from "../../DittoImpl/renderer/NodeRenderer";
 import LF2 from "../LF2";
 import Callbacks from "../base/Callbacks";
 import { Expression } from "../base/Expression";
@@ -6,6 +5,8 @@ import { NoEmitCallbacks } from "../base/NoEmitCallbacks";
 import GameKey from "../defines/GameKey";
 import { IValGetter } from "../defines/IExpression";
 import IStyle from "../defines/IStyle";
+import Ditto from "../ditto";
+import { IUINodeRenderer } from "../ditto/render/IUINodeRenderer";
 import { type IImageInfo } from "../loader/IImageInfo";
 import { filter, find } from "../utils/container_help";
 import { is_arr, is_bool, is_num, is_str } from "../utils/type_check";
@@ -18,10 +19,10 @@ import { Component } from "./component/Component";
 import factory from "./component/Factory";
 import read_nums from "./utils/read_nums";
 
-export class Node {
+export class UINode {
   readonly lf2: LF2;
-  readonly id_layout_map: Map<string, Node>;
-  readonly name_layout_map: Map<string, Node>;
+  readonly id_layout_map: Map<string, UINode>;
+  readonly name_layout_map: Map<string, UINode>;
 
   protected _callbacks = new Callbacks<ILayoutCallback>();
   get callbacks(): NoEmitCallbacks<ILayoutCallback> {
@@ -31,10 +32,10 @@ export class Node {
    * 根节点
    *
    * @protected
-   * @type {Node}
+   * @type {UINode}
    */
-  protected _root: Node;
-  protected _focused_item?: Node;
+  protected _root: UINode;
+  protected _focused_item?: UINode;
   protected _pos: StateDelegate<[number, number, number]> = new StateDelegate(
     () => this.data.pos,
   );
@@ -49,8 +50,8 @@ export class Node {
     new StateDelegate([0, 0, 0]);
 
   protected _img_idx = () => 0;
-  protected _parent?: Node;
-  protected _children: Node[] = [];
+  protected _parent?: UINode;
+  protected _children: UINode[] = [];
   protected _index: number = 0;
   readonly data: Readonly<ICookedLayoutInfo>;
 
@@ -61,10 +62,10 @@ export class Node {
     if (v) this.focused_item = this;
     else if (this.focused_item === this) this.focused_item = void 0;
   }
-  get focused_item(): Node | undefined {
+  get focused_item(): UINode | undefined {
     return this._root._focused_item;
   }
-  set focused_item(val: Node | undefined) {
+  set focused_item(val: UINode | undefined) {
     const old = this._root._focused_item;
     if (old === val) return;
     this._root._focused_item = val;
@@ -129,13 +130,13 @@ export class Node {
     return this.set_pos([x, y, z]);
   }
 
-  get root(): Node {
+  get root(): UINode {
     return this._root;
   }
 
   get depth() {
     let depth = 0;
-    let l: Node | undefined = this;
+    let l: UINode | undefined = this;
     for (; l?._parent; l = l.parent) ++depth;
     return depth;
   }
@@ -202,8 +203,8 @@ export class Node {
     return this;
   }
 
-  get parent(): Node | undefined { return this._parent; }
-  get children(): Readonly<Node[]> { return this._children; }
+  get parent(): UINode | undefined { return this._parent; }
+  get children(): Readonly<UINode[]> { return this._children; }
 
   get size(): [number, number] { return this._size.value; }
   set size(v: [number, number]) { this.set_size(v); }
@@ -237,8 +238,9 @@ export class Node {
     return this;
   }
 
-  renderer: INodeRenderer;
-  constructor(lf2: LF2, data: ICookedLayoutInfo, parent?: Node) {
+  renderer: IUINodeRenderer;
+
+  constructor(lf2: LF2, data: ICookedLayoutInfo, parent?: UINode) {
     this.lf2 = lf2;
     this.data = Object.freeze(data);
     this._parent = parent;
@@ -246,12 +248,12 @@ export class Node {
     this.id_layout_map = parent?.id_layout_map ?? new Map();
     this.name_layout_map = parent?.name_layout_map ?? new Map();
 
-    this.renderer = new NodeRenderer(this);
+    this.renderer = new Ditto.UINodeRenderer(this);
   }
 
   get x_on_root(): number {
     let x = 0;
-    let node: Node | undefined = this;
+    let node: UINode | undefined = this;
     do {
       x += node.x;
       node = node.parent;
@@ -261,7 +263,7 @@ export class Node {
 
   get y_on_root(): number {
     let ret = 0;
-    let node: Node | undefined = this;
+    let node: UINode | undefined = this;
     do {
       ret += node.y;
       node = node.parent;
@@ -435,7 +437,7 @@ export class Node {
     if (Array.isArray(raw_info.items) && raw_info.items.length) {
       ret.items = [];
       for (const item of raw_info.items)
-        ret.items.push(await Node.cook_layout_info(lf2, item, ret));
+        ret.items.push(await UINode.cook_layout_info(lf2, item, ret));
     } else {
       delete ret.items;
     }
@@ -445,17 +447,17 @@ export class Node {
   static cook(
     lf2: LF2,
     info: ICookedLayoutInfo,
-    get_val: IValGetter<Node>,
-    parent?: Node,
+    get_val: IValGetter<UINode>,
+    parent?: UINode,
   ) {
-    const ret = new Node(lf2, info, parent);
+    const ret = new UINode(lf2, info, parent);
     ret._cook_data(get_val);
     ret._cook_img_idx(get_val);
     ret._cook_component();
 
     if (info.items) {
       for (const item_info of info.items) {
-        const cooked_item = Node.cook(lf2, item_info, get_val, ret);
+        const cooked_item = UINode.cook(lf2, item_info, get_val, ret);
         if (cooked_item.id) ret.id_layout_map.set(cooked_item.id, cooked_item);
         if (cooked_item.name)
           ret.name_layout_map.set(cooked_item.name, cooked_item);
@@ -466,12 +468,12 @@ export class Node {
     return ret;
   }
 
-  add_child(layout: Node): this {
+  add_child(layout: UINode): this {
     this._children.push(layout);
     return this;
   }
 
-  add_children(...layout: Node[]): this {
+  add_children(...layout: UINode[]): this {
     layout.forEach(l => this.add_child(l))
     return this;
   }
@@ -484,20 +486,20 @@ export class Node {
     }
   }
 
-  private _cook_data(get_val: IValGetter<Node>) {
+  private _cook_data(get_val: IValGetter<UINode>) {
     const { visible, opacity, disabled } = this.data;
 
     if (is_bool(disabled)) {
       this._disabled.default_value = disabled;
     } else if (is_str(disabled)) {
-      const func = new Expression<Node>(disabled, get_val).run;
+      const func = new Expression<UINode>(disabled, get_val).run;
       this._disabled.default_value = () => func(this);
     }
 
     if (is_bool(visible)) {
       this._visible.default_value = visible;
     } else if (is_str(visible)) {
-      const func = new Expression<Node>(visible, get_val).run;
+      const func = new Expression<UINode>(visible, get_val).run;
       this._visible.default_value = () => func(this);
     }
 
@@ -513,7 +515,7 @@ export class Node {
     this._center.default_value = this.data.center;
   }
 
-  private _cook_img_idx(get_val: IValGetter<Node>) {
+  private _cook_img_idx(get_val: IValGetter<UINode>) {
     const { img_infos } = this;
     if (!img_infos?.length) return;
     const { which } = this.data;
@@ -549,7 +551,7 @@ export class Node {
 
   get global_z(): number {
     let global_z = 0;
-    let l: Node | undefined = this;
+    let l: UINode | undefined = this;
     for (; l?._parent; l = l.parent) global_z += this.sprite.z;
     return global_z;
   }
@@ -595,11 +597,11 @@ export class Node {
     for (const c of this._components) c.on_player_key_up?.(player_id, key);
   }
 
-  find_layout(id: string): Node | undefined {
+  find_layout(id: string): UINode | undefined {
     return this.id_layout_map.get(id);
   }
 
-  find_layout_by_name(name: string): Node | undefined {
+  find_layout_by_name(name: string): UINode | undefined {
     return this.name_layout_map.get(name);
   }
 
@@ -692,6 +694,6 @@ export class Node {
     for (const c of this._components) c.on_blur?.();
   }
 }
-export default Node;
+export default UINode;
 type TCls<R = any> = abstract new (...args: any) => R;
 type TCond<T extends TCls> = (c: InstanceType<T>) => unknown;

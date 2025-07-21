@@ -1,11 +1,11 @@
-import type Node from "./Node";
+import type UINode from "./UINode";
 export interface ILayoutCallback {
   on_click?(): void;
-  on_show?(layout: Node): void;
-  on_hide?(layout: Node): void;
-  on_foucs_changed?(layout: Node): void;
+  on_show?(layout: UINode): void;
+  on_hide?(layout: UINode): void;
+  on_foucs_changed?(layout: UINode): void;
   on_foucs_item_changed?(
-    foucs: Node | undefined,
-    blur: Node | undefined
+    foucs: UINode | undefined,
+    blur: UINode | undefined
   ): void;
 }

@@ -3,7 +3,7 @@ import Invoker from "../../base/Invoker";
 import { CheatType, IStageInfo } from "../../defines";
 import { Defines } from "../../defines/defines";
 import Ditto from "../../ditto";
-import Node from "../Node";
+import UINode from "../UINode";
 import { Component } from "./Component";
 
 export default class StageNameText extends Component {
@@ -30,7 +30,7 @@ export default class StageNameText extends Component {
   protected _mesh: IText;
   protected _unmount_jobs = new Invoker();
 
-  constructor(layout: Node, f_name: string) {
+  constructor(layout: UINode, f_name: string) {
     super(layout, f_name);
     this._mesh = new Ditto.TextNode(this.lf2)
       .set_center(0.5, 0.5)

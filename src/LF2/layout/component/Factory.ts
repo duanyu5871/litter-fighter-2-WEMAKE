@@ -1,7 +1,7 @@
 import { Warn } from "../../../Log";
 import { is_str } from "../../utils/type_check";
 import { ILayoutInfo } from "../ILayoutInfo";
-import type Node from "../Node";
+import type UINode from "../UINode";
 import { read_call_func_expression } from "../utils/read_func_args";
 import BackgroundNameText from "./BackgroundNameText";
 import CharacterSelLogic from "./CharacterSelLogic";
@@ -64,7 +64,7 @@ class Factory {
   ]);
 
   create(
-    layout: Node,
+    layout: UINode,
     components: ILayoutInfo["component"],
   ): Component[] {
     if (!components?.length) return [];

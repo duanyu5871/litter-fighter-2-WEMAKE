@@ -1,13 +1,13 @@
 import type { Difficulty } from "./defines";
 import type { IZip } from "./ditto";
 import type { ICookedLayoutInfo } from "./layout/ICookedLayoutInfo";
-import type Node from "./layout/Node";
+import type UINode from "./layout/UINode";
 import type { PlayerInfo } from "./PlayerInfo";
 
 export interface ILf2Callback {
   on_layout_changed?(
-    layout: Node | undefined,
-    prev_layout: Node | undefined,
+    layout: UINode | undefined,
+    prev_layout: UINode | undefined,
   ): void;
 
   on_loading_start?(): void;

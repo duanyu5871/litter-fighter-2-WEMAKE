@@ -1,36 +1,27 @@
 import * as THREE from "three";
 import type { ISprite, ISpriteInfo } from "../../LF2/3d/ISprite";
 import Ditto from "../../LF2/ditto";
-import type { Node } from "../../LF2/layout/Node";
+import type { UINode } from "../../LF2/layout/UINode";
 import { empty_texture, white_texture } from "../../LF2/loader/loader";
-export interface INodeRenderer {
-  /** @deprecated get rip of it */ sprite: ISprite;
-  node: Node;
-  visible: boolean;
-  parent: typeof this;
-  on_start(): void;
-  on_stop(): void;
-  del(child: typeof this): void;
-  add(child: typeof this): void;
-  del_self(): void;
-  render(): void;
-}
-export class NodeRenderer implements INodeRenderer {
+import { IUINodeRenderer } from "../../LF2/ditto/render/IUINodeRenderer";
+
+export class UINodeRenderer implements IUINodeRenderer {
   sprite: ISprite;
-  node: Node;
+  node: UINode;
   get world() { return this.node.lf2.world }
   get lf2() { return this.node.lf2 }
   get parent() { return this.node.renderer }
   get visible(): boolean { return this.sprite.visible }
   set visible(v: boolean) { this.sprite.visible = v }
-  constructor(node: Node) {
+  img_idx = -1
+  constructor(node: UINode) {
     this.node = node;
     this.sprite = new Ditto.SpriteNode(node.lf2).add_user_data("owner", node);
   }
-  del(child: NodeRenderer) {
+  del(child: UINodeRenderer) {
     this.sprite.del(child.sprite)
   }
-  add(child: NodeRenderer) {
+  add(child: UINodeRenderer) {
     this.sprite.add(child.sprite)
   }
   del_self() {
@@ -80,12 +71,14 @@ export class NodeRenderer implements INodeRenderer {
     return texture;
   }
 
-
   render() {
+    if (this.img_idx != this.node.img_idx) {
+      this.img_idx = this.node.img_idx
+      this.update_img();
+    }
     const [x, y, z] = this.node.pos
     this.sprite.set_position(x, -y, z);
     if (this.node.root === this.node) this.sprite.x = this.world.renderer.cam_x;
-
     this.visible = this.node.visible
     this.sprite.opacity = this.node.opacity;
   }

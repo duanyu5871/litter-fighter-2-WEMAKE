@@ -3,7 +3,7 @@ import Invoker from "../../base/Invoker";
 import { IBgData } from "../../defines";
 import { Defines } from "../../defines/defines";
 import Ditto from "../../ditto";
-import Layout from "../Node";
+import Layout from "../UINode";
 import { Component } from "./Component";
 
 export default class BackgroundNameText extends Component {

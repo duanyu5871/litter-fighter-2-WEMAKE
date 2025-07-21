@@ -2,7 +2,7 @@ import { IText } from "../../3d/IText";
 import { SineAnimation } from "../../animation/SineAnimation";
 import Invoker from "../../base/Invoker";
 import Ditto from "../../ditto";
-import Node from "../Node";
+import UINode from "../UINode";
 import { Component } from "./Component";
 
 /**
@@ -38,7 +38,7 @@ export default class PlayerCharacterName extends Component {
   protected _mesh: IText;
   protected _opacity: SineAnimation = new SineAnimation(0.65, 1, 1 / 25);
   protected _unmount_jobs = new Invoker();
-  constructor(layout: Node, f_name: string) {
+  constructor(layout: UINode, f_name: string) {
     super(layout, f_name);
     const [w, h] = this.node.size;
     this._mesh = new Ditto.TextNode(this.lf2)

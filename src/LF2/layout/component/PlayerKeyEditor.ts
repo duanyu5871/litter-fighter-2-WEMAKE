@@ -4,7 +4,7 @@ import GameKey from "../../defines/GameKey";
 import Ditto from "../../ditto";
 import { IKeyboardCallback } from "../../ditto/keyboard/IKeyboardCallback";
 import { IPointingsCallback } from "../../ditto/pointings/IPointingsCallback";
-import Node from "../Node";
+import UINode from "../UINode";
 import { Component } from "./Component";
 
 export default class PlayerKeyEditor extends Component {
@@ -20,7 +20,7 @@ export default class PlayerKeyEditor extends Component {
   protected _sprite: IText;
   protected _unmount_jobs = new Invoker();
 
-  constructor(layout: Node, f_name: string) {
+  constructor(layout: UINode, f_name: string) {
     super(layout, f_name);
     const [w, h] = this.node.size;
     this._sprite = new Ditto.TextNode(this.lf2)

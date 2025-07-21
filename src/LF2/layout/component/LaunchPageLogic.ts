@@ -8,19 +8,19 @@ import Ditto from "../../ditto";
 import ease_linearity from "../../utils/ease_method/ease_linearity";
 import { TPicture } from "../../loader/loader";
 import { make_arr } from "../../utils/array/make_arr";
-import Node from "../Node";
+import UINode from "../UINode";
 import { Component } from "./Component";
 
 export default class LaunchPageLogic extends Component {
   get entry_name(): string {
     return this.args[0] || "";
   }
-  protected tap_to_launch!: Node;
-  protected yeonface!: Node;
-  protected bearface!: Node;
-  protected long_text!: Node;
-  protected long_text_2!: Node;
-  protected sound_warning!: Node;
+  protected tap_to_launch!: UINode;
+  protected yeonface!: UINode;
+  protected bearface!: UINode;
+  protected long_text!: UINode;
+  protected long_text_2!: UINode;
+  protected sound_warning!: UINode;
 
   protected _layouts_loaded: boolean = false;
   protected _dispose_jobs = new Invoker();
@@ -53,7 +53,7 @@ export default class LaunchPageLogic extends Component {
     2000,
   ).set_ease_method(ease_linearity);
 
-  constructor(layout: Node, f_name: string) {
+  constructor(layout: UINode, f_name: string) {
     super(layout, f_name);
     this._loading_sprite = new Ditto.SpriteNode(this.lf2);
   }

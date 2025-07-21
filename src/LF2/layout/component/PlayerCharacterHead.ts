@@ -3,7 +3,7 @@ import { SineAnimation } from "../../animation/SineAnimation";
 import Invoker from "../../base/Invoker";
 import { Defines } from "../../defines/defines";
 import Ditto from "../../ditto";
-import Node from "../Node";
+import UINode from "../UINode";
 import GamePrepareLogic, { GamePrepareState } from "./GamePrepareLogic";
 import { Component } from "./Component";
 
@@ -43,7 +43,7 @@ export default class PlayerCharacterHead extends Component {
 
   protected _unmount_jobs = new Invoker();
 
-  constructor(layout: Node, f_name: string) {
+  constructor(layout: UINode, f_name: string) {
     super(layout, f_name);
 
     this._mesh_head = new Ditto.SpriteNode(this.lf2)

@@ -61,9 +61,6 @@ export default class PlayerScoreCell extends Component {
         if (c.hp > 0) return this.node.get_value("win_alive_txt");
         else if (s.lose) return this.node.get_value("lose_txt");
         else return this.node.get_value("win_dead_txt");
-        // "win_alive_txt"
-        // "win_dead_txt"
-        // "lose_txt"
       }
     }
     return "";
