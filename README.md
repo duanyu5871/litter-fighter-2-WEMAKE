@@ -8,15 +8,15 @@ gameplays, arts, and sounds are all from "Litter Fighter 2" basically, created b
 
 "LF2:Remake" created by Gim in 2024."
 
-## 运行本项目
+## 如何运行本项目?
 
 using node v22.16.0
 
-### `npm i`
+### 1.依赖安装 `npm i`
 
 install deps
 
-### `npm run build_data`
+### 2.构建数据 `npm run build_data`
 
 根据lf2原数据生成lf2:wemake的数据
 
@@ -24,4 +24,4 @@ install deps
   - [ffmpeg](https://ffmpeg.org/download.html): 用于音频文件转格式
   - [magick](https://imagemagick.org/script/download.php): 用于图片文件转格式
 
-### `npm run start`
+### 3.运行 `npm run start`
