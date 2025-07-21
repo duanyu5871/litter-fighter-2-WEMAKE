@@ -40,9 +40,9 @@ export default class BallState_Base extends State_Base {
         e.shaking = 0;
         e.motionless = 0;
         e.velocities.length = 1;
-        e.velocities[0].x = 0;
-        e.velocities[0].z = 0;
-        e.velocities[0].y = 0;
+        e.velocity_0.x = 0;
+        e.velocity_0.z = 0;
+        e.velocity_0.y = 0;
         break;
     }
   }
@@ -60,9 +60,9 @@ export default class BallState_Base extends State_Base {
           const { victim } = collision;
           victim.shaking = 0;
           victim.velocities.length = 1;
-          victim.velocities[0].x = 0;
-          victim.velocities[0].z = 0;
-          victim.velocities[0].y = 0;
+          victim.velocity_0.x = 0;
+          victim.velocity_0.z = 0;
+          victim.velocity_0.y = 0;
           break;
       }
     }
@@ -71,9 +71,9 @@ export default class BallState_Base extends State_Base {
     const { victim, attacker } = collision;
     victim.shaking = 0;
     victim.velocities.length = 1;
-    victim.velocities[0].x = 0;
-    victim.velocities[0].z = 0;
-    victim.velocities[0].y = 0;
+    victim.velocity_0.x = 0;
+    victim.velocity_0.z = 0;
+    victim.velocity_0.y = 0;
     switch (victim.frame.state) {
       case StateEnum.Ball_Flying:
       case StateEnum.Ball_Rebounding:

@@ -41,7 +41,7 @@ export class BallController extends BaseController {
           this.release(j, d)
         }
       } else {
-        this.entity.velocities[0].y = 0;
+        this.entity.velocity_0.y = 0;
         this.release(U, D, R, L, j, d)
       }
       if (a.x > 0 && this.entity.facing < 0) {

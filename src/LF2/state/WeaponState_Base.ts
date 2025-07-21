@@ -15,8 +15,8 @@ export default class WeaponState_Base extends State_Base {
       attacker.frame.state === StateEnum.Weapon_Throwing
     ) {
       // TODO: 这里是击中的反弹，如何更合适？ -Gim
-      attacker.velocities[0].x = -0.3 * attacker.velocities[0].x;
-      attacker.velocities[0].y = -0.3 * attacker.velocities[0].y;
+      attacker.velocity_0.x = -0.3 * attacker.velocity_0.x;
+      attacker.velocity_0.y = -0.3 * attacker.velocity_0.y;
     }
     attacker.enter_frame({ id: attacker.data.indexes?.in_the_sky });
   }
@@ -67,16 +67,16 @@ export default class WeaponState_Base extends State_Base {
           if (is_fly) {
             const vx = itr.dvx ? itr.dvx * attacker.facing : 0;
             const vy = itr.dvy ? itr.dvy : 3;
-            victim.velocities[0].x = vx / 2;
-            victim.velocities[0].y = vy;
+            victim.velocity_0.x = vx / 2;
+            victim.velocity_0.y = vy;
             victim.team = attacker.team;
             victim.next_frame = { id: victim.data.indexes?.in_the_sky };
           }
         } else {
           const vx = itr.dvx ? itr.dvx * attacker.facing : 0;
           const vy = itr.dvy ? itr.dvy : 3;
-          victim.velocities[0].x = vx;
-          victim.velocities[0].y = vy;
+          victim.velocity_0.x = vx;
+          victim.velocity_0.y = vy;
           victim.team = attacker.team;
           victim.next_frame = { id: victim.data.indexes?.in_the_sky };
         }

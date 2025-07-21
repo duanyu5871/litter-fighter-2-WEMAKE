@@ -172,11 +172,8 @@ function App() {
   }, [lf2, ele_game_overlay])
 
   useEffect(() => {
-    if (!ref_lf2.current) {
-      const lf2 = ((window as any).lf2 = ref_lf2.current = new LF2());
-      set_lf2(lf2)
-    }
-    const lf2 = ref_lf2.current;
+    const lf2 = ((window as any).lf2 = ref_lf2.current = new LF2());
+    set_lf2(lf2)
     lf2.sounds.set_muted(muted);
     lf2.sounds.set_volume(volume);
     lf2.sounds.set_bgm_muted(bgm_muted);
@@ -252,7 +249,7 @@ function App() {
         }),
       )
       .clear_fn();
-  }, []);
+  }, [LF2]);
 
   const on_click_load_local_zip = () => {
     const lf2 = ref_lf2.current;

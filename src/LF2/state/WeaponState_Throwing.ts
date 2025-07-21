@@ -29,7 +29,7 @@ export default class WeaponState_Throwing extends WeaponState_Base {
         id: indexes?.throw_on_ground || indexes?.just_on_ground,
       });
     } else {
-      e.velocities[0].y = dvy;
+      e.velocity_0.y = dvy;
     }
     if (this._unhurt_weapons.has(e)) {
       this._unhurt_weapons.delete(e);

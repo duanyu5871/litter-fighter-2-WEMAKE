@@ -21,7 +21,7 @@ export default class WeaponState_InTheSky extends WeaponState_Base {
     if (dvy < min_bounce_vy) {
       e.enter_frame({ id: indexes?.just_on_ground });
     } else {
-      e.velocities[0].y = dvy;
+      e.velocity_0.y = dvy;
     }
     if (this._unhurt_weapons.has(e)) {
       this._unhurt_weapons.delete(e);

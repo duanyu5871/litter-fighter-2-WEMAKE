@@ -17,7 +17,7 @@ export default class CharacterState_Falling extends CharacterState_Base {
         ]),
       );
     }
-    this._begin_velocty_y_map.set(e.data.id, e.velocities[0].y);
+    this._begin_velocty_y_map.set(e.data.id, e.velocity_0.y);
     e.drop_holding();
   }
   is_bouncing_frame(e: Entity) {
@@ -67,7 +67,7 @@ export default class CharacterState_Falling extends CharacterState_Base {
     const { y: vy } = e.velocity;
     if (vy <= e.world.cha_bc_tst_spd) {
       e.enter_frame({ id: indexes?.bouncing?.[d][1] });
-      e.velocities[0].y = e.world.cha_bc_spd;
+      e.velocity_0.y = e.world.cha_bc_spd;
     } else {
       e.enter_frame({ id: indexes?.lying?.[d] });
     }

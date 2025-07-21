@@ -7,7 +7,7 @@ export default class CharacterState_Dash extends CharacterState_Base {
     if (e.position.y > 0 && e.velocity.y !== 0) return;
 
     const { gravity } = e.world;
-    const velocity = e.velocities[0];
+    const velocity = e.velocity_0;
     const {
       dash_distance: dx = 0,
       dash_distancez: dz = 0,

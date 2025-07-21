@@ -76,7 +76,7 @@ export default class CharacterState_Base extends State_Base {
     }
     if (!is_character(victim)) {
       victim.velocities.length = 1;
-      victim.velocities[0].set(0, 0, 0);
+      victim.velocity_0.set(0, 0, 0);
       return WhatNext.OnlyEntity;
     }
     return super.before_be_collided(collision);
@@ -119,7 +119,7 @@ export default class CharacterState_Base extends State_Base {
             if (result) victim.next_frame = result.frame;
           }
         } else {
-          if (itr.dvx) victim.velocities[0].x = (itr.dvx * attacker.facing) / 2;
+          if (itr.dvx) victim.velocity_0.x = (itr.dvx * attacker.facing) / 2;
           victim.world.spark(
             ...victim.spark_point(a_cube, b_cube),
             "defend_hit",
@@ -155,16 +155,16 @@ export default class CharacterState_Base extends State_Base {
   }
 
   override get_sudden_death_frame(target: Entity): INextFrame | undefined {
-    target.velocities[0].y = 2;
-    target.velocities[0].x = 2 * target.facing;
+    target.velocity_0.y = 2;
+    target.velocity_0.x = 2 * target.facing;
     if (target.data.indexes?.falling)
       return { id: target.data.indexes?.falling[1][1] };
     return void 0;
   }
 
   override get_caught_end_frame(target: Entity): INextFrame | undefined {
-    target.velocities[0].y = 2;
-    target.velocities[0].x = -2 * target.facing;
+    target.velocity_0.y = 2;
+    target.velocity_0.x = -2 * target.facing;
     if (target.data.indexes?.falling)
       return { id: target.data.indexes.falling[-1][1] };
     return void 0;

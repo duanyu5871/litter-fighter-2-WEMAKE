@@ -17,10 +17,10 @@ function fall(collision: ICollision) {
   victim.defend_value = victim.defend_value_max;
   victim.resting = 0;
   victim.velocities.length = 1;
-  victim.velocities[0].y =
+  victim.velocity_0.y =
     (itr.dvy ?? attacker.world.ivy_d) * attacker.world.ivy_f;
-  victim.velocities[0].z = 0;
-  victim.velocities[0].x = (itr.dvx || 0) * aface;
+  victim.velocity_0.z = 0;
+  victim.velocity_0.x = (itr.dvx || 0) * aface;
   if (itr.effect === ItrEffect.Sharp) {
     victim.world.spark(...victim.spark_point(a_cube, b_cube), "critical_bleed");
   } else if (is_character(victim)) {
@@ -31,7 +31,7 @@ function fall(collision: ICollision) {
       "slient_critical_hit",
     );
   }
-  const direction: TFace = victim.velocities[0].x / victim.facing >= 0 ? 1 : -1;
+  const direction: TFace = victim.velocity_0.x / victim.facing >= 0 ? 1 : -1;
   if (victim.data.indexes?.critical_hit)
     victim.next_frame = { id: victim.data.indexes.critical_hit[direction][0] };
 }
@@ -44,16 +44,16 @@ export function handle_itr_kind_normal(collision: ICollision) {
     case ItrEffect.FireExplosion: {
       victim.fall_value = 0;
       victim.defend_value = 0;
-      victim.velocities[0].y =
+      victim.velocity_0.y =
         (itr.dvy ?? attacker.world.ivy_d) * attacker.world.ivy_f;
-      victim.velocities[0].z = 0;
+      victim.velocity_0.z = 0;
       const direction =
         ItrEffect.FireExplosion === itr.effect
           ? victim.position.x > attacker.position.x
             ? -1
             : 1
           : attacker.facing;
-      victim.velocities[0].x = (itr.dvx || 0) * direction;
+      victim.velocity_0.x = (itr.dvx || 0) * direction;
       if (victim.data.indexes?.fire)
         victim.next_frame = {
           id: victim.data.indexes.fire[0],
@@ -94,15 +94,15 @@ export function handle_itr_kind_normal(collision: ICollision) {
         victim.frame.state === StateEnum.Frozen ||
         (victim.fall_value <= Defines.DEFAULT_FALL_VALUE_DIZZY &&
           (StateEnum.Caught === victim.frame.state ||
-            victim.velocities[0].y > 0 ||
+            victim.velocity_0.y > 0 ||
             victim.position.y > 0));
       if (is_fall) {
         fall(collision);
       } else {
-        if (itr.dvx) victim.velocities[0].x = itr.dvx * attacker.facing;
-        if (victim.position.y > 0 && victim.velocities[0].y > 2)
-          victim.velocities[0].y = 2;
-        victim.velocities[0].z = 0;
+        if (itr.dvx) victim.velocity_0.x = itr.dvx * attacker.facing;
+        if (victim.position.y > 0 && victim.velocity_0.y > 2)
+          victim.velocity_0.y = 2;
+        victim.velocity_0.z = 0;
         if (itr.effect === ItrEffect.Sharp) {
           victim.world.spark(...victim.spark_point(a_cube, b_cube), "bleed");
         } else if (is_character(victim)) {

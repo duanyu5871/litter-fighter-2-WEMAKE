@@ -5,7 +5,7 @@ import { ICollision } from "../base/ICollision";
 export function handle_itr_kind_magic_flute(collision: ICollision): void {
   const { victim } = collision;
   victim.merge_velocities();
-  if (victim.velocities[0].y < 3) victim.velocities[0].y += 3;
+  if (victim.velocity_0.y < 3) victim.velocity_0.y += 3;
   switch (victim.data.type) {
     case EntityEnum.Character:
       if (victim.frame.state !== StateEnum.Falling) {

@@ -12,8 +12,8 @@ export const get_val_getter_from_entity: IValGetterGetter<Entity> = (
   switch (word) {
     case EntityVal.TrendX:
       return (e) => {
-        if (e.velocities[0].x < 0) return -e.facing;
-        if (e.velocities[0].x > 0) return e.facing;
+        if (e.velocity_0.x < 0) return -e.facing;
+        if (e.velocity_0.x > 0) return e.facing;
         return 0;
       };
     case EntityVal.PressFB:

@@ -52,6 +52,7 @@ const cheat_info_pair = (n: CheatType) =>
 
 export class LF2 implements IKeyboardCallback, IPointingsCallback {
   static readonly TAG = "LF2";
+  static readonly DATE = Date()
   private _disposed: boolean = false;
   private _callbacks = new Callbacks<ILf2Callback>();
   private _layout_stacks: Node[] = [];
@@ -476,9 +477,9 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
       x = old.position.x;
       y = old.position.y;
       z = old.position.z;
-      vx = old.velocities[0].x;
-      vy = old.velocities[0].y;
-      vz = old.velocities[0].z;
+      vx = old.velocity_0.x;
+      vy = old.velocity_0.y;
+      vz = old.velocity_0.z;
       old_facing = old.facing;
       old_frame_id = old.frame.id;
       this.world.del_entity(old);
@@ -489,9 +490,9 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
     character.position.x = x;
     character.position.y = y;
     character.position.z = z;
-    character.velocities[0].x = vx;
-    character.velocities[0].y = vy;
-    character.velocities[0].z = vz;
+    character.velocity_0.x = vx;
+    character.velocity_0.y = vy;
+    character.velocity_0.z = vz;
     character.facing = old_facing;
     character.name = player_info.name;
     character.team = player_info.team;
@@ -685,6 +686,4 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
     return random_in(l, r)
   }
 }
-
-
 export default LF2

@@ -5,11 +5,11 @@ export class CharacterState_Caught extends CharacterState_Base {
   override enter(e: Entity): void {
     e.fall_value = e.fall_value_max;
     e.velocities.length = 1;
-    e.velocities[0].set(0, 0, 0);
+    e.velocity_0.set(0, 0, 0);
     e.drop_holding();
   }
   override update(e: Entity): void {
     e.velocities.length = 1;
-    e.velocities[0].set(0, 0, 0);
+    e.velocity_0.set(0, 0, 0);
   }
 }
