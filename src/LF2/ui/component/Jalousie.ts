@@ -1,8 +1,13 @@
 import { Sequence } from "../../animation";
 import { Sine } from "../../animation/Sine";
+import { Callbacks } from "../../base";
 import factory from "./Factory";
 import { UIComponent } from "./UIComponent";
+export interface IJalousieCallbacks {
+  on_change?(v: Jalousie): void;
+}
 export class Jalousie extends UIComponent {
+  callbacks = new Callbacks<IJalousieCallbacks>();
   direction: 'ns' | 'ew' = 'ew';
   sine = new Sequence(
     1500,
@@ -40,19 +45,31 @@ export class Jalousie extends UIComponent {
     }
     return this;
   }
+  get open(): boolean { return this.sine.reverse }
+  set open(v: boolean) { this.sine.reverse = v }
   get w(): number { return this.node.root.size[0] }
   get h(): number { return this.node.root.size[1] }
+
+  override on_stop(): void {
+    super.on_stop?.()
+    this.callbacks.clear();
+  }
+
   override update(dt: number): void {
     if (this.sine.is_end) return;
-    this.sine.update(dt)
+    this.sine.update(dt);
     this.update_children();
+    if (this.sine.is_end)
+      this.callbacks.emit('on_change')(this);
   }
+
   override on_show(): void {
     super.on_show?.()
     this.sine.calc();
     this.update_children();
   }
-  update_children() {
+
+  protected update_children() {
     const { value } = this.sine;
     const { children } = this.node;
     const len = children.length;
