@@ -1,9 +1,6 @@
 import IStyle from "../defines/IStyle";
 
 export interface IUIInfo {
-  count?: number;
-  values?: { [x in string]?: any };
-  templates?: { [x in string]?: IUIInfo };
   /**
    * 节点ID
    *
@@ -45,5 +42,22 @@ export interface IUIInfo {
   key_press_actions?: [string, string][];
   items?: (IUIInfo | string)[];
   auto_focus?: boolean;
+  /**
+   * 模板名
+   *
+   * @type {string}
+   * @memberof IUIInfo
+   */
   template?: string;
+
+  /**
+   * 循环创建次数，默认为1
+   *
+   * @type {number}
+   * @memberof IUIInfo
+   */
+  count?: number;
+  
+  values?: { [x in string]?: any };
+  templates?: { [x in string]?: IUIInfo };
 }
