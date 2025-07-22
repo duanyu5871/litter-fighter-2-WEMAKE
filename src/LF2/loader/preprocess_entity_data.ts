@@ -2,6 +2,7 @@ import { Defines, IEntityData } from "../defines";
 import LF2 from "../LF2";
 import { not_blank_str } from "../utils";
 import { traversal } from "../utils/container_help/traversal";
+import { check_frame } from "./check_frame";
 import { preprocess_frame } from "./preprocess_frame";
 import { preprocess_next_frame } from "./preprocess_next_frame";
 
@@ -28,5 +29,9 @@ export async function preprocess_entity_data(lf2: LF2, data: IEntityData, jobs: 
   if (jobs.length) await Promise.all(jobs);
 
   traversal(frames, (k, v, o) => o[k] = preprocess_frame(lf2, data, v, jobs));
+  traversal(frames, (k, v, o) => o[k] = preprocess_frame(lf2, data, v, jobs));
+  traversal(frames, (_, v) => check_frame(data, v));
   return data;
 }
+
+

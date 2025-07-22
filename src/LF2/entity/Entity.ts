@@ -1472,10 +1472,9 @@ export class Entity {
       if (result) this.next_frame = result.frame;
       return;
     }
-
     if (bdy.actions?.length) {
       for (const action of bdy.actions) {
-        if (action.tester?.run(collision) === false)
+        if (action.tester && !action.tester?.run(collision))
           continue;
         bdy_action_handlers[action.type](action, collision)
       }

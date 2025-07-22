@@ -10,7 +10,6 @@ import type { IOpointInfo } from "./IOpointInfo";
 import type { IQubePair } from "./IQubePair";
 import type { IWpointInfo } from "./IWpointInfo";
 import type { SpeedMode } from "./SpeedMode";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { StateEnum } from "./StateEnum";
 
 export interface IFrameInfo {
@@ -41,7 +40,7 @@ export interface IFrameInfo {
    * @type {number}
    * @memberof IFrameInfo
    */
-  state: number;
+  state: number | StateEnum;
 
   /**
    * 帧等待数
@@ -99,9 +98,6 @@ export interface IFrameInfo {
   invisible?: number;
   no_shadow?: number;
 
-
-  ctrl_acc_z?: number;
-
   /**
    * x轴速度，当按着左或右，此值生效
    */
@@ -110,21 +106,21 @@ export interface IFrameInfo {
   /** 
    * @see {SpeedMode} 
    */
-  ctrl_spd_x_m?: number;
+  ctrl_spd_x_m?: number | SpeedMode;
+  ctrl_acc_x?: number;
 
   /**
    * z轴速度，当按着上或下，此值生效
    */
   ctrl_spd_z?: number;
-
+  ctrl_acc_z?: number;
   /** 
    * @see {SpeedMode} 
    */
-  ctrl_spd_z_m?: number;
-  ctrl_acc_x?: number;
+  ctrl_spd_z_m?: number | SpeedMode;
 
   ctrl_spd_y?: number;
-  ctrl_spd_y_m?: number;
+  ctrl_spd_y_m?: number | SpeedMode;
   ctrl_acc_y?: number;
 
   /**

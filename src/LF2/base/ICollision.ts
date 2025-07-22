@@ -1,5 +1,4 @@
-import type { IBdyInfo, IFrameInfo, IItrInfo } from "../defines";
-import type { IBounding } from "../defines/IBounding";
+import type { IBounding, IBdyInfo, IFrameInfo, IItrInfo } from "../defines";
 import type { Entity } from "../entity/Entity";
 
 export interface ICollision {
@@ -7,7 +6,7 @@ export interface ICollision {
    * 攻击方
    *
    * @type {Entity}
-   * @memberof ICollisionInfo
+   * @memberof ICollision
    */
   attacker: Entity;
 
@@ -15,7 +14,7 @@ export interface ICollision {
    * 被攻击方
    *
    * @type {Entity}
-   * @memberof ICollisionInfo
+   * @memberof ICollision
    */
   victim: Entity;
 
@@ -23,7 +22,7 @@ export interface ICollision {
    * 攻击方的itr
    *
    * @type {IItrInfo}
-   * @memberof ICollisionInfo
+   * @memberof ICollision
    */
   itr: IItrInfo;
 
@@ -31,7 +30,7 @@ export interface ICollision {
    * 被攻击方的bdy
    *
    * @type {IBdyInfo}
-   * @memberof ICollisionInfo
+   * @memberof ICollision
    */
   bdy: IBdyInfo;
 
@@ -39,7 +38,7 @@ export interface ICollision {
    * 攻击方的frame
    *
    * @type {IFrameInfo}
-   * @memberof ICollisionInfo
+   * @memberof ICollision
    */
   aframe: IFrameInfo;
 
@@ -47,7 +46,7 @@ export interface ICollision {
    * 被攻击方的frame
    *
    * @type {IFrameInfo}
-   * @memberof ICollisionInfo
+   * @memberof ICollision
    */
   bframe: IFrameInfo;
 
@@ -55,7 +54,7 @@ export interface ICollision {
    * 攻击方判定框
    *
    * @type {IBounding}
-   * @memberof ICollisionInfo
+   * @memberof ICollision
    */
   a_cube: IBounding;
 
@@ -63,7 +62,7 @@ export interface ICollision {
    * 被攻击方的判定框
    *
    * @type {IBounding}
-   * @memberof ICollisionInfo
+   * @memberof ICollision
    */
   b_cube: IBounding;
 
@@ -71,7 +70,7 @@ export interface ICollision {
    *
    *
    * @type {number}
-   * @memberof ICollisionInfo
+   * @memberof ICollision
    */
   v_rest?: number;
 }
