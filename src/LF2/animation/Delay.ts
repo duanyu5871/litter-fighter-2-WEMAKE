@@ -1,7 +1,7 @@
 import Sequence from "./Sequence";
-import { IBase } from "./IBase";
+import { IAnimation } from "./IBase";
 
-export class Delay implements IBase {
+export class Delay implements IAnimation {
   duration: number;
   time: number = 0;
   reverse: boolean = false;
@@ -13,8 +13,7 @@ export class Delay implements IBase {
     this.owner = owner;
     this.duration = duration;
   }
-  calc(): this {
-    return this;
-  }
-  end(): void { }
+  update(dt: number): this { return this }
+  calc(): this { return this; }
+  end(): this { return this }
 }

@@ -11,7 +11,7 @@ import { IUINodeRenderer } from "../ditto/render/IUINodeRenderer";
 import { type IImageInfo } from "../loader/IImageInfo";
 import { filter, find } from "../utils/container_help";
 import { is_arr, is_bool, is_num, is_str } from "../utils/type_check";
-import { ICookedUIInfo } from "./ICookedLayoutInfo";
+import { ICookedUIInfo } from "./ICookedUIInfo";
 import { IUICallback } from "./IUICallback";
 import type { IUIInfo } from "./IUIInfo";
 import actor from "./action/Actor";
@@ -35,10 +35,9 @@ export class UINode {
    * @type {UINode}
    */
   protected _root: UINode;
-  protected _focused_item?: UINode;
-  protected _pos: StateDelegate<[number, number, number]> = new StateDelegate(
-    () => this.data.pos,
-  );
+  protected _focused_node?: UINode;
+  protected _pos: StateDelegate<[number, number, number]> = new StateDelegate(() => this.data.pos);
+  protected _scale: StateDelegate<[number, number, number]> = new StateDelegate(() => this.data.scale);
   protected _components = new Set<UIComponent>();
   protected _state: any = {};
   protected _visible: StateDelegate<boolean> = new StateDelegate(true);
@@ -54,21 +53,22 @@ export class UINode {
   protected _children: UINode[] = [];
   protected _index: number = 0;
   readonly data: Readonly<ICookedUIInfo>;
-
+  get scale() { return this._scale.value }
+  set scale(v: [number, number, number]) { this._scale.value = v }
   get focused(): boolean {
-    return this._root._focused_item === this;
+    return this._root._focused_node === this;
   }
   set focused(v: boolean) {
-    if (v) this.focused_item = this;
-    else if (this.focused_item === this) this.focused_item = void 0;
+    if (v) this.focused_node = this;
+    else if (this.focused_node === this) this.focused_node = void 0;
   }
-  get focused_item(): UINode | undefined {
-    return this._root._focused_item;
+  get focused_node(): UINode | undefined {
+    return this._root._focused_node;
   }
-  set focused_item(val: UINode | undefined) {
-    const old = this._root._focused_item;
+  set focused_node(val: UINode | undefined) {
+    const old = this._root._focused_node;
     if (old === val) return;
-    this._root._focused_item = val;
+    this._root._focused_node = val;
     if (old) {
       old.on_blur();
       old._callbacks.emit("on_foucs_changed")(old);
@@ -300,7 +300,7 @@ export class UINode {
 
   on_resume() {
     if (!this.parent) {
-      this.focused_item = this._state.focused_item;
+      this.focused_node = this._state.focused_node;
     }
     if (this.root === this) this.lf2.world.scene.add(this.sprite);
 
@@ -315,8 +315,8 @@ export class UINode {
 
   on_pause() {
     if (!this.parent) {
-      this._state.focused_item = this.focused_item;
-      console.log("on_pause focused_item", this.focused_item);
+      this._state.focused_node = this.focused_node;
+      console.log("on_pause focused_node", this.focused_node);
     }
     if (this.root === this) this.renderer.del_self();
 
@@ -331,12 +331,12 @@ export class UINode {
   on_show() {
     for (const c of this.components) c.on_show?.();
     this._callbacks.emit("on_show")(this);
-    if (this.data.auto_focus && !this.global_disabled && !this.focused_item)
-      this.focused_item = this;
+    if (this.data.auto_focus && !this.global_disabled && !this.focused_node)
+      this.focused_node = this;
   }
 
   on_hide() {
-    if (this.focused_item === this) this.focused_item = void 0;
+    if (this.focused_node === this) this.focused_node = void 0;
     for (const c of this.components) c.on_hide?.();
     this._callbacks.emit("on_hide")(this);
   }
@@ -347,6 +347,27 @@ export class UINode {
     this._img_idx = () => (img_idx + 1) % img_infos.length;
   }
 
+  protected static async read_template(lf2: LF2, raw_info: IUIInfo, parent: ICookedUIInfo | undefined): Promise<IUIInfo> {
+    const { template, ...remain_raw_info } = raw_info
+    if (!template) return raw_info;
+
+    let raw_template_data: IUIInfo | undefined = void 0;
+    let n = parent;
+    while (n && !raw_template_data) {
+      raw_template_data = n.templates?.[template]
+      n = n.parent;
+    }
+    if (!raw_template_data) {
+      raw_template_data = await lf2.import_json<IUIInfo>(template);
+    }
+    Object.assign(raw_template_data, remain_raw_info);
+    const cooked_template_data = await this.cook_layout_info(
+      lf2,
+      raw_template_data,
+      parent,
+    );
+    return { ...cooked_template_data, ...remain_raw_info };
+  }
   static async cook_layout_info(
     lf2: LF2,
     data_or_path: IUIInfo | string,
@@ -356,23 +377,14 @@ export class UINode {
       ? await lf2.import_json<IUIInfo>(data_or_path)
       : data_or_path;
 
-    if (parent && raw_info.template) {
-      const raw_template_data = await lf2.import_json<IUIInfo>(
-        raw_info.template,
-      );
-      Object.assign(raw_template_data, raw_info);
-      delete raw_template_data.template;
-      const cooked_template_data = await this.cook_layout_info(
-        lf2,
-        raw_template_data,
-        parent,
-      );
-      raw_info = { ...cooked_template_data, ...raw_info };
+    if (raw_info.template) {
+      raw_info = await this.read_template(lf2, raw_info, parent)
     }
 
     const ret: ICookedUIInfo = {
       ...raw_info,
       pos: read_nums(raw_info.pos, 3, parent ? void 0 : [0, -450, 0]),
+      scale: read_nums(raw_info.scale, 3, [1, 1, 1]),
       center: read_nums(raw_info.center, 3, [0, 0, 0]),
       rect: read_nums(raw_info.rect, 4),
       size: [0, 0],
@@ -406,33 +418,28 @@ export class UINode {
     } else if (is_str(txt)) {
       ret.img_infos.push(await lf2.images.load_text(txt, style));
     }
-    {
-      const {
-        w: img_w = 0,
-        h: img_h = 0,
-        scale = 1,
-      } = ret.img_infos?.[0] || {};
-      const { size, center, pos, rect } = raw_info;
 
-      const [sx, sy, sw, sh] = read_nums(rect, 4, [
-        0,
-        0,
-        img_w / scale,
-        img_h / scale,
-      ]);
-      const [w, h] = read_nums(size, 2, [parent ? sw : 794, parent ? sh : 450]);
-      const [cx, cy] = read_nums(center, 2, [0, 0]);
-      const [x, y] = read_nums(pos, 2, [0, 0]);
+    const { w: img_w = 0, h: img_h = 0, scale = 1 } = ret.img_infos?.[0] || {};
+    const { size, center, pos, rect } = raw_info;
 
-      // 宽或高其一为0时，使用原图宽高比例的计算之
-      const dw = Math.floor(w ? w : sh ? (h * sw) / sh : 0);
-      const dh = Math.floor(h ? h : sw ? (w * sh) / sw : 0);
-      const dx = x - Math.floor(cx * dw);
-      const dy = y - Math.floor(cy * dh);
-      ret.rect = [sx, sy, sw, sh];
-      ret.size = [dw, dh];
-      ret.left_top = [dx, dy];
-    }
+    const [sx, sy, sw, sh] = read_nums(rect, 4, [
+      0,
+      0,
+      img_w / scale,
+      img_h / scale,
+    ]);
+    const [w, h] = read_nums(size, 2, [parent ? sw : 794, parent ? sh : 450]);
+    const [cx, cy] = read_nums(center, 2, [0, 0]);
+    const [x, y] = read_nums(pos, 2, [0, 0]);
+
+    // 宽或高其一为0时，使用原图宽高比例的计算之
+    const dw = Math.floor(w ? w : sh ? (h * sw) / sh : 0);
+    const dh = Math.floor(h ? h : sw ? (w * sh) / sw : 0);
+    const dx = x - Math.floor(cx * dw);
+    const dy = y - Math.floor(cy * dh);
+    ret.rect = [sx, sy, sw, sh];
+    ret.size = [dw, dh];
+    ret.left_top = [dx, dy];
 
     if (Array.isArray(raw_info.items) && raw_info.items.length) {
       ret.items = [];
@@ -443,38 +450,43 @@ export class UINode {
     }
     return ret;
   }
-
+  readonly cook = UINode.cook.bind(UINode)
   static cook(
     lf2: LF2,
     info: ICookedUIInfo,
-    get_val: IValGetter<UINode>,
     parent?: UINode,
-  ) {
+  ): UINode {
     const ret = new UINode(lf2, info, parent);
+    const get_val = lf2.layout_val_getter;
     ret._cook_data(get_val);
     ret._cook_img_idx(get_val);
     ret._cook_component();
 
     if (info.items) {
       for (const item_info of info.items) {
-        const cooked_item = UINode.cook(lf2, item_info, get_val, ret);
-        if (cooked_item.id) ret.id_layout_map.set(cooked_item.id, cooked_item);
-        if (cooked_item.name)
-          ret.name_layout_map.set(cooked_item.name, cooked_item);
-        cooked_item._index = ret.children.length;
-        ret.add_child(cooked_item)
+        let count = (is_num(item_info.count) && item_info.count > 0) ? item_info.count : 1
+        while (count) {
+          const cooked_item = UINode.cook(lf2, item_info, ret);
+          if (cooked_item.id)
+            ret.id_layout_map.set(cooked_item.id, cooked_item);
+          if (cooked_item.name)
+            ret.name_layout_map.set(cooked_item.name, cooked_item);
+          cooked_item._index = ret.children.length;
+          ret.add_child(cooked_item)
+          --count;
+        }
       }
     }
     return ret;
   }
 
-  add_child(layout: UINode): this {
-    this._children.push(layout);
+  add_child(node: UINode): this {
+    this._children.push(node);
     return this;
   }
 
-  add_children(...layout: UINode[]): this {
-    layout.forEach(l => this.add_child(l))
+  add_children(...node: UINode[]): this {
+    node.forEach(l => this.add_child(l))
     return this;
   }
 
@@ -578,18 +590,18 @@ export class UINode {
     }
   }
 
-  render(dt: number) {
+  update(dt: number) {
     const visible_changed = this.visible != this.renderer.visible
     this.renderer.render()
     if (visible_changed) this.invoke_visible_callback();
-    for (const i of this.children) i.render(dt);
-    for (const c of this._components) c.render?.(dt);
+    for (const i of this.children) i.update(dt);
+    for (const c of this._components) c.update?.(dt);
   }
 
   on_player_key_down(player_id: string, key: GameKey) {
     for (const i of this.children) i.on_player_key_down(player_id, key);
     for (const c of this._components) c.on_player_key_down?.(player_id, key);
-    if ("a" === key) this._focused_item?.on_click();
+    if ("a" === key) this._focused_node?.on_click();
   }
 
   on_player_key_up(player_id: string, key: GameKey) {
@@ -597,11 +609,27 @@ export class UINode {
     for (const c of this._components) c.on_player_key_up?.(player_id, key);
   }
 
-  find_layout(id: string): UINode | undefined {
+  /**
+   * 根据子节点ID查找子节点
+   *
+   * @see {IUIInfo.id}
+   * @param {string} id 子节点ID
+   * @return {(UINode | undefined)} 
+   * @memberof UINode
+   */
+  find_child(id: string): UINode | undefined {
     return this.id_layout_map.get(id);
   }
 
-  find_layout_by_name(name: string): UINode | undefined {
+  /**
+   * 根据子节点名查找子节点
+   *
+   * @see {IUIInfo.name}
+   * @param {string} name 子节点名
+   * @return {(UINode | undefined)} 
+   * @memberof UINode
+   */
+  find_child_by_name(name: string): UINode | undefined {
     return this.name_layout_map.get(name);
   }
 

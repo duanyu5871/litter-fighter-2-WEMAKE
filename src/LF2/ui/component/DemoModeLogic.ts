@@ -113,7 +113,7 @@ export class DemoModeLogic extends UIComponent implements IEntityCallbacks {
     const i = team_alives.get("") || 0;
     if (i > 1) return;
     this.lf2.sounds.play_preset("end");
-    const score_board = this.node.find_layout("score_board");
+    const score_board = this.node.find_child("score_board");
     if (score_board) score_board.visible = true;
   }
 

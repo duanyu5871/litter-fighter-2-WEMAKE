@@ -1,4 +1,10 @@
-export interface IBase {
+/**
+ * 动画接口
+ *
+ * @export
+ * @interface IAnimation
+ */
+export interface IAnimation {
 
   /**
    * 当前值
@@ -9,7 +15,7 @@ export interface IBase {
   value: number;
 
   /**
-   * 动画时长
+   * 动画时长（毫秒）
    *
    * @readonly
    * @type {number}
@@ -46,9 +52,17 @@ export interface IBase {
    *
    *
    * @param {boolean} [reverse]
+   * @return {this}
    * @memberof IBase
    */
-  end(reverse?: boolean): void;
+  end(reverse?: boolean): this;
+
+  /**
+   *
+   *
+   * @param {number} dt
+   * @return {this}
+   * @memberof IAnimation
+   */
+  update(dt: number): this;
 }
-export type IAnimation = IBase;
-export default IAnimation

@@ -76,7 +76,7 @@ export class UIComponent {
 
   on_foucs?(): void;
 
-  render?(dt: number): void;
+  update?(dt: number): void;
 
   on_player_key_down?(player_id: string, key: GameKey): void;
 

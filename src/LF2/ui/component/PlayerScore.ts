@@ -26,7 +26,8 @@ export default class PlayerScore extends UIComponent {
 
   override on_resume(): void {
     super.on_resume();
-    this.node.visible = !!this.character;
+
+    this.node.visible = this.world.player_slot_characters.size ? !!this.character : true;
     this.character?.callbacks.add({
       on_hp_changed: (e, value, prev) => {
         if (value < prev) this._hp_lost += prev - value;

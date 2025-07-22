@@ -1,8 +1,10 @@
 {
   "name": "启动页",
   "id": "launch",
-  "bg_color": "rgb(16, 32, 108)",
-  "component": ["launch_page(entry)"],
+  "color": "rgb(16, 32, 108)",
+  "component": [
+    "launch_page(entry)"
+  ],
   "items": [
     {
       "id": "tap_to_launch",

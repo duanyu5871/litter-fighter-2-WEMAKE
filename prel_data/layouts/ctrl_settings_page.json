@@ -1,7 +1,7 @@
 {
   "name": "设置页",
   "id": "ctrl_settings",
-  "bg_color": "rgb(16, 32, 108)",
+  "color": "rgb(16, 32, 108)",
   "pos": "0, -450",
   "size": "794, 450",
   "key_press_actions": [["escape", "set_layout(entry)"]],

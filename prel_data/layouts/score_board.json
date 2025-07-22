@@ -1,5 +1,6 @@
 {
   "id": "score_board",
+  "name": "UI: 分数版",
   "component": ["vertical_layout()"],
   "items": [
     {

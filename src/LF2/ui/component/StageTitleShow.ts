@@ -132,7 +132,7 @@ export default class StageTitleShow extends UIComponent {
     this.depose_all_mesh();
   }
 
-  override render(dt: number): void {
+  override update(dt: number): void {
     if (this._sprites.length) {
       this._opactiy.update(dt);
       for (const m of this._sprites) m.opacity = this._opactiy.value;

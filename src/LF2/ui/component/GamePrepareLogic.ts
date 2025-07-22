@@ -44,8 +44,8 @@ export default class GamePrepareLogic extends UIComponent {
 
   override on_resume(): void {
     super.on_resume();
-    const btn_switch_bg = this.node.find_layout("btn_switch_bg");
-    const btn_switch_stage = this.node.find_layout("btn_switch_stage");
+    const btn_switch_bg = this.node.find_child("btn_switch_bg");
+    const btn_switch_stage = this.node.find_child("btn_switch_stage");
 
     if (this.game_mode === "vs_mode") {
       btn_switch_bg?.set_visible(true).set_disabled(false);
@@ -126,7 +126,7 @@ export default class GamePrepareLogic extends UIComponent {
     }
   }
 
-  override render(dt: number): void {
+  override update(dt: number): void {
     this._fsm.update(dt);
   }
   get fsm(): IReadonlyFSM<GamePrepareState> {
@@ -179,10 +179,10 @@ export default class GamePrepareLogic extends UIComponent {
             this._min_com_num = joined_num <= 1 ? 1 : 0;
 
           this._max_com_num = not_joined_num;
-          this.node.find_layout("how_many_computer")?.set_visible(true);
+          this.node.find_child("how_many_computer")?.set_visible(true);
         },
         leave: () =>
-          this.node.find_layout("how_many_computer")?.set_visible(false),
+          this.node.find_child("how_many_computer")?.set_visible(false),
       },
       {
         key: GamePrepareState.ComputerCharacterSel,
@@ -191,12 +191,12 @@ export default class GamePrepareLogic extends UIComponent {
         key: GamePrepareState.GameSetting,
         enter: () => {
           this.update_random();
-          this.node.find_layout("menu")?.set_visible(true);
+          this.node.find_child("menu")?.set_visible(true);
         },
         leave: () => {
           for (const { player: p } of this.player_slots)
             p?.set_random_character("", true);
-          this.node.find_layout("menu")?.set_visible(false);
+          this.node.find_child("menu")?.set_visible(false);
         },
       },
     )

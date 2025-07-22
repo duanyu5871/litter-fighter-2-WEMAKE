@@ -1,0 +1,21 @@
+{
+  "name": "百叶窗",
+  "id": "jalousie",
+  "color": "rgb(255, 255, 255)",
+  "component": [
+    "jalousie(ns, 0)"
+  ],
+  "templates": {
+    "shutter_item": {
+      "color": "rgb(0, 0, 0)",
+      "size": "20,20",
+      "pos": "0,0,2"
+    }
+  },
+  "items": [
+    {
+      "count": 20,
+      "template": "shutter_item"
+    }
+  ]
+}

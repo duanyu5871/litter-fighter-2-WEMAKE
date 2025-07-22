@@ -3,6 +3,7 @@ import type { IUIInfo } from "./IUIInfo";
 
 export interface ICookedUIInfo extends IUIInfo {
   pos: [number, number, number];
+  scale: [number, number, number];
   center: [number, number, number];
   rect: [number, number, number, number];
   parent?: ICookedUIInfo;

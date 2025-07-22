@@ -1,0 +1,7 @@
+import { Periodic } from "./Periodic";
+
+export class Sine extends Periodic {
+  readonly method = (v: number) => {
+    return (this.height * (Math.sin(this.offset + v * 2 * Math.PI / 1000) + 1) / 2) + this.bottom
+  }
+}

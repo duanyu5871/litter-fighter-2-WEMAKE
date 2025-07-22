@@ -1,6 +1,6 @@
 import { clamp, ease_in_out_sine, IEaseMethod } from "../utils";
-import { IBase } from "./IBase";
-export class Easing implements IBase {
+import { IAnimation } from "./IBase";
+export class Easing implements IAnimation {
   protected _val_1 = 0;
   protected _val_2 = 1;
   protected _duration = 250;
@@ -56,6 +56,7 @@ export class Easing implements IBase {
   }
   set time(v: number) {
     this._time = clamp(v, 0, this.duration);
+    this.calc();
   }
 
   constructor(begin = 0, end = 1, duration = 250, reverse = false) {
@@ -98,9 +99,9 @@ export class Easing implements IBase {
     this._value = this._ease_method(factor, this._val_1, this._val_2);
     return this;
   }
-  update(dt: number): number {
+  update(dt: number): this {
     this.time = this.time + dt;
-    return this.calc().value;
+    return this;
   }
 }
 export default Easing;

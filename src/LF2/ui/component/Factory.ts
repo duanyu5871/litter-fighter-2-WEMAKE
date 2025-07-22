@@ -9,6 +9,8 @@ import ComNumButton from "./ComNumButton";
 import { DemoModeLogic } from "./DemoModeLogic";
 import DifficultyText from "./DifficultyText";
 import GamePrepareLogic from "./GamePrepareLogic";
+import { HorizontalLayout } from "./HorizontalLayout";
+import { Items } from "./Items";
 import LaunchPageLogic from "./LaunchPageLogic";
 import LoadingFileNameDisplayer from "./LoadingFileNameDisplayer";
 import OpacityHover from "./OpacityHover";
@@ -24,6 +26,7 @@ import PlayerTeamName from "./PlayerTeamName";
 import { PlayingTimeText } from "./PlayingTimeText";
 import { RandomImgOnLayoutResume } from "./RandomImgOnLayoutResume";
 import { ReachableLayout, ReachableLayoutGroup } from "./ReachableLayoutGroup";
+import { Jalousie } from "./Jalousie";
 import StageNameText from "./StageNameText";
 import StageTitleShow from "./StageTitleShow";
 import StageTransitions from "./StageTransitions";
@@ -55,12 +58,15 @@ class Factory {
     ["background_name_text", BackgroundNameText],
     ["opacity_hover", OpacityHover],
     ["vertical_layout", VerticalLayout],
+    ["horizontal_layout", HorizontalLayout],
     ["player_score", PlayerScore],
     ["player_score_cell", PlayerScoreCell],
     ["vs_mode_logic", VsModeLogic],
     ["demo_mode_logic", DemoModeLogic],
     ["playing_time", PlayingTimeText],
     ["random_img_on_layout_resume", RandomImgOnLayoutResume],
+    ["jalousie", Jalousie],
+    ["items", Items],
   ]);
 
   create(

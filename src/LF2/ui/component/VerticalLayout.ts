@@ -1,7 +1,7 @@
 import { UIComponent } from "./UIComponent";
 
 export default class VerticalLayout extends UIComponent {
-  override render(dt: number): void {
+  override update(dt: number): void {
     let w = 0;
     let h = 0;
     for (const l of this.node.children) {
@@ -18,3 +18,4 @@ export default class VerticalLayout extends UIComponent {
     }
   }
 }
+

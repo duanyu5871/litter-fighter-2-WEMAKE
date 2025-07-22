@@ -497,10 +497,9 @@ export class World {
     this.stage.update();
   }
 
-
   render_once(dt: number) {
     this.renderer.render();
-    this.lf2.layout?.render(dt);
+    this.lf2.layout?.update(dt);
   }
 
   update_camera() {

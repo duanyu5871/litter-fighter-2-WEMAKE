@@ -17,6 +17,6 @@ export function read_call_func_expression(
   const result = text.match(/(.*)\((.*)\)/);
   if (!result) return [void 0, void 0];
   const [, func_name, args_str] = result;
-  const args = args_str!.split(",");
+  const args = args_str!.split(",").map(v => v.trim());
   return [func_name!, args];
 }

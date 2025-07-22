@@ -9,10 +9,10 @@
     "test": "node scripts/test.js",
     "build_tool": "cd ./tool && npm i && tsc -p ./",
     "build_data": "npm run build_tool && node ./tool",
+    "build_prel": "node ./tool --make-prel-zip",
     "deploy": "fdeploy -s release -i deployer.private.json -p deployer.config.json",
     "flow": "npm run build_tool && npm run build_data && npm run build && npm run deploy",
-    "dat_2_txt": "npm run build_tool && node ./tool --dat-2-txt",
-    "make_prel_zip": "npm run build_tool && node ./tool --make-prel-zip"
+    "dat_2_txt": "npm run build_tool && node ./tool --dat-2-txt"
   },
   "dependencies": {
     "@fimagine/logger": "^1.2.1",

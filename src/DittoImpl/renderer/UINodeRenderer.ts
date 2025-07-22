@@ -1,9 +1,9 @@
 import * as THREE from "three";
 import type { ISprite, ISpriteInfo } from "../../LF2/3d/ISprite";
 import Ditto from "../../LF2/ditto";
-import type { UINode } from "../../LF2/ui/UINode";
-import { empty_texture, white_texture } from "../../LF2/loader/ImageMgr";
 import { IUINodeRenderer } from "../../LF2/ditto/render/IUINodeRenderer";
+import { empty_texture, white_texture } from "../../LF2/loader/ImageMgr";
+import type { UINode } from "../../LF2/ui/UINode";
 
 export class UINodeRenderer implements IUINodeRenderer {
   sprite: ISprite;
@@ -48,10 +48,7 @@ export class UINodeRenderer implements IUINodeRenderer {
     const [w, h] = this.node.size;
     const texture = this.create_texture();
     const p: ISpriteInfo = {
-      w,
-      h,
-      texture,
-      color: this.node.data.bg_color,
+      w, h, texture, color: this.node.data.color,
     };
     return p;
   }
@@ -64,7 +61,7 @@ export class UINodeRenderer implements IUINodeRenderer {
     const img_idx = this.node.img_idx;
     const img_info = this.node.img_infos?.[img_idx];
     if (!img_info)
-      return this.node.data.bg_color ? white_texture() : empty_texture();
+      return this.node.data.color ? white_texture() : empty_texture();
     const { flip_x, flip_y } = this.node.data;
     const texture = this.lf2.images.create_pic_by_img_info(img_info).texture;
     texture.offset.set(flip_x ? 1 : 0, flip_y ? 1 : 0);
@@ -72,12 +69,20 @@ export class UINodeRenderer implements IUINodeRenderer {
   }
 
   render() {
+    const [w, h] = this.node.size;
+    if (this.sprite.w != w || this.sprite.h != h) {
+      this.sprite.set_size(w, h).apply()
+    }
     if (this.img_idx != this.node.img_idx) {
       this.img_idx = this.node.img_idx
       this.update_img();
     }
+    const s = this.node.scale;
+    this.sprite.set_scale(...s);
+
     const [x, y, z] = this.node.pos
     this.sprite.set_position(x, -y, z);
+
     if (this.node.root === this.node) this.sprite.x = this.world.renderer.cam_x;
     this.visible = this.node.visible
     this.sprite.opacity = this.node.opacity;

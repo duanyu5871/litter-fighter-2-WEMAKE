@@ -1,21 +1,37 @@
 import IStyle from "../defines/IStyle";
 
 export interface IUIInfo {
+  count?: number;
   values?: { [x in string]?: any };
+  templates?: { [x in string]?: IUIInfo };
+  /**
+   * 节点ID
+   *
+   * @type {string}
+   * @memberof IUIInfo
+   */
   id?: string;
+
+  /**
+   * 节点名
+   *
+   * @type {string}
+   * @memberof IUIInfo
+   */
   name?: string;
   img?: string[] | string;
   opacity?: number;
   which?: number | string;
   rect?: number[] | string;
   center?: number[] | string;
+  scale?: number[] | string;
   pos?: number[] | string;
   size?: number[] | string;
   visible?: boolean | string;
   disabled?: boolean | string;
   flip_x?: boolean;
   flip_y?: boolean;
-  bg_color?: string;
+  color?: string;
   component?: string | string[];
   style?: IStyle;
   txt?: string;
@@ -28,7 +44,6 @@ export interface IUIInfo {
   };
   key_press_actions?: [string, string][];
   items?: (IUIInfo | string)[];
-
   auto_focus?: boolean;
   template?: string;
 }

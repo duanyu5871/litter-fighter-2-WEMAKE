@@ -1,13 +1,13 @@
 import { ISprite } from "../../3d/ISprite";
 import Easing from "../../animation/Easing";
 import Sequence from "../../animation/Sequence";
-import { SineAnimation } from "../../animation/SineAnimation";
+import { Sine } from "../../animation/Sine";
 import Invoker from "../../base/Invoker";
 import GameKey from "../../defines/GameKey";
 import Ditto from "../../ditto";
-import ease_linearity from "../../utils/ease_method/ease_linearity";
 import { TPicture } from "../../loader/ImageMgr";
 import { make_arr } from "../../utils/array/make_arr";
+import ease_linearity from "../../utils/ease_method/ease_linearity";
 import type { UINode } from "../UINode";
 import { UIComponent } from "./UIComponent";
 
@@ -41,7 +41,7 @@ export default class LaunchPageLogic extends UIComponent {
   protected _unmount_jobs = new Invoker();
   protected _skipped = false;
 
-  protected _tap_hints_opacity = new SineAnimation(0.1, 1, 0.002);
+  protected _tap_hints_opacity = new Sine(0.1, 1, 0.5);
   protected _tap_hints_fadeout_opacity = new Easing(1, 0, 255);
   protected state: number = 0;
 
@@ -107,12 +107,12 @@ export default class LaunchPageLogic extends UIComponent {
   override on_resume(): void {
     super.on_resume();
     this._skipped = false;
-    this.bearface = this.node.find_layout("bearface")!;
-    this.yeonface = this.node.find_layout("yeonface")!;
-    this.tap_to_launch = this.node.find_layout("tap_to_launch")!;
-    this.sound_warning = this.node.find_layout("sound_warning")!;
-    this.long_text = this.node.find_layout("long_text")!;
-    this.long_text_2 = this.node.find_layout("long_text_2")!;
+    this.bearface = this.node.find_child("bearface")!;
+    this.yeonface = this.node.find_child("yeonface")!;
+    this.tap_to_launch = this.node.find_child("tap_to_launch")!;
+    this.sound_warning = this.node.find_child("sound_warning")!;
+    this.long_text = this.node.find_child("long_text")!;
+    this.long_text_2 = this.node.find_child("long_text_2")!;
 
     this.state = 0;
     this._tap_hints_opacity.time = 0;
@@ -150,28 +150,28 @@ export default class LaunchPageLogic extends UIComponent {
     this._unmount_jobs.invoke_and_clear();
   }
 
-  override render(dt: number): void {
+  override update(dt: number): void {
     if (this._loading_imgs.length && !this._loading_idx_anim.is_finish) {
-      const idx = Math.floor(this._loading_idx_anim.update(dt));
+      const idx = Math.floor(this._loading_idx_anim.update(dt).value);
       const pic = this._loading_imgs[idx];
       if (pic) this._loading_sprite.set_info(pic).apply();
       if (
         this._loading_idx_anim.is_finish &&
-        !this.lf2.layout_infos.find((v) => v.id === "entry")
+        !this.lf2.uiinfos.find((v) => v.id === "entry")
       )
         this._loading_idx_anim.play();
     }
 
     if (this.state === 0) {
-      this.sound_warning.opacity = this.tap_to_launch.opacity =
-        this._tap_hints_opacity.update(dt);
+      this._tap_hints_opacity.update(dt)
+      this.sound_warning.opacity = this.tap_to_launch.opacity = this._tap_hints_opacity.value;
     } else if (this.state === 1 || this.state === 2 || this.state === 3) {
       this.sound_warning.opacity = this.tap_to_launch.opacity =
-        this._tap_hints_fadeout_opacity.update(dt);
+        this._tap_hints_fadeout_opacity.update(dt).value;
       const { bearface, yeonface, long_text } = this;
-      const scale = this._scale.update(dt);
-      const offset = this._offset_x.update(dt);
-      const opacity = this._opacity.update(dt);
+      const scale = this._scale.update(dt).value;
+      const offset = this._offset_x.update(dt).value;
+      const opacity = this._opacity.update(dt).value;
       bearface.sprite.x = 397 - offset;
       yeonface.sprite.x = 397 + offset;
       long_text.sprite.y = -150 - offset;
@@ -188,13 +188,14 @@ export default class LaunchPageLogic extends UIComponent {
       }
       if (this.state === 3) {
         this.long_text_2.opacity = opacity;
-      } else if (this.lf2.layout_infos.find((v) => v.id === "entry")) {
-        this.long_text_2.opacity = this._tap_hints_opacity.update(dt);
+      } else if (this.lf2.uiinfos.find((v) => v.id === "entry")) {
+        this._tap_hints_opacity.update(dt)
+        this.long_text_2.opacity = this._tap_hints_opacity.value;
       }
       this.long_text.visible = this.long_text.opacity > 0;
       this.long_text_2.visible = this.long_text_2.opacity > 0;
 
-      if (this._opacity.is_finish && this._layouts_loaded) {
+      if (this._opacity.is_end && this._layouts_loaded) {
         if (this._opacity.reverse) {
           this.lf2.set_layout("entry");
         } else if (this._skipped) {

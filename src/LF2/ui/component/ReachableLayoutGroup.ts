@@ -13,7 +13,7 @@ export class ReachableLayoutGroup extends UIComponent {
   get binded_layout(): UINode {
     const lid = this.args[2];
     if (!lid) return this.node;
-    return this.node.root.find_layout(lid) || this.node;
+    return this.node.root.find_child(lid) || this.node;
   }
 
   override on_player_key_down(_player_id: string, key: GameKey): void {
@@ -43,7 +43,7 @@ export class ReachableLayoutGroup extends UIComponent {
     else if (this.direction === "ud")
       items.sort((a, b) => a.node.y_on_root - b.node.y_on_root);
 
-    const focused_layout = this.node.focused_item;
+    const focused_layout = this.node.focused_node;
     
     if (key === "L" || key === "U") {
       const idx = items.findIndex((v) => v.node === focused_layout);

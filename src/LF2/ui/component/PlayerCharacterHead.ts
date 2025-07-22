@@ -1,5 +1,5 @@
 import { ISprite } from "../../3d/ISprite";
-import { SineAnimation } from "../../animation/SineAnimation";
+import { Sine } from "../../animation/Sine";
 import Invoker from "../../base/Invoker";
 import { Defines } from "../../defines/defines";
 import Ditto from "../../ditto";
@@ -29,7 +29,7 @@ export default class PlayerCharacterHead extends UIComponent {
     return head ?? Defines.BuiltIn_Imgs.RFACE;
   }
 
-  protected _opacity: SineAnimation = new SineAnimation(0.65, 1, 1 / 25);
+  protected _opacity: Sine = new Sine(0.65, 1, 3);
   protected readonly _mesh_head: ISprite;
   protected readonly _mesh_hints: ISprite;
   protected readonly _mesh_cd: ISprite;
@@ -121,7 +121,7 @@ export default class PlayerCharacterHead extends UIComponent {
     }
   }
 
-  override render(dt: number): void {
+  override update(dt: number): void {
     this._opacity.update(dt);
     if (this._mesh_hints) this._mesh_hints.opacity = this._opacity.value;
   }

@@ -1,5 +1,5 @@
 import { IText } from "../../3d/IText";
-import { SineAnimation } from "../../animation/SineAnimation";
+import { Sine } from "../../animation/Sine";
 import Invoker from "../../base/Invoker";
 import Ditto from "../../ditto";
 import type { UINode } from "../UINode";
@@ -36,7 +36,7 @@ export default class PlayerCharacterName extends UIComponent {
     return true === this.player?.is_com;
   }
   protected _mesh: IText;
-  protected _opacity: SineAnimation = new SineAnimation(0.65, 1, 1 / 25);
+  protected _opacity: Sine = new Sine(0.65, 1, 3);
   protected _unmount_jobs = new Invoker();
   constructor(layout: UINode, f_name: string) {
     super(layout, f_name);
@@ -83,7 +83,7 @@ export default class PlayerCharacterName extends UIComponent {
       .apply();
   }
 
-  override render(dt: number): void {
+  override update(dt: number): void {
     this._opacity.update(dt);
     this._mesh.opacity = this.decided ? 1 : this._opacity.value;
   }

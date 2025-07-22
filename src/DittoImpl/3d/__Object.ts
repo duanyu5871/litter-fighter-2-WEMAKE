@@ -92,8 +92,14 @@ export class __Object implements IObjectNode {
   get w(): number {
     return is_num(this._w) ? this._w : 0;
   }
+  set w(v: number) {
+    this.set_size(v, void 0)
+  }
   get h(): number {
     return is_num(this._h) ? this._h : 0;
+  }
+  set h(v: number) {
+    this.set_size(void 0, v)
   }
   get size(): [number, number] {
     return [this.w, this.h];

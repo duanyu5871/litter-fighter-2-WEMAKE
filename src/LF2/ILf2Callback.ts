@@ -1,6 +1,6 @@
 import type { Difficulty } from "./defines";
 import type { IZip } from "./ditto";
-import type { ICookedUIInfo } from "./ui/ICookedLayoutInfo";
+import type { ICookedUIInfo } from "./ui/ICookedUIInfo";
 import type { UINode } from "./ui/UINode";
 import type { PlayerInfo } from "./PlayerInfo";
 

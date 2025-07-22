@@ -1,6 +1,3 @@
-import { ILf2Callback } from "./ILf2Callback";
-import { PlayerInfo } from "./PlayerInfo";
-import { World } from "./World";
 import {
   Callbacks, get_short_file_size_txt, Loader, new_id,
   NoEmitCallbacks,
@@ -25,11 +22,13 @@ import {
 } from "./ditto";
 import { Entity } from "./entity";
 import { BallsHelper, CharactersHelper, EntitiesHelper, WeaponsHelper } from "./helper";
+import { ILf2Callback } from "./ILf2Callback";
 import DatMgr from "./loader/DatMgr";
 import get_import_fallbacks from "./loader/get_import_fallbacks";
 import { ImageMgr } from "./loader/ImageMgr";
+import { PlayerInfo } from "./PlayerInfo";
 import { Stage } from "./stage";
-import { ICookedUIInfo } from "./ui/ICookedLayoutInfo";
+import { ICookedUIInfo } from "./ui/ICookedUIInfo";
 import { IUIInfo } from "./ui/IUIInfo";
 import { UINode } from "./ui/UINode";
 import {
@@ -39,6 +38,7 @@ import {
   random_in,
   random_take
 } from "./utils";
+import { World } from "./World";
 
 const cheat_info_pair = (n: CheatType) =>
   [
@@ -52,6 +52,7 @@ const cheat_info_pair = (n: CheatType) =>
 export class LF2 implements IKeyboardCallback, IPointingsCallback {
   static readonly TAG = "LF2";
   static readonly DATE = Date()
+  static readonly instances = new Set<LF2>()
   private _disposed: boolean = false;
   private _callbacks = new Callbacks<ILf2Callback>();
   private _layout_stacks: UINode[] = [];
@@ -194,6 +195,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
     this.world.start_update();
     this.world.start_render();
     this.load_prel_data_zip("prel.zip.json");
+    LF2.instances.add(this)
   }
 
   random_entity_info(e: Entity) {
@@ -436,6 +438,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
       l?.on_stop();
     }
     this._layout_stacks.length = 0;
+    LF2.instances.delete(this);
   }
 
   add_player_character(player_id: string, character_id: string) {
@@ -533,22 +536,22 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
     this.change_stage(next_stage);
   }
 
-  private _layout_infos_loaded = false;
-  private _layout_infos: ICookedUIInfo[] = [];
-  get layout_infos(): readonly ICookedUIInfo[] {
-    return this._layout_infos;
+  private _uiinfos_loaded = false;
+  private _uiinfos: ICookedUIInfo[] = [];
+  get uiinfos(): readonly ICookedUIInfo[] {
+    return this._uiinfos;
   }
-  get layout_infos_loaded() {
-    return this._layout_infos_loaded;
+  get uiinfos_loaded() {
+    return this._uiinfos_loaded;
   }
 
   protected _layout_info_map = new Map<string, IUIInfo>();
 
   async load_layouts(): Promise<ICookedUIInfo[]> {
-    if (this._layout_infos.length) return this._layout_infos;
+    if (this._uiinfos.length) return this._uiinfos;
     const array = await this.import_json("layouts/index.json").catch((e) => []);
-    this._layout_infos_loaded = false;
-    const paths: string[] = ["launch/init.json"];
+    this._uiinfos_loaded = false;
+    const paths: string[] = ["launch/init.json", "launch/jalousie.json"];
     for (const element of array) {
       if (is_str(element)) paths.push(element);
       else
@@ -561,16 +564,16 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
     }
     for (const path of paths) {
       const cooked_layout_data = await UINode.cook_layout_info(this, path);
-      this._layout_infos.push(cooked_layout_data);
+      this._uiinfos.push(cooked_layout_data);
       if (path === paths[0]) this.set_layout(cooked_layout_data);
     }
     if (this._disposed) {
-      this._layout_infos.length = 0;
+      this._uiinfos.length = 0;
     } else {
-      this._callbacks.emit("on_layouts_loaded")(this._layout_infos);
-      this._layout_infos_loaded = true;
+      this._callbacks.emit("on_layouts_loaded")(this._uiinfos);
+      this._uiinfos_loaded = true;
     }
-    return this._layout_infos;
+    return this._uiinfos;
   }
 
   layout_val_getter = (item: UINode, word: string) => {
@@ -608,9 +611,9 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
     prev?.on_pause();
 
     const info = is_str(arg)
-      ? this._layout_infos?.find((v) => v.id === arg)
+      ? this._uiinfos?.find((v) => v.id === arg)
       : arg;
-    const curr = info && UINode.cook(this, info, this.layout_val_getter);
+    const curr = info && UINode.cook(this, info);
     curr && this._layout_stacks.push(curr);
     curr?.on_start();
     curr?.on_resume();
@@ -636,9 +639,9 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
     prev?.on_pause();
 
     const info = is_str(arg)
-      ? this._layout_infos?.find((v) => v.id === arg)
+      ? this._uiinfos?.find((v) => v.id === arg)
       : arg;
-    const curr = info && UINode.cook(this, info, this.layout_val_getter);
+    const curr = info && UINode.cook(this, info);
     curr && this._layout_stacks.push(curr);
     curr?.on_start();
     curr?.on_resume();
@@ -672,4 +675,5 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
     return random_in(l, r)
   }
 }
+(window as any).LF2 = LF2;
 export default LF2

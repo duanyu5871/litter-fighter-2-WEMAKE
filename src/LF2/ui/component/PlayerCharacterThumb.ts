@@ -1,5 +1,5 @@
 import { ISprite } from "../../3d";
-import { SineAnimation } from "../../animation/SineAnimation";
+import { Sine } from "../../animation/Sine";
 import Invoker from "../../base/Invoker";
 import { Defines } from "../../defines/defines";
 import Ditto from "../../ditto";
@@ -32,7 +32,7 @@ export default class PlayerCharacterThumb extends UIComponent {
     );
   }
 
-  protected _opacity: SineAnimation = new SineAnimation(0.65, 1, 1 / 25);
+  protected _opacity: Sine = new Sine(0.65, 1, 3);
   protected readonly _mesh_thumb: ISprite;
 
   get gpl(): GamePrepareLogic | undefined {

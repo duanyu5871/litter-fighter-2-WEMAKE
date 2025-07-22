@@ -1,7 +1,7 @@
 {
   "name": "入口页",
   "id": "entry",
-  "bg_color": "rgb(16, 32, 108)",
+  "color": "rgb(16, 32, 108)",
   "component": ["reachable_layout_group(main,ud)"],
   "items": [
     {
