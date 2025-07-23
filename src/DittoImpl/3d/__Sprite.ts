@@ -1,38 +1,32 @@
-import * as THREE from "../3d/_t";
+import { ISprite, ISpriteInfo } from "../../LF2/3d/ISprite";
 import LF2 from "../../LF2/LF2";
-import { dispose_mesh } from "./disposer";
 import { empty_texture } from "../../LF2/loader/ImageMgr";
 import { is_num } from "../../LF2/utils/type_check";
+import * as THREE from "../3d/_t";
 import { __Object } from "./__Object";
-import { ISpriteInfo, ISprite } from "../../LF2/3d/ISprite";
+import { dispose_mesh } from "./disposer";
+import { get_alpha_from_color } from "./get_alpha_from_color";
 
 export class __Sprite extends __Object implements ISprite {
   readonly is_sprite_node = true;
   protected _info: ISpriteInfo = { w: 0, h: 0 };
   protected _texture: THREE.Texture = empty_texture();
   protected _geo: THREE.PlaneGeometry = new THREE.PlaneGeometry();
-
   override get inner(): THREE.Mesh<
     THREE.PlaneGeometry,
     THREE.MeshBasicMaterial
   > {
     return this._inner as any;
   }
-
-  override get opacity(): number {
-    return this.inner.material.opacity;
-  }
   override set opacity(v: number) {
     this.set_opacity(v);
   }
-
   override get w(): number {
     return is_num(this._w) ? this._w : this._info.w;
   }
   override get h(): number {
     return is_num(this._h) ? this._h : this._info.h;
   }
-
   protected next_geometry(): THREE.PlaneGeometry {
     const { w, h, _c_x, _c_y, _c_z } = this;
     const { w: _w, h: _h, c_x, c_y, c_z } = this._geo.userData;
@@ -55,9 +49,9 @@ export class __Sprite extends __Object implements ISprite {
   constructor(lf2: LF2, info?: ISpriteInfo) {
     super(lf2);
     info && this.set_info(info);
-    const [r, g, b] = this._rgb;
+    const [r, g, b, a] = this._rgba;
     const geo = this.next_geometry();
-    const mp: THREE.MeshBasicMaterialParameters = { transparent: true };
+    const mp: THREE.MeshBasicMaterialParameters = { transparent: true, opacity: this._rgba[3] };
     mp.map = this._texture;
     mp.color = new THREE.Color(r / 255, g / 255, b / 255);
     this._inner = new THREE.Mesh(geo, new THREE.MeshBasicMaterial(mp));
@@ -65,7 +59,7 @@ export class __Sprite extends __Object implements ISprite {
   }
 
   override set_opacity(v: number): this {
-    this.inner.material.opacity = v;
+    this.inner.material.opacity = v * this._rgba[3];
     this.inner.material.needsUpdate = true;
     return super.set_opacity(v);
   }
@@ -77,7 +71,7 @@ export class __Sprite extends __Object implements ISprite {
     mesh.geometry = this.next_geometry();
     const {
       _texture,
-      _rgb: [_r, _g, _b],
+      _rgba: [_r, _g, _b, _a],
     } = this;
     if (mesh.material.map !== _texture) {
       mesh.material.map?.dispose();
@@ -103,8 +97,9 @@ export class __Sprite extends __Object implements ISprite {
    */
   set_info(info: ISpriteInfo): this {
     this._info = info;
+    const a = get_alpha_from_color(info.color) || 1
     const { r, g, b } = new THREE.Color(info.color);
-    this._rgb = [Math.ceil(r * 255), Math.ceil(g * 255), Math.ceil(b * 255)];
+    this._rgba = [Math.ceil(r * 255), Math.ceil(g * 255), Math.ceil(b * 255), a];
     this._texture = info.texture || empty_texture();
     return this;
   }

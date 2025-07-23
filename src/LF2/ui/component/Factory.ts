@@ -2,7 +2,7 @@ import Ditto from "../../ditto";
 import { is_str } from "../../utils/type_check";
 import { IUIInfo } from "../IUIInfo";
 import type { UINode } from "../UINode";
-import { read_call_func_expression } from "../utils/read_func_args";
+import { read_call_func_expression } from "../utils/read_call_func_expression";
 import BackgroundNameText from "./BackgroundNameText";
 import CharacterSelLogic from "./CharacterSelLogic";
 import ComNumButton from "./ComNumButton";

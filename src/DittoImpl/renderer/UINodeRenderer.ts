@@ -60,8 +60,9 @@ export class UINodeRenderer implements IUINodeRenderer {
   protected create_texture(): THREE.Texture | undefined {
     const img_idx = this.node.img_idx;
     const img_info = this.node.img_infos?.[img_idx];
-    if (!img_info)
+    if (!img_info) {
       return this.node.data.color ? white_texture() : empty_texture();
+    }
     const { flip_x, flip_y } = this.node.data;
     const texture = this.lf2.images.create_pic_by_img_info(img_info).texture;
     texture.offset.set(flip_x ? 1 : 0, flip_y ? 1 : 0);

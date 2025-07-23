@@ -12,7 +12,7 @@ export class __Object implements IObjectNode {
   protected _parent?: IObjectNode;
   protected _children: IBaseNode[] = [];
   protected _inner: _T.Object3D;
-  protected _rgb: [number, number, number] = [255, 255, 255];
+  protected _rgba: [number, number, number, number] = [255, 255, 255, 1];
   protected _w?: number;
   protected _h?: number;
   protected _c_x: number = 0;
@@ -113,11 +113,11 @@ export class __Object implements IObjectNode {
   set user_data(v: Record<string, any>) {
     this._inner.userData = v;
   }
-  get rgb(): [number, number, number] {
-    return this._rgb;
+  get rgba(): [number, number, number, number] {
+    return this._rgba;
   }
-  set rgb([r, g, b]: [number, number, number]) {
-    this.set_rgb(r, g, b);
+  set rgba([r, g, b, a]: [number, number, number, number]) {
+    this.set_rgba(r, g, b, a);
     this.apply();
   }
   get inner(): _T.Object3D {
@@ -212,8 +212,8 @@ export class __Object implements IObjectNode {
     Object.assign(this._inner.userData, v);
     return this;
   }
-  set_rgb(r: number, g: number, b: number): this {
-    this._rgb = [r, g, b];
+  set_rgba(r: number, g: number, b: number, a: number): this {
+    this._rgba = [r, g, b, a];
     return this;
   }
   set_scale(_x?: number, _y?: number, _z?: number): this {

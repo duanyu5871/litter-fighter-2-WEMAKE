@@ -348,27 +348,21 @@ export class UINode {
   }
 
   protected static async read_template(lf2: LF2, raw_info: IUIInfo, parent: ICookedUIInfo | undefined): Promise<IUIInfo> {
-    const { template, ...remain_raw_info } = raw_info
-    if (!template) return raw_info;
-
-    let raw_template_data: IUIInfo | undefined = void 0;
+    const { template: template_name, ...remain_raw_info } = raw_info
+    if (!template_name) return raw_info;
+    let raw_template: IUIInfo | undefined = void 0;
     let n = parent;
-    while (n && !raw_template_data) {
-      raw_template_data = n.templates?.[template]
+    while (n && !raw_template) {
+      raw_template = n.templates?.[template_name];
       n = n.parent;
     }
-    if (!raw_template_data) {
-      raw_template_data = await lf2.import_json<IUIInfo>(template);
-    }
-    Object.assign(raw_template_data, remain_raw_info);
-    const cooked_template_data = await this.cook_layout_info(
-      lf2,
-      raw_template_data,
-      parent,
-    );
-    return { ...cooked_template_data, ...remain_raw_info };
+    raw_template = raw_template || await lf2.import_json<IUIInfo>(template_name);
+    Object.assign(raw_template, remain_raw_info);
+    const cooked_template = await this.cook_ui_info(lf2, raw_template, parent);
+    return { ...cooked_template, ...remain_raw_info };
   }
-  static async cook_layout_info(
+
+  static async cook_ui_info(
     lf2: LF2,
     data_or_path: IUIInfo | string,
     parent?: ICookedUIInfo,
@@ -377,22 +371,28 @@ export class UINode {
       ? await lf2.import_json<IUIInfo>(data_or_path)
       : data_or_path;
 
-    if (raw_info.template) {
-      raw_info = await this.read_template(lf2, raw_info, parent)
-    }
-
+    if (raw_info.template) raw_info = await this.read_template(lf2, raw_info, parent)
     const ret: ICookedUIInfo = {
       ...raw_info,
-      pos: read_nums(raw_info.pos, 3, parent ? void 0 : [0, -450, 0]),
+      pos: read_nums(raw_info.pos, 3, parent ? [0, 0, 0] : [0, -450, 0]),
       scale: read_nums(raw_info.scale, 3, [1, 1, 1]),
       center: read_nums(raw_info.center, 3, [0, 0, 0]),
       rect: read_nums(raw_info.rect, 4),
       size: [0, 0],
       left_top: [0, 0],
-      parent: parent,
+      parent,
       img_infos: [],
       items: void 0,
+      templates: void 0,
     };
+    if (raw_info.templates) {
+      for (const key in raw_info.templates) {
+        const template = raw_info.templates[key]
+        if (!template) continue;
+        if (!ret.templates) ret.templates = {}
+        ret.templates[key] = await this.cook_ui_info(lf2, template, parent)
+      }
+    }
     const { img, txt, style } = raw_info;
     if (img) {
       const img_paths = !is_arr(img)
@@ -444,18 +444,15 @@ export class UINode {
     if (Array.isArray(raw_info.items) && raw_info.items.length) {
       ret.items = [];
       for (const item of raw_info.items)
-        ret.items.push(await UINode.cook_layout_info(lf2, item, ret));
+        ret.items.push(await UINode.cook_ui_info(lf2, item, ret));
     } else {
       delete ret.items;
     }
     return ret;
   }
-  readonly cook = UINode.cook.bind(UINode)
-  static cook(
-    lf2: LF2,
-    info: ICookedUIInfo,
-    parent?: UINode,
-  ): UINode {
+  readonly cook = UINode.create.bind(UINode)
+
+  static create(lf2: LF2, info: ICookedUIInfo, parent?: UINode): UINode {
     const ret = new UINode(lf2, info, parent);
     const get_val = lf2.layout_val_getter;
     ret._cook_data(get_val);
@@ -466,7 +463,7 @@ export class UINode {
       for (const item_info of info.items) {
         let count = (is_num(item_info.count) && item_info.count > 0) ? item_info.count : 1
         while (count) {
-          const cooked_item = UINode.cook(lf2, item_info, ret);
+          const cooked_item = UINode.create(lf2, item_info, ret);
           if (cooked_item.id)
             ret.id_layout_map.set(cooked_item.id, cooked_item);
           if (cooked_item.name)

@@ -17,7 +17,7 @@ export interface IObjectNode extends IBaseNode {
 
   size: [number, number];
   user_data: Record<string, any>;
-  rgb: [number, number, number];
+  rgba: [number, number, number, number];
 
   scale_x: number;
   scale_y: number;
@@ -53,7 +53,7 @@ export interface IObjectNode extends IBaseNode {
 
   apply(): this;
 
-  set_rgb(r: number, g: number, b: number): this;
+  set_rgba(r: number, g: number, b: number, a: number): this;
 
   rotation_from_quaternion(q: IQuaternion): this;
 

@@ -551,7 +551,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
     if (this._uiinfos.length) return this._uiinfos;
     const array = await this.import_json("layouts/index.json").catch((e) => []);
     this._uiinfos_loaded = false;
-    const paths: string[] = ["launch/init.json", "launch/jalousie.json"];
+    const paths: string[] = ["launch/init.json", "launch/jalousie_ns.json", "launch/jalousie_ew.json"];
     for (const element of array) {
       if (is_str(element)) paths.push(element);
       else
@@ -563,7 +563,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
         );
     }
     for (const path of paths) {
-      const cooked_layout_data = await UINode.cook_layout_info(this, path);
+      const cooked_layout_data = await UINode.cook_ui_info(this, path);
       this._uiinfos.push(cooked_layout_data);
       if (path === paths[0]) this.set_layout(cooked_layout_data);
     }
@@ -613,7 +613,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
     const info = is_str(arg)
       ? this._uiinfos?.find((v) => v.id === arg)
       : arg;
-    const curr = info && UINode.cook(this, info);
+    const curr = info && UINode.create(this, info);
     curr && this._layout_stacks.push(curr);
     curr?.on_start();
     curr?.on_resume();
@@ -641,7 +641,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
     const info = is_str(arg)
       ? this._uiinfos?.find((v) => v.id === arg)
       : arg;
-    const curr = info && UINode.cook(this, info);
+    const curr = info && UINode.create(this, info);
     curr && this._layout_stacks.push(curr);
     curr?.on_start();
     curr?.on_resume();

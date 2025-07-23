@@ -1,7 +1,7 @@
 import Ditto from "../../ditto";
 import { is_str } from "../../utils/type_check";
 import type { UINode } from "../UINode";
-import { read_call_func_expression } from "../utils/read_func_args";
+import { read_call_func_expression } from "../utils/read_call_func_expression";
 
 interface IUIActionHandler {
   (layout: UINode, ...args: string[]): void;
