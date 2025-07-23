@@ -1,21 +1,19 @@
 import Easing from "../../animation/Easing";
-import { is_nan } from "../../utils/type_check";
 import { UIComponent } from "./UIComponent";
 
 export default class OpacityHover extends UIComponent {
   protected anim = new Easing(0, 1, 150);
-  override init(...args: string[]): this {
-    const a = Number(args[0]);
-    const b = Number(args[1]);
-    const c = Number(args[2]);
+
+  override on_start(): void {
+    super.on_start?.();
     this.anim.set(
-      is_nan(a) ? 0 : a,
-      is_nan(b) ? 1 : b,
-      is_nan(c) ? 255 : c,
-      false,
-    );
-    return super.init(...args);
+      this.get_num_arg(0) ?? 0,
+      this.get_num_arg(1) ?? 1,
+    ).set_duration(
+      this.get_num_arg(2) ?? 255
+    ).set_reverse(false);
   }
+
   override update(dt: number): void {
     const r = this.node.state.mouse_on_me !== "1" && !this.node.focused;
     if (this.anim.reverse !== r) {

@@ -1,35 +1,11 @@
-import { clamp, is_num } from "../utils";
+import { is_num } from "../utils";
+import { Animation } from "./Animation";
 import { Delay } from "./Delay";
-import { IAnimation } from "./IAnimation";
-export class Sequence implements IAnimation {
-  protected _anims: IAnimation[] = [];
-  protected _r_anims: IAnimation[] = [];
-  protected _reverse = false;
-  protected _time: number = 0;
-  protected _value: number = 0;
-  get value(): number {
-    return this._value;
-  }
-  get is_end(): boolean {
-    return this._reverse ? this._time <= 0 : this._time >= this.duration;
-  }
-  get is_begin(): boolean {
-    return this._reverse ? this._time >= this.duration : this._time <= 0;
-  }
-  get reverse(): boolean {
-    return this._reverse;
-  }
-  set reverse(v: boolean) {
-    this._reverse = v;
-  }
-  get time(): number {
-    return this._time;
-  }
-  set time(v: number) {
-    this._time = clamp(v, 0, this.duration);
-  }
-
-  constructor(...animations: (IAnimation | number)[]) {
+export class Sequence extends Animation {
+  protected _anims: Animation[] = [];
+  protected _r_anims: Animation[] = [];
+  constructor(...animations: (Animation | number)[]) {
+    super()
     for (const a of animations) {
       if (is_num(a)) {
         if (a <= 0) continue;
@@ -42,49 +18,34 @@ export class Sequence implements IAnimation {
       }
     }
     this.calc();
+    this.duration = this._anims.reduce((r, i) => r + i.duration, 0)
   }
-  get duration(): number {
-    return this._anims.reduce((r, i) => r + i.duration, 0)
-  }
-
-  play(reverse: boolean = this._reverse) {
-    this._reverse = reverse;
-    this._time = 0;
-    this.calc();
-    return this;
-  }
-
-  end(reverse: boolean = this._reverse): this {
-    this._reverse = reverse;
-    this._time = this.duration;
-    this.calc();
-    return this;
-  }
-
-  calc(): this {
-    let time = this._time;
-    const anims = this._reverse ? this._r_anims : this._anims
-    for (const a of anims) {
-      a.reverse = this._reverse;
-      if (a.duration > time) {
-        a.time = time;
+  override calc(): this {
+    let { time, reverse, duration } = this;
+    if (reverse) {
+      for (const a of this._r_anims) {
+        a.reverse = reverse
+        duration -= a.duration;
+        if (time > duration) {
+          a.time = time - duration;
+        } else {
+          time -= a.duration;
+          a.time = 0;
+        }
         this._value = a.calc().value;
-        break;
       }
-      time -= a.duration;
-      a.end(this._reverse);
-      this._value = a.calc().value;
-    }
-    return this;
-  }
-
-  update(dt: number): this {
-    if (this._reverse) {
-      this.time -= dt;
     } else {
-      this.time += dt;
+      for (const a of this._anims) {
+        a.reverse = reverse
+        if (a.duration > time) {
+          a.time = time;
+        } else {
+          time -= a.duration;
+          a.time = a.duration;
+        }
+        this._value = a.calc().value;
+      }
     }
-    this.calc()
     return this;
   }
 }

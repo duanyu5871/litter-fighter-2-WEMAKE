@@ -592,7 +592,7 @@ export class UINode {
     this.renderer.render()
     if (visible_changed) this.invoke_visible_callback();
     for (const i of this.children) i.update(dt);
-    for (const c of this._components) c.update?.(dt);
+    for (const c of this._components) if(c.enabled) c.update?.(dt);
   }
 
   on_player_key_down(player_id: string, key: GameKey) {

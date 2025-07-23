@@ -20,6 +20,14 @@ export class UIComponent {
   private _mounted: boolean = false;
   private _args: readonly string[] = [];
 
+  private _enabled: boolean = true;
+
+  get enabled() {
+    return this._enabled;
+  }
+  set enabled(v: boolean) {
+    this._enabled = v;
+  }
   get mounted() {
     return this._mounted;
   }
@@ -27,7 +35,6 @@ export class UIComponent {
   get args(): readonly string[] {
     return this._args;
   }
-
 
 
   /**

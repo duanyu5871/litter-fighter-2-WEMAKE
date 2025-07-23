@@ -34,6 +34,8 @@ import StageTransitions from "./StageTransitions";
 import { UIComponent } from "./UIComponent";
 import VerticalLayout from "./VerticalLayout";
 import VsModeLogic from "./VsModeLogic";
+import { FadeInOpacity } from "./FadeInOpacity";
+import { FadeOutOpacity } from "./FadeOutOpacity";
 
 class Factory {
   static readonly TAG = `Layout Component Factory`;
@@ -69,6 +71,8 @@ class Factory {
     ["jalousie", Jalousie],
     ["items", Items],
     ["sine_opacity", SineOpacity],
+    ["fade_in_opacity", FadeInOpacity],
+    ["fade_out_opacity", FadeOutOpacity],
   ]);
 
   create(
@@ -88,7 +92,11 @@ class Factory {
         );
         continue;
       }
-      const Cls = this._component_map.get(func_name);
+      const Cls = this._component_map.get(
+        func_name.startsWith('!') ?
+          func_name.substring(1, func_name.length) :
+          func_name
+      );
       if (!Cls) {
         Ditto.Warn(
           Factory.TAG + "::create",
@@ -99,6 +107,7 @@ class Factory {
       }
 
       const component = new Cls(layout, func_name).init(...args);
+      component.enabled = !func_name.startsWith('!');
       ret.push(component);
     }
     return ret;

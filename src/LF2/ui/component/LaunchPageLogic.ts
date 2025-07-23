@@ -10,6 +10,8 @@ import { TPicture } from "../../loader/ImageMgr";
 import { make_arr } from "../../utils/array/make_arr";
 import ease_linearity from "../../utils/ease_method/ease_linearity";
 import type { UINode } from "../UINode";
+import { FadeOutOpacity } from "./FadeOutOpacity";
+import { SineOpacity } from "./SineOpacity";
 import { UIComponent } from "./UIComponent";
 
 enum Status {
@@ -24,11 +26,11 @@ export default class LaunchPageLogic extends UIComponent {
     return this.args[0] || "";
   }
   protected tap_to_launch!: UINode;
+  protected sound_warning!: UINode;
   protected yeonface!: UINode;
   protected bearface!: UINode;
   protected long_text!: UINode;
   protected long_text_2!: UINode;
-  protected sound_warning!: UINode;
   protected _layouts_loaded: boolean = false;
   protected _dispose_jobs = new Invoker();
   protected _offset_x = new Sequence(
@@ -54,18 +56,30 @@ export default class LaunchPageLogic extends UIComponent {
   protected _loading_sprite: ISprite;
   protected _loading_imgs: TPicture[] = [];
   protected _loading_idx_anim = new Easing(
-    0,
-    44,
-    20000,
-  ).set_ease_method(ease_linearity);
+      0,
+      44,
+      2000,
+    ).set_ease_method(ease_linearity)
 
   constructor(layout: UINode, f_name: string) {
     super(layout, f_name);
     this._loading_sprite = new Ditto.SpriteNode(this.lf2);
     this.fsm = new FSM<Status>().add({
       key: Status.TapHints,
+      enter: () => {
+        this.tap_to_launch.find_component(SineOpacity)!.enabled = true;
+        this.sound_warning.find_component(SineOpacity)!.enabled = true;
+        this.tap_to_launch.find_component(FadeOutOpacity)!.enabled = false
+        this.sound_warning.find_component(FadeOutOpacity)!.enabled = false
+      },
       update: (dt) => {
         this.update_loading_img(dt)
+      },
+      leave: () => {
+        this.tap_to_launch.find_component(SineOpacity)!.enabled = false
+        this.sound_warning.find_component(SineOpacity)!.enabled = false
+        this.tap_to_launch.find_component(FadeOutOpacity)!.enabled = true
+        this.sound_warning.find_component(FadeOutOpacity)!.enabled = true
       }
     }, {
       key: Status.Introduction,
@@ -81,7 +95,7 @@ export default class LaunchPageLogic extends UIComponent {
       update: (dt) => {
         this.update_Introduction(dt)
       }
-    }).use(Status.TapHints)
+    })
   }
 
   protected on_prel_data_loaded() {
@@ -109,7 +123,7 @@ export default class LaunchPageLogic extends UIComponent {
       );
       return this.lf2.images.create_pic_by_img_info(info);
     });
-    Promise.all(jobs).then((s) => (this._loading_imgs = s));
+    Promise.all(jobs).then((s) => { this._loading_imgs = s });
     this.node.sprite.add(
       this._loading_sprite.set_position(
         this.node.w - 33,
@@ -178,18 +192,11 @@ export default class LaunchPageLogic extends UIComponent {
   }
 
   update_loading_img(dt: number) {
-    // if (!this._loading_imgs.length || this._loading_idx_anim.is_finish)
-    //   return;
-    // console.log(this._loading_idx_anim.update(dt).value)
     this._loading_idx_anim.update(dt)
     const idx = Math.floor(this._loading_idx_anim.value) % this._loading_imgs.length;
     const pic = this._loading_imgs[idx];
     if (pic) this._loading_sprite.set_info(pic).apply();
     if (this._loading_idx_anim.is_finish) this._loading_idx_anim.play();
-    // if (
-    //   this._loading_idx_anim.is_finish 
-    //   // && !this.lf2.uiinfos.find((v) => v.id === "entry")
-    // ) this._loading_idx_anim.play();
   }
 
   update_Introduction(dt: number) {

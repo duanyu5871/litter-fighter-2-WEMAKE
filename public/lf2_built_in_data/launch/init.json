@@ -15,7 +15,10 @@
         "font": "36px Arial",
         "text_align": "center"
       },
-      "component": ["sine_opacity(0.1, 1, 0.25)"]
+      "component": [
+        "sine_opacity(0.1, 1, 0.25)",
+        "!fade_out_opacity(50000)"
+      ]
     },
     {
       "id": "sound_warning",
@@ -26,7 +29,10 @@
         "font": "18px Arial",
         "text_align": "center"
       },
-      "component": ["sine_opacity(0.1, 1, 0.25)"]
+      "component": [
+        "sine_opacity(0.1, 1, 0.25)",
+        "!fade_out_opacity(50000)"
+      ]
     },
     {
       "id": "bearface",

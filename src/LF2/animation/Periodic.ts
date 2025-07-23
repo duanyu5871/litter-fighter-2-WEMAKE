@@ -35,7 +35,7 @@ export abstract class Periodic extends Animation {
     return this;
   }
   override calc(): this {
-    this._v = this.method(this._t * this._s);
+    this._value = this.method(this._time * this._s);
     return this;
   }
 }
