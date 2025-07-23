@@ -18,8 +18,8 @@ import { UIComponent } from "./UIComponent";
 enum Status {
   TapHints = 'TapHints',
   Introduction = 'Introduction',
-  Loaded = 'Loaded',
   GoToEntry = "GoToEntry",
+  End = "End",
 }
 
 export default class LaunchPageLogic extends UIComponent {
@@ -33,7 +33,7 @@ export default class LaunchPageLogic extends UIComponent {
   protected bearface!: UINode;
   protected long_text!: UINode;
   protected long_text_2!: UINode;
-  protected _layouts_loaded: boolean = false;
+  protected _prel_loaded: boolean = false;
   protected _dispose_jobs = new Invoker();
   protected _offset_x = new Sequence(
     1000,
@@ -57,7 +57,8 @@ export default class LaunchPageLogic extends UIComponent {
   protected _loading_imgs: TPicture[] = [];
   protected _loading_idx_anim = new Easing(0, 44, 2000)
     .set_ease_method(ease_linearity)
-    .set_loop(1)
+    .set_times(-1)
+    .stay_end(1)
 
   constructor(layout: UINode, f_name: string) {
     super(layout, f_name);
@@ -65,6 +66,7 @@ export default class LaunchPageLogic extends UIComponent {
     this.fsm = new FSM<Status>().add({
       key: Status.TapHints,
       enter: () => {
+        this._loading_idx_anim.set_times(-1)
         this.tap_to_launch.find_component(SineOpacity)!.enabled = true;
         this.sound_warning.find_component(SineOpacity)!.enabled = true;
         this.tap_to_launch.find_component(FadeOutOpacity)!.enabled = false
@@ -81,23 +83,37 @@ export default class LaunchPageLogic extends UIComponent {
       }
     }, {
       key: Status.Introduction,
+      enter: () => {
+        Ditto.Timeout.add(() => this.lf2.sounds.play("launch/093.wav.mp3"), 1000);
+        this._opacity.start(false);
+        this._scale.start(false)
+      },
       update: (dt) => {
+        this.update_loading_img(dt)
         this.update_Introduction(dt)
+        if (this._skipped && this._opacity.is_end)
+          return Status.GoToEntry
       }
     }, {
       key: Status.GoToEntry,
       enter: () => {
         this._opacity.start(true);
+        this._scale.start(true)
         this.lf2.sounds.play_bgm("launch/main.wma.mp3");
       },
       update: (dt) => {
         this.update_Introduction(dt)
+        if (this._opacity.is_end) {
+          this.lf2.set_layout(this.entry_name);
+          return Status.End
+        }
       }
     })
   }
 
   protected on_prel_data_loaded() {
-    this._layouts_loaded = true;
+    this._prel_loaded = true;
+    this._loading_idx_anim.set_times(4).set_curr_times(0)
   }
 
   override init(...args: string[]): this {
@@ -172,14 +188,11 @@ export default class LaunchPageLogic extends UIComponent {
     const status = this.fsm.state?.key
     switch (status) {
       case Status.TapHints:
-        Ditto.Timeout.add(() => this.lf2.sounds.play("launch/093.wav.mp3"), 1000);
         this.fsm.use(Status.Introduction);
         return;
       case Status.Introduction:
-        this._skipped = true;
-        return;
-      case Status.Loaded:
-        this.fsm.use(Status.GoToEntry)
+        if (this._prel_loaded) this.fsm.use(Status.GoToEntry)
+        else this._skipped = true;
         return;
     }
   }
@@ -187,14 +200,13 @@ export default class LaunchPageLogic extends UIComponent {
     super.on_pause();
     this._unmount_jobs.invoke_and_clear();
   }
-  
+
   update_loading_img(dt: number) {
     if (!this._loading_imgs.length) return;
     this._loading_idx_anim.update(dt)
-    const idx = Math.floor(this._loading_idx_anim.value) % this._loading_imgs.length;
+    const idx = Math.floor(this._loading_idx_anim.value);
     const pic = this._loading_imgs[idx];
     if (pic) this._loading_sprite.set_info(pic).apply();
-    if (this._loading_idx_anim.reach_end) this._loading_idx_anim.start();
   }
 
   update_Introduction(dt: number) {
@@ -210,10 +222,8 @@ export default class LaunchPageLogic extends UIComponent {
       const s = 0.1 + 0.9 * opacity;
       bearface.sprite.set_scale(s, s, 1);
       yeonface.sprite.set_scale(s, s, 1);
-      yeonface.sprite.set_scale(s, s, 1);
     } else {
       bearface.sprite.set_scale(scale, scale, 1);
-      yeonface.sprite.set_scale(scale, scale, 1);
       yeonface.sprite.set_scale(scale, scale, 1);
     }
   }

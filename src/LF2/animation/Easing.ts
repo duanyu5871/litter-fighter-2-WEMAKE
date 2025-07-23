@@ -37,13 +37,13 @@ export class Easing extends Animation {
     return this;
   }
   override calc(): this {
-    if (this._time >= this._duration) {
-      this._value = this._reverse ? this._val_1 : this._val_2;
+    const { is_end, time, duration, val_1, val_2, reverse } = this
+    if (is_end) {
+      this.value = reverse ? val_1 : val_2;
       return this;
     }
-
-    const factor = clamp(this._time / this._duration, 0, 1);
-    this._value = this._ease_method(factor, this._val_1, this._val_2);
+    const factor = clamp(time / duration, 0, 1);
+    this.value = this._ease_method(factor, val_1, val_2);
     return this;
   }
 }

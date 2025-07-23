@@ -27,7 +27,7 @@ export class Sequence extends Animation {
         a.reverse = reverse
         duration -= a.duration;
         if (time > duration) {
-          a.time = a.duration - time + duration;
+          a.time = time - duration;
           this._value = a.calc().value;
           break;
         } else {
