@@ -1,6 +1,6 @@
 import { clamp, is_num } from "../utils";
 import { Delay } from "./Delay";
-import { IAnimation } from "./IBase";
+import { IAnimation } from "./IAnimation";
 export class Sequence implements IAnimation {
   protected _anims: IAnimation[] = [];
   protected _r_anims: IAnimation[] = [];

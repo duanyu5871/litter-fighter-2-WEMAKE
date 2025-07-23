@@ -12,6 +12,7 @@ import GamePrepareLogic from "./GamePrepareLogic";
 import { HorizontalLayout } from "./HorizontalLayout";
 import { Items } from "./Items";
 import LaunchPageLogic from "./LaunchPageLogic";
+import { SineOpacity } from "./SineOpacity";
 import LoadingFileNameDisplayer from "./LoadingFileNameDisplayer";
 import OpacityHover from "./OpacityHover";
 import PlayerCharacterHead from "./PlayerCharacterHead";
@@ -67,6 +68,7 @@ class Factory {
     ["random_img_on_layout_resume", RandomImgOnLayoutResume],
     ["jalousie", Jalousie],
     ["items", Items],
+    ["sine_opacity", SineOpacity],
   ]);
 
   create(

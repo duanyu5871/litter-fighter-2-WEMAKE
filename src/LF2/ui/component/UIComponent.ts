@@ -1,4 +1,5 @@
 import GameKey from "../../defines/GameKey";
+import { is_num } from "../../utils";
 import type { UINode } from "../UINode";
 
 /**
@@ -27,6 +28,8 @@ export class UIComponent {
     return this._args;
   }
 
+
+
   /**
    * 组件基类构造函数
    *
@@ -49,6 +52,10 @@ export class UIComponent {
   init(...args: string[]): this {
     this._args = args;
     return this;
+  }
+  get_num_arg(idx: number): number | null {
+    const num = Number(this._args[idx]);
+    return is_num(num) ? num : null;
   }
 
   /**

@@ -18,6 +18,9 @@ export namespace Defines {
   export type TeamEnum = _TeamEnum;
   export const CLASSIC_SCREEN_WIDTH = 794;
   export const CLASSIC_SCREEN_HEIGHT = 550;
+  export const MODERN_SCREEN_WIDTH = 794;
+  export const MODERN_SCREEN_HEIGHT = 450;
+
   export const DEFAULT_HP = 500;
   export const DEFAULT_MP = 500;
   export const DEFAULT_MILK_MP = 249;

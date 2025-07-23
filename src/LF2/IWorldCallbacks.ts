@@ -1,3 +1,4 @@
+import { IWorldDataset } from "./IWorldDataset";
 import type { World } from "./World";
 import type { Stage } from "./stage/Stage";
 
@@ -39,7 +40,10 @@ export interface IWorldCallbacks {
    */
   on_ups_update?(fps: number, score: number): void;
 
-  on_gravity_change?(value: number, prev: number, world: World): void;
+  on_dataset_change?(
+    key: keyof IWorldDataset, 
+    value: IWorldDataset[typeof key], 
+    prev: IWorldDataset[typeof key], zworld: World): void;
 
-  on_is_sync_render_changed?(value: 0 | 1 | 2, prev: 0 | 1 | 2): void;
+  on_sync_render_changed?(value: 0 | 1 | 2, prev: 0 | 1 | 2): void;
 }

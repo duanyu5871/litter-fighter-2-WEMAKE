@@ -203,7 +203,7 @@ function App() {
         lf2.world.callbacks.add({
           on_stage_change: (s) => _set_bg_id(s.bg.id),
           on_pause_change: (v) => _set_paused(v),
-          on_is_sync_render_changed: (v) => set_sync_render(v),
+          on_sync_render_changed: (v) => set_sync_render(v),
         }),
         lf2.callbacks.add({
           on_layouts_loaded: (layouts) => {
@@ -763,7 +763,7 @@ function App() {
             ]}
             parse={i => [i.value, i.label]}
             value={sync_render}
-            onClick={() => lf2?.world.set_sync_render()}
+            onClick={() => { if (lf2) lf2.world.sync_render = (lf2.world.sync_render + 1) % 3 }}
           />
 
         </Combine>

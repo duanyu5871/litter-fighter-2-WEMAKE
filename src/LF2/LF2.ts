@@ -51,7 +51,6 @@ const cheat_info_pair = (n: CheatType) =>
 
 export class LF2 implements IKeyboardCallback, IPointingsCallback {
   static readonly TAG = "LF2";
-  static readonly DATE = Date()
   static readonly instances = new Set<LF2>()
   private _disposed: boolean = false;
   private _callbacks = new Callbacks<ILf2Callback>();

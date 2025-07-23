@@ -1,6 +1,6 @@
 import { IOrthographicCameraNode, IScene } from "./3d";
-import { Callbacks, FPS, ICollision, NoEmitCallbacks } from "./base";
-import { Builtin_FrameId, Defines, IBdyInfo, IBounding, IEntityData, IFrameInfo, IItrInfo, ItrKind, StateEnum } from "./defines";
+import { Callbacks, FPS, ICollision } from "./base";
+import { Builtin_FrameId, Defines, IBdyInfo, IBounding, IEntityData, IFrameInfo, IItrInfo, StateEnum } from "./defines";
 import { AllyFlag } from "./defines/AllyFlag";
 import Ditto from "./ditto";
 import { IWorldRenderer } from "./ditto/render/IWorldRenderer";
@@ -16,166 +16,24 @@ import LF2 from "./LF2";
 import { Stage } from "./stage/Stage";
 import { WhatNext } from "./state/State_Base";
 import { find } from "./utils/container_help";
-import float_equal from "./utils/math/float_equal";
 import { is_num } from "./utils/type_check";
-export class World {
-  static readonly TAG = "World";
+import { WorldDataset } from "./WorldDataset";
+export class World extends WorldDataset {
+  static override readonly TAG: string = "World";
   readonly lf2: LF2;
-  readonly _callbacks = new Callbacks<IWorldCallbacks>();
+  readonly callbacks = new Callbacks<IWorldCallbacks>();
+
   private _spark_data?: IEntityData;
   private _spark_creator?: ICreator<Entity, typeof Entity>;
-
-  /**
-   * 被击中的对象晃动多少帧
-   *
-   * @type {number}
-   * @memberof World
-   */
-  itr_shaking: number = Defines.DEFAULT_ITR_SHAKING;
-
-  /**
-   * 击中敌人的对象停顿多少帧
-   *
-   * @type {number}
-   * @memberof World
-   */
-  itr_motionless: number = Defines.DEFAULT_ITR_MOTIONLESS;
-
-  /**
-   * dvx缩放系数
-   *
-   * @type {number}
-   * @memberof World
-   */
-  fvx_f: number = Defines.DEFAULT_FVX_F;
-
-  /**
-   * dvy缩放系数
-   *
-   * @type {number}
-   * @memberof World
-   */
-  fvy_f: number = Defines.DEFAULT_FVY_F;
-
-  /**
-   * dvz缩放系数
-   *
-   * @type {number}
-   * @memberof World
-   */
-  fvz_f: number = Defines.DEFAULT_FVZ_F;
-
-  ivy_f: number = 1;
-  ivz_f: number = 1;
-  ivx_f: number = 1;
-  ivy_d: number = 5.5;
-  ivx_d: number = 4;
-
-  /**
-   * X轴丢人初速度缩放系数
-   *
-   * @type {number}
-   */
-  tvx_f: number = Defines.DEFAULT_TVX_F;
-
-  /**
-   * Y轴丢人初速度缩放系数
-   *
-   * @type {number}
-   */
-  tvy_f: number = Defines.DEFAULT_TVY_F;
-
-  /**
-   * Z轴丢人初速度缩放系数
-   *
-   * @type {number}
-   */
-  tvz_f: number = Defines.DEFAULT_TVZ_F;
-
-  /**
-   * 角色进入场地时的闪烁无敌时间
-   *
-   * @type {number}
-   */
-  begin_blink_time: number = Defines.DEFAULT_BEGIN_BLINK_TIME;
-
-  /**
-   * 倒地起身后的闪烁无敌时间
-   *
-   * @type {number}
-   */
-  lying_blink_time: number = Defines.DEFAULT_LYING_BLINK_TIME;
-
-  /**
-   * “非玩家槽角色”死亡时后的闪烁时间
-   * 
-   * 闪烁完成后，非玩家槽角色应当被移除
-   *
-   * @type {number}
-   * @memberof World
-   */
-  gone_blink_time: number = Defines.DEFAULT_GONE_BLINK_TIME;
-
-  vrest_offset: number = 0;
-  arest_offset: number = 0;
-  arest_offset_2: number = 0;
-
-  /**
-   * “帧等待数”偏移值
-   * 
-   * @note
-   * “帧等待数”会在每次更新中减一
-   * 每一帧会在“帧等待数”归零时，尝试进入下一帧。
-   * 
-   * 有：“帧等待数” = “帧本身的帧等待数” + “帧等待数”偏移值
-   * 
-   * @see {IFrameInfo.wait} 帧本身的“帧等待数”
-   * 
-   * @type {number}
-   * @memberof World
-   */
-  frame_wait_offset: number = 0;
-
-  cha_bc_spd: number = Defines.CHARACTER_BOUNCING_SPD;
-  cha_bc_tst_spd: number = Defines.CHARACTER_BOUNCING_TEST_SPD;
-  hp_recoverability: number = Defines.HP_RECOVERABILITY;
-  hp_recovery_spd: number = Defines.HP_RECOVERY_SPD;
-  hp_healing_spd: number = Defines.HP_HEALING_SPD;
-
-  get callbacks(): NoEmitCallbacks<IWorldCallbacks> {
-    return this._callbacks;
-  }
-
-  /**
-   * 按键“双击”判定间隔，单位（帧数）
-   *
-   * 当同个按键在“双击判定间隔”之内按下两次，
-   * 且中途未按下其对应冲突按键，视为“双击”。
-   *
-   */
-  double_click_interval = Defines.DOUBLE_CLICK_INTERVAL;
-
-  /**
-   * 按键“按下”/“双击”的判定持续帧，单位：帧数
-   *
-   * 当某按键被“按下”（不松开），接下来的数帧（数值key_hit_duration）内，均判定为“按下”。
-   * 此时若存在对应的“按键‘按下’跳转动作”，且满足跳转条件，角色将会进入对应的“按键‘按下’跳转动作”。
-   *
-   * 当某双击后，接下来的数帧（数值key_hit_duration）内，均判定为“双击”。
-   * 此时若存在对应的“按键‘双击’跳转动作”，且满足跳转条件，角色将会进入对应的“按键‘双击’跳转动作”。
-   */
-  key_hit_duration = Defines.KEY_HIT_DURATION;
-
-  protected _gravity = Defines.GRAVITY;
-
-  friction_factor = Defines.FRICTION_FACTOR;
-  friction = Defines.FRICTION;
-
   private _stage: Stage;
+  private _need_FPS: boolean = true;
+  private _need_UPS: boolean = true;
+  private _FPS = new FPS(0.9);
+  private _UPS = new FPS(0.9);
+  private _render_worker_id?: ReturnType<typeof Ditto.Render.add>;
+  private _update_worker_id?: ReturnType<typeof Ditto.Interval.add>;
   entities = new Set<Entity>();
-
   readonly player_slot_characters = new Map<string, Entity>();
-
   get stage() {
     return this._stage;
   }
@@ -183,15 +41,21 @@ export class World {
     if (v === this._stage) return;
     const o = this._stage;
     this._stage = v;
-    this._callbacks.emit("on_stage_change")(v, o);
+    this.callbacks.emit("on_stage_change")(v, o);
     o.dispose();
     v.enter_phase(0);
   }
-
+  override on_dataset_change = (k: string, curr: any, prev: any) => {
+    this.callbacks.emit('on_dataset_change')(k as any, curr, prev, this)
+  };
+  on_sync_render_change(curr: any, prev: any) {
+    this.callbacks.emit('on_sync_render_changed')(curr, prev)
+    this.start_render();
+    this.start_update();
+  }
   get bg() {
     return this._stage.bg;
   }
-
   get left() {
     return this.bg.left || 0;
   }
@@ -214,25 +78,6 @@ export class World {
     return this.bg.middle || { x: 0, z: 0 };
   }
 
-  protected _screen_w: number = Defines.CLASSIC_SCREEN_WIDTH;
-  protected _screen_h: number = Defines.CLASSIC_SCREEN_HEIGHT;
-
-  get screen_w(): number {
-    return this._screen_w;
-  }
-  get screen_h(): number {
-    return this._screen_h;
-  }
-  get gravity(): number {
-    return this._gravity;
-  }
-  set gravity(v: number) {
-    const prev = this._gravity;
-    if (float_equal(v, prev)) return;
-    this._gravity = v;
-    this._callbacks.emit("on_gravity_change")(v, prev, this);
-  }
-
   cam_speed = 0;
   lock_cam_x: number | undefined = void 0;
   public renderer: IWorldRenderer
@@ -240,9 +85,8 @@ export class World {
   get camera(): IOrthographicCameraNode { return this.renderer.camera }
 
   constructor(lf2: LF2) {
+    super()
     this.lf2 = lf2;
-    this._screen_w = Defines.CLASSIC_SCREEN_WIDTH;
-    this._screen_h = 450;
     this._stage = new Stage(this, Defines.VOID_BG);
     this.renderer = new Ditto.WorldRender(this);
   }
@@ -255,7 +99,7 @@ export class World {
         this.lf2.players.has(entity.ctrl.player_id)
       ) {
         this.player_slot_characters.set(entity.ctrl.player_id, entity);
-        this._callbacks.emit("on_player_character_add")(
+        this.callbacks.emit("on_player_character_add")(
           entity.ctrl.player_id,
         );
       }
@@ -270,7 +114,7 @@ export class World {
     if (e.ctrl?.player_id) {
       const ok = this.player_slot_characters.delete(e.ctrl.player_id);
       if (ok)
-        this._callbacks.emit("on_player_character_del")(e.ctrl.player_id);
+        this.callbacks.emit("on_player_character_del")(e.ctrl.player_id);
     }
     this.renderer.del_entity(e);
     e.dispose();
@@ -283,36 +127,6 @@ export class World {
     }
   }
 
-  private _need_FPS: boolean = true;
-  private _need_UPS: boolean = true;
-  private _FPS = new FPS(0.9);
-  private _UPS = new FPS(0.9);
-  private _render_worker_id?: ReturnType<typeof Ditto.Render.add>;
-  private _update_worker_id?: ReturnType<typeof Ditto.Interval.add>;
-
-  /**
-   * 同步渲染
-   *
-   * @private
-   * @type {(0 | 1 | 2)}
-   */
-  private _sync_render: 0 | 1 | 2 = 0;
-  get sync_render(): number {
-    return this._sync_render;
-  }
-  set sync_render(v: number) {
-    this.set_sync_render(v);
-  }
-
-  set_sync_render(v: number = this._sync_render + 1) {
-    if (this._sync_render === v) return;
-    const prev = this._sync_render;
-    const curr = (this._sync_render = (Math.floor(v) % 3) as 0 | 1 | 2);
-    this.start_render();
-    this.start_update();
-    this._callbacks.emit("on_is_sync_render_changed")(curr, prev);
-  }
-
   stop_render() {
     this._render_worker_id && Ditto.Render.del(this._render_worker_id);
     this._render_worker_id = 0;
@@ -320,7 +134,7 @@ export class World {
 
   start_render() {
     if (this._render_worker_id) Ditto.Render.del(this._render_worker_id);
-    if (this._sync_render) return;
+    if (this.sync_render) return;
     let _r_prev_time = 0;
     const on_render = (time: number) => {
       const dt = time - _r_prev_time;
@@ -329,7 +143,7 @@ export class World {
       }
       if (_r_prev_time !== 0 && this._need_FPS) {
         this._FPS.update(dt);
-        this._callbacks.emit("on_fps_update")(this._FPS.value);
+        this.callbacks.emit("on_fps_update")(this._FPS.value);
       }
       _r_prev_time = time;
     };
@@ -341,31 +155,31 @@ export class World {
     this._update_worker_id && Ditto.Interval.del(this._update_worker_id);
     this._update_worker_id = void 0;
   }
-
-  private _prev_time: number = Date.now();
-  private _update_count: number = 0;
-  private _fix_radio: number = 1;
   start_update() {
     if (this._update_worker_id) Ditto.Interval.del(this._update_worker_id);
-
+    let _prev_time = Date.now();
+    let _update_count = 0;
+    let _fix_radio = 1;
     const on_update = () => {
       const time = Date.now();
-      const real_dt = time - this._prev_time;
-      if (real_dt < this._ideally_dt * this._fix_radio) return;
-      this._update_count++;
+      const real_dt = time - _prev_time;
+      this.lf2.layout?.update(real_dt);
+      if (real_dt < this._ideally_dt * _fix_radio) return;
+      _update_count++;
       if (!this._paused) this.update_once();
-      if (0 === this._update_count % this._sync_render) {
+      this.update_camera();
+      this.bg.update();
+
+      if (0 === _update_count % this.sync_render) {
         this.render_once(real_dt);
-        this._callbacks.emit("on_fps_update")(
-          this._UPS.value / this._sync_render,
-        );
+        this.callbacks.emit("on_fps_update")(this._UPS.value / this.sync_render);
       }
       this._UPS.update(real_dt);
-      this._fix_radio = this._UPS.value / 60;
+      _fix_radio = this._UPS.value / 60;
       if (this._need_UPS) {
-        this._callbacks.emit("on_ups_update")(this._UPS.value, 0);
+        this.callbacks.emit("on_ups_update")(this._UPS.value, 0);
       }
-      this._prev_time = time;
+      _prev_time = time;
     };
     this._update_worker_id = Ditto.Interval.add(on_update, 0);
   }
@@ -491,15 +305,11 @@ export class World {
     }
     this.del_entities(this.gone_entities);
     this.collision_detections();
-
-    this.update_camera();
-    this.bg.update();
     this.stage.update();
   }
 
   render_once(dt: number) {
     this.renderer.render();
-    this.lf2.layout?.update(dt);
   }
 
   update_camera() {
@@ -534,7 +344,7 @@ export class World {
     let cur_x = this.renderer.cam_x;
     const acc = Math.min(
       acc_ratio,
-      (acc_ratio * Math.abs(cur_x - new_x)) / this._screen_w,
+      (acc_ratio * Math.abs(cur_x - new_x)) / this.screen_w,
     );
     const max_speed = max_speed_ratio * acc;
 
@@ -554,7 +364,7 @@ export class World {
 
     const new_cam_x = Math.floor(this.renderer.cam_x);
     if (old_cam_x !== new_cam_x) {
-      this._callbacks.emit("on_cam_move")(new_cam_x);
+      this.callbacks.emit("on_cam_move")(new_cam_x);
     }
   }
 
@@ -764,15 +574,15 @@ export class World {
   set_paused(v: boolean) {
     if (this._paused === v) return;
     this._paused = v;
-    this._callbacks.emit("on_pause_change")(v);
+    this.callbacks.emit("on_pause_change")(v);
   }
 
   dispose() {
-    this._callbacks.emit("on_disposed")();
+    this.callbacks.emit("on_disposed")();
     this.stop_update();
     this.stop_render();
     this.del_entities(Array.from(this.entities));
     this.renderer.dispose();
-    this._callbacks.clear()
+    this.callbacks.clear()
   }
 }

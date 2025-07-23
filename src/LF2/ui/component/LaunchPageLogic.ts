@@ -2,6 +2,7 @@ import { ISprite } from "../../3d/ISprite";
 import Easing from "../../animation/Easing";
 import Sequence from "../../animation/Sequence";
 import { Sine } from "../../animation/Sine";
+import FSM, { IState } from "../../base/FSM";
 import Invoker from "../../base/Invoker";
 import GameKey from "../../defines/GameKey";
 import Ditto from "../../ditto";
@@ -11,7 +12,14 @@ import ease_linearity from "../../utils/ease_method/ease_linearity";
 import type { UINode } from "../UINode";
 import { UIComponent } from "./UIComponent";
 
+enum Status {
+  TapHints = '0',
+  Introduction = '1',
+  Loaded = '2',
+  GoToEntry = "GoToEntry",
+}
 export default class LaunchPageLogic extends UIComponent {
+  protected fsm: FSM<Status, IState<Status>>;
   get entry_name(): string {
     return this.args[0] || "";
   }
@@ -21,7 +29,6 @@ export default class LaunchPageLogic extends UIComponent {
   protected long_text!: UINode;
   protected long_text_2!: UINode;
   protected sound_warning!: UINode;
-
   protected _layouts_loaded: boolean = false;
   protected _dispose_jobs = new Invoker();
   protected _offset_x = new Sequence(
@@ -41,21 +48,40 @@ export default class LaunchPageLogic extends UIComponent {
   protected _unmount_jobs = new Invoker();
   protected _skipped = false;
 
-  protected _tap_hints_opacity = new Sine(0.1, 1, 0.5);
+  protected _tap_hints_opacity: Sine = new Sine(0.1, 1, 0.5);
   protected _tap_hints_fadeout_opacity = new Easing(1, 0, 255);
-  protected state: number = 0;
 
   protected _loading_sprite: ISprite;
   protected _loading_imgs: TPicture[] = [];
   protected _loading_idx_anim = new Easing(
     0,
     44,
-    2000,
+    20000,
   ).set_ease_method(ease_linearity);
 
   constructor(layout: UINode, f_name: string) {
     super(layout, f_name);
     this._loading_sprite = new Ditto.SpriteNode(this.lf2);
+    this.fsm = new FSM<Status>().add({
+      key: Status.TapHints,
+      update: (dt) => {
+        this.update_loading_img(dt)
+      }
+    }, {
+      key: Status.Introduction,
+      update: (dt) => {
+        this.update_Introduction(dt)
+      }
+    }, {
+      key: Status.GoToEntry,
+      enter: () => {
+        this._opacity.play(true);
+        this.lf2.sounds.play_bgm("launch/main.wma.mp3");
+      },
+      update: (dt) => {
+        this.update_Introduction(dt)
+      }
+    }).use(Status.TapHints)
   }
 
   protected on_prel_data_loaded() {
@@ -113,8 +139,6 @@ export default class LaunchPageLogic extends UIComponent {
     this.sound_warning = this.node.find_child("sound_warning")!;
     this.long_text = this.node.find_child("long_text")!;
     this.long_text_2 = this.node.find_child("long_text_2")!;
-
-    this.state = 0;
     this._tap_hints_opacity.time = 0;
     this._tap_hints_fadeout_opacity.time = 0;
     this.long_text.opacity = this.bearface.opacity = this.yeonface.opacity = 0;
@@ -128,21 +152,24 @@ export default class LaunchPageLogic extends UIComponent {
         on_pointer_down: () => this.on_pointer_down(),
       }),
     );
+    this.fsm.use(Status.TapHints)
   }
-
   override on_player_key_down(player_id: string, key: GameKey): void {
     this.on_pointer_down();
   }
   on_pointer_down() {
-    if (this.state === 0) {
-      this.state = 1;
-      Ditto.Timeout.add(() => this.lf2.sounds.play("launch/093.wav.mp3"), 1000);
-    } else if (this.state === 1) {
-      this._skipped = true;
-    } else if (this.state === 2) {
-      this.state = 3;
-      this._opacity.play(true);
-      this.lf2.sounds.play_bgm("launch/main.wma.mp3");
+    const status = this.fsm.state?.key
+    switch (status) {
+      case Status.TapHints:
+        Ditto.Timeout.add(() => this.lf2.sounds.play("launch/093.wav.mp3"), 1000);
+        this.fsm.use(Status.Introduction);
+        return;
+      case Status.Introduction:
+        this._skipped = true;
+        return;
+      case Status.Loaded:
+        this.fsm.use(Status.GoToEntry)
+        return;
     }
   }
   override on_pause(): void {
@@ -150,62 +177,70 @@ export default class LaunchPageLogic extends UIComponent {
     this._unmount_jobs.invoke_and_clear();
   }
 
+  update_loading_img(dt: number) {
+    // if (!this._loading_imgs.length || this._loading_idx_anim.is_finish)
+    //   return;
+    // console.log(this._loading_idx_anim.update(dt).value)
+    this._loading_idx_anim.update(dt)
+    const idx = Math.floor(this._loading_idx_anim.value) % this._loading_imgs.length;
+    const pic = this._loading_imgs[idx];
+    if (pic) this._loading_sprite.set_info(pic).apply();
+    if (this._loading_idx_anim.is_finish) this._loading_idx_anim.play();
+    // if (
+    //   this._loading_idx_anim.is_finish 
+    //   // && !this.lf2.uiinfos.find((v) => v.id === "entry")
+    // ) this._loading_idx_anim.play();
+  }
+
+  update_Introduction(dt: number) {
+    const { bearface, yeonface, long_text } = this;
+    const scale = this._scale.update(dt).value;
+    const offset = this._offset_x.update(dt).value;
+    const opacity = this._opacity.update(dt).value;
+    bearface.sprite.x = 397 - offset;
+    yeonface.sprite.x = 397 + offset;
+    long_text.sprite.y = -150 - offset;
+    long_text.opacity = bearface.opacity = yeonface.opacity = opacity;
+    if (this._opacity.reverse) {
+      const s = 0.1 + 0.9 * opacity;
+      bearface.sprite.set_scale(s, s, 1);
+      yeonface.sprite.set_scale(s, s, 1);
+      yeonface.sprite.set_scale(s, s, 1);
+    } else {
+      bearface.sprite.set_scale(scale, scale, 1);
+      yeonface.sprite.set_scale(scale, scale, 1);
+      yeonface.sprite.set_scale(scale, scale, 1);
+    }
+  }
+
   override update(dt: number): void {
-    if (this._loading_imgs.length && !this._loading_idx_anim.is_finish) {
-      const idx = Math.floor(this._loading_idx_anim.update(dt).value);
-      const pic = this._loading_imgs[idx];
-      if (pic) this._loading_sprite.set_info(pic).apply();
-      if (
-        this._loading_idx_anim.is_finish &&
-        !this.lf2.uiinfos.find((v) => v.id === "entry")
-      )
-        this._loading_idx_anim.play();
-    }
+    this.fsm.update(dt);
+    // if (
+    //   this.status === Status.Loaded ||
+    //   this.status === 2 ||
+    //   this.status === 3
+    // ) {
+    //   this.sound_warning.opacity = this.tap_to_launch.opacity =
+    //     this._tap_hints_fadeout_opacity.update(dt).value;
 
-    if (this.state === 0) {
-      this._tap_hints_opacity.update(dt)
-      this.sound_warning.opacity = this.tap_to_launch.opacity = this._tap_hints_opacity.value;
-    } else if (this.state === 1 || this.state === 2 || this.state === 3) {
-      this.sound_warning.opacity = this.tap_to_launch.opacity =
-        this._tap_hints_fadeout_opacity.update(dt).value;
-      const { bearface, yeonface, long_text } = this;
-      const scale = this._scale.update(dt).value;
-      const offset = this._offset_x.update(dt).value;
-      const opacity = this._opacity.update(dt).value;
-      bearface.sprite.x = 397 - offset;
-      yeonface.sprite.x = 397 + offset;
-      long_text.sprite.y = -150 - offset;
-      long_text.opacity = bearface.opacity = yeonface.opacity = opacity;
-      if (this._opacity.reverse) {
-        const s = 0.1 + 0.9 * opacity;
-        bearface.sprite.set_scale(s, s, 1);
-        yeonface.sprite.set_scale(s, s, 1);
-        yeonface.sprite.set_scale(s, s, 1);
-      } else {
-        bearface.sprite.set_scale(scale, scale, 1);
-        yeonface.sprite.set_scale(scale, scale, 1);
-        yeonface.sprite.set_scale(scale, scale, 1);
-      }
-      if (this.state === 3) {
-        this.long_text_2.opacity = opacity;
-      } else if (this.lf2.uiinfos.find((v) => v.id === "entry")) {
-        this._tap_hints_opacity.update(dt)
-        this.long_text_2.opacity = this._tap_hints_opacity.value;
-      }
-      this.long_text.visible = this.long_text.opacity > 0;
-      this.long_text_2.visible = this.long_text_2.opacity > 0;
+    //   if (this.status === 3) {
+    //     this.long_text_2.opacity = opacity;
+    //   } else if (this.lf2.uiinfos.find((v) => v.id === "entry")) {
+    //     this._tap_hints_opacity.update(dt)
+    //     this.long_text_2.opacity = this._tap_hints_opacity.value;
+    //   }
+    //   this.long_text.visible = this.long_text.opacity > 0;
+    //   this.long_text_2.visible = this.long_text_2.opacity > 0;
 
-      if (this._opacity.is_end && this._layouts_loaded) {
-        if (this._opacity.reverse) {
-          this.lf2.set_layout("entry");
-        } else if (this._skipped) {
-          this.state = 3;
-          this._opacity.play(true);
-          this.lf2.sounds.play_bgm("launch/main.wma.mp3");
-        } else {
-          this.state = 2;
-        }
-      }
-    }
+    //   if (this._opacity.is_end && this._layouts_loaded) {
+    //     if (this._opacity.reverse) {
+    //       this.lf2.set_layout("entry");
+    //     } else if (this._skipped) {
+    //       this.fsm.use(Status.GoToEntry)
+    //     } else {
+    //       this.status = 2;
+    //     }
+    //   }
+    // }
   }
 }

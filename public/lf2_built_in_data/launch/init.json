@@ -14,7 +14,8 @@
       "style": {
         "font": "36px Arial",
         "text_align": "center"
-      }
+      },
+      "component": ["sine_opacity(0.1, 1, 0.25)"]
     },
     {
       "id": "sound_warning",
@@ -24,7 +25,8 @@
       "style": {
         "font": "18px Arial",
         "text_align": "center"
-      }
+      },
+      "component": ["sine_opacity(0.1, 1, 0.25)"]
     },
     {
       "id": "bearface",

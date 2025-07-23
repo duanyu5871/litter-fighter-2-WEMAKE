@@ -1,19 +1,15 @@
 import Sequence from "./Sequence";
-import { IAnimation } from "./IBase";
+import { Animation } from "./Animation";
 
-export class Delay implements IAnimation {
-  duration: number;
-  time: number = 0;
-  reverse: boolean = false;
+export class Delay extends Animation {
   owner: Sequence;
-  get value(): number {
-    return this.owner.value;
-  }
   constructor(owner: Sequence, duration: number) {
+    super()
     this.owner = owner;
     this.duration = duration;
   }
-  update(dt: number): this { return this }
-  calc(): this { return this; }
-  end(): this { return this }
+  override calc(): this {
+    this.value = this.owner.value;
+    return this;
+  }
 }
