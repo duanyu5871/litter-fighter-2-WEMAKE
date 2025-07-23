@@ -14,12 +14,14 @@ import { FadeOutOpacity } from "./FadeOutOpacity";
 import { SineOpacity } from "./SineOpacity";
 import { UIComponent } from "./UIComponent";
 
+
 enum Status {
-  TapHints = '0',
-  Introduction = '1',
-  Loaded = '2',
+  TapHints = 'TapHints',
+  Introduction = 'Introduction',
+  Loaded = 'Loaded',
   GoToEntry = "GoToEntry",
 }
+
 export default class LaunchPageLogic extends UIComponent {
   protected fsm: FSM<Status, IState<Status>>;
   get entry_name(): string {
@@ -35,31 +37,27 @@ export default class LaunchPageLogic extends UIComponent {
   protected _dispose_jobs = new Invoker();
   protected _offset_x = new Sequence(
     1000,
-    new Easing(0, 80, 500),
+    new Easing(0, 80, 1000),
   );
   protected _scale = new Sequence(
     1000,
-    new Easing(0, 2, 250),
-    new Easing(2, 1, 250),
+    new Easing(0, 2, 500),
+    new Easing(2, 1, 500),
   );
   protected _opacity = new Sequence(
     1000,
-    new Easing(0, 1, 500),
+    new Easing(0, 1, 1000),
     250,
   );
   protected _unmount_jobs = new Invoker();
   protected _skipped = false;
-
   protected _tap_hints_opacity: Sine = new Sine(0.1, 1, 0.5);
   protected _tap_hints_fadeout_opacity = new Easing(1, 0, 255);
-
   protected _loading_sprite: ISprite;
   protected _loading_imgs: TPicture[] = [];
-  protected _loading_idx_anim = new Easing(
-      0,
-      44,
-      2000,
-    ).set_ease_method(ease_linearity)
+  protected _loading_idx_anim = new Easing(0, 44, 2000)
+    .set_ease_method(ease_linearity)
+    .set_loop(1)
 
   constructor(layout: UINode, f_name: string) {
     super(layout, f_name);
@@ -89,7 +87,7 @@ export default class LaunchPageLogic extends UIComponent {
     }, {
       key: Status.GoToEntry,
       enter: () => {
-        this._opacity.play(true);
+        this._opacity.start(true);
         this.lf2.sounds.play_bgm("launch/main.wma.mp3");
       },
       update: (dt) => {
@@ -157,10 +155,9 @@ export default class LaunchPageLogic extends UIComponent {
     this._tap_hints_fadeout_opacity.time = 0;
     this.long_text.opacity = this.bearface.opacity = this.yeonface.opacity = 0;
     this.long_text_2.opacity = 0;
-
-    this._scale.play(false);
-    this._opacity.play(false);
-    this._offset_x.play(false);
+    this._scale.start(false);
+    this._opacity.start(false);
+    this._offset_x.start(false);
     this._unmount_jobs.add(
       this.lf2.pointings.callback.add({
         on_pointer_down: () => this.on_pointer_down(),
@@ -190,13 +187,14 @@ export default class LaunchPageLogic extends UIComponent {
     super.on_pause();
     this._unmount_jobs.invoke_and_clear();
   }
-
+  
   update_loading_img(dt: number) {
+    if (!this._loading_imgs.length) return;
     this._loading_idx_anim.update(dt)
     const idx = Math.floor(this._loading_idx_anim.value) % this._loading_imgs.length;
     const pic = this._loading_imgs[idx];
     if (pic) this._loading_sprite.set_info(pic).apply();
-    if (this._loading_idx_anim.is_finish) this._loading_idx_anim.play();
+    if (this._loading_idx_anim.reach_end) this._loading_idx_anim.start();
   }
 
   update_Introduction(dt: number) {

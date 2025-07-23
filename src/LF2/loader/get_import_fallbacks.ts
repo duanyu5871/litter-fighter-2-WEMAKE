@@ -21,6 +21,12 @@ export default function get_import_fallbacks(name: string): string[] {
       name.replace(regexp, (_, dir, name) => dir + "/@3x/" + name + ".png"),
       name.replace(regexp, (_, dir, name) => dir + "/@2x/" + name + ".webp"),
       name.replace(regexp, (_, dir, name) => dir + "/@2x/" + name + ".png"),
+      name.replace(regexp, (_, dir, name) => dir + "/" + name + "@4x.webp"),
+      name.replace(regexp, (_, dir, name) => dir + "/" + name + "@4x.png"),
+      name.replace(regexp, (_, dir, name) => dir + "/" + name + "@3x.webp"),
+      name.replace(regexp, (_, dir, name) => dir + "/" + name + "@3x.png"),
+      name.replace(regexp, (_, dir, name) => dir + "/" + name + "@2x.webp"),
+      name.replace(regexp, (_, dir, name) => dir + "/" + name + "@2x.png"),
       name.replace(regexp, (_, dir, name) => dir + "/" + name + ".webp"),
       name.replace(regexp, (_, dir, name) => dir + "/" + name + ".png"),
     ].filter((v) => v !== name);

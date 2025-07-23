@@ -17,9 +17,9 @@ export class Sequence extends Animation {
         this._r_anims.unshift(a);
       }
     }
-    this.calc();
     this.duration = this._anims.reduce((r, i) => r + i.duration, 0)
   }
+
   override calc(): this {
     let { time, reverse, duration } = this;
     if (reverse) {
@@ -27,23 +27,27 @@ export class Sequence extends Animation {
         a.reverse = reverse
         duration -= a.duration;
         if (time > duration) {
-          a.time = time - duration;
+          a.time = a.duration - time + duration;
+          this._value = a.calc().value;
+          break;
         } else {
           time -= a.duration;
           a.time = 0;
+          this._value = a.calc().value;
         }
-        this._value = a.calc().value;
       }
     } else {
       for (const a of this._anims) {
         a.reverse = reverse
         if (a.duration > time) {
           a.time = time;
+          this._value = a.calc().value;
+          break;
         } else {
           time -= a.duration;
           a.time = a.duration;
+          this._value = a.calc().value;
         }
-        this._value = a.calc().value;
       }
     }
     return this;

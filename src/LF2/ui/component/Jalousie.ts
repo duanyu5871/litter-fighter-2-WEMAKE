@@ -56,10 +56,10 @@ export class Jalousie extends UIComponent {
   }
 
   override update(dt: number): void {
-    if (this.sine.is_finish) return;
+    if (this.sine.reach_end) return;
     this.sine.update(dt);
     this.update_children();
-    if (this.sine.is_finish)
+    if (this.sine.reach_end)
       this.callbacks.emit('on_change')(this);
   }
 

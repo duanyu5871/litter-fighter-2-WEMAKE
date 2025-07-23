@@ -7,11 +7,11 @@ export class Animation implements IAnimation {
   protected _time: number = 0;
   protected _duration: number = 0
   protected _reverse: boolean = false;
-  protected _loop: boolean = false;
+  protected _loop: number = 0;
 
-  get loop(): boolean { return this._loop; }
-  set loop(v: boolean) { this.set_loop(v) }
-  set_loop(v: boolean): this {
+  get loop(): number { return this._loop; }
+  set loop(v: number) { this.set_loop(v) }
+  set_loop(v: number): this {
     this._loop = v
     return this
   }
@@ -38,12 +38,17 @@ export class Animation implements IAnimation {
   set time(v: number) { this.set_time(v); }
   set_time(v: number): this { this._time = clamp(v, 0, this.duration); return this }
 
-  get is_finish(): boolean {
-    return this._reverse ? this._time >= this._duration : this._time <= 0;
+  get reach_end(): boolean {
+    const { reverse, time, duration } = this
+    return reverse ? time >= duration : time <= 0;
   }
-  play(reverse: boolean = this._reverse): this {
-    this._reverse = reverse;
-    this._time = 0;
+  get is_start(): boolean {
+    const { reverse, time, duration } = this
+    return reverse ? time <= 0 : time >= duration;
+  }
+  start(reverse: boolean = this.reverse): this {
+    this.reverse = reverse;
+    this.time = reverse ? this.duration : 0
     return this;
   }
   end(reverse: boolean = this.reverse): this {
@@ -56,8 +61,16 @@ export class Animation implements IAnimation {
     return this;
   }
   update(dt: number): this {
-    const t = this.reverse ? this.time - dt : this.time + dt;
-    this.time = clamp(t, 0, this.duration);
+    const { duration, reverse, time, loop } = this
+    let t = reverse ? time - dt : time + dt;
+    if (loop) {
+      if (reverse && t < 0 && duration > 0) {
+        while (t < 0) t += duration
+      } else if (!reverse && t > duration && duration > 0) {
+        while (t > duration) t -= duration
+      }
+    }
+    this.time = clamp(t, 0, duration);
     this.calc();
     return this;
   }

@@ -45,7 +45,7 @@ export default class StageTitleShow extends UIComponent {
       x += sprite.w;
       parent_mesh.add(sprite);
     }
-    this._opactiy.play(false);
+    this._opactiy.start(false);
   }
 
   protected async on_stage_change(stage: Stage) {
@@ -92,7 +92,7 @@ export default class StageTitleShow extends UIComponent {
       x += sprite.w;
       parent_sprite.add(sprite);
     }
-    this._opactiy.play(false);
+    this._opactiy.start(false);
   }
   async create_sp(rect_name: string) {
     const raw_rect = this.node.get_value(rect_name);
