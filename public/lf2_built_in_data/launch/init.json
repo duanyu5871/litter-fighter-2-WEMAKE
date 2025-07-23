@@ -17,7 +17,7 @@
       },
       "component": [
         "sine_opacity(0.1, 1, 0.25)",
-        "!fade_out_opacity(50000)"
+        "!fade_out_opacity(500)"
       ]
     },
     {
@@ -31,7 +31,7 @@
       },
       "component": [
         "sine_opacity(0.1, 1, 0.25)",
-        "!fade_out_opacity(50000)"
+        "!fade_out_opacity(500)"
       ]
     },
     {
