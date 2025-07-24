@@ -1,7 +1,8 @@
 import Ditto from "../../ditto";
 import { is_str } from "../../utils/type_check";
+import { TAction } from "../IUIInfo";
 import type { UINode } from "../UINode";
-import { read_call_func_expression } from "../utils/read_call_func_expression";
+import { parse_call_func_expression } from "../utils/parse_call_func_expression";
 
 interface IUIActionHandler {
   (layout: UINode, ...args: string[]): void;
@@ -37,28 +38,32 @@ class UIActor {
     ["switch_difficulty", ({ lf2 }) => lf2.switch_difficulty()],
     ["destory_stage", ({ lf2 }) => lf2.remove_stage()],
     ["remove_all_entities", ({ lf2 }) => lf2.entities.del_all()],
-    [
-      "exit",
-      () => {
-        if (window.confirm("确定退出?")) window.close();
-      },
-    ],
+    ["exit", () => window.confirm("确定退出?") && window.close()],
   ]);
-  act(layout: UINode, actions: string | string[]): void {
-    if (!actions.length) return;
-    if (is_str(actions)) actions = [actions];
-    for (const action of actions) {
-      const [func_name, args] = read_call_func_expression(action);
-      if (!func_name) return;
-      const handler = this._handler_map.get(func_name);
-      if (!handler) return;
-      handler(layout, ...args);
-    }
-  }
 
   add(key: string, handler: IUIActionHandler): void {
     this._handler_map.set(key, handler);
   }
+
+  act(layout: UINode, actions: TAction | TAction[]): void {
+    if (!Array.isArray(actions)) actions = [actions]
+    if (!actions.length) return;
+    for (const raw of actions) {
+      const action = is_str(raw) ? parse_call_func_expression(raw) : raw;
+      if (!action) {
+        Ditto.Warn(`[${UIActor.TAG}::act] failed to act, expression incorrect, expression: ${raw}`)
+        continue;
+      }
+      const { name, args = [] } = action;
+      const handler = this._handler_map.get(name);
+      if (!handler) {
+        Ditto.Warn(`[${UIActor.TAG}::act] failed to act, handler not found by name, expression: ${raw}`)
+        continue;
+      }
+      handler(layout, ...args);
+    }
+  }
+
 }
 const actor = new UIActor();
 export default actor;

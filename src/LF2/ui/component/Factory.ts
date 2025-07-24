@@ -2,17 +2,19 @@ import Ditto from "../../ditto";
 import { is_str } from "../../utils/type_check";
 import { IUIInfo } from "../IUIInfo";
 import type { UINode } from "../UINode";
-import { read_call_func_expression } from "../utils/read_call_func_expression";
+import { parse_call_func_expression } from "../utils/parse_call_func_expression";
 import BackgroundNameText from "./BackgroundNameText";
 import CharacterSelLogic from "./CharacterSelLogic";
 import ComNumButton from "./ComNumButton";
 import { DemoModeLogic } from "./DemoModeLogic";
 import DifficultyText from "./DifficultyText";
+import { FadeInOpacity } from "./FadeInOpacity";
+import { FadeOutOpacity } from "./FadeOutOpacity";
 import GamePrepareLogic from "./GamePrepareLogic";
 import { HorizontalLayout } from "./HorizontalLayout";
 import { Items } from "./Items";
+import { Jalousie } from "./Jalousie";
 import LaunchPageLogic from "./LaunchPageLogic";
-import { SineOpacity } from "./SineOpacity";
 import LoadingFileNameDisplayer from "./LoadingFileNameDisplayer";
 import OpacityHover from "./OpacityHover";
 import PlayerCharacterHead from "./PlayerCharacterHead";
@@ -27,18 +29,16 @@ import PlayerTeamName from "./PlayerTeamName";
 import { PlayingTimeText } from "./PlayingTimeText";
 import { RandomImgOnLayoutResume } from "./RandomImgOnLayoutResume";
 import { ReachableLayout, ReachableLayoutGroup } from "./ReachableLayoutGroup";
-import { Jalousie } from "./Jalousie";
+import { SineOpacity } from "./SineOpacity";
 import StageNameText from "./StageNameText";
 import StageTitleShow from "./StageTitleShow";
 import StageTransitions from "./StageTransitions";
 import { UIComponent } from "./UIComponent";
 import VerticalLayout from "./VerticalLayout";
 import VsModeLogic from "./VsModeLogic";
-import { FadeInOpacity } from "./FadeInOpacity";
-import { FadeOutOpacity } from "./FadeOutOpacity";
 
-class Factory {
-  static readonly TAG = `Layout Component Factory`;
+class ComponentFactory {
+  static readonly TAG = `ComponentFactory`;
   private _component_map = new Map<string, typeof UIComponent>([
     ["game_loading_file_name", LoadingFileNameDisplayer],
     ["key_set", PlayerKeyEditor],
@@ -75,47 +75,36 @@ class Factory {
     ["fade_out_opacity", FadeOutOpacity],
   ]);
 
-  create(
-    layout: UINode,
-    components: IUIInfo["component"],
-  ): UIComponent[] {
-    if (!components?.length) return [];
-    if (is_str(components)) components = [components];
-    const ret: UIComponent[] = [];
-    for (const component_expression of components) {
-      const [func_name, args] = read_call_func_expression(component_expression);
-      if (!func_name) {
-        Ditto.Warn(
-          Factory.TAG + "::create",
-          "expression not correct! expression:",
-          component_expression,
-        );
-        continue;
-      }
-      const Cls = this._component_map.get(
-        func_name.startsWith('!') ?
-          func_name.substring(1, func_name.length) :
-          func_name
-      );
-      if (!Cls) {
-        Ditto.Warn(
-          Factory.TAG + "::create",
-          "Component class not found! expression:",
-          component_expression,
-        );
-        continue;
-      }
+  register(key: string, Cls: typeof UIComponent) {
+    if (this._component_map.has(key))
+      Ditto.Warn(`[${ComponentFactory.TAG}::register] key already exists, ${key}`)
+    this._component_map.set(key, Cls);
+  }
 
-      const component = new Cls(layout, func_name).init(...args);
-      component.enabled = !func_name.startsWith('!');
+  create(layout: UINode, components: IUIInfo["component"]): UIComponent[] {
+    if (!components) return [];
+    if (!Array.isArray(components)) components = [components]
+    if (!components.length) return [];
+
+    const ret: UIComponent[] = [];
+    for (const raw of components) {
+      const info = is_str(raw) ? parse_call_func_expression(raw) : raw
+      if (!info) {
+        Ditto.Warn(`[${ComponentFactory.TAG}::create] expression not correct! expression: ${raw}`);
+        continue;
+      }
+      const cls = this._component_map.get(info.name);
+      if (!cls) {
+        Ditto.Warn(`[${ComponentFactory.TAG}::create] Component not found! expression: ${raw}`);
+        continue;
+      }
+      const { name, args = [], enabled = true } = info;
+      const component = new cls(layout, name).init(...args).set_enabled(enabled);
       ret.push(component);
     }
     return ret;
   }
 
-  register(key: string, Cls: typeof UIComponent) {
-    this._component_map.set(key, Cls);
-  }
 }
-const factory = new Factory();
+const factory = new ComponentFactory();
 export default factory;

@@ -28,6 +28,10 @@ export class UIComponent {
   set enabled(v: boolean) {
     this._enabled = v;
   }
+  set_enabled(v: boolean): this {
+    this._enabled = v;
+    return this;
+  }
   get mounted() {
     return this._mounted;
   }

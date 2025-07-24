@@ -1,4 +1,15 @@
 import IStyle from "../defines/IStyle";
+export interface IComponentInfo {
+  name: string;
+  args?: any[];
+  enabled?: boolean;
+}
+export type TComponentInfo = IComponentInfo | string
+export interface IAction {
+  name: string;
+  args?: any[];
+}
+export type TAction = IAction | string
 
 export interface IUIInfo {
   /**
@@ -29,17 +40,17 @@ export interface IUIInfo {
   flip_x?: boolean;
   flip_y?: boolean;
   color?: string;
-  component?: string | string[];
+  component?: TComponentInfo | TComponentInfo[];
   style?: IStyle;
   txt?: string;
   actions?: {
-    click: string | string[];
-    resume?: string | string[];
-    pause?: string | string[];
-    start?: string | string[];
-    stop?: string | string[];
+    click: TAction | TAction[];
+    resume?: TAction | TAction[];
+    pause?: TAction | TAction[];
+    start?: TAction | TAction[];
+    stop?: TAction | TAction[];
   };
-  key_press_actions?: [string, string][];
+  key_press_actions?: [string, TAction][];
   items?: (IUIInfo | string)[];
   auto_focus?: boolean;
   /**
@@ -57,7 +68,7 @@ export interface IUIInfo {
    * @memberof IUIInfo
    */
   count?: number;
-  
+
   values?: { [x in string]?: any };
   templates?: { [x in string]?: IUIInfo };
 }
