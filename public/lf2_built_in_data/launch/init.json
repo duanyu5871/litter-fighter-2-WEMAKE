@@ -17,7 +17,7 @@
       },
       "component": [
         "sine_opacity(0.1, 1, 0.25)",
-        "!fade_out_opacity(500)"
+        "<fade_out>!fade_out_opacity(500)"
       ]
     },
     {
@@ -31,7 +31,7 @@
       },
       "component": [
         "sine_opacity(0.1, 1, 0.25)",
-        "!fade_out_opacity(500)"
+        "<fade_out>!fade_out_opacity(500)"
       ]
     },
     {
@@ -41,7 +41,7 @@
       "pos": "397,150,1",
       "opacity": 0,
       "component": [
-        "OpacityAnimation(0,1, 0,1000, 1,1000, 1,1000)"
+        "OpacityAnimation(0,1, 0,1000, 1,1000, 1,5000)"
       ]
     },
     {
@@ -51,7 +51,7 @@
       "pos": "397,150,1",
       "opacity": 0,
       "component": [
-        "OpacityAnimation(0,1, 0,1000, 1,1000, 1,1000)"
+        "OpacityAnimation(0,1, 0,1000, 1,1000, 1,5000)"
       ]
     },
     {
@@ -62,7 +62,7 @@
       "pos": "397,150,2",
       "opacity": 0,
       "component": [
-        "OpacityAnimation(0,1, 0,1000, 1,1000, 1,1000)"
+        "OpacityAnimation(0,1, 0,1000, 1,1000, 1,5000)"
       ],
       "style": {
         "font": "18px Arial",

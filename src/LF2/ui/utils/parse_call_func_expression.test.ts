@@ -22,3 +22,11 @@ test(`parse_call_func_expression('!func_name(hello, world)')`, () => {
   expect(a?.args?.[1]).toBe('world')
   expect(a?.enabled).toBe(false)
 })
+test(`parse_call_func_expression('<MY>!func_name(hello, world)')`, () => {
+  const a = parse_call_func_expression('<MY>!func_name(hello, world)');
+  expect(a?.id).toBe('MY')
+  expect(a?.name).toBe('func_name')
+  expect(a?.args?.[0]).toBe('hello')
+  expect(a?.args?.[1]).toBe('world')
+  expect(a?.enabled).toBe(false)
+})

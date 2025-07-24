@@ -46,7 +46,6 @@ export default class LaunchPageLogic extends UIComponent {
     new Easing(2, 1).set_duration(500),
   );
   protected _unmount_jobs = new Invoker();
-  protected _tapped = false;
   protected _tap_hints_opacity: Sine = new Sine(0.1, 1, 0.5);
   protected _tap_hints_fadeout_opacity = new Easing(1, 0).set_duration(255);
   protected _loading_sprite: ISprite;
@@ -97,7 +96,7 @@ export default class LaunchPageLogic extends UIComponent {
       update: (dt) => {
         this.update_loading_img(dt)
         this.update_introduction(dt)
-        if (this._tapped && this.long_text.find_component(OpacityAnimation)!.is_end && this._prel_loaded)
+        if (this._prel_loaded && this.long_text.find_component(OpacityAnimation)!.is_end)
           return Status.GoToEntry
       }
     }, {
@@ -171,7 +170,6 @@ export default class LaunchPageLogic extends UIComponent {
   }
   override on_resume(): void {
     super.on_resume();
-    this._tapped = false;
     this.bearface = this.node.find_child("bearface")!;
     this.yeonface = this.node.find_child("yeonface")!;
     this.tap_to_launch = this.node.find_child("tap_to_launch")!;
@@ -194,7 +192,6 @@ export default class LaunchPageLogic extends UIComponent {
   }
   on_pointer_down() {
     const status = this.fsm.state?.key
-    this._tapped = true
     switch (status) {
       case Status.TapHints:
         this.fsm.use(Status.Introduction);

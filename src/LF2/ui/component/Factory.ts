@@ -90,7 +90,8 @@ class ComponentFactory {
     if (!components.length) return [];
 
     const ret: UIComponent[] = [];
-    for (const raw of components) {
+    for (let idx = 0; idx < components.length; idx++) {
+      const raw = components[idx];
       const info = is_str(raw) ? parse_call_func_expression(raw) : raw
       if (!info) {
         Ditto.Warn(`[${ComponentFactory.TAG}::create] expression not correct! expression: ${raw}`);
@@ -101,8 +102,11 @@ class ComponentFactory {
         Ditto.Warn(`[${ComponentFactory.TAG}::create] Component not found! expression: ${raw}`);
         continue;
       }
-      const { name, args = [], enabled = true } = info;
-      const component = new cls(layout, name).init(...args).set_enabled(enabled);
+      const { name, args = [], enabled = true, id = '' } = info;
+      const component = new cls(layout, name)
+      component.init(...args)
+      component.set_enabled(enabled);
+      component.id = id || `${name}_${idx}`
       ret.push(component);
     }
     return ret;

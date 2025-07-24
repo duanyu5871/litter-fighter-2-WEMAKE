@@ -1,7 +1,8 @@
 import IStyle from "../defines/IStyle";
 export interface IComponentInfo {
-  name: string;
+  id?: string;
   args?: any[];
+  name: string;
   enabled?: boolean;
 }
 export type TComponentInfo = IComponentInfo | string

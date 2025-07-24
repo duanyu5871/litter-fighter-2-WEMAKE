@@ -1,6 +1,6 @@
 import GameKey from "../../defines/GameKey";
 import Ditto from "../../ditto";
-import { is_num, is_str } from "../../utils";
+import { is_num } from "../../utils";
 import type { UINode } from "../UINode";
 
 /**
@@ -12,6 +12,7 @@ import type { UINode } from "../UINode";
 export class UIComponent {
   readonly node: UINode;
   readonly f_name: string;
+  id: string = '';
   get lf2() {
     return this.node.lf2;
   }
@@ -79,7 +80,7 @@ export class UIComponent {
     if (!str) return false
     return !['false', '0'].some(v => v === str);
   }
-  
+
   nums(idx: number, length: number): number[] | null {
     if (idx >= this._args.length) return null;
     let raw = this._args[idx];
