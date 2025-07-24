@@ -20,6 +20,7 @@ import { UIComponent } from "./component/UIComponent";
 import read_nums from "./utils/read_nums";
 
 export class UINode {
+  __debugging = false;
   readonly lf2: LF2;
   readonly id_layout_map: Map<string, UINode>;
   readonly name_layout_map: Map<string, UINode>;
@@ -54,7 +55,13 @@ export class UINode {
   protected _index: number = 0;
   readonly data: Readonly<ICookedUIInfo>;
   get scale() { return this._scale.value }
-  set scale(v: [number, number, number]) { this._scale.value = v }
+  set scale(v: [number, number, number]) { this.set_scale(...v) }
+  set_scale(x?: number, y?: number, z?: number): this {
+    const [a, b, c] = this._scale.value;
+    this._scale.value = [x ?? a, y ?? b, z ?? c];
+    return this;
+  }
+
   get focused(): boolean {
     return this._root._focused_node === this;
   }
@@ -157,8 +164,18 @@ export class UINode {
     this._img_idx = () => v;
   }
 
+  /**
+   * 当前节点是否可见
+   * 
+   * @description 
+   *    要注意，当任意一个祖先节点visible为false时，
+   *    即使设置当前节点为visible为true，visible属性仍将返回false
+   *
+   * @type {boolean}
+   */
   get visible(): boolean {
-    return this._visible.value;
+    if (!this.parent) return this._visible.value
+    return this.parent.visible && this._visible.value;
   }
 
   set visible(v: boolean) {
@@ -166,12 +183,15 @@ export class UINode {
   }
 
   set_visible(v: boolean): this {
+    const prev = this.visible;
     this._visible.set(1, v);
+    if (prev !== this.visible) this.invoke_visible_callback()
     return this;
   }
 
   get disabled(): boolean {
-    return this._disabled.value;
+    if (!this.parent) return this._disabled.value;
+    return this.parent.disabled || this._disabled.value;
   }
   set disabled(v: boolean) {
     this.set_disabled(v);
@@ -320,7 +340,7 @@ export class UINode {
     }
     if (this.root === this) this.renderer.del_self();
 
-    if (this.global_visible && !this.parent) this.invoke_all_on_hide();
+    if (this.visible && !this.parent) this.invoke_all_on_hide();
 
     const { pause } = this.data.actions || {};
     pause && actor.act(this, pause);
@@ -331,7 +351,7 @@ export class UINode {
   on_show() {
     for (const c of this.components) c.on_show?.();
     this._callbacks.emit("on_show")(this);
-    if (this.data.auto_focus && !this.global_disabled && !this.focused_node)
+    if (this.data.auto_focus && !this.disabled && !this.focused_node)
       this.focused_node = this;
   }
 
@@ -536,33 +556,14 @@ export class UINode {
       return (this._img_idx = () => img_idx);
     }
   }
-
-  get sprite() {
-    return this.renderer.sprite;
-  }
+  /** @deprecated get rip of it */
+  get sprite() { return this.renderer.sprite; }
 
   on_click(): boolean {
     const { click } = this.data.actions ?? {};
     click && actor.act(this, click);
     for (const c of this._components) c.on_click?.();
     return !!click;
-  }
-
-  get global_visible(): boolean {
-    if (!this.visible) return false;
-    return this.parent ? this.parent.global_visible : true;
-  }
-
-  get global_disabled(): boolean {
-    if (this.disabled) return true;
-    return !!this.parent?.global_disabled;
-  }
-
-  get global_z(): number {
-    let global_z = 0;
-    let l: UINode | undefined = this;
-    for (; l?._parent; l = l.parent) global_z += this.sprite.z;
-    return global_z;
   }
 
   invoke_all_on_show() {
@@ -580,19 +581,17 @@ export class UINode {
   }
 
   invoke_visible_callback() {
-    if (this.global_visible) {
+    if (this.visible) {
       this.invoke_all_on_show();
-    } else if (!this.parent || this.parent.global_visible) {
+    } else {
       this.invoke_all_on_hide();
     }
   }
 
   update(dt: number) {
-    const visible_changed = this.visible != this.renderer.visible
-    this.renderer.render()
-    if (visible_changed) this.invoke_visible_callback();
     for (const i of this.children) i.update(dt);
-    for (const c of this._components) if(c.enabled) c.update?.(dt);
+    for (const c of this._components) if (c.enabled) c.update?.(dt);
+    this.renderer.visible = this.visible;
   }
 
   on_player_key_down(player_id: string, key: GameKey) {

@@ -1,54 +1,53 @@
-import { is_num } from "../utils";
 import { Animation } from "./Animation";
-import { Delay } from "./Delay";
 export class Sequence extends Animation {
-  protected _anims: Animation[] = [];
-  protected _r_anims: Animation[] = [];
-  constructor(...animations: (Animation | number)[]) {
+  static override TAG = 'Sequence';
+  readonly anims: Animation[] = [];
+  constructor(...anims: Animation[]) {
     super()
-    for (const a of animations) {
-      if (is_num(a)) {
-        if (a <= 0) continue;
-        const anim = new Delay(this, a);
-        this._anims.push(anim);
-        this._r_anims.unshift(anim);
-      } else {
-        this._anims.push(a);
-        this._r_anims.unshift(a);
-      }
-    }
-    this.duration = this._anims.reduce((r, i) => r + i.duration, 0)
+    this.anims = anims
+    this.duration = anims.reduce((r, i) => r + i.duration, 0)
   }
-
   override calc(): this {
-    let { time, reverse, duration } = this;
+    let { time, reverse: reverse, duration, anims } = this;
+    if (time >= duration) {
+      const a = this.anims[this.anims.length - 1]
+      a.time = a.duration;
+      this.value = a.calc().value;
+      return this;
+    }
+    if (time <= 0) {
+      const a = this.anims[0]
+      a.time = 0;
+      this.value = a.calc().value;
+      return this;
+    }
+    const len = anims.length
     if (reverse) {
-      for (const a of this._r_anims) {
-        a.reverse = reverse
-        duration -= a.duration;
+      let idx = len - 1
+      for (; idx >= 0; --idx) {
+        if (this.__debugging) console.log(`[${Sequence.TAG}::calc] anim idx=${idx}`)
+        const anim = anims[idx]!;
+        duration -= anim.duration;
         if (time > duration) {
-          a.time = time - duration;
-          this._value = a.calc().value;
+          anim.time = time - duration;
+          this.value = anim.calc().value;
           break;
-        } else {
-          time -= a.duration;
-          a.time = 0;
-          this._value = a.calc().value;
         }
       }
+      if (this.__debugging) console.log(`[${Sequence.TAG}::calc] anim idx=${idx}, value=${anims[idx].value}`)
     } else {
-      for (const a of this._anims) {
-        a.reverse = reverse
-        if (a.duration > time) {
-          a.time = time;
-          this._value = a.calc().value;
+      let idx = 0
+      for (; idx < len; ++idx) {
+        if (this.__debugging) console.log(`[${Sequence.TAG}::calc] anim idx=${idx}`)
+        const anim = anims[idx]!;
+        if (anim.duration > time) {
+          anim.time = time;
+          this.value = anim.calc().value;
           break;
-        } else {
-          time -= a.duration;
-          a.time = a.duration;
-          this._value = a.calc().value;
         }
+        time -= anim.duration;
       }
+      if (this.__debugging) console.log(`[${Sequence.TAG}::calc] anim idx=${idx}, value=${anims[idx].value}`)
     }
     return this;
   }

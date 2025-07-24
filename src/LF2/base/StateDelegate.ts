@@ -4,6 +4,7 @@ export type TValueInfo<T> =
 
 export type Value<T> = T | (() => T)
 export type Unsafe<T> = T | undefined | null;
+
 export class StateDelegate<T> {
   protected _values: TValueInfo<Unsafe<T>>[] = [];
   protected get_value(v: TValueInfo<Unsafe<T>>) {

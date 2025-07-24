@@ -315,11 +315,11 @@ export default class GamePrepareLogic extends UIComponent {
 
     const stage_name_text = this.node.root.search_component(
       StageNameText,
-      (v) => v.node.global_visible && !v.node.global_disabled,
+      (v) => v.node.visible && !v.node.disabled,
     );
     const background_name_text = this.node.root.search_component(
       BackgroundNameText,
-      (v) => v.node.global_visible && !v.node.global_disabled,
+      (v) => v.node.visible && !v.node.disabled,
     );
     if (stage_name_text) this.lf2.change_stage(stage_name_text.stage);
     if (background_name_text)

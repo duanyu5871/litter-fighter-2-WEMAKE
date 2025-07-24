@@ -6,6 +6,7 @@ import { empty_texture, white_texture } from "../../LF2/loader/ImageMgr";
 import type { UINode } from "../../LF2/ui/UINode";
 
 export class UINodeRenderer implements IUINodeRenderer {
+  __debugging = false;
   sprite: ISprite;
   node: UINode;
   get world() { return this.node.lf2.world }
@@ -29,24 +30,24 @@ export class UINodeRenderer implements IUINodeRenderer {
   }
   on_start() {
     const [x, y, z] = this.node.data.pos;
-    const p = this.create_sprite_info();
     this.sprite
-      .set_info(p)
       .set_center(...this.node.center)
       .set_position(x, -y, z)
-      .set_opacity(p.texture || p.color ? 1 : 0)
       .set_visible(this.node.visible)
       .set_name(`layout(name= ${this.node.name}, id=${this.node.id})`)
       .apply();
 
+    this.create_sprite_info().then((p) => {
+      this.sprite.set_info(p).set_opacity(p.texture || p.color ? 1 : 0)
+    });
     this.node.parent?.renderer.add(this);
   }
   on_stop() {
     this.parent?.del(this)
   }
-  create_sprite_info(): ISpriteInfo {
+  async create_sprite_info(): Promise<ISpriteInfo> {
     const [w, h] = this.node.size;
-    const texture = this.create_texture();
+    const texture = await this.create_texture();
     const p: ISpriteInfo = {
       w, h, texture, color: this.node.data.color,
     };
@@ -54,17 +55,16 @@ export class UINodeRenderer implements IUINodeRenderer {
   }
 
   update_img() {
-    const p = this.create_sprite_info();
-    this.sprite.set_info(p).apply();
+    this.create_sprite_info().then(p => this.sprite.set_info(p).apply());
   }
-  protected create_texture(): THREE.Texture | undefined {
+  protected async create_texture(): Promise<THREE.Texture> {
     const img_idx = this.node.img_idx;
     const img_info = this.node.img_infos?.[img_idx];
     if (!img_info) {
       return this.node.data.color ? white_texture() : empty_texture();
     }
     const { flip_x, flip_y } = this.node.data;
-    const texture = this.lf2.images.create_pic_by_img_info(img_info).texture;
+    const { texture } = await this.lf2.images.p_create_pic_by_img_info(img_info);
     texture.offset.set(flip_x ? 1 : 0, flip_y ? 1 : 0);
     return texture;
   }
@@ -81,11 +81,18 @@ export class UINodeRenderer implements IUINodeRenderer {
       this.img_idx = this.node.img_idx
       this.update_img();
     }
-    const s = this.node.scale;
-    this.sprite.set_scale(...s);
+    this.sprite.set_scale(...this.node.scale);
     const [x, y, z] = this.node.pos
     this.sprite.set_position(x, -y, z);
-    this.visible = this.node.visible
+    this.sprite.visible = this.node.visible
+    if (this.__debugging && this.node.opacity) {
+      const i = 0
+      const j = i
+    }
     this.sprite.opacity = this.node.opacity;
+    this.sprite.apply()
+    for (const child of this.node.children)
+      if (child.visible)
+        child.renderer.render()
   }
 }

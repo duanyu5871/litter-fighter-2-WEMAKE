@@ -17,8 +17,8 @@ export class ReachableLayoutGroup extends UIComponent {
   }
 
   override on_player_key_down(_player_id: string, key: GameKey): void {
-    if (!this.binded_layout.global_visible) return;
-    if (this.binded_layout.global_disabled) return;
+    if (!this.binded_layout.visible) return;
+    if (this.binded_layout.disabled) return;
     switch (this.direction) {
       case "lr":
         if (key === "L" || key === "R") break;
@@ -32,8 +32,8 @@ export class ReachableLayoutGroup extends UIComponent {
     const items = this.node.root.search_components(ReachableLayout, (v) => {
       return (
         v.group_name === this.name &&
-        v.node.global_visible &&
-        !v.node.global_disabled
+        v.node.visible &&
+        !v.node.disabled
       );
     });
     if (items.length <= 0) return;

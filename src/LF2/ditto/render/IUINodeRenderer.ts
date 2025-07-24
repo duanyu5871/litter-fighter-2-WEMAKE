@@ -2,6 +2,7 @@ import type { ISprite } from "../../3d/ISprite";
 import type { UINode } from "../../ui/UINode";
 
 export interface IUINodeRenderer {
+  __debugging?: boolean;
   /** @deprecated get rip of it */ sprite: ISprite;
   set x(v: number);
   set y(v: number);

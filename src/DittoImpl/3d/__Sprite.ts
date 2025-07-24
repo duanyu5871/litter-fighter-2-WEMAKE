@@ -18,6 +18,9 @@ export class __Sprite extends __Object implements ISprite {
   > {
     return this._inner as any;
   }
+  override get opacity(): number {
+    return super.opacity;
+  }
   override set opacity(v: number) {
     this.set_opacity(v);
   }
@@ -51,7 +54,7 @@ export class __Sprite extends __Object implements ISprite {
     info && this.set_info(info);
     const [r, g, b, a] = this._rgba;
     const geo = this.next_geometry();
-    const mp: THREE.MeshBasicMaterialParameters = { transparent: true, opacity: this._rgba[3] };
+    const mp: THREE.MeshBasicMaterialParameters = { transparent: true, opacity: a };
     mp.map = this._texture;
     mp.color = new THREE.Color(r / 255, g / 255, b / 255);
     this._inner = new THREE.Mesh(geo, new THREE.MeshBasicMaterial(mp));
@@ -103,9 +106,11 @@ export class __Sprite extends __Object implements ISprite {
     this._texture = info.texture || empty_texture();
     return this;
   }
+
   get_info(): ISpriteInfo {
     return this._info;
   }
+  
   override dispose(): void {
     super.dispose();
     dispose_mesh(this.inner);

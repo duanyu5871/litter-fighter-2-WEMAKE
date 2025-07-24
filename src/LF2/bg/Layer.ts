@@ -1,4 +1,4 @@
-import { Easing, IAnimation, Sequence } from "../animation";
+import { Delay, Easing, IAnimation, Sequence } from "../animation";
 import type { IBgLayerInfo } from "../defines/IBgLayerInfo";
 import type Background from "./Background";
 export class Layer {
@@ -27,10 +27,10 @@ export class Layer {
     }
   }
   fade_out(duration: number = 16, delay: number = 0): void {
-    this._fade_anim = new Sequence(delay, new Easing(this.opacity, 0, duration))
+    this._fade_anim = new Sequence(new Delay(this.opacity, delay), new Easing(this.opacity, 0).set_duration(duration))
   }
   fade_in(duration: number = 16, delay: number = 0): void {
-    this._fade_anim = new Sequence(delay, new Easing(this.opacity, 1, duration))
+    this._fade_anim = new Sequence(new Delay(this.opacity, delay), new Easing(this.opacity, 1).set_duration(duration))
   }
   dispose() {
   }

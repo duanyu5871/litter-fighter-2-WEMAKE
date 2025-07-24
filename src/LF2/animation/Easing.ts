@@ -20,12 +20,10 @@ export class Easing extends Animation {
     this._ease_method = v;
   }
 
-  constructor(begin = 0, end = 1, duration = 250, reverse = false) {
+  constructor(begin = 0, end = 1) {
     super()
     this.val_1 = begin;
     this.val_2 = end;
-    this.duration = duration;
-    this.reverse = reverse;
   }
   set(begin: number, end: number): this {
     this._val_1 = is_num(begin) ? begin : this._val_1;
@@ -37,7 +35,11 @@ export class Easing extends Animation {
     return this;
   }
   override calc(): this {
-    const { is_end, time, duration, val_1, val_2, reverse } = this
+    const { is_end, time, duration, val_1, val_2, reverse: reverse } = this
+    if (val_1 === val_2) {
+      this.value = val_1
+      return this;
+    };
     if (is_end) {
       this.value = reverse ? val_1 : val_2;
       return this;

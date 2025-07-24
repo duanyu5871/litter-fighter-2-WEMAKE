@@ -75,10 +75,10 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
     return !this._loaded && !this._loading;
   }
 
-  get ui_stacks() {
+  get ui_stacks(): UINode[] {
     return this._ui_stacks;
   }
-  get ui() {
+  get ui(): UINode | undefined {
     return this._ui_stacks[this._ui_stacks.length - 1];
   }
   get difficulty(): Difficulty {
@@ -193,7 +193,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
     this.pointings.callback.add(this);
     this.world.start_update();
     this.world.start_render();
-    this.load_prel_data_zip("prel.zip.json");
+    this.load_prel_zip("prel.zip.json");
     LF2.instances.add(this)
   }
 
@@ -225,7 +225,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
     const enter_ui = new Set<UINode>();
     for (const { object } of intersections) {
       const ui = object.user_data.owner;
-      if (ui instanceof UINode && ui.global_visible) {
+      if (ui instanceof UINode && ui.visible) {
         if (leave_ui.has(ui)) {
           leave_ui.delete(ui)
           stay_ui.add(ui)
@@ -264,7 +264,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
     );
     const layouts = intersections
       .map((v) => v.object.get_user_data('owner') as UINode)
-      .filter((v) => v && v.global_visible && !v.global_disabled)
+      .filter((v) => v && v.visible && !v.disabled)
     for (const ui of layouts) if (ui.on_click()) break;
   }
 
@@ -338,12 +338,12 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
     this.on_loading_content(txt, progress);
   }
 
-  async load_prel_data_zip(url: string): Promise<IZip> {
+  async load_prel_zip(url: string): Promise<IZip> {
     const ret = await this.load_zip_from_info_url(url);
     this._zips.unshift(ret);
     this._callbacks.emit("on_zips_changed")(this._zips);
-    await this.load_layouts();
-    this._callbacks.emit("on_prel_data_loaded")();
+    await this.load_ui();
+    this._callbacks.emit("on_prel_loaded")();
     return ret;
   }
 
@@ -544,9 +544,9 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
     return this._uiinfos_loaded;
   }
 
-  protected _layout_info_map = new Map<string, IUIInfo>();
+  protected _uiinfo_map = new Map<string, IUIInfo>();
 
-  async load_layouts(): Promise<ICookedUIInfo[]> {
+  async load_ui(): Promise<ICookedUIInfo[]> {
     if (this._uiinfos.length) return this._uiinfos;
     const array = await this.import_json("layouts/index.json").catch((e) => []);
     this._uiinfos_loaded = false;
@@ -562,14 +562,14 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
         );
     }
     for (const path of paths) {
-      const cooked_layout_data = await UINode.cook_ui_info(this, path);
-      this._uiinfos.push(cooked_layout_data);
-      if (path === paths[0]) this.set_layout(cooked_layout_data);
+      const cooked_ui_info = await UINode.cook_ui_info(this, path);
+      this._uiinfos.push(cooked_ui_info);
+      if (path === paths[0]) this.set_layout(cooked_ui_info);
     }
     if (this._disposed) {
       this._uiinfos.length = 0;
     } else {
-      this._callbacks.emit("on_layouts_loaded")(this._uiinfos);
+      this._callbacks.emit("on_ui_loaded")(this._uiinfos);
       this._uiinfos_loaded = true;
     }
     return this._uiinfos;

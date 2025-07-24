@@ -3,36 +3,48 @@ import { IAnimation } from "./IAnimation";
 const { max } = Math;
 
 export class Animation implements IAnimation {
-  protected _value: number = 0;
-  protected _time: number = 0;
-  protected _duration: number = 0
-  protected _reverse: boolean = false;
-  protected _times: number = 1;
-  protected _stay_end: number = 1;
-  protected _curr_times: number = 0;
+  static TAG = 'Animation'
+  __debugging = false;
+  private _value: number = 0;
+  private _time: number = 0;
+  private _duration: number = 0
+  private _direction: -1 | 1 = 1;
+  private _loops: number = 1;
+  private _wrap: number = 1;
+  private _count: number = 0;
 
-  get curr_times(): number { return this._curr_times; }
-  set curr_times(v: number) { this.set_curr_times(v) }
-  set_curr_times(v: number): this {
-    this._curr_times = v
+  get count(): number { return this._count; }
+  set count(v: number) { this.set_count(v) }
+  set_count(v: number): this {
+    this._count = v
     return this
   }
 
-  stay_end(v: any = true) {
-    this._stay_end = v ? 1 : 0
+  wrap(v: any = true) {
+    this._wrap = v ? 1 : 0
     return this
   }
 
-  get times(): number { return this._times; }
-  set times(v: number) { this.set_times(v) }
-  set_times(v: number): this {
-    this._times = v
+  get loops(): number { return this._loops; }
+  set loops(v: number) { this.set_loops(v) }
+  set_loops(v: number): this {
+    this._loops = v
     return this
   }
-  get reverse(): boolean { return this._reverse; }
+  get direction(): -1 | 1 { return this._direction; }
+
+  set direction(v: -1 | 1) { this.set_direction(v) }
+  set_direction(v: -1 | 1): this {
+    if (v !== -1 && v !== 1) debugger;
+    this._direction = (v === -1 || v === 1) ? v : this._direction;
+    return this
+  }
+
+  get reverse(): boolean { return this.direction === -1; }
   set reverse(v: boolean) { this.set_reverse(v) }
   set_reverse(v: boolean): this {
-    this._reverse = v
+    if (typeof v !== 'boolean') debugger;
+    this.direction = v ? -1 : 1
     return this
   }
 
@@ -53,48 +65,49 @@ export class Animation implements IAnimation {
   set_time(v: number): this { this._time = clamp(v, 0, this.duration); return this }
 
   get is_end(): boolean {
-    const { times, curr_times } = this
-    return times > 0 && curr_times >= times;
+    const { loops, count, duration } = this
+    return (loops > 0 && count >= loops) || duration <= 0;
   }
   start(reverse: boolean = this.reverse): this {
-    this.curr_times = 0;
+    this.count = 0;
     this.reverse = reverse;
-    this.time = reverse ? this.duration : 0
+    this.time = reverse ? this.duration : 0;
     return this;
   }
   end(reverse: boolean = this.reverse): this {
-    this.curr_times = this._times;
+    this.count = Math.max(0, this._loops);
     this.reverse = reverse;
     this.time = reverse ? 0 : this.duration
     return this;
   }
+
   calc(): this {
     this.value = this.duration === 0 ? this.value : this.time / this.duration;
     return this;
   }
+
   update(dt: number): this {
-    const { times, curr_times } = this
-    if (times > 0 && curr_times >= times) return this;
-    
-    const { duration, reverse, time, } = this
-    let t = reverse ? time - dt : time + dt;
-    if (times < 0 || curr_times < times) {
-      if (reverse && t < 0 && duration > 0) {
-        while (t < 0) {
-          t += duration
-          ++this.curr_times
-        }
-      } else if (!reverse && t > duration && duration > 0) {
-        while (t > duration) {
-          t -= duration
-          ++this.curr_times
-        }
+    if (this.is_end) return this;
+    const { duration, direction } = this
+    let time = this.time + direction * dt;
+    if (time < 0) {
+      while (time < 0) {
+        time += duration
+        ++this.count
       }
-      if (times > 0 && curr_times >= times && this._stay_end) {
-        t = reverse ? 0 : duration;
+      if (this.is_end && this._wrap)
+        time = 0
+    } else if (time > duration) {
+      while (time > duration) {
+        time -= duration
+        ++this.count
       }
+      if (this.is_end && this._wrap)
+        time = duration
     }
-    this.time = clamp(t, 0, duration);
+
+    this.time = clamp(time, 0, duration);
+    if (this.__debugging) console.debug(`[${Animation.TAG}::update] time = ${this.time}, dt = ${dt}`)
     this.calc();
     return this;
   }

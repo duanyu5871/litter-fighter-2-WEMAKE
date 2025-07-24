@@ -5,9 +5,9 @@ export class SineOpacity extends UIComponent {
   override on_start(): void {
     super.on_start?.();
     this.anim.set(
-      this.get_num_arg(0) ?? 0,
-      this.get_num_arg(1) ?? 1,
-      this.get_num_arg(2) ?? 1,
+      this.num(0) ?? 0,
+      this.num(1) ?? 1,
+      this.num(2) ?? 1,
     );
   }
   override update(dt: number): void {

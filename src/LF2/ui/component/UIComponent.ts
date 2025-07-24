@@ -1,5 +1,5 @@
 import GameKey from "../../defines/GameKey";
-import { is_num } from "../../utils";
+import { is_num, is_str } from "../../utils";
 import type { UINode } from "../UINode";
 
 /**
@@ -57,17 +57,28 @@ export class UIComponent {
   /**
    * 初始化
    *
-   * @param {...string[]} args 参数
+   * @param {...any[]} args 参数
    * @returns {this} 对象本身
    */
-  init(...args: string[]): this {
+  init(...args: any[]): this {
     this._args = args;
     return this;
   }
-  get_num_arg(idx: number): number | null {
+  num(idx: number): number | null {
+    if (idx >= this._args.length) return null;
     const num = Number(this._args[idx]);
     return is_num(num) ? num : null;
   }
+  str(idx: number): string | null {
+    if (idx >= this._args.length) return null;
+    return '' + this._args[idx]
+  }
+  bool(idx: number): boolean | null {
+    const str = this.str(idx)?.toLowerCase();
+    if (!str) return false
+    return !['false', '0'].some(v => v === str);
+  }
+
 
   /**
    * Description placeholder

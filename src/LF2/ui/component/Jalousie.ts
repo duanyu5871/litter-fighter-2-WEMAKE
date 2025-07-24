@@ -1,4 +1,5 @@
-import { Sequence } from "../../animation";
+import { Easing, Sequence } from "../../animation";
+import { Animation } from "../../animation/Animation";
 import { Sine } from "../../animation/Sine";
 import { Callbacks } from "../../base";
 import factory from "./Factory";
@@ -6,44 +7,33 @@ import { UIComponent } from "./UIComponent";
 export interface IJalousieCallbacks {
   on_change?(v: Jalousie): void;
 }
+enum D {
+  ns = 'ns',
+  ew = 'ew',
+}
 export class Jalousie extends UIComponent {
   callbacks = new Callbacks<IJalousieCallbacks>();
-  direction: 'ns' | 'ew' = 'ew';
+  direction: D = D.ew;
   sine = new Sequence(
-    1500,
+    new Easing(0, 0).set_duration(1500),
     new Sine(-1, 2, 0.5).set_duration(500),
-    1500,
+    new Easing(1, 1).set_duration(1500),
   )
-  override init(...args: string[]): this {
-    super.init(...args);
-    const raw_direction: string | undefined = args[0]
-    switch (raw_direction) {
-      case 'ns':
-      case 'ew':
-        this.direction = raw_direction;
-        break;
-      default:
-        this.direction = 'ew';
-        break;
-    }
-    const raw_open: string | undefined = args[1]
-    switch (raw_open) {
-      case '0':
-      case 'false':
-      case void 0:
-        this.sine.reverse = false;
-        break;
-      default:
-        this.sine.reverse = true
-        break;
-    }
+  override on_start() {
+    super.on_start?.();
+    const raw_direction = this.str(0);
+    this.direction = [D.ns, D.ew].find(v => raw_direction === v) || D.ew
+    const open = !!this.bool(1);
+    const end = !!this.bool(2);
+    if (end) this.sine.end(open)
+    else this.sine.start(open)
+
     const components = factory.create(this.node,
-      this.direction === 'ns' ? 'vertical_layout()' : 'horizontal_layout()'
+      this.direction === D.ns ? 'vertical_layout()' : 'horizontal_layout()'
     )
     for (const component of components) {
       this.node.components.add(component)
     }
-    return this;
   }
   get open(): boolean { return this.sine.reverse }
   set open(v: boolean) { this.sine.reverse = v }
@@ -68,7 +58,7 @@ export class Jalousie extends UIComponent {
     this.sine.calc();
     this.update_children();
   }
-
+  _value: any = void 0;
   protected update_children() {
     const { value } = this.sine;
     const { children } = this.node;

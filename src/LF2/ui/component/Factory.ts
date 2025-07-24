@@ -16,6 +16,7 @@ import { Items } from "./Items";
 import { Jalousie } from "./Jalousie";
 import LaunchPageLogic from "./LaunchPageLogic";
 import LoadingFileNameDisplayer from "./LoadingFileNameDisplayer";
+import { OpacityAnimation } from "./OpacityAnimation";
 import OpacityHover from "./OpacityHover";
 import PlayerCharacterHead from "./PlayerCharacterHead";
 import PlayerCharacterName from "./PlayerCharacterName";
@@ -71,8 +72,10 @@ class ComponentFactory {
     ["jalousie", Jalousie],
     ["items", Items],
     ["sine_opacity", SineOpacity],
+
     ["fade_in_opacity", FadeInOpacity],
     ["fade_out_opacity", FadeOutOpacity],
+    [OpacityAnimation.TAG, OpacityAnimation],
   ]);
 
   register(key: string, Cls: typeof UIComponent) {

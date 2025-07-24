@@ -7,6 +7,9 @@
   ],
   "items": [
     {
+      "template": "launch/jalousie_ns.json"
+    },
+    {
       "id": "bg_left",
       "img": [
         "sprite/MENU_BACK1.png",

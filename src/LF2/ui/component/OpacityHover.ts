@@ -2,15 +2,15 @@ import Easing from "../../animation/Easing";
 import { UIComponent } from "./UIComponent";
 
 export default class OpacityHover extends UIComponent {
-  protected anim = new Easing(0, 1, 150);
+  protected anim = new Easing(0, 1).set_duration(150);
 
   override on_start(): void {
     super.on_start?.();
     this.anim.set(
-      this.get_num_arg(0) ?? 0,
-      this.get_num_arg(1) ?? 1,
+      this.num(0) ?? 0,
+      this.num(1) ?? 1,
     ).set_duration(
-      this.get_num_arg(2) ?? 255
+      this.num(2) ?? 255
     ).set_reverse(false);
   }
 

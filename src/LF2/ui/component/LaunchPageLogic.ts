@@ -1,4 +1,5 @@
 import { ISprite } from "../../3d/ISprite";
+import { Delay } from "../../animation";
 import Easing from "../../animation/Easing";
 import Sequence from "../../animation/Sequence";
 import { Sine } from "../../animation/Sine";
@@ -11,6 +12,7 @@ import { make_arr } from "../../utils/array/make_arr";
 import ease_linearity from "../../utils/ease_method/ease_linearity";
 import type { UINode } from "../UINode";
 import { FadeOutOpacity } from "./FadeOutOpacity";
+import { OpacityAnimation } from "./OpacityAnimation";
 import { SineOpacity } from "./SineOpacity";
 import { UIComponent } from "./UIComponent";
 
@@ -32,33 +34,27 @@ export default class LaunchPageLogic extends UIComponent {
   protected yeonface!: UINode;
   protected bearface!: UINode;
   protected long_text!: UINode;
-  protected long_text_2!: UINode;
   protected _prel_loaded: boolean = false;
   protected _dispose_jobs = new Invoker();
   protected _offset_x = new Sequence(
-    1000,
-    new Easing(0, 80, 1000),
+    new Delay(0, 1000),
+    new Easing(0, 80).set_duration(1000),
   );
   protected _scale = new Sequence(
-    1000,
-    new Easing(0, 2, 500),
-    new Easing(2, 1, 500),
-  );
-  protected _opacity = new Sequence(
-    1000,
-    new Easing(0, 1, 1000),
-    250,
+    new Delay(0, 1000),
+    new Easing(0, 2).set_duration(500),
+    new Easing(2, 1).set_duration(500),
   );
   protected _unmount_jobs = new Invoker();
   protected _skipped = false;
   protected _tap_hints_opacity: Sine = new Sine(0.1, 1, 0.5);
-  protected _tap_hints_fadeout_opacity = new Easing(1, 0, 255);
+  protected _tap_hints_fadeout_opacity = new Easing(1, 0).set_duration(255);
   protected _loading_sprite: ISprite;
   protected _loading_imgs: TPicture[] = [];
-  protected _loading_idx_anim = new Easing(0, 44, 2000)
+  protected _loading_idx_anim = new Easing(0, 44).set_duration(2000)
     .set_ease_method(ease_linearity)
-    .set_times(-1)
-    .stay_end(1)
+    .set_loops(-1)
+    .wrap(1)
 
   constructor(layout: UINode, f_name: string) {
     super(layout, f_name);
@@ -66,7 +62,10 @@ export default class LaunchPageLogic extends UIComponent {
     this.fsm = new FSM<Status>().add({
       key: Status.TapHints,
       enter: () => {
-        this._loading_idx_anim.set_times(-1)
+        if (this._prel_loaded)
+          this._loading_idx_anim.set_loops(4).set_count(0)
+        else
+          this._loading_idx_anim.set_loops(-1)
         this.tap_to_launch.find_component(SineOpacity)!.enabled = true;
         this.sound_warning.find_component(SineOpacity)!.enabled = true;
         this.tap_to_launch.find_component(FadeOutOpacity)!.enabled = false
@@ -85,42 +84,55 @@ export default class LaunchPageLogic extends UIComponent {
       key: Status.Introduction,
       enter: () => {
         Ditto.Timeout.add(() => this.lf2.sounds.play("launch/093.wav.mp3"), 1000);
-        this._opacity.start(false);
+        this.yeonface.find_component(OpacityAnimation)!.direction = 1;
+        this.bearface.find_component(OpacityAnimation)!.direction = 1;
+        this.long_text.find_component(OpacityAnimation)!.direction = 1;
         this._scale.start(false)
+      },
+      leave: () => {
+        this.yeonface.find_component(OpacityAnimation)!.direction = -1;
+        this.bearface.find_component(OpacityAnimation)!.direction = -1;
+        this.long_text.find_component(OpacityAnimation)!.direction = -1;
       },
       update: (dt) => {
         this.update_loading_img(dt)
-        this.update_Introduction(dt)
-        if (this._skipped && this._opacity.is_end)
+        this.update_introduction(dt)
+        if (this._skipped && this.long_text.opacity >= 1)
           return Status.GoToEntry
       }
     }, {
       key: Status.GoToEntry,
       enter: () => {
-        this._opacity.start(true);
         this._scale.start(true)
         this.lf2.sounds.play_bgm("launch/main.wma.mp3");
       },
       update: (dt) => {
-        this.update_Introduction(dt)
-        if (this._opacity.is_end) {
+        this.update_loading_img(dt)
+        this.update_introduction(dt)
+        if (this.long_text.opacity <= 0) {
           this.lf2.set_layout(this.entry_name);
           return Status.End
         }
       }
+    }, {
+      key: Status.End,
+      update: (dt) => {
+        this.update_loading_img(dt)
+      }
     })
   }
 
-  protected on_prel_data_loaded() {
+  protected on_prel_loaded() {
     this._prel_loaded = true;
-    this._loading_idx_anim.set_times(4).set_curr_times(0)
+    this._loading_idx_anim.set_loops(4).set_count(0)
   }
-
+  override on_start(): void {
+    this._prel_loaded = this.lf2.uiinfos_loaded
+  }
   override init(...args: string[]): this {
     super.init(...args);
     this.lf2.sounds.load("launch/093.wav.mp3", "launch/093.wav.mp3");
     this.lf2.sounds.load("launch/main.wma.mp3", "launch/main.wma.mp3");
-
     const max_col = 15;
     const cell_w = 33 * 4;
     const cell_h = 21 * 4;
@@ -145,10 +157,9 @@ export default class LaunchPageLogic extends UIComponent {
         0,
       ),
     );
-
     this._dispose_jobs.add(
       this.lf2.callbacks.add({
-        on_prel_data_loaded: () => this.on_prel_data_loaded(),
+        on_prel_loaded: () => this.on_prel_loaded(),
       }),
     );
     return this;
@@ -166,13 +177,10 @@ export default class LaunchPageLogic extends UIComponent {
     this.tap_to_launch = this.node.find_child("tap_to_launch")!;
     this.sound_warning = this.node.find_child("sound_warning")!;
     this.long_text = this.node.find_child("long_text")!;
-    this.long_text_2 = this.node.find_child("long_text_2")!;
+    this.long_text.renderer.__debugging = true;
     this._tap_hints_opacity.time = 0;
     this._tap_hints_fadeout_opacity.time = 0;
-    this.long_text.opacity = this.bearface.opacity = this.yeonface.opacity = 0;
-    this.long_text_2.opacity = 0;
     this._scale.start(false);
-    this._opacity.start(false);
     this._offset_x.start(false);
     this._unmount_jobs.add(
       this.lf2.pointings.callback.add({
@@ -200,7 +208,6 @@ export default class LaunchPageLogic extends UIComponent {
     super.on_pause();
     this._unmount_jobs.invoke_and_clear();
   }
-
   update_loading_img(dt: number) {
     if (!this._loading_imgs.length) return;
     this._loading_idx_anim.update(dt)
@@ -209,53 +216,25 @@ export default class LaunchPageLogic extends UIComponent {
     if (pic) this._loading_sprite.set_info(pic).apply();
   }
 
-  update_Introduction(dt: number) {
-    const { bearface, yeonface, long_text } = this;
+  update_introduction(dt: number) {
+    const { bearface, yeonface } = this;
+    const { long_text } = this;
     const scale = this._scale.update(dt).value;
     const offset = this._offset_x.update(dt).value;
-    const opacity = this._opacity.update(dt).value;
-    bearface.sprite.x = 397 - offset;
-    yeonface.sprite.x = 397 + offset;
-    long_text.sprite.y = -150 - offset;
-    long_text.opacity = bearface.opacity = yeonface.opacity = opacity;
-    if (this._opacity.reverse) {
-      const s = 0.1 + 0.9 * opacity;
-      bearface.sprite.set_scale(s, s, 1);
-      yeonface.sprite.set_scale(s, s, 1);
+    bearface.x = 397 - offset;
+    yeonface.x = 397 + offset;
+    long_text.y = 150 + offset;
+    if (this.fsm.state?.key !== Status.Introduction) {
+      const s = bearface.opacity;
+      bearface.set_scale(s, s);
+      yeonface.set_scale(s, s);
     } else {
-      bearface.sprite.set_scale(scale, scale, 1);
-      yeonface.sprite.set_scale(scale, scale, 1);
+      bearface.set_scale(scale, scale);
+      yeonface.set_scale(scale, scale);
     }
   }
 
   override update(dt: number): void {
     this.fsm.update(dt);
-    // if (
-    //   this.status === Status.Loaded ||
-    //   this.status === 2 ||
-    //   this.status === 3
-    // ) {
-    //   this.sound_warning.opacity = this.tap_to_launch.opacity =
-    //     this._tap_hints_fadeout_opacity.update(dt).value;
-
-    //   if (this.status === 3) {
-    //     this.long_text_2.opacity = opacity;
-    //   } else if (this.lf2.uiinfos.find((v) => v.id === "entry")) {
-    //     this._tap_hints_opacity.update(dt)
-    //     this.long_text_2.opacity = this._tap_hints_opacity.value;
-    //   }
-    //   this.long_text.visible = this.long_text.opacity > 0;
-    //   this.long_text_2.visible = this.long_text_2.opacity > 0;
-
-    //   if (this._opacity.is_end && this._layouts_loaded) {
-    //     if (this._opacity.reverse) {
-    //       this.lf2.set_layout("entry");
-    //     } else if (this._skipped) {
-    //       this.fsm.use(Status.GoToEntry)
-    //     } else {
-    //       this.status = 2;
-    //     }
-    //   }
-    // }
   }
 }

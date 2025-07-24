@@ -1,15 +1,10 @@
-import Sequence from "./Sequence";
 import { Animation } from "./Animation";
 
 export class Delay extends Animation {
-  owner: Sequence;
-  constructor(owner: Sequence, duration: number) {
+  constructor(value: number, duration?: number) {
     super()
-    this.owner = owner;
-    this.duration = duration;
+    this.value = value;
+    if (duration != void 0) this.duration = duration;
   }
-  override calc(): this {
-    this.value = this.owner.value;
-    return this;
-  }
+  override calc(): this { return this; }
 }

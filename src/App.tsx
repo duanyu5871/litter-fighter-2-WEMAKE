@@ -206,7 +206,7 @@ function App() {
           on_sync_render_changed: (v) => set_sync_render(v),
         }),
         lf2.callbacks.add({
-          on_layouts_loaded: (layouts) => {
+          on_ui_loaded: (layouts) => {
             const layout_data_list = layouts.map((l) => ({
               id: l.id,
               name: l.name,
