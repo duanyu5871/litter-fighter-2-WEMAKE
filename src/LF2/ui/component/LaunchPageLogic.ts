@@ -46,7 +46,7 @@ export default class LaunchPageLogic extends UIComponent {
     new Easing(2, 1).set_duration(500),
   );
   protected _unmount_jobs = new Invoker();
-  protected _skipped = false;
+  protected _tapped = false;
   protected _tap_hints_opacity: Sine = new Sine(0.1, 1, 0.5);
   protected _tap_hints_fadeout_opacity = new Easing(1, 0).set_duration(255);
   protected _loading_sprite: ISprite;
@@ -63,7 +63,7 @@ export default class LaunchPageLogic extends UIComponent {
       key: Status.TapHints,
       enter: () => {
         if (this._prel_loaded)
-          this._loading_idx_anim.set_loops(4).set_count(0)
+          this._loading_idx_anim.set_loops(1).set_count(0)
         else
           this._loading_idx_anim.set_loops(-1)
         this.tap_to_launch.find_component(SineOpacity)!.enabled = true;
@@ -97,7 +97,7 @@ export default class LaunchPageLogic extends UIComponent {
       update: (dt) => {
         this.update_loading_img(dt)
         this.update_introduction(dt)
-        if (this._skipped && this.long_text.opacity >= 1)
+        if (this._tapped && this.long_text.find_component(OpacityAnimation)!.is_end && this._prel_loaded)
           return Status.GoToEntry
       }
     }, {
@@ -109,7 +109,7 @@ export default class LaunchPageLogic extends UIComponent {
       update: (dt) => {
         this.update_loading_img(dt)
         this.update_introduction(dt)
-        if (this.long_text.opacity <= 0) {
+        if (this.long_text.find_component(OpacityAnimation)!.is_end) {
           this.lf2.set_layout(this.entry_name);
           return Status.End
         }
@@ -171,7 +171,7 @@ export default class LaunchPageLogic extends UIComponent {
   }
   override on_resume(): void {
     super.on_resume();
-    this._skipped = false;
+    this._tapped = false;
     this.bearface = this.node.find_child("bearface")!;
     this.yeonface = this.node.find_child("yeonface")!;
     this.tap_to_launch = this.node.find_child("tap_to_launch")!;
@@ -194,13 +194,13 @@ export default class LaunchPageLogic extends UIComponent {
   }
   on_pointer_down() {
     const status = this.fsm.state?.key
+    this._tapped = true
     switch (status) {
       case Status.TapHints:
         this.fsm.use(Status.Introduction);
         return;
       case Status.Introduction:
-        if (this._prel_loaded) this.fsm.use(Status.GoToEntry)
-        else this._skipped = true;
+        this.fsm.use(Status.GoToEntry)
         return;
     }
   }

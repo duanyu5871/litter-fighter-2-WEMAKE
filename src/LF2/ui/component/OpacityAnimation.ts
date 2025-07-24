@@ -4,12 +4,15 @@ import { UIComponent } from "./UIComponent";
 export class OpacityAnimation extends UIComponent {
   static TAG: string = "OpacityAnimation";
   protected anim: Animation = new Delay(0, 1000);
+  protected _direction: -1 | 1 = 1;
   set direction(v: -1 | 1) {
-    this.anim.direction = v;
-    this.anim.count = 0;
+    this._direction = v;
   }
   get direction() {
-    return this.anim.direction
+    return this._direction // this.anim.direction
+  }
+  get is_end() {
+    return this.anim.is_end
   }
   override on_start(): void {
     super.on_start?.();
@@ -30,10 +33,16 @@ export class OpacityAnimation extends UIComponent {
     const is_reverse = this.bool(1) ?? false;
     if (is_play) this.anim.start(is_reverse)
     else this.anim.end(is_reverse)
+    this._direction = this.anim.direction
   }
 
   override update(dt: number): void {
     super.update?.(dt);
-    this.node.opacity = this.anim.update(dt).value;
+    if (!this.anim.is_end) {
+      this.node.opacity = this.anim.update(dt).value;
+    } else if (this._direction !== this.anim.direction) {
+      this.anim.direction = this._direction;
+      this.anim.start();
+    }
   }
 }
