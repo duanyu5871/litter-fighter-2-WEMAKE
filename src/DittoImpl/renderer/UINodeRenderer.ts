@@ -68,7 +68,10 @@ export class UINodeRenderer implements IUINodeRenderer {
     texture.offset.set(flip_x ? 1 : 0, flip_y ? 1 : 0);
     return texture;
   }
-
+  get x(): number { return this.sprite.x }
+  set x(v: number) { this.sprite.x = v; }
+  get y(): number { return this.sprite.y }
+  set y(v: number) { this.sprite.y = v; }
   render() {
     const [w, h] = this.node.size;
     if (this.sprite.w != w || this.sprite.h != h) {
@@ -80,11 +83,8 @@ export class UINodeRenderer implements IUINodeRenderer {
     }
     const s = this.node.scale;
     this.sprite.set_scale(...s);
-
     const [x, y, z] = this.node.pos
     this.sprite.set_position(x, -y, z);
-
-    if (this.node.root === this.node) this.sprite.x = this.world.renderer.cam_x;
     this.visible = this.node.visible
     this.sprite.opacity = this.node.opacity;
   }

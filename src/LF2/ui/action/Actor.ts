@@ -26,11 +26,7 @@ class UIActor {
       "load_data",
       ({ lf2 }, url) => {
         if (lf2.loading) return;
-        lf2
-          .load(url)
-          .catch((e) =>
-            Ditto.Warn(UIActor.TAG + "::load_data", `${url} not exists`, e),
-          );
+        lf2.load(url).catch((e) => Ditto.Warn(`[${UIActor.TAG}::load_data] ${url} not exists, err: ${e}`));
       },
     ],
     ["broadcast", ({ lf2 }, message) => message && lf2.broadcast(message)],

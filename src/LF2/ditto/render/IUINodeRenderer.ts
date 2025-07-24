@@ -3,6 +3,8 @@ import type { UINode } from "../../ui/UINode";
 
 export interface IUINodeRenderer {
   /** @deprecated get rip of it */ sprite: ISprite;
+  set x(v: number);
+  set y(v: number);
   node: UINode;
   visible: boolean;
   parent: IUINodeRenderer;

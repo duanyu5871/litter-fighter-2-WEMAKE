@@ -9,6 +9,9 @@ import { World } from "../../LF2/World";
 
 
 export class WorldRenderer implements IWorldRenderer {
+  get lf2() {
+    return this.world.lf2;
+  }
   world: World;
   bg_render: IBgRender;
   scene: IScene;
@@ -33,6 +36,7 @@ export class WorldRenderer implements IWorldRenderer {
   }
   set cam_x(v: number) {
     this.camera.x = v;
+    for (const ui of this.lf2.ui_stacks) ui.renderer.x = v;
   }
   constructor(world: World) {
     this.world = world;

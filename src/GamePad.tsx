@@ -161,13 +161,13 @@ export default function GamePad(props: IGamePadProps) {
       for (const [k, v] of curr_pressings) {
         if (v === prev_pressings.get(k)) continue;
         if (v) {
-          lf2?.layout?.on_player_key_down(player_id, k);
+          lf2?.ui?.on_player_key_down(player_id, k);
           controller?.start(k);
           if (pad_text.innerText.length > 10)
             pad_text.innerText = pad_text.innerText.substring(2);
           pad_text.innerText += k + "⬇";
         } else {
-          lf2?.layout?.on_player_key_up(player_id, k);
+          lf2?.ui?.on_player_key_up(player_id, k);
           controller?.end(k);
           if (pad_text.innerText.length > 10)
             pad_text.innerText = pad_text.innerText.substring(2);
@@ -247,13 +247,13 @@ export default function GamePad(props: IGamePadProps) {
       for (const [k, v] of curr_pressings) {
         if (v === prev_pressings.get(k)) continue;
         if (v) {
-          lf2?.layout?.on_player_key_down(player_id, k);
+          lf2?.ui?.on_player_key_down(player_id, k);
           controller?.start(k);
           if (pad_text.innerText.length > 10)
             pad_text.innerText = pad_text.innerText.substring(2);
           pad_text.innerText += k + "⬇";
         } else {
-          lf2?.layout?.on_player_key_up(player_id, k);
+          lf2?.ui?.on_player_key_up(player_id, k);
           controller?.end(k);
           if (pad_text.innerText.length > 10)
             pad_text.innerText = pad_text.innerText.substring(2);

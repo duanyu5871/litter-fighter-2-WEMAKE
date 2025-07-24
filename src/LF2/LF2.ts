@@ -54,12 +54,12 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
   static readonly instances = new Set<LF2>()
   private _disposed: boolean = false;
   private _callbacks = new Callbacks<ILf2Callback>();
-  private _layout_stacks: UINode[] = [];
+  private _ui_stacks: UINode[] = [];
   private _loading: boolean = false;
   private _loaded: boolean = false;
   private _difficulty: Difficulty = Difficulty.Difficult;
   private _infinity_mp: boolean = false;
-  private _pointer_on_layouts = new Set<UINode>();
+  private _pointer_on_uis = new Set<UINode>();
   private _pointer_raycaster = new Ditto.Raycaster();
   private _pointer_vec_2 = new Ditto.Vector2();
   get callbacks(): NoEmitCallbacks<ILf2Callback> {
@@ -75,11 +75,11 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
     return !this._loaded && !this._loading;
   }
 
-  get layout_stacks() {
-    return this._layout_stacks;
+  get ui_stacks() {
+    return this._ui_stacks;
   }
-  get layout() {
-    return this._layout_stacks[this._layout_stacks.length - 1];
+  get ui() {
+    return this._ui_stacks[this._ui_stacks.length - 1];
   }
   get difficulty(): Difficulty {
     return this._difficulty;
@@ -209,43 +209,43 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
   }
 
   on_pointer_move(e: IPointingEvent) {
-    const { layout } = this;
-    if (!layout) return;
+    const { ui: ui } = this;
+    if (!ui) return;
     this._pointer_vec_2.x = e.scene_x;
     this._pointer_vec_2.y = e.scene_y;
-    const { sprite } = layout;
+    const { sprite } = ui;
     if (!sprite) return;
     this.world.camera.raycaster(this._pointer_raycaster, this._pointer_vec_2);
     const intersections = sprite.intersect_from_raycaster(
       this._pointer_raycaster,
       true,
     );
-    const leave_layouts = this._pointer_on_layouts;
-    const stay_layouts = new Set<UINode>();
-    const enter_layouts = new Set<UINode>();
+    const leave_ui = this._pointer_on_uis;
+    const stay_ui = new Set<UINode>();
+    const enter_ui = new Set<UINode>();
     for (const { object } of intersections) {
-      const layout = object.user_data.owner;
-      if (layout instanceof UINode && layout.global_visible) {
-        if (leave_layouts.has(layout)) {
-          leave_layouts.delete(layout)
-          stay_layouts.add(layout)
+      const ui = object.user_data.owner;
+      if (ui instanceof UINode && ui.global_visible) {
+        if (leave_ui.has(ui)) {
+          leave_ui.delete(ui)
+          stay_ui.add(ui)
         } else {
-          enter_layouts.add(layout);
+          enter_ui.add(ui);
         }
       }
     }
-    for (const layout of leave_layouts) {
-      layout.on_mouse_leave();
-      layout.state.mouse_on_me = "0";
+    for (const ui of leave_ui) {
+      ui.on_mouse_leave();
+      ui.state.mouse_on_me = "0";
     }
-    this._pointer_on_layouts.clear();
-    for (const layout of enter_layouts) {
-      layout.on_mouse_enter();
-      layout.state.mouse_on_me = "1";
-      this._pointer_on_layouts.add(layout)
+    this._pointer_on_uis.clear();
+    for (const ui of enter_ui) {
+      ui.on_mouse_enter();
+      ui.state.mouse_on_me = "1";
+      this._pointer_on_uis.add(ui)
     }
-    for (const layout of stay_layouts) {
-      this._pointer_on_layouts.add(layout)
+    for (const ui of stay_ui) {
+      this._pointer_on_uis.add(ui)
     }
   }
 
@@ -253,9 +253,9 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
     this._pointer_vec_2.x = e.scene_x;
     this._pointer_vec_2.y = e.scene_y;
     this.world.camera.raycaster(this._pointer_raycaster, this._pointer_vec_2);
-    const { layout } = this;
-    if (!layout) return;
-    const { sprite } = layout;
+    const { ui: ui } = this;
+    if (!ui) return;
+    const { sprite } = ui;
     if (!sprite) return;
     this.world.camera.raycaster(this._pointer_raycaster, this._pointer_vec_2);
     const intersections = sprite.intersect_from_raycaster(
@@ -265,7 +265,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
     const layouts = intersections
       .map((v) => v.object.get_user_data('owner') as UINode)
       .filter((v) => v && v.global_visible && !v.global_disabled)
-    for (const layout of layouts) if (layout.on_click()) break;
+    for (const ui of layouts) if (ui.on_click()) break;
   }
 
   on_pointer_up(e: IPointingEvent) { }
@@ -308,12 +308,12 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
     }
     if (!match) this._curr_key_list = "";
     if (e.times === 0) {
-      const { layout } = this;
-      if (layout) {
+      const { ui: ui } = this;
+      if (ui) {
         for (const key_name of KEY_NAME_LIST) {
           for (const [player_id, player_info] of this.players) {
             if (player_info.keys[key_name] === key_code)
-              layout.on_player_key_down(player_id, key_name);
+              ui.on_player_key_down(player_id, key_name);
           }
         }
       }
@@ -322,12 +322,12 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
 
   on_key_up(e: IKeyEvent) {
     const key_code = e.key?.toLowerCase() ?? "";
-    const { layout } = this;
-    if (layout) {
+    const { ui: ui } = this;
+    if (ui) {
       for (const key_name of KEY_NAME_LIST) {
         for (const [player_id, player_info] of this.players) {
           if (player_info.keys[key_name] === key_code)
-            layout.on_player_key_up(player_id, key_name);
+            ui.on_player_key_up(player_id, key_name);
         }
       }
     }
@@ -432,11 +432,11 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
     this.keyboard.dispose();
     this.pointings.dispose();
 
-    for (const l of this._layout_stacks) {
+    for (const l of this._ui_stacks) {
       l?.on_pause();
       l?.on_stop();
     }
-    this._layout_stacks.length = 0;
+    this._ui_stacks.length = 0;
     LF2.instances.delete(this);
   }
 
@@ -606,42 +606,42 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
   set_layout(layout_info?: ICookedUIInfo): void;
   set_layout(id?: string): void;
   set_layout(arg: string | ICookedUIInfo | undefined): void {
-    const prev = this._layout_stacks.pop();
+    const prev = this._ui_stacks.pop();
     prev?.on_pause();
 
     const info = is_str(arg)
       ? this._uiinfos?.find((v) => v.id === arg)
       : arg;
     const curr = info && UINode.create(this, info);
-    curr && this._layout_stacks.push(curr);
+    curr && this._ui_stacks.push(curr);
     curr?.on_start();
     curr?.on_resume();
     this._callbacks.emit("on_layout_changed")(curr, prev);
   }
 
   pop_layout(): void {
-    if (this._layout_stacks.length <= 1) {
-      Ditto.Warn(LF2.TAG + "::pop_layout", "can not pop top layout!");
+    if (this._ui_stacks.length <= 1) {
+      Ditto.Warn(LF2.TAG + "::pop_layout", "can not pop top ui!");
       return;
     }
-    const popped = this._layout_stacks.pop();
+    const popped = this._ui_stacks.pop();
     popped?.on_pause();
     popped?.on_stop();
-    this.layout?.on_resume();
-    this._callbacks.emit("on_layout_changed")(this.layout, popped);
+    this.ui?.on_resume();
+    this._callbacks.emit("on_layout_changed")(this.ui, popped);
   }
 
   push_layout(layout_info?: ICookedUIInfo): void;
   push_layout(id?: string): void;
   push_layout(arg: string | ICookedUIInfo | undefined): void {
-    const prev = this.layout;
+    const prev = this.ui;
     prev?.on_pause();
 
     const info = is_str(arg)
       ? this._uiinfos?.find((v) => v.id === arg)
       : arg;
     const curr = info && UINode.create(this, info);
-    curr && this._layout_stacks.push(curr);
+    curr && this._ui_stacks.push(curr);
     curr?.on_start();
     curr?.on_resume();
     this._callbacks.emit("on_layout_changed")(curr, prev);

@@ -516,7 +516,7 @@ function App() {
             src={[img_btn_1_1, img_btn_1_1]}
           />
         </Show>
-        <Show show={layout_id && Number(lf2?.layout_stacks.length) > 1}>
+        <Show show={layout_id && Number(lf2?.ui_stacks.length) > 1}>
           <ToggleImgButton
             shortcut="F4"
             onClick={() => lf2?.pop_layout()}
