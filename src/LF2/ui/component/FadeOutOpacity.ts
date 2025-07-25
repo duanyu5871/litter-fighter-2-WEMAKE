@@ -2,6 +2,7 @@ import { Easing } from "../../animation";
 import { UIComponent } from "./UIComponent";
 
 export class FadeOutOpacity extends UIComponent {
+  static override readonly TAG: string = 'FadeOutOpacity';
   protected anim: Easing = new Easing(1, 0).set_duration(1000);
   override on_start(): void {
     super.on_start?.();

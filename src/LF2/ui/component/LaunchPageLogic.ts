@@ -13,6 +13,8 @@ import ease_linearity from "../../utils/ease_method/ease_linearity";
 import type { UINode } from "../UINode";
 import { FadeOutOpacity } from "./FadeOutOpacity";
 import { OpacityAnimation } from "./OpacityAnimation";
+import { PositionAnimation } from "./PositionAnimation";
+import { ScaleAnimation } from "./ScaleAnimation";
 import { SineOpacity } from "./SineOpacity";
 import { UIComponent } from "./UIComponent";
 
@@ -36,24 +38,13 @@ export default class LaunchPageLogic extends UIComponent {
   protected long_text!: UINode;
   protected _prel_loaded: boolean = false;
   protected _dispose_jobs = new Invoker();
-  protected _offset_x = new Sequence(
-    new Delay(0, 1000),
-    new Easing(0, 80).set_duration(1000),
-  );
-  protected _scale = new Sequence(
-    new Delay(0, 1000),
-    new Easing(0, 2).set_duration(500),
-    new Easing(2, 1).set_duration(500),
-  );
   protected _unmount_jobs = new Invoker();
-  protected _tap_hints_opacity: Sine = new Sine(0.1, 1, 0.5);
-  protected _tap_hints_fadeout_opacity = new Easing(1, 0).set_duration(255);
   protected _loading_sprite: ISprite;
   protected _loading_imgs: TPicture[] = [];
   protected _loading_idx_anim = new Easing(0, 44).set_duration(2000)
     .set_ease_method(ease_linearity)
     .set_loops(-1)
-    .wrap(1)
+    .set_fill_mode(1)
 
   constructor(layout: UINode, f_name: string) {
     super(layout, f_name);
@@ -70,9 +61,6 @@ export default class LaunchPageLogic extends UIComponent {
         this.tap_to_launch.find_component(FadeOutOpacity)!.enabled = false
         this.sound_warning.find_component(FadeOutOpacity)!.enabled = false
       },
-      update: (dt) => {
-        this.update_loading_img(dt)
-      },
       leave: () => {
         this.tap_to_launch.find_component(SineOpacity)!.enabled = false
         this.sound_warning.find_component(SineOpacity)!.enabled = false
@@ -83,31 +71,38 @@ export default class LaunchPageLogic extends UIComponent {
       key: Status.Introduction,
       enter: () => {
         Ditto.Timeout.add(() => this.lf2.sounds.play("launch/093.wav.mp3"), 1000);
+        this.yeonface.find_component(ScaleAnimation, 'scale_in')!.start(false);
+        this.yeonface.find_component(PositionAnimation, 'move_in')!.start(false);
         this.yeonface.find_component(OpacityAnimation)!.direction = 1;
+
+        this.bearface.find_component(ScaleAnimation, 'scale_in')!.start(false);
+        this.bearface.find_component(PositionAnimation, 'move_in')!.start(false);
         this.bearface.find_component(OpacityAnimation)!.direction = 1;
+
+        this.long_text.find_component(PositionAnimation, 'move_in')!.start(false);
         this.long_text.find_component(OpacityAnimation)!.direction = 1;
-        this._scale.start(false)
+
       },
       leave: () => {
         this.yeonface.find_component(OpacityAnimation)!.direction = -1;
+        this.yeonface.find_component(ScaleAnimation, 'scale_out')!.start(false);
+
         this.bearface.find_component(OpacityAnimation)!.direction = -1;
-        this.long_text.find_component(OpacityAnimation)!.direction = -1;
+        this.bearface.find_component(ScaleAnimation, 'scale_out')!.start(false);
+
+        const c = this.long_text.find_component(OpacityAnimation)!
+        c.anim.start(true).update(5000)
       },
       update: (dt) => {
-        this.update_loading_img(dt)
-        this.update_introduction(dt)
         if (this._prel_loaded && this.long_text.find_component(OpacityAnimation)!.is_end)
           return Status.GoToEntry
       }
     }, {
       key: Status.GoToEntry,
       enter: () => {
-        this._scale.start(true)
         this.lf2.sounds.play_bgm("launch/main.wma.mp3");
       },
       update: (dt) => {
-        this.update_loading_img(dt)
-        this.update_introduction(dt)
         if (this.long_text.find_component(OpacityAnimation)!.is_end) {
           this.lf2.set_layout(this.entry_name);
           return Status.End
@@ -175,11 +170,6 @@ export default class LaunchPageLogic extends UIComponent {
     this.tap_to_launch = this.node.find_child("tap_to_launch")!;
     this.sound_warning = this.node.find_child("sound_warning")!;
     this.long_text = this.node.find_child("long_text")!;
-    this.long_text.renderer.__debugging = true;
-    this._tap_hints_opacity.time = 0;
-    this._tap_hints_fadeout_opacity.time = 0;
-    this._scale.start(false);
-    this._offset_x.start(false);
     this._unmount_jobs.add(
       this.lf2.pointings.callback.add({
         on_pointer_down: () => this.on_pointer_down(),
@@ -196,9 +186,6 @@ export default class LaunchPageLogic extends UIComponent {
       case Status.TapHints:
         this.fsm.use(Status.Introduction);
         return;
-      case Status.Introduction:
-        this.fsm.use(Status.GoToEntry)
-        return;
     }
   }
   override on_pause(): void {
@@ -213,25 +200,8 @@ export default class LaunchPageLogic extends UIComponent {
     if (pic) this._loading_sprite.set_info(pic).apply();
   }
 
-  update_introduction(dt: number) {
-    const { bearface, yeonface } = this;
-    const { long_text } = this;
-    const scale = this._scale.update(dt).value;
-    const offset = this._offset_x.update(dt).value;
-    bearface.x = 397 - offset;
-    yeonface.x = 397 + offset;
-    long_text.y = 150 + offset;
-    if (this.fsm.state?.key !== Status.Introduction) {
-      const s = bearface.opacity;
-      bearface.set_scale(s, s);
-      yeonface.set_scale(s, s);
-    } else {
-      bearface.set_scale(scale, scale);
-      yeonface.set_scale(scale, scale);
-    }
-  }
-
   override update(dt: number): void {
+    this.update_loading_img(dt)
     this.fsm.update(dt);
   }
 }

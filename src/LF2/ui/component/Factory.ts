@@ -28,8 +28,10 @@ import PlayerScore from "./PlayerScore";
 import PlayerScoreCell from "./PlayerScoreCell";
 import PlayerTeamName from "./PlayerTeamName";
 import { PlayingTimeText } from "./PlayingTimeText";
+import { PositionAnimation } from "./PositionAnimation";
 import { RandomImgOnLayoutResume } from "./RandomImgOnLayoutResume";
 import { ReachableLayout, ReachableLayoutGroup } from "./ReachableLayoutGroup";
+import { ScaleAnimation } from "./ScaleAnimation";
 import { SineOpacity } from "./SineOpacity";
 import StageNameText from "./StageNameText";
 import StageTitleShow from "./StageTitleShow";
@@ -71,11 +73,12 @@ class ComponentFactory {
     ["random_img_on_layout_resume", RandomImgOnLayoutResume],
     ["jalousie", Jalousie],
     ["items", Items],
-    ["sine_opacity", SineOpacity],
-
-    ["fade_in_opacity", FadeInOpacity],
-    ["fade_out_opacity", FadeOutOpacity],
+    [SineOpacity.TAG, SineOpacity],
+    [FadeInOpacity.TAG, FadeInOpacity],
+    [FadeOutOpacity.TAG, FadeOutOpacity],
     [OpacityAnimation.TAG, OpacityAnimation],
+    [ScaleAnimation.TAG, ScaleAnimation],
+    [PositionAnimation.TAG, PositionAnimation],
   ]);
 
   register(key: string, Cls: typeof UIComponent) {

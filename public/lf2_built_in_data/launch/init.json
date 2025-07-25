@@ -16,8 +16,8 @@
         "text_align": "center"
       },
       "component": [
-        "sine_opacity(0.1, 1, 0.25)",
-        "<fade_out>!fade_out_opacity(500)"
+        "SineOpacity(0.1, 1, 0.25)",
+        "<fade_out>!FadeOutOpacity(500)"
       ]
     },
     {
@@ -30,8 +30,8 @@
         "text_align": "center"
       },
       "component": [
-        "sine_opacity(0.1, 1, 0.25)",
-        "<fade_out>!fade_out_opacity(500)"
+        "SineOpacity(0.1, 1, 0.25)",
+        "<fade_out>!FadeOutOpacity(500)"
       ]
     },
     {
@@ -41,7 +41,45 @@
       "pos": "397,150,1",
       "opacity": 0,
       "component": [
-        "OpacityAnimation(0,1, 0,1000, 1,1000, 1,5000)"
+        "OpacityAnimation(0,1, 0,1000, 1,1000, 1,5000)",
+        {
+          "id": "scale_in",
+          "name": "ScaleAnimation",
+          "args": [
+            0,
+            1,
+            "0,0,0",
+            1000,
+            "2,2,2",
+            500,
+            "1,1,1",
+            500
+          ]
+        },
+        {
+          "id": "move_in",
+          "name": "PositionAnimation",
+          "args": [
+            0,
+            1,
+            "397,150,1",
+            1000,
+            "319,150,1",
+            1000
+          ]
+        },
+        {
+          "id": "scale_out",
+          "name": "ScaleAnimation",
+          "args": [
+            0,
+            1,
+            "1,1,1",
+            1000,
+            "0,0,0",
+            1000
+          ]
+        }
       ]
     },
     {
@@ -50,8 +88,47 @@
       "center": "0.5,0.5",
       "pos": "397,150,1",
       "opacity": 0,
+      "scale": "0,0,0",
       "component": [
-        "OpacityAnimation(0,1, 0,1000, 1,1000, 1,5000)"
+        "OpacityAnimation(0,1, 0,1000, 1,1000, 1,5000)",
+        {
+          "id": "scale_in",
+          "name": "ScaleAnimation",
+          "args": [
+            0,
+            1,
+            "0,0,0",
+            1000,
+            "2,2,2",
+            500,
+            "1,1,1",
+            500
+          ]
+        },
+        {
+          "id": "scale_out",
+          "name": "ScaleAnimation",
+          "args": [
+            0,
+            1,
+            "1,1,1",
+            1000,
+            "0,0,0",
+            1000
+          ]
+        },
+        {
+          "id": "move_in",
+          "name": "PositionAnimation",
+          "args": [
+            0,
+            1,
+            "397,150,1",
+            1000,
+            "477,150,1",
+            1000
+          ]
+        }
       ]
     },
     {
@@ -62,7 +139,19 @@
       "pos": "397,150,2",
       "opacity": 0,
       "component": [
-        "OpacityAnimation(0,1, 0,1000, 1,1000, 1,5000)"
+        "OpacityAnimation(0,1, 0,1000, 1,1000, 1,5000)",
+        {
+          "id": "move_in",
+          "name": "PositionAnimation",
+          "args": [
+            0,
+            1,
+            "397,150,1",
+            1000,
+            "397,230,1",
+            1000
+          ]
+        }
       ],
       "style": {
         "font": "18px Arial",

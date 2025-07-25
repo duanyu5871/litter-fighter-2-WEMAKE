@@ -1,6 +1,6 @@
 import { clamp } from "../utils/math/clamp";
 import { IAnimation } from "./IAnimation";
-const { max } = Math;
+const { max, floor } = Math;
 
 export class Animation implements IAnimation {
   static TAG = 'Animation'
@@ -10,29 +10,32 @@ export class Animation implements IAnimation {
   private _duration: number = 0
   private _direction: -1 | 1 = 1;
   private _loops: number = 1;
-  private _wrap: number = 1;
+  private _fill_mode: 1 | 0 = 1;
   private _count: number = 0;
+
+  get fill_mode(): 1 | 0 { return this._fill_mode; }
+  set fill_mode(v: 1 | 0) { this.set_fill_mode(v) }
+  set_fill_mode(v: 1 | 0) {
+    if (v != 1 && v != 0) debugger;
+    this._fill_mode = v == 1 || v == 0 ? v : this._fill_mode;
+    return this
+  }
 
   get count(): number { return this._count; }
   set count(v: number) { this.set_count(v) }
   set_count(v: number): this {
-    this._count = v
-    return this
-  }
-
-  wrap(v: any = true) {
-    this._wrap = v ? 1 : 0
+    this._count = clamp(floor(v), 0, this._loops)
     return this
   }
 
   get loops(): number { return this._loops; }
   set loops(v: number) { this.set_loops(v) }
   set_loops(v: number): this {
-    this._loops = v
+    this._loops = clamp(floor(v), -1, Number.MAX_SAFE_INTEGER)
     return this
   }
+  
   get direction(): -1 | 1 { return this._direction; }
-
   set direction(v: -1 | 1) { this.set_direction(v) }
   set_direction(v: -1 | 1): this {
     if (v !== -1 && v !== 1) debugger;
@@ -65,8 +68,10 @@ export class Animation implements IAnimation {
   set_time(v: number): this { this._time = clamp(v, 0, this.duration); return this }
 
   get is_end(): boolean {
-    const { loops, count, duration } = this
-    return (loops > 0 && count >= loops) || duration <= 0;
+    const { loops, count, duration } = this;
+    if (duration <= 0) return true;
+    if (loops < 0) return false;
+    return count >= loops;
   }
   start(reverse: boolean = this.reverse): this {
     this.count = 0;
@@ -90,19 +95,19 @@ export class Animation implements IAnimation {
     if (this.is_end) return this;
     const { duration, direction } = this
     let time = this.time + direction * dt;
-    if (time < 0) {
-      while (time < 0) {
-        time += duration
+    if (time <= 0) {
+      do {
         ++this.count
-      }
-      if (this.is_end && this._wrap)
+        if (time < 0) time += duration
+      } while (time < 0)
+      if (this.is_end && this._fill_mode)
         time = 0
-    } else if (time > duration) {
-      while (time > duration) {
-        time -= duration
+    } else if (time >= duration) {
+      do {
         ++this.count
-      }
-      if (this.is_end && this._wrap)
+        time -= duration
+      } while (time >= duration)
+      if (this.is_end && this._fill_mode)
         time = duration
     }
 

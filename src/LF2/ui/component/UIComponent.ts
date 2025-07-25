@@ -10,6 +10,7 @@ import type { UINode } from "../UINode";
  * @class Component
  */
 export class UIComponent {
+  static readonly TAG: string = "UIComponent"
   readonly node: UINode;
   readonly f_name: string;
   id: string = '';
@@ -80,14 +81,20 @@ export class UIComponent {
     if (!str) return false
     return !['false', '0'].some(v => v === str);
   }
-
+  warn(func: string, msg: string) {
+    Ditto.Warn(`[${this.node_name}][<${this.id}>${this.f_name}::${func}] ${msg}`)
+  }
+  nums(idx: number, length: 1): [number] | null
+  nums(idx: number, length: 2): [number, number] | null
+  nums(idx: number, length: 3): [number, number, number] | null
+  nums(idx: number, length: number): number[] | null;
   nums(idx: number, length: number): number[] | null {
     if (idx >= this._args.length) return null;
     let raw = this._args[idx];
     raw = typeof raw === 'string' ? raw.split(',') : raw
     if (Array.isArray(raw)) {
       if (raw.length < length) {
-        Ditto.Warn(`[${this.node_name}][${this.f_name}::num2] args[${idx}].length < 2!`)
+        this.warn(`num2`, `args[${idx}].length < 2!`)
         return null
       }
       const unsafe_nums = raw.map(v => Number(v));
@@ -95,14 +102,14 @@ export class UIComponent {
       for (let i = 0; i < length; i++) {
         const unsafe_num = unsafe_nums[i];
         if (!is_num(unsafe_num)) {
-          Ditto.Warn(`[${this.node_name}][${this.f_name}::num2] args[${idx}][${i}] is not a number, but got ${raw[i]}`)
+          this.warn(`num2`, `args[${idx}][${i}] is not a number, but got ${raw[i]}`)
           return null
         }
         ret.push(unsafe_num)
       }
       return ret
     } else {
-      Ditto.Warn(`[${this.node_name}][${this.f_name}::num2] args[${idx}] got ${raw}, can not parse to num2`)
+      this.warn(`num2`, `args[${idx}] got ${raw}, can not parse to num2`)
       return null
     }
   }

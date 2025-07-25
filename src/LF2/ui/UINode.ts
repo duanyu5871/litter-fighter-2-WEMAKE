@@ -97,10 +97,10 @@ export class UINode {
     return this._pos.value;
   }
   set pos(v: [number, number, number]) {
-    this.set_pos(v);
-  }
-  set_pos(v: [number, number, number]): this {
     this._pos.set(1, v);
+  }
+  set_pos(x: number, y: number, z: number): this {
+    this._pos.set(1, [x, y, z]);
     return this;
   }
 
@@ -112,7 +112,7 @@ export class UINode {
   }
   set_x(x: number): this {
     const [, y, z] = this.pos;
-    return this.set_pos([x, y, z]);
+    return this.set_pos(x, y, z);
   }
 
   get y(): number {
@@ -123,7 +123,7 @@ export class UINode {
   }
   set_y(y: number): this {
     const [x, , z] = this.pos;
-    return this.set_pos([x, y, z]);
+    return this.set_pos(x, y, z);
   }
 
   get z(): number {
@@ -134,7 +134,7 @@ export class UINode {
   }
   set_z(z: number): this {
     const [x, y] = this.pos;
-    return this.set_pos([x, y, z]);
+    return this.set_pos(x, y, z);
   }
 
   get root(): UINode {
@@ -642,14 +642,18 @@ export class UINode {
    * @param condition
    * @returns
    */
-  find_component<T extends TCls>(
-    type: T,
-    condition: TCond<T> = () => 1,
-  ): InstanceType<T> | undefined {
-    return find(
+  find_component<T extends TCls>(type: T, condition: TCond<T> | string = () => 1, handler?: (c: InstanceType<T>) => void): InstanceType<T> | undefined {
+    const c = find(
       this.components,
-      (v) => v instanceof type && condition(v as any),
+      (v) => {
+        if (!(v instanceof type)) return 0;
+        if (is_str(condition)) return condition === v.id;
+        return condition(v as any);
+      },
     ) as InstanceType<T> | undefined;
+
+    c && handler?.(c)
+    return c
   }
 
   /**
