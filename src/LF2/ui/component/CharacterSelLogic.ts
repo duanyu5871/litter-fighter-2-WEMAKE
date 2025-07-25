@@ -30,7 +30,8 @@ export default class SlotSelLogic extends UIComponent {
     enter: () => {
       this.joined = false;
       this.team_decided = false;
-      this.character_decided = false
+      this.character_decided = false;
+      this.player?.set_is_com(true, true)
     },
     on_player_key_down: (player_id, key) => {
       if (key !== 'a') return;
@@ -112,9 +113,7 @@ export default class SlotSelLogic extends UIComponent {
     return this.args[0] || "";
   }
 
-  get player(): PlayerInfo | undefined {
-    return this.lf2.players.get(this.player_id);
-  }
+  get player(): PlayerInfo { return this.lf2.players.get(this.player_id)! }
 
   get character(): string {
     return this.player?.character || "";

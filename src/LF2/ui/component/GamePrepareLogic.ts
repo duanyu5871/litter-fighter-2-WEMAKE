@@ -13,8 +13,8 @@ import { filter } from "../../utils/container_help";
 import { map_no_void } from "../../utils/container_help/map_no_void";
 import BackgroundNameText from "./BackgroundNameText";
 import SlotSelLogic, { SlotSelStatus } from "./CharacterSelLogic";
-import { UIComponent } from "./UIComponent";
 import StageNameText from "./StageNameText";
+import { UIComponent } from "./UIComponent";
 
 export interface IGamePrepareLogicCallback {
   on_countdown?(v: number): void;
@@ -82,7 +82,7 @@ export default class GamePrepareLogic extends UIComponent {
   override on_player_key_down(_player_id: string, key: GameKey) {
     switch (this.state) {
       case GamePrepareState.Player:
-        if ("j" === key && !this.used_player_slots.length) {
+        if ("j" === key && !this.joined_slots.length) {
           this.lf2.pop_ui();
         }
         break;
@@ -227,51 +227,38 @@ export default class GamePrepareLogic extends UIComponent {
   }
 
   /** 全部“玩家槽” */
-  get slots(): SlotSelLogic[] {
-    return this.node.root.search_components(SlotSelLogic);
-  }
+  get slots(): SlotSelLogic[] { return this.node.search_components(SlotSelLogic) }
 
   /** 已加入的“电脑槽” */
   get joined_coms(): SlotSelLogic[] {
-    return filter(
-      this.node.root.search_components(SlotSelLogic),
-      (v) => v.player?.is_com && v.player.joined,
-    );
+    return this.node.search_components(SlotSelLogic, v => v.player?.is_com && v.player.joined,)
   }
 
   /** 电脑槽 */
   get coms(): SlotSelLogic[] {
-    return filter(
-      this.node.root.search_components(SlotSelLogic),
-      (v) => v.player?.is_com,
-    );
+    return this.node.search_components(SlotSelLogic, v => v.player?.is_com);
   }
 
-  /** 使用玩家槽 */
-  get used_player_slots(): SlotSelLogic[] {
-    return filter(
-      this.node.root.search_components(SlotSelLogic),
-      (v) => v.player?.joined,
-    );
+  /** 已使用槽 */
+  get joined_slots(): SlotSelLogic[] {
+    return this.node.search_components(SlotSelLogic, v => v.player?.joined);
   }
 
-  /** 未使用玩家槽 */
-  get empty_player_slots(): SlotSelLogic[] {
-    return filter(
-      this.node.root.search_components(SlotSelLogic),
-      (v) => !v.player?.joined,
-    );
+  /** 未使用槽 */
+  get empty_slots(): SlotSelLogic[] {
+    return this.node.search_components(SlotSelLogic, v => !v.player?.joined);
   }
 
   handling_com: SlotSelLogic | undefined;
 
   set_com_num(num: number) {
     this._com_num = num;
+
+    const { empty_slots } = this;
     if (num > 0) {
-      const { empty_player_slots } = this;
-      this.handling_com = empty_player_slots[0];
-      while (num > 0 && empty_player_slots.length) {
-        empty_player_slots.shift()?.player?.set_is_com(true, true);
+      this.handling_com = empty_slots[0];
+      while (num > 0 && empty_slots.length) {
+        empty_slots.shift()?.player?.set_is_com(true, true);
         num -= 1;
       }
       this._fsm.use(GamePrepareState.Computer);
