@@ -1,11 +1,11 @@
 import { new_team } from "../../base";
 import Callbacks from "../../base/Callbacks";
-import FSM, { IReadonlyFSM } from "../../base/FSM";
+import FSM, { IReadonlyFSM, IState } from "../../base/FSM";
 import Invoker from "../../base/Invoker";
 import { NoEmitCallbacks } from "../../base/NoEmitCallbacks";
 import LocalController from "../../controller/LocalController";
 import { EntityGroup } from "../../defines";
-import GameKey from "../../defines/GameKey";
+import GameKey, { TLooseGameKey } from "../../defines/GameKey";
 import { Defines } from "../../defines/defines";
 import { Entity } from "../../entity/Entity";
 import { Factory } from "../../entity/Factory";
@@ -20,11 +20,15 @@ export interface IGamePrepareLogicCallback {
   on_countdown?(v: number): void;
 }
 export enum GamePrepareState {
-  Player = "PlayerCharacterSelecting",
+  Player = "Player",
   CountingDown = "CountingDown",
   ComNumberSel = "ComputerNumberSelecting",
   Computer = "ComputerCharacterSelecting",
   GameSetting = "GameSetting",
+}
+
+export interface IGamePrepareState extends IState<GamePrepareState> {
+  on_player_key_down?(key: TLooseGameKey): void
 }
 
 export default class GamePrepareLogic extends UIComponent {
@@ -80,29 +84,7 @@ export default class GamePrepareLogic extends UIComponent {
   }
 
   override on_player_key_down(_player_id: string, key: GameKey) {
-    switch (this.state) {
-      case GamePrepareState.Player:
-        if ("j" === key && !this.joined_slots.length) {
-          this.lf2.pop_ui();
-        }
-        break;
-      case GamePrepareState.CountingDown:
-        if ("j" === key) {
-          this._count_down = Math.max(0, this._count_down - 500);
-          this._callbacks.emit("on_countdown")(
-            Math.ceil(this._count_down / 1000),
-          );
-        }
-        break;
-      case GamePrepareState.ComNumberSel:
-      case GamePrepareState.GameSetting:
-        if ("j" === key) this._fsm.use(GamePrepareState.Player);
-        break;
-      case GamePrepareState.Computer:
-        if ("j" === key && !this.joined_coms.length)
-          this._fsm.use(GamePrepareState.ComNumberSel);
-        break;
-    }
+    this.fsm.state?.on_player_key_down?.(key)
   }
 
   protected on_someone_changed() {
@@ -128,73 +110,84 @@ export default class GamePrepareLogic extends UIComponent {
   override update(dt: number): void {
     this._fsm.update(dt);
   }
-  get fsm(): IReadonlyFSM<GamePrepareState> {
+  get fsm(): IReadonlyFSM<GamePrepareState, IGamePrepareState> {
     return this._fsm;
   }
-  private _fsm = new FSM<GamePrepareState>()
-    .add(
-      {
-        key: GamePrepareState.Player,
-        enter: () => {
-          this._com_num = 0;
-          for (const slots of this.slots) slots.fsm.use(SlotSelStatus.Empty)
-        },
-      },
-      {
-        key: GamePrepareState.CountingDown,
-        enter: () => {
-          this._count_down = 5000;
-          this._callbacks.emit("on_countdown")(5);
-        },
-        update: (dt) => {
-          const prev_second = Math.ceil(this._count_down / 1000);
-          this._count_down -= dt;
-          const curr_second = Math.ceil(this._count_down / 1000);
-          if (curr_second !== prev_second)
-            this._callbacks.emit("on_countdown")(curr_second);
-          if (this._count_down <= 0) return GamePrepareState.ComNumberSel;
-        },
-      },
-      {
-        key: GamePrepareState.ComNumberSel,
-        enter: () => {
-          for (const { player: p } of this.coms) {
-            p
-              ?.set_is_com(false, true)
-              .set_joined(false, true)
-              .set_team_decided(false, true)
-              .set_random_character("", true);
-          }
-          const { slots: player_slots } = this;
-          const joined_num = filter(player_slots, (v) => v.joined).length;
-          const not_joined_num = filter(player_slots, (v) => !v.joined).length;
+  private _fsm = new FSM<GamePrepareState, IGamePrepareState>().add({
+    key: GamePrepareState.Player,
+    enter: () => {
+      this._com_num = 0;
+      for (const slots of this.slots) slots.fsm.use(SlotSelStatus.Empty)
+    },
+    on_player_key_down: (key) => {
+      if ("j" === key && !this.joined_slots.length) this.lf2.pop_ui();
+    },
+  }, {
+    key: GamePrepareState.CountingDown,
+    enter: () => {
+      this._count_down = 5000;
+      this._callbacks.emit("on_countdown")(5);
+    },
+    update: (dt) => {
+      const prev_second = Math.ceil(this._count_down / 1000);
+      this._count_down -= dt;
+      const curr_second = Math.ceil(this._count_down / 1000);
+      if (curr_second !== prev_second)
+        this._callbacks.emit("on_countdown")(curr_second);
+      if (this._count_down <= 0) return GamePrepareState.ComNumberSel;
+    },
+    on_player_key_down: (key) => {
+      if ("j" !== key) return;
+      this._count_down = Math.max(0, this._count_down - 500);
+      this._callbacks.emit("on_countdown")(Math.ceil(this._count_down / 1000));
+    },
+  }, {
+    key: GamePrepareState.ComNumberSel,
+    enter: () => {
+      for (const { player: p } of this.coms) {
+        p
+          ?.set_is_com(false, true)
+          .set_joined(false, true)
+          .set_team_decided(false, true)
+          .set_random_character("", true);
+      }
+      const { slots: player_slots } = this;
+      const joined_num = filter(player_slots, (v) => v.joined).length;
+      const not_joined_num = filter(player_slots, (v) => !v.joined).length;
 
-          if (this.game_mode !== "stage_mode")
-            this._min_com_num = joined_num <= 1 ? 1 : 0;
+      if (this.game_mode !== "stage_mode")
+        this._min_com_num = joined_num <= 1 ? 1 : 0;
 
-          this._max_com_num = not_joined_num;
-          this.node.find_child("how_many_computer")?.set_visible(true);
-        },
-        leave: () =>
-          this.node.find_child("how_many_computer")?.set_visible(false),
-      },
-      {
-        key: GamePrepareState.Computer,
-      },
-      {
-        key: GamePrepareState.GameSetting,
-        enter: () => {
-          this.update_random();
-          this.node.find_child("menu")?.set_visible(true);
-        },
-        leave: () => {
-          for (const { player: p } of this.slots)
-            p?.set_random_character("", true);
-          this.node.find_child("menu")?.set_visible(false);
-        },
-      },
-    )
-    .use(GamePrepareState.Player);
+      this._max_com_num = not_joined_num;
+      this.node.find_child("how_many_computer")?.set_visible(true);
+    },
+    leave: () => {
+      this.node.find_child("how_many_computer")?.set_visible(false)
+    },
+    on_player_key_down: (key) => {
+      if ("d" === key) this._fsm.use(GamePrepareState.Player);
+    },
+  }, {
+    key: GamePrepareState.Computer,
+    on_player_key_down: (key) => {
+      if ("j" === key && !this.joined_coms.length)
+        this._fsm.use(GamePrepareState.ComNumberSel);
+    },
+  }, {
+    key: GamePrepareState.GameSetting,
+    enter: () => {
+      this.update_random();
+      this.node.find_child("menu")?.set_visible(true);
+    },
+    leave: () => {
+      for (const { player: p } of this.slots)
+        p?.set_random_character("", true);
+      this.node.find_child("menu")?.set_visible(false);
+    },
+    on_player_key_down: (key) => {
+      if ("d" === key) this._fsm.use(GamePrepareState.Player);
+    },
+  }).use(GamePrepareState.Player);
 
   /** 至少可选COM数量 */
   private _min_com_num = 0;
