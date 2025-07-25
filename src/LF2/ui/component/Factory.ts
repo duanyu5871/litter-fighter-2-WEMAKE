@@ -4,7 +4,7 @@ import { IUIInfo } from "../IUIInfo";
 import type { UINode } from "../UINode";
 import { parse_call_func_expression } from "../utils/parse_call_func_expression";
 import BackgroundNameText from "./BackgroundNameText";
-import CharacterSelLogic from "./CharacterSelLogic";
+import SlotSelLogic from "./CharacterSelLogic";
 import ComNumButton from "./ComNumButton";
 import { DemoModeLogic } from "./DemoModeLogic";
 import DifficultyText from "./DifficultyText";
@@ -47,7 +47,7 @@ class ComponentFactory {
     ["key_set", PlayerKeyEditor],
     ["key_txt", PlayerKeyText],
     ["stage_transitions", StageTransitions],
-    ["player_c_sel_logic", CharacterSelLogic],
+    ["player_c_sel_logic", SlotSelLogic],
     ["player_c_head", PlayerCharacterHead],
     ["player_c_thumb", PlayerCharacterThumb],
     ["player_c_name", PlayerCharacterName],

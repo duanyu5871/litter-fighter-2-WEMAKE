@@ -6,14 +6,14 @@ import GameKey from "../../defines/GameKey";
 import { Defines } from "../../defines/defines";
 import GamePrepareLogic, { GamePrepareState } from "./GamePrepareLogic";
 import { UIComponent } from "./UIComponent";
-enum Status {
+export enum SlotSelStatus {
   Empty = 'Empty',
   Character = 'Player_Character',
   Team = 'Player_Team',
   Ready = 'Player_Done',
 }
 
-interface IStateUnit extends IState<Status> {
+interface IStateUnit extends IState<SlotSelStatus> {
   on_player_key_down?(player_id: string, key: GameKey): void;
 }
 
@@ -24,8 +24,89 @@ interface IStateUnit extends IState<Status> {
  * @class CharacterSelLogic
  * @extends {UIComponent}
  */
-export default class CharacterSelLogic extends UIComponent {
-  fsm = new FSM<Status, IStateUnit>();
+export default class SlotSelLogic extends UIComponent {
+  fsm = new FSM<SlotSelStatus, IStateUnit>().add({
+    key: SlotSelStatus.Empty,
+    enter: () => {
+      this.joined = false;
+      this.team_decided = false;
+      this.character_decided = false
+    },
+    on_player_key_down: (player_id, key) => {
+      if (key !== 'a') return;
+      this.fsm.use(SlotSelStatus.Character);
+      this.lf2.sounds.play_preset("join");
+    },
+  }, {
+    key: SlotSelStatus.Character,
+    enter: () => {
+      this.joined = true
+      this.character_decided = false
+      this.team_decided = false;
+    },
+    on_player_key_down: (player_id, key) => {
+      if (this.player_id != player_id && this.gpl.handling_com !== this) return;
+      if (key === "j") this.lf2.sounds.play_preset("cancel");
+      if (key === "a") this.lf2.sounds.play_preset("join");
+      if (key === 'a') {
+        // 按攻击确认角色,
+        this.character_decided = true;
+        // 闯关模式下，直接确定为第一队
+        if (this.gpl.game_mode === "stage_mode") {
+          this.team = Defines.TeamEnum.Team_1;
+          this.fsm.use(SlotSelStatus.Ready)
+        } else {
+          this.fsm.use(SlotSelStatus.Team)
+        }
+      } else if (key === 'j') {
+        // 按跳跃取消加入
+        this.fsm.use(SlotSelStatus.Empty);
+        if (this.gpl.handling_com === this) {
+          this.gpl.handling_com === this.gpl.coms[this.gpl.coms.indexOf(this) - 1];
+        }
+      } else {
+        this.swtich_fighter(key);
+      }
+    },
+  }, {
+    key: SlotSelStatus.Team,
+    enter: () => {
+      this.joined = true
+      this.character_decided = true
+      this.team_decided = false;
+    }, on_player_key_down: (player_id, key) => {
+      if (this.player_id != player_id && this.gpl.handling_com !== this) return;
+      if (key === "j") this.lf2.sounds.play_preset("cancel");
+      if (key === "a") this.lf2.sounds.play_preset("join");
+      if ("a" === key) {
+        this.fsm.use(SlotSelStatus.Ready);
+        if (this.gpl.handling_com === this) {
+          this.gpl.handling_com === this.gpl.coms[this.gpl.coms.indexOf(this) + 1];
+        }
+      } else if ("j" === key) {
+        this.fsm.use(SlotSelStatus.Character);
+      } else {
+        this.switch_team(key);
+      }
+    },
+  }, {
+    key: SlotSelStatus.Ready,
+    enter: () => {
+      this.joined = true
+      this.character_decided = true
+      this.team_decided = true;
+    }, on_player_key_down: (player_id, key) => {
+      if (this.player_id != player_id && this.gpl.handling_com !== this) return;
+      if (key === "j") this.lf2.sounds.play_preset("cancel");
+      if (key === "j") {
+        if (this.gpl.game_mode === "stage_mode") {
+          this.fsm.use(SlotSelStatus.Character)
+        } else {
+          this.fsm.use(SlotSelStatus.Team)
+        }
+      }
+    },
+  });
 
   get player_id() {
     return this.args[0] || "";
@@ -76,92 +157,6 @@ export default class CharacterSelLogic extends UIComponent {
     return this.node.root.find_component(GamePrepareLogic)!;
   }
 
-  override on_start(): void {
-    super.on_start?.()
-    this.fsm.add({
-      key: Status.Empty,
-      enter: () => {
-        this.joined = false;
-        this.team_decided = false;
-        this.character_decided = false
-      },
-      on_player_key_down: (player_id, key) => {
-        if (key !== 'a') return;
-        this.fsm.use(Status.Character);
-        this.lf2.sounds.play_preset("join");
-      },
-    }, {
-      key: Status.Character,
-      enter: () => {
-        this.joined = true
-        this.character_decided = false
-        this.team_decided = false;
-      },
-      on_player_key_down: (player_id, key) => {
-        if (this.player_id != player_id && this.gpl.handling_com !== this) return;
-        if (key === "j") this.lf2.sounds.play_preset("cancel");
-        if (key === "a") this.lf2.sounds.play_preset("join");
-        if (key === 'a') {
-          // 按攻击确认角色,
-          this.character_decided = true;
-          // 闯关模式下，直接确定为第一队
-          if (this.gpl.game_mode === "stage_mode") {
-            this.team = Defines.TeamEnum.Team_1;
-            this.fsm.use(Status.Ready)
-          } else {
-            this.fsm.use(Status.Team)
-          }
-        } else if (key === 'j') {
-          // 按跳跃取消加入
-          this.fsm.use(Status.Empty);
-          if (this.gpl.handling_com === this) {
-            this.gpl.handling_com === this.gpl.com_slots[this.gpl.com_slots.indexOf(this) - 1];
-          }
-        } else {
-          this.swtich_fighter(key);
-        }
-      },
-    }, {
-      key: Status.Team,
-      enter: () => {
-        this.joined = true
-        this.character_decided = true
-        this.team_decided = false;
-      }, on_player_key_down: (player_id, key) => {
-        if (this.player_id != player_id && this.gpl.handling_com !== this) return;
-        if (key === "j") this.lf2.sounds.play_preset("cancel");
-        if (key === "a") this.lf2.sounds.play_preset("join");
-        if ("a" === key) {
-          this.fsm.use(Status.Ready);
-          if (this.gpl.handling_com === this) {
-            this.gpl.handling_com === this.gpl.com_slots[this.gpl.com_slots.indexOf(this) + 1];
-          }
-        } else if ("j" === key) {
-          this.fsm.use(Status.Character);
-        } else {
-          this.switch_team(key);
-        }
-      },
-    }, {
-      key: Status.Ready,
-      enter: () => {
-        this.joined = true
-        this.character_decided = true
-        this.team_decided = true;
-      }, on_player_key_down: (player_id, key) => {
-        if (this.player_id != player_id && this.gpl.handling_com !== this) return;
-        if (key === "j") this.lf2.sounds.play_preset("cancel");
-        if (key === "j") {
-          if (this.gpl.game_mode === "stage_mode") {
-            this.fsm.use(Status.Character)
-          } else {
-            this.fsm.use(Status.Team)
-          }
-        }
-      },
-    })
-  }
-
   private swtich_fighter(key: GameKey) {
     if ("D" === key || "U" === key) {
       // 按上或下,回到随机
@@ -209,7 +204,7 @@ export default class CharacterSelLogic extends UIComponent {
     if (!this.lf2.is_cheat_enabled(CheatType.LF2_NET))
       this.handle_hidden_character();
 
-    this.fsm.use(Status.Empty)
+    this.fsm.use(SlotSelStatus.Empty)
   }
 
   override on_pause(): void {

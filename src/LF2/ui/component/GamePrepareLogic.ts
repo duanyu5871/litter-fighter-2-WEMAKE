@@ -12,7 +12,7 @@ import { Factory } from "../../entity/Factory";
 import { filter } from "../../utils/container_help";
 import { map_no_void } from "../../utils/container_help/map_no_void";
 import BackgroundNameText from "./BackgroundNameText";
-import CharacterSelLogic from "./CharacterSelLogic";
+import SlotSelLogic, { SlotSelStatus } from "./CharacterSelLogic";
 import { UIComponent } from "./UIComponent";
 import StageNameText from "./StageNameText";
 
@@ -99,7 +99,7 @@ export default class GamePrepareLogic extends UIComponent {
         if ("j" === key) this._fsm.use(GamePrepareState.Player);
         break;
       case GamePrepareState.Computer:
-        if ("j" === key && !this.joined_com_infos.length)
+        if ("j" === key && !this.joined_coms.length)
           this._fsm.use(GamePrepareState.ComNumberSel);
         break;
     }
@@ -137,12 +137,7 @@ export default class GamePrepareLogic extends UIComponent {
         key: GamePrepareState.Player,
         enter: () => {
           this._com_num = 0;
-          for (const [, player] of this.lf2.players) {
-            if (player.is_com) player.set_joined(false, true);
-            player.set_team_decided(false, true);
-            player.set_character_decided(false, true);
-            player.set_is_com(false, true);
-          }
+          for (const slots of this.slots) slots.fsm.use(SlotSelStatus.Empty)
         },
       },
       {
@@ -163,14 +158,14 @@ export default class GamePrepareLogic extends UIComponent {
       {
         key: GamePrepareState.ComNumberSel,
         enter: () => {
-          for (const { player: p } of this.com_slots) {
+          for (const { player: p } of this.coms) {
             p
               ?.set_is_com(false, true)
               .set_joined(false, true)
               .set_team_decided(false, true)
               .set_random_character("", true);
           }
-          const { player_slots } = this;
+          const { slots: player_slots } = this;
           const joined_num = filter(player_slots, (v) => v.joined).length;
           const not_joined_num = filter(player_slots, (v) => !v.joined).length;
 
@@ -193,7 +188,7 @@ export default class GamePrepareLogic extends UIComponent {
           this.node.find_child("menu")?.set_visible(true);
         },
         leave: () => {
-          for (const { player: p } of this.player_slots)
+          for (const { player: p } of this.slots)
             p?.set_random_character("", true);
           this.node.find_child("menu")?.set_visible(false);
         },
@@ -209,7 +204,7 @@ export default class GamePrepareLogic extends UIComponent {
   private _com_num = 0;
 
   private update_random() {
-    for (const { player: p } of this.player_slots) {
+    for (const { player: p } of this.slots) {
       if (!p?.joined || !p.is_random) continue;
       const { characters } = this.lf2.datas.find_group(
         EntityGroup.Regular,
@@ -232,44 +227,43 @@ export default class GamePrepareLogic extends UIComponent {
   }
 
   /** 全部“玩家槽” */
-  get player_slots(): CharacterSelLogic[] {
-    return this.node.root.search_components(CharacterSelLogic);
+  get slots(): SlotSelLogic[] {
+    return this.node.root.search_components(SlotSelLogic);
   }
 
   /** 已加入的“电脑槽” */
-  get joined_com_infos(): CharacterSelLogic[] {
-    
+  get joined_coms(): SlotSelLogic[] {
     return filter(
-      this.node.root.search_components(CharacterSelLogic),
+      this.node.root.search_components(SlotSelLogic),
       (v) => v.player?.is_com && v.player.joined,
     );
   }
 
   /** 电脑槽 */
-  get com_slots(): CharacterSelLogic[] {
+  get coms(): SlotSelLogic[] {
     return filter(
-      this.node.root.search_components(CharacterSelLogic),
+      this.node.root.search_components(SlotSelLogic),
       (v) => v.player?.is_com,
     );
   }
-  
+
   /** 使用玩家槽 */
-  get used_player_slots(): CharacterSelLogic[] {
+  get used_player_slots(): SlotSelLogic[] {
     return filter(
-      this.node.root.search_components(CharacterSelLogic),
+      this.node.root.search_components(SlotSelLogic),
       (v) => v.player?.joined,
     );
   }
-  
+
   /** 未使用玩家槽 */
-  get empty_player_slots(): CharacterSelLogic[] {
+  get empty_player_slots(): SlotSelLogic[] {
     return filter(
-      this.node.root.search_components(CharacterSelLogic),
+      this.node.root.search_components(SlotSelLogic),
       (v) => !v.player?.joined,
     );
   }
 
-  handling_com: CharacterSelLogic | undefined;
+  handling_com: SlotSelLogic | undefined;
 
   set_com_num(num: number) {
     this._com_num = num;
@@ -289,7 +283,7 @@ export default class GamePrepareLogic extends UIComponent {
   start_game() {
     const { far, near, left, right } = this.lf2.world.bg;
 
-    for (const { player } of this.player_slots) {
+    for (const { player } of this.slots) {
       if (!player?.joined) continue;
       const character_data = this.lf2.datas.find_character(player.character);
       if (!character_data) continue;
