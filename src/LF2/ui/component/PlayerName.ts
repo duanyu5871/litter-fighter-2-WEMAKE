@@ -33,7 +33,7 @@ export default class PlayerName extends UIComponent {
     return this.node.root.find_component(GamePrepareLogic);
   }
   get can_join(): boolean {
-    return this.gpl?.state === GamePrepareState.PlayerCharacterSel;
+    return this.gpl?.state === GamePrepareState.Player;
   }
   protected get text(): string {
     if (this.is_com) return "Computer";

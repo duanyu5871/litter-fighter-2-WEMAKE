@@ -20,17 +20,16 @@ export interface IGamePrepareLogicCallback {
   on_countdown?(v: number): void;
 }
 export enum GamePrepareState {
-  PlayerCharacterSel = "PlayerCharacterSelecting",
+  Player = "PlayerCharacterSelecting",
   CountingDown = "CountingDown",
   ComNumberSel = "ComputerNumberSelecting",
-  ComputerCharacterSel = "ComputerCharacterSelecting",
+  Computer = "ComputerCharacterSelecting",
   GameSetting = "GameSetting",
 }
 
 export default class GamePrepareLogic extends UIComponent {
-  get game_mode(): string {
-    return this.args[0] || '';
-  }
+  static override readonly TAG = 'GamePrepareLogic'
+  get game_mode(): string { return this.args[0] || ''; }
   protected _unmount_jobs = new Invoker();
   protected _callbacks = new Callbacks<IGamePrepareLogicCallback>();
   get state(): GamePrepareState {
@@ -55,7 +54,7 @@ export default class GamePrepareLogic extends UIComponent {
       btn_switch_bg?.set_visible(false).set_disabled(true);
     }
 
-    this._fsm.use(GamePrepareState.PlayerCharacterSel);
+    this._fsm.use(GamePrepareState.Player);
     this._unmount_jobs.add(
       ...map_no_void(this.lf2.players.values(), (v) =>
         v.callbacks.add({
@@ -66,7 +65,7 @@ export default class GamePrepareLogic extends UIComponent {
       this.lf2.callbacks.add({
         on_broadcast: (m) => {
           if (m === Defines.BuiltIn_Broadcast.ResetGPL)
-            this._fsm.use(GamePrepareState.PlayerCharacterSel);
+            this._fsm.use(GamePrepareState.Player);
           if (m === Defines.BuiltIn_Broadcast.UpdateRandom)
             this.update_random();
           if (m === Defines.BuiltIn_Broadcast.StartGame) this.start_game();
@@ -82,7 +81,7 @@ export default class GamePrepareLogic extends UIComponent {
 
   override on_player_key_down(_player_id: string, key: GameKey) {
     switch (this.state) {
-      case GamePrepareState.PlayerCharacterSel:
+      case GamePrepareState.Player:
         if ("j" === key && !this.used_player_slots.length) {
           this.lf2.pop_ui();
         }
@@ -97,9 +96,9 @@ export default class GamePrepareLogic extends UIComponent {
         break;
       case GamePrepareState.ComNumberSel:
       case GamePrepareState.GameSetting:
-        if ("d" === key) this._fsm.use(GamePrepareState.PlayerCharacterSel);
+        if ("j" === key) this._fsm.use(GamePrepareState.Player);
         break;
-      case GamePrepareState.ComputerCharacterSel:
+      case GamePrepareState.Computer:
         if ("j" === key && !this.joined_com_infos.length)
           this._fsm.use(GamePrepareState.ComNumberSel);
         break;
@@ -114,14 +113,14 @@ export default class GamePrepareLogic extends UIComponent {
       if (p.team_decided) ready_num += 1; // 已准备人数
     }
     if (ready_num && ready_num === joined_num) {
-      if (this.state === GamePrepareState.ComputerCharacterSel) {
+      if (this.state === GamePrepareState.Computer) {
         this._fsm.use(GamePrepareState.GameSetting);
-      } else if (this.state === GamePrepareState.PlayerCharacterSel) {
+      } else if (this.state === GamePrepareState.Player) {
         this._fsm.use(GamePrepareState.CountingDown);
       }
     } else if (ready_num < joined_num) {
       if (this.state === GamePrepareState.CountingDown) {
-        this._fsm.use(GamePrepareState.PlayerCharacterSel);
+        this._fsm.use(GamePrepareState.Player);
       }
     }
   }
@@ -135,7 +134,7 @@ export default class GamePrepareLogic extends UIComponent {
   private _fsm = new FSM<GamePrepareState>()
     .add(
       {
-        key: GamePrepareState.PlayerCharacterSel,
+        key: GamePrepareState.Player,
         enter: () => {
           this._com_num = 0;
           for (const [, player] of this.lf2.players) {
@@ -185,7 +184,7 @@ export default class GamePrepareLogic extends UIComponent {
           this.node.find_child("how_many_computer")?.set_visible(false),
       },
       {
-        key: GamePrepareState.ComputerCharacterSel,
+        key: GamePrepareState.Computer,
       },
       {
         key: GamePrepareState.GameSetting,
@@ -200,7 +199,7 @@ export default class GamePrepareLogic extends UIComponent {
         },
       },
     )
-    .use(GamePrepareState.PlayerCharacterSel);
+    .use(GamePrepareState.Player);
 
   /** 至少可选COM数量 */
   private _min_com_num = 0;
@@ -232,33 +231,38 @@ export default class GamePrepareLogic extends UIComponent {
     return this._com_num;
   }
 
+  /** 全部“玩家槽” */
   get player_slots(): CharacterSelLogic[] {
-    // 全部“玩家槽”
     return this.node.root.search_components(CharacterSelLogic);
   }
+
+  /** 已加入的“电脑槽” */
   get joined_com_infos(): CharacterSelLogic[] {
-    // 已加入的“电脑槽”
+    
     return filter(
       this.node.root.search_components(CharacterSelLogic),
       (v) => v.player?.is_com && v.player.joined,
     );
   }
+
+  /** 电脑槽 */
   get com_slots(): CharacterSelLogic[] {
-    // 电脑槽”
     return filter(
       this.node.root.search_components(CharacterSelLogic),
       (v) => v.player?.is_com,
     );
   }
+  
+  /** 使用玩家槽 */
   get used_player_slots(): CharacterSelLogic[] {
-    // 未使用玩家槽
     return filter(
       this.node.root.search_components(CharacterSelLogic),
       (v) => v.player?.joined,
     );
   }
+  
+  /** 未使用玩家槽 */
   get empty_player_slots(): CharacterSelLogic[] {
-    // 未使用玩家槽
     return filter(
       this.node.root.search_components(CharacterSelLogic),
       (v) => !v.player?.joined,
@@ -276,7 +280,7 @@ export default class GamePrepareLogic extends UIComponent {
         empty_player_slots.shift()?.player?.set_is_com(true, true);
         num -= 1;
       }
-      this._fsm.use(GamePrepareState.ComputerCharacterSel);
+      this._fsm.use(GamePrepareState.Computer);
     } else {
       this._fsm.use(GamePrepareState.GameSetting);
     }

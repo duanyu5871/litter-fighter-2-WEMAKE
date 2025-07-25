@@ -109,7 +109,7 @@ export default class PlayerCharacterHead extends UIComponent {
     const { gpl } = this;
     if (!gpl) return;
     this._mesh_head.visible = this.joined;
-    if (gpl.state === GamePrepareState.PlayerCharacterSel) {
+    if (gpl.state === GamePrepareState.Player) {
       this._mesh_hints.visible = !this.joined;
       this._mesh_cd.visible = false;
     } else if (gpl.state === GamePrepareState.CountingDown) {

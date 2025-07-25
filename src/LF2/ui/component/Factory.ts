@@ -53,7 +53,7 @@ class ComponentFactory {
     ["player_c_name", PlayerCharacterName],
     ["player_name", PlayerName],
     ["player_t_name", PlayerTeamName],
-    ["game_prepare_logic", GamePrepareLogic],
+    [GamePrepareLogic.TAG, GamePrepareLogic],
     ["com_number", ComNumButton],
     ["stage_title_show", StageTitleShow],
     ["reachable_layout_group", ReachableLayoutGroup],
