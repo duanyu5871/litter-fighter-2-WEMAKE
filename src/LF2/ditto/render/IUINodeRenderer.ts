@@ -10,14 +10,17 @@ export interface IUINodeRenderer {
   visible: boolean;
   parent: IUINodeRenderer;
   img_idx: number;
-  on_start(): void;
-  on_stop(): void;
   del(child: IUINodeRenderer): void;
   add(child: IUINodeRenderer): void;
   del_self(): void;
   render(): void;
-  on_resume(): void;
-  on_pause(): void;
-  on_show(): void;
-  on_hide(): void;
+
+  on_start?(): void;
+  on_resume?(): void;
+  on_show?(): void;
+  on_hide?(): void;
+  on_pause?(): void;
+  on_stop?(): void;
+  on_foucs?(): void;
+  on_blur?(): void;
 }

@@ -26,8 +26,8 @@ export class UINode implements IDebugging {
   log!: (_0: string, ..._1: any[]) => void;
 
   readonly lf2: LF2;
-  readonly id_layout_map: Map<string, UINode>;
-  readonly name_layout_map: Map<string, UINode>;
+  readonly id_ui_map: Map<string, UINode[]>;
+  readonly name_ui_map: Map<string, UINode[]>;
 
   protected _callbacks = new Callbacks<IUICallback>();
   get callbacks(): NoEmitCallbacks<IUICallback> {
@@ -269,8 +269,8 @@ export class UINode implements IDebugging {
     this.data = Object.freeze(data);
     this._parent = parent;
     this._root = parent?.root ?? this;
-    this.id_layout_map = parent?.id_layout_map ?? new Map();
-    this.name_layout_map = parent?.name_layout_map ?? new Map();
+    this.id_ui_map = parent?.id_ui_map ?? new Map();
+    this.name_ui_map = parent?.name_ui_map ?? new Map();
 
     this.renderer = new Ditto.UINodeRenderer(this);
     make_debugging(this)
@@ -308,11 +308,11 @@ export class UINode implements IDebugging {
 
   on_start() {
     this._state = {};
-    this.renderer.on_start();
     for (const c of this._components) c.on_start?.();
     for (const i of this.children) i.on_start();
     const { start } = this.data.actions || {};
     start && actor.act(this, start);
+    this.renderer.on_start?.();
   }
 
   on_stop(): void {
@@ -320,7 +320,7 @@ export class UINode implements IDebugging {
     for (const l of this.children) l.on_stop();
     const { stop } = this.data.actions || {};
     stop && actor.act(this, stop);
-    this.renderer.on_stop();
+    this.renderer.on_stop?.();
   }
 
   on_resume() {
@@ -333,7 +333,7 @@ export class UINode implements IDebugging {
     const { resume } = this.data.actions || {};
     resume && actor.act(this, resume);
     this.invoke_visible_callback();
-    this.renderer.on_resume();
+    this.renderer.on_resume?.();
   }
 
   on_pause() {
@@ -349,7 +349,7 @@ export class UINode implements IDebugging {
     pause && actor.act(this, pause);
     for (const c of this._components) c.on_pause?.();
     for (const item of this.children) item.on_pause();
-    this.renderer.on_pause();
+    this.renderer.on_pause?.();
   }
 
   on_show() {
@@ -357,14 +357,14 @@ export class UINode implements IDebugging {
     this._callbacks.emit("on_show")(this);
     if (this.data.auto_focus && !this.disabled && !this.focused_node)
       this.focused_node = this;
-    this.renderer.on_show();
+    this.renderer.on_show?.();
   }
 
   on_hide() {
     if (this.focused_node === this) this.focused_node = void 0;
     for (const c of this.components) c.on_hide?.();
     this._callbacks.emit("on_hide")(this);
-    this.renderer.on_hide();
+    this.renderer.on_hide?.();
   }
 
   to_next_img() {
@@ -490,10 +490,17 @@ export class UINode implements IDebugging {
         let count = (is_num(item_info.count) && item_info.count > 0) ? item_info.count : 1
         while (count) {
           const cooked_item = UINode.create(lf2, item_info, ret);
-          if (cooked_item.id)
-            ret.id_layout_map.set(cooked_item.id, cooked_item);
-          if (cooked_item.name)
-            ret.name_layout_map.set(cooked_item.name, cooked_item);
+
+          if (cooked_item.id) {
+            const set = ret.id_ui_map.get(cooked_item.id) || [];
+            set.push(cooked_item)
+            ret.id_ui_map.set(cooked_item.id, set);
+          }
+          if (cooked_item.name) {
+            const set = ret.name_ui_map.get(cooked_item.name) || [];
+            set.push(cooked_item)
+            ret.name_ui_map.set(cooked_item.name, set);
+          }
           cooked_item._index = ret.children.length;
           ret.add_child(cooked_item)
           --count;
@@ -620,7 +627,7 @@ export class UINode implements IDebugging {
    * @memberof UINode
    */
   find_child(id: string): UINode | undefined {
-    return this.id_layout_map.get(id);
+    return this.id_ui_map.get(id)?.[0];
   }
 
   /**
@@ -632,7 +639,7 @@ export class UINode implements IDebugging {
    * @memberof UINode
    */
   find_child_by_name(name: string): UINode | undefined {
-    return this.name_layout_map.get(name);
+    return this.name_ui_map.get(name)?.[0];
   }
 
   get_value(name: string, lookup: boolean = true): any {
@@ -670,11 +677,15 @@ export class UINode implements IDebugging {
    */
   find_components<T extends TCls>(
     type: T,
-    condition: TCond<T> = () => 1,
+    condition: TCond<T> | string = () => 1,
   ): InstanceType<T>[] {
     return filter(
       this.components,
-      (v) => v instanceof type && condition(v as any),
+      (v) => {
+        if (!(v instanceof type)) return 0;
+        if (is_str(condition)) return condition === v.id;
+        return condition(v as any);
+      },
     ) as InstanceType<T>[];
   }
 
@@ -686,7 +697,7 @@ export class UINode implements IDebugging {
    */
   search_component<T extends TCls>(
     type: T,
-    condition: TCond<T> = () => 1,
+    condition: TCond<T> | string = () => 1,
   ): InstanceType<T> | undefined {
     const ret = this.find_component(type, condition);
     if (ret) return ret;
@@ -704,7 +715,7 @@ export class UINode implements IDebugging {
    */
   search_components<T extends TCls>(
     type: T,
-    condition: TCond<T> = () => 1,
+    condition: TCond<T> | string = () => 1,
   ): InstanceType<T>[] {
     const ret = this.find_components(type, condition);
     for (const i of this._children)
@@ -723,9 +734,11 @@ export class UINode implements IDebugging {
 
   on_foucs(): void {
     for (const c of this._components) c.on_foucs?.();
+    this.renderer.on_foucs?.()
   }
   on_blur(): void {
     for (const c of this._components) c.on_blur?.();
+    this.renderer.on_blur?.()
   }
 }
 type TCls<R = any> = abstract new (...args: any) => R;

@@ -315,7 +315,7 @@ export class World extends WorldDataset {
   update_camera() {
 
     const old_cam_x = Math.floor(this.renderer.cam_x);
-    if (this.stage.id === Defines.VOID_STAGE.id) {
+    if (this.bg.id === Defines.VOID_BG.id) {
       this.renderer.cam_x = 0
       if (old_cam_x !== 0) {
         this.callbacks.emit("on_cam_move")(0);
