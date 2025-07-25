@@ -1,8 +1,5 @@
 import { ISprite } from "../../3d/ISprite";
-import { Delay } from "../../animation";
 import Easing from "../../animation/Easing";
-import Sequence from "../../animation/Sequence";
-import { Sine } from "../../animation/Sine";
 import FSM, { IState } from "../../base/FSM";
 import Invoker from "../../base/Invoker";
 import GameKey from "../../defines/GameKey";
@@ -45,6 +42,7 @@ export default class LaunchPageLogic extends UIComponent {
     .set_ease_method(ease_linearity)
     .set_loops(-1)
     .set_fill_mode(1)
+
 
   constructor(layout: UINode, f_name: string) {
     super(layout, f_name);
