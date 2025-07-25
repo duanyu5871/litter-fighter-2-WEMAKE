@@ -366,7 +366,7 @@ function App() {
 
   useShortcut("F1", 0, () => lf2?.world.set_paused(!paused));
   useShortcut("F2", 0, () => update_once());
-  useShortcut("F4", 0, () => lf2?.pop_layout());
+  useShortcut("F4", 0, () => lf2?.pop_ui());
   useShortcut("F5", 0, () => set_fast_forward(!fast_forward));
 
   useShortcut("F6", 0, () => {
@@ -511,7 +511,7 @@ function App() {
           <ToggleImgButton
             onClick={() => {
               lf2?.world.set_paused(true);
-              lf2?.push_layout("ctrl_settings");
+              lf2?.push_ui("ctrl_settings");
             }}
             src={[img_btn_1_1, img_btn_1_1]}
           />
@@ -519,7 +519,7 @@ function App() {
         <Show show={layout_id && Number(lf2?.ui_stacks.length) > 1}>
           <ToggleImgButton
             shortcut="F4"
-            onClick={() => lf2?.pop_layout()}
+            onClick={() => lf2?.pop_ui()}
             src={[img_btn_2_3]}
           />
         </Show>
@@ -614,7 +614,7 @@ function App() {
         <Select
           placeholder="页面"
           value={layout_id}
-          on_changed={v => lf2?.set_layout(v!)}
+          on_changed={v => lf2?.set_ui(v!)}
           items={layouts}
           parse={(o) => [o.id!, o.name]}
         />

@@ -8,6 +8,7 @@ import { IValGetter } from "../defines/IExpression";
 import IStyle from "../defines/IStyle";
 import Ditto from "../ditto";
 import { IUINodeRenderer } from "../ditto/render/IUINodeRenderer";
+import { IDebugging, make_debugging } from "../entity/make_debugging";
 import { type IImageInfo } from "../loader/IImageInfo";
 import { filter, find } from "../utils/container_help";
 import { is_arr, is_bool, is_num, is_str } from "../utils/type_check";
@@ -19,8 +20,11 @@ import factory from "./component/Factory";
 import { UIComponent } from "./component/UIComponent";
 import read_nums from "./utils/read_nums";
 
-export class UINode {
-  __debugging = false;
+export class UINode implements IDebugging {
+  debug!: (_0: string, ..._1: any[]) => void;
+  warn!: (_0: string, ..._1: any[]) => void;
+  log!: (_0: string, ..._1: any[]) => void;
+
   readonly lf2: LF2;
   readonly id_layout_map: Map<string, UINode>;
   readonly name_layout_map: Map<string, UINode>;
@@ -269,6 +273,7 @@ export class UINode {
     this.name_layout_map = parent?.name_layout_map ?? new Map();
 
     this.renderer = new Ditto.UINodeRenderer(this);
+    make_debugging(this)
   }
 
   get x_on_root(): number {
@@ -313,9 +318,9 @@ export class UINode {
   on_stop(): void {
     for (const c of this.components) c.on_stop?.();
     for (const l of this.children) l.on_stop();
-    this.renderer.on_stop();
     const { stop } = this.data.actions || {};
     stop && actor.act(this, stop);
+    this.renderer.on_stop();
   }
 
   on_resume() {
@@ -323,20 +328,18 @@ export class UINode {
       this.focused_node = this._state.focused_node;
     }
     if (this.root === this) this.lf2.world.scene.add(this.sprite);
-
     for (const c of this._components) c.on_resume?.();
     for (const i of this.children) i.on_resume();
-
     const { resume } = this.data.actions || {};
     resume && actor.act(this, resume);
-
     this.invoke_visible_callback();
+    this.renderer.on_resume();
   }
 
   on_pause() {
     if (!this.parent) {
       this._state.focused_node = this.focused_node;
-      console.log("on_pause focused_node", this.focused_node);
+      this.debug("on_pause focused_node", this.focused_node);
     }
     if (this.root === this) this.renderer.del_self();
 
@@ -346,6 +349,7 @@ export class UINode {
     pause && actor.act(this, pause);
     for (const c of this._components) c.on_pause?.();
     for (const item of this.children) item.on_pause();
+    this.renderer.on_pause();
   }
 
   on_show() {
@@ -353,12 +357,14 @@ export class UINode {
     this._callbacks.emit("on_show")(this);
     if (this.data.auto_focus && !this.disabled && !this.focused_node)
       this.focused_node = this;
+    this.renderer.on_show();
   }
 
   on_hide() {
     if (this.focused_node === this) this.focused_node = void 0;
     for (const c of this.components) c.on_hide?.();
     this._callbacks.emit("on_hide")(this);
+    this.renderer.on_hide();
   }
 
   to_next_img() {
@@ -474,7 +480,7 @@ export class UINode {
 
   static create(lf2: LF2, info: ICookedUIInfo, parent?: UINode): UINode {
     const ret = new UINode(lf2, info, parent);
-    const get_val = lf2.layout_val_getter;
+    const get_val = lf2.ui_val_getter;
     ret._cook_data(get_val);
     ret._cook_img_idx(get_val);
     ret._cook_component();

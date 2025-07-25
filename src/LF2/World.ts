@@ -313,7 +313,17 @@ export class World extends WorldDataset {
   }
 
   update_camera() {
+
     const old_cam_x = Math.floor(this.renderer.cam_x);
+    if (this.stage.id === Defines.VOID_STAGE.id) {
+      this.renderer.cam_x = 0
+      if (old_cam_x !== 0) {
+        this.callbacks.emit("on_cam_move")(0);
+      }
+      return;
+    }
+
+
     const { player_left, left, player_right, right } = this.stage;
     const max_cam_left = is_num(this.lock_cam_x) ? left : player_left;
     const max_cam_right = is_num(this.lock_cam_x) ? right : player_right;

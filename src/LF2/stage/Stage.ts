@@ -1,6 +1,5 @@
 import type { World } from "../World";
 import Callbacks from "../base/Callbacks";
-import { NoEmitCallbacks } from "../base/NoEmitCallbacks";
 import { new_team } from "../base/new_id";
 import Background from "../bg/Background";
 import { Defines, IBgData, IStageInfo, IStageObjectInfo, IStagePhaseInfo } from "../defines";
@@ -12,54 +11,31 @@ import { is_num } from "../utils/type_check";
 import type IStageCallbacks from "./IStageCallbacks";
 import Item from "./Item";
 
-export class Stage {
+export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
   static readonly TAG: string = "Stage";
   readonly world: World;
   readonly data: IStageInfo;
   readonly bg: Background;
   readonly team: string;
-  private _callbacks = new Callbacks<IStageCallbacks>();
+  readonly callbacks = new Callbacks<IStageCallbacks>();
   private _disposed: boolean = false;
   private _disposers: (() => void)[] = [];
   private _cur_phase_idx = -1;
   private _time: number = 0;
+  get phases() { return this.data.phases }
+  get id(): string { return this.data.name; }
+  get name(): string { return this.data.name; }
+  get cur_phase(): number { return this._cur_phase_idx; }
+  get left(): number { return this.bg.left; }
+  get right(): number { return this.bg.right; }
+  get near(): number { return this.bg.near; }
+  get far(): number { return this.bg.far; }
+  get width(): number { return this.bg.width; }
+  get depth(): number { return this.bg.depth; }
+  get middle() { return this.bg.middle; }
+  get lf2() { return this.world.lf2; }
+  get time() { return this._time; }
 
-  get name(): string {
-    return this.data.name;
-  }
-  get cur_phase(): number {
-    return this._cur_phase_idx;
-  }
-  get left(): number {
-    return this.bg.left;
-  }
-  get right(): number {
-    return this.bg.right;
-  }
-  get near(): number {
-    return this.bg.near;
-  }
-  get far(): number {
-    return this.bg.far;
-  }
-  get width(): number {
-    return this.bg.width;
-  }
-  get depth(): number {
-    return this.bg.depth;
-  }
-  get middle() {
-    return this.bg.middle;
-  }
-  get lf2() {
-    return this.world.lf2;
-  }
-  get callbacks(): NoEmitCallbacks<IStageCallbacks> {
-    return this._callbacks;
-  }
-  get time() {
-    return this._time;
-  }
   /**
    * 玩家角色的地图左边界
    *
@@ -124,7 +100,7 @@ export class Stage {
       this.data.phases[this._cur_phase_idx];
     const phase: IStagePhaseInfo | undefined =
       this.data.phases[(this._cur_phase_idx = idx)];
-    this._callbacks.emit("on_phase_changed")(this, phase, old);
+    this.callbacks.emit("on_phase_changed")(this, phase, old);
     if (!phase) return;
     const { objects } = phase;
     this.play_phase_bgm();
@@ -227,7 +203,7 @@ export class Stage {
       temp.push(e);
     }
     this.world.del_entities(temp);
-    this._callbacks.clear()
+    this.callbacks.clear()
   }
   all_boss_dead(): boolean {
     return !find(this.items, (i) => i.info.is_boss);

@@ -1,10 +1,13 @@
+import { IDebugging, make_debugging } from "../entity/make_debugging";
 import { clamp } from "../utils/math/clamp";
 import { IAnimation } from "./IAnimation";
 const { max, floor } = Math;
 
-export class Animation implements IAnimation {
+export class Animation implements IAnimation, IDebugging {
   static TAG = 'Animation'
-  __debugging = false;
+  debug!: (_0: string, ..._1: any[]) => void;
+  warn!: (_0: string, ..._1: any[]) => void;
+  log!: (_0: string, ..._1: any[]) => void;
   private _value: number = 0;
   private _time: number = 0;
   private _duration: number = 0
@@ -12,6 +15,10 @@ export class Animation implements IAnimation {
   private _loops: number = 1;
   private _fill_mode: 1 | 0 = 1;
   private _count: number = 0;
+
+  constructor() {
+    make_debugging(this)
+  }
 
   get fill_mode(): 1 | 0 { return this._fill_mode; }
   set fill_mode(v: 1 | 0) { this.set_fill_mode(v) }
@@ -34,7 +41,7 @@ export class Animation implements IAnimation {
     this._loops = clamp(floor(v), -1, Number.MAX_SAFE_INTEGER)
     return this
   }
-  
+
   get direction(): -1 | 1 { return this._direction; }
   set direction(v: -1 | 1) { this.set_direction(v) }
   set_direction(v: -1 | 1): this {
@@ -112,7 +119,7 @@ export class Animation implements IAnimation {
     }
 
     this.time = clamp(time, 0, duration);
-    if (this.__debugging) console.debug(`[${Animation.TAG}::update] time = ${this.time}, dt = ${dt}`)
+    this.debug(`update`, `time = ${this.time}, dt = ${dt}`)
     this.calc();
     return this;
   }

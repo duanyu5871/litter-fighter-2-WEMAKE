@@ -16,4 +16,8 @@ export interface IUINodeRenderer {
   add(child: IUINodeRenderer): void;
   del_self(): void;
   render(): void;
+  on_resume(): void;
+  on_pause(): void;
+  on_show(): void;
+  on_hide(): void;
 }

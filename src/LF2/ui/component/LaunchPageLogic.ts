@@ -102,7 +102,7 @@ export default class LaunchPageLogic extends UIComponent {
       },
       update: (dt) => {
         if (this.long_text.find_component(OpacityAnimation)!.is_end) {
-          this.lf2.set_layout(this.entry_name);
+          this.lf2.set_ui(this.entry_name);
           return Status.End
         }
       }

@@ -21,6 +21,7 @@ import {
   IZip,
 } from "./ditto";
 import { Entity } from "./entity";
+import { IDebugging, make_debugging } from "./entity/make_debugging";
 import { BallsHelper, CharactersHelper, EntitiesHelper, WeaponsHelper } from "./helper";
 import { ILf2Callback } from "./ILf2Callback";
 import DatMgr from "./loader/DatMgr";
@@ -49,7 +50,10 @@ const cheat_info_pair = (n: CheatType) =>
     },
   ] as const;
 
-export class LF2 implements IKeyboardCallback, IPointingsCallback {
+export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
+  debug!: (_0: string, ..._1: any[]) => void;
+  warn!: (_0: string, ..._1: any[]) => void;
+  log!: (_0: string, ..._1: any[]) => void;
   static readonly TAG = "LF2";
   static readonly instances = new Set<LF2>()
   private _disposed: boolean = false;
@@ -182,7 +186,6 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
   }
 
   constructor() {
-    Ditto.Debug(`[${LF2.TAG}::constructor]`)
     this.world = new World(this);
     this.datas = new DatMgr(this);
     this.sounds = new ditto.Sounds(this);
@@ -195,6 +198,8 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
     this.world.start_render();
     this.load_prel_zip("prel.zip.json");
     LF2.instances.add(this)
+    make_debugging(this)
+    this.debug(`constructor`)
   }
 
   random_entity_info(e: Entity) {
@@ -297,7 +302,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
   }
 
   on_key_down(e: IKeyEvent) {
-    Ditto.Debug(`[${LF2.TAG}::on_key_down]`, e)
+    this.debug('on_key_down', e)
     const key_code = e.key?.toLowerCase() ?? "";
     this._curr_key_list += key_code;
     let match = false;
@@ -372,7 +377,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
   async load(arg1?: IZip | string): Promise<void> {
     this._loading = true;
     this._callbacks.emit("on_loading_start")();
-    this.set_layout("loading");
+    this.set_ui("loading");
 
     try {
       const zip = is_str(arg1) ? await this.load_zip_from_info_url(arg1) : arg1;
@@ -421,7 +426,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
   }
 
   dispose() {
-    Ditto.Debug(`[${LF2.TAG}::dispose]`)
+    this.debug('dispose')
     this._disposed = true;
     this._callbacks.emit("on_dispose")();
     this._callbacks.clear()
@@ -564,7 +569,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
     for (const path of paths) {
       const cooked_ui_info = await UINode.cook_ui_info(this, path);
       this._uiinfos.push(cooked_ui_info);
-      if (path === paths[0]) this.set_layout(cooked_ui_info);
+      if (path === paths[0]) this.set_ui(cooked_ui_info);
     }
     if (this._disposed) {
       this._uiinfos.length = 0;
@@ -575,7 +580,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
     return this._uiinfos;
   }
 
-  layout_val_getter = (item: UINode, word: string) => {
+  ui_val_getter = (item: UINode, word: string) => {
     if (word === "mouse_on_me") return item.state.mouse_on_me;
     if (word === "paused") return this.world.paused ? 1 : 0;
     if (word.startsWith("f:")) {
@@ -603,9 +608,9 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
     return word;
   };
 
-  set_layout(layout_info?: ICookedUIInfo): void;
-  set_layout(id?: string): void;
-  set_layout(arg: string | ICookedUIInfo | undefined): void {
+  set_ui(ui_info?: ICookedUIInfo): void;
+  set_ui(id?: string): void;
+  set_ui(arg: string | ICookedUIInfo | undefined): void {
     const prev = this._ui_stacks.pop();
     prev?.on_pause();
 
@@ -619,7 +624,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
     this._callbacks.emit("on_layout_changed")(curr, prev);
   }
 
-  pop_layout(): void {
+  pop_ui(): void {
     if (this._ui_stacks.length <= 1) {
       Ditto.Warn(LF2.TAG + "::pop_layout", "can not pop top ui!");
       return;
@@ -631,9 +636,9 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback {
     this._callbacks.emit("on_layout_changed")(this.ui, popped);
   }
 
-  push_layout(layout_info?: ICookedUIInfo): void;
-  push_layout(id?: string): void;
-  push_layout(arg: string | ICookedUIInfo | undefined): void {
+  push_ui(layout_info?: ICookedUIInfo): void;
+  push_ui(id?: string): void;
+  push_ui(arg: string | ICookedUIInfo | undefined): void {
     const prev = this.ui;
     prev?.on_pause();
 

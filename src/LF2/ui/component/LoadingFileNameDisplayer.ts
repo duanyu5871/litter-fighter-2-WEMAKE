@@ -26,7 +26,7 @@ export default class LoadingFileNameDisplayer extends UIComponent {
       this.lf2.callbacks.add({
         on_loading_content: (content, progress) =>
           this.update_sprite(content, progress),
-        on_loading_end: (): void => this.lf2.set_layout("main_page"),
+        on_loading_end: (): void => this.lf2.set_ui("main_page"),
       }),
     );
   }

@@ -4,9 +4,12 @@ import Ditto from "../../LF2/ditto";
 import { IUINodeRenderer } from "../../LF2/ditto/render/IUINodeRenderer";
 import { empty_texture, white_texture } from "../../LF2/loader/ImageMgr";
 import type { UINode } from "../../LF2/ui/UINode";
+import { IDebugging, make_debugging } from "../../LF2/entity/make_debugging";
 
-export class UINodeRenderer implements IUINodeRenderer {
-  __debugging = false;
+export class UINodeRenderer implements IUINodeRenderer, IDebugging {
+  debug!: (_0: string, ..._1: any[]) => void;
+  warn!: (_0: string, ..._1: any[]) => void;
+  log!: (_0: string, ..._1: any[]) => void;
   sprite: ISprite;
   node: UINode;
   get world() { return this.node.lf2.world }
@@ -18,6 +21,7 @@ export class UINodeRenderer implements IUINodeRenderer {
   constructor(node: UINode) {
     this.node = node;
     this.sprite = new Ditto.SpriteNode(node.lf2).add_user_data("owner", node);
+    make_debugging(this)
   }
   del(child: UINodeRenderer) {
     this.sprite.del(child.sprite)
@@ -28,6 +32,10 @@ export class UINodeRenderer implements IUINodeRenderer {
   del_self() {
     this.sprite.del_self();
   }
+  on_resume(): void { };
+  on_pause(): void { };
+  on_show(): void { };
+  on_hide(): void { };
   on_start() {
     const [x, y, z] = this.node.data.pos;
     this.sprite
@@ -85,10 +93,6 @@ export class UINodeRenderer implements IUINodeRenderer {
     const [x, y, z] = this.node.pos
     this.sprite.set_position(x, -y, z);
     this.sprite.visible = this.node.visible
-    if (this.__debugging && this.node.opacity) {
-      const i = 0
-      const j = i
-    }
     this.sprite.opacity = this.node.opacity;
     this.sprite.apply()
     for (const child of this.node.children)

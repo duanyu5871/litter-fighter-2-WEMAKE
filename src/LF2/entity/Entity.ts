@@ -30,6 +30,7 @@ import type IEntityCallbacks from "./IEntityCallbacks";
 import { bdy_action_handlers } from "./bdy_action_handlers";
 import { turn_face } from "./face_helper";
 import { itr_action_handlers } from "./itr_action_handlers";
+import { IDebugging, make_debugging } from "./make_debugging";
 import { is_ball, is_character, is_weapon_data } from "./type_check";
 const { max, min, round, abs } = Math
 function calc_v(
@@ -69,8 +70,11 @@ function calc_v(
   }
 }
 export type TData = IBaseData | IEntityData;
-export class Entity {
+export class Entity implements IDebugging {
   static readonly TAG: string = EntityEnum.Entity;
+  debug!: (_0: string, ..._1: any[]) => void;
+  warn!: (_0: string, ..._1: any[]) => void;
+  log!: (_0: string, ..._1: any[]) => void;
 
   id: string = new_id();
   wait: number = 0;
@@ -538,8 +542,8 @@ export class Entity {
     this._hp = this._hp_r = this._hp_max;
     this._mp = this._mp_max;
     this._catch_time = this._catch_time_max;
+    make_debugging(this)
   }
-
   set_holder(v: Entity | undefined): this {
     if (this._holder === v) return this;
     const old = this._holder;
@@ -1384,11 +1388,10 @@ export class Entity {
    * @memberof Entity
    */
   readonly collided_list: ICollision[] = [];
-
   start_catch(target: Entity, itr: IItrInfo) {
-    Ditto.Debug(`[${Entity.TAG}::start_catch]`)
+    this.debug(`start_catch`)
     if (itr.catchingact === void 0) {
-      Ditto.Warn(`[${Entity.TAG}::start_catch] cannot catch, catchingact got ${itr.catchingact}`);
+      this.warn(`start_catch`, `cannot catch, catchingact got ${itr.catchingact}`);
       return;
     }
     this._catch_time = this._catch_time_max;
@@ -1397,9 +1400,9 @@ export class Entity {
   }
 
   start_caught(attacker: Entity, itr: IItrInfo) {
-    Ditto.Debug(`[${Entity.TAG}::start_caught]`)
+    this.debug(`start_caught`)
     if (itr.caughtact === void 0) {
-      Ditto.Warn(`[${Entity.TAG}::start_caught] cannot be caught, caughtact got ${itr.caughtact}`)
+      this.warn(`start_caught`, `cannot be caught, caughtact got ${itr.caughtact}`)
       return;
     }
     this._catcher = attacker;
@@ -1535,7 +1538,7 @@ export class Entity {
       centerx: centerx_a,
       centery: centery_a,
     } = holder.frame;
-    if (!wpoint_a) Ditto.Debug(`[${Entity.TAG}::follow_holder]failed! holder.frame.wpoint got ${wpoint_a}`)
+    if (!wpoint_a) this.debug(`follow_holder`, `failed! holder.frame.wpoint got ${wpoint_a}`)
     if (!wpoint_a) return;
 
     if (wpoint_a.weaponact !== this.frame.id) {
@@ -1546,7 +1549,7 @@ export class Entity {
       centerx: centerx_b,
       centery: centery_b,
     } = this.frame;
-    if (!wpoint_b) Ditto.Debug(`[${Entity.TAG}::follow_holder]failed! this.frame.wpoint got ${wpoint_b}`)
+    if (!wpoint_b) this.debug(`follow_holder`, `failed! this.frame.wpoint got ${wpoint_b}`)
     if (!wpoint_b) return;
 
     const { x, y, z } = holder.position;

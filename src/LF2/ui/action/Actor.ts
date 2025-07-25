@@ -14,13 +14,13 @@ class UIActor {
     ["link_to", (_, url) => window.open(url)],
     [
       "set_layout",
-      ({ lf2 }, layout_id) => layout_id && lf2.set_layout(layout_id),
+      ({ lf2 }, layout_id) => layout_id && lf2.set_ui(layout_id),
     ],
     [
       "push_layout",
-      ({ lf2 }, layout_id) => layout_id && lf2.push_layout(layout_id),
+      ({ lf2 }, layout_id) => layout_id && lf2.push_ui(layout_id),
     ],
-    ["pop_layout", ({ lf2 }) => lf2.pop_layout()],
+    ["pop_layout", ({ lf2 }) => lf2.pop_ui()],
     ["loop_img", (l) => l.to_next_img()],
     [
       "load_data",

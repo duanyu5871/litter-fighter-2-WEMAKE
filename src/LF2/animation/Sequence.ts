@@ -47,7 +47,7 @@ export class Sequence extends Animation {
     if (reverse) {
       let idx = len - 1
       for (; idx >= 0; --idx) {
-        if (this.__debugging) console.log(`[${Sequence.TAG}::calc] anim idx=${idx}`)
+        this.debug(`calc`, `anim idx=${idx}`)
         const anim = anims[idx]!;
         duration -= anim.duration;
         if (time > duration) {
@@ -57,11 +57,11 @@ export class Sequence extends Animation {
           break;
         }
       }
-      if (this.__debugging) console.log(`[${Sequence.TAG}::calc] anim idx=${idx}, value=${anims[idx].value}`)
+      this.debug(`calc`, `anim idx=${idx}, value=${anims[idx].value}`)
     } else {
       let idx = 0
       for (; idx < len; ++idx) {
-        if (this.__debugging) console.log(`[${Sequence.TAG}::calc] anim idx=${idx}`)
+        this.debug(`calc`, `anim idx=${idx}`)
         const anim = anims[idx]!;
         if (anim.duration > time) {
           anim.time = time;
@@ -71,7 +71,7 @@ export class Sequence extends Animation {
         }
         time -= anim.duration;
       }
-      if (this.__debugging) console.log(`[${Sequence.TAG}::calc] anim idx=${idx}, value=${anims[idx].value}`)
+      this.debug(`calc`, `anim idx=${idx}, value=${anims[idx].value}`)
     }
     return this;
   }

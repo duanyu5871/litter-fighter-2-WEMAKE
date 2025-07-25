@@ -84,7 +84,7 @@ export default class GamePrepareLogic extends UIComponent {
     switch (this.state) {
       case GamePrepareState.PlayerCharacterSel:
         if ("j" === key && !this.used_player_slots.length) {
-          this.lf2.pop_layout();
+          this.lf2.pop_ui();
         }
         break;
       case GamePrepareState.CountingDown:
@@ -324,7 +324,7 @@ export default class GamePrepareLogic extends UIComponent {
     if (stage_name_text) this.lf2.change_stage(stage_name_text.stage);
     if (background_name_text)
       this.lf2.change_bg(background_name_text.background);
-    if (stage_name_text) this.lf2.push_layout("stage_mode_page");
-    else this.lf2.push_layout("vs_mode_page");
+    if (stage_name_text) this.lf2.push_ui("stage_mode_page");
+    else this.lf2.push_ui("vs_mode_page");
   }
 }
