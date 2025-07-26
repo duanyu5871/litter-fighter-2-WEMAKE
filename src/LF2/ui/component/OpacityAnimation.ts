@@ -1,22 +1,28 @@
 import { Animation, Delay, Easing, Sequence } from "../../animation";
 import ease_linearity from "../../utils/ease_method/ease_linearity";
+import { Loop } from "../../animation/Loop";
 import { UIComponent } from "./UIComponent";
 
 export class OpacityAnimation extends UIComponent {
+
   static override readonly TAG: string = "OpacityAnimation";
   protected _anim: Sequence = new Sequence();
   protected _direction: -1 | 1 = 1;
+  get loop() { return this._anim.loop }
   set direction(v: -1 | 1) {
     this._direction = v;
   }
   get direction() {
     return this._direction // this.anim.direction
   }
-  get is_end() {
-    return this._anim.is_end
+  get done() {
+    return this._anim.done
   }
   get anim(): Sequence {
     return this._anim;
+  }
+  reset() {
+    this.anim.start()
   }
   override on_start(): void {
     super.on_start?.();
@@ -44,14 +50,8 @@ export class OpacityAnimation extends UIComponent {
 
   override update(dt: number): void {
     super.update?.(dt);
-    if (!this._anim.is_end) {
-      this.node.opacity = this._anim.update(dt).value;
-    } else if (this._direction !== this._anim.direction) {
-      this.set_enabled(true)
-      this._anim.direction = this._direction;
-      this._anim.start();
-    } else {
-      this.set_enabled(false)
-    }
+    if (this._anim.done) return;
+    if (!this._anim.done) this.node.opacity = this._anim.update(dt).value;
+    if (this._anim.done) this.set_enabled(false)
   }
 }

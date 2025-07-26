@@ -1,7 +1,7 @@
 import __Sprite from "../../../DittoImpl/3d/__Sprite";
 import { Delay } from "../../animation";
 import Easing from "../../animation/Easing";
-import Sequence from "../../animation/Sequence";
+import { Sequence } from "../../animation/Sequence";
 import Invoker from "../../base/Invoker";
 import Ditto from "../../ditto";
 import { Stage } from "../../stage/Stage";

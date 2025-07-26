@@ -1,10 +1,13 @@
 import { IDebugging, make_debugging } from "../entity/make_debugging";
 import { clamp } from "../utils/math/clamp";
 import { IAnimation } from "./IAnimation";
+import { Loop } from "./Loop";
 const { max, floor } = Math;
 
 export class Animation implements IAnimation, IDebugging {
   static TAG = 'Animation'
+
+  __debugging?: boolean;
   debug!: (_0: string, ..._1: any[]) => void;
   warn!: (_0: string, ..._1: any[]) => void;
   log!: (_0: string, ..._1: any[]) => void;
@@ -12,9 +15,8 @@ export class Animation implements IAnimation, IDebugging {
   private _time: number = 0;
   private _duration: number = 0
   private _direction: -1 | 1 = 1;
-  private _loops: number = 1;
   private _fill_mode: 1 | 0 = 1;
-  private _count: number = 0;
+  readonly loop = new Loop()
 
   constructor() {
     make_debugging(this)
@@ -28,19 +30,13 @@ export class Animation implements IAnimation, IDebugging {
     return this
   }
 
-  get count(): number { return this._count; }
-  set count(v: number) { this.set_count(v) }
-  set_count(v: number): this {
-    this._count = clamp(floor(v), 0, this._loops)
-    return this
-  }
+  get count(): number { return this.loop.count; }
+  set count(v: number) { this.loop.count = v }
+  set_count(v: number): this { this.loop.set_count(v); return this; }
 
-  get loops(): number { return this._loops; }
-  set loops(v: number) { this.set_loops(v) }
-  set_loops(v: number): this {
-    this._loops = clamp(floor(v), -1, Number.MAX_SAFE_INTEGER)
-    return this
-  }
+  get times(): number { return this.loop.times; }
+  set times(v: number) { this.loop.times = v }
+  set_times(v: number): this { this.loop.set_times(v); return this; }
 
   get direction(): -1 | 1 { return this._direction; }
   set direction(v: -1 | 1) { this.set_direction(v) }
@@ -74,20 +70,19 @@ export class Animation implements IAnimation, IDebugging {
   set time(v: number) { this.set_time(v); }
   set_time(v: number): this { this._time = clamp(v, 0, this.duration); return this }
 
-  get is_end(): boolean {
-    const { loops, count, duration } = this;
+  get done(): boolean {
+    const { duration } = this;
     if (duration <= 0) return true;
-    if (loops < 0) return false;
-    return count >= loops;
+    return this.loop.done()
   }
   start(reverse: boolean = this.reverse): this {
-    this.count = 0;
+    this.loop.reset()
     this.reverse = reverse;
     this.time = reverse ? this.duration : 0;
     return this;
   }
   end(reverse: boolean = this.reverse): this {
-    this.count = Math.max(0, this._loops);
+    this.count = Math.max(0, this.times);
     this.reverse = reverse;
     this.time = reverse ? 0 : this.duration
     return this;
@@ -99,24 +94,26 @@ export class Animation implements IAnimation, IDebugging {
   }
 
   update(dt: number): this {
-    if (this.is_end) return this;
+    if (this.done) return this;
     const { duration, direction } = this
     let time = this.time + direction * dt;
     if (time <= 0) {
       do {
-        ++this.count
-        if (time < 0) time += duration
-      } while (time < 0)
-      if (this.is_end && this._fill_mode)
+        this.loop.continue()
+        time += duration
+      } while (time <= 0)
+      if (this.done && this._fill_mode)
         time = 0
     } else if (time >= duration) {
       do {
-        ++this.count
+        this.loop.continue()
         time -= duration
       } while (time >= duration)
-      if (this.is_end && this._fill_mode)
+      if (this.done && this._fill_mode)
         time = duration
     }
+    
+
 
     this.time = clamp(time, 0, duration);
     this.debug(`update`, `time = ${this.time}, dt = ${dt}`)
@@ -124,3 +121,4 @@ export class Animation implements IAnimation, IDebugging {
     return this;
   }
 }
+

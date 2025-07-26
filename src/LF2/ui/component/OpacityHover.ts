@@ -17,7 +17,7 @@ export default class OpacityHover extends UIComponent {
   override update(dt: number): void {
     const r = this.node.state.mouse_on_me !== "1" && !this.node.focused;
     if (this.anim.reverse !== r) {
-      if (this.anim.is_end)
+      if (this.anim.done)
         this.anim.start(r)
       else
         this.anim.reverse = r;

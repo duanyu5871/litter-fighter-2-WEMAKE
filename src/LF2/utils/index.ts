@@ -4,3 +4,5 @@ export * from "./type_cast";
 export * from "./ease_method"
 export * from "./math"
 export * from "./container_help"
+
+export const floor = Math.floor;

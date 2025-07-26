@@ -39,7 +39,7 @@ export default class LaunchPageLogic extends UIComponent {
   protected _loading_imgs: TPicture[] = [];
   protected _loading_idx_anim = new Easing(0, 44).set_duration(2000)
     .set_ease_method(ease_linearity)
-    .set_loops(-1)
+    .set_times(0)
     .set_fill_mode(1)
 
 
@@ -50,13 +50,15 @@ export default class LaunchPageLogic extends UIComponent {
       key: Status.TapHints,
       enter: () => {
         if (this._prel_loaded)
-          this._loading_idx_anim.set_loops(1).set_count(0)
+          this._loading_idx_anim.set_times(1).set_count(0)
         else
-          this._loading_idx_anim.set_loops(-1)
+          this._loading_idx_anim.set_times(0)
         this.tap_to_launch.find_component(SineOpacity)!.enabled = true;
         this.sound_warning.find_component(SineOpacity)!.enabled = true;
-        this.tap_to_launch.find_component(FadeOutOpacity)!.enabled = false
-        this.sound_warning.find_component(FadeOutOpacity)!.enabled = false
+        this.tap_to_launch.find_component(FadeOutOpacity)!.enabled = false;
+        this.sound_warning.find_component(FadeOutOpacity)!.enabled = false;
+
+
       },
       leave: () => {
         this.tap_to_launch.find_component(SineOpacity)!.enabled = false
@@ -72,31 +74,38 @@ export default class LaunchPageLogic extends UIComponent {
         this.yeonface.find_component(PositionAnimation, 'move_in')!.start(false);
         this.yeonface.find_component(OpacityAnimation)!.direction = 1;
         this.yeonface.find_component(OpacityAnimation)!.enabled = true;
+        this.yeonface.find_component(OpacityAnimation)!.reset();
 
         this.bearface.find_component(ScaleAnimation, 'scale_in')!.start(false);
         this.bearface.find_component(PositionAnimation, 'move_in')!.start(false);
         this.bearface.find_component(OpacityAnimation)!.direction = 1;
         this.bearface.find_component(OpacityAnimation)!.enabled = true;
+        this.bearface.find_component(OpacityAnimation)!.reset();
 
         this.long_text.find_component(PositionAnimation, 'move_in')!.start(false);
         this.long_text.find_component(OpacityAnimation)!.direction = 1;
         this.long_text.find_component(OpacityAnimation)!.enabled = true;
+        this.long_text.find_component(OpacityAnimation)!.reset();
 
       },
       leave: () => {
-        this.yeonface.find_component(OpacityAnimation)!.direction = -1;
-        this.yeonface.find_component(OpacityAnimation)!.enabled = true;
+        // this.yeonface.find_component(OpacityAnimation)!.direction = -1;
+        // this.yeonface.find_component(OpacityAnimation)!.enabled = true;
+        // this.yeonface.find_component(OpacityAnimation)!.reset();
         this.yeonface.find_component(ScaleAnimation, 'scale_out')!.start(false);
 
-        this.bearface.find_component(OpacityAnimation)!.direction = -1;
-        this.bearface.find_component(OpacityAnimation)!.enabled = true;
+        // this.bearface.find_component(OpacityAnimation)!.direction = -1;
+        // this.bearface.find_component(OpacityAnimation)!.enabled = true;
+        // this.bearface.find_component(OpacityAnimation)!.reset();
+
         this.bearface.find_component(ScaleAnimation, 'scale_out')!.start(false);
 
         const c = this.long_text.find_component(OpacityAnimation)!
+        c!.enabled = true;
         c.anim.start(true).update(5000)
       },
       update: (dt) => {
-        if (this._prel_loaded && this.long_text.find_component(OpacityAnimation)!.is_end)
+        if (this._prel_loaded && this.long_text.find_component(OpacityAnimation)!.done)
           return Status.GoToEntry
       }
     }, {
@@ -105,7 +114,7 @@ export default class LaunchPageLogic extends UIComponent {
         this.lf2.sounds.play_bgm("launch/main.wma.mp3");
       },
       update: (dt) => {
-        if (this.long_text.find_component(OpacityAnimation)!.is_end) {
+        if (this.long_text.find_component(OpacityAnimation)!.done) {
           this.lf2.set_ui(this.entry_name);
           return Status.End
         }
@@ -120,7 +129,7 @@ export default class LaunchPageLogic extends UIComponent {
 
   protected on_prel_loaded() {
     this._prel_loaded = true;
-    this._loading_idx_anim.set_loops(4).set_count(0)
+    this._loading_idx_anim.set_times(4).set_count(0)
   }
   override on_start(): void {
     this._prel_loaded = this.lf2.uiinfos_loaded

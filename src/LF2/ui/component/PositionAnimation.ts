@@ -19,7 +19,7 @@ export class PositionAnimation extends UIComponent {
     this._direction = this.seq_anim.direction
   }
   get is_end() {
-    return this.seq_anim.is_end
+    return this.seq_anim.done
   }
   override on_start(): void {
     super.on_start?.();
@@ -55,7 +55,7 @@ export class PositionAnimation extends UIComponent {
 
   override update(dt: number): void {
     super.update?.(dt);
-    if (!this.seq_anim.is_end) {
+    if (!this.seq_anim.done) {
       this.seq_anim.update(dt);
       const pair = this.values.get(this.seq_anim.curr_anim)
       if (!pair) return;

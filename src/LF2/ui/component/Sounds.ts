@@ -1,4 +1,5 @@
 import { Defines } from "../../defines";
+import { Loop } from "../../animation/Loop";
 import { UIComponent } from "./UIComponent";
 
 export class Sounds extends UIComponent {
@@ -6,6 +7,14 @@ export class Sounds extends UIComponent {
   protected seq: [number, string, boolean][] = [];
   protected idx = 0;
   protected time: number = 0;
+  readonly loop = new Loop()
+
+  reset(): this {
+    this.idx = 0;
+    this.time = 0;
+    this.loop.reset();
+    return this;
+  }
   override on_start(): void {
     const l = this.args.length;
     let t = 0;
@@ -16,20 +25,16 @@ export class Sounds extends UIComponent {
       this.seq.push([t, s, s in Defines.BuiltIn_Sounds]);
     }
   }
-
   override on_resume(): void {
     this.time = 0;
     this.idx = 0;
   }
   override update(dt: number): void {
     super.update?.(dt)
-    const l = this.seq.length
+    const l = this.seq.length;
     if (!l) return;
-
-    if (this.idx >= l && this.enabled) {
-      this.idx = 0;
-      this.time = 0;
-    }
+    if (this.idx >= l) return
+    if (this.loop.done()) return;
 
     this.time += dt;
     for (; this.idx < l; ++this.idx) {
@@ -38,6 +43,14 @@ export class Sounds extends UIComponent {
       if (b) this.lf2.sounds.play_with_load(s)
       else this.lf2.sounds.play_preset(s)
     }
-    if (this.idx >= l) this.set_enabled(false)
+
+    if (this.idx >= l) {
+      if (this.loop.continue()) {
+        this.time = 0;
+        this.idx = 0;
+      } else {
+        this.set_enabled(false)
+      }
+    }
   }
 }

@@ -35,7 +35,7 @@ export class Easing extends Animation {
     return this;
   }
   override calc(): this {
-    const { is_end, time, duration, val_1, val_2, reverse } = this
+    const { done: is_end, time, duration, val_1, val_2, reverse } = this
     if (val_1 === val_2) {
       this.value = val_1
       return this;

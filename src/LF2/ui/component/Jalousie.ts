@@ -12,31 +12,32 @@ enum D {
   ew = 'ew',
 }
 export class Jalousie extends UIComponent {
-  callbacks = new Callbacks<IJalousieCallbacks>();
-  direction: D = D.ew;
-  sine = new Sequence(
+  readonly callbacks = new Callbacks<IJalousieCallbacks>();
+  protected _direction: D = D.ew;
+  protected _anim: Animation = new Sequence(
     new Easing(0, 0).set_duration(1500),
     new Sine(-1, 2, 0.5).set_duration(500),
     new Easing(1, 1).set_duration(1500),
   )
+  get direction(): D { return this._direction }
+  get anim(): Animation { return this._anim }
   override on_start() {
     super.on_start?.();
     const raw_direction = this.str(0);
-    this.direction = [D.ns, D.ew].find(v => raw_direction === v) || D.ew
+    this._direction = [D.ns, D.ew].find(v => raw_direction === v) || D.ew
     const open = !!this.bool(1);
     const end = !!this.bool(2);
-    if (end) this.sine.end(open)
-    else this.sine.start(open)
-
+    if (end) this._anim.end(open)
+    else this._anim.start(open)
     const components = factory.create(this.node,
-      this.direction === D.ns ? 'vertical_layout()' : 'horizontal_layout()'
+      this._direction === D.ns ? 'vertical_layout()' : 'horizontal_layout()'
     )
     for (const component of components) {
       this.node.components.add(component)
     }
   }
-  get open(): boolean { return this.sine.reverse }
-  set open(v: boolean) { this.sine.reverse = v }
+  get open(): boolean { return this._anim.reverse }
+  set open(v: boolean) { this._anim.reverse = v }
   get w(): number { return this.node.root.size[0] }
   get h(): number { return this.node.root.size[1] }
 
@@ -46,27 +47,27 @@ export class Jalousie extends UIComponent {
   }
 
   override update(dt: number): void {
-    if (this.sine.is_end) return;
-    this.sine.update(dt);
+    if (this._anim.done) return;
+    this._anim.update(dt);
     this.update_children();
-    if (this.sine.is_end)
+    if (this._anim.done)
       this.callbacks.emit('on_change')(this);
   }
 
   override on_show(): void {
     super.on_show?.()
-    this.sine.calc();
+    this._anim.calc();
     this.update_children();
   }
   _value: any = void 0;
   protected update_children() {
-    const { value } = this.sine;
+    const { value } = this._anim;
     const { children } = this.node;
     const len = children.length;
     for (let i = 0; i < len; i++) {
       const child = children[i];
       if (!child) continue;
-      if (this.direction === 'ns') {
+      if (this._direction === 'ns') {
         child.w = this.w;
         child.scale = [1, value, 1];
       } else {

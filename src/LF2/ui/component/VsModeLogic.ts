@@ -1,14 +1,17 @@
 import type { IStagePhaseInfo } from "../../defines";
+import Ditto from "../../ditto";
 import type { Entity } from "../../entity";
 import type IEntityCallbacks from "../../entity/IEntityCallbacks";
 import { is_character } from "../../entity/type_check";
+import { IWorldCallbacks } from "../../IWorldCallbacks";
 import type { Stage } from "../../stage";
 import type IStageCallbacks from "../../stage/IStageCallbacks";
 import { OpacityAnimation } from "./OpacityAnimation";
 import { Sounds } from "./Sounds";
 import { UIComponent } from "./UIComponent";
 
-export class VsModeLogic extends UIComponent implements IEntityCallbacks, IStageCallbacks {
+export class VsModeLogic extends UIComponent
+  implements IEntityCallbacks, IStageCallbacks, IWorldCallbacks {
   override on_start(): void {
     super.on_start?.();
     for (const [, v] of this.lf2.player_characters) {
@@ -22,23 +25,38 @@ export class VsModeLogic extends UIComponent implements IEntityCallbacks, IStage
     }
   }
   override on_resume(): void {
-    this.lf2.world.stage.callbacks.add(this)
+    this.lf2.world.stage.callbacks.add(this);
+    this.lf2.world.callbacks.add(this);
   }
   override on_pause(): void {
     this.lf2.world.stage.callbacks.del(this)
+    this.lf2.world.callbacks.del(this);
+  }
+  on_stage_change() {
+    this.lf2.world.stage.callbacks.add(this);
   }
   on_phase_changed(
     stage: Stage,
     curr: IStagePhaseInfo | undefined,
     prev: IStagePhaseInfo | undefined,
   ) {
-    // if (prev) return;
+    Ditto.Warn('on_phase_changed')
     const a = this.node.search_component(Sounds, "go_sounds")
-    a!.enabled = true
-
     const b = this.node.search_component(OpacityAnimation, "go_flashing")
-    b!.enabled = true
-    b!.anim.start()
+    if (prev) {
+      if (!curr) {
+        b!.loop.set(0, Number.MAX_SAFE_INTEGER);
+      } else {
+        b!.loop.set(0, 1);
+      }
+      a!.reset()
+      a!.enabled = true
+      b!.reset();
+      b!.enabled = true;
+    } else {
+      a!.enabled = false
+      b!.enabled = false;
+    }
 
   }
   on_dead(e: Entity) {

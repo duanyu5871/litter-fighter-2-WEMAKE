@@ -22,6 +22,7 @@ import factory from "./component/Factory";
 import { UIComponent } from "./component/UIComponent";
 import read_nums from "./utils/read_nums";
 export class UINode implements IDebugging {
+  static readonly TAG: string = 'UINode';
   debug!: (_0: string, ..._1: any[]) => void;
   warn!: (_0: string, ..._1: any[]) => void;
   log!: (_0: string, ..._1: any[]) => void;
@@ -472,9 +473,13 @@ export class UINode implements IDebugging {
     ret.size = [dw, dh];
     ret.left_top = [dx, dy];
 
-    if (Array.isArray(raw_info.items) && raw_info.items.length) {
+    const { items } = raw_info;
+    if (items && !Array.isArray(items)) {
+      Ditto.Warn(`[${UINode.TAG}::cook_ui_info] items must be array, but got`, items)
+    }
+    if (Array.isArray(items) && items.length) {
       ret.items = [];
-      for (const item of raw_info.items)
+      for (const item of items)
         ret.items.push(await UINode.cook_ui_info(lf2, item, ret));
     } else {
       delete ret.items;

@@ -125,11 +125,11 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
     }
   }
   enter_next_phase(): void {
-    if (!this.is_last_phase()) {
+    // if (!this.is_last_phase()) {
       this.enter_phase(this._cur_phase_idx + 1);
-      return;
-    }
-    this.lf2.goto_next_stage();
+      // return;
+    // }
+    // this.lf2.goto_next_stage();
   }
 
   readonly items = new Set<Item>();

@@ -45,8 +45,26 @@
         "<go_flashing>!OpacityAnimation(1, 0, 0, 0, 1, 750, 0, 750, 1, 750, 0, 750, 1, 750, 0, 750)",
         "<go_sounds>!Sounds(1500, ok, 1500, ok, 1500, ok)"
       ]
+    },
+    {
+      "component": [
+        "jalousie(ns, 1, 1)"
+      ],
+      "items": [
+        {
+          "count": 10,
+          "template": "shutter_item"
+        }
+      ]
     }
   ],
+  "templates": {
+    "shutter_item": {
+      "color": "rgb(16, 32, 108)",
+      "size": "40,40",
+      "pos": "0,0,2"
+    }
+  },
   "actions": {
     "stop": [
       "remove_all_entities()",

@@ -17,6 +17,6 @@ export class SineOpacity extends UIComponent {
     super.update?.(dt);
     this.anim.update(dt);
     this.node.opacity = this.anim.value;
-    if (this.anim.is_end) this.set_enabled(false)
+    if (this.anim.done) this.set_enabled(false)
   }
 }
