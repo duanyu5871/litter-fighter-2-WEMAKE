@@ -8,7 +8,7 @@ import { Input } from "./Component/Input";
 import Select from "./Component/Select";
 import TeamSelect from "./Component/TeamSelect";
 import Titled from "./Component/Titled";
-import { DummyEnum } from "./LF2/controller/BotController";
+import { DummyEnum } from "./LF2/controller/DummyEnum";
 import LocalController from "./LF2/controller/LocalController";
 import { CheatType } from "./LF2/defines";
 import GameKey from "./LF2/defines/GameKey";

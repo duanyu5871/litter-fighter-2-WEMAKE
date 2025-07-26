@@ -1,33 +1,9 @@
-import { Builtin_FrameId, GameKey, StateEnum, TLooseGameKey } from "../defines";
+import { Builtin_FrameId, GameKey as GK, StateEnum, TLooseGameKey } from "../defines";
 import { Entity } from "../entity/Entity";
 import { is_character } from "../entity/type_check";
 import { BaseController } from "./BaseController";
+import { dummy_updaters, DummyEnum } from "./DummyEnum";
 
-export enum DummyEnum {
-  LockAtMid_Stand = "1",
-  LockAtMid_Defend = "2",
-  LockAtMid_RowingWhenFalling = "3",
-  LockAtMid_JumpAndRowingWhenFalling = "4",
-  AvoidEnemyAllTheTime = "5",
-  LockAtMid_dUa = "6",
-  LockAtMid_dUj = "7",
-  LockAtMid_dDa = "8",
-  LockAtMid_dDj = "9",
-  LockAtMid_dLa = "10",
-  LockAtMid_dLj = "11",
-  LockAtMid_dRa = "12",
-  LockAtMid_dRj = "13",
-  LockAtMid_dja = "14",
-  LockAtMid_dUa_auto = "15",
-  LockAtMid_dUj_auto = "16",
-  LockAtMid_dDa_auto = "17",
-  LockAtMid_dDj_auto = "18",
-  LockAtMid_dLa_auto = "18",
-  LockAtMid_dLj_auto = "19",
-  LockAtMid_dRa_auto = "20",
-  LockAtMid_dRj_auto = "21",
-  LockAtMid_dja_auto = "22",
-}
 export class BotController extends BaseController {
   readonly is_bot_enemy_chaser = true;
   _count = 0;
@@ -39,7 +15,7 @@ export class BotController extends BaseController {
     return this._dummy;
   }
   set dummy(v) {
-    this.end(...Object.values(GameKey));
+    this.end(...Object.values(GK));
     this._dummy = v;
   }
   manhattan_to(a: Entity) {
@@ -66,6 +42,7 @@ export class BotController extends BaseController {
     );
   }
   update_nearest() {
+    if (this.time % 10 !== 0) return;
     const c = this.entity;
     if (c.hp <= 0) return;
     if (!this.should_chase(this.chasing_enemy)) {
@@ -120,14 +97,13 @@ export class BotController extends BaseController {
     }
     return { x: px, z: pz, next_x: x, next_z: z };
   }
+
   chase_enemy() {
     if (!this.chasing_enemy) return false;
 
     const me = this.entity;
     const { x: my_x, z: my_z } = this.guess_entity_pos(me);
-    const { x: enemy_x, z: enemy_z } = this.guess_entity_pos(
-      this.chasing_enemy,
-    );
+    const { x: enemy_x, z: enemy_z } = this.guess_entity_pos(this.chasing_enemy);
 
     const WALK_ATTACK_DEAD_ZONE_X = 50;
     const WALK_ATTACK_DEAD_ZONE_Z = 10;
@@ -149,43 +125,43 @@ export class BotController extends BaseController {
       // console.log('run <<<', this.is_db_hit(GameKey.L))
     } else if (is_running) {
       if (enemy_x - my_x > RUN_ATTACK_DEAD_ZONE_X) {
-        if (this.is_end(GameKey.R)) {
-          this.start(GameKey.R).end(GameKey.L);
+        if (this.is_end(GK.R)) {
+          this.start(GK.R).end(GK.L);
         }
       } else if (my_x - enemy_x > RUN_ATTACK_DEAD_ZONE_X) {
-        if (this.is_end(GameKey.L)) {
-          this.start(GameKey.L).end(GameKey.R);
+        if (this.is_end(GK.L)) {
+          this.start(GK.L).end(GK.R);
         }
       } else {
         is_x_reach = true;
       }
     } else {
       if (enemy_x - my_x > WALK_ATTACK_DEAD_ZONE_X) {
-        if (this.is_end(GameKey.R)) {
-          this.start(GameKey.R).end(GameKey.L);
+        if (this.is_end(GK.R)) {
+          this.start(GK.R).end(GK.L);
         }
       } else if (my_x - enemy_x > WALK_ATTACK_DEAD_ZONE_X) {
-        if (this.is_end(GameKey.L)) {
-          this.start(GameKey.L).end(GameKey.R);
+        if (this.is_end(GK.L)) {
+          this.start(GK.L).end(GK.R);
         }
       } else {
         is_x_reach = true;
       }
     }
     if (my_z < enemy_z - WALK_ATTACK_DEAD_ZONE_Z) {
-      if (this.is_end(GameKey.D)) {
-        this.start(GameKey.D).end(GameKey.U);
+      if (this.is_end(GK.D)) {
+        this.start(GK.D).end(GK.U);
       }
     } else if (my_z > enemy_z + WALK_ATTACK_DEAD_ZONE_Z) {
-      if (this.is_end(GameKey.U)) {
-        this.start(GameKey.U).end(GameKey.D);
+      if (this.is_end(GK.U)) {
+        this.start(GK.U).end(GK.D);
       }
     } else {
       is_z_reach = true;
     }
 
     if (is_z_reach) {
-      this.end(GameKey.D, GameKey.U);
+      this.end(GK.D, GK.U);
     }
     if (is_x_reach && is_z_reach) {
       if (
@@ -193,49 +169,49 @@ export class BotController extends BaseController {
         this.entity.frame.state === StateEnum.Walking
       ) {
         if (my_z < enemy_z + 10) {
-          if (this.is_end(GameKey.D)) {
-            this.start(GameKey.D).end(GameKey.U);
+          if (this.is_end(GK.D)) {
+            this.start(GK.D).end(GK.U);
           }
         } else if (my_z > enemy_z - 10) {
-          if (this.is_end(GameKey.U)) {
-            this.start(GameKey.U).end(GameKey.D);
+          if (this.is_end(GK.U)) {
+            this.start(GK.U).end(GK.D);
           }
         } else {
-          this.end(GameKey.U, GameKey.D);
+          this.end(GK.U, GK.D);
         }
         if (my_x < enemy_x + 10 && me.facing === -1) {
-          if (this.is_end(GameKey.R)) {
-            this.start(GameKey.R).end(GameKey.L);
+          if (this.is_end(GK.R)) {
+            this.start(GK.R).end(GK.L);
           }
         } else if (enemy_x < my_x - 10 && me.facing === 1) {
-          if (this.is_end(GameKey.L)) {
-            this.start(GameKey.L).end(GameKey.R);
+          if (this.is_end(GK.L)) {
+            this.start(GK.L).end(GK.R);
           }
         } else {
-          this.end(GameKey.L, GameKey.R);
+          this.end(GK.L, GK.R);
         }
       }
       // 上来就一拳。
-      this.is_hit(GameKey.a) ? this.end(GameKey.a) : this.start(GameKey.a);
+      this.is_hit(GK.a) ? this.end(GK.a) : this.start(GK.a);
       this.want_to_jump = false;
     } else {
       if (is_x_reach) {
         if (is_running && facing > 0) {
-          this.start(GameKey.L).end(GameKey.R); // stop running.
+          this.start(GK.L).end(GK.R); // stop running.
         } else if (is_running && facing < 0) {
-          this.start(GameKey.R).end(GameKey.L); // stop running.
+          this.start(GK.R).end(GK.L); // stop running.
         } else {
-          this.end(GameKey.L, GameKey.R);
+          this.end(GK.L, GK.R);
         }
       }
       if (!this.want_to_jump)
         this.want_to_jump = Math.random() * 100 < JUMP_DESIRE;
       if (this.want_to_jump) {
-        if (this.is_hit(GameKey.j)) {
+        if (this.is_hit(GK.j)) {
           this.want_to_jump = false;
-          this.end(GameKey.j);
+          this.end(GK.j);
         } else {
-          this.start(GameKey.j);
+          this.start(GK.j);
         }
       }
     }
@@ -249,7 +225,7 @@ export class BotController extends BaseController {
     const { x: enemy_x, z: enemy_z } = this.avoiding_enemy.position;
     const distance = this.manhattan_to(this.avoiding_enemy);
     if (distance > 200) {
-      this.end(GameKey.L, GameKey.R, GameKey.U, GameKey.D);
+      this.end(GK.L, GK.R, GK.U, GK.D);
       return true;
     }
 
@@ -263,12 +239,12 @@ export class BotController extends BaseController {
     }
     switch (x_d) {
       case 1:
-        if (distance < 25) this.db_hit(GameKey.R).end(GameKey.L);
-        else this.is_end(GameKey.R) && this.start(GameKey.R).end(GameKey.L);
+        if (distance < 25) this.db_hit(GK.R).end(GK.L);
+        else this.is_end(GK.R) && this.start(GK.R).end(GK.L);
         break;
       case -1:
-        if (distance < 25) this.db_hit(GameKey.L).end(GameKey.R);
-        else this.is_end(GameKey.L) && this.start(GameKey.L).end(GameKey.R);
+        if (distance < 25) this.db_hit(GK.L).end(GK.R);
+        else this.is_end(GK.L) && this.start(GK.L).end(GK.R);
         break;
     }
 
@@ -280,10 +256,10 @@ export class BotController extends BaseController {
     }
     switch (z_d) {
       case 1:
-        this.is_end(GameKey.U) && this.start(GameKey.U).end(GameKey.D);
+        this.is_end(GK.U) && this.start(GK.U).end(GK.D);
         break;
       case -1:
-        this.is_end(GameKey.D) && this.start(GameKey.D).end(GameKey.U);
+        this.is_end(GK.D) && this.start(GK.D).end(GK.U);
         break;
     }
 
@@ -291,128 +267,12 @@ export class BotController extends BaseController {
   }
 
   override update() {
-    switch (this._dummy!) {
-      case void 0: {
-        if (this.time % 10 === 0) this.update_nearest();
-        if (!this.chase_enemy() && !this.avoid_enemy()) {
-          if (!this.is_end(GameKey.L)) this.end(GameKey.L);
-          if (!this.is_end(GameKey.R)) this.end(GameKey.R);
-          if (!this.is_end(GameKey.U)) this.end(GameKey.U);
-          if (!this.is_end(GameKey.D)) this.end(GameKey.D);
-        }
-        break;
-      }
-      case DummyEnum.LockAtMid_Stand: {
-        if (
-          this.entity.frame.state === StateEnum.Standing &&
-          this.entity.resting <= 0
-        ) {
-          this.entity.position.x = this.world.bg.width / 2;
-          this.entity.position.z = (this.world.bg.near + this.world.far) / 2;
-        }
-        break;
-      }
-      case DummyEnum.LockAtMid_Defend: {
-        if (
-          this.entity.frame.state === StateEnum.Standing &&
-          this.entity.resting <= 0
-        ) {
-          this.entity.position.x = this.world.bg.width / 2;
-          this.entity.position.z = (this.world.bg.near + this.world.far) / 2;
-        }
-        this.start(GameKey.d);
-        break;
-      }
-      case DummyEnum.LockAtMid_RowingWhenFalling: {
-        if (
-          this.entity.frame.state === StateEnum.Standing &&
-          this.entity.resting <= 0
-        ) {
-          this.entity.position.x = this.world.bg.width / 2;
-          this.entity.position.z = (this.world.bg.near + this.world.far) / 2;
-        }
-        if (this.entity.frame.state === StateEnum.Falling) {
-          this.start(GameKey.j);
-        }
-        break;
-      }
-
-      case DummyEnum.LockAtMid_JumpAndRowingWhenFalling: {
-        if (this.entity.frame.state === StateEnum.Standing) {
-          this.entity.position.x = this.world.bg.width / 2;
-          this.entity.position.z = (this.world.bg.near + this.world.far) / 2;
-          this.start(GameKey.j);
-        } else if (this.entity.frame.state === StateEnum.Falling) {
-          this.start(GameKey.j);
-        } else {
-          this.end(GameKey.j);
-        }
-        break;
-      }
-      case DummyEnum.AvoidEnemyAllTheTime: {
-        if (this.time % 10 === 0) this.update_nearest();
-        this.avoid_enemy();
-        break;
-      }
-      case DummyEnum.LockAtMid_dUa: {
-        const h = this.lock_when_stand_and_rest();
-        this[h ? "start" : "end"](GameKey.d, GameKey.U, GameKey.a);
-        break;
-      }
-      case DummyEnum.LockAtMid_dUj: {
-        const h = this.lock_when_stand_and_rest();
-        this[h ? "start" : "end"](GameKey.d, GameKey.U, GameKey.j);
-        break;
-      }
-      case DummyEnum.LockAtMid_dDa: {
-        const h = this.lock_when_stand_and_rest();
-        this[h ? "start" : "end"](GameKey.d, GameKey.D, GameKey.a);
-        break;
-      }
-      case DummyEnum.LockAtMid_dDj: {
-        const h = this.lock_when_stand_and_rest();
-        this[h ? "start" : "end"](GameKey.d, GameKey.D, GameKey.j);
-        break;
-      }
-      case DummyEnum.LockAtMid_dLa: {
-        const h = this.lock_when_stand_and_rest();
-        if (h) this.start(GameKey.d, GameKey.L, GameKey.a);
-        else if (this.entity.frame.hit?.a) this.start(GameKey.a);
-        else this[h ? "start" : "end"](GameKey.d, GameKey.L, GameKey.a);
-        break;
-      }
-      case DummyEnum.LockAtMid_dLj: {
-        const h = this.lock_when_stand_and_rest();
-        this[h ? "start" : "end"](GameKey.d, GameKey.L, GameKey.j);
-        break;
-      }
-      case DummyEnum.LockAtMid_dRa: {
-        const h = this.lock_when_stand_and_rest();
-        if (h) this.start(GameKey.d, GameKey.R, GameKey.a);
-        else if (this.entity.frame.hit?.a) this.start(GameKey.a);
-        else this[h ? "start" : "end"](GameKey.d, GameKey.R, GameKey.a);
-        break;
-      }
-      case DummyEnum.LockAtMid_dRj: {
-        const h = this.lock_when_stand_and_rest();
-        this[h ? "start" : "end"](GameKey.d, GameKey.R, GameKey.j);
-        break;
-      }
-      case DummyEnum.LockAtMid_dja: {
-        const h = this.lock_when_stand_and_rest();
-        this[h ? "start" : "end"](GameKey.d, GameKey.j, GameKey.a);
-        break;
-      }
-      case DummyEnum.LockAtMid_dUa_auto:
-      case DummyEnum.LockAtMid_dUj_auto:
-      case DummyEnum.LockAtMid_dDa_auto:
-      case DummyEnum.LockAtMid_dDj_auto:
-      case DummyEnum.LockAtMid_dLj_auto:
-      case DummyEnum.LockAtMid_dRa_auto:
-      case DummyEnum.LockAtMid_dRj_auto:
-      case DummyEnum.LockAtMid_dja_auto:
-      default:
-        break;
+    if (this.dummy) {
+      dummy_updaters[this.dummy]?.update(this);
+    } else {
+      this.update_nearest();
+      this.chase_enemy()
+      this.avoid_enemy()
     }
     return super.update();
   }
