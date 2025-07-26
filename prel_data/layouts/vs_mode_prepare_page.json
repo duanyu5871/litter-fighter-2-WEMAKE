@@ -13,8 +13,8 @@
     "player_c_sel_logic(6)",
     "player_c_sel_logic(7)",
     "player_c_sel_logic(8)",
-    "reachable_layout_group(com_num,lr,how_many_computer)",
-    "reachable_layout_group(menu,ud,menu)"
+    "ReachableGroup(com_num,lr,how_many_computer)",
+    "ReachableGroup(menu,ud,menu)"
   ],
   "items": [
     {
@@ -32,10 +32,10 @@
               "pos": "-246,0",
               "items": [
                 {
-                  "id": "player_c_head",
+                  "id": "FighterHead",
                   "size": "120, 120",
                   "pos": "0, 0",
-                  "component": "player_c_head(1)"
+                  "component": "FighterHead(1)"
                 },
                 {
                   "id": "player_name",
@@ -44,10 +44,10 @@
                   "component": "player_name(1)"
                 },
                 {
-                  "id": "player_c_name",
+                  "id": "FighterName",
                   "size": "120, 19",
                   "pos": "0, 145",
-                  "component": "player_c_name(1)"
+                  "component": "FighterName(1)"
                 },
                 {
                   "id": "player_team",
@@ -62,10 +62,10 @@
               "pos": "-93,0",
               "items": [
                 {
-                  "id": "player_c_head",
+                  "id": "FighterHead",
                   "size": "120, 120",
                   "pos": "0, 0",
-                  "component": "player_c_head(2)"
+                  "component": "FighterHead(2)"
                 },
                 {
                   "id": "player_name",
@@ -74,10 +74,10 @@
                   "component": "player_name(2)"
                 },
                 {
-                  "id": "player_c_name",
+                  "id": "FighterName",
                   "size": "120, 19",
                   "pos": "0, 145",
-                  "component": "player_c_name(2)"
+                  "component": "FighterName(2)"
                 },
                 {
                   "id": "player_team",
@@ -92,10 +92,10 @@
               "pos": "60,0",
               "items": [
                 {
-                  "id": "player_c_head",
+                  "id": "FighterHead",
                   "size": "120, 120",
                   "pos": "0, 0",
-                  "component": "player_c_head(3)"
+                  "component": "FighterHead(3)"
                 },
                 {
                   "id": "player_name",
@@ -104,10 +104,10 @@
                   "component": "player_name(3)"
                 },
                 {
-                  "id": "player_c_name",
+                  "id": "FighterName",
                   "size": "120, 19",
                   "pos": "0, 145",
-                  "component": "player_c_name(3)"
+                  "component": "FighterName(3)"
                 },
                 {
                   "id": "player_team",
@@ -122,10 +122,10 @@
               "pos": "213,0",
               "items": [
                 {
-                  "id": "player_c_head",
+                  "id": "FighterHead",
                   "size": "120, 120",
                   "pos": "0, 0",
-                  "component": "player_c_head(4)"
+                  "component": "FighterHead(4)"
                 },
                 {
                   "id": "player_name",
@@ -134,10 +134,10 @@
                   "component": "player_name(4)"
                 },
                 {
-                  "id": "player_c_name",
+                  "id": "FighterName",
                   "size": "120, 19",
                   "pos": "0, 145",
-                  "component": "player_c_name(4)"
+                  "component": "FighterName(4)"
                 },
                 {
                   "id": "player_team",
@@ -158,10 +158,10 @@
               "pos": "-246,0",
               "items": [
                 {
-                  "id": "player_c_head",
+                  "id": "FighterHead",
                   "size": "120, 120",
                   "pos": "0, 0",
-                  "component": "player_c_head(5)"
+                  "component": "FighterHead(5)"
                 },
                 {
                   "id": "player_name",
@@ -170,10 +170,10 @@
                   "component": "player_name(5)"
                 },
                 {
-                  "id": "player_c_name",
+                  "id": "FighterName",
                   "size": "120, 19",
                   "pos": "0, 145",
-                  "component": "player_c_name(5)"
+                  "component": "FighterName(5)"
                 },
                 {
                   "id": "player_team",
@@ -188,10 +188,10 @@
               "pos": "-93,0",
               "items": [
                 {
-                  "id": "player_c_head",
+                  "id": "FighterHead",
                   "size": "120, 120",
                   "pos": "0, 0",
-                  "component": "player_c_head(6)"
+                  "component": "FighterHead(6)"
                 },
                 {
                   "id": "player_name",
@@ -200,10 +200,10 @@
                   "component": "player_name(6)"
                 },
                 {
-                  "id": "player_c_name",
+                  "id": "FighterName",
                   "size": "120, 19",
                   "pos": "0, 145",
-                  "component": "player_c_name(6)"
+                  "component": "FighterName(6)"
                 },
                 {
                   "id": "player_team",
@@ -218,10 +218,10 @@
               "pos": "60,0",
               "items": [
                 {
-                  "id": "player_c_head",
+                  "id": "FighterHead",
                   "size": "120, 120",
                   "pos": "0, 0",
-                  "component": "player_c_head(7)"
+                  "component": "FighterHead(7)"
                 },
                 {
                   "id": "player_name",
@@ -230,10 +230,10 @@
                   "component": "player_name(7)"
                 },
                 {
-                  "id": "player_c_name",
+                  "id": "FighterName",
                   "size": "120, 19",
                   "pos": "0, 145",
-                  "component": "player_c_name(7)"
+                  "component": "FighterName(7)"
                 },
                 {
                   "id": "player_team",
@@ -248,10 +248,10 @@
               "pos": "213,0",
               "items": [
                 {
-                  "id": "player_c_head",
+                  "id": "FighterHead",
                   "size": "120, 120",
                   "pos": "0, 0",
-                  "component": "player_c_head(8)"
+                  "component": "FighterHead(8)"
                 },
                 {
                   "id": "player_name",
@@ -260,10 +260,10 @@
                   "component": "player_name(8)"
                 },
                 {
-                  "id": "player_c_name",
+                  "id": "FighterName",
                   "size": "120, 19",
                   "pos": "0, 145",
-                  "component": "player_c_name(8)"
+                  "component": "FighterName(8)"
                 },
                 {
                   "id": "player_team",

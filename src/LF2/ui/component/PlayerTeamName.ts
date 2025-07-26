@@ -10,7 +10,7 @@ import { UIComponent } from "./UIComponent";
  * 显示玩家队伍名
  *
  * @export
- * @class PlayerCharacterHead
+ * @class PlayerFighterHead
  * @extends {UIComponent}
  */
 export default class PlayerTeamName extends UIComponent {

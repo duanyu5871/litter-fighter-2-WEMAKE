@@ -15,11 +15,12 @@ import { is_arr, is_bool, is_num, is_str } from "../utils/type_check";
 import { ICookedUIInfo } from "./ICookedUIInfo";
 import { IUICallback } from "./IUICallback";
 import type { IUIInfo } from "./IUIInfo";
+import { IUIEvent as IUIEvent } from "./UIEvent";
+import { IUIKeyEvent } from "./IUIKeyEvent";
 import actor from "./action/Actor";
 import factory from "./component/Factory";
 import { UIComponent } from "./component/UIComponent";
 import read_nums from "./utils/read_nums";
-
 export class UINode implements IDebugging {
   debug!: (_0: string, ..._1: any[]) => void;
   warn!: (_0: string, ..._1: any[]) => void;
@@ -79,6 +80,7 @@ export class UINode implements IDebugging {
   set focused_node(val: UINode | undefined) {
     const old = this._root._focused_node;
     if (old === val) return;
+    if (val?.disabled || !val?.visible) val = void 0;
     this._root._focused_node = val;
     if (old) {
       old.on_blur();
@@ -189,7 +191,8 @@ export class UINode implements IDebugging {
   set_visible(v: boolean): this {
     const prev = this.visible;
     this._visible.set(1, v);
-    if (prev !== this.visible) this.invoke_visible_callback()
+    if (prev !== this.visible) this.invoke_all_visible()
+    if (!v && !this.focused_node?.visible) this.focused_node = void 0
     return this;
   }
 
@@ -202,6 +205,7 @@ export class UINode implements IDebugging {
   }
   set_disabled(v: boolean): this {
     this._disabled.set(1, v);
+    if (v && this.focused_node?.disabled) this.focused_node = void 0
     return this;
   }
 
@@ -326,24 +330,24 @@ export class UINode implements IDebugging {
   on_resume() {
     if (!this.parent) {
       this.focused_node = this._state.focused_node;
+      if (this._visible) this.invoke_all_visible();
     }
     if (this.root === this) this.lf2.world.scene.add(this.sprite);
     for (const c of this._components) c.on_resume?.();
     for (const i of this.children) i.on_resume();
     const { resume } = this.data.actions || {};
     resume && actor.act(this, resume);
-    this.invoke_visible_callback();
     this.renderer.on_resume?.();
   }
 
   on_pause() {
     if (!this.parent) {
       this._state.focused_node = this.focused_node;
-      this.debug("on_pause focused_node", this.focused_node);
+      this.focused_node = void 0;
+      this.invoke_all_on_hide();
     }
     if (this.root === this) this.renderer.del_self();
 
-    if (this.visible && !this.parent) this.invoke_all_on_hide();
 
     const { pause } = this.data.actions || {};
     pause && actor.act(this, pause);
@@ -355,8 +359,9 @@ export class UINode implements IDebugging {
   on_show() {
     for (const c of this.components) c.on_show?.();
     this._callbacks.emit("on_show")(this);
-    if (this.data.auto_focus && !this.disabled && !this.focused_node)
+    if (this.data.auto_focus && !this.disabled && !this.focused_node) {
       this.focused_node = this;
+    }
     this.renderer.on_show?.();
   }
 
@@ -579,22 +584,28 @@ export class UINode implements IDebugging {
     return !!click;
   }
 
-  invoke_all_on_show() {
+  /** 
+   * 当前节点从"不可见"变为"可见"时被调用 
+   */
+  protected invoke_all_on_show() {
     this.on_show();
     for (const child of this.children) {
-      if (child.visible) child.invoke_all_on_show();
+      if (child._visible.value) child.invoke_all_on_show();
     }
   }
 
-  invoke_all_on_hide() {
+  /** 
+   * 当前节点从"可见"变为"不可见"时被调用 
+   */
+  protected invoke_all_on_hide() {
     this.on_hide();
     for (const child of this.children) {
-      if (child.visible) child.invoke_all_on_hide();
+      if (child._visible.value) child.invoke_all_on_hide();
     }
   }
 
-  invoke_visible_callback() {
-    if (this.visible) {
+  protected invoke_all_visible() {
+    if (this._visible.value) {
       this.invoke_all_on_show();
     } else {
       this.invoke_all_on_hide();
@@ -607,15 +618,29 @@ export class UINode implements IDebugging {
     this.renderer.visible = this.visible;
   }
 
-  on_player_key_down(player_id: string, key: GameKey) {
-    for (const i of this.children) i.on_player_key_down(player_id, key);
-    for (const c of this._components) c.on_player_key_down?.(player_id, key);
-    if ("a" === key) this._focused_node?.on_click();
+  on_key_down(e: IUIKeyEvent) {
+    if (e.stopped) return;
+    for (const c of this._components) {
+      c.on_key_down?.(e);
+      if (e.stopped === 2) return;
+    }
+    for (const i of this.children) {
+      i.on_key_down(e);
+      if (e.stopped === 2) return;
+    }
+    if ("a" === e.key) this._focused_node?.on_click();
   }
 
-  on_player_key_up(player_id: string, key: GameKey) {
-    for (const i of this.children) i.on_player_key_up(player_id, key);
-    for (const c of this._components) c.on_player_key_up?.(player_id, key);
+  on_key_up(e: IUIKeyEvent) {
+    if (e.stopped) return;
+    for (const i of this.children) {
+      i.on_key_up(e);
+      if (e.stopped === 2) return;
+    }
+    for (const c of this._components) {
+      c.on_key_up?.(e);
+      if (e.stopped === 2) return;
+    }
   }
 
   /**

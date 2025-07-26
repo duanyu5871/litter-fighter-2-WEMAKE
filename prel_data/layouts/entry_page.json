@@ -3,7 +3,7 @@
   "id": "entry",
   "color": "rgb(16, 32, 108)",
   "component": [
-    "reachable_layout_group(main,ud)"
+    "ReachableGroup(main,ud)"
   ],
   "items": [
     {
@@ -79,7 +79,7 @@
           "auto_focus": true,
           "component": [
             "opacity_hover(0,1)",
-            "reachable_layout(main)"
+            "Reachable(main)"
           ],
           "actions": {
             "click": [
@@ -98,7 +98,7 @@
           "pos": "1, -14",
           "component": [
             "opacity_hover(0,1)",
-            "reachable_layout(main)"
+            "Reachable(main)"
           ],
           "actions": {
             "click": [
@@ -115,7 +115,7 @@
           "pos": "1, 17",
           "component": [
             "opacity_hover(0,1)",
-            "reachable_layout(main)"
+            "Reachable(main)"
           ],
           "actions": {
             "click": [

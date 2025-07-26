@@ -1,6 +1,8 @@
 import GameKey from "../../defines/GameKey";
 import Ditto from "../../ditto";
+import { IDebugging, make_debugging } from "../../entity/make_debugging";
 import { is_num } from "../../utils";
+import { IUIKeyEvent } from "../IUIKeyEvent";
 import type { UINode } from "../UINode";
 
 /**
@@ -9,10 +11,14 @@ import type { UINode } from "../UINode";
  * @export
  * @class Component
  */
-export class UIComponent {
+export class UIComponent implements IDebugging {
   static readonly TAG: string = "UIComponent"
   readonly node: UINode;
   readonly f_name: string;
+
+  __debugging?: boolean | undefined;
+  debug(func: string, ...args: any[]): void { }
+  log(func: string, ...args: any[]): void { }
   id: string = '';
   get lf2() {
     return this.node.lf2;
@@ -22,7 +28,6 @@ export class UIComponent {
   }
   private _mounted: boolean = false;
   private _args: readonly any[] = [];
-
   private _enabled: boolean = true;
 
   get enabled() {
@@ -55,6 +60,7 @@ export class UIComponent {
   constructor(layout: UINode, f_name: string) {
     this.node = layout;
     this.f_name = f_name;
+    make_debugging(this)
   }
 
   /**
@@ -145,7 +151,7 @@ export class UIComponent {
 
   update?(dt: number): void;
 
-  on_player_key_down?(player_id: string, key: GameKey): void;
+  on_key_down?(e: IUIKeyEvent): void;
 
-  on_player_key_up?(player_id: string, key: GameKey): void;
+  on_key_up?(e: IUIKeyEvent): void;
 }

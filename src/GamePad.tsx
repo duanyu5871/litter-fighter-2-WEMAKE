@@ -8,6 +8,7 @@ import img_touch_btn_arrow from "./assets/touch_btn_arrow.png";
 import img_touch_btn_a from "./assets/touch_btn_a.png";
 import img_touch_btn_j from "./assets/touch_btn_j.png";
 import img_touch_btn_d from "./assets/touch_btn_d.png";
+import { LF2UIKeyEvent } from "./LF2/ui/LF2UIKeyEvent";
 export interface IGamePadProps extends React.HTMLAttributes<HTMLDivElement> {
   lf2?: LF2;
   player_id?: string;
@@ -161,13 +162,13 @@ export default function GamePad(props: IGamePadProps) {
       for (const [k, v] of curr_pressings) {
         if (v === prev_pressings.get(k)) continue;
         if (v) {
-          lf2?.ui?.on_player_key_down(player_id, k);
+          lf2?.ui?.on_key_down(new LF2UIKeyEvent(player_id, k));
           controller?.start(k);
           if (pad_text.innerText.length > 10)
             pad_text.innerText = pad_text.innerText.substring(2);
           pad_text.innerText += k + "⬇";
         } else {
-          lf2?.ui?.on_player_key_up(player_id, k);
+          lf2?.ui?.on_key_up(new LF2UIKeyEvent(player_id, k));
           controller?.end(k);
           if (pad_text.innerText.length > 10)
             pad_text.innerText = pad_text.innerText.substring(2);
@@ -247,13 +248,13 @@ export default function GamePad(props: IGamePadProps) {
       for (const [k, v] of curr_pressings) {
         if (v === prev_pressings.get(k)) continue;
         if (v) {
-          lf2?.ui?.on_player_key_down(player_id, k);
+          lf2?.ui?.on_key_down(new LF2UIKeyEvent(player_id, k));
           controller?.start(k);
           if (pad_text.innerText.length > 10)
             pad_text.innerText = pad_text.innerText.substring(2);
           pad_text.innerText += k + "⬇";
         } else {
-          lf2?.ui?.on_player_key_up(player_id, k);
+          lf2?.ui?.on_key_up(new LF2UIKeyEvent(player_id, k));
           controller?.end(k);
           if (pad_text.innerText.length > 10)
             pad_text.innerText = pad_text.innerText.substring(2);

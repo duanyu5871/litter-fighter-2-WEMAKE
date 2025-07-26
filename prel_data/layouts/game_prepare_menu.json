@@ -11,7 +11,7 @@
       "rect": "407,183,126,21",
       "pos": "89,13",
       "auto_focus": true,
-      "component": ["opacity_hover(0,1)", "reachable_layout(menu)"],
+      "component": ["opacity_hover(0,1)", "Reachable(menu)"],
       "actions": {
         "click": ["broadcast(start_game)", "sound(ok)"]
       }
@@ -21,7 +21,7 @@
       "img": "sprite/MENU_CLIP3.png",
       "rect": "379,206,186,21",
       "pos": "61,36",
-      "component": ["opacity_hover(0,1)", "reachable_layout(menu)"],
+      "component": ["opacity_hover(0,1)", "Reachable(menu)"],
       "actions": {
         "click": ["broadcast(reset_gpl)", "sound(ok)"]
       }
@@ -31,7 +31,7 @@
       "img": "sprite/MENU_CLIP3.png",
       "rect": "355,231,235,21",
       "pos": "37,61",
-      "component": ["opacity_hover(0,1)", "reachable_layout(menu)"],
+      "component": ["opacity_hover(0,1)", "Reachable(menu)"],
       "actions": {
         "click": ["broadcast(update_random)", "sound(ok)"]
       }
@@ -41,7 +41,7 @@
       "img": "sprite/MENU_CLIP3.png",
       "rect": "330,254,279,22",
       "pos": "12,84",
-      "component": ["opacity_hover(0,1)", "reachable_layout(menu)"],
+      "component": ["opacity_hover(0,1)", "Reachable(menu)"],
       "actions": {
         "click": ["broadcast(switch_background)", "sound(ok)"]
       },
@@ -64,7 +64,7 @@
           "img": "sprite/MENU_CLIP3.png",
           "rect": "330,332,279,22",
           "pos": "0,0",
-          "component": ["opacity_hover(0,1)", "reachable_layout(menu)"],
+          "component": ["opacity_hover(0,1)", "Reachable(menu)"],
           "actions": {
             "click": ["broadcast(switch_stage)", "sound(ok)"]
           },
@@ -82,7 +82,7 @@
       "img": "sprite/MENU_CLIP3.png",
       "rect": "352,278,228,22",
       "pos": "34,108",
-      "component": ["opacity_hover(0,1)", "reachable_layout(menu)"],
+      "component": ["opacity_hover(0,1)", "Reachable(menu)"],
       "actions": {
         "click": ["switch_difficulty()", "sound(ok)"]
       },
@@ -98,7 +98,7 @@
       "img": "sprite/MENU_CLIP3.png",
       "rect": "416,304,111,19",
       "pos": "98,134",
-      "component": ["opacity_hover(0,1)", "reachable_layout(menu)"],
+      "component": ["opacity_hover(0,1)", "Reachable(menu)"],
       "actions": {
         "click": ["pop_layout()", "sound(cancel)"]
       }

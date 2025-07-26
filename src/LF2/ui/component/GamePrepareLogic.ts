@@ -9,8 +9,8 @@ import GameKey, { TLooseGameKey } from "../../defines/GameKey";
 import { Defines } from "../../defines/defines";
 import { Entity } from "../../entity/Entity";
 import { Factory } from "../../entity/Factory";
-import { filter } from "../../utils/container_help";
 import { map_no_void } from "../../utils/container_help/map_no_void";
+import { IUIKeyEvent } from "../IUIKeyEvent";
 import BackgroundNameText from "./BackgroundNameText";
 import SlotSelLogic, { SlotSelStatus } from "./SlotSelLogic";
 import StageNameText from "./StageNameText";
@@ -22,13 +22,13 @@ export interface IGamePrepareLogicCallback {
 export enum GamePrepareState {
   Player = "Player",
   CountingDown = "CountingDown",
-  ComNumberSel = "ComputerNumberSelecting",
-  Computer = "ComputerCharacterSelecting",
+  ComNumberSel = "ComNumberSel",
+  Computer = "Computer",
   GameSetting = "GameSetting",
 }
 
 export interface IGamePrepareState extends IState<GamePrepareState> {
-  on_player_key_down?(key: TLooseGameKey): void
+  on_player_key_down?(e: IUIKeyEvent): void
 }
 
 export default class GamePrepareLogic extends UIComponent {
@@ -37,10 +37,10 @@ export default class GamePrepareLogic extends UIComponent {
   protected _unmount_jobs = new Invoker();
   protected _callbacks = new Callbacks<IGamePrepareLogicCallback>();
   get state(): GamePrepareState {
-    return this._fsm.state?.key!;
+    return this.fsm.state?.key!;
   }
 
-  private _count_down: number = 5000;
+  private _count_down: number = 4000;
   get callbacks(): NoEmitCallbacks<IGamePrepareLogicCallback> {
     return this._callbacks;
   }
@@ -58,7 +58,7 @@ export default class GamePrepareLogic extends UIComponent {
       btn_switch_bg?.set_visible(false).set_disabled(true);
     }
 
-    this._fsm.use(GamePrepareState.Player);
+    this.fsm.use(GamePrepareState.Player);
     this._unmount_jobs.add(
       ...map_no_void(this.lf2.players.values(), (v) =>
         v.callbacks.add({
@@ -69,7 +69,7 @@ export default class GamePrepareLogic extends UIComponent {
       this.lf2.callbacks.add({
         on_broadcast: (m) => {
           if (m === Defines.BuiltIn_Broadcast.ResetGPL)
-            this._fsm.use(GamePrepareState.Player);
+            this.fsm.use(GamePrepareState.Player);
           if (m === Defines.BuiltIn_Broadcast.UpdateRandom)
             this.update_random();
           if (m === Defines.BuiltIn_Broadcast.StartGame) this.start_game();
@@ -83,8 +83,8 @@ export default class GamePrepareLogic extends UIComponent {
     this._unmount_jobs.invoke_and_clear();
   }
 
-  override on_player_key_down(_player_id: string, key: GameKey) {
-    this.fsm.state?.on_player_key_down?.(key)
+  override on_key_down(e: IUIKeyEvent): void {
+    this.fsm.state?.on_player_key_down?.(e)
   }
 
   protected on_someone_changed() {
@@ -96,24 +96,22 @@ export default class GamePrepareLogic extends UIComponent {
     }
     if (ready_num && ready_num === joined_num) {
       if (this.state === GamePrepareState.Computer) {
-        this._fsm.use(GamePrepareState.GameSetting);
+        this.fsm.use(GamePrepareState.GameSetting);
       } else if (this.state === GamePrepareState.Player) {
-        this._fsm.use(GamePrepareState.CountingDown);
+        this.fsm.use(GamePrepareState.CountingDown);
       }
     } else if (ready_num < joined_num) {
       if (this.state === GamePrepareState.CountingDown) {
-        this._fsm.use(GamePrepareState.Player);
+        this.fsm.use(GamePrepareState.Player);
       }
     }
   }
 
   override update(dt: number): void {
-    this._fsm.update(dt);
+    this.fsm.update(dt);
   }
-  get fsm(): IReadonlyFSM<GamePrepareState, IGamePrepareState> {
-    return this._fsm;
-  }
-  private _fsm = new FSM<GamePrepareState, IGamePrepareState>().add({
+
+  readonly fsm = new FSM<GamePrepareState, IGamePrepareState>().add({
     key: GamePrepareState.Player,
     enter: () => {
       this.handling_com = void 0;
@@ -121,14 +119,17 @@ export default class GamePrepareLogic extends UIComponent {
       const { slots } = this;
       for (const slot of slots) slot.fsm.use(SlotSelStatus.Empty)
     },
-    on_player_key_down: (key) => {
-      if ("j" === key && !this.joined_slots.length) this.lf2.pop_ui();
+    on_player_key_down: (e) => {
+      if ("j" === e.key && !this.joined_slots.length) {
+        this.lf2.pop_ui();
+        e.stop_immediate_propagation()
+      }
     },
   }, {
     key: GamePrepareState.CountingDown,
     enter: () => {
-      this._count_down = 5000;
-      this._callbacks.emit("on_countdown")(5);
+      this._count_down = 4000;
+      this._callbacks.emit("on_countdown")(4);
     },
     update: (dt) => {
       const prev_second = Math.ceil(this._count_down / 1000);
@@ -136,12 +137,18 @@ export default class GamePrepareLogic extends UIComponent {
       const curr_second = Math.ceil(this._count_down / 1000);
       if (curr_second !== prev_second)
         this._callbacks.emit("on_countdown")(curr_second);
-      if (this._count_down <= 0) return GamePrepareState.ComNumberSel;
+      if (this._count_down <= 0)
+        if (this.empty_slots.length)
+          return GamePrepareState.ComNumberSel;
+        else
+          return GamePrepareState.GameSetting;
     },
-    on_player_key_down: (key) => {
-      if ("j" !== key) return;
-      this._count_down = Math.max(0, this._count_down - 500);
-      this._callbacks.emit("on_countdown")(Math.ceil(this._count_down / 1000));
+    on_player_key_down: (e) => {
+      if ("j" === e.key) {
+        this._count_down = Math.max(0, this._count_down - 500);
+        this._callbacks.emit("on_countdown")(Math.ceil(this._count_down / 1000));
+        e.stop_immediate_propagation()
+      }
     },
   }, {
     key: GamePrepareState.ComNumberSel,
@@ -164,15 +171,14 @@ export default class GamePrepareLogic extends UIComponent {
     leave: () => {
       this.node.find_child("how_many_computer")?.set_visible(false)
     },
-    on_player_key_down: (key) => {
-      if ("d" === key) this._fsm.use(GamePrepareState.Player);
+    on_player_key_down: (e) => {
+      if ("d" === e.key) {
+        this.fsm.use(GamePrepareState.Player);
+        e.stop_immediate_propagation()
+      }
     },
   }, {
     key: GamePrepareState.Computer,
-    on_player_key_down: (key) => {
-      if ("j" === key && !this.joined_coms.length)
-        this._fsm.use(GamePrepareState.ComNumberSel);
-    },
   }, {
     key: GamePrepareState.GameSetting,
     enter: () => {
@@ -184,8 +190,11 @@ export default class GamePrepareLogic extends UIComponent {
         p?.set_random_character("", true);
       this.node.find_child("menu")?.set_visible(false);
     },
-    on_player_key_down: (key) => {
-      if ("d" === key) this._fsm.use(GamePrepareState.Player);
+    on_player_key_down: (e) => {
+      if ("d" === e.key) {
+        this.fsm.use(GamePrepareState.Player);
+        e.stop_immediate_propagation()
+      }
     },
   }).use(GamePrepareState.Player);
 
@@ -247,15 +256,18 @@ export default class GamePrepareLogic extends UIComponent {
   set_com_num(num: number) {
     this._com_num = num;
     const { empty_slots } = this;
+
+    for (const c of empty_slots) c.is_com = false;
+
     while (num && empty_slots.length) {
       empty_slots.shift()!.is_com = true;
       --num;
     }
     this.handling_com = this.coms[0]
     if (this._com_num > 0) {
-      this._fsm.use(GamePrepareState.Computer);
+      this.fsm.use(GamePrepareState.Computer);
     } else {
-      this._fsm.use(GamePrepareState.GameSetting);
+      this.fsm.use(GamePrepareState.GameSetting);
     }
   }
 
@@ -263,9 +275,15 @@ export default class GamePrepareLogic extends UIComponent {
     const { coms } = this
     const idx = this.handling_com ? coms.indexOf(this.handling_com) : -1
     this.handling_com = coms[idx + 1];
-    this.handling_com?.fsm.use(SlotSelStatus.Character)
+    if (!this.handling_com) this.fsm.use(GamePrepareState.GameSetting)
+    else this.handling_com.fsm.use(SlotSelStatus.Fighter)
   }
-
+  handle_prev_com() {
+    const { coms } = this
+    const idx = this.handling_com ? coms.indexOf(this.handling_com) : 0
+    this.handling_com = coms[idx - 1];
+    if (!this.handling_com) this.fsm.use(GamePrepareState.ComNumberSel)
+  }
   start_game() {
     const { far, near, left, right } = this.lf2.world.bg;
 

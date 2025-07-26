@@ -1,22 +1,24 @@
 import GameKey from "../../defines/GameKey";
+import { IUIKeyEvent } from "../IUIKeyEvent";
 import type { UINode } from "../UINode";
+import { Reachable } from "./Reachable";
 import { UIComponent } from "./UIComponent";
 
-export class ReachableLayoutGroup extends UIComponent {
+export class ReachableGroup extends UIComponent {
+  static override readonly TAG = 'ReachableGroup'
   get name(): string {
     return this.args[0] || "";
   }
   get direction(): string {
     return this.args[1] || "";
   }
-
   get binded_layout(): UINode {
     const lid = this.args[2];
     if (!lid) return this.node;
     return this.node.root.find_child(lid) || this.node;
   }
-
-  override on_player_key_down(_player_id: string, key: GameKey): void {
+  override on_key_down(e: IUIKeyEvent): void {
+    const { key } = e;
     if (!this.binded_layout.visible) return;
     if (this.binded_layout.disabled) return;
     switch (this.direction) {
@@ -29,7 +31,7 @@ export class ReachableLayoutGroup extends UIComponent {
       default:
         return;
     }
-    const items = this.node.root.search_components(ReachableLayout, (v) => {
+    const items = this.node.root.search_components(Reachable, (v) => {
       return (
         v.group_name === this.name &&
         v.node.visible &&
@@ -44,7 +46,7 @@ export class ReachableLayoutGroup extends UIComponent {
       items.sort((a, b) => a.node.y_on_root - b.node.y_on_root);
 
     const focused_layout = this.node.focused_node;
-    
+
     if (key === "L" || key === "U") {
       const idx = items.findIndex((v) => v.node === focused_layout);
       const next_idx = (Math.max(idx, 0) + items.length - 1) % items.length;
@@ -54,17 +56,5 @@ export class ReachableLayoutGroup extends UIComponent {
       const next_idx = (idx + 1) % items.length;
       items[next_idx]!.node.focused = true;
     }
-  }
-}
-
-export class ReachableLayout extends UIComponent {
-  get group_name(): string {
-    return this.args[0] || '';
-  }
-  get group(): ReachableLayoutGroup | undefined {
-    return this.node.root.find_component(
-      ReachableLayoutGroup,
-      (v) => v.name === this.group_name,
-    );
   }
 }

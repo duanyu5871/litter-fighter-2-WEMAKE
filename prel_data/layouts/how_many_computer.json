@@ -11,7 +11,7 @@
       "component": [
         "opacity_hover(0.5,1)",
         "com_number(0)",
-        "reachable_layout(com_num)"
+        "Reachable(com_num)"
       ],
       "style": {
         "font": "16px Arial"
@@ -24,7 +24,7 @@
       "component": [
         "opacity_hover(0.5,1)",
         "com_number(1)",
-        "reachable_layout(com_num)"
+        "Reachable(com_num)"
       ],
       "style": {
         "font": "16px Arial"
@@ -37,7 +37,7 @@
       "component": [
         "opacity_hover(0.5,1)",
         "com_number(2)",
-        "reachable_layout(com_num)"
+        "Reachable(com_num)"
       ],
       "style": {
         "font": "16px Arial"
@@ -50,7 +50,7 @@
       "component": [
         "opacity_hover(0.5,1)",
         "com_number(3)",
-        "reachable_layout(com_num)"
+        "Reachable(com_num)"
       ],
       "style": {
         "font": "16px Arial"
@@ -63,7 +63,7 @@
       "component": [
         "opacity_hover(0.5,1)",
         "com_number(4)",
-        "reachable_layout(com_num)"
+        "Reachable(com_num)"
       ],
       "style": {
         "font": "16px Arial"
@@ -76,7 +76,7 @@
       "component": [
         "opacity_hover(0.5,1)",
         "com_number(5)",
-        "reachable_layout(com_num)"
+        "Reachable(com_num)"
       ],
       "style": {
         "font": "16px Arial"
@@ -89,7 +89,7 @@
       "component": [
         "opacity_hover(0.5,1)",
         "com_number(6)",
-        "reachable_layout(com_num)"
+        "Reachable(com_num)"
       ],
       "style": {
         "font": "16px Arial"
@@ -102,7 +102,7 @@
       "component": [
         "opacity_hover(0.5,1)",
         "com_number(7)",
-        "reachable_layout(com_num)"
+        "Reachable(com_num)"
       ],
       "style": {
         "font": "16px Arial"

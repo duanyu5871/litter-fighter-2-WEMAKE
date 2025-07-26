@@ -22,7 +22,7 @@ export const Debug = Object.assign(
   L.Debug.Clone({ showArgs: true, showRet: true, disabled: false }),
   {
     print(...args: any[]) {
-      return console.debug(...args);
+      return console.trace(...args);
     },
   },
 );

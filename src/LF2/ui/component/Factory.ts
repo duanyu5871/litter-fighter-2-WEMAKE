@@ -4,12 +4,13 @@ import { IUIInfo } from "../IUIInfo";
 import type { UINode } from "../UINode";
 import { parse_call_func_expression } from "../utils/parse_call_func_expression";
 import BackgroundNameText from "./BackgroundNameText";
-import SlotSelLogic from "./SlotSelLogic";
 import ComNumButton from "./ComNumButton";
 import { DemoModeLogic } from "./DemoModeLogic";
 import DifficultyText from "./DifficultyText";
 import { FadeInOpacity } from "./FadeInOpacity";
 import { FadeOutOpacity } from "./FadeOutOpacity";
+import FighterHead from "./FighterHead";
+import FighterName from "./FighterName";
 import GamePrepareLogic from "./GamePrepareLogic";
 import { HorizontalLayout } from "./HorizontalLayout";
 import { Items } from "./Items";
@@ -18,8 +19,6 @@ import LaunchPageLogic from "./LaunchPageLogic";
 import LoadingFileNameDisplayer from "./LoadingFileNameDisplayer";
 import { OpacityAnimation } from "./OpacityAnimation";
 import OpacityHover from "./OpacityHover";
-import PlayerCharacterHead from "./PlayerCharacterHead";
-import PlayerCharacterName from "./PlayerCharacterName";
 import PlayerCharacterThumb from "./PlayerCharacterThumb";
 import PlayerKeyEditor from "./PlayerKeyEditor";
 import PlayerKeyText from "./PlayerKeyText";
@@ -30,9 +29,11 @@ import PlayerTeamName from "./PlayerTeamName";
 import { PlayingTimeText } from "./PlayingTimeText";
 import { PositionAnimation } from "./PositionAnimation";
 import { RandomImgOnLayoutResume } from "./RandomImgOnLayoutResume";
-import { ReachableLayout, ReachableLayoutGroup } from "./ReachableLayoutGroup";
+import { Reachable } from "./Reachable";
+import { ReachableGroup } from "./ReachableGroup";
 import { ScaleAnimation } from "./ScaleAnimation";
 import { SineOpacity } from "./SineOpacity";
+import SlotSelLogic from "./SlotSelLogic";
 import StageNameText from "./StageNameText";
 import StageTitleShow from "./StageTitleShow";
 import StageTransitions from "./StageTransitions";
@@ -48,16 +49,16 @@ class ComponentFactory {
     ["key_txt", PlayerKeyText],
     ["stage_transitions", StageTransitions],
     ["player_c_sel_logic", SlotSelLogic],
-    ["player_c_head", PlayerCharacterHead],
+    [FighterHead.TAG, FighterHead],
     ["player_c_thumb", PlayerCharacterThumb],
-    ["player_c_name", PlayerCharacterName],
+    [FighterName.TAG, FighterName],
     ["player_name", PlayerName],
     ["player_t_name", PlayerTeamName],
     [GamePrepareLogic.TAG, GamePrepareLogic],
     ["com_number", ComNumButton],
     ["stage_title_show", StageTitleShow],
-    ["reachable_layout_group", ReachableLayoutGroup],
-    ["reachable_layout", ReachableLayout],
+    [ReachableGroup.TAG, ReachableGroup],
+    [Reachable.TAG, Reachable],
     ["launch_page", LaunchPageLogic],
     ["difficulty_text", DifficultyText],
     ["stage_name_text", StageNameText],

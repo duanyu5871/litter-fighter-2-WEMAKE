@@ -175,7 +175,7 @@ export default class LaunchPageLogic extends UIComponent {
     );
     this.fsm.use(Status.TapHints)
   }
-  override on_player_key_down(player_id: string, key: GameKey): void {
+  override on_key_down(): void {
     this.on_pointer_down();
   }
   on_pointer_down() {

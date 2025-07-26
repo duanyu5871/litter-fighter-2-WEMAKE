@@ -9,10 +9,11 @@ import { UIComponent } from "./UIComponent";
  * 显示玩家角色选择的角色名称
  *
  * @export
- * @class PlayerCharacterHead
+ * @class FighterName
  * @extends {UIComponent}
  */
-export default class PlayerCharacterName extends UIComponent {
+export default class FighterName extends UIComponent {
+  static override readonly TAG = 'FighterName'
   get player_id() {
     return this.args[0] || "";
   }
@@ -44,7 +45,7 @@ export default class PlayerCharacterName extends UIComponent {
     this._mesh = new Ditto.TextNode(this.lf2)
       .set_position(w / 2, -h / 2)
       .set_center(0.5, 0.5)
-      .set_name(PlayerCharacterName.name)
+      .set_name(FighterName.name)
       .set_style({
         fill_style: "white",
         font: "14px Arial",

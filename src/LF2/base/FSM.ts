@@ -19,12 +19,12 @@ export interface IReadonlyFSM<
 > {
   get callbacks(): NoEmitCallbacks<IFSMCallback<K, S>>;
   get state(): S | undefined;
+  get prev_state(): S | undefined;
 }
 export default class FSM<
   K extends string | number = string | number,
   S extends IState<K> = IState<K>,
-> implements IReadonlyFSM<K, S>
-{
+> implements IReadonlyFSM<K, S> {
   protected _callbacks = new Callbacks<IFSMCallback<K, S>>();
   protected _state_map = new Map<K, S>();
   protected _prev_state?: S;

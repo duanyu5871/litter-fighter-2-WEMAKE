@@ -31,6 +31,7 @@ import { PlayerInfo } from "./PlayerInfo";
 import { Stage } from "./stage";
 import { ICookedUIInfo } from "./ui/ICookedUIInfo";
 import { IUIInfo } from "./ui/IUIInfo";
+import { LF2UIKeyEvent } from "./ui/LF2UIKeyEvent";
 import { UINode } from "./ui/UINode";
 import {
   arithmetic_progression, fisrt,
@@ -270,7 +271,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
     const layouts = intersections
       .map((v) => v.object.get_user_data('owner') as UINode)
       .filter((v) => v && v.visible && !v.disabled)
-    for (const ui of layouts) if (ui.on_click()) break;
+    for (const ui of layouts) if (!ui.disabled && ui.on_click()) break;
   }
 
   on_pointer_up(e: IPointingEvent) { }
@@ -318,7 +319,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
         for (const key_name of KEY_NAME_LIST) {
           for (const [player_id, player_info] of this.players) {
             if (player_info.keys[key_name] === key_code)
-              ui.on_player_key_down(player_id, key_name);
+              ui.on_key_down(new LF2UIKeyEvent(player_id, key_name));
           }
         }
       }
@@ -332,7 +333,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
       for (const key_name of KEY_NAME_LIST) {
         for (const [player_id, player_info] of this.players) {
           if (player_info.keys[key_name] === key_code)
-            ui.on_player_key_up(player_id, key_name);
+            ui.on_key_up(new LF2UIKeyEvent(player_id, key_name));
         }
       }
     }

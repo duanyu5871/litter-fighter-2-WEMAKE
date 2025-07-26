@@ -3,6 +3,7 @@ import { Sine } from "../../animation/Sine";
 import Invoker from "../../base/Invoker";
 import { Defines } from "../../defines/defines";
 import Ditto from "../../ditto";
+import { PlayerInfo } from "../../PlayerInfo";
 import type { UINode } from "../UINode";
 import GamePrepareLogic, { GamePrepareState } from "./GamePrepareLogic";
 import { UIComponent } from "./UIComponent";
@@ -11,15 +12,16 @@ import { UIComponent } from "./UIComponent";
  * 显示玩家角色选择的角色头像
  *
  * @export
- * @class PlayerCharacterHead
+ * @class FighterHead
  * @extends {UIComponent}
  */
-export default class PlayerCharacterHead extends UIComponent {
+export default class FighterHead extends UIComponent {
+  static override readonly TAG = 'FighterHead'
   get player_id() {
     return this.args[0] || "";
   }
-  get player() {
-    return this.lf2.players.get(this.player_id);
+  get player(): PlayerInfo {
+    return this.lf2.players.get(this.player_id)!;
   }
 
   get head() {
@@ -37,15 +39,11 @@ export default class PlayerCharacterHead extends UIComponent {
   get gpl(): GamePrepareLogic | undefined {
     return this.node.root.find_component(GamePrepareLogic);
   }
-  get joined(): boolean {
-    return !!this.player?.joined;
-  }
 
   protected _unmount_jobs = new Invoker();
 
   constructor(layout: UINode, f_name: string) {
     super(layout, f_name);
-
     this._mesh_head = new Ditto.SpriteNode(this.lf2)
       .set_center(0.5, 0.5)
       .set_position(this.node.w / 2, -this.node.h / 2, 0.1)
@@ -63,13 +61,11 @@ export default class PlayerCharacterHead extends UIComponent {
   }
   override on_resume(): void {
     super.on_resume();
-    const hint_pic = this.lf2.images.create_pic_by_img_key(
-      Defines.BuiltIn_Imgs.CMA,
-    );
-    this._mesh_hints
-      .set_info(hint_pic)
-      .set_visible(!this.player?.joined)
-      .apply();
+    this.lf2.images.p_create_pic_by_img_key(Defines.BuiltIn_Imgs.CMA)
+      .then((hint_pic) => {
+        this._mesh_hints.set_info(hint_pic).apply();
+      })
+
     this.node.sprite.add(this._mesh_cd, this._mesh_hints, this._mesh_head);
     this._unmount_jobs.add(
       () =>
@@ -85,10 +81,9 @@ export default class PlayerCharacterHead extends UIComponent {
       }),
       this.gpl?.callbacks.add({
         on_countdown: (seconds) => {
-          const pic = this.lf2.images.create_pic_by_img_key(
-            `sprite/CM${seconds}.png`,
-          );
-          this._mesh_cd.set_info(pic).apply();
+          this.lf2.images.p_create_pic_by_img_key(`sprite/CM${seconds + 1}.png`).then(pic => {
+            this._mesh_cd.set_info(pic).apply();
+          })
         },
       }),
       this.gpl?.fsm.callbacks.add({
@@ -103,26 +98,41 @@ export default class PlayerCharacterHead extends UIComponent {
   }
 
   protected handle_changed() {
-    const pic = this.lf2.images.create_pic_by_img_key(this.head);
-    this._mesh_head.set_info(pic).apply();
-
-    const { gpl } = this;
-    if (!gpl) return;
-    this._mesh_head.visible = this.joined;
-    if (gpl.state === GamePrepareState.Player) {
-      this._mesh_hints.visible = !this.joined;
-      this._mesh_cd.visible = false;
-    } else if (gpl.state === GamePrepareState.CountingDown) {
-      this._mesh_cd.visible = !this.joined;
-      this._mesh_hints.visible = false;
-    } else {
-      this._mesh_cd.visible = false;
-      this._mesh_hints.visible = false;
-    }
+    this.lf2.images.p_create_pic_by_img_key(this.head).then(pic => {
+      this._mesh_head.set_info(pic).apply();
+    });
   }
 
   override update(dt: number): void {
     this._opacity.update(dt);
     if (this._mesh_hints) this._mesh_hints.opacity = this._opacity.value;
+
+    switch (this.gpl?.state!) {
+      case GamePrepareState.Player:
+        this._mesh_hints.visible = !this.player.joined;
+        this._mesh_head.visible = this.player.joined;
+        this._mesh_cd.visible = false;
+        break;
+      case GamePrepareState.CountingDown:
+        this._mesh_hints.visible = false;
+        this._mesh_head.visible = this.player.joined;
+        this._mesh_cd.visible = !this.player.joined;
+        break;
+      case GamePrepareState.ComNumberSel:
+        this._mesh_head.visible = this.player.joined;
+        this._mesh_hints.visible = false;
+        this._mesh_cd.visible = false;
+        break;
+      case GamePrepareState.Computer:
+        this._mesh_hints.visible = !this.player.joined && this.player.is_com;
+        this._mesh_head.visible = this.player.joined;
+        this._mesh_cd.visible = false;
+        break;
+      case GamePrepareState.GameSetting:
+        this._mesh_head.visible = this.player.joined;
+        this._mesh_hints.visible = false;
+        this._mesh_cd.visible = false;
+        break;
+    }
   }
 }

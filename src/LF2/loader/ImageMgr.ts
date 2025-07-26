@@ -195,7 +195,10 @@ export class ImageMgr {
     if (!img_info) return err_pic_info();
     return this.create_pic_by_img_info(img_info, onLoad, onError);
   }
-  p_create_pic_by_img_key(img_key: string): Promise<TPicture> {
+
+  async p_create_pic_by_img_key(img_key: string): Promise<TPicture> {
+    if (this.find(img_key)) return new Promise((a, b) => this.create_pic_by_img_key(img_key, a, b))
+    await this.lf2.images.load_img(img_key, img_key)
     return new Promise((a, b) => this.create_pic_by_img_key(img_key, a, b))
   }
 

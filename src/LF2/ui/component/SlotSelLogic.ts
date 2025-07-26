@@ -2,19 +2,20 @@ import type { PlayerInfo } from "../../PlayerInfo";
 import FSM, { IState } from "../../base/FSM";
 import Invoker from "../../base/Invoker";
 import { CheatType, EntityGroup } from "../../defines";
-import GameKey from "../../defines/GameKey";
+import { TLooseGameKey } from "../../defines/GameKey";
 import { Defines } from "../../defines/defines";
+import { IUIKeyEvent } from "../IUIKeyEvent";
 import GamePrepareLogic, { GamePrepareState } from "./GamePrepareLogic";
 import { UIComponent } from "./UIComponent";
 export enum SlotSelStatus {
   Empty = 'Empty',
-  Character = 'Player_Character',
-  Team = 'Player_Team',
-  Ready = 'Player_Done',
+  Fighter = 'Fighter',
+  Team = 'Team',
+  Ready = 'Ready',
 }
 
 interface IStateUnit extends IState<SlotSelStatus> {
-  on_player_key_down?(player_id: string, key: GameKey): void;
+  on_player_key_down?(e: IUIKeyEvent): void;
 }
 
 /**
@@ -25,33 +26,59 @@ interface IStateUnit extends IState<SlotSelStatus> {
  * @extends {UIComponent}
  */
 export default class SlotSelLogic extends UIComponent {
-  fsm = new FSM<SlotSelStatus, IStateUnit>().add({
+  static override readonly TAG = "SlotSelLogic";
+
+  override __debugging = true
+  get player_id(): string { return this.args[0] || ""; }
+  get player(): PlayerInfo { return this.lf2.players.get(this.player_id)! }
+  get character(): string { return this.player.character; }
+  set character(v: string) { this.player.set_character(v, true); this.debug('setter:character', v) }
+  get character_decided() { return this.player.character_decided; }
+  set character_decided(v: boolean) { this.player.set_character_decided(v, true); this.debug('setter:character_decided', v) }
+  get team_decided(): boolean { return this.player.team_decided; }
+  set team_decided(v: boolean) { this.player.set_team_decided(v, true); this.debug('setter:team_decided', v) }
+  get team(): string { return this.player.team; }
+  set team(v: string) { this.player.set_team(v, true); this.debug('setter:is_com', v) }
+  get joined(): boolean { return this.player.joined; }
+  set joined(v: boolean) { this.player.set_joined(v, true); this.debug('setter:joined', v) }
+  get is_com(): boolean { return this.player.is_com; }
+  set is_com(v: boolean) { this.player.set_is_com(v, true); this.debug('setter:is_com', v) }
+  protected _unmount_jobs = new Invoker();
+
+  get gpl() {
+    return this.node.root.find_component(GamePrepareLogic)!;
+  }
+
+  readonly fsm = new FSM<SlotSelStatus, IStateUnit>().add({
     key: SlotSelStatus.Empty,
     enter: () => {
       this.joined = false;
       this.team_decided = false;
       this.character_decided = false;
-      this.is_com = false;
+      if (this.gpl.state !== GamePrepareState.Computer)
+        this.is_com = false;
       this.player.set_random_character('', true)
     },
-    on_player_key_down: (player_id, key) => {
-      if (this.player_id != player_id && this.gpl.handling_com !== this) return;
-      if (key !== 'a') return;
-      this.fsm.use(SlotSelStatus.Character);
-      this.lf2.sounds.play_preset("join");
+    on_player_key_down: (e) => {
+      if (this.player_id != e.player && this.gpl.handling_com !== this) return;
+      if (e.key === 'a') {
+        this.fsm.use(SlotSelStatus.Fighter);
+        this.lf2.sounds.play_preset("join");
+        e.stop_immediate_propagation()
+      }
     },
   }, {
-    key: SlotSelStatus.Character,
+    key: SlotSelStatus.Fighter,
     enter: () => {
       this.joined = true
       this.character_decided = false
       this.team_decided = false;
     },
-    on_player_key_down: (player_id, key) => {
-      if (this.player_id != player_id && this.gpl.handling_com !== this) return;
-      if (key === "j") this.lf2.sounds.play_preset("cancel");
-      if (key === "a") this.lf2.sounds.play_preset("join");
-      if (key === 'a') {
+    on_player_key_down: (e) => {
+      if (this.player_id != e.player && this.gpl.handling_com !== this) return;
+      if (e.key === "j") this.lf2.sounds.play_preset("cancel");
+      if (e.key === "a") this.lf2.sounds.play_preset("join");
+      if (e.key === 'a') {
         // 按攻击确认角色,
         this.character_decided = true;
         // 闯关模式下，直接确定为第一队
@@ -61,14 +88,16 @@ export default class SlotSelLogic extends UIComponent {
         } else {
           this.fsm.use(SlotSelStatus.Team)
         }
-      } else if (key === 'j') {
+        e.stop_immediate_propagation()
+      } else if (e.key === 'j') {
         // 按跳跃取消加入
         this.fsm.use(SlotSelStatus.Empty);
         if (this.gpl.handling_com === this) {
-          this.gpl.handling_com === this.gpl.coms[this.gpl.coms.indexOf(this) - 1];
+          this.gpl.handle_prev_com()
         }
+        e.stop_immediate_propagation()
       } else {
-        this.swtich_fighter(key);
+        this.swtich_fighter(e);
       }
     },
   }, {
@@ -77,17 +106,18 @@ export default class SlotSelLogic extends UIComponent {
       this.joined = true
       this.character_decided = true
       this.team_decided = false;
-    }, on_player_key_down: (player_id, key) => {
-      if (this.player_id != player_id && this.gpl.handling_com !== this) return;
-      if (key === "j") this.lf2.sounds.play_preset("cancel");
-      if (key === "a") this.lf2.sounds.play_preset("join");
-      if ("a" === key) {
+    }, on_player_key_down: (e) => {
+      if (this.player_id != e.player && this.gpl.handling_com !== this) return;
+      if (e.key === "j") this.lf2.sounds.play_preset("cancel");
+      if (e.key === "a") this.lf2.sounds.play_preset("join");
+      if ("a" === e.key) {
         this.fsm.use(SlotSelStatus.Ready);
-
-      } else if ("j" === key) {
-        this.fsm.use(SlotSelStatus.Character);
+        e.stop_immediate_propagation()
+      } else if ("j" === e.key) {
+        this.fsm.use(SlotSelStatus.Fighter);
+        e.stop_immediate_propagation()
       } else {
-        this.switch_team(key);
+        this.switch_team(e);
       }
     },
   }, {
@@ -97,12 +127,13 @@ export default class SlotSelLogic extends UIComponent {
       this.character_decided = true
       this.team_decided = true;
       if (this.gpl.handling_com === this) this.gpl.handle_next_com()
-    }, on_player_key_down: (player_id, key) => {
-      if (this.player_id != player_id && this.gpl.handling_com !== this) return;
-      if (key === "j") this.lf2.sounds.play_preset("cancel");
-      if (key === "j") {
+    }, on_player_key_down: (e) => {
+      if (this.player_id != e.player && this.gpl.handling_com !== this) return;
+      if (e.key === "j") {
+        e.stop_immediate_propagation()
+        this.lf2.sounds.play_preset("cancel");
         if (this.gpl.game_mode === "stage_mode") {
-          this.fsm.use(SlotSelStatus.Character)
+          this.fsm.use(SlotSelStatus.Fighter)
         } else {
           this.fsm.use(SlotSelStatus.Team)
         }
@@ -110,91 +141,49 @@ export default class SlotSelLogic extends UIComponent {
     },
   });
 
-  get player_id() {
-    return this.args[0] || "";
-  }
-
-  get player(): PlayerInfo { return this.lf2.players.get(this.player_id)! }
-
-  get character(): string {
-    return this.player?.character || "";
-  }
-  set character(v: string) {
-    this.player!.set_character(v, true);
-  }
-
-  get character_decided() {
-    return !!this.player?.character_decided;
-  }
-  set character_decided(v: boolean) {
-    this.player!.set_character_decided(v, true);
-  }
-
-  get team_decided(): boolean {
-    return !!this.player?.team_decided;
-  }
-  set team_decided(v: boolean) {
-    this.player!.set_team_decided(v, true);
-  }
-
-  get team(): string {
-    return this.player?.team ?? "";
-  }
-  set team(v: string) {
-    this.player!.set_team(v, true);
-  }
-
-  get joined(): boolean {
-    return !!this.player?.joined;
-  }
-  set joined(v: boolean) {
-    this.player!.set_joined(v, true);
-  }
-  get is_com(): boolean {
-    return !!this.player?.is_com;
-  }
-  set is_com(v: boolean) {
-    this.player!.set_is_com(v, true);
-  }
-  protected _unmount_jobs = new Invoker();
-
-  get gpl() {
-    return this.node.root.find_component(GamePrepareLogic)!;
-  }
-
-  private swtich_fighter(key: GameKey) {
-    if ("D" === key || "U" === key) {
+  private swtich_fighter(e: IUIKeyEvent) {
+    if ("D" === e.key || "U" === e.key) {
       // 按上或下,回到随机
       this.character = "";
-    } else if ("L" === key) {
+      e.stop_immediate_propagation()
+    } else if ("L" === e.key) {
       // 上一个角色
       const { characters } = this;
       const idx = characters.findIndex((v) => v.id === this.character);
       const next = idx <= -1 ? characters.length - 1 : idx - 1;
       this.character = characters[next]?.id ?? "";
-    } else if ("R" === key) {
+      e.stop_immediate_propagation()
+    } else if ("R" === e.key) {
       // 下一个角色
       const { characters } = this;
       const idx = characters.findIndex((v) => v.id === this.character);
       const next = idx >= characters.length - 1 ? -1 : idx + 1;
       this.character = characters[next]?.id ?? "";
+      e.stop_immediate_propagation()
     }
   }
 
-  private switch_team(key: GameKey) {
-    if ("L" === key) {
+  private switch_team(e: IUIKeyEvent) {
+    if ("L" === e.key) {
       // 上一个队伍
       const idx = Defines.Teams.findIndex((v) => v === this.team);
       const next_idx = (idx + Defines.Teams.length - 1) % Defines.Teams.length;
       this.team = Defines.Teams[next_idx]!;
-    } else if ("R" === key) {
+      e.stop_immediate_propagation()
+    } else if ("R" === e.key) {
       // 下一个队伍
       const idx = Defines.Teams.findIndex((v) => v === this.team);
       const next_idx = (idx + 1) % Defines.Teams.length;
       this.team = Defines.Teams[next_idx]!;
+      e.stop_immediate_propagation()
     }
   }
 
+  override on_start(): void {
+    this.fsm.callbacks.add({
+      on_state_changed: (fsm) => this.debug('on_state_changed', `${fsm.prev_state?.key} => ${fsm.state?.key}`)
+    })
+  }
   override on_resume(): void {
     super.on_resume();
     this._unmount_jobs.add(
@@ -226,11 +215,11 @@ export default class SlotSelLogic extends UIComponent {
       : this.lf2.datas.get_characters_not_in_group(EntityGroup.Hidden);
   }
 
-  override on_player_key_down(player_id: string, key: GameKey): void {
+  override on_key_down(e: IUIKeyEvent): void {
     if (
-      this.gpl.state === GamePrepareState.Player && this.player_id == player_id ||
+      this.gpl.state === GamePrepareState.Player && this.player_id == e.player ||
       this.gpl.state === GamePrepareState.Computer && this.gpl.handling_com === this
-    ) this.fsm.state?.on_player_key_down?.(player_id, key)
+    ) this.fsm.state?.on_player_key_down?.(e)
   }
   override update(dt: number): void {
     this.fsm.update(dt)
@@ -243,6 +232,6 @@ export default class SlotSelLogic extends UIComponent {
   protected handle_hidden_character() {
     const { characters } = this;
     const idx = characters.findIndex((v) => v.id === this.character);
-    this.player?.set_character(characters[idx]?.id ?? "", true);
+    this.player.set_character(characters[idx]?.id ?? "", true);
   }
 }
