@@ -35,6 +35,7 @@ export default class SlotSelLogic extends UIComponent {
       this.player.set_random_character('', true)
     },
     on_player_key_down: (player_id, key) => {
+      if (this.player_id != player_id && this.gpl.handling_com !== this) return;
       if (key !== 'a') return;
       this.fsm.use(SlotSelStatus.Character);
       this.lf2.sounds.play_preset("join");
@@ -82,9 +83,7 @@ export default class SlotSelLogic extends UIComponent {
       if (key === "a") this.lf2.sounds.play_preset("join");
       if ("a" === key) {
         this.fsm.use(SlotSelStatus.Ready);
-        if (this.gpl.handling_com === this) {
-          this.gpl.handling_com === this.gpl.coms[this.gpl.coms.indexOf(this) + 1];
-        }
+
       } else if ("j" === key) {
         this.fsm.use(SlotSelStatus.Character);
       } else {
@@ -97,6 +96,7 @@ export default class SlotSelLogic extends UIComponent {
       this.joined = true
       this.character_decided = true
       this.team_decided = true;
+      if (this.gpl.handling_com === this) this.gpl.handle_next_com()
     }, on_player_key_down: (player_id, key) => {
       if (this.player_id != player_id && this.gpl.handling_com !== this) return;
       if (key === "j") this.lf2.sounds.play_preset("cancel");

@@ -116,8 +116,10 @@ export default class GamePrepareLogic extends UIComponent {
   private _fsm = new FSM<GamePrepareState, IGamePrepareState>().add({
     key: GamePrepareState.Player,
     enter: () => {
+      this.handling_com = void 0;
       this._com_num = 0;
-      for (const slots of this.slots) slots.fsm.use(SlotSelStatus.Empty)
+      const { slots } = this;
+      for (const slot of slots) slot.fsm.use(SlotSelStatus.Empty)
     },
     on_player_key_down: (key) => {
       if ("j" === key && !this.joined_slots.length) this.lf2.pop_ui();
@@ -147,14 +149,14 @@ export default class GamePrepareLogic extends UIComponent {
       for (const c of this.coms) {
         c.fsm.use(SlotSelStatus.Empty)
       }
-      
+
       const joined_num = this.joined_slots.length;
       const not_joined_num = this.empty_slots.length;
 
       if (this.game_mode !== "stage_mode")
         this._min_com_num = joined_num <= 1 ? 1 : 0;
 
-      
+
       this._max_com_num = not_joined_num;
 
       this.node.find_child("how_many_computer")?.set_visible(true);
@@ -222,40 +224,46 @@ export default class GamePrepareLogic extends UIComponent {
 
   /** 已加入的“电脑槽” */
   get joined_coms(): SlotSelLogic[] {
-    return this.node.search_components(SlotSelLogic, v => v.player?.is_com && v.player.joined,)
+    return this.node.search_components(SlotSelLogic, v => v.is_com && v.joined)
   }
 
   /** 电脑槽 */
   get coms(): SlotSelLogic[] {
-    return this.node.search_components(SlotSelLogic, v => v.player?.is_com);
+    return this.node.search_components(SlotSelLogic, v => v.is_com);
   }
 
   /** 已使用槽 */
   get joined_slots(): SlotSelLogic[] {
-    return this.node.search_components(SlotSelLogic, v => v.player?.joined);
+    return this.node.search_components(SlotSelLogic, v => v.joined);
   }
 
   /** 未使用槽 */
   get empty_slots(): SlotSelLogic[] {
-    return this.node.search_components(SlotSelLogic, v => !v.player?.joined);
+    return this.node.search_components(SlotSelLogic, v => !v.joined);
   }
 
   handling_com: SlotSelLogic | undefined;
 
   set_com_num(num: number) {
     this._com_num = num;
-
     const { empty_slots } = this;
-    if (num > 0) {
-      this.handling_com = empty_slots[0];
-      while (num > 0 && empty_slots.length) {
-        empty_slots.shift()?.player?.set_is_com(true, true);
-        num -= 1;
-      }
+    while (num && empty_slots.length) {
+      empty_slots.shift()!.is_com = true;
+      --num;
+    }
+    this.handling_com = this.coms[0]
+    if (this._com_num > 0) {
       this._fsm.use(GamePrepareState.Computer);
     } else {
       this._fsm.use(GamePrepareState.GameSetting);
     }
+  }
+
+  handle_next_com() {
+    const { coms } = this
+    const idx = this.handling_com ? coms.indexOf(this.handling_com) : -1
+    this.handling_com = coms[idx + 1];
+    this.handling_com?.fsm.use(SlotSelStatus.Character)
   }
 
   start_game() {
