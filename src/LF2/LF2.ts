@@ -124,7 +124,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
   ]);
 
   get player_characters() {
-    return this.world.player_slot_characters;
+    return this.world.slot_fighters;
   }
 
   readonly characters = new CharactersHelper(this);

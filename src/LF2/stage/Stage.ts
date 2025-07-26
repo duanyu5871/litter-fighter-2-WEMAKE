@@ -115,7 +115,7 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
       const x = phase.player_jump_to_x;
 
       const player_teams = new Set<string>();
-      for (const [, v] of this.lf2.world.player_slot_characters) {
+      for (const [, v] of this.lf2.world.slot_fighters) {
         player_teams.add(v.team);
       }
       for (const entity of this.world.entities) {
@@ -135,7 +135,7 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
   readonly items = new Set<Item>();
   async spawn_object(obj_info: IStageObjectInfo) {
     let count = 0;
-    for (const [, c] of this.world.player_slot_characters)
+    for (const [, c] of this.world.slot_fighters)
       count += c.data.base.ce ?? 1;
     if (!count) count = 1;
 
@@ -193,7 +193,7 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
 
     const temp: Entity[] = [];
     const player_teams = new Set<string>();
-    for (const [, v] of this.lf2.world.player_slot_characters) {
+    for (const [, v] of this.lf2.world.slot_fighters) {
       player_teams.add(v.team);
     }
     for (const e of this.world.entities) {

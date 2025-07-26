@@ -33,7 +33,7 @@ export class World extends WorldDataset {
   private _render_worker_id?: ReturnType<typeof Ditto.Render.add>;
   private _update_worker_id?: ReturnType<typeof Ditto.Interval.add>;
   entities = new Set<Entity>();
-  readonly player_slot_characters = new Map<string, Entity>();
+  readonly slot_fighters = new Map<string, Entity>();
   get stage() {
     return this._stage;
   }
@@ -98,7 +98,7 @@ export class World extends WorldDataset {
         is_base_ctrl(entity.ctrl) &&
         this.lf2.players.has(entity.ctrl.player_id)
       ) {
-        this.player_slot_characters.set(entity.ctrl.player_id, entity);
+        this.slot_fighters.set(entity.ctrl.player_id, entity);
         this.callbacks.emit("on_player_character_add")(
           entity.ctrl.player_id,
         );
@@ -112,7 +112,7 @@ export class World extends WorldDataset {
   del_entity(e: Entity) {
     if (!this.entities.delete(e)) return false;
     if (e.ctrl?.player_id) {
-      const ok = this.player_slot_characters.delete(e.ctrl.player_id);
+      const ok = this.slot_fighters.delete(e.ctrl.player_id);
       if (ok)
         this.callbacks.emit("on_player_character_del")(e.ctrl.player_id);
     }
@@ -191,11 +191,11 @@ export class World extends WorldDataset {
    * @return {void} 
    * @memberof World
    */
-  restrict_character(e: Entity): void {
+  restrict_fighter(e: Entity): void {
     if (!this.bg) return;
-    const { left, right, near, far, player_left, player_right } = this.stage;
+    const { left, right, near, far, player_left, player_right, team } = this.stage;
 
-    const is_player = is_local_ctrl(e.ctrl);
+    const is_player = e.team !== team;
     const l = is_player ? player_left : left;
     const r = is_player ? player_right : right;
 
@@ -253,7 +253,7 @@ export class World extends WorldDataset {
    */
   restrict(e: Entity): void {
     if (is_character(e)) {
-      this.restrict_character(e);
+      this.restrict_fighter(e);
     } else if (is_ball(e)) {
       this.restrict_ball(e);
     } else if (is_weapon(e)) {
@@ -334,14 +334,14 @@ export class World extends WorldDataset {
       new_x = this.lock_cam_x;
       max_speed_ratio = 1000;
       acc_ratio = 10;
-    } else if (this.player_slot_characters.size) {
+    } else if (this.slot_fighters.size) {
       let l = 0;
       new_x = 0;
       const has_human_player = find(
-        this.player_slot_characters,
+        this.slot_fighters,
         ([_, p]) => is_local_ctrl(p.ctrl) && p.hp > 0,
       );
-      for (const [, player] of this.player_slot_characters) {
+      for (const [, player] of this.slot_fighters) {
         const c = player.ctrl;
         if (!is_local_ctrl(c) && has_human_player) continue;
         new_x += player.position.x - 794 / 2 + (player.facing * 794) / 6;

@@ -500,7 +500,7 @@ export class Entity implements IDebugging {
    */
   get in_player_slot(): boolean {
     const player_id = this.ctrl?.player_id;
-    return !!(player_id && this.world.player_slot_characters.has(player_id));
+    return !!(player_id && this.world.slot_fighters.has(player_id));
   }
 
   constructor(world: World, data: IEntityData, states: States = ENTITY_STATES) {

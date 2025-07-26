@@ -27,7 +27,7 @@ export default class PlayerScore extends UIComponent {
   override on_resume(): void {
     super.on_resume();
 
-    this.node.visible = this.world.player_slot_characters.size ? !!this.character : true;
+    this.node.visible = this.world.slot_fighters.size ? !!this.character : true;
     this.character?.callbacks.add({
       on_hp_changed: (e, value, prev) => {
         if (value < prev) this._hp_lost += prev - value;
@@ -40,7 +40,7 @@ export default class PlayerScore extends UIComponent {
           this._lose = true;
           return;
         }
-        for (const [, c] of this.world.player_slot_characters) {
+        for (const [, c] of this.world.slot_fighters) {
           if (c.team !== e.team) continue;
           if (c.hp > 0) {
             this._lose = false;
