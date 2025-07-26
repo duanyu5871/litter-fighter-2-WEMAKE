@@ -105,7 +105,7 @@ export namespace Defines {
    * @memberof World
    */
   export const DEFAULT_FVY_F: number = 1;
-  
+
   /**
    * 默认值：dvz缩放系数
    *
@@ -296,6 +296,15 @@ export namespace Defines {
     SwitchStage = "switch_stage",
     SwitchBackground = "switch_background",
   }
+  export enum BuiltIn_Sounds {
+    Cancel = "cancel",
+    End = "end",
+    Join = "join",
+    Ok = "ok",
+    Pass = "pass",
+  }
+  export type TBuiltIn_Sounds = BuiltIn_Sounds | "cancel" | "end" | "join" | "ok" | "pass"
+
 
   export type TKeys = Record<GameKey, string>;
   export const default_keys_map: ReadonlyMap<string, TKeys> = new Map<string, TKeys>([

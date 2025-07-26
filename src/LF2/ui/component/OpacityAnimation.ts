@@ -47,8 +47,11 @@ export class OpacityAnimation extends UIComponent {
     if (!this._anim.is_end) {
       this.node.opacity = this._anim.update(dt).value;
     } else if (this._direction !== this._anim.direction) {
+      this.set_enabled(true)
       this._anim.direction = this._direction;
       this._anim.start();
+    } else {
+      this.set_enabled(false)
     }
   }
 }

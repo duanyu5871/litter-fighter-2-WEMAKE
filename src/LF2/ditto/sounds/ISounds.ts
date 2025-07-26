@@ -1,4 +1,5 @@
 import type { NoEmitCallbacks } from "../../base/NoEmitCallbacks";
+import { Defines } from "../../defines";
 import type { ISoundsCallback } from "./ISoundsCallback";
 
 export interface ISounds {
@@ -165,7 +166,7 @@ export interface ISounds {
   ): Promise<string>;
 
   play_preset(
-    t: "cancel" | "end" | "join" | "ok" | "pass",
+    t: Defines.TBuiltIn_Sounds,
     x?: number,
     y?: number,
     z?: number,

@@ -28,6 +28,7 @@ import PlayerScoreCell from "./PlayerScoreCell";
 import PlayerTeamName from "./PlayerTeamName";
 import { PlayingTimeText } from "./PlayingTimeText";
 import { PositionAnimation } from "./PositionAnimation";
+import { Sounds } from "./Sounds";
 import { RandomImgOnLayoutResume } from "./RandomImgOnLayoutResume";
 import { Reachable } from "./Reachable";
 import { ReachableGroup } from "./ReachableGroup";
@@ -39,8 +40,7 @@ import StageTitleShow from "./StageTitleShow";
 import StageTransitions from "./StageTransitions";
 import { UIComponent } from "./UIComponent";
 import VerticalLayout from "./VerticalLayout";
-import VsModeLogic from "./VsModeLogic";
-
+import { VsModeLogic } from "./VsModeLogic";
 class ComponentFactory {
   static readonly TAG = `ComponentFactory`;
   private _component_map = new Map<string, typeof UIComponent>([
@@ -80,6 +80,7 @@ class ComponentFactory {
     [OpacityAnimation.TAG, OpacityAnimation],
     [ScaleAnimation.TAG, ScaleAnimation],
     [PositionAnimation.TAG, PositionAnimation],
+    [Sounds.TAG, Sounds]
   ]);
 
   register(key: string, Cls: typeof UIComponent) {

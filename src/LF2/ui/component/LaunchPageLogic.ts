@@ -2,7 +2,6 @@ import { ISprite } from "../../3d/ISprite";
 import Easing from "../../animation/Easing";
 import FSM, { IState } from "../../base/FSM";
 import Invoker from "../../base/Invoker";
-import GameKey from "../../defines/GameKey";
 import Ditto from "../../ditto";
 import { TPicture } from "../../loader/ImageMgr";
 import { make_arr } from "../../utils/array/make_arr";
@@ -72,20 +71,25 @@ export default class LaunchPageLogic extends UIComponent {
         this.yeonface.find_component(ScaleAnimation, 'scale_in')!.start(false);
         this.yeonface.find_component(PositionAnimation, 'move_in')!.start(false);
         this.yeonface.find_component(OpacityAnimation)!.direction = 1;
+        this.yeonface.find_component(OpacityAnimation)!.enabled = true;
 
         this.bearface.find_component(ScaleAnimation, 'scale_in')!.start(false);
         this.bearface.find_component(PositionAnimation, 'move_in')!.start(false);
         this.bearface.find_component(OpacityAnimation)!.direction = 1;
+        this.bearface.find_component(OpacityAnimation)!.enabled = true;
 
         this.long_text.find_component(PositionAnimation, 'move_in')!.start(false);
         this.long_text.find_component(OpacityAnimation)!.direction = 1;
+        this.long_text.find_component(OpacityAnimation)!.enabled = true;
 
       },
       leave: () => {
         this.yeonface.find_component(OpacityAnimation)!.direction = -1;
+        this.yeonface.find_component(OpacityAnimation)!.enabled = true;
         this.yeonface.find_component(ScaleAnimation, 'scale_out')!.start(false);
 
         this.bearface.find_component(OpacityAnimation)!.direction = -1;
+        this.bearface.find_component(OpacityAnimation)!.enabled = true;
         this.bearface.find_component(ScaleAnimation, 'scale_out')!.start(false);
 
         const c = this.long_text.find_component(OpacityAnimation)!

@@ -16,7 +16,8 @@ export default class WeaponState_Base extends State_Base {
     ) {
       // TODO: 这里是击中的反弹，如何更合适？ -Gim
       attacker.velocity_0.x = -0.3 * attacker.velocity_0.x;
-      attacker.velocity_0.y = -0.3 * attacker.velocity_0.y;
+      attacker.velocity_0.y = 0.3 * attacker.velocity_0.y;
+      attacker.velocity_0.z = 0.3 * attacker.velocity_0.z;
     }
     attacker.enter_frame({ id: attacker.data.indexes?.in_the_sky });
   }
