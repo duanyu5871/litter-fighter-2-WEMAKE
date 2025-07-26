@@ -12,7 +12,7 @@ import { Factory } from "../../entity/Factory";
 import { filter } from "../../utils/container_help";
 import { map_no_void } from "../../utils/container_help/map_no_void";
 import BackgroundNameText from "./BackgroundNameText";
-import SlotSelLogic, { SlotSelStatus } from "./CharacterSelLogic";
+import SlotSelLogic, { SlotSelStatus } from "./SlotSelLogic";
 import StageNameText from "./StageNameText";
 import { UIComponent } from "./UIComponent";
 
@@ -144,21 +144,19 @@ export default class GamePrepareLogic extends UIComponent {
   }, {
     key: GamePrepareState.ComNumberSel,
     enter: () => {
-      for (const { player: p } of this.coms) {
-        p
-          ?.set_is_com(false, true)
-          .set_joined(false, true)
-          .set_team_decided(false, true)
-          .set_random_character("", true);
+      for (const c of this.coms) {
+        c.fsm.use(SlotSelStatus.Empty)
       }
-      const { slots: player_slots } = this;
-      const joined_num = filter(player_slots, (v) => v.joined).length;
-      const not_joined_num = filter(player_slots, (v) => !v.joined).length;
+      
+      const joined_num = this.joined_slots.length;
+      const not_joined_num = this.empty_slots.length;
 
       if (this.game_mode !== "stage_mode")
         this._min_com_num = joined_num <= 1 ? 1 : 0;
 
+      
       this._max_com_num = not_joined_num;
+
       this.node.find_child("how_many_computer")?.set_visible(true);
     },
     leave: () => {

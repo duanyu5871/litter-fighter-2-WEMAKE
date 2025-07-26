@@ -3,10 +3,11 @@ import type { TKeys } from "./controller/BaseController";
 import { Defines, GameKey } from "./defines";
 import { IPurePlayerInfo } from "./defines/IPurePlayerInfo";
 import Ditto from "./ditto";
+import { IDebugging } from "./entity/make_debugging";
 import { IPlayerInfoCallback } from "./IPlayerInfoCallback";
 import { is_str } from "./utils/type_check";
 
-export class PlayerInfo {
+export class PlayerInfo implements IDebugging {
   static readonly TAG = "PlayerInfo";
 
   protected _callbacks = new Callbacks<IPlayerInfoCallback>();
@@ -46,31 +47,37 @@ export class PlayerInfo {
     this._info = { id, name, keys, team: "", version: 0, character: "" };
     this.load();
   }
+  __debugging?: boolean | undefined;
+  debug(func: string, ...args: any[]): void { }
+  warn(func: string, ...args: any[]): void { }
+  log(func: string, ...args: any[]): void { }
 
   save(): void {
-    localStorage.setItem(this.storage_key, JSON.stringify(this._info));
+    Ditto.Cache.put({
+      name: this.storage_key,
+      version: 0,
+      data: JSON.stringify(this._info)
+    })
   }
 
-  load(): boolean {
-    const str = localStorage.getItem(this.storage_key);
-    if (!str) return false;
-    try {
-      const { name, keys, team, version, character } = JSON.parse(str) as Partial<IPurePlayerInfo>;
-      if (version !== this._info.version) {
-        Ditto.Warn(PlayerInfo.TAG + "::load", "version changed");
+  load() {
+    Ditto.Cache.get(this.storage_key).then((r) => {
+      if (!r) return
+      const { data: str } = r
+      try {
+        const { name, keys, version } = JSON.parse(str) as Partial<IPurePlayerInfo>;
+        if (version !== this._info.version) {
+          this.warn("load", "version changed");
+          return false;
+        }
+        this._info.name = is_str(name) ? name : this._info.name;
+        this._info.keys = keys ? keys : this._info.keys;
+        return true;
+      } catch (e) {
+        this.warn("load", "load failed, ", e);
         return false;
       }
-      this._info.name = is_str(name) ? name : this._info.name;
-      this._info.keys = keys ? keys : this._info.keys;
-      this._info.team = is_str(team) ? team : this._info.team;
-      this._info.character = is_str(character)
-        ? character
-        : this._info.character;
-      return true;
-    } catch (e) {
-      Ditto.Warn(PlayerInfo.TAG + "::load", "load failed, ", e);
-      return false;
-    }
+    });
   }
 
   set_name(name: string, emit: boolean): this {

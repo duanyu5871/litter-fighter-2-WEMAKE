@@ -4,7 +4,7 @@ import { IUIInfo } from "../IUIInfo";
 import type { UINode } from "../UINode";
 import { parse_call_func_expression } from "../utils/parse_call_func_expression";
 import BackgroundNameText from "./BackgroundNameText";
-import SlotSelLogic from "./CharacterSelLogic";
+import SlotSelLogic from "./SlotSelLogic";
 import ComNumButton from "./ComNumButton";
 import { DemoModeLogic } from "./DemoModeLogic";
 import DifficultyText from "./DifficultyText";

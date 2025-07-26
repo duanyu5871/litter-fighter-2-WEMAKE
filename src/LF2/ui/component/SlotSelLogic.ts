@@ -31,7 +31,8 @@ export default class SlotSelLogic extends UIComponent {
       this.joined = false;
       this.team_decided = false;
       this.character_decided = false;
-      this.player?.set_is_com(true, true)
+      this.is_com = false;
+      this.player.set_random_character('', true)
     },
     on_player_key_down: (player_id, key) => {
       if (key !== 'a') return;
@@ -149,7 +150,12 @@ export default class SlotSelLogic extends UIComponent {
   set joined(v: boolean) {
     this.player!.set_joined(v, true);
   }
-
+  get is_com(): boolean {
+    return !!this.player?.is_com;
+  }
+  set is_com(v: boolean) {
+    this.player!.set_is_com(v, true);
+  }
   protected _unmount_jobs = new Invoker();
 
   get gpl() {
