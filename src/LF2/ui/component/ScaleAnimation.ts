@@ -64,9 +64,8 @@ export class ScaleAnimation extends UIComponent {
         pair[0][1] + pair[1][1] * value,
         pair[0][2] + pair[1][2] * value,
       )
-    } else if (this._direction !== this.seq_anim.direction) {
-      this.seq_anim.direction = this._direction;
-      this.seq_anim.start();
+    } else {
+      this.set_enabled(false)
     }
   }
 }
