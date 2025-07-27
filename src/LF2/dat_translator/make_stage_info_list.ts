@@ -77,25 +77,29 @@ export function make_stage_info_list(full_str: string): IStageInfo[] | void {
     }
     if (nid === 50) {
       stage_info.starting_name = "Survival";
+      stage_info.chapter = "survival"
+      stage_info.bg = "8";
     }
-
     if (nid <= 9) {
       stage_info.bg = "2";
+      stage_info.chapter = "chapter_1"
       if (nid < 9) stage_info.next = "" + (nid + 1);
     } else if (nid <= 19) {
       stage_info.bg = "3";
+      stage_info.chapter = "chapter_2"
       if (nid < 19) stage_info.next = "" + (nid + 1);
     } else if (nid <= 29) {
       stage_info.bg = "5";
+      stage_info.chapter = "chapter_3"
       if (nid < 29) stage_info.next = "" + (nid + 1);
     } else if (nid <= 39) {
       stage_info.bg = "6";
+      stage_info.chapter = "chapter_4"
       if (nid < 39) stage_info.next = "" + (nid + 1);
     } else if (nid <= 49) {
       stage_info.bg = "7";
+      stage_info.chapter = "chapter_5"
       if (nid < 49) stage_info.next = "" + (nid + 1);
-    } else {
-      stage_info.bg = "8";
     }
     stage_infos.push(stage_info);
   }
@@ -103,9 +107,14 @@ export function make_stage_info_list(full_str: string): IStageInfo[] | void {
   for (const stage_info of stage_infos) {
     const first_phase = stage_info.phases[0];
     if (!first_phase) return;
-
     first_phase.cam_jump_to_x = 0;
     first_phase.player_jump_to_x = 0;
+  }
+  for (const s of stage_infos) {
+    if (!s.next) continue;
+    const next_ok = !!stage_infos.find(v => v.id === s.next)
+    if (next_ok) continue;
+    delete s.next;
   }
   return stage_infos.sort((a, b) => Number(a.id) - Number(b.id));
 }

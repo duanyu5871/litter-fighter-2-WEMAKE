@@ -18,6 +18,7 @@ export class VsModeLogic extends UIComponent
   go_flashing!: OpacityAnimation;
   override on_start(): void {
     super.on_start?.();
+    this.__debugging = true
     this.jalousie = this.node.search_component(Jalousie)!
     this.go_sounds = this.node.search_component(Sounds, "go_sounds")!
     this.go_flashing = this.node.search_component(OpacityAnimation, "go_flashing")!
@@ -56,7 +57,15 @@ export class VsModeLogic extends UIComponent
     curr: IStagePhaseInfo | undefined,
     prev: IStagePhaseInfo | undefined,
   ) {
-    Ditto.Warn('on_phase_changed')
+    this.debug('on_phase_changed', stage, curr, prev)
+    if (!curr) {
+      const next_stage = this.lf2.stages.find(v => v.id === stage.data.next)
+      if (!next_stage || next_stage?.chapter !== stage.data.chapter) {
+        this.lf2.sounds.play_preset("pass");
+        this.node.find_child("score_board")!.visible = true;
+        return;
+      }
+    }
     if (prev) {
       if (!curr) {
         this.go_flashing.loop.set(0, Number.MAX_SAFE_INTEGER);
@@ -91,8 +100,7 @@ export class VsModeLogic extends UIComponent
     if (i > 1) return;
 
     this.lf2.sounds.play_preset("end");
-    const score_board = this.node.find_child("score_board");
-    if (score_board) score_board.visible = true;
+    this.node.find_child("score_board")!.visible = true;
   }
 
 }

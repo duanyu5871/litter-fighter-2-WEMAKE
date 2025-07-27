@@ -8,6 +8,7 @@ export interface IStageInfo {
   name: string;
   phases: IStagePhaseInfo[];
   next?: string;
+  chapter?: string;
 
   /**
    * 关卡结束判定
