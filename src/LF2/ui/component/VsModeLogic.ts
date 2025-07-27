@@ -6,14 +6,21 @@ import { is_character } from "../../entity/type_check";
 import { IWorldCallbacks } from "../../IWorldCallbacks";
 import type { Stage } from "../../stage";
 import type IStageCallbacks from "../../stage/IStageCallbacks";
+import { Jalousie } from "./Jalousie";
 import { OpacityAnimation } from "./OpacityAnimation";
 import { Sounds } from "./Sounds";
 import { UIComponent } from "./UIComponent";
 
 export class VsModeLogic extends UIComponent
   implements IEntityCallbacks, IStageCallbacks, IWorldCallbacks {
+  jalousie!: Jalousie;
+  go_sounds!: Sounds;
+  go_flashing!: OpacityAnimation;
   override on_start(): void {
     super.on_start?.();
+    this.jalousie = this.node.search_component(Jalousie)!
+    this.go_sounds = this.node.search_component(Sounds, "go_sounds")!
+    this.go_flashing = this.node.search_component(OpacityAnimation, "go_flashing")!
     for (const [, v] of this.lf2.player_characters) {
       v.callbacks.add(this);
     }
@@ -32,8 +39,17 @@ export class VsModeLogic extends UIComponent
     this.lf2.world.stage.callbacks.del(this)
     this.lf2.world.callbacks.del(this);
   }
+  override update(dt: number): void {
+    if (!this.jalousie.open && this.jalousie.anim.done) {
+      this.lf2.goto_next_stage()
+      this.jalousie.open = true;
+    }
+  }
   on_stage_change() {
     this.lf2.world.stage.callbacks.add(this);
+    this.go_sounds.stop();
+    this.go_flashing.stop();
+    this.jalousie.open = true;
   }
   on_phase_changed(
     stage: Stage,
@@ -41,23 +57,22 @@ export class VsModeLogic extends UIComponent
     prev: IStagePhaseInfo | undefined,
   ) {
     Ditto.Warn('on_phase_changed')
-    const a = this.node.search_component(Sounds, "go_sounds")
-    const b = this.node.search_component(OpacityAnimation, "go_flashing")
     if (prev) {
       if (!curr) {
-        b!.loop.set(0, Number.MAX_SAFE_INTEGER);
+        this.go_flashing.loop.set(0, Number.MAX_SAFE_INTEGER);
       } else {
-        b!.loop.set(0, 1);
+        this.go_flashing.loop.set(0, 1);
       }
-      a!.reset()
-      a!.enabled = true
-      b!.start();
-      b!.enabled = true;
+      this.go_sounds.start()
+      this.go_flashing.start();
     } else {
-      a!.enabled = false
-      b!.enabled = false;
+      this.go_sounds.stop()
+      this.go_flashing.stop();
     }
 
+  }
+  on_phases_done() {
+    this.jalousie.open = false;
   }
   on_dead(e: Entity) {
     if (!is_character(e)) return;

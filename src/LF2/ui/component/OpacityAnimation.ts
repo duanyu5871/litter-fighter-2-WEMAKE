@@ -14,6 +14,9 @@ export class OpacityAnimation extends UIComponent {
     this.anim.start(r)
     this.enabled = true
   }
+  stop(r?: boolean) {
+    this.anim.end(r)
+  }
   override on_start(): void {
     super.on_start?.();
     const len = this.args.length;

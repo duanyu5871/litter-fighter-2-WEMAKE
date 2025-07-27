@@ -36,8 +36,8 @@ export class Jalousie extends UIComponent {
       this.node.components.add(component)
     }
   }
-  get open(): boolean { return this._anim.reverse }
-  set open(v: boolean) { this._anim.reverse = v }
+  get open(): boolean { return this._anim.reverse; }
+  set open(v: boolean) { this._anim.start(v); }
   get w(): number { return this.node.root.size[0] }
   get h(): number { return this.node.root.size[1] }
 

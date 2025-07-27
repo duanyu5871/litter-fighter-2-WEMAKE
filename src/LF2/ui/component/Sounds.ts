@@ -1,18 +1,27 @@
-import { Defines } from "../../defines";
 import { Loop } from "../../animation/Loop";
+import { Defines } from "../../defines";
 import { UIComponent } from "./UIComponent";
 
 export class Sounds extends UIComponent {
+
   static override readonly TAG: string = 'Sounds';
   protected seq: [number, string, boolean][] = [];
   protected idx = 0;
   protected time: number = 0;
   readonly loop = new Loop()
 
-  reset(): this {
+  start(): this {
     this.idx = 0;
     this.time = 0;
     this.loop.reset();
+    this.enabled = true;
+    return this;
+  }
+  stop(): this {
+    this.idx = this.seq.length;
+    this.time = 0;
+    this.loop.reset();
+    this.enabled = false;
     return this;
   }
   override on_start(): void {

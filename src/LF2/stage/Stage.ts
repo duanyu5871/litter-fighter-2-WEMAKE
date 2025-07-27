@@ -250,9 +250,8 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
         return is_character(e) && e.hp > 0 && e.position.x < this.camera_right
       })
       if (all_ready) {
-        this.lf2.goto_next_stage()
+        this.callbacks.emit('on_phases_done')(this)
         ++this._cur_phase_idx;
-        // this.callbacks.emit('on_phase_changed')
       }
     }
   }

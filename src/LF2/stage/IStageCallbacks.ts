@@ -7,4 +7,6 @@ export default interface IStageCallbacks {
     curr: IStagePhaseInfo | undefined,
     prev: IStagePhaseInfo | undefined,
   ): void;
+
+  on_phases_done?(stage: Stage): void;
 }
