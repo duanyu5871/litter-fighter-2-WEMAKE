@@ -1,11 +1,12 @@
 import type { IStagePhaseInfo } from "../../defines";
-import Ditto from "../../ditto";
 import type { Entity } from "../../entity";
 import type IEntityCallbacks from "../../entity/IEntityCallbacks";
 import { is_character } from "../../entity/type_check";
 import { IWorldCallbacks } from "../../IWorldCallbacks";
 import type { Stage } from "../../stage";
 import type IStageCallbacks from "../../stage/IStageCallbacks";
+import { IUIKeyEvent } from "../IUIKeyEvent";
+import { UINode } from "../UINode";
 import { Jalousie } from "./Jalousie";
 import { OpacityAnimation } from "./OpacityAnimation";
 import { Sounds } from "./Sounds";
@@ -16,9 +17,10 @@ export class VsModeLogic extends UIComponent
   jalousie!: Jalousie;
   go_sounds!: Sounds;
   go_flashing!: OpacityAnimation;
+  score_board!: UINode;
   override on_start(): void {
     super.on_start?.();
-    this.__debugging = true
+    this.score_board = this.node.find_child("score_board")!
     this.jalousie = this.node.search_component(Jalousie)!
     this.go_sounds = this.node.search_component(Sounds, "go_sounds")!
     this.go_flashing = this.node.search_component(OpacityAnimation, "go_flashing")!
@@ -46,6 +48,12 @@ export class VsModeLogic extends UIComponent
       this.jalousie.open = true;
     }
   }
+  override on_key_down(e: IUIKeyEvent): void {
+    if ((e.key === 'a' || e.key === 'j') && this.world.stage.is_chapter_finish) {
+      e.stop_immediate_propagation();
+      this.lf2.goto_next_stage();
+    }
+  }
   on_stage_change() {
     this.lf2.world.stage.callbacks.add(this);
     this.go_sounds.stop();
@@ -58,14 +66,8 @@ export class VsModeLogic extends UIComponent
     prev: IStagePhaseInfo | undefined,
   ) {
     this.debug('on_phase_changed', stage, curr, prev)
-    if (!curr) {
-      const next_stage = this.lf2.stages.find(v => v.id === stage.data.next)
-      if (!next_stage || next_stage?.chapter !== stage.data.chapter) {
-        this.lf2.sounds.play_preset("pass");
-        this.node.find_child("score_board")!.visible = true;
-        return;
-      }
-    }
+    if (stage.is_chapter_finish) return;
+    this.score_board.visible = false;
     if (prev) {
       if (!curr) {
         this.go_flashing.loop.set(0, Number.MAX_SAFE_INTEGER);
@@ -78,9 +80,14 @@ export class VsModeLogic extends UIComponent
       this.go_sounds.stop()
       this.go_flashing.stop();
     }
-
   }
-  on_phases_done() {
+  on_chapter_finish(stage: Stage) {
+    this.debug('on_chapter_finish', stage)
+    this.lf2.sounds.play_preset("pass");
+    this.score_board.visible = true;
+  }
+  on_requrie_goto_next_stage(stage: Stage) {
+    this.debug('on_requrie_goto_next_stage', stage)
     this.jalousie.open = false;
   }
   on_dead(e: Entity) {
@@ -100,7 +107,7 @@ export class VsModeLogic extends UIComponent
     if (i > 1) return;
 
     this.lf2.sounds.play_preset("end");
-    this.node.find_child("score_board")!.visible = true;
+    this.score_board.visible = true;
   }
 
 }

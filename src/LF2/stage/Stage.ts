@@ -1,5 +1,6 @@
 import type { World } from "../World";
 import Callbacks from "../base/Callbacks";
+import FSM from "../base/FSM";
 import { new_team } from "../base/new_id";
 import Background from "../bg/Background";
 import { Defines, IBgData, IStageInfo, IStageObjectInfo, IStagePhaseInfo } from "../defines";
@@ -10,18 +11,19 @@ import { find } from "../utils/container_help/find";
 import { is_num } from "../utils/type_check";
 import type IStageCallbacks from "./IStageCallbacks";
 import Item from "./Item";
+import { Status } from "./Status";
 
 export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
   static readonly TAG: string = "Stage";
   readonly world: World;
   readonly data: IStageInfo;
+  readonly next_stage?: IStageInfo;
   readonly bg: Background;
   readonly team: string;
   readonly callbacks = new Callbacks<IStageCallbacks>();
   private _disposed: boolean = false;
   private _disposers: (() => void)[] = [];
   private _cur_phase_idx = -1;
-  private _time: number = 0;
   get phases() { return this.data.phases }
   get id(): string { return this.data.name; }
   get name(): string { return this.data.name; }
@@ -34,7 +36,7 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
   get depth(): number { return this.bg.depth; }
   get middle() { return this.bg.middle; }
   get lf2() { return this.world.lf2; }
-  get time() { return this._time; }
+  get time() { return this.fsm.time; }
 
   /**
    * 玩家角色的地图左边界
@@ -83,8 +85,31 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
       this.data = Defines.VOID_STAGE;
       this.bg = new Background(world, Defines.VOID_BG);
     }
+    if (this.data.next)
+      this.next_stage = this.lf2.stages.find(v => v.id === this.data.next);
     this.team = new_team();
   }
+
+  readonly fsm = new FSM<Status>().add({
+    key: Status.Running,
+    update: () => {
+      if (this.is_stage_finish) return Status.Completed;
+    }
+  }, {
+    key: Status.Completed,
+    enter: () => {
+      this.callbacks.emit('on_stage_finish')(this)
+      if (this.is_chapter_finish) this.callbacks.emit('on_chapter_finish')(this)
+    },
+    update: () => {
+      if (this.should_goto_next_stage) {
+        this.callbacks.emit('on_requrie_goto_next_stage')(this)
+        return Status.End;
+      }
+    }
+  }, {
+    key: Status.End
+  }).use(Status.Running)
 
   private _stop_bgm?: () => void;
 
@@ -135,10 +160,6 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
   }
   enter_next_phase(): void {
     this.enter_phase(this._cur_phase_idx + 1);
-    // if (!this.is_last_phase()) {
-    // return;
-    // }
-    // this.lf2.goto_next_stage();
   }
 
   readonly items = new Set<Item>();
@@ -220,9 +241,6 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
   all_enemies_dead(): boolean {
     return !find(this.items, (i) => i.is_enemies);
   }
-  is_last_phase(): boolean {
-    return this._cur_phase_idx >= this.data.phases.length - 1;
-  }
   handle_empty_stage_item(item: Item) {
     const { times, is_soldier } = item.info;
     if (is_soldier) {
@@ -243,16 +261,27 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
     }
   }
 
-  update() {
-    this._time++;
-    if (this.phases.length && this._cur_phase_idx === this.phases.length) {
-      const all_ready = !find(this.world.entities, e => {
-        return is_character(e) && e.hp > 0 && e.position.x < this.camera_right
-      })
-      if (all_ready) {
-        this.callbacks.emit('on_phases_done')(this)
-        ++this._cur_phase_idx;
-      }
+  /** 章是否结束 */
+  get is_chapter_finish(): boolean {
+    if (!this.is_stage_finish) return false
+    if (!this.next_stage) return true;
+    return this.next_stage.chapter !== this.data.chapter
+  }
+  /** 节是否结束 */
+  get is_stage_finish(): boolean {
+    const l = this.phases.length
+    return !!l && this._cur_phase_idx >= l;
+  }
+  /** 是否应该进入下一关 */
+  get should_goto_next_stage(): boolean {
+    if (!this.next_stage) return false;
+    if (this.next_stage.chapter === this.data.chapter) {
+      return !find(this.world.entities, e => is_character(e) && e.hp > 0 && e.position.x < this.camera_right)
     }
+    return false;
+  }
+
+  update() {
+    this.fsm.update(1);
   }
 }

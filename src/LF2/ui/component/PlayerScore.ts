@@ -15,7 +15,6 @@ export default class PlayerScore extends UIComponent {
   get lose() {
     return this._lose;
   }
-
   get player_id(): string {
     return this.args[0] || "";
   }

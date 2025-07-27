@@ -29,12 +29,16 @@ export default class FSM<
   protected _state_map = new Map<K, S>();
   protected _prev_state?: S;
   protected _state?: S;
+  protected _time: number = 0;
+  protected _state_time: number = 0;
   get callbacks(): NoEmitCallbacks<IFSMCallback<K, S>> {
     return this._callbacks;
   }
   get state(): S | undefined {
     return this._state;
   }
+  get time(): number { return this._time }
+  get state_time(): number { return this._state_time }
   protected set state(s: S | undefined) {
     this._prev_state = this._state;
     this._state?.leave?.();
@@ -58,9 +62,12 @@ export default class FSM<
     this._state = next_state;
     next_state?.enter?.();
     this._callbacks.emit("on_state_changed")(this);
+    this._state_time = 0;
     return this;
   }
   update(dt: number) {
+    this._time += dt;
+    this._state_time += dt;
     const curr_state = this._state;
     if (!curr_state) return;
 

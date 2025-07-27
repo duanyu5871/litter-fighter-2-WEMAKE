@@ -8,5 +8,7 @@ export default interface IStageCallbacks {
     prev: IStagePhaseInfo | undefined,
   ): void;
 
-  on_phases_done?(stage: Stage): void;
+  on_stage_finish?(stage: Stage): void;
+  on_chapter_finish?(stage: Stage): void;
+  on_requrie_goto_next_stage?(stage: Stage): void;
 }

@@ -110,11 +110,17 @@ export function make_stage_info_list(full_str: string): IStageInfo[] | void {
     first_phase.cam_jump_to_x = 0;
     first_phase.player_jump_to_x = 0;
   }
+  stage_infos.sort((a, b) => Number(a.id) - Number(b.id));
   for (const s of stage_infos) {
     if (!s.next) continue;
     const next_ok = !!stage_infos.find(v => v.id === s.next)
     if (next_ok) continue;
     delete s.next;
+    const nid = Number(s.id);
+    if (nid <= 9) { s.next = '10' }
+    else if (nid <= 19) { s.next = '20' }
+    else if (nid <= 29) { s.next = '30' }
+    else if (nid <= 39) { s.next = '40' }
   }
-  return stage_infos.sort((a, b) => Number(a.id) - Number(b.id));
+  return stage_infos
 }
