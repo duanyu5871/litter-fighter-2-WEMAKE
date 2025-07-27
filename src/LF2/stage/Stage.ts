@@ -46,6 +46,10 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
     return this.bg.left;
   }
 
+  get camera_left(): number {
+    return this.bg.left;
+  }
+
   /**
    * 玩家角色的地图右边界
    *
@@ -55,7 +59,12 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
   get player_right(): number {
     return this.data.phases[this._cur_phase_idx]?.bound ?? this.bg.right;
   }
-
+  get camera_right(): number {
+    if (!this.data.phases.length) return this.bg.right
+    const { phases } = this.data
+    const phase = phases[this._cur_phase_idx] || phases[phases.length - 1]!
+    return phase.bound ?? this.bg.right;
+  }
   constructor(world: World, data: IStageInfo | IBgData) {
     this.world = world;
     if ("type" in data && data.type === "background") {
@@ -125,9 +134,9 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
     }
   }
   enter_next_phase(): void {
+    this.enter_phase(this._cur_phase_idx + 1);
     // if (!this.is_last_phase()) {
-      this.enter_phase(this._cur_phase_idx + 1);
-      // return;
+    // return;
     // }
     // this.lf2.goto_next_stage();
   }
@@ -236,5 +245,15 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
 
   update() {
     this._time++;
+    if (this.phases.length && this._cur_phase_idx === this.phases.length) {
+      const all_ready = !find(this.world.entities, e => {
+        return is_character(e) && e.hp > 0 && e.position.x < this.camera_right
+      })
+      if (all_ready) {
+        this.lf2.goto_next_stage()
+        ++this._cur_phase_idx;
+        // this.callbacks.emit('on_phase_changed')
+      }
+    }
   }
 }

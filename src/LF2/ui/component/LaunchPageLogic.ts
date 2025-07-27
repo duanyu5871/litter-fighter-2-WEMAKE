@@ -70,51 +70,50 @@ export default class LaunchPageLogic extends UIComponent {
       key: Status.Introduction,
       enter: () => {
         Ditto.Timeout.add(() => this.lf2.sounds.play("launch/093.wav.mp3"), 1000);
-        this.yeonface.find_component(ScaleAnimation, 'scale_in')!.start(false);
-        this.yeonface.find_component(ScaleAnimation, 'scale_in')!.enabled = true;
-        this.yeonface.find_component(PositionAnimation, 'move_in')!.start(false);
-        this.yeonface.find_component(PositionAnimation, 'move_in')!.enabled = true;
-
-        this.yeonface.find_component(OpacityAnimation)!.direction = 1;
-        this.yeonface.find_component(OpacityAnimation)!.enabled = true;
-        this.yeonface.find_component(OpacityAnimation)!.reset();
-
-        this.bearface.find_component(ScaleAnimation, 'scale_in')!.start(false);
-        this.bearface.find_component(ScaleAnimation, 'scale_in')!.enabled = true;
-
-        this.bearface.find_component(PositionAnimation, 'move_in')!.start(false);
-        this.bearface.find_component(PositionAnimation, 'move_in')!.enabled = true;
-
-
-        this.bearface.find_component(OpacityAnimation)!.direction = 1;
-        this.bearface.find_component(OpacityAnimation)!.enabled = true;
-        this.bearface.find_component(OpacityAnimation)!.reset();
-
-        this.long_text.find_component(PositionAnimation, 'move_in')!.start(false);
-        this.long_text.find_component(OpacityAnimation)!.direction = 1;
-        this.long_text.find_component(OpacityAnimation)!.enabled = true;
-        this.long_text.find_component(OpacityAnimation)!.reset();
-
+        this.yeonface.find_component(ScaleAnimation, 'scale_in', c => {
+          c.start(false);
+        })
+        this.yeonface.find_component(PositionAnimation, 'move_in', c => {
+          c.start(false);
+        })
+        this.yeonface.find_component(OpacityAnimation, void 0, c => {
+          c.start(false);
+        })
+        this.bearface.find_component(ScaleAnimation, 'scale_in', c => {
+          c.start(false);
+        })
+        this.bearface.find_component(PositionAnimation, 'move_in', c => {
+          c.start(false);
+        })
+        this.bearface.find_component(OpacityAnimation, void 0, c => {
+          c.start(false);
+        })
+        this.long_text.find_component(PositionAnimation, 'move_in', c => {
+          c.start(false);
+        })
+        this.long_text.find_component(OpacityAnimation, 'opacity', c => {
+          c.start(false)
+        });
       },
       leave: () => {
-        // this.yeonface.find_component(OpacityAnimation)!.direction = -1;
-        // this.yeonface.find_component(OpacityAnimation)!.enabled = true;
-        // this.yeonface.find_component(OpacityAnimation)!.reset();
-        this.yeonface.find_component(ScaleAnimation, 'scale_in')!.enabled = false;
-        this.yeonface.find_component(ScaleAnimation, 'scale_out')!.start(false);
-        this.yeonface.find_component(ScaleAnimation, 'scale_out')!.enabled = true;
-
-        // this.bearface.find_component(OpacityAnimation)!.direction = -1;
-        // this.bearface.find_component(OpacityAnimation)!.enabled = true;
-        // this.bearface.find_component(OpacityAnimation)!.reset();
-
-        this.bearface.find_component(ScaleAnimation, 'scale_in')!.enabled = false;
-        this.bearface.find_component(ScaleAnimation, 'scale_out')!.start(false);
-        this.bearface.find_component(ScaleAnimation, 'scale_out')!.enabled = true;
-
-        const c = this.long_text.find_component(OpacityAnimation)!
-        c!.enabled = true;
-        c.anim.start(true).update(5000)
+        this.yeonface.find_component(OpacityAnimation, void 0, c => {
+          c.start(true)
+          c.update(5000)
+        })
+        this.bearface.find_component(OpacityAnimation, void 0, c => {
+          c.start(true)
+          c.update(5000)
+        })
+        this.yeonface.find_component(ScaleAnimation, 'scale_out', c => {
+          c.start(false);
+        })
+        this.bearface.find_component(ScaleAnimation, 'scale_out', c => {
+          c.start(false);
+        })
+        this.long_text.find_component(OpacityAnimation, void 0, c => {
+          c.start(true)
+          c.update(5000)
+        })
       },
       update: (dt) => {
         if (this._prel_loaded && this.long_text.find_component(OpacityAnimation)!.done)
@@ -126,10 +125,10 @@ export default class LaunchPageLogic extends UIComponent {
         this.lf2.sounds.play_bgm("launch/main.wma.mp3");
       },
       update: (dt) => {
-        // if (this.long_text.find_component(OpacityAnimation)!.done) {
-        //   this.lf2.set_ui(this.entry_name);
-        //   return Status.End
-        // }
+        if (this.long_text.find_component(OpacityAnimation)!.done) {
+          this.lf2.set_ui(this.entry_name);
+          return Status.End
+        }
       }
     }, {
       key: Status.End,

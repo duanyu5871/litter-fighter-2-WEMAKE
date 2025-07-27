@@ -324,9 +324,9 @@ export class World extends WorldDataset {
     }
 
 
-    const { player_left, left, player_right, right } = this.stage;
-    const max_cam_left = is_num(this.lock_cam_x) ? left : player_left;
-    const max_cam_right = is_num(this.lock_cam_x) ? right : player_right;
+    const { camera_left, left, camera_right, right } = this.stage;
+    const max_cam_left = is_num(this.lock_cam_x) ? left : camera_left;
+    const max_cam_right = is_num(this.lock_cam_x) ? right : camera_right;
     let new_x = this.renderer.cam_x;
     let max_speed_ratio = 50;
     let acc_ratio = 1;

@@ -535,10 +535,9 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
       this.world.stage.stop_bgm();
       this.sounds.play_with_load(Defines.Sounds.StagePass);
       this._callbacks.emit("on_stage_pass")();
-      return;
     }
+    this.change_stage(next_stage || Defines.VOID_STAGE);
     this._callbacks.emit("on_enter_next_stage")();
-    this.change_stage(next_stage);
   }
 
   private _uiinfos_loaded = false;

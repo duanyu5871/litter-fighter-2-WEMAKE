@@ -13,7 +13,8 @@ export default class StageTitleShow extends UIComponent {
   protected _unmount_jobs = new Invoker();
   private _opactiy: Sequence = new Sequence(
     new Easing(0, 1).set_duration(500),
-    new Delay(1, 3000),
+    new Delay(1)
+      .set_duration(3000),
     new Easing(1, 0).set_duration(500),
   );
   private _sprites: __Sprite[] = [];

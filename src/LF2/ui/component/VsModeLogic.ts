@@ -51,7 +51,7 @@ export class VsModeLogic extends UIComponent
       }
       a!.reset()
       a!.enabled = true
-      b!.reset();
+      b!.start();
       b!.enabled = true;
     } else {
       a!.enabled = false

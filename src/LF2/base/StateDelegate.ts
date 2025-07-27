@@ -20,7 +20,7 @@ export class StateDelegate<T> {
     return this.get_value(this._values[0]!)!;
   }
   set value(v: Value<Unsafe<T>>) {
-    this.set(Math.min(1, this._values.length - 1), v);
+    this.set(Math.max(1, this._values.length - 1), v);
   }
   get value(): T {
     const len = this._values.length;

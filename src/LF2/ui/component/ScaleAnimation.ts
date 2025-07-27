@@ -6,16 +6,9 @@ export class ScaleAnimation extends UIComponent {
   static override readonly TAG: string = "ScaleAnimation";
   protected seq_anim: Sequence = new Sequence();
   protected values = new Map<any, [[number, number, number], [number, number, number]]>()
-  protected _direction: -1 | 1 = 1;
-  set direction(v: -1 | 1) {
-    this._direction = v;
-  }
-  get direction() {
-    return this._direction // this.anim.direction
-  }
   start(v?: boolean) {
     this.seq_anim.start(v)
-    this._direction = this.seq_anim.direction
+    this.enabled = true;
   }
   get is_end() {
     return this.seq_anim.done
@@ -29,7 +22,7 @@ export class ScaleAnimation extends UIComponent {
       const duration = this.num(i + 3) || 0;
       const prev_scale = i == 0 ? scale : (this.nums(i, 3) || scale);
       const a = scale.join() === prev_scale.join() ?
-        new Delay(0, duration) :
+        new Delay(0).set_duration(duration) :
         new Easing(0, 1)
           .set_duration(duration)
           .set_ease_method(ease_linearity)
@@ -49,7 +42,6 @@ export class ScaleAnimation extends UIComponent {
     const is_reverse = this.bool(1) ?? false;
     if (is_play) this.seq_anim.start(is_reverse)
     else this.seq_anim.end(is_reverse)
-    this._direction = this.seq_anim.direction
   }
 
   override update(dt: number): void {

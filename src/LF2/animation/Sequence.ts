@@ -78,16 +78,3 @@ export class Sequence extends Animation {
     return this;
   }
 }
-
-  const anim = new Sequence(
-    new Delay(0, 1000),
-    new Easing(0, 1).set_duration(1000),
-    new Delay(1, 250),
-  ).set_times(2).set_reverse(true)
-  anim.start()
-  anim.update(2000);
-  anim.update(250);
-  anim.update(500);
-  anim.update(1500);
-  anim.update(249);
-  anim.update(1);

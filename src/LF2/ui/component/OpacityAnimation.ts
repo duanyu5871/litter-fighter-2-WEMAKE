@@ -7,22 +7,12 @@ export class OpacityAnimation extends UIComponent {
 
   static override readonly TAG: string = "OpacityAnimation";
   protected _anim: Sequence = new Sequence();
-  protected _direction: -1 | 1 = 1;
   get loop() { return this._anim.loop }
-  set direction(v: -1 | 1) {
-    this._direction = v;
-  }
-  get direction() {
-    return this._direction // this.anim.direction
-  }
-  get done() {
-    return this._anim.done
-  }
-  get anim(): Sequence {
-    return this._anim;
-  }
-  reset() {
-    this.anim.start()
+  get done() { return this._anim.done }
+  get anim(): Sequence { return this._anim; }
+  start(r?: boolean) {
+    this.anim.start(r)
+    this.enabled = true
   }
   override on_start(): void {
     super.on_start?.();
@@ -34,7 +24,8 @@ export class OpacityAnimation extends UIComponent {
       const prev_opacity = this.num(2 + i - 2) ?? opacity;
       anims.push(
         prev_opacity === opacity ?
-          new Delay(opacity, duration) :
+          new Delay(opacity)
+            .set_duration(duration) :
           new Easing(prev_opacity, opacity)
             .set_duration(duration)
             .set_ease_method(ease_linearity)
@@ -45,7 +36,6 @@ export class OpacityAnimation extends UIComponent {
     const is_reverse = this.bool(1) ?? false;
     if (is_play) this._anim.start(is_reverse)
     else this._anim.end(is_reverse)
-    this._direction = this._anim.direction
   }
 
   override update(dt: number): void {
