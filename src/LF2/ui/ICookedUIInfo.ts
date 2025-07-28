@@ -10,6 +10,5 @@ export interface ICookedUIInfo extends IUIInfo {
   items?: ICookedUIInfo[];
   img_infos: IImageInfo[];
   size: [number, number];
-  left_top: [number, number];
   templates?: { [x in string]?: ICookedUIInfo };
 }

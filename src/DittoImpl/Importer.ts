@@ -51,7 +51,7 @@ function get_req_header_accept(url: string): string | undefined {
   return void 0;
 }
 async function import_as<T>(
-  responseType: "json" | "blob",
+  responseType: "json" | "blob" | 'arraybuffer',
   urls: string[],
 ): Promise<[AxiosResponse<T, any>, string]> {
   const start_req = async (url: string) => {
@@ -72,6 +72,7 @@ async function import_as<T>(
 }
 
 export class __Importer implements IImporter {
+
   @PIO
   async import_as_json<T = any>(urls: string[]): Promise<[T, string]> {
     const url_list: string[] = get_possible_url_list(urls);
@@ -90,5 +91,14 @@ export class __Importer implements IImporter {
   async import_as_blob_url(urls: string[]): Promise<[string, string]> {
     const [blob, url] = await this.import_as_blob(urls);
     return [URL.createObjectURL(blob), url];
+  }
+
+  @PIO
+  async import_as_array_buffer(urls: string[]): Promise<[ArrayBuffer, string]> {
+    const url_list: string[] = get_possible_url_list(urls);
+    return import_as<ArrayBuffer>('arraybuffer', url_list).then(([v, url]) => [
+      v.data,
+      url,
+    ]);
   }
 }

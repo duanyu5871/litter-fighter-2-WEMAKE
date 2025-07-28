@@ -14,10 +14,11 @@ export class ImageInfo implements IImageInfo {
   mag_filter?: MagnificationTextureFilter;
   wrap_s?: TextureWrapping;
   wrap_t?: TextureWrapping;
-
-  merge(o: IImageInfo): this {
+  constructor(o?: Partial<IImageInfo>) {
+    if (o) Object.assign(this, o)
+  }
+  merge(o: Partial<IImageInfo>): this {
     Object.assign(this, o)
     return this
   }
-
 }

@@ -24,6 +24,12 @@ export class ZipObject implements IZipObject {
   async blob_url(): Promise<string> {
     return URL.createObjectURL(await this.blob());
   }
+  async array_buffer(): Promise<ArrayBuffer> {
+    return this.inner.async('arraybuffer')
+  }
+  async uint8_array(): Promise<Uint8Array> {
+    return this.inner.async('uint8array')
+  }
 }
 
 export class __Zip implements IZip {

@@ -3,7 +3,6 @@ import Callbacks from "../base/Callbacks";
 import { Expression } from "../base/Expression";
 import { NoEmitCallbacks } from "../base/NoEmitCallbacks";
 import StateDelegate from "../base/StateDelegate";
-import GameKey from "../defines/GameKey";
 import { IValGetter } from "../defines/IExpression";
 import IStyle from "../defines/IStyle";
 import Ditto from "../ditto";
@@ -15,7 +14,6 @@ import { is_arr, is_bool, is_num, is_str } from "../utils/type_check";
 import { ICookedUIInfo } from "./ICookedUIInfo";
 import { IUICallback } from "./IUICallback";
 import type { IUIInfo } from "./IUIInfo";
-import { IUIEvent as IUIEvent } from "./UIEvent";
 import { IUIKeyEvent } from "./IUIKeyEvent";
 import actor from "./action/Actor";
 import factory from "./component/Factory";
@@ -302,7 +300,11 @@ export class UINode implements IDebugging {
   }
 
   hit(x: number, y: number): boolean {
-    const [l, t] = this.data.left_top;
+    const [cx, cy] = this.center;
+    const [px, py] = this.pos;
+    const [dw, dh] = this.size;
+    const l = px - Math.floor(cx * dw);
+    const t = py - Math.floor(cy * dh);
     const [w, h] = this.data.size;
     return l <= x && t <= y && l + w >= x && t + h >= y;
   }
@@ -411,7 +413,6 @@ export class UINode implements IDebugging {
       center: read_nums(raw_info.center, 3, [0, 0, 0]),
       rect: read_nums(raw_info.rect, 4),
       size: [0, 0],
-      left_top: [0, 0],
       parent,
       img_infos: [],
       items: void 0,
@@ -452,26 +453,17 @@ export class UINode implements IDebugging {
     }
 
     const { w: img_w = 0, h: img_h = 0, scale = 1 } = ret.img_infos?.[0] || {};
-    const { size, center, pos, rect } = raw_info;
+    const { size, rect } = raw_info;
 
-    const [sx, sy, sw, sh] = read_nums(rect, 4, [
-      0,
-      0,
-      img_w / scale,
-      img_h / scale,
-    ]);
-    const [w, h] = read_nums(size, 2, [parent ? sw : 794, parent ? sh : 450]);
-    const [cx, cy] = read_nums(center, 2, [0, 0]);
-    const [x, y] = read_nums(pos, 2, [0, 0]);
+    const [sx, sy, sw, sh] = read_nums(rect, 4, [0, 0, img_w / scale, img_h / scale]);
+    const [w, h] = read_nums(size, 2, [parent ? sw : lf2.world.screen_w, parent ? sh : lf2.world.screen_h]);
+
 
     // 宽或高其一为0时，使用原图宽高比例的计算之
     const dw = Math.floor(w ? w : sh ? (h * sw) / sh : 0);
     const dh = Math.floor(h ? h : sw ? (w * sh) / sw : 0);
-    const dx = x - Math.floor(cx * dw);
-    const dy = y - Math.floor(cy * dh);
     ret.rect = [sx, sy, sw, sh];
     ret.size = [dw, dh];
-    ret.left_top = [dx, dy];
 
     const { items } = raw_info;
     if (items && !Array.isArray(items)) {
@@ -499,20 +491,19 @@ export class UINode implements IDebugging {
       for (const item_info of info.items) {
         let count = (is_num(item_info.count) && item_info.count > 0) ? item_info.count : 1
         while (count) {
-          const cooked_item = UINode.create(lf2, item_info, ret);
-
-          if (cooked_item.id) {
-            const set = ret.id_ui_map.get(cooked_item.id) || [];
-            set.push(cooked_item)
-            ret.id_ui_map.set(cooked_item.id, set);
+          const child = UINode.create(lf2, item_info, ret);
+          if (child.id) {
+            const set = ret.id_ui_map.get(child.id) || [];
+            set.push(child)
+            ret.id_ui_map.set(child.id, set);
           }
-          if (cooked_item.name) {
-            const set = ret.name_ui_map.get(cooked_item.name) || [];
-            set.push(cooked_item)
-            ret.name_ui_map.set(cooked_item.name, set);
+          if (child.name) {
+            const set = ret.name_ui_map.get(child.name) || [];
+            set.push(child)
+            ret.name_ui_map.set(child.name, set);
           }
-          cooked_item._index = ret.children.length;
-          ret.add_child(cooked_item)
+          child._index = ret.children.length;
+          ret.add_child(child)
           --count;
         }
       }

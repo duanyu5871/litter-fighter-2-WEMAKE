@@ -32,4 +32,6 @@ export interface IZipObject {
    * @returns {Promise<string>} 
    */
   blob_url(): Promise<string>;
+  array_buffer(): Promise<ArrayBuffer>
+  uint8_array(): Promise<Uint8Array>
 }

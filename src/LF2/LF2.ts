@@ -20,6 +20,7 @@ import {
   ISounds,
   IZip,
 } from "./ditto";
+import { BlobUrl, HitUrl } from "./ditto/importer";
 import { Entity } from "./entity";
 import { IDebugging, make_debugging } from "./entity/make_debugging";
 import { BallsHelper, CharactersHelper, EntitiesHelper, WeaponsHelper } from "./helper";
@@ -108,10 +109,15 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
 
   readonly world: World;
 
-  private _zips: IZip[] = [];
-
-  get zips() { return this._zips }
-
+  /**
+   * 资源包列表
+   * 
+   * 
+   * @readonly
+   * @type {IZip[]}
+   * @memberof LF2
+   */
+  readonly zips: IZip[] = [];
   readonly players: ReadonlyMap<string, PlayerInfo> = new Map([
     ["1", new PlayerInfo("1")],
     ["2", new PlayerInfo("2")],
@@ -163,11 +169,20 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
   }
   on_click_character?: (c: Entity) => void;
 
+
+  /**
+   * TODO
+   *
+   * @template C 
+   * @param {string} path
+   * @return {Promise<C>}
+   * @memberof LF2
+   */
   @PIO
   async import_json<C = any>(path: string): Promise<C> {
     const paths = get_import_fallbacks(path);
     for (const path of paths) {
-      const zip_obj = fisrt(this._zips, (z) => z.file(path));
+      const zip_obj = fisrt(this.zips, (z) => z.file(path));
       if (!zip_obj) continue;
       return zip_obj.json() as C;
     }
@@ -175,15 +190,31 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
     return v[0];
   }
 
-  @PIO
-  async import_resource(path: string): Promise<[string, string]> {
+  /**
+   * 加载资源
+   *
+   * @param {string} path 资源路径
+   * @return {Promise<[BlobUrl, HitUrl]>}
+   * @memberof LF2
+   */
+  @PIO async import_resource(path: string): Promise<[BlobUrl, HitUrl]> {
     const paths = get_import_fallbacks(path);
     for (const path of paths) {
-      const zip_obj = fisrt(this._zips, (z) => z.file(path));
+      const zip_obj = fisrt(this.zips, (z) => z.file(path));
       if (!zip_obj) continue;
       return [await zip_obj.blob_url(), zip_obj.name];
     }
     return ditto.Importer.import_as_blob_url(paths);
+  }
+
+  @PIO async import_array_buffer(path: string): Promise<[ArrayBuffer, HitUrl]> {
+    const paths = get_import_fallbacks(path);
+    for (const path of paths) {
+      const zip_obj = fisrt(this.zips, (z) => z.file(path));
+      if (!zip_obj) continue;
+      return [await zip_obj.array_buffer(), zip_obj.name];
+    }
+    return ditto.Importer.import_as_array_buffer(paths);
   }
 
   constructor() {
@@ -346,8 +377,8 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
 
   async load_prel_zip(url: string): Promise<IZip> {
     const ret = await this.load_zip_from_info_url(url);
-    this._zips.unshift(ret);
-    this._callbacks.emit("on_zips_changed")(this._zips);
+    this.zips.unshift(ret);
+    this._callbacks.emit("on_zips_changed")(this.zips);
     await this.load_ui();
     this._callbacks.emit("on_prel_loaded")();
     return ret;
@@ -395,8 +426,8 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
 
   private async load_data(zip?: IZip) {
     if (zip) {
-      this._zips.unshift(zip);
-      this._callbacks.emit("on_zips_changed")(this._zips);
+      this.zips.unshift(zip);
+      this._callbacks.emit("on_zips_changed")(this.zips);
     }
     await this.datas.load();
     if (this._disposed) this.datas.dispose();

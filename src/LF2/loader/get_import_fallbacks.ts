@@ -31,12 +31,19 @@ export default function get_import_fallbacks(name: string): string[] {
       name.replace(regexp, (_, dir, name) => dir + "/" + name + ".png"),
     ].filter((v) => v !== name);
     fallbacks.unshift(...l);
+    return fallbacks;
   }
+
+  /*
+  举例：
+    输入 a.wav
+    输出 [a.mp3, a.wav.mp3, a.wav]
+  */
   if (name.endsWith(".wav") || name.endsWith(".wma")) {
-    fallbacks.unshift(name + ".mp3");
-    fallbacks.unshift(name.substring(0, name.length - 4) + ".mp3");
-    // >> a.wav
-    // << [a.mp3, a.wav.mp3, a.wav]
+    fallbacks.unshift(
+      name.substring(0, name.length - 4) + ".mp3",
+      name + ".mp3"
+    );
   }
   return fallbacks;
 }

@@ -20,26 +20,24 @@ import { TextImageInfo } from "./TextImageInfo";
 export type TPicture = IPicture<THREE.Texture>;
 export const texture_loader = new THREE.TextureLoader();
 export class ImageMgr {
-  readonly lf2: LF2;
   protected infos = new AsyncValuesKeeper<ImageInfo>();
+  readonly lf2: LF2;
   constructor(lf2: LF2) {
     this.lf2 = lf2;
   }
 
-  protected async _make_img_info(
-    key: string,
-    src: string,
-    operations?: ImageOperation[],
-  ): Promise<ImageInfo> {
+  async create_img_info(key: string, src: string, operations?: ImageOperation[]): Promise<ImageInfo> {
     const [blob_url, src_url] = await this.lf2.import_resource(src);
     const img = await create_img_ele(blob_url);
 
-    let [, txt_scale] = src_url.match(/@(\d)[x|X](.png|.webp)$/) ??
-      src_url.match(/@(\d)[x|X]\/(.*)(.png|.webp)$/) ?? ["", "1"];
-
-    const scale = Math.max(1, Number(txt_scale));
+    const scale = Math.max(1,
+      Number(
+        src_url.match(/@(\d)[x|X](.png|.webp)$/)?.[1] ??
+        src_url.match(/@(\d)[x|X]\/(.*)(.png|.webp)$/)?.[1]
+      ) || 1
+    )
     if (!operations?.length) {
-      return new ImageInfo().merge({
+      return new ImageInfo({
         key,
         url: blob_url,
         src_url,
@@ -49,17 +47,16 @@ export class ImageMgr {
       });
     }
 
-    let cvs: HTMLCanvasElement | null = null//document.createElement('canvas')
+    let cvs: HTMLCanvasElement | null = null
     for (const op of operations) cvs = this.edit_image(cvs || img, op)
 
-    // debugger;
     const blob = await get_blob(cvs!).catch((e) => {
       const err = new Error(e.message + " key:" + key);
       Object.assign(err, { cause: e.cause })
       throw err
     });
     const url = URL.createObjectURL(blob);
-    return new ImageInfo().merge({ key, url, src_url, scale, w: cvs!.width, h: cvs!.height });
+    return new ImageInfo({ key, url, src_url, scale, w: cvs!.width, h: cvs!.height });
   }
 
   protected async _make_img_info_by_text(
@@ -151,7 +148,7 @@ export class ImageMgr {
   load_img(key: string, src: string, operations?: ImageOperation[]): Promise<ImageInfo> {
     const fn = async () => {
       this.lf2.on_loading_content(`${key}`, 0);
-      const info = await this._make_img_info(key, src, operations);
+      const info = await this.create_img_info(key, src, operations);
       return info;
     };
     return this.infos.fetch(key, fn);

@@ -133,10 +133,8 @@ export class __Modern extends BaseSounds {
   override load(name: string, src: string): Promise<AudioBuffer> {
     return this._r.fetch(name, async () => {
       this.lf2.on_loading_content(`${name}`, 0);
-      const [url] = await this.lf2.import_resource(src);
-      const buf = await axios
-        .get<ArrayBuffer>(url, { responseType: "arraybuffer" })
-        .then((v) => this.ctx.decodeAudioData(v.data));
+      const [dat] = await this.lf2.import_array_buffer(src);
+      const buf = this.ctx.decodeAudioData(dat);
       this.lf2.on_loading_content(`${name}`, 100);
       return buf;
     });
@@ -152,7 +150,7 @@ export class __Modern extends BaseSounds {
   }
 
   override play_bgm(name: string, restart?: boolean | undefined): () => void {
-    if (!restart && this._prev_bgm_url === name) return () => {};
+    if (!restart && this._prev_bgm_url === name) return () => { };
 
     const prev = this.bgm();
 
@@ -197,21 +195,21 @@ export class __Modern extends BaseSounds {
     return [
       sound_x,
       (muted ? 0 : this._volume * this._sound_volume) *
-        Math.max(
-          0,
-          1 -
-            Math.abs(
-              (sound_x - viewer_x + edge_w) / Defines.CLASSIC_SCREEN_WIDTH,
-            ),
+      Math.max(
+        0,
+        1 -
+        Math.abs(
+          (sound_x - viewer_x + edge_w) / Defines.CLASSIC_SCREEN_WIDTH,
         ),
+      ),
       (muted ? 0 : this._volume * this._sound_volume) *
-        Math.max(
-          0,
-          1 -
-            Math.abs(
-              (sound_x - viewer_x - edge_w) / Defines.CLASSIC_SCREEN_WIDTH,
-            ),
+      Math.max(
+        0,
+        1 -
+        Math.abs(
+          (sound_x - viewer_x - edge_w) / Defines.CLASSIC_SCREEN_WIDTH,
         ),
+      ),
     ];
   }
   override play(name: string, x?: number, y?: number, z?: number): string {
