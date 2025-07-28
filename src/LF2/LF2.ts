@@ -555,7 +555,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
     if (this._uiinfos.length) return this._uiinfos;
     const array = await this.import_json("layouts/index.json").catch((e) => []);
     this._uiinfos_loaded = false;
-    const paths: string[] = ["launch/init.json", "launch/jalousie_ns.json", "launch/jalousie_ew.json"];
+    const paths: string[] = ["launch/init.json"];
     for (const element of array) {
       if (is_str(element)) paths.push(element);
       else

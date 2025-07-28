@@ -7,7 +7,7 @@
   ],
   "items": [
     {
-      "template": "launch/jalousie_ns.json"
+      "template": "layouts/jalousie_ns.json"
     },
     {
       "id": "bg_left",
