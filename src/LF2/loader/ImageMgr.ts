@@ -59,7 +59,7 @@ export class ImageMgr {
     return new ImageInfo({ key, url, src_url, scale, w: cvs!.width, h: cvs!.height });
   }
 
-  protected async _make_img_info_by_text(
+  async create_img_info_by_text(
     key: string,
     text: string,
     style: IStyle = {},
@@ -141,7 +141,7 @@ export class ImageMgr {
 
   load_text(text: string, style: IStyle = {}): Promise<ImageInfo> {
     const key = Ditto.MD5(text, JSON.stringify(style));
-    const fn = () => this._make_img_info_by_text(key, text, style);
+    const fn = () => this.create_img_info_by_text(key, text, style);
     return this.infos.fetch(key, fn);
   }
 
