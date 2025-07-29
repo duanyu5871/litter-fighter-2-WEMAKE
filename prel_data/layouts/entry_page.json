@@ -6,30 +6,42 @@
     "ReachableGroup(main,ud)"
   ],
   "items": [
-    {
-      "template": "layouts/jalousie_ns.json"
-    },
-    {
-      "template": "layouts/bg_l_face.json"
-    },
-    {
-      "template": "layouts/bg_r_face.json"
-    },
+    "layouts/jalousie_ns.json",
+    "layouts/bg_l_face.json",
+    "layouts/bg_r_face.json",
     {
       "id": "main_title",
-      "img": {"path": "sprite/MENU_CLIP.png", "x": 0, "y": 41, "w": 496, "h": 80},
+      "img": {
+        "path": "sprite/MENU_CLIP.png",
+        "x": 0,
+        "y": 41,
+        "w": 496,
+        "h": 80
+      },
       "center": "0.5, 0",
       "pos": "398, 40"
     },
     {
       "id": "main_menu",
-      "img": {"path": "sprite/MENU_CLIP.png", "x": 10, "y": 135, "w": 262, "h": 99},
+      "img": {
+        "path": "sprite/MENU_CLIP.png",
+        "x": 10,
+        "y": 135,
+        "w": 262,
+        "h": 99
+      },
       "center": "0.5, 0.5",
       "pos": "397, 270",
       "items": [
         {
           "id": "btn_start_local_game",
-          "img": {"path": "sprite/MENU_CLIP.png", "x": 535, "y": 105, "w": 256, "h": 26},
+          "img": {
+            "path": "sprite/MENU_CLIP.png",
+            "x": 535,
+            "y": 105,
+            "w": 256,
+            "h": 26
+          },
           "center": "0.5, 0",
           "pos": "1, -46",
           "auto_focus": true,
@@ -48,7 +60,13 @@
         {
           "id": "btn_network_game",
           "opacity": "f:",
-          "img": {"path": "sprite/MENU_CLIP.png", "x": 535, "y": 137, "w": 256, "h": 26},
+          "img": {
+            "path": "sprite/MENU_CLIP.png",
+            "x": 535,
+            "y": 137,
+            "w": 256,
+            "h": 26
+          },
           "center": "0.5, 0",
           "pos": "1, -14",
           "component": [
@@ -64,7 +82,13 @@
         },
         {
           "id": "btn_ctrl_settings",
-          "img": {"path": "sprite/MENU_CLIP.png", "x": 535, "y": 168, "w": 256, "h": 26},
+          "img": {
+            "path": "sprite/MENU_CLIP.png",
+            "x": 535,
+            "y": 168,
+            "w": 256,
+            "h": 26
+          },
           "center": "0.5, 0",
           "pos": "1, 17",
           "component": [

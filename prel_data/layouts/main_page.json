@@ -6,12 +6,8 @@
     "ReachableGroup(main,ud)"
   ],
   "items": [
-    {
-      "template": "layouts/bg_l_face.json"
-    },
-    {
-      "template": "layouts/bg_r_face.json"
-    },
+    "layouts/bg_l_face.json",
+    "layouts/bg_r_face.json",
     {
       "id": "main_title",
       "img": {
@@ -27,13 +23,25 @@
     },
     {
       "id": "main_menu",
-      "img": {"path": "sprite/MENU_CLIP3.png", "x": 0, "y": 116, "w": 305, "h": 213},
+      "img": {
+        "path": "sprite/MENU_CLIP3.png",
+        "x": 0,
+        "y": 116,
+        "w": 305,
+        "h": 213
+      },
       "center": "0.5, 0.5",
       "pos": "397, 270",
       "items": [
         {
           "id": "btn_vs_mode",
-          "img": {"path": "sprite/MENU_CLIP3.png", "x": 32, "y": 331, "w": 210, "h": 22},
+          "img": {
+            "path": "sprite/MENU_CLIP3.png",
+            "x": 32,
+            "y": 331,
+            "w": 210,
+            "h": 22
+          },
           "center": "0.5, 0",
           "pos": "-3,-108",
           "auto_focus": true,
@@ -50,7 +58,13 @@
         },
         {
           "id": "btn_stage_mode",
-          "img": {"path": "sprite/MENU_CLIP3.png", "x": 18, "y": 358, "w": 238, "h": 24},
+          "img": {
+            "path": "sprite/MENU_CLIP3.png",
+            "x": 18,
+            "y": 358,
+            "w": 238,
+            "h": 24
+          },
           "center": "0.5, 0",
           "pos": "-3,-81",
           "component": [
@@ -66,7 +80,13 @@
         },
         {
           "id": "btn_1v1_championship_mode",
-          "img": {"path": "sprite/MENU_CLIP3.png", "x": 0, "y": 385, "w": 275, "h": 23},
+          "img": {
+            "path": "sprite/MENU_CLIP3.png",
+            "x": 0,
+            "y": 385,
+            "w": 275,
+            "h": 23
+          },
           "center": "0.5, 0",
           "pos": "-2,-54",
           "component": [
@@ -82,7 +102,13 @@
         },
         {
           "id": "btn_2v2_championship_mode",
-          "img": {"path": "sprite/MENU_CLIP3.png", "x": 0, "y": 412, "w": 275, "h": 24},
+          "img": {
+            "path": "sprite/MENU_CLIP3.png",
+            "x": 0,
+            "y": 412,
+            "w": 275,
+            "h": 24
+          },
           "center": "0.5, 0",
           "pos": "-2,-27",
           "component": [
@@ -98,7 +124,13 @@
         },
         {
           "id": "btn_battle_mode",
-          "img": {"path": "sprite/MENU_CLIP3.png", "x": 32, "y": 438, "w": 207, "h": 24},
+          "img": {
+            "path": "sprite/MENU_CLIP3.png",
+            "x": 32,
+            "y": 438,
+            "w": 207,
+            "h": 24
+          },
           "center": "0.5, 0",
           "pos": "-4,-1",
           "component": [
@@ -114,7 +146,13 @@
         },
         {
           "id": "btn_demo_mode",
-          "img": {"path": "sprite/MENU_CLIP3.png", "x": 42, "y": 466, "w": 188, "h": 23},
+          "img": {
+            "path": "sprite/MENU_CLIP3.png",
+            "x": 42,
+            "y": 466,
+            "w": 188,
+            "h": 23
+          },
           "center": "0.5, 0",
           "pos": "-4,27",
           "component": [
@@ -130,7 +168,13 @@
         },
         {
           "id": "btn_quit",
-          "img": {"path": "sprite/MENU_CLIP3.png", "x": 55, "y": 521, "w": 165, "h": 23},
+          "img": {
+            "path": "sprite/MENU_CLIP3.png",
+            "x": 55,
+            "y": 521,
+            "w": 165,
+            "h": 23
+          },
           "center": "0.5, 0",
           "pos": "-2,82",
           "component": [

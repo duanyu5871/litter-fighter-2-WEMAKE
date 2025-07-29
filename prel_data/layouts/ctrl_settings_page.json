@@ -11,12 +11,8 @@
     ]
   ],
   "items": [
-    {
-      "template": "layouts/bg_l_face.json"
-    },
-    {
-      "template": "layouts/bg_r_face.json"
-    },
+    "layouts/bg_l_face.json",
+    "layouts/bg_r_face.json",
     {
       "id": "main_menu",
       "img": {

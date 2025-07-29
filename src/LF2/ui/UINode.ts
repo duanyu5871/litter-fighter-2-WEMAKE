@@ -412,7 +412,7 @@ export class UINode implements IDebugging {
     const ret: ICookedUIInfo = {
       ...raw_info,
       id, name,
-      pos: read_nums(raw_info.pos, 3, parent ? [0, 0, 0] : [0, -450, 0]),
+      pos: read_nums(raw_info.pos, 3, [0, 0, 0]),
       scale: read_nums(raw_info.scale, 3, [1, 1, 1]),
       center: read_nums(raw_info.center, 3, [0, 0, 0]),
       size: [0, 0],
@@ -554,6 +554,11 @@ export class UINode implements IDebugging {
     this._img_infos.default_value = this.data.img_infos;
     this._size.default_value = this.data.size;
     this._center.default_value = this.data.center;
+    this._pos.default_value = () => {
+      if (this.parent) return this.data.pos;
+      const [x, y, z] = this.data.pos;
+      return [x, y - this.lf2.world.screen_h, z]
+    }
   }
 
   private _cook_img_idx(get_val: IValGetter<UINode>) {

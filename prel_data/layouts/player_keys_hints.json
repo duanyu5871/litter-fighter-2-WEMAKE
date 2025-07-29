@@ -1,4 +1,5 @@
 {
+  "id": "player_keys_hints",
   "name": "玩家按键提示",
   "img": {
     "path": "sprite/MENU_CLIP5.png",
@@ -7,7 +8,8 @@
     "w": 530,
     "h": 200
   },
-  "pos": "0,0,2",
+  "_pos": "0,0,2",
+  "size": "530,200",
   "items": [
     {
       "pos": "143,60,0.1",
