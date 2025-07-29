@@ -34,7 +34,7 @@ export class LaunchPageLogic extends UIComponent {
 
   constructor(layout: UINode, f_name: string) {
     super(layout, f_name);
-    this.__debugging = true
+    // this.__debugging = true
     this.fsm = new FSM<Status>().add({
       key: Status.TapHints,
       enter: () => {
