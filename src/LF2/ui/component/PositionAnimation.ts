@@ -28,7 +28,10 @@ export class PositionAnimation extends UIComponent {
         new Easing(0, 1)
           .set_duration(duration)
           .set_ease_method(ease_linearity)
-
+      // new Sine(0, 1)
+      //   .set_offset(-250)
+      //   .set_scale(duration / 500)
+      //   .set_duration(duration)
       this.values.set(a,
         [
           prev_value, [

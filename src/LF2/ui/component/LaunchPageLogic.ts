@@ -37,7 +37,7 @@ export default class LaunchPageLogic extends UIComponent {
   protected _unmount_jobs = new Invoker();
   protected _loading_sprite: ISprite;
   protected _loading_imgs: TPicture[] = [];
-  protected _loading_idx_anim = new Easing(0, 44).set_duration(2000)
+  protected _loading_idx_anim = new Easing(0, 44).set_duration(1000)
     .set_ease_method(ease_linearity)
     .set_times(0)
     .set_fill_mode(1)
@@ -98,11 +98,11 @@ export default class LaunchPageLogic extends UIComponent {
       leave: () => {
         this.yeonface.find_component(OpacityAnimation, void 0, c => {
           c.start(true)
-          c.update(5000)
+          c.update(c.anim.anims[c.anim.anims.length - 1]!.duration)
         })
         this.bearface.find_component(OpacityAnimation, void 0, c => {
           c.start(true)
-          c.update(5000)
+          c.update(c.anim.anims[c.anim.anims.length - 1]!.duration)
         })
         this.yeonface.find_component(ScaleAnimation, 'scale_out', c => {
           c.start(false);
@@ -112,7 +112,7 @@ export default class LaunchPageLogic extends UIComponent {
         })
         this.long_text.find_component(OpacityAnimation, void 0, c => {
           c.start(true)
-          c.update(5000)
+          c.update(c.anim.anims[c.anim.anims.length - 1]!.duration)
         })
       },
       update: (dt) => {

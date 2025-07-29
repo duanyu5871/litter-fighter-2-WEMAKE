@@ -45,7 +45,6 @@ export default class GamePrepareLogic extends UIComponent<IGamePrepareLogicCallb
     super.on_resume();
     const btn_switch_bg = this.node.find_child("btn_switch_bg");
     const btn_switch_stage = this.node.find_child("btn_switch_stage");
-
     if (this.game_mode === "vs_mode") {
       btn_switch_bg?.set_visible(true).set_disabled(false);
       btn_switch_stage?.set_visible(false).set_disabled(true);
@@ -54,7 +53,7 @@ export default class GamePrepareLogic extends UIComponent<IGamePrepareLogicCallb
       btn_switch_bg?.set_visible(false).set_disabled(true);
     }
 
-    this.fsm.use(GamePrepareState.Player);
+    // this.fsm.use(GamePrepareState.Player);
     this._unmount_jobs.add(
       ...map_no_void(this.lf2.players.values(), (v) =>
         v.callbacks.add({

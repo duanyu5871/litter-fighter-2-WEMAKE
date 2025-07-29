@@ -11,7 +11,10 @@ export abstract class Periodic extends Animation {
     this.offset = v;
     return this
   }
-
+  set_scale(v: number): this {
+    this.scale = v;
+    return this
+  }
   get bottom(): number { return this._b; }
   set bottom(v: number) { if (is_num(v)) { this._b = v; } }
   get height(): number { return this._h; }

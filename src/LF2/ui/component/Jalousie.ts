@@ -15,9 +15,9 @@ enum D {
 export class Jalousie extends UIComponent<IJalousieCallbacks> {
   protected _direction: D = D.ew;
   protected _anim: Animation = new Sequence(
-    new Easing(0, 0).set_duration(1500),
-    new Sine(-1, 2, 0.5).set_duration(500),
-    new Easing(1, 1).set_duration(1500),
+    new Easing(0, 0).set_duration(250),
+    new Sine(-1, 2, 0.5).set_duration(250),
+    new Easing(1, 1).set_duration(250),
   )
   get direction(): D { return this._direction }
   get anim(): Animation { return this._anim }
