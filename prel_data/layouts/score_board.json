@@ -50,9 +50,12 @@
         {
           "pos": "453,13",
           "component": "playing_time()",
-          "style": {
-            "fill_style": "#ffffff",
-            "font": "12px Arial"
+          "txt": {
+            "value": "",
+            "style": {
+              "fill_style": "#ffffff",
+              "font": "12px Arial"
+            }
           }
         }
       ]

@@ -14,14 +14,14 @@ import { UIComponent } from "./UIComponent";
 
 export class VsModeLogic extends UIComponent
   implements IEntityCallbacks, IStageCallbacks, IWorldCallbacks {
-  jalousie!: Jalousie;
+  jalousie?: Jalousie;
   go_sounds!: Sounds;
   go_flashing!: OpacityAnimation;
   score_board!: UINode;
   override on_start(): void {
     super.on_start?.();
     this.score_board = this.node.find_child("score_board")!
-    this.jalousie = this.node.search_component(Jalousie)!
+    this.jalousie = this.node.search_component(Jalousie)
     this.go_sounds = this.node.search_component(Sounds, "go_sounds")!
     this.go_flashing = this.node.search_component(OpacityAnimation, "go_flashing")!
     for (const [, v] of this.lf2.player_characters) {
@@ -43,7 +43,7 @@ export class VsModeLogic extends UIComponent
     this.lf2.world.callbacks.del(this);
   }
   override update(dt: number): void {
-    if (!this.jalousie.open && this.jalousie.anim.done) {
+    if (this.jalousie && !this.jalousie.open && this.jalousie.anim.done) {
       this.lf2.goto_next_stage()
       this.jalousie.open = true;
     }
@@ -58,7 +58,7 @@ export class VsModeLogic extends UIComponent
     this.lf2.world.stage.callbacks.add(this);
     this.go_sounds.stop();
     this.go_flashing.stop();
-    this.jalousie.open = true;
+    if (this.jalousie) this.jalousie.open = true;
   }
   on_phase_changed(
     stage: Stage,
@@ -88,7 +88,7 @@ export class VsModeLogic extends UIComponent
   }
   on_requrie_goto_next_stage(stage: Stage) {
     this.debug('on_requrie_goto_next_stage', stage)
-    this.jalousie.open = false;
+    if (this.jalousie) this.jalousie.open = false;
   }
   on_dead(e: Entity) {
     if (!is_character(e)) return;

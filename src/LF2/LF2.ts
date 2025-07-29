@@ -345,12 +345,14 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
     }
     if (!match) this._curr_key_list = "";
     if (e.times === 0) {
-      const { ui: ui } = this;
+      const { ui } = this;
       if (ui) {
         for (const key_name of KEY_NAME_LIST) {
           for (const [player_id, player_info] of this.players) {
-            if (player_info.keys[key_name] === key_code)
-              ui.on_key_down(new LF2UIKeyEvent(player_id, key_name));
+            if (player_info.keys[key_name] === key_code) {
+              const e = new LF2UIKeyEvent(player_id, key_name)
+              ui.on_key_down(e);
+            }
           }
         }
       }
@@ -359,12 +361,14 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
 
   on_key_up(e: IKeyEvent) {
     const key_code = e.key?.toLowerCase() ?? "";
-    const { ui: ui } = this;
+    const { ui } = this;
     if (ui) {
       for (const key_name of KEY_NAME_LIST) {
         for (const [player_id, player_info] of this.players) {
-          if (player_info.keys[key_name] === key_code)
-            ui.on_key_up(new LF2UIKeyEvent(player_id, key_name));
+          if (player_info.keys[key_name] === key_code) {
+            const e = new LF2UIKeyEvent(player_id, key_name)
+            ui.on_key_up(e);
+          }
         }
       }
     }

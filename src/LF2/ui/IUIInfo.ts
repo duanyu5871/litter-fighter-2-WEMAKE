@@ -1,14 +1,14 @@
 import IStyle from "../defines/IStyle";
-import { IImageInfo } from "../loader/IImageInfo";
 import { IComponentInfo } from "./IComponentInfo";
-import { IUIImgInfo as IUIImageInfo } from "./IUIImgInfo";
+import { IUIImgInfo } from "./IUIImgInfo";
+import { IUITxtInfo } from "./IUITxtInfo";
 export type TComponentInfo = IComponentInfo | string
 export interface IAction {
   name: string;
   args?: any[];
 }
 export type TAction = IAction | string
-
+export type TUITxtInfo = IUITxtInfo | string
 export interface IUIInfo {
   /**
    * 节点ID
@@ -25,7 +25,7 @@ export interface IUIInfo {
    * @memberof IUIInfo
    */
   name?: string;
-  img?: IUIImageInfo[] | IUIImageInfo;
+  img?: IUIImgInfo[] | IUIImgInfo;
   opacity?: number;
   which?: number | string;
   center?: number[] | string;
@@ -38,8 +38,7 @@ export interface IUIInfo {
   flip_y?: boolean;
   color?: string;
   component?: TComponentInfo | TComponentInfo[];
-  style?: IStyle;
-  txt?: string;
+  txt?: TUITxtInfo;
   actions?: {
     click: TAction | TAction[];
     resume?: TAction | TAction[];

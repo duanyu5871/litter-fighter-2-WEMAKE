@@ -1,5 +1,6 @@
 {
   "id": "how_many_computer",
+  "name": "how_many_computer",
   "img": {
     "path": "sprite/CMC.png",
     "w": 365,
@@ -9,108 +10,124 @@
   "visible": false,
   "items": [
     {
-      "txt": "0",
+      "txt": {
+        "value": "0",
+        "style": {
+          "font": "16px Arial"
+        }
+      },
       "pos": "30,70",
       "auto_focus": true,
       "component": [
         "opacity_hover(0.5,1)",
         "com_number(0)",
         "Reachable(com_num)"
-      ],
-      "style": {
-        "font": "16px Arial"
-      }
+      ]
     },
     {
-      "txt": "1",
+      "txt": {
+        "value": "1",
+        "style": {
+          "font": "16px Arial"
+        }
+      },
       "pos": "70,70",
       "auto_focus": true,
       "component": [
         "opacity_hover(0.5,1)",
         "com_number(1)",
         "Reachable(com_num)"
-      ],
-      "style": {
-        "font": "16px Arial"
-      }
+      ]
     },
     {
-      "txt": "2",
+      "txt": {
+        "value": "2",
+        "style": {
+          "font": "16px Arial"
+        }
+      },
       "pos": "110,70",
       "auto_focus": true,
       "component": [
         "opacity_hover(0.5,1)",
         "com_number(2)",
         "Reachable(com_num)"
-      ],
-      "style": {
-        "font": "16px Arial"
-      }
+      ]
     },
     {
-      "txt": "3",
+      "txt": {
+        "value": "3",
+        "style": {
+          "font": "16px Arial"
+        }
+      },
       "pos": "150,70",
       "auto_focus": true,
       "component": [
         "opacity_hover(0.5,1)",
         "com_number(3)",
         "Reachable(com_num)"
-      ],
-      "style": {
-        "font": "16px Arial"
-      }
+      ]
     },
     {
-      "txt": "4",
+      "txt": {
+        "value": "4",
+        "style": {
+          "font": "16px Arial"
+        }
+      },
       "pos": "190,70",
       "auto_focus": true,
       "component": [
         "opacity_hover(0.5,1)",
         "com_number(4)",
         "Reachable(com_num)"
-      ],
-      "style": {
-        "font": "16px Arial"
-      }
+      ]
     },
     {
-      "txt": "5",
+      "txt": {
+        "value": "5",
+        "style": {
+          "font": "16px Arial"
+        }
+      },
       "pos": "230,70",
       "auto_focus": true,
       "component": [
         "opacity_hover(0.5,1)",
         "com_number(5)",
         "Reachable(com_num)"
-      ],
-      "style": {
-        "font": "16px Arial"
-      }
+      ]
     },
     {
-      "txt": "6",
+      "txt": {
+        "value": "6",
+        "style": {
+          "font": "16px Arial"
+        }
+      },
       "pos": "270,70",
       "auto_focus": true,
       "component": [
         "opacity_hover(0.5,1)",
         "com_number(6)",
         "Reachable(com_num)"
-      ],
-      "style": {
-        "font": "16px Arial"
-      }
+      ]
     },
     {
-      "txt": "7",
+      "txt": {
+        "value": "7",
+        "style": {
+          "font": "16px Arial"
+        }
+      },
       "pos": "310,70",
       "auto_focus": true,
       "component": [
         "opacity_hover(0.5,1)",
         "com_number(7)",
         "Reachable(com_num)"
-      ],
-      "style": {
-        "font": "16px Arial"
-      }
+      ]
     }
   ]
 }

@@ -1,6 +1,10 @@
 {
   "id": "bg_r_face",
   "name": "背景右边脸",
+  "center": "1, 0",
+  "size": "0, 450",
+  "pos": "794, 0",
+  "flip_x": true,
   "component": [
     "random_img_on_layout_resume(entry_page)"
   ],
@@ -70,9 +74,5 @@
       "h": 546,
       "path": "sprite/MENU_BACK13.png"
     }
-  ],
-  "center": "1, 0",
-  "size": "0, 450",
-  "pos": "794, 0",
-  "flip_x": true
+  ]
 }

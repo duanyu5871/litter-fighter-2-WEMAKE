@@ -38,6 +38,20 @@ export async function make_zip_and_json(
   src_dir = src_dir.replace(/\\/g, "/");
   out_dir = out_dir.replace(/\\/g, "/");
   console.log("zipping", src_dir, "=>", join(out_dir, zip_name));
+
+  const layout_dir = src_dir + '/layouts'
+  const layout_index_file = src_dir + '/layouts/index.json'
+  await fs.unlink(layout_index_file).catch(() => { });
+  await fs.readdir(layout_dir).then((names) => {
+    const paths: string[] = []
+    for (const name of names) {
+      if (!name.endsWith('.json')) continue;
+      paths.push('layouts/' + name)
+    }
+    const str = JSON.stringify(paths, null, 2);
+    return fs.writeFile(layout_index_file, str)
+  })
+
   if (!(await is_dir(src_dir)))
     throw new Error("[make_zip_and_json] src_dir " + src_dir + "不是目录");
   if (!(await is_dir(out_dir)))
@@ -46,7 +60,7 @@ export async function make_zip_and_json(
   const zip_path = join(out_dir, zip_name);
   const inf_path = join(out_dir, zip_name + ".json");
 
-  await fs.unlink(zip_path).catch(() => {});
+  await fs.unlink(zip_path).catch(() => { });
   await zip.compressDir(src_dir, zip_path, { ignoreBase: true });
 
   async function read_sub_info_json(path: string, infos: any = {}) {

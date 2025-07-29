@@ -43,8 +43,11 @@
       "component": "game_loading_file_name()",
       "pos": "10,420",
       "center": "0,0",
-      "style": {
-        "font": "16px Arial"
+      "txt": {
+        "value": "",
+        "style": {
+          "font": "16px Arial"
+        }
       }
     },
     {

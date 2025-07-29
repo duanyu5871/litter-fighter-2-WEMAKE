@@ -1,5 +1,6 @@
 {
   "id": "menu",
+  "name": "game_prepare_menu",
   "img": {
     "path": "sprite/MENU_CLIP3.png",
     "x": 348,

@@ -1,53 +1,144 @@
 {
-  "img": { "path": "sprite/MENU_CLIP5.png", "x": 0, "y": 389, "w": 530, "h": 200 } ,
+  "name": "玩家按键提示",
+  "img": {
+    "path": "sprite/MENU_CLIP5.png",
+    "x": 0,
+    "y": 389,
+    "w": 530,
+    "h": 200
+  },
   "pos": "0,0,2",
   "items": [
     {
       "pos": "143,60,0.1",
       "items": [
-        { "pos": "0,000,0.1", "component": "key_txt(1,U)" },
-        { "pos": "0,020,0.1", "component": "key_txt(1,D)" },
-        { "pos": "0,040,0.1", "component": "key_txt(1,L)" },
-        { "pos": "0,060,0.1", "component": "key_txt(1,R)" },
-        { "pos": "0,080,0.1", "component": "key_txt(1,a)" },
-        { "pos": "0,100,0.1", "component": "key_txt(1,j)" },
-        { "pos": "0,120,0.1", "component": "key_txt(1,d)" }
+        {
+          "pos": "0,000,0.1",
+          "component": "key_txt(1,U)"
+        },
+        {
+          "pos": "0,020,0.1",
+          "component": "key_txt(1,D)"
+        },
+        {
+          "pos": "0,040,0.1",
+          "component": "key_txt(1,L)"
+        },
+        {
+          "pos": "0,060,0.1",
+          "component": "key_txt(1,R)"
+        },
+        {
+          "pos": "0,080,0.1",
+          "component": "key_txt(1,a)"
+        },
+        {
+          "pos": "0,100,0.1",
+          "component": "key_txt(1,j)"
+        },
+        {
+          "pos": "0,120,0.1",
+          "component": "key_txt(1,d)"
+        }
       ]
     },
     {
       "pos": "250,60,0.1",
       "items": [
-        { "pos": "0,000,0.1", "component": "key_txt(2,U)" },
-        { "pos": "0,020,0.1", "component": "key_txt(2,D)" },
-        { "pos": "0,040,0.1", "component": "key_txt(2,L)" },
-        { "pos": "0,060,0.1", "component": "key_txt(2,R)" },
-        { "pos": "0,080,0.1", "component": "key_txt(2,a)" },
-        { "pos": "0,100,0.1", "component": "key_txt(2,j)" },
-        { "pos": "0,120,0.1", "component": "key_txt(2,d)" }
+        {
+          "pos": "0,000,0.1",
+          "component": "key_txt(2,U)"
+        },
+        {
+          "pos": "0,020,0.1",
+          "component": "key_txt(2,D)"
+        },
+        {
+          "pos": "0,040,0.1",
+          "component": "key_txt(2,L)"
+        },
+        {
+          "pos": "0,060,0.1",
+          "component": "key_txt(2,R)"
+        },
+        {
+          "pos": "0,080,0.1",
+          "component": "key_txt(2,a)"
+        },
+        {
+          "pos": "0,100,0.1",
+          "component": "key_txt(2,j)"
+        },
+        {
+          "pos": "0,120,0.1",
+          "component": "key_txt(2,d)"
+        }
       ]
     },
     {
       "pos": "357,60,0.1",
       "items": [
-        { "pos": "0,000,0.1", "component": "key_txt(3,U)" },
-        { "pos": "0,020,0.1", "component": "key_txt(3,D)" },
-        { "pos": "0,040,0.1", "component": "key_txt(3,L)" },
-        { "pos": "0,060,0.1", "component": "key_txt(3,R)" },
-        { "pos": "0,080,0.1", "component": "key_txt(3,a)" },
-        { "pos": "0,100,0.1", "component": "key_txt(3,j)" },
-        { "pos": "0,120,0.1", "component": "key_txt(3,d)" }
+        {
+          "pos": "0,000,0.1",
+          "component": "key_txt(3,U)"
+        },
+        {
+          "pos": "0,020,0.1",
+          "component": "key_txt(3,D)"
+        },
+        {
+          "pos": "0,040,0.1",
+          "component": "key_txt(3,L)"
+        },
+        {
+          "pos": "0,060,0.1",
+          "component": "key_txt(3,R)"
+        },
+        {
+          "pos": "0,080,0.1",
+          "component": "key_txt(3,a)"
+        },
+        {
+          "pos": "0,100,0.1",
+          "component": "key_txt(3,j)"
+        },
+        {
+          "pos": "0,120,0.1",
+          "component": "key_txt(3,d)"
+        }
       ]
     },
     {
       "pos": "464,60,0.1",
       "items": [
-        { "pos": "0,000,0.1", "component": "key_txt(4,U)" },
-        { "pos": "0,020,0.1", "component": "key_txt(4,D)" },
-        { "pos": "0,040,0.1", "component": "key_txt(4,L)" },
-        { "pos": "0,060,0.1", "component": "key_txt(4,R)" },
-        { "pos": "0,080,0.1", "component": "key_txt(4,a)" },
-        { "pos": "0,100,0.1", "component": "key_txt(4,j)" },
-        { "pos": "0,120,0.1", "component": "key_txt(4,d)" }
+        {
+          "pos": "0,000,0.1",
+          "component": "key_txt(4,U)"
+        },
+        {
+          "pos": "0,020,0.1",
+          "component": "key_txt(4,D)"
+        },
+        {
+          "pos": "0,040,0.1",
+          "component": "key_txt(4,L)"
+        },
+        {
+          "pos": "0,060,0.1",
+          "component": "key_txt(4,R)"
+        },
+        {
+          "pos": "0,080,0.1",
+          "component": "key_txt(4,a)"
+        },
+        {
+          "pos": "0,100,0.1",
+          "component": "key_txt(4,j)"
+        },
+        {
+          "pos": "0,120,0.1",
+          "component": "key_txt(4,d)"
+        }
       ]
     }
   ]

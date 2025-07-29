@@ -9,19 +9,19 @@ import Ditto from "../ditto";
 import { IUINodeRenderer } from "../ditto/render/IUINodeRenderer";
 import { IDebugging, make_debugging } from "../entity/make_debugging";
 import { type IImageInfo } from "../loader/IImageInfo";
+import { ImageInfo } from "../loader/ImageInfo";
 import { filter, find } from "../utils/container_help";
 import { is_arr, is_bool, is_num, is_str } from "../utils/type_check";
 import { ICookedUIInfo } from "./ICookedUIInfo";
-import { IUIImgInfo } from "./IUIImgInfo";
 import { IUICallback } from "./IUICallback";
+import { IUIImgInfo } from "./IUIImgInfo";
 import type { IUIInfo } from "./IUIInfo";
 import { IUIKeyEvent } from "./IUIKeyEvent";
 import actor from "./action/Actor";
 import factory from "./component/Factory";
 import { UIComponent } from "./component/UIComponent";
 import read_nums from "./utils/read_nums";
-import { validate_ui_img_info as validate_ui_img_info } from "./validate_ui_img_info";
-import { ImageInfo } from "../loader/ImageInfo";
+import { validate_ui_img_info } from "./validate_ui_img_info";
 export class UINode implements IDebugging {
   static readonly TAG: string = 'UINode';
   debug!: (_0: string, ..._1: any[]) => void;
@@ -254,7 +254,7 @@ export class UINode implements IDebugging {
     return this._components;
   }
   get style(): IStyle {
-    return this.data.style || {};
+    return this.data.txt?.style || {}
   }
 
   get img_infos() {
@@ -353,8 +353,6 @@ export class UINode implements IDebugging {
       this.invoke_all_on_hide();
     }
     if (this.root === this) this.renderer.del_self();
-
-
     const { pause } = this.data.actions || {};
     pause && actor.act(this, pause);
     for (const c of this._components) c.on_pause?.();
@@ -409,8 +407,11 @@ export class UINode implements IDebugging {
       : data_or_path;
 
     if (raw_info.template) raw_info = await this.read_template(lf2, raw_info, parent)
+    const id = raw_info.id || 'uinode_with_no_id_' + Date.now()
+    const name = raw_info.name || 'uinode_with_no_name_' + Date.now()
     const ret: ICookedUIInfo = {
       ...raw_info,
+      id, name,
       pos: read_nums(raw_info.pos, 3, parent ? [0, 0, 0] : [0, -450, 0]),
       scale: read_nums(raw_info.scale, 3, [1, 1, 1]),
       center: read_nums(raw_info.center, 3, [0, 0, 0]),
@@ -419,6 +420,7 @@ export class UINode implements IDebugging {
       img_infos: [],
       items: void 0,
       templates: void 0,
+      txt: is_str(raw_info.txt) ? { value: raw_info.txt } : raw_info.txt
     };
     if (raw_info.templates) {
       for (const key in raw_info.templates) {
@@ -428,29 +430,33 @@ export class UINode implements IDebugging {
         ret.templates[key] = await this.cook_ui_info(lf2, template, parent)
       }
     }
-    const { img, txt, style } = raw_info;
+    const { img, txt } = raw_info;
     if (img) {
       const imgs = !is_arr(img) ? [img] : img// .filter((v) => validate_ui_img_info(v));
       const preload = async (img: IUIImgInfo): Promise<ImageInfo> => {
         const errors: string[] = []
         validate_ui_img_info(img, errors)
         if (errors.length) throw new Error(errors.join('\n'))
-        const { x, y, w, h, dw = w, dh = h, path } = img
+        const { x = 0, y = 0, w, h, dw = w, dh = h, path } = img
         const img_key = `${path}?${x}_${y}_${w}_${h}_${dw}_${dh}`;
         return lf2.images.find(img_key) || lf2.images.load_img(img_key, img.path, [{ type: 'crop', ...img }]);
       };
       for (const p of imgs) {
-        if (p) ret.img_infos.push(await preload(p));
+        ret.img_infos.push(await preload(p));
       }
     } else if (is_str(txt)) {
-      ret.img_infos.push(await lf2.images.load_text(txt, style));
+      ret.img_infos.push(await lf2.images.load_text(txt));
+    } else if (txt) {
+      ret.img_infos.push(await lf2.images.load_text(txt.value, txt.style));
     }
 
     const { w: img_w = 0, h: img_h = 0, scale = 1 } = ret.img_infos?.[0] || {};
-    const { size } = raw_info;
-
-    const [sw, sh] = [img_w / scale, img_h / scale];
-    const [w, h] = read_nums(size, 2, [parent ? sw : lf2.world.screen_w, parent ? sh : lf2.world.screen_h]);
+    const sw = img_w / scale;
+    const sh = img_h / scale;
+    const [w, h] = read_nums(raw_info.size, 2, [
+      parent ? sw : lf2.world.screen_w,
+      parent ? sh : lf2.world.screen_h
+    ]);
 
     // 宽或高其一为0时，使用原图宽高比例的计算之
     const dw = Math.floor(w ? w : sh ? (h * sw) / sh : 0);
@@ -603,7 +609,6 @@ export class UINode implements IDebugging {
   update(dt: number) {
     for (const i of this.children) i.update(dt);
     for (const c of this._components) if (c.enabled) c.update?.(dt);
-    this.renderer.visible = this.visible;
   }
 
   on_key_down(e: IUIKeyEvent) {
@@ -616,7 +621,10 @@ export class UINode implements IDebugging {
       i.on_key_down(e);
       if (e.stopped === 2) return;
     }
-    if ("a" === e.key) this._focused_node?.on_click();
+    if (this.focused && "a" === e.key) {
+      this.on_click();
+      e.stop_immediate_propagation();
+    }
   }
 
   on_key_up(e: IUIKeyEvent) {

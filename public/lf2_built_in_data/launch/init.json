@@ -8,13 +8,15 @@
   "items": [
     {
       "id": "tap_to_launch",
-      "txt": "点击任意位置继续",
+      "txt": {
+        "value": "点击任意位置继续",
+        "style": {
+          "font": "36px Arial",
+          "text_align": "center"
+        }
+      },
       "center": "0.5,0.5",
       "pos": "397,225,1",
-      "style": {
-        "font": "36px Arial",
-        "text_align": "center"
-      },
       "component": [
         "SineOpacity(0.1, 1, 0.25)",
         "<fade_out>!FadeOutOpacity(500)"
@@ -22,13 +24,15 @@
     },
     {
       "id": "sound_warning",
-      "txt": "开始后将播放声音，点击右上角喇叭关闭声音\n将播放背景音乐，点击右上角音符关闭背景音乐",
+      "txt": {
+        "value": "开始后将播放声音，点击右上角喇叭关闭声音\n将播放背景音乐，点击右上角音符关闭背景音乐",
+        "style": {
+          "font": "18px Arial",
+          "text_align": "center"
+        }
+      },
       "center": "0.5,0.5",
       "pos": "397,400,1",
-      "style": {
-        "font": "18px Arial",
-        "text_align": "center"
-      },
       "component": [
         "SineOpacity(0.1, 1, 0.25)",
         "<fade_out>!FadeOutOpacity(500)"
@@ -147,7 +151,13 @@
     {
       "id": "long_text",
       "txt2": "大部分玩法、美术、音效音乐来自 \"Litter Fighter 2\" \n原作：Marti Wong，Starsky Wong.\n\n\"LF2:Remake\" created by Gim in 2024.\n\n Click anywhere to continue ",
-      "txt": "gameplays, arts, and sounds are all from \"Litter Fighter 2\" basically.\ncreated by Marti Wong and Starsky Wong in 1999.\n\n\"LF2:Remake\" created by Gim in 2024.",
+      "txt": {
+        "value": "gameplays, arts, and sounds are all from \"Litter Fighter 2\" basically.\ncreated by Marti Wong and Starsky Wong in 1999.\n\n\"LF2:Remake\" created by Gim in 2024.",
+        "style": {
+          "font": "18px Arial",
+          "text_align": "center"
+        }
+      },
       "center": "0.5,0",
       "pos": "397,150,2",
       "opacity": 0,
@@ -165,11 +175,7 @@
             1000
           ]
         }
-      ],
-      "style": {
-        "font": "18px Arial",
-        "text_align": "center"
-      }
+      ]
     }
   ]
 }
