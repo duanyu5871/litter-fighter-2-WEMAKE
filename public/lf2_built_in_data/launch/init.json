@@ -176,6 +176,11 @@
           ]
         }
       ]
+    },
+    {
+      "template": "launch/loading_anim.json",
+      "id": "loading",
+      "pos": "760, 430"
     }
   ]
 }

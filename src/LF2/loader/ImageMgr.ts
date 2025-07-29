@@ -17,6 +17,8 @@ import { is_int, is_non_nagative_int, is_positive_int } from "../utils";
 import { IImageInfo } from "./IImageInfo";
 import { ImageInfo } from "./ImageInfo";
 import { TextImageInfo } from "./TextImageInfo";
+import { ImageOperation_Crop } from "./ImageOperation_Crop";
+import { validate_ui_img_operation_crop } from "./validate_ui_img_operation_crop";
 
 export type TPicture = IPicture<THREE.Texture>;
 export const texture_loader = new THREE.TextureLoader();
@@ -30,6 +32,7 @@ export class ImageMgr {
   async create_img_info(key: string, src: string, operations?: ImageOperation[]): Promise<ImageInfo> {
     const [blob_url, src_url] = await this.lf2.import_resource(src);
     const img = await create_img_ele(blob_url);
+    img.setAttribute('src-url', src_url)
 
     const scale = Math.max(1,
       Number(
@@ -37,18 +40,13 @@ export class ImageMgr {
         src_url.match(/@(\d)[x|X]\/(.*)(.png|.webp)$/)?.[1]
       ) || 1
     )
+    img.setAttribute('scale', '' + scale)
 
     const vaild_operations = operations?.filter(v => {
       let vaild = true;
       switch (v.type) {
         case "crop":
-          if (!is_non_nagative_int(v.x)) { vaild = false }
-          if (!is_non_nagative_int(v.y)) { vaild = false }
-          if (!is_positive_int(v.w)) { vaild = false }
-          if (!is_positive_int(v.h)) { vaild = false }
-          if ('dw' in v && !is_positive_int(v.dw)) { vaild = false }
-          if ('dh' in v && !is_positive_int(v.dh)) { vaild = false }
-          return vaild
+          return validate_ui_img_operation_crop(v)
         case "resize":
           if (!is_positive_int(v.w)) { vaild = false }
           if (!is_positive_int(v.h)) { vaild = false }
@@ -68,7 +66,7 @@ export class ImageMgr {
       });
     }
 
-    let cvs: HTMLCanvasElement | null = null
+    let cvs: HTMLCanvasElement | null = null;
     for (const op of vaild_operations) cvs = this.edit_image(cvs || img, op)
 
     const blob = await get_blob(cvs!).catch((e) => {
@@ -243,15 +241,18 @@ export class ImageMgr {
     // debugger
     switch (op.type) {
       case 'crop': {
+        const scale = Number(src.getAttribute("scale")) || 1
         const ret = document.createElement("canvas")
-        const w = op.dw ?? op.w
-        const h = op.dh ?? op.h
-        const dw = ret.width = w > 0 ? w : src.width;
-        const dh = ret.height = h > 0 ? h : src.height;
-        const sw = op.w > 0 ? op.w : src.width;
-        const sh = op.h > 0 ? op.h : src.height;
+        ret.setAttribute('scale', '' + scale)
+        ret.setAttribute('src-url', src.getAttribute('src-url') || '')
+        const sx = op.x ? op.x * scale : 0;
+        const sy = op.y ? op.y * scale : 0;
+        const sw = op.w ? op.w * scale : src.width;
+        const sh = op.h ? op.h * scale : src.height;
+        ret.width = op.dw ? op.dw * scale : sw;
+        ret.height = op.dh ? op.dh * scale : sh
         const dst_ctx = ret.getContext('2d');
-        dst_ctx?.drawImage(src, op.x || 0, op.y || 0, sw, sh, 0, 0, dw, dh)
+        dst_ctx?.drawImage(src, sx, sy, sw, sh, 0, 0, ret.width, ret.height)
         return ret;
       }
       case 'resize': {
@@ -313,15 +314,6 @@ function error_texture() {
 }
 export interface ImageOperation_Resize extends ISize {
   type: 'resize';
-}
-export interface ImageOperation_Crop {
-  type: 'crop';
-  x?: number;
-  y?: number;
-  w: number;
-  h: number;
-  dw?: number,
-  dh?: number,
 }
 export type ImageOperation = ImageOperation_Crop | ImageOperation_Resize;
 

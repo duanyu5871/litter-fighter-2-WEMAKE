@@ -1,13 +1,10 @@
-import { ISprite } from "../../3d/ISprite";
-import Easing from "../../animation/Easing";
 import FSM, { IState } from "../../base/FSM";
 import Invoker from "../../base/Invoker";
 import Ditto from "../../ditto";
-import { TPicture } from "../../loader/ImageMgr";
-import { make_arr } from "../../utils/array/make_arr";
-import ease_linearity from "../../utils/ease_method/ease_linearity";
+import { IUIKeyEvent } from "../IUIKeyEvent";
 import type { UINode } from "../UINode";
 import { FadeOutOpacity } from "./FadeOutOpacity";
+import { ImgLoop } from "./ImgLoop";
 import { OpacityAnimation } from "./OpacityAnimation";
 import { PositionAnimation } from "./PositionAnimation";
 import { ScaleAnimation } from "./ScaleAnimation";
@@ -22,7 +19,7 @@ enum Status {
   End = "End",
 }
 
-export default class LaunchPageLogic extends UIComponent {
+export class LaunchPageLogic extends UIComponent {
   protected fsm: FSM<Status, IState<Status>>;
   get entry_name(): string {
     return this.args[0] || "";
@@ -34,31 +31,20 @@ export default class LaunchPageLogic extends UIComponent {
   protected long_text!: UINode;
   protected _prel_loaded: boolean = false;
   protected _dispose_jobs = new Invoker();
-  protected _unmount_jobs = new Invoker();
-  protected _loading_sprite: ISprite;
-  protected _loading_imgs: TPicture[] = [];
-  protected _loading_idx_anim = new Easing(0, 44).set_duration(1000)
-    .set_ease_method(ease_linearity)
-    .set_times(0)
-    .set_fill_mode(1)
-
 
   constructor(layout: UINode, f_name: string) {
     super(layout, f_name);
-    this._loading_sprite = new Ditto.SpriteNode(this.lf2);
+    this.__debugging = true
     this.fsm = new FSM<Status>().add({
       key: Status.TapHints,
       enter: () => {
-        if (this._prel_loaded)
-          this._loading_idx_anim.set_times(1).set_count(0)
-        else
-          this._loading_idx_anim.set_times(0)
+        this.node.search_component(ImgLoop, 'loading', (c) => {
+          c.anim.set_times(this._prel_loaded ? 1 : 0).set_count(0)
+        })
         this.tap_to_launch.find_component(SineOpacity)!.enabled = true;
         this.sound_warning.find_component(SineOpacity)!.enabled = true;
         this.tap_to_launch.find_component(FadeOutOpacity)!.enabled = false;
         this.sound_warning.find_component(FadeOutOpacity)!.enabled = false;
-
-
       },
       leave: () => {
         this.tap_to_launch.find_component(SineOpacity)!.enabled = false
@@ -132,15 +118,12 @@ export default class LaunchPageLogic extends UIComponent {
       }
     }, {
       key: Status.End,
-      update: (dt) => {
-        this.update_loading_img(dt)
-      }
+      update: (dt) => { }
     })
   }
-
   protected on_prel_loaded() {
     this._prel_loaded = true;
-    this._loading_idx_anim.set_times(4).set_count(0)
+    this.node.search_component(ImgLoop, 'loading', (c) => { c.anim.set_times(4).set_count(0) })
   }
   override on_start(): void {
     this._prel_loaded = this.lf2.uiinfos_loaded
@@ -149,30 +132,6 @@ export default class LaunchPageLogic extends UIComponent {
     super.init(...args);
     this.lf2.sounds.load("launch/093.wav.mp3", "launch/093.wav.mp3");
     this.lf2.sounds.load("launch/main.wma.mp3", "launch/main.wma.mp3");
-    const max_col = 15;
-    const cell_w = 33 * 4;
-    const cell_h = 21 * 4;
-    const jobs = make_arr(44, async (i) => {
-      const x = cell_w * (i % max_col);
-      const y = cell_h * Math.floor(i / max_col);
-      const info = await this.lf2.images.load_img(
-        "SMALL_LOADING_" + i,
-        "launch/SMALL_LOADING.png",
-        [{
-          type: 'crop',
-          x, y, w: cell_w, h: cell_h,
-        }]
-      );
-      return this.lf2.images.create_pic_by_img_info(info);
-    });
-    Promise.all(jobs).then((s) => { this._loading_imgs = s });
-    this.node.sprite.add(
-      this._loading_sprite.set_position(
-        this.node.w - 33,
-        -this.node.h + 21,
-        0,
-      ),
-    );
     this._dispose_jobs.add(
       this.lf2.callbacks.add({
         on_prel_loaded: () => this.on_prel_loaded(),
@@ -192,38 +151,27 @@ export default class LaunchPageLogic extends UIComponent {
     this.tap_to_launch = this.node.find_child("tap_to_launch")!;
     this.sound_warning = this.node.find_child("sound_warning")!;
     this.long_text = this.node.find_child("long_text")!;
-    this._unmount_jobs.add(
-      this.lf2.pointings.callback.add({
-        on_pointer_down: () => this.on_pointer_down(),
-      }),
-    );
     this.fsm.use(Status.TapHints)
   }
-  override on_key_down(): void {
-    this.on_pointer_down();
+  override on_key_down(e: IUIKeyEvent): void {
+    this.debug('on_key_down', e)
+    e.stop_immediate_propagation()
+    this.on_tap();
   }
-  on_pointer_down() {
+  override on_click(): boolean | void {
+    this.debug('on_click')
+    this.on_tap()
+  }
+  on_tap() {
     const status = this.fsm.state?.key
     switch (status) {
       case Status.TapHints:
         this.fsm.use(Status.Introduction);
         return;
     }
+    return true;
   }
-  override on_pause(): void {
-    super.on_pause();
-    this._unmount_jobs.invoke_and_clear();
-  }
-  update_loading_img(dt: number) {
-    if (!this._loading_imgs.length) return;
-    this._loading_idx_anim.update(dt)
-    const idx = Math.floor(this._loading_idx_anim.value);
-    const pic = this._loading_imgs[idx];
-    if (pic) this._loading_sprite.set_info(pic).apply();
-  }
-
   override update(dt: number): void {
-    this.update_loading_img(dt)
     this.fsm.update(dt);
   }
 }

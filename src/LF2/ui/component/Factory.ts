@@ -15,7 +15,7 @@ import GamePrepareLogic from "./GamePrepareLogic";
 import { HorizontalLayout } from "./HorizontalLayout";
 import { Items } from "./Items";
 import { Jalousie } from "./Jalousie";
-import LaunchPageLogic from "./LaunchPageLogic";
+import { LaunchPageLogic } from "./LaunchPageLogic";
 import LoadingFileNameDisplayer from "./LoadingFileNameDisplayer";
 import { OpacityAnimation } from "./OpacityAnimation";
 import OpacityHover from "./OpacityHover";
@@ -42,6 +42,7 @@ import { UIComponent } from "./UIComponent";
 import VerticalLayout from "./VerticalLayout";
 import { VsModeLogic } from "./VsModeLogic";
 import { IUICompnentCallbacks } from "./IUICompnentCallbacks";
+import { ImgLoop } from "./ImgLoop";
 
 class ComponentFactory {
   static readonly TAG = `ComponentFactory`;
@@ -82,7 +83,8 @@ class ComponentFactory {
     [OpacityAnimation.TAG, OpacityAnimation],
     [ScaleAnimation.TAG, ScaleAnimation],
     [PositionAnimation.TAG, PositionAnimation],
-    [Sounds.TAG, Sounds]
+    [Sounds.TAG, Sounds],
+    [ImgLoop.TAG, ImgLoop],
   ]);
 
   register(key: string, Cls: typeof UIComponent) {

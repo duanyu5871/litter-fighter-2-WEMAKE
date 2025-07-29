@@ -23,7 +23,7 @@ export class RandomImgOnLayoutResume extends UIComponent {
   override on_resume(): void {
     super.on_resume?.();
     const l = this.img_idx_list;
-    if (!l.length) this.node.img_infos.forEach((_, i) => l.push(i));
+    if (!l.length) this.node.imgs.forEach((_, i) => l.push(i));
     if (!l.length) return;
     this.node.img_idx = Math.floor(local_random() * l.length);
   }

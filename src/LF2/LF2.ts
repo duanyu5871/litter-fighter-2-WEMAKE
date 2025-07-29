@@ -590,7 +590,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
     if (this._uiinfos.length) return this._uiinfos;
     const array = await this.import_json("layouts/index.json").catch((e) => []);
     this._uiinfos_loaded = false;
-    const paths: string[] = ["launch/init.json"];
+    const paths: string[] = ["launch/init.json","launch/loading_anim.json"];
     for (const element of array) {
       if (is_str(element)) paths.push(element);
       else
@@ -660,10 +660,6 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
   }
 
   pop_ui(): void {
-    if (this._ui_stacks.length <= 1) {
-      Ditto.Warn(LF2.TAG + "::pop_layout", "can not pop top ui!");
-      return;
-    }
     const popped = this._ui_stacks.pop();
     popped?.on_pause();
     popped?.on_stop();

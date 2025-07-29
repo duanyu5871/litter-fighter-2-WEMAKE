@@ -366,7 +366,7 @@ function App() {
 
   useShortcut("F1", 0, () => lf2?.world.set_paused(!paused));
   useShortcut("F2", 0, () => update_once());
-  useShortcut("F4", 0, () => lf2?.pop_ui());
+  useShortcut("F4", 0, () => lf2 && lf2.ui_stacks.length >= 2 && lf2.pop_ui());
   useShortcut("F5", 0, () => set_fast_forward(!fast_forward));
 
   useShortcut("F6", 0, () => {
@@ -519,7 +519,7 @@ function App() {
         <Show show={layout_id && Number(lf2?.ui_stacks.length) > 1}>
           <ToggleImgButton
             shortcut="F4"
-            onClick={() => lf2?.pop_ui()}
+            onClick={() => lf2 && lf2.ui_stacks.length >= 2 && lf2.pop_ui()}
             src={[img_btn_2_3]}
           />
         </Show>

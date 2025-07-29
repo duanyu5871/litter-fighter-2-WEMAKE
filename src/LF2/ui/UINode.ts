@@ -257,13 +257,13 @@ export class UINode implements IDebugging {
     return this.data.txt?.style || {}
   }
 
-  get img_infos() {
+  get imgs() {
     return this._img_infos.value;
   }
-  set img_infos(v: IImageInfo[]) {
-    this.set_img_infos(v);
+  set imgs(v: IImageInfo[]) {
+    this.set_imgs(v);
   }
-  set_img_infos(v: IImageInfo[]): this {
+  set_imgs(v: IImageInfo[]): this {
     this._img_infos.set(1, v);
     return this;
   }
@@ -377,7 +377,7 @@ export class UINode implements IDebugging {
   }
 
   to_next_img() {
-    const { img_idx, img_infos } = this;
+    const { img_idx, imgs: img_infos } = this;
     if (!img_infos?.length) return;
     this._img_idx = () => (img_idx + 1) % img_infos.length;
   }
@@ -433,16 +433,31 @@ export class UINode implements IDebugging {
     const { img, txt } = raw_info;
     if (img) {
       const imgs = !is_arr(img) ? [img] : img// .filter((v) => validate_ui_img_info(v));
-      const preload = async (img: IUIImgInfo): Promise<ImageInfo> => {
+      const preload = (img: IUIImgInfo): Promise<ImageInfo>[] => {
         const errors: string[] = []
         validate_ui_img_info(img, errors)
         if (errors.length) throw new Error(errors.join('\n'))
-        const { x = 0, y = 0, w, h, dw = w, dh = h, path } = img
-        const img_key = `${path}?${x}_${y}_${w}_${h}_${dw}_${dh}`;
-        return lf2.images.find(img_key) || lf2.images.load_img(img_key, img.path, [{ type: 'crop', ...img }]);
+        const { x = 0, y = 0, w = 0, h = 0, count = 0, path, col: cols = 1, row: rows = 1 } = img
+        const ret: Promise<ImageInfo>[] = []
+        for (let row = 0; row < rows; ++row) {
+          for (let col = 0; col < cols; ++col) {
+            const idx = row * cols + col;
+            if (count > 0 && idx >= count) {
+              row == rows
+              break;
+            }
+            const cpy = { ...img }
+            cpy.x = x + col * w;
+            cpy.y = y + row * h;
+            const img_key = `${path}?${cpy.x}_${cpy.y}_${cpy.w}_${cpy.h}_${cpy.dw}_${cpy.dh}`;
+            ret.push(lf2.images.load_img(img_key, cpy.path, [{ type: 'crop', ...cpy }]));
+          }
+        }
+        return ret;
       };
       for (const p of imgs) {
-        ret.img_infos.push(await preload(p));
+        for (const j of preload(p))
+          ret.img_infos.push(await j);
       }
     } else if (is_str(txt)) {
       ret.img_infos.push(await lf2.images.load_text(txt));
@@ -562,7 +577,7 @@ export class UINode implements IDebugging {
   }
 
   private _cook_img_idx(get_val: IValGetter<UINode>) {
-    const { img_infos } = this;
+    const { imgs: img_infos } = this;
     if (!img_infos?.length) return;
     const { which } = this.data;
     if (is_str(which)) {
@@ -723,12 +738,12 @@ export class UINode implements IDebugging {
    */
   search_component<T extends TCls>(
     type: T,
-    condition: TCond<T> | string = () => 1,
+    condition: TCond<T> | string = () => 1, handler?: (c: InstanceType<T>) => void
   ): InstanceType<T> | undefined {
-    const ret = this.find_component(type, condition);
+    const ret = this.find_component(type, condition, handler);
     if (ret) return ret;
     for (const i of this._children) {
-      const ret = i.search_component(type, condition);
+      const ret = i.search_component(type, condition, handler);
       if (ret) return ret;
     }
   }

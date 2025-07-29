@@ -65,7 +65,7 @@ export class UINodeRenderer implements IUINodeRenderer, IDebugging {
   }
   protected async create_texture(): Promise<THREE.Texture> {
     const img_idx = this.node.img_idx;
-    const img_info = this.node.img_infos?.[img_idx];
+    const img_info = this.node.imgs[img_idx];
     if (!img_info) {
       return this.node.data.color ? white_texture() : empty_texture();
     }
