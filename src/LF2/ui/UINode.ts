@@ -692,16 +692,20 @@ export class UINode implements IDebugging {
 
   /**
    * 查找当前layout符合条件的的component
-   * @param type
-   * @param condition
-   * @returns
+   *
+   * @template T
+   * @param {T} type
+   * @param {(TCond<T> | string)} [condition=() => 1]
+   * @param {(c: InstanceType<T>) => void} [handler]
+   * @return {(InstanceType<T> | undefined)}
+   * @memberof UINode
    */
   find_component<T extends TCls<UIComponent>>(
     type: T,
     condition: TCond<T> | string = () => 1,
     handler?: (c: InstanceType<T>) => void
   ): InstanceType<T> | undefined {
-    const c = find(
+    const ret = find(
       this.components,
       (v) => {
         if (!(v instanceof type)) return 0;
@@ -710,21 +714,26 @@ export class UINode implements IDebugging {
       },
     ) as InstanceType<T> | undefined;
 
-    c && handler?.(c)
-    return c
+    ret && handler?.(ret)
+    return ret
   }
 
   /**
    * 查找当前layout符合条件的的component数组
-   * @param type
-   * @param condition
-   * @returns
+   *
+   * @template T
+   * @param {T} type
+   * @param {(TCond<T> | string)} [condition=() => 1]
+   * @param {(c: InstanceType<T>[]) => void} [handler]
+   * @return {InstanceType<T>[]}
+   * @memberof UINode
    */
   find_components<T extends TCls<UIComponent>>(
     type: T,
     condition: TCond<T> | string = () => 1,
+    handler?: (c: InstanceType<T>[]) => void
   ): InstanceType<T>[] {
-    return filter(
+    const ret = filter(
       this.components,
       (v) => {
         if (!(v instanceof type)) return 0;
@@ -732,6 +741,8 @@ export class UINode implements IDebugging {
         return condition(v as any);
       },
     ) as InstanceType<T>[];
+    ret.length && handler?.(ret);
+    return ret;
   }
 
   /**
