@@ -1,5 +1,5 @@
 import { is_non_blank_str, is_non_nagative_int, is_positive_int } from "../utils";
-import { IUIImgInfo } from "./IUIImgInfo";
+import { IUIImgInfo } from "./IUIImgInfo.dat";
 
 export function validate_ui_img_info(any: any, errors: string[] = []): any is IUIImgInfo {
   const fn = 'validate_ui_img_info';

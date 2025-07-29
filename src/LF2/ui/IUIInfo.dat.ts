@@ -1,13 +1,9 @@
-import IStyle from "../defines/IStyle";
-import { IComponentInfo } from "./IComponentInfo";
-import { IUIImgInfo } from "./IUIImgInfo";
-import { IUITxtInfo } from "./IUITxtInfo";
+import type { IComponentInfo } from "./IComponentInfo";
+import type { IUIAction } from "./IUIAction";
+import type { IUIImgInfo } from "./IUIImgInfo.dat";
+import type { IUITxtInfo } from "./IUITxtInfo.dat";
 export type TComponentInfo = IComponentInfo | string
-export interface IAction {
-  name: string;
-  args?: any[];
-}
-export type TAction = IAction | string
+export type TAction = IUIAction | string
 export type TUITxtInfo = IUITxtInfo | string
 export interface IUIInfo {
   /**

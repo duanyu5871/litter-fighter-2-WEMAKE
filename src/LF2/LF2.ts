@@ -31,7 +31,7 @@ import { ImageMgr } from "./loader/ImageMgr";
 import { PlayerInfo } from "./PlayerInfo";
 import { Stage } from "./stage";
 import { ICookedUIInfo } from "./ui/ICookedUIInfo";
-import { IUIInfo } from "./ui/IUIInfo";
+import { IUIInfo } from "./ui/IUIInfo.dat";
 import { LF2UIKeyEvent } from "./ui/LF2UIKeyEvent";
 import { UINode } from "./ui/UINode";
 import {

@@ -11,8 +11,8 @@
     ]
   ],
   "items": [
-    "layouts/bg_l_face.json",
-    "layouts/bg_r_face.json",
+    "layouts/bg_l_face.ui.json",
+    "layouts/bg_r_face.ui.json",
     {
       "id": "main_menu",
       "img": {

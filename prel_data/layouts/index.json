@@ -1,6 +1,6 @@
 [
-  "layouts/bg_l_face.json",
-  "layouts/bg_r_face.json",
+  "layouts/bg_l_face.ui.json",
+  "layouts/bg_r_face.ui.json",
   "layouts/ctrl_settings_page.json",
   "layouts/demo_mode_page.json",
   "layouts/entry_page.json",

@@ -1,6 +1,6 @@
 import type { IImageInfo } from "../loader/IImageInfo";
-import type { IUIInfo } from "./IUIInfo";
-import { IUITxtInfo } from "./IUITxtInfo";
+import type { IUIInfo } from "./IUIInfo.dat";
+import { IUITxtInfo } from "./IUITxtInfo.dat";
 
 export interface ICookedUIInfo extends IUIInfo {
   id: string;

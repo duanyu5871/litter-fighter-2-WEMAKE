@@ -1,6 +1,6 @@
 import Ditto from "../../ditto";
 import { is_str } from "../../utils/type_check";
-import { IUIInfo } from "../IUIInfo";
+import { IUIInfo } from "../IUIInfo.dat";
 import type { UINode } from "../UINode";
 import { parse_call_func_expression } from "../utils/parse_call_func_expression";
 import BackgroundNameText from "./BackgroundNameText";
