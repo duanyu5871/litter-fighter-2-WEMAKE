@@ -696,7 +696,11 @@ export class UINode implements IDebugging {
    * @param condition
    * @returns
    */
-  find_component<T extends TCls>(type: T, condition: TCond<T> | string = () => 1, handler?: (c: InstanceType<T>) => void): InstanceType<T> | undefined {
+  find_component<T extends TCls<UIComponent>>(
+    type: T,
+    condition: TCond<T> | string = () => 1,
+    handler?: (c: InstanceType<T>) => void
+  ): InstanceType<T> | undefined {
     const c = find(
       this.components,
       (v) => {
@@ -716,7 +720,7 @@ export class UINode implements IDebugging {
    * @param condition
    * @returns
    */
-  find_components<T extends TCls>(
+  find_components<T extends TCls<UIComponent>>(
     type: T,
     condition: TCond<T> | string = () => 1,
   ): InstanceType<T>[] {
@@ -732,13 +736,18 @@ export class UINode implements IDebugging {
 
   /**
    * 查找当前layout以及子layout符合条件的component
-   * @param type
-   * @param condition
-   * @returns
+   *
+   * @template T 
+   * @param {T} type
+   * @param {(TCond<T> | string)} [condition=() => 1]
+   * @param {(c: InstanceType<T>) => void} [handler]
+   * @return {(InstanceType<T> | undefined)}
+   * @memberof UINode
    */
-  search_component<T extends TCls>(
+  search_component<T extends TCls<UIComponent>>(
     type: T,
-    condition: TCond<T> | string = () => 1, handler?: (c: InstanceType<T>) => void
+    condition: TCond<T> | string = () => 1,
+    handler?: (c: InstanceType<T>) => void
   ): InstanceType<T> | undefined {
     const ret = this.find_component(type, condition, handler);
     if (ret) return ret;
@@ -750,27 +759,44 @@ export class UINode implements IDebugging {
 
   /**
    * 查找当前layout以及子layout符合条件的component数组
-   * @param type
-   * @param condition
-   * @returns
+   *
+   * @template T
+   * @param {T} type
+   * @param {(TCond<T> | string)} [condition=() => 1]
+   * @param {(c: InstanceType<T>[]) => void} [handler]
+   * @return {InstanceType<T>[]}
+   * @memberof UINode
    */
-  search_components<T extends TCls>(
+  search_components<T extends TCls<UIComponent>>(
     type: T,
     condition: TCond<T> | string = () => 1,
+    handler?: (c: InstanceType<T>[]) => void
   ): InstanceType<T>[] {
     const ret = this.find_components(type, condition);
     for (const i of this._children)
       ret.push(...i.search_components(type, condition));
+    ret.length && handler?.(ret);
     return ret;
   }
 
-  lookup_component<T extends TCls>(
+  /**
+   * 向上查找组件，当前节点不存在对应组件
+   *
+   * @template T
+   * @param {T} type
+   * @param {TCond<T>} [condition=() => 1]
+   * @param {(c: InstanceType<T>) => void} [handler]
+   * @return {(InstanceType<T> | undefined)}
+   * @memberof UINode
+   */
+  lookup_component<T extends TCls<UIComponent>>(
     type: T,
     condition: TCond<T> = () => 1,
+    handler?: (c: InstanceType<T>) => void
   ): InstanceType<T> | undefined {
-    const ret = this.find_component(type, condition);
+    const ret = this.find_component(type, condition, handler);
     if (ret) return ret;
-    return this.parent?.lookup_component(type, condition);
+    return this.parent?.lookup_component(type, condition, handler);
   }
 
   on_foucs(): void {
