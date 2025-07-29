@@ -6,6 +6,7 @@ import { EntityGroup } from "../../defines";
 import { Defines } from "../../defines/defines";
 import { Entity } from "../../entity/Entity";
 import { Factory } from "../../entity/Factory";
+import { ceil } from "../../utils";
 import { map_no_void } from "../../utils/container_help/map_no_void";
 import { IUIKeyEvent } from "../IUIKeyEvent";
 import BackgroundNameText from "./BackgroundNameText";
@@ -37,7 +38,7 @@ export default class GamePrepareLogic extends UIComponent<IGamePrepareLogicCallb
     return this.fsm.state?.key!;
   }
 
-  private _count_down: number = 4000;
+  private _count_down: number = 5000;
 
 
   override on_resume(): void {
@@ -123,13 +124,13 @@ export default class GamePrepareLogic extends UIComponent<IGamePrepareLogicCallb
   }, {
     key: GamePrepareState.CountingDown,
     enter: () => {
-      this._count_down = 4000;
-      this.callbacks.emit("on_countdown")(4);
+      this._count_down = 5000;
+      this.callbacks.emit("on_countdown")(ceil(this._count_down / 1000));
     },
     update: (dt) => {
-      const prev_second = Math.ceil(this._count_down / 1000);
+      const prev_second = ceil(this._count_down / 1000);
       this._count_down -= dt;
-      const curr_second = Math.ceil(this._count_down / 1000);
+      const curr_second = ceil(this._count_down / 1000);
       if (curr_second !== prev_second)
         this.callbacks.emit("on_countdown")(curr_second);
       if (this._count_down <= 0)
@@ -174,6 +175,10 @@ export default class GamePrepareLogic extends UIComponent<IGamePrepareLogicCallb
     },
   }, {
     key: GamePrepareState.Computer,
+    enter: () => {
+      this.handling_com = this.coms[0];
+      this.handling_com.fsm.use(SlotSelStatus.Fighter);
+    }
   }, {
     key: GamePrepareState.GameSetting,
     enter: () => {
@@ -258,7 +263,6 @@ export default class GamePrepareLogic extends UIComponent<IGamePrepareLogicCallb
       empty_slots.shift()!.is_com = true;
       --num;
     }
-    this.handling_com = this.coms[0]
     if (this._com_num > 0) {
       this.fsm.use(GamePrepareState.Computer);
     } else {

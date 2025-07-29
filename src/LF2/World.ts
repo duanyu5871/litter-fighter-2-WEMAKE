@@ -163,9 +163,11 @@ export class World extends WorldDataset {
     const on_update = () => {
       const time = Date.now();
       const real_dt = time - _prev_time;
-      this.lf2.ui?.update(real_dt);
       if (real_dt < this._ideally_dt * _fix_radio) return;
+      
+      this.lf2.ui?.update(real_dt);
       _update_count++;
+
       if (!this._paused) this.update_once();
       this.update_camera();
       this.bg.update();

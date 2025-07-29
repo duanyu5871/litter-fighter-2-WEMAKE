@@ -54,8 +54,7 @@ export default class SlotSelLogic extends UIComponent {
       this.joined = false;
       this.team_decided = false;
       this.character_decided = false;
-      if (this.gpl.state !== GamePrepareState.Computer)
-        this.is_com = false;
+      if (this.gpl.state !== GamePrepareState.Computer) this.is_com = false;
       this.player.set_random_character('', true)
     },
     on_player_key_down: (e) => {

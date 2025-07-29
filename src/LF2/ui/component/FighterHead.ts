@@ -4,6 +4,7 @@ import Invoker from "../../base/Invoker";
 import { Defines } from "../../defines/defines";
 import Ditto from "../../ditto";
 import { PlayerInfo } from "../../PlayerInfo";
+import { between, ceil } from "../../utils";
 import type { UINode } from "../UINode";
 import GamePrepareLogic, { GamePrepareState } from "./GamePrepareLogic";
 import { UIComponent } from "./UIComponent";
@@ -17,12 +18,8 @@ import { UIComponent } from "./UIComponent";
  */
 export default class FighterHead extends UIComponent {
   static override readonly TAG = 'FighterHead'
-  get player_id() {
-    return this.args[0] || "";
-  }
-  get player(): PlayerInfo {
-    return this.lf2.players.get(this.player_id)!;
-  }
+  get player_id() { return this.args[0] || ""; }
+  get player(): PlayerInfo { return this.lf2.players.get(this.player_id)!; }
 
   get head() {
     const character_id = this.player?.character;
@@ -31,7 +28,7 @@ export default class FighterHead extends UIComponent {
     return head ?? Defines.BuiltIn_Imgs.RFACE;
   }
 
-  protected _opacity: Sine = new Sine(0.65, 1, 3);
+  protected _opacity: Sine = new Sine(0.65, 1, 6);
   protected readonly _mesh_head: ISprite;
   protected readonly _mesh_hints: ISprite;
   protected readonly _mesh_cd: ISprite;
@@ -81,9 +78,10 @@ export default class FighterHead extends UIComponent {
       }),
       this.gpl?.callbacks.add({
         on_countdown: (seconds) => {
-          this.lf2.images.p_create_pic_by_img_key(`sprite/CM${seconds + 1}.png`).then(pic => {
-            this._mesh_cd.set_info(pic).apply();
-          })
+          if (between(seconds, 1, 5))
+            this.lf2.images.p_create_pic_by_img_key(`sprite/CM${seconds}.png`).then(pic => {
+              this._mesh_cd.set_info(pic).apply();
+            })
         },
       }),
       this.gpl?.fsm.callbacks.add({

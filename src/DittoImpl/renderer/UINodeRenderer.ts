@@ -15,8 +15,6 @@ export class UINodeRenderer implements IUINodeRenderer, IDebugging {
   get world() { return this.node.lf2.world }
   get lf2() { return this.node.lf2 }
   get parent() { return this.node.renderer }
-  get visible(): boolean { return this.sprite.visible }
-  set visible(v: boolean) { this.sprite.visible = v }
   img_idx = -1
   constructor(node: UINode) {
     this.node = node;
@@ -80,6 +78,8 @@ export class UINodeRenderer implements IUINodeRenderer, IDebugging {
   set x(v: number) { this.sprite.x = v; }
   get y(): number { return this.sprite.y }
   set y(v: number) { this.sprite.y = v; }
+  get visible() { return this.sprite.visible }
+  set visible(v: boolean) { this.sprite.visible = v }
   render() {
     const [w, h] = this.node.size;
     if (this.sprite.w != w || this.sprite.h != h) {
@@ -96,7 +96,7 @@ export class UINodeRenderer implements IUINodeRenderer, IDebugging {
     this.sprite.opacity = this.node.opacity;
     this.sprite.apply()
     for (const child of this.node.children)
-      if (child.visible)
+      if (child.visible !== child.renderer.visible || child.renderer.visible)
         child.renderer.render()
   }
 }
