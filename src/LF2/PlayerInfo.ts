@@ -71,7 +71,14 @@ export class PlayerInfo implements IDebugging {
           return false;
         }
         this._info.name = is_str(name) ? name : this._info.name;
+        const prev_keys = this._info.keys;
         this._info.keys = keys ? keys : this._info.keys;
+
+        for (const k in this._info.keys) {
+          const prev = prev_keys[k as keyof TKeys];
+          const curr = this._info.keys[k as keyof TKeys]
+          this.callbacks.emit("on_key_changed")(k as keyof TKeys, curr, prev);
+        }
         return true;
       } catch (e) {
         this.warn("load", "load failed, ", e);
