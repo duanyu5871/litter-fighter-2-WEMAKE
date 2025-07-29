@@ -4,7 +4,7 @@ import { match_all } from "../utils/string_parser/match_all";
 import { match_block_once } from "../utils/string_parser/match_block";
 import { match_colon_value } from "../utils/string_parser/match_colon_value";
 import { to_num } from "../utils/type_cast/to_num";
-import { not_empty_str } from "../utils/type_check";
+import { is_non_empty_str } from "../utils/type_check";
 import cook_itr from "./cook_itr";
 
 export function make_itr_prefabs(full_str: string): IEntityData["itr_prefabs"] {
@@ -13,7 +13,7 @@ export function make_itr_prefabs(full_str: string): IEntityData["itr_prefabs"] {
     "<weapon_strength_list>",
     "<weapon_strength_list_end>",
   )?.trim();
-  if (!not_empty_str(weapon_strength_str)) return void 0;
+  if (!is_non_empty_str(weapon_strength_str)) return void 0;
   const list = match_all(
     weapon_strength_str,
     /entry:\s*(\d+)\s*(\S+)\s*\n?(.*)\n?/g,

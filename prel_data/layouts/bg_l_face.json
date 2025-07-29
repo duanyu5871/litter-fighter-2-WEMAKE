@@ -1,0 +1,75 @@
+{
+  "id": "bg_l_face",
+  "name": "背景左边脸",
+  "component": [
+    "random_img_on_layout_resume(entry_page)"
+  ],
+  "img": [
+    {
+      "w": 409,
+      "h": 546,
+      "path": "sprite/MENU_BACK1.png"
+    },
+    {
+      "w": 409,
+      "h": 546,
+      "path": "sprite/MENU_BACK2.png"
+    },
+    {
+      "w": 409,
+      "h": 546,
+      "path": "sprite/MENU_BACK3.png"
+    },
+    {
+      "w": 409,
+      "h": 546,
+      "path": "sprite/MENU_BACK4.png"
+    },
+    {
+      "w": 409,
+      "h": 546,
+      "path": "sprite/MENU_BACK5.png"
+    },
+    {
+      "w": 409,
+      "h": 546,
+      "path": "sprite/MENU_BACK6.png"
+    },
+    {
+      "w": 409,
+      "h": 546,
+      "path": "sprite/MENU_BACK7.png"
+    },
+    {
+      "w": 409,
+      "h": 546,
+      "path": "sprite/MENU_BACK8.png"
+    },
+    {
+      "w": 409,
+      "h": 546,
+      "path": "sprite/MENU_BACK9.png"
+    },
+    {
+      "w": 409,
+      "h": 546,
+      "path": "sprite/MENU_BACK10.png"
+    },
+    {
+      "w": 409,
+      "h": 546,
+      "path": "sprite/MENU_BACK11.png"
+    },
+    {
+      "w": 409,
+      "h": 546,
+      "path": "sprite/MENU_BACK12.png"
+    },
+    {
+      "w": 409,
+      "h": 546,
+      "path": "sprite/MENU_BACK13.png"
+    }
+  ],
+  "size": "0, 450"
+}

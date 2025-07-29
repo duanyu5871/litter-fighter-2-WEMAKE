@@ -3,16 +3,16 @@ import { Animation } from "../../animation/Animation";
 import { Sine } from "../../animation/Sine";
 import { Callbacks } from "../../base";
 import factory from "./Factory";
+import { IUICompnentCallbacks } from "./IUICompnentCallbacks";
 import { UIComponent } from "./UIComponent";
-export interface IJalousieCallbacks {
+export interface IJalousieCallbacks extends IUICompnentCallbacks {
   on_change?(v: Jalousie): void;
 }
 enum D {
   ns = 'ns',
   ew = 'ew',
 }
-export class Jalousie extends UIComponent {
-  readonly callbacks = new Callbacks<IJalousieCallbacks>();
+export class Jalousie extends UIComponent<IJalousieCallbacks> {
   protected _direction: D = D.ew;
   protected _anim: Animation = new Sequence(
     new Easing(0, 0).set_duration(1500),

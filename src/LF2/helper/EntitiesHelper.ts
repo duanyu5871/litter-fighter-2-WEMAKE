@@ -3,7 +3,7 @@ import { IEntityData } from "../defines";
 import { Factory } from "../entity";
 import { Entity } from "../entity/Entity";
 import LF2 from "../LF2";
-import { not_empty_str } from "../utils";
+import { is_non_empty_str } from "../utils";
 
 export class EntitiesHelper {
   readonly lf2: LF2;
@@ -24,7 +24,7 @@ export class EntitiesHelper {
     const ret: Entity[] = [];
     while (--num >= 0) {
       const entity = creator(this.lf2.world, data);
-      entity.team = not_empty_str(team) ? team : new_team();
+      entity.team = is_non_empty_str(team) ? team : new_team();
       this.lf2.random_entity_info(entity).attach();
       ret.push(entity);
     }

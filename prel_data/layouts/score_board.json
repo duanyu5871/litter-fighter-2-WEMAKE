@@ -1,10 +1,16 @@
 {
   "id": "score_board",
   "name": "UI: 分数版",
-  "component": ["vertical_layout()"],
+  "component": [
+    "vertical_layout()"
+  ],
   "items": [
     {
-      "img": "sprite/SCORE_BOARD1.png"
+      "img": {
+        "path": "sprite/SCORE_BOARD1.png",
+        "w": 490,
+        "h": 61
+      }
     },
     {
       "component": "player_score(1)",
@@ -35,7 +41,11 @@
       "template": "layouts/player_score_row.json"
     },
     {
-      "img": "sprite/SCORE_BOARD3.png",
+      "img": {
+        "path": "sprite/SCORE_BOARD3.png",
+        "w": 490,
+        "h": 32
+      },
       "items": [
         {
           "pos": "453,13",

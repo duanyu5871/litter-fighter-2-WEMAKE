@@ -1,20 +1,21 @@
-import GameKey from "../../defines/GameKey";
+import { Callbacks } from "../../base";
 import Ditto from "../../ditto";
 import { IDebugging, make_debugging } from "../../entity/make_debugging";
 import { is_num } from "../../utils";
 import { IUIKeyEvent } from "../IUIKeyEvent";
 import type { UINode } from "../UINode";
-
+import { IUICompnentCallbacks } from "./IUICompnentCallbacks";
 /**
  * 组件
  * 
  * @export
  * @class Component
  */
-export class UIComponent implements IDebugging {
+export class UIComponent<Callbacks extends IUICompnentCallbacks = IUICompnentCallbacks> implements IDebugging {
   static readonly TAG: string = "UIComponent"
   readonly node: UINode;
   readonly f_name: string;
+  readonly callbacks = new Callbacks<Callbacks>()
 
   __debugging?: boolean | undefined;
   debug(func: string, ...args: any[]): void { }
@@ -30,12 +31,8 @@ export class UIComponent implements IDebugging {
   private _args: readonly any[] = [];
   private _enabled: boolean = true;
 
-  get enabled() {
-    return this._enabled;
-  }
-  set enabled(v: boolean) {
-    this._enabled = v;
-  }
+  get enabled() { return this._enabled; }
+  set enabled(v: boolean) { this.set_enabled(v); }
   set_enabled(v: boolean): this {
     this._enabled = v;
     return this;

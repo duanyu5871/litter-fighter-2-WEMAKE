@@ -4,7 +4,7 @@ import {
   is_fun,
   is_num,
   is_bool,
-  not_empty_str,
+  is_non_empty_str,
 } from "./LF2/utils/type_check";
 
 type T_RET<S> = readonly [S, React.Dispatch<React.SetStateAction<S>>];
@@ -56,7 +56,7 @@ export function useLocalNumber<S extends number = number>(
 ): T_RET<S> | T_RET<S | undefined> {
   const [val, set_val] = useState<S | undefined>(() => {
     let v = localStorage.getItem(name);
-    if (not_empty_str(v)) {
+    if (is_non_empty_str(v)) {
       const n = Number(v);
       if (is_num(n)) return n as S;
     }

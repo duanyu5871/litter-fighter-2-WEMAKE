@@ -41,9 +41,11 @@ import StageTransitions from "./StageTransitions";
 import { UIComponent } from "./UIComponent";
 import VerticalLayout from "./VerticalLayout";
 import { VsModeLogic } from "./VsModeLogic";
+import { IUICompnentCallbacks } from "./IUICompnentCallbacks";
+
 class ComponentFactory {
   static readonly TAG = `ComponentFactory`;
-  private _component_map = new Map<string, typeof UIComponent>([
+  private _component_map = new Map<string, typeof UIComponent<IUICompnentCallbacks>>([
     ["game_loading_file_name", LoadingFileNameDisplayer],
     ["key_set", PlayerKeyEditor],
     ["key_txt", PlayerKeyText],

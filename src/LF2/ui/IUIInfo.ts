@@ -1,10 +1,7 @@
 import IStyle from "../defines/IStyle";
-export interface IComponentInfo {
-  id?: string;
-  args?: any[];
-  name: string;
-  enabled?: boolean;
-}
+import { IImageInfo } from "../loader/IImageInfo";
+import { IComponentInfo } from "./IComponentInfo";
+import { IUIImgInfo as IUIImageInfo } from "./IUIImgInfo";
 export type TComponentInfo = IComponentInfo | string
 export interface IAction {
   name: string;
@@ -28,10 +25,9 @@ export interface IUIInfo {
    * @memberof IUIInfo
    */
   name?: string;
-  img?: string[] | string;
+  img?: IUIImageInfo[] | IUIImageInfo;
   opacity?: number;
   which?: number | string;
-  rect?: number[] | string;
   center?: number[] | string;
   scale?: number[] | string;
   pos?: number[] | string;

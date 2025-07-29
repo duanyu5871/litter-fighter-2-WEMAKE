@@ -9,7 +9,7 @@ import { is_str } from "./utils/type_check";
 
 export class PlayerInfo implements IDebugging {
   static readonly TAG = "PlayerInfo";
-  __debugging?: boolean = true
+  __debugging?: boolean
   readonly callbacks = new Callbacks<IPlayerInfoCallback>();
   protected _info: IPurePlayerInfo;
   protected _joined: boolean = false;

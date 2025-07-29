@@ -12,6 +12,7 @@ import { type IImageInfo } from "../loader/IImageInfo";
 import { filter, find } from "../utils/container_help";
 import { is_arr, is_bool, is_num, is_str } from "../utils/type_check";
 import { ICookedUIInfo } from "./ICookedUIInfo";
+import { IUIImgInfo } from "./IUIImgInfo";
 import { IUICallback } from "./IUICallback";
 import type { IUIInfo } from "./IUIInfo";
 import { IUIKeyEvent } from "./IUIKeyEvent";
@@ -19,6 +20,8 @@ import actor from "./action/Actor";
 import factory from "./component/Factory";
 import { UIComponent } from "./component/UIComponent";
 import read_nums from "./utils/read_nums";
+import { validate_ui_img_info as validate_ui_img_info } from "./validate_ui_img_info";
+import { ImageInfo } from "../loader/ImageInfo";
 export class UINode implements IDebugging {
   static readonly TAG: string = 'UINode';
   debug!: (_0: string, ..._1: any[]) => void;
@@ -411,7 +414,6 @@ export class UINode implements IDebugging {
       pos: read_nums(raw_info.pos, 3, parent ? [0, 0, 0] : [0, -450, 0]),
       scale: read_nums(raw_info.scale, 3, [1, 1, 1]),
       center: read_nums(raw_info.center, 3, [0, 0, 0]),
-      rect: read_nums(raw_info.rect, 4),
       size: [0, 0],
       parent,
       img_infos: [],
@@ -428,24 +430,16 @@ export class UINode implements IDebugging {
     }
     const { img, txt, style } = raw_info;
     if (img) {
-      const img_paths = !is_arr(img)
-        ? [img]
-        : img.filter((v) => v && is_str(v));
-      const [sx, sy, sw, sh] = ret.rect;
-      const preload = async (img_path: string) => {
-        const img_key = `${img_path}?${sx}_${sy}_${sw}_${sh}`;
-        const img_info = lf2.images.find(img_key);
-        if (img_info) return img_info;
-
-        return await lf2.images.load_img(img_key, img_path, [{
-          type: 'crop',
-          x: sx,
-          y: sy,
-          w: sw,
-          h: sh
-        }]);
+      const imgs = !is_arr(img) ? [img] : img// .filter((v) => validate_ui_img_info(v));
+      const preload = async (img: IUIImgInfo): Promise<ImageInfo> => {
+        const errors: string[] = []
+        validate_ui_img_info(img, errors)
+        if (errors.length) throw new Error(errors.join('\n'))
+        const { x, y, w, h, dw = w, dh = h, path } = img
+        const img_key = `${path}?${x}_${y}_${w}_${h}_${dw}_${dh}`;
+        return lf2.images.find(img_key) || lf2.images.load_img(img_key, img.path, [{ type: 'crop', ...img }]);
       };
-      for (const p of img_paths) {
+      for (const p of imgs) {
         if (p) ret.img_infos.push(await preload(p));
       }
     } else if (is_str(txt)) {
@@ -453,16 +447,14 @@ export class UINode implements IDebugging {
     }
 
     const { w: img_w = 0, h: img_h = 0, scale = 1 } = ret.img_infos?.[0] || {};
-    const { size, rect } = raw_info;
+    const { size } = raw_info;
 
-    const [sx, sy, sw, sh] = read_nums(rect, 4, [0, 0, img_w / scale, img_h / scale]);
+    const [sw, sh] = [img_w / scale, img_h / scale];
     const [w, h] = read_nums(size, 2, [parent ? sw : lf2.world.screen_w, parent ? sh : lf2.world.screen_h]);
-
 
     // 宽或高其一为0时，使用原图宽高比例的计算之
     const dw = Math.floor(w ? w : sh ? (h * sw) / sh : 0);
     const dh = Math.floor(h ? h : sw ? (w * sh) / sw : 0);
-    ret.rect = [sx, sy, sw, sh];
     ret.size = [dw, dh];
 
     const { items } = raw_info;

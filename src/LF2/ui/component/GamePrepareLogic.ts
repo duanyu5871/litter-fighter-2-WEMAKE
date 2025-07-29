@@ -1,22 +1,20 @@
 import { new_team } from "../../base";
-import Callbacks from "../../base/Callbacks";
-import FSM, { IReadonlyFSM, IState } from "../../base/FSM";
+import FSM, { IState } from "../../base/FSM";
 import Invoker from "../../base/Invoker";
-import { NoEmitCallbacks } from "../../base/NoEmitCallbacks";
 import LocalController from "../../controller/LocalController";
 import { EntityGroup } from "../../defines";
-import GameKey, { TLooseGameKey } from "../../defines/GameKey";
 import { Defines } from "../../defines/defines";
 import { Entity } from "../../entity/Entity";
 import { Factory } from "../../entity/Factory";
 import { map_no_void } from "../../utils/container_help/map_no_void";
 import { IUIKeyEvent } from "../IUIKeyEvent";
 import BackgroundNameText from "./BackgroundNameText";
+import { IUICompnentCallbacks } from "./IUICompnentCallbacks";
 import SlotSelLogic, { SlotSelStatus } from "./SlotSelLogic";
 import StageNameText from "./StageNameText";
 import { UIComponent } from "./UIComponent";
 
-export interface IGamePrepareLogicCallback {
+export interface IGamePrepareLogicCallback extends IUICompnentCallbacks {
   on_countdown?(v: number): void;
 }
 export enum GamePrepareState {
@@ -31,19 +29,16 @@ export interface IGamePrepareState extends IState<GamePrepareState> {
   on_player_key_down?(e: IUIKeyEvent): void
 }
 
-export default class GamePrepareLogic extends UIComponent {
+export default class GamePrepareLogic extends UIComponent<IGamePrepareLogicCallback> {
   static override readonly TAG = 'GamePrepareLogic'
   get game_mode(): string { return this.args[0] || ''; }
   protected _unmount_jobs = new Invoker();
-  protected _callbacks = new Callbacks<IGamePrepareLogicCallback>();
   get state(): GamePrepareState {
     return this.fsm.state?.key!;
   }
 
   private _count_down: number = 4000;
-  get callbacks(): NoEmitCallbacks<IGamePrepareLogicCallback> {
-    return this._callbacks;
-  }
+
 
   override on_resume(): void {
     super.on_resume();
@@ -129,14 +124,14 @@ export default class GamePrepareLogic extends UIComponent {
     key: GamePrepareState.CountingDown,
     enter: () => {
       this._count_down = 4000;
-      this._callbacks.emit("on_countdown")(4);
+      this.callbacks.emit("on_countdown")(4);
     },
     update: (dt) => {
       const prev_second = Math.ceil(this._count_down / 1000);
       this._count_down -= dt;
       const curr_second = Math.ceil(this._count_down / 1000);
       if (curr_second !== prev_second)
-        this._callbacks.emit("on_countdown")(curr_second);
+        this.callbacks.emit("on_countdown")(curr_second);
       if (this._count_down <= 0)
         if (this.empty_slots.length)
           return GamePrepareState.ComNumberSel;
@@ -146,7 +141,7 @@ export default class GamePrepareLogic extends UIComponent {
     on_player_key_down: (e) => {
       if ("j" === e.key) {
         this._count_down = Math.max(0, this._count_down - 500);
-        this._callbacks.emit("on_countdown")(Math.ceil(this._count_down / 1000));
+        this.callbacks.emit("on_countdown")(Math.ceil(this._count_down / 1000));
         e.stop_immediate_propagation()
       }
     },

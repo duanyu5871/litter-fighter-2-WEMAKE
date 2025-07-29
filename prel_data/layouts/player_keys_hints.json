@@ -1,6 +1,5 @@
 {
-  "img": "sprite/MENU_CLIP5.png",
-  "rect": "0,389,530,200",
+  "img": { "path": "sprite/MENU_CLIP5.png", "x": 0, "y": 389, "w": 530, "h": 200 } ,
   "pos": "0,0,2",
   "items": [
     {

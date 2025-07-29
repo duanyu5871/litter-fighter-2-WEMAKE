@@ -10,70 +10,26 @@
       "template": "layouts/jalousie_ns.json"
     },
     {
-      "id": "bg_left",
-      "img": [
-        "sprite/MENU_BACK1.png",
-        "sprite/MENU_BACK2.png",
-        "sprite/MENU_BACK3.png",
-        "sprite/MENU_BACK4.png",
-        "sprite/MENU_BACK5.png",
-        "sprite/MENU_BACK6.png",
-        "sprite/MENU_BACK7.png",
-        "sprite/MENU_BACK8.png",
-        "sprite/MENU_BACK9.png",
-        "sprite/MENU_BACK10.png",
-        "sprite/MENU_BACK11.png",
-        "sprite/MENU_BACK12.png",
-        "sprite/MENU_BACK13.png"
-      ],
-      "size": "0, 450",
-      "component": [
-        "random_img_on_layout_resume(entry_page)"
-      ]
+      "template": "layouts/bg_l_face.json"
     },
     {
-      "id": "bg_right",
-      "img": [
-        "sprite/MENU_BACK1.png",
-        "sprite/MENU_BACK2.png",
-        "sprite/MENU_BACK3.png",
-        "sprite/MENU_BACK4.png",
-        "sprite/MENU_BACK5.png",
-        "sprite/MENU_BACK6.png",
-        "sprite/MENU_BACK7.png",
-        "sprite/MENU_BACK8.png",
-        "sprite/MENU_BACK9.png",
-        "sprite/MENU_BACK10.png",
-        "sprite/MENU_BACK11.png",
-        "sprite/MENU_BACK12.png",
-        "sprite/MENU_BACK13.png"
-      ],
-      "size": "0, 450",
-      "center": "1, 0",
-      "pos": "794, 0",
-      "flip_x": true,
-      "component": [
-        "random_img_on_layout_resume(entry_page)"
-      ]
+      "template": "layouts/bg_r_face.json"
     },
     {
       "id": "main_title",
-      "img": "sprite/MENU_CLIP.png",
-      "rect": "0, 41, 496, 80",
+      "img": {"path": "sprite/MENU_CLIP.png", "x": 0, "y": 41, "w": 496, "h": 80},
       "center": "0.5, 0",
       "pos": "398, 40"
     },
     {
       "id": "main_menu",
-      "img": "sprite/MENU_CLIP.png",
-      "rect": "10, 135, 262, 99",
+      "img": {"path": "sprite/MENU_CLIP.png", "x": 10, "y": 135, "w": 262, "h": 99},
       "center": "0.5, 0.5",
       "pos": "397, 270",
       "items": [
         {
           "id": "btn_start_local_game",
-          "img": "sprite/MENU_CLIP.png",
-          "rect": "535, 105, 256, 26",
+          "img": {"path": "sprite/MENU_CLIP.png", "x": 535, "y": 105, "w": 256, "h": 26},
           "center": "0.5, 0",
           "pos": "1, -46",
           "auto_focus": true,
@@ -92,8 +48,7 @@
         {
           "id": "btn_network_game",
           "opacity": "f:",
-          "img": "sprite/MENU_CLIP.png",
-          "rect": "535, 137, 256, 26",
+          "img": {"path": "sprite/MENU_CLIP.png", "x": 535, "y": 137, "w": 256, "h": 26},
           "center": "0.5, 0",
           "pos": "1, -14",
           "component": [
@@ -109,8 +64,7 @@
         },
         {
           "id": "btn_ctrl_settings",
-          "img": "sprite/MENU_CLIP.png",
-          "rect": "535, 168, 256, 26",
+          "img": {"path": "sprite/MENU_CLIP.png", "x": 535, "y": 168, "w": 256, "h": 26},
           "center": "0.5, 0",
           "pos": "1, 17",
           "component": [

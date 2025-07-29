@@ -13,6 +13,7 @@ import { MagnificationTextureFilter } from "../defines/MagnificationTextureFilte
 import { MinificationTextureFilter } from "../defines/MinificationTextureFilter";
 import { TextureWrapping } from "../defines/TextureWrapping";
 import Ditto from "../ditto";
+import { is_int, is_non_nagative_int, is_positive_int } from "../utils";
 import { IImageInfo } from "./IImageInfo";
 import { ImageInfo } from "./ImageInfo";
 import { TextImageInfo } from "./TextImageInfo";
@@ -36,7 +37,27 @@ export class ImageMgr {
         src_url.match(/@(\d)[x|X]\/(.*)(.png|.webp)$/)?.[1]
       ) || 1
     )
-    if (!operations?.length) {
+
+    const vaild_operations = operations?.filter(v => {
+      let vaild = true;
+      switch (v.type) {
+        case "crop":
+          if (!is_non_nagative_int(v.x)) { vaild = false }
+          if (!is_non_nagative_int(v.y)) { vaild = false }
+          if (!is_positive_int(v.w)) { vaild = false }
+          if (!is_positive_int(v.h)) { vaild = false }
+          if ('dw' in v && !is_positive_int(v.dw)) { vaild = false }
+          if ('dh' in v && !is_positive_int(v.dh)) { vaild = false }
+          return vaild
+        case "resize":
+          if (!is_positive_int(v.w)) { vaild = false }
+          if (!is_positive_int(v.h)) { vaild = false }
+          return vaild
+      }
+      return vaild;
+    });
+
+    if (!vaild_operations?.length) {
       return new ImageInfo({
         key,
         url: blob_url,
@@ -48,7 +69,7 @@ export class ImageMgr {
     }
 
     let cvs: HTMLCanvasElement | null = null
-    for (const op of operations) cvs = this.edit_image(cvs || img, op)
+    for (const op of vaild_operations) cvs = this.edit_image(cvs || img, op)
 
     const blob = await get_blob(cvs!).catch((e) => {
       const err = new Error(e.message + " key:" + key);
@@ -222,16 +243,15 @@ export class ImageMgr {
     // debugger
     switch (op.type) {
       case 'crop': {
-        // debugger;
         const ret = document.createElement("canvas")
-        const w = op.dst_size?.w ?? op.w
-        const h = op.dst_size?.h ?? op.h
+        const w = op.dw ?? op.w
+        const h = op.dh ?? op.h
         const dw = ret.width = w > 0 ? w : src.width;
         const dh = ret.height = h > 0 ? h : src.height;
         const sw = op.w > 0 ? op.w : src.width;
         const sh = op.h > 0 ? op.h : src.height;
         const dst_ctx = ret.getContext('2d');
-        dst_ctx?.drawImage(src, op.x, op.y, sw, sh, 0, 0, dw, dh)
+        dst_ctx?.drawImage(src, op.x || 0, op.y || 0, sw, sh, 0, 0, dw, dh)
         return ret;
       }
       case 'resize': {
@@ -294,9 +314,14 @@ function error_texture() {
 export interface ImageOperation_Resize extends ISize {
   type: 'resize';
 }
-export interface ImageOperation_Crop extends IRect {
+export interface ImageOperation_Crop {
   type: 'crop';
-  dst_size?: ISize;
+  x?: number;
+  y?: number;
+  w: number;
+  h: number;
+  dw?: number,
+  dh?: number,
 }
 export type ImageOperation = ImageOperation_Crop | ImageOperation_Resize;
 

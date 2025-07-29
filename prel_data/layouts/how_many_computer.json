@@ -1,6 +1,10 @@
 {
   "id": "how_many_computer",
-  "img": "sprite/CMC.png",
+  "img": {
+    "path": "sprite/CMC.png",
+    "w": 365,
+    "h": 111
+  },
   "pos": "204,175,1",
   "visible": false,
   "items": [

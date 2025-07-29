@@ -17,7 +17,7 @@ import {
   is_entity_data,
   is_weapon_data,
 } from "../entity/type_check";
-import { is_str, not_blank_str } from "../utils/type_check";
+import { is_str, is_non_blank_str } from "../utils/type_check";
 import { preprocess_bg_data } from "./preprocess_bg_data";
 import { preprocess_entity_data } from "./preprocess_entity_data";
 
@@ -100,14 +100,14 @@ class Inner {
   async load() {
     for (const k of Object.keys(Defines.BuiltIn_Imgs)) {
       const src = (Defines.BuiltIn_Imgs as any)[k];
-      if (!not_blank_str(src)) continue;
+      if (!is_non_blank_str(src)) continue;
       this.lf2.on_loading_content(`${src}`, 0);
       await this.lf2.images.load_img(src, src);
     }
 
     for (const k of Object.keys(Defines.BuiltIn_Dats)) {
       const src = (Defines.BuiltIn_Dats as any)[k];
-      if (!not_blank_str(src)) continue;
+      if (!is_non_blank_str(src)) continue;
       this.lf2.on_loading_content(`${src}`, 0);
       await this._add_data(src, await this.lf2.import_json(src));
     }

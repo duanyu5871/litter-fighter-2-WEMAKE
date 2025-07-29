@@ -1,13 +1,21 @@
 {
   "name": "l_frame",
   "id": "l_frame",
-  "img": "sprite/l_frame.png",
+  "img": {
+    "path": "sprite/l_frame.png",
+    "w": 240,
+    "h": 45
+  },
   "items": [
     {
       "id": "face",
       "pos": "0,0,0.1",
       "center": "0,0",
-      "img": "sprite/s.png"
+      "img": {
+        "path": "sprite/s.png",
+        "w": 40,
+        "h": 45
+      }
     },
     {
       "id": "hp_bar",

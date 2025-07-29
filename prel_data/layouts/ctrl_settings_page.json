@@ -4,57 +4,28 @@
   "color": "rgb(16, 32, 108)",
   "pos": "0, -450",
   "size": "794, 450",
-  "key_press_actions": [["escape", "set_layout(entry)"]],
+  "key_press_actions": [
+    [
+      "escape",
+      "set_layout(entry)"
+    ]
+  ],
   "items": [
     {
-      "id": "bg_left",
-      "component": ["random_img_on_layout_resume(entry_page)"],
-      "img": [
-        "sprite/MENU_BACK1.png",
-        "sprite/MENU_BACK2.png",
-        "sprite/MENU_BACK3.png",
-        "sprite/MENU_BACK4.png",
-        "sprite/MENU_BACK5.png",
-        "sprite/MENU_BACK6.png",
-        "sprite/MENU_BACK7.png",
-        "sprite/MENU_BACK8.png",
-        "sprite/MENU_BACK9.png",
-        "sprite/MENU_BACK10.png",
-        "sprite/MENU_BACK11.png",
-        "sprite/MENU_BACK12.png",
-        "sprite/MENU_BACK13.png"
-      ],
-      "rect": "0, 0, 378, 546",
-      "size": "0, 450"
+      "template": "layouts/bg_l_face.json"
     },
     {
-      "id": "bg_right",
-      "component": ["random_img_on_layout_resume(entry_page)"],
-      "img": [
-        "sprite/MENU_BACK1.png",
-        "sprite/MENU_BACK2.png",
-        "sprite/MENU_BACK3.png",
-        "sprite/MENU_BACK4.png",
-        "sprite/MENU_BACK5.png",
-        "sprite/MENU_BACK6.png",
-        "sprite/MENU_BACK7.png",
-        "sprite/MENU_BACK8.png",
-        "sprite/MENU_BACK9.png",
-        "sprite/MENU_BACK10.png",
-        "sprite/MENU_BACK11.png",
-        "sprite/MENU_BACK12.png",
-        "sprite/MENU_BACK13.png"
-      ],
-      "rect": "0, 0, 378, 546",
-      "center": "1, 0",
-      "size": "0, 450",
-      "pos": "794, 0",
-      "flip_x": true
+      "template": "layouts/bg_r_face.json"
     },
     {
       "id": "main_menu",
-      "img": "sprite/MENU_CLIP2.png",
-      "rect": "0, 0, 704, 353",
+      "img": {
+        "path": "sprite/MENU_CLIP2.png",
+        "x": 0,
+        "y": 0,
+        "w": 704,
+        "h": 353
+      },
       "center": "0.5, 0.5",
       "pos": "397, 200",
       "items": [
@@ -72,11 +43,31 @@
               "id": "btn_ctrl_type",
               "component": "player_ctrl_type(1)",
               "img": [
-                "sprite/CS6.png",
-                "sprite/CS2.png",
-                "sprite/CS3.png",
-                "sprite/CS4.png",
-                "sprite/CS5.png"
+                {
+                  "w": 106,
+                  "h": 91,
+                  "path": "sprite/CS6.png"
+                },
+                {
+                  "w": 106,
+                  "h": 91,
+                  "path": "sprite/CS2.png"
+                },
+                {
+                  "w": 106,
+                  "h": 91,
+                  "path": "sprite/CS3.png"
+                },
+                {
+                  "w": 106,
+                  "h": 91,
+                  "path": "sprite/CS4.png"
+                },
+                {
+                  "w": 106,
+                  "h": 91,
+                  "path": "sprite/CS5.png"
+                }
               ],
               "pos": "0, 26",
               "actions": {
@@ -141,11 +132,31 @@
               "id": "btn_ctrl_type",
               "component": "player_ctrl_type(2)",
               "img": [
-                "sprite/CS6.png",
-                "sprite/CS2.png",
-                "sprite/CS3.png",
-                "sprite/CS4.png",
-                "sprite/CS5.png"
+                {
+                  "w": 106,
+                  "h": 91,
+                  "path": "sprite/CS6.png"
+                },
+                {
+                  "w": 106,
+                  "h": 91,
+                  "path": "sprite/CS2.png"
+                },
+                {
+                  "w": 106,
+                  "h": 91,
+                  "path": "sprite/CS3.png"
+                },
+                {
+                  "w": 106,
+                  "h": 91,
+                  "path": "sprite/CS4.png"
+                },
+                {
+                  "w": 106,
+                  "h": 91,
+                  "path": "sprite/CS5.png"
+                }
               ],
               "pos": "0, 26",
               "actions": {
@@ -210,11 +221,31 @@
               "id": "btn_ctrl_type",
               "component": "player_ctrl_type(3)",
               "img": [
-                "sprite/CS6.png",
-                "sprite/CS2.png",
-                "sprite/CS3.png",
-                "sprite/CS4.png",
-                "sprite/CS5.png"
+                {
+                  "w": 106,
+                  "h": 91,
+                  "path": "sprite/CS6.png"
+                },
+                {
+                  "w": 106,
+                  "h": 91,
+                  "path": "sprite/CS2.png"
+                },
+                {
+                  "w": 106,
+                  "h": 91,
+                  "path": "sprite/CS3.png"
+                },
+                {
+                  "w": 106,
+                  "h": 91,
+                  "path": "sprite/CS4.png"
+                },
+                {
+                  "w": 106,
+                  "h": 91,
+                  "path": "sprite/CS5.png"
+                }
               ],
               "pos": "0, 26",
               "actions": {
@@ -279,11 +310,31 @@
               "id": "btn_ctrl_type",
               "component": "player_ctrl_type(4)",
               "img": [
-                "sprite/CS6.png",
-                "sprite/CS2.png",
-                "sprite/CS3.png",
-                "sprite/CS4.png",
-                "sprite/CS5.png"
+                {
+                  "w": 106,
+                  "h": 91,
+                  "path": "sprite/CS6.png"
+                },
+                {
+                  "w": 106,
+                  "h": 91,
+                  "path": "sprite/CS2.png"
+                },
+                {
+                  "w": 106,
+                  "h": 91,
+                  "path": "sprite/CS3.png"
+                },
+                {
+                  "w": 106,
+                  "h": 91,
+                  "path": "sprite/CS4.png"
+                },
+                {
+                  "w": 106,
+                  "h": 91,
+                  "path": "sprite/CS5.png"
+                }
               ],
               "pos": "0, 26",
               "actions": {
@@ -338,40 +389,75 @@
     },
     {
       "id": "btn_confirm",
-      "img": "sprite/MENU_CLIP.png",
-      "rect": "489, 426, 151, 26",
+      "img": {
+        "path": "sprite/MENU_CLIP.png",
+        "x": 489,
+        "y": 426,
+        "w": 151,
+        "h": 26
+      },
       "pos": "407, 344",
-      "component": ["opacity_hover(0,1)"],
+      "component": [
+        "opacity_hover(0,1)"
+      ],
       "actions": {
-        "click": ["sound(ok)", "pop_layout(entry)"]
+        "click": [
+          "sound(ok)",
+          "pop_layout(entry)"
+        ]
       }
     },
     {
       "id": "btn_cancel",
-      "img": "sprite/MENU_CLIP.png",
-      "rect": "643, 426, 151, 26",
+      "img": {
+        "path": "sprite/MENU_CLIP.png",
+        "x": 643,
+        "y": 426,
+        "w": 151,
+        "h": 26
+      },
       "pos": "579, 344",
-      "component": ["opacity_hover(0,1)"],
+      "component": [
+        "opacity_hover(0,1)"
+      ],
       "actions": {
-        "click": ["sound(cancel)", "pop_layout(entry)"]
+        "click": [
+          "sound(cancel)",
+          "pop_layout(entry)"
+        ]
       }
     },
     {
       "id": "btn_move_table_normal",
-      "img": "sprite/MENU_CLIP2.png",
-      "rect": "0, 354, 494, 23",
+      "img": {
+        "path": "sprite/MENU_CLIP2.png",
+        "x": 0,
+        "y": 354,
+        "w": 494,
+        "h": 23
+      },
       "center": "0, 1",
       "pos": "0, 450"
     },
     {
       "id": "btn_move_table_hover",
-      "img": "sprite/MENU_CLIP2.png",
-      "rect": "0, 379, 494, 23",
+      "img": {
+        "path": "sprite/MENU_CLIP2.png",
+        "x": 0,
+        "y": 379,
+        "w": 494,
+        "h": 23
+      },
       "center": "0, 1",
       "pos": "0, 450",
-      "component": ["opacity_hover(0,1)"],
+      "component": [
+        "opacity_hover(0,1)"
+      ],
       "actions": {
-        "click": ["sound(ok)", "link_to(https://lf2.net/control.html)"]
+        "click": [
+          "sound(ok)",
+          "link_to(https://lf2.net/control.html)"
+        ]
       }
     }
   ]

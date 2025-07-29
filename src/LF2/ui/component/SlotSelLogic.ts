@@ -28,7 +28,6 @@ interface IStateUnit extends IState<SlotSelStatus> {
 export default class SlotSelLogic extends UIComponent {
   static override readonly TAG = "SlotSelLogic";
 
-  override __debugging = true
   get player_id(): string { return this.args[0] || ""; }
   get player(): PlayerInfo { return this.lf2.players.get(this.player_id)! }
   get character(): string { return this.player.character; }

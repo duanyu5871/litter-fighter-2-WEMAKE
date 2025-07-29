@@ -1,77 +1,145 @@
 {
   "id": "menu",
-  "img": "sprite/MENU_CLIP3.png",
-  "rect": "348,0,304,166",
+  "img": {
+    "path": "sprite/MENU_CLIP3.png",
+    "x": 348,
+    "y": 0,
+    "w": 304,
+    "h": 166
+  },
   "pos": "10,10,1",
   "visible": false,
   "items": [
     {
       "id": "btn_start",
-      "img": "sprite/MENU_CLIP3.png",
-      "rect": "407,183,126,21",
+      "img": {
+        "path": "sprite/MENU_CLIP3.png",
+        "x": 407,
+        "y": 183,
+        "w": 126,
+        "h": 21
+      },
       "pos": "89,13",
       "auto_focus": true,
-      "component": ["opacity_hover(0,1)", "Reachable(menu)"],
+      "component": [
+        "opacity_hover(0,1)",
+        "Reachable(menu)"
+      ],
       "actions": {
-        "click": ["broadcast(start_game)", "sound(ok)"]
+        "click": [
+          "broadcast(start_game)",
+          "sound(ok)"
+        ]
       }
     },
     {
       "id": "btn_cancel",
-      "img": "sprite/MENU_CLIP3.png",
-      "rect": "379,206,186,21",
+      "img": {
+        "path": "sprite/MENU_CLIP3.png",
+        "x": 379,
+        "y": 206,
+        "w": 186,
+        "h": 21
+      },
       "pos": "61,36",
-      "component": ["opacity_hover(0,1)", "Reachable(menu)"],
+      "component": [
+        "opacity_hover(0,1)",
+        "Reachable(menu)"
+      ],
       "actions": {
-        "click": ["broadcast(reset_gpl)", "sound(ok)"]
+        "click": [
+          "broadcast(reset_gpl)",
+          "sound(ok)"
+        ]
       }
     },
     {
       "id": "btn_update_random",
-      "img": "sprite/MENU_CLIP3.png",
-      "rect": "355,231,235,21",
+      "img": {
+        "path": "sprite/MENU_CLIP3.png",
+        "x": 355,
+        "y": 231,
+        "w": 235,
+        "h": 21
+      },
       "pos": "37,61",
-      "component": ["opacity_hover(0,1)", "Reachable(menu)"],
+      "component": [
+        "opacity_hover(0,1)",
+        "Reachable(menu)"
+      ],
       "actions": {
-        "click": ["broadcast(update_random)", "sound(ok)"]
+        "click": [
+          "broadcast(update_random)",
+          "sound(ok)"
+        ]
       }
     },
     {
       "id": "btn_switch_bg",
-      "img": "sprite/MENU_CLIP3.png",
-      "rect": "330,254,279,22",
+      "img": {
+        "path": "sprite/MENU_CLIP3.png",
+        "x": 330,
+        "y": 254,
+        "w": 279,
+        "h": 22
+      },
       "pos": "12,84",
-      "component": ["opacity_hover(0,1)", "Reachable(menu)"],
+      "component": [
+        "opacity_hover(0,1)",
+        "Reachable(menu)"
+      ],
       "actions": {
-        "click": ["broadcast(switch_background)", "sound(ok)"]
+        "click": [
+          "broadcast(switch_background)",
+          "sound(ok)"
+        ]
       },
       "items": [
         {
           "pos": "157,12,0.1",
-          "component": ["background_name_text()"]
+          "component": [
+            "background_name_text()"
+          ]
         }
       ]
     },
     {
       "id": "btn_switch_stage",
-      "img": "sprite/MENU_CLIP3.png",
-      "rect": "330,363,279,22",
+      "img": {
+        "path": "sprite/MENU_CLIP3.png",
+        "x": 330,
+        "y": 363,
+        "w": 279,
+        "h": 22
+      },
       "pos": "12,84",
-
       "items": [
         {
           "id": "btn_switch_stage_hover",
-          "img": "sprite/MENU_CLIP3.png",
-          "rect": "330,332,279,22",
+          "img": {
+            "path": "sprite/MENU_CLIP3.png",
+            "x": 330,
+            "y": 332,
+            "w": 279,
+            "h": 22
+          },
           "pos": "0,0",
-          "component": ["opacity_hover(0,1)", "Reachable(menu)"],
+          "component": [
+            "opacity_hover(0,1)",
+            "Reachable(menu)"
+          ],
           "actions": {
-            "click": ["broadcast(switch_stage)", "sound(ok)"]
+            "click": [
+              "broadcast(switch_stage)",
+              "sound(ok)"
+            ]
           },
           "items": [
             {
               "pos": "186,12,0.1",
-              "component": ["stage_name_text()"]
+              "component": [
+                "stage_name_text()"
+              ]
             }
           ]
         }
@@ -79,28 +147,52 @@
     },
     {
       "id": "btn_switch_difficulty",
-      "img": "sprite/MENU_CLIP3.png",
-      "rect": "352,278,228,22",
+      "img": {
+        "path": "sprite/MENU_CLIP3.png",
+        "x": 352,
+        "y": 278,
+        "w": 228,
+        "h": 22
+      },
       "pos": "34,108",
-      "component": ["opacity_hover(0,1)", "Reachable(menu)"],
+      "component": [
+        "opacity_hover(0,1)",
+        "Reachable(menu)"
+      ],
       "actions": {
-        "click": ["switch_difficulty()", "sound(ok)"]
+        "click": [
+          "switch_difficulty()",
+          "sound(ok)"
+        ]
       },
       "items": [
         {
           "pos": "134,12,0.1",
-          "component": ["difficulty_text()"]
+          "component": [
+            "difficulty_text()"
+          ]
         }
       ]
     },
     {
       "id": "btn_exit",
-      "img": "sprite/MENU_CLIP3.png",
-      "rect": "416,304,111,19",
+      "img": {
+        "path": "sprite/MENU_CLIP3.png",
+        "x": 416,
+        "y": 304,
+        "w": 111,
+        "h": 19
+      },
       "pos": "98,134",
-      "component": ["opacity_hover(0,1)", "Reachable(menu)"],
+      "component": [
+        "opacity_hover(0,1)",
+        "Reachable(menu)"
+      ],
       "actions": {
-        "click": ["pop_layout()", "sound(cancel)"]
+        "click": [
+          "pop_layout()",
+          "sound(cancel)"
+        ]
       }
     }
   ]
