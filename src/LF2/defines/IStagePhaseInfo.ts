@@ -8,7 +8,7 @@ import { IStageObjectInfo } from "./IStageObjectInfo";
  */
 export interface IStagePhaseInfo {
   bound: number;
-  desc: string;
+  desc?: string;
   objects: IStageObjectInfo[];
   music?: string;
 

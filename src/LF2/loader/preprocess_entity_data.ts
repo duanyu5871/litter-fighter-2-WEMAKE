@@ -1,4 +1,5 @@
 import { Defines, IEntityData } from "../defines";
+import Ditto from "../ditto";
 import LF2 from "../LF2";
 import { is_non_blank_str } from "../utils";
 import { traversal } from "../utils/container_help/traversal";
@@ -30,7 +31,11 @@ export async function preprocess_entity_data(lf2: LF2, data: IEntityData, jobs: 
 
   traversal(frames, (k, v, o) => o[k] = preprocess_frame(lf2, data, v, jobs));
   traversal(frames, (k, v, o) => o[k] = preprocess_frame(lf2, data, v, jobs));
-  traversal(frames, (_, v) => check_frame(data, v));
+  traversal(frames, (_, v) => {
+    const errors: string[] = []
+    check_frame(data, v, errors)
+    if(errors.length) Ditto.Warn(errors)
+  });
   return data;
 }
 

@@ -8,5 +8,14 @@ import type { IEntityData, IFrameInfo, IBdyInfo } from "../defines";
  * @param {Readonly<IFrameInfo>} frame
  */
 
-export function check_bdy(data: Readonly<IEntityData>, frame: Readonly<IFrameInfo>, bdy: Readonly<IBdyInfo>, idx: number) {
+export function check_bdy(
+  data: Readonly<IEntityData>,
+  frame: Readonly<IFrameInfo>,
+  bdy: Readonly<IBdyInfo>,
+  idx: number,
+  errors?: string[]
+): boolean {
+  return true
 }
+
+

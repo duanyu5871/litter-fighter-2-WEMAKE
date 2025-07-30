@@ -18,6 +18,7 @@ import {
   is_weapon_data,
 } from "../entity/type_check";
 import { is_str, is_non_blank_str } from "../utils/type_check";
+import { check_stage_info as check_stage_info } from "./check_stage_info";
 import { preprocess_bg_data } from "./preprocess_bg_data";
 import { preprocess_entity_data } from "./preprocess_entity_data";
 
@@ -137,10 +138,21 @@ class Inner {
 
     const stage_file = "data/stage.json";
     this.lf2.on_loading_content(`${stage_file}`, 0);
-    this.stages = [
-      Defines.VOID_STAGE,
-      ...(await this.lf2.import_json("data/stage.json")),
-    ];
+
+    const stages = await this.lf2.import_json<IStageInfo[]>("data/stage.json").catch(e => [])
+
+    if (!this.stages.find(v => v.id === Defines.VOID_STAGE.id))
+      this.stages.unshift(Defines.VOID_STAGE)
+
+    for (const stage of stages) {
+      const idx = this.stages.findIndex(v => v.id === stage.id);
+      check_stage_info(stage)
+      if (idx < 0) this.stages.push(stage);
+      this.stages[idx] = stage;
+    }
+
+
+
     this.lf2.on_loading_content(`${stage_file}`, 100);
   }
   process_entity_data(data: IEntityData): void { }
