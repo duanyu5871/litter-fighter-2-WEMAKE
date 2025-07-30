@@ -15,12 +15,16 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
 );
 reportWebVitals();
 
+function connect_to_server() {
   const ws = new WebSocket('ws://localhost:8080');
 
   // 连接成功时触发
   ws.onopen = () => {
     console.log('已连接到服务器');
-    ws.send('Hello, Server!'); // 向服务器发送消息
+    // ws.send('Hello, Server!'); // 向服务器发送消息
+    ws.send(JSON.stringify({ type: 'Register' }))
+    ws.send(JSON.stringify({ type: 'CreateRoom' }))
+    ws.send(JSON.stringify({ type: 'JoinRoom' }))
   };
 
   // 收到服务器消息时触发
@@ -37,3 +41,5 @@ reportWebVitals();
   ws.onerror = (err) => {
     console.error('连接错误:', err);
   };
+}
+connect_to_server();
