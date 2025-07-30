@@ -15,8 +15,9 @@ import { is_arr, is_bool, is_num, is_str } from "../utils/type_check";
 import { ICookedUIInfo } from "./ICookedUIInfo";
 import { IUICallback } from "./IUICallback";
 import { IUIImgInfo } from "./IUIImgInfo.dat";
-import type { IUIInfo } from "./IUIInfo.dat";
+import type { IUIInfo, TUIImgInfo } from "./IUIInfo.dat";
 import { IUIKeyEvent } from "./IUIKeyEvent";
+import { IUIPointerEvent } from "./IUIPointerEvent";
 import actor from "./action/Actor";
 import factory from "./component/Factory";
 import { UIComponent } from "./component/UIComponent";
@@ -33,6 +34,10 @@ export class UINode implements IDebugging {
   readonly name_ui_map: Map<string, UINode[]>;
 
   protected _callbacks = new Callbacks<IUICallback>();
+  protected _pointer_on_me: 0 | 1 = 0;
+  protected _pointer_down: 0 | 1 = 0;
+  protected _click_flag: 0 | 1 = 0;
+
   get callbacks(): NoEmitCallbacks<IUICallback> {
     return this._callbacks;
   }
@@ -267,6 +272,9 @@ export class UINode implements IDebugging {
     this._img_infos.set(1, v);
     return this;
   }
+  get pointer_on_me() { return this._pointer_on_me }
+  get pointer_down() { return this._pointer_down }
+  get click_flag() { return this._click_flag }
 
   renderer: IUINodeRenderer;
 
@@ -311,10 +319,27 @@ export class UINode implements IDebugging {
     const [w, h] = this.data.size;
     return l <= x && t <= y && l + w >= x && t + h >= y;
   }
+  on_pointer_down(e: IUIPointerEvent) {
+    this._pointer_down = 1;
+    this._click_flag = 1;
+  }
 
-  on_mouse_leave() { }
+  on_pointer_up(e: IUIPointerEvent) {
+    this._pointer_down = 0
+  }
 
-  on_mouse_enter() { }
+  on_pointer_cancel(e: IUIPointerEvent) {
+    this._pointer_down = 0
+  }
+
+  on_pointer_leave() {
+    this._pointer_on_me = 0;
+    this._click_flag = 0;
+  }
+
+  on_pointer_enter() {
+    this._pointer_on_me = 1
+  }
 
   on_start() {
     this._state = {};
@@ -432,24 +457,32 @@ export class UINode implements IDebugging {
     }
     const { img, txt } = raw_info;
     if (img) {
-      const imgs = !is_arr(img) ? [img] : img// .filter((v) => validate_ui_img_info(v));
-      const preload = (img: IUIImgInfo): Promise<ImageInfo>[] => {
+      const imgs = !is_arr(img) ? [img] : img;
+      const preload = (img: TUIImgInfo): Promise<ImageInfo>[] => {
         const errors: string[] = []
         validate_ui_img_info(img, errors)
         if (errors.length) throw new Error(errors.join('\n'))
-        const { x = 0, y = 0, w = 0, h = 0, count = 0, path, col: cols = 1, row: rows = 1 } = img
+        img = typeof img === 'string' ? { path: img } : img
+        const {
+          path, x = 0, y = 0, w = 0, h = 0, dw = w, dh = h,
+          col: cols = 1, row: rows = 1, count = 0
+        } = img
         const ret: Promise<ImageInfo>[] = []
         for (let row = 0; row < rows; ++row) {
           for (let col = 0; col < cols; ++col) {
             const idx = row * cols + col;
             if (count > 0 && idx >= count) {
-              row == rows
+              row == rows;
               break;
             }
-            const cpy = { ...img }
-            cpy.x = x + col * w;
-            cpy.y = y + row * h;
-            const img_key = `${path}?${cpy.x}_${cpy.y}_${cpy.w}_${cpy.h}_${cpy.dw}_${cpy.dh}`;
+            const cpy: IUIImgInfo = {
+              ...img,
+              x: x + col * w,
+              y: y + row * h,
+              dw: dw,
+              dh: dh
+            }
+            const img_key = `${path}?x=${cpy.x}&y=${cpy.y}&w=${cpy.w}&h=${cpy.h}&dw=${cpy.dw}&dh=${cpy.dh}`;
             ret.push(lf2.images.load_img(img_key, cpy.path, [{ type: 'crop', ...cpy }]));
           }
         }
@@ -468,11 +501,7 @@ export class UINode implements IDebugging {
     const { w: img_w = 0, h: img_h = 0, scale = 1 } = ret.img_infos?.[0] || {};
     const sw = img_w / scale;
     const sh = img_h / scale;
-    const [w, h] = read_nums(raw_info.size, 2, [
-      parent ? sw : lf2.world.screen_w,
-      parent ? sh : lf2.world.screen_h
-    ]);
-
+    const [w, h] = read_nums(raw_info.size, 2, [parent ? sw : lf2.world.screen_w, parent ? sh : lf2.world.screen_h]);
     // 宽或高其一为0时，使用原图宽高比例的计算之
     const dw = Math.floor(w ? w : sh ? (h * sw) / sh : 0);
     const dh = Math.floor(h ? h : sw ? (w * sh) / sw : 0);
@@ -591,11 +620,16 @@ export class UINode implements IDebugging {
   /** @deprecated get rip of it */
   get sprite() { return this.renderer.sprite; }
 
-  on_click(): boolean {
+  on_click(e: IUIPointerEvent) {
     const { click } = this.data.actions ?? {};
-    click && actor.act(this, click);
-    for (const c of this._components) c.on_click?.();
-    return !!click;
+    if (click) {
+      e.stop_propagation()
+      actor.act(this, click)
+    }
+    for (const c of this._components) {
+      c.on_click?.(e);
+      if (e.stopped === 2) break;
+    }
   }
 
   /** 
@@ -642,7 +676,6 @@ export class UINode implements IDebugging {
       if (e.stopped === 2) return;
     }
     if (this.focused && "a" === e.key) {
-      this.on_click();
       e.stop_immediate_propagation();
     }
   }

@@ -1,3 +1,4 @@
+import { IIntersection } from "./3d";
 import {
   Callbacks, get_short_file_size_txt, Loader, new_id,
   NoEmitCallbacks,
@@ -32,6 +33,7 @@ import { PlayerInfo } from "./PlayerInfo";
 import { Stage } from "./stage";
 import { ICookedUIInfo } from "./ui/ICookedUIInfo";
 import { IUIInfo } from "./ui/IUIInfo.dat";
+import { LF2PointerEvent } from "./ui/LF2PointerEvent";
 import { LF2UIKeyEvent } from "./ui/LF2UIKeyEvent";
 import { UINode } from "./ui/UINode";
 import {
@@ -245,67 +247,94 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
     return e;
   }
 
-  on_pointer_move(e: IPointingEvent) {
-    const { ui: ui } = this;
-    if (!ui) return;
+
+  protected get_pointer_intersections(e: IPointingEvent): IIntersection<UINode>[] {
+    if (!this.ui) return [];
     this._pointer_vec_2.x = e.scene_x;
     this._pointer_vec_2.y = e.scene_y;
-    const { sprite } = ui;
-    if (!sprite) return;
     this.world.camera.raycaster(this._pointer_raycaster, this._pointer_vec_2);
-    const intersections = sprite.intersect_from_raycaster(
-      this._pointer_raycaster,
-      true,
-    );
+    const intersections = this.ui.sprite.intersect_from_raycaster(this._pointer_raycaster, true);
+    const ret: IIntersection<UINode>[] = []
+    for (const intersection of intersections) {
+      const ui = intersection.object.get_user_data('owner');
+      if (!(ui instanceof UINode)) continue;
+      if (!ui.visible || ui.disabled) continue;
+      intersection.extra = ui;
+      ret.push(intersection);
+    }
+    return ret;
+  }
+
+
+  on_pointer_move(e: IPointingEvent) {
+    const intersections = this.get_pointer_intersections(e);
     const leave_ui = this._pointer_on_uis;
     const stay_ui = new Set<UINode>();
     const enter_ui = new Set<UINode>();
-    for (const { object } of intersections) {
-      const ui = object.user_data.owner;
-      if (ui instanceof UINode && ui.visible) {
-        if (leave_ui.has(ui)) {
-          leave_ui.delete(ui)
-          stay_ui.add(ui)
-        } else {
-          enter_ui.add(ui);
-        }
+    for (const { extra: ui } of intersections) {
+      if (leave_ui.has(ui)) {
+        leave_ui.delete(ui)
+        stay_ui.add(ui)
+      } else {
+        enter_ui.add(ui);
       }
     }
     for (const ui of leave_ui) {
-      ui.on_mouse_leave();
-      ui.state.mouse_on_me = "0";
+      ui.on_pointer_leave();
     }
     this._pointer_on_uis.clear();
     for (const ui of enter_ui) {
-      ui.on_mouse_enter();
-      ui.state.mouse_on_me = "1";
+      ui.on_pointer_enter();
       this._pointer_on_uis.add(ui)
     }
     for (const ui of stay_ui) {
       this._pointer_on_uis.add(ui)
     }
   }
+  _pointer_down_uis = new Set<UINode>();
 
   on_pointer_down(e: IPointingEvent) {
-    this._pointer_vec_2.x = e.scene_x;
-    this._pointer_vec_2.y = e.scene_y;
-    this.world.camera.raycaster(this._pointer_raycaster, this._pointer_vec_2);
-    const { ui: ui } = this;
-    if (!ui) return;
-    const { sprite } = ui;
-    if (!sprite) return;
-    this.world.camera.raycaster(this._pointer_raycaster, this._pointer_vec_2);
-    const intersections = sprite.intersect_from_raycaster(
-      this._pointer_raycaster,
-      true,
-    );
-    const layouts = intersections
-      .map((v) => v.object.get_user_data('owner') as UINode)
-      .filter((v) => v && v.visible && !v.disabled)
-    for (const ui of layouts) if (!ui.disabled && ui.on_click()) break;
+    const intersections = this.get_pointer_intersections(e);
+    for (const i of intersections) {
+      this._pointer_down_uis.add(i.extra)
+      const e = new LF2PointerEvent(i.point);
+      i.extra.on_pointer_down(e);
+      if (e.stopped) break;
+    }
   }
 
-  on_pointer_up(e: IPointingEvent) { }
+  on_pointer_up(e: IPointingEvent) {
+    const intersections = this.get_pointer_intersections(e);
+    for (const i of intersections) {
+      if (i.extra.pointer_down) {
+        this._pointer_down_uis.delete(i.extra)
+        const e = new LF2PointerEvent(i.point);
+        i.extra.on_pointer_up(e);
+        if (e.stopped) break;
+      }
+    }
+    for (const i of intersections) {
+      if (i.extra.click_flag) {
+        const e = new LF2PointerEvent(i.point);
+        i.extra.on_click(e);
+        if (e.stopped) break;
+      }
+    }
+
+    for (const i of this._pointer_down_uis) {
+      const e = new LF2PointerEvent(new Ditto.Vector3(NaN, NaN, NaN));
+      i.on_pointer_cancel(e);
+    }
+    this._pointer_down_uis.clear()
+  }
+
+  on_pointer_cancel(e: IPointingEvent) {
+    for (const i of this._pointer_down_uis) {
+      const e = new LF2PointerEvent(new Ditto.Vector3(NaN, NaN, NaN));
+      i.on_pointer_cancel(e);
+    }
+    this._pointer_down_uis.clear()
+  }
 
   private _curr_key_list: string = "";
   private readonly _CheatType_map = new Map<string, Defines.ICheatInfo>([
@@ -590,7 +619,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
     if (this._uiinfos.length) return this._uiinfos;
     const array = await this.import_json("layouts/index.json").catch((e) => []);
     this._uiinfos_loaded = false;
-    const paths: string[] = ["launch/init.json","launch/loading_anim.json"];
+    const paths: string[] = ["launch/init.json", "launch/loading_anim.json"];
     for (const element of array) {
       if (is_str(element)) paths.push(element);
       else
@@ -616,7 +645,8 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
   }
 
   ui_val_getter = (item: UINode, word: string) => {
-    if (word === "mouse_on_me") return item.state.mouse_on_me;
+    if (word === "mouse_on_me") return '' + item.pointer_on_me;
+    if (word === "pointer_on_me") return '' + item.pointer_on_me;
     if (word === "paused") return this.world.paused ? 1 : 0;
     if (word.startsWith("f:")) {
       let result = word.match(/f:random_int_in_range\((\d+),(\d+),?(\d+)?\)/);
@@ -648,7 +678,6 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
   set_ui(arg: string | ICookedUIInfo | undefined): void {
     const prev = this._ui_stacks.pop();
     prev?.on_pause();
-
     const info = is_str(arg)
       ? this._uiinfos?.find((v) => v.id === arg)
       : arg;

@@ -1,7 +1,7 @@
 import Easing from "../../animation/Easing";
 import { UIComponent } from "./UIComponent";
 
-export default class OpacityHover extends UIComponent {
+export class OpacityHover extends UIComponent {
   protected anim = new Easing(0, 1).set_duration(150);
 
   override on_start(): void {
@@ -15,12 +15,13 @@ export default class OpacityHover extends UIComponent {
   }
 
   override update(dt: number): void {
-    const r = this.node.state.mouse_on_me !== "1" && !this.node.focused;
+    const r = this.node.pointer_on_me !== 1 && !this.node.focused;
     if (this.anim.reverse !== r) {
-      if (this.anim.done)
+      if (this.anim.done) {
         this.anim.start(r)
-      else
+      } else {
         this.anim.reverse = r;
+      }
     }
     this.node.opacity = this.anim.update(dt).value;
   }

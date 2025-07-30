@@ -1,7 +1,8 @@
 import FSM, { IState } from "../../base/FSM";
 import Invoker from "../../base/Invoker";
-import Ditto from "../../ditto";
+import Ditto, { IPointingEvent } from "../../ditto";
 import { IUIKeyEvent } from "../IUIKeyEvent";
+import { IUIPointerEvent } from "../IUIPointerEvent";
 import type { UINode } from "../UINode";
 import { FadeOutOpacity } from "./FadeOutOpacity";
 import { ImgLoop } from "./ImgLoop";
@@ -155,12 +156,13 @@ export class LaunchPageLogic extends UIComponent {
   }
   override on_key_down(e: IUIKeyEvent): void {
     this.debug('on_key_down', e)
-    e.stop_immediate_propagation()
     this.on_tap();
+    e.stop_immediate_propagation()
   }
-  override on_click(): boolean | void {
+  override on_click(e: IUIPointerEvent): void {
     this.debug('on_click')
     this.on_tap()
+    e.stop_immediate_propagation()
   }
   on_tap() {
     const status = this.fsm.state?.key

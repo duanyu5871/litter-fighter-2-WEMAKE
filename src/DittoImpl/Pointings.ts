@@ -16,6 +16,8 @@ export class __Pointings implements IPointings {
     this._callbacks.emit("on_pointer_up")(new __PointingEvent(this._ele, e));
   private _on_pointer_move = (e: PointerEvent) =>
     this._callbacks.emit("on_pointer_move")(new __PointingEvent(this._ele, e));
+  private _on_pointer_cancel = (e: PointerEvent) =>
+    this._callbacks.emit("on_pointer_cancel")(new __PointingEvent(this._ele, e));
   private _on_click = (e: MouseEvent) =>
     this._callbacks.emit("on_click")(new __PointingEvent(this._ele, e));
 
@@ -33,6 +35,7 @@ export class __Pointings implements IPointings {
     this._ele?.removeEventListener("pointermove", this._on_pointer_move);
     this._ele?.removeEventListener("pointerdown", this._on_pointer_down);
     this._ele?.removeEventListener("pointerup", this._on_pointer_up);
+    this._ele?.removeEventListener("pointercancel", this._on_pointer_cancel);
     this._ele = void 0;
     if (element) {
       this._ele = element;
@@ -40,6 +43,7 @@ export class __Pointings implements IPointings {
       element.addEventListener("pointermove", this._on_pointer_move);
       element.addEventListener("pointerdown", this._on_pointer_down);
       element.addEventListener("pointerup", this._on_pointer_up);
+      element.addEventListener("pointercancel", this._on_pointer_cancel);
     }
 
   }

@@ -10,4 +10,3 @@ export class LF2UIEvent implements IUIEvent {
     this._stopped = 2;
   }
 }
-

@@ -18,7 +18,7 @@ import { Jalousie } from "./Jalousie";
 import { LaunchPageLogic } from "./LaunchPageLogic";
 import LoadingFileNameDisplayer from "./LoadingFileNameDisplayer";
 import { OpacityAnimation } from "./OpacityAnimation";
-import OpacityHover from "./OpacityHover";
+import { OpacityHover } from "./OpacityHover";
 import PlayerCharacterThumb from "./PlayerCharacterThumb";
 import PlayerKeyEditor from "./PlayerKeyEditor";
 import PlayerKeyText from "./PlayerKeyText";

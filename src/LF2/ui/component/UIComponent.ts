@@ -3,6 +3,7 @@ import Ditto from "../../ditto";
 import { IDebugging, make_debugging } from "../../entity/make_debugging";
 import { is_num } from "../../utils";
 import { IUIKeyEvent } from "../IUIKeyEvent";
+import { IUIPointerEvent } from "../IUIPointerEvent";
 import type { UINode } from "../UINode";
 import { IUICompnentCallbacks } from "./IUICompnentCallbacks";
 /**
@@ -121,12 +122,7 @@ export class UIComponent<Callbacks extends IUICompnentCallbacks = IUICompnentCal
     return this.node.name ?? this.node.id ?? 'no_name'
   }
 
-  /**
-   * Description placeholder
-   *
-   * @returns {(boolean | void)} 
-   */
-  on_click?(): boolean | void;
+  on_click?(e: IUIPointerEvent): void;
 
   on_start?(): void;
 

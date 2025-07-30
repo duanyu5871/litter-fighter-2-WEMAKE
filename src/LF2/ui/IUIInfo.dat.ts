@@ -5,6 +5,7 @@ import type { IUITxtInfo } from "./IUITxtInfo.dat";
 export type TComponentInfo = IComponentInfo | string
 export type TAction = IUIAction | string
 export type TUITxtInfo = IUITxtInfo | string
+export type TUIImgInfo = IUIImgInfo | string
 export interface IUIInfo {
   /**
    * 节点ID
@@ -21,7 +22,7 @@ export interface IUIInfo {
    * @memberof IUIInfo
    */
   name?: string;
-  img?: IUIImgInfo[] | IUIImgInfo;
+  img?: TUIImgInfo[] | TUIImgInfo;
   opacity?: number;
   which?: number | string;
   center?: number[] | string;

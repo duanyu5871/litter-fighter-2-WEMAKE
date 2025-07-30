@@ -4,6 +4,7 @@ import GameKey from "../../defines/GameKey";
 import Ditto from "../../ditto";
 import { IKeyboardCallback } from "../../ditto/keyboard/IKeyboardCallback";
 import { IPointingsCallback } from "../../ditto/pointings/IPointingsCallback";
+import { IUIPointerEvent } from "../IUIPointerEvent";
 import type { UINode } from "../UINode";
 import { UIComponent } from "./UIComponent";
 
@@ -31,13 +32,13 @@ export default class PlayerKeyEditor extends UIComponent {
       .apply();
   }
 
-  override on_click() {
+  override on_click(e: IUIPointerEvent) {
     this.lf2.keyboard.callback.add(this.l);
     this.lf2.pointings.callback.add(this.r);
     this._sprite
       .set_style({ ...this._sprite.style, fill_style: "blue" })
       .apply();
-    return true;
+    e.stop_immediate_propagation()
   }
 
   override on_resume() {

@@ -5,8 +5,8 @@ const img_idx_list_map = new Map<string, number[]>();
 
 export class RandomImgOnLayoutResume extends UIComponent {
   private _img_idx_list: number[] = [];
-  group?: string;
-
+  
+  get group() { return this.str(0) };
   get img_idx_list() {
     if (!this.group) return this._img_idx_list;
     else return img_idx_list_map.get(this.group) || [];
@@ -14,11 +14,6 @@ export class RandomImgOnLayoutResume extends UIComponent {
   set img_idx_list(v: number[]) {
     if (!this.group) this._img_idx_list = v;
     else img_idx_list_map.set(this.group, v);
-  }
-  override init(...args: string[]) {
-    super.init(...args);
-    this.group = args[0] ? "" + args[0] : void 0;
-    return this;
   }
   override on_resume(): void {
     super.on_resume?.();

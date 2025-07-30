@@ -243,9 +243,10 @@ export class __Object implements IObjectNode {
   ): IIntersection[] {
     const ret: IIntersection[] = [];
     const temp = (raycaster as _T.Raycaster).intersectObject(this.inner, recursive);
+    temp.sort((a, b) => a.distance - b.distance)
     for (const i of temp) {
       const wrapper = i.object.userData.__wrapper
-      if (wrapper) ret.push({ object: wrapper })
+      if (wrapper) ret.push({ object: wrapper, point: i.point, extra: void 0 })
     }
     return ret;
   }

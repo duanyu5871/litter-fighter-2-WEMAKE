@@ -1,4 +1,4 @@
-import type { IQuaternion, IRaycaster } from "../defines";
+import type { IQuaternion, IRaycaster, IVector3 } from "../defines";
 import type LF2 from "../LF2";
 import type { IBaseNode } from "./IBaseNode";
 export type ObjectEventKey = "added" | "removed";
@@ -65,8 +65,10 @@ export interface IObjectNode extends IBaseNode {
   on(key: ObjectEventKey, fn: () => void): this;
   off(key: ObjectEventKey, fn: () => void): this;
 }
-export interface IIntersection {
+export interface IIntersection<D extends any = any> {
   object: IObjectNode;
+  point: IVector3;
+  extra: D;
 }
 export const is_object_node = (v: any): v is IObjectNode =>
   v?.is_object_node === true;

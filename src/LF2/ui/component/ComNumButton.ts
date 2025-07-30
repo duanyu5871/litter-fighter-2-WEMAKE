@@ -1,3 +1,5 @@
+import { IUIKeyEvent } from "../IUIKeyEvent";
+import { IUIPointerEvent } from "../IUIPointerEvent";
 import GamePrepareLogic from "./GamePrepareLogic";
 import { UIComponent } from "./UIComponent";
 
@@ -5,8 +7,15 @@ export default class ComNumButton extends UIComponent {
   get gpl() {
     return this.node.root.search_component(GamePrepareLogic);
   }
-  override on_click(): void {
+  override on_click(e: IUIPointerEvent): void {
     this.gpl?.set_com_num(this.num(0) || 0);
+    e.stop_immediate_propagation();
+  }
+  override on_key_down(e: IUIKeyEvent): void {
+    if (e.key === 'a' && this.node.focused) {
+      this.gpl?.set_com_num(this.num(0) || 0);
+      e.stop_immediate_propagation();
+    }
   }
   override on_show(): void {
     super.on_show?.();
