@@ -1,6 +1,5 @@
 import type { IFrameInfo, IHitKeyCollection, TLooseGameKey } from "../defines";
 import { GameKey, StateEnum } from "../defines";
-import Ditto from "../ditto";
 import type { Entity } from "../entity/Entity";
 import { ControllerUpdateResult } from "./ControllerUpdateResult";
 import DoubleClick from "./DoubleClick";
@@ -142,10 +141,7 @@ export class BaseController {
   }
 
   is_db_hit(k: TLooseGameKey): boolean {
-    const {
-      time,
-      data: [f_0, f_1],
-    } = this.dbc[k];
+    const { time, data: [f_0, f_1] } = this.dbc[k];
     if (
       f_0?.state !== StateEnum.Standing &&
       f_0?.state !== StateEnum.Walking &&
@@ -210,6 +206,13 @@ export class BaseController {
   protected result = new ControllerUpdateResult();
   readonly queue: (readonly [0 | 1 | 2, TLooseGameKey])[] = []
   update(): ControllerUpdateResult {
+    if (this.world.time % 2) return this.result.set(void 0, 0)
+
+    if (this._time === Number.MAX_SAFE_INTEGER)
+      this._time = 0;
+    else
+      ++this._time;
+
     if (this.queue.length) {
       for (const [status, k] of this.queue) {
         switch (status) {
@@ -232,7 +235,6 @@ export class BaseController {
       this.queue.length = 0;
     }
 
-    ++this._time;
     const entity = this.entity;
     const frame = entity.frame;
     const { hold: hld, hit } = frame;
@@ -240,8 +242,7 @@ export class BaseController {
     // 按键序列初始化
     if (this.keys.d.is_start()) this._key_list = "";
 
-    const ret = this.result;
-    ret.set(void 0, 0);
+    const ret = this.result.set(void 0, 0);
 
     const { facing } = entity;
     let F: "L" | "R" = facing === 1 ? "R" : "L";

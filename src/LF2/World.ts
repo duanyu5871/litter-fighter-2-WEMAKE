@@ -155,6 +155,7 @@ export class World extends WorldDataset {
     this._update_worker_id && Ditto.Interval.del(this._update_worker_id);
     this._update_worker_id = void 0;
   }
+  
   start_update() {
     if (this._update_worker_id) Ditto.Interval.del(this._update_worker_id);
     let _prev_time = Date.now();
@@ -164,7 +165,7 @@ export class World extends WorldDataset {
       const time = Date.now();
       const real_dt = time - _prev_time;
       if (real_dt < this._ideally_dt * _fix_radio) return;
-      
+
       this.lf2.ui?.update(real_dt);
       _update_count++;
 
@@ -278,7 +279,12 @@ export class World extends WorldDataset {
     this._entity_chasers.delete(entity);
     entity.chasing_target = void 0;
   }
+  protected _time = 0;
+  get time() { return this._time }
   update_once() {
+    if (this._time === Number.MAX_SAFE_INTEGER) this._time = 0;
+    else ++this._time;
+
     for (const e of this.entities) {
       e.self_update();
 

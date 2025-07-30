@@ -68,7 +68,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
   private _pointer_on_uis = new Set<UINode>();
   private _pointer_raycaster = new Ditto.Raycaster();
   private _pointer_vec_2 = new Ditto.Vector2();
-  private _mt = new MersenneTwister()
+  private _mt = new MersenneTwister(0)
   get callbacks(): NoEmitCallbacks<ILf2Callback> {
     return this._callbacks;
   }

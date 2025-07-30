@@ -10,10 +10,11 @@ export class ControllerUpdateResult {
     time: number,
     game_key?: TLooseGameKey,
     key_list?: string,
-  ) {
+  ): this {
     this.next_frame = next_frame;
     this.time = time;
     this.game_key = game_key;
     this.key_list = key_list;
+    return this;
   }
 }
