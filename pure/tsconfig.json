@@ -10,16 +10,8 @@
     "downlevelIteration": true,
     "outDir": "./dist",
     "experimentalDecorators": true,
-    // "rootDir": "./src",
-    "rootDirs": [
-      "./src",
-      "../src/LF2"
-    ],
+    "rootDir": "./src",
     "noUncheckedIndexedAccess": true,
-    "typeRoots": [
-      "node_modules/@types",
-      "./src"
-    ],
     "lib": [
       "DOM",
       "ES2022"
@@ -32,8 +24,7 @@
     }
   },
   "include": [
-    "src",
-    "../../src/LF2"
+    "src"
   ],
   "exclude": [
     "node_modules",
