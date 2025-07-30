@@ -9,3 +9,4 @@ export * from "./IRespRegister";
 export * from "./MsgEnum";
 export * from "./IUserInfo";
 export * from "./IRoomInfo";
+export * from "./ErrCode";

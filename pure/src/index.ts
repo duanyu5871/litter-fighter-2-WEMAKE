@@ -17,6 +17,7 @@ wss.on('connection', (ws) => {
   // 监听客户端发送的消息
   ws.on('message', (data) => {
     const any: TReq = JSON.parse(data.toString())
+    console.log('收到客户端消息:', any);
     switch (any.type) {
       case MsgEnum.Register: handle_req_register(ws, any as any); break;
       case MsgEnum.CreateRoom: handle_req_create_room(ws, any as any); break;

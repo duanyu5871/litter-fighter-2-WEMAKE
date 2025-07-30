@@ -7,7 +7,9 @@ import { IReqCreateRoom, MsgEnum, IRespCreateRoom } from './definition';
 
 export function handle_req_create_room(ws: WebSocket, msg: IReqCreateRoom) {
   const user: User | undefined = check_user(MsgEnum.CreateRoom, ws);
-  if (!user || check_no_in_room(MsgEnum.CreateRoom, user)) return;
+  if (!user) return;
+  if (check_no_in_room(MsgEnum.CreateRoom, user)) return;
+
   const room = user.room = room_mgr.create_room();
   room.users.push(room.master = user)
   user.send<IRespCreateRoom>({

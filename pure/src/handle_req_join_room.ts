@@ -7,7 +7,8 @@ import { User } from './User';
 
 export function handle_req_join_room(ws: WebSocket, msg: IReqJoinRoom) {
   const user: User | undefined = check_user(MsgEnum.JoinRoom, ws);
-  if (!user || check_no_in_room(MsgEnum.JoinRoom, user)) return;
+  if (!user) return;
+  if (check_no_in_room(MsgEnum.JoinRoom, user)) return;
 
   const { roomid } = msg;
   if (!roomid) {
