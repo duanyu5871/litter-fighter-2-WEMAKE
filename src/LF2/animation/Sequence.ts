@@ -31,15 +31,16 @@ export class Sequence extends Animation {
 
   override calc(): this {
     let { time, reverse, duration, anims } = this;
+    if (!this.anims.length) return this;
     if (time >= duration) {
-      const a = this.anims[this.anims.length - 1]
+      const a = this.anims[this.anims.length - 1]!
       this._curr_anim = a;
       a.time = a.duration;
       this.value = a.calc().value;
       return this;
     }
     if (time <= 0) {
-      const a = this.anims[0]
+      const a = this.anims[0]!
       this._curr_anim = a;
       a.time = 0;
       this.value = a.calc().value;
@@ -59,7 +60,7 @@ export class Sequence extends Animation {
           break;
         }
       }
-      this.debug(`calc`, `anim idx=${idx}, value=${anims[idx].value}`)
+      this.debug(`calc`, `anim idx=${idx}, value=${anims[idx]!.value}`)
     } else {
       let idx = 0
       for (; idx < len; ++idx) {
@@ -73,7 +74,7 @@ export class Sequence extends Animation {
         }
         time -= anim.duration;
       }
-      this.debug(`calc`, `anim idx=${idx}, value=${anims[idx].value}`)
+      this.debug(`calc`, `anim idx=${idx}, value=${anims[idx]!.value}`)
     }
     return this;
   }

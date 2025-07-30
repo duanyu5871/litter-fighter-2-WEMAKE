@@ -176,7 +176,7 @@ export default class GamePrepareLogic extends UIComponent<IGamePrepareLogicCallb
     key: GamePrepareState.Computer,
     enter: () => {
       this.handling_com = this.coms[0];
-      this.handling_com.fsm.use(SlotSelStatus.Fighter);
+      this.handling_com?.fsm.use(SlotSelStatus.Fighter);
     }
   }, {
     key: GamePrepareState.GameSetting,

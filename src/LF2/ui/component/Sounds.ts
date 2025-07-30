@@ -47,7 +47,7 @@ export class Sounds extends UIComponent {
 
     this.time += dt;
     for (; this.idx < l; ++this.idx) {
-      const [t, s, b] = this.seq[this.idx];
+      const [t, s, b] = this.seq[this.idx]!;
       if (t > this.time) break;
       if (b) this.lf2.sounds.play_with_load(s)
       else this.lf2.sounds.play_preset(s)

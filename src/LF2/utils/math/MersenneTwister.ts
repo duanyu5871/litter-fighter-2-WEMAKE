@@ -17,9 +17,9 @@ export class MersenneTwister {
     this.index = this.n + 1;
     this.mt[0] = seed >>> 0;
     for (let i = 1; i < this.n; i++) {
-      const s = this.mt[i - 1] ^ (this.mt[i - 1] >>> 30);
+      const s = this.mt[i - 1]! ^ (this.mt[i - 1]! >>> 30);
       this.mt[i] = (((((s & 0xFFFF0000) >>> 16) * 1812433253) << 16) + (s & 0x0000FFFF) * 1812433253) + i;
-      this.mt[i] >>>= 0; // 转换为32位无符号整数
+      this.mt[i]! >>>= 0; // 转换为32位无符号整数
     }
   }
   constructor(seed: number = Date.now()) {
@@ -29,12 +29,12 @@ export class MersenneTwister {
   // 生成下一组624个值
   private twist(): void {
     for (let i = 0; i < this.n; i++) {
-      let x = (this.mt[i] & this.upperMask) | (this.mt[(i + 1) % this.n] & this.lowerMask);
+      let x = (this.mt[i]! & this.upperMask) | (this.mt[(i + 1) % this.n]! & this.lowerMask);
       let xA = x >>> 1;
       if (x % 2 !== 0) {
         xA ^= this.matrixA;
       }
-      this.mt[i] = this.mt[(i + this.m) % this.n] ^ xA;
+      this.mt[i]! = this.mt[(i + this.m) % this.n]! ^ xA;
     }
     this.index = 0;
   }
@@ -45,7 +45,7 @@ export class MersenneTwister {
       this.twist();
     }
 
-    let y = this.mt[this.index++];
+    let y = this.mt[this.index++]!;
 
     // 额外的位操作以改善分布
     y ^= (y >>> 11);
