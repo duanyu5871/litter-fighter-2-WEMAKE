@@ -1,15 +1,22 @@
 import { Builtin_FrameId, GameKey as GK, StateEnum, TLooseGameKey } from "../defines";
 import { Entity } from "../entity/Entity";
 import { is_character } from "../entity/type_check";
+import { abs } from "../utils";
 import { BaseController } from "./BaseController";
 import { dummy_updaters, DummyEnum } from "./DummyEnum";
 
+const WALK_ATTACK_DEAD_ZONE_X = 50;
+const WALK_ATTACK_DEAD_ZONE_Z = 10;
+const RUN_ATTACK_DEAD_ZONE_X = 120;
+const JUMP_DESIRE = 5;
+const RUN_DESIRE = 20;
+const STOP_RUN_DESIRE = 5;
+const RUN_ZONE = 300;
 export class BotController extends BaseController {
   readonly is_bot_enemy_chaser = true;
   _count = 0;
   chasing_enemy: Entity | undefined;
   avoiding_enemy: Entity | undefined;
-  want_to_jump = false;
   private _dummy?: DummyEnum;
   get dummy(): DummyEnum | undefined {
     return this._dummy;
@@ -21,7 +28,7 @@ export class BotController extends BaseController {
   manhattan_to(a: Entity) {
     const { x, z } = this.entity.position;
     const { x: x1, z: z1 } = a.position;
-    return Math.abs(x1 - x) + Math.abs(z1 - z);
+    return abs(x1 - x) + abs(z1 - z);
   }
   should_avoid(e?: Entity | null) {
     if (!e) return false;
@@ -98,121 +105,83 @@ export class BotController extends BaseController {
     return { x: px, z: pz, next_x: x, next_z: z };
   }
 
+  protected key_up(...ks: TLooseGameKey[]): this {
+    for (const k of ks) this.is_end(k) || this.end(k)
+    return this;
+  }
+
+  protected key_down(...ks: TLooseGameKey[]): this {
+    for (const k of ks) this.is_end(k) && this.start(k)
+    return this;
+  }
+  desire() {
+    return this.lf2.random_in(0, 100)
+  }
   chase_enemy() {
     if (!this.chasing_enemy) return false;
-
     const me = this.entity;
     const { x: my_x, z: my_z } = this.guess_entity_pos(me);
-    const { x: enemy_x, z: enemy_z } = this.guess_entity_pos(this.chasing_enemy);
-
-    const WALK_ATTACK_DEAD_ZONE_X = 50;
-    const WALK_ATTACK_DEAD_ZONE_Z = 10;
-    const RUN_ATTACK_DEAD_ZONE_X = 75;
-    const RUN_ATTACK_DEAD_ZONE_Z = 10;
-    const JUMP_DESIRE = 1;
-    const RUN_ZONE = 300;
-    const { facing } = me;
+    const { x: en_x, z: en_z } = this.guess_entity_pos(this.chasing_enemy);
     const { state } = me.frame;
-    const is_running = state === StateEnum.Running;
-    let is_x_reach = false;
-    let is_z_reach = false;
+    let x_reach = false;
+    let z_reach = false;
 
-    if (enemy_x - my_x > RUN_ZONE && !is_running) {
-      this.db_hit("R");
-      // console.log('run >>>', this.is_db_hit(GameKey.R))
-    } else if (my_x - enemy_x > RUN_ZONE && !is_running) {
-      this.db_hit("L");
-      // console.log('run <<<', this.is_db_hit(GameKey.L))
-    } else if (is_running) {
-      if (enemy_x - my_x > RUN_ATTACK_DEAD_ZONE_X) {
-        if (this.is_end(GK.R)) {
-          this.start(GK.R).end(GK.L);
+    switch (state) {
+      case StateEnum.Standing:
+      case StateEnum.Walking: {
+        if (my_x < en_x - RUN_ZONE && this.desire() < RUN_DESIRE) {
+          this.key_up(GK.L, GK.R).db_hit(GK.R).end(GK.R);
+        } else if (my_x > en_x + RUN_ZONE && this.desire() < RUN_DESIRE) {
+          this.key_up(GK.L, GK.R).db_hit(GK.L).end(GK.L);
         }
-      } else if (my_x - enemy_x > RUN_ATTACK_DEAD_ZONE_X) {
-        if (this.is_end(GK.L)) {
-          this.start(GK.L).end(GK.R);
-        }
-      } else {
-        is_x_reach = true;
+        break;
       }
-    } else {
-      if (enemy_x - my_x > WALK_ATTACK_DEAD_ZONE_X) {
-        if (this.is_end(GK.R)) {
-          this.start(GK.R).end(GK.L);
-        }
-      } else if (my_x - enemy_x > WALK_ATTACK_DEAD_ZONE_X) {
-        if (this.is_end(GK.L)) {
-          this.start(GK.L).end(GK.R);
-        }
-      } else {
-        is_x_reach = true;
-      }
-    }
-    if (my_z < enemy_z - WALK_ATTACK_DEAD_ZONE_Z) {
-      if (this.is_end(GK.D)) {
-        this.start(GK.D).end(GK.U);
-      }
-    } else if (my_z > enemy_z + WALK_ATTACK_DEAD_ZONE_Z) {
-      if (this.is_end(GK.U)) {
-        this.start(GK.U).end(GK.D);
-      }
-    } else {
-      is_z_reach = true;
     }
 
-    if (is_z_reach) {
-      this.end(GK.D, GK.U);
+    if (state === StateEnum.Running) {
+      // STOP RUNNING.
+      if (abs(en_x - my_x) < WALK_ATTACK_DEAD_ZONE_X || this.desire() < STOP_RUN_DESIRE) {
+        this.entity.facing < 0 ?
+          this.key_down(GK.R).key_up(GK.L) :
+          this.key_down(GK.L).key_up(GK.R)
+      }
+      if (state !== StateEnum.Running) {
+        this.key_up(GK.R, GK.L);
+      }
     }
-    if (is_x_reach && is_z_reach) {
-      if (
-        this.entity.frame.state === StateEnum.Standing ||
-        this.entity.frame.state === StateEnum.Walking
-      ) {
-        if (my_z < enemy_z + 10) {
-          if (this.is_end(GK.D)) {
-            this.start(GK.D).end(GK.U);
-          }
-        } else if (my_z > enemy_z - 10) {
-          if (this.is_end(GK.U)) {
-            this.start(GK.U).end(GK.D);
-          }
-        } else {
-          this.end(GK.U, GK.D);
-        }
-        if (my_x < enemy_x + 10 && me.facing === -1) {
-          if (this.is_end(GK.R)) {
-            this.start(GK.R).end(GK.L);
-          }
-        } else if (enemy_x < my_x - 10 && me.facing === 1) {
-          if (this.is_end(GK.L)) {
-            this.start(GK.L).end(GK.R);
-          }
-        } else {
-          this.end(GK.L, GK.R);
-        }
-      }
-      // 上来就一拳。
-      this.is_hit(GK.a) ? this.end(GK.a) : this.start(GK.a);
-      this.want_to_jump = false;
+
+    if (my_x < en_x - WALK_ATTACK_DEAD_ZONE_X) {
+      this.key_up(GK.L).key_down(GK.R);
+    } else if (my_x > en_x + WALK_ATTACK_DEAD_ZONE_X) {
+      this.key_up(GK.R).key_down(GK.L);
     } else {
-      if (is_x_reach) {
-        if (is_running && facing > 0) {
-          this.start(GK.L).end(GK.R); // stop running.
-        } else if (is_running && facing < 0) {
-          this.start(GK.R).end(GK.L); // stop running.
-        } else {
-          this.end(GK.L, GK.R);
-        }
+      this.key_up(GK.L, GK.R);
+      x_reach = true;
+    }
+    if (my_z < en_z - WALK_ATTACK_DEAD_ZONE_Z) {
+      this.key_up(GK.U).key_down(GK.D);
+    } else if (my_z > en_z + WALK_ATTACK_DEAD_ZONE_Z) {
+      this.key_up(GK.D).key_down(GK.U);
+    } else {
+      this.key_up(GK.U, GK.D);
+      z_reach = true;
+    }
+    if (x_reach && z_reach) {
+      if (my_x > en_x && this.entity.facing > 0) {
+        this.key_down(GK.L).key_up(GK.L); // 回头
+      } else if (my_x < en_x && this.entity.facing < 0) {
+        this.key_down(GK.R).key_up(GK.R); // 回头
       }
-      if (!this.want_to_jump)
-        this.want_to_jump = Math.random() * 100 < JUMP_DESIRE;
-      if (this.want_to_jump) {
-        if (this.is_hit(GK.j)) {
-          this.want_to_jump = false;
-          this.end(GK.j);
-        } else {
-          this.start(GK.j);
+      this.key_down(GK.a).key_up(GK.a)
+    }
+    switch (state) {
+      case StateEnum.Standing:
+      case StateEnum.Walking:
+      case StateEnum.Running: {
+        if (this.lf2.random_in(0, 100) < JUMP_DESIRE) {
+          this.key_down(GK.j).key_up(GK.j)
         }
+        break;
       }
     }
     return true;

@@ -17,6 +17,8 @@ import { is_bot_ctrl, is_local_ctrl } from "./LF2/entity/type_check";
 import LF2 from "./LF2/LF2";
 import { PlayerInfo } from "./LF2/PlayerInfo";
 import { random_get } from "./LF2/utils/math/random";
+import { BotController } from "./LF2/controller/BotController";
+import Show from "./Component/Show";
 const key_names: Record<GameKey, string> = {
   U: "上",
   D: "下",
@@ -197,32 +199,34 @@ export function PlayerRow(props: Props) {
             );
           })}
       </Combine>
-      <Combine>
-        <Button
-          onClick={() => {
-            const character = lf2.player_characters.get(info.id);
-            if (!character) return;
-            const ctrl = character.ctrl;
-            if (is_bot_ctrl(ctrl)) {
-              character.ctrl = new LocalController(
-                info.id,
-                character,
-                info.keys,
-              );
-            } else {
-              character.ctrl = Factory.inst.get_ctrl(character.id, info.id, character);
-            }
-            ctrl?.dispose();
-          }}>
-          <>Bot</>
-        </Button>
-        <Select
-          items={["", ...Object.keys(DummyEnum)]}
-          parse={(k) => k ? [(DummyEnum as any)[k], k] : ["", "not dummy"]}
-          value={dummy}
-          on_changed={set_dummy}
-        />
-      </Combine>
+      <Show show={added}>
+        <Combine>
+          <Button
+            onClick={() => {
+              const character = lf2.player_characters.get(info.id);
+              if (!character) return;
+              const ctrl = character.ctrl;
+              if (is_bot_ctrl(ctrl)) {
+                character.ctrl = new LocalController(
+                  info.id,
+                  character,
+                  info.keys,
+                );
+              } else {
+                character.ctrl = Factory.inst.get_ctrl(character.data.id, info.id, character);
+              }
+              ctrl?.dispose();
+            }}>
+            <>Bot</>
+          </Button>
+          <Select
+            items={["", ...Object.keys(DummyEnum)]}
+            parse={(k) => k ? [(DummyEnum as any)[k], k] : ["", "not dummy"]}
+            value={dummy}
+            on_changed={set_dummy}
+          />
+        </Combine>
+      </Show>
     </div>
   );
 

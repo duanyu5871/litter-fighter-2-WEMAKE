@@ -623,8 +623,8 @@ export class UINode implements IDebugging {
   on_click(e: IUIPointerEvent) {
     const { click } = this.data.actions ?? {};
     if (click) {
-      e.stop_propagation()
-      actor.act(this, click)
+      actor.act(this, click);
+      e.stop_propagation();
     }
     for (const c of this._components) {
       c.on_click?.(e);
@@ -676,7 +676,11 @@ export class UINode implements IDebugging {
       if (e.stopped === 2) return;
     }
     if (this.focused && "a" === e.key) {
-      e.stop_immediate_propagation();
+      const { click } = this.data.actions ?? {};
+      if (click) {
+        actor.act(this, click);
+        e.stop_immediate_propagation();
+      }
     }
   }
 

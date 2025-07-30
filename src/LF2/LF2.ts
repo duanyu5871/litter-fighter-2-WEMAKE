@@ -38,11 +38,9 @@ import { LF2UIKeyEvent } from "./ui/LF2UIKeyEvent";
 import { UINode } from "./ui/UINode";
 import {
   arithmetic_progression, fisrt,
-  is_arr, is_num, is_str,
-  random_get,
-  random_in,
-  random_take
+  is_arr, is_num, is_str
 } from "./utils";
+import { MersenneTwister } from "./utils/math/MersenneTwister";
 import { World } from "./World";
 
 const cheat_info_pair = (n: CheatType) =>
@@ -70,6 +68,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
   private _pointer_on_uis = new Set<UINode>();
   private _pointer_raycaster = new Ditto.Raycaster();
   private _pointer_vec_2 = new Ditto.Vector2();
+  private _mt = new MersenneTwister()
   get callbacks(): NoEmitCallbacks<ILf2Callback> {
     return this._callbacks;
   }
@@ -170,8 +169,6 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
       if (id === which) return player;
   }
   on_click_character?: (c: Entity) => void;
-
-
   /**
    * TODO
    *
@@ -648,28 +645,6 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
     if (word === "mouse_on_me") return '' + item.pointer_on_me;
     if (word === "pointer_on_me") return '' + item.pointer_on_me;
     if (word === "paused") return this.world.paused ? 1 : 0;
-    if (word.startsWith("f:")) {
-      let result = word.match(/f:random_int_in_range\((\d+),(\d+),?(\d+)?\)/);
-      if (result) {
-        const [, a, b, group_id] = result;
-        const begin = Number(a);
-        const end = Number(b);
-        if (begin > end) return end;
-        const { img_idx } = item.state;
-        if (is_num(img_idx)) return img_idx;
-        if (is_str(group_id) && item.parent) {
-          let arr = item.parent.state["random_int_arr" + group_id];
-          if (!is_arr(arr) || !arr.length)
-            arr = item.parent.state["random_int_arr" + group_id] =
-              arithmetic_progression(begin, end, 1);
-          return (item.state.img_idx = this.random_take(arr));
-        } else {
-          return (item.state.img_idx = Math.floor(
-            random_in(begin, end) % (end + 1),
-          ));
-        }
-      }
-    }
     return word;
   };
 
@@ -728,15 +703,15 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
   }
 
   random_get<T>(a: T | T[] | undefined): T | undefined {
-    if (Array.isArray(a)) return random_get(a);
-    return a
+    if (!a || !Array.isArray(a)) return a
+    return a[this.random_in(0, a.length)]
   }
   random_take<T>(a: T | T[] | undefined): T | undefined {
-    if (Array.isArray(a)) return random_take(a);
-    return a
+    if (!a || !Array.isArray(a)) return a
+    return a.splice(this.random_in(0, a.length), 1)[0]
   }
   random_in(l: number, r: number) {
-    return random_in(l, r)
+    return this._mt.in_range(l, r);
   }
 }
 (window as any).LF2 = LF2;
