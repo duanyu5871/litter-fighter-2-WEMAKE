@@ -58,9 +58,13 @@ for (const [ig, str, result] of expression_result_pairs) {
 }
 
 test(`expression case`, () => {
-  const exp = new Expression<any>("v==0", (d) => (a, b, c) => {
-    console.log('b_func', { a, b, c, d })
-    return b
+  const exp = new Expression<any>("v==0", (ww) => (input, word, op) => {
+    console.log(ww)
+    expect(input).toBe('input');
+    expect(op).toBe('==');
+    if (word === 'v') return '0'
+    return word
   })
-  exp.run("inst")
+  const result = exp.run("input")
+  expect(result).toBe(true)
 })
