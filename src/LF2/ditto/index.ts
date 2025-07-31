@@ -11,7 +11,7 @@ import type { Layer } from "../bg/Layer";
 import type { IQuaternion, IVector2, IVector3 } from "../defines";
 import type { IRaycaster } from "../defines/IRaycaster";
 import type { Entity } from "../entity/Entity";
-import type LF2 from "../LF2";
+import type { LF2 } from "../LF2";
 import type { UINode } from "../ui/UINode";
 import type { World } from "../World";
 import type { ICache } from "./cache";

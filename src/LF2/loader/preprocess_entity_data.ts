@@ -1,6 +1,6 @@
 import { Defines, IEntityData } from "../defines";
 import Ditto from "../ditto";
-import LF2 from "../LF2";
+import { LF2 } from "../LF2";
 import { is_non_blank_str } from "../utils";
 import { traversal } from "../utils/container_help/traversal";
 import { check_frame } from "./check_frame";

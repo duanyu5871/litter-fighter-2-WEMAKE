@@ -1,5 +1,5 @@
 import type { IBgData } from "../defines";
-import type LF2 from "../LF2";
+import type { LF2 } from "../LF2";
 import { is_non_blank_str } from "../utils/type_check/is_str";
 import type { ImageInfo } from "./ImageInfo";
 

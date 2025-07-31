@@ -21,7 +21,7 @@ import { __Scene } from "./DittoImpl/3d";
 import EditorView from "./EditorView";
 import { GameOverlay } from "./GameOverlay";
 import GamePad from "./GamePad";
-import LF2 from "./LF2/LF2";
+import { LF2 } from "./LF2/LF2";
 import Invoker from "./LF2/base/Invoker";
 import { CheatType } from "./LF2/defines";
 import { Defines } from "./LF2/defines/defines";
@@ -407,7 +407,7 @@ function App() {
   useEffect(() => {
     if (!lf2) return;
     (lf2.pointings as __Pointings).set_element(ele_game_canvas);
-    (lf2.world.scene as __Scene).set_canvas(ele_game_canvas);
+    (lf2.world.renderer.scene as __Scene).set_canvas(ele_game_canvas);
   }, [lf2, ele_game_canvas])
 
   useEffect(() => {

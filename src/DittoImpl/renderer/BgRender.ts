@@ -54,13 +54,13 @@ export class BgRender implements BgRenderPack, IBgRender {
         this._layers.push(layer_render);
         this._mesh.add(layer_render.mesh);
       }
-      world.scene.add(this._mesh);
+      world.renderer.scene.add(this._mesh);
     }
   }
 
   private render_pack({ bg, mesh, layers }: BgRenderPack, with_update = false) {
     if (with_update) bg?.update()
-    bg?.world.camera.world_quaternion(this.quaternion);
+    bg?.world.renderer.camera.world_quaternion(this.quaternion);
     mesh?.rotation_from_quaternion(this.quaternion);
     for (const render of layers)
       render.update();

@@ -1,6 +1,6 @@
 import { IPerspectiveCamera } from "../../LF2/3d/IPerspectiveCamera";
 import { IQuaternion, IRaycaster } from "../../LF2/defines";
-import LF2 from "../../LF2/LF2";
+import { LF2 } from "../../LF2/LF2";
 import { __Object } from "./__Object";
 import * as _T from "./_t";
 

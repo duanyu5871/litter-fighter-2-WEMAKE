@@ -1,6 +1,6 @@
 import { Entity } from "../entity/Entity";
 import { is_ball } from "../entity/type_check";
-import LF2 from "../LF2";
+import { LF2 } from "../LF2";
 
 export class BallsHelper {
   readonly lf2: LF2;

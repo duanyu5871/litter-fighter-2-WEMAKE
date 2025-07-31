@@ -14,7 +14,7 @@ import { CheatType } from "./LF2/defines";
 import GameKey from "./LF2/defines/GameKey";
 import { Factory } from "./LF2/entity/Factory";
 import { is_bot_ctrl, is_local_ctrl } from "./LF2/entity/type_check";
-import LF2 from "./LF2/LF2";
+import { LF2 } from "./LF2/LF2";
 import { PlayerInfo } from "./LF2/PlayerInfo";
 import { random_get } from "./LF2/utils/math/random";
 import { BotController } from "./LF2/controller/BotController";

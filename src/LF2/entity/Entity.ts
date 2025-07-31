@@ -1,4 +1,4 @@
-import type LF2 from "../LF2";
+import type { LF2 } from "../LF2";
 import type { World } from "../World";
 import { Callbacks, ICollision, new_id, new_team, type NoEmitCallbacks } from "../base";
 import { BaseController } from "../controller/BaseController";

@@ -5,13 +5,12 @@ import type { IEntityRenderer } from "../../LF2/ditto/render/IEntityRenderer";
 import type { IFrameIndicators } from "../../LF2/ditto/render/IFrameIndicators";
 import type { IWorldRenderer } from "../../LF2/ditto/render/IWorldRenderer";
 import type { Entity } from "../../LF2/entity";
-import { World } from "../../LF2/World";
+import type { LF2 } from "../../LF2/LF2";
+import type { World } from "../../LF2/World";
 
 
 export class WorldRenderer implements IWorldRenderer {
-  get lf2() {
-    return this.world.lf2;
-  }
+  lf2: LF2;
   world: World;
   bg_render: IBgRender;
   scene: IScene;
@@ -43,6 +42,7 @@ export class WorldRenderer implements IWorldRenderer {
   }
   constructor(world: World) {
     this.world = world;
+    this.lf2 = world.lf2;
     const w = world.screen_w;
     const h = world.screen_h;
     this.bg_render = new Ditto.BgRender(world);

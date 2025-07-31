@@ -1,6 +1,6 @@
 import type { IBillboardInfo, IBillboardNode } from "../../LF2/3d";
 import { IPicture } from "../../LF2/defines";
-import LF2 from "../../LF2/LF2";
+import { LF2 } from "../../LF2/LF2";
 import { __Object } from "./__Object";
 import { Sprite, SpriteMaterial } from "./_t";
 

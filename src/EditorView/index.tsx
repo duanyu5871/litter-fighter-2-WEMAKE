@@ -21,7 +21,7 @@ import { IEntityData } from "../LF2/defines/IEntityData";
 import { ILegacyPictureInfo } from "../LF2/defines/ILegacyPictureInfo";
 import Ditto, { IZip } from "../LF2/ditto";
 import { ILf2Callback } from "../LF2/ILf2Callback";
-import LF2 from "../LF2/LF2";
+import { LF2 } from "../LF2/LF2";
 import { traversal } from "../LF2/utils/container_help/traversal";
 import { is_num } from "../LF2/utils/type_check";
 import open_file from "../Utils/open_file";

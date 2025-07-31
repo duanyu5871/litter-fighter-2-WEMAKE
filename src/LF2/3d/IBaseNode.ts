@@ -1,4 +1,4 @@
-import type LF2 from "../LF2";
+import type { LF2 } from "../LF2";
 
 export interface IBaseNode {
   readonly is_base_node: true;

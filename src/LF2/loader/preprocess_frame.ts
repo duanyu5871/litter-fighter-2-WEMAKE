@@ -1,4 +1,4 @@
-import LF2 from "../LF2";
+import { LF2 } from "../LF2";
 import { cook_frame_indicator_info } from "../dat_translator/cook_frame_indicator_info";
 import { IFrameInfo } from "../defines";
 import { IEntityData } from "../defines/IEntityData";

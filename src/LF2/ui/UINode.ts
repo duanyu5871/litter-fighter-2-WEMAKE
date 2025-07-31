@@ -1,4 +1,4 @@
-import LF2 from "../LF2";
+import { LF2 } from "../LF2";
 import Callbacks from "../base/Callbacks";
 import { Expression } from "../base/Expression";
 import { NoEmitCallbacks } from "../base/NoEmitCallbacks";
@@ -363,7 +363,7 @@ export class UINode implements IDebugging {
       this.focused_node = this._state.focused_node;
       if (this._visible) this.invoke_all_visible();
     }
-    if (this.root === this) this.lf2.world.scene.add(this.sprite);
+    if (this.root === this) this.lf2.world.renderer.scene.add(this.sprite);
     for (const c of this._components) c.on_resume?.();
     for (const i of this.children) i.on_resume();
     const { resume } = this.data.actions || {};

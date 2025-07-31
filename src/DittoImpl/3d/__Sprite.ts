@@ -1,5 +1,5 @@
 import { ISprite, ISpriteInfo } from "../../LF2/3d/ISprite";
-import LF2 from "../../LF2/LF2";
+import { LF2 } from "../../LF2/LF2";
 import { empty_texture } from "../../LF2/loader/ImageMgr";
 import { is_num } from "../../LF2/utils/type_check";
 import * as THREE from "../3d/_t";

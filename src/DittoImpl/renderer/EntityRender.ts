@@ -72,7 +72,7 @@ export class EntityRender implements IEntityRenderer {
     this.entity_mesh.visible = v;
   }
   on_mount() {
-    this.entity.world.scene.add(this.entity_mesh!);
+    this.entity.world.renderer.scene.add(this.entity_mesh!);
   }
   on_unmount(): void {
     this.entity_mesh.dispose();

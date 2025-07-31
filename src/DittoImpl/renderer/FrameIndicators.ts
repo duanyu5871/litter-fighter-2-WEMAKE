@@ -27,7 +27,7 @@ export class FrameIndicators implements IFrameIndicators {
   private _y: number = 0;
   private _z: number = 0;
   get scene() {
-    return this._entity.world.scene;
+    return this._entity.world.renderer.scene;
   }
   get frame() {
     return this._entity.frame;

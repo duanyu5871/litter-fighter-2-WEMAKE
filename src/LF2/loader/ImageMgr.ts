@@ -2,7 +2,7 @@ import { ISize } from "splittings/dist/es/splittings";
 import * as THREE from "three";
 import { create_img_ele } from "../../Utils/create_img_ele";
 import { get_blob } from "../../Utils/get_blob";
-import type LF2 from "../LF2";
+import type { LF2 } from "../LF2";
 import AsyncValuesKeeper from "../base/AsyncValuesKeeper";
 import { ILegacyPictureInfo } from "../defines/ILegacyPictureInfo";
 import type IPicture from "../defines/IPicture";

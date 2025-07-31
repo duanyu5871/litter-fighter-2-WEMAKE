@@ -1,4 +1,4 @@
-import LF2 from "../LF2";
+import { LF2 } from "../LF2";
 import { BallController } from "../controller/BallController";
 import { BotController } from "../controller/BotController";
 import { InvalidController } from "../controller/InvalidController";

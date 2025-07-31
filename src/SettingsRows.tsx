@@ -9,7 +9,7 @@ import Select from "./Component/Select";
 import Show from "./Component/Show";
 import TeamSelect from "./Component/TeamSelect";
 import Titled from "./Component/Titled";
-import LF2 from "./LF2/LF2";
+import { LF2 } from "./LF2/LF2";
 import { BaseController } from "./LF2/controller/BaseController";
 import { BotController } from "./LF2/controller/BotController";
 import { InvalidController } from "./LF2/controller/InvalidController";

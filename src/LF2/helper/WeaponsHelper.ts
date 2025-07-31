@@ -1,7 +1,7 @@
 import { IEntityData } from "../defines/IEntityData";
 import { Entity } from "../entity/Entity";
 import { is_weapon } from "../entity/type_check";
-import LF2 from "../LF2";
+import { LF2 } from "../LF2";
 
 export class WeaponsHelper {
   readonly lf2: LF2;

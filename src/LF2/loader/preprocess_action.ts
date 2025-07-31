@@ -1,6 +1,6 @@
 import { Expression } from "../base/Expression";
 import type { TAction } from "../defines";
-import type LF2 from "../LF2";
+import type { LF2 } from "../LF2";
 import { is_non_blank_str } from "../utils";
 import { get_val_geter_from_collision } from "./get_val_from_collision";
 import { preprocess_next_frame } from "./preprocess_next_frame";

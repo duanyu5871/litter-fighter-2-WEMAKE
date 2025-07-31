@@ -1,7 +1,7 @@
 import { IBaseNode } from "../../LF2/3d/IBaseNode";
 import type { IIntersection, IObjectNode, ObjectEventKey } from "../../LF2/3d/IObject";
 import type { IQuaternion, IRaycaster } from "../../LF2/defines";
-import LF2 from "../../LF2/LF2";
+import { LF2 } from "../../LF2/LF2";
 import { is_num } from "../../LF2/utils/type_check";
 import * as _T from "./_t";
 

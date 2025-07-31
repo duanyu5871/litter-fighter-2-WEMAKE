@@ -1,4 +1,3 @@
-import { IOrthographicCameraNode, IScene } from "./3d";
 import { Callbacks, FPS, ICollision } from "./base";
 import { Builtin_FrameId, Defines, IBdyInfo, IBounding, IEntityData, IFrameInfo, IItrInfo, StateEnum } from "./defines";
 import { AllyFlag } from "./defines/AllyFlag";
@@ -12,7 +11,7 @@ import {
   is_weapon
 } from "./entity";
 import { IWorldCallbacks } from "./IWorldCallbacks";
-import LF2 from "./LF2";
+import { LF2 } from "./LF2";
 import { Stage } from "./stage/Stage";
 import { WhatNext } from "./state/State_Base";
 import { find } from "./utils/container_help";
@@ -81,8 +80,6 @@ export class World extends WorldDataset {
   cam_speed = 0;
   lock_cam_x: number | undefined = void 0;
   public renderer: IWorldRenderer
-  get scene(): IScene { return this.renderer.scene }
-  get camera(): IOrthographicCameraNode { return this.renderer.camera }
 
   constructor(lf2: LF2) {
     super()
@@ -155,7 +152,7 @@ export class World extends WorldDataset {
     this._update_worker_id && Ditto.Interval.del(this._update_worker_id);
     this._update_worker_id = void 0;
   }
-  
+
   start_update() {
     if (this._update_worker_id) Ditto.Interval.del(this._update_worker_id);
     let _prev_time = Date.now();

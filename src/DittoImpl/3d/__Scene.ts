@@ -5,7 +5,7 @@ import {
   is_orthographic_camera_node,
   IScene,
 } from "../../LF2/3d";
-import LF2 from "../../LF2/LF2";
+import { LF2 } from "../../LF2/LF2";
 import { __Object } from "./__Object";
 
 export class __Scene extends __Object implements IScene {

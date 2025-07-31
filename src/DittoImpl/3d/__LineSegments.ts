@@ -1,6 +1,6 @@
 import { Line2, LineGeometry, LineMaterial } from "./_t"
 import { ILineSegmentsInfo, ILineSegmentsNode } from "../../LF2/3d";
-import LF2 from "../../LF2/LF2";
+import { LF2 } from "../../LF2/LF2";
 import { __Object } from "./__Object";
 
 const geometry = new LineGeometry();

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { IToggleImgProps, ToggleImgButton } from "./Component/Buttons/ToggleImgButton";
 import styles from "./GamePad.module.scss";
-import LF2 from "./LF2/LF2";
+import { LF2 } from "./LF2/LF2";
 import { BaseController } from "./LF2/controller/BaseController";
 import GameKey from "./LF2/defines/GameKey";
 import img_touch_btn_arrow from "./assets/touch_btn_arrow.png";

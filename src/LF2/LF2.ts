@@ -249,7 +249,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
     if (!this.ui) return [];
     this._pointer_vec_2.x = e.scene_x;
     this._pointer_vec_2.y = e.scene_y;
-    this.world.camera.raycaster(this._pointer_raycaster, this._pointer_vec_2);
+    this.world.renderer.camera.raycaster(this._pointer_raycaster, this._pointer_vec_2);
     const intersections = this.ui.sprite.intersect_from_raycaster(this._pointer_raycaster, true);
     const ret: IIntersection<UINode>[] = []
     for (const intersection of intersections) {
@@ -715,4 +715,3 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
   }
 }
 (window as any).LF2 = LF2;
-export default LF2

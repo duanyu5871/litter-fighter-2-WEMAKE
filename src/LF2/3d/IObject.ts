@@ -1,5 +1,5 @@
 import type { IQuaternion, IRaycaster, IVector3 } from "../defines";
-import type LF2 from "../LF2";
+import type { LF2 } from "../LF2";
 import type { IBaseNode } from "./IBaseNode";
 export type ObjectEventKey = "added" | "removed";
 export interface IObjectNode extends IBaseNode {

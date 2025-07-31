@@ -35,7 +35,7 @@ export class EntityShadowRender implements IEntityRenderer {
   }
 
   on_mount() {
-    this.entity.world.scene.add(this.mesh);
+    this.entity.world.renderer.scene.add(this.mesh);
   }
 
   on_unmount() {

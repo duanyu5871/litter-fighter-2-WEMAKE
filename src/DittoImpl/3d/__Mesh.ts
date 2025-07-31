@@ -1,6 +1,6 @@
 import { BufferGeometry, Material, Mesh, Object3D, Object3DEventMap } from "./_t";
 import { IMeshInfo, IMeshNode } from "../../LF2/3d/IMesh";
-import LF2 from "../../LF2/LF2";
+import { LF2 } from "../../LF2/LF2";
 import { __Object } from "./__Object";
 import { dispose_material } from "./disposer";
 

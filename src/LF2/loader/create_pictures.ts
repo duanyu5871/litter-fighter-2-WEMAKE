@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import IPicture from "../defines/IPicture";
 import { TData } from "../entity/Entity";
-import type LF2 from "../LF2";
+import type { LF2 } from "../LF2";
 
 export default function create_pictures(lf2: LF2, data: TData) {
   const pictures = new Map<string, IPicture<THREE.Texture>>();
