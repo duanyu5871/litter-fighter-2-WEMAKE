@@ -325,7 +325,8 @@ export class UINode implements IDebugging {
   }
 
   to_next_img() {
-    this.img_idx.value = () => this.img_idx.value + 1 % this.data.img.length;
+    const idx = this.img_idx.value
+    this.img_idx.value = () => idx + 1 % this.data.img.length;
   }
 
   readonly cook = UINode.create.bind(UINode)
