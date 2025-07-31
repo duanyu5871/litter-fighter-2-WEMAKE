@@ -363,7 +363,6 @@ export class UINode implements IDebugging {
       this.focused_node = this._state.focused_node;
       if (this._visible) this.invoke_all_visible();
     }
-    if (this.root === this) this.lf2.world.renderer.scene.add(this.sprite);
     for (const c of this._components) c.on_resume?.();
     for (const i of this.children) i.on_resume();
     const { resume } = this.data.actions || {};

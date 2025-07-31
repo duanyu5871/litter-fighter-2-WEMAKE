@@ -3,8 +3,8 @@ import Background from "../../LF2/bg/Background";
 import Ditto from "../../LF2/ditto";
 import type { IEntityRenderer } from "../../LF2/ditto/render/IEntityRenderer";
 import type { Entity } from "../../LF2/entity/Entity";
-import type { Stage } from "../../LF2/stage/Stage";
 import * as T from "../3d/_t";
+import { WorldRenderer } from "./WorldRenderer";
 
 export class EntityShadowRender implements IEntityRenderer {
   readonly renderer_type: string = "Shadow";
@@ -35,14 +35,13 @@ export class EntityShadowRender implements IEntityRenderer {
   }
 
   on_mount() {
-    this.entity.world.renderer.scene.add(this.mesh);
+    (this.entity.world.renderer as WorldRenderer).scene.add(this.mesh);
   }
 
   on_unmount() {
     this.mesh.dispose();
   }
-
-
+  
   render() {
     const { bg } = this.world
     if (bg != this.bg) {

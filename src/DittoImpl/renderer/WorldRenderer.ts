@@ -1,4 +1,4 @@
-import type { IOrthographicCameraNode, IScene } from "../../LF2/3d";
+import type { IOrthographicCameraNode } from "../../LF2/3d";
 import Ditto from "../../LF2/ditto";
 import type { IBgRender } from "../../LF2/ditto/render/IBgRender";
 import type { IEntityRenderer } from "../../LF2/ditto/render/IEntityRenderer";
@@ -7,13 +7,14 @@ import type { IWorldRenderer } from "../../LF2/ditto/render/IWorldRenderer";
 import type { Entity } from "../../LF2/entity";
 import type { LF2 } from "../../LF2/LF2";
 import type { World } from "../../LF2/World";
+import { __Scene } from "../3d";
 
 
 export class WorldRenderer implements IWorldRenderer {
   lf2: LF2;
   world: World;
   bg_render: IBgRender;
-  scene: IScene;
+  scene: __Scene;
   camera: IOrthographicCameraNode;
   entity_renderer_packs = new Map<Entity, [
     IEntityRenderer, IEntityRenderer, IEntityRenderer, IFrameIndicators
@@ -46,7 +47,7 @@ export class WorldRenderer implements IWorldRenderer {
     const w = world.screen_w;
     const h = world.screen_h;
     this.bg_render = new Ditto.BgRender(world);
-    this.scene = new Ditto.SceneNode(world.lf2).set_size(w * 4, h * 4);
+    this.scene = new __Scene(world.lf2).set_size(w * 4, h * 4);
     this.camera = new Ditto.OrthographicCamera(world.lf2)
       .setup(0, w, h, 0)
       .set_position(void 0, void 0, 10)

@@ -5,6 +5,7 @@ import Ditto from "../../LF2/ditto";
 import type { IBgRender } from "../../LF2/ditto/render/IBgRender";
 import type { World } from "../../LF2/World";
 import { BgLayerRender } from "./BgLayerRender";
+import { WorldRenderer } from "./WorldRenderer";
 
 interface BgRenderPack {
   readonly bg: Background | null;
@@ -54,7 +55,7 @@ export class BgRender implements BgRenderPack, IBgRender {
         this._layers.push(layer_render);
         this._mesh.add(layer_render.mesh);
       }
-      world.renderer.scene.add(this._mesh);
+      (world.renderer as WorldRenderer).scene.add(this._mesh);
     }
   }
 

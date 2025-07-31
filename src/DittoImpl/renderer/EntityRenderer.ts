@@ -1,11 +1,12 @@
 import type { IMeshNode } from "../../LF2/3d";
-import type { IEntityData, IFrameInfo, IPicture, ITexturePieceInfo, TFace } from "../../LF2/defines";
+import type { IEntityData, IPicture, ITexturePieceInfo } from "../../LF2/defines";
 import { Builtin_FrameId } from "../../LF2/defines";
 import Ditto from "../../LF2/ditto";
 import type { IEntityRenderer } from "../../LF2/ditto/render/IEntityRenderer";
 import type { Entity } from "../../LF2/entity/Entity";
 import create_pictures from "../../LF2/loader/create_pictures";
 import * as THREE from "../3d/_t";
+import { WorldRenderer } from "./WorldRenderer";
 export const EMPTY_PIECE: ITexturePieceInfo = {
   tex: "0",
   x: 0,
@@ -15,8 +16,6 @@ export const EMPTY_PIECE: ITexturePieceInfo = {
   pixel_h: 0,
   pixel_w: 0,
 };
-
-
 export class EntityRenderer implements IEntityRenderer {
   readonly renderer_type: string = "Entity";
   protected pictures!: Map<string, IPicture<THREE.Texture>>;
@@ -74,7 +73,7 @@ export class EntityRenderer implements IEntityRenderer {
     this.entity_mesh.visible = v;
   }
   on_mount() {
-    this.entity.world.renderer.scene.add(this.entity_mesh!);
+    (this.entity.world.renderer as WorldRenderer).scene.add(this.entity_mesh!);
   }
   on_unmount(): void {
     this.entity_mesh.dispose();

@@ -7,6 +7,7 @@ import type { Entity } from "../../LF2/entity/Entity";
 import type IEntityCallbacks from "../../LF2/entity/IEntityCallbacks";
 import type { LF2 } from "../../LF2/LF2";
 import * as T from "../3d/_t";
+import { WorldRenderer } from "./WorldRenderer";
 
 const BAR_W = 40;
 const BAR_H = 3;
@@ -175,7 +176,7 @@ export class EntityInfoRender implements IEntityCallbacks, IEntityRenderer {
   on_mount() {
     const { entity } = this;
     if (entity.in_player_slot)
-      entity.world.renderer.scene.add(this.bars_node, this.name_node);
+      (entity.world.renderer as WorldRenderer).scene.add(this.bars_node, this.name_node);
     entity.callbacks.add(this);
     this.update_name_sprite(entity, entity.name, entity.team);
   }

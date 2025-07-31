@@ -16,7 +16,7 @@ export interface IUINodeRenderer {
   render(): void;
 
   on_start?(): void;
-  on_resume?(): void;
+  on_resume(): void;
   on_show?(): void;
   on_hide?(): void;
   on_pause?(): void;

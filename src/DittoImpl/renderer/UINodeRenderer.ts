@@ -1,10 +1,11 @@
 import * as THREE from "three";
 import type { ISprite, ISpriteInfo } from "../../LF2/3d/ISprite";
 import Ditto from "../../LF2/ditto";
-import { IUINodeRenderer } from "../../LF2/ditto/render/IUINodeRenderer";
+import type { IUINodeRenderer } from "../../LF2/ditto/render/IUINodeRenderer";
+import { IDebugging, make_debugging } from "../../LF2/entity/make_debugging";
 import { empty_texture, white_texture } from "../../LF2/loader/ImageMgr";
 import type { UINode } from "../../LF2/ui/UINode";
-import { IDebugging, make_debugging } from "../../LF2/entity/make_debugging";
+import type { WorldRenderer } from "./WorldRenderer";
 
 export class UINodeRenderer implements IUINodeRenderer, IDebugging {
   debug!: (_0: string, ..._1: any[]) => void;
@@ -30,7 +31,10 @@ export class UINodeRenderer implements IUINodeRenderer, IDebugging {
   del_self() {
     this.sprite.del_self();
   }
-  on_resume(): void { };
+  on_resume(): void {
+    const world_renderer = this.lf2.world.renderer as WorldRenderer;
+    if (this.node.root === this.node) world_renderer.scene.add(this.sprite);
+  };
   on_pause(): void { };
   on_show(): void { };
   on_hide(): void { };

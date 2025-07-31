@@ -29,7 +29,6 @@ Ditto.setup({
   Importer: new dom.__Importer(),
   ObjectNode: __Object,
   TextNode: __Text,
-  SceneNode: __Scene,
   OrthographicCamera: __Camera_O,
   PerspectiveCamera: __Camera_P,
   SpriteNode: __Sprite,

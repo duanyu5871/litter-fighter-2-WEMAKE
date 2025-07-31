@@ -1,9 +1,10 @@
 import type { IObjectNode } from "../../LF2/3d";
 import Ditto from "../../LF2/ditto";
 import type { IFrameIndicators } from "../../LF2/ditto/render/IFrameIndicators";
-import { Entity } from "../../LF2/entity/Entity";
+import type { Entity } from "../../LF2/entity/Entity";
 import { traversal } from "../../LF2/utils/container_help/traversal";
 import * as THREE from "../3d/_t";
+import type { WorldRenderer } from "./WorldRenderer";
 export const EMPTY_ARR = [] as const;
 export const INDICATORS_COLOR = {
   bdy: 0x00ff00,
@@ -27,7 +28,7 @@ export class FrameIndicators implements IFrameIndicators {
   private _y: number = 0;
   private _z: number = 0;
   get scene() {
-    return this._entity.world.renderer.scene;
+    return (this._entity.world.renderer as WorldRenderer).scene;
   }
   get frame() {
     return this._entity.frame;

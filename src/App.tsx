@@ -17,7 +17,7 @@ import Titled from "./Component/Titled";
 import { useShortcut } from "./Component/useShortcut";
 import DatViewer from "./DatViewer";
 import { __Pointings } from "./DittoImpl";
-import { __Scene } from "./DittoImpl/3d";
+import { WorldRenderer } from "./DittoImpl/renderer/WorldRenderer";
 import EditorView from "./EditorView";
 import { GameOverlay } from "./GameOverlay";
 import GamePad from "./GamePad";
@@ -407,7 +407,7 @@ function App() {
   useEffect(() => {
     if (!lf2) return;
     (lf2.pointings as __Pointings).set_element(ele_game_canvas);
-    (lf2.world.renderer.scene as __Scene).set_canvas(ele_game_canvas);
+    (lf2.world.renderer as WorldRenderer).scene.set_canvas(ele_game_canvas);
   }, [lf2, ele_game_canvas])
 
   useEffect(() => {

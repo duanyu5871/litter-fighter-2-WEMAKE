@@ -4,7 +4,6 @@ import type { IMeshInfo, IMeshNode } from "../3d/IMesh";
 import type { IObjectNode } from "../3d/IObject";
 import type { IOrthographicCameraNode } from "../3d/IOrthographicCamera";
 import type { IPerspectiveCamera } from "../3d/IPerspectiveCamera";
-import type { IScene } from "../3d/IScene";
 import type { ISprite, ISpriteInfo } from "../3d/ISprite";
 import type { IText } from "../3d/IText";
 import type { Layer } from "../bg/Layer";
@@ -61,7 +60,6 @@ export interface IDittoPack {
 
   ObjectNode: new (lf2: LF2) => IObjectNode;
   TextNode: new (lf2: LF2) => IText;
-  SceneNode: new (lf2: LF2) => IScene;
   OrthographicCamera: new (lf2: LF2) => IOrthographicCameraNode;
   PerspectiveCamera: new (lf2: LF2) => IPerspectiveCamera;
   SpriteNode: new (lf2: LF2, info?: ISpriteInfo) => ISprite;

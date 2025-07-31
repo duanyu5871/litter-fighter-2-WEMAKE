@@ -6,6 +6,7 @@ import type { IEntityRenderer } from "../../LF2/ditto/render/IEntityRenderer";
 import type { Entity } from "../../LF2/entity/Entity";
 import create_pictures from "../../LF2/loader/create_pictures";
 import * as THREE from "../3d/_t";
+import { WorldRenderer } from "./WorldRenderer";
 export const EMPTY_PIECE: ITexturePieceInfo = {
   tex: "0",
   x: 0,
@@ -72,7 +73,7 @@ export class EntityRender implements IEntityRenderer {
     this.entity_mesh.visible = v;
   }
   on_mount() {
-    this.entity.world.renderer.scene.add(this.entity_mesh!);
+    (this.entity.world.renderer as WorldRenderer).scene.add(this.entity_mesh!);
   }
   on_unmount(): void {
     this.entity_mesh.dispose();
@@ -111,7 +112,7 @@ export class EntityRender implements IEntityRenderer {
     if (this._prev_update_count === entity.update_id)
       return;
     this._prev_update_count = entity.update_id;
-    
+
     const tex = frame.pic?.[facing]
     if (this._prev_tex !== tex) {
       this.apply_tex(entity, this._prev_tex = tex)
