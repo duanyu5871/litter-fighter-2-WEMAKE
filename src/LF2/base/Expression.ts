@@ -35,27 +35,23 @@ export class Expression<T1, T2 = T1> implements IExpression<T1, T2> {
   static is = (v: any): v is Expression<unknown> => v?.is_expression === true;
   readonly text: string = "";
   readonly children: IExpression<T1, T2>[] = [];
-  readonly get_val?: IValGetter<T1 | T2>;
-  readonly get_val_getter?: IValGetterGetter<T1 | T2>;
+  // readonly get_val?: IValGetter<T1 | T2>;
+  readonly get_val_getter: IValGetterGetter<T1 | T2>;
   readonly err?: string | undefined;
   before: string = "";
   not: boolean = false;
   constructor(
     text: string,
-    get_val?: IValGetter<T1 | T2>,
-    get_val_getter?: IValGetterGetter<T1 | T2>,
+    get_val_getter: IValGetterGetter<T1 | T2>,
   );
   constructor(
     run: IJudger<T1 | T2>,
-    get_val?: IValGetter<T1 | T2>,
-    get_val_getter?: IValGetterGetter<T1 | T2>,
+    get_val_getter: IValGetterGetter<T1 | T2>,
   );
   constructor(
     arg_0: string | IJudger<T1 | T2>,
-    get_val?: IValGetter<T1 | T2>,
-    get_val_getter?: IValGetterGetter<T1 | T2>,
+    get_val_getter: IValGetterGetter<T1 | T2>,
   ) {
-    this.get_val = get_val;
     this.get_val_getter = get_val_getter;
     if (typeof arg_0 === "string") {
       this.text = arg_0.replace(/\s|\n|\r/g, "");
@@ -69,7 +65,6 @@ export class Expression<T1, T2 = T1> implements IExpression<T1, T2> {
         if ("!" === letter && this.text[i] === "(") {
           const child = new Expression<T1, T2>(
             this.text.substring(i + 2),
-            get_val,
             get_val_getter,
           );
           child.not = true;
@@ -80,7 +75,6 @@ export class Expression<T1, T2 = T1> implements IExpression<T1, T2> {
         } else if ("(" === letter) {
           const child = new Expression<T1, T2>(
             this.text.substring(i + 1),
-            get_val,
             get_val_getter,
           );
           child.before = before;
@@ -91,11 +85,7 @@ export class Expression<T1, T2 = T1> implements IExpression<T1, T2> {
           if (p < i) {
             const sub_str = this.text.substring(p, i).replace(/\)*$/g, "");
             const judger = this.gen_judger(sub_str);
-            const child = new Expression<T1, T2>(
-              judger,
-              get_val,
-              get_val_getter,
-            );
+            const child = new Expression<T1, T2>(judger, get_val_getter);
             child.before = before;
             this.children.push(child);
             before = letter;
@@ -107,11 +97,7 @@ export class Expression<T1, T2 = T1> implements IExpression<T1, T2> {
           if (p < i) {
             const sub_str = this.text.substring(p, i);
             const judger = this.gen_judger(sub_str);
-            const child = new Expression<T1, T2>(
-              judger,
-              get_val,
-              get_val_getter,
-            );
+            const child = new Expression<T1, T2>(judger, get_val_getter);
             child.before = before;
             this.children.push(child);
           }
@@ -137,8 +123,8 @@ export class Expression<T1, T2 = T1> implements IExpression<T1, T2> {
       Ditto.Warn("gen_single_judge_func", `wrong operator: ${op}`);
       return ALWAY_FALSE(text, `wrong operator: ${op}`);
     }
-    const getter_1 = this.get_val_getter?.(word_1) ?? this.get_val;
-    const getter_2 = this.get_val_getter?.(word_2) ?? this.get_val;
+    const getter_1 = this.get_val_getter(word_1);
+    const getter_2 = this.get_val_getter(word_2);
     let val_1: any = word_1;
     let val_2: any = word_2;
     if (op === "{{" || op === "}}" || op === "!{" || op === "!}") {

@@ -20,11 +20,7 @@ export function preprocess_itr(lf2: LF2, itr: IItrInfo, data: IEntityData, jobs:
   if (itr.catchingact) preprocess_next_frame(itr.catchingact);
   if (itr.caughtact) preprocess_next_frame(itr.caughtact);
   if (itr.test)
-    itr.tester = new Expression(
-      itr.test,
-      void 0,
-      get_val_geter_from_collision
-    );
+    itr.tester = new Expression(itr.test, get_val_geter_from_collision);
   itr.ally_flags = itr.ally_flags ?? AllyFlag.Enemy
   itr.actions?.forEach((n, i, l) => l[i] = preprocess_action(lf2, n, jobs));
   return itr;

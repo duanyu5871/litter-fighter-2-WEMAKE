@@ -18,8 +18,7 @@
     "player_c_sel_logic(6)",
     "player_c_sel_logic(7)",
     "player_c_sel_logic(8)",
-    "ReachableGroup(com_num,lr,how_many_computer)",
-    "ReachableGroup(menu,ud,menu)"
+    "ReachableGroup(com_num,lr,how_many_computer)"
   ],
   "items": [
     {

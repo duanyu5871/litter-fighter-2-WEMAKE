@@ -40,10 +40,11 @@ export class ReachableGroup extends UIComponent {
     });
     if (items.length <= 0) return;
 
-    if (this.direction === "lr")
-      items.sort((a, b) => a.node.x_on_root - b.node.x_on_root);
-    else if (this.direction === "ud")
-      items.sort((a, b) => a.node.y_on_root - b.node.y_on_root);
+    if (this.direction === "lr") {
+      items.sort((a, b) => a.node.global_pos[0] - b.node.global_pos[0]);
+    } else if (this.direction === "ud") {
+      items.sort((a, b) => a.node.global_pos[1] - b.node.global_pos[1]);
+    }
 
     const focused_layout = this.node.focused_node;
 

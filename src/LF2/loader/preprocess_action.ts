@@ -7,7 +7,7 @@ import { preprocess_next_frame } from "./preprocess_next_frame";
 
 export function preprocess_action(lf2: LF2, action: TAction, jobs: Promise<void>[]): TAction {
   action.tester = action.test ? new Expression(
-    action.test, void 0, get_val_geter_from_collision
+    action.test, get_val_geter_from_collision
   ) : void 0
   switch (action.type) {
     case "sound":

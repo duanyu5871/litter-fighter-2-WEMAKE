@@ -9,7 +9,8 @@
     {
       "id": "tap_to_launch",
       "txt": {
-        "value": "点击任意位置继续",
+        "value": "CLICK ANYWHERE TO CONTINUE",
+        "value2": "点击任意位置继续",
         "style": {
           "font": "36px Arial",
           "text_align": "center"
@@ -25,7 +26,8 @@
     {
       "id": "sound_warning",
       "txt": {
-        "value": "开始后将播放声音，点击右上角喇叭关闭声音\n将播放背景音乐，点击右上角音符关闭背景音乐",
+        "value": "After starting, the sound and background music will play. \nClick the speaker icon in the upper-right corner to turn off the sound. \nClick the musical note icon in the upper - right corner to turn off the background music.",
+        "value2": "开始后将播放声音，点击右上角喇叭关闭声音\n将播放背景音乐，点击右上角音符关闭背景音乐",
         "style": {
           "font": "18px Arial",
           "text_align": "center"

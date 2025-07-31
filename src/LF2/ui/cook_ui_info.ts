@@ -1,14 +1,15 @@
 import Ditto from "../ditto";
 import { LF2 } from "../LF2";
-import { is_str, is_arr } from "../utils";
+import { is_str } from "../utils";
 import { ICookedUIInfo } from "./ICookedUIInfo";
 import { IUIImgInfo } from "./IUIImgInfo.dat";
 import type { IUIInfo, TUIImgInfo } from "./IUIInfo.dat";
-import { IUITxtInfo } from "./IUITxtInfo.dat";
+import { ui_load_img } from "./ui_load_img";
+import { ui_load_txt } from "./ui_load_txt";
 import { UINode } from "./UINode";
 import read_nums from "./utils/read_nums";
 import { validate_ui_img_info } from "./validate_ui_img_info";
-function flat_ui_img_info(imgs: TUIImgInfo[]): IUIImgInfo[] {
+export function flat_ui_img_info(imgs: TUIImgInfo[], output?: IUIImgInfo[]): IUIImgInfo[] {
   const ret: IUIImgInfo[] = [];
   for (let img of imgs) {
     const errors: string[] = [];
@@ -19,7 +20,9 @@ function flat_ui_img_info(imgs: TUIImgInfo[]): IUIImgInfo[] {
     let idx = 0;
     for (let row = 0; row < rows && (count <= 0 || idx < count); ++row) {
       for (let col = 0; col < cols && (count <= 0 || idx < count); ++col) {
-        ret.push({ ...img, x: x + col * w, y: y + row * h });
+        const i = { ...img, x: x + col * w, y: y + row * h }
+        ret.push(i);
+        output?.push(i)
         ++idx;
       }
     }
@@ -77,29 +80,10 @@ export async function cook_ui_info(
   }
 
   const { img } = raw_info;
-  if (img) {
-    ret.img = flat_ui_img_info(is_arr(img) ? img : [img]);
-    const jobs = ret.img.map(img => {
-      const { path, x, y, w = 0, h = 0, dw = w, dh = h } = img;
-      const img_key = `${path}?x=${x}&y=${y}&w=${w}&h=${h}&dw=${dw}&dh=${dh}`;
-      return lf2.images.load_img(img_key, path, [{ type: 'crop', ...img }]);
-    });
-    ret.img_infos.push(...await Promise.all(jobs));
-  }
+  if (img) ret.img_infos.push(...await ui_load_img(lf2, img, ret.img));
 
   const { txt } = raw_info;
-  if (txt) {
-    const txts = Array.isArray(txt) ? txt : [txt];
-    const infos = await Promise.all(
-      txts.map(txt => {
-        const info: IUITxtInfo = is_str(txt) ? { value: txt, style: {} } : txt;
-        ret.txt.push(info);
-        return lf2.images.load_text(info.value, info.style);
-      })
-    );
-    ret.txt_infos.push(...infos);
-    ret.img_infos.push(...infos);
-  }
+  if (txt) ret.txt_infos.push(...await ui_load_txt(lf2, txt, ret.txt));
 
   const { w: img_w = 0, h: img_h = 0, scale = 1 } = ret.img_infos[0] || ret.txt_infos[0] || {};
   const sw = img_w / scale;

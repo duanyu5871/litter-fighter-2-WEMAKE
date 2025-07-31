@@ -10,7 +10,7 @@ export function preprocess_next_frame(nf: TNextFrame): TNextFrame {
     return nf.map(i => preprocess_next_frame(i))
 
   if (typeof nf.expression !== "string") return nf;
-  nf.judger = new Expression(nf.expression, void 0, get_val_getter_from_entity);
+  nf.judger = new Expression(nf.expression, get_val_getter_from_entity);
   return nf;
 }
 preprocess_next_frame.Tag = 'preprocess_next_frame'

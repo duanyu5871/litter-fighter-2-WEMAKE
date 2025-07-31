@@ -28,6 +28,15 @@ export class UINode implements IDebugging {
   readonly lf2: LF2;
   readonly id_ui_map: Map<string, UINode[]>;
   readonly name_ui_map: Map<string, UINode[]>;
+
+  /**
+   * 原始UI数据
+   * 
+   * 对UINode的一些属性进行修改，不会影响到原始UI数据。
+   *
+   * @type {Readonly<ICookedUIInfo>}
+   * @memberof UINode
+   */
   readonly data: Readonly<ICookedUIInfo>;
 
   protected _callbacks = new Callbacks<IUICallback>();
@@ -56,8 +65,8 @@ export class UINode implements IDebugging {
   readonly scale: StateDelegate<[number, number, number]> = new StateDelegate(() => this.data.scale);
   readonly txts: StateDelegate<ITextImageInfo[]> = new StateDelegate(() => this.data.txt_infos);
   readonly imgs: StateDelegate<IImageInfo[]> = new StateDelegate(() => this.data.img_infos);
-  readonly size: StateDelegate<[number, number]> = new StateDelegate([0, 0]);
-  readonly center: StateDelegate<[number, number, number]> = new StateDelegate([0, 0, 0]);
+  readonly size: StateDelegate<[number, number]> = new StateDelegate(() => this.data.size);
+  readonly center: StateDelegate<[number, number, number]> = new StateDelegate(() => this.data.center);
   readonly img_idx: StateDelegate<number> = new StateDelegate(0);
   readonly txt_idx: StateDelegate<number> = new StateDelegate(0);
   readonly flip_x: StateDelegate<boolean> = new StateDelegate(() => this.data.flip_x === true);
@@ -101,35 +110,7 @@ export class UINode implements IDebugging {
 
   get id(): string | undefined { return this.data.id }
   get name(): string | undefined { return this.data.name }
-  // set_pos(x: number, y: number, z: number): this {
-  //   this.pos.set(0, [x, y, z]);
-  //   return this;
-  // }
-
-  // get x(): number { return this.pos.value[0]; }
-  // set x(v: number) { this.set_x(v); }
-  // set_x(x: number): this {
-  //   const [, y, z] = this.pos.value;
-  //   return this.set_pos(x, y, z);
-  // }
-
-  // get y(): number { return this.pos.value[1]; }
-  // set y(v: number) { this.set_y(v); }
-  // set_y(y: number): this {
-  //   const [x, , z] = this.pos.value;
-  //   return this.set_pos(x, y, z);
-  // }
-
-  // get z(): number { return this.pos.value[2]; }
-  // set z(z: number) { this.set_z(z); }
-  // set_z(z: number): this {
-  //   const [x, y] = this.pos.value;
-  //   return this.set_pos(x, y, z);
-  // }
-
-  get root(): UINode {
-    return this._root;
-  }
+  get root(): UINode { return this._root; }
 
   get depth() {
     let depth = 0;
@@ -238,25 +219,19 @@ export class UINode implements IDebugging {
     this.renderer = new Ditto.UINodeRenderer(this);
     make_debugging(this)
   }
-
-  get x_on_root(): number {
+  get global_pos(): [number, number, number] {
     let x = 0;
+    let y = 0;
+    let z = 0;
     let node: UINode | undefined = this;
     do {
-      x += node.pos.value[0];
+      const [a, b, c] = node.pos.value;
+      x += a;
+      y += b;
+      z += c;
       node = node.parent;
     } while (node);
-    return x;
-  }
-
-  get y_on_root(): number {
-    let ret = 0;
-    let node: UINode | undefined = this;
-    do {
-      ret += node.pos.value[1];
-      node = node.parent;
-    } while (node);
-    return ret;
+    return [x, y, z];
   }
 
   hit(x: number, y: number): boolean {
@@ -360,7 +335,12 @@ export class UINode implements IDebugging {
     const get_val = lf2.ui_val_getter;
     ret._cook_data(get_val);
     ret._cook_img_idx(get_val);
-    ret._cook_component();
+
+    const { component } = ret.data;
+    if (component)
+      for (const c of factory.create(ret, component))
+        ret._components.add(c);
+
 
     if (info.items) {
       for (const item_info of info.items) {
@@ -396,28 +376,19 @@ export class UINode implements IDebugging {
     return this;
   }
 
-  private _cook_component() {
-    const { component } = this.data;
-    if (!component) return;
-    for (const c of factory.create(this, component)) {
-      this._components.add(c);
-    }
-  }
-
   private _cook_data(get_val: IValGetter<UINode>) {
     const { visible, opacity, disabled } = this.data;
-
     if (is_bool(disabled)) {
       this._disabled.default_value = disabled;
     } else if (is_str(disabled)) {
-      const func = new Expression<UINode>(disabled, get_val).run;
+      const func = new Expression<UINode>(disabled, () => get_val).run;
       this._disabled.default_value = () => func(this);
     }
 
     if (is_bool(visible)) {
       this._visible.default_value = visible;
     } else if (is_str(visible)) {
-      const func = new Expression<UINode>(visible, get_val).run;
+      const func = new Expression<UINode>(visible, () => get_val).run;
       this._visible.default_value = () => func(this);
     }
 
@@ -427,9 +398,6 @@ export class UINode implements IDebugging {
       this._opacity.default_value = () =>
         Number(get_val(this, opacity, "==")) || 0;
     }
-
-    this.size.default_value = this.data.size;
-    this.center.default_value = this.data.center;
     this.pos.default_value = () => {
       if (this.parent) return this.data.pos;
       const [x, y, z] = this.data.pos;

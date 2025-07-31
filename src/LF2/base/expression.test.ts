@@ -40,7 +40,7 @@ const expression_result_pairs: [1 | 0, string, any][] = [
 for (const [ig, str, result] of expression_result_pairs) {
   if (ig) continue;
   test(`expression ${str} should be ${result}`, () => {
-    const exp = new Expression(str, (_, a, op) => {
+    const exp = new Expression(str, () => (_, a, op) => {
       switch (op) {
         case "{{":
           return a.split(",");
@@ -56,3 +56,11 @@ for (const [ig, str, result] of expression_result_pairs) {
     expect(exp.run(void 0)).toBe(result);
   });
 }
+
+test(`expression case`, () => {
+  const exp = new Expression<any>("v==0", (d) => (a, b, c) => {
+    console.log('b_func', { a, b, c, d })
+    return b
+  })
+  exp.run("inst")
+})

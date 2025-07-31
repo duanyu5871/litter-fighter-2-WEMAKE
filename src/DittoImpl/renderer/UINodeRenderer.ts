@@ -93,9 +93,11 @@ export class UINodeRenderer implements IUINodeRenderer, IDebugging {
   get visible() { return this.sprite.visible }
   set visible(v: boolean) { this.sprite.visible = v }
   render() {
-    if (this.node.size.dirty) {
+    if (this.node.center.dirty || this.node.size.dirty) {
+      this.node.center.dirty = this.node.size.dirty = false
       const [w, h] = this.node.size.value;
-      this.sprite.set_size(w, h).apply()
+      const [x, y, z] = this.node.center.value
+      this.sprite.set_center(x, y, z).set_size(w, h).apply();
     }
     this.update_sprite();
     this.node.scale.dirty && this.sprite.set_scale(...this.node.scale.value);
@@ -104,7 +106,6 @@ export class UINodeRenderer implements IUINodeRenderer, IDebugging {
       const [x, y, z] = this.node.pos.value
       this.sprite.set_position(x, -y, z);
     }
-
     this.sprite.visible = this.node.visible
     this.sprite.opacity = this.node.opacity;
     this.sprite.apply()

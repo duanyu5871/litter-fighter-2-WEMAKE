@@ -11,7 +11,6 @@ export function preprocess_bdy(lf2: LF2, bdy: IBdyInfo, data: IEntityData, jobs:
   bdy.ally_flags = bdy.ally_flags ?? AllyFlag.Enemy
   bdy.tester = bdy.test ? new Expression(
     bdy.test,
-    void 0,
     get_val_geter_from_collision
   ) : void 0;
   bdy.actions?.forEach((n, i, l) => l[i] = preprocess_action(lf2, n, jobs));

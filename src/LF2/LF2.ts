@@ -58,7 +58,10 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
   warn!: (_0: string, ..._1: any[]) => void;
   log!: (_0: string, ..._1: any[]) => void;
   static readonly TAG = "LF2";
-  static readonly instances = new Set<LF2>()
+  static readonly instances: LF2[] = []
+  static get instance() { return LF2.instances[0] }
+  static get ui() { return LF2.instances[0].ui }
+
   private _disposed: boolean = false;
   private _callbacks = new Callbacks<ILf2Callback>();
   private _ui_stacks: UINode[] = [];
@@ -229,7 +232,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
     this.world.start_update();
     this.world.start_render();
     this.load_prel_zip("prel.zip.json");
-    LF2.instances.add(this)
+    LF2.instances.push(this)
     make_debugging(this)
     this.debug(`constructor`)
   }
@@ -505,7 +508,9 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
       l?.on_stop();
     }
     this._ui_stacks.length = 0;
-    LF2.instances.delete(this);
+
+    const i = LF2.instances.indexOf(this);
+    if (i >= 0) LF2.instances.splice(i, 1);
   }
 
   add_player_character(player_id: string, character_id: string) {

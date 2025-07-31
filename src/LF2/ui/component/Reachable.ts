@@ -8,9 +8,9 @@ export class Reachable extends UIComponent {
     return this.args[0] || '';
   }
   get group(): ReachableGroup | undefined {
-    return this.node.root.find_component(
-      ReachableGroup,
-      (v) => v.name === this.group_name
+    return this.node.root.lookup_component(
+      ReachableGroup, 
+      v => v.name === this.group_name
     );
   }
 }
