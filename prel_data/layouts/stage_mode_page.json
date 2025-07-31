@@ -42,12 +42,13 @@
       "id": "go",
       "img": {
         "path": "sprite/MENU_CLIP3.png",
-        "w": 794,
-        "h": 600
+        "x": 328,
+        "y": 401,
+        "w": 132,
+        "h": 41
       },
       "opacity": 0,
       "center": "1, 0",
-      "rect": "328, 401, 132, 41",
       "pos": "770, 100",
       "component": [
         "<go_flashing>!OpacityAnimation(1, 0, 0, 0, 1, 750, 0, 750, 1, 750, 0, 750, 1, 750, 0, 750)",
