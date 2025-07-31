@@ -40,7 +40,7 @@ export default class BackgroundNameText extends UIComponent {
 
     this._background = this.backgrounds[0] || Defines.VOID_BG;
 
-    this.node.sprite.add(this._mesh);
+    this.node.renderer.sprite.add(this._mesh);
     this._unmount_jobs.add(
       this.lf2.callbacks.add({
         on_broadcast: (v) => {

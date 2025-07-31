@@ -22,20 +22,23 @@ export interface IUIInfo {
    * @memberof IUIInfo
    */
   name?: string;
-  img?: TUIImgInfo[] | TUIImgInfo;
+
+  pos?: number[] | string;
   opacity?: number;
-  which?: number | string;
   center?: number[] | string;
   scale?: number[] | string;
-  pos?: number[] | string;
   size?: number[] | string;
   visible?: boolean | string;
   disabled?: boolean | string;
+
   flip_x?: boolean;
   flip_y?: boolean;
   color?: string;
+  img?: TUIImgInfo | TUIImgInfo[];
+  txt?: TUITxtInfo | TUITxtInfo[];
+  which?: number | string;
+  
   component?: TComponentInfo | TComponentInfo[];
-  txt?: TUITxtInfo;
   actions?: {
     click: TAction | TAction[];
     resume?: TAction | TAction[];

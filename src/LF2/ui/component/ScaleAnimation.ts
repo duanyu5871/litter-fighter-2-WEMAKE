@@ -18,7 +18,7 @@ export class ScaleAnimation extends UIComponent {
     const len = this.args.length;
     const anims: Animation[] = [];
     for (let i = 0; i < len - 2; i += 2) {
-      const scale = this.nums(i + 2, 3) || this.node.scale;
+      const scale = this.nums(i + 2, 3) || this.node.scale.value;
       const duration = this.num(i + 3) || 0;
       const prev_scale = i == 0 ? scale : (this.nums(i, 3) || scale);
       const a = scale.join() === prev_scale.join() ?

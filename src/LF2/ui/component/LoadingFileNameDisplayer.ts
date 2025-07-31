@@ -12,7 +12,7 @@ export default class LoadingFileNameDisplayer extends UIComponent {
     super(node, f_name);
     this._mesh = new Ditto.TextNode(this.lf2)
       .set_position(0, 0, 1)
-      .set_center(...this.node.center)
+      .set_center(...this.node.center.value)
       .set_style(this.node.style)
       .set_name(LoadingFileNameDisplayer.name)
       .apply();
@@ -20,7 +20,7 @@ export default class LoadingFileNameDisplayer extends UIComponent {
 
   override on_resume(): void {
     super.on_resume();
-    this.node.sprite.add(this._mesh);
+    this.node.renderer.sprite.add(this._mesh);
     this._unmount_job.add(
       () => this._mesh?.del_self(),
       this.lf2.callbacks.add({

@@ -2,7 +2,6 @@ import type { IMeshNode } from "../../LF2/3d";
 import type { IEntityData, IPicture, ITexturePieceInfo } from "../../LF2/defines";
 import { Builtin_FrameId } from "../../LF2/defines";
 import Ditto from "../../LF2/ditto";
-import type { IEntityRenderer } from "../../LF2/ditto/render/IEntityRenderer";
 import type { Entity } from "../../LF2/entity/Entity";
 import create_pictures from "../../LF2/loader/create_pictures";
 import * as THREE from "../3d/_t";
@@ -16,7 +15,7 @@ export const EMPTY_PIECE: ITexturePieceInfo = {
   pixel_h: 0,
   pixel_w: 0,
 };
-export class EntityRenderer implements IEntityRenderer {
+export class EntityRenderer {
   readonly renderer_type: string = "Entity";
   protected pictures!: Map<string, IPicture<THREE.Texture>>;
   protected entity!: Entity;

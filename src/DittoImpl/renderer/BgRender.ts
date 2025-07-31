@@ -2,7 +2,6 @@ import type { IObjectNode } from "../../LF2/3d";
 import type Background from "../../LF2/bg/Background";
 import { Defines, type IQuaternion } from "../../LF2/defines";
 import Ditto from "../../LF2/ditto";
-import type { IBgRender } from "../../LF2/ditto/render/IBgRender";
 import type { World } from "../../LF2/World";
 import { BgLayerRender } from "./BgLayerRender";
 import { WorldRenderer } from "./WorldRenderer";
@@ -12,7 +11,7 @@ interface BgRenderPack {
   readonly mesh: IObjectNode | null;
   readonly layers: BgLayerRender[];
 }
-export class BgRender implements BgRenderPack, IBgRender {
+export class BgRender implements BgRenderPack {
   readonly world: World;
   private _bg: Background | null = null;
   private _mesh: IObjectNode | null = null;

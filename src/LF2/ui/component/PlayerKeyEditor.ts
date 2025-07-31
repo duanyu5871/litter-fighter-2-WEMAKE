@@ -23,7 +23,7 @@ export default class PlayerKeyEditor extends UIComponent {
 
   constructor(layout: UINode, f_name: string) {
     super(layout, f_name);
-    const [w, h] = this.node.size;
+    const [w, h] = this.node.size.value;
     this._sprite = new Ditto.TextNode(this.lf2)
       .set_position(Math.ceil(w / 2), Math.ceil(-h / 2), 1)
       .set_center(0.5, 0.5)
@@ -43,7 +43,7 @@ export default class PlayerKeyEditor extends UIComponent {
 
   override on_resume() {
     super.on_resume();
-    this.node.sprite.add(this._sprite);
+    this.node.renderer.sprite.add(this._sprite);
     this._unmount_jobs.add(
       this.player?.callbacks.add({
         on_key_changed: () => this.update_sprite(),

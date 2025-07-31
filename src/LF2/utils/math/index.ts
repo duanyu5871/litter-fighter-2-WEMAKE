@@ -7,3 +7,4 @@ export const floor = Math.floor;
 export const ceil = Math.ceil;
 export const between = (v: number, min: number, max: number) => v >= min && v <= max
 export const abs = Math.abs;
+export const max = Math.max;

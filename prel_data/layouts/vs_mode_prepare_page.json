@@ -286,7 +286,13 @@
         }
       ]
     },
-    "layouts/how_many_computer.json",
-    "layouts/game_prepare_menu.json"
+    {
+      "template": "layouts/how_many_computer.json",
+      "visible": false
+    },
+    {
+      "template": "layouts/game_prepare_menu.json",
+      "visible": false
+    }
   ]
 }

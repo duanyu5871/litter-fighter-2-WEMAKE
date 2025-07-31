@@ -26,7 +26,7 @@ export default class DifficultyText extends UIComponent {
   override on_resume(): void {
     super.on_resume();
 
-    this.node.sprite.add(this._mesh);
+    this.node.renderer.sprite.add(this._mesh);
     this._unmount_jobs.add(
       this.lf2.callbacks.add({
         on_difficulty_changed: () => this.handle_changed(),

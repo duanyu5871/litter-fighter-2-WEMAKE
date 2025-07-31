@@ -1,23 +1,28 @@
 import type { IOrthographicCameraNode } from "../../LF2/3d";
 import Ditto from "../../LF2/ditto";
-import type { IBgRender } from "../../LF2/ditto/render/IBgRender";
-import type { IEntityRenderer } from "../../LF2/ditto/render/IEntityRenderer";
-import type { IFrameIndicators } from "../../LF2/ditto/render/IFrameIndicators";
 import type { IWorldRenderer } from "../../LF2/ditto/render/IWorldRenderer";
 import type { Entity } from "../../LF2/entity";
 import type { LF2 } from "../../LF2/LF2";
 import type { World } from "../../LF2/World";
 import { __Scene } from "../3d";
+import { BgRender } from "./BgRender";
+import { EntityInfoRender } from "./EntityInfoRender";
+import { EntityRender } from "./EntityRender";
+import EntityShadowRender from "./EntityShadowRender";
+import { FrameIndicators } from "./FrameIndicators";
 
 
 export class WorldRenderer implements IWorldRenderer {
   lf2: LF2;
   world: World;
-  bg_render: IBgRender;
+  bg_render: BgRender;
   scene: __Scene;
   camera: IOrthographicCameraNode;
   entity_renderer_packs = new Map<Entity, [
-    IEntityRenderer, IEntityRenderer, IEntityRenderer, IFrameIndicators
+    EntityRender,
+    EntityShadowRender,
+    EntityInfoRender,
+    FrameIndicators
   ]>();
 
   private _indicator_flags: number = 0;
@@ -37,7 +42,9 @@ export class WorldRenderer implements IWorldRenderer {
   set cam_x(v: number) {
     this.camera.x = v;
     for (const ui of this.lf2.ui_stacks) {
-      ui.x = v;
+      const pos = ui.pos.value;
+      pos[0] = v
+      ui.pos.value = pos;
       ui.renderer.x = v;
     }
   }
@@ -46,7 +53,7 @@ export class WorldRenderer implements IWorldRenderer {
     this.lf2 = world.lf2;
     const w = world.screen_w;
     const h = world.screen_h;
-    this.bg_render = new Ditto.BgRender(world);
+    this.bg_render = new BgRender(world);
     this.scene = new __Scene(world.lf2).set_size(w * 4, h * 4);
     this.camera = new Ditto.OrthographicCamera(world.lf2)
       .setup(0, w, h, 0)
@@ -56,16 +63,16 @@ export class WorldRenderer implements IWorldRenderer {
     this.scene.add(this.camera);
   }
   add_entity(entity: Entity): void {
-    const entity_renderer = new Ditto.EntityRender(entity);
+    const entity_renderer = new EntityRender(entity);
     entity_renderer.on_mount();
 
-    const shadow_renderer = new Ditto.EntityShadowRender(entity);
+    const shadow_renderer = new EntityShadowRender(entity);
     shadow_renderer.on_mount()
 
-    const info_renderer = new Ditto.EntityInfoRender(entity);
+    const info_renderer = new EntityInfoRender(entity);
     info_renderer.on_mount()
 
-    const frame_indicators = new Ditto.FrameIndicators(entity);
+    const frame_indicators = new FrameIndicators(entity);
     frame_indicators.on_mount()
 
     this.entity_renderer_packs.set(entity, [

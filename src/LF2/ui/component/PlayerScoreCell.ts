@@ -14,7 +14,7 @@ export default class PlayerScoreCell extends UIComponent {
 
   override on_start(): void {
     super.on_start?.();
-    this.node.sprite.add(
+    this.node.renderer.sprite.add(
       (this._txt = new Ditto.TextNode(this.lf2).set_center(0.5, 0.5).apply()),
     );
   }

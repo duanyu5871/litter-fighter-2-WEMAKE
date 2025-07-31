@@ -10,7 +10,7 @@ export class ImgLoop extends UIComponent {
     .set_fill_mode(1)
   override on_start(): void {
     const val_1 = this.num(0) || 0;
-    const val_2 = this.num(1) || this.node.imgs.length;
+    const val_2 = this.num(1) || this.node.data.img.length;
     const duration = this.num(2) || this.anim.duration;
     this.anim.set(val_1, val_2,).set_duration(duration)
   }
@@ -18,12 +18,17 @@ export class ImgLoop extends UIComponent {
     this.anim.set_times(1).set_count(0)
   }
   start(): void {
+    if (!this.enabled) this.enabled = true;
     this.anim.set_times(0).set_count(0)
   }
   override update(dt: number): void {
-    if (!this.node.imgs.length) return;
+    if (!this.node.data.img.length) {
+      this.enabled = false;
+      return;
+    }
     this.anim.update(dt);
     const idx = Math.floor(this.anim.value);
-    this.node.img_idx = idx;
+    this.node.img_idx.value = idx;
+    if (this.anim.done) this.enabled = false;
   }
 }

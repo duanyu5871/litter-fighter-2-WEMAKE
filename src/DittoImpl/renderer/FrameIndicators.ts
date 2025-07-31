@@ -1,6 +1,5 @@
 import type { IObjectNode } from "../../LF2/3d";
 import Ditto from "../../LF2/ditto";
-import type { IFrameIndicators } from "../../LF2/ditto/render/IFrameIndicators";
 import type { Entity } from "../../LF2/entity/Entity";
 import { traversal } from "../../LF2/utils/container_help/traversal";
 import * as THREE from "../3d/_t";
@@ -16,7 +15,7 @@ const vertices = new Float32Array([
   0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 1,
 ]);
 geometry.setAttribute("position", new THREE.BufferAttribute(vertices, 3));
-export class FrameIndicators implements IFrameIndicators {
+export class FrameIndicators {
   readonly renderer_type: string = "FrameIndicators";
   protected _entity: Entity;
   protected _box?: IObjectNode;

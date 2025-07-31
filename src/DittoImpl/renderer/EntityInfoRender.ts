@@ -2,7 +2,6 @@ import type { IBillboardNode, IMeshNode, IObjectNode } from "../../LF2/3d";
 import { get_team_shadow_color } from "../../LF2/base/get_team_shadow_color";
 import { get_team_text_color } from "../../LF2/base/get_team_text_color";
 import Ditto from "../../LF2/ditto";
-import type { IEntityRenderer } from "../../LF2/ditto/render/IEntityRenderer";
 import type { Entity } from "../../LF2/entity/Entity";
 import type IEntityCallbacks from "../../LF2/entity/IEntityCallbacks";
 import type { LF2 } from "../../LF2/LF2";
@@ -82,7 +81,7 @@ class Bar {
   }
 }
 
-export class EntityInfoRender implements IEntityCallbacks, IEntityRenderer {
+export class EntityInfoRender implements IEntityCallbacks {
   readonly renderer_type: string = "Info";
   protected name_node: IBillboardNode;
   protected bars_node: IObjectNode;

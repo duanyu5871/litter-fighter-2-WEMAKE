@@ -6,6 +6,7 @@ import { IDebugging, make_debugging } from "../../LF2/entity/make_debugging";
 import { empty_texture, white_texture } from "../../LF2/loader/ImageMgr";
 import type { UINode } from "../../LF2/ui/UINode";
 import type { WorldRenderer } from "./WorldRenderer";
+import { IImageInfo } from "../../LF2/loader/IImageInfo";
 
 export class UINodeRenderer implements IUINodeRenderer, IDebugging {
   debug!: (_0: string, ..._1: any[]) => void;
@@ -39,45 +40,52 @@ export class UINodeRenderer implements IUINodeRenderer, IDebugging {
   on_show(): void { };
   on_hide(): void { };
   on_start() {
-    const [x, y, z] = this.node.data.pos;
+    const [x, y, z] = this.node.pos.value;
     this.sprite
-      .set_center(...this.node.center)
+      .set_center(...this.node.center.value)
       .set_position(x, -y, z)
       .set_visible(this.node.visible)
       .set_name(`layout(name= ${this.node.name}, id=${this.node.id})`)
       .apply();
-
-    this.create_sprite_info().then((p) => {
-      this.sprite.set_info(p).set_opacity(p.texture || p.color ? 1 : 0)
-    });
     this.node.parent?.renderer.add(this);
   }
   on_stop() {
     this.parent?.del(this)
   }
-  async create_sprite_info(): Promise<ISpriteInfo> {
-    const [w, h] = this.node.size;
-    const texture = await this.create_texture();
-    const p: ISpriteInfo = {
-      w, h, texture, color: this.node.data.color,
-    };
+
+  update_sprite() {
+    if (
+      !this.node.img_idx.dirty &&
+      !this.node.imgs.dirty &&
+      !this.node.txt_idx.dirty &&
+      !this.node.txts.dirty &&
+      !this.node.size.dirty &&
+      !this.node.flip_x.dirty &&
+      !this.node.flip_y.dirty &&
+      !this.node.color.dirty
+    ) return;
+    const img =
+      this.node.imgs.value[this.node.img_idx.value] ||
+      this.node.txts.value[this.node.txt_idx.value];
+    this.create_sprite_info(img).then(p => this.sprite.set_info(p).apply());
+  }
+
+  async create_sprite_info(img: IImageInfo | undefined): Promise<ISpriteInfo> {
+    const [w, h] = this.node.size.value;
+    const color = this.node.color.value
+    const texture = img ? await this.create_texture(img) : color ? white_texture() : empty_texture();
+    const p: ISpriteInfo = { w, h, texture, color: color };
     return p;
   }
 
-  update_img() {
-    this.create_sprite_info().then(p => this.sprite.set_info(p).apply());
-  }
-  protected async create_texture(): Promise<THREE.Texture> {
-    const img_idx = this.node.img_idx;
-    const img_info = this.node.imgs[img_idx];
-    if (!img_info) {
-      return this.node.data.color ? white_texture() : empty_texture();
-    }
-    const { flip_x, flip_y } = this.node.data;
-    const { texture } = await this.lf2.images.p_create_pic_by_img_info(img_info);
+  protected async create_texture(img: IImageInfo): Promise<THREE.Texture> {
+    const flip_x = this.node.flip_x.value;
+    const flip_y = this.node.flip_y.value;
+    const { texture } = await this.lf2.images.p_create_pic_by_img_info(img);
     texture.offset.set(flip_x ? 1 : 0, flip_y ? 1 : 0);
     return texture;
   }
+
   get x(): number { return this.sprite.x }
   set x(v: number) { this.sprite.x = v; }
   get y(): number { return this.sprite.y }
@@ -85,17 +93,18 @@ export class UINodeRenderer implements IUINodeRenderer, IDebugging {
   get visible() { return this.sprite.visible }
   set visible(v: boolean) { this.sprite.visible = v }
   render() {
-    const [w, h] = this.node.size;
-    if (this.sprite.w != w || this.sprite.h != h) {
+    if (this.node.size.dirty) {
+      const [w, h] = this.node.size.value;
       this.sprite.set_size(w, h).apply()
     }
-    if (this.img_idx != this.node.img_idx) {
-      this.img_idx = this.node.img_idx
-      this.update_img();
+    this.update_sprite();
+    this.node.scale.dirty && this.sprite.set_scale(...this.node.scale.value);
+
+    if (this.node.pos.dirty) {
+      const [x, y, z] = this.node.pos.value
+      this.sprite.set_position(x, -y, z);
     }
-    this.sprite.set_scale(...this.node.scale);
-    const [x, y, z] = this.node.pos
-    this.sprite.set_position(x, -y, z);
+
     this.sprite.visible = this.node.visible
     this.sprite.opacity = this.node.opacity;
     this.sprite.apply()

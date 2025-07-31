@@ -28,7 +28,7 @@ export default class StageTitleShow extends UIComponent {
     this.lf2.sounds.play_preset("pass");
     this.depose_all_mesh();
     const meshs = [await this.create_sp(`stage_clear`)];
-    const parent_mesh = this.node.sprite;
+    const parent_mesh = this.node.renderer.sprite;
     if (!parent_mesh || meshs.indexOf(void 0) >= 0 || !this.mounted) {
       for (const mesh of meshs) mesh?.dispose();
       return;
@@ -69,7 +69,7 @@ export default class StageTitleShow extends UIComponent {
       await this.create_sp(`char_num_${sub_num}`),
     ];
 
-    const parent_sprite = this.node.sprite;
+    const parent_sprite = this.node.renderer.sprite;
     if (
       !parent_sprite ||
       sps.indexOf(void 0) >= 0 ||

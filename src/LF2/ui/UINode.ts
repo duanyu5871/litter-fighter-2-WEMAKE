@@ -9,20 +9,16 @@ import Ditto from "../ditto";
 import { IUINodeRenderer } from "../ditto/render/IUINodeRenderer";
 import { IDebugging, make_debugging } from "../entity/make_debugging";
 import { type IImageInfo } from "../loader/IImageInfo";
-import { ImageInfo } from "../loader/ImageInfo";
+import { ITextImageInfo } from "../loader/ITextImageInfo";
 import { filter, find } from "../utils/container_help";
-import { is_arr, is_bool, is_num, is_str } from "../utils/type_check";
+import { is_bool, is_num, is_str } from "../utils/type_check";
 import { ICookedUIInfo } from "./ICookedUIInfo";
 import { IUICallback } from "./IUICallback";
-import { IUIImgInfo } from "./IUIImgInfo.dat";
-import type { IUIInfo, TUIImgInfo } from "./IUIInfo.dat";
 import { IUIKeyEvent } from "./IUIKeyEvent";
 import { IUIPointerEvent } from "./IUIPointerEvent";
 import actor from "./action/Actor";
 import factory from "./component/Factory";
 import { UIComponent } from "./component/UIComponent";
-import read_nums from "./utils/read_nums";
-import { validate_ui_img_info } from "./validate_ui_img_info";
 export class UINode implements IDebugging {
   static readonly TAG: string = 'UINode';
   debug!: (_0: string, ..._1: any[]) => void;
@@ -32,6 +28,7 @@ export class UINode implements IDebugging {
   readonly lf2: LF2;
   readonly id_ui_map: Map<string, UINode[]>;
   readonly name_ui_map: Map<string, UINode[]>;
+  readonly data: Readonly<ICookedUIInfo>;
 
   protected _callbacks = new Callbacks<IUICallback>();
   protected _pointer_on_me: 0 | 1 = 0;
@@ -49,28 +46,30 @@ export class UINode implements IDebugging {
    */
   protected _root: UINode;
   protected _focused_node?: UINode;
-  protected _pos: StateDelegate<[number, number, number]> = new StateDelegate(() => this.data.pos);
-  protected _scale: StateDelegate<[number, number, number]> = new StateDelegate(() => this.data.scale);
   protected _components = new Set<UIComponent>();
   protected _state: any = {};
   protected _visible: StateDelegate<boolean> = new StateDelegate(true);
   protected _disabled: StateDelegate<boolean> = new StateDelegate(false);
   protected _opacity: StateDelegate<number> = new StateDelegate(1);
-  protected _img_infos: StateDelegate<IImageInfo[]> = new StateDelegate([]);
-  protected _size: StateDelegate<[number, number]> = new StateDelegate([0, 0]);
-  protected _center: StateDelegate<[number, number, number]> =
-    new StateDelegate([0, 0, 0]);
 
-  protected _img_idx = () => 0;
+  readonly pos: StateDelegate<[number, number, number]> = new StateDelegate(() => this.data.pos);
+  readonly scale: StateDelegate<[number, number, number]> = new StateDelegate(() => this.data.scale);
+  readonly txts: StateDelegate<ITextImageInfo[]> = new StateDelegate(() => this.data.txt_infos);
+  readonly imgs: StateDelegate<IImageInfo[]> = new StateDelegate(() => this.data.img_infos);
+  readonly size: StateDelegate<[number, number]> = new StateDelegate([0, 0]);
+  readonly center: StateDelegate<[number, number, number]> = new StateDelegate([0, 0, 0]);
+  readonly img_idx: StateDelegate<number> = new StateDelegate(0);
+  readonly txt_idx: StateDelegate<number> = new StateDelegate(0);
+  readonly flip_x: StateDelegate<boolean> = new StateDelegate(() => this.data.flip_x === true);
+  readonly flip_y: StateDelegate<boolean> = new StateDelegate(() => this.data.flip_y === true);
+  readonly color: StateDelegate<string> = new StateDelegate(() => this.data.color || '');
+
   protected _parent?: UINode;
   protected _children: UINode[] = [];
   protected _index: number = 0;
-  readonly data: Readonly<ICookedUIInfo>;
-  get scale() { return this._scale.value }
-  set scale(v: [number, number, number]) { this.set_scale(...v) }
   set_scale(x?: number, y?: number, z?: number): this {
-    const [a, b, c] = this._scale.value;
-    this._scale.value = [x ?? a, y ?? b, z ?? c];
+    const [a, b, c] = this.scale.value;
+    this.scale.value = [x ?? a, y ?? b, z ?? c];
     return this;
   }
 
@@ -100,55 +99,33 @@ export class UINode implements IDebugging {
     this._root._callbacks.emit("on_foucs_item_changed")(val, old);
   }
 
-  get id(): string | undefined {
-    return this.data.id;
-  }
-  get name(): string | undefined {
-    return this.data.name;
-  }
-  get pos(): [number, number, number] {
-    return this._pos.value;
-  }
-  set pos(v: [number, number, number]) {
-    this._pos.set(1, v);
-  }
-  set_pos(x: number, y: number, z: number): this {
-    this._pos.set(1, [x, y, z]);
-    return this;
-  }
+  get id(): string | undefined { return this.data.id }
+  get name(): string | undefined { return this.data.name }
+  // set_pos(x: number, y: number, z: number): this {
+  //   this.pos.set(0, [x, y, z]);
+  //   return this;
+  // }
 
-  get x(): number {
-    return this.pos[0];
-  }
-  set x(v: number) {
-    this.set_x(v);
-  }
-  set_x(x: number): this {
-    const [, y, z] = this.pos;
-    return this.set_pos(x, y, z);
-  }
+  // get x(): number { return this.pos.value[0]; }
+  // set x(v: number) { this.set_x(v); }
+  // set_x(x: number): this {
+  //   const [, y, z] = this.pos.value;
+  //   return this.set_pos(x, y, z);
+  // }
 
-  get y(): number {
-    return this.pos[1];
-  }
-  set y(v: number) {
-    this.set_y(v);
-  }
-  set_y(y: number): this {
-    const [x, , z] = this.pos;
-    return this.set_pos(x, y, z);
-  }
+  // get y(): number { return this.pos.value[1]; }
+  // set y(v: number) { this.set_y(v); }
+  // set_y(y: number): this {
+  //   const [x, , z] = this.pos.value;
+  //   return this.set_pos(x, y, z);
+  // }
 
-  get z(): number {
-    return this.pos[2];
-  }
-  set z(z: number) {
-    this.set_z(z);
-  }
-  set_z(z: number): this {
-    const [x, y] = this.pos;
-    return this.set_pos(x, y, z);
-  }
+  // get z(): number { return this.pos.value[2]; }
+  // set z(z: number) { this.set_z(z); }
+  // set_z(z: number): this {
+  //   const [x, y] = this.pos.value;
+  //   return this.set_pos(x, y, z);
+  // }
 
   get root(): UINode {
     return this._root;
@@ -167,14 +144,6 @@ export class UINode implements IDebugging {
 
   get state() {
     return this._state;
-  }
-
-  get img_idx() {
-    return this._img_idx();
-  }
-
-  set img_idx(v: number) {
-    this._img_idx = () => v;
   }
 
   /**
@@ -197,7 +166,7 @@ export class UINode implements IDebugging {
 
   set_visible(v: boolean): this {
     const prev = this.visible;
-    this._visible.set(1, v);
+    this._visible.set(0, v);
     if (prev !== this.visible) this.invoke_all_visible()
     if (!v && !this.focused_node?.visible) this.focused_node = void 0
     return this;
@@ -211,19 +180,13 @@ export class UINode implements IDebugging {
     this.set_disabled(v);
   }
   set_disabled(v: boolean): this {
-    this._disabled.set(1, v);
+    this._disabled.set(0, v);
     if (v && this.focused_node?.disabled) this.focused_node = void 0
     return this;
   }
 
-  get center() {
-    return this._center.value;
-  }
-  set center(v: [number, number, number]) {
-    this.set_center(v);
-  }
   set_center(v: [number, number, number]): this {
-    this._center.set(1, v);
+    this.center.set(0, v);
     return this;
   }
 
@@ -234,24 +197,20 @@ export class UINode implements IDebugging {
     this.set_opacity(v);
   }
   set_opacity(v: number): this {
-    this._opacity.set(1, v);
+    this._opacity.set(0, v);
     return this;
   }
 
   get parent(): UINode | undefined { return this._parent; }
   get children(): Readonly<UINode[]> { return this._children; }
 
-  get size(): [number, number] { return this._size.value; }
-  set size(v: [number, number]) { this.set_size(v); }
+  set_size(v: [number, number]): this { this.size.set(0, v); return this; }
 
-  get w(): number { return this.size[0]; }
+  get w(): number { return this.size.value[0]; }
   set w(v: number) { this.set_w(v); }
 
-  get h(): number { return this.size[1]; }
+  get h(): number { return this.size.value[1]; }
   set h(v: number) { this.set_h(v); }
-
-
-  set_size(v: [number, number]): this { this._size.set(1, v); return this; }
   set_w(v: number): this { return this.set_size([v, this.h]); }
   set_h(v: number): this { return this.set_size([this.w, v]); }
 
@@ -259,19 +218,9 @@ export class UINode implements IDebugging {
     return this._components;
   }
   get style(): IStyle {
-    return this.data.txt?.style || {}
+    return this.txts.value[0].style || {}
   }
 
-  get imgs() {
-    return this._img_infos.value;
-  }
-  set imgs(v: IImageInfo[]) {
-    this.set_imgs(v);
-  }
-  set_imgs(v: IImageInfo[]): this {
-    this._img_infos.set(1, v);
-    return this;
-  }
   get pointer_on_me() { return this._pointer_on_me }
   get pointer_down() { return this._pointer_down }
   get click_flag() { return this._click_flag }
@@ -294,7 +243,7 @@ export class UINode implements IDebugging {
     let x = 0;
     let node: UINode | undefined = this;
     do {
-      x += node.x;
+      x += node.pos.value[0];
       node = node.parent;
     } while (node);
     return x;
@@ -304,16 +253,16 @@ export class UINode implements IDebugging {
     let ret = 0;
     let node: UINode | undefined = this;
     do {
-      ret += node.y;
+      ret += node.pos.value[1];
       node = node.parent;
     } while (node);
     return ret;
   }
 
   hit(x: number, y: number): boolean {
-    const [cx, cy] = this.center;
-    const [px, py] = this.pos;
-    const [dw, dh] = this.size;
+    const [cx, cy] = this.center.value;
+    const [px, py] = this.pos.value;
+    const [dw, dh] = this.size.value;
     const l = px - Math.floor(cx * dw);
     const t = py - Math.floor(cy * dh);
     const [w, h] = this.data.size;
@@ -401,124 +350,9 @@ export class UINode implements IDebugging {
   }
 
   to_next_img() {
-    const { img_idx, imgs: img_infos } = this;
-    if (!img_infos?.length) return;
-    this._img_idx = () => (img_idx + 1) % img_infos.length;
+    this.img_idx.value = () => this.img_idx.value + 1 % this.data.img.length;
   }
 
-  protected static async read_template(lf2: LF2, raw_info: IUIInfo, parent: ICookedUIInfo | undefined): Promise<IUIInfo> {
-    const { template: template_name, ...remain_raw_info } = raw_info
-    if (!template_name) return raw_info;
-    let raw_template: IUIInfo | undefined = void 0;
-    let n = parent;
-    while (n && !raw_template) {
-      raw_template = n.templates?.[template_name];
-      n = n.parent;
-    }
-    raw_template = raw_template || await lf2.import_json<IUIInfo>(template_name);
-    Object.assign(raw_template, remain_raw_info);
-    const cooked_template = await this.cook_ui_info(lf2, raw_template, parent);
-    return { ...cooked_template, ...remain_raw_info };
-  }
-
-  static async cook_ui_info(
-    lf2: LF2,
-    data_or_path: IUIInfo | string,
-    parent?: ICookedUIInfo,
-  ): Promise<ICookedUIInfo> {
-    let raw_info = is_str(data_or_path)
-      ? await lf2.import_json<IUIInfo>(data_or_path)
-      : data_or_path;
-
-    if (raw_info.template) raw_info = await this.read_template(lf2, raw_info, parent)
-    const id = raw_info.id || 'uinode_with_no_id_' + Date.now()
-    const name = raw_info.name || 'uinode_with_no_name_' + Date.now()
-    const ret: ICookedUIInfo = {
-      ...raw_info,
-      id, name,
-      pos: read_nums(raw_info.pos, 3, [0, 0, 0]),
-      scale: read_nums(raw_info.scale, 3, [1, 1, 1]),
-      center: read_nums(raw_info.center, 3, [0, 0, 0]),
-      size: [0, 0],
-      parent,
-      img_infos: [],
-      items: void 0,
-      templates: void 0,
-      txt: is_str(raw_info.txt) ? { value: raw_info.txt } : raw_info.txt
-    };
-    if (raw_info.templates) {
-      for (const key in raw_info.templates) {
-        const template = raw_info.templates[key]
-        if (!template) continue;
-        if (!ret.templates) ret.templates = {}
-        ret.templates[key] = await this.cook_ui_info(lf2, template, parent)
-      }
-    }
-    const { img, txt } = raw_info;
-    if (img) {
-      const imgs = !is_arr(img) ? [img] : img;
-      const preload = (img: TUIImgInfo): Promise<ImageInfo>[] => {
-        const errors: string[] = []
-        validate_ui_img_info(img, errors)
-        if (errors.length) throw new Error(errors.join('\n'))
-        img = typeof img === 'string' ? { path: img } : img
-        const {
-          path, x = 0, y = 0, w = 0, h = 0, dw = w, dh = h,
-          col: cols = 1, row: rows = 1, count = 0
-        } = img
-        const ret: Promise<ImageInfo>[] = []
-        for (let row = 0; row < rows; ++row) {
-          for (let col = 0; col < cols; ++col) {
-            const idx = row * cols + col;
-            if (count > 0 && idx >= count) {
-              row == rows;
-              break;
-            }
-            const cpy: IUIImgInfo = {
-              ...img,
-              x: x + col * w,
-              y: y + row * h,
-              dw: dw,
-              dh: dh
-            }
-            const img_key = `${path}?x=${cpy.x}&y=${cpy.y}&w=${cpy.w}&h=${cpy.h}&dw=${cpy.dw}&dh=${cpy.dh}`;
-            ret.push(lf2.images.load_img(img_key, cpy.path, [{ type: 'crop', ...cpy }]));
-          }
-        }
-        return ret;
-      };
-      for (const p of imgs) {
-        for (const j of preload(p))
-          ret.img_infos.push(await j);
-      }
-    } else if (is_str(txt)) {
-      ret.img_infos.push(await lf2.images.load_text(txt));
-    } else if (txt) {
-      ret.img_infos.push(await lf2.images.load_text(txt.value, txt.style));
-    }
-
-    const { w: img_w = 0, h: img_h = 0, scale = 1 } = ret.img_infos?.[0] || {};
-    const sw = img_w / scale;
-    const sh = img_h / scale;
-    const [w, h] = read_nums(raw_info.size, 2, [parent ? sw : lf2.world.screen_w, parent ? sh : lf2.world.screen_h]);
-    // 宽或高其一为0时，使用原图宽高比例的计算之
-    const dw = Math.floor(w ? w : sh ? (h * sw) / sh : 0);
-    const dh = Math.floor(h ? h : sw ? (w * sh) / sw : 0);
-    ret.size = [dw, dh];
-
-    const { items } = raw_info;
-    if (items && !Array.isArray(items)) {
-      Ditto.Warn(`[${UINode.TAG}::cook_ui_info] items must be array, but got`, items)
-    }
-    if (Array.isArray(items) && items.length) {
-      ret.items = [];
-      for (const item of items)
-        ret.items.push(await UINode.cook_ui_info(lf2, item, ret));
-    } else {
-      delete ret.items;
-    }
-    return ret;
-  }
   readonly cook = UINode.create.bind(UINode)
 
   static create(lf2: LF2, info: ICookedUIInfo, parent?: UINode): UINode {
@@ -594,10 +428,9 @@ export class UINode implements IDebugging {
         Number(get_val(this, opacity, "==")) || 0;
     }
 
-    this._img_infos.default_value = this.data.img_infos;
-    this._size.default_value = this.data.size;
-    this._center.default_value = this.data.center;
-    this._pos.default_value = () => {
+    this.size.default_value = this.data.size;
+    this.center.default_value = this.data.center;
+    this.pos.default_value = () => {
       if (this.parent) return this.data.pos;
       const [x, y, z] = this.data.pos;
       return [x, y - this.lf2.world.screen_h, z]
@@ -605,19 +438,21 @@ export class UINode implements IDebugging {
   }
 
   private _cook_img_idx(get_val: IValGetter<UINode>) {
-    const { imgs: img_infos } = this;
-    if (!img_infos?.length) return;
+    const imgs = this.imgs.value;
+    if (!imgs?.length) return;
     const { which } = this.data;
     if (is_str(which)) {
-      return (this._img_idx = () => Number(get_val(this, which, "==")) || 0);
+      this.img_idx.default_value = () => {
+        const num = get_val(this, which, "==")
+        return num % imgs.length || 0;
+      };
+      return
     }
     if (is_num(which)) {
-      const img_idx = which % img_infos.length;
-      return (this._img_idx = () => img_idx);
+      this.img_idx.default_value = () => (which % imgs.length || 0)
+      return
     }
   }
-  /** @deprecated get rip of it */
-  get sprite() { return this.renderer.sprite; }
 
   on_click(e: IUIPointerEvent) {
     const { click } = this.data.actions ?? {};
@@ -857,3 +692,4 @@ export class UINode implements IDebugging {
 }
 type TCls<R = any> = abstract new (...args: any) => R;
 type TCond<T extends TCls> = (c: InstanceType<T>) => unknown;
+

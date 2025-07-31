@@ -38,7 +38,7 @@ export default class FighterName extends UIComponent {
   protected _unmount_jobs = new Invoker();
   constructor(layout: UINode, f_name: string) {
     super(layout, f_name);
-    const [w, h] = this.node.size;
+    const [w, h] = this.node.size.value;
     this._mesh = new Ditto.TextNode(this.lf2)
       .set_position(w / 2, -h / 2)
       .set_center(0.5, 0.5)
@@ -52,7 +52,7 @@ export default class FighterName extends UIComponent {
   override on_resume(): void {
     super.on_resume();
 
-    this.node.sprite.add(this._mesh);
+    this.node.renderer.sprite.add(this._mesh);
     this._unmount_jobs.add(
       this.player.callbacks.add({
         on_is_com_changed: () => this.handle_changed(),

@@ -20,10 +20,6 @@ import type { IRender } from "./IRender";
 import type { ITimeout } from "./ITimeout";
 import type { IKeyboard } from "./keyboard/IKeyboard";
 import type { IPointings } from "./pointings";
-import type { IBgLayerRender } from "./render/IBgLayerRender";
-import type { IBgRender } from "./render/IBgRender";
-import type { IEntityRenderer } from "./render/IEntityRenderer";
-import type { IFrameIndicators } from "./render/IFrameIndicators";
 import type { IUINodeRenderer } from "./render/IUINodeRenderer";
 import type { IWorldRenderer } from "./render/IWorldRenderer";
 import BaseSounds from "./sounds/BaseSounds";
@@ -73,12 +69,6 @@ export interface IDittoPack {
   Vector2: new (x?: number, y?: number) => IVector2;
   Raycaster: new () => IRaycaster;
   Quaternion: new (x?: number, y?: number, z?: number, w?: number) => IQuaternion;
-  BgLayerRender: new (layer: Layer) => IBgLayerRender;
-  BgRender: new (world: World) => IBgRender;
-  EntityShadowRender: new (entity: Entity) => IEntityRenderer
-  EntityInfoRender: new (entity: Entity) => IEntityRenderer
-  EntityRender: new (entity: Entity) => IEntityRenderer
-  FrameIndicators: new (entity: Entity) => IFrameIndicators
   WorldRender: new (world: World) => IWorldRenderer,
   UINodeRenderer: new (uinode: UINode) => IUINodeRenderer,
   Warn(...args: any[]): unknown;

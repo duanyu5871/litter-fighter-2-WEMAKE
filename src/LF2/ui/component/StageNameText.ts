@@ -45,7 +45,7 @@ export default class StageNameText extends UIComponent {
     super.on_resume();
     if (this._stage === Defines.VOID_STAGE)
       this.switch_stage();
-    this.node.sprite.add(this._mesh);
+    this.node.renderer.sprite.add(this._mesh);
     this._unmount_jobs.add(
       this.lf2.callbacks.add({
         on_broadcast: (v) => {

@@ -63,10 +63,10 @@ export default class FighterHead extends UIComponent {
         this._mesh_hints.set_info(hint_pic).apply();
       })
 
-    this.node.sprite.add(this._mesh_cd, this._mesh_hints, this._mesh_head);
+    this.node.renderer.sprite.add(this._mesh_cd, this._mesh_hints, this._mesh_head);
     this._unmount_jobs.add(
       () =>
-        this.node.sprite.del(
+        this.node.renderer.sprite.del(
           this._mesh_cd,
           this._mesh_hints,
           this._mesh_head,

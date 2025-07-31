@@ -52,8 +52,8 @@ export default class PlayerCharacterThumb extends UIComponent {
   override on_resume(): void {
     super.on_resume();
     this._player_id = this.node.lookup_component(PlayerScore)?.player_id;
-    this.node.sprite.add(this._mesh_thumb);
-    this._unmount_jobs.add(() => this.node.sprite.del(this._mesh_thumb));
+    this.node.renderer.sprite.add(this._mesh_thumb);
+    this._unmount_jobs.add(() => this.node.renderer.sprite.del(this._mesh_thumb));
   }
 
   override on_show(): void {

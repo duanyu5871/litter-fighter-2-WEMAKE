@@ -31,14 +31,15 @@ import get_import_fallbacks from "./loader/get_import_fallbacks";
 import { ImageMgr } from "./loader/ImageMgr";
 import { PlayerInfo } from "./PlayerInfo";
 import { Stage } from "./stage";
+import { cook_ui_info } from "./ui/cook_ui_info";
 import { ICookedUIInfo } from "./ui/ICookedUIInfo";
 import { IUIInfo } from "./ui/IUIInfo.dat";
 import { LF2PointerEvent } from "./ui/LF2PointerEvent";
 import { LF2UIKeyEvent } from "./ui/LF2UIKeyEvent";
 import { UINode } from "./ui/UINode";
 import {
-  arithmetic_progression, fisrt,
-  is_arr, is_num, is_str
+  fisrt,
+  is_str
 } from "./utils";
 import { MersenneTwister } from "./utils/math/MersenneTwister";
 import { World } from "./World";
@@ -250,7 +251,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
     this._pointer_vec_2.x = e.scene_x;
     this._pointer_vec_2.y = e.scene_y;
     this.world.renderer.camera.raycaster(this._pointer_raycaster, this._pointer_vec_2);
-    const intersections = this.ui.sprite.intersect_from_raycaster(this._pointer_raycaster, true);
+    const intersections = this.ui.renderer.sprite.intersect_from_raycaster(this._pointer_raycaster, true);
     const ret: IIntersection<UINode>[] = []
     for (const intersection of intersections) {
       const ui = intersection.object.get_user_data('owner');
@@ -602,7 +603,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
   }
 
   private _uiinfos_loaded = false;
-  private _uiinfos: ICookedUIInfo[] = [];
+  private _uiinfos: Readonly<ICookedUIInfo>[] = [];
   get uiinfos(): readonly ICookedUIInfo[] {
     return this._uiinfos;
   }
@@ -628,7 +629,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
         );
     }
     for (const path of paths) {
-      const cooked_ui_info = await UINode.cook_ui_info(this, path);
+      const cooked_ui_info = await cook_ui_info(this, path);
       this._uiinfos.push(cooked_ui_info);
       if (path === paths[0]) this.set_ui(cooked_ui_info);
     }

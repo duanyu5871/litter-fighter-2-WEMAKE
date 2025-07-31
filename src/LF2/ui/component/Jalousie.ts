@@ -38,8 +38,8 @@ export class Jalousie extends UIComponent<IJalousieCallbacks> {
   }
   get open(): boolean { return this._anim.reverse; }
   set open(v: boolean) { this._anim.start(v); }
-  get w(): number { return this.node.root.size[0] }
-  get h(): number { return this.node.root.size[1] }
+  get w(): number { return this.node.root.size.value[0] }
+  get h(): number { return this.node.root.size.value[1] }
 
   override on_stop(): void {
     super.on_stop?.()
@@ -69,10 +69,10 @@ export class Jalousie extends UIComponent<IJalousieCallbacks> {
       if (!child) continue;
       if (this._direction === 'ns') {
         child.w = this.w;
-        child.scale = [1, value, 1];
+        child.scale.value = [1, value, 1];
       } else {
         child.h = this.h;
-        child.scale = [value, 1, 1];
+        child.scale.value = [value, 1, 1];
       }
     }
   }

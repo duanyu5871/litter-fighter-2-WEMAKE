@@ -19,7 +19,7 @@ export class PositionAnimation extends UIComponent {
     const len = this.args.length;
     const anims: Animation[] = [];
     for (let i = 0; i < len - 2; i += 2) {
-      const value = this.nums(i + 2, 3) || this.node.pos;
+      const value = this.nums(i + 2, 3) || this.node.pos.value;
       const duration = this.num(i + 3) || 0;
       const prev_value = i == 0 ? value : (this.nums(i, 3) || value);
       const a = value.join() === prev_value.join() ?
@@ -56,11 +56,11 @@ export class PositionAnimation extends UIComponent {
       const pair = this.values.get(this.seq_anim.curr_anim)
       if (!pair) return;
       const { value } = this.seq_anim
-      this.node.set_pos(
+      this.node.pos.value = [
         pair[0][0] + pair[1][0] * value,
         pair[0][1] + pair[1][1] * value,
         pair[0][2] + pair[1][2] * value,
-      )
+      ]
     } else {
       this.set_enabled(false)
     }

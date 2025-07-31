@@ -1,12 +1,11 @@
 import type { IMeshNode } from "../../LF2/3d/IMesh";
 import Background from "../../LF2/bg/Background";
 import Ditto from "../../LF2/ditto";
-import type { IEntityRenderer } from "../../LF2/ditto/render/IEntityRenderer";
 import type { Entity } from "../../LF2/entity/Entity";
 import * as T from "../3d/_t";
 import { WorldRenderer } from "./WorldRenderer";
 
-export class EntityShadowRender implements IEntityRenderer {
+export class EntityShadowRender {
   readonly renderer_type: string = "Shadow";
   readonly mesh: IMeshNode;
   readonly entity: Entity;
@@ -41,7 +40,7 @@ export class EntityShadowRender implements IEntityRenderer {
   on_unmount() {
     this.mesh.dispose();
   }
-  
+
   render() {
     const { bg } = this.world
     if (bg != this.bg) {

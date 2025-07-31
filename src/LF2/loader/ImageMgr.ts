@@ -7,17 +7,16 @@ import AsyncValuesKeeper from "../base/AsyncValuesKeeper";
 import { ILegacyPictureInfo } from "../defines/ILegacyPictureInfo";
 import type IPicture from "../defines/IPicture";
 import { IPictureInfo } from "../defines/IPictureInfo";
-import { IRect } from "../defines/IRect";
 import type IStyle from "../defines/IStyle";
 import { MagnificationTextureFilter } from "../defines/MagnificationTextureFilter";
 import { MinificationTextureFilter } from "../defines/MinificationTextureFilter";
 import { TextureWrapping } from "../defines/TextureWrapping";
 import Ditto from "../ditto";
-import { is_int, is_non_nagative_int, is_positive_int } from "../utils";
+import { is_positive_int } from "../utils";
 import { IImageInfo } from "./IImageInfo";
 import { ImageInfo } from "./ImageInfo";
-import { TextImageInfo } from "./TextImageInfo";
 import { ImageOperation_Crop } from "./ImageOperation_Crop";
+import { TextImageInfo } from "./TextImageInfo";
 import { validate_ui_img_operation_crop } from "./validate_ui_img_operation_crop";
 
 export type TPicture = IPicture<THREE.Texture>;
@@ -147,6 +146,7 @@ export class ImageMgr {
       w: cvs.width,
       h: cvs.height,
       text: text,
+      style
     });
   }
 
@@ -158,10 +158,10 @@ export class ImageMgr {
     return this.infos.get(this._gen_key(f));
   }
 
-  load_text(text: string, style: IStyle = {}): Promise<ImageInfo> {
+  load_text(text: string, style: IStyle = {}): Promise<TextImageInfo> {
     const key = Ditto.MD5(text, JSON.stringify(style));
     const fn = () => this.create_img_info_by_text(key, text, style);
-    return this.infos.fetch(key, fn);
+    return this.infos.fetch(key, fn) as Promise<TextImageInfo>;
   }
 
   load_img(key: string, src: string, operations?: ImageOperation[]): Promise<ImageInfo> {
