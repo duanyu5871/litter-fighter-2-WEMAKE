@@ -1,7 +1,6 @@
-import { IText } from "../../3d/IText";
 import { Sine } from "../../animation/Sine";
 import Invoker from "../../base/Invoker";
-import Ditto from "../../ditto";
+import { ui_load_txt } from "../ui_load_txt";
 import type { UINode } from "../UINode";
 import GamePrepareLogic, { GamePrepareState } from "./GamePrepareLogic";
 import { UIComponent } from "./UIComponent";
@@ -41,27 +40,17 @@ export default class PlayerName extends UIComponent {
     if (this.can_join) return "Join?";
     return "";
   }
-  protected _mesh: IText;
   protected _opacity: Sine = new Sine(0.65, 0.35, 3);
   protected _unmount_jobs = new Invoker();
 
   constructor(layout: UINode, f_name: string) {
     super(layout, f_name);
     const [w, h] = this.node.size.value;
-    this._mesh = new Ditto.TextNode(this.lf2)
-      .set_position(w / 2, -h / 2)
-      .set_center(0.5, 0.5)
-      .set_name(PlayerName.name)
-      .set_style({
-        fill_style: "white",
-        font: "14px Arial",
-      });
   }
 
   override on_resume(): void {
     super.on_resume();
 
-    this.node.renderer.sprite.add(this._mesh);
     this._unmount_jobs.add(
       this.player?.callbacks.add({
         on_is_com_changed: () => this.handle_changed(),
@@ -70,8 +59,7 @@ export default class PlayerName extends UIComponent {
       }),
       this.gpl?.fsm.callbacks.add({
         on_state_changed: () => this.handle_changed(),
-      }),
-      () => this._mesh.del_self(),
+      })
     );
     this.handle_changed();
   }
@@ -82,17 +70,21 @@ export default class PlayerName extends UIComponent {
   }
 
   protected handle_changed() {
-    this._mesh
-      .set_style({
-        ...this._mesh.style,
+    ui_load_txt(this.lf2, {
+      value: this.text, style: {
         fill_style: this.is_com ? "pink" : "white",
-      })
-      .set_text(this.text)
-      .apply();
+        font: "14px Arial",
+      }
+    }).then(v => {
+      this.node.txts.value = v;
+      this.node.txt_idx.value = 0;
+      const { w, h, scale } = v[0]!
+      this.node.size.value = [w / scale, h / scale];
+    })
   }
 
   override update(dt: number): void {
     this._opacity.update(dt);
-    this._mesh.opacity = this.joined ? 1 : this._opacity.value;
+    this.node.opacity = this.joined ? 1 : this._opacity.value;
   }
 }
