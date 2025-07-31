@@ -12,7 +12,7 @@ export default class ComNumButton extends UIComponent {
     e.stop_immediate_propagation();
   }
   override on_key_down(e: IUIKeyEvent): void {
-    if (e.key === 'a' && this.node.focused) {
+    if (e.game_key === 'a' && this.node.focused) {
       this.gpl?.set_com_num(this.num(0) || 0);
       e.stop_immediate_propagation();
     }

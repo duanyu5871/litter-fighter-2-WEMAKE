@@ -18,7 +18,7 @@ export class ReachableGroup extends UIComponent {
     return this.node.root.find_child(lid) || this.node;
   }
   override on_key_down(e: IUIKeyEvent): void {
-    const { key } = e;
+    const { game_key: key } = e;
     if (!this.binded_layout.visible) return;
     if (this.binded_layout.disabled) return;
     switch (this.direction) {

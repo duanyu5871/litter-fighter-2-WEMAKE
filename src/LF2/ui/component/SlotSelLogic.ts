@@ -59,7 +59,7 @@ export default class SlotSelLogic extends UIComponent {
     },
     on_player_key_down: (e) => {
       if (this.player_id != e.player && this.gpl.handling_com !== this) return;
-      if (e.key === 'a') {
+      if (e.game_key === 'a') {
         this.fsm.use(SlotSelStatus.Fighter);
         this.lf2.sounds.play_preset("join");
         e.stop_immediate_propagation()
@@ -74,9 +74,9 @@ export default class SlotSelLogic extends UIComponent {
     },
     on_player_key_down: (e) => {
       if (this.player_id != e.player && this.gpl.handling_com !== this) return;
-      if (e.key === "j") this.lf2.sounds.play_preset("cancel");
-      if (e.key === "a") this.lf2.sounds.play_preset("join");
-      if (e.key === 'a') {
+      if (e.game_key === "j") this.lf2.sounds.play_preset("cancel");
+      if (e.game_key === "a") this.lf2.sounds.play_preset("join");
+      if (e.game_key === 'a') {
         // 按攻击确认角色,
         this.character_decided = true;
         // 闯关模式下，直接确定为第一队
@@ -87,7 +87,7 @@ export default class SlotSelLogic extends UIComponent {
           this.fsm.use(SlotSelStatus.Team)
         }
         e.stop_immediate_propagation()
-      } else if (e.key === 'j') {
+      } else if (e.game_key === 'j') {
         // 按跳跃取消加入
         this.fsm.use(SlotSelStatus.Empty);
         if (this.gpl.handling_com === this) {
@@ -106,12 +106,12 @@ export default class SlotSelLogic extends UIComponent {
       this.team_decided = false;
     }, on_player_key_down: (e) => {
       if (this.player_id != e.player && this.gpl.handling_com !== this) return;
-      if (e.key === "j") this.lf2.sounds.play_preset("cancel");
-      if (e.key === "a") this.lf2.sounds.play_preset("join");
-      if ("a" === e.key) {
+      if (e.game_key === "j") this.lf2.sounds.play_preset("cancel");
+      if (e.game_key === "a") this.lf2.sounds.play_preset("join");
+      if ("a" === e.game_key) {
         this.fsm.use(SlotSelStatus.Ready);
         e.stop_immediate_propagation()
-      } else if ("j" === e.key) {
+      } else if ("j" === e.game_key) {
         this.fsm.use(SlotSelStatus.Fighter);
         e.stop_immediate_propagation()
       } else {
@@ -127,7 +127,7 @@ export default class SlotSelLogic extends UIComponent {
       if (this.gpl.handling_com === this) this.gpl.handle_next_com()
     }, on_player_key_down: (e) => {
       if (this.player_id != e.player && this.gpl.handling_com !== this) return;
-      if (e.key === "j") {
+      if (e.game_key === "j") {
         e.stop_immediate_propagation()
         this.lf2.sounds.play_preset("cancel");
         if (this.gpl.game_mode === "stage_mode") {
@@ -140,18 +140,18 @@ export default class SlotSelLogic extends UIComponent {
   });
 
   private swtich_fighter(e: IUIKeyEvent) {
-    if ("D" === e.key || "U" === e.key) {
+    if ("D" === e.game_key || "U" === e.game_key) {
       // 按上或下,回到随机
       this.character = "";
       e.stop_immediate_propagation()
-    } else if ("L" === e.key) {
+    } else if ("L" === e.game_key) {
       // 上一个角色
       const { characters } = this;
       const idx = characters.findIndex((v) => v.id === this.character);
       const next = idx <= -1 ? characters.length - 1 : idx - 1;
       this.character = characters[next]?.id ?? "";
       e.stop_immediate_propagation()
-    } else if ("R" === e.key) {
+    } else if ("R" === e.game_key) {
       // 下一个角色
       const { characters } = this;
       const idx = characters.findIndex((v) => v.id === this.character);
@@ -162,13 +162,13 @@ export default class SlotSelLogic extends UIComponent {
   }
 
   private switch_team(e: IUIKeyEvent) {
-    if ("L" === e.key) {
+    if ("L" === e.game_key) {
       // 上一个队伍
       const idx = Defines.Teams.findIndex((v) => v === this.team);
       const next_idx = (idx + Defines.Teams.length - 1) % Defines.Teams.length;
       this.team = Defines.Teams[next_idx]!;
       e.stop_immediate_propagation()
-    } else if ("R" === e.key) {
+    } else if ("R" === e.game_key) {
       // 下一个队伍
       const idx = Defines.Teams.findIndex((v) => v === this.team);
       const next_idx = (idx + 1) % Defines.Teams.length;

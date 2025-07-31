@@ -53,11 +53,14 @@ export class PlayerInfo implements IDebugging {
   log(func: string, ...args: any[]): void { }
 
   save(): void {
-    Ditto.Cache.put({
-      name: this.storage_key,
-      version: 0,
-      data: JSON.stringify(this._info)
+    Ditto.Cache.del(this.storage_key).then(() => {
+      Ditto.Cache.put({
+        name: this.storage_key,
+        version: 0,
+        data: JSON.stringify(this._info)
+      })
     })
+
   }
 
   load() {

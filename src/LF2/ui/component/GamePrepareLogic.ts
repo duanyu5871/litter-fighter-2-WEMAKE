@@ -115,7 +115,7 @@ export default class GamePrepareLogic extends UIComponent<IGamePrepareLogicCallb
       for (const slot of slots) slot.fsm.use(SlotSelStatus.Empty)
     },
     on_player_key_down: (e) => {
-      if ("j" === e.key && !this.joined_slots.length) {
+      if ("j" === e.game_key && !this.joined_slots.length) {
         this.lf2.pop_ui();
         e.stop_immediate_propagation()
       }
@@ -139,7 +139,7 @@ export default class GamePrepareLogic extends UIComponent<IGamePrepareLogicCallb
           return GamePrepareState.GameSetting;
     },
     on_player_key_down: (e) => {
-      if ("j" === e.key) {
+      if ("j" === e.game_key) {
         this._count_down = Math.max(0, this._count_down - 500);
         this.callbacks.emit("on_countdown")(Math.ceil(this._count_down / 1000));
         e.stop_immediate_propagation()
@@ -167,7 +167,7 @@ export default class GamePrepareLogic extends UIComponent<IGamePrepareLogicCallb
       this.node.find_child("how_many_computer")?.set_visible(false)
     },
     on_player_key_down: (e) => {
-      if ("d" === e.key) {
+      if ("d" === e.game_key) {
         this.fsm.use(GamePrepareState.Player);
         e.stop_immediate_propagation()
       }
@@ -190,7 +190,7 @@ export default class GamePrepareLogic extends UIComponent<IGamePrepareLogicCallb
       this.node.find_child("menu")?.set_visible(false);
     },
     on_player_key_down: (e) => {
-      if ("d" === e.key) {
+      if ("d" === e.game_key) {
         this.fsm.use(GamePrepareState.Player);
         e.stop_immediate_propagation()
       }

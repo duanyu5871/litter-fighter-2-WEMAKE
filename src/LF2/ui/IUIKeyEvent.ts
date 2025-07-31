@@ -3,6 +3,7 @@ import type { IUIEvent } from "./UIEvent";
 
 export interface IUIKeyEvent extends IUIEvent {
   player: string;
-  key: TLooseGameKey;
+  key: string;
+  game_key: TLooseGameKey;
 }
 

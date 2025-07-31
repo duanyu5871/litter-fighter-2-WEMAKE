@@ -71,43 +71,50 @@
             {
               "id": "btn_key_set_U",
               "component": "key_set(1,U)",
-              "pos": "0, 124",
+              "center": "0.5,0.5",
+              "pos": "53, 134",
               "size": "106, 19"
             },
             {
               "id": "btn_key_set_D",
               "component": "key_set(1,D)",
-              "pos": "0, 146",
+              "center": "0.5,0.5",
+              "pos": "53, 156",
               "size": "106, 19"
             },
             {
               "id": "btn_key_set_L",
               "component": "key_set(1,L)",
-              "pos": "0, 168",
+              "center": "0.5,0.5",
+              "pos": "53, 178",
               "size": "106, 19"
             },
             {
               "id": "btn_key_set_R",
               "component": "key_set(1,R)",
-              "pos": "0, 190",
+              "center": "0.5,0.5",
+              "pos": "53, 200",
               "size": "106, 19"
             },
             {
               "id": "btn_key_set_a",
               "component": "key_set(1,a)",
-              "pos": "0, 212",
+              "center": "0.5,0.5",
+              "pos": "53, 222",
               "size": "106, 19"
             },
             {
               "id": "btn_key_set_j",
               "component": "key_set(1,j)",
-              "pos": "0, 234",
+              "center": "0.5,0.5",
+              "pos": "53, 244",
               "size": "106, 19"
             },
             {
               "id": "btn_key_set_d",
               "component": "key_set(1,d)",
-              "pos": "0, 256",
+              "center": "0.5,0.5",
+              "pos": "53, 266",
               "size": "106, 19"
             }
           ]
@@ -160,43 +167,50 @@
             {
               "id": "btn_key_set_U",
               "component": "key_set(2,U)",
-              "pos": "0, 124",
+              "center": "0.5,0.5",
+              "pos": "53, 134",
               "size": "106, 19"
             },
             {
               "id": "btn_key_set_D",
               "component": "key_set(2,D)",
-              "pos": "0, 146",
+              "center": "0.5,0.5",
+              "pos": "53, 156",
               "size": "106, 19"
             },
             {
               "id": "btn_key_set_L",
               "component": "key_set(2,L)",
-              "pos": "0, 168",
+              "center": "0.5,0.5",
+              "pos": "53, 178",
               "size": "106, 19"
             },
             {
               "id": "btn_key_set_R",
               "component": "key_set(2,R)",
-              "pos": "0, 190",
+              "center": "0.5,0.5",
+              "pos": "53, 200",
               "size": "106, 19"
             },
             {
               "id": "btn_key_set_a",
               "component": "key_set(2,a)",
-              "pos": "0, 212",
+              "center": "0.5,0.5",
+              "pos": "53, 222",
               "size": "106, 19"
             },
             {
               "id": "btn_key_set_j",
               "component": "key_set(2,j)",
-              "pos": "0, 234",
+              "center": "0.5,0.5",
+              "pos": "53, 244",
               "size": "106, 19"
             },
             {
               "id": "btn_key_set_d",
               "component": "key_set(2,d)",
-              "pos": "0, 256",
+              "center": "0.5,0.5",
+              "pos": "53, 266",
               "size": "106, 19"
             }
           ]
@@ -249,43 +263,50 @@
             {
               "id": "btn_key_set_U",
               "component": "key_set(3,U)",
-              "pos": "0, 124",
+              "center": "0.5,0.5",
+              "pos": "53, 134",
               "size": "106, 19"
             },
             {
               "id": "btn_key_set_D",
               "component": "key_set(3,D)",
-              "pos": "0, 146",
+              "center": "0.5,0.5",
+              "pos": "53, 156",
               "size": "106, 19"
             },
             {
               "id": "btn_key_set_L",
               "component": "key_set(3,L)",
-              "pos": "0, 168",
+              "center": "0.5,0.5",
+              "pos": "53, 178",
               "size": "106, 19"
             },
             {
               "id": "btn_key_set_R",
               "component": "key_set(3,R)",
-              "pos": "0, 190",
+              "center": "0.5,0.5",
+              "pos": "53, 200",
               "size": "106, 19"
             },
             {
               "id": "btn_key_set_a",
               "component": "key_set(3,a)",
-              "pos": "0, 212",
+              "center": "0.5,0.5",
+              "pos": "53, 222",
               "size": "106, 19"
             },
             {
               "id": "btn_key_set_j",
               "component": "key_set(3,j)",
-              "pos": "0, 234",
+              "center": "0.5,0.5",
+              "pos": "53, 244",
               "size": "106, 19"
             },
             {
               "id": "btn_key_set_d",
               "component": "key_set(3,d)",
-              "pos": "0, 256",
+              "center": "0.5,0.5",
+              "pos": "53, 266",
               "size": "106, 19"
             }
           ]
@@ -338,43 +359,50 @@
             {
               "id": "btn_key_set_U",
               "component": "key_set(4,U)",
-              "pos": "0, 124",
+              "center": "0.5,0.5",
+              "pos": "53, 134",
               "size": "106, 19"
             },
             {
               "id": "btn_key_set_D",
               "component": "key_set(4,D)",
-              "pos": "0, 146",
+              "center": "0.5,0.5",
+              "pos": "53, 156",
               "size": "106, 19"
             },
             {
               "id": "btn_key_set_L",
               "component": "key_set(4,L)",
-              "pos": "0, 168",
+              "center": "0.5,0.5",
+              "pos": "53, 178",
               "size": "106, 19"
             },
             {
               "id": "btn_key_set_R",
               "component": "key_set(4,R)",
-              "pos": "0, 190",
+              "center": "0.5,0.5",
+              "pos": "53, 200",
               "size": "106, 19"
             },
             {
               "id": "btn_key_set_a",
               "component": "key_set(4,a)",
-              "pos": "0, 212",
+              "center": "0.5,0.5",
+              "pos": "53, 222",
               "size": "106, 19"
             },
             {
               "id": "btn_key_set_j",
               "component": "key_set(4,j)",
-              "pos": "0, 234",
+              "center": "0.5,0.5",
+              "pos": "53, 244",
               "size": "106, 19"
             },
             {
               "id": "btn_key_set_d",
               "component": "key_set(4,d)",
-              "pos": "0, 256",
+              "center": "0.5,0.5",
+              "pos": "53, 266",
               "size": "106, 19"
             }
           ]

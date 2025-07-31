@@ -49,7 +49,7 @@ export class VsModeLogic extends UIComponent
     }
   }
   override on_key_down(e: IUIKeyEvent): void {
-    if ((e.key === 'a' || e.key === 'j') && this.world.stage.is_chapter_finish) {
+    if ((e.game_key === 'a' || e.game_key === 'j') && this.world.stage.is_chapter_finish) {
       e.stop_immediate_propagation();
       this.lf2.goto_next_stage();
     }

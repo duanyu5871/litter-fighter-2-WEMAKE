@@ -478,7 +478,7 @@ export class UINode implements IDebugging {
       i.on_key_down(e);
       if (e.stopped === 2) return;
     }
-    if (this.focused && "a" === e.key) {
+    if (this.focused && "a" === e.game_key) {
       const { click } = this.data.actions ?? {};
       if (click) {
         actor.act(this, click);
