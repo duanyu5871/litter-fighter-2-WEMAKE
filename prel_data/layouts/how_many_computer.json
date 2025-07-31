@@ -6,9 +6,32 @@
     "w": 365,
     "h": 111
   },
-  "size":"365,111",
+  "size": "365,111",
   "pos": "204,175,1",
+  "component": [
+    "ReachableGroup(com_num,lr,how_many_computer)"
+  ],
   "items": [
+    {
+      "txt": {
+        "value": "How many Computer Players?",
+        "style": {
+          "font": "16px Arial"
+        }
+      },
+      "pos": "182,22",
+      "center": "0.5,0.5"
+    },
+    {
+      "txt": {
+        "value": "有多少个电脑玩家？",
+        "style": {
+          "font": "16px Arial"
+        }
+      },
+      "pos": "182,45",
+      "center": "0.5,0.5"
+    },
     {
       "txt": {
         "value": "0",
