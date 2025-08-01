@@ -5,7 +5,7 @@ import { is_num } from "../../LF2/utils/type_check";
 import * as THREE from "../3d/_t";
 import { __Object } from "./__Object";
 import { dispose_mesh } from "./disposer";
-import { get_alpha_from_color } from "./get_alpha_from_color";
+import { get_alpha_from_color } from "../../LF2/ui/utils/get_alpha_from_color";
 
 export class __Sprite extends __Object implements ISprite {
   readonly is_sprite_node = true;

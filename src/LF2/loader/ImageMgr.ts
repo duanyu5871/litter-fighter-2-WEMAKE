@@ -12,6 +12,7 @@ import { MagnificationTextureFilter } from "../defines/MagnificationTextureFilte
 import { MinificationTextureFilter } from "../defines/MinificationTextureFilter";
 import { TextureWrapping } from "../defines/TextureWrapping";
 import Ditto from "../ditto";
+import { get_alpha_from_color } from "../ui/utils/get_alpha_from_color";
 import { is_positive_int } from "../utils";
 import { IImageInfo } from "./IImageInfo";
 import { ImageInfo } from "./ImageInfo";
@@ -85,25 +86,14 @@ export class ImageMgr {
     const cvs = document.createElement("canvas");
     const ctx = cvs.getContext("2d");
     if (!ctx) throw new Error("can not get context from canvas");
-
     const {
       padding_b = 2,
       padding_l = 2,
       padding_r = 2,
       padding_t = 2,
     } = style;
-    const text_align = style.text_align ?? "left";
-    const apply_text_style = () => {
-      ctx.font = style.font ?? "normal 9px system-ui";
-      ctx.fillStyle = style.fill_style ?? "white";
-      ctx.strokeStyle = style.stroke_style ?? "";
-      ctx.shadowColor = style.shadow_color ?? "";
-      ctx.lineWidth = style.line_width ?? 1;
-      ctx.textAlign = text_align;
-      ctx.shadowBlur = 5;
-      ctx.imageSmoothingEnabled = style.smoothing ?? false;
-    };
-    apply_text_style();
+
+    apply_text_style(style, ctx);
     let w = 0;
     let h = 0;
     const scale = 2;
@@ -119,18 +109,35 @@ export class ImageMgr {
       h += a + d;
       return ret;
     });
-    if (text_align === "center") for (const l of lines) l.x = Math.round(w / 2);
-    else if (text_align === "right") for (const l of lines) l.x = Math.round(w);
+    if (style.text_align === "center") for (const l of lines) l.x = Math.round(w / 2);
+    else if (style.text_align === "right") for (const l of lines) l.x = Math.round(w);
     cvs.style.width = (cvs.width = scale * (w + padding_l + padding_r)) + "px";
-    cvs.style.height =
-      (cvs.height = scale * (h + padding_t + padding_b)) + "px";
-
-    apply_text_style();
+    cvs.style.height = (cvs.height = scale * (h + padding_t + padding_b)) + "px";
     ctx.save();
     ctx.scale(scale, scale);
-    for (const { x, y, t } of lines) {
-      ctx.fillText(t, padding_l + x, padding_t + y);
+    if (style.back_style) {
+      const nf = need_fiil(style.back_style);
+      const ns = need_stroke(style.back_style);
+      apply_text_style(style.back_style, ctx);
+      if (nf || ns) {
+        for (const { x, y, t } of lines) {
+          if (nf) ctx.fillText(t, padding_l + x, padding_t + y)
+          if (ns) ctx.strokeText(t, padding_l + x, padding_t + y)
+        }
+      }
     }
+
+    const nf = need_fiil(style);
+    const ns = need_stroke(style);
+    if (nf || ns) {
+      apply_text_style(style, ctx);
+      for (const { x, y, t } of lines) {
+        if (nf) ctx.fillText(t, padding_l + x, padding_t + y)
+        if (ns) ctx.strokeText(t, padding_l + x, padding_t + y)
+      }
+    }
+
+
     ctx.restore();
     const blob = await get_blob(cvs).catch((e) => {
       const err = new Error(e.message + " key:" + key);
@@ -317,3 +324,24 @@ export interface ImageOperation_Resize extends ISize {
 }
 export type ImageOperation = ImageOperation_Crop | ImageOperation_Resize;
 
+function apply_text_style(style: IStyle, ctx: CanvasRenderingContext2D) {
+  ctx.font = style.font ?? "normal 9px system-ui";
+  ctx.fillStyle = style.fill_style ?? "white";
+  ctx.strokeStyle = style.stroke_style ?? "";
+  ctx.lineWidth = style.line_width ?? 0;
+  ctx.textAlign = style.text_align ?? "left";
+  ctx.shadowColor = style.shadow_color ?? "";
+  ctx.shadowBlur = style.shadow_color ? style.shadow_blur ?? 0 : 0;
+  ctx.shadowOffsetX = style.shadow_color ? style.shadow_offset_x ?? 0 : 0;
+  ctx.shadowOffsetY = style.shadow_color ? style.shadow_offset_y ?? 0 : 0;
+  ctx.imageSmoothingEnabled = style.smoothing ?? false;
+}
+function need_stroke(style: IStyle): boolean {
+  return !!style.line_width && style.line_width > 0
+}
+function need_fiil(style: IStyle): boolean {
+  if (!style.fill_style) return true;
+  const n = get_alpha_from_color(style.fill_style);
+  if (n === null) return true;
+  return n > 0;
+}

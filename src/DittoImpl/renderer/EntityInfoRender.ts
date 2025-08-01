@@ -51,7 +51,6 @@ class Bar {
     this._max = v;
     this.mesh.set_scale_x(this._val / this._max);
   }
-
   set val(v: number) {
     this._val = Math.max(0, v);
     this.mesh.set_scale_x(this._val / this._max);
@@ -59,7 +58,6 @@ class Bar {
   set color(color: string) {
     this.mesh.material = get_color_material(color)
   }
-
   constructor(
     lf2: LF2,
     color: T.ColorRepresentation,
@@ -108,7 +106,7 @@ export class EntityInfoRender implements IEntityCallbacks {
 
   constructor(entity: Entity) {
     const { lf2 } = entity.world;
-    this.name_node = new Ditto.BillboardNode(lf2, { visible: false });
+    this.name_node = new Ditto.BillboardNode(lf2);
     this.bars_node = new Ditto.ObjectNode(lf2);
     this.bars_bg = new Bar(lf2, "rgb(0,0,0)", BAR_BG_W, BAR_BG_H, 0.5, 0);
     this.self_healing_hp_bar = new Bar(
@@ -238,20 +236,21 @@ export class EntityInfoRender implements IEntityCallbacks {
     }
     lf2.images
       .load_text(name, {
-        shadow_color: strokeStyle,
         fill_style: fillStyle,
+        back_style: {
+          stroke_style: strokeStyle,
+          line_width: 2
+        },
         smoothing: false,
       })
       .then((i) => lf2.images.p_create_pic_by_img_key(i.key))
       .then((p) => {
         if (name !== e.name) return;
         if (team !== e.team) return;
-        console.log(p.texture.image)
         this.name_node.visible = true;
         this.name_node
           .set_texture(p)
           .update_material()
-        // .set_scale(p.w, p.h, 1);
         this.name_node.name = "name sprite";
       });
   }

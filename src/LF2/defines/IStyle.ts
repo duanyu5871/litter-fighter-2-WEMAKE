@@ -15,21 +15,17 @@ export default interface IStyle {
   padding_b?: number;
   padding_l?: number;
   padding_r?: number;
-
   line_cap?: CanvasLineCap;
   line_dash_offset?: number;
   line_join?: CanvasLineJoin;
   line_width?: number;
   miter_limit?: number;
-
   shadow_blur?: number;
   shadow_color?: string;
   shadow_offset_x?: number;
   shadow_offset_y?: number;
-
   fill_style?: string | CanvasGradient | CanvasPattern;
   stroke_style?: string | CanvasGradient | CanvasPattern;
-
   direction?: CanvasDirection;
   font?: string;
   font_kerning?: CanvasFontKerning;
@@ -40,6 +36,6 @@ export default interface IStyle {
   text_baseline?: CanvasTextBaseline;
   text_rendering?: CanvasTextRendering;
   word_spacing?: string;
-
   smoothing?: boolean;
+  back_style?: IStyle
 }

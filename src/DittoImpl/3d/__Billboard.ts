@@ -25,15 +25,12 @@ export class __Billboard extends __Object implements IBillboardNode {
   set render_order(v: number) {
     this.inner.renderOrder = v;
   }
-  override set_visible(v: boolean): this {
-    this.material.visible = false;
-    return this;
-  }
   set_texture(picutre: IPicture): this {
     this.inner.material.map?.dispose();
     this.inner.material.dispose();
     this.inner.material = new SpriteMaterial({ ...this._info, map: picutre.texture })
-    this.inner.material.needsUpdate = true
+    this.inner.material.needsUpdate = true;
+    this.inner.scale.set(picutre.w, picutre.h, 0);
     return this;
   }
   clear_material(): this {

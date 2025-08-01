@@ -1,4 +1,4 @@
-import { clamp, is_num, is_str } from "../../LF2/utils";
+import { clamp, is_num, is_str } from "../../utils";
 
 /**
  * 从颜色字符串或颜色整型中获取透明度
