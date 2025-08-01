@@ -1,4 +1,4 @@
-import { IRoomInfo } from "./definition";
+import { IResp, IRoomInfo } from "../../src/net_msg_definition";
 import type { User } from "./User";
 export class Room {
   readonly id: number;
@@ -19,4 +19,12 @@ export class Room {
       users: this.users.map(v => v.info())
     }
   }
+  broadcast<T extends IResp>(msg: Omit<T, 'pid'>) {
+
+    for (const user of this.users) {
+      user.send<IResp>({ type: msg.type, pid: 'room_' + ++room_pid })
+    }
+  }
 }
+
+let room_pid = 1

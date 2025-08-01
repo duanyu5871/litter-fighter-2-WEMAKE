@@ -10,7 +10,11 @@
     "downlevelIteration": true,
     "outDir": "./dist",
     "experimentalDecorators": true,
-    "rootDir": "./src",
+    // "rootDir": "./src",
+    "rootDirs": [
+      "./src",
+      "../src/net_msg_definition"
+    ],
     "noUncheckedIndexedAccess": true,
     "lib": [
       "DOM",
@@ -24,7 +28,8 @@
     }
   },
   "include": [
-    "src"
+    "src",
+    "../src/net_msg_definition"
   ],
   "exclude": [
     "node_modules",

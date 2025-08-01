@@ -7,6 +7,7 @@ export namespace Paths {
     quad_tree_test = '/quad_tree_test',
     bebavior_net_test = '/bebavior_net_test',
     editor = '/editor',
+    network_test = '/network_test',
     workspaces_demo = '/workspaces',
     component_demos = '/component_demos',
     component_demos_InputNumber = '/component_demos/InputNumber',
@@ -34,6 +35,7 @@ export namespace Paths {
     [All.component_demos_Icon]: React.lazy(() => import("./pages/component_demos/IconDemo")),
     [All.component_demos_Tag]: React.lazy(() => import("./pages/component_demos/TagDemo")),
     [All.workspaces_demo]: React.lazy(() => import("./pages/workspaces_demo")),
+    [All.network_test]: React.lazy(() => import("./pages/network_test")),
   }
   export const Relations: { [x in All]?: All[] } = {
     [All._]: [
@@ -43,6 +45,7 @@ export namespace Paths {
       All.component_demos,
       All.editor,
       All.workspaces_demo,
+      All.network_test,
     ],
     [All.component_demos]: [
       All.component_demos_InputNumber,
