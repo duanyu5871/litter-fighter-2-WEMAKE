@@ -329,5 +329,14 @@ export namespace Defines {
   export function get_default_keys(player_id: string): TKeys {
     return default_keys_map.get(player_id) || default_keys_map.get("_")!;
   }
+  export const SHORT_KEY_CODES: { [x in string]?: string } = {
+    ARROWUP: "↑",
+    ARROWDOWN: "↓",
+    ARROWLEFT: "←",
+    ARROWRIGHT: "→",
+    DELETE: "DEL",
+    PAGEDOWN: "PG↓",
+    PAGEUP: "PG↑",
+  }
 }
 export default Defines;

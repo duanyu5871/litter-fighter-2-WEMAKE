@@ -10,138 +10,118 @@
   },
   "_pos": "0,0,2",
   "size": "530,200",
+  "templates": {
+    "key_U": {
+      "pos": "0,000,0.1",
+      "center": "0.5,0.5",
+      "component": "PlayerKeyText(,U)"
+    },
+    "key_D": {
+      "pos": "0,020,0.1",
+      "center": "0.5,0.5",
+      "component": "PlayerKeyText(,D)"
+    },
+    "key_L": {
+      "pos": "0,040,0.1",
+      "center": "0.5,0.5",
+      "component": "PlayerKeyText(,L)"
+    },
+    "key_R": {
+      "pos": "0,060,0.1",
+      "center": "0.5,0.5",
+      "component": "PlayerKeyText(,R)"
+    },
+    "key_a": {
+      "pos": "0,080,0.1",
+      "center": "0.5,0.5",
+      "component": "PlayerKeyText(,a)"
+    },
+    "key_j": {
+      "pos": "0,100,0.1",
+      "center": "0.5,0.5",
+      "component": "PlayerKeyText(,j)"
+    },
+    "key_d": {
+      "pos": "0,120,0.1",
+      "center": "0.5,0.5",
+      "component": "PlayerKeyText(,d)"
+    },
+    "key_set": {
+      "items": [
+        "key_U",
+        "key_D",
+        "key_L",
+        "key_R",
+        "key_a",
+        "key_j",
+        "key_d"
+      ]
+    }
+  },
   "items": [
     {
       "pos": "143,60,0.1",
-      "items": [
-        {
-          "pos": "0,000,0.1",
-          "component": "key_txt(1,U)"
-        },
-        {
-          "pos": "0,020,0.1",
-          "component": "key_txt(1,D)"
-        },
-        {
-          "pos": "0,040,0.1",
-          "component": "key_txt(1,L)"
-        },
-        {
-          "pos": "0,060,0.1",
-          "component": "key_txt(1,R)"
-        },
-        {
-          "pos": "0,080,0.1",
-          "component": "key_txt(1,a)"
-        },
-        {
-          "pos": "0,100,0.1",
-          "component": "key_txt(1,j)"
-        },
-        {
-          "pos": "0,120,0.1",
-          "component": "key_txt(1,d)"
-        }
-      ]
+      "values": {
+        "player_id": "1"
+      },
+      "template": "key_set"
     },
     {
       "pos": "250,60,0.1",
-      "items": [
-        {
-          "pos": "0,000,0.1",
-          "component": "key_txt(2,U)"
-        },
-        {
-          "pos": "0,020,0.1",
-          "component": "key_txt(2,D)"
-        },
-        {
-          "pos": "0,040,0.1",
-          "component": "key_txt(2,L)"
-        },
-        {
-          "pos": "0,060,0.1",
-          "component": "key_txt(2,R)"
-        },
-        {
-          "pos": "0,080,0.1",
-          "component": "key_txt(2,a)"
-        },
-        {
-          "pos": "0,100,0.1",
-          "component": "key_txt(2,j)"
-        },
-        {
-          "pos": "0,120,0.1",
-          "component": "key_txt(2,d)"
-        }
-      ]
+      "values": {
+        "player_id": "2"
+      },
+      "template": "key_set"
     },
     {
       "pos": "357,60,0.1",
+      "values": {
+        "player_id": "3"
+      },
       "items": [
         {
           "pos": "0,000,0.1",
-          "component": "key_txt(3,U)"
+          "center": "0.5,0.5",
+          "component": "PlayerKeyText(3,U)"
         },
         {
           "pos": "0,020,0.1",
-          "component": "key_txt(3,D)"
+          "center": "0.5,0.5",
+          "component": "PlayerKeyText(3,D)"
         },
         {
           "pos": "0,040,0.1",
-          "component": "key_txt(3,L)"
+          "center": "0.5,0.5",
+          "component": "PlayerKeyText(3,L)"
         },
         {
           "pos": "0,060,0.1",
-          "component": "key_txt(3,R)"
+          "center": "0.5,0.5",
+          "component": "PlayerKeyText(3,R)"
         },
         {
           "pos": "0,080,0.1",
-          "component": "key_txt(3,a)"
+          "center": "0.5,0.5",
+          "component": "PlayerKeyText(3,a)"
         },
         {
           "pos": "0,100,0.1",
-          "component": "key_txt(3,j)"
+          "center": "0.5,0.5",
+          "component": "PlayerKeyText(3,j)"
         },
         {
           "pos": "0,120,0.1",
-          "component": "key_txt(3,d)"
+          "center": "0.5,0.5",
+          "component": "PlayerKeyText(3,d)"
         }
       ]
     },
     {
       "pos": "464,60,0.1",
-      "items": [
-        {
-          "pos": "0,000,0.1",
-          "component": "key_txt(4,U)"
-        },
-        {
-          "pos": "0,020,0.1",
-          "component": "key_txt(4,D)"
-        },
-        {
-          "pos": "0,040,0.1",
-          "component": "key_txt(4,L)"
-        },
-        {
-          "pos": "0,060,0.1",
-          "component": "key_txt(4,R)"
-        },
-        {
-          "pos": "0,080,0.1",
-          "component": "key_txt(4,a)"
-        },
-        {
-          "pos": "0,100,0.1",
-          "component": "key_txt(4,j)"
-        },
-        {
-          "pos": "0,120,0.1",
-          "component": "key_txt(4,d)"
-        }
-      ]
+      "values": {
+        "player_id": "4"
+      },
+      "template": "key_set"
     }
   ]
 }

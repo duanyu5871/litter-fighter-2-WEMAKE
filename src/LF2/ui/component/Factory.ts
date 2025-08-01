@@ -20,8 +20,8 @@ import LoadingFileNameDisplayer from "./LoadingFileNameDisplayer";
 import { OpacityAnimation } from "./OpacityAnimation";
 import { OpacityHover } from "./OpacityHover";
 import PlayerCharacterThumb from "./PlayerCharacterThumb";
-import PlayerKeyEditor from "./PlayerKeyEditor";
-import PlayerKeyText from "./PlayerKeyText";
+import { PlayerKeyEdit } from "./PlayerKeyEdit";
+import { PlayerKeyText } from "./PlayerKeyText";
 import PlayerName from "./PlayerName";
 import PlayerScore from "./PlayerScore";
 import PlayerScoreCell from "./PlayerScoreCell";
@@ -48,8 +48,9 @@ class ComponentFactory {
   static readonly TAG = `ComponentFactory`;
   private _component_map = new Map<string, typeof UIComponent<IUICompnentCallbacks>>([
     ["game_loading_file_name", LoadingFileNameDisplayer],
-    ["key_set", PlayerKeyEditor],
-    ["key_txt", PlayerKeyText],
+    [PlayerKeyEdit.TAG, PlayerKeyEdit],
+    [PlayerKeyText.TAG, PlayerKeyText],
+
     ["stage_transitions", StageTransitions],
     ["player_c_sel_logic", SlotSelLogic],
     [FighterHead.TAG, FighterHead],

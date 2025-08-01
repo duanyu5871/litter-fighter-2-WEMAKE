@@ -326,7 +326,7 @@ export class UINode implements IDebugging {
 
   to_next_img() {
     const idx = this.img_idx.value
-    this.img_idx.value = () => idx + 1 % this.data.img.length;
+    this.img_idx.value = () => (idx + 1) % this.data.img.length;
   }
 
   readonly cook = UINode.create.bind(UINode)
@@ -521,6 +521,26 @@ export class UINode implements IDebugging {
    */
   find_child_by_name(name: string): UINode | undefined {
     return this.name_ui_map.get(name)?.[0];
+  }
+
+  find_parent<T>(
+    id: string | ((node: UINode) => any),
+    handler?: (parent: UINode, path: UINode[]) => T
+  ): UINode | undefined {
+    let { parent } = this;
+    const path: UINode[] = []
+    while (parent) {
+      path.push(parent);
+      if (
+        (typeof id === 'string' && parent.id === id) ||
+        (typeof id === 'function' && id(parent))
+      ) {
+        handler && handler(parent, path);
+        return parent;
+      }
+      parent = parent.parent;
+    }
+    return void 0;
   }
 
   get_value(name: string, lookup: boolean = true): any {

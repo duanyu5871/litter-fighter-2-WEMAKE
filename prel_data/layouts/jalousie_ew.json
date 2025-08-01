@@ -1,5 +1,5 @@
 {
-  "name": "百叶窗EW",
+  "name": "UI: 百叶窗EW",
   "id": "jalousie_ew",
   "component": [
     "jalousie(ew, 0, 0)"

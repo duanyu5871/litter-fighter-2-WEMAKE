@@ -1,5 +1,5 @@
 {
-  "name": "对战模式页",
+  "name": "页面：对战模式",
   "id": "vs_mode_page",
   "component": [
     "vs_mode_logic()"

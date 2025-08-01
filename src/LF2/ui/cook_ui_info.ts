@@ -1,6 +1,6 @@
 import Ditto from "../ditto";
 import { LF2 } from "../LF2";
-import { is_str } from "../utils";
+import { is_str, Unsafe } from "../utils";
 import { ICookedUIInfo } from "./ICookedUIInfo";
 import { IUIImgInfo } from "./IUIImgInfo.dat";
 import type { IUIInfo, TUIImgInfo } from "./IUIInfo.dat";
@@ -29,16 +29,28 @@ export function flat_ui_img_info(imgs: TUIImgInfo[], output?: IUIImgInfo[]): IUI
   }
   return ret;
 };
-async function read_ui_template(lf2: LF2, raw_info: IUIInfo, parent: ICookedUIInfo | undefined): Promise<IUIInfo> {
-  const { template: template_name, ...remain_raw_info } = raw_info
-  if (!template_name) return raw_info;
+async function find_ui_template(lf2: LF2, parent: Unsafe<ICookedUIInfo>, template_name: string): Promise<IUIInfo> {
   let raw_template: IUIInfo | undefined = void 0;
-  let n = parent;
+  let n: Unsafe<ICookedUIInfo> = parent;
   while (n && !raw_template) {
     raw_template = n.templates?.[template_name];
     n = n.parent;
   }
-  raw_template = raw_template || await lf2.import_json<IUIInfo>(template_name);
+  if (raw_template) return raw_template;
+  try {
+    raw_template = await lf2.import_json<IUIInfo>(template_name);
+  } catch (e) {
+    Ditto.Warn(`[${find_ui_template.TAG}] ui template not found! template_name: ${template_name}`)
+  }
+  return raw_template || {};
+}
+find_ui_template.TAG = 'find_ui_template'
+
+async function read_ui_template(lf2: LF2, raw_info: IUIInfo, parent: ICookedUIInfo | undefined): Promise<IUIInfo> {
+  const { template: template_name, ...remain_raw_info } = raw_info
+  if (!template_name) return raw_info;
+  if (template_name === 'key_u') debugger;
+  const raw_template: Unsafe<IUIInfo> = await find_ui_template(lf2, parent, template_name);
   Object.assign(raw_template, remain_raw_info);
   return { ...raw_template, ...remain_raw_info };
 }
@@ -48,7 +60,7 @@ export async function cook_ui_info(
   parent?: ICookedUIInfo
 ): Promise<ICookedUIInfo> {
   let raw_info = is_str(data_or_path)
-    ? await lf2.import_json<IUIInfo>(data_or_path)
+    ? await find_ui_template(lf2, parent, data_or_path)
     : data_or_path;
 
   if (raw_info.template) raw_info = await read_ui_template(lf2, raw_info, parent);
@@ -65,19 +77,9 @@ export async function cook_ui_info(
     img_infos: [],
     txt_infos: [],
     items: void 0,
-    templates: void 0,
     img: [],
     txt: []
   };
-
-  if (raw_info.templates) {
-    for (const key in raw_info.templates) {
-      const template = raw_info.templates[key];
-      if (!template) continue;
-      if (!ret.templates) ret.templates = {};
-      ret.templates[key] = await cook_ui_info(lf2, template, parent);
-    }
-  }
 
   const { img } = raw_info;
   if (img) ret.img_infos.push(...await ui_load_img(lf2, img, ret.img));

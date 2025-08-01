@@ -15,7 +15,6 @@ export interface ICookedUIInfo extends IUIInfo {
   img_infos: IImageInfo[];
   txt_infos: ITextImageInfo[];
   size: [number, number];
-  templates?: { [x in string]?: ICookedUIInfo };
   
   img: IUIImgInfo[]
   txt: IUITxtInfo[]

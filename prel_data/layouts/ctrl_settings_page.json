@@ -1,5 +1,5 @@
 {
-  "name": "设置页",
+  "name": "页面：按键设置",
   "id": "ctrl_settings",
   "color": "rgb(16, 32, 108)",
   "key_press_actions": [
@@ -8,6 +8,102 @@
       "set_layout(entry)"
     ]
   ],
+  "templates": {
+    "player_set": {
+      "items": [
+        {
+          "id": "btn_player_name",
+          "component": "player_name_input()",
+          "txt": "player_name_input(1)",
+          "size": "106, 19"
+        },
+        {
+          "id": "btn_ctrl_type",
+          "component": "player_ctrl_type()",
+          "img": [
+            {
+              "w": 106,
+              "h": 91,
+              "path": "sprite/CS6.png"
+            },
+            {
+              "w": 106,
+              "h": 91,
+              "path": "sprite/CS2.png"
+            },
+            {
+              "w": 106,
+              "h": 91,
+              "path": "sprite/CS3.png"
+            },
+            {
+              "w": 106,
+              "h": 91,
+              "path": "sprite/CS4.png"
+            },
+            {
+              "w": 106,
+              "h": 91,
+              "path": "sprite/CS5.png"
+            }
+          ],
+          "pos": "0, 26",
+          "actions": {
+            "click": "loop_img()"
+          }
+        },
+        {
+          "id": "btn_key_set_U",
+          "component": "PlayerKeyEdit(,U)",
+          "center": "0.5,0.5",
+          "pos": "53, 134",
+          "size": "106, 19"
+        },
+        {
+          "id": "btn_key_set_D",
+          "component": "PlayerKeyEdit(,D)",
+          "center": "0.5,0.5",
+          "pos": "53, 156",
+          "size": "106, 19"
+        },
+        {
+          "id": "btn_key_set_L",
+          "component": "PlayerKeyEdit(,L)",
+          "center": "0.5,0.5",
+          "pos": "53, 178",
+          "size": "106, 19"
+        },
+        {
+          "id": "btn_key_set_R",
+          "component": "PlayerKeyEdit(,R)",
+          "center": "0.5,0.5",
+          "pos": "53, 200",
+          "size": "106, 19"
+        },
+        {
+          "id": "btn_key_set_a",
+          "component": "PlayerKeyEdit(,a)",
+          "center": "0.5,0.5",
+          "pos": "53, 222",
+          "size": "106, 19"
+        },
+        {
+          "id": "btn_key_set_j",
+          "component": "PlayerKeyEdit(,j)",
+          "center": "0.5,0.5",
+          "pos": "53, 244",
+          "size": "106, 19"
+        },
+        {
+          "id": "btn_key_set_d",
+          "component": "PlayerKeyEdit(,d)",
+          "center": "0.5,0.5",
+          "pos": "53, 266",
+          "size": "106, 19"
+        }
+      ]
+    }
+  },
   "items": [
     "layouts/bg_l_face.ui.json",
     "layouts/bg_r_face.ui.json",
@@ -26,386 +122,34 @@
         {
           "id": "player_1",
           "pos": "-205,-141",
-          "items": [
-            {
-              "id": "btn_player_name",
-              "component": "player_name_input(1)",
-              "txt": "player_name_input(1)",
-              "size": "106, 19"
-            },
-            {
-              "id": "btn_ctrl_type",
-              "component": "player_ctrl_type(1)",
-              "img": [
-                {
-                  "w": 106,
-                  "h": 91,
-                  "path": "sprite/CS6.png"
-                },
-                {
-                  "w": 106,
-                  "h": 91,
-                  "path": "sprite/CS2.png"
-                },
-                {
-                  "w": 106,
-                  "h": 91,
-                  "path": "sprite/CS3.png"
-                },
-                {
-                  "w": 106,
-                  "h": 91,
-                  "path": "sprite/CS4.png"
-                },
-                {
-                  "w": 106,
-                  "h": 91,
-                  "path": "sprite/CS5.png"
-                }
-              ],
-              "pos": "0, 26",
-              "actions": {
-                "click": "loop_img()"
-              }
-            },
-            {
-              "id": "btn_key_set_U",
-              "component": "key_set(1,U)",
-              "center": "0.5,0.5",
-              "pos": "53, 134",
-              "size": "106, 19"
-            },
-            {
-              "id": "btn_key_set_D",
-              "component": "key_set(1,D)",
-              "center": "0.5,0.5",
-              "pos": "53, 156",
-              "size": "106, 19"
-            },
-            {
-              "id": "btn_key_set_L",
-              "component": "key_set(1,L)",
-              "center": "0.5,0.5",
-              "pos": "53, 178",
-              "size": "106, 19"
-            },
-            {
-              "id": "btn_key_set_R",
-              "component": "key_set(1,R)",
-              "center": "0.5,0.5",
-              "pos": "53, 200",
-              "size": "106, 19"
-            },
-            {
-              "id": "btn_key_set_a",
-              "component": "key_set(1,a)",
-              "center": "0.5,0.5",
-              "pos": "53, 222",
-              "size": "106, 19"
-            },
-            {
-              "id": "btn_key_set_j",
-              "component": "key_set(1,j)",
-              "center": "0.5,0.5",
-              "pos": "53, 244",
-              "size": "106, 19"
-            },
-            {
-              "id": "btn_key_set_d",
-              "component": "key_set(1,d)",
-              "center": "0.5,0.5",
-              "pos": "53, 266",
-              "size": "106, 19"
-            }
-          ]
+          "values": {
+            "player_id": "1"
+          },
+          "template": "player_set"
         },
         {
           "id": "player_2",
           "pos": "-66,-141",
-          "items": [
-            {
-              "id": "btn_player_name",
-              "component": "player_name_input(2)",
-              "txt": "player_name_input(2)",
-              "size": "106, 19"
-            },
-            {
-              "id": "btn_ctrl_type",
-              "component": "player_ctrl_type(2)",
-              "img": [
-                {
-                  "w": 106,
-                  "h": 91,
-                  "path": "sprite/CS6.png"
-                },
-                {
-                  "w": 106,
-                  "h": 91,
-                  "path": "sprite/CS2.png"
-                },
-                {
-                  "w": 106,
-                  "h": 91,
-                  "path": "sprite/CS3.png"
-                },
-                {
-                  "w": 106,
-                  "h": 91,
-                  "path": "sprite/CS4.png"
-                },
-                {
-                  "w": 106,
-                  "h": 91,
-                  "path": "sprite/CS5.png"
-                }
-              ],
-              "pos": "0, 26",
-              "actions": {
-                "click": "loop_img()"
-              }
-            },
-            {
-              "id": "btn_key_set_U",
-              "component": "key_set(2,U)",
-              "center": "0.5,0.5",
-              "pos": "53, 134",
-              "size": "106, 19"
-            },
-            {
-              "id": "btn_key_set_D",
-              "component": "key_set(2,D)",
-              "center": "0.5,0.5",
-              "pos": "53, 156",
-              "size": "106, 19"
-            },
-            {
-              "id": "btn_key_set_L",
-              "component": "key_set(2,L)",
-              "center": "0.5,0.5",
-              "pos": "53, 178",
-              "size": "106, 19"
-            },
-            {
-              "id": "btn_key_set_R",
-              "component": "key_set(2,R)",
-              "center": "0.5,0.5",
-              "pos": "53, 200",
-              "size": "106, 19"
-            },
-            {
-              "id": "btn_key_set_a",
-              "component": "key_set(2,a)",
-              "center": "0.5,0.5",
-              "pos": "53, 222",
-              "size": "106, 19"
-            },
-            {
-              "id": "btn_key_set_j",
-              "component": "key_set(2,j)",
-              "center": "0.5,0.5",
-              "pos": "53, 244",
-              "size": "106, 19"
-            },
-            {
-              "id": "btn_key_set_d",
-              "component": "key_set(2,d)",
-              "center": "0.5,0.5",
-              "pos": "53, 266",
-              "size": "106, 19"
-            }
-          ]
+          "values": {
+            "player_id": "2"
+          },
+          "template": "player_set"
         },
         {
           "id": "player_3",
           "pos": "73,-141",
-          "items": [
-            {
-              "id": "btn_player_name",
-              "component": "player_name_input(3)",
-              "txt": "player_name_input(3)",
-              "size": "106, 19"
-            },
-            {
-              "id": "btn_ctrl_type",
-              "component": "player_ctrl_type(3)",
-              "img": [
-                {
-                  "w": 106,
-                  "h": 91,
-                  "path": "sprite/CS6.png"
-                },
-                {
-                  "w": 106,
-                  "h": 91,
-                  "path": "sprite/CS2.png"
-                },
-                {
-                  "w": 106,
-                  "h": 91,
-                  "path": "sprite/CS3.png"
-                },
-                {
-                  "w": 106,
-                  "h": 91,
-                  "path": "sprite/CS4.png"
-                },
-                {
-                  "w": 106,
-                  "h": 91,
-                  "path": "sprite/CS5.png"
-                }
-              ],
-              "pos": "0, 26",
-              "actions": {
-                "click": "loop_img()"
-              }
-            },
-            {
-              "id": "btn_key_set_U",
-              "component": "key_set(3,U)",
-              "center": "0.5,0.5",
-              "pos": "53, 134",
-              "size": "106, 19"
-            },
-            {
-              "id": "btn_key_set_D",
-              "component": "key_set(3,D)",
-              "center": "0.5,0.5",
-              "pos": "53, 156",
-              "size": "106, 19"
-            },
-            {
-              "id": "btn_key_set_L",
-              "component": "key_set(3,L)",
-              "center": "0.5,0.5",
-              "pos": "53, 178",
-              "size": "106, 19"
-            },
-            {
-              "id": "btn_key_set_R",
-              "component": "key_set(3,R)",
-              "center": "0.5,0.5",
-              "pos": "53, 200",
-              "size": "106, 19"
-            },
-            {
-              "id": "btn_key_set_a",
-              "component": "key_set(3,a)",
-              "center": "0.5,0.5",
-              "pos": "53, 222",
-              "size": "106, 19"
-            },
-            {
-              "id": "btn_key_set_j",
-              "component": "key_set(3,j)",
-              "center": "0.5,0.5",
-              "pos": "53, 244",
-              "size": "106, 19"
-            },
-            {
-              "id": "btn_key_set_d",
-              "component": "key_set(3,d)",
-              "center": "0.5,0.5",
-              "pos": "53, 266",
-              "size": "106, 19"
-            }
-          ]
+          "values": {
+            "player_id": "3"
+          },
+          "template": "player_set"
         },
         {
           "id": "player_4",
           "pos": "212,-141",
-          "items": [
-            {
-              "id": "btn_player_name",
-              "component": "player_name_input(4)",
-              "txt": "player_name_input(4)",
-              "size": "106, 19"
-            },
-            {
-              "id": "btn_ctrl_type",
-              "component": "player_ctrl_type(4)",
-              "img": [
-                {
-                  "w": 106,
-                  "h": 91,
-                  "path": "sprite/CS6.png"
-                },
-                {
-                  "w": 106,
-                  "h": 91,
-                  "path": "sprite/CS2.png"
-                },
-                {
-                  "w": 106,
-                  "h": 91,
-                  "path": "sprite/CS3.png"
-                },
-                {
-                  "w": 106,
-                  "h": 91,
-                  "path": "sprite/CS4.png"
-                },
-                {
-                  "w": 106,
-                  "h": 91,
-                  "path": "sprite/CS5.png"
-                }
-              ],
-              "pos": "0, 26",
-              "actions": {
-                "click": "loop_img()"
-              }
-            },
-            {
-              "id": "btn_key_set_U",
-              "component": "key_set(4,U)",
-              "center": "0.5,0.5",
-              "pos": "53, 134",
-              "size": "106, 19"
-            },
-            {
-              "id": "btn_key_set_D",
-              "component": "key_set(4,D)",
-              "center": "0.5,0.5",
-              "pos": "53, 156",
-              "size": "106, 19"
-            },
-            {
-              "id": "btn_key_set_L",
-              "component": "key_set(4,L)",
-              "center": "0.5,0.5",
-              "pos": "53, 178",
-              "size": "106, 19"
-            },
-            {
-              "id": "btn_key_set_R",
-              "component": "key_set(4,R)",
-              "center": "0.5,0.5",
-              "pos": "53, 200",
-              "size": "106, 19"
-            },
-            {
-              "id": "btn_key_set_a",
-              "component": "key_set(4,a)",
-              "center": "0.5,0.5",
-              "pos": "53, 222",
-              "size": "106, 19"
-            },
-            {
-              "id": "btn_key_set_j",
-              "component": "key_set(4,j)",
-              "center": "0.5,0.5",
-              "pos": "53, 244",
-              "size": "106, 19"
-            },
-            {
-              "id": "btn_key_set_d",
-              "component": "key_set(4,d)",
-              "center": "0.5,0.5",
-              "pos": "53, 266",
-              "size": "106, 19"
-            }
-          ]
+          "values": {
+            "player_id": "4"
+          },
+          "template": "player_set"
         }
       ]
     },

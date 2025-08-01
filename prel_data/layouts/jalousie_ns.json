@@ -1,5 +1,5 @@
 {
-  "name": "百叶窗NS",
+  "name": "UI: 百叶窗NS",
   "id": "jalousie_ns",
   "component": [
     "jalousie(ns, 1, 0)"

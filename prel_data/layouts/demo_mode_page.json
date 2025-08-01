@@ -1,5 +1,5 @@
 {
-  "name": "DEMO模式页",
+  "name": "页面：DEMO模式",
   "id": "demo_mode_page",
   "component": [
     "demo_mode_logic()"

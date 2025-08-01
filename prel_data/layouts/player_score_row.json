@@ -1,11 +1,12 @@
 {
-  "name": "玩家分数栏",
+  "id": "player_score_row",
+  "name": "UI: 玩家分数栏",
   "img": {
     "path": "sprite/SCORE_BOARD2.png",
     "w": 490,
     "h": 45
   },
-  "size":"490,45",
+  "size": "490,45",
   "component": "player_score(1)",
   "values": {
     "win_alive_txt": "Win (Alive)",
