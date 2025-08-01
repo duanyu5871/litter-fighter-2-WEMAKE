@@ -1,43 +1,78 @@
+import { useEffect, useMemo, useState } from "react";
+import styles from "./App.module.scss";
+
 export class LoadingImg {
-  tid = 0;
-  img: HTMLImageElement | null = null;
+  private tid = 0;
+  private img: HTMLImageElement | null = null;
+  private _visible: boolean = true;
+  private _idx = 0
+  readonly w: number;
+  readonly h: number;
+  set visible(v: boolean) {
+    this._visible = v;
+    if (this.img) this.img.style.opacity = v ? "1" : "0"
+  }
+  get visible() { return this._visible }
+  constructor(w = 132, h = 84) {
+    this.w = w;
+    this.h = h;
+  }
   set_element(img: HTMLImageElement | null) {
     if (this.img === img) return;
     this.img = img;
-    if (!img) window.clearTimeout(this.tid);
-    else this.start();
+    if (!img) return;
+    img.style.objectPosition = "0px 0px";
+    img.draggable = false;
+    img.style.left = img.style.right = img.style.top = img.style.bottom = "0";
+    img.style.opacity = this._visible ? "1" : "0"
+    this.update_img();
   }
-  start() {
+  protected update_img() {
     const { img } = this;
     if (!img) return;
-    const w = 132;
-    const h = 84;
-    img.style.objectPosition = "0px 0px";
-    img.width = w;
-    img.height = h;
-    img.draggable = false;
-    img.style.opacity = '1'
-    img.style.left = img.style.right = img.style.top = img.style.bottom = "0";
-    let i = 0;
+    const x = -this.w * (this._idx % 15);
+    const y = -this.h * Math.floor(this._idx / 15);
+    img.style.objectPosition = `${x}px ${y}px`;
+  }
+  protected start() {
     const update = () => {
       window.clearTimeout(this.tid);
-      i = (i + 1) % 44;
-      const x = -w * (i % 15);
-      const y = -h * Math.floor(i / 15);
-      img.style.objectPosition = `${x}px ${y}px`;
-      this.tid = window.setTimeout(update, i === 21 ? 1000 : 30);
+      this._idx = (this._idx + 1) % 44;
+      this.update_img();
+      const t = this._idx === 21 ? 1000 : 30
+      if (this.visible || this._idx !== 43) this.tid = window.setTimeout(update, t);
     };
     update();
   }
+
   hide() {
-    const { img } = this;
-    if (!img) return;
-    img.style.opacity = "0";
-    window.clearTimeout(this.tid);
+    this.visible = false;
   }
+
   show() {
-    const { img } = this;
-    if (!img) return;
-    img.style.opacity = "1";
+    this.visible = true;
+    this.start()
   }
+}
+
+
+export interface ILoadingProps extends Omit<React.ImgHTMLAttributes<HTMLImageElement>, 'loading'> {
+  loading?: boolean
+}
+export function Loading(props: ILoadingProps) {
+  const { loading, ..._p } = props;
+  const logic = useMemo(() => new LoadingImg(33, 21), [])
+
+  useEffect(() => {
+    loading ? logic.show() : logic.hide();
+  }, [loading]);
+
+  return (
+    <img
+      src="lf2_built_in_data/launch/SMALL_LOADING.png"
+      alt="loading..."
+      className={styles.loading_img_s}
+      ref={r => logic.set_element(r)}
+      {..._p} />
+  )
 }

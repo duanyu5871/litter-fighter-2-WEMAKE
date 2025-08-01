@@ -61,7 +61,6 @@ function App() {
   const [lf2, set_lf2] = useState<LF2 | undefined>()
   const [ele_game_canvas, set_ele_game_canvas] = useState<HTMLCanvasElement | null>(null)
   const [ele_game_overlay, set_ele_game_overlay] = useState<HTMLElement | null>(null)
-  const [ele_loading_img, set_ele_loading_img] = useState<HTMLImageElement | null>(null)
   const [ele_root, set_ele_root] = useState<HTMLDivElement | null>(null)
   const [[workspace, , game_cell, pannel_cell], set_workspace] = useState<
     [Workspaces | null, DomAdapter | null, HTMLElement | null, HTMLElement | null]
@@ -397,12 +396,9 @@ function App() {
       return () => clearTimeout(tid);
     } else {
       ele.style.opacity = "0";
-      const tid = setTimeout(() => {
-        loading_img.set_element(ele_loading_img)
-      }, 1000);
-      return () => clearTimeout(tid);
+      loading_img.show();
     }
-  }, [layout_id, ele_game_canvas, ele_loading_img]);
+  }, [layout_id, ele_game_canvas]);
 
   useEffect(() => {
     if (!lf2) return;
@@ -467,7 +463,7 @@ function App() {
         src="lf2_built_in_data/launch/SMALL_LOADING@4x.png"
         className={styles.loading_img}
         alt="loading..."
-        ref={set_ele_loading_img} />
+        ref={r => loading_img.set_element(r)} />
       <div className={styles.debug_pannel}>
         <Show show={lf2?.is_cheat_enabled(CheatType.GIM_INK) || true}>
           <ToggleImgButton

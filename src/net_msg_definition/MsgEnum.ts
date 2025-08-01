@@ -8,5 +8,6 @@ export enum MsgEnum {
   ExitRoom = 'ExitRoom',
   OtherExitRoom = "OtherExitRoom",
   OtherJoinRoom = "OtherJoinRoom",
-  CloseRoom = "CloseRoom"
+  CloseRoom = "CloseRoom",
+  ListRooms = "ListRooms",
 }

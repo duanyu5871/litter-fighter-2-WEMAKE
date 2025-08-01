@@ -7,6 +7,7 @@ import type { IReqRegister } from "./IReqRegister";
 import type { IReqRoomStart } from "./IReqRoomStart";
 import { IRespOtherExitRoom } from "./IRespOtherExitRoom";
 import { IRespOtherJoinRoom } from "./IRespOtherJoinRoom";
+import { IReqListRooms } from "./IReqRespListRooms";
 
 export * from "./ErrCode";
 export * from "./IReq";
@@ -26,6 +27,7 @@ export * from "./IRoomInfo";
 export * from "./IUserInfo";
 export * from "./IRespCloseRoom"
 export * from "./MsgEnum";
+export * from "./IReqRespListRooms";
 export type TReq = IReqJoinRoom | IReqCreateRoom | IReqRegister |
   IReqPlayerReady | IReqPlayerNotReady | IReqRoomStart | IReqExitRoom |
-  IRespOtherExitRoom | IRespOtherJoinRoom;
+  IRespOtherExitRoom | IRespOtherJoinRoom | IReqListRooms;

@@ -1,60 +1,14 @@
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "../../Component/Buttons/Button";
 import Combine from "../../Component/Combine";
 import { Input } from "../../Component/Input";
 import Show from "../../Component/Show";
 import { Space } from "../../Component/Space";
 import { Text } from "../../Component/Text";
-import { IReq, IReqCreateRoom, IReqJoinRoom, IReqRegister, IResp, IRespCreateRoom, IRespJoinRoom, IRoomInfo, MsgEnum } from "../../net_msg_definition";
-
-interface IJob {
-  resolve(r: IResp): void,
-  reject(e: any): void,
-  timerId?: number,
-  ignoreCode?: boolean
-}
-class Connection {
-  private _pid = 1;
-  private _jobs = new Map<string, IJob>();
-  readonly inner: WebSocket;
-
-  constructor(...args: ConstructorParameters<typeof WebSocket>) {
-    this.inner = new WebSocket(...args);
-    this.inner.onmessage = this.onmessage.bind(this);
-  }
-
-  onmessage(event: MessageEvent<any>) {
-    console.log('收到服务器消息:', event.data);
-    const resp = JSON.parse(event.data) as IResp;
-    const { pid, code, error } = resp;
-    const job = this._jobs.get(pid);
-    if (!job) return;
-    this._jobs.delete(pid);
-    if (job.timerId) clearTimeout(job.timerId)
-    if (code && !job.ignoreCode) {
-      job.reject(new Error(`[${code}]${error}`))
-    } else {
-      job.resolve(resp)
-    }
-  }
-
-  send<Req extends IReq = IReq, Resp extends IResp = IResp>(msg: Omit<Req, 'pid'>, options?: { ignoreCode?: boolean, timeout?: number }): Promise<Resp> {
-    const pid = `${++this._pid}`
-    const _req: IReq = { pid, ...msg }
-    this.inner.send(JSON.stringify(_req));
-    return new Promise<Resp>((resolve, reject) => {
-      this._jobs.set(pid, { resolve: resolve as any, reject, ...options })
-      const timeout = options?.timeout || 0
-      if (timeout > 0) {
-        setTimeout(() => {
-          this._jobs.delete(pid)
-          reject(new Error(`timeout! over ${timeout}`))
-        }, timeout)
-      }
-    })
-  }
-}
+import { IReqCreateRoom, IReqJoinRoom, IReqListRooms, IReqRegister, IRespCreateRoom, IRespJoinRoom, IRespListRooms, IRoomInfo, MsgEnum } from "../../net_msg_definition";
+import { Connection } from "./Connection";
+import Select from "../../Component/Select";
 
 enum TriState {
   False = 0,
@@ -69,6 +23,8 @@ function Player() {
   const [room_creating, set_room_creating] = useState<boolean>(false);
   const [room_joining, set_room_joining] = useState<boolean>(false);
   const [room, set_room] = useState<IRoomInfo | undefined>(void 0);
+  const [rooms_loading, set_rooms_loading] = useState(false)
+  const [rooms, set_rooms] = useState<IRoomInfo[]>([])
   const ref_room_id = useRef<string>('')
 
   const ref_ws = useRef<Connection | null>(null)
@@ -85,18 +41,20 @@ function Player() {
     if (ref_ws.current) return;
     const ws = ref_ws.current = new Connection('ws://localhost:8080');
     set_connected(1);
-    ws.inner.onopen = () => {
+
+    ws.inner.addEventListener('open', () => {
       console.log('已连接到服务器');
       set_connected(2);
-    };
-    ws.inner.onclose = () => {
-      console.log('与服务器的连接已关闭');
+    }, { once: true })
+
+    ws.inner.addEventListener('close', () => {
       disconnect()
-    };
-    ws.inner.onerror = (err) => {
+    }, { once: true });
+
+    ws.inner.addEventListener('error', (err) => {
       console.error('连接错误:', err);
       disconnect()
-    };
+    }, { once: true });
   }
   function register() {
     const ws = ref_ws.current
@@ -135,6 +93,25 @@ function Player() {
       set_room_joining(false)
     })
   }
+
+  useEffect(() => {
+    const ws = ref_ws.current;
+    if (!ws) return;
+    if (registered === TriState.True) {
+      set_rooms_loading(true)
+      ws.send<IReqListRooms, IRespListRooms>({
+        type: MsgEnum.ListRooms
+      }).then((r) => {
+        set_rooms(r.rooms ?? [])
+      }).finally(() => {
+        set_rooms_loading(false)
+      })
+    } else {
+      set_rooms([])
+      set_rooms_loading(false)
+    }
+  }, [registered === TriState.True])
+
   return (
     <Space>
       <Button size='s' disabled={connected === 1} onClick={connected ? disconnect : connect}>
@@ -155,7 +132,12 @@ function Player() {
         <Show show={room_joining}>
           <Text>room joining...</Text>
         </Show>
-
+        <Select
+          items={rooms}
+          loading={true}
+          parse={room => [room.id!, <>{room.master?.name}</>]}
+          placeholder="rooms"
+        />
         <Show show={!room && registered && !room_joining && !room_creating}>
           <Button size='s' onClick={create_room}>create room</Button>
           <Combine>

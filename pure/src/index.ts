@@ -4,7 +4,7 @@ import { MsgEnum, TReq } from '../../src/net_msg_definition';
 import { handle_req_create_room } from './handle_req_create_room';
 import { handle_req_exit_room } from './handle_req_exit_room';
 import { handle_req_join_room } from './handle_req_join_room';
-import { handle_req_player_not_ready } from './handle_req_player_not_ready';
+import { handle_req_list_rooms, handle_req_player_not_ready } from './handle_req_player_not_ready';
 import { handle_req_player_ready } from './handle_req_player_ready';
 import { handle_req_register } from './handle_req_register';
 import { handle_req_room_start } from './handle_req_room_start';
@@ -29,6 +29,7 @@ wss.on('connection', (ws) => {
       case MsgEnum.RoomStart: handle_req_room_start(ws, msg); break;
       case MsgEnum.PlayerReady: handle_req_player_ready(ws, msg); break;
       case MsgEnum.PlayerNotReady: handle_req_player_not_ready(ws, msg); break;
+      case MsgEnum.ListRooms: handle_req_list_rooms(ws, msg); break;
       default: console.warn(`ignore msg type: ${msg.type}`)
 
     }

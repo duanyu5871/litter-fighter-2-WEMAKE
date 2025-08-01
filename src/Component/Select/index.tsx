@@ -11,6 +11,7 @@ import { Tag } from "../Tag";
 import { Text } from "../Text";
 import { ITreeNode, TreeView } from "../TreeView";
 import styles from "./styles.module.scss";
+import { Loading, LoadingImg } from "../../LoadingImg";
 export type TItemInfo<V> = [V, React.ReactNode] | [V, React.ReactNode, React.HTMLAttributes<HTMLDivElement>]
 export interface IBaseSelectProps<T, V> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'defaultValue' | 'multiply'> {
   items?: readonly T[];
@@ -20,6 +21,7 @@ export interface IBaseSelectProps<T, V> extends Omit<React.HTMLAttributes<HTMLDi
   disabled?: boolean;
   clearable?: boolean;
   arrow?: React.ReactNode;
+  loading?: boolean;
 }
 export interface IMultiSelectProps<T, V> extends IBaseSelectProps<T, V> {
   multi: true;
@@ -47,7 +49,7 @@ function value_adapter<V>(defaultValue: V | V[] | undefined | null): V[] | undef
 export function Select<T, V>(props: ISelectProps<T, V>): ReactElement
 export function Select<T, V>(props: IMultiSelectProps<T, V>): ReactElement
 export function Select<T, V>(props: ISelectProps<T, V> | IMultiSelectProps<T, V>): ReactElement {
-  const { className, items, parse, disabled, arrow, clearable, on_changed, defaultValue, value: _value, ..._p } = props;
+  const { className, items, parse, disabled, arrow, clearable, on_changed, defaultValue, value: _value, loading, ..._p } = props;
   const [open, set_open] = useState(false);
   const ref_popover = React.useRef<HTMLDivElement | null>(null);
   const ref_wrapper = React.useRef<HTMLDivElement | null>(null);
@@ -239,8 +241,7 @@ export function Select<T, V>(props: ISelectProps<T, V> | IMultiSelectProps<T, V>
         return;
       p = p.parentElement
     }
-    set_open(!open)
-    e.stopPropagation()
+    set_open(!open);
   }
 
   const not_empty = !!checked_tree_nodes?.length;
@@ -271,7 +272,10 @@ export function Select<T, V>(props: ISelectProps<T, V> | IMultiSelectProps<T, V>
             placeholder={not_empty ? void 0 : props.placeholder}
             suffix={
               <>
-                <Show.Div show={has_outer_arrow}>
+                <Show show={loading}>
+                  <Loading loading={loading} />
+                </Show>
+                <Show.Div show={!loading && has_outer_arrow}>
                   {arrow}
                 </Show.Div>
                 <Show show={!has_outer_arrow}>
