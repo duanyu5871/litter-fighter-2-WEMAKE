@@ -28,10 +28,18 @@ export enum GameKey {
   Defend = "d",
 }
 export const Labels: Record<GameKey, string> = {
-  [GameKey.L]: "←",
-  [GameKey.R]: "→",
-  [GameKey.U]: "↑",
-  [GameKey.D]: "↓",
+  // [GameKey.L]: "◀",
+  // [GameKey.R]: "▶",
+  // [GameKey.U]: "▲",
+  // [GameKey.D]: "▼",
+  [GameKey.L]: "<",
+  [GameKey.R]: ">",
+  [GameKey.U]: "^",
+  [GameKey.D]: "v",
+  // [GameKey.L]: "←",
+  // [GameKey.R]: "→",
+  // [GameKey.U]: "↑",
+  // [GameKey.D]: "↓",
   [GameKey.a]: "A",
   [GameKey.j]: "J",
   [GameKey.d]: "D"

@@ -190,17 +190,16 @@ export class EntityInfoRender implements IEntityCallbacks {
       lf2.images
         .load_text(Labels[k], {
           fill_style: 'white',
-          line_width: 2,
+          line_width: 0,
+          smoothing: false,
+          font: "bold 12px Arial",
           back_style: {
+            fill_style: '',
             stroke_style: 'black',
             line_width: 2,
+            smoothing: false,
+            font: "bold 12px Arial",
           },
-          smoothing: false,
-          padding_l: 5,
-          padding_r: 5,
-          padding_t: 5,
-          padding_b: 5,
-          font: "bold 12px Arial",
         })
         .then((i) => lf2.images.p_create_pic_by_img_key(i.key))
         .then((p) => {

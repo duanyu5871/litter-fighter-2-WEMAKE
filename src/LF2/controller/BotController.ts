@@ -7,11 +7,11 @@ import { dummy_updaters, DummyEnum } from "./DummyEnum";
 
 export class BotController extends BaseController {
   static W_ATK_ZONE_X = 50;
-  static W_ATK_ZONE_Z = 10;
+  static W_ATK_ZONE_Z = 15;
   static R_ATK_ZONE_X = 120;
   static JUMP_DESIRE = 5;
-  static RUN_DESIRE = 5;
-  static STOP_RUN_DESIRE = 5;
+  static RUN_DESIRE = 20;
+  static STOP_RUN_DESIRE = 10;
   static RUN_ZONE = 300;
 
   readonly is_bot_enemy_chaser = true;
@@ -57,7 +57,7 @@ export class BotController extends BaseController {
     );
   }
   update_nearest() {
-    if (this.time % 10 !== 0) return;
+    if (this.time % 5 !== 0) return;
     const c = this.entity;
     if (c.hp <= 0) return;
     if (!this.should_chase(this.chasing_enemy)) {
@@ -151,24 +151,33 @@ export class BotController extends BaseController {
 
     if (state === StateEnum.Running) {
       // STOP RUNNING.
-      if (abs(en_x - my_x) < this.W_ATK_ZONE_X || this.desire() < this.STOP_RUN_DESIRE) {
+      if (my_x > en_x && me.facing > 0) {
+        this.key_down(GK.L)
+      } else if (my_x < en_x && me.facing < 0) {
+        this.key_down(GK.R)
+      } else if (abs(en_x - my_x) < this.W_ATK_ZONE_X || this.desire() < this.STOP_RUN_DESIRE) {
         this.entity.facing < 0 ?
-          this.key_down(GK.R).key_up(GK.L) :
-          this.key_down(GK.L).key_up(GK.R)
+          this.key_down(GK.R) :
+          this.key_down(GK.L)
       }
+
       if (state !== StateEnum.Running) {
         this.key_up(GK.R, GK.L);
       }
     }
 
+
     if (my_x < en_x - this.W_ATK_ZONE_X) {
-      this.key_up(GK.L).key_down(GK.R);
+      if (state !== StateEnum.Running)
+        this.key_up(GK.L).key_down(GK.R);
     } else if (my_x > en_x + this.W_ATK_ZONE_X) {
-      this.key_up(GK.R).key_down(GK.L);
+      if (state !== StateEnum.Running)
+        this.key_up(GK.R).key_down(GK.L);
     } else {
       this.key_up(GK.L, GK.R);
       x_reach = true;
     }
+
     if (my_z < en_z - this.W_ATK_ZONE_Z) {
       this.key_up(GK.U).key_down(GK.D);
     } else if (my_z > en_z + this.W_ATK_ZONE_Z) {
@@ -177,14 +186,19 @@ export class BotController extends BaseController {
       this.key_up(GK.U, GK.D);
       z_reach = true;
     }
+
     if (x_reach && z_reach) {
+      /** 回头 */
       if (my_x > en_x && this.entity.facing > 0) {
-        this.key_down(GK.L).key_up(GK.L); // 回头
+        this.key_down(GK.L).key_up(GK.L);
       } else if (my_x < en_x && this.entity.facing < 0) {
-        this.key_down(GK.R).key_up(GK.R); // 回头
+        this.key_down(GK.R).key_up(GK.R);
       }
       this.key_down(GK.a).key_up(GK.a)
+    } else {
+      this.key_up(GK.a)
     }
+
     switch (state) {
       case StateEnum.Standing:
       case StateEnum.Walking:

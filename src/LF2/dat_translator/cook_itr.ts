@@ -13,7 +13,7 @@ export default function cook_itr(itr?: Partial<IItrInfo>) {
   itr.ally_flags = AllyFlag.Enemy;
   const vrest = take(itr, "vrest");
   if (is_positive(vrest)) {
-    itr.vrest = Math.max(2, 2 * vrest - Defines.DEFAULT_ITR_SHAKING);
+    itr.vrest = Math.max(2, 2 * vrest - Defines.DEFAULT_ITR_SHAKING - 2);
   }
   const arest = take(itr, "arest");
   if (is_positive(arest)) {

@@ -181,6 +181,7 @@ export default class SlotSelLogic extends UIComponent {
     this.fsm.callbacks.add({
       on_state_changed: (fsm) => this.debug('on_state_changed', `${fsm.prev_state?.key} => ${fsm.state?.key}`)
     })
+    this.fsm.use(SlotSelStatus.Empty)
   }
   override on_resume(): void {
     super.on_resume();
@@ -195,15 +196,10 @@ export default class SlotSelLogic extends UIComponent {
     );
     if (!this.lf2.is_cheat_enabled(CheatType.LF2_NET))
       this.handle_hidden_character();
-
-    this.fsm.use(SlotSelStatus.Empty)
   }
 
   override on_pause(): void {
     super.on_pause();
-    this.joined = false;
-    this.character_decided = false;
-    this.team_decided = false;
     this._unmount_jobs.invoke_and_clear();
   }
 

@@ -96,7 +96,7 @@ export class ImageMgr {
     apply_text_style(style, ctx);
     let w = 0;
     let h = 0;
-    const scale = 2;
+    const scale = 4;
     let lines = text.split("\n").map((line, idx, arr) => {
       const t = idx === arr.length ? line + "\n" : line;
       const {

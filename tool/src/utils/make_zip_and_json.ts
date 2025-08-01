@@ -50,7 +50,7 @@ export async function make_zip_and_json(
     }
     const str = JSON.stringify(paths, null, 2);
     return fs.writeFile(layout_index_file, str)
-  })
+  }).catch(e => { })
 
   if (!(await is_dir(src_dir)))
     throw new Error("[make_zip_and_json] src_dir " + src_dir + "不是目录");

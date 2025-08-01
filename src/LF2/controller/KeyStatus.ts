@@ -2,8 +2,23 @@ import { BaseController } from "./BaseController";
 
 export class KeyStatus {
   readonly ctrl: BaseController;
+  /**
+   * 按键按下的时间
+   *
+   * @private
+   * @type {number}
+   * @memberof KeyStatus
+   */
   private _t: number = 0;
   private _u: 0 | 1 = 0;
+
+  /**
+   * 按键按下的时间
+   *
+   * @readonly
+   * @type {number}
+   * @memberof KeyStatus
+   */
   get time(): number {
     return this._t;
   }
@@ -31,9 +46,11 @@ export class KeyStatus {
   }
   is_hit(): boolean {
     const { _t } = this;
-    return (
-      !!_t && this.ctrl.time - _t <= this.ctrl.entity.world.key_hit_duration
-    );
+    if(!_t) return false;
+    /** 按键时长（单位帧） */
+    const dt = this.ctrl.time - _t
+    /** 按键时长短于一定时间内时，视为按键被按下 */
+    return dt < this.ctrl.entity.world.key_hit_duration;
   }
   is_hld(): boolean {
     return !this.is_hit() && !!this._t;
