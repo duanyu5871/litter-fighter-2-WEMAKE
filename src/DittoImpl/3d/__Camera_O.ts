@@ -1,10 +1,9 @@
 import { IOrthographicCameraNode } from "../../LF2/3d/IOrthographicCamera";
-import { IQuaternion, IRaycaster } from "../../LF2/defines";
 import { LF2 } from "../../LF2/LF2";
-import { __Object } from "./__Object";
+import { __Camera } from "./__Camera";
 import * as _T from "./_t";
 
-export class __Camera_O extends __Object implements IOrthographicCameraNode {
+export class __Camera_O extends __Camera implements IOrthographicCameraNode {
   readonly is_orthographic_camera_node = true;
   get left(): number {
     return this.inner.left;
@@ -71,14 +70,6 @@ export class __Camera_O extends __Object implements IOrthographicCameraNode {
     inner.top = t;
     inner.near = n;
     inner.far = f;
-    return this;
-  }
-  world_quaternion(q: IQuaternion): this {
-    this.inner.getWorldQuaternion(q as _T.Quaternion);
-    return this;
-  }
-  raycaster(r: IRaycaster, coords: _T.Vector2): this {
-    (r as _T.Raycaster).setFromCamera(coords, this.inner);
     return this;
   }
 }

@@ -1,4 +1,4 @@
-import type { IOrthographicCameraNode } from "../../LF2/3d";
+import { ICamera } from "../../LF2/3d/ICamera";
 import Ditto from "../../LF2/ditto";
 import type { IWorldRenderer } from "../../LF2/ditto/render/IWorldRenderer";
 import type { Entity } from "../../LF2/entity";
@@ -17,7 +17,7 @@ export class WorldRenderer implements IWorldRenderer {
   world: World;
   bg_render: BgRender;
   scene: __Scene;
-  camera: IOrthographicCameraNode;
+  camera: ICamera;
   entity_renderer_packs = new Map<Entity, [
     EntityRender,
     EntityShadowRender,

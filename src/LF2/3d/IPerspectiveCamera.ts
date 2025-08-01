@@ -1,7 +1,6 @@
-import type { IQuaternion, IRaycaster, IVector2 } from "../defines";
-import type { IObjectNode } from "./IObject";
+import { ICamera } from "./ICamera";
 
-export interface IPerspectiveCamera extends IObjectNode {
+export interface IPerspectiveCamera extends ICamera {
   readonly is_perspective_camera_node: true;
   get aspect(): number;
   set aspect(v: number);
@@ -13,8 +12,6 @@ export interface IPerspectiveCamera extends IObjectNode {
     n?: number,
     f?: number,
   ): this;
-  world_quaternion(q: IQuaternion): this;
-  raycaster(raycaster: IRaycaster, coords: IVector2): this;
 }
 
 export const is_perspective_camera_node = (v: any): v is IPerspectiveCamera =>

@@ -1,10 +1,9 @@
 import { IPerspectiveCamera } from "../../LF2/3d/IPerspectiveCamera";
-import { IQuaternion, IRaycaster } from "../../LF2/defines";
 import { LF2 } from "../../LF2/LF2";
-import { __Object } from "./__Object";
+import { __Camera } from "./__Camera";
 import * as _T from "./_t";
 
-export class __Camera_P extends __Object implements IPerspectiveCamera {
+export class __Camera_P extends __Camera implements IPerspectiveCamera {
   readonly is_perspective_camera_node = true;
   get aspect(): number {
     return this.inner.aspect;
@@ -42,14 +41,6 @@ export class __Camera_P extends __Object implements IPerspectiveCamera {
     inner.aspect = aspect;
     inner.near = n;
     inner.far = f;
-    return this;
-  }
-  world_quaternion(q: IQuaternion): this {
-    this.inner.getWorldQuaternion(q as _T.Quaternion);
-    return this;
-  }
-  raycaster(r: IRaycaster, coords: _T.Vector2): this {
-    (r as _T.Raycaster).setFromCamera(coords, this.inner);
     return this;
   }
 }
