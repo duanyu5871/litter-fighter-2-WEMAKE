@@ -8,7 +8,7 @@ export class UserManager {
     let user = this._ws_user_map.get(ws);
     if (!user) {
       const id = ++this._user_id
-      user = new User(ws, id, name || 'player_' + id);
+      user = new User(this, ws, id, name || 'player_' + id);
       this._ws_user_map.set(ws, user);
     }
     return user;

@@ -11,6 +11,6 @@ export function handle_req_create_room(ws: WebSocket, msg: IReqCreateRoom) {
   if (check_no_in_room(msg, user)) return;
 
   const room = user.room = room_mgr.create_room();
-  room.users.push(room.master = user)
+  room.add_user(room.master = user)
   user.resp<IRespCreateRoom>(msg, { room: room.info() });
 }

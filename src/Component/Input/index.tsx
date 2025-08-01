@@ -7,7 +7,7 @@ import { IStyleProps } from "../StyleBase/IStyleProps";
 import { useStyleBase } from "../StyleBase/useStyleBase";
 
 export type BaseProps = React.InputHTMLAttributes<HTMLInputElement>
-export interface InputProps extends Omit<BaseProps, 'prefix' | 'step'>, IStyleProps {
+export interface InputProps extends Omit<BaseProps, 'prefix' | 'step' | 'size'>, IStyleProps {
   precision?: number;
   prefix?: React.ReactNode;
   suffix?: React.ReactNode;
@@ -48,7 +48,7 @@ function direct_set_value(ele: HTMLInputElement | null, value: string | number |
 function _Input(props: InputProps, forwarded_Ref: React.ForwardedRef<InputRef>) {
   const {
     className, prefix, suffix, clear_icon = <CircleCross hoverable />, style, clazz,
-    clearable = false, on_changed, variants, precision,
+    clearable = false, on_changed, variants, precision, size,
     ..._p
   } = props;
 

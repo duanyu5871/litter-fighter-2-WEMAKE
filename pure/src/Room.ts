@@ -1,29 +1,58 @@
-import { IResp, IRoomInfo } from "../../src/net_msg_definition";
+import { IResp, IRespCloseRoom, IRespOtherExitRoom, IRespOtherJoinRoom, IRoomInfo, MsgEnum } from "../../src/net_msg_definition";
+import { RoomManager } from "./RoomManager";
 import type { User } from "./User";
 export class Room {
-  readonly id: number;
-  readonly users: User[] = []
+  readonly mgr: RoomManager;
+  readonly id: string;
+  private _users: User[] = []
   master?: User;
-  constructor(id: number) {
+
+  get users(): Readonly<User[]> { return this._users; }
+
+  constructor(mgr: RoomManager, id: string) {
+    this.mgr = mgr;
     this.id = id;
   }
-  del_user(user: User) {
-    const idx = this.users.findIndex(v => user === v);
-    if (this.master === user) this.master = void 0;
-    this.users.splice(idx, 1)
-  }
+
   info(): IRoomInfo {
     return {
       id: this.id,
       master: this.master?.info(),
-      users: this.users.map(v => v.info())
+      users: this._users.map(v => v.info())
     }
   }
-  broadcast<T extends IResp>(msg: Omit<T, 'pid'>) {
+  
+  add_user(user: User) {
+    console.log(`[Room::add_user]`)
+    const idx = this._users.findIndex(v => user === v);
+    if (idx >= 0) return;
+    this.broadcast<IRespOtherJoinRoom>({ type: MsgEnum.OtherJoinRoom, player: user.info() });
+    this._users.push(user)
+  }
 
-    for (const user of this.users) {
+  del_user(user: User) {
+    console.log(`[Room::del_user]`)
+    const idx = this._users.findIndex(v => user === v);
+    if (this.master === user) this.master = void 0;
+    this._users.splice(idx, 1)
+    this.broadcast<IRespOtherExitRoom>({ type: MsgEnum.OtherExitRoom, player: user.info() });
+    if (this.users.length <= 0) this.mgr.del_room(this.id)
+  }
+
+  broadcast<T extends IResp>(msg: Omit<T, 'pid'>) {
+    for (const user of this._users) {
       user.send<IResp>({ type: msg.type, pid: 'room_' + ++room_pid })
     }
+  }
+  close() {
+    console.log(`[Room::close]`)
+    this.broadcast<IRespCloseRoom>({ type: MsgEnum.CloseRoom })
+    for (const user of this._users) {
+      user.room = void 0;
+      user.ready = false;
+    }
+    this.master = void 0;
+    this._users.length = 0;
   }
 }
 

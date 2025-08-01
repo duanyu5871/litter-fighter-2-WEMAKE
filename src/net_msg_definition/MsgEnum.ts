@@ -5,4 +5,8 @@ export enum MsgEnum {
   PlayerReady = 'PlayerReady',
   PlayerNotReady = 'PlayerNotReady',
   RoomStart = 'RoomStart',
+  ExitRoom = 'ExitRoom',
+  OtherExitRoom = "OtherExitRoom",
+  OtherJoinRoom = "OtherJoinRoom",
+  CloseRoom = "CloseRoom"
 }

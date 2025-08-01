@@ -1,7 +1,7 @@
 import { IUserInfo } from "./IUserInfo";
 
 export interface IRoomInfo {
-  id?: number;
+  id?: string;
   master?: Required<IUserInfo>;
   users?: Required<IUserInfo>[];
 }

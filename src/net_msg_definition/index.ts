@@ -1,9 +1,12 @@
 import type { IReqCreateRoom } from "./IReqCreateRoom";
+import type { IReqExitRoom } from "./IReqExitRoom";
 import type { IReqJoinRoom } from "./IReqJoinRoom";
 import type { IReqPlayerNotReady } from "./IReqPlayerNotReady";
 import type { IReqPlayerReady } from "./IReqPlayerReady";
 import type { IReqRegister } from "./IReqRegister";
-import { IReqRoomStart } from "./IReqRoomStart";
+import type { IReqRoomStart } from "./IReqRoomStart";
+import { IRespOtherExitRoom } from "./IRespOtherExitRoom";
+import { IRespOtherJoinRoom } from "./IRespOtherJoinRoom";
 
 export * from "./ErrCode";
 export * from "./IReq";
@@ -16,9 +19,13 @@ export * from "./IReqRoomStart";
 export * from "./IResp";
 export * from "./IRespCreateRoom";
 export * from "./IRespJoinRoom";
+export * from "./IRespOtherExitRoom";
+export * from "./IRespOtherJoinRoom";
 export * from "./IRespRegister";
 export * from "./IRoomInfo";
 export * from "./IUserInfo";
+export * from "./IRespCloseRoom"
 export * from "./MsgEnum";
-
-export type TReq = IReqJoinRoom | IReqCreateRoom | IReqRegister | IReqPlayerReady | IReqPlayerNotReady | IReqRoomStart;
+export type TReq = IReqJoinRoom | IReqCreateRoom | IReqRegister |
+  IReqPlayerReady | IReqPlayerNotReady | IReqRoomStart | IReqExitRoom |
+  IRespOtherExitRoom | IRespOtherJoinRoom;

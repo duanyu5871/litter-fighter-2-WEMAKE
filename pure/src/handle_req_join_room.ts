@@ -1,7 +1,7 @@
 import WebSocket from 'ws';
+import { ErrCode, IReqJoinRoom, IRespJoinRoom, IRespOtherJoinRoom, MsgEnum } from '../../src/net_msg_definition';
 import { check_no_in_room } from './check_no_in_room';
 import { check_user } from './check_user';
-import { ErrCode, IReqJoinRoom, IResp, IRespJoinRoom, MsgEnum } from '../../src/net_msg_definition';
 import { room_mgr } from './RoomManager';
 import { User } from './User';
 
@@ -21,9 +21,8 @@ export function handle_req_join_room(ws: WebSocket, msg: IReqJoinRoom) {
     return
   }
   user.room = room;
-  room.users.push(user)
-  if (!room.master) room.master = user;
-
+  room.add_user(user)
+  room.master = room.master || user;
   user.resp<IRespJoinRoom>(msg, { room: room.info() })
 }
 

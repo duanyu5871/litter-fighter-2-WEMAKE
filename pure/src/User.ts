@@ -1,8 +1,10 @@
 import type WebSocket from 'ws';
 import type { IReq, IResp, IUserInfo } from '../../src/net_msg_definition';
 import type { Room } from './Room';
+import type { UserManager } from './UserManager';
 
 export class User {
+  readonly mgr: UserManager;
   readonly ws: WebSocket;
   readonly id: number;
   protected _room?: Room;
@@ -19,7 +21,8 @@ export class User {
 
   name: string = '';
 
-  constructor(ws: WebSocket, id: number, name: string) {
+  constructor(mgr: UserManager, ws: WebSocket, id: number, name: string) {
+    this.mgr = mgr;
     this.ws = ws;
     this.id = id;
     this.name = name;
@@ -27,7 +30,7 @@ export class User {
   send<T extends IResp | IReq>(msg: T): void {
     this.ws.send(JSON.stringify(msg))
   }
-  resp<Resp extends IResp = IResp, Req extends IReq = IReq>(req: Req, resp: Omit<Resp, 'type' | 'pid'>) {
+  resp<Resp extends IResp = IResp, Req extends IReq = IReq>(req: Req, resp?: Omit<Resp, 'type' | 'pid'>) {
     const _resp: IResp = {
       pid: req.pid,
       type: req.type,
