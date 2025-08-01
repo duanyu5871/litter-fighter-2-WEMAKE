@@ -25,6 +25,7 @@ const ForkTsCheckerWebpackPlugin =
     ? require("react-dev-utils/ForkTsCheckerWarningWebpackPlugin")
     : require("react-dev-utils/ForkTsCheckerWebpackPlugin");
 const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin");
+const GitInfo = require('./version/version')
 
 const createEnvironmentHash = require("./webpack/persistentCache/createEnvironmentHash");
 
@@ -597,6 +598,13 @@ module.exports = function (webpackEnv) {
             : undefined,
         ),
       ),
+      new HtmlWebpackPlugin({
+        filename: 'version.html',
+        favicon: './public/favicon.ico',
+        template: './config/version/version.html',
+        inject: false,
+        buildInfo: GitInfo,
+      }),
       // Inlines the webpack runtime script. This script is too small to warrant
       // a network request.
       // https://github.com/facebook/create-react-app/issues/5358
