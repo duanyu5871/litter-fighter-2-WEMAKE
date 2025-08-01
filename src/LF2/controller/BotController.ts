@@ -5,15 +5,23 @@ import { abs } from "../utils";
 import { BaseController } from "./BaseController";
 import { dummy_updaters, DummyEnum } from "./DummyEnum";
 
-const WALK_ATTACK_DEAD_ZONE_X = 50;
-const WALK_ATTACK_DEAD_ZONE_Z = 10;
-const RUN_ATTACK_DEAD_ZONE_X = 120;
-const JUMP_DESIRE = 5;
-const RUN_DESIRE = 20;
-const STOP_RUN_DESIRE = 5;
-const RUN_ZONE = 300;
 export class BotController extends BaseController {
+  static W_ATK_ZONE_X = 50;
+  static W_ATK_ZONE_Z = 10;
+  static R_ATK_ZONE_X = 120;
+  static JUMP_DESIRE = 5;
+  static RUN_DESIRE = 5;
+  static STOP_RUN_DESIRE = 5;
+  static RUN_ZONE = 300;
+
   readonly is_bot_enemy_chaser = true;
+  W_ATK_ZONE_X = BotController.W_ATK_ZONE_X;
+  W_ATK_ZONE_Z = BotController.W_ATK_ZONE_Z;
+  JUMP_DESIRE = BotController.JUMP_DESIRE;
+  RUN_DESIRE = BotController.RUN_DESIRE;
+  STOP_RUN_DESIRE = BotController.STOP_RUN_DESIRE;
+  RUN_ZONE_X = BotController.RUN_ZONE;
+
   _count = 0;
   chasing_enemy: Entity | undefined;
   avoiding_enemy: Entity | undefined;
@@ -115,8 +123,9 @@ export class BotController extends BaseController {
     return this;
   }
   desire() {
-    return this.lf2.random_in(0, 100)
+    return this.lf2.random_in(0, 10000)
   }
+
   chase_enemy() {
     if (!this.chasing_enemy) return false;
     const me = this.entity;
@@ -129,10 +138,12 @@ export class BotController extends BaseController {
     switch (state) {
       case StateEnum.Standing:
       case StateEnum.Walking: {
-        if (my_x < en_x - RUN_ZONE && this.desire() < RUN_DESIRE) {
-          this.key_up(GK.L, GK.R).db_hit(GK.R).end(GK.R);
-        } else if (my_x > en_x + RUN_ZONE && this.desire() < RUN_DESIRE) {
-          this.key_up(GK.L, GK.R).db_hit(GK.L).end(GK.L);
+        if (my_x < en_x - this.RUN_ZONE_X) {
+          if (this.desire() < this.RUN_DESIRE)
+            this.key_up(GK.L, GK.R).db_hit(GK.R).end(GK.R);
+        } else if (my_x > en_x + this.RUN_ZONE_X) {
+          if (this.desire() < this.RUN_DESIRE)
+            this.key_up(GK.L, GK.R).db_hit(GK.L).end(GK.L);
         }
         break;
       }
@@ -140,7 +151,7 @@ export class BotController extends BaseController {
 
     if (state === StateEnum.Running) {
       // STOP RUNNING.
-      if (abs(en_x - my_x) < WALK_ATTACK_DEAD_ZONE_X || this.desire() < STOP_RUN_DESIRE) {
+      if (abs(en_x - my_x) < this.W_ATK_ZONE_X || this.desire() < this.STOP_RUN_DESIRE) {
         this.entity.facing < 0 ?
           this.key_down(GK.R).key_up(GK.L) :
           this.key_down(GK.L).key_up(GK.R)
@@ -150,17 +161,17 @@ export class BotController extends BaseController {
       }
     }
 
-    if (my_x < en_x - WALK_ATTACK_DEAD_ZONE_X) {
+    if (my_x < en_x - this.W_ATK_ZONE_X) {
       this.key_up(GK.L).key_down(GK.R);
-    } else if (my_x > en_x + WALK_ATTACK_DEAD_ZONE_X) {
+    } else if (my_x > en_x + this.W_ATK_ZONE_X) {
       this.key_up(GK.R).key_down(GK.L);
     } else {
       this.key_up(GK.L, GK.R);
       x_reach = true;
     }
-    if (my_z < en_z - WALK_ATTACK_DEAD_ZONE_Z) {
+    if (my_z < en_z - this.W_ATK_ZONE_Z) {
       this.key_up(GK.U).key_down(GK.D);
-    } else if (my_z > en_z + WALK_ATTACK_DEAD_ZONE_Z) {
+    } else if (my_z > en_z + this.W_ATK_ZONE_Z) {
       this.key_up(GK.D).key_down(GK.U);
     } else {
       this.key_up(GK.U, GK.D);
@@ -178,8 +189,8 @@ export class BotController extends BaseController {
       case StateEnum.Standing:
       case StateEnum.Walking:
       case StateEnum.Running: {
-        if (this.lf2.random_in(0, 100) < JUMP_DESIRE) {
-          this.key_down(GK.j).key_up(GK.j)
+        if (this.desire() < this.JUMP_DESIRE) {
+          this.key_down(GK.j).end(GK.j)
         }
         break;
       }

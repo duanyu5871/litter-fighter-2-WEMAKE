@@ -3,7 +3,7 @@ import { IToggleImgProps, ToggleImgButton } from "./Component/Buttons/ToggleImgB
 import styles from "./GamePad.module.scss";
 import { LF2 } from "./LF2/LF2";
 import { BaseController } from "./LF2/controller/BaseController";
-import GameKey from "./LF2/defines/GameKey";
+import { GameKey } from "./LF2/defines/GameKey";
 import img_touch_btn_arrow from "./assets/touch_btn_arrow.png";
 import img_touch_btn_a from "./assets/touch_btn_a.png";
 import img_touch_btn_j from "./assets/touch_btn_j.png";

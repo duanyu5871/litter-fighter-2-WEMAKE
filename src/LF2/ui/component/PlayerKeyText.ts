@@ -1,6 +1,6 @@
 import Invoker from "../../base/Invoker";
 import { Defines } from "../../defines";
-import GameKey from "../../defines/GameKey";
+import { GameKey } from "../../defines/GameKey";
 import { ui_load_txt } from "../ui_load_txt";
 import { UIComponent } from "./UIComponent";
 

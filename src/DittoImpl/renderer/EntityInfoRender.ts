@@ -1,6 +1,7 @@
 import type { IBillboardNode, IMeshNode, IObjectNode } from "../../LF2/3d";
 import { get_team_shadow_color } from "../../LF2/base/get_team_shadow_color";
 import { get_team_text_color } from "../../LF2/base/get_team_text_color";
+import { GameKey, IVector3, Labels } from "../../LF2/defines";
 import Ditto from "../../LF2/ditto";
 import type { Entity } from "../../LF2/entity/Entity";
 import type IEntityCallbacks from "../../LF2/entity/IEntityCallbacks";
@@ -97,6 +98,8 @@ export class EntityInfoRender implements IEntityCallbacks {
   entity: Entity;
   protected heading: number = 0;
 
+  protected key_nodes: Map<GameKey, { node: IBillboardNode, pos: IVector3 }>
+
   get visible() {
     return this.name_node.visible;
   }
@@ -106,6 +109,18 @@ export class EntityInfoRender implements IEntityCallbacks {
 
   constructor(entity: Entity) {
     const { lf2 } = entity.world;
+    const f = 7;
+    this.key_nodes = new Map([
+      [GameKey.U, { node: new Ditto.BillboardNode(lf2), pos: new Ditto.Vector3(f * (-2 + 0.5), f * 2, 0) }],
+      [GameKey.D, { node: new Ditto.BillboardNode(lf2), pos: new Ditto.Vector3(f * (-2 + 0.5), f * 0, 0) }],
+      [GameKey.L, { node: new Ditto.BillboardNode(lf2), pos: new Ditto.Vector3(f * (-3 + 0.5), f * 1, 0) }],
+      [GameKey.R, { node: new Ditto.BillboardNode(lf2), pos: new Ditto.Vector3(f * (-1 + 0.5), f * 1, 0) }],
+
+      [GameKey.a, { node: new Ditto.BillboardNode(lf2), pos: new Ditto.Vector3(f * (1 - 0.5), f * 0, 0) }],
+      [GameKey.j, { node: new Ditto.BillboardNode(lf2), pos: new Ditto.Vector3(f * (2 - 0.5), f * 1, 0) }],
+      [GameKey.d, { node: new Ditto.BillboardNode(lf2), pos: new Ditto.Vector3(f * (3 - 0.5), f * 2, 0) }],
+    ])
+
     this.name_node = new Ditto.BillboardNode(lf2);
     this.bars_node = new Ditto.ObjectNode(lf2);
     this.bars_bg = new Bar(lf2, "rgb(0,0,0)", BAR_BG_W, BAR_BG_H, 0.5, 0);
@@ -168,6 +183,32 @@ export class EntityInfoRender implements IEntityCallbacks {
     this.mp_bar.set(entity.mp, entity.mp_max);
     this.self_healing_hp_bar.set(entity.hp, entity.hp_max);
     this.self_healing_mp_bar.set(entity.mp, entity.mp_max);
+
+    for (const [k, { node, pos }] of this.key_nodes) {
+      node.name = `key ${k}`;
+      node.set_position(BAR_BG_W / 2 + pos.x, 10 + pos.y, pos.z)
+      lf2.images
+        .load_text(Labels[k], {
+          fill_style: 'white',
+          line_width: 2,
+          back_style: {
+            stroke_style: 'black',
+            line_width: 2,
+          },
+          smoothing: false,
+          padding_l: 5,
+          padding_r: 5,
+          padding_t: 5,
+          padding_b: 5,
+          font: "bold 12px Arial",
+        })
+        .then((i) => lf2.images.p_create_pic_by_img_key(i.key))
+        .then((p) => {
+          node.set_texture(p)
+        });
+      this.bars_node.add(node)
+    }
+
   }
 
   on_mount() {
@@ -268,6 +309,10 @@ export class EntityInfoRender implements IEntityCallbacks {
     const bar_x = _x - BAR_BG_W / 2;
 
     this.set_bars_position(Math.floor(bar_x), Math.floor(bar_y), Math.floor(z));
+
+    for (const [k, { node }] of this.key_nodes) {
+      node.visible = !this.entity.ctrl.is_end(k)
+    }
   }
 
   set_name_position(x: number, y: number, z: number) {

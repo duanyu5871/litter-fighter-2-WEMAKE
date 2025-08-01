@@ -1,4 +1,4 @@
-import GameKey from "../../defines/GameKey";
+import { GameKey } from "../../defines/GameKey";
 import { IUIKeyEvent } from "../IUIKeyEvent";
 import type { UINode } from "../UINode";
 import { Reachable } from "./Reachable";

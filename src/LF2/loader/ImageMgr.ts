@@ -337,11 +337,13 @@ function apply_text_style(style: IStyle, ctx: CanvasRenderingContext2D) {
   ctx.imageSmoothingEnabled = style.smoothing ?? false;
 }
 function need_stroke(style: IStyle): boolean {
-  return !!style.line_width && style.line_width > 0
+  if (!style.stroke_style) return false;
+  if (!style.line_width || style.line_width < 0) return false;
+  const n = get_alpha_from_color(style.fill_style);
+  return n === null || n > 0;
 }
 function need_fiil(style: IStyle): boolean {
   if (!style.fill_style) return true;
   const n = get_alpha_from_color(style.fill_style);
-  if (n === null) return true;
-  return n > 0;
+  return n === null || n > 0;
 }

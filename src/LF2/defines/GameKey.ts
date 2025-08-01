@@ -27,5 +27,15 @@ export enum GameKey {
   d = "d",
   Defend = "d",
 }
+export const Labels: Record<GameKey, string> = {
+  [GameKey.L]: "←",
+  [GameKey.R]: "→",
+  [GameKey.U]: "↑",
+  [GameKey.D]: "↓",
+  [GameKey.a]: "A",
+  [GameKey.j]: "J",
+  [GameKey.d]: "D"
+}
+
 export type TLooseGameKey = GameKey | "L" | "R" | "U" | "D" | "a" | "j" | "d";
-export default GameKey;
+

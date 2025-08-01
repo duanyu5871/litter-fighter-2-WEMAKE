@@ -1,4 +1,4 @@
-import GameKey from "../defines/GameKey";
+import { GameKey } from "../defines/GameKey";
 import { IKeyboardCallback } from "../ditto/keyboard/IKeyboardCallback";
 import { IKeyEvent } from "../ditto/keyboard/IKeyEvent";
 import { Entity } from "../entity/Entity";
