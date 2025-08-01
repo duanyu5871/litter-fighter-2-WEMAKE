@@ -239,11 +239,10 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
 
   random_entity_info(e: Entity) {
     const { left: l, right: r, near: n, far: f } = this.world;
-    const rand = () => this.random_in(0, 100)
     e.id = new_id();
-    e.facing = Math.floor(rand() * 100) % 2 ? -1 : 1;
-    e.position.x = l + rand() * (r - l);
-    e.position.z = f + rand() * (n - f);
+    e.facing = this.random_in(0, 100) % 2 ? -1 : 1;
+    e.position.x = this.random_in(l, r);
+    e.position.z = this.random_in(f, n);
     e.position.y = 550;
     return e;
   }
