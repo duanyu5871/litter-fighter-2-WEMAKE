@@ -9,8 +9,162 @@
       "img": {
         "path": "sprite/SCORE_BOARD1.png",
         "w": 490,
-        "h": 61
-      }
+        "h": 50
+      },
+      "items": [
+        {
+          "txt": {
+            "value#zh-hans": "总 结",
+            "value#zh-cn": "总 结",
+            "value#zh-sg": "总 结",
+            "value#zh-my": "总 结",
+            "value#zh-hant": "總 結",
+            "value#zh-tw": "總 結",
+            "value#zh-hk": "總 結",
+            "value#zh-mo": "總 結",
+            "value": "Summary",
+            "style": {
+              "fill_style": "#ffffff",
+              "font": "bold 15px Arial"
+            }
+          },
+          "pos": "245,16",
+          "center": "0.5,0.5"
+        },
+        {
+          "txt": {
+            "value#zh-hans": "玩 家",
+            "value#zh-cn": "玩 家",
+            "value#zh-sg": "玩 家",
+            "value#zh-my": "玩 家",
+            "value#zh-hant": "玩 家",
+            "value#zh-tw": "玩 家",
+            "value#zh-hk": "玩 家",
+            "value#zh-mo": "玩 家",
+            "value": "Player",
+            "style": {
+              "fill_style": "#ffffff",
+              "font": "12px Arial"
+            }
+          },
+          "pos": "50,40",
+          "center": "0.5,0.5"
+        },
+        {
+          "txt": {
+            "value#zh-hans": "杀 敌",
+            "value#zh-cn": "杀 敌",
+            "value#zh-sg": "杀 敌",
+            "value#zh-my": "杀 敌",
+            "value#zh-hant": "殺 敵",
+            "value#zh-tw": "殺 敵",
+            "value#zh-hk": "殺 敵",
+            "value#zh-mo": "殺 敵",
+            "value": "kill",
+            "style": {
+              "fill_style": "#ffaaaa",
+              "font": "12px Arial"
+            }
+          },
+          "pos": "127,40",
+          "center": "0.5,0.5"
+        },
+        {
+          "txt": {
+            "value#zh-hans": "攻 击",
+            "value#zh-cn": "攻 击",
+            "value#zh-sg": "攻 击",
+            "value#zh-my": "攻 击",
+            "value#zh-hant": "攻 擊",
+            "value#zh-tw": "攻 擊",
+            "value#zh-hk": "攻 擊",
+            "value#zh-mo": "攻 擊",
+            "value": "Attack",
+            "style": {
+              "fill_style": "#ffaaaa",
+              "font": "12px Arial"
+            }
+          },
+          "pos": "191,40",
+          "center": "0.5,0.5"
+        },
+        {
+          "txt": {
+            "value#zh-hans": "生命损耗",
+            "value#zh-cn": "生命损耗",
+            "value#zh-sg": "生命损耗",
+            "value#zh-my": "生命损耗",
+            "value#zh-hant": "生命損耗",
+            "value#zh-tw": "生命損耗",
+            "value#zh-hk": "生命損耗",
+            "value#zh-mo": "生命損耗",
+            "value": "HP Lost",
+            "style": {
+              "fill_style": "#f0f0aa",
+              "font": "12px Arial"
+            }
+          },
+          "pos": "255,40",
+          "center": "0.5,0.5"
+        },
+        {
+          "txt": {
+            "value#zh-hans": "气用量",
+            "value#zh-cn": "气用量",
+            "value#zh-sg": "气用量",
+            "value#zh-my": "气用量",
+            "value#zh-hant": "氣用量",
+            "value#zh-tw": "氣用量",
+            "value#zh-hk": "氣用量",
+            "value#zh-mo": "氣用量",
+            "value": "MP Usage",
+            "style": {
+              "fill_style": "#f0f0aa",
+              "font": "12px Arial"
+            }
+          },
+          "pos": "319,40",
+          "center": "0.5,0.5"
+        },
+        {
+          "txt": {
+            "value#zh-hans": "拾取物件",
+            "value#zh-cn": "拾取物件",
+            "value#zh-sg": "拾取物件",
+            "value#zh-my": "拾取物件",
+            "value#zh-hant": "拾取物件",
+            "value#zh-tw": "拾取物件",
+            "value#zh-hk": "拾取物件",
+            "value#zh-mo": "拾取物件",
+            "value": "Picking",
+            "style": {
+              "fill_style": "#aaf5aa",
+              "font": "12px Arial"
+            }
+          },
+          "pos": "383,40",
+          "center": "0.5,0.5"
+        },
+        {
+          "txt": {
+            "value#zh-hans": "状 态",
+            "value#zh-cn": "状 态",
+            "value#zh-sg": "状 态",
+            "value#zh-my": "状 态",
+            "value#zh-hant": "狀 態",
+            "value#zh-tw": "狀 態",
+            "value#zh-hk": "狀 態",
+            "value#zh-mo": "狀 態",
+            "value": "Status",
+            "style": {
+              "fill_style": "#aaf5aa",
+              "font": "12px Arial"
+            }
+          },
+          "pos": "447,40",
+          "center": "0.5,0.5"
+        }
+      ]
     },
     {
       "component": "player_score(1)",
