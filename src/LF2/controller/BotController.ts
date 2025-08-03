@@ -1,17 +1,29 @@
-import { Builtin_FrameId, GameKey, GameKey as GK, StateEnum, TLooseGameKey } from "../defines";
+import FSM from "../base/FSM";
+import { Builtin_FrameId, GameKey as GK, StateEnum, TLooseGameKey } from "../defines";
 import { Entity } from "../entity/Entity";
 import { is_character } from "../entity/type_check";
 import { abs } from "../utils";
 import { BaseController, KEY_NAME_LIST } from "./BaseController";
+import { BotCtrlState } from "./BotCtrlState";
+import { BotCtrlState_Standing } from "./BotCtrlState_Standing";
+import { BotCtrlState_Avoiding } from "./BotCtrlState_Avoiding";
+import { BotCtrlState_Chasing } from "./BotCtrlState_Chasing";
 import { dummy_updaters, DummyEnum } from "./DummyEnum";
-
 export class BotController extends BaseController {
+  readonly fsm = new FSM<BotCtrlState>()
+    .add(
+      new BotCtrlState_Standing(this),
+      new BotCtrlState_Chasing(this),
+      new BotCtrlState_Avoiding(this)
+    )
+    .use(BotCtrlState.Standing)
+
   static W_ATK_ZONE_X = 50;
   static W_ATK_ZONE_Z = 15;
   static R_ATK_ZONE_X = 120;
   static JUMP_DESIRE = 5;
-  static RUN_DESIRE = 20;
-  static STOP_RUN_DESIRE = 10;
+  static RUN_DESIRE = 200;
+  static STOP_RUN_DESIRE = 100;
   static RUN_ZONE = 300;
 
   readonly is_bot_enemy_chaser = true;
@@ -114,103 +126,27 @@ export class BotController extends BaseController {
   }
 
   key_up(...ks: TLooseGameKey[]): this {
-    for (const k of ks) this.is_end(k) || this.end(k)
+    for (const k of ks) {
+      if (!this.is_end(k)) {
+        this.end(k)
+      }
+    }
     return this;
   }
 
   key_down(...ks: TLooseGameKey[]): this {
-    for (const k of ks) this.is_end(k) && this.start(k)
+    for (const k of ks) {
+      if (this.is_end(k)) {
+        this.start(k)
+      }
+    }
     return this;
   }
   desire() {
     return this.lf2.random_in(0, 10000)
   }
 
-  chase_enemy() {
-    if (!this.chasing_enemy) return false;
-    const me = this.entity;
-    const { x: my_x, z: my_z } = this.guess_entity_pos(me);
-    const { x: en_x, z: en_z } = this.guess_entity_pos(this.chasing_enemy);
-    const { state } = me.frame;
-    let x_reach = false;
-    let z_reach = false;
 
-    switch (state) {
-      case StateEnum.Standing:
-      case StateEnum.Walking: {
-        if (my_x < en_x - this.RUN_ZONE_X) {
-          if (this.desire() < this.RUN_DESIRE)
-            this.key_up(GK.L, GK.R).db_hit(GK.R).end(GK.R);
-        } else if (my_x > en_x + this.RUN_ZONE_X) {
-          if (this.desire() < this.RUN_DESIRE)
-            this.key_up(GK.L, GK.R).db_hit(GK.L).end(GK.L);
-        }
-        break;
-      }
-    }
-
-    if (state === StateEnum.Running) {
-      // STOP RUNNING.
-      if (my_x > en_x && me.facing > 0) {
-        this.key_down(GK.L).key_up(GK.L)
-      } else if (my_x < en_x && me.facing < 0) {
-        this.key_down(GK.R).key_up(GK.R)
-      } else if (abs(en_x - my_x) < this.W_ATK_ZONE_X || this.desire() < this.STOP_RUN_DESIRE) {
-        this.entity.facing < 0 ?
-          this.key_down(GK.R).key_up(GK.R) :
-          this.key_down(GK.L).key_up(GK.L)
-      }
-
-      if (state !== StateEnum.Running) {
-        this.key_up(GK.R, GK.L);
-      }
-    }
-
-
-    if (my_x < en_x - this.W_ATK_ZONE_X) {
-      if (state !== StateEnum.Running)
-        this.key_up(GK.L).key_down(GK.R);
-    } else if (my_x > en_x + this.W_ATK_ZONE_X) {
-      if (state !== StateEnum.Running)
-        this.key_up(GK.R).key_down(GK.L);
-    } else {
-      this.key_up(GK.L, GK.R);
-      x_reach = true;
-    }
-
-    if (my_z < en_z - this.W_ATK_ZONE_Z) {
-      this.key_up(GK.U).key_down(GK.D);
-    } else if (my_z > en_z + this.W_ATK_ZONE_Z) {
-      this.key_up(GK.D).key_down(GK.U);
-    } else {
-      this.key_up(GK.U, GK.D);
-      z_reach = true;
-    }
-
-    if (x_reach && z_reach) {
-      /** 回头 */
-      if (my_x > en_x && this.entity.facing > 0) {
-        this.key_down(GK.L).key_up(GK.L);
-      } else if (my_x < en_x && this.entity.facing < 0) {
-        this.key_down(GK.R).key_up(GK.R);
-      }
-      this.key_down(GK.a).key_up(GK.a)
-    } else {
-      this.key_up(GK.a)
-    }
-
-    switch (state) {
-      case StateEnum.Standing:
-      case StateEnum.Walking:
-      case StateEnum.Running: {
-        if (this.desire() < this.JUMP_DESIRE) {
-          this.key_down(GK.j).end(GK.j)
-        }
-        break;
-      }
-    }
-    return true;
-  }
   avoid_enemy() {
     if (!this.avoiding_enemy) return false;
 
@@ -267,9 +203,7 @@ export class BotController extends BaseController {
       if (this.world.stage.is_stage_finish) {
         this.key_down(GK.R).key_up(...KEY_NAME_LIST)
       } else {
-        this.update_nearest();
-        this.chase_enemy();
-        this.avoid_enemy();
+        this.fsm.update(1)
       }
     }
     return super.update();
