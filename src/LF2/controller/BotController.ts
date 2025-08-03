@@ -152,13 +152,13 @@ export class BotController extends BaseController {
     if (state === StateEnum.Running) {
       // STOP RUNNING.
       if (my_x > en_x && me.facing > 0) {
-        this.key_down(GK.L)
+        this.key_down(GK.L).key_up(GK.L)
       } else if (my_x < en_x && me.facing < 0) {
-        this.key_down(GK.R)
+        this.key_down(GK.R).key_up(GK.R)
       } else if (abs(en_x - my_x) < this.W_ATK_ZONE_X || this.desire() < this.STOP_RUN_DESIRE) {
         this.entity.facing < 0 ?
-          this.key_down(GK.R) :
-          this.key_down(GK.L)
+          this.key_down(GK.R).key_up(GK.R) :
+          this.key_down(GK.L).key_up(GK.L)
       }
 
       if (state !== StateEnum.Running) {
@@ -264,9 +264,14 @@ export class BotController extends BaseController {
     if (this.dummy) {
       dummy_updaters[this.dummy]?.update(this);
     } else {
-      this.update_nearest();
-      this.chase_enemy()
-      this.avoid_enemy()
+      if (this.world.stage.is_stage_finish) {
+        debugger;
+        this.key_down(GK.R).key_up(GK.R)
+      } else {
+        this.update_nearest();
+        this.chase_enemy();
+        this.avoid_enemy();
+      }
     }
     return super.update();
   }
