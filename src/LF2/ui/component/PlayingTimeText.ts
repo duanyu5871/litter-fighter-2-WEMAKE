@@ -1,25 +1,17 @@
-import { IText } from "../../3d/IText";
-import Ditto from "../../ditto";
+import { ui_load_txt } from "../ui_load_txt";
 import { UIComponent } from "./UIComponent";
 
 export class PlayingTimeText extends UIComponent {
-  private _txt?: IText;
-
-  override on_start(): void {
-    super.on_start?.();
-    this.node.renderer.sprite.add(
-      (this._txt = new Ditto.TextNode(this.lf2).set_center(0.5, 0.5).apply()),
-    );
-  }
-
-  override on_stop(): void {
-    super.on_stop?.();
-    this._txt?.del_self();
-  }
 
   override on_show(): void {
-    super.on_show?.();
-    this._txt?.set_style(this.node.style).set_text(this.get_txt()).apply();
+    ui_load_txt(this.lf2, {
+      value: this.get_txt(), style: this.node.style
+    }).then(v => {
+      this.node.txts.value = v;
+      this.node.txt_idx.value = 0;
+      const { w, h, scale } = v[0]!
+      this.node.size.value = [w / scale, h / scale];
+    })
   }
 
   protected get_txt(): string {
@@ -35,8 +27,4 @@ export class PlayingTimeText extends UIComponent {
     else ret += "0" + s;
     return ret;
   }
-
-  // on_render(dt: number): void {
-  //   this._txt?.set_text(this.get_txt()).apply()
-  // }
 }

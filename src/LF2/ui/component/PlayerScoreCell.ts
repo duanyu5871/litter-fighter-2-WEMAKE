@@ -1,8 +1,7 @@
-import { IText } from "../../3d/IText";
 import IStyle from "../../defines/IStyle";
-import Ditto from "../../ditto";
-import { UIComponent } from "./UIComponent";
+import { ui_load_txt } from "../ui_load_txt";
 import PlayerScore from "./PlayerScore";
+import { UIComponent } from "./UIComponent";
 export default class PlayerScoreCell extends UIComponent {
   get kind() {
     return this.args[0];
@@ -10,23 +9,17 @@ export default class PlayerScoreCell extends UIComponent {
   get player_score() {
     return this.node.lookup_component(PlayerScore);
   }
-  private _txt?: IText;
-
-  override on_start(): void {
-    super.on_start?.();
-    this.node.renderer.sprite.add(
-      (this._txt = new Ditto.TextNode(this.lf2).set_center(0.5, 0.5).apply()),
-    );
-  }
-
-  override on_stop(): void {
-    super.on_stop?.();
-    this._txt?.del_self();
-  }
 
   override on_show(): void {
     super.on_show?.();
-    this._txt?.set_style(this.get_style()).set_text(this.get_txt()).apply();
+    ui_load_txt(this.lf2, {
+      value: this.get_txt(), style: this.get_style()
+    }).then(v => {
+      this.node.txts.value = v;
+      this.node.txt_idx.value = 0;
+      const { w, h, scale } = v[0]!
+      this.node.size.value = [w / scale, h / scale];
+    })
   }
 
   protected get_style(): IStyle {
@@ -45,7 +38,7 @@ export default class PlayerScoreCell extends UIComponent {
   protected get_txt() {
     const s = this.player_score;
     const c = this.player_score?.character;
-    if (!s || !c) return "";
+    if (!s || !c) return "-";
     switch (this.kind) {
       case "kill":
         return "" + c.kill_sum;
@@ -63,6 +56,6 @@ export default class PlayerScoreCell extends UIComponent {
         else return this.node.get_value("win_dead_txt");
       }
     }
-    return "";
+    return "-";
   }
 }
