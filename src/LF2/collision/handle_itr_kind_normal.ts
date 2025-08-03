@@ -3,6 +3,7 @@ import { ICollision } from "../base/ICollision";
 import { IItrInfo, ItrEffect, SparkEnum, TFace } from "../defines";
 import { Entity } from "../entity/Entity";
 import { is_character } from "../entity/type_check";
+import { round } from "../utils";
 
 export function handle_fall(collision: ICollision) {
   const { itr, attacker, victim, a_cube, b_cube } = collision;
@@ -36,9 +37,11 @@ export function take_injury(
   scale: number = 1,
 ) {
   if (!itr.injury) return;
-  const inj = Math.round(itr.injury * scale);
-  victim.hp -= inj;
-  victim.hp_r -= Math.floor(inj * (1 - victim.world.hp_recoverability))
-  attacker.add_damage_sum(inj);
+  const injury = round(itr.injury * scale);
+  if (injury) {
+    victim.hp -= injury;
+    victim.hp_r -= round(injury * (1 - victim.world.hp_recoverability))
+  }
+  attacker.add_damage_sum(injury);
   if (victim.hp <= 0) attacker.add_kill_sum(1);
 }

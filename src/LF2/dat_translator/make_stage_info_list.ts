@@ -66,15 +66,26 @@ export function make_stage_info_list(full_str: string): IStageInfo[] | void {
     for (const [key, value] of match_colon_value(head)) {
       (stage_info as any)[key] = value;
     }
+    const nid = Number(stage_info.id);
     stage_info.name = (match_hash_end(head) ?? stage_info.id)
       .replace(/stage/gi, "")
       .trim();
-    const nid = Number(stage_info.id);
 
     if (nid % 10 === 0) {
       stage_info.is_starting = true;
       stage_info.starting_name = "" + (1 + nid / 10);
+
     }
+    if (nid < 49 && stage_info.phases[0]) {
+      stage_info.phases[0]!.health_up = 0.5;
+      stage_info.phases[0]!.respawn = 0.5;
+    }
+    if (nid === 50) {
+      for (const p of stage_info.phases) {
+        p.respawn = 0.5;
+      }
+    }
+
     if (nid === 50) {
       stage_info.starting_name = "Survival";
       stage_info.chapter = "survival"

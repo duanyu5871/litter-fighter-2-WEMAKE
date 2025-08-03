@@ -3,6 +3,7 @@ import { Defines, IFrameInfo, ItrKind, StateEnum, WeaponType } from "../defines"
 import { ICollision } from "../base/ICollision";
 import type { Entity } from "../entity/Entity";
 import State_Base, { WhatNext } from "./State_Base";
+import { round } from "../utils";
 
 export default class WeaponState_Base extends State_Base {
   override on_collision(collision: ICollision): void {
@@ -52,8 +53,11 @@ export default class WeaponState_Base extends State_Base {
         )
           victim.hp = 0;
         else if (itr.injury) {
-          victim.hp -= itr.injury;
-          victim.hp_r -= itr.injury;
+          const { injury } = itr;
+          if (injury) {
+            victim.hp -= injury;
+            victim.hp_r -= injury
+          }
         }
         const is_fly =
           itr.fall &&

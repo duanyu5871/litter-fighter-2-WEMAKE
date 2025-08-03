@@ -51,8 +51,8 @@
       "center": "1, 0",
       "pos": "770, 100",
       "component": [
-        "<go_flashing>!OpacityAnimation(1, 0, 0, 0, 1, 750, 0, 750, 1, 750, 0, 750, 1, 750, 0, 750)",
-        "<go_sounds>!Sounds(1500, ok, 1500, ok, 1500, ok)"
+        "<go_flashing>!OpacityAnimation(1, 0, 0, 0, 1, 325, 0, 325, 1, 325, 0, 325, 1, 325, 0, 325)",
+        "<go_sounds>!Sounds(750, ok, 750, ok, 750, ok)"
       ]
     },
     {

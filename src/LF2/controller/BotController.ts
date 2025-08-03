@@ -1,8 +1,8 @@
-import { Builtin_FrameId, GameKey as GK, StateEnum, TLooseGameKey } from "../defines";
+import { Builtin_FrameId, GameKey, GameKey as GK, StateEnum, TLooseGameKey } from "../defines";
 import { Entity } from "../entity/Entity";
 import { is_character } from "../entity/type_check";
 import { abs } from "../utils";
-import { BaseController } from "./BaseController";
+import { BaseController, KEY_NAME_LIST } from "./BaseController";
 import { dummy_updaters, DummyEnum } from "./DummyEnum";
 
 export class BotController extends BaseController {
@@ -265,8 +265,7 @@ export class BotController extends BaseController {
       dummy_updaters[this.dummy]?.update(this);
     } else {
       if (this.world.stage.is_stage_finish) {
-        debugger;
-        this.key_down(GK.R).key_up(GK.R)
+        this.key_down(GK.R).key_up(...KEY_NAME_LIST)
       } else {
         this.update_nearest();
         this.chase_enemy();

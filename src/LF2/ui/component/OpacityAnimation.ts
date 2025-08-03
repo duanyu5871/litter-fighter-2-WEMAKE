@@ -1,6 +1,5 @@
 import { Animation, Delay, Easing, Sequence } from "../../animation";
 import ease_linearity from "../../utils/ease_method/ease_linearity";
-import { Loop } from "../../animation/Loop";
 import { UIComponent } from "./UIComponent";
 
 export class OpacityAnimation extends UIComponent {
@@ -12,10 +11,13 @@ export class OpacityAnimation extends UIComponent {
   get anim(): Sequence { return this._anim; }
   start(r?: boolean) {
     this.anim.start(r)
+    this.node.opacity = this._anim.value;
     this.enabled = true
   }
   stop(r?: boolean) {
     this.anim.end(r)
+    this.node.opacity = this._anim.value;
+    this.enabled = false
   }
   override on_start(): void {
     super.on_start?.();
@@ -43,8 +45,8 @@ export class OpacityAnimation extends UIComponent {
 
   override update(dt: number): void {
     super.update?.(dt);
-    if (this._anim.done) return;
     if (!this._anim.done) this.node.opacity = this._anim.update(dt).value;
     if (this._anim.done) this.set_enabled(false)
+    if (this._anim.done) return;
   }
 }

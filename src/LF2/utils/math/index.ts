@@ -8,3 +8,5 @@ export const ceil = Math.ceil;
 export const between = (v: number, min: number, max: number) => v >= min && v <= max
 export const abs = Math.abs;
 export const max = Math.max;
+export const min = Math.min;
+export const round = Math.round;

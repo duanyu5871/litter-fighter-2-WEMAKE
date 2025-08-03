@@ -11,6 +11,8 @@ export interface IStagePhaseInfo {
   desc?: string;
   objects: IStageObjectInfo[];
   music?: string;
+  respawn?: number;
+  health_up?: number,
 
   /**
    * 相机跳至位置

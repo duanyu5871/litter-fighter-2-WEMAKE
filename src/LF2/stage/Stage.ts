@@ -136,7 +136,23 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
       this.data.phases[(this._cur_phase_idx = idx)];
     this.callbacks.emit("on_phase_changed")(this, phase, old);
     if (!phase) return;
-    const { objects } = phase;
+    const { objects, respawn, health_up } = phase;
+
+    if (health_up && health_up > 0) {
+      for (const [, f] of this.world.slot_fighters) {
+        if (f.hp <= 0) continue;
+        const hp = f.hp_r + (f.hp_max - f.hp_r) * health_up
+        f.hp = f.hp_r = hp
+      }
+    }
+    if (respawn && respawn > 0) {
+      debugger
+      for (const [, f] of this.world.slot_fighters) {
+        if (f.hp > 0) continue;
+        f.hp = f.hp_r = f.hp_max * respawn
+      }
+    }
+
     this.play_phase_bgm();
     for (const object of objects) {
       this.spawn_object(object);

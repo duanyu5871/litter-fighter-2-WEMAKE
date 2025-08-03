@@ -18,8 +18,6 @@ export class LoadingContentText extends UIComponent {
         this.fade_out_delay
       ).done()
       this.fadeout = factory.create(this.node, expression)[0] as FadeOutOpacity
-      this.fadeout.__debugging = true;
-      console.log(expression, this.fadeout)
       this.node.components.add(this.fadeout)
     }
     return this;

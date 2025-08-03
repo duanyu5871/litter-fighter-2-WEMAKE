@@ -33,7 +33,7 @@ import { turn_face } from "./face_helper";
 import { itr_action_handlers } from "./itr_action_handlers";
 import { IDebugging, make_debugging } from "./make_debugging";
 import { is_ball, is_character, is_weapon_data } from "./type_check";
-const { max, min, round, abs } = Math
+import { max, min, round, abs } from "../utils";
 function calc_v(
   old: number,
   speed: number,
@@ -1298,9 +1298,10 @@ export class Entity implements IDebugging {
       return this.get_caught_cancel_frame();
     }
     if (this.prev_cpoint_a !== cpoint_a) {
-      if (cpoint_a.injury) {
-        this.hp -= cpoint_a.injury;
-        this.hp_r -= round(cpoint_a.injury * (1 - this.world.hp_recoverability))
+      const { injury } = cpoint_a;
+      if (injury) {
+        this.hp -= injury;
+        this.hp_r -= round(injury * (1 - this.world.hp_recoverability))
       }
       if (cpoint_a.shaking && cpoint_a.shaking > 0)
         this.shaking = cpoint_a.shaking;
