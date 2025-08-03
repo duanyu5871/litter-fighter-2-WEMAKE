@@ -9,8 +9,15 @@
     {
       "id": "tap_to_launch",
       "txt": {
+        "value#zh-hans": "点击任意位置继续",
+        "value#zh-cn": "点击任意位置继续",
+        "value#zh-sg": "点击任意位置继续",
+        "value#zh-my": "点击任意位置继续",
+        "value#zh-hant": "點擊任何位置繼續",
+        "value#zh-tw": "點擊任何位置繼續",
+        "value#zh-hk": "點擊任何位置繼續",
+        "value#zh-mo": "點擊任何位置繼續",
         "value": "CLICK ANYWHERE TO CONTINUE",
-        "value2": "点击任意位置继续",
         "style": {
           "font": "36px Arial",
           "text_align": "center"
@@ -26,8 +33,15 @@
     {
       "id": "sound_warning",
       "txt": {
-        "value": "After starting, the sound and background music will play. \nClick the speaker icon in the upper-right corner to turn off the sound. \nClick the musical note icon in the upper - right corner to turn off the background music.",
-        "value2": "开始后将播放声音，点击右上角喇叭关闭声音\n将播放背景音乐，点击右上角音符关闭背景音乐",
+        "value#zh-hans": "开始后将播放声音，点击右上方喇叭关闭声音\n将播放背景音乐，点击右上方音符关闭背景音乐",
+        "value#zh-cn": "开始后将播放声音，点击右上方喇叭关闭声音\n将播放背景音乐，点击右上方音符关闭背景音乐",
+        "value#zh-sg": "开始后将播放声音，点击右上方喇叭关闭声音\n将播放背景音乐，点击右上方音符关闭背景音乐",
+        "value#zh-my": "开始后将播放声音，点击右上方喇叭关闭声音\n将播放背景音乐，点击右上方音符关闭背景音乐",
+        "value#zh-hant": "開始後將播放聲音，點擊右上方喇叭關閉聲音\n將播放背景音樂，點擊右上方音符關閉背景音樂",
+        "value#zh-tw": "開始後將播放聲音，點擊右上方喇叭關閉聲音\n將播放背景音樂，點擊右上方音符關閉背景音樂",
+        "value#zh-hk": "開始後將播放聲音，點擊右上方喇叭關閉聲音\n將播放背景音樂，點擊右上方音符關閉背景音樂",
+        "value#zh-mo": "開始後將播放聲音，點擊右上方喇叭關閉聲音\n將播放背景音樂，點擊右上方音符關閉背景音樂",
+        "value": "After starting, the sound and background music will play. \nClick the speaker icon in the upper-right corner to turn off the sound. \nClick the musical note icon in the upper-right corner to turn off the background music.",
         "style": {
           "font": "18px Arial",
           "text_align": "center"
@@ -152,9 +166,16 @@
     },
     {
       "id": "long_text",
-      "txt2": "大部分玩法、美术、音效音乐来自 \"Litter Fighter 2\" \n原作：Marti Wong，Starsky Wong.\n\n\"LF2:Remake\" created by Gim in 2024.\n\n Click anywhere to continue ",
       "txt": {
-        "value": "gameplays, arts, and sounds are all from \"Litter Fighter 2\" basically.\ncreated by Marti Wong and Starsky Wong in 1999.\n\n\"LF2:Remake\" created by Gim in 2024.",
+        "value#zh-hans": "大部分玩法、美术、音效音乐来自 \"Litter Fighter 2\" \n原作：Marti Wong，Starsky Wong.\n\n\"LF2:Wemake\" created by Gim in 2024.",
+        "value#zh-cn": "大部分玩法、美术、音效音乐来自 \"Litter Fighter 2\" \n原作：Marti Wong，Starsky Wong.\n\n\"LF2:Wemake\" created by Gim in 2024.",
+        "value#zh-sg": "大部分玩法、美术、音效音乐来自 \"Litter Fighter 2\" \n原作：Marti Wong，Starsky Wong.\n\n\"LF2:Wemake\" created by Gim in 2024.",
+        "value#zh-my": "大部分玩法、美术、音效音乐来自 \"Litter Fighter 2\" \n原作：Marti Wong，Starsky Wong.\n\n\"LF2:Wemake\" created by Gim in 2024.",
+        "value#zh-hant": "大部分玩法、美術、音效音樂來自 \"Litter Fighter 2\" \n原作：Marti Wong，Starsky Wong.\n\n\"LF2:Wemake\" created by Gim in 2024.",
+        "value#zh-tw": "大部分玩法、美術、音效音樂來自 \"Litter Fighter 2\" \n原作：Marti Wong，Starsky Wong.\n\n\"LF2:Wemake\" created by Gim in 2024.",
+        "value#zh-hk": "大部分玩法、美術、音效音樂來自 \"Litter Fighter 2\" \n原作：Marti Wong，Starsky Wong.\n\n\"LF2:Wemake\" created by Gim in 2024.",
+        "value#zh-mo": "大部分玩法、美術、音效音樂來自 \"Litter Fighter 2\" \n原作：Marti Wong，Starsky Wong.\n\n\"LF2:Wemake\" created by Gim in 2024.",
+        "value": "gameplays, arts, and sounds are all from \"Litter Fighter 2\" basically.\ncreated by Marti Wong and Starsky Wong in 1999.\n\n\"LF2:Wemake\" created by Gim in 2024.",
         "style": {
           "font": "18px Arial",
           "text_align": "center"

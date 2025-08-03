@@ -6,7 +6,7 @@ try it at [https://lf2.gim.ink/](https://lf2.gim.ink/)
 
 gameplays, arts, and sounds are all from "Litter Fighter 2" basically, created by Marti Wong and Starsky Wong in 1999.
 
-"LF2:Remake" created by Gim in 2024."
+"LF2:Wemake" created by Gim in 2024."
 
 ## 如何运行本项目?
 

@@ -60,6 +60,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
   log!: (_0: string, ..._1: any[]) => void;
   static readonly TAG = "LF2";
   static readonly instances: LF2[] = []
+  lang: string = '';
   static get instance() { return LF2.instances[0] }
   static get ui() { return LF2.instances[0].ui }
 

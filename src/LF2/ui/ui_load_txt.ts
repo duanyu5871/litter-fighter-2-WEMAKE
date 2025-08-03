@@ -8,8 +8,9 @@ export async function ui_load_txt(lf2: LF2, txt: TUITxtInfo | TUITxtInfo[], outp
   const infos = await Promise.all(
     txts.map(txt => {
       const info: IUITxtInfo = is_str(txt) ? { value: txt, style: {} } : txt;
-      output?.push(info);
-      return lf2.images.load_text(info.value, info.style);
+      const value = lf2.lang ? ((info as any)[`value#${lf2.lang.toLowerCase()}`] ?? info.value) : info.value
+      return lf2.images.load_text(value, info.style);
+
     })
   );
   return infos;

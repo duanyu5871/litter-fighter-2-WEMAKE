@@ -169,6 +169,7 @@ function App() {
   useEffect(() => {
     if (ref_lf2.current) return;
     const lf2 = ref_lf2.current = new LF2();
+    lf2.lang = navigator.language
     set_lf2(lf2)
     lf2.sounds.set_muted(muted);
     lf2.sounds.set_volume(volume);
