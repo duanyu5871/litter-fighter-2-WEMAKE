@@ -19,20 +19,16 @@ export class VsModeLogic extends UIComponent
   go_sounds!: Sounds;
   go_flashing!: OpacityAnimation;
   score_board!: UINode;
+  time = 0;
+  game_over_time: number = -1;
   override on_start(): void {
     super.on_start?.();
     this.score_board = this.node.find_child("score_board")!
     this.jalousie = this.node.search_component(Jalousie)
     this.go_sounds = this.node.search_component(Sounds, "go_sounds")!
     this.go_flashing = this.node.search_component(OpacityAnimation, "go_flashing")!
-    for (const [, v] of this.lf2.player_characters) {
-      v.callbacks.add(this);
-    }
-  }
-  override on_stop(): void {
-    super.on_stop?.();
-    for (const [, v] of this.lf2.player_characters) {
-      v.callbacks.del(this);
+    for (const [, f] of this.world.slot_fighters) {
+      this.on_fighter_add(f)
     }
   }
   override on_resume(): void {
@@ -44,10 +40,22 @@ export class VsModeLogic extends UIComponent
     this.lf2.world.callbacks.del(this);
   }
   override update(dt: number): void {
+    this.time += dt;
     if (this.jalousie && !this.jalousie.open && this.jalousie.anim.done) {
       this.lf2.goto_next_stage()
       this.jalousie.open = true;
     }
+    if (this.game_over_time > 0 && this.time - this.game_over_time > 3000) {
+      this.lf2.sounds.play_preset("end");
+      this.score_board.visible = true;
+      this.game_over_time = -1;
+    }
+  }
+  on_fighter_add(entity: Entity): void {
+    entity.callbacks.add(this)
+  }
+  on_fighter_del(entity: Entity): void {
+    entity.callbacks.del(this)
   }
   override on_key_down(e: IUIKeyEvent): void {
     if ((e.game_key === 'a' || e.game_key === 'j') && this.world.stage.is_chapter_finish) {
@@ -92,8 +100,6 @@ export class VsModeLogic extends UIComponent
     if (this.jalousie) this.jalousie.open = false;
   }
   on_dead(e: Entity) {
-    if (!is_character(e)) return;
-
     if (this.world.stage.data.id === Defines.VOID_STAGE.id) {
 
       // 各队伍存活计数
@@ -108,7 +114,7 @@ export class VsModeLogic extends UIComponent
       }
 
       // 剩余队伍数
-      let team_remains = 0; 
+      let team_remains = 0;
       traversal(player_teams, (_, v) => {
         if (v) ++team_remains;
       })
@@ -116,9 +122,7 @@ export class VsModeLogic extends UIComponent
       // 大于一队，继续打
       if (team_remains > 1) return;
 
-      this.lf2.sounds.play_preset("end");
-      this.score_board.visible = true;
-
+      this.game_over_time = this.time;
     } else {
       // 玩家队伍存活计数
       const player_teams: { [x in string]?: number } = {};
@@ -132,16 +136,15 @@ export class VsModeLogic extends UIComponent
       }
 
       // 剩余队伍数
-      let team_remains = 0; 
+      let team_remains = 0;
       traversal(player_teams, (_, v) => {
         if (v) ++team_remains;
       })
 
       // 大于0队，继续打
       if (team_remains > 0) return;
-
-      this.lf2.sounds.play_preset("end");
-      this.score_board.visible = true;
+      this.game_over_time = this.time;
     }
   }
+
 }

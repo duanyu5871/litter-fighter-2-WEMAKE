@@ -5,5 +5,6 @@ export enum Builtin_FrameId {
   Self = "self",
   Gone = "gone",
   Invisible_Min = "1100",// 1100 ~ 1299 隐身
-  Invisible_Max = "1299"
+  Invisible_Max = "1299",
+  Respawn = "respawn"
 }

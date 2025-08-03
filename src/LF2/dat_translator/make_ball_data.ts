@@ -240,13 +240,13 @@ export function make_ball_data(
 
   traversal(ret.frames, (_, frame) => {
     switch (frame.state) {
-      case StateEnum._3000:
+      case StateEnum.Ball_Flying:
         return cook_ball_frame_state_3000(ret, frame);
-      case StateEnum._3002:
+      case StateEnum.Ball_Hitting:
         return cook_ball_frame_state_3000(ret, frame);
-      case StateEnum._3005:
+      case StateEnum.Ball_3005:
         return cook_ball_frame_state_3005(ret, frame);
-      case StateEnum._3006:
+      case StateEnum.Ball_3006:
         return cook_ball_frame_state_3006(ret, frame);
     }
   });

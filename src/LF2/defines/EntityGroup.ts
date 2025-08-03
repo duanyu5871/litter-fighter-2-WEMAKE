@@ -5,6 +5,11 @@ export enum EntityGroup {
   Hidden = "hidden",
 
   /**
+   * BOSS
+   */
+  Boss = "Boss",
+
+  /**
    * 常规角色
    * 属于此组的角色才可被随机到
    */

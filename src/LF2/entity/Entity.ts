@@ -33,7 +33,7 @@ import { turn_face } from "./face_helper";
 import { itr_action_handlers } from "./itr_action_handlers";
 import { IDebugging, make_debugging } from "./make_debugging";
 import { is_ball, is_character, is_weapon_data } from "./type_check";
-import { max, min, round, abs } from "../utils";
+import { max, min, round, abs, floor } from "../utils";
 function calc_v(
   old: number,
   speed: number,
@@ -81,11 +81,21 @@ export class Entity implements IDebugging {
   wait: number = 0;
   update_id: number = Number.MIN_SAFE_INTEGER;
   variant: number = 0;
-  reserve?: number = 0;
   data: IEntityData;
   transform_datas?: [IEntityData, IEntityData];
   readonly world: World;
   readonly position = new Ditto.Vector3(0, 0, 0);
+
+  protected _reserve = 0;
+  get reserve(): number {
+    return this._reserve;
+  }
+  set reserve(v: number) {
+    const o = this._reserve;
+    if (o === v) return;
+    this._reserve = v;
+    this._callbacks.emit("on_reserve_changed")(this, v, o);
+  }
 
   get type() {
     return this.data.type;
@@ -1065,6 +1075,33 @@ export class Entity implements IDebugging {
         if (this._after_blink === Builtin_FrameId.Gone) {
           this.next_frame = void 0;
           this.frame = GONE_FRAME_INFO;
+        } else if (this._after_blink === Builtin_FrameId.Respawn) {
+          this.hp = this.hp_r = this.hp_max;
+          this.position.y = 550;
+
+          let min_distance = Number.MAX_SAFE_INTEGER
+          let friend: Entity | undefined;
+          for (const e of this.world.slot_fighters.values()) {
+            if (e.hp <= 0) continue;
+            const d =
+              abs(floor(e.position.x - this.position.x)) +
+              abs(floor(e.position.z - this.position.z));
+            if (d > min_distance) continue;
+            min_distance = d;
+            friend = e;
+          }
+          if (friend) {
+            this.position.x = this.lf2.random_in(
+              max(floor(friend.position.x - 100), this.world.stage.player_left),
+              min(floor(friend.position.x + 100), this.world.stage.player_right)
+            )
+            this.position.z = this.lf2.random_in(
+              min(floor(friend.position.z - 100), this.world.stage.far),
+              max(floor(friend.position.z + 100), this.world.stage.near)
+            )
+          }
+
+          this.next_frame = Defines.NEXT_FRAME_AUTO;
         }
       }
     }
@@ -1581,6 +1618,10 @@ export class Entity implements IDebugging {
   blink_and_gone(duration: number) {
     this._blinking_duration = duration;
     this._after_blink = Builtin_FrameId.Gone;
+  }
+  blink_and_respawn(duration: number) {
+    this._blinking_duration = duration;
+    this._after_blink = Builtin_FrameId.Respawn;
   }
 
   /**

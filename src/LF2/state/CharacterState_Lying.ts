@@ -3,14 +3,24 @@ import type { Entity } from "../entity/Entity";
 import CharacterState_Base from "./CharacterState_Base";
 
 export default class CharacterState_Lying extends CharacterState_Base {
+
   override enter(e: Entity, prev_frame: IFrameInfo): void {
+    e.drop_holding();
+    const player_teams = new Set<string>()
+    for (const [, f] of e.world.slot_fighters) {
+      player_teams.add(f.team)
+    }
     if (e.frame.state === StateEnum.Lying && e.hp <= 0) {
-      if (!e.in_player_slot) {
+      if (e.reserve) --e.reserve;
+
+      if (e.reserve && player_teams.has(e.team)) {
+        // 玩家队伍的复活到玩家附近。
+        e.blink_and_respawn(e.world.gone_blink_time);
+      } else if (!e.in_player_slot) {
         // 非玩家槽的角色在被击败时，闪烁着离开了这个世界
         e.blink_and_gone(e.world.gone_blink_time);
       }
     }
-    e.drop_holding();
   }
   override leave(e: Entity, next_frame: IFrameInfo): void {
     if (e.in_player_slot) {

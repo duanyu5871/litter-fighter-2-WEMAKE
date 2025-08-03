@@ -1,8 +1,9 @@
 import type { IBillboardNode, IObjectNode } from "../../LF2/3d";
 import { get_team_shadow_color } from "../../LF2/base/get_team_shadow_color";
 import { get_team_text_color } from "../../LF2/base/get_team_text_color";
-import { GameKey, IVector3, Labels } from "../../LF2/defines";
+import { EntityGroup, GameKey, IVector3, Labels } from "../../LF2/defines";
 import Ditto from "../../LF2/ditto";
+import { is_character } from "../../LF2/entity";
 import type { Entity } from "../../LF2/entity/Entity";
 import type IEntityCallbacks from "../../LF2/entity/IEntityCallbacks";
 import * as T from "../3d/_t";
@@ -63,6 +64,7 @@ export class EntityInfoRender implements IEntityCallbacks {
   protected heading: number = 0;
 
   protected key_nodes: Map<GameKey, { node: IBillboardNode, pos: IVector3 }>
+  world_renderer: WorldRenderer;
 
   get visible() {
     return this.name_node.visible;
@@ -71,7 +73,8 @@ export class EntityInfoRender implements IEntityCallbacks {
     this.name_node.visible = this.bars_node.visible = v;
   }
 
-  constructor(entity: Entity) {
+  constructor(entity: Entity, world_renderer: WorldRenderer) {
+    this.world_renderer = world_renderer;
     const { lf2 } = entity.world;
     const f = 7;
     this.key_nodes = new Map([
@@ -180,10 +183,23 @@ export class EntityInfoRender implements IEntityCallbacks {
 
   on_mount() {
     const { entity } = this;
-    if (entity.in_player_slot)
-      (entity.world.renderer as WorldRenderer).scene.add(this.bars_node, this.name_node);
     entity.callbacks.add(this);
-    this.update_name_sprite(entity, entity.name, entity.team);
+    if (entity.in_player_slot)
+      this.world_renderer.scene.add(this.bars_node);
+    if (entity.in_player_slot) {
+      // 玩家角色就叫玩家名
+      this.world_renderer.scene.add(this.name_node);
+    } else if (entity.data.base.group?.some(v =>
+      v === EntityGroup.Regular ||
+      v === EntityGroup.Boss
+    )) {
+      entity.name = entity.data.base.name
+      this.world_renderer.scene.add(this.name_node);
+    } else if (entity.reserve) {
+      entity.name = is_character(entity) ? entity.data.base.name : ''
+      this.world_renderer.scene.add(this.name_node);
+    }
+    this.on_name_changed(entity)
   }
 
   on_unmount() {
@@ -193,12 +209,20 @@ export class EntityInfoRender implements IEntityCallbacks {
     entity.callbacks.del(this);
   }
 
-  on_name_changed(entity: Entity, name: string): void {
-    this.update_name_sprite(entity, name, entity.team);
+  on_name_changed(entity: Entity): void {
+    const reserve = entity.reserve;
+    const text =
+      (reserve > 1 && entity.name) ? `${entity.name} x${reserve}` :
+        entity.name ? entity.name : reserve > 1 ? `x${reserve}` : ''
+    this.update_name_sprite(entity, text, entity.team)
   }
 
-  on_team_changed(entity: Entity, team: string): void {
-    this.update_name_sprite(entity, entity.name, team);
+  on_reserve_changed(entity: Entity): void {
+    this.on_name_changed(entity)
+  }
+
+  on_team_changed(entity: Entity): void {
+    this.on_name_changed(entity)
   }
 
   on_hp_changed(_e: Entity, value: number): void {
@@ -239,35 +263,34 @@ export class EntityInfoRender implements IEntityCallbacks {
     this.heading = value;
     this.hp_bar.color = Math.floor(value) % 2 ? "rgb(255, 130, 130)" : "rgb(255,0,0)"
   }
-  private update_name_sprite(e: Entity, name: string, team: string) {
+  private update_name_sprite(e: Entity, text: string, team: string) {
     const fillStyle = get_team_text_color(team);
     const strokeStyle = get_team_shadow_color(team);
     const world = e.world;
     const lf2 = world.lf2;
-    if (!name) {
+    if (!text) {
       this.name_node.visible = false;
       this.name_node.clear_material().update_material();
       return;
     }
-    lf2.images
-      .load_text(name, {
-        fill_style: fillStyle,
-        back_style: {
-          stroke_style: strokeStyle,
-          line_width: 2
-        },
-        smoothing: false,
-      })
-      .then((i) => lf2.images.p_create_pic_by_img_key(i.key))
-      .then((p) => {
-        if (name !== e.name) return;
-        if (team !== e.team) return;
-        this.name_node.visible = true;
-        this.name_node
-          .set_texture(p)
-          .update_material()
-        this.name_node.name = "name sprite";
-      });
+    this.name_node.add_user_data('text', text)
+    lf2.images.load_text(text, {
+      fill_style: fillStyle,
+      back_style: {
+        stroke_style: strokeStyle,
+        line_width: 2
+      },
+      smoothing: false,
+    }).then((i) => {
+      return lf2.images.p_create_pic_by_img_key(i.key)
+    }).then((p) => {
+      if (this.name_node.get_user_data('text') !== text)
+        return;
+      this.name_node.visible = true;
+      this.name_node.set_texture(p)
+      this.name_node.set_scale(p.w, p.h)
+      this.name_node.name = "name sprite";
+    });
   }
 
   render() {

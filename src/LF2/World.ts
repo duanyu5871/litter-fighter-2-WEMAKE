@@ -90,31 +90,28 @@ export class World extends WorldDataset {
 
   add_entities(...entities: Entity[]) {
     for (const entity of entities) {
-      if (
-        is_character(entity) &&
-        is_base_ctrl(entity.ctrl) &&
-        this.lf2.players.has(entity.ctrl.player_id)
-      ) {
-        this.slot_fighters.set(entity.ctrl.player_id, entity);
-        this.callbacks.emit("on_player_character_add")(
-          entity.ctrl.player_id,
-        );
+      if (is_character(entity)) {
+        this.callbacks.emit("on_fighter_add")(entity);
+        if (this.lf2.players.has(entity.ctrl.player_id)) {
+          this.slot_fighters.set(entity.ctrl.player_id, entity);
+          this.callbacks.emit("on_player_character_add")(entity.ctrl.player_id);
+        }
       }
-
       this.entities.add(entity);
       this.renderer.add_entity(entity);
     }
   }
 
-  del_entity(e: Entity) {
-    if (!this.entities.delete(e)) return false;
-    if (e.ctrl?.player_id) {
-      const ok = this.slot_fighters.delete(e.ctrl.player_id);
-      if (ok)
-        this.callbacks.emit("on_player_character_del")(e.ctrl.player_id);
+  del_entity(entity: Entity) {
+    if (!this.entities.delete(entity)) return false;
+    if (is_character(entity))
+      this.callbacks.emit("on_fighter_del")(entity);
+    if (entity.ctrl?.player_id) {
+      const ok = this.slot_fighters.delete(entity.ctrl.player_id);
+      if (ok) this.callbacks.emit("on_player_character_del")(entity.ctrl.player_id);
     }
-    this.renderer.del_entity(e);
-    e.dispose();
+    this.renderer.del_entity(entity);
+    entity.dispose();
     return true;
   }
 

@@ -1,5 +1,6 @@
 import { IWorldDataset } from "./IWorldDataset";
 import type { World } from "./World";
+import { Entity } from "./entity";
 import type { Stage } from "./stage/Stage";
 
 export interface IWorldCallbacks {
@@ -41,9 +42,11 @@ export interface IWorldCallbacks {
   on_ups_update?(fps: number, score: number): void;
 
   on_dataset_change?(
-    key: keyof IWorldDataset, 
-    value: IWorldDataset[typeof key], 
+    key: keyof IWorldDataset,
+    value: IWorldDataset[typeof key],
     prev: IWorldDataset[typeof key], zworld: World): void;
 
   on_sync_render_changed?(value: 0 | 1 | 2, prev: 0 | 1 | 2): void;
+  on_fighter_add?(entity: Entity): void;
+  on_fighter_del?(entity: Entity): void;
 }

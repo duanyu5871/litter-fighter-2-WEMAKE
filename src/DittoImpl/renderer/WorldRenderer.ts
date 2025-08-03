@@ -69,7 +69,7 @@ export class WorldRenderer implements IWorldRenderer {
     const shadow_renderer = new EntityShadowRender(entity);
     shadow_renderer.on_mount()
 
-    const info_renderer = new EntityInfoRender(entity);
+    const info_renderer = new EntityInfoRender(entity, this);
     info_renderer.on_mount()
 
     const frame_indicators = new FrameIndicators(entity);

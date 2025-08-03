@@ -142,7 +142,7 @@ export class UIComponent<Callbacks extends IUICompnentCallbacks = IUICompnentCal
 
   on_foucs?(): void;
 
-  update?(dt: number): void;
+  update?(dt: number): void
 
   on_key_down?(e: IUIKeyEvent): void;
 

@@ -44,7 +44,7 @@
       "img": {
         "path": "sprite/SCORE_BOARD3.png",
         "w": 490,
-        "h": 32
+        "h": 31
       },
       "items": [
         {

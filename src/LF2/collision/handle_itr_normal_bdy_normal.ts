@@ -12,6 +12,7 @@ export function handle_itr_normal_bdy_normal(collision: ICollision) {
     case ItrEffect.MFire1:
     case ItrEffect.MFire2:
     case ItrEffect.FireExplosion: {
+      take_injury(itr, victim, attacker);
       victim.toughness = 0;
       victim.fall_value = 0;
       victim.defend_value = 0;
@@ -35,6 +36,7 @@ export function handle_itr_normal_bdy_normal(collision: ICollision) {
       break;
     case ItrEffect.Ice: {
       if (victim.frame.state === StateEnum.Frozen) {
+        take_injury(itr, victim, attacker);
         handle_fall(collision);
       } else {
         handle_itr_kind_freeze(collision)

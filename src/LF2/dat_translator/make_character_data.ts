@@ -816,7 +816,7 @@ function cook_transform_begin_expression_to_hit<
       )
         return;
       n.expression = new CondMaker()
-        .add(EntityVal.HAS_TRANSFROM_DATA, "==", 1)
+        .add(EntityVal.HAS_TRANSFORM_DATA, "==", 1)
         .done();
     };
     for (const k in frames) {

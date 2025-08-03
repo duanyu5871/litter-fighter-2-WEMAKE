@@ -22,7 +22,7 @@ export enum EntityVal {
   LF2_NET_ON = "lf2_net_on",
   HERO_FT_ON = "hero_ft_on",
   GIM_INK_ON = "gim_ink_on",
-  HAS_TRANSFROM_DATA = "has_transform_data",
+  HAS_TRANSFORM_DATA = "has_transform_data",
 
   Catching = "catching",
   CAUGHT = "caught",

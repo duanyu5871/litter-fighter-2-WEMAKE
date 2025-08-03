@@ -65,7 +65,7 @@ export const get_val_getter_from_entity: IValGetterGetter<Entity> = (
       return (e) => {
         return e.holding?.data.base.type ?? 0;
       };
-    case EntityVal.HAS_TRANSFROM_DATA:
+    case EntityVal.HAS_TRANSFORM_DATA:
       return (e) => {
         return e.transform_datas ? 1 : 0;
       };

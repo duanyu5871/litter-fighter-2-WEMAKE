@@ -26,6 +26,9 @@ export default class State_TransformTo8XXX extends State_Base {
         );
         new_entity.variant = 1;
         new_entity.reserve = e.reserve;
+        new_entity.hp_max = e.hp_max;
+        new_entity.hp_r = e.hp_r;
+        new_entity.hp = e.hp;
         new_entity.attach();
       }
     }
