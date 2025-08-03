@@ -28,11 +28,7 @@ public/*.zip.json
 public/cache_infos.json
 
 src/lf2_data
-public/lf2_data/**/*.mp3
-public/lf2_data/**/*.png
-public/lf2_data/**/*.webp
-public/lf2_data/**/*.bmp
-public/lf2_data/**/*.txt
+public/lf2_data
 
 tool/json
 tool/dist
