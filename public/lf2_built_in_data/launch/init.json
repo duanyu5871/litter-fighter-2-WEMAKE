@@ -183,6 +183,18 @@
       "template": "launch/loading_anim.json",
       "id": "loading",
       "pos": "760, 430"
+    },
+    {
+      "id": "txt_loading_content",
+      "component": "LoadingContentText(,1000,1000)",
+      "pos": "0,0",
+      "center": "0,0",
+      "txt": {
+        "value": "",
+        "style": {
+          "font": "12px Arial"
+        }
+      }
     }
   ]
 }

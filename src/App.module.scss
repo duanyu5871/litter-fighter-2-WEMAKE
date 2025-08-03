@@ -47,11 +47,14 @@
 }
 
 .loading_img {
+  position: absolute;
+}
+
+.loading_img_l {
   opacity    : 0;
   transition : opacity 1000ms;
   object-fit : none;
   user-select: none;
-  position   : absolute;
   margin     : auto;
   display    : block;
   width      : 132px;

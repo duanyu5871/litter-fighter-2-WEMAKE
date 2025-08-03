@@ -30,7 +30,7 @@ import { is_weapon } from "./LF2/entity/type_check";
 import { IUIInfo } from "./LF2/ui/IUIInfo.dat";
 import { fisrt } from "./LF2/utils/container_help";
 import { arithmetic_progression } from "./LF2/utils/math/arithmetic_progression";
-import { LoadingImg } from "./LoadingImg";
+import { Loading } from "./LoadingImg";
 import { Log } from "./Log";
 import { PlayerRow } from "./PlayerRow";
 import SettingsRows from "./SettingsRows";
@@ -54,7 +54,6 @@ import {
   useLocalString,
 } from "./useLocalStorage";
 
-const loading_img = new LoadingImg();
 function App() {
   const [fullscreen] = useState(() => new Ditto.FullScreen());
   const ref_lf2 = useRef<LF2 | undefined>(void 0)
@@ -388,15 +387,10 @@ function App() {
     const ele = ele_game_canvas;
     if (!ele) return;
     if (layout_id) {
-      loading_img.hide();
-      const tid = setTimeout(() => {
-        ele.style.transition = "opacity 1000ms";
-        ele.style.opacity = "1";
-      }, 1000);
-      return () => clearTimeout(tid);
+      ele.style.transition = "opacity 1000ms";
+      ele.style.opacity = "1";
     } else {
       ele.style.opacity = "0";
-      loading_img.show();
     }
   }, [layout_id, ele_game_canvas]);
 
@@ -459,11 +453,7 @@ function App() {
       />
       <div ref={set_ele_game_overlay} className={classNames(styles.game_overlay, { [styles.gone]: !game_overlay })} />
       <GamePad player_id={touch_pad_on} lf2={lf2} />
-      <img
-        src="lf2_built_in_data/launch/SMALL_LOADING@4x.png"
-        className={styles.loading_img}
-        alt="loading..."
-        ref={r => loading_img.set_element(r)} />
+      <Loading loading={!layout_id} big className={styles.loading_img} />
       <div className={styles.debug_pannel}>
         <Show show={lf2?.is_cheat_enabled(CheatType.GIM_INK) || true}>
           <ToggleImgButton

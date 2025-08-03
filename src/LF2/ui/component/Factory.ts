@@ -16,7 +16,7 @@ import { HorizontalLayout } from "./HorizontalLayout";
 import { Items } from "./Items";
 import { Jalousie } from "./Jalousie";
 import { LaunchPageLogic } from "./LaunchPageLogic";
-import LoadingFileNameDisplayer from "./LoadingFileNameDisplayer";
+import { LoadingContentText } from "./LoadingContentText";
 import { OpacityAnimation } from "./OpacityAnimation";
 import { OpacityHover } from "./OpacityHover";
 import PlayerCharacterThumb from "./PlayerCharacterThumb";
@@ -47,7 +47,7 @@ import { ImgLoop } from "./ImgLoop";
 class ComponentFactory {
   static readonly TAG = `ComponentFactory`;
   private _component_map = new Map<string, typeof UIComponent<IUICompnentCallbacks>>([
-    ["game_loading_file_name", LoadingFileNameDisplayer],
+    [LoadingContentText.TAG, LoadingContentText],
     [PlayerKeyEdit.TAG, PlayerKeyEdit],
     [PlayerKeyText.TAG, PlayerKeyText],
 

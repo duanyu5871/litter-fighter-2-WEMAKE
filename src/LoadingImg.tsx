@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import styles from "./App.module.scss";
+import classNames from "classnames";
 
 export class LoadingImg {
   private tid = 0;
@@ -57,21 +58,27 @@ export class LoadingImg {
 
 
 export interface ILoadingProps extends Omit<React.ImgHTMLAttributes<HTMLImageElement>, 'loading'> {
-  loading?: boolean
+  loading?: boolean;
+  big?: boolean;
 }
 export function Loading(props: ILoadingProps) {
-  const { loading, ..._p } = props;
-  const logic = useMemo(() => new LoadingImg(33, 21), [])
+  const { loading, big = false, className, ..._p } = props;
+  const logic = useMemo(() => new LoadingImg(33 * (big ? 4 : 1), 21 * (big ? 4 : 1)), [big])
 
   useEffect(() => {
     loading ? logic.show() : logic.hide();
   }, [loading]);
 
+  const class_name = classNames(className, big ? styles.loading_img_l : styles.loading_img_s)
   return (
     <img
-      src="lf2_built_in_data/launch/SMALL_LOADING.png"
+      src={
+        big ?
+          "lf2_built_in_data/launch/SMALL_LOADING@4x.png" :
+          "lf2_built_in_data/launch/SMALL_LOADING.png"
+      }
       alt="loading..."
-      className={styles.loading_img_s}
+      className={class_name}
       ref={r => logic.set_element(r)}
       {..._p} />
   )
