@@ -146,7 +146,6 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
       }
     }
     if (respawn && respawn > 0) {
-      debugger
       for (const [, f] of this.world.slot_fighters) {
         if (f.hp > 0) continue;
         f.hp = f.hp_r = f.hp_max * respawn

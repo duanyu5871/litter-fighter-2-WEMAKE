@@ -1,10 +1,11 @@
-import type { IStagePhaseInfo } from "../../defines";
+import { Defines, type IStagePhaseInfo } from "../../defines";
 import type { Entity } from "../../entity";
 import type IEntityCallbacks from "../../entity/IEntityCallbacks";
 import { is_character } from "../../entity/type_check";
 import { IWorldCallbacks } from "../../IWorldCallbacks";
 import type { Stage } from "../../stage";
 import type IStageCallbacks from "../../stage/IStageCallbacks";
+import { traversal } from "../../utils/container_help/traversal";
 import { IUIKeyEvent } from "../IUIKeyEvent";
 import { UINode } from "../UINode";
 import { Jalousie } from "./Jalousie";
@@ -93,21 +94,54 @@ export class VsModeLogic extends UIComponent
   on_dead(e: Entity) {
     if (!is_character(e)) return;
 
-    const team_alives = new Map<string, number>();
-    for (const e of this.world.entities) {
-      if (!is_character(e) || e.hp < 0) continue;
-      const { team } = e;
-      const count = team_alives.get(team);
-      if (count && count > 1) return;
-      team_alives.set(team, (count || 0) + 1);
+    if (this.world.stage.data.id === Defines.VOID_STAGE.id) {
+
+      // 各队伍存活计数
+      const player_teams: { [x in string]?: number } = {};
+
+      for (const [, f] of this.world.slot_fighters)
+        player_teams[f.team] = 0 // 玩家队伍
+
+      for (const e of this.world.entities) {
+        if (is_character(e) && e.hp > 0 && player_teams[e.team] !== void 0)
+          ++player_teams[e.team]!; // 存活计数++
+      }
+
+      // 剩余队伍数
+      let team_remains = 0; 
+      traversal(player_teams, (_, v) => {
+        if (v) ++team_remains;
+      })
+
+      // 大于一队，继续打
+      if (team_remains > 1) return;
+
+      this.lf2.sounds.play_preset("end");
+      this.score_board.visible = true;
+
+    } else {
+      // 玩家队伍存活计数
+      const player_teams: { [x in string]?: number } = {};
+
+      for (const [, f] of this.world.slot_fighters)
+        player_teams[f.team] = 0 // 玩家队伍
+
+      for (const e of this.world.entities) {
+        if (is_character(e) && e.hp > 0 && player_teams[e.team] !== void 0)
+          ++player_teams[e.team]!; // 存活计数++
+      }
+
+      // 剩余队伍数
+      let team_remains = 0; 
+      traversal(player_teams, (_, v) => {
+        if (v) ++team_remains;
+      })
+
+      // 大于0队，继续打
+      if (team_remains > 0) return;
+
+      this.lf2.sounds.play_preset("end");
+      this.score_board.visible = true;
     }
-    if (team_alives.size > 1) return;
-
-    const i = team_alives.get("") || 0;
-    if (i > 1) return;
-
-    this.lf2.sounds.play_preset("end");
-    this.score_board.visible = true;
   }
-
 }

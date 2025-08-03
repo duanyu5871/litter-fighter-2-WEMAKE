@@ -3,11 +3,15 @@ import { Defines, EntityGroup } from "../../defines";
 import { Factory } from "../../entity/Factory";
 import IEntityCallbacks from "../../entity/IEntityCallbacks";
 import { is_character } from "../../entity/type_check";
+import { traversal } from "../../utils/container_help/traversal";
+import { UINode } from "../UINode";
 import { UIComponent } from "./UIComponent";
 
 export class DemoModeLogic extends UIComponent implements IEntityCallbacks {
+  score_board!: UINode;
   override on_start(): void {
     super.on_start?.();
+    this.score_board = this.node.find_child("score_board")!
 
     const bg_data = this.lf2.random_get(this.lf2.datas.backgrounds);
     if (bg_data) this.lf2.change_bg(bg_data);
@@ -101,20 +105,28 @@ export class DemoModeLogic extends UIComponent implements IEntityCallbacks {
   }
 
   on_dead() {
-    const team_alives = new Map<string, number>();
+    // 各队伍存活计数
+    const player_teams: { [x in string]?: number } = {};
+
+    for (const [, f] of this.world.slot_fighters)
+      player_teams[f.team] = 0 // 玩家队伍
+
     for (const e of this.world.entities) {
-      if (!is_character(e) || e.hp < 0) continue;
-      const { team } = e;
-      const count = team_alives.get(team);
-      if (count && count > 1) return;
-      team_alives.set(team, (count || 0) + 1);
+      if (is_character(e) && e.hp > 0 && player_teams[e.team] !== void 0)
+        ++player_teams[e.team]!; // 存活计数++
     }
-    if (team_alives.size > 1) return;
-    const i = team_alives.get("") || 0;
-    if (i > 1) return;
+
+    // 剩余队伍数
+    let team_remains = 0;
+    traversal(player_teams, (_, v) => {
+      if (v) ++team_remains;
+    })
+
+    // 大于一队，继续打
+    if (team_remains > 1) return;
+
     this.lf2.sounds.play_preset("end");
-    const score_board = this.node.find_child("score_board");
-    if (score_board) score_board.visible = true;
+    this.score_board.visible = true;
   }
 
   override on_show(): void { }
