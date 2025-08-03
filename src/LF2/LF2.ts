@@ -413,6 +413,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
     const ret = await this.load_zip_from_info_url(url);
     this.zips.unshift(ret);
     this._callbacks.emit("on_zips_changed")(this.zips);
+    await this.load_data(ret)
     await this.load_ui();
     this._callbacks.emit("on_prel_loaded")();
     return ret;

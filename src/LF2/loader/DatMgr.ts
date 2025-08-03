@@ -2,7 +2,7 @@ import { LF2 } from "../LF2";
 import { BallController } from "../controller/BallController";
 import { BotController } from "../controller/BotController";
 import { InvalidController } from "../controller/InvalidController";
-import { IBgData, IStageInfo } from "../defines";
+import { IBgData, IDataLists, IStageInfo } from "../defines";
 import { EntityEnum } from "../defines/EntityEnum";
 import { IDataMap } from "../defines/IDataMap";
 import { IEntityData } from "../defines/IEntityData";
@@ -113,8 +113,9 @@ class Inner {
       await this._add_data(src, await this.lf2.import_json(src));
     }
 
-    const { objects, backgrounds } =
-      await this.lf2.import_json("data/data.json");
+    const { objects = [], backgrounds = [] } =
+      await this.lf2.import_json<Partial<IDataLists>>("data/data.json")
+        .catch(() => ({} as Partial<IDataLists>));
     if (this.cancelled) throw new Error("cancelled");
 
     if (this.cancelled) throw new Error("cancelled");
