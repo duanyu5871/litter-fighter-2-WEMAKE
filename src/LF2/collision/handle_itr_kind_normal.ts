@@ -1,11 +1,10 @@
-import { Defines, ItrEffect, ItrKind, StateEnum, TFace } from "../defines";
-import { BdyKind } from "../defines/BdyKind";
-import { ICollision } from "../base/ICollision";
-import { same_face, turn_face } from "../entity/face_helper";
-import { is_character } from "../entity/type_check";
-import { collisions_keeper } from "./CollisionKeeper";
 
-function fall(collision: ICollision) {
+import { ICollision } from "../base/ICollision";
+import { IItrInfo, ItrEffect, SparkEnum, TFace } from "../defines";
+import { Entity } from "../entity/Entity";
+import { is_character } from "../entity/type_check";
+
+export function handle_fall(collision: ICollision) {
   const { itr, attacker, victim, a_cube, b_cube } = collision;
   const aface: TFace =
     ItrEffect.Explosion === itr.effect
@@ -22,121 +21,24 @@ function fall(collision: ICollision) {
   victim.velocity_0.z = 0;
   victim.velocity_0.x = (itr.dvx || 0) * aface;
   if (itr.effect === ItrEffect.Sharp) {
-    victim.world.spark(...victim.spark_point(a_cube, b_cube), "critical_bleed");
+    victim.world.spark(...victim.spark_point(a_cube, b_cube), SparkEnum.CriticalBleed);
   } else if (is_character(victim)) {
-    victim.world.spark(...victim.spark_point(a_cube, b_cube), "critical_hit");
-  } else {
-    victim.world.spark(
-      ...victim.spark_point(a_cube, b_cube),
-      "slient_critical_hit",
-    );
+    victim.world.spark(...victim.spark_point(a_cube, b_cube), SparkEnum.CriticalHit);
   }
   const direction: TFace = victim.velocity_0.x / victim.facing >= 0 ? 1 : -1;
   if (victim.data.indexes?.critical_hit)
     victim.next_frame = { id: victim.data.indexes.critical_hit[direction][0] };
 }
-export function handle_itr_kind_normal(collision: ICollision) {
-  const { itr, attacker, victim, a_cube, b_cube } = collision;
-  switch (itr.effect) {
-    case ItrEffect.Fire:
-    case ItrEffect.MFire1:
-    case ItrEffect.MFire2:
-    case ItrEffect.FireExplosion: {
-      victim.fall_value = 0;
-      victim.defend_value = 0;
-      victim.velocity_0.y =
-        (itr.dvy ?? attacker.world.ivy_d) * attacker.world.ivy_f;
-      victim.velocity_0.z = 0;
-      const direction =
-        ItrEffect.FireExplosion === itr.effect
-          ? victim.position.x > attacker.position.x
-            ? -1
-            : 1
-          : attacker.facing;
-      victim.velocity_0.x = (itr.dvx || 0) * direction;
-      if (victim.data.indexes?.fire)
-        victim.next_frame = {
-          id: victim.data.indexes.fire[0],
-          facing: turn_face(attacker.facing),
-        };
-      break;
-    }
-    case ItrEffect.Ice2:
-      collisions_keeper.get(
-        attacker.type,
-        ItrKind.Freeze,
-        victim.type,
-        BdyKind.Normal,
-      )?.(collision);
-      break;
-    case ItrEffect.Ice: {
-      if (victim.frame.state === StateEnum.Frozen) {
-        fall(collision);
-      } else {
-        collisions_keeper.get(
-          attacker.type,
-          ItrKind.Freeze,
-          victim.type,
-          BdyKind.Normal,
-        )?.(collision);
-      }
-      break;
-    }
-    case ItrEffect.Explosion:
-    case ItrEffect.Normal:
-    case ItrEffect.Sharp:
-    case void 0: {
-      victim.fall_value -= itr.fall ? itr.fall : Defines.DEFAULT_ITR_FALL;
-      victim.defend_value = 0;
-      const is_fall =
-        victim.fall_value <= 0 ||
-        victim.hp <= 0 ||
-        victim.frame.state === StateEnum.Frozen ||
-        (victim.fall_value <= Defines.DEFAULT_FALL_VALUE_DIZZY &&
-          (StateEnum.Caught === victim.frame.state ||
-            victim.velocity_0.y > 0 ||
-            victim.position.y > 0));
-      if (is_fall) {
-        fall(collision);
-      } else {
-        if (itr.dvx) victim.velocity_0.x = itr.dvx * attacker.facing;
-        if (victim.position.y > 0 && victim.velocity_0.y > 2)
-          victim.velocity_0.y = 2;
-        victim.velocity_0.z = 0;
-        if (itr.effect === ItrEffect.Sharp) {
-          victim.world.spark(...victim.spark_point(a_cube, b_cube), "bleed");
-        } else if (is_character(victim)) {
-          victim.world.spark(...victim.spark_point(a_cube, b_cube), "hit");
-        } else {
-          victim.world.spark(
-            ...victim.spark_point(a_cube, b_cube),
-            "slient_hit",
-          );
-        }
-        if (StateEnum.Caught === victim.frame.state) {
-          if (victim.frame.cpoint) {
-            const { backhurtact, fronthurtact } = victim.frame.cpoint;
-            if (attacker.facing === victim.facing && backhurtact) {
-              victim.next_frame = { id: backhurtact };
-            } else if (attacker.facing !== victim.facing && fronthurtact) {
-              victim.next_frame = { id: fronthurtact };
-            }
-          }
-        } else {
-          /* 击晕 */
-          if (victim.fall_value <= Defines.DEFAULT_FALL_VALUE_DIZZY) {
-            victim.next_frame = { id: victim.data.indexes?.dizzy };
-          } else if (victim.data.indexes?.grand_injured) {
-            /* 击中 */
-            victim.next_frame = {
-              id: victim.data.indexes.grand_injured[
-                same_face(victim, attacker)
-              ][0],
-            };
-          }
-        }
-      }
-      break;
-    }
-  }
+export function take_injury(
+  itr: IItrInfo,
+  victim: Entity,
+  attacker: Entity,
+  scale: number = 1,
+) {
+  if (!itr.injury) return;
+  const inj = Math.round(itr.injury * scale);
+  victim.hp -= inj;
+  victim.hp_r -= Math.floor(inj * (1 - victim.world.hp_recoverability))
+  attacker.add_damage_sum(inj);
+  if (victim.hp <= 0) attacker.add_kill_sum(1);
 }

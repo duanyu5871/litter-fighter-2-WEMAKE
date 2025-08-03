@@ -75,76 +75,9 @@ export default class CharacterState_Base extends State_Base {
   }
 
   override on_be_collided(collision: ICollision): void {
-    const { itr, bdy, attacker, victim, a_cube, b_cube } = collision;
-    switch (bdy.kind) {
-      case BdyKind.Defend: {
-        if (
-          // 默认仅允许抵御来自前方的伤害
-          (ItrEffect.FireExplosion !== itr.effect &&
-            ItrEffect.Explosion !== itr.effect &&
-            attacker.facing === victim.facing) ||
-          (itr.bdefend &&
-            itr.bdefend >= Defines.DEFAULT_FORCE_BREAK_DEFEND_VALUE)
-        ) {
-          collisions_keeper.get(
-            attacker.type,
-            itr.kind!,
-            victim.type,
-            BdyKind.Normal,
-          )?.(collision);
-          break;
-        }
-        if (itr.bdefend) victim.defend_value -= itr.bdefend;
-        this.take_injury(itr, victim, attacker, 0.1);
-        if (victim.defend_value <= 0) {
-          // 破防
-          victim.defend_value = 0;
-          victim.world.spark(
-            ...victim.spark_point(a_cube, b_cube),
-            "broken_defend",
-          );
-
-
-          const action = bdy.actions?.find(v => v.type === 'broken_defend');
-          if (action) {
-            const result = victim.get_next_frame(action.data);
-            if (result) victim.next_frame = result.frame;
-          }
-        } else {
-          if (itr.dvx) victim.velocity_0.x = (itr.dvx * attacker.facing) / 2;
-          victim.world.spark(
-            ...victim.spark_point(a_cube, b_cube),
-            "defend_hit",
-          );
-
-          const action = bdy.actions?.find(v => v.type === 'defend');
-          if (action) {
-            const result = victim.get_next_frame(action.data);
-            if (result) victim.next_frame = result.frame;
-          }
-          return;
-        }
-        break;
-      }
-    }
-    this.take_injury(itr, victim, attacker);
-    victim.defend_value = 0;
     collisions_keeper.handle(collision);
   }
 
-  private take_injury(
-    itr: IItrInfo,
-    victim: Entity,
-    attacker: Entity,
-    scale: number = 1,
-  ) {
-    if (!itr.injury) return;
-    const inj = Math.round(itr.injury * scale);
-    victim.hp -= inj;
-    victim.hp_r -= Math.floor(inj * (1 - victim.world.hp_recoverability))
-    attacker.add_damage_sum(inj);
-    if (victim.hp <= 0) attacker.add_kill_sum(1);
-  }
 
   override get_sudden_death_frame(target: Entity): INextFrame | undefined {
     target.velocity_0.y = 2;

@@ -165,6 +165,9 @@ export interface IEntityCallbacks<E extends Entity = Entity> {
    * @param {number} prev 上一次值
    */
   on_healing_changed?(e: E, value: number, prev: number): void;
-  
+
+
+  on_toughness_changed?(e: E, value: number, prev: number): void;
+  on_toughness_max_changed?(e: E, value: number, prev: number): void;
 }
 export default IEntityCallbacks

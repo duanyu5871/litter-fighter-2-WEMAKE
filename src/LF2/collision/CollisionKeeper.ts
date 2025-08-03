@@ -4,7 +4,8 @@ import { handle_itr_kind_catch } from "./handle_itr_kind_catch";
 import { handle_itr_kind_force_catch } from "./handle_itr_kind_force_catch";
 import { handle_itr_kind_freeze } from "./handle_itr_kind_freeze";
 import { handle_itr_kind_magic_flute } from "./handle_itr_kind_magic_flute";
-import { handle_itr_kind_normal } from "./handle_itr_kind_normal";
+import { handle_itr_normal_bdy_normal } from "./handle_itr_normal_bdy_normal";
+import { handle_itr_normal_bdy_defend } from "./handle_itr_normal_bdy_defend";
 import { handle_itr_kind_pick } from "./handle_itr_kind_pick";
 import { handle_itr_kind_pick_secretly } from "./handle_itr_kind_pick_secretly";
 import { handle_itr_kind_whirlwind } from "./handle_itr_kind_whirlwind";
@@ -101,7 +102,19 @@ collisions_keeper.add(
   ],
   [EntityEnum.Character],
   [BdyKind.Normal],
-  handle_itr_kind_normal,
+  handle_itr_normal_bdy_normal,
+);
+collisions_keeper.add(
+  ALL_ENTITY_ENUM,
+  [
+    ItrKind.JohnShield,
+    ItrKind.Normal,
+    ItrKind.WeaponSwing,
+    ItrKind.CharacterThrew,
+  ],
+  [EntityEnum.Character],
+  [BdyKind.Defend],
+  handle_itr_normal_bdy_defend,
 );
 collisions_keeper.add(
   [EntityEnum.Character],

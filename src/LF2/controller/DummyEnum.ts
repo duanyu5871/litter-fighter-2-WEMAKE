@@ -29,43 +29,29 @@ export enum DummyEnum {
 export const dummy_updaters: Record<DummyEnum, IDummyUpdater | undefined> = {
   [DummyEnum.LockAtMid_Stand]: {
     update: (self) => {
-      if (self.entity.frame.state === StateEnum.Standing &&
-        self.entity.resting <= 0) {
-        self.entity.position.x = self.world.bg.width / 2;
-        self.entity.position.z = (self.world.bg.near + self.world.far) / 2;
-      }
+      self.lock_when_stand_and_rest();
     }
   },
   [DummyEnum.LockAtMid_Defend]: {
     update: (self) => {
-      if (self.entity.frame.state === StateEnum.Standing &&
-        self.entity.resting <= 0) {
-        self.entity.position.x = self.world.bg.width / 2;
-        self.entity.position.z = (self.world.bg.near + self.world.far) / 2;
-      }
-      self.start(GK.d);
+      const keys = [GK.d]
+      const h = self.lock_when_stand_and_rest();
+      if (h) self.key_down(...keys).key_up(...keys);
     }
   },
   [DummyEnum.LockAtMid_RowingWhenFalling]: {
     update: (self) => {
-      if (self.entity.frame.state === StateEnum.Standing &&
-        self.entity.resting <= 0) {
-        self.entity.position.x = self.world.bg.width / 2;
-        self.entity.position.z = (self.world.bg.near + self.world.far) / 2;
-      }
+      self.lock_when_stand_and_rest();
       if (self.entity.frame.state === StateEnum.Falling) {
-        self.start(GK.j);
+        self.key_down(GK.j).key_up(GK.j);
       }
     }
   },
   [DummyEnum.LockAtMid_JumpAndRowingWhenFalling]: {
     update: (self) => {
-      if (self.entity.frame.state === StateEnum.Standing) {
-        self.entity.position.x = self.world.bg.width / 2;
-        self.entity.position.z = (self.world.bg.near + self.world.far) / 2;
-        self.start(GK.j);
-      } else if (self.entity.frame.state === StateEnum.Falling) {
-        self.start(GK.j);
+      const h = self.lock_when_stand_and_rest();
+      if (h || self.entity.frame.state === StateEnum.Falling) {
+        self.key_down(GK.j).key_up(GK.j);
       } else {
         self.end(GK.j);
       }
@@ -73,66 +59,71 @@ export const dummy_updaters: Record<DummyEnum, IDummyUpdater | undefined> = {
   },
   [DummyEnum.AvoidEnemyAllTheTime]: {
     update: (self) => {
-      if (self.time % 10 === 0) self.update_nearest();
+      self.update_nearest();
       self.avoid_enemy();
     }
   },
   [DummyEnum.LockAtMid_dUa]: {
     update: (self) => {
+      const keys = [GK.d, GK.U, GK.a]
       const h = self.lock_when_stand_and_rest();
-      self[h ? "start" : "end"](GK.d, GK.U, GK.a);
+      if (h) self.key_down(...keys).key_up(...keys)
     }
   },
   [DummyEnum.LockAtMid_dUj]: {
     update: (self) => {
+      const keys = [GK.d, GK.U, GK.j]
       const h = self.lock_when_stand_and_rest();
-      self[h ? "start" : "end"](GK.d, GK.U, GK.j);
+      if (h) self.key_down(...keys).key_up(...keys)
     }
   },
   [DummyEnum.LockAtMid_dDa]: {
     update: (self) => {
+      const keys = [GK.d, GK.D, GK.a]
       const h = self.lock_when_stand_and_rest();
-      self[h ? "start" : "end"](GK.d, GK.D, GK.a);
+      if (h) self.key_down(...keys).key_up(...keys)
     }
   },
   [DummyEnum.LockAtMid_dDj]: {
     update: (self) => {
+      const keys = [GK.d, GK.D, GK.j]
       const h = self.lock_when_stand_and_rest();
-      self[h ? "start" : "end"](GK.d, GK.D, GK.j);
+      if (h) self.key_down(...keys).key_up(...keys)
     }
   },
   [DummyEnum.LockAtMid_dLa]: {
     update: (self) => {
+      const keys = [GK.d, GK.L, GK.a]
       const h = self.lock_when_stand_and_rest();
-      if (h) self.start(GK.d, GK.L, GK.a);
-      else if (self.entity.frame.hit?.a) self.start(GK.a);
-      else self[h ? "start" : "end"](GK.d, GK.L, GK.a);
+      if (h) self.key_down(...keys).key_up(...keys)
     }
   },
   [DummyEnum.LockAtMid_dLj]: {
     update: (self) => {
+      const keys = [GK.d, GK.L, GK.j]
       const h = self.lock_when_stand_and_rest();
-      self[h ? "start" : "end"](GK.d, GK.L, GK.j);
+      if (h) self.key_down(...keys).key_up(...keys)
     }
   },
   [DummyEnum.LockAtMid_dRa]: {
     update: (self) => {
+      const keys = [GK.d, GK.R, GK.a]
       const h = self.lock_when_stand_and_rest();
-      if (h) self.start(GK.d, GK.R, GK.a);
-      else if (self.entity.frame.hit?.a) self.start(GK.a);
-      else self[h ? "start" : "end"](GK.d, GK.R, GK.a);
+      if (h) self.key_down(...keys).key_up(...keys)
     }
   },
   [DummyEnum.LockAtMid_dRj]: {
     update: (self) => {
+      const keys = [GK.d, GK.L, GK.j]
       const h = self.lock_when_stand_and_rest();
-      self[h ? "start" : "end"](GK.d, GK.R, GK.j);
+      if (h) self.key_down(...keys).key_up(...keys)
     }
   },
   [DummyEnum.LockAtMid_dja]: {
     update: (self) => {
+      const keys = [GK.d, GK.j, GK.a]
       const h = self.lock_when_stand_and_rest();
-      self[h ? "start" : "end"](GK.d, GK.j, GK.a);
+      if (h) self.key_down(...keys).key_up(...keys)
     }
   },
   [DummyEnum.LockAtMid_dUa_auto]: undefined,

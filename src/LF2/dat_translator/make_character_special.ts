@@ -1,4 +1,5 @@
-import { BuiltIn_OID, EntityGroup } from "../defines";
+import { BuiltIn_OID, Defines, EntityGroup } from "../defines";
+import { ArmorEnum } from "../defines/ArmorEnum";
 import { IEntityData } from "../defines/IEntityData";
 import { add_entity_groups } from "./add_entity_to_group";
 import { make_louis_data, make_rudolf_data } from "./cook_louis_data";
@@ -18,8 +19,8 @@ export function make_character_special(data: IEntityData) {
         fireproof: 1,
         antifreeze: 1,
         hit_sounds: ["data/002.wav.mp3"],
-        type: "times",
-        toughness: 3,
+        type: ArmorEnum.Fall,
+        toughness: Defines.DEFAULT_FALL_VALUE_MAX - Defines.DEFAULT_FALL_VALUE_DIZZY,
       };
       break;
     case BuiltIn_OID.Firzen:
@@ -28,19 +29,19 @@ export function make_character_special(data: IEntityData) {
     case BuiltIn_OID.Knight:
       data.base.armor = {
         hit_sounds: ["data/085.wav.mp3"],
-        type: "times",
-        toughness: 3,
+        type: ArmorEnum.Fall,
+        toughness: Defines.DEFAULT_FALL_VALUE_MAX - Defines.DEFAULT_FALL_VALUE_DIZZY,
       };
       break;
     case BuiltIn_OID.Louis:
       data.base.armor = {
         hit_sounds: ["data/085.wav.mp3"],
-        type: "times",
-        toughness: 1,
+        type: ArmorEnum.Defend,
+        toughness: 30,
       };
       make_louis_data(data)
       break;
-    case BuiltIn_OID.Bandit: 
+    case BuiltIn_OID.Bandit:
     case BuiltIn_OID.Hunter:
       add_entity_groups(data.base, EntityGroup._3000);
       break;

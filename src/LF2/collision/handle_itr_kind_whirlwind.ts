@@ -1,6 +1,5 @@
-import { StateEnum } from "../defines";
-import { EntityEnum } from "../defines/EntityEnum";
 import { ICollision } from "../base/ICollision";
+import { EntityEnum, StateEnum } from "../defines";
 
 export function handle_itr_kind_whirlwind(c: ICollision) {
   const { attacker, victim } = c;

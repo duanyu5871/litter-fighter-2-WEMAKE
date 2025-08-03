@@ -1,3 +1,5 @@
+import type { ArmorEnum } from "./ArmorEnum";
+
 export interface IArmorInfo {
   /**
    * 护甲被击中的声音
@@ -33,9 +35,10 @@ export interface IArmorInfo {
 
   toughness: number;
 
-  type: string; // hp? times? fall? defend?
+  type: ArmorEnum | string; // hp? times? fall? defend?
 
   fall_value?: number;
 
   defend_value?: number;
 }
+

@@ -15,6 +15,7 @@ import {
   OpointKind, OpointMultiEnum, OpointSpreading, SpeedMode, StateEnum, TFace,
   TNextFrame
 } from "../defines";
+import { IArmorInfo } from "../defines/IArmorInfo";
 import Ditto from "../ditto";
 import { ENTITY_STATES, States } from "../state";
 import BallState_Base from "../state/BallState_Base";
@@ -90,6 +91,16 @@ export class Entity implements IDebugging {
     return this.data.type;
   }
 
+  protected _toughness_resting_max = Defines.DEFAULT_TOUGHNESS_RESTING_MAX;
+  get toughness_resting_max(): number {
+    return this._toughness_resting_max;
+  }
+  set toughness_resting_max(v: number) {
+    const o = this._toughness_resting_max;
+    if (o === v) return;
+    this._toughness_resting_max = v;
+  }
+
   protected _resting_max = Defines.DEFAULT_RESTING_MAX;
   get resting_max(): number {
     return this._resting_max;
@@ -120,9 +131,46 @@ export class Entity implements IDebugging {
     const o = this._fall_value;
     if (o === v) return;
     this._fall_value = v;
-    if (v < o) this.resting = this.resting_max;
+    if (v < o) {
+      this.resting = this.resting_max;
+      this.toughness_resting = this.toughness_resting_max;
+    }
     this._callbacks.emit("on_fall_value_changed")(this, v, o);
   }
+
+  private _toughness = 0;
+  get toughness(): number {
+    return this._toughness;
+  }
+  set toughness(v: number) {
+    const o = this._toughness;
+    if (o === v) return;
+    this._toughness = v;
+    if (v < o) this.toughness_resting = this.toughness_resting_max;
+    this._callbacks.emit("on_toughness_changed")(this, v, o);
+  }
+
+  private _toughness_max = 0;
+  get toughness_max(): number {
+    return this._toughness_max;
+  }
+  set toughness_max(v: number) {
+    const o = this._toughness_max;
+    if (o === v) return;
+    this._toughness_max = v;
+    this._callbacks.emit("on_toughness_max_changed")(this, v, o);
+  }
+
+  protected _toughness_resting = 0;
+  get toughness_resting() {
+    return this._toughness_resting;
+  }
+  set toughness_resting(v: number) {
+    const o = this._toughness_resting;
+    if (o === v) return;
+    this._toughness_resting = v;
+  }
+
 
   private _fall_value_max = Defines.DEFAULT_FALL_VALUE_MAX;
   get fall_value_max(): number {
@@ -143,7 +191,10 @@ export class Entity implements IDebugging {
     const o = this._defend_value;
     if (o === v) return;
     this._defend_value = v;
-    if (v < o) this.resting = this.resting_max;
+    if (v < o) {
+      this.resting = this.resting_max;
+      this.toughness_resting = this.toughness_resting_max;
+    }
     this._callbacks.emit("on_defend_value_changed")(this, v, o);
   }
 
@@ -502,6 +553,7 @@ export class Entity implements IDebugging {
     const player_id = this.ctrl?.player_id;
     return !!(player_id && this.world.slot_fighters.has(player_id));
   }
+  armor?: Readonly<IArmorInfo>
 
   constructor(world: World, data: IEntityData, states: States = ENTITY_STATES) {
     this.data = data;
@@ -526,6 +578,11 @@ export class Entity implements IDebugging {
     } else {
       this._mp_r_spd_min = data.base.mp_r_min_spd ?? 0;
       this._mp_r_spd_max = data.base.mp_r_max_spd ?? 0;
+    }
+
+    const { armor } = this.data.base
+    if (this.armor = armor) {
+      this.toughness = this.toughness_max = armor.toughness
     }
 
     this._catch_time_max = data.base.catch_time ?? Defines.DEFAULT_CATCH_TIME;
@@ -1038,15 +1095,30 @@ export class Entity implements IDebugging {
   }
 
   update_resting() {
+    const s = this.state?.state;
+    const should_recover_toughness = !(
+      StateEnum.Falling === s ||
+      StateEnum.Caught === s ||
+      StateEnum.Injured === s ||
+      StateEnum.Frozen === s ||
+      StateEnum.Burning === s
+    ) && this.resting <= 0
+    if (should_recover_toughness) {
+      if (this.toughness_resting > 0) {
+        this.toughness_resting--;
+      } else if (this.armor && this.toughness < this.armor.toughness) {
+        this.toughness += 1;
+      }
+    }
     if (this.resting > 0) {
       this.resting--;
-      return;
-    }
-    if (this.fall_value < this.fall_value_max) {
-      this.fall_value += 1;
-    }
-    if (this.defend_value < this.defend_value_max) {
-      this.defend_value += 1;
+    } else {
+      if (this.fall_value < this.fall_value_max) {
+        this.fall_value += 1;
+      }
+      if (this.defend_value < this.defend_value_max) {
+        this.defend_value += 1;
+      }
     }
   }
 

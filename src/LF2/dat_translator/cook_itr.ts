@@ -44,6 +44,12 @@ export default function cook_itr(itr?: Partial<IItrInfo>) {
       break;
     }
   }
+  const kind_name = (ItrKind as any)[itr.kind!];
+  if (kind_name) (itr as any).kind_name = `ItrKind.${kind_name}`;
+
+  const effect_name = (ItrEffect as any)[itr.effect!];
+  if (effect_name) (itr as any).effect_name = `ItrEffect.${effect_name}`;
+
   switch (itr.kind) {
     case ItrKind.Normal: {
       const cond_maker = new CondMaker<C_Val>()

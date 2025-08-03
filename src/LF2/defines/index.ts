@@ -1,4 +1,5 @@
 export * from "./Action";
+export * from "./ArmorEnum";
 export * from "./BdyKind";
 export * from "./Builtin_FrameId";
 export * from "./BuiltIn_OID";
@@ -45,6 +46,7 @@ export * from "./IWpointInfo";
 export * from "./OpointKind";
 export * from "./OpointMultiEnum";
 export * from "./OpointSpreading";
+export * from "./SparkEnum";
 export * from "./SpeedMode";
 export * from "./StateEnum";
 export * from "./WeaponType";

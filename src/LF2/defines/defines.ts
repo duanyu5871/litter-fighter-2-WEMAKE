@@ -44,9 +44,18 @@ export namespace Defines {
   export const DEFAULT_ITR_MOTIONLESS: number = 4;
   export const DEFAULT_CATCH_TIME: number = 680;
   export const DEFAULT_ITR_FALL: number = 40;
+
+  /**
+   * 默认值：当角色fall_value低于DEFAULT_FALL_VALUE_DIZZY时，角色应当进入眩晕状态
+   *
+   * @type {number}
+   * @memberof World
+   */
   export const DEFAULT_FALL_VALUE_DIZZY: number = 40;
+
   export const DAFUALT_QUBE_LENGTH: number = 24;
   export const DEFAULT_RESTING_MAX: number = 30;
+  export const DEFAULT_TOUGHNESS_RESTING_MAX: number = 30;
 
   /**
    * 默认值：角色进入场地时的闪烁无敌时间
@@ -338,5 +347,8 @@ export namespace Defines {
     PAGEDOWN: "PG↓",
     PAGEUP: "PG↑",
   }
+
+  export const DEFAULT_BREAK_DEFEND_VALUE = 32;
 }
+
 export default Defines;

@@ -1,6 +1,7 @@
 import { IIntersection } from "./3d";
 import {
   Callbacks, get_short_file_size_txt, Loader, new_id,
+  new_team,
   NoEmitCallbacks,
   PIO
 } from "./base";
@@ -555,7 +556,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
     character.velocity_0.z = vz;
     character.facing = old_facing;
     character.name = player_info.name;
-    character.team = player_info.team;
+    character.team = player_info.team ?? new_team();
     character.enter_frame({ id: old_frame_id });
     if (!old) {
       this.random_entity_info(character);

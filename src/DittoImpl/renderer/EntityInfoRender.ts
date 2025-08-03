@@ -1,12 +1,12 @@
-import type { IBillboardNode, IMeshNode, IObjectNode } from "../../LF2/3d";
+import type { IBillboardNode, IObjectNode } from "../../LF2/3d";
 import { get_team_shadow_color } from "../../LF2/base/get_team_shadow_color";
 import { get_team_text_color } from "../../LF2/base/get_team_text_color";
 import { GameKey, IVector3, Labels } from "../../LF2/defines";
 import Ditto from "../../LF2/ditto";
 import type { Entity } from "../../LF2/entity/Entity";
 import type IEntityCallbacks from "../../LF2/entity/IEntityCallbacks";
-import type { LF2 } from "../../LF2/LF2";
 import * as T from "../3d/_t";
+import { Bar } from "./Bar";
 import { WorldRenderer } from "./WorldRenderer";
 
 const BAR_W = 40;
@@ -15,7 +15,7 @@ const BAR_BG_W = BAR_W + 2;
 const BAR_BG_H = 1 + (BAR_H + 1) * 2 + 4;
 const geo_map = new Map<string, T.PlaneGeometry>();
 
-function get_bar_geo(w: number, h: number, ax: number, ay: number) {
+export function get_bar_geo(w: number, h: number, ax: number, ay: number) {
   const key = `w_h_a_${w}_${h}`;
   let ret = geo_map.get(key);
   if (!ret)
@@ -27,7 +27,7 @@ function get_bar_geo(w: number, h: number, ax: number, ay: number) {
 }
 
 const material_map = new Map<T.ColorRepresentation, T.MeshBasicMaterial>();
-function get_color_material(color: T.ColorRepresentation) {
+export function get_color_material(color: T.ColorRepresentation) {
   const key =
     typeof color === "string" || typeof color === "number"
       ? `c_${color}`
@@ -43,43 +43,6 @@ function get_color_material(color: T.ColorRepresentation) {
     );
   return ret;
 }
-class Bar {
-  readonly mesh: IMeshNode;
-  protected _max: number = 1;
-  protected _val: number = 1;
-
-  set max(v: number) {
-    this._max = v;
-    this.mesh.set_scale_x(this._val / this._max);
-  }
-  set val(v: number) {
-    this._val = Math.max(0, v);
-    this.mesh.set_scale_x(this._val / this._max);
-  }
-  set color(color: string) {
-    this.mesh.material = get_color_material(color)
-  }
-  constructor(
-    lf2: LF2,
-    color: T.ColorRepresentation,
-    w: number,
-    h: number,
-    ax: number,
-    ay: number,
-  ) {
-    this.mesh = new Ditto.MeshNode(lf2, {
-      geometry: get_bar_geo(w, h, ax, ay),
-      material: get_color_material(color),
-    });
-  }
-
-  set(val: number, max: number) {
-    this._max = max;
-    this._val = val;
-    this.mesh.set_scale_x(this._val / this._max);
-  }
-}
-
 export class EntityInfoRender implements IEntityCallbacks {
   readonly renderer_type: string = "Info";
   protected name_node: IBillboardNode;
@@ -94,6 +57,7 @@ export class EntityInfoRender implements IEntityCallbacks {
 
   protected fall_value_bar: Bar;
   protected defend_value_bar: Bar;
+  protected toughness_value_bar: Bar;
 
   entity: Entity;
   protected heading: number = 0;
@@ -146,27 +110,31 @@ export class EntityInfoRender implements IEntityCallbacks {
 
     this.fall_value_bar = new Bar(lf2, "rgb(216, 115, 0)", BAR_W, 1, 0.5, 1);
     this.defend_value_bar = new Bar(lf2, "rgb(0, 122, 71)", BAR_W, 1, 0.5, 1);
+    this.toughness_value_bar = new Bar(lf2, "rgba(0, 204, 255, 1)", BAR_W, 1, 0.5, 1);
 
     this.name_node.name = EntityInfoRender.name;
     this.name_node.render_order = 0;
     this.entity = entity;
 
     let y = -1;
-
     this.bars_bg.mesh.set_position(-1, -2);
     this.bars_node.add(this.bars_bg.mesh);
 
     this.self_healing_hp_bar.mesh.set_position(0, y);
+    this.self_healing_hp_bar.set(entity.hp, entity.hp_max);
     this.bars_node.add(this.self_healing_hp_bar.mesh);
 
     this.hp_bar.mesh.set_position(0, y);
+    this.hp_bar.set(entity.hp, entity.hp_max);
     this.bars_node.add(this.hp_bar.mesh);
     y = y - 1 - BAR_H;
 
     this.self_healing_mp_bar.mesh.set_position(0, y);
+    this.self_healing_mp_bar.set(entity.mp, entity.mp_max);
     this.bars_node.add(this.self_healing_mp_bar.mesh);
 
     this.mp_bar.mesh.set_position(0, y);
+    this.mp_bar.set(entity.mp, entity.mp_max);
     this.bars_node.add(this.mp_bar.mesh);
 
     y = y - 1;
@@ -179,10 +147,10 @@ export class EntityInfoRender implements IEntityCallbacks {
     this.defend_value_bar.set(entity.defend_value, entity.defend_value_max);
     this.bars_node.add(this.defend_value_bar.mesh);
 
-    this.hp_bar.set(entity.hp, entity.hp_max);
-    this.mp_bar.set(entity.mp, entity.mp_max);
-    this.self_healing_hp_bar.set(entity.hp, entity.hp_max);
-    this.self_healing_mp_bar.set(entity.mp, entity.mp_max);
+    this.toughness_value_bar.mesh.set_position(0, y);
+    this.toughness_value_bar.set(entity.toughness, entity.toughness_max);
+    this.bars_node.add(this.toughness_value_bar.mesh);
+
 
     for (const [k, { node, pos }] of this.key_nodes) {
       node.name = `key ${k}`;
@@ -260,6 +228,13 @@ export class EntityInfoRender implements IEntityCallbacks {
   on_defend_value_max_changed(_e: Entity, value: number): void {
     this.defend_value_bar.max = value;
   }
+  on_toughness_changed(_e: Entity, value: number): void {
+    this.toughness_value_bar.val = value;
+  }
+  on_toughness_max_changed(_e: Entity, value: number): void {
+    this.toughness_value_bar.max = value;
+  }
+
   on_healing_changed(e: Entity, value: number, prev: number): void {
     this.heading = value;
     this.hp_bar.color = Math.floor(value) % 2 ? "rgb(255, 130, 130)" : "rgb(255,0,0)"

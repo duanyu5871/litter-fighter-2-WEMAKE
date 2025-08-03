@@ -113,12 +113,12 @@ export class BotController extends BaseController {
     return { x: px, z: pz, next_x: x, next_z: z };
   }
 
-  protected key_up(...ks: TLooseGameKey[]): this {
+  key_up(...ks: TLooseGameKey[]): this {
     for (const k of ks) this.is_end(k) || this.end(k)
     return this;
   }
 
-  protected key_down(...ks: TLooseGameKey[]): this {
+  key_down(...ks: TLooseGameKey[]): this {
     for (const k of ks) this.is_end(k) && this.start(k)
     return this;
   }

@@ -10,7 +10,6 @@ export enum ItrKind {
    * * [X] WEMAKE
    */
   Normal = 0,
-  _0 = 0,
 
   /**
    * 抓起眩晕的角色
@@ -137,7 +136,6 @@ export enum ItrKind {
    *    - 反弹state3000与3002的ball
    */
   JohnShield = 9,
-  _9 = 9,
 
   /**
    *  henry d^j
@@ -160,10 +158,8 @@ export enum ItrKind {
    *
    */
   Whirlwind = 15,
-  _15 = 15,
 
   Freeze = 16,
-  _16 = 16,
 }
 export const ItrKindDescriptionMap: Record<ItrKind, string> = {
   [ItrKind.Normal]: "普通（可配合effect）",

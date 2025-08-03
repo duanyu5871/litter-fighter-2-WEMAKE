@@ -125,6 +125,9 @@ export function make_frames(
       cpoint: cpoint_list[0],
       ...fields,
     };
+    const state_name = StateEnum[frame.state!]
+    if (state_name) (frame as any).state_name = `StateEnum.${state_name}`
+
     if (error) (frame as any).__ERROR__ = error;
     if (
       (raw_next >= 1100 && raw_next <= 1299) ||
