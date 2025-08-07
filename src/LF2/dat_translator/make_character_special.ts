@@ -40,6 +40,7 @@ export function make_character_special(data: IEntityData) {
       data.base.armor = {
         hit_sounds: ["data/085.wav.mp3"],
         type: ArmorEnum.Defend,
+        fulltime: false,
         toughness: 30,
       };
       make_louis_data(data)

@@ -21,12 +21,12 @@ export async function convert_pic(
     "magick",
     src_path,
     "-alpha",
-    "set",
+    "on",
     "-fill",
     "rgba(0,0,0,0)",
     "-opaque",
     "rgb(0,0,0)",
-    "PNG24:" + dst_path,
+    dst_path,
   );
 }
 convert_pic.get_dst_path = get_dst_path;
@@ -64,12 +64,12 @@ export async function convert_pic_2(
     "1",
     ...remove_lines,
     "-alpha",
-    "set",
+    "on",
     "-fill",
     "rgba(0,0,0,0)",
     "-opaque",
     "rgb(0,0,0)",
-    "PNG24:" + dst_path,
+    dst_path,
   ];
   await exec_cmd("magick", ...args);
 }

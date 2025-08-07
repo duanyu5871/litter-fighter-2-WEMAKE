@@ -213,7 +213,11 @@ export class BaseController {
     else
       ++this._time;
 
-    if (this.queue.length) {
+    if (
+      !this.entity.shaking &&
+      !this.entity.motionless &&
+      this.queue.length
+    ) {
       for (const [status, k] of this.queue) {
         switch (status) {
           case 0:
@@ -295,12 +299,9 @@ export class BaseController {
         }
       }
     }
-    if (this.keys[GameKey.a].is_hit()) debugger;
     this.check_hit_seqs(hit?.sequences, ret);
-
     /** 这里不想支持过长的指令 */
     if (this._key_list && this._key_list.length >= 10) this._key_list = void 0;
-
     return ret;
   }
 

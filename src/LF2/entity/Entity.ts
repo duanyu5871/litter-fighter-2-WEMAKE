@@ -1425,8 +1425,9 @@ export class Entity implements IDebugging {
       px - face_a * (centerx_a - c_a.x) + face_b * (centerx_b - c_b.x);
     this.position.y = round(py + centery_a - c_a.y + c_b.y - centery_b);
     this.position.z = round(pz);
-    if (c_b.cover === 11 || c_b.cover === 1) this.position.z -= 0.5;
-    else if (c_b.cover === 10 || c_b.cover === 0) this.position.z += 0.5;
+    if (c_b.cover === 10 || c_b.cover === 0) this.position.z += 1;
+    else if (c_b.cover === 11 || c_b.cover === 1) this.position.z -= 1;
+    else this.position.z -= 1;
   }
 
   /**
@@ -1525,18 +1526,10 @@ export class Entity implements IDebugging {
   on_collision(collision: ICollision): void {
     this.collision_list.push((this.lastest_collision = collision));
     const { itr } = collision;
-
-    if (is_ball(collision.victim)) {
-      this.shaking = itr.motionless ?? collision.victim.world.itr_motionless;
-    } else {
-      this.motionless = itr.motionless ?? collision.victim.world.itr_motionless;
-    }
-
     if (itr.arest) {
       this._a_rest = itr.arest + this.world.arest_offset;
     } else if (!itr.vrest) {
-      this._a_rest =
-        this.wait + this.motionless + 2 + this.world.arest_offset_2;
+      this._a_rest = Defines.DEFAULT_ITR_MOTIONLESS * 2 + this.world.arest_offset_2;
     }
 
     if (itr.actions?.length) {
@@ -1545,6 +1538,15 @@ export class Entity implements IDebugging {
           continue;
         itr_action_handlers[action.type](action, collision)
       }
+    }
+    if (
+      itr.kind !== ItrKind.Block &&
+      itr.kind !== ItrKind.Whirlwind &&
+      itr.kind !== ItrKind.MagicFlute &&
+      itr.kind !== ItrKind.MagicFlute2
+    ) {
+      const sounds = this.data.base.hit_sounds;
+      this.play_sound(sounds);
     }
   }
 
@@ -1576,7 +1578,6 @@ export class Entity implements IDebugging {
   on_be_collided(collision: ICollision): void {
     this.collided_list.push((this.lastest_collided = collision));
     const { itr, bdy } = collision;
-    this.shaking = itr.shaking ?? collision.attacker.world.itr_shaking;
     if (collision.v_rest !== void 0) {
       this.v_rests.set(collision.attacker.id, collision);
     }
@@ -1825,8 +1826,7 @@ export class Entity implements IDebugging {
         "frame not find! id:",
         id,
       );
-      debugger;
-      return EMPTY_FRAME_INFO;
+      return this.find_auto_frame();
     }
     return this.data.frames[id];
   }

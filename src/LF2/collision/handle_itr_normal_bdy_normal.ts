@@ -1,12 +1,15 @@
 import { ICollision } from "../base";
-import { ArmorEnum, Defines, ItrEffect, SparkEnum, StateEnum } from "../defines";
+import { Defines, ItrEffect, SparkEnum, StateEnum } from "../defines";
 import { is_character, same_face, turn_face } from "../entity";
 import { handle_itr_kind_freeze } from "./handle_itr_kind_freeze";
-import { handle_fall, take_injury } from "./handle_itr_kind_normal";
+import { handle_fall, take_injury } from "./handle_fall";
+import { is_armor_work } from "./is_armor_work";
 
 export function handle_itr_normal_bdy_normal(collision: ICollision) {
   if (is_armor_work(collision)) return;
   const { itr, attacker, victim, a_cube, b_cube } = collision;
+  attacker.motionless = itr.motionless ?? collision.victim.world.itr_motionless;
+  victim.shaking = itr.shaking ?? collision.attacker.world.itr_shaking;
   switch (itr.effect) {
     case ItrEffect.Fire:
     case ItrEffect.MFire1:
@@ -47,7 +50,6 @@ export function handle_itr_normal_bdy_normal(collision: ICollision) {
     case ItrEffect.Normal:
     case ItrEffect.Sharp:
     case void 0: {
-
       const { fall = Defines.DEFAULT_ITR_FALL } = itr;
       take_injury(itr, victim, attacker);
       victim.fall_value -= fall;
@@ -99,45 +101,3 @@ export function handle_itr_normal_bdy_normal(collision: ICollision) {
   }
 }
 
-export function is_armor_work(collision: ICollision): boolean {
-  const { victim } = collision;
-  const { armor } = victim;
-
-  if (!armor || victim.toughness <= 0) return false;
-
-  const { itr } = collision;
-  const { effect } = itr
-  if (!armor.fireproof && (
-    effect === ItrEffect.Fire ||
-    effect === ItrEffect.MFire1 ||
-    effect === ItrEffect.MFire2 ||
-    effect === ItrEffect.FireExplosion
-  )) return false;
-
-  if (!armor.antifreeze && (
-    effect === ItrEffect.Ice2 ||
-    effect === ItrEffect.Ice
-  )) return false
-
-  const { bdefend = Defines.DEFAULT_BREAK_DEFEND_VALUE } = itr;
-  if (bdefend >= Defines.DEFAULT_FORCE_BREAK_DEFEND_VALUE) return false;
-
-  const { a_cube, b_cube } = collision;
-  const { fall_value_max } = victim
-  const { type, hit_sounds, dead_sounds = hit_sounds } = armor;
-  const { fall = Defines.DEFAULT_ITR_FALL } = itr;
-  let decrease_value = 0;
-  switch (type) {
-    case ArmorEnum.Fall: decrease_value = fall; break;
-    case ArmorEnum.Defend: decrease_value = bdefend; break;
-  }
-  victim.toughness -= decrease_value;
-  const [x, y, z] = victim.spark_point(a_cube, b_cube)
-  const spark_type = fall >= fall_value_max - Defines.DEFAULT_FALL_VALUE_DIZZY ?
-    SparkEnum.SlientCriticalHit :
-    SparkEnum.SlientHit
-  victim.world.spark(x, y, z, spark_type);
-  const sounds = victim.toughness > 0 ? hit_sounds : dead_sounds;
-  if (sounds) for (const s of sounds) victim.lf2.sounds.play(s, x, y, z)
-  return true;
-}

@@ -33,9 +33,20 @@ export interface IArmorInfo {
    */
   antifreeze?: number;
 
-  toughness: number;
+  /**
+   * 
+   */
+  fulltime?: boolean;
 
-  type: ArmorEnum | string; // hp? times? fall? defend?
+  /** 
+   * 通过itr的什么值来扣除toughness 
+   * 
+   * @type {ArmorEnum | string}
+   * @memberof IArmorInfo
+   */
+  type: ArmorEnum | string;
+
+  toughness: number;
 
   fall_value?: number;
 

@@ -177,16 +177,13 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
   }
   on_click_character?: (c: Entity) => void;
 
-  protected _offset_map = new Map<string, number>()
   protected find_in_zip(paths: string[], mark: string): IZipObject | undefined {
-    const offset = this._offset_map.get(mark) || 0;
     const len = paths.length;
     for (let i = 0; i < len; i++) {
-      const idx = (offset + i) % len
+      const idx = i
       const path = paths[idx];
       const obj = fisrt(this.zips, (z) => z.file(path));
       if (!obj) continue;
-      this._offset_map.set(mark, idx)
       return obj;
     }
   }
@@ -525,16 +522,10 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
 
   add_player_character(player_id: string, character_id: string) {
     const player_info = this.players.get(player_id);
-    if (!player_info) {
-      debugger;
-      return;
-    }
+    if (!player_info) { debugger; return; }
 
     const data = this.datas.characters.find((v) => v.id === character_id);
-    if (!data) {
-      debugger;
-      return;
-    }
+    if (!data) { debugger; return; }
     let x = 0;
     let y = 0;
     let z = 0;

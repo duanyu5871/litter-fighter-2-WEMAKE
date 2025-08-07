@@ -1,6 +1,6 @@
 import { Defines, StateEnum } from "../defines";
 import { ICollision } from "../base/ICollision";
-import { take_injury } from "./handle_itr_kind_normal";
+import { take_injury } from "./handle_fall";
 
 export function handle_itr_kind_freeze(c: ICollision) {
   const { itr, victim, attacker } = c;
