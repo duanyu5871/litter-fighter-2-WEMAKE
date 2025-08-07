@@ -21,6 +21,7 @@ import {
   IPointingsCallback,
   ISounds,
   IZip,
+  IZipObject,
 } from "./ditto";
 import { BlobUrl, HitUrl } from "./ditto/importer";
 import { Entity } from "./entity";
@@ -175,6 +176,22 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
       if (id === which) return player;
   }
   on_click_character?: (c: Entity) => void;
+
+  protected _offset_map = new Map<string, number>()
+  protected find_in_zip(paths: string[], mark: string): IZipObject | undefined {
+    const offset = this._offset_map.get(mark) || 0;
+    const len = paths.length;
+    for (let i = 0; i < len; i++) {
+      const idx = (offset + i) % len
+      const path = paths[idx];
+      const obj = fisrt(this.zips, (z) => z.file(path));
+      if (!obj) continue;
+      this._offset_map.set(mark, idx)
+      return obj;
+    }
+  }
+
+
   /**
    * TODO
    *
@@ -184,15 +201,12 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
    * @memberof LF2
    */
   @PIO
-  async import_json<C = any>(path: string): Promise<C> {
-    const paths = get_import_fallbacks(path);
-    for (const path of paths) {
-      const zip_obj = fisrt(this.zips, (z) => z.file(path));
-      if (!zip_obj) continue;
-      return zip_obj.json() as C;
-    }
-    const v = await ditto.Importer.import_as_json<C>(paths);
-    return v[0];
+  async import_json<C = any>(path: string): Promise<[C, HitUrl]> {
+    const [paths, mark] = get_import_fallbacks(path);
+    const zip_obj = this.find_in_zip(paths, mark)
+    if (zip_obj) return [await zip_obj.json<C>(), zip_obj.name];
+    const ret = await ditto.Importer.import_as_json<C>(paths);
+    return ret;
   }
 
   /**
@@ -203,22 +217,16 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
    * @memberof LF2
    */
   @PIO async import_resource(path: string): Promise<[BlobUrl, HitUrl]> {
-    const paths = get_import_fallbacks(path);
-    for (const path of paths) {
-      const zip_obj = fisrt(this.zips, (z) => z.file(path));
-      if (!zip_obj) continue;
-      return [await zip_obj.blob_url(), zip_obj.name];
-    }
+    const [paths, mark] = get_import_fallbacks(path);
+    const zip_obj = this.find_in_zip(paths, mark)
+    if (zip_obj) return [await zip_obj.blob_url(), zip_obj.name];
     return ditto.Importer.import_as_blob_url(paths);
   }
 
   @PIO async import_array_buffer(path: string): Promise<[ArrayBuffer, HitUrl]> {
-    const paths = get_import_fallbacks(path);
-    for (const path of paths) {
-      const zip_obj = fisrt(this.zips, (z) => z.file(path));
-      if (!zip_obj) continue;
-      return [await zip_obj.array_buffer(), zip_obj.name];
-    }
+    const [paths, mark] = get_import_fallbacks(path);
+    const zip_obj = this.find_in_zip(paths, mark)
+    if (zip_obj) return [await zip_obj.array_buffer(), zip_obj.name];
     return ditto.Importer.import_as_array_buffer(paths);
   }
 
@@ -622,7 +630,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
 
   async load_ui(): Promise<ICookedUIInfo[]> {
     if (this._uiinfos.length) return this._uiinfos;
-    const array = await this.import_json("layouts/index.json").catch((e) => []);
+    const array = await this.import_json("layouts/index.json").then(r => r[0]).catch((e) => []);
     this._uiinfos_loaded = false;
     const paths: string[] = ["launch/init.json", "launch/loading_anim.json"];
     for (const element of array) {

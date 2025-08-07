@@ -50,25 +50,51 @@ function get_req_header_accept(url: string): string | undefined {
 
   return void 0;
 }
+async function start_req<T>(url: string, responseType: "json" | "blob" | 'arraybuffer') {
+  const headers: RawAxiosRequestHeaders = {};
+  const accept = get_req_header_accept(url);
+  if (accept) headers.Accept = accept;
+  return await axios.get<T>(url, { responseType, headers });
+};
 async function import_as<T>(
   responseType: "json" | "blob" | 'arraybuffer',
   urls: string[],
 ): Promise<[AxiosResponse<T, any>, string]> {
-  const start_req = async (url: string) => {
-    const headers: RawAxiosRequestHeaders = {};
-    const accept = get_req_header_accept(url);
-    if (accept) headers.Accept = accept;
-    return await axios.get<T>(url, { responseType, headers });
-  };
-  const err_list: [string, any][] = [];
-  for (const url of urls) {
-    try {
-      return [await start_req(url), url];
-    } catch (e) {
-      err_list.push([url, e]);
+
+  return new Promise((resolve, reject) => {
+    let done = false
+    const results: ({ data: [AxiosResponse, string], type: 1 } | { data: [string, any], type: 0 } | null)[] = []
+    for (let i = 0; i < urls.length; ++i) {
+      results[i] = null;
+      const url = urls[i]
+      start_req<T>(url, responseType).then(data => {
+        results[i] = { data: [data, url], type: 1 };
+      }).catch((e) => {
+        results[i] = { data: [url, e], type: 0 }
+      }).finally(() => {
+        const errors: [string, any][] = []
+        for (let i = 0; i < results.length; ++i) {
+          const r = results[i]
+          if (!r) return;
+          if (r.type === 0) {
+            errors.push(r.data)
+            continue;
+          }
+          if (r.type === 1) {
+            done = true;
+            return resolve(r.data)
+          }
+        }
+        if (errors.length === results.length) {
+          done = true;
+          reject(new ImportError(urls, errors))
+        }
+      })
     }
-  }
-  throw new ImportError(urls, err_list);
+    setTimeout(() => {
+      if (!done) debugger;
+    }, 5000);
+  })
 }
 
 export class __Importer implements IImporter {

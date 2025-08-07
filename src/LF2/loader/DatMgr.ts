@@ -110,11 +110,11 @@ class Inner {
       const src = (Defines.BuiltIn_Dats as any)[k];
       if (!is_non_blank_str(src)) continue;
       this.lf2.on_loading_content(`${src}`, 0);
-      await this._add_data(src, await this.lf2.import_json(src));
+      await this._add_data(src, await this.lf2.import_json(src).then(r => r[0]));
     }
 
     const { objects = [], backgrounds = [] } =
-      await this.lf2.import_json<Partial<IDataLists>>("data/data.json")
+      await this.lf2.import_json<Partial<IDataLists>>("data/data.json").then(r => r[0])
         .catch(() => ({} as Partial<IDataLists>));
     if (this.cancelled) throw new Error("cancelled");
 
@@ -123,12 +123,12 @@ class Inner {
       if (this.cancelled) throw new Error("cancelled");
 
       this.lf2.on_loading_content(`${file}`, 0);
-      await this._add_data(id, await this.lf2.import_json(file));
+      await this._add_data(id, await this.lf2.import_json(file).then(r => r[0]));
     }
     for (const { id, file } of backgrounds) {
       if (this.cancelled) throw new Error("cancelled");
       this.lf2.on_loading_content(`${file}`, 0);
-      await this._add_data(id, await this.lf2.import_json(file));
+      await this._add_data(id, await this.lf2.import_json(file).then(r => r[0]));
     }
     for (const [, v] of this.data_map) {
       if (this.cancelled) throw new Error("cancelled");
@@ -140,7 +140,7 @@ class Inner {
     const stage_file = "data/stage.json";
     this.lf2.on_loading_content(`${stage_file}`, 0);
 
-    const stages = await this.lf2.import_json<IStageInfo[]>("data/stage.json").catch(e => [])
+    const stages = await this.lf2.import_json<IStageInfo[]>("data/stage.json").then(r => r[0]).catch(e => [])
 
     if (!this.stages.find(v => v.id === Defines.VOID_STAGE.id))
       this.stages.unshift(Defines.VOID_STAGE)

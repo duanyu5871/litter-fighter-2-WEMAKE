@@ -38,7 +38,7 @@ async function find_ui_template(lf2: LF2, parent: Unsafe<ICookedUIInfo>, templat
   }
   if (raw_template) return raw_template;
   try {
-    raw_template = await lf2.import_json<IUIInfo>(template_name);
+    raw_template = await lf2.import_json<IUIInfo>(template_name).then(r => r[0]);
   } catch (e) {
     Ditto.Warn(`[${find_ui_template.TAG}] ui template not found! template_name: ${template_name}`)
   }
