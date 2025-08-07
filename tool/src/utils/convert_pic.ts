@@ -16,7 +16,7 @@ export async function convert_pic(
       "magick not found, download it from: https://imagemagick.org/script/download.php",
     );
   await fs.rm(dst_path, { recursive: true, force: true }).catch((e) => void 0);
-  console.log("convert", src_path, "=>", dst_path);
+  console.log("convert pic 1", src_path, "=>", dst_path);
   await exec_cmd(
     "magick",
     src_path,
@@ -26,7 +26,7 @@ export async function convert_pic(
     "rgba(0,0,0,0)",
     "-opaque",
     "rgb(0,0,0)",
-    "PNG8:" + dst_path,
+    "PNG24:" + dst_path,
   );
 }
 convert_pic.get_dst_path = get_dst_path;
@@ -46,7 +46,7 @@ export async function convert_pic_2(
   const { col: row, row: col, cell_w, cell_h } = pic;
   const w = (cell_w + 1) * col;
   const h = (cell_h + 1) * row;
-  console.log("convert", src_path, "=>", dst_path);
+  console.log("convert pic 2", src_path, "=>", dst_path);
   const remove_lines: string[] = [];
   for (let col_idx = 0; col_idx < col; ++col_idx) {
     const x = (cell_w + 1) * (col_idx + 1) - 1;
@@ -69,7 +69,7 @@ export async function convert_pic_2(
     "rgba(0,0,0,0)",
     "-opaque",
     "rgb(0,0,0)",
-    "PNG8:" + dst_path,
+    "PNG24:" + dst_path,
   ];
   await exec_cmd("magick", ...args);
 }

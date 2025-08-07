@@ -248,6 +248,7 @@ export class BaseController {
     let F: "L" | "R" = facing === 1 ? "R" : "L";
     let B: "L" | "R" = facing === 1 ? "L" : "R";
 
+
     if (hit) {
       /** 相对方向的按钮判定 */
       if (hit.F && this.tst("hit", F) && !ret.time)
@@ -294,12 +295,12 @@ export class BaseController {
         }
       }
     }
-
-    const seqs = hit?.sequences;
-    this.check_hit_seqs(seqs, ret);
+    if (this.keys[GameKey.a].is_hit()) debugger;
+    this.check_hit_seqs(hit?.sequences, ret);
 
     /** 这里不想支持过长的指令 */
     if (this._key_list && this._key_list.length >= 10) this._key_list = void 0;
+
     return ret;
   }
 
@@ -307,34 +308,34 @@ export class BaseController {
     seqs: IHitKeyCollection["sequences"],
     ret: ControllerUpdateResult,
   ) {
-    if (seqs)
-      do {
-        /** 同时按键 判定 */
-        if (this.keys.d.is_hit()) {
-          const seq = Object.keys(seqs).find((v) => this.seq_test(v));
-          if (seq && seqs[seq]) {
-            for (const k of seq) this.keys[k as GameKey]?.use();
-            ret.set(seqs[seq], this._time, void 0, this._key_list);
-            this._key_list = void 0;
-            break;
-          } else {
-            ret.key_list = this._key_list;
-          }
-        }
-
-        /** 顺序按键 判定 */
-        if (
-          this._key_list &&
-          this._key_list.length >= 2 &&
-          seqs[this._key_list]
-        ) {
-          ret.set(seqs[this._key_list], this._time, void 0, this._key_list);
+    if (!seqs) return;
+    do {
+      /** 同时按键 判定 */
+      if (this.keys.d.is_hit()) {
+        const seq = Object.keys(seqs).find((v) => this.seq_test(v));
+        if (seq && seqs[seq]) {
+          for (const k of seq) this.keys[k as GameKey]?.use();
+          ret.set(seqs[seq], this._time, void 0, this._key_list);
           this._key_list = void 0;
           break;
         } else {
           ret.key_list = this._key_list;
         }
-      } while (0);
+      }
+
+      /** 顺序按键 判定 */
+      if (
+        this._key_list &&
+        this._key_list.length >= 2 &&
+        seqs[this._key_list]
+      ) {
+        ret.set(seqs[this._key_list], this._time, void 0, this._key_list);
+        this._key_list = void 0;
+        break;
+      } else {
+        ret.key_list = this._key_list;
+      }
+    } while (0);
   }
 
   private seq_test(str: string): boolean {

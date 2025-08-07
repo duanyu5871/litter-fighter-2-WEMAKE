@@ -88,7 +88,7 @@ async function main() {
         dst_path,
         indexes,
       );
-      if (!Array.isArray(json) && json && "is_game_obj_data" in json) {
+      if (!Array.isArray(json) && json) {
         let edited = false;
         for (const pic_name in json.base.files) {
           const file = json.base.files[pic_name];

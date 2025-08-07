@@ -42,7 +42,7 @@ export class KeyStatus {
   }
   is_start(): boolean {
     const { _t } = this;
-    return !!_t && _t === this.ctrl.time - 1;
+    return !!_t && _t === this.ctrl.time;
   }
   is_hit(): boolean {
     const { _t } = this;
