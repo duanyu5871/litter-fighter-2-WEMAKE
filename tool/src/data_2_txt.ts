@@ -18,7 +18,7 @@ export async function data_2_txt(src_path: string, dst_path: string) {
     dst_path = dst_path.replace(/.dat$/, ".txt");
     log(`data_2_txt: ${src_path} => ${dst_path}`);
     const data = await read_lf2_dat_file(src_path);
-    await fs.writeFile(src_path, data);
+    await fs.writeFile(dst_path, data);
     return;
   }
 
