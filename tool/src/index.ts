@@ -1,7 +1,6 @@
 import { readFileSync } from "fs";
-import fs, { readFile } from "fs/promises";
-import path, { join } from "path";
-import { ColonValueReader } from "../../src/LF2/dat_translator/ColonValueReader";
+import fs from "fs/promises";
+import path from "path";
 import { ILegacyPictureInfo } from "../../src/LF2/defines/ILegacyPictureInfo";
 import { CacheInfos } from "./utils/cache_infos";
 import { check_is_str_ok } from "./utils/check_is_str_ok";
@@ -11,8 +10,8 @@ import { convert_data_txt } from "./utils/convert_data_txt";
 import { convert_pic, convert_pic_2 } from "./utils/convert_pic";
 import { convert_sound } from "./utils/convert_sound";
 import { make_zip_and_json } from "./utils/make_zip_and_json";
-import { read_lf2_dat_file } from "./utils/read_lf2_dat_file";
 import { write_file } from "./utils/write_file";
+import { data_2_txt } from "./data_2_txt";
 const {
   RAW_LF2_PATH,
   DATA_DIR_PATH,
@@ -177,59 +176,6 @@ async function main() {
   await make_prel_zip();
 }
 
-async function DAT_2_TXT() {
-  check_is_str_ok(RAW_LF2_PATH, TXT_LF2_PATH);
-  try {
-    await fs.rm(TXT_LF2_PATH, { recursive: true, force: true });
-  } catch {}
-  async function a(path: string, t_path: string) {
-    try {
-      await fs.mkdir(t_path, { recursive: true });
-    } catch {}
-    const items = await fs.readdir(path);
-    for (const item of items) {
-      const sub_path = join(path, item);
-      let sub_t_path = join(t_path, item);
-      const stat = await fs.stat(sub_path);
-      if (stat.isDirectory()) {
-        await a(sub_path, sub_t_path);
-      } else if (stat.isFile()) {
-        if (item.endsWith(".dat")) {
-          sub_t_path = sub_t_path.replace(/.dat$/, ".txt");
-          console.log("reading", sub_path, "=>", sub_t_path);
-          const data = await read_lf2_dat_file(sub_path);
-          await fs.writeFile(sub_t_path, data);
-        } else {
-          // await fs.copyFile(sub_path, sub_t_path)
-        }
-      }
-    }
-  }
-  await a(RAW_LF2_PATH, TXT_LF2_PATH);
-
-  async function test() {
-    const src_str = await readFile(
-      join(TXT_LF2_PATH, "/bg/sys/bc/bg.txt"),
-    ).then((v) => v.toString());
-    const result = {
-      name: "",
-      width: 0,
-      zboundary: [0, 0],
-      shadow: "",
-      shadowsize: [0, 0],
-    };
-    const [, rem_str] = new ColonValueReader<typeof result>()
-      .str("name")
-      .int("width")
-      .int_2("zboundary")
-      .str("shadow")
-      .int_2("shadowsize")
-      .read(src_str, result);
-    console.log(src_str, "\n///////////////////////\n", rem_str);
-  }
-  await test();
-}
-
 switch (entry) {
   case EntryEnum.MAIN:
     main();
@@ -238,7 +184,7 @@ switch (entry) {
     console.log("need_help");
     break;
   case EntryEnum.DAT_2_TXT:
-    DAT_2_TXT();
+    data_2_txt(RAW_LF2_PATH, TXT_LF2_PATH);
     break;
   case EntryEnum.MAKE_PREL_ZIP:
     make_prel_zip();
