@@ -27,6 +27,7 @@ enum EntryEnum {
   HELP,
   DAT_2_TXT,
   MAKE_PREL_ZIP,
+  TOOL_DEV,
 }
 let entry = EntryEnum.MAIN;
 
@@ -41,6 +42,9 @@ for (let i = 2; i < process.argv.length; ++i) {
       break;
     case "--dat-2-txt":
       entry = EntryEnum.DAT_2_TXT;
+      break;
+    case "--tool-dev":
+      entry = EntryEnum.TOOL_DEV;
       break;
   }
 }
@@ -188,5 +192,8 @@ switch (entry) {
     break;
   case EntryEnum.MAKE_PREL_ZIP:
     make_prel_zip();
+    break;
+  case EntryEnum.TOOL_DEV:
+    console.log('!')
     break;
 }

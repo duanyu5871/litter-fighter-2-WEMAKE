@@ -1,55 +1,46 @@
 import { IEntityData } from "../defines";
 import { ILegacyPictureInfo } from "../defines/ILegacyPictureInfo";
 
+const suffix_reg = /\.[^.]*$/
+const get_letter = (offset: number) => String.fromCharCode(98 + offset);
+
 export function cook_file_variants(ret: IEntityData) {
   const file_keys = Object.keys(ret.base.files);
   if (!file_keys.length || file_keys.length % 2 !== 0)
     return;
-  file_keys.sort();
-  let has_variant = true;
-  for (let i = 0; i < file_keys.length / 2; ++i) {
-    const file_1 = ret.base.files[file_keys[i]] as ILegacyPictureInfo;
-    const file_2 = ret.base.files[file_keys[i + file_keys.length / 2]] as ILegacyPictureInfo;
-    if (file_1.cell_w !== file_2.cell_w ||
-      file_1.cell_h !== file_2.cell_h ||
-      file_1.row !== file_2.row ||
-      file_1.col !== file_2.col) {
-      has_variant = false;
-    }
-  }
-  if (has_variant) {
-    for (let i = 0; i < file_keys.length / 2; ++i) {
-      const file_1 = ret.base.files[file_keys[i]];
-      file_1.variants = [file_keys[i + file_keys.length / 2]];
-    }
-  }
-}
-
-(() => {
-  const a = [
-    "bandit_0.png", "bandit_1.png",
-    "bandit_0b.png", "bandit_1b.png",
-    "bandit_0c.png", "bandit_1c.png"
-  ]
-  const reg = /\.[^.]*$/
-
-  const v_idx_list = [0]
-  const first_str = a[0].replace(reg, '')
+  const infos: ILegacyPictureInfo[] = file_keys.sort().map(k => ret.base.files[k] as ILegacyPictureInfo)
+  const indexes = [0]
+  const first_str = infos[0].path.replace(suffix_reg, '')
   for (let i = 0; i < 16; ++i) {
-    const letter = String.fromCharCode(98 + i);
-    const v_idx = a.findIndex(v => v.replace(reg, '') === first_str + letter);
+    const letter = get_letter(i);
+    const v_idx = infos.findIndex(info => info.path.replace(suffix_reg, '') === first_str + letter);
     if (v_idx < 1) break;
-    v_idx_list.push(v_idx);
+    indexes.push(v_idx);
   }
-  const gap = v_idx_list.reduce<number | boolean>((pre, item, idx, arr) => {
+  const gap = indexes.reduce<number | null>((pre, item, idx, arr) => {
     if (idx === 0) return item;
     const diff = item - arr[idx - 1];
     if (idx === 1) return diff
-    return pre == diff ? pre : false
+    return pre === diff ? pre : null
   }, 0)
-  if (!gap) return false;
-
-
-  return gap
-})();
-
+  if (!gap) return;
+  let is_match = true;
+  for (let i = 0; i < gap; ++i) {
+    const template = infos[i]
+    const variants = indexes.slice(1).map(j => infos[j + i])
+    is_match = !variants.some((variant, idx) => {
+      const is_path_ok =
+        variant.path.replace(suffix_reg, '') ===
+        template.path.replace(suffix_reg, '') + get_letter(idx);
+      return !is_path_ok ||
+        variant.col !== template.col ||
+        variant.row !== template.row ||
+        variant.cell_w !== template.cell_w ||
+        variant.cell_h !== template.cell_h
+    })
+    if (!is_match) return;
+  }
+  for (let i = 0; i < gap; ++i) {
+    infos[i].variants = indexes.slice(1).map(j => infos[j + i].id)
+  }
+}
