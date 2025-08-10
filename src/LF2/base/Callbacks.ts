@@ -12,7 +12,9 @@ export class Callbacks<F extends {}> extends NoEmitCallbacks<F> {
     const set = this._map.get(fn_name);
     if (!set || !set.size) return EFUNC as any;
     const ret: any = (...args: any[]) => {
-      for (const v of set) {
+      const current_set = new Set(set);
+      // 避免当前循环添加的回调被出发
+      for (const v of current_set) {
         const f = (v as any)[fn_name];
         f.apply(v, args);
         if ('once' in v && v.once) set.delete(f)
