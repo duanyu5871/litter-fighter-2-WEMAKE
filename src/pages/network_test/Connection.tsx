@@ -1,22 +1,37 @@
+import { Callbacks } from "../../LF2/base";
+import { IReq, IReqRegister, IResp, IRespRegister, MsgEnum } from "../../net_msg_definition";
 import { IJob } from "./IJob";
-import { IResp, IReq } from "../../net_msg_definition";
 
+export interface IConnectionCallbacks {
+  once?: boolean;
+  on_open?(conn: Connection): void;
+  on_close?(conn: Connection): void;
+  on_register?(resp: IRespRegister, conn: Connection): void;
+  on_error?(event: Event, conn: Connection): void;
+}
 export class Connection {
-  private _pid = 1;
-  private _jobs = new Map<string, IJob>();
-  readonly inner: WebSocket;
+  readonly callbacks = new Callbacks<IConnectionCallbacks>()
+  protected _pid = 1;
+  protected _reopen?: () => void;
+  protected _jobs = new Map<string, IJob>();
+  protected _ws: WebSocket | null = null;
+  static TAG: string = 'Connection';
 
-  constructor(...args: ConstructorParameters<typeof WebSocket>) {
-    this.inner = new WebSocket(...args);
-    this.inner.onmessage = this.onmessage.bind(this);
-    this.inner.onopen = this.onopen.bind(this);
+  protected _on_error = (e: Event) => this.callbacks.emit('on_error')(e, this)
+
+  protected _on_open = () => {
+    this.callbacks.emit('on_open')(this)
+    this.send<IReqRegister, IRespRegister>({
+      type: MsgEnum.Register,
+      name: 'player_1'
+    }).then((resp) => {
+      this.callbacks.emit('on_register')(resp, this)
+    }).catch((e) => {
+      this.close();
+      this.callbacks.emit('on_error',)
+    })
   }
-  
-  onopen() {
-
-  }
-
-  onmessage(event: MessageEvent<any>) {
+  protected _on_message = (event: MessageEvent<any>) => {
     console.log('收到服务器消息:', event.data);
     const resp = JSON.parse(event.data) as IResp;
     const { pid, code, error } = resp;
@@ -31,10 +46,45 @@ export class Connection {
     }
   }
 
+  protected _on_close = () => {
+    this.callbacks.emit('on_close')(this)
+    this._ws = null;
+  }
+
+  open(...args: ConstructorParameters<typeof WebSocket>) {
+    switch (this._ws?.readyState) {
+      case WebSocket.CONNECTING:
+      case WebSocket.OPEN:
+      case WebSocket.CLOSING:
+        this._ws.close();
+        if (this._reopen) this._ws.removeEventListener('close', this._reopen);
+        this._reopen = () => this.open(...args)
+        this._ws.addEventListener('close', this._reopen, { once: true });
+        return;
+    }
+    this._reopen = void 0;
+    this._ws = new WebSocket(...args);
+    this._ws.addEventListener('message', this._on_message);
+    this._ws.addEventListener('open', this._on_open);
+    this._ws.addEventListener('close', this._on_close);
+    this._ws.addEventListener('error', this._on_error);
+  }
+
+  close() {
+    if (this._reopen) {
+      this._ws?.removeEventListener('close', this._reopen);
+      this._reopen = void 0
+    }
+    this._ws?.close()
+    this._ws = null
+  }
+
+
   send<Req extends IReq = IReq, Resp extends IResp = IResp>(msg: Omit<Req, 'pid'>, options?: { ignoreCode?: boolean; timeout?: number; }): Promise<Resp> {
+    if (!this._ws) return Promise.reject(new Error(`[${Connection.TAG}] not open`))
     const pid = `${++this._pid}`;
     const _req: IReq = { pid, ...msg };
-    this.inner.send(JSON.stringify(_req));
+    this._ws.send(JSON.stringify(_req));
     return new Promise<Resp>((resolve, reject) => {
       this._jobs.set(pid, { resolve: resolve as any, reject, ...options });
       const timeout = options?.timeout || 0;

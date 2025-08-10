@@ -1,6 +1,6 @@
 import list_fn from "../utils/container_help/list_fn";
 
-export class NoEmitCallbacks<F> {
+export class NoEmitCallbacks<F extends {}> {
   /**
    * 回调对象map
    *
@@ -24,13 +24,20 @@ export class NoEmitCallbacks<F> {
     if (!any_keys.size) return () => { };
 
     for (const key of any_keys) {
+      if (key === 'once') continue;
       let set = this._map.get(key);
       if (!set) this._map.set(key, (set = new Set()));
       set.add(v);
     }
-    return () => {
-      this.del(v);
-    };
+    return () => this.del(v);
+  }
+
+  once<K extends keyof F, V extends F[K] = F[K]>(k: K, f: V): () => void {
+    return this.add({ [k]: f, once: true } as unknown as F)
+  }
+
+  on<K extends keyof F, V extends F[K] = F[K]>(k: K, f: V): () => void {
+    return this.add({ [k]: f } as unknown as F)
   }
 
   /**

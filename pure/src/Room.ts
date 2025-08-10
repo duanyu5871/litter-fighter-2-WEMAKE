@@ -2,26 +2,40 @@ import { IResp, IRespCloseRoom, IRespOtherExitRoom, IRespOtherJoinRoom, IRoomInf
 import { RoomManager } from "./RoomManager";
 import type { User } from "./User";
 export class Room {
+  protected _title: string | undefined;
+  protected _max_users: number | undefined;
+
   readonly mgr: RoomManager;
   readonly id: string;
   private _users: User[] = []
   master?: User;
 
   get users(): Readonly<User[]> { return this._users; }
+  get title() { return this._title; }
+  get max_users() { return this._max_users; }
 
   constructor(mgr: RoomManager, id: string) {
     this.mgr = mgr;
     this.id = id;
   }
-
+  set_title(title: string | undefined) {
+    this._title = title
+    return this
+  }
+  set_max_users(max_users: number | undefined) {
+    this._max_users = max_users
+    return this
+  }
   info(): IRoomInfo {
     return {
+      title: this._title,
+      max_users: this._max_users,
       id: this.id,
       master: this.master?.info(),
       users: this._users.map(v => v.info())
     }
   }
-  
+
   add_user(user: User) {
     console.log(`[Room::add_user]`)
     const idx = this._users.findIndex(v => user === v);

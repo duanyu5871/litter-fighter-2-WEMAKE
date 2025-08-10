@@ -272,9 +272,6 @@ export function Select<T, V>(props: ISelectProps<T, V> | IMultiSelectProps<T, V>
             placeholder={not_empty ? void 0 : props.placeholder}
             suffix={
               <>
-                <Show show={loading}>
-                  <Loading loading={loading} />
-                </Show>
                 <Show.Div show={!loading && has_outer_arrow}>
                   {arrow}
                 </Show.Div>

@@ -7,4 +7,5 @@ export enum ErrCode {
   PlayersNotReady = 1005,
   InvalidRoomId = 1006,
   RoomNotFound = 1007,
+  InvalidRoomParameters = 1008,
 }

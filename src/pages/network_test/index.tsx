@@ -1,14 +1,16 @@
 
-import { useEffect, useRef, useState } from "react";
+import List from "rc-virtual-list";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "../../Component/Buttons/Button";
 import Combine from "../../Component/Combine";
+import Frame from "../../Component/Frame";
 import { Input } from "../../Component/Input";
+import Select from "../../Component/Select";
 import Show from "../../Component/Show";
 import { Space } from "../../Component/Space";
-import { Text } from "../../Component/Text";
-import { IReqCreateRoom, IReqJoinRoom, IReqListRooms, IReqRegister, IRespCreateRoom, IRespJoinRoom, IRespListRooms, IRoomInfo, MsgEnum } from "../../net_msg_definition";
+import { Strong, Text } from "../../Component/Text";
+import { IReqCreateRoom, IReqJoinRoom, IReqListRooms, IRespCreateRoom, IRespJoinRoom, IRespListRooms, IRoomInfo, MsgEnum } from "../../net_msg_definition";
 import { Connection } from "./Connection";
-import Select from "../../Component/Select";
 
 enum TriState {
   False = 0,
@@ -18,7 +20,6 @@ enum TriState {
 
 function Player() {
   const [connected, set_connected] = useState<TriState>(TriState.False);
-  const [registered, set_registered] = useState<TriState>(TriState.False);
 
   const [room_creating, set_room_creating] = useState<boolean>(false);
   const [room_joining, set_room_joining] = useState<boolean>(false);
@@ -27,54 +28,61 @@ function Player() {
   const [rooms, set_rooms] = useState<IRoomInfo[]>([])
   const ref_room_id = useRef<string>('')
 
-  const ref_ws = useRef<Connection | null>(null)
+  const ref_conn = useRef<Connection | null>(null)
+
+  const update_rooms = useCallback(() => {
+    const conn = ref_conn.current;
+    if (!conn) return;
+    set_rooms_loading(true)
+    conn.send<IReqListRooms, IRespListRooms>({
+      type: MsgEnum.ListRooms
+    }).then((r) => {
+      set_rooms(r.rooms ?? [])
+    }).finally(() => {
+      set_rooms_loading(false)
+    })
+  }, [])
+
   function disconnect() {
-    const ws = ref_ws.current
-    if (!ws) return;
-    ws.inner.close();
+    const conn = ref_conn.current
+    if (!conn) return;
+    conn.close();
     set_connected(0);
     set_room(void 0);
-    set_registered(0)
-    ref_ws.current = null
+    ref_conn.current = null
   }
   function connect() {
-    if (ref_ws.current) return;
-    const ws = ref_ws.current = new Connection('ws://localhost:8080');
+    if (ref_conn.current) return;
+    const conn = ref_conn.current = new Connection();
+    conn.open('ws://localhost:8080')
     set_connected(1);
-
-    ws.inner.addEventListener('open', () => {
-      console.log('已连接到服务器');
+    conn.callbacks.once('on_open', () => {
+      console.log('on_open');
+    })
+    conn.callbacks.once('on_close', () => {
+      console.log('on_close');
+    })
+    conn.callbacks.once('on_error', (err) => {
+      console.error('on_error:', err);
+    })
+    conn.callbacks.once('on_register', (resp) => {
+      console.log('on_register:', resp);
       set_connected(2);
-    }, { once: true })
-
-    ws.inner.addEventListener('close', () => {
-      disconnect()
-    }, { once: true });
-
-    ws.inner.addEventListener('error', (err) => {
-      console.error('连接错误:', err);
-      disconnect()
-    }, { once: true });
-  }
-  function register() {
-    const ws = ref_ws.current
-    if (!ws) return;
-    set_registered(1);
-    ws.send<IReqRegister>({ type: MsgEnum.Register, name: 'player_1' }).then(() => {
-      set_registered(2);
-    }).catch(e => {
-      console.error(e);
-      set_registered(0)
+      update_rooms()
     })
   }
 
-
   function create_room() {
-    const ws = ref_ws.current
-    if (!ws) return;
+    const conn = ref_conn.current
+    if (!conn) return;
     set_room_creating(true)
-    ws.send<IReqCreateRoom, IRespCreateRoom>({ type: MsgEnum.CreateRoom }).then((resp) => {
+    conn.send<IReqCreateRoom, IRespCreateRoom>({
+      type: MsgEnum.CreateRoom,
+      max_users: 8,
+      title: 'Hello World',
+    }).then((resp) => {
       set_room(resp.room)
+      update_rooms()
     }).catch(e => {
       console.log(e)
     }).finally(() => {
@@ -82,10 +90,10 @@ function Player() {
     })
   }
   function join_room() {
-    const ws = ref_ws.current;
-    if (!ws) return;
+    const conn = ref_conn.current;
+    if (!conn) return;
     set_room_joining(true)
-    ws.send<IReqJoinRoom, IRespJoinRoom>({ type: MsgEnum.JoinRoom, roomid: ref_room_id.current }).then((resp) => {
+    conn.send<IReqJoinRoom, IRespJoinRoom>({ type: MsgEnum.JoinRoom, roomid: ref_room_id.current }).then((resp) => {
       set_room(resp.room)
     }).catch(e => {
       console.log(e)
@@ -94,23 +102,6 @@ function Player() {
     })
   }
 
-  useEffect(() => {
-    const ws = ref_ws.current;
-    if (!ws) return;
-    if (registered === TriState.True) {
-      set_rooms_loading(true)
-      ws.send<IReqListRooms, IRespListRooms>({
-        type: MsgEnum.ListRooms
-      }).then((r) => {
-        set_rooms(r.rooms ?? [])
-      }).finally(() => {
-        set_rooms_loading(false)
-      })
-    } else {
-      set_rooms([])
-      set_rooms_loading(false)
-    }
-  }, [registered === TriState.True])
 
   return (
     <Space>
@@ -118,13 +109,8 @@ function Player() {
         {connected === 1 ? 'connecting...' : connected === 2 ? 'disconnect' : 'connect'}
       </Button>
       <Show show={connected}>
-        <Show show={registered !== 2}>
-          <Button size='s' disabled={registered != 0} onClick={register}>
-            {registered === 1 ? 'registering...' : 'register'}
-          </Button>
-        </Show>
         <Show show={room}>
-          <Text>room id: {room?.id}</Text>
+          <Text>room: {room?.id}</Text>
         </Show>
         <Show show={room_creating}>
           <Text>room creating...</Text>
@@ -132,13 +118,29 @@ function Player() {
         <Show show={room_joining}>
           <Text>room joining...</Text>
         </Show>
-        <Select
-          items={rooms}
-          loading={true}
-          parse={room => [room.id!, <>{room.master?.name}</>]}
-          placeholder="rooms"
-        />
-        <Show show={!room && registered && !room_joining && !room_creating}>
+        <Frame label='room list'>
+          <List data={rooms} itemKey={r => r.id!}>
+            {(room) => {
+              return (
+                <Space>
+                  <Strong>
+                    {room.title || room.id}
+                  </Strong>
+                  <Strong>
+                    {room.master?.name}
+                  </Strong>
+                  <Strong>
+                    人数:
+                    {room.users?.length}
+                    {room.max_users ? '/' + room.max_users : null}
+                  </Strong>
+                </Space>
+              )
+            }}
+          </List>
+        </Frame>
+
+        <Show show={!room && connected && !room_joining && !room_creating}>
           <Button size='s' onClick={create_room}>create room</Button>
           <Combine>
             <Input

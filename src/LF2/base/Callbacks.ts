@@ -1,6 +1,6 @@
 import { NoEmitCallbacks } from "./NoEmitCallbacks";
 const EFUNC = (..._args: any[]) => void 0
-export class Callbacks<F> extends NoEmitCallbacks<F> {
+export class Callbacks<F extends {}> extends NoEmitCallbacks<F> {
   /**
    * 获取指定回调名的回调函数
    *
@@ -12,7 +12,11 @@ export class Callbacks<F> extends NoEmitCallbacks<F> {
     const set = this._map.get(fn_name);
     if (!set || !set.size) return EFUNC as any;
     const ret: any = (...args: any[]) => {
-      for (const v of new Set(set)) (v as any)[fn_name].apply(v, args);
+      for (const v of set) {
+        const f = (v as any)[fn_name];
+        f.apply(v, args);
+        if ('once' in v && v.once) set.delete(f)
+      }
     };
     return ret;
   }
