@@ -232,7 +232,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
     this.datas = new DatMgr(this);
     this.sounds = new ditto.Sounds(this);
     this.images = new ImageMgr(this);
-    this.keyboard = new ditto.Keyboard();
+    this.keyboard = new ditto.Keyboard(this);
     this.keyboard.callback.add(this);
     this.pointings = new ditto.Pointings();
     this.pointings.callback.add(this);

@@ -48,7 +48,7 @@ export interface IDittoPack {
     ): Promise<IZip>;
   };
   Sounds: new (...args: any[]) => ISounds;
-  Keyboard: new (...args: any[]) => IKeyboard;
+  Keyboard: new (lf2: LF2, ...args: any[]) => IKeyboard;
   Pointings: new (...args: any[]) => IPointings;
   FullScreen: new (...args: any[]) => IFullScreen;
   Importer: IImporter;

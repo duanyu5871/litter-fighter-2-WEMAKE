@@ -1,11 +1,15 @@
-import { GameKey } from "../defines/GameKey";
+import { GameKey as GK } from "../defines/GameKey";
 import { IKeyboardCallback } from "../ditto/keyboard/IKeyboardCallback";
 import { IKeyEvent } from "../ditto/keyboard/IKeyEvent";
 import { Entity } from "../entity/Entity";
+import { PlayerInfo } from "../PlayerInfo";
+import { abs } from "../utils";
 import { BaseController } from "./BaseController";
+import { ControllerUpdateResult } from "./ControllerUpdateResult";
+import { CtrlDevice } from "./CtrlDevice";
 
-type TKeyCodeMap = { [x in GameKey]?: string };
-type TCodeKeyMap = { [x in string]?: GameKey };
+type TKeyCodeMap = { [x in GK]?: string };
+type TCodeKeyMap = { [x in string]?: GK };
 export class LocalController
   extends BaseController
   implements IKeyboardCallback {
@@ -13,6 +17,9 @@ export class LocalController
 
   private _key_code_map: TKeyCodeMap = {};
   private _code_key_map: TCodeKeyMap = {};
+  player_info?: PlayerInfo;
+  private _ax_using: number = 0;
+  private _ay_using: number = 0;
   on_key_up(e: IKeyEvent) {
     const code = e.key?.toLowerCase();
     if (!code) return;
@@ -38,12 +45,48 @@ export class LocalController
   set_key_code_map(key_code_map: TKeyCodeMap) {
     this._key_code_map = {};
     this._code_key_map = {};
-    for (const key of Object.keys(key_code_map) as GameKey[]) {
+    for (const key of Object.keys(key_code_map) as GK[]) {
       const code = key_code_map[key]?.toLowerCase();
       if (!code) continue;
       this._key_code_map[key] = code;
       this._code_key_map[code] = key;
     }
+  }
+
+  override update(): ControllerUpdateResult {
+    if (this.player_info?.id !== this.player_id)
+      this.player_info = this.lf2.players.get(this.player_id);
+    if (this.player_info && this.player_info.ctrl !== CtrlDevice.Keyboard) {
+      const [ax = 0, ay = 0] = this.lf2.keyboard.axes(this.player_info.ctrl - 1)
+
+      if (ax > 0.22) {
+        this._ax_using = 1
+        this.is_end(GK.R) && this.start(GK.R)
+        this.is_end(GK.L) || this.end(GK.L)
+      } else if (ax < -0.22) {
+        this._ax_using = 1
+        this.is_end(GK.L) && this.start(GK.L)
+        this.is_end(GK.R) || this.end(GK.R)
+      } else if (abs(ax) < 0.12 && this._ax_using) {
+        this._ax_using = 0
+        this.is_end(GK.L) || this.end(GK.L)
+        this.is_end(GK.R) || this.end(GK.R)
+      }
+      if (ay > 0.22) {
+        this._ay_using = 1
+        this.is_end(GK.D) && this.start(GK.D)
+        this.is_end(GK.U) || this.end(GK.U)
+      } else if (ay < -0.22) {
+        this._ay_using = 1
+        this.is_end(GK.U) && this.start(GK.U)
+        this.is_end(GK.D) || this.end(GK.D)
+      } else if (abs(ay) < 0.12 && this._ay_using) {
+        this._ay_using = 0
+        this.is_end(GK.U) || this.end(GK.U)
+        this.is_end(GK.D) || this.end(GK.D)
+      }
+    }
+    return super.update()
   }
 }
 export default LocalController;
