@@ -1,4 +1,4 @@
-import type { TKeys } from "../controller";
+import type { CtrlDevice, TKeys } from "../controller";
 
 export interface IPurePlayerInfo {
   id: string;
@@ -7,4 +7,5 @@ export interface IPurePlayerInfo {
   team: string;
   character: string;
   version: number;
+  ctrl: CtrlDevice;
 }

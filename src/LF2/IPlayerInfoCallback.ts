@@ -1,3 +1,4 @@
+import { CtrlDevice } from "./controller";
 import type { GameKey } from "./defines";
 
 export interface IPlayerInfoCallback {
@@ -10,4 +11,5 @@ export interface IPlayerInfoCallback {
   on_team_decided?(is_decided: boolean): void;
   on_is_com_changed?(is_com: boolean): void;
   on_random_character_changed?(character_id: string, prev: string): void;
+  on_ctrl_changed?(value: CtrlDevice, prev: CtrlDevice): void;
 }

@@ -19,7 +19,7 @@
         },
         {
           "id": "btn_ctrl_type",
-          "component": "player_ctrl_type()",
+          "component": "PlayerCtrlType()",
           "img": [
             {
               "w": 106,
@@ -47,10 +47,7 @@
               "path": "sprite/CS5.png"
             }
           ],
-          "pos": "0, 26",
-          "actions": {
-            "click": "loop_img()"
-          }
+          "pos": "0, 26"
         },
         {
           "id": "btn_key_set_U",

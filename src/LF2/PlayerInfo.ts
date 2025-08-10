@@ -1,5 +1,6 @@
-import { Callbacks, NoEmitCallbacks } from "./base";
+import { Callbacks } from "./base";
 import type { TKeys } from "./controller/BaseController";
+import { CtrlDevice } from "./controller/CtrlDevice";
 import { Defines, GameKey } from "./defines";
 import { IPurePlayerInfo } from "./defines/IPurePlayerInfo";
 import Ditto from "./ditto";
@@ -17,7 +18,6 @@ export class PlayerInfo implements IDebugging {
   protected _team_decided: boolean = false;
   protected _character_decided: boolean = false;
   protected _random_character: string = "";
-
   get id(): string { return this._info.id; }
   get storage_key() { return "player_info_" + this.id; }
   get name(): string { return this._info.name; }
@@ -39,12 +39,19 @@ export class PlayerInfo implements IDebugging {
   get character_decided(): boolean { return this._character_decided; }
   set character_decided(v: boolean) { this._character_decided = v; this.debug('setter:character_decided', v) }
 
+  get ctrl(): CtrlDevice { return this._info.ctrl; }
+  set ctrl(v: CtrlDevice) { this._info.ctrl = v; this.debug('setter:ctrl', v) }
+
   constructor(
     id: string,
     name: string = id,
     keys: TKeys = Defines.get_default_keys(id),
   ) {
-    this._info = { id, name, keys, team: "", version: 0, character: "" };
+    this._info = {
+      id, name, keys, team: "",
+      version: 0, character: "",
+      ctrl: CtrlDevice.Keyboard
+    };
     this.load();
     make_debugging(this)
   }
@@ -60,7 +67,6 @@ export class PlayerInfo implements IDebugging {
         data: JSON.stringify(this._info)
       })
     })
-
   }
 
   load() {
@@ -68,13 +74,14 @@ export class PlayerInfo implements IDebugging {
       if (!r) return
       const { data: str } = r
       try {
-        const { name, keys, version } = JSON.parse(str) as Partial<IPurePlayerInfo>;
+        const { name, keys, ctrl = this.ctrl, version } = JSON.parse(str) as Partial<IPurePlayerInfo>;
         if (version !== this._info.version) {
           this.warn("load", "version changed");
           return false;
         }
         if (is_str(name)) this.set_name(name, true)
         if (keys) for (const k in keys) this.set_key(k, keys[k as keyof typeof keys], true)
+        if (ctrl !== this.ctrl) this.set_ctrl(ctrl, true)
         return true;
       } catch (e) {
         this.warn("load", "load failed, ", e);
@@ -82,18 +89,24 @@ export class PlayerInfo implements IDebugging {
       }
     });
   }
-
+  set_ctrl(ctrl: CtrlDevice, emit: boolean): this {
+    const prev = this._info.ctrl;
+    if (prev === ctrl) return this;
+    this.ctrl = ctrl;
+    if (emit) this.callbacks.emit("on_ctrl_changed")(ctrl, prev);
+    return this;
+  }
   set_name(name: string, emit: boolean): this {
-    if (this._info.name === name) return this;
     const prev = this._info.name;
+    if (prev === name) return this;
     this.name = name;
     if (emit) this.callbacks.emit("on_name_changed")(name, prev);
     return this;
   }
 
   set_character(character: string, emit: boolean): this {
-    if (this._info.character === character) return this;
     const prev = this._info.character;
+    if (prev === character) return this;
     this.character = character;
     if (emit) this.callbacks.emit("on_character_changed")(character, prev);
     return this;
@@ -106,16 +119,16 @@ export class PlayerInfo implements IDebugging {
    * @returns {this}
    */
   set_random_character(character: string, emit: boolean): this {
-    if (this._random_character === character) return this;
     const prev = this._random_character;
+    if (prev === character) return this;
     this.random_character = character;
     if (emit) this.callbacks.emit("on_random_character_changed")(character, prev);
     return this;
   }
 
   set_team(team: string, emit: boolean): this {
-    if (this._info.team === team) return this;
     const prev = this._info.team;
+    if (prev === team) return this;
     this.team = team;
     if (emit) this.callbacks.emit("on_team_changed")(team, prev);
     return this;

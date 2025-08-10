@@ -43,6 +43,7 @@ import VerticalLayout from "./VerticalLayout";
 import { VsModeLogic } from "./VsModeLogic";
 import { IUICompnentCallbacks } from "./IUICompnentCallbacks";
 import { ImgLoop } from "./ImgLoop";
+import { PlayerCtrlType } from "./PlayerCtrlType";
 
 class ComponentFactory {
   static readonly TAG = `ComponentFactory`;
@@ -86,6 +87,7 @@ class ComponentFactory {
     [PositionAnimation.TAG, PositionAnimation],
     [Sounds.TAG, Sounds],
     [ImgLoop.TAG, ImgLoop],
+    [PlayerCtrlType.TAG, PlayerCtrlType]
   ]);
 
   register(key: string, Cls: typeof UIComponent) {
