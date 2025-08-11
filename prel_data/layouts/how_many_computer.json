@@ -1,6 +1,6 @@
 {
   "id": "how_many_computer",
-  "name": "how_many_computer",
+  "name": "UI: 电脑玩家数量选择框",
   "img": {
     "path": "sprite/CMC.png",
     "w": 365,
@@ -15,21 +15,19 @@
     {
       "txt": {
         "value": "How many Computer Players?",
+        "value#zh-hans": "有多少个电脑玩家？",
+        "value#zh-cn": "有多少个电脑玩家？",
+        "value#zh-sg": "有多少个电脑玩家？",
+        "value#zh-my": "有多少个电脑玩家？",
+        "value#zh-hant": "有多少個電腦玩家？",
+        "value#zh-tw": "有多少個電腦玩家？",
+        "value#zh-hk": "有多少個電腦玩家？",
+        "value#zh-mo": "有多少個電腦玩家？",
         "style": {
           "font": "16px Arial"
         }
       },
-      "pos": "182,22",
-      "center": "0.5,0.5"
-    },
-    {
-      "txt": {
-        "value": "有多少个电脑玩家？",
-        "style": {
-          "font": "16px Arial"
-        }
-      },
-      "pos": "182,45",
+      "pos": "182,33",
       "center": "0.5,0.5"
     },
     {
@@ -39,7 +37,7 @@
           "font": "16px Arial"
         }
       },
-      "pos": "30,70",
+      "pos": "30,60",
       "auto_focus": true,
       "component": [
         "opacity_hover(0.3,1)",
@@ -54,7 +52,7 @@
           "font": "16px Arial"
         }
       },
-      "pos": "70,70",
+      "pos": "70,60",
       "auto_focus": true,
       "component": [
         "opacity_hover(0.3,1)",
@@ -69,7 +67,7 @@
           "font": "16px Arial"
         }
       },
-      "pos": "110,70",
+      "pos": "110,60",
       "auto_focus": true,
       "component": [
         "opacity_hover(0.3,1)",
@@ -84,7 +82,7 @@
           "font": "16px Arial"
         }
       },
-      "pos": "150,70",
+      "pos": "150,60",
       "auto_focus": true,
       "component": [
         "opacity_hover(0.3,1)",
@@ -99,7 +97,7 @@
           "font": "16px Arial"
         }
       },
-      "pos": "190,70",
+      "pos": "190,60",
       "auto_focus": true,
       "component": [
         "opacity_hover(0.3,1)",
@@ -114,7 +112,7 @@
           "font": "16px Arial"
         }
       },
-      "pos": "230,70",
+      "pos": "230,60",
       "auto_focus": true,
       "component": [
         "opacity_hover(0.3,1)",
@@ -129,7 +127,7 @@
           "font": "16px Arial"
         }
       },
-      "pos": "270,70",
+      "pos": "270,60",
       "auto_focus": true,
       "component": [
         "opacity_hover(0.3,1)",
@@ -144,7 +142,7 @@
           "font": "16px Arial"
         }
       },
-      "pos": "310,70",
+      "pos": "310,60",
       "auto_focus": true,
       "component": [
         "opacity_hover(0.3,1)",
