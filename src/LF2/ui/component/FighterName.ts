@@ -14,7 +14,7 @@ import { UIComponent } from "./UIComponent";
  */
 export default class FighterName extends UIComponent {
   static override readonly TAG = 'FighterName'
-  get player_id() { return this.args[0] || ""; }
+  get player_id() { return this.args[0] || this.node.find_parent(v => v.data.values?.player_id)?.data.values?.player_id || ''; }
   get player(): PlayerInfo { return this.lf2.players.get(this.player_id)! }
   get decided() {
     return !!this.player.character_decided;

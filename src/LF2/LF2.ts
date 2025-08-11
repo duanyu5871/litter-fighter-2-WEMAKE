@@ -62,9 +62,11 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
   static readonly TAG = "LF2";
   static readonly instances: LF2[] = []
   lang: string = '';
+  static readonly DATA_VERSION: number = 2;
+  static readonly DATA_TYPE: string = 'DataZip';
   static get instance() { return LF2.instances[0] }
   static get ui() { return LF2.instances[0].ui }
-
+  static get ditto() { return ditto }
   private _disposed: boolean = false;
   private _callbacks = new Callbacks<ILf2Callback>();
   private _ui_stacks: UINode[] = [];
@@ -242,6 +244,8 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
     LF2.instances.push(this)
     make_debugging(this)
     this.debug(`constructor`)
+    ditto.Cache.forget(LF2.DATA_TYPE, LF2.DATA_VERSION).then(v => console.log('forget', v))
+    ditto.Cache.forget(PlayerInfo.DATA_TYPE, PlayerInfo.DATA_VERSION).then(v => console.log('forget', v))
   }
 
   random_entity_info(e: Entity) {
@@ -409,7 +413,6 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
       }
     }
   }
-
   private on_loading_file(url: string, progress: number, full_size: number) {
     const txt = `${url}(${get_short_file_size_txt(full_size)})`;
     this.on_loading_content(txt, progress);
@@ -431,18 +434,18 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
     const exists = await ditto.Cache.get(md5);
     let ret: IZip | null = null;
     if (exists) {
-      const nums = [];
-      for (var i = 0, j = exists.data.length; i < j; ++i)
-        nums.push(exists.data.charCodeAt(i));
-      ret = await ditto.Zip.read_buf(exists.name, new Uint8Array(nums));
+      ret = await ditto.Zip.read_buf(exists.name, exists.data);
     } else {
       ret = await ditto.Zip.download(url, (progress, full_size) =>
         this.on_loading_file(url, progress, full_size),
       );
-      let data: string = "";
-      for (const c of ret.buf) data += String.fromCharCode(c);
       await ditto.Cache.del(info_url, "");
-      await ditto.Cache.put({ name: md5, version: 0, data });
+      await ditto.Cache.put({
+        name: md5,
+        version: LF2.DATA_VERSION,
+        type: LF2.DATA_TYPE,
+        data: ret.buf,
+      });
     }
     this.on_loading_content(`${url}`, 100);
     return ret;

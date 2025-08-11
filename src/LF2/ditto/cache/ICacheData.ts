@@ -2,6 +2,7 @@ export interface ICacheData {
   id: number;
   name: string;
   version: number;
-  data: string;
+  type: string;
+  data: Uint8Array;
   create_date: number;
 }

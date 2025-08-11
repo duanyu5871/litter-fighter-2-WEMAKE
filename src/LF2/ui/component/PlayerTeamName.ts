@@ -13,9 +13,8 @@ import { UIComponent } from "./UIComponent";
  * @extends {UIComponent}
  */
 export default class PlayerTeamName extends UIComponent {
-  get player_id() {
-    return this.args[0] || "";
-  }
+  static override TAG: string = 'PlayerTeamName';
+  get player_id() { return this.args[0] || this.node.find_parent(v => v.data.values?.player_id)?.data.values?.player_id || ''; }
   get player() {
     return this.lf2.players.get(this.player_id);
   }

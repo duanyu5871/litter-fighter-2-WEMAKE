@@ -10,6 +10,8 @@ import { is_str } from "./utils/type_check";
 
 export class PlayerInfo implements IDebugging {
   static readonly TAG = "PlayerInfo";
+  static readonly DATA_TYPE: string = 'PlayerInfo';
+  static readonly DATA_VERSION: number = 1;
   __debugging?: boolean
   readonly callbacks = new Callbacks<IPlayerInfoCallback>();
   protected _info: IPurePlayerInfo;
@@ -63,8 +65,9 @@ export class PlayerInfo implements IDebugging {
     Ditto.Cache.del(this.storage_key).then(() => {
       Ditto.Cache.put({
         name: this.storage_key,
-        version: 0,
-        data: JSON.stringify(this._info)
+        type: PlayerInfo.DATA_TYPE,
+        version: PlayerInfo.DATA_VERSION,
+        data: new TextEncoder().encode(JSON.stringify(this._info)),
       })
     })
   }
@@ -72,9 +75,9 @@ export class PlayerInfo implements IDebugging {
   load() {
     Ditto.Cache.get(this.storage_key).then((r) => {
       if (!r) return
-      const { data: str } = r
+      const { data } = r
       try {
-        const { name, keys, ctrl = this.ctrl, version } = JSON.parse(str) as Partial<IPurePlayerInfo>;
+        const { name, keys, ctrl = this.ctrl, version } = JSON.parse(new TextDecoder().decode(data)) as Partial<IPurePlayerInfo>;
         if (version !== this._info.version) {
           this.warn("load", "version changed");
           return false;

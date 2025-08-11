@@ -8,44 +8,47 @@ const db = new Dexie("lf2") as Dexie & {
 db.version(1).stores({
   tbl_lf2_data: "++id, name, version",
 });
-db.version(2)
-  .stores({
-    tbl_lf2_data: "++id, name, version, data",
-  })
-  .upgrade((trans) => {
-    return trans
-      .table("tbl_lf2_data")
-      .toCollection()
-      .modify((lf2_data) => {
-        lf2_data.data = "";
-      });
-  });
+db.version(2).stores({
+  tbl_lf2_data: "++id, name, version, data",
+}).upgrade((trans) => {
+  return trans
+    .table("tbl_lf2_data")
+    .toCollection()
+    .modify((lf2_data) => {
+      lf2_data.data = "";
+    });
+});
 
-db.version(3)
-  .stores({
-    tbl_lf2_data: "++id, name, version, data, create_date",
-  })
-  .upgrade((trans) => {
-    return trans
-      .table("tbl_lf2_data")
-      .toCollection()
-      .modify((lf2_data) => {
-        lf2_data.create_date = Date.now();
-      });
-  });
+db.version(3).stores({
+  tbl_lf2_data: "++id, name, version, data, create_date",
+}).upgrade((trans) => {
+  return trans
+    .table("tbl_lf2_data")
+    .toCollection()
+    .modify((lf2_data) => {
+      lf2_data.create_date = Date.now();
+    });
+});
 
-db.version(4)
-  .stores({
-    tbl_lf2_data: "++id, name, version, data, create_date, url",
-  })
-  .upgrade((trans) => {
-    return trans
-      .table("tbl_lf2_data")
-      .toCollection()
-      .modify((lf2_data) => {
-        lf2_data.url = "";
-      });
-  });
+db.version(4).stores({
+  tbl_lf2_data: "++id, name, version, data, create_date, url",
+}).upgrade((trans) => {
+  return trans
+    .table("tbl_lf2_data")
+    .toCollection()
+    .modify((lf2_data) => {
+      lf2_data.url = "";
+    });
+});
+db.version(5).stores({
+  tbl_lf2_data: "++id, name, version, data, create_date, url, type",
+}).upgrade((trans) => {
+  return trans
+    .table("tbl_lf2_data")
+    .where('type')
+    .anyOf([''])
+    .delete()
+});
 
 export const __Cache: ICache = {
   async list(): Promise<ICacheData[] | undefined> {
@@ -57,31 +60,37 @@ export const __Cache: ICache = {
   async get(name: string): Promise<ICacheData | undefined> {
     return db
       .open()
-      .catch((_) => void 0)
-      .then(() => db.tbl_lf2_data.where("name").equals(name).first());
+      .then(() => db.tbl_lf2_data.where({ name }).first())
+      .catch((_) => void 0);
   },
   async put(data: Omit<ICacheData, 'id' | 'create_date'>): Promise<number | void> {
     return db
       .open()
-      .catch((_) => void 0)
-      .then(() =>
-        db.tbl_lf2_data.put({
-          ...data,
-          create_date: Date.now(),
-        }),
-      );
+      .then(() => db.tbl_lf2_data.put({
+        ...data,
+        create_date: Date.now(),
+      }))
+      .catch((_) => void 0);
   },
   async del(...names: string[]): Promise<number | void> {
     return db
       .open()
-      .catch((_) => void 0)
-      .then(() =>
-        db.tbl_lf2_data
-          .where("name")
-          .anyOf(names)
-          .or("url")
-          .anyOf(names)
-          .delete(),
-      );
+      .then(() => db.tbl_lf2_data
+        .where("name")
+        .anyOf(names)
+        .or("url")
+        .anyOf(names)
+        .delete()
+      ).catch((_) => void 0);
   },
+  async forget(type: ICacheData["type"], version: number): Promise<number> {
+    return db.open()
+      .then(() => db.tbl_lf2_data
+        .where({ type })
+        .and(v => {
+          return v.version != version
+        })
+        .delete()
+      ).catch((_) => 0);
+  }
 };

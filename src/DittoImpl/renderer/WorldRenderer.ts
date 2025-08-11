@@ -42,9 +42,8 @@ export class WorldRenderer implements IWorldRenderer {
   set cam_x(v: number) {
     this.camera.x = v;
     for (const ui of this.lf2.ui_stacks) {
-      const pos = ui.pos.value;
-      pos[0] = v
-      ui.pos.value = pos;
+      const [a, b, c] = ui.pos.default_value;
+      ui.pos.value = [a + v, b, c];
       ui.renderer.x = v;
     }
   }

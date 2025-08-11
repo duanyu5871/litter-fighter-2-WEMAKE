@@ -17,7 +17,7 @@ export class PlayerCtrlType extends UIComponent {
     e.stop_immediate_propagation();
     this.node.to_next_img();
     const ctrl: CtrlDevice = (this.node.img_idx.value % 5) as CtrlDevice
-    this.player_info.set_ctrl(ctrl, true)
+    this.player_info.set_ctrl(ctrl, true).save()
   }
   on_ctrl_changed() {
     this.node.img_idx.value = this.player_info.ctrl % this.node.imgs.value.length;
