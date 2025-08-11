@@ -3,10 +3,10 @@
   "name": "UI: 八人框",
   "img": {
     "path": "sprite/CHARMENU.png",
-    "w": 633,
+    "w": 599,
     "h": 406
   },
-  "size": "633, 406",
+  "size": "599, 406",
   "pos": "397, 225",
   "center": "0.5, 0.5",
   "templates": {
@@ -40,6 +40,60 @@
           "component": "PlayerTeamName()"
         }
       ]
+    },
+    "prefix_1": {
+      "pos": "-230, 133",
+      "center": "1, 0.5",
+      "txt": {
+        "value": "Player：",
+        "value#zh-hans": "玩 家：",
+        "value#zh-cn": "玩 家：",
+        "value#zh-sg": "玩 家：",
+        "value#zh-my": "玩 家：",
+        "value#zh-hant": "玩 家：",
+        "value#zh-tw": "玩 家：",
+        "value#zh-hk": "玩 家：",
+        "value#zh-mo": "玩 家：",
+        "style": {
+          "font": "12px Arial"
+        }
+      }
+    },
+    "prefix_2": {
+      "pos": "-230, 155",
+      "center": "1, 0.5",
+      "txt": {
+        "value": "Fighter：",
+        "value#zh-hans": "角 色：",
+        "value#zh-cn": "角 色：",
+        "value#zh-sg": "角 色：",
+        "value#zh-my": "角 色：",
+        "value#zh-hant": "角 色：",
+        "value#zh-tw": "角 色：",
+        "value#zh-hk": "角 色：",
+        "value#zh-mo": "角 色：",
+        "style": {
+          "font": "12px Arial"
+        }
+      }
+    },
+    "prefix_3": {
+      "pos": "-230, 177",
+      "center": "1, 0.5",
+      "txt": {
+        "value": "Team：",
+        "value#zh-hans": "队 伍：",
+        "value#zh-cn": "队 伍：",
+        "value#zh-sg": "队 伍：",
+        "value#zh-my": "队 伍：",
+        "value#zh-hant": "隊伍：",
+        "value#zh-tw": "隊 伍：",
+        "value#zh-hk": "隊 伍：",
+        "value#zh-mo": "隊 伍：",
+        "style": {
+          "font": "12px Arial"
+        }
+      }
     }
   },
   "items": [
@@ -47,9 +101,12 @@
       "id": "players_row_1",
       "pos": "0,-192",
       "items": [
+        "prefix_1",
+        "prefix_2",
+        "prefix_3",
         {
           "id": "player_layout_0",
-          "pos": "-210,0",
+          "pos": "-227,0",
           "values": {
             "player_id": "1"
           },
@@ -57,7 +114,7 @@
         },
         {
           "id": "player_layout_1",
-          "pos": "-81,0",
+          "pos": "-98,0",
           "values": {
             "player_id": "2"
           },
@@ -65,7 +122,7 @@
         },
         {
           "id": "player_layout_2",
-          "pos": "48,0",
+          "pos": "31,0",
           "values": {
             "player_id": "3"
           },
@@ -73,7 +130,7 @@
         },
         {
           "id": "player_layout_3",
-          "pos": "177,0",
+          "pos": "160,0",
           "values": {
             "player_id": "4"
           },
@@ -85,9 +142,12 @@
       "id": "players_row_2",
       "pos": "0,5",
       "items": [
+        "prefix_1",
+        "prefix_2",
+        "prefix_3",
         {
           "id": "player_layout_4",
-          "pos": "-210,0",
+          "pos": "-227,0",
           "values": {
             "player_id": "5"
           },
@@ -95,7 +155,7 @@
         },
         {
           "id": "player_layout_5",
-          "pos": "-81,0",
+          "pos": "-98,0",
           "values": {
             "player_id": "6"
           },
@@ -103,7 +163,7 @@
         },
         {
           "id": "player_layout_6",
-          "pos": "48,0",
+          "pos": "31,0",
           "values": {
             "player_id": "7"
           },
@@ -111,7 +171,7 @@
         },
         {
           "id": "player_layout_7",
-          "pos": "177,0",
+          "pos": "160,0",
           "values": {
             "player_id": "8"
           },
