@@ -69,7 +69,6 @@ export function make_frames(
     const bpoint_list = r5.sections;
     _content = r5.remains;
 
-
     const r6 = take_sections<ICpointInfo>(_content, "cpoint:", "cpoint_end:");
     const cpoint_list = r6.sections;
     _content = r6.remains;
@@ -117,13 +116,13 @@ export function make_frames(
       pic: frame_pic_info,
       wait,
       next,
+      ...fields,
       bdy: bdy_list,
       itr: itr_list,
       wpoint: wpoint_list[0],
       bpoint: bpoint_list[0],
       opoint: opoint_list,
       cpoint: cpoint_list[0],
-      ...fields,
     };
     const state_name = StateEnum[frame.state!]
     if (state_name) (frame as any).state_name = `StateEnum.${state_name}`
