@@ -1,4 +1,4 @@
-import { EntityGroup, IOpointInfo } from "../defines";
+import { BuiltIn_OID, Defines, EntityGroup, IOpointInfo } from "../defines";
 import { IEntityData } from "../defines/IEntityData";
 import { OpointKind } from "../defines/OpointKind";
 import { add_entity_groups } from "./add_entity_to_group";
@@ -38,42 +38,50 @@ export function make_weapon_special(data: IEntityData) {
     );
   }
   switch (data.id) {
-    case "100": // #stick
+    case BuiltIn_OID.HenryArrow1:
+      data.base.weight = 0.8
+      data.base.brokens = ooo();
+      break;
+    case BuiltIn_OID.RudolfWeapon:
+      data.base.weight = 0.8
+      data.base.brokens = ooo();
+      break;
+    case BuiltIn_OID.Weapon_Stick:
       data.base.brokens = ooo("10", "10", "14", "14", "14");
       break;
-    case "101": // #hoe
+    case BuiltIn_OID.Weapon_Hoe:
       data.base.brokens = ooo("30", "30", "20", "20", "24");
       break;
-    case "120": // #knife
+    case BuiltIn_OID.Weapon_Knife:
       data.base.brokens = ooo("30", "30", "24", "24");
       break;
-    case "121": // #baseball
+    case BuiltIn_OID.Weapon_baseball:
       data.base.brokens = ooo("60", "60", "60", "60", "60");
       break;
-    case "122": // #milk
+    case BuiltIn_OID.Weapon_milk:
       data.base.brokens = ooo("70", "50", "80", "50", "50");
       add_entity_groups(data.base, EntityGroup.VsRegularWeapon);
       break;
-    case "150": // #stone
+    case BuiltIn_OID.Weapon_Stone:
       data.base.brokens = ooo("0", "0", "4", "4", "4");
       break;
-    case "151": // #wooden_box
+    case BuiltIn_OID.Weapon_WoodenBox:
       data.base.brokens = ooo("40", "44", "50", "54", "54");
       break;
-    case "123": // #beer
+    case BuiltIn_OID.Weapon_Beer:
       data.base.brokens = ooo("160", "164", "164", "164", "164");
       add_entity_groups(data.base, EntityGroup.VsRegularWeapon);
       break;
-    case "124": // #<
+    case BuiltIn_OID.Weapon_Boomerang:
       data.base.brokens = ooo("170", "170", "170");
       break;
-    case "217": // #louis_armour
+    case BuiltIn_OID.Weapon_LouisArmourA:
       data.base.brokens = ooo("174", "174", "174", "174", "174");
       break;
-    case "218": // #louis_armour
+    case BuiltIn_OID.Weapon_LouisArmourB:
       data.base.brokens = ooo("174", "174", "174", "174", "174");
       break;
-    case "213": // #ice_sword
+    case BuiltIn_OID.Weapon_IceSword:
       data.base.brokens = ooo("150", "150", "150", "154", "154", "154", "154");
       break;
   }

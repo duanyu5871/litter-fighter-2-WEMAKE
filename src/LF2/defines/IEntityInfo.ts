@@ -239,4 +239,6 @@ export interface IEntityInfo {
   rowing_distance?: number;
 
   armor?: IArmorInfo;
+
+  weight?: number
 }

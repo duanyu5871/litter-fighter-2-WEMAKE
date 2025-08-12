@@ -700,6 +700,11 @@ export class Entity implements IDebugging {
     );
 
     let { dvx = 0, dvy = 0, dvz = 0, speedz = 3 } = opoint;
+    const { weight } = this.data.base
+
+    dvx /= (weight || 1);
+    dvy /= (weight || 1);
+
     let ud = emitter.ctrl?.UD || 0;
     let { x: ovx, y: ovy, z: ovz } = offset_velocity;
     if (dvx > 0) {
@@ -1111,14 +1116,19 @@ export class Entity implements IDebugging {
       this.follow_holder();
       const { wpoint } = this.holder.frame;
       if (wpoint) {
-        const { dvx, dvy, dvz } = wpoint;
+        const { weight } = this.data.base
+        let { dvx, dvy, dvz } = wpoint;
         if (dvx !== void 0 || dvy !== void 0 || dvz !== void 0) {
+
           this.enter_frame({ id: this.data.indexes?.throwing });
           const vz = this.holder.ctrl
             ? this.holder.ctrl.UD * (dvz || 0)
             : 0;
-          const vx = (dvx || 0 - abs(vz / 2)) * this.facing;
-          this.velocity_0.set(vx, dvy || 0, vz);
+
+          dvx = (dvx || 0) / (weight || 1);
+          dvy = (dvy || 0) / (weight || 1);
+          const vx = (dvx / - abs(vz / 2)) * this.facing;
+          this.velocity_0.set(vx, dvy, vz);
           this.holder.holding = void 0;
           this.holder = void 0;
         }

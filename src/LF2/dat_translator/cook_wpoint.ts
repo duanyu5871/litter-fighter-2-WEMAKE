@@ -10,7 +10,7 @@ export function cook_wpoint(unsure_wpoint: IWpointInfo) {
   if (not_zero_num(dvz)) unsure_wpoint.dvz = dvz;
 
   const dvy = take(unsure_wpoint, "dvy");
-  if (not_zero_num(dvy)) unsure_wpoint.dvy = dvy * -0.5;
+  if (not_zero_num(dvy)) unsure_wpoint.dvy = dvy * -0.5; 
 
   const attacking = take(unsure_wpoint, "attacking");
   if (attacking) unsure_wpoint.attacking = "" + attacking;
