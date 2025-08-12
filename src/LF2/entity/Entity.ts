@@ -488,7 +488,8 @@ export class Entity implements IDebugging {
   }
   set team(v) {
     const o = this._team;
-    this._team = v
+    this._team = v;
+    this.variant = Number(this._team) || 0
     this._callbacks.emit("on_team_changed")(this, v, o);
   }
 

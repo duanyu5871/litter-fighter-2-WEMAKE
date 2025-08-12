@@ -5,5 +5,5 @@ export const new_team = () => {
   if (__team__ === Number.MAX_SAFE_INTEGER)
     return "" + (__team__ = Number.MIN_SAFE_INTEGER);
   else if (__team__ === 0) return "" + (__team__ = 5);
-  return "" + ++__team__;
+  return "team_" + ++__team__;
 };
