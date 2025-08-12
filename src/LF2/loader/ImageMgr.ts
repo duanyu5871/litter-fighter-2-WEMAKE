@@ -87,32 +87,14 @@ export class ImageMgr {
     const ctx = cvs.getContext("2d");
     if (!ctx) throw new Error("can not get context from canvas");
     const {
-      padding_b = 2,
       padding_l = 2,
-      padding_r = 2,
       padding_t = 2,
     } = style;
-
     apply_text_style(style, ctx);
-    let w = 0;
-    let h = 0;
     const scale = 4;
-    let lines = text.split("\n").map((line, idx, arr) => {
-      const t = idx === arr.length ? line + "\n" : line;
-      const {
-        width,
-        fontBoundingBoxAscent: a,
-        fontBoundingBoxDescent: d,
-      } = ctx.measureText(t);
-      const ret = { x: 0, y: h + a, t, w: width };
-      w = Math.max(w, width);
-      h += a + d;
-      return ret;
-    });
-    if (style.text_align === "center") for (const l of lines) l.x = Math.round(w / 2);
-    else if (style.text_align === "right") for (const l of lines) l.x = Math.round(w);
-    cvs.style.width = (cvs.width = scale * (w + padding_l + padding_r)) + "px";
-    cvs.style.height = (cvs.height = scale * (h + padding_t + padding_b)) + "px";
+    const [lines, w, h] = split_text_to_lines(text, ctx, style);
+    cvs.style.width = (cvs.width = scale * w) + "px";
+    cvs.style.height = (cvs.height = scale * h) + "px";
     ctx.save();
     ctx.scale(scale, scale);
     if (style.back_style) {
@@ -124,6 +106,7 @@ export class ImageMgr {
           if (nf) ctx.fillText(t, padding_l + x, padding_t + y)
           if (ns) ctx.strokeText(t, padding_l + x, padding_t + y)
         }
+        draw_underline(style, ctx, lines);
       }
     }
 
@@ -135,8 +118,8 @@ export class ImageMgr {
         if (nf) ctx.fillText(t, padding_l + x, padding_t + y)
         if (ns) ctx.strokeText(t, padding_l + x, padding_t + y)
       }
+      draw_underline(style, ctx, lines);
     }
-
 
     ctx.restore();
     const blob = await get_blob(cvs).catch((e) => {
@@ -273,6 +256,55 @@ export class ImageMgr {
     }
   }
 }
+interface ITextLineInfo {
+  x: number;
+  y: number;
+  t: string;
+  w: number;
+  h: number;
+}
+function split_text_to_lines(text: string, ctx: CanvasRenderingContext2D, style: IStyle): [ITextLineInfo[], number, number] {
+  let w = 0
+  let h = 0;
+  const { padding_l = 2, padding_r = 2, padding_t = 2, padding_b = 2 } = style
+  const lines = text.split("\n").map<ITextLineInfo>((line, idx, arr) => {
+    const t = idx === arr.length ? line + "\n" : line;
+    const {
+      width, fontBoundingBoxAscent: a, fontBoundingBoxDescent: d,
+    } = ctx.measureText(t);
+    const ret = {
+      x: 0,
+      y: h + a,
+      t,
+      w: width,
+      h: a + d
+    };
+    w = Math.max(w, width);
+    h += ret.h;
+    ret.h += a + d;
+    return ret;
+  });
+  w += padding_l + padding_r
+  h += padding_t + padding_b
+  if (style.text_align === "center") for (const l of lines) l.x = Math.round(w / 2);
+  if (style.text_align === "right") for (const l of lines) l.x = Math.round(w);
+  return [lines, w, h];
+}
+
+function draw_underline(style: IStyle, ctx: CanvasRenderingContext2D, lines: ITextLineInfo[]) {
+  const { underline_color, underline_width } = style
+  if (!underline_color || !underline_width) return;
+  const { padding_l = 2, padding_t = 2 } = style
+  ctx.strokeStyle = underline_color;
+  ctx.lineWidth = underline_width;
+  for (const { x, y, w } of lines) {
+    ctx.beginPath();
+    ctx.moveTo(padding_l + x, padding_t + y + underline_width + 1);
+    ctx.lineTo(padding_l + x + w, padding_t + y + underline_width + 1);
+    ctx.stroke();
+  }
+
+}
 
 function _create_pic(
   img_info: IImageInfo,
@@ -335,6 +367,7 @@ function apply_text_style(style: IStyle, ctx: CanvasRenderingContext2D) {
   ctx.shadowOffsetX = style.shadow_color ? style.shadow_offset_x ?? 0 : 0;
   ctx.shadowOffsetY = style.shadow_color ? style.shadow_offset_y ?? 0 : 0;
   ctx.imageSmoothingEnabled = style.smoothing ?? false;
+
 }
 function need_stroke(style: IStyle): boolean {
   if (!style.stroke_style) return false;

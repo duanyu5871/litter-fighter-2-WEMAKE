@@ -110,15 +110,34 @@
         "path": "sprite/MENU_CLIP2.png",
         "x": 0,
         "y": 0,
-        "w": 704,
-        "h": 353
+        "w": 626,
+        "h": 344
       },
       "center": "0.5, 0.5",
-      "pos": "397, 200",
+      "pos": "397, 220",
       "items": [
         {
+          "txt": {
+            "value": "control settings",
+            "value#zh-hans": "控制设置",
+            "value#zh-cn": "控制设置",
+            "value#zh-sg": "控制设置",
+            "value#zh-my": "控制设置",
+            "value#zh-hant": "控制设置",
+            "value#zh-tw": "控制设置",
+            "value#zh-hk": "控制设置",
+            "value#zh-mo": "控制设置",
+            "style": {
+              "fill_style": "#5A73D6",
+              "font": "20px Arial"
+            }
+          },
+          "pos": "0, -185",
+          "center": "0.5, 0.5"
+        },
+        {
           "id": "player_1",
-          "pos": "-205,-141",
+          "pos": "-165,-145",
           "values": {
             "player_id": "1"
           },
@@ -126,7 +145,7 @@
         },
         {
           "id": "player_2",
-          "pos": "-66,-141",
+          "pos": "-52,-145",
           "values": {
             "player_id": "2"
           },
@@ -134,7 +153,7 @@
         },
         {
           "id": "player_3",
-          "pos": "73,-141",
+          "pos": "61,-145",
           "values": {
             "player_id": "3"
           },
@@ -142,7 +161,7 @@
         },
         {
           "id": "player_4",
-          "pos": "212,-141",
+          "pos": "174,-145",
           "values": {
             "player_id": "4"
           },
@@ -159,7 +178,7 @@
         "w": 151,
         "h": 26
       },
-      "pos": "407, 344",
+      "pos": "368, 359",
       "component": [
         "opacity_hover(0,1)"
       ],
@@ -179,7 +198,7 @@
         "w": 151,
         "h": 26
       },
-      "pos": "579, 344",
+      "pos": "525, 359",
       "component": [
         "opacity_hover(0,1)"
       ],
@@ -192,27 +211,47 @@
     },
     {
       "id": "btn_move_table_normal",
-      "img": {
-        "path": "sprite/MENU_CLIP2.png",
-        "x": 0,
-        "y": 354,
-        "w": 494,
-        "h": 23
+      "txt": {
+        "value": "ⓘ Click here to see the special moves table of characters",
+        "value#zh-hans": "ⓘ 查看角色出招表",
+        "value#zh-cn": "ⓘ 查看角色出招表",
+        "value#zh-sg": "ⓘ 查看角色出招表",
+        "value#zh-my": "ⓘ 查看角色出招表",
+        "value#zh-hant": "ⓘ 查看角色出招表",
+        "value#zh-tw": "ⓘ 查看角色出招表",
+        "value#zh-hk": "ⓘ 查看角色出招表",
+        "value#zh-mo": "ⓘ 查看角色出招表",
+        "style": {
+          "fill_style": "#5A73D6",
+          "underline_color": "#5A73D6",
+          "underline_width": 1,
+          "font": "12px Arial"
+        }
       },
       "center": "0, 1",
-      "pos": "0, 450"
+      "pos": "5, 445"
     },
     {
       "id": "btn_move_table_hover",
-      "img": {
-        "path": "sprite/MENU_CLIP2.png",
-        "x": 0,
-        "y": 379,
-        "w": 494,
-        "h": 23
+      "txt": {
+        "value": "ⓘ Click here to see the special moves table of characters",
+        "value#zh-hans": "ⓘ 查看角色出招表",
+        "value#zh-cn": "ⓘ 查看角色出招表",
+        "value#zh-sg": "ⓘ 查看角色出招表",
+        "value#zh-my": "ⓘ 查看角色出招表",
+        "value#zh-hant": "ⓘ 查看角色出招表",
+        "value#zh-tw": "ⓘ 查看角色出招表",
+        "value#zh-hk": "ⓘ 查看角色出招表",
+        "value#zh-mo": "ⓘ 查看角色出招表",
+        "style": {
+          "fill_style": "white",
+          "underline_color": "white",
+          "underline_width": 1,
+          "font": "12px Arial"
+        }
       },
       "center": "0, 1",
-      "pos": "0, 450",
+      "pos": "5, 445",
       "component": [
         "opacity_hover(0,1)"
       ],
