@@ -28,16 +28,7 @@
     ]
   ],
   "items": [
-    {
-      "visible": "paused==1",
-      "img": {
-        "path": "sprite/PAUSE.png",
-        "w": 84,
-        "h": 23
-      },
-      "center": "0.5,0.5",
-      "pos": "397, 225"
-    },
+    "layouts/center_pause_label.json",
     {
       "id": "go",
       "img": {
