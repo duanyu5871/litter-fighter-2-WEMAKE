@@ -49,6 +49,7 @@ export class __Zip implements IZip {
     const buf = await axios
       .get<ArrayBuffer>(url, {
         responseType: "arraybuffer",
+        params: { time: Date.now() },
         onDownloadProgress: (e_1) => {
           const progress_1 = e_1.total
             ? Math.round((100 * e_1.loaded) / e_1.total)
