@@ -1127,7 +1127,7 @@ export class Entity implements IDebugging {
 
           dvx = (dvx || 0) / (weight || 1);
           dvy = (dvy || 0) / (weight || 1);
-          const vx = (dvx / - abs(vz / 2)) * this.facing;
+          const vx = (dvx - abs(vz / 2)) * this.facing;
           this.velocity_0.set(vx, dvy, vz);
           this.holder.holding = void 0;
           this.holder = void 0;
