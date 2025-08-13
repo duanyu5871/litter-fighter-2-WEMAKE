@@ -23,170 +23,398 @@
     },
     {
       "id": "main_menu",
-      "img": {
-        "path": "sprite/MENU_CLIP3.png",
-        "x": 0,
-        "y": 116,
-        "w": 305,
-        "h": 213
-      },
       "center": "0.5, 0.5",
       "pos": "397, 270",
+      "_color": "red",
+      "component": [
+        "vertical_layout(5)"
+      ],
       "items": [
         {
           "id": "btn_vs_mode",
-          "img": {
-            "path": "sprite/MENU_CLIP3.png",
-            "x": 32,
-            "y": 331,
-            "w": 210,
-            "h": 22
-          },
-          "center": "0.5, 0",
-          "pos": "-3,-108",
-          "auto_focus": true,
-          "component": [
-            "opacity_hover(0,1)",
-            "Reachable(main)"
-          ],
-          "actions": {
-            "click": [
-              "push_layout(vs_mode_prepare_page)",
-              "sound(ok)"
-            ]
-          }
+          "size": "200,22",
+          "center": "0.5, 0.5",
+          "items": [
+            {
+              "center": "0.5, 0.5",
+              "txt": {
+                "value#zh-hans": "对 决 模 式",
+                "value#zh-cn": "对 决 模 式",
+                "value#zh-sg": "对 决 模 式",
+                "value#zh-my": "对 决 模 式",
+                "value#zh-hant": "對 決 模 式",
+                "value#zh-tw": "對 決 模 式",
+                "value#zh-hk": "對 決 模 式",
+                "value#zh-mo": "對 決 模 式",
+                "value": "VS mode",
+                "style": {
+                  "font": "18px Arial",
+                  "fill_style": "#5A73D6"
+                }
+              }
+            },
+            {
+              "center": "0.5, 0.5",
+              "auto_focus": true,
+              "txt": {
+                "value#zh-hans": "对 决 模 式",
+                "value#zh-cn": "对 决 模 式",
+                "value#zh-sg": "对 决 模 式",
+                "value#zh-my": "对 决 模 式",
+                "value#zh-hant": "對 決 模 式",
+                "value#zh-tw": "對 決 模 式",
+                "value#zh-hk": "對 決 模 式",
+                "value#zh-mo": "對 決 模 式",
+                "value": "VS mode",
+                "style": {
+                  "font": "18px Arial",
+                  "fill_style": "white",
+                  "underline_color": "white",
+                  "underline_width": 2
+                }
+              },
+              "component": [
+                "opacity_hover(0,1)",
+                "Reachable(main)"
+              ],
+              "actions": {
+                "click": [
+                  "push_layout(vs_mode_prepare_page)",
+                  "sound(ok)"
+                ]
+              }
+            }
+          ]
         },
         {
           "id": "btn_stage_mode",
-          "img": {
-            "path": "sprite/MENU_CLIP3.png",
-            "x": 18,
-            "y": 358,
-            "w": 238,
-            "h": 24
-          },
-          "center": "0.5, 0",
-          "pos": "-3,-81",
-          "component": [
-            "opacity_hover(0,1)",
-            "Reachable(main)"
-          ],
-          "actions": {
-            "click": [
-              "push_layout(stage_mode_prepare_page)",
-              "sound(ok)"
-            ]
-          }
+          "center": "0.5, 0.5",
+          "size": "200,22",
+          "items": [
+            {
+              "center": "0.5, 0.5",
+              "txt": {
+                "value#zh-hans": "闯 关 模 式",
+                "value#zh-cn": "闯 关 模 式",
+                "value#zh-sg": "闯 关 模 式",
+                "value#zh-my": "闯 关 模 式",
+                "value#zh-hant": "闖 關 模 式",
+                "value#zh-tw": "闖 關 模 式",
+                "value#zh-hk": "闖 關 模 式",
+                "value#zh-mo": "闖 關 模 式",
+                "value": "Stage mode",
+                "style": {
+                  "font": "18px Arial",
+                  "fill_style": "#5A73D6"
+                }
+              }
+            },
+            {
+              "center": "0.5, 0.5",
+              "txt": {
+                "value#zh-hans": "闯 关 模 式",
+                "value#zh-cn": "闯 关 模 式",
+                "value#zh-sg": "闯 关 模 式",
+                "value#zh-my": "闯 关 模 式",
+                "value#zh-hant": "闖 關 模 式",
+                "value#zh-tw": "闖 關 模 式",
+                "value#zh-hk": "闖 關 模 式",
+                "value#zh-mo": "闖 關 模 式",
+                "value": "Stage mode",
+                "style": {
+                  "font": "18px Arial",
+                  "fill_style": "white",
+                  "underline_color": "white",
+                  "underline_width": 2
+                }
+              },
+              "component": [
+                "opacity_hover(0,1)",
+                "Reachable(main)"
+              ],
+              "actions": {
+                "click": [
+                  "push_layout(stage_mode_prepare_page)",
+                  "sound(ok)"
+                ]
+              }
+            }
+          ]
         },
         {
           "id": "btn_1v1_championship_mode",
-          "img": {
-            "path": "sprite/MENU_CLIP3.png",
-            "x": 0,
-            "y": 385,
-            "w": 275,
-            "h": 23
-          },
-          "center": "0.5, 0",
-          "pos": "-2,-54",
-          "component": [
-            "opacity_hover(0,1)",
-            "Reachable(main)"
-          ],
-          "actions": {
-            "click": [
-              "alert(还没写)",
-              "sound(ok)"
-            ]
-          }
+          "size": "200,22",
+          "center": "0.5, 0.5",
+          "items": [
+            {
+              "center": "0.5, 0.5",
+              "txt": {
+                "value#zh-hans": "单人淘汰赛",
+                "value#zh-cn": "单人淘汰赛",
+                "value#zh-sg": "单人淘汰赛",
+                "value#zh-my": "单人淘汰赛",
+                "value#zh-hant": "單人淘汰賽",
+                "value#zh-tw": "單人淘汰賽",
+                "value#zh-hk": "單人淘汰賽",
+                "value#zh-mo": "單人淘汰賽",
+                "value": "1 on 1 Championship",
+                "style": {
+                  "font": "18px Arial",
+                  "fill_style": "#5A73D6"
+                }
+              }
+            },
+            {
+              "center": "0.5, 0.5",
+              "txt": {
+                "value#zh-hans": "单人淘汰赛",
+                "value#zh-cn": "单人淘汰赛",
+                "value#zh-sg": "单人淘汰赛",
+                "value#zh-my": "单人淘汰赛",
+                "value#zh-hant": "單人淘汰賽",
+                "value#zh-tw": "單人淘汰賽",
+                "value#zh-hk": "單人淘汰賽",
+                "value#zh-mo": "單人淘汰賽",
+                "value": "1 on 1 Championship",
+                "style": {
+                  "font": "18px Arial",
+                  "fill_style": "white",
+                  "underline_color": "white",
+                  "underline_width": 2
+                }
+              },
+              "component": [
+                "opacity_hover(0,1)",
+                "Reachable(main)"
+              ],
+              "actions": {
+                "click": [
+                  "alert(还没写)",
+                  "sound(ok)"
+                ]
+              }
+            }
+          ]
         },
         {
           "id": "btn_2v2_championship_mode",
-          "img": {
-            "path": "sprite/MENU_CLIP3.png",
-            "x": 0,
-            "y": 412,
-            "w": 275,
-            "h": 24
-          },
-          "center": "0.5, 0",
-          "pos": "-2,-27",
-          "component": [
-            "opacity_hover(0,1)",
-            "Reachable(main)"
-          ],
-          "actions": {
-            "click": [
-              "alert(还没写)",
-              "sound(ok)"
-            ]
-          }
+          "size": "200,22",
+          "center": "0.5, 0.5",
+          "items": [
+            {
+              "center": "0.5, 0.5",
+              "txt": {
+                "value#zh-hans": "2V2淘汰赛",
+                "value#zh-cn": "2V2淘汰赛",
+                "value#zh-sg": "2V2淘汰赛",
+                "value#zh-my": "2V2淘汰赛",
+                "value#zh-hant": "2V2淘汰賽",
+                "value#zh-tw": "2V2淘汰賽",
+                "value#zh-hk": "2V2淘汰賽",
+                "value#zh-mo": "2V2淘汰賽",
+                "value": "2 on 2 Championship",
+                "style": {
+                  "font": "18px Arial",
+                  "fill_style": "#5A73D6"
+                }
+              }
+            },
+            {
+              "center": "0.5, 0.5",
+              "txt": {
+                "value#zh-hans": "2V2淘汰赛",
+                "value#zh-cn": "2V2淘汰赛",
+                "value#zh-sg": "2V2淘汰赛",
+                "value#zh-my": "2V2淘汰赛",
+                "value#zh-hant": "2V2淘汰賽",
+                "value#zh-tw": "2V2淘汰賽",
+                "value#zh-hk": "2V2淘汰賽",
+                "value#zh-mo": "2V2淘汰賽",
+                "value": "2 on 2 Championship",
+                "style": {
+                  "font": "18px Arial",
+                  "fill_style": "white",
+                  "underline_color": "white",
+                  "underline_width": 2
+                }
+              },
+              "component": [
+                "opacity_hover(0,1)",
+                "Reachable(main)"
+              ],
+              "actions": {
+                "click": [
+                  "alert(还没写)",
+                  "sound(ok)"
+                ]
+              }
+            }
+          ]
         },
         {
           "id": "btn_battle_mode",
-          "img": {
-            "path": "sprite/MENU_CLIP3.png",
-            "x": 32,
-            "y": 438,
-            "w": 207,
-            "h": 24
-          },
-          "center": "0.5, 0",
-          "pos": "-4,-1",
-          "component": [
-            "opacity_hover(0,1)",
-            "Reachable(main)"
-          ],
-          "actions": {
-            "click": [
-              "alert(还没写)",
-              "sound(ok)"
-            ]
-          }
+          "size": "200,22",
+          "center": "0.5, 0.5",
+          "items": [
+            {
+              "center": "0.5, 0.5",
+              "txt": {
+                "value#zh-hans": "战 争 模 式",
+                "value#zh-cn": "战 争 模 式",
+                "value#zh-sg": "战 争 模 式",
+                "value#zh-my": "战 争 模 式",
+                "value#zh-hant": "戰 爭 模 式",
+                "value#zh-tw": "戰 爭 模 式",
+                "value#zh-hk": "戰 爭 模 式",
+                "value#zh-mo": "戰 爭 模 式",
+                "value": "Battle mode",
+                "style": {
+                  "font": "18px Arial",
+                  "fill_style": "#5A73D6"
+                }
+              }
+            },
+            {
+              "center": "0.5, 0.5",
+              "txt": {
+                "value#zh-hans": "战 争 模 式",
+                "value#zh-cn": "战 争 模 式",
+                "value#zh-sg": "战 争 模 式",
+                "value#zh-my": "战 争 模 式",
+                "value#zh-hant": "戰 爭 模 式",
+                "value#zh-tw": "戰 爭 模 式",
+                "value#zh-hk": "戰 爭 模 式",
+                "value#zh-mo": "戰 爭 模 式",
+                "value": "Battle mode",
+                "style": {
+                  "font": "18px Arial",
+                  "fill_style": "white",
+                  "underline_color": "white",
+                  "underline_width": 2
+                }
+              },
+              "component": [
+                "opacity_hover(0,1)",
+                "Reachable(main)"
+              ],
+              "actions": {
+                "click": [
+                  "alert(还没写)",
+                  "sound(ok)"
+                ]
+              }
+            }
+          ]
         },
         {
           "id": "btn_demo_mode",
-          "img": {
-            "path": "sprite/MENU_CLIP3.png",
-            "x": 42,
-            "y": 466,
-            "w": 188,
-            "h": 23
-          },
-          "center": "0.5, 0",
-          "pos": "-4,27",
-          "component": [
-            "opacity_hover(0,1)",
-            "Reachable(main)"
-          ],
-          "actions": {
-            "click": [
-              "push_layout(demo_mode_page)",
-              "sound(ok)"
-            ]
-          }
+          "center": "0.5, 0.5",
+          "size": "200,22",
+          "items": [
+            {
+              "center": "0.5, 0.5",
+              "txt": {
+                "value#zh-hans": "游 戏 示 范",
+                "value#zh-cn": "游 戏 示 范",
+                "value#zh-sg": "游 戏 示 范",
+                "value#zh-my": "游 戏 示 范",
+                "value#zh-hant": "游 戲 示 範",
+                "value#zh-tw": "游 戲 示 範",
+                "value#zh-hk": "游 戲 示 範",
+                "value#zh-mo": "游 戲 示 範",
+                "value": "Demo",
+                "style": {
+                  "font": "18px Arial",
+                  "fill_style": "#5A73D6"
+                }
+              }
+            },
+            {
+              "center": "0.5, 0.5",
+              "txt": {
+                "value#zh-hans": "游 戏 示 范",
+                "value#zh-cn": "游 戏 示 范",
+                "value#zh-sg": "游 戏 示 范",
+                "value#zh-my": "游 戏 示 范",
+                "value#zh-hant": "游 戲 示 範",
+                "value#zh-tw": "游 戲 示 範",
+                "value#zh-hk": "游 戲 示 範",
+                "value#zh-mo": "游 戲 示 範",
+                "value": "Demo",
+                "style": {
+                  "font": "18px Arial",
+                  "fill_style": "white",
+                  "underline_color": "white",
+                  "underline_width": 2
+                }
+              },
+              "component": [
+                "opacity_hover(0,1)",
+                "Reachable(main)"
+              ],
+              "actions": {
+                "click": [
+                  "push_layout(demo_mode_page)",
+                  "sound(ok)"
+                ]
+              }
+            }
+          ]
         },
         {
           "id": "btn_quit",
-          "img": {
-            "path": "sprite/MENU_CLIP3.png",
-            "x": 55,
-            "y": 521,
-            "w": 165,
-            "h": 23
-          },
-          "center": "0.5, 0",
-          "pos": "-2,82",
-          "component": [
-            "opacity_hover(0,1)",
-            "Reachable(main)"
-          ],
-          "actions": {
-            "click": [
-              "exit()",
-              "sound(ok)"
-            ]
-          }
+          "size": "200,22",
+          "center": "0.5, 0.5",
+          "items": [
+            {
+              "center": "0.5, 0.5",
+              "txt": {
+                "value#zh-hans": "退 出 游 戏",
+                "value#zh-cn": "退 出 游 戏",
+                "value#zh-sg": "退 出 游 戏",
+                "value#zh-my": "退 出 游 戏",
+                "value#zh-hant": "關 閉 游 戲",
+                "value#zh-tw": "關 閉 游 戲",
+                "value#zh-hk": "關 閉 游 戲",
+                "value#zh-mo": "關 閉 游 戲",
+                "value": "Quit",
+                "style": {
+                  "font": "18px Arial",
+                  "fill_style": "#5A73D6"
+                }
+              }
+            },
+            {
+              "center": "0.5, 0.5",
+              "txt": {
+                "value#zh-hans": "退 出 游 戏",
+                "value#zh-cn": "退 出 游 戏",
+                "value#zh-sg": "退 出 游 戏",
+                "value#zh-my": "退 出 游 戏",
+                "value#zh-hant": "關 閉 游 戲",
+                "value#zh-tw": "關 閉 游 戲",
+                "value#zh-hk": "關 閉 游 戲",
+                "value#zh-mo": "關 閉 游 戲",
+                "value": "Quit",
+                "style": {
+                  "font": "18px Arial",
+                  "fill_style": "white",
+                  "underline_color": "white",
+                  "underline_width": 2
+                }
+              },
+              "component": [
+                "opacity_hover(0,1)",
+                "Reachable(main)"
+              ],
+              "actions": {
+                "click": [
+                  "exit()",
+                  "sound(ok)"
+                ]
+              }
+            }
+          ]
         }
       ]
     }

@@ -4,8 +4,12 @@
   "component": [
     "vertical_layout()"
   ],
+  "pos": "397,225",
+  "center": "0.5,0.5",
+  "_color": "red",
   "items": [
     {
+      "_opacity": 0,
       "img": {
         "path": "sprite/SCORE_BOARD1.png",
         "w": 490,
@@ -29,7 +33,7 @@
             }
           },
           "pos": "245,16",
-          "center": "0.5,0.5"
+          "center": "0.5, 0.5"
         },
         {
           "txt": {
@@ -167,34 +171,47 @@
       ]
     },
     {
+      "_opacity": 0,
       "component": "player_score(1)",
       "template": "layouts/player_score_row.json"
     },
     {
+      "_opacity": 0,
       "component": "player_score(2)",
       "template": "layouts/player_score_row.json"
     },
     {
+      "_opacity": 0,
       "component": "player_score(3)",
       "template": "layouts/player_score_row.json"
     },
     {
+      "_opacity": 0,
       "component": "player_score(4)",
       "template": "layouts/player_score_row.json"
     },
     {
+      "_opacity": 0,
       "component": "player_score(5)",
       "template": "layouts/player_score_row.json"
     },
     {
+      "_opacity": 0,
       "component": "player_score(6)",
       "template": "layouts/player_score_row.json"
     },
     {
+      "_opacity": 0,
       "component": "player_score(7)",
       "template": "layouts/player_score_row.json"
     },
     {
+      "_opacity": 0,
+      "component": "player_score(8)",
+      "template": "layouts/player_score_row.json"
+    },
+    {
+      "_opacity": 0,
       "img": {
         "path": "sprite/SCORE_BOARD3.png",
         "w": 490,

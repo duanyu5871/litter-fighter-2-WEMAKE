@@ -32,10 +32,6 @@ export default class PlayerTeamName extends UIComponent {
   protected _opacity: Sine = new Sine(0.65, 1, 3);
   protected _unmount_jobs = new Invoker();
 
-  constructor(layout: UINode, f_name: string) {
-    super(layout, f_name);
-    const [w, h] = this.node.size.value;
-  }
 
   override on_resume(): void {
     super.on_resume();

@@ -44,6 +44,7 @@ import { VsModeLogic } from "./VsModeLogic";
 import { IUICompnentCallbacks } from "./IUICompnentCallbacks";
 import { ImgLoop } from "./ImgLoop";
 import { PlayerCtrlType } from "./PlayerCtrlType";
+import { Alignment } from "./Alignment";
 
 class ComponentFactory {
   static readonly TAG = `ComponentFactory`;
@@ -87,7 +88,8 @@ class ComponentFactory {
     [PositionAnimation.TAG, PositionAnimation],
     [Sounds.TAG, Sounds],
     [ImgLoop.TAG, ImgLoop],
-    [PlayerCtrlType.TAG, PlayerCtrlType]
+    [PlayerCtrlType.TAG, PlayerCtrlType],
+    [Alignment.TAG, Alignment]
   ]);
 
   register(key: string, Cls: typeof UIComponent) {
@@ -115,7 +117,7 @@ class ComponentFactory {
         continue;
       }
       const { name, args = [], enabled = true, id = '' } = info;
-      const component = new cls(layout, name)
+      const component = new cls(layout, name, info)
       component.init(...args)
       component.set_enabled(enabled);
       component.id = id || `${name}_${idx}`

@@ -34,9 +34,6 @@ export default class FighterName extends UIComponent {
   }
   protected _opacity: Sine = new Sine(0.65, 1, 6);
   protected _unmount_jobs = new Invoker();
-  constructor(layout: UINode, f_name: string) {
-    super(layout, f_name);
-  }
 
   override on_resume(): void {
     super.on_resume();

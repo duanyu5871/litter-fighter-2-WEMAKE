@@ -2,7 +2,6 @@ import { CtrlDevice } from "../../controller/CtrlDevice";
 import { IUIPointerEvent } from "../IUIPointerEvent";
 import { UIComponent } from "./UIComponent";
 
-
 export class PlayerCtrlType extends UIComponent {
   static override TAG: string = 'PlayerCtrlType';
   get player_id() { return this.args[0] || this.node.find_parent(v => v.data.values?.player_id)?.data.values?.player_id || ''; }
@@ -23,3 +22,4 @@ export class PlayerCtrlType extends UIComponent {
     this.node.img_idx.value = this.player_info.ctrl % this.node.imgs.value.length;
   }
 }
+

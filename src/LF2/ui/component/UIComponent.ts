@@ -2,6 +2,7 @@ import { Callbacks } from "../../base";
 import Ditto from "../../ditto";
 import { IDebugging, make_debugging } from "../../entity/make_debugging";
 import { is_num } from "../../utils";
+import { IComponentInfo } from "../IComponentInfo";
 import { IUIKeyEvent } from "../IUIKeyEvent";
 import { IUIPointerEvent } from "../IUIPointerEvent";
 import type { UINode } from "../UINode";
@@ -17,6 +18,7 @@ export class UIComponent<Callbacks extends IUICompnentCallbacks = IUICompnentCal
   readonly node: UINode;
   readonly f_name: string;
   readonly callbacks = new Callbacks<Callbacks>()
+  readonly info: IComponentInfo;
 
   __debugging?: boolean | undefined;
   debug(func: string, ...args: any[]): void { }
@@ -54,10 +56,12 @@ export class UIComponent<Callbacks extends IUICompnentCallbacks = IUICompnentCal
    * @protected
    * @param {UINode} layout 布局对象
    * @param {string} f_name 组件在工厂中的名字
+   * @param {IComponentInfo} info
    */
-  constructor(layout: UINode, f_name: string) {
+  constructor(layout: UINode, f_name: string, info: IComponentInfo) {
     this.node = layout;
     this.f_name = f_name;
+    this.info = info
     make_debugging(this)
   }
 

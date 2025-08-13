@@ -170,7 +170,10 @@ export class UINode implements IDebugging {
     this.center.set(0, v);
     return this;
   }
-
+  get global_opacity(): number {
+    if (!this.parent) return this._opacity.value
+    return this._opacity.value * this.parent._opacity.value;
+  }
   get opacity(): number {
     return this._opacity.value;
   }

@@ -7,6 +7,7 @@ import type { UINode } from "../UINode";
 import GamePrepareLogic from "./GamePrepareLogic";
 import { UIComponent } from "./UIComponent";
 import PlayerScore from "./PlayerScore";
+import { IComponentInfo } from "../IComponentInfo";
 
 /**
  * 显示玩家角色选择的角色小头像
@@ -41,8 +42,8 @@ export default class PlayerCharacterThumb extends UIComponent {
 
   protected _unmount_jobs = new Invoker();
 
-  constructor(layout: UINode, f_name: string) {
-    super(layout, f_name);
+  constructor(layout: UINode, f_name: string, info: IComponentInfo) {
+    super(layout, f_name, info);
     this._mesh_thumb = new Ditto.SpriteNode(this.lf2)
       .set_center(0.5, 0.5)
       .set_position(this.node.w / 2, -this.node.h / 2, 0.1)

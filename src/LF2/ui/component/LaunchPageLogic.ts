@@ -1,6 +1,7 @@
 import FSM, { IState } from "../../base/FSM";
 import Invoker from "../../base/Invoker";
 import Ditto, { IPointingEvent } from "../../ditto";
+import { IComponentInfo } from "../IComponentInfo";
 import { IUIKeyEvent } from "../IUIKeyEvent";
 import { IUIPointerEvent } from "../IUIPointerEvent";
 import type { UINode } from "../UINode";
@@ -33,8 +34,8 @@ export class LaunchPageLogic extends UIComponent {
   protected _prel_loaded: boolean = false;
   protected _dispose_jobs = new Invoker();
 
-  constructor(layout: UINode, f_name: string) {
-    super(layout, f_name);
+  constructor(layout: UINode, f_name: string, info: IComponentInfo) {
+      super(layout, f_name, info);
     // this.__debugging = true
     this.fsm = new FSM<Status>().add({
       key: Status.TapHints,
