@@ -16,7 +16,6 @@ export class StageTitleShow extends UIComponent {
   );
 
   on_chapter_finish() {
-    this.lf2.sounds.play_preset("pass");
     this.node.visible = false;
     ui_load_txt(this.lf2, {
       value: "STAGE CLEAR!", style: {
@@ -25,7 +24,7 @@ export class StageTitleShow extends UIComponent {
         back_style: {
           font: "46px \"Arial Black\", Arial",
           stroke_style: "#005A8E",
-          line_width: 8
+          line_width: 5
         }
       }
     }).then(v => {
@@ -38,17 +37,19 @@ export class StageTitleShow extends UIComponent {
     this._opactiy.start(false);
   }
 
-  on_stage_change(stage: Stage) {
-    const name = stage.data.starting_name ?? stage.id
+  on_stage_change(stage: Stage, prev?: Stage) {
+    prev?.callbacks.del(this)
+    stage.callbacks.add(this)
+    const title = stage.data.title ?? stage.id
     this.node.visible = false;
     ui_load_txt(this.lf2, {
-      value: name, style: {
+      value: title, style: {
         fill_style: "white",
         font: "46px \"Arial Black\", Arial",
         back_style: {
           font: "46px \"Arial Black\", Arial",
           stroke_style: "#005A8E",
-          line_width: 8
+          line_width: 5
         }
       }
     }).then(v => {
