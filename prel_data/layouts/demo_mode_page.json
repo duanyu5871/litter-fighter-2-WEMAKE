@@ -23,9 +23,9 @@
         "value": "DEMO",
         "style": {
           "fill_style": "white",
-          "font": "24px bolder Arial",
+          "font": "24px \"Arial Black\", Arial",
           "back_style": {
-            "font": "24px bolder Arial",
+            "font": "24px \"Arial Black\", Arial",
             "stroke_style": "#005A8E",
             "line_width": 4
           }

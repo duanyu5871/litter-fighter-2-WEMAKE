@@ -37,4 +37,6 @@ export interface IStageInfo {
    * 起点名称
    */
   starting_name?: string;
+  
+  title?: string;
 }

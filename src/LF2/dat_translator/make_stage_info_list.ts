@@ -90,26 +90,32 @@ export function make_stage_info_list(full_str: string): IStageInfo[] | void {
       stage_info.starting_name = "Survival";
       stage_info.chapter = "survival"
       stage_info.bg = "8";
+      stage_info.title = 'SURVIVAL STAGE'
     }
     if (nid <= 9) {
       stage_info.bg = "2";
       stage_info.chapter = "chapter_1"
+      stage_info.title = `STAGE 1-${nid + 1}`
       if (nid < 9) stage_info.next = "" + (nid + 1);
     } else if (nid <= 19) {
       stage_info.bg = "3";
       stage_info.chapter = "chapter_2"
+      stage_info.title = `STAGE 2-${nid + 1 - 10}`
       if (nid < 19) stage_info.next = "" + (nid + 1);
     } else if (nid <= 29) {
       stage_info.bg = "5";
       stage_info.chapter = "chapter_3"
+      stage_info.title = `STAGE 3-${nid + 1 - 20}`
       if (nid < 29) stage_info.next = "" + (nid + 1);
     } else if (nid <= 39) {
       stage_info.bg = "6";
       stage_info.chapter = "chapter_4"
+      stage_info.title = `STAGE 4-${nid + 1 - 30}`
       if (nid < 39) stage_info.next = "" + (nid + 1);
     } else if (nid <= 49) {
       stage_info.bg = "7";
       stage_info.chapter = "chapter_5"
+      stage_info.title = `STAGE 5-${nid + 1 - 40}`
       if (nid < 49) stage_info.next = "" + (nid + 1);
     }
     stage_infos.push(stage_info);

@@ -18,8 +18,7 @@
     "stage_clear": "12, 552, 386, 40"
   },
   "component": [
-    "vs_mode_logic()",
-    "stage_title_show()"
+    "vs_mode_logic()"
   ],
   "key_press_actions": [
     [
@@ -29,6 +28,13 @@
   ],
   "items": [
     "layouts/center_pause_label.json",
+    {
+      "center": "0.5,0.5",
+      "pos": "397, 225",
+      "component": [
+        "StageTitleShow()"
+      ]
+    },
     {
       "id": "go",
       "img": {

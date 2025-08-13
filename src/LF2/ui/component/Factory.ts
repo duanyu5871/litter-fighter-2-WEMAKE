@@ -36,7 +36,7 @@ import { ScaleAnimation } from "./ScaleAnimation";
 import { SineOpacity } from "./SineOpacity";
 import SlotSelLogic from "./SlotSelLogic";
 import StageNameText from "./StageNameText";
-import StageTitleShow from "./StageTitleShow";
+import { StageTitleShow } from "./StageTitleShow";
 import StageTransitions from "./StageTransitions";
 import { UIComponent } from "./UIComponent";
 import VerticalLayout from "./VerticalLayout";
@@ -62,7 +62,7 @@ class ComponentFactory {
     [PlayerTeamName.TAG, PlayerTeamName],
     [GamePrepareLogic.TAG, GamePrepareLogic],
     ["com_number", ComNumButton],
-    ["stage_title_show", StageTitleShow],
+    [StageTitleShow.TAG, StageTitleShow],
     [ReachableGroup.TAG, ReachableGroup],
     [Reachable.TAG, Reachable],
     ["launch_page", LaunchPageLogic],
