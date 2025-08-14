@@ -27,7 +27,15 @@
       "pos": "397, 270",
       "_color": "red",
       "component": [
-        "vertical_layout(5)"
+        {
+          "name": "Flex",
+          "properties": {
+            "direction": "column",
+            "align": "center",
+            "fit": true,
+            "gap": 5
+          }
+        }
       ],
       "items": [
         {

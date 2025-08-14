@@ -2,7 +2,14 @@
   "id": "score_board",
   "name": "UI: 分数版",
   "component": [
-    "vertical_layout()"
+    {
+      "name": "Flex",
+      "properties": {
+        "direction": "column",
+        "align": "center",
+        "fit": true
+      }
+    }
   ],
   "pos": "397,225",
   "center": "0.5,0.5",

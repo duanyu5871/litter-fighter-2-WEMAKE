@@ -455,7 +455,7 @@ function App() {
       <div ref={set_ele_game_overlay} className={classNames(styles.game_overlay, { [styles.gone]: !game_overlay })} />
       <GamePad player_id={touch_pad_on} lf2={lf2} />
       <Loading loading={!layout_id} big className={styles.loading_img} />
-      <div className={styles.debug_pannel} style={{ display: 'none' }}>
+      <div className={styles.debug_pannel}>
         <Show show={lf2?.is_cheat_enabled(CheatType.GIM_INK) || true}>
           <ToggleImgButton
             checked={control_panel_visible}
