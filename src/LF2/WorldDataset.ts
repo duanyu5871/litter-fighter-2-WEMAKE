@@ -51,21 +51,21 @@ export class WorldDataset implements IWorldDataset {
   ivx_d: number = 4;
 
   /**
-   * X轴丢人初速度缩放系数
+   * X轴丢人初速度系数
    *
    * @type {number}
    */
   tvx_f: number = Defines.DEFAULT_TVX_F;
 
   /**
-   * Y轴丢人初速度缩放系数
+   * Y轴丢人初速度系数
    *
    * @type {number}
    */
   tvy_f: number = Defines.DEFAULT_TVY_F;
 
   /**
-   * Z轴丢人初速度缩放系数
+   * Z轴丢人初速度系数
    *
    * @type {number}
    */
@@ -140,7 +140,20 @@ export class WorldDataset implements IWorldDataset {
    */
   key_hit_duration: number = Defines.KEY_HIT_DURATION;
   friction_factor: number = Defines.FRICTION_FACTOR;
-  friction: number = Defines.FRICTION;
+  /**
+   * 地面摩擦X 在地面的物体，每帧X速度将±=此值,向0靠近
+   *
+   * @type {number}
+   * @memberof WorldDataset
+   */
+  friction_x: number = Defines.FRICTION_X;
+  /**
+   * 地面摩擦Z 在地面的物体，每帧Z速度将±=此值,向0靠近
+   *
+   * @type {number}
+   * @memberof WorldDataset
+   */
+  friction_z: number = Defines.FRICTION_Z;
   screen_w: number = Defines.MODERN_SCREEN_WIDTH;
   screen_h: number = Defines.MODERN_SCREEN_HEIGHT;
   gravity: number = Defines.GRAVITY;

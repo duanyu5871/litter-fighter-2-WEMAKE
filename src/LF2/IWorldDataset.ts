@@ -134,7 +134,8 @@ export interface IWorldDataset {
    */
   key_hit_duration: number;
   friction_factor: number;
-  friction: number;
+  friction_x: number;
+  friction_z: number;
   screen_w: number;
   screen_h: number;
   gravity: number;

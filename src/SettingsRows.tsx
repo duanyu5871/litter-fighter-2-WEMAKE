@@ -22,6 +22,8 @@ import { Stage } from "./LF2/stage/Stage";
 import list_writable_properties, { TProperty } from "./LF2/utils/list_writable_properties";
 import { is_num, is_str } from "./LF2/utils/type_check";
 import { useLocalNumber, useLocalString } from "./useLocalStorage";
+import { World } from "./LF2/World";
+import { IWorldDataset } from "./LF2/IWorldDataset";
 const bot_controllers: { [x in string]?: (e: Entity) => BaseController } = {
   OFF: (e: Entity) => new InvalidController("", e),
   "enemy chaser": (e: Entity) => new BotController("", e),
@@ -82,7 +84,9 @@ export default function SettingsRows(props: ISettingsRowsProps) {
       }),
       lf2.world.callbacks.add({ on_stage_change }),
     ];
-    set_world_properties(list_writable_properties(lf2.world));
+
+    const ppp = list_writable_properties(lf2.world)
+    set_world_properties(ppp);
     return () => a.forEach((b) => b());
   }, [lf2]);
 
@@ -259,10 +263,11 @@ export default function SettingsRows(props: ISettingsRowsProps) {
         show={props.show_world_tuning !== false}
       >
         {world_properties?.map((v, idx) => {
+          const r = world_field_map[v.name as keyof IWorldDataset]
+          if (!r) return null
+          const { title, desc = title, type } = r
+          if (!type) return null;
           let ref: InputRef | null = null;
-          const rec = world_tuning_title_map[v.name]
-          const r = Array.isArray(rec) ? rec : is_str(rec) ? [rec] as const : [v.name] as const;
-          const [title, desc = title] = r
           return (
             <Titled
               float_label={title}
@@ -270,19 +275,19 @@ export default function SettingsRows(props: ISettingsRowsProps) {
               key={v.name + "_" + idx}>
               <Combine>
                 <InputNumber
-                  precision={2}
+                  precision={type === 'float' ? 2 : 0}
                   ref={(r) => { ref = r }}
                   placeholder={v.name}
-                  step={0.01}
-                  defaultValue={v.value}
+                  step={type === 'float' ? 0.01 : type === 'int' ? 1 : 0.01}
+                  defaultValue={(lf2.world as any)[v.name]}
                   onChange={(e) =>
                     ((lf2.world as any)[v.name] = Number(e.target.value))
                   } />
                 <Button
                   title="重置"
                   onClick={(_) => {
-                    (lf2.world as any)[v.name] = Number(v.value);
-                    ref!.value = "" + v.value;
+                    (lf2.world as any)[v.name] = Number(v.default_value);
+                    ref!.value = "" + v.default_value;
                   }}>
                   <Cross />
                 </Button>
@@ -295,13 +300,44 @@ export default function SettingsRows(props: ISettingsRowsProps) {
   );
 }
 
-const world_tuning_title_map: { [name in string]?: string | readonly [string] | readonly [string, string] } = {
-  gravity: "重力",
-  begin_blink_time: "入场闪烁时长",
-  gone_blink_time: "消失闪烁时长",
-  lying_blink_time: "起身闪烁时长",
-  double_click_interval: "双击判定时长",
-  key_hit_duration: "按键判定时长",
-  itr_shaking: "受伤摇晃时长",
-  itr_motionless: "命中停顿时长",
+interface IFieldInfo {
+  title: string;
+  type: '' | 'int' | 'float';
+  desc?: string;
+}
+const world_field_map: Record<keyof IWorldDataset, IFieldInfo> = {
+  gravity: { title: "重力", desc: "重力", type: 'float' },
+  begin_blink_time: { title: "入场闪烁时长", desc: "入场闪烁时长", type: 'int' },
+  gone_blink_time: { title: "消失闪烁时长", desc: "消失闪烁时长", type: 'int' },
+  lying_blink_time: { title: "起身闪烁时长", desc: "起身闪烁时长", type: 'int' },
+  double_click_interval: { title: "双击判定时长", desc: "双击判定时长", type: 'int' },
+  key_hit_duration: { title: "按键判定时长", desc: "按键判定时长", type: 'int' },
+  itr_shaking: { title: "受伤摇晃时长", desc: "受伤摇晃时长", type: 'int' },
+  itr_motionless: { title: "命中停顿时长", desc: "命中停顿时长", type: 'int' },
+  hp_healing_spd: { title: "hp_healing_spd", desc: "hp_healing_spd", type: 'float' },
+  fvx_f: { title: "dvx缩放系数", desc: "fvx_f", type: 'float' },
+  fvy_f: { title: "dvy缩放系数", desc: "fvy_f", type: 'float' },
+  fvz_f: { title: "dvz缩放系数", desc: "fvz_f", type: 'float' },
+  ivy_f: { title: "ivy_f", desc: "ivy_f", type: 'float' },
+  ivz_f: { title: "ivz_f", desc: "ivz_f", type: 'float' },
+  ivx_f: { title: "ivx_f", desc: "ivx_f", type: 'float' },
+  ivy_d: { title: "ivy_d", desc: "ivy_d", type: 'float' },
+  ivx_d: { title: "ivx_d", desc: "ivx_d", type: 'float' },
+  tvx_f: { title: "X轴丢人初速度系数", desc: "tvx_f", type: 'float' },
+  tvy_f: { title: "Y轴丢人初速度系数", desc: "tvy_f", type: 'float' },
+  tvz_f: { title: "Z轴丢人初速度系数", desc: "tvz_f", type: 'float' },
+  vrest_offset: { title: "vrest_offset", desc: "vrest_offset", type: 'int' },
+  arest_offset: { title: "arest_offset", desc: "arest_offset", type: 'int' },
+  arest_offset_2: { title: "arest_offset_2", desc: "arest_offset_2", type: 'int' },
+  frame_wait_offset: { title: "frame_wait_offset", desc: "frame_wait_offset", type: 'int' },
+  cha_bc_spd: { title: "cha_bc_spd", desc: "cha_bc_spd", type: 'float' },
+  cha_bc_tst_spd: { title: "cha_bc_tst_spd", desc: "cha_bc_tst_spd", type: 'float' },
+  hp_recoverability: { title: "可回血比例", desc: "可回血比例", type: 'float' },
+  hp_recovery_spd: { title: "每帧回血", desc: "每帧回血", type: 'float' },
+  friction_factor: { title: "地速衰减系数", desc: "在地面的物体，速度将每帧乘以此值", type: 'float' },
+  friction_x: { title: "地面摩擦X", desc: "在地面的物体，每帧X速度将±=此值,向0靠近", type: 'float' },
+  friction_z: { title: "地面摩擦Z", desc: "在地面的物体，每帧Z速度将±=此值,向0靠近", type: 'float' },
+  screen_w: { title: "screen_w", desc: "screen_w", type: '' },
+  screen_h: { title: "screen_h", desc: "screen_h", type: '' },
+  sync_render: { title: "sync_render", desc: "sync_render", type: '' }
 }

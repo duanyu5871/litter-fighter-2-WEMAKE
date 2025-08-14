@@ -54,8 +54,7 @@
 
   &>.lfui_input_spacer {
     position             : relative;
-    // margin-right   : 20px;
-    // pointer-events    : none;
+
     user-select          : none;
     font-size            : inherit;
     font-family          : inherit;
@@ -70,6 +69,7 @@
     flex-shrink          : 0;
 
     &>span {
+      pointer-events    : none;
       font-family: inherit;
       font-size  : inherit;
       display    : inline-block;

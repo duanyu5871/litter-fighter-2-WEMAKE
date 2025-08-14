@@ -75,7 +75,6 @@ export class UINode implements IDebugging {
 
   protected _parent?: UINode;
   protected _children: UINode[] = [];
-  protected _index: number = 0;
   set_scale(x?: number, y?: number, z?: number): this {
     const [a, b, c] = this.scale.value;
     this.scale.value = [x ?? a, y ?? b, z ?? c];
@@ -143,10 +142,6 @@ export class UINode implements IDebugging {
     let l: UINode | undefined = this;
     for (; l?._parent; l = l.parent) ++depth;
     return depth;
-  }
-
-  get index() {
-    return this._index;
   }
 
   get state() {
@@ -372,33 +367,32 @@ export class UINode implements IDebugging {
       for (const c of factory.create(ret, component))
         ret._components.add(c);
 
-
     if (info.items) {
       for (const item_info of info.items) {
         let count = (is_num(item_info.count) && item_info.count > 0) ? item_info.count : 1
         while (count) {
           const child = UINode.create(lf2, item_info, ret);
-          if (child.id) {
-            const set = ret.id_ui_map.get(child.id) || [];
-            set.push(child)
-            ret.id_ui_map.set(child.id, set);
-          }
-          if (child.name) {
-            const set = ret.name_ui_map.get(child.name) || [];
-            set.push(child)
-            ret.name_ui_map.set(child.name, set);
-          }
-          child._index = ret.children.length;
           ret.add_child(child)
           --count;
         }
       }
     }
+
     return ret;
   }
 
   add_child(node: UINode): this {
     this._children.push(node);
+    if (node.id) {
+      const set = this.id_ui_map.get(node.id) || [];
+      set.push(node)
+      this.id_ui_map.set(node.id, set);
+    }
+    if (node.name) {
+      const set = this.name_ui_map.get(node.name) || [];
+      set.push(node)
+      this.name_ui_map.set(node.name, set);
+    }
     return this;
   }
 

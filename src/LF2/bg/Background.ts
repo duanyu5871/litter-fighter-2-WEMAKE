@@ -7,6 +7,9 @@ export default class Background {
 
   readonly data: Readonly<IBgData>;
   private _layers: Layer[] = [];
+  get name(): string {
+    return this.data.base.name
+  }
 
   get id(): string {
     return this.data.id;

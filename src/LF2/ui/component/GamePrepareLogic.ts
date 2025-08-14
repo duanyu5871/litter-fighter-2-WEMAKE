@@ -322,8 +322,7 @@ export default class GamePrepareLogic extends UIComponent<IGamePrepareLogicCallb
       (v) => v.node.visible && !v.node.disabled,
     );
     if (stage_name_text) this.lf2.change_stage(stage_name_text.stage);
-    if (background_name_text)
-      this.lf2.change_bg(background_name_text.background);
+    else if (background_name_text) this.lf2.change_bg(background_name_text.background);
     if (stage_name_text) this.lf2.push_ui("stage_mode_page");
     else this.lf2.push_ui("vs_mode_page");
   }
