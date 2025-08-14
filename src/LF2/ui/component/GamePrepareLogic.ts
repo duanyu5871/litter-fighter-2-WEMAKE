@@ -43,8 +43,8 @@ export default class GamePrepareLogic extends UIComponent<IGamePrepareLogicCallb
 
   override on_resume(): void {
     super.on_resume();
-    const btn_switch_bg = this.node.find_child("btn_switch_bg");
-    const btn_switch_stage = this.node.find_child("btn_switch_stage");
+    const btn_switch_bg = this.node.search_child("btn_switch_bg");
+    const btn_switch_stage = this.node.search_child("btn_switch_stage");
     if (this.game_mode === "vs_mode") {
       btn_switch_bg?.set_visible(true).set_disabled(false);
       btn_switch_stage?.set_visible(false).set_disabled(true);

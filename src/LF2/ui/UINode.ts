@@ -534,6 +534,14 @@ export class UINode implements IDebugging {
   find_child(id: string): UINode | undefined {
     return this.id_ui_map.get(id)?.[0];
   }
+  search_child(id: string): UINode | undefined {
+    let ret = this.find_child(id);
+    if (ret) return ret;
+    for (const child of this.children) {
+      ret = child.find_child(id)
+      if (ret) return ret;
+    }
+  }
 
   /**
    * 根据子节点名查找子节点

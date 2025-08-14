@@ -214,6 +214,7 @@ export class EntityInfoRender implements IEntityCallbacks {
     const text =
       (reserve > 1 && entity.name) ? `${entity.name} x${reserve}` :
         entity.name ? entity.name : reserve > 1 ? `x${reserve}` : ''
+        
     this.update_name_sprite(entity, text, entity.team)
   }
 
