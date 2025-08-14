@@ -9,9 +9,7 @@ export async function ui_load_txt(lf2: LF2, txt: TUITxtInfo | TUITxtInfo[], outp
     txts.map(txt => {
       const info: IUITxtInfo = is_str(txt) ? { i18n: txt } : txt;
       const { i18n } = info;
-      const lang = lf2.lang.toLowerCase();
-      const lang_value_key = `value#${lang}`;
-      const value = (info as any)[lang_value_key] ?? info.value ?? lf2.string(i18n) ?? i18n ?? ''
+      const value = '' + (info.value ?? lf2.string(i18n) ?? i18n ?? '');
       return lf2.images.load_text(value, info.style);
     })
   );

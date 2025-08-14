@@ -287,12 +287,6 @@ export namespace Defines {
 
   export enum BuiltIn_Imgs {
     RFACE = "sprite/RFACE.png",
-    CM5 = "sprite/CM5.png",
-    CM4 = "sprite/CM4.png",
-    CM3 = "sprite/CM3.png",
-    CM2 = "sprite/CM2.png",
-    CM1 = "sprite/CM1.png",
-    CMA = "sprite/CMA.png",
     CHARACTER_THUMB = "sprite/CHARACTER_THUMB.png",
   }
   export enum BuiltIn_Dats {

@@ -52,6 +52,7 @@ async function read_ui_template(lf2: LF2, raw_info: IUIInfo, parent: ICookedUIIn
   if (template_name === 'key_u') debugger;
   const raw_template: Unsafe<IUIInfo> = await find_ui_template(lf2, parent, template_name);
   Object.assign(raw_template, remain_raw_info);
+  
   return { ...raw_template, ...remain_raw_info };
 }
 export async function cook_ui_info(

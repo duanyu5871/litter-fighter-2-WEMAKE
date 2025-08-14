@@ -4,9 +4,7 @@ import Invoker from "../../base/Invoker";
 import { Defines } from "../../defines/defines";
 import Ditto from "../../ditto";
 import { PlayerInfo } from "../../PlayerInfo";
-import { between, ceil } from "../../utils";
-import { IComponentInfo } from "../IComponentInfo";
-import type { UINode } from "../UINode";
+import { between } from "../../utils";
 import GamePrepareLogic, { GamePrepareState } from "./GamePrepareLogic";
 import { UIComponent } from "./UIComponent";
 
@@ -31,9 +29,8 @@ export default class FighterHead extends UIComponent {
 
   protected _opacity: Sine = new Sine(0.65, 1, 6);
   protected readonly _mesh_head: ISprite;
-  protected readonly _mesh_hints: ISprite;
-  protected readonly _mesh_cd: ISprite;
-
+  get countdown_node() { return this.node.find_child("countdown_text") }
+  get hints_node() { return this.node.find_child("hints") }
   get gpl(): GamePrepareLogic | undefined {
     return this.node.root.find_component(GamePrepareLogic);
   }
@@ -47,29 +44,16 @@ export default class FighterHead extends UIComponent {
       .set_position(this.node.w / 2, -this.node.h / 2, 0.1)
       .set_name("head")
       .apply();
-    this._mesh_hints = new Ditto.SpriteNode(this.lf2)
-      .set_center(0.5, 0.5)
-      .set_position(this.node.w / 2, -this.node.h / 2, 0.1)
-      .set_name("hints")
-      .apply();
-    this._mesh_cd = new Ditto.SpriteNode(this.lf2)
-      .set_center(0.5, 0.5)
-      .set_position(this.node.w / 2, -this.node.h / 2, 0.1)
-      .set_name("countdown");
   }
   override on_resume(): void {
     super.on_resume();
-    this.lf2.images.p_create_pic_by_img_key(Defines.BuiltIn_Imgs.CMA)
-      .then((hint_pic) => {
-        this._mesh_hints.set_info(hint_pic).apply();
-      })
 
-    this.node.renderer.sprite.add(this._mesh_cd, this._mesh_hints, this._mesh_head);
+    this.node.renderer.sprite.add(
+      this._mesh_head,
+    )
     this._unmount_jobs.add(
       () =>
         this.node.renderer.sprite.del(
-          this._mesh_cd,
-          this._mesh_hints,
           this._mesh_head,
         ),
       this.player?.callbacks.add({
@@ -80,9 +64,7 @@ export default class FighterHead extends UIComponent {
       this.gpl?.callbacks.add({
         on_countdown: (seconds) => {
           if (between(seconds, 1, 5))
-            this.lf2.images.p_create_pic_by_img_key(`sprite/CM${seconds}.png`).then(pic => {
-              this._mesh_cd.set_info(pic).apply();
-            })
+            this.countdown_node!.txt_idx.value = (seconds - 1);
         },
       }),
       this.gpl?.fsm.callbacks.add({
@@ -104,33 +86,33 @@ export default class FighterHead extends UIComponent {
 
   override update(dt: number): void {
     this._opacity.update(dt);
-    if (this._mesh_hints) this._mesh_hints.opacity = this._opacity.value;
+    if (this.hints_node) this.hints_node.opacity = this._opacity.value;
 
     switch (this.gpl?.state!) {
       case GamePrepareState.Player:
-        this._mesh_hints.visible = !this.player.joined;
+        this.hints_node!.visible = !this.player.joined;
         this._mesh_head.visible = this.player.joined;
-        this._mesh_cd.visible = false;
+        this.countdown_node!.visible = false;
         break;
       case GamePrepareState.CountingDown:
-        this._mesh_hints.visible = false;
+        this.hints_node!.visible = false;
         this._mesh_head.visible = this.player.joined;
-        this._mesh_cd.visible = !this.player.joined;
+        this.countdown_node!.visible = !this.player.joined;
         break;
       case GamePrepareState.ComNumberSel:
         this._mesh_head.visible = this.player.joined;
-        this._mesh_hints.visible = false;
-        this._mesh_cd.visible = false;
+        this.hints_node!.visible = false;
+        this.countdown_node!.visible = false;
         break;
       case GamePrepareState.Computer:
-        this._mesh_hints.visible = !this.player.joined && this.player.is_com;
+        this.hints_node!.visible = !this.player.joined && this.player.is_com;
         this._mesh_head.visible = this.player.joined;
-        this._mesh_cd.visible = false;
+        this.countdown_node!.visible = false;
         break;
       case GamePrepareState.GameSetting:
         this._mesh_head.visible = this.player.joined;
-        this._mesh_hints.visible = false;
-        this._mesh_cd.visible = false;
+        this.hints_node!.visible = false;
+        this.countdown_node!.visible = false;
         break;
     }
   }

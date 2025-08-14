@@ -163,8 +163,9 @@ export class UINode implements IDebugging {
    * @type {boolean}
    */
   get visible(): boolean {
-    if (!this.parent) return this._visible.value
-    return this.parent.visible && this._visible.value;
+    const mine = this._visible.value
+    if (!this.parent) return mine
+    return this.parent.visible && mine;
   }
 
   set visible(v: boolean) {
@@ -173,7 +174,7 @@ export class UINode implements IDebugging {
 
   set_visible(v: boolean): this {
     const prev = this.visible;
-    this._visible.set(0, v);
+    this._visible.value = v;
     if (prev !== this.visible) this.invoke_all_visible()
     if (!v && !this.focused_node?.visible) this.focused_node = void 0
     return this;
@@ -187,7 +188,7 @@ export class UINode implements IDebugging {
     this.set_disabled(v);
   }
   set_disabled(v: boolean): this {
-    this._disabled.set(0, v);
+    this._disabled.value = v;
     if (v && this.focused_node?.disabled) this.focused_node = void 0
     return this;
   }
@@ -242,8 +243,8 @@ export class UINode implements IDebugging {
     this.data = Object.freeze(data);
     this._parent = parent;
     this._root = parent?.root ?? this;
-    this.id_ui_map = parent?.id_ui_map ?? new Map();
-    this.name_ui_map = parent?.name_ui_map ?? new Map();
+    this.id_ui_map = new Map();
+    this.name_ui_map = new Map();
 
     this.renderer = new Ditto.UINodeRenderer(this);
     make_debugging(this)

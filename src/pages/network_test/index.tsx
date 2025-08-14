@@ -161,6 +161,22 @@ export default function NetworkTest() {
     <Space vertical>
       <Player />
       <Player />
+      {/* 
+      <div style={{
+        background: 'green',
+        borderRadius: 5,
+      }}>
+        <input type="text" style={{
+          background: 'transparent',
+          outline: 'none',
+          color: 'white',
+          border: 'none',
+          padding: 9,
+          minWidth: 0,
+          width: 'auto'
+        }} defaultValue='hello world' />
+      </div> 
+      */}
     </Space>
   )
 }

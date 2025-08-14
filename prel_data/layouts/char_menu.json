@@ -16,7 +16,63 @@
           "id": "FighterHead",
           "size": "120, 120",
           "pos": "0, 0",
-          "component": "FighterHead()"
+          "component": "FighterHead()",
+          "items": [
+            {
+              "id": "hints",
+              "pos": "60, 60",
+              "center": "0.5,0.5",
+              "visible": "true",
+              "img": {
+                "path": "sprite/CMA.png",
+                "w": 120,
+                "h": 66
+              }
+            },
+            {
+              "id": "countdown_text",
+              "pos": "60, 60",
+              "center": "0.5,0.5",
+              "visible": "false",
+              "txt": [
+                {
+                  "value": "1",
+                  "style": {
+                    "fill_style": "white",
+                    "font": "90px \"Arial Black\", Arial"
+                  }
+                },
+                {
+                  "value": "2",
+                  "style": {
+                    "fill_style": "white",
+                    "font": "90px \"Arial Black\", Arial"
+                  }
+                },
+                {
+                  "value": "3",
+                  "style": {
+                    "fill_style": "white",
+                    "font": "90px \"Arial Black\", Arial"
+                  }
+                },
+                {
+                  "value": "4",
+                  "style": {
+                    "fill_style": "white",
+                    "font": "90px \"Arial Black\", Arial"
+                  }
+                },
+                {
+                  "value": "5",
+                  "style": {
+                    "fill_style": "white",
+                    "font": "90px \"Arial Black\", Arial"
+                  }
+                }
+              ]
+            }
+          ]
         },
         {
           "id": "player_name",
