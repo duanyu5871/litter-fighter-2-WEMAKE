@@ -81,7 +81,33 @@ export class UINode implements IDebugging {
     this.scale.value = [x ?? a, y ?? b, z ?? c];
     return this;
   }
-
+  get cross() {
+    const [x, y] = this.pos.value
+    const [w, h] = this.size.value
+    const [a, b] = this.center.value
+    const left = -a * w
+    const top = -b * h
+    const right = (1 - a) * w
+    const bottom = (1 - b) * h
+    return {
+      left,
+      top,
+      right,
+      bottom,
+      mid_x: (left + right) / 2,
+      mid_y: (top + bottom) / 2
+    }
+  }
+  get rect() {
+    const c = this.cross
+    const [x, y] = this.pos.value
+    return {
+      left: x + c.left,
+      top: y + c.top,
+      right: x + c.right,
+      bottom: y + c.bottom
+    }
+  }
   get focused(): boolean {
     return this._root._focused_node === this;
   }

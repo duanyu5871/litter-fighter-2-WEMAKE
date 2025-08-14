@@ -34,8 +34,8 @@ export class LaunchPageLogic extends UIComponent {
   protected _prel_loaded: boolean = false;
   protected _dispose_jobs = new Invoker();
 
-  constructor(layout: UINode, f_name: string, info: IComponentInfo) {
-      super(layout, f_name, info);
+  constructor(...args: ConstructorParameters<typeof UIComponent>) {
+    super(...args);
     // this.__debugging = true
     this.fsm = new FSM<Status>().add({
       key: Status.TapHints,

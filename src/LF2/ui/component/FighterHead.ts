@@ -40,8 +40,8 @@ export default class FighterHead extends UIComponent {
 
   protected _unmount_jobs = new Invoker();
 
-  constructor(layout: UINode, f_name: string, info: IComponentInfo) {
-    super(layout, f_name, info);
+  constructor(...args: ConstructorParameters<typeof UIComponent>) {
+    super(...args);
     this._mesh_head = new Ditto.SpriteNode(this.lf2)
       .set_center(0.5, 0.5)
       .set_position(this.node.w / 2, -this.node.h / 2, 0.1)

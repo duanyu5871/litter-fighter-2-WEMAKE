@@ -1,6 +1,6 @@
 import { UIComponent } from "./UIComponent";
 
-export default class VerticalLayout extends UIComponent {
+export class VerticalLayout extends UIComponent {
   get gap() {
     return this.num(0) || 0
   }
@@ -31,4 +31,5 @@ export default class VerticalLayout extends UIComponent {
     this.node.size.value = [max_w, max_h];
   }
 }
+
 

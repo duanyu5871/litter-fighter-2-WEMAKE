@@ -39,12 +39,14 @@ import StageNameText from "./StageNameText";
 import { StageTitleShow } from "./StageTitleShow";
 import StageTransitions from "./StageTransitions";
 import { UIComponent } from "./UIComponent";
-import VerticalLayout from "./VerticalLayout";
+import { VerticalLayout } from "./VerticalLayout";
 import { VsModeLogic } from "./VsModeLogic";
 import { IUICompnentCallbacks } from "./IUICompnentCallbacks";
 import { ImgLoop } from "./ImgLoop";
 import { PlayerCtrlType } from "./PlayerCtrlType";
 import { Alignment } from "./Alignment";
+import { Flex } from "./Flex";
+import { FlexItem } from "./FlexItem";
 
 class ComponentFactory {
   static readonly TAG = `ComponentFactory`;
@@ -89,7 +91,9 @@ class ComponentFactory {
     [Sounds.TAG, Sounds],
     [ImgLoop.TAG, ImgLoop],
     [PlayerCtrlType.TAG, PlayerCtrlType],
-    [Alignment.TAG, Alignment]
+    [Alignment.TAG, Alignment],
+    [Flex.TAG, Flex],
+    [FlexItem.TAG, FlexItem]
   ]);
 
   register(key: string, Cls: typeof UIComponent) {
@@ -116,8 +120,8 @@ class ComponentFactory {
         Ditto.Warn(`[${ComponentFactory.TAG}::create] Component not found! expression: ${raw}`);
         continue;
       }
-      const { name, args = [], enabled = true, id = '' } = info;
-      const component = new cls(layout, name, info)
+      const { name, args = [], enabled = true, id = '', properties = {} } = info;
+      const component = new cls(layout, name, { name, args, enabled, id, properties })
       component.init(...args)
       component.set_enabled(enabled);
       component.id = id || `${name}_${idx}`

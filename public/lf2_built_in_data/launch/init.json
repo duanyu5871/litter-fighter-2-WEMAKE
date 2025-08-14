@@ -2,21 +2,67 @@
   "name": "页面：启动页",
   "id": "launch",
   "color": "rgb(16, 32, 108)",
-  "component": [
+  "_component": [
     "launch_page(entry)"
   ],
   "items": [
     {
+      "id": "id_0",
+      "color": "black",
+      "pos": "50,50",
+      "size": "200,200",
+      "center": "0,0",
+      "component": [
+        {
+          "name": "Flex",
+          "properties": {
+            "direction": "column",
+            "align": "end",
+            "gap": 5,
+            "fit": true
+          }
+        }
+      ],
+      "items": [
+        {
+          "id": "id_0",
+          "color": "blue",
+          "size": "30,30",
+          "center": "0.25,0"
+        },
+        {
+          "id": "id_1",
+          "color": "red",
+          "size": "30,30",
+          "center": "0.75,0"
+        },
+        {
+          "id": "id_2",
+          "color": "yellow",
+          "size": "30,30",
+          "center": "0,0.25"
+        },
+        {
+          "id": "id_2",
+          "color": "white",
+          "size": "30,30",
+          "center": "0,0.75"
+        }
+      ]
+    }
+  ],
+  "_items": [
+    {
       "id": "tap_to_launch",
       "txt": {
         "value#zh-hans": "点击任意位置继续",
-        "value#zh-cn":   "点击任意位置继续",
-        "value#zh-sg":   "点击任意位置继续",
-        "value#zh-my":   "点击任意位置继续",
+        "value#zh-cn": "点击任意位置继续",
+        "value#zh-sg": "点击任意位置继续",
+        "value#zh-my": "点击任意位置继续",
         "value#zh-hant": "點擊任何位置繼續",
-        "value#zh-tw":   "點擊任何位置繼續",
-        "value#zh-hk":   "點擊任何位置繼續",
-        "value#zh-mo":   "點擊任何位置繼續",
+        "value#zh-tw": "點擊任何位置繼續",
+        "value#zh-hk": "點擊任何位置繼續",
+        "value#zh-mo": "點擊任何位置繼續",
         "value": "CLICK ANYWHERE TO CONTINUE",
         "style": {
           "font": "36px Arial",
