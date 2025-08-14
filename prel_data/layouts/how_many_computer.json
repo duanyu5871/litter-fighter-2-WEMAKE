@@ -14,15 +14,7 @@
   "items": [
     {
       "txt": {
-        "value": "How many Computer Players?",
-        "value#zh-hans": "有多少个电脑玩家？",
-        "value#zh-cn": "有多少个电脑玩家？",
-        "value#zh-sg": "有多少个电脑玩家？",
-        "value#zh-my": "有多少个电脑玩家？",
-        "value#zh-hant": "有多少個電腦玩家？",
-        "value#zh-tw": "有多少個電腦玩家？",
-        "value#zh-hk": "有多少個電腦玩家？",
-        "value#zh-mo": "有多少個電腦玩家？",
+        "i18n":"cmc.how_many_coms",
         "style": {
           "font": "16px Arial"
         }

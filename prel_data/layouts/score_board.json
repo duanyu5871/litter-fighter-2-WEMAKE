@@ -25,15 +25,7 @@
       "items": [
         {
           "txt": {
-            "value#zh-hans": "总 结",
-            "value#zh-cn": "总 结",
-            "value#zh-sg": "总 结",
-            "value#zh-my": "总 结",
-            "value#zh-hant": "總 結",
-            "value#zh-tw": "總 結",
-            "value#zh-hk": "總 結",
-            "value#zh-mo": "總 結",
-            "value": "Summary",
+            "i18n": "score_board.summary",
             "style": {
               "fill_style": "#ffffff",
               "font": "bold 15px Arial"
@@ -44,15 +36,7 @@
         },
         {
           "txt": {
-            "value#zh-hans": "玩 家",
-            "value#zh-cn": "玩 家",
-            "value#zh-sg": "玩 家",
-            "value#zh-my": "玩 家",
-            "value#zh-hant": "玩 家",
-            "value#zh-tw": "玩 家",
-            "value#zh-hk": "玩 家",
-            "value#zh-mo": "玩 家",
-            "value": "Player",
+            "i18n": "score_board.player",
             "style": {
               "fill_style": "#ffffff",
               "font": "12px Arial"
@@ -63,15 +47,7 @@
         },
         {
           "txt": {
-            "value#zh-hans": "杀 敌",
-            "value#zh-cn": "杀 敌",
-            "value#zh-sg": "杀 敌",
-            "value#zh-my": "杀 敌",
-            "value#zh-hant": "殺 敵",
-            "value#zh-tw": "殺 敵",
-            "value#zh-hk": "殺 敵",
-            "value#zh-mo": "殺 敵",
-            "value": "kill",
+            "i18n": "score_board.kill",
             "style": {
               "fill_style": "#ffaaaa",
               "font": "12px Arial"
@@ -82,15 +58,7 @@
         },
         {
           "txt": {
-            "value#zh-hans": "攻 击",
-            "value#zh-cn": "攻 击",
-            "value#zh-sg": "攻 击",
-            "value#zh-my": "攻 击",
-            "value#zh-hant": "攻 擊",
-            "value#zh-tw": "攻 擊",
-            "value#zh-hk": "攻 擊",
-            "value#zh-mo": "攻 擊",
-            "value": "Attack",
+            "i18n": "score_board.attack",
             "style": {
               "fill_style": "#ffaaaa",
               "font": "12px Arial"
@@ -101,15 +69,7 @@
         },
         {
           "txt": {
-            "value#zh-hans": "生命损耗",
-            "value#zh-cn": "生命损耗",
-            "value#zh-sg": "生命损耗",
-            "value#zh-my": "生命损耗",
-            "value#zh-hant": "生命損耗",
-            "value#zh-tw": "生命損耗",
-            "value#zh-hk": "生命損耗",
-            "value#zh-mo": "生命損耗",
-            "value": "HP Lost",
+            "i18n": "score_board.hp_lost",
             "style": {
               "fill_style": "#f0f0aa",
               "font": "12px Arial"
@@ -120,15 +80,7 @@
         },
         {
           "txt": {
-            "value#zh-hans": "气用量",
-            "value#zh-cn": "气用量",
-            "value#zh-sg": "气用量",
-            "value#zh-my": "气用量",
-            "value#zh-hant": "氣用量",
-            "value#zh-tw": "氣用量",
-            "value#zh-hk": "氣用量",
-            "value#zh-mo": "氣用量",
-            "value": "MP Usage",
+            "i18n": "score_board.mp_usage",
             "style": {
               "fill_style": "#f0f0aa",
               "font": "12px Arial"
@@ -139,15 +91,7 @@
         },
         {
           "txt": {
-            "value#zh-hans": "拾取物件",
-            "value#zh-cn": "拾取物件",
-            "value#zh-sg": "拾取物件",
-            "value#zh-my": "拾取物件",
-            "value#zh-hant": "拾取物件",
-            "value#zh-tw": "拾取物件",
-            "value#zh-hk": "拾取物件",
-            "value#zh-mo": "拾取物件",
-            "value": "Picking",
+            "i18n": "score_board.picking",
             "style": {
               "fill_style": "#aaf5aa",
               "font": "12px Arial"
@@ -158,15 +102,7 @@
         },
         {
           "txt": {
-            "value#zh-hans": "状 态",
-            "value#zh-cn": "状 态",
-            "value#zh-sg": "状 态",
-            "value#zh-my": "状 态",
-            "value#zh-hant": "狀 態",
-            "value#zh-tw": "狀 態",
-            "value#zh-hk": "狀 態",
-            "value#zh-mo": "狀 態",
-            "value": "Status",
+            "i18n": "score_board.status",
             "style": {
               "fill_style": "#aaf5aa",
               "font": "12px Arial"
@@ -230,15 +166,7 @@
           "pos": "7,27",
           "center": "0, 1",
           "txt": {
-            "value#zh-hans": "按'攻击'或'跳跃'继续",
-            "value#zh-cn": "按'攻击'或'跳跃'继续",
-            "value#zh-sg": "按'攻击'或'跳跃'继续",
-            "value#zh-my": "按'攻击'或'跳跃'继续",
-            "value#zh-hant": "按'攻擊'或'跳躍'繼續",
-            "value#zh-tw": "按'攻擊'或'跳躍'繼續",
-            "value#zh-hk": "按'攻擊'或'跳躍'繼續",
-            "value#zh-mo": "按'攻擊'或'跳躍'繼續",
-            "value": "Press 'Attack' or 'Jump' to contimue",
+            "i18n": "score_board.press_atk_jmp_continue",
             "style": {
               "fill_style": "#7286bf",
               "font": "12px Arial"
@@ -249,15 +177,7 @@
           "pos": "425,13",
           "center": "1, 0.5",
           "txt": {
-            "value#zh-hans": "完结时间:",
-            "value#zh-cn": "完结时间:",
-            "value#zh-sg": "完结时间:",
-            "value#zh-my": "完结时间:",
-            "value#zh-hant": "完結時間:",
-            "value#zh-tw": "完結時間:",
-            "value#zh-hk": "完結時間:",
-            "value#zh-mo": "完結時間:",
-            "value": "time:",
+            "i18n": "score_board.time_used",
             "style": {
               "fill_style": "#ffffff",
               "font": "12px Arial"

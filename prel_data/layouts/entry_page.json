@@ -46,15 +46,7 @@
             {
               "center": "0.5, 0.5",
               "txt": {
-                "value#zh-hans": "开 始 游 戏",
-                "value#zh-cn": "开 始 游 戏",
-                "value#zh-sg": "开 始 游 戏",
-                "value#zh-my": "开 始 游 戏",
-                "value#zh-hant": "開 始 游 戲",
-                "value#zh-tw": "開 始 游 戲",
-                "value#zh-hk": "開 始 游 戲",
-                "value#zh-mo": "開 始 游 戲",
-                "value": "game start",
+                "i18n":"entry_page.game_start",
                 "style": {
                   "font": "18px Arial",
                   "fill_style": "#5A73D6"
@@ -65,15 +57,7 @@
               "center": "0.5, 0.5",
               "auto_focus": true,
               "txt": {
-                "value#zh-hans": "开 始 游 戏",
-                "value#zh-cn": "开 始 游 戏",
-                "value#zh-sg": "开 始 游 戏",
-                "value#zh-my": "开 始 游 戏",
-                "value#zh-hant": "開 始 游 戲",
-                "value#zh-tw": "開 始 游 戲",
-                "value#zh-hk": "開 始 游 戲",
-                "value#zh-mo": "開 始 游 戲",
-                "value": "game start",
+                "i18n":"entry_page.game_start",
                 "style": {
                   "font": "18px Arial",
                   "fill_style": "white",
@@ -103,15 +87,7 @@
             {
               "center": "0.5, 0.5",
               "txt": {
-                "value#zh-hans": "联 机 游 戏",
-                "value#zh-cn": "联 机 游 戏",
-                "value#zh-sg": "联 机 游 戏",
-                "value#zh-my": "联 机 游 戏",
-                "value#zh-hant": "連 線 遊 戲",
-                "value#zh-tw": "連 線 遊 戲",
-                "value#zh-hk": "連 線 遊 戲",
-                "value#zh-mo": "連 線 遊 戲",
-                "value": "network game",
+                "i18n":"entry_page.network_game",
                 "style": {
                   "font": "18px Arial",
                   "fill_style": "#5A73D6"
@@ -122,15 +98,7 @@
               "center": "0.5, 0.5",
               "auto_focus": true,
               "txt": {
-                "value#zh-hans": "联 机 游 戏",
-                "value#zh-cn": "联 机 游 戏",
-                "value#zh-sg": "联 机 游 戏",
-                "value#zh-my": "联 机 游 戏",
-                "value#zh-hant": "連 線 遊 戲",
-                "value#zh-tw": "連 線 遊 戲",
-                "value#zh-hk": "連 線 遊 戲",
-                "value#zh-mo": "連 線 遊 戲",
-                "value": "network game",
+                "i18n":"entry_page.network_game",
                 "style": {
                   "font": "18px Arial",
                   "fill_style": "white",
@@ -159,15 +127,7 @@
             {
               "center": "0.5, 0.5",
               "txt": {
-                "value#zh-hans": "控 制 设 置",
-                "value#zh-cn": "控 制 设 置",
-                "value#zh-sg": "控 制 设 置",
-                "value#zh-my": "控 制 设 置",
-                "value#zh-hant": "控 制 設 定",
-                "value#zh-tw": "控 制 設 定",
-                "value#zh-hk": "控 制 設 定",
-                "value#zh-mo": "控 制 設 定",
-                "value": "control settings",
+                "i18n":"entry_page.ctrl_settings",
                 "style": {
                   "font": "18px Arial",
                   "fill_style": "#5A73D6"
@@ -178,15 +138,7 @@
               "center": "0.5, 0.5",
               "auto_focus": true,
               "txt": {
-                "value#zh-hans": "控 制 设 置",
-                "value#zh-cn": "控 制 设 置",
-                "value#zh-sg": "控 制 设 置",
-                "value#zh-my": "控 制 设 置",
-                "value#zh-hant": "控 制 設 定",
-                "value#zh-tw": "控 制 設 定",
-                "value#zh-hk": "控 制 設 定",
-                "value#zh-mo": "控 制 設 定",
-                "value": "control settings",
+                "i18n":"entry_page.ctrl_settings",
                 "style": {
                   "font": "18px Arial",
                   "fill_style": "white",

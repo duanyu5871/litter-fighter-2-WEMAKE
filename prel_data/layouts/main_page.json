@@ -46,15 +46,7 @@
             {
               "center": "0.5, 0.5",
               "txt": {
-                "value#zh-hans": "对 决 模 式",
-                "value#zh-cn": "对 决 模 式",
-                "value#zh-sg": "对 决 模 式",
-                "value#zh-my": "对 决 模 式",
-                "value#zh-hant": "對 決 模 式",
-                "value#zh-tw": "對 決 模 式",
-                "value#zh-hk": "對 決 模 式",
-                "value#zh-mo": "對 決 模 式",
-                "value": "VS mode",
+                "i18n": "main_page.vs_mode",
                 "style": {
                   "font": "18px Arial",
                   "fill_style": "#5A73D6"
@@ -65,15 +57,7 @@
               "center": "0.5, 0.5",
               "auto_focus": true,
               "txt": {
-                "value#zh-hans": "对 决 模 式",
-                "value#zh-cn": "对 决 模 式",
-                "value#zh-sg": "对 决 模 式",
-                "value#zh-my": "对 决 模 式",
-                "value#zh-hant": "對 決 模 式",
-                "value#zh-tw": "對 決 模 式",
-                "value#zh-hk": "對 決 模 式",
-                "value#zh-mo": "對 決 模 式",
-                "value": "VS mode",
+                "i18n": "main_page.vs_mode",
                 "style": {
                   "font": "18px Arial",
                   "fill_style": "white",
@@ -102,15 +86,7 @@
             {
               "center": "0.5, 0.5",
               "txt": {
-                "value#zh-hans": "闯 关 模 式",
-                "value#zh-cn": "闯 关 模 式",
-                "value#zh-sg": "闯 关 模 式",
-                "value#zh-my": "闯 关 模 式",
-                "value#zh-hant": "闖 關 模 式",
-                "value#zh-tw": "闖 關 模 式",
-                "value#zh-hk": "闖 關 模 式",
-                "value#zh-mo": "闖 關 模 式",
-                "value": "Stage mode",
+                "i18n": "main_page.stage_mode",
                 "style": {
                   "font": "18px Arial",
                   "fill_style": "#5A73D6"
@@ -120,15 +96,7 @@
             {
               "center": "0.5, 0.5",
               "txt": {
-                "value#zh-hans": "闯 关 模 式",
-                "value#zh-cn": "闯 关 模 式",
-                "value#zh-sg": "闯 关 模 式",
-                "value#zh-my": "闯 关 模 式",
-                "value#zh-hant": "闖 關 模 式",
-                "value#zh-tw": "闖 關 模 式",
-                "value#zh-hk": "闖 關 模 式",
-                "value#zh-mo": "闖 關 模 式",
-                "value": "Stage mode",
+                "i18n": "main_page.stage_mode",
                 "style": {
                   "font": "18px Arial",
                   "fill_style": "white",
@@ -157,15 +125,7 @@
             {
               "center": "0.5, 0.5",
               "txt": {
-                "value#zh-hans": "单人淘汰赛",
-                "value#zh-cn": "单人淘汰赛",
-                "value#zh-sg": "单人淘汰赛",
-                "value#zh-my": "单人淘汰赛",
-                "value#zh-hant": "單人淘汰賽",
-                "value#zh-tw": "單人淘汰賽",
-                "value#zh-hk": "單人淘汰賽",
-                "value#zh-mo": "單人淘汰賽",
-                "value": "1 on 1 Championship",
+                "i18n": "main_page.1v1_championship_mode",
                 "style": {
                   "font": "18px Arial",
                   "fill_style": "#5A73D6"
@@ -175,15 +135,7 @@
             {
               "center": "0.5, 0.5",
               "txt": {
-                "value#zh-hans": "单人淘汰赛",
-                "value#zh-cn": "单人淘汰赛",
-                "value#zh-sg": "单人淘汰赛",
-                "value#zh-my": "单人淘汰赛",
-                "value#zh-hant": "單人淘汰賽",
-                "value#zh-tw": "單人淘汰賽",
-                "value#zh-hk": "單人淘汰賽",
-                "value#zh-mo": "單人淘汰賽",
-                "value": "1 on 1 Championship",
+                "i18n": "main_page.1v1_championship_mode",
                 "style": {
                   "font": "18px Arial",
                   "fill_style": "white",
@@ -212,15 +164,7 @@
             {
               "center": "0.5, 0.5",
               "txt": {
-                "value#zh-hans": "2V2淘汰赛",
-                "value#zh-cn": "2V2淘汰赛",
-                "value#zh-sg": "2V2淘汰赛",
-                "value#zh-my": "2V2淘汰赛",
-                "value#zh-hant": "2V2淘汰賽",
-                "value#zh-tw": "2V2淘汰賽",
-                "value#zh-hk": "2V2淘汰賽",
-                "value#zh-mo": "2V2淘汰賽",
-                "value": "2 on 2 Championship",
+                "i18n": "main_page.2v2_championship_mode",
                 "style": {
                   "font": "18px Arial",
                   "fill_style": "#5A73D6"
@@ -230,15 +174,7 @@
             {
               "center": "0.5, 0.5",
               "txt": {
-                "value#zh-hans": "2V2淘汰赛",
-                "value#zh-cn": "2V2淘汰赛",
-                "value#zh-sg": "2V2淘汰赛",
-                "value#zh-my": "2V2淘汰赛",
-                "value#zh-hant": "2V2淘汰賽",
-                "value#zh-tw": "2V2淘汰賽",
-                "value#zh-hk": "2V2淘汰賽",
-                "value#zh-mo": "2V2淘汰賽",
-                "value": "2 on 2 Championship",
+                "i18n": "main_page.2v2_championship_mode",
                 "style": {
                   "font": "18px Arial",
                   "fill_style": "white",
@@ -267,15 +203,7 @@
             {
               "center": "0.5, 0.5",
               "txt": {
-                "value#zh-hans": "战 争 模 式",
-                "value#zh-cn": "战 争 模 式",
-                "value#zh-sg": "战 争 模 式",
-                "value#zh-my": "战 争 模 式",
-                "value#zh-hant": "戰 爭 模 式",
-                "value#zh-tw": "戰 爭 模 式",
-                "value#zh-hk": "戰 爭 模 式",
-                "value#zh-mo": "戰 爭 模 式",
-                "value": "Battle mode",
+                "i18n": "main_page.battle_mode",
                 "style": {
                   "font": "18px Arial",
                   "fill_style": "#5A73D6"
@@ -285,15 +213,7 @@
             {
               "center": "0.5, 0.5",
               "txt": {
-                "value#zh-hans": "战 争 模 式",
-                "value#zh-cn": "战 争 模 式",
-                "value#zh-sg": "战 争 模 式",
-                "value#zh-my": "战 争 模 式",
-                "value#zh-hant": "戰 爭 模 式",
-                "value#zh-tw": "戰 爭 模 式",
-                "value#zh-hk": "戰 爭 模 式",
-                "value#zh-mo": "戰 爭 模 式",
-                "value": "Battle mode",
+                "i18n": "main_page.battle_mode",
                 "style": {
                   "font": "18px Arial",
                   "fill_style": "white",
@@ -322,15 +242,7 @@
             {
               "center": "0.5, 0.5",
               "txt": {
-                "value#zh-hans": "游 戏 示 范",
-                "value#zh-cn": "游 戏 示 范",
-                "value#zh-sg": "游 戏 示 范",
-                "value#zh-my": "游 戏 示 范",
-                "value#zh-hant": "游 戲 示 範",
-                "value#zh-tw": "游 戲 示 範",
-                "value#zh-hk": "游 戲 示 範",
-                "value#zh-mo": "游 戲 示 範",
-                "value": "Demo",
+                "i18n": "main_page.demo_mode",
                 "style": {
                   "font": "18px Arial",
                   "fill_style": "#5A73D6"
@@ -340,14 +252,7 @@
             {
               "center": "0.5, 0.5",
               "txt": {
-                "value#zh-hans": "游 戏 示 范",
-                "value#zh-cn": "游 戏 示 范",
-                "value#zh-sg": "游 戏 示 范",
-                "value#zh-my": "游 戏 示 范",
-                "value#zh-hant": "游 戲 示 範",
-                "value#zh-tw": "游 戲 示 範",
-                "value#zh-hk": "游 戲 示 範",
-                "value#zh-mo": "游 戲 示 範",
+                "i18n": "main_page.demo_mode",
                 "value": "Demo",
                 "style": {
                   "font": "18px Arial",
@@ -377,15 +282,7 @@
             {
               "center": "0.5, 0.5",
               "txt": {
-                "value#zh-hans": "退 出 游 戏",
-                "value#zh-cn": "退 出 游 戏",
-                "value#zh-sg": "退 出 游 戏",
-                "value#zh-my": "退 出 游 戏",
-                "value#zh-hant": "關 閉 游 戲",
-                "value#zh-tw": "關 閉 游 戲",
-                "value#zh-hk": "關 閉 游 戲",
-                "value#zh-mo": "關 閉 游 戲",
-                "value": "Quit",
+                "i18n": "main_page.quit",
                 "style": {
                   "font": "18px Arial",
                   "fill_style": "#5A73D6"
@@ -395,15 +292,7 @@
             {
               "center": "0.5, 0.5",
               "txt": {
-                "value#zh-hans": "退 出 游 戏",
-                "value#zh-cn": "退 出 游 戏",
-                "value#zh-sg": "退 出 游 戏",
-                "value#zh-my": "退 出 游 戏",
-                "value#zh-hant": "關 閉 游 戲",
-                "value#zh-tw": "關 閉 游 戲",
-                "value#zh-hk": "關 閉 游 戲",
-                "value#zh-mo": "關 閉 游 戲",
-                "value": "Quit",
+                "i18n": "main_page.quit",
                 "style": {
                   "font": "18px Arial",
                   "fill_style": "white",

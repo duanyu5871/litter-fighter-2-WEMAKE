@@ -422,6 +422,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
     const ret = await this.load_zip_from_info_url(url);
     this.zips.unshift(ret);
     this._callbacks.emit("on_zips_changed")(this.zips);
+    await this.import_json("launch/strings.json").then(r => this.load_strings(r[0])).catch(e => { })
     await this.load_data(ret)
     await this.load_ui();
     this._callbacks.emit("on_prel_loaded")();
@@ -472,6 +473,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
     if (zip) {
       this.zips.unshift(zip);
       this._callbacks.emit("on_zips_changed")(this.zips);
+      await zip.file("strings.json")?.json().then(r => this.load_strings(r))
     }
     await this.datas.load();
     if (this._disposed) this.datas.dispose();
@@ -621,7 +623,35 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
   }
 
   protected _uiinfo_map = new Map<string, IUIInfo>();
+  protected _strings = new Map<string, { [x in string]?: string }>()
+  string(name?: string): string | null {
+    if (typeof name !== 'string') return null
+    const collection = this._strings.get(this.lang.toLowerCase()) || this._strings.get("")
+    if (!collection) return null;
+    return collection[name] ?? null
+  }
+  load_strings(strings: any) {
+    const collection_pointers: [string, string][] = []
+    for (const key in strings) {
+      const collection = strings[key];
+      if (typeof collection === 'object') {
+        const prev = this._strings.get(key)
+        if (prev) this._strings.set(key, { ...collection, ...prev });
+        else this._strings.set(key, collection)
+      }
+      if (typeof collection === 'string' && collection !== key)
+        collection_pointers.push([key, collection]);
+    }
+    for (let i = 0; i < collection_pointers.length; i++) {
+      const [a, b] = collection_pointers[i];
+      const collection = this._strings.get(b)
+      if (!collection) continue;
+      this._strings.set(a, { ...collection });
+      collection_pointers.splice(i, 1);
+      --i
+    }
 
+  }
   async load_ui(): Promise<ICookedUIInfo[]> {
     if (this._uiinfos.length) return this._uiinfos;
     const array = await this.import_json("layouts/index.json").then(r => r[0]).catch((e) => []);

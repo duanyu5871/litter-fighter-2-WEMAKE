@@ -45,15 +45,7 @@
       "pos": "-230, 133",
       "center": "1, 0.5",
       "txt": {
-        "value": "Player：",
-        "value#zh-hans": "玩 家：",
-        "value#zh-cn": "玩 家：",
-        "value#zh-sg": "玩 家：",
-        "value#zh-my": "玩 家：",
-        "value#zh-hant": "玩 家：",
-        "value#zh-tw": "玩 家：",
-        "value#zh-hk": "玩 家：",
-        "value#zh-mo": "玩 家：",
+        "i18n": "char_menu.player_colon",
         "style": {
           "font": "12px Arial"
         }
@@ -63,15 +55,7 @@
       "pos": "-230, 155",
       "center": "1, 0.5",
       "txt": {
-        "value": "Fighter：",
-        "value#zh-hans": "角 色：",
-        "value#zh-cn": "角 色：",
-        "value#zh-sg": "角 色：",
-        "value#zh-my": "角 色：",
-        "value#zh-hant": "角 色：",
-        "value#zh-tw": "角 色：",
-        "value#zh-hk": "角 色：",
-        "value#zh-mo": "角 色：",
+        "i18n": "char_menu.fighter_colon",
         "style": {
           "font": "12px Arial"
         }
@@ -81,15 +65,7 @@
       "pos": "-230, 177",
       "center": "1, 0.5",
       "txt": {
-        "value": "Team：",
-        "value#zh-hans": "队 伍：",
-        "value#zh-cn": "队 伍：",
-        "value#zh-sg": "队 伍：",
-        "value#zh-my": "队 伍：",
-        "value#zh-hant": "隊伍：",
-        "value#zh-tw": "隊 伍：",
-        "value#zh-hk": "隊 伍：",
-        "value#zh-mo": "隊 伍：",
+        "i18n": "char_menu.team_colon",
         "style": {
           "font": "12px Arial"
         }
