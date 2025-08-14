@@ -9,6 +9,94 @@
     ]
   ],
   "templates": {
+    "suffixies": {
+      "items": [
+        {
+          "id": "key_set_U",
+          "center": "1,0.5",
+          "pos": "0, 134",
+          "txt": {
+            "i18n": "ctrl_settings.key_up",
+            "style": {
+              "fill_style": "#AAC3FF",
+              "font": "bold 16px Arial"
+            }
+          }
+        },
+        {
+          "id": "key_set_D",
+          "center": "1,0.5",
+          "pos": "0, 156",
+          "txt": {
+            "i18n": "ctrl_settings.key_down",
+            "style": {
+              "fill_style": "#AAC3FF",
+              "font": "bold 16px Arial"
+            }
+          }
+        },
+        {
+          "id": "key_set_L",
+          "center": "1,0.5",
+          "pos": "0, 178",
+          "txt": {
+            "i18n": "ctrl_settings.key_left",
+            "style": {
+              "fill_style": "#AAC3FF",
+              "font": "bold 16px Arial"
+            }
+          }
+        },
+        {
+          "id": "key_set_R",
+          "center": "1,0.5",
+          "pos": "0, 200",
+          "txt": {
+            "i18n": "ctrl_settings.key_right",
+            "style": {
+              "fill_style": "#AAC3FF",
+              "font": "bold 16px Arial"
+            }
+          }
+        },
+        {
+          "id": "key_set_a",
+          "center": "1,0.5",
+          "pos": "0, 222",
+          "txt": {
+            "i18n": "ctrl_settings.key_attack",
+            "style": {
+              "fill_style": "#AAC3FF",
+              "font": "bold 16px Arial"
+            }
+          }
+        },
+        {
+          "id": "key_set_j",
+          "center": "1,0.5",
+          "pos": "0, 244",
+          "txt": {
+            "i18n": "ctrl_settings.key_jump",
+            "style": {
+              "fill_style": "#AAC3FF",
+              "font": "bold 16px Arial"
+            }
+          }
+        },
+        {
+          "id": "key_set_d",
+          "center": "1,0.5",
+          "pos": "0, 266",
+          "txt": {
+            "i18n": "ctrl_settings.key_defend",
+            "style": {
+              "fill_style": "#AAC3FF",
+              "font": "bold 16px Arial"
+            }
+          }
+        }
+      ]
+    },
     "player_set": {
       "items": [
         {
@@ -128,6 +216,11 @@
           "center": "0.5, 0.5"
         },
         {
+          "id": "suffixies",
+          "pos": "-170,-144",
+          "template": "suffixies"
+        },
+        {
           "id": "player_1",
           "pos": "-165,-145",
           "values": {
@@ -204,7 +297,7 @@
     {
       "id": "btn_move_table_normal",
       "txt": {
-        "i18n":"goto_special_moves_table",
+        "i18n": "goto_special_moves_table",
         "style": {
           "fill_style": "#5A73D6",
           "underline_color": "#5A73D6",
@@ -218,7 +311,7 @@
     {
       "id": "btn_move_table_hover",
       "txt": {
-        "i18n":"goto_special_moves_table",
+        "i18n": "goto_special_moves_table",
         "style": {
           "fill_style": "white",
           "underline_color": "white",

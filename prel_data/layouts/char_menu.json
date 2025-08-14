@@ -16,13 +16,13 @@
           "id": "FighterHead",
           "size": "120, 120",
           "pos": "0, 0",
-          "component": "FighterHead()",
+          "_component": "FighterHead()",
           "items": [
             {
               "id": "hints",
               "pos": "60, 60",
               "center": "0.5,0.5",
-              "visible": "true",
+              "visible": true,
               "img": {
                 "path": "sprite/CMA.png",
                 "w": 120,
@@ -33,7 +33,7 @@
               "id": "countdown_text",
               "pos": "60, 60",
               "center": "0.5,0.5",
-              "visible": "false",
+              "visible": false,
               "txt": [
                 {
                   "value": "1",
@@ -69,6 +69,29 @@
                     "fill_style": "white",
                     "font": "90px \"Arial Black\", Arial"
                   }
+                }
+              ]
+            },
+            {
+              "id": "hints",
+              "pos": "60, 60",
+              "center": "0.5,0.5",
+              "visible": false,
+              "items": [
+                {
+                  "id": "?",
+                  "pos": "60, 60",
+                  "center": "0.5,0.5",
+                  "visible": true,
+                  "txt": [
+                    {
+                      "value": "?",
+                      "style": {
+                        "fill_style": "white",
+                        "font": "90px \"Arial Black\", Arial"
+                      }
+                    }
+                  ]
                 }
               ]
             }

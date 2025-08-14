@@ -626,9 +626,10 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
   protected _strings = new Map<string, { [x in string]?: string }>()
   string(name?: string): string | null {
     if (typeof name !== 'string') return null
-    const collection = this._strings.get(this.lang.toLowerCase()) || this._strings.get("")
-    if (!collection) return null;
-    return collection[name] ?? null
+    return (
+      this._strings.get(this.lang)?.[name] ??
+      this._strings.get("")?.[name] ?? null
+    )
   }
   load_strings(strings: any) {
     const collection_pointers: [string, string][] = []

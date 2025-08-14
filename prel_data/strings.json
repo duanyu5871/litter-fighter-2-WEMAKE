@@ -25,6 +25,13 @@
     "main_page.demo_mode": "Demo",
     "main_page.quit": "Quit",
     "cmc.how_many_coms": "How many Computer Players?",
+    "ctrl_settings.key_up": "up",
+    "ctrl_settings.key_down": "down",
+    "ctrl_settings.key_left": "left",
+    "ctrl_settings.key_right": "right",
+    "ctrl_settings.key_attack": "attack",
+    "ctrl_settings.key_jump": "jump",
+    "ctrl_settings.key_defend": "defend",
     "": ""
   },
   "zh-hans": {
@@ -53,6 +60,13 @@
     "char_menu.player_colon": "玩 家：",
     "char_menu.fighter_colon": "角 色：",
     "char_menu.team_colon": "队 伍：",
+    "ctrl_settings.key_up": "上",
+    "ctrl_settings.key_down": "下",
+    "ctrl_settings.key_left": "左",
+    "ctrl_settings.key_right": "右",
+    "ctrl_settings.key_attack": "攻",
+    "ctrl_settings.key_jump": "跳",
+    "ctrl_settings.key_defend": "防",
     "": ""
   },
   "zh-hant": {
@@ -81,6 +95,13 @@
     "char_menu.player_colon": "玩 家：",
     "char_menu.fighter_colon": "角 色：",
     "char_menu.team_colon": "隊 伍：",
+    "ctrl_settings.key_up": "上",
+    "ctrl_settings.key_down": "下",
+    "ctrl_settings.key_left": "左",
+    "ctrl_settings.key_right": "右",
+    "ctrl_settings.key_attack": "攻",
+    "ctrl_settings.key_jump": "跳",
+    "ctrl_settings.key_defend": "守",
     "": ""
   },
   "zh-cn": "zh-hans",
