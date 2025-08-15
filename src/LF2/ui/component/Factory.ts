@@ -3,6 +3,7 @@ import { is_str } from "../../utils/type_check";
 import { IUIInfo } from "../IUIInfo.dat";
 import type { UINode } from "../UINode";
 import { parse_call_func_expression } from "../utils/parse_call_func_expression";
+import { Alignment } from "./Alignment";
 import BackgroundNameText from "./BackgroundNameText";
 import ComNumButton from "./ComNumButton";
 import { DemoModeLogic } from "./DemoModeLogic";
@@ -11,8 +12,13 @@ import { FadeInOpacity } from "./FadeInOpacity";
 import { FadeOutOpacity } from "./FadeOutOpacity";
 import FighterHead from "./FighterHead";
 import FighterName from "./FighterName";
+import { FitChildren } from "./FitChildren";
+import { Flex } from "./Flex";
+import { FlexItem } from "./FlexItem";
 import GamePrepareLogic from "./GamePrepareLogic";
 import { HorizontalLayout } from "./HorizontalLayout";
+import { IUICompnentCallbacks } from "./IUICompnentCallbacks";
+import { ImgLoop } from "./ImgLoop";
 import { Items } from "./Items";
 import { Jalousie } from "./Jalousie";
 import { LaunchPageLogic } from "./LaunchPageLogic";
@@ -20,6 +26,7 @@ import { LoadingContentText } from "./LoadingContentText";
 import { OpacityAnimation } from "./OpacityAnimation";
 import { OpacityHover } from "./OpacityHover";
 import PlayerCharacterThumb from "./PlayerCharacterThumb";
+import { PlayerCtrlType } from "./PlayerCtrlType";
 import { PlayerKeyEdit } from "./PlayerKeyEdit";
 import { PlayerKeyText } from "./PlayerKeyText";
 import PlayerName from "./PlayerName";
@@ -28,25 +35,19 @@ import PlayerScoreCell from "./PlayerScoreCell";
 import PlayerTeamName from "./PlayerTeamName";
 import { PlayingTimeText } from "./PlayingTimeText";
 import { PositionAnimation } from "./PositionAnimation";
-import { Sounds } from "./Sounds";
 import { RandomImgOnLayoutResume } from "./RandomImgOnLayoutResume";
 import { Reachable } from "./Reachable";
 import { ReachableGroup } from "./ReachableGroup";
 import { ScaleAnimation } from "./ScaleAnimation";
 import { SineOpacity } from "./SineOpacity";
 import SlotSelLogic from "./SlotSelLogic";
+import { Sounds } from "./Sounds";
 import StageNameText from "./StageNameText";
 import { StageTitleShow } from "./StageTitleShow";
 import StageTransitions from "./StageTransitions";
 import { UIComponent } from "./UIComponent";
 import { VerticalLayout } from "./VerticalLayout";
 import { VsModeLogic } from "./VsModeLogic";
-import { IUICompnentCallbacks } from "./IUICompnentCallbacks";
-import { ImgLoop } from "./ImgLoop";
-import { PlayerCtrlType } from "./PlayerCtrlType";
-import { Alignment } from "./Alignment";
-import { Flex } from "./Flex";
-import { FlexItem } from "./FlexItem";
 
 class ComponentFactory {
   static readonly TAG = `ComponentFactory`;
@@ -93,7 +94,8 @@ class ComponentFactory {
     [PlayerCtrlType.TAG, PlayerCtrlType],
     [Alignment.TAG, Alignment],
     [Flex.TAG, Flex],
-    [FlexItem.TAG, FlexItem]
+    [FlexItem.TAG, FlexItem],
+    [FitChildren.TAG, FitChildren]
   ]);
 
   register(key: string, Cls: typeof UIComponent) {

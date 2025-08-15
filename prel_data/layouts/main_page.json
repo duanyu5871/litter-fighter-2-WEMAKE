@@ -42,276 +42,128 @@
           "id": "btn_vs_mode",
           "size": "200,22",
           "center": "0.5, 0.5",
-          "items": [
-            {
-              "center": "0.5, 0.5",
-              "txt": {
-                "i18n": "main_page.vs_mode",
-                "style": {
-                  "font": "18px Arial",
-                  "fill_style": "#5A73D6"
-                }
-              }
-            },
-            {
-              "center": "0.5, 0.5",
-              "auto_focus": true,
-              "txt": {
-                "i18n": "main_page.vs_mode",
-                "style": {
-                  "font": "18px Arial",
-                  "fill_style": "white",
-                  "underline_color": "white",
-                  "underline_width": 2
-                }
-              },
-              "component": [
-                "opacity_hover(0,1)",
-                "Reachable(main)"
-              ],
-              "actions": {
-                "click": [
-                  "push_layout(vs_mode_prepare_page)",
-                  "sound(ok)"
-                ]
-              }
-            }
-          ]
+          "auto_focus": true,
+          "template": "launch/text_button.json",
+          "values": {
+            "text": "main_page.vs_mode"
+          },
+          "component": [
+            "Reachable(main)"
+          ],
+          "actions": {
+            "click": [
+              "push_layout(vs_mode_prepare_page)",
+              "sound(ok)"
+            ]
+          }
         },
         {
           "id": "btn_stage_mode",
           "center": "0.5, 0.5",
           "size": "200,22",
-          "items": [
-            {
-              "center": "0.5, 0.5",
-              "txt": {
-                "i18n": "main_page.stage_mode",
-                "style": {
-                  "font": "18px Arial",
-                  "fill_style": "#5A73D6"
-                }
-              }
-            },
-            {
-              "center": "0.5, 0.5",
-              "txt": {
-                "i18n": "main_page.stage_mode",
-                "style": {
-                  "font": "18px Arial",
-                  "fill_style": "white",
-                  "underline_color": "white",
-                  "underline_width": 2
-                }
-              },
-              "component": [
-                "opacity_hover(0,1)",
-                "Reachable(main)"
-              ],
-              "actions": {
-                "click": [
-                  "push_layout(stage_mode_prepare_page)",
-                  "sound(ok)"
-                ]
-              }
-            }
-          ]
+          "template": "launch/text_button.json",
+          "values": {
+            "text": "main_page.stage_mode"
+          },
+          "component": [
+            "Reachable(main)"
+          ],
+          "actions": {
+            "click": [
+              "push_layout(stage_mode_prepare_page)",
+              "sound(ok)"
+            ]
+          }
         },
         {
           "id": "btn_1v1_championship_mode",
           "size": "200,22",
           "center": "0.5, 0.5",
-          "items": [
-            {
-              "center": "0.5, 0.5",
-              "txt": {
-                "i18n": "main_page.1v1_championship_mode",
-                "style": {
-                  "font": "18px Arial",
-                  "fill_style": "#5A73D6"
-                }
-              }
-            },
-            {
-              "center": "0.5, 0.5",
-              "txt": {
-                "i18n": "main_page.1v1_championship_mode",
-                "style": {
-                  "font": "18px Arial",
-                  "fill_style": "white",
-                  "underline_color": "white",
-                  "underline_width": 2
-                }
-              },
-              "component": [
-                "opacity_hover(0,1)",
-                "Reachable(main)"
-              ],
-              "actions": {
-                "click": [
-                  "alert(还没写)",
-                  "sound(ok)"
-                ]
-              }
-            }
-          ]
+          "template": "launch/text_button.json",
+          "values": {
+            "text": "main_page.1v1_championship_mode"
+          },
+          "component": [
+            "Reachable(main)"
+          ],
+          "actions": {
+            "click": [
+              "alert(还没写)",
+              "sound(ok)"
+            ]
+          }
         },
         {
           "id": "btn_2v2_championship_mode",
           "size": "200,22",
           "center": "0.5, 0.5",
-          "items": [
-            {
-              "center": "0.5, 0.5",
-              "txt": {
-                "i18n": "main_page.2v2_championship_mode",
-                "style": {
-                  "font": "18px Arial",
-                  "fill_style": "#5A73D6"
-                }
-              }
-            },
-            {
-              "center": "0.5, 0.5",
-              "txt": {
-                "i18n": "main_page.2v2_championship_mode",
-                "style": {
-                  "font": "18px Arial",
-                  "fill_style": "white",
-                  "underline_color": "white",
-                  "underline_width": 2
-                }
-              },
-              "component": [
-                "opacity_hover(0,1)",
-                "Reachable(main)"
-              ],
-              "actions": {
-                "click": [
-                  "alert(还没写)",
-                  "sound(ok)"
-                ]
-              }
-            }
-          ]
+          "template": "launch/text_button.json",
+          "values": {
+            "text": "main_page.2v2_championship_mode"
+          },
+          "component": [
+            "Reachable(main)"
+          ],
+          "actions": {
+            "click": [
+              "alert(还没写)",
+              "sound(ok)"
+            ]
+          }
         },
         {
           "id": "btn_battle_mode",
           "size": "200,22",
           "center": "0.5, 0.5",
-          "items": [
-            {
-              "center": "0.5, 0.5",
-              "txt": {
-                "i18n": "main_page.battle_mode",
-                "style": {
-                  "font": "18px Arial",
-                  "fill_style": "#5A73D6"
-                }
-              }
-            },
-            {
-              "center": "0.5, 0.5",
-              "txt": {
-                "i18n": "main_page.battle_mode",
-                "style": {
-                  "font": "18px Arial",
-                  "fill_style": "white",
-                  "underline_color": "white",
-                  "underline_width": 2
-                }
-              },
-              "component": [
-                "opacity_hover(0,1)",
-                "Reachable(main)"
-              ],
-              "actions": {
-                "click": [
-                  "alert(还没写)",
-                  "sound(ok)"
-                ]
-              }
-            }
-          ]
+          "template": "launch/text_button.json",
+          "values": {
+            "text": "main_page.battle_mode"
+          },
+          "component": [
+            "Reachable(main)"
+          ],
+          "actions": {
+            "click": [
+              "alert(还没写)",
+              "sound(ok)"
+            ]
+          }
         },
         {
           "id": "btn_demo_mode",
           "center": "0.5, 0.5",
           "size": "200,22",
-          "items": [
-            {
-              "center": "0.5, 0.5",
-              "txt": {
-                "i18n": "main_page.demo_mode",
-                "style": {
-                  "font": "18px Arial",
-                  "fill_style": "#5A73D6"
-                }
-              }
-            },
-            {
-              "center": "0.5, 0.5",
-              "txt": {
-                "i18n": "main_page.demo_mode",
-                "value": "Demo",
-                "style": {
-                  "font": "18px Arial",
-                  "fill_style": "white",
-                  "underline_color": "white",
-                  "underline_width": 2
-                }
-              },
-              "component": [
-                "opacity_hover(0,1)",
-                "Reachable(main)"
-              ],
-              "actions": {
-                "click": [
-                  "push_layout(demo_mode_page)",
-                  "sound(ok)"
-                ]
-              }
-            }
-          ]
+          "template": "launch/text_button.json",
+          "values": {
+            "text": "main_page.demo_mode"
+          },
+          "component": [
+            "Reachable(main)"
+          ],
+          "actions": {
+            "click": [
+              "push_layout(demo_mode_page)",
+              "sound(ok)"
+            ]
+          }
         },
         {
           "id": "btn_quit",
           "size": "200,22",
           "center": "0.5, 0.5",
-          "items": [
-            {
-              "center": "0.5, 0.5",
-              "txt": {
-                "i18n": "main_page.quit",
-                "style": {
-                  "font": "18px Arial",
-                  "fill_style": "#5A73D6"
-                }
-              }
-            },
-            {
-              "center": "0.5, 0.5",
-              "txt": {
-                "i18n": "main_page.quit",
-                "style": {
-                  "font": "18px Arial",
-                  "fill_style": "white",
-                  "underline_color": "white",
-                  "underline_width": 2
-                }
-              },
-              "component": [
-                "opacity_hover(0,1)",
-                "Reachable(main)"
-              ],
-              "actions": {
-                "click": [
-                  "exit()",
-                  "sound(ok)"
-                ]
-              }
-            }
-          ]
+          "template": "launch/text_button.json",
+          "values": {
+            "text": "main_page.quit"
+          },
+          "component": [
+            "Reachable(main)"
+          ],
+          "actions": {
+            "click": [
+              "exit()",
+              "sound(ok)"
+            ]
+          }
         }
       ]
     }

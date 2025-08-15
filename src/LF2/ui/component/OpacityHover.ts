@@ -3,6 +3,7 @@ import { UIComponent } from "./UIComponent";
 
 export class OpacityHover extends UIComponent {
   protected anim = new Easing(0, 1).set_duration(150);
+  private _p: number | null = null;
 
   override on_start(): void {
     super.on_start?.();
@@ -12,10 +13,12 @@ export class OpacityHover extends UIComponent {
     ).set_duration(
       this.num(2) ?? 255
     ).set_reverse(false);
+    this._p = this.num(3)
   }
 
   override update(dt: number): void {
-    const r = this.node.pointer_on_me !== 1 && !this.node.focused;
+    const n = this._p ? this.node.parent! : this.node;
+    const r = n.pointer_on_me !== 1 && !n.focused;
     if (this.anim.reverse !== r) {
       if (this.anim.done) {
         this.anim.start(r)

@@ -42,122 +42,57 @@
           "id": "btn_game_start",
           "size": "200,22",
           "center": "0.5, 0.5",
-          "items": [
-            {
-              "center": "0.5, 0.5",
-              "txt": {
-                "i18n":"entry_page.game_start",
-                "style": {
-                  "font": "18px Arial",
-                  "fill_style": "#5A73D6"
-                }
-              }
-            },
-            {
-              "center": "0.5, 0.5",
-              "auto_focus": true,
-              "txt": {
-                "i18n":"entry_page.game_start",
-                "style": {
-                  "font": "18px Arial",
-                  "fill_style": "white",
-                  "underline_color": "white",
-                  "underline_width": 2
-                }
-              },
-              "component": [
-                "opacity_hover(0,1)",
-                "Reachable(main)"
-              ],
-              "actions": {
-                "click": [
-                  "sound(ok)",
-                  "set_layout(loading)",
-                  "load_data(data.zip.json)"
-                ]
-              }
-            }
-          ]
+          "auto_focus": true,
+          "template": "launch/text_button.json",
+          "values": {
+            "text": "entry_page.game_start"
+          },
+          "component": [
+            "Reachable(main)"
+          ],
+          "actions": {
+            "click": [
+              "sound(ok)",
+              "set_layout(loading)",
+              "load_data(data.zip.json)"
+            ]
+          }
         },
         {
           "id": "btn_network_game",
           "size": "200,22",
           "center": "0.5, 0.5",
-          "items": [
-            {
-              "center": "0.5, 0.5",
-              "txt": {
-                "i18n":"entry_page.network_game",
-                "style": {
-                  "font": "18px Arial",
-                  "fill_style": "#5A73D6"
-                }
-              }
-            },
-            {
-              "center": "0.5, 0.5",
-              "auto_focus": true,
-              "txt": {
-                "i18n":"entry_page.network_game",
-                "style": {
-                  "font": "18px Arial",
-                  "fill_style": "white",
-                  "underline_color": "white",
-                  "underline_width": 2
-                }
-              },
-              "component": [
-                "opacity_hover(0,1)",
-                "Reachable(main)"
-              ],
-              "actions": {
-                "click": [
-                  "sound(ok)",
-                  "alert(还没想好呢)"
-                ]
-              }
-            }
-          ]
+          "template": "launch/text_button.json",
+          "values": {
+            "text": "entry_page.network_game"
+          },
+          "component": [
+            "Reachable(main)"
+          ],
+          "actions": {
+            "click": [
+              "sound(ok)",
+              "alert(还没想好呢)"
+            ]
+          }
         },
         {
           "id": "btn_ctrl_settings",
           "size": "200,22",
           "center": "0.5, 0.5",
-          "items": [
-            {
-              "center": "0.5, 0.5",
-              "txt": {
-                "i18n":"entry_page.ctrl_settings",
-                "style": {
-                  "font": "18px Arial",
-                  "fill_style": "#5A73D6"
-                }
-              }
-            },
-            {
-              "center": "0.5, 0.5",
-              "auto_focus": true,
-              "txt": {
-                "i18n":"entry_page.ctrl_settings",
-                "style": {
-                  "font": "18px Arial",
-                  "fill_style": "white",
-                  "underline_color": "white",
-                  "underline_width": 2
-                }
-              },
-              "component": [
-                "opacity_hover(0,1)",
-                "Reachable(main)"
-              ],
-              "actions": {
-                "click": [
-                  "sound(ok)",
-                  "push_layout(ctrl_settings)"
-                ]
-              }
-            }
-          ]
+          "template": "launch/text_button.json",
+          "values": {
+            "text": "entry_page.ctrl_settings"
+          },
+          "component": [
+            "Reachable(main)"
+          ],
+          "actions": {
+            "click": [
+              "sound(ok)",
+              "push_layout(ctrl_settings)"
+            ]
+          }
         }
       ]
     }

@@ -3,7 +3,7 @@ import { LF2 } from "../LF2";
 import { is_str, Unsafe } from "../utils";
 import { ICookedUIInfo } from "./ICookedUIInfo";
 import { IUIImgInfo } from "./IUIImgInfo.dat";
-import type { IUIInfo, TUIImgInfo } from "./IUIInfo.dat";
+import type { IUIInfo, TComponentInfo, TUIImgInfo } from "./IUIInfo.dat";
 import { ui_load_img } from "./ui_load_img";
 import { ui_load_txt } from "./ui_load_txt";
 import { UINode } from "./UINode";
@@ -46,15 +46,35 @@ async function find_ui_template(lf2: LF2, parent: Unsafe<ICookedUIInfo>, templat
 }
 find_ui_template.TAG = 'find_ui_template'
 
+
 async function read_ui_template(lf2: LF2, raw_info: IUIInfo, parent: ICookedUIInfo | undefined): Promise<IUIInfo> {
   const { template: template_name, ...remain_raw_info } = raw_info
   if (!template_name) return raw_info;
   if (template_name === 'key_u') debugger;
   const raw_template: Unsafe<IUIInfo> = await find_ui_template(lf2, parent, template_name);
-  Object.assign(raw_template, remain_raw_info);
-  
-  return { ...raw_template, ...remain_raw_info };
+  remain_raw_info.component;
+
+  const component: TComponentInfo[] = []
+  if (Array.isArray(raw_template.component))
+    component.push(...raw_template.component)
+  else if (raw_template.component)
+    component.push(raw_template.component)
+  if (Array.isArray(remain_raw_info.component))
+    component.push(...remain_raw_info.component)
+  else if (remain_raw_info.component)
+    component.push(remain_raw_info.component)
+
+  return {
+    ...raw_template,
+    ...remain_raw_info,
+    component,
+    values: {
+      ...raw_template.values,
+      ...remain_raw_info.values
+    }
+  };
 }
+
 export async function cook_ui_info(
   lf2: LF2,
   data_or_path: IUIInfo | string,
@@ -86,7 +106,7 @@ export async function cook_ui_info(
   if (img) ret.img_infos.push(...await ui_load_img(lf2, img, ret.img));
 
   const { txt } = raw_info;
-  if (txt) ret.txt_infos.push(...await ui_load_txt(lf2, txt, ret.txt));
+  if (txt) ret.txt_infos.push(...await ui_load_txt(lf2, txt, ret));
 
   const { w: img_w = 0, h: img_h = 0, scale = 1 } = ret.img_infos[0] || ret.txt_infos[0] || {};
   const sw = img_w / scale;

@@ -107,7 +107,7 @@ export class UINodeRenderer implements IUINodeRenderer, IDebugging {
       this.sprite.set_position(x, -y, z);
     }
     this.sprite.visible = this.node.visible
-    this.sprite.opacity = this.node.opacity;//this.node.global_opacity;
+    this.sprite.opacity = this.node.global_opacity;
     this.sprite.apply()
     for (const child of this.node.children)
       if (child.visible !== child.renderer.visible || child.renderer.visible)
