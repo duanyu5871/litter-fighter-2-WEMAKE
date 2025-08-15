@@ -43,7 +43,7 @@
           "size": "200,22",
           "center": "0.5, 0.5",
           "auto_focus": true,
-          "template": "launch/text_button.json",
+          "template": "launch/main_text_button.json",
           "values": {
             "text": "entry_page.game_start"
           },
@@ -62,7 +62,7 @@
           "id": "btn_network_game",
           "size": "200,22",
           "center": "0.5, 0.5",
-          "template": "launch/text_button.json",
+          "template": "launch/main_text_button.json",
           "values": {
             "text": "entry_page.network_game"
           },
@@ -80,7 +80,7 @@
           "id": "btn_ctrl_settings",
           "size": "200,22",
           "center": "0.5, 0.5",
-          "template": "launch/text_button.json",
+          "template": "launch/main_text_button.json",
           "values": {
             "text": "entry_page.ctrl_settings"
           },

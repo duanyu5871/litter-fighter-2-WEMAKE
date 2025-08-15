@@ -43,14 +43,14 @@ export default class GamePrepareLogic extends UIComponent<IGamePrepareLogicCallb
 
   override on_resume(): void {
     super.on_resume();
-    const btn_switch_bg = this.node.search_child("btn_switch_bg");
-    const btn_switch_stage = this.node.search_child("btn_switch_stage");
-    if (this.game_mode === "vs_mode") {
-      btn_switch_bg?.set_visible(true).set_disabled(false);
-      btn_switch_stage?.set_visible(false).set_disabled(true);
-    } else if (this.game_mode === "stage_mode") {
-      btn_switch_stage?.set_visible(true).set_disabled(false);
-      btn_switch_bg?.set_visible(false).set_disabled(true);
+    const background_row = this.node.search_child("background_row")!;
+    const stage_row = this.node.search_child("stage_row")!;
+    if (this.game_mode === "stage_mode") {
+      stage_row.set_visible(true).set_disabled(false);
+      background_row.set_visible(false).set_disabled(true);
+    } else {
+      background_row.set_visible(true).set_disabled(false);
+      stage_row.set_visible(false).set_disabled(true);
     }
 
     // this.fsm.use(GamePrepareState.Player);

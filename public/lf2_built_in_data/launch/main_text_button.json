@@ -1,6 +1,6 @@
 {
-  "name": "UI: 文本按钮",
-  "id": "ui_text",
+  "name": "UI: main_text_button",
+  "id": "main_text_button",
   "size": "0,0",
   "center": "0, 0",
   "pos": "100, 100",
@@ -10,11 +10,11 @@
   "values": {
     "text": "文本按钮",
     "style_normal": {
-      "font": "18px Arial",
+      "font": "bold 18px Arial",
       "fill_style": "#5A73D6"
     },
     "style_hover": {
-      "font": "18px Arial",
+      "font": "bold 18px Arial",
       "fill_style": "white",
       "underline_color": "white",
       "underline_width": 2

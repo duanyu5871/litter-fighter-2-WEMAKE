@@ -1,208 +1,215 @@
 {
   "id": "menu",
   "name": "game_prepare_menu",
-  "img": {
+  "_img": {
     "path": "sprite/MENU_CLIP3.png",
     "x": 348,
     "y": 0,
     "w": 304,
     "h": 166
   },
+  "size": "200,166",
+  "color": "#122565",
   "pos": "10,10,1",
-  "size": "304,166",
-  "component": [
-    "ReachableGroup(menu,ud,menu)"
-  ],
+  "_size": "304,166",
   "items": [
     {
-      "id": "btn_start",
-      "img": {
-        "path": "sprite/MENU_CLIP3.png",
-        "x": 407,
-        "y": 183,
-        "w": 126,
-        "h": 21
-      },
-      "pos": "89,13",
-      "auto_focus": true,
+      "pos": "100,83",
+      "center": "0.5,0.5",
       "component": [
-        "opacity_hover(0,1)",
-        "Reachable(menu)"
-      ],
-      "actions": {
-        "click": [
-          "broadcast(start_game)",
-          "sound(ok)"
-        ]
-      }
-    },
-    {
-      "id": "btn_cancel",
-      "img": {
-        "path": "sprite/MENU_CLIP3.png",
-        "x": 379,
-        "y": 206,
-        "w": 186,
-        "h": 21
-      },
-      "pos": "61,36",
-      "component": [
-        "opacity_hover(0,1)",
-        "Reachable(menu)"
-      ],
-      "actions": {
-        "click": [
-          "broadcast(reset_gpl)",
-          "sound(ok)"
-        ]
-      }
-    },
-    {
-      "id": "btn_update_random",
-      "img": {
-        "path": "sprite/MENU_CLIP3.png",
-        "x": 355,
-        "y": 231,
-        "w": 235,
-        "h": 21
-      },
-      "pos": "37,61",
-      "component": [
-        "opacity_hover(0,1)",
-        "Reachable(menu)"
-      ],
-      "actions": {
-        "click": [
-          "broadcast(update_random)",
-          "sound(ok)"
-        ]
-      }
-    },
-    {
-      "id": "btn_switch_bg",
-      "img": {
-        "path": "sprite/MENU_CLIP3.png",
-        "x": 330,
-        "y": 254,
-        "w": 279,
-        "h": 22
-      },
-      "pos": "12,84",
-      "component": [
-        "opacity_hover(0,1)",
-        "Reachable(menu)"
-      ],
-      "actions": {
-        "click": [
-          "broadcast(switch_background)",
-          "sound(ok)"
-        ]
-      },
-      "items": [
+        "ReachableGroup(menu,ud,menu)",
         {
-          "id": "background_name_text",
-          "pos": "157,12,0.1",
-          "center": "0,0.5",
-          "component": [
-            "background_name_text()"
-          ]
+          "name": "Flex",
+          "properties": {
+            "direction": "column",
+            "align": "center",
+            "fit": true,
+            "gap": 3,
+            "_padding": "5,5,5,5"
+          }
         }
-      ]
-    },
-    {
-      "id": "btn_switch_stage",
-      "img": {
-        "path": "sprite/MENU_CLIP3.png",
-        "x": 330,
-        "y": 363,
-        "w": 279,
-        "h": 22
-      },
-      "pos": "12,84,0.2",
+      ],
       "items": [
         {
-          "id": "btn_switch_stage_hover",
-          "img": {
-            "path": "sprite/MENU_CLIP3.png",
-            "x": 330,
-            "y": 332,
-            "w": 279,
-            "h": 22
+          "id": "btn_fight",
+          "auto_focus": true,
+          "template": "launch/menu_text_button.json",
+          "values": {
+            "text": "game_prepare_menu.fight"
           },
-          "pos": "0,0,0.1",
           "component": [
-            "opacity_hover(0,1)",
             "Reachable(menu)"
           ],
           "actions": {
             "click": [
-              "broadcast(switch_stage)",
+              "broadcast(start_game)",
               "sound(ok)"
             ]
+          }
+        },
+        {
+          "id": "btn_reset_all",
+          "template": "launch/menu_text_button.json",
+          "values": {
+            "text": "game_prepare_menu.reset_all"
           },
+          "component": [
+            "Reachable(menu)"
+          ],
+          "actions": {
+            "click": [
+              "broadcast(reset_gpl)",
+              "sound(ok)"
+            ]
+          }
+        },
+        {
+          "id": "btn_update_random",
+          "template": "launch/menu_text_button.json",
+          "values": {
+            "text": "game_prepare_menu.reset_random"
+          },
+          "component": [
+            "Reachable(menu)"
+          ],
+          "actions": {
+            "click": [
+              "broadcast(update_random)",
+              "sound(ok)"
+            ]
+          }
+        },
+        {
+          "id": "background_row",
+          "component": [
+            {
+              "name": "Flex",
+              "properties": {
+                "direction": "row",
+                "align": "center",
+                "fit": true,
+                "gap": 3
+              }
+            }
+          ],
           "items": [
             {
+              "id": "btn_switch_bg",
+              "template": "launch/menu_text_button.json",
+              "values": {
+                "text": "game_prepare_menu.background"
+              },
+              "component": [
+                "Reachable(menu)"
+              ],
+              "actions": {
+                "click": [
+                  "broadcast(switch_background)",
+                  "sound(ok)"
+                ]
+              }
+            },
+            {
+              "id": "background_name_text",
+              "component": [
+                "background_name_text()"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "stage_row",
+          "component": [
+            {
+              "name": "Flex",
+              "properties": {
+                "direction": "row",
+                "align": "center",
+                "fit": true,
+                "gap": 3
+              }
+            }
+          ],
+          "items": [
+            {
+              "id": "btn_switch_stage",
+              "template": "launch/menu_text_button.json",
+              "values": {
+                "text": "game_prepare_menu.stage"
+              },
+              "component": [
+                "Reachable(menu)"
+              ],
+              "actions": {
+                "click": [
+                  "broadcast(switch_stage)",
+                  "sound(ok)"
+                ]
+              }
+            },
+            {
               "id": "stage_name_text",
-              "pos": "186,12,0.1",
-              "center": "0.5,0.5",
               "component": [
                 "stage_name_text()"
               ]
             }
           ]
-        }
-      ]
-    },
-    {
-      "id": "btn_switch_difficulty",
-      "img": {
-        "path": "sprite/MENU_CLIP3.png",
-        "x": 352,
-        "y": 278,
-        "w": 228,
-        "h": 22
-      },
-      "pos": "34,108",
-      "component": [
-        "opacity_hover(0,1)",
-        "Reachable(menu)"
-      ],
-      "actions": {
-        "click": [
-          "switch_difficulty()",
-          "sound(ok)"
-        ]
-      },
-      "items": [
+        },
         {
-          "pos": "134,12,0.1",
-          "center": "0,0.5",
+          "id": "difficulty_row",
           "component": [
-            "difficulty_text()"
+            {
+              "name": "Flex",
+              "properties": {
+                "direction": "row",
+                "align": "center",
+                "fit": true,
+                "gap": 3
+              }
+            }
+          ],
+          "items": [
+            {
+              "id": "btn_difficulty",
+              "template": "launch/menu_text_button.json",
+              "values": {
+                "text": "game_prepare_menu.difficulty"
+              },
+              "component": [
+                "Reachable(menu)"
+              ],
+              "actions": {
+                "click": [
+                  "broadcast(switch_difficulty)",
+                  "sound(ok)"
+                ]
+              }
+            },
+            {
+              "id": "difficulty_text",
+              "component": [
+                "difficulty_text()"
+              ]
+            }
           ]
+        },
+        {
+          "id": "btn_exit",
+          "template": "launch/menu_text_button.json",
+          "values": {
+            "text": "game_prepare_menu.exit"
+          },
+          "component": [
+            "Reachable(menu)"
+          ],
+          "actions": {
+            "click": [
+              "pop_layout()",
+              "sound(cancel)"
+            ]
+          }
         }
       ]
-    },
-    {
-      "id": "btn_exit",
-      "img": {
-        "path": "sprite/MENU_CLIP3.png",
-        "x": 416,
-        "y": 304,
-        "w": 111,
-        "h": 19
-      },
-      "pos": "98,134",
-      "component": [
-        "opacity_hover(0,1)",
-        "Reachable(menu)"
-      ],
-      "actions": {
-        "click": [
-          "pop_layout()",
-          "sound(cancel)"
-        ]
-      }
     }
   ]
 }

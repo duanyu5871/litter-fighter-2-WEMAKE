@@ -538,7 +538,7 @@ export class UINode implements IDebugging {
     let ret = this.find_child(id);
     if (ret) return ret;
     for (const child of this.children) {
-      ret = child.find_child(id)
+      ret = child.search_child(id)
       if (ret) return ret;
     }
   }

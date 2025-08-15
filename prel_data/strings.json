@@ -32,9 +32,16 @@
     "ctrl_settings.key_attack": "attack",
     "ctrl_settings.key_jump": "jump",
     "ctrl_settings.key_defend": "defend",
+    "game_prepare_menu.fight": "Fight!",
+    "game_prepare_menu.reset_all": "Reset All",
+    "game_prepare_menu.reset_random": "Reset Random",
+    "game_prepare_menu.background": "Background",
+    "game_prepare_menu.stage": "Stage",
+    "game_prepare_menu.difficulty": "Difficulty",
+    "game_prepare_menu.exit": "Exit",
     "": ""
   },
-  "zh-hans": {
+  "~zh-hans": {
     "entry_page.game_start": "开 始 游 戏",
     "entry_page.network_game": "联 机 游 戏",
     "entry_page.ctrl_settings": "控 制 设 置",
@@ -67,9 +74,16 @@
     "ctrl_settings.key_attack": "攻",
     "ctrl_settings.key_jump": "跳",
     "ctrl_settings.key_defend": "防",
+    "game_prepare_menu.fight": "开 始",
+    "game_prepare_menu.reset_all": "重新选择",
+    "game_prepare_menu.reset_random": "更新随机",
+    "game_prepare_menu.stage": "關 卡",
+    "game_prepare_menu.background": "背 景",
+    "game_prepare_menu.difficulty": "难 度",
+    "game_prepare_menu.exit": "离 开",
     "": ""
   },
-  "zh-hant": {
+  "~zh-hant": {
     "entry_page.game_start": "開 始 游 戲",
     "entry_page.network_game": "連 線 遊 戲",
     "entry_page.ctrl_settings": "控 制 設 定",
@@ -102,6 +116,13 @@
     "ctrl_settings.key_attack": "攻",
     "ctrl_settings.key_jump": "跳",
     "ctrl_settings.key_defend": "守",
+    "game_prepare_menu.fight": "開 始",
+    "game_prepare_menu.reset_all": "重新選擇",
+    "game_prepare_menu.reset_random": "更新隨機",
+    "game_prepare_menu.background": "背 景",
+    "game_prepare_menu.stage": "關 卡",
+    "game_prepare_menu.difficulty": "難 度",
+    "game_prepare_menu.exit": "離 開",
     "": ""
   },
   "zh-cn": "zh-hans",

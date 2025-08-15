@@ -41,7 +41,7 @@ export default class BackgroundNameText extends UIComponent {
     ui_load_txt(this.lf2, {
       value: this.text, style: {
         fill_style: "#9b9bff",
-        font: "14px Arial",
+        font: "15px Arial",
       }
     }).then(v => {
       this.node.txts.value = v;

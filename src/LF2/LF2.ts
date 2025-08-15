@@ -660,7 +660,8 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
     const paths: string[] = [
       "launch/init.json", 
       "launch/loading_anim.json", 
-      "launch/text_button.json"
+      "launch/main_text_button.json", 
+      "launch/menu_text_button.json"
     ];
     for (const element of array) {
       if (is_str(element)) paths.push(element);
