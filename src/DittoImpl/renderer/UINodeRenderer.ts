@@ -7,6 +7,7 @@ import { empty_texture, white_texture } from "../../LF2/loader/ImageMgr";
 import type { UINode } from "../../LF2/ui/UINode";
 import type { WorldRenderer } from "./WorldRenderer";
 import { IImageInfo } from "../../LF2/loader/IImageInfo";
+import { __Sprite } from "../3d";
 
 export class UINodeRenderer implements IUINodeRenderer, IDebugging {
   debug!: (_0: string, ..._1: any[]) => void;
@@ -101,6 +102,18 @@ export class UINodeRenderer implements IUINodeRenderer, IDebugging {
     }
     this.update_sprite();
     this.node.scale.dirty && this.sprite.set_scale(...this.node.scale.value);
+
+    // const sp = this.sprite as __Sprite;
+    // if (sp) {
+    //   const t = sp.inner.material.map;
+    //   if (t) {
+    //     t.offset.y += 0.001;
+    //     t.offset.x += 0.001;
+    //     t.wrapS = THREE.RepeatWrapping
+    //     t.wrapT = THREE.RepeatWrapping
+    //   }
+    // }
+
 
     if (this.node.pos.dirty) {
       const [x, y, z] = this.node.pos.value

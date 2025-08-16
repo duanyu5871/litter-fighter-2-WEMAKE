@@ -37,7 +37,7 @@ export interface IUIInfo {
   img?: TUIImgInfo | TUIImgInfo[];
   txt?: TUITxtInfo | TUITxtInfo[];
   which?: number | string;
-  
+
   component?: TComponentInfo | TComponentInfo[];
   actions?: {
     click: TAction | TAction[];

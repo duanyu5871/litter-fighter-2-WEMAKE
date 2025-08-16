@@ -1,15 +1,9 @@
 import "current-device";
 import * as THREE from "three";
 import * as dom from "./DittoImpl";
-import { __Billboard, __Camera_O, __Camera_P, __LineSegments, __Object, __Scene, __Text } from "./DittoImpl/3d";
+import { __Billboard, __Camera_O, __Camera_P, __LineSegments, __Object, __Text } from "./DittoImpl/3d";
 import { __Mesh } from "./DittoImpl/3d/__Mesh";
 import __Sprite from "./DittoImpl/3d/__Sprite";
-import { BgLayerRender } from "./DittoImpl/renderer/BgLayerRender";
-import { BgRender } from "./DittoImpl/renderer/BgRender";
-import { EntityInfoRender } from "./DittoImpl/renderer/EntityInfoRender";
-import { EntityRender } from "./DittoImpl/renderer/EntityRender";
-import { EntityShadowRender } from "./DittoImpl/renderer/EntityShadowRender";
-import { FrameIndicators } from "./DittoImpl/renderer/FrameIndicators";
 import { UINodeRenderer } from "./DittoImpl/renderer/UINodeRenderer";
 import { WorldRenderer } from "./DittoImpl/renderer/WorldRenderer";
 import Ditto from "./LF2/ditto";

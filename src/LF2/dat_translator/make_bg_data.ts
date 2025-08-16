@@ -1,11 +1,12 @@
-import { is_str } from "../utils/type_check";
-import { IDatIndex } from "../defines/IDatIndex";
+import { BackgroundGroup } from "../defines";
 import { IBgData } from "../defines/IBgData";
 import { IBgLayerInfo } from "../defines/IBgLayerInfo";
+import { IDatIndex } from "../defines/IDatIndex";
 import { Defines } from "../defines/defines";
 import { match_colon_value } from "../utils/string_parser/match_colon_value";
 import { take_blocks } from "../utils/string_parser/take_blocks";
 import { to_num } from "../utils/type_cast/to_num";
+import { is_str } from "../utils/type_check";
 import { ColonValueReader } from "./ColonValueReader";
 import { take } from "./take";
 const bg_color_translate = function (rect: number | string) {
@@ -114,6 +115,12 @@ export function make_bg_data(
       layer.c2 = c2 * 2 + 1;
     }
     ret.layers.push(layer);
+  }
+
+  if (datIndex && datIndex.file.startsWith("bg/template")) {
+    ret.base.group = []
+  } else {
+    ret.base.group = [BackgroundGroup.Regular]
   }
   return ret;
 }

@@ -214,7 +214,7 @@ export class EntityInfoRender implements IEntityCallbacks {
     const text =
       (reserve > 1 && entity.name) ? `${entity.name} x${reserve}` :
         entity.name ? entity.name : reserve > 1 ? `x${reserve}` : ''
-        
+
     this.update_name_sprite(entity, text, entity.team)
   }
 
@@ -295,9 +295,9 @@ export class EntityInfoRender implements IEntityCallbacks {
   }
 
   render() {
-    const { invisible, position: { x, z, y } } = this.entity;
+    const { invisible, position: { x, z, y }, hp } = this.entity;
 
-    this.visible = !invisible;
+    this.visible = !invisible && hp > 0;
 
     const _x = Math.floor(x);
     const name_y = Math.floor(-z / 2 - this.name_node.scale_y);

@@ -50,3 +50,4 @@ export * from "./SparkEnum";
 export * from "./SpeedMode";
 export * from "./StateEnum";
 export * from "./WeaponType";
+export * from "./BackgroundGroup"

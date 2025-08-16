@@ -91,7 +91,7 @@ export class __Sprite extends __Object implements ISprite {
     }
     return this;
   }
-
+  
   /**
    *
    * @note call apply();

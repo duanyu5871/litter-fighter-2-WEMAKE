@@ -207,10 +207,13 @@ export default class GamePrepareLogic extends UIComponent<IGamePrepareLogicCallb
   private update_random() {
     for (const { player: p } of this.slots) {
       if (!p?.joined || !p.is_random) continue;
-      const { characters } = this.lf2.datas.find_group(
-        EntityGroup.Regular,
-      );
-      p.set_random_character(this.lf2.random_get(characters)?.id ?? "", true);
+      const { characters } = this.lf2.datas.find_group(EntityGroup.Regular);
+      const { character } = p
+      const remains = character ? characters.filter(v => v.id !== character) : characters
+      if (remains.length < 0) continue;
+      const next = this.lf2.random_get(remains)
+      if (!next) continue;
+      p.set_random_character(next.id, true);
     }
   }
 

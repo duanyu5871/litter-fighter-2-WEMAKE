@@ -6,6 +6,7 @@ import {
 } from "./base";
 import { KEY_NAME_LIST, LocalController } from "./controller";
 import {
+  BackgroundGroup,
   Builtin_FrameId, CheatType, Defines, Difficulty, IBgData,
   IStageInfo, TFace
 } from "./defines";
@@ -61,7 +62,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
   static readonly TAG = "LF2";
   static readonly instances: LF2[] = []
   lang: string = '';
-  static readonly DATA_VERSION: number = 4;
+  static readonly DATA_VERSION: number = 5;
   static readonly DATA_TYPE: string = 'DataZip';
   static get instance() { return LF2.instances[0] }
   static get ui() { return LF2.instances[0].ui }
@@ -580,6 +581,8 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
   change_bg(bg_id: string): void;
   change_bg(arg: IBgData | string | undefined) {
     if (!arg) return;
+    if (arg === Defines.RANDOM_BG || arg === Defines.RANDOM_BG.id)
+      arg = this.random_get(this.datas.backgrounds.filter(v => v.base.group.some(a => a === BackgroundGroup.Regular)))
     if (is_str(arg)) arg = this.datas.find_background(arg);
     if (!arg) return;
     this.world.stage = new Stage(this.world, arg);

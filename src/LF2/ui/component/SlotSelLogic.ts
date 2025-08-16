@@ -224,8 +224,9 @@ export default class SlotSelLogic extends UIComponent {
    * @protected
    */
   protected handle_hidden_character() {
-    const { characters } = this;
-    const idx = characters.findIndex((v) => v.id === this.character);
-    this.player.set_character(characters[idx]?.id ?? "", true);
+    const { characters, character } = this;
+    if (!character) return;
+    const idx = characters.findIndex((v) => v.id === character);
+    if (idx < 0) this.player.set_character("", true);
   }
 }

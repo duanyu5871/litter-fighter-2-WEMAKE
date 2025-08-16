@@ -157,6 +157,22 @@ export namespace Defines {
       right: 794,
       far: -468,
       near: -216,
+      group: []
+    },
+  };
+  export const RANDOM_BG: IBgData = {
+    type: "background",
+    layers: [],
+    id: "RANDOM_BG",
+    base: {
+      name: "Random",
+      shadow: "",
+      shadowsize: [0, 0],
+      left: 0,
+      right: 794,
+      far: -468,
+      near: -216,
+      group: []
     },
   };
   export const VOID_STAGE: IStageInfo = {
