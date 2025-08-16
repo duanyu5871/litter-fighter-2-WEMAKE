@@ -3,8 +3,9 @@ import { ui_load_txt } from "../ui_load_txt";
 import { UIComponent } from "./UIComponent";
 
 export default class DifficultyText extends UIComponent {
+  static override TAG: string = "difficulty_text";
   protected get text(): string {
-    return Defines.DifficultyLabels[this.lf2.difficulty];
+    return this.lf2.string(Defines.DifficultyLabels[this.lf2.difficulty]);
   }
   override on_resume(): void {
     super.on_resume();
@@ -15,10 +16,10 @@ export default class DifficultyText extends UIComponent {
     super.on_pause();
     this.lf2.callbacks.del(this);
   }
-
   on_difficulty_changed() {
     ui_load_txt(this.lf2, {
-      value: this.text, style: {
+      i18n: this.text, 
+      style: {
         fill_style: "#9b9bff",
         font: "15px Arial",
       }

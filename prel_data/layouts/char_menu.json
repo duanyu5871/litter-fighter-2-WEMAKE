@@ -36,35 +36,35 @@
               "visible": false,
               "txt": [
                 {
-                  "value": "1",
+                  "i18n": "1",
                   "style": {
                     "fill_style": "white",
                     "font": "90px \"Arial Black\", Arial"
                   }
                 },
                 {
-                  "value": "2",
+                  "i18n": "2",
                   "style": {
                     "fill_style": "white",
                     "font": "90px \"Arial Black\", Arial"
                   }
                 },
                 {
-                  "value": "3",
+                  "i18n": "3",
                   "style": {
                     "fill_style": "white",
                     "font": "90px \"Arial Black\", Arial"
                   }
                 },
                 {
-                  "value": "4",
+                  "i18n": "4",
                   "style": {
                     "fill_style": "white",
                     "font": "90px \"Arial Black\", Arial"
                   }
                 },
                 {
-                  "value": "5",
+                  "i18n": "5",
                   "style": {
                     "fill_style": "white",
                     "font": "90px \"Arial Black\", Arial"

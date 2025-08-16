@@ -5,7 +5,7 @@ export class PlayingTimeText extends UIComponent {
 
   override on_show(): void {
     ui_load_txt(this.lf2, {
-      value: this.get_txt(), style: this.node.style
+      i18n: this.get_txt(), style: this.node.style
     }).then(v => {
       this.node.txts.value = v;
       this.node.txt_idx.value = 0;

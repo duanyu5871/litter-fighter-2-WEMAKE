@@ -69,7 +69,7 @@ class ComponentFactory {
     [ReachableGroup.TAG, ReachableGroup],
     [Reachable.TAG, Reachable],
     ["launch_page", LaunchPageLogic],
-    ["difficulty_text", DifficultyText],
+    [DifficultyText.TAG, DifficultyText],
     ["stage_name_text", StageNameText],
     ["background_name_text", BackgroundNameText],
     ["opacity_hover", OpacityHover],

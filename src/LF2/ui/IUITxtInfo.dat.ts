@@ -6,3 +6,7 @@ export interface IUITxtInfo {
   value?: string;
   style?: IStyle | string;
 }
+export interface ICookedUITxtInfo {
+  i18n: string;
+  style: IStyle;
+}

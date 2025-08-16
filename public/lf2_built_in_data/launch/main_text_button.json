@@ -24,15 +24,15 @@
     {
       "center": "0.5,0.5",
       "txt": {
-        "i18n": "$p_val:text",
-        "style": "$p_val:style_normal"
+        "i18n": "$val:text",
+        "style": "$val:style_normal"
       }
     },
     {
       "center": "0.5,0.5",
       "txt": {
-        "i18n": "$p_val:text",
-        "style": "$p_val:style_hover"
+        "i18n": "$val:text",
+        "style": "$val:style_hover"
       },
       "component": [
         "opacity_hover(0,1,255,1)"

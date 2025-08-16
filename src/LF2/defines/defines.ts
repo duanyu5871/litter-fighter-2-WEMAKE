@@ -232,10 +232,10 @@ export namespace Defines {
 
 
   export const DifficultyLabels: Record<Difficulty, string> = {
-    [Difficulty.Easy]: "Easy",
-    [Difficulty.Normal]: "Normal",
-    [Difficulty.Difficult]: "Difficult",
-    [Difficulty.Crazy]: "Crazy!",
+    [Difficulty.Easy]: "easy",
+    [Difficulty.Normal]: "normal",
+    [Difficulty.Difficult]: "difficult",
+    [Difficulty.Crazy]: "crazy",
   };
   export interface ITeamInfo {
     name: string;
@@ -298,7 +298,7 @@ export namespace Defines {
     UpdateRandom = "update_random",
     StartGame = "start_game",
     SwitchStage = "switch_stage",
-    SwitchBackground = "switch_background",
+    SwitchBackground = "switch_background"
   }
   export enum BuiltIn_Sounds {
     Cancel = "cancel",

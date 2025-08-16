@@ -66,7 +66,7 @@ export default class PlayerName extends UIComponent {
 
   protected handle_changed() {
     ui_load_txt(this.lf2, {
-      value: this.text, style: {
+      i18n: this.text, style: {
         fill_style: this.is_com ? "pink" : "white",
         font: "14px Arial",
       }

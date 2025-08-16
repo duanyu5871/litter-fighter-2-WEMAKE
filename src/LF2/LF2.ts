@@ -2,7 +2,6 @@ import { IIntersection } from "./3d";
 import {
   Callbacks, get_short_file_size_txt, Loader, new_id,
   new_team,
-  NoEmitCallbacks,
   PIO
 } from "./base";
 import { KEY_NAME_LIST, LocalController } from "./controller";
@@ -68,7 +67,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
   static get ui() { return LF2.instances[0].ui }
   static get ditto() { return ditto }
   private _disposed: boolean = false;
-  private _callbacks = new Callbacks<ILf2Callback>();
+  readonly callbacks = new Callbacks<ILf2Callback>();
   private _ui_stacks: UINode[] = [];
   private _loading: boolean = false;
   private _loaded: boolean = false;
@@ -77,10 +76,8 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
   private _pointer_on_uis = new Set<UINode>();
   private _pointer_raycaster = new Ditto.Raycaster();
   private _pointer_vec_2 = new Ditto.Vector2();
-  private _mt = new MersenneTwister(0)
-  get callbacks(): NoEmitCallbacks<ILf2Callback> {
-    return this._callbacks;
-  }
+  private _mt = new MersenneTwister(Date.now())
+
   get loading() {
     return this._loading;
   }
@@ -104,7 +101,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
     if (this._difficulty === v) return;
     const old = this._difficulty;
     this._difficulty = v;
-    this._callbacks.emit("on_difficulty_changed")(v, old);
+    this.callbacks.emit("on_difficulty_changed")(v, old);
   }
   get infinity_mp(): boolean {
     return this._infinity_mp;
@@ -112,7 +109,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
   set infinity_mp(v: boolean) {
     if (this._infinity_mp === v) return;
     this._infinity_mp = v;
-    this._callbacks.emit("on_infinity_mp")(v);
+    this.callbacks.emit("on_infinity_mp")(v);
     if (!v) return;
     for (const e of this.world.entities) e.mp = e.mp_max;
   }
@@ -169,8 +166,8 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
       });
       return Promise.all(jobs);
     },
-    (d) => this._callbacks.emit("on_bgms_loaded")(d),
-    () => this._callbacks.emit("on_bgms_clear")(),
+    (d) => this.callbacks.emit("on_bgms_loaded")(d),
+    () => this.callbacks.emit("on_bgms_clear")(),
   );
 
   get_player_character(which: string) {
@@ -369,7 +366,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
       .then((v) => this._cheat_sound_id_map.set(cheat_name, v));
     const enabled = !this._CheatType_enable_map.get(cheat_name);
     this._CheatType_enable_map.set(cheat_name, enabled);
-    this._callbacks.emit("on_cheat_changed")(cheat_name, enabled);
+    this.callbacks.emit("on_cheat_changed")(cheat_name, enabled);
     this._curr_key_list = "";
   }
 
@@ -421,11 +418,11 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
   async load_prel_zip(url: string): Promise<IZip> {
     const ret = await this.load_zip_from_info_url(url);
     this.zips.unshift(ret);
-    this._callbacks.emit("on_zips_changed")(this.zips);
+    this.callbacks.emit("on_zips_changed")(this.zips);
     await this.import_json("launch/strings.json").then(r => this.load_strings(r[0])).catch(e => { })
     await this.load_data(ret)
     await this.load_ui();
-    this._callbacks.emit("on_prel_loaded")();
+    this.callbacks.emit("on_prel_loaded")();
     return ret;
   }
 
@@ -453,16 +450,16 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
   }
   async load(arg1?: IZip | string): Promise<void> {
     this._loading = true;
-    this._callbacks.emit("on_loading_start")();
+    this.callbacks.emit("on_loading_start")();
     this.set_ui("loading");
 
     try {
       const zip = is_str(arg1) ? await this.load_zip_from_info_url(arg1) : arg1;
       await this.load_data(zip);
       this._loaded = true;
-      this._callbacks.emit("on_loading_end")();
+      this.callbacks.emit("on_loading_end")();
     } catch (e) {
-      this._callbacks.emit("on_loading_failed")(e);
+      this.callbacks.emit("on_loading_failed")(e);
       return await Promise.reject(e);
     } finally {
       this._loading = false;
@@ -472,7 +469,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
   private async load_data(zip?: IZip) {
     if (zip) {
       this.zips.unshift(zip);
-      this._callbacks.emit("on_zips_changed")(this.zips);
+      this.callbacks.emit("on_zips_changed")(this.zips);
       await zip.file("strings.json")?.json().then(r => this.load_strings(r))
     }
     await this.datas.load();
@@ -506,8 +503,8 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
   dispose() {
     this.debug('dispose')
     this._disposed = true;
-    this._callbacks.emit("on_dispose")();
-    this._callbacks.clear()
+    this.callbacks.emit("on_dispose")();
+    this.callbacks.clear()
     this.world.dispose();
     this.datas.dispose();
     this.sounds.dispose();
@@ -607,10 +604,10 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
     if (!next_stage) {
       this.world.stage.stop_bgm();
       this.sounds.play_with_load(Defines.Sounds.StagePass);
-      this._callbacks.emit("on_stage_pass")();
+      this.callbacks.emit("on_stage_pass")();
     }
     this.change_stage(next_stage || Defines.VOID_STAGE);
-    this._callbacks.emit("on_enter_next_stage")();
+    this.callbacks.emit("on_enter_next_stage")();
   }
 
   private _uiinfos_loaded = false;
@@ -624,11 +621,10 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
 
   protected _uiinfo_map = new Map<string, IUIInfo>();
   protected _strings = new Map<string, { [x in string]?: string }>()
-  string(name?: string): string | null {
-    if (typeof name !== 'string') return null
+  string(name: string): string {
     return (
       this._strings.get(this.lang)?.[name] ??
-      this._strings.get("")?.[name] ?? null
+      this._strings.get("")?.[name] ?? name
     )
   }
   load_strings(strings: any) {
@@ -658,9 +654,9 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
     const array = await this.import_json("layouts/index.json").then(r => r[0]).catch((e) => []);
     this._uiinfos_loaded = false;
     const paths: string[] = [
-      "launch/init.json", 
-      "launch/loading_anim.json", 
-      "launch/main_text_button.json", 
+      "launch/init.json",
+      "launch/loading_anim.json",
+      "launch/main_text_button.json",
       "launch/menu_text_button.json"
     ];
     for (const element of array) {
@@ -681,7 +677,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
     if (this._disposed) {
       this._uiinfos.length = 0;
     } else {
-      this._callbacks.emit("on_ui_loaded")(this._uiinfos);
+      this.callbacks.emit("on_ui_loaded")(this._uiinfos);
       this._uiinfos_loaded = true;
     }
     return this._uiinfos;
@@ -706,7 +702,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
     curr && this._ui_stacks.push(curr);
     curr?.on_start();
     curr?.on_resume();
-    this._callbacks.emit("on_layout_changed")(curr, prev);
+    this.callbacks.emit("on_layout_changed")(curr, prev);
   }
 
   pop_ui(): void {
@@ -714,7 +710,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
     popped?.on_pause();
     popped?.on_stop();
     this.ui?.on_resume();
-    this._callbacks.emit("on_layout_changed")(this.ui, popped);
+    this.callbacks.emit("on_layout_changed")(this.ui, popped);
   }
 
   push_ui(layout_info?: ICookedUIInfo): void;
@@ -730,15 +726,17 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
     curr && this._ui_stacks.push(curr);
     curr?.on_start();
     curr?.on_resume();
-    this._callbacks.emit("on_layout_changed")(curr, prev);
+    this.callbacks.emit("on_layout_changed")(curr, prev);
   }
 
   on_loading_content(content: string, progress: number) {
-    this._callbacks.emit("on_loading_content")(content, progress);
+    this.callbacks.emit("on_loading_content")(content, progress);
   }
 
   broadcast(message: string): void {
-    this._callbacks.emit("on_broadcast")(message);
+    this.callbacks.emit("on_broadcast")(message);
+    const { count } = this.callbacks
+    if (count <= 0) this.warn('broadcast', `listener count got ${count}`)
   }
 
   switch_difficulty(): void {

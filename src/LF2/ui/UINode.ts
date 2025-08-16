@@ -72,6 +72,7 @@ export class UINode implements IDebugging {
   readonly flip_x: StateDelegate<boolean> = new StateDelegate(() => this.data.flip_x === true);
   readonly flip_y: StateDelegate<boolean> = new StateDelegate(() => this.data.flip_y === true);
   readonly color: StateDelegate<string> = new StateDelegate(() => this.data.color || '');
+  readonly enabled: StateDelegate<boolean> = new StateDelegate(() => this.data.enabled === true);
 
   protected _parent?: UINode;
   protected _children: UINode[] = [];
@@ -148,6 +149,9 @@ export class UINode implements IDebugging {
     return this._state;
   }
 
+  get self_visible(){
+    return this._visible.value
+  }
   /**
    * 当前节点是否可见
    * 
@@ -158,9 +162,8 @@ export class UINode implements IDebugging {
    * @type {boolean}
    */
   get visible(): boolean {
-    const mine = this._visible.value
-    if (!this.parent) return mine
-    return this.parent.visible && mine;
+    if (!this.parent) return this.self_visible
+    return this.parent.visible && this.self_visible;
   }
 
   set visible(v: boolean) {
@@ -488,7 +491,7 @@ export class UINode implements IDebugging {
   }
 
   update(dt: number) {
-    for (const i of this.children) i.update(dt);
+    for (const i of this.children) if (i.enabled) i.update(dt);
     for (const c of this._components) if (c.enabled) c.update?.(dt);
   }
 

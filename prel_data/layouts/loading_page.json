@@ -44,7 +44,7 @@
       "pos": "10,420",
       "center": "0,0",
       "txt": {
-        "value": "",
+        "i18n": "",
         "style": {
           "font": "16px Arial"
         }

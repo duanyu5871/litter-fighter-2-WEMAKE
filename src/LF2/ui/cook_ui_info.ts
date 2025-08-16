@@ -3,7 +3,9 @@ import { LF2 } from "../LF2";
 import { is_str, Unsafe } from "../utils";
 import { ICookedUIInfo } from "./ICookedUIInfo";
 import { IUIImgInfo } from "./IUIImgInfo.dat";
-import type { IUIInfo, TComponentInfo, TUIImgInfo } from "./IUIInfo.dat";
+import type { IUIInfo, TComponentInfo, TUIImgInfo, TUITxtInfo } from "./IUIInfo.dat";
+import { ICookedUITxtInfo } from "./IUITxtInfo.dat";
+import { judger, parse_ui_value, unsafe_is_object } from "./read_info_value";
 import { ui_load_img } from "./ui_load_img";
 import { ui_load_txt } from "./ui_load_txt";
 import { UINode } from "./UINode";
@@ -63,7 +65,6 @@ async function read_ui_template(lf2: LF2, raw_info: IUIInfo, parent: ICookedUIIn
     component.push(...remain_raw_info.component)
   else if (remain_raw_info.component)
     component.push(remain_raw_info.component)
-
   return {
     ...raw_template,
     ...remain_raw_info,
@@ -73,6 +74,27 @@ async function read_ui_template(lf2: LF2, raw_info: IUIInfo, parent: ICookedUIIn
       ...remain_raw_info.values
     }
   };
+}
+read_ui_template.TAG = 'read_ui_template'
+
+function cook_ui_txt_info(lf2: LF2, ui_info: ICookedUIInfo, raw: TUITxtInfo | TUITxtInfo[] | undefined, out: ICookedUITxtInfo[] = []): ICookedUITxtInfo[] {
+  if (!raw) return [];
+
+  const raws = Array.isArray(raw) ? raw : [raw];
+  for (const info of raws) {
+    if (!info) continue;
+    if (typeof info === 'string') {
+      const i18n = parse_ui_value(ui_info, 'string', info) ?? info
+      out.push({ i18n: lf2.string(i18n), style: {} })
+    } else {
+      const i18n = parse_ui_value(ui_info, 'string', info.i18n) ?? ''
+      out.push({
+        i18n: lf2.string(i18n),
+        style: parse_ui_value(ui_info, unsafe_is_object, info.style) ?? {}
+      })
+    }
+  }
+  return out
 }
 
 export async function cook_ui_info(
@@ -89,6 +111,8 @@ export async function cook_ui_info(
   const name = raw_info.name || 'no_name_' + Date.now();
   const ret: ICookedUIInfo = {
     ...raw_info,
+    values: raw_info.values ? raw_info.values : {},
+    enabled: false,
     id, name,
     pos: read_nums(raw_info.pos, 3, [0, 0, 0]),
     scale: read_nums(raw_info.scale, 3, [1, 1, 1]),
@@ -101,12 +125,15 @@ export async function cook_ui_info(
     img: [],
     txt: []
   };
+  
+  ret.enabled = parse_ui_value(ret, 'boolean', raw_info.enabled) ?? true
+
 
   const { img } = raw_info;
   if (img) ret.img_infos.push(...await ui_load_img(lf2, img, ret.img));
 
-  const { txt } = raw_info;
-  if (txt) ret.txt_infos.push(...await ui_load_txt(lf2, txt, ret));
+  cook_ui_txt_info(lf2, ret, raw_info.txt, ret.txt)
+  await ui_load_txt(lf2, ret.txt, ret, ret.txt_infos)
 
   const { w: img_w = 0, h: img_h = 0, scale = 1 } = ret.img_infos[0] || ret.txt_infos[0] || {};
   const sw = img_w / scale;

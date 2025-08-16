@@ -43,7 +43,7 @@ export default class StageNameText extends UIComponent {
     }
 
     ui_load_txt(this.lf2, {
-      value: this.text, style: {
+      i18n: this.text, style: {
         fill_style: "#9b9bff",
         font: "15px Arial",
       }

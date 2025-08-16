@@ -42,7 +42,7 @@ export class PlayerKeyEdit extends PlayerKeyText {
 
   override on_key_changed() {
     ui_load_txt(this.lf2, {
-      value: this.key_code, style: {
+      i18n: this.key_code, style: {
         fill_style: this.node.focused ? "blue" : 'white',
         font: "14px Arial",
         padding_l: 20,

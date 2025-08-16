@@ -18,7 +18,7 @@ export class StageTitleShow extends UIComponent {
   on_chapter_finish() {
     this.node.visible = false;
     ui_load_txt(this.lf2, {
-      value: "STAGE CLEAR!", style: {
+      i18n: "STAGE CLEAR!", style: {
         fill_style: "white",
         font: "46px \"Arial Black\", Arial",
         back_style: {
@@ -43,7 +43,7 @@ export class StageTitleShow extends UIComponent {
     const title = stage.data.title ?? stage.bg.name ?? ""
     this.node.visible = false;
     ui_load_txt(this.lf2, {
-      value: title, style: {
+      i18n: title, style: {
         fill_style: "white",
         font: "46px \"Arial Black\", Arial",
         back_style: {

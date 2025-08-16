@@ -34,7 +34,7 @@ export class Flex extends UIComponent {
       const len = children.length;
       for (let i = 0; i < len; ++i) {
         const child = children[i]
-        if (!child.visible) continue;
+        if (!child.self_visible) continue;
         const [child_w, child_h] = child.size.value
         if (fit_w && direction === 'row')
           w += child_w + (i < len - 1 ? row_gap : 0);
@@ -57,7 +57,7 @@ export class Flex extends UIComponent {
 
     const [my_w, my_h] = this.node.size.value;
     for (const child of this.node.children) {
-      if (!child.visible) continue;
+      if (!child.self_visible) continue;
       const [child_w, child_h] = child.size.value
       const { cross } = child;
       const [x, y, z] = child.pos.value;

@@ -28,7 +28,7 @@ export class PlayerKeyText extends UIComponent {
 
   on_key_changed() {
     ui_load_txt(this.lf2, {
-      value: this.key_code, style: {
+      i18n: this.key_code, style: {
         fill_style: "#9b9bff",
         font: "14px Arial",
       }

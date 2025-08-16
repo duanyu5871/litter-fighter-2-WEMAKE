@@ -13,7 +13,7 @@ export default class PlayerScoreCell extends UIComponent {
   override on_show(): void {
     super.on_show?.();
     ui_load_txt(this.lf2, {
-      value: this.get_txt(), style: this.get_style()
+      i18n: this.get_txt(), style: this.get_style()
     }).then(v => {
       this.node.txts.value = v;
       this.node.txt_idx.value = 0;

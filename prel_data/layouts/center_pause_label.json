@@ -3,7 +3,7 @@
   "id": "center_pause_label",
   "visible": "paused==1",
   "txt": {
-    "value": "PAUSE",
+    "i18n": "PAUSE",
     "style": {
       "fill_style": "white",
       "font": "24px \"Arial Black\", Arial",

@@ -20,7 +20,7 @@
     {
       "visible": "paused!=1",
       "txt": {
-        "value": "DEMO",
+        "i18n": "DEMO",
         "style": {
           "fill_style": "white",
           "font": "24px \"Arial Black\", Arial",

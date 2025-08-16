@@ -42,7 +42,7 @@ export class LoadingContentText extends UIComponent {
     this.fadeout?.start();
     const str = progress ? `loading: ${text}(${progress}%)` : ` loading: ${text}`;
     ui_load_txt(this.lf2, {
-      value: str, style: this.node.style
+      i18n: str, style: this.node.style
     }).then(v => {
       this.node.txts.value = v;
       this.node.txt_idx.value = 0;

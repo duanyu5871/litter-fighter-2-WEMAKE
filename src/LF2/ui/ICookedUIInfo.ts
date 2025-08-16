@@ -2,7 +2,7 @@ import type { IImageInfo } from "../loader/IImageInfo";
 import { ITextImageInfo } from "../loader/ITextImageInfo";
 import { IUIImgInfo } from "./IUIImgInfo.dat";
 import type { IUIInfo } from "./IUIInfo.dat";
-import { IUITxtInfo } from "./IUITxtInfo.dat";
+import { ICookedUITxtInfo } from "./IUITxtInfo.dat";
 
 export interface ICookedUIInfo extends IUIInfo {
   id: string;
@@ -15,7 +15,8 @@ export interface ICookedUIInfo extends IUIInfo {
   img_infos: IImageInfo[];
   txt_infos: ITextImageInfo[];
   size: [number, number];
-  
-  img: IUIImgInfo[]
-  txt: IUITxtInfo[]
+  enabled: boolean;
+  img: IUIImgInfo[];
+  txt: ICookedUITxtInfo[];
+  values: { [x in string]?: any };
 }

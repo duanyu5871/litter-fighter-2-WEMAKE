@@ -160,7 +160,7 @@ export class World extends WorldDataset {
       const real_dt = time - _prev_time;
       if (real_dt < this._ideally_dt * _fix_radio) return;
 
-      this.lf2.ui?.update(real_dt);
+      this.lf2.ui?.enabled && this.lf2.ui?.update(real_dt);
       _update_count++;
 
       if (!this._paused) this.update_once();

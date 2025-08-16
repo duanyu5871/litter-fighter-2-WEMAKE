@@ -43,7 +43,10 @@ class UIActor {
 
   act(layout: UINode, actions: TAction | TAction[]): void {
     if (!Array.isArray(actions)) actions = [actions]
-    if (!actions.length) return;
+    if (!actions.length) {
+      Ditto.Warn(`[${UIActor.TAG}::act] failed to act, actions empty`);
+      return
+    }
     for (const raw of actions) {
       const action = is_str(raw) ? parse_call_func_expression(raw) : raw;
       if (!action) {
