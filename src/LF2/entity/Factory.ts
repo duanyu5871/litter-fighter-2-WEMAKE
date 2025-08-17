@@ -1,6 +1,6 @@
 import type { BaseController } from "../controller/BaseController";
 import { EntityEnum } from "../defines/EntityEnum";
-import type { Entity } from "./Entity.1";
+import type { Entity } from "./Entity";
 
 export interface ICreator<C, T extends new (...args: any[]) => C> {
   (...args: ConstructorParameters<T>): C;
