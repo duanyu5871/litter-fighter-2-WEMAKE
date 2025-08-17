@@ -22,6 +22,7 @@ import BallState_Base from "../state/BallState_Base";
 import CharacterState_Base from "../state/CharacterState_Base";
 import { State_Base } from "../state/State_Base";
 import WeaponState_Base from "../state/WeaponState_Base";
+import { abs, floor, max, min, round } from "../utils";
 import { cross_bounding } from "../utils/cross_bounding";
 import { is_num, is_positive, is_str } from "../utils/type_check";
 import { EMPTY_FRAME_INFO } from "./EMPTY_FRAME_INFO";
@@ -32,8 +33,7 @@ import { bdy_action_handlers } from "./bdy_action_handlers";
 import { turn_face } from "./face_helper";
 import { itr_action_handlers } from "./itr_action_handlers";
 import { IDebugging, make_debugging } from "./make_debugging";
-import { is_ball, is_character, is_weapon_data } from "./type_check";
-import { max, min, round, abs, floor } from "../utils";
+import { is_character, is_weapon_data } from "./type_check";
 function calc_v(
   old: number,
   speed: number,
@@ -717,14 +717,12 @@ export class Entity implements IDebugging {
     const facing = result?.which.facing
       ? this.handle_facing_flag(result.which.facing, result.frame)
       : emitter.facing;
+    this.velocities.length = 1
     this.velocity_0.set(
       ovx + dvx * facing,
       ovy + dvy,
-      dvz
+      dvz + ovz + speedz * ud
     )
-    this.velocities.push(
-      new Ditto.Vector3(0, 0, ovz + speedz * ud),
-    );
 
     if (is_num(opoint.max_hp)) this.hp_max = opoint.max_hp;
     if (is_num(opoint.max_mp)) this.mp_max = opoint.max_mp;
@@ -1057,7 +1055,6 @@ export class Entity implements IDebugging {
       if (cpoint?.decrease) {
         this._catch_time += cpoint.decrease;
         if (this._catch_time < 0) this._catch_time = 0;
-        console.log(`decrease got ${cpoint?.decrease}, remains ${this._catch_time}`)
       }
     } else {
       this._catch_time = this._catch_time_max;

@@ -3,7 +3,7 @@ import { ItrEffect, Defines, ArmorEnum, SparkEnum, StateEnum } from "../defines"
 
 
 export function is_armor_work(collision: ICollision): boolean {
-  const { victim, bframe } = collision;
+  const { victim, bframe, attacker } = collision;
   const { armor } = victim;
   if (
     bframe.state === StateEnum.Caught ||
@@ -57,5 +57,9 @@ export function is_armor_work(collision: ICollision): boolean {
   const sounds = victim.toughness > 0 ? hit_sounds : dead_sounds;
   if (sounds) for (const s of sounds) victim.lf2.sounds.play(s, x, y, z);
   victim.shaking = itr.shaking ?? collision.attacker.world.itr_shaking;
+  victim.velocities.length = 1;
+  victim.velocity_0.x = 0;
+  victim.velocity_0.y = 0;
+  victim.velocity_0.z = 0;
   return true;
 }
