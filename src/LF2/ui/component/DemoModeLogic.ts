@@ -4,6 +4,7 @@ import { Factory } from "../../entity/Factory";
 import IEntityCallbacks from "../../entity/IEntityCallbacks";
 import { is_character } from "../../entity/type_check";
 import { traversal } from "../../utils/container_help/traversal";
+import { floor } from "../../utils/math/base";
 import { UINode } from "../UINode";
 import { UIComponent } from "./UIComponent";
 
@@ -19,7 +20,7 @@ export class DemoModeLogic extends UIComponent implements IEntityCallbacks {
     const character_datas = this.lf2.datas.get_characters_of_group(
       EntityGroup.Regular,
     );
-    const player_count = Math.floor(this.lf2.random_in(2, 8));
+    const player_count = floor(this.lf2.random_in(2, 8));
     const player_teams: string[] = [];
 
     for (let i = 0; i < player_count; i++) {
@@ -81,7 +82,7 @@ export class DemoModeLogic extends UIComponent implements IEntityCallbacks {
       const character = creator(this.world, character_data);
       character.name = "com";
       character.team = player_teams.shift() ?? new_team();
-      character.facing = Math.random() < 0.5 ? 1 : -1;
+      character.facing = this.lf2.random_get([1, -1] as const)!;
       character.callbacks.add(this);
 
       const { far, near, left, right } = this.lf2.world.bg;

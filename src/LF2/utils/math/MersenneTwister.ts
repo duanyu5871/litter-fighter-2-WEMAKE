@@ -1,3 +1,5 @@
+import { floor } from "./base";
+
 export class MersenneTwister {
   private n: number = 624;
   private m: number = 397;
@@ -63,6 +65,6 @@ export class MersenneTwister {
 
   // 生成[min, max)范围内的整数
   public in_range(min: number, max: number): number {
-    return Math.floor(this.float() * (max - min)) + min;
+    return floor(this.float() * (max - min)) + min;
   }
 }

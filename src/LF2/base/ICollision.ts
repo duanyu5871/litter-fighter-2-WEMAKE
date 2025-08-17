@@ -1,3 +1,4 @@
+
 import type { IBounding, IBdyInfo, IFrameInfo, IItrInfo } from "../defines";
 import type { Entity } from "../entity/Entity";
 

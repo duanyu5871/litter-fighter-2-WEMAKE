@@ -1,6 +1,5 @@
 import type { World } from "../World";
 import type { IBgData, IBgLayerInfo } from "../defines";
-import { local_random } from "../utils/math/random";
 import Layer from "./Layer";
 
 export default class Background {
@@ -63,12 +62,12 @@ export default class Background {
 
   fade_out(duration: number, delay_max_offset: number, delay: number): void {
     for (const layer of this._layers)
-      layer.fade_out(duration, local_random() * delay_max_offset + delay);
+      layer.fade_out(duration, this.world.lf2.random_in(0, delay_max_offset) + delay);
   }
 
   fade_in(duration: number, delay_max_offset: number, delay: number): void {
     for (const layer of this._layers)
-      layer.fade_in(duration, local_random() * delay_max_offset + delay);
+      layer.fade_in(duration, this.world.lf2.random_in(0, delay_max_offset) + delay);
   }
 
   update() {

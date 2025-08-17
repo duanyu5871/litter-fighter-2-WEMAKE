@@ -13,7 +13,7 @@ import { MinificationTextureFilter } from "../defines/MinificationTextureFilter"
 import { TextureWrapping } from "../defines/TextureWrapping";
 import Ditto from "../ditto";
 import { get_alpha_from_color } from "../ui/utils/get_alpha_from_color";
-import { is_positive_int } from "../utils";
+import { is_positive_int, max, round } from "../utils";
 import { IImageInfo } from "./IImageInfo";
 import { ImageInfo } from "./ImageInfo";
 import { ImageOperation_Crop } from "./ImageOperation_Crop";
@@ -34,7 +34,7 @@ export class ImageMgr {
     const img = await create_img_ele(blob_url);
     img.setAttribute('src-url', src_url)
 
-    const scale = Math.max(1,
+    const scale = max(1,
       Number(
         src_url.match(/@(\d)[x|X](.png|.webp)$/)?.[1] ??
         src_url.match(/@(\d)[x|X]\/(.*)(.png|.webp)$/)?.[1]
@@ -279,15 +279,15 @@ function split_text_to_lines(text: string, ctx: CanvasRenderingContext2D, style:
       w: width,
       h: a + d
     };
-    w = Math.max(w, width);
+    w = max(w, width);
     h += ret.h;
     ret.h += a + d;
     return ret;
   });
   w += padding_l + padding_r
   h += padding_t + padding_b
-  if (style.text_align === "center") for (const l of lines) l.x = Math.round(w / 2);
-  if (style.text_align === "right") for (const l of lines) l.x = Math.round(w);
+  if (style.text_align === "center") for (const l of lines) l.x = round(w / 2);
+  if (style.text_align === "right") for (const l of lines) l.x = round(w);
   return [lines, w, h];
 }
 

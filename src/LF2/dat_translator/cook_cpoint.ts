@@ -1,6 +1,7 @@
 import { FacingFlag } from "../defines/FacingFlag";
 import { ICpointInfo } from "../defines/ICpointInfo";
 import { Defines } from "../defines/defines";
+import { abs } from "../utils";
 import { is_num, is_str, not_zero_num } from "../utils/type_check";
 import { get_next_frame_by_raw_id } from "./get_the_next";
 import { take } from "./take";
@@ -27,7 +28,7 @@ export function cook_cpoint(unsure_cpoint: ICpointInfo): void {
   const vaction = take(unsure_cpoint as any, "vaction");
   const raw_injury = take(unsure_cpoint, "injury");
   if (is_num(raw_injury)) {
-    unsure_cpoint.injury = Math.abs(raw_injury);
+    unsure_cpoint.injury = abs(raw_injury);
     if (raw_injury > 0) unsure_cpoint.shaking = Defines.DEFAULT_ITR_SHAKING;
   }
 

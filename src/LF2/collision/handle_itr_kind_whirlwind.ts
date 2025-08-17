@@ -1,12 +1,13 @@
 import { ICollision } from "../base/ICollision";
 import { EntityEnum, StateEnum } from "../defines";
+import { round } from "../utils/math/base";
 
 export function handle_itr_kind_whirlwind(c: ICollision) {
   const { attacker, victim } = c;
   victim.merge_velocities();
   let { x, y, z } = victim.velocity_0;
-  const dz = Math.round(victim.position.z - attacker.position.z);
-  const dx = Math.round(victim.position.x - attacker.position.x);
+  const dz = round(victim.position.z - attacker.position.z);
+  const dx = round(victim.position.x - attacker.position.x);
   let d = dx > 0 ? -1 : 1;
   let l = dz > 0 ? -1 : dz < 0 ? 1 : 0;
   y += y < 4 ? 1 : -1;

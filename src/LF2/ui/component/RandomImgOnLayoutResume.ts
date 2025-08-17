@@ -1,11 +1,10 @@
-import { local_random } from "../../utils/math/random";
 import { UIComponent } from "./UIComponent";
 
 const img_idx_list_map = new Map<string, number[]>();
 
 export class RandomImgOnLayoutResume extends UIComponent {
   private _img_idx_list: number[] = [];
-  
+
   get group() { return this.str(0) };
   get img_idx_list() {
     if (!this.group) return this._img_idx_list;
@@ -20,6 +19,6 @@ export class RandomImgOnLayoutResume extends UIComponent {
     const l = this.img_idx_list;
     if (!l.length) this.node.data.img.forEach((_, i) => l.push(i));
     if (!l.length) return;
-    this.node.img_idx.value = Math.floor(local_random() * l.length);
+    this.node.img_idx.value = this.lf2.random_in(0, l.length);
   }
 }

@@ -2,11 +2,11 @@ import { new_team } from "../../base";
 import FSM, { IState } from "../../base/FSM";
 import Invoker from "../../base/Invoker";
 import LocalController from "../../controller/LocalController";
-import { EntityGroup } from "../../defines";
-import { Defines } from "../../defines/defines";
+import { EntityGroup, FacingFlag } from "../../defines";
+import { Defines, TFace } from "../../defines/defines";
 import { Entity } from "../../entity/Entity";
 import { Factory } from "../../entity/Factory";
-import { ceil } from "../../utils";
+import { ceil, max } from "../../utils";
 import { map_no_void } from "../../utils/container_help/map_no_void";
 import { IUIKeyEvent } from "../IUIKeyEvent";
 import BackgroundNameText from "./BackgroundNameText";
@@ -140,8 +140,9 @@ export default class GamePrepareLogic extends UIComponent<IGamePrepareLogicCallb
     },
     on_player_key_down: (e) => {
       if ("j" === e.game_key) {
-        this._count_down = Math.max(0, this._count_down - 500);
-        this.callbacks.emit("on_countdown")(Math.ceil(this._count_down / 1000));
+        this._count_down = 
+        max(0, this._count_down - 500);
+        this.callbacks.emit("on_countdown")(ceil(this._count_down / 1000));
         e.stop_immediate_propagation()
       }
     },
@@ -295,7 +296,7 @@ export default class GamePrepareLogic extends UIComponent<IGamePrepareLogicCallb
       const character = new Entity(this.world, character_data);
       character.name = player.is_com ? "com" : player.name;
       character.team = player.team || new_team();
-      character.facing = Math.random() < 0.5 ? 1 : -1;
+      character.facing = this.lf2.random_get([FacingFlag.Left, FacingFlag.Right])!;
 
       if (player.is_com) {
         character.ctrl = Factory.inst.get_ctrl(
@@ -330,3 +331,4 @@ export default class GamePrepareLogic extends UIComponent<IGamePrepareLogicCallb
     else this.lf2.push_ui("vs_mode_page");
   }
 }
+

@@ -1,3 +1,4 @@
+import { max } from "../../utils";
 import { UIComponent } from "./UIComponent";
 
 export class HorizontalLayout extends UIComponent {
@@ -9,7 +10,7 @@ export class HorizontalLayout extends UIComponent {
       const [, y, z] = l.pos.value
       l.pos.value = [w, y, z];
       w += l.w;
-      h = Math.max(h, l.h);
+      h = max(h, l.h);
     }
     this.node.size.value = [w, h];
     const p = this.node.parent;

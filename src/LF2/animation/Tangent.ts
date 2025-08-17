@@ -1,5 +1,6 @@
+import { PI, tan } from "../utils/math/base";
 import { Periodic } from "./Periodic";
 
 export class Tangent extends Periodic {
-  readonly method = (v: number) => Math.tan(v * 2 * Math.PI / 1000);
+  readonly method = (v: number) => tan(v * 2 * PI / 1000);
 }

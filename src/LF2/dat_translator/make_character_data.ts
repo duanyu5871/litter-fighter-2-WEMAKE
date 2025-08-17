@@ -6,6 +6,7 @@ import { IEntityData } from "../defines/IEntityData";
 import { IFrameIndexes } from "../defines/IFrameIndexes";
 import { INextFrame } from "../defines/INextFrame";
 import { Defines } from "../defines/defines";
+import { round } from "../utils";
 import { set_obj_field } from "../utils/container_help/set_obj_field";
 import { take_number } from "../utils/container_help/take_number";
 import { traversal } from "../utils/container_help/traversal";
@@ -55,11 +56,12 @@ export function make_character_data(
   const rowing_height = take_number(info, "rowing_height", 0);
 
   if (info.jump_height)
-    info.jump_height = Math.round((info.jump_height * info.jump_height) / 3.5);
+    info.jump_height = round((info.jump_height * info.jump_height) / 3.5);
   if (info.dash_height)
-    info.dash_height = Math.round((info.dash_height * info.dash_height) / 3.5);
-  // if (info.rowing_height) info.rowing_height = Math.round(info.rowing_height * info.rowing_height / 3.5);
-  if (info.rowing_height) info.rowing_height = -info.rowing_height;
+    info.dash_height = round((info.dash_height * info.dash_height) / 3.5);
+  if (info.rowing_height)
+    info.rowing_height = round(info.rowing_height * info.rowing_height / 3.5);
+  // if (info.rowing_height) info.rowing_height = -info.rowing_height;
 
   if (info.dash_distance) info.dash_distance /= 2;
   if (info.jump_distance) info.jump_distance /= 2;
@@ -448,9 +450,10 @@ export function make_character_data(
         break;
       /** （180~185）falling 向前 */
       case 180:
-      case 181:
         break;
+      case 181:
       case 182:
+      case 183:
         if (!frame.hit) frame.hit = {};
         frame.hit.j = push_next_frame(frame.hit.j, {
           id: "100",
@@ -459,16 +462,16 @@ export function make_character_data(
             .done(),
         });
         break;
-      case 183:
       case 184:
       case 185:
         break;
 
       /** （186~191）falling 向后 */
       case 186:
-      case 187:
         break;
+      case 187:
       case 188:
+      case 189:
         if (!frame.hit) frame.hit = {};
         frame.hit.j = push_next_frame(frame.hit.j, {
           id: "108",
@@ -477,7 +480,6 @@ export function make_character_data(
             .done(),
         });
         break;
-      case 189:
       case 190:
       case 191:
         break;
@@ -695,8 +697,8 @@ export function make_character_data(
           ]; // run_atk
           frame.hit.j = { id: "213" }; // dash
           frame.hit.d = { id: "102" }; // rowing
-          frame.hold = frame.hold || {};
-          frame.hit.B = frame.hold.B = { id: "218" }; // running_stop
+          frame.key_down = frame.key_down || {};
+          frame.key_down.B = { id: "218" }; // running_stop
           frame.dvx = running_speed / 2;
           frame.ctrl_spd_z = running_speedz;
           /* 

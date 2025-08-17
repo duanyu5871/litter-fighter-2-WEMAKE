@@ -1,5 +1,6 @@
 import { Easing } from "../../animation";
 import ease_linearity from "../../utils/ease_method/ease_linearity";
+import { floor } from "../../utils/math/base";
 import { UIComponent } from "./UIComponent";
 
 export class ImgLoop extends UIComponent {
@@ -27,7 +28,7 @@ export class ImgLoop extends UIComponent {
       return;
     }
     this.anim.update(dt);
-    const idx = Math.floor(this.anim.value);
+    const idx = floor(this.anim.value);
     this.node.img_idx.value = idx;
     if (this.anim.done) this.enabled = false;
   }

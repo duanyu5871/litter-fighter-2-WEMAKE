@@ -1,3 +1,4 @@
+
 import type { Entity } from "../entity/Entity";
 import CharacterState_Base from "./CharacterState_Base";
 

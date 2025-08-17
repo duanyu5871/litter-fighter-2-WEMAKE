@@ -3,7 +3,7 @@ import { Defines, IFrameInfo, ItrKind, StateEnum, WeaponType } from "../defines"
 import { ICollision } from "../base/ICollision";
 import type { Entity } from "../entity/Entity";
 import State_Base, { WhatNext } from "./State_Base";
-import { round } from "../utils";
+import { max, min, round } from "../utils";
 
 export default class WeaponState_Base extends State_Base {
   override on_collision(collision: ICollision): void {
@@ -39,14 +39,14 @@ export default class WeaponState_Base extends State_Base {
       case ItrKind.Normal:
       case ItrKind.CharacterThrew:
         const spark_x =
-          (Math.max(a_cube.left, b_cube.left) +
-            Math.min(a_cube.right, b_cube.right)) /
+          (max(a_cube.left, b_cube.left) +
+            min(a_cube.right, b_cube.right)) /
           2;
         const spark_y =
-          (Math.min(a_cube.top, b_cube.top) +
-            Math.max(a_cube.bottom, b_cube.bottom)) /
+          (min(a_cube.top, b_cube.top) +
+            max(a_cube.bottom, b_cube.bottom)) /
           2;
-        const spark_z = Math.max(a_cube.far, b_cube.far);
+        const spark_z = max(a_cube.far, b_cube.far);
         if (
           itr.bdefend &&
           itr.bdefend >= Defines.DEFAULT_FORCE_BREAK_DEFEND_VALUE

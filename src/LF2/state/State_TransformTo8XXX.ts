@@ -2,6 +2,7 @@ import { new_team } from "../base";
 import { Builtin_FrameId } from "../defines";
 import type { Entity } from "../entity/Entity";
 import { Factory } from "../entity/Factory";
+import { round } from "../utils/math/base";
 import State_Base from "./State_Base";
 export default class State_TransformTo8XXX extends State_Base {
   override enter(e: Entity): void {
@@ -13,9 +14,9 @@ export default class State_TransformTo8XXX extends State_Base {
       e.team = e.lastest_collided?.attacker.team || new_team();
       e.ctrl = Factory.inst.get_ctrl(data.id, e.ctrl?.player_id ?? "", e);
       e.position.set(
-        Math.round(e.position.x),
-        Math.round(e.position.y),
-        Math.round(e.position.z)
+        round(e.position.x),
+        round(e.position.y),
+        round(e.position.z)
       );
       e.variant = 1;
     }

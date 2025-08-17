@@ -1,5 +1,6 @@
 import { Entity } from "../entity/Entity";
 import { is_character } from "../entity/type_check";
+import { abs, round } from "../utils/math/base";
 import CharacterState_Base from "./CharacterState_Base";
 
 export default class CharacterState_Teleport2NearestEnemy extends CharacterState_Base {
@@ -9,8 +10,8 @@ export default class CharacterState_Teleport2NearestEnemy extends CharacterState
     for (const o of m.world.entities) {
       if (!is_character(o) || o === m || o.is_ally(m)) continue;
       const dis =
-        Math.abs(o.position.x - m.position.x) +
-        Math.abs(o.position.z - o.position.z);
+        abs(o.position.x - m.position.x) +
+        abs(o.position.z - o.position.z);
       if (_dis < 0 || dis < _dis) {
         _dis = dis;
         _tar = o;
@@ -21,8 +22,8 @@ export default class CharacterState_Teleport2NearestEnemy extends CharacterState
       m.position.y = 0;
       return;
     }
-    m.position.x = Math.round(_tar.position.x - m.facing * 120);
-    m.position.z = Math.round(_tar.position.z);
+    m.position.x = round(_tar.position.x - m.facing * 120);
+    m.position.z = round(_tar.position.z);
     m.position.y = 0;
   }
 }

@@ -1,3 +1,4 @@
+
 import { IEntityData } from "../defines";
 import { Entity } from "../entity/Entity";
 import { is_character } from "../entity/type_check";

@@ -1,5 +1,6 @@
 import { IFrameInfo } from "../defines";
 import { Entity } from "../entity/Entity";
+import { sqrt } from "../utils";
 import CharacterState_Base from "./CharacterState_Base";
 
 export class CharacterState_Rowing extends CharacterState_Base {
@@ -14,7 +15,8 @@ export class CharacterState_Rowing extends CharacterState_Base {
     } else {
       e.velocity_0.x = -dx;
     }
-    e.velocity_0.y = e.world.gravity * Math.sqrt((6 * h) / e.world.gravity);
+    const g_acc = e.world.gravity;
+    e.velocity_0.y = g_acc * sqrt((2 * h) / g_acc);
   }
   override on_landing(e: Entity): void {
     e.enter_frame({ id: e.data.indexes?.landing_1 });

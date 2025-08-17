@@ -9,14 +9,16 @@ import {
   IWpointInfo,
   StateEnum,
 } from "../defines";
+import { AllyFlag } from "../defines/AllyFlag";
 import { BdyKind } from "../defines/BdyKind";
 import { CollisionVal as C_Val } from "../defines/CollisionVal";
 import { IEntityInfo } from "../defines/IEntityInfo";
-import { ILegacyPictureInfo } from "../defines/ILegacyPictureInfo";
 import { IFrameInfo } from "../defines/IFrameInfo";
+import { ILegacyPictureInfo } from "../defines/ILegacyPictureInfo";
 import { OpointKind } from "../defines/OpointKind";
 import { SpeedMode } from "../defines/SpeedMode";
 import { Defines } from "../defines/defines";
+import { abs, floor } from "../utils/math/base";
 import { match_all } from "../utils/string_parser/match_all";
 import { match_colon_value } from "../utils/string_parser/match_colon_value";
 import take_sections from "../utils/string_parser/take_sections";
@@ -31,7 +33,6 @@ import { cook_wpoint } from "./cook_wpoint";
 import { add_next_frame } from "./edit_next_frame";
 import { get_next_frame_by_raw_id } from "./get_the_next";
 import { take } from "./take";
-import { AllyFlag } from "../defines/AllyFlag";
 export function make_frames(
   text: string,
   files: IEntityInfo["files"],
@@ -97,7 +98,7 @@ export function make_frames(
       frame_pic_info = {
         tex: id,
         x: (cell_w + 1) * (pic % row),
-        y: (cell_h + 1) * Math.floor(pic / row),
+        y: (cell_h + 1) * floor(pic / row),
         w: cell_w,
         h: cell_h,
       };
@@ -132,7 +133,7 @@ export function make_frames(
       (raw_next >= 1100 && raw_next <= 1299) ||
       (raw_next <= -1100 && raw_next >= -1299)
     ) {
-      frame.invisible = 2 * (Math.abs(raw_next) - 1100);
+      frame.invisible = 2 * (abs(raw_next) - 1100);
     }
 
     if (!frame.itr?.length) delete frame.itr;

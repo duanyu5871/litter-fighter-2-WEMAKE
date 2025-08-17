@@ -14,6 +14,7 @@ import { IWorldCallbacks } from "./IWorldCallbacks";
 import { LF2 } from "./LF2";
 import { Stage } from "./stage/Stage";
 import { WhatNext } from "./state/State_Base";
+import { abs, floor, min, round } from "./utils";
 import { find } from "./utils/container_help";
 import { is_num } from "./utils/type_check";
 import { WorldDataset } from "./WorldDataset";
@@ -261,7 +262,7 @@ export class World extends WorldDataset {
   manhattan(e1: Entity, e2: Entity) {
     const p1 = e1.position;
     const p2 = e2.position;
-    return Math.abs(p1.x - p2.x) + Math.abs(p1.z - p2.z);
+    return abs(p1.x - p2.x) + abs(p1.z - p2.z);
   }
 
   private gone_entities: Entity[] = [];
@@ -316,7 +317,7 @@ export class World extends WorldDataset {
 
   update_camera() {
 
-    const old_cam_x = Math.floor(this.renderer.cam_x);
+    const old_cam_x = floor(this.renderer.cam_x);
     if (this.bg.id === Defines.VOID_BG.id) {
       this.renderer.cam_x = 0
       if (old_cam_x !== 0) {
@@ -349,14 +350,14 @@ export class World extends WorldDataset {
         new_x += player.position.x - 794 / 2 + (player.facing * 794) / 6;
         ++l;
       }
-      new_x = Math.floor(new_x / l);
+      new_x = floor(new_x / l);
     }
     if (new_x < max_cam_left) new_x = max_cam_left;
     if (new_x > max_cam_right - this.screen_w) new_x = max_cam_right - this.screen_w;
     let cur_x = this.renderer.cam_x;
-    const acc = Math.min(
+    const acc = min(
       acc_ratio,
-      (acc_ratio * Math.abs(cur_x - new_x)) / this.screen_w,
+      (acc_ratio * abs(cur_x - new_x)) / this.screen_w,
     );
     const max_speed = max_speed_ratio * acc;
 
@@ -374,7 +375,7 @@ export class World extends WorldDataset {
       if (this.renderer.cam_x > new_x) this.renderer.cam_x = new_x;
     }
 
-    const new_cam_x = Math.floor(this.renderer.cam_x);
+    const new_cam_x = floor(this.renderer.cam_x);
     if (old_cam_x !== new_cam_x) {
       this.callbacks.emit("on_cam_move")(new_cam_x);
     }
@@ -542,7 +543,7 @@ export class World extends WorldDataset {
       return;
     }
     const e = this._spark_creator(this, this._spark_data);
-    e.position.set(Math.round(x), Math.round(y), Math.round(z));
+    e.position.set(round(x), round(y), round(z));
     e.enter_frame({ id: f });
     e.attach();
   }
@@ -564,7 +565,7 @@ export class World extends WorldDataset {
     };
   }
 
-  private _ideally_dt: number = Math.floor(1000 / 60);
+  private _ideally_dt: number = floor(1000 / 60);
   private _playrate: number = 1;
 
   get playrate() {
@@ -574,7 +575,7 @@ export class World extends WorldDataset {
     if (v <= 0) throw new Error("playrate must be larger than 0");
     if (v === this._playrate) return;
     this._playrate = v;
-    this._ideally_dt = Math.floor(1000 / 60) / this._playrate;
+    this._ideally_dt = floor(1000 / 60) / this._playrate;
     this.start_update();
   }
 

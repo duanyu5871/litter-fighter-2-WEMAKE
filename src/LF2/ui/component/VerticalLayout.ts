@@ -1,3 +1,4 @@
+import { max } from "../../utils/math/base";
 import { UIComponent } from "./UIComponent";
 
 export class VerticalLayout extends UIComponent {
@@ -17,7 +18,7 @@ export class VerticalLayout extends UIComponent {
       const [, , z] = item.pos.value;
       pos_list.unshift([(1 - cx) * w, max_h + (1 - cy) * h, z] as const)
       max_h += item.h + this.gap;
-      max_w = Math.max(max_w, item.w);
+      max_w = max(max_w, item.w);
     }
 
     for (const item of this.node.children) {

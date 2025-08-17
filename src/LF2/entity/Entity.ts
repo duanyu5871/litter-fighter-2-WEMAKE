@@ -1057,8 +1057,10 @@ export class Entity implements IDebugging {
       if (cpoint?.decrease) {
         this._catch_time -= abs(cpoint.decrease);
         if (this._catch_time < 0) this._catch_time = 0;
+        console.log(`decrease got ${cpoint?.decrease}, remains ${this._catch_time}`)
       } else {
         this._catch_time = this._catch_time_max;
+        console.log(`no decrease, got ${cpoint?.decrease}, remains ${this._catch_time}`)
       }
     }
     if (this.shaking <= 0) {

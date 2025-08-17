@@ -7,6 +7,7 @@ import { Defines, IBgData, IStageInfo, IStageObjectInfo, IStagePhaseInfo } from 
 import Ditto from "../ditto";
 import { Entity } from "../entity/Entity";
 import { is_character, is_weapon } from "../entity/type_check";
+import { floor } from "../utils";
 import { find } from "../utils/container_help/find";
 import { is_num } from "../utils/type_check";
 import type IStageCallbacks from "./IStageCallbacks";
@@ -185,7 +186,7 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
     if (!count) count = 1;
 
     const { ratio = 1, times = 1, is_boss } = obj_info;
-    let spawn_count = is_boss ? 1 : Math.floor(count * ratio);
+    let spawn_count = is_boss ? 1 : floor(count * ratio);
     if (spawn_count <= 0 || !times) return;
 
     while (spawn_count > 0) {

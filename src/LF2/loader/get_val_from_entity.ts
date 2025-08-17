@@ -4,7 +4,7 @@ import { IValGetter, IValGetterGetter } from "../defines/IExpression";
 import { Entity } from "../entity/Entity";
 import { is_ball, is_character, is_weapon } from "../entity/type_check";
 import { find } from "../utils/container_help";
-import { clamp } from "../utils/math";
+import { clamp, round } from "../utils/math";
 
 export const get_val_getter_from_entity: IValGetterGetter<Entity> = (
   word: string,
@@ -47,7 +47,8 @@ export const get_val_getter_from_entity: IValGetterGetter<Entity> = (
       };
     case EntityVal.HP_P:
       return (e) => {
-        return clamp(Math.round((100 * e.hp) / e.hp_max), 0, 100);
+        return clamp(
+          round((100 * e.hp) / e.hp_max), 0, 100);
       };
     case EntityVal.LF2_NET_ON:
       return (e) => {

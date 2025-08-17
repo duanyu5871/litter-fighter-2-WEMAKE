@@ -1,4 +1,5 @@
 import type { Entity } from "../entity/Entity";
+import { abs, sqrt } from "../utils";
 import CharacterState_Base from "./CharacterState_Base";
 
 export default class CharacterState_Jump extends CharacterState_Base {
@@ -26,8 +27,8 @@ export default class CharacterState_Jump extends CharacterState_Base {
     const g_acc = character.world.gravity;
     const vz = UD1 * dz;
     character.velocity_0.set(
-      LR1 * (dx - Math.abs(vz / 4)),
-      g_acc * Math.sqrt((2 * h) / g_acc),
+      LR1 * (dx - abs(vz / 4)),
+      g_acc * sqrt((2 * h) / g_acc),
       vz,
     );
     this._jumpings.add(character);

@@ -2,11 +2,5 @@ export * from "./arithmetic_progression";
 export * from "./clamp";
 export * from "./float_equal";
 export * from "./random";
+export * from "./base";
 
-export const floor = Math.floor;
-export const ceil = Math.ceil;
-export const between = (v: number, min: number, max: number) => v >= min && v <= max
-export const abs = Math.abs;
-export const max = Math.max;
-export const min = Math.min;
-export const round = Math.round;

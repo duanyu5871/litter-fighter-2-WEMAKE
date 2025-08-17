@@ -1,6 +1,6 @@
 import Ditto from "../ditto";
 import { LF2 } from "../LF2";
-import { is_str, Unsafe } from "../utils";
+import { floor, is_str, Unsafe } from "../utils";
 import { ICookedUIInfo } from "./ICookedUIInfo";
 import { IUIImgInfo } from "./IUIImgInfo.dat";
 import type { IUIInfo, TComponentInfo, TUIImgInfo, TUITxtInfo } from "./IUIInfo.dat";
@@ -140,8 +140,8 @@ export async function cook_ui_info(
   const sh = img_h / scale;
   const [w, h] = read_nums(raw_info.size, 2, [parent ? sw : lf2.world.screen_w, parent ? sh : lf2.world.screen_h]);
   // 宽或高其一为0时，使用原图宽高比例的计算之
-  const dw = Math.floor(w ? w : sh ? (h * sw / sh) : 0);
-  const dh = Math.floor(h ? h : sw ? (w * sh / sw) : 0);
+  const dw = floor(w ? w : sh ? (h * sw / sh) : 0);
+  const dh = floor(h ? h : sw ? (w * sh / sw) : 0);
   ret.size = [dw, dh];
 
   const { items } = raw_info;

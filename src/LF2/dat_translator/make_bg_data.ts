@@ -3,6 +3,7 @@ import { IBgData } from "../defines/IBgData";
 import { IBgLayerInfo } from "../defines/IBgLayerInfo";
 import { IDatIndex } from "../defines/IDatIndex";
 import { Defines } from "../defines/defines";
+import { min } from "../utils/math/base";
 import { match_colon_value } from "../utils/string_parser/match_colon_value";
 import { take_blocks } from "../utils/string_parser/take_blocks";
 import { to_num } from "../utils/type_cast/to_num";
@@ -100,7 +101,7 @@ export function make_bg_data(
       y: Defines.CLASSIC_SCREEN_HEIGHT - y,
       z: ret.layers.length - blocks.length,
     };
-    min_y = Math.min(layer.y, min_y);
+    min_y = min(layer.y, min_y);
     if (color) {
       layer.absolute = 1;
       layer.color = bg_color_translate(color);

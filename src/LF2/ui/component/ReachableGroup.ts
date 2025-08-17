@@ -1,4 +1,5 @@
 import { GameKey } from "../../defines/GameKey";
+import { max } from "../../utils/math/base";
 import { IUIKeyEvent } from "../IUIKeyEvent";
 import type { UINode } from "../UINode";
 import { Reachable } from "./Reachable";
@@ -50,7 +51,7 @@ export class ReachableGroup extends UIComponent {
 
     if (key === "L" || key === "U") {
       const idx = items.findIndex((v) => v.node === focused_layout);
-      const next_idx = (Math.max(idx, 0) + items.length - 1) % items.length;
+      const next_idx = (max(idx, 0) + items.length - 1) % items.length;
       items[next_idx]!.node.focused = true;
     } else if (key === "R" || key === "D") {
       const idx = items.findIndex((v) => v.node === focused_layout);

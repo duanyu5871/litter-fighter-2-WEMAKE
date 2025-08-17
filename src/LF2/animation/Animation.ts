@@ -82,7 +82,7 @@ export class Animation implements IAnimation, IDebugging {
     return this;
   }
   end(reverse: boolean = this.reverse): this {
-    this.count = Math.max(0, this.times);
+    this.count = max(0, this.times);
     this.reverse = reverse;
     this.time = reverse ? 0 : this.duration
     return this;

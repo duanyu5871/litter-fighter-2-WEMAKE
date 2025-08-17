@@ -17,7 +17,7 @@ import { Difficulty } from "./LF2/defines";
 import { IStageInfo } from "./LF2/defines/IStageInfo";
 import { IStagePhaseInfo } from "./LF2/defines/IStagePhaseInfo";
 import { Defines } from "./LF2/defines/defines";
-import { Entity } from "./LF2/entity/Entity";
+import { Entity } from "./LF2/entity/Entity.1";
 import { Stage } from "./LF2/stage/Stage";
 import list_writable_properties, { TProperty } from "./LF2/utils/list_writable_properties";
 import { is_num, is_str } from "./LF2/utils/type_check";

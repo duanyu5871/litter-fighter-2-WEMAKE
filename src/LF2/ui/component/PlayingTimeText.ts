@@ -1,3 +1,4 @@
+import { floor } from "../../utils";
 import { ui_load_txt } from "../ui_load_txt";
 import { UIComponent } from "./UIComponent";
 
@@ -16,9 +17,9 @@ export class PlayingTimeText extends UIComponent {
 
   protected get_txt(): string {
     const ms = (this.world.stage.time * 1000) / 60;
-    const s = Math.floor(ms / 1000) % 60;
-    const m = Math.floor(ms / (60 * 1000)) % 60;
-    const h = Math.floor(ms / (60 * 60 * 1000)) % 60;
+    const s = floor(ms / 1000) % 60;
+    const m = floor(ms / (60 * 1000)) % 60;
+    const h = floor(ms / (60 * 60 * 1000)) % 60;
     let ret = "";
     if (h) ret += h + ":";
     if (m > 9 || !h) ret += m + ":";
