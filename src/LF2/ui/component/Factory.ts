@@ -44,6 +44,7 @@ import SlotSelLogic from "./SlotSelLogic";
 import { Sounds } from "./Sounds";
 import StageNameText from "./StageNameText";
 import { StageTitleShow } from "./StageTitleShow";
+import { StageTitleText } from "./StageTitleText";
 import StageTransitions from "./StageTransitions";
 import { UIComponent } from "./UIComponent";
 import { VerticalLayout } from "./VerticalLayout";
@@ -71,6 +72,7 @@ class ComponentFactory {
     ["launch_page", LaunchPageLogic],
     [DifficultyText.TAG, DifficultyText],
     ["stage_name_text", StageNameText],
+    [StageTitleText.TAG, StageTitleText],
     ["background_name_text", BackgroundNameText],
     ["opacity_hover", OpacityHover],
     ["vertical_layout", VerticalLayout],
