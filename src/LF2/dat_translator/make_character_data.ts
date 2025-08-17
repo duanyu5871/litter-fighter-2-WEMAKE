@@ -1,3 +1,4 @@
+import { FacingFlag, IEntityInfo, IFrameInfo, StateEnum, TNextFrame, WeaponType } from "../defines";
 import { BdyKind } from "../defines/BdyKind";
 import { EntityEnum } from "../defines/EntityEnum";
 import { EntityVal } from "../defines/EntityVal";
@@ -5,20 +6,19 @@ import { IEntityData } from "../defines/IEntityData";
 import { IFrameIndexes } from "../defines/IFrameIndexes";
 import { INextFrame } from "../defines/INextFrame";
 import { Defines } from "../defines/defines";
-import { FacingFlag, IEntityInfo, IFrameInfo, StateEnum, TNextFrame, WeaponType } from "../defines";
 import { set_obj_field } from "../utils/container_help/set_obj_field";
 import { take_number } from "../utils/container_help/take_number";
 import { traversal } from "../utils/container_help/traversal";
 import { is_num, is_str } from "../utils/type_check";
 import { CondMaker } from "./CondMaker";
+import { cook_file_variants } from "./cook_file_variants";
+import { cook_next_frame_mp_hp } from "./cook_next_frame_mp_hp";
 import { edit_next_frame } from "./edit_next_frame";
 import {
   get_next_frame_by_raw_id,
 } from "./get_the_next";
-import { cook_next_frame_mp_hp } from "./cook_next_frame_mp_hp";
 import { take } from "./take";
 import { take_raw_frame_mp } from "./take_raw_frame_mp";
-import { cook_file_variants } from "./cook_file_variants";
 const k_9 = ["Fa", "Fj", "Da", "Dj", "Ua", "Uj", "ja"] as const;
 
 function push_next_frame(
@@ -31,13 +31,13 @@ function push_next_frame(
   return [src, ...list];
 }
 const set_hit_turn_back = (frame: IFrameInfo, back_frame_id: string = "") => {
-  frame.hit = frame.hit || {};
-  frame.hit.B = { id: back_frame_id, wait: "i", facing: FacingFlag.Backward };
+  frame.key_down = frame.key_down || {};
+  frame.key_down.B = { id: back_frame_id, wait: "i", facing: FacingFlag.Backward };
 };
-const set_hold_turn_back = (frame: IFrameInfo, back_frame_id: string = "") => {
-  frame.hold = frame.hold || {};
-  frame.hold.B = { id: back_frame_id, wait: "i", facing: FacingFlag.Backward };
-};
+// const set_hold_turn_back = (frame: IFrameInfo, back_frame_id: string = "") => {
+//   frame.hold = frame.hold || {};
+//   frame.hold.B = { id: back_frame_id, wait: "i", facing: FacingFlag.Backward };
+// };
 export function make_character_data(
   info: IEntityInfo,
   frames: Record<string, IFrameInfo>,
@@ -147,7 +147,7 @@ export function make_character_data(
       case 7:
       case 8: {
         set_hit_turn_back(frame);
-        set_hold_turn_back(frame);
+        // set_hold_turn_back(frame);
         frame.hit = frame.hit || {};
         frame.hit.a = [
           {
@@ -238,7 +238,7 @@ export function make_character_data(
       case 14:
       case 15: {
         set_hit_turn_back(frame);
-        set_hold_turn_back(frame);
+        // set_hold_turn_back(frame);
         frame.hit = frame.hit || {};
         frame.hit.FF = { id: "heavy_obj_run_0" };
         frame.hit.a = { id: "50", facing: FacingFlag.Ctrl }; // running_stop
@@ -265,7 +265,7 @@ export function make_character_data(
       case 110:
       case 111: {
         set_hit_turn_back(frame);
-        set_hold_turn_back(frame);
+        // set_hold_turn_back(frame);
         if (frame.bdy?.length)
           for (const bdy of frame.bdy) {
             bdy.actions = bdy.actions || []
@@ -285,13 +285,14 @@ export function make_character_data(
       case 211:
       case 212: {
         set_hit_turn_back(frame);
-        set_hold_turn_back(frame);
+        // set_hold_turn_back(frame);
         frame.hit = frame.hit || {};
+        frame.key_down = frame.hit || {};
         frame.hold = frame.hold || {};
 
         if (frame_id === "211") frame.jump_flag = 1;
         if (frame_id === "212") {
-          frame.hit.a = [
+          frame.key_down.a = [
             {
               id: "52", // 角色跳跃丢出武器
               facing: FacingFlag.Ctrl,
@@ -535,6 +536,7 @@ export function make_character_data(
       case StateEnum.Standing:
         frame.hit = frame.hit || {};
         frame.hold = frame.hold || {};
+        frame.key_down = frame.key_down || {}
         frame.hit.a = [
           {
             id: "45",
@@ -570,19 +572,11 @@ export function make_character_data(
           },
           { id: ["60", "65"], facing: FacingFlag.Ctrl },
         ]; // punch
-        frame.hit.j = { id: "210" }; // jump
-        frame.hit.d = { id: "110" }; // defend
-        frame.hit.B = frame.hold.B = {
-          id: "walking_0",
-          facing: FacingFlag.Backward,
-        }; // walking
-        frame.hit.F =
-          frame.hit.U =
-          frame.hit.D =
-          frame.hold.F =
-          frame.hold.U =
-          frame.hold.D =
-          { id: "walking_0" }; // walking
+        frame.key_down.j = { id: "210", facing: FacingFlag.Ctrl }; // jump
+        frame.key_down.d = { id: "110", facing: FacingFlag.Ctrl }; // defend
+        frame.key_down.U = frame.key_down.D =
+          frame.key_down.L = frame.key_down.R =
+          { id: "walking_0", facing: FacingFlag.Ctrl }; // walking
         frame.hit.FF = frame.hit.FF = { id: "running_0" };
         break;
       case StateEnum.BurnRun:
@@ -657,7 +651,7 @@ export function make_character_data(
           frame.wait = walking_frame_rate * 2;
         }
         set_hit_turn_back(frame);
-        set_hold_turn_back(frame);
+        // set_hold_turn_back(frame);
         round_trip_frames_map[frame.name] =
           round_trip_frames_map[frame.name] || [];
         round_trip_frames_map[frame.name].push(frame);
@@ -740,6 +734,12 @@ export function make_character_data(
       frame.next = {
         id: `${prefix}_${i === 2 * src_frames.length - 3 ? 0 : i + 1}`,
       };
+      if (
+        frame.state === StateEnum.Standing ||
+        frame.state === StateEnum.Walking
+      ) {
+        frame.next.facing = FacingFlag.Ctrl
+      }
       frames[frame.id] = frame;
     }
   };

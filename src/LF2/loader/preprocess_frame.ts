@@ -19,6 +19,8 @@ export function preprocess_frame(lf2: LF2, data: IEntityData, frame: IFrameInfo,
   traversal(frame.hit?.sequences, (k, v, o) => { if (v) o[k] = preprocess_next_frame(v) });
   traversal(frame.hit, (k, v, o) => { if (k !== 'sequences' && v) o[k] = preprocess_next_frame(v) });
   traversal(frame.hold, (k, v, o) => { if (v) o[k] = preprocess_next_frame(v) });
+  traversal(frame.key_down, (k, v, o) => { if (v) o[k] = preprocess_next_frame(v) });
+  traversal(frame.key_up, (k, v, o) => { if (v) o[k] = preprocess_next_frame(v) });
 
   if (frame.next) frame.next = preprocess_next_frame(frame.next);
   if (frame.on_dead) frame.on_dead = preprocess_next_frame(frame.on_dead);

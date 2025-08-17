@@ -195,9 +195,11 @@ export class BaseController {
   dispose(): void {
     for (const f of this._disposers) f();
   }
-  tst(type: "hit" | "hld" | "dbl", key: TLooseGameKey) {
+  tst(type: "hit" | "hld" | "dbl" | "kd" | 'ku', key: TLooseGameKey) {
     const conflict_key = CONFLICTS_KEY_MAP[key];
     if (conflict_key && !this.is_end(conflict_key)) return false;
+    if (type === "kd") return !this.is_end(key);
+    if (type === "ku") return this.is_end(key);
     if (type === "dbl") return this.is_db_hit(key);
     if (type === "hit") return this.keys[key].is_hit() && !this.keys[key].used;
     else return this.keys[key].is_hld();
@@ -241,7 +243,7 @@ export class BaseController {
 
     const entity = this.entity;
     const frame = entity.frame;
-    const { hold: hld, hit } = frame;
+    const { hold: hld, hit, key_down: kd_map, key_up: ku_map } = frame;
 
     // 按键序列初始化
     if (this.keys.d.is_start()) this._key_list = "";
@@ -252,6 +254,21 @@ export class BaseController {
     let F: "L" | "R" = facing === 1 ? "R" : "L";
     let B: "L" | "R" = facing === 1 ? "L" : "R";
 
+    if (kd_map) {
+      /** 相对方向的按钮判定 */
+      if (kd_map.F && this.tst('kd', F) && !ret.time)
+        ret.set(kd_map.F, this.keys[F].time, F);
+      if (kd_map.B && this.tst("kd", B) && !ret.time)
+        ret.set(kd_map.B, this.keys[B].time, B);
+
+    }
+    if (ku_map) {
+      /** 相对方向的按钮判定 */
+      if (ku_map.F && this.tst("ku", F) && !ret.time)
+        ret.set(ku_map.F, this.keys[F].time, F);
+      if (ku_map.B && this.tst("ku", B) && !ret.time)
+        ret.set(ku_map.B, this.keys[B].time, B);
+    }
 
     if (hit) {
       /** 相对方向的按钮判定 */
@@ -277,6 +294,20 @@ export class BaseController {
       /** 加入按键序列，但d除外，因为d是按键序列的开始 */
       if (name !== "d" && this.is_start(name)) this._key_list += name;
 
+      if (kd_map) {
+        /** 按键判定 */
+        let act = kd_map[name];
+        if (act && this.tst("kd", name) && !ret.time) {
+          ret.set(act, key.time, name);
+        }
+      }
+      if (ku_map) {
+        /** 按键判定 */
+        let act = ku_map[name];
+        if (act && this.tst("ku", name) && !ret.time) {
+          ret.set(act, key.time, name);
+        }
+      }
       if (hit) {
         /** 按键判定 */
         let act = hit[name];

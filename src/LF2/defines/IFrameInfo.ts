@@ -88,6 +88,8 @@ export interface IFrameInfo {
 
   hold?: IHoldKeyCollection;
   hit?: IHitKeyCollection;
+  key_down?: IHoldKeyCollection;
+  key_up?: IHoldKeyCollection;
   bdy?: IBdyInfo[];
   itr?: IItrInfo[];
   wpoint?: IWpointInfo;
