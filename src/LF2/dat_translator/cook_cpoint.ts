@@ -24,8 +24,11 @@ export function cook_cpoint(unsure_cpoint: ICpointInfo): void {
     unsure_cpoint.tx = 60;
     unsure_cpoint.ty = 15;
   }
-
-  const vaction = take(unsure_cpoint as any, "vaction");
+  
+  const decrease = take(unsure_cpoint, 'decrease');
+  if (is_num(decrease)) unsure_cpoint.decrease = -abs(decrease)
+  
+  const vaction = take(unsure_cpoint, "vaction");
   const raw_injury = take(unsure_cpoint, "injury");
   if (is_num(raw_injury)) {
     unsure_cpoint.injury = abs(raw_injury);
