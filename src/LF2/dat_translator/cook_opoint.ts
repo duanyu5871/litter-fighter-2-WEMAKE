@@ -27,7 +27,8 @@ export default function cook_opoint(opoint: IOpointInfo) {
 
   const dvx = take(opoint, "dvx");
   if (not_zero_num(dvx)) opoint.dvx = dvx * 0.5;
-
+  else opoint.dvx = 0;
+  
   const dvz = take(opoint, "dvz");
   if (not_zero_num(dvz)) opoint.dvz = dvz * 0.5;
 

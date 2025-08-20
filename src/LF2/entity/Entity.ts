@@ -717,11 +717,14 @@ export class Entity implements IDebugging {
     const facing = result?.which.facing
       ? this.handle_facing_flag(result.which.facing, result.frame)
       : emitter.facing;
-    this.velocities.length = 1
-    this.velocity_0.set(
-      ovx + dvx * facing,
-      ovy + dvy,
-      dvz + ovz + speedz * ud
+    this.velocities.length = 0
+    this.velocities.push(
+      new Ditto.Vector3(
+        ovx + dvx * facing,
+        ovy + dvy,
+        ovz + dvz
+      ),
+      new Ditto.Vector3(0, 0, speedz * ud)
     )
 
     if (is_num(opoint.max_hp)) this.hp_max = opoint.max_hp;
@@ -730,7 +733,13 @@ export class Entity implements IDebugging {
     if (is_num(opoint.mp)) this.mp = opoint.mp;
 
     if (result) this.enter_frame(result.which);
-
+    if (
+      result?.frame.state === StateEnum.Normal ||
+      result?.frame.state === StateEnum.Burning
+    ) {
+      this.merge_velocities()
+      this.velocity_0.z = 0;
+    }
     switch (opoint.kind) {
       case OpointKind.Pick:
         this.holder = emitter;
