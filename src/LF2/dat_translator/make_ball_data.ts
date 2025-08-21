@@ -1,4 +1,4 @@
-import { BuiltIn_OID, FacingFlag, ItrKind, StateEnum } from "../defines";
+import { BuiltIn_OID, Defines, FacingFlag, ItrKind, OpointSpreading, StateEnum } from "../defines";
 import { CollisionVal as C_Val } from "../defines/CollisionVal";
 import { EntityEnum } from "../defines/EntityEnum";
 import { FrameBehavior } from "../defines/FrameBehavior";
@@ -62,7 +62,7 @@ export function make_ball_data(
         frame.ctrl_spd_x = 5;
         frame.ctrl_acc_x = 0.1;
         frame.ctrl_spd_x_m = SpeedMode.AccTo;
-        frame.ctrl_spd_z = 5;
+        frame.ctrl_spd_z = Defines.DEFAULT_OPOINT_SPEED_Z;
         frame.ctrl_acc_z = 0.2;
         frame.ctrl_spd_z_m = SpeedMode.AccTo;
         frame.ctrl_spd_y = 1;
@@ -70,10 +70,10 @@ export function make_ball_data(
         frame.ctrl_spd_y_m = SpeedMode.AccTo;
         break;
       case FrameBehavior._02:
-        frame.ctrl_spd_x = 5;
+        frame.ctrl_spd_x = 2.5;
         frame.ctrl_acc_x = 0.1;
         frame.ctrl_spd_x_m = SpeedMode.AccTo;
-        frame.ctrl_spd_z = 5;
+        frame.ctrl_spd_z = Defines.DEFAULT_OPOINT_SPEED_Z;
         frame.ctrl_acc_z = 0.2;
         frame.ctrl_spd_z_m = SpeedMode.AccTo;
         frame.ctrl_spd_y = 1;
@@ -91,17 +91,17 @@ export function make_ball_data(
       case FrameBehavior._06:
         jan_chase_start(frame);
         break;
-      case FrameBehavior._07:
-        frame.ctrl_spd_x = 5;
-        frame.ctrl_acc_x = 0.1;
+      case FrameBehavior.ChasingSameEnemy:
+        frame.ctrl_spd_x = 7;
+        frame.ctrl_acc_x = 0.5;
         frame.ctrl_spd_x_m = SpeedMode.AccTo;
-        frame.ctrl_spd_z = 5;
-        frame.ctrl_acc_z = 0.2;
+        frame.ctrl_spd_z = Defines.DEFAULT_OPOINT_SPEED_Z;
+        frame.ctrl_acc_z = 0.5;
         frame.ctrl_spd_z_m = SpeedMode.AccTo;
         frame.ctrl_spd_y = 1;
         frame.ctrl_acc_y = 0.01;
         frame.ctrl_spd_y_m = SpeedMode.AccTo;
-        frame.dvy = -6;
+        frame.dvy = -4;
         frame.acc_y = -0.25;
         frame.vym = SpeedMode.AccTo;
         switch (datIndex.id) {
@@ -115,7 +115,6 @@ export function make_ball_data(
         }
         break;
       case FrameBehavior.BatStart:
-      case FrameBehavior._08:
         frame.opoint = frame.opoint || [];
         frame.opoint.push({
           kind: OpointKind.Normal,
@@ -127,19 +126,18 @@ export function make_ball_data(
             type: OpointMultiEnum.AccordingEnemies,
             min: 3,
           },
+          spreading: OpointSpreading.Bat,
         });
         break;
       case FrameBehavior.FirzenDisasterStart:
-      case FrameBehavior._09:
         firzen_disater_start(frame);
         break;
-      case FrameBehavior._10:
+      case FrameBehavior.JohnBiscuitLeaving:
         frame.dvx = 15;
         frame.acc_x = 2;
         frame.vxm = SpeedMode.AccTo;
         break;
       case FrameBehavior.FirzenVolcanoStart:
-      case FrameBehavior._11:
         firzen_disater_start(frame, frame.centerx, -79);
         frame.opoint = frame.opoint || [];
         frame.opoint.push({
@@ -163,7 +161,6 @@ export function make_ball_data(
         });
         break;
       case FrameBehavior.Bat:
-      case FrameBehavior._12:
         frame.ctrl_spd_x = 5;
         frame.ctrl_acc_x = 0.1;
         frame.ctrl_spd_x_m = SpeedMode.AccTo;
@@ -175,7 +172,6 @@ export function make_ball_data(
         frame.ctrl_spd_y_m = SpeedMode.AccTo;
         break;
       case FrameBehavior.JulianBallStart:
-      case FrameBehavior._13:
         frame.opoint = frame.opoint || [];
         frame.opoint.push({
           kind: OpointKind.Normal,
@@ -193,7 +189,6 @@ export function make_ball_data(
         });
         break;
       case FrameBehavior.JulianBall:
-      case FrameBehavior._14:
         frame.ctrl_spd_x = 5;
         frame.ctrl_acc_x = 0.1;
         frame.ctrl_spd_x_m = SpeedMode.AccTo;
@@ -266,6 +261,8 @@ function firzen_disater_start(frame: IFrameInfo, x: number = frame.centerx, y: n
     dvy: 6,
     action: { id: "0" },
     multi: { type: OpointMultiEnum.AccordingEnemies, min: 4 },
+    spreading: OpointSpreading.FirzenDisater,
+
   });
 }
 function jan_chaseh_start(frame: IFrameInfo, x: number = frame.centerx, y: number = frame.centery) {

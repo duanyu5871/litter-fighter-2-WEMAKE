@@ -49,7 +49,7 @@ export enum FrameBehavior {
    *    - 跟踪效果在BallController, 配合frame.speedx, frame.speedz实现
    *    - 下落打到地面得效果通过 dvy, acc_y, vym, on_hit_ground实现
    */
-  AlwaysChasingSameEnemy = 7, _07 = 7,
+  ChasingSameEnemy = 7,
 
   /**
    * 用于：
@@ -67,7 +67,7 @@ export enum FrameBehavior {
    *    - 此值不会有任何作用（但依旧保留）
    *    - 生成将通过opoint被实现
    */
-  BatStart = 8, _08 = 8,
+  BatStart = 8,
 
   /**
    * 用于：
@@ -80,7 +80,7 @@ export enum FrameBehavior {
    *    - 此值不会有任何作用（但依旧保留）
    *    - 生成将通过opoint被实现
    */
-  FirzenDisasterStart = 9, _09 = 9,
+  FirzenDisasterStart = 9,
 
   /**
    * 用于：
@@ -93,7 +93,7 @@ export enum FrameBehavior {
    *    - 此值不会有任何作用（但依旧保留）
    *    - 通过dvx: 15 acc_x: 2 vxm: 4实现
    */
-  JohnBiscuitLeaving = 10, _10 = 10,
+  JohnBiscuitLeaving = 10,
 
   /**
    * 用于：
@@ -106,7 +106,7 @@ export enum FrameBehavior {
    *    - 此值不会有任何作用（但依旧保留）
    *    - 生成将通过opoint被实现
    */
-  FirzenVolcanoStart = 11, _11 = 11,
+  FirzenVolcanoStart = 11,
 
   /**
    * 用于：
@@ -115,7 +115,7 @@ export enum FrameBehavior {
    *
    * 吸血蝙蝠
    */
-  Bat = 12, _12 = 12,
+  Bat = 12,
 
   /**
    * 用于：
@@ -131,10 +131,10 @@ export enum FrameBehavior {
    *    - 此值不会有任何作用（但依旧保留）
    *    - 生成将通过opoint被实现
    */
-  JulianBallStart = 13, _13 = 13,
+  JulianBallStart = 13,
 
   /**
    * 连环重炮
    */
-  JulianBall = 14, _14 = 14,
+  JulianBall = 14,
 }

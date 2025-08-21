@@ -5,5 +5,10 @@ export enum SpeedMode {
   FixedLf2 = 2,
   /** 固定方向加速度 */
   FixedAcc = 3,
+
+  /** 
+   * 加速直至到达指定速度
+   * 
+   */
   AccTo = 4,
 }

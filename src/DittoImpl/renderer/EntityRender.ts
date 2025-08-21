@@ -4,6 +4,7 @@ import { Builtin_FrameId } from "../../LF2/defines";
 import Ditto from "../../LF2/ditto";
 import type { Entity } from "../../LF2/entity/Entity";
 import create_pictures from "../../LF2/loader/create_pictures";
+import { abs, round } from "../../LF2/utils";
 import * as THREE from "../3d/_t";
 import { WorldRenderer } from "./WorldRenderer";
 export const EMPTY_PIECE: ITexturePieceInfo = {
@@ -120,9 +121,9 @@ export class EntityRender {
     const { centerx, centery } = frame;
     const offset_x = entity.facing === 1 ? centerx : entity_mesh.scale_x - centerx;
     entity_mesh.set_position(
-      Math.round(x - offset_x),
-      Math.round(y - z / 2 + centery),
-      Math.round(z),
+      round(x - offset_x),
+      round(y - z / 2 + centery),
+      round(z),
     );
     const is_visible = !entity.invisible;
     const is_blinking = !!entity.blinking;
@@ -132,7 +133,7 @@ export class EntityRender {
     }
 
     if (entity.shaking && this._shaking !== entity.shaking) {
-      const x = entity.shaking % 2 ? -4 : 4;
+      const x = abs(entity.shaking * 0.5) % 2 ? -4 : 4;
       entity_mesh.x += facing * x;
     }
     this._shaking = entity.shaking;

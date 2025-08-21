@@ -138,11 +138,11 @@ centery: y位置中心，对于图片来说，相当于影子的位置，由图�
 | 203 ~ 206 | fire               | 被火烧                                                                                    |
 | 207       | tired              | 累，但不是晕眩 ←有这个动作吗？？？                                                       |
 | 210 ~ 212 | jump               | 跳跃                                                                                      |
-| 213 | dash               | 冲跳                                                                                      |
-| 214 | dash               | 倒冲跳                                                                                      |
-| 215       | crouch             | 落地蹲，state：4、6刚落地的动作，按d滚动，按j冲跳 |
+| 213       | dash               | 冲跳                                                                                      |
+| 214       | dash               | 倒冲跳                                                                                    |
+| 215       | crouch             | 落地蹲，state：4、6刚落地的动作，按d滚动，按j冲跳                                         |
 | 218       | stop_running       | 煞车                                                                                      |
-| 219       | crouch2            | 起身、落地蹲                                                                        |
+| 219       | crouch2            | 起身、落地蹲                                                                              |
 | 220 ~ 221 | injured            | 被打到向后退的动作                                                                        |
 | 222 ~ 223 | injured            | 被打到向前移的动作                                                                        |
 | 224 ~ 229 | injured            | 晕眩                                                                                      |
@@ -197,53 +197,51 @@ centery: y位置中心，对于图片来说，相当于影子的位置，由图�
 
 ### frame.state: 8 defend 破防
 
-| 值   | 一般frame名 | 说明   |
-| ---- | ------ | --- |
-| 9    | catching          | 抓人:只有用这个state配合cpoint才能使injury有效。|
-| 10   | picked_caught     | 被捉(武器掉落) |
-| 11   | injured           | 受伤 |
-| 12   | falling           | 跌倒(武器掉落，着地倒，被fall大于60打到) |
-| 13   | ice               | 结冻(被同盟攻击，着地倒并会扣10hp，打一下就倒，连结其他state会跑出冰碎片).<br />因为state:13可被同盟攻击，所以louis要抓结冻的同盟是可能的<br />被itr kind：0打到或落地会提前跳到next（无论wait数值）<br /><br /> |
-| 14   | lying             | 躺(com会远离你)<br />气功波hit_Fa以及state：400、401对你无效。<br />另外，刚结束此frame后会有为时一秒的一闪一闪的无敌效果。                                                                                      |
-| 15   |                   | 普通动作                                                                                                                                                                                                         |
-| 16   | injured           | 受伤(会被itr的kind:1 捉起来)                                                                                                                                                                                     |
-| 17   | weapon_drink      | 喝(消耗id: 122,123的牛奶和酒的hp)                                                                                                                                                                                |
-| 18   | fire              | 火攻击<br />- 可攻击同盟，id:211的例外<br />- 不会被itr.effect: 20 21烧到<br />- 不会被frame.state:19 + itr.effect:2 烧到<br />- 冒火苗（x=centerx，y=centery）wait:0则不会冒火                                 |
-| 19   | burn_run          | 烈火焚身(effect:20, 21烧不到之，冒火苗，和z方向移动)<br />- 不会被itr.effect: 20 21烧到<br />- 冒火苗（x=centerx，y=centery）wait:0则不会冒火                                                                    |
-| 100  |                   | 落雷霸(着地act94)                                                                                                                                                                                                |
-| 301  |                   | 鬼哭斩(z方向移动)                                                                                                                                                                                                |
-| 400  |                   | 瞬移到最近敌人，敌人在120的位置                                                                                                                                                                                  |
-| 401  |                   | 瞬移到最远同盟，同盟在60的位置                                                                                                                                                                                   |
-| 500  | transform         | 若没变过身，act跳至0                                                                                                                                                                                             |
-| 501  | transform         | 变成之前变身过的人                                                                                                                                                                                               |
-| 1000 |                   | 轻型武器在空中(light weapon-in the sky)                                                                                                                                                                          |
-| 1001 |                   | 轻型武器在手中(on hand)，类似arest:1                                                                                                                                                                             |
-| 1002 |                   | 轻型武器被投掷(throwing)，重力变弱，打到人act5,10,15                                                                                                                                                             |
-| 1003 |                   | 轻型武器反弹(rebounding)                                                                                                                                                                                         |
-| 1004 |                   | 轻型武器在地上(on ground)，与itr kind2作用                                                                                                                                                                       |
-| 2000 |                   | 重型武器在空中(heavy weapon-in the sky))                                                                                                                                                                         |
-| 2001 |                   | 重型武器在手中                                                                                                                                                                                                   |
-| 2002 |                   | 重型武器在地上                                                                                                                                                                                                   |
-| 2004 |                   | 与itr kind2作用                                                                                                                                                                                                  |
-| 1700 | healself          | 回hp加快                                                                                                                                                                                                         |
-| 3000 | ball-flying       | "波"的飞行(ball-flying，波是指气功波)，打到人和自己的武器会跳到act10，打到别人的武器跳到act20                                                                                                                    |
-| 3001 | ball-hiting       | "波"打中敌时的爆破(hiting)，打到人和自己的武器不消失，正面打到别人的武器act20。                                                                                                                                  |
-| 3002 | ball-hit          | 波被取消，即被其他东西打中阻挡而爆破(hit)，打到人和自已的武器不消失，打到别人type1的武器act20。                                                                                                                  |
-| 3003 | ball-rebounding   | 波的反弹及爆破(rebounding)，打到人和type2的武器不消失，打到别人的武器act20。                                                                                                                                     |
-| 3004 | ball-disappear    | 波消失(disappear)，打到人和type2.4.6的武器不消失，打到type1的武器act20。                                                                                                                                         |
-| 3005 | henry wind-flying | "拳气"的飞行(henry wind-flying)，打到东西不消失，打到state3005的act20，无法上下移动，没有影子。                                                                                                                  |
-| 3006 | ball-flying       | 属穿心攻击的波(flying)，打到东西不消失，打到state3005.3006的act20。                                                                                                                                              |
-| 9995 |                   | 变成id：50的角色。                                                                                                                                                                                               |
-| 9996 |                   | 造出id: 217,218 louis_armour                                                                                                                                                                                     |
-| 9997 | etc               | 没有影子，图片在何地都会看见                                                                                                                                                                                     |
-| 9998 |                   | 消失                                                                                                                                                                                                             |
-| 9999 | broken_weapon     |                                                                                                                                                                                                                  |
-| 80## |                   | 变身成id:##的人物但图片是用第3个和第4个的                                                                                                                                                                        |
+| 值   | 一般frame名       | 说明                                                                                                                                                                                                       |
+| ---- | ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 9    | catching          | 抓人:只有用这个state配合cpoint才能使injury有效。                                                                                                                                                           |
+| 10   | picked_caught     | 被捉(武器掉落)                                                                                                                                                                                             |
+| 11   | injured           | 受伤                                                                                                                                                                                                       |
+| 12   | falling           | 跌倒(武器掉落，着地倒，被fall大于60打到)                                                                                                                                                                   |
+| 13   | ice               | 结冻(被同盟攻击，着地倒并会扣10hp，打一下就倒，连结其他state会跑出冰碎片).<br />因为state:13可被同盟攻击，所以louis要抓结冻的同盟是可能的<br />被itr kind：0打到或落地会提前跳到next（无论wait数值）<br /> |
+| 14   | lying             | 躺(com会远离你)<br />气功波hit_Fa以及state：400、401对你无效。<br />另外，刚结束此frame后会有为时一秒的一闪一闪的无敌效果。                                                                                |
+| 15   |                   | 普通动作                                                                                                                                                                                                   |
+| 16   | injured           | 受伤(会被itr的kind:1 捉起来)                                                                                                                                                                               |
+| 17   | weapon_drink      | 喝(消耗id: 122,123的牛奶和酒的hp)                                                                                                                                                                          |
+| 18   | fire              | 火攻击<br />- 可攻击同盟，id:211的例外<br />- 不会被itr.effect: 20 21烧到<br />- 不会被frame.state:19 + itr.effect:2 烧到<br />- 冒火苗（x=centerx，y=centery）wait:0则不会冒火                           |
+| 19   | burn_run          | 烈火焚身(effect:20, 21烧不到之，冒火苗，和z方向移动)<br />- 不会被itr.effect: 20 21烧到<br />- 冒火苗（x=centerx，y=centery）wait:0则不会冒火                                                              |
+| 100  |                   | 落雷霸(着地act94)                                                                                                                                                                                          |
+| 301  |                   | 鬼哭斩(z方向移动)                                                                                                                                                                                          |
+| 400  |                   | 瞬移到最近敌人，敌人在120的位置                                                                                                                                                                            |
+| 401  |                   | 瞬移到最远同盟，同盟在60的位置                                                                                                                                                                             |
+| 500  | transform         | 若没变过身，act跳至0                                                                                                                                                                                       |
+| 501  | transform         | 变成之前变身过的人                                                                                                                                                                                         |
+| 1000 |                   | 轻型武器在空中(light weapon-in the sky)                                                                                                                                                                    |
+| 1001 |                   | 轻型武器在手中(on hand)，类似arest:1                                                                                                                                                                       |
+| 1002 |                   | 轻型武器被投掷(throwing)，重力变弱，打到人act5,10,15                                                                                                                                                       |
+| 1003 |                   | 轻型武器反弹(rebounding)                                                                                                                                                                                   |
+| 1004 |                   | 轻型武器在地上(on ground)，与itr kind2作用                                                                                                                                                                 |
+| 2000 |                   | 重型武器在空中(heavy weapon-in the sky))                                                                                                                                                                   |
+| 2001 |                   | 重型武器在手中                                                                                                                                                                                             |
+| 2002 |                   | 重型武器在地上                                                                                                                                                                                             |
+| 2004 |                   | 与itr kind2作用                                                                                                                                                                                            |
+| 1700 | healself          | 回hp加快                                                                                                                                                                                                   |
+| 3000 | ball-flying       | "波"的飞行(ball-flying，波是指气功波)，打到人和自己的武器会跳到act10，打到别人的武器跳到act20                                                                                                              |
+| 3001 | ball-hiting       | "波"打中敌时的爆破(hiting)，打到人和自己的武器不消失，正面打到别人的武器act20。                                                                                                                            |
+| 3002 | ball-hit          | 波被取消，即被其他东西打中阻挡而爆破(hit)，打到人和自已的武器不消失，打到别人type1的武器act20。                                                                                                            |
+| 3003 | ball-rebounding   | 波的反弹及爆破(rebounding)，打到人和type2的武器不消失，打到别人的武器act20。                                                                                                                               |
+| 3004 | ball-disappear    | 波消失(disappear)，打到人和type2.4.6的武器不消失，打到type1的武器act20。                                                                                                                                   |
+| 3005 | henry wind-flying | "拳气"的飞行(henry wind-flying)，打到东西不消失，打到state3005的act20，无法上下移动，没有影子。                                                                                                            |
+| 3006 | ball-flying       | 属穿心攻击的波(flying)，打到东西不消失，打到state3005.3006的act20。                                                                                                                                        |
+| 9995 |                   | 变成id：50的角色。                                                                                                                                                                                         |
+| 9996 |                   | 造出id: 217,218 louis_armour                                                                                                                                                                               |
+| 9997 | etc               | 没有影子，图片在何地都会看见                                                                                                                                                                               |
+| 9998 |                   | 消失                                                                                                                                                                                                       |
+| 9999 | broken_weapon     |                                                                                                                                                                                                            |
+| 80## |                   | 变身成id:##的人物但图片是用第3个和第4个的                                                                                                                                                                  |
 
 - itr.effect: 20, 21烧不到之
-
 - 冒火苗（x=centerx，y=centery）
-
 - 可攻击同盟，id:211的例外
 - itr.effect: 20, 21烧不到之
 - frame.state:19 + itr.effect:2 烧不到之
@@ -379,15 +377,15 @@ dvy：550，人物不受重力和惯性作用。
 
 ## frame.next
 
-| 值          | 描述                           |
-| ----------- | ------------------------------ |
-| 0           | 原动作，此动作若有mp但不消耗   |
-| 原act码     | 原动作，此动作若有mp: -#会消耗 |
-| 999         | 回到act: 0，角色在空中则会回到act:212                     |
-| 1000        | 移除物件                       |
+| 值          | 描述                                        |
+| ----------- | ------------------------------------------- |
+| 0           | 原动作，此动作若有mp但不消耗                |
+| 原act码     | 原动作，此动作若有mp: -#会消耗              |
+| 999         | 回到act: 0，角色在空中则会回到act:212       |
+| 1000        | 移除物件                                    |
 | 1100 ~ 1299 | 与999等效，但会隐身，数值越大，隐形时间越长 |
-| -#          | 下一个动作会转向               |
-| 无对应act   | 与999等效                      |
+| -#          | 下一个动作会转向                            |
+| 无对应act   | 与999等效                                   |
 
 ## frame.mp
 
@@ -530,45 +528,6 @@ x: y: w: h: 同上使用方式，body的范围
 气功波无敌要删除bdy。
 场地边缘无限高度会阻挡人物bdy。如果人物用bdy y：-10000，则不会跑到场外；如果人物删除bdy，就会跑到场外。
 
-### opoint
-
-这次针对opoint(制造物件)和wpoint(手持武器)和cpoint(抓人或被抓)bpoint(流血)说明。
-
-opoint:(造物件指令开始)
-kind: # x: # y: # action: # dvx: # dvy: # oid: # facing: #
-opoint_end:(造物件指令结束)
-
-- 只有next:0或next接的动作才可造物件
-  kind: 造物件后会：1掉落，2拿在手上。
-  x: x座标
-  y: y座标，(以图片左上角为准，x向右，y向下算的位置)
-- 此座标为此造出来的物件的center
-  action: act号码，为此造出来的物件的act
-  dvx: 造出来后的x速度
-  dvy: 造出来后的y速度
-  oid: id码，在data.txt可以找到你想造的物件
-  facing: 数量和方向。
-
-facing说明
-十位数为数量，个位数为方向，0正向，1反向。
-
-wpoint:(手持武器指令开始)
-kind: # x: # y: # weaponact: # attacking: # cover: # dvx: # dvy: # dvz: #
-wpoint_end:(手持武器指令结束)
-
-kind: 状态，1持在手上，2持在手上，3掉落
-x: x座标，与武器的cpoint的x座标配合。
-y: y座标，与武器的cpoint的y座标配合。
-weaponact: 武器的动作，20 ~ 35之间，在范围之外会在游戏中被打到。
-attacking: 攻击状态，在武器中的entry可查。
-
-- 若weaponact不在20 ~ 35之间，则attacking没用。
-  cover: 遮盖，0显示在人物之前，1藏在人物之后。
-  dvx: 速度，丢出去的x速度。
-  dvy: 丢出去的y速度。
-  dvz: 丢出去的z速度，要自已按↑↓
-- 值=0，则会持在手上，值≠0则会丢出去。(武器的act跳到40)
-
 ### cpoint
 
 cpoint:(抓人指令开始)
@@ -609,7 +568,7 @@ throwinjury完全说明
 
 ### bpoint
 
-``` text
+```text
 bpoint:
 x: # y: #
 bpoint_end:

@@ -9,7 +9,7 @@ export function handle_itr_normal_bdy_normal(collision: ICollision) {
   if (is_armor_work(collision)) return;
   const { itr, attacker, victim, a_cube, b_cube } = collision;
   attacker.motionless = itr.motionless ?? collision.victim.world.itr_motionless;
-  victim.shaking = itr.shaking ?? collision.attacker.world.itr_shaking;
+  victim.shaking = (itr.shaking ?? collision.attacker.world.itr_shaking) * 2;
   switch (itr.effect) {
     case ItrEffect.Fire:
     case ItrEffect.MFire1:

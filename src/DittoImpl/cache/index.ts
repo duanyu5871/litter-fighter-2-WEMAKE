@@ -2,52 +2,11 @@ import Dexie, { EntityTable } from "dexie";
 import { ICache } from "../../LF2/ditto/cache";
 import { ICacheData } from "../../LF2/ditto/cache/ICacheData";
 
-const db = new Dexie("lf2") as Dexie & {
+export const db = new Dexie("lf2") as Dexie & {
   tbl_lf2_data: EntityTable<ICacheData, "id">;
 };
 db.version(1).stores({
-  tbl_lf2_data: "++id, name, version",
-});
-db.version(2).stores({
-  tbl_lf2_data: "++id, name, version, data",
-}).upgrade((trans) => {
-  return trans
-    .table("tbl_lf2_data")
-    .toCollection()
-    .modify((lf2_data) => {
-      lf2_data.data = "";
-    });
-});
-
-db.version(3).stores({
-  tbl_lf2_data: "++id, name, version, data, create_date",
-}).upgrade((trans) => {
-  return trans
-    .table("tbl_lf2_data")
-    .toCollection()
-    .modify((lf2_data) => {
-      lf2_data.create_date = Date.now();
-    });
-});
-
-db.version(4).stores({
-  tbl_lf2_data: "++id, name, version, data, create_date, url",
-}).upgrade((trans) => {
-  return trans
-    .table("tbl_lf2_data")
-    .toCollection()
-    .modify((lf2_data) => {
-      lf2_data.url = "";
-    });
-});
-db.version(5).stores({
   tbl_lf2_data: "++id, name, version, data, create_date, url, type",
-}).upgrade((trans) => {
-  return trans
-    .table("tbl_lf2_data")
-    .where('type')
-    .anyOf([''])
-    .delete()
 });
 
 export const __Cache: ICache = {

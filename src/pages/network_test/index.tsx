@@ -12,6 +12,9 @@ import { Strong, Text } from "../../Component/Text";
 import { IReqCreateRoom, IReqJoinRoom, IReqListRooms, IRespCreateRoom, IRespJoinRoom, IRespListRooms, IRoomInfo, MsgEnum } from "../../net_msg_definition";
 import { Connection } from "./Connection";
 
+
+indexedDB.databases().then((r) => console.log(r))
+
 enum TriState {
   False = 0,
   Pending = 1,

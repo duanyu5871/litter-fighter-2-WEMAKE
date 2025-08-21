@@ -2,6 +2,7 @@ import type { FacingFlag } from "./FacingFlag";
 import type { TNextFrame } from "./INextFrame";
 import type { OpointKind } from "./OpointKind";
 import type { OpointMultiEnum } from "./OpointMultiEnum";
+import { OpointSpreading } from "./OpointSpreading";
 export type __KEEP_FacingFlag = FacingFlag;
 export interface IOpointInfo {
   /**
@@ -113,7 +114,7 @@ export interface IOpointInfo {
    * 扩散模式
    *
    * 当multi大于1，扩散模式生效。
-   *
+   * @see OpointSpreading
    */
-  spreading?: number;
+  spreading?: number | OpointSpreading;
 }

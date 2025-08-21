@@ -674,6 +674,7 @@ export class Entity implements IDebugging {
     emitter: Entity,
     opoint: IOpointInfo,
     offset_velocity: IVector3 = new Ditto.Vector3(0, 0, 0),
+    facing: TFace = emitter.facing,
   ) {
     this._emitter = emitter;
     this._emitter_opoint = opoint;
@@ -699,9 +700,13 @@ export class Entity implements IDebugging {
       round(z)
     );
 
-    let { dvx = 0, dvy = 0, dvz = 0, speedz = 3 } = opoint;
+    let {
+      dvx = 0,
+      dvy = 0,
+      dvz = 0,
+      speedz = Defines.DEFAULT_OPOINT_SPEED_Z
+    } = opoint;
     const { weight } = this.data.base
-
     dvx /= (weight || 1);
     dvy /= (weight || 1);
 
@@ -714,17 +719,17 @@ export class Entity implements IDebugging {
     }
 
     const result = this.get_next_frame(opoint.action);
-    const facing = result?.which.facing
+    facing = result?.which.facing
       ? this.handle_facing_flag(result.which.facing, result.frame)
       : emitter.facing;
+
     this.velocities.length = 0
     this.velocities.push(
       new Ditto.Vector3(
         ovx + dvx * facing,
         ovy + dvy,
-        ovz + dvz
+        ovz + dvz + speedz * ud
       ),
-      new Ditto.Vector3(0, 0, speedz * ud)
     )
 
     if (is_num(opoint.max_hp)) this.hp_max = opoint.max_hp;
@@ -835,6 +840,7 @@ export class Entity implements IDebugging {
             break;
         }
       }
+      let facing = this.facing;
       for (let i = 0; i < count; ++i) {
         const v = new Ditto.Vector3(0, 0, 0);
         switch (opoint.spreading) {
@@ -843,9 +849,16 @@ export class Entity implements IDebugging {
             v.z = (i - (count - 1) / 2) * 2;
             break;
           case OpointSpreading.Bat:
+            v.x = this.lf2.random_in(-6, 6);
+            facing = v.x < 0 ? -1 : v.x > 0 ? 1 : facing
+            break;
+          case OpointSpreading.FirzenDisater:
+            v.x = this.lf2.random_in(-7, 7);
+            v.y = this.lf2.random_in(1, 4);
+            facing = v.x < 0 ? -1 : v.x > 0 ? 1 : facing
             break;
         }
-        this.spawn_entity(opoint, v);
+        this.spawn_entity(opoint, v, facing);
       }
     }
   }
@@ -853,6 +866,7 @@ export class Entity implements IDebugging {
   spawn_entity(
     opoint: IOpointInfo,
     offset_velocity: IVector3 = new Ditto.Vector3(0, 0, 0),
+    facing: TFace = this.facing
   ): Entity | undefined {
     const oid = this.lf2.random_get(opoint.oid);
     if (!oid) {
@@ -879,7 +893,7 @@ export class Entity implements IDebugging {
     }
     const entity = create(this.world, data);
     entity.ctrl = Factory.inst.get_ctrl(entity.data.id, "", entity,) ?? entity.ctrl;
-    entity.on_spawn(this, opoint, offset_velocity).attach();
+    entity.on_spawn(this, opoint, offset_velocity, facing).attach();
 
     for (const [k, v] of this.v_rests) {
       /*

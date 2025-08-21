@@ -13,7 +13,7 @@ export class BallController extends BaseController {
       case FrameBehavior._01:
       case FrameBehavior._02:
       case FrameBehavior._03:
-      case FrameBehavior.AlwaysChasingSameEnemy:
+      case FrameBehavior.ChasingSameEnemy:
       case FrameBehavior.Bat:
       case FrameBehavior.JulianBall:
         this.world.add_entity_chaser(this.entity);

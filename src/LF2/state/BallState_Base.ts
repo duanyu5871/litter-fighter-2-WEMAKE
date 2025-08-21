@@ -12,7 +12,7 @@ export default class BallState_Base extends State_Base {
         case FrameBehavior._02:
         case FrameBehavior._03:
         case FrameBehavior._04:
-        case FrameBehavior.AlwaysChasingSameEnemy:
+        case FrameBehavior.ChasingSameEnemy:
         case FrameBehavior.Bat:
         case FrameBehavior.JulianBall:
           e.world.del_entity_chaser(e);
@@ -23,7 +23,7 @@ export default class BallState_Base extends State_Base {
         case FrameBehavior._02:
         case FrameBehavior._03:
         case FrameBehavior._04:
-        case FrameBehavior.AlwaysChasingSameEnemy:
+        case FrameBehavior.ChasingSameEnemy:
         case FrameBehavior.Bat:
         case FrameBehavior.JulianBall:
           e.world.add_entity_chaser(e);
@@ -47,7 +47,7 @@ export default class BallState_Base extends State_Base {
     }
   }
   override update(e: Entity): void {
-    // e.handle_ground_velocity_decay();
+    e.handle_ground_velocity_decay();
     e.handle_frame_velocity();
   }
   override on_collision(collision: ICollision): void {

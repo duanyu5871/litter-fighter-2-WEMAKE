@@ -1,4 +1,4 @@
-import { BuiltIn_OID, FacingFlag, IOpointInfo } from "../defines";
+import { BuiltIn_OID, Defines, FacingFlag, IOpointInfo } from "../defines";
 import { floor } from "../utils/math/base";
 import { is_num, not_zero_num } from "../utils/type_check";
 import { get_next_frame_by_raw_id } from "./get_the_next";
@@ -28,7 +28,7 @@ export default function cook_opoint(opoint: IOpointInfo) {
   const dvx = take(opoint, "dvx");
   if (not_zero_num(dvx)) opoint.dvx = dvx * 0.5;
   else opoint.dvx = 0;
-  
+
   const dvz = take(opoint, "dvz");
   if (not_zero_num(dvz)) opoint.dvz = dvz * 0.5;
 
@@ -38,8 +38,16 @@ export default function cook_opoint(opoint: IOpointInfo) {
   switch (opoint.oid) {
     case BuiltIn_OID.FirzenBall:
     case BuiltIn_OID.Bat:
+    case BuiltIn_OID.BatChase:
     case BuiltIn_OID.BatBall:
       opoint.speedz = 0;
+      break;
+    case BuiltIn_OID.FirenFlame:
+      opoint.speedz = Defines.DEFAULT_FIREN_FLAME_SPEED_Z;
+      break;
+    default:
+      opoint.speedz = Defines.DEFAULT_OPOINT_SPEED_Z;
+      // throw new Error('opoint: '+JSON.stringify(opoint))
       break;
   }
 }

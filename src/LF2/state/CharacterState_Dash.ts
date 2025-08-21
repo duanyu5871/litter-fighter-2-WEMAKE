@@ -3,6 +3,10 @@ import type { Entity } from "../entity/Entity";
 import CharacterState_Base from "./CharacterState_Base";
 const { sqrt } = Math;
 export default class CharacterState_Dash extends CharacterState_Base {
+  override update(e: Entity): void {
+    e.handle_gravity();
+    e.handle_frame_velocity();
+  }
   override enter(e: Entity, prev_frame: IFrameInfo): void {
     if (e.position.y > 0 && e.velocity.y !== 0) return;
 
