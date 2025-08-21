@@ -48,6 +48,7 @@ export class EntityInfoRender implements IEntityCallbacks {
   readonly renderer_type: string = "Info";
   protected name_node: IBillboardNode;
   protected bars_node: IObjectNode;
+  protected key_node: IObjectNode;
   protected bars_bg: Bar;
 
   protected self_healing_hp_bar: Bar;
@@ -90,6 +91,7 @@ export class EntityInfoRender implements IEntityCallbacks {
 
     this.name_node = new Ditto.BillboardNode(lf2);
     this.bars_node = new Ditto.ObjectNode(lf2);
+    this.key_node = new Ditto.ObjectNode(lf2);
     this.bars_bg = new Bar(lf2, "rgb(0,0,0)", BAR_BG_W, BAR_BG_H, 0.5, 0);
     this.self_healing_hp_bar = new Bar(
       lf2,
@@ -123,6 +125,7 @@ export class EntityInfoRender implements IEntityCallbacks {
     this.bars_bg.mesh.set_position(-1, -2);
     this.bars_node.add(this.bars_bg.mesh);
 
+
     this.self_healing_hp_bar.mesh.set_position(0, y);
     this.self_healing_hp_bar.set(entity.hp, entity.hp_max);
     this.bars_node.add(this.self_healing_hp_bar.mesh);
@@ -154,7 +157,6 @@ export class EntityInfoRender implements IEntityCallbacks {
     this.toughness_value_bar.set(entity.toughness, entity.toughness_max);
     this.bars_node.add(this.toughness_value_bar.mesh);
 
-
     for (const [k, { node, pos }] of this.key_nodes) {
       node.name = `key ${k}`;
       node.set_position(BAR_BG_W / 2 + pos.x, 10 + pos.y, pos.z)
@@ -176,7 +178,7 @@ export class EntityInfoRender implements IEntityCallbacks {
         .then((p) => {
           node.set_texture(p)
         });
-      this.bars_node.add(node)
+      this.key_node.add(node)
     }
 
   }
@@ -198,7 +200,10 @@ export class EntityInfoRender implements IEntityCallbacks {
     } else if (entity.reserve) {
       entity.name = is_character(entity) ? entity.data.base.name : ''
       this.world_renderer.scene.add(this.name_node);
+    } else {
+      this.world_renderer.scene.add(this.name_node);
     }
+    this.world_renderer.scene.add(this.key_node);
     this.on_name_changed(entity)
   }
 
@@ -206,6 +211,7 @@ export class EntityInfoRender implements IEntityCallbacks {
     const { entity } = this;
     this.bars_node.del_self();
     this.name_node.del_self();
+    this.key_node.del_self();
     entity.callbacks.del(this);
   }
 
@@ -307,7 +313,10 @@ export class EntityInfoRender implements IEntityCallbacks {
     const bar_x = _x - BAR_BG_W / 2;
 
     this.set_bars_position(Math.floor(bar_x), Math.floor(bar_y), Math.floor(z));
-
+    this.key_node.set_position(
+      Math.floor(bar_x),
+      Math.floor(bar_y),
+      Math.floor(z))
     for (const [k, { node }] of this.key_nodes) {
       node.visible = !this.entity.ctrl.is_end(k)
     }

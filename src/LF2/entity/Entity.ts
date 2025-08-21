@@ -22,7 +22,7 @@ import BallState_Base from "../state/BallState_Base";
 import CharacterState_Base from "../state/CharacterState_Base";
 import { State_Base } from "../state/State_Base";
 import WeaponState_Base from "../state/WeaponState_Base";
-import { abs, floor, max, min, round } from "../utils";
+import { abs, arithmetic_progression, floor, max, min, round } from "../utils";
 import { cross_bounding } from "../utils/cross_bounding";
 import { is_num, is_positive, is_str } from "../utils/type_check";
 import { EMPTY_FRAME_INFO } from "./EMPTY_FRAME_INFO";
@@ -821,8 +821,7 @@ export class Entity implements IDebugging {
                 ++count;
               }
             }
-            if (count)
-              count = max(multi.min, count);
+            count = max(multi.min, count);
             break;
           case OpointMultiEnum.AccordingAllies:
             for (const other of this.world.entities) {
@@ -849,12 +848,13 @@ export class Entity implements IDebugging {
             v.z = (i - (count - 1) / 2) * 2;
             break;
           case OpointSpreading.Bat:
-            v.x = this.lf2.random_in(-6, 6);
+            v.x = this.lf2.bat_spreading_x.take()
+            v.z = this.lf2.bat_spreading_z.take()
             facing = v.x < 0 ? -1 : v.x > 0 ? 1 : facing
             break;
           case OpointSpreading.FirzenDisater:
-            v.x = this.lf2.random_in(-7, 7);
-            v.y = this.lf2.random_in(1, 4);
+            v.x = this.lf2.disater_spreading_x.take()
+            v.y = this.lf2.disater_spreading_y.take()
             facing = v.x < 0 ? -1 : v.x > 0 ? 1 : facing
             break;
         }

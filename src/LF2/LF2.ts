@@ -10,6 +10,7 @@ import {
   Builtin_FrameId, CheatType, Defines, Difficulty, IBgData,
   IStageInfo, TFace
 } from "./defines";
+import { Randoming } from "./utils/Randoming";
 import {
   default as ditto,
   default as Ditto,
@@ -78,6 +79,10 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
   private _pointer_raycaster = new Ditto.Raycaster();
   private _pointer_vec_2 = new Ditto.Vector2();
   private _mt = new MersenneTwister(Date.now())
+  readonly bat_spreading_x = new Randoming(Defines.BAT_CHASE_SPREADING_VX, this)
+  readonly bat_spreading_z = new Randoming(Defines.BAT_CHASE_SPREADING_VZ, this)
+  readonly disater_spreading_x = new Randoming(Defines.DISATER_SPREADING_VX, this)
+  readonly disater_spreading_y = new Randoming(Defines.DISATER_SPREADING_VY, this)
 
   get loading() {
     return this._loading;

@@ -8,8 +8,8 @@ export default class BallState_Base extends State_Base {
   override on_frame_changed(e: Entity, frame: IFrameInfo, prev_frame: IFrameInfo): void {
     if (prev_frame.behavior !== frame.behavior) {
       switch (prev_frame.behavior as FrameBehavior) {
-        case FrameBehavior._01:
-        case FrameBehavior._02:
+        case FrameBehavior.JohnChase:
+        case FrameBehavior.DennisChase:
         case FrameBehavior._03:
         case FrameBehavior._04:
         case FrameBehavior.ChasingSameEnemy:
@@ -19,8 +19,8 @@ export default class BallState_Base extends State_Base {
           break;
       }
       switch (prev_frame.behavior as FrameBehavior) {
-        case FrameBehavior._01:
-        case FrameBehavior._02:
+        case FrameBehavior.JohnChase:
+        case FrameBehavior.DennisChase:
         case FrameBehavior._03:
         case FrameBehavior._04:
         case FrameBehavior.ChasingSameEnemy:
@@ -78,7 +78,6 @@ export default class BallState_Base extends State_Base {
       case StateEnum.Ball_Flying:
       case StateEnum.Ball_Rebounding:
         victim.team = attacker.team;
-        // victim.facing = attacker.facing;
         break;
     }
   }

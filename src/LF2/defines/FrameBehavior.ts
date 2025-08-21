@@ -8,7 +8,7 @@ export enum FrameBehavior {
    * 
    * John的d^a
    */
-  _01 = 1,
+  JohnChase = 1,
 
   /** 
    * * 用于：
@@ -18,7 +18,7 @@ export enum FrameBehavior {
    * 水平追敌？
    * Dennis的d^a
    */
-  _02 = 2,
+  DennisChase = 2,
 
   /** 加速法追敌(追纵力较差) */
   _03 = 3,
@@ -91,7 +91,7 @@ export enum FrameBehavior {
    * 
    * - WEMAKE中：
    *    - 此值不会有任何作用（但依旧保留）
-   *    - 通过dvx: 15 acc_x: 2 vxm: 4实现
+   *    - 通过dvx acc_x vxm 实现
    */
   JohnBiscuitLeaving = 10,
 

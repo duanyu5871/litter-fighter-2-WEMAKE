@@ -1,3 +1,4 @@
+import { arithmetic_progression } from "../utils/math/arithmetic_progression";
 import { Builtin_FrameId } from "./Builtin_FrameId";
 import { CheatType } from "./CheatType";
 import { Difficulty } from "./Difficulty";
@@ -362,6 +363,34 @@ export namespace Defines {
   }
 
   export const DEFAULT_BREAK_DEFEND_VALUE = 32;
+
+  export const BAT_CHASE_SPREADING_VX = arithmetic_progression(-6, 6, 1)
+  export const BAT_CHASE_SPREADING_VZ = arithmetic_progression(-2, 2, 1)
+  export const BAT_CHASE_MAX_VX = 7
+  export const BAT_CHASE_ACC_X = 0.25
+  export const BAT_CHASE_ACC_Z = 0.25
+  export const BAT_CHASE_MAX_VY = 1
+  export const BAT_CHASE_ACC_Y = 0.1
+
+  export const DENNIS_CHASE_MAX_VX = 7
+  export const DENNIS_CHASE_ACC_X = 0.25
+  export const DENNIS_CHASE_ACC_Z = 0.25
+  export const DENNIS_CHASE_MAX_VY = 1
+  export const DENNIS_CHASE_ACC_Y = 0.05
+
+  export const DISATER_SPREADING_VX = arithmetic_progression(-7, 7, 1)
+  export const DISATER_SPREADING_VY = arithmetic_progression(0.5, 3, 0.5)
+  export const DISATER_CHASE_MAX_VX = 7
+  export const DISATER_CHASE_ACC_X = 0.25
+  export const DISATER_CHASE_ACC_Z = 0.25
+  export const DISATER_CHASE_MAX_VY = -4
+  export const DISATER_CHASE_ACC_Y = -0.25
+
+  export const JOHN_CHASE_MAX_VX = 6.5
+  export const JOHN_CHASE_ACC_X = 0.25
+  export const JOHN_CHASE_ACC_Z = 0.25
+  export const JOHN_CHASE_MAX_VY = 1
+  export const JOHN_CHASE_ACC_Y = 0.05
 }
 
 export default Defines;

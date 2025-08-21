@@ -58,26 +58,26 @@ export function make_ball_data(
     if (hit_Fa) frame.behavior = hit_Fa;
 
     switch (hit_Fa as FrameBehavior) {
-      case FrameBehavior._01:
-        frame.ctrl_spd_x = 5;
-        frame.ctrl_acc_x = 0.1;
+      case FrameBehavior.JohnChase:
+        frame.ctrl_spd_x = Defines.JOHN_CHASE_MAX_VX
+        frame.ctrl_acc_x = Defines.JOHN_CHASE_ACC_X
         frame.ctrl_spd_x_m = SpeedMode.AccTo;
         frame.ctrl_spd_z = Defines.DEFAULT_OPOINT_SPEED_Z;
-        frame.ctrl_acc_z = 0.2;
+        frame.ctrl_acc_z = Defines.JOHN_CHASE_ACC_Z
         frame.ctrl_spd_z_m = SpeedMode.AccTo;
-        frame.ctrl_spd_y = 1;
-        frame.ctrl_acc_y = 0.01;
+        frame.ctrl_spd_y = Defines.JOHN_CHASE_MAX_VY
+        frame.ctrl_acc_y = Defines.JOHN_CHASE_ACC_Y
         frame.ctrl_spd_y_m = SpeedMode.AccTo;
         break;
-      case FrameBehavior._02:
-        frame.ctrl_spd_x = 2.5;
-        frame.ctrl_acc_x = 0.1;
+      case FrameBehavior.DennisChase:
+        frame.ctrl_spd_x = Defines.DENNIS_CHASE_MAX_VX;
+        frame.ctrl_acc_x = Defines.DENNIS_CHASE_ACC_X;
         frame.ctrl_spd_x_m = SpeedMode.AccTo;
         frame.ctrl_spd_z = Defines.DEFAULT_OPOINT_SPEED_Z;
-        frame.ctrl_acc_z = 0.2;
+        frame.ctrl_acc_z = Defines.DENNIS_CHASE_ACC_Z;
         frame.ctrl_spd_z_m = SpeedMode.AccTo;
-        frame.ctrl_spd_y = 1;
-        frame.ctrl_acc_y = 0.01;
+        frame.ctrl_spd_y = Defines.DENNIS_CHASE_MAX_VY;
+        frame.ctrl_acc_y = Defines.DENNIS_CHASE_ACC_Y;
         frame.ctrl_spd_y_m = SpeedMode.AccTo;
         frame.on_dead = { id: '5' }
         break;
@@ -92,17 +92,14 @@ export function make_ball_data(
         jan_chase_start(frame);
         break;
       case FrameBehavior.ChasingSameEnemy:
-        frame.ctrl_spd_x = 7;
-        frame.ctrl_acc_x = 0.5;
+        frame.ctrl_spd_x = Defines.DISATER_CHASE_MAX_VX;
+        frame.ctrl_acc_x = Defines.DISATER_CHASE_ACC_X;
         frame.ctrl_spd_x_m = SpeedMode.AccTo;
         frame.ctrl_spd_z = Defines.DEFAULT_OPOINT_SPEED_Z;
-        frame.ctrl_acc_z = 0.5;
+        frame.ctrl_acc_z = Defines.DISATER_CHASE_ACC_Z;
         frame.ctrl_spd_z_m = SpeedMode.AccTo;
-        frame.ctrl_spd_y = 1;
-        frame.ctrl_acc_y = 0.01;
-        frame.ctrl_spd_y_m = SpeedMode.AccTo;
-        frame.dvy = -4;
-        frame.acc_y = -0.25;
+        frame.dvy = Defines.DISATER_CHASE_MAX_VY;
+        frame.acc_y = Defines.DISATER_CHASE_ACC_Y;
         frame.vym = SpeedMode.AccTo;
         switch (datIndex.id) {
           case BuiltIn_OID.FirzenChasef:
@@ -132,7 +129,7 @@ export function make_ball_data(
       case FrameBehavior.FirzenDisasterStart:
         firzen_disater_start(frame);
         break;
-      case FrameBehavior.JohnBiscuitLeaving:
+      case FrameBehavior.JohnBiscuitLeaving:hit_Fa: 2
         frame.dvx = 15;
         frame.acc_x = 2;
         frame.vxm = SpeedMode.AccTo;
@@ -161,14 +158,14 @@ export function make_ball_data(
         });
         break;
       case FrameBehavior.Bat:
-        frame.ctrl_spd_x = 5;
-        frame.ctrl_acc_x = 0.1;
+        frame.ctrl_spd_x = Defines.BAT_CHASE_MAX_VX
+        frame.ctrl_acc_x = Defines.BAT_CHASE_ACC_X;
         frame.ctrl_spd_x_m = SpeedMode.AccTo;
         frame.ctrl_spd_z = Defines.DEFAULT_OPOINT_SPEED_Z;
-        frame.ctrl_acc_z = 0.2;
+        frame.ctrl_acc_z = Defines.BAT_CHASE_ACC_Z;
         frame.ctrl_spd_z_m = SpeedMode.AccTo;
-        frame.ctrl_spd_y = 1;
-        frame.ctrl_acc_y = 0.01;
+        frame.ctrl_spd_y = Defines.BAT_CHASE_MAX_VY;
+        frame.ctrl_acc_y = Defines.BAT_CHASE_ACC_Y;
         frame.ctrl_spd_y_m = SpeedMode.AccTo;
         break;
       case FrameBehavior.JulianBallStart:
