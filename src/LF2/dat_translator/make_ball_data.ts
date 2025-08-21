@@ -164,7 +164,7 @@ export function make_ball_data(
         frame.ctrl_spd_x = 5;
         frame.ctrl_acc_x = 0.1;
         frame.ctrl_spd_x_m = SpeedMode.AccTo;
-        frame.ctrl_spd_z = 5;
+        frame.ctrl_spd_z = Defines.DEFAULT_OPOINT_SPEED_Z;
         frame.ctrl_acc_z = 0.2;
         frame.ctrl_spd_z_m = SpeedMode.AccTo;
         frame.ctrl_spd_y = 1;
