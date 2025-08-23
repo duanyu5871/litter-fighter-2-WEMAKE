@@ -6,10 +6,10 @@ import { handle_injury } from "./handle_injury";
 import { handle_itr_kind_freeze } from "./handle_itr_kind_freeze";
 import { handle_rest } from "./handle_rest";
 import { handle_stiffness } from "./handle_stiffness";
-import { is_armor_work } from "./is_armor_work";
+import { handle_armor } from "./handle_armor";
 
 export function handle_itr_normal_bdy_normal(collision: ICollision) {
-  if (is_armor_work(collision)) return;
+  if (handle_armor(collision)) return;
   const { itr, attacker, victim, a_cube, b_cube } = collision;
   switch (itr.effect) {
     case ItrEffect.Fire:

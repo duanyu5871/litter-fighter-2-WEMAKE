@@ -20,6 +20,8 @@ export interface IArmorInfo {
   /**
    * 护甲是否防火烧
    * 
+   * 默认为false
+   * 
    * @type {?number}
    * @memberof IArmorInfo
    */
@@ -28,18 +30,17 @@ export interface IArmorInfo {
   /**
    * 护甲是否防冻结
    * 
+   * 默认为false
+   * 
    * @type {?number}
    * @memberof IArmorInfo
    */
   antifreeze?: number;
 
-  /**
-   * 
-   */
   fulltime?: boolean;
 
   /** 
-   * 通过itr的什么值来扣除toughness 
+   * 通过什么值来扣除toughness 
    * 
    * @type {ArmorEnum | string}
    * @memberof IArmorInfo
@@ -48,8 +49,22 @@ export interface IArmorInfo {
 
   toughness: number;
 
-  fall_value?: number;
+  /**
+   * 受伤比例
+   * 默认: 0.1
+   *
+   * @type {number}
+   * @memberof IArmorInfo
+   */
+  injury_ratio?: number;
 
-  defend_value?: number;
+  /**
+   * 硬直比例
+   * 默认: 2
+   *
+   * @type {number}
+   * @memberof IArmorInfo
+   */
+  shaking_ratio?: number;
 }
 

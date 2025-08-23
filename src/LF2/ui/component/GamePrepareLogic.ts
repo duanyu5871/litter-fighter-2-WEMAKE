@@ -111,8 +111,15 @@ export default class GamePrepareLogic extends UIComponent<IGamePrepareLogicCallb
     enter: () => {
       this.handling_com = void 0;
       this._com_num = 0;
-      const { slots } = this;
-      for (const slot of slots) slot.fsm.use(SlotSelStatus.Empty)
+
+      // 清空已选的com
+      for (const slot of this.coms)
+        slot.fsm.use(SlotSelStatus.Empty)
+      
+      // ready状态
+      for (const slot of this.joined_players)
+        if (slot.fsm.state?.key === SlotSelStatus.Ready)
+          slot.fsm.use(SlotSelStatus.Fighter)
     },
     on_player_key_down: (e) => {
       if ("j" === e.game_key && !this.joined_slots.length) {
@@ -139,10 +146,14 @@ export default class GamePrepareLogic extends UIComponent<IGamePrepareLogicCallb
           return GamePrepareState.GameSetting;
     },
     on_player_key_down: (e) => {
+      const player = this.lf2.players.get(e.player)
       if ("j" === e.game_key) {
-        this._count_down = 
-        max(0, this._count_down - 500);
+        this._count_down = max(0, this._count_down - 500);
         this.callbacks.emit("on_countdown")(ceil(this._count_down / 1000));
+        e.stop_immediate_propagation()
+      }
+      if ("a" === e.game_key && (!player?.joined || player?.is_com)) {
+        this.fsm.use(GamePrepareState.Player)
         e.stop_immediate_propagation()
       }
     },
@@ -152,16 +163,13 @@ export default class GamePrepareLogic extends UIComponent<IGamePrepareLogicCallb
       for (const c of this.coms) {
         c.fsm.use(SlotSelStatus.Empty)
       }
-
       const joined_num = this.joined_slots.length;
       const not_joined_num = this.empty_slots.length;
 
       if (this.game_mode !== "stage_mode")
         this._min_com_num = joined_num <= 1 ? 1 : 0;
 
-
       this._max_com_num = not_joined_num;
-
       this.node.find_child("how_many_computer")?.set_visible(true);
     },
     leave: () => {
@@ -238,7 +246,9 @@ export default class GamePrepareLogic extends UIComponent<IGamePrepareLogicCallb
   get joined_coms(): SlotSelLogic[] {
     return this.node.search_components(SlotSelLogic, v => v.is_com && v.joined)
   }
-
+  get joined_players(): SlotSelLogic[] {
+    return this.node.search_components(SlotSelLogic, v => !v.is_com && v.joined)
+  }
   /** 电脑槽 */
   get coms(): SlotSelLogic[] {
     return this.node.search_components(SlotSelLogic, v => v.is_com);
