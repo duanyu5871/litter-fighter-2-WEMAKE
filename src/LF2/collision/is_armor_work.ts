@@ -1,5 +1,7 @@
 import { ICollision } from "../base";
-import { ItrEffect, Defines, ArmorEnum, SparkEnum, StateEnum } from "../defines";
+import { ArmorEnum, Defines, ItrEffect, SparkEnum, StateEnum } from "../defines";
+import { handle_injury } from "./handle_injury";
+import { handle_rest } from "./handle_rest";
 
 
 export function is_armor_work(collision: ICollision): boolean {
@@ -18,7 +20,14 @@ export function is_armor_work(collision: ICollision): boolean {
   ) {
     return false;
   }
-  if (bframe.state === StateEnum.Attacking && armor?.fulltime === false) {
+  if (armor?.fulltime === false && (
+    StateEnum.Standing !== bframe.state &&
+    StateEnum.Walking !== bframe.state &&
+    StateEnum.Running !== bframe.state && 
+    StateEnum.Jump !== bframe.state && 
+    StateEnum.Dash !== bframe.state && 
+    true
+  )) {
     return false;
   }
   if (!armor || victim.toughness <= 0) return false;
@@ -61,5 +70,7 @@ export function is_armor_work(collision: ICollision): boolean {
   victim.velocity_0.x = 0;
   victim.velocity_0.y = 0;
   victim.velocity_0.z = 0;
+  handle_rest(collision)
+  handle_injury(collision, 0.1)
   return true;
 }

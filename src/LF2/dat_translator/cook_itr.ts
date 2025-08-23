@@ -18,7 +18,7 @@ export function cook_itr(itr?: Partial<IItrInfo>) {
     itr.vrest = max(2, 2 * vrest - Defines.DEFAULT_ITR_SHAKING - 4);
 
   const arest = take(itr, "arest");
-  if (is_positive(arest)) itr.arest = max(2, 2 * arest + 2);
+  if (is_positive(arest)) itr.arest = max(2, 2 * arest - Defines.DEFAULT_ITR_MOTIONLESS - 4);
 
   const src_dvx = take(itr, "dvx");
   if (not_zero_num(src_dvx)) itr.dvx = src_dvx * 0.5;
@@ -54,10 +54,10 @@ export function cook_itr(itr?: Partial<IItrInfo>) {
   switch (itr.kind) {
     case ItrKind.Normal: {
       const cond_maker = new CondMaker<C_Val>()
-        // .wrap((c) => c
-        //   .add(C_Val.VictimState, "!=", StateEnum.Weapon_OnGround)
-        //   .or(C_Val.AttackerType, "!=", EntityEnum.Character),
-        // );
+      // .wrap((c) => c
+      //   .add(C_Val.VictimState, "!=", StateEnum.Weapon_OnGround)
+      //   .or(C_Val.AttackerType, "!=", EntityEnum.Character),
+      // );
       switch (itr.effect) {
         case ItrEffect.Fire:
           cond_maker.and((c) => c
