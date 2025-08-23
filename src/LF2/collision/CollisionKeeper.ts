@@ -1,18 +1,28 @@
 import { ICollision, ICollisionHandler } from "../base";
 import { ALL_ENTITY_ENUM, BdyKind, EntityEnum, ItrKind, TEntityEnum } from "../defines";
+import Ditto from "../ditto";
+import { bdy_action_handlers } from "../entity/bdy_action_handlers";
+import { itr_action_handlers } from "../entity/itr_action_handlers";
+import { arithmetic_progression } from "../utils";
+import { handle_ball_hit_other } from "./handle_ball_hit_other";
+import { handle_body_goto } from "./handle_body_goto";
+import { handle_healing } from "./handle_healing";
 import { handle_itr_kind_catch } from "./handle_itr_kind_catch";
 import { handle_itr_kind_force_catch } from "./handle_itr_kind_force_catch";
 import { handle_itr_kind_freeze } from "./handle_itr_kind_freeze";
 import { handle_itr_kind_magic_flute } from "./handle_itr_kind_magic_flute";
-import { handle_itr_normal_bdy_normal } from "./handle_itr_normal_bdy_normal";
+import { handle_itr_kind_whirlwind } from "./handle_itr_kind_whirlwind";
 import { handle_itr_normal_bdy_defend } from "./handle_itr_normal_bdy_defend";
+import { handle_itr_normal_bdy_normal } from "./handle_itr_normal_bdy_normal";
+import { handle_rest } from "./handle_rest";
+import { handle_super_punch_me } from "./handle_super_punch_me";
+import { handle_weapon_hit_other } from "./handle_weapon_hit_other";
+import { handle_weapon_is_hit } from "./handle_weapon_is_hit";
 import { handle_weapon_is_picked } from "./handle_weapon_is_picked";
 import { handle_weapon_is_picked_secretly } from "./handle_weapon_is_picked_secretly";
-import { handle_itr_kind_whirlwind } from "./handle_itr_kind_whirlwind";
-import { handle_weapon_is_hit } from "./handle_weapon_is_hit";
 
 export class CollisionKeeper {
-  protected pair_map: Map<string, (collision: ICollision) => void> = new Map();
+  protected pair_map: Map<string, ((collision: ICollision) => void)[]> = new Map();
   add(
     a_type_list: TEntityEnum[],
     itr_kind_list: ItrKind[],
@@ -24,10 +34,10 @@ export class CollisionKeeper {
       for (const a_type of a_type_list) {
         for (const bdy_kind of bdy_kind_list) {
           for (const v_type of v_type_list) {
-            this.pair_map.set(
-              [a_type, itr_kind, v_type, bdy_kind].join("_"),
-              fn,
-            );
+            const key = [a_type, itr_kind, v_type, bdy_kind].join("_")
+            const fns = this.pair_map.get(key) || []
+            fns.push(fn)
+            this.pair_map.set(key, fns);
           }
         }
       }
@@ -55,13 +65,47 @@ export class CollisionKeeper {
     return this.pair_map.get(`${a_type}_${itr_kind}_${v_type}_${bdy_kind}`);
   }
 
-  handle(c: ICollision) {
-    this.get(
-      c.attacker.data.type,
-      c.itr.kind!,
-      c.victim.data.type,
-      c.bdy.kind,
-    )?.(c);
+  handle(collision: ICollision) {
+    const handlers = this.get(
+      collision.attacker.data.type,
+      collision.itr.kind,
+      collision.victim.data.type,
+      collision.bdy.kind,
+    )
+
+
+    const collision_desc =
+      `[${collision.attacker.data.type}]#${ItrKind[collision.itr.kind]} => ` +
+      `[${collision.victim.data.type}]#${BdyKind[collision.bdy.kind]}`;
+
+    Ditto.Debug(` collision: ${collision_desc} \nhandlers: ${handlers?.map(v => v.name) ?? 'none'}`)
+
+    if (handlers) handlers.forEach(fn => fn(collision))
+
+    const { itr, bdy, victim, attacker } = collision;
+    if (itr.actions?.length) {
+      for (const action of itr.actions) {
+        if (action.tester?.run(collision) === false)
+          continue;
+        itr_action_handlers[action.type](action, collision)
+      }
+    }
+    if (bdy.actions?.length) {
+      for (const action of bdy.actions) {
+        if (action.tester && !action.tester?.run(collision))
+          continue;
+        bdy_action_handlers[action.type](action, collision)
+      }
+    }
+    if (
+      itr.kind !== ItrKind.Block &&
+      itr.kind !== ItrKind.Whirlwind &&
+      itr.kind !== ItrKind.MagicFlute &&
+      itr.kind !== ItrKind.MagicFlute2
+    ) {
+      const sounds = victim.data.base.hit_sounds;
+      victim.play_sound(sounds);
+    }
   }
 }
 export const collisions_keeper = new CollisionKeeper();
@@ -150,5 +194,63 @@ collisions_keeper.add(
   [EntityEnum.Weapon],
   [BdyKind.Normal],
   handle_weapon_is_hit,
+);
+
+collisions_keeper.add(
+  ALL_ENTITY_ENUM,
+  [ItrKind.Block],
+  [EntityEnum.Character],
+  [BdyKind.Normal],
+  handle_rest,
+);
+
+collisions_keeper.add(
+  [EntityEnum.Ball],
+  [ItrKind.Normal],
+  [EntityEnum.Character, EntityEnum.Weapon],
+  [BdyKind.Normal],
+  handle_ball_hit_other
+)
+
+collisions_keeper.add(
+  [EntityEnum.Character, EntityEnum.Weapon],
+  [ItrKind.Normal],
+  [EntityEnum.Ball],
+  [BdyKind.Normal],
+  handle_ball_hit_other
+)
+
+collisions_keeper.add(
+  [EntityEnum.Weapon],
+  [ItrKind.Normal],
+  ALL_ENTITY_ENUM,
+  [BdyKind.Normal],
+  handle_weapon_hit_other
+)
+
+
+collisions_keeper.add(
+  [EntityEnum.Character],
+  [ItrKind.Normal],
+  ALL_ENTITY_ENUM,
+  arithmetic_progression(BdyKind.GotoMin, BdyKind.GotoMax, 1) as BdyKind[],
+  handle_body_goto,
+);
+
+collisions_keeper.add(
+  ALL_ENTITY_ENUM,
+  [ItrKind.Heal],
+  [EntityEnum.Character],
+  [BdyKind.Normal],
+  handle_healing,
+);
+
+
+collisions_keeper.add(
+  [EntityEnum.Character],
+  [ItrKind.SuperPunchMe],
+  [EntityEnum.Character],
+  [BdyKind.Normal],
+  handle_super_punch_me,
 );
 

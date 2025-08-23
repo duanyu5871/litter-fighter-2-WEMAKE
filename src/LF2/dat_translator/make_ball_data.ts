@@ -57,7 +57,10 @@ export function make_ball_data(
       frame.on_dead = get_next_frame_by_raw_id(hit_d);
 
     const hit_Fa = take(frame, "hit_Fa");
-    if (hit_Fa) frame.behavior = hit_Fa;
+    if (hit_Fa) {
+      frame.behavior = hit_Fa;
+      (frame as any).behavior_name = `FrameBehavior.` + FrameBehavior[hit_Fa]
+    }
 
     switch (hit_Fa as FrameBehavior) {
       case FrameBehavior.JohnChase:

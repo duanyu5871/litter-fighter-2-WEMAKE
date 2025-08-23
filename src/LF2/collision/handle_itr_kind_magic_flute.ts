@@ -1,6 +1,7 @@
 import { StateEnum } from "../defines";
 import { EntityEnum } from "../defines/EntityEnum";
 import { ICollision } from "../base/ICollision";
+import { handle_injury } from "./handle_injury";
 
 export function handle_itr_kind_magic_flute(collision: ICollision): void {
   const { victim } = collision;
@@ -8,6 +9,7 @@ export function handle_itr_kind_magic_flute(collision: ICollision): void {
   if (victim.velocity_0.y < 3) victim.velocity_0.y += 3;
   switch (victim.data.type) {
     case EntityEnum.Character:
+      handle_injury(collision)
       if (victim.frame.state !== StateEnum.Falling) {
         victim.next_frame = { id: victim.data.indexes?.falling?.[-1][0] };
       }

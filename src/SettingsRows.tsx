@@ -323,6 +323,8 @@ const world_field_map: Record<keyof IWorldDataset, IFieldInfo> = {
   ivx_f: { title: "ivx_f", desc: "ivx_f", type: 'float' },
   ivy_d: { title: "ivy_d", desc: "ivy_d", type: 'float' },
   ivx_d: { title: "ivx_d", desc: "ivx_d", type: 'float' },
+  cvy_d: { title: "cvy_d", desc: "cvy_d", type: 'float' },
+  cvx_d: { title: "cvx_d", desc: "cvx_d", type: 'float' },
   tvx_f: { title: "X轴丢人初速度系数", desc: "tvx_f", type: 'float' },
   tvy_f: { title: "Y轴丢人初速度系数", desc: "tvy_f", type: 'float' },
   tvz_f: { title: "Z轴丢人初速度系数", desc: "tvz_f", type: 'float' },

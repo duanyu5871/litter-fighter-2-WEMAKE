@@ -590,6 +590,7 @@ export function make_character_data(
         if (frame.bdy?.length)
           for (const bdy of frame.bdy) {
             bdy.kind = BdyKind.Defend;
+            (bdy as any).kind_name = BdyKind[bdy.kind];
             if (!bdy.actions?.find(v => v.type === 'broken_defend')) {
               bdy.actions = bdy.actions || []
               bdy.actions = [{ type: 'broken_defend', data: { id: "112" } }];

@@ -47,8 +47,10 @@ export class WorldDataset implements IWorldDataset {
   ivy_f: number = 1;
   ivz_f: number = 1;
   ivx_f: number = 1;
-  ivy_d: number = 3;
+  ivy_d: number = 5;
   ivx_d: number = 4;
+  cvy_d: number = 3;
+  cvx_d: number = 2;
 
   /**
    * X轴丢人初速度系数

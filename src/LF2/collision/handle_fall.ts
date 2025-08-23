@@ -8,7 +8,7 @@ export function handle_fall(collision: ICollision) {
   const { itr, attacker, victim, a_cube, b_cube } = collision;
   const aface: TFace = (
     ItrEffect.FireExplosion === itr.effect || ItrEffect.Explosion === itr.effect
-  ) ? (victim.position.x > attacker.position.x ? -1 : 1) : attacker.facing;
+  ) ? (victim.position.x > attacker.position.x ? 1 : -1) : attacker.facing;
 
   victim.toughness = 0;
   victim.fall_value = 0;

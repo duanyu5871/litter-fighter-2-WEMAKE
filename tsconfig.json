@@ -17,7 +17,7 @@
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
-    "noImplicitThis": false, // FOR PIO
+    "noImplicitThis": true, // FOR PIO
     "noImplicitOverride": true,
     "noFallthroughCasesInSwitch": true,
     "module": "esnext",

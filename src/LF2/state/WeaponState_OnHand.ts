@@ -1,12 +1,10 @@
-import { ICollision } from "../base/ICollision";
+import { Entity } from "../entity";
+import { max } from "../utils";
 import WeaponState_Base from "./WeaponState_Base";
 
 export default class WeaponState_OnHand extends WeaponState_Base {
-  override on_collision(collision: ICollision): void {
-    const { itr, attacker } = collision;
-    if (attacker.holder) {
-      attacker.holder.motionless =
-        itr.motionless ?? attacker.world.itr_motionless;
-    }
+  override pre_update(e: Entity): void {
+    if (e.motionless && e.holder)
+      e.holder.motionless = max(e.motionless, e.holder.motionless)
   }
 }

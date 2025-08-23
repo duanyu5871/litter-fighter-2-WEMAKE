@@ -1,5 +1,5 @@
 import { ICollision } from "../base";
-import { Defines, ItrEffect, SparkEnum, StateEnum, TFace } from "../defines";
+import { Defines, ItrEffect, ItrKind, SparkEnum, StateEnum, TFace } from "../defines";
 import { is_character, same_face, turn_face } from "../entity";
 import { handle_fall } from "./handle_fall";
 import { handle_injury } from "./handle_injury";

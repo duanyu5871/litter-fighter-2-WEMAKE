@@ -4,7 +4,7 @@ import { Callbacks, ICollision, new_id, new_team, type NoEmitCallbacks } from ".
 import { BaseController } from "../controller/BaseController";
 import { InvalidController } from "../controller/InvalidController";
 import {
-  BdyKind, Builtin_FrameId, Defines, EntityEnum, FacingFlag, IBaseData, IBounding,
+  BdyKind, Builtin_FrameId, Defines, EntityEnum, FacingFlag, FrameBehavior, IBaseData, IBounding,
   ICpointInfo, IEntityData, IFrameInfo,
   IItrInfo,
   INextFrame,
@@ -18,10 +18,7 @@ import {
 import { IArmorInfo } from "../defines/IArmorInfo";
 import Ditto from "../ditto";
 import { ENTITY_STATES, States } from "../state";
-import BallState_Base from "../state/BallState_Base";
-import CharacterState_Base from "../state/CharacterState_Base";
 import { State_Base } from "../state/State_Base";
-import WeaponState_Base from "../state/WeaponState_Base";
 import { abs, floor, max, min, round } from "../utils";
 import { cross_bounding } from "../utils/cross_bounding";
 import { is_num, is_positive, is_str } from "../utils/type_check";
@@ -774,40 +771,23 @@ export class Entity implements IDebugging {
 
   apply_opoints(opoints: IOpointInfo[]) {
     for (const opoint of opoints) {
+      let enemies: Entity[] = []
+      let allies: Entity[] = []
+      let multi_type: OpointMultiEnum | undefined = void 0
       let count = 0;
       const multi = opoint.multi ?? 1;
       if (is_num(multi)) {
         count = multi;
       } else if (multi) {
+        multi_type = multi.type
         switch (multi.type) {
           case OpointMultiEnum.AccordingEnemies:
-            for (const other of this.world.entities) {
-              if (
-                is_character(other) &&
-                !other.is_ally(this) &&
-                other.hp > 0 &&
-                this.find_emitter(
-                  (emitter) => is_character(emitter) && emitter !== other,
-                )
-              ) {
-                ++count;
-              }
-            }
-            count = max(multi.min, count);
+            enemies = this.world.list_enemy_fighters(this, o => o.hp > 0)
+            count = max(multi.min, enemies.length);
             break;
           case OpointMultiEnum.AccordingAllies:
-            for (const other of this.world.entities) {
-              if (
-                is_character(other) &&
-                other.is_ally(this) &&
-                other.hp > 0 &&
-                this.find_emitter(
-                  (emitter) => is_character(emitter) && emitter !== other,
-                )
-              )
-                ++count;
-            }
-            count = max(multi.min, count);
+            allies = this.world.list_ally_fighters(this, o => o.hp > 0)
+            count = max(multi.min, allies.length);
             break;
         }
       }
@@ -830,7 +810,21 @@ export class Entity implements IDebugging {
             facing = v.x < 0 ? -1 : v.x > 0 ? 1 : facing
             break;
         }
-        this.spawn_entity(opoint, v, facing);
+        const e = this.spawn_entity(opoint, v, facing);
+        if (e) switch (this.frame.behavior) {
+          case FrameBehavior.FirzenDisasterStart:
+          case FrameBehavior.FirzenVolcanoStart:
+          case FrameBehavior.BatStart:
+          case FrameBehavior._06:
+            console.log(multi_type, OpointMultiEnum.AccordingEnemies, multi_type === OpointMultiEnum.AccordingEnemies)
+            if (multi_type === OpointMultiEnum.AccordingEnemies)
+              e.chasing = enemies[i % enemies.length]
+            break;
+          case FrameBehavior._05:
+            if (multi_type === OpointMultiEnum.AccordingAllies)
+              e.chasing = allies[i % allies.length]
+            break;
+        }
       }
     }
   }
@@ -866,7 +860,6 @@ export class Entity implements IDebugging {
     const entity = create(this.world, data);
     entity.ctrl = Factory.inst.get_ctrl(entity.data.id, "", entity,) ?? entity.ctrl;
     entity.on_spawn(this, opoint, offset_velocity, facing).attach();
-
     for (const [k, v] of this.v_rests) {
       /*
       Note: 继承v_rests，避免重复反弹ball...
@@ -1304,9 +1297,8 @@ export class Entity implements IDebugging {
    * @returns 下帧信息
    */
   get_caught_end_frame(): INextFrame {
-    return (
-      this.state?.get_caught_end_frame?.(this) || { id: Builtin_FrameId.Auto }
-    );
+    if (this.position.y < 1) this.position.y = 1;
+    return (this.state?.get_caught_end_frame?.(this) || { id: Builtin_FrameId.Auto });
   }
 
   /**
@@ -1528,53 +1520,6 @@ export class Entity implements IDebugging {
     this.next_frame = this.get_next_frame(itr.caughtact)?.which;
   }
 
-  on_collision(collision: ICollision): void {
-    const { itr } = collision;
-    if (itr.actions?.length) {
-      for (const action of itr.actions) {
-        if (action.tester?.run(collision) === false)
-          continue;
-        itr_action_handlers[action.type](action, collision)
-      }
-    }
-    if (
-      itr.kind !== ItrKind.Block &&
-      itr.kind !== ItrKind.Whirlwind &&
-      itr.kind !== ItrKind.MagicFlute &&
-      itr.kind !== ItrKind.MagicFlute2
-    ) {
-      const sounds = this.data.base.hit_sounds;
-      this.play_sound(sounds);
-    }
-  }
-
-
-  on_be_collided(collision: ICollision): void {
-    const { itr, bdy } = collision;
-    if (bdy.kind >= BdyKind.GotoMin && bdy.kind <= BdyKind.GotoMax) {
-      const result = this.get_next_frame({ id: "" + (bdy.kind - 1000) });
-      if (result) this.next_frame = result.frame;
-      return;
-    }
-    if (bdy.actions?.length) {
-      for (const action of bdy.actions) {
-        if (action.tester && !action.tester?.run(collision))
-          continue;
-        bdy_action_handlers[action.type](action, collision)
-      }
-    }
-    if (
-      itr.kind !== ItrKind.Block &&
-      itr.kind !== ItrKind.Whirlwind &&
-      itr.kind !== ItrKind.MagicFlute &&
-      itr.kind !== ItrKind.MagicFlute2
-    ) {
-      const sounds = this.data.base.hit_sounds;
-      this.play_sound(sounds);
-    }
-  }
-
-
   spark_point(r0: IBounding, r1: IBounding) {
     const {
       left: l,
@@ -1672,10 +1617,9 @@ export class Entity implements IDebugging {
     );
   }
 
-  protected _chasing_target?: Entity;
-  get chasing_target(): Entity | undefined { return this._chasing_target; }
-  set chasing_target(e: Entity | undefined) { this._chasing_target = e; }
-
+  protected _chasing?: Entity;
+  get chasing(): Entity | undefined { return this._chasing; }
+  set chasing(e: Entity | undefined) { this._chasing = e; }
 
 
   enter_frame(which: TNextFrame): void {

@@ -45,6 +45,22 @@ export interface IWorldDataset {
   ivx_d: number;
 
   /**
+   * 停抓后VY
+   * 
+   * @type {number}
+   * @memberof WorldDataset
+   */
+  cvy_d: number;
+
+  /**
+   * 停抓后VX
+   * 
+   * @type {number}
+   * @memberof WorldDataset
+   */
+  cvx_d: number;
+
+  /**
    * X轴丢人初速度缩放系数
    *
    * @type {number}
