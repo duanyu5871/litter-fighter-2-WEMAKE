@@ -3,7 +3,13 @@ import { ArmorEnum, Defines, ItrEffect, SparkEnum, StateEnum } from "../defines"
 import { handle_injury } from "./handle_injury";
 import { handle_rest } from "./handle_rest";
 
-
+/**
+ * 护甲逻辑
+ *
+ * @export
+ * @param {ICollision} collision 碰撞信息
+ * @return {boolean} 护甲是否有效
+ */
 export function handle_armor(collision: ICollision): boolean {
   const { victim } = collision;
   const { armor } = victim;
