@@ -6,9 +6,10 @@ import { handle_itr_kind_freeze } from "./handle_itr_kind_freeze";
 import { handle_itr_kind_magic_flute } from "./handle_itr_kind_magic_flute";
 import { handle_itr_normal_bdy_normal } from "./handle_itr_normal_bdy_normal";
 import { handle_itr_normal_bdy_defend } from "./handle_itr_normal_bdy_defend";
-import { handle_itr_kind_pick } from "./handle_itr_kind_pick";
-import { handle_itr_kind_pick_secretly } from "./handle_itr_kind_pick_secretly";
+import { handle_weapon_is_picked } from "./handle_weapon_is_picked";
+import { handle_weapon_is_picked_secretly } from "./handle_weapon_is_picked_secretly";
 import { handle_itr_kind_whirlwind } from "./handle_itr_kind_whirlwind";
+import { handle_weapon_is_hit } from "./handle_weapon_is_hit";
 
 export class CollisionKeeper {
   protected pair_map: Map<string, (collision: ICollision) => void> = new Map();
@@ -128,13 +129,26 @@ collisions_keeper.add(
   [ItrKind.Pick],
   [EntityEnum.Weapon],
   [BdyKind.Normal],
-  handle_itr_kind_pick,
+  handle_weapon_is_picked,
 );
 collisions_keeper.add(
   [EntityEnum.Character],
   [ItrKind.PickSecretly],
   [EntityEnum.Weapon],
   [BdyKind.Normal],
-  handle_itr_kind_pick_secretly,
+  handle_weapon_is_picked_secretly,
+);
+
+collisions_keeper.add(
+  ALL_ENTITY_ENUM,
+  [
+    ItrKind.JohnShield,
+    ItrKind.Normal,
+    ItrKind.WeaponSwing,
+    ItrKind.CharacterThrew,
+  ],
+  [EntityEnum.Weapon],
+  [BdyKind.Normal],
+  handle_weapon_is_hit,
 );
 

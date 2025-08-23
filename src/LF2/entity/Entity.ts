@@ -305,7 +305,7 @@ export class Entity implements IDebugging {
   protected _holding?: Entity;
   protected _emitter?: Entity;
   protected _emitter_opoint?: IOpointInfo;
-  protected _a_rest: number = 0;
+  public a_rest: number = 0;
   public v_rests = new Map<string, ICollision>();
 
   public motionless: number = 0;
@@ -495,9 +495,6 @@ export class Entity implements IDebugging {
 
   get emitter() {
     return this._emitter;
-  }
-  get a_rest(): number {
-    return this._a_rest;
   }
 
   protected _state: State_Base | undefined;
@@ -797,7 +794,6 @@ export class Entity implements IDebugging {
         v.kind !== ItrKind.ForceCatch
       );
     });
-    if (!attacking) this._a_rest = 0;
   }
 
   apply_opoints(opoints: IOpointInfo[]) {
@@ -1089,7 +1085,7 @@ export class Entity implements IDebugging {
       }
     }
     if (this.motionless <= 0)
-      this._a_rest >= 1 ? this._a_rest-- : (this._a_rest = 0);
+      this.a_rest >= 1 ? this.a_rest-- : (this.a_rest = 0);
 
     if (this._invisible_duration > 0) {
       this._invisible_duration--;
@@ -1557,14 +1553,7 @@ export class Entity implements IDebugging {
   }
 
   on_collision(collision: ICollision): void {
-    this.collision_list.push((this.lastest_collision = collision));
     const { itr } = collision;
-    if (itr.arest) {
-      this._a_rest = itr.arest + this.world.arest_offset;
-    } else if (!itr.vrest) {
-      this._a_rest = Defines.DEFAULT_ITR_MOTIONLESS * 2 + this.world.arest_offset_2;
-    }
-
     if (itr.actions?.length) {
       for (const action of itr.actions) {
         if (action.tester?.run(collision) === false)
@@ -1582,6 +1571,33 @@ export class Entity implements IDebugging {
       this.play_sound(sounds);
     }
   }
+
+
+  on_be_collided(collision: ICollision): void {
+    const { itr, bdy } = collision;
+    if (bdy.kind >= BdyKind.GotoMin && bdy.kind <= BdyKind.GotoMax) {
+      const result = this.get_next_frame({ id: "" + (bdy.kind - 1000) });
+      if (result) this.next_frame = result.frame;
+      return;
+    }
+    if (bdy.actions?.length) {
+      for (const action of bdy.actions) {
+        if (action.tester && !action.tester?.run(collision))
+          continue;
+        bdy_action_handlers[action.type](action, collision)
+      }
+    }
+    if (
+      itr.kind !== ItrKind.Block &&
+      itr.kind !== ItrKind.Whirlwind &&
+      itr.kind !== ItrKind.MagicFlute &&
+      itr.kind !== ItrKind.MagicFlute2
+    ) {
+      const sounds = this.data.base.hit_sounds;
+      this.play_sound(sounds);
+    }
+  }
+
 
   spark_point(r0: IBounding, r1: IBounding) {
     const {
@@ -1605,36 +1621,6 @@ export class Entity implements IDebugging {
       ((this.velocity_0.x > 0 && target.position.x > this.position.x) ||
         (this.velocity_0.x < 0 && target.position.x < this.position.x))
     );
-  }
-
-
-  on_be_collided(collision: ICollision): void {
-    this.collided_list.push((this.lastest_collided = collision));
-    const { itr, bdy } = collision;
-    if (collision.v_rest !== void 0) {
-      this.v_rests.set(collision.attacker.id, collision);
-    }
-    if (bdy.kind >= BdyKind.GotoMin && bdy.kind <= BdyKind.GotoMax) {
-      const result = this.get_next_frame({ id: "" + (bdy.kind - 1000) });
-      if (result) this.next_frame = result.frame;
-      return;
-    }
-    if (bdy.actions?.length) {
-      for (const action of bdy.actions) {
-        if (action.tester && !action.tester?.run(collision))
-          continue;
-        bdy_action_handlers[action.type](action, collision)
-      }
-    }
-    if (
-      itr.kind !== ItrKind.Block &&
-      itr.kind !== ItrKind.Whirlwind &&
-      itr.kind !== ItrKind.MagicFlute &&
-      itr.kind !== ItrKind.MagicFlute2
-    ) {
-      const sounds = this.data.base.hit_sounds;
-      this.play_sound(sounds);
-    }
   }
 
   dispose(): void {

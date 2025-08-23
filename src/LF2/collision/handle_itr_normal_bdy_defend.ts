@@ -1,7 +1,8 @@
 import { ICollision } from "../base";
 import { Defines, ItrEffect, SparkEnum } from "../defines";
-import { take_injury } from "./handle_fall";
+import { handle_injury } from "./handle_injury";
 import { handle_itr_normal_bdy_normal } from "./handle_itr_normal_bdy_normal";
+import { handle_rest } from "./handle_rest";
 
 
 export function handle_itr_normal_bdy_defend(collision: ICollision) {
@@ -19,7 +20,8 @@ export function handle_itr_normal_bdy_defend(collision: ICollision) {
   attacker.motionless = itr.motionless ?? collision.victim.world.itr_motionless;
   victim.shaking = itr.shaking ?? collision.attacker.world.itr_shaking;
   victim.defend_value -= bdefend;
-  take_injury(itr, victim, attacker, 0.1);
+  handle_injury(collision, 0.1);
+  handle_rest(collision)
   const [x, y, z] = victim.spark_point(a_cube, b_cube);
   if (victim.defend_value <= 0) {
     // 破防

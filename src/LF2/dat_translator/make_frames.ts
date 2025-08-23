@@ -27,7 +27,7 @@ import { not_zero_num } from "../utils/type_check";
 import { CondMaker } from "./CondMaker";
 import cook_bdy from "./cook_bdy";
 import { cook_cpoint } from "./cook_cpoint";
-import cook_itr from "./cook_itr";
+import { cook_itr } from "./cook_itr";
 import cook_opoint from "./cook_opoint";
 import { cook_wpoint } from "./cook_wpoint";
 import { add_next_frame } from "./edit_next_frame";

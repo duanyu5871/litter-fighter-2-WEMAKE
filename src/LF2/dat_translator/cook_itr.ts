@@ -9,17 +9,17 @@ import { get_next_frame_by_raw_id } from "./get_the_next";
 import { take } from "./take";
 import { AllyFlag } from "../defines/AllyFlag";
 import { max } from "../utils";
-export default function cook_itr(itr?: Partial<IItrInfo>) {
+
+export function cook_itr(itr?: Partial<IItrInfo>) {
   if (!itr) return;
   itr.ally_flags = AllyFlag.Enemy;
   const vrest = take(itr, "vrest");
-  if (is_positive(vrest)) {
-    itr.vrest = max(2, 2 * vrest - Defines.DEFAULT_ITR_SHAKING - 2);
-  }
+  if (is_positive(vrest))
+    itr.vrest = max(2, 2 * vrest - Defines.DEFAULT_ITR_SHAKING - 4);
+
   const arest = take(itr, "arest");
-  if (is_positive(arest)) {
-    itr.arest = max(2, 2 * arest + 2);
-  }
+  if (is_positive(arest)) itr.arest = max(2, 2 * arest + 2);
+
   const src_dvx = take(itr, "dvx");
   if (not_zero_num(src_dvx)) itr.dvx = src_dvx * 0.5;
   const src_dvz = take(itr, "dvz");
@@ -54,10 +54,10 @@ export default function cook_itr(itr?: Partial<IItrInfo>) {
   switch (itr.kind) {
     case ItrKind.Normal: {
       const cond_maker = new CondMaker<C_Val>()
-        .wrap((c) => c
-          .add(C_Val.VictimState, "!=", StateEnum.Weapon_OnGround)
-          .or(C_Val.AttackerType, "!=", EntityEnum.Character),
-        );
+        // .wrap((c) => c
+        //   .add(C_Val.VictimState, "!=", StateEnum.Weapon_OnGround)
+        //   .or(C_Val.AttackerType, "!=", EntityEnum.Character),
+        // );
       switch (itr.effect) {
         case ItrEffect.Fire:
           cond_maker.and((c) => c

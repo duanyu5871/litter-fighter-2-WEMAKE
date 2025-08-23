@@ -5,7 +5,7 @@ import { match_block_once } from "../utils/string_parser/match_block";
 import { match_colon_value } from "../utils/string_parser/match_colon_value";
 import { to_num } from "../utils/type_cast/to_num";
 import { is_non_empty_str } from "../utils/type_check";
-import cook_itr from "./cook_itr";
+import { cook_itr } from "./cook_itr";
 
 export function make_itr_prefabs(full_str: string): IEntityData["itr_prefabs"] {
   const weapon_strength_str = match_block_once(

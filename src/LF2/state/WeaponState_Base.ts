@@ -34,59 +34,7 @@ export default class WeaponState_Base extends State_Base {
   }
 
   override on_be_collided(collision: ICollision): void {
-    const { itr, attacker, victim, a_cube, b_cube } = collision;
-    switch (itr.kind) {
-      case ItrKind.Normal:
-      case ItrKind.CharacterThrew:
-        const spark_x =
-          (max(a_cube.left, b_cube.left) +
-            min(a_cube.right, b_cube.right)) /
-          2;
-        const spark_y =
-          (min(a_cube.top, b_cube.top) +
-            max(a_cube.bottom, b_cube.bottom)) /
-          2;
-        const spark_z = max(a_cube.far, b_cube.far);
-        if (
-          itr.bdefend &&
-          itr.bdefend >= Defines.DEFAULT_FORCE_BREAK_DEFEND_VALUE
-        )
-          victim.hp = 0;
-        else if (itr.injury) {
-          const { injury } = itr;
-          if (injury) {
-            victim.hp -= injury;
-            victim.hp_r -= injury
-          }
-        }
-        const is_fly =
-          itr.fall &&
-          itr.fall >=
-          Defines.DEFAULT_FALL_VALUE_MAX - Defines.DEFAULT_FALL_VALUE_DIZZY;
-        const spark_frame_name = is_fly ? "slient_critical_hit" : "slient_hit";
-        victim.world.spark(spark_x, spark_y, spark_z, spark_frame_name);
-        if (victim.data.base.type === WeaponType.Heavy) {
-          if (is_fly) {
-            const vx = itr.dvx ? itr.dvx * attacker.facing : 0;
-            const vy = itr.dvy ? itr.dvy : 3;
-            victim.velocity_0.x = vx / 2;
-            victim.velocity_0.y = vy;
-            victim.team = attacker.team;
-            victim.next_frame = { id: victim.data.indexes?.in_the_sky };
-          }
-        } else {
-          const vx = itr.dvx ? itr.dvx * attacker.facing : 0;
-          const vy = itr.dvy ? itr.dvy : 3;
-          victim.velocity_0.x = vx;
-          victim.velocity_0.y = vy;
-          victim.team = attacker.team;
-          victim.next_frame = { id: victim.data.indexes?.in_the_sky };
-        }
-        break;
-      default:
-        collisions_keeper.handle(collision);
-        break;
-    }
+    collisions_keeper.handle(collision);
   }
 
   override get_auto_frame(e: Entity): IFrameInfo | undefined {

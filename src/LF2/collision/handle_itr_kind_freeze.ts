@@ -1,6 +1,7 @@
-import { Defines, StateEnum } from "../defines";
 import { ICollision } from "../base/ICollision";
-import { take_injury } from "./handle_fall";
+import { Defines, StateEnum } from "../defines";
+import { handle_injury } from "./handle_injury";
+import { handle_rest } from "./handle_rest";
 
 export function handle_itr_kind_freeze(c: ICollision) {
   const { itr, victim, attacker } = c;
@@ -19,5 +20,6 @@ export function handle_itr_kind_freeze(c: ICollision) {
   victim.velocity_0.x =
     (itr.dvx ?? attacker.world.ivx_d) * attacker.facing * attacker.world.ivx_f;
   victim.next_frame = { id: victim.data.indexes?.ice };
-  take_injury(itr, victim, attacker);
+  handle_injury(c);
+  handle_rest(c);
 }

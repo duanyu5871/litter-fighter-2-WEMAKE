@@ -1,7 +1,7 @@
 import { ICollision } from "../base";
 import { WeaponType } from "../defines";
 
-export function handle_itr_kind_pick(collision: ICollision): void {
+export function handle_weapon_is_picked(collision: ICollision): void {
   const { victim, attacker } = collision;
   if (attacker.holding) return;
   victim.holder = attacker;
@@ -12,5 +12,4 @@ export function handle_itr_kind_pick(collision: ICollision): void {
   } else {
     attacker.next_frame = { id: attacker.data.indexes?.picking_light };
   }
-
 }

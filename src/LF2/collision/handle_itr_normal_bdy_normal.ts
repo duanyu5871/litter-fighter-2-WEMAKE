@@ -1,8 +1,10 @@
 import { ICollision } from "../base";
 import { Defines, ItrEffect, SparkEnum, StateEnum } from "../defines";
 import { is_character, same_face, turn_face } from "../entity";
+import { handle_fall } from "./handle_fall";
+import { handle_injury } from "./handle_injury";
 import { handle_itr_kind_freeze } from "./handle_itr_kind_freeze";
-import { handle_fall, take_injury } from "./handle_fall";
+import { handle_rest } from "./handle_rest";
 import { is_armor_work } from "./is_armor_work";
 
 export function handle_itr_normal_bdy_normal(collision: ICollision) {
@@ -15,7 +17,8 @@ export function handle_itr_normal_bdy_normal(collision: ICollision) {
     case ItrEffect.MFire1:
     case ItrEffect.MFire2:
     case ItrEffect.FireExplosion: {
-      take_injury(itr, victim, attacker);
+      handle_injury(collision);
+      handle_rest(collision)
       victim.toughness = 0;
       victim.fall_value = 0;
       victim.defend_value = 0;
@@ -39,8 +42,9 @@ export function handle_itr_normal_bdy_normal(collision: ICollision) {
       break;
     case ItrEffect.Ice: {
       if (victim.frame.state === StateEnum.Frozen) {
-        take_injury(itr, victim, attacker);
+        handle_injury(collision);
         handle_fall(collision);
+        handle_rest(collision)
       } else {
         handle_itr_kind_freeze(collision)
       }
@@ -51,7 +55,8 @@ export function handle_itr_normal_bdy_normal(collision: ICollision) {
     case ItrEffect.Sharp:
     case void 0: {
       const { fall = Defines.DEFAULT_ITR_FALL } = itr;
-      take_injury(itr, victim, attacker);
+      handle_injury(collision);
+      handle_rest(collision)
       victim.fall_value -= fall;
       victim.defend_value = 0;
       const is_fall = victim.fall_value <= 0 ||
@@ -70,9 +75,9 @@ export function handle_itr_normal_bdy_normal(collision: ICollision) {
         victim.velocity_0.z = 0;
 
         const [x, y, z] = victim.spark_point(a_cube, b_cube)
-        if (itr.effect === ItrEffect.Sharp) {
+        if (itr.effect === ItrEffect.Sharp && is_character(victim)) {
           victim.world.spark(x, y, z, SparkEnum.Bleed);
-        } else if (is_character(victim)) {
+        } else {
           victim.world.spark(x, y, z, SparkEnum.Hit);
         }
         if (StateEnum.Caught === victim.frame.state) {

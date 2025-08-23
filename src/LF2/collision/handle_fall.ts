@@ -1,9 +1,7 @@
 
 import { ICollision } from "../base/ICollision";
-import { IItrInfo, ItrEffect, SparkEnum, TFace } from "../defines";
-import { Entity } from "../entity/Entity";
+import { ItrEffect, SparkEnum, TFace } from "../defines";
 import { is_character } from "../entity/type_check";
-import { round } from "../utils";
 
 export function handle_fall(collision: ICollision) {
   const { itr, attacker, victim, a_cube, b_cube } = collision;
@@ -29,19 +27,4 @@ export function handle_fall(collision: ICollision) {
   const direction: TFace = victim.velocity_0.x / victim.facing >= 0 ? 1 : -1;
   if (victim.data.indexes?.critical_hit)
     victim.next_frame = { id: victim.data.indexes.critical_hit[direction][0] };
-}
-export function take_injury(
-  itr: IItrInfo,
-  victim: Entity,
-  attacker: Entity,
-  scale: number = 1,
-) {
-  if (!itr.injury) return;
-  const injury = round(itr.injury * scale);
-  if (injury) {
-    victim.hp -= injury;
-    victim.hp_r -= round(injury * (1 - victim.world.hp_recoverability))
-  }
-  attacker.add_damage_sum(injury);
-  if (victim.hp <= 0) attacker.add_kill_sum(1);
 }
