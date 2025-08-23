@@ -128,7 +128,6 @@ export async function cook_ui_info(
   
   ret.enabled = parse_ui_value(ret, 'boolean', raw_info.enabled) ?? true
 
-
   const { img } = raw_info;
   if (img) ret.img_infos.push(...await ui_load_img(lf2, img, ret.img));
 

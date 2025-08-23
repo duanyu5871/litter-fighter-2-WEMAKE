@@ -2,7 +2,7 @@
   "id": "CHARMENU",
   "name": "UI: 八人框",
   "img": {
-    "path": "sprite/CHARMENU.png",
+    "path": "!sprite/CHARMENU.png",
     "w": 599,
     "h": 406
   },
@@ -24,7 +24,7 @@
               "center": "0.5,0.5",
               "visible": true,
               "img": {
-                "path": "sprite/CMA.png",
+                "path": "!sprite/CMA.png",
                 "w": 120,
                 "h": 66
               }

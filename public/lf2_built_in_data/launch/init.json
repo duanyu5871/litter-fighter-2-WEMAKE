@@ -41,7 +41,7 @@
     {
       "id": "bearface",
       "img": {
-        "path": "launch/bearface.png",
+        "path": "!launch/bearface.png",
         "w": 100,
         "h": 100
       },
@@ -96,7 +96,7 @@
     {
       "id": "yeonface",
       "img": {
-        "path": "launch/yeonface.png",
+        "path": "!launch/yeonface.png",
         "w": 100,
         "h": 100
       },

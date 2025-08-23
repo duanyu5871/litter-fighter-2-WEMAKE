@@ -200,8 +200,6 @@ export class EntityInfoRender implements IEntityCallbacks {
     } else if (entity.reserve) {
       entity.name = is_character(entity) ? entity.data.base.name : ''
       this.world_renderer.scene.add(this.name_node);
-    } else {
-      this.world_renderer.scene.add(this.name_node);
     }
     this.world_renderer.scene.add(this.key_node);
     this.on_name_changed(entity)

@@ -2,7 +2,7 @@
   "id": "player_keys_hints",
   "name": "玩家按键提示",
   "img": {
-    "path": "sprite/MENU_CLIP5.png",
+    "path": "!sprite/MENU_CLIP5.png",
     "x": 0,
     "y": 389,
     "w": 530,

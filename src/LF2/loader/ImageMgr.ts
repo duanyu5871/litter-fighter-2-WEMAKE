@@ -30,7 +30,9 @@ export class ImageMgr {
   }
 
   async create_img_info(key: string, src: string, operations?: ImageOperation[]): Promise<ImageInfo> {
-    const [blob_url, src_url] = await this.lf2.import_resource(src);
+    const exact = src.startsWith('!')
+    if (exact) src = src.substring(1)
+    const [blob_url, src_url] = await this.lf2.import_resource(src, exact);
     const img = await create_img_ele(blob_url);
     img.setAttribute('src-url', src_url)
 

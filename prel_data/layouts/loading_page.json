@@ -11,7 +11,7 @@
     {
       "id": "bg_wait",
       "img": {
-        "path": "sprite/MENU_WAIT_SHORT.png",
+        "path": "!sprite/MENU_WAIT_SHORT.png",
         "w": 794,
         "h": 450
       }
@@ -19,7 +19,7 @@
     {
       "id": "img_loading_text",
       "img": {
-        "path": "sprite/MENU_WAIT_LOADING_TEXT.png",
+        "path": "!sprite/MENU_WAIT_LOADING_TEXT.png",
         "w": 158,
         "h": 43
       },
@@ -28,7 +28,7 @@
     {
       "id": "main_title",
       "img": {
-        "path": "sprite/MENU_CLIP.png",
+        "path": "!sprite/MENU_CLIP.png",
         "x": 40,
         "y": 41,
         "w": 456,

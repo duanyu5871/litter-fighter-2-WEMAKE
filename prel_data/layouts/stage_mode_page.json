@@ -45,7 +45,7 @@
     {
       "id": "go",
       "img": {
-        "path": "sprite/MENU_CLIP3.png",
+        "path": "!sprite/MENU_CLIP3.png",
         "x": 328,
         "y": 401,
         "w": 132,

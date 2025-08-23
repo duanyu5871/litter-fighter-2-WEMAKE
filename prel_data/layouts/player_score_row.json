@@ -2,7 +2,7 @@
   "id": "player_score_row",
   "name": "UI: 玩家分数栏",
   "img": {
-    "path": "sprite/SCORE_BOARD2.png",
+    "path": "!sprite/SCORE_BOARD2.png",
     "w": 490,
     "h": 45
   },

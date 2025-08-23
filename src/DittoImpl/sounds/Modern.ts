@@ -133,7 +133,7 @@ export class __Modern extends BaseSounds {
   override load(name: string, src: string): Promise<AudioBuffer> {
     return this._r.fetch(name, async () => {
       this.lf2.on_loading_content(`${name}`, 0);
-      const [dat] = await this.lf2.import_array_buffer(src);
+      const [dat] = await this.lf2.import_array_buffer(src, false);
       const buf = this.ctx.decodeAudioData(dat);
       this.lf2.on_loading_content(`${name}`, 100);
       return buf;

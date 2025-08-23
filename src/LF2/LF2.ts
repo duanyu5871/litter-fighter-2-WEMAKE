@@ -182,7 +182,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
   }
   on_click_character?: (c: Entity) => void;
 
-  protected find_in_zip(paths: string[], mark: string): IZipObject | undefined {
+  protected find_in_zip(paths: string[]): IZipObject | undefined {
     const len = paths.length;
     for (let i = 0; i < len; i++) {
       const idx = i
@@ -199,13 +199,14 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
    *
    * @template C 
    * @param {string} path
+   * @param {boolean} exact 准确匹配
    * @return {Promise<C>}
    * @memberof LF2
    */
   @PIO
-  async import_json<C = any>(path: string): Promise<[C, HitUrl]> {
-    const [paths, mark] = get_import_fallbacks(path);
-    const zip_obj = this.find_in_zip(paths, mark)
+  async import_json<C = any>(path: string, exact: boolean = true): Promise<[C, HitUrl]> {
+    const paths = exact ? [path] : get_import_fallbacks(path)[0];
+    const zip_obj = this.find_in_zip(paths)
     if (zip_obj) return [await zip_obj.json<C>(), zip_obj.name];
     const ret = await ditto.Importer.import_as_json<C>(paths);
     return ret;
@@ -215,19 +216,20 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
    * 加载资源
    *
    * @param {string} path 资源路径
+   * @param {boolean} exact 准确匹配
    * @return {Promise<[BlobUrl, HitUrl]>}
    * @memberof LF2
    */
-  @PIO async import_resource(path: string): Promise<[BlobUrl, HitUrl]> {
-    const [paths, mark] = get_import_fallbacks(path);
-    const zip_obj = this.find_in_zip(paths, mark)
+  @PIO async import_resource(path: string, exact: boolean): Promise<[BlobUrl, HitUrl]> {
+    const paths = exact ? [path] : get_import_fallbacks(path)[0];
+    const zip_obj = this.find_in_zip(paths)
     if (zip_obj) return [await zip_obj.blob_url(), zip_obj.name];
     return ditto.Importer.import_as_blob_url(paths);
   }
 
-  @PIO async import_array_buffer(path: string): Promise<[ArrayBuffer, HitUrl]> {
-    const [paths, mark] = get_import_fallbacks(path);
-    const zip_obj = this.find_in_zip(paths, mark)
+  @PIO async import_array_buffer(path: string, exact: boolean): Promise<[ArrayBuffer, HitUrl]> {
+    const paths = exact ? [path] : get_import_fallbacks(path)[0];
+    const zip_obj = this.find_in_zip(paths)
     if (zip_obj) return [await zip_obj.array_buffer(), zip_obj.name];
     return ditto.Importer.import_as_array_buffer(paths);
   }

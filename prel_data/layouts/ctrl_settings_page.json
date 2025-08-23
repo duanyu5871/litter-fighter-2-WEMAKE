@@ -195,7 +195,7 @@
     {
       "id": "main_menu",
       "img": {
-        "path": "sprite/MENU_CLIP2.png",
+        "path": "!sprite/MENU_CLIP2.png",
         "x": 0,
         "y": 0,
         "w": 626,
@@ -257,7 +257,7 @@
     {
       "id": "btn_confirm",
       "img": {
-        "path": "sprite/MENU_CLIP.png",
+        "path": "!sprite/MENU_CLIP.png",
         "x": 489,
         "y": 426,
         "w": 151,
@@ -277,7 +277,7 @@
     {
       "id": "btn_cancel",
       "img": {
-        "path": "sprite/MENU_CLIP.png",
+        "path": "!sprite/MENU_CLIP.png",
         "x": 643,
         "y": 426,
         "w": 151,

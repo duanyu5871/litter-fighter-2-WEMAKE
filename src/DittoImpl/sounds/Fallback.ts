@@ -112,7 +112,7 @@ export class __Fallback extends BaseSounds {
   }
 
   override play_bgm(name: string, restart?: boolean | undefined): () => void {
-    if (!restart && this._prev_bgm_url === name) return () => {};
+    if (!restart && this._prev_bgm_url === name) return () => { };
     const prev = this.bgm();
     if (this._bgm_ele) this.stop_bgm();
     this._bgm_ele = document.createElement("audio");
@@ -133,7 +133,7 @@ export class __Fallback extends BaseSounds {
   }
 
   override async load(name: string, src: string): Promise<void> {
-    const [url] = await this.lf2.import_resource(src);
+    const [url] = await this.lf2.import_resource(src, false);
     this._r.set(name, url);
   }
 

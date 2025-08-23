@@ -2,7 +2,7 @@
   "id": "how_many_computer",
   "name": "UI: 电脑玩家数量选择框",
   "img": {
-    "path": "sprite/CMC.png",
+    "path": "!sprite/CMC.png",
     "w": 365,
     "h": 111
   },
