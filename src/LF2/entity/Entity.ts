@@ -751,24 +751,8 @@ export class Entity implements IDebugging {
     return this;
   }
 
-  set_state(next_state_code: number) {
-    let next_state = this.states.get(next_state_code);
-    if (!next_state) {
-      // state not found!
-      // debugger; 
-      const next_state_key = this.data.type + next_state_code;
-      next_state = this.states.get(next_state_key);
-      if (!next_state) {
-        let State: typeof State_Base;
-        switch (this.data.type) {
-          case EntityEnum.Character: State = CharacterState_Base; break;
-          case EntityEnum.Weapon: State = WeaponState_Base; break;
-          case EntityEnum.Ball: State = BallState_Base; break;
-          case EntityEnum.Entity: default: State = State_Base; break;
-        }
-        this.states.set(next_state_key, (next_state = new State()));
-      }
-    }
+  set_state(state_code: number) {
+    const next_state = this.states.get(state_code) || this.states.fallback(this.data.type, state_code);
     this.state = next_state;
   }
 
@@ -786,14 +770,6 @@ export class Entity implements IDebugging {
     if (v.invisible) this.invisibility(v.invisible);
     if (v.opoint) this.apply_opoints(v.opoint);
     if (!v.cpoint) delete this._catching;
-    const attacking = !!this.frame.itr?.find((v) => {
-      return (
-        v.kind !== ItrKind.Pick &&
-        v.kind !== ItrKind.PickSecretly &&
-        v.kind !== ItrKind.Catch &&
-        v.kind !== ItrKind.ForceCatch
-      );
-    });
   }
 
   apply_opoints(opoints: IOpointInfo[]) {

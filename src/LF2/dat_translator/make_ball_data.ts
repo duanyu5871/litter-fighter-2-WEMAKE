@@ -1,6 +1,7 @@
 import { BuiltIn_OID, Defines, FacingFlag, ItrKind, OpointSpreading, StateEnum } from "../defines";
 import { CollisionVal as C_Val } from "../defines/CollisionVal";
 import { EntityEnum } from "../defines/EntityEnum";
+import { EntityVal } from "../defines/EntityVal";
 import { FrameBehavior } from "../defines/FrameBehavior";
 import { IDatIndex } from "../defines/IDatIndex";
 import { IEntityData } from "../defines/IEntityData";
@@ -18,6 +19,7 @@ import { cook_ball_frame_state_3006 } from "./cook_ball_frame_state_3006";
 import { get_next_frame_by_raw_id } from "./get_the_next";
 import { take, take_str } from "./take";
 
+const hp_gt_0 = new CondMaker<EntityVal>().and(EntityVal.HP, '>', 0).done()
 export function make_ball_data(
   info: IEntityInfo,
   frames: Record<string, IFrameInfo>,
@@ -69,7 +71,7 @@ export function make_ball_data(
         frame.ctrl_acc_y = Defines.JOHN_CHASE_ACC_Y
         frame.ctrl_spd_y_m = SpeedMode.AccTo;
         break;
-      case FrameBehavior.DennisChase:
+      case FrameBehavior.DennisChase: {
         frame.ctrl_spd_x = Defines.DENNIS_CHASE_MAX_VX;
         frame.ctrl_acc_x = Defines.DENNIS_CHASE_ACC_X;
         frame.ctrl_spd_x_m = SpeedMode.AccTo;
@@ -80,7 +82,14 @@ export function make_ball_data(
         frame.ctrl_acc_y = Defines.DENNIS_CHASE_ACC_Y;
         frame.ctrl_spd_y_m = SpeedMode.AccTo;
         frame.on_dead = { id: '5' }
+        switch (frame.id) {
+          case '1': frame.key_down = { 'F': { id: '3', wait: 'i', expression: hp_gt_0 } }; break;
+          case '2': frame.key_down = { 'F': { id: '4', wait: 'i', expression: hp_gt_0 } }; break;
+          case '3': frame.key_down = { 'B': { id: '1', wait: 'i', expression: hp_gt_0 } }; break;
+          case '4': frame.key_down = { 'B': { id: '2', wait: 'i', expression: hp_gt_0 } }; break;
+        }
         break;
+      }
       case FrameBehavior._03:
         break;
       case FrameBehavior._04:
@@ -129,7 +138,7 @@ export function make_ball_data(
       case FrameBehavior.FirzenDisasterStart:
         firzen_disater_start(frame);
         break;
-      case FrameBehavior.JohnBiscuitLeaving:hit_Fa: 2
+      case FrameBehavior.JohnBiscuitLeaving:
         frame.dvx = 15;
         frame.acc_x = 2;
         frame.vxm = SpeedMode.AccTo;
@@ -185,7 +194,7 @@ export function make_ball_data(
           action: { id: "10" },
         });
         break;
-      case FrameBehavior.JulianBall:
+      case FrameBehavior.JulianBall: {
         frame.ctrl_spd_x = 5;
         frame.ctrl_acc_x = 0.1;
         frame.ctrl_spd_x_m = SpeedMode.AccTo;
@@ -195,7 +204,14 @@ export function make_ball_data(
         frame.ctrl_spd_y = 1;
         frame.ctrl_acc_y = 0.01;
         frame.ctrl_spd_y_m = SpeedMode.AccTo;
+        const fid = Number(frame.id)
+        if (fid >= 50 && fid <= 59) {
+          frame.key_down = { 'F': { id: '' + (fid - 50), wait: 'i', expression: hp_gt_0 } }; break;
+        } else if (fid >= 1 && fid <= 9) {
+          frame.key_down = { 'B': { id: '' + (fid + 50), wait: 'i', expression: hp_gt_0 } }; break;
+        }
         break;
+      }
     }
     if (frame.itr) {
       for (const itr of frame.itr) {

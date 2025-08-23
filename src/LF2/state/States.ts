@@ -1,10 +1,16 @@
+import { EntityEnum, TEntityEnum } from "../defines";
+import BallState_Base from "./BallState_Base";
+import CharacterState_Base from "./CharacterState_Base";
 import State_Base from "./State_Base";
+import WeaponState_Base from "./WeaponState_Base";
 
 export class States {
   readonly map = new Map<number | string, State_Base>();
+
   get(key: number | string) {
     return this.map.get(key);
   }
+
   set(key: number | string, value: State_Base) {
     if (this.map.has(key)) debugger;
     if (typeof key === "number") value.state = key;
@@ -30,6 +36,30 @@ export class States {
       const value = create(key);
       this.set(key, value);
     }
+  }
+
+  fallback(type: TEntityEnum, code: number): State_Base {
+    const state_key = type + code;
+    let state = this.get(state_key);
+    if (!state) {
+      let State: typeof State_Base;
+      switch (type) {
+        case EntityEnum.Character:
+          State = CharacterState_Base;
+          break;
+        case EntityEnum.Weapon:
+          State = WeaponState_Base;
+          break;
+        case EntityEnum.Ball:
+          State = BallState_Base;
+          break;
+        default:
+          State = State_Base;
+          break;
+      }
+      this.set(state_key, (state = new State()));
+    }
+    return state
   }
 }
 export default States;
