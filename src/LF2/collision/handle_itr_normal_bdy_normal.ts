@@ -1,17 +1,16 @@
 import { ICollision } from "../base";
-import { Defines, ItrEffect, SparkEnum, StateEnum } from "../defines";
+import { Defines, ItrEffect, SparkEnum, StateEnum, TFace } from "../defines";
 import { is_character, same_face, turn_face } from "../entity";
 import { handle_fall } from "./handle_fall";
 import { handle_injury } from "./handle_injury";
 import { handle_itr_kind_freeze } from "./handle_itr_kind_freeze";
 import { handle_rest } from "./handle_rest";
+import { handle_stiffness } from "./handle_stiffness";
 import { is_armor_work } from "./is_armor_work";
 
 export function handle_itr_normal_bdy_normal(collision: ICollision) {
   if (is_armor_work(collision)) return;
   const { itr, attacker, victim, a_cube, b_cube } = collision;
-  attacker.motionless = itr.motionless ?? collision.victim.world.itr_motionless;
-  victim.shaking = (itr.shaking ?? collision.attacker.world.itr_shaking) * 2;
   switch (itr.effect) {
     case ItrEffect.Fire:
     case ItrEffect.MFire1:
@@ -19,22 +18,8 @@ export function handle_itr_normal_bdy_normal(collision: ICollision) {
     case ItrEffect.FireExplosion: {
       handle_injury(collision);
       handle_rest(collision)
-      victim.toughness = 0;
-      victim.fall_value = 0;
-      victim.defend_value = 0;
-      victim.velocity_0.y = (itr.dvy ?? attacker.world.ivy_d) * attacker.world.ivy_f;
-      victim.velocity_0.z = 0;
-      const direction = ItrEffect.FireExplosion === itr.effect
-        ? victim.position.x > attacker.position.x
-          ? -1
-          : 1
-        : attacker.facing;
-      victim.velocity_0.x = (itr.dvx || 0) * direction;
-      if (victim.data.indexes?.fire)
-        victim.next_frame = {
-          id: victim.data.indexes.fire[0],
-          facing: turn_face(attacker.facing),
-        };
+      handle_stiffness(collision)
+      handle_fall(collision);
       break;
     }
     case ItrEffect.Ice2:
@@ -43,8 +28,9 @@ export function handle_itr_normal_bdy_normal(collision: ICollision) {
     case ItrEffect.Ice: {
       if (victim.frame.state === StateEnum.Frozen) {
         handle_injury(collision);
-        handle_fall(collision);
+        handle_stiffness(collision)
         handle_rest(collision)
+        handle_fall(collision);
       } else {
         handle_itr_kind_freeze(collision)
       }
@@ -54,9 +40,10 @@ export function handle_itr_normal_bdy_normal(collision: ICollision) {
     case ItrEffect.Normal:
     case ItrEffect.Sharp:
     case void 0: {
-      const { fall = Defines.DEFAULT_ITR_FALL } = itr;
       handle_injury(collision);
       handle_rest(collision)
+      handle_stiffness(collision)
+      const { fall = Defines.DEFAULT_ITR_FALL } = itr;
       victim.fall_value -= fall;
       victim.defend_value = 0;
       const is_fall = victim.fall_value <= 0 ||

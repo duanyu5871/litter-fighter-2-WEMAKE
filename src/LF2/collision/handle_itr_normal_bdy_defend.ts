@@ -3,7 +3,7 @@ import { Defines, ItrEffect, SparkEnum } from "../defines";
 import { handle_injury } from "./handle_injury";
 import { handle_itr_normal_bdy_normal } from "./handle_itr_normal_bdy_normal";
 import { handle_rest } from "./handle_rest";
-
+import { handle_stiffness } from "./handle_stiffness";
 
 export function handle_itr_normal_bdy_defend(collision: ICollision) {
   const { itr, attacker, victim, a_cube, b_cube, bdy } = collision;
@@ -17,11 +17,11 @@ export function handle_itr_normal_bdy_defend(collision: ICollision) {
     handle_itr_normal_bdy_normal(collision);
     return;
   }
-  attacker.motionless = itr.motionless ?? collision.victim.world.itr_motionless;
-  victim.shaking = itr.shaking ?? collision.attacker.world.itr_shaking;
+
   victim.defend_value -= bdefend;
   handle_injury(collision, 0.1);
   handle_rest(collision)
+  handle_stiffness(collision)
   const [x, y, z] = victim.spark_point(a_cube, b_cube);
   if (victim.defend_value <= 0) {
     // 破防

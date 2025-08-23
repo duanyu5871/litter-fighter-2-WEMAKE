@@ -1,9 +1,11 @@
 import { ICollision } from "../base";
 import { Defines, WeaponType } from "../defines";
 import { handle_rest } from "./handle_rest";
+import { handle_stiffness } from "./handle_stiffness";
 
 export function handle_weapon_is_hit(collision: ICollision): void {
   handle_rest(collision)
+  handle_stiffness(collision)
   const { itr, attacker, victim, a_cube, b_cube } = collision;
 
   if (itr.bdefend && itr.bdefend >= Defines.DEFAULT_FORCE_BREAK_DEFEND_VALUE) {
@@ -16,10 +18,6 @@ export function handle_weapon_is_hit(collision: ICollision): void {
   const is_fly = itr.fall && itr.fall >= Defines.DEFAULT_FALL_VALUE_FLY;
   const spark_frame_name = is_fly ? "slient_critical_hit" : "slient_hit";
   victim.world.spark(...collision.victim.spark_point(a_cube, b_cube), spark_frame_name);
-
-  attacker.motionless = itr.motionless ?? collision.victim.world.itr_motionless;
-  victim.shaking = itr.shaking ?? collision.attacker.world.itr_shaking;
-
   victim.data.base.hit_sounds
 
   if (victim.data.base.type === WeaponType.Heavy) {
