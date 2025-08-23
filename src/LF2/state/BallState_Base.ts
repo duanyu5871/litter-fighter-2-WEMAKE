@@ -18,7 +18,7 @@ export default class BallState_Base extends State_Base {
           e.world.del_entity_chaser(e);
           break;
       }
-      switch (prev_frame.behavior as FrameBehavior) {
+      switch (frame.behavior as FrameBehavior) {
         case FrameBehavior.JohnChase:
         case FrameBehavior.DennisChase:
         case FrameBehavior._03:
@@ -51,7 +51,27 @@ export default class BallState_Base extends State_Base {
     e.handle_frame_velocity();
   }
   override on_collision(collision: ICollision): void {
-    const { attacker, victim } = collision;
+    const { attacker, victim, aframe } = collision;
+    switch (aframe.behavior as FrameBehavior) {
+      case FrameBehavior.JohnChase:
+        attacker.hp = attacker.hp_r = 0;
+        break;
+      case FrameBehavior.DennisChase:
+      case FrameBehavior._03:
+      case FrameBehavior._04:
+      case FrameBehavior._05:
+      case FrameBehavior._06:
+      case FrameBehavior.ChasingSameEnemy:
+      case FrameBehavior.BatStart:
+      case FrameBehavior.FirzenDisasterStart:
+      case FrameBehavior.JohnBiscuitLeaving:
+      case FrameBehavior.FirzenVolcanoStart:
+      case FrameBehavior.Bat:
+      case FrameBehavior.JulianBallStart:
+      case FrameBehavior.JulianBall:
+        break;
+    }
+
     if (is_character(victim) || is_weapon(victim)) {
       attacker.velocities.length = 1;
       switch (attacker.frame.state) {

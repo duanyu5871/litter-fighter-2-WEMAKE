@@ -65,6 +65,9 @@ export function handle_armor(collision: ICollision): boolean {
   const { bdefend = 0 } = itr;
   if (bdefend >= Defines.DEFAULT_FORCE_BREAK_DEFEND_VALUE) return false;
 
+  const { aframe } = collision;
+  if (aframe.state === StateEnum.Ball_3006) return false;
+
   const { a_cube, b_cube } = collision;
   const {
     type,

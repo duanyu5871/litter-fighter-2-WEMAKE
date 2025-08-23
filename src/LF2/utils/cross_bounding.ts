@@ -10,6 +10,5 @@ export function cross_bounding(r0: IBounding, r1: IBounding): IBounding {
     far: max(r0.far, r1.far),
     near: min(r0.near, r1.near),
   }
-  debugger;
   return ret;
 }

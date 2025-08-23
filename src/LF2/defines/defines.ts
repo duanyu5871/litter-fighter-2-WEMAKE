@@ -380,8 +380,8 @@ export namespace Defines {
   export const DENNIS_CHASE_MAX_VX = 7
   export const DENNIS_CHASE_ACC_X = 0.25
   export const DENNIS_CHASE_ACC_Z = 0.25
-  export const DENNIS_CHASE_MAX_VY = 1
-  export const DENNIS_CHASE_ACC_Y = 0.05
+  export const DENNIS_CHASE_MAX_VY = 0.2
+  export const DENNIS_CHASE_ACC_Y = 0.01
 
   export const DISATER_SPREADING_VX = arithmetic_progression(-7, 7, 1)
   export const DISATER_SPREADING_VY = arithmetic_progression(0.5, 3, 0.5)
@@ -394,8 +394,8 @@ export namespace Defines {
   export const JOHN_CHASE_MAX_VX = 6.5
   export const JOHN_CHASE_ACC_X = 0.25
   export const JOHN_CHASE_ACC_Z = 0.25
-  export const JOHN_CHASE_MAX_VY = 1
-  export const JOHN_CHASE_ACC_Y = 0.05
+  export const JOHN_CHASE_MAX_VY = 0.2
+  export const JOHN_CHASE_ACC_Y = 0.01
 }
 
 export default Defines;

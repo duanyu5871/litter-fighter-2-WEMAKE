@@ -47,7 +47,7 @@ export class WorldDataset implements IWorldDataset {
   ivy_f: number = 1;
   ivz_f: number = 1;
   ivx_f: number = 1;
-  ivy_d: number = 5.5;
+  ivy_d: number = 3;
   ivx_d: number = 4;
 
   /**

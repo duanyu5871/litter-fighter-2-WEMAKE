@@ -1,3 +1,4 @@
+import { FrameBehavior } from "./FrameBehavior";
 import type { IBdyInfo } from "./IBdyInfo";
 import type { IBpointInfo } from "./IBpointInfo";
 import type { ICpointInfo } from "./ICpointInfo";
@@ -162,7 +163,7 @@ export interface IFrameInfo {
    * @type {?number}
    * @see {FrameBehavior}
    */
-  behavior?: number;
+  behavior?: number | FrameBehavior;
 
   on_hit_ground?: TNextFrame;
 }

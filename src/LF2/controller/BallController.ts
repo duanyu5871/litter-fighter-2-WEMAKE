@@ -17,14 +17,15 @@ export class BallController extends BaseController {
       case FrameBehavior.ChasingSameEnemy:
       case FrameBehavior.Bat:
       case FrameBehavior.JulianBall:
-        this.target_position = this.target_position ?? this.entity.position.clone();
+        if (!this.target_position)
+          this.target_position = this.target_position ?? this.entity.position.clone();
         break;
     }
     if (this.entity.chasing_target) {
       this.target_position = this.entity.chasing_target.position.clone();
       this.target_position.y += this.entity.chasing_target.frame.centery / 2
     }
-
+    const { facing } = this.entity
     if (this.target_position) {
       const p2 = this.target_position;
       const p1 = this.entity.position;
@@ -45,8 +46,8 @@ export class BallController extends BaseController {
           this.release(j, d)
         }
       } else {
-        this.entity.velocity_0.y = 0;
-        this.release(U, D, R, L, j, d)
+        this.press(facing === -1 ? L : R, d)
+          .release(facing === -1 ? R : L, j)
       }
       if (a.x > 0 && this.entity.facing < 0) {
         this.entity.facing = 1

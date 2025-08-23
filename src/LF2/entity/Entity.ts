@@ -22,7 +22,7 @@ import BallState_Base from "../state/BallState_Base";
 import CharacterState_Base from "../state/CharacterState_Base";
 import { State_Base } from "../state/State_Base";
 import WeaponState_Base from "../state/WeaponState_Base";
-import { abs, arithmetic_progression, floor, max, min, round } from "../utils";
+import { abs, floor, max, min, round } from "../utils";
 import { cross_bounding } from "../utils/cross_bounding";
 import { is_num, is_positive, is_str } from "../utils/type_check";
 import { EMPTY_FRAME_INFO } from "./EMPTY_FRAME_INFO";
