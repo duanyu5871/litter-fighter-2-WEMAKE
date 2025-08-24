@@ -5,6 +5,7 @@ import { bdy_action_handlers } from "../entity/bdy_action_handlers";
 import { itr_action_handlers } from "../entity/itr_action_handlers";
 import { arithmetic_progression } from "../utils";
 import { handle_ball_hit_other } from "./handle_ball_hit_other";
+import { handle_ball_is_hit } from "./handle_ball_is_hit";
 import { handle_body_goto } from "./handle_body_goto";
 import { handle_healing } from "./handle_healing";
 import { handle_itr_kind_catch } from "./handle_itr_kind_catch";
@@ -217,7 +218,7 @@ collisions_keeper.add(
   [ItrKind.Normal],
   [EntityEnum.Ball],
   [BdyKind.Normal],
-  handle_ball_hit_other
+  handle_ball_is_hit
 )
 
 collisions_keeper.add(

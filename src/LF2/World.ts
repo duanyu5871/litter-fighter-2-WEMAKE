@@ -309,7 +309,9 @@ export class World extends WorldDataset {
 
   protected _time = 0;
   get time() { return this._time }
+  protected _updating = 0
   update_once() {
+    this._updating = 1;
     if (this._time === Number.MAX_SAFE_INTEGER) this._time = 0;
     else ++this._time;
 
@@ -350,6 +352,7 @@ export class World extends WorldDataset {
     this.del_entities(this.gone_entities);
     this.collision_detections();
     this.stage.update();
+    this._updating = 0;
   }
 
   render_once(dt: number) {

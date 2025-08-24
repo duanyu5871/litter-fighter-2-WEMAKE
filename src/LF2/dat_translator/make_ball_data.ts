@@ -198,14 +198,14 @@ export function make_ball_data(
         });
         break;
       case FrameBehavior.JulianBall: {
-        frame.ctrl_spd_x = 5;
-        frame.ctrl_acc_x = 0.1;
+        frame.ctrl_spd_x = Defines.DENNIS_CHASE_MAX_VX;
+        frame.ctrl_acc_x = Defines.DENNIS_CHASE_ACC_X;
         frame.ctrl_spd_x_m = SpeedMode.AccTo;
-        frame.ctrl_spd_z = 3;
-        frame.ctrl_acc_z = 0.1;
+        frame.ctrl_spd_z = Defines.DEFAULT_OPOINT_SPEED_Z;
+        frame.ctrl_acc_z = Defines.DENNIS_CHASE_ACC_Z;
         frame.ctrl_spd_z_m = SpeedMode.AccTo;
-        frame.ctrl_spd_y = 1;
-        frame.ctrl_acc_y = 0.01;
+        frame.ctrl_spd_y = Defines.DENNIS_CHASE_MAX_VY;
+        frame.ctrl_acc_y = Defines.DENNIS_CHASE_ACC_Y;
         frame.ctrl_spd_y_m = SpeedMode.AccTo;
         const fid = Number(frame.id)
         if (fid >= 50 && fid <= 59) {

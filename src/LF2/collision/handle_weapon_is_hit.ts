@@ -1,18 +1,17 @@
 import { ICollision } from "../base";
 import { Defines, WeaponType } from "../defines";
+import { handle_injury } from "./handle_injury";
 import { handle_rest } from "./handle_rest";
 import { handle_stiffness } from "./handle_stiffness";
 
 export function handle_weapon_is_hit(collision: ICollision): void {
   handle_rest(collision)
   handle_stiffness(collision)
+  handle_injury(collision)
   const { itr, attacker, victim, a_cube, b_cube } = collision;
 
   if (itr.bdefend && itr.bdefend >= Defines.DEFAULT_FORCE_BREAK_DEFEND_VALUE) {
     victim.hp = victim.hp_r = 0;
-  } else if (itr.injury) {
-    victim.hp -= itr.injury;
-    victim.hp_r -= itr.injury;
   }
 
   const is_fly = itr.fall && itr.fall >= Defines.DEFAULT_FALL_VALUE_FLY;

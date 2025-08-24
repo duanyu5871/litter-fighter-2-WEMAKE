@@ -4,13 +4,12 @@ import { Callbacks, ICollision, new_id, new_team, type NoEmitCallbacks } from ".
 import { BaseController } from "../controller/BaseController";
 import { InvalidController } from "../controller/InvalidController";
 import {
-  BdyKind, Builtin_FrameId, Defines, EntityEnum, FacingFlag, FrameBehavior, IBaseData, IBounding,
+  Builtin_FrameId, Defines, EntityEnum, FacingFlag, FrameBehavior, IBaseData, IBounding,
   ICpointInfo, IEntityData, IFrameInfo,
   IItrInfo,
   INextFrame,
   INextFrameResult,
   IOpointInfo, IPos,
-  ItrEffect,
   ItrKind,
   IVector3,
   OpointKind, OpointMultiEnum, OpointSpreading, SpeedMode, StateEnum, TFace,
@@ -20,16 +19,14 @@ import { IArmorInfo } from "../defines/IArmorInfo";
 import Ditto from "../ditto";
 import { ENTITY_STATES, States } from "../state";
 import { State_Base } from "../state/State_Base";
-import { abs, find, floor, max, min, round } from "../utils";
+import { abs, floor, max, min, round } from "../utils";
 import { cross_bounding } from "../utils/cross_bounding";
 import { is_num, is_positive, is_str } from "../utils/type_check";
 import { EMPTY_FRAME_INFO } from "./EMPTY_FRAME_INFO";
 import { Factory } from "./Factory";
 import { GONE_FRAME_INFO } from "./GONE_FRAME_INFO";
 import type IEntityCallbacks from "./IEntityCallbacks";
-import { bdy_action_handlers } from "./bdy_action_handlers";
 import { turn_face } from "./face_helper";
-import { itr_action_handlers } from "./itr_action_handlers";
 import { IDebugging, make_debugging } from "./make_debugging";
 import { is_character, is_weapon_data } from "./type_check";
 function calc_v(
@@ -864,7 +861,7 @@ export class Entity implements IDebugging {
       /*
       Note: 继承v_rests，避免重复反弹ball...
       */
-      entity.v_rests.set(k, v);
+      entity.v_rests.set(k, { ...v });
     }
 
     return entity;

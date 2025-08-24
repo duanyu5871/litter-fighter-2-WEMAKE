@@ -1,9 +1,8 @@
 import { ICollision } from "../base";
-import { FrameBehavior, ItrKind, StateEnum } from "../defines";
-import { is_character, is_weapon } from "../entity";
+import { FrameBehavior } from "../defines";
 
 export function handle_ball_hit_other(collision: ICollision): void {
-  const { attacker, victim, aframe } = collision;
+  const { attacker, aframe } = collision;
   switch (aframe.behavior as FrameBehavior) {
     case FrameBehavior.JohnChase:
       attacker.hp = attacker.hp_r = 0;
@@ -23,19 +22,5 @@ export function handle_ball_hit_other(collision: ICollision): void {
     case FrameBehavior.JulianBall:
       break;
   }
-
-  // if (is_character(victim) || is_weapon(victim)) {
-  //   attacker.velocities.length = 1;
-  //   switch (attacker.frame.state) {
-  //     case ItrKind.JohnShield:
-  //     case StateEnum.Ball_Flying:
-  //       const { victim } = collision;
-  //       victim.shaking = 0;
-  //       victim.velocities.length = 1;
-  //       victim.velocity_0.x = 0;
-  //       victim.velocity_0.z = 0;
-  //       victim.velocity_0.y = 0;
-  //       break;
-  //   }
-  // }
+  attacker.play_sound(attacker.data.base.hit_sounds)
 }

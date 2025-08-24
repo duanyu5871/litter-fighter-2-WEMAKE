@@ -12,8 +12,8 @@ export function preprocess_frame_pic(lf2: LF2, data: IEntityData, frame: IFrameI
   const { pic } = frame;
   if (!pic) return pic;
 
-  const pic_info = find(data.base.files, (v) => v.id === pic.tex);
-  if (pic_info === void 0) {
+  const pic_info = find(data.base.files, ([,v]) => v.id === pic.tex)?.[1];
+  if (!pic_info) {
     Ditto.Warn(preprocess_frame_pic.TAG, "file info not found, pic:", pic);
     return pic;
   }

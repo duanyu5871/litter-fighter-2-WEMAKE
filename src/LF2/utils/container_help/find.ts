@@ -1,12 +1,15 @@
+import { Unsafe } from "../type_check";
 
-export function find<T>(set: Set<T>, p: (v: T) => unknown): T | undefined;
-export function find<T>(array: T[], p: (v: T) => unknown): T | undefined;
-export function find<K, V>(iterable: Map<K, V>, p: (v: [K, V]) => unknown): [K, V] | undefined;
-export function find<K extends string | number | symbol, V>(iterable: Record<K, V>, p: (v: V, k: K) => unknown): V | undefined;
+export function find<T>(set: Unsafe<Set<T>>, p: (v: T) => unknown): Unsafe<T>;
+export function find<T>(array: Unsafe<T[]>, p: (v: T) => unknown): Unsafe<T>;
+export function find<K, V>(map: Unsafe<Map<K, V>>, p: (v: [K, V]) => unknown): Unsafe<[K, V]>;
+export function find<K extends string | number | symbol, V>(iterable: Unsafe<Record<K, V>>, p: (v: [K, V]) => unknown): Unsafe<[K, V]>;
+
 export function find(p0: any, p1: (...v: any[]) => unknown): any | undefined {
+  if (!p0) return void 0;
   if (typeof p0[Symbol.iterator] === 'function')
     for (const v of p0) if (p1(v)) return v;
-  for (const k in p0) if (p1(p0[k], k)) return p0[k]
+  for (const k in p0) if (p1([k, p0[k]])) return [k, p0[k]]
 }
 
 export function find_last<T>(

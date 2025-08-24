@@ -129,6 +129,7 @@ export class __Object implements IObjectNode {
     return this;
   }
   set_opacity(v: number): this {
+    if (Number.isNaN(v)) debugger
     this._opacity = v;
     return this;
   }
@@ -141,28 +142,34 @@ export class __Object implements IObjectNode {
     return this;
   }
   set_x(x: number): this {
+    if (Number.isNaN(x)) debugger
     this._inner.position.x = x;
     return this;
   }
   set_y(y: number): this {
+    if (Number.isNaN(y)) debugger
     this._inner.position.y = y;
     return this;
   }
   set_z(z: number): this {
+    if (Number.isNaN(z)) debugger
     this._inner.position.z = z;
     return this;
   }
   set_position(_x?: number, _y?: number, _z?: number): this {
+    if (Number.isNaN(_x) || Number.isNaN(_y) || Number.isNaN(_z)) debugger
     const { x, y, z } = this._inner.position;
     this._inner.position.set(_x ?? x, _y ?? y, _z ?? z);
     return this;
   }
   set_size(w?: number, h?: number): this {
+    if (Number.isNaN(h) || Number.isNaN(w)) debugger
     this._w = w ?? this._w;
     this._h = h ?? this._h;
     return this;
   }
   set_center(x?: number, y?: number, z?: number): this {
+    if (Number.isNaN(x) || Number.isNaN(y) || Number.isNaN(z)) debugger
     this._c_x = x ?? this._c_x;
     this._c_y = y ?? this._c_y;
     this._c_z = z ?? this._c_z;

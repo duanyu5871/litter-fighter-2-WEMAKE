@@ -23,6 +23,6 @@ export class FitChildren extends UIComponent {
     const h = max_bottom - min_top
     const [, , cz] = this.node.center.value
     this.node.size.value = [w, h]
-    this.node.center.value = [-min_left / w, -min_top / h, cz]
+    this.node.center.value = [w ? -min_left / w : 0, h ? -min_top / h : 0, cz]
   }
 }

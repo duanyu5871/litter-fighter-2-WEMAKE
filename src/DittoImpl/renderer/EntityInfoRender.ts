@@ -6,6 +6,7 @@ import Ditto from "../../LF2/ditto";
 import { is_character } from "../../LF2/entity";
 import type { Entity } from "../../LF2/entity/Entity";
 import type IEntityCallbacks from "../../LF2/entity/IEntityCallbacks";
+import { floor, round } from "../../LF2/utils";
 import * as T from "../3d/_t";
 import { Bar } from "./Bar";
 import { WorldRenderer } from "./WorldRenderer";
@@ -186,8 +187,12 @@ export class EntityInfoRender implements IEntityCallbacks {
   on_mount() {
     const { entity } = this;
     entity.callbacks.add(this);
-    if (entity.in_player_slot)
+    if (entity.in_player_slot) {
+      this.bars_node.visible = true
       this.world_renderer.scene.add(this.bars_node);
+    } else {
+      this.bars_node.visible = false
+    }
     if (entity.in_player_slot) {
       // 玩家角色就叫玩家名
       this.world_renderer.scene.add(this.name_node);
@@ -266,7 +271,7 @@ export class EntityInfoRender implements IEntityCallbacks {
 
   on_healing_changed(e: Entity, value: number, prev: number): void {
     this.heading = value;
-    this.hp_bar.color = Math.floor(value) % 2 ? "rgb(255, 130, 130)" : "rgb(255,0,0)"
+    this.hp_bar.color = floor(value) % 2 ? "rgb(255, 130, 130)" : "rgb(255,0,0)"
   }
   private update_name_sprite(e: Entity, text: string, team: string) {
     const fillStyle = get_team_text_color(team);
@@ -299,22 +304,20 @@ export class EntityInfoRender implements IEntityCallbacks {
   }
 
   render() {
-    const { invisible, position: { x, z, y }, hp } = this.entity;
+    const { invisible, position: { x, z, y }, frame: { centery }, hp } = this.entity;
 
     this.visible = !invisible && hp > 0;
 
-    const _x = Math.floor(x);
-    const name_y = Math.floor(-z / 2 - this.name_node.scale_y);
-    this.set_name_position(Math.floor(_x), Math.floor(name_y), Math.floor(z));
+    const _x = floor(x);
+    const bar_y = floor(y - z / 2 + BAR_BG_H + 5 + centery);
+    const bar_x = floor(_x - BAR_BG_W / 2);
+    const bar_z = floor(z);
 
-    const bar_y = Math.floor(y - z / 2 + 79 + BAR_BG_H + 5);
-    const bar_x = _x - BAR_BG_W / 2;
+    this.set_bars_position(bar_x, bar_y, bar_z);
 
-    this.set_bars_position(Math.floor(bar_x), Math.floor(bar_y), Math.floor(z));
-    this.key_node.set_position(
-      Math.floor(bar_x),
-      Math.floor(bar_y),
-      Math.floor(z))
+    const name_y = floor(-z / 2 - this.name_node.scale_y);
+    this.set_name_position(_x, name_y, bar_z);
+
     for (const [k, { node }] of this.key_nodes) {
       node.visible = !this.entity.ctrl.is_end(k)
     }
@@ -326,10 +329,14 @@ export class EntityInfoRender implements IEntityCallbacks {
     const cam_r = cam_l + this.entity.world.screen_w;
     if (x + hw > cam_r) x = cam_r - hw;
     else if (x - hw < cam_l) x = cam_l + hw;
-    this.name_node.set_position(Math.round(x), Math.round(y), Math.round(z));
+    this.name_node.set_position(round(x), round(y), round(z));
   }
 
   set_bars_position(x?: number, y?: number, z?: number) {
-    this.bars_node.set_position(x, y, z);
+    const _y = y ?? this.bars_node.y
+    let __y = this.bars_node.y + (_y - this.bars_node.y) * 0.2
+    this.bars_node.set_position(x, __y, z);
+    if (!this.bars_node.parent) __y -= BAR_BG_H + 5
+    this.key_node.set_position(x, __y, z);
   }
 }
