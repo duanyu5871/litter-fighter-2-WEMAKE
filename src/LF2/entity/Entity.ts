@@ -10,6 +10,7 @@ import {
   INextFrame,
   INextFrameResult,
   IOpointInfo, IPos,
+  ItrEffect,
   ItrKind,
   IVector3,
   OpointKind, OpointMultiEnum, OpointSpreading, SpeedMode, StateEnum, TFace,
@@ -19,7 +20,7 @@ import { IArmorInfo } from "../defines/IArmorInfo";
 import Ditto from "../ditto";
 import { ENTITY_STATES, States } from "../state";
 import { State_Base } from "../state/State_Base";
-import { abs, floor, max, min, round } from "../utils";
+import { abs, find, floor, max, min, round } from "../utils";
 import { cross_bounding } from "../utils/cross_bounding";
 import { is_num, is_positive, is_str } from "../utils/type_check";
 import { EMPTY_FRAME_INFO } from "./EMPTY_FRAME_INFO";
@@ -816,7 +817,6 @@ export class Entity implements IDebugging {
           case FrameBehavior.FirzenVolcanoStart:
           case FrameBehavior.BatStart:
           case FrameBehavior._06:
-            console.log(multi_type, OpointMultiEnum.AccordingEnemies, multi_type === OpointMultiEnum.AccordingEnemies)
             if (multi_type === OpointMultiEnum.AccordingEnemies)
               e.chasing = enemies[i % enemies.length]
             break;
