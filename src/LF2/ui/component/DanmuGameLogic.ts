@@ -67,7 +67,14 @@ export class DanmuGameLogic extends UIComponent {
   update_bg() {
     this.lf2.change_bg('?');
     this.lf2.characters
-      .add_random(20, '?')
+      .add_random(10, '?')
+      .forEach(v => {
+        v.is_key_role = true;
+        v.is_gone_dead = true;
+        v.blinking = 120;
+      })
+    this.lf2.characters
+      .add_random(10, '')
       .forEach(v => {
         v.is_key_role = true;
         v.is_gone_dead = true;
