@@ -11,8 +11,8 @@ export function handle_fall(collision: ICollision) {
   const diff_x = victim.position.x - attacker.position.x
   let attacker_facing: TFace = -1;
   if (!is_explosion) attacker_facing = attacker.facing
-  else if (diff_x > 0) attacker_facing = 1;
-  else attacker_facing = -1;
+  else if (diff_x > 0) attacker_facing = -1;
+  else attacker_facing = 1;
 
   victim.toughness = 0;
   victim.fall_value = 0;
@@ -36,7 +36,7 @@ export function handle_fall(collision: ICollision) {
       if (victim.data.indexes?.fire)
         victim.next_frame = {
           id: victim.data.indexes.fire[0],
-          facing: turn_face(attacker_facing),
+          facing: attacker_facing,
         };
       break;
     default:
