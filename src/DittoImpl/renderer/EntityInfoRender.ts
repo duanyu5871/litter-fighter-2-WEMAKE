@@ -6,7 +6,7 @@ import Ditto from "../../LF2/ditto";
 import { is_character } from "../../LF2/entity";
 import type { Entity } from "../../LF2/entity/Entity";
 import type IEntityCallbacks from "../../LF2/entity/IEntityCallbacks";
-import { floor, round } from "../../LF2/utils";
+import { find, floor, intersection, round } from "../../LF2/utils";
 import * as T from "../3d/_t";
 import { Bar } from "./Bar";
 import { WorldRenderer } from "./WorldRenderer";
@@ -185,28 +185,26 @@ export class EntityInfoRender implements IEntityCallbacks {
   }
 
   on_mount() {
+
     const { entity } = this;
+
+    const is_fighter = is_character(entity)
+    const is_key_fighter = entity.is_key_role
+
     entity.callbacks.add(this);
-    if (entity.in_player_slot) {
-      this.bars_node.visible = true
-      this.world_renderer.scene.add(this.bars_node);
-    } else {
-      this.bars_node.visible = false
-    }
-    if (entity.in_player_slot) {
-      // 玩家角色就叫玩家名
-      this.world_renderer.scene.add(this.name_node);
-    } else if (entity.data.base.group?.some(v =>
-      v === EntityGroup.Regular ||
-      v === EntityGroup.Boss
-    )) {
+    this.world_renderer.scene.add(this.bars_node, this.name_node, this.key_node);
+    this.bars_node.visible = is_fighter && entity.is_key_role
+    this.name_node.visible = is_fighter && (entity.is_key_role || is_key_fighter || !!entity.reserve)
+
+
+    // 玩家角色就叫玩家名
+    if (entity.reserve > 1) {
+      entity.name = 'x' + entity.reserve
+    } else if (!entity.is_key_role && is_key_fighter) {
       entity.name = entity.data.base.name
-      this.world_renderer.scene.add(this.name_node);
-    } else if (entity.reserve) {
-      entity.name = is_character(entity) ? entity.data.base.name : ''
-      this.world_renderer.scene.add(this.name_node);
+    } else {
+      entity.name = 'com'
     }
-    this.world_renderer.scene.add(this.key_node);
     this.on_name_changed(entity)
   }
 
@@ -219,12 +217,17 @@ export class EntityInfoRender implements IEntityCallbacks {
   }
 
   on_name_changed(entity: Entity): void {
-    const reserve = entity.reserve;
-    const text =
-      (reserve > 1 && entity.name) ? `${entity.name} x${reserve}` :
-        entity.name ? entity.name : reserve > 1 ? `x${reserve}` : ''
-
-    this.update_name_sprite(entity, text, entity.team)
+    const { reserve, is_key_role: is_key_fighter } = entity;
+    if (is_key_fighter)
+      if (reserve > 1)
+        entity.name = entity.data.base.name + ' x' + reserve
+      else
+        entity.name = entity.data.base.name
+    else if (reserve > 1)
+      entity.name = 'x' + reserve
+    else
+      entity.name = 'com'
+    this.update_name_sprite(entity, entity.name, entity.team)
   }
 
   on_reserve_changed(entity: Entity): void {
@@ -305,8 +308,8 @@ export class EntityInfoRender implements IEntityCallbacks {
 
   render() {
     const { invisible, position: { x, z, y }, frame: { centery }, hp } = this.entity;
-
-    this.visible = !invisible && hp > 0;
+    const is_fighter = is_character(this.entity)
+    this.visible = is_fighter && !invisible && hp > 0;
 
     const _x = floor(x);
     const bar_y = floor(y - z / 2 + BAR_BG_H + 5 + centery);
@@ -333,8 +336,9 @@ export class EntityInfoRender implements IEntityCallbacks {
   }
 
   set_bars_position(x?: number, y?: number, z?: number) {
-    const _y = y ?? this.bars_node.y
-    let __y = this.bars_node.y + (_y - this.bars_node.y) * 0.2
+    const old_y = this.bars_node.y
+    const _y = y ?? old_y
+    let __y = old_y === 0 ? _y : old_y + (_y - old_y) * 0.2
     this.bars_node.set_position(x, __y, z);
     if (!this.bars_node.parent) __y -= BAR_BG_H + 5
     this.key_node.set_position(x, __y, z);

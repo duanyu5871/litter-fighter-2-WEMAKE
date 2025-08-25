@@ -3,6 +3,7 @@ import { StateEnum } from "../defines/StateEnum";
 import { abs } from "../utils";
 import { BotCtrlState } from "./BotCtrlState";
 import { BotCtrlState_Base } from "./BotCtrlState_Base";
+import { random_jumping } from "./random_jumping";
 
 export class BotCtrlState_Chasing extends BotCtrlState_Base {
   readonly key = BotCtrlState.Chasing;
@@ -21,13 +22,24 @@ export class BotCtrlState_Chasing extends BotCtrlState_Base {
     const x_reach = x_diff <= ctrl.W_ATK_ZONE_X;
     const z_reach = z_diff <= ctrl.W_ATK_ZONE_Z;
 
+    random_jumping(ctrl);
+
     if (state === StateEnum.Running) {
-      // STOP RUNNING.
       if (my_x > en_x && me.facing > 0) {
+        // STOP RUNNING, run over
         ctrl.key_down(GK.L).key_up(GK.R, GK.L)
         return
       } else if (my_x < en_x && me.facing < 0) {
+        // STOP RUNNING, run over
         ctrl.key_down(GK.R).key_up(GK.R, GK.L)
+        return
+      } else if (
+        (me.facing > 0 && en_x - my_x <= ctrl.R_ATK_ZONE_X) ||
+        (me.facing < 0 && my_x - en_x <= ctrl.R_ATK_ZONE_X) &&
+        abs(my_z - en_x) <= ctrl.W_ATK_ZONE_Z
+      ) {
+        // run attack!
+        ctrl.key_down(GK.a).key_up(GK.a).key_up(GK.R, GK.L)
         return
       } else if (
         abs(en_x - my_x) < ctrl.W_ATK_ZONE_X ||
@@ -81,15 +93,6 @@ export class BotCtrlState_Chasing extends BotCtrlState_Base {
       ctrl.key_up(GK.a)
     }
 
-    switch (state) {
-      case StateEnum.Standing:
-      case StateEnum.Walking:
-      case StateEnum.Running: {
-        if (ctrl.desire() < ctrl.JUMP_DESIRE) {
-          ctrl.key_down(GK.j).end(GK.j)
-        }
-        break;
-      }
-    }
   }
 }
+

@@ -16,14 +16,14 @@ export default class CharacterState_Lying extends CharacterState_Base {
       if (e.reserve && player_teams.has(e.team)) {
         // 玩家队伍的复活到玩家附近。
         e.blink_and_respawn(e.world.gone_blink_time);
-      } else if (!e.in_player_slot) {
+      } else if (e.is_gone_dead) {
         // 非玩家槽的角色在被击败时，闪烁着离开了这个世界
         e.blink_and_gone(e.world.gone_blink_time);
       }
     }
   }
   override leave(e: Entity, next_frame: IFrameInfo): void {
-    if (e.in_player_slot) {
+    if (e.is_key_role) {
       // 玩家槽的角色起身时会闪烁的无敌时间
       e.blinking = e.world.lying_blink_time;
     }

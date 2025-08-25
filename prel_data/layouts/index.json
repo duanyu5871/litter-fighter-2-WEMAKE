@@ -4,6 +4,7 @@
   "layouts/center_pause_label.json",
   "layouts/char_menu.json",
   "layouts/ctrl_settings_page.json",
+  "layouts/danmu_game_page.json",
   "layouts/demo_mode_page.json",
   "layouts/entry_page.json",
   "layouts/game_prepare_menu.json",

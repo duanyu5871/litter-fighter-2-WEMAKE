@@ -20,15 +20,16 @@ export class BotController extends BaseController {
 
   static W_ATK_ZONE_X = 50;
   static W_ATK_ZONE_Z = 15;
-  static R_ATK_ZONE_X = 120;
-  static JUMP_DESIRE = 5;
+  static R_ATK_ZONE_X = 110;
+  static JUMP_DESIRE = 100;
   static RUN_DESIRE = 200;
-  static STOP_RUN_DESIRE = 100;
+  static STOP_RUN_DESIRE = 60;
   static RUN_ZONE = 300;
 
   readonly is_bot_enemy_chaser = true;
   W_ATK_ZONE_X = BotController.W_ATK_ZONE_X;
   W_ATK_ZONE_Z = BotController.W_ATK_ZONE_Z;
+  R_ATK_ZONE_X = BotController.R_ATK_ZONE_X;
   JUMP_DESIRE = BotController.JUMP_DESIRE;
   RUN_DESIRE = BotController.RUN_DESIRE;
   STOP_RUN_DESIRE = BotController.STOP_RUN_DESIRE;
@@ -199,12 +200,12 @@ export class BotController extends BaseController {
   override update() {
     if (this.dummy) {
       dummy_updaters[this.dummy]?.update(this);
+    } else if (this.world.stage.is_stage_finish) {
+      this.key_down(GK.R).key_up(...KEY_NAME_LIST)
+    } else if (this.entity.hp <= 0) {
+      this.key_up(...KEY_NAME_LIST)
     } else {
-      if (this.world.stage.is_stage_finish) {
-        this.key_down(GK.R).key_up(...KEY_NAME_LIST)
-      } else {
-        this.fsm.update(1)
-      }
+      this.fsm.update(1)
     }
     return super.update();
   }

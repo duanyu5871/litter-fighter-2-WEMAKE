@@ -18,3 +18,8 @@ export function find_last<T>(
 ): T | undefined {
   for (const i of Array.from(set).reverse()) if (p(i)) return i;
 }
+
+export function intersection<T>(a: Unsafe<T[]>, b: Unsafe<T[]>, fn = (c1: T, c2: T) => c1 === c2): T[] {
+  if (!a || !b) return [];
+  return a.filter(c1 => b.some(c2 => fn(c1, c2)));
+}

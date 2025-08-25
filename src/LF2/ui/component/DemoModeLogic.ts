@@ -84,6 +84,7 @@ export class DemoModeLogic extends UIComponent implements IEntityCallbacks {
       character.team = player_teams.shift() ?? new_team();
       character.facing = this.lf2.random_get([1, -1] as const)!;
       character.callbacks.add(this);
+      character.is_key_role = true;
 
       const { far, near, left, right } = this.lf2.world.bg;
 

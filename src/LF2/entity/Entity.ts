@@ -4,7 +4,7 @@ import { Callbacks, ICollision, new_id, new_team, type NoEmitCallbacks } from ".
 import { BaseController } from "../controller/BaseController";
 import { InvalidController } from "../controller/InvalidController";
 import {
-  Builtin_FrameId, Defines, EntityEnum, FacingFlag, FrameBehavior, IBaseData, IBounding,
+  Builtin_FrameId, Defines, EntityEnum, EntityGroup, FacingFlag, FrameBehavior, IBaseData, IBounding,
   ICpointInfo, IEntityData, IFrameInfo,
   IItrInfo,
   INextFrame,
@@ -19,7 +19,7 @@ import { IArmorInfo } from "../defines/IArmorInfo";
 import Ditto from "../ditto";
 import { ENTITY_STATES, States } from "../state";
 import { State_Base } from "../state/State_Base";
-import { abs, floor, max, min, round } from "../utils";
+import { abs, floor, intersection, max, min, round } from "../utils";
 import { cross_bounding } from "../utils/cross_bounding";
 import { is_num, is_positive, is_str } from "../utils/type_check";
 import { EMPTY_FRAME_INFO } from "./EMPTY_FRAME_INFO";
@@ -389,6 +389,7 @@ export class Entity implements IDebugging {
   }
 
   set name(v: string) {
+    if (v === this._name) return;
     const o = this._name;
     this._callbacks.emit("on_name_changed")(this, (this._name = v), o);
   }
@@ -545,17 +546,30 @@ export class Entity implements IDebugging {
     this._ctrl?.dispose();
     this._ctrl = v;
   }
+  private _is_key_role: boolean | null = null;
+  private _is_gone_dead: boolean | null = null;
 
-  /**
-   * 是否属于玩家选择槽的entity
-   *
-   * @readonly
-   * @type {boolean}
-   */
-  get in_player_slot(): boolean {
-    const player_id = this.ctrl?.player_id;
-    return !!(player_id && this.world.slot_fighters.has(player_id));
+  get is_key_role(): boolean {
+    if (this._is_key_role !== null) return this._is_key_role;
+    const is_player = !!this.ctrl?.player_id;
+    const is_key = !!intersection(this.data.base.group, [EntityGroup.Regular, EntityGroup.Boss]).length
+    return this._is_key_role = is_player || is_key;
   }
+  set is_key_role(v: boolean | null) {
+    if (this._is_key_role === v) return;
+    this._is_key_role = v;
+    this._callbacks.emit("on_name_changed")(this, this._name, this._name);
+  }
+  get is_gone_dead(): boolean {
+    if (this._is_gone_dead !== null) return this._is_gone_dead;
+    return !this.is_key_role;
+  }
+
+  set is_gone_dead(v: boolean | null) {
+    if (this._is_gone_dead === v) return;
+    this._is_gone_dead = v;
+  }
+
   armor?: Readonly<IArmorInfo>
 
   constructor(world: World, data: IEntityData, states: States = ENTITY_STATES) {
