@@ -165,9 +165,7 @@ export class __Modern extends BaseSounds {
     this._prev_bgm_url = null;
     this._callbacks.emit("on_bgm_changed")(null, prev, this);
   }
-  _random_next = () => {
-    this.play_bgm(this._bgms.take())
-  }
+  _random_next = () => this.play_bgm('?')
   override play_bgm(name: string, restart?: boolean | undefined): () => void {
     if (!restart && this._prev_bgm_url === name) return () => { };
 

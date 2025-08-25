@@ -29,7 +29,9 @@ export class CharactersHelper {
   add_random(num = 1, team?: string): Entity[] {
     const ret: Entity[] = [];
     while (--num >= 0) {
-      const d = this.lf2.random_get(this.lf2.datas.characters);
+      const d = this.lf2.random_get(
+        this.lf2.datas.characters.filter(v => v.id != '5' && v.id != '31' && v.id != '4')
+      );
       if (!d) continue;
       ret.push(...this.add(d, 1, team));
     }
