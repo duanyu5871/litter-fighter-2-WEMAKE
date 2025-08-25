@@ -6,9 +6,13 @@ import { is_character } from "../entity/type_check";
 
 export function handle_fall(collision: ICollision) {
   const { itr, attacker, victim, a_cube, b_cube } = collision;
-  const aface: TFace = (
-    ItrEffect.FireExplosion === itr.effect || ItrEffect.Explosion === itr.effect
-  ) ? (victim.position.x > attacker.position.x ? 1 : -1) : attacker.facing;
+
+  const is_explosion = [ItrEffect.FireExplosion, ItrEffect.Explosion].some(v => v === itr.effect);
+  const diff_x = victim.position.x - attacker.position.x
+  let attacker_facing: TFace = -1;
+  if (!is_explosion) attacker_facing = attacker.facing
+  else if (diff_x > 0) attacker_facing = 1;
+  else attacker_facing = -1;
 
   victim.toughness = 0;
   victim.fall_value = 0;
@@ -17,7 +21,7 @@ export function handle_fall(collision: ICollision) {
   victim.velocities.length = 1;
   victim.velocity_0.y = (itr.dvy ?? attacker.world.ivy_d) * attacker.world.ivy_f;
   victim.velocity_0.z = 0;
-  victim.velocity_0.x = (itr.dvx || 0) * -aface;
+  victim.velocity_0.x = (itr.dvx || 0) * attacker_facing;
   if (itr.effect === ItrEffect.Sharp) {
     victim.world.spark(...victim.spark_point(a_cube, b_cube), SparkEnum.CriticalBleed);
   } else if (is_character(victim)) {
@@ -33,7 +37,7 @@ export function handle_fall(collision: ICollision) {
       if (victim.data.indexes?.fire)
         victim.next_frame = {
           id: victim.data.indexes.fire[0],
-          facing: turn_face(aface),
+          facing: turn_face(attacker_facing),
         };
       break;
     default:
