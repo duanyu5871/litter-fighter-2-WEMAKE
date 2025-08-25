@@ -27,7 +27,6 @@ export function handle_fall(collision: ICollision) {
   } else if (is_character(victim)) {
     victim.world.spark(...victim.spark_point(a_cube, b_cube), SparkEnum.CriticalHit);
   }
-  const direction: TFace = victim.velocity_0.x / victim.facing >= 0 ? 1 : -1;
 
   switch (itr.effect) {
     case ItrEffect.Fire:
@@ -41,8 +40,10 @@ export function handle_fall(collision: ICollision) {
         };
       break;
     default:
-      if (victim.data.indexes?.critical_hit)
+      if (victim.data.indexes?.critical_hit) {
+        const direction: TFace = victim.velocity_0.x / victim.facing >= 0 ? 1 : -1;
         victim.next_frame = { id: victim.data.indexes.critical_hit[direction][0] };
+      }
       break;
   }
 
