@@ -6,6 +6,7 @@ import { parse_call_func_expression } from "../utils/parse_call_func_expression"
 import { Alignment } from "./Alignment";
 import BackgroundNameText from "./BackgroundNameText";
 import ComNumButton from "./ComNumButton";
+import { DanmuGameLogic } from "./DanmuGameLogic";
 import { DemoModeLogic } from "./DemoModeLogic";
 import DifficultyText from "./DifficultyText";
 import { FadeInOpacity } from "./FadeInOpacity";
@@ -97,7 +98,8 @@ class ComponentFactory {
     [Alignment.TAG, Alignment],
     [Flex.TAG, Flex],
     [FlexItem.TAG, FlexItem],
-    [FitChildren.TAG, FitChildren]
+    [FitChildren.TAG, FitChildren],
+    [DanmuGameLogic.TAG, DanmuGameLogic],
   ]);
 
   register(key: string, Cls: typeof UIComponent) {
