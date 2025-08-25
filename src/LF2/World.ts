@@ -379,8 +379,8 @@ export class World extends WorldDataset {
     let acc_ratio = 1;
     if (is_num(this.lock_cam_x)) {
       new_x = this.lock_cam_x;
-      max_speed_ratio = 1000;
-      acc_ratio = 10;
+      // max_speed_ratio = 1000;
+      // acc_ratio = 10;
     } else if (this.slot_fighters.size) {
       let l = 0;
       new_x = 0;
@@ -388,20 +388,30 @@ export class World extends WorldDataset {
         this.slot_fighters,
         ([_, p]) => is_local_ctrl(p.ctrl) && p.hp > 0,
       );
-      for (const [, player] of this.slot_fighters) {
-        const c = player.ctrl;
-        if (!is_local_ctrl(c) && has_human_player) continue;
-        new_x += player.position.x - 794 / 2 + (player.facing * 794) / 6;
-        ++l;
+      if (has_human_player) { // 取中间部分
+        for (const [, player] of this.slot_fighters) {
+          const c = player.ctrl;
+          if (!is_local_ctrl(c)) continue;
+          new_x += player.position.x - this.screen_w / 2 + (player.facing * this.screen_w) / 6;
+          ++l;
+        }
+      } else {
+        for (const [, player] of this.slot_fighters) {
+          new_x += player.position.x + this.screen_w / 2
+          ++l;
+        }
       }
+
       new_x = floor(new_x / l);
+    } else {
+
     }
     if (new_x < max_cam_left) new_x = max_cam_left;
     if (new_x > max_cam_right - this.screen_w) new_x = max_cam_right - this.screen_w;
     let cur_x = this.renderer.cam_x;
     const acc = min(
       acc_ratio,
-      (acc_ratio * abs(cur_x - new_x)) / this.screen_w,
+      0.5 * (acc_ratio * abs(cur_x - new_x)) / this.screen_w,
     );
     const max_speed = max_speed_ratio * acc;
 

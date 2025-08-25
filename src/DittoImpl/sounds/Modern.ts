@@ -4,6 +4,8 @@ import { Defines } from "../../LF2/defines/defines";
 import BaseSounds from "../../LF2/ditto/sounds/BaseSounds";
 import { clamp } from "../../LF2/utils/math/clamp";
 import float_equal from "../../LF2/utils/math/float_equal";
+import { Randoming } from "../../LF2/utils/Randoming";
+import { LF2 } from "../../LF2/LF2";
 
 export class __Modern extends BaseSounds {
   readonly ctx = new AudioContext();
@@ -32,6 +34,7 @@ export class __Modern extends BaseSounds {
   protected _sound_volume: number = 1;
   protected _bgm_muted: boolean = false;
   protected _sound_muted: boolean = false;
+  protected _bgms: Randoming<string>
 
   override bgm_volume(): number {
     return this._bgm_volume;
@@ -139,29 +142,48 @@ export class __Modern extends BaseSounds {
       return buf;
     });
   }
+  constructor(lf2: LF2) {
+    super(lf2);
+    this._bgms = new Randoming([
+      "launch/main.wma.mp3",
+      "bgm/boss1.wma.mp3",
+      "bgm/boss2.wma.mp3",
+      "bgm/stage1.wma.mp3",
+      "bgm/stage2.wma.mp3",
+      "bgm/stage3.wma.mp3",
+      "bgm/stage4.wma.mp3",
+      "bgm/stage5.wma.mp3"
+    ], this.lf2)
+  }
 
   override stop_bgm(): void {
     if (!this._bgm_node) return;
     const prev = this.bgm();
     this._bgm_name = null;
+    this._bgm_node.src_node.removeEventListener('ended', this._random_next)
     this._bgm_node.src_node.stop();
     this._prev_bgm_url = null;
     this._callbacks.emit("on_bgm_changed")(null, prev, this);
   }
-
+  _random_next = () => {
+    this.play_bgm(this._bgms.take())
+  }
   override play_bgm(name: string, restart?: boolean | undefined): () => void {
     if (!restart && this._prev_bgm_url === name) return () => { };
 
     const prev = this.bgm();
 
+    const real_name = name === '?' ?
+      this._bgms.take() :
+      name;
     this.stop_bgm();
-    this._bgm_name = name;
-    this._prev_bgm_url = name;
+    this._bgm_name = real_name;
+    this._prev_bgm_url = real_name;
     ++this._req_id;
 
     const req_id = this._req_id;
     const ctx = this.ctx;
-    const buf = this._r.get(name);
+    const buf = this._r.get(real_name);
     const start = (buf: AudioBuffer) => {
       const src_node = ctx.createBufferSource();
       src_node.buffer = buf;
@@ -170,7 +192,13 @@ export class __Modern extends BaseSounds {
       const gain_node = this.ctx.createGain();
       gain_node.connect(ctx.destination);
       src_node.connect(gain_node);
-      src_node.loop = true;
+      if (name !== '?') {
+        src_node.loop = true;
+        src_node.removeEventListener('ended', this._random_next)
+      } else {
+        src_node.addEventListener('ended', this._random_next, { once: true })
+      }
+
       this._bgm_node = {
         src_node,
         gain_node,
@@ -180,10 +208,10 @@ export class __Modern extends BaseSounds {
     if (buf) {
       start(buf);
     } else {
-      this.load(name, name).then(start);
+      this.load(real_name, real_name).then(start);
     }
 
-    this._callbacks.emit("on_bgm_changed")(name, prev, this);
+    this._callbacks.emit("on_bgm_changed")(real_name, prev, this);
     return () => req_id === this._req_id && this.stop_bgm();
   }
 

@@ -61,6 +61,15 @@ export class BotCtrlState_Chasing extends BotCtrlState_Base {
         ctrl.db_hit(GK.L).end(GK.L);
         return
       }
+    } else if (state === StateEnum.Dash) {
+      if (
+        (me.facing > 0 && en_x - my_x <= ctrl.R_ATK_ZONE_X) ||
+        (me.facing < 0 && my_x - en_x <= ctrl.R_ATK_ZONE_X)
+      ) {
+        // run attack!
+        ctrl.key_down(GK.a).key_up(GK.a)
+        return
+      }
     }
 
     if (my_x < en_x - ctrl.W_ATK_ZONE_X) {

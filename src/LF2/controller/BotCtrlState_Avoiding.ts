@@ -7,11 +7,11 @@ export class BotCtrlState_Avoiding extends BotCtrlState_Base {
   override update() {
     this.ctrl.update_nearest();
     random_jumping(this.ctrl)
-    if (this.ctrl.chasing_enemy) {
-      return BotCtrlState.Chasing;
-    } else if (this.ctrl.avoiding_enemy) {
+    if (this.ctrl.avoiding_enemy) {
       this.ctrl.avoid_enemy();
-    } else {
+    } else if (this.ctrl.chasing_enemy) {
+      return BotCtrlState.Chasing;
+    } else  {
       return BotCtrlState.Standing;
     }
   }

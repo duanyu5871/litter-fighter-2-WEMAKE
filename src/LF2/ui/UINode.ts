@@ -44,6 +44,7 @@ export class UINode implements IDebugging {
   protected _pointer_on_me: 0 | 1 = 0;
   protected _pointer_down: 0 | 1 = 0;
   protected _click_flag: 0 | 1 = 0;
+  protected _update_times: number = 0;
 
   get callbacks(): NoEmitCallbacks<IUICallback> {
     return this._callbacks;
@@ -150,7 +151,7 @@ export class UINode implements IDebugging {
     return this._state;
   }
 
-  get self_visible(){
+  get self_visible() {
     return this._visible.value
   }
   /**
@@ -234,7 +235,7 @@ export class UINode implements IDebugging {
   get pointer_on_me() { return this._pointer_on_me }
   get pointer_down() { return this._pointer_down }
   get click_flag() { return this._click_flag }
-
+  get update_times() { return this._update_times }
   renderer: IUINodeRenderer;
 
   constructor(lf2: LF2, data: ICookedUIInfo, parent?: UINode) {
@@ -492,6 +493,11 @@ export class UINode implements IDebugging {
   }
 
   update(dt: number) {
+    if (this._update_times === Number.MAX_SAFE_INTEGER)
+      this._update_times = 0;
+    else
+      this._update_times++;
+
     for (const i of this.children) if (i.enabled) i.update(dt);
     for (const c of this._components) if (c.enabled) c.update?.(dt);
   }

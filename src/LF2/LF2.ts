@@ -10,7 +10,6 @@ import {
   Builtin_FrameId, CheatType, Defines, Difficulty, IBgData,
   IStageInfo, TFace
 } from "./defines";
-import { Randoming } from "./utils/Randoming";
 import {
   default as ditto,
   default as Ditto,
@@ -45,6 +44,7 @@ import {
   is_str
 } from "./utils";
 import { MersenneTwister } from "./utils/math/MersenneTwister";
+import { Randoming } from "./utils/Randoming";
 import { World } from "./World";
 
 const cheat_info_pair = (n: CheatType) =>
@@ -587,8 +587,9 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
   change_bg(bg_info: IBgData): void;
   change_bg(bg_id: string): void;
   change_bg(arg: IBgData | string | undefined) {
+
     if (!arg) return;
-    if (arg === Defines.RANDOM_BG || arg === Defines.RANDOM_BG.id)
+    if (arg === Defines.RANDOM_BG || arg === Defines.RANDOM_BG.id || arg === '?')
       arg = this.random_get(this.datas.backgrounds.filter(v => v.base.group.some(a => a === BackgroundGroup.Regular)))
     if (is_str(arg)) arg = this.datas.find_background(arg);
     if (!arg) return;
