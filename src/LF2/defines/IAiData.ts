@@ -1,4 +1,6 @@
+import { IExpression } from "./IExpression";
 import type { IFrameInfo } from "./IFrameInfo";
+/** XZ射线检测 */
 export interface IAiRay {
   x: number;
   z: number;
@@ -8,24 +10,25 @@ export interface IAiRay {
   max_z?: number;
   min_d?: number;
 }
+export interface IAiRange {
+
+  min?: number;
+  max?: number;
+}
 export interface IAiAction {
+  /** 欲望值，范围[0,10000] */
   desire?: number;
-  e_ray?: IAiRay[]
-  a_ray?: IAiRay[]
+
+  /** XZ射线检测 */
+  e_ray?: IAiRay[];
+
+  /** 判定式 */
+  expression?: string;
+
+  judger?: IExpression<any>;
 }
 export interface IAiData {
   id?: string;
   states?: { [x in IFrameInfo['state']]: IAiAction[] };
   frames?: { [x in IFrameInfo['id']]: IAiAction[] };
-  w_atk_zone_x?: number
-  w_atk_zone_z?: number
-  r_atk_zone_x?: number
-  r_atk_zone_z?: number
-  d_atk_zone_x?: number
-  d_atk_zone_z?: number
-  jump_desire?: number
-  run_desire?: number
-  dash_desire?: number
-  stop_run_desire?: number
-  run_zone?: number
 }

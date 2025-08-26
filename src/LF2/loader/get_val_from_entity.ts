@@ -5,6 +5,7 @@ import { Entity } from "../entity/Entity";
 import { is_ball, is_character, is_weapon } from "../entity/type_check";
 import { find } from "../utils/container_help";
 import { clamp, round } from "../utils/math";
+import { get_val_from_world } from "./get_val_from_world";
 
 export const get_val_getter_from_entity: IValGetterGetter<Entity> = (
   word: string,
@@ -144,6 +145,10 @@ export const get_val_getter_from_entity: IValGetterGetter<Entity> = (
       return (e) => {
         return e.velocity.z;
       };
+    default:
+      const fallback = get_val_from_world(word);
+      return (e, ...arg) => fallback?.(e.world, ...arg);
   }
-  return void 0;
 };
+
+

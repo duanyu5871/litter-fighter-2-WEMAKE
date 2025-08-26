@@ -10,7 +10,7 @@ export class BotCtrlState_Chasing extends BotCtrlState_Base {
   override update() {
     const { ctrl: c } = this;
     c.update_nearest();
-    const en = c.enemy
+    const en = c.chasing
     if (!en) return BotCtrlState.Standing;
 
     const me = c.entity;

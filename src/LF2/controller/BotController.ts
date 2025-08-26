@@ -29,8 +29,8 @@ export class BotController extends BaseController {
   w_atk_z = Defines.AI_W_ATK_Z;
   /** 走攻触发范围X */
   get w_atk_x() {
-    if (!this.enemy) return 0;
-    return this.entity.facing === this.enemy.facing ?
+    if (!this.chasing) return 0;
+    return this.entity.facing === this.chasing.facing ?
       this.w_atk_f_x :
       this.w_atk_b_x;
   }
@@ -46,8 +46,8 @@ export class BotController extends BaseController {
   r_atk_z = Defines.AI_R_ATK_Z;
   /** 跑攻触发范围X */
   get r_atk_x() {
-    if (!this.enemy) return 0;
-    return this.entity.facing === this.enemy.facing ? this.r_atk_b_x : this.r_atk_f_x;
+    if (!this.chasing) return 0;
+    return this.entity.facing === this.chasing.facing ? this.r_atk_b_x : this.r_atk_f_x;
   }
 
   /** 冲跳攻触发范围X(敌人正对) */
@@ -58,8 +58,8 @@ export class BotController extends BaseController {
   d_atk_z = Defines.AI_D_ATK_Z;
   /** 冲跳攻触发范围X */
   get d_atk_x() {
-    if (!this.enemy) return 0;
-    return this.entity.facing === this.enemy.facing ? this.d_atk_b_x : this.d_atk_f_x;
+    if (!this.chasing) return 0;
+    return this.entity.facing === this.chasing.facing ? this.d_atk_b_x : this.d_atk_f_x;
   }
 
   /** 跳攻触发范围X(敌人正对) */
@@ -73,8 +73,8 @@ export class BotController extends BaseController {
   j_atk_y_max = Defines.AI_D_ATK_Y_MAX;
   /** 跳攻触发范围X */
   get j_atk_x() {
-    if (!this.enemy) return 0;
-    return this.entity.facing === this.enemy.facing ? this.j_atk_b_x : this.j_atk_f_x;
+    if (!this.chasing) return 0;
+    return this.entity.facing === this.chasing.facing ? this.j_atk_b_x : this.j_atk_f_x;
   }
 
   jump_desire = Defines.AI_J_DESIRE;
@@ -90,8 +90,8 @@ export class BotController extends BaseController {
   r_x_max = Defines.AI_R_X_MAX;
 
   get r_desire(): -1 | 1 | 0 {
-    if (!this.enemy) return 0;
-    let dx = abs(this.entity.position.x - this.enemy.position.x) - this.r_x_min
+    if (!this.chasing) return 0;
+    let dx = abs(this.entity.position.x - this.chasing.position.x) - this.r_x_min
     if (dx < 0) return 0;
     let should_run = false
     const r_x_r = this.r_x_max - this.r_x_min
@@ -103,7 +103,7 @@ export class BotController extends BaseController {
       should_run = this.desire() < this.r_x_min;
     }
     if (!should_run) return 0;
-    return this.entity.position.x > this.enemy.position.x ? -1 : 1
+    return this.entity.position.x > this.chasing.position.x ? -1 : 1
   }
 
 
@@ -111,8 +111,8 @@ export class BotController extends BaseController {
   r_stop_desire = Defines.AI_R_STOP_DESIRE;
 
   _count = 0;
-  enemy: Entity | undefined;
-  avoiding_enemy: Entity | undefined;
+  chasing: Entity | undefined;
+  avoiding: Entity | undefined;
   private _dummy?: DummyEnum;
   get dummy(): DummyEnum | undefined {
     return this._dummy;
@@ -148,34 +148,34 @@ export class BotController extends BaseController {
     if (this.time % 5 !== 0) return;
     const c = this.entity;
     if (c.hp <= 0) return;
-    if (!this.should_chase(this.enemy)) {
-      this.enemy = void 0;
+    if (!this.should_chase(this.chasing)) {
+      this.chasing = void 0;
     }
-    if (!this.should_avoid(this.avoiding_enemy)) {
-      this.avoiding_enemy = void 0;
+    if (!this.should_avoid(this.avoiding)) {
+      this.avoiding = void 0;
     }
     for (const e of c.world.entities) {
       if (!is_character(e) || c.is_ally(e)) continue;
       if (this.should_avoid(e)) {
-        if (!this.avoiding_enemy) {
-          this.avoiding_enemy = e;
+        if (!this.avoiding) {
+          this.avoiding = e;
         } else if (
-          this.manhattan_to(e) < this.manhattan_to(this.avoiding_enemy)
+          this.manhattan_to(e) < this.manhattan_to(this.avoiding)
         ) {
-          this.avoiding_enemy = e;
+          this.avoiding = e;
         }
       } else if (this.should_chase(e)) {
-        if (!this.enemy) {
-          this.enemy = e;
+        if (!this.chasing) {
+          this.chasing = e;
         } else if (
-          this.manhattan_to(e) < this.manhattan_to(this.enemy)
+          this.manhattan_to(e) < this.manhattan_to(this.chasing)
         ) {
-          this.enemy = e;
+          this.chasing = e;
         }
       }
     }
     if (this.dummy === DummyEnum.AvoidEnemyAllTheTime) {
-      this.avoiding_enemy = this.enemy;
+      this.avoiding = this.chasing;
     }
   }
 
@@ -228,12 +228,12 @@ export class BotController extends BaseController {
 
 
   avoid_enemy() {
-    if (!this.avoiding_enemy) return false;
+    if (!this.avoiding) return false;
 
     const c = this.entity;
     const { x, z } = c.position;
-    const { x: enemy_x, z: enemy_z } = this.avoiding_enemy.position;
-    const distance = this.manhattan_to(this.avoiding_enemy);
+    const { x: enemy_x, z: enemy_z } = this.avoiding.position;
+    const distance = this.manhattan_to(this.avoiding);
     if (distance > 200) {
       this.end(GK.L, GK.R, GK.U, GK.D);
       return true;
