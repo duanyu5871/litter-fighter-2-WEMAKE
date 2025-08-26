@@ -73,7 +73,7 @@ export function handle_armor(collision: ICollision): boolean {
     type,
     hit_sounds,
     injury_ratio = 0.1,
-    shaking_ratio = 2,
+    shaking_ratio = 3,
     dead_sounds = hit_sounds
   } = armor;
   const { fall = Defines.DEFAULT_ITR_FALL, injury = 0 } = itr;

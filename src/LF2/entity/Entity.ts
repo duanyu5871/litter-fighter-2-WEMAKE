@@ -1060,11 +1060,12 @@ export class Entity implements IDebugging {
     }
     if (this.shaking <= 0) {
       for (const [k, v] of this.v_rests) {
+        if (v.attacker.shaking) continue;
         if (v.v_rest && v.v_rest >= 0) --v.v_rest;
         else this.v_rests.delete(k);
       }
     }
-    if (this.motionless <= 0)
+    if (this.motionless <= 0 && this.shaking <= 0)
       this.a_rest >= 1 ? this.a_rest-- : (this.a_rest = 0);
 
     if (this._invisible_duration > 0) {
