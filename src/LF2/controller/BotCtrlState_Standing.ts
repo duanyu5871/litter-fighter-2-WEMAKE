@@ -9,7 +9,7 @@ export class BotCtrlState_Standing extends BotCtrlState_Base {
   }
   override update() {
     this.ctrl.update_nearest()
-    if (this.ctrl.chasing_enemy) {
+    if (this.ctrl.enemy) {
       return BotCtrlState.Chasing;
     } else if (this.ctrl.avoiding_enemy) {
       return BotCtrlState.Avoiding;

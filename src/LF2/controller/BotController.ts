@@ -1,13 +1,13 @@
 import FSM from "../base/FSM";
-import { Builtin_FrameId, GameKey as GK, StateEnum, TLooseGameKey } from "../defines";
+import { Builtin_FrameId, Defines, GameKey as GK, StateEnum, TFace, TLooseGameKey } from "../defines";
 import { Entity } from "../entity/Entity";
 import { is_character } from "../entity/type_check";
-import { abs } from "../utils";
+import { abs, clamp, floor } from "../utils";
 import { BaseController, KEY_NAME_LIST } from "./BaseController";
 import { BotCtrlState } from "./BotCtrlState";
-import { BotCtrlState_Standing } from "./BotCtrlState_Standing";
 import { BotCtrlState_Avoiding } from "./BotCtrlState_Avoiding";
 import { BotCtrlState_Chasing } from "./BotCtrlState_Chasing";
+import { BotCtrlState_Standing } from "./BotCtrlState_Standing";
 import { dummy_updaters, DummyEnum } from "./DummyEnum";
 export class BotController extends BaseController {
   readonly fsm = new FSM<BotCtrlState>()
@@ -18,25 +18,100 @@ export class BotController extends BaseController {
     )
     .use(BotCtrlState.Standing)
 
-  static W_ATK_ZONE_X = 50;
-  static W_ATK_ZONE_Z = 15;
-  static R_ATK_ZONE_X = 110;
-  static JUMP_DESIRE = 100;
-  static RUN_DESIRE = 200;
-  static STOP_RUN_DESIRE = 60;
-  static RUN_ZONE = 300;
-
   readonly is_bot_enemy_chaser = true;
-  W_ATK_ZONE_X = BotController.W_ATK_ZONE_X;
-  W_ATK_ZONE_Z = BotController.W_ATK_ZONE_Z;
-  R_ATK_ZONE_X = BotController.R_ATK_ZONE_X;
-  JUMP_DESIRE = BotController.JUMP_DESIRE;
-  RUN_DESIRE = BotController.RUN_DESIRE;
-  STOP_RUN_DESIRE = BotController.STOP_RUN_DESIRE;
-  RUN_ZONE_X = BotController.RUN_ZONE;
+
+
+  /** 走攻触发范围X(敌人正对) */
+  w_atk_f_x = Defines.AI_W_ATK_F_X;
+  /** 走攻触发范围X(敌人背对) */
+  w_atk_b_x = Defines.AI_W_ATK_B_X;
+  /** 走攻触发范围Z */
+  w_atk_z = Defines.AI_W_ATK_Z;
+  /** 走攻触发范围X */
+  get w_atk_x() {
+    if (!this.enemy) return 0;
+    return this.entity.facing === this.enemy.facing ?
+      this.w_atk_f_x :
+      this.w_atk_b_x;
+  }
+
+
+  /** 跑攻欲望值 */
+  r_atk_desire = Defines.AI_R_ATK_DESIRE;
+  /** 跑攻触发范围X(敌人正对) */
+  r_atk_f_x = Defines.AI_R_ATK_F_X;
+  /** 跑攻触发范围X(敌人背对) */
+  r_atk_b_x = Defines.AI_R_ATK_F_X;
+  /** 跑攻触发范围Z */
+  r_atk_z = Defines.AI_R_ATK_Z;
+  /** 跑攻触发范围X */
+  get r_atk_x() {
+    if (!this.enemy) return 0;
+    return this.entity.facing === this.enemy.facing ? this.r_atk_b_x : this.r_atk_f_x;
+  }
+
+  /** 冲跳攻触发范围X(敌人正对) */
+  d_atk_f_x = Defines.AI_D_ATK_F_X;
+  /** 冲跳攻触发范围X(敌人正对) */
+  d_atk_b_x = Defines.AI_D_ATK_B_X;
+  /** 冲跳攻触发范围Z */
+  d_atk_z = Defines.AI_D_ATK_Z;
+  /** 冲跳攻触发范围X */
+  get d_atk_x() {
+    if (!this.enemy) return 0;
+    return this.entity.facing === this.enemy.facing ? this.d_atk_b_x : this.d_atk_f_x;
+  }
+
+  /** 跳攻触发范围X(敌人正对) */
+  j_atk_f_x = Defines.AI_D_ATK_F_X;
+  /** 跳攻触发范围X(敌人正对) */
+  j_atk_b_x = Defines.AI_D_ATK_B_X;
+  /** 跳攻触发范围Z */
+  j_atk_z = Defines.AI_D_ATK_Z;
+  /** 跳攻触发范围Y */
+  j_atk_y_min = Defines.AI_D_ATK_Y_MIN;
+  j_atk_y_max = Defines.AI_D_ATK_Y_MAX;
+  /** 跳攻触发范围X */
+  get j_atk_x() {
+    if (!this.enemy) return 0;
+    return this.entity.facing === this.enemy.facing ? this.j_atk_b_x : this.j_atk_f_x;
+  }
+
+  jump_desire = Defines.AI_J_DESIRE;
+  dash_desire = Defines.AI_D_DESIRE;
+
+  /** 最小欲望值：跑步 */
+  r_desire_min = Defines.AI_R_DESIRE_MIN;
+  /** 最大欲望值：跑步 */
+  r_desire_max = Defines.AI_R_DESIRE_MAX;
+  /** 最小起跑范围X */
+  r_x_min = Defines.AI_R_X_MIN;
+  /** 最大起跑范围X */
+  r_x_max = Defines.AI_R_X_MAX;
+
+  get r_desire(): -1 | 1 | 0 {
+    if (!this.enemy) return 0;
+    let dx = abs(this.entity.position.x - this.enemy.position.x) - this.r_x_min
+    if (dx < 0) return 0;
+    let should_run = false
+    const r_x_r = this.r_x_max - this.r_x_min
+    if (r_x_r === 0) {
+      dx = floor(clamp(dx, 0, r_x_r) / r_x_r)
+      should_run = this.desire() <
+        this.r_desire_min + (this.r_desire_max - this.r_desire_min) * dx;
+    } else {
+      should_run = this.desire() < this.r_x_min;
+    }
+    if (!should_run) return 0;
+    return this.entity.position.x > this.enemy.position.x ? -1 : 1
+  }
+
+
+  /** 欲望值：停止跑步 */
+  r_stop_desire = Defines.AI_R_STOP_DESIRE;
 
   _count = 0;
-  chasing_enemy: Entity | undefined;
+  enemy: Entity | undefined;
   avoiding_enemy: Entity | undefined;
   private _dummy?: DummyEnum;
   get dummy(): DummyEnum | undefined {
@@ -73,8 +148,8 @@ export class BotController extends BaseController {
     if (this.time % 5 !== 0) return;
     const c = this.entity;
     if (c.hp <= 0) return;
-    if (!this.should_chase(this.chasing_enemy)) {
-      this.chasing_enemy = void 0;
+    if (!this.should_chase(this.enemy)) {
+      this.enemy = void 0;
     }
     if (!this.should_avoid(this.avoiding_enemy)) {
       this.avoiding_enemy = void 0;
@@ -90,40 +165,44 @@ export class BotController extends BaseController {
           this.avoiding_enemy = e;
         }
       } else if (this.should_chase(e)) {
-        if (!this.chasing_enemy) {
-          this.chasing_enemy = e;
+        if (!this.enemy) {
+          this.enemy = e;
         } else if (
-          this.manhattan_to(e) < this.manhattan_to(this.chasing_enemy)
+          this.manhattan_to(e) < this.manhattan_to(this.enemy)
         ) {
-          this.chasing_enemy = e;
+          this.enemy = e;
         }
       }
     }
     if (this.dummy === DummyEnum.AvoidEnemyAllTheTime) {
-      this.avoiding_enemy = this.chasing_enemy;
+      this.avoiding_enemy = this.enemy;
     }
   }
 
   guess_entity_pos(entity: Entity) {
-    const { x: px, z: pz } = entity.position;
-    const { x: vx, z: vz } = entity.velocity;
+    const { x: px, z: pz, y: py } = entity.position;
+    const { x: vx, z: vz, y: vy } = entity.velocity;
     let x = px + vx;
     let z = pz + vz;
+    let y = py + vy;
     switch (entity.frame.state) {
       case StateEnum.Jump:
-        x += 2 * vx;
-        z += 2 * vz;
+        x += 6 * vx;
+        z += 4 * vz;
+        y += 4 * vy;
         break;
       case StateEnum.Running:
-        x += 4 * vx;
+        x += 8 * vx;
         z += 4 * vz;
+        y += 4 * vy;
         break;
       case StateEnum.Dash:
-        x += 8 * vx;
-        z += 8 * vz;
+        x += 16 * vx;
+        z += 4 * vz;
+        y += 4 * vy
         break;
     }
-    return { x: px, z: pz, next_x: x, next_z: z };
+    return { x: px, z: pz, next_x: x, next_z: z, next_y: y };
   }
 
   key_up(...ks: TLooseGameKey[]): this {

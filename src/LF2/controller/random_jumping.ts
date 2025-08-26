@@ -1,20 +1,28 @@
 import { StateEnum, GameKey as GK } from "../defines";
 import { BotController } from "./BotController";
 
-export function random_jumping(ctrl: BotController) {
-  const { state } = ctrl.entity.frame;
+export function random_jumping(c: BotController) {
+  const { state } = c.entity.frame;
+  const desire = c.desire()
   switch (state) {
-    case StateEnum.Standing:
-    case StateEnum.Walking:
     case StateEnum.Running: {
-      if (ctrl.desire() < ctrl.JUMP_DESIRE) {
-        ctrl.key_down(GK.j);
-      } else {
-        ctrl.key_up(GK.j);
-      }
+      (
+        desire < c.dash_desire ?
+          c.key_down :
+          c.key_up
+      ).call(c, GK.j)
+      break;
+    }
+    case StateEnum.Standing:
+    case StateEnum.Walking: {
+      (
+        desire < c.jump_desire ?
+          c.key_down :
+          c.key_up
+      ).call(c, GK.j)
       break;
     }
     default:
-      ctrl.key_up(GK.j);
+      c.key_up(GK.j);
   }
 }

@@ -2,6 +2,7 @@ import { Callbacks, FPS, ICollision } from "./base";
 import { collisions_keeper } from "./collision/CollisionKeeper";
 import { Builtin_FrameId, Defines, IBdyInfo, IBounding, IEntityData, IFrameInfo, IItrInfo, ItrEffect, StateEnum } from "./defines";
 import { AllyFlag } from "./defines/AllyFlag";
+import { is_ai_ray_hit } from "./defines/is_ai_ray_hit";
 import Ditto from "./ditto";
 import { IWorldRenderer } from "./ditto/render/IWorldRenderer";
 import {
@@ -353,6 +354,13 @@ export class World extends WorldDataset {
     this.collision_detections();
     this.stage.update();
     this._updating = 0;
+
+    const [a, b] = Array.from(this.entities)
+    if (a && b) {
+      if(is_ai_ray_hit(a, b, { x: 1, z: 1 })){
+        console.log('hit!')
+      }
+    }
   }
 
   render_once(dt: number) {
