@@ -354,13 +354,6 @@ export class World extends WorldDataset {
     this.collision_detections();
     this.stage.update();
     this._updating = 0;
-
-    const [a, b] = Array.from(this.entities)
-    if (a && b) {
-      if(is_ai_ray_hit(a, b, { x: 1, z: 1 })){
-        console.log('hit!')
-      }
-    }
   }
 
   render_once(dt: number) {

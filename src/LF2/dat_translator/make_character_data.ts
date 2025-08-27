@@ -574,8 +574,8 @@ export function make_character_data(
           },
           { id: ["60", "65"], facing: FacingFlag.Ctrl },
         ]; // punch
-        frame.key_down.j = { id: "210", facing: FacingFlag.Ctrl }; // jump
-        frame.key_down.d = { id: "110", facing: FacingFlag.Ctrl }; // defend
+        frame.hit.j = { id: "210", facing: FacingFlag.Ctrl }; // jump
+        frame.hit.d = { id: "110", facing: FacingFlag.Ctrl }; // defend
         frame.key_down.U = frame.key_down.D =
           frame.key_down.L = frame.key_down.R =
           { id: "walking_0", facing: FacingFlag.Ctrl }; // walking

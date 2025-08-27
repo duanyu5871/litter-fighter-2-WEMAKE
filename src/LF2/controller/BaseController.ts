@@ -65,20 +65,20 @@ export class BaseController {
   readonly dbc: Record<TLooseGameKey, DoubleClick<IFrameInfo>>;
 
   get LR(): 0 | 1 | -1 {
-    const L = !!this.keys.L.time;
-    const R = !!this.keys.R.time;
+    const L = !this.keys.L.is_end();
+    const R = !this.keys.R.is_end();
     return L === R ? 0 : R ? 1 : -1;
   }
 
   get UD(): 0 | 1 | -1 {
-    const U = !!this.keys.U.time;
-    const D = !!this.keys.D.time;
+    const U = !this.keys.U.is_end();
+    const D = !this.keys.D.is_end();
     return U === D ? 0 : D ? 1 : -1;
   }
 
   get jd(): 0 | 1 | -1 {
-    const d = !!this.keys.d.time;
-    const j = !!this.keys.j.time;
+    const d = !this.keys.d.is_end();
+    const j = !this.keys.j.is_end();
     return d === j ? 0 : d ? 1 : -1;
   }
 

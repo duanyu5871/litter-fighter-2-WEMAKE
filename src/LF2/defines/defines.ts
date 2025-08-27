@@ -421,7 +421,7 @@ export namespace Defines {
   
 
   export const AI_R_DESIRE_MIN = 0;
-  export const AI_R_DESIRE_MAX = 5000;
+  export const AI_R_DESIRE_MAX = 500;
   export const AI_R_STOP_DESIRE = 1;
   export const AI_R_X_MIN = 100;
   export const AI_R_X_MAX = 2000;

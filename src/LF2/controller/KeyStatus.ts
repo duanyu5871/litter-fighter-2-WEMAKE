@@ -9,8 +9,9 @@ export class KeyStatus {
    * @type {number}
    * @memberof KeyStatus
    */
-  private _t: number = 0;
-  private _u: 0 | 1 = 0;
+  private _d_time: number = 0;
+  private _u_time: number = 0;
+  private _used: 0 | 1 = 0;
 
   /**
    * 按键按下的时间
@@ -20,7 +21,7 @@ export class KeyStatus {
    * @memberof KeyStatus
    */
   get time(): number {
-    return this._t;
+    return this._d_time;
   }
 
   /**
@@ -30,40 +31,41 @@ export class KeyStatus {
    * @memberof KeyStatus
    */
   get used(): 0 | 1 {
-    return this._u;
+    return this._used;
   }
 
   constructor(ctrl: BaseController) {
     this.ctrl = ctrl;
   }
   use() {
-    this._u = 1;
-    return this._t;
+    this._used = 1;
+    return this._d_time;
   }
   is_start(): boolean {
-    const { _t } = this;
-    return !!_t && _t === this.ctrl.time;
+    const { _d_time } = this;
+    return !!_d_time && _d_time === this.ctrl.time;
   }
   is_hit(): boolean {
-    const { _t } = this;
-    if(!_t) return false;
+    const { _d_time } = this;
+    if (!_d_time) return false;
+
     /** 按键时长（单位帧） */
-    const dt = this.ctrl.time - _t
+    const dt = this.ctrl.time - _d_time
     /** 按键时长短于一定时间内时，视为按键被按下 */
     return dt < this.ctrl.entity.world.key_hit_duration;
   }
   is_hld(): boolean {
-    return !this.is_hit() && !!this._t;
+    return !this.is_hit() && this._d_time > this._u_time;
   }
   is_end(): boolean {
-    return !this._t;
+    return this._d_time <= this._u_time;
   }
   hit(t: number): void {
-    this._t = t;
-    this._u = 0;
+    this._d_time = t;
+    this._used = 0;
   }
   end(): void {
-    this._t = 0;
-    this._u = 0;
+    this._u_time = this.ctrl.time
+    this._used = 0;
   }
 }

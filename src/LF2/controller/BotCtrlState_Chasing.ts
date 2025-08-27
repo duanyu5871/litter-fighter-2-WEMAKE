@@ -1,6 +1,8 @@
 import { GameKey as GK } from "../defines";
+import { is_ai_ray_hit } from "../defines/is_ai_ray_hit";
 import { StateEnum } from "../defines/StateEnum";
 import { abs, between } from "../utils";
+import { KEY_NAME_LIST } from "./BaseController";
 import { BotCtrlState } from "./BotCtrlState";
 import { BotCtrlState_Base } from "./BotCtrlState_Base";
 import { random_jumping } from "./random_jumping";
@@ -45,6 +47,7 @@ export class BotCtrlState_Chasing extends BotCtrlState_Base {
 
     random_jumping(c);
 
+
     switch (state) {
       case StateEnum.Running: {
         if (a_facing > 0 && abs_dx < c.w_atk_x) {
@@ -68,8 +71,20 @@ export class BotCtrlState_Chasing extends BotCtrlState_Base {
         } else break;
         return
       }
+      // case StateEnum.Defend:
+      //   if (is_ai_ray_hit(me, en, { x: 1, z: 0 })) {
+      //     const lr = a_facing > 0 ? GK.R : GK.L
+      //     c.start(GK.d, lr, GK.a)
+      //     return
+      //   }
+      //   break;
       case StateEnum.Standing:
       case StateEnum.Walking: {
+        if (is_ai_ray_hit(me, en, { x: 1, z: 0 })) {
+          const lr = a_facing > 0 ? GK.R : GK.L
+          c.start(GK.d, lr, GK.a).end(GK.d, lr, GK.a)
+        }
+
         const { r_desire } = c;
         if (r_desire > 0) {
           c.db_hit(GK.R).end(GK.R);
@@ -112,6 +127,9 @@ export class BotCtrlState_Chasing extends BotCtrlState_Base {
         }
         return
       }
+      default:
+        c.key_up(...KEY_NAME_LIST);
+
     }
 
     if (my_x < en_x - c.w_atk_x) {
@@ -128,7 +146,6 @@ export class BotCtrlState_Chasing extends BotCtrlState_Base {
     } else {
       c.key_up(GK.U, GK.D);
     }
-
     if (
       between(dist_x, 0, c.w_atk_x) &&
       between(abs_dz, 0, c.w_atk_z)
@@ -136,7 +153,6 @@ export class BotCtrlState_Chasing extends BotCtrlState_Base {
       c.key_down(GK.a).key_up(GK.a)
       return
     }
-
     if (x_reach && z_reach) {
       /** 回头 */
       if (abs_dx <= 5) {
