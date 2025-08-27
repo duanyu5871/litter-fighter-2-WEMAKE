@@ -80,11 +80,13 @@ export class BotCtrlState_Chasing extends BotCtrlState_Base {
       //   break;
       case StateEnum.Standing:
       case StateEnum.Walking: {
-        if (is_ai_ray_hit(me, en, { x: 1, z: 0 })) {
+        if (is_ai_ray_hit(me, en, { x: 1, z: 0 }) && c.desire() < 100) {
           const lr = a_facing > 0 ? GK.R : GK.L
           c.start(GK.d, lr, GK.a).end(GK.d, lr, GK.a)
+        } else if (is_ai_ray_hit(me, en, { x: 1, z: 0 }) && c.desire() < 100) {
+          const lr = a_facing > 0 ? GK.R : GK.L
+          c.start(GK.d, lr, GK.j).end(GK.d, lr, GK.j)
         }
-
         const { r_desire } = c;
         if (r_desire > 0) {
           c.db_hit(GK.R).end(GK.R);
