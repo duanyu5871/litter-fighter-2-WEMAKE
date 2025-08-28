@@ -68,12 +68,6 @@ export class EntityInfoRender implements IEntityCallbacks {
   protected key_nodes: Map<GameKey, { node: IBillboardNode, pos: IVector3 }>
   world_renderer: WorldRenderer;
 
-  get visible() {
-    return this.name_node.visible;
-  }
-  set visible(v) {
-    this.name_node.visible = this.bars_node.visible = v;
-  }
 
   constructor(entity: Entity, world_renderer: WorldRenderer) {
     this.world_renderer = world_renderer;
@@ -307,9 +301,11 @@ export class EntityInfoRender implements IEntityCallbacks {
   }
 
   render() {
-    const { invisible, position: { x, z, y }, frame: { centery }, hp } = this.entity;
+    const { invisible, position: { x, z, y }, frame: { centery }, hp, is_key_role } = this.entity;
     const is_fighter = is_character(this.entity)
-    this.visible = is_fighter && !invisible && hp > 0;
+
+    this.name_node.visible = is_fighter && is_key_role && !invisible
+    this.bars_node.visible = is_fighter && is_key_role && !invisible && hp > 0;
 
     const _x = floor(x);
     const bar_y = floor(y - z / 2 + BAR_BG_H + 5 + centery);

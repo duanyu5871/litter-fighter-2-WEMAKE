@@ -17,7 +17,7 @@ export class EntitiesHelper {
       TeamEnum.Team_2,
       TeamEnum.Team_3,
       TeamEnum.Team_4,
-      TeamEnum.Independent,
+      // TeamEnum.Independent,
     ], this.lf2)
   }
   list(): Entity[] {

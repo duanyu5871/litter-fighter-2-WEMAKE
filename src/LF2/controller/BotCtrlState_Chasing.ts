@@ -6,6 +6,7 @@ import { KEY_NAME_LIST } from "./BaseController";
 import { BotCtrlState } from "./BotCtrlState";
 import { BotCtrlState_Base } from "./BotCtrlState_Base";
 import { random_jumping } from "./random_jumping";
+import { xz_distance } from "./xz_distance";
 
 export class BotCtrlState_Chasing extends BotCtrlState_Base {
   readonly key = BotCtrlState.Chasing;
@@ -15,10 +16,11 @@ export class BotCtrlState_Chasing extends BotCtrlState_Base {
     const me = c.entity;
     const en = c.chasing
     const av = c.avoiding
-    if (!en) return BotCtrlState.Standing;
-
-    if (av && (abs(av.position.x - me.position.x) + (av.position.z - me.position.z)) < (abs(en.position.x - me.position.x) + (en.position.z - me.position.z)))
+    if (av && en && xz_distance(me, av) < xz_distance(me, en))
       return BotCtrlState.Avoiding
+    else if (!en && av) return BotCtrlState.Avoiding;
+    else if (!en) return BotCtrlState.Standing;
+
 
     const { facing: a_facing } = me
     const { x: my_x, z: my_z, y: my_y } = me.position;

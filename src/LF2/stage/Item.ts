@@ -95,12 +95,13 @@ export default class Item {
     if (this.times) this.times--;
     const e = creator(this.world, data);
     e.ctrl = Factory.inst.get_ctrl(e.data.id, "", e);
+    e.is_gone_dead = true;
     e.reserve = reserve ?? 0;
     e.position.x = this.lf2.random_in(x, x + range_x);
     e.position.z = is_num(z)
       ? this.lf2.random_in(z - range_z, z + range_z)
       : this.lf2.random_in(this.stage.near, this.stage.far);
-    
+
     if (is_num(hp)) e.hp_max = e.hp_r = e.hp = hp;
     if (is_num(y)) e.position.y = y;
 

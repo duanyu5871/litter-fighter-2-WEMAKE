@@ -1,6 +1,8 @@
+import { BuiltIn_OID, EntityGroup } from "../../defines";
 import { IEntityCallbacks } from "../../entity";
 import { Entity } from "../../entity/Entity";
 import { IWorldCallbacks } from "../../IWorldCallbacks";
+import { intersection } from "../../utils";
 import { Times } from "../utils/Times";
 import { UIComponent } from "./UIComponent";
 export class DanmuGameLogic extends UIComponent {
@@ -47,14 +49,19 @@ export class DanmuGameLogic extends UIComponent {
   update_bg() {
     this.lf2.change_bg('?');
     this.lf2.characters
-      .add_random(10, '?')
-      .forEach(v => {
+      .add_random(20, '?', e => {
+        return (0 == intersection(e.base.group, [EntityGroup.Boss]).length ||
+          e.id == BuiltIn_OID.Bat ||
+          e.id == BuiltIn_OID.LouisEX
+        )
+      }).forEach(v => {
         v.is_key_role = true;
         v.is_gone_dead = true;
         v.blinking = 120;
       })
+
     this.lf2.characters
-      .add_random(10, '')
+      .add_random(this.lf2.random_in(0, 3), '', e => e.id == BuiltIn_OID.Julian || e.id == BuiltIn_OID.Firzen)
       .forEach(v => {
         v.is_key_role = true;
         v.is_gone_dead = true;

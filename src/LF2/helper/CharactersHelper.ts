@@ -1,5 +1,5 @@
 
-import { IEntityData } from "../defines";
+import { EntityGroup, IEntityData } from "../defines";
 import { Entity } from "../entity/Entity";
 import { is_character } from "../entity/type_check";
 import { LF2 } from "../LF2";
@@ -26,11 +26,13 @@ export class CharactersHelper {
     if (!data) return [];
     return this.lf2.entities.add(data, num, team);
   }
-  add_random(num = 1, team?: string): Entity[] {
+  add_random(num = 1, team?: string, filter?: (e: IEntityData) => boolean): Entity[] {
     const ret: Entity[] = [];
     while (--num >= 0) {
       const d = this.lf2.random_get(
-        this.lf2.datas.characters.filter(v => v.id != '5' && v.id != '31' && v.id != '4')
+        this.lf2.datas.characters.filter(v => {
+          return filter ? filter(v) : true
+        })
       );
       if (!d) continue;
       ret.push(...this.add(d, 1, team));
