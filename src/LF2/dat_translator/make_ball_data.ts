@@ -89,7 +89,7 @@ export function make_ball_data(
             {
               type: "next_frame",
               data: {
-                id: "40"
+                id: "60"
               }
             }
           ],
@@ -128,8 +128,6 @@ export function make_ball_data(
         break;
       }
       case FrameBehavior._03:
-        break;
-      case FrameBehavior.AngelBlessing:
         break;
       case FrameBehavior.AngelBlessingStart:
         jan_chaseh_start(frame);
