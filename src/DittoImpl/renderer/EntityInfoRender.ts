@@ -183,23 +183,24 @@ export class EntityInfoRender implements IEntityCallbacks {
     const { entity } = this;
 
     const is_fighter = is_character(entity)
-    const is_key_fighter = entity.is_key_role
+    const { is_key_role, reserve } = entity
 
     entity.callbacks.add(this);
     this.world_renderer.scene.add(this.bars_node, this.name_node, this.key_node);
     this.bars_node.visible = is_fighter && entity.is_key_role
-    this.name_node.visible = is_fighter && (entity.is_key_role || is_key_fighter || !!entity.reserve)
+    this.name_node.visible = is_fighter && (entity.is_key_role || is_key_role || !!entity.reserve)
 
 
     // 玩家角色就叫玩家名
-    if (entity.reserve > 1) {
-      entity.name = 'x' + entity.reserve
-    } else if (!entity.is_key_role && is_key_fighter) {
-      entity.name = entity.data.base.name
-    } else {
+    if (is_key_role)
+      if (reserve > 1)
+        entity.name = entity.data.base.name + ' x' + reserve
+      else
+        entity.name = entity.data.base.name
+    else if (reserve > 1)
+      entity.name = 'x' + reserve
+    else
       entity.name = 'com'
-    }
-    this.on_name_changed(entity)
   }
 
   on_unmount() {
@@ -211,6 +212,10 @@ export class EntityInfoRender implements IEntityCallbacks {
   }
 
   on_name_changed(entity: Entity): void {
+    this.update_name_sprite(entity, entity.name, entity.team)
+  }
+
+  on_reserve_changed(entity: Entity): void {
     const { reserve, is_key_role: is_key_fighter } = entity;
     if (is_key_fighter)
       if (reserve > 1)
@@ -221,15 +226,10 @@ export class EntityInfoRender implements IEntityCallbacks {
       entity.name = 'x' + reserve
     else
       entity.name = 'com'
-    this.update_name_sprite(entity, entity.name, entity.team)
-  }
-
-  on_reserve_changed(entity: Entity): void {
-    this.on_name_changed(entity)
   }
 
   on_team_changed(entity: Entity): void {
-    this.on_name_changed(entity)
+    this.update_name_sprite(entity, entity.name, entity.team)
   }
 
   on_hp_changed(_e: Entity, value: number): void {

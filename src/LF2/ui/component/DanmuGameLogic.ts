@@ -44,6 +44,7 @@ export class DanmuGameLogic extends UIComponent {
   override on_stop(): void {
     super.on_stop?.();
     this.world.callbacks.del(this._cb2)
+    this.world.lock_cam_x = void 0;
   }
 
   update_bg() {
@@ -68,10 +69,11 @@ export class DanmuGameLogic extends UIComponent {
         v.blinking = 120;
       })
     this.update_staring();
-
+    this._countdown.reset()
     const { staring } = this
-    debugger
-    if (staring) this.world.lock_cam_x = this.world.renderer.cam_x = staring.position.x - this.world.screen_w / 2
+    if (staring) {
+      this.world.lock_cam_x = this.world.renderer.cam_x = staring.position.x - this.world.screen_w / 2
+    }
   }
   update_staring() {
     const fighters = this.lf2.characters.list();
