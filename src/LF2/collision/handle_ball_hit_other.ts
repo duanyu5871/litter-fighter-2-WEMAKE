@@ -11,7 +11,7 @@ export function handle_ball_hit_other(collision: ICollision): void {
     case FrameBehavior._03:
     case FrameBehavior._04:
     case FrameBehavior._05:
-    case FrameBehavior._06:
+    case FrameBehavior.DevilJudgementStart:
     case FrameBehavior.ChasingSameEnemy:
     case FrameBehavior.BatStart:
     case FrameBehavior.FirzenDisasterStart:

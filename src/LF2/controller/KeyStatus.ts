@@ -66,6 +66,5 @@ export class KeyStatus {
   }
   end(): void {
     this._u_time = this.ctrl.time
-    this._used = 0;
   }
 }

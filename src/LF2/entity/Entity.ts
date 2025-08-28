@@ -821,13 +821,18 @@ export class Entity implements IDebugging {
             v.y = this.lf2.disater_spreading_y.take()
             facing = v.x < 0 ? -1 : v.x > 0 ? 1 : facing
             break;
+          case OpointSpreading.JanDevilJudgement:
+            v.x = this.lf2.jan_devil_judgement_spreading_x.take()
+            v.y = this.lf2.jan_devil_judgement_spreading_y.take()
+            facing = v.x < 0 ? -1 : v.x > 0 ? 1 : facing
+            break;
         }
         const e = this.spawn_entity(opoint, v, facing);
         if (e) switch (this.frame.behavior) {
           case FrameBehavior.FirzenDisasterStart:
           case FrameBehavior.FirzenVolcanoStart:
           case FrameBehavior.BatStart:
-          case FrameBehavior._06:
+          case FrameBehavior.DevilJudgementStart:
             if (multi_type === OpointMultiEnum.AccordingEnemies)
               e.chasing = enemies[i % enemies.length]
             break;

@@ -83,6 +83,8 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
   readonly bat_spreading_z = new Randoming(Defines.BAT_CHASE_SPREADING_VZ, this)
   readonly disater_spreading_x = new Randoming(Defines.DISATER_SPREADING_VX, this)
   readonly disater_spreading_y = new Randoming(Defines.DISATER_SPREADING_VY, this)
+  readonly jan_devil_judgement_spreading_x = new Randoming(Defines.DEVIL_JUDGEMENT_SPREADING_VX, this)
+  readonly jan_devil_judgement_spreading_y = new Randoming(Defines.DEVIL_JUDGEMENT_SPREADING_VY, this)
 
   get loading() {
     return this._loading;

@@ -59,7 +59,7 @@ export namespace Defines {
   /**
    * 默认值：
    */
-  export const DEFAULT_FALL_VALUE_FLY: number = DEFAULT_FALL_VALUE_MAX - DEFAULT_FALL_VALUE_DIZZY
+  export const DEFAULT_FALL_VALUE_CRITICAL: number = DEFAULT_FALL_VALUE_MAX - DEFAULT_FALL_VALUE_DIZZY
 
   export const DAFUALT_QUBE_LENGTH: number = 24;
   export const DEFAULT_RESTING_MAX: number = 30;
@@ -384,9 +384,11 @@ export namespace Defines {
   export const DENNIS_CHASE_ACC_Y = 0.01
 
   export const DISATER_SPREADING_VX = arithmetic_progression(-7, 7, 1)
-  export const DISATER_SPREADING_VY = arithmetic_progression(0.5, 3, 0.5)
+  export const DISATER_SPREADING_VY = arithmetic_progression(0.5, 2, 0.5)
+  export const DEVIL_JUDGEMENT_SPREADING_VX = arithmetic_progression(-7, 7, 1)
+  export const DEVIL_JUDGEMENT_SPREADING_VY = arithmetic_progression(0.5, 2, 0.5)
   export const DISATER_CHASE_MAX_VX = 7
-  export const DISATER_CHASE_ACC_X = 0.25
+  export const DISATER_CHASE_ACC_X = 0.3
   export const DISATER_CHASE_ACC_Z = 0.25
   export const DISATER_CHASE_MAX_VY = -4
   export const DISATER_CHASE_ACC_Y = -0.25
@@ -418,7 +420,7 @@ export namespace Defines {
   export const AI_D_ATK_Y_MIN = -60;
   export const AI_D_ATK_Y_MAX = 60;
   export const AI_D_ATK_DESIRE = 10000;
-  
+
 
   export const AI_R_DESIRE_MIN = 0;
   export const AI_R_DESIRE_MAX = 500;

@@ -86,7 +86,7 @@ export function handle_armor(collision: ICollision): boolean {
   }
   victim.toughness -= decrease_value;
   const [x, y, z] = victim.spark_point(a_cube, b_cube);
-  const spark_type = fall >= Defines.DEFAULT_FALL_VALUE_FLY ?
+  const spark_type = fall >= Defines.DEFAULT_FALL_VALUE_CRITICAL ?
     SparkEnum.SlientCriticalHit :
     SparkEnum.SlientHit;
   victim.world.spark(x, y, z, spark_type);

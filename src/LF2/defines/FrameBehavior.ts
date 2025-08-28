@@ -36,7 +36,7 @@ export enum FrameBehavior {
   /** 
    * 恶魔之审判的开始(视敌人数目而增加，基本上是一个) 
     */
-  _06 = 6,
+  DevilJudgementStart = 6,
 
   /** 
    * * 用于：

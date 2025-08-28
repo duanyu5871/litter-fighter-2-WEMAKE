@@ -1,6 +1,6 @@
 
 import { ICollision } from "../base/ICollision";
-import { ItrEffect, SparkEnum, TFace } from "../defines";
+import { Defines, ItrEffect, SparkEnum, TFace } from "../defines";
 import { turn_face } from "../entity";
 import { is_character } from "../entity/type_check";
 
@@ -22,28 +22,51 @@ export function handle_fall(collision: ICollision) {
   victim.velocity_0.y = (itr.dvy ?? attacker.world.ivy_d) * attacker.world.ivy_f;
   victim.velocity_0.z = 0;
   victim.velocity_0.x = (itr.dvx || 0) * attacker_facing;
-  if (itr.effect === ItrEffect.Sharp) {
-    victim.world.spark(...victim.spark_point(a_cube, b_cube), SparkEnum.CriticalBleed);
-  } else if (is_character(victim)) {
-    victim.world.spark(...victim.spark_point(a_cube, b_cube), SparkEnum.CriticalHit);
+
+  const is_critical = !!(itr.fall && itr.fall > Defines.DEFAULT_FALL_VALUE_CRITICAL)
+
+  const spark_pos = victim.spark_point(a_cube, b_cube);
+  let effect = SparkEnum.Hit
+  if (itr.effect === ItrEffect.Sharp && is_character(victim)) {
+    effect = is_critical ? SparkEnum.CriticalBleed : SparkEnum.Bleed;
+  } else {
+    effect = is_critical ? SparkEnum.CriticalHit : SparkEnum.Hit;
+  }
+  victim.world.spark(...spark_pos, effect)
+
+  const { fire, critical_hit } = victim.data.indexes || {}
+
+  const normal_fall_act = () => {
+    if (!critical_hit) return;
+    const direction: TFace = victim.velocity_0.x / victim.facing >= 0 ? 1 : -1;
+    victim.next_frame = { id: critical_hit[direction][0] };
   }
 
   switch (itr.effect) {
     case ItrEffect.Fire:
-    case ItrEffect.MFire1:
     case ItrEffect.MFire2:
-    case ItrEffect.FireExplosion:
-      if (victim.data.indexes?.fire)
+      if (fire) {
         victim.next_frame = {
-          id: victim.data.indexes.fire[0],
+          id: fire[0],
+          facing: turn_face(attacker_facing),
+        };
+      } else {
+        normal_fall_act()
+      }
+      break;
+    case ItrEffect.MFire1:
+    case ItrEffect.FireExplosion:
+      if (fire) {
+        victim.next_frame = {
+          id: fire[0],
           facing: attacker_facing,
         };
+      } else {
+        normal_fall_act()
+      }
       break;
     default:
-      if (victim.data.indexes?.critical_hit) {
-        const direction: TFace = victim.velocity_0.x / victim.facing >= 0 ? 1 : -1;
-        victim.next_frame = { id: victim.data.indexes.critical_hit[direction][0] };
-      }
+      normal_fall_act()
       break;
   }
 

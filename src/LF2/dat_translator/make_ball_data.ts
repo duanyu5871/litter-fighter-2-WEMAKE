@@ -100,7 +100,7 @@ export function make_ball_data(
       case FrameBehavior._05:
         jan_chaseh_start(frame);
         break;
-      case FrameBehavior._06:
+      case FrameBehavior.DevilJudgementStart:
         jan_chase_start(frame);
         break;
       case FrameBehavior.ChasingSameEnemy:
@@ -300,5 +300,6 @@ function jan_chase_start(frame: IFrameInfo, x: number = frame.centerx, y: number
     x, y, dvy: 6,
     action: { id: "0" },
     multi: { type: OpointMultiEnum.AccordingEnemies, min: 1 },
+    spreading: OpointSpreading.JanDevilJudgement
   });
 }

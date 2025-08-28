@@ -26,7 +26,7 @@ export function handle_ball_is_hit(collision: ICollision): void {
   }
 
   victim.world.spark(...victim.spark_point(a_cube, b_cube),
-    itr.fall && itr.fall > Defines.DEFAULT_FALL_VALUE_FLY ?
+    itr.fall && itr.fall > Defines.DEFAULT_FALL_VALUE_CRITICAL ?
       SparkEnum.CriticalHit :
       SparkEnum.Hit
   );
