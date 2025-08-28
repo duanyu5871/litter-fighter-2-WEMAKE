@@ -8,6 +8,12 @@ export enum CollisionVal {
    * 被攻击者类型
    */
   VictimType = "victim_type",
+
+  /** 
+   * 被攻击者是否为当前跟踪对象 
+   */
+  VictimIsChasing = "victim_is_chasing",
+
   ItrEffect = "itr_effect",
   ItrKind = "itr_kind",
   SameFacing = "same_facing",

@@ -21,11 +21,11 @@ export function cook_itr(itr?: Partial<IItrInfo>) {
   if (is_positive(arest)) itr.arest = max(2, 2 * arest - Defines.DEFAULT_ITR_MOTIONLESS - 4);
 
   const src_dvx = take(itr, "dvx");
-  if (not_zero_num(src_dvx)) itr.dvx = src_dvx * 0.5;
+  if (not_zero_num(src_dvx)) itr.dvx = Number((src_dvx * 0.5).toPrecision(1));
   const src_dvz = take(itr, "dvz");
-  if (not_zero_num(src_dvz)) itr.dvz = src_dvz * 0.5;
+  if (not_zero_num(src_dvz)) itr.dvz = Number((src_dvz * 0.5).toPrecision(1));
   const src_dvy = take(itr, "dvy");
-  if (not_zero_num(src_dvy)) itr.dvy = src_dvy * -0.59;
+  if (not_zero_num(src_dvy)) itr.dvy = Number((src_dvy * -0.59).toPrecision(1));
   const fall = take(itr, "fall");
   if (not_zero_num(fall)) itr.fall = fall * 2;
   const bdefend = take(itr, "bdefend");

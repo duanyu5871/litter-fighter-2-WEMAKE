@@ -19,7 +19,7 @@ import { IArmorInfo } from "../defines/IArmorInfo";
 import Ditto from "../ditto";
 import { ENTITY_STATES, States } from "../state";
 import { State_Base } from "../state/State_Base";
-import { abs, floor, intersection, max, min, round } from "../utils";
+import { abs, find, floor, intersection, max, min, round } from "../utils";
 import { cross_bounding } from "../utils/cross_bounding";
 import { is_num, is_positive, is_str } from "../utils/type_check";
 import { EMPTY_FRAME_INFO } from "./EMPTY_FRAME_INFO";
@@ -703,7 +703,7 @@ export class Entity implements IDebugging {
     this.position.set(
       round(x),
       round(y),
-      round(z)
+      round(z + (opoint.z ?? 0))
     );
 
     let {
@@ -764,8 +764,26 @@ export class Entity implements IDebugging {
     const next_state = this.states.get(state_code) || this.states.fallback(this.data.type, state_code);
     this.state = next_state;
   }
+  _opoints: [IOpointInfo, number][] = [];
 
   set_frame(v: IFrameInfo) {
+    if (v.id === GONE_FRAME_INFO.id) {
+      this._opoints.length = 0
+    } else {
+      for (let i = 0; i < this._opoints.length; ++i) {
+        const { interval_mode, interval_id } = this._opoints[i]![0];
+        if (interval_mode === 1) {
+          const exists = !!find(v.opoint, o => o.interval_id === interval_id)
+          if (!exists) {
+            this._opoints.splice(i, 1)
+            --i
+          }
+        } else {
+          this._opoints.splice(i, 1)
+          --i
+        }
+      }
+    }
     this._prev_frame = this.frame;
     this.frame = v;
     const prev_state_code = this._prev_frame.state;
@@ -782,7 +800,15 @@ export class Entity implements IDebugging {
   }
 
   apply_opoints(opoints: IOpointInfo[]) {
+
     for (const opoint of opoints) {
+      const { interval = 0, interval_id, interval_mode } = opoint;
+      const interval_info = this._opoints.find(v => v[0].interval_id === interval_id)
+      if (interval_info && interval_mode === 1) {
+        if (interval_info[1] !== opoint.interval) continue;
+      } else if (interval > 0) {
+        this._opoints.push([opoint, 0])
+      }
       let enemies: Entity[] = []
       let allies: Entity[] = []
       let multi_type: OpointMultiEnum | undefined = void 0
@@ -836,7 +862,7 @@ export class Entity implements IDebugging {
             if (multi_type === OpointMultiEnum.AccordingEnemies)
               e.chasing = enemies[i % enemies.length]
             break;
-          case FrameBehavior._05:
+          case FrameBehavior.AngelBlessingStart:
             if (multi_type === OpointMultiEnum.AccordingAllies)
               e.chasing = allies[i % allies.length]
             break;
@@ -875,7 +901,7 @@ export class Entity implements IDebugging {
     }
     const entity = create(this.world, data);
     entity.ctrl = Factory.inst.get_ctrl(entity.data.id, "", entity,) ?? entity.ctrl;
-    entity.on_spawn(this, opoint, offset_velocity, facing).attach();
+    entity.on_spawn(this, opoint, offset_velocity, facing).attach(opoint.is_entity);
     for (const [k, v] of this.v_rests) {
       /*
       Note: 继承v_rests，避免重复反弹ball...
@@ -886,8 +912,12 @@ export class Entity implements IDebugging {
     return entity;
   }
 
-  attach(): this {
-    this.world.add_entities(this);
+  attach(is_entity = true): this {
+    if (is_entity)
+      this.world.add_entities(this);
+    else
+      this.world.add_incorporeities(this);
+
     if (EMPTY_FRAME_INFO === this.frame)
       this.enter_frame(Defines.NEXT_FRAME_AUTO);
     return this;
@@ -1144,6 +1174,16 @@ export class Entity implements IDebugging {
     }
 
     this.state?.pre_update?.(this);
+
+    for (const pair of this._opoints) {
+      const [opoint, time] = pair
+      if (time === opoint.interval) {
+        this.apply_opoints([opoint])
+        pair[1] = 0;
+      } else {
+        pair[1] = time + 1;
+      }
+    }
   }
 
   update_resting() {

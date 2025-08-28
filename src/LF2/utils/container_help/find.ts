@@ -23,3 +23,4 @@ export function intersection<T>(a: Unsafe<T[]>, b: Unsafe<T[]>, fn = (c1: T, c2:
   if (!a || !b) return [];
   return a.filter(c1 => b.some(c2 => fn(c1, c2)));
 }
+

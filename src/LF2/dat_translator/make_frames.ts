@@ -18,6 +18,7 @@ import { ILegacyPictureInfo } from "../defines/ILegacyPictureInfo";
 import { OpointKind } from "../defines/OpointKind";
 import { SpeedMode } from "../defines/SpeedMode";
 import { Defines } from "../defines/defines";
+import { ensure } from "../utils";
 import { abs, floor } from "../utils/math/base";
 import { match_all } from "../utils/string_parser/match_all";
 import { match_colon_value } from "../utils/string_parser/match_colon_value";
@@ -167,13 +168,13 @@ export function make_frames(
     if (dvx === 550) frame.dvx = dvx;
     else if (not_zero_num(dvx)) {
       if (dvx >= 501 && dvx <= 549) {
-        frame.dvx = (dvx - 550) * 0.5;
+        frame.dvx = Number(((dvx - 550) * 0.5).toPrecision(1));
         frame.vxm = SpeedMode.FixedLf2;
       } else if (dvx >= 551) {
-        frame.dvx = (dvx - 550) * 0.5;
+        frame.dvx = Number(((dvx - 550) * 0.5).toPrecision(1));
         frame.vxm = SpeedMode.FixedLf2;
       } else {
-        frame.dvx = dvx * 0.5;
+        frame.dvx = Number((dvx * 0.5).toPrecision(1));
       }
     }
     if (
@@ -242,8 +243,8 @@ export function make_frames(
         break;
       }
       case StateEnum.LouisCastOff:
-        frame.opoint = frame.opoint || [];
-        frame.opoint.push(
+
+        frame.opoint = ensure(frame.opoint,
           {
             kind: OpointKind.Normal,
             x: 39,

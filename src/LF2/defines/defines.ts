@@ -383,6 +383,12 @@ export namespace Defines {
   export const DENNIS_CHASE_MAX_VY = 0.2
   export const DENNIS_CHASE_ACC_Y = 0.01
 
+  export const ANGEL_BLESSING_MAX_VX = 7
+  export const ANGEL_BLESSING_ACC_X = 0.25
+  export const ANGEL_BLESSING_ACC_Z = 0.25
+  export const ANGEL_BLESSING_MAX_VY = 0.2
+  export const ANGEL_BLESSING_ACC_Y = 0.01
+
   export const DISATER_SPREADING_VX = arithmetic_progression(-7, 7, 1)
   export const DISATER_SPREADING_VY = arithmetic_progression(0.5, 2, 0.5)
   export const DEVIL_JUDGEMENT_SPREADING_VX = arithmetic_progression(-7, 7, 1)

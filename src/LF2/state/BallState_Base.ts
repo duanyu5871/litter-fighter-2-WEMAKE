@@ -24,7 +24,12 @@ export default class BallState_Base extends State_Base {
           e.world.add_enemy_chaser(e);
           if (ctrl) ctrl.target_position = ctrl.target_position ?? ctrl.entity.position.clone()
           break;
+        case FrameBehavior.ChasingSameEnemy:
+        case FrameBehavior.AngelBlessing:
+          if (ctrl) ctrl.target_position = ctrl.target_position ?? ctrl.entity.position.clone()
+          break;
       }
+
     }
 
   }

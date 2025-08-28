@@ -15,6 +15,7 @@ import { handle_itr_kind_magic_flute } from "./handle_itr_kind_magic_flute";
 import { handle_itr_kind_whirlwind } from "./handle_itr_kind_whirlwind";
 import { handle_itr_normal_bdy_defend } from "./handle_itr_normal_bdy_defend";
 import { handle_itr_normal_bdy_normal } from "./handle_itr_normal_bdy_normal";
+import { handle_john_shield_hit_other_ball } from "./handle_john_shield_hit_other_ball";
 import { handle_rest } from "./handle_rest";
 import { handle_super_punch_me } from "./handle_super_punch_me";
 import { handle_weapon_hit_other } from "./handle_weapon_hit_other";
@@ -208,17 +209,24 @@ collisions_keeper.add(
 collisions_keeper.add(
   [EntityEnum.Ball],
   [ItrKind.Normal],
-  [EntityEnum.Character, EntityEnum.Weapon],
+  ALL_ENTITY_ENUM,
   [BdyKind.Normal],
   handle_ball_hit_other
 )
 
 collisions_keeper.add(
-  [EntityEnum.Character, EntityEnum.Weapon],
+  ALL_ENTITY_ENUM,
   [ItrKind.Normal],
   [EntityEnum.Ball],
   [BdyKind.Normal],
   handle_ball_is_hit
+)
+collisions_keeper.add(
+  ALL_ENTITY_ENUM,
+  [ItrKind.JohnShield],
+  [EntityEnum.Ball],
+  [BdyKind.Normal],
+  handle_john_shield_hit_other_ball,
 )
 
 collisions_keeper.add(

@@ -3,4 +3,5 @@ export enum OpointSpreading {
   Bat = 1,
   FirzenDisater = 2,
   JanDevilJudgement = 3,
+  AngelBlessing = 4,
 }

@@ -230,7 +230,7 @@ export function make_character_data(
         frame.hit.d = { id: "102" }; // rowing
         frame.hold = frame.hold || {};
         frame.hit.B = frame.hold.B = { id: "218" }; // running_stop
-        frame.dvx = running_speed / 2;
+        frame.dvx = Number((running_speed / 2).toPrecision(1));
         frame.ctrl_spd_z = running_speedz;
         break;
       }
@@ -256,7 +256,7 @@ export function make_character_data(
         frame.hold = frame.hold || {};
         frame.hit.B = frame.hold.B = { id: "19" }; // running_stop
         frame.hit.a = { id: "50" }; // running_stop
-        frame.dvx = heavy_running_speed / 2;
+        frame.dvx = Number((heavy_running_speed / 2).toPrecision(1));
         frame.ctrl_spd_z = heavy_running_speedz;
         break;
       }
@@ -700,7 +700,7 @@ export function make_character_data(
           frame.hit.d = { id: "102" }; // rowing
           frame.key_down = frame.key_down || {};
           frame.key_down.B = { id: "218" }; // running_stop
-          frame.dvx = running_speed / 2;
+          frame.dvx = Number((running_speed / 2).toPrecision(1));
           frame.ctrl_spd_z = running_speedz;
           /* 
             NOTE: 

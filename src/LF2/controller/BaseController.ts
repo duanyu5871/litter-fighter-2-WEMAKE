@@ -79,7 +79,7 @@ export class BaseController {
   get jd(): 0 | 1 | -1 {
     const d = !this.keys.d.is_end();
     const j = !this.keys.j.is_end();
-    return d === j ? 0 : d ? 1 : -1;
+    return d === j ? 0 : d ? -1 : 1;
   }
 
   private _key_list: string | undefined = void 0;

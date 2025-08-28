@@ -1,4 +1,5 @@
 import { BuiltIn_OID, Defines, FacingFlag, ItrKind, OpointSpreading, StateEnum } from "../defines";
+import { AllyFlag } from "../defines/AllyFlag";
 import { CollisionVal as C_Val } from "../defines/CollisionVal";
 import { EntityEnum } from "../defines/EntityEnum";
 import { EntityVal } from "../defines/EntityVal";
@@ -10,6 +11,7 @@ import { IFrameInfo } from "../defines/IFrameInfo";
 import { OpointKind } from "../defines/OpointKind";
 import { OpointMultiEnum } from "../defines/OpointMultiEnum";
 import { SpeedMode } from "../defines/SpeedMode";
+import { ensure } from "../utils";
 import { traversal } from "../utils/container_help/traversal";
 import { to_num } from "../utils/type_cast/to_num";
 import { CondMaker } from "./CondMaker";
@@ -63,6 +65,38 @@ export function make_ball_data(
     }
 
     switch (hit_Fa as FrameBehavior) {
+      case FrameBehavior.AngelBlessing:
+        frame.ctrl_spd_x = Defines.ANGEL_BLESSING_MAX_VX;
+        frame.ctrl_acc_x = Defines.ANGEL_BLESSING_ACC_X;
+        frame.ctrl_spd_x_m = SpeedMode.AccTo;
+        frame.ctrl_spd_z = Defines.DEFAULT_OPOINT_SPEED_Z;
+        frame.ctrl_acc_z = Defines.ANGEL_BLESSING_ACC_Z;
+        frame.ctrl_spd_z_m = SpeedMode.AccTo;
+        frame.ctrl_spd_y = Defines.ANGEL_BLESSING_MAX_VY;
+        frame.ctrl_acc_y = Defines.ANGEL_BLESSING_ACC_Y;
+        frame.ctrl_spd_y_m = SpeedMode.AccTo;
+        frame.itr = ensure(frame.itr, {
+          kind: ItrKind.Heal,
+          x: 25,
+          y: 13,
+          w: 32,
+          h: 34,
+          injury: 100,
+          ally_flags: AllyFlag.Ally,
+          l: 24,
+          z: -12,
+          actions: [
+            {
+              type: "next_frame",
+              data: {
+                id: "40"
+              }
+            }
+          ],
+          test: new CondMaker().and(C_Val.VictimIsChasing, "==", 1).done()
+        })
+        console.log(frame.itr)
+        break;
       case FrameBehavior.JohnChase:
         frame.ctrl_spd_x = Defines.JOHN_CHASE_MAX_VX
         frame.ctrl_acc_x = Defines.JOHN_CHASE_ACC_X
@@ -95,9 +129,9 @@ export function make_ball_data(
       }
       case FrameBehavior._03:
         break;
-      case FrameBehavior._04:
+      case FrameBehavior.AngelBlessing:
         break;
-      case FrameBehavior._05:
+      case FrameBehavior.AngelBlessingStart:
         jan_chaseh_start(frame);
         break;
       case FrameBehavior.DevilJudgementStart:
@@ -124,8 +158,7 @@ export function make_ball_data(
         }
         break;
       case FrameBehavior.BatStart:
-        frame.opoint = frame.opoint || [];
-        frame.opoint.push({
+        frame.opoint = ensure(frame.opoint, {
           kind: OpointKind.Normal,
           oid: BuiltIn_OID.BatChase,
           x: frame.centerx,
@@ -148,25 +181,147 @@ export function make_ball_data(
         break;
       case FrameBehavior.FirzenVolcanoStart:
         firzen_disater_start(frame, frame.centerx, -79);
-        frame.opoint = frame.opoint || [];
-        frame.opoint.push({
+        frame.opoint = ensure(frame.opoint, { // 爆炸
+          kind: OpointKind.Normal,
+          oid: BuiltIn_OID.FirenFlame,
+          x: frame.centerx,
+          y: 24,
+          action: { id: "109" },
+        }, { // 前中冰柱
+          kind: OpointKind.Normal,
+          oid: BuiltIn_OID.FreezeColumn,
+          x: 135,
+          y: 24,
+          action: { id: "100" },
+        }, { // 前上冰柱
+          kind: OpointKind.Normal,
+          oid: BuiltIn_OID.FreezeColumn,
+          x: 135,
+          y: 24,
+          z: -60,
+          dvz: -4,
+          action: { id: "100" },
+        }, { // 前下冰柱
+          kind: OpointKind.Normal,
+          oid: BuiltIn_OID.FreezeColumn,
+          x: 135,
+          y: 24,
+          z: 60,
+          dvz: 4,
+          action: { id: "100" },
+        }, { // 后中冰柱
+          kind: OpointKind.Normal,
+          oid: BuiltIn_OID.FreezeColumn,
+          x: -45,
+          y: 24,
+          action: { id: "100", facing: FacingFlag.Backward },
+        }, {// 后下冰柱
+          kind: OpointKind.Normal,
+          oid: BuiltIn_OID.FreezeColumn,
+          x: -45,
+          y: 24,
+          z: -60,
+          dvz: -4,
+          action: { id: "100", facing: FacingFlag.Backward },
+        }, {// 后下冰柱
+          kind: OpointKind.Normal,
+          oid: BuiltIn_OID.FreezeColumn,
+          x: -45,
+          y: 24,
+          z: 60,
+          dvz: 4,
+          action: { id: "100", facing: FacingFlag.Backward },
+        }, { // 地火1
           kind: OpointKind.Normal,
           oid: BuiltIn_OID.FirenFlame,
           x: frame.centerx,
           y: 26,
-          action: { id: "109" },
-        }, {
+          z: 0,
+          action: { id: "54" },
+        }, { // 地火2
           kind: OpointKind.Normal,
-          oid: BuiltIn_OID.FreezeColumn,
-          x: 135,
+          oid: BuiltIn_OID.FirenFlame,
+          x: frame.centerx - 25,
           y: 26,
-          action: { id: "100" },
-        }, {
+          z: 0,
+          action: { id: "54" },
+        }, { // 地火3
           kind: OpointKind.Normal,
-          oid: BuiltIn_OID.FreezeColumn,
-          x: -45,
+          oid: BuiltIn_OID.FirenFlame,
+          x: frame.centerx + 25,
           y: 26,
-          action: { id: "100", facing: FacingFlag.Backward },
+          z: 0,
+          action: { id: "54", facing: 2 },
+        }, { // 地火4
+          kind: OpointKind.Normal,
+          oid: BuiltIn_OID.FirenFlame,
+          x: frame.centerx - 50,
+          y: 26,
+          z: 0,
+          action: { id: "54" },
+        }, { // 地火5
+          kind: OpointKind.Normal,
+          oid: BuiltIn_OID.FirenFlame,
+          x: frame.centerx + 50,
+          y: 26,
+          z: 0,
+          action: { id: "54", facing: 2 },
+        }, { // 地火6
+          kind: OpointKind.Normal,
+          oid: BuiltIn_OID.FirenFlame,
+          x: frame.centerx - 38,
+          y: 26,
+          z: -15,
+          action: { id: "54" },
+        }, { // 地火7
+          kind: OpointKind.Normal,
+          oid: BuiltIn_OID.FirenFlame,
+          x: frame.centerx + 38,
+          y: 26,
+          z: -15,
+          action: { id: "54", facing: 2 },
+        }, { // 地火8
+          kind: OpointKind.Normal,
+          oid: BuiltIn_OID.FirenFlame,
+          x: frame.centerx - 38,
+          y: 26,
+          z: 15,
+          action: { id: "54" },
+        }, { // 地火9
+          kind: OpointKind.Normal,
+          oid: BuiltIn_OID.FirenFlame,
+          x: frame.centerx + 38,
+          y: 26,
+          z: 15,
+          action: { id: "54", facing: 2 },
+        }, { // 地火10
+          kind: OpointKind.Normal,
+          oid: BuiltIn_OID.FirenFlame,
+          x: frame.centerx + 10,
+          y: 26,
+          z: 25,
+          action: { id: "54" },
+        }, { // 地火11
+          kind: OpointKind.Normal,
+          oid: BuiltIn_OID.FirenFlame,
+          x: frame.centerx - 10,
+          y: 26,
+          z: 25,
+          action: { id: "54", facing: 2 },
+        }, { // 地火12
+          kind: OpointKind.Normal,
+          oid: BuiltIn_OID.FirenFlame,
+          x: frame.centerx + 10,
+          y: 26,
+          z: -25,
+          action: { id: "54" },
+        }, { // 地火13
+          kind: OpointKind.Normal,
+          oid: BuiltIn_OID.FirenFlame,
+          x: frame.centerx - 10,
+          y: 26,
+          z: -25,
+          action: { id: "54", facing: 2 },
         });
         break;
       case FrameBehavior.Bat:
@@ -181,8 +336,7 @@ export function make_ball_data(
         frame.ctrl_spd_y_m = SpeedMode.AccTo;
         break;
       case FrameBehavior.JulianBallStart:
-        frame.opoint = frame.opoint || [];
-        frame.opoint.push({
+        frame.opoint = ensure(frame.opoint, {
           kind: OpointKind.Normal,
           oid: BuiltIn_OID.JulianBall,
           x: frame.centerx,
@@ -220,8 +374,7 @@ export function make_ball_data(
       for (const itr of frame.itr) {
         if (itr.kind === ItrKind.JohnShield) {
           if (hit_d) {
-            itr.actions = itr.actions || [];
-            itr.actions.push({
+            itr.actions = ensure(itr.actions, {
               type: 'next_frame',
               test: new CondMaker<C_Val>()
                 .add(C_Val.VictimType, "==", EntityEnum.Character)
@@ -234,10 +387,10 @@ export function make_ball_data(
           weapon_hit_sound &&
           itr.kind !== ItrKind.Whirlwind &&
           itr.kind !== ItrKind.Freeze &&
-          itr.kind !== ItrKind.Block
+          itr.kind !== ItrKind.Block &&
+          itr.kind !== ItrKind.Heal
         ) {
-          itr.actions = itr.actions || [];
-          itr.actions.push({ type: 'sound', path: [weapon_hit_sound] })
+          itr.actions = ensure(itr.actions, { type: 'sound', path: [weapon_hit_sound] })
         }
       }
     }
@@ -265,8 +418,7 @@ export function make_ball_data(
 }
 
 function firzen_disater_start(frame: IFrameInfo, x: number = frame.centerx, y: number = frame.centery) {
-  frame.opoint = frame.opoint || [];
-  frame.opoint.push({
+  frame.opoint = ensure(frame.opoint, {
     kind: OpointKind.Normal,
     oid: [
       BuiltIn_OID.FirzenChasef,
@@ -282,19 +434,18 @@ function firzen_disater_start(frame: IFrameInfo, x: number = frame.centerx, y: n
   });
 }
 function jan_chaseh_start(frame: IFrameInfo, x: number = frame.centerx, y: number = frame.centery) {
-  frame.opoint = frame.opoint || [];
-  frame.opoint.push({
+  frame.opoint = ensure(frame.opoint, {
     kind: OpointKind.Normal,
     oid: BuiltIn_OID.JanChaseh,
     x,
     y,
     action: { id: "0" },
     multi: { type: OpointMultiEnum.AccordingAllies, min: 1 },
+    spreading: OpointSpreading.AngelBlessing
   });
 }
 function jan_chase_start(frame: IFrameInfo, x: number = frame.centerx, y: number = frame.centery) {
-  frame.opoint = frame.opoint || [];
-  frame.opoint.push({
+  frame.opoint = ensure(frame.opoint, {
     kind: OpointKind.Normal,
     oid: BuiltIn_OID.JanChase,
     x, y, dvy: 6,

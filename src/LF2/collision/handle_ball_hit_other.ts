@@ -1,7 +1,13 @@
 import { ICollision } from "../base";
 import { FrameBehavior } from "../defines";
+import { handle_injury } from "./handle_injury";
+import { handle_rest } from "./handle_rest";
+import { handle_stiffness } from "./handle_stiffness";
 
 export function handle_ball_hit_other(collision: ICollision): void {
+  handle_rest(collision);
+  // handle_injury(collision);
+  handle_stiffness(collision);
   const { attacker, aframe } = collision;
   switch (aframe.behavior as FrameBehavior) {
     case FrameBehavior.JohnChase:
@@ -9,8 +15,8 @@ export function handle_ball_hit_other(collision: ICollision): void {
       break;
     case FrameBehavior.DennisChase:
     case FrameBehavior._03:
-    case FrameBehavior._04:
-    case FrameBehavior._05:
+    case FrameBehavior.AngelBlessing:
+    case FrameBehavior.AngelBlessingStart:
     case FrameBehavior.DevilJudgementStart:
     case FrameBehavior.ChasingSameEnemy:
     case FrameBehavior.BatStart:

@@ -25,6 +25,7 @@ export interface IOpointInfo {
    */
   y: number;
 
+  z?: number;
   /**
    * 实体数据ID
    *
@@ -117,4 +118,13 @@ export interface IOpointInfo {
    * @see OpointSpreading
    */
   spreading?: number | OpointSpreading;
+
+  /**
+   * 
+   */
+  is_entity?: boolean;
+
+  interval?: number;
+  interval_id?: string;
+  interval_mode?: 1 | 0;
 }

@@ -26,12 +26,12 @@ export enum FrameBehavior {
   /** 
    * 天使之祝福(别的dat档用了无效) 
    */
-  _04 = 4,
+  AngelBlessing = 4,
 
   /** 
    * 天使之祝福的开始(会追我方的人物很久) 
    */
-  _05 = 5,
+  AngelBlessingStart = 5,
 
   /** 
    * 恶魔之审判的开始(视敌人数目而增加，基本上是一个) 

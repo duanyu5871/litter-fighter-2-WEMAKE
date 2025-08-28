@@ -1,6 +1,6 @@
 import { Callbacks, FPS, ICollision } from "./base";
 import { collisions_keeper } from "./collision/CollisionKeeper";
-import { Builtin_FrameId, Defines, IBdyInfo, IBounding, IEntityData, IFrameInfo, IItrInfo, ItrEffect, StateEnum } from "./defines";
+import { Builtin_FrameId, Defines, IBdyInfo, IBounding, IEntityData, IFrameInfo, IItrInfo, ItrEffect, ItrKind, StateEnum } from "./defines";
 import { AllyFlag } from "./defines/AllyFlag";
 import { is_ai_ray_hit } from "./defines/is_ai_ray_hit";
 import Ditto from "./ditto";
@@ -33,6 +33,8 @@ export class World extends WorldDataset {
   private _render_worker_id?: ReturnType<typeof Ditto.Render.add>;
   private _update_worker_id?: ReturnType<typeof Ditto.Interval.add>;
   entities = new Set<Entity>();
+  incorporeities = new Set<Entity>();
+
   readonly slot_fighters = new Map<string, Entity>();
   readonly collisions: ICollision[] = [];
   get stage() {
@@ -89,7 +91,12 @@ export class World extends WorldDataset {
     this._stage = new Stage(this, Defines.VOID_BG);
     this.renderer = new Ditto.WorldRender(this);
   }
-
+  add_incorporeities(...entities: Entity[]) {
+    for (const entity of entities) {
+      this.incorporeities.add(entity);
+      this.renderer.add_entity(entity);
+    }
+  }
   add_entities(...entities: Entity[]) {
     for (const entity of entities) {
       if (is_character(entity)) {
@@ -129,7 +136,9 @@ export class World extends WorldDataset {
   }
 
   del_entity(entity: Entity) {
-    if (!this.entities.delete(entity)) return false;
+    if (!(this.entities.delete(entity) || this.incorporeities.delete(entity)))
+      return false;
+
     if (is_character(entity))
       this.callbacks.emit("on_fighter_del")(entity);
     if (entity.ctrl?.player_id) {
@@ -315,7 +324,6 @@ export class World extends WorldDataset {
     this._updating = 1;
     if (this._time === Number.MAX_SAFE_INTEGER) this._time = 0;
     else ++this._time;
-
     for (const e of this.entities) {
       e.self_update();
 
@@ -342,6 +350,16 @@ export class World extends WorldDataset {
     }
     this.gone_entities.length = 0;
     for (const e of this.entities) {
+      e.update();
+      if (
+        e.frame.id === Builtin_FrameId.Gone ||
+        e.frame.state === StateEnum.Gone
+      ) {
+        this.gone_entities.push(e);
+      }
+    }
+    for (const e of this.incorporeities) {
+      e.self_update();
       e.update();
       if (
         e.frame.id === Builtin_FrameId.Gone ||
@@ -450,12 +468,9 @@ export class World extends WorldDataset {
   }
 
   collision_detection(a: Entity, b: Entity) {
-    if (b.blinking || b.invisible) return;
     const af = a.frame;
     const bf = b.frame;
     if (!af.itr?.length || !bf.bdy?.length) return;
-    const b_catcher = b.catcher;
-    if (b_catcher && b_catcher.frame.cpoint?.hurtable !== 1) return;
     const l0 = af.itr.length;
     const l1 = bf.bdy.length;
     for (let i = 0; i < l0; ++i) {
@@ -473,6 +488,13 @@ export class World extends WorldDataset {
     bframe: IFrameInfo,
     bdy: IBdyInfo,
   ): void {
+
+    if (itr.kind !== ItrKind.Heal) {
+      const b_catcher = victim.catcher;
+      if (victim.blinking || victim.invisible) return;
+      if (b_catcher && b_catcher.frame.cpoint?.hurtable !== 1) return;
+    }
+
     switch (aframe.state) {
       case StateEnum.Weapon_OnHand: {
         const atk = attacker.holder?.frame.wpoint?.attacking;
@@ -564,7 +586,7 @@ export class World extends WorldDataset {
     const e = this._spark_creator(this, this._spark_data);
     e.position.set(round(x), round(y), round(z));
     e.enter_frame({ id: f });
-    e.attach();
+    e.attach(false);
   }
 
   get_bounding(e: Entity, f: IFrameInfo, i: IItrInfo | IBdyInfo): IBounding {
