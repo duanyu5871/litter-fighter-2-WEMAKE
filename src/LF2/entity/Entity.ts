@@ -739,10 +739,10 @@ export class Entity implements IDebugging {
       ),
     )
 
-    if (is_num(opoint.max_hp)) this.hp_max = opoint.max_hp;
-    if (is_num(opoint.max_mp)) this.mp_max = opoint.max_mp;
-    if (is_num(opoint.hp)) this.hp = opoint.hp;
-    if (is_num(opoint.mp)) this.mp = opoint.mp;
+    if (is_num(opoint.max_hp)) this.hp = this.hp_r = this.hp_max = opoint.max_hp;
+    if (is_num(opoint.max_mp)) this.mp = this.hp_r = this.mp_max = opoint.max_mp;
+    if (is_num(opoint.hp)) this.hp = this.hp_r = opoint.hp;
+    if (is_num(opoint.mp)) this.mp = this.hp_r = opoint.mp;
 
     if (result) this.enter_frame(result.which);
     if (
@@ -909,6 +909,7 @@ export class Entity implements IDebugging {
     const entity = create(this.world, data);
     entity.ctrl = Factory.inst.get_ctrl(entity.data.id, "", entity,) ?? entity.ctrl;
     entity.on_spawn(this, opoint, offset_velocity, facing).attach(opoint.is_entity);
+    entity.is_gone_dead = true;
     for (const [k, v] of this.v_rests) {
       /*
       Note: 继承v_rests，避免重复反弹ball...
