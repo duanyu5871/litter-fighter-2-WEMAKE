@@ -1,12 +1,12 @@
 import type { IBillboardNode, IObjectNode } from "../../LF2/3d";
 import { get_team_shadow_color } from "../../LF2/base/get_team_shadow_color";
 import { get_team_text_color } from "../../LF2/base/get_team_text_color";
-import { EntityGroup, GameKey, IVector3, Labels } from "../../LF2/defines";
+import { GameKey, IVector3, Labels } from "../../LF2/defines";
 import Ditto from "../../LF2/ditto";
 import { is_character } from "../../LF2/entity";
 import type { Entity } from "../../LF2/entity/Entity";
 import type IEntityCallbacks from "../../LF2/entity/IEntityCallbacks";
-import { find, floor, intersection, round } from "../../LF2/utils";
+import { floor, round } from "../../LF2/utils";
 import * as T from "../3d/_t";
 import { Bar } from "./Bar";
 import { WorldRenderer } from "./WorldRenderer";

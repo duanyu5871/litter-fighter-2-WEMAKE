@@ -24,7 +24,6 @@ export class EntityRender {
   protected entity_material!: THREE.MeshBasicMaterial;
   protected variants = new Map<string, string[]>();
   protected piece: ITexturePieceInfo = EMPTY_PIECE;
-  protected _prev_update_count?: number;
   protected _shaking?: number;
   protected _prev_data?: IEntityData;
   constructor(entity: Entity) {
@@ -109,10 +108,6 @@ export class EntityRender {
     if (entity.data !== this._prev_data) {
       this.set_entity(entity);
     }
-    if (this._prev_update_count === entity.update_id)
-      return;
-    this._prev_update_count = entity.update_id;
-
     const tex = frame.pic?.[facing]
     if (this._prev_tex !== tex) {
       this.apply_tex(entity, this._prev_tex = tex)

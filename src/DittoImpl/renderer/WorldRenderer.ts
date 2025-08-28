@@ -1,7 +1,7 @@
 import { ICamera } from "../../LF2/3d/ICamera";
 import Ditto from "../../LF2/ditto";
 import type { IWorldRenderer } from "../../LF2/ditto/render/IWorldRenderer";
-import type { Entity } from "../../LF2/entity";
+import { is_character, type Entity } from "../../LF2/entity";
 import type { LF2 } from "../../LF2/LF2";
 import type { World } from "../../LF2/World";
 import { __Scene } from "../3d";
@@ -20,9 +20,9 @@ export class WorldRenderer implements IWorldRenderer {
   camera: ICamera;
   entity_renderer_packs = new Map<Entity, [
     EntityRender,
-    EntityShadowRender,
-    EntityInfoRender,
-    FrameIndicators
+    EntityShadowRender | null,
+    EntityInfoRender | null,
+    FrameIndicators | null
   ]>();
 
   private _indicator_flags: number = 0;
@@ -33,7 +33,7 @@ export class WorldRenderer implements IWorldRenderer {
     if (this._indicator_flags === v) return;
     this._indicator_flags = v;
     for (const [, [, , , r4]] of this.entity_renderer_packs) {
-      r4.flags = v;
+      if (r4) r4.flags = v;
     }
   }
   get cam_x(): number {
@@ -65,14 +65,21 @@ export class WorldRenderer implements IWorldRenderer {
     const entity_renderer = new EntityRender(entity);
     entity_renderer.on_mount();
 
-    const shadow_renderer = new EntityShadowRender(entity);
-    shadow_renderer.on_mount()
+    let info_renderer: EntityInfoRender | null = null
+    let shadow_renderer: EntityShadowRender | null = null
+    let frame_indicators: FrameIndicators | null = null
 
-    const info_renderer = new EntityInfoRender(entity, this);
-    info_renderer.on_mount()
+    if (!entity.is_incorporeity) {
+      if (is_character(entity)) {
+        info_renderer = new EntityInfoRender(entity, this);
+        info_renderer.on_mount()
+      }
+      shadow_renderer = new EntityShadowRender(entity);
+      shadow_renderer.on_mount()
+      frame_indicators = new FrameIndicators(entity);
+      frame_indicators.on_mount()
+    }
 
-    const frame_indicators = new FrameIndicators(entity);
-    frame_indicators.on_mount()
 
     this.entity_renderer_packs.set(entity, [
       entity_renderer, shadow_renderer, info_renderer, frame_indicators
@@ -84,9 +91,9 @@ export class WorldRenderer implements IWorldRenderer {
     if (!pack) return;
     const [r1, r2, r3, r4] = pack
     r1.on_unmount();
-    r2.on_unmount();
-    r3.on_unmount();
-    r4.on_unmount();
+    r2?.on_unmount();
+    r3?.on_unmount();
+    r4?.on_unmount();
     this.entity_renderer_packs.delete(e);
   }
 
@@ -97,9 +104,9 @@ export class WorldRenderer implements IWorldRenderer {
     this.bg_render.render();
     for (const [, [r1, r2, r3, r4]] of this.entity_renderer_packs) {
       r1.render();
-      r2.render();
-      r3.render();
-      r4.render();
+      r2?.render();
+      r3?.render();
+      r4?.render();
     }
     this.lf2.ui?.renderer.render()
     this.scene.render();

@@ -109,10 +109,8 @@ export class EntityRenderer {
     if (entity.data !== this._prev_data) {
       this.set_entity(entity);
     }
-    if (this._prev_update_count === entity.update_id)
-      return;
-    this._prev_update_count = entity.update_id;
-
+    if (this._prev_update_count !== entity.update_id.value)
+      this._prev_update_count = entity.update_id.value;
     const tex = frame.pic?.[facing]
     if (this._prev_tex !== tex) {
       this.apply_tex(entity, this._prev_tex = tex)

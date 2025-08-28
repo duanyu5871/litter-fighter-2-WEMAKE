@@ -19,6 +19,7 @@ import { IArmorInfo } from "../defines/IArmorInfo";
 import Ditto from "../ditto";
 import { ENTITY_STATES, States } from "../state";
 import { State_Base } from "../state/State_Base";
+import { Times } from "../ui/utils/Times";
 import { abs, find, floor, intersection, max, min, round } from "../utils";
 import { cross_bounding } from "../utils/cross_bounding";
 import { is_num, is_positive, is_str } from "../utils/type_check";
@@ -74,7 +75,7 @@ export class Entity implements IDebugging {
 
   id: string = new_id();
   wait: number = 0;
-  update_id: number = Number.MIN_SAFE_INTEGER;
+  update_id = new Times(Number.MIN_SAFE_INTEGER, Number.MAX_SAFE_INTEGER);
   variant: number = 0;
   data: IEntityData;
   transform_datas?: [IEntityData, IEntityData];
@@ -82,6 +83,7 @@ export class Entity implements IDebugging {
   readonly position = new Ditto.Vector3(0, 0, 0);
 
   protected _reserve = 0;
+  is_incorporeity: boolean = false;
   get reserve(): number {
     return this._reserve;
   }
@@ -257,7 +259,6 @@ export class Entity implements IDebugging {
   protected _prev_frame: IFrameInfo = EMPTY_FRAME_INFO;
   protected _catching?: Entity;
   protected _catcher?: Entity;
-  readonly is_entity = true;
   readonly states: States;
 
   /**
@@ -859,8 +860,14 @@ export class Entity implements IDebugging {
           case FrameBehavior.FirzenVolcanoStart:
           case FrameBehavior.BatStart:
           case FrameBehavior.DevilJudgementStart:
-            if (multi_type === OpointMultiEnum.AccordingEnemies)
+            if (multi_type === OpointMultiEnum.AccordingEnemies) {
               e.chasing = enemies[i % enemies.length]
+              if (e.chasing) {
+                e.facing = (e.chasing.position.x > e.position.x) ? 1 : -1
+                e.merge_velocities();
+                e.velocity_0.x = (e.facing * abs(e.velocity_0.x))
+              }
+            }
             break;
           case FrameBehavior.AngelBlessingStart:
             if (multi_type === OpointMultiEnum.AccordingAllies)
@@ -913,6 +920,7 @@ export class Entity implements IDebugging {
   }
 
   attach(is_entity = true): this {
+    this.is_incorporeity = !is_entity
     if (is_entity)
       this.world.add_entities(this);
     else
@@ -1237,8 +1245,11 @@ export class Entity implements IDebugging {
       if (nf) this.next_frame = { ...nf.which, judger: void 0 }
       else this.next_frame = this.find_auto_frame()
     }
+    if (this.is_incorporeity) {
+      this.update_id.add()
+      return
+    }
     this.state?.update(this);
-
     let vx = 0;
     let vy = 0;
     let vz = 0;
@@ -1276,7 +1287,6 @@ export class Entity implements IDebugging {
       ++this.wait;
       --this.shaking;
     }
-
     const next_frame_1 = this.update_catching();
     const next_frame_2 = this.update_caught();
     this.next_frame = next_frame_2 || next_frame_1 || this.next_frame;
@@ -1327,12 +1337,11 @@ export class Entity implements IDebugging {
         delete this.throwinjury;
       }
     }
-    if (this.update_id === Number.MAX_SAFE_INTEGER)
-      this.update_id = Number.MIN_SAFE_INTEGER;
-    else ++this.update_id;
+
     this.world.restrict(this);
     this.collision_list.length = 0;
     this.collided_list.length = 0;
+    this.update_id.add()
   }
 
   /**

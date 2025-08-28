@@ -208,8 +208,6 @@ export class BaseController {
   protected result = new ControllerUpdateResult();
   readonly queue: (readonly [0 | 1 | 2, TLooseGameKey])[] = []
   update(): ControllerUpdateResult {
-    // if (this.world.time % 2) return this.result.set(void 0, 0)
-
     if (this._time === Number.MAX_SAFE_INTEGER)
       this._time = 0;
     else
