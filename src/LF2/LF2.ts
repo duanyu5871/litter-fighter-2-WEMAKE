@@ -33,6 +33,8 @@ import get_import_fallbacks from "./loader/get_import_fallbacks";
 import { ImageMgr } from "./loader/ImageMgr";
 import { PlayerInfo } from "./PlayerInfo";
 import { Stage } from "./stage";
+import { DanmuGameLogic } from "./ui/component/DanmuGameLogic";
+import { UIComponent } from "./ui/component/UIComponent";
 import { cook_ui_info } from "./ui/cook_ui_info";
 import { ICookedUIInfo } from "./ui/ICookedUIInfo";
 import { IUIInfo } from "./ui/IUIInfo.dat";
@@ -194,7 +196,6 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
       return obj;
     }
   }
-
 
   /**
    * TODO
@@ -748,10 +749,10 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
 
   broadcast(message: string): void {
     this.callbacks.emit("on_broadcast")(message);
-    const { count } = this.callbacks
-    if (count <= 0) this.warn('broadcast', `listener count got ${count}`)
   }
-
+  on_component_broadcast(component: UIComponent, message: string) {
+    this.callbacks.emit("on_component_broadcast")(component, message);
+  }
   switch_difficulty(): void {
     const { difficulty } = this;
     const max = this.is_cheat_enabled(CheatType.LF2_NET) ? 4 : 3;

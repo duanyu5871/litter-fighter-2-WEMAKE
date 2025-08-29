@@ -1,6 +1,7 @@
 import type { Difficulty } from "./defines";
 import type { IZip } from "./ditto";
 import type { PlayerInfo } from "./PlayerInfo";
+import type { UIComponent } from "./ui/component/UIComponent";
 import type { ICookedUIInfo } from "./ui/ICookedUIInfo";
 import type { UINode } from "./ui/UINode";
 
@@ -38,4 +39,6 @@ export interface ILf2Callback {
   on_infinity_mp?(enabled: boolean): void;
 
   on_zips_changed?(zips: IZip[]): void;
+
+  on_component_broadcast?(component: UIComponent, message: string): void;
 }

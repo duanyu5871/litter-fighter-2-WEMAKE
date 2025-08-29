@@ -53,6 +53,7 @@ import {
   useLocalNumber,
   useLocalString,
 } from "./useLocalStorage";
+import { DanmuOverlay } from "./DanmuOverlay";
 
 function App() {
   const [fullscreen] = useState(() => new Ditto.FullScreen());
@@ -161,7 +162,6 @@ function App() {
 
   useEffect(() => {
     if (!lf2 || !ele_game_overlay) return;
-
     const ele = new GameOverlay(lf2.world, ele_game_overlay);
     return () => ele.release()
   }, [lf2, ele_game_overlay])
@@ -453,6 +453,7 @@ function App() {
         draggable={false}
       />
       <div ref={set_ele_game_overlay} className={classNames(styles.game_overlay, { [styles.gone]: !game_overlay })} />
+      <DanmuOverlay lf2={lf2}/>
       <GamePad player_id={touch_pad_on} lf2={lf2} />
       <Loading loading={!layout_id} big className={styles.loading_img} />
       <div className={styles.debug_pannel}>

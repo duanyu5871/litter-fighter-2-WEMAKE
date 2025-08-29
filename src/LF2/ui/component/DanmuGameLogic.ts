@@ -22,16 +22,19 @@ const make_team_sum = (): ISumInfo => ({
 })
 export class DanmuGameLogic extends UIComponent {
   static override readonly TAG = 'DanmuGameLogic';
+  static readonly BROADCAST_ON_START = 'DanmuGameLogic_ON_START';
+  static readonly BROADCAST_ON_STOP = 'DanmuGameLogic_ON_STOP';
+
   private _countdown = new Times(0, 60 * 30);
   private _staring: Entity | undefined;
   private _teams = new Set<string>();
-  private _team_sum = new Map<string, ISumInfo>([
+  readonly team_sum = new Map<string, ISumInfo>([
     [TeamEnum.Team_1, make_team_sum()],
     [TeamEnum.Team_2, make_team_sum()],
     [TeamEnum.Team_3, make_team_sum()],
     [TeamEnum.Team_4, make_team_sum()]
   ])
-  private _fighter_sum = new Map<string, ISumInfo>()
+  readonly fighter_sum = new Map<string, ISumInfo>()
   private _world_cb: IWorldCallbacks = {
     on_fighter_del: e => this.on_fighter_del(e),
     on_fighter_add: e => this.on_fighter_add(e),
@@ -39,35 +42,35 @@ export class DanmuGameLogic extends UIComponent {
   private _fighter_cb: IEntityCallbacks = {
     on_damage_sum_changed: (e, value, prev) => {
       // 母体还在，避免重算
-      if (e.emitter?.is_attach === true) return; 
-      const sum = this._team_sum.get(e.team)
+      if (e.emitter?.is_attach === true) return;
+      const sum = this.team_sum.get(e.team)
       if (sum) sum.damages += value - prev;
 
-      const sum2 = this._fighter_sum.get(e.data.id)
+      const sum2 = this.fighter_sum.get(e.data.id)
       if (sum2) sum2.damages += value - prev;
     },
     on_kill_sum_changed: (e, value, prev) => {
       // 母体还在，避免重算
       if (e.emitter?.is_attach === true) return;
-      const sum = this._team_sum.get(e.team)
+      const sum = this.team_sum.get(e.team)
       if (sum) sum.kills += value - prev;
 
-      const sum2 = this._fighter_sum.get(e.data.id)
+      const sum2 = this.fighter_sum.get(e.data.id)
       if (sum2) sum2.kills += value - prev;
     },
     on_picking_sum_changed: (e, value, prev) => {
-      const sum = this._team_sum.get(e.team)
+      const sum = this.team_sum.get(e.team)
       if (sum) sum.pickings += value - prev;
 
-      const sum2 = this._fighter_sum.get(e.data.id)
+      const sum2 = this.fighter_sum.get(e.data.id)
       if (sum2) sum2.pickings += value - prev;
     },
     on_dead: (e) => {
       // 分身死亡不计算
-      if(e.emitter) return;
-      const sum = this._team_sum.get(e.team)
+      if (e.emitter) return;
+      const sum = this.team_sum.get(e.team)
       if (sum) sum.deads++;
-      const sum2 = this._fighter_sum.get(e.data.id)
+      const sum2 = this.fighter_sum.get(e.data.id)
       if (sum2) sum2.deads++;
     },
     on_disposed: (e) => {
@@ -79,7 +82,7 @@ export class DanmuGameLogic extends UIComponent {
   }
   override init(...args: any[]): this {
     super.init(...args)
-    this.lf2.datas.characters.map(v => this._fighter_sum.set(v.id, make_team_sum()))
+    this.lf2.datas.characters.map(v => this.fighter_sum.set(v.id, make_team_sum()))
     return this;
   }
   update_teams() {
@@ -92,9 +95,9 @@ export class DanmuGameLogic extends UIComponent {
     e.callbacks.add(this._fighter_cb)
 
     if (!e.emitter) { // 忽略分身计数
-      const sum = this._team_sum.get(e.team)
+      const sum = this.team_sum.get(e.team)
       if (sum) sum.spawns++;
-      const sum2 = this._fighter_sum.get(e.data.id)
+      const sum2 = this.fighter_sum.get(e.data.id)
       if (sum2) sum2.spawns++;
     }
     this.update_teams()
@@ -114,11 +117,13 @@ export class DanmuGameLogic extends UIComponent {
     this.update_bg();
     this.world.callbacks.add(this._world_cb)
     this.lf2.sounds.play_bgm('?')
+    this.lf2.on_component_broadcast(this, DanmuGameLogic.BROADCAST_ON_START)
   }
   override on_stop(): void {
     super.on_stop?.();
     this.world.callbacks.del(this._world_cb)
     this.world.lock_cam_x = void 0;
+    this.lf2.on_component_broadcast(this, DanmuGameLogic.BROADCAST_ON_STOP)
   }
 
   update_bg() {
