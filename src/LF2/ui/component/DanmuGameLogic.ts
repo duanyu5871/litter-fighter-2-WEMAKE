@@ -1,4 +1,4 @@
-import { BuiltIn_OID, EntityGroup, IEntityData } from "../../defines";
+import { BuiltIn_OID, Defines, EntityGroup, IEntityData } from "../../defines";
 import { TeamEnum } from "../../defines/TeamEnum";
 import { IEntityCallbacks } from "../../entity";
 import { Entity } from "../../entity/Entity";
@@ -6,7 +6,7 @@ import { IWorldCallbacks } from "../../IWorldCallbacks";
 import { intersection } from "../../utils";
 import { Times } from "../utils/Times";
 import { UIComponent } from "./UIComponent";
-interface ISumInfo {
+export interface ISumInfo {
   kills: number,
   damages: number,
   pickings: number,
@@ -22,7 +22,7 @@ const make_team_sum = (team: string): ISumInfo => ({
   deads: 0,
   team
 })
-interface IFighterSumInfo extends ISumInfo {
+export interface IFighterSumInfo extends ISumInfo {
   data: IEntityData,
 }
 const make_fighter_sum = (data: IEntityData): IFighterSumInfo => {
@@ -127,9 +127,10 @@ export class DanmuGameLogic extends UIComponent {
   }
   override on_stop(): void {
     super.on_stop?.();
-    this.world.callbacks.del(this._world_cb)
+    this.world.callbacks.del(this._world_cb);
     this.world.lock_cam_x = void 0;
-    this.lf2.on_component_broadcast(this, DanmuGameLogic.BROADCAST_ON_STOP)
+    this.lf2.on_component_broadcast(this, DanmuGameLogic.BROADCAST_ON_STOP);
+    this.lf2.change_bg(Defines.VOID_BG)
   }
 
   update_bg() {
@@ -143,6 +144,7 @@ export class DanmuGameLogic extends UIComponent {
       }).forEach(v => {
         v.is_key_role = true;
         v.is_gone_dead = true;
+        v.name = v.data.base.name;
         v.blinking = 120;
       })
 

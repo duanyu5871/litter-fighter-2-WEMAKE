@@ -26,13 +26,13 @@ export class Layer {
         this._fade_anim = void 0;
     }
   }
-  fade_out(duration: number = 16, delay: number = 0): void {
+  fade_out(duration: number = 0, delay: number = 0): void {
     this._fade_anim = new Sequence(
       new Delay(this.opacity).set_duration(delay),
       new Easing(this.opacity, 0).set_duration(duration)
     )
   }
-  fade_in(duration: number = 16, delay: number = 0): void {
+  fade_in(duration: number = 0, delay: number = 0): void {
     this._fade_anim = new Sequence(
       new Delay(this.opacity).set_duration(delay),
       new Easing(this.opacity, 1).set_duration(duration)

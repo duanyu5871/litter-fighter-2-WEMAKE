@@ -1,7 +1,7 @@
-import { GameKey as GK } from "../defines";
+import { GameKey as GK, ItrKind } from "../defines";
 import { is_ai_ray_hit } from "../defines/is_ai_ray_hit";
 import { StateEnum } from "../defines/StateEnum";
-import { abs, between } from "../utils";
+import { abs, between, find } from "../utils";
 import { KEY_NAME_LIST } from "./BaseController";
 import { BotCtrlState } from "./BotCtrlState";
 import { BotCtrlState_Base } from "./BotCtrlState_Base";
@@ -50,12 +50,17 @@ export class BotCtrlState_Chasing extends BotCtrlState_Base {
 
     const x_reach = abs_dx <= c.w_atk_x;
     const z_reach = abs_dz <= c.w_atk_z;
+    const z_reach_2 = abs_dz <= 2 * c.w_atk_z;
+    const z_reach_3 = abs_dz <= 3 * c.w_atk_z;
 
     random_jumping(c);
 
 
     switch (state) {
       case StateEnum.Running: {
+        if (find(me.v_rests, v => v[1].itr.kind === ItrKind.Block)) {
+          c.start(GK.a).end(GK.a)
+        }
         if (a_facing > 0 && abs_dx < c.w_atk_x) {
           // 避免跑过头停下
           c.key_down(GK.L).key_up(GK.R, GK.L)
@@ -77,32 +82,59 @@ export class BotCtrlState_Chasing extends BotCtrlState_Base {
         } else break;
         return
       }
-      // case StateEnum.Defend:
-      //   if (is_ai_ray_hit(me, en, { x: 1, z: 0 })) {
-      //     const lr = a_facing > 0 ? GK.R : GK.L
-      //     c.start(GK.d, lr, GK.a)
-      //     return
-      //   }
-      //   break;
+      case StateEnum.Injured:
+        c.start(GK.d).end(GK.d)
+        break;
+      case StateEnum.Catching:
+        c.start(GK.a).end(GK.a)
+        break;
+      case StateEnum.Attacking:
+      case StateEnum.BurnRun:
+      case StateEnum.Z_Moveable:
+        if (my_z < en_z - c.w_atk_z) {
+          c.key_down(GK.D);
+        } else if (my_z > en_z + c.w_atk_z) {
+          c.key_down(GK.U);
+        } else {
+          c.key_up(GK.D, GK.U);
+        }
+        const hits = me.frame.hit
+        if (hits) {
+          const { sequences: seqs } = hits
+          if (hits.a && dist_x > 100 && c.desire() < 3000) {
+            c.start(GK.a).end(GK.a) // 持续a
+          } else if (hits.j && dist_x < 0) {
+            c.start(GK.j).end(GK.j) // 取消一些动作
+          } else if (hits.d && dist_x < 0) {
+            c.start(GK.d).end(GK.d) // 取消一些动作
+          } else if (seqs && z_reach_2 && c.desire() < 2000) {
+            const keys = c.lf2.random_get(Object.keys(seqs).filter(v => v[0] !== 'L' && v[0] !== 'R'))?.split('') as GK[]
+            if (keys?.length) c.start(GK.d, ...keys).end(GK.d, ...keys)
+          }
+        }
+
+        break;
       case StateEnum.Standing:
       case StateEnum.Walking: {
-        if ((
-          is_ai_ray_hit(me, en, { x: 1, z: 0 }) ||
-          is_ai_ray_hit(me, en, { x: 1, z: 0.3 })
-        ) && c.desire() < 500) {
-          const lr = a_facing > 0 ? GK.R : GK.L
-          c.start(GK.d, lr, GK.a).end(GK.d, lr, GK.a)
-        } else if (is_ai_ray_hit(me, en, { x: 1, z: 0 }) && c.desire() < 500) {
-          const lr = a_facing > 0 ? GK.R : GK.L
-          c.start(GK.d, lr, GK.j).end(GK.d, lr, GK.j)
-        } else if (c.desire() < 100) {
-          c.start(GK.d, GK.U, GK.j).end(GK.d, GK.U, GK.j)
-        } else if (c.desire() < 100) {
-          c.start(GK.d, GK.U, GK.a).end(GK.d, GK.U, GK.a)
-        } else if (c.desire() < 100) {
-          c.start(GK.d, GK.D, GK.j).end(GK.d, GK.D, GK.j)
-        } else if (c.desire() < 100) {
-          c.start(GK.d, GK.D, GK.a).end(GK.d, GK.D, GK.a)
+        if (find(me.v_rests, v => v[1].itr.kind === ItrKind.Block)) {
+          c.start(GK.a).end(GK.a)
+        }
+        const seqs = me.frame.hit?.sequences;
+        if (seqs && c.desire() < 2000) {
+          if (is_ai_ray_hit(me, en, { x: 1, z: 0, min_x: 100 })) {
+            const kk: GK[] = []
+            if (seqs.La && seqs.Ra) kk.push(GK.a)
+            if (seqs.Lj && seqs.Rj) kk.push(GK.j)
+            if (kk.length) {
+              const lr = a_facing > 0 ? GK.R : GK.L
+              const k = c.lf2.random_get(kk)!
+              c.start(GK.d, lr, k).end(GK.d, lr, k)
+            }
+          } else if (z_reach_3) {
+            const keys = c.lf2.random_get(Object.keys(seqs).filter(v => v[0] !== 'L' && v[0] !== 'R'))?.split('') as GK[]
+            if (keys?.length) c.start(GK.d, ...keys).end(GK.d, ...keys)
+          }
+          return;
         }
         const { r_desire } = c;
         if (r_desire > 0) {
@@ -115,6 +147,9 @@ export class BotCtrlState_Chasing extends BotCtrlState_Base {
         return;
       }
       case StateEnum.Dash: {
+        if (find(me.v_rests, v => v[1].itr.kind === ItrKind.Block)) {
+          c.start(GK.a).end(GK.a)
+        }
         if (
           between(dist_x, 0, c.d_atk_x) &&
           between(abs_dz, 0, c.d_atk_z)
@@ -176,9 +211,9 @@ export class BotCtrlState_Chasing extends BotCtrlState_Base {
       /** 回头 */
       if (abs_dx <= 5) {
         c.key_up(GK.L, GK.R)
-      } else if (my_x > en_x && c.entity.facing > 0) {
+      } else if (my_x > en_x && me.facing > 0) {
         c.key_down(GK.L).key_up(GK.R);
-      } else if (my_x < en_x && c.entity.facing < 0) {
+      } else if (my_x < en_x && me.facing < 0) {
         c.key_down(GK.R).key_up(GK.L);
       }
       c.key_down(GK.a).key_up(GK.a)

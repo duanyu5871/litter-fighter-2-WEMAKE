@@ -85,6 +85,8 @@ export class CollisionKeeper {
     if (handlers) handlers.forEach(fn => fn(collision))
 
     const { itr, bdy, victim, attacker } = collision;
+    victim.collided_list.push((victim.lastest_collided = collision));
+    attacker.collision_list.push((attacker.lastest_collision = collision));
     if (itr.actions?.length) {
       for (const action of itr.actions) {
         if (action.tester?.run(collision) === false)
@@ -216,7 +218,7 @@ collisions_keeper.add(
 
 collisions_keeper.add(
   ALL_ENTITY_ENUM,
-  [ItrKind.Normal],
+  [ItrKind.Normal, ItrKind.WeaponSwing, ItrKind.CharacterThrew],
   [EntityEnum.Ball],
   [BdyKind.Normal],
   handle_ball_is_hit

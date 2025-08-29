@@ -1,6 +1,7 @@
 import { IValGetter, IValGetterGetter } from "../defines/IExpression";
 import { CollisionVal } from "../defines/CollisionVal";
 import { ICollision } from "../base/ICollision";
+import { EntityGroup } from "../defines";
 
 const map: Record<CollisionVal, IValGetter<ICollision>> = {
   [CollisionVal.AttackerType]: (collision: ICollision) => collision.attacker.data.type,
@@ -24,6 +25,8 @@ const map: Record<CollisionVal, IValGetter<ICollision>> = {
   [CollisionVal.AttackerThrew]: (collision: ICollision) => collision.attacker.throwinjury !== void 0 ? 1 : 0,
   [CollisionVal.VictimThrew]: (collision: ICollision) => collision.victim.throwinjury !== void 0 ? 1 : 0,
   [CollisionVal.VictimIsChasing]: (collision: ICollision) => collision.victim === collision.attacker.chasing ? 1 : 0,
+  [CollisionVal.VictimIsFreezableBall]: (collision: ICollision) => collision.victim.group?.some(v => v === EntityGroup.FreezableBall) ? 1 : 0,
+  [CollisionVal.AttackerIsFreezableBall]: (collision: ICollision) => collision.attacker.group?.some(v => v === EntityGroup.FreezableBall) ? 1 : 0,
 };
 export const get_val_geter_from_collision: IValGetterGetter<ICollision> = (
   word: string,

@@ -32,4 +32,6 @@ export enum CollisionVal {
   ItrFall = "itr_fall",
   AttackerThrew = "attacker_threw",
   VictimThrew = "victim_threw",
+  VictimIsFreezableBall = "victim_freezable_ball",
+  AttackerIsFreezableBall = "attacker_freezable_ball",
 }

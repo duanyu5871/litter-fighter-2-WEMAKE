@@ -4,12 +4,13 @@ import { Callbacks, ICollision, new_id, new_team, type NoEmitCallbacks } from ".
 import { BaseController } from "../controller/BaseController";
 import { InvalidController } from "../controller/InvalidController";
 import {
-  Builtin_FrameId, Defines, EntityEnum, EntityGroup, FacingFlag, FrameBehavior, IBaseData, IBounding,
+  Builtin_FrameId, BuiltIn_OID, Defines, EntityEnum, EntityGroup, FacingFlag, FrameBehavior, IBaseData, IBounding,
   ICpointInfo, IEntityData, IFrameInfo,
   IItrInfo,
   INextFrame,
   INextFrameResult,
   IOpointInfo, IPos,
+  ItrEffect,
   ItrKind,
   IVector3,
   OpointKind, OpointMultiEnum, OpointSpreading, SpeedMode, StateEnum, TFace,
@@ -29,7 +30,7 @@ import { GONE_FRAME_INFO } from "./GONE_FRAME_INFO";
 import type IEntityCallbacks from "./IEntityCallbacks";
 import { turn_face } from "./face_helper";
 import { IDebugging, make_debugging } from "./make_debugging";
-import { is_character, is_weapon_data } from "./type_check";
+import { is_ball, is_character, is_weapon_data } from "./type_check";
 function calc_v(
   old: number,
   speed: number,
@@ -85,6 +86,7 @@ export class Entity implements IDebugging {
   protected _reserve = 0;
   protected _is_attach: boolean = false;
   protected _is_incorporeity: boolean = false;
+  get group() { return this.data.base.group };
   get is_attach() { return this._is_attach }
   get is_incorporeity() { return this._is_incorporeity }
   get reserve(): number {
@@ -830,6 +832,7 @@ export class Entity implements IDebugging {
     }
     switch (opoint.kind) {
       case OpointKind.Pick:
+        emitter.drop_holding()
         this.holder = emitter;
         this.holder.holding = this;
         break;
@@ -877,8 +880,20 @@ export class Entity implements IDebugging {
   }
 
   apply_opoints(opoints: IOpointInfo[]) {
+    const frozen = is_ball(this) &&
+      this.frame.state === StateEnum.Ball_Rebounding &&
+      this.data.base.group?.some(v => v === EntityGroup.FreezableBall) &&
+      (
+        this.lastest_collided?.attacker.data.id === BuiltIn_OID.Freeze || (
+          this.lastest_collided?.attacker.data.id === BuiltIn_OID.Weapon_IceSword &&
+          this.lastest_collided?.aframe.state === StateEnum.Weapon_OnHand
+        )
+      )
 
-    for (const opoint of opoints) {
+
+    for (let opoint of opoints) {
+      if (frozen) opoint = { ...opoint, oid: BuiltIn_OID.FreezeBall }
+
       const { interval = 0, interval_id, interval_mode } = opoint;
       const interval_info = this._opoints.find(v => v[0].interval_id === interval_id)
       if (interval_info && interval_mode === 1) {

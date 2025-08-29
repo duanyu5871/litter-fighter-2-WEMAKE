@@ -707,8 +707,12 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
   set_ui(ui_info?: ICookedUIInfo): void;
   set_ui(id?: string): void;
   set_ui(arg: string | ICookedUIInfo | undefined): void {
+    if (is_str(arg) && this.ui?.id === arg) return;
+    if (!is_str(arg) && this.ui?.id === arg?.id) return;
+
     const prev = this._ui_stacks.pop();
     prev?.on_pause();
+    prev?.on_stop();
     const info = is_str(arg)
       ? this._uiinfos?.find((v) => v.id === arg)
       : arg;

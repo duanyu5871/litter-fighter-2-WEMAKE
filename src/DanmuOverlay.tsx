@@ -1,18 +1,22 @@
 import { useEffect, useRef, useState } from "react";
+import { get_team_text_color } from "./LF2/base/get_team_text_color";
 import { ILf2Callback } from "./LF2/ILf2Callback";
 import { LF2 } from "./LF2/LF2";
-import { DanmuGameLogic } from "./LF2/ui/component/DanmuGameLogic";
+import { DanmuGameLogic, IFighterSumInfo } from "./LF2/ui/component/DanmuGameLogic";
 import { UIComponent } from "./LF2/ui/component/UIComponent";
-const n = (nn: number) => nn.toPrecision(2).replace(/0+$/, '').replace(/\.$/, '')
+import { Times } from "./LF2/ui/utils/Times";
+import { floor } from "./LF2/utils";
+const n = (nn: number) => nn.toFixed(2).replace(/0+$/, '').replace(/\.$/, '')
 
-const t = (name: string) => {
-  return `<span style="display:inline-block;width:100px">${name}</span>:`
+const t = (name: string, color: string = 'white') => {
+  return `<span style="display:inline-block;width:100px;color:${color};">${name}</span>:`
 }
 export class DanmuOverlayLogic implements ILf2Callback {
   lf2: LF2;
   component: DanmuGameLogic | undefined;
   timer: ReturnType<typeof setInterval> | null = null;
   ele: HTMLDivElement | null = null;
+  times = new Times(0, Number.MAX_SAFE_INTEGER);
   constructor(lf2: LF2) {
     this.lf2 = lf2;
     this.lf2.callbacks.add(this)
@@ -48,39 +52,91 @@ export class DanmuOverlayLogic implements ILf2Callback {
       if (s) return s;
       return a.damages - b.damages;
     })
-    const fighter_sum = Array.from(component.fighter_sum.values()).sort((a, b) => {
-      if (a.spawns && !b.spawns) return -1;
-      if (!a.spawns && b.spawns) return 1;
-      const k = b.kills - a.kills;
-      if (k) return k
-      const d = a.deads - b.deads;
-      if (d) return d;
-      const s = a.spawns - b.spawns;
-      if (s) return s;
-      return b.damages - a.damages;
-    })
+
     ele.innerHTML += '测试中(数据不保留)🎖️=击败数 ☠️=战败数 🐣=出场数 💥=伤害值 ⚔️=KD值\n'
-    ele.innerHTML += '---------------------------------------------------------------\n'
+    ele.innerHTML += '------------------------------【队伍】------------------------------\n'
     for (const sum of team_sum) {
       if (!sum.spawns) continue;
-      ele.innerHTML += `${t('Team ' + sum.team)} 🎖️|☠️|🐣|💥 = ${sum.kills} | ${sum.deads} | ${sum.spawns} | ${sum.damages}\n`
+      ele.innerHTML += `${t('Team ' + sum.team, get_team_text_color(sum.team))} 🎖️|☠️|🐣|💥 = ${sum.kills} | ${sum.deads} | ${sum.spawns} | ${sum.damages}\n`
     }
-    ele.innerHTML += '---------------------------------------------------------------\n'
-    for (const sum of fighter_sum) {
-      const { spawns, kills, deads, damages } = sum;
-      if (!spawns) continue;
-      const { name } = sum.data.base;
-      if (deads)
-        ele.innerHTML += `${t(name)} ⚔️|🐣|💥 = ${n(kills / deads)} | ${spawns} | ${damages}\n`
-      else if (sum.kills)
-        ele.innerHTML += `${t(name)} 🎖️|🐣|💥 = ${n(kills)} | ${spawns} | ${damages}\n`
-      else
-        ele.innerHTML += `${t(name)} 🐣|💥 = ${spawns} | ${damages}\n`
+
+    this.times.add();
+    const anchor = floor(this.times.value / 16)
+    const remain_times = ((anchor + 1) * 16 - this.times.value - 1)
+    switch (anchor % 3) {
+      case 0: {
+        const fighter_sum = Array.from(component.fighter_sum.values()).sort(sort_by_kd)
+        let i = 0
+        ele.innerHTML += `------------------------------【角色-KD排名】${remain_times}秒------------------------------\n`
+        for (const sum of fighter_sum) {
+          const { spawns, kills, deads, damages } = sum;
+          if (!spawns) continue;
+          const { name } = sum.data.base;
+          if (deads) ele.innerHTML += `${t(`${++i}.${name}`)} ⚔️|🐣|💥 = ${n(kills / deads)} | ${spawns} | ${damages}\n`
+          else if (kills) ele.innerHTML += `${t(`${++i}.${name}`)} 🎖️|🐣|💥 = ${n(kills)} | ${spawns} | ${damages}\n`
+          else ele.innerHTML += `${t(`${++i}.${name}`)} 🐣|💥 = ${spawns} | ${damages}\n`
+        }
+        break;
+      }
+      case 1: {
+        const fighter_sum = Array.from(component.fighter_sum.values()).sort(sort_by_kills_per_spawn)
+        ele.innerHTML += `------------------------------【角色-场均击败排名】${remain_times}秒------------------------------\n`
+        let i = 0
+        for (const sum of fighter_sum) {
+          const { spawns, kills } = sum;
+          if (!spawns || !kills) continue;
+          const { name } = sum.data.base;
+          ele.innerHTML += `${t(`${++i}.${name}`)} 🎖️|🐣 = ${n(kills / spawns)} | ${spawns}\n`
+        }
+        break;
+      }
+      case 2: {
+        const fighter_sum = Array.from(component.fighter_sum.values()).sort(sort_by_damages_per_spawn)
+        ele.innerHTML += `------------------------------【角色-场均伤害排名】${remain_times}秒------------------------------\n`
+        let i = 0
+        for (const sum of fighter_sum) {
+          const { spawns, damages } = sum;
+          if (!spawns || !damages) continue;
+          const { name } = sum.data.base;
+          ele.innerHTML += `${t(`${++i}.${name}`)} 💥|🐣 = ${n(damages / spawns)} | ${spawns}\n`
+        }
+        break;
+      }
     }
+
+
   }
   close?(): void;
   open?(): void;
 }
+function sort_by_kd(a: IFighterSumInfo, b: IFighterSumInfo): number {
+  if (a.spawns && !b.spawns) return -1;
+  if (!a.spawns && b.spawns) return 1;
+  if (a.deads && b.deads) {
+    const akd = a.kills / a.deads;
+    const bkd = b.kills / b.deads;
+    const kd = bkd - akd;
+    if (kd) return kd;
+  }
+  const k = b.kills - a.kills;
+  if (k) return k;
+  const d = a.deads - b.deads;
+  if (d) return d;
+  const s = a.spawns - b.spawns;
+  if (s) return s;
+  return b.damages - a.damages;
+}
+function sort_by_damages_per_spawn(a: IFighterSumInfo, b: IFighterSumInfo): number {
+  if (a.spawns && !b.spawns) return -1;
+  if (!a.spawns && b.spawns) return 1;
+  return b.damages / b.spawns - a.damages / a.spawns;
+}
+function sort_by_kills_per_spawn(a: IFighterSumInfo, b: IFighterSumInfo): number {
+  if (a.spawns && !b.spawns) return -1;
+  if (!a.spawns && b.spawns) return 1;
+  return b.kills / b.spawns - a.kills / a.spawns;
+}
+
 export function DanmuOverlay(props: { lf2: LF2 | undefined }) {
   const { lf2 } = props;
   const ref_div = useRef<HTMLDivElement | null>(null);
@@ -105,7 +161,7 @@ export function DanmuOverlay(props: { lf2: LF2 | undefined }) {
       display: open ? 'block' : 'none',
       whiteSpace: 'pre-wrap',
       left: 30,
-      top: 100,
+      top: 50,
       fontSize: 20,
       opacity: 0.7,
       fontFamily: 'Arial',
