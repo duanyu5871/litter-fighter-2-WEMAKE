@@ -14,7 +14,7 @@ interface ISumInfo {
   deads: number,
   team: string,
 }
-const make_team_sum = (team:string): ISumInfo => ({
+const make_team_sum = (team: string): ISumInfo => ({
   kills: 0,
   damages: 0,
   pickings: 0,
@@ -80,12 +80,6 @@ export class DanmuGameLogic extends UIComponent {
       if (sum) sum.deads++;
       const sum2 = this.fighter_sum.get(e.data.id)
       if (sum2) sum2.deads++;
-    },
-    on_disposed: (e) => {
-      if (this.staring !== e) return
-      // 聚焦角色被移除后，聚焦下一个角色
-      this._countdown.reset();
-      this.staring = this.lf2.random_get(this.lf2.characters.list())
     }
   }
   override init(...args: any[]): this {
@@ -113,6 +107,10 @@ export class DanmuGameLogic extends UIComponent {
   on_fighter_del(e: Entity) {
     e.callbacks.del(this._fighter_cb)
     this.update_teams()
+    if (this.staring !== e) return
+    // 聚焦角色被移除后，聚焦下一个角色
+    this._countdown.reset();
+    this.staring = this.lf2.random_get(this.lf2.characters.list())
   }
   get staring(): Entity | undefined {
     return this._staring;
