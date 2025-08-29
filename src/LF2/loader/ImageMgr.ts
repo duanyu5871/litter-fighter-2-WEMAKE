@@ -24,14 +24,19 @@ export type TPicture = IPicture<THREE.Texture>;
 export const texture_loader = new THREE.TextureLoader();
 export class ImageMgr {
   protected infos = new AsyncValuesKeeper<ImageInfo>();
+  protected disposables = new Map<string, ImageInfo>();
   readonly lf2: LF2;
   constructor(lf2: LF2) {
     this.lf2 = lf2;
   }
 
   async create_img_info(key: string, src: string, operations?: ImageOperation[]): Promise<ImageInfo> {
-    const exact = src.startsWith('!')
+    const disposable = src.startsWith('?');
+    if (disposable) src = src.substring(1)
+
+    const exact = src.startsWith('!');
     if (exact) src = src.substring(1)
+
     const [blob_url, src_url] = await this.lf2.import_resource(src, exact);
     const img = await create_img_ele(blob_url);
     img.setAttribute('src-url', src_url)
@@ -58,7 +63,7 @@ export class ImageMgr {
     });
 
     if (!vaild_operations?.length) {
-      return new ImageInfo({
+      const ret = new ImageInfo({
         key,
         url: blob_url,
         src_url,
@@ -66,6 +71,8 @@ export class ImageMgr {
         w: img.width,
         h: img.height,
       });
+      if (disposable) this.add_disposable(ret)
+      return ret;
     }
 
     let cvs: HTMLCanvasElement | null = null;
@@ -77,7 +84,9 @@ export class ImageMgr {
       throw err
     });
     const url = URL.createObjectURL(blob);
-    return new ImageInfo({ key, url, src_url, scale, w: cvs!.width, h: cvs!.height });
+    const ret = new ImageInfo({ key, url, src_url, scale, w: cvs!.width, h: cvs!.height });
+    if (disposable) this.add_disposable(ret);
+    return ret;
   }
 
   async create_img_info_by_text(
@@ -130,7 +139,7 @@ export class ImageMgr {
       throw err
     });
     const url = URL.createObjectURL(blob);
-    return new TextImageInfo().merge({
+    const ret = new TextImageInfo().merge({
       key,
       url,
       scale: scale,
@@ -140,6 +149,19 @@ export class ImageMgr {
       text: text,
       style
     });
+    if (style.disposable) this.add_disposable(ret);
+    return ret;
+  }
+
+  private add_disposable(ret: ImageInfo) {
+    this.disposables.set(ret.key, ret);
+    if (this.disposables.size > 1000) {
+      const { value } = this.disposables.keys().next();
+      if (value) {
+        this.disposables.delete(value);
+        this.infos.del(value);
+      }
+    }
   }
 
   find(key: string): ImageInfo | undefined {

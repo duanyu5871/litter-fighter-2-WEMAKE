@@ -40,4 +40,5 @@ export default interface IStyle {
   back_style?: IStyle;
   underline_color?: string;
   underline_width?: number;
+  disposable?: boolean;
 }
