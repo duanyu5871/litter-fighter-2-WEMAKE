@@ -83,7 +83,10 @@ export class Entity implements IDebugging {
   readonly position = new Ditto.Vector3(0, 0, 0);
 
   protected _reserve = 0;
-  is_incorporeity: boolean = false;
+  protected _is_attach: boolean = false;
+  protected _is_incorporeity: boolean = false;
+  get is_attach() { return this._is_attach }
+  get is_incorporeity() { return this._is_incorporeity }
   get reserve(): number {
     return this._reserve;
   }
@@ -284,7 +287,21 @@ export class Entity implements IDebugging {
   }
 
   protected _callbacks = new Callbacks<IEntityCallbacks>();
+
+  /**
+   * 实体名称
+   *
+   * @protected
+   * @type {string}
+   */
   protected _name: string = "";
+
+  /**
+   * 所属队伍
+   *
+   * @protected
+   * @type {string}
+   */
   protected _team: string = new_team();
 
   protected _mp: number = Defines.DEFAULT_MP;
@@ -339,6 +356,12 @@ export class Entity implements IDebugging {
    */
   protected _after_blink: string | TNextFrame | null = null;
 
+  /**
+   * 拾取物件总数
+   *
+   * @protected
+   * @type {number}
+   */
   protected _picking_sum: number = 0;
 
   /**
@@ -357,14 +380,32 @@ export class Entity implements IDebugging {
    */
   protected _kill_sum: number = 0;
 
+  /**
+   * 拾取物件总数
+   *
+   * @protected
+   * @type {number}
+   */
   get picking_sum() {
     return this._picking_sum;
   }
 
+  /**
+   * 伤害总数
+   *
+   * @protected
+   * @type {number}
+   */
   get damage_sum() {
     return this._damage_sum;
   }
 
+  /**
+   * 击杀总数
+   *
+   * @readonly
+   * @type {number}
+   */
   get kill_sum() {
     return this._kill_sum;
   }
@@ -480,9 +521,22 @@ export class Entity implements IDebugging {
     this._mp_r_spd_max = v;
   }
 
+  /**
+   * 所属队伍
+   *
+   * @type {string}
+   * @memberof Entity
+   */
   get team(): string {
     return this._team;
   }
+
+  /**
+   * 所属队伍
+   *
+   * @type {string}
+   * @memberof Entity
+   */
   set team(v) {
     const o = this._team;
     this._team = v;
@@ -644,6 +698,17 @@ export class Entity implements IDebugging {
     return this;
   }
 
+  /**
+   * 增加伤害值数量
+   * 
+   * emitter的伤害值数量也同样增加
+   * 
+   * 会触发话回调 on_damage_sum_changed
+   *
+   * @param {number} v 伤害值计算
+   * @return {this}
+   * @memberof Entity
+   */
   add_damage_sum(v: number): this {
     const old = this._damage_sum;
     this._damage_sum += v;
@@ -652,6 +717,17 @@ export class Entity implements IDebugging {
     return this;
   }
 
+  /**
+   * 增加击杀数量
+   * 
+   * emitter的击杀数量也同样增加
+   * 
+   * 会触发话回调 on_kill_sum_changed
+   *
+   * @param {number} v 击杀数量 
+   * @return {this}
+   * @memberof Entity
+   */
   add_kill_sum(v: number): this {
     const old = this._kill_sum;
     this._kill_sum += v;
@@ -921,7 +997,8 @@ export class Entity implements IDebugging {
   }
 
   attach(is_entity = true): this {
-    this.is_incorporeity = !is_entity
+    this._is_attach = true
+    this._is_incorporeity = !is_entity
     if (is_entity)
       this.world.add_entities(this);
     else
@@ -1246,7 +1323,7 @@ export class Entity implements IDebugging {
       if (nf) this.next_frame = { ...nf.which, judger: void 0 }
       else this.next_frame = this.find_auto_frame()
     }
-    if (this.is_incorporeity) {
+    if (this._is_incorporeity) {
       this.update_id.add()
       return
     }
@@ -1612,6 +1689,7 @@ export class Entity implements IDebugging {
   }
 
   dispose(): void {
+    this._is_attach = false;
     this.world.del_entity(this);
     this.ctrl.dispose();
     this._callbacks.emit("on_disposed")(this);

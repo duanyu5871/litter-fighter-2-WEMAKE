@@ -1,20 +1,86 @@
 import { BuiltIn_OID, EntityGroup } from "../../defines";
+import { TeamEnum } from "../../defines/TeamEnum";
 import { IEntityCallbacks } from "../../entity";
 import { Entity } from "../../entity/Entity";
 import { IWorldCallbacks } from "../../IWorldCallbacks";
 import { intersection } from "../../utils";
 import { Times } from "../utils/Times";
 import { UIComponent } from "./UIComponent";
+interface ISumInfo {
+  kills: number,
+  damages: number,
+  pickings: number,
+  spawns: number,
+  deads: number,
+}
+const make_team_sum = (): ISumInfo => ({
+  kills: 0,
+  damages: 0,
+  pickings: 0,
+  spawns: 0,
+  deads: 0,
+})
 export class DanmuGameLogic extends UIComponent {
   static override readonly TAG = 'DanmuGameLogic';
   private _countdown = new Times(0, 60 * 30);
   private _staring: Entity | undefined;
   private _teams = new Set<string>();
-  private _cb: IEntityCallbacks = {
-    on_disposed: () => {
+  private _team_sum = new Map<string, ISumInfo>([
+    [TeamEnum.Team_1, make_team_sum()],
+    [TeamEnum.Team_2, make_team_sum()],
+    [TeamEnum.Team_3, make_team_sum()],
+    [TeamEnum.Team_4, make_team_sum()]
+  ])
+  private _fighter_sum = new Map<string, ISumInfo>()
+  private _world_cb: IWorldCallbacks = {
+    on_fighter_del: e => this.on_fighter_del(e),
+    on_fighter_add: e => this.on_fighter_add(e),
+  }
+  private _fighter_cb: IEntityCallbacks = {
+    on_damage_sum_changed: (e, value, prev) => {
+      // 母体还在，避免重算
+      if (e.emitter?.is_attach === true) return; 
+      const sum = this._team_sum.get(e.team)
+      if (sum) sum.damages += value - prev;
+
+      const sum2 = this._fighter_sum.get(e.data.id)
+      if (sum2) sum2.damages += value - prev;
+    },
+    on_kill_sum_changed: (e, value, prev) => {
+      // 母体还在，避免重算
+      if (e.emitter?.is_attach === true) return;
+      const sum = this._team_sum.get(e.team)
+      if (sum) sum.kills += value - prev;
+
+      const sum2 = this._fighter_sum.get(e.data.id)
+      if (sum2) sum2.kills += value - prev;
+    },
+    on_picking_sum_changed: (e, value, prev) => {
+      const sum = this._team_sum.get(e.team)
+      if (sum) sum.pickings += value - prev;
+
+      const sum2 = this._fighter_sum.get(e.data.id)
+      if (sum2) sum2.pickings += value - prev;
+    },
+    on_dead: (e) => {
+      // 分身死亡不计算
+      if(e.emitter) return;
+      const sum = this._team_sum.get(e.team)
+      if (sum) sum.deads++;
+      const sum2 = this._fighter_sum.get(e.data.id)
+      if (sum2) sum2.deads++;
+    },
+    on_disposed: (e) => {
+      if (this.staring !== e) return
+      // 聚焦角色被移除后，聚焦下一个角色
       this._countdown.reset();
       this.staring = this.lf2.random_get(this.lf2.characters.list())
     }
+  }
+  override init(...args: any[]): this {
+    super.init(...args)
+    this.lf2.datas.characters.map(v => this._fighter_sum.set(v.id, make_team_sum()))
+    return this;
   }
   update_teams() {
     const fighters = this.lf2.characters.list();
@@ -22,28 +88,36 @@ export class DanmuGameLogic extends UIComponent {
     for (const fighter of fighters)
       this._teams.add(fighter.team);
   }
-  private _cb2: IWorldCallbacks = {
-    on_fighter_del: () => this.update_teams(),
-    on_fighter_add: () => this.update_teams()
-  }
+  on_fighter_add(e: Entity) {
+    e.callbacks.add(this._fighter_cb)
 
+    if (!e.emitter) { // 忽略分身计数
+      const sum = this._team_sum.get(e.team)
+      if (sum) sum.spawns++;
+      const sum2 = this._fighter_sum.get(e.data.id)
+      if (sum2) sum2.spawns++;
+    }
+    this.update_teams()
+  }
+  on_fighter_del(e: Entity) {
+    e.callbacks.del(this._fighter_cb)
+    this.update_teams()
+  }
   get staring(): Entity | undefined {
     return this._staring;
   }
   set staring(v: Entity | undefined) {
-    this._staring?.callbacks.del(this._cb)
     this._staring = v;
-    this._staring?.callbacks.add(this._cb)
   };
   override on_start(): void {
     super.on_start?.();
     this.update_bg();
-    this.world.callbacks.add(this._cb2)
+    this.world.callbacks.add(this._world_cb)
     this.lf2.sounds.play_bgm('?')
   }
   override on_stop(): void {
     super.on_stop?.();
-    this.world.callbacks.del(this._cb2)
+    this.world.callbacks.del(this._world_cb)
     this.world.lock_cam_x = void 0;
   }
 
