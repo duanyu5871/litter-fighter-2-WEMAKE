@@ -1,4 +1,4 @@
-import { BuiltIn_OID, EntityGroup } from "../../defines";
+import { BuiltIn_OID, EntityGroup, IEntityData } from "../../defines";
 import { TeamEnum } from "../../defines/TeamEnum";
 import { IEntityCallbacks } from "../../entity";
 import { Entity } from "../../entity/Entity";
@@ -12,14 +12,22 @@ interface ISumInfo {
   pickings: number,
   spawns: number,
   deads: number,
+  team: string,
 }
-const make_team_sum = (): ISumInfo => ({
+const make_team_sum = (team:string): ISumInfo => ({
   kills: 0,
   damages: 0,
   pickings: 0,
   spawns: 0,
   deads: 0,
+  team
 })
+interface IFighterSumInfo extends ISumInfo {
+  data: IEntityData,
+}
+const make_fighter_sum = (data: IEntityData): IFighterSumInfo => {
+  return { ...make_team_sum(''), data }
+}
 export class DanmuGameLogic extends UIComponent {
   static override readonly TAG = 'DanmuGameLogic';
   static readonly BROADCAST_ON_START = 'DanmuGameLogic_ON_START';
@@ -29,12 +37,12 @@ export class DanmuGameLogic extends UIComponent {
   private _staring: Entity | undefined;
   private _teams = new Set<string>();
   readonly team_sum = new Map<string, ISumInfo>([
-    [TeamEnum.Team_1, make_team_sum()],
-    [TeamEnum.Team_2, make_team_sum()],
-    [TeamEnum.Team_3, make_team_sum()],
-    [TeamEnum.Team_4, make_team_sum()]
+    [TeamEnum.Team_1, make_team_sum(TeamEnum.Team_1)],
+    [TeamEnum.Team_2, make_team_sum(TeamEnum.Team_2)],
+    [TeamEnum.Team_3, make_team_sum(TeamEnum.Team_3)],
+    [TeamEnum.Team_4, make_team_sum(TeamEnum.Team_4)]
   ])
-  readonly fighter_sum = new Map<string, ISumInfo>()
+  readonly fighter_sum = new Map<string, IFighterSumInfo>()
   private _world_cb: IWorldCallbacks = {
     on_fighter_del: e => this.on_fighter_del(e),
     on_fighter_add: e => this.on_fighter_add(e),
@@ -82,7 +90,7 @@ export class DanmuGameLogic extends UIComponent {
   }
   override init(...args: any[]): this {
     super.init(...args)
-    this.lf2.datas.characters.map(v => this.fighter_sum.set(v.id, make_team_sum()))
+    this.lf2.datas.characters.map(v => this.fighter_sum.set(v.id, make_fighter_sum(v)))
     return this;
   }
   update_teams() {

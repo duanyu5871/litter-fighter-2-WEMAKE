@@ -21,7 +21,8 @@ export class DanmuOverlayLogic implements ILf2Callback {
       this.component = component as DanmuGameLogic
       this.open?.();
       if (this.timer) clearInterval(this.timer)
-      this.timer = setInterval(() => this.update(), 3000)
+      this.timer = setInterval(() => this.update(), 1000)
+      this.update()
     } else if (msg === DanmuGameLogic.BROADCAST_ON_STOP) {
       this.component = component as DanmuGameLogic
       this.close?.();
@@ -33,8 +34,17 @@ export class DanmuOverlayLogic implements ILf2Callback {
     const { ele, component } = this;
     if (!ele || !component) return;
     ele.innerHTML = ''
-    for (const [team, sum] of component.team_sum)
-      ele.innerHTML += `队伍${team}: ${sum.damages} / ${sum.spawns} / ${sum.kills} / ${sum.deads}\n`
+
+    const team_sum = Array.from(component.team_sum.values()).sort((b, a) => {
+      return a.kills - b.kills
+    })
+    for (const sum of team_sum)
+      ele.innerHTML += `队伍${sum.team}: ${sum.kills} / ${sum.deads} / ${sum.spawns} / ${sum.damages}\n`
+    const fighter_sum = Array.from(component.fighter_sum.values()).sort((b, a) => {
+      return a.kills - b.kills
+    })
+    for (const sum of fighter_sum)
+      ele.innerHTML += `${sum.data.base.name}: ${sum.kills} / ${sum.deads} / ${sum.spawns} / ${sum.damages}\n`
   }
   close?(): void;
   open?(): void;
@@ -62,11 +72,12 @@ export function DanmuOverlay(props: { lf2: LF2 | undefined }) {
       pointerEvents: 'none',
       display: open ? 'block' : 'none',
       whiteSpace: 'pre-wrap',
-      WebkitTextStrokeColor: 'black',
-      WebkitTextStrokeWidth: 1,
+      // WebkitTextStrokeColor: 'black',
+      // WebkitTextStrokeWidth: 1,
       fontSize: 20,
       opacity: 0.8,
-      fontFamily: '"Arial Black", Arial'
+      fontFamily: '"Arial Black", Arial',
+      textShadow: `-1px 1px 0 #000, 1px 1px 0 #000,1px -1px 0 #000,-1px -1px 0 #000`
     }} />
   )
 }
