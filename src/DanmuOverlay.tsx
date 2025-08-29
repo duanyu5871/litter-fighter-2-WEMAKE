@@ -3,6 +3,7 @@ import { ILf2Callback } from "./LF2/ILf2Callback";
 import { LF2 } from "./LF2/LF2";
 import { DanmuGameLogic } from "./LF2/ui/component/DanmuGameLogic";
 import { UIComponent } from "./LF2/ui/component/UIComponent";
+const n = (nn: number) => nn.toPrecision(2).replace(/0+$/, '').replace(/\.$/, '')
 
 export class DanmuOverlayLogic implements ILf2Callback {
   lf2: LF2;
@@ -36,15 +37,40 @@ export class DanmuOverlayLogic implements ILf2Callback {
     ele.innerHTML = ''
 
     const team_sum = Array.from(component.team_sum.values()).sort((b, a) => {
-      return a.kills - b.kills
+      const k = a.kills - b.kills;
+      if (k) return k
+      const d = b.deads - a.deads;
+      if (d) return d;
+      const s = a.spawns - b.spawns;
+      if (s) return s;
+      return a.damages - b.damages;
     })
-    for (const sum of team_sum)
-      ele.innerHTML += `队伍${sum.team}: ${sum.kills} / ${sum.deads} / ${sum.spawns} / ${sum.damages}\n`
-    const fighter_sum = Array.from(component.fighter_sum.values()).sort((b, a) => {
-      return a.kills - b.kills
+    const fighter_sum = Array.from(component.fighter_sum.values()).sort((a, b) => {
+      if (a.spawns && !b.spawns) return -1;
+      if (!a.spawns && b.spawns) return 1;
+      const k = b.kills - a.kills;
+      if (k) return k
+      const d = a.deads - b.deads;
+      if (d) return d;
+      const s = a.spawns - b.spawns;
+      if (s) return s;
+      return b.damages - a.damages;
     })
-    for (const sum of fighter_sum)
-      ele.innerHTML += `${sum.data.base.name}: ${sum.kills} / ${sum.deads} / ${sum.spawns} / ${sum.damages}\n`
+
+    for (const sum of team_sum) {
+      if (!sum.spawns) continue;
+      ele.innerHTML += `<span style="display:inline-block;width:100px">Team ${sum.team}</span>: Kills | Deads | Spawns | Damages = ${sum.kills} | ${sum.deads} | ${sum.spawns} | ${sum.damages}\n`
+    }
+
+    for (const sum of fighter_sum) {
+      if (!sum.spawns) continue;
+      if (!sum.deads && !sum.kills)
+        ele.innerHTML += `<span style="display:inline-block;width:100px">${sum.data.base.name}</span>: Damages = ${sum.damages}\n`
+      else if (!sum.deads && sum.kills)
+        ele.innerHTML += `<span style="display:inline-block;width:100px">${sum.data.base.name}</span>: Kill | Damages = ${n(sum.kills)} | ${sum.damages}\n`
+      else
+        ele.innerHTML += `<span style="display:inline-block;width:100px">${sum.data.base.name}</span>: KD | Damages = ${n(sum.kills / sum.deads)} | ${sum.damages}\n`
+    }
   }
   close?(): void;
   open?(): void;
@@ -76,7 +102,7 @@ export function DanmuOverlay(props: { lf2: LF2 | undefined }) {
       // WebkitTextStrokeWidth: 1,
       fontSize: 20,
       opacity: 0.8,
-      fontFamily: '"Arial Black", Arial',
+      fontFamily: 'Arial',
       textShadow: `-1px 1px 0 #000, 1px 1px 0 #000,1px -1px 0 #000,-1px -1px 0 #000`
     }} />
   )
