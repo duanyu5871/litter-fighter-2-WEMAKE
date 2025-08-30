@@ -1,3 +1,4 @@
+import { floor } from "../utils";
 import { arithmetic_progression } from "../utils/math/arithmetic_progression";
 import { Builtin_FrameId } from "./Builtin_FrameId";
 import { CheatType } from "./CheatType";
@@ -433,6 +434,12 @@ export namespace Defines {
   export const AI_R_STOP_DESIRE = 1;
   export const AI_R_X_MIN = 100;
   export const AI_R_X_MAX = 2000;
+
+  export const MAX_AI_DESIRE = 10000;
+
+  export function calc_desire(ratio: number): number {
+    return floor(Defines.MAX_AI_DESIRE * ratio)
+  }
 }
 
 export default Defines;

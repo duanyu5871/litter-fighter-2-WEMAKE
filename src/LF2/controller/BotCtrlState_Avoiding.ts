@@ -2,7 +2,7 @@
 import { BotCtrlState } from "./BotCtrlState";
 import { BotCtrlState_Base } from "./BotCtrlState_Base";
 import { random_jumping } from "./random_jumping";
-import { xz_distance } from "./xz_distance";
+import { manhattan_xz } from "../helper/manhattan_xz";
 export class BotCtrlState_Avoiding extends BotCtrlState_Base {
   readonly key = BotCtrlState.Avoiding;
   override update() {
@@ -15,7 +15,7 @@ export class BotCtrlState_Avoiding extends BotCtrlState_Base {
 
     random_jumping(this.ctrl)
 
-    if (av && en && xz_distance(me, av) > xz_distance(me, en))
+    if (av && en && manhattan_xz(me, av) > manhattan_xz(me, en))
       return BotCtrlState.Chasing
     else if (av) {
       this.ctrl.avoid_enemy();

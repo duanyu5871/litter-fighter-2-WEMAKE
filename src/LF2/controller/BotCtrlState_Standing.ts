@@ -1,7 +1,7 @@
 import { KEY_NAME_LIST } from "./BaseController";
 import { BotCtrlState } from "./BotCtrlState";
 import { BotCtrlState_Base } from "./BotCtrlState_Base";
-import { xz_distance } from "./xz_distance";
+import { manhattan_xz } from "../helper/manhattan_xz";
 
 export class BotCtrlState_Standing extends BotCtrlState_Base {
   readonly key = BotCtrlState.Standing;
@@ -20,7 +20,7 @@ export class BotCtrlState_Standing extends BotCtrlState_Base {
       return BotCtrlState.Avoiding;
     else if (!av)
       return BotCtrlState.Chasing;
-    else if (xz_distance(me, av) < xz_distance(me, en))
+    else if (manhattan_xz(me, av) < manhattan_xz(me, en))
       return BotCtrlState.Avoiding;
     else
       return BotCtrlState.Chasing;

@@ -9,6 +9,8 @@ export const get_val_from_bot_ctrl: IValGetterGetter<BotController> = (
   switch (word as BotCtrlVal) {
     case BotCtrlVal.Desire:
       return e => e.desire()
+    case BotCtrlVal.BotState:
+      return e => (e.fsm.state?.key ?? '')
     default: {
       const fallback = get_val_getter_from_entity(word);
       return (e, ...arg) => fallback?.(e.entity, ...arg);

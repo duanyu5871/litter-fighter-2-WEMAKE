@@ -1,4 +1,5 @@
 
 export enum BotCtrlVal {
-  Desire = 'desire'
+  Desire = 'desire',
+  BotState = 'bot_status',
 }

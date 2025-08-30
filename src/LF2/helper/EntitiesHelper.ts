@@ -5,7 +5,7 @@ import { Factory } from "../entity";
 import { Entity } from "../entity/Entity";
 import { LF2 } from "../LF2";
 import { is_non_empty_str } from "../utils";
-import { Randoming } from "../utils/Randoming";
+import { Randoming } from "./Randoming";
 
 export class EntitiesHelper {
   readonly lf2: LF2;

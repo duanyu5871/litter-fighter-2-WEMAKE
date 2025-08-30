@@ -1,3 +1,5 @@
+import { BotCtrlState } from "../controller/BotCtrlState";
+import { TLooseGameKey } from "./GameKey";
 import { IExpression } from "./IExpression";
 import type { IFrameInfo } from "./IFrameInfo";
 /** XZ射线检测 */
@@ -25,10 +27,15 @@ export interface IAiAction {
   /** 判定式 */
   expression?: string;
 
+  /** 判定 */
   judger?: IExpression<any>;
+
+  status?: BotCtrlState[];
+
+  keys: ('F' | 'B' | TLooseGameKey)[]
 }
 export interface IAiData {
-  id?: string;
-  states?: { [x in IFrameInfo['state']]: IAiAction[] };
-  frames?: { [x in IFrameInfo['id']]: IAiAction[] };
+  actions: { [x in string]?: IAiAction }
+  states?: { [x in IFrameInfo['state']]: string[] };
+  frames?: { [x in IFrameInfo['id']]: string[] };
 }

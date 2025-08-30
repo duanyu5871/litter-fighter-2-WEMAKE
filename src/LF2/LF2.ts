@@ -46,7 +46,7 @@ import {
   is_str
 } from "./utils";
 import { MersenneTwister } from "./utils/math/MersenneTwister";
-import { Randoming } from "./utils/Randoming";
+import { Randoming } from "./helper/Randoming";
 import { World } from "./World";
 
 const cheat_info_pair = (n: CheatType) =>

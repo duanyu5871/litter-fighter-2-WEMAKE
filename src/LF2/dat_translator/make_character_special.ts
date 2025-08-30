@@ -3,8 +3,10 @@ import { ArmorEnum } from "../defines/ArmorEnum";
 import { IEntityData } from "../defines/IEntityData";
 import { add_entity_groups } from "./add_entity_to_group";
 import { make_louis_data, make_rudolf_data } from "./cook_louis_data";
+import { make_fighter_data_firzen } from "./fighters/make_fighter_data_firzen";
+import { make_fighter_data_julian } from "./fighters/make_fighter_data_julian";
 
-export function make_character_special(data: IEntityData) {
+export function make_character_special(data: IEntityData): IEntityData {
   const num_id = Number(data.id);
 
   if ((num_id >= 30 && num_id <= 39) || (num_id >= 50 && num_id <= 59)) {
@@ -14,21 +16,8 @@ export function make_character_special(data: IEntityData) {
     add_entity_groups(data.base, EntityGroup.Regular);
   }
   switch (data.id as BuiltIn_OID) {
-    case BuiltIn_OID.Julian:
-      add_entity_groups(data.base, EntityGroup.Boss);
-      data.base.ce = 3;
-      data.base.armor = {
-        fireproof: 1,
-        antifreeze: 1,
-        hit_sounds: ["data/002.wav.mp3"],
-        type: ArmorEnum.Fall,
-        toughness: Defines.DEFAULT_FALL_VALUE_MAX - Defines.DEFAULT_FALL_VALUE_DIZZY,
-      };
-      break;
-    case BuiltIn_OID.Firzen:
-      add_entity_groups(data.base, EntityGroup.Boss);
-      data.base.ce = 2;
-      break;
+    case BuiltIn_OID.Julian: return make_fighter_data_julian(data)
+    case BuiltIn_OID.Firzen: return make_fighter_data_firzen(data);
     case BuiltIn_OID.Knight:
       data.base.armor = {
         hit_sounds: ["data/085.wav.mp3"],
@@ -122,4 +111,6 @@ export function make_character_special(data: IEntityData) {
     case BuiltIn_OID.BrokenWeapon:
       break;
   }
+  return data;
 }
+

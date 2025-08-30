@@ -9,6 +9,9 @@ import { BotCtrlState_Avoiding } from "./BotCtrlState_Avoiding";
 import { BotCtrlState_Chasing } from "./BotCtrlState_Chasing";
 import { BotCtrlState_Standing } from "./BotCtrlState_Standing";
 import { dummy_updaters, DummyEnum } from "./DummyEnum";
+import { manhattan_xz } from "../helper/manhattan_xz";
+import { IAiAction } from "../defines/IAiData";
+import { is_ai_ray_hit } from "../defines/is_ai_ray_hit";
 export class BotController extends BaseController {
   readonly fsm = new FSM<BotCtrlState>()
     .add(
@@ -130,9 +133,10 @@ export class BotController extends BaseController {
     if (!e) return false;
     if (e.frame.id === Builtin_FrameId.Gone) return false;
     return (
-      e.hp > 0 &&
+      e.hp > 0 && manhattan_xz(this.entity, e) < 200 &&
       (e.frame.state === StateEnum.Lying || e.invisible || e.blinking)
     );
+
   }
   should_chase(e?: Entity | null) {
     if (!e) return false;
@@ -223,7 +227,7 @@ export class BotController extends BaseController {
     return this;
   }
   desire() {
-    return this.lf2.random_in(0, 10000)
+    return this.lf2.random_in(0, Defines.MAX_AI_DESIRE)
   }
 
 
@@ -298,5 +302,35 @@ export class BotController extends BaseController {
       return true;
     }
     return false;
+  }
+
+  handle_action(action: IAiAction | undefined) {
+    if (!action) return false;
+    const c = this;
+    const { facing } = c.entity;
+    const { status, e_ray, judger, desire = 10000, keys } = action
+    if (c.desire() > desire) return false;
+
+    if (status && !status.some(v => v === c.fsm.state?.key))
+      return false;
+    if (e_ray) {
+      if (!c.chasing) return false;
+      let ray_hit = false
+      for (const r of e_ray) {
+        ray_hit = is_ai_ray_hit(c.entity, c.chasing, r);
+        if (ray_hit) break;
+      }
+      if (!ray_hit) return false;
+    }
+
+    if (judger && !judger.run(this))
+      return false;
+    const ks = keys.map<TLooseGameKey>(v => {
+      if (v === 'F') return facing > 0 ? GK.R : GK.L;
+      if (v === 'B') return facing > 0 ? GK.R : GK.L;
+      return v
+    })
+    c.start(...ks).end(...ks)
+    return true;
   }
 }

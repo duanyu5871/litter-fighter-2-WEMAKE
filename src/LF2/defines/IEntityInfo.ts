@@ -2,6 +2,7 @@ import type { IPictureInfo } from "./IPictureInfo";
 import type { IArmorInfo } from "./IArmorInfo";
 import type { IOpointInfo } from "./IOpointInfo";
 import type { ILegacyPictureInfo } from "./ILegacyPictureInfo";
+import type { IAiData } from "./IAiData";
 
 export interface IEntityInfo {
   type?: number;
@@ -241,4 +242,6 @@ export interface IEntityInfo {
   armor?: IArmorInfo;
 
   weight?: number
+
+  ai?: IAiData;
 }
