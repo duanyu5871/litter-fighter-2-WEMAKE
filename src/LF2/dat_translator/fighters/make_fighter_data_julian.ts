@@ -1,8 +1,8 @@
 import { BotCtrlState } from "../../controller/BotCtrlState";
-import { IEntityData, EntityGroup, ArmorEnum, Defines, StateEnum, GameKey as GK } from "../../defines";
-import { BotCtrlVal } from "../../defines/BotCtrlVal";
-import { EntityVal } from "../../defines/EntityVal";
-import { IAiData } from "../../defines/IAiData";
+import {
+  IEntityData, EntityGroup, ArmorEnum, Defines, StateEnum, GameKey as GK,
+  BotVal, EntityVal, IBotData
+} from "../../defines";
 import { add_entity_groups } from "../add_entity_to_group";
 import { CondMaker } from "../CondMaker";
 import { running_frame_ids } from "./running_frame_ids";
@@ -21,7 +21,7 @@ export function make_fighter_data_julian(data: IEntityData) {
   };
 
 
-  const ai: IAiData = data.base.ai = {
+  const ai: IBotData = data.base.bot = {
     actions: {},
     frames: {},
     states: {}
@@ -35,14 +35,14 @@ export function make_fighter_data_julian(data: IEntityData) {
 
   ai.actions['injured_dja'] = {
     desire: Defines.calc_desire(0.08),
-    expression: new CondMaker<BotCtrlVal | EntityVal>()
+    expression: new CondMaker<BotVal | EntityVal>()
       .add(EntityVal.MP, '>', 25)
       .done(),
     keys: [GK.d, GK.j, GK.a]
   }
   ai.actions['shaking_dja'] = {
     desire: Defines.calc_desire(0.08),
-    expression: new CondMaker<BotCtrlVal | EntityVal>()
+    expression: new CondMaker<BotVal | EntityVal>()
       .add(EntityVal.MP, '>', 25)
       .and(EntityVal.Shaking, '>', 0)
       .done(),
@@ -51,7 +51,7 @@ export function make_fighter_data_julian(data: IEntityData) {
   ai.actions['d>a'] = {
     desire: Defines.calc_desire(0.04),
     status: [BotCtrlState.Chasing],
-    expression: new CondMaker<BotCtrlVal | EntityVal>()
+    expression: new CondMaker<BotVal | EntityVal>()
       .add(EntityVal.MP, '>', 25)
       .done(),
     keys: [GK.d, 'F', GK.a]
@@ -60,7 +60,7 @@ export function make_fighter_data_julian(data: IEntityData) {
     desire: Defines.calc_desire(0.02),
     status: [BotCtrlState.Chasing],
     e_ray: [{ x: 1, z: 0, min_x: 200 }],
-    expression: new CondMaker<BotCtrlVal | EntityVal>()
+    expression: new CondMaker<BotVal | EntityVal>()
       .add(EntityVal.MP, '>', 125)
       .done(),
     keys: [GK.d, 'F', GK.j]
@@ -69,7 +69,7 @@ export function make_fighter_data_julian(data: IEntityData) {
     desire: Defines.calc_desire(0.02),
     status: [BotCtrlState.Chasing],
     e_ray: [{ x: 1, z: 0, min_x: -120, max_x: 120, max_d: 10000 }],
-    expression: new CondMaker<BotCtrlVal | EntityVal>()
+    expression: new CondMaker<BotVal | EntityVal>()
       .add(EntityVal.MP, '>', 100)
       .done(),
     keys: [GK.d, GK.U, GK.j]
@@ -78,7 +78,7 @@ export function make_fighter_data_julian(data: IEntityData) {
     desire: Defines.calc_desire(0.05),
     status: [BotCtrlState.Chasing],
     e_ray: [{ x: 1, z: 0, min_x: 0, max_x: 120 }],
-    expression: new CondMaker<BotCtrlVal | EntityVal>().done(),
+    expression: new CondMaker<BotVal | EntityVal>().done(),
     keys: [GK.d, GK.U, GK.a]
   }
   return data;

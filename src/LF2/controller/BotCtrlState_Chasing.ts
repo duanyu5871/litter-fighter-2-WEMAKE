@@ -57,7 +57,7 @@ export class BotCtrlState_Chasing extends BotCtrlState_Base {
     const z_reach_3 = abs_dz <= 3 * c.w_atk_z;
 
     random_jumping(c);
-    const { ai } = me.data.base
+    const { bot: ai } = me.data.base
 
     if (ai) {
       let action_ids = ai.frames?.[me.frame.id]

@@ -51,3 +51,6 @@ export * from "./SpeedMode";
 export * from "./StateEnum";
 export * from "./WeaponType";
 export * from "./BackgroundGroup"
+export * from "./BotVal";
+export * from "./EntityVal";
+export * from "./IBotData";

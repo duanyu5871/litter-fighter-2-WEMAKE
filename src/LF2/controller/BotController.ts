@@ -10,7 +10,7 @@ import { BotCtrlState_Chasing } from "./BotCtrlState_Chasing";
 import { BotCtrlState_Standing } from "./BotCtrlState_Standing";
 import { dummy_updaters, DummyEnum } from "./DummyEnum";
 import { manhattan_xz } from "../helper/manhattan_xz";
-import { IAiAction } from "../defines/IAiData";
+import { IBotAction } from "../defines/IBotAction";
 import { is_ai_ray_hit } from "../defines/is_ai_ray_hit";
 export class BotController extends BaseController {
   readonly fsm = new FSM<BotCtrlState>()
@@ -304,7 +304,7 @@ export class BotController extends BaseController {
     return false;
   }
 
-  handle_action(action: IAiAction | undefined) {
+  handle_action(action: IBotAction | undefined) {
     if (!action) return false;
     const c = this;
     const { facing } = c.entity;

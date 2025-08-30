@@ -38,7 +38,7 @@ export async function preprocess_entity_data(lf2: LF2, data: IEntityData, jobs: 
     check_frame(data, v, errors)
     if (errors.length) Ditto.Warn(errors)
   });
-  traversal(data.base.ai?.actions, (_, a) => {
+  traversal(data.base.bot?.actions, (_, a) => {
     if (a?.expression) a.judger = new Expression(a.expression, get_val_from_bot_ctrl)
   })
   return data;

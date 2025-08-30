@@ -13,6 +13,12 @@ import type { IWpointInfo } from "./IWpointInfo";
 import type { SpeedMode } from "./SpeedMode";
 import type { StateEnum } from "./StateEnum";
 
+/**
+ * 实体的帧信息
+ *
+ * @export
+ * @interface IFrameInfo
+ */
 export interface IFrameInfo {
 
   /**
