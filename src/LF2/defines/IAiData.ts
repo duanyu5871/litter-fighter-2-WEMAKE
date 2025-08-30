@@ -11,6 +11,7 @@ export interface IAiRay {
   min_z?: number;
   max_z?: number;
   min_d?: number;
+  reverse?: boolean;
 }
 export interface IAiRange {
 

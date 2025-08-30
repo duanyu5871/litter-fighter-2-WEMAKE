@@ -1,14 +1,11 @@
-import { GameKey as GK, ItrKind, TLooseGameKey } from "../defines";
-import { is_ai_ray_hit } from "../defines/is_ai_ray_hit";
+import { GameKey as GK, ItrKind } from "../defines";
 import { StateEnum } from "../defines/StateEnum";
+import { manhattan_xz } from "../helper/manhattan_xz";
 import { abs, between, find } from "../utils";
 import { KEY_NAME_LIST } from "./BaseController";
 import { BotCtrlState } from "./BotCtrlState";
 import { BotCtrlState_Base } from "./BotCtrlState_Base";
 import { random_jumping } from "./random_jumping";
-import { manhattan_xz } from "../helper/manhattan_xz";
-import { IAiAction } from "../defines/IAiData";
-import { get_val_from_bot_ctrl } from "../loader/get_val_from_bot_ctrl";
 
 export class BotCtrlState_Chasing extends BotCtrlState_Base {
   readonly key = BotCtrlState.Chasing;
@@ -63,7 +60,13 @@ export class BotCtrlState_Chasing extends BotCtrlState_Base {
     const { ai } = me.data.base
 
     if (ai) {
-      const action_ids = ai.frames?.[me.frame.id]
+      let action_ids = ai.frames?.[me.frame.id]
+      if (action_ids) for (const aid of action_ids) {
+        const result = this.ctrl.handle_action(ai.actions[aid])
+        if (result) return;
+      }
+
+      action_ids = ai.states?.[me.frame.state]
       if (action_ids) for (const aid of action_ids) {
         const result = this.ctrl.handle_action(ai.actions[aid])
         if (result) return;
