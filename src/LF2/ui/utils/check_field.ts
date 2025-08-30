@@ -4,7 +4,7 @@ class _OneOf {
     this.values = values
   }
   toString(): string {
-    return `one_of(${this.values.map(v => JSON.stringify(v)).join(',')})`
+    return `one_of(${this.values.map(v => JSON.stringify(v)).join()})`
   }
 }
 class _ArrayOf {

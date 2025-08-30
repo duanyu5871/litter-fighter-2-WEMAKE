@@ -39,7 +39,24 @@ export async function preprocess_entity_data(lf2: LF2, data: IEntityData, jobs: 
     if (errors.length) Ditto.Warn(errors)
   });
   traversal(data.base.bot?.actions, (_, a) => {
-    if (a?.expression) a.judger = new Expression(a.expression, get_val_from_bot_ctrl)
+    if (!a) return;
+    if (a.expression) a.judger = new Expression(a.expression, get_val_from_bot_ctrl)
+  })
+  traversal(data.base.bot?.frames, (k, v, o) => {
+    if (!v) return;
+    const ks = k.split(',')
+    if (ks.length <= 1) return;
+    delete o[k];
+    for (const k of ks)
+      o[k] = [...v];
+  })
+  traversal(data.base.bot?.states, (k, v, o) => {
+    if (!v) return;
+    const ks = ("" + k).split(',')
+    if (ks.length <= 1) return;
+    delete o[k];
+    for (const k of ks)
+      o[k as any] = [...v];
   })
   return data;
 }

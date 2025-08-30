@@ -1,7 +1,7 @@
 import { BotCtrlState } from "../../controller/BotCtrlState";
-import { 
-  BotVal, Defines, EntityGroup, EntityVal, GameKey as GK, IBotData, IEntityData, 
-  StateEnum 
+import {
+  BotVal, Defines, EntityGroup, EntityVal, GameKey as GK, IBotData, IEntityData,
+  StateEnum
 } from "../../defines";
 import { add_entity_groups } from "../add_entity_to_group";
 import { CondMaker } from "../CondMaker";
@@ -19,8 +19,13 @@ export function make_fighter_data_firzen(data: IEntityData) {
     frames: {},
     states: {}
   }
-  for (const id of standing_frame_ids) bot.frames![id] = ['d>j', 'd^a', 'd^j']
-  for (const id of walking_frame_ids) bot.frames![id] = ['d>j', 'd^a', 'd^j']
+  bot.frames![
+    '' + [
+      '' + standing_frame_ids,
+      '' + walking_frame_ids,
+    ]
+  ] = ['d>j', 'd^a', 'd^j']
+
   bot.states![StateEnum.Attacking] = ['cancel_d>j']
   bot.actions['cancel_d>j'] = {
     desire: Defines.calc_desire(0.01),

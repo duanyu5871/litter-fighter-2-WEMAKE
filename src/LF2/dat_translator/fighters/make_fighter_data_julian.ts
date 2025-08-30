@@ -21,26 +21,30 @@ export function make_fighter_data_julian(data: IEntityData) {
   };
 
 
-  const ai: IBotData = data.base.bot = {
+  const bot: IBotData = data.base.bot = {
     actions: {},
     frames: {},
     states: {}
   }
-  for (const id of standing_frame_ids) ai.frames![id] = ['shaking_dja', 'd^a', 'd^j', 'd>j', 'd>a']
-  for (const id of walking_frame_ids) ai.frames![id] = ['shaking_dja', 'd^a', 'd^j', 'd>j', 'd>a']
-  for (const id of running_frame_ids) ai.frames![id] = ['shaking_dja', 'd^a', 'd^j', 'd>j', 'd>a']
-  ai.states![StateEnum.Injured] = ['injured_dja']
-  ai.states![StateEnum.BrokenDefend] = ['injured_dja']
-  ai.states![StateEnum.Attacking] = ['shaking_dja']
+  bot.frames![
+    '' + [
+      '' + standing_frame_ids,
+      '' + walking_frame_ids,
+      '' + running_frame_ids
+    ]
+  ] = ['shaking_dja', 'd^a', 'd^j', 'd>j', 'd>a']
 
-  ai.actions['injured_dja'] = {
+  bot.states![[StateEnum.Injured, StateEnum.BrokenDefend].join() as any] = ['injured_dja']
+  bot.states![StateEnum.Attacking] = ['shaking_dja']
+
+  bot.actions['injured_dja'] = {
     desire: Defines.calc_desire(0.08),
     expression: new CondMaker<BotVal | EntityVal>()
       .add(EntityVal.MP, '>', 25)
       .done(),
     keys: [GK.d, GK.j, GK.a]
   }
-  ai.actions['shaking_dja'] = {
+  bot.actions['shaking_dja'] = {
     desire: Defines.calc_desire(0.08),
     expression: new CondMaker<BotVal | EntityVal>()
       .add(EntityVal.MP, '>', 25)
@@ -48,7 +52,7 @@ export function make_fighter_data_julian(data: IEntityData) {
       .done(),
     keys: [GK.d, GK.j, GK.a]
   }
-  ai.actions['d>a'] = {
+  bot.actions['d>a'] = {
     desire: Defines.calc_desire(0.04),
     status: [BotCtrlState.Chasing],
     expression: new CondMaker<BotVal | EntityVal>()
@@ -56,7 +60,7 @@ export function make_fighter_data_julian(data: IEntityData) {
       .done(),
     keys: [GK.d, 'F', GK.a]
   }
-  ai.actions['d>j'] = {
+  bot.actions['d>j'] = {
     desire: Defines.calc_desire(0.02),
     status: [BotCtrlState.Chasing],
     e_ray: [{ x: 1, z: 0, min_x: 200 }],
@@ -65,7 +69,7 @@ export function make_fighter_data_julian(data: IEntityData) {
       .done(),
     keys: [GK.d, 'F', GK.j]
   }
-  ai.actions['d^j'] = {
+  bot.actions['d^j'] = {
     desire: Defines.calc_desire(0.02),
     status: [BotCtrlState.Chasing],
     e_ray: [{ x: 1, z: 0, min_x: -120, max_x: 120, max_d: 10000 }],
@@ -74,7 +78,7 @@ export function make_fighter_data_julian(data: IEntityData) {
       .done(),
     keys: [GK.d, GK.U, GK.j]
   }
-  ai.actions['d^a'] = {
+  bot.actions['d^a'] = {
     desire: Defines.calc_desire(0.05),
     status: [BotCtrlState.Chasing],
     e_ray: [{ x: 1, z: 0, min_x: 0, max_x: 120 }],
