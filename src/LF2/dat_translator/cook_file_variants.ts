@@ -1,4 +1,4 @@
-import { IEntityData } from "../defines";
+import { BuiltIn_OID, IEntityData } from "../defines";
 import { ILegacyPictureInfo } from "../defines/ILegacyPictureInfo";
 
 const suffix_reg = /\.[^.]*$/
@@ -42,5 +42,9 @@ export function cook_file_variants(ret: IEntityData) {
   }
   for (let i = 0; i < gap; ++i) {
     infos[i].variants = indexes.slice(1).map(j => infos[j + i].id)
+  }
+  if (ret.id === BuiltIn_OID.Jan) {
+    ret.base.files['0'].variants = ['2']
+    ret.base.files['1'].variants = ['3']
   }
 }
