@@ -53,7 +53,7 @@ export class DanmuOverlayLogic implements ILf2Callback {
       return a.damages - b.damages;
     })
 
-    ele.innerHTML += '测试中(数据不保留)🎖️=击败数 ☠️=战败数 🐣=出场数 💥=伤害值 ⚔️=KD值\n'
+    ele.innerHTML += 'BOSS "AI"测试中(数据不保留)🎖️=击败数 ☠️=战败数 🐣=出场数 💥=伤害值 ⚔️=KD值\n'
     ele.innerHTML += '------------------------------【队伍】------------------------------\n'
     for (const sum of team_sum) {
       if (!sum.spawns) continue;

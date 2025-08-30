@@ -135,26 +135,40 @@ export class DanmuGameLogic extends UIComponent {
 
   update_bg() {
     this.lf2.change_bg('?');
+    // this.lf2.characters
+    //   .add_random(20, '?', e => {
+    //     return (0 == intersection(e.base.group, [EntityGroup.Boss]).length ||
+    //       e.id == BuiltIn_OID.Bat ||
+    //       e.id == BuiltIn_OID.LouisEX
+    //     )
+    //   }).forEach(v => {
+    //     v.is_key_role = true;
+    //     v.is_gone_dead = true;
+    //     v.name = v.data.base.name;
+    //     v.blinking = 120;
+    //   })
+
+    // this.lf2.characters
+    //   .add_random(this.lf2.random_in(0, 3), '', e => e.id == BuiltIn_OID.Julian || e.id == BuiltIn_OID.Firzen)
+    //   .forEach(v => {
+    //     v.is_key_role = true;
+    //     v.is_gone_dead = true;
+    //     v.blinking = 120;
+    //   })
+
     this.lf2.characters
-      .add_random(20, '?', e => {
-        return (0 == intersection(e.base.group, [EntityGroup.Boss]).length ||
-          e.id == BuiltIn_OID.Bat ||
-          e.id == BuiltIn_OID.LouisEX
-        )
-      }).forEach(v => {
-        v.is_key_role = true;
-        v.is_gone_dead = true;
+      .add(BuiltIn_OID.Julian, 5, TeamEnum.Team_1).forEach(v => {
+        v.is_key_role = v.is_gone_dead = true;
+        v.name = v.data.base.name;
+        v.blinking = 120;
+      })
+    this.lf2.characters
+      .add(BuiltIn_OID.Firzen, 5, TeamEnum.Team_2).forEach(v => {
+        v.is_key_role = v.is_gone_dead = true;
         v.name = v.data.base.name;
         v.blinking = 120;
       })
 
-    this.lf2.characters
-      .add_random(this.lf2.random_in(0, 3), '', e => e.id == BuiltIn_OID.Julian || e.id == BuiltIn_OID.Firzen)
-      .forEach(v => {
-        v.is_key_role = true;
-        v.is_gone_dead = true;
-        v.blinking = 120;
-      })
     this.update_staring();
     this._countdown.reset()
     const { staring } = this
