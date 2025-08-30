@@ -26,7 +26,11 @@ export function make_fighter_data_firzen(data: IEntityData) {
     ]
   ] = ['d>j', 'd^a', 'd^j']
 
-  bot.states![StateEnum.Attacking] = ['cancel_d>j']
+  bot.states![StateEnum.Attacking] = ['cancel_d>j', 'd^a+a']
+  bot.actions['d^a+a'] = {
+    desire: Defines.calc_desire(0.05),
+    keys: [GK.a]
+  }
   bot.actions['cancel_d>j'] = {
     desire: Defines.calc_desire(0.01),
     status: [BotCtrlState.Chasing],
