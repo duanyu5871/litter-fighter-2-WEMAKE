@@ -61,9 +61,12 @@ export function make_character_special(data: IEntityData) {
     case BuiltIn_OID.Template:
       add_entity_groups(data.base, EntityGroup.Boss);
       break;
+    case BuiltIn_OID.Jan:
+      data.base.files['0'].variants = ['2']
+      data.base.files['1'].variants = ['3']
+      break;
     case BuiltIn_OID.Justin:
     case BuiltIn_OID.Knight:
-    case BuiltIn_OID.Jan:
     case BuiltIn_OID.Monk:
     case BuiltIn_OID.Sorcerer:
     case BuiltIn_OID.Jack:
