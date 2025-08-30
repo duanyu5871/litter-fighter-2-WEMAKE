@@ -1,9 +1,11 @@
+import { Expression } from "../base/Expression";
 import { Defines, IEntityData } from "../defines";
 import Ditto from "../ditto";
 import { LF2 } from "../LF2";
 import { is_non_blank_str } from "../utils";
 import { traversal } from "../utils/container_help/traversal";
 import { check_frame } from "./check_frame";
+import { get_val_from_bot_ctrl } from "./get_val_from_bot_ctrl";
 import { preprocess_frame } from "./preprocess_frame";
 import { preprocess_next_frame } from "./preprocess_next_frame";
 
@@ -34,8 +36,11 @@ export async function preprocess_entity_data(lf2: LF2, data: IEntityData, jobs: 
   traversal(frames, (_, v) => {
     const errors: string[] = []
     check_frame(data, v, errors)
-    if(errors.length) Ditto.Warn(errors)
+    if (errors.length) Ditto.Warn(errors)
   });
+  traversal(data.base.ai?.actions, (_, a) => {
+    if (a?.expression) a.judger = new Expression(a.expression, get_val_from_bot_ctrl)
+  })
   return data;
 }
 

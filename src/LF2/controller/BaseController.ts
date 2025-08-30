@@ -369,7 +369,10 @@ export class BaseController {
   }
 
   private seq_test(str: string): boolean {
-    for (const key of str) if (!this.is_hit(key)) return false;
+    for (const key of str) {
+      if (!this.is_hit(key)) 
+        return false;
+    }
     return true;
   }
 }

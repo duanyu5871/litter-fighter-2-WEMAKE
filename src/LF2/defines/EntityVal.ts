@@ -53,6 +53,8 @@ export enum EntityVal {
   VX = "vx",
   VY = "vy",
   VZ = "vz",
+  FrameState = "frame_state",
+  Shaking = "shaking"
 }
 
 

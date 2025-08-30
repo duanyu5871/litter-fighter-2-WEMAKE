@@ -11,7 +11,7 @@ export function is_ai_ray_hit(a: Entity, b: Entity, ray: IAiRay) {
     x, z,
     min_x = 0, max_x = 10000,
     min_z = 0, max_z = 10000,
-    min_d = 400,
+    max_d = 400,
     reverse = false,
   } = ray
 
@@ -23,6 +23,6 @@ export function is_ai_ray_hit(a: Entity, b: Entity, ray: IAiRay) {
     return reverse;
 
   const [px, pz] = project_to_line(dx, dz, x * a.facing, z)
-  const hit = pow(dx - px, 2) + pow(dz - pz, 2) < min_d
+  const hit = pow(dx - px, 2) + pow(dz - pz, 2) < max_d
   return reverse ? !hit : hit;
 }

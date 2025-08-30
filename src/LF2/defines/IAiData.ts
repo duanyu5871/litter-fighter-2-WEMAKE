@@ -10,7 +10,7 @@ export interface IAiRay {
   max_x?: number;
   min_z?: number;
   max_z?: number;
-  min_d?: number;
+  max_d?: number;
   reverse?: boolean;
 }
 export interface IAiRange {

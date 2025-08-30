@@ -1220,15 +1220,15 @@ export class Entity implements IDebugging {
           this.hp = this.hp_r = this.hp_max;
           this.position.y = 550;
 
-          let min_distance = Number.MAX_SAFE_INTEGER
+          let max_distance = Number.MAX_SAFE_INTEGER
           let friend: Entity | undefined;
           for (const e of this.world.slot_fighters.values()) {
             if (e.hp <= 0) continue;
             const d =
               abs(floor(e.position.x - this.position.x)) +
               abs(floor(e.position.z - this.position.z));
-            if (d > min_distance) continue;
-            min_distance = d;
+            if (d > max_distance) continue;
+            max_distance = d;
             friend = e;
           }
           if (friend) {
