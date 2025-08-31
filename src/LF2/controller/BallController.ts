@@ -1,4 +1,4 @@
-import { FrameBehavior, GameKey as GK, IVector3 } from "../defines";
+import { FrameBehavior, GameKey as GK, IFrameInfo, IVector3 } from "../defines";
 import { BaseController } from "./BaseController";
 import { ControllerUpdateResult } from "./ControllerUpdateResult";
 const { L, R, U, D, j, d } = GK
@@ -11,9 +11,10 @@ export class BallController extends BaseController {
       this.target_position.y += this.entity.chasing.frame.centery / 2
     }
     const { facing, hp, frame } = this.entity
+    
     if (this.target_position) {
       if (hp > 0) {
-        const p1 = this.entity.position;
+      const p1 = this.entity.position;
         const p2 = this.target_position;
         const vx = this.entity.velocity.x;
         this.entity.merge_velocities();
@@ -32,20 +33,26 @@ export class BallController extends BaseController {
         if (vx > 0 && facing < 0) this.entity.facing = 1
         else if (vx < 0 && facing > 0) this.entity.facing = -1
 
-      } else if (frame.behavior === FrameBehavior.JohnBiscuitLeaving) {
-        this.press(facing === -1 ? L : R, d)
-        this.release(facing === -1 ? R : L, j, U, D)
-      } else {
-        this.press(facing === -1 ? L : R)
-        this.release(facing === -1 ? R : L, j, d, U, D)
-      }
-    } else if (frame.behavior === FrameBehavior.JohnBiscuitLeaving) {
-      this.press(facing === -1 ? L : R, d)
-      this.release(facing === -1 ? R : L, j, U, D)
-    } else {
-      this.press(facing === -1 ? L : R)
-      this.release(facing === -1 ? R : L, j, d, U, D)
-    }
+      } else this.target_lost(frame, facing);
+    } else this.target_lost(frame, facing);
     return super.update();
+  }
+
+  private target_lost(frame: IFrameInfo, facing: number) {
+    if (frame.behavior === FrameBehavior.JohnBiscuitLeaving) {
+      const p1 = this.entity.position;
+      this.press(facing === -1 ? L : R);
+      this.release(facing === -1 ? R : L, U, D);
+      if (p1.y > 40) this.press(d).release(j);
+      else if (p1.y < 40) this.press(j).release(d);
+      else this.release(j, d);
+    } else {
+      const p1 = this.entity.position;
+      this.press(facing === -1 ? L : R);
+      this.release(facing === -1 ? R : L, U, D);
+      if (p1.y > 40) this.press(d).release(j);
+      else if (p1.y < 40) this.press(j).release(d);
+      else this.release(j, d);
+    }
   }
 }

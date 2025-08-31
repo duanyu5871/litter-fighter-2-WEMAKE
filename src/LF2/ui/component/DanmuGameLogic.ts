@@ -7,6 +7,8 @@ import { intersection } from "../../utils";
 import { Times } from "../utils/Times";
 import { UIComponent } from "./UIComponent";
 export interface ISumInfo {
+  wins: number;
+  loses: number;
   kills: number,
   damages: number,
   pickings: number,
@@ -15,6 +17,8 @@ export interface ISumInfo {
   team: string,
 }
 const make_team_sum = (team: string): ISumInfo => ({
+  wins: 0,
+  loses: 0,
   kills: 0,
   damages: 0,
   pickings: 0,
@@ -157,19 +161,19 @@ export class DanmuGameLogic extends UIComponent {
     //   })
 
     this.lf2.characters
-      .add(BuiltIn_OID.Julian, 2, TeamEnum.Team_1).forEach(v => {
+      .add(BuiltIn_OID.Julian, 3, TeamEnum.Team_1).forEach(v => {
         v.is_key_role = v.is_gone_dead = true;
         v.name = v.data.base.name;
         v.blinking = 120;
       })
     this.lf2.characters
-      .add(BuiltIn_OID.Firzen, 3, TeamEnum.Team_2).forEach(v => {
+      .add(BuiltIn_OID.Firzen, 4, TeamEnum.Team_2).forEach(v => {
         v.is_key_role = v.is_gone_dead = true;
         v.name = v.data.base.name;
         v.blinking = 120;
       })
     this.lf2.characters
-      .add(BuiltIn_OID.Bat, 5, TeamEnum.Team_3).forEach(v => {
+      .add(BuiltIn_OID.Bat, 6, TeamEnum.Team_3).forEach(v => {
         v.is_key_role = v.is_gone_dead = true;
         v.name = v.data.base.name;
         v.blinking = 120;
@@ -195,6 +199,14 @@ export class DanmuGameLogic extends UIComponent {
     if (staring) this.world.lock_cam_x = staring.position.x - this.world.screen_w / 2
     else if (!staring) this.update_staring()
 
-    if (this._teams.size <= 1) this.update_bg()
+    if (this._teams.size <= 1) {
+      if (this._teams.size) {
+        for (const [k, v] of this.team_sum) {
+          if (this._teams.has(k)) v.wins += 1
+          else v.loses += 1
+        }
+      }
+      this.update_bg()
+    }
   }
 }

@@ -44,6 +44,8 @@ export class DanmuOverlayLogic implements ILf2Callback {
     ele.innerHTML = ''
 
     const team_sum = Array.from(component.team_sum.values()).sort((b, a) => {
+      const w = a.wins - b.wins;
+      if (w) return w
       const k = a.kills - b.kills;
       if (k) return k
       const d = b.deads - a.deads;
@@ -53,11 +55,13 @@ export class DanmuOverlayLogic implements ILf2Callback {
       return a.damages - b.damages;
     })
 
-    ele.innerHTML += 'BOSS "AI"测试中(数据不保留)🎖️=击败数 ☠️=战败数 🐣=出场数 💥=伤害值 ⚔️=KD值\n'
+    ele.innerHTML += `BOSS "AI"测试中(数据不保留)\n`
+    ele.innerHTML += `🎖️=击败数 ☠️=战败数 🐣=出场数 💥=伤害值 ⚔️=KD值\n`
+    ele.innerHTML += `🏆=胜局数 😵=败局数\n`
     ele.innerHTML += '------------------------------【队伍】------------------------------\n'
     for (const sum of team_sum) {
       if (!sum.spawns) continue;
-      ele.innerHTML += `${t('Team ' + sum.team, get_team_text_color(sum.team))} 🎖️|☠️|🐣|💥 = ${sum.kills} | ${sum.deads} | ${sum.spawns} | ${sum.damages}\n`
+      ele.innerHTML += `${t('Team ' + sum.team, get_team_text_color(sum.team))} 🏆|😵|🎖️|☠️|🐣|💥 = ${sum.wins} | ${sum.loses} | ${sum.kills} | ${sum.deads} | ${sum.spawns} | ${sum.damages}\n`
     }
 
     this.times.add();
