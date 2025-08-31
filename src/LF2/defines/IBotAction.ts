@@ -13,6 +13,7 @@ import { IExpression } from "./IExpression";
  * @interface IBotAction
  */
 export interface IBotAction {
+  action_id: string;
   /**
    * 动作欲望值，范围 [0, 10000]
    *

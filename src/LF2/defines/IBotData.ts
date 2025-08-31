@@ -27,7 +27,7 @@ export interface IBotData {
    * @type {{ [x in IFrameInfo['state'] | StateEnum]?: string[] }}
    * @memberof IBotData
    */
-  states?: { [x in IFrameInfo['state'] | StateEnum]?: string[] };
+  states?: { [x in IFrameInfo['state'] | StateEnum | string]?: string[] };
 
   /**
    * BOT“帧ID”-“动作列表”表
