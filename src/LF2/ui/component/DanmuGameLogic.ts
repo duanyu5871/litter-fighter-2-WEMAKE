@@ -157,13 +157,19 @@ export class DanmuGameLogic extends UIComponent {
     //   })
 
     this.lf2.characters
-      .add(BuiltIn_OID.Julian, 5, TeamEnum.Team_1).forEach(v => {
+      .add(BuiltIn_OID.Julian, 2, TeamEnum.Team_1).forEach(v => {
         v.is_key_role = v.is_gone_dead = true;
         v.name = v.data.base.name;
         v.blinking = 120;
       })
     this.lf2.characters
-      .add(BuiltIn_OID.Firzen, 5, TeamEnum.Team_2).forEach(v => {
+      .add(BuiltIn_OID.Firzen, 3, TeamEnum.Team_2).forEach(v => {
+        v.is_key_role = v.is_gone_dead = true;
+        v.name = v.data.base.name;
+        v.blinking = 120;
+      })
+    this.lf2.characters
+      .add(BuiltIn_OID.Bat, 5, TeamEnum.Team_3).forEach(v => {
         v.is_key_role = v.is_gone_dead = true;
         v.name = v.data.base.name;
         v.blinking = 120;

@@ -3,6 +3,7 @@ import { ArmorEnum } from "../defines/ArmorEnum";
 import { IEntityData } from "../defines/IEntityData";
 import { add_entity_groups } from "./add_entity_to_group";
 import { make_louis_data, make_rudolf_data } from "./cook_louis_data";
+import { make_fighter_data_bat } from "./fighters/make_fighter_data_bat";
 import { make_fighter_data_firzen } from "./fighters/make_fighter_data_firzen";
 import { make_fighter_data_julian } from "./fighters/make_fighter_data_julian";
 
@@ -44,9 +45,7 @@ export function make_character_special(data: IEntityData): IEntityData {
     case BuiltIn_OID.LouisEX:
       add_entity_groups(data.base, EntityGroup.Boss);
       break;
-    case BuiltIn_OID.Bat:
-      add_entity_groups(data.base, EntityGroup.Boss);
-      break;
+    case BuiltIn_OID.Bat: return make_fighter_data_bat(data);
     case BuiltIn_OID.Template:
       add_entity_groups(data.base, EntityGroup.Boss);
       break;
