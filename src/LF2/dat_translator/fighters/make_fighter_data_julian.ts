@@ -40,14 +40,14 @@ export function make_fighter_data_julian(data: IEntityData) {
     // uppercut
     bot_uppercut_dua(-1, 0.05), {
     action_id: 'injured_dja',
-    desire: Defines.calc_desire(0.08),
+    desire: Defines.desire(0.08),
     expression: new CondMaker<BotVal | EntityVal>()
       .add(EntityVal.MP, '>', 25)
       .done(),
     keys: [GK.d, GK.j, GK.a]
   }, {
     action_id: 'shaking_dja',
-    desire: Defines.calc_desire(0.08),
+    desire: Defines.desire(0.08),
     expression: new CondMaker<BotVal | EntityVal>()
       .add(EntityVal.MP, '>', 25)
       .and(EntityVal.Shaking, '>', 0)

@@ -2,9 +2,9 @@ import { BotCtrlState } from "../../controller/BotCtrlState";
 import { BotVal, Defines, EntityVal, GameKey as GK } from "../../defines";
 import { IBotAction } from "../../defines/IBotAction";
 import { CondMaker } from "../CondMaker";
-import { IEditBotAction, IEditBotActionFunc } from "./IEditBotAction";
-const DESIRE = 0.05;
-const MIN_X = 80;
+import { IEditBotActionFunc } from "./IEditBotAction";
+const DESIRE = 1 / 60;
+const MIN_X = -10;
 const MAX_X = 120;
 export const ID = 'dva'
 
@@ -29,9 +29,9 @@ export function bot_uppercut_dva(
       .add(EntityVal.MP, '>=', min_mp)
     const ret: IBotAction = {
       action_id: ID,
-      desire: Defines.calc_desire(desire),
+      desire: Defines.desire(desire),
       status: [BotCtrlState.Chasing],
-      e_ray: [{ x: 1, z: 0, min_x, max_x }],
+      e_ray: [{ x: 1, z: 0, min_x, max_x, max_d: 900 }],
       expression: cond.done(),
       keys: [GK.d, GK.D, GK.a]
     }

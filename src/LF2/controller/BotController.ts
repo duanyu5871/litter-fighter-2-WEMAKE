@@ -1,7 +1,10 @@
 import FSM from "../base/FSM";
-import { Builtin_FrameId, Defines, GameKey as GK, StateEnum, TFace, TLooseGameKey } from "../defines";
+import { Builtin_FrameId, Defines, GameKey as GK, StateEnum, TLooseGameKey } from "../defines";
+import { IBotAction } from "../defines/IBotAction";
+import { is_ai_ray_hit } from "../defines/is_ai_ray_hit";
 import { Entity } from "../entity/Entity";
 import { is_character } from "../entity/type_check";
+import { manhattan_xz } from "../helper/manhattan_xz";
 import { abs, clamp, floor } from "../utils";
 import { BaseController, KEY_NAME_LIST } from "./BaseController";
 import { BotCtrlState } from "./BotCtrlState";
@@ -9,9 +12,6 @@ import { BotCtrlState_Avoiding } from "./BotCtrlState_Avoiding";
 import { BotCtrlState_Chasing } from "./BotCtrlState_Chasing";
 import { BotCtrlState_Standing } from "./BotCtrlState_Standing";
 import { dummy_updaters, DummyEnum } from "./DummyEnum";
-import { manhattan_xz } from "../helper/manhattan_xz";
-import { IBotAction } from "../defines/IBotAction";
-import { is_ai_ray_hit } from "../defines/is_ai_ray_hit";
 export class BotController extends BaseController {
   readonly fsm = new FSM<BotCtrlState>()
     .add(
@@ -304,13 +304,15 @@ export class BotController extends BaseController {
     return false;
   }
 
-  handle_action(action: IBotAction | undefined) {
+  handle_action(action: IBotAction | undefined): TLooseGameKey[] | false {
     if (!action) return false;
     const c = this;
     const { facing } = c.entity;
     const { status, e_ray, judger, desire = 10000, keys } = action
-    if (c.desire() > desire) return false;
 
+    if ('dva+j' === action.action_id) debugger
+
+    if (c.desire() > desire) return false;
     if (status && !status.some(v => v === c.fsm.state?.key))
       return false;
     if (e_ray) {
@@ -330,7 +332,6 @@ export class BotController extends BaseController {
       if (v === 'B') return facing > 0 ? GK.R : GK.L;
       return v
     })
-    c.start(...ks).end(...ks)
-    return true;
+    return ks;
   }
 }

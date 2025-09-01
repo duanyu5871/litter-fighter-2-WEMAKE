@@ -3,16 +3,16 @@ import { GameKey, Defines, BotVal, EntityVal, TLooseGameKey } from "../../define
 import { IBotAction } from "../../defines/IBotAction";
 import { CondMaker } from "../CondMaker";
 
-
+const DESIRE = 1 / 60;
 export function bot_chasing_action(
   action_id: string,
   keys: ("F" | "B" | TLooseGameKey)[],
   min_mp: number = -1,
-  desire: number = 0.05
+  desire: number = DESIRE
 ): IBotAction {
   return {
     action_id: action_id,
-    desire: Defines.calc_desire(desire),
+    desire: Defines.desire(desire),
     status: [BotCtrlState.Chasing],
     expression: min_mp > 0 ?
       new CondMaker<BotVal | EntityVal>()
@@ -21,3 +21,5 @@ export function bot_chasing_action(
     keys: keys
   };
 }
+
+bot_chasing_action.DESIRE = DESIRE

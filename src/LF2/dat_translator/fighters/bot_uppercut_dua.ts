@@ -2,7 +2,7 @@ import { BotCtrlState } from "../../controller/BotCtrlState";
 import { BotVal, Defines, EntityVal, GameKey as GK } from "../../defines";
 import { IBotAction } from "../../defines/IBotAction";
 import { CondMaker } from "../CondMaker";
-const DESIRE = 0.05;
+const DESIRE = 1 / 60;
 const MIN_X = 80;
 const MAX_X = 120;
 export const ID = 'd^a'
@@ -24,7 +24,7 @@ export function bot_uppercut_dua(
 ): IBotAction {
   return {
     action_id: ID,
-    desire: Defines.calc_desire(desire),
+    desire: Defines.desire(desire),
     status: [BotCtrlState.Chasing],
     e_ray: [{ x: 1, z: 0, min_x, max_x }],
     expression: new CondMaker<BotVal | EntityVal>()

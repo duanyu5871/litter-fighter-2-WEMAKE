@@ -5,11 +5,12 @@ import { CondMaker } from "../CondMaker";
 
 type Key1 = '^' | '>' | 'v' | 'j';
 type Key2 = 'a' | 'j';
+const DESIRE = 1 / 60;
 export function bot_chasing_skill_action(
   keys_str: `d${Key1}${Key2}`,
   action_id: string = keys_str,
   min_mp: number = -1,
-  desire: number = 0.05
+  desire: number = DESIRE
 ): IBotAction {
   const keys: IBotAction['keys'] = [GK.d];
   switch (keys_str[1]) {
@@ -24,7 +25,7 @@ export function bot_chasing_skill_action(
   }
   return {
     action_id: action_id,
-    desire: Defines.calc_desire(desire),
+    desire: Defines.desire(desire),
     status: [BotCtrlState.Chasing],
     expression: min_mp > 0 ?
       new CondMaker<BotVal | EntityVal>()

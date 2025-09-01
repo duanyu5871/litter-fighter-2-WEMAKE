@@ -2,7 +2,7 @@ import { BotCtrlState } from "../../controller/BotCtrlState";
 import { BotVal, Defines, EntityVal, GameKey as GK } from "../../defines";
 import { IBotAction } from "../../defines/IBotAction";
 import { CondMaker } from "../CondMaker";
-const DESIRE = 0.05;
+const DESIRE = 1 / 60;
 const MIN_X = 120;
 const ID = 'd>j'
 /**
@@ -15,10 +15,15 @@ const ID = 'd>j'
  * @param {number} [max_x] 最大x，与敌人x距离大于此值将不会触发
  * @return {IBotAction}
  */
-export function bot_ball_dfj(min_mp: number, desire: number = 0.05, min_x: number = 120, max_x?: number): IBotAction {
+export function bot_ball_dfj(
+  min_mp: number,
+  desire: number = DESIRE,
+  min_x: number = MIN_X,
+  max_x?: number
+): IBotAction {
   return {
     action_id: ID,
-    desire: Defines.calc_desire(desire),
+    desire: Defines.desire(desire),
     status: [BotCtrlState.Chasing],
     e_ray: [{ x: 1, z: 0, min_x, max_x }],
     expression: new CondMaker<BotVal | EntityVal>()

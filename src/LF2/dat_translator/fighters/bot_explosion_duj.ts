@@ -3,7 +3,7 @@ import { BotVal, Defines, EntityVal, GameKey as GK } from "../../defines";
 import { IBotAction } from "../../defines/IBotAction";
 import { pow } from "../../utils";
 import { CondMaker } from "../CondMaker";
-const DESIRE = 0.05;
+const DESIRE = 1 / 60;
 const MIN_X = -120;
 const MAX_X = 120;
 const Z_LEN = 100;
@@ -28,7 +28,7 @@ export function bot_explosion_duj(
 ): IBotAction {
   return {
     action_id: ID,
-    desire: Defines.calc_desire(desire),
+    desire: Defines.desire(desire),
     status: [BotCtrlState.Chasing],
     e_ray: [{ x: 1, z: 0, min_x, max_x, max_d: pow(z_len, 2) }],
     expression: new CondMaker<BotVal | EntityVal>()

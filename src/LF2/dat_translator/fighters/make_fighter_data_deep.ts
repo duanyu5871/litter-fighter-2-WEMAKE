@@ -1,9 +1,11 @@
-import { EntityVal, GameKey, IEntityData, StateEnum } from "../../defines";
+import { BotVal, Defines, EntityVal, GameKey, IEntityData, StateEnum } from "../../defines";
+import { probability } from "../../defines/probability";
 import { arithmetic_progression } from "../../utils";
 import { bot_ball_continuation } from "./bot_ball_continuation";
 import { bot_ball_dfa } from "./bot_ball_dfa";
 import { bot_ball_dfj } from "./bot_ball_dfj";
 import { bot_chasing_skill_action } from "./bot_chasing_skill_action";
+import { bot_explosion_dua } from "./bot_explosion_dua";
 import { bot_uppercut_dva } from "./bot_uppercut_dva";
 import { BotBuilder } from "./BotBuilder";
 import { frames } from "./frames";
@@ -30,16 +32,23 @@ export function make_fighter_data_deep(data: IEntityData) {
     bot_uppercut_dva(75, bot_uppercut_dva.DESIRE, bot_uppercut_dva.MIN_X, bot_uppercut_dva.MAX_X),
 
     // dva+a
-    bot_uppercut_dva(75, bot_uppercut_dva.DESIRE, bot_uppercut_dva.MIN_X, bot_uppercut_dva.MAX_X)((action) => {
+    bot_uppercut_dva(75, 1, bot_uppercut_dva.MIN_X, bot_uppercut_dva.MAX_X)((action, cond) => {
       action.action_id = 'dva+a';
+      action.expression = cond!.and(BotVal.EnemyY, '<=', 0).done()
       action.keys = [GameKey.a];
       return action;
     }),
 
     // dva+j
-    bot_uppercut_dva(150, bot_uppercut_dva.DESIRE, bot_uppercut_dva.MAX_X, bot_uppercut_dva.MIN_X + bot_uppercut_dva.MAX_X)((action) => {
+    bot_uppercut_dva(
+      150, 
+      probability(4, 0.5),
+      0.5,
+      bot_uppercut_dva.MAX_X
+    )((action, cond) => {
       action.action_id = 'dva+j';
       action.keys = [GameKey.j];
+      action.expression = cond!.and(BotVal.EnemyY, '>', 0).done()
       return action;
     }),
 
@@ -51,7 +60,7 @@ export function make_fighter_data_deep(data: IEntityData) {
     }),
 
     // "d^j+a"
-    bot_uppercut_dva(150, bot_uppercut_dva.DESIRE, -bot_uppercut_dva.MIN_X, bot_uppercut_dva.MAX_X)((action) => {
+    bot_uppercut_dva(150, 1, -bot_uppercut_dva.MIN_X, bot_uppercut_dva.MAX_X)((action) => {
       action.action_id = "d^j+a";
       action.keys = [GameKey.a];
       return action;
@@ -68,7 +77,7 @@ export function make_fighter_data_deep(data: IEntityData) {
       ...frames.walkings,
       ...frames.runnings
     ],
-    ['d^j', bot_ball_dfj.ID, bot_ball_dfa.ID]
+    ['d^j', bot_ball_dfj.ID, bot_ball_dfa.ID, bot_uppercut_dva.ID]
   ).frames(
     arithmetic_progression(235, 250, 1),
     ["d>a+a"]

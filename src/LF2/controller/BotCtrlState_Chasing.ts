@@ -1,7 +1,7 @@
-import { GameKey as GK, ItrKind } from "../defines";
+import { GameKey as GK, ItrKind, TLooseGameKey } from "../defines";
 import { StateEnum } from "../defines/StateEnum";
 import { manhattan_xz } from "../helper/manhattan_xz";
-import { abs, between, find } from "../utils";
+import { abs, between, find, random_get } from "../utils";
 import { KEY_NAME_LIST } from "./BaseController";
 import { BotCtrlState } from "./BotCtrlState";
 import { BotCtrlState_Base } from "./BotCtrlState_Base";
@@ -60,16 +60,23 @@ export class BotCtrlState_Chasing extends BotCtrlState_Base {
     const { bot: ai } = me.data.base
 
     if (ai) {
+
+      const keys_list: TLooseGameKey[][] = []
+
       let action_ids = ai.frames?.[me.frame.id]
       if (action_ids) for (const aid of action_ids) {
-        const result = this.ctrl.handle_action(ai.actions[aid])
-        if (result) return;
+        const keys = this.ctrl.handle_action(ai.actions[aid])
+        if (keys) keys_list.push(keys)
       }
 
       action_ids = ai.states?.[me.frame.state]
       if (action_ids) for (const aid of action_ids) {
-        const result = this.ctrl.handle_action(ai.actions[aid])
-        if (result) return;
+        const keys = this.ctrl.handle_action(ai.actions[aid])
+        if (keys) keys_list.push(keys)
+      }
+      if (keys_list.length) {
+        const keys = random_get(keys_list)
+        if(keys) this.ctrl.start(...keys).end(...keys)
       }
     }
 
