@@ -10,14 +10,16 @@ export class BotBuilder {
   constructor(data: IEntityData) {
     this.data = data;
   }
-  actions(...actions: IBotAction[]): this {
+  actions(...actions: (IBotAction | (() => IBotAction))[]): this {
     const bot = this.data.base.bot || { actions: {} };
-    for (const action of actions)
-      bot.actions[action.action_id] = action;
+    for (const action of actions) {
+      const a = typeof action === 'function' ? action() : action
+      bot.actions[a.action_id] = a;
+    }
     this.data.base.bot = bot;
     return this;
   }
-  frames(frame_ids: string[], action_ids: string[]): this {
+  frames(frame_ids: (string | number)[], action_ids: string[]): this {
     const bot = this.data.base.bot || { actions: {} };
     const frames = bot.frames || {};
     frames['' + frame_ids] = action_ids;
