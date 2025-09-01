@@ -19,19 +19,19 @@ export function make_fighter_data_firzen(data: IEntityData) {
 
   BotBuilder.make(data).actions(
     // ball
-    bot_ball_dfj(50, 0.02),
+    bot_ball_dfj(50, bot_ball_dfj.DESIRE),
 
     // explosion
-    bot_explosion_duj(250, 0.02, -500, 500, 500),
+    bot_explosion_duj(250, bot_explosion_duj.DESIRE, -500, 500, 500),
 
     // ball cancell
     bot_ball_cancelling('cancel_d>j'),
 
     // disaster
-    bot_explosion_dua(100, 0.05, -700, 700, 500),
+    bot_explosion_dua(100, bot_explosion_dua.DESIRE, -700, 700, 500),
 
     // disaster + ...a
-    bot_chasing_action('d^a+a', ['a'], void 0, 0.05)
+    bot_chasing_action('d^a+a', ['a'], void 0, bot_chasing_action.DESIRE)
   ).states(
     [StateEnum.Attacking],
     ['cancel_d>j', 'd^a+a']

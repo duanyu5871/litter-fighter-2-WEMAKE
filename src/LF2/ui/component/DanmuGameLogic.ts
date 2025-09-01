@@ -178,7 +178,12 @@ export class DanmuGameLogic extends UIComponent {
         v.name = v.data.base.name;
         v.blinking = 120;
       })
-
+    this.lf2.characters
+      .add(BuiltIn_OID.Deep, 3, TeamEnum.Team_3).forEach(v => {
+        v.is_key_role = v.is_gone_dead = true;
+        v.name = v.data.base.name;
+        v.blinking = 120;
+      })
     this.update_staring();
     this._countdown.reset()
     const { staring } = this

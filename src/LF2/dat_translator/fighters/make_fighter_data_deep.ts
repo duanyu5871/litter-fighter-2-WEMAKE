@@ -79,6 +79,11 @@ export function make_fighter_data_deep(data: IEntityData) {
     ],
     ['d^j', bot_ball_dfj.ID, bot_ball_dfa.ID, bot_uppercut_dva.ID]
   ).frames(
+    [
+      ...frames.punchs
+    ],
+    [bot_uppercut_dva.ID]
+  ).frames(
     arithmetic_progression(235, 250, 1),
     ["d>a+a"]
   ).frames(

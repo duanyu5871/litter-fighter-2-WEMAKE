@@ -1,5 +1,5 @@
 import { BotCtrlState } from "../../controller/BotCtrlState";
-import { Defines, BotVal, EntityVal, GameKey as GK } from "../../defines";
+import { BotVal, Defines, EntityVal, GameKey as GK } from "../../defines";
 import { IBotAction } from "../../defines/IBotAction";
 import { CondMaker } from "../CondMaker";
 
@@ -17,9 +17,9 @@ const ID = 'd>a'
  * @return {IBotAction}
  */
 export function bot_ball_dfa(
-  min_mp: number, 
-  desire: number = DESIRE, 
-  min_x: number = MIN_X, 
+  min_mp: number,
+  desire: number = DESIRE,
+  min_x: number = MIN_X,
   max_x?: number
 ): IBotAction {
   return {

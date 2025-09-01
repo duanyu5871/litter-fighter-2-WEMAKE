@@ -3,7 +3,7 @@ import { BotVal, Defines, EntityVal, GameKey as GK } from "../../defines";
 import { IBotAction } from "../../defines/IBotAction";
 import { CondMaker } from "../CondMaker";
 const DESIRE = 1 / 60;
-const MIN_X = 80;
+const MIN_X = -10;
 const MAX_X = 120;
 export const ID = 'd^a'
 /**
@@ -22,14 +22,13 @@ export function bot_uppercut_dua(
   min_x: number = MIN_X,
   max_x: number = MAX_X
 ): IBotAction {
+  const cond = new CondMaker<BotVal | EntityVal>().add(EntityVal.MP, '>=', min_mp)
   return {
     action_id: ID,
     desire: Defines.desire(desire),
     status: [BotCtrlState.Chasing],
     e_ray: [{ x: 1, z: 0, min_x, max_x }],
-    expression: new CondMaker<BotVal | EntityVal>()
-      .add(EntityVal.MP, '>=', min_mp)
-      .done(),
+    expression: min_mp > 0 ? cond.done() : void 0,
     keys: [GK.d, GK.U, GK.a]
   };
 }

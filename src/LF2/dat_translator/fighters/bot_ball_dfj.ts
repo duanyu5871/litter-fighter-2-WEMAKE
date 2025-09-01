@@ -21,14 +21,13 @@ export function bot_ball_dfj(
   min_x: number = MIN_X,
   max_x?: number
 ): IBotAction {
+  const cond = new CondMaker<BotVal | EntityVal>().add(EntityVal.MP, '>=', min_mp)
   return {
     action_id: ID,
     desire: Defines.desire(desire),
     status: [BotCtrlState.Chasing],
     e_ray: [{ x: 1, z: 0, min_x, max_x }],
-    expression: new CondMaker<BotVal | EntityVal>()
-      .add(EntityVal.MP, '>=', min_mp)
-      .done(),
+    expression: min_mp > 0 ? cond.done() : void 0,
     keys: [GK.d, 'F', GK.j]
   };
 }
