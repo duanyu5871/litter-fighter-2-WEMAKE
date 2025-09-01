@@ -3,6 +3,7 @@ import {
   IEntityData,
   StateEnum
 } from "../../defines";
+import { probability } from "../../defines/probability";
 import { add_entity_groups } from "../add_entity_to_group";
 import { bot_ball_cancelling } from "./bot_ball_cancelling";
 import { bot_ball_dfj } from "./bot_ball_dfj";
@@ -19,19 +20,19 @@ export function make_fighter_data_firzen(data: IEntityData) {
 
   BotBuilder.make(data).actions(
     // d^a
-    bot_ball_dfj(50, bot_ball_dfj.DESIRE),
+    bot_ball_dfj(50, 1 / 30),
 
     // d^j
-    bot_explosion_duj(250, bot_explosion_duj.DESIRE, -500, 500, 500),
+    bot_explosion_duj(250, 1 / 30, -500, 500, 500),
 
     // ball cancell
     bot_ball_cancelling('cancel_d>j'),
 
     // disaster
-    bot_explosion_dua(100, bot_explosion_dua.DESIRE, -700, 700, 500),
+    bot_explosion_dua(100, 1 / 30, -700, 700, 500),
 
     // disaster + ...a
-    bot_chasing_action('d^a+a', ['a'], void 0, bot_chasing_action.DESIRE)
+    bot_chasing_action('d^a+a', ['a'], void 0, probability(2, 0.1))
   ).states(
     [StateEnum.Attacking],
     ['cancel_d>j', 'd^a+a']
@@ -40,7 +41,7 @@ export function make_fighter_data_firzen(data: IEntityData) {
       ...frames.standings,
       ...frames.walkings,
     ],
-    [bot_ball_dfj.ID, 'd^a', bot_explosion_duj.ID]
+    [bot_ball_dfj.ID, bot_explosion_dua.ID, bot_explosion_duj.ID]
   )
   return data;
 }

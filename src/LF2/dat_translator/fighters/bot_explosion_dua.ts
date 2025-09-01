@@ -7,7 +7,7 @@ const DESIRE = 1 / 60;
 const MIN_X = -120;
 const MAX_X = 120;
 const Z_LEN = 100;
-const ID = 'd^j'
+const ID = 'd^a'
 /**
  * 矩形范围，检测成功将会按下D^Aa
  *

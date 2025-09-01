@@ -310,9 +310,9 @@ export class BotController extends BaseController {
     const { facing } = c.entity;
     const { status, e_ray, judger, desire = 10000, keys } = action
 
-    if ('dva+j' === action.action_id) debugger
 
     if (c.desire() > desire) return false;
+    if ('d^j' === action.action_id) debugger
     if (status && !status.some(v => v === c.fsm.state?.key))
       return false;
     if (e_ray) {
