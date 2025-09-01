@@ -78,7 +78,7 @@ class Inner {
     const _data_id = "" + data.id;
     if (_data_id === "spark") debugger;
     if (_data_id !== _index_id) {
-      Ditto.Warn(
+      Ditto.warn(
         DatMgr.TAG + "::_add_data",
         `index_id not equal to data_id,`,
         `index_id: ${_index_id}, data_id: ${_data_id},`,
@@ -86,7 +86,7 @@ class Inner {
       );
     }
     if (this.data_map.has(_index_id)) {
-      Ditto.Warn(
+      Ditto.warn(
         DatMgr.TAG + "::_add_data",
         "id duplicated, old data will be overwritten!",
         "old data:",

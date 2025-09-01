@@ -35,7 +35,15 @@ Ditto.setup({
   Raycaster: THREE.Raycaster,
   WorldRender: WorldRenderer,
   UINodeRenderer: UINodeRenderer,
-  Warn: Warn.print,
+  warn: Warn.print,
   Log: Log.print,
-  Debug: Debug.print,
+  debug: Debug.print,
+  get DEV(): boolean {
+    const { hostname, search, hash } = window.location
+    return hostname.startsWith('localhost') ? (
+      !search.startsWith('?NO_DEV') && !hash.startsWith('#NO_DEV')
+    ) : (
+      search.startsWith('?DEV') || hash.startsWith('#DEV')
+    )
+  }
 });

@@ -150,7 +150,7 @@ export class __Fallback extends BaseSounds {
     this._playings.set(id, audio);
 
     audio.onerror = (e) => {
-      Ditto.Warn(
+      Ditto.warn(
         __Fallback.TAG + "::play -> audio.onerror",
         ", failed:",
         name,

@@ -42,7 +42,7 @@ async function find_ui_template(lf2: LF2, parent: Unsafe<ICookedUIInfo>, templat
   try {
     raw_template = await lf2.import_json<IUIInfo>(template_name).then(r => r[0]);
   } catch (e) {
-    Ditto.Warn(`[${find_ui_template.TAG}] ui template not found! template_name: ${template_name}`)
+    Ditto.warn(`[${find_ui_template.TAG}] ui template not found! template_name: ${template_name}`)
   }
   return raw_template || {};
 }
@@ -145,7 +145,7 @@ export async function cook_ui_info(
 
   const { items } = raw_info;
   if (items && !Array.isArray(items)) {
-    Ditto.Warn(`[${UINode.TAG}::cook_ui_info] items must be array, but got`, items);
+    Ditto.warn(`[${UINode.TAG}::cook_ui_info] items must be array, but got`, items);
   }
   if (Array.isArray(items) && items.length) {
     ret.items = [];

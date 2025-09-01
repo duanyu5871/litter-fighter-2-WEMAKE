@@ -21,7 +21,7 @@ export class __Sounds implements ISounds {
         this.inner = new cls(lf2);
         break;
       } catch (e) {
-        Ditto.Warn(
+        Ditto.warn(
           __Sounds.TAG + "::constructor",
           "can not use " + cls.name,
           e,

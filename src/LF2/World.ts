@@ -1,8 +1,7 @@
 import { Callbacks, FPS, ICollision } from "./base";
 import { collisions_keeper } from "./collision/CollisionKeeper";
-import { Builtin_FrameId, Defines, IBdyInfo, IBounding, IEntityData, IFrameInfo, IItrInfo, ItrEffect, ItrKind, StateEnum } from "./defines";
+import { Builtin_FrameId, Defines, IBdyInfo, IBounding, IEntityData, IFrameInfo, IItrInfo, ItrKind, StateEnum } from "./defines";
 import { AllyFlag } from "./defines/AllyFlag";
-import { is_ai_ray_hit } from "./defines/is_ai_ray_hit";
 import Ditto from "./ditto";
 import { IWorldRenderer } from "./ditto/render/IWorldRenderer";
 import {
@@ -573,14 +572,14 @@ export class World extends WorldDataset {
     if (!this._spark_data)
       this.init_spark_data();
     if (!this._spark_data) {
-      Ditto.Warn(
+      Ditto.warn(
         World.TAG + "::spark",
         `data of "${Defines.BuiltIn_Dats.Spark}" not found!`,
       );
       return;
     }
     if (!this._spark_creator) {
-      Ditto.Warn(World.TAG + "::spark", `creator of "${this._spark_data.type}" not found!`);
+      Ditto.warn(World.TAG + "::spark", `creator of "${this._spark_data.type}" not found!`);
       return;
     }
     const e = this._spark_creator(this, this._spark_data);

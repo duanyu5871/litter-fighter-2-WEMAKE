@@ -14,12 +14,12 @@ export function preprocess_frame_pic(lf2: LF2, data: IEntityData, frame: IFrameI
 
   const pic_info = find(data.base.files, ([,v]) => v.id === pic.tex)?.[1];
   if (!pic_info) {
-    Ditto.Warn(preprocess_frame_pic.TAG, "file info not found, pic:", pic);
+    Ditto.warn(preprocess_frame_pic.TAG, "file info not found, pic:", pic);
     return pic;
   }
   const p = lf2.images.find_by_pic_info(pic_info);
   if (!p) {
-    Ditto.Warn(preprocess_frame_pic.TAG, "img info not found", pic_info);
+    Ditto.warn(preprocess_frame_pic.TAG, "img info not found", pic_info);
     return pic;
   };
   const ck = cache_key(pic, p)

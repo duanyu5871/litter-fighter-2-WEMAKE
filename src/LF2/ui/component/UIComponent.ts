@@ -126,7 +126,7 @@ export class UIComponent<Callbacks extends IUICompnentCallbacks = IUICompnentCal
     return !['false', '0'].some(v => v === str);
   }
   warn(func: string, msg: string) {
-    Ditto.Warn(`[${this.node_name}][<${this.id}>${this.f_name}::${func}] ${msg}`)
+    Ditto.warn(`[${this.node_name}][<${this.id}>${this.f_name}::${func}] ${msg}`)
   }
   nums(idx: number, length: 1): [number] | null
   nums(idx: number, length: 2): [number, number] | null

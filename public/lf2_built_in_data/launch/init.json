@@ -3,7 +3,7 @@
   "id": "launch",
   "color": "rgb(16, 32, 108)",
   "component": [
-    "launch_page(entry)"
+    "LaunchPage(entry)"
   ],
   "items": [
     {

@@ -26,7 +26,7 @@ class UIActor {
       "load_data",
       ({ lf2 }, url) => {
         if (lf2.loading) return;
-        lf2.load(url).catch((e) => Ditto.Warn(`[${UIActor.TAG}::load_data] ${url} not exists, err: ${e}`));
+        lf2.load(url).catch((e) => Ditto.warn(`[${UIActor.TAG}::load_data] ${url} not exists, err: ${e}`));
       },
     ],
     ["broadcast", ({ lf2 }, message) => message && lf2.broadcast(message)],
@@ -44,19 +44,19 @@ class UIActor {
   act(layout: UINode, actions: TAction | TAction[]): void {
     if (!Array.isArray(actions)) actions = [actions]
     if (!actions.length) {
-      Ditto.Warn(`[${UIActor.TAG}::act] failed to act, actions empty`);
+      Ditto.warn(`[${UIActor.TAG}::act] failed to act, actions empty`);
       return
     }
     for (const raw of actions) {
       const action = is_str(raw) ? parse_call_func_expression(raw) : raw;
       if (!action) {
-        Ditto.Warn(`[${UIActor.TAG}::act] failed to act, expression incorrect, expression: ${raw}`)
+        Ditto.warn(`[${UIActor.TAG}::act] failed to act, expression incorrect, expression: ${raw}`)
         continue;
       }
       const { name, args = [] } = action;
       const handler = this._handler_map.get(name);
       if (!handler) {
-        Ditto.Warn(`[${UIActor.TAG}::act] failed to act, handler not found by name, expression: ${raw}`)
+        Ditto.warn(`[${UIActor.TAG}::act] failed to act, handler not found by name, expression: ${raw}`)
         continue;
       }
       handler(layout, ...args);

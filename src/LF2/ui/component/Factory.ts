@@ -22,7 +22,7 @@ import { IUICompnentCallbacks } from "./IUICompnentCallbacks";
 import { ImgLoop } from "./ImgLoop";
 import { Items } from "./Items";
 import { Jalousie } from "./Jalousie";
-import { LaunchPageLogic } from "./LaunchPageLogic";
+import { LaunchPage } from "./LaunchPageLogic";
 import { LoadingContentText } from "./LoadingContentText";
 import { OpacityAnimation } from "./OpacityAnimation";
 import { OpacityHover } from "./OpacityHover";
@@ -54,10 +54,10 @@ import { VsModeLogic } from "./VsModeLogic";
 class ComponentFactory {
   static readonly TAG = `ComponentFactory`;
   private _component_map = new Map<string, typeof UIComponent<IUICompnentCallbacks>>([
+    [LaunchPage.TAG, LaunchPage],
     [LoadingContentText.TAG, LoadingContentText],
     [PlayerKeyEdit.TAG, PlayerKeyEdit],
     [PlayerKeyText.TAG, PlayerKeyText],
-
     ["stage_transitions", StageTransitions],
     ["player_c_sel_logic", SlotSelLogic],
     [FighterHead.TAG, FighterHead],
@@ -70,7 +70,6 @@ class ComponentFactory {
     [StageTitleShow.TAG, StageTitleShow],
     [ReachableGroup.TAG, ReachableGroup],
     [Reachable.TAG, Reachable],
-    ["launch_page", LaunchPageLogic],
     [DifficultyText.TAG, DifficultyText],
     ["stage_name_text", StageNameText],
     [StageTitleText.TAG, StageTitleText],
@@ -104,7 +103,7 @@ class ComponentFactory {
 
   register(key: string, Cls: typeof UIComponent) {
     if (this._component_map.has(key))
-      Ditto.Warn(`[${ComponentFactory.TAG}::register] key already exists, ${key}`)
+      Ditto.warn(`[${ComponentFactory.TAG}::register] key already exists, ${key}`)
     this._component_map.set(key, Cls);
   }
 
@@ -118,12 +117,12 @@ class ComponentFactory {
       const raw = components[idx];
       const info = is_str(raw) ? parse_call_func_expression(raw) : raw
       if (!info) {
-        Ditto.Warn(`[${ComponentFactory.TAG}::create] expression not correct! expression: ${raw}`);
+        Ditto.warn(`[${ComponentFactory.TAG}::create] expression not correct! expression: ${raw}`);
         continue;
       }
       const cls = this._component_map.get(info.name);
       if (!cls) {
-        Ditto.Warn(`[${ComponentFactory.TAG}::create] Component not found! expression: ${raw}`);
+        Ditto.warn(`[${ComponentFactory.TAG}::create] Component not found! expression: ${raw}`);
         continue;
       }
       const { name, args = [], enabled = true, id = '', properties = {} } = info;

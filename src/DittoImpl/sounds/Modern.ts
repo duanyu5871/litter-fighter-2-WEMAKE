@@ -144,16 +144,7 @@ export class __Modern extends BaseSounds {
   }
   constructor(lf2: LF2) {
     super(lf2);
-    this._bgms = new Randoming([
-      "launch/main.wma.mp3",
-      "bgm/boss1.wma.mp3",
-      "bgm/boss2.wma.mp3",
-      "bgm/stage1.wma.mp3",
-      "bgm/stage2.wma.mp3",
-      "bgm/stage3.wma.mp3",
-      "bgm/stage4.wma.mp3",
-      "bgm/stage5.wma.mp3"
-    ], this.lf2)
+    this._bgms = new Randoming(this.lf2.bgms, this.lf2)
   }
 
   override stop_bgm(): void {
@@ -172,7 +163,7 @@ export class __Modern extends BaseSounds {
     const prev = this.bgm();
 
     const real_name = name === '?' ?
-      this._bgms.take() :
+      this._bgms.set_src(this.lf2.bgms).take() :
       name;
     this.stop_bgm();
     this._bgm_name = real_name;

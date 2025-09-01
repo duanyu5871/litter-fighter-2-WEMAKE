@@ -168,17 +168,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
     return this.stages.find((v) => v.id === stage_id);
   }
 
-  readonly bgms = new Loader<string[]>(
-    () => {
-      const jobs = ["launch/main.wma.mp3"].map(async (name) => {
-        await this.sounds.load(name, name);
-        return name;
-      });
-      return Promise.all(jobs);
-    },
-    (d) => this.callbacks.emit("on_bgms_loaded")(d),
-    () => this.callbacks.emit("on_bgms_clear")(),
-  );
+  readonly bgms: string[] = []
 
   get_player_character(which: string) {
     for (const [id, player] of this.player_characters)
@@ -509,8 +499,14 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
       (this.entities as any)[`add_${name}`] = (num = 1, team_1 = void 0) =>
         this.entities.add(d, num, team_1);
     }
+    if (zip) {
+      const bgms = zip.file(/bgm\/.*?/)
+      for (const bgm of bgms) {
+        this.bgms.some(v => v === bgm.name) ||
+          this.bgms.push(bgm.name)
+      }
+    }
   }
-
   dispose() {
     this.debug('dispose')
     this._disposed = true;
@@ -676,7 +672,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
     for (const element of array) {
       if (is_str(element)) paths.push(element);
       else
-        Ditto.Warn(
+        Ditto.warn(
           LF2.TAG + "::load_layouts",
           "layouts/index.json",
           "element is not a string! got:",

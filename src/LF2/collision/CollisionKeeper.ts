@@ -75,12 +75,13 @@ export class CollisionKeeper {
       collision.bdy.kind,
     )
 
+    if (Ditto.DEV) {
+      const collision_desc =
+        `[${collision.attacker.data.type}]#${ItrKind[collision.itr.kind]} => ` +
+        `[${collision.victim.data.type}]#${BdyKind[collision.bdy.kind]}`;
 
-    const collision_desc =
-      `[${collision.attacker.data.type}]#${ItrKind[collision.itr.kind]} => ` +
-      `[${collision.victim.data.type}]#${BdyKind[collision.bdy.kind]}`;
-
-    Ditto.Debug(` collision: ${collision_desc} \nhandlers: ${handlers?.map(v => v.name) ?? 'none'}`)
+      Ditto.debug(` collision: ${collision_desc} \nhandlers: ${handlers?.map(v => v.name) ?? 'none'}`)
+    }
 
     if (handlers) handlers.forEach(fn => fn(collision))
 

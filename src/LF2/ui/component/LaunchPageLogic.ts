@@ -1,7 +1,6 @@
 import FSM, { IState } from "../../base/FSM";
-import Invoker from "../../base/Invoker";
-import Ditto, { IPointingEvent } from "../../ditto";
-import { IComponentInfo } from "../IComponentInfo";
+import Ditto from "../../ditto";
+import { ILf2Callback } from "../../ILf2Callback";
 import { IUIKeyEvent } from "../IUIKeyEvent";
 import { IUIPointerEvent } from "../IUIPointerEvent";
 import type { UINode } from "../UINode";
@@ -21,7 +20,8 @@ enum Status {
   End = "End",
 }
 
-export class LaunchPageLogic extends UIComponent {
+export class LaunchPage extends UIComponent {
+  static override readonly TAG = 'LaunchPage'
   protected fsm: FSM<Status, IState<Status>>;
   get entry_name(): string {
     return this.args[0] || "";
@@ -32,7 +32,6 @@ export class LaunchPageLogic extends UIComponent {
   protected bearface!: UINode;
   protected long_text!: UINode;
   protected _prel_loaded: boolean = false;
-  protected _dispose_jobs = new Invoker();
 
   constructor(...args: ConstructorParameters<typeof UIComponent>) {
     super(...args);
@@ -110,7 +109,7 @@ export class LaunchPageLogic extends UIComponent {
     }, {
       key: Status.GoToEntry,
       enter: () => {
-        this.lf2.sounds.play_bgm("launch/main.wma.mp3");
+        this.lf2.sounds.play_bgm("bgm/main.wma.mp3");
       },
       update: (dt) => {
         if (this.long_text.find_component(OpacityAnimation)!.done) {
@@ -127,24 +126,23 @@ export class LaunchPageLogic extends UIComponent {
     this._prel_loaded = true;
     this.node.search_component(ImgLoop, 'loading', (c) => { c.anim.set_times(4).set_count(0) })
   }
-  override on_start(): void {
-    this._prel_loaded = this.lf2.uiinfos_loaded
+  readonly lf2_cb: ILf2Callback = {
+    on_prel_loaded: () => {
+      this.lf2.sounds.load("bgm/main.wma.mp3", "bgm/main.wma.mp3").catch(e => {
+        Ditto.warn(e)
+      }).then(() => {
+        this.on_prel_loaded()
+      });
+    },
   }
-  override init(...args: string[]): this {
-    super.init(...args);
+  override on_start(): void {
+    this._prel_loaded = this.lf2.uiinfos_loaded;
     this.lf2.sounds.load("launch/093.wav.mp3", "launch/093.wav.mp3");
-    this.lf2.sounds.load("launch/main.wma.mp3", "launch/main.wma.mp3");
-    this._dispose_jobs.add(
-      this.lf2.callbacks.add({
-        on_prel_loaded: () => this.on_prel_loaded(),
-      }),
-    );
-    return this;
+    this.lf2.callbacks.add(this.lf2_cb)
   }
   override on_stop(): void {
     super.on_stop?.();
-    this._dispose_jobs.invoke();
-    this._dispose_jobs.clear();
+    this.lf2.callbacks.del(this.lf2_cb)
   }
   override on_resume(): void {
     super.on_resume();

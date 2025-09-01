@@ -6,7 +6,7 @@ export function make_private_properties(place: string, o: any, on_change?: (k: s
     if (key.startsWith('on_') || key.startsWith('_')) continue;
     const pk = '_' + key;
     if (pk in o)
-      Ditto.Warn(`[${place}] member "${pk}" already exists`);
+      Ditto.warn(`[${place}] member "${pk}" already exists`);
     if (typeof o[key] === 'function') continue;
     o[pk] = o[key];
     delete o[key];

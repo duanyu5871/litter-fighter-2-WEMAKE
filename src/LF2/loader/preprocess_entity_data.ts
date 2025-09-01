@@ -36,7 +36,7 @@ export async function preprocess_entity_data(lf2: LF2, data: IEntityData, jobs: 
   traversal(frames, (_, v) => {
     const errors: string[] = []
     check_frame(data, v, errors)
-    if (errors.length) Ditto.Warn(errors)
+    if (errors.length) Ditto.warn(errors)
   });
   traversal(data.base.bot?.actions, (_, a) => {
     if (!a) return;

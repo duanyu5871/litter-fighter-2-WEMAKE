@@ -72,9 +72,10 @@ export interface IDittoPack {
   Quaternion: new (x?: number, y?: number, z?: number, w?: number) => IQuaternion;
   WorldRender: new (world: World) => IWorldRenderer,
   UINodeRenderer: new (uinode: UINode) => IUINodeRenderer,
-  Warn(...args: any[]): unknown;
+  warn(...args: any[]): unknown;
   Log(...args: any[]): unknown;
-  Debug(...args: any[]): unknown;
+  debug(...args: any[]): unknown;
+  DEV: boolean;
 }
 
 export interface IDitto extends IDittoPack {

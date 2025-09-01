@@ -976,12 +976,12 @@ export class Entity implements IDebugging {
   ): Entity | undefined {
     const oid = this.lf2.random_get(opoint.oid);
     if (!oid) {
-      Ditto.Warn(Entity.TAG + "::spawn_object", "oid got", oid);
+      Ditto.warn(Entity.TAG + "::spawn_object", "oid got", oid);
       return;
     }
     const data = this.world.lf2.datas.find(oid);
     if (!data) {
-      Ditto.Warn(
+      Ditto.warn(
         Entity.TAG + "::spawn_object",
         "data not found! opoint:",
         opoint,
@@ -990,7 +990,7 @@ export class Entity implements IDebugging {
     }
     const create = Factory.inst.get_entity_creator(data.type);
     if (!create) {
-      Ditto.Warn(
+      Ditto.warn(
         Entity.TAG + "::spawn_object",
         `creator of "${data.type}" not found! opoint:`,
         opoint,

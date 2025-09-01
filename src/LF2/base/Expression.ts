@@ -120,7 +120,7 @@ export class Expression<T1, T2 = T1> implements IExpression<T1, T2> {
       return ALWAY_FALSE(text, `[wrong expression: ${text}]`);
     const predicate = predicate_maps[op as TBinOp];
     if (!predicate) {
-      Ditto.Warn("gen_single_judge_func", `wrong operator: ${op}`);
+      Ditto.warn("gen_single_judge_func", `wrong operator: ${op}`);
       return ALWAY_FALSE(text, `wrong operator: ${op}`);
     }
     const getter_1 = this.get_val_getter(word_1);

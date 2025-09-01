@@ -80,7 +80,7 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
         (v) => v.id === bg_id || v.id === "bg_" + bg_id,
       ); // FIXME;
       if (!bg_data && bg_id !== Defines.VOID_BG.id)
-        Ditto.Warn(Stage.TAG + "::constructor", `bg_data not found, id: ${bg_id}`);
+        Ditto.warn(Stage.TAG + "::constructor", `bg_data not found, id: ${bg_id}`);
       this.bg = new Background(world, bg_data ?? Defines.VOID_BG);
     } else {
       this.data = Defines.VOID_STAGE;
