@@ -5,10 +5,13 @@ import {
 } from "../../defines";
 import { add_entity_groups } from "../add_entity_to_group";
 import { CondMaker } from "../CondMaker";
+import { bot_ball_dfj } from "./bot_ball_dfj";
+import { bot_chasing_action } from "./bot_chasing_action";
+import { bot_chasing_skill_action } from "./bot_chasing_skill_action";
+import { bot_explosion_duj } from "./bot_explosion_duj";
+import { bot_uppercut_dua } from "./bot_uppercut_dua";
 import { BotBuilder } from "./BotBuilder";
-import { running_frame_ids } from "./running_frame_ids";
-import { standing_frame_ids } from "./standing_frame_ids";
-import { walking_frame_ids } from "./walking_frame_ids";
+import { frames } from "./frames";
 
 export function make_fighter_data_julian(data: IEntityData) {
   add_entity_groups(data.base, EntityGroup.Boss);
@@ -21,16 +24,21 @@ export function make_fighter_data_julian(data: IEntityData) {
     toughness: Defines.DEFAULT_FALL_VALUE_MAX - Defines.DEFAULT_FALL_VALUE_DIZZY,
   };
 
+  BotBuilder.make(data).actions(
+    // ball
+    bot_chasing_skill_action('d>a', void 0, 25, 0.04),
 
-  const bot: IBotData = data.base.bot = {
-    actions: {},
-    frames: {},
-    states: {}
-  }
+    // ball + ...a
+    bot_chasing_action('d>a+a', ['a'], void 0, 0.05),
 
+    // super-ball
+    bot_ball_dfj(125, 0.02),
 
+    // explosion
+    bot_explosion_duj(100, 0.02, -120, 120, 100),
 
-  BotBuilder.make(data).actions({
+    // uppercut
+    bot_uppercut_dua(-1, 0.05), {
     action_id: 'injured_dja',
     desire: Defines.calc_desire(0.08),
     expression: new CondMaker<BotVal | EntityVal>()
@@ -45,51 +53,15 @@ export function make_fighter_data_julian(data: IEntityData) {
       .and(EntityVal.Shaking, '>', 0)
       .done(),
     keys: [GK.d, GK.j, GK.a]
-  }, {
-    action_id: 'd>a',
-    desire: Defines.calc_desire(0.04),
-    status: [BotCtrlState.Chasing],
-    expression: new CondMaker<BotVal | EntityVal>()
-      .add(EntityVal.MP, '>', 25)
-      .done(),
-    keys: [GK.d, 'F', GK.a]
-  }, {
-    action_id: 'd>j',
-    desire: Defines.calc_desire(0.02),
-    status: [BotCtrlState.Chasing],
-    e_ray: [{ x: 1, z: 0, min_x: 200 }],
-    expression: new CondMaker<BotVal | EntityVal>()
-      .add(EntityVal.MP, '>', 125)
-      .done(),
-    keys: [GK.d, 'F', GK.j]
-  }, {
-    action_id: 'd^j',
-    desire: Defines.calc_desire(0.02),
-    status: [BotCtrlState.Chasing],
-    e_ray: [{ x: 1, z: 0, min_x: -120, max_x: 120, max_d: 10000 }],
-    expression: new CondMaker<BotVal | EntityVal>()
-      .add(EntityVal.MP, '>', 100)
-      .done(),
-    keys: [GK.d, GK.U, GK.j]
-  }, {
-    action_id: 'd^a',
-    desire: Defines.calc_desire(0.05),
-    status: [BotCtrlState.Chasing],
-    e_ray: [{ x: 1, z: 0, min_x: 0, max_x: 120 }],
-    expression: new CondMaker<BotVal | EntityVal>().done(),
-    keys: [GK.d, GK.U, GK.a]
   }).frames([
-    ...standing_frame_ids,
-    ...walking_frame_ids,
-    ...running_frame_ids
+    ...frames.standings,
+    ...frames.walkings,
+    ...frames.runnings
   ], [
-    'shaking_dja', 'd^a', 'd^j', 'd>j', 'd>a'
+    'shaking_dja', bot_uppercut_dua.ID, bot_explosion_duj.ID, bot_ball_dfj.ID, 'd>a'
   ]).states(
-    [StateEnum.Injured, StateEnum.BrokenDefend],
-    ['injured_dja']
-  ).states(
     [StateEnum.Attacking],
-    ['shaking_dja']
+    ['shaking_dja', 'd>a+a']
   )
 
   return data;

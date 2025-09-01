@@ -1,0 +1,8 @@
+import { arithmetic_progression } from "../../utils";
+
+
+export const frames = {
+  walkings: arithmetic_progression(0, 5, 1).map(v => 'walking_' + v),
+  standings: arithmetic_progression(0, 3, 1).map(v => '' + v),
+  runnings: arithmetic_progression(0, 3, 1).map(v => 'running_' + v)
+};
