@@ -1,4 +1,3 @@
-import { Entity } from "dexie";
 import { EntityVal, GameKey, IEntityData, StateEnum } from "../../defines";
 import { arithmetic_progression } from "../../utils";
 import { bot_ball_continuation } from "./bot_ball_continuation";
