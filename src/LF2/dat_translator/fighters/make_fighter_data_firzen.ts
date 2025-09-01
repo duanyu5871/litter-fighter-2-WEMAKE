@@ -18,10 +18,10 @@ export function make_fighter_data_firzen(data: IEntityData) {
   data.base.ce = 2;
 
   BotBuilder.make(data).actions(
-    // ball
+    // d^a
     bot_ball_dfj(50, bot_ball_dfj.DESIRE),
 
-    // explosion
+    // d^j
     bot_explosion_duj(250, bot_explosion_duj.DESIRE, -500, 500, 500),
 
     // ball cancell
