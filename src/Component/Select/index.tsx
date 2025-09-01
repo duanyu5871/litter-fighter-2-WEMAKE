@@ -11,7 +11,6 @@ import { Tag } from "../Tag";
 import { Text } from "../Text";
 import { ITreeNode, TreeView } from "../TreeView";
 import styles from "./styles.module.scss";
-import { Loading, LoadingImg } from "../../LoadingImg";
 export type TItemInfo<V> = [V, React.ReactNode] | [V, React.ReactNode, React.HTMLAttributes<HTMLDivElement>]
 export interface IBaseSelectProps<T, V> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'defaultValue' | 'multiply'> {
   items?: readonly T[];
@@ -161,7 +160,6 @@ export function Select<T, V>(props: ISelectProps<T, V> | IMultiSelectProps<T, V>
           return;
         p = p.parentElement
       }
-      console.log("on_pointerdown")
       set_open(false)
     }
     document.addEventListener('pointerdown', on_pointerdown, { capture: true })
@@ -186,7 +184,6 @@ export function Select<T, V>(props: ISelectProps<T, V> | IMultiSelectProps<T, V>
     } else {
       popover.style.maxHeight = `${rect1.top - 10}px`;
     }
-
     let tid = setTimeout(() => {
       tid = setInterval(() => {
         const rect1 = wrapper.getBoundingClientRect();
@@ -205,10 +202,7 @@ export function Select<T, V>(props: ISelectProps<T, V> | IMultiSelectProps<T, V>
     }, 300)
 
     const ob = new IntersectionObserver((e) => {
-      if (!e[0].isIntersecting) {
-        console.log("IntersectionObserver")
-        set_open(false)
-      }
+      if (!e[0].isIntersecting) set_open(false)
     })
     ob.observe(wrapper);
     return () => {
