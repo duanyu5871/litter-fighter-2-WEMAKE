@@ -1,9 +1,15 @@
 export enum SpeedMode {
   LF2 = 0,
-  /** 跟随方向加速度 */
+  /** 
+   * 跟随方向加速度 
+   */
   Acc = 1,
+
   FixedLf2 = 2,
-  /** 固定方向加速度 */
+  
+  /** 
+   * 固定方向加速 
+   */
   FixedAcc = 3,
 
   /** 
@@ -11,4 +17,9 @@ export enum SpeedMode {
    * 
    */
   AccTo = 4,
+
+  /**
+   * 
+   */
+  Extra = 5,
 }

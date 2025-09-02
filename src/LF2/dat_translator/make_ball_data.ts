@@ -49,8 +49,10 @@ export function make_ball_data(
 
   for (const [, frame] of traversal(frames)) {
     const hit_j = take(frame, "hit_j");
-    if (hit_j !== 0) frame.dvz = to_num(hit_j, 50) - 50;
-
+    if (hit_j !== 0) {
+      frame.vzm = SpeedMode.Extra
+      frame.dvz = to_num(hit_j, 50) - 50;
+    }
     const hit_a = take(frame, "hit_a");
     if (hit_a) frame.hp = hit_a / 2;
 

@@ -28,45 +28,10 @@ import { EMPTY_FRAME_INFO } from "./EMPTY_FRAME_INFO";
 import { Factory } from "./Factory";
 import { GONE_FRAME_INFO } from "./GONE_FRAME_INFO";
 import type IEntityCallbacks from "./IEntityCallbacks";
+import { calc_v } from "./calc_v";
 import { turn_face } from "./face_helper";
 import { IDebugging, make_debugging } from "./make_debugging";
 import { is_ball, is_character, is_weapon_data } from "./type_check";
-function calc_v(
-  old: number,
-  speed: number,
-  mode: SpeedMode,
-  acc: number | undefined,
-  direction: 1 | -1 = 1,
-): number {
-  switch (mode) {
-    case SpeedMode.FixedAcc:
-      return old + speed;
-    case SpeedMode.Acc:
-      return old + speed * direction;
-    case SpeedMode.FixedLf2:
-      return (speed > 0 && old < speed) || (speed < 0 && old > speed)
-        ? speed
-        : old;
-    case SpeedMode.AccTo:
-      speed *= direction;
-      acc = acc ? acc * direction : void 0;
-      if (
-        !acc ||
-        (speed > 0 && old >= speed) ||
-        (speed < 0 && old <= speed) ||
-        (speed > old && acc < 0) ||
-        (speed < old && acc > 0)
-      )
-        return old;
-      return old + acc;
-    case SpeedMode.LF2:
-    default:
-      speed *= direction;
-      return (speed > 0 && old < speed) || (speed < 0 && old > speed)
-        ? speed
-        : old;
-  }
-}
 export type TData = IBaseData | IEntityData;
 export class Entity implements IDebugging {
   static readonly TAG: string = EntityEnum.Entity;
@@ -286,6 +251,10 @@ export class Entity implements IDebugging {
   get velocity_0(): IVector3 {
     if (this.velocities.length) return this.velocities[0]!;
     return this.velocities[0] = new Ditto.Vector3(0, 0, 0);
+  }
+  get velocity_1(): IVector3 {
+    if (this.velocities.length > 1) return this.velocities[1]!;
+    return this.velocities[1] = new Ditto.Vector3(0, 0, 0);
   }
 
   protected _callbacks = new Callbacks<IEntityCallbacks>();
@@ -824,7 +793,6 @@ export class Entity implements IDebugging {
         ovz + o_dvz + o_speedz * ud + dvz
       ),
     )
-
     if (
       result?.frame.state === StateEnum.Normal ||
       result?.frame.state === StateEnum.Burning
@@ -1164,6 +1132,9 @@ export class Entity implements IDebugging {
     this.velocity_0.x = vx;
     this.velocity_0.y = vy;
     this.velocity_0.z = vz;
+    if (vxm == SpeedMode.Extra && dvx) this.velocity_1.x = dvx
+    if (vym == SpeedMode.Extra && dvy) this.velocity_1.y = dvy
+    if (vzm == SpeedMode.Extra && dvz) this.velocity_1.z = dvz
   }
 
   self_update(): void {

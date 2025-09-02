@@ -16,7 +16,11 @@ export function make_fighter_data_davis(data: IEntityData) {
     bot_ball_dfa(40, bot_ball_dfa.DESIRE, 50, 200),
 
     // d>a+a
-    bot_ball_continuation("d>a+a", bot_ball_dfa.DESIRE, GameKey.a)((action, cond) => {
+    bot_ball_continuation(
+      "d>a+a",
+      probability(3, 0.8),
+      GameKey.a
+    )((action, cond) => {
       action.expression = cond?.and(EntityVal.MP, '>=', 40)!.done()
       return action
     }),
@@ -81,6 +85,10 @@ export function make_fighter_data_davis(data: IEntityData) {
   ).frames(
     // many punch
     [...arithmetic_progression(270, 289, 1)],
+    ["dva+j", "d^a"]
+  ).frames(
+    // super punch + j or d^a
+    [39],
     ["dva+j", "d^a"]
   ).frames(
     // jumphit
