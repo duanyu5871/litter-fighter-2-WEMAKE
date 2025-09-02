@@ -1,5 +1,6 @@
 import { ICollision } from "../base";
 import { ArmorEnum, Defines, ItrEffect, SparkEnum, StateEnum } from "../defines";
+import { floor } from "../utils";
 import { handle_injury } from "./handle_injury";
 import { handle_rest } from "./handle_rest";
 
@@ -11,7 +12,7 @@ import { handle_rest } from "./handle_rest";
  * @return {boolean} 护甲是否有效
  */
 export function handle_armor(collision: ICollision): boolean {
-  const { victim } = collision;
+  const { victim, attacker } = collision;
   const { armor } = victim;
 
   /* 无护甲 或 护甲耐久为0 */
@@ -73,6 +74,7 @@ export function handle_armor(collision: ICollision): boolean {
     type,
     hit_sounds,
     injury_ratio = 0.1,
+    motionless_ratio = 1.5,
     shaking_ratio = 3,
     dead_sounds = hit_sounds
   } = armor;
@@ -92,8 +94,12 @@ export function handle_armor(collision: ICollision): boolean {
   victim.world.spark(x, y, z, spark_type);
   const sounds = victim.toughness > 0 ? hit_sounds : dead_sounds;
   if (sounds) for (const s of sounds) victim.lf2.sounds.play(s, x, y, z);
-  const { shaking = victim.world.itr_shaking } = itr
-  victim.shaking = shaking_ratio * shaking;
+  const {
+    shaking = victim.world.itr_shaking,
+    motionless = victim.world.itr_motionless
+  } = itr
+  attacker.motionless = floor(motionless_ratio * motionless);
+  victim.shaking = floor(shaking_ratio * shaking);
   victim.velocities.length = 1;
   victim.velocity_0.x = 0;
   victim.velocity_0.y = 0;

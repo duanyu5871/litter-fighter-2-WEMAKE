@@ -247,8 +247,10 @@ export namespace Defines {
   export const KEY_HIT_DURATION: number = 10;
   export const GRAVITY: number = 0.5; // 0.38;
   export const FRICTION_FACTOR: number = 1; // 0.894427191;
-  export const FRICTION_X: number = 0.5;
-  export const FRICTION_Z: number = 0.5;
+  export const FRICTION_X: number = 0.3;
+  export const FRICTION_Z: number = 0.3;
+  export const LAND_FRICTION_X: number = 1;
+  export const LAND_FRICTION_Z: number = 1;
   export const CHARACTER_BOUNCING_SPD: number = 2;
   export const CHARACTER_BOUNCING_TEST_SPD: number = -2.6;
   export const HP_RECOVERABILITY = 0.66;

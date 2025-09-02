@@ -1021,20 +1021,21 @@ export class Entity implements IDebugging {
     x *= factor;
     z *= factor;
 
+    const fx = this.frame.friction_x ?? this.world.friction_x
     if (x > 0) {
-      x -= this.world.friction_x;
+      x -= fx;
       if (x < 0) x = 0; // 不能因为摩擦力反向加速
     } else if (x < 0) {
-      x += this.world.friction_x;
+      x += fx;
       if (x > 0) x = 0; // 不能因为摩擦力反向加速
     }
 
-    // 伪深度下，z轴看起来短，需要衰减更快
+    const fz = this.frame.friction_z ?? this.world.friction_z
     if (z > 0) {
-      z -= 1.5 * this.world.friction_z;
+      z -= fz;
       if (z < 0) z = 0; // 不能因为摩擦力反向加速
     } else if (z < 0) {
-      z += 1.5 * this.world.friction_z;
+      z += fz;
       if (z > 0) z = 0; // 不能因为摩擦力反向加速
     }
 

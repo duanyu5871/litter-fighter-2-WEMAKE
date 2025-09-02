@@ -172,4 +172,7 @@ export interface IFrameInfo {
   behavior?: number | FrameBehavior;
 
   on_hit_ground?: TNextFrame;
+
+  friction_z?: number;
+  friction_x?: number;
 }

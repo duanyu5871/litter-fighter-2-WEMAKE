@@ -60,11 +60,14 @@ export interface IArmorInfo {
 
   /**
    * 硬直比例
-   * 默认: 2
+   * 默认: 3
    *
    * @type {number}
    * @memberof IArmorInfo
    */
   shaking_ratio?: number;
+
+  
+  motionless_ratio?: number;
 }
 

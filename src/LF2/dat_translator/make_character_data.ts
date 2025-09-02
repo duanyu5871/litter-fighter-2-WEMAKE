@@ -793,6 +793,14 @@ export function make_character_data(
     indexes,
     frames,
   };
+  if (ret.frames[215]) {
+    ret.frames[215].friction_x = 1;
+    ret.frames[215].friction_z = 0.5;
+  }
+  if (ret.frames[219]) {
+    ret.frames[219].friction_x = 1;
+    ret.frames[219].friction_z = 0.5;
+  }
   cook_transform_begin_expression_to_hit(ret.frames);
   cook_file_variants(ret);
   return ret;
