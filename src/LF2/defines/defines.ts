@@ -392,10 +392,10 @@ export namespace Defines {
   export const ANGEL_BLESSING_MAX_VY = 0.2
   export const ANGEL_BLESSING_ACC_Y = 0.01
 
-  export const DISATER_SPREADING_VX = arithmetic_progression(-7, 7, 1)
-  export const DISATER_SPREADING_VY = arithmetic_progression(0.5, 2, 0.5)
-  export const DEVIL_JUDGEMENT_SPREADING_VX = arithmetic_progression(-7, 7, 1)
-  export const DEVIL_JUDGEMENT_SPREADING_VY = arithmetic_progression(0.5, 2, 0.5)
+  export const DISATER_SPREADING_VX = arithmetic_progression(-5, 5, 1)
+  export const DISATER_SPREADING_VY = arithmetic_progression(2, 6, 0.5)
+  export const DEVIL_JUDGEMENT_SPREADING_VX = arithmetic_progression(-5, 5, 1)
+  export const DEVIL_JUDGEMENT_SPREADING_VY = arithmetic_progression(2, 6, 0.5)
   export const DISATER_CHASE_MAX_VX = 7
   export const DISATER_CHASE_ACC_X = 0.3
   export const DISATER_CHASE_ACC_Z = 0.25
