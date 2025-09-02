@@ -786,21 +786,21 @@ export class Entity implements IDebugging {
     );
 
     let {
-      dvx = 0,
-      dvy = 0,
-      dvz = 0,
-      speedz = Defines.DEFAULT_OPOINT_SPEED_Z
+      dvx: o_dvx = 0,
+      dvy: o_dvy = 0,
+      dvz: o_dvz = 0,
+      speedz: o_speedz = Defines.DEFAULT_OPOINT_SPEED_Z
     } = opoint;
     const { weight } = this.data.base
-    dvx /= (weight || 1);
-    dvy /= (weight || 1);
+    o_dvx /= (weight || 1);
+    o_dvy /= (weight || 1);
 
     let ud = emitter.ctrl?.UD || 0;
     let { x: ovx, y: ovy, z: ovz } = offset_velocity;
-    if (dvx > 0) {
-      dvx = dvx - abs(ovz / 2);
+    if (o_dvx > 0) {
+      o_dvx = o_dvx - abs(ovz / 2);
     } else {
-      dvx = dvx + abs(ovz / 2);
+      o_dvx = o_dvx + abs(ovz / 2);
     }
 
     const result = this.get_next_frame(opoint.action);
@@ -808,21 +808,23 @@ export class Entity implements IDebugging {
       ? this.handle_facing_flag(result.which.facing, result.frame)
       : emitter.facing;
 
-    this.velocities.length = 0
-    this.velocities.push(
-      new Ditto.Vector3(
-        ovx + dvx * facing,
-        ovy + dvy,
-        ovz + dvz + speedz * ud
-      ),
-    )
-
     if (is_num(opoint.max_hp)) this.hp = this.hp_r = this.hp_max = opoint.max_hp;
     if (is_num(opoint.max_mp)) this.mp = this.hp_r = this.mp_max = opoint.max_mp;
     if (is_num(opoint.hp)) this.hp = this.hp_r = opoint.hp;
     if (is_num(opoint.mp)) this.mp = this.hp_r = opoint.mp;
 
     if (result) this.enter_frame(result.which);
+    this.velocities.length = 0
+
+    const { dvy = 0, dvz = 0 } = this.frame
+    this.velocities.push(
+      new Ditto.Vector3(
+        ovx + o_dvx * facing,
+        ovy + o_dvy + dvy,
+        ovz + o_dvz + o_speedz * ud + dvz
+      ),
+    )
+
     if (
       result?.frame.state === StateEnum.Normal ||
       result?.frame.state === StateEnum.Burning
@@ -966,6 +968,7 @@ export class Entity implements IDebugging {
             break;
         }
       }
+
     }
   }
 
