@@ -4,6 +4,7 @@ import { IEntityData } from "../defines/IEntityData";
 import { add_entity_groups } from "./add_entity_to_group";
 import { make_louis_data, make_rudolf_data } from "./cook_louis_data";
 import { make_fighter_data_bat } from "./fighters/make_fighter_data_bat";
+import { make_fighter_data_davis } from "./fighters/make_fighter_data_davis";
 import { make_fighter_data_deep } from "./fighters/make_fighter_data_deep";
 import { make_fighter_data_firzen } from "./fighters/make_fighter_data_firzen";
 import { make_fighter_data_julian } from "./fighters/make_fighter_data_julian";
@@ -55,6 +56,7 @@ export function make_character_special(data: IEntityData): IEntityData {
       data.base.files['1'].variants = ['3']
       break;
     case BuiltIn_OID.Deep: return make_fighter_data_deep(data)
+    case BuiltIn_OID.Davis: return make_fighter_data_davis(data)
     case BuiltIn_OID.Justin:
     case BuiltIn_OID.Knight:
     case BuiltIn_OID.Monk:
@@ -68,7 +70,6 @@ export function make_character_special(data: IEntityData): IEntityData {
     case BuiltIn_OID.Freeze:
     case BuiltIn_OID.Dennis:
     case BuiltIn_OID.Woody:
-    case BuiltIn_OID.Davis:
     case BuiltIn_OID.Weapon0:
     case BuiltIn_OID.Weapon2:
     case BuiltIn_OID.Weapon4:

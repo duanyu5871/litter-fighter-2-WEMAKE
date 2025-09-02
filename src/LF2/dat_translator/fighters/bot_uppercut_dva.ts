@@ -3,10 +3,10 @@ import { BotVal, Defines, EntityVal, GameKey as GK } from "../../defines";
 import { IBotAction } from "../../defines/IBotAction";
 import { CondMaker } from "../CondMaker";
 import { IEditBotActionFunc } from "./IEditBotAction";
-const DESIRE = 1 / 60;
-const MIN_X = -10;
-const MAX_X = 120;
-export const ID = 'dva'
+const DESIRE = 0.016666 as const;
+const MIN_X = -10 as const;
+const MAX_X = 120 as const;
+export const ID = 'dva' as const
 
 /**
  * 矩形范围，检测成功将会按下D^A
