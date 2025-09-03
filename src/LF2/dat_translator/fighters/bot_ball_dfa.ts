@@ -2,6 +2,7 @@ import { BotCtrlState } from "../../controller/BotCtrlState";
 import { BotVal, Defines, EntityVal, GameKey as GK } from "../../defines";
 import { IBotAction } from "../../defines/IBotAction";
 import { CondMaker } from "../CondMaker";
+import { IEditBotActionFunc } from "./IEditBotAction";
 
 const DESIRE = 0.016666 as const;
 const MIN_X = 120 as const;
@@ -21,16 +22,19 @@ export function bot_ball_dfa(
   desire: number = DESIRE,
   min_x: number = MIN_X,
   max_x?: number
-): IBotAction {
-  return {
-    action_id: ID,
-    desire: Defines.desire(desire),
-    status: [BotCtrlState.Chasing],
-    e_ray: [{ x: 1, z: 0, min_x, max_x }],
-    expression: new CondMaker<BotVal | EntityVal>()
-      .add(EntityVal.MP, '>=', min_mp)
-      .done(),
-    keys: [GK.d, 'F', GK.a]
+): IEditBotActionFunc {
+  return (fn) => {
+    const cond = new CondMaker<BotVal | EntityVal>()
+    if (min_mp > 0) cond.add(EntityVal.MP, '>=', min_mp)
+    const ret: IBotAction = {
+      action_id: ID,
+      desire: Defines.desire(desire),
+      status: [BotCtrlState.Chasing],
+      e_ray: [{ x: 1, z: 0, min_x, max_x }],
+      expression: min_mp > 0 ? cond.done() : void 0,
+      keys: [GK.d, 'F', GK.a]
+    }
+    return fn ? fn(ret, cond) : ret
   };
 }
 

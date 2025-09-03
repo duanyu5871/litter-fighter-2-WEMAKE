@@ -11,6 +11,7 @@ import { make_fighter_data_firzen } from "./fighters/make_fighter_data_firzen";
 import { make_fighter_data_julian } from "./fighters/make_fighter_data_julian";
 import { make_fighter_data_knigt } from "./fighters/make_fighter_data_knigt";
 import { make_fighter_data_dennis } from "./fighters/make_fighter_data_dennis";
+import { make_fighter_data_woody } from "./fighters/make_fighter_data_woody";
 
 export function make_fighter_special(data: IEntityData): IEntityData {
   const num_id = Number(data.id);
@@ -30,6 +31,7 @@ export function make_fighter_special(data: IEntityData): IEntityData {
     case BuiltIn_OID.Deep: return make_fighter_data_deep(data);
     case BuiltIn_OID.Davis: return make_fighter_data_davis(data);
     case BuiltIn_OID.Dennis: return make_fighter_data_dennis(data);
+    case BuiltIn_OID.Woody: return make_fighter_data_woody(data);
 
     case BuiltIn_OID.Bandit:
     case BuiltIn_OID.Hunter:
@@ -55,7 +57,6 @@ export function make_fighter_special(data: IEntityData): IEntityData {
     case BuiltIn_OID.Henry:
     case BuiltIn_OID.Firen:
     case BuiltIn_OID.Freeze:
-    case BuiltIn_OID.Woody:
 
     // not charctor, ignore it;
     case BuiltIn_OID.Weapon0:
