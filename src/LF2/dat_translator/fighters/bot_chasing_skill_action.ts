@@ -6,7 +6,7 @@ import { IEditBotActionFunc } from "./IEditBotAction";
 
 type Key1 = '^' | '>' | 'v' | 'j';
 type Key2 = 'a' | 'j';
-const DESIRE = 1 / 60;
+const DESIRE = 0.016666 as const;
 export function bot_chasing_skill_action(
   keys_str: `d${Key1}${Key2}`,
   action_id: string = keys_str,
@@ -31,7 +31,7 @@ export function bot_chasing_skill_action(
       action_id: action_id,
       desire: Defines.desire(desire),
       status: [BotCtrlState.Chasing],
-      expression: min_mp > 0 ? cond.add(EntityVal.MP, '>=', min_mp).done() : void 0,
+      expression: min_mp > 0 ? cond.done() : void 0,
       keys: keys
     }
     return fn ? fn(ret, cond) : ret

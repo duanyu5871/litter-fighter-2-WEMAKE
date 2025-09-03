@@ -2,23 +2,26 @@ import { BotCtrlState } from "../../controller/BotCtrlState";
 import { GameKey, Defines, BotVal, EntityVal, TLooseGameKey } from "../../defines";
 import { IBotAction } from "../../defines/IBotAction";
 import { CondMaker } from "../CondMaker";
+import { IEditBotActionFunc } from "./IEditBotAction";
 
-const DESIRE = 1 / 60;
+const DESIRE = 0.016666 as const;
 export function bot_chasing_action(
   action_id: string,
   keys: ("F" | "B" | TLooseGameKey)[],
   min_mp: number = -1,
   desire: number = DESIRE
-): IBotAction {
-  return {
-    action_id: action_id,
-    desire: Defines.desire(desire),
-    status: [BotCtrlState.Chasing],
-    expression: min_mp > 0 ?
-      new CondMaker<BotVal | EntityVal>()
-        .add(EntityVal.MP, '>=', min_mp)
-        .done() : void 0,
-    keys: keys
+): IEditBotActionFunc {
+  return (fn) => {
+    const cond = new CondMaker<BotVal | EntityVal>()
+    if (min_mp > 0) cond.add(EntityVal.MP, '>=', min_mp)
+    const ret: IBotAction = {
+      action_id: action_id,
+      desire: Defines.desire(desire),
+      status: [BotCtrlState.Chasing],
+      expression: min_mp > 0 ? cond.done() : void 0,
+      keys: keys
+    }
+    return fn ? fn(ret, cond) : ret;
   };
 }
 

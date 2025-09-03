@@ -4,7 +4,7 @@ import { CondMaker } from "../CondMaker";
 
 
 export interface IEditBotAction {
-  (o: IBotAction, cond?: CondMaker<BotVal | EntityVal>): IBotAction;
+  (action: IBotAction, cond: CondMaker<BotVal | EntityVal>): IBotAction;
 }
 export interface IEditBotActionFunc {
   (e?: IEditBotAction): IBotAction

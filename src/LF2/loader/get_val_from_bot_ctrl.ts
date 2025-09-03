@@ -11,6 +11,8 @@ export const get_val_from_bot_ctrl: IValGetterGetter<BotController> = (
     case BotVal.BotState: return e => (e.fsm.state?.key ?? '')
     case BotVal.EnemyY: return e => e.chasing?.position.y
     case BotVal.EnemyDiffY: return e => e.chasing ? (e.chasing.position.y - e.entity.position.y) : NaN
+    case BotVal.EnemyX: return e => e.chasing?.position.x
+    case BotVal.EnemyDiffX: return e => e.chasing ? e.entity.facing * (e.chasing.position.x - e.entity.position.x) : NaN
     default: {
       const fallback = get_val_getter_from_entity(word);
       return (e, ...arg) => fallback?.(e.entity, ...arg);

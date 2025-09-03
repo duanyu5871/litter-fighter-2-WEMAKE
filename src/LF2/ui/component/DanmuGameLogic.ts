@@ -171,7 +171,7 @@ export class DanmuGameLogic extends UIComponent {
         v.blinking = 120;
       })
     this.lf2.characters
-      .add(BuiltIn_OID.Bat, 2, TeamEnum.Team_3).forEach(v => {
+      .add(BuiltIn_OID.Bat, 1, TeamEnum.Team_3).forEach(v => {
         v.is_key_role = v.is_gone_dead = true;
         v.name = v.data.base.name;
         v.blinking = 120;
@@ -184,6 +184,12 @@ export class DanmuGameLogic extends UIComponent {
       })
     this.lf2.characters
       .add(BuiltIn_OID.Davis, 1, TeamEnum.Team_3).forEach(v => {
+        v.is_key_role = v.is_gone_dead = true;
+        v.name = v.data.base.name;
+        v.blinking = 120;
+      })
+    this.lf2.characters
+      .add(BuiltIn_OID.Dennis, 1, TeamEnum.Team_3).forEach(v => {
         v.is_key_role = v.is_gone_dead = true;
         v.name = v.data.base.name;
         v.blinking = 120;

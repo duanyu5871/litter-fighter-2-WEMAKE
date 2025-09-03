@@ -3,9 +3,9 @@ import { BotVal, Defines, EntityVal, GameKey as GK } from "../../defines";
 import { IBotAction } from "../../defines/IBotAction";
 import { CondMaker } from "../CondMaker";
 
-const DESIRE = 1 / 60;
-const MIN_X = 120;
-const ID = 'd>a'
+const DESIRE = 0.016666 as const;
+const MIN_X = 120 as const;
+const ID = 'd>a' as const
 /**
  * 前向检测，检测成功将会按下D>A
  *
