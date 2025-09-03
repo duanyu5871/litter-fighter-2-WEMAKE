@@ -11,8 +11,8 @@ import { match_colon_value } from "../utils/string_parser/match_colon_value";
 import { make_ball_data } from "./make_ball_data";
 import { make_ball_special } from "./make_ball_special";
 import { make_bg_data } from "./make_bg_data";
-import { make_character_data } from "./make_character_data";
-import { make_character_special } from "./make_character_special";
+import { make_character_data } from "./make_fighter_data";
+import { make_fighter_special } from "./make_fighter_special";
 import { make_entity_data } from "./make_entity_data";
 import { make_entity_special } from "./make_entity_special";
 import { make_frames } from "./make_frames";
@@ -173,7 +173,7 @@ export default function dat_to_json(
       make_entity_special(ret);
       break;
     case EntityEnum.Character:
-      make_character_special(ret);
+      make_fighter_special(ret);
       break;
     case EntityEnum.Weapon:
       make_weapon_special(ret);
