@@ -15,7 +15,7 @@ import { frames } from "./frames";
 export function make_fighter_data_dennis(data: IEntityData) {
   BotBuilder.make(data).actions(
     // d>a
-    bot_ball_dfa(40, 1 / 60, 50),
+    bot_ball_dfa(40, 1 / 30, 50),
 
     // d>a+a
     bot_ball_continuation("d>a+a", 0.8, GameKey.a)((action, cond) => {
@@ -90,3 +90,4 @@ export function make_fighter_data_dennis(data: IEntityData) {
   );
   return data;
 }
+

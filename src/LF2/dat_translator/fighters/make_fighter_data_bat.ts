@@ -15,9 +15,9 @@ export function make_fighter_data_bat(data: IEntityData) {
 
   BotBuilder.make(data).actions(
     // laser_eyes
-    bot_ball_dfa(25),
+    bot_ball_dfa(25, 1 / 30),
     // fast_punch
-    bot_ball_dfj(50, bot_ball_dfj.DESIRE, bot_ball_dfj.MIN_X, 200),
+    bot_ball_dfj(50, 1 / 30, 50, 120),
     // bats
     bot_chasing_skill_action('d^j', void 0, 200, 0.05),
     // catching + fast_punch
@@ -29,6 +29,6 @@ export function make_fighter_data_bat(data: IEntityData) {
     ...frames.standings,
     ...frames.walkings,
     ...frames.runnings
-  ], ['d^j', bot_ball_dfj.ID, bot_ball_dfa.ID])
+  ], ['d^j', 'd>j', 'd>a'])
   return data;
 }
