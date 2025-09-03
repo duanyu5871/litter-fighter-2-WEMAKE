@@ -7,6 +7,6 @@ export interface IWorldRenderer {
   indicator_flags: number;
   add_entity(entity: Entity): void;
   del_entity(entity: Entity): void;
-  render(): void;
+  render(dt: number): void;
   dispose(): void;
 }

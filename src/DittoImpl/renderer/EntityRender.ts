@@ -4,7 +4,7 @@ import { Builtin_FrameId } from "../../LF2/defines";
 import Ditto from "../../LF2/ditto";
 import type { Entity } from "../../LF2/entity/Entity";
 import create_pictures from "../../LF2/loader/create_pictures";
-import { abs, round } from "../../LF2/utils";
+import { abs, floor, round } from "../../LF2/utils";
 import * as THREE from "../3d/_t";
 import { WorldRenderer } from "./WorldRenderer";
 export const EMPTY_PIECE: ITexturePieceInfo = {
@@ -16,6 +16,7 @@ export const EMPTY_PIECE: ITexturePieceInfo = {
   pixel_h: 0,
   pixel_w: 0,
 };
+const EXTRA_SHAKING_TIME = 100;
 export class EntityRender {
   readonly renderer_type: string = "Entity";
   protected pictures!: Map<string, IPicture<THREE.Texture>>;
@@ -24,7 +25,9 @@ export class EntityRender {
   protected entity_material!: THREE.MeshBasicMaterial;
   protected variants = new Map<string, string[]>();
   protected piece: ITexturePieceInfo = EMPTY_PIECE;
-  protected _shaking?: number;
+  protected _shaking: number = 0;
+  protected _shaking_time: number = 0;
+  protected _extra_shaking_time: number = 0;
   protected _prev_data?: IEntityData;
   constructor(entity: Entity) {
     this.set_entity(entity);
@@ -101,7 +104,7 @@ export class EntityRender {
     }
   }
 
-  render() {
+  render(dt: number) {
     const { entity, entity_mesh } = this;
     if (entity.frame.id === Builtin_FrameId.Gone) return;
     const { frame, position: { x, y, z }, facing } = entity;
@@ -127,12 +130,21 @@ export class EntityRender {
       entity_mesh.visible = 0 === Math.floor(entity.blinking / 4) % 2;
     }
 
-    if (entity.shaking && this._shaking !== entity.shaking) {
-      const x = abs(entity.shaking * 0.5) % 2 ? -4 : 4;
-      entity_mesh.x += facing * x;
+    const { shaking } = entity
+    if (shaking != this._shaking) {
+      // keep shaking for a while.
+      if (!shaking) this._extra_shaking_time = EXTRA_SHAKING_TIME;
+      this._shaking = shaking;
     }
-    this._shaking = entity.shaking;
 
-
+    if (this._shaking || this._extra_shaking_time > 0) {
+      this._shaking_time += dt
+      const f = (floor(this._shaking_time / 32) % 2) || -1
+      entity_mesh.x += facing * f;
+      if (!shaking) this._extra_shaking_time -= dt
+    } else {
+      this._shaking_time = 0;
+    }
   }
+
 }

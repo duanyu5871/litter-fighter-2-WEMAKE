@@ -374,7 +374,7 @@ export class World extends WorldDataset {
   }
 
   render_once(dt: number) {
-    this.renderer.render();
+    this.renderer.render(dt);
   }
 
   update_camera() {

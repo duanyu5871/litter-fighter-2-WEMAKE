@@ -97,13 +97,13 @@ export class WorldRenderer implements IWorldRenderer {
     this.entity_renderer_packs.delete(e);
   }
 
-  render(): void {
+  render(dt: number): void {
     const { indicator_flags } = this.world;
     if (indicator_flags != this.indicator_flags)
       this.indicator_flags = indicator_flags;
     this.bg_render.render();
     for (const [, [r1, r2, r3, r4]] of this.entity_renderer_packs) {
-      r1.render();
+      r1.render(dt);
       r2?.render();
       r3?.render();
       r4?.render();
