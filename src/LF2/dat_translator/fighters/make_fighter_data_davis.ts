@@ -11,7 +11,7 @@ import { frames } from "./frames";
 
 
 export function make_fighter_data_davis(data: IEntityData) {
-  BotBuilder.make(data).actions(
+  BotBuilder.make(data).set_actions(
     // d>a
     bot_ball_dfa(40, 1 / 30, 50),
 
@@ -59,38 +59,38 @@ export function make_fighter_data_davis(data: IEntityData) {
     }),
 
     bot_chasing_action("dva+run", ["F", "F"], 0, probability(7, 0.5))
-  ).states(
+  ).set_states(
     [StateEnum.Rowing],
     ["d^a", "d^j"]
-  ).states(
+  ).set_states(
     [StateEnum.Catching],
     ["d^a", "dva"]
-  ).frames(
+  ).set_frames(
     [
       ...frames.standings,
       ...frames.walkings,
       ...frames.runnings
     ],
     ["d^a", "d^j", "d>a", "dva"]
-  ).frames(
+  ).set_frames(
     frames.punchs,
     ["dva", "d^a"]
-  ).frames(
+  ).set_frames(
     arithmetic_progression(240, 269, 1),
     ["d>a+a"]
-  ).frames(
+  ).set_frames(
     // many punch + >>
     [282],
     ["dva+run"]
-  ).frames(
+  ).set_frames(
     // many punch
     [...arithmetic_progression(270, 289, 1)],
     ["dva+j", "d^a"]
-  ).frames(
+  ).set_frames(
     // super punch + j or d^a
     [39],
     ["dva+j", "d^a"]
-  ).frames(
+  ).set_frames(
     // jumphit
     arithmetic_progression(290, 292, 1),
     ["d^j+a"]

@@ -8,13 +8,14 @@ import { ILegacyPictureInfo } from "../defines/ILegacyPictureInfo";
 import { set_obj_field } from "../utils/container_help/set_obj_field";
 import { match_block_once } from "../utils/string_parser/match_block";
 import { match_colon_value } from "../utils/string_parser/match_colon_value";
+import { BotBuilder } from "./fighters/BotBuilder";
 import { make_ball_data } from "./make_ball_data";
 import { make_ball_special } from "./make_ball_special";
 import { make_bg_data } from "./make_bg_data";
-import { make_character_data } from "./make_fighter_data";
-import { make_fighter_special } from "./make_fighter_special";
 import { make_entity_data } from "./make_entity_data";
 import { make_entity_special } from "./make_entity_special";
+import { make_character_data } from "./make_fighter_data";
+import { make_fighter_special } from "./make_fighter_special";
 import { make_frames } from "./make_frames";
 import { make_frames_special } from "./make_frames_special";
 import { make_stage_info_list as make_stage_infos } from "./make_stage_info_list";
@@ -183,5 +184,7 @@ export default function dat_to_json(
       break;
   }
   make_frames_special(ret);
+  BotBuilder.check_all();
+  BotBuilder.builders.length = 0
   return ret;
 }

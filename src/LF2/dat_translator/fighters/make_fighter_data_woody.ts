@@ -14,7 +14,7 @@ import { frames } from "./frames";
 
 
 export function make_fighter_data_woody(data: IEntityData) {
-  BotBuilder.make(data).actions(
+  BotBuilder.make(data).set_actions(
     // d>a
     bot_ball_dfa(125, 1 / 30, 50)(e => {
       const ray = e.e_ray![0]
@@ -59,25 +59,25 @@ export function make_fighter_data_woody(data: IEntityData) {
     // dva
     bot_uppercut_dva(0, void 0, 80, bot_uppercut_dua.MAX_X),
 
-  ).states(
+  ).set_states(
     [StateEnum.Catching],
     ['catching_d^a']
-  ).frames(
+  ).set_frames(
     [
       ...frames.standings,
       ...frames.walkings
     ],
     ['d>a', 'd^a', 'dva', 'd>j', 'd^j', 'dvj']
-  ).states(
+  ).set_states(
     [StateEnum.Jump],
     ['d^j', 'dvj']
-  ).frames(
+  ).set_frames(
     [...frames.rowings],
     ['dva']
-  ).frames(
+  ).set_frames(
     [286, 287, 288, 301, 302, 303, 271],
     ['c_d>j', 'd^a']
-  ).frames(
+  ).set_frames(
     [215, 219],
     ['c_d>j', 'd^a']
   );

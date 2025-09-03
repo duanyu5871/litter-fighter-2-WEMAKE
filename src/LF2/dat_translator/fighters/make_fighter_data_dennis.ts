@@ -13,7 +13,7 @@ import { frames } from "./frames";
 
 
 export function make_fighter_data_dennis(data: IEntityData) {
-  BotBuilder.make(data).actions(
+  BotBuilder.make(data).set_actions(
     // d>a
     bot_ball_dfa(40, 1 / 30, 50),
 
@@ -66,25 +66,25 @@ export function make_fighter_data_dennis(data: IEntityData) {
     // catching_dva
     bot_chasing_skill_action('dva', 'catching_dva', 75),
 
-  ).states(
+  ).set_states(
     [StateEnum.Catching],
     ['catching_d>j', 'catching_dva', 'd^a']
-  ).frames(
+  ).set_frames(
     [
       ...frames.standings,
       ...frames.walkings
     ],
-    ['d>a', 'dua', 'dva', 'd>j']
-  ).frames(
+    ['d>a', 'd^a', 'dva', 'd>j']
+  ).set_frames(
     [...frames.punchs],
     ['dva', 'd>j']
-  ).frames(
+  ).set_frames(
     [88, 89],
     ['run_atk+dva', 'run_atk+d>j']
-  ).frames(
+  ).set_frames(
     arithmetic_progression(235, 262, 1),
     ["d>a+a"]
-  ).frames(
+  ).set_frames(
     arithmetic_progression(280, 290, 1),
     ["cancel_d>j"]
   );

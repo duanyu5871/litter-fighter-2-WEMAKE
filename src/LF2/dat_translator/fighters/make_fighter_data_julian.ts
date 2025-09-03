@@ -24,7 +24,7 @@ export function make_fighter_data_julian(data: IEntityData) {
     toughness: Defines.DEFAULT_FALL_VALUE_MAX - Defines.DEFAULT_FALL_VALUE_DIZZY,
   };
 
-  BotBuilder.make(data).actions(
+  BotBuilder.make(data).set_actions(
     // ball
     bot_chasing_skill_action('d>a', void 0, 25, 1 / 30),
 
@@ -53,7 +53,7 @@ export function make_fighter_data_julian(data: IEntityData) {
       .and(EntityVal.Shaking, '>', 0)
       .done(),
     keys: [GK.d, GK.j, GK.a]
-  }).frames([
+  }).set_frames([
     ...frames.standings,
     ...frames.walkings,
     ...frames.runnings
@@ -63,11 +63,11 @@ export function make_fighter_data_julian(data: IEntityData) {
     'd^j',
     'd>j',
     'd>a'
-  ]).frames([
+  ]).set_frames([
     ...frames.punchs,
   ], [
     'd^a', 'shaking_dja'
-  ]).states(
+  ]).set_states(
     [StateEnum.Attacking],
     ['shaking_dja', 'd>a+a']
   )

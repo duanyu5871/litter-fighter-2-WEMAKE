@@ -12,7 +12,7 @@ import { frames } from "./frames";
 
 
 export function make_fighter_data_deep(data: IEntityData) {
-  BotBuilder.make(data).actions(
+  BotBuilder.make(data).set_actions(
     // d>a
     bot_ball_dfa(75, 1 / 30, 50, 200),
 
@@ -65,32 +65,32 @@ export function make_fighter_data_deep(data: IEntityData) {
       action.keys = [GameKey.a];
       return action;
     }),
-  ).states(
+  ).set_states(
     [StateEnum.Rowing],
     [bot_ball_dfj.ID]
-  ).states(
+  ).set_states(
     [StateEnum.Catching],
     ['catching_d>j']
-  ).frames(
+  ).set_frames(
     [
       ...frames.standings,
       ...frames.walkings,
       ...frames.runnings
     ],
     ['d^j', bot_ball_dfj.ID, bot_ball_dfa.ID, bot_uppercut_dva.ID]
-  ).frames(
+  ).set_frames(
     [
       ...frames.punchs
     ],
     [bot_uppercut_dva.ID]
-  ).frames(
+  ).set_frames(
     arithmetic_progression(235, 250, 1),
     ["d>a+a"]
-  ).frames(
+  ).set_frames(
     // jump_sword: ground_part
     [...arithmetic_progression(260, 265, 1), ...arithmetic_progression(277, 282, 1)],
     ["dva+a", "dva+j"]
-  ).frames(
+  ).set_frames(
     // jump_sword: jump_part
     arithmetic_progression(266, 267, 1),
     ["d^j+a"]

@@ -8,7 +8,7 @@ import { BotBuilder } from "./BotBuilder";
 import { frames } from "./frames";
 
 export function make_fighter_data_firen(data: IEntityData) {
-  BotBuilder.make(data).actions(
+  BotBuilder.make(data).set_actions(
     // d>a
     bot_ball_dfa(75, 1 / 30, 50),
 
@@ -68,19 +68,19 @@ export function make_fighter_data_firen(data: IEntityData) {
     // d^j
     bot_explosion_duj(300, 1 / 60, -110, 110, 900),
 
-  ).frames(
+  ).set_frames(
     [
       ...frames.standings,
       ...frames.walkings
     ],
     ['d>a', 'd>j', 'd^j', 'dvj']
-  ).frames(
+  ).set_frames(
     arithmetic_progression(255, 261, 1),
     ["cancel_d>j"]
-  ).frames(
+  ).set_frames(
     arithmetic_progression(267, 275, 1),
     ["cancel_dvj"]
-  ).frames(
+  ).set_frames(
     arithmetic_progression(235, 252, 1),
     ["d>a+a"]
   );

@@ -10,6 +10,10 @@ import { StateEnum } from "./StateEnum";
  */
 export interface IBotData {
   /**
+   * 
+   */
+  id: string;
+  /**
    * BOT动作表
    *
    * @type {{ [x in string]?: IBotAction }}

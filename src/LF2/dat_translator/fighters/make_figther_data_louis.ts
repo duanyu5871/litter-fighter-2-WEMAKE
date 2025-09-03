@@ -29,7 +29,7 @@ export function make_figther_data_louis(data: IEntityData): IEntityData {
       .or(EntityVal.LF2_NET_ON, "==", 1)
       .done();
   }
-  BotBuilder.make(data).actions(
+  BotBuilder.make(data).set_actions(
     // d>a
     bot_ball_dfa(150, 1 / 30, 120, 400),
     // d>j
@@ -41,13 +41,13 @@ export function make_figther_data_louis(data: IEntityData): IEntityData {
       e.expression = c?.and(EntityVal.HP_P, '<', 33).done()
       return e;
     })
-  ).frames(
+  ).set_frames(
     [
       ...frames.standings,
       ...frames.walkings,
     ],
     ['d^j', 'd>a', 'd>j', 'dja']
-  ).frames(
+  ).set_frames(
     [
       ...frames.punchs,
     ],

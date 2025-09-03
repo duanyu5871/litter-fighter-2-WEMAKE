@@ -18,7 +18,7 @@ export function make_fighter_data_firzen(data: IEntityData) {
   add_entity_groups(data.base, EntityGroup.Boss);
   data.base.ce = 2;
 
-  BotBuilder.make(data).actions(
+  BotBuilder.make(data).set_actions(
     // d^a
     bot_ball_dfj(50, 1 / 30),
 
@@ -33,10 +33,10 @@ export function make_fighter_data_firzen(data: IEntityData) {
 
     // disaster + ...a
     bot_chasing_action('d^a+a', ['a'], void 0, probability(2, 0.1))
-  ).states(
+  ).set_states(
     [StateEnum.Attacking],
     ['cancel_d>j', 'd^a+a']
-  ).frames(
+  ).set_frames(
     [
       ...frames.standings,
       ...frames.walkings,
