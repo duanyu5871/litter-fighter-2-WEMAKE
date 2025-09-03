@@ -2,7 +2,8 @@
   "name": "页面：直播弹幕游戏模式",
   "id": "danmu_game_page",
   "component": [
-    "DanmuGameLogic()"
+    "DanmuGameLogic()",
+    "CameraCtrl()"
   ],
   "key_press_actions": [
     [

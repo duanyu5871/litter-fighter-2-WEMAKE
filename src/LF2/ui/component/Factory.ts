@@ -5,6 +5,7 @@ import type { UINode } from "../UINode";
 import { parse_call_func_expression } from "../utils/parse_call_func_expression";
 import { Alignment } from "./Alignment";
 import BackgroundNameText from "./BackgroundNameText";
+import { CameraCtrl } from "./CameraCtrl";
 import ComNumButton from "./ComNumButton";
 import { DanmuGameLogic } from "./DanmuGameLogic";
 import { DemoModeLogic } from "./DemoModeLogic";
@@ -99,6 +100,7 @@ class ComponentFactory {
     [FlexItem.TAG, FlexItem],
     [FitChildren.TAG, FitChildren],
     [DanmuGameLogic.TAG, DanmuGameLogic],
+    [CameraCtrl.TAG, CameraCtrl],
   ]);
 
   register(key: string, Cls: typeof UIComponent) {

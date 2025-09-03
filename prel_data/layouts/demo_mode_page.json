@@ -2,7 +2,8 @@
   "name": "页面：DEMO模式",
   "id": "demo_mode_page",
   "component": [
-    "demo_mode_logic()"
+    "demo_mode_logic()",
+    "CameraCtrl()"
   ],
   "key_press_actions": [
     [

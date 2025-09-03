@@ -1,15 +1,18 @@
 import { new_team } from "../../base";
-import { Defines, EntityGroup } from "../../defines";
+import { KeyStatus } from "../../controller/KeyStatus";
+import { Defines, EntityGroup, GameKey } from "../../defines";
 import { Factory } from "../../entity/Factory";
 import IEntityCallbacks from "../../entity/IEntityCallbacks";
 import { is_character } from "../../entity/type_check";
 import { traversal } from "../../utils/container_help/traversal";
 import { floor } from "../../utils/math/base";
+import { IUIKeyEvent } from "../IUIKeyEvent";
 import { UINode } from "../UINode";
 import { UIComponent } from "./UIComponent";
 
 export class DemoModeLogic extends UIComponent implements IEntityCallbacks {
-  score_board!: UINode;
+  score_board!: UINode
+  time: number = 0;
   override on_start(): void {
     super.on_start?.();
     this.score_board = this.node.find_child("score_board")!
@@ -130,6 +133,5 @@ export class DemoModeLogic extends UIComponent implements IEntityCallbacks {
     this.lf2.sounds.play_preset("end");
     this.score_board.visible = true;
   }
-
   override on_show(): void { }
 }

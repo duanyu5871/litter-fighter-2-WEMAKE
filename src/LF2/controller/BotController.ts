@@ -312,7 +312,6 @@ export class BotController extends BaseController {
 
 
     if (c.desire() > desire) return false;
-    if ('d^j' === action.action_id) debugger
     if (status && !status.some(v => v === c.fsm.state?.key))
       return false;
     if (e_ray) {

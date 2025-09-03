@@ -1,10 +1,10 @@
-import { BuiltIn_OID, Defines, EntityGroup, IEntityData } from "../../defines";
+import { BuiltIn_OID, Defines, IEntityData } from "../../defines";
 import { TeamEnum } from "../../defines/TeamEnum";
 import { IEntityCallbacks } from "../../entity";
 import { Entity } from "../../entity/Entity";
 import { IWorldCallbacks } from "../../IWorldCallbacks";
-import { intersection } from "../../utils";
 import { Times } from "../utils/Times";
+import { CameraCtrl } from "./CameraCtrl";
 import { UIComponent } from "./UIComponent";
 export interface ISumInfo {
   wins: number;
@@ -40,6 +40,8 @@ export class DanmuGameLogic extends UIComponent {
   private _countdown = new Times(0, 60 * 30);
   private _staring: Entity | undefined;
   private _teams = new Set<string>();
+  private _cam_ctrl?: CameraCtrl
+
   readonly team_sum = new Map<string, ISumInfo>([
     [TeamEnum.Team_1, make_team_sum(TeamEnum.Team_1)],
     [TeamEnum.Team_2, make_team_sum(TeamEnum.Team_2)],
@@ -86,6 +88,7 @@ export class DanmuGameLogic extends UIComponent {
       if (sum2) sum2.deads++;
     }
   }
+  time: number = 0;
   override init(...args: any[]): this {
     super.init(...args)
     this.lf2.datas.characters.map(v => this.fighter_sum.set(v.id, make_fighter_sum(v)))
@@ -111,23 +114,18 @@ export class DanmuGameLogic extends UIComponent {
   on_fighter_del(e: Entity) {
     e.callbacks.del(this._fighter_cb)
     this.update_teams()
-    if (this.staring !== e) return
+    if (!this._cam_ctrl || this._cam_ctrl?.staring !== e) return
     // 聚焦角色被移除后，聚焦下一个角色
     this._countdown.reset();
-    this.staring = this.lf2.random_get(this.lf2.characters.list())
+    this._cam_ctrl.staring = this.lf2.random_get(this.lf2.characters.list())
   }
-  get staring(): Entity | undefined {
-    return this._staring;
-  }
-  set staring(v: Entity | undefined) {
-    this._staring = v;
-  };
   override on_start(): void {
     super.on_start?.();
     this.update_bg();
     this.world.callbacks.add(this._world_cb)
     this.lf2.sounds.play_bgm('?')
     this.lf2.on_component_broadcast(this, DanmuGameLogic.BROADCAST_ON_START)
+    this._cam_ctrl = this.node.find_component(CameraCtrl)
   }
   override on_stop(): void {
     super.on_stop?.();
@@ -192,23 +190,28 @@ export class DanmuGameLogic extends UIComponent {
       })
     this.update_staring();
     this._countdown.reset()
-    const { staring } = this
-    if (staring) {
+
+    const staring = this._cam_ctrl?.staring;
+    if (staring && this._cam_ctrl?.free != false) {
       this.world.lock_cam_x = this.world.renderer.cam_x = staring.position.x - this.world.screen_w / 2
     }
   }
   update_staring() {
+    if (!this._cam_ctrl) return;
     const fighters = this.lf2.characters.list();
-    this.staring = this.lf2.random_get(fighters)
+    this._cam_ctrl.staring = this.lf2.random_get(fighters)
   }
   override update(dt: number): void {
+    this.time += dt;
     super.update?.(dt)
     this._countdown.add();
     if (this._countdown.is_end()) this.update_staring()
 
-    const { staring } = this
-    if (staring) this.world.lock_cam_x = staring.position.x - this.world.screen_w / 2
-    else if (!staring) this.update_staring()
+    const staring = this._cam_ctrl?.staring;
+    if (staring && this._cam_ctrl?.free != false)
+      this.world.lock_cam_x = staring.position.x - this.world.screen_w / 2
+    else if (!staring)
+      this.update_staring()
 
     if (this._teams.size <= 1) {
       if (this._teams.size) {
@@ -221,3 +224,4 @@ export class DanmuGameLogic extends UIComponent {
     }
   }
 }
+

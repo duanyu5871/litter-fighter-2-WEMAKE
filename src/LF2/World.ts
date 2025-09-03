@@ -397,8 +397,6 @@ export class World extends WorldDataset {
     let acc_ratio = 1;
     if (is_num(this.lock_cam_x)) {
       new_x = this.lock_cam_x;
-      // max_speed_ratio = 1000;
-      // acc_ratio = 10;
     } else if (this.slot_fighters.size) {
       let l = 0;
       new_x = 0;
@@ -415,7 +413,7 @@ export class World extends WorldDataset {
         }
       } else {
         for (const [, player] of this.slot_fighters) {
-          new_x += player.position.x + this.screen_w / 2
+          new_x += player.position.x - this.screen_w / 2
           ++l;
         }
       }

@@ -1,7 +1,7 @@
-import { BaseController } from "./BaseController";
+import type { World } from "../World";
 
 export class KeyStatus {
-  readonly ctrl: BaseController;
+  readonly ctrl: { time: number, world: World };
   /**
    * 按键按下的时间
    *
@@ -23,7 +23,9 @@ export class KeyStatus {
   get time(): number {
     return this._d_time;
   }
-
+  get u_time(): number {
+    return this._u_time;
+  }
   /**
    * 按键是否被消耗
    *
@@ -34,7 +36,7 @@ export class KeyStatus {
     return this._used;
   }
 
-  constructor(ctrl: BaseController) {
+  constructor(ctrl: typeof this.ctrl) {
     this.ctrl = ctrl;
   }
   use() {
@@ -52,7 +54,7 @@ export class KeyStatus {
     /** 按键时长（单位帧） */
     const dt = this.ctrl.time - _d_time
     /** 按键时长短于一定时间内时，视为按键被按下 */
-    return dt < this.ctrl.entity.world.key_hit_duration;
+    return dt < this.ctrl.world.key_hit_duration;
   }
   is_hld(): boolean {
     return !this.is_hit() && this._d_time > this._u_time;
@@ -60,7 +62,7 @@ export class KeyStatus {
   is_end(): boolean {
     return this._d_time <= this._u_time;
   }
-  hit(t: number): void {
+  hit(t: number = this.ctrl.time): void {
     this._d_time = t;
     this._used = 0;
   }
