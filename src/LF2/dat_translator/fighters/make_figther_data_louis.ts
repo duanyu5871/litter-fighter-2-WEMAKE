@@ -31,7 +31,7 @@ export function make_figther_data_louis(data: IEntityData): IEntityData {
   }
   BotBuilder.make(data).actions(
     // d>a
-    bot_ball_dfa(150, void 0, 120, 400),
+    bot_ball_dfa(150, 1 / 30, 120, 400),
     // d>j
     bot_ball_dfj(50, void 0, 120, 250),
     // d^j

@@ -1,14 +1,9 @@
-import { IEntityData, GameKey, EntityVal, BotVal, StateEnum } from "../../defines";
-import { probability } from "../../defines/probability";
+import { BotVal, EntityVal, GameKey, IEntityData } from "../../defines";
 import { arithmetic_progression } from "../../utils";
 import { bot_ball_continuation } from "./bot_ball_continuation";
 import { bot_ball_dfa } from "./bot_ball_dfa";
 import { bot_ball_dfj } from "./bot_ball_dfj";
-import { bot_chasing_action } from "./bot_chasing_action";
-import { bot_chasing_skill_action } from "./bot_chasing_skill_action";
-import { bot_explosion_dua } from "./bot_explosion_dua";
 import { bot_explosion_duj } from "./bot_explosion_duj";
-import { bot_uppercut_dva } from "./bot_uppercut_dva";
 import { BotBuilder } from "./BotBuilder";
 import { frames } from "./frames";
 
@@ -50,7 +45,7 @@ export function make_fighter_data_firen(data: IEntityData) {
     bot_ball_dfj(75, 1 / 30, 50, 200)(action => {
       action.action_id = 'dvj'
       action.e_ray?.push(
-        { ...action.e_ray![0], z: 0.1 },
+        { ...action.e_ray![0], z: 0.05 },
         { ...action.e_ray![0], z: -0.1 }
       );
       action.keys = [GameKey.Defend, GameKey.Down, GameKey.Jump]
