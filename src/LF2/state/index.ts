@@ -100,7 +100,7 @@ ENTITY_STATES.set(
   new CharacterState_Teleport2FarthestAlly(),
 );
 ENTITY_STATES.set(
-  StateEnum.TransformToLouisEx,
+  StateEnum.TurnIntoLouisEX,
   new CharacterState_TransformToLouisEX(),
 );
 ENTITY_STATES.set(StateEnum.Rowing, new CharacterState_Rowing());

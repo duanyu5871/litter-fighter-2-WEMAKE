@@ -243,7 +243,6 @@ export function make_frames(
         break;
       }
       case StateEnum.LouisCastOff:
-
         frame.opoint = ensure(frame.opoint,
           {
             kind: OpointKind.Normal,
@@ -252,6 +251,7 @@ export function make_frames(
             oid: "218",
             dvy: 5,
             action: { id: "auto" },
+            speedz: 0
           },
           {
             kind: OpointKind.Normal,
@@ -259,9 +259,10 @@ export function make_frames(
             y: 79,
             oid: "217",
             dvy: 4,
-            dvx: 8,
+            dvx: -5,
+            dvz: 4,
             action: { id: "auto", facing: FacingFlag.Backward },
-            multi: 2,
+            speedz: 0
           },
           {
             kind: OpointKind.Normal,
@@ -269,9 +270,32 @@ export function make_frames(
             y: 79,
             oid: "217",
             dvy: 4,
-            dvx: 8,
+            dvx: -5,
+            dvz: -4,
+            action: { id: "auto", facing: FacingFlag.Backward },
+            speedz: 0
+          },
+          {
+            kind: OpointKind.Normal,
+            x: 39,
+            y: 79,
+            oid: "217",
+            dvy: 4,
+            dvx: -5,
+            dvz: 4,
             action: { id: "auto" },
-            multi: 2,
+            speedz: 0
+          },
+          {
+            kind: OpointKind.Normal,
+            x: 39,
+            y: 79,
+            oid: "217",
+            dvy: 4,
+            dvx: -5,
+            dvz: -4,
+            action: { id: "auto" },
+            speedz: 0
           },
         );
         break;

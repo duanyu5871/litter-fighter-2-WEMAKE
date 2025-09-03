@@ -103,8 +103,18 @@ export enum StateEnum {
   Ball_3006 = 3006,
   TransformTo_Min = 8001,
   TransformTo_Max = 8999,
+  /**
+   * 变成LouisEX
+   */
   TurnIntoLouisEX = 9995,
+  /**
+   * 原LF2的Louis爆甲
+   * 但现在Wemake中，爆甲是通过opoint实现的。
+   */
+  LouisCastOff = 9996,
+
   Gone = 9998,
+  
   Weapon_Brokens = 9999,
 
   /**
@@ -120,11 +130,4 @@ export enum StateEnum {
    */
   TransformToCatching_End = 501,
 
-  /**
-   * 原LF2的Louis爆甲
-   * 但现在Wemake中，爆甲是通过opoint实现的。
-   */
-  LouisCastOff = 9996,
-
-  TransformToLouisEx = 9996,
 }
