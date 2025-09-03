@@ -794,12 +794,12 @@ export function make_character_data(
     frames,
   };
   if (ret.frames[215]) {
-    ret.frames[215].friction_x = 1;
-    ret.frames[215].friction_z = 0.5;
+    ret.frames[215].friction_x = Defines.LAND_FRICTION_X;
+    ret.frames[215].friction_z = Defines.LAND_FRICTION_Z;
   }
   if (ret.frames[219]) {
-    ret.frames[219].friction_x = 1;
-    ret.frames[219].friction_z = 0.5;
+    ret.frames[219].friction_x = Defines.LAND_FRICTION_X;
+    ret.frames[219].friction_z = Defines.LAND_FRICTION_Z;
   }
   cook_transform_begin_expression_to_hit(ret.frames);
   cook_file_variants(ret);

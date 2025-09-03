@@ -9,23 +9,16 @@ import {
   IWpointInfo,
   StateEnum,
 } from "../defines";
-import { AllyFlag } from "../defines/AllyFlag";
-import { BdyKind } from "../defines/BdyKind";
-import { CollisionVal as C_Val } from "../defines/CollisionVal";
 import { IEntityInfo } from "../defines/IEntityInfo";
 import { IFrameInfo } from "../defines/IFrameInfo";
 import { ILegacyPictureInfo } from "../defines/ILegacyPictureInfo";
-import { OpointKind } from "../defines/OpointKind";
 import { SpeedMode } from "../defines/SpeedMode";
-import { Defines } from "../defines/defines";
-import { ensure } from "../utils";
 import { abs, floor } from "../utils/math/base";
 import { match_all } from "../utils/string_parser/match_all";
 import { match_colon_value } from "../utils/string_parser/match_colon_value";
 import take_sections from "../utils/string_parser/take_sections";
 import { to_num } from "../utils/type_cast/to_num";
 import { not_zero_num } from "../utils/type_check";
-import { CondMaker } from "./CondMaker";
 import cook_bdy from "./cook_bdy";
 import { cook_cpoint } from "./cook_cpoint";
 import { cook_itr } from "./cook_itr";
@@ -33,6 +26,7 @@ import cook_opoint from "./cook_opoint";
 import { cook_wpoint } from "./cook_wpoint";
 import { add_next_frame } from "./edit_next_frame";
 import { get_next_frame_by_raw_id } from "./get_the_next";
+import { make_frame_state } from "./make_frame_state";
 import { take } from "./take";
 export function make_frames(
   text: string,
@@ -223,100 +217,6 @@ export function make_frames(
         frame.dvy = dvy * -0.285;
       }
     }
-
-    switch (frame.state) {
-      case StateEnum.Ball_3005:
-        frame.no_shadow = 1;
-        break;
-      case StateEnum.HeavyWeapon_OnHand:
-        frame.no_shadow = 1;
-        break;
-      case StateEnum.Weapon_OnHand:
-        frame.no_shadow = 1;
-        break;
-      case StateEnum.Burning: {
-        if (frame.itr) {
-          for (const itr of frame.itr) {
-            itr.ally_flags = AllyFlag.Both;
-          }
-        }
-        break;
-      }
-      case StateEnum.LouisCastOff:
-        frame.opoint = ensure(frame.opoint,
-          {
-            kind: OpointKind.Normal,
-            x: 39,
-            y: 79,
-            oid: "218",
-            dvy: 5,
-            action: { id: "auto" },
-            speedz: 0
-          },
-          {
-            kind: OpointKind.Normal,
-            x: 39,
-            y: 79,
-            oid: "217",
-            dvy: 4,
-            dvx: -5,
-            dvz: 4,
-            action: { id: "auto", facing: FacingFlag.Backward },
-            speedz: 0
-          },
-          {
-            kind: OpointKind.Normal,
-            x: 39,
-            y: 79,
-            oid: "217",
-            dvy: 4,
-            dvx: -5,
-            dvz: -4,
-            action: { id: "auto", facing: FacingFlag.Backward },
-            speedz: 0
-          },
-          {
-            kind: OpointKind.Normal,
-            x: 39,
-            y: 79,
-            oid: "217",
-            dvy: 4,
-            dvx: -5,
-            dvz: 4,
-            action: { id: "auto" },
-            speedz: 0
-          },
-          {
-            kind: OpointKind.Normal,
-            x: 39,
-            y: 79,
-            oid: "217",
-            dvy: 4,
-            dvx: -5,
-            dvz: -4,
-            action: { id: "auto" },
-            speedz: 0
-          },
-        );
-        break;
-      case StateEnum.Falling:
-        if (frame.bdy)
-          for (const bdy of frame.bdy) {
-            if (bdy.kind === BdyKind.Normal) {
-              bdy.test = new CondMaker<C_Val>()
-                .add(
-                  C_Val.ItrFall,
-                  ">=",
-                  Defines.DEFAULT_FALL_VALUE_MAX -
-                  Defines.DEFAULT_FALL_VALUE_DIZZY,
-                )
-                .or(C_Val.ItrKind, "==", ItrKind.MagicFlute)
-                .or(C_Val.ItrKind, "==", ItrKind.MagicFlute2)
-                .done();
-            }
-          }
-        break;
-    }
     if (frame.itr) {
       for (const itr of frame.itr) {
         if (
@@ -327,6 +227,8 @@ export function make_frames(
         }
       }
     }
+    make_frame_state(frame);
   }
   return frames;
 }
+

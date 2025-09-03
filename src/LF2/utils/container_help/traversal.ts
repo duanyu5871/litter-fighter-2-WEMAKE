@@ -1,3 +1,4 @@
+
 type TKey = string | number | symbol;
 
 /**
@@ -29,3 +30,4 @@ export function traversal<K extends TKey, V>(
   }) : [];
   if (!func) return items;
 }
+
