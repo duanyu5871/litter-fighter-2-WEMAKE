@@ -1,7 +1,7 @@
 import { IBotData, IEntityData, StateEnum } from "../../defines";
 import { IBotAction } from "../../defines/IBotAction";
+import { IBotDataSet } from "../../defines/IBotDataSet";
 import { find } from "../../utils";
-import { foreach } from "../../utils/container_help/foreach";
 import { traversal } from "../../utils/container_help/traversal";
 
 export class BotBuilder {
@@ -92,5 +92,9 @@ export class BotBuilder {
     if (exists_action_ids.size > 0) {
       console.warn(`[BotBuilder::check] actions "${Array.from(exists_action_ids)}" is not used in entity: "${entity.id}(${entity.base.name})"`)
     }
+  }
+  set_dataset(dataset: IBotDataSet): this {
+    this.bot.dataset = { ...this.bot.dataset, ...dataset }
+    return this;
   }
 }

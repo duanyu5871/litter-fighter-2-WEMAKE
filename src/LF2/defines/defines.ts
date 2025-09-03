@@ -418,9 +418,11 @@ export namespace Defines {
   export const AI_R_ATK_DESIRE = 10000;
 
   export const AI_J_DESIRE = 100;
-  export const AI_J_ATK_F_X = 200;
-  export const AI_J_ATK_B_X = 200;
+  export const AI_J_ATK_F_X = 80;
+  export const AI_J_ATK_B_X = 90;
   export const AI_J_ATK_Z = 60;
+  export const AI_J_ATK_Y_MIN = -60;
+  export const AI_J_ATK_Y_MAX = 60;
 
   export const AI_D_DESIRE = 50;
   export const AI_D_ATK_F_X = 200;
@@ -433,7 +435,7 @@ export namespace Defines {
 
   export const AI_R_DESIRE_MIN = 0;
   export const AI_R_DESIRE_MAX = 500;
-  export const AI_R_STOP_DESIRE = 1;
+  export const AI_R_STOP_DESIRE = 10;
   export const AI_R_X_MIN = 100;
   export const AI_R_X_MAX = 2000;
   export const MAX_AI_DESIRE = 10000;

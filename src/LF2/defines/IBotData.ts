@@ -1,4 +1,5 @@
 import type { IBotAction } from "./IBotAction";
+import { IBotDataSet } from "./IBotDataSet";
 import type { IFrameInfo } from "./IFrameInfo";
 import { StateEnum } from "./StateEnum";
 
@@ -13,6 +14,7 @@ export interface IBotData {
    * 
    */
   id: string;
+
   /**
    * BOT动作表
    *
@@ -43,4 +45,7 @@ export interface IBotData {
    * @memberof IBotData
    */
   frames?: { [x in IFrameInfo['id'] | string]?: string[] };
+
+  dataset?: IBotDataSet;
 }
+

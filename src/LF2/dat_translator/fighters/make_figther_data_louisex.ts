@@ -1,5 +1,5 @@
-import { ArmorEnum, EntityVal, IEntityData } from "../../defines";
-import { CondMaker } from "../CondMaker";
+import { IEntityData, EntityGroup, EntityVal } from "../../defines";
+import { add_entity_groups } from "../add_entity_to_group";
 import { bot_ball_dfa } from "./bot_ball_dfa";
 import { bot_ball_dfj } from "./bot_ball_dfj";
 import { bot_chasing_skill_action } from "./bot_chasing_skill_action";
@@ -7,27 +7,10 @@ import { bot_uppercut_duj } from "./bot_uppercut_duj";
 import { BotBuilder } from "./BotBuilder";
 import { frames } from "./frames";
 
-/**
- *
- * @export
- * @param {IEntityData} data
- * @return {IEntityData} 
- */
-export function make_figther_data_louis(data: IEntityData): IEntityData {
-  data.base.armor = {
-    hit_sounds: ["data/085.wav.mp3"],
-    type: ArmorEnum.Defend,
-    fulltime: false,
-    toughness: 30,
-  };
-  for (const k in data.frames) {
-    const ja = data.frames[k].hit?.sequences?.["ja"];
-    if (!ja || !("id" in ja) || ja.id !== "300") continue;
-    ja.expression = new CondMaker()
-      .add(EntityVal.HP_P, "<=", 33)
-      .or(EntityVal.LF2_NET_ON, "==", 1)
-      .done();
-  }
+
+export function make_figther_data_louisex(data: IEntityData): IEntityData {
+
+  add_entity_groups(data.base, EntityGroup.Boss);
   BotBuilder.make(data).set_actions(
     // d>a
     bot_ball_dfa(150, 1 / 30, 120, 400),
@@ -37,7 +20,7 @@ export function make_figther_data_louis(data: IEntityData): IEntityData {
     bot_uppercut_duj(100, 1 / 30, -10, 120),
     // dja
     bot_chasing_skill_action('dja', void 0, void 0, 0.01)((e, c) => {
-      e.expression = c?.and(EntityVal.HP_P, '<', 33).done()
+      e.expression = c?.and(EntityVal.HP_P, '<', 33).done();
       return e;
     })
   ).set_frames(
@@ -51,8 +34,9 @@ export function make_figther_data_louis(data: IEntityData): IEntityData {
       ...frames.punchs,
     ],
     ['d^j']
-  )
+  ).set_dataset({
+    w_atk_f_x: 100,
+    j_atk_f_x: 120,
+  });
   return data;
 }
-
-

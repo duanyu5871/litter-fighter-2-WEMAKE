@@ -1,6 +1,7 @@
 import FSM from "../base/FSM";
 import { Builtin_FrameId, Defines, GameKey as GK, StateEnum, TLooseGameKey } from "../defines";
 import { IBotAction } from "../defines/IBotAction";
+import { IBotDataSet } from "../defines/IBotDataSet";
 import { is_ai_ray_hit } from "../defines/is_ai_ray_hit";
 import { Entity } from "../entity/Entity";
 import { is_character } from "../entity/type_check";
@@ -12,7 +13,8 @@ import { BotCtrlState_Avoiding } from "./BotCtrlState_Avoiding";
 import { BotCtrlState_Chasing } from "./BotCtrlState_Chasing";
 import { BotCtrlState_Standing } from "./BotCtrlState_Standing";
 import { dummy_updaters, DummyEnum } from "./DummyEnum";
-export class BotController extends BaseController {
+
+export class BotController extends BaseController implements Required<IBotDataSet> {
   readonly fsm = new FSM<BotCtrlState>()
     .add(
       new BotCtrlState_Standing(this),
@@ -22,7 +24,6 @@ export class BotController extends BaseController {
     .use(BotCtrlState.Standing)
 
   readonly is_bot_enemy_chaser = true;
-
 
   /** 走攻触发范围X(敌人正对) */
   w_atk_f_x = Defines.AI_W_ATK_F_X;
@@ -66,14 +67,14 @@ export class BotController extends BaseController {
   }
 
   /** 跳攻触发范围X(敌人正对) */
-  j_atk_f_x = Defines.AI_D_ATK_F_X;
+  j_atk_f_x = Defines.AI_J_ATK_F_X;
   /** 跳攻触发范围X(敌人正对) */
-  j_atk_b_x = Defines.AI_D_ATK_B_X;
+  j_atk_b_x = Defines.AI_J_ATK_B_X;
   /** 跳攻触发范围Z */
-  j_atk_z = Defines.AI_D_ATK_Z;
+  j_atk_z = Defines.AI_J_ATK_Z;
   /** 跳攻触发范围Y */
-  j_atk_y_min = Defines.AI_D_ATK_Y_MIN;
-  j_atk_y_max = Defines.AI_D_ATK_Y_MAX;
+  j_atk_y_min = Defines.AI_J_ATK_Y_MIN;
+  j_atk_y_max = Defines.AI_J_ATK_Y_MAX;
   /** 跳攻触发范围X */
   get j_atk_x() {
     if (!this.chasing) return 0;
@@ -85,11 +86,20 @@ export class BotController extends BaseController {
 
   /** 最小欲望值：跑步 */
   r_desire_min = Defines.AI_R_DESIRE_MIN;
+
   /** 最大欲望值：跑步 */
   r_desire_max = Defines.AI_R_DESIRE_MAX;
-  /** 最小起跑范围X */
+
+  /** 
+   * 最小起跑范围X 
+   * 距离敌人小于于等于此距离时，此时奔跑欲望值最小
+   */
   r_x_min = Defines.AI_R_X_MIN;
-  /** 最大起跑范围X */
+
+  /** 
+   * 最大起跑范围X 
+   * 距离敌人大于等于此距离时，此时奔跑欲望值最大
+   */
   r_x_max = Defines.AI_R_X_MAX;
 
   get r_desire(): -1 | 1 | 0 {
@@ -109,11 +119,9 @@ export class BotController extends BaseController {
     return this.entity.position.x > this.chasing.position.x ? -1 : 1
   }
 
-
   /** 欲望值：停止跑步 */
   r_stop_desire = Defines.AI_R_STOP_DESIRE;
 
-  _count = 0;
   chasing: Entity | undefined;
   avoiding: Entity | undefined;
   private _dummy?: DummyEnum;
@@ -123,6 +131,10 @@ export class BotController extends BaseController {
   set dummy(v) {
     this.end(...Object.values(GK));
     this._dummy = v;
+  }
+  constructor(player_id: string, entity: Entity) {
+    super(player_id, entity);
+    Object.assign(this, entity.data.base.bot?.dataset)
   }
   manhattan_to(a: Entity) {
     const { x, z } = this.entity.position;
@@ -183,6 +195,9 @@ export class BotController extends BaseController {
     }
   }
 
+  /**
+   *  预判敌人位置(有点粗暴)
+   */
   guess_entity_pos(entity: Entity) {
     const { x: px, z: pz, y: py } = entity.position;
     const { x: vx, z: vz, y: vy } = entity.velocity;
@@ -191,19 +206,19 @@ export class BotController extends BaseController {
     let y = py + vy;
     switch (entity.frame.state) {
       case StateEnum.Jump:
-        x += 6 * vx;
-        z += 4 * vz;
-        y += 4 * vy;
+        x += 2 * vx;
+        z += 1 * vz;
+        y += 1 * vy;
         break;
       case StateEnum.Running:
-        x += 8 * vx;
-        z += 4 * vz;
-        y += 4 * vy;
+        x += 3 * vx;
+        z += 1.5 * vz;
+        y += 1.5 * vy;
         break;
       case StateEnum.Dash:
-        x += 16 * vx;
-        z += 4 * vz;
-        y += 4 * vy
+        x += 4 * vx;
+        z += 2 * vz;
+        y += 2 * vy
         break;
     }
     return { x: px, z: pz, next_x: x, next_z: z, next_y: y };
@@ -229,8 +244,6 @@ export class BotController extends BaseController {
   desire() {
     return this.lf2.random_in(0, Defines.MAX_AI_DESIRE)
   }
-
-
   avoid_enemy() {
     if (!this.avoiding) return false;
 

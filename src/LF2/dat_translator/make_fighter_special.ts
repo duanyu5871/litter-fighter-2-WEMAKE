@@ -4,6 +4,7 @@ import { IEntityData } from "../defines/IEntityData";
 import { add_entity_groups } from "./add_entity_to_group";
 import { make_fighter_data_rudolf } from "./fighters/make_fighter_data_rudolf";
 import { make_figther_data_louis } from "./fighters/make_figther_data_louis";
+import { make_figther_data_louisex } from "./fighters/make_figther_data_louisex";
 import { make_fighter_data_bat } from "./fighters/make_fighter_data_bat";
 import { make_fighter_data_davis } from "./fighters/make_fighter_data_davis";
 import { make_fighter_data_deep } from "./fighters/make_fighter_data_deep";
@@ -34,13 +35,11 @@ export function make_fighter_special(data: IEntityData): IEntityData {
     case BuiltIn_OID.Dennis: return make_fighter_data_dennis(data);
     case BuiltIn_OID.Woody: return make_fighter_data_woody(data);
     case BuiltIn_OID.Firen: return make_fighter_data_firen(data);
+    case BuiltIn_OID.LouisEX: return make_figther_data_louisex(data);
 
     case BuiltIn_OID.Bandit:
     case BuiltIn_OID.Hunter:
       add_entity_groups(data.base, EntityGroup._3000);
-      break;
-    case BuiltIn_OID.LouisEX:
-      add_entity_groups(data.base, EntityGroup.Boss);
       break;
     case BuiltIn_OID.Bat: return make_fighter_data_bat(data);
     case BuiltIn_OID.Template:
