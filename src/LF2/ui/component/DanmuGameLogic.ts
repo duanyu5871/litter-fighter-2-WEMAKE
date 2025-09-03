@@ -1,5 +1,5 @@
-import { BuiltIn_OID, Defines, IEntityData } from "../../defines";
-import { TeamEnum } from "../../defines/TeamEnum";
+import { BuiltIn_OID as OID, Defines, IEntityData } from "../../defines";
+import { TeamEnum as TE } from "../../defines/TeamEnum";
 import { IEntityCallbacks } from "../../entity";
 import { Entity } from "../../entity/Entity";
 import { IWorldCallbacks } from "../../IWorldCallbacks";
@@ -43,10 +43,10 @@ export class DanmuGameLogic extends UIComponent {
   private _cam_ctrl?: CameraCtrl
 
   readonly team_sum = new Map<string, ISumInfo>([
-    [TeamEnum.Team_1, make_team_sum(TeamEnum.Team_1)],
-    [TeamEnum.Team_2, make_team_sum(TeamEnum.Team_2)],
-    [TeamEnum.Team_3, make_team_sum(TeamEnum.Team_3)],
-    [TeamEnum.Team_4, make_team_sum(TeamEnum.Team_4)]
+    [TE.Team_1, make_team_sum(TE.Team_1)],
+    [TE.Team_2, make_team_sum(TE.Team_2)],
+    [TE.Team_3, make_team_sum(TE.Team_3)],
+    [TE.Team_4, make_team_sum(TE.Team_4)]
   ])
   readonly fighter_sum = new Map<string, IFighterSumInfo>()
   private _world_cb: IWorldCallbacks = {
@@ -157,43 +157,20 @@ export class DanmuGameLogic extends UIComponent {
     //     v.is_gone_dead = true;
     //     v.blinking = 120;
     //   })
+    const fighter_enter = (v: Entity) => {
+      v.is_key_role = v.is_gone_dead = true;
+      v.name = v.data.base.name;
+      v.blinking = 120;
+    }
+    this.lf2.characters.add(OID.Julian, 2, TE.Team_1).forEach(fighter_enter)
+    
+    this.lf2.characters.add(OID.Firzen, 4, TE.Team_2).forEach(fighter_enter)
 
-    this.lf2.characters
-      .add(BuiltIn_OID.Julian, 2, TeamEnum.Team_1).forEach(v => {
-        v.is_key_role = v.is_gone_dead = true;
-        v.name = v.data.base.name;
-        v.blinking = 120;
-      })
-    this.lf2.characters
-      .add(BuiltIn_OID.Firzen, 4, TeamEnum.Team_2).forEach(v => {
-        v.is_key_role = v.is_gone_dead = true;
-        v.name = v.data.base.name;
-        v.blinking = 120;
-      })
-    this.lf2.characters
-      .add(BuiltIn_OID.Bat, 1, TeamEnum.Team_3).forEach(v => {
-        v.is_key_role = v.is_gone_dead = true;
-        v.name = v.data.base.name;
-        v.blinking = 120;
-      })
-    this.lf2.characters
-      .add(BuiltIn_OID.Deep, 1, TeamEnum.Team_3).forEach(v => {
-        v.is_key_role = v.is_gone_dead = true;
-        v.name = v.data.base.name;
-        v.blinking = 120;
-      })
-    this.lf2.characters
-      .add(BuiltIn_OID.Davis, 1, TeamEnum.Team_3).forEach(v => {
-        v.is_key_role = v.is_gone_dead = true;
-        v.name = v.data.base.name;
-        v.blinking = 120;
-      })
-    this.lf2.characters
-      .add(BuiltIn_OID.Dennis, 1, TeamEnum.Team_3).forEach(v => {
-        v.is_key_role = v.is_gone_dead = true;
-        v.name = v.data.base.name;
-        v.blinking = 120;
-      })
+    this.lf2.characters.add(OID.Bat, 1, TE.Team_3).forEach(fighter_enter)
+    this.lf2.characters.add(OID.Deep, 1, TE.Team_3).forEach(fighter_enter)
+    this.lf2.characters.add(OID.Davis, 1, TE.Team_3).forEach(fighter_enter)
+    this.lf2.characters.add(OID.Dennis, 1, TE.Team_3).forEach(fighter_enter)
+    this.lf2.characters.add(OID.Woody, 1, TE.Team_3).forEach(fighter_enter)
     this.update_staring();
     this._countdown.reset()
 
