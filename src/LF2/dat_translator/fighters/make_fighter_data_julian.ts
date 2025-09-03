@@ -26,19 +26,19 @@ export function make_fighter_data_julian(data: IEntityData) {
 
   BotBuilder.make(data).actions(
     // ball
-    bot_chasing_skill_action('d>a', void 0, 25, 1 / 60),
+    bot_chasing_skill_action('d>a', void 0, 25, 1 / 30),
 
     // ball + ...a
-    bot_chasing_action('d>a+a', ['a'], void 0, 1 / 60),
+    bot_chasing_action('d>a+a', ['a'], void 0, 0.5),
 
     // super-ball
-    bot_ball_dfj(125, 1 / 60),
+    bot_ball_dfj(125, 1 / 30),
 
     // explosion
-    bot_explosion_duj(100, bot_explosion_duj.DESIRE, -120, 120, 100),
+    bot_explosion_duj(100, 1 / 30, -120, 120, 100),
 
     // uppercut
-    bot_uppercut_dua(-1), {
+    bot_uppercut_dua(-1, 1 / 30), {
     action_id: 'injured_dja',
     desire: Defines.desire(0.08),
     expression: new CondMaker<BotVal | EntityVal>()
@@ -58,11 +58,15 @@ export function make_fighter_data_julian(data: IEntityData) {
     ...frames.walkings,
     ...frames.runnings
   ], [
-    'shaking_dja', bot_uppercut_dua.ID, bot_explosion_duj.ID, bot_ball_dfj.ID, 'd>a'
+    'shaking_dja',
+    'd^a',
+    'd^j',
+    'd>j',
+    'd>a'
   ]).frames([
     ...frames.punchs,
   ], [
-    bot_uppercut_dua.ID, 'shaking_dja'
+    'd^a', 'shaking_dja'
   ]).states(
     [StateEnum.Attacking],
     ['shaking_dja', 'd>a+a']
