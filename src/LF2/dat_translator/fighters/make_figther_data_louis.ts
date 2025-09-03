@@ -1,9 +1,8 @@
-import { IEntityData, ArmorEnum, EntityVal } from "../../defines";
+import { ArmorEnum, EntityVal, IEntityData } from "../../defines";
 import { CondMaker } from "../CondMaker";
 import { bot_ball_dfa } from "./bot_ball_dfa";
 import { bot_ball_dfj } from "./bot_ball_dfj";
 import { bot_chasing_skill_action } from "./bot_chasing_skill_action";
-import { bot_uppercut_dua } from "./bot_uppercut_dua";
 import { bot_uppercut_duj } from "./bot_uppercut_duj";
 import { BotBuilder } from "./BotBuilder";
 import { frames } from "./frames";
