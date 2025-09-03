@@ -2,6 +2,7 @@ import { BotCtrlState } from "../../controller/BotCtrlState";
 import { BotVal, Defines, EntityVal, GameKey as GK, GameKey } from "../../defines";
 import { IBotAction } from "../../defines/IBotAction";
 import { CondMaker } from "../CondMaker";
+import { IEditBotActionFunc } from "./IEditBotAction";
 
 type Key1 = '^' | '>' | 'v' | 'j';
 type Key2 = 'a' | 'j';
@@ -11,7 +12,7 @@ export function bot_chasing_skill_action(
   action_id: string = keys_str,
   min_mp: number = -1,
   desire: number = DESIRE
-): IBotAction {
+): IEditBotActionFunc {
   const keys: IBotAction['keys'] = [GK.d];
   switch (keys_str[1]) {
     case '^': keys.push(GameKey.U); break;
@@ -23,15 +24,17 @@ export function bot_chasing_skill_action(
     case 'a': keys.push(GameKey.a); break;
     case 'j': keys.push(GameKey.j); break;
   }
-  return {
-    action_id: action_id,
-    desire: Defines.desire(desire),
-    status: [BotCtrlState.Chasing],
-    expression: min_mp > 0 ?
-      new CondMaker<BotVal | EntityVal>()
-        .add(EntityVal.MP, '>=', min_mp)
-        .done() : void 0,
-    keys: keys
+  return (fn) => {
+    const cond = new CondMaker<BotVal | EntityVal>()
+    if (min_mp > 0) cond.add(EntityVal.MP, '>=', min_mp)
+    const ret: IBotAction = {
+      action_id: action_id,
+      desire: Defines.desire(desire),
+      status: [BotCtrlState.Chasing],
+      expression: min_mp > 0 ? cond.add(EntityVal.MP, '>=', min_mp).done() : void 0,
+      keys: keys
+    }
+    return fn ? fn(ret, cond) : ret
   };
 }
 

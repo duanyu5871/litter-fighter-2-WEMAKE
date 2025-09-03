@@ -1,5 +1,12 @@
 import { IEntityData, ArmorEnum, EntityVal } from "../../defines";
 import { CondMaker } from "../CondMaker";
+import { bot_ball_dfa } from "./bot_ball_dfa";
+import { bot_ball_dfj } from "./bot_ball_dfj";
+import { bot_chasing_skill_action } from "./bot_chasing_skill_action";
+import { bot_uppercut_dua } from "./bot_uppercut_dua";
+import { bot_uppercut_duj } from "./bot_uppercut_duj";
+import { BotBuilder } from "./BotBuilder";
+import { frames } from "./frames";
 
 /**
  *
@@ -23,5 +30,24 @@ export function make_figther_data_louis(data: IEntityData): IEntityData {
       .or(EntityVal.LF2_NET_ON, "==", 1)
       .done();
   }
+  BotBuilder.make(data).actions(
+    // d>a
+    bot_ball_dfa(150, void 0, 120),
+    // d>j
+    bot_ball_dfj(50, void 0, 120, 200),
+    // d^j
+    bot_uppercut_duj(100),
+    // dja
+    bot_chasing_skill_action('dja', void 0, void 0, 1 / 6000)((e, c) => {
+      e.expression = c?.and(EntityVal.HP_P, '<', 0.3).done()
+      return e;
+    })
+  ).frames(
+    [
+      ...frames.standings,
+      ...frames.walkings,
+    ],
+    ['d^j', 'd>a', 'd>j', 'dja']
+  )
   return data;
 }
