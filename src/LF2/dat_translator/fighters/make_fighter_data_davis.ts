@@ -13,7 +13,7 @@ import { frames } from "./frames";
 export function make_fighter_data_davis(data: IEntityData) {
   BotBuilder.make(data).actions(
     // d>a
-    bot_ball_dfa(40, bot_ball_dfa.DESIRE, 50, 200),
+    bot_ball_dfa(40, bot_ball_dfa.DESIRE, 50),
 
     // d>a+a
     bot_ball_continuation(

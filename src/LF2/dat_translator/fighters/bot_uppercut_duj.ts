@@ -5,7 +5,7 @@ import { CondMaker } from "../CondMaker";
 const DESIRE = 0.016666 as const;
 const MIN_X = -10 as const;
 const MAX_X = 120 as const;
-export const ID = 'd^a'
+export const ID = 'd^j'
 /**
  * 矩形范围，检测成功将会按下D^A
  *

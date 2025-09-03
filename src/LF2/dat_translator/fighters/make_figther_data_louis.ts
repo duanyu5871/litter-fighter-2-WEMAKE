@@ -32,14 +32,14 @@ export function make_figther_data_louis(data: IEntityData): IEntityData {
   }
   BotBuilder.make(data).actions(
     // d>a
-    bot_ball_dfa(150, void 0, 120),
+    bot_ball_dfa(150, void 0, 120, 400),
     // d>j
-    bot_ball_dfj(50, void 0, 120, 200),
+    bot_ball_dfj(50, void 0, 120, 250),
     // d^j
-    bot_uppercut_duj(100),
+    bot_uppercut_duj(100, 1 / 30, -10, 120),
     // dja
-    bot_chasing_skill_action('dja', void 0, void 0, 1 / 6000)((e, c) => {
-      e.expression = c?.and(EntityVal.HP_P, '<', 0.3).done()
+    bot_chasing_skill_action('dja', void 0, void 0, 0.01)((e, c) => {
+      e.expression = c?.and(EntityVal.HP_P, '<', 33).done()
       return e;
     })
   ).frames(
@@ -48,6 +48,11 @@ export function make_figther_data_louis(data: IEntityData): IEntityData {
       ...frames.walkings,
     ],
     ['d^j', 'd>a', 'd>j', 'dja']
+  ).frames(
+    [
+      ...frames.punchs,
+    ],
+    ['d^j']
   )
   return data;
 }
