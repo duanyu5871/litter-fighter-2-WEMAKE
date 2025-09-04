@@ -7,6 +7,13 @@ import { bot_explosion_duj } from "./bot_explosion_duj";
 import { BotBuilder } from "./BotBuilder";
 import { frames } from "./frames";
 
+/**
+ *
+ * @todo not tested
+ * @export
+ * @param {IEntityData} data
+ * @return {*} 
+ */
 export function make_fighter_data_firen(data: IEntityData) {
   BotBuilder.make(data).set_actions(
     // d>a

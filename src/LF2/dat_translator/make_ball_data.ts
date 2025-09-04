@@ -97,7 +97,6 @@ export function make_ball_data(
           ],
           test: new CondMaker().and(C_Val.VictimIsChasing, "==", 1).done()
         })
-        console.log(frame.itr)
         break;
       case FrameBehavior.JohnChase:
         frame.ctrl_spd_x = Defines.JOHN_CHASE_MAX_VX

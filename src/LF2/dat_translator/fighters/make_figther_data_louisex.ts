@@ -7,7 +7,11 @@ import { bot_uppercut_duj } from "./bot_uppercut_duj";
 import { BotBuilder } from "./BotBuilder";
 import { frames } from "./frames";
 
-
+/**
+ * @todo
+ * @param data 
+ * @returns 
+ */
 export function make_figther_data_louisex(data: IEntityData): IEntityData {
 
   add_entity_groups(data.base, EntityGroup.Boss);
