@@ -1,6 +1,4 @@
-import { BotVal, EntityVal, GameKey, IEntityData } from "../../defines";
-import { arithmetic_progression } from "../../utils";
-import { bot_ball_continuation } from "./bot_ball_continuation";
+import { EntityVal, IEntityData } from "../../defines";
 import { bot_ball_dfa } from "./bot_ball_dfa";
 import { bot_ball_dfj } from "./bot_ball_dfj";
 import { bot_chasing_skill_action } from "./bot_chasing_skill_action";
@@ -10,7 +8,6 @@ import { frames } from "./frames";
 
 /**
  *
- * @todo not tested
  * @export
  * @param {IEntityData} data
  * @return {IEntityData} 
@@ -36,7 +33,10 @@ export function make_fighter_data_freeze(data: IEntityData): IEntityData {
     }),
 
     // dvj
-    bot_chasing_skill_action('dvj', void 0, 1 / 60, 150),
+    bot_chasing_skill_action('dvj', void 0, 150, 1 / 180)((action, cond) => {
+      action.expression = cond.and(EntityVal.Holding, '==', 0).done()
+      return action
+    }),
 
     // d^j
     bot_explosion_duj(300, 1 / 30, -110, 150, 1600),
@@ -46,7 +46,7 @@ export function make_fighter_data_freeze(data: IEntityData): IEntityData {
       ...frames.standings,
       ...frames.walkings
     ],
-    ['d>a', 'd>j', 'd^j', 'dvj']
+    ['d>a', 'd>j', 'd^j', 'wa']
   );
   return data;
 }

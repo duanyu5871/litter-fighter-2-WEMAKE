@@ -1,4 +1,4 @@
-import { BotVal, EntityVal, GameKey, IEntityData } from "../../defines";
+import { BotVal, GameKey, IEntityData } from "../../defines";
 import { arithmetic_progression } from "../../utils";
 import { bot_ball_continuation } from "./bot_ball_continuation";
 import { bot_ball_dfa } from "./bot_ball_dfa";
@@ -9,7 +9,6 @@ import { frames } from "./frames";
 
 /**
  *
- * @todo not tested
  * @export
  * @param {IEntityData} data
  * @return {*} 

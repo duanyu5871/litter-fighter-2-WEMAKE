@@ -11,6 +11,8 @@ export const get_val_getter_from_entity: IValGetterGetter<Entity> = (
   word: string,
 ): IValGetter<Entity> | undefined => {
   switch (word) {
+    case EntityVal.Holding:
+      return e => (e.holding === void 0) ? 0 : 1
     case EntityVal.Shaking:
       return e => e.shaking;
     case EntityVal.FrameState:
