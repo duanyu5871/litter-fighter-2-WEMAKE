@@ -4,7 +4,7 @@ import { IBotAction } from "../../defines/IBotAction";
 import { CondMaker } from "../CondMaker";
 import { IEditBotActionFunc } from "./IEditBotAction";
 /**
- * 停止联系发射的
+ * 停止循环的动作（BALL类）
  * 
  * 默认判定: 当目标不在正前方
  * 默认按键：跳跃
