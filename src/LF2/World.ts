@@ -502,12 +502,12 @@ export class World extends WorldDataset {
     bdy: IBdyInfo,
   ): ICollision | undefined {
 
+    if (!itr.vrest && attacker.a_rest) return;
     if (itr.kind !== ItrKind.Heal) {
       const b_catcher = victim.catcher;
       if (victim.blinking || victim.invisible) return;
       if (b_catcher && b_catcher.frame.cpoint?.hurtable !== 1) return;
     }
-
     switch (aframe.state) {
       case StateEnum.Weapon_OnHand: {
         const atk = attacker.holder?.frame.wpoint?.attacking;
@@ -521,7 +521,6 @@ export class World extends WorldDataset {
         return;
       }
     }
-
     const a_cube = this.get_bounding(attacker, aframe, itr);
     const b_cube = this.get_bounding(victim, bframe, bdy);
     if (!(

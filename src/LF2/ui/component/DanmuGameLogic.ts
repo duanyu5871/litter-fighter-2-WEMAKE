@@ -1,4 +1,4 @@
-import { BuiltIn_OID as OID, Defines, IEntityData } from "../../defines";
+import { Defines, IEntityData, BuiltIn_OID as OID } from "../../defines";
 import { TeamEnum as TE } from "../../defines/TeamEnum";
 import { IEntityCallbacks } from "../../entity";
 import { Entity } from "../../entity/Entity";
@@ -38,7 +38,7 @@ export class DanmuGameLogic extends UIComponent {
   static readonly BROADCAST_ON_STOP = 'DanmuGameLogic_ON_STOP';
 
   private _staring_countdown = new Times(0, 60 * 30);
-  private _gameover_countdown = new Times(0, 60 * 10);
+  private _gameover_countdown = new Times(0, 60 * 5);
   private _teams = new Set<string>();
   private _cam_ctrl?: CameraCtrl
 
@@ -121,8 +121,8 @@ export class DanmuGameLogic extends UIComponent {
   }
   override on_start(): void {
     super.on_start?.();
-    this.update_bg();
     this.world.callbacks.add(this._world_cb)
+    this.update_bg();
     this.lf2.sounds.play_bgm('?')
     this.lf2.on_component_broadcast(this, DanmuGameLogic.BROADCAST_ON_START)
     this._cam_ctrl = this.node.find_component(CameraCtrl)
@@ -136,34 +136,47 @@ export class DanmuGameLogic extends UIComponent {
   }
 
   update_bg() {
-    this.lf2.change_bg('?');
+    this.lf2.change_bg('bg_4');
 
     const fighter_enter = (v: Entity) => {
       v.is_key_role = v.is_gone_dead = true;
       v.name = v.data.base.name;
       v.blinking = 120;
     }
-    this.lf2.characters.add(OID.Julian, 2, TE.Team_1).forEach(fighter_enter)
+    // this.lf2.characters.add(OID.Julian, 2, TE.Team_1).forEach(fighter_enter)
+    // this.lf2.characters.add(OID.Firzen, 3, TE.Team_2).forEach(fighter_enter)
+    // this.lf2.characters.add(OID.LouisEX, 2, TE.Team_3).forEach(fighter_enter)
+    // this.lf2.characters.add(OID.Bat, 3, TE.Team_3).forEach(fighter_enter)
 
-    this.lf2.characters.add(OID.Firzen, 3, TE.Team_2).forEach(fighter_enter)
-
-    this.lf2.characters.add(OID.LouisEX, 2, TE.Team_3).forEach(fighter_enter)
-    this.lf2.characters.add(OID.Bat, 3, TE.Team_3).forEach(fighter_enter)
-
-    this.lf2.characters.add(OID.Deep, 1, TE.Team_4).forEach(fighter_enter)
-    this.lf2.characters.add(OID.Davis, 1, TE.Team_4).forEach(fighter_enter)
-    this.lf2.characters.add(OID.Dennis, 1, TE.Team_4).forEach(fighter_enter)
-    this.lf2.characters.add(OID.Woody, 1, TE.Team_4).forEach(fighter_enter)
-    this.lf2.characters.add(OID.Firen, 1, TE.Team_4).forEach(fighter_enter)
-    this.lf2.characters.add(OID.Freeze, 1, TE.Team_4).forEach(fighter_enter)
-    this.lf2.characters.add(OID.Jack, 1, TE.Team_4).forEach(fighter_enter)
+    // this.lf2.characters.add(OID.Deep, 1, TE.Team_4).forEach(fighter_enter)
+    // this.lf2.characters.add(OID.Davis, 1, TE.Team_4).forEach(fighter_enter)
+    // this.lf2.characters.add(OID.Dennis, 1, TE.Team_4).forEach(fighter_enter)
+    // this.lf2.characters.add(OID.Woody, 1, TE.Team_4).forEach(fighter_enter)
+    // this.lf2.characters.add(OID.Firen, 1, TE.Team_4).forEach(fighter_enter)
+    // this.lf2.characters.add(OID.Freeze, 1, TE.Team_4).forEach(fighter_enter)
+    // this.lf2.characters.add(OID.Jack, 1, TE.Team_4).forEach(fighter_enter)
+    this.lf2.characters.add(OID.Deep, 1, '').forEach(fighter_enter)
+    this.lf2.characters.add(OID.Davis, 1, '').forEach(fighter_enter)
+    this.lf2.characters.add(OID.Dennis, 1, '').forEach(fighter_enter)
+    this.lf2.characters.add(OID.Woody, 1, '').forEach(fighter_enter)
+    this.lf2.characters.add(OID.Firen, 1, '').forEach(fighter_enter)
+    this.lf2.characters.add(OID.Freeze, 1, '').forEach(fighter_enter)
+    this.lf2.characters.add(OID.Jack, 1, '').forEach(fighter_enter)
+    this.lf2.characters.add(OID.Louis, 1, '').forEach(fighter_enter)
 
     this.update_staring();
     this._staring_countdown.reset()
 
     const staring = this._cam_ctrl?.staring;
     if (staring && this._cam_ctrl?.free != false) {
-      this.world.lock_cam_x = this.world.renderer.cam_x = staring.position.x - this.world.screen_w / 2
+      const { left, right } = this.world.stage;
+      let cam_x = staring.position.x - this.world.screen_w / 2
+      const max_cam_left = left;
+      const max_cam_right = right;
+      if (cam_x < max_cam_left) cam_x = max_cam_left;
+      if (cam_x > max_cam_right - this.world.screen_w) cam_x = max_cam_right - this.world.screen_w;
+      this.world.lock_cam_x = cam_x
+      this.world.renderer.cam_x = cam_x;
     }
   }
   update_staring() {
@@ -196,6 +209,8 @@ export class DanmuGameLogic extends UIComponent {
       } else {
         this._gameover_countdown.add()
       }
+    } else {
+      this._gameover_countdown.reset()
     }
 
   }
