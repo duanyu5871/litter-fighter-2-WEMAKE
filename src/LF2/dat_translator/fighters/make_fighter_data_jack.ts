@@ -15,7 +15,7 @@ export function make_fighter_data_jack(data: IEntityData) {
     bot_ball_dfa(40, 1 / 30, 50),
 
     // d>a+d>a
-    bot_ball_continuation("d>a+d>a", probability(3, 0.8), 40, GK.d, 'F', GK.a),
+    bot_ball_continuation("d>a+d>a", probability(3, 0.3), 40, GK.d, 'F', GK.a),
 
     // d^a
     bot_uppercut_dua(225, 1 / 15, bot_uppercut_dua.MIN_X, bot_uppercut_dua.MAX_X),
