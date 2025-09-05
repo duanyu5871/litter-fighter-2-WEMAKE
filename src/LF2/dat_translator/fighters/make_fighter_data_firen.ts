@@ -20,10 +20,7 @@ export function make_fighter_data_firen(data: IEntityData) {
     bot_ball_dfa(75, 1 / 30, 50),
 
     // d>a+a
-    bot_ball_continuation("d>a+a", 0.8, GameKey.a)((action, cond) => {
-      action.expression = cond?.and(EntityVal.MP, '>=', 75)!.done();
-      return action;
-    }),
+    bot_ball_continuation("d>a+a", 0.8, 75),
 
     // d>j
     bot_ball_dfj(75, 1 / 30, 50, 1000)(e => {

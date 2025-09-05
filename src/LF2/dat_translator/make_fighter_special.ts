@@ -38,6 +38,7 @@ export function make_fighter_special(data: IEntityData): IEntityData {
     case BuiltIn_OID.Firen: return make_fighter_data_firen(data);
     case BuiltIn_OID.LouisEX: return make_figther_data_louisex(data);
     case BuiltIn_OID.Freeze: return make_fighter_data_freeze(data);
+    case BuiltIn_OID.Jack: return make_fighter_data_davis(data);
 
     case BuiltIn_OID.Bandit:
     case BuiltIn_OID.Hunter:
@@ -54,7 +55,6 @@ export function make_fighter_special(data: IEntityData): IEntityData {
     case BuiltIn_OID.Justin:
     case BuiltIn_OID.Monk:
     case BuiltIn_OID.Sorcerer:
-    case BuiltIn_OID.Jack:
     case BuiltIn_OID.Mark:
     case BuiltIn_OID.John:
     case BuiltIn_OID.Henry:

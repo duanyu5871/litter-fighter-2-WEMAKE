@@ -13,17 +13,10 @@ import { frames } from "./frames";
 export function make_fighter_data_davis(data: IEntityData) {
   BotBuilder.make(data).set_actions(
     // d>a
-    bot_ball_dfa(40, 1 / 30, 50),
+    bot_ball_dfa(50, 1 / 30, 50),
 
     // d>a+a
-    bot_ball_continuation(
-      "d>a+a",
-      probability(3, 0.8),
-      GameKey.a
-    )((action, cond) => {
-      action.expression = cond?.and(EntityVal.MP, '>=', 40)!.done()
-      return action
-    }),
+    bot_ball_continuation("d>a+a", probability(3, 0.8), 50),
 
     // d^a
     bot_uppercut_dua(225, bot_uppercut_dua.DESIRE, bot_uppercut_dua.MIN_X, bot_uppercut_dua.MAX_X),

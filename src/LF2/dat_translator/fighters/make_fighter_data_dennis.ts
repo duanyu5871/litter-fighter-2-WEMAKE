@@ -18,10 +18,7 @@ export function make_fighter_data_dennis(data: IEntityData) {
     bot_ball_dfa(40, 1 / 30, 50),
 
     // d>a+a
-    bot_ball_continuation("d>a+a", 0.8, GameKey.a)((action, cond) => {
-      action.expression = cond?.and(EntityVal.MP, '>=', 40)!.done()
-      return action
-    }),
+    bot_ball_continuation("d>a+a", 0.8, 40),
 
     // dva
     bot_uppercut_dva(75, 1 / 60, bot_uppercut_dva.MIN_X, bot_uppercut_dva.MAX_X),

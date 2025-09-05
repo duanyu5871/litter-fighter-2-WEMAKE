@@ -17,10 +17,7 @@ export function make_fighter_data_deep(data: IEntityData) {
     bot_ball_dfa(75, 1 / 30, 50, 200),
 
     // d>a+a
-    bot_ball_continuation("d>a+a", 0.5, GameKey.a)((action, cond) => {
-      action.expression = cond?.and(EntityVal.MP, '>=', 75)!.done()
-      return action
-    }),
+    bot_ball_continuation("d>a+a", 0.5, 75),
 
     // d>j
     bot_ball_dfj(150, bot_ball_dfj.DESIRE, 50, 200),
