@@ -37,8 +37,8 @@ export class DanmuGameLogic extends UIComponent {
   static readonly BROADCAST_ON_START = 'DanmuGameLogic_ON_START';
   static readonly BROADCAST_ON_STOP = 'DanmuGameLogic_ON_STOP';
 
-  private _countdown = new Times(0, 60 * 30);
-  private _staring: Entity | undefined;
+  private _staring_countdown = new Times(0, 60 * 30);
+  private _gameover_countdown = new Times(0, 60 * 10);
   private _teams = new Set<string>();
   private _cam_ctrl?: CameraCtrl
 
@@ -116,7 +116,7 @@ export class DanmuGameLogic extends UIComponent {
     this.update_teams()
     if (!this._cam_ctrl || this._cam_ctrl?.staring !== e) return
     // 聚焦角色被移除后，聚焦下一个角色
-    this._countdown.reset();
+    this._staring_countdown.reset();
     this._cam_ctrl.staring = this.lf2.random_get(this.lf2.characters.list())
   }
   override on_start(): void {
@@ -137,36 +137,18 @@ export class DanmuGameLogic extends UIComponent {
 
   update_bg() {
     this.lf2.change_bg('?');
-    // this.lf2.characters
-    //   .add_random(20, '?', e => {
-    //     return (0 == intersection(e.base.group, [EntityGroup.Boss]).length ||
-    //       e.id == BuiltIn_OID.Bat ||
-    //       e.id == BuiltIn_OID.LouisEX
-    //     )
-    //   }).forEach(v => {
-    //     v.is_key_role = true;
-    //     v.is_gone_dead = true;
-    //     v.name = v.data.base.name;
-    //     v.blinking = 120;
-    //   })
 
-    // this.lf2.characters
-    //   .add_random(this.lf2.random_in(0, 3), '', e => e.id == BuiltIn_OID.Julian || e.id == BuiltIn_OID.Firzen)
-    //   .forEach(v => {
-    //     v.is_key_role = true;
-    //     v.is_gone_dead = true;
-    //     v.blinking = 120;
-    //   })
     const fighter_enter = (v: Entity) => {
       v.is_key_role = v.is_gone_dead = true;
       v.name = v.data.base.name;
       v.blinking = 120;
     }
     this.lf2.characters.add(OID.Julian, 2, TE.Team_1).forEach(fighter_enter)
+
     this.lf2.characters.add(OID.Firzen, 3, TE.Team_2).forEach(fighter_enter)
 
     this.lf2.characters.add(OID.LouisEX, 2, TE.Team_3).forEach(fighter_enter)
-    this.lf2.characters.add(OID.Bat, 2, TE.Team_3).forEach(fighter_enter)
+    this.lf2.characters.add(OID.Bat, 3, TE.Team_3).forEach(fighter_enter)
 
     this.lf2.characters.add(OID.Deep, 1, TE.Team_4).forEach(fighter_enter)
     this.lf2.characters.add(OID.Davis, 1, TE.Team_4).forEach(fighter_enter)
@@ -174,8 +156,10 @@ export class DanmuGameLogic extends UIComponent {
     this.lf2.characters.add(OID.Woody, 1, TE.Team_4).forEach(fighter_enter)
     this.lf2.characters.add(OID.Firen, 1, TE.Team_4).forEach(fighter_enter)
     this.lf2.characters.add(OID.Freeze, 1, TE.Team_4).forEach(fighter_enter)
+    this.lf2.characters.add(OID.Jack, 1, TE.Team_4).forEach(fighter_enter)
+
     this.update_staring();
-    this._countdown.reset()
+    this._staring_countdown.reset()
 
     const staring = this._cam_ctrl?.staring;
     if (staring && this._cam_ctrl?.free != false) {
@@ -190,8 +174,8 @@ export class DanmuGameLogic extends UIComponent {
   override update(dt: number): void {
     this.time += dt;
     super.update?.(dt)
-    this._countdown.add();
-    if (this._countdown.is_end()) this.update_staring()
+    this._staring_countdown.add();
+    if (this._staring_countdown.is_end()) this.update_staring()
 
     const staring = this._cam_ctrl?.staring;
     if (staring && this._cam_ctrl?.free != false)
@@ -200,14 +184,21 @@ export class DanmuGameLogic extends UIComponent {
       this.update_staring()
 
     if (this._teams.size <= 1) {
-      if (this._teams.size) {
-        for (const [k, v] of this.team_sum) {
-          if (this._teams.has(k)) v.wins += 1
-          else v.loses += 1
+      if (this._gameover_countdown.is_end()) {
+        if (this._teams.size) {
+          for (const [k, v] of this.team_sum) {
+            if (this._teams.has(k)) v.wins += 1
+            else v.loses += 1
+          }
         }
+        this._gameover_countdown.reset()
+        this.update_bg()
+      } else {
+        this._gameover_countdown.add()
       }
-      this.update_bg()
     }
+
   }
+
 }
 
