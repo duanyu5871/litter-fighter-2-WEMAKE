@@ -1,3 +1,4 @@
+
 import { GameKey as GK, IEntityData, StateEnum } from "../../defines";
 import { probability } from "../../defines/probability";
 import { arithmetic_progression } from "../../utils";
@@ -17,7 +18,7 @@ export function make_fighter_data_jack(data: IEntityData) {
     bot_ball_continuation("d>a+d>a", probability(3, 0.8), 40, GK.d, 'F', GK.a),
 
     // d^a
-    bot_uppercut_dua(225, bot_uppercut_dua.DESIRE, bot_uppercut_dua.MIN_X, bot_uppercut_dua.MAX_X),
+    bot_uppercut_dua(225, 1 / 15, bot_uppercut_dua.MIN_X, bot_uppercut_dua.MAX_X),
   ).set_states(
     [StateEnum.Rowing, StateEnum.Catching],
     ["d^a"]
