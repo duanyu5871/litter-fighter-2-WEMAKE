@@ -110,7 +110,8 @@ export class BotCtrlState_Chasing extends BotCtrlState_Base {
         c.start(GK.d).end(GK.d)
         break;
       case StateEnum.Catching:
-        c.start(GK.a).end(GK.a)
+        // shit, louisEx air-push frame's state is StateEnum.Catching...
+        if(me.catching) c.start(GK.a).end(GK.a)
         break;
       case StateEnum.Attacking:
       case StateEnum.BurnRun:

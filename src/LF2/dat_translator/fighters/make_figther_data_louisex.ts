@@ -37,10 +37,10 @@ export function make_figther_data_louisex(data: IEntityData): IEntityData {
     arithmetic_progression(260, 269, 1),
     ['d>a+a']
   ).set_dataset({
-    w_atk_f_x: 150,
-    w_atk_b_x: 150,
-    j_atk_f_x: 160,
-    j_atk_b_x: 160,
+    w_atk_f_x: 90,
+    w_atk_b_x: 90,
+    j_atk_f_x: 90,
+    j_atk_b_x: 90,
   });
   return data;
 }
