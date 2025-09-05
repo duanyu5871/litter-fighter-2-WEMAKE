@@ -1655,6 +1655,7 @@ export class Entity implements IDebugging {
   }
 
   spark_point(r0: IBounding, r1: IBounding) {
+    const cross: IBounding = cross_bounding(r0, r1);
     const {
       left: l,
       right: r,
@@ -1662,9 +1663,9 @@ export class Entity implements IDebugging {
       bottom: b,
       near: n,
       far: f,
-    }: IBounding = cross_bounding(r0, r1);
+    } = cross
     const x = this.lf2.random_in(l, r);
-    const y = this.lf2.random_in(b, t);
+    const y = (b + t) / 2//this.lf2.random_in(b, t);
     const z = this.lf2.random_in(f, n);
     return [x, y, z] as const;
   }

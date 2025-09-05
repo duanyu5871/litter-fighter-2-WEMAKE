@@ -10,7 +10,7 @@ export type TEntityEnum =
   | "weapon"
   | "ball"
   | "entity";
-export const ALL_ENTITY_ENUM: EntityEnum[] = [
+export const ALL_ENTITY_ENUM: TEntityEnum[] = [
   EntityEnum.Character,
   EntityEnum.Weapon,
   EntityEnum.Ball,

@@ -1,6 +1,6 @@
 import { Callbacks, FPS, ICollision } from "./base";
 import { collisions_keeper } from "./collision/CollisionKeeper";
-import { Builtin_FrameId, Defines, IBdyInfo, IBounding, IEntityData, IFrameInfo, IItrInfo, ItrKind, StateEnum } from "./defines";
+import { ALL_ENTITY_ENUM, Builtin_FrameId, Defines, IBdyInfo, IBounding, IEntityData, IFrameInfo, IItrInfo, ItrKind, StateEnum } from "./defines";
 import { AllyFlag } from "./defines/AllyFlag";
 import Ditto from "./ditto";
 import { IWorldRenderer } from "./ditto/render/IWorldRenderer";
@@ -457,14 +457,29 @@ export class World extends WorldDataset {
     this._temp_entitis_set.clear();
     for (const a of this.entities) {
       for (const b of this._temp_entitis_set) {
-        this.collision_detection(a, b);
-        this.collision_detection(b, a);
+        const collision1 = this.collision_detection(a, b);
+        const collision2 = this.collision_detection(b, a);
+        if (collision1 && collision2) {
+          const weight1 = ALL_ENTITY_ENUM.indexOf(collision1.attacker.type)
+          const weight2 = ALL_ENTITY_ENUM.indexOf(collision2.attacker.type)
+          if (weight1 > weight2)
+            this.collisions.push(collision1)
+          else if (weight1 < weight2)
+            this.collisions.push(collision2)
+          else
+            this.collisions.push(collision1, collision2)
+        }
+        else if (collision1) this.collisions.push(collision1)
+        else if (collision2) this.collisions.push(collision2)
       }
       this._temp_entitis_set.add(a);
     }
+    for (const collision of this.collisions) {
+      collisions_keeper.handle(collision)
+    }
   }
 
-  collision_detection(a: Entity, b: Entity) {
+  collision_detection(a: Entity, b: Entity): ICollision | undefined {
     const af = a.frame;
     const bf = b.frame;
     if (!af.itr?.length || !bf.bdy?.length) return;
@@ -472,7 +487,8 @@ export class World extends WorldDataset {
     const l1 = bf.bdy.length;
     for (let i = 0; i < l0; ++i) {
       for (let j = 0; j < l1; ++j) {
-        this.collision_test(a, af, af.itr[i]!, b, bf, bf.bdy[j]!);
+        const collision = this.collision_test(a, af, af.itr[i]!, b, bf, bf.bdy[j]!);
+        if (collision) return collision;
       }
     }
   }
@@ -484,7 +500,7 @@ export class World extends WorldDataset {
     victim: Entity,
     bframe: IFrameInfo,
     bdy: IBdyInfo,
-  ): void {
+  ): ICollision | undefined {
 
     if (itr.kind !== ItrKind.Heal) {
       const b_catcher = victim.catcher;
@@ -546,9 +562,7 @@ export class World extends WorldDataset {
       bdy.tester?.run(collision) === false ||
       itr.tester?.run(collision) === false
     ) return;
-
-    collisions_keeper.handle(collision)
-    this.collisions.push(collision)
+    return collision
   }
 
   init_spark_data() {
