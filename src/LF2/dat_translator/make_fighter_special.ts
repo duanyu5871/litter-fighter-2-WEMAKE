@@ -1,20 +1,20 @@
 import { BuiltIn_OID, EntityGroup } from "../defines";
-import { ArmorEnum } from "../defines/ArmorEnum";
 import { IEntityData } from "../defines/IEntityData";
 import { add_entity_groups } from "./add_entity_to_group";
-import { make_fighter_data_rudolf } from "./fighters/make_fighter_data_rudolf";
-import { make_figther_data_louis } from "./fighters/make_figther_data_louis";
-import { make_figther_data_louisex } from "./fighters/make_figther_data_louisex";
 import { make_fighter_data_bat } from "./fighters/make_fighter_data_bat";
 import { make_fighter_data_davis } from "./fighters/make_fighter_data_davis";
 import { make_fighter_data_deep } from "./fighters/make_fighter_data_deep";
+import { make_fighter_data_dennis } from "./fighters/make_fighter_data_dennis";
+import { make_fighter_data_firen } from "./fighters/make_fighter_data_firen";
 import { make_fighter_data_firzen } from "./fighters/make_fighter_data_firzen";
+import { make_fighter_data_freeze } from "./fighters/make_fighter_data_freeze";
+import { make_fighter_data_jack } from "./fighters/make_fighter_data_jack";
 import { make_fighter_data_julian } from "./fighters/make_fighter_data_julian";
 import { make_fighter_data_knigt } from "./fighters/make_fighter_data_knigt";
-import { make_fighter_data_dennis } from "./fighters/make_fighter_data_dennis";
+import { make_fighter_data_rudolf } from "./fighters/make_fighter_data_rudolf";
 import { make_fighter_data_woody } from "./fighters/make_fighter_data_woody";
-import { make_fighter_data_firen } from "./fighters/make_fighter_data_firen";
-import { make_fighter_data_freeze } from "./fighters/make_fighter_data_freeze";
+import { make_figther_data_louis } from "./fighters/make_figther_data_louis";
+import { make_figther_data_louisex } from "./fighters/make_figther_data_louisex";
 
 export function make_fighter_special(data: IEntityData): IEntityData {
   const num_id = Number(data.id);
@@ -28,6 +28,8 @@ export function make_fighter_special(data: IEntityData): IEntityData {
   switch (data.id as BuiltIn_OID) {
     case BuiltIn_OID.Julian: return make_fighter_data_julian(data)
     case BuiltIn_OID.Firzen: return make_fighter_data_firzen(data);
+    case BuiltIn_OID.LouisEX: return make_figther_data_louisex(data);
+    case BuiltIn_OID.Bat: return make_fighter_data_bat(data);
     case BuiltIn_OID.Knight: return make_fighter_data_knigt(data);
     case BuiltIn_OID.Louis: return make_figther_data_louis(data);
     case BuiltIn_OID.Rudolf: return make_fighter_data_rudolf(data);
@@ -36,15 +38,13 @@ export function make_fighter_special(data: IEntityData): IEntityData {
     case BuiltIn_OID.Dennis: return make_fighter_data_dennis(data);
     case BuiltIn_OID.Woody: return make_fighter_data_woody(data);
     case BuiltIn_OID.Firen: return make_fighter_data_firen(data);
-    case BuiltIn_OID.LouisEX: return make_figther_data_louisex(data);
     case BuiltIn_OID.Freeze: return make_fighter_data_freeze(data);
-    case BuiltIn_OID.Jack: return make_fighter_data_davis(data);
+    case BuiltIn_OID.Jack: return make_fighter_data_jack(data);
 
     case BuiltIn_OID.Bandit:
     case BuiltIn_OID.Hunter:
       add_entity_groups(data.base, EntityGroup._3000);
       break;
-    case BuiltIn_OID.Bat: return make_fighter_data_bat(data);
     case BuiltIn_OID.Template:
       add_entity_groups(data.base, EntityGroup.Hidden);
       break;

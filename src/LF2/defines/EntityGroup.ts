@@ -10,6 +10,11 @@ export enum EntityGroup {
   Boss = "Boss",
 
   /**
+   * 比较大只的角色
+   */
+  Gaint = "Giant",
+
+  /**
    * 常规角色
    * 属于此组的角色才可被随机到
    */
