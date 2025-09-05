@@ -1,28 +1,28 @@
 import type { IFrameInfo, IHitKeyCollection, TLooseGameKey } from "../defines";
-import { GameKey, StateEnum } from "../defines";
+import { GameKey as GK, StateEnum } from "../defines";
 import type { Entity } from "../entity/Entity";
 import { ControllerUpdateResult } from "./ControllerUpdateResult";
 import DoubleClick from "./DoubleClick";
 import { KeyStatus } from "./KeyStatus";
-export type TKeys = Record<GameKey, string>;
+export type TKeys = Record<GK, string>;
 
 export const KEY_NAME_LIST = [
-  GameKey.d,
-  GameKey.L,
-  GameKey.R,
-  GameKey.U,
-  GameKey.D,
-  GameKey.j,
-  GameKey.a,
+  GK.d,
+  GK.L,
+  GK.R,
+  GK.U,
+  GK.D,
+  GK.j,
+  GK.a,
 ] as const;
-export const CONFLICTS_KEY_MAP: Record<GameKey, GameKey | undefined> = {
+export const CONFLICTS_KEY_MAP: Record<GK, GK | undefined> = {
   a: void 0,
   j: void 0,
   d: void 0,
-  [GameKey.L]: GameKey.R,
-  [GameKey.R]: GameKey.L,
-  [GameKey.U]: GameKey.D,
-  [GameKey.D]: GameKey.U,
+  [GK.L]: GK.R,
+  [GK.R]: GK.L,
+  [GK.U]: GK.D,
+  [GK.D]: GK.U,
 };
 
 /**
@@ -82,10 +82,9 @@ export class BaseController {
     return d === j ? 0 : d ? -1 : 1;
   }
 
-  private _key_list: string | undefined = void 0;
-  reset_key_list() {
-    this._key_list = void 0;
-  }
+  private _key_list: string = '';
+  reset_key_list() { this._key_list = '' }
+
   /**
    * 指定按键进入start状态（按下）
    * @param keys 指定按键
@@ -147,7 +146,7 @@ export class BaseController {
       f_0?.state !== StateEnum.Walking &&
       f_1?.state !== StateEnum.Standing &&
       f_1?.state !== StateEnum.Walking &&
-      (k === GameKey.L || k === GameKey.R)
+      (k === GK.L || k === GK.R)
     ) {
       /*
         Note: 
@@ -330,7 +329,7 @@ export class BaseController {
     }
     this.check_hit_seqs(hit?.sequences, ret);
     /** 这里不想支持过长的指令 */
-    if (this._key_list && this._key_list.length >= 10) this._key_list = void 0;
+    if (this._key_list && this._key_list.length >= 10) this._key_list = '';
     return ret;
   }
 
@@ -342,11 +341,18 @@ export class BaseController {
     do {
       /** 同时按键 判定 */
       if (this.keys.d.is_hit()) {
-        const seq = Object.keys(seqs).find((v) => this.seq_test(v));
+        const seq = Object.keys(seqs).find((v) => this.sametime_keys_test(v));
         if (seq && seqs[seq]) {
-          for (const k of seq) this.keys[k as GameKey]?.use();
+          for (let k of seq) {
+            if (k === 'F')
+              k = this.entity.facing > 0 ? GK.R : GK.L
+            else if (k === 'B')
+              k = this.entity.facing < 0 ? GK.R : GK.L
+            this.keys[k as GK]?.use();
+          }
           ret.set(seqs[seq], this._time, void 0, this._key_list);
-          this._key_list = void 0;
+          console.log('sametime keys hit!')
+          this._key_list = '';
           break;
         } else {
           ret.key_list = this._key_list;
@@ -354,23 +360,39 @@ export class BaseController {
       }
 
       /** 顺序按键 判定 */
-      if (
-        this._key_list &&
-        this._key_list.length >= 2 &&
-        seqs[this._key_list]
-      ) {
-        ret.set(seqs[this._key_list], this._time, void 0, this._key_list);
-        this._key_list = void 0;
+      if (this._key_list.length >= 2 && seqs[this._key_list]) {
+        const seq = Object.keys(seqs).find(v => this.sequence_keys_test(v));
+        if (seq) {
+          ret.set(seqs[seq], this._time, void 0, this._key_list);
+          console.log('seq keys hit!')
+          this._key_list = '';
+        }
         break;
       } else {
         ret.key_list = this._key_list;
       }
     } while (0);
   }
-
-  private seq_test(str: string): boolean {
-    for (const key of str) {
-      if (!this.is_hit(key)) 
+  private sequence_keys_test(str: string): boolean {
+    for (let i = 0; i < str.length; i++) {
+      let actual_key = this._key_list[i]
+      let expected_key = str[i]
+      if (expected_key === 'F')
+        expected_key = this.entity.facing > 0 ? GK.R : GK.L
+      else if (expected_key === 'B')
+        expected_key = this.entity.facing < 0 ? GK.R : GK.L
+      if (expected_key !== actual_key)
+        return false;
+    }
+    return true;
+  }
+  private sametime_keys_test(str: string): boolean {
+    for (let k of str) {
+      if (k === 'F')
+        k = this.entity.facing > 0 ? GK.R : GK.L
+      else if (k === 'B')
+        k = this.entity.facing < 0 ? GK.R : GK.L
+      if (!this.is_hit(k))
         return false;
     }
     return true;
