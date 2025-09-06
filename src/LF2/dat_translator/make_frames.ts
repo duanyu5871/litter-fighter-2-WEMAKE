@@ -162,13 +162,13 @@ export function make_frames(
     if (dvx === 550) frame.dvx = dvx;
     else if (not_zero_num(dvx)) {
       if (dvx >= 501 && dvx <= 549) {
-        frame.dvx = Number(((dvx - 550) * 0.5).toPrecision(1));
+        frame.dvx = Number(((dvx - 550) * 0.5).toFixed(1));
         frame.vxm = SpeedMode.FixedLf2;
       } else if (dvx >= 551) {
-        frame.dvx = Number(((dvx - 550) * 0.5).toPrecision(1));
+        frame.dvx = Number(((dvx - 550) * 0.5).toFixed(1));
         frame.vxm = SpeedMode.FixedLf2;
       } else {
-        frame.dvx = Number((dvx * 0.5).toPrecision(1));
+        frame.dvx = Number((dvx * 0.5).toFixed(1));
       }
     }
     if (

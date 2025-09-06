@@ -48,6 +48,10 @@ export interface IItrInfo extends IQube {
    * @see {ItrKind}
    */
   kind: number;
+
+  /** just for reading */
+  kind_name?: string;
+
   dvx?: number;
   dvy?: number;
   dvz?: number;
@@ -73,6 +77,10 @@ export interface IItrInfo extends IQube {
    * @see {ItrEffect}
    */
   effect?: number | ItrEffect;
+
+  /** just for reading */
+  effect_name?: string;
+
   indicator_info?: IQubePair;
 
 

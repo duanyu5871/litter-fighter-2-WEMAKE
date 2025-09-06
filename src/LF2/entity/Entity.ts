@@ -1344,9 +1344,9 @@ export class Entity implements IDebugging {
     }
     this.velocity.set(vx, vy, vz);
     if (!this.shaking && !this.motionless) {
-      this.position.x = Number((this.position.x + vx).toPrecision(4));
-      this.position.y = Number((this.position.y + vy).toPrecision(4));
-      this.position.z = Number((this.position.z + vz).toPrecision(4));
+      this.position.x = Number((this.position.x + vx).toFixed(4));
+      this.position.y = Number((this.position.y + vy).toFixed(4));
+      this.position.z = Number((this.position.z + vz).toFixed(4));
     }
     if (this.motionless > 0) {
       ++this.wait;

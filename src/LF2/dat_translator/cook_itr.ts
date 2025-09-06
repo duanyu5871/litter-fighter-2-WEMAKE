@@ -7,49 +7,39 @@ import { is_num, is_positive, not_zero_num } from "../utils/type_check";
 import { CondMaker } from "./CondMaker";
 import { get_next_frame_by_raw_id } from "./get_the_next";
 import { take } from "./take";
+import { take_not_zero_num } from "./take_not_zero_num";
 import { AllyFlag } from "../defines/AllyFlag";
 import { max } from "../utils";
+import { fixed_float } from "./fixed_float";
+import { take_positive_num } from "./take_positive_num";
 
 export function cook_itr(itr?: Partial<IItrInfo>) {
+
   if (!itr) return;
   itr.ally_flags = AllyFlag.Enemy;
-  const vrest = take(itr, "vrest");
-  if (is_positive(vrest))
-    itr.vrest = max(2, 2 * vrest - Defines.DEFAULT_ITR_SHAKING - 4);
 
-  const arest = take(itr, "arest");
-  if (is_positive(arest)) itr.arest = max(2, 2 * arest - Defines.DEFAULT_ITR_MOTIONLESS - 4);
+  itr.vrest = take_positive_num(itr, "vrest", n => max(2, 2 * n - Defines.DEFAULT_ITR_SHAKING - 4))
+  itr.arest = take_positive_num(itr, "arest", n => max(2, 2 * n - Defines.DEFAULT_ITR_MOTIONLESS - 4))
 
-  const src_dvx = take(itr, "dvx");
-  if (not_zero_num(src_dvx)) itr.dvx = Number((src_dvx * 0.5).toPrecision(1));
-  const src_dvz = take(itr, "dvz");
-  if (not_zero_num(src_dvz)) itr.dvz = Number((src_dvz * 0.5).toPrecision(1));
-  const src_dvy = take(itr, "dvy");
-  if (not_zero_num(src_dvy)) itr.dvy = Number((src_dvy * -0.59).toPrecision(1));
-  const fall = take(itr, "fall");
-  if (not_zero_num(fall)) itr.fall = fall * 2;
-  const bdefend = take(itr, "bdefend");
-  if (not_zero_num(bdefend)) itr.bdefend = bdefend * 2;
-  const zwidth = take(itr, "zwidth");
-  if (not_zero_num(zwidth)) {
-    itr.l = 2 * zwidth;
-    itr.z = -zwidth;
-  } else {
-    itr.l = Defines.DAFUALT_QUBE_LENGTH;
-    itr.z = -Defines.DAFUALT_QUBE_LENGTH / 2;
-  }
-  switch (itr.effect) {
-    case ItrEffect.FireExplosion:
-    case ItrEffect.Explosion: {
-      itr.motionless = 0;
-      break;
-    }
-  }
+  const src_dvx = itr.dvx
+  itr.dvx = take_not_zero_num(itr, "dvx", n => fixed_float(n * 0.5, 4));
+  itr.dvz = take_not_zero_num(itr, "dvz", n => fixed_float(n * 0.5, 4));
+  itr.dvy = take_not_zero_num(itr, "dvy", n => fixed_float(n * -0.59, 4));
+  itr.fall = take_not_zero_num(itr, "fall", n => n * 2);
+  itr.bdefend = take_not_zero_num(itr, "bdefend", n => n * 2);
+
+
+  const zwidth = take_not_zero_num(itr, "zwidth") ?? Defines.DAFUALT_QUBE_LENGTH / 2;
+  itr.l = 2 * zwidth;
+  itr.z = -zwidth;
+
   const kind_name = (ItrKind as any)[itr.kind!];
-  if (kind_name) (itr as any).kind_name = `ItrKind.${kind_name}`;
+  if (kind_name) itr.kind_name = `ItrKind.${kind_name}`;
 
-  const effect_name = (ItrEffect as any)[itr.effect!];
-  if (effect_name) (itr as any).effect_name = `ItrEffect.${effect_name}`;
+  if (itr.effect !== void 0) {
+    const effect_name = ItrEffect[itr.effect as ItrEffect];
+    if (effect_name) itr.effect_name = `ItrEffect.${effect_name}`;
+  }
 
   switch (itr.kind) {
     case ItrKind.Normal: {
@@ -97,7 +87,6 @@ export function cook_itr(itr?: Partial<IItrInfo>) {
       itr.ally_flags = AllyFlag.Both;
       itr.motionless = 0;
       itr.shaking = 0;
-      if (is_positive(vrest)) itr.vrest = vrest + 2;
       itr.test = new CondMaker<C_Val>()
         .add(C_Val.AttackerHasHolder, "==", 0)
         .and(C_Val.VictimHasHolder, "==", 0)
@@ -114,7 +103,6 @@ export function cook_itr(itr?: Partial<IItrInfo>) {
       itr.ally_flags = AllyFlag.Both;
       itr.motionless = 0;
       itr.shaking = 0;
-      if (is_positive(vrest)) itr.vrest = vrest + 2;
       itr.test = new CondMaker<C_Val>()
         .add(C_Val.AttackerHasHolder, "==", 0)
         .and(C_Val.VictimHasHolder, "==", 0)
@@ -125,7 +113,6 @@ export function cook_itr(itr?: Partial<IItrInfo>) {
     case ItrKind.SuperPunchMe: {
       itr.motionless = 0;
       itr.shaking = 0;
-      if (is_positive(vrest)) itr.vrest = vrest + 2;
       itr.test = new CondMaker<C_Val>()
         .add(C_Val.VictimType, "==", EntityEnum.Character)
         .done();
