@@ -17,7 +17,7 @@ export class BotCtrlState_Avoiding extends BotCtrlState_Base {
     const { state } = me.frame;
 
     random_jumping(this.ctrl)
-
+    if (this.handle_bot_actions()) return;
     if (av && en && manhattan_xz(me, av) > manhattan_xz(me, en))
       return BotCtrlState.Chasing
     else if (av) {
@@ -27,6 +27,7 @@ export class BotCtrlState_Avoiding extends BotCtrlState_Base {
     } else {
       return BotCtrlState.Standing;
     }
+
 
     switch (state) {
       case StateEnum.Dash:

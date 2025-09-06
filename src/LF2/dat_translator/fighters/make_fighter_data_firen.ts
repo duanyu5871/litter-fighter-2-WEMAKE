@@ -78,13 +78,13 @@ export function make_fighter_data_firen(data: IEntityData) {
     ],
     ['d>a', 'd>j', 'd^j', 'dvj']
   ).set_frames(
-    arithmetic_progression(255, 261, 1),
+    arithmetic_progression(255, 261),
     ["cancel_d>j"]
   ).set_frames(
-    arithmetic_progression(267, 275, 1),
+    arithmetic_progression(267, 275),
     ["cancel_dvj"]
   ).set_frames(
-    arithmetic_progression(235, 252, 1),
+    arithmetic_progression(235, 252),
     ["d>a+a"]
   );
   return data;

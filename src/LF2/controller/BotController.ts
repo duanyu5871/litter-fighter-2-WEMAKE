@@ -13,7 +13,10 @@ import { BotCtrlState_Avoiding } from "./BotCtrlState_Avoiding";
 import { BotCtrlState_Chasing } from "./BotCtrlState_Chasing";
 import { BotCtrlState_Standing } from "./BotCtrlState_Standing";
 import { dummy_updaters, DummyEnum } from "./DummyEnum";
-
+export interface IBotTarget {
+  entity: Entity;
+  distance: number;
+}
 export class BotController extends BaseController implements Required<IBotDataSet> {
   readonly fsm = new FSM<BotCtrlState>()
     .add(
@@ -122,8 +125,49 @@ export class BotController extends BaseController implements Required<IBotDataSe
   /** 欲望值：停止跑步 */
   r_stop_desire = Defines.AI_R_STOP_DESIRE;
 
-  chasing: Entity | undefined;
-  avoiding: Entity | undefined;
+  get chasing(): Entity | undefined {
+    return this.chasings[0]?.entity
+  }
+  set chasing(entity: Entity | undefined) {
+    const target = this.chasings[0]
+    if (entity) {
+      const distance = this.manhattan_to(entity)
+      if (target) {
+        target.distance = distance
+      } else {
+        this.chasings[0] = {
+          entity,
+          distance
+        }
+      }
+
+    } else {
+      this.chasings.length = 0
+    }
+  }
+  get avoiding(): Entity | undefined {
+    return this.avoidings[0]?.entity
+  }
+  set avoiding(entity: Entity | undefined) {
+    const target = this.avoidings[0]
+    if (entity) {
+      const distance = this.manhattan_to(entity)
+      if (target) {
+        target.distance = this.manhattan_to(entity)
+      } else {
+        this.avoidings[0] = {
+          entity,
+          distance
+        }
+      }
+    } else {
+      this.avoidings.length = 0
+    }
+  }
+
+  chasings: IBotTarget[] = [];
+  avoidings: IBotTarget[] = [];
+
   private _dummy?: DummyEnum;
   get dummy(): DummyEnum | undefined {
     return this._dummy;
@@ -171,7 +215,8 @@ export class BotController extends BaseController implements Required<IBotDataSe
       this.avoiding = void 0;
     }
     for (const e of c.world.entities) {
-      if (!is_character(e) || c.is_ally(e)) continue;
+      if (!is_character(e)) continue;
+      if (c.is_ally(e)) continue;
       if (this.should_avoid(e)) {
         if (!this.avoiding) {
           this.avoiding = e;

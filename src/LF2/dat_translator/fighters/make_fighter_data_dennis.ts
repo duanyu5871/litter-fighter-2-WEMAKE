@@ -79,10 +79,10 @@ export function make_fighter_data_dennis(data: IEntityData) {
     [88, 89],
     ['run_atk+dva', 'run_atk+d>j']
   ).set_frames(
-    arithmetic_progression(235, 262, 1),
+    arithmetic_progression(235, 262),
     ["d>a+a"]
   ).set_frames(
-    arithmetic_progression(280, 290, 1),
+    arithmetic_progression(280, 290),
     ["cancel_d>j"]
   );
   return data;

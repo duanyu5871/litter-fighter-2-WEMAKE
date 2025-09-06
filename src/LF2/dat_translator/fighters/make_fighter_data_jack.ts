@@ -32,7 +32,7 @@ export function make_fighter_data_jack(data: IEntityData) {
     frames.punchs,
     ["d^a"]
   ).set_frames(
-    arithmetic_progression(240, 247, 1),
+    arithmetic_progression(240, 247),
     ["d>a+d>a"]
   );
   return data;

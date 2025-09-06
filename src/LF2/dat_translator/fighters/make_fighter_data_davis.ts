@@ -69,7 +69,7 @@ export function make_fighter_data_davis(data: IEntityData) {
     frames.punchs,
     ["dva", "d^a"]
   ).set_frames(
-    arithmetic_progression(240, 269, 1),
+    arithmetic_progression(240, 269),
     ["d>a+a"]
   ).set_frames(
     // many punch + >>
@@ -85,7 +85,7 @@ export function make_fighter_data_davis(data: IEntityData) {
     ["dva+j", "d^a"]
   ).set_frames(
     // jumphit
-    arithmetic_progression(290, 292, 1),
+    arithmetic_progression(290, 292),
     ["d^j+a"]
   );
   return data;

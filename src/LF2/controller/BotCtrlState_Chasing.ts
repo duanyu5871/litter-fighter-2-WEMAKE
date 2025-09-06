@@ -1,7 +1,7 @@
-import { GameKey as GK, ItrKind, TLooseGameKey } from "../defines";
+import { GameKey as GK, ItrKind } from "../defines";
 import { StateEnum } from "../defines/StateEnum";
 import { manhattan_xz } from "../helper/manhattan_xz";
-import { abs, between, find, random_get } from "../utils";
+import { abs, between, find } from "../utils";
 import { KEY_NAME_LIST } from "./BaseController";
 import { BotCtrlState } from "./BotCtrlState";
 import { BotCtrlState_Base } from "./BotCtrlState_Base";
@@ -57,28 +57,7 @@ export class BotCtrlState_Chasing extends BotCtrlState_Base {
     const z_reach_3 = abs_dz <= 3 * c.w_atk_z;
 
     random_jumping(c);
-    const { bot: ai } = me.data.base
-
-    if (ai) {
-
-      const keys_list: TLooseGameKey[][] = []
-
-      let action_ids = ai.frames?.[me.frame.id]
-      if (action_ids) for (const aid of action_ids) {
-        const keys = this.ctrl.handle_action(ai.actions[aid])
-        if (keys) keys_list.push(keys)
-      }
-
-      action_ids = ai.states?.[me.frame.state]
-      if (action_ids) for (const aid of action_ids) {
-        const keys = this.ctrl.handle_action(ai.actions[aid])
-        if (keys) keys_list.push(keys)
-      }
-      if (keys_list.length) {
-        const keys = random_get(keys_list)
-        if(keys) this.ctrl.start(...keys).end(...keys)
-      }
-    }
+    if (this.handle_bot_actions()) return;
 
     switch (state) {
       case StateEnum.Running: {
@@ -111,7 +90,7 @@ export class BotCtrlState_Chasing extends BotCtrlState_Base {
         break;
       case StateEnum.Catching:
         // shit, louisEx air-push frame's state is StateEnum.Catching...
-        if(me.catching) c.start(GK.a).end(GK.a)
+        if (me.catching) c.start(GK.a).end(GK.a)
         break;
       case StateEnum.Attacking:
       case StateEnum.BurnRun:

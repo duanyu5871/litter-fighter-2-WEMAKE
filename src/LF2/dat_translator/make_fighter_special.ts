@@ -11,6 +11,8 @@ import { make_fighter_data_freeze } from "./fighters/make_fighter_data_freeze";
 import { make_fighter_data_jack } from "./fighters/make_fighter_data_jack";
 import { make_fighter_data_julian } from "./fighters/make_fighter_data_julian";
 import { make_fighter_data_knigt } from "./fighters/make_fighter_data_knigt";
+import { make_fighter_data_mark } from "./fighters/make_fighter_data_mark";
+import { make_fighter_data_monk } from "./fighters/make_fighter_data_monk";
 import { make_fighter_data_rudolf } from "./fighters/make_fighter_data_rudolf";
 import { make_fighter_data_woody } from "./fighters/make_fighter_data_woody";
 import { make_figther_data_louis } from "./fighters/make_figther_data_louis";
@@ -40,6 +42,8 @@ export function make_fighter_special(data: IEntityData): IEntityData {
     case BuiltIn_OID.Firen: return make_fighter_data_firen(data);
     case BuiltIn_OID.Freeze: return make_fighter_data_freeze(data);
     case BuiltIn_OID.Jack: return make_fighter_data_jack(data);
+    case BuiltIn_OID.Mark: return make_fighter_data_mark(data);
+    case BuiltIn_OID.Monk: return make_fighter_data_monk(data);
 
     case BuiltIn_OID.Bandit:
     case BuiltIn_OID.Hunter:
@@ -53,9 +57,7 @@ export function make_fighter_special(data: IEntityData): IEntityData {
       data.base.files['1'].variants = ['3']
       break;
     case BuiltIn_OID.Justin:
-    case BuiltIn_OID.Monk:
     case BuiltIn_OID.Sorcerer:
-    case BuiltIn_OID.Mark:
     case BuiltIn_OID.John:
     case BuiltIn_OID.Henry:
 

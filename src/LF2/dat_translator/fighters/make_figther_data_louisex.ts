@@ -34,7 +34,7 @@ export function make_figther_data_louisex(data: IEntityData): IEntityData {
     [...frames.punchs],
     ['dva']
   ).set_frames(
-    arithmetic_progression(260, 269, 1),
+    arithmetic_progression(260, 269),
     ['d>a+a']
   ).set_dataset({
     w_atk_f_x: 90,

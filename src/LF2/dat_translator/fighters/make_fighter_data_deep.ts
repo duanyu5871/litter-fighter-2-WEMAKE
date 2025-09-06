@@ -38,7 +38,7 @@ export function make_fighter_data_deep(data: IEntityData) {
 
     // dva+j
     bot_uppercut_dva(
-      150, 
+      150,
       probability(4, 0.5),
       0.5,
       bot_uppercut_dva.MAX_X
@@ -81,15 +81,18 @@ export function make_fighter_data_deep(data: IEntityData) {
     ],
     [bot_uppercut_dva.ID]
   ).set_frames(
-    arithmetic_progression(235, 250, 1),
+    arithmetic_progression(235, 250),
     ["d>a+a"]
   ).set_frames(
     // jump_sword: ground_part
-    [...arithmetic_progression(260, 265, 1), ...arithmetic_progression(277, 282, 1)],
+    [
+      ...arithmetic_progression(260, 265),
+      ...arithmetic_progression(277, 282)
+    ],
     ["dva+a", "dva+j"]
   ).set_frames(
     // jump_sword: jump_part
-    arithmetic_progression(266, 267, 1),
+    arithmetic_progression(266, 267),
     ["d^j+a"]
   );
   return data;
