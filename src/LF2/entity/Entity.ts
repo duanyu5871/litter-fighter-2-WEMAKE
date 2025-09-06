@@ -289,8 +289,10 @@ export class Entity implements IDebugging {
   protected _holding?: Entity;
   protected _emitter?: Entity;
   protected _emitter_opoint?: IOpointInfo;
+  /** 当前角色 */
   public a_rest: number = 0;
   public v_rests = new Map<string, ICollision>();
+  public victims = new Map<string, ICollision>()
 
   public motionless: number = 0;
   public shaking: number = 0;
@@ -1176,6 +1178,9 @@ export class Entity implements IDebugging {
         else this.v_rests.delete(k);
       }
     }
+    for (const [k, v] of this.victims)
+      if (v.v_rest) this.victims.delete(k)
+
     if (this.motionless <= 0 && this.shaking <= 0)
       this.a_rest >= 1 ? this.a_rest-- : (this.a_rest = 0);
 
@@ -1780,6 +1785,14 @@ export class Entity implements IDebugging {
     this.set_frame(frame);
 
     this.next_frame = void 0;
+    if (flags.id === Builtin_FrameId.Auto) {
+      this.a_rest = 0;
+      for (const [_, v] of this.victims)
+        v.v_rest = 0;
+      this.victims.clear()
+    }
+    this.v_rests
+
     if (flags.facing !== void 0) {
       this.facing = this.handle_facing_flag(flags.facing, frame);
     }
