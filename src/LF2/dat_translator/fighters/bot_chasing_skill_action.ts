@@ -6,7 +6,7 @@ import { IEditBotActionFunc } from "./IEditBotAction";
 
 type Key1 = '^' | '>' | 'v' | 'j';
 type Key2 = 'a' | 'j';
-const DESIRE = 0.016666 as const;
+const DESIRE = 0.033333 as const;
 export function bot_chasing_skill_action(
   keys_str: `d${Key1}${Key2}`,
   action_id: string = keys_str,

@@ -4,7 +4,7 @@ import { IBotAction } from "../../defines/IBotAction";
 import { CondMaker } from "../CondMaker";
 import { IEditBotActionFunc } from "./IEditBotAction";
 
-const DESIRE = 0.016666 as const;
+const DESIRE = 0.033333 as const;
 export function bot_chasing_action(
   action_id: string,
   keys: ("F" | "B" | TLooseGameKey)[],

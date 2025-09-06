@@ -3,7 +3,7 @@ import { BotVal, Defines, EntityVal, GameKey as GK } from "../../defines";
 import { IBotAction } from "../../defines/IBotAction";
 import { pow } from "../../utils";
 import { CondMaker } from "../CondMaker";
-const DESIRE = 0.016666 as const;
+const DESIRE = 0.033333 as const;
 const MIN_X = -120 as const;
 const MAX_X = 120 as const;
 const Z_LEN = 100 as const;

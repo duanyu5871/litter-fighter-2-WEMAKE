@@ -4,7 +4,7 @@ import { IBotAction } from "../../defines/IBotAction";
 import { CondMaker } from "../CondMaker";
 import { bot_front_test } from "./bot_front_test";
 import { IEditBotActionFunc } from "./IEditBotAction";
-const DESIRE = 0.016666 as const;
+const DESIRE = 0.033333 as const;
 const MIN_X = 120 as const;
 const ID = 'd>j' as const
 /**

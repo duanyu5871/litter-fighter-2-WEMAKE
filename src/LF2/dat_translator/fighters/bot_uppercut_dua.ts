@@ -2,7 +2,7 @@ import { BotCtrlState } from "../../controller/BotCtrlState";
 import { BotVal, Defines, EntityVal, GameKey as GK } from "../../defines";
 import { IBotAction } from "../../defines/IBotAction";
 import { CondMaker } from "../CondMaker";
-const DESIRE = 0.016666 as const;
+const DESIRE = 0.033333 as const;
 const MIN_X = -10 as const;
 const MAX_X = 120 as const;
 export const ID = 'd^a' as const
