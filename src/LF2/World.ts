@@ -452,8 +452,10 @@ export class World extends WorldDataset {
   }
 
   private _temp_entitis_set = new Set<Entity>();
+  private _used_itrs = new Set<IItrInfo>()
   collision_detections() {
     this.collisions.length = 0;
+    this._used_itrs.clear()
     this._temp_entitis_set.clear();
     for (const a of this.entities) {
       for (const b of this._temp_entitis_set) {
@@ -487,8 +489,17 @@ export class World extends WorldDataset {
     const l1 = bf.bdy.length;
     for (let i = 0; i < l0; ++i) {
       for (let j = 0; j < l1; ++j) {
-        const collision = this.collision_test(a, af, af.itr[i]!, b, bf, bf.bdy[j]!);
-        if (collision) return collision;
+        const itr = af.itr[i]!
+        const bdy = bf.bdy[j]!
+
+        if (!itr.vrest && this._used_itrs.has(itr)) return;
+
+        const collision = this.collision_test(a, af, itr, b, bf, bdy);
+
+        if (!collision) continue;
+
+        if (!itr.vrest) this._used_itrs.add(itr)
+        return collision
       }
     }
   }
@@ -517,10 +528,8 @@ export class World extends WorldDataset {
         itr = { ...itr, ...itr_prefab };
         break;
       }
-      case StateEnum.Weapon_Rebounding: {
-        return;
-      }
     }
+
     const a_cube = this.get_bounding(attacker, aframe, itr);
     const b_cube = this.get_bounding(victim, bframe, bdy);
     if (!(
@@ -561,6 +570,7 @@ export class World extends WorldDataset {
       bdy.tester?.run(collision) === false ||
       itr.tester?.run(collision) === false
     ) return;
+
     return collision
   }
 
