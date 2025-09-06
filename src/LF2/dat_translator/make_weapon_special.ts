@@ -33,8 +33,8 @@ export function make_weapon_special(data: IEntityData) {
   if (num_data_id >= 100 || num_data_id <= 199) {
     add_entity_groups(
       data.base,
-      EntityGroup.VsRegularWeapon,
-      EntityGroup.StageRegularWeapon,
+      EntityGroup.VsWeapon,
+      EntityGroup.StageWeapon,
     );
   }
   switch (data.id) {
@@ -60,7 +60,7 @@ export function make_weapon_special(data: IEntityData) {
       break;
     case BuiltIn_OID.Weapon_milk:
       data.base.brokens = ooo("70", "50", "80", "50", "50");
-      add_entity_groups(data.base, EntityGroup.VsRegularWeapon);
+      add_entity_groups(data.base, EntityGroup.VsWeapon);
       break;
     case BuiltIn_OID.Weapon_Stone:
       data.base.brokens = ooo("0", "0", "4", "4", "4");
@@ -70,7 +70,7 @@ export function make_weapon_special(data: IEntityData) {
       break;
     case BuiltIn_OID.Weapon_Beer:
       data.base.brokens = ooo("160", "164", "164", "164", "164");
-      add_entity_groups(data.base, EntityGroup.VsRegularWeapon);
+      add_entity_groups(data.base, EntityGroup.VsWeapon);
       break;
     case BuiltIn_OID.Weapon_Boomerang:
       data.base.brokens = ooo("170", "170", "170");

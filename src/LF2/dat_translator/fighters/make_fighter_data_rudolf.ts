@@ -1,4 +1,5 @@
 import { IEntityData } from "../../defines";
+import { BotBuilder } from "./BotBuilder";
 
 /**
  *
@@ -14,5 +15,9 @@ export function make_fighter_data_rudolf(data: IEntityData): IEntityData {
         opoint.hp = opoint.max_hp = 20;
     });
   }
+  BotBuilder.make(data).set_dataset({
+    w_atk_b_x: 200,
+    w_atk_f_x: 200
+  })
   return data;
 }

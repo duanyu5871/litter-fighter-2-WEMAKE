@@ -101,9 +101,13 @@ export function make_frame_state(frame: IFrameInfo) {
       break;
     }
     case StateEnum.Lying:
+      frame.friction_x = Defines.LAND_FRICTION_X;
+      frame.friction_z = Defines.LAND_FRICTION_Z;
+      break;
     case StateEnum.Frozen:
       frame.friction_x = Defines.LAND_FRICTION_X;
       frame.friction_z = Defines.LAND_FRICTION_Z;
+      foreach(frame.bdy, bdy => bdy.ally_flags = AllyFlag.Both)
       break;
   }
 }

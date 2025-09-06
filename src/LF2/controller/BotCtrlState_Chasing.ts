@@ -102,44 +102,12 @@ export class BotCtrlState_Chasing extends BotCtrlState_Base {
         } else {
           c.key_up(GK.D, GK.U);
         }
-        // const hits = me.frame.hit
-        // if (hits) {
-        //   const { sequences: seqs } = hits
-        //   if (hits.a && dist_en_x > 100 && c.desire() < 3000) {
-        //     c.start(GK.a).end(GK.a) // 持续a
-        //   } else if (hits.j && dist_en_x < 0) {
-        //     c.start(GK.j).end(GK.j) // 取消一些动作
-        //   } else if (hits.d && dist_en_x < 0) {
-        //     c.start(GK.d).end(GK.d) // 取消一些动作
-        //   } else if (seqs && z_reach_2 && c.desire() < 2000) {
-        //     const keys = c.lf2.random_get(Object.keys(seqs).filter(v => v[0] !== 'L' && v[0] !== 'R'))?.split('') as GK[]
-        //     if (keys?.length) c.start(GK.d, ...keys).end(GK.d, ...keys)
-        //   }
-        // }
-
         break;
       case StateEnum.Standing:
       case StateEnum.Walking: {
         if (find(me.v_rests, v => v[1].itr.kind === ItrKind.Block)) {
           c.start(GK.a).end(GK.a)
         }
-        // const seqs = me.frame.hit?.sequences;
-        // if (seqs && c.desire() < 2000) {
-        //   if (is_ai_ray_hit(me, en, { x: 1, z: 0, min_x: 100 })) {
-        //     const kk: GK[] = []
-        //     if (seqs.La && seqs.Ra) kk.push(GK.a)
-        //     if (seqs.Lj && seqs.Rj) kk.push(GK.j)
-        //     if (kk.length) {
-        //       const lr = a_facing > 0 ? GK.R : GK.L
-        //       const k = c.lf2.random_get(kk)!
-        //       c.start(GK.d, lr, k).end(GK.d, lr, k)
-        //     }
-        //   } else if (z_reach_3) {
-        //     const keys = c.lf2.random_get(Object.keys(seqs).filter(v => v[0] !== 'L' && v[0] !== 'R'))?.split('') as GK[]
-        //     if (keys?.length) c.start(GK.d, ...keys).end(GK.d, ...keys)
-        //   }
-        //   return;
-        // }
         const { r_desire } = c;
         if (r_desire > 0) {
           c.db_hit(GK.R).end(GK.R);

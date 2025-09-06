@@ -6,6 +6,9 @@ export interface IBotDataSet {
   /** 走攻触发范围X(敌人背对) */
   w_atk_b_x?: number; // = Defines.AI_W_ATK_B_X;
 
+  /** 走攻触发最小范围X */
+  w_atk_m_x?: number; // = Defines.AI_W_ATK_M_X;
+
   /** 走攻触发范围Z */
   w_atk_z?: number; // = Defines.AI_W_ATK_Z;
 

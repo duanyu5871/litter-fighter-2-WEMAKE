@@ -30,13 +30,13 @@ export enum EntityGroup {
    * 对战模式常规武器
    * 对战模式应当掉落属于这组的武器
    */
-  VsRegularWeapon = "VsRegularWeapon",
+  VsWeapon = "VsWeapon",
 
   /**
    * 闯关常规武器
    * 闯关模式应当掉落属于这组的武器
    */
-  StageRegularWeapon = "StageRegularWeapon",
+  StageWeapon = "StageWeapon",
 
   /**
    * 可被反弹为冰ball的ball
