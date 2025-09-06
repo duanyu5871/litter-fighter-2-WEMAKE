@@ -439,6 +439,9 @@ export namespace Defines {
   export const AI_R_STOP_DESIRE = 10;
   export const AI_R_X_MIN = 100;
   export const AI_R_X_MAX = 2000;
+
+  export const AI_DEF_DESIRE = 10000;
+
   export const MAX_AI_DESIRE = 10000;
 
   export function desire(ratio: number): number {

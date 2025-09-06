@@ -58,6 +58,17 @@ export class BotCtrlState_Chasing extends BotCtrlState_Base {
     random_jumping(c);
     if (this.handle_bot_actions()) return;
 
+    if (c.balls.targets.length > 0 && c.desire() < c.d_desire) {
+      const dx = c.balls.targets[0].entity.position.x - me.position.x
+      if (dx > 0 && a_facing < 0) {
+        c.start(GK.R).end(GK.R)
+      } else if (dx < 0 && a_facing > 0) {
+        c.start(GK.L).end(GK.L)
+      }
+      c.start(GK.d).end(GK.d)
+      return
+    }
+
     switch (state) {
       case StateEnum.Running: {
         if (find(me.v_rests, v => v[1].itr.kind === ItrKind.Block)) {

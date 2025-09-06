@@ -182,6 +182,9 @@ export class BotController extends BaseController implements Required<IBotDataSe
   /** 欲望值：停止跑步 */
   r_stop_desire = Defines.AI_R_STOP_DESIRE;
 
+  /** 防御 */
+  d_desire = Defines.AI_DEF_DESIRE;
+
   get_chasing(): Entity | undefined {
     return this.chasings.get()?.entity
   }
@@ -239,17 +242,34 @@ export class BotController extends BaseController implements Required<IBotDataSe
   }
 
   is_ball_threatening(e?: Entity | null): boolean {
-    return !!(
-      e?.is_attach &&
-      e.frame.id !== Builtin_FrameId.Gone &&
-      abs(this.entity.position.x - e.position.x) <= 200 &&
-      abs(this.entity.position.z - e.position.z) <= 70 &&
-      e.frame.itr?.some(({ kind }) => [
+    if (
+      this.entity.invisible > 5 ||
+      this.entity.blinking > 5 ||
+      !e?.is_attach ||
+      e.frame.id === Builtin_FrameId.Gone ||
+      !e.frame.itr?.some(({ kind }) => [
         ItrKind.Normal,
         ItrKind.JohnShield,
         ItrKind.WeaponSwing
       ].some(b => b === kind)
-      ))
+      )
+    ) return false
+
+
+    const dx = abs(this.entity.position.x - e.position.x)
+    const dz = abs(this.entity.position.z - e.position.z)
+
+    if (!e.velocity.z && abs(dz) > 50) return false;
+
+    if (e.velocity.z < 0 && dz > 0) return false;
+    if (e.velocity.z > 0 && dz < 0) return false;
+    if (e.velocity.x < 0 && dx > 0) return false;
+    if (e.velocity.x > 0 && dx < 0) return false;
+
+    return (
+      abs(dx) <= abs(e.velocity.x * 20) + 80 &&
+      abs(dz) <= abs(e.velocity.z * 20) + 80
+    )
   }
 
   look_other(other: Entity) {
