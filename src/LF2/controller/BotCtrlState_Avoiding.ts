@@ -26,8 +26,13 @@ export class BotCtrlState_Avoiding extends BotCtrlState_Base {
     } else {
       return BotCtrlState.Standing;
     }
-
-
+    switch (state) {
+      case StateEnum.Normal:
+      case StateEnum.Standing:
+      case StateEnum.Walking:
+      case StateEnum.Running:
+        if (this.defend_test()) return;
+    }
     switch (state) {
       case StateEnum.Dash:
       case StateEnum.Jump:

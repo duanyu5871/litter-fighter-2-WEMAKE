@@ -58,19 +58,23 @@ export class BotCtrlState_Chasing extends BotCtrlState_Base {
     random_jumping(c);
     if (this.handle_bot_actions()) return;
 
-    if (c.balls.targets.length > 0 && c.desire() < c.d_desire) {
+    if (c.balls.targets.length > 0) {
       const dx = c.balls.targets[0].entity.position.x - me.position.x
       if (dx > 0 && a_facing < 0) {
-        c.start(GK.R).end(GK.R)
+        c.key_down(GK.R).key_up(GK.L)
       } else if (dx < 0 && a_facing > 0) {
-        c.start(GK.L).end(GK.L)
+        c.key_down(GK.L).key_up(GK.R)
       }
       c.start(GK.d).end(GK.d)
       return
     }
 
     switch (state) {
+      case StateEnum.Normal:
+        if (this.defend_test()) return;
+        break;
       case StateEnum.Running: {
+        if (this.defend_test()) return;
         if (find(me.v_rests, v => v[1].itr.kind === ItrKind.Block)) {
           c.start(GK.a).end(GK.a)
         }
@@ -115,6 +119,7 @@ export class BotCtrlState_Chasing extends BotCtrlState_Base {
         break;
       case StateEnum.Standing:
       case StateEnum.Walking: {
+        if (this.defend_test()) return;
         if (find(me.v_rests, v => v[1].itr.kind === ItrKind.Block)) {
           c.start(GK.a).end(GK.a)
         }
@@ -142,7 +147,6 @@ export class BotCtrlState_Chasing extends BotCtrlState_Base {
         break;
       }
       case StateEnum.Jump: {
-
         if (
           my_y > 10 &&
           between(dist_en_x, 0, c.j_atk_x) &&

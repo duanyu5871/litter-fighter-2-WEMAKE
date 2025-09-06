@@ -136,7 +136,8 @@ export class DanmuGameLogic extends UIComponent {
   }
 
   update_bg() {
-    this.lf2.change_bg('bg_4');
+    // this.lf2.change_bg('bg_4');
+    this.lf2.change_bg('?');
 
     const fighter_enter = (v: Entity) => {
       v.is_key_role = v.is_gone_dead = true;

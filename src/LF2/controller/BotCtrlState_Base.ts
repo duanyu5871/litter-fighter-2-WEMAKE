@@ -1,5 +1,5 @@
 import { IState } from "../base/FSM";
-import { TLooseGameKey } from "../defines";
+import { GameKey as GK, TLooseGameKey } from "../defines";
 import { random_get } from "../utils";
 import { abs } from "../utils/math/base";
 import { BotController } from "./BotController";
@@ -10,6 +10,21 @@ export abstract class BotCtrlState_Base implements IState<BotCtrlState> {
   readonly ctrl: BotController
   constructor(ctrl: BotController) {
     this.ctrl = ctrl;
+  }
+  defend_test(): boolean {
+    const { ctrl: c } = this;
+    const me = c.entity;
+    const { facing } = me
+    if (c.balls.targets.length <= 0)
+      return false
+    const dx = c.balls.targets[0].entity.position.x - me.position.x
+    if (dx > 0 && facing < 0) {
+      c.key_down(GK.R).key_up(GK.L)
+    } else if (dx < 0 && facing > 0) {
+      c.key_down(GK.L).key_up(GK.R)
+    }
+    c.start(GK.d).end(GK.d)
+    return true;
   }
   update?(dt: number): BotCtrlState | undefined | void;
   enter?(): void;

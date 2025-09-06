@@ -255,21 +255,18 @@ export class BotController extends BaseController implements Required<IBotDataSe
       )
     ) return false
 
+    const dx = this.entity.position.x - e.position.x
+    const dz = this.entity.position.z - e.position.z
+    if (e.velocity.z < 0 && dz > 80) return false;
+    if (e.velocity.z > 0 && dz < -80) return false;
+    if (e.velocity.x < 0 && dx > 80) return false;
+    if (e.velocity.x > 0 && dx < -80) return false;
 
-    const dx = abs(this.entity.position.x - e.position.x)
-    const dz = abs(this.entity.position.z - e.position.z)
-
-    if (!e.velocity.z && abs(dz) > 50) return false;
-
-    if (e.velocity.z < 0 && dz > 0) return false;
-    if (e.velocity.z > 0 && dz < 0) return false;
-    if (e.velocity.x < 0 && dx > 0) return false;
-    if (e.velocity.x > 0 && dx < 0) return false;
-
-    return (
+    const ret = (
       abs(dx) <= abs(e.velocity.x * 20) + 80 &&
       abs(dz) <= abs(e.velocity.z * 20) + 80
     )
+    return ret
   }
 
   look_other(other: Entity) {
