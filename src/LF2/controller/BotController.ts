@@ -242,7 +242,8 @@ export class BotController extends BaseController implements Required<IBotDataSe
     return !!(
       e?.is_attach &&
       e.frame.id !== Builtin_FrameId.Gone &&
-      manhattan_xz(this.entity, e) <= 300 &&
+      abs(this.entity.position.x - e.position.x) <= 200 &&
+      abs(this.entity.position.z - e.position.z) <= 70 &&
       e.frame.itr?.some(({ kind }) => [
         ItrKind.Normal,
         ItrKind.JohnShield,
