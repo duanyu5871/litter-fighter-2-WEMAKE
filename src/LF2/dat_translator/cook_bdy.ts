@@ -12,8 +12,8 @@ import { take } from "./take";
 
 export default function cook_bdy(bdy?: Partial<IBdyInfo>): void {
   if (!bdy) return;
-  const kind_name = (BdyKind as any)[bdy.kind!];
-  if (kind_name) (bdy as any).kind_name = `BdyKind.${kind_name}`;
+  const kind_name = BdyKind[bdy.kind as BdyKind];
+  if (kind_name) bdy.kind_name = `BdyKind.${kind_name}`;
 
   bdy.ally_flags = AllyFlag.Enemy;
   bdy.l = Defines.DAFUALT_QUBE_LENGTH;

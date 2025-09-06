@@ -2,32 +2,27 @@ import { FacingFlag } from "../defines/FacingFlag";
 import { ICpointInfo } from "../defines/ICpointInfo";
 import { Defines } from "../defines/defines";
 import { abs } from "../utils";
+import { take_number } from "../utils/container_help/take_number";
 import { is_num, is_str, not_zero_num } from "../utils/type_check";
 import { get_next_frame_by_raw_id } from "./get_the_next";
 import { take } from "./take";
+import { take_not_zero_num } from "./take_not_zero_num";
+import { take_num } from "./take_num";
 
 export function cook_cpoint(unsure_cpoint: ICpointInfo): void {
-  const tvx = take(unsure_cpoint, "throwvx");
-  if (not_zero_num(tvx) && tvx !== -842150451)
-    unsure_cpoint.throwvx = tvx * 0.5;
 
-  const tvy = take(unsure_cpoint, "throwvy");
-  if (not_zero_num(tvy) && tvy !== -842150451)
-    unsure_cpoint.throwvy = tvy * -0.5;
+  unsure_cpoint.throwvx = take_not_zero_num(unsure_cpoint, "throwvx", n => n * 0.5);
+  unsure_cpoint.throwvy = take_not_zero_num(unsure_cpoint, "throwvy", n => n * -0.5);
+  unsure_cpoint.throwvz = take_not_zero_num(unsure_cpoint, "throwvz", n => n * 1);
 
-  const tvz = take(unsure_cpoint, "throwvz");
-  if (not_zero_num(tvz) && tvz !== -842150451) unsure_cpoint.throwvz = tvz;
-
-  const tvj = take(unsure_cpoint, "throwinjury");
-  if (not_zero_num(tvj) && tvj !== -842150451) {
-    unsure_cpoint.throwinjury = tvj;
+  unsure_cpoint.throwinjury = take_not_zero_num(unsure_cpoint, "throwinjury", n => n * 1);
+  if (unsure_cpoint.throwinjury) {
     unsure_cpoint.tx = 60;
     unsure_cpoint.ty = 15;
   }
-  
-  const decrease = take(unsure_cpoint, 'decrease');
-  if (is_num(decrease)) unsure_cpoint.decrease = -abs(decrease)
-  
+
+  unsure_cpoint.decrease = take_num(unsure_cpoint, 'decrease', n => -abs(n));
+
   const vaction = take(unsure_cpoint, "vaction");
   const raw_injury = take(unsure_cpoint, "injury");
   if (is_num(raw_injury)) {

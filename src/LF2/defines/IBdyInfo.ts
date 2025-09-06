@@ -28,6 +28,8 @@ export interface IBdyInfo extends IQube {
    */
   kind: number;
 
+  kind_name?: string;
+
   /**
    * [WEMAKE]
    *
