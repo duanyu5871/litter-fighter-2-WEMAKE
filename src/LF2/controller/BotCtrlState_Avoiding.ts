@@ -10,10 +10,9 @@ export class BotCtrlState_Avoiding extends BotCtrlState_Base {
   override update() {
 
     const { ctrl: c } = this;
-    c.update_nearest();
     const me = c.entity;
-    const en = c.chasing
-    const av = c.avoiding
+    const en = c.get_chasing()
+    const av = c.get_avoiding()
     const { state } = me.frame;
 
     random_jumping(this.ctrl)

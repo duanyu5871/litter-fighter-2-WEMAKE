@@ -6,6 +6,7 @@ import Ditto from "./ditto";
 import { IWorldRenderer } from "./ditto/render/IWorldRenderer";
 import {
   Entity, Factory, ICreator, is_ball,
+  is_bot_ctrl,
   is_character,
   is_local_ctrl,
   is_weapon
@@ -457,16 +458,22 @@ export class World extends WorldDataset {
     this.collisions.length = 0;
     this._used_itrs.clear()
     this._temp_entitis_set.clear();
+
     for (const a of this.entities) {
+      const a_ctrl = a.ctrl
       for (const b of this._temp_entitis_set) {
+        const b_ctrl = b.ctrl;
+        if (is_bot_ctrl(b_ctrl)) b_ctrl.look_other(a)
+        if (is_bot_ctrl(a_ctrl)) a_ctrl.look_other(b)
+
         const collision1 = this.collision_detection(a, b);
         const collision2 = this.collision_detection(b, a);
         if (collision1 && collision2) {
-          const weight1 = ALL_ENTITY_ENUM.indexOf(collision1.attacker.type)
-          const weight2 = ALL_ENTITY_ENUM.indexOf(collision2.attacker.type)
-          if (weight1 > weight2)
+          const priority1 = ALL_ENTITY_ENUM.indexOf(collision1.attacker.type)
+          const priority2 = ALL_ENTITY_ENUM.indexOf(collision2.attacker.type)
+          if (priority1 > priority2)
             this.collisions.push(collision1)
-          else if (weight1 < weight2)
+          else if (priority1 < priority2)
             this.collisions.push(collision2)
           else
             this.collisions.push(collision1, collision2)

@@ -47,7 +47,7 @@ export interface IItrInfo extends IQube {
    * 详细效果见ItrKind
    * @see {ItrKind}
    */
-  kind: number;
+  kind: number | ItrKind;
 
   /** just for reading */
   kind_name?: string;

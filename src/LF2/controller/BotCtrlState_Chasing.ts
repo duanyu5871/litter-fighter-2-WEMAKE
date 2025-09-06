@@ -11,10 +11,9 @@ export class BotCtrlState_Chasing extends BotCtrlState_Base {
   readonly key = BotCtrlState.Chasing;
   override update() {
     const { ctrl: c } = this;
-    c.update_nearest();
     const me = c.entity;
-    const en = c.chasing
-    const av = c.avoiding
+    const en = c.get_chasing()
+    const av = c.get_avoiding()
     if (av && en && manhattan_xz(me, av) < manhattan_xz(me, en))
       return BotCtrlState.Avoiding
     else if (!en && av) return BotCtrlState.Avoiding;

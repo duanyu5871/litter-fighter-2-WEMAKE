@@ -59,7 +59,6 @@ export const dummy_updaters: Record<DummyEnum, IDummyUpdater | undefined> = {
   },
   [DummyEnum.AvoidEnemyAllTheTime]: {
     update: (self) => {
-      self.update_nearest();
       self.avoid_enemy();
     }
   },

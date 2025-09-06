@@ -1,10 +1,10 @@
 import FSM from "../base/FSM";
-import { Builtin_FrameId, Defines, GameKey as GK, StateEnum, TLooseGameKey } from "../defines";
+import { Builtin_FrameId, Defines, GameKey as GK, ItrKind, StateEnum, TLooseGameKey } from "../defines";
 import { IBotAction } from "../defines/IBotAction";
 import { IBotDataSet } from "../defines/IBotDataSet";
 import { is_ai_ray_hit } from "../defines/is_ai_ray_hit";
 import { Entity } from "../entity/Entity";
-import { is_character } from "../entity/type_check";
+import { is_ball, is_character } from "../entity/type_check";
 import { manhattan_xz } from "../helper/manhattan_xz";
 import { abs, clamp, floor } from "../utils";
 import { BaseController, KEY_NAME_LIST } from "./BaseController";
@@ -16,6 +16,55 @@ import { dummy_updaters, DummyEnum } from "./DummyEnum";
 export interface IBotTarget {
   entity: Entity;
   distance: number;
+}
+export class NearestTargets {
+  targets: IBotTarget[] = [];
+  max: number = 5;
+  entities = new Set<Entity>();
+
+  constructor(max: number) { this.max = max }
+  get(): IBotTarget | undefined { return this.targets[0] }
+
+  look(self: Entity, other: Entity) {
+    const { targets } = this
+    if (!self || this.entities.has(other)) return
+
+    const distance = manhattan_xz(self, other)
+    const len = targets.length;
+    if (len < this.max) {
+      targets.push({ entity: other, distance })
+      this.entities.add(other);
+      return;
+    } else {
+      for (let i = 0; i < len; ++i) {
+        const target = targets[i];
+        if (distance > target.distance)
+          continue;
+        this.targets.splice(i, 0, { entity: other, distance })
+        this.entities.add(other);
+        const { entity } = this.targets[this.max]
+        this.entities.delete(entity);
+        this.targets.length = this.max
+        break;
+      }
+    }
+  }
+
+  del(condition: (target: IBotTarget) => boolean) {
+    this.targets = this.targets.filter((target) => {
+      const ret = !condition(target)
+      if (!ret) this.entities.delete(target.entity)
+      return ret;
+    })
+  }
+
+  sort(self: Entity) {
+    this.targets.sort((a, b) => {
+      a.distance = manhattan_xz(self, a.entity)
+      b.distance = manhattan_xz(self, b.entity)
+      return a.distance - b.distance
+    })
+  }
 }
 export class BotController extends BaseController implements Required<IBotDataSet> {
   readonly fsm = new FSM<BotCtrlState>()
@@ -39,8 +88,9 @@ export class BotController extends BaseController implements Required<IBotDataSe
   w_atk_z = Defines.AI_W_ATK_Z;
   /** 走攻触发范围X */
   get w_atk_x() {
-    if (!this.chasing) return 0;
-    return this.entity.facing === this.chasing.facing ?
+    const chasing = this.get_chasing()
+    if (!chasing) return 0;
+    return this.entity.facing === chasing.facing ?
       this.w_atk_f_x :
       this.w_atk_b_x;
   }
@@ -56,8 +106,9 @@ export class BotController extends BaseController implements Required<IBotDataSe
   r_atk_z = Defines.AI_R_ATK_Z;
   /** 跑攻触发范围X */
   get r_atk_x() {
-    if (!this.chasing) return 0;
-    return this.entity.facing === this.chasing.facing ? this.r_atk_b_x : this.r_atk_f_x;
+    const chasing = this.get_chasing()
+    if (!chasing) return 0;
+    return this.entity.facing === chasing.facing ? this.r_atk_b_x : this.r_atk_f_x;
   }
 
   /** 冲跳攻触发范围X(敌人正对) */
@@ -68,8 +119,9 @@ export class BotController extends BaseController implements Required<IBotDataSe
   d_atk_z = Defines.AI_D_ATK_Z;
   /** 冲跳攻触发范围X */
   get d_atk_x() {
-    if (!this.chasing) return 0;
-    return this.entity.facing === this.chasing.facing ? this.d_atk_b_x : this.d_atk_f_x;
+    const chasing = this.get_chasing()
+    if (!chasing) return 0;
+    return this.entity.facing === chasing.facing ? this.d_atk_b_x : this.d_atk_f_x;
   }
 
   /** 跳攻触发范围X(敌人正对) */
@@ -83,8 +135,9 @@ export class BotController extends BaseController implements Required<IBotDataSe
   j_atk_y_max = Defines.AI_J_ATK_Y_MAX;
   /** 跳攻触发范围X */
   get j_atk_x() {
-    if (!this.chasing) return 0;
-    return this.entity.facing === this.chasing.facing ? this.j_atk_b_x : this.j_atk_f_x;
+    const chasing = this.get_chasing()
+    if (!chasing) return 0;
+    return this.entity.facing === chasing.facing ? this.j_atk_b_x : this.j_atk_f_x;
   }
 
   jump_desire = Defines.AI_J_DESIRE;
@@ -109,8 +162,9 @@ export class BotController extends BaseController implements Required<IBotDataSe
   r_x_max = Defines.AI_R_X_MAX;
 
   get r_desire(): -1 | 1 | 0 {
-    if (!this.chasing) return 0;
-    let dx = abs(this.entity.position.x - this.chasing.position.x) - this.r_x_min
+    const chasing = this.get_chasing()
+    if (!chasing) return 0;
+    let dx = abs(this.entity.position.x - chasing.position.x) - this.r_x_min
     if (dx < 0) return 0;
     let should_run = false
     const r_x_r = this.r_x_max - this.r_x_min
@@ -122,54 +176,23 @@ export class BotController extends BaseController implements Required<IBotDataSe
       should_run = this.desire() < this.r_x_min;
     }
     if (!should_run) return 0;
-    return this.entity.position.x > this.chasing.position.x ? -1 : 1
+    return this.entity.position.x > chasing.position.x ? -1 : 1
   }
 
   /** 欲望值：停止跑步 */
   r_stop_desire = Defines.AI_R_STOP_DESIRE;
 
-  get chasing(): Entity | undefined {
-    return this.chasings[0]?.entity
-  }
-  set chasing(entity: Entity | undefined) {
-    const target = this.chasings[0]
-    if (entity) {
-      const distance = this.manhattan_to(entity)
-      if (target) {
-        target.distance = distance
-      } else {
-        this.chasings[0] = {
-          entity,
-          distance
-        }
-      }
-
-    } else {
-      this.chasings.length = 0
-    }
-  }
-  get avoiding(): Entity | undefined {
-    return this.avoidings[0]?.entity
-  }
-  set avoiding(entity: Entity | undefined) {
-    const target = this.avoidings[0]
-    if (entity) {
-      const distance = this.manhattan_to(entity)
-      if (target) {
-        target.distance = this.manhattan_to(entity)
-      } else {
-        this.avoidings[0] = {
-          entity,
-          distance
-        }
-      }
-    } else {
-      this.avoidings.length = 0
-    }
+  get_chasing(): Entity | undefined {
+    return this.chasings.get()?.entity
   }
 
-  chasings: IBotTarget[] = [];
-  avoidings: IBotTarget[] = [];
+  get_avoiding(): Entity | undefined {
+    return this.avoidings.get()?.entity
+  }
+
+  chasings = new NearestTargets(5);
+  avoidings = new NearestTargets(5);
+  balls = new NearestTargets(5);
 
   private _dummy?: DummyEnum;
   get dummy(): DummyEnum | undefined {
@@ -188,58 +211,61 @@ export class BotController extends BaseController implements Required<IBotDataSe
     const { x: x1, z: z1 } = a.position;
     return abs(x1 - x) + abs(z1 - z);
   }
-  should_avoid(e?: Entity | null) {
-    if (!e) return false;
-    if (e.frame.id === Builtin_FrameId.Gone) return false;
-    return (
-      e.hp > 0 && manhattan_xz(this.entity, e) < 200 &&
-      (e.frame.state === StateEnum.Lying || e.invisible || e.blinking)
-    );
 
-  }
-  should_chase(e?: Entity | null) {
-    if (!e) return false;
-    if (e.frame.id === Builtin_FrameId.Gone) return false;
-    return (
+  should_chase(e?: Entity | null): boolean {
+    return !!(
+      e?.is_attach &&
+      this.entity.hp > 0 &&
       e.hp > 0 &&
+      e.frame.id !== Builtin_FrameId.Gone &&
       e.frame.state !== StateEnum.Lying &&
       !e.invisible &&
       !e.blinking
-    );
+    )
   }
-  update_nearest() {
-    if (this.time % 5 !== 0) return;
-    const c = this.entity;
-    if (c.hp <= 0) return;
-    if (!this.should_chase(this.chasing)) {
-      this.chasing = void 0;
-    }
-    if (!this.should_avoid(this.avoiding)) {
-      this.avoiding = void 0;
-    }
-    for (const e of c.world.entities) {
-      if (!is_character(e)) continue;
-      if (c.is_ally(e)) continue;
-      if (this.should_avoid(e)) {
-        if (!this.avoiding) {
-          this.avoiding = e;
-        } else if (
-          this.manhattan_to(e) < this.manhattan_to(this.avoiding)
-        ) {
-          this.avoiding = e;
-        }
-      } else if (this.should_chase(e)) {
-        if (!this.chasing) {
-          this.chasing = e;
-        } else if (
-          this.manhattan_to(e) < this.manhattan_to(this.chasing)
-        ) {
-          this.chasing = e;
+
+  should_avoid(e?: Entity | null): boolean {
+    return !!(
+      e?.is_attach &&
+      this.entity.hp > 0 &&
+      e.hp > 0 &&
+      e.frame.id !== Builtin_FrameId.Gone &&
+      manhattan_xz(this.entity, e) < 300 && (
+        e.frame.state === StateEnum.Lying ||
+        e.invisible ||
+        e.blinking
+      )
+    )
+  }
+
+  is_ball_threatening(e?: Entity | null): boolean {
+    return !!(
+      e?.is_attach &&
+      e.frame.id !== Builtin_FrameId.Gone &&
+      manhattan_xz(this.entity, e) <= 300 &&
+      e.frame.itr?.some(({ kind }) => [
+        ItrKind.Normal,
+        ItrKind.JohnShield,
+        ItrKind.WeaponSwing
+      ].some(b => b === kind)
+      ))
+  }
+
+  look_other(other: Entity) {
+    if (is_character(other)) {
+      if (!this.entity.is_ally(other)) {
+        if (this.should_avoid(other)) {
+          this.avoidings.look(this.entity, other)
+        } else if (this.should_chase(other)) {
+          this.chasings.look(this.entity, other)
         }
       }
-    }
-    if (this.dummy === DummyEnum.AvoidEnemyAllTheTime) {
-      this.avoiding = this.chasing;
+    } else if (is_ball(other)) {
+      if (!this.entity.is_ally(other)) {
+        if (this.is_ball_threatening(other)) {
+          this.balls.look(this.entity, other)
+        }
+      }
     }
   }
 
@@ -293,12 +319,13 @@ export class BotController extends BaseController implements Required<IBotDataSe
     return this.lf2.random_in(0, Defines.MAX_AI_DESIRE)
   }
   avoid_enemy() {
-    if (!this.avoiding) return false;
+    const avoiding = this.get_avoiding()
+    if (!avoiding) return false;
 
     const c = this.entity;
     const { x, z } = c.position;
-    const { x: enemy_x, z: enemy_z } = this.avoiding.position;
-    const distance = this.manhattan_to(this.avoiding);
+    const { x: enemy_x, z: enemy_z } = avoiding.position;
+    const distance = this.manhattan_to(avoiding);
     if (distance > 200) {
       this.end(GK.L, GK.R, GK.U, GK.D);
       return true;
@@ -351,6 +378,17 @@ export class BotController extends BaseController implements Required<IBotDataSe
     } else {
       this.fsm.update(1)
     }
+
+
+    this.chasings.del(({ entity }) => !this.should_chase(entity))
+    this.chasings.sort(this.entity)
+
+    this.avoidings.del(({ entity }) => !this.should_avoid(entity))
+    this.avoidings.sort(this.entity)
+
+    this.balls.del(({ entity }) => !this.is_ball_threatening(entity))
+    this.balls.sort(this.entity)
+
     return super.update();
   }
   lock_when_stand_and_rest() {
@@ -366,20 +404,18 @@ export class BotController extends BaseController implements Required<IBotDataSe
   }
 
   handle_action(action: IBotAction | undefined): TLooseGameKey[] | false {
-    if (!action) return false;
-    const c = this;
-    const { facing } = c.entity;
+    if (!action) return false
+    const { facing } = this.entity;
     const { status, e_ray, judger, desire = 10000, keys } = action
-
-
-    if (c.desire() > desire) return false;
-    if (status && !status.some(v => v === c.fsm.state?.key))
+    if (this.desire() > desire) return false;
+    if (status && !status.some(v => v === this.fsm.state?.key))
       return false;
     if (e_ray) {
-      if (!c.chasing) return false;
+      const chasing = this.get_chasing()
+      if (!chasing) return false;
       let ray_hit = false
       for (const r of e_ray) {
-        ray_hit = is_ai_ray_hit(c.entity, c.chasing, r);
+        ray_hit = is_ai_ray_hit(this.entity, chasing, r);
         if (ray_hit) break;
       }
       if (!ray_hit) return false;
