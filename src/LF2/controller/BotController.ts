@@ -32,6 +32,9 @@ export class BotController extends BaseController implements Required<IBotDataSe
   w_atk_f_x = Defines.AI_W_ATK_F_X;
   /** 走攻触发范围X(敌人背对) */
   w_atk_b_x = Defines.AI_W_ATK_B_X;
+
+  w_atk_m_x = Defines.AI_W_ATK_M_X;
+
   /** 走攻触发范围Z */
   w_atk_z = Defines.AI_W_ATK_Z;
   /** 走攻触发范围X */

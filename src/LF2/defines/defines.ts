@@ -410,6 +410,7 @@ export namespace Defines {
 
   export const AI_W_ATK_F_X = 50;
   export const AI_W_ATK_B_X = 40;
+  export const AI_W_ATK_M_X = -1;
   export const AI_W_ATK_Z = 15;
 
   export const AI_R_ATK_F_X = 100;
