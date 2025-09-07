@@ -225,6 +225,11 @@ export class BaseController {
             break;
           case 1:
             if (!this.is_end(k)) break;
+            if (k === GK.d) {
+              this._key_list = k;
+            } else if (this._key_list[0] === GK.d) {
+              this._key_list += k;
+            }
             this.keys[k].hit(this._time);
             const ck = CONFLICTS_KEY_MAP[k];
             if (ck) this.dbc[ck].reset();
@@ -241,9 +246,6 @@ export class BaseController {
     const entity = this.entity;
     const frame = entity.frame;
     const { hold: hld, hit, key_down: kd_map, key_up: ku_map } = frame;
-
-    // 按键序列初始化
-    if (this.keys.d.is_start()) this._key_list = "";
 
     const ret = this.result.set(void 0, 0);
 
@@ -288,8 +290,6 @@ export class BaseController {
     for (const name of KEY_NAME_LIST) {
       const key = this.keys[name];
 
-      /** 加入按键序列，但d除外，因为d是按键序列的开始 */
-      if (name !== "d" && this.is_start(name)) this._key_list += name;
 
       if (kd_map) {
         /** 按键判定 */
@@ -343,15 +343,8 @@ export class BaseController {
       if (this.keys.d.is_hit()) {
         const seq = Object.keys(seqs).find((v) => this.sametime_keys_test(v));
         if (seq && seqs[seq]) {
-          for (let k of seq) {
-            if (k === 'F')
-              k = this.entity.facing > 0 ? GK.R : GK.L
-            else if (k === 'B')
-              k = this.entity.facing < 0 ? GK.R : GK.L
-            this.keys[k as GK]?.use();
-          }
+          for (let k of seq) this.keys[k as GK]?.use();
           ret.set(seqs[seq], this._time, void 0, this._key_list);
-          console.log('sametime keys hit!')
           this._key_list = '';
           break;
         } else {
@@ -360,11 +353,13 @@ export class BaseController {
       }
 
       /** 顺序按键 判定 */
-      if (this._key_list.length >= 2 && seqs[this._key_list]) {
+      if (this._key_list.length >= 3) {
         const seq = Object.keys(seqs).find(v => this.sequence_keys_test(v));
         if (seq) {
           ret.set(seqs[seq], this._time, void 0, this._key_list);
-          console.log('seq keys hit!')
+          for (let k of this._key_list) 
+            this.keys[k as GK]?.use();
+          
           this._key_list = '';
         }
         break;
@@ -375,7 +370,7 @@ export class BaseController {
   }
   private sequence_keys_test(str: string): boolean {
     for (let i = 0; i < str.length; i++) {
-      let actual_key = this._key_list[i]
+      let actual_key = this._key_list[i + 1]
       let expected_key = str[i]
       if (expected_key === 'F')
         expected_key = this.entity.facing > 0 ? GK.R : GK.L

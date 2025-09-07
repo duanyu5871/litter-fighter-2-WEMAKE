@@ -115,15 +115,8 @@ export function make_character_data(
       if (!frame.hit) frame.hit = {};
       if (!frame.hit.sequences) frame.hit.sequences = {};
       const nf = get_next_frame_by_raw_id(next, "hit", frame_mp_hp_map);
-      const turnable = [
-        StateEnum.Standing,
-        StateEnum.Walking,
-        StateEnum.Defend,
-        StateEnum.Jump,
-        StateEnum.Dash,
-        StateEnum.Rowing
-      ].some(v => v == frame.state)
-      if (turnable && (k === "Fa" || k === "Fj")) {
+
+      if (k === "Fa" || k === "Fj") {
         frame.hit.sequences["L" + k[1]] = {
           ...nf,
           facing:

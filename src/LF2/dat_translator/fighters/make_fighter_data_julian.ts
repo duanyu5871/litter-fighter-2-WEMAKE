@@ -26,10 +26,10 @@ export function make_fighter_data_julian(data: IEntityData) {
 
   BotBuilder.make(data).set_actions(
     // ball
-    bot_chasing_skill_action('d>a', void 0, 25, 1 / 30),
+    bot_chasing_skill_action('d>a', void 0, 25, 1 / 60),
 
     // ball + ...a
-    bot_chasing_action('d>a+a', ['a'], void 0, 0.5),
+    bot_chasing_action('d>a+a', ['a'], void 0, 0.15),
 
     // super-ball
     bot_ball_dfj(125, 1 / 30),
