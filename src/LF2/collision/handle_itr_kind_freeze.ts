@@ -14,6 +14,7 @@ export function handle_itr_kind_freeze(collision: ICollision) {
       (StateEnum.Caught === victim.frame.state ||
         victim.velocity_0.y > 0 ||
         victim.position.y > 0));
+
   if (is_fall && itr.dvy)
     victim.velocity_0.y =
       (itr.dvy ?? attacker.world.ivy_d) * attacker.world.ivy_f;
