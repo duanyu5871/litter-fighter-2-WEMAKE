@@ -1,7 +1,7 @@
 import { Defines } from "./defines";
 import Ditto from "./ditto";
 import { IWorldDataset } from "./IWorldDataset";
-import { make_private_properties } from "./make_private_properties";
+import { make_private_properties } from "./utils/make_private_properties";
 
 export class WorldDataset implements IWorldDataset {
   static readonly TAG: string = 'WorldDataset';
