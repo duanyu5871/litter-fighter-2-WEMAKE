@@ -245,7 +245,7 @@ export namespace Defines {
    * @type {number}
    */
   export const KEY_HIT_DURATION: number = 10;
-  export const GRAVITY: number = 0.5; // 0.38;
+  export const GRAVITY: number = 0.48; // 0.38;
   export const FRICTION_FACTOR: number = 1; // 0.894427191;
   export const FRICTION_X: number = 0.3;
   export const FRICTION_Z: number = 0.3;

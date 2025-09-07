@@ -454,7 +454,6 @@ export function make_character_data(
         break;
       case 181:
       case 182:
-      case 183:
         if (!frame.hit) frame.hit = {};
         frame.hit.j = push_next_frame(frame.hit.j, {
           id: "100",
@@ -463,6 +462,7 @@ export function make_character_data(
             .done(),
         });
         break;
+      case 183:
       case 184:
       case 185:
         break;
@@ -472,7 +472,6 @@ export function make_character_data(
         break;
       case 187:
       case 188:
-      case 189:
         if (!frame.hit) frame.hit = {};
         frame.hit.j = push_next_frame(frame.hit.j, {
           id: "108",
@@ -481,6 +480,7 @@ export function make_character_data(
             .done(),
         });
         break;
+      case 189:
       case 190:
       case 191:
         break;

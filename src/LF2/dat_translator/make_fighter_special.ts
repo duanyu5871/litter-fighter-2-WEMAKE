@@ -52,9 +52,7 @@ export function make_fighter_special(data: IEntityData): IEntityData {
       add_entity_groups(data.base, EntityGroup._3000);
       break;
     case BuiltIn_OID.Hunter: return make_fighter_data_henter(data);
-    case BuiltIn_OID.Template:
-      add_entity_groups(data.base, EntityGroup.Hidden);
-      break;
+    case BuiltIn_OID.Template: break;
     case BuiltIn_OID.Jan:
       data.base.files['0'].variants = ['2']
       data.base.files['1'].variants = ['3']
