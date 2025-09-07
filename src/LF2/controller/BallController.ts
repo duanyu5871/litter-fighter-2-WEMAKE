@@ -1,4 +1,4 @@
-import { FrameBehavior, GameKey as GK, IFrameInfo, IVector3 } from "../defines";
+import { FrameBehavior, GK, IFrameInfo, IVector3 } from "../defines";
 import { BaseController } from "./BaseController";
 import { ControllerUpdateResult } from "./ControllerUpdateResult";
 const { L, R, U, D, j, d } = GK

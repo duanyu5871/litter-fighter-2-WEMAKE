@@ -7,3 +7,4 @@ export * from "./NoEmitCallbacks";
 export * from "./PromisesInOne";
 export * from "./ICollision";
 export * from "./ICollisionHandler"
+export * from "./FSM"

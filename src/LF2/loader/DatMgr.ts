@@ -1,6 +1,6 @@
 import { LF2 } from "../LF2";
 import { BallController } from "../controller/BallController";
-import { BotController } from "../controller/BotController";
+import { BotController } from "../bot/BotController";
 import { InvalidController } from "../controller/InvalidController";
 import { IBgData, IDataLists, IStageInfo } from "../defines";
 import { EntityEnum } from "../defines/EntityEnum";
@@ -25,7 +25,7 @@ import { preprocess_entity_data } from "./preprocess_entity_data";
 export interface IDataListMap {
   background: IBgData[];
   [EntityEnum.Entity]: IEntityData[];
-  [EntityEnum.Character]: IEntityData[];
+  [EntityEnum.Fighter]: IEntityData[];
   [EntityEnum.Weapon]: IEntityData[];
   [EntityEnum.Ball]: IEntityData[];
   all: TData[];
@@ -33,10 +33,10 @@ export interface IDataListMap {
 
 const create_data_list_map = (): IDataListMap => ({
   background: [Defines.VOID_BG],
-  entity: [],
-  character: [],
-  weapon: [],
-  ball: [],
+  [EntityEnum.Entity]: [],
+  [EntityEnum.Fighter]: [],
+  [EntityEnum.Weapon]: [],
+  [EntityEnum.Ball]: [],
   all: [],
 });
 
@@ -200,19 +200,19 @@ export default class DatMgr {
   }
 
   get characters() {
-    return this._inner.data_list_map.character;
+    return this._inner.data_list_map[EntityEnum.Fighter];
   }
   get weapons() {
-    return this._inner.data_list_map.weapon;
+    return this._inner.data_list_map[EntityEnum.Weapon];
   }
   get backgrounds() {
     return this._inner.data_list_map.background;
   }
   get balls() {
-    return this._inner.data_list_map.ball;
+    return this._inner.data_list_map[EntityEnum.Ball];
   }
   get entity() {
-    return this._inner.data_list_map.entity;
+    return this._inner.data_list_map[EntityEnum.Entity];
   }
   get all() {
     return this._inner.data_list_map.all;

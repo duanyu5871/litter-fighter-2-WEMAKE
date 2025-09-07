@@ -60,7 +60,7 @@ export default class Item {
       this.data_list.push(...characters, ...weapons, ...entity);
     }
     this.is_enemies = !this.data_list.find(
-      (v) => v.type !== EntityEnum.Character,
+      (v) => v.type !== EntityEnum.Fighter,
     );
     let waiting_data_list = [...this.data_list];
     this.get_oid = () => {

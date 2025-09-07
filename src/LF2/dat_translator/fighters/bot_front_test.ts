@@ -1,6 +1,7 @@
-import { BotCtrlState } from "../../controller/BotCtrlState";
-import { BotVal, EntityVal, Defines } from "../../defines";
-import { IBotAction } from "../../defines/IBotAction";
+import {
+  BotStateEnum, BotVal, Defines, EntityVal,
+  IBotAction
+} from "../../defines";
 import { CondMaker } from "../CondMaker";
 import { IEditBotActionFunc } from "./IEditBotAction";
 
@@ -29,7 +30,7 @@ export function bot_front_test(
     const ret: IBotAction = {
       action_id: action_id,
       desire: Defines.desire(desire),
-      status: [BotCtrlState.Chasing],
+      status: [BotStateEnum.Chasing],
       e_ray: rays,
       expression: min_mp > 0 ? cond.done() : void 0,
       keys: keys

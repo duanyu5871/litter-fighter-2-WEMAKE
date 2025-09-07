@@ -1,6 +1,6 @@
 export enum ArmorEnum {
-  Defend = 'Defend',
-  Fall = "Fall",
-  Times = "Times",
-  Injury = "Injury"
+  Defend = 1,
+  Fall = 2,
+  Times = 3,
+  Injury = 4
 }

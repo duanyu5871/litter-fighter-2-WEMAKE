@@ -1,6 +1,4 @@
-import { BotCtrlState } from "../../controller/BotCtrlState";
-import { Defines, GameKey as GK, TLooseGameKey } from "../../defines";
-import { IBotAction } from "../../defines/IBotAction";
+import { Defines, GK, LGK, IBotAction, BotStateEnum } from "../../defines";
 import { CondMaker } from "../CondMaker";
 import { IEditBotActionFunc } from "./IEditBotAction";
 /**
@@ -12,16 +10,16 @@ import { IEditBotActionFunc } from "./IEditBotAction";
  * @export
  * @param {string} action_id
  * @param {number} [desire=0.1]
- * @param {(...('F' | 'B' | TLooseGameKey)[])} keys
+ * @param {(...('F' | 'B' | LGK)[])} keys
  * @return {IEditBotActionFunc} 
  */
-export function bot_ball_cancelling(action_id: string, desire: number = 0.1, ...keys: ('F' | 'B' | TLooseGameKey)[]): IEditBotActionFunc {
+export function bot_ball_cancelling(action_id: string, desire: number = 0.1, ...keys: ('F' | 'B' | LGK)[]): IEditBotActionFunc {
   return (fn) => {
     const cond = new CondMaker();
     const ret: IBotAction = {
       action_id: action_id,
       desire: Defines.desire(desire),
-      status: [BotCtrlState.Chasing],
+      status: [BotStateEnum.Chasing],
       e_ray: [{ x: 1, z: 0, reverse: true }],
       keys: keys.length ? keys : [GK.j]
     };

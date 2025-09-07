@@ -1,12 +1,11 @@
 
-import { BotCtrlState } from "./BotCtrlState";
-import { BotCtrlState_Base } from "./BotCtrlState_Base";
-import { random_jumping } from "./random_jumping";
-import { manhattan_xz } from "../helper/manhattan_xz";
-import { GameKey as GK, ItrKind, StateEnum } from "../defines";
-import { find } from "../utils";
-export class BotCtrlState_Avoiding extends BotCtrlState_Base {
-  readonly key = BotCtrlState.Avoiding;
+import { GK, ItrKind, StateEnum } from "../../defines";
+import { manhattan_xz } from "../../helper/manhattan_xz";
+import { find } from "../../utils";
+import { BotState_Base } from "./BotState";
+import { BotStateEnum } from "../../defines/BotStateEnum";
+export class BotState_Avoiding extends BotState_Base {
+  readonly key = BotStateEnum.Avoiding;
   override update() {
 
     const { ctrl: c } = this;
@@ -15,16 +14,16 @@ export class BotCtrlState_Avoiding extends BotCtrlState_Base {
     const av = c.get_avoiding()
     const { state } = me.frame;
 
-    random_jumping(this.ctrl)
+    this.random_jumping()
     if (this.handle_bot_actions()) return;
     if (av && en && manhattan_xz(me, av) > manhattan_xz(me, en))
-      return BotCtrlState.Chasing
+      return BotStateEnum.Chasing
     else if (av) {
       this.ctrl.avoid_enemy();
     } else if (en) {
-      return BotCtrlState.Chasing;
+      return BotStateEnum.Chasing;
     } else {
-      return BotCtrlState.Standing;
+      return BotStateEnum.Idle;
     }
     switch (state) {
       case StateEnum.Normal:

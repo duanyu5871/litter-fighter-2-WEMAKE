@@ -9,7 +9,7 @@ export interface ICreator<C, T extends new (...args: any[]) => C> {
 export interface EntityCreators {
   [EntityEnum.Entity]: ICreator<Entity, typeof Entity>;
   [EntityEnum.Ball]: ICreator<Entity, typeof Entity>;
-  [EntityEnum.Character]: ICreator<Entity, typeof Entity>;
+  [EntityEnum.Fighter]: ICreator<Entity, typeof Entity>;
   [EntityEnum.Weapon]: ICreator<Entity, typeof Entity>;
 }
 
@@ -28,7 +28,7 @@ export class Factory {
   ) {
     _entity_creators[k] = creator;
   }
-  get_entity_creator(type: string): ICreator<Entity, typeof Entity> | undefined;
+  get_entity_creator(type: string | number): ICreator<Entity, typeof Entity> | undefined;
   get_entity_creator<K extends keyof EntityCreators>(
     type: K,
   ): EntityCreators[K] | undefined;

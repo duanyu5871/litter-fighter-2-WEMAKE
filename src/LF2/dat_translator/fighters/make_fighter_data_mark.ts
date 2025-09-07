@@ -1,4 +1,4 @@
-import { BotVal, GameKey as GK, IEntityData } from "../../defines";
+import { BotVal, GK, IEntityData } from "../../defines";
 import { arithmetic_progression } from "../../utils";
 import { foreach } from "../../utils/container_help/foreach";
 import { bot_ball_dfa } from "./bot_ball_dfa";

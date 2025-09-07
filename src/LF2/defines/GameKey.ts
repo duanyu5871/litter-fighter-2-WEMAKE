@@ -27,23 +27,17 @@ export enum GameKey {
   d = "d",
   Defend = "d",
 }
-export const Labels: Record<GameKey, string> = {
-  // [GameKey.L]: "◀",
-  // [GameKey.R]: "▶",
-  // [GameKey.U]: "▲",
-  // [GameKey.D]: "▼",
-  [GameKey.L]: "<",
-  [GameKey.R]: ">",
-  [GameKey.U]: "^",
-  [GameKey.D]: "v",
-  // [GameKey.L]: "←",
-  // [GameKey.R]: "→",
-  // [GameKey.U]: "↑",
-  // [GameKey.D]: "↓",
-  [GameKey.a]: "A",
-  [GameKey.j]: "J",
-  [GameKey.d]: "D"
+export type GK = GameKey;
+export const GK = GameKey;
+export type LGK = GK | "L" | "R" | "U" | "D" | "a" | "j" | "d";
+export const Labels: Record<LGK, string> = {
+  [GK.L]: "<",
+  [GK.R]: ">",
+  [GK.U]: "^",
+  [GK.D]: "v",
+  [GK.a]: "A",
+  [GK.j]: "J",
+  [GK.d]: "D"
 }
 
-export type TLooseGameKey = GameKey | "L" | "R" | "U" | "D" | "a" | "j" | "d";
 

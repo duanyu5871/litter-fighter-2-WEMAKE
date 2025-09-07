@@ -25,7 +25,7 @@ export default function cook_bdy(bdy?: Partial<IBdyInfo>): void {
       .add(C_Val.SameTeam, "==", 0)
       .and((c) => c
         .wrap((c) => c
-          .add(C_Val.AttackerType, "==", EntityEnum.Character)
+          .add(C_Val.AttackerType, "==", EntityEnum.Fighter)
           .and(C_Val.ItrKind, "==", ItrKind.Normal),
         )
         .or((c) => c

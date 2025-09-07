@@ -1,23 +1,21 @@
-import { GameKey as GK, ItrKind } from "../defines";
-import { StateEnum } from "../defines/StateEnum";
-import { manhattan_xz } from "../helper/manhattan_xz";
-import { abs, between, find } from "../utils";
-import { KEY_NAME_LIST } from "./BaseController";
-import { BotCtrlState } from "./BotCtrlState";
-import { BotCtrlState_Base } from "./BotCtrlState_Base";
-import { random_jumping } from "./random_jumping";
+import { KEY_NAME_LIST } from "../../controller/BaseController";
+import { GK, ItrKind, StateEnum } from "../../defines";
+import { manhattan_xz } from "../../helper/manhattan_xz";
+import { abs, between, find } from "../../utils";
+import { BotState_Base } from "./BotState";
+import { BotStateEnum } from "../../defines/BotStateEnum";
 
-export class BotCtrlState_Chasing extends BotCtrlState_Base {
-  readonly key = BotCtrlState.Chasing;
+export class BotState_Chasing extends BotState_Base {
+  readonly key = BotStateEnum.Chasing;
   override update() {
     const { ctrl: c } = this;
     const me = c.entity;
     const en = c.get_chasing()
     const av = c.get_avoiding()
     if (av && en && manhattan_xz(me, av) < manhattan_xz(me, en))
-      return BotCtrlState.Avoiding
-    else if (!en && av) return BotCtrlState.Avoiding;
-    else if (!en) return BotCtrlState.Standing;
+      return BotStateEnum.Avoiding
+    else if (!en && av) return BotStateEnum.Avoiding;
+    else if (!en) return BotStateEnum.Idle;
 
     const { facing: a_facing } = me
     const { x: my_x, z: my_z, y: my_y } = me.position;
@@ -55,7 +53,7 @@ export class BotCtrlState_Chasing extends BotCtrlState_Base {
     const z_reach_2 = abs_dz <= 2 * c.w_atk_z;
     const z_reach_3 = abs_dz <= 3 * c.w_atk_z;
 
-    random_jumping(c);
+    this.random_jumping();
     if (this.handle_bot_actions()) return;
 
     if (c.balls.targets.length > 0) {

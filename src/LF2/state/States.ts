@@ -44,7 +44,7 @@ export class States {
     if (!state) {
       let State: typeof State_Base;
       switch (type) {
-        case EntityEnum.Character:
+        case EntityEnum.Fighter:
           State = CharacterState_Base;
           break;
         case EntityEnum.Weapon:

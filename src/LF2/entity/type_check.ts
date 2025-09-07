@@ -1,11 +1,11 @@
 import type { BallController } from "../controller/BallController";
 import type { BaseController } from "../controller/BaseController";
-import type { BotController } from "../controller/BotController";
+import type { BotController } from "../bot/BotController";
 import type { LocalController } from "../controller/LocalController";
 import type { IBgData } from "../defines";
 import { EntityEnum } from "../defines/EntityEnum";
 import type { IEntityData } from "../defines/IEntityData";
-export const is_character_data = (v: any) => v?.type === EntityEnum.Character;
+export const is_character_data = (v: any) => v?.type === EntityEnum.Fighter;
 export const is_weapon_data = (v: any) => v?.type === EntityEnum.Weapon;
 export const is_ball_data = (v: any) => v?.type === EntityEnum.Ball;
 export const is_character = (v: any) => is_character_data(v?.data);

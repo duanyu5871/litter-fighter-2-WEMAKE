@@ -9,21 +9,17 @@ import Select from "./Component/Select";
 import Show from "./Component/Show";
 import TeamSelect from "./Component/TeamSelect";
 import Titled from "./Component/Titled";
+import { IWorldDataset } from "./LF2/IWorldDataset";
 import { LF2 } from "./LF2/LF2";
+import { BotController } from "./LF2/bot/BotController";
 import { BaseController } from "./LF2/controller/BaseController";
-import { BotController } from "./LF2/controller/BotController";
 import { InvalidController } from "./LF2/controller/InvalidController";
-import { Difficulty } from "./LF2/defines";
-import { IStageInfo } from "./LF2/defines/IStageInfo";
-import { IStagePhaseInfo } from "./LF2/defines/IStagePhaseInfo";
-import { Defines } from "./LF2/defines/defines";
+import { Defines, Difficulty, IStageInfo, IStagePhaseInfo } from "./LF2/defines";
 import { Entity } from "./LF2/entity/Entity";
 import { Stage } from "./LF2/stage/Stage";
-import list_writable_properties, { TProperty } from "./LF2/utils/list_writable_properties";
-import { is_num, is_str } from "./LF2/utils/type_check";
+import { list_writable_properties, TProperty } from "./LF2/utils/list_writable_properties";
+import { is_num } from "./LF2/utils/type_check";
 import { useLocalNumber, useLocalString } from "./useLocalStorage";
-import { World } from "./LF2/World";
-import { IWorldDataset } from "./LF2/IWorldDataset";
 const bot_controllers: { [x in string]?: (e: Entity) => BaseController } = {
   OFF: (e: Entity) => new InvalidController("", e),
   "enemy chaser": (e: Entity) => new BotController("", e),

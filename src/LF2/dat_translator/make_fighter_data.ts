@@ -789,7 +789,7 @@ export function make_character_data(
 
   const ret: IEntityData = {
     id: "",
-    type: EntityEnum.Character,
+    type: EntityEnum.Fighter,
     base: info,
     indexes,
     frames,

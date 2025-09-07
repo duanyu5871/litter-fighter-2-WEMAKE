@@ -3,6 +3,6 @@ export interface IBaseData<I = any> {
   /**
    * @see {IDataMap}
    */
-  type: string;
+  type: string | number;
   base: I;
 }

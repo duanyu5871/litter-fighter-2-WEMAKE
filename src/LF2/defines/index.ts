@@ -54,3 +54,6 @@ export * from "./BackgroundGroup"
 export * from "./BotVal";
 export * from "./EntityVal";
 export * from "./IBotData";
+export * from "./BotStateEnum"
+export * from "./IBotAction"
+export * from "./IBotDataSet"

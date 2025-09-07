@@ -1,6 +1,7 @@
 import { IIntersection } from "./3d";
 import {
-  Callbacks, get_short_file_size_txt, Loader, new_id,
+  Callbacks, get_short_file_size_txt,
+  new_id,
   new_team,
   PIO
 } from "./base";
@@ -27,13 +28,13 @@ import { BlobUrl, HitUrl } from "./ditto/importer";
 import { Entity } from "./entity";
 import { IDebugging, make_debugging } from "./entity/make_debugging";
 import { BallsHelper, CharactersHelper, EntitiesHelper, WeaponsHelper } from "./helper";
+import { Randoming } from "./helper/Randoming";
 import { ILf2Callback } from "./ILf2Callback";
 import DatMgr from "./loader/DatMgr";
 import get_import_fallbacks from "./loader/get_import_fallbacks";
 import { ImageMgr } from "./loader/ImageMgr";
 import { PlayerInfo } from "./PlayerInfo";
 import { Stage } from "./stage";
-import { DanmuGameLogic } from "./ui/component/DanmuGameLogic";
 import { UIComponent } from "./ui/component/UIComponent";
 import { cook_ui_info } from "./ui/cook_ui_info";
 import { ICookedUIInfo } from "./ui/ICookedUIInfo";
@@ -46,7 +47,6 @@ import {
   is_str
 } from "./utils";
 import { MersenneTwister } from "./utils/math/MersenneTwister";
-import { Randoming } from "./helper/Randoming";
 import { World } from "./World";
 
 const cheat_info_pair = (n: CheatType) =>

@@ -34,7 +34,7 @@ import { IDebugging, make_debugging } from "./make_debugging";
 import { is_ball, is_character, is_weapon_data } from "./type_check";
 export type TData = IBaseData | IEntityData;
 export class Entity implements IDebugging {
-  static readonly TAG: string = EntityEnum.Entity;
+  static readonly TAG: string = 'Entity';
   debug!: (_0: string, ..._1: any[]) => void;
   warn!: (_0: string, ..._1: any[]) => void;
   log!: (_0: string, ..._1: any[]) => void;
@@ -615,7 +615,7 @@ export class Entity implements IDebugging {
       this._mp_max = data.base.mp ?? Defines.DEFAULT_MP;
     }
 
-    if (data.type === EntityEnum.Character) {
+    if (data.type === EntityEnum.Fighter) {
       this._mp_r_spd_min =
         data.base.mp_r_min_spd ?? Defines.DEFAULT_MP_RECOVERY_MIN_SPEED;
       this._mp_r_spd_max =
@@ -1951,6 +1951,6 @@ Factory.inst.set_entity_creator(
   (...args) => new Entity(...args),
 );
 Factory.inst.set_entity_creator(
-  EntityEnum.Character,
+  EntityEnum.Fighter,
   (...args) => new Entity(...args),
 );

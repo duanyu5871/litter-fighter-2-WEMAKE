@@ -1,8 +1,4 @@
-import { BotCtrlState } from "../../controller/BotCtrlState";
-import {
-  IEntityData, EntityGroup, ArmorEnum, Defines, StateEnum, GameKey as GK,
-  BotVal, EntityVal, IBotData
-} from "../../defines";
+import { ArmorEnum, BotVal, Defines, EntityGroup, EntityVal, GK, IEntityData, StateEnum } from "../../defines";
 import { add_entity_groups } from "../add_entity_to_group";
 import { CondMaker } from "../CondMaker";
 import { bot_ball_dfj } from "./bot_ball_dfj";

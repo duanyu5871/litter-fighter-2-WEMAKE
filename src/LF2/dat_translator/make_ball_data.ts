@@ -376,7 +376,7 @@ export function make_ball_data(
             itr.actions = ensure(itr.actions, {
               type: 'next_frame',
               test: new CondMaker<C_Val>()
-                .add(C_Val.VictimType, "==", EntityEnum.Character)
+                .add(C_Val.VictimType, "==", EntityEnum.Fighter)
                 .done(),
               data: { id: hit_d }
             })

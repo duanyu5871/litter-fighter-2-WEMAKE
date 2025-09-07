@@ -57,7 +57,7 @@ export function cook_itr(itr?: Partial<IItrInfo>) {
           break;
         case ItrEffect.MFire1:
           cond_maker
-            .and(C_Val.VictimType, "!=", EntityEnum.Character)
+            .and(C_Val.VictimType, "!=", EntityEnum.Fighter)
             .or((c) => c
               .add(C_Val.VictimState, "!=", StateEnum.BurnRun)
               .and(C_Val.VictimState, "!=", StateEnum.Burning)
@@ -70,7 +70,7 @@ export function cook_itr(itr?: Partial<IItrInfo>) {
           );
           break;
         case ItrEffect.Through:
-          cond_maker.and(C_Val.VictimType, "!=", EntityEnum.Character);
+          cond_maker.and(C_Val.VictimType, "!=", EntityEnum.Fighter);
           break;
         case ItrEffect.Ice2:
           cond_maker.and((c) =>
@@ -114,7 +114,7 @@ export function cook_itr(itr?: Partial<IItrInfo>) {
       itr.motionless = 0;
       itr.shaking = 0;
       itr.test = new CondMaker<C_Val>()
-        .add(C_Val.VictimType, "==", EntityEnum.Character)
+        .add(C_Val.VictimType, "==", EntityEnum.Fighter)
         .done();
       break;
     }
@@ -123,7 +123,7 @@ export function cook_itr(itr?: Partial<IItrInfo>) {
       itr.motionless = 0;
       itr.shaking = 0;
       itr.test = new CondMaker<C_Val>()
-        .add(C_Val.VictimType, "==", EntityEnum.Character)
+        .add(C_Val.VictimType, "==", EntityEnum.Fighter)
         .or((c) =>
           c
             .add(C_Val.VictimType, "==", EntityEnum.Weapon)
@@ -141,7 +141,7 @@ export function cook_itr(itr?: Partial<IItrInfo>) {
         delete itr.vrest;
       }
       itr.test = new CondMaker<C_Val>()
-        .and(C_Val.VictimType, "==", EntityEnum.Character)
+        .and(C_Val.VictimType, "==", EntityEnum.Fighter)
         .and(C_Val.VictimState, "!=", StateEnum.Falling)
         .done();
       break;
@@ -154,7 +154,7 @@ export function cook_itr(itr?: Partial<IItrInfo>) {
         delete itr.vrest;
       }
       itr.test = new CondMaker<C_Val>()
-        .and(C_Val.VictimType, "==", EntityEnum.Character)
+        .and(C_Val.VictimType, "==", EntityEnum.Fighter)
         .and(C_Val.VictimState, "==", StateEnum.Tired)
         .done();
       break;
@@ -170,7 +170,7 @@ export function cook_itr(itr?: Partial<IItrInfo>) {
     case ItrKind.JohnShield:
       itr.ally_flags = AllyFlag.Both;
       itr.test = new CondMaker<C_Val>()
-        .and(C_Val.VictimType, "!=", EntityEnum.Character)
+        .and(C_Val.VictimType, "!=", EntityEnum.Fighter)
         .or(C_Val.SameTeam, "!=", 1)
         .done();
       break;
@@ -186,7 +186,7 @@ export function cook_itr(itr?: Partial<IItrInfo>) {
         })
       }
       itr.test = new CondMaker<C_Val>()
-        .and(C_Val.VictimType, "==", EntityEnum.Character)
+        .and(C_Val.VictimType, "==", EntityEnum.Fighter)
         .done();
       break;
     }
@@ -198,7 +198,7 @@ export function cook_itr(itr?: Partial<IItrInfo>) {
       itr.dvy = 0;
       itr.dvz = 0;
       itr.test = new CondMaker<C_Val>()
-        .add(C_Val.VictimType, "==", EntityEnum.Character)
+        .add(C_Val.VictimType, "==", EntityEnum.Fighter)
         .and((c) =>
           c
             .add(C_Val.SameTeam, "==", 0)
@@ -225,7 +225,7 @@ export function cook_itr(itr?: Partial<IItrInfo>) {
         )
         .or((c) =>
           c
-            .add(C_Val.VictimType, "==", EntityEnum.Character)
+            .add(C_Val.VictimType, "==", EntityEnum.Fighter)
             .and((c) =>
               c
                 .add(C_Val.SameTeam, "==", 0)
@@ -239,7 +239,7 @@ export function cook_itr(itr?: Partial<IItrInfo>) {
       itr.ally_flags = AllyFlag.Both;
       itr.test = new CondMaker<C_Val>()
         .add(C_Val.AttackerThrew, "==", 1)
-        .and(C_Val.AttackerType, "==", EntityEnum.Character)
+        .and(C_Val.AttackerType, "==", EntityEnum.Fighter)
         .done();
       break;
     }

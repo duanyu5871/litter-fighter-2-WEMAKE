@@ -1,5 +1,4 @@
-import { GameKey as GK } from "../defines";
-import { StateEnum } from "../defines/StateEnum";
+import { GK, StateEnum } from "../defines";
 import { BotController } from "./BotController";
 export enum DummyEnum {
   LockAtMid_Stand = "1",

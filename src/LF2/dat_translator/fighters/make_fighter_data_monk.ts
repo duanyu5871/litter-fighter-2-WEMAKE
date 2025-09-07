@@ -1,4 +1,4 @@
-import { GameKey as GK, IEntityData } from "../../defines";
+import { GK, IEntityData } from "../../defines";
 import { arithmetic_progression } from "../../utils";
 import { bot_ball_dfa } from "./bot_ball_dfa";
 import { BotBuilder } from "./BotBuilder";

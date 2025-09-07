@@ -1,6 +1,7 @@
-import { BotCtrlState } from "../../controller/BotCtrlState";
-import { BotVal, Defines, EntityVal, GameKey as GK, GameKey } from "../../defines";
-import { IBotAction } from "../../defines/IBotAction";
+
+import {
+  BotStateEnum, BotVal, Defines, EntityVal, GK, GameKey, IBotAction
+} from "../../defines";
 import { CondMaker } from "../CondMaker";
 import { IEditBotActionFunc } from "./IEditBotAction";
 
@@ -30,7 +31,7 @@ export function bot_chasing_skill_action(
     const ret: IBotAction = {
       action_id: action_id,
       desire: Defines.desire(desire),
-      status: [BotCtrlState.Chasing],
+      status: [BotStateEnum.Chasing],
       expression: min_mp > 0 ? cond.done() : void 0,
       keys: keys
     }

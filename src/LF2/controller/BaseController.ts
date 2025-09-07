@@ -1,5 +1,5 @@
-import type { IFrameInfo, IHitKeyCollection, TLooseGameKey } from "../defines";
-import { GameKey as GK, StateEnum } from "../defines";
+import type { IFrameInfo, IHitKeyCollection, LGK } from "../defines";
+import { GK, StateEnum } from "../defines";
 import type { Entity } from "../entity/Entity";
 import { ControllerUpdateResult } from "./ControllerUpdateResult";
 import DoubleClick from "./DoubleClick";
@@ -52,7 +52,7 @@ export class BaseController {
     else this._disposers.add(f);
   }
   entity: Entity;
-  keys: Record<TLooseGameKey, KeyStatus> = {
+  keys: Record<LGK, KeyStatus> = {
     L: new KeyStatus(this),
     R: new KeyStatus(this),
     U: new KeyStatus(this),
@@ -62,7 +62,7 @@ export class BaseController {
     d: new KeyStatus(this),
   };
 
-  readonly dbc: Record<TLooseGameKey, DoubleClick<IFrameInfo>>;
+  readonly dbc: Record<LGK, DoubleClick<IFrameInfo>>;
 
   get LR(): 0 | 1 | -1 {
     const L = !this.keys.L.is_end();
@@ -90,7 +90,7 @@ export class BaseController {
    * @param keys 指定按键
    * @returns {this}
    */
-  start(...keys: TLooseGameKey[]): this {
+  start(...keys: LGK[]): this {
     this.queue.push(...keys.map(k => [1, k] as const))
     return this;
   }
@@ -100,7 +100,7 @@ export class BaseController {
    * @param keys 指定按键
    * @returns {this}
    */
-  hold(...keys: TLooseGameKey[]): this {
+  hold(...keys: LGK[]): this {
     this.queue.push(...keys.map(k => [2, k] as const))
     return this;
   }
@@ -110,7 +110,7 @@ export class BaseController {
    * @param keys 指定按键
    * @returns {this}
    */
-  end(...keys: TLooseGameKey[]): this {
+  end(...keys: LGK[]): this {
     this.queue.push(...keys.map(k => [0, k] as const))
     return this;
   }
@@ -121,25 +121,25 @@ export class BaseController {
    * @param keys 指定按键
    * @returns {this}
    */
-  db_hit(...keys: TLooseGameKey[]): this {
+  db_hit(...keys: LGK[]): this {
     this.start(...keys)
       .end(...keys)
       .start(...keys);
     return this;
   }
   is_hold(k: string): boolean;
-  is_hold(k: TLooseGameKey): boolean;
-  is_hold(k: TLooseGameKey): boolean {
+  is_hold(k: LGK): boolean;
+  is_hold(k: LGK): boolean {
     return !!this.keys[k]?.is_hld();
   }
 
   is_hit(k: string): boolean;
-  is_hit(k: TLooseGameKey): boolean;
-  is_hit(k: TLooseGameKey): boolean {
+  is_hit(k: LGK): boolean;
+  is_hit(k: LGK): boolean {
     return !!this.keys[k]?.is_hit();
   }
 
-  is_db_hit(k: TLooseGameKey): boolean {
+  is_db_hit(k: LGK): boolean {
     const { time, data: [f_0, f_1] } = this.dbc[k];
     if (
       f_0?.state !== StateEnum.Standing &&
@@ -160,21 +160,21 @@ export class BaseController {
     return time > 0 && this._time - time <= this.entity.world.key_hit_duration;
   }
   is_end(k: string): boolean;
-  is_end(k: TLooseGameKey): boolean;
-  is_end(k: TLooseGameKey): boolean {
+  is_end(k: LGK): boolean;
+  is_end(k: LGK): boolean {
     return !!this.keys[k]?.is_end();
   }
 
   is_start(k: string): boolean;
-  is_start(k: TLooseGameKey): boolean;
-  is_start(k: TLooseGameKey): boolean {
+  is_start(k: LGK): boolean;
+  is_start(k: LGK): boolean {
     return !!this.keys[k]?.is_start();
   }
-  press(...keys: TLooseGameKey[]) {
+  press(...keys: LGK[]) {
     for (const k of keys) if (this.is_end(k)) this.start(k);
     return this;
   }
-  release(...keys: TLooseGameKey[]) {
+  release(...keys: LGK[]) {
     for (const k of keys) if (!this.is_end(k)) this.end(k);
     return this;
   }
@@ -194,7 +194,7 @@ export class BaseController {
   dispose(): void {
     for (const f of this._disposers) f();
   }
-  tst(type: "hit" | "hld" | "dbl" | "kd" | 'ku', key: TLooseGameKey) {
+  tst(type: "hit" | "hld" | "dbl" | "kd" | 'ku', key: LGK) {
     const conflict_key = CONFLICTS_KEY_MAP[key];
     if (conflict_key && !this.is_end(conflict_key)) return false;
     if (type === "kd") return !this.is_end(key);
@@ -205,7 +205,7 @@ export class BaseController {
   }
 
   protected result = new ControllerUpdateResult();
-  readonly queue: (readonly [0 | 1 | 2, TLooseGameKey])[] = []
+  readonly queue: (readonly [0 | 1 | 2, LGK])[] = []
   update(): ControllerUpdateResult {
     if (this._time === Number.MAX_SAFE_INTEGER)
       this._time = 0;

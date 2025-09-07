@@ -1,4 +1,4 @@
-import { clamp, pow } from "../utils";
+import { clamp, pow } from "..";
 
 /**
  * 单次触发的概率

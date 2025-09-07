@@ -1,8 +1,8 @@
-import { BotCtrlState } from "../controller/BotCtrlState";
 import { CondMaker } from "../dat_translator/CondMaker";
+import { BotStateEnum } from "./BotStateEnum";
 import { BotVal } from "./BotVal";
 import { EntityVal } from "./EntityVal";
-import { TLooseGameKey } from "./GameKey";
+import { LGK } from "./GameKey";
 import { IBotRay } from "./IBotRay";
 import { IExpression } from "./IExpression";
 
@@ -55,13 +55,13 @@ export interface IBotAction {
    */
   judger?: IExpression<any>;
 
-  status?: BotCtrlState[];
+  status?: BotStateEnum[];
 
   /**
    * 该action触发时，bot按下的键
    *
-   * @type {(('F' | 'B' | TLooseGameKey)[])}
+   * @type {(('F' | 'B' | LGK)[])}
    * @memberof IBotAction
    */
-  keys: ('F' | 'B' | TLooseGameKey)[];
+  keys: ('F' | 'B' | LGK)[];
 }

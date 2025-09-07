@@ -1,13 +1,11 @@
-import { BotCtrlState } from "../../controller/BotCtrlState";
-import { GameKey, Defines, BotVal, EntityVal, TLooseGameKey } from "../../defines";
-import { IBotAction } from "../../defines/IBotAction";
+import { BotStateEnum, BotVal, Defines, EntityVal, IBotAction, LGK } from "../../defines";
 import { CondMaker } from "../CondMaker";
 import { IEditBotActionFunc } from "./IEditBotAction";
 
 const DESIRE = 0.033333 as const;
 export function bot_chasing_action(
   action_id: string,
-  keys: ("F" | "B" | TLooseGameKey)[],
+  keys: ("F" | "B" | LGK)[],
   min_mp: number = -1,
   desire: number = DESIRE
 ): IEditBotActionFunc {
@@ -17,7 +15,7 @@ export function bot_chasing_action(
     const ret: IBotAction = {
       action_id: action_id,
       desire: Defines.desire(desire),
-      status: [BotCtrlState.Chasing],
+      status: [BotStateEnum.Chasing],
       expression: min_mp > 0 ? cond.done() : void 0,
       keys: keys
     }

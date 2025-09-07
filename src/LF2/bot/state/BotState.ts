@@ -1,12 +1,11 @@
-import { IState } from "../base/FSM";
-import { GameKey as GK, TLooseGameKey } from "../defines";
-import { random_get } from "../utils";
-import { abs } from "../utils/math/base";
-import { BotController } from "./BotController";
-import { BotCtrlState } from "./BotCtrlState";
+import type { IState } from "../../base/FSM";
+import { GK, LGK, StateEnum } from "../../defines";
+import { random_get } from "../../utils";
+import type { BotController } from "../BotController";
+import type { BotStateEnum } from "../../defines/BotStateEnum";
 
-export abstract class BotCtrlState_Base implements IState<BotCtrlState> {
-  abstract key: BotCtrlState;
+export abstract class BotState_Base implements IState<BotStateEnum> {
+  abstract key: BotStateEnum;
   readonly ctrl: BotController
   constructor(ctrl: BotController) {
     this.ctrl = ctrl;
@@ -26,7 +25,33 @@ export abstract class BotCtrlState_Base implements IState<BotCtrlState> {
     c.start(GK.d).end(GK.d)
     return true;
   }
-  update?(dt: number): BotCtrlState | undefined | void;
+  random_jumping() {
+    const c = this.ctrl;
+    const { state } = c.entity.frame;
+    const desire = c.desire()
+    switch (state) {
+      case StateEnum.Running: {
+        (
+          desire < c.dash_desire ?
+            c.key_down :
+            c.key_up
+        ).call(c, GK.j)
+        break;
+      }
+      case StateEnum.Standing:
+      case StateEnum.Walking: {
+        (
+          desire < c.jump_desire ?
+            c.key_down :
+            c.key_up
+        ).call(c, GK.j)
+        break;
+      }
+      default:
+        c.key_up(GK.j);
+    }
+  }
+  update?(dt: number): BotStateEnum | undefined | void;
   enter?(): void;
   leave?(): void;
   handle_bot_actions(): boolean {
@@ -35,9 +60,7 @@ export abstract class BotCtrlState_Base implements IState<BotCtrlState> {
     const { bot } = me.data.base
 
     if (!bot) return false;
-
-    const keys_list: TLooseGameKey[][] = []
-
+    const keys_list: LGK[][] = []
     let action_ids = bot.frames?.[me.frame.id]
     if (action_ids) for (const aid of action_ids) {
       const keys = this.ctrl.handle_action(bot.actions[aid])

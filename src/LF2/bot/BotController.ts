@@ -1,79 +1,24 @@
 import FSM from "../base/FSM";
-import { Builtin_FrameId, Defines, GameKey as GK, ItrKind, StateEnum, TLooseGameKey } from "../defines";
-import { IBotAction } from "../defines/IBotAction";
-import { IBotDataSet } from "../defines/IBotDataSet";
-import { is_ai_ray_hit } from "../defines/is_ai_ray_hit";
-import { Entity } from "../entity/Entity";
-import { is_ball, is_character } from "../entity/type_check";
+import { BaseController, KEY_NAME_LIST } from "../controller/BaseController";
+import {
+  Builtin_FrameId, Defines, GK, ItrKind, LGK, StateEnum, IBotAction, IBotDataSet, BotStateEnum
+} from "../defines";
+import { is_bot_ray_hit } from "./utils/is_bot_ray_hit";
+import { is_ball, is_character, Entity } from "../entity";
 import { manhattan_xz } from "../helper/manhattan_xz";
 import { abs, clamp, floor } from "../utils";
-import { BaseController, KEY_NAME_LIST } from "./BaseController";
-import { BotCtrlState } from "./BotCtrlState";
-import { BotCtrlState_Avoiding } from "./BotCtrlState_Avoiding";
-import { BotCtrlState_Chasing } from "./BotCtrlState_Chasing";
-import { BotCtrlState_Standing } from "./BotCtrlState_Standing";
-import { dummy_updaters, DummyEnum } from "./DummyEnum";
-export interface IBotTarget {
-  entity: Entity;
-  distance: number;
-}
-export class NearestTargets {
-  targets: IBotTarget[] = [];
-  max: number = 5;
-  entities = new Set<Entity>();
+import { DummyEnum, dummy_updaters } from "./DummyEnum";
+import { BotState_Avoiding, BotState_Chasing, BotState_Idle } from "./state";
+import { NearestTargets } from "./NearestTargets";
 
-  constructor(max: number) { this.max = max }
-  get(): IBotTarget | undefined { return this.targets[0] }
-
-  look(self: Entity, other: Entity) {
-    const { targets } = this
-    if (!self || this.entities.has(other)) return
-
-    const distance = manhattan_xz(self, other)
-    const len = targets.length;
-    if (len < this.max) {
-      targets.push({ entity: other, distance })
-      this.entities.add(other);
-      return;
-    } else {
-      for (let i = 0; i < len; ++i) {
-        const target = targets[i];
-        if (distance > target.distance)
-          continue;
-        this.targets.splice(i, 0, { entity: other, distance })
-        this.entities.add(other);
-        const { entity } = this.targets[this.max]
-        this.entities.delete(entity);
-        this.targets.length = this.max
-        break;
-      }
-    }
-  }
-
-  del(condition: (target: IBotTarget) => boolean) {
-    this.targets = this.targets.filter((target) => {
-      const ret = !condition(target)
-      if (!ret) this.entities.delete(target.entity)
-      return ret;
-    })
-  }
-
-  sort(self: Entity) {
-    this.targets.sort((a, b) => {
-      a.distance = manhattan_xz(self, a.entity)
-      b.distance = manhattan_xz(self, b.entity)
-      return a.distance - b.distance
-    })
-  }
-}
 export class BotController extends BaseController implements Required<IBotDataSet> {
-  readonly fsm = new FSM<BotCtrlState>()
+  readonly fsm = new FSM<BotStateEnum>()
     .add(
-      new BotCtrlState_Standing(this),
-      new BotCtrlState_Chasing(this),
-      new BotCtrlState_Avoiding(this)
+      new BotState_Idle(this),
+      new BotState_Chasing(this),
+      new BotState_Avoiding(this)
     )
-    .use(BotCtrlState.Standing)
+    .use(BotStateEnum.Idle)
 
   readonly is_bot_enemy_chaser = true;
 
@@ -316,7 +261,7 @@ export class BotController extends BaseController implements Required<IBotDataSe
     return { x: px, z: pz, next_x: x, next_z: z, next_y: y };
   }
 
-  key_up(...ks: TLooseGameKey[]): this {
+  key_up(...ks: LGK[]): this {
     for (const k of ks) {
       if (!this.is_end(k)) {
         this.end(k)
@@ -325,7 +270,7 @@ export class BotController extends BaseController implements Required<IBotDataSe
     return this;
   }
 
-  key_down(...ks: TLooseGameKey[]): this {
+  key_down(...ks: LGK[]): this {
     for (const k of ks) {
       if (this.is_end(k)) {
         this.start(k)
@@ -421,7 +366,7 @@ export class BotController extends BaseController implements Required<IBotDataSe
     return false;
   }
 
-  handle_action(action: IBotAction | undefined): TLooseGameKey[] | false {
+  handle_action(action: IBotAction | undefined): LGK[] | false {
     if (!action) return false
     const { facing } = this.entity;
     const { status, e_ray, judger, desire = 10000, keys } = action
@@ -433,7 +378,7 @@ export class BotController extends BaseController implements Required<IBotDataSe
       if (!chasing) return false;
       let ray_hit = false
       for (const r of e_ray) {
-        ray_hit = is_ai_ray_hit(this.entity, chasing, r);
+        ray_hit = is_bot_ray_hit(this.entity, chasing, r);
         if (ray_hit) break;
       }
       if (!ray_hit) return false;
@@ -441,7 +386,7 @@ export class BotController extends BaseController implements Required<IBotDataSe
 
     if (judger && !judger.run(this))
       return false;
-    const ks = keys.map<TLooseGameKey>(v => {
+    const ks = keys.map<LGK>(v => {
       if (v === 'F') return facing > 0 ? GK.R : GK.L;
       if (v === 'B') return facing > 0 ? GK.R : GK.L;
       return v

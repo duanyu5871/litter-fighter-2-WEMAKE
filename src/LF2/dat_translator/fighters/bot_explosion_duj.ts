@@ -1,6 +1,4 @@
-import { BotCtrlState } from "../../controller/BotCtrlState";
-import { BotVal, Defines, EntityVal, GameKey as GK } from "../../defines";
-import { IBotAction } from "../../defines/IBotAction";
+import { BotStateEnum, BotVal, Defines, EntityVal, GK, IBotAction } from "../../defines";
 import { pow } from "../../utils";
 import { CondMaker } from "../CondMaker";
 const DESIRE = 0.033333 as const;
@@ -29,7 +27,7 @@ export function bot_explosion_duj(
   return {
     action_id: ID,
     desire: Defines.desire(desire),
-    status: [BotCtrlState.Chasing],
+    status: [BotStateEnum.Chasing],
     e_ray: [{ x: 1, z: 0, min_x, max_x, max_d: pow(z_len, 2) }],
     expression: new CondMaker<BotVal | EntityVal>()
       .add(EntityVal.MP, '>=', min_mp)

@@ -8,7 +8,7 @@ export function handle_itr_kind_magic_flute(collision: ICollision): void {
   victim.merge_velocities();
   if (victim.velocity_0.y < 3) victim.velocity_0.y += 3;
   switch (victim.data.type) {
-    case EntityEnum.Character:
+    case EntityEnum.Fighter:
       handle_injury(collision)
       if (victim.frame.state !== StateEnum.Falling) {
         victim.next_frame = { id: victim.data.indexes?.falling?.[-1][0] };

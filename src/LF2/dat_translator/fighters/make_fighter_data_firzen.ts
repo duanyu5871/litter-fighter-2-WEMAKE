@@ -3,7 +3,7 @@ import {
   IEntityData,
   StateEnum
 } from "../../defines";
-import { probability } from "../../defines/probability";
+import { probability } from "../../utils/math/probability";
 import { add_entity_groups } from "../add_entity_to_group";
 import { bot_ball_cancelling } from "./bot_ball_cancelling";
 import { bot_ball_dfj } from "./bot_ball_dfj";

@@ -1,6 +1,6 @@
-import { BotCtrlState } from "../../controller/BotCtrlState";
-import { BotVal, Defines, EntityVal, GameKey as GK } from "../../defines";
-import { IBotAction } from "../../defines/IBotAction";
+import {
+  BotStateEnum, BotVal, Defines, EntityVal, GK, IBotAction
+} from "../../defines";
 import { CondMaker } from "../CondMaker";
 import { IEditBotActionFunc } from "./IEditBotAction";
 const DESIRE = 0.033333 as const;
@@ -30,7 +30,7 @@ export function bot_uppercut_dva(
     const ret: IBotAction = {
       action_id: ID,
       desire: Defines.desire(desire),
-      status: [BotCtrlState.Chasing],
+      status: [BotStateEnum.Chasing],
       e_ray: [{ x: 1, z: 0, min_x, max_x, max_d: 900 }],
       expression: cond.done(),
       keys: [GK.d, GK.D, GK.a]

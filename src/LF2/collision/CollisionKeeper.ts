@@ -117,28 +117,28 @@ export const collisions_keeper = new CollisionKeeper();
 collisions_keeper.add(
   ALL_ENTITY_ENUM,
   [ItrKind.Catch],
-  [EntityEnum.Character],
+  [EntityEnum.Fighter],
   [BdyKind.Normal, BdyKind.Defend],
   handle_itr_kind_catch,
 );
 collisions_keeper.add(
   ALL_ENTITY_ENUM,
   [ItrKind.ForceCatch],
-  [EntityEnum.Character],
+  [EntityEnum.Fighter],
   [BdyKind.Normal, BdyKind.Defend],
   handle_itr_kind_force_catch,
 );
 collisions_keeper.add(
   ALL_ENTITY_ENUM,
   [ItrKind.Whirlwind],
-  [EntityEnum.Character, EntityEnum.Weapon],
+  [EntityEnum.Fighter, EntityEnum.Weapon],
   [BdyKind.Normal, BdyKind.Defend],
   handle_itr_kind_whirlwind,
 );
 collisions_keeper.add(
   ALL_ENTITY_ENUM,
   [ItrKind.Freeze],
-  [EntityEnum.Character],
+  [EntityEnum.Fighter],
   [BdyKind.Normal, BdyKind.Defend],
   handle_itr_kind_freeze,
 );
@@ -150,7 +150,7 @@ collisions_keeper.add(
     ItrKind.WeaponSwing,
     ItrKind.CharacterThrew,
   ],
-  [EntityEnum.Character],
+  [EntityEnum.Fighter],
   [BdyKind.Normal],
   handle_itr_normal_bdy_normal,
 );
@@ -162,26 +162,26 @@ collisions_keeper.add(
     ItrKind.WeaponSwing,
     ItrKind.CharacterThrew,
   ],
-  [EntityEnum.Character],
+  [EntityEnum.Fighter],
   [BdyKind.Defend],
   handle_itr_normal_bdy_defend,
 );
 collisions_keeper.add(
-  [EntityEnum.Character],
+  [EntityEnum.Fighter],
   [ItrKind.MagicFlute, ItrKind.MagicFlute2],
-  [EntityEnum.Character, EntityEnum.Weapon],
+  [EntityEnum.Fighter, EntityEnum.Weapon],
   [BdyKind.Normal, BdyKind.Defend],
   handle_itr_kind_magic_flute,
 );
 collisions_keeper.add(
-  [EntityEnum.Character],
+  [EntityEnum.Fighter],
   [ItrKind.Pick],
   [EntityEnum.Weapon],
   [BdyKind.Normal],
   handle_weapon_is_picked,
 );
 collisions_keeper.add(
-  [EntityEnum.Character],
+  [EntityEnum.Fighter],
   [ItrKind.PickSecretly],
   [EntityEnum.Weapon],
   [BdyKind.Normal],
@@ -204,7 +204,7 @@ collisions_keeper.add(
 collisions_keeper.add(
   ALL_ENTITY_ENUM,
   [ItrKind.Block],
-  [EntityEnum.Character],
+  [EntityEnum.Fighter],
   [BdyKind.Normal],
   handle_rest,
 );
@@ -242,7 +242,7 @@ collisions_keeper.add(
 
 
 collisions_keeper.add(
-  [EntityEnum.Character],
+  [EntityEnum.Fighter],
   [ItrKind.Normal],
   ALL_ENTITY_ENUM,
   arithmetic_progression(BdyKind.GotoMin, BdyKind.GotoMax, 1) as BdyKind[],
@@ -252,16 +252,16 @@ collisions_keeper.add(
 collisions_keeper.add(
   ALL_ENTITY_ENUM,
   [ItrKind.Heal],
-  [EntityEnum.Character],
+  [EntityEnum.Fighter],
   [BdyKind.Normal],
   handle_healing,
 );
 
 
 collisions_keeper.add(
-  [EntityEnum.Character],
+  [EntityEnum.Fighter],
   [ItrKind.SuperPunchMe],
-  [EntityEnum.Character],
+  [EntityEnum.Fighter],
   [BdyKind.Normal],
   handle_super_punch_me,
 );

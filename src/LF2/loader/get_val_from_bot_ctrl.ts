@@ -1,4 +1,4 @@
-import { BotController } from "../controller/BotController";
+import { BotController } from "../bot/BotController";
 import { BotVal } from "../defines/BotVal";
 import { IValGetter, IValGetterGetter } from "../defines/IExpression";
 import { get_val_getter_from_entity } from "./get_val_from_entity";

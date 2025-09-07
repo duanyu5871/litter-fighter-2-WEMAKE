@@ -2,7 +2,7 @@ import type { PlayerInfo } from "../../PlayerInfo";
 import FSM, { IState } from "../../base/FSM";
 import Invoker from "../../base/Invoker";
 import { CheatType, EntityGroup } from "../../defines";
-import { TLooseGameKey } from "../../defines/GameKey";
+import { LGK } from "../../defines/GameKey";
 import { Defines } from "../../defines/defines";
 import { IUIKeyEvent } from "../IUIKeyEvent";
 import GamePrepareLogic, { GamePrepareState } from "./GamePrepareLogic";

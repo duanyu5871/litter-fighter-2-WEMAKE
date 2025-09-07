@@ -38,4 +38,3 @@ export function list_writable_properties(prototype: any, ret: TProperty[] = []) 
   }
   return ret;
 }
-export default list_writable_properties;

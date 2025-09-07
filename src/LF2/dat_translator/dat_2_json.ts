@@ -173,7 +173,7 @@ export default function dat_to_json(
     case EntityEnum.Entity:
       make_entity_special(ret);
       break;
-    case EntityEnum.Character:
+    case EntityEnum.Fighter:
       make_fighter_special(ret);
       break;
     case EntityEnum.Weapon:

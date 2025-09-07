@@ -65,7 +65,7 @@ type TTreeNode = ITreeNode<IEntityData | IBgData | null>
 const dat_type_emoji_map: { [x in string]?: React.ReactNode } = {
   [EntityEnum.Ball]: '🥏',
   [EntityEnum.Weapon]: '🗡️',
-  [EntityEnum.Character]: '🏃‍➡️',
+  [EntityEnum.Fighter]: '🏃‍➡️',
   [EntityEnum.Entity]: '🌀',
   'background': '⛰️'
 }
@@ -335,10 +335,10 @@ export default function EditorView(props: IEditorViewProps) {
         })
       } else if (node.data?.type) {
         switch (node.data?.type) {
-          case EntityEnum.Character:
+          case EntityEnum.Entity:
+          case EntityEnum.Fighter:
           case EntityEnum.Weapon:
           case EntityEnum.Ball:
-          case EntityEnum.Entity:
             zip?.file(node.key)?.json().then(r => {
               const editing_node = ref_editing_node.current;
               const editing_data = ref_editing_data.current;

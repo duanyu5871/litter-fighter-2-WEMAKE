@@ -1,9 +1,8 @@
-import type { Entity } from "../entity";
-import { abs, between, pow } from "../utils";
-import { IBotRay } from "./IBotRay";
-import { project_to_line } from "./project_to_line";
+import type { IBotRay } from "../../defines/IBotRay";
+import type { Entity } from "../../entity";
+import { abs, between, pow,project_to_line } from "../../utils";
 
-export function is_ai_ray_hit(a: Entity, b: Entity, ray: IBotRay) {
+export function is_bot_ray_hit(a: Entity, b: Entity, ray: IBotRay) {
   const p0 = a.position;
   const p1 = b.position;
 

@@ -1,7 +1,4 @@
-import { BotCtrlState } from "../../controller/BotCtrlState";
-import { BotVal, Defines, EntityVal, GameKey as GK } from "../../defines";
-import { IBotAction } from "../../defines/IBotAction";
-import { CondMaker } from "../CondMaker";
+import { GK, IBotAction } from "../../defines";
 import { bot_front_test } from "./bot_front_test";
 import { IEditBotActionFunc } from "./IEditBotAction";
 const DESIRE = 0.033333 as const;

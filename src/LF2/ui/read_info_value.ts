@@ -1,6 +1,6 @@
 import { Unsafe } from "../utils";
 import { ICookedUIInfo } from "./ICookedUIInfo";
-import { is_instance_of } from "../utils/is_instance_of";
+import { instance_of } from "../utils";
 
 type BaseType = 'string' | 'number' | 'boolean'
 export type Cls<T> = new (...args: any[]) => T
@@ -29,7 +29,7 @@ export function find_ui_value<T extends BaseType, C>(ui_info: ICookedUIInfo, typ
     return typeof value === type ? value : null;
   if (is_judger(type))
     return type(value) ? value : null
-  if (is_instance_of(value, type))
+  if (instance_of(value, type))
     return value;
   return null;
 }

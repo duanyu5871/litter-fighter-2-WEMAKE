@@ -1,14 +1,14 @@
-import { type TNextFrame, TLooseGameKey } from "../defines";
+import { type TNextFrame, LGK } from "../defines";
 
 export class ControllerUpdateResult {
   next_frame?: TNextFrame;
   time: number = 0;
-  game_key?: TLooseGameKey;
+  game_key?: LGK;
   key_list?: string;
   set(
     next_frame: TNextFrame | undefined,
     time: number,
-    game_key?: TLooseGameKey,
+    game_key?: LGK,
     key_list?: string,
   ): this {
     this.next_frame = next_frame;
