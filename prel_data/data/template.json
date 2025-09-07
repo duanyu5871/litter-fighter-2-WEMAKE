@@ -1,6 +1,6 @@
 {
   "id": "0",
-  "type": "character",
+  "type": 2,
   "base": {
     "name": "Template",
     "files": {

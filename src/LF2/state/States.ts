@@ -39,7 +39,7 @@ export class States {
   }
 
   fallback(type: TEntityEnum, code: number): State_Base {
-    const state_key = type + code;
+    const state_key = `${type}_${code}`;
     let state = this.get(state_key);
     if (!state) {
       let State: typeof State_Base;
