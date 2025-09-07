@@ -1,5 +1,5 @@
 import { ICamera } from "../../LF2/3d/ICamera";
-import Ditto from "../../LF2/ditto";
+import { Ditto } from "../../LF2/ditto";
 import type { IWorldRenderer } from "../../LF2/ditto/render/IWorldRenderer";
 import { is_character, type Entity } from "../../LF2/entity";
 import type { LF2 } from "../../LF2/LF2";

@@ -17,7 +17,7 @@ import {
   TNextFrame
 } from "../defines";
 import { IArmorInfo } from "../defines/IArmorInfo";
-import Ditto from "../ditto";
+import { Ditto } from "../ditto";
 import { ENTITY_STATES, States } from "../state";
 import { State_Base } from "../state/State_Base";
 import { Times } from "../ui/utils/Times";

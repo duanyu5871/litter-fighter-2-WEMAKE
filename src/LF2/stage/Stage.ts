@@ -4,7 +4,7 @@ import FSM from "../base/FSM";
 import { new_team } from "../base/new_id";
 import Background from "../bg/Background";
 import { Defines, IBgData, IStageInfo, IStageObjectInfo, IStagePhaseInfo } from "../defines";
-import Ditto from "../ditto";
+import { Ditto } from "../ditto";
 import { Entity } from "../entity/Entity";
 import { is_character, is_weapon } from "../entity/type_check";
 import { floor } from "../utils";

@@ -2,7 +2,7 @@ import { ISprite } from "../../3d";
 import { Sine } from "../../animation/Sine";
 import Invoker from "../../base/Invoker";
 import { Defines } from "../../defines/defines";
-import Ditto from "../../ditto";
+import { Ditto } from "../../ditto";
 import type { UINode } from "../UINode";
 import GamePrepareLogic from "./GamePrepareLogic";
 import { UIComponent } from "./UIComponent";

@@ -7,7 +7,7 @@ import { EntityEnum } from "../defines/EntityEnum";
 import { IDataMap } from "../defines/IDataMap";
 import { IEntityData } from "../defines/IEntityData";
 import { Defines } from "../defines/defines";
-import Ditto from "../ditto";
+import { Ditto } from "../ditto";
 import { Factory } from "../entity";
 import { TData } from "../entity/Entity";
 import {

@@ -57,3 +57,4 @@ export * from "./IBotData";
 export * from "./BotStateEnum"
 export * from "./IBotAction"
 export * from "./IBotDataSet"
+export * from "./AllyFlag"

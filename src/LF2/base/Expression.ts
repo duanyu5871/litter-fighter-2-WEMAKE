@@ -5,7 +5,7 @@ import {
   IValGetter,
   IValGetterGetter,
 } from "../defines/IExpression";
-import Ditto from "../ditto";
+import { Ditto } from "../ditto";
 export function ALWAY_FALSE<T = unknown>(
   text: string,
   err?: string,

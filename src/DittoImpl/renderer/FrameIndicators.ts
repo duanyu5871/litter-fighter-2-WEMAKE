@@ -1,5 +1,5 @@
 import type { IObjectNode } from "../../LF2/3d";
-import Ditto from "../../LF2/ditto";
+import { Ditto } from "../../LF2/ditto";
 import type { Entity } from "../../LF2/entity/Entity";
 import { traversal } from "../../LF2/utils/container_help/traversal";
 import * as THREE from "../3d/_t";

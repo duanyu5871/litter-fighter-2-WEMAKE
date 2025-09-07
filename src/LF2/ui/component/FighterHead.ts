@@ -2,7 +2,7 @@ import { ISprite } from "../../3d/ISprite";
 import { Sine } from "../../animation/Sine";
 import Invoker from "../../base/Invoker";
 import { Defines } from "../../defines/defines";
-import Ditto from "../../ditto";
+import { Ditto } from "../../ditto";
 import { PlayerInfo } from "../../PlayerInfo";
 import { between } from "../../utils";
 import GamePrepareLogic, { GamePrepareState } from "./GamePrepareLogic";

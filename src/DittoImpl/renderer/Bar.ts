@@ -1,5 +1,5 @@
 import type { IMeshNode } from "../../LF2/3d";
-import Ditto from "../../LF2/ditto";
+import { Ditto } from "../../LF2/ditto";
 import type { LF2 } from "../../LF2/LF2";
 import * as T from "../3d/_t";
 import { get_color_material, get_bar_geo } from "./EntityInfoRender";

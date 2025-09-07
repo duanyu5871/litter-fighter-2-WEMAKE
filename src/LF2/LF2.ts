@@ -12,8 +12,7 @@ import {
   IStageInfo, TFace
 } from "./defines";
 import {
-  default as ditto,
-  default as Ditto,
+  Ditto,
   IKeyboard,
   IKeyboardCallback,
   IKeyEvent,
@@ -69,7 +68,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
   static readonly DATA_TYPE: string = 'DataZip';
   static get instance() { return LF2.instances[0] }
   static get ui() { return LF2.instances[0].ui }
-  static get ditto() { return ditto }
+  static get ditto() { return Ditto }
   private _disposed: boolean = false;
   readonly callbacks = new Callbacks<ILf2Callback>();
   private _ui_stacks: UINode[] = [];
@@ -201,7 +200,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
     const paths = exact ? [path] : get_import_fallbacks(path)[0];
     const zip_obj = this.find_in_zip(paths)
     if (zip_obj) return [await zip_obj.json<C>(), zip_obj.name];
-    const ret = await ditto.Importer.import_as_json<C>(paths);
+    const ret = await Ditto.Importer.import_as_json<C>(paths);
     return ret;
   }
 
@@ -217,24 +216,24 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
     const paths = exact ? [path] : get_import_fallbacks(path)[0];
     const zip_obj = this.find_in_zip(paths)
     if (zip_obj) return [await zip_obj.blob_url(), zip_obj.name];
-    return ditto.Importer.import_as_blob_url(paths);
+    return Ditto.Importer.import_as_blob_url(paths);
   }
 
   @PIO async import_array_buffer(path: string, exact: boolean): Promise<[ArrayBuffer, HitUrl]> {
     const paths = exact ? [path] : get_import_fallbacks(path)[0];
     const zip_obj = this.find_in_zip(paths)
     if (zip_obj) return [await zip_obj.array_buffer(), zip_obj.name];
-    return ditto.Importer.import_as_array_buffer(paths);
+    return Ditto.Importer.import_as_array_buffer(paths);
   }
 
   constructor() {
     this.world = new World(this);
     this.datas = new DatMgr(this);
-    this.sounds = new ditto.Sounds(this);
+    this.sounds = new Ditto.Sounds(this);
     this.images = new ImageMgr(this);
-    this.keyboard = new ditto.Keyboard(this);
+    this.keyboard = new Ditto.Keyboard(this);
     this.keyboard.callback.add(this);
-    this.pointings = new ditto.Pointings();
+    this.pointings = new Ditto.Pointings();
     this.pointings.callback.add(this);
     this.world.start_update();
     this.world.start_render();
@@ -242,8 +241,8 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
     LF2.instances.push(this)
     make_debugging(this)
     this.debug(`constructor`)
-    ditto.Cache.forget(LF2.DATA_TYPE, LF2.DATA_VERSION).then(v => console.log('forget', v))
-    ditto.Cache.forget(PlayerInfo.DATA_TYPE, PlayerInfo.DATA_VERSION).then(v => console.log('forget', v))
+    Ditto.Cache.forget(LF2.DATA_TYPE, LF2.DATA_VERSION).then(v => console.log('forget', v))
+    Ditto.Cache.forget(PlayerInfo.DATA_TYPE, PlayerInfo.DATA_VERSION).then(v => console.log('forget', v))
   }
 
   random_entity_info(e: Entity) {
@@ -429,17 +428,17 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
 
   async load_zip_from_info_url(info_url: string): Promise<IZip> {
     this.on_loading_content(`${info_url}`, 0);
-    const [{ url, md5 }] = await ditto.Importer.import_as_json([info_url]);
-    const exists = await ditto.Cache.get(md5);
+    const [{ url, md5 }] = await Ditto.Importer.import_as_json([info_url]);
+    const exists = await Ditto.Cache.get(md5);
     let ret: IZip | null = null;
     if (exists) {
-      ret = await ditto.Zip.read_buf(exists.name, exists.data);
+      ret = await Ditto.Zip.read_buf(exists.name, exists.data);
     } else {
-      ret = await ditto.Zip.download(url, (progress, full_size) =>
+      ret = await Ditto.Zip.download(url, (progress, full_size) =>
         this.on_loading_file(url, progress, full_size),
       );
-      await ditto.Cache.del(info_url, "");
-      await ditto.Cache.put({
+      await Ditto.Cache.del(info_url, "");
+      await Ditto.Cache.put({
         name: md5,
         version: LF2.DATA_VERSION,
         type: LF2.DATA_TYPE,

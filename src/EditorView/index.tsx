@@ -19,7 +19,7 @@ import { IBgData, IFrameInfo } from "../LF2/defines";
 import { EntityEnum } from "../LF2/defines/EntityEnum";
 import { IEntityData } from "../LF2/defines/IEntityData";
 import { ILegacyPictureInfo } from "../LF2/defines/ILegacyPictureInfo";
-import Ditto, { IZip } from "../LF2/ditto";
+import { Ditto, IZip } from "../LF2/ditto";
 import { ILf2Callback } from "../LF2/ILf2Callback";
 import { LF2 } from "../LF2/LF2";
 import { traversal } from "../LF2/utils/container_help/traversal";

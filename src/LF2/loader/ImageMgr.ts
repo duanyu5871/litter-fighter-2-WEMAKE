@@ -11,7 +11,7 @@ import type IStyle from "../defines/IStyle";
 import { MagnificationTextureFilter } from "../defines/MagnificationTextureFilter";
 import { MinificationTextureFilter } from "../defines/MinificationTextureFilter";
 import { TextureWrapping } from "../defines/TextureWrapping";
-import Ditto from "../ditto";
+import { Ditto } from "../ditto";
 import { get_alpha_from_color } from "../ui/utils/get_alpha_from_color";
 import { is_positive_int, max, round } from "../utils";
 import { IImageInfo } from "./IImageInfo";

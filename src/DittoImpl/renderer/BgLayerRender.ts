@@ -1,6 +1,6 @@
 import type { IMeshNode } from "../../LF2/3d";
 import type Layer from "../../LF2/bg/Layer";
-import Ditto from "../../LF2/ditto";
+import { Ditto } from "../../LF2/ditto";
 import type { TPicture } from "../../LF2/loader/ImageMgr";
 import * as THREE from "../3d/_t";
 

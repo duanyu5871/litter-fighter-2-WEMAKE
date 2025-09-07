@@ -3,7 +3,7 @@ import type { TKeys } from "./controller/BaseController";
 import { CtrlDevice } from "./controller/CtrlDevice";
 import { Defines, GameKey } from "./defines";
 import { IPurePlayerInfo } from "./defines/IPurePlayerInfo";
-import Ditto from "./ditto";
+import { Ditto } from "./ditto";
 import { IDebugging, make_debugging } from "./entity/make_debugging";
 import { IPlayerInfoCallback } from "./IPlayerInfoCallback";
 import { is_str } from "./utils/type_check";

@@ -1,5 +1,5 @@
 import { Callbacks } from "../../base";
-import Ditto from "../../ditto";
+import { Ditto } from "../../ditto";
 import { IDebugging, make_debugging } from "../../entity/make_debugging";
 import { is_num, is_str } from "../../utils";
 import { IComponentInfo } from "../IComponentInfo";

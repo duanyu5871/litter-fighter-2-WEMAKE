@@ -1,4 +1,4 @@
-import Ditto from "../../ditto";
+import { Ditto } from "../../ditto";
 import { is_str } from "../../utils/type_check";
 import { IUIInfo } from "../IUIInfo.dat";
 import type { UINode } from "../UINode";

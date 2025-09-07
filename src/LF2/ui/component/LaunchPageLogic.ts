@@ -1,5 +1,5 @@
 import FSM, { IState } from "../../base/FSM";
-import Ditto from "../../ditto";
+import { Ditto } from "../../ditto";
 import { ILf2Callback } from "../../ILf2Callback";
 import { IUIKeyEvent } from "../IUIKeyEvent";
 import { IUIPointerEvent } from "../IUIPointerEvent";

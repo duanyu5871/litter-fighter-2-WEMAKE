@@ -1,4 +1,4 @@
-import Ditto from "../ditto";
+import { Ditto } from "../ditto";
 export interface IDebugging {
   id?: string;
   __debugging?: boolean;

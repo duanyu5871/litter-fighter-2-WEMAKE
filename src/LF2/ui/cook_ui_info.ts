@@ -1,4 +1,4 @@
-import Ditto from "../ditto";
+import { Ditto } from "../ditto";
 import { LF2 } from "../LF2";
 import { floor, is_str, Unsafe } from "../utils";
 import { ICookedUIInfo } from "./ICookedUIInfo";

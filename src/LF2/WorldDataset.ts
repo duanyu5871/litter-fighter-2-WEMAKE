@@ -1,5 +1,4 @@
 import { Defines } from "./defines";
-import Ditto from "./ditto";
 import { IWorldDataset } from "./IWorldDataset";
 import { make_private_properties } from "./utils/make_private_properties";
 

@@ -2,7 +2,7 @@ import type { IBillboardNode, IObjectNode } from "../../LF2/3d";
 import { get_team_shadow_color } from "../../LF2/base/get_team_shadow_color";
 import { get_team_text_color } from "../../LF2/base/get_team_text_color";
 import { GameKey, IVector3, Labels } from "../../LF2/defines";
-import Ditto from "../../LF2/ditto";
+import { Ditto } from "../../LF2/ditto";
 import { is_character, type Entity, type IEntityCallbacks } from "../../LF2/entity";
 import { floor, round } from "../../LF2/utils";
 import * as T from "../3d/_t";

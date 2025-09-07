@@ -1,7 +1,7 @@
 
 import type { IMeshNode } from "../../LF2/3d/IMesh";
 import Background from "../../LF2/bg/Background";
-import Ditto from "../../LF2/ditto";
+import { Ditto } from "../../LF2/ditto";
 import type { Entity } from "../../LF2/entity/Entity";
 import * as T from "../3d/_t";
 import { WorldRenderer } from "./WorldRenderer";

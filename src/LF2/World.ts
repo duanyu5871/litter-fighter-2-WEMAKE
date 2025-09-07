@@ -1,8 +1,10 @@
 import { Callbacks, FPS, ICollision } from "./base";
 import { collisions_keeper } from "./collision/CollisionKeeper";
-import { ALL_ENTITY_ENUM, Builtin_FrameId, Defines, IBdyInfo, IBounding, IEntityData, IFrameInfo, IItrInfo, ItrKind, StateEnum } from "./defines";
-import { AllyFlag } from "./defines/AllyFlag";
-import Ditto from "./ditto";
+import {
+  ALL_ENTITY_ENUM, Builtin_FrameId, Defines, IBdyInfo, IBounding, IEntityData,
+  IFrameInfo, IItrInfo, ItrKind, StateEnum, AllyFlag
+} from "./defines";
+import { Ditto } from "./ditto";
 import { IWorldRenderer } from "./ditto/render/IWorldRenderer";
 import {
   Entity, Factory, ICreator, is_ball,
@@ -14,9 +16,7 @@ import {
 import { IWorldCallbacks } from "./IWorldCallbacks";
 import { LF2 } from "./LF2";
 import { Stage } from "./stage/Stage";
-import { abs, floor, min, round } from "./utils";
-import { find } from "./utils/container_help";
-import { is_num } from "./utils/type_check";
+import { abs, floor, min, round, find, is_num } from "./utils";
 import { WorldDataset } from "./WorldDataset";
 export class World extends WorldDataset {
   static override readonly TAG: string = "World";

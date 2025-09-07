@@ -1,4 +1,3 @@
-
 import type { ILineSegmentsInfo, ILineSegmentsNode } from "../3d";
 import type { IBillboardInfo, IBillboardNode } from "../3d/IBillboard";
 import type { IMeshInfo, IMeshNode } from "../3d/IMesh";
@@ -7,10 +6,8 @@ import type { IOrthographicCameraNode } from "../3d/IOrthographicCamera";
 import type { IPerspectiveCamera } from "../3d/IPerspectiveCamera";
 import type { ISprite, ISpriteInfo } from "../3d/ISprite";
 import type { IText } from "../3d/IText";
-import type { Layer } from "../bg/Layer";
 import type { IQuaternion, IVector2, IVector3 } from "../defines";
 import type { IRaycaster } from "../defines/IRaycaster";
-import type { Entity } from "../entity/Entity";
 import type { LF2 } from "../LF2";
 import type { UINode } from "../ui/UINode";
 import type { World } from "../World";
@@ -81,11 +78,11 @@ export interface IDittoPack {
 export interface IDitto extends IDittoPack {
   setup(pack: IDittoPack): void;
 }
-const Ditto: Partial<IDitto> = {
+const _Ditto: Partial<IDitto> = {
   Importer: new BaseImporter(),
   Sounds: BaseSounds,
   setup(pack: IDittoPack) {
     Object.assign(this, pack);
   },
 };
-export default Ditto as IDitto;
+export const Ditto = _Ditto as IDitto

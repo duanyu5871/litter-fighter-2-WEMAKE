@@ -1,5 +1,5 @@
 import type { LF2 } from "../../LF2/LF2";
-import Ditto from "../../LF2/ditto";
+import { Ditto } from "../../LF2/ditto";
 import BaseSounds from "../../LF2/ditto/sounds/BaseSounds";
 import type ISounds from "../../LF2/ditto/sounds/ISounds";
 import { __Fallback } from "./Fallback";

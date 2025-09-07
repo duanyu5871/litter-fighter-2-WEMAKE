@@ -1,7 +1,7 @@
 import type { IMeshNode } from "../../LF2/3d";
 import type { IEntityData, IPicture, ITexturePieceInfo } from "../../LF2/defines";
 import { Builtin_FrameId } from "../../LF2/defines";
-import Ditto from "../../LF2/ditto";
+import { Ditto } from "../../LF2/ditto";
 import type { Entity } from "../../LF2/entity/Entity";
 import create_pictures from "../../LF2/loader/create_pictures";
 import { abs, floor, round } from "../../LF2/utils";

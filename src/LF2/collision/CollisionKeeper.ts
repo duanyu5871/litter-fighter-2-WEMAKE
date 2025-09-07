@@ -1,6 +1,6 @@
 import { ICollision, ICollisionHandler } from "../base";
 import { ALL_ENTITY_ENUM, BdyKind, EntityEnum, ItrKind, TEntityEnum } from "../defines";
-import Ditto from "../ditto";
+import { Ditto } from "../ditto";
 import { bdy_action_handlers } from "../entity/bdy_action_handlers";
 import { itr_action_handlers } from "../entity/itr_action_handlers";
 import { arithmetic_progression } from "../utils";

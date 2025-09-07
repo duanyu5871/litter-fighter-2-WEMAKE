@@ -1,5 +1,5 @@
 import { IEntityData, IFrameInfo, IFramePictureInfo, ITexturePieceInfo } from "../defines";
-import Ditto from "../ditto";
+import { Ditto } from "../ditto";
 import { LF2 } from "../LF2";
 import { find } from "../utils";
 import { ImageInfo } from "./ImageInfo";

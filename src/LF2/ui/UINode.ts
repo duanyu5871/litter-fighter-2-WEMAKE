@@ -5,7 +5,7 @@ import { NoEmitCallbacks } from "../base/NoEmitCallbacks";
 import StateDelegate from "../base/StateDelegate";
 import { IValGetter } from "../defines/IExpression";
 import IStyle from "../defines/IStyle";
-import Ditto from "../ditto";
+import { Ditto } from "../ditto";
 import { IUINodeRenderer } from "../ditto/render/IUINodeRenderer";
 import { IDebugging, make_debugging } from "../entity/make_debugging";
 import { type IImageInfo } from "../loader/IImageInfo";

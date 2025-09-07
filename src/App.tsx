@@ -25,7 +25,7 @@ import { LF2 } from "./LF2/LF2";
 import Invoker from "./LF2/base/Invoker";
 import { CheatType } from "./LF2/defines";
 import { Defines } from "./LF2/defines/defines";
-import Ditto from "./LF2/ditto";
+import { Ditto } from "./LF2/ditto";
 import { is_weapon } from "./LF2/entity/type_check";
 import { IUIInfo } from "./LF2/ui/IUIInfo.dat";
 import { fisrt } from "./LF2/utils/container_help";

@@ -6,7 +6,7 @@ import { __Mesh } from "./DittoImpl/3d/__Mesh";
 import __Sprite from "./DittoImpl/3d/__Sprite";
 import { UINodeRenderer } from "./DittoImpl/renderer/UINodeRenderer";
 import { WorldRenderer } from "./DittoImpl/renderer/WorldRenderer";
-import Ditto from "./LF2/ditto";
+import { Ditto } from "./LF2/ditto";
 import { Debug, Log, Warn } from "./Log";
 
 Ditto.setup({
