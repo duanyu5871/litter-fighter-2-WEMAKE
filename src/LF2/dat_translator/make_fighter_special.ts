@@ -12,6 +12,7 @@ import { make_fighter_data_henry } from "./fighters/make_fighter_data_henry";
 import { make_fighter_data_henter } from "./fighters/make_fighter_data_henter";
 import { make_fighter_data_jack } from "./fighters/make_fighter_data_jack";
 import { make_fighter_data_julian } from "./fighters/make_fighter_data_julian";
+import { make_fighter_data_justin } from "./fighters/make_fighter_data_justin";
 import { make_fighter_data_knigt } from "./fighters/make_fighter_data_knigt";
 import { make_fighter_data_mark } from "./fighters/make_fighter_data_mark";
 import { make_fighter_data_monk } from "./fighters/make_fighter_data_monk";
@@ -47,19 +48,17 @@ export function make_fighter_special(data: IEntityData): IEntityData {
     case BuiltIn_OID.Mark: return make_fighter_data_mark(data);
     case BuiltIn_OID.Monk: return make_fighter_data_monk(data);
     case BuiltIn_OID.Henry: return make_fighter_data_henry(data);
-
-    case BuiltIn_OID.Bandit:
-      add_entity_groups(data.base, EntityGroup._3000);
-      break;
     case BuiltIn_OID.Hunter: return make_fighter_data_henter(data);
-    case BuiltIn_OID.Template: break;
+    case BuiltIn_OID.Justin: return make_fighter_data_justin(data);
     case BuiltIn_OID.Jan:
       data.base.files['0'].variants = ['2']
       data.base.files['1'].variants = ['3']
       break;
-    case BuiltIn_OID.Justin:
     case BuiltIn_OID.Sorcerer:
     case BuiltIn_OID.John:
+      break;
+    case BuiltIn_OID.Template: break;
+    case BuiltIn_OID.Bandit: add_entity_groups(data.base, EntityGroup._3000); break;
 
     // not charctor, ignore it;
     case BuiltIn_OID.Weapon0:

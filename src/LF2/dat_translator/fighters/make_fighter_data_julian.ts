@@ -34,7 +34,7 @@ export function make_fighter_data_julian(data: IEntityData) {
     bot_explosion_duj(100, 1 / 30, -120, 120, 100),
 
     // uppercut
-    bot_uppercut_dua(-1, 1 / 30), {
+    bot_uppercut_dua(0, 1 / 30), {
     action_id: 'injured_dja',
     desire: Defines.desire(0.08),
     expression: new CondMaker<BotVal | EntityVal>()
