@@ -640,13 +640,18 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
     const collection_pointers: [string, string][] = []
     for (const key in strings) {
       const collection = strings[key];
-      if (typeof collection === 'object') {
+      if (typeof collection === 'string' && collection !== key)
+        collection_pointers.push([key, collection]);
+      else if (typeof collection === 'object') {
+        for (const key in collection) {
+          const v = collection[key]
+          if(Array.isArray(v)) 
+            collection[key] = v.join('\n')
+        }
         const prev = this._strings.get(key)
         if (prev) this._strings.set(key, { ...collection, ...prev });
         else this._strings.set(key, collection)
       }
-      if (typeof collection === 'string' && collection !== key)
-        collection_pointers.push([key, collection]);
     }
     for (let i = 0; i < collection_pointers.length; i++) {
       const [a, b] = collection_pointers[i];

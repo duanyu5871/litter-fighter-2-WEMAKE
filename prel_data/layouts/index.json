@@ -6,6 +6,7 @@
   "layouts/ctrl_settings_page.json",
   "layouts/danmu_game_page.json",
   "layouts/demo_mode_page.json",
+  "layouts/ending_page.json",
   "layouts/entry_page.json",
   "layouts/game_prepare_menu.json",
   "layouts/how_many_computer.json",

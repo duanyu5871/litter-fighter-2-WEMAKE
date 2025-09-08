@@ -44,6 +44,33 @@
     "normal": "Normal",
     "difficult": "Difficult",
     "crazy": "Crazy!",
+    "old_ending_0_0": [
+      "Congratulations, you have finished the stage mode.",
+      "Try challenging a higher level!"
+    ],
+    "old_ending_0_1": [
+      "Congratulations, you have finished the stage mode.",
+      "To reveal the secret characters,",
+      "just type \"lf2.net\" at character selection menu!"
+    ],
+    "old_ending_1": [
+      "Thank you very much for your support in LF2.",
+      "Do you know? It has always been our dreams to create a global popular game, and seem to me now,",
+      "our goal has been achieved! we hope LF2 will leave a print in every players's heart! After 10 years,",
+      "20 years... hope you all will still remember the game!"
+    ],
+    "old_ending_2": [
+      "After LF2 is finished, we shall all go back to",
+      "our job duties... Marti will try establishing his own career, while Starsky will continue his studies",
+      "in the US(UCLA). It is an exceptionally fine",
+      "incidence to meet somebody who will strive for the same goal. Hope there will be one day we can have opportunity to work together again, to create a more fantastic game!"
+    ],
+    "old_ending_3": [
+      "Thank you again for all your support. Long live LF2!",
+      "",
+      "LF2 Design Team",
+      "Sep 2002"
+    ],
     "": ""
   },
   "zh-hans": {
@@ -91,6 +118,33 @@
     "normal": "普 通",
     "difficult": "困 难",
     "crazy": "疯 狂!",
+    "old_ending_0_0": [
+      "恭喜你，你已经完成了闯关模式！",
+      "试试挑战更高的难度吧！"
+    ],
+    "old_ending_0_1": [
+      "恭喜你，你已经完成了闯关模式！",
+      "只要在人物选单中按“lf2.net”，",
+      "便能够选用秘密人物，试试看吧！"
+    ],
+    "old_ending_1": [
+      "很感激您对这游戏的支持。",
+      "你知道吗？我们自小便梦想能做出一个在世界各地流行的游戏。",
+      "现在，这个梦想似乎达到了！希望十年、二十年之后，LF2",
+      "仍会留在每一位玩家的心里面！"
+    ],
+    "old_ending_2": [
+      "LF2完成后，我们好应该返回自己的工作岗位了…",
+      "小熊会尝试开创自己的事业，而浩然则会去美国（UCLA）继续升学。",
+      "在人生中，能找到一个愿意一起去追求理想的伙伴是一件很难的事。",
+      "但愿有一天，我们仍能有合作的机会，创作更多精彩的游戏！"
+    ],
+    "old_ending_3": [
+      "最后再一次多谢大家。LF2万岁！",
+      "",
+      "LF2 Design Team",
+      "Sep 2002"
+    ],
     "": ""
   },
   "zh-hant": {
@@ -138,6 +192,33 @@
     "normal": "普 通",
     "difficult": "困 難",
     "crazy": "瘋 狂!",
+    "old_ending_0_0": [
+      "恭喜你，你已經完成了闖關模式！",
+      "試試挑戰更高的難度吧！"
+    ],
+    "old_ending_0_1": [
+      "恭喜你，你已經完成了闖關模式！",
+      "只要在人物選單中按“lf2.net”，",
+      "便能夠選用秘密人物，試試看吧！"
+    ],
+    "old_ending_1": [
+      "很感激您對這遊戲的支持。",
+      "你知道嗎？我們自小便夢想能做出一個在世界各地流行的遊戲。",
+      "現在，這個夢想似乎達到了！希望十年、二十年之後，LF2",
+      "仍會留在每一位玩家的心裏面！"
+    ],
+    "old_ending_2": [
+      "LF2完成後，我們好應該返回自己的工作崗位了…",
+      "小熊會嘗試開創自己的事業，而浩然則会去美國（UCLA）繼續升學。",
+      "在人生中，能找到一個願意一起去追求理想的夥伴是一件很難的事。",
+      "但願有一天，我們仍能有合作的機會，創作更多精彩的遊戲！"
+    ],
+    "old_ending_3": [
+      "最後再一次多謝大家。LF2萬歲！",
+      "",
+      "LF2 Design Team",
+      "Sep 2002"
+    ],
     "": ""
   },
   "zh-cn": "zh-hans",
