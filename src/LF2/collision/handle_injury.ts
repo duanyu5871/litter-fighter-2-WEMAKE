@@ -10,5 +10,6 @@ export function handle_injury(c: ICollision, scale: number = 1) {
     victim.hp_r -= round(injury * (1 - victim.world.hp_recoverability));
   }
   attacker.add_damage_sum(injury);
-  if (victim.hp <= 0) attacker.add_kill_sum(1);
+  // 分身击杀则不计算
+  if (!victim.emitter && victim.hp <= 0) attacker.add_kill_sum(1);
 }
