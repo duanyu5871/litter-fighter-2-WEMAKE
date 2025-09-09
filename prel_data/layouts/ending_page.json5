@@ -39,6 +39,22 @@
           i18n: "old_ending_3",
           style: "$val:txt_style",
         },
+        {
+          i18n: "gim_ending_0",
+          style: "$val:txt_style",
+        },
+        {
+          i18n: "gim_ending_1",
+          style: "$val:txt_style",
+        },
+        {
+          i18n: "gim_ending_2",
+          style: "$val:txt_style",
+        },
+        {
+          i18n: "gim_ending_3",
+          style: "$val:txt_style",
+        }
       ],
       center: "0.5,0.5",
       pos: "397, 225",
