@@ -576,7 +576,10 @@ export class Entity implements IDebugging {
   }
   private _is_key_role: boolean | null = null;
   private _is_gone_dead: boolean | null = null;
-
+  private _join_dead: {
+    hp?: number;
+    team?: string
+  } | null = null;
   get is_key_role(): boolean {
     if (this._is_key_role !== null) return this._is_key_role;
     const is_player = !!this.ctrl?.player_id;
@@ -592,10 +595,15 @@ export class Entity implements IDebugging {
     if (this._is_gone_dead !== null) return this._is_gone_dead;
     return !this.is_key_role;
   }
-
   set is_gone_dead(v: boolean | null) {
     if (this._is_gone_dead === v) return;
     this._is_gone_dead = v;
+  }
+  get join_dead() {
+    return this._join_dead
+  }
+  set join_dead(v) {
+    this._join_dead = v
   }
 
   armor?: Readonly<IArmorInfo>

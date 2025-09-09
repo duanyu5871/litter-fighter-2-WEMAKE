@@ -44,17 +44,4 @@ export default class CharacterState_Base extends State_Base {
       return { id: target.data.indexes.falling[-1][1] };
     return void 0;
   }
-
-  override find_frame_by_id(
-    e: Entity,
-    id: string | undefined,
-  ): IFrameInfo | undefined {
-    if (
-      e.hp <= 0 &&
-      e.position.y <= 0 &&
-      e.frame.state === StateEnum.Lying
-    ) {
-      return e.frame;
-    }
-  }
 }

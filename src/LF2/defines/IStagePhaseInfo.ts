@@ -45,4 +45,11 @@ export interface IStagePhaseInfo {
    * @type {?string}
    */
   end_action?: string;
+
+  /**
+   * 被打败后，加入队伍的血量
+   * 
+   * @type {?number}
+   */
+  join?: number;
 }
