@@ -134,5 +134,4 @@ export enum StateEnum {
    * 变成最后一次曾经变过的人（rudolf的变身效果）
    */
   TransformToCatching_End = 501,
-
 }

@@ -186,7 +186,7 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
     if (!count) count = 1;
 
     const { ratio = 1, times = 1, is_boss } = obj_info;
-    let spawn_count = is_boss ? 1 : floor(count * ratio);
+    let spawn_count = is_boss ? 1 : floor((count - 1) * ratio);
     if (spawn_count <= 0 || !times) return;
 
     while (spawn_count > 0) {
