@@ -141,7 +141,6 @@ export class DanmuGameLogic extends SummaryLogic {
         if (this._teams.size) {
           for (const [k, v] of this.teams) {
             if (this._teams.has(k)) v.wins += 1
-            else v.loses += 1
           }
         }
         this._gameover_countdown.reset()

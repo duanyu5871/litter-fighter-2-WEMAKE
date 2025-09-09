@@ -4,7 +4,7 @@ import { IFighterSumInfo, IPlayerSumInfo } from "./IFighterSumInfo";
 import { ISumInfo } from "./ISumInfo";
 import { make_fighter_sum } from "./make_fighter_sum";
 import { make_player_sum } from "./make_player_sum";
-import { make_team_sum } from "./make_team_sum";
+import { make_sum_info } from "./make_sum_info";
 import { UIComponent } from "./UIComponent";
 
 export class SummaryLogic extends UIComponent {
@@ -12,11 +12,12 @@ export class SummaryLogic extends UIComponent {
   readonly fighters = new Map<string, IFighterSumInfo>();
   readonly players = new Map<string, IPlayerSumInfo>();
   readonly teams = new Map<string, ISumInfo>();
+  readonly losing_teams = new Set<ISumInfo>();
 
   team_sum(entity: Entity): ISumInfo {
     const { team } = entity;
     let ret = this.teams.get(team)
-    if (!ret) this.teams.set(team, ret = make_team_sum(team))
+    if (!ret) this.teams.set(team, ret = make_sum_info(team))
     return ret;
   }
   fighter_sum(entity: Entity): IFighterSumInfo {
@@ -56,7 +57,11 @@ export class SummaryLogic extends UIComponent {
     on_dead: (e) => {
       // 分身死亡不计算
       if (e.emitter) return;
-      this.team_sum(e).deads++;
+      const team_sum = this.team_sum(e);
+      team_sum.deads++;
+      team_sum.latest_dead_time = this.node.update_times;
+      if (team_sum.deads === team_sum.spawns)
+        this.losing_teams.add(team_sum)
       this.fighter_sum(e).deads++;
       this.player_sum(e).deads++;
     }
@@ -64,7 +69,9 @@ export class SummaryLogic extends UIComponent {
   on_fighter_add(e: Entity) {
     e.callbacks.add(this._fighter_cb);
     if (!e.emitter) { // 忽略分身计数
-      this.team_sum(e).spawns++;
+      const team_sum = this.team_sum(e);
+      team_sum.spawns++;
+      this.losing_teams.delete(team_sum);
       this.fighter_sum(e).spawns++;
       this.player_sum(e).spawns++;
     }
@@ -79,5 +86,23 @@ export class SummaryLogic extends UIComponent {
   override on_stop(): void {
     super.on_stop?.();
     this.world.callbacks.del(this._world_cb);
+  }
+
+  private _temps: ISumInfo[] = []
+  override update(dt: number): void {
+    super.update?.(dt);
+
+    if (this.losing_teams.size) {
+      for (const losing_team of this.losing_teams) {
+        const is_waiting = this.node.update_times - losing_team.latest_dead_time < 180;
+        if (is_waiting) continue;
+        losing_team.loses++;
+        this._temps.push(losing_team);
+      }
+    }
+    if (this._temps.length) {
+      this._temps.forEach(i => this.losing_teams.delete(i))
+      this._temps.length = 0;
+    }
   }
 }

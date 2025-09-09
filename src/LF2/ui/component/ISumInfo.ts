@@ -7,4 +7,5 @@ export interface ISumInfo {
   spawns: number;
   deads: number;
   team: string;
+  latest_dead_time: number;
 }
