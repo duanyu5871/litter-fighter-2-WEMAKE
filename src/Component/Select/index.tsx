@@ -53,9 +53,6 @@ export function Select<T, V>(props: ISelectProps<T, V> | IMultiSelectProps<T, V>
   const ref_popover = React.useRef<HTMLDivElement | null>(null);
   const ref_wrapper = React.useRef<HTMLDivElement | null>(null);
   const [gone, set_gone] = useState(false);
-  if (props.id === "layout_id_select") {
-    console.log(props.id, "value", props.value)
-  }
   const multi = (props as any).multi
   const classname = classNames(styles.lfui_dropdown, { [styles.open]: open }, className);
 

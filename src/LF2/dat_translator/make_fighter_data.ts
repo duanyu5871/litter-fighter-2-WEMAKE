@@ -6,7 +6,7 @@ import { IEntityData } from "../defines/IEntityData";
 import { IFrameIndexes } from "../defines/IFrameIndexes";
 import { INextFrame } from "../defines/INextFrame";
 import { Defines } from "../defines/defines";
-import { round } from "../utils";
+import { ensure, round } from "../utils";
 import { set_obj_field } from "../utils/container_help/set_obj_field";
 import { take_number } from "../utils/container_help/take_number";
 import { traversal } from "../utils/container_help/traversal";
@@ -271,8 +271,7 @@ export function make_character_data(
         // set_hold_turn_back(frame);
         if (frame.bdy?.length)
           for (const bdy of frame.bdy) {
-            bdy.actions = bdy.actions || []
-            bdy.actions.push(
+            bdy.actions = ensure(bdy.actions,
               { type: 'broken_defend', data: { id: "112" } },
               { type: 'defend', data: { id: "111" } }
             );
@@ -591,10 +590,9 @@ export function make_character_data(
         if (frame.bdy?.length)
           for (const bdy of frame.bdy) {
             bdy.kind = BdyKind.Defend;
-            (bdy as any).kind_name = BdyKind[bdy.kind];
+            bdy.kind_name = BdyKind[bdy.kind];
             if (!bdy.actions?.find(v => v.type === 'broken_defend')) {
-              bdy.actions = bdy.actions || []
-              bdy.actions = [{ type: 'broken_defend', data: { id: "112" } }];
+              bdy.actions = ensure(bdy.actions, { type: 'broken_defend', data: { id: "112" } })
             }
           }
         break;

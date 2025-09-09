@@ -3,8 +3,8 @@ import {
   IEntityData,
   StateEnum
 } from "../../defines";
+import { ensure } from "../../utils";
 import { probability } from "../../utils/math/probability";
-import { add_entity_groups } from "../add_entity_to_group";
 import { bot_ball_cancelling } from "./bot_ball_cancelling";
 import { bot_ball_dfj } from "./bot_ball_dfj";
 import { bot_chasing_action } from "./bot_chasing_action";
@@ -15,7 +15,7 @@ import { frames } from "./frames";
 
 
 export function make_fighter_data_firzen(data: IEntityData) {
-  add_entity_groups(data.base, EntityGroup.Boss);
+  data.base.group = ensure(data.base.group, EntityGroup.Boss);
   data.base.ce = 2;
 
   BotBuilder.make(data).set_actions(

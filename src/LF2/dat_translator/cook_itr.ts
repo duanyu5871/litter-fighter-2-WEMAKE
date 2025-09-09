@@ -9,7 +9,7 @@ import { get_next_frame_by_raw_id } from "./get_the_next";
 import { take } from "./take";
 import { take_not_zero_num } from "./take_not_zero_num";
 import { AllyFlag } from "../defines/AllyFlag";
-import { max } from "../utils";
+import { ensure, max } from "../utils";
 import { fixed_float } from "./fixed_float";
 import { take_positive_num } from "./take_positive_num";
 
@@ -179,8 +179,7 @@ export function cook_itr(itr?: Partial<IItrInfo>) {
 
 
       if (src_dvx) {
-        itr.actions = itr.actions || []
-        itr.actions.push({
+        itr.actions = ensure(itr.actions, {
           type: 'next_frame',
           data: get_next_frame_by_raw_id(src_dvx),
         })

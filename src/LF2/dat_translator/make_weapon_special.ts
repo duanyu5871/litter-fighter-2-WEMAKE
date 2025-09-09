@@ -1,7 +1,7 @@
 import { BuiltIn_OID, Defines, EntityGroup, IOpointInfo } from "../defines";
 import { IEntityData } from "../defines/IEntityData";
 import { OpointKind } from "../defines/OpointKind";
-import { add_entity_groups } from "./add_entity_to_group";
+import { ensure } from "../utils";
 
 export function make_weapon_special(data: IEntityData) {
   const ooo = (...frame_ids: string[]): IOpointInfo[] => {
@@ -31,8 +31,7 @@ export function make_weapon_special(data: IEntityData) {
 
   const num_data_id = Number(data.id);
   if (num_data_id >= 100 || num_data_id <= 199) {
-    add_entity_groups(
-      data.base,
+    data.base.group = ensure(data.base.group,
       EntityGroup.VsWeapon,
       EntityGroup.StageWeapon,
     );
@@ -60,7 +59,7 @@ export function make_weapon_special(data: IEntityData) {
       break;
     case BuiltIn_OID.Weapon_milk:
       data.base.brokens = ooo("70", "50", "80", "50", "50");
-      add_entity_groups(data.base, EntityGroup.VsWeapon);
+      data.base.group = ensure(data.base.group, EntityGroup.VsWeapon);
       break;
     case BuiltIn_OID.Weapon_Stone:
       data.base.brokens = ooo("0", "0", "4", "4", "4");
@@ -70,7 +69,7 @@ export function make_weapon_special(data: IEntityData) {
       break;
     case BuiltIn_OID.Weapon_Beer:
       data.base.brokens = ooo("160", "164", "164", "164", "164");
-      add_entity_groups(data.base, EntityGroup.VsWeapon);
+      data.base.group = ensure(data.base.group, EntityGroup.VsWeapon);
       break;
     case BuiltIn_OID.Weapon_Boomerang:
       data.base.brokens = ooo("170", "170", "170");

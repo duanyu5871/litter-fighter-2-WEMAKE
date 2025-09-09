@@ -19,6 +19,11 @@ export enum StateEnum {
    *
    * 此状态下：
    *    - 防御值不会恢复
+   * 
+   * WEMAKE中，要实现防御与破防，需要结合
+   * bdy.kind = BdyKind.Defend
+   * bdy.actions = [{ type: 'broken_defend', data: { id: "112" } }]
+   * 
    *
    * @see {Entity.self_update}
    */
@@ -111,7 +116,7 @@ export enum StateEnum {
    * 原LF2的Louis爆甲
    * 但现在Wemake中，爆甲是通过opoint实现的。
    */
-  LouisCastOff = 9996,
+  OLD_LouisCastOff = 9996,
 
   Gone = 9998,
   

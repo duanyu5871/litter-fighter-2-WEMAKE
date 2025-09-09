@@ -1,7 +1,6 @@
 import { GK, IEntityData } from "../../defines";
 import { arithmetic_progression } from "../../utils";
 import { bot_ball_dfa } from "./bot_ball_dfa";
-import { bot_ball_dfj } from "./bot_ball_dfj";
 import { bot_chasing_action } from "./bot_chasing_action";
 import { bot_front_test } from "./bot_front_test";
 import { BotBuilder } from "./BotBuilder";

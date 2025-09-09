@@ -1,5 +1,5 @@
 import { ArmorEnum, BotVal, Defines, EntityGroup, EntityVal, GK, IEntityData, StateEnum } from "../../defines";
-import { add_entity_groups } from "../add_entity_to_group";
+import { ensure } from "../../utils";
 import { CondMaker } from "../CondMaker";
 import { bot_ball_dfj } from "./bot_ball_dfj";
 import { bot_chasing_action } from "./bot_chasing_action";
@@ -10,7 +10,7 @@ import { BotBuilder } from "./BotBuilder";
 import { frames } from "./frames";
 
 export function make_fighter_data_julian(data: IEntityData) {
-  add_entity_groups(data.base, EntityGroup.Boss);
+  data.base.group = ensure(data.base.group, EntityGroup.Boss);
   data.base.ce = 3;
   data.base.armor = {
     fireproof: 1,

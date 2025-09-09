@@ -1,6 +1,6 @@
 import { BuiltIn_OID, EntityGroup } from "../defines";
 import { IEntityData } from "../defines/IEntityData";
-import { add_entity_groups } from "./add_entity_to_group";
+import { ensure } from "../utils";
 import { make_fighter_data_bat } from "./fighters/make_fighter_data_bat";
 import { make_fighter_data_davis } from "./fighters/make_fighter_data_davis";
 import { make_fighter_data_deep } from "./fighters/make_fighter_data_deep";
@@ -25,10 +25,10 @@ export function make_fighter_special(data: IEntityData): IEntityData {
   const num_id = Number(data.id);
 
   if ((num_id >= 30 && num_id <= 39) || (num_id >= 50 && num_id <= 59)) {
-    add_entity_groups(data.base, EntityGroup.Hidden);
+    data.base.group = ensure(data.base.group, EntityGroup.Hidden);
   }
   if (num_id >= 1 && num_id <= 29) {
-    add_entity_groups(data.base, EntityGroup.Regular);
+    data.base.group = ensure(data.base.group, EntityGroup.Regular);
   }
   switch (data.id as BuiltIn_OID) {
     case BuiltIn_OID.Julian: return make_fighter_data_julian(data)
@@ -58,7 +58,7 @@ export function make_fighter_special(data: IEntityData): IEntityData {
     case BuiltIn_OID.John:
       break;
     case BuiltIn_OID.Template: break;
-    case BuiltIn_OID.Bandit: add_entity_groups(data.base, EntityGroup._3000); break;
+    case BuiltIn_OID.Bandit: data.base.group = ensure(data.base.group, EntityGroup._3000); break;
 
     // not charctor, ignore it;
     case BuiltIn_OID.Weapon0:

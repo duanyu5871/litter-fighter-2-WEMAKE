@@ -22,7 +22,8 @@ export function make_frame_state(frame: IFrameInfo) {
       })
       break;
     }
-    case StateEnum.LouisCastOff: {
+    case StateEnum.OLD_LouisCastOff: {
+      frame.state = StateEnum.Attacking;
       frame.opoint = ensure(frame.opoint,
         {
           kind: OpointKind.Normal,

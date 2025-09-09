@@ -1,11 +1,7 @@
-import { IEntityData, EntityGroup, EntityVal } from "../../defines";
-import { arithmetic_progression } from "../../utils";
-import { add_entity_groups } from "../add_entity_to_group";
+import { EntityGroup, IEntityData } from "../../defines";
+import { arithmetic_progression, ensure } from "../../utils";
 import { bot_ball_continuation } from "./bot_ball_continuation";
 import { bot_ball_dfa } from "./bot_ball_dfa";
-import { bot_ball_dfj } from "./bot_ball_dfj";
-import { bot_chasing_skill_action } from "./bot_chasing_skill_action";
-import { bot_uppercut_duj } from "./bot_uppercut_duj";
 import { bot_uppercut_dva } from "./bot_uppercut_dva";
 import { BotBuilder } from "./BotBuilder";
 import { frames } from "./frames";
@@ -15,8 +11,7 @@ import { frames } from "./frames";
  * @returns 
  */
 export function make_figther_data_louisex(data: IEntityData): IEntityData {
-
-  add_entity_groups(data.base, EntityGroup.Boss);
+  data.base.group = ensure(data.base.group, EntityGroup.Boss);
   BotBuilder.make(data).set_actions(
     // d>a
     bot_ball_dfa(100, 1 / 30, 150, 400),

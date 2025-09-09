@@ -1,6 +1,6 @@
-import { BotVal, EntityVal, GameKey, IEntityData, StateEnum } from "../../defines";
-import { probability } from "../../utils/math/probability";
+import { BotVal, GameKey, IEntityData, StateEnum } from "../../defines";
 import { arithmetic_progression } from "../../utils";
+import { probability } from "../../utils/math/probability";
 import { bot_ball_continuation } from "./bot_ball_continuation";
 import { bot_ball_dfa } from "./bot_ball_dfa";
 import { bot_chasing_action } from "./bot_chasing_action";
