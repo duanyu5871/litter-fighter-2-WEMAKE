@@ -1,6 +1,8 @@
 import fs from "fs/promises";
 import { file_md5_str } from "./file_md5_str";
 import { write_file } from "./write_file";
+import JSON5 from "json5"
+
 class CacheInfo {
   cache_infos: CacheInfos;
   dst_path: string;
@@ -65,7 +67,7 @@ export class CacheInfos {
         return r.toString();
       })
       .then((r) => {
-        return JSON.parse(r);
+        return JSON5.parse(r);
       })
       .catch((e) => {
         return {};
@@ -110,7 +112,7 @@ export class CacheInfos {
   async save() {
     await write_file(
       this.cache_infos_path,
-      JSON.stringify(this.raw_obj, null, 2),
+      JSON5.stringify(this.raw_obj, null, 2),
     );
   }
 }

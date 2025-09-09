@@ -421,7 +421,8 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
     this.callbacks.emit("on_zips_changed")(this.zips);
     await this.import_json("launch/strings.json").then(r => this.load_strings(r[0])).catch(e => { })
     await this.load_data(ret)
-    await this.load_ui();
+    await this.load_ui(ret);
+    this.set_ui(this.uiinfos[0]!)
     this.callbacks.emit("on_prel_loaded")();
     return ret;
   }
@@ -645,7 +646,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
       else if (typeof collection === 'object') {
         for (const key in collection) {
           const v = collection[key]
-          if(Array.isArray(v)) 
+          if (Array.isArray(v))
             collection[key] = v.join('\n')
         }
         const prev = this._strings.get(key)
@@ -661,40 +662,47 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
       collection_pointers.splice(i, 1);
       --i
     }
-
   }
-  async load_ui(): Promise<ICookedUIInfo[]> {
-    if (this._uiinfos.length) return this._uiinfos;
-    const array = await this.import_json("layouts/index.json").then(r => r[0]).catch((e) => []);
-    this._uiinfos_loaded = false;
+
+  protected async load_builtin_ui(): Promise<ICookedUIInfo[]> {
+    const ret: ICookedUIInfo[] = []
     const paths: string[] = [
       "launch/init.json",
       "launch/loading_anim.json",
       "launch/main_text_button.json",
       "launch/menu_text_button.json"
     ];
-    for (const element of array) {
-      if (is_str(element)) paths.push(element);
-      else
-        Ditto.warn(
-          LF2.TAG + "::load_layouts",
-          "layouts/index.json",
-          "element is not a string! got:",
-          element,
-        );
-    }
     for (const path of paths) {
       const cooked_ui_info = await cook_ui_info(this, path);
-      this._uiinfos.push(cooked_ui_info);
-      if (path === paths[0]) this.set_ui(cooked_ui_info);
+      ret.push(cooked_ui_info);
     }
+    return ret
+  }
+
+  async load_ui(zip: IZip): Promise<ICookedUIInfo[]> {
+    if (this._uiinfos.length) return this._uiinfos;
+
+    this._uiinfos_loaded = false;
+    const files = zip.file(/^layouts\/.*?\.json5?$/)
+    const ret: ICookedUIInfo[] = []
+
+    for (const file of files) {
+      const json = await file.json().catch(() => null);
+      if (!json || Array.isArray(json)) continue;
+      const cooked_ui_info = await cook_ui_info(this, json);
+      ret.push(cooked_ui_info);
+    }
+    if (!this._uiinfos.length)
+      ret.unshift(...await this.load_builtin_ui())
     if (this._disposed) {
       this._uiinfos.length = 0;
+      return this._uiinfos = [];
     } else {
-      this.callbacks.emit("on_ui_loaded")(this._uiinfos);
       this._uiinfos_loaded = true;
+      this._uiinfos.push(...ret)
+      this.callbacks.emit("on_ui_loaded")(ret);
+      return ret;
     }
-    return this._uiinfos;
   }
 
   ui_val_getter = (item: UINode, word: string) => {

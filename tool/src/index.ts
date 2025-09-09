@@ -12,6 +12,7 @@ import { convert_sound } from "./utils/convert_sound";
 import { make_zip_and_json } from "./utils/make_zip_and_json";
 import { write_file } from "./utils/write_file";
 import { data_2_txt } from "./data_2_txt";
+import JSON5 from "json5"
 const {
   RAW_LF2_PATH,
   DATA_DIR_PATH,
@@ -20,7 +21,7 @@ const {
   PREL_DIR_PATH,
   PREL_ZIP_NAME,
   TXT_LF2_PATH,
-} = JSON.parse(readFileSync("./converter.config.json").toString());
+} = JSON5.parse(readFileSync("./converter.config.json").toString());
 
 enum EntryEnum {
   MAIN = 1,
@@ -106,7 +107,7 @@ async function main() {
           }
         }
         if (edited) {
-          await write_file(dst_path, JSON.stringify(json, null, 2));
+          await write_file(dst_path, JSON5.stringify(json, null, 2));
         }
       }
       await cache_info.update();

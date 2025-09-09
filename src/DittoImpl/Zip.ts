@@ -2,6 +2,7 @@ import axios from "axios";
 import JSZIP from "jszip";
 import { IZip, IZipObject } from "../LF2/ditto";
 import { is_str } from "../LF2/utils/type_check";
+import json5 from "json5";
 
 export class ZipObject implements IZipObject {
   protected inner: JSZIP.JSZipObject;
@@ -16,7 +17,7 @@ export class ZipObject implements IZipObject {
     return this.inner.async("text");
   }
   async json(): Promise<any> {
-    return this.text().then(JSON.parse);
+    return this.text().then(json5.parse);
   }
   async blob(): Promise<Blob> {
     return this.inner.async("blob");

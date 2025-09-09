@@ -1,0 +1,26 @@
+{
+  name: "UI: 百叶窗NS",
+  id: "jalousie_ns",
+  component: [
+    {
+      name: "Jalousie",
+      properties: {
+        direction: "column",
+        align: "stretch",
+      },
+    },
+  ],
+  templates: {
+    shutter_item: {
+      color: "rgb(16, 32, 108)",
+      size: "20,20",
+      pos: "0,0,2",
+    },
+  },
+  items: [
+    {
+      count: 30,
+      template: "shutter_item",
+    },
+  ],
+}

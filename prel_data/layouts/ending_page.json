@@ -9,6 +9,7 @@
   },
   "items": [
     {
+      "id": "txt_a",
       "txt": [
         {
           "i18n": "old_ending_0_0",
@@ -31,6 +32,7 @@
       "pos": "397, 225"
     },
     {
+      "id": "txt_b",
       "txt": [
         {
           "i18n": "old_ending_0_1",

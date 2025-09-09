@@ -13,7 +13,8 @@
   "license": "ISC",
   "dependencies": {
     "command-exists": "^1.2.9",
-    "compressing": "^1.10.1"
+    "compressing": "^1.10.1",
+    "json5": "^2.2.3"
   },
   "devDependencies": {
     "@types/command-exists": "^1.2.3",

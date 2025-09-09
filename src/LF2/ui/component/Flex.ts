@@ -1,13 +1,16 @@
 import { max } from "../../utils";
 import { FlexItem } from "./FlexItem";
+import { IUICompnentCallbacks } from "./IUICompnentCallbacks";
 import { UIComponent } from "./UIComponent";
 
 export type TFlexDirection = 'row' | 'column'
 export type TFlexAlign = 'start' | 'center' | 'end' | 'stretch'
 
-export class Flex extends UIComponent {
+export class Flex<Callbacks extends IUICompnentCallbacks = IUICompnentCallbacks> extends UIComponent<Callbacks> {
   static override readonly TAG: string = 'Flex';
-  get direction(): TFlexDirection { return this.props.str('direction', ['row', 'column']) ?? 'row' }
+  get direction(): TFlexDirection { 
+    return this.props.str('direction', ['row', 'column']) ?? 'row' 
+  }
   get gap(): number { return this.props.num('gap') ?? 0; }
   get row_gap(): number { return this.props.num('row_gap') ?? this.gap; }
   get col_gap(): number { return this.props.num('col_gap') ?? this.gap; }

@@ -1,57 +1,52 @@
 import { Easing, Sequence } from "../../animation";
 import { Animation } from "../../animation/Animation";
 import { Sine } from "../../animation/Sine";
-import { Callbacks } from "../../base";
-import factory from "./Factory";
+import { Ditto } from "../../ditto";
+import { IUIPointerEvent } from "../IUIPointerEvent";
+import { Flex } from "./Flex";
 import { IUICompnentCallbacks } from "./IUICompnentCallbacks";
-import { UIComponent } from "./UIComponent";
 export interface IJalousieCallbacks extends IUICompnentCallbacks {
-  on_change?(v: Jalousie): void;
+  on_anim_end?(v: Jalousie): void;
 }
-enum D {
-  ns = 'ns',
-  ew = 'ew',
-}
-export class Jalousie extends UIComponent<IJalousieCallbacks> {
-  protected _direction: D = D.ew;
+export class Jalousie extends Flex<IJalousieCallbacks> {
+  static override readonly TAG = 'Jalousie'
   protected _anim: Animation = new Sequence(
     new Easing(0, 0).set_duration(250),
     new Sine(-1, 2, 0.5).set_duration(250),
     new Easing(1, 1).set_duration(250),
   )
-  get direction(): D { return this._direction }
   get anim(): Animation { return this._anim }
+
   override on_start() {
     super.on_start?.();
-    const raw_direction = this.str(0);
-    this._direction = [D.ns, D.ew].find(v => raw_direction === v) || D.ew
-    const open = !!this.bool(1);
-    const end = !!this.bool(2);
+    const open = this.props.bool('open') ?? this.bool(1);
+    const end = this.props.bool('end') ?? this.bool(2);
     if (end) this._anim.end(open)
     else this._anim.start(open)
-    const components = factory.create(this.node,
-      this._direction === D.ns ? 'vertical_layout()' : 'horizontal_layout()'
-    )
-    for (const component of components) {
-      this.node.components.add(component)
-    }
   }
   get open(): boolean { return this._anim.reverse; }
   set open(v: boolean) { this._anim.start(v); }
   get w(): number { return this.node.root.size.value[0] }
   get h(): number { return this.node.root.size.value[1] }
 
+  override on_click(e: IUIPointerEvent): void {
+    super.on_click?.(e)
+    this.open = !this.open;
+    Ditto.debug(`[${Jalousie.TAG}]open=${this.open}`)
+  }
   override on_stop(): void {
     super.on_stop?.()
     this.callbacks.clear();
   }
 
   override update(dt: number): void {
+    super.update(dt);
     if (this._anim.done) return;
     this._anim.update(dt);
     this.update_children();
+
     if (this._anim.done)
-      this.callbacks.emit('on_change')(this);
+      this.callbacks.emit('on_anim_end')(this);
   }
 
   override on_show(): void {
@@ -59,7 +54,7 @@ export class Jalousie extends UIComponent<IJalousieCallbacks> {
     this._anim.calc();
     this.update_children();
   }
-  _value: any = void 0;
+
   protected update_children() {
     const { value } = this._anim;
     const { children } = this.node;
@@ -67,11 +62,9 @@ export class Jalousie extends UIComponent<IJalousieCallbacks> {
     for (let i = 0; i < len; i++) {
       const child = children[i];
       if (!child) continue;
-      if (this._direction === 'ns') {
-        child.w = this.w;
+      if (this.direction === 'column') {
         child.scale.value = [1, value, 1];
       } else {
-        child.h = this.h;
         child.scale.value = [value, 1, 1];
       }
     }

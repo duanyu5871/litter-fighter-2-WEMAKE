@@ -20,6 +20,7 @@ import { IUIPointerEvent } from "./IUIPointerEvent";
 import actor from "./action/Actor";
 import factory from "./component/Factory";
 import { UIComponent } from "./component/UIComponent";
+import { parse_ui_value } from "./read_info_value";
 export class UINode implements IDebugging {
   static readonly TAG: string = 'UINode';
   debug!: (_0: string, ..._1: any[]) => void;
@@ -73,7 +74,7 @@ export class UINode implements IDebugging {
   readonly txt_idx: StateDelegate<number> = new StateDelegate(0);
   readonly flip_x: StateDelegate<boolean> = new StateDelegate(() => this.data.flip_x === true);
   readonly flip_y: StateDelegate<boolean> = new StateDelegate(() => this.data.flip_y === true);
-  readonly color: StateDelegate<string> = new StateDelegate(() => this.data.color || '');
+  readonly color: StateDelegate<string> = new StateDelegate(() => parse_ui_value(this.data, "string", this.data.color) ?? '');
   readonly enabled: StateDelegate<boolean> = new StateDelegate(() => this.data.enabled === true);
 
   protected _parent?: UINode;

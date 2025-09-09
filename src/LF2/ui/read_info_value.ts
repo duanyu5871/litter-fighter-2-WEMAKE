@@ -38,7 +38,8 @@ export function find_ui_value<T extends BaseType, C>(ui_info: ICookedUIInfo, typ
 
 export function parse_ui_value(ui_info: ICookedUIInfo, type: 'boolean', value: Unsafe<boolean | string>): boolean | null;
 export function parse_ui_value(ui_info: ICookedUIInfo, type: 'number', value: Unsafe<number | string>): number | null;
-export function parse_ui_value(ui_info: ICookedUIInfo, type: 'string', value: Unsafe<string>): string | null;
+export function parse_ui_value(ui_info: ICookedUIInfo, type: 'string', value: Unsafe<string>): Unsafe<string>;
+export function parse_ui_value(ui_info: ICookedUIInfo, type: 'string', value: string): string;
 export function parse_ui_value<C>(ui_info: ICookedUIInfo, type: Cls<C>, value: Unsafe<C | string>): C | null
 export function parse_ui_value<C>(ui_info: ICookedUIInfo, type: Judger, value: Unsafe<C | string>): C | null
 export function parse_ui_value<T extends BaseType, C>(ui_info: ICookedUIInfo, type: T | Cls<C> | Judger, value: Unsafe<T | string>): C | T | null
@@ -47,9 +48,7 @@ export function parse_ui_value<T extends BaseType, C>(ui_info: ICookedUIInfo, ty
     return null
   if (typeof value !== 'string')
     return value;
-  if (!ui_info)
-    return null;
-  if (value.startsWith("$val:"))
+  if (ui_info && value.startsWith("$val:"))
     return (find_ui_value(ui_info, type, value.substring(5).trim()) ?? value) as T;
   return value as T;
 }

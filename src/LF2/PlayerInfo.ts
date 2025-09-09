@@ -1,3 +1,4 @@
+import json5 from "json5";
 import { Callbacks } from "./base";
 import type { TKeys } from "./controller/BaseController";
 import { CtrlDevice } from "./controller/CtrlDevice";
@@ -77,7 +78,7 @@ export class PlayerInfo implements IDebugging {
       if (!r) return
       const { data } = r
       try {
-        const { name, keys, ctrl = this.ctrl, version } = JSON.parse(new TextDecoder().decode(data)) as Partial<IPurePlayerInfo>;
+        const { name, keys, ctrl = this.ctrl, version } = json5.parse(new TextDecoder().decode(data)) as Partial<IPurePlayerInfo>;
         if (version !== this._info.version) {
           this.warn("load", "version changed");
           return false;

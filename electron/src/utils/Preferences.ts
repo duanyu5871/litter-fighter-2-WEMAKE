@@ -67,7 +67,7 @@ export default class Preferences {
     return this;
   }
   get<T = any>(k: string, defaultValue?: T): T {
-    return this.exists(k) ? this.__obj[k] : defaultValue;
+    return this.exists(k) ? this.__obj[k] : defaultValue!;
   }
   async commit() {
     try {

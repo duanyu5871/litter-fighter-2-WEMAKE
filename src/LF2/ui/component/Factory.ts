@@ -84,7 +84,7 @@ class ComponentFactory {
     ["demo_mode_logic", DemoModeLogic],
     ["playing_time", PlayingTimeText],
     ["random_img_on_layout_resume", RandomImgOnLayoutResume],
-    ["jalousie", Jalousie],
+    [Jalousie.TAG, Jalousie],
     ["items", Items],
     [SineOpacity.TAG, SineOpacity],
     [FadeInOpacity.TAG, FadeInOpacity],

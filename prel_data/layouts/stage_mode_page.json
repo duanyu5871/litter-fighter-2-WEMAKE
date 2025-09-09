@@ -61,7 +61,7 @@
     },
     {
       "component": [
-        "jalousie(ns, 1, 1)"
+        "Jalousie(ns, 1, 1)"
       ],
       "items": [
         {

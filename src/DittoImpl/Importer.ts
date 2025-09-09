@@ -1,7 +1,8 @@
-import axios, { AxiosResponse, RawAxiosRequestHeaders } from "axios";
+import axios, { Axios, AxiosResponse, RawAxiosRequestHeaders, ResponseType } from "axios";
 import { IImporter } from "../LF2/ditto/importer/IImporter";
 import { ImportError } from "../LF2/ditto/importer/ImportError";
 import { PIO } from "../LF2/base/PromisesInOne";
+import json5 from "json5";
 
 const roots = ["lf2_built_in_data"];
 function get_possible_url_list(list: string[]): string[] {
@@ -50,7 +51,7 @@ function get_req_header_accept(url: string): string | undefined {
 
   return void 0;
 }
-async function start_req<T>(url: string, responseType: "json" | "blob" | 'arraybuffer') {
+async function start_req<T>(url: string, responseType: ResponseType) {
   const headers: RawAxiosRequestHeaders = {};
   const accept = get_req_header_accept(url);
   if (accept) headers.Accept = accept;
@@ -67,8 +68,10 @@ async function import_as<T>(
     for (let i = 0; i < urls.length; ++i) {
       results[i] = null;
       const url = urls[i]
-      start_req<T>(url, responseType).then(data => {
-        results[i] = { data: [data, url], type: 1 };
+      const rt = responseType === 'json' ? 'text' : responseType;
+      start_req<T>(url, rt).then(resp => {
+        if (responseType === 'json') resp.data = json5.parse(resp.data as string)
+        results[i] = { data: [resp, url], type: 1 };
       }).catch((e) => {
         results[i] = { data: [url, e], type: 0 }
       }).finally(() => {

@@ -4,6 +4,7 @@ import { join } from "path";
 import { file_md5_str } from "./file_md5_str";
 import { is_dir } from "./is_dir";
 import { write_file } from "./write_file";
+import JSON5 from "json5"
 
 export interface ZipFileInfo {
   url: string;
@@ -40,15 +41,15 @@ export async function make_zip_and_json(
   console.log("zipping", src_dir, "=>", join(out_dir, zip_name));
 
   const layout_dir = src_dir + '/layouts'
-  const layout_index_file = src_dir + '/layouts/index.json'
+  const layout_index_file = src_dir + '/layouts/index.json5'
   await fs.unlink(layout_index_file).catch(() => { });
   await fs.readdir(layout_dir).then((names) => {
     const paths: string[] = []
     for (const name of names) {
-      if (!name.endsWith('.json')) continue;
+      if (!name.match(/\.json5?$/)) continue;
       paths.push('layouts/' + name)
     }
-    const str = JSON.stringify(paths, null, 2);
+    const str = JSON5.stringify(paths, null, 2);
     return fs.writeFile(layout_index_file, str)
   }).catch(e => { })
 
@@ -74,7 +75,7 @@ export async function make_zip_and_json(
         if (name === "__info.json") {
           infos[path.replace(src_dir, "/")] = await fs
             .readFile(sub_path)
-            .then((v) => JSON.parse(v.toString()));
+            .then((v) => JSON5.parse(v.toString()));
         }
       }
     }
@@ -86,5 +87,5 @@ export async function make_zip_and_json(
     infos: await read_sub_info_json(src_dir),
     time: new Date().toISOString(),
   };
-  await write_file(inf_path, JSON.stringify(inf));
+  await write_file(inf_path, JSON5.stringify(inf));
 }
