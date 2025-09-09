@@ -586,7 +586,6 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
   change_bg(bg_info: IBgData): void;
   change_bg(bg_id: string): void;
   change_bg(arg: IBgData | string | undefined) {
-
     if (!arg) return;
     if (arg === Defines.RANDOM_BG || arg === Defines.RANDOM_BG.id || arg === '?')
       arg = this.random_get(this.datas.backgrounds.filter(v => v.base.group.some(a => a === BackgroundGroup.Regular)))

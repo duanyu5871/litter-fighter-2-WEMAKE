@@ -1,0 +1,86 @@
+{
+  name: "页面：闯关模式",
+  id: "stage_mode_page",
+  values: {
+    char_num_img: "sprite/MENU_CLIP3.png",
+    state_name_prefix: "488, 400, 176, 41",
+    char_num_1: "662, 009, 29, 40",
+    char_num_2: "692, 009, 29, 40",
+    char_num_3: "722, 009, 29, 40",
+    char_num_4: "752, 009, 29, 40",
+    char_num_5: "662, 066, 29, 40",
+    char_num_6: "692, 066, 29, 40",
+    char_num_7: "722, 066, 29, 40",
+    char_num_8: "752, 066, 29, 40",
+    char_num_9: "662, 124, 29, 40",
+    char_num_0: "692, 124, 29, 40",
+    char_minus: "722, 124, 29, 40",
+    stage_clear: "12, 552, 386, 40",
+  },
+  component: ["vs_mode_logic()"],
+  key_press_actions: [["escape", "set_layout(entry)"]],
+  items: [
+    "layouts/center_pause_label.json",
+    {
+      center: "0.5,0.5",
+      pos: "397, 225",
+      component: ["StageTitleShow()"],
+    },
+    {
+      pos: "397,0",
+      center: "0.5,0",
+      component: ["StageTitleText()"],
+    },
+    {
+      id: "go",
+      img: {
+        path: "!sprite/MENU_CLIP3.png",
+        x: 328,
+        y: 401,
+        w: 132,
+        h: 41,
+      },
+      opacity: 0,
+      center: "1, 0",
+      pos: "770, 100",
+      component: [
+        "<go_flashing>!OpacityAnimation(1, 0, 0, 0, 1, 325, 0, 325, 1, 325, 0, 325, 1, 325, 0, 325)",
+        "<go_sounds>!Sounds(750, ok, 750, ok, 750, ok)",
+      ],
+    },
+    {
+      component: [
+        {
+          name: "Jalousie",
+          properties: {
+            direction: "column",
+            align: "stretch",
+            open: true,
+            end: true,
+          },
+        },
+      ],
+      items: [
+        {
+          count: 10,
+          template: "shutter_item",
+        },
+      ],
+    },
+    {
+      id: "score_board",
+      template: "layouts/score_board.json",
+      visible: false,
+    },
+  ],
+  templates: {
+    shutter_item: {
+      color: "rgb(16, 32, 108)",
+      size: "40,40",
+      pos: "0,0,2",
+    },
+  },
+  actions: {
+    stop: ["remove_all_entities()", "destory_stage()"],
+  },
+}

@@ -17,7 +17,6 @@ export class BgRender implements BgRenderPack {
   private _mesh: IObjectNode | null = null;
   private _layers: BgLayerRender[] = [];
   private quaternion: IQuaternion;
-  private old_packs = new Set<BgRenderPack>();
   get bg(): Background | null { return this._bg }
   set bg(v: Background | null) { this.set_bg(v) }
   get mesh(): IObjectNode | null { return this._mesh }
@@ -35,12 +34,8 @@ export class BgRender implements BgRenderPack {
       mesh: this._mesh,
       layers: [...this._layers]
     }
-    this.old_packs.add(pack)
     pack.bg?.fade_out(0, 0, 0);
-    setTimeout(() => {
-      pack.mesh?.dispose()
-      this.old_packs.delete(pack)
-    }, 500)
+    pack.mesh?.dispose()
 
     this._bg = bg;
     if (this._bg) {
@@ -69,10 +64,6 @@ export class BgRender implements BgRenderPack {
   render() {
     if (this._bg !== this.world.bg)
       this.bg = this.world.bg
-
-    for (const pack of this.old_packs)
-      this.render_pack(pack, true);
-
     this.render_pack(this);
   }
 
