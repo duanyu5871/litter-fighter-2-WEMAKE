@@ -20,6 +20,13 @@ export interface InputProps extends Omit<BaseProps, 'prefix' | 'step' | 'size'>,
     input?: string;
     icon?: string;
   };
+  styles?: {
+    suffix?: React.CSSProperties;
+    prefix?: React.CSSProperties;
+    input?: React.CSSProperties;
+    icon?: React.CSSProperties;
+  };
+
   on_changed?(v: string): void;
 }
 export interface InputRef {
@@ -48,7 +55,7 @@ function direct_set_value(ele: HTMLInputElement | null, value: string | number |
 function _Input(props: InputProps, forwarded_Ref: React.ForwardedRef<InputRef>) {
   const {
     className, prefix, suffix, clear_icon = <CircleCross hoverable />, style, clazz,
-    clearable = false, on_changed, variants, precision, size,
+    clearable = false, on_changed, variants, precision, size, styles: _styles,
     ..._p
   } = props;
 
@@ -224,20 +231,19 @@ function _Input(props: InputProps, forwarded_Ref: React.ForwardedRef<InputRef>) 
     </span>
 
   const icon = !need_clearer ? null :
-    <button className={clear_icon_cls_name} ref={ref_icon} tabIndex={-1}
+    <button className={clear_icon_cls_name} style={_styles?.icon} ref={ref_icon} tabIndex={-1}
       onClick={() => direct_set_value(ref_input.current, void 0, void 0)}>
       {clear_icon}
     </button>
 
-  if ('value' in _p && _p.value === void 0) _p.value = "";
   return (
     <div className={root_cls_name} ref={ref_root} style={style}>
-      {prefix ? <span className={prefix_cls_name}>{prefix}</span> : null}
+      {prefix ? <span className={prefix_cls_name} style={_styles?.prefix}>{prefix}</span> : null}
       <div className={styles.lfui_input_spacer}>
         <span ref={ref_spacer} />
-        <input className={input_cls_name} ref={ref_input} {..._p} />
+        <input className={input_cls_name} ref={ref_input} {..._p} style={_styles?.input}/>
       </div>
-      <span className={suffix_cls_name}>{suffix}</span>
+      <span className={suffix_cls_name} style={_styles?.suffix}>{suffix}</span>
       <span className={styles.fix_right_zone}>
         {icon}
         {steppers}

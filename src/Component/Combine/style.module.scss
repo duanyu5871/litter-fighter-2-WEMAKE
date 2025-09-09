@@ -8,12 +8,14 @@
   &:hover {
     .lfui_combine_split_line {
       background-color: $primary_border_color_active;
+      opacity         : 0.5;
     }
   }
 
   &:not(:hover) {
     .lfui_combine_split_line {
       background-color: $primary_border_color;
+      opacity         : 0.5;
     }
   }
 
@@ -27,7 +29,7 @@
   flex-wrap  : nowrap;
   align-items: stretch;
   overflow   : hidden !important;
-
+  
   &>.item {
     position: relative;
     display : flex;

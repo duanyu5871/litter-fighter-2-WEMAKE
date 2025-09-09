@@ -59,13 +59,10 @@ export function Select<T, V>(props: ISelectProps<T, V> | IMultiSelectProps<T, V>
   const multi = (props as any).multi
   const classname = classNames(styles.lfui_dropdown, { [styles.open]: open }, className);
 
-  const has_value = 'value' in props
-  const [value, set_value] = useState<V[] | undefined>(() => value_adapter(has_value ? _value : defaultValue));
-
+  const [value, set_value] = useState<V[] | undefined>(() => value_adapter(_value ?? defaultValue));
   useEffect(() => {
-    if (has_value) set_value(value_adapter(_value))
-    else set_value(value_adapter(defaultValue))
-  }, [defaultValue, has_value, _value])
+    if (_value != void 0) set_value(value_adapter(_value))
+  }, [_value])
 
   const [tree_nodes, checked_tree_nodes] = useMemo(() => {
     if (!items) return [void 0, void 0];

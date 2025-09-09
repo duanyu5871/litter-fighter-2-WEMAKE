@@ -1,9 +1,11 @@
+import { floor } from "../utils";
 import type { TAction } from "./Action";
-import type { TAllyFlag } from "./AllyFlag";
+import { AllyFlag, type TAllyFlag } from "./AllyFlag";
+import { BdyKind } from "./BdyKind";
+import Defines from "./defines";
 import type { IExpression } from "./IExpression";
 import type { IQube } from "./IQube";
 import type { IQubePair } from "./IQubePair";
-
 
 export interface IBdyInfo extends IQube {
   /**
