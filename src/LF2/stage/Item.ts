@@ -1,4 +1,5 @@
 import { Defines, EntityEnum, IEntityData, IStageObjectInfo } from "../defines";
+import { TeamEnum } from "../defines/TeamEnum";
 import { Entity } from "../entity/Entity";
 import { Factory } from "../entity/Factory";
 import IEntityCallbacks from "../entity/IEntityCallbacks";
@@ -23,8 +24,13 @@ export default class Item {
   private data_list: IEntityData[] = [];
 
   readonly entity_callback: IEntityCallbacks = {
-    on_disposed: (e: Entity): void => {
+    on_team_changed: (e) => {
       this.entities.delete(e); // 被移除
+      if (e.team !== this.stage.team) {
+        this.entity_callback.on_disposed?.(e)
+      }
+    },
+    on_disposed: (e: Entity): void => {
       e.callbacks.del(this.entity_callback);
       if (this.entities.size) return;
       if (this.info.is_soldier) {
@@ -101,7 +107,11 @@ export default class Item {
     e.position.z = is_num(z)
       ? this.lf2.random_in(z - range_z, z + range_z)
       : this.lf2.random_in(this.stage.near, this.stage.far);
-
+    if (this.info.join)
+      e.join_dead = {
+        hp: this.info.join,
+        team: this.info.join_team ?? TeamEnum.Team_1
+      }
     if (is_num(hp)) e.hp_max = e.hp_r = e.hp = hp;
     if (is_num(y)) e.position.y = y;
 

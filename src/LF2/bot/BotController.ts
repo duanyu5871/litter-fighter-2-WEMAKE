@@ -181,7 +181,8 @@ export class BotController extends BaseController implements Required<IBotDataSe
       manhattan_xz(this.entity, e) < 300 && (
         e.frame.state === StateEnum.Lying ||
         e.invisible ||
-        e.blinking
+        e.blinking ||
+        e.invulnerable
       )
     )
   }

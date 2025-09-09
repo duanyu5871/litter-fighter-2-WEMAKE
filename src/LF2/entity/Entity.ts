@@ -314,6 +314,14 @@ export class Entity implements IDebugging {
   protected _invisible_duration: number = 0;
 
   /**
+   * 无敌时间计数，每帧-1
+   *
+   * @protected
+   * @type {number}
+   */
+  protected _invulnerable_duration: number = 0;
+  
+  /**
    * 闪烁计数，每帧-1
    *
    * @protected
@@ -560,6 +568,12 @@ export class Entity implements IDebugging {
     this._invisible_duration = max(0, v);
   }
 
+  get invulnerable() {
+    return this._invulnerable_duration;
+  }
+  set invulnerable(v: number) {
+    this._invulnerable_duration = max(0, v);
+  }
   get callbacks(): NoEmitCallbacks<IEntityCallbacks> {
     return this._callbacks;
   }
@@ -1196,6 +1210,12 @@ export class Entity implements IDebugging {
       this._invisible_duration--;
       if (this._invisible_duration <= 0) {
         this._blinking_duration = 120;
+      }
+    }
+    if (this._invulnerable_duration > 0) {
+      this._invulnerable_duration--;
+      if (this._invulnerable_duration <= 0) {
+        this._invulnerable_duration = 120;
       }
     }
     if (this._blinking_duration > 0) {

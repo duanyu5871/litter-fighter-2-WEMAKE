@@ -18,31 +18,34 @@ export default class CharacterState_Lying extends CharacterState_Base {
         // 玩家队伍的复活到玩家附近。
         e.blink_and_respawn(e.world.gone_blink_time);
       } else if (e.join_dead) {
-
       } else if (e.is_gone_dead) {
         // 非玩家槽的角色在被击败时，闪烁着离开了这个世界
         e.blink_and_gone(e.world.gone_blink_time);
       }
+
     }
   }
   override leave(e: Entity, next_frame: IFrameInfo): void {
+    if (e.join_dead) {
+      e.motionless = 30
+      e.invulnerable = 30
+      e.hp = e.hp_r = e.hp_max = (e.join_dead.hp ?? e.hp_max);
+      e.team = (e.join_dead.team ?? TeamEnum.Team_1);
+      e.lf2.world.etc(e.position.x, e.position.y, e.position.z, '6')
+      e.join_dead = null;
+    }
     if (e.is_key_role) {
       // 玩家槽的角色起身时会闪烁的无敌时间
       e.blinking = e.world.lying_blink_time;
     }
   }
-
   override find_frame_by_id(e: Entity, id: string | undefined): IFrameInfo | undefined {
     if (
       e.hp <= 0 &&
       e.position.y <= 0 &&
-      e.frame.state === StateEnum.Lying
+      e.frame.state === StateEnum.Lying &&
+      !e.join_dead
     ) {
-      if (e.join_dead) {
-        e.team = (e.join_dead.team ?? TeamEnum.Team_1);
-        e.hp = e.hp_r = e.hp_max = (e.join_dead.hp ?? e.hp_max)
-        return void 0;
-      }
       return e.frame;
     }
   }

@@ -20,4 +20,5 @@ export interface IStageObjectInfo {
    * @type {?number}
    */
   join?: number;
+  join_team?: string;
 }

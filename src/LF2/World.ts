@@ -523,7 +523,7 @@ export class World extends WorldDataset {
     if (!itr.vrest && attacker.a_rest) return;
     if (itr.kind !== ItrKind.Heal) {
       const b_catcher = victim.catcher;
-      if (victim.blinking || victim.invisible) return;
+      if (victim.blinking || victim.invisible || victim.invulnerable) return;
       if (b_catcher && b_catcher.frame.cpoint?.hurtable !== 1) return;
     }
     switch (aframe.state) {
@@ -615,7 +615,27 @@ export class World extends WorldDataset {
     e.enter_frame({ id: f });
     e.attach(false);
   }
+  etc(x: number, y: number, z: number, f: string): void {
+    const data = this.lf2.datas.find(998);
+    if (!data) {
+      Ditto.warn(
+        World.TAG + "::etc",
+        `data of "${998}" not found!`,
+      );
+      return;
+    }
 
+    const create = Factory.inst.get_entity_creator(data.type)
+
+    if (!create) {
+      Ditto.warn(World.TAG + "::etc", `creator of "${998}" not found!`);
+      return;
+    }
+    const e = create(this, data);
+    e.position.set(round(x), round(y), round(z));
+    e.enter_frame({ id: f });
+    e.attach(false);
+  }
   get_bounding(e: Entity, f: IFrameInfo, i: IItrInfo | IBdyInfo): IBounding {
     const left =
       e.facing > 0
