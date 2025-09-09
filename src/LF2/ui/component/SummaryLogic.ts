@@ -1,0 +1,83 @@
+import { Entity, IEntityCallbacks } from "../../entity";
+import { IWorldCallbacks } from "../../IWorldCallbacks";
+import { IFighterSumInfo, IPlayerSumInfo } from "./IFighterSumInfo";
+import { ISumInfo } from "./ISumInfo";
+import { make_fighter_sum } from "./make_fighter_sum";
+import { make_player_sum } from "./make_player_sum";
+import { make_team_sum } from "./make_team_sum";
+import { UIComponent } from "./UIComponent";
+
+export class SummaryLogic extends UIComponent {
+  static override readonly TAG: string = 'SummaryLogic';
+  readonly fighters = new Map<string, IFighterSumInfo>();
+  readonly players = new Map<string, IPlayerSumInfo>();
+  readonly teams = new Map<string, ISumInfo>();
+
+  team_sum(entity: Entity): ISumInfo {
+    const { team } = entity;
+    let ret = this.teams.get(team)
+    if (!ret) this.teams.set(team, ret = make_team_sum(team))
+    return ret;
+  }
+  fighter_sum(entity: Entity): IFighterSumInfo {
+    let ret = this.fighters.get(entity.data.id)
+    if (!ret) this.fighters.set(entity.data.id, ret = make_fighter_sum(entity.data))
+    return ret;
+  }
+  player_sum(entity: Entity): IFighterSumInfo {
+    let ret = this.players.get(entity.ctrl.player_id)
+    if (!ret) this.players.set(entity.ctrl.player_id, ret = make_player_sum(entity))
+    return ret;
+  }
+  private _world_cb: IWorldCallbacks = {
+    on_fighter_del: e => this.on_fighter_del(e),
+    on_fighter_add: e => this.on_fighter_add(e),
+  };
+  private _fighter_cb: IEntityCallbacks = {
+    on_damage_sum_changed: (e, value, prev) => {
+      // 母体还在，避免重算
+      if (e.emitter?.is_attach === true) return;
+      this.team_sum(e).damages += value - prev;
+      this.fighter_sum(e).damages += value - prev;
+      this.player_sum(e).damages += value - prev;
+    },
+    on_kill_sum_changed: (e, value, prev) => {
+      // 母体还在，避免重算
+      if (e.emitter?.is_attach === true) return;
+      this.team_sum(e).kills += value - prev;
+      this.fighter_sum(e).kills += value - prev;
+      this.player_sum(e).kills += value - prev;
+    },
+    on_picking_sum_changed: (e, value, prev) => {
+      this.team_sum(e).pickings += value - prev;
+      this.fighter_sum(e).pickings += value - prev;
+      this.player_sum(e).pickings += value - prev;
+    },
+    on_dead: (e) => {
+      // 分身死亡不计算
+      if (e.emitter) return;
+      this.team_sum(e).deads++;
+      this.fighter_sum(e).deads++;
+      this.player_sum(e).deads++;
+    }
+  };
+  on_fighter_add(e: Entity) {
+    e.callbacks.add(this._fighter_cb);
+    if (!e.emitter) { // 忽略分身计数
+      this.team_sum(e).spawns++;
+      this.fighter_sum(e).spawns++;
+      this.player_sum(e).spawns++;
+    }
+  }
+  on_fighter_del(e: Entity) {
+    e.callbacks.del(this._fighter_cb);
+  }
+  override on_start(): void {
+    super.on_start?.();
+    this.world.callbacks.add(this._world_cb);
+  }
+  override on_stop(): void {
+    super.on_stop?.();
+    this.world.callbacks.del(this._world_cb);
+  }
+}

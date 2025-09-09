@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { get_team_text_color } from "./LF2/base/get_team_text_color";
 import { ILf2Callback } from "./LF2/ILf2Callback";
 import { LF2 } from "./LF2/LF2";
-import { DanmuGameLogic, IFighterSumInfo } from "./LF2/ui/component/DanmuGameLogic";
+import { DanmuGameLogic } from "./LF2/ui/component/DanmuGameLogic";
+import { IFighterSumInfo } from "./LF2/ui/component/IFighterSumInfo";
 import { UIComponent } from "./LF2/ui/component/UIComponent";
 import { Times } from "./LF2/ui/utils/Times";
 import { floor } from "./LF2/utils";
@@ -43,7 +44,7 @@ export class DanmuOverlayLogic implements ILf2Callback {
     if (!ele || !component) return;
     ele.innerHTML = ''
 
-    const team_sum = Array.from(component.team_sum.values()).sort((b, a) => {
+    const team_sum = Array.from(component.teams.values()).sort((b, a) => {
       const w = a.wins - b.wins;
       if (w) return w
       const k = a.kills - b.kills;
@@ -71,7 +72,7 @@ export class DanmuOverlayLogic implements ILf2Callback {
     const remain_times = ((anchor + 1) * 16 - this.times.value - 1)
     switch (anchor % 3) {
       case 0: {
-        const fighter_sum = Array.from(component.fighter_sum.values()).sort(sort_by_kd)
+        const fighter_sum = Array.from(component.fighters.values()).sort(sort_by_kd)
         let i = 0
         ele.innerHTML += `------------------------------【角色-KD排名】${remain_times}秒------------------------------\n`
         for (const sum of fighter_sum) {
@@ -85,7 +86,7 @@ export class DanmuOverlayLogic implements ILf2Callback {
         break;
       }
       case 1: {
-        const fighter_sum = Array.from(component.fighter_sum.values()).sort(sort_by_kills_per_spawn)
+        const fighter_sum = Array.from(component.fighters.values()).sort(sort_by_kills_per_spawn)
         ele.innerHTML += `------------------------------【角色-场均击败排名】${remain_times}秒------------------------------\n`
         let i = 0
         for (const sum of fighter_sum) {
@@ -97,7 +98,7 @@ export class DanmuOverlayLogic implements ILf2Callback {
         break;
       }
       case 2: {
-        const fighter_sum = Array.from(component.fighter_sum.values()).sort(sort_by_damages_per_spawn)
+        const fighter_sum = Array.from(component.fighters.values()).sort(sort_by_damages_per_spawn)
         ele.innerHTML += `------------------------------【角色-场均伤害排名】${remain_times}秒------------------------------\n`
         let i = 0
         for (const sum of fighter_sum) {

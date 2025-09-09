@@ -48,6 +48,7 @@ import StageNameText from "./StageNameText";
 import { StageTitleShow } from "./StageTitleShow";
 import { StageTitleText } from "./StageTitleText";
 import StageTransitions from "./StageTransitions";
+import { SummaryLogic } from "./SummaryLogic";
 import { UIComponent } from "./UIComponent";
 import { VerticalLayout } from "./VerticalLayout";
 import { VsModeLogic } from "./VsModeLogic";
@@ -101,6 +102,7 @@ class ComponentFactory {
     [FitChildren.TAG, FitChildren],
     [DanmuGameLogic.TAG, DanmuGameLogic],
     [CameraCtrl.TAG, CameraCtrl],
+    [SummaryLogic.TAG, SummaryLogic],
   ]);
 
   register(key: string, Cls: typeof UIComponent) {
