@@ -472,6 +472,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
       this.zips.unshift(zip);
       this.callbacks.emit("on_zips_changed")(this.zips);
       await zip.file("strings.json")?.json().then(r => this.load_strings(r))
+      await zip.file("strings.json5")?.json().then(r => this.load_strings(r))
     }
     await this.datas.load();
     if (this._disposed) this.datas.dispose();
@@ -730,12 +731,32 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
     this.callbacks.emit("on_layout_changed")(curr, prev);
   }
 
-  pop_ui(): void {
-    const popped = this._ui_stacks.pop();
-    popped?.on_pause();
-    popped?.on_stop();
+  pop_ui(inclusive?: boolean, until?: (ui: UINode, index: number, stack: UINode[]) => boolean): void {
+    const poppeds: UINode[] = []
+    const len = this._ui_stacks.length
+    for (let i = len - 1; i >= 0; --i) {
+      const ui = this._ui_stacks[i]
+      if (until) {
+        if (until(ui, i, this._ui_stacks)) {
+          if (inclusive) {
+            poppeds.unshift(ui)
+          }
+          break;
+        }
+        poppeds.unshift(ui)
+      } else {
+        poppeds.unshift(ui);
+        break;
+      }
+    }
+    for (let i = 0; i < poppeds.length; i++) {
+      const popped = poppeds[i];
+      if (i === 0) popped?.on_pause();
+      popped?.on_stop();
+    }
+    this._ui_stacks.splice(len - poppeds.length, poppeds.length)
     this.ui?.on_resume();
-    this.callbacks.emit("on_layout_changed")(this.ui, popped);
+    this.callbacks.emit("on_layout_changed")(this.ui, poppeds[0]);
   }
 
   push_ui(layout_info?: ICookedUIInfo): void;

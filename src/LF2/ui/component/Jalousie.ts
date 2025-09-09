@@ -16,6 +16,7 @@ export class Jalousie extends Flex<IJalousieCallbacks> {
     new Easing(1, 1).set_duration(250),
   )
   get anim(): Animation { return this._anim }
+  get click_test(): boolean { return this.props.bool('click_test') === true; }
 
   override on_start() {
     super.on_start?.();
@@ -31,8 +32,10 @@ export class Jalousie extends Flex<IJalousieCallbacks> {
 
   override on_click(e: IUIPointerEvent): void {
     super.on_click?.(e)
-    this.open = !this.open;
-    Ditto.debug(`[${Jalousie.TAG}]open=${this.open}`)
+    if (this.click_test) {
+      this.open = !this.open;
+      Ditto.debug(`[${Jalousie.TAG}]open=${this.open}`)
+    }
   }
   override on_stop(): void {
     super.on_stop?.()

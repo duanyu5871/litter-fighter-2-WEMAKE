@@ -13,7 +13,7 @@
     "score_board.status": "Status",
     "score_board.press_atk_jmp_continue": "Press 'Attack' or 'Jump' to contimue",
     "score_board.time_used": "time:",
-    "goto_special_moves_table": "ⓘ Click here to see the special moves table of characters",
+    goto_special_moves_table: "ⓘ Click here to see the special moves table of characters",
     "entry_page.game_start": "game start",
     "entry_page.network_game": "network game",
     "entry_page.ctrl_settings": "control settings",
@@ -40,38 +40,52 @@
     "game_prepare_menu.stage": "Stage: ",
     "game_prepare_menu.difficulty": "Difficulty: ",
     "game_prepare_menu.exit": "Exit",
-    "easy": "Easy",
-    "normal": "Normal",
-    "difficult": "Difficult",
-    "crazy": "Crazy!",
-    "old_ending_0_0": [
+    easy: "Easy",
+    normal: "Normal",
+    difficult: "Difficult",
+    crazy: "Crazy!",
+    old_ending_0_0: [
       "Congratulations, you have finished the stage mode.",
-      "Try challenging a higher level!"
+      "Try challenging a higher level!",
+      "",
+      '                                                         —— from "LF2 2.0a"',
     ],
-    "old_ending_0_1": [
+    old_ending_0_1: [
       "Congratulations, you have finished the stage mode.",
       "To reveal the secret characters,",
-      "just type \"lf2.net\" at character selection menu!"
+      'just type "lf2.net" at character selection menu!',
+      "",
+      '                                                         —— from "LF2 2.0a"',
     ],
-    "old_ending_1": [
+    old_ending_1: [
       "Thank you very much for your support in LF2.",
-      "Do you know? It has always been our dreams to create a global popular game, and seem to me now,",
-      "our goal has been achieved! we hope LF2 will leave a print in every players's heart! After 10 years,",
-      "20 years... hope you all will still remember the game!"
+      "Do you know? It has always been our dreams to create a global popular game, ",
+      "and seem to me now, our goal has been achieved!",
+      "we hope LF2 will leave a print in every players's heart! After 10 years,",
+      "20 years... hope you all will still remember the game!",
+      "",
+      '                                                         —— from "LF2 2.0a"',
     ],
-    "old_ending_2": [
+    old_ending_2: [
       "After LF2 is finished, we shall all go back to",
-      "our job duties... Marti will try establishing his own career, while Starsky will continue his studies",
+      "our job duties... Marti will try establishing his own career,",
+      "while Starsky will continue his studies",
       "in the US(UCLA). It is an exceptionally fine",
-      "incidence to meet somebody who will strive for the same goal. Hope there will be one day we can have opportunity to work together again, to create a more fantastic game!"
+      "incidence to meet somebody who will strive for the same goal.",
+      "Hope there will be one day we can have opportunity",
+      "to work together again, to create a more fantastic game!",
+      "",
+      '                                                         —— from "LF2 2.0a"',
     ],
-    "old_ending_3": [
+    old_ending_3: [
       "Thank you again for all your support. Long live LF2!",
       "",
       "LF2 Design Team",
-      "Sep 2002"
+      "Sep 2002",
+      "",
+      '                                                         —— from "LF2 2.0a"',
     ],
-    "": ""
+    "": "",
   },
   "zh-hans": {
     "entry_page.game_start": "开 始 游 戏",
@@ -96,7 +110,7 @@
     "score_board.status": "状 态",
     "score_board.press_atk_jmp_continue": "按'攻击'或'跳跃'继续",
     "score_board.time_used": "完结时间:",
-    "goto_special_moves_table": "ⓘ 查看角色出招表",
+    goto_special_moves_table: "ⓘ 查看角色出招表",
     "char_menu.player_colon": "玩 家：",
     "char_menu.fighter_colon": "角 色：",
     "char_menu.team_colon": "队 伍：",
@@ -114,38 +128,48 @@
     "game_prepare_menu.background": "背 景: ",
     "game_prepare_menu.difficulty": "难 度: ",
     "game_prepare_menu.exit": "离 开",
-    "easy": "简 单",
-    "normal": "普 通",
-    "difficult": "困 难",
-    "crazy": "疯 狂!",
-    "old_ending_0_0": [
+    easy: "简 单",
+    normal: "普 通",
+    difficult: "困 难",
+    crazy: "疯 狂!",
+    old_ending_0_0: [
       "恭喜你，你已经完成了闯关模式！",
-      "试试挑战更高的难度吧！"
+      "试试挑战更高的难度吧！",
+      "",
+      "                                  —— 来自《LF2 2.0a》",
     ],
-    "old_ending_0_1": [
+    old_ending_0_1: [
       "恭喜你，你已经完成了闯关模式！",
       "只要在人物选单中按“lf2.net”，",
-      "便能够选用秘密人物，试试看吧！"
+      "便能够选用秘密人物，试试看吧！",
+      "",
+      "                                  —— 来自《LF2 2.0a》",
     ],
-    "old_ending_1": [
+    old_ending_1: [
       "很感激您对这游戏的支持。",
       "你知道吗？我们自小便梦想能做出一个在世界各地流行的游戏。",
       "现在，这个梦想似乎达到了！希望十年、二十年之后，LF2",
-      "仍会留在每一位玩家的心里面！"
+      "仍会留在每一位玩家的心里面！",
+      "",
+      "                                  —— 来自《LF2 2.0a》",
     ],
-    "old_ending_2": [
+    old_ending_2: [
       "LF2完成后，我们好应该返回自己的工作岗位了…",
       "小熊会尝试开创自己的事业，而浩然则会去美国（UCLA）继续升学。",
       "在人生中，能找到一个愿意一起去追求理想的伙伴是一件很难的事。",
-      "但愿有一天，我们仍能有合作的机会，创作更多精彩的游戏！"
+      "但愿有一天，我们仍能有合作的机会，创作更多精彩的游戏！",
+      "",
+      "                                  —— 来自《LF2 2.0a》",
     ],
-    "old_ending_3": [
+    old_ending_3: [
       "最后再一次多谢大家。LF2万岁！",
       "",
       "LF2 Design Team",
-      "Sep 2002"
+      "Sep 2002",
+      "",
+      "                                  —— 来自《LF2 2.0a》",
     ],
-    "": ""
+    "": "",
   },
   "zh-hant": {
     "entry_page.game_start": "開 始 游 戲",
@@ -170,7 +194,7 @@
     "score_board.status": "狀 態",
     "score_board.press_atk_jmp_continue": "按'攻擊'或'跳躍'繼續",
     "score_board.time_used": "完結時間:",
-    "goto_special_moves_table": "ⓘ 查看角色出招表",
+    goto_special_moves_table: "ⓘ 查看角色出招表",
     "char_menu.player_colon": "玩 家：",
     "char_menu.fighter_colon": "角 色：",
     "char_menu.team_colon": "隊 伍：",
@@ -188,43 +212,53 @@
     "game_prepare_menu.stage": "關 卡: ",
     "game_prepare_menu.difficulty": "難 度: ",
     "game_prepare_menu.exit": "離 開",
-    "easy": "簡 單",
-    "normal": "普 通",
-    "difficult": "困 難",
-    "crazy": "瘋 狂!",
-    "old_ending_0_0": [
+    easy: "簡 單",
+    normal: "普 通",
+    difficult: "困 難",
+    crazy: "瘋 狂!",
+    old_ending_0_0: [
       "恭喜你，你已經完成了闖關模式！",
-      "試試挑戰更高的難度吧！"
+      "試試挑戰更高的難度吧！",
+      "",
+      "                                  —— 來自《LF2 2.0a》",
     ],
-    "old_ending_0_1": [
+    old_ending_0_1: [
       "恭喜你，你已經完成了闖關模式！",
       "只要在人物選單中按“lf2.net”，",
-      "便能夠選用秘密人物，試試看吧！"
+      "便能夠選用秘密人物，試試看吧！",
+      "",
+      "                                  —— 來自《LF2 2.0a》",
     ],
-    "old_ending_1": [
+    old_ending_1: [
       "很感激您對這遊戲的支持。",
       "你知道嗎？我們自小便夢想能做出一個在世界各地流行的遊戲。",
       "現在，這個夢想似乎達到了！希望十年、二十年之後，LF2",
-      "仍會留在每一位玩家的心裏面！"
+      "仍會留在每一位玩家的心裏面！",
+      "",
+      "                                  —— 來自《LF2 2.0a》",
     ],
-    "old_ending_2": [
+    old_ending_2: [
       "LF2完成後，我們好應該返回自己的工作崗位了…",
       "小熊會嘗試開創自己的事業，而浩然則会去美國（UCLA）繼續升學。",
       "在人生中，能找到一個願意一起去追求理想的夥伴是一件很難的事。",
-      "但願有一天，我們仍能有合作的機會，創作更多精彩的遊戲！"
+      "但願有一天，我們仍能有合作的機會，創作更多精彩的遊戲！",
+      "",
+      "                                  —— 來自《LF2 2.0a》",
     ],
-    "old_ending_3": [
+    old_ending_3: [
       "最後再一次多謝大家。LF2萬歲！",
       "",
       "LF2 Design Team",
-      "Sep 2002"
+      "Sep 2002",
+      "",
+      "                                  —— 來自《LF2 2.0a》",
     ],
-    "": ""
+    "": "",
   },
   "zh-cn": "zh-hans",
   "zh-sg": "zh-hans",
   "zh-my": "zh-hans",
   "zh-tw": "zh-hant",
   "zh-hk": "zh-hant",
-  "zh-mo": "zh-hant"
+  "zh-mo": "zh-hant",
 }

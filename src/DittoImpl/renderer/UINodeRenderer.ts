@@ -69,6 +69,10 @@ export class UINodeRenderer implements IUINodeRenderer, IDebugging {
       this.node.imgs.value[this.node.img_idx.value] ||
       this.node.txts.value[this.node.txt_idx.value];
     this.create_sprite_info(img).then(p => this.sprite.set_info(p).apply());
+    if (img) {
+      const { w, h, scale } = img
+      this.node.size.value = [w / scale, h / scale];
+    }
   }
 
   async create_sprite_info(img: IImageInfo | undefined): Promise<ISpriteInfo> {

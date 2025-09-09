@@ -10,6 +10,7 @@ import ComNumButton from "./ComNumButton";
 import { DanmuGameLogic } from "./DanmuGameLogic";
 import { DemoModeLogic } from "./DemoModeLogic";
 import DifficultyText from "./DifficultyText";
+import { EndingPageLogic } from "./EndingPageLogic";
 import { FadeInOpacity } from "./FadeInOpacity";
 import { FadeOutOpacity } from "./FadeOutOpacity";
 import FighterHead from "./FighterHead";
@@ -52,7 +53,6 @@ import { SummaryLogic } from "./SummaryLogic";
 import { UIComponent } from "./UIComponent";
 import { VerticalLayout } from "./VerticalLayout";
 import { VsModeLogic } from "./VsModeLogic";
-
 class ComponentFactory {
   static readonly TAG = `ComponentFactory`;
   private _component_map = new Map<string, typeof UIComponent<IUICompnentCallbacks>>([
@@ -103,6 +103,7 @@ class ComponentFactory {
     [DanmuGameLogic.TAG, DanmuGameLogic],
     [CameraCtrl.TAG, CameraCtrl],
     [SummaryLogic.TAG, SummaryLogic],
+    [EndingPageLogic.TAG, EndingPageLogic]
   ]);
 
   register(key: string, Cls: typeof UIComponent) {
