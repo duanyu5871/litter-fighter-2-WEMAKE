@@ -125,7 +125,14 @@ export interface IWorldDataset {
   frame_wait_offset: number;
 
   cha_bc_spd: number;
-  cha_bc_tst_spd: number;
+  /** 
+   * 角色倒地反弹判定速度X
+   */
+  cha_bc_tst_spd_x: number;
+  /** 
+   * 角色倒地反弹判定速度Y
+   */
+  cha_bc_tst_spd_y: number;
   hp_recoverability: number;
   hp_recovery_spd: number;
   hp_healing_spd: number;

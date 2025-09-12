@@ -252,10 +252,20 @@ export namespace Defines {
   export const LAND_FRICTION_X: number = 1;
   export const LAND_FRICTION_Z: number = 0.5;
   export const CHARACTER_BOUNCING_SPD: number = 2;
-  export const CHARACTER_BOUNCING_TEST_SPD: number = -2.6;
+  export const CHARACTER_BOUNCING_TEST_SPD_X: number = 5;
+  export const CHARACTER_BOUNCING_TEST_SPD_Y: number = -2.6;
   export const HP_RECOVERABILITY = 0.66;
   export const HP_RECOVERY_SPD = 0.05;
+
+  /**
+   * 加速治愈的治愈速度
+   * 每帧治愈多少血
+   */
   export const HP_HEALING_SPD = 0.5;
+  /**
+   * StateEnum.HealSelf 治愈的血量
+   */
+  export const STATE_HEAL_SELF_HP = 100;
 
 
   export const DifficultyLabels: Record<Difficulty, string> = {

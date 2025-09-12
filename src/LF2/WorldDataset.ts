@@ -116,7 +116,8 @@ export class WorldDataset implements IWorldDataset {
   frame_wait_offset: number = 0;
 
   cha_bc_spd: number = Defines.CHARACTER_BOUNCING_SPD;
-  cha_bc_tst_spd: number = Defines.CHARACTER_BOUNCING_TEST_SPD;
+  cha_bc_tst_spd_x: number = Defines.CHARACTER_BOUNCING_TEST_SPD_X;
+  cha_bc_tst_spd_y: number = Defines.CHARACTER_BOUNCING_TEST_SPD_Y;
   hp_recoverability: number = Defines.HP_RECOVERABILITY;
   hp_recovery_spd: number = Defines.HP_RECOVERY_SPD;
   hp_healing_spd: number = Defines.HP_HEALING_SPD;

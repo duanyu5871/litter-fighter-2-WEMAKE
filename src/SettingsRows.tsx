@@ -329,7 +329,8 @@ const world_field_map: Record<keyof IWorldDataset, IFieldInfo> = {
   arest_offset_2: { title: "arest_offset_2", desc: "arest_offset_2", type: 'int' },
   frame_wait_offset: { title: "frame_wait_offset", desc: "frame_wait_offset", type: 'int' },
   cha_bc_spd: { title: "cha_bc_spd", desc: "cha_bc_spd", type: 'float' },
-  cha_bc_tst_spd: { title: "cha_bc_tst_spd", desc: "cha_bc_tst_spd", type: 'float' },
+  cha_bc_tst_spd_x: { title: "cha_bc_tst_spd_x", desc: "cha_bc_tst_spd_x", type: 'float' },
+  cha_bc_tst_spd_y: { title: "cha_bc_tst_spd_y", desc: "cha_bc_tst_spd_y", type: 'float' },
   hp_recoverability: { title: "可回血比例", desc: "可回血比例", type: 'float' },
   hp_recovery_spd: { title: "每帧回血", desc: "每帧回血", type: 'float' },
   friction_factor: { title: "地速衰减系数", desc: "在地面的物体，速度将每帧乘以此值", type: 'float' },
@@ -337,5 +338,5 @@ const world_field_map: Record<keyof IWorldDataset, IFieldInfo> = {
   friction_z: { title: "地面摩擦Z", desc: "在地面的物体，每帧Z速度将±=此值,向0靠近", type: 'float' },
   screen_w: { title: "screen_w", desc: "screen_w", type: '' },
   screen_h: { title: "screen_h", desc: "screen_h", type: '' },
-  sync_render: { title: "sync_render", desc: "sync_render", type: '' }
+  sync_render: { title: "sync_render", desc: "sync_render", type: '' },
 }

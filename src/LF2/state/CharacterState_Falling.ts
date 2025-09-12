@@ -1,6 +1,7 @@
 import type { IFrameInfo } from "../defines";
 import type { Entity } from "../entity/Entity";
 import find_direction from "../entity/find_frame_direction";
+import { abs } from "../utils";
 import CharacterState_Base from "./CharacterState_Base";
 
 export default class CharacterState_Falling extends CharacterState_Base {
@@ -64,9 +65,10 @@ export default class CharacterState_Falling extends CharacterState_Base {
       find_direction(f, indexes?.falling) ||
       find_direction(f, indexes?.critical_hit) ||
       facing;
-    const { y: vy } = e.velocity;
-    if (vy <= e.world.cha_bc_tst_spd) {
+    const { y: vy, x: vx } = e.velocity;
+    if (vy <= e.world.cha_bc_tst_spd_y || abs(vx) > e.world.cha_bc_tst_spd_x) {
       e.enter_frame({ id: indexes?.bouncing?.[d][1] });
+      e.merge_velocities()
       e.velocity_0.y = e.world.cha_bc_spd;
     } else {
       e.enter_frame({ id: indexes?.lying?.[d] });

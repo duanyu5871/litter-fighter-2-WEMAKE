@@ -93,12 +93,14 @@ export enum StateEnum {
   Weapon_Throwing = 1002,
   Weapon_Rebounding = 1003,
   Weapon_OnGround = 1004,
+  
+  HealSelf = 1700,
 
   HeavyWeapon_InTheSky = 2000,
   HeavyWeapon_OnHand = 2001,
   HeavyWeapon_Throwing = 2002,//= 重型武器在地上
   HeavyWeapon_OnGround = 2004,//= 与itr kind2作用
-
+  
   Ball_Flying = 3000,
   Ball_Hitting = 3001,
   Ball_Hit = 3002,

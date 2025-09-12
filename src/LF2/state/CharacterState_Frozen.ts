@@ -1,4 +1,4 @@
-import { BuiltIn_OID, IFrameInfo, IOpointInfo } from "../defines";
+import { BuiltIn_OID, IFrameInfo, IOpointInfo, StateEnum } from "../defines";
 import type { Entity } from "../entity/Entity";
 import CharacterState_Base from "./CharacterState_Base";
 
@@ -12,10 +12,12 @@ function make_ice_piece(victim: Entity, id: string): IOpointInfo {
     dvx: victim.lf2.random_in(-2, 2),
     dvz: victim.lf2.random_in(-2, 2),
     dvy: victim.lf2.random_in(0, 5),
+    is_entity: false,
   };
 }
 
 export default class CharacterState_Frozen extends CharacterState_Base {
+  override state: string | number = StateEnum.Frozen;
   override leave(e: Entity, next_frame: IFrameInfo): void {
     e.play_sound(["data/066.wav.mp3"]);
     if (e.data.indexes?.ice !== next_frame.id) {
@@ -45,9 +47,10 @@ export default class CharacterState_Frozen extends CharacterState_Base {
       data: { indexes },
     } = e;
     const { y: vy } = e.velocity;
-    if (vy <= e.world.cha_bc_tst_spd * 2) {
+    if (vy <= e.world.cha_bc_tst_spd_y * 2) {
       e.enter_frame({ id: indexes?.bouncing?.[-1][0] });
       e.velocity_0.y = e.world.cha_bc_spd;
+      e.hp -= 10;
     }
   }
 }
