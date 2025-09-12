@@ -9,16 +9,15 @@ export function edit_next_frame(
 }
 export function add_next_frame(
   src: TNextFrame | undefined,
-  item: INextFrame,
   ...items: INextFrame[]
-): TNextFrame {
+): TNextFrame | undefined {
+  if (!items.length) return src;
+
   if (Array.isArray(src)) {
-    return [...src, item, ...items];
+    return [...src, ...items];
   } else if (src) {
-    return [src, item, ...items];
-  } else if (items.length) {
-    return [item, ...items];
-  } else {
-    return item;
+    return [src, ...items];
   }
+  return [...items];
+
 }

@@ -14,7 +14,7 @@ import { is_num, is_str } from "../utils/type_check";
 import { CondMaker } from "./CondMaker";
 import { cook_file_variants } from "./cook_file_variants";
 import { cook_next_frame_mp_hp } from "./cook_next_frame_mp_hp";
-import { edit_next_frame } from "./edit_next_frame";
+import { add_next_frame, edit_next_frame } from "./edit_next_frame";
 import {
   get_next_frame_by_raw_id,
 } from "./get_the_next";
@@ -152,43 +152,40 @@ export function make_character_data(
         set_hit_turn_back(frame);
         // set_hold_turn_back(frame);
         frame.hit = frame.hit || {};
-        frame.hit.a = [
-          {
-            id: ["45"],
-            facing: FacingFlag.Ctrl,
-            expression: new CondMaker<EntityVal>()
-              .add(EntityVal.WeaponType, "==", WeaponType.Baseball)
-              .or((v) =>
-                v
-                  .add(EntityVal.WeaponType, "==", WeaponType.Knife)
-                  .and(EntityVal.PressFB, "!=", 0),
-              )
-              .done(),
-          },
-          {
-            id: ["20", "25"],
-            facing: FacingFlag.Ctrl,
-            expression: new CondMaker<EntityVal>()
-              .one_of(EntityVal.WeaponType, WeaponType.Knife, WeaponType.Stick)
-              .done(),
-          }, // drink
-          {
-            id: "55",
-            expression: new CondMaker<EntityVal>()
-              .one_of(EntityVal.WeaponType, WeaponType.Drink)
-              .done(),
-            facing: FacingFlag.Ctrl,
-          },
-          {
-            id: "70",
-            expression: new CondMaker<EntityVal>()
-              .add(EntityVal.RequireSuperPunch, "==", 1)
-              .done(),
-          },
-          { id: ["60", "65"], facing: FacingFlag.Ctrl },
-        ]; // punch
-        frame.hit.j = { id: "210" }; // jump
-        frame.hit.d = { id: "110" }; // defend
+        frame.hit.a = add_next_frame(frame.hit.a, {
+          id: ["45"],
+          facing: FacingFlag.Ctrl,
+          expression: new CondMaker<EntityVal>()
+            .add(EntityVal.WeaponType, "==", WeaponType.Baseball)
+            .or((v) =>
+              v
+                .add(EntityVal.WeaponType, "==", WeaponType.Knife)
+                .and(EntityVal.PressFB, "!=", 0),
+            )
+            .done(),
+        }, {
+          id: ["20", "25"],
+          facing: FacingFlag.Ctrl,
+          expression: new CondMaker<EntityVal>()
+            .one_of(EntityVal.WeaponType, WeaponType.Knife, WeaponType.Stick)
+            .done(),
+        }, { // drink
+          id: "55",
+          expression: new CondMaker<EntityVal>()
+            .one_of(EntityVal.WeaponType, WeaponType.Drink)
+            .done(),
+          facing: FacingFlag.Ctrl,
+        }, {
+          id: "70",
+          expression: new CondMaker<EntityVal>()
+            .add(EntityVal.RequireSuperPunch, "==", 1)
+            .done(),
+        }, { // punch
+          id: ["60", "65"], facing: FacingFlag.Ctrl
+        },
+        );
+        frame.hit.j = add_next_frame(frame.hit.j, { id: "210" }); // jump
+        frame.hit.d = add_next_frame(frame.hit.d, { id: "110" }); // defend
         frame.hit.FF = { id: "running_0" };
         frame.ctrl_spd_x = walking_speed / 2;
         frame.ctrl_spd_z = walking_speedz;
@@ -199,36 +196,33 @@ export function make_character_data(
       case 10:
       case 11: {
         frame.hit = frame.hit || {};
-        frame.hit.a = [
-          {
-            // 丢出武器
-            id: ["45"],
-            expression: new CondMaker<EntityVal>()
-              .add(EntityVal.WeaponType, "==", WeaponType.Baseball)
-              .or((v) =>
-                v
-                  .add(EntityVal.PressFB, "==", 1)
-                  .and(EntityVal.WeaponType, "!=", WeaponType.None),
-              )
-              .done(),
-          }, // drink
-          {
-            id: "55",
-            expression: new CondMaker<EntityVal>()
-              .one_of(EntityVal.WeaponType, WeaponType.Drink)
-              .done(),
-          },
-          {
-            id: "35",
-            expression: new CondMaker<EntityVal>()
-              .one_of(EntityVal.WeaponType, WeaponType.Knife, WeaponType.Stick)
-              .done(),
-            facing: FacingFlag.Ctrl,
-          },
-          { id: "85" },
-        ]; // run_atk
-        frame.hit.j = { id: "213" }; // dash
-        frame.hit.d = { id: "102" }; // rowing
+        frame.hit.a = add_next_frame(frame.hit.a, {
+          // 丢出武器
+          id: ["45"],
+          expression: new CondMaker<EntityVal>()
+            .add(EntityVal.WeaponType, "==", WeaponType.Baseball)
+            .or((v) =>
+              v
+                .add(EntityVal.PressFB, "==", 1)
+                .and(EntityVal.WeaponType, "!=", WeaponType.None),
+            )
+            .done(),
+        }, { // drink
+          id: "55",
+          expression: new CondMaker<EntityVal>()
+            .one_of(EntityVal.WeaponType, WeaponType.Drink)
+            .done(),
+        }, {
+          id: "35",
+          expression: new CondMaker<EntityVal>()
+            .one_of(EntityVal.WeaponType, WeaponType.Knife, WeaponType.Stick)
+            .done(),
+          facing: FacingFlag.Ctrl,
+        }, { // run_atk
+          id: "85"
+        });
+        frame.hit.j = add_next_frame(frame.hit.j, { id: "213" }); // dash
+        frame.hit.d = add_next_frame(frame.hit.d, { id: "102" }); // rowing
         frame.hold = frame.hold || {};
         frame.hit.B = frame.hold.B = { id: "218" }; // running_stop
         frame.dvx = Number((running_speed / 2).toFixed(1));
@@ -244,7 +238,7 @@ export function make_character_data(
         // set_hold_turn_back(frame);
         frame.hit = frame.hit || {};
         frame.hit.FF = { id: "heavy_obj_run_0" };
-        frame.hit.a = { id: "50", facing: FacingFlag.Ctrl }; // running_stop
+        frame.hit.a = add_next_frame(frame.hit.a, { id: "50", facing: FacingFlag.Ctrl }); // running_stop
         frame.ctrl_spd_x = heavy_walking_speed / 2;
         frame.ctrl_spd_z = heavy_walking_speedz;
         break;
@@ -256,7 +250,7 @@ export function make_character_data(
         frame.hit = frame.hit || {};
         frame.hold = frame.hold || {};
         frame.hit.B = frame.hold.B = { id: "19" }; // running_stop
-        frame.hit.a = { id: "50" }; // running_stop
+        frame.hit.a = add_next_frame(frame.hit.a, { id: "50" });
         frame.dvx = Number((heavy_running_speed / 2).toFixed(1));
         frame.ctrl_spd_z = heavy_running_speedz;
         break;
@@ -294,39 +288,35 @@ export function make_character_data(
 
         if (frame_id === "211") frame.jump_flag = 1;
         if (frame_id === "212") {
-          frame.key_down.a = [
-            {
-              id: "52", // 角色跳跃丢出武器
-              facing: FacingFlag.Ctrl,
-              expression: new CondMaker<EntityVal>()
-                .one_of(
-                  EntityVal.WeaponType,
-                  WeaponType.Baseball,
-                  WeaponType.Drink,
-                )
-                .or((v) =>
-                  v
-                    .add(EntityVal.PressFB, "!=", 0)
-                    .and(EntityVal.WeaponType, "!=", WeaponType.None),
-                )
-                .done(),
-            },
-            {
-              id: "30", // 角色跳跃用武器攻击
-              facing: FacingFlag.Ctrl,
-              expression: new CondMaker<EntityVal>()
-                .one_of(
-                  EntityVal.WeaponType,
-                  WeaponType.Knife,
-                  WeaponType.Stick,
-                )
-                .done(),
-            },
-            {
-              id: "80", // 角色跳跃攻击
-              facing: FacingFlag.Ctrl,
-            },
-          ]; // jump_atk
+          frame.key_down.a = add_next_frame({
+            id: "52", // 角色跳跃丢出武器
+            facing: FacingFlag.Ctrl,
+            expression: new CondMaker<EntityVal>()
+              .one_of(
+                EntityVal.WeaponType,
+                WeaponType.Baseball,
+                WeaponType.Drink,
+              )
+              .or((v) =>
+                v
+                  .add(EntityVal.PressFB, "!=", 0)
+                  .and(EntityVal.WeaponType, "!=", WeaponType.None),
+              )
+              .done(),
+          }, {
+            id: "30", // 角色跳跃用武器攻击
+            facing: FacingFlag.Ctrl,
+            expression: new CondMaker<EntityVal>()
+              .one_of(
+                EntityVal.WeaponType,
+                WeaponType.Knife,
+                WeaponType.Stick,
+              )
+              .done(),
+          }, {
+            id: "80", // 角色跳跃攻击
+            facing: FacingFlag.Ctrl,
+          },); // jump_atk
         }
         frame.hit.B = { facing: FacingFlag.Ctrl };
         frame.hold.B = { facing: FacingFlag.Ctrl };
@@ -337,14 +327,13 @@ export function make_character_data(
       case 214:
       case 216:
       case 217: {
-        frame.state = 5;
         if (frame_id === "213" && frames[214]) set_hit_turn_back(frame, "214"); // turn back;
         if (frame_id === "216" && frames[217]) set_hit_turn_back(frame, "217"); // turn back;
         if (frame_id === "214" && frames[213]) set_hit_turn_back(frame, "213"); // turn back;
         if (frame_id === "217" && frames[216]) set_hit_turn_back(frame, "216"); // turn back;
         if (frame_id === "213" || frame_id === "216") {
           frame.hit = frame.hit || {};
-          frame.hit.a = [
+          frame.hit.a = add_next_frame(frame.hit.a,
             {
               id: "52",
               facing: FacingFlag.Ctrl,
@@ -368,7 +357,7 @@ export function make_character_data(
                 .done(),
             },
             { id: "90" },
-          ]; // dash_atk
+          ); // dash_atk
         }
         break;
       }
@@ -425,10 +414,15 @@ export function make_character_data(
               t_hit_a && hit_a.push(...t_hit_a);
               a_hit_a && hit_a.push(a_hit_a);
               frame.hit = frame.hit || {};
-              frame.hit.a = hit_a;
+              frame.hit.a = add_next_frame(frame.hit.a, ...hit_a);
             } else if (c === 1) {
               frame.hit = frame.hit || {};
-              frame.hit.a = s_hit_a || t_hit_a || a_hit_a;
+              if (s_hit_a)
+                frame.hit.a = add_next_frame(frame.hit.a, s_hit_a);
+              else if (t_hit_a)
+                frame.hit.a = add_next_frame(frame.hit.a, ...t_hit_a);
+              else if (a_hit_a)
+                frame.hit.a = add_next_frame(frame.hit.a, a_hit_a);
             }
           }
         }
