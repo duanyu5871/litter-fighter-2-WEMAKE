@@ -1126,41 +1126,32 @@ export class Entity implements IDebugging {
       vxm = SpeedMode.LF2,
       vym = SpeedMode.Acc,
       vzm = SpeedMode.LF2,
-      ctrl_spd_x_m = SpeedMode.LF2,
-      ctrl_acc_x,
-      ctrl_spd_x,
-
-      ctrl_spd_z_m = SpeedMode.LF2,
-      ctrl_acc_z,
-      ctrl_spd_z,
-
-      ctrl_spd_y_m = SpeedMode.LF2,
-      ctrl_acc_y,
-      ctrl_spd_y,
+      ctrl_x = 0,
+      ctrl_y = 0,
+      ctrl_z = 0,
     } = this.frame;
     let { x: vx, y: vy, z: vz } = this.velocity_0;
 
-    if (dvx) vx = calc_v(vx, dvx * this.world.fvx_f, vxm, acc_x, this.facing);
-    if (dvy) vy = calc_v(vy, dvy * this.world.fvy_f, vym, acc_y, 1);
-    if (dvz) vz = calc_v(vz, dvz * this.world.fvz_f, vzm, acc_z, 1);
-    if (this._ctrl) {
-      const { UD, LR, jd } = this._ctrl;
-      if (LR && ctrl_spd_x && ctrl_spd_x !== 550)
-        vx = calc_v(vx, ctrl_spd_x, ctrl_spd_x_m, ctrl_acc_x, LR);
-      if (UD && ctrl_spd_z && ctrl_spd_z !== 550)
-        vz = calc_v(vz, ctrl_spd_z, ctrl_spd_z_m, ctrl_acc_z, UD);
-      if (jd && ctrl_spd_y && ctrl_spd_y !== 550)
-        vy = calc_v(vy, ctrl_spd_y, ctrl_spd_y_m, ctrl_acc_y, jd);
-    }
-    if (dvx === 550) vx = 0;
-    if (dvz === 550) vz = 0;
-    if (dvy === 550) vy = 0;
+    const { UD, LR, jd } = this._ctrl;
+
+    if (!ctrl_x && dvx) vx = calc_v(vx, dvx * this.world.fvx_f, vxm, acc_x, this.facing);
+    else if (LR && dvx) vx = calc_v(vx, dvx * this.world.fvx_f, vxm, acc_x, LR);
+
+    if (!ctrl_y && dvy) vy = calc_v(vy, dvy * this.world.fvy_f, vym, acc_y, 1);
+    else if (jd && dvy) vy = calc_v(vy, dvy * this.world.fvy_f, vym, acc_y, jd);
+
+    if (!ctrl_z && dvz) vz = calc_v(vz, dvz * this.world.fvz_f, vzm, acc_z, 1);
+    else if (UD && dvz) vz = calc_v(vz, dvz * this.world.fvz_f, vzm, acc_z, UD);
+
     this.velocity_0.x = vx;
     this.velocity_0.y = vy;
     this.velocity_0.z = vz;
     if (vxm == SpeedMode.Extra && dvx) this.velocity_1.x = dvx
     if (vym == SpeedMode.Extra && dvy) this.velocity_1.y = dvy
     if (vzm == SpeedMode.Extra && dvz) this.velocity_1.z = dvz
+    if (vxm == SpeedMode.Fixed) this.velocity_1.x = 0
+    if (vym == SpeedMode.Fixed) this.velocity_1.y = 0
+    if (vzm == SpeedMode.Fixed) this.velocity_1.z = 0
   }
 
   self_update(): void {

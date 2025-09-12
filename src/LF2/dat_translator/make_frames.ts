@@ -159,8 +159,10 @@ export function make_frames(
     }
 
     const dvx = take(frame, "dvx");
-    if (dvx === 550) frame.dvx = dvx;
-    else if (not_zero_num(dvx)) {
+    if (dvx === 550) {
+      frame.dvx = 0;
+      frame.vxm = SpeedMode.Fixed;
+    } else if (not_zero_num(dvx)) {
       if (dvx >= 501 && dvx <= 549) {
         frame.dvx = Number(((dvx - 550) * 0.5).toFixed(1));
         frame.vxm = SpeedMode.FixedLf2;
@@ -171,42 +173,28 @@ export function make_frames(
         frame.dvx = Number((dvx * 0.5).toFixed(1));
       }
     }
-    if (
-      frame.state === StateEnum.Attacking ||
-      frame.state === StateEnum.Rowing
-    ) {
-      const dvz = take(frame, "dvz");
-      if (dvz === 550) frame.dvz = dvz;
-      else if (not_zero_num(dvz)) {
-        if (dvz >= 501 && dvz <= 549) {
-          frame.dvz = dvz - 550;
-          frame.vzm = SpeedMode.FixedLf2;
-        } else if (dvz >= 551) {
-          frame.dvz = dvz - 550;
-          frame.vzm = SpeedMode.FixedLf2;
-        } else {
-          frame.ctrl_spd_z = dvz;
-        }
-      }
-    } else {
-      const dvz = take(frame, "dvz");
-      if (dvz === 550) frame.dvz = dvz;
-      else if (not_zero_num(dvz)) {
-        if (dvz >= 501 && dvz <= 549) {
-          frame.dvz = (dvz - 550) * 0.5;
-          frame.vzm = SpeedMode.FixedLf2;
-        } else if (dvz >= 551) {
-          frame.dvz = (dvz - 550) * 0.5;
-          frame.vzm = SpeedMode.FixedLf2;
-        } else {
-          frame.dvz = dvz * 0.5;
-        }
+    const dvz = take(frame, "dvz");
+    if (dvz === 550) {
+      frame.dvz = 0;
+      frame.vzm = SpeedMode.Fixed;
+    } else if (not_zero_num(dvz)) {
+      if (dvz >= 501 && dvz <= 549) {
+        frame.dvz = (dvz - 550) * 0.5;
+        frame.vzm = SpeedMode.FixedLf2;
+      } else if (dvz >= 551) {
+        frame.dvz = (dvz - 550) * 0.5;
+        frame.vzm = SpeedMode.FixedLf2;
+      } else {
+        frame.dvz = dvz * 0.5;
       }
     }
 
     const dvy = take(frame, "dvy");
-    if (dvy === 550) frame.dvy = dvy;
-    else if (not_zero_num(dvy)) {
+    if (dvy === 550) {
+      frame.dvy = 0;
+      frame.vym = SpeedMode.Fixed;
+      frame.gravity_enabled = false;
+    } else if (not_zero_num(dvy)) {
       if (dvy >= 501 && dvy <= 549) {
         frame.dvy = (dvy - 550) * -0.285;
         frame.vym = SpeedMode.FixedLf2;

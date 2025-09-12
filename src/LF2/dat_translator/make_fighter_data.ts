@@ -187,8 +187,10 @@ export function make_character_data(
         frame.hit.j = add_next_frame(frame.hit.j, { id: "210" }); // jump
         frame.hit.d = add_next_frame(frame.hit.d, { id: "110" }); // defend
         frame.hit.FF = { id: "running_0" };
-        frame.ctrl_spd_x = walking_speed / 2;
-        frame.ctrl_spd_z = walking_speedz;
+        frame.dvx = walking_speed / 2;
+        frame.dvz = walking_speedz;
+        frame.ctrl_z = 1;
+        frame.ctrl_x = 1;
         break;
       }
       /** running */
@@ -226,7 +228,8 @@ export function make_character_data(
         frame.hold = frame.hold || {};
         frame.hit.B = frame.hold.B = { id: "218" }; // running_stop
         frame.dvx = Number((running_speed / 2).toFixed(1));
-        frame.ctrl_spd_z = running_speedz;
+        frame.dvz = running_speedz;
+        frame.ctrl_z = 1;
         break;
       }
       /** heavy_obj_walk */
@@ -239,8 +242,9 @@ export function make_character_data(
         frame.hit = frame.hit || {};
         frame.hit.FF = { id: "heavy_obj_run_0" };
         frame.hit.a = add_next_frame(frame.hit.a, { id: "50", facing: FacingFlag.Ctrl }); // running_stop
-        frame.ctrl_spd_x = heavy_walking_speed / 2;
-        frame.ctrl_spd_z = heavy_walking_speedz;
+        frame.dvx = heavy_walking_speed / 2;
+        frame.dvz = heavy_walking_speedz;
+        frame.ctrl_x = frame.ctrl_z = 1;
         break;
       }
       /** heavy_obj_run */
@@ -252,7 +256,8 @@ export function make_character_data(
         frame.hit.B = frame.hold.B = { id: "19" }; // running_stop
         frame.hit.a = add_next_frame(frame.hit.a, { id: "50" });
         frame.dvx = Number((heavy_running_speed / 2).toFixed(1));
-        frame.ctrl_spd_z = heavy_running_speedz;
+        frame.dvz = heavy_running_speedz;
+        frame.ctrl_z = 1;
         break;
       }
       /*
@@ -577,8 +582,8 @@ export function make_character_data(
         break;
       case StateEnum.BurnRun:
       case StateEnum.Z_Moveable:
-        frame.dvz = void 0;
-        frame.ctrl_spd_z = running_speedz;
+        frame.dvz = running_speedz;
+        frame.ctrl_z = 1;
         break;
       case StateEnum.Defend: {
         if (frame.bdy?.length)
@@ -642,8 +647,9 @@ export function make_character_data(
           frame.hit.j = { id: "210" }; // jump
           frame.hit.d = { id: "110" }; // defend
           frame.hit.FF = { id: "running_0" };
-          frame.ctrl_spd_x = walking_speed / 2;
-          frame.ctrl_spd_z = walking_speedz;
+          frame.dvx = walking_speed / 2;
+          frame.dvz = walking_speedz;
+          frame.ctrl_x = frame.ctrl_z = 1;
           frame.wait = walking_frame_rate * 2;
         }
         set_hit_turn_back(frame);
@@ -694,7 +700,8 @@ export function make_character_data(
           frame.key_down = frame.key_down || {};
           frame.key_down.B = { id: "218" }; // running_stop
           frame.dvx = Number((running_speed / 2).toFixed(1));
-          frame.ctrl_spd_z = running_speedz;
+          frame.dvz = running_speedz;
+          frame.ctrl_z = 1;
           /* 
             NOTE: 
               在原版LF2中，角色走路和跑步是用帧的往返切换来实现的。

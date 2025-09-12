@@ -119,7 +119,9 @@ export enum StateEnum {
    * 但现在Wemake中，爆甲是通过opoint实现的。
    */
   OLD_LouisCastOff = 9996,
-
+  
+  Message = 9997,
+  
   Gone = 9998,
   
   Weapon_Brokens = 9999,

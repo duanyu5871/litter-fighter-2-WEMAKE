@@ -67,17 +67,19 @@ export interface IFrameInfo {
   dvx?: number;
   dvy?: number;
   dvz?: number;
-
   acc_x?: number;
   acc_y?: number;
   acc_z?: number;
-
   /** @see {SpeedMode} */
   vxm?: number | SpeedMode;
   /** @see {SpeedMode} */
   vym?: number | SpeedMode;
   /** @see {SpeedMode} */
   vzm?: number | SpeedMode;
+  ctrl_x?: number;
+  ctrl_y?: number;
+  ctrl_z?: number;
+
 
   centerx: number;
   centery: number;
@@ -105,31 +107,6 @@ export interface IFrameInfo {
   indicator_info?: IQubePair;
   invisible?: number;
   no_shadow?: number;
-
-  /**
-   * x轴速度，当按着左或右，此值生效
-   */
-  ctrl_spd_x?: number;
-
-  /** 
-   * @see {SpeedMode} 
-   */
-  ctrl_spd_x_m?: number | SpeedMode;
-  ctrl_acc_x?: number;
-
-  /**
-   * z轴速度，当按着上或下，此值生效
-   */
-  ctrl_spd_z?: number;
-  ctrl_acc_z?: number;
-  /** 
-   * @see {SpeedMode} 
-   */
-  ctrl_spd_z_m?: number | SpeedMode;
-
-  ctrl_spd_y?: number;
-  ctrl_spd_y_m?: number | SpeedMode;
-  ctrl_acc_y?: number;
 
   /**
    * 起跳标志（角色专用）

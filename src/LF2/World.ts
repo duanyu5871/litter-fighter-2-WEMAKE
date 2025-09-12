@@ -469,11 +469,11 @@ export class World extends WorldDataset {
         const collision1 = this.collision_detection(a, b);
         const collision2 = this.collision_detection(b, a);
         if (collision1 && collision2) {
-          const priority1 = ALL_ENTITY_ENUM.indexOf(collision1.attacker.type)
-          const priority2 = ALL_ENTITY_ENUM.indexOf(collision2.attacker.type)
-          if (priority1 > priority2)
+          const index1 = ALL_ENTITY_ENUM.indexOf(collision1.attacker.type)
+          const index2 = ALL_ENTITY_ENUM.indexOf(collision2.attacker.type)
+          if (index1 < index2)
             this.collisions.push(collision1)
-          else if (priority1 < priority2)
+          else if (index1 > index2)
             this.collisions.push(collision2)
           else
             this.collisions.push(collision1, collision2)

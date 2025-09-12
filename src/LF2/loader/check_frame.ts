@@ -44,15 +44,6 @@ export function check_frame(data: Readonly<IEntityData>, frame: Readonly<IFrameI
   // TODO: indicator_info
   check_field(frame, frame_name, 'invisible', [one_of(0, 1), 'undefined'], my_errors);
   check_field(frame, frame_name, 'no_shadow', [one_of(0, 1), 'undefined'], my_errors);
-  check_field(frame, frame_name, 'ctrl_acc_x', ['number', 'undefined'], my_errors);
-  check_field(frame, frame_name, 'ctrl_spd_x', ['number', 'undefined'], my_errors);
-  check_field(frame, frame_name, 'ctrl_spd_x_m', ['number', 'undefined'], my_errors);
-  check_field(frame, frame_name, 'ctrl_acc_y', ['number', 'undefined'], my_errors);
-  check_field(frame, frame_name, 'ctrl_spd_y', ['number', 'undefined'], my_errors);
-  check_field(frame, frame_name, 'ctrl_spd_y_m', ['number', 'undefined'], my_errors);
-  check_field(frame, frame_name, 'ctrl_acc_z', ['number', 'undefined'], my_errors);
-  check_field(frame, frame_name, 'ctrl_spd_z', ['number', 'undefined'], my_errors);
-  check_field(frame, frame_name, 'ctrl_spd_z_m', ['number', 'undefined'], my_errors);
   check_field(frame, frame_name, 'jump_flag', [one_of(1, 0), 'undefined'], my_errors);
   // TODO: on_dead
   // TODO: on_exhaustion

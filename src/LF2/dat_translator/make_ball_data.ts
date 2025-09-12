@@ -68,15 +68,16 @@ export function make_ball_data(
 
     switch (hit_Fa as FrameBehavior) {
       case FrameBehavior.AngelBlessing:
-        frame.ctrl_spd_x = Defines.ANGEL_BLESSING_MAX_VX;
-        frame.ctrl_acc_x = Defines.ANGEL_BLESSING_ACC_X;
-        frame.ctrl_spd_x_m = SpeedMode.AccTo;
-        frame.ctrl_spd_z = Defines.DEFAULT_OPOINT_SPEED_Z;
-        frame.ctrl_acc_z = Defines.ANGEL_BLESSING_ACC_Z;
-        frame.ctrl_spd_z_m = SpeedMode.AccTo;
-        frame.ctrl_spd_y = Defines.ANGEL_BLESSING_MAX_VY;
-        frame.ctrl_acc_y = Defines.ANGEL_BLESSING_ACC_Y;
-        frame.ctrl_spd_y_m = SpeedMode.AccTo;
+        frame.dvx = Defines.ANGEL_BLESSING_MAX_VX;
+        frame.acc_x = Defines.ANGEL_BLESSING_ACC_X;
+        frame.vxm = SpeedMode.AccTo;
+        frame.dvz = Defines.DEFAULT_OPOINT_SPEED_Z;
+        frame.acc_z = Defines.ANGEL_BLESSING_ACC_Z;
+        frame.vzm = SpeedMode.AccTo;
+        frame.dvy = Defines.ANGEL_BLESSING_MAX_VY;
+        frame.acc_y = Defines.ANGEL_BLESSING_ACC_Y;
+        frame.vym = SpeedMode.AccTo;
+        frame.ctrl_x = frame.ctrl_y = frame.ctrl_z = 1
         frame.itr = ensure(frame.itr, {
           kind: ItrKind.Heal,
           x: 25,
@@ -99,26 +100,28 @@ export function make_ball_data(
         })
         break;
       case FrameBehavior.JohnChase:
-        frame.ctrl_spd_x = Defines.JOHN_CHASE_MAX_VX
-        frame.ctrl_acc_x = Defines.JOHN_CHASE_ACC_X
-        frame.ctrl_spd_x_m = SpeedMode.AccTo;
-        frame.ctrl_spd_z = Defines.DEFAULT_OPOINT_SPEED_Z;
-        frame.ctrl_acc_z = Defines.JOHN_CHASE_ACC_Z
-        frame.ctrl_spd_z_m = SpeedMode.AccTo;
-        frame.ctrl_spd_y = Defines.JOHN_CHASE_MAX_VY
-        frame.ctrl_acc_y = Defines.JOHN_CHASE_ACC_Y
-        frame.ctrl_spd_y_m = SpeedMode.AccTo;
+        frame.dvx = Defines.JOHN_CHASE_MAX_VX
+        frame.acc_x = Defines.JOHN_CHASE_ACC_X
+        frame.vxm = SpeedMode.AccTo;
+        frame.dvz = Defines.DEFAULT_OPOINT_SPEED_Z;
+        frame.acc_z = Defines.JOHN_CHASE_ACC_Z
+        frame.vzm = SpeedMode.AccTo;
+        frame.dvy = Defines.JOHN_CHASE_MAX_VY
+        frame.acc_y = Defines.JOHN_CHASE_ACC_Y
+        frame.vym = SpeedMode.AccTo;
+        frame.ctrl_x = frame.ctrl_y = frame.ctrl_z = 1
         break;
       case FrameBehavior.DennisChase: {
-        frame.ctrl_spd_x = Defines.DENNIS_CHASE_MAX_VX;
-        frame.ctrl_acc_x = Defines.DENNIS_CHASE_ACC_X;
-        frame.ctrl_spd_x_m = SpeedMode.AccTo;
-        frame.ctrl_spd_z = Defines.DEFAULT_OPOINT_SPEED_Z;
-        frame.ctrl_acc_z = Defines.DENNIS_CHASE_ACC_Z;
-        frame.ctrl_spd_z_m = SpeedMode.AccTo;
-        frame.ctrl_spd_y = Defines.DENNIS_CHASE_MAX_VY;
-        frame.ctrl_acc_y = Defines.DENNIS_CHASE_ACC_Y;
-        frame.ctrl_spd_y_m = SpeedMode.AccTo;
+        frame.dvx = Defines.DENNIS_CHASE_MAX_VX;
+        frame.acc_x = Defines.DENNIS_CHASE_ACC_X;
+        frame.vxm = SpeedMode.AccTo;
+        frame.dvz = Defines.DEFAULT_OPOINT_SPEED_Z;
+        frame.acc_z = Defines.DENNIS_CHASE_ACC_Z;
+        frame.vzm = SpeedMode.AccTo;
+        frame.dvy = Defines.DENNIS_CHASE_MAX_VY;
+        frame.acc_y = Defines.DENNIS_CHASE_ACC_Y;
+        frame.vym = SpeedMode.AccTo;
+        frame.ctrl_x = frame.ctrl_y = frame.ctrl_z = 1
         frame.on_dead = { id: '5' }
         switch (frame.id) {
           case '1': frame.key_down = { 'F': { id: '3', wait: 'i', expression: hp_gt_0 } }; break;
@@ -137,15 +140,16 @@ export function make_ball_data(
         jan_chase_start(frame);
         break;
       case FrameBehavior.ChasingSameEnemy:
-        frame.ctrl_spd_x = Defines.DISATER_CHASE_MAX_VX;
-        frame.ctrl_acc_x = Defines.DISATER_CHASE_ACC_X;
-        frame.ctrl_spd_x_m = SpeedMode.AccTo;
-        frame.ctrl_spd_z = Defines.DEFAULT_OPOINT_SPEED_Z;
-        frame.ctrl_acc_z = Defines.DISATER_CHASE_ACC_Z;
-        frame.ctrl_spd_z_m = SpeedMode.AccTo;
+        frame.dvx = Defines.DISATER_CHASE_MAX_VX;
+        frame.acc_x = Defines.DISATER_CHASE_ACC_X;
+        frame.vxm = SpeedMode.AccTo;
+        frame.dvz = Defines.DEFAULT_OPOINT_SPEED_Z;
+        frame.acc_z = Defines.DISATER_CHASE_ACC_Z;
+        frame.vzm = SpeedMode.AccTo;
         frame.dvy = Defines.DISATER_CHASE_MAX_VY;
         frame.acc_y = Defines.DISATER_CHASE_ACC_Y;
         frame.vym = SpeedMode.AccTo;
+        frame.ctrl_x = frame.ctrl_z = 1
         switch (datIndex.id) {
           case BuiltIn_OID.FirzenChasef:
           case BuiltIn_OID.FirzenChasei:
@@ -324,15 +328,16 @@ export function make_ball_data(
         });
         break;
       case FrameBehavior.Bat:
-        frame.ctrl_spd_x = Defines.BAT_CHASE_MAX_VX
-        frame.ctrl_acc_x = Defines.BAT_CHASE_ACC_X;
-        frame.ctrl_spd_x_m = SpeedMode.AccTo;
-        frame.ctrl_spd_z = Defines.DEFAULT_OPOINT_SPEED_Z;
-        frame.ctrl_acc_z = Defines.BAT_CHASE_ACC_Z;
-        frame.ctrl_spd_z_m = SpeedMode.AccTo;
-        frame.ctrl_spd_y = Defines.BAT_CHASE_MAX_VY;
-        frame.ctrl_acc_y = Defines.BAT_CHASE_ACC_Y;
-        frame.ctrl_spd_y_m = SpeedMode.AccTo;
+        frame.dvx = Defines.BAT_CHASE_MAX_VX
+        frame.acc_x = Defines.BAT_CHASE_ACC_X;
+        frame.vxm = SpeedMode.AccTo;
+        frame.dvz = Defines.DEFAULT_OPOINT_SPEED_Z;
+        frame.acc_z = Defines.BAT_CHASE_ACC_Z;
+        frame.vzm = SpeedMode.AccTo;
+        frame.dvy = Defines.BAT_CHASE_MAX_VY;
+        frame.acc_y = Defines.BAT_CHASE_ACC_Y;
+        frame.vym = SpeedMode.AccTo;
+        frame.ctrl_x = frame.ctrl_y = frame.ctrl_z = 1
         break;
       case FrameBehavior.JulianBallStart:
         frame.opoint = ensure(frame.opoint, {
@@ -351,15 +356,16 @@ export function make_ball_data(
         });
         break;
       case FrameBehavior.JulianBall: {
-        frame.ctrl_spd_x = Defines.DENNIS_CHASE_MAX_VX;
-        frame.ctrl_acc_x = Defines.DENNIS_CHASE_ACC_X;
-        frame.ctrl_spd_x_m = SpeedMode.AccTo;
-        frame.ctrl_spd_z = Defines.DEFAULT_OPOINT_SPEED_Z;
-        frame.ctrl_acc_z = Defines.DENNIS_CHASE_ACC_Z;
-        frame.ctrl_spd_z_m = SpeedMode.AccTo;
-        frame.ctrl_spd_y = Defines.DENNIS_CHASE_MAX_VY;
-        frame.ctrl_acc_y = Defines.DENNIS_CHASE_ACC_Y;
-        frame.ctrl_spd_y_m = SpeedMode.AccTo;
+        frame.dvx = Defines.DENNIS_CHASE_MAX_VX;
+        frame.acc_x = Defines.DENNIS_CHASE_ACC_X;
+        frame.vxm = SpeedMode.AccTo;
+        frame.dvz = Defines.DEFAULT_OPOINT_SPEED_Z;
+        frame.acc_z = Defines.DENNIS_CHASE_ACC_Z;
+        frame.vzm = SpeedMode.AccTo;
+        frame.dvy = Defines.DENNIS_CHASE_MAX_VY;
+        frame.acc_y = Defines.DENNIS_CHASE_ACC_Y;
+        frame.vym = SpeedMode.AccTo;
+        frame.ctrl_x = frame.ctrl_y = frame.ctrl_z = 1
         const fid = Number(frame.id)
         if (fid >= 50 && fid <= 59) {
           frame.key_down = { 'F': { id: '' + (fid - 50), wait: 'i', expression: hp_gt_0 } }; break;
@@ -393,7 +399,7 @@ export function make_ball_data(
         }
       }
     }
-    frame.gravity_enabled = false
+    frame.gravity_enabled = frame.gravity_enabled ?? false
   }
   const ret: IEntityData = {
     id: datIndex.id,

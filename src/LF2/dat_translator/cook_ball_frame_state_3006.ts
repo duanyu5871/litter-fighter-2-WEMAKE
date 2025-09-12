@@ -7,7 +7,6 @@ import { CondMaker } from "./CondMaker";
 import { ensure } from "../utils";
 
 export function cook_ball_frame_state_3006(e: IEntityData, frame: IFrameInfo) {
-  frame.ctrl_spd_z = 2;
   for (const bdy of frame.bdy || []) {
     bdy.actions = ensure(bdy.actions, {
       type: 'next_frame',

@@ -92,17 +92,6 @@ export function FrameEditorView(props: IFrameEditorViewProps) {
               fields={['vxm', 'vym', 'vzm']}
               placeholders={['x', 'y', 'z']}
               select={SPEED_MODE_SELECT_PROPS} />
-            <Editor.Number3
-              name="操作速度"
-              fields={['ctrl_spd_x', 'ctrl_spd_y', 'ctrl_spd_z']} />
-            <Editor.Number3
-              name="操作加速度"
-              fields={['ctrl_acc_x', 'ctrl_acc_y', 'ctrl_acc_z']} />
-            <Editor.Sel3
-              name="操作速度模式"
-              fields={['ctrl_spd_x_m', 'ctrl_spd_y_m', 'ctrl_spd_z_m']}
-              placeholders={['x', 'y', 'z']}
-              select={SPEED_MODE_SELECT_PROPS} />
           </Space>
         </Show>
       </Space>

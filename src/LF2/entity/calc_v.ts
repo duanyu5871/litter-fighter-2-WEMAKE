@@ -17,14 +17,10 @@ export function calc_v(
   acc: number | undefined,
   direction: 1 | -1 = 1): number {
   switch (mode) {
-    case SpeedMode.Extra:
-      return old;
-    case SpeedMode.FixedAcc: {
-      return old + speed;
-    }
-    case SpeedMode.Acc: {
-      return old + speed * direction;
-    }
+    case SpeedMode.Fixed: return speed;
+    case SpeedMode.Extra: return old;
+    case SpeedMode.FixedAcc: return old + speed;
+    case SpeedMode.Acc: return old + speed * direction;
     case SpeedMode.FixedLf2: {
       return (speed > 0 && old < speed) || (speed < 0 && old > speed)
         ? speed

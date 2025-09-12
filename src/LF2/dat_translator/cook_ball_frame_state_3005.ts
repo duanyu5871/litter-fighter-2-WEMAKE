@@ -6,7 +6,6 @@ import { StateEnum } from "../defines/StateEnum";
 import { CondMaker } from "./CondMaker";
 
 export function cook_ball_frame_state_3005(e: IEntityData, frame: IFrameInfo) {
-  frame.ctrl_spd_z = 0;
   if (frame.bdy) {
     for (const bdy of frame.bdy) {
       bdy.actions = bdy.actions || [];

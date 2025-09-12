@@ -14,13 +14,11 @@ export function make_ball_special(data: IEntityData) {
       break;
     case BuiltIn_OID.FirzenBall:
       traversal(data.frames, (_, frame) => {
-        frame.ctrl_spd_z = 0;
         frame.no_shadow = 1;
       });
       break;
     case BuiltIn_OID.BatBall:
       traversal(data.frames, (_, frame) => {
-        frame.ctrl_spd_z = 0;
         frame.no_shadow = 1;
       });
       break;
