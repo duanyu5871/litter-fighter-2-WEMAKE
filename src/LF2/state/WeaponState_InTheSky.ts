@@ -34,8 +34,6 @@ export default class WeaponState_InTheSky extends WeaponState_Base {
     }
   }
   override update(e: Entity): void {
-    e.handle_gravity();
     e.handle_ground_velocity_decay();
-    e.handle_frame_velocity();
   }
 }

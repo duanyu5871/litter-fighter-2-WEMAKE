@@ -34,14 +34,10 @@ export default class CharacterState_Falling extends CharacterState_Base {
   }
 
   update_bouncing(e: Entity): void {
-    e.handle_gravity();
     e.handle_ground_velocity_decay(0.7);
-    e.handle_frame_velocity();
   }
 
   update_falling(e: Entity): void {
-    e.handle_gravity();
-    e.handle_frame_velocity();
     if (e.wait <= 0) {
       const { x, y } = e.velocity;
       let falling_frame_idx = 1; // ---

@@ -7,9 +7,8 @@ export default class CharacterState_Base extends State_Base {
     e.update_resting();
   }
   override update(e: Entity): void {
-    e.handle_gravity();
+    super.update(e)
     e.handle_ground_velocity_decay();
-    e.handle_frame_velocity();
   }
   override on_landing(e: Entity): void {
     e.enter_frame({ id: e.data.indexes?.landing_2 });

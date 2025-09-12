@@ -320,7 +320,7 @@ export class Entity implements IDebugging {
    * @type {number}
    */
   protected _invulnerable_duration: number = 0;
-  
+
   /**
    * 闪烁计数，每帧-1
    *
@@ -1108,12 +1108,13 @@ export class Entity implements IDebugging {
    * @see {State_Base.get_gravity}
    * @see {World.gravity}
    */
-  handle_gravity() {
-    if (this.position.y <= 0 || this.shaking || this.motionless) return;
-    this.velocity_0.y -= this.state?.get_gravity(this) ?? this.world.gravity;
+  private handle_gravity() {
+    const { gravity_enabled = true } = this.frame;
+    if (this.position.y <= 0 || this.shaking || this.motionless || !gravity_enabled) return;
+    this.velocity_0.y -= this.frame.gravity ?? this.state?.get_gravity(this) ?? this.world.gravity;
   }
 
-  handle_frame_velocity() {
+  private handle_frame_velocity() {
     if (this.shaking || this.motionless) return;
     const {
       acc_x,
@@ -1350,6 +1351,8 @@ export class Entity implements IDebugging {
       this.update_id.add()
       return
     }
+    this.handle_gravity();
+    this.handle_frame_velocity();
     this.state?.update(this);
     let vx = 0;
     let vy = 0;

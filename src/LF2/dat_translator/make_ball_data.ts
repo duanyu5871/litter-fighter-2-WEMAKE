@@ -393,6 +393,7 @@ export function make_ball_data(
         }
       }
     }
+    frame.gravity_enabled = false
   }
   const ret: IEntityData = {
     id: datIndex.id,

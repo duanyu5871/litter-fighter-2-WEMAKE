@@ -6,9 +6,7 @@ export default class CharacterState_Jump extends CharacterState_Base {
   private _jumpings = new Set<Entity>();
 
   override update(character: Entity): void {
-    character.handle_gravity();
     character.handle_ground_velocity_decay();
-    character.handle_frame_velocity();
 
     const { jump_flag } = character.get_prev_frame();
     if (!jump_flag) {

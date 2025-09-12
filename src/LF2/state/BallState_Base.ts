@@ -50,6 +50,5 @@ export default class BallState_Base extends State_Base {
   }
   override update(e: Entity): void {
     e.handle_ground_velocity_decay();
-    e.handle_frame_velocity();
   }
 }

@@ -20,7 +20,6 @@ import type { StateEnum } from "./StateEnum";
  * @interface IFrameInfo
  */
 export interface IFrameInfo {
-
   /**
    * 帧ID
    * 
@@ -175,4 +174,10 @@ export interface IFrameInfo {
 
   friction_z?: number;
   friction_x?: number;
+
+  gravity?: number;
+  /**
+   * 是否响应重力
+   */
+  gravity_enabled?: boolean;
 }
