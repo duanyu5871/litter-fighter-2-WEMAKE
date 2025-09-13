@@ -6,8 +6,7 @@ import CharacterState_Base from "./CharacterState_Base";
 
 export default class CharacterState_Falling extends CharacterState_Base {
   _bouncing_frames_map = new Map<string, Set<string>>();
-  _begin_velocty_y_map = new Map<string, number>();
-
+  _bouncings = new Set<Entity>()
   override enter(e: Entity, prev_frame: IFrameInfo): void {
     if (!this._bouncing_frames_map.has(e.data.id) && e.data.indexes?.bouncing) {
       this._bouncing_frames_map.set(
@@ -18,7 +17,6 @@ export default class CharacterState_Falling extends CharacterState_Base {
         ]),
       );
     }
-    this._begin_velocty_y_map.set(e.data.id, e.velocity_0.y);
     e.drop_holding();
   }
   is_bouncing_frame(e: Entity) {
@@ -49,7 +47,11 @@ export default class CharacterState_Falling extends CharacterState_Base {
       });
     }
   }
+  override leave(e: Entity, next_frame: IFrameInfo): void {
+    super.leave(e, next_frame);
+    this._bouncings.delete(e)
 
+  }
   override on_landing(e: Entity): void {
     const {
       facing,
@@ -62,7 +64,12 @@ export default class CharacterState_Falling extends CharacterState_Base {
       find_direction(f, indexes?.critical_hit) ||
       facing;
     const { y: vy, x: vx } = e.velocity;
-    if (vy <= e.world.cha_bc_tst_spd_y || abs(vx) > e.world.cha_bc_tst_spd_x) {
+    if (
+      !this._bouncings.has(e) && (
+        vy <= e.world.cha_bc_tst_spd_y ||
+        abs(vx) > e.world.cha_bc_tst_spd_x
+      )) {
+      this._bouncings.add(e)
       e.enter_frame({ id: indexes?.bouncing?.[d][1] });
       e.merge_velocities()
       e.velocity_0.y = e.world.cha_bc_spd;
