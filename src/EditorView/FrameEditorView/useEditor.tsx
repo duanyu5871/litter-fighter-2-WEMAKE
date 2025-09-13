@@ -66,7 +66,7 @@ export function useEditor<O extends {}>(value: O, label_style: React.CSSProperti
               items={img_list}
               parse={v => [v.name, v.name]}
               defaultValue={get_value(field)}
-              on_changed={v => set_value(field, v)}
+              onChange={v => set_value(field, v)}
               clearable
               style={{ flex: 1 }}
               {..._p} />
@@ -118,7 +118,7 @@ export function useEditor<O extends {}>(value: O, label_style: React.CSSProperti
             <Combine style={combine_style}>
               <InputNumber
                 defaultValue={get_value(x)}
-                on_changed={v => set_value(x, v)}
+                onChange={v => set_value(x, v)}
                 title="x"
                 prefix="x"
                 style={input_style}
@@ -126,7 +126,7 @@ export function useEditor<O extends {}>(value: O, label_style: React.CSSProperti
                 data-flex={1} />
               <InputNumber
                 defaultValue={get_value(y)}
-                on_changed={v => set_value(y, v)}
+                onChange={v => set_value(y, v)}
                 title="y"
                 prefix="y"
                 style={input_style}
@@ -134,7 +134,7 @@ export function useEditor<O extends {}>(value: O, label_style: React.CSSProperti
                 data-flex={1} />
               <InputNumber
                 defaultValue={get_value(z)}
-                on_changed={v => set_value(z, v)}
+                onChange={v => set_value(z, v)}
                 title="z"
                 prefix="z"
                 style={input_style}
@@ -153,7 +153,7 @@ export function useEditor<O extends {}>(value: O, label_style: React.CSSProperti
             <Combine style={combine_style}>
               <InputNumber
                 defaultValue={get_value(x)}
-                on_changed={v => set_value(x, v)}
+                onChange={v => set_value(x, v)}
                 title="x"
                 prefix="x"
                 style={input_style}
@@ -161,7 +161,7 @@ export function useEditor<O extends {}>(value: O, label_style: React.CSSProperti
                 data-flex={1} />
               <InputNumber
                 defaultValue={get_value(y)}
-                on_changed={v => set_value(y, v)}
+                onChange={v => set_value(y, v)}
                 title="y"
                 prefix="y"
                 style={input_style}
@@ -181,20 +181,20 @@ export function useEditor<O extends {}>(value: O, label_style: React.CSSProperti
               <Combine data-flex={1} style={{ flex: 1 }}>
                 <InputNumber
                   defaultValue={get_value(x)}
-                  on_changed={v => set_value(x, v)}
+                  onChange={v => set_value(x, v)}
                   title="x"
                   prefix="x"
                   style={input_style}
                   clearable={clearable} data-flex={1} />
                 <InputNumber
                   defaultValue={get_value(y)}
-                  on_changed={v => set_value(y, v)}
+                  onChange={v => set_value(y, v)}
                   title="y" prefix="y"
                   style={input_style}
                   clearable={clearable} data-flex={1} />
                 <InputNumber
                   defaultValue={get_value(z)}
-                  on_changed={v => set_value(z, v)}
+                  onChange={v => set_value(z, v)}
                   title="z" prefix="z"
                   style={input_style}
                   clearable={clearable} data-flex={1} />
@@ -202,19 +202,19 @@ export function useEditor<O extends {}>(value: O, label_style: React.CSSProperti
               <Combine data-flex={1} style={{ flex: 1 }}>
                 <InputNumber
                   defaultValue={get_value(w)}
-                  on_changed={v => set_value(w, v)}
+                  onChange={v => set_value(w, v)}
                   title="w" prefix="w"
                   style={input_style}
                   clearable={clearable} data-flex={1} />
                 <InputNumber
                   defaultValue={get_value(h)}
-                  on_changed={v => set_value(h, v)}
+                  onChange={v => set_value(h, v)}
                   title="h" prefix="h"
                   style={input_style}
                   clearable={clearable} data-flex={1} />
                 <InputNumber
                   defaultValue={get_value(l)}
-                  on_changed={v => set_value(l, v)}
+                  onChange={v => set_value(l, v)}
                   title="l" prefix="l"
                   style={input_style}
                   clearable={clearable} data-flex={1} />
@@ -310,13 +310,13 @@ export function useEditor<O extends {}>(value: O, label_style: React.CSSProperti
         );
       },
       Select<T, V>(props: CommonProps<O> & ISelectProps<T, V>) {
-        const { title: name, field, on_changed, ..._p } = props;
+        const { title: name, field, onChange: on_changed, ..._p } = props;
         const [, set_change_flags] = useState(0);
         return (
           <Titled {...t_props(name ?? field)}>
             <Select
               defaultValue={get_value(field)}
-              on_changed={v => {
+              onChange={v => {
                 (value as any)[field] = v;
                 on_changed?.(v);
                 set_change_flags(v => ++v);
@@ -342,7 +342,7 @@ export function useEditor<O extends {}>(value: O, label_style: React.CSSProperti
             <Combine style={combine_style}>
               <Select
                 defaultValue={get_value(x)}
-                on_changed={v => { set_value(x, v) }}
+                onChange={v => { set_value(x, v) }}
                 placeholder={placeholders?.at(0)}
                 clearable
                 style={select_style}
@@ -350,7 +350,7 @@ export function useEditor<O extends {}>(value: O, label_style: React.CSSProperti
                 data-flex={1} />
               <Select
                 defaultValue={get_value(y)}
-                on_changed={v => { set_value(y, v) }}
+                onChange={v => { set_value(y, v) }}
                 placeholder={placeholders?.at(1)}
                 clearable
                 style={select_style}
@@ -358,7 +358,7 @@ export function useEditor<O extends {}>(value: O, label_style: React.CSSProperti
                 data-flex={1} />
               <Select
                 defaultValue={get_value(z)}
-                on_changed={v => { set_value(z, v) }}
+                onChange={v => { set_value(z, v) }}
                 placeholder={placeholders?.at(2)}
                 clearable
                 style={select_style}

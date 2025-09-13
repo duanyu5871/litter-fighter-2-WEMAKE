@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Vector2 as __Vector2, Vector2 } from "three";
 import { Button } from "../../Component/Buttons/Button";
 import Combine from "../../Component/Combine";
-import { Input, InputRef } from "../../Component/Input";
+import { Input, InputNumber, InputRef } from "../../Component/Input";
 import Titled from "../../Component/Titled";
 import { __Render } from "../../DittoImpl";
 import FPS from "../../LF2/base/FPS";
@@ -239,18 +239,16 @@ export default function QuadTreeView() {
           <div ref={ref_div_count} />{" "}
         </Titled>
         <Titled label="capacity:">
-          <Input
+          <InputNumber
             placeholder="capacity"
-            type="number"
             defaultValue={CAPACITY}
             min={0}
             max={100}
             onChange={(e) => {
-              let num = Math.floor(Number(e.target.value));
+              let num = Math.floor(e!);
               if (!num || num < 1) num = 1;
               else if (num > 100) num = 100;
               root_qt.capacity = num;
-              e.target.value = "" + root_qt.capacity;
             }}
           />
         </Titled>

@@ -24,19 +24,19 @@ export default function InputDemo() {
             value={variants}
             items={Object.values(Variant)}
             parse={i => [i, '' + i]}
-            on_changed={set_variants} />
+            onChange={set_variants} />
         </Titled>
         <Titled label="clearable">
           <Checkbox value={clearable} onChanged={set_clearable} />
         </Titled>
         <Titled label="prefix">
-          <Input value={prefix} onChange={e => set_prefix(e.target.value)} />
+          <Input value={prefix} onChange={e => set_prefix(e)} />
         </Titled>
         <Titled label="placeholder">
-          <Input value={placeholder} onChange={e => set_placeholder(e.target.value)} />
+          <Input value={placeholder} onChange={e => set_placeholder(e)} />
         </Titled>
         <Titled label="suffix">
-          <Input value={suffix} onChange={e => set_suffix(e.target.value)} />
+          <Input value={suffix} onChange={e => set_suffix(e)} />
         </Titled>
       </Space>
     </Frame>

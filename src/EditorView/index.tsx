@@ -581,7 +581,7 @@ export default function EditorView(props: IEditorViewProps) {
               items={zips}
               parse={i => [zips?.indexOf(i), i.name]}
               value={zip ? zips?.indexOf(zip) : void 0}
-              on_changed={(i) => {
+              onChange={(i) => {
                 set_zip(is_num(i) ? zips?.at(i) : void 0)
               }} />
           </Show>

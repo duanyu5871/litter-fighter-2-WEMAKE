@@ -136,7 +136,7 @@ export function FrameListView(props: IFrameListViewProps) {
                 <Input
                   variants="no_border"
                   defaultValue={frame.name}
-                  on_changed={v => frame.name = v}
+                  onChange={v => frame.name = v}
                   style={{ flex: 1 }}
                   clearable />
               </div>

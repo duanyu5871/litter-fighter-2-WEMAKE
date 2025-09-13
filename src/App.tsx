@@ -530,7 +530,7 @@ function App() {
           items={["top", "bottom", "left", "right"] as const}
           parse={(v) => [v, "位置：" + v]}
           value={debug_ui_pos}
-          on_changed={v => set_debug_ui_pos(v!)}
+          onChange={v => set_debug_ui_pos(v!)}
         />
         <Button
           style={{ marginLeft: "auto" }}
@@ -556,7 +556,7 @@ function App() {
               step={1}
               value={Math.ceil(volume * 100)}
               onChange={(e) =>
-                lf2?.sounds.set_volume(Number(e.target.value) / 100)
+                lf2?.sounds.set_volume(e! / 100)
               }
             />
           </Show>
@@ -574,7 +574,7 @@ function App() {
               step={1}
               value={Math.ceil(bgm_volume * 100)}
               onChange={(e) =>
-                lf2?.sounds.set_bgm_volume(Number(e.target.value) / 100)
+                lf2?.sounds.set_bgm_volume(e! / 100)
               }
             />
           </Show>
@@ -592,7 +592,7 @@ function App() {
               step={1}
               value={Math.ceil(sound_volume * 100)}
               onChange={(e) =>
-                lf2?.sounds.set_sound_volume(Number(e.target.value) / 100)
+                lf2?.sounds.set_sound_volume(e! / 100)
               }
             />
           </Show>
@@ -602,14 +602,14 @@ function App() {
         <Select
           placeholder="页面"
           value={layout_id}
-          on_changed={v => lf2?.set_ui(v!)}
+          onChange={v => lf2?.set_ui(v!)}
           items={layouts}
           parse={(o) => [o.id!, o.name]}
         />
         <Titled float_label="显示模式">
           <Select
             value={render_size_mode}
-            on_changed={v => set_render_size_mode(v!)}
+            onChange={v => set_render_size_mode(v!)}
             placeholder="显示模式"
             parse={i => [i, i]}
             items={["fixed", "fill", "cover", "contain"] as const}
@@ -620,7 +620,7 @@ function App() {
             <Combine>
               <Select
                 value={render_fixed_scale}
-                on_changed={v => set_render_fixed_scale(v!)}
+                onChange={v => set_render_fixed_scale(v!)}
                 items={arithmetic_progression(0, 4, 0.5)}
                 parse={(i) => [i, "✕" + (i || "?")]}
               />
@@ -631,7 +631,7 @@ function App() {
                   step={custom_render_fixed_scale <= 0.5 ? 0.1 : 0.5}
                   value={custom_render_fixed_scale}
                   onChange={(e) =>
-                    set_custom_render_fixed_scale(Number(e.target.value))
+                    set_custom_render_fixed_scale(e!)
                   } />
               </Show>
             </Combine>
@@ -642,7 +642,7 @@ function App() {
             <Combine>
               <Select
                 value={v_align}
-                on_changed={v => set_v_align(v!)}
+                onChange={v => set_v_align(v!)}
                 items={[-2, 0, 0.5, 1]}
                 parse={(v, idx) => [
                   v, v <= -1 ? "?" : ["上", "中", "下"][idx - 1],
@@ -655,12 +655,12 @@ function App() {
                   max={2}
                   step={0.1}
                   value={custom_v_align}
-                  onChange={(e) => set_custom_v_align(Number(e.target.value))}
+                  onChange={(e) => set_custom_v_align(e!)}
                 />
               </Show>
               <Select
                 value={h_align}
-                on_changed={v => set_h_align(v!)}
+                onChange={v => set_h_align(v!)}
                 items={[-2, 0, 0.5, 1]}
                 parse={(v, idx) => [
                   v,
@@ -674,7 +674,7 @@ function App() {
                   max={2}
                   step={0.1}
                   value={custom_h_align}
-                  onChange={(e) => set_custom_h_align(Number(e.target.value))}
+                  onChange={(e) => set_custom_h_align(e!)}
                 />
               </Show>
             </Combine>

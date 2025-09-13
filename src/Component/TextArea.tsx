@@ -1,5 +1,8 @@
 import React, { useEffect, useMemo, useRef } from "react";
-export interface ITextAreaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> { }
+
+export interface ITextAreaProps extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'onChange'> {
+  onChange?(value: string | undefined): void
+}
 export interface ITextAreaRef {
   readonly textarea: HTMLTextAreaElement | null;
   value: string | undefined;
@@ -7,7 +10,7 @@ export interface ITextAreaRef {
 
 function _TextArea(props: ITextAreaProps, forwarded_Ref: React.ForwardedRef<ITextAreaRef>) {
 
-  const { ..._p } = props
+  const { onChange, ..._p } = props
   const ref_textarea = useRef<HTMLTextAreaElement>(null);
 
   useMemo<ITextAreaRef>(() => {
@@ -33,6 +36,6 @@ function _TextArea(props: ITextAreaProps, forwarded_Ref: React.ForwardedRef<ITex
     ref_textarea.current.value = defaultValue;
   }, [defaultValue, has_value])
 
-  return <textarea {..._p} ref={ref_textarea} />;
+  return <textarea {..._p} onChange={e => onChange?.(e.target.value)} ref={ref_textarea} />;
 }
 export const TextArea = React.forwardRef<ITextAreaRef, ITextAreaProps>(_TextArea);

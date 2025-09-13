@@ -150,7 +150,7 @@ function Player() {
               prefix={<Text size='s'>room id:</Text>}
               placeholder="room id"
               defaultValue={ref_room_id.current}
-              onChange={e => ref_room_id.current = e.target.value.trim()} />
+              onChange={e => ref_room_id.current = e.trim()} />
             <Button size='s' onClick={join_room}>join room</Button>
           </Combine>
         </Show>

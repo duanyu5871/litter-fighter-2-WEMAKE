@@ -32,7 +32,7 @@ export default function IconDemo() {
             min={1}
             max={70}
             value={font_size}
-            on_changed={set_font_size}
+            onChange={set_font_size}
             placeholder="font size" />
         </Titled>
       </Space>

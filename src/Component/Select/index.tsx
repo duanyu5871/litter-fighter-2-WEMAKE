@@ -12,7 +12,7 @@ import { Text } from "../Text";
 import { ITreeNode, TreeView } from "../TreeView";
 import styles from "./styles.module.scss";
 export type TItemInfo<V> = [V, React.ReactNode] | [V, React.ReactNode, React.HTMLAttributes<HTMLDivElement>]
-export interface IBaseSelectProps<T, V> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'defaultValue' | 'multiply'> {
+export interface IBaseSelectProps<T, V> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'defaultValue' | 'multiply' | 'onChange'> {
   items?: readonly T[];
   auto_blur?: boolean;
   parse(item: T, idx: number, items: readonly T[]): TItemInfo<V>;
@@ -26,12 +26,12 @@ export interface IMultiSelectProps<T, V> extends IBaseSelectProps<T, V> {
   multi: true;
   value?: V[];
   defaultValue?: V[];
-  on_changed?: (value: V[] | undefined) => void;
+  onChange?: (value: V[] | undefined) => void;
 }
 export interface ISelectProps<T, V> extends IBaseSelectProps<T, V> {
   value?: V;
   defaultValue?: V;
-  on_changed?: (value: V | undefined) => void;
+  onChange?: (value: V | undefined) => void;
 }
 export interface IOptionData<T, V> {
   value: V;
@@ -48,7 +48,7 @@ function value_adapter<V>(defaultValue: V | V[] | undefined | null): V[] | undef
 export function Select<T, V>(props: ISelectProps<T, V>): ReactElement
 export function Select<T, V>(props: IMultiSelectProps<T, V>): ReactElement
 export function Select<T, V>(props: ISelectProps<T, V> | IMultiSelectProps<T, V>): ReactElement {
-  const { className, items, parse, disabled, arrow, clearable, on_changed, defaultValue, value: _value, loading, ..._p } = props;
+  const { className, items, parse, disabled, arrow, clearable, onChange: on_changed, defaultValue, value: _value, loading, ..._p } = props;
   const [open, set_open] = useState(false);
   const ref_popover = React.useRef<HTMLDivElement | null>(null);
   const ref_wrapper = React.useRef<HTMLDivElement | null>(null);

@@ -7,7 +7,7 @@ import { IStyleProps } from "../StyleBase/IStyleProps";
 import { useStyleBase } from "../StyleBase/useStyleBase";
 
 export type BaseProps = React.InputHTMLAttributes<HTMLInputElement>
-export interface InputProps extends Omit<BaseProps, 'prefix' | 'step' | 'size'>, IStyleProps {
+export interface InputProps extends Omit<BaseProps, 'prefix' | 'step' | 'size' | 'onChange'>, IStyleProps {
   precision?: number;
   prefix?: React.ReactNode;
   suffix?: React.ReactNode;
@@ -26,8 +26,7 @@ export interface InputProps extends Omit<BaseProps, 'prefix' | 'step' | 'size'>,
     input?: React.CSSProperties;
     icon?: React.CSSProperties;
   };
-
-  on_changed?(v: string): void;
+  onChange?(v: string): void;
 }
 export interface InputRef {
   readonly input: HTMLInputElement | null;
@@ -55,7 +54,7 @@ function direct_set_value(ele: HTMLInputElement | null, value: string | number |
 function _Input(props: InputProps, forwarded_Ref: React.ForwardedRef<InputRef>) {
   const {
     className, prefix, suffix, clear_icon = <CircleCross hoverable />, style, clazz,
-    clearable = false, on_changed, variants, precision, size, styles: _styles,
+    clearable = false, onChange: on_changed, variants, precision, size, styles: _styles,
     ..._p
   } = props;
 
@@ -241,7 +240,7 @@ function _Input(props: InputProps, forwarded_Ref: React.ForwardedRef<InputRef>) 
       {prefix ? <span className={prefix_cls_name} style={_styles?.prefix}>{prefix}</span> : null}
       <div className={styles.lfui_input_spacer}>
         <span ref={ref_spacer} />
-        <input className={input_cls_name} ref={ref_input} {..._p} style={_styles?.input}/>
+        <input className={input_cls_name} ref={ref_input} onChange={e => on_changed?.(e.target.value)}{..._p} style={_styles?.input} />
       </div>
       <span className={suffix_cls_name} style={_styles?.suffix}>{suffix}</span>
       <span className={styles.fix_right_zone}>
@@ -255,23 +254,22 @@ function _Input(props: InputProps, forwarded_Ref: React.ForwardedRef<InputRef>) 
 export const Input = React.forwardRef<InputRef, InputProps>(_Input)
 
 
-export interface InputNumberProps extends Omit<InputProps, 'type' | 'value' | 'defaultValue' | 'on_changed'> {
+export interface InputNumberProps extends Omit<InputProps, 'type' | 'value' | 'defaultValue' | 'onChange'> {
   value?: number;
   defaultValue?: number;
-  on_changed?(v: number | undefined): void;
+  onChange?(v: number | undefined): void;
   on_blur?(v: number | undefined): void;
 }
 function _InputNumber(props: InputNumberProps, forwarded_Ref: React.ForwardedRef<InputRef>) {
-  const { onChange, onBlur, on_changed, on_blur, ..._p } = props;
-  const _on_change = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onChange?.(e);
-    const t = e.target.value.trim();
-    on_changed?.(t ? void 0 : Number(e.target.value))
+  const { onChange, onBlur, onChange: on_changed, on_blur, ..._p } = props;
+  const _on_change = (v: string) => {
+    const t = v.trim();
+    onChange?.(t ? Number(t) : void 0)
   }
   const _on_blur = (e: React.FocusEvent<HTMLInputElement>) => {
     onBlur?.(e);
     const t = e.target.value.trim();
-    on_blur?.(t ? void 0 : Number(e.target.value))
+    on_blur?.(t ? Number(t) : void 0)
   }
   return <Input {..._p} type='number' ref={forwarded_Ref} onChange={_on_change} onBlur={_on_blur} />
 }

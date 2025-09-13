@@ -151,20 +151,20 @@ export function PlayerRow(props: Props) {
             maxLength={50}
             title="enter player name"
             value={player_name}
-            onChange={(e) => info.set_name(e.target.value, true)}
+            onChange={(e) => info.set_name(e, true)}
             onBlur={(e) => info.set_name(e.target.value.trim() || info.id, true).save()}
           />
           <CharacterSelect
             lf2={lf2}
             value={character_id}
             placeholder="角色"
-            on_changed={(v) => info.set_character(v!, true).save()}
+            onChange={(v) => info.set_character(v!, true).save()}
             show_all={show_hidden}
           />
           <TeamSelect
             placeholder="队伍"
             value={team}
-            on_changed={(v) => info.set_team(v!, true).save()}
+            onChange={(v) => info.set_team(v!, true).save()}
           />
           <Button onClick={on_click_add}>{added ? "移除" : "加入"}</Button>
           <ToggleButton value={touch_pad_on} onClick={on_click_toggle_touch_pad}>
@@ -222,7 +222,7 @@ export function PlayerRow(props: Props) {
             items={["", ...Object.keys(DummyEnum)]}
             parse={(k) => k ? [(DummyEnum as any)[k], k] : ["", "not dummy"]}
             value={dummy}
-            on_changed={set_dummy}
+            onChange={set_dummy}
           />
         </Combine>
       </Show>

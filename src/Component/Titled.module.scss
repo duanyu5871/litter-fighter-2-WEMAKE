@@ -9,12 +9,17 @@
   white-space   : nowrap;
   position      : relative;
 
+  &.no_label>*:first-child,
+  &.has_label>*:nth-child(2) {
+    flex: 1;
+  }
+
   &>.label {
-    opacity        : 0.8;
-    margin-right   : 5px;
-    display        : inline-block;
-    white-space    : nowrap;
-    word-break     : keep-all;
+    opacity     : 0.8;
+    margin-right: 5px;
+    display     : inline-block;
+    white-space : nowrap;
+    word-break  : keep-all;
   }
 
   &>.float_label {

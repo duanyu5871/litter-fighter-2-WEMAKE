@@ -132,14 +132,14 @@ export default function SettingsRows(props: ISettingsRowsProps) {
           <Combine>
             <Select
               value={stage_id}
-              on_changed={v => lf2.change_stage(v!)}
+              onChange={v => lf2.change_stage(v!)}
               items={stage_list}
               parse={(i) => [i.id, i.name]}
             />
             {!stage_phase_list.length ? null : (
               <Select
                 title={phase_desc}
-                on_changed={v => set_stage_phase_idx(v!)}
+                onChange={v => set_stage_phase_idx(v!)}
                 value={stage_phase_idx}
                 items={stage_phase_list}
                 parse={(i, idx) => [
@@ -166,7 +166,7 @@ export default function SettingsRows(props: ISettingsRowsProps) {
         <Titled float_label="背景">
           <Select
             value={bg_id}
-            on_changed={v => lf2.change_bg(v!)}
+            onChange={v => lf2.change_bg(v!)}
             items={lf2.datas.backgrounds}
             parse={(i) => [i.id, i.base.name]}
           />
@@ -174,7 +174,7 @@ export default function SettingsRows(props: ISettingsRowsProps) {
         <Titled float_label="难度">
           <Select
             value={difficulty}
-            on_changed={v => set_difficulty(v!)}
+            onChange={v => set_difficulty(v!)}
             items={[
               Difficulty.Easy,
               Difficulty.Normal,
@@ -201,7 +201,7 @@ export default function SettingsRows(props: ISettingsRowsProps) {
               max={max_rwn}
               step={1}
               value={rwn}
-              onChange={(e) => set_rwn(Number(e.target.value))}
+              onChange={(e) => set_rwn(o => e ?? o)}
               onBlur={() =>
                 set_rwn((v) =>
                   Math.min(Math.max(Math.floor(v), min_rwn), max_rwn),
@@ -210,7 +210,7 @@ export default function SettingsRows(props: ISettingsRowsProps) {
             />
             <Select
               value={weapon_id}
-              on_changed={v => set_weapon_id(v!)}
+              onChange={v => set_weapon_id(v!)}
               items={[0, ...lf2.datas.weapons]}
               parse={i => is_num(i) ? ["", "Random"] : [i.id, i.base.name]} >
             </Select>
@@ -233,7 +233,7 @@ export default function SettingsRows(props: ISettingsRowsProps) {
               max={max_rcn}
               step={1}
               value={rcn}
-              onChange={(e) => set_rcn(Number(e.target.value))}
+              onChange={v => set_rcn(o => v ?? o)}
               onBlur={() =>
                 set_rcn((v) =>
                   Math.min(Math.max(Math.floor(v), min_rcn), max_rcn),
@@ -241,11 +241,11 @@ export default function SettingsRows(props: ISettingsRowsProps) {
               }
             />
             <CharacterSelect
-              lf2={lf2} value={c_id} on_changed={v => set_character_id(v!)} />
-            <TeamSelect value={team} on_changed={v => set_team(v!)} />
+              lf2={lf2} value={c_id} onChange={v => set_character_id(v!)} />
+            <TeamSelect value={team} onChange={v => set_team(v!)} />
             <Select
               value={bot_ctrl}
-              on_changed={v => set_bot_ctrl(v!)}
+              onChange={v => set_bot_ctrl(v!)}
               items={Object.keys(bot_controllers)}
               parse={(i) => [i, i]}
             />
@@ -277,7 +277,7 @@ export default function SettingsRows(props: ISettingsRowsProps) {
                   step={type === 'float' ? 0.01 : type === 'int' ? 1 : 0.01}
                   defaultValue={(lf2.world as any)[v.name]}
                   onChange={(e) =>
-                    ((lf2.world as any)[v.name] = Number(e.target.value))
+                    ((lf2.world as any)[v.name] = e)
                   } />
                 <Button
                   title="重置"
