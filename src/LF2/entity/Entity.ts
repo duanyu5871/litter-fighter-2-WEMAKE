@@ -1891,6 +1891,7 @@ export class Entity implements IDebugging {
       if (!frame) return void 0;
     } else {
       frame = this.frame;
+      which.wait = 'i'
     }
 
     if (!this.world.lf2.infinity_mp) {
