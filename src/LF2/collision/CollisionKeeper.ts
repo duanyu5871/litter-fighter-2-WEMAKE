@@ -66,24 +66,25 @@ export class CollisionKeeper {
     }
     return this.pair_map.get(`${a_type}_${itr_kind}_${v_type}_${bdy_kind}`);
   }
-
-  handle(collision: ICollision) {
-    const handlers = this.get(
+  handler(collision: ICollision) {
+    return this.get(
       collision.attacker.data.type,
       collision.itr.kind,
       collision.victim.data.type,
       collision.bdy.kind,
     )
+  }
+  handle(collision: ICollision) {
 
-    if (Ditto.DEV) {
-      const collision_desc =
-        `[${collision.attacker.data.type}]#${ItrKind[collision.itr.kind]} => ` +
-        `[${collision.victim.data.type}]#${BdyKind[collision.bdy.kind]}`;
+    // if (Ditto.DEV) {
+    //   const collision_desc =
+    //     `[${collision.attacker.data.type}]#${ItrKind[collision.itr.kind]} => ` +
+    //     `[${collision.victim.data.type}]#${BdyKind[collision.bdy.kind]}`;
 
-      Ditto.debug(` collision: ${collision_desc} \nhandlers: ${handlers?.map(v => v.name) ?? 'none'}`)
-    }
+    //   Ditto.debug(` collision: ${collision_desc} \nhandlers: ${handlers?.map(v => v.name) ?? 'none'}`)
+    // }
 
-    if (handlers) handlers.forEach(fn => fn(collision))
+    collision.handlers?.forEach(fn => fn(collision))
 
     const { itr, bdy, victim, attacker } = collision;
     victim.collided_list.push((victim.lastest_collided = collision));
@@ -106,7 +107,9 @@ export class CollisionKeeper {
       itr.kind !== ItrKind.Block &&
       itr.kind !== ItrKind.Whirlwind &&
       itr.kind !== ItrKind.MagicFlute &&
-      itr.kind !== ItrKind.MagicFlute2
+      itr.kind !== ItrKind.MagicFlute2 &&
+      itr.kind !== ItrKind.Pick &&
+      itr.kind !== ItrKind.PickSecretly
     ) {
       const sounds = victim.data.base.hit_sounds;
       victim.play_sound(sounds);

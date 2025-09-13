@@ -74,4 +74,6 @@ export interface ICollision {
    * @memberof ICollision
    */
   v_rest?: number;
+
+  handlers?: ((collision: ICollision) => void)[]
 }
