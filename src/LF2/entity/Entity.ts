@@ -1205,9 +1205,6 @@ export class Entity implements IDebugging {
     }
     if (this._invulnerable_duration > 0) {
       this._invulnerable_duration--;
-      if (this._invulnerable_duration <= 0) {
-        this._invulnerable_duration = 120;
-      }
     }
     if (this._blinking_duration > 0) {
       this._blinking_duration--;
