@@ -310,7 +310,7 @@ export function make_character_data(
         if (frame_id === "217" && frames[216]) set_hit_turn_back(frame, "216"); // turn back;
         // julian和knight的dash非常特殊……
         if (frame.state === StateEnum.Dash && (frame_id === "213" || frame_id === "216")) {
-          frame.key_down = frame.hit || {};
+          frame.key_down = frame.key_down || {};
           frame.key_down.a = add_next_frame(frame.key_down.a,
             {
               id: "52",
