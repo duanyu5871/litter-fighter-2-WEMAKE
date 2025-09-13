@@ -111,42 +111,6 @@ export function cook_ball_frame_state_3000(e: IEntityData, frame: IFrameInfo) {
   const new_itr: IItrInfo[] = [];
   for (const itr of itr_list) {
     switch (itr.kind) {
-      case ItrKind.Block:
-        bdy_list.push({
-          kind: 0,
-          ally_flags: AllyFlag.Both,
-          test: new CondMaker<C_Val>()
-            .not_in(
-              C_Val.ItrKind,
-              ItrKind.Block,
-              ItrKind.MagicFlute,
-              ItrKind.MagicFlute2,
-              ItrKind.Pick,
-              ItrKind.PickSecretly,
-            )
-            .and().not_in(
-              C_Val.ItrEffect,
-              ItrEffect.Ice2,
-              ItrEffect.MFire1
-            )
-            .done(),
-          z: itr.z,
-          l: itr.l,
-          x: itr.x,
-          y: itr.y,
-          w: itr.w,
-          h: itr.h,
-          actions: [{
-            type: 'next_frame',
-            data: {
-              id: "30"
-            }
-          }, {
-            type: 'sound',
-            path: e.base.hit_sounds || []
-          }]
-        })
-        break;
       case ItrKind.Normal:
         itr.actions = ensure(itr.actions, {
           type: 'next_frame',

@@ -24,17 +24,13 @@ export function cook_ball_frame_state_3005(e: IEntityData, frame: IFrameInfo) {
     }
   }
   foreach(frame.itr, itr => {
-    itr.actions = ensure(itr.actions, {
-      type: 'next_frame',
-      test: new CondMaker<C_Val>()
-        .add(C_Val.VictimState, "==", StateEnum.Ball_3005)
-        .done(),
-      data: { id: "20" }
-    })
-    if (e.base.hit_sounds?.length)
-      itr.actions.push({
-        type: 'sound',
-        path: e.base.hit_sounds
+    if (itr.kind === ItrKind.Normal)
+      itr.actions = ensure(itr.actions, {
+        type: 'next_frame',
+        test: new CondMaker<C_Val>()
+          .add(C_Val.VictimState, "==", StateEnum.Ball_3005)
+          .done(),
+        data: { id: "20" }
       })
   })
 }

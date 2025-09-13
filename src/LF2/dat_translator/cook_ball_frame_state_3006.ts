@@ -21,14 +21,15 @@ export function cook_ball_frame_state_3006(e: IEntityData, frame: IFrameInfo) {
     })
   }
   foreach(frame.itr, itr => {
-    itr.actions = ensure(itr.actions, {
-      type: 'next_frame',
-      test: new CondMaker<C_Val>()
-        .one_of(C_Val.VictimState, StateEnum.Ball_3005, StateEnum.Ball_3006)
-        .done(),
-      data: {
-        id: "20"
-      }
-    })
+    if (itr.kind === ItrKind.Normal)
+      itr.actions = ensure(itr.actions, {
+        type: 'next_frame',
+        test: new CondMaker<C_Val>()
+          .one_of(C_Val.VictimState, StateEnum.Ball_3005, StateEnum.Ball_3006)
+          .done(),
+        data: {
+          id: "20"
+        }
+      })
   })
 }
