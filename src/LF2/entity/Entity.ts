@@ -798,7 +798,7 @@ export class Entity implements IDebugging {
 
     const result = this.get_next_frame(opoint.action);
     facing = result?.which.facing
-      ? this.handle_facing_flag(result.which.facing, result.frame)
+      ? this.handle_facing_flag(result.which.facing)
       : emitter.facing;
 
     if (is_num(opoint.max_hp)) this.hp = this.hp_r = this.hp_max = opoint.max_hp;
@@ -818,8 +818,8 @@ export class Entity implements IDebugging {
       ),
     )
     if (
-      result?.frame.state === StateEnum.Normal ||
-      result?.frame.state === StateEnum.Burning
+      result?.frame?.state === StateEnum.Normal ||
+      result?.frame?.state === StateEnum.Burning
     ) {
       this.merge_velocities()
       this.velocity_0.z = 0;
@@ -1408,7 +1408,7 @@ export class Entity implements IDebugging {
         const { bottom } = this.world.get_bounding(this, this.frame, itr);
         if (bottom > 0) continue;
         const result = this.get_next_frame(this.frame.on_hit_ground);
-        if (result) this.enter_frame(result.frame);
+        if (result) this.enter_frame(result.which);
         break;
       }
     }
@@ -1800,11 +1800,13 @@ export class Entity implements IDebugging {
       if (mp) this.mp -= mp;
       if (hp) this.hp -= hp;
     }
-    if (frame.sound) {
-      const { x, y, z } = this.position;
-      this.world.lf2.sounds.play(frame.sound, x, y, z);
+    if (frame) {
+      if (frame.sound) {
+        const { x, y, z } = this.position;
+        this.world.lf2.sounds.play(frame.sound, x, y, z);
+      }
+      this.set_frame(frame);
     }
-    this.set_frame(frame);
 
     this.next_frame = void 0;
     if (flags.id === Builtin_FrameId.Auto) {
@@ -1816,11 +1818,11 @@ export class Entity implements IDebugging {
     this.v_rests
 
     if (flags.facing !== void 0) {
-      this.facing = this.handle_facing_flag(flags.facing, frame);
+      this.facing = this.handle_facing_flag(flags.facing);
     }
     if (flags.wait !== void 0) {
       this.wait = this.handle_wait_flag(flags.wait, frame);
-    } else {
+    } else if (frame) {
       this.wait = frame.wait + this.world.frame_wait_offset;
     }
     if (flags.sounds?.length) this.play_sound(flags.sounds);
@@ -1828,11 +1830,10 @@ export class Entity implements IDebugging {
     if (flags.blink_time) this.blinking = flags.blink_time;
   }
 
-  handle_wait_flag(wait: string | number, frame: IFrameInfo): number {
-    if (wait === "i") return this.wait;
-    if (wait === "d")
-      return max(0, frame.wait - this.frame.wait + this.wait);
+  handle_wait_flag(wait: string | number, frame?: IFrameInfo): number {
     if (is_positive(wait)) return wait;
+    if (wait === "i" || !frame) return this.wait;
+    if (wait === "d") return max(0, frame.wait - this.frame.wait + this.wait);
     return frame.wait + this.world.frame_wait_offset;
   }
 
@@ -1844,7 +1845,7 @@ export class Entity implements IDebugging {
    * @param frame 帧
    * @returns 返回新的朝向
    */
-  handle_facing_flag(facing: number, frame: IFrameInfo): -1 | 1 {
+  handle_facing_flag(facing: number): -1 | 1 {
     switch (facing) {
       case FacingFlag.Ctrl:
         return this.ctrl?.LR || this.facing;
@@ -1890,11 +1891,10 @@ export class Entity implements IDebugging {
       frame = this.find_frame_by_id(this.lf2.random_get(id));
       if (!frame) return void 0;
     } else {
-      frame = this.frame;
-      which.wait = 'i'
+      // frame = this.frame;
     }
 
-    if (!this.world.lf2.infinity_mp) {
+    if (!this.world.lf2.infinity_mp && frame) {
       if (this.frame.next === which) {
         // 用next 进入此动作，负数表示消耗，无视正数。若消耗完毕跳至按下防御键的指定跳转动作
         if (use_mp && this._mp < use_mp)

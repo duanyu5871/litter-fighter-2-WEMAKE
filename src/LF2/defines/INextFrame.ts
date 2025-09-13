@@ -2,7 +2,7 @@ import type { FacingFlag } from "./FacingFlag";
 import type { IExpression } from "./IExpression";
 import type { IFrameInfo } from "./IFrameInfo";
 export interface INextFrameResult {
-  frame: IFrameInfo;
+  frame?: IFrameInfo;
   which: INextFrame;
 }
 export interface INextFrame {
