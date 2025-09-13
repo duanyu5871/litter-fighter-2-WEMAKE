@@ -76,15 +76,16 @@ export class CollisionKeeper {
   }
   handle(collision: ICollision) {
 
-    // if (Ditto.DEV) {
-    //   const collision_desc =
-    //     `[${collision.attacker.data.type}]#${ItrKind[collision.itr.kind]} => ` +
-    //     `[${collision.victim.data.type}]#${BdyKind[collision.bdy.kind]}`;
+    const { handlers } = collision
+    if (Ditto.DEV && handlers) {
+      const collision_desc =
+        `[${collision.attacker.data.type}]#${ItrKind[collision.itr.kind]} => ` +
+        `[${collision.victim.data.type}]#${BdyKind[collision.bdy.kind]}`;
 
-    //   Ditto.debug(` collision: ${collision_desc} \nhandlers: ${handlers?.map(v => v.name) ?? 'none'}`)
-    // }
+      Ditto.debug(` collision: ${collision_desc} \nhandlers: ${handlers?.map(v => v.name) ?? 'none'}`)
+    }
 
-    collision.handlers?.forEach(fn => fn(collision))
+    handlers?.forEach(fn => fn(collision))
 
     const { itr, bdy, victim, attacker } = collision;
     victim.collided_list.push((victim.lastest_collided = collision));
