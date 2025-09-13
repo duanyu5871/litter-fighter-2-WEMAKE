@@ -11,6 +11,7 @@ import { copy_bdy_info } from "./copy_bdy_info";
 import { edit_bdy_info } from "./edit_bdy_info";
 import { edit_itr_info } from "./edit_itr_info";
 import { AllyFlag } from "../defines/AllyFlag";
+import { ensure } from "../utils";
 
 export function cook_ball_frame_state_3000(e: IEntityData, frame: IFrameInfo) {
   const bdy_list = frame.bdy ? frame.bdy : (frame.bdy = []);
@@ -45,9 +46,6 @@ export function cook_ball_frame_state_3000(e: IEntityData, frame: IFrameInfo) {
         data: {
           id: "20"
         }
-      }, {
-        type: 'sound',
-        path: e.base.dead_sounds || []
       }]
     });
 
@@ -103,9 +101,6 @@ export function cook_ball_frame_state_3000(e: IEntityData, frame: IFrameInfo) {
           data: {
             id: "30"
           }
-        }, {
-          type: 'sound',
-          path: e.base.dead_sounds || []
         }]
       }),
     );
@@ -148,22 +143,17 @@ export function cook_ball_frame_state_3000(e: IEntityData, frame: IFrameInfo) {
             }
           }, {
             type: 'sound',
-            path: e.base.dead_sounds || []
+            path: e.base.hit_sounds || []
           }]
         })
         break;
       case ItrKind.Normal:
-        edit_itr_info(itr, {
-          actions: [{
-            type: 'next_frame',
-            data: { id: "10" }
-          }],
+        itr.actions = ensure(itr.actions, {
+          type: 'next_frame',
+          data: { id: "10" }
         });
         break;
     }
   }
   itr_list.push(...new_itr);
-
-
-
 }

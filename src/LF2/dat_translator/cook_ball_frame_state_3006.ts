@@ -5,6 +5,7 @@ import { IEntityData } from "../defines/IEntityData";
 import { StateEnum } from "../defines/StateEnum";
 import { CondMaker } from "./CondMaker";
 import { ensure } from "../utils";
+import { foreach } from "../utils/container_help/foreach";
 
 export function cook_ball_frame_state_3006(e: IEntityData, frame: IFrameInfo) {
   for (const bdy of frame.bdy || []) {
@@ -19,7 +20,7 @@ export function cook_ball_frame_state_3006(e: IEntityData, frame: IFrameInfo) {
       }
     })
   }
-  for (const itr of frame.itr || []) {
+  foreach(frame.itr, itr => {
     itr.actions = ensure(itr.actions, {
       type: 'next_frame',
       test: new CondMaker<C_Val>()
@@ -29,5 +30,5 @@ export function cook_ball_frame_state_3006(e: IEntityData, frame: IFrameInfo) {
         id: "20"
       }
     })
-  }
+  })
 }

@@ -12,6 +12,7 @@ import { OpointKind } from "../defines/OpointKind";
 import { OpointMultiEnum } from "../defines/OpointMultiEnum";
 import { SpeedMode } from "../defines/SpeedMode";
 import { ensure } from "../utils";
+import { foreach } from "../utils/container_help/foreach";
 import { traversal } from "../utils/container_help/traversal";
 import { to_num } from "../utils/type_cast/to_num";
 import { CondMaker } from "./CondMaker";
@@ -47,7 +48,15 @@ export function make_ball_data(
     info.hit_sounds = [weapon_hit_sound];
   }
 
-  for (const [, frame] of traversal(frames)) {
+
+  const ret: IEntityData = {
+    id: datIndex.id,
+    type: EntityEnum.Ball,
+    base: info,
+    frames: frames,
+  };
+
+  traversal(ret.frames, (_, frame) => {
     const hit_j = take(frame, "hit_j");
     if (hit_j !== 0) {
       frame.vzm = SpeedMode.Extra
@@ -400,15 +409,8 @@ export function make_ball_data(
       }
     }
     frame.gravity_enabled = frame.gravity_enabled ?? false
-  }
-  const ret: IEntityData = {
-    id: datIndex.id,
-    type: EntityEnum.Ball,
-    base: info,
-    frames: frames,
-  };
 
-  traversal(ret.frames, (_, frame) => {
+
     switch (frame.state) {
       case StateEnum.Ball_Flying:
         return cook_ball_frame_state_3000(ret, frame);
@@ -419,6 +421,35 @@ export function make_ball_data(
       case StateEnum.Ball_3006:
         return cook_ball_frame_state_3006(ret, frame);
     }
+
+    foreach(frame.itr, itr => {
+      switch (itr.kind as ItrKind) {
+        case ItrKind.Normal:
+        case ItrKind.JohnShield:
+        case ItrKind.CharacterThrew:
+        case ItrKind.WeaponSwing:
+          if (ret.base.hit_sounds?.length)
+            itr.actions = ensure(itr.actions, {
+              type: 'sound',
+              path: ret.base.hit_sounds
+            })
+          break;
+
+        case ItrKind.Catch:
+        case ItrKind.Pick:
+        case ItrKind.ForceCatch:
+        case ItrKind.SuperPunchMe:
+        case ItrKind.PickSecretly:
+        case ItrKind.Heal:
+        case ItrKind.MagicFlute:
+        case ItrKind.MagicFlute2:
+        case ItrKind.Block:
+        case ItrKind.Whirlwind:
+        case ItrKind.Freeze:
+      }
+    })
+
+
   });
   return ret;
 }

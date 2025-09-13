@@ -4,6 +4,8 @@ import { CollisionVal as C_Val } from "../defines/CollisionVal";
 import { IEntityData } from "../defines/IEntityData";
 import { StateEnum } from "../defines/StateEnum";
 import { CondMaker } from "./CondMaker";
+import { ensure } from "../utils";
+import { foreach } from "../utils/container_help/foreach";
 
 export function cook_ball_frame_state_3005(e: IEntityData, frame: IFrameInfo) {
   if (frame.bdy) {
@@ -21,18 +23,18 @@ export function cook_ball_frame_state_3005(e: IEntityData, frame: IFrameInfo) {
       })
     }
   }
-  if (frame.itr) {
-    for (const itr of frame.itr) {
-      itr.actions = itr.actions || [];
+  foreach(frame.itr, itr => {
+    itr.actions = ensure(itr.actions, {
+      type: 'next_frame',
+      test: new CondMaker<C_Val>()
+        .add(C_Val.VictimState, "==", StateEnum.Ball_3005)
+        .done(),
+      data: { id: "20" }
+    })
+    if (e.base.hit_sounds?.length)
       itr.actions.push({
-        type: 'next_frame',
-        test: new CondMaker<C_Val>()
-          .add(C_Val.VictimState, "==", StateEnum.Ball_3005)
-          .done(),
-        data: {
-          id: "20"
-        }
+        type: 'sound',
+        path: e.base.hit_sounds
       })
-    }
-  }
+  })
 }
