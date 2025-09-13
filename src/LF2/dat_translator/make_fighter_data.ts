@@ -293,35 +293,7 @@ export function make_character_data(
 
         if (frame_id === "211") frame.jump_flag = 1;
         if (frame_id === "212") {
-          frame.key_down.a = add_next_frame({
-            id: "52", // 角色跳跃丢出武器
-            facing: FacingFlag.Ctrl,
-            expression: new CondMaker<EntityVal>()
-              .one_of(
-                EntityVal.WeaponType,
-                WeaponType.Baseball,
-                WeaponType.Drink,
-              )
-              .or((v) =>
-                v
-                  .add(EntityVal.PressFB, "!=", 0)
-                  .and(EntityVal.WeaponType, "!=", WeaponType.None),
-              )
-              .done(),
-          }, {
-            id: "30", // 角色跳跃用武器攻击
-            facing: FacingFlag.Ctrl,
-            expression: new CondMaker<EntityVal>()
-              .one_of(
-                EntityVal.WeaponType,
-                WeaponType.Knife,
-                WeaponType.Stick,
-              )
-              .done(),
-          }, {
-            id: "80", // 角色跳跃攻击
-            facing: FacingFlag.Ctrl,
-          },); // jump_atk
+          add_key_down_jump_atk(frame); // jump_atk
         }
         frame.hit.B = { facing: FacingFlag.Ctrl };
         frame.hold.B = { facing: FacingFlag.Ctrl };
@@ -336,9 +308,10 @@ export function make_character_data(
         if (frame_id === "216" && frames[217]) set_hit_turn_back(frame, "217"); // turn back;
         if (frame_id === "214" && frames[213]) set_hit_turn_back(frame, "213"); // turn back;
         if (frame_id === "217" && frames[216]) set_hit_turn_back(frame, "216"); // turn back;
-        if (frame_id === "213" || frame_id === "216") {
-          frame.hit = frame.hit || {};
-          frame.hit.a = add_next_frame(frame.hit.a,
+        // julian和knight的dash非常特殊……
+        if (frame.state === StateEnum.Dash && (frame_id === "213" || frame_id === "216")) {
+          frame.key_down = frame.hit || {};
+          frame.key_down.a = add_next_frame(frame.key_down.a,
             {
               id: "52",
               facing: FacingFlag.Ctrl,
@@ -363,6 +336,11 @@ export function make_character_data(
             },
             { id: "90" },
           ); // dash_atk
+        }
+
+        if (frame.state === StateEnum.Jump) {
+          add_key_down_jump_atk(frame)
+          frame.state = StateEnum.Dash
         }
         break;
       }
@@ -804,6 +782,38 @@ export function make_character_data(
   cook_transform_begin_expression_to_hit(ret.frames);
   cook_file_variants(ret);
   return ret;
+}
+
+function add_key_down_jump_atk(frame: IFrameInfo) {
+  frame.key_down = frame.key_down || {}
+  frame.key_down.a = add_next_frame({
+    id: "52", // 角色跳跃丢出武器
+    facing: FacingFlag.Ctrl,
+    expression: new CondMaker<EntityVal>()
+      .one_of(
+        EntityVal.WeaponType,
+        WeaponType.Baseball,
+        WeaponType.Drink
+      )
+      .or((v) => v
+        .add(EntityVal.PressFB, "!=", 0)
+        .and(EntityVal.WeaponType, "!=", WeaponType.None)
+      )
+      .done(),
+  }, {
+    id: "30", // 角色跳跃用武器攻击
+    facing: FacingFlag.Ctrl,
+    expression: new CondMaker<EntityVal>()
+      .one_of(
+        EntityVal.WeaponType,
+        WeaponType.Knife,
+        WeaponType.Stick
+      )
+      .done(),
+  }, {
+    id: "80", // 角色跳跃攻击
+    facing: FacingFlag.Ctrl,
+  });
 }
 
 function cook_transform_begin_expression_to_hit<

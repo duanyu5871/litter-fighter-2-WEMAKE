@@ -1,16 +1,18 @@
 import { Defines, INextFrame, ItrKind, StateEnum, type IFrameInfo } from "../defines";
 import { ICollision } from "../base/ICollision";
 import type { Entity } from "../entity/Entity";
-import { make_smoke } from "./make_smoke";
+import { spawn_buring_smoke } from "./spawn_buring_smoke";
 export class State_Base {
   on_frame_changed?(e: Entity, frame: IFrameInfo, prev_frame: IFrameInfo): void;
   state: number | string = "";
   pre_update?(e: Entity): void;
   update(e: Entity): void {
-    switch (this.state) {
+    switch (e.frame.state) {
       case StateEnum.Burning:
+        if (e.update_id.value % 2) e.apply_opoints([spawn_buring_smoke(e, 1)]);
+        break;
       case StateEnum.BurnRun:
-        e.apply_opoints([make_smoke(e)])
+        if (e.update_id.value % 2) e.apply_opoints([spawn_buring_smoke(e, 2)]);
         break;
     }
   }

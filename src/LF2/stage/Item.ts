@@ -32,7 +32,6 @@ export default class Item {
     },
     on_disposed: (e: Entity): void => {
       e.callbacks.del(this.entity_callback);
-      if (this.entities.size) return;
       if (this.info.is_soldier) {
         if (this.stage.all_boss_dead()) {
           this.dispose();
@@ -121,9 +120,9 @@ export default class Item {
       e.position.y = 450;
     }
     this.entities.add(e);
-    e.callbacks.add(this.entity_callback);
     e.team = this.stage.team;
     e.attach();
+    e.callbacks.add(this.entity_callback);
 
     if (is_str(act)) e.enter_frame({ id: act });
     else e.enter_frame(Defines.NEXT_FRAME_AUTO);

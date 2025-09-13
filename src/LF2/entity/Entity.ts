@@ -10,7 +10,6 @@ import {
   INextFrame,
   INextFrameResult,
   IOpointInfo, IPos,
-  ItrEffect,
   ItrKind,
   IVector3,
   OpointKind, OpointMultiEnum, OpointSpreading, SpeedMode, StateEnum, TFace,
@@ -1337,10 +1336,6 @@ export class Entity implements IDebugging {
       const nf = this.get_next_frame(this.frame.next);
       if (nf) this.next_frame = { ...nf.which, judger: void 0 }
       else this.next_frame = this.find_auto_frame()
-    }
-    if (this._is_incorporeity) {
-      this.update_id.add()
-      return
     }
     this.handle_gravity();
     this.handle_frame_velocity();

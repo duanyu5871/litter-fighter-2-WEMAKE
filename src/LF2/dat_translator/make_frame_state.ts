@@ -12,9 +12,11 @@ export function make_frame_state(frame: IFrameInfo) {
       break;
     case StateEnum.HeavyWeapon_OnHand:
       frame.no_shadow = 1;
+      frame.gravity_enabled = false;
       break;
     case StateEnum.Weapon_OnHand:
       frame.no_shadow = 1;
+      frame.gravity_enabled = false;
       break;
     case StateEnum.Burning: {
       foreach(frame.itr, itr => {

@@ -69,18 +69,15 @@ export class WorldRenderer implements IWorldRenderer {
     let shadow_renderer: EntityShadowRender | null = null
     let frame_indicators: FrameIndicators | null = null
 
-    if (!entity.is_incorporeity) {
-      if (is_character(entity)) {
-        info_renderer = new EntityInfoRender(entity, this);
-        info_renderer.on_mount()
-      }
-      shadow_renderer = new EntityShadowRender(entity);
-      shadow_renderer.on_mount()
-      frame_indicators = new FrameIndicators(entity);
-      frame_indicators.on_mount()
+
+    if (is_character(entity)) {
+      info_renderer = new EntityInfoRender(entity, this);
+      info_renderer.on_mount()
     }
-
-
+    frame_indicators = new FrameIndicators(entity);
+    frame_indicators.on_mount()
+    shadow_renderer = new EntityShadowRender(entity);
+    shadow_renderer.on_mount()
     this.entity_renderer_packs.set(entity, [
       entity_renderer, shadow_renderer, info_renderer, frame_indicators
     ]);
