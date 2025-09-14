@@ -58,14 +58,20 @@ export class DanmuGameLogic extends SummaryLogic {
       v.name = v.data.base.name;
       v.blinking = 120;
     }
-    const way: number = 3;
+    const way: number = 0;
     switch (way) {
       case 0: {
         this.lf2.change_bg('?');
         this.lf2.characters.add(OID.Julian, 2, TE.Team_1).forEach(fighter_enter)
+        this.lf2.characters.add(OID.Jan, 1, TE.Team_1).forEach(fighter_enter)
+
         this.lf2.characters.add(OID.Firzen, 3, TE.Team_2).forEach(fighter_enter)
+        this.lf2.characters.add(OID.Jan, 1, TE.Team_2).forEach(fighter_enter)
+
         this.lf2.characters.add(OID.LouisEX, 2, TE.Team_3).forEach(fighter_enter)
         this.lf2.characters.add(OID.Bat, 3, TE.Team_3).forEach(fighter_enter)
+        this.lf2.characters.add(OID.Jan, 1, TE.Team_3).forEach(fighter_enter)
+
         this.lf2.characters.add(OID.Deep, 1, TE.Team_4).forEach(fighter_enter)
         this.lf2.characters.add(OID.Davis, 1, TE.Team_4).forEach(fighter_enter)
         this.lf2.characters.add(OID.Dennis, 1, TE.Team_4).forEach(fighter_enter)
@@ -73,6 +79,7 @@ export class DanmuGameLogic extends SummaryLogic {
         this.lf2.characters.add(OID.Firen, 1, TE.Team_4).forEach(fighter_enter)
         this.lf2.characters.add(OID.Freeze, 1, TE.Team_4).forEach(fighter_enter)
         this.lf2.characters.add(OID.Jack, 1, TE.Team_4).forEach(fighter_enter)
+        this.lf2.characters.add(OID.Jan, 1, TE.Team_4).forEach(fighter_enter)
         break
       }
       case 1: { // 1v1v1v1v1v1
