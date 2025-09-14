@@ -1,6 +1,7 @@
 import { BotStateEnum, BotVal, Defines, EntityVal, GK, IBotAction } from "../../defines";
 import { pow } from "../../utils";
 import { CondMaker } from "../CondMaker";
+import { IEditBotActionFunc } from "./IEditBotAction";
 const DESIRE = 0.033333 as const;
 const MIN_X = -120 as const;
 const MAX_X = 120 as const;
@@ -23,17 +24,20 @@ export function bot_explosion_duj(
   min_x: number = MIN_X,
   max_x: number = MAX_X,
   z_len: number = Z_LEN
-): IBotAction {
-  return {
-    action_id: ID,
-    desire: Defines.desire(desire),
-    status: [BotStateEnum.Chasing],
-    e_ray: [{ x: 1, z: 0, min_x, max_x, max_d: pow(z_len, 2) }],
-    expression: new CondMaker<BotVal | EntityVal>()
-      .add(EntityVal.MP, '>=', min_mp)
-      .done(),
-    keys: [GK.d, GK.U, GK.j]
-  };
+): IEditBotActionFunc {
+  return (fn) => {
+    const cond = new CondMaker<BotVal | EntityVal>()
+    if (min_mp > 0) cond.add(EntityVal.MP, '>=', min_mp)
+    const ret = {
+      action_id: ID,
+      desire: Defines.desire(desire),
+      status: [BotStateEnum.Chasing],
+      e_ray: [{ x: 1, z: 0, min_x, max_x, max_d: pow(z_len, 2) }],
+      expression: min_mp > 0 ? cond.done() : void 0,
+      keys: [GK.d, GK.U, GK.j]
+    };
+    return fn ? fn(ret, cond) : ret
+  }
 }
 bot_explosion_duj.ID = ID
 bot_explosion_duj.DESIRE = DESIRE
