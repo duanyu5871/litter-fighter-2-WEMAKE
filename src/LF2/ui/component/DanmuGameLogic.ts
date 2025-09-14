@@ -80,6 +80,9 @@ export class DanmuGameLogic extends SummaryLogic {
         this.lf2.characters.add(OID.Freeze, 1, TE.Team_4).forEach(fighter_enter)
         this.lf2.characters.add(OID.Jack, 1, TE.Team_4).forEach(fighter_enter)
         this.lf2.characters.add(OID.Jan, 1, TE.Team_4).forEach(fighter_enter)
+        this.lf2.characters.add(OID.Mark, 1, TE.Team_4).forEach(fighter_enter)
+        this.lf2.characters.add(OID.Monk, 1, TE.Team_4).forEach(fighter_enter)
+        this.lf2.characters.add(OID.Knight, 1, TE.Team_4).forEach(fighter_enter)
         break
       }
       case 1: { // 1v1v1v1v1v1
