@@ -2,8 +2,7 @@ import { BinOp, TBinOp } from "../defines/BinOp";
 import {
   IExpression,
   IJudger,
-  IValGetter,
-  IValGetterGetter,
+  IValGetterGetter
 } from "../defines/IExpression";
 import { Ditto } from "../ditto";
 export function ALWAY_FALSE<T = unknown>(
@@ -35,7 +34,6 @@ export class Expression<T1, T2 = T1> implements IExpression<T1, T2> {
   static is = (v: any): v is Expression<unknown> => v?.is_expression === true;
   readonly text: string = "";
   readonly children: IExpression<T1, T2>[] = [];
-  // readonly get_val?: IValGetter<T1 | T2>;
   readonly get_val_getter: IValGetterGetter<T1 | T2>;
   readonly err?: string | undefined;
   before: string = "";
@@ -62,7 +60,7 @@ export class Expression<T1, T2 = T1> implements IExpression<T1, T2> {
       let before: string = "";
       for (; i < count; ++i) {
         letter = this.text[i] || '';
-        if ("!" === letter && this.text[i] === "(") {
+        if ("!" === letter && this.text[i+1] === "(") {
           const child = new Expression<T1, T2>(
             this.text.substring(i + 2),
             get_val_getter,
