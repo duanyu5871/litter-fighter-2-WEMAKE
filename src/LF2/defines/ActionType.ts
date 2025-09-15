@@ -1,7 +1,13 @@
 export enum ActionType {
-  Sound = 'sound',
-  NextFrame = 'next_frame',
-  SetProp = 'set_prop',
-  Defend = 'defend',
-  BrokenDefend = 'broken_defend',
+  A_Sound = 'a_sound',
+  A_NextFrame = 'a_next_frame',
+  A_SetProp = 'a_set_prop',
+  A_Defend = 'a_defend',
+  A_BrokenDefend = 'a_broken_defend',
+
+  V_Sound = 'v_sound',
+  V_NextFrame = 'v_next_frame',
+  V_SetProp = 'v_set_prop',
+  V_Defend = 'v_defend',
+  V_BrokenDefend = 'v_broken_defend',
 }

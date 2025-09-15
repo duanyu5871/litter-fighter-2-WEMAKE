@@ -7,7 +7,7 @@ import type { TNextFrame } from "./INextFrame";
  */
 
 export interface IAction_NextFrame extends IAction_Base {
-  type: ActionType.NextFrame;
+  type: ActionType.A_NextFrame | ActionType.V_NextFrame;
 
   /**
    * 指定帧

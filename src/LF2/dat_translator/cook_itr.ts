@@ -181,7 +181,7 @@ export function cook_itr(itr?: Partial<IItrInfo>) {
 
       if (src_dvx) {
         itr.actions = ensure(itr.actions, {
-          type: ActionType.NextFrame,
+          type: ActionType.A_NextFrame,
           data: get_next_frame_by_raw_id(src_dvx),
         })
       }

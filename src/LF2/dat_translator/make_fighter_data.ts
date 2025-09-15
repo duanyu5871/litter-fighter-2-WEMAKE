@@ -272,8 +272,8 @@ export function make_character_data(
         if (frame.bdy?.length)
           for (const bdy of frame.bdy) {
             bdy.actions = ensure(bdy.actions,
-              { type: ActionType.BrokenDefend, data: { id: "112" } },
-              { type: ActionType.Defend, data: { id: "111" } }
+              { type: ActionType.V_BrokenDefend, data: { id: "112" } },
+              { type: ActionType.V_Defend, data: { id: "111" } }
             );
           }
         break;
@@ -569,9 +569,9 @@ export function make_character_data(
           for (const bdy of frame.bdy) {
             bdy.kind = BdyKind.Defend;
             bdy.kind_name = BdyKind[bdy.kind];
-            if (!bdy.actions?.find(v => v.type === 'broken_defend')) {
+            if (!bdy.actions?.find(v => v.type === ActionType.V_BrokenDefend)) {
               bdy.actions = ensure(bdy.actions, {
-                type: ActionType.BrokenDefend,
+                type: ActionType.V_BrokenDefend,
                 data: { id: "112" }
               })
             }

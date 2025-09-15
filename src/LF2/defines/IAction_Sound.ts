@@ -7,7 +7,7 @@ import type { IPos } from "./IPos";
  */
 
 export interface IAction_Sound extends IAction_Base {
-  type: ActionType.Sound;
+  type: ActionType.A_Sound | ActionType.V_Sound;
   data: {
     /**
      * 声音文件路径

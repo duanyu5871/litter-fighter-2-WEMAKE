@@ -43,7 +43,7 @@ export function cook_ball_frame_state_3000(e: IEntityData, frame: IFrameInfo) {
           ItrEffect.MFire1
         ).done(),
       actions: [{
-        type: ActionType.NextFrame,
+        type: ActionType.V_NextFrame,
         data: {
           id: "20"
         }
@@ -98,7 +98,7 @@ export function cook_ball_frame_state_3000(e: IEntityData, frame: IFrameInfo) {
           )
           .done(),
         actions: [{
-          type: ActionType.NextFrame,
+          type: ActionType.V_NextFrame,
           data: {
             id: "30"
           }
@@ -114,7 +114,7 @@ export function cook_ball_frame_state_3000(e: IEntityData, frame: IFrameInfo) {
     switch (itr.kind) {
       case ItrKind.Normal:
         itr.actions = ensure(itr.actions, {
-          type: ActionType.NextFrame,
+          type: ActionType.A_NextFrame,
           data: { id: "10" }
         });
         break;

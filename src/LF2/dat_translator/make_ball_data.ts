@@ -100,7 +100,7 @@ export function make_ball_data(
           z: -12,
           actions: [
             {
-              type: ActionType.NextFrame,
+              type: ActionType.A_NextFrame,
               data: {
                 id: "60"
               }
@@ -390,7 +390,7 @@ export function make_ball_data(
         if (itr.kind === ItrKind.JohnShield) {
           if (hit_d) {
             itr.actions = ensure(itr.actions, {
-              type: ActionType.NextFrame,
+              type: ActionType.A_NextFrame,
               test: new CondMaker<C_Val>()
                 .add(C_Val.VictimType, "==", EntityEnum.Fighter)
                 .done(),
@@ -406,7 +406,7 @@ export function make_ball_data(
           itr.kind !== ItrKind.Heal
         ) {
           itr.actions = ensure(itr.actions, {
-            type: ActionType.Sound,
+            type: ActionType.A_Sound,
             data: { path: [weapon_hit_sound] }
           })
         }
@@ -434,7 +434,7 @@ export function make_ball_data(
         case ItrKind.WeaponSwing:
           if (ret.base.hit_sounds?.length)
             itr.actions = ensure(itr.actions, {
-              type: ActionType.Sound,
+              type: ActionType.A_Sound,
               data: { path: ret.base.hit_sounds }
             })
           break;

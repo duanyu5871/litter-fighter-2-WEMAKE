@@ -1,6 +1,7 @@
 import { ICollision } from "../base";
-import { Defines, ItrEffect, SparkEnum } from "../defines";
+import { Defines, IAction_BrokenDefend, IAction_Defend, ItrEffect, SparkEnum } from "../defines";
 import { ActionType } from "../defines/ActionType";
+import { collision_action_handlers } from "../entity/collision_action_handlers";
 import { handle_injury } from "./handle_injury";
 import { handle_itr_normal_bdy_normal } from "./handle_itr_normal_bdy_normal";
 import { handle_rest } from "./handle_rest";
@@ -28,18 +29,34 @@ export function handle_itr_normal_bdy_defend(collision: ICollision) {
     // 破防
     victim.defend_value = 0;
     victim.world.spark(x, y, z, SparkEnum.BrokenDefend);
-    const action = bdy.actions?.find(v => v.type === ActionType.BrokenDefend);
-    if (action) {
-      const result = victim.get_next_frame(action.data);
-      if (result) victim.next_frame = result.frame;
-    }
+
+
+    itr.actions?.forEach((action) => {
+      if (action.type === ActionType.A_Defend)
+        collision_action_handlers.a_next_frame(action, collision);
+      if (action.type === ActionType.V_Defend)
+        collision_action_handlers.v_next_frame(action, collision);
+    })
+    bdy.actions?.forEach((action) => {
+      if (action.type === ActionType.A_BrokenDefend)
+        collision_action_handlers.a_next_frame(action, collision);
+      if (action.type === ActionType.V_BrokenDefend)
+        collision_action_handlers.v_next_frame(action, collision);
+    })
   } else {
     if (itr.dvx) victim.velocity_0.x = (itr.dvx * attacker.facing) / 2;
     victim.world.spark(x, y, z, SparkEnum.DefendHit);
-    const action = bdy.actions?.find(v => v.type === ActionType.Defend);
-    if (action) {
-      const result = victim.get_next_frame(action.data);
-      if (result) victim.next_frame = result.frame;
-    }
+    itr.actions?.forEach((action) => {
+      if (action.type === ActionType.A_Defend)
+        collision_action_handlers.a_next_frame(action, collision);
+      if (action.type === ActionType.V_Defend)
+        collision_action_handlers.v_next_frame(action, collision);
+    })
+    bdy.actions?.forEach((action) => {
+      if (action.type === ActionType.A_Defend)
+        collision_action_handlers.a_next_frame(action, collision);
+      if (action.type === ActionType.V_Defend)
+        collision_action_handlers.v_next_frame(action, collision);
+    })
   }
 }

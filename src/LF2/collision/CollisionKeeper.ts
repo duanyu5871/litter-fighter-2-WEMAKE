@@ -1,8 +1,7 @@
 import { ICollision, ICollisionHandler } from "../base";
 import { ALL_ENTITY_ENUM, BdyKind, EntityEnum, ItrKind, TEntityEnum } from "../defines";
 import { Ditto } from "../ditto";
-import { bdy_action_handlers } from "../entity/bdy_action_handlers";
-import { itr_action_handlers } from "../entity/itr_action_handlers";
+import { collision_action_handlers } from "../entity/collision_action_handlers";
 import { arithmetic_progression } from "../utils";
 import { handle_ball_hit_other } from "./handle_ball_hit_other";
 import { handle_ball_is_hit } from "./handle_ball_is_hit";
@@ -92,11 +91,11 @@ export class CollisionKeeper {
 
     itr.actions?.forEach(action => {
       if (action.tester?.run(collision) === false) return;
-      itr_action_handlers[action.type](action as any, collision)
+      collision_action_handlers[action.type](action as any, collision)
     })
     bdy.actions?.forEach(action => {
       if (action.tester?.run(collision) === false) return;
-      bdy_action_handlers[action.type](action as any, collision)
+      collision_action_handlers[action.type](action as any, collision)
     })
     if (
       itr.kind !== ItrKind.Block &&
