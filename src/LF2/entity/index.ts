@@ -1,4 +1,5 @@
-export * from "./bdy_action_handlers";
+
+export * from "./collision_action_handlers";
 export * from "./Entity";
 export * from "./face_helper";
 export * from "./Factory";

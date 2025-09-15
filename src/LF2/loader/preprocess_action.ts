@@ -1,5 +1,6 @@
 import { Expression } from "../base/Expression";
 import type { TAction } from "../defines";
+import { ActionType } from "../defines/ActionType";
 import type { LF2 } from "../LF2";
 import { is_non_blank_str } from "../utils";
 import { get_val_geter_from_collision } from "./get_val_from_collision";
@@ -10,15 +11,19 @@ export function preprocess_action(lf2: LF2, action: TAction, jobs: Promise<void>
     action.test, get_val_geter_from_collision
   ) : void 0
   switch (action.type) {
-    case "sound":
+    case ActionType.A_Sound:
+    case ActionType.V_Sound:
       for (const sound of action.data.path) {
         if (is_non_blank_str(sound) && !lf2.sounds.has(sound))
           jobs.push(lf2.sounds.load(sound, sound));
       }
       break;
-    case "next_frame":
-    case "defend":
-    case "broken_defend":
+    case ActionType.A_NextFrame:
+    case ActionType.V_NextFrame:
+    case ActionType.A_Defend:
+    case ActionType.V_Defend:
+    case ActionType.A_BrokenDefend:
+    case ActionType.V_BrokenDefend:
       preprocess_next_frame(action.data);
       break;
   }
