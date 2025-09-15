@@ -96,14 +96,12 @@ export function ItrEditor(props: IItrEditorViewProps) {
             placeholder={'' + Defines.DEFAULT_ITR_SHAKING}
             step={1} />
         </Titled>
-
         <Titled label='arest' styles={titled_styles}>
           <Input.Number id='arest' {...make_not_blank_field_props(props, default_value, 'arest', v => { v.vrest = void 0; return v; })} placeholder={'' + Defines.DEFAULT_ITR_MOTIONLESS} clearable step={1} />
         </Titled>
         <Titled label='vrest' styles={titled_styles}>
           <Input.Number {...make_not_blank_field_props(props, default_value, 'vrest', v => { v.arest = void 0; return v; })} clearable step={1} />
         </Titled>
-
         <Titled label='击倒值' styles={titled_styles}>
           <Input.Number {...make_not_blank_field_props(props, default_value, 'fall')} placeholder={'' + Defines.DEFAULT_ITR_FALL} clearable step={1} />
         </Titled>
@@ -113,9 +111,6 @@ export function ItrEditor(props: IItrEditorViewProps) {
         <Titled label='伤害值' styles={titled_styles}>
           <Input.Number {...make_not_blank_field_props(props, default_value, 'injury')} clearable step={1} />
         </Titled>
-
-
-
         <Titled label='包围盒' styles={titled_styles}>
           <QubeEdit
             value={value}
