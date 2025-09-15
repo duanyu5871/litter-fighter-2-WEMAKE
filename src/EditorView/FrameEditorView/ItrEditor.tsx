@@ -40,7 +40,7 @@ const default_value: IItrInfo = {
 export function ItrEditor(props: IItrEditorViewProps) {
   const { label = 'itr info', value, defaultValue = default_value, onRemove, onChange } = props;
   const kind = value?.kind ?? defaultValue.kind;
-  const vrest = value?.vrest ?? defaultValue.vrest;
+
   return (
     <Frame key={label} label={label} tabIndex={-1}>
       <Button style={{ position: 'absolute', right: 0, top: 0, border: 'none' }} onClick={onRemove}>
@@ -97,14 +97,12 @@ export function ItrEditor(props: IItrEditorViewProps) {
             step={1} />
         </Titled>
 
-        <Flex direction='row'>
-          <Titled label='arest' styles={titled_styles} style={{ flex: 1 }}>
-            <Input.Number {...make_not_blank_field_props(props, default_value, 'arest', v => { delete v.vrest; return v; })} placeholder={'' + Defines.DEFAULT_ITR_MOTIONLESS} clearable step={1} />
-          </Titled>
-          <Titled label='vrest' styles={titled_styles} style={{ flex: 1 }}>
-            <Input.Number {...make_not_blank_field_props(props, default_value, 'vrest', v => { delete v.arest; return v; })} clearable step={1} />
-          </Titled>
-        </Flex>
+        <Titled label='arest' styles={titled_styles}>
+          <Input.Number id='arest' {...make_not_blank_field_props(props, default_value, 'arest', v => { v.vrest = void 0; return v; })} placeholder={'' + Defines.DEFAULT_ITR_MOTIONLESS} clearable step={1} />
+        </Titled>
+        <Titled label='vrest' styles={titled_styles}>
+          <Input.Number {...make_not_blank_field_props(props, default_value, 'vrest', v => { v.arest = void 0; return v; })} clearable step={1} />
+        </Titled>
 
         <Titled label='击倒值' styles={titled_styles}>
           <Input.Number {...make_not_blank_field_props(props, default_value, 'fall')} placeholder={'' + Defines.DEFAULT_ITR_FALL} clearable step={1} />

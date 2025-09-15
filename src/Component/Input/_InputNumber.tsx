@@ -8,7 +8,7 @@ export interface InputNumberProps extends Omit<InputProps, 'type' | 'value' | 'd
   on_blur?(v: number | undefined): void;
 }
 function _InputNumber(props: InputNumberProps, forwarded_Ref: React.ForwardedRef<InputRef>) {
-  const { onBlur, onChange, value, on_blur, ..._p } = props;
+  const { onBlur, onChange, on_blur, ..._p } = props;
   const _on_change = (v: string) => {
     const t = v.trim();
     onChange?.(t ? Number(t) : void 0)

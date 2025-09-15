@@ -6,18 +6,24 @@ export interface IFieldProps<V> {
 
 export function make_field_props<T, K extends keyof T>(props: IFieldProps<T>, default_value: T | undefined, key: K, edit?: (v: T) => T): IFieldProps<T[K]> {
   const { value, defaultValue = default_value, onChange } = props;
-
   const ret: IFieldProps<T[K]> = {
     value: value?.[key],
     defaultValue: defaultValue?.[key],
     onChange: v => {
-      let next = { ...defaultValue, ...value, [key]: v } as T
+      let next = { ...(value || defaultValue), [key]: v } as T
       if (edit) next = edit(next);
       return onChange?.(next)
     }
   };
-  if (!value || key in (value as any)) delete (ret as any).value;
-  if (!defaultValue || key in (defaultValue as any)) delete (defaultValue as any).value;
+  if (ret.value === void 0) {
+    delete ret.value;
+  } else {
+    delete ret.defaultValue;
+  }
+  if (ret.defaultValue === void 0) {
+    delete ret.defaultValue
+  }
+
   (ret as any)[`data-value`] = value?.[key];
   (ret as any)[`data-default-value`] = defaultValue?.[key];
   return ret;

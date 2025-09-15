@@ -58,10 +58,9 @@ function direct_set_value(ele: HTMLInputElement | null, value: string | number |
 function _Input(props: InputProps, forwarded_Ref: React.ForwardedRef<InputRef>) {
   const {
     className, prefix, suffix, clear_icon = <CircleCross hoverable />, style, clazz,
-    clearable = false, onChange: on_changed, variants, precision, size, styles: _styles,
-    ..._p
+    clearable = false, onChange, variants, precision, size, styles: _styles,
+    id, value, ..._p
   } = props;
-
   const { type, step, min, max } = props;
   const need_steppers = !!(step && type === 'number' && !props.readOnly && !props.disabled);
   const need_clearer = !!(clearable && clear_icon && !props.readOnly && !props.disabled);
@@ -95,17 +94,13 @@ function _Input(props: InputProps, forwarded_Ref: React.ForwardedRef<InputRef>) 
     return ret;
   }, [forwarded_Ref])
 
-  const { defaultValue, placeholder } = props;
-  const has_value = ('value' in props)
+  const ref_value = useRef(props.value);
+  const value_cleared = props.value === void 0 && ref_value.current != props.value;
+  ref_value.current = props.value;
+
   useEffect(() => {
-    if (has_value) return;
-    if (!ref_input.current) return;
-    if (!ref_spacer.current) return;
-    const _d = '' + (defaultValue !== void 0 ? defaultValue : '');
-    const _p = '' + (placeholder !== void 0 ? placeholder : '');
-    ref_input.current.value = _d;
-    ref_spacer.current.innerText = _d.length > _p.length ? _d : _p;
-  }, [defaultValue, has_value, placeholder])
+    if (value_cleared && ref_input.current) direct_set_value(ref_input.current, '', void 0)
+  }, [value_cleared])
 
   useEffect(() => {
     const ele_root = ref_root.current;
@@ -239,12 +234,19 @@ function _Input(props: InputProps, forwarded_Ref: React.ForwardedRef<InputRef>) 
       {clear_icon}
     </button>
 
+
   return (
-    <div className={root_cls_name} ref={ref_root} style={style}>
+    <div className={root_cls_name} ref={ref_root} style={style} id={id}>
       {prefix ? <span className={prefix_cls_name} style={_styles?.prefix}>{prefix}</span> : null}
       <div className={styles.lfui_input_spacer}>
         <span ref={ref_spacer} />
-        <input className={input_cls_name} ref={ref_input} onChange={e => on_changed?.(e.target.value)}{..._p} style={_styles?.input} />
+        <input
+          className={input_cls_name}
+          ref={ref_input}
+          onChange={e => onChange?.(e.target.value)}
+          value={value ?? ''}
+          {..._p}
+          style={_styles?.input} />
       </div>
       <span className={suffix_cls_name} style={_styles?.suffix}>{suffix}</span>
       <span className={styles.fix_right_zone}>
