@@ -1,5 +1,6 @@
 import { ICollision } from "../base";
 import { Defines, ItrEffect, SparkEnum } from "../defines";
+import { ActionType } from "../defines/ActionType";
 import { handle_injury } from "./handle_injury";
 import { handle_itr_normal_bdy_normal } from "./handle_itr_normal_bdy_normal";
 import { handle_rest } from "./handle_rest";
@@ -27,7 +28,7 @@ export function handle_itr_normal_bdy_defend(collision: ICollision) {
     // 破防
     victim.defend_value = 0;
     victim.world.spark(x, y, z, SparkEnum.BrokenDefend);
-    const action = bdy.actions?.find(v => v.type === 'broken_defend');
+    const action = bdy.actions?.find(v => v.type === ActionType.BrokenDefend);
     if (action) {
       const result = victim.get_next_frame(action.data);
       if (result) victim.next_frame = result.frame;
@@ -35,7 +36,7 @@ export function handle_itr_normal_bdy_defend(collision: ICollision) {
   } else {
     if (itr.dvx) victim.velocity_0.x = (itr.dvx * attacker.facing) / 2;
     victim.world.spark(x, y, z, SparkEnum.DefendHit);
-    const action = bdy.actions?.find(v => v.type === 'defend');
+    const action = bdy.actions?.find(v => v.type === ActionType.Defend);
     if (action) {
       const result = victim.get_next_frame(action.data);
       if (result) victim.next_frame = result.frame;
