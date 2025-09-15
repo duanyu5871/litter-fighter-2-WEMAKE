@@ -23,6 +23,7 @@ export interface IItrInfo extends IQube {
    * @type {TAllyFlag}
    */
   ally_flags: TAllyFlag;
+  ally_flags_name?: string;
 
   /**
    * 自身停顿值

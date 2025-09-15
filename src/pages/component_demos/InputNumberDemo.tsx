@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Checkbox } from "../../Component/Checkbox";
 import Frame from "../../Component/Frame";
-import { Input, InputNumber } from "../../Component/Input";
+import { Input } from "../../Component/Input";
+import { InputNumber } from "../../Component/Input";
 import { Space } from "../../Component/Space";
 import Titled from "../../Component/Titled";
 

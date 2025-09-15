@@ -9,7 +9,7 @@ export function handle_rest(collision: ICollision): void {
     victim.v_rests.set(collision.attacker.id, collision);
     attacker.victims.set(collision.victim.id, collision)
   } else {
-    const arest = itr.arest ?? Defines.DEFAULT_ITR_MOTIONLESS * 2;
+    const arest = itr.arest ?? Defines.DEFAULT_ITR_A_REST;
     attacker.a_rest = arest + attacker.world.arest_offset;
   }
 }

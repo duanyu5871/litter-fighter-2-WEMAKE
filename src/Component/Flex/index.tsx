@@ -13,14 +13,16 @@ export function Flex(props: IFlexProps) {
     align,
     justify,
     gap,
+    style,
     ..._p
   } = props;
-  const style: React.CSSProperties = {
+  const _style: React.CSSProperties = {
     display: inline ? 'inline-flex' : 'flex',
     flexDirection: direction,
     alignItems: align,
     justifyContent: justify,
+    ...style,
     gap
   }
-  return <div {..._p} style={style} />
+  return <div {..._p} style={_style} />
 }

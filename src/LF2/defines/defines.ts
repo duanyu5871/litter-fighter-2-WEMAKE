@@ -46,6 +46,7 @@ export namespace Defines {
    * @memberof World
    */
   export const DEFAULT_ITR_MOTIONLESS: number = 4;
+  export const DEFAULT_ITR_A_REST: number = 8;
   export const DEFAULT_CATCH_TIME: number = 680;
   export const DEFAULT_ITR_FALL: number = 40;
 
