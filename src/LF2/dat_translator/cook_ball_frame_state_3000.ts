@@ -12,6 +12,7 @@ import { edit_bdy_info } from "./edit_bdy_info";
 import { edit_itr_info } from "./edit_itr_info";
 import { AllyFlag } from "../defines/AllyFlag";
 import { ensure } from "../utils";
+import { ActionType } from "../defines/ActionType";
 
 export function cook_ball_frame_state_3000(e: IEntityData, frame: IFrameInfo) {
   const bdy_list = frame.bdy ? frame.bdy : (frame.bdy = []);
@@ -42,7 +43,7 @@ export function cook_ball_frame_state_3000(e: IEntityData, frame: IFrameInfo) {
           ItrEffect.MFire1
         ).done(),
       actions: [{
-        type: 'next_frame',
+        type: ActionType.NextFrame,
         data: {
           id: "20"
         }
@@ -97,7 +98,7 @@ export function cook_ball_frame_state_3000(e: IEntityData, frame: IFrameInfo) {
           )
           .done(),
         actions: [{
-          type: 'next_frame',
+          type: ActionType.NextFrame,
           data: {
             id: "30"
           }
@@ -113,7 +114,7 @@ export function cook_ball_frame_state_3000(e: IEntityData, frame: IFrameInfo) {
     switch (itr.kind) {
       case ItrKind.Normal:
         itr.actions = ensure(itr.actions, {
-          type: 'next_frame',
+          type: ActionType.NextFrame,
           data: { id: "10" }
         });
         break;

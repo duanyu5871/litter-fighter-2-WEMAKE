@@ -105,9 +105,6 @@ export interface IItrInfo extends IQube {
    */
   caughtact?: TNextFrame;
 
-  /** 命中后，自己跳转至什么帧 */
-  // hit_act?: TNextFrame;
-  // hit_sounds?: string[];
   actions?: TAction[];
 
   /**

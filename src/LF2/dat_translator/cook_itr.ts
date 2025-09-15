@@ -12,6 +12,7 @@ import { AllyFlag } from "../defines/AllyFlag";
 import { ensure, max } from "../utils";
 import { fixed_float } from "./fixed_float";
 import { take_positive_num } from "./take_positive_num";
+import { ActionType } from "../defines/ActionType";
 
 export function cook_itr(itr?: Partial<IItrInfo>) {
 
@@ -180,7 +181,7 @@ export function cook_itr(itr?: Partial<IItrInfo>) {
 
       if (src_dvx) {
         itr.actions = ensure(itr.actions, {
-          type: 'next_frame',
+          type: ActionType.NextFrame,
           data: get_next_frame_by_raw_id(src_dvx),
         })
       }

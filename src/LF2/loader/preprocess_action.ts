@@ -11,7 +11,7 @@ export function preprocess_action(lf2: LF2, action: TAction, jobs: Promise<void>
   ) : void 0
   switch (action.type) {
     case "sound":
-      for (const sound of action.path) {
+      for (const sound of action.data.path) {
         if (is_non_blank_str(sound) && !lf2.sounds.has(sound))
           jobs.push(lf2.sounds.load(sound, sound));
       }

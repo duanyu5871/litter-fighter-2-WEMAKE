@@ -1,4 +1,5 @@
 import { BuiltIn_OID, Defines, FacingFlag, ItrKind, OpointSpreading, StateEnum } from "../defines";
+import { ActionType } from "../defines/ActionType";
 import { AllyFlag } from "../defines/AllyFlag";
 import { CollisionVal as C_Val } from "../defines/CollisionVal";
 import { EntityEnum } from "../defines/EntityEnum";
@@ -99,7 +100,7 @@ export function make_ball_data(
           z: -12,
           actions: [
             {
-              type: "next_frame",
+              type: ActionType.NextFrame,
               data: {
                 id: "60"
               }
@@ -389,7 +390,7 @@ export function make_ball_data(
         if (itr.kind === ItrKind.JohnShield) {
           if (hit_d) {
             itr.actions = ensure(itr.actions, {
-              type: 'next_frame',
+              type: ActionType.NextFrame,
               test: new CondMaker<C_Val>()
                 .add(C_Val.VictimType, "==", EntityEnum.Fighter)
                 .done(),
@@ -404,7 +405,10 @@ export function make_ball_data(
           itr.kind !== ItrKind.Block &&
           itr.kind !== ItrKind.Heal
         ) {
-          itr.actions = ensure(itr.actions, { type: 'sound', path: [weapon_hit_sound] })
+          itr.actions = ensure(itr.actions, {
+            type: ActionType.Sound,
+            data: { path: [weapon_hit_sound] }
+          })
         }
       }
     }
@@ -430,8 +434,8 @@ export function make_ball_data(
         case ItrKind.WeaponSwing:
           if (ret.base.hit_sounds?.length)
             itr.actions = ensure(itr.actions, {
-              type: 'sound',
-              path: ret.base.hit_sounds
+              type: ActionType.Sound,
+              data: { path: ret.base.hit_sounds }
             })
           break;
 

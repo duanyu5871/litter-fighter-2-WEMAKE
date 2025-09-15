@@ -1,4 +1,5 @@
 import { FacingFlag, IEntityInfo, IFrameInfo, StateEnum, TNextFrame, WeaponType } from "../defines";
+import { ActionType } from "../defines/ActionType";
 import { BdyKind } from "../defines/BdyKind";
 import { EntityEnum } from "../defines/EntityEnum";
 import { EntityVal } from "../defines/EntityVal";
@@ -271,8 +272,8 @@ export function make_character_data(
         if (frame.bdy?.length)
           for (const bdy of frame.bdy) {
             bdy.actions = ensure(bdy.actions,
-              { type: 'broken_defend', data: { id: "112" } },
-              { type: 'defend', data: { id: "111" } }
+              { type: ActionType.BrokenDefend, data: { id: "112" } },
+              { type: ActionType.Defend, data: { id: "111" } }
             );
           }
         break;
@@ -569,7 +570,10 @@ export function make_character_data(
             bdy.kind = BdyKind.Defend;
             bdy.kind_name = BdyKind[bdy.kind];
             if (!bdy.actions?.find(v => v.type === 'broken_defend')) {
-              bdy.actions = ensure(bdy.actions, { type: 'broken_defend', data: { id: "112" } })
+              bdy.actions = ensure(bdy.actions, {
+                type: ActionType.BrokenDefend,
+                data: { id: "112" }
+              })
             }
           }
         break;
