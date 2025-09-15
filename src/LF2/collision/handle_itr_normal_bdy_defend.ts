@@ -11,6 +11,7 @@ export function handle_itr_normal_bdy_defend(collision: ICollision) {
   const { itr, attacker, victim, a_cube, b_cube, bdy } = collision;
   const { bdefend = Defines.DEFAULT_BREAK_DEFEND_VALUE } = itr;
   if (
+    // 爆炸类型的伤害不论方向都可防御。
     // 默认仅允许抵御来自前方的伤害
     (ItrEffect.FireExplosion !== itr.effect &&
       ItrEffect.Explosion !== itr.effect &&
@@ -21,16 +22,17 @@ export function handle_itr_normal_bdy_defend(collision: ICollision) {
   }
 
   victim.defend_value -= bdefend;
-  handle_injury(collision, 0.1);
+  handle_injury(collision, victim.defend_ratio);
   handle_rest(collision)
   handle_stiffness(collision)
   const [x, y, z] = victim.spark_point(a_cube, b_cube);
+
+  if (itr.dvx) victim.velocity_0.x = (itr.dvx * attacker.facing) / 2;
+  
   if (victim.defend_value <= 0) {
     // 破防
     victim.defend_value = 0;
     victim.world.spark(x, y, z, SparkEnum.BrokenDefend);
-
-
     itr.actions?.forEach((action) => {
       if (action.type === ActionType.A_Defend)
         collision_action_handlers.a_next_frame(action, collision);
@@ -44,7 +46,6 @@ export function handle_itr_normal_bdy_defend(collision: ICollision) {
         collision_action_handlers.v_next_frame(action, collision);
     })
   } else {
-    if (itr.dvx) victim.velocity_0.x = (itr.dvx * attacker.facing) / 2;
     victim.world.spark(x, y, z, SparkEnum.DefendHit);
     itr.actions?.forEach((action) => {
       if (action.type === ActionType.A_Defend)

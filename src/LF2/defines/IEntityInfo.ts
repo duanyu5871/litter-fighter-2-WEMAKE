@@ -250,4 +250,11 @@ export interface IEntityInfo {
    * @memberof IEntityInfo
    */
   bot?: IBotData;
+
+  /**
+   * 防御生效时，仍扣除多少比例的血
+   *
+   * @type {number}
+   */
+  defend_ratio?: number;
 }

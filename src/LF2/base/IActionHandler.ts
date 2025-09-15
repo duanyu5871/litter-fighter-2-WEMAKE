@@ -1,5 +1,5 @@
 import { ICollision } from ".";
-import { IAction_NextFrame, IAction_SetProp, IAction_Sound, TNextFrame } from "../defines";
+import { IAction_SetProp, IAction_Sound, TNextFrame } from "../defines";
 import { ActionType } from "../defines/ActionType";
 import { IAction_BrokenDefend } from "../defines/IAction_BrokenDefend";
 import { IAction_Defend } from "../defines/IAction_Defend";

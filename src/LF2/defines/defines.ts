@@ -459,6 +459,34 @@ export namespace Defines {
     return floor(Defines.MAX_AI_DESIRE * ratio)
   }
 
+  /**
+   * 防御生效时，仍扣除多少比例的血
+   *
+   * @type {number}
+   */
+  export const DEFAULT_DEFEND_INJURY_RATIO: number = 0.1
+
+  /**
+   * 盔甲生效时，仍扣除多少比例的血
+   *
+   * @type {number}
+   */
+  export const DEFAULT_ARMOR_INJURY_RATIO: number = 0.1
+
+  /**
+   * 盔甲生效时，攻击方停顿多少比例的时间
+   *
+   * @type {number}
+   */
+  export const DEFAULT_ARMOR_MOTIONLESS_RATIO: number = 1.5
+
+  /**
+   * 盔甲生效时，受伤方停顿多少比例的时间
+   *
+   * @type {number}
+   */
+  export const DEFAULT_ARMOR_SHAKING_RATIO: number = 3
+
 }
 
 export default Defines;

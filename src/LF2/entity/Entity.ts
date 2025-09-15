@@ -50,6 +50,8 @@ export class Entity implements IDebugging {
   protected _reserve = 0;
   protected _is_attach: boolean = false;
   protected _is_incorporeity: boolean = false;
+
+
   get group() { return this.data.base.group };
   get is_attach() { return this._is_attach }
   get is_incorporeity() { return this._is_incorporeity }
@@ -194,6 +196,17 @@ export class Entity implements IDebugging {
     if (o === v) return;
     this._healing = v;
     this._callbacks.emit("on_healing_changed")(this, v, o);
+  }
+
+
+  private _defend_ratio: number = Defines.DEFAULT_DEFEND_INJURY_RATIO;
+  get defend_ratio(): number {
+    return this._defend_ratio;
+  }
+  set defend_ratio(v: number) {
+    const o = this._defend_ratio;
+    if (o === v) return;
+    this._defend_ratio = v;
   }
 
 
@@ -635,6 +648,8 @@ export class Entity implements IDebugging {
     } else {
       this._mp_max = data.base.mp ?? Defines.DEFAULT_MP;
     }
+
+    this._defend_ratio = data.base.defend_ratio ?? Defines.DEFAULT_DEFEND_INJURY_RATIO;
 
     if (data.type === EntityEnum.Fighter) {
       this._mp_r_spd_min =
