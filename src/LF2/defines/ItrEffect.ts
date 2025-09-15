@@ -110,3 +110,25 @@ export enum ItrEffect {
    */
   Ice2 = 30,
 }
+
+
+export const itr_effect_name = (v: any) => ItrEffect[v] ?? `unknown_${v}`;
+export const itr_effect_full_name = (v: any) => `ItrEffect.${itr_effect_name(v)}`
+export const itr_effect_desc = (v: any) => ItrEffectDescriptions[v as ItrEffect] || itr_effect_full_name(v)
+export const ItrEffectDescriptions: Record<ItrEffect, string> = {
+  [ItrEffect.Normal]: "",
+  [ItrEffect.Sharp]: "",
+  [ItrEffect.Fire]: "",
+  [ItrEffect.Ice]: "",
+  [ItrEffect.Through]: "",
+  [ItrEffect.None]: "",
+  [ItrEffect.MFire1]: "",
+  [ItrEffect.MFire2]: "",
+  [ItrEffect.FireExplosion]: "",
+  [ItrEffect.Explosion]: "",
+  [ItrEffect.Ice2]: ""
+}
+const descs: any = ItrEffectDescriptions;
+for (const key in descs) {
+  descs[key] = descs[key] || itr_effect_full_name(key)
+}

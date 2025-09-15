@@ -10,7 +10,7 @@ import { IFrameInfo } from "../../LF2/defines";
 import { IEntityData } from "../../LF2/defines/IEntityData";
 import { map_arr } from "../../LF2/utils/array/map_arr";
 import { SPEED_MODE_SELECT_PROPS, STATE_SELECT_PROPS } from "../EntityEditorView";
-import { ItrEditorView } from "./ItrEditorView";
+import { ItrEditor } from "./ItrEditor";
 import { useEditor } from "./useEditor";
 import { useThrough } from "./useThrough";
 
@@ -126,7 +126,7 @@ export function FrameEditorView(props: IFrameEditorViewProps) {
             //   return next;
             // })
             return (
-              <ItrEditorView
+              <ItrEditor
                 key={name}
                 label={name}
                 value={itr}

@@ -29,11 +29,16 @@
   flex-wrap  : nowrap;
   align-items: stretch;
   overflow   : hidden !important;
-  
+
   &>.item {
     position: relative;
     display : flex;
     overflow: hidden;
+
+    &>*:only-child {
+      flex      : 1;
+      align-self: stretch;
+    }
 
     &>* {
       z-index      : 0;

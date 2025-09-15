@@ -46,3 +46,13 @@ export enum BdyKind {
    */
   Defend = 2000,
 }
+
+
+export const bdy_kind_name = (v: any) => BdyKind[v] ?? `unknown_${v}`;
+export const bdy_kind_full_name = (v: any) => `ItrKind.${bdy_kind_name(v)}`
+export const BdyKindDescriptions: Record<BdyKind, string> = {
+  [BdyKind.Normal]: "",
+  [BdyKind.GotoMin]: "",
+  [BdyKind.GotoMax]: "",
+  [BdyKind.Defend]: ""
+}

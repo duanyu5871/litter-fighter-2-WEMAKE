@@ -40,11 +40,11 @@ function direct_set_value(ele: HTMLInputElement | null, value: string | number |
   if (is_positive(precision) && value !== void 0) {
     value = '' + Number(Number(value).toFixed(precision))
   }
-
+  const next_value = value === void 0 ? '' : '' + value;
   if (set) {
-    set?.call(ele, '' + value);
+    set?.call(ele, next_value);
   } else {
-    ele.value = '' + value;
+    ele.value = next_value;
   }
   const ev = new InputEvent('input', { bubbles: true });
   (ev as any).simulated = true;

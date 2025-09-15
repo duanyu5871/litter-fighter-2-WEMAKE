@@ -161,9 +161,9 @@ export enum ItrKind {
 
   Freeze = 16,
 }
-export const ItrKindDescriptionMap: Record<ItrKind, string> = {
+export const ItrKindDescriptions: Record<ItrKind, string> = {
   [ItrKind.Normal]: "普通（可配合effect）",
-  [ItrKind.Catch]: "",
+  [ItrKind.Catch]: "抓起眩晕的角色",
   [ItrKind.Pick]: "",
   [ItrKind.ForceCatch]: "",
   [ItrKind.CharacterThrew]: "",
@@ -177,4 +177,11 @@ export const ItrKindDescriptionMap: Record<ItrKind, string> = {
   [ItrKind.Block]: "",
   [ItrKind.Whirlwind]: "",
   [ItrKind.Freeze]: ""
+}
+export const itr_kind_name = (v: any) => ItrKind[v] ?? `unknown_${v}`;
+export const itr_kind_full_name = (v: any) => `ItrKind.${itr_kind_name(v)}`
+
+const descs: any = ItrKindDescriptions;
+for (const key in descs) {
+  descs[key] = descs[key] || itr_kind_full_name(key)
 }

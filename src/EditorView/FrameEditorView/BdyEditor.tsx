@@ -21,9 +21,7 @@ export interface IBdyEditorViewProps {
 }
 const titled_styles: ITitledProps['styles'] = {
   label: {
-    display: 'inline-block',
-    width: 60,
-    textAlign: 'center'
+    width: 60
   }
 }
 const default_value: IBdyInfo = {
@@ -36,7 +34,7 @@ const default_value: IBdyInfo = {
   w: 0,
   h: 0
 }
-export function BdyEditorView(props: IBdyEditorViewProps) {
+export function BdyEditor(props: IBdyEditorViewProps) {
   const { label = 'bdy info', value, defaultValue = default_value, onRemove, onChange } = props;
   return (
     <Frame key={label} label={label} tabIndex={-1}>
@@ -60,10 +58,7 @@ export function BdyEditorView(props: IBdyEditorViewProps) {
           <QubeEdit
             value={value}
             defaultValue={defaultValue}
-            onChange={v => {
-              console.log('!', v)
-              onChange?.({ ...defaultValue, ...value, ...v })
-            }} />
+            onChange={v => onChange?.({ ...defaultValue, ...value, ...v })} />
         </Titled>
         <Titled label='条件' styles={titled_styles}>
           <TextArea
@@ -82,7 +77,7 @@ export default function BdyEditorTestView(props: {}) {
   return (
     <Flex direction='column' gap={10}>
       <TextArea style={{ resize: 'vertical', height: 500 }} readOnly value={JSON.stringify(value, null, 2)} />
-      <BdyEditorView value={value} onChange={set_value} />
+      <BdyEditor value={value} onChange={set_value} />
     </Flex>
   )
 };
