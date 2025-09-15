@@ -81,7 +81,6 @@ export class CollisionKeeper {
       const collision_desc =
         `[${collision.attacker.data.type}]#${ItrKind[collision.itr.kind]} => ` +
         `[${collision.victim.data.type}]#${BdyKind[collision.bdy.kind]}`;
-
       Ditto.debug(` collision: ${collision_desc} \nhandlers: ${handlers?.map(v => v.name) ?? 'none'}`)
     }
 
@@ -90,20 +89,15 @@ export class CollisionKeeper {
     const { itr, bdy, victim, attacker } = collision;
     victim.collided_list.push((victim.lastest_collided = collision));
     attacker.collision_list.push((attacker.lastest_collision = collision));
-    if (itr.actions?.length) {
-      for (const action of itr.actions) {
-        if (action.tester?.run(collision) === false)
-          continue;
-        itr_action_handlers[action.type](action, collision)
-      }
-    }
-    if (bdy.actions?.length) {
-      for (const action of bdy.actions) {
-        if (action.tester && !action.tester?.run(collision))
-          continue;
-        bdy_action_handlers[action.type](action, collision)
-      }
-    }
+
+    itr.actions?.forEach(action => {
+      if (action.tester?.run(collision) === false) return;
+      itr_action_handlers[action.type](action as any, collision)
+    })
+    bdy.actions?.forEach(action => {
+      if (action.tester?.run(collision) === false) return;
+      bdy_action_handlers[action.type](action as any, collision)
+    })
     if (
       itr.kind !== ItrKind.Block &&
       itr.kind !== ItrKind.Whirlwind &&
