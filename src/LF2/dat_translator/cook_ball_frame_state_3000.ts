@@ -105,6 +105,7 @@ export function cook_ball_frame_state_3000(e: IEntityData, frame: IFrameInfo) {
         }]
       }),
     );
+
   }
   bdy_list.push(...new_bdy);
 
@@ -118,6 +119,43 @@ export function cook_ball_frame_state_3000(e: IEntityData, frame: IFrameInfo) {
           data: { id: "10" }
         });
         break;
+      case ItrKind.Block:
+        bdy_list.length = 0;
+        bdy_list.push({
+          kind: 0,
+          ally_flags: AllyFlag.Both,
+          test: new CondMaker<C_Val>()
+            .not_in(
+              C_Val.ItrKind,
+              ItrKind.Block,
+              ItrKind.MagicFlute,
+              ItrKind.MagicFlute2,
+              ItrKind.Pick,
+              ItrKind.PickSecretly,
+            )
+            .and().not_in(
+              C_Val.ItrEffect,
+              ItrEffect.Ice2,
+              ItrEffect.MFire1
+            )
+            .done(),
+          z: itr.z,
+          l: itr.l,
+          x: itr.x,
+          y: itr.y,
+          w: itr.w,
+          h: itr.h,
+          actions: [{
+            type: ActionType.V_NextFrame,
+            data: {
+              id: "30"
+            }
+          }, {
+            type: ActionType.V_Sound,
+            data: { path: e.base.dead_sounds || [] }
+          }]
+        })
+        break
     }
   }
   itr_list.push(...new_itr);
