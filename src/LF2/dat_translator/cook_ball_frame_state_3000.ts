@@ -1,47 +1,52 @@
+import { BuiltIn_OID } from "../defines";
+import { ActionType } from "../defines/ActionType";
+import { AllyFlag } from "../defines/AllyFlag";
+import { CollisionVal as C_Val } from "../defines/CollisionVal";
+import { EntityEnum } from "../defines/EntityEnum";
 import { IBdyInfo } from "../defines/IBdyInfo";
+import { IEntityData } from "../defines/IEntityData";
 import { IFrameInfo } from "../defines/IFrameInfo";
 import { IItrInfo } from "../defines/IItrInfo";
 import { ItrEffect } from "../defines/ItrEffect";
 import { ItrKind } from "../defines/ItrKind";
-import { IEntityData } from "../defines/IEntityData";
-import { CollisionVal as C_Val } from "../defines/CollisionVal";
-import { EntityEnum } from "../defines/EntityEnum";
+import { ensure } from "../utils";
 import { CondMaker } from "./CondMaker";
 import { copy_bdy_info } from "./copy_bdy_info";
 import { edit_bdy_info } from "./edit_bdy_info";
-import { edit_itr_info } from "./edit_itr_info";
-import { AllyFlag } from "../defines/AllyFlag";
-import { ensure } from "../utils";
-import { ActionType } from "../defines/ActionType";
 
 export function cook_ball_frame_state_3000(e: IEntityData, frame: IFrameInfo) {
   const bdy_list = frame.bdy ? frame.bdy : (frame.bdy = []);
   const new_bdy: IBdyInfo[] = [];
   for (const bdy of bdy_list) {
+
+    const cond = new CondMaker<C_Val>()
+      .add(C_Val.ItrKind, "!=", ItrKind.JohnShield)
+      .and(C_Val.ItrKind, "!=", ItrKind.Block)
+      .and((c) => c
+        .add(C_Val.AttackerType, "==", EntityEnum.Ball).or((c) => c
+          /** 被武器s击中 */
+          .add(C_Val.AttackerType, "==", EntityEnum.Weapon)
+          .and(C_Val.ItrKind, "!=", ItrKind.WeaponSwing),
+        ),
+      ).and().not_in(
+        C_Val.ItrKind,
+        ItrKind.Block,
+        ItrKind.MagicFlute,
+        ItrKind.MagicFlute2,
+        ItrKind.Pick,
+        ItrKind.PickSecretly,
+      )
+      .and().not_in(
+        C_Val.ItrEffect,
+        ItrEffect.Ice2,
+        ItrEffect.MFire1
+      )
+    if (e.id === BuiltIn_OID.FreezeBall) 
+      cond.and(C_Val.AttackerIsFreezableBall, '!=', 1)
+    
     edit_bdy_info(bdy, {
       /* 受攻击判定 */
-      test: new CondMaker<C_Val>()
-        .add(C_Val.ItrKind, "!=", ItrKind.JohnShield)
-        .and(C_Val.ItrKind, "!=", ItrKind.Block)
-        .and((c) => c
-          .add(C_Val.AttackerType, "==", EntityEnum.Ball).or((c) => c
-            /** 被武器s击中 */
-            .add(C_Val.AttackerType, "==", EntityEnum.Weapon)
-            .and(C_Val.ItrKind, "!=", ItrKind.WeaponSwing),
-          ),
-        ).and().not_in(
-          C_Val.ItrKind,
-          ItrKind.Block,
-          ItrKind.MagicFlute,
-          ItrKind.MagicFlute2,
-          ItrKind.Pick,
-          ItrKind.PickSecretly,
-        )
-        .and().not_in(
-          C_Val.ItrEffect,
-          ItrEffect.Ice2,
-          ItrEffect.MFire1
-        ).done(),
+      test: cond.done(),
       actions: [{
         type: ActionType.V_NextFrame,
         data: {

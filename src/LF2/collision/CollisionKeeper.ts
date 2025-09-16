@@ -1,8 +1,10 @@
 import { ICollision, ICollisionHandler } from "../base";
-import { ALL_ENTITY_ENUM, BdyKind, EntityEnum, ItrKind, TEntityEnum } from "../defines";
+import { ALL_ENTITY_ENUM, BdyKind, Builtin_FrameId, BuiltIn_OID, EntityEnum, EntityGroup, ItrKind, TEntityEnum } from "../defines";
 import { Ditto } from "../ditto";
+import { Factory, turn_face } from "../entity";
 import { collision_action_handlers } from "../entity/collision_action_handlers";
 import { arithmetic_progression } from "../utils";
+import { handle_ball_frozen } from "./handle_ball_frozen";
 import { handle_ball_hit_other } from "./handle_ball_hit_other";
 import { handle_ball_is_hit } from "./handle_ball_is_hit";
 import { handle_body_goto } from "./handle_body_goto";
@@ -83,20 +85,41 @@ export class CollisionKeeper {
       Ditto.debug(` collision: ${collision_desc} \nhandlers: ${handlers?.map(v => v.name) ?? 'none'}`)
     }
 
-    handlers?.forEach(fn => fn(collision))
+    let ball_hit = false
+    handlers?.forEach(fn => {
+      ball_hit = ball_hit || fn === handle_ball_is_hit;
+      return fn(collision)
+    })
 
     const { itr, bdy, victim, attacker } = collision;
+    if (
+      attacker.group?.some(v => v === EntityGroup.FreezableBall) &&
+      attacker.data.id === BuiltIn_OID.FreezeBall
+    ) {
+      handle_ball_frozen(victim, attacker);
+    } else if (
+      (
+        (attacker.data.id === BuiltIn_OID.Freeze) ||
+        (attacker.data.id === BuiltIn_OID.FreezeBall) ||
+        (attacker.data.id === BuiltIn_OID.Weapon_IceSword && attacker.holder)
+      ) && (
+        victim.group?.some(v => v === EntityGroup.FreezableBall)
+      )
+    ) {
+      handle_ball_frozen(attacker, victim);
+    } else {
+      itr.actions?.forEach(action => {
+        if (action.tester?.run(collision) === false) return;
+        collision_action_handlers[action.type](action as any, collision)
+      })
+      bdy.actions?.forEach(action => {
+        if (action.tester?.run(collision) === false) return;
+        collision_action_handlers[action.type](action as any, collision)
+      })
+    }
+
     victim.collided_list.push((victim.lastest_collided = collision));
     attacker.collision_list.push((attacker.lastest_collision = collision));
-
-    itr.actions?.forEach(action => {
-      if (action.tester?.run(collision) === false) return;
-      collision_action_handlers[action.type](action as any, collision)
-    })
-    bdy.actions?.forEach(action => {
-      if (action.tester?.run(collision) === false) return;
-      collision_action_handlers[action.type](action as any, collision)
-    })
     if (
       itr.kind !== ItrKind.Block &&
       itr.kind !== ItrKind.Whirlwind &&

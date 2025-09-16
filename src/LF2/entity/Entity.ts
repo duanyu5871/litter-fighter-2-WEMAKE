@@ -888,20 +888,7 @@ export class Entity implements IDebugging {
   }
 
   apply_opoints(opoints: IOpointInfo[]) {
-    const frozen = is_ball(this) &&
-      this.frame.state === StateEnum.Ball_Rebounding &&
-      this.data.base.group?.some(v => v === EntityGroup.FreezableBall) &&
-      (
-        this.lastest_collided?.attacker.data.id === BuiltIn_OID.Freeze || (
-          this.lastest_collided?.attacker.data.id === BuiltIn_OID.Weapon_IceSword &&
-          this.lastest_collided?.aframe.state === StateEnum.Weapon_OnHand
-        )
-      )
-
-
     for (let opoint of opoints) {
-      if (frozen) opoint = { ...opoint, oid: BuiltIn_OID.FreezeBall }
-
       const { interval = 0, interval_id, interval_mode } = opoint;
       const interval_info = this._opoints.find(v => v[0].interval_id === interval_id)
       if (interval_info && interval_mode === 1) {
