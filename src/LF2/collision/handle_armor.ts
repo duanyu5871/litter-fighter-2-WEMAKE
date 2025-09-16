@@ -28,7 +28,6 @@ export function handle_armor(collision: ICollision): boolean {
     bframe.state === StateEnum.Frozen ||
     bframe.state === StateEnum.Lying ||
     bframe.state === StateEnum.Tired ||
-    bframe.state === StateEnum.Defend ||
     bframe.state === StateEnum.BrokenDefend ||
     bframe.state === StateEnum.Burning
   ) {
