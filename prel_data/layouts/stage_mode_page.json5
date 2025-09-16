@@ -27,9 +27,19 @@
       component: ["StageTitleShow()"],
     },
     {
-      pos: "397,0",
+      pos: "397,10",
       center: "0.5,0",
       component: ["StageTitleText()"],
+    },
+    {
+      pos: "0,10",
+      center: "0,0",
+      component: ["TeamSituationText(1)"],
+    },
+    {
+      pos: "794,10",
+      center: "1,0",
+      component: ["TeamSituationText()"],
     },
     {
       "pos": "794,450",

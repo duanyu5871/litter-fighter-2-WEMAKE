@@ -1,5 +1,6 @@
 import { Entity, IEntityCallbacks, is_character } from "../../entity";
 import { IWorldCallbacks } from "../../IWorldCallbacks";
+import { max } from "../../utils";
 import { IFighterSumInfo, IPlayerSumInfo } from "./IFighterSumInfo";
 import { ITeamSumInfo } from "./ITeamSumInfo";
 import { make_fighter_sum } from "./make_fighter_sum";
@@ -14,8 +15,7 @@ export class SummaryLogic extends UIComponent {
   readonly teams = new Map<string, ITeamSumInfo>();
   readonly losing_teams = new Set<ITeamSumInfo>();
 
-  team_sum(entity: Entity): ITeamSumInfo {
-    const { team } = entity;
+  team_sum(team: string): ITeamSumInfo {
     let ret = this.teams.get(team)
     if (!ret) this.teams.set(team, ret = make_team_sum_info(team))
     return ret;
@@ -38,27 +38,28 @@ export class SummaryLogic extends UIComponent {
     on_damage_sum_changed: (e, value, prev) => {
       // 母体还在，避免重算
       if (e.emitter?.is_attach === true) return;
-      this.team_sum(e).damages += value - prev;
+      this.team_sum(e.team).damages += value - prev;
       this.fighter_sum(e).damages += value - prev;
       this.player_sum(e).damages += value - prev;
     },
     on_kill_sum_changed: (e, value, prev) => {
       // 母体还在，避免重算
       if (e.emitter?.is_attach === true) return;
-      this.team_sum(e).kills += value - prev;
+      this.team_sum(e.team).kills += value - prev;
       this.fighter_sum(e).kills += value - prev;
       this.player_sum(e).kills += value - prev;
     },
     on_picking_sum_changed: (e, value, prev) => {
-      this.team_sum(e).pickings += value - prev;
+      this.team_sum(e.team).pickings += value - prev;
       this.fighter_sum(e).pickings += value - prev;
       this.player_sum(e).pickings += value - prev;
     },
     on_dead: (e) => {
       // 分身死亡不计算
       if (e.emitter) return;
-      const team_sum = this.team_sum(e);
+      const team_sum = this.team_sum(e.team);
       team_sum.deads++;
+      team_sum.lives--;
       team_sum.latest_dead_time = this.node.update_times;
       if (team_sum.deads === team_sum.spawns)
         this.losing_teams.add(team_sum)
@@ -66,23 +67,29 @@ export class SummaryLogic extends UIComponent {
       this.player_sum(e).deads++;
     },
     on_hp_changed: (e, value, prev) => {
-      this.team_sum(e).hp += value - prev;
+      const team_sum = this.team_sum(e.team);
+      if (prev <= 0 && value > 0) {
+        team_sum.deads--;
+        team_sum.lives++;
+      }
+      team_sum.hp += max(value, 0) - prev;
     },
     on_reserve_changed: (e, value, prev) => {
-      this.team_sum(e).reserve += value - prev;
+      this.team_sum(e.team).reserve += value - prev;
     },
   };
   on_fighter_add(e: Entity) {
-    e.callbacks.add(this._fighter_cb);
+    const team_sum = this.team_sum(e.team)
+    team_sum.hp += e.hp;
+    team_sum.reserve += e.reserve;
+    team_sum.lives++
     if (!e.emitter) { // 忽略分身计数
-      const team_sum = this.team_sum(e);
       team_sum.spawns++;
       this.losing_teams.delete(team_sum);
       this.fighter_sum(e).spawns++;
       this.player_sum(e).spawns++;
     }
-    this.team_sum(e).hp += e.hp;
-    this.team_sum(e).reserve += e.reserve;
+    e.callbacks.add(this._fighter_cb);
   }
   on_fighter_del(e: Entity) {
     e.callbacks.del(this._fighter_cb);

@@ -434,6 +434,7 @@ export class Entity implements IDebugging {
   }
   set mp(v: number) {
     const o = this._mp;
+    v = max(0, v)
     if (o === v) return;
     this._callbacks.emit("on_mp_changed")(this, (this._mp = v), o);
     if (o > 0 && v <= 0) {
@@ -447,6 +448,7 @@ export class Entity implements IDebugging {
   }
   set hp_r(v: number) {
     const o = this._hp_r;
+    v = max(0, v)
     if (o === v) return;
     this._callbacks.emit("on_hp_r_changed")(this, (this._hp_r = v), o);
   }
@@ -456,6 +458,7 @@ export class Entity implements IDebugging {
   }
   set hp(v: number) {
     const o = this._hp;
+    v = max(0, v)
     if (o === v) return;
     this._callbacks.emit("on_hp_changed")(this, (this._hp = v), o);
     this.update_mp_r_spd();
@@ -489,6 +492,7 @@ export class Entity implements IDebugging {
   }
   set mp_max(v: number) {
     const o = this._mp_max;
+    v = max(0, v)
     this._callbacks.emit("on_mp_max_changed")(this, (this._mp_max = v), o);
   }
 
@@ -497,6 +501,7 @@ export class Entity implements IDebugging {
   }
   set hp_max(v: number) {
     const o = this._hp_max;
+    v = max(0, v)
     this._callbacks.emit("on_hp_max_changed")(this, (this._hp_max = v), o);
     this.update_mp_r_spd();
   }

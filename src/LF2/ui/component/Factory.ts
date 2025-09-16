@@ -54,6 +54,7 @@ import { SummaryLogic } from "./SummaryLogic";
 import { UIComponent } from "./UIComponent";
 import { VerticalLayout } from "./VerticalLayout";
 import { VsModeLogic } from "./VsModeLogic";
+import { TeamSituationText } from "./TeamSituationText";
 class ComponentFactory {
   static readonly TAG = `ComponentFactory`;
   private _component_map = new Map<string, typeof UIComponent<IUICompnentCallbacks>>([
@@ -105,7 +106,8 @@ class ComponentFactory {
     [CameraCtrl.TAG, CameraCtrl],
     [SummaryLogic.TAG, SummaryLogic],
     [EndingPageLogic.TAG, EndingPageLogic],
-    [PrefixAndDifficultyText.TAG, PrefixAndDifficultyText]
+    [PrefixAndDifficultyText.TAG, PrefixAndDifficultyText],
+    [TeamSituationText.TAG, TeamSituationText]
   ]);
 
   register(key: string, Cls: typeof UIComponent) {
