@@ -457,7 +457,7 @@ function App() {
       <GamePad player_id={touch_pad_on} lf2={lf2} />
       <Loading loading={!layout_id} big className={styles.loading_img} />
       <div className={styles.debug_pannel}>
-        <Show show={lf2?.is_cheat_enabled(CheatType.GIM_INK) || true}>
+        <Show show={lf2?.is_cheat_enabled(CheatType.GIM_INK)}>
           <ToggleImgButton
             checked={control_panel_visible}
             onClick={() => set_control_panel_visible((v) => !v)}

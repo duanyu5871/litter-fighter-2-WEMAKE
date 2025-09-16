@@ -1,3 +1,4 @@
+import { Difficulty } from "../../defines";
 import { IUIPointerEvent } from "../IUIPointerEvent";
 import { UINode } from "../UINode";
 import { IJalousieCallbacks, Jalousie } from "./Jalousie";
@@ -16,13 +17,18 @@ export class EndingPageLogic extends UIComponent {
     this.jalousie?.callbacks.add(this.jalousie_cbs)
     this.txt_node = this.node.search_child('txt_b')
   }
+  override on_resume(): void {
+    super.on_resume()
+    this.lf2.sounds.stop_bgm()
+    if (this.jalousie?.anim.done) this.jalousie.open = !this.jalousie.open
+  }
   override on_stop(): void {
     super.on_stop?.();
     this.jalousie?.callbacks.del(this.jalousie_cbs)
   }
 
   override on_click(e: IUIPointerEvent): void {
-    if (this.jalousie) this.jalousie.open = !this.jalousie.open
+    if (this.jalousie?.anim.done) this.jalousie.open = !this.jalousie.open
   }
   on_jalousie_anim_end(j: Jalousie): void {
     if (j.open) return;
@@ -30,8 +36,20 @@ export class EndingPageLogic extends UIComponent {
     if (this.txt_node) {
       const i = this.txt_node.txt_idx.value++
       const l = this.txt_node.txts.value.length;
-      if (i < l - 1) this.txt_node.txt_idx.value = i + 1;
-      else this.lf2.pop_ui(false, (_, i) => i === 0)
+      if (i < l - 1) {
+        if (i === 0 && this.lf2.difficulty >= Difficulty.Difficult) {
+          this.txt_node.txt_idx.value = i + 2
+        } else {
+          this.txt_node.txt_idx.value = i + 1
+        }
+      } else {
+        if (this.lf2.ui_stacks.length > 1) {
+          this.lf2.pop_ui(true, (_, i) => i === 0)
+        } else {
+          this.lf2.set_ui("main_page")
+          this.lf2.sounds.play_bgm("bgm/main.wma.mp3")
+        }
+      }
     }
     j.open = true;
   }

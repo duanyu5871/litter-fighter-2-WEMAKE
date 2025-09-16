@@ -24,6 +24,14 @@
       id: "txt_b",
       txt: [
         {
+          i18n: "   ",
+          style: "$val:txt_style",
+        },
+        {
+          i18n: "old_ending_0_0",
+          style: "$val:txt_style",
+        },
+        {
           i18n: "old_ending_0_1",
           style: "$val:txt_style",
         },
