@@ -26,8 +26,10 @@ export class EndingPageLogic extends UIComponent {
     super.on_stop?.();
     this.jalousie?.callbacks.del(this.jalousie_cbs)
   }
-
   override on_click(e: IUIPointerEvent): void {
+    if (this.jalousie?.anim.done) this.jalousie.open = !this.jalousie.open
+  }
+  override on_key_down(e: IUIPointerEvent): void {
     if (this.jalousie?.anim.done) this.jalousie.open = !this.jalousie.open
   }
   on_jalousie_anim_end(j: Jalousie): void {

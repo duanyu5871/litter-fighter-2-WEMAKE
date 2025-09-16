@@ -32,6 +32,13 @@
       component: ["StageTitleText()"],
     },
     {
+      "pos": "794,450",
+      "center": "1,1",
+      "component": [
+        "PrefixAndDifficultyText(Stage mode)"
+      ]
+    },
+    {
       id: "go",
       img: {
         path: "!sprite/MENU_CLIP3.png",

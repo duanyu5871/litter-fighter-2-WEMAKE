@@ -30,7 +30,7 @@ export class __Modern extends BaseSounds {
   >();
   protected _muted: boolean = false;
   protected _volume: number = 0.3;
-  protected _bgm_volume: number = 1;
+  protected _bgm_volume: number = 0.5;
   protected _sound_volume: number = 1;
   protected _bgm_muted: boolean = false;
   protected _sound_muted: boolean = false;

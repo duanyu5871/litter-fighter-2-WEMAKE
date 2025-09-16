@@ -1135,14 +1135,14 @@ export class Entity implements IDebugging {
 
     const { UD, LR, jd } = this._ctrl;
 
-    if (!ctrl_x && dvx) vx = calc_v(vx, dvx * this.world.fvx_f, vxm, acc_x, this.facing);
-    else if (LR && dvx) vx = calc_v(vx, dvx * this.world.fvx_f, vxm, acc_x, LR);
+    if (!ctrl_x && dvx != void 0) vx = calc_v(vx, dvx * this.world.fvx_f, vxm, acc_x, this.facing);
+    else if (LR && dvx != void 0) vx = calc_v(vx, dvx * this.world.fvx_f, vxm, acc_x, LR);
 
-    if (!ctrl_y && dvy) vy = calc_v(vy, dvy * this.world.fvy_f, vym, acc_y, 1);
-    else if (jd && dvy) vy = calc_v(vy, dvy * this.world.fvy_f, vym, acc_y, jd);
+    if (!ctrl_y && dvy != void 0) vy = calc_v(vy, dvy * this.world.fvy_f, vym, acc_y, 1);
+    else if (jd && dvy != void 0) vy = calc_v(vy, dvy * this.world.fvy_f, vym, acc_y, jd);
 
-    if (!ctrl_z && dvz) vz = calc_v(vz, dvz * this.world.fvz_f, vzm, acc_z, 1);
-    else if (UD && dvz) vz = calc_v(vz, dvz * this.world.fvz_f, vzm, acc_z, UD);
+    if (!ctrl_z && dvz != void 0) vz = calc_v(vz, dvz * this.world.fvz_f, vzm, acc_z, 1);
+    else if (UD && dvz != void 0) vz = calc_v(vz, dvz * this.world.fvz_f, vzm, acc_z, UD);
 
     this.velocity_0.x = vx;
     this.velocity_0.y = vy;

@@ -1,0 +1,57 @@
+{
+  "name": "页面：对战模式",
+  "id": "vs_mode_page",
+  "component": [
+    "vs_mode_logic()"
+  ],
+  "key_press_actions": [
+    [
+      "escape",
+      "set_layout(entry)"
+    ]
+  ],
+  "items": [
+    {
+      "pos": "0,0,5",
+      "visible": false,
+      "template": "layouts/player_keys_hints.json"
+    },
+    "layouts/center_pause_label.json",
+    {
+      "pos": "397,0",
+      "center": "0.5,0",
+      "component": [
+        "StageTitleText()"
+      ]
+    },
+    {
+      "pos": "794,450",
+      "center": "1,1",
+      "component": [
+        "PrefixAndDifficultyText(VS mode)"
+      ]
+    },
+    {
+      "id": "left_info_frame_1",
+      "visible": false,
+      "pos": "0,0",
+      "template": "layouts/left_info_frame.json"
+    },
+    {
+      "id": "left_info_frame_5",
+      "visible": false,
+      "pos": "0,45",
+      "template": "layouts/left_info_frame.json"
+    },
+    {
+      "template": "layouts/score_board.json",
+      "visible": false
+    }
+  ],
+  "actions": {
+    "stop": [
+      "remove_all_entities()",
+      "destory_stage()"
+    ]
+  }
+}

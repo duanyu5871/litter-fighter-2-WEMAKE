@@ -22,6 +22,6 @@
   'layouts/score_board.json',
   'layouts/stage_mode_page.json5',
   'layouts/stage_mode_prepare_page.json',
-  'layouts/vs_mode_page.json',
+  'layouts/vs_mode_page.json5',
   'layouts/vs_mode_prepare_page.json',
 ]

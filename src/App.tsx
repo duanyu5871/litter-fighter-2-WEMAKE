@@ -89,12 +89,9 @@ function App() {
   const [muted, _set_muted] = useLocalBoolean("total_muted", false);
   const [bgm_muted, _set_bgm_muted] = useLocalBoolean("bgm_muted", false);
   const [sound_muted, _set_sound_muted] = useLocalBoolean("sound_muted", false);
-  const [volume, _set_volume] = useLocalNumber<number>("total_volume", 1);
-  const [bgm_volume, _set_bgm_volume] = useLocalNumber<number>("bgm_volume", 1);
-  const [sound_volume, _set_sound_volume] = useLocalNumber<number>(
-    "sound_volume",
-    1,
-  );
+  const [volume, _set_volume] = useLocalNumber<number>("total_volume", 0.3);
+  const [bgm_volume, _set_bgm_volume] = useLocalNumber<number>("bgm_volume", 0.5);
+  const [sound_volume, _set_sound_volume] = useLocalNumber<number>("sound_volume",1,);
   const [render_size_mode, set_render_size_mode] = useLocalString<
     "fixed" | "fill" | "cover" | "contain"
   >("render_size_mode", "contain");

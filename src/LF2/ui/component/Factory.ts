@@ -18,6 +18,7 @@ import FighterName from "./FighterName";
 import { FitChildren } from "./FitChildren";
 import { Flex } from "./Flex";
 import { FlexItem } from "./FlexItem";
+import { PrefixAndDifficultyText } from "./PrefixAndDifficultyText";
 import GamePrepareLogic from "./GamePrepareLogic";
 import { HorizontalLayout } from "./HorizontalLayout";
 import { IUICompnentCallbacks } from "./IUICompnentCallbacks";
@@ -103,7 +104,8 @@ class ComponentFactory {
     [DanmuGameLogic.TAG, DanmuGameLogic],
     [CameraCtrl.TAG, CameraCtrl],
     [SummaryLogic.TAG, SummaryLogic],
-    [EndingPageLogic.TAG, EndingPageLogic]
+    [EndingPageLogic.TAG, EndingPageLogic],
+    [PrefixAndDifficultyText.TAG, PrefixAndDifficultyText]
   ]);
 
   register(key: string, Cls: typeof UIComponent) {
