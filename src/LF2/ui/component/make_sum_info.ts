@@ -11,3 +11,4 @@ export const make_sum_info = (team: string): ISumInfo => ({
   team,
   latest_dead_time: -1,
 });
+

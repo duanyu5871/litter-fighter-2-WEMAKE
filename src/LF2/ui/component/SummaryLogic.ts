@@ -1,23 +1,23 @@
-import { Entity, IEntityCallbacks } from "../../entity";
+import { Entity, IEntityCallbacks, is_character } from "../../entity";
 import { IWorldCallbacks } from "../../IWorldCallbacks";
 import { IFighterSumInfo, IPlayerSumInfo } from "./IFighterSumInfo";
-import { ISumInfo } from "./ISumInfo";
+import { ITeamSumInfo } from "./ITeamSumInfo";
 import { make_fighter_sum } from "./make_fighter_sum";
 import { make_player_sum } from "./make_player_sum";
-import { make_sum_info } from "./make_sum_info";
+import { make_team_sum_info } from "./make_team_sum_info";
 import { UIComponent } from "./UIComponent";
 
 export class SummaryLogic extends UIComponent {
   static override readonly TAG: string = 'SummaryLogic';
   readonly fighters = new Map<string, IFighterSumInfo>();
   readonly players = new Map<string, IPlayerSumInfo>();
-  readonly teams = new Map<string, ISumInfo>();
-  readonly losing_teams = new Set<ISumInfo>();
+  readonly teams = new Map<string, ITeamSumInfo>();
+  readonly losing_teams = new Set<ITeamSumInfo>();
 
-  team_sum(entity: Entity): ISumInfo {
+  team_sum(entity: Entity): ITeamSumInfo {
     const { team } = entity;
     let ret = this.teams.get(team)
-    if (!ret) this.teams.set(team, ret = make_sum_info(team))
+    if (!ret) this.teams.set(team, ret = make_team_sum_info(team))
     return ret;
   }
   fighter_sum(entity: Entity): IFighterSumInfo {
@@ -64,7 +64,13 @@ export class SummaryLogic extends UIComponent {
         this.losing_teams.add(team_sum)
       this.fighter_sum(e).deads++;
       this.player_sum(e).deads++;
-    }
+    },
+    on_hp_changed: (e, value, prev) => {
+      this.team_sum(e).hp += value - prev;
+    },
+    on_reserve_changed: (e, value, prev) => {
+      this.team_sum(e).reserve += value - prev;
+    },
   };
   on_fighter_add(e: Entity) {
     e.callbacks.add(this._fighter_cb);
@@ -75,12 +81,19 @@ export class SummaryLogic extends UIComponent {
       this.fighter_sum(e).spawns++;
       this.player_sum(e).spawns++;
     }
+    this.team_sum(e).hp += e.hp;
+    this.team_sum(e).reserve += e.reserve;
   }
   on_fighter_del(e: Entity) {
     e.callbacks.del(this._fighter_cb);
   }
   override on_start(): void {
     super.on_start?.();
+    for (const e of this.world.entities) {
+      if (is_character(e)) {
+        this.on_fighter_add(e)
+      }
+    }
     this.world.callbacks.add(this._world_cb);
   }
   override on_stop(): void {
@@ -88,7 +101,7 @@ export class SummaryLogic extends UIComponent {
     this.world.callbacks.del(this._world_cb);
   }
 
-  private _temps: ISumInfo[] = []
+  private _temps: ITeamSumInfo[] = []
   override update(dt: number): void {
     super.update?.(dt);
 

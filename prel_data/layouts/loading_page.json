@@ -46,7 +46,8 @@
       "txt": {
         "i18n": "",
         "style": {
-          "font": "16px Arial"
+          "font": "16px Arial",
+          "disposable": true
         }
       }
     },

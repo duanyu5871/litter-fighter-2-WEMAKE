@@ -29,6 +29,7 @@ export class PrefixAndDifficultyText extends UIComponent implements ILf2Callback
         fill_style: "white",
         font: "12px Arial",
         line_width: 1,
+        disposable: true
       }
     }).then(v => {
       this.node.txts.value = v;

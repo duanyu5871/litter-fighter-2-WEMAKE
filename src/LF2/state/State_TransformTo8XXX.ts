@@ -1,5 +1,6 @@
 import { new_team } from "../base";
-import { Builtin_FrameId } from "../defines";
+import { Builtin_FrameId, EntityEnum } from "../defines";
+import { is_character } from "../entity";
 import type { Entity } from "../entity/Entity";
 import { Factory } from "../entity/Factory";
 import { round } from "../utils/math/base";
@@ -9,6 +10,7 @@ export default class State_TransformTo8XXX extends State_Base {
     if (typeof this.state !== "number") return;
     const oid = "" + (this.state - 8000);
     const data = e.lf2.datas.find(oid);
+    const old_type = e.data.type
     if (data) {
       e.data = data;
       e.team = e.lastest_collided?.attacker.team || new_team();
@@ -21,5 +23,9 @@ export default class State_TransformTo8XXX extends State_Base {
       e.variant = 1;
     }
     e.enter_frame({ id: Builtin_FrameId.Auto });
+    const new_type = e.data.type
+    if (old_type !== new_type && new_type === EntityEnum.Fighter) {
+      e.world.callbacks.emit("on_fighter_add")(e) // so stupid
+    }
   }
 }

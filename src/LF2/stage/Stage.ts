@@ -3,7 +3,7 @@ import Callbacks from "../base/Callbacks";
 import FSM from "../base/FSM";
 import { new_team } from "../base/new_id";
 import Background from "../bg/Background";
-import { Defines, IBgData, IStageInfo, IStageObjectInfo, IStagePhaseInfo } from "../defines";
+import { Defines, EntityEnum, IBgData, IStageInfo, IStageObjectInfo, IStagePhaseInfo } from "../defines";
 import { Ditto } from "../ditto";
 import { Entity } from "../entity/Entity";
 import { is_character, is_weapon } from "../entity/type_check";
@@ -180,13 +180,16 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
 
   readonly items = new Set<Item>();
   async spawn_object(obj_info: IStageObjectInfo) {
+
     let count = 0;
+
     for (const [, c] of this.world.slot_fighters)
       count += c.data.base.ce ?? 1;
     if (!count) count = 1;
 
-    const { ratio = 1, times = 1, is_boss } = obj_info;
-    let spawn_count = is_boss ? 1 : floor(count * ratio);
+    const { ratio, times = 1 } = obj_info;
+
+    let spawn_count = ratio === void 0 ? 1 : floor(count * ratio);
     if (spawn_count <= 0 || !times) return;
 
     while (spawn_count > 0) {

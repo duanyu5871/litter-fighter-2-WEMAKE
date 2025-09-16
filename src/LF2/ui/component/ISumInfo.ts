@@ -9,3 +9,4 @@ export interface ISumInfo {
   team: string;
   latest_dead_time: number;
 }
+
