@@ -775,16 +775,6 @@ export function make_character_data(
     indexes,
     frames,
   };
-  if (ret.frames[215]) {
-    ret.frames[215].friction_x = Defines.LAND_FRICTION_X;
-    ret.frames[215].friction_z = Defines.LAND_FRICTION_Z;
-    ret.frames[215].friction_factor = Defines.LAND_FRICTION_FACTOR;
-  }
-  if (ret.frames[219]) {
-    ret.frames[219].friction_x = Defines.LAND_FRICTION_X;
-    ret.frames[219].friction_z = Defines.LAND_FRICTION_Z;
-    ret.frames[219].friction_factor = Defines.LAND_FRICTION_FACTOR;
-  }
   cook_transform_begin_expression_to_hit(ret.frames);
   cook_file_variants(ret);
   return ret;

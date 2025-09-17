@@ -98,21 +98,7 @@ export function make_frame_state(frame: IFrameInfo) {
       })
       break;
     }
-    case StateEnum.Weapon_OnGround: {
-      frame.friction_x = Defines.LAND_FRICTION_X;
-      frame.friction_z = Defines.LAND_FRICTION_Z;
-      frame.friction_factor = Defines.LAND_FRICTION_FACTOR;
-      break;
-    }
-    case StateEnum.Lying:
-      frame.friction_x = Defines.LAND_FRICTION_X;
-      frame.friction_z = Defines.LAND_FRICTION_Z;
-      frame.friction_factor = Defines.LAND_FRICTION_FACTOR;
-      break;
     case StateEnum.Frozen:
-      frame.friction_x = Defines.LAND_FRICTION_X;
-      frame.friction_z = Defines.LAND_FRICTION_Z;
-      frame.friction_factor = Defines.LAND_FRICTION_FACTOR;
       foreach(frame.bdy, bdy => bdy.ally_flags = AllyFlag.Both)
       break;
   }

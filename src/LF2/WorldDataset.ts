@@ -156,6 +156,22 @@ export class WorldDataset implements IWorldDataset {
    * @memberof WorldDataset
    */
   friction_z: number = Defines.FRICTION_Z;
+
+  /**
+   * 地面摩擦X 在地面的物体，每帧X速度将±=此值,向0靠近
+   *
+   * @type {number}
+   * @memberof WorldDataset
+   */
+  land_friction_x: number = Defines.LAND_FRICTION_X;
+  /**
+   * 地面摩擦Z 在地面的物体，每帧Z速度将±=此值,向0靠近
+   *
+   * @type {number}
+   * @memberof WorldDataset
+   */
+  land_friction_z: number = Defines.LAND_FRICTION_Z;
+
   screen_w: number = Defines.MODERN_SCREEN_WIDTH;
   screen_h: number = Defines.MODERN_SCREEN_HEIGHT;
   gravity: number = Defines.GRAVITY;

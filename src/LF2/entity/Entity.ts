@@ -50,6 +50,7 @@ export class Entity implements IDebugging {
   protected _reserve = 0;
   protected _is_attach: boolean = false;
   protected _is_incorporeity: boolean = false;
+  protected _landing_frame?: IFrameInfo;
 
 
   get group() { return this.data.base.group };
@@ -1047,11 +1048,13 @@ export class Entity implements IDebugging {
   handle_ground_velocity_decay(factor: number = 1) {
     if (this.position.y > 0 || this.shaking || this.motionless) return;
     let { x, z } = this.velocity_0;
+    const is_landing_frame = this._landing_frame === this.frame;
+
     factor *= this.frame.friction_factor ?? this.world.friction_factor;
     x *= factor;
     z *= factor;
 
-    const fx = this.frame.friction_x ?? this.world.friction_x
+    const fx = this.frame.friction_x ?? (is_landing_frame ? this.world.land_friction_x : this.world.friction_x)
     if (x > 0) {
       x -= fx;
       if (x < 0) x = 0; // 不能因为摩擦力反向加速
@@ -1060,7 +1063,7 @@ export class Entity implements IDebugging {
       if (x > 0) x = 0; // 不能因为摩擦力反向加速
     }
 
-    const fz = this.frame.friction_z ?? this.world.friction_z
+    const fz = this.frame.friction_z ?? (is_landing_frame ? this.world.land_friction_z : this.world.friction_z)
     if (z > 0) {
       z -= fz;
       if (z < 0) z = 0; // 不能因为摩擦力反向加速
@@ -1422,7 +1425,7 @@ export class Entity implements IDebugging {
       this.velocity_0.y = 0;
       if (this.frame.on_landing) {
         const result = this.get_next_frame(this.frame.on_landing);
-        if (result) this.next_frame = result.frame;
+        if (result) this.enter_frame(result.which);
       }
       this.state?.on_landing?.(this);
       if (this.throwinjury !== void 0) {
@@ -1430,6 +1433,7 @@ export class Entity implements IDebugging {
         this.hp_r -= round(this.throwinjury * (1 - this.world.hp_recoverability))
         delete this.throwinjury;
       }
+      this._landing_frame = this.frame
     }
 
     this.world.restrict(this);
