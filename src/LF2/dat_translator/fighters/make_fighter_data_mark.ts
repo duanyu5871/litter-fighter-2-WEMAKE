@@ -24,8 +24,16 @@ export function make_fighter_data_mark(data: IEntityData) {
     }),
 
     // cancel_d>j
-    bot_chasing_action("cancel_d>j", [GK.j], 0, 0.1)((action, cond) => {
-      action.expression = cond?.or(BotVal.EnemyDiffX, "<", -30).done()
+    bot_ball_dfj(0, 1 / 30, 0, 1000)((action, cond) => {
+      action.action_id = 'cancel_d>j'
+      const ray = action.e_ray![0]
+      ray.reverse = true
+      action.e_ray?.push(
+        { ...ray, z: 0.2 },
+        { ...ray, z: -0.2 }
+      );
+      action.expression = cond.or(BotVal.EnemyDiffX, "<", -100).done();
+      action.keys = [GK.Jump]
       return action;
     }),
   ).set_frames(

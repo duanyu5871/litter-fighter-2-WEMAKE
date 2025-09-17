@@ -1,4 +1,4 @@
-import { BotVal, GameKey, IEntityData } from "../../defines";
+import { BotVal, GameKey as GK, IEntityData } from "../../defines";
 import { arithmetic_progression } from "../../utils";
 import { bot_ball_continuation } from "./bot_ball_continuation";
 import { bot_ball_dfa } from "./bot_ball_dfa";
@@ -40,7 +40,7 @@ export function make_fighter_data_firen(data: IEntityData) {
         { ...ray, z: -0.2 }
       );
       action.expression = cond.or(BotVal.EnemyDiffX, "<", -100).done();
-      action.keys = [GameKey.Jump]
+      action.keys = [GK.Jump]
       return action;
     }),
 
@@ -51,7 +51,7 @@ export function make_fighter_data_firen(data: IEntityData) {
         { ...action.e_ray![0], z: 0.05 },
         { ...action.e_ray![0], z: -0.1 }
       );
-      action.keys = [GameKey.Defend, GameKey.Down, GameKey.Jump]
+      action.keys = [GK.Defend, GK.Down, GK.Jump]
       return action;
     }),
 
@@ -64,7 +64,7 @@ export function make_fighter_data_firen(data: IEntityData) {
         { ...ray, z: 0.05 },
         { ...ray, z: -0.05 }
       );
-      action.keys = [GameKey.Jump]
+      action.keys = [GK.Jump]
       return action;
     }),
 
