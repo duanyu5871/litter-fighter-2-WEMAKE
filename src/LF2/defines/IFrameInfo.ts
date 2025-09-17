@@ -105,6 +105,12 @@ export interface IFrameInfo {
   opoint?: IOpointInfo[];
   cpoint?: ICpointInfo;
   indicator_info?: IQubePair;
+  
+  /**
+   * 隐身多少帧
+   * 
+   * @type {?number}
+   */
   invisible?: number;
   no_shadow?: number;
 

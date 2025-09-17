@@ -1,14 +1,28 @@
-class _OneOf {
+import { is_positive_int as is_non_nagative_int } from "../../utils";
+
+abstract class _Checker {
+  abstract check(value: any): boolean
+}
+class _OneOf extends _Checker {
   readonly values: any[];
   constructor(values: any[]) {
+    super();
     this.values = values
   }
-  toString(): string {
+  override check(value: any): boolean {
+    return this.values.some(v => v === value)
+  }
+  override toString(): string {
     return `one_of(${this.values.map(v => JSON.stringify(v)).join()})`
   }
 }
 class _ArrayOf {
 
+}
+class _NonNagativeInt extends _Checker {
+  override check(value: any): boolean {
+    return is_non_nagative_int(value)
+  }
 }
 export function one_of(...values: any[]): _OneOf {
   return new _OneOf(values)
@@ -16,7 +30,10 @@ export function one_of(...values: any[]): _OneOf {
 export function arr_of(): _ArrayOf {
   return new _ArrayOf()
 }
-export type Expected = _OneOf | _ArrayOf |
+export function non_nagative_int() {
+  return new _NonNagativeInt()
+}
+export type Expected = _OneOf | _ArrayOf | _NonNagativeInt |
   "string" | "number" | "bigint" | "boolean" | "symbol" | "undefined" |
   "object" | "function"
 
@@ -35,9 +52,8 @@ export function check_field<T extends {}>(
     if (expected instanceof _ArrayOf) {
       if (Array.isArray(value))
         return true;
-    } else if (expected instanceof _OneOf) {
-      if (expected.values.some(v => v === value))
-        return true
+    } else if (expected instanceof _Checker) {
+      if (expected.check(value)) return true
     } else if (type_name === expected) {
       return true;
     }

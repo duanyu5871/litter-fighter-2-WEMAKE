@@ -1,4 +1,4 @@
-import { IFrameInfo, Builtin_FrameId } from "../defines";
+import { type IFrameInfo, Builtin_FrameId } from ".";
 
 export const EMPTY_FRAME_INFO: IFrameInfo = {
   id: Builtin_FrameId.None,
