@@ -43,20 +43,32 @@ export function make_weapon_special(data: IEntityData) {
   switch (data.id) {
     case BuiltIn_OID.HenryArrow1:
       data.base.weight = 0.74;
-      foreach(data.frames, frame => foreach(frame.itr, itr => {
-        itr.actions = ensure(itr.actions, {
-          type: ActionType.A_NextFrame,
-          data: { id: Builtin_FrameId.Gone },
-          test: new CondMaker<C_Val>()
-            .add(C_Val.VictimType, '==', EntityEnum.Fighter)
-            .and(C_Val.BdyKind, '==', BdyKind.Normal)
-            .and(C_Val.VictimState, '!=', StateEnum.Defend)
-            .done()
+      foreach(data.frames, frame => {
+        if (frame.state === StateEnum.Weapon_Rebounding) {
+          delete frame.itr
+          return;
+        }
+        foreach(frame.itr, itr => {
+          itr.actions = ensure(itr.actions, {
+            type: ActionType.A_NextFrame,
+            data: { id: Builtin_FrameId.Gone },
+            test: new CondMaker<C_Val>()
+              .add(C_Val.VictimType, '==', EntityEnum.Fighter)
+              .and(C_Val.BdyKind, '==', BdyKind.Normal)
+              .and(C_Val.VictimState, '!=', StateEnum.Defend)
+              .done()
+          })
         })
-      }))
+      })
       break;
     case BuiltIn_OID.RudolfWeapon:
       data.base.weight = 0.74
+      foreach(data.frames, frame => {
+        if (frame.state === StateEnum.Weapon_Rebounding) {
+          delete frame.itr
+          return;
+        }
+      })
       break;
     case BuiltIn_OID.Weapon_Stick:
       data.base.brokens = ooo("10", "10", "14", "14", "14");

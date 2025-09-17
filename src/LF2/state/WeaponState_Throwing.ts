@@ -11,7 +11,7 @@ export default class WeaponState_Throwing extends WeaponState_Base {
    */
   protected _unhurt_weapons: Set<Entity> = new Set<Entity>();
   override get_gravity(e: Entity) {
-    return e.world.gravity * 0.5;
+    return e.world.gravity * 0.45;
   }
   override enter(e: Entity, prev_frame: IFrameInfo): void {
     this._unhurt_weapons.add(e);

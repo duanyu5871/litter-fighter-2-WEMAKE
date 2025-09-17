@@ -29,7 +29,7 @@ export namespace Defines {
   export const DEFAULT_BEER_MP = 154;
   export const DEFAULT_FALL_VALUE_MAX = 140;
   export const DEFAULT_DEFEND_VALUE_MAX = 120;
-  export const DEFAULT_OPOINT_SPEED_Z = 2.5;
+  export const DEFAULT_OPOINT_SPEED_Z = 3.5;
   export const DEFAULT_FIREN_FLAME_SPEED_Z = 0.5;
 
   /**

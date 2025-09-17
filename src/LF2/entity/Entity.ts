@@ -928,7 +928,7 @@ export class Entity implements IDebugging {
         switch (opoint.spreading) {
           case void 0:
           case OpointSpreading.Normal:
-            v.z = (i - (count - 1) / 2) * 2;
+            v.z = (i - (count - 1) / 2) * 3.5;
             break;
           case OpointSpreading.Bat:
             v.x = this.lf2.bat_spreading_x.take()
