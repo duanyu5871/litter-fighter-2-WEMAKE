@@ -1,5 +1,6 @@
 import type { FacingFlag } from "./FacingFlag";
 import type { TNextFrame } from "./INextFrame";
+import { IQubePair } from "./IQubePair";
 import type { OpointKind } from "./OpointKind";
 import type { OpointMultiEnum } from "./OpointMultiEnum";
 import { OpointSpreading } from "./OpointSpreading";
@@ -127,4 +128,5 @@ export interface IOpointInfo {
   interval?: number;
   interval_id?: string;
   interval_mode?: 1 | 0;
+  indicator_info?: IQubePair;
 }

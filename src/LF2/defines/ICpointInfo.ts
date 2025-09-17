@@ -1,9 +1,11 @@
 import type { TNextFrame } from "./INextFrame";
+import { IQubePair } from "./IQubePair";
 
 export interface ICpointInfo {
   kind: 1 | 2;
   x: number;
   y: number;
+  z?: number;
   vaction?: TNextFrame;
   injury?: number;
   hurtable?: 0 | 1;
@@ -22,4 +24,5 @@ export interface ICpointInfo {
   tz?: number;
 
   /*dircontrol*/
+  indicator_info?: IQubePair;
 }

@@ -10,10 +10,7 @@
         "row": 10,
         "col": 7,
         "cell_w": 79,
-        "cell_h": 79,
-        "variants": [
-          "1"
-        ]
+        "cell_h": 79
       },
       "1": {
         "id": "1",
@@ -114,6 +111,9 @@
       "next": {
         "id": "1"
       },
+      "state": 0,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 21,
@@ -134,10 +134,7 @@
         "weaponact": 21,
         "cover": 0
       },
-      "state": 0,
-      "centerx": 39,
-      "centery": 79,
-      "state_name": "StateEnum._0",
+      "state_name": "StateEnum.Standing",
       "hit": {
         "a": [
           {
@@ -171,41 +168,34 @@
           }
         ],
         "j": {
-          "id": "210"
+          "id": "210",
+          "facing": 3
         },
         "d": {
-          "id": "110"
-        },
-        "B": {
-          "id": "walking_0",
-          "facing": 2
-        },
-        "D": {
-          "id": "walking_0"
-        },
-        "U": {
-          "id": "walking_0"
-        },
-        "F": {
-          "id": "walking_0"
+          "id": "110",
+          "facing": 3
         },
         "FF": {
           "id": "running_0"
         }
       },
-      "hold": {
-        "B": {
+      "hold": {},
+      "key_down": {
+        "R": {
           "id": "walking_0",
-          "facing": 2
+          "facing": 3
+        },
+        "L": {
+          "id": "walking_0",
+          "facing": 3
         },
         "D": {
-          "id": "walking_0"
+          "id": "walking_0",
+          "facing": 3
         },
         "U": {
-          "id": "walking_0"
-        },
-        "F": {
-          "id": "walking_0"
+          "id": "walking_0",
+          "facing": 3
         }
       }
     },
@@ -223,6 +213,9 @@
       "next": {
         "id": "2"
       },
+      "state": 0,
+      "centerx": 38,
+      "centery": 79,
       "bdy": [
         {
           "x": 21,
@@ -243,10 +236,7 @@
         "weaponact": 21,
         "cover": 0
       },
-      "state": 0,
-      "centerx": 38,
-      "centery": 79,
-      "state_name": "StateEnum._0",
+      "state_name": "StateEnum.Standing",
       "hit": {
         "a": [
           {
@@ -280,41 +270,34 @@
           }
         ],
         "j": {
-          "id": "210"
+          "id": "210",
+          "facing": 3
         },
         "d": {
-          "id": "110"
-        },
-        "B": {
-          "id": "walking_0",
-          "facing": 2
-        },
-        "D": {
-          "id": "walking_0"
-        },
-        "U": {
-          "id": "walking_0"
-        },
-        "F": {
-          "id": "walking_0"
+          "id": "110",
+          "facing": 3
         },
         "FF": {
           "id": "running_0"
         }
       },
-      "hold": {
-        "B": {
+      "hold": {},
+      "key_down": {
+        "R": {
           "id": "walking_0",
-          "facing": 2
+          "facing": 3
+        },
+        "L": {
+          "id": "walking_0",
+          "facing": 3
         },
         "D": {
-          "id": "walking_0"
+          "id": "walking_0",
+          "facing": 3
         },
         "U": {
-          "id": "walking_0"
-        },
-        "F": {
-          "id": "walking_0"
+          "id": "walking_0",
+          "facing": 3
         }
       }
     },
@@ -332,6 +315,9 @@
       "next": {
         "id": "3"
       },
+      "state": 0,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 21,
@@ -352,10 +338,7 @@
         "weaponact": 21,
         "cover": 0
       },
-      "state": 0,
-      "centerx": 39,
-      "centery": 79,
-      "state_name": "StateEnum._0",
+      "state_name": "StateEnum.Standing",
       "hit": {
         "a": [
           {
@@ -389,41 +372,34 @@
           }
         ],
         "j": {
-          "id": "210"
+          "id": "210",
+          "facing": 3
         },
         "d": {
-          "id": "110"
-        },
-        "B": {
-          "id": "walking_0",
-          "facing": 2
-        },
-        "D": {
-          "id": "walking_0"
-        },
-        "U": {
-          "id": "walking_0"
-        },
-        "F": {
-          "id": "walking_0"
+          "id": "110",
+          "facing": 3
         },
         "FF": {
           "id": "running_0"
         }
       },
-      "hold": {
-        "B": {
+      "hold": {},
+      "key_down": {
+        "R": {
           "id": "walking_0",
-          "facing": 2
+          "facing": 3
+        },
+        "L": {
+          "id": "walking_0",
+          "facing": 3
         },
         "D": {
-          "id": "walking_0"
+          "id": "walking_0",
+          "facing": 3
         },
         "U": {
-          "id": "walking_0"
-        },
-        "F": {
-          "id": "walking_0"
+          "id": "walking_0",
+          "facing": 3
         }
       }
     },
@@ -441,6 +417,9 @@
       "next": {
         "id": "auto"
       },
+      "state": 0,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 21,
@@ -461,10 +440,7 @@
         "weaponact": 21,
         "cover": 0
       },
-      "state": 0,
-      "centerx": 39,
-      "centery": 79,
-      "state_name": "StateEnum._0",
+      "state_name": "StateEnum.Standing",
       "hit": {
         "a": [
           {
@@ -498,41 +474,34 @@
           }
         ],
         "j": {
-          "id": "210"
+          "id": "210",
+          "facing": 3
         },
         "d": {
-          "id": "110"
-        },
-        "B": {
-          "id": "walking_0",
-          "facing": 2
-        },
-        "D": {
-          "id": "walking_0"
-        },
-        "U": {
-          "id": "walking_0"
-        },
-        "F": {
-          "id": "walking_0"
+          "id": "110",
+          "facing": 3
         },
         "FF": {
           "id": "running_0"
         }
       },
-      "hold": {
-        "B": {
+      "hold": {},
+      "key_down": {
+        "R": {
           "id": "walking_0",
-          "facing": 2
+          "facing": 3
+        },
+        "L": {
+          "id": "walking_0",
+          "facing": 3
         },
         "D": {
-          "id": "walking_0"
+          "id": "walking_0",
+          "facing": 3
         },
         "U": {
-          "id": "walking_0"
-        },
-        "F": {
-          "id": "walking_0"
+          "id": "walking_0",
+          "facing": 3
         }
       }
     },
@@ -550,6 +519,9 @@
       "next": {
         "id": "auto"
       },
+      "state": 15,
+      "centerx": 34,
+      "centery": 79,
       "bdy": [
         {
           "x": 29,
@@ -570,10 +542,7 @@
         "weaponact": 10,
         "cover": 0
       },
-      "state": 15,
-      "centerx": 34,
-      "centery": 79,
-      "state_name": "StateEnum._15",
+      "state_name": "StateEnum.Normal",
       "sound": "data/009.wav.mp3",
       "dvx": 1
     },
@@ -591,6 +560,9 @@
       "next": {
         "id": "21"
       },
+      "state": 3,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 27,
@@ -611,9 +583,6 @@
         "weaponact": 35,
         "cover": 0
       },
-      "state": 3,
-      "centerx": 39,
-      "centery": 79,
       "state_name": "StateEnum.Attacking"
     },
     "21": {
@@ -630,6 +599,9 @@
       "next": {
         "id": "22"
       },
+      "state": 3,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 30,
@@ -650,9 +622,6 @@
         "weaponact": 33,
         "cover": 0
       },
-      "state": 3,
-      "centerx": 39,
-      "centery": 79,
       "state_name": "StateEnum.Attacking",
       "sound": "data/008.wav.mp3"
     },
@@ -670,6 +639,9 @@
       "next": {
         "id": "23"
       },
+      "state": 3,
+      "centerx": 16,
+      "centery": 79,
       "bdy": [
         {
           "x": 17,
@@ -713,9 +685,6 @@
         "cover": 0,
         "attacking": "1"
       },
-      "state": 3,
-      "centerx": 16,
-      "centery": 79,
       "state_name": "StateEnum.Attacking"
     },
     "23": {
@@ -732,6 +701,9 @@
       "next": {
         "id": "auto"
       },
+      "state": 3,
+      "centerx": 40,
+      "centery": 79,
       "bdy": [
         {
           "x": 41,
@@ -763,9 +735,6 @@
         "weaponact": 24,
         "cover": 0
       },
-      "state": 3,
-      "centerx": 40,
-      "centery": 79,
       "state_name": "StateEnum.Attacking"
     },
     "25": {
@@ -782,6 +751,9 @@
       "next": {
         "id": "26"
       },
+      "state": 3,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 29,
@@ -802,9 +774,6 @@
         "weaponact": 34,
         "cover": 0
       },
-      "state": 3,
-      "centerx": 39,
-      "centery": 79,
       "state_name": "StateEnum.Attacking"
     },
     "26": {
@@ -821,6 +790,9 @@
       "next": {
         "id": "27"
       },
+      "state": 3,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 29,
@@ -841,9 +813,6 @@
         "weaponact": 32,
         "cover": 0
       },
-      "state": 3,
-      "centerx": 39,
-      "centery": 79,
       "state_name": "StateEnum.Attacking",
       "sound": "data/008.wav.mp3"
     },
@@ -861,6 +830,9 @@
       "next": {
         "id": "28"
       },
+      "state": 3,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 41,
@@ -893,9 +865,6 @@
         "cover": 0,
         "attacking": "1"
       },
-      "state": 3,
-      "centerx": 39,
-      "centery": 79,
       "state_name": "StateEnum.Attacking"
     },
     "28": {
@@ -912,6 +881,9 @@
       "next": {
         "id": "auto"
       },
+      "state": 3,
+      "centerx": 17,
+      "centery": 79,
       "bdy": [
         {
           "x": 10,
@@ -932,9 +904,6 @@
         "weaponact": 25,
         "cover": 0
       },
-      "state": 3,
-      "centerx": 17,
-      "centery": 79,
       "state_name": "StateEnum.Attacking"
     },
     "30": {
@@ -951,6 +920,9 @@
       "next": {
         "id": "31"
       },
+      "state": 3,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 27,
@@ -971,9 +943,6 @@
         "weaponact": 30,
         "cover": 0
       },
-      "state": 3,
-      "centerx": 39,
-      "centery": 79,
       "state_name": "StateEnum.Attacking"
     },
     "31": {
@@ -990,6 +959,9 @@
       "next": {
         "id": "auto"
       },
+      "state": 3,
+      "centerx": 19,
+      "centery": 91,
       "bdy": [
         {
           "x": 11,
@@ -1011,9 +983,6 @@
         "cover": 0,
         "attacking": "2"
       },
-      "state": 3,
-      "centerx": 19,
-      "centery": 91,
       "state_name": "StateEnum.Attacking",
       "sound": "data/008.wav.mp3"
     },
@@ -1031,6 +1000,9 @@
       "next": {
         "id": "36"
       },
+      "state": 3,
+      "centerx": 44,
+      "centery": 79,
       "bdy": [
         {
           "x": 28,
@@ -1051,9 +1023,6 @@
         "weaponact": 23,
         "cover": 0
       },
-      "state": 3,
-      "centerx": 44,
-      "centery": 79,
       "state_name": "StateEnum.Attacking",
       "dvx": 3
     },
@@ -1071,6 +1040,9 @@
       "next": {
         "id": "37"
       },
+      "state": 3,
+      "centerx": 24,
+      "centery": 79,
       "bdy": [
         {
           "x": 29,
@@ -1103,9 +1075,6 @@
         "cover": 0,
         "attacking": "3"
       },
-      "state": 3,
-      "centerx": 24,
-      "centery": 79,
       "state_name": "StateEnum.Attacking",
       "sound": "data/008.wav.mp3",
       "dvx": 2
@@ -1124,6 +1093,9 @@
       "next": {
         "id": "auto"
       },
+      "state": 3,
+      "centerx": 44,
+      "centery": 79,
       "bdy": [
         {
           "x": 28,
@@ -1144,9 +1116,6 @@
         "weaponact": 23,
         "cover": 0
       },
-      "state": 3,
-      "centerx": 44,
-      "centery": 79,
       "state_name": "StateEnum.Attacking"
     },
     "40": {
@@ -1163,6 +1132,9 @@
       "next": {
         "id": "41"
       },
+      "state": 3,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 25,
@@ -1183,9 +1155,6 @@
         "weaponact": 30,
         "cover": 0
       },
-      "state": 3,
-      "centerx": 39,
-      "centery": 79,
       "state_name": "StateEnum.Attacking"
     },
     "41": {
@@ -1202,6 +1171,9 @@
       "next": {
         "id": "auto"
       },
+      "state": 3,
+      "centerx": 21,
+      "centery": 89,
       "bdy": [
         {
           "x": 8,
@@ -1223,9 +1195,6 @@
         "cover": 0,
         "attacking": "4"
       },
-      "state": 3,
-      "centerx": 21,
-      "centery": 89,
       "state_name": "StateEnum.Attacking",
       "sound": "data/008.wav.mp3"
     },
@@ -1243,6 +1212,9 @@
       "next": {
         "id": "46"
       },
+      "state": 15,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 25,
@@ -1274,10 +1246,7 @@
         "weaponact": 20,
         "cover": 0
       },
-      "state": 15,
-      "centerx": 39,
-      "centery": 79,
-      "state_name": "StateEnum._15"
+      "state_name": "StateEnum.Normal"
     },
     "46": {
       "id": "46",
@@ -1293,6 +1262,9 @@
       "next": {
         "id": "47"
       },
+      "state": 15,
+      "centerx": 37,
+      "centery": 79,
       "bdy": [
         {
           "x": 24,
@@ -1313,10 +1285,7 @@
         "weaponact": 31,
         "cover": 0
       },
-      "state": 15,
-      "centerx": 37,
-      "centery": 79,
-      "state_name": "StateEnum._15",
+      "state_name": "StateEnum.Normal",
       "sound": "data/008.wav.mp3"
     },
     "47": {
@@ -1333,6 +1302,9 @@
       "next": {
         "id": "auto"
       },
+      "state": 15,
+      "centerx": 25,
+      "centery": 79,
       "bdy": [
         {
           "x": 10,
@@ -1367,10 +1339,7 @@
         "dvz": 3,
         "dvy": 2
       },
-      "state": 15,
-      "centerx": 25,
-      "centery": 79,
-      "state_name": "StateEnum._15"
+      "state_name": "StateEnum.Normal"
     },
     "50": {
       "id": "50",
@@ -1386,6 +1355,9 @@
       "next": {
         "id": "51"
       },
+      "state": 15,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 28,
@@ -1406,10 +1378,7 @@
         "weaponact": 10,
         "cover": 0
       },
-      "state": 15,
-      "centerx": 39,
-      "centery": 79,
-      "state_name": "StateEnum._15"
+      "state_name": "StateEnum.Normal"
     },
     "51": {
       "id": "51",
@@ -1425,6 +1394,9 @@
       "next": {
         "id": "auto"
       },
+      "state": 15,
+      "centerx": 29,
+      "centery": 79,
       "bdy": [
         {
           "x": 8,
@@ -1459,10 +1431,7 @@
         "dvz": 2,
         "dvy": 2
       },
-      "state": 15,
-      "centerx": 29,
-      "centery": 79,
-      "state_name": "StateEnum._15",
+      "state_name": "StateEnum.Normal",
       "sound": "data/007.wav.mp3"
     },
     "52": {
@@ -1479,6 +1448,9 @@
       "next": {
         "id": "53"
       },
+      "state": 15,
+      "centerx": 41,
+      "centery": 68,
       "bdy": [
         {
           "x": 22,
@@ -1499,10 +1471,7 @@
         "weaponact": 22,
         "cover": 0
       },
-      "state": 15,
-      "centerx": 41,
-      "centery": 68,
-      "state_name": "StateEnum._15"
+      "state_name": "StateEnum.Normal"
     },
     "53": {
       "id": "53",
@@ -1518,6 +1487,9 @@
       "next": {
         "id": "54"
       },
+      "state": 15,
+      "centerx": 35,
+      "centery": 63,
       "bdy": [
         {
           "x": 35,
@@ -1549,10 +1521,7 @@
         "weaponact": 34,
         "cover": 0
       },
-      "state": 15,
-      "centerx": 35,
-      "centery": 63,
-      "state_name": "StateEnum._15",
+      "state_name": "StateEnum.Normal",
       "sound": "data/008.wav.mp3",
       "dvy": 0.57
     },
@@ -1570,6 +1539,9 @@
       "next": {
         "id": "auto"
       },
+      "state": 15,
+      "centerx": 21,
+      "centery": 62,
       "bdy": [
         {
           "x": 22,
@@ -1604,10 +1576,7 @@
         "dvz": 3,
         "dvy": -4
       },
-      "state": 15,
-      "centerx": 21,
-      "centery": 62,
-      "state_name": "StateEnum._15"
+      "state_name": "StateEnum.Normal"
     },
     "55": {
       "id": "55",
@@ -1623,6 +1592,9 @@
       "next": {
         "id": "56"
       },
+      "state": 17,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 25,
@@ -1643,10 +1615,7 @@
         "weaponact": 31,
         "cover": 0
       },
-      "state": 17,
-      "centerx": 39,
-      "centery": 79,
-      "state_name": "StateEnum._17",
+      "state_name": "StateEnum.Drink",
       "sound": "data/042.wav.mp3",
       "hit": {
         "d": {
@@ -1668,6 +1637,9 @@
       "next": {
         "id": "57"
       },
+      "state": 17,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 25,
@@ -1688,10 +1660,7 @@
         "weaponact": 31,
         "cover": 0
       },
-      "state": 17,
-      "centerx": 39,
-      "centery": 79,
-      "state_name": "StateEnum._17",
+      "state_name": "StateEnum.Drink",
       "hit": {
         "d": {
           "id": "auto"
@@ -1712,6 +1681,9 @@
       "next": {
         "id": "58"
       },
+      "state": 17,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 25,
@@ -1732,10 +1704,7 @@
         "weaponact": 31,
         "cover": 0
       },
-      "state": 17,
-      "centerx": 39,
-      "centery": 79,
-      "state_name": "StateEnum._17",
+      "state_name": "StateEnum.Drink",
       "hit": {
         "d": {
           "id": "auto"
@@ -1756,6 +1725,9 @@
       "next": {
         "id": "55"
       },
+      "state": 17,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 25,
@@ -1776,10 +1748,7 @@
         "weaponact": 31,
         "cover": 0
       },
-      "state": 17,
-      "centerx": 39,
-      "centery": 79,
-      "state_name": "StateEnum._17",
+      "state_name": "StateEnum.Drink",
       "hit": {
         "d": {
           "id": "auto"
@@ -1800,6 +1769,9 @@
       "next": {
         "id": "61"
       },
+      "state": 3,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 30,
@@ -1832,7 +1804,7 @@
           "w": 37,
           "h": 23,
           "ally_flags": 3,
-          "vrest": 3,
+          "vrest": 2,
           "l": 24,
           "z": -12,
           "kind_name": "ItrKind.Pick",
@@ -1841,9 +1813,6 @@
           "test": "attacker_has_holder==0&victim_has_holder==0&(victim_state==1004|victim_state==2004)"
         }
       ],
-      "state": 3,
-      "centerx": 39,
-      "centery": 79,
       "state_name": "StateEnum.Attacking",
       "dvx": 0.5
     },
@@ -1861,6 +1830,9 @@
       "next": {
         "id": "auto"
       },
+      "state": 3,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 39,
@@ -1899,12 +1871,9 @@
           "l": 24,
           "z": -12,
           "kind_name": "ItrKind.Normal",
-          "test": "victim_state!=1004|attacker_type!=character"
+          "test": ""
         }
       ],
-      "state": 3,
-      "centerx": 39,
-      "centery": 79,
       "state_name": "StateEnum.Attacking",
       "sound": "data/007.wav.mp3"
     },
@@ -1922,6 +1891,9 @@
       "next": {
         "id": "66"
       },
+      "state": 3,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 27,
@@ -1943,7 +1915,7 @@
           "w": 37,
           "h": 23,
           "ally_flags": 3,
-          "vrest": 3,
+          "vrest": 2,
           "l": 24,
           "z": -12,
           "kind_name": "ItrKind.Pick",
@@ -1952,9 +1924,6 @@
           "test": "attacker_has_holder==0&victim_has_holder==0&(victim_state==1004|victim_state==2004)"
         }
       ],
-      "state": 3,
-      "centerx": 39,
-      "centery": 79,
       "state_name": "StateEnum.Attacking",
       "dvx": 0.5
     },
@@ -1972,6 +1941,9 @@
       "next": {
         "id": "auto"
       },
+      "state": 3,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 28,
@@ -2010,12 +1982,9 @@
           "l": 24,
           "z": -12,
           "kind_name": "ItrKind.Normal",
-          "test": "victim_state!=1004|attacker_type!=character"
+          "test": ""
         }
       ],
-      "state": 3,
-      "centerx": 39,
-      "centery": 79,
       "state_name": "StateEnum.Attacking",
       "sound": "data/007.wav.mp3"
     },
@@ -2033,6 +2002,9 @@
       "next": {
         "id": "71"
       },
+      "state": 3,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 22,
@@ -2046,9 +2018,6 @@
           "kind": 0
         }
       ],
-      "state": 3,
-      "centerx": 39,
-      "centery": 79,
       "state_name": "StateEnum.Attacking"
     },
     "71": {
@@ -2065,6 +2034,9 @@
       "next": {
         "id": "72"
       },
+      "state": 3,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 40,
@@ -2089,9 +2061,6 @@
           "kind": 0
         }
       ],
-      "state": 3,
-      "centerx": 39,
-      "centery": 79,
       "state_name": "StateEnum.Attacking",
       "dvx": 2
     },
@@ -2109,6 +2078,9 @@
       "next": {
         "id": "auto"
       },
+      "state": 3,
+      "centerx": 46,
+      "centery": 79,
       "bdy": [
         {
           "x": 31,
@@ -2131,20 +2103,17 @@
           "h": 51,
           "injury": 50,
           "ally_flags": 1,
-          "arest": 32,
+          "arest": 22,
           "dvx": 2.5,
-          "dvy": 7.08,
+          "dvy": 7.1,
           "fall": 140,
           "bdefend": 120,
           "l": 24,
           "z": -12,
           "kind_name": "ItrKind.Normal",
-          "test": "victim_state!=1004|attacker_type!=character"
+          "test": ""
         }
       ],
-      "state": 3,
-      "centerx": 46,
-      "centery": 79,
       "state_name": "StateEnum.Attacking",
       "sound": "data/007.wav.mp3"
     },
@@ -2162,6 +2131,9 @@
       "next": {
         "id": "81"
       },
+      "state": 3,
+      "centerx": 39,
+      "centery": 70,
       "bdy": [
         {
           "x": 20,
@@ -2175,9 +2147,6 @@
           "kind": 0
         }
       ],
-      "state": 3,
-      "centerx": 39,
-      "centery": 70,
       "state_name": "StateEnum.Attacking",
       "sound": "data/007.wav.mp3"
     },
@@ -2195,6 +2164,9 @@
       "next": {
         "id": "auto"
       },
+      "state": 3,
+      "centerx": 39,
+      "centery": 70,
       "bdy": [
         {
           "x": 22,
@@ -2228,18 +2200,15 @@
           "h": 18,
           "injury": 35,
           "ally_flags": 1,
-          "arest": 32,
+          "arest": 22,
           "dvx": 1,
           "bdefend": 32,
           "l": 24,
           "z": -12,
           "kind_name": "ItrKind.Normal",
-          "test": "victim_state!=1004|attacker_type!=character"
+          "test": ""
         }
       ],
-      "state": 3,
-      "centerx": 39,
-      "centery": 70,
       "state_name": "StateEnum.Attacking"
     },
     "85": {
@@ -2256,6 +2225,9 @@
       "next": {
         "id": "86"
       },
+      "state": 3,
+      "centerx": 31,
+      "centery": 79,
       "bdy": [
         {
           "x": 19,
@@ -2280,9 +2252,6 @@
           "kind": 0
         }
       ],
-      "state": 3,
-      "centerx": 31,
-      "centery": 79,
       "state_name": "StateEnum.Attacking",
       "dvx": 3
     },
@@ -2300,6 +2269,9 @@
       "next": {
         "id": "87"
       },
+      "state": 3,
+      "centerx": 19,
+      "centery": 79,
       "bdy": [
         {
           "x": 24,
@@ -2333,19 +2305,16 @@
           "h": 17,
           "injury": 50,
           "ally_flags": 1,
-          "arest": 32,
+          "arest": 22,
           "dvx": 5,
           "fall": 140,
           "bdefend": 32,
           "l": 24,
           "z": -12,
           "kind_name": "ItrKind.Normal",
-          "test": "victim_state!=1004|attacker_type!=character"
+          "test": ""
         }
       ],
-      "state": 3,
-      "centerx": 19,
-      "centery": 79,
       "state_name": "StateEnum.Attacking",
       "sound": "data/007.wav.mp3",
       "dvx": 2
@@ -2364,6 +2333,9 @@
       "next": {
         "id": "auto"
       },
+      "state": 3,
+      "centerx": 14,
+      "centery": 79,
       "bdy": [
         {
           "x": 18,
@@ -2388,9 +2360,6 @@
           "kind": 0
         }
       ],
-      "state": 3,
-      "centerx": 14,
-      "centery": 79,
       "state_name": "StateEnum.Attacking"
     },
     "90": {
@@ -2407,6 +2376,9 @@
       "next": {
         "id": "91"
       },
+      "state": 15,
+      "centerx": 38,
+      "centery": 73,
       "bdy": [
         {
           "x": 24,
@@ -2431,10 +2403,7 @@
           "kind": 0
         }
       ],
-      "state": 15,
-      "centerx": 38,
-      "centery": 73,
-      "state_name": "StateEnum._15"
+      "state_name": "StateEnum.Normal"
     },
     "91": {
       "id": "91",
@@ -2450,6 +2419,9 @@
       "next": {
         "id": "auto"
       },
+      "state": 15,
+      "centerx": 31,
+      "centery": 68,
       "bdy": [
         {
           "x": 7,
@@ -2483,20 +2455,17 @@
           "h": 23,
           "injury": 70,
           "ally_flags": 1,
-          "arest": 42,
+          "arest": 32,
           "dvx": 6,
           "fall": 140,
           "bdefend": 120,
           "l": 24,
           "z": -12,
           "kind_name": "ItrKind.Normal",
-          "test": "victim_state!=1004|attacker_type!=character"
+          "test": ""
         }
       ],
-      "state": 15,
-      "centerx": 31,
-      "centery": 68,
-      "state_name": "StateEnum._15",
+      "state_name": "StateEnum.Normal",
       "sound": "data/007.wav.mp3"
     },
     "95": {
@@ -2511,20 +2480,23 @@
       },
       "wait": 5,
       "next": {},
+      "state": 7,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 14,
           "y": 19,
           "w": 28,
           "h": 36,
-          "kind_name": "BdyKind.Normal",
+          "kind_name": "Defend",
           "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 2000,
           "actions": [
             {
-              "type": "broken_defend",
+              "type": "v_broken_defend",
               "data": {
                 "id": "112"
               }
@@ -2536,14 +2508,14 @@
           "y": 37,
           "w": 24,
           "h": 34,
-          "kind_name": "BdyKind.Normal",
+          "kind_name": "Defend",
           "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 2000,
           "actions": [
             {
-              "type": "broken_defend",
+              "type": "v_broken_defend",
               "data": {
                 "id": "112"
               }
@@ -2558,10 +2530,7 @@
         "weaponact": 30,
         "cover": 0
       },
-      "state": 7,
-      "centerx": 39,
-      "centery": 79,
-      "state_name": "StateEnum._7"
+      "state_name": "StateEnum.Defend"
     },
     "100": {
       "id": "100",
@@ -2577,6 +2546,9 @@
       "next": {
         "id": "101"
       },
+      "state": 6,
+      "centerx": 39,
+      "centery": 79,
       "wpoint": {
         "kind": 1,
         "x": 43,
@@ -2584,9 +2556,6 @@
         "weaponact": 22,
         "cover": 0
       },
-      "state": 6,
-      "centerx": 39,
-      "centery": 79,
       "state_name": "StateEnum.Rowing",
       "sound": "data/017.wav.mp3"
     },
@@ -2602,6 +2571,9 @@
       },
       "wait": 13,
       "next": {},
+      "state": 6,
+      "centerx": 39,
+      "centery": 79,
       "wpoint": {
         "kind": 1,
         "x": 53,
@@ -2609,9 +2581,6 @@
         "weaponact": 21,
         "cover": 0
       },
-      "state": 6,
-      "centerx": 39,
-      "centery": 79,
       "state_name": "StateEnum.Rowing"
     },
     "102": {
@@ -2628,6 +2597,9 @@
       "next": {
         "id": "103"
       },
+      "state": 6,
+      "centerx": 39,
+      "centery": 79,
       "itr": [
         {
           "kind": 7,
@@ -2636,7 +2608,7 @@
           "w": 13,
           "h": 25,
           "ally_flags": 3,
-          "vrest": 3,
+          "vrest": 2,
           "l": 24,
           "z": -12,
           "kind_name": "ItrKind.PickSecretly",
@@ -2652,9 +2624,6 @@
         "weaponact": 22,
         "cover": 0
       },
-      "state": 6,
-      "centerx": 39,
-      "centery": 79,
       "state_name": "StateEnum.Rowing",
       "dvx": 3.5
     },
@@ -2672,6 +2641,9 @@
       "next": {
         "id": "104"
       },
+      "state": 6,
+      "centerx": 39,
+      "centery": 79,
       "itr": [
         {
           "kind": 7,
@@ -2680,7 +2652,7 @@
           "w": 13,
           "h": 25,
           "ally_flags": 3,
-          "vrest": 3,
+          "vrest": 2,
           "l": 24,
           "z": -12,
           "kind_name": "ItrKind.PickSecretly",
@@ -2696,9 +2668,6 @@
         "weaponact": 31,
         "cover": 0
       },
-      "state": 6,
-      "centerx": 39,
-      "centery": 79,
       "state_name": "StateEnum.Rowing",
       "dvx": 3.5
     },
@@ -2716,6 +2685,9 @@
       "next": {
         "id": "105"
       },
+      "state": 6,
+      "centerx": 39,
+      "centery": 79,
       "itr": [
         {
           "kind": 7,
@@ -2724,7 +2696,7 @@
           "w": 13,
           "h": 25,
           "ally_flags": 3,
-          "vrest": 3,
+          "vrest": 2,
           "l": 24,
           "z": -12,
           "kind_name": "ItrKind.PickSecretly",
@@ -2740,9 +2712,6 @@
         "weaponact": 25,
         "cover": 0
       },
-      "state": 6,
-      "centerx": 39,
-      "centery": 79,
       "state_name": "StateEnum.Rowing",
       "dvx": 3.5
     },
@@ -2760,6 +2729,9 @@
       "next": {
         "id": "219"
       },
+      "state": 6,
+      "centerx": 39,
+      "centery": 79,
       "itr": [
         {
           "kind": 7,
@@ -2768,7 +2740,7 @@
           "w": 13,
           "h": 25,
           "ally_flags": 3,
-          "vrest": 3,
+          "vrest": 2,
           "l": 24,
           "z": -12,
           "kind_name": "ItrKind.PickSecretly",
@@ -2784,9 +2756,6 @@
         "weaponact": 22,
         "cover": 0
       },
-      "state": 6,
-      "centerx": 39,
-      "centery": 79,
       "state_name": "StateEnum.Rowing",
       "dvx": 3.5
     },
@@ -2804,6 +2773,9 @@
       "next": {
         "id": "219"
       },
+      "state": 6,
+      "centerx": 39,
+      "centery": 79,
       "itr": [
         {
           "kind": 7,
@@ -2812,7 +2784,7 @@
           "w": 13,
           "h": 25,
           "ally_flags": 3,
-          "vrest": 3,
+          "vrest": 2,
           "l": 24,
           "z": -12,
           "kind_name": "ItrKind.PickSecretly",
@@ -2828,9 +2800,6 @@
         "weaponact": 30,
         "cover": 0
       },
-      "state": 6,
-      "centerx": 39,
-      "centery": 79,
       "state_name": "StateEnum.Rowing",
       "dvx": 3.5
     },
@@ -2848,6 +2817,9 @@
       "next": {
         "id": "219"
       },
+      "state": 6,
+      "centerx": 39,
+      "centery": 79,
       "itr": [
         {
           "kind": 7,
@@ -2856,7 +2828,7 @@
           "w": 13,
           "h": 25,
           "ally_flags": 3,
-          "vrest": 3,
+          "vrest": 2,
           "l": 24,
           "z": -12,
           "kind_name": "ItrKind.PickSecretly",
@@ -2872,9 +2844,6 @@
         "weaponact": 25,
         "cover": 0
       },
-      "state": 6,
-      "centerx": 39,
-      "centery": 79,
       "state_name": "StateEnum.Rowing",
       "dvx": 3.5
     },
@@ -2892,6 +2861,9 @@
       "next": {
         "id": "109"
       },
+      "state": 6,
+      "centerx": 45,
+      "centery": 62,
       "wpoint": {
         "kind": 1,
         "x": 43,
@@ -2899,9 +2871,6 @@
         "weaponact": 22,
         "cover": 0
       },
-      "state": 6,
-      "centerx": 45,
-      "centery": 62,
       "state_name": "StateEnum.Rowing",
       "sound": "data/017.wav.mp3"
     },
@@ -2917,6 +2886,9 @@
       },
       "wait": 13,
       "next": {},
+      "state": 6,
+      "centerx": 39,
+      "centery": 79,
       "wpoint": {
         "kind": 1,
         "x": 53,
@@ -2924,9 +2896,6 @@
         "weaponact": 21,
         "cover": 0
       },
-      "state": 6,
-      "centerx": 39,
-      "centery": 79,
       "state_name": "StateEnum.Rowing"
     },
     "110": {
@@ -2943,26 +2912,29 @@
       "next": {
         "id": "auto"
       },
+      "state": 7,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 20,
           "y": 19,
           "w": 38,
           "h": 60,
-          "kind_name": "BdyKind.Normal",
+          "kind_name": "Defend",
           "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 2000,
           "actions": [
             {
-              "type": "broken_defend",
+              "type": "v_broken_defend",
               "data": {
                 "id": "112"
               }
             },
             {
-              "type": "defend",
+              "type": "v_defend",
               "data": {
                 "id": "111"
               }
@@ -2977,18 +2949,8 @@
         "weaponact": 35,
         "cover": 0
       },
-      "state": 7,
-      "centerx": 39,
-      "centery": 79,
-      "state_name": "StateEnum._7",
-      "hit": {
-        "B": {
-          "id": "",
-          "wait": "i",
-          "facing": 2
-        }
-      },
-      "hold": {
+      "state_name": "StateEnum.Defend",
+      "key_down": {
         "B": {
           "id": "",
           "wait": "i",
@@ -3010,26 +2972,29 @@
       "next": {
         "id": "110"
       },
+      "state": 7,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 16,
           "y": 19,
           "w": 42,
           "h": 60,
-          "kind_name": "BdyKind.Normal",
+          "kind_name": "Defend",
           "ally_flags": 1,
           "l": 24,
           "z": -12,
           "kind": 2000,
           "actions": [
             {
-              "type": "broken_defend",
+              "type": "v_broken_defend",
               "data": {
                 "id": "112"
               }
             },
             {
-              "type": "defend",
+              "type": "v_defend",
               "data": {
                 "id": "111"
               }
@@ -3044,18 +3009,8 @@
         "weaponact": 35,
         "cover": 0
       },
-      "state": 7,
-      "centerx": 39,
-      "centery": 79,
-      "state_name": "StateEnum._7",
-      "hit": {
-        "B": {
-          "id": "",
-          "wait": "i",
-          "facing": 2
-        }
-      },
-      "hold": {
+      "state_name": "StateEnum.Defend",
+      "key_down": {
         "B": {
           "id": "",
           "wait": "i",
@@ -3077,6 +3032,9 @@
       "next": {
         "id": "113"
       },
+      "state": 8,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 5,
@@ -3104,7 +3062,7 @@
           "kind_name": "ItrKind.SuperPunchMe",
           "motionless": 0,
           "shaking": 0,
-          "test": "victim_type==character"
+          "test": "victim_type==2"
         }
       ],
       "wpoint": {
@@ -3114,10 +3072,7 @@
         "weaponact": 21,
         "cover": 0
       },
-      "state": 8,
-      "centerx": 39,
-      "centery": 79,
-      "state_name": "StateEnum._8",
+      "state_name": "StateEnum.BrokenDefend",
       "dvx": -1
     },
     "113": {
@@ -3134,6 +3089,9 @@
       "next": {
         "id": "114"
       },
+      "state": 8,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 5,
@@ -3161,7 +3119,7 @@
           "kind_name": "ItrKind.SuperPunchMe",
           "motionless": 0,
           "shaking": 0,
-          "test": "victim_type==character"
+          "test": "victim_type==2"
         }
       ],
       "wpoint": {
@@ -3171,10 +3129,7 @@
         "weaponact": 20,
         "cover": 0
       },
-      "state": 8,
-      "centerx": 39,
-      "centery": 79,
-      "state_name": "StateEnum._8",
+      "state_name": "StateEnum.BrokenDefend",
       "dvx": -1
     },
     "114": {
@@ -3191,6 +3146,9 @@
       "next": {
         "id": "auto"
       },
+      "state": 8,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 5,
@@ -3218,7 +3176,7 @@
           "kind_name": "ItrKind.SuperPunchMe",
           "motionless": 0,
           "shaking": 0,
-          "test": "victim_type==character"
+          "test": "victim_type==2"
         }
       ],
       "wpoint": {
@@ -3228,10 +3186,7 @@
         "weaponact": 35,
         "cover": 0
       },
-      "state": 8,
-      "centerx": 39,
-      "centery": 79,
-      "state_name": "StateEnum._8",
+      "state_name": "StateEnum.BrokenDefend",
       "dvx": -1
     },
     "115": {
@@ -3248,6 +3203,9 @@
       "next": {
         "id": "auto"
       },
+      "state": 15,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 24,
@@ -3268,10 +3226,7 @@
         "weaponact": 24,
         "cover": 0
       },
-      "state": 15,
-      "centerx": 39,
-      "centery": 79,
-      "state_name": "StateEnum._15",
+      "state_name": "StateEnum.Normal",
       "sound": "data/009.wav.mp3"
     },
     "116": {
@@ -3288,6 +3243,9 @@
       "next": {
         "id": "117"
       },
+      "state": 15,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 24,
@@ -3308,10 +3266,7 @@
         "weaponact": 10,
         "cover": 0
       },
-      "state": 15,
-      "centerx": 39,
-      "centery": 79,
-      "state_name": "StateEnum._15",
+      "state_name": "StateEnum.Normal",
       "sound": "data/009.wav.mp3"
     },
     "117": {
@@ -3328,6 +3283,9 @@
       "next": {
         "id": "auto"
       },
+      "state": 15,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 24,
@@ -3348,10 +3306,7 @@
         "weaponact": 10,
         "cover": 0
       },
-      "state": 15,
-      "centerx": 39,
-      "centery": 79,
-      "state_name": "StateEnum._15"
+      "state_name": "StateEnum.Normal"
     },
     "120": {
       "id": "120",
@@ -3367,6 +3322,9 @@
       "next": {
         "id": "121"
       },
+      "state": 9,
+      "centerx": 36,
+      "centery": 79,
       "bdy": [
         {
           "x": 19,
@@ -3392,15 +3350,12 @@
         "x": 67,
         "y": 39,
         "hurtable": 1,
-        "decrease": 7,
+        "decrease": -7,
         "vaction": {
           "id": "131",
           "facing": 5
         }
       },
-      "state": 9,
-      "centerx": 36,
-      "centery": 79,
       "state_name": "StateEnum.Catching",
       "sound": "data/015.wav.mp3"
     },
@@ -3416,6 +3371,9 @@
       },
       "wait": 1,
       "next": {},
+      "state": 9,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 19,
@@ -3447,9 +3405,6 @@
           "facing": 5
         }
       },
-      "state": 9,
-      "centerx": 39,
-      "centery": 79,
       "state_name": "StateEnum.Catching",
       "hit": {
         "a": [
@@ -3479,6 +3434,9 @@
       "next": {
         "id": "123"
       },
+      "state": 9,
+      "centerx": 38,
+      "centery": 79,
       "bdy": [
         {
           "x": 19,
@@ -3504,15 +3462,12 @@
         "x": 61,
         "y": 39,
         "hurtable": 1,
-        "decrease": 7,
+        "decrease": -7,
         "vaction": {
           "id": "130",
           "facing": 5
         }
       },
-      "state": 9,
-      "centerx": 38,
-      "centery": 79,
       "state_name": "StateEnum.Catching"
     },
     "123": {
@@ -3529,6 +3484,9 @@
       "next": {
         "id": "121"
       },
+      "state": 9,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 19,
@@ -3554,7 +3512,7 @@
         "x": 58,
         "y": 38,
         "hurtable": 1,
-        "decrease": 3,
+        "decrease": -3,
         "injury": 15,
         "shaking": 4,
         "vaction": {
@@ -3562,9 +3520,6 @@
           "facing": 5
         }
       },
-      "state": 9,
-      "centerx": 39,
-      "centery": 79,
       "state_name": "StateEnum.Catching",
       "sound": "data/014.wav.mp3"
     },
@@ -3580,6 +3535,9 @@
       },
       "wait": 7,
       "next": {},
+      "state": 10,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 26,
@@ -3607,9 +3565,6 @@
         "fronthurtact": 132,
         "backhurtact": 131
       },
-      "state": 10,
-      "centerx": 39,
-      "centery": 79,
       "state_name": "StateEnum.Caught"
     },
     "131": {
@@ -3624,6 +3579,9 @@
       },
       "wait": 7,
       "next": {},
+      "state": 10,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 26,
@@ -3651,9 +3609,6 @@
         "fronthurtact": 132,
         "backhurtact": 132
       },
-      "state": 10,
-      "centerx": 39,
-      "centery": 79,
       "state_name": "StateEnum.Caught"
     },
     "132": {
@@ -3668,6 +3623,9 @@
       },
       "wait": 7,
       "next": {},
+      "state": 10,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 26,
@@ -3695,9 +3653,6 @@
         "fronthurtact": 131,
         "backhurtact": 131
       },
-      "state": 10,
-      "centerx": 39,
-      "centery": 79,
       "state_name": "StateEnum.Caught"
     },
     "133": {
@@ -3712,6 +3667,9 @@
       },
       "wait": 7,
       "next": {},
+      "state": 10,
+      "centerx": 39,
+      "centery": 79,
       "wpoint": {
         "kind": 1,
         "x": 35,
@@ -3724,9 +3682,6 @@
         "x": 33,
         "y": 36
       },
-      "state": 10,
-      "centerx": 39,
-      "centery": 79,
       "state_name": "StateEnum.Caught"
     },
     "134": {
@@ -3741,6 +3696,9 @@
       },
       "wait": 7,
       "next": {},
+      "state": 10,
+      "centerx": 39,
+      "centery": 79,
       "wpoint": {
         "kind": 1,
         "x": 41,
@@ -3753,9 +3711,6 @@
         "x": 37,
         "y": 28
       },
-      "state": 10,
-      "centerx": 39,
-      "centery": 79,
       "state_name": "StateEnum.Caught"
     },
     "135": {
@@ -3770,6 +3725,9 @@
       },
       "wait": 7,
       "next": {},
+      "state": 10,
+      "centerx": 39,
+      "centery": 79,
       "wpoint": {
         "kind": 1,
         "x": 40,
@@ -3782,9 +3740,6 @@
         "x": 31,
         "y": 22
       },
-      "state": 10,
-      "centerx": 39,
-      "centery": 79,
       "state_name": "StateEnum.Caught"
     },
     "136": {
@@ -3799,6 +3754,9 @@
       },
       "wait": 7,
       "next": {},
+      "state": 10,
+      "centerx": 39,
+      "centery": 79,
       "wpoint": {
         "kind": 1,
         "x": 24,
@@ -3811,9 +3769,6 @@
         "x": 27,
         "y": 46
       },
-      "state": 10,
-      "centerx": 39,
-      "centery": 79,
       "state_name": "StateEnum.Caught"
     },
     "137": {
@@ -3828,6 +3783,9 @@
       },
       "wait": 7,
       "next": {},
+      "state": 10,
+      "centerx": 39,
+      "centery": 71,
       "wpoint": {
         "kind": 1,
         "x": 33,
@@ -3840,9 +3798,6 @@
         "x": 33,
         "y": 68
       },
-      "state": 10,
-      "centerx": 39,
-      "centery": 71,
       "state_name": "StateEnum.Caught"
     },
     "138": {
@@ -3857,6 +3812,9 @@
       },
       "wait": 7,
       "next": {},
+      "state": 10,
+      "centerx": 39,
+      "centery": 79,
       "wpoint": {
         "kind": 1,
         "x": 38,
@@ -3869,9 +3827,6 @@
         "x": 34,
         "y": 54
       },
-      "state": 10,
-      "centerx": 39,
-      "centery": 79,
       "state_name": "StateEnum.Caught"
     },
     "139": {
@@ -3886,6 +3841,9 @@
       },
       "wait": 7,
       "next": {},
+      "state": 10,
+      "centerx": 39,
+      "centery": 79,
       "wpoint": {
         "kind": 1,
         "x": 22,
@@ -3898,9 +3856,6 @@
         "x": 40,
         "y": 36
       },
-      "state": 10,
-      "centerx": 39,
-      "centery": 79,
       "state_name": "StateEnum.Caught"
     },
     "140": {
@@ -3915,6 +3870,9 @@
       },
       "wait": 7,
       "next": {},
+      "state": 10,
+      "centerx": 39,
+      "centery": 79,
       "wpoint": {
         "kind": 1,
         "x": 23,
@@ -3927,9 +3885,6 @@
         "x": 36,
         "y": 38
       },
-      "state": 10,
-      "centerx": 39,
-      "centery": 79,
       "state_name": "StateEnum.Caught"
     },
     "141": {
@@ -3944,6 +3899,9 @@
       },
       "wait": 7,
       "next": {},
+      "state": 10,
+      "centerx": 39,
+      "centery": 79,
       "wpoint": {
         "kind": 1,
         "x": 30,
@@ -3956,9 +3914,6 @@
         "x": 44,
         "y": 40
       },
-      "state": 10,
-      "centerx": 39,
-      "centery": 79,
       "state_name": "StateEnum.Caught"
     },
     "142": {
@@ -3973,6 +3928,9 @@
       },
       "wait": 7,
       "next": {},
+      "state": 10,
+      "centerx": 39,
+      "centery": 79,
       "wpoint": {
         "kind": 1,
         "x": 32,
@@ -3985,9 +3943,6 @@
         "x": 46,
         "y": 51
       },
-      "state": 10,
-      "centerx": 39,
-      "centery": 79,
       "state_name": "StateEnum.Caught"
     },
     "143": {
@@ -4002,6 +3957,9 @@
       },
       "wait": 7,
       "next": {},
+      "state": 10,
+      "centerx": 39,
+      "centery": 74,
       "wpoint": {
         "kind": 1,
         "x": 30,
@@ -4014,9 +3972,6 @@
         "x": 45,
         "y": 66
       },
-      "state": 10,
-      "centerx": 39,
-      "centery": 74,
       "state_name": "StateEnum.Caught"
     },
     "144": {
@@ -4031,6 +3986,9 @@
       },
       "wait": 7,
       "next": {},
+      "state": 10,
+      "centerx": 39,
+      "centery": 79,
       "wpoint": {
         "kind": 1,
         "x": 39,
@@ -4043,9 +4001,6 @@
         "x": 42,
         "y": 55
       },
-      "state": 10,
-      "centerx": 39,
-      "centery": 79,
       "state_name": "StateEnum.Caught"
     },
     "180": {
@@ -4060,6 +4015,9 @@
       },
       "wait": 7,
       "next": {},
+      "state": 12,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 25,
@@ -4083,14 +4041,14 @@
           "h": 44,
           "injury": 30,
           "ally_flags": 3,
-          "vrest": 34,
+          "vrest": 32,
           "dvx": 1,
           "fall": 140,
           "bdefend": 20,
           "l": 24,
           "z": -12,
           "kind_name": "ItrKind.CharacterThrew",
-          "test": "attacker_threw==1&attacker_type==character"
+          "test": "attacker_threw==1&attacker_type==2"
         }
       ],
       "wpoint": {
@@ -4100,9 +4058,6 @@
         "weaponact": 21,
         "cover": 0
       },
-      "state": 12,
-      "centerx": 39,
-      "centery": 79,
       "state_name": "StateEnum.Falling"
     },
     "181": {
@@ -4117,6 +4072,9 @@
       },
       "wait": 7,
       "next": {},
+      "state": 12,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 22,
@@ -4140,14 +4098,14 @@
           "h": 26,
           "injury": 30,
           "ally_flags": 3,
-          "vrest": 34,
+          "vrest": 32,
           "dvx": 1,
           "fall": 140,
           "bdefend": 20,
           "l": 24,
           "z": -12,
           "kind_name": "ItrKind.CharacterThrew",
-          "test": "attacker_threw==1&attacker_type==character"
+          "test": "attacker_threw==1&attacker_type==2"
         },
         {
           "kind": 4,
@@ -4157,14 +4115,14 @@
           "h": 29,
           "injury": 30,
           "ally_flags": 3,
-          "vrest": 34,
+          "vrest": 32,
           "dvx": 1,
           "fall": 140,
           "bdefend": 20,
           "l": 24,
           "z": -12,
           "kind_name": "ItrKind.CharacterThrew",
-          "test": "attacker_threw==1&attacker_type==character"
+          "test": "attacker_threw==1&attacker_type==2"
         }
       ],
       "wpoint": {
@@ -4174,10 +4132,15 @@
         "weaponact": 21,
         "cover": 0
       },
-      "state": 12,
-      "centerx": 39,
-      "centery": 79,
-      "state_name": "StateEnum.Falling"
+      "state_name": "StateEnum.Falling",
+      "hit": {
+        "j": [
+          {
+            "id": "100",
+            "expression": "hp>0"
+          }
+        ]
+      }
     },
     "182": {
       "id": "182",
@@ -4191,6 +4154,9 @@
       },
       "wait": 7,
       "next": {},
+      "state": 12,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 27,
@@ -4214,14 +4180,14 @@
           "h": 26,
           "injury": 30,
           "ally_flags": 3,
-          "vrest": 34,
+          "vrest": 32,
           "dvx": 1,
           "fall": 140,
           "bdefend": 20,
           "l": 24,
           "z": -12,
           "kind_name": "ItrKind.CharacterThrew",
-          "test": "attacker_threw==1&attacker_type==character"
+          "test": "attacker_threw==1&attacker_type==2"
         }
       ],
       "wpoint": {
@@ -4231,9 +4197,6 @@
         "weaponact": 21,
         "cover": 0
       },
-      "state": 12,
-      "centerx": 39,
-      "centery": 79,
       "state_name": "StateEnum.Falling",
       "hit": {
         "j": [
@@ -4256,6 +4219,9 @@
       },
       "wait": 7,
       "next": {},
+      "state": 12,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 22,
@@ -4279,14 +4245,14 @@
           "h": 27,
           "injury": 30,
           "ally_flags": 3,
-          "vrest": 34,
+          "vrest": 32,
           "dvx": 1,
           "fall": 140,
           "bdefend": 20,
           "l": 24,
           "z": -12,
           "kind_name": "ItrKind.CharacterThrew",
-          "test": "attacker_threw==1&attacker_type==character"
+          "test": "attacker_threw==1&attacker_type==2"
         },
         {
           "kind": 4,
@@ -4296,14 +4262,14 @@
           "h": 21,
           "injury": 30,
           "ally_flags": 3,
-          "vrest": 34,
+          "vrest": 32,
           "dvx": 1,
           "fall": 140,
           "bdefend": 20,
           "l": 24,
           "z": -12,
           "kind_name": "ItrKind.CharacterThrew",
-          "test": "attacker_threw==1&attacker_type==character"
+          "test": "attacker_threw==1&attacker_type==2"
         }
       ],
       "wpoint": {
@@ -4313,9 +4279,6 @@
         "weaponact": 33,
         "cover": 0
       },
-      "state": 12,
-      "centerx": 39,
-      "centery": 79,
       "state_name": "StateEnum.Falling"
     },
     "184": {
@@ -4330,6 +4293,9 @@
       },
       "wait": 7,
       "next": {},
+      "state": 12,
+      "centerx": 39,
+      "centery": 72,
       "wpoint": {
         "kind": 1,
         "x": 36,
@@ -4337,9 +4303,6 @@
         "weaponact": 32,
         "cover": 0
       },
-      "state": 12,
-      "centerx": 39,
-      "centery": 72,
       "state_name": "StateEnum.Falling"
     },
     "185": {
@@ -4354,6 +4317,9 @@
       },
       "wait": 7,
       "next": {},
+      "state": 12,
+      "centerx": 39,
+      "centery": 79,
       "wpoint": {
         "kind": 1,
         "x": 37,
@@ -4361,9 +4327,6 @@
         "weaponact": 31,
         "cover": 0
       },
-      "state": 12,
-      "centerx": 39,
-      "centery": 79,
       "state_name": "StateEnum.Falling"
     },
     "186": {
@@ -4378,6 +4341,9 @@
       },
       "wait": 7,
       "next": {},
+      "state": 12,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 31,
@@ -4401,14 +4367,14 @@
           "h": 50,
           "injury": 30,
           "ally_flags": 3,
-          "vrest": 34,
+          "vrest": 32,
           "dvx": 1,
           "fall": 140,
           "bdefend": 20,
           "l": 24,
           "z": -12,
           "kind_name": "ItrKind.CharacterThrew",
-          "test": "attacker_threw==1&attacker_type==character"
+          "test": "attacker_threw==1&attacker_type==2"
         }
       ],
       "wpoint": {
@@ -4418,9 +4384,6 @@
         "weaponact": 34,
         "cover": 0
       },
-      "state": 12,
-      "centerx": 39,
-      "centery": 79,
       "state_name": "StateEnum.Falling"
     },
     "187": {
@@ -4435,6 +4398,9 @@
       },
       "wait": 7,
       "next": {},
+      "state": 12,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 28,
@@ -4458,14 +4424,14 @@
           "h": 46,
           "injury": 30,
           "ally_flags": 3,
-          "vrest": 34,
+          "vrest": 32,
           "dvx": 1,
           "fall": 140,
           "bdefend": 20,
           "l": 24,
           "z": -12,
           "kind_name": "ItrKind.CharacterThrew",
-          "test": "attacker_threw==1&attacker_type==character"
+          "test": "attacker_threw==1&attacker_type==2"
         },
         {
           "kind": 4,
@@ -4475,14 +4441,14 @@
           "h": 29,
           "injury": 30,
           "ally_flags": 3,
-          "vrest": 34,
+          "vrest": 32,
           "dvx": 1,
           "fall": 140,
           "bdefend": 20,
           "l": 24,
           "z": -12,
           "kind_name": "ItrKind.CharacterThrew",
-          "test": "attacker_threw==1&attacker_type==character"
+          "test": "attacker_threw==1&attacker_type==2"
         }
       ],
       "wpoint": {
@@ -4492,10 +4458,15 @@
         "weaponact": 20,
         "cover": 0
       },
-      "state": 12,
-      "centerx": 39,
-      "centery": 79,
-      "state_name": "StateEnum.Falling"
+      "state_name": "StateEnum.Falling",
+      "hit": {
+        "j": [
+          {
+            "id": "108",
+            "expression": "hp>0"
+          }
+        ]
+      }
     },
     "188": {
       "id": "188",
@@ -4509,6 +4480,9 @@
       },
       "wait": 7,
       "next": {},
+      "state": 12,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 30,
@@ -4532,14 +4506,14 @@
           "h": 23,
           "injury": 30,
           "ally_flags": 3,
-          "vrest": 34,
+          "vrest": 32,
           "dvx": 1,
           "fall": 140,
           "bdefend": 20,
           "l": 24,
           "z": -12,
           "kind_name": "ItrKind.CharacterThrew",
-          "test": "attacker_threw==1&attacker_type==character"
+          "test": "attacker_threw==1&attacker_type==2"
         }
       ],
       "wpoint": {
@@ -4549,9 +4523,6 @@
         "weaponact": 22,
         "cover": 0
       },
-      "state": 12,
-      "centerx": 39,
-      "centery": 79,
       "state_name": "StateEnum.Falling",
       "hit": {
         "j": [
@@ -4574,6 +4545,9 @@
       },
       "wait": 7,
       "next": {},
+      "state": 12,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 30,
@@ -4597,14 +4571,14 @@
           "h": 28,
           "injury": 30,
           "ally_flags": 3,
-          "vrest": 34,
+          "vrest": 32,
           "dvx": 1,
           "fall": 140,
           "bdefend": 20,
           "l": 24,
           "z": -12,
           "kind_name": "ItrKind.CharacterThrew",
-          "test": "attacker_threw==1&attacker_type==character"
+          "test": "attacker_threw==1&attacker_type==2"
         },
         {
           "kind": 4,
@@ -4614,14 +4588,14 @@
           "h": 28,
           "injury": 30,
           "ally_flags": 3,
-          "vrest": 34,
+          "vrest": 32,
           "dvx": 1,
           "fall": 140,
           "bdefend": 20,
           "l": 24,
           "z": -12,
           "kind_name": "ItrKind.CharacterThrew",
-          "test": "attacker_threw==1&attacker_type==character"
+          "test": "attacker_threw==1&attacker_type==2"
         }
       ],
       "wpoint": {
@@ -4631,9 +4605,6 @@
         "weaponact": 25,
         "cover": 0
       },
-      "state": 12,
-      "centerx": 39,
-      "centery": 79,
       "state_name": "StateEnum.Falling"
     },
     "190": {
@@ -4648,6 +4619,9 @@
       },
       "wait": 7,
       "next": {},
+      "state": 12,
+      "centerx": 39,
+      "centery": 75,
       "wpoint": {
         "kind": 1,
         "x": 31,
@@ -4655,9 +4629,6 @@
         "weaponact": 24,
         "cover": 0
       },
-      "state": 12,
-      "centerx": 39,
-      "centery": 75,
       "state_name": "StateEnum.Falling"
     },
     "191": {
@@ -4672,6 +4643,9 @@
       },
       "wait": 7,
       "next": {},
+      "state": 12,
+      "centerx": 39,
+      "centery": 79,
       "wpoint": {
         "kind": 1,
         "x": 38,
@@ -4679,9 +4653,6 @@
         "weaponact": 25,
         "cover": 0
       },
-      "state": 12,
-      "centerx": 39,
-      "centery": 79,
       "state_name": "StateEnum.Falling"
     },
     "200": {
@@ -4698,6 +4669,9 @@
       "next": {
         "id": "201"
       },
+      "state": 13,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 10,
@@ -4718,10 +4692,7 @@
         "weaponact": 20,
         "cover": 0
       },
-      "state": 13,
-      "centerx": 39,
-      "centery": 79,
-      "state_name": "StateEnum._15"
+      "state_name": "StateEnum.Normal"
     },
     "201": {
       "id": "201",
@@ -4738,6 +4709,9 @@
         "id": "202",
         "blink_time": 60
       },
+      "state": 13,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 8,
@@ -4745,7 +4719,7 @@
           "w": 67,
           "h": 73,
           "kind_name": "BdyKind.Normal",
-          "ally_flags": 1,
+          "ally_flags": 3,
           "l": 24,
           "z": -12,
           "kind": 0
@@ -4775,10 +4749,9 @@
         "weaponact": 35,
         "cover": 0
       },
-      "state": 13,
-      "centerx": 39,
-      "centery": 79,
-      "state_name": "StateEnum.Frozen"
+      "state_name": "StateEnum.Frozen",
+      "friction_x": 1,
+      "friction_z": 0.5
     },
     "202": {
       "id": "202",
@@ -4794,6 +4767,9 @@
       "next": {
         "id": "182"
       },
+      "state": 15,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 8,
@@ -4814,10 +4790,7 @@
         "weaponact": 20,
         "cover": 0
       },
-      "state": 15,
-      "centerx": 39,
-      "centery": 79,
-      "state_name": "StateEnum._15",
+      "state_name": "StateEnum.Normal",
       "dvx": -2,
       "dvy": 0.855
     },
@@ -4835,6 +4808,9 @@
       "next": {
         "id": "204"
       },
+      "state": 18,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 22,
@@ -4858,16 +4834,16 @@
           "injury": 30,
           "effect": 20,
           "ally_flags": 3,
-          "vrest": 14,
+          "vrest": 12,
           "dvx": -3,
-          "dvy": 3.54,
+          "dvy": 3.5,
           "fall": 140,
           "bdefend": 32,
           "l": 24,
           "z": -12,
           "kind_name": "ItrKind.Normal",
           "effect_name": "ItrEffect.MFire1",
-          "test": "(victim_state!=1004|attacker_type!=character)&victim_type!=character|(victim_state!=19&victim_state!=18)"
+          "test": "victim_type!=2|(victim_state!=19&victim_state!=18)"
         }
       ],
       "wpoint": {
@@ -4877,10 +4853,7 @@
         "weaponact": 21,
         "cover": 0
       },
-      "state": 18,
-      "centerx": 39,
-      "centery": 79,
-      "state_name": "StateEnum._18"
+      "state_name": "StateEnum.Burning"
     },
     "204": {
       "id": "204",
@@ -4896,6 +4869,9 @@
       "next": {
         "id": "203"
       },
+      "state": 18,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 22,
@@ -4919,16 +4895,16 @@
           "injury": 30,
           "effect": 20,
           "ally_flags": 3,
-          "vrest": 14,
+          "vrest": 12,
           "dvx": -3,
-          "dvy": 3.54,
+          "dvy": 3.5,
           "fall": 140,
           "bdefend": 32,
           "l": 24,
           "z": -12,
           "kind_name": "ItrKind.Normal",
           "effect_name": "ItrEffect.MFire1",
-          "test": "(victim_state!=1004|attacker_type!=character)&victim_type!=character|(victim_state!=19&victim_state!=18)"
+          "test": "victim_type!=2|(victim_state!=19&victim_state!=18)"
         }
       ],
       "wpoint": {
@@ -4938,10 +4914,7 @@
         "weaponact": 21,
         "cover": 0
       },
-      "state": 18,
-      "centerx": 39,
-      "centery": 79,
-      "state_name": "StateEnum._18"
+      "state_name": "StateEnum.Burning"
     },
     "205": {
       "id": "205",
@@ -4957,6 +4930,9 @@
       "next": {
         "id": "206"
       },
+      "state": 18,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 22,
@@ -4980,16 +4956,16 @@
           "injury": 30,
           "effect": 20,
           "ally_flags": 3,
-          "vrest": 14,
+          "vrest": 12,
           "dvx": -3,
-          "dvy": 3.54,
+          "dvy": 3.5,
           "fall": 140,
           "bdefend": 32,
           "l": 24,
           "z": -12,
           "kind_name": "ItrKind.Normal",
           "effect_name": "ItrEffect.MFire1",
-          "test": "(victim_state!=1004|attacker_type!=character)&victim_type!=character|(victim_state!=19&victim_state!=18)"
+          "test": "victim_type!=2|(victim_state!=19&victim_state!=18)"
         }
       ],
       "wpoint": {
@@ -4999,10 +4975,7 @@
         "weaponact": 20,
         "cover": 0
       },
-      "state": 18,
-      "centerx": 39,
-      "centery": 79,
-      "state_name": "StateEnum._18"
+      "state_name": "StateEnum.Burning"
     },
     "206": {
       "id": "206",
@@ -5018,6 +4991,9 @@
       "next": {
         "id": "205"
       },
+      "state": 18,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 22,
@@ -5041,16 +5017,16 @@
           "injury": 30,
           "effect": 20,
           "ally_flags": 3,
-          "vrest": 14,
+          "vrest": 12,
           "dvx": -3,
-          "dvy": 3.54,
+          "dvy": 3.5,
           "fall": 140,
           "bdefend": 32,
           "l": 24,
           "z": -12,
           "kind_name": "ItrKind.Normal",
           "effect_name": "ItrEffect.MFire1",
-          "test": "(victim_state!=1004|attacker_type!=character)&victim_type!=character|(victim_state!=19&victim_state!=18)"
+          "test": "victim_type!=2|(victim_state!=19&victim_state!=18)"
         }
       ],
       "wpoint": {
@@ -5060,10 +5036,7 @@
         "weaponact": 20,
         "cover": 0
       },
-      "state": 18,
-      "centerx": 39,
-      "centery": 79,
-      "state_name": "StateEnum._18"
+      "state_name": "StateEnum.Burning"
     },
     "207": {
       "id": "207",
@@ -5077,6 +5050,9 @@
       },
       "wait": 5,
       "next": {},
+      "state": 15,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 44,
@@ -5108,10 +5084,7 @@
         "weaponact": 22,
         "cover": 0
       },
-      "state": 15,
-      "centerx": 39,
-      "centery": 79,
-      "state_name": "StateEnum._15"
+      "state_name": "StateEnum.Normal"
     },
     "210": {
       "id": "210",
@@ -5127,6 +5100,9 @@
       "next": {
         "id": "211"
       },
+      "state": 4,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 33,
@@ -5158,10 +5134,12 @@
         "weaponact": 20,
         "cover": 0
       },
-      "state": 4,
-      "centerx": 39,
-      "centery": 79,
       "state_name": "StateEnum.Jump",
+      "key_down": {
+        "B": {
+          "facing": 3
+        }
+      },
       "hit": {
         "B": {
           "facing": 3
@@ -5187,6 +5165,9 @@
       "next": {
         "id": "212"
       },
+      "state": 4,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 15,
@@ -5218,11 +5199,13 @@
         "weaponact": 21,
         "cover": 0
       },
-      "state": 4,
-      "centerx": 39,
-      "centery": 79,
       "state_name": "StateEnum.Jump",
       "sound": "data/017.wav.mp3",
+      "key_down": {
+        "B": {
+          "facing": 3
+        }
+      },
       "hit": {
         "B": {
           "facing": 3
@@ -5247,6 +5230,9 @@
       },
       "wait": 3,
       "next": {},
+      "state": 4,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 31,
@@ -5278,14 +5264,8 @@
         "weaponact": 20,
         "cover": 0
       },
-      "state": 4,
-      "centerx": 39,
-      "centery": 79,
       "state_name": "StateEnum.Jump",
-      "hit": {
-        "B": {
-          "facing": 3
-        },
+      "key_down": {
         "a": [
           {
             "id": "52",
@@ -5301,7 +5281,31 @@
             "id": "80",
             "facing": 3
           }
-        ]
+        ],
+        "B": {
+          "facing": 3
+        }
+      },
+      "hit": {
+        "a": [
+          {
+            "id": "52",
+            "facing": 3,
+            "expression": "(weapon_type==4|weapon_type==5)|(press_F_B!=0&weapon_type!=0)"
+          },
+          {
+            "id": "30",
+            "facing": 3,
+            "expression": "weapon_type==3|weapon_type==1"
+          },
+          {
+            "id": "80",
+            "facing": 3
+          }
+        ],
+        "B": {
+          "facing": 3
+        }
       },
       "hold": {
         "B": {
@@ -5323,6 +5327,9 @@
       "next": {
         "id": "216"
       },
+      "state": 5,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 46,
@@ -5365,11 +5372,8 @@
         "weaponact": 25,
         "cover": 0
       },
-      "state": 5,
-      "centerx": 39,
-      "centery": 79,
       "state_name": "StateEnum.Dash",
-      "hit": {
+      "key_down": {
         "B": {
           "id": "214",
           "wait": "i",
@@ -5406,6 +5410,9 @@
       "next": {
         "id": "217"
       },
+      "state": 5,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 18,
@@ -5426,11 +5433,8 @@
         "weaponact": 21,
         "cover": 0
       },
-      "state": 5,
-      "centerx": 39,
-      "centery": 79,
       "state_name": "StateEnum.Dash",
-      "hit": {
+      "key_down": {
         "B": {
           "id": "213",
           "wait": "i",
@@ -5452,6 +5456,9 @@
       "next": {
         "id": "auto"
       },
+      "state": 15,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 26,
@@ -5472,10 +5479,7 @@
         "weaponact": 21,
         "cover": 0
       },
-      "state": 15,
-      "centerx": 39,
-      "centery": 79,
-      "state_name": "StateEnum._15",
+      "state_name": "StateEnum.Normal",
       "sound": "data/012.wav.mp3",
       "hit": {
         "d": {
@@ -5502,7 +5506,9 @@
             "expression": "trend_x==1"
           }
         ]
-      }
+      },
+      "friction_x": 1,
+      "friction_z": 0.5
     },
     "216": {
       "id": "216",
@@ -5516,6 +5522,9 @@
       },
       "wait": 5,
       "next": {},
+      "state": 5,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 42,
@@ -5547,11 +5556,8 @@
         "weaponact": 21,
         "cover": 0
       },
-      "state": 5,
-      "centerx": 39,
-      "centery": 79,
       "state_name": "StateEnum.Dash",
-      "hit": {
+      "key_down": {
         "B": {
           "id": "217",
           "wait": "i",
@@ -5586,6 +5592,9 @@
       },
       "wait": 5,
       "next": {},
+      "state": 5,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 18,
@@ -5606,11 +5615,8 @@
         "weaponact": 35,
         "cover": 0
       },
-      "state": 5,
-      "centerx": 39,
-      "centery": 79,
       "state_name": "StateEnum.Dash",
-      "hit": {
+      "key_down": {
         "B": {
           "id": "216",
           "wait": "i",
@@ -5632,6 +5638,9 @@
       "next": {
         "id": "auto"
       },
+      "state": 15,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 17,
@@ -5663,10 +5672,7 @@
         "weaponact": 35,
         "cover": 0
       },
-      "state": 15,
-      "centerx": 39,
-      "centery": 79,
-      "state_name": "StateEnum._15",
+      "state_name": "StateEnum.Normal",
       "sound": "data/009.wav.mp3",
       "dvx": 0.5
     },
@@ -5684,6 +5690,9 @@
       "next": {
         "id": "auto"
       },
+      "state": 15,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 26,
@@ -5704,11 +5713,10 @@
         "weaponact": 21,
         "cover": 0
       },
-      "state": 15,
-      "centerx": 39,
-      "centery": 79,
-      "state_name": "StateEnum._15",
-      "sound": "data/012.wav.mp3"
+      "state_name": "StateEnum.Normal",
+      "sound": "data/012.wav.mp3",
+      "friction_x": 1,
+      "friction_z": 0.5
     },
     "220": {
       "id": "220",
@@ -5724,6 +5732,9 @@
       "next": {
         "id": "221"
       },
+      "state": 11,
+      "centerx": 47,
+      "centery": 79,
       "bdy": [
         {
           "x": 47,
@@ -5755,9 +5766,6 @@
         "weaponact": 35,
         "cover": 0
       },
-      "state": 11,
-      "centerx": 47,
-      "centery": 79,
       "state_name": "StateEnum.Injured"
     },
     "221": {
@@ -5774,6 +5782,9 @@
       "next": {
         "id": "auto"
       },
+      "state": 11,
+      "centerx": 44,
+      "centery": 79,
       "bdy": [
         {
           "x": 46,
@@ -5805,9 +5816,6 @@
         "weaponact": 35,
         "cover": 0
       },
-      "state": 11,
-      "centerx": 44,
-      "centery": 79,
       "state_name": "StateEnum.Injured"
     },
     "222": {
@@ -5824,6 +5832,9 @@
       "next": {
         "id": "223"
       },
+      "state": 11,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 11,
@@ -5855,9 +5866,6 @@
         "weaponact": 20,
         "cover": 0
       },
-      "state": 11,
-      "centerx": 39,
-      "centery": 79,
       "state_name": "StateEnum.Injured"
     },
     "223": {
@@ -5874,6 +5882,9 @@
       "next": {
         "id": "auto"
       },
+      "state": 11,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 12,
@@ -5905,9 +5916,6 @@
         "weaponact": 21,
         "cover": 0
       },
-      "state": 11,
-      "centerx": 39,
-      "centery": 79,
       "state_name": "StateEnum.Injured"
     },
     "224": {
@@ -5924,6 +5932,9 @@
       "next": {
         "id": "225"
       },
+      "state": 11,
+      "centerx": 48,
+      "centery": 79,
       "bdy": [
         {
           "x": 32,
@@ -5955,9 +5966,6 @@
         "weaponact": 35,
         "cover": 0
       },
-      "state": 11,
-      "centerx": 48,
-      "centery": 79,
       "state_name": "StateEnum.Injured"
     },
     "225": {
@@ -5974,6 +5982,9 @@
       "next": {
         "id": "auto"
       },
+      "state": 11,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 24,
@@ -5994,9 +6005,6 @@
         "weaponact": 20,
         "cover": 0
       },
-      "state": 11,
-      "centerx": 39,
-      "centery": 79,
       "state_name": "StateEnum.Injured"
     },
     "226": {
@@ -6013,6 +6021,9 @@
       "next": {
         "id": "227"
       },
+      "state": 16,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 27,
@@ -6040,7 +6051,7 @@
           "kind_name": "ItrKind.SuperPunchMe",
           "motionless": 0,
           "shaking": 0,
-          "test": "victim_type==character"
+          "test": "victim_type==2"
         }
       ],
       "wpoint": {
@@ -6050,9 +6061,6 @@
         "weaponact": 35,
         "cover": 0
       },
-      "state": 16,
-      "centerx": 39,
-      "centery": 79,
       "state_name": "StateEnum.Tired"
     },
     "227": {
@@ -6069,6 +6077,9 @@
       "next": {
         "id": "228"
       },
+      "state": 16,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 28,
@@ -6096,7 +6107,7 @@
           "kind_name": "ItrKind.SuperPunchMe",
           "motionless": 0,
           "shaking": 0,
-          "test": "victim_type==character"
+          "test": "victim_type==2"
         }
       ],
       "wpoint": {
@@ -6106,9 +6117,6 @@
         "weaponact": 35,
         "cover": 0
       },
-      "state": 16,
-      "centerx": 39,
-      "centery": 79,
       "state_name": "StateEnum.Tired"
     },
     "228": {
@@ -6125,6 +6133,9 @@
       "next": {
         "id": "229"
       },
+      "state": 16,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 28,
@@ -6152,7 +6163,7 @@
           "kind_name": "ItrKind.SuperPunchMe",
           "motionless": 0,
           "shaking": 0,
-          "test": "victim_type==character"
+          "test": "victim_type==2"
         }
       ],
       "wpoint": {
@@ -6162,9 +6173,6 @@
         "weaponact": 35,
         "cover": 0
       },
-      "state": 16,
-      "centerx": 39,
-      "centery": 79,
       "state_name": "StateEnum.Tired"
     },
     "229": {
@@ -6181,6 +6189,9 @@
       "next": {
         "id": "auto"
       },
+      "state": 16,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 29,
@@ -6208,7 +6219,7 @@
           "kind_name": "ItrKind.SuperPunchMe",
           "motionless": 0,
           "shaking": 0,
-          "test": "victim_type==character"
+          "test": "victim_type==2"
         }
       ],
       "wpoint": {
@@ -6218,9 +6229,6 @@
         "weaponact": 35,
         "cover": 0
       },
-      "state": 16,
-      "centerx": 39,
-      "centery": 79,
       "state_name": "StateEnum.Tired"
     },
     "230": {
@@ -6237,6 +6245,9 @@
       "next": {
         "id": "219"
       },
+      "state": 14,
+      "centerx": 39,
+      "centery": 72,
       "wpoint": {
         "kind": 1,
         "x": 35,
@@ -6244,10 +6255,9 @@
         "weaponact": 32,
         "cover": 0
       },
-      "state": 14,
-      "centerx": 39,
-      "centery": 72,
-      "state_name": "StateEnum.Lying"
+      "state_name": "StateEnum.Lying",
+      "friction_x": 1,
+      "friction_z": 0.5
     },
     "231": {
       "id": "231",
@@ -6263,6 +6273,9 @@
       "next": {
         "id": "219"
       },
+      "state": 14,
+      "centerx": 39,
+      "centery": 75,
       "wpoint": {
         "kind": 1,
         "x": 32,
@@ -6270,10 +6283,9 @@
         "weaponact": 24,
         "cover": 0
       },
-      "state": 14,
-      "centerx": 39,
-      "centery": 75,
-      "state_name": "StateEnum.Lying"
+      "state_name": "StateEnum.Lying",
+      "friction_x": 1,
+      "friction_z": 0.5
     },
     "232": {
       "id": "232",
@@ -6289,6 +6301,9 @@
       "next": {
         "id": "233"
       },
+      "state": 9,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 28,
@@ -6318,15 +6333,14 @@
           "facing": 5
         }
       },
-      "state": 9,
-      "centerx": 39,
-      "centery": 79,
       "state_name": "StateEnum.Catching",
       "hit": {
-        "B": {
-          "wait": "i",
-          "facing": 2
-        }
+        "B": [
+          {
+            "wait": "i",
+            "facing": 2
+          }
+        ]
       }
     },
     "233": {
@@ -6343,6 +6357,9 @@
       "next": {
         "id": "234"
       },
+      "state": 9,
+      "centerx": 45,
+      "centery": 79,
       "bdy": [
         {
           "x": 8,
@@ -6389,9 +6406,6 @@
           "facing": 5
         }
       },
-      "state": 9,
-      "centerx": 45,
-      "centery": 79,
       "state_name": "StateEnum.Catching",
       "sound": "data/007.wav.mp3"
     },
@@ -6409,6 +6423,9 @@
       "next": {
         "id": "auto"
       },
+      "state": 9,
+      "centerx": 45,
+      "centery": 79,
       "bdy": [
         {
           "x": 8,
@@ -6440,9 +6457,6 @@
         "weaponact": 25,
         "cover": 0
       },
-      "state": 9,
-      "centerx": 45,
-      "centery": 79,
       "state_name": "StateEnum.Catching"
     },
     "399": {
@@ -6457,6 +6471,9 @@
       },
       "wait": 1,
       "next": {},
+      "state": 0,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 21,
@@ -6470,10 +6487,7 @@
           "kind": 0
         }
       ],
-      "state": 0,
-      "centerx": 39,
-      "centery": 79,
-      "state_name": "StateEnum._0",
+      "state_name": "StateEnum.Standing",
       "hit": {
         "a": [
           {
@@ -6507,41 +6521,34 @@
           }
         ],
         "j": {
-          "id": "210"
+          "id": "210",
+          "facing": 3
         },
         "d": {
-          "id": "110"
-        },
-        "B": {
-          "id": "walking_0",
-          "facing": 2
-        },
-        "D": {
-          "id": "walking_0"
-        },
-        "U": {
-          "id": "walking_0"
-        },
-        "F": {
-          "id": "walking_0"
+          "id": "110",
+          "facing": 3
         },
         "FF": {
           "id": "running_0"
         }
       },
-      "hold": {
-        "B": {
+      "hold": {},
+      "key_down": {
+        "R": {
           "id": "walking_0",
-          "facing": 2
+          "facing": 3
+        },
+        "L": {
+          "id": "walking_0",
+          "facing": 3
         },
         "D": {
-          "id": "walking_0"
+          "id": "walking_0",
+          "facing": 3
         },
         "U": {
-          "id": "walking_0"
-        },
-        "F": {
-          "id": "walking_0"
+          "id": "walking_0",
+          "facing": 3
         }
       }
     },
@@ -6557,8 +6564,12 @@
       },
       "wait": 6,
       "next": {
-        "id": "walking_1"
+        "id": "walking_1",
+        "facing": 3
       },
+      "state": 1,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 28,
@@ -6585,7 +6596,7 @@
           "kind_name": "ItrKind.Catch",
           "motionless": 0,
           "shaking": 0,
-          "test": "victim_type==character&victim_state==16",
+          "test": "victim_type==2&victim_state==16",
           "catchingact": {
             "id": "120"
           },
@@ -6602,16 +6613,15 @@
         "weaponact": 21,
         "cover": 0
       },
-      "state": 1,
-      "centerx": 39,
-      "centery": 79,
-      "state_name": "StateEnum._1",
-      "hit": {
+      "state_name": "StateEnum.Walking",
+      "key_down": {
         "B": {
           "id": "",
           "wait": "i",
           "facing": 2
-        },
+        }
+      },
+      "hit": {
         "a": [
           {
             "id": [
@@ -6655,15 +6665,10 @@
           "id": "running_0"
         }
       },
-      "hold": {
-        "B": {
-          "id": "",
-          "wait": "i",
-          "facing": 2
-        }
-      },
-      "ctrl_spd_x": 2,
-      "ctrl_spd_z": 2
+      "dvx": 2,
+      "dvz": 2,
+      "ctrl_z": 1,
+      "ctrl_x": 1
     },
     "walking_1": {
       "id": "walking_1",
@@ -6677,8 +6682,12 @@
       },
       "wait": 6,
       "next": {
-        "id": "walking_2"
+        "id": "walking_2",
+        "facing": 3
       },
+      "state": 1,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 28,
@@ -6705,7 +6714,7 @@
           "kind_name": "ItrKind.Catch",
           "motionless": 0,
           "shaking": 0,
-          "test": "victim_type==character&victim_state==16",
+          "test": "victim_type==2&victim_state==16",
           "catchingact": {
             "id": "120"
           },
@@ -6722,16 +6731,15 @@
         "weaponact": 21,
         "cover": 0
       },
-      "state": 1,
-      "centerx": 39,
-      "centery": 79,
-      "state_name": "StateEnum._1",
-      "hit": {
+      "state_name": "StateEnum.Walking",
+      "key_down": {
         "B": {
           "id": "",
           "wait": "i",
           "facing": 2
-        },
+        }
+      },
+      "hit": {
         "a": [
           {
             "id": [
@@ -6775,15 +6783,10 @@
           "id": "running_0"
         }
       },
-      "hold": {
-        "B": {
-          "id": "",
-          "wait": "i",
-          "facing": 2
-        }
-      },
-      "ctrl_spd_x": 2,
-      "ctrl_spd_z": 2
+      "dvx": 2,
+      "dvz": 2,
+      "ctrl_z": 1,
+      "ctrl_x": 1
     },
     "walking_2": {
       "id": "walking_2",
@@ -6797,8 +6800,12 @@
       },
       "wait": 6,
       "next": {
-        "id": "walking_3"
+        "id": "walking_3",
+        "facing": 3
       },
+      "state": 1,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 28,
@@ -6825,7 +6832,7 @@
           "kind_name": "ItrKind.Catch",
           "motionless": 0,
           "shaking": 0,
-          "test": "victim_type==character&victim_state==16",
+          "test": "victim_type==2&victim_state==16",
           "catchingact": {
             "id": "120"
           },
@@ -6842,16 +6849,15 @@
         "weaponact": 22,
         "cover": 0
       },
-      "state": 1,
-      "centerx": 39,
-      "centery": 79,
-      "state_name": "StateEnum._1",
-      "hit": {
+      "state_name": "StateEnum.Walking",
+      "key_down": {
         "B": {
           "id": "",
           "wait": "i",
           "facing": 2
-        },
+        }
+      },
+      "hit": {
         "a": [
           {
             "id": [
@@ -6895,15 +6901,10 @@
           "id": "running_0"
         }
       },
-      "hold": {
-        "B": {
-          "id": "",
-          "wait": "i",
-          "facing": 2
-        }
-      },
-      "ctrl_spd_x": 2,
-      "ctrl_spd_z": 2
+      "dvx": 2,
+      "dvz": 2,
+      "ctrl_z": 1,
+      "ctrl_x": 1
     },
     "walking_3": {
       "id": "walking_3",
@@ -6917,8 +6918,12 @@
       },
       "wait": 6,
       "next": {
-        "id": "walking_4"
+        "id": "walking_4",
+        "facing": 3
       },
+      "state": 1,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 28,
@@ -6945,7 +6950,7 @@
           "kind_name": "ItrKind.Catch",
           "motionless": 0,
           "shaking": 0,
-          "test": "victim_type==character&victim_state==16",
+          "test": "victim_type==2&victim_state==16",
           "catchingact": {
             "id": "120"
           },
@@ -6962,16 +6967,15 @@
         "weaponact": 23,
         "cover": 0
       },
-      "state": 1,
-      "centerx": 39,
-      "centery": 79,
-      "state_name": "StateEnum._1",
-      "hit": {
+      "state_name": "StateEnum.Walking",
+      "key_down": {
         "B": {
           "id": "",
           "wait": "i",
           "facing": 2
-        },
+        }
+      },
+      "hit": {
         "a": [
           {
             "id": [
@@ -7015,15 +7019,10 @@
           "id": "running_0"
         }
       },
-      "hold": {
-        "B": {
-          "id": "",
-          "wait": "i",
-          "facing": 2
-        }
-      },
-      "ctrl_spd_x": 2,
-      "ctrl_spd_z": 2
+      "dvx": 2,
+      "dvz": 2,
+      "ctrl_z": 1,
+      "ctrl_x": 1
     },
     "walking_4": {
       "id": "walking_4",
@@ -7037,8 +7036,12 @@
       },
       "wait": 6,
       "next": {
-        "id": "walking_5"
+        "id": "walking_5",
+        "facing": 3
       },
+      "state": 1,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 28,
@@ -7065,7 +7068,7 @@
           "kind_name": "ItrKind.Catch",
           "motionless": 0,
           "shaking": 0,
-          "test": "victim_type==character&victim_state==16",
+          "test": "victim_type==2&victim_state==16",
           "catchingact": {
             "id": "120"
           },
@@ -7082,16 +7085,15 @@
         "weaponact": 22,
         "cover": 0
       },
-      "state": 1,
-      "centerx": 39,
-      "centery": 79,
-      "state_name": "StateEnum._1",
-      "hit": {
+      "state_name": "StateEnum.Walking",
+      "key_down": {
         "B": {
           "id": "",
           "wait": "i",
           "facing": 2
-        },
+        }
+      },
+      "hit": {
         "a": [
           {
             "id": [
@@ -7135,15 +7137,10 @@
           "id": "running_0"
         }
       },
-      "hold": {
-        "B": {
-          "id": "",
-          "wait": "i",
-          "facing": 2
-        }
-      },
-      "ctrl_spd_x": 2,
-      "ctrl_spd_z": 2
+      "dvx": 2,
+      "dvz": 2,
+      "ctrl_z": 1,
+      "ctrl_x": 1
     },
     "walking_5": {
       "id": "walking_5",
@@ -7157,8 +7154,12 @@
       },
       "wait": 6,
       "next": {
-        "id": "walking_0"
+        "id": "walking_0",
+        "facing": 3
       },
+      "state": 1,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 28,
@@ -7185,7 +7186,7 @@
           "kind_name": "ItrKind.Catch",
           "motionless": 0,
           "shaking": 0,
-          "test": "victim_type==character&victim_state==16",
+          "test": "victim_type==2&victim_state==16",
           "catchingact": {
             "id": "120"
           },
@@ -7202,16 +7203,15 @@
         "weaponact": 21,
         "cover": 0
       },
-      "state": 1,
-      "centerx": 39,
-      "centery": 79,
-      "state_name": "StateEnum._1",
-      "hit": {
+      "state_name": "StateEnum.Walking",
+      "key_down": {
         "B": {
           "id": "",
           "wait": "i",
           "facing": 2
-        },
+        }
+      },
+      "hit": {
         "a": [
           {
             "id": [
@@ -7255,15 +7255,10 @@
           "id": "running_0"
         }
       },
-      "hold": {
-        "B": {
-          "id": "",
-          "wait": "i",
-          "facing": 2
-        }
-      },
-      "ctrl_spd_x": 2,
-      "ctrl_spd_z": 2
+      "dvx": 2,
+      "dvz": 2,
+      "ctrl_z": 1,
+      "ctrl_x": 1
     },
     "running_0": {
       "id": "running_0",
@@ -7279,6 +7274,9 @@
       "next": {
         "id": "running_1"
       },
+      "state": 2,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 25,
@@ -7299,10 +7297,7 @@
         "weaponact": 25,
         "cover": 0
       },
-      "state": 2,
-      "centerx": 39,
-      "centery": 79,
-      "state_name": "StateEnum._2",
+      "state_name": "StateEnum.Running",
       "sound": "data/003.wav.mp3",
       "hit": {
         "a": [
@@ -7341,7 +7336,13 @@
         }
       },
       "dvx": 4,
-      "ctrl_spd_z": 1.3
+      "dvz": 1.3,
+      "ctrl_z": 1,
+      "key_down": {
+        "B": {
+          "id": "218"
+        }
+      }
     },
     "running_1": {
       "id": "running_1",
@@ -7357,6 +7358,9 @@
       "next": {
         "id": "running_2"
       },
+      "state": 2,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 25,
@@ -7377,10 +7381,7 @@
         "weaponact": 23,
         "cover": 0
       },
-      "state": 2,
-      "centerx": 39,
-      "centery": 79,
-      "state_name": "StateEnum._2",
+      "state_name": "StateEnum.Running",
       "hit": {
         "a": [
           {
@@ -7418,7 +7419,13 @@
         }
       },
       "dvx": 4,
-      "ctrl_spd_z": 1.3
+      "dvz": 1.3,
+      "ctrl_z": 1,
+      "key_down": {
+        "B": {
+          "id": "218"
+        }
+      }
     },
     "running_2": {
       "id": "running_2",
@@ -7434,6 +7441,9 @@
       "next": {
         "id": "running_3"
       },
+      "state": 2,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 25,
@@ -7454,10 +7464,7 @@
         "weaponact": 21,
         "cover": 0
       },
-      "state": 2,
-      "centerx": 39,
-      "centery": 79,
-      "state_name": "StateEnum._2",
+      "state_name": "StateEnum.Running",
       "sound": "data/004.wav.mp3",
       "hit": {
         "a": [
@@ -7496,7 +7503,13 @@
         }
       },
       "dvx": 4,
-      "ctrl_spd_z": 1.3
+      "dvz": 1.3,
+      "ctrl_z": 1,
+      "key_down": {
+        "B": {
+          "id": "218"
+        }
+      }
     },
     "running_3": {
       "id": "running_3",
@@ -7512,6 +7525,9 @@
       "next": {
         "id": "running_0"
       },
+      "state": 2,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 25,
@@ -7532,10 +7548,7 @@
         "weaponact": 23,
         "cover": 0
       },
-      "state": 2,
-      "centerx": 39,
-      "centery": 79,
-      "state_name": "StateEnum._2",
+      "state_name": "StateEnum.Running",
       "hit": {
         "a": [
           {
@@ -7573,7 +7586,13 @@
         }
       },
       "dvx": 4,
-      "ctrl_spd_z": 1.3
+      "dvz": 1.3,
+      "ctrl_z": 1,
+      "key_down": {
+        "B": {
+          "id": "218"
+        }
+      }
     },
     "heavy_obj_walk_0": {
       "id": "heavy_obj_walk_0",
@@ -7587,8 +7606,12 @@
       },
       "wait": 7,
       "next": {
-        "id": "heavy_obj_walk_1"
+        "id": "heavy_obj_walk_1",
+        "facing": 3
       },
+      "state": 1,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 29,
@@ -7609,33 +7632,29 @@
         "weaponact": 10,
         "cover": 0
       },
-      "state": 1,
-      "centerx": 39,
-      "centery": 79,
-      "state_name": "StateEnum._1",
-      "hit": {
+      "state_name": "StateEnum.Walking",
+      "key_down": {
         "B": {
           "id": "",
           "wait": "i",
           "facing": 2
-        },
+        }
+      },
+      "hit": {
         "FF": {
           "id": "heavy_obj_run_0"
         },
-        "a": {
-          "id": "50",
-          "facing": 3
-        }
+        "a": [
+          {
+            "id": "50",
+            "facing": 3
+          }
+        ]
       },
-      "hold": {
-        "B": {
-          "id": "",
-          "wait": "i",
-          "facing": 2
-        }
-      },
-      "ctrl_spd_x": 1.5,
-      "ctrl_spd_z": 1.5
+      "dvx": 1.5,
+      "dvz": 1.5,
+      "ctrl_z": 1,
+      "ctrl_x": 1
     },
     "heavy_obj_walk_1": {
       "id": "heavy_obj_walk_1",
@@ -7649,8 +7668,12 @@
       },
       "wait": 7,
       "next": {
-        "id": "heavy_obj_walk_2"
+        "id": "heavy_obj_walk_2",
+        "facing": 3
       },
+      "state": 1,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 29,
@@ -7671,33 +7694,29 @@
         "weaponact": 10,
         "cover": 0
       },
-      "state": 1,
-      "centerx": 39,
-      "centery": 79,
-      "state_name": "StateEnum._1",
-      "hit": {
+      "state_name": "StateEnum.Walking",
+      "key_down": {
         "B": {
           "id": "",
           "wait": "i",
           "facing": 2
-        },
+        }
+      },
+      "hit": {
         "FF": {
           "id": "heavy_obj_run_0"
         },
-        "a": {
-          "id": "50",
-          "facing": 3
-        }
+        "a": [
+          {
+            "id": "50",
+            "facing": 3
+          }
+        ]
       },
-      "hold": {
-        "B": {
-          "id": "",
-          "wait": "i",
-          "facing": 2
-        }
-      },
-      "ctrl_spd_x": 1.5,
-      "ctrl_spd_z": 1.5
+      "dvx": 1.5,
+      "dvz": 1.5,
+      "ctrl_z": 1,
+      "ctrl_x": 1
     },
     "heavy_obj_walk_2": {
       "id": "heavy_obj_walk_2",
@@ -7711,8 +7730,12 @@
       },
       "wait": 7,
       "next": {
-        "id": "heavy_obj_walk_3"
+        "id": "heavy_obj_walk_3",
+        "facing": 3
       },
+      "state": 1,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 29,
@@ -7733,33 +7756,29 @@
         "weaponact": 10,
         "cover": 0
       },
-      "state": 1,
-      "centerx": 39,
-      "centery": 79,
-      "state_name": "StateEnum._1",
-      "hit": {
+      "state_name": "StateEnum.Walking",
+      "key_down": {
         "B": {
           "id": "",
           "wait": "i",
           "facing": 2
-        },
+        }
+      },
+      "hit": {
         "FF": {
           "id": "heavy_obj_run_0"
         },
-        "a": {
-          "id": "50",
-          "facing": 3
-        }
+        "a": [
+          {
+            "id": "50",
+            "facing": 3
+          }
+        ]
       },
-      "hold": {
-        "B": {
-          "id": "",
-          "wait": "i",
-          "facing": 2
-        }
-      },
-      "ctrl_spd_x": 1.5,
-      "ctrl_spd_z": 1.5
+      "dvx": 1.5,
+      "dvz": 1.5,
+      "ctrl_z": 1,
+      "ctrl_x": 1
     },
     "heavy_obj_walk_3": {
       "id": "heavy_obj_walk_3",
@@ -7773,8 +7792,12 @@
       },
       "wait": 7,
       "next": {
-        "id": "heavy_obj_walk_4"
+        "id": "heavy_obj_walk_4",
+        "facing": 3
       },
+      "state": 1,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 29,
@@ -7795,33 +7818,29 @@
         "weaponact": 10,
         "cover": 0
       },
-      "state": 1,
-      "centerx": 39,
-      "centery": 79,
-      "state_name": "StateEnum._1",
-      "hit": {
+      "state_name": "StateEnum.Walking",
+      "key_down": {
         "B": {
           "id": "",
           "wait": "i",
           "facing": 2
-        },
+        }
+      },
+      "hit": {
         "FF": {
           "id": "heavy_obj_run_0"
         },
-        "a": {
-          "id": "50",
-          "facing": 3
-        }
+        "a": [
+          {
+            "id": "50",
+            "facing": 3
+          }
+        ]
       },
-      "hold": {
-        "B": {
-          "id": "",
-          "wait": "i",
-          "facing": 2
-        }
-      },
-      "ctrl_spd_x": 1.5,
-      "ctrl_spd_z": 1.5
+      "dvx": 1.5,
+      "dvz": 1.5,
+      "ctrl_z": 1,
+      "ctrl_x": 1
     },
     "heavy_obj_walk_4": {
       "id": "heavy_obj_walk_4",
@@ -7835,8 +7854,12 @@
       },
       "wait": 7,
       "next": {
-        "id": "heavy_obj_walk_5"
+        "id": "heavy_obj_walk_5",
+        "facing": 3
       },
+      "state": 1,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 29,
@@ -7857,33 +7880,29 @@
         "weaponact": 10,
         "cover": 0
       },
-      "state": 1,
-      "centerx": 39,
-      "centery": 79,
-      "state_name": "StateEnum._1",
-      "hit": {
+      "state_name": "StateEnum.Walking",
+      "key_down": {
         "B": {
           "id": "",
           "wait": "i",
           "facing": 2
-        },
+        }
+      },
+      "hit": {
         "FF": {
           "id": "heavy_obj_run_0"
         },
-        "a": {
-          "id": "50",
-          "facing": 3
-        }
+        "a": [
+          {
+            "id": "50",
+            "facing": 3
+          }
+        ]
       },
-      "hold": {
-        "B": {
-          "id": "",
-          "wait": "i",
-          "facing": 2
-        }
-      },
-      "ctrl_spd_x": 1.5,
-      "ctrl_spd_z": 1.5
+      "dvx": 1.5,
+      "dvz": 1.5,
+      "ctrl_z": 1,
+      "ctrl_x": 1
     },
     "heavy_obj_walk_5": {
       "id": "heavy_obj_walk_5",
@@ -7897,8 +7916,12 @@
       },
       "wait": 7,
       "next": {
-        "id": "heavy_obj_walk_0"
+        "id": "heavy_obj_walk_0",
+        "facing": 3
       },
+      "state": 1,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 29,
@@ -7919,33 +7942,29 @@
         "weaponact": 10,
         "cover": 0
       },
-      "state": 1,
-      "centerx": 39,
-      "centery": 79,
-      "state_name": "StateEnum._1",
-      "hit": {
+      "state_name": "StateEnum.Walking",
+      "key_down": {
         "B": {
           "id": "",
           "wait": "i",
           "facing": 2
-        },
+        }
+      },
+      "hit": {
         "FF": {
           "id": "heavy_obj_run_0"
         },
-        "a": {
-          "id": "50",
-          "facing": 3
-        }
+        "a": [
+          {
+            "id": "50",
+            "facing": 3
+          }
+        ]
       },
-      "hold": {
-        "B": {
-          "id": "",
-          "wait": "i",
-          "facing": 2
-        }
-      },
-      "ctrl_spd_x": 1.5,
-      "ctrl_spd_z": 1.5
+      "dvx": 1.5,
+      "dvz": 1.5,
+      "ctrl_z": 1,
+      "ctrl_x": 1
     },
     "heavy_obj_run_0": {
       "id": "heavy_obj_run_0",
@@ -7961,6 +7980,9 @@
       "next": {
         "id": "heavy_obj_run_1"
       },
+      "state": 2,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 29,
@@ -7981,18 +8003,17 @@
         "weaponact": 10,
         "cover": 0
       },
-      "state": 2,
-      "centerx": 39,
-      "centery": 79,
-      "state_name": "StateEnum._2",
+      "state_name": "StateEnum.Running",
       "sound": "data/003.wav.mp3",
       "hit": {
         "B": {
           "id": "19"
         },
-        "a": {
-          "id": "50"
-        }
+        "a": [
+          {
+            "id": "50"
+          }
+        ]
       },
       "hold": {
         "B": {
@@ -8000,7 +8021,8 @@
         }
       },
       "dvx": 2.5,
-      "ctrl_spd_z": 0.8
+      "dvz": 0.8,
+      "ctrl_z": 1
     },
     "heavy_obj_run_1": {
       "id": "heavy_obj_run_1",
@@ -8016,6 +8038,9 @@
       "next": {
         "id": "heavy_obj_run_2"
       },
+      "state": 2,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 29,
@@ -8036,17 +8061,16 @@
         "weaponact": 10,
         "cover": 0
       },
-      "state": 2,
-      "centerx": 39,
-      "centery": 79,
-      "state_name": "StateEnum._2",
+      "state_name": "StateEnum.Running",
       "hit": {
         "B": {
           "id": "19"
         },
-        "a": {
-          "id": "50"
-        }
+        "a": [
+          {
+            "id": "50"
+          }
+        ]
       },
       "hold": {
         "B": {
@@ -8054,7 +8078,8 @@
         }
       },
       "dvx": 2.5,
-      "ctrl_spd_z": 0.8
+      "dvz": 0.8,
+      "ctrl_z": 1
     },
     "heavy_obj_run_2": {
       "id": "heavy_obj_run_2",
@@ -8070,6 +8095,9 @@
       "next": {
         "id": "heavy_obj_run_3"
       },
+      "state": 2,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 29,
@@ -8090,18 +8118,17 @@
         "weaponact": 10,
         "cover": 0
       },
-      "state": 2,
-      "centerx": 39,
-      "centery": 79,
-      "state_name": "StateEnum._2",
+      "state_name": "StateEnum.Running",
       "sound": "data/004.wav.mp3",
       "hit": {
         "B": {
           "id": "19"
         },
-        "a": {
-          "id": "50"
-        }
+        "a": [
+          {
+            "id": "50"
+          }
+        ]
       },
       "hold": {
         "B": {
@@ -8109,7 +8136,8 @@
         }
       },
       "dvx": 2.5,
-      "ctrl_spd_z": 0.8
+      "dvz": 0.8,
+      "ctrl_z": 1
     },
     "heavy_obj_run_3": {
       "id": "heavy_obj_run_3",
@@ -8125,6 +8153,9 @@
       "next": {
         "id": "heavy_obj_run_0"
       },
+      "state": 2,
+      "centerx": 39,
+      "centery": 79,
       "bdy": [
         {
           "x": 29,
@@ -8145,17 +8176,16 @@
         "weaponact": 10,
         "cover": 0
       },
-      "state": 2,
-      "centerx": 39,
-      "centery": 79,
-      "state_name": "StateEnum._2",
+      "state_name": "StateEnum.Running",
       "hit": {
         "B": {
           "id": "19"
         },
-        "a": {
-          "id": "50"
-        }
+        "a": [
+          {
+            "id": "50"
+          }
+        ]
       },
       "hold": {
         "B": {
@@ -8163,7 +8193,8 @@
         }
       },
       "dvx": 2.5,
-      "ctrl_spd_z": 0.8
+      "dvz": 0.8,
+      "ctrl_z": 1
     }
   }
 }

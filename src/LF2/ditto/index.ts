@@ -51,16 +51,11 @@ export interface IDittoPack {
   FullScreen: new (...args: any[]) => IFullScreen;
   Importer: IImporter;
   Cache: ICache;
-
   ObjectNode: new (lf2: LF2) => IObjectNode;
   TextNode: new (lf2: LF2) => IText;
   OrthographicCamera: new (lf2: LF2) => IOrthographicCameraNode;
   PerspectiveCamera: new (lf2: LF2) => IPerspectiveCamera;
   SpriteNode: new (lf2: LF2, info?: ISpriteInfo) => ISprite;
-  LineSegmentsNode: new (
-    lf2: LF2,
-    info?: ILineSegmentsInfo,
-  ) => ILineSegmentsNode;
   MeshNode: new (lf2: LF2, info?: IMeshInfo) => IMeshNode;
   BillboardNode: new (lf2: LF2, info?: IBillboardInfo) => IBillboardNode;
   Vector3: new (x?: number, y?: number, z?: number) => IVector3;

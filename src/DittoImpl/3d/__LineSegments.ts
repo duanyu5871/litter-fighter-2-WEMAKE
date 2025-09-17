@@ -12,7 +12,7 @@ geometry.setPositions(vertices);
 export class __LineSegments extends __Object implements ILineSegmentsNode {
   readonly is_line_segments_node = true;
   constructor(lf2: LF2, info?: ILineSegmentsInfo) {
-    const material = new LineMaterial({ ...info, linewidth: 1 });
+    const material = new LineMaterial(info);
     const inner = new Line2(geometry, material);
     material.resolution.set(lf2.world.screen_w, lf2.world.screen_h);
     inner.computeLineDistances();

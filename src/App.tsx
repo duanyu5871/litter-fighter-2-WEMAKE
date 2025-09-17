@@ -15,8 +15,10 @@ import Select from "./Component/Select";
 import Show from "./Component/Show";
 import Titled from "./Component/Titled";
 import { useShortcut } from "./Component/useShortcut";
+import { DanmuOverlay } from "./DanmuOverlay";
 import DatViewer from "./DatViewer";
 import { __Pointings } from "./DittoImpl";
+import { Indicating, INDICATINGS } from "./DittoImpl/renderer/FrameIndicators";
 import { WorldRenderer } from "./DittoImpl/renderer/WorldRenderer";
 import EditorView from "./EditorView";
 import { GameOverlay } from "./GameOverlay";
@@ -45,15 +47,12 @@ import img_btn_2_1 from "./assets/btn_2_1.png";
 import img_btn_2_2 from "./assets/btn_2_2.png";
 import img_btn_2_3 from "./assets/btn_2_3.png";
 import img_btn_3_0 from "./assets/btn_3_0.png";
-import img_btn_3_1 from "./assets/btn_3_1.png";
-import img_btn_3_2 from "./assets/btn_3_2.png";
 import "./init";
 import {
   useLocalBoolean,
   useLocalNumber,
   useLocalString,
 } from "./useLocalStorage";
-import { DanmuOverlay } from "./DanmuOverlay";
 
 function App() {
   const [fullscreen] = useState(() => new Ditto.FullScreen());
@@ -695,27 +694,21 @@ function App() {
         </Combine>
 
         <Combine>
-          <ToggleButton
-            value={!!(indicator_flags & 1)}
-            onClick={() => set_indicator_flags((v) => (v & 1 ? v ^ 1 : v | 1))}
-          >
-            <>FrameBox</>
-            <>FrameBox✓</>
-          </ToggleButton>
-          <ToggleButton
-            value={!!(indicator_flags & 2)}
-            onClick={() => set_indicator_flags((v) => (v & 2 ? v ^ 2 : v | 2))}
-          >
-            <>ItrBox</>
-            <>ItrBox✓</>
-          </ToggleButton>
-          <ToggleButton
-            value={!!(indicator_flags & 4)}
-            onClick={() => set_indicator_flags((v) => (v & 4 ? v ^ 4 : v | 4))}
-          >
-            <>BdyBox</>
-            <>BdyBox✓</>
-          </ToggleButton>
+          {
+            Object.keys(INDICATINGS).map(k => {
+              const key = k as Indicating;
+              const num = INDICATINGS[key]
+              return (
+                <ToggleButton
+                  key={key}
+                  value={!!(indicator_flags & num)}
+                  onClick={() => set_indicator_flags(v => toggle_bit(v, num))}>
+                  <>{k}</>
+                  <>{k}✓</>
+                </ToggleButton>
+              )
+            })
+          }
         </Combine>
         <Combine>
           <ToggleButton
@@ -867,5 +860,8 @@ function App() {
     </>
   );
 }
-
+function toggle_bit(v: number, b: number): number {
+  return v & b ? v ^ b : v | b
+}
 export default App;
+
