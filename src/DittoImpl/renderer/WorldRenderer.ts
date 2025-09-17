@@ -32,8 +32,14 @@ export class WorldRenderer implements IWorldRenderer {
   set indicator_flags(v: number) {
     if (this._indicator_flags === v) return;
     this._indicator_flags = v;
-    for (const [, [, , , r4]] of this.entity_renderer_packs) {
-      if (r4) r4.flags = v;
+    for (const [, packs] of this.entity_renderer_packs) {
+      if (v) {
+        if (!packs[3]) packs[3] = new FrameIndicators(packs[0].entity)
+        packs[3].flags = v;
+      } else {
+        if (packs[3]) packs[3].on_unmount();
+        packs[3] = null;
+      }
     }
   }
   get cam_x(): number {

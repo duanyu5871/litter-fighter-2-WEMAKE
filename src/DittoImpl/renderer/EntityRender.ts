@@ -20,7 +20,7 @@ const EXTRA_SHAKING_TIME = 100;
 export class EntityRender {
   readonly renderer_type: string = "Entity";
   protected pictures!: Map<string, IPicture<THREE.Texture>>;
-  protected entity!: Entity;
+  entity!: Entity;
   protected entity_mesh!: IMeshNode;
   protected entity_material!: THREE.MeshBasicMaterial;
   protected variants = new Map<string, string[]>();
