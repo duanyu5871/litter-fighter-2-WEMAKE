@@ -13,13 +13,13 @@ export const get_val_from_bot_ctrl: IValGetterGetter<BotController> = (
     case BotVal.EnemyDiffY: return e => {
       const chasing = e.get_chasing()
       if (!chasing) return NaN
-      chasing.position.y - e.entity.position.y
+      return chasing.position.y - e.entity.position.y
     }
     case BotVal.EnemyX: return e => e.get_chasing()?.position.x
     case BotVal.EnemyDiffX: return e => {
       const chasing = e.get_chasing()
       if (!chasing) return NaN
-      e.entity.facing * (chasing.position.x - e.entity.position.x)
+      return e.entity.facing * (chasing.position.x - e.entity.position.x)
     }
     default: {
       const fallback = get_val_getter_from_entity(word);
