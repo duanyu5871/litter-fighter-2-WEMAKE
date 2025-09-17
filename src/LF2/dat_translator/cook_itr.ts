@@ -45,10 +45,6 @@ export function cook_itr(itr?: Partial<IItrInfo>) {
   switch (itr.kind) {
     case ItrKind.Normal: {
       const cond_maker = new CondMaker<C_Val>()
-      // .wrap((c) => c
-      //   .add(C_Val.VictimState, "!=", StateEnum.Weapon_OnGround)
-      //   .or(C_Val.AttackerType, "!=", EntityEnum.Character),
-      // );
       switch (itr.effect) {
         case ItrEffect.Fire:
           cond_maker.and((c) => c
@@ -81,7 +77,7 @@ export function cook_itr(itr?: Partial<IItrInfo>) {
           );
           break;
       }
-      itr.test = cond_maker.done();
+      itr.test = cond_maker.done() || void 0;
       break;
     }
     case ItrKind.Pick: {

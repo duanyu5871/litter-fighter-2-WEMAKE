@@ -4,8 +4,8 @@
   is_game_obj_data: true,
   is_base_data: true,
   base: {
-    depth_test: false,
-    render_order: 2,
+    // depth_test: false,
+    // render_order: 2,
     files: {
       "0": {
         id: "0",

@@ -157,6 +157,7 @@ export interface IFrameInfo {
 
   friction_z?: number;
   friction_x?: number;
+  friction_factor?: number;
 
   gravity?: number;
   /**

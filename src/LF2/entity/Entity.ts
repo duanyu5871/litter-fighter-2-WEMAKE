@@ -1047,7 +1047,7 @@ export class Entity implements IDebugging {
   handle_ground_velocity_decay(factor: number = 1) {
     if (this.position.y > 0 || this.shaking || this.motionless) return;
     let { x, z } = this.velocity_0;
-    factor *= this.world.friction_factor;
+    factor *= this.frame.friction_factor ?? this.world.friction_factor;
     x *= factor;
     z *= factor;
 
@@ -1691,8 +1691,8 @@ export class Entity implements IDebugging {
       far: f,
     } = cross
     const x = this.lf2.random_in(l, r);
-    const y = (b + t) / 2//this.lf2.random_in(b, t);
-    const z = this.lf2.random_in(f, n);
+    const y = 2 + (b + t) / 2//this.lf2.random_in(b, t);
+    const z = max(f, n) + 2;
     return [x, y, z] as const;
   }
 

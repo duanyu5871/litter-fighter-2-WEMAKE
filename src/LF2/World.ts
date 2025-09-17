@@ -200,7 +200,7 @@ export class World extends WorldDataset {
       this.lf2.ui?.enabled && this.lf2.ui?.update(real_dt);
       _update_count++;
 
-      for (const key of this.lf2.cmds)
+      for (const key of this.lf2.cmds) {
         switch (key) {
           case 'f1':
             this.set_paused(!this.paused);
@@ -222,7 +222,8 @@ export class World extends WorldDataset {
             for (const e of this.entities) e.hp = e.hp_max;
             break;
         }
-
+      }
+      this.lf2.cmds.length = 0
       if (!this._paused) this.update_once();
       this.update_camera();
       this.bg.update();

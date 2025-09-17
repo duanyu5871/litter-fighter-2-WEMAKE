@@ -247,11 +247,16 @@ export namespace Defines {
    */
   export const KEY_HIT_DURATION: number = 10;
   export const GRAVITY: number = 0.48; // 0.38;
+
+
   export const FRICTION_FACTOR: number = 1; // 0.894427191;
   export const FRICTION_X: number = 0.3;
   export const FRICTION_Z: number = 0.3;
+
+  export const LAND_FRICTION_FACTOR: number = 1;
   export const LAND_FRICTION_X: number = 1;
   export const LAND_FRICTION_Z: number = 0.5;
+  
   export const CHARACTER_BOUNCING_SPD: number = 2;
   export const CHARACTER_BOUNCING_TEST_SPD_X: number = 5;
   export const CHARACTER_BOUNCING_TEST_SPD_Y: number = -2.6;
@@ -487,6 +492,12 @@ export namespace Defines {
    */
   export const DEFAULT_ARMOR_SHAKING_RATIO: number = 3
 
+  /**
+   * 默认击飞速度
+   * 
+   * @link https://lf-empire.de/forum/showthread.php?tid=11204
+   */
+  export const DEFAULT_IVY_D: number = 3.5;
 }
 
 export default Defines;

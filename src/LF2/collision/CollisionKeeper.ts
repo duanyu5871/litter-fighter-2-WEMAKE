@@ -256,7 +256,7 @@ collisions_keeper.add(
   [EntityEnum.Weapon],
   [ItrKind.Normal],
   ALL_ENTITY_ENUM,
-  [BdyKind.Normal],
+  [BdyKind.Normal, BdyKind.Defend],
   handle_weapon_hit_other
 )
 

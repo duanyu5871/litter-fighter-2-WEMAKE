@@ -632,7 +632,7 @@ export function make_character_data(
           frame.dvx = walking_speed / 2;
           frame.dvz = walking_speedz;
           frame.ctrl_x = frame.ctrl_z = 1;
-          frame.wait = walking_frame_rate * 2;
+          frame.wait = walking_frame_rate * 2 - 1;
         }
         set_hit_turn_back(frame);
         // set_hold_turn_back(frame);
@@ -695,7 +695,7 @@ export function make_character_data(
               原版：0 ==> 1 ==> 2 ==> 1 ==>0
               WEMAKE: 0 ==> 1 ==> 2 ==> copy_1 ==> 0
           */
-          frame.wait = running_frame_rate * 2;
+          frame.wait = running_frame_rate * 2 - 1;
         }
         round_trip_frames_map[frame.name] =
           round_trip_frames_map[frame.name] || [];
@@ -704,7 +704,7 @@ export function make_character_data(
         break;
       }
       case StateEnum.NextAsLanding: {
-        frame.next = { id: "" + (Number(frame.id) + 1) };
+        frame.next = { id: "94" };
         break;
       }
     }
@@ -778,10 +778,12 @@ export function make_character_data(
   if (ret.frames[215]) {
     ret.frames[215].friction_x = Defines.LAND_FRICTION_X;
     ret.frames[215].friction_z = Defines.LAND_FRICTION_Z;
+    ret.frames[215].friction_factor = Defines.LAND_FRICTION_FACTOR;
   }
   if (ret.frames[219]) {
     ret.frames[219].friction_x = Defines.LAND_FRICTION_X;
     ret.frames[219].friction_z = Defines.LAND_FRICTION_Z;
+    ret.frames[219].friction_factor = Defines.LAND_FRICTION_FACTOR;
   }
   cook_transform_begin_expression_to_hit(ret.frames);
   cook_file_variants(ret);

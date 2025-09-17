@@ -73,6 +73,10 @@ export enum StateEnum {
    * 此状态下，在空中时(position.y > 0)，wait结束不会进入到next中.
    *
    * 但会在落地(position.y == 0)时进入next
+   * 
+   * 原版中：落地将进入94帧
+   * @link https://www.lf-empire.de/lf2-empire/data-changing/reference-pages/182-states?start=21
+   * 
    */
   NextAsLanding = 100,
 

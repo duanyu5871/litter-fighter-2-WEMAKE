@@ -4,7 +4,7 @@ import {
   Builtin_FrameId, Defines, GK, ItrKind, LGK, StateEnum, IBotAction, IBotDataSet, BotStateEnum
 } from "../defines";
 import { is_bot_ray_hit } from "./utils/is_bot_ray_hit";
-import { is_ball, is_character, Entity } from "../entity";
+import { is_ball, is_character, Entity, is_weapon } from "../entity";
 import { manhattan_xz } from "../helper/manhattan_xz";
 import { abs, clamp, floor } from "../utils";
 import { DummyEnum, dummy_updaters } from "./DummyEnum";
@@ -224,7 +224,7 @@ export class BotController extends BaseController implements Required<IBotDataSe
           this.chasings.look(this.entity, other)
         }
       }
-    } else if (is_ball(other)) {
+    } else if (is_ball(other) || is_weapon(other)) {
       if (!this.entity.is_ally(other)) {
         if (this.is_ball_threatening(other)) {
           this.balls.look(this.entity, other)
