@@ -126,10 +126,7 @@ function App() {
     "sync_render",
     0,
   );
-  const [indicator_flags, set_indicator_flags] = useLocalNumber<number>(
-    "indicator_flags",
-    0,
-  );
+  const [indicator_flags, set_indicator_flags] = useState<number>(0);
 
   const update_once = () => {
     lf2?.world.set_paused(true);
@@ -460,11 +457,11 @@ function App() {
             src={[img_btn_1_2, img_btn_1_3]}
           />
         </Show>
-        <ToggleImgButton
+        {/* <ToggleImgButton
           checked={is_fullscreen}
           onClick={() => toggle_fullscreen()}
           src={[img_btn_3_1, img_btn_3_2]}
-        />
+        /> */}
         <ToggleImgButton
           checked={bgm_muted}
           onClick={() => lf2?.sounds?.set_bgm_muted(!bgm_muted)}

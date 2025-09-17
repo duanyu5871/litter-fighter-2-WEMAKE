@@ -368,7 +368,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
     this.callbacks.emit("on_cheat_changed")(cheat_name, enabled);
     this._curr_key_list = "";
   }
-
+  cmds: string[] = [];
   on_key_down(e: IKeyEvent) {
     this.debug('on_key_down', e)
     const key_code = e.key;
@@ -377,30 +377,11 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
 
     } else {
       switch (e.key) {
-        case 'f1':
-          this.world.set_paused(!this.world.paused);
+        case 'f1': case 'f2': case 'f3': case 'f4': case 'f5':
+        case 'f6': case 'f7': case 'f8': case 'f9': case 'f10':
+        case 'f11':
           e.interrupt()
-          break;
-        case 'f2':
-          this.world.set_paused(true);
-          this.world.update_once();
-          e.interrupt()
-          break;
-        case 'f4':
-          this.ui_stacks.length >= 2 && this.pop_ui()
-          e.interrupt()
-          break;
-        case 'f5':
-          this.world.playrate = this.world.playrate === 1 ? 100 : 1;
-          e.interrupt()
-          break;
-        case 'f6':
-          this.infinity_mp = !this.infinity_mp;
-          e.interrupt()
-          break;
-        case 'f7':
-          for (const e of this.world.entities) e.hp = e.hp_max;
-          e.interrupt()
+          this.cmds.push(e.key)
           break;
       }
     }

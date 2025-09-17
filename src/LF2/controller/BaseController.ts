@@ -1,6 +1,7 @@
 import type { IFrameInfo, IHitKeyCollection, LGK } from "../defines";
 import { GK, StateEnum } from "../defines";
 import type { Entity } from "../entity/Entity";
+import { Times } from "../ui/utils/Times";
 import { ControllerUpdateResult } from "./ControllerUpdateResult";
 import DoubleClick from "./DoubleClick";
 import { KeyStatus } from "./KeyStatus";
@@ -32,7 +33,7 @@ export class BaseController {
   static readonly TAG: string = 'BaseController';
   readonly is_base_controller = true;
 
-  private _time = 10;
+  private _time = new Times(10, Number.MAX_SAFE_INTEGER);
   private _disposers = new Set<() => void>();
   private _player_id: string;
   get player_id(): string {
@@ -45,7 +46,7 @@ export class BaseController {
     return this.world.lf2;
   }
   get time() {
-    return this._time;
+    return this._time.value;
   }
   set disposer(f: (() => void)[] | (() => void)) {
     if (Array.isArray(f)) for (const i of f) this._disposers.add(i);
@@ -157,7 +158,7 @@ export class BaseController {
       */
       return false;
     }
-    return time > 0 && this._time - time <= this.entity.world.key_hit_duration;
+    return time > 0 && this.time - time <= this.entity.world.key_hit_duration;
   }
   is_end(k: string): boolean;
   is_end(k: LGK): boolean;
@@ -207,11 +208,7 @@ export class BaseController {
   protected result = new ControllerUpdateResult();
   readonly queue: (readonly [0 | 1 | 2, LGK])[] = []
   update(): ControllerUpdateResult {
-    if (this._time === Number.MAX_SAFE_INTEGER)
-      this._time = 0;
-    else
-      ++this._time;
-
+    this._time.add()
     if (
       !this.entity.shaking &&
       !this.entity.motionless &&
@@ -230,13 +227,13 @@ export class BaseController {
             } else if (this._key_list[0] === GK.d) {
               this._key_list += k;
             }
-            this.keys[k].hit(this._time);
+            this.keys[k].hit(this.time);
             const ck = CONFLICTS_KEY_MAP[k];
             if (ck) this.dbc[ck].reset();
-            this.dbc[k].press(this._time, this.entity.frame);
+            this.dbc[k].press(this.time, this.entity.frame);
             break;
           case 2:
-            this.keys[k].hit(this._time - this.entity.world.key_hit_duration);
+            this.keys[k].hit(this.time - this.entity.world.key_hit_duration);
             break;
         }
       }
@@ -344,7 +341,7 @@ export class BaseController {
         const seq = Object.keys(seqs).find((v) => this.sametime_keys_test(v));
         if (seq && seqs[seq]) {
           for (let k of seq) this.keys[k as GK]?.use();
-          ret.set(seqs[seq], this._time, void 0, this._key_list);
+          ret.set(seqs[seq], this.time, void 0, this._key_list);
           this._key_list = '';
           break;
         } else {
@@ -356,10 +353,10 @@ export class BaseController {
       if (this._key_list.length >= 3) {
         const seq = Object.keys(seqs).find(v => this.sequence_keys_test(v));
         if (seq) {
-          ret.set(seqs[seq], this._time, void 0, this._key_list);
-          for (let k of this._key_list) 
+          ret.set(seqs[seq], this.time, void 0, this._key_list);
+          for (let k of this._key_list)
             this.keys[k as GK]?.use();
-          
+
           this._key_list = '';
         }
         break;

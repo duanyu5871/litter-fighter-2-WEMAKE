@@ -1,8 +1,10 @@
 import { Callbacks, FPS, ICollision } from "./base";
 import { collisions_keeper } from "./collision/CollisionKeeper";
 import {
-  ALL_ENTITY_ENUM, Builtin_FrameId, Defines, IBdyInfo, IBounding, IEntityData,
-  IFrameInfo, IItrInfo, ItrKind, StateEnum, AllyFlag
+  ALL_ENTITY_ENUM,
+  AllyFlag,
+  Builtin_FrameId, Defines, IBdyInfo, IBounding, IEntityData,
+  IFrameInfo, IItrInfo, ItrKind, StateEnum
 } from "./defines";
 import { Ditto } from "./ditto";
 import { IWorldRenderer } from "./ditto/render/IWorldRenderer";
@@ -16,7 +18,7 @@ import {
 import { IWorldCallbacks } from "./IWorldCallbacks";
 import { LF2 } from "./LF2";
 import { Stage } from "./stage/Stage";
-import { abs, floor, min, round, find, is_num } from "./utils";
+import { abs, find, floor, is_num, min, round } from "./utils";
 import { WorldDataset } from "./WorldDataset";
 export class World extends WorldDataset {
   static override readonly TAG: string = "World";
@@ -197,6 +199,29 @@ export class World extends WorldDataset {
 
       this.lf2.ui?.enabled && this.lf2.ui?.update(real_dt);
       _update_count++;
+
+      for (const key of this.lf2.cmds)
+        switch (key) {
+          case 'f1':
+            this.set_paused(!this.paused);
+            break;
+          case 'f2':
+            this.set_paused(true);
+            this.update_once();
+            break;
+          case 'f4':
+            this.lf2.ui_stacks.length >= 2 && this.lf2.pop_ui()
+            break;
+          case 'f5':
+            this.playrate = this.playrate === 1 ? 100 : 1;
+            break;
+          case 'f6':
+            this.lf2.infinity_mp = !this.lf2.infinity_mp;
+            break;
+          case 'f7':
+            for (const e of this.entities) e.hp = e.hp_max;
+            break;
+        }
 
       if (!this._paused) this.update_once();
       this.update_camera();
