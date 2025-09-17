@@ -231,6 +231,8 @@ function App() {
                 break;
               case CheatType.GIM_INK:
                 _set_cheat_3(enabled);
+                set_control_panel_visible(enabled)
+                set_game_overlay(enabled)
                 break;
             }
           },
@@ -365,17 +367,6 @@ function App() {
     [players],
   );
 
-  useShortcut("F1", 0, () => lf2?.world.set_paused(!paused));
-  useShortcut("F2", 0, () => update_once());
-  useShortcut("F4", 0, () => lf2 && lf2.ui_stacks.length >= 2 && lf2.pop_ui());
-  useShortcut("F5", 0, () => set_fast_forward(!fast_forward));
-
-  useShortcut("F6", 0, () => {
-    if (lf2) lf2.infinity_mp = !lf2.infinity_mp;
-  });
-  useShortcut("F7", 0, () => {
-    if (lf2) for (const e of lf2.world.entities) e.hp = e.hp_max;
-  });
   useShortcut("F8", 0, () => lf2?.weapons.add_random(9));
   useShortcut("F9", 0, () => lf2?.world.stage.kill_all_enemies());
   useShortcut("F10", 0, () => {
@@ -383,9 +374,8 @@ function App() {
   });
 
   useShortcut("F11", 0, () => toggle_fullscreen());
-  useShortcut("ctrl+F1", 0, () => set_control_panel_visible((v) => !v));
-  // useShortcut('ctrl+F2', 0, () => set_indicator_flags(v => !v));
-  useShortcut("ctrl+F3", 0, () => set_game_overlay((v) => !v));
+  useShortcut("ctrl+F1", 0, () => lf2?.is_cheat_enabled(CheatType.GIM_INK) && set_control_panel_visible((v) => !v));
+  useShortcut("ctrl+F3", 0, () => lf2?.is_cheat_enabled(CheatType.GIM_INK) && set_game_overlay((v) => !v));
   useEffect(() => {
 
     const ele = ele_game_canvas;
@@ -512,7 +502,6 @@ function App() {
         </Show>
         <Show show={layout_id && Number(lf2?.ui_stacks.length) > 1}>
           <ToggleImgButton
-            shortcut="F4"
             onClick={() => lf2 && lf2.ui_stacks.length >= 2 && lf2.pop_ui()}
             src={[img_btn_2_3]}
           />
@@ -690,18 +679,16 @@ function App() {
       <div className={styles.settings_row}>
         <Combine>
           <ToggleButton
-            title="F1"
             value={paused}
             onClick={() => lf2?.world.set_paused(!paused)}
           >
             <>游戏暂停</>
             <>游戏暂停✓</>
           </ToggleButton>
-          <Button title="F2" onClick={update_once}>
+          <Button onClick={update_once}>
             更新一帧
           </Button>
           <ToggleButton
-            title="F5"
             value={fast_forward}
             onClick={() => set_fast_forward(!fast_forward)}
           >

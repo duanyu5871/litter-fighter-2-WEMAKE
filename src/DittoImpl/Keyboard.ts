@@ -8,9 +8,20 @@ import { LF2 } from "../LF2/LF2";
 class __KeyEvent implements IKeyEvent {
   readonly times: number;
   readonly key: string;
-  constructor(key: string, times: number = 0) {
+  readonly native: KeyboardEvent | undefined;;
+  constructor(key: string, times: number = 0, e: KeyboardEvent | undefined = void 0) {
     this.key = key;
     this.times = times;
+    this.native = e;
+
+  }
+  stopImmediatePropagation = () => this.native?.stopImmediatePropagation();
+  stopPropagation = () => this.native?.stopPropagation();
+  preventDefault = () => this.native?.preventDefault();
+  interrupt = () => {
+    this.stopImmediatePropagation()
+    this.stopPropagation()
+    this.preventDefault()
   }
 }
 
@@ -24,21 +35,21 @@ export class __Keyboard implements IKeyboard {
   }
   protected _on_key_down = (e: KeyboardEvent) => {
     const key_code = e.key?.toLowerCase() || "";
-    this.key_down(key_code)
+    this.key_down(key_code, e)
   };
 
   protected _on_key_up = (e: KeyboardEvent) => {
     const key_code = e.key?.toLowerCase() || "";
-    this.key_up(key_code)
+    this.key_up(key_code, e)
   };
-  protected key_down = (key_code: string) => {
+  protected key_down = (key_code: string, e?: KeyboardEvent) => {
     const times = this._times_map.get(key_code) ?? -1;
     this._times_map.set(key_code, times + 1);
-    this._callback.emit("on_key_down")(new __KeyEvent(key_code, times + 1));
+    this._callback.emit("on_key_down")(new __KeyEvent(key_code, times + 1, e));
   };
-  protected key_up = (key_code: string) => {
+  protected key_up = (key_code: string, e?: KeyboardEvent) => {
     this._times_map.delete(key_code);
-    this._callback.emit("on_key_up")(new __KeyEvent(key_code, 0));
+    this._callback.emit("on_key_up")(new __KeyEvent(key_code, 0, e));
   };
   protected gamepads: (Gamepad | null)[] = [];
   protected gamepad_timer?: ReturnType<typeof setInterval>;
@@ -83,6 +94,10 @@ export class __Keyboard implements IKeyboard {
         }
       }
     }
+  }
+
+  is_key_down(key_code: string): boolean {
+    return this._times_map.get(key_code) !== void 0
   }
 
   axes(index: number): readonly number[] {

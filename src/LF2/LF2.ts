@@ -64,7 +64,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
   static readonly TAG = "LF2";
   static readonly instances: LF2[] = []
   lang: string = '';
-  static readonly DATA_VERSION: number = 5;
+  static readonly DATA_VERSION: number = 6;
   static readonly DATA_TYPE: string = 'DataZip';
   static get instance() { return LF2.instances[0] }
   static get ui() { return LF2.instances[0].ui }
@@ -240,8 +240,8 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
     this.world.start_render();
     LF2.instances.push(this)
     this.debug(`constructor`)
-    Ditto.Cache.forget(LF2.DATA_TYPE, LF2.DATA_VERSION).then(v => console.log('forget', v))
-    Ditto.Cache.forget(PlayerInfo.DATA_TYPE, PlayerInfo.DATA_VERSION).then(v => console.log('forget', v))
+    Ditto.Cache.forget(LF2.DATA_TYPE, LF2.DATA_VERSION).catch(e => { })
+    Ditto.Cache.forget(PlayerInfo.DATA_TYPE, PlayerInfo.DATA_VERSION).catch(e => { })
   }
 
   random_entity_info(e: Entity) {
@@ -371,7 +371,40 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
 
   on_key_down(e: IKeyEvent) {
     this.debug('on_key_down', e)
-    const key_code = e.key?.toLowerCase() ?? "";
+    const key_code = e.key;
+    const ctrl_down = this.keyboard.is_key_down('control')
+    if (ctrl_down) {
+
+    } else {
+      switch (e.key) {
+        case 'f1':
+          this.world.set_paused(!this.world.paused);
+          e.interrupt()
+          break;
+        case 'f2':
+          this.world.set_paused(true);
+          this.world.update_once();
+          e.interrupt()
+          break;
+        case 'f4':
+          this.ui_stacks.length >= 2 && this.pop_ui()
+          e.interrupt()
+          break;
+        case 'f5':
+          this.world.playrate = this.world.playrate === 1 ? 100 : 1;
+          e.interrupt()
+          break;
+        case 'f6':
+          this.infinity_mp = !this.infinity_mp;
+          e.interrupt()
+          break;
+        case 'f7':
+          for (const e of this.world.entities) e.hp = e.hp_max;
+          e.interrupt()
+          break;
+      }
+    }
+
     this._curr_key_list += key_code;
     let match = false;
     for (const [cheat_name, { keys: k }] of this._CheatType_map) {

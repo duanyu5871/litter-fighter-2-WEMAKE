@@ -23,7 +23,7 @@ export class __Scene extends __Object {
     }
     this._renderer = void 0;
     if (canvas) {
-      this._renderer = new THREE.WebGLRenderer({ canvas });
+      this._renderer = new THREE.WebGLRenderer({ canvas, premultipliedAlpha: false });
       this._renderer.setSize(this.w, this.h, false);
     }
   }
