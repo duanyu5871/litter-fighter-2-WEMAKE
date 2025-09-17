@@ -4,12 +4,12 @@ import { join } from "path";
 import { file_md5_str } from "./file_md5_str";
 import { is_dir } from "./is_dir";
 import { write_file } from "./write_file";
-import JSON5 from "json5"
 
-export interface ZipFileInfo {
+export interface IZipFileInfo {
   url: string;
   md5: string;
   time: string;
+  type: string;
   infos?: { [x in string]?: any };
 }
 /**
@@ -23,33 +23,35 @@ export interface ZipFileInfo {
  *
  *    ${out_dir}/${zip_name}.json
  *
- * @see {ZipFileInfo} 信息json文件的结构可见ZipFileInfo
+ * @see {IZipFileInfo} 信息json文件的结构可见ZipFileInfo
  * @export
  * @async
  * @param {string} src_dir 源目录
  * @param {string} out_dir 输出目录
  * @param {string} zip_name 压缩文件名，需要包括后缀
+ * @param {} edit_info 编辑最后信息文件
  * @returns {Promise<void>}
  */
 export async function make_zip_and_json(
   src_dir: string,
   out_dir: string,
   zip_name: string,
+  edit_info?: (info: IZipFileInfo) => IZipFileInfo | PromiseLike<IZipFileInfo>,
 ): Promise<void> {
   src_dir = src_dir.replace(/\\/g, "/");
   out_dir = out_dir.replace(/\\/g, "/");
   console.log("zipping", src_dir, "=>", join(out_dir, zip_name));
 
   const layout_dir = src_dir + '/layouts'
-  const layout_index_file = src_dir + '/layouts/index.json5'
+  const layout_index_file = src_dir + '/layouts/index.json'
   await fs.unlink(layout_index_file).catch(() => { });
   await fs.readdir(layout_dir).then((names) => {
     const paths: string[] = []
     for (const name of names) {
-      if (!name.match(/\.json5?$/)) continue;
+      if (!name.match(/\.json?$/)) continue;
       paths.push('layouts/' + name)
     }
-    const str = JSON5.stringify(paths, null, 2);
+    const str = JSON.stringify(paths, null, 2);
     return fs.writeFile(layout_index_file, str)
   }).catch(e => { })
 
@@ -60,7 +62,6 @@ export async function make_zip_and_json(
 
   const zip_path = join(out_dir, zip_name);
   const inf_path = join(out_dir, zip_name + ".json");
-
   await fs.unlink(zip_path).catch(() => { });
   await zip.compressDir(src_dir, zip_path, { ignoreBase: true });
 
@@ -75,17 +76,19 @@ export async function make_zip_and_json(
         if (name === "__info.json") {
           infos[path.replace(src_dir, "/")] = await fs
             .readFile(sub_path)
-            .then((v) => JSON5.parse(v.toString()));
+            .then((v) => JSON.parse(v.toString()));
         }
       }
     }
     return infos;
   }
-  const inf: ZipFileInfo = {
+  let inf: IZipFileInfo = {
+    type: '',
     url: zip_name,
     md5: await file_md5_str(zip_path),
     infos: await read_sub_info_json(src_dir),
     time: new Date().toISOString(),
   };
-  await write_file(inf_path, JSON5.stringify(inf));
+  inf = edit_info ? await edit_info(inf) : inf;
+  await write_file(inf_path, JSON.stringify(inf));
 }

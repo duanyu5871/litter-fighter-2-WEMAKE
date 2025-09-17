@@ -73,7 +73,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
   readonly callbacks = new Callbacks<ILf2Callback>();
   private _ui_stacks: UINode[] = [];
   private _loading: boolean = false;
-  private _loaded: boolean = false;
+  private _playable: boolean = false;
   private _difficulty: Difficulty = Difficulty.Difficult;
   private _infinity_mp: boolean = false;
   private _pointer_on_uis = new Set<UINode>();
@@ -90,11 +90,11 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
   get loading() {
     return this._loading;
   }
-  get loaded() {
-    return this._loaded;
+  get playable() {
+    return this._playable;
   }
   get need_load() {
-    return !this._loaded && !this._loading;
+    return !this._playable && !this._loading;
   }
 
   get ui_stacks(): UINode[] {
@@ -237,7 +237,6 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
     this.pointings.callback.add(this);
     this.world.start_update();
     this.world.start_render();
-    this.load_prel_zip("prel.zip.json");
     LF2.instances.push(this)
     make_debugging(this)
     this.debug(`constructor`)
@@ -417,6 +416,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
 
   async load_prel_zip(url: string): Promise<IZip> {
     const ret = await this.load_zip_from_info_url(url);
+    this._dispose_check('load_prel_zip')
     this.zips.unshift(ret);
     this.callbacks.emit("on_zips_changed")(this.zips);
     await this.import_json("launch/strings.json").then(r => this.load_strings(r[0])).catch(e => { })
@@ -427,18 +427,24 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
     return ret;
   }
 
-  async load_zip_from_info_url(info_url: string): Promise<IZip> {
+  protected async load_zip_from_info_url(info_url: string): Promise<IZip> {
+    this._dispose_check('load_zip_from_info_url')
     this.on_loading_content(`${info_url}`, 0);
     const [{ url, md5 }] = await Ditto.Importer.import_as_json([info_url]);
+    this._dispose_check('load_zip_from_info_url')
     const exists = await Ditto.Cache.get(md5);
+    this._dispose_check('load_zip_from_info_url')
     let ret: IZip | null = null;
     if (exists) {
       ret = await Ditto.Zip.read_buf(exists.name, exists.data);
+      this._dispose_check('load_zip_from_info_url')
     } else {
       ret = await Ditto.Zip.download(url, (progress, full_size) =>
         this.on_loading_file(url, progress, full_size),
       );
+      this._dispose_check('load_zip_from_info_url')
       await Ditto.Cache.del(info_url, "");
+      this._dispose_check('load_zip_from_info_url')
       await Ditto.Cache.put({
         name: md5,
         version: LF2.DATA_VERSION,
@@ -449,7 +455,9 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
     this.on_loading_content(`${url}`, 100);
     return ret;
   }
+
   async load(arg1?: IZip | string): Promise<void> {
+    this._dispose_check('load')
     this._loading = true;
     this.callbacks.emit("on_loading_start")();
     this.set_ui("loading");
@@ -457,7 +465,8 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
     try {
       const zip = is_str(arg1) ? await this.load_zip_from_info_url(arg1) : arg1;
       await this.load_data(zip);
-      this._loaded = true;
+      
+      this._playable = true;
       this.callbacks.emit("on_loading_end")();
     } catch (e) {
       this.callbacks.emit("on_loading_failed")(e);
@@ -466,16 +475,30 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
       this._loading = false;
     }
   }
-
+  static IgnoreDisposed = (e: any) => {
+    if (e.is_disposed_error === true) return;
+    throw e;
+  }
+  private _dispose_check = (fn: string) => {
+    if (!this._disposed) return;
+    const error = Object.assign(
+      new Error(`[${LF2.TAG}::${fn}] instance disposed.`),
+      { is_disposed_error: true }
+    )
+    throw error;
+  }
   private async load_data(zip?: IZip) {
+    this._dispose_check('load_data')
     if (zip) {
+      await zip.file("strings.json")?.json().then(r => this.load_strings(r))
+      this._dispose_check('load_data')
+      await zip.file("strings.json5")?.json().then(r => this.load_strings(r))
+      this._dispose_check('load_data')
       this.zips.unshift(zip);
       this.callbacks.emit("on_zips_changed")(this.zips);
-      await zip.file("strings.json")?.json().then(r => this.load_strings(r))
-      await zip.file("strings.json5")?.json().then(r => this.load_strings(r))
     }
     await this.datas.load();
-    if (this._disposed) this.datas.dispose();
+    this._dispose_check('load_data')
     for (const d of this.datas.characters) {
       const name = d.base.name?.toLowerCase() ?? d.type + "_id_" + d.id;
       (this.characters as any)[`add_${name}`] = (num = 1, team = void 0) =>
@@ -665,6 +688,8 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
   }
 
   protected async load_builtin_ui(): Promise<ICookedUIInfo[]> {
+
+    this._dispose_check('load_builtin_ui')
     const ret: ICookedUIInfo[] = []
     const paths: string[] = [
       "launch/init.json",
@@ -674,12 +699,14 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
     ];
     for (const path of paths) {
       const cooked_ui_info = await cook_ui_info(this, path);
+      this._dispose_check('load_builtin_ui')
       ret.push(cooked_ui_info);
     }
     return ret
   }
 
   async load_ui(zip: IZip): Promise<ICookedUIInfo[]> {
+    this._dispose_check('load_ui')
     if (this._uiinfos.length) return this._uiinfos;
 
     this._uiinfos_loaded = false;
@@ -688,12 +715,15 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
 
     for (const file of files) {
       const json = await file.json().catch(() => null);
+      this._dispose_check('load_ui')
       if (!json || Array.isArray(json)) continue;
       const cooked_ui_info = await cook_ui_info(this, json);
       ret.push(cooked_ui_info);
     }
-    if (!this._uiinfos.length)
+    if (!this._uiinfos.length) {
       ret.unshift(...await this.load_builtin_ui())
+      this._dispose_check('load_ui')
+    }
     if (this._disposed) {
       this._uiinfos.length = 0;
       return this._uiinfos = [];

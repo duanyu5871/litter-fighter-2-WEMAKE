@@ -91,7 +91,7 @@ function App() {
   const [sound_muted, _set_sound_muted] = useLocalBoolean("sound_muted", false);
   const [volume, _set_volume] = useLocalNumber<number>("total_volume", 0.3);
   const [bgm_volume, _set_bgm_volume] = useLocalNumber<number>("bgm_volume", 0.5);
-  const [sound_volume, _set_sound_volume] = useLocalNumber<number>("sound_volume",1,);
+  const [sound_volume, _set_sound_volume] = useLocalNumber<number>("sound_volume", 1,);
   const [render_size_mode, set_render_size_mode] = useLocalString<
     "fixed" | "fill" | "cover" | "contain"
   >("render_size_mode", "contain");
@@ -164,8 +164,10 @@ function App() {
   }, [lf2, ele_game_overlay])
 
   useEffect(() => {
-    if (ref_lf2.current) return;
+    // if (ref_lf2.current) return;
     const lf2 = ref_lf2.current = new LF2();
+    
+    lf2.load_prel_zip("prel.zip.json");
     lf2.lang = navigator.language.toLowerCase()
     set_lf2(lf2)
     lf2.sounds.set_muted(muted);
@@ -244,7 +246,8 @@ function App() {
         () => lf2.dispose(),
       )
     // .clear_fn;
-  }, []);
+    return () => lf2.dispose();
+  }, [LF2]);
 
   const on_click_load_local_zip = () => {
     if (!lf2) return;
@@ -450,7 +453,7 @@ function App() {
         draggable={false}
       />
       <div ref={set_ele_game_overlay} className={classNames(styles.game_overlay, { [styles.gone]: !game_overlay })} />
-      <DanmuOverlay lf2={lf2}/>
+      <DanmuOverlay lf2={lf2} />
       <GamePad player_id={touch_pad_on} lf2={lf2} />
       <Loading loading={!layout_id} big className={styles.loading_img} />
       <div className={styles.debug_pannel}>

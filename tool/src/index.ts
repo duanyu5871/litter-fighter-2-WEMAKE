@@ -1,7 +1,9 @@
 import { readFileSync } from "fs";
 import fs from "fs/promises";
+import JSON5 from "json5";
 import path from "path";
 import { ILegacyPictureInfo } from "../../src/LF2/defines/ILegacyPictureInfo";
+import { data_2_txt } from "./data_2_txt";
 import { CacheInfos } from "./utils/cache_infos";
 import { check_is_str_ok } from "./utils/check_is_str_ok";
 import { classify } from "./utils/classify";
@@ -11,8 +13,6 @@ import { convert_pic, convert_pic_2 } from "./utils/convert_pic";
 import { convert_sound } from "./utils/convert_sound";
 import { make_zip_and_json } from "./utils/make_zip_and_json";
 import { write_file } from "./utils/write_file";
-import { data_2_txt } from "./data_2_txt";
-import JSON5 from "json5"
 const {
   RAW_LF2_PATH,
   DATA_DIR_PATH,
@@ -51,7 +51,10 @@ for (let i = 2; i < process.argv.length; ++i) {
 }
 
 async function make_prel_zip() {
-  await make_zip_and_json(PREL_DIR_PATH, OUT_DIR, PREL_ZIP_NAME);
+  await make_zip_and_json(PREL_DIR_PATH, OUT_DIR, PREL_ZIP_NAME, (inf) => {
+    inf.type = 'prel'
+    return inf;
+  });
 }
 
 async function main() {
@@ -177,7 +180,10 @@ async function main() {
     await cache_info.update();
   }
   await cache_infos.save();
-  await make_zip_and_json(DATA_DIR_PATH, OUT_DIR, DATA_ZIP_NAME);
+  await make_zip_and_json(DATA_DIR_PATH, OUT_DIR, DATA_ZIP_NAME, (inf) => {
+    inf.type = 'data'
+    return inf;
+  });
   await make_prel_zip();
 }
 
