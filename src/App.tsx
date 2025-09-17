@@ -65,8 +65,6 @@ function App() {
   const [[workspace, , game_cell, pannel_cell], set_workspace] = useState<
     [Workspaces | null, DomAdapter | null, HTMLElement | null, HTMLElement | null]
   >([null, null, null, null])
-  console.log("game_cell:", game_cell)
-  console.log("pannel_cell:", pannel_cell)
 
   const [dat_viewer_open, set_dat_viewer_open] = useState(false);
   const [editor_open, set_editor_open] = useState(false);
@@ -249,7 +247,6 @@ function App() {
       )
 
     return () => {
-      console.log('ddd!')
       invoker.invoke()
     };
   }, [LF2]);
