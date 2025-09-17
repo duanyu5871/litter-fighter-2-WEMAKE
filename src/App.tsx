@@ -65,6 +65,8 @@ function App() {
   const [[workspace, , game_cell, pannel_cell], set_workspace] = useState<
     [Workspaces | null, DomAdapter | null, HTMLElement | null, HTMLElement | null]
   >([null, null, null, null])
+  console.log("game_cell:", game_cell)
+  console.log("pannel_cell:", pannel_cell)
 
   const [dat_viewer_open, set_dat_viewer_open] = useState(false);
   const [editor_open, set_editor_open] = useState(false);
@@ -161,13 +163,13 @@ function App() {
     if (!lf2 || !ele_game_overlay) return;
     const ele = new GameOverlay(lf2.world, ele_game_overlay);
     return () => ele.release()
+
   }, [lf2, ele_game_overlay])
 
   useEffect(() => {
-    // if (ref_lf2.current) return;
     const lf2 = ref_lf2.current = new LF2();
-    
-    lf2.load_prel_zip("prel.zip.json");
+    lf2.load("prel.zip.json").catch(LF2.IgnoreDisposed);
+
     lf2.lang = navigator.language.toLowerCase()
     set_lf2(lf2)
     lf2.sounds.set_muted(muted);
@@ -191,7 +193,7 @@ function App() {
     window.addEventListener("keydown", on_keydown);
     _set_is_fullscreen(!!fullscreen.target);
     _set_paused(lf2.world.paused);
-    new Invoker()
+    const invoker = new Invoker()
       .add(
         () => window.removeEventListener("keydown", on_keydown),
         () => window.removeEventListener("touchstart", on_touchstart),
@@ -245,8 +247,11 @@ function App() {
         }),
         () => lf2.dispose(),
       )
-    // .clear_fn;
-    return () => lf2.dispose();
+
+    return () => {
+      console.log('ddd!')
+      invoker.invoke()
+    };
   }, [LF2]);
 
   const on_click_load_local_zip = () => {
@@ -274,7 +279,7 @@ function App() {
           e,
         ),
       )
-      .then(() => lf2.load())
+      .then(() => lf2.load("prel.zip.json"))
       .catch((e) => Log.print("App -> on_click_load_builtin", e));
   };
 
@@ -385,6 +390,7 @@ function App() {
   // useShortcut('ctrl+F2', 0, () => set_indicator_flags(v => !v));
   useShortcut("ctrl+F3", 0, () => set_game_overlay((v) => !v));
   useEffect(() => {
+
     const ele = ele_game_canvas;
     if (!ele) return;
     if (layout_id) {
@@ -406,6 +412,7 @@ function App() {
     const adpater = new DomAdapter(ele_root)
     const workspace = new Workspaces(adpater)
     const game_slot = workspace.root;
+
     workspace.on_leaves_changed = () => {
       for (const leaf of workspace.leaves) {
         const cell = workspace.adapter.get_cell(leaf)
@@ -422,6 +429,7 @@ function App() {
     }
     workspace.confirm()
     return () => {
+      workspace.on_leaves_changed = void 0
       workspace.root.release()
       workspace.release()
     }
@@ -429,7 +437,7 @@ function App() {
 
   useEffect(() => {
     if (!workspace) return;
-    workspace.del("panel", false);
+    workspace.del("panel");
     if (control_panel_visible) {
       switch (debug_ui_pos) {
         case "left": workspace.add("slot_1", debug_ui_pos, { id: "panel" }); break;
@@ -437,6 +445,7 @@ function App() {
         case "top": workspace.add("slot_1", "up", { id: "panel" }); break;
         case "bottom": workspace.add("slot_1", "down", { id: "panel" }); break;
       }
+      workspace.root.keep = true
     }
     workspace.confirm()
   }, [workspace, debug_ui_pos, control_panel_visible])

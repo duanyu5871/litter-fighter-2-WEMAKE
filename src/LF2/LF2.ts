@@ -227,6 +227,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
   }
 
   constructor() {
+    make_debugging(this)
     this.world = new World(this);
     this.datas = new DatMgr(this);
     this.sounds = new Ditto.Sounds(this);
@@ -238,7 +239,6 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
     this.world.start_update();
     this.world.start_render();
     LF2.instances.push(this)
-    make_debugging(this)
     this.debug(`constructor`)
     Ditto.Cache.forget(LF2.DATA_TYPE, LF2.DATA_VERSION).then(v => console.log('forget', v))
     Ditto.Cache.forget(PlayerInfo.DATA_TYPE, PlayerInfo.DATA_VERSION).then(v => console.log('forget', v))
@@ -414,19 +414,6 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
     this.on_loading_content(txt, progress);
   }
 
-  async load_prel_zip(url: string): Promise<IZip> {
-    const ret = await this.load_zip_from_info_url(url);
-    this._dispose_check('load_prel_zip')
-    this.zips.unshift(ret);
-    this.callbacks.emit("on_zips_changed")(this.zips);
-    await this.import_json("launch/strings.json").then(r => this.load_strings(r[0])).catch(e => { })
-    await this.load_data(ret)
-    await this.load_ui(ret);
-    this.set_ui(this.uiinfos[0]!)
-    this.callbacks.emit("on_prel_loaded")();
-    return ret;
-  }
-
   protected async load_zip_from_info_url(info_url: string): Promise<IZip> {
     this._dispose_check('load_zip_from_info_url')
     this.on_loading_content(`${info_url}`, 0);
@@ -456,16 +443,24 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
     return ret;
   }
 
-  async load(arg1?: IZip | string): Promise<void> {
+  async load(arg1: IZip | string): Promise<void> {
+    const is_first = this.zips.length === 0;
     this._dispose_check('load')
     this._loading = true;
     this.callbacks.emit("on_loading_start")();
     this.set_ui("loading");
 
+    if (is_first)
+      await this.import_json("launch/strings.json").then(r => this.load_strings(r[0])).catch(e => { })
+
     try {
       const zip = is_str(arg1) ? await this.load_zip_from_info_url(arg1) : arg1;
       await this.load_data(zip);
-      
+      await this.load_ui(zip);
+      if (is_first) {
+        this.set_ui(this.uiinfos[0]!)
+        this.callbacks.emit("on_prel_loaded")();
+      }
       this._playable = true;
       this.callbacks.emit("on_loading_end")();
     } catch (e) {
@@ -476,6 +471,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
     }
   }
   static IgnoreDisposed = (e: any) => {
+    console.warn(e)
     if (e.is_disposed_error === true) return;
     throw e;
   }
