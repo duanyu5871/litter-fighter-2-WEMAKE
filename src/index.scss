@@ -1,3 +1,5 @@
+@use "./styles/lfui_hoverable_border.scss" as *;
+
 html {
   /* -webkit-filter: grayscale(1); */
   /* Chrome, Safari, Opera */
@@ -74,7 +76,6 @@ img {
   // background-color: #5a73d6;
 }
 
-@import "./styles/lfui_hoverable_border.scss";
 
 
 select,

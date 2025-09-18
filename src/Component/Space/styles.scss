@@ -1,4 +1,4 @@
-@import "../../styles/lfui_hoverable_border.scss";
+@use "../../styles/lfui_hoverable_border.scss" as *;
 
 .lf2ui_space {
   display    : flex;

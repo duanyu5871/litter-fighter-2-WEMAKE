@@ -1,4 +1,4 @@
-@import "./lfui_border.scss";
+@use "./lfui_border.scss" as *;
 
 .lfui_hoverable_border {
   @extend .lfui_border;

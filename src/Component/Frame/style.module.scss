@@ -1,5 +1,5 @@
-@import "../../styles/lfui_hoverable_border.module.scss";
-@import "../../styles/lfui_values.module.scss";
+@use "../../styles/lfui_hoverable_border.module.scss" as *;
+@use "../../styles/lfui_values.module.scss" as *;
 
 .lfui_frame {
   background-color: $primary_bg_color;

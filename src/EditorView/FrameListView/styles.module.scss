@@ -1,4 +1,4 @@
-@import "../../styles/lfui_hoverable_border.module.scss";
+@use "../../styles/lfui_hoverable_border.module.scss" as *;
 
 .frame_list_view {
   width     : 100%;

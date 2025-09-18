@@ -1,6 +1,6 @@
-@import "../../styles/lfui_hoverable_border.module.scss";
-@import "../../styles/lfui_values.module.scss";
-@import "../../styles/lfui_input_like.module.scss";
+@use "../../styles/lfui_hoverable_border.module.scss" as *;
+@use "../../styles/lfui_values.module.scss" as *;
+@use "../../styles/lfui_input_like.module.scss" as *;
 
 .lfui_input {
   @extend .lfui_input_like;

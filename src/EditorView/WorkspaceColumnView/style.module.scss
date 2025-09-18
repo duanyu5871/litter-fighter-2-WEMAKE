@@ -1,4 +1,4 @@
-@import "../../styles/lfui_values.module.scss";
+@use "../../styles/lfui_values.module.scss" as *;
 
 .header_main_footer_view {
   flex            : 1;
