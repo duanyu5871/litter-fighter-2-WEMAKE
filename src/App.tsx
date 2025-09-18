@@ -258,23 +258,23 @@ function App() {
   };
 
   const on_click_download_zip = () => {
-    const a = document.createElement("a");
-    a.href = "data.zip";
-    a.download = "data.zip";
-    a.click();
+    const download = (url: string) => {
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = url;
+      a.click();
+    }
+    download("data.zip.json")
+    download("data.zip")
+    download("prel.zip.json")
+    download("prel.zip")
   };
 
   const on_click_load_builtin = async () => {
     if (!lf2) return;
     lf2
-      .load("data.zip.json")
-      .catch((e) =>
-        Log.print(
-          "App -> on_click_load_builtin, data.zip.json not exists, will try lf2_data",
-          e,
-        ),
-      )
-      .then(() => lf2.load("prel.zip.json"))
+      .load("prel.zip.json")
+      .then(() => lf2.load("data.zip.json"))
       .catch((e) => Log.print("App -> on_click_load_builtin", e));
   };
 
