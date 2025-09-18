@@ -29,8 +29,7 @@ export class BgLayerRender {
     const w = pic?.w ?? info.width;
     const h = pic?.h ?? info.height;
     const params: THREE.MeshBasicMaterialParameters = {
-      transparent: true,
-      opacity: 0,
+      transparent: true
     };
     if (pic?.texture) params.map = pic.texture;
     else params.color = info.color;
