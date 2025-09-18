@@ -1,14 +1,13 @@
 import type { World } from "../World";
-import type { IBgData, IBgLayerInfo } from "../defines";
+import { type IBgData, type IBgLayerInfo } from "../defines";
 import Layer from "./Layer";
 
-export default class Background {
+export class Background {
   readonly data: Readonly<IBgData>;
   private _layers: Layer[] = [];
   get name(): string {
     return this.data.base.name
   }
-
   get id(): string {
     return this.data.id;
   }
@@ -60,6 +59,7 @@ export default class Background {
       }
     }
   }
+
   update() {
     this._update_times++;
     for (const layer of this._layers)
@@ -71,5 +71,6 @@ export default class Background {
       layer.dispose()
     this._layers.length = 0
   }
+
 }
 

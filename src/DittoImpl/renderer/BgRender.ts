@@ -1,5 +1,5 @@
 import type { IObjectNode } from "../../LF2/3d";
-import type Background from "../../LF2/bg/Background";
+import type { Background } from "../../LF2/bg/Background";
 import { Defines, type IQuaternion } from "../../LF2/defines";
 import { Ditto } from "../../LF2/ditto";
 import type { World } from "../../LF2/World";

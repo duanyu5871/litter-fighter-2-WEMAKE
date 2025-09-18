@@ -2,8 +2,8 @@ import type { World } from "../World";
 import Callbacks from "../base/Callbacks";
 import FSM from "../base/FSM";
 import { new_team } from "../base/new_id";
-import Background from "../bg/Background";
-import { Defines, EntityEnum, IBgData, IStageInfo, IStageObjectInfo, IStagePhaseInfo } from "../defines";
+import { Background } from "../bg/Background";
+import { Defines, IBgData, IStageInfo, IStageObjectInfo, IStagePhaseInfo } from "../defines";
 import { Ditto } from "../ditto";
 import { Entity } from "../entity/Entity";
 import { is_character, is_weapon } from "../entity/type_check";
@@ -19,23 +19,24 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
   readonly world: World;
   readonly data: IStageInfo;
   readonly next_stage?: IStageInfo;
-  readonly bg: Background;
   readonly team: string;
   readonly callbacks = new Callbacks<IStageCallbacks>();
   private _disposed: boolean = false;
   private _disposers: (() => void)[] = [];
   private _cur_phase_idx = -1;
+  private _bg: Background;
+  get bg(): Background { return this._bg; }
   get phases() { return this.data.phases }
   get id(): string { return this.data.name; }
   get name(): string { return this.data.name; }
   get cur_phase(): number { return this._cur_phase_idx; }
-  get left(): number { return this.bg.left; }
-  get right(): number { return this.bg.right; }
-  get near(): number { return this.bg.near; }
-  get far(): number { return this.bg.far; }
-  get width(): number { return this.bg.width; }
-  get depth(): number { return this.bg.depth; }
-  get middle() { return this.bg.middle; }
+  get left(): number { return this._bg.left; }
+  get right(): number { return this._bg.right; }
+  get near(): number { return this._bg.near; }
+  get far(): number { return this._bg.far; }
+  get width(): number { return this._bg.width; }
+  get depth(): number { return this._bg.depth; }
+  get middle() { return this._bg.middle; }
   get lf2() { return this.world.lf2; }
   get time() { return this.fsm.time; }
 
@@ -46,11 +47,11 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
    * @type {number}
    */
   get player_left(): number {
-    return this.bg.left;
+    return this._bg.left;
   }
 
   get camera_left(): number {
-    return this.bg.left;
+    return this._bg.left;
   }
 
   /**
@@ -60,19 +61,30 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
    * @type {number}
    */
   get player_right(): number {
-    return this.data.phases[this._cur_phase_idx]?.bound ?? this.bg.right;
+    return this.data.phases[this._cur_phase_idx]?.bound ?? this._bg.right;
   }
   get camera_right(): number {
-    if (!this.data.phases.length) return this.bg.right
+    if (!this.data.phases.length) return this._bg.right
     const { phases } = this.data
     const phase = phases[this._cur_phase_idx] || phases[phases.length - 1]!
-    return phase.bound ?? this.bg.right;
+    return phase.bound ?? this._bg.right;
+  }
+  change_bg(data: IBgData): Background {
+    // FIXME: so messed up here...
+    if (this._bg) {
+      if (this._bg.data.id === data.id) return this._bg;
+      this._bg.dispose();
+    }
+    const world_stage = this.world.stage;
+    if (world_stage && this.world.bg.data.id === data.id)
+      return this._bg = this.world.bg
+    return this._bg = new Background(this.world, data);
   }
   constructor(world: World, data: IStageInfo | IBgData) {
     this.world = world;
     if ("type" in data && data.type === "background") {
       this.data = Defines.VOID_STAGE;
-      this.bg = new Background(world, data);
+      this._bg = this.change_bg(data);
     } else if ("bg" in data) {
       this.data = data;
       const bg_id = this.data.bg;
@@ -81,11 +93,12 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
       ); // FIXME;
       if (!bg_data && bg_id !== Defines.VOID_BG.id)
         Ditto.warn(Stage.TAG + "::constructor", `bg_data not found, id: ${bg_id}`);
-      this.bg = new Background(world, bg_data ?? Defines.VOID_BG);
+      this._bg = this.change_bg(bg_data ?? Defines.VOID_BG);
     } else {
       this.data = Defines.VOID_STAGE;
-      this.bg = new Background(world, Defines.VOID_BG);
+      this._bg = this.change_bg(Defines.VOID_BG);
     }
+
     if (this.data.next)
       this.next_stage = this.lf2.stages.find(v => v.id === this.data.next);
     this.team = new_team();
@@ -237,7 +250,9 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
   dispose() {
     this._disposed = true;
     for (const f of this._disposers) f();
-    this.bg.dispose();
+
+    if (this._bg !== this.world.bg) this._bg.dispose();
+
     for (const item of this.items) item.dispose();
 
     const temp: Entity[] = [];

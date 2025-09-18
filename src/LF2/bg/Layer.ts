@@ -1,5 +1,5 @@
 import type { IBgLayerInfo } from "../defines/IBgLayerInfo";
-import type Background from "./Background";
+import type { Background } from "./Background";
 export class Layer {
   readonly bg: Background;
   readonly info: IBgLayerInfo;

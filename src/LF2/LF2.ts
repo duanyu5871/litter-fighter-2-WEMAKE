@@ -624,7 +624,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
       arg = this.random_get(this.datas.backgrounds.filter(v => v.base.group.some(a => a === BackgroundGroup.Regular)))
     if (is_str(arg)) arg = this.datas.find_background(arg);
     if (!arg) return;
-    this.world.stage = new Stage(this.world, arg);
+    this.world.stage.change_bg(arg);
   }
   remove_bg = () => this.remove_stage();
 
