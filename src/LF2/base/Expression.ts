@@ -4,12 +4,11 @@ import {
   IJudger,
   IValGetterGetter
 } from "../defines/IExpression";
-import { Ditto } from "../ditto";
 export function ALWAY_FALSE<T = unknown>(
   text: string,
   err?: string,
 ): IJudger<T> {
-  return { run: () => false, text, err };
+  return { run: () => false, text, err, result: false };
 }
 const a_included_b = (a: any[], b: any[]) => {
   return !b.length || b.findIndex((i) => a.indexOf(i) < 0) === -1;
@@ -32,22 +31,20 @@ export const predicate_maps: Record<BinOp, (a: any, b: any) => boolean> = {
 export class Expression<T1, T2 = T1> implements IExpression<T1, T2> {
   readonly is_expression = true;
   static is = (v: any): v is Expression<unknown> => v?.is_expression === true;
-  readonly text: string = "";
   readonly children: IExpression<T1, T2>[] = [];
   readonly get_val_getter: IValGetterGetter<T1 | T2>;
-  readonly err?: string | undefined;
+  err?: string | undefined;
+  text: string = "";
+  result?: boolean | undefined;
   before: string = "";
   not: boolean = false;
+  
+  op: any;
+  val_1: any;
+  val_2: any;
+
   constructor(
-    text: string,
-    get_val_getter: IValGetterGetter<T1 | T2>,
-  );
-  constructor(
-    run: IJudger<T1 | T2>,
-    get_val_getter: IValGetterGetter<T1 | T2>,
-  );
-  constructor(
-    arg_0: string | IJudger<T1 | T2>,
+    arg_0: string | null,
     get_val_getter: IValGetterGetter<T1 | T2>,
   ) {
     this.get_val_getter = get_val_getter;
@@ -60,7 +57,7 @@ export class Expression<T1, T2 = T1> implements IExpression<T1, T2> {
       let before: string = "";
       for (; i < count; ++i) {
         letter = this.text[i] || '';
-        if ("!" === letter && this.text[i+1] === "(") {
+        if ("!" === letter && this.text[i + 1] === "(") {
           const child = new Expression<T1, T2>(
             this.text.substring(i + 2),
             get_val_getter,
@@ -81,9 +78,8 @@ export class Expression<T1, T2 = T1> implements IExpression<T1, T2> {
           this.children.push(child);
         } else if ("|" === letter || "&" === letter) {
           if (p < i) {
-            const sub_str = this.text.substring(p, i).replace(/\)*$/g, "");
-            const judger = this.gen_judger(sub_str);
-            const child = new Expression<T1, T2>(judger, get_val_getter);
+            const child = new Expression<T1, T2>(null, get_val_getter);
+            child.judger(this.text.substring(p, i).replace(/\)*$/g, ""))
             child.before = before;
             this.children.push(child);
             before = letter;
@@ -93,9 +89,8 @@ export class Expression<T1, T2 = T1> implements IExpression<T1, T2> {
           p = i + 1;
         } else if (")" === letter || '' === letter) {
           if (p < i) {
-            const sub_str = this.text.substring(p, i);
-            const judger = this.gen_judger(sub_str);
-            const child = new Expression<T1, T2>(judger, get_val_getter);
+            const child = new Expression<T1, T2>(null, get_val_getter);
+            child.judger(this.text.substring(p, i))
             child.before = before;
             this.children.push(child);
           }
@@ -103,24 +98,27 @@ export class Expression<T1, T2 = T1> implements IExpression<T1, T2> {
         }
       }
       this.text = this.text.substring(0, i);
-    } else {
-      Object.assign(this, arg_0);
     }
   }
-  private gen_judger(text: string): IJudger<T1> {
-    if (!text) return ALWAY_FALSE(text, "[empty text]");
+  private alway_false(err: string): void {
+    this.err = err
+    this.result = false;
+    this.run = () => false;
+  }
+  private judger(text: string): void {
+    this.text = text
+    if (!text) return this.alway_false("[empty text]")
+
     const reg_result =
       text.match(/(\S*)\s*(==|!=|<=|>=|\{\{|\}\}|!\{|!\})\s?(\S*)/) ||
       text.match(/(\S*)\s*(=|<|>)\s?(\S*)/);
-    if (!reg_result) return ALWAY_FALSE(text, `[wrong expression: ${text}]`);
+    if (!reg_result) return this.alway_false(`[wrong expression: ${text}]`);
     const [, word_1, op, word_2] = reg_result;
-    if (!word_1 || !word_2)
-      return ALWAY_FALSE(text, `[wrong expression: ${text}]`);
+    this.op = op;
+    if (!word_1 || !word_2) return this.alway_false(`[wrong expression: ${text}]`);
     const predicate = predicate_maps[op as TBinOp];
-    if (!predicate) {
-      Ditto.warn("gen_single_judge_func", `wrong operator: ${op}`);
-      return ALWAY_FALSE(text, `wrong operator: ${op}`);
-    }
+    if (!predicate) return this.alway_false(`wrong operator: ${op}`);
+
     const getter_1 = this.get_val_getter(word_1);
     const getter_2 = this.get_val_getter(word_2);
     let val_1: any = word_1;
@@ -130,26 +128,23 @@ export class Expression<T1, T2 = T1> implements IExpression<T1, T2> {
       if (!getter_2) val_2 = word_2.split(",");
     }
     if (!getter_1 && !getter_2) {
-      const result = predicate(val_1, val_2);
+      const result = this.result = predicate(
+        this.val_1 = val_1,
+        this.val_2 = val_2
+      );
       console.warn(
         "[Expression] warning,",
         JSON.stringify(text),
         "always got",
         result,
       );
-      return {
-        run: () => result,
-        text,
-      };
+      this.run = () => result
+      return;
     }
-    return {
-      run: (t) =>
-        predicate(
-          getter_1 ? getter_1(t, word_1, op as BinOp) : val_1,
-          getter_2 ? getter_2(t, word_2, op as BinOp) : val_2,
-        ),
-      text,
-    };
+    this.run = (t) => this.result = predicate(
+      this.val_1 = getter_1 ? getter_1(t, word_1, op as BinOp) : val_1,
+      this.val_2 = getter_2 ? getter_2(t, word_2, op as BinOp) : val_2,
+    )
   }
   run = (e: T1): boolean => {
     let ret = false;
@@ -164,6 +159,6 @@ export class Expression<T1, T2 = T1> implements IExpression<T1, T2> {
         ret = ret && child.run(e);
       }
     }
-    return this.not ? !ret : ret;
+    return this.result = this.not ? !ret : ret;
   };
 }

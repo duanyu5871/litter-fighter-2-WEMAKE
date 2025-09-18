@@ -1,6 +1,7 @@
 import type { TBinOp } from "./BinOp";
 
 export interface IJudger<T> {
+  result?: boolean;
   run(arg: T): boolean;
   readonly text: string;
   readonly err?: string;

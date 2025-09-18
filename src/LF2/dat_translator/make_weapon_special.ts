@@ -7,7 +7,10 @@ import { ensure } from "../utils";
 import { foreach } from "../utils/container_help/foreach";
 import { CondMaker } from "./CondMaker";
 
+const handled = new Set<any>();
 export function make_weapon_special(data: IEntityData) {
+
+
   const ooo = (...frame_ids: string[]): IOpointInfo[] => {
     const aa = [
       { dvy: 5, dvx: -1 },
@@ -48,10 +51,13 @@ export function make_weapon_special(data: IEntityData) {
           delete frame.itr
           return;
         }
-        foreach(frame.itr, itr => {
+        foreach(frame.itr, (itr, idx) => {
+          if (handled.has(itr)) throw new Error('already handle!')
+          handled.add(itr)
           itr.actions = ensure(itr.actions, {
             type: ActionType.A_NextFrame,
             data: { id: Builtin_FrameId.Gone },
+            pretest: true,
             test: new CondMaker<C_Val>()
               .add(C_Val.VictimType, '==', EntityEnum.Fighter)
               .and(C_Val.BdyKind, '==', BdyKind.Normal)

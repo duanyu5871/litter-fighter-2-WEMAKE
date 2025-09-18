@@ -27,4 +27,11 @@ export interface IAction_Base {
    * @type {?IExpression<any>}
    */
   tester?: IExpression<any>;
+
+  /**
+   * 是否在碰撞响应前判定？
+   * 
+   * @type {?boolean} 默认true
+   */
+  pretest?: boolean; 
 }

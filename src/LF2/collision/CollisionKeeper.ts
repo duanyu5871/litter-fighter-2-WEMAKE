@@ -1,7 +1,6 @@
 import { ICollision, ICollisionHandler } from "../base";
-import { ALL_ENTITY_ENUM, BdyKind, Builtin_FrameId, BuiltIn_OID, EntityEnum, EntityGroup, ItrKind, TEntityEnum } from "../defines";
+import { ALL_ENTITY_ENUM, BdyKind, BuiltIn_OID, EntityEnum, EntityGroup, ItrKind, TEntityEnum } from "../defines";
 import { Ditto } from "../ditto";
-import { Factory, turn_face } from "../entity";
 import { collision_action_handlers } from "../entity/collision_action_handlers";
 import { arithmetic_progression } from "../utils";
 import { handle_ball_frozen } from "./handle_ball_frozen";
@@ -85,13 +84,16 @@ export class CollisionKeeper {
       Ditto.debug(` collision: ${collision_desc} \nhandlers: ${handlers?.map(v => v.name) ?? 'none'}`)
     }
 
-    let ball_hit = false
+    let ball_hit = false;
+    const { itr, bdy, victim, attacker } = collision;
+    const itr_tests = itr.actions?.map(v => v.pretest && v.tester?.run(collision) !== false)
+    const bdy_tests = bdy.actions?.map(v => v.pretest && v.tester?.run(collision) !== false)
+
     handlers?.forEach(fn => {
       ball_hit = ball_hit || fn === handle_ball_is_hit;
       return fn(collision)
     })
 
-    const { itr, bdy, victim, attacker } = collision;
     if (
       attacker.group?.some(v => v === EntityGroup.FreezableBall) &&
       attacker.data.id === BuiltIn_OID.FreezeBall
@@ -108,12 +110,14 @@ export class CollisionKeeper {
     ) {
       handle_ball_frozen(attacker, victim);
     } else {
-      itr.actions?.forEach(action => {
-        if (action.tester?.run(collision) === false) return;
+      itr.actions?.forEach((action, idx) => {
+        const test_result = action.pretest ? itr_tests?.[idx] : action.tester?.run(collision);
+        if (test_result === false) return;
         collision_action_handlers[action.type](action as any, collision)
       })
-      bdy.actions?.forEach(action => {
-        if (action.tester?.run(collision) === false) return;
+      bdy.actions?.forEach((action, idx) => {
+        const test_result = action.pretest ? bdy_tests?.[idx] : action.tester?.run(collision);
+        if (test_result === false) return;
         collision_action_handlers[action.type](action as any, collision)
       })
     }
