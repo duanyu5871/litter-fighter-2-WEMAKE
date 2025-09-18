@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { DomAdapter } from "splittings-dom/dist/es/splittings-dom";
 import "splittings-dom/dist/es/splittings-dom.css";
-import { Workspaces } from "splittings/dist/es/splittings";
+import { Slot, Workspaces } from "splittings/dist/es/splittings";
 import { Button } from "../Component/Buttons/Button";
 import { Checkbox } from "../Component/Checkbox";
 import Combine from "../Component/Combine";
@@ -476,7 +476,7 @@ export default function EditorView(props: IEditorViewProps) {
 
 
     workspace.set_root(
-      workspace.new_slot(workspace, {
+      new Slot(workspace, {
         id: 'root',
         type: 'h',
         children: [
@@ -552,7 +552,7 @@ export default function EditorView(props: IEditorViewProps) {
       }
 
       workspace.edits([0, 'res_tree_cell', 'empty'], 1, ([slot0, slot1, slot2]) => {
-        slot0.rect.w = root_w
+        slot0.edit_rect(v => ({ ...v, w: root_w }))
         slot1.weight = res_tree_slot_w
         slot2.weight = root_w - res_tree_slot_w
       })
