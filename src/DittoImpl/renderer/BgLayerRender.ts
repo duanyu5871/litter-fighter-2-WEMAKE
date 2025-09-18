@@ -10,10 +10,6 @@ export class BgLayerRender {
   readonly mesh: IMeshNode;
   readonly layer: Layer;
   readonly pic: TPicture | undefined;
-  private _show_indicators = false;
-  get show_indicators() { return this._show_indicators; }
-  set show_indicators(v: boolean) { this._show_indicators = v; }
-
   get_pic = (file: string) => {
     let ret = pic_map.get(file);
     if (!ret) pic_map.set(file, ret = this.layer.bg.world.lf2.images.create_pic_by_img_key(file));
