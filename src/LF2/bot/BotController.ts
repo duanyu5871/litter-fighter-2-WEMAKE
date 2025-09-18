@@ -1,15 +1,20 @@
 import FSM from "../base/FSM";
 import { BaseController, KEY_NAME_LIST } from "../controller/BaseController";
 import {
-  Builtin_FrameId, Defines, GK, ItrKind, LGK, StateEnum, IBotAction, IBotDataSet, BotStateEnum
+  BotStateEnum,
+  Builtin_FrameId, Defines,
+  Difficulty,
+  GK,
+  IBotAction, IBotDataSet,
+  ItrKind, LGK, StateEnum
 } from "../defines";
-import { is_bot_ray_hit } from "./utils/is_bot_ray_hit";
-import { is_ball, is_character, Entity, is_weapon } from "../entity";
+import { Entity, is_ball, is_character, is_weapon } from "../entity";
 import { manhattan_xz } from "../helper/manhattan_xz";
 import { abs, clamp, floor } from "../utils";
 import { DummyEnum, dummy_updaters } from "./DummyEnum";
-import { BotState_Avoiding, BotState_Chasing, BotState_Idle } from "./state";
 import { NearestTargets } from "./NearestTargets";
+import { BotState_Avoiding, BotState_Chasing, BotState_Idle } from "./state";
+import { is_bot_ray_hit } from "./utils/is_bot_ray_hit";
 
 export class BotController extends BaseController implements Required<IBotDataSet> {
   readonly fsm = new FSM<BotStateEnum>()
@@ -367,11 +372,20 @@ export class BotController extends BaseController implements Required<IBotDataSe
     return false;
   }
 
+  action_desire(): number {
+    const crazy_desire = this.desire(); // 默认action设置的desire是crazy的好了。
+    const max_ratio = 1 - (this.lf2.difficulty - 1) / 3
+    const now_desire = max_ratio ?
+      crazy_desire + this.lf2.random_in(0, 10000 * max_ratio) :
+      crazy_desire
+    return now_desire;
+  }
   handle_action(action: IBotAction | undefined): LGK[] | false {
     if (!action) return false
     const { facing } = this.entity;
-    const { status, e_ray, judger, desire = 10000, keys } = action
-    if (this.desire() > desire) return false;
+    const { status, e_ray, judger, desire = 10000, keys } = action;
+    const action_desire = this.action_desire();
+    if (action_desire > desire) return false;
     if (status && !status.some(v => v === this.fsm.state?.key))
       return false;
     if (e_ray) {
