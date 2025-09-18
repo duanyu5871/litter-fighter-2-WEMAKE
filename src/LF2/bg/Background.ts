@@ -51,12 +51,15 @@ export default class Background {
 
   private add_layer(info: IBgLayerInfo) {
     let { x, loop = 0 } = info;
-    do {
-      this._layers.push(
-        new Layer(this, { ...info, x })
-      );
-      x += loop
-    } while (loop > 0 && x < this.width);
+    if (loop <= 0) {
+      this._layers.push(new Layer(this, info))
+      return;
+    } else {
+      const right = this.width + loop;
+      for (x -= loop; x < right; x += loop) {
+        this._layers.push(new Layer(this, { ...info, x }));
+      }
+    }
   }
 
 

@@ -3,6 +3,9 @@ import { IStagePhaseInfo } from "./IStagePhaseInfo";
  * 关卡信息
  */
 export interface IStageInfo {
+  /**
+   * 关卡使用的背景
+   */
   bg: string;
   id: string;
   name: string;

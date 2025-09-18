@@ -7,6 +7,9 @@ export interface IBgLayerInfo {
   x: number;
   y: number;
   z: number;
+  /** 
+   * x轴循环布置间隔距离
+   */
   loop?: number;
   cc?: number;
   c1?: number;
