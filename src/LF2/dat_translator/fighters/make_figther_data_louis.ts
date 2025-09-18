@@ -30,11 +30,11 @@ export function make_figther_data_louis(data: IEntityData): IEntityData {
   }
   BotBuilder.make(data).set_actions(
     // d>a
-    bot_ball_dfa(150, 1 / 30, 120, 400),
+    bot_ball_dfa(150, void 0, 120, 400),
     // d>j
     bot_ball_dfj(50, void 0, 120, 250),
     // d^j
-    bot_uppercut_duj(100, 1 / 30, -10, 120),
+    bot_uppercut_duj(100, void 0, -10, 120),
     // dja
     bot_chasing_skill_action('dja', void 0, void 0, 0.01)((e, c) => {
       e.expression = c?.and(EntityVal.HP_P, '<', 33).done()
