@@ -34,7 +34,6 @@ export class BgRender implements BgRenderPack {
       mesh: this._mesh,
       layers: [...this._layers]
     }
-    pack.bg?.fade_out(0, 0, 0);
     pack.mesh?.dispose()
 
     this._bg = bg;
@@ -43,7 +42,6 @@ export class BgRender implements BgRenderPack {
       this._mesh.z = -2 * Defines.CLASSIC_SCREEN_HEIGHT;
       this._layers.length = 0;
       this._mesh.name = "Background:" + this._bg.data.base.name;
-      this._bg.fade_in(0, 0, 0)
       for (const layer of this._bg.layers) {
         const layer_render = new BgLayerRender(layer)
         this._layers.push(layer_render);

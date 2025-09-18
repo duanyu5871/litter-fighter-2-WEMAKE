@@ -43,8 +43,7 @@ export class BgLayerRender {
   }
 
   update() {
-    const { opacity, visible, info: { x, absolute, width }, bg } = this.layer;
-    this.mesh.set_opacity(opacity);
+    const { visible, info: { x, absolute, width }, bg } = this.layer;
     this.mesh.visible = visible;
     const cam_x = bg.world.renderer.cam_x;
     const _x = absolute ?

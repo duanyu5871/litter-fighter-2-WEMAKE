@@ -3,7 +3,6 @@ import type { IBgData, IBgLayerInfo } from "../defines";
 import Layer from "./Layer";
 
 export default class Background {
-
   readonly data: Readonly<IBgData>;
   private _layers: Layer[] = [];
   get name(): string {
@@ -61,18 +60,6 @@ export default class Background {
       }
     }
   }
-
-
-  fade_out(duration: number, delay_max_offset: number, delay: number): void {
-    for (const layer of this._layers)
-      layer.fade_out(duration, this.world.lf2.random_in(0, delay_max_offset) + delay);
-  }
-
-  fade_in(duration: number, delay_max_offset: number, delay: number): void {
-    for (const layer of this._layers)
-      layer.fade_in(duration, this.world.lf2.random_in(0, delay_max_offset) + delay);
-  }
-
   update() {
     this._update_times++;
     for (const layer of this._layers)
