@@ -1,4 +1,4 @@
-import { BdyKind, Builtin_FrameId, BuiltIn_OID, Defines, EntityEnum, EntityGroup, IOpointInfo, StateEnum } from "../defines";
+import { BdyKind, Builtin_FrameId, BuiltIn_OID, EntityEnum, EntityGroup, IOpointInfo, StateEnum } from "../defines";
 import { ActionType } from "../defines/ActionType";
 import { CollisionVal as C_Val } from "../defines/CollisionVal";
 import { IEntityData } from "../defines/IEntityData";
@@ -56,6 +56,7 @@ export function make_weapon_special(data: IEntityData) {
               .add(C_Val.VictimType, '==', EntityEnum.Fighter)
               .and(C_Val.BdyKind, '==', BdyKind.Normal)
               .and(C_Val.VictimState, '!=', StateEnum.Defend)
+              .and(C_Val.ArmorWork, '==', 0)
               .done()
           })
         })
