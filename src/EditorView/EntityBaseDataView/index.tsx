@@ -27,8 +27,6 @@ export function EntityBaseDataView(props: IEntityBaseDataViewProps) {
         <Editor.Number field="resting" foo={data.base.resting} placeholder={'' + Defines.DEFAULT_RESTING_MAX} />
         <Editor.Number field="hp" foo={data.base.hp} placeholder={'' + Defines.DEFAULT_HP} />
         <Editor.Number field="mp" foo={data.base.mp} placeholder={'' + Defines.DEFAULT_MP} />
-        <Editor.Number field="mp_r_max_spd" foo={data.base.mp_r_max_spd} placeholder={'' + Defines.DEFAULT_MP_RECOVERY_MAX_SPEED} />
-        <Editor.Number field="mp_r_min_spd" foo={data.base.mp_r_min_spd} placeholder={'' + Defines.DEFAULT_MP_RECOVERY_MIN_SPEED} />
         <Editor.Number field="catch_time" foo={data.base.catch_time} placeholder={'' + Defines.DEFAULT_CATCH_TIME} />
         <Editor.Number field="jump_height" foo={data.base.jump_height} />
         <Editor.Number field="jump_distance" foo={data.base.jump_distance} />

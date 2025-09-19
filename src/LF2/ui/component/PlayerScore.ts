@@ -3,6 +3,7 @@ import { Entity } from "../../entity/Entity";
 import { UIComponent } from "./UIComponent";
 
 export default class PlayerScore extends UIComponent {
+  static override readonly TAG: string = 'player_score'
   private _hp_lost: number = 0;
   private _mp_usage: number = 0;
   private _lose: boolean = false;

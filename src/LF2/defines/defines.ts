@@ -95,21 +95,6 @@ export namespace Defines {
   export const DEFAULT_FORCE_BREAK_DEFEND_VALUE = 200;
 
   /**
-   * 默认最大回蓝速度, 血越少，回蓝越快（线性）
-   *
-   * @type {number}
-   */
-  export const DEFAULT_MP_RECOVERY_MAX_SPEED: number = 1;
-
-  /**
-   * 默认最大回蓝速度, 血越多，回蓝越慢（线性）
-   *
-   * @type {number}
-   */
-  export const DEFAULT_MP_RECOVERY_MIN_SPEED: number = 0.25;
-
-  export const DEFAULT_HP_RECOVERY_SPEED = 0.2;
-  /**
    * 默认值：dvx缩放系数
    *
    * @type {number}
@@ -261,18 +246,15 @@ export namespace Defines {
   export const CHARACTER_BOUNCING_TEST_SPD_X: number = 5;
   export const CHARACTER_BOUNCING_TEST_SPD_Y: number = -2.6;
   export const HP_RECOVERABILITY = 0.66;
-  export const HP_RECOVERY_SPD = 0.05;
 
-  /**
-   * 加速治愈的治愈速度
-   * 每帧治愈多少血
-   */
-  export const HP_HEALING_SPD = 0.5;
-  /**
-   * StateEnum.HealSelf 治愈的血量
-   */
-  export const STATE_HEAL_SELF_HP = 100;
+  export const HP_R_TICKS = 24;
+  export const HP_R_VALUE = 1;
 
+  export const HP_HEALING_TICKS = 16;
+  export const HP_HEALING_VALUE = 8;
+  export const STATE_HEAL_SELF_HP = 104;
+
+  export const MP_R_TICKS = 6;
 
   export const DifficultyLabels: Record<Difficulty, string> = {
     [Difficulty.Easy]: "easy",

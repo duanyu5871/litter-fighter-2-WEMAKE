@@ -81,7 +81,7 @@ class ComponentFactory {
     ["opacity_hover", OpacityHover],
     ["vertical_layout", VerticalLayout],
     ["horizontal_layout", HorizontalLayout],
-    ["player_score", PlayerScore],
+    [PlayerScore.TAG, PlayerScore],
     ["player_score_cell", PlayerScoreCell],
     ["vs_mode_logic", VsModeLogic],
     ["demo_mode_logic", DemoModeLogic],

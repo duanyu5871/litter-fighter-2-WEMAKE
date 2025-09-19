@@ -11,6 +11,7 @@ import { frames } from "./frames";
 
 export function make_fighter_data_julian(data: IEntityData) {
   data.base.group = ensure(data.base.group, EntityGroup.Boss);
+  data.base.mp_r_ticks = 3;
   data.base.ce = 3;
   data.base.armor = {
     fireproof: 1,

@@ -4,7 +4,8 @@ import { Callbacks, ICollision, new_id, new_team, type NoEmitCallbacks } from ".
 import { BaseController } from "../controller/BaseController";
 import { InvalidController } from "../controller/InvalidController";
 import {
-  Builtin_FrameId, BuiltIn_OID, Defines, EntityEnum, EntityGroup, FacingFlag, FrameBehavior, IBaseData, IBounding,
+  Builtin_FrameId,
+  Defines, EntityEnum, EntityGroup, FacingFlag, FrameBehavior, IBaseData, IBounding,
   ICpointInfo, IEntityData, IFrameInfo,
   IItrInfo,
   INextFrame,
@@ -15,6 +16,8 @@ import {
   OpointKind, OpointMultiEnum, OpointSpreading, SpeedMode, StateEnum, TFace,
   TNextFrame
 } from "../defines";
+import { EMPTY_FRAME_INFO } from "../defines/EMPTY_FRAME_INFO";
+import { GONE_FRAME_INFO } from "../defines/GONE_FRAME_INFO";
 import { IArmorInfo } from "../defines/IArmorInfo";
 import { Ditto } from "../ditto";
 import { ENTITY_STATES, States } from "../state";
@@ -23,14 +26,12 @@ import { Times } from "../ui/utils/Times";
 import { abs, find, floor, intersection, max, min, round } from "../utils";
 import { cross_bounding } from "../utils/cross_bounding";
 import { is_num, is_positive, is_str } from "../utils/type_check";
-import { EMPTY_FRAME_INFO } from "../defines/EMPTY_FRAME_INFO";
 import { Factory } from "./Factory";
-import { GONE_FRAME_INFO } from "../defines/GONE_FRAME_INFO";
 import type IEntityCallbacks from "./IEntityCallbacks";
 import { calc_v } from "./calc_v";
 import { turn_face } from "./face_helper";
 import { IDebugging, make_debugging } from "./make_debugging";
-import { is_ball, is_character, is_weapon_data } from "./type_check";
+import { is_character, is_weapon_data } from "./type_check";
 export type TData = IBaseData | IEntityData;
 export class Entity implements IDebugging {
   static readonly TAG: string = 'Entity';
@@ -51,7 +52,8 @@ export class Entity implements IDebugging {
   protected _is_attach: boolean = false;
   protected _is_incorporeity: boolean = false;
   protected _landing_frame?: IFrameInfo;
-
+  protected _hp_r_tick: Times;
+  protected _mp_r_tick: Times;
 
   get group() { return this.data.base.group };
   get is_attach() { return this._is_attach }
@@ -188,6 +190,7 @@ export class Entity implements IDebugging {
     this._callbacks.emit("on_defend_value_max_changed")(this, v, o);
   }
 
+
   private _healing: number = 0;
   get healing(): number {
     return this._healing;
@@ -290,9 +293,7 @@ export class Entity implements IDebugging {
 
   protected _mp: number = Defines.DEFAULT_MP;
   protected _mp_max: number = Defines.DEFAULT_MP;
-  protected _mp_r_spd_min: number = Defines.DEFAULT_MP_RECOVERY_MIN_SPEED;
-  protected _mp_r_spd_max: number = Defines.DEFAULT_MP_RECOVERY_MAX_SPEED;
-  protected _mp_r_spd: number = Defines.DEFAULT_MP_RECOVERY_MIN_SPEED;
+
 
   protected _hp: number = Defines.DEFAULT_HP;
   protected _hp_r: number = Defines.DEFAULT_HP;
@@ -462,8 +463,6 @@ export class Entity implements IDebugging {
     v = max(0, v)
     if (o === v) return;
     this._callbacks.emit("on_hp_changed")(this, (this._hp = v), o);
-    this.update_mp_r_spd();
-
     if (o > 0 && v <= 0) {
       this._callbacks.emit("on_dead")(this);
 
@@ -504,20 +503,6 @@ export class Entity implements IDebugging {
     const o = this._hp_max;
     v = max(0, v)
     this._callbacks.emit("on_hp_max_changed")(this, (this._hp_max = v), o);
-    this.update_mp_r_spd();
-  }
-
-  get mp_r_spd_min(): number {
-    return this._mp_r_spd_min;
-  }
-  set mp_r_spd_min(v: number) {
-    this._mp_r_spd_min = v;
-  }
-  get mp_r_spd_max(): number {
-    return this._mp_r_spd_max;
-  }
-  set mp_r_spd_max(v: number) {
-    this._mp_r_spd_max = v;
   }
 
   /**
@@ -644,6 +629,8 @@ export class Entity implements IDebugging {
     this.data = data;
     this.world = world;
     this.states = states;
+    this._hp_r_tick = new Times(0, world.hp_r_ticks);
+    this._mp_r_tick = new Times(0, world.mp_r_ticks)
     this._hp_max = data.base.hp ?? Defines.DEFAULT_HP;
     this._ctrl = new InvalidController("", this);
 
@@ -657,23 +644,12 @@ export class Entity implements IDebugging {
 
     this._defend_ratio = data.base.defend_ratio ?? Defines.DEFAULT_DEFEND_INJURY_RATIO;
 
-    if (data.type === EntityEnum.Fighter) {
-      this._mp_r_spd_min =
-        data.base.mp_r_min_spd ?? Defines.DEFAULT_MP_RECOVERY_MIN_SPEED;
-      this._mp_r_spd_max =
-        data.base.mp_r_max_spd ?? Defines.DEFAULT_MP_RECOVERY_MAX_SPEED;
-    } else {
-      this._mp_r_spd_min = data.base.mp_r_min_spd ?? 0;
-      this._mp_r_spd_max = data.base.mp_r_max_spd ?? 0;
-    }
-
     const { armor } = this.data.base
     if (this.armor = armor) {
       this.toughness = this.toughness_max = armor.toughness
     }
 
     this._catch_time_max = data.base.catch_time ?? Defines.DEFAULT_CATCH_TIME;
-    this.update_mp_r_spd();
     this.fall_value_max =
       this.data.base.fall_value ?? Defines.DEFAULT_FALL_VALUE_MAX;
     this.defend_value_max =
@@ -822,9 +798,10 @@ export class Entity implements IDebugging {
       : emitter.facing;
 
     if (is_num(opoint.max_hp)) this.hp = this.hp_r = this.hp_max = opoint.max_hp;
-    if (is_num(opoint.max_mp)) this.mp = this.hp_r = this.mp_max = opoint.max_mp;
     if (is_num(opoint.hp)) this.hp = this.hp_r = opoint.hp;
-    if (is_num(opoint.mp)) this.mp = this.hp_r = opoint.mp;
+
+    if (is_num(opoint.max_mp)) this.mp = this.mp_max = opoint.max_mp;
+    if (is_num(opoint.mp)) this.mp = opoint.mp;
 
     if (result) this.enter_frame(result.which);
     this.velocities.length = 0
@@ -1162,26 +1139,29 @@ export class Entity implements IDebugging {
     if (vym == SpeedMode.Fixed) this.velocity_1.y = 0
     if (vzm == SpeedMode.Fixed) this.velocity_1.z = 0
   }
-
   self_update(): void {
     if (this.next_frame) this.enter_frame(this.next_frame);
 
-    if (this._hp > 0) {
-      if (this._hp < this._hp_r) {
-        let offset = this.world.hp_recovery_spd;
-        if (this.healing > 0) {
-          this.healing -= this.world.hp_healing_spd
-          offset += this.world.hp_healing_spd
-        }
-        let next_hp = this._hp + offset
-        if (next_hp >= this._hp_r) {
-          next_hp = this._hp_r
-        }
-        this.hp = next_hp;
+    if (this._hp > 0 && this._hp < this._hp_r) {
+      this._hp_r_tick.max = this.healing > 0 ?
+        (this.data.base.hp_healing_ticks || this.world.hp_healing_ticks) :
+        (this.data.base.hp_r_ticks || this.world.hp_r_ticks);
+      if (this._hp_r_tick.add()) {
+        const value = this.healing > 0 ?
+          (this.data.base.hp_healing_value || this.world.hp_healing_value) :
+          (this.data.base.hp_r_value || this.world.hp_r_value);
+        this.hp = min(this._hp_r, this._hp + value);
+        if (this._hp === this._hp_r) this.healing = 0;
+        else if (this._healing) this.healing = max(0, this._healing - value)
       }
+    }
 
-      if (this._mp < this._mp_max)
-        this.mp = min(this._mp_max, this._mp + this._mp_r_spd);
+    if (this._hp > 0 && this._mp < this._mp_max && !this._blinking_duration && !this._invisible_duration) {
+      this._mp_r_tick.max = this.data.base.mp_r_ticks || this.world.mp_r_ticks;
+      if (this._mp_r_tick.add()) {
+        const value = 1 + floor((500 - min(this._hp, 500)) / 100)
+        this.mp = min(this._mp_max, this._mp + value);
+      }
     }
 
     if (this.frame.hp) this.hp -= this.frame.hp;
@@ -1740,12 +1720,6 @@ export class Entity implements IDebugging {
     this._invisible_duration = duration;
   }
 
-  protected update_mp_r_spd(): void {
-    this._mp_r_spd =
-      this._mp_r_spd_min +
-      ((this._mp_r_spd_max - this._mp_r_spd_min) * (this._hp_max - this._hp)) /
-      this._hp_max;
-  }
 
   is_ally(other: Entity): boolean {
     return this.team === other.team;

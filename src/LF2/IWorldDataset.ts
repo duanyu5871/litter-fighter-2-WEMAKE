@@ -134,9 +134,23 @@ export interface IWorldDataset {
    */
   cha_bc_tst_spd_y: number;
   hp_recoverability: number;
-  hp_recovery_spd: number;
-  hp_healing_spd: number;
 
+  /**
+   * 暗血恢复周期
+   * 每几帧回一次血
+   */
+  hp_r_ticks: number;
+
+  /**
+   * 暗血恢复量
+   * 每次回血的回血量
+   */
+  hp_r_value: number;
+  hp_healing_ticks: number;
+  hp_healing_value: number;
+
+  mp_r_ticks: number;
+  
   /**
    * 按键“双击”判定间隔，单位（帧数）
    *

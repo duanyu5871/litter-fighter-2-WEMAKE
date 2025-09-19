@@ -119,9 +119,13 @@ export class WorldDataset implements IWorldDataset {
   cha_bc_tst_spd_x: number = Defines.CHARACTER_BOUNCING_TEST_SPD_X;
   cha_bc_tst_spd_y: number = Defines.CHARACTER_BOUNCING_TEST_SPD_Y;
   hp_recoverability: number = Defines.HP_RECOVERABILITY;
-  hp_recovery_spd: number = Defines.HP_RECOVERY_SPD;
-  hp_healing_spd: number = Defines.HP_HEALING_SPD;
+  hp_r_ticks: number = Defines.HP_R_TICKS;
+  hp_r_value: number = Defines.HP_R_VALUE;
+  hp_healing_ticks: number = Defines.HP_HEALING_TICKS;
+  hp_healing_value: number = Defines.HP_HEALING_VALUE;
 
+  mp_r_ticks: number = Defines.MP_R_TICKS;
+  
   /**
    * 按键“双击”判定间隔，单位（帧数）
    *

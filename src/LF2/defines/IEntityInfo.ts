@@ -87,30 +87,20 @@ export interface IEntityInfo {
   mp?: number;
 
   /**
-   * MP最大恢复速度（每帧）
-   * 血量越低，MP恢复速度 越接近MP最大恢复速度
-   *
-   * - 默认值：
-   *    - 角色：Defines.DEFAULT_MP_RECOVERY_MAX_SPEED
-   *    - 武器、波：0
-   *
-   * @see Defines.DEFAULT_MP_RECOVERY_MAX_SPEED
-   * @type {?number}
+   * 暗血恢复周期
+   * 每几帧回一次血
    */
-  mp_r_max_spd?: number;
+  hp_r_ticks?: number;
 
   /**
-   * MP最小恢复速度（每帧）
-   * 血量越高，MP恢复速度 越接近MP最大恢复速度
-   *
-   * - 默认值：
-   *    - 角色：Defines.DEFAULT_MP_RECOVERY_MIN_SPEED
-   *    - 武器、波：0
-   *
-   * @see Defines.DEFAULT_MP_RECOVERY_MIN_SPEED
-   * @type {?number}
+   * 暗血恢复量
+   * 每次回血的回血量
    */
-  mp_r_min_spd?: number;
+  hp_r_value?: number;
+
+  hp_healing_ticks?: number;
+  hp_healing_value?: number;
+  mp_r_ticks?: number;
 
   /**
    * 是否为隐藏角色
