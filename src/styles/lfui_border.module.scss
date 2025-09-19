@@ -11,6 +11,10 @@
   border-radius: 0px
 }
 
+.lfui_no_shadow {
+  box-shadow: none !important;
+}
+
 ._lfui_no_border,
 .lfui_no_border,
 .lfui_no_border:hover,
@@ -28,5 +32,3 @@
 .lfui_no_round:disabled {
   @include lfui_no_round
 }
-
-

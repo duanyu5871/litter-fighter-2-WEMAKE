@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "../../Component/Buttons/Button";
 import Combine from "../../Component/Combine";
 import { Flex } from "../../Component/Flex";
-import Frame from "../../Component/Frame";
+import Frame, { IFrameProps } from "../../Component/Frame";
 import { Input } from "../../Component/Input";
 import Select from "../../Component/Select";
 import Show from "../../Component/Show";
@@ -15,7 +15,7 @@ import { HitFlagEditor } from "./HitFlagEditor";
 import { make_field_props, make_not_blank_field_props } from "./make_field_props";
 import { QubeEdit } from "./QubeEdit";
 
-export interface IItrEditorViewProps {
+export interface IItrEditorViewProps extends IFrameProps {
   label?: string;
   value?: IItrInfo;
   defaultValue?: IItrInfo
@@ -40,11 +40,11 @@ const default_value: IItrInfo = {
   h: 0
 }
 export function ItrEditor(props: IItrEditorViewProps) {
-  const { label = 'itr info', value, defaultValue = default_value, onRemove, onChange } = props;
+  const { label = 'itr info', value, defaultValue = default_value, onRemove, onChange, ..._p } = props;
   const kind = value?.kind ?? defaultValue.kind;
   const is_vrest = !!value && 'vrest' in value;
   return (
-    <Frame key={label} label={label} tabIndex={-1}>
+    <Frame key={label} label={label} tabIndex={-1} {..._p}>
       <Button style={{ position: 'absolute', right: 0, top: 0, border: 'none' }} onClick={onRemove}>
         🗑️
       </Button>
@@ -142,6 +142,7 @@ export function ItrEditor(props: IItrEditorViewProps) {
     </Frame>
   )
 }
+ItrEditor.genValue = (fn?: (edit: IItrInfo) => IItrInfo) => fn ? fn({ ...default_value }) : { ...default_value }
 export default function ItrEditorTestView(props: {}) {
   const [value, set_value] = useState<IItrInfo | undefined>(default_value)
   return (

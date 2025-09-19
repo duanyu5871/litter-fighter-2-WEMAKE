@@ -9,6 +9,7 @@ export namespace Paths {
     editor = '/editor',
     bdy_editor = '/bdy_editor',
     itr_editor = '/itr_editor',
+    frame_editor = '/frame_editor',
     network_test = '/network_test',
     workspaces_demo = '/workspaces',
     component_demos = '/component_demos',
@@ -40,6 +41,8 @@ export namespace Paths {
     [All.network_test]: React.lazy(() => import("./pages/network_test")),
     [All.bdy_editor]: React.lazy(() => import("./EditorView/FrameEditorView/BdyEditor")),
     [All.itr_editor]: React.lazy(() => import("./EditorView/FrameEditorView/ItrEditor")),
+    [All.frame_editor]: React.lazy(() => import("./EditorView/FrameEditorView")),
+
   }
   export const Relations: { [x in All]?: All[] } = {
     [All._]: [
@@ -51,7 +54,8 @@ export namespace Paths {
       All.workspaces_demo,
       All.network_test,
       All.bdy_editor,
-      All.itr_editor
+      All.itr_editor,
+      All.frame_editor,
     ],
     [All.component_demos]: [
       All.component_demos_InputNumber,

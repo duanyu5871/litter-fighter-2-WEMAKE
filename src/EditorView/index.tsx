@@ -30,7 +30,7 @@ import { EditorShapeEnum } from "./EditorShapeEnum";
 import { EntityBaseDataView } from "./EntityBaseDataView";
 import { EntityDataEditorView } from "./EntityDataEditorView";
 import { FrameDrawer, FrameDrawerData } from "./FrameDrawer";
-import { FrameEditorView } from "./FrameEditorView";
+import { FrameEditor } from "./FrameEditorView";
 import { ItrPrefabView } from "./FrameEditorView/ItrPrefabView";
 import { FrameListView } from "./FrameListView";
 import { PicInfoEditorView } from "./PicInfoEditorView";
@@ -445,7 +445,7 @@ export default function EditorView(props: IEditorViewProps) {
             if (!editing_frame || !editing_data)
               return null;
             return createPortal(
-              <FrameEditorView
+              <FrameEditor
                 value={editing_frame}
                 data={editing_data} />,
               cell,
