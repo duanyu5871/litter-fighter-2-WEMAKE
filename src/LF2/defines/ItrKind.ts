@@ -121,7 +121,7 @@ export enum ItrKind {
    * 
    * - WEMAKE：
    *    - injury数值变成治疗多少hp
-   *    - 可治疗队友：通过ally_flags实现
+   *    - 可治疗队友：通过hit_flag实现
    *    - 动作跳转：通过hit_act实现
    */
   Heal = 8,

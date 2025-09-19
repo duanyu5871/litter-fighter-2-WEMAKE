@@ -1,7 +1,7 @@
 import { BuiltIn_OID, EntityGroup, FrameBehavior, OpointKind } from "../defines";
 import { IEntityData } from "../defines/IEntityData";
 import { traversal } from "../utils/container_help/traversal";
-import { AllyFlag } from "../defines/AllyFlag";
+import { HitFlag } from "../defines/HitFlag";
 import { ensure, find, floor } from "../utils";
 
 export function make_ball_special(data: IEntityData) {
@@ -9,7 +9,7 @@ export function make_ball_special(data: IEntityData) {
     case BuiltIn_OID.FirenFlame:
       traversal(data.frames, (_, frame) => {
         if (frame.itr) for (const itr of frame.itr)
-          itr.ally_flags = AllyFlag.Enemy;
+          itr.hit_flag = HitFlag.Enemy;
       });
       break;
     case BuiltIn_OID.FirzenBall:

@@ -6,7 +6,7 @@ import { Input } from "../../Component/Input";
 import Select from "../../Component/Select";
 import { TextArea } from "../../Component/TextArea";
 import Titled, { ITitledProps } from "../../Component/Titled";
-import { AllyFlag, BdyKind, Defines, IBdyInfo } from "../../LF2/defines";
+import { HitFlag, BdyKind, Defines, IBdyInfo } from "../../LF2/defines";
 import { floor } from "../../LF2/utils";
 import { ALLY_FLAG_SELECT_PROPS, BDY_KIND_SELECT_PROPS } from "../EntityEditorView";
 import { make_field_props } from "./make_field_props";
@@ -25,7 +25,7 @@ const titled_styles: ITitledProps['styles'] = {
   }
 }
 const default_value: IBdyInfo = {
-  ally_flags: AllyFlag.Enemy,
+  hit_flag: HitFlag.Enemy,
   kind: BdyKind.Normal,
   z: floor(-Defines.DAFUALT_QUBE_LENGTH / 2),
   l: floor(Defines.DAFUALT_QUBE_LENGTH),
@@ -51,7 +51,7 @@ export function BdyEditor(props: IBdyEditorViewProps) {
         <Titled label='判定' styles={titled_styles}>
           <Select
             {...ALLY_FLAG_SELECT_PROPS}
-            {...make_field_props(props, default_value, 'ally_flags')}
+            {...make_field_props(props, default_value, 'hit_flag')}
           />
         </Titled>
         <Titled label='包围盒' styles={titled_styles}>

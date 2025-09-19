@@ -1,6 +1,6 @@
 import type { TAction } from "./Action";
-import { type TAllyFlag } from "./AllyFlag";
 import { BdyKind } from "./BdyKind";
+import { HitFlag } from "./HitFlag";
 import type { IExpression } from "./IExpression";
 import type { IQube } from "./IQube";
 import type { IQubePair } from "./IQubePair";
@@ -16,9 +16,9 @@ export interface IBdyInfo extends IQube {
   /**
    * [WEMAKE]
    * 
-   * @type {TAllyFlag}
+   * @type {HitFlag}
    */
-  ally_flags: TAllyFlag;
+  hit_flag: HitFlag | number;
 
   /**
    * [LF2][WEMAKE]
@@ -42,4 +42,21 @@ export interface IBdyInfo extends IQube {
   test?: string;
 
   tester?: IExpression<any>;
+}
+
+export const BdyKeyOrders: Record<keyof IBdyInfo, number> = {
+  kind: 0,
+  kind_name: 1,
+  x: 2,
+  y: 3,
+  w: 4,
+  h: 5,
+  z: 6,
+  l: 7,
+  hit_flag: 8,
+  prefab_id: 9,
+  actions: 10,
+  test: 11,
+  tester: 9998,
+  indicator_info: 9999,
 }

@@ -8,7 +8,7 @@ import Select from "../../Component/Select";
 import Show from "../../Component/Show";
 import { TextArea } from "../../Component/TextArea";
 import Titled, { ITitledProps } from "../../Component/Titled";
-import { ally_flag_full_name, AllyFlag, Defines, IItrInfo, itr_effect_full_name, itr_kind_full_name, ItrEffect, ItrKind } from "../../LF2/defines";
+import { hit_flag_full_name, HitFlag, Defines, IItrInfo, itr_effect_full_name, itr_kind_full_name, ItrEffect, ItrKind } from "../../LF2/defines";
 import { floor } from "../../LF2/utils";
 import { ALLY_FLAG_SELECT_PROPS, ITR_EFFECT_SELECT_PROPS, ITR_KIND_SELECT_PROPS } from "../EntityEditorView";
 import { make_field_props, make_not_blank_field_props } from "./make_field_props";
@@ -28,7 +28,7 @@ const titled_styles: ITitledProps['styles'] = {
   }
 }
 const default_value: IItrInfo = {
-  ally_flags: AllyFlag.Enemy,
+  hit_flag: HitFlag.Enemy,
   kind: ItrKind.Normal,
   effect: ItrEffect.Normal,
   z: floor(-Defines.DAFUALT_QUBE_LENGTH / 2),
@@ -76,8 +76,8 @@ export function ItrEditor(props: IItrEditorViewProps) {
         <Titled label='判定' styles={titled_styles}>
           <Select
             {...ALLY_FLAG_SELECT_PROPS}
-            {...make_field_props(props, default_value, 'ally_flags', v => {
-              v.ally_flags_name = ally_flag_full_name(v.ally_flags)
+            {...make_field_props(props, default_value, 'hit_flag', v => {
+              v.hit_flag_name = hit_flag_full_name(v.hit_flag)
               return v
             })}
           />

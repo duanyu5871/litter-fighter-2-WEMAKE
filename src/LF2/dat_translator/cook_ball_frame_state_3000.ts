@@ -1,6 +1,6 @@
 import { BuiltIn_OID } from "../defines";
 import { ActionType } from "../defines/ActionType";
-import { AllyFlag } from "../defines/AllyFlag";
+import { HitFlag } from "../defines/HitFlag";
 import { CollisionVal as C_Val } from "../defines/CollisionVal";
 import { EntityEnum } from "../defines/EntityEnum";
 import { IBdyInfo } from "../defines/IBdyInfo";
@@ -58,7 +58,7 @@ export function cook_ball_frame_state_3000(e: IEntityData, frame: IFrameInfo) {
     new_bdy.push(
       copy_bdy_info(bdy, {
         /* 反弹判定 */
-        ally_flags: AllyFlag.Both,
+        hit_flag: HitFlag.Both,
         test: new CondMaker<C_Val>()
           .wrap((c) => c
             // 敌方角色的攻击反弹气功波
@@ -128,7 +128,7 @@ export function cook_ball_frame_state_3000(e: IEntityData, frame: IFrameInfo) {
         bdy_list.length = 0;
         bdy_list.push({
           kind: 0,
-          ally_flags: AllyFlag.Both,
+          hit_flag: HitFlag.Both,
           test: new CondMaker<C_Val>()
             .not_in(
               C_Val.ItrKind,

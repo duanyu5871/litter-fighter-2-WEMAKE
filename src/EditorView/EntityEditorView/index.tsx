@@ -1,5 +1,5 @@
 import { IBaseSelectProps } from "../../Component/Select";
-import { AllyFlag, AllyFlagDescriptions, ItrEffect, ItrEffectDescriptions, ItrKind, ItrKindDescriptions as ItrKindDescriptions, StateEnum } from "../../LF2/defines";
+import { HitFlag, hit_flag_desc_map, ItrEffect, ItrEffectDescriptions, ItrKind, ItrKindDescriptions as ItrKindDescriptions, StateEnum } from "../../LF2/defines";
 import { BdyKind, BdyKindDescriptions } from "../../LF2/defines/BdyKind";
 import { EntityEnum } from "../../LF2/defines/EntityEnum";
 import { SpeedMode } from "../../LF2/defines/SpeedMode";
@@ -36,5 +36,5 @@ export const SPEED_MODE_SELECT_PROPS = make_num_enum_select_props(SpeedMode);
 export const ITR_KIND_SELECT_PROPS = make_num_enum_select_props(ItrKind, ItrKindDescriptions);
 export const ITR_EFFECT_SELECT_PROPS = make_num_enum_select_props(ItrEffect, ItrEffectDescriptions);
 export const BDY_KIND_SELECT_PROPS = make_num_enum_select_props(BdyKind, BdyKindDescriptions);
-export const ALLY_FLAG_SELECT_PROPS = make_num_enum_select_props(AllyFlag, AllyFlagDescriptions);
+export const ALLY_FLAG_SELECT_PROPS = make_num_enum_select_props(HitFlag, hit_flag_desc_map);
 export const ENTITY_TYPE_SELECT_PROPS = make_str_enum_select_props(EntityEnum);

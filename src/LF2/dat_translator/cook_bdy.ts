@@ -1,21 +1,20 @@
-import { AllyFlag } from "../defines/AllyFlag";
-import { BdyKind } from "../defines/BdyKind";
+import { HitFlag } from "../defines/HitFlag";
+import { bdy_kind_full_name, BdyKind } from "../defines/BdyKind";
 import { BuiltIn_OID } from "../defines/BuiltIn_OID";
 import { CollisionVal as C_Val } from "../defines/CollisionVal";
 import { Defines } from "../defines/defines";
 import { EntityEnum } from "../defines/EntityEnum";
-import { IBdyInfo } from "../defines/IBdyInfo";
+import { BdyKeyOrders as bdy_key_orders, IBdyInfo } from "../defines/IBdyInfo";
 import { ItrKind } from "../defines/ItrKind";
+import { sort_key_value } from "../utils";
 import { is_num } from "../utils/type_check";
 import { CondMaker } from "./CondMaker";
 import { take } from "./take";
 
 export default function cook_bdy(bdy?: Partial<IBdyInfo>): void {
   if (!bdy) return;
-  const kind_name = BdyKind[bdy.kind as BdyKind];
-  if (kind_name) bdy.kind_name = `BdyKind.${kind_name}`;
-
-  bdy.ally_flags = AllyFlag.Enemy;
+  bdy.kind_name = bdy_kind_full_name(bdy.kind);
+  bdy.hit_flag = HitFlag.Enemy;
   bdy.l = Defines.DAFUALT_QUBE_LENGTH;
   bdy.z = -Defines.DAFUALT_QUBE_LENGTH / 2;
   const kind = take(bdy, "kind");
@@ -40,4 +39,5 @@ export default function cook_bdy(bdy?: Partial<IBdyInfo>): void {
       )
       .done();
   }
+  sort_key_value(bdy, bdy_key_orders)
 }

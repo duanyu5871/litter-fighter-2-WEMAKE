@@ -1,5 +1,5 @@
 export * from "./Action";
-export * from "./AllyFlag";
+export * from "./hit_flag_info";
 export * from "./ArmorEnum";
 export * from "./BackgroundGroup";
 export * from "./BdyKind";
@@ -19,6 +19,7 @@ export * from "./FacingFlag";
 export * from "./FrameBehavior";
 export * from "./GameKey";
 export * from "./GONE_FRAME_INFO";
+export * from "./HitFlag";
 export * from "./IAction_Base";
 export * from "./IAction_BrokenDefend";
 export * from "./IAction_Defend";

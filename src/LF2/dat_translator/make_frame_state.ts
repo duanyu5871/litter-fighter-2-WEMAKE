@@ -1,5 +1,5 @@
 import { BdyKind, Defines, FacingFlag, IFrameInfo, ItrKind, OpointKind, StateEnum } from "../defines";
-import { AllyFlag } from "../defines/AllyFlag";
+import { HitFlag } from "../defines/HitFlag";
 import { CollisionVal as C_Val } from "../defines/CollisionVal";
 import { ensure } from "../utils";
 import { foreach } from "../utils/container_help/foreach";
@@ -20,7 +20,7 @@ export function make_frame_state(frame: IFrameInfo) {
       break;
     case StateEnum.Burning: {
       foreach(frame.itr, itr => {
-        itr.ally_flags = AllyFlag.Both;
+        itr.hit_flag = HitFlag.Both;
       })
       break;
     }
@@ -99,7 +99,7 @@ export function make_frame_state(frame: IFrameInfo) {
       break;
     }
     case StateEnum.Frozen:
-      foreach(frame.bdy, bdy => bdy.ally_flags = AllyFlag.Both)
+      foreach(frame.bdy, bdy => bdy.hit_flag = HitFlag.Both)
       break;
   }
 }

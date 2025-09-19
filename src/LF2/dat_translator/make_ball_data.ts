@@ -1,6 +1,6 @@
 import { BuiltIn_OID, Defines, FacingFlag, ItrKind, OpointSpreading, StateEnum } from "../defines";
 import { ActionType } from "../defines/ActionType";
-import { AllyFlag } from "../defines/AllyFlag";
+import { HitFlag } from "../defines/HitFlag";
 import { CollisionVal as C_Val } from "../defines/CollisionVal";
 import { EntityEnum } from "../defines/EntityEnum";
 import { EntityVal } from "../defines/EntityVal";
@@ -95,7 +95,7 @@ export function make_ball_data(
           w: 32,
           h: 34,
           injury: 100,
-          ally_flags: AllyFlag.Ally,
+          hit_flag: HitFlag.Ally,
           l: 24,
           z: -12,
           actions: [

@@ -2,8 +2,10 @@ import { Callbacks, FPS, ICollision } from "./base";
 import { collisions_keeper } from "./collision/CollisionKeeper";
 import {
   ALL_ENTITY_ENUM,
-  AllyFlag,
-  Builtin_FrameId, Defines, IBdyInfo, IBounding, IEntityData,
+  Builtin_FrameId, Defines,
+  EntityEnum,
+  HitFlag,
+  IBdyInfo, IBounding, IEntityData,
   IFrameInfo, IItrInfo, ItrKind, StateEnum
 } from "./defines";
 import { Ditto } from "./ditto";
@@ -578,13 +580,26 @@ export class World extends WorldDataset {
     const is_ally = attacker.is_ally(victim);
     if (
       is_ally ? (
-        !(itr.ally_flags & AllyFlag.Ally) &&
-        !(bdy.ally_flags & AllyFlag.Ally)
+        !(itr.hit_flag & HitFlag.Ally) &&
+        !(bdy.hit_flag & HitFlag.Ally)
       ) : (
-        !(itr.ally_flags & AllyFlag.Enemy) &&
-        !(bdy.ally_flags & AllyFlag.Enemy)
+        !(itr.hit_flag & HitFlag.Enemy) &&
+        !(bdy.hit_flag & HitFlag.Enemy)
       )
     ) return;
+
+    if (
+      0 == (itr.hit_flag & HitFlag.Fighter) && victim.data.type === EntityEnum.Fighter ||
+      0 == (bdy.hit_flag & HitFlag.Fighter) && attacker.data.type === EntityEnum.Fighter ||
+      0 == (itr.hit_flag & HitFlag.Weapon) && victim.data.type === EntityEnum.Weapon ||
+      0 == (bdy.hit_flag & HitFlag.Weapon) && attacker.data.type === EntityEnum.Weapon ||
+      0 == (itr.hit_flag & HitFlag.Ball) && victim.data.type === EntityEnum.Ball ||
+      0 == (bdy.hit_flag & HitFlag.Ball) && attacker.data.type === EntityEnum.Ball ||
+      0 == (itr.hit_flag & HitFlag.Ohters) && victim.data.type === EntityEnum.Entity ||
+      0 == (bdy.hit_flag & HitFlag.Ohters) && attacker.data.type === EntityEnum.Entity ||
+      false
+    ) return;
+
 
     if (!itr.vrest && attacker.a_rest) return;
     if (itr.vrest && victim.get_v_rest(attacker.id) > 0) return;

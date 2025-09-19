@@ -1,3 +1,5 @@
+import { between } from "../utils";
+
 export enum BdyKind {
   /**
    * [LF2][WEMAKE]
@@ -46,10 +48,14 @@ export enum BdyKind {
    */
   Defend = 2000,
 }
-
-
-export const bdy_kind_name = (v: any) => BdyKind[v] ?? `unknown_${v}`;
-export const bdy_kind_full_name = (v: any) => `ItrKind.${bdy_kind_name(v)}`
+export const bdy_kind_name = (v: any) => {
+  let ret = BdyKind[v];
+  if (between(Number(v), BdyKind.GotoMin, BdyKind.GotoMax))
+    ret = 'Goto_' + (v - 1000)
+  if (!ret) ret = `unknown_${v}`
+  return ret;
+}
+export const bdy_kind_full_name = (v: any) => `BdyKind.${bdy_kind_name(v)}`
 export const BdyKindDescriptions: Record<BdyKind, string> = {
   [BdyKind.Normal]: "",
   [BdyKind.GotoMin]: "",

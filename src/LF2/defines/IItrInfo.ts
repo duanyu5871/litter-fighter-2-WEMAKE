@@ -1,6 +1,6 @@
 import type { TAction } from "./Action";
-import type { TAllyFlag } from "./AllyFlag";
 import type { Defines } from "./defines";
+import type { HitFlag } from "./HitFlag";
 import type { IExpression } from "./IExpression";
 import type { TNextFrame } from "./INextFrame";
 import type { IQube } from "./IQube";
@@ -20,10 +20,10 @@ export interface IItrInfo extends IQube {
 
   /**
    *
-   * @type {TAllyFlag}
+   * @type {HitFlag}
    */
-  ally_flags: TAllyFlag;
-  ally_flags_name?: string;
+  hit_flag: HitFlag | number;
+  hit_flag_name?: string;
 
   /**
    * 自身停顿值
