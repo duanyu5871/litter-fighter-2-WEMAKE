@@ -23,7 +23,7 @@ export function read_indexes(
             item[name] = value;
             break;
           case "file":
-            item[name] = value.replace(/\\/g, "/").replace(/.dat$/, ".json");
+            item[name] = value.replace(/\\/g, "/").replace(/.dat$/, ".json5");
             break;
         }
       }
@@ -48,7 +48,7 @@ export function read_indexes(
             item[name] = "bg_" + value;
             break;
           case "file":
-            item[name] = value.replace(/\\/g, "/").replace(/.dat$/, ".json");
+            item[name] = value.replace(/\\/g, "/").replace(/.dat$/, ".json5");
             break;
         }
       }

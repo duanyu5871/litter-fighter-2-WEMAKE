@@ -1,17 +1,16 @@
 import fs from "fs/promises";
+import JSON5 from "json5";
 import dat_to_json from "../../../src/LF2/dat_translator/dat_2_json";
 import { IDataLists } from "../../../src/LF2/defines/IDataLists";
-import { read_lf2_dat_file } from "./read_lf2_dat_file";
 import { IEntityData } from "../../../src/LF2/defines/IEntityData";
-import { EntityEnum } from "../../../src/LF2/defines";
-
+import { read_lf2_dat_file } from "./read_lf2_dat_file";
 export type IRet = ReturnType<typeof dat_to_json>;
 function get_dst_path(
   out_dir: string,
   src_dir: string,
   src_path: string,
 ): string {
-  return src_path.replace(src_dir, out_dir).replace(/\.dat$/, ".json");
+  return src_path.replace(src_dir, out_dir).replace(/\.dat$/, ".json5");
 }
 export async function convert_dat_file(
   out_dir: string,
@@ -39,7 +38,7 @@ export async function convert_dat_file(
     return void 0;
   }
   console.log("convert", src_path, "=>", dst_path);
-  await fs.writeFile(dst_path, JSON.stringify(ret, null, 2));
+  await fs.writeFile(dst_path, JSON5.stringify(ret, { space: 2, quote: '"' }));
   return ret;
 }
 convert_dat_file.get_dst_path = get_dst_path;

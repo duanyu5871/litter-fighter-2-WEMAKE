@@ -112,7 +112,7 @@ export class CacheInfos {
   async save() {
     await write_file(
       this.cache_infos_path,
-      JSON5.stringify(this.raw_obj, null, 2),
+      JSON5.stringify(this.raw_obj, { space: 2, quote: '"' }),
     );
   }
 }

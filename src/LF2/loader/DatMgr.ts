@@ -114,7 +114,7 @@ class Inner {
     }
 
     const { objects = [], backgrounds = [] } =
-      await this.lf2.import_json<Partial<IDataLists>>("data/data.json").then(r => r[0])
+      await this.lf2.import_json<Partial<IDataLists>>("data/data.json5").then(r => r[0])
         .catch(() => ({} as Partial<IDataLists>));
     if (this.cancelled) throw new Error("cancelled");
 
