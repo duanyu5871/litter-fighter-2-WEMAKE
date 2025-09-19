@@ -8,9 +8,10 @@ import Select from "../../Component/Select";
 import Show from "../../Component/Show";
 import { TextArea } from "../../Component/TextArea";
 import Titled, { ITitledProps } from "../../Component/Titled";
-import { hit_flag_full_name, HitFlag, Defines, IItrInfo, itr_effect_full_name, itr_kind_full_name, ItrEffect, ItrKind } from "../../LF2/defines";
+import { Defines, HitFlag, IItrInfo, itr_effect_full_name, itr_kind_full_name, ItrEffect, ItrKind } from "../../LF2/defines";
 import { floor } from "../../LF2/utils";
-import { ALLY_FLAG_SELECT_PROPS, ITR_EFFECT_SELECT_PROPS, ITR_KIND_SELECT_PROPS } from "../EntityEditorView";
+import { ITR_EFFECT_SELECT_PROPS, ITR_KIND_SELECT_PROPS } from "../EntityEditorView";
+import { HitFlagEditor } from "./HitFlagEditor";
 import { make_field_props, make_not_blank_field_props } from "./make_field_props";
 import { QubeEdit } from "./QubeEdit";
 
@@ -74,13 +75,7 @@ export function ItrEditor(props: IItrEditorViewProps) {
           </Combine>
         </Titled>
         <Titled label='判定' styles={titled_styles}>
-          <Select
-            {...ALLY_FLAG_SELECT_PROPS}
-            {...make_field_props(props, default_value, 'hit_flag', v => {
-              v.hit_flag_name = hit_flag_full_name(v.hit_flag)
-              return v
-            })}
-          />
+          <HitFlagEditor {...make_field_props(props, default_value, 'hit_flag')} />
         </Titled>
         <Flex direction='row'>
           <Titled label='自身停顿' styles={titled_styles} style={{ flex: 1 }}>
