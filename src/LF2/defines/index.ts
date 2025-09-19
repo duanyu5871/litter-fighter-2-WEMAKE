@@ -1,5 +1,4 @@
 export * from "./Action";
-export * from "./hit_flag_info";
 export * from "./ArmorEnum";
 export * from "./BackgroundGroup";
 export * from "./BdyKind";

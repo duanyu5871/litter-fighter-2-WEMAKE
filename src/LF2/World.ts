@@ -579,25 +579,17 @@ export class World extends WorldDataset {
 
     const is_ally = attacker.is_ally(victim);
     if (
-      is_ally ? (
-        !(itr.hit_flag & HitFlag.Ally) &&
-        !(bdy.hit_flag & HitFlag.Ally)
-      ) : (
-        !(itr.hit_flag & HitFlag.Enemy) &&
-        !(bdy.hit_flag & HitFlag.Enemy)
+      0 == (itr.hit_flag & victim.data.type) ||
+      0 == (bdy.hit_flag & attacker.data.type) ||
+      (
+        is_ally ? (
+          !(itr.hit_flag & HitFlag.Ally) &&
+          !(bdy.hit_flag & HitFlag.Ally)
+        ) : (
+          !(itr.hit_flag & HitFlag.Enemy) &&
+          !(bdy.hit_flag & HitFlag.Enemy)
+        )
       )
-    ) return;
-
-    if (
-      0 == (itr.hit_flag & HitFlag.Fighter) && victim.data.type === EntityEnum.Fighter ||
-      0 == (bdy.hit_flag & HitFlag.Fighter) && attacker.data.type === EntityEnum.Fighter ||
-      0 == (itr.hit_flag & HitFlag.Weapon) && victim.data.type === EntityEnum.Weapon ||
-      0 == (bdy.hit_flag & HitFlag.Weapon) && attacker.data.type === EntityEnum.Weapon ||
-      0 == (itr.hit_flag & HitFlag.Ball) && victim.data.type === EntityEnum.Ball ||
-      0 == (bdy.hit_flag & HitFlag.Ball) && attacker.data.type === EntityEnum.Ball ||
-      0 == (itr.hit_flag & HitFlag.Ohters) && victim.data.type === EntityEnum.Entity ||
-      0 == (bdy.hit_flag & HitFlag.Ohters) && attacker.data.type === EntityEnum.Entity ||
-      false
     ) return;
 
 

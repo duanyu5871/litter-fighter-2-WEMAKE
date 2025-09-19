@@ -1,10 +1,14 @@
 export enum EntityEnum {
-  Entity = 1,
-  Fighter = 2,
-  Weapon = 3,
-  Ball = 4,
+  Entity = 0b000100,
+  Fighter = 0b001000,
+  Weapon = 0b010000,
+  Ball = 0b100000,
 }
-export type TEntityEnum = EntityEnum | 1 | 2 | 3 | 4;
+export type TEntityEnum = EntityEnum |
+  0b000100 |
+  0b001000 |
+  0b010000 |
+  0b100000;
 export const ALL_ENTITY_ENUM: TEntityEnum[] = [
   EntityEnum.Fighter,
   EntityEnum.Weapon,
