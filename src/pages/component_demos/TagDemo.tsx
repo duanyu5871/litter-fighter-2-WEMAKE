@@ -12,7 +12,7 @@ export default function TagDemo() {
     <Frame label='Tag'>
       <Space>
         <Titled label='hoverable'>
-          <Checkbox value={closeable} onChanged={set_closable} />
+          <Checkbox value={closeable} onChange={set_closable} />
         </Titled>
       </Space>
       <Tag closeable={closeable}>

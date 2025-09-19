@@ -384,11 +384,11 @@ export default function EditorView(props: IEditorViewProps) {
                 header={
                   <WorkspaceColumnView.TitleAndAdd title={
                     <Space>
-                      <Titled label="mp3"><Checkbox value={state.mp3} onChanged={v => set_state(o => ({ ...o, mp3: v }))} /></Titled>
-                      <Titled label="flat"><Checkbox value={state.flat} onChanged={v => set_state(o => ({ ...o, flat: v }))} /></Titled>
-                      <Titled label="json"><Checkbox value={state.json} onChanged={v => set_state(o => ({ ...o, json: v }))} /></Titled>
-                      <Titled label="img"><Checkbox value={state.img} onChanged={v => set_state(o => ({ ...o, img: v }))} /></Titled>
-                      <Titled label="others"><Checkbox value={state.others} onChanged={v => set_state(o => ({ ...o, others: v }))} /></Titled>
+                      <Titled label="mp3"><Checkbox value={state.mp3} onChange={v => set_state(o => ({ ...o, mp3: v }))} /></Titled>
+                      <Titled label="flat"><Checkbox value={state.flat} onChange={v => set_state(o => ({ ...o, flat: v }))} /></Titled>
+                      <Titled label="json"><Checkbox value={state.json} onChange={v => set_state(o => ({ ...o, json: v }))} /></Titled>
+                      <Titled label="img"><Checkbox value={state.img} onChange={v => set_state(o => ({ ...o, img: v }))} /></Titled>
+                      <Titled label="others"><Checkbox value={state.others} onChange={v => set_state(o => ({ ...o, others: v }))} /></Titled>
                     </Space>
                   } />
                 }>

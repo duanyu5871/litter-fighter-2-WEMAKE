@@ -3,7 +3,7 @@ import { Base, IIconProps } from "./Base";
 export function Tick(props: IIconProps) {
   return (
     <Base {...props}>
-      <Base.Path d={o.path} />
+      <Base.Path d={o.path} strokeWidth={1.5}/>
     </Base>
   );
 }

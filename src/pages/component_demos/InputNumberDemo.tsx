@@ -16,7 +16,7 @@ export default function InputNumberDemo() {
       <Space direction='column'>
         <InputNumber step={1} prefix={prefix} placeholder={placeholder} suffix={suffix} clearable={clearable} />
         <Titled label="clearable">
-          <Checkbox value={clearable} onChanged={set_clearable} />
+          <Checkbox value={clearable} onChange={set_clearable} />
         </Titled>
         <Titled label="prefix">
           <Input value={prefix} onChange={e => set_prefix(e)} />

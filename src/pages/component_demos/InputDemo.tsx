@@ -27,7 +27,7 @@ export default function InputDemo() {
             onChange={set_variants} />
         </Titled>
         <Titled label="clearable">
-          <Checkbox value={clearable} onChanged={set_clearable} />
+          <Checkbox value={clearable} onChange={set_clearable} />
         </Titled>
         <Titled label="prefix">
           <Input value={prefix} onChange={e => set_prefix(e)} />

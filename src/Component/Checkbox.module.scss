@@ -1,22 +1,37 @@
+@use "../styles/lfui_border.module.scss"as *;
+
 .lf2ui_checkbox {
-  width          : 15px;
-  height         : 15px;
-  min-width      : 15px;
-  min-height     : 15px;
-  padding        : 0px;
-  display        : flex;
-  align-items    : center;
-  justify-content: center;
+  &>span:first-child {
+    display        : flex;
+    align-items    : center;
+    justify-content: center;
+    gap            : 5px;
 
-  &>.inner_show {
-    transition: all 200ms;
-    opacity   : 1;
-    transform : rotate(0deg);
-  }
+    .qube {
+      @extend .lfui_border;
+      width          : 15px;
+      height         : 15px;
+      min-width      : 15px;
+      min-height     : 15px;
+      max-width      : 15px;
+      max-height     : 15px;
+      padding        : 0px;
+      box-sizing     : border-box;
+      display        : inline-flex;
+      align-items    : center;
+      justify-content: center;
 
-  &>.inner_hide {
-    transition: all 200ms;
-    opacity   : 0;
-    transform : rotate(-10deg) scale(0.5);
+      .inner_show {
+        transition: all 200ms;
+        opacity   : 1;
+        transform : rotate(0deg);
+      }
+
+      .inner_hide {
+        transition: all 200ms;
+        opacity   : 0;
+        transform : rotate(-10deg) scale(0.5);
+      }
+    }
   }
 }

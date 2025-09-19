@@ -24,7 +24,7 @@ export default function IconDemo() {
     <Frame label='Icon'>
       <Space>
         <Titled label='hoverable'>
-          <Checkbox value={hoverable} onChanged={set_hoverable} />
+          <Checkbox value={hoverable} onChange={set_hoverable} />
         </Titled>
         <Titled float_label='font size'>
           <InputNumber

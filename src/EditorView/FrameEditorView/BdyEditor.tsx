@@ -11,6 +11,7 @@ import { floor } from "../../LF2/utils";
 import { ALLY_FLAG_SELECT_PROPS, BDY_KIND_SELECT_PROPS } from "../EntityEditorView";
 import { make_field_props } from "./make_field_props";
 import { QubeEdit } from "./QubeEdit";
+import { HitFlagEditor } from "./HitFlagEditor";
 
 export interface IBdyEditorViewProps {
   label?: string;
@@ -49,10 +50,7 @@ export function BdyEditor(props: IBdyEditorViewProps) {
           />
         </Titled>
         <Titled label='判定' styles={titled_styles}>
-          <Select
-            {...ALLY_FLAG_SELECT_PROPS}
-            {...make_field_props(props, default_value, 'hit_flag')}
-          />
+          <HitFlagEditor {...make_field_props(props, default_value, 'hit_flag')} />
         </Titled>
         <Titled label='包围盒' styles={titled_styles}>
           <QubeEdit

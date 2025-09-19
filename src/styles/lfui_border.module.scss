@@ -4,7 +4,7 @@
 }
 
 @mixin lfui_no_border {
-  border-width: 0px
+  border-width: 0px !important
 }
 
 @mixin lfui_no_round {
