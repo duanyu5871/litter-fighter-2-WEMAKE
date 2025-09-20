@@ -47,6 +47,8 @@ import img_btn_2_1 from "./assets/btn_2_1.png";
 import img_btn_2_2 from "./assets/btn_2_2.png";
 import img_btn_2_3 from "./assets/btn_2_3.png";
 import img_btn_3_0 from "./assets/btn_3_0.png";
+import img_btn_3_1 from "./assets/btn_3_1.png";
+import img_btn_3_2 from "./assets/btn_3_2.png";
 import "./init";
 import {
   useLocalBoolean,
@@ -456,11 +458,11 @@ function App() {
             src={[img_btn_1_2, img_btn_1_3]}
           />
         </Show>
-        {/* <ToggleImgButton
+        <ToggleImgButton
           checked={is_fullscreen}
           onClick={() => toggle_fullscreen()}
           src={[img_btn_3_1, img_btn_3_2]}
-        /> */}
+        />
         <ToggleImgButton
           checked={bgm_muted}
           onClick={() => lf2?.sounds?.set_bgm_muted(!bgm_muted)}
