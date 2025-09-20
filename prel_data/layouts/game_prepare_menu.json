@@ -32,7 +32,7 @@
         {
           "id": "btn_fight",
           "auto_focus": true,
-          "template": "launch/menu_text_button.json",
+          "template": "builtin_data/launch/menu_text_button.json",
           "values": {
             "text": "game_prepare_menu.fight"
           },
@@ -48,7 +48,7 @@
         },
         {
           "id": "btn_reset_all",
-          "template": "launch/menu_text_button.json",
+          "template": "builtin_data/launch/menu_text_button.json",
           "values": {
             "text": "game_prepare_menu.reset_all"
           },
@@ -64,7 +64,7 @@
         },
         {
           "id": "btn_update_random",
-          "template": "launch/menu_text_button.json",
+          "template": "builtin_data/launch/menu_text_button.json",
           "values": {
             "text": "game_prepare_menu.reset_random"
           },
@@ -94,7 +94,7 @@
           "items": [
             {
               "id": "btn_switch_bg",
-              "template": "launch/menu_text_button.json",
+              "template": "builtin_data/launch/menu_text_button.json",
               "values": {
                 "text": "game_prepare_menu.background"
               },
@@ -142,7 +142,7 @@
           "items": [
             {
               "id": "btn_switch_stage",
-              "template": "launch/menu_text_button.json",
+              "template": "builtin_data/launch/menu_text_button.json",
               "values": {
                 "text": "game_prepare_menu.stage"
               },
@@ -190,7 +190,7 @@
           "items": [
             {
               "id": "btn_difficulty",
-              "template": "launch/menu_text_button.json",
+              "template": "builtin_data/launch/menu_text_button.json",
               "values": {
                 "text": "game_prepare_menu.difficulty"
               },
@@ -224,7 +224,7 @@
         },
         {
           "id": "btn_exit",
-          "template": "launch/menu_text_button.json",
+          "template": "builtin_data/launch/menu_text_button.json",
           "values": {
             "text": "game_prepare_menu.exit"
           },

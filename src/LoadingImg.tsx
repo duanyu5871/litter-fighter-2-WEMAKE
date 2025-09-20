@@ -74,8 +74,8 @@ export function Loading(props: ILoadingProps) {
     <img
       src={
         big ?
-          "lf2_built_in_data/launch/SMALL_LOADING@4x.png" :
-          "lf2_built_in_data/launch/SMALL_LOADING.png"
+          "builtin_data/launch/SMALL_LOADING@4x.png" :
+          "builtin_data/launch/SMALL_LOADING.png"
       }
       alt="loading..."
       className={class_name}

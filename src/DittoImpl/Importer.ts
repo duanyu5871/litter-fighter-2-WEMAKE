@@ -1,10 +1,10 @@
-import axios, { Axios, AxiosResponse, RawAxiosRequestHeaders, ResponseType } from "axios";
+import axios, { AxiosResponse, RawAxiosRequestHeaders, ResponseType } from "axios";
+import json5 from "json5";
+import { PIO } from "../LF2/base/PromisesInOne";
 import { IImporter } from "../LF2/ditto/importer/IImporter";
 import { ImportError } from "../LF2/ditto/importer/ImportError";
-import { PIO } from "../LF2/base/PromisesInOne";
-import json5 from "json5";
 
-const roots = ["lf2_built_in_data"];
+const roots = ["builtin_data"];
 function get_possible_url_list(list: string[]): string[] {
   const ret: string[] = [];
   for (let item of list) {
@@ -18,7 +18,10 @@ function get_possible_url_list(list: string[]): string[] {
     }
     if (!item.startsWith("/")) item = "/" + item;
     ret.push(item);
-    for (const root of roots) ret.push(root + item);
+    if (roots.some(v => item.startsWith('/' + v + '/')))
+      continue;
+    for (const root of roots)
+      ret.push(root + item);
   }
   return ret;
 }

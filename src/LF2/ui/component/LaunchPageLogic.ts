@@ -56,7 +56,7 @@ export class LaunchPage extends UIComponent {
     }, {
       key: Status.Introduction,
       enter: () => {
-        Ditto.Timeout.add(() => this.lf2.sounds.play("launch/093.wav.mp3"), 1000);
+        Ditto.Timeout.add(() => this.lf2.sounds.play("builtin_data/launch/093.wav.mp3"), 1000);
         this.yeonface.find_component(ScaleAnimation, 'scale_in', c => {
           c.start(false);
         })
@@ -137,7 +137,7 @@ export class LaunchPage extends UIComponent {
   }
   override on_start(): void {
     this._prel_loaded = this.lf2.uiinfos_loaded;
-    this.lf2.sounds.load("launch/093.wav.mp3", "launch/093.wav.mp3");
+    this.lf2.sounds.load("builtin_data/launch/093.wav.mp3", "builtin_data/launch/093.wav.mp3");
     this.lf2.callbacks.add(this.lf2_cb)
   }
   override on_stop(): void {

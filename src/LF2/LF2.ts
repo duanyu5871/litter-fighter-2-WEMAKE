@@ -464,7 +464,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
     this.set_ui("loading");
 
     if (is_first)
-      await this.import_json("launch/strings.json").then(r => this.load_strings(r[0])).catch(e => { })
+      await this.import_json("builtin_data/launch/strings.json").then(r => this.load_strings(r[0])).catch(e => { })
 
     try {
       const zip = is_str(arg1) ? await this.load_zip_from_info_url(arg1) : arg1;
@@ -701,10 +701,10 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
     this._dispose_check('load_builtin_ui')
     const ret: ICookedUIInfo[] = []
     const paths: string[] = [
-      "launch/init.json",
-      "launch/loading_anim.json",
-      "launch/main_text_button.json",
-      "launch/menu_text_button.json"
+      "builtin_data/launch/init.json",
+      "builtin_data/launch/loading_anim.json",
+      "builtin_data/launch/main_text_button.json",
+      "builtin_data/launch/menu_text_button.json"
     ];
     for (const path of paths) {
       const cooked_ui_info = await cook_ui_info(this, path);
