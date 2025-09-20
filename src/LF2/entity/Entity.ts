@@ -1171,7 +1171,7 @@ export class Entity implements IDebugging {
       this._mp_r_tick.max = this.data.base.mp_r_ticks || this.world.mp_r_ticks;
       const r_ratio = this.data.base.mp_r_ratio || this.world.mp_r_ratio;
       if (this._mp_r_tick.add()) {
-        const value = 1 + floor((500 - min(this._hp, 500)) / 100)
+        const value = 1 + floor(r_ratio * (500 - min(this._hp, 500)) / 100)
         this.mp = min(this._mp_max, this._mp + value);
       }
     }
