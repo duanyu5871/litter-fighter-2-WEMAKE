@@ -33,7 +33,7 @@
       "auto_focus": true,
       "component": [
         "OpacityHover(0.3,1)",
-        "com_number(0)",
+        "ComNumButton(0)",
         "Reachable(com_num)"
       ]
     },
@@ -48,7 +48,7 @@
       "auto_focus": true,
       "component": [
         "OpacityHover(0.3,1)",
-        "com_number(1)",
+        "ComNumButton(1)",
         "Reachable(com_num)"
       ]
     },
@@ -63,7 +63,7 @@
       "auto_focus": true,
       "component": [
         "OpacityHover(0.3,1)",
-        "com_number(2)",
+        "ComNumButton(2)",
         "Reachable(com_num)"
       ]
     },
@@ -78,7 +78,7 @@
       "auto_focus": true,
       "component": [
         "OpacityHover(0.3,1)",
-        "com_number(3)",
+        "ComNumButton(3)",
         "Reachable(com_num)"
       ]
     },
@@ -93,7 +93,7 @@
       "auto_focus": true,
       "component": [
         "OpacityHover(0.3,1)",
-        "com_number(4)",
+        "ComNumButton(4)",
         "Reachable(com_num)"
       ]
     },
@@ -108,7 +108,7 @@
       "auto_focus": true,
       "component": [
         "OpacityHover(0.3,1)",
-        "com_number(5)",
+        "ComNumButton(5)",
         "Reachable(com_num)"
       ]
     },
@@ -123,7 +123,7 @@
       "auto_focus": true,
       "component": [
         "OpacityHover(0.3,1)",
-        "com_number(6)",
+        "ComNumButton(6)",
         "Reachable(com_num)"
       ]
     },
@@ -138,7 +138,7 @@
       "auto_focus": true,
       "component": [
         "OpacityHover(0.3,1)",
-        "com_number(7)",
+        "ComNumButton(7)",
         "Reachable(com_num)"
       ]
     }
