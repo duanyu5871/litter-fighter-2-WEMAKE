@@ -580,10 +580,9 @@ export class World extends WorldDataset {
     const ally_flag = attacker.is_ally(victim) ? HitFlag.Ally : HitFlag.Enemy;
     if (
       0 == (itr.hit_flag & victim.data.type) ||
-      0 == (bdy.hit_flag & attacker.data.type) || (
-        0 != (itr.hit_flag & ally_flag) &&
-        0 != (bdy.hit_flag & ally_flag)
-      )
+      0 == (bdy.hit_flag & attacker.data.type) || 
+      0 == (itr.hit_flag & ally_flag) ||
+      0 == (bdy.hit_flag & ally_flag)
     ) return;
 
 

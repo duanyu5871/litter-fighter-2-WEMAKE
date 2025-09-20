@@ -1,6 +1,6 @@
 {
   id: "data/spark.json",
-  type: 1,
+  type: 4,
   is_game_obj_data: true,
   is_base_data: true,
   base: {
