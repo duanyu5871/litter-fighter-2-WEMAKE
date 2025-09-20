@@ -95,7 +95,7 @@ export function make_ball_data(
           w: 32,
           h: 34,
           injury: 100,
-          hit_flag: HitFlag.AllAlly,
+          hit_flag: HitFlag.Ally | HitFlag.Fighter,
           l: 24,
           z: -12,
           actions: [

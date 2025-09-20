@@ -1,4 +1,4 @@
-import type { TAction } from "./Action";
+import type { TAction } from "./TAction";
 import type { Defines } from "./defines";
 import type { HitFlag } from "./HitFlag";
 import type { IExpression } from "./IExpression";

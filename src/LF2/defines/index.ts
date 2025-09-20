@@ -1,4 +1,3 @@
-export * from "./Action";
 export * from "./ArmorEnum";
 export * from "./BackgroundGroup";
 export * from "./BdyKind";
@@ -65,4 +64,6 @@ export * from "./OpointSpreading";
 export * from "./SparkEnum";
 export * from "./SpeedMode";
 export * from "./StateEnum";
+export * from "./TAction";
 export * from "./WeaponType";
+

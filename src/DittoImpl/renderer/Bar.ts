@@ -18,7 +18,10 @@ export class Bar {
     this.mesh.set_scale_x(this._max ? this._val / this._max : 0);
   }
   set color(color: string) {
-    this.mesh.material = get_color_material(color);
+    const m = get_color_material(color);
+    this.mesh.material = m;
+    m.needsUpdate = true;
+
   }
   constructor(
     lf2: LF2,

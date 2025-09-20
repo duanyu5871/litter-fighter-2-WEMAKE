@@ -10,4 +10,8 @@ export enum ActionType {
   V_SetProp = 'v_set_prop',
   V_Defend = 'v_defend',
   V_BrokenDefend = 'v_broken_defend',
+
+  A_REBOUND_VX = 'a_rebound_vx',
+  V_REBOUND_VX = 'v_rebound_vx',
+  V_TURN_FACE = 'v_turn_face',
 }

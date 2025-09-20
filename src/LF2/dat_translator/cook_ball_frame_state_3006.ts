@@ -1,12 +1,13 @@
-import { IFrameInfo } from "../defines/IFrameInfo";
-import { ItrKind } from "../defines/ItrKind";
+import { BuiltIn_OID, FrameBehavior } from "../defines";
+import { ActionType } from "../defines/ActionType";
 import { CollisionVal as C_Val } from "../defines/CollisionVal";
 import { IEntityData } from "../defines/IEntityData";
+import { IFrameInfo } from "../defines/IFrameInfo";
+import { ItrKind } from "../defines/ItrKind";
 import { StateEnum } from "../defines/StateEnum";
-import { CondMaker } from "./CondMaker";
 import { ensure } from "../utils";
 import { foreach } from "../utils/container_help/foreach";
-import { ActionType } from "../defines/ActionType";
+import { CondMaker } from "./CondMaker";
 
 export function cook_ball_frame_state_3006(e: IEntityData, frame: IFrameInfo) {
   for (const bdy of frame.bdy || []) {

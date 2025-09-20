@@ -41,7 +41,7 @@ export class Entity implements IDebugging {
 
   id: string = new_id();
   wait: number = 0;
-  update_id = new Times(Number.MIN_SAFE_INTEGER, Number.MAX_SAFE_INTEGER);
+  update_id = new Times(0, Number.MAX_SAFE_INTEGER);
   variant: number = 0;
   data: IEntityData;
   transform_datas?: [IEntityData, IEntityData];
@@ -201,6 +201,8 @@ export class Entity implements IDebugging {
     return this._healing;
   }
   set healing(v: number) {
+    if (this._hp_r === this._hp)
+      v = 0
     const o = this._healing;
     if (o === v) return;
     this._healing = v;

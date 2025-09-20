@@ -28,12 +28,8 @@ export function get_bar_geo(w: number, h: number, ax: number, ay: number) {
 
 const material_map = new Map<T.ColorRepresentation, T.MeshBasicMaterial>();
 export function get_color_material(color: T.ColorRepresentation) {
-  const key =
-    typeof color === "string" || typeof color === "number"
-      ? `c_${color}`
-      : color
-        ? color
-        : "c_void";
+  const key = typeof color === "string" || typeof color === "number"
+    ? `c_${color}` : color ? color : "c_void";
 
   let ret = material_map.get(key);
   if (!ret)
@@ -61,10 +57,10 @@ export class EntityInfoRender implements IEntityCallbacks {
   protected toughness_value_bar: Bar;
 
   entity: Entity;
-  protected heading: number = 0;
 
   protected key_nodes: Map<GameKey, { node: IBillboardNode, pos: IVector3 }>
   world_renderer: WorldRenderer;
+  protected _heading: boolean = false;
 
 
   constructor(entity: Entity, world_renderer: WorldRenderer) {
@@ -264,10 +260,6 @@ export class EntityInfoRender implements IEntityCallbacks {
     this.toughness_value_bar.max = value;
   }
 
-  on_healing_changed(e: Entity, value: number, prev: number): void {
-    this.heading = value;
-    this.hp_bar.color = floor(value) % 2 ? "rgb(255, 130, 130)" : "rgb(255,0,0)"
-  }
   private update_name_sprite(e: Entity, text: string, team: string) {
     const fillStyle = get_team_text_color(team);
     const strokeStyle = get_team_shadow_color(team);
@@ -304,6 +296,19 @@ export class EntityInfoRender implements IEntityCallbacks {
 
     this.name_node.visible = is_fighter && is_key_role && !invisible
     this.bars_node.visible = is_fighter && is_key_role && !invisible && hp > 0;
+
+    if (this.entity.healing) {
+      const heading = (this.entity.update_id.value % 8) < 4;
+      if (this._heading != heading) {
+        this.hp_bar.color = heading ? "rgb(255, 130, 130)" : "rgb(255,0,0)"
+        this._heading = heading
+      }
+    } else if (this._heading) {
+      debugger;
+      this.hp_bar.color = "rgb(255,0,0)";
+      this._heading = false;
+    }
+
 
     const _x = floor(x);
     const bar_y = floor(y - z / 2 + BAR_BG_H + 5 + centery);

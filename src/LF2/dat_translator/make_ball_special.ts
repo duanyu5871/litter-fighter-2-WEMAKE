@@ -1,8 +1,12 @@
-import { BuiltIn_OID, EntityGroup, FrameBehavior, OpointKind } from "../defines";
+import { BuiltIn_OID, EntityGroup, FrameBehavior, ItrKind, OpointKind, StateEnum } from "../defines";
 import { IEntityData } from "../defines/IEntityData";
 import { traversal } from "../utils/container_help/traversal";
 import { HitFlag } from "../defines/HitFlag";
 import { ensure, find, floor } from "../utils";
+import { foreach } from "../utils/container_help/foreach";
+import { ActionType } from "../defines/ActionType";
+import { CondMaker } from "./CondMaker";
+import { CollisionVal as C_Val } from "../defines/CollisionVal";
 
 export function make_ball_special(data: IEntityData) {
   switch (data.id as BuiltIn_OID) {
@@ -118,6 +122,36 @@ export function make_ball_special(data: IEntityData) {
       data.base.group = ensure(data.base.group, EntityGroup.FreezableBall)
       break;
     }
+
+    case BuiltIn_OID.JohnBiscuit: {
+      foreach(data.frames, (frame) => {
+        foreach(frame.bdy, bdy => {
+          bdy.actions = ensure([], {
+            type: ActionType.V_REBOUND_VX,
+            test: new CondMaker<C_Val>()
+              .or(C_Val.ItrKind, "==", ItrKind.JohnShield)
+              .done(),
+            data: ''
+          }, {
+            type: ActionType.V_TURN_FACE,
+            test: new CondMaker<C_Val>()
+              .or(C_Val.ItrKind, "==", ItrKind.JohnShield)
+              .done(),
+            data: ''
+          }, {
+            type: ActionType.V_NextFrame,
+            test: new CondMaker<C_Val>()
+              .one_of(C_Val.AttackerState, StateEnum.Ball_3005, StateEnum.Ball_3006)
+              .and(C_Val.ItrKind, "!=", ItrKind.JohnShield)
+              .done(),
+            data: {
+              id: "20"
+            }
+          })
+        })
+      })
+      break;
+    }
     case BuiltIn_OID.Template:
     case BuiltIn_OID.Julian:
     case BuiltIn_OID.Firzen:
@@ -162,7 +196,6 @@ export function make_ball_special(data: IEntityData) {
     case BuiltIn_OID.FirenBall:
     case BuiltIn_OID.FreezeColumn:
     case BuiltIn_OID.Weapon7:
-    case BuiltIn_OID.JohnBiscuit:
     case BuiltIn_OID.BatChase:
     case BuiltIn_OID.JustinBall:
     case BuiltIn_OID.JulianBall:

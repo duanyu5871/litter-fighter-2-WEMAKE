@@ -29,6 +29,7 @@ const map: Record<CollisionVal, IValGetter<ICollision>> = {
   [CollisionVal.VictimIsFreezableBall]: (collision: ICollision) => collision.victim.group?.some(v => v === EntityGroup.FreezableBall) ? 1 : 0,
   [CollisionVal.AttackerIsFreezableBall]: (collision: ICollision) => collision.attacker.group?.some(v => v === EntityGroup.FreezableBall) ? 1 : 0,
   [CollisionVal.ArmorWork]: (collision: ICollision) => is_armor_work(collision) ? 1 : 0,
+  [CollisionVal.V_FrameBehavior]: (collision: ICollision) => collision.victim.frame.behavior,
 };
 export const get_val_geter_from_collision: IValGetterGetter<ICollision> = (
   word: string,
