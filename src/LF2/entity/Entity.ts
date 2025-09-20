@@ -1888,11 +1888,11 @@ export class Entity implements IDebugging {
         // 用next 进入此动作，负数表示消耗，无视正数。若消耗完毕跳至按下防御键的指定跳转动作
         if (use_mp && this._mp < use_mp)
           return this.get_next_frame(frame.hit?.d ?? Defines.NEXT_FRAME_AUTO);
-        if (use_hp && this._hp < use_hp)
+        if (use_hp && this._hp <= use_hp)
           return this.get_next_frame(frame.hit?.d ?? Defines.NEXT_FRAME_AUTO);
       } else {
         if (use_mp && this._mp < use_mp) return void 0;
-        if (use_hp && this._hp < use_hp) return void 0;
+        if (use_hp && this._hp <= use_hp) return void 0;
       }
     }
 
