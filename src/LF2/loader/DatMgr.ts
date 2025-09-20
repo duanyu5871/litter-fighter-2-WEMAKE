@@ -137,10 +137,10 @@ class Inner {
       this.data_list_map.all.push(v as any);
     }
 
-    const stage_file = "data/stage.json";
+    const stage_file = "data/stage.json5";
     this.lf2.on_loading_content(`${stage_file}`, 0);
 
-    const stages = await this.lf2.import_json<IStageInfo[]>("data/stage.json").then(r => r[0]).catch(e => [])
+    const stages = await this.lf2.import_json<IStageInfo[]>("data/stage.json5").then(r => r[0]).catch(e => [])
 
     if (!this.stages.find(v => v.id === Defines.VOID_STAGE.id))
       this.stages.unshift(Defines.VOID_STAGE)

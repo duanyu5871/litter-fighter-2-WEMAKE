@@ -3,11 +3,11 @@ import Callbacks from "../base/Callbacks";
 import FSM from "../base/FSM";
 import { new_team } from "../base/new_id";
 import { Background } from "../bg/Background";
-import { Defines, IBgData, IStageInfo, IStageObjectInfo, IStagePhaseInfo } from "../defines";
+import { Defines, Difficulty, IBgData, IStageInfo, IStageObjectInfo, IStagePhaseInfo } from "../defines";
 import { Ditto } from "../ditto";
 import { Entity } from "../entity/Entity";
 import { is_character, is_weapon } from "../entity/type_check";
-import { floor } from "../utils";
+import { floor, min } from "../utils";
 import { find } from "../utils/container_help/find";
 import { is_num } from "../utils/type_check";
 import type IStageCallbacks from "./IStageCallbacks";
@@ -152,17 +152,25 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
     if (!phase) return;
     const { objects, respawn, health_up } = phase;
 
-    if (health_up && health_up > 0) {
+    const hp_recovery = health_up?.[this.lf2.difficulty]
+    if (hp_recovery) {
       for (const [, f] of this.world.slot_fighters) {
         if (f.hp <= 0) continue;
-        const hp = f.hp_r + (f.hp_max - f.hp_r) * health_up
+        const hp = hp_recovery < 1 ?
+          min(f.hp_r + (f.hp_max - f.hp_r) * hp_recovery, f.hp_max) :
+          min(f.hp_r + hp_recovery, f.hp_max)
         f.hp = f.hp_r = hp
       }
     }
-    if (respawn && respawn > 0) {
+
+    const hp_respawn = respawn?.[this.lf2.difficulty]
+    if (hp_respawn && hp_respawn > 0) {
       for (const [, f] of this.world.slot_fighters) {
         if (f.hp > 0) continue;
-        f.hp = f.hp_r = f.hp_max * respawn
+        const hp = hp_respawn < 1 ?
+          f.hp_max * hp_respawn :
+          hp_respawn
+        f.hp = f.hp_r = hp;
       }
     }
 
@@ -193,13 +201,20 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
 
   readonly items = new Set<Item>();
   async spawn_object(obj_info: IStageObjectInfo) {
-
     let count = 0;
-
     for (const [, c] of this.world.slot_fighters)
       count += c.data.base.ce ?? 1;
     if (!count) count = 1;
 
+    switch (this.lf2.difficulty) {
+      case Difficulty.Crazy:
+        count *= 2
+        break;
+      case Difficulty.Easy:
+      case Difficulty.Normal:
+      case Difficulty.Difficult:
+        break;
+    }
     const { ratio, times = 1 } = obj_info;
 
     let spawn_count = ratio === void 0 ? 1 : floor(count * ratio);

@@ -1,9 +1,10 @@
-import { Defines, EntityEnum, IEntityData, IStageObjectInfo } from "../defines";
+import { Defines, Difficulty, EntityEnum, IEntityData, IStageObjectInfo } from "../defines";
 import { TeamEnum } from "../defines/TeamEnum";
 import { Entity } from "../entity/Entity";
 import { Factory } from "../entity/Factory";
 import IEntityCallbacks from "../entity/IEntityCallbacks";
 import { is_character, is_weapon } from "../entity/type_check";
+import { floor } from "../utils";
 import { is_num, is_str } from "../utils/type_check";
 import { Stage } from "./Stage";
 
@@ -96,7 +97,7 @@ export default class Item {
       return false;
     }
 
-    const { hp, act, x, y, z, reserve } = this.info;
+    let { hp, act, x, y, z, reserve } = this.info;
     if (this.times) this.times--;
     const e = creator(this.world, data);
     e.ctrl = Factory.inst.get_ctrl(e.data.id, "", e);
@@ -111,7 +112,21 @@ export default class Item {
         hp: this.info.join,
         team: this.info.join_team ?? TeamEnum.Team_1
       }
-    if (is_num(hp)) e.hp_max = e.hp_r = e.hp = hp;
+
+
+    if (is_num(hp)) {
+      switch (this.lf2.difficulty) {
+        case Difficulty.Easy:
+          hp = floor(hp * 3 / 4)
+          break;
+        case Difficulty.Crazy:
+          hp = floor(hp * 3 / 2)
+          break;
+        case Difficulty.Normal:
+        case Difficulty.Difficult:
+      }
+      e.hp_max = e.hp_r = e.hp = hp;
+    }
     if (is_num(y)) e.position.y = y;
 
     if (is_character(e)) {

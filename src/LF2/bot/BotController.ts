@@ -395,12 +395,11 @@ export class BotController extends BaseController implements Required<IBotDataSe
   }
 
   action_desire(): number {
-    const crazy_desire = this.desire(); // 默认action设置的desire是crazy的好了。
-    // const max_ratio = 1 - (this.lf2.difficulty - 1) / 3
-    // const now_desire = max_ratio ?
-    //   crazy_desire + this.lf2.random_in(0, 10000 * max_ratio) :
-    //   crazy_desire
-    return crazy_desire;
+    let ret = this.desire(); // 默认action设置的desire是crazy的好了。
+    for (let i = Difficulty.MAX - this.lf2.difficulty; i > 0; --i) {
+      ret += this.desire();
+    }
+    return ret;
   }
   handle_action(action: IBotAction | undefined): LGK[] | false {
     if (!action) return false

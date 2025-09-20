@@ -1,3 +1,4 @@
+import { Difficulty } from "../defines";
 import { IStageInfo } from "../defines/IStageInfo";
 import { IStageObjectInfo } from "../defines/IStageObjectInfo";
 import { IStagePhaseInfo } from "../defines/IStagePhaseInfo";
@@ -77,12 +78,21 @@ export function make_stage_info_list(full_str: string): IStageInfo[] | void {
 
     }
     if (nid < 49 && stage_info.phases[0]) {
-      stage_info.phases[0]!.health_up = 0.5;
-      stage_info.phases[0]!.respawn = 0.5;
+      stage_info.phases[0]!.health_up = stage_info.phases[0]!.respawn = {
+        [Difficulty.Easy]: 200,
+        [Difficulty.Normal]: 150,
+        [Difficulty.Difficult]: 100,
+        [Difficulty.Crazy]: 50,
+      };
     }
     if (nid === 50) {
       for (const p of stage_info.phases) {
-        p.respawn = 0.5;
+        p.respawn = {
+          [Difficulty.Easy]: 300,
+          [Difficulty.Normal]: 150,
+          [Difficulty.Difficult]: 5,
+          [Difficulty.Crazy]: 5,
+        };
       }
     }
 

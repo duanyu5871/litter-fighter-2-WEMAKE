@@ -1,3 +1,4 @@
+import { Difficulty } from "./Difficulty";
 import { IStageObjectInfo } from "./IStageObjectInfo";
 
 /**
@@ -11,8 +12,16 @@ export interface IStagePhaseInfo {
   desc?: string;
   objects: IStageObjectInfo[];
   music?: string;
-  respawn?: number;
-  health_up?: number,
+
+  respawn?: { [x in Difficulty]?: number };
+  
+  /**
+   *
+   *
+   * @type {number}
+   * @memberof IStagePhaseInfo
+   */
+  health_up?: { [x in Difficulty]?: number },
 
   /**
    * 相机跳至位置

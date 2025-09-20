@@ -1,4 +1,4 @@
-import { Defines, BuiltIn_OID as OID } from "../../defines";
+import { Builtin_FrameId, Defines, BuiltIn_OID as OID } from "../../defines";
 import { TeamEnum as TE } from "../../defines/TeamEnum";
 import { Entity } from "../../entity/Entity";
 import { Times } from "../utils/Times";
@@ -53,6 +53,8 @@ export class DanmuGameLogic extends SummaryLogic {
   }
 
   update_bg() {
+    for (const e of this.world.entities)
+      e.enter_frame({ id: Builtin_FrameId.Gone })
     const fighter_enter = (v: Entity) => {
       v.is_key_role = v.is_gone_dead = true;
       v.name = v.data.base.name;
@@ -115,7 +117,6 @@ export class DanmuGameLogic extends SummaryLogic {
         break;
       }
     }
-
 
     this.update_staring();
     this._staring_countdown.reset()
