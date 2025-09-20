@@ -1,9 +1,12 @@
 import IStyle from "../../defines/IStyle";
-import { ui_load_txt } from "../ui_load_txt";
+import { UITextLoader } from "../UITextLoader";
 import PlayerScore from "./PlayerScore";
 import { UIComponent } from "./UIComponent";
 export default class PlayerScoreCell extends UIComponent {
   static override readonly TAG = 'PlayerScoreCell'
+  private _text_loader = new UITextLoader(() => this.node)
+    .set_style(() => this.get_style())
+    .ignore_out_of_date();
   get kind() {
     return this.args[0];
   }
@@ -13,14 +16,7 @@ export default class PlayerScoreCell extends UIComponent {
 
   override on_show(): void {
     super.on_show?.();
-    ui_load_txt(this.lf2, {
-      i18n: this.get_txt(), style: this.get_style()
-    }).then(v => {
-      this.node.txts.value = v;
-      this.node.txt_idx.value = 0;
-      const { w, h, scale } = v[0]!
-      this.node.size.value = [w / scale, h / scale];
-    })
+    this._text_loader.set_text([this.get_txt()])
   }
 
   protected get_style(): IStyle {

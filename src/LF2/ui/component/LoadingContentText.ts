@@ -1,10 +1,13 @@
-import { ui_load_txt } from "../ui_load_txt";
+import { UITextLoader } from "../UITextLoader";
 import factory from "./Factory";
 import { FadeOutOpacity } from "./FadeOutOpacity";
 import { UIComponent } from "./UIComponent";
 
 export class LoadingContentText extends UIComponent {
   static override readonly TAG = "LoadingContentText"
+  private _text_loader = new UITextLoader(() => this.node)
+    .set_style(() => this.node.style)
+    .ignore_out_of_date();
 
   get fade_out_duration() { return this.num(1) ?? 0 };
   get fade_out_delay() { return this.num(2) ?? 0 }
@@ -41,13 +44,6 @@ export class LoadingContentText extends UIComponent {
   on_loading_content(text: string, progress: number) {
     this.fadeout?.start();
     const str = progress ? `loading: ${text}(${progress}%)` : ` loading: ${text}`;
-    ui_load_txt(this.lf2, {
-      i18n: str, style: this.node.style
-    }).then(v => {
-      this.node.txts.value = v;
-      this.node.txt_idx.value = 0;
-      const { w, h, scale } = v[0]!
-      this.node.size.value = [w / scale, h / scale];
-    })
+    this._text_loader.set_text([str])
   }
 }

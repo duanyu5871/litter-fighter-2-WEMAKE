@@ -1,9 +1,7 @@
 import { LF2 } from "../LF2";
 import { ITextImageInfo } from "../loader/ITextImageInfo";
-import { ICookedUIInfo } from "./ICookedUIInfo";
 import { ICookedUITxtInfo } from "./IUITxtInfo.dat";
-
-export async function ui_load_txt(lf2: LF2, txt: ICookedUITxtInfo | ICookedUITxtInfo[], ui_info?: ICookedUIInfo, out: ITextImageInfo[] = []) {
+export async function ui_load_txt(lf2: LF2, txt: ICookedUITxtInfo | ICookedUITxtInfo[], out: ITextImageInfo[] = []) {
   const txts = Array.isArray(txt) ? txt : [txt];
   if (!txts.length) return []
   const infos = await Promise.all(

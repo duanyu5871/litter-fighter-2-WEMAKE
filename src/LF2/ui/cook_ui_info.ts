@@ -132,7 +132,7 @@ export async function cook_ui_info(
   if (img) ret.img_infos.push(...await ui_load_img(lf2, img, ret.img));
 
   cook_ui_txt_info(lf2, ret, raw_info.txt, ret.txt)
-  await ui_load_txt(lf2, ret.txt, ret, ret.txt_infos)
+  await ui_load_txt(lf2, ret.txt, ret.txt_infos)
 
   const { w: img_w = 0, h: img_h = 0, scale = 1 } = ret.img_infos[0] || ret.txt_infos[0] || {};
   const sw = img_w / scale;

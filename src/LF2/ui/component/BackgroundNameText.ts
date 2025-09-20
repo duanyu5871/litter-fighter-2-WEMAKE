@@ -1,12 +1,16 @@
 import { IBgData } from "../../defines";
 import { Defines } from "../../defines/defines";
-import { ui_load_txt } from "../ui_load_txt";
+import { UITextLoader } from "../UITextLoader";
 import { UIComponent } from "./UIComponent";
 
 
-export default class BackgroundNameText extends UIComponent {  
+export default class BackgroundNameText extends UIComponent {
   static override readonly TAG = 'BackgroundNameText'
   private _background: IBgData = Defines.RANDOM_BG;
+  private _text_loader = new UITextLoader(() => this.node).set_style({
+    fill_style: "#9b9bff",
+    font: "15px Arial",
+  }).ignore_out_of_date();
 
   get backgrounds(): IBgData[] {
     const ret = this.lf2.datas.backgrounds?.filter((v) => v.id !== Defines.VOID_BG.id) || []
@@ -29,17 +33,7 @@ export default class BackgroundNameText extends UIComponent {
     this.lf2.callbacks.del(this);
   }
   update_text() {
-    ui_load_txt(this.lf2, {
-      i18n: this.text, style: {
-        fill_style: "#9b9bff",
-        font: "15px Arial",
-      }
-    }).then(v => {
-      this.node.txts.value = v;
-      this.node.txt_idx.value = 0;
-      const { w, h, scale } = v[0]!
-      this.node.size.value = [w / scale, h / scale];
-    })
+    this._text_loader.set_text([this.text])
   }
   on_broadcast(v: string = Defines.BuiltIn_Broadcast.SwitchBackground) {
     if (v !== Defines.BuiltIn_Broadcast.SwitchBackground) return;

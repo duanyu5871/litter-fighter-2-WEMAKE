@@ -3,6 +3,7 @@ import { Sine } from "../../animation/Sine";
 import Invoker from "../../base/Invoker";
 import { Defines } from "../../defines/defines";
 import { Ditto } from "../../ditto";
+import { IPlayerInfoCallback } from "../../IPlayerInfoCallback";
 import { PlayerInfo } from "../../PlayerInfo";
 import { between } from "../../utils";
 import GamePrepareLogic, { GamePrepareState } from "./GamePrepareLogic";
@@ -34,9 +35,13 @@ export default class FighterHead extends UIComponent {
   get gpl(): GamePrepareLogic | undefined {
     return this.node.root.find_component(GamePrepareLogic);
   }
-
   protected _unmount_jobs = new Invoker();
 
+  protected _player_callbacks: IPlayerInfoCallback = {
+    on_joined_changed: () => this.handle_changed(),
+    on_character_changed: () => this.handle_changed(),
+    on_random_character_changed: () => this.handle_changed(),
+  }
   constructor(...args: ConstructorParameters<typeof UIComponent>) {
     super(...args);
     this._mesh_head = new Ditto.SpriteNode(this.lf2)
@@ -47,20 +52,15 @@ export default class FighterHead extends UIComponent {
   }
   override on_resume(): void {
     super.on_resume();
-
     this.node.renderer.sprite.add(
       this._mesh_head,
     )
+    this.player?.callbacks.add(this._player_callbacks);
     this._unmount_jobs.add(
       () =>
         this.node.renderer.sprite.del(
           this._mesh_head,
         ),
-      this.player?.callbacks.add({
-        on_joined_changed: () => this.handle_changed(),
-        on_character_changed: () => this.handle_changed(),
-        on_random_character_changed: () => this.handle_changed(),
-      }),
       this.gpl?.callbacks.add({
         on_countdown: (seconds) => {
           if (between(seconds, 1, 5))
@@ -75,11 +75,13 @@ export default class FighterHead extends UIComponent {
 
   override on_pause(): void {
     super.on_pause();
+    this.player?.callbacks.del(this._player_callbacks);
     this._unmount_jobs.invoke_and_clear();
   }
 
   protected handle_changed() {
     this.lf2.images.p_create_pic_by_img_key(this.head).then(pic => {
+      this.node.txts.value
       this._mesh_head.set_info(pic).apply();
     });
   }
