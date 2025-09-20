@@ -1,4 +1,3 @@
-import { BuiltIn_OID, FrameBehavior } from "../defines";
 import { ActionType } from "../defines/ActionType";
 import { CollisionVal as C_Val } from "../defines/CollisionVal";
 import { IEntityData } from "../defines/IEntityData";
