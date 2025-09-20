@@ -58,7 +58,7 @@ export function cook_ball_frame_state_3000(e: IEntityData, frame: IFrameInfo) {
     new_bdy.push(
       copy_bdy_info(bdy, {
         /* 反弹判定 */
-        hit_flag: HitFlag.Both,
+        hit_flag: HitFlag.AllBoth,
         test: new CondMaker<C_Val>()
           .wrap((c) => c
             // 敌方角色的攻击反弹气功波
@@ -128,7 +128,7 @@ export function cook_ball_frame_state_3000(e: IEntityData, frame: IFrameInfo) {
         bdy_list.length = 0;
         bdy_list.push({
           kind: 0,
-          hit_flag: HitFlag.Both,
+          hit_flag: HitFlag.AllBoth,
           test: new CondMaker<C_Val>()
             .not_in(
               C_Val.ItrKind,

@@ -29,7 +29,7 @@ const titled_styles: ITitledProps['styles'] = {
   }
 }
 const default_value: IItrInfo = {
-  hit_flag: HitFlag.Enemy,
+  hit_flag: HitFlag.AllEnemy,
   kind: ItrKind.Normal,
   effect: ItrEffect.Normal,
   z: floor(-Defines.DAFUALT_QUBE_LENGTH / 2),

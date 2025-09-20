@@ -6,12 +6,12 @@ import { Input } from "../../Component/Input";
 import Select from "../../Component/Select";
 import { TextArea } from "../../Component/TextArea";
 import Titled, { ITitledProps } from "../../Component/Titled";
-import { HitFlag, BdyKind, Defines, IBdyInfo } from "../../LF2/defines";
+import { BdyKind, Defines, HitFlag, IBdyInfo } from "../../LF2/defines";
 import { floor } from "../../LF2/utils";
-import { ALLY_FLAG_SELECT_PROPS, BDY_KIND_SELECT_PROPS } from "../EntityEditorView";
+import { BDY_KIND_SELECT_PROPS } from "../EntityEditorView";
+import { HitFlagEditor } from "./HitFlagEditor";
 import { make_field_props } from "./make_field_props";
 import { QubeEdit } from "./QubeEdit";
-import { HitFlagEditor } from "./HitFlagEditor";
 
 export interface IBdyEditorViewProps {
   label?: string;
@@ -26,7 +26,7 @@ const titled_styles: ITitledProps['styles'] = {
   }
 }
 const default_value: IBdyInfo = {
-  hit_flag: HitFlag.Enemy,
+  hit_flag: HitFlag.AllEnemy,
   kind: BdyKind.Normal,
   z: floor(-Defines.DAFUALT_QUBE_LENGTH / 2),
   l: floor(Defines.DAFUALT_QUBE_LENGTH),

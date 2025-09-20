@@ -20,7 +20,7 @@ export function make_frame_state(frame: IFrameInfo) {
       break;
     case StateEnum.Burning: {
       foreach(frame.itr, itr => {
-        itr.hit_flag = HitFlag.Both;
+        itr.hit_flag = HitFlag.AllBoth;
       })
       break;
     }
@@ -99,7 +99,7 @@ export function make_frame_state(frame: IFrameInfo) {
       break;
     }
     case StateEnum.Frozen:
-      foreach(frame.bdy, bdy => bdy.hit_flag = HitFlag.Both)
+      foreach(frame.bdy, bdy => bdy.hit_flag = HitFlag.AllBoth)
       break;
   }
 }

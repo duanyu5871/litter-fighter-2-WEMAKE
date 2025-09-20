@@ -21,7 +21,7 @@ export function preprocess_itr(lf2: LF2, itr: IItrInfo, data: IEntityData, jobs:
   if (itr.caughtact) preprocess_next_frame(itr.caughtact);
   if (itr.test)
     itr.tester = new Expression(itr.test, get_val_geter_from_collision);
-  itr.hit_flag = itr.hit_flag ?? HitFlag.Enemy
+  itr.hit_flag = itr.hit_flag ?? HitFlag.AllEnemy
   itr.actions?.forEach((n, i, l) => l[i] = preprocess_action(lf2, n, jobs));
   return itr;
 }

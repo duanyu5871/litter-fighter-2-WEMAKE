@@ -9,7 +9,7 @@ export function make_ball_special(data: IEntityData) {
     case BuiltIn_OID.FirenFlame:
       traversal(data.frames, (_, frame) => {
         if (frame.itr) for (const itr of frame.itr)
-          itr.hit_flag = HitFlag.Enemy;
+          itr.hit_flag = HitFlag.AllEnemy;
       });
       break;
     case BuiltIn_OID.FirzenBall:

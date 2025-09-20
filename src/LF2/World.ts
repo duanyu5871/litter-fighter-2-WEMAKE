@@ -3,7 +3,6 @@ import { collisions_keeper } from "./collision/CollisionKeeper";
 import {
   ALL_ENTITY_ENUM,
   Builtin_FrameId, Defines,
-  EntityEnum,
   HitFlag,
   IBdyInfo, IBounding, IEntityData,
   IFrameInfo, IItrInfo, ItrKind, StateEnum
@@ -577,12 +576,12 @@ export class World extends WorldDataset {
       a_cube.near >= b_cube.far
     )) return;
 
-    const ally_flag = attacker.is_ally(victim) ? HitFlag.Ally : HitFlag.Enemy;
+    const ally_flag = attacker.is_ally(victim) ? HitFlag.AllAlly : HitFlag.AllEnemy;
     if (
       0 == (itr.hit_flag & victim.data.type) ||
       0 == (bdy.hit_flag & attacker.data.type) || 
-      0 == (itr.hit_flag & ally_flag) ||
-      0 == (bdy.hit_flag & ally_flag)
+      0 != (itr.hit_flag & ally_flag) &&
+      0 != (bdy.hit_flag & ally_flag)
     ) return;
 
 

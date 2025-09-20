@@ -17,7 +17,7 @@ import { ActionType } from "../defines/ActionType";
 export function cook_itr(itr?: Partial<IItrInfo>) {
 
   if (!itr) return;
-  itr.hit_flag = HitFlag.Enemy;
+  itr.hit_flag = HitFlag.AllEnemy;
 
   itr.vrest = take_positive_num(itr, "vrest", n => max(2, 2 * n - Defines.DEFAULT_ITR_SHAKING - 4))
   itr.arest = take_positive_num(itr, "arest", n => max(2, 2 * n - Defines.DEFAULT_ITR_MOTIONLESS - 4))
@@ -81,7 +81,7 @@ export function cook_itr(itr?: Partial<IItrInfo>) {
       break;
     }
     case ItrKind.Pick: {
-      itr.hit_flag = HitFlag.Both;
+      itr.hit_flag = HitFlag.AllBoth;
       itr.motionless = 0;
       itr.shaking = 0;
       itr.test = new CondMaker<C_Val>()
@@ -97,7 +97,7 @@ export function cook_itr(itr?: Partial<IItrInfo>) {
       break;
     }
     case ItrKind.PickSecretly: {
-      itr.hit_flag = HitFlag.Both;
+      itr.hit_flag = HitFlag.AllBoth;
       itr.motionless = 0;
       itr.shaking = 0;
       itr.test = new CondMaker<C_Val>()
@@ -157,7 +157,7 @@ export function cook_itr(itr?: Partial<IItrInfo>) {
       break;
     }
     case ItrKind.Block:
-      itr.hit_flag = HitFlag.Both;
+      itr.hit_flag = HitFlag.AllBoth;
       itr.motionless = 0;
       itr.shaking = 0;
       itr.test = new CondMaker<C_Val>()
@@ -165,14 +165,14 @@ export function cook_itr(itr?: Partial<IItrInfo>) {
         .done();
       break;
     case ItrKind.JohnShield:
-      itr.hit_flag = HitFlag.Both;
+      itr.hit_flag = HitFlag.AllBoth;
       itr.test = new CondMaker<C_Val>()
         .and(C_Val.VictimType, "!=", EntityEnum.Fighter)
         .or(C_Val.SameTeam, "!=", 1)
         .done();
       break;
     case ItrKind.Heal: {
-      itr.hit_flag = HitFlag.Both; // 允许治疗队友
+      itr.hit_flag = HitFlag.AllBoth; // 允许治疗队友
 
 
       if (src_dvx) {
@@ -187,7 +187,7 @@ export function cook_itr(itr?: Partial<IItrInfo>) {
       break;
     }
     case ItrKind.Freeze: {
-      itr.hit_flag = HitFlag.Both;
+      itr.hit_flag = HitFlag.AllBoth;
       itr.shaking = 0;
       itr.motionless = 0;
       itr.dvx = 0;
@@ -204,7 +204,7 @@ export function cook_itr(itr?: Partial<IItrInfo>) {
       break;
     }
     case ItrKind.Whirlwind: {
-      itr.hit_flag = HitFlag.Both;
+      itr.hit_flag = HitFlag.AllBoth;
       itr.shaking = 0;
       itr.motionless = 0;
       itr.vrest = 1;
@@ -232,7 +232,7 @@ export function cook_itr(itr?: Partial<IItrInfo>) {
       break;
     }
     case ItrKind.CharacterThrew: {
-      itr.hit_flag = HitFlag.Both;
+      itr.hit_flag = HitFlag.AllBoth;
       itr.test = new CondMaker<C_Val>()
         .add(C_Val.AttackerThrew, "==", 1)
         .and(C_Val.AttackerType, "==", EntityEnum.Fighter)
