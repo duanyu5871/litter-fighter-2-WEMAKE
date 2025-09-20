@@ -200,13 +200,13 @@ export function make_frames(
       frame.ctrl_z = 0;
     } else if (not_zero_num(dvz)) {
       if (dvz >= 501 && dvz <= 549) {
-        frame.dvz = (dvz - 550) * 0.5;
+        frame.dvz = (dvz - 550);
         frame.vzm = SpeedMode.FixedLf2;
       } else if (dvz >= 551) {
-        frame.dvz = (dvz - 550) * 0.5;
+        frame.dvz = (dvz - 550);
         frame.vzm = SpeedMode.FixedLf2;
       } else {
-        frame.dvz = dvz * 0.5;
+        frame.dvz = dvz;
       }
       frame.ctrl_z = 1;
     }
