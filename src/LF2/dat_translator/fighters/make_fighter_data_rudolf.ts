@@ -1,4 +1,4 @@
-import { IEntityData } from "../../defines";
+import { BuiltIn_OID, IEntityData } from "../../defines";
 import { BotBuilder } from "./BotBuilder";
 
 /**
@@ -11,8 +11,10 @@ import { BotBuilder } from "./BotBuilder";
 export function make_fighter_data_rudolf(data: IEntityData): IEntityData {
   for (const k in data.frames) {
     data.frames[k].opoint?.forEach((opoint) => {
-      if (opoint.oid === "5") 
+      if (opoint.oid === BuiltIn_OID.Rudolf) {
         opoint.hp = opoint.max_hp = 20;
+        opoint.mp = opoint.max_mp = 150;
+      }
     });
   }
   BotBuilder.make(data).set_dataset({

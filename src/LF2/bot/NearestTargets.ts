@@ -10,14 +10,14 @@ export class NearestTargets {
   constructor(max: number) { this.max = max; }
   get(): IBotTarget | undefined { return this.targets[0]; }
 
-  look(self: Entity, other: Entity) {
+  look(self: Entity, other: Entity, defendable: number = 0) {
     const { targets } = this;
     if (!self || this.entities.has(other)) return;
 
     const distance = manhattan_xz(self, other);
     const len = targets.length;
     if (len < this.max) {
-      targets.push({ entity: other, distance });
+      targets.push({ entity: other, distance, defendable });
       this.entities.add(other);
       return;
     } else {
@@ -25,7 +25,7 @@ export class NearestTargets {
         const target = targets[i];
         if (distance > target.distance)
           continue;
-        this.targets.splice(i, 0, { entity: other, distance });
+        this.targets.splice(i, 0, { entity: other, distance, defendable });
         this.entities.add(other);
         const { entity } = this.targets[this.max];
         this.entities.delete(entity);

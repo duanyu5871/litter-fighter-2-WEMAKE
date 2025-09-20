@@ -4,15 +4,15 @@ import {
   ATTCKING_ITR_KINDS,
   ATTCKING_STATES,
   BotStateEnum,
-  Builtin_FrameId, Defines,
+  Defines,
   Difficulty,
   GK,
   IBotAction, IBotDataSet,
-  ItrKind, LGK, StateEnum
+  LGK, StateEnum
 } from "../defines";
 import { Entity, is_ball, is_character, is_weapon } from "../entity";
 import { manhattan_xz } from "../helper/manhattan_xz";
-import { abs, clamp, floor, max, min } from "../utils";
+import { abs, clamp, floor, max } from "../utils";
 import { DummyEnum, dummy_updaters } from "./DummyEnum";
 import { NearestTargets } from "./NearestTargets";
 import { BotState_Avoiding, BotState_Chasing, BotState_Idle } from "./state";
@@ -176,7 +176,7 @@ export class BotController extends BaseController implements Required<IBotDataSe
    */
   should_chase(e?: Entity | null): boolean {
     return !!(
-      e &&
+      e?.is_attach &&
       this.entity.hp > 0 &&
       e.hp > 0 &&
       e.frame.state !== StateEnum.Lying &&
@@ -195,7 +195,7 @@ export class BotController extends BaseController implements Required<IBotDataSe
    */
   should_avoid(e?: Entity | null): boolean {
     return !!(
-      e &&
+      e?.is_attach &&
       this.entity.hp > 0 &&
       e.hp > 0 &&
       manhattan_xz(this.entity, e) < 300 && (
@@ -215,18 +215,19 @@ export class BotController extends BaseController implements Required<IBotDataSe
    * @return {*}  {boolean}
    * @memberof BotController
    */
-  should_defend(e?: Entity | null): boolean {
-
+  should_defend(e?: Entity | null): 0 | 1 | 2 {
     if (
-      !e ||
+      e?.is_attach != true ||
+      this.entity.toughness ||
       this.entity.invisible ||
       this.entity.blinking ||
-      this.entity.invulnerable ||
-      !ATTCKING_STATES.some(v => v === e?.frame.state) &&
-      !ATTCKING_ITR_KINDS.some(b => e.itr?.some(({ kind }) => b === kind))
-    ) return false
+      this.entity.invulnerable) return 0
 
-    return is_ray_hit(e, this.entity, {
+    const { itr: itrs } = e
+    if (!ATTCKING_STATES.some(v => v === e.frame.state))
+      return 0
+
+    const hit = is_ray_hit(e, this.entity, {
       x: max(e.velocity.x, 1),
       z: e.velocity.z,
       min_x: -80,
@@ -234,28 +235,44 @@ export class BotController extends BaseController implements Required<IBotDataSe
       min_z: -Defines.DAFUALT_QUBE_LENGTH,
       max_z: max(abs(20 * e.velocity.z), Defines.DAFUALT_QUBE_LENGTH)
     })
+    if (!hit) return 0;
+
+    if (itrs?.length) for (const itr of itrs) {
+      if (!ATTCKING_ITR_KINDS.some(v => itr.kind === v)) continue;
+      if (Defines.DEFAULT_FORCE_BREAK_DEFEND_VALUE === itr.bdefend) {
+        return 2;
+      }
+    }
+    return 1;
   }
 
   look_other(other: Entity) {
     if (is_character(other)) {
       if (this.entity.is_ally(other)) {
-
-      } else {
-        if (this.should_avoid(other)) {
-          this.avoidings.look(this.entity, other)
-        } else if (this.should_defend(other)) {
-          this.defends.look(this.entity, other)
-        } else if (this.should_chase(other)) {
-          this.chasings.look(this.entity, other)
-        }
+        return;
       }
+      if (this.should_avoid(other)) {
+        this.avoidings.look(this.entity, other)
+        return;
+      }
+      const dd = this.should_defend(other)
+      if (dd) {
+        this.defends.look(this.entity, other, dd)
+        return;
+      }
+      if (this.should_chase(other)) {
+        this.chasings.look(this.entity, other)
+        return;
+      }
+
     } else if (is_ball(other) || is_weapon(other)) {
       if (this.entity.is_ally(other)) {
-
-      } else {
-        if (this.should_defend(other)) {
-          this.defends.look(this.entity, other)
-        }
+        return;
+      }
+      const dd = this.should_defend(other)
+      if (dd) {
+        this.defends.look(this.entity, other, dd)
+        return;
       }
     }
   }

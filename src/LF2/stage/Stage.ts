@@ -151,28 +151,30 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
     this.callbacks.emit("on_phase_changed")(this, phase, old);
     if (!phase) return;
     const { objects, respawn, health_up } = phase;
-
-    const hp_recovery = health_up?.[this.lf2.difficulty]
-    if (hp_recovery) {
-      for (const [, f] of this.world.slot_fighters) {
-        if (f.hp <= 0) continue;
-        const hp = hp_recovery < 1 ?
-          min(f.hp_r + (f.hp_max - f.hp_r) * hp_recovery, f.hp_max) :
-          min(f.hp_r + hp_recovery, f.hp_max)
-        f.hp = f.hp_r = hp
+    const hp_recovery = health_up?.[this.lf2.difficulty] || 0;
+    const hp_respawn = respawn?.[this.lf2.difficulty] || 0;
+    const loop_players_fighters = hp_recovery || hp_respawn || idx === 0
+    if (loop_players_fighters) {
+      const teams = new Set<string>()
+      for (const [, f] of this.world.slot_fighters)
+        teams.add(f.team)
+      for (const f of this.world.entities) {
+        if (!is_character(f) && !teams.has(f.team)) continue;
+        if (idx === 0) f.mp = f.mp_max
+        if (f.hp <= 0 && hp_respawn) {
+          const hp = hp_respawn < 1 ?
+            min(f.hp_max * hp_respawn, f.hp_max) :
+            min(hp_respawn, f.hp_max)
+          f.hp = f.hp_r = hp;
+        } else if (f.hp > 0 && hp_recovery) {
+          const hp = hp_recovery < 1 ?
+            min(f.hp_r + (f.hp_max - f.hp_r) * hp_recovery, f.hp_max) :
+            min(f.hp_r + hp_recovery, f.hp_max)
+          f.hp = f.hp_r = hp
+        }
       }
     }
 
-    const hp_respawn = respawn?.[this.lf2.difficulty]
-    if (hp_respawn && hp_respawn > 0) {
-      for (const [, f] of this.world.slot_fighters) {
-        if (f.hp > 0) continue;
-        const hp = hp_respawn < 1 ?
-          f.hp_max * hp_respawn :
-          hp_respawn
-        f.hp = f.hp_r = hp;
-      }
-    }
 
     this.play_phase_bgm();
     for (const object of objects) {

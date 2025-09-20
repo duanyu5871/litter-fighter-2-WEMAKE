@@ -1,4 +1,4 @@
-import { ArmorEnum, BotVal, Defines, EntityGroup, EntityVal, GK, IEntityData, StateEnum } from "../../defines";
+import { ArmorEnum, BotVal, BuiltIn_OID, Defines, EntityGroup, EntityVal, GK, IEntityData, StateEnum } from "../../defines";
 import { ensure } from "../../utils";
 import { CondMaker } from "../CondMaker";
 import { bot_ball_dfj } from "./bot_ball_dfj";
@@ -20,7 +20,14 @@ export function make_fighter_data_julian(data: IEntityData) {
     type: ArmorEnum.Fall,
     toughness: Defines.DEFAULT_FALL_VALUE_CRITICAL,
   };
-
+  for (const k in data.frames) {
+    data.frames[k].opoint?.forEach((opoint) => {
+      if (opoint.oid === BuiltIn_OID.Julian) {
+        opoint.hp = opoint.max_hp = 20;
+        opoint.mp = opoint.max_mp = 150;
+      }
+    });
+  }
   BotBuilder.make(data).set_actions(
     // ball
     bot_chasing_skill_action('d>a', void 0, 25, 1 / 60),

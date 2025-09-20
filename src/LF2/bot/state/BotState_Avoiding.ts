@@ -14,6 +14,22 @@ export class BotState_Avoiding extends BotState_Base {
     const av = c.get_avoiding()
     const { state } = me.frame;
 
+    if (c.defends.targets.length > 0) {
+      if (c.defends.targets[0].defendable === 1) {
+        const dx = c.defends.targets[0].entity.position.x - me.position.x
+        const t_facing = c.defends.targets[0].entity.facing
+        if (dx > 0 && t_facing < 0) {
+          c.key_down(GK.R).key_up(GK.L)
+        } else if (dx < 0 && t_facing > 0) {
+          c.key_down(GK.L).key_up(GK.R)
+        }
+        c.start(GK.d).end(GK.d)
+      } else {
+        // 不可防御的攻击
+      }
+      return
+    }
+
     this.random_jumping()
     if (this.handle_bot_actions()) return;
     if (av && en && manhattan_xz(me, av) > manhattan_xz(me, en))
