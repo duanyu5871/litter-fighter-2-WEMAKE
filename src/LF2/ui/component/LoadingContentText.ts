@@ -4,7 +4,7 @@ import { FadeOutOpacity } from "./FadeOutOpacity";
 import { UIComponent } from "./UIComponent";
 
 export class LoadingContentText extends UIComponent {
-  static override TAG = "LoadingContentText"
+  static override readonly TAG = "LoadingContentText"
 
   get fade_out_duration() { return this.num(1) ?? 0 };
   get fade_out_delay() { return this.num(2) ?? 0 }

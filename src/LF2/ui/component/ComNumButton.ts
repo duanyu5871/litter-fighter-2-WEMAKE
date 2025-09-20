@@ -4,6 +4,7 @@ import GamePrepareLogic from "./GamePrepareLogic";
 import { UIComponent } from "./UIComponent";
 
 export default class ComNumButton extends UIComponent {
+  static override readonly TAG = 'ComNumButton'
   get gpl() {
     return this.node.root.search_component(GamePrepareLogic);
   }

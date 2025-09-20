@@ -3,6 +3,7 @@ import { ui_load_txt } from "../ui_load_txt";
 import { UIComponent } from "./UIComponent";
 
 export class PlayingTimeText extends UIComponent {
+  static override readonly TAG = 'PlayingTimeText'
 
   override on_show(): void {
     ui_load_txt(this.lf2, {

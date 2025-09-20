@@ -4,6 +4,8 @@ import { ui_load_txt } from "../ui_load_txt";
 import { UIComponent } from "./UIComponent";
 
 export default class StageNameText extends UIComponent {
+  static override readonly TAG = 'StageNameText'
+
   private _stage: IStageInfo = Defines.VOID_STAGE;
   get show_all(): boolean {
     return this.lf2.is_cheat_enabled(CheatType.GIM_INK);

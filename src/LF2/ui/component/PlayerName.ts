@@ -13,7 +13,7 @@ import { UIComponent } from "./UIComponent";
  * @extends {UIComponent}
  */
 export default class PlayerName extends UIComponent {
-  static override TAG: string = 'PlayerName';
+  static override readonly TAG: string = 'PlayerName';
   get player_id() { return this.args[0] || this.node.find_parent(v => v.data.values?.player_id)?.data.values?.player_id || ''; }
 
   get player() {

@@ -1,16 +1,15 @@
 import { new_team } from "../../base";
-import { KeyStatus } from "../../controller/KeyStatus";
-import { Defines, EntityGroup, GameKey } from "../../defines";
+import { Defines, EntityGroup } from "../../defines";
 import { Factory } from "../../entity/Factory";
 import IEntityCallbacks from "../../entity/IEntityCallbacks";
 import { is_character } from "../../entity/type_check";
 import { traversal } from "../../utils/container_help/traversal";
 import { floor } from "../../utils/math/base";
-import { IUIKeyEvent } from "../IUIKeyEvent";
 import { UINode } from "../UINode";
 import { UIComponent } from "./UIComponent";
 
 export class DemoModeLogic extends UIComponent implements IEntityCallbacks {
+  static override readonly TAG = 'DemoModeLogic'
   score_board!: UINode
   time: number = 0;
   override on_start(): void {

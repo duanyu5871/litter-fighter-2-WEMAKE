@@ -4,7 +4,8 @@ import { ui_load_txt } from "../ui_load_txt";
 import { UIComponent } from "./UIComponent";
 
 
-export default class BackgroundNameText extends UIComponent {
+export default class BackgroundNameText extends UIComponent {  
+  static override readonly TAG = 'BackgroundNameText'
   private _background: IBgData = Defines.RANDOM_BG;
 
   get backgrounds(): IBgData[] {

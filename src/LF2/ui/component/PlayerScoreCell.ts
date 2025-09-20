@@ -3,6 +3,7 @@ import { ui_load_txt } from "../ui_load_txt";
 import PlayerScore from "./PlayerScore";
 import { UIComponent } from "./UIComponent";
 export default class PlayerScoreCell extends UIComponent {
+  static override readonly TAG = 'PlayerScoreCell'
   get kind() {
     return this.args[0];
   }

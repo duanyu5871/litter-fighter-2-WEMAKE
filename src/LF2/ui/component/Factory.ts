@@ -18,19 +18,17 @@ import FighterName from "./FighterName";
 import { FitChildren } from "./FitChildren";
 import { Flex } from "./Flex";
 import { FlexItem } from "./FlexItem";
-import { PrefixAndDifficultyText } from "./PrefixAndDifficultyText";
 import GamePrepareLogic from "./GamePrepareLogic";
 import { HorizontalLayout } from "./HorizontalLayout";
 import { IUICompnentCallbacks } from "./IUICompnentCallbacks";
 import { ImgLoop } from "./ImgLoop";
-import { Items } from "./Items";
 import { Jalousie } from "./Jalousie";
 import { LaunchPage } from "./LaunchPageLogic";
 import { LoadingContentText } from "./LoadingContentText";
 import { OpacityAnimation } from "./OpacityAnimation";
 import { OpacityHover } from "./OpacityHover";
-import PlayerCharacterThumb from "./PlayerCharacterThumb";
 import { PlayerCtrlType } from "./PlayerCtrlType";
+import PlayerFighterThumb from "./PlayerFighterThumb";
 import { PlayerKeyEdit } from "./PlayerKeyEdit";
 import { PlayerKeyText } from "./PlayerKeyText";
 import PlayerName from "./PlayerName";
@@ -39,6 +37,7 @@ import PlayerScoreCell from "./PlayerScoreCell";
 import PlayerTeamName from "./PlayerTeamName";
 import { PlayingTimeText } from "./PlayingTimeText";
 import { PositionAnimation } from "./PositionAnimation";
+import { PrefixAndDifficultyText } from "./PrefixAndDifficultyText";
 import { RandomImgOnLayoutResume } from "./RandomImgOnLayoutResume";
 import { Reachable } from "./Reachable";
 import { ReachableGroup } from "./ReachableGroup";
@@ -51,64 +50,65 @@ import { StageTitleShow } from "./StageTitleShow";
 import { StageTitleText } from "./StageTitleText";
 import StageTransitions from "./StageTransitions";
 import { SummaryLogic } from "./SummaryLogic";
+import { TeamSituationText } from "./TeamSituationText";
 import { UIComponent } from "./UIComponent";
 import { VerticalLayout } from "./VerticalLayout";
 import { VsModeLogic } from "./VsModeLogic";
-import { TeamSituationText } from "./TeamSituationText";
+const COMPONENTS = [
+  LaunchPage,
+  LoadingContentText,
+  PlayerKeyEdit,
+  PlayerKeyText,
+  StageTransitions,
+  SlotSelLogic,
+  FighterHead,
+  PlayerFighterThumb,
+  FighterName,
+  PlayerName,
+  PlayerTeamName,
+  GamePrepareLogic,
+  ComNumButton,
+  StageTitleShow,
+  ReachableGroup,
+  Reachable,
+  DifficultyText,
+  StageNameText,
+  StageTitleText,
+  BackgroundNameText,
+  OpacityHover,
+  VerticalLayout,
+  HorizontalLayout,
+  PlayerScore,
+  PlayerScoreCell,
+  VsModeLogic,
+  DemoModeLogic,
+  PlayingTimeText,
+  RandomImgOnLayoutResume,
+  Jalousie,
+  SineOpacity,
+  FadeInOpacity,
+  FadeOutOpacity,
+  OpacityAnimation,
+  ScaleAnimation,
+  PositionAnimation,
+  Sounds,
+  ImgLoop,
+  PlayerCtrlType,
+  Alignment,
+  Flex,
+  FlexItem,
+  FitChildren,
+  DanmuGameLogic,
+  CameraCtrl,
+  SummaryLogic,
+  EndingPageLogic,
+  PrefixAndDifficultyText,
+  TeamSituationText
+].map(v => [v.TAG, v] as const)
+
 class ComponentFactory {
   static readonly TAG = `ComponentFactory`;
-  private _component_map = new Map<string, typeof UIComponent<IUICompnentCallbacks>>([
-    [LaunchPage.TAG, LaunchPage],
-    [LoadingContentText.TAG, LoadingContentText],
-    [PlayerKeyEdit.TAG, PlayerKeyEdit],
-    [PlayerKeyText.TAG, PlayerKeyText],
-    ["stage_transitions", StageTransitions],
-    ["player_c_sel_logic", SlotSelLogic],
-    [FighterHead.TAG, FighterHead],
-    ["player_c_thumb", PlayerCharacterThumb],
-    [FighterName.TAG, FighterName],
-    [PlayerName.TAG, PlayerName],
-    [PlayerTeamName.TAG, PlayerTeamName],
-    [GamePrepareLogic.TAG, GamePrepareLogic],
-    ["com_number", ComNumButton],
-    [StageTitleShow.TAG, StageTitleShow],
-    [ReachableGroup.TAG, ReachableGroup],
-    [Reachable.TAG, Reachable],
-    [DifficultyText.TAG, DifficultyText],
-    ["stage_name_text", StageNameText],
-    [StageTitleText.TAG, StageTitleText],
-    ["background_name_text", BackgroundNameText],
-    ["opacity_hover", OpacityHover],
-    ["vertical_layout", VerticalLayout],
-    ["horizontal_layout", HorizontalLayout],
-    [PlayerScore.TAG, PlayerScore],
-    ["player_score_cell", PlayerScoreCell],
-    ["vs_mode_logic", VsModeLogic],
-    ["demo_mode_logic", DemoModeLogic],
-    ["playing_time", PlayingTimeText],
-    ["random_img_on_layout_resume", RandomImgOnLayoutResume],
-    [Jalousie.TAG, Jalousie],
-    ["items", Items],
-    [SineOpacity.TAG, SineOpacity],
-    [FadeInOpacity.TAG, FadeInOpacity],
-    [FadeOutOpacity.TAG, FadeOutOpacity],
-    [OpacityAnimation.TAG, OpacityAnimation],
-    [ScaleAnimation.TAG, ScaleAnimation],
-    [PositionAnimation.TAG, PositionAnimation],
-    [Sounds.TAG, Sounds],
-    [ImgLoop.TAG, ImgLoop],
-    [PlayerCtrlType.TAG, PlayerCtrlType],
-    [Alignment.TAG, Alignment],
-    [Flex.TAG, Flex],
-    [FlexItem.TAG, FlexItem],
-    [FitChildren.TAG, FitChildren],
-    [DanmuGameLogic.TAG, DanmuGameLogic],
-    [CameraCtrl.TAG, CameraCtrl],
-    [SummaryLogic.TAG, SummaryLogic],
-    [EndingPageLogic.TAG, EndingPageLogic],
-    [PrefixAndDifficultyText.TAG, PrefixAndDifficultyText],
-    [TeamSituationText.TAG, TeamSituationText]
-  ]);
+  private _component_map = new Map<string, typeof UIComponent<IUICompnentCallbacks>>(COMPONENTS);
 
   register(key: string, Cls: typeof UIComponent) {
     if (this._component_map.has(key))

@@ -5,7 +5,7 @@ import { ui_load_txt } from "../ui_load_txt";
 import { PlayerKeyText } from "./PlayerKeyText";
 
 export class PlayerKeyEdit extends PlayerKeyText {
-  static override TAG: string = 'PlayerKeyEdit'
+  static override readonly TAG: string = 'PlayerKeyEdit'
   override on_click(e: IUIPointerEvent) {
     this.node.focused = !this.node.focused;
     e.stop_immediate_propagation();

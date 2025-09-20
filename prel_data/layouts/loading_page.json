@@ -53,7 +53,7 @@
     },
     {
       "id": "stage_transition",
-      "component": "stage_transitions()"
+      "component": "StageTransitions()"
     }
   ]
 }

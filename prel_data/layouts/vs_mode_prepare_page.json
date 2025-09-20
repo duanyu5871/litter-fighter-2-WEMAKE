@@ -10,14 +10,14 @@
   ],
   "component": [
     "GamePrepareLogic(vs_mode)",
-    "player_c_sel_logic(1)",
-    "player_c_sel_logic(2)",
-    "player_c_sel_logic(3)",
-    "player_c_sel_logic(4)",
-    "player_c_sel_logic(5)",
-    "player_c_sel_logic(6)",
-    "player_c_sel_logic(7)",
-    "player_c_sel_logic(8)"
+    "SlotSelLogic(1)",
+    "SlotSelLogic(2)",
+    "SlotSelLogic(3)",
+    "SlotSelLogic(4)",
+    "SlotSelLogic(5)",
+    "SlotSelLogic(6)",
+    "SlotSelLogic(7)",
+    "SlotSelLogic(8)"
   ],
   "items": [
     {

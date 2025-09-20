@@ -15,6 +15,7 @@ import { UIComponent } from "./UIComponent";
 
 export class VsModeLogic extends UIComponent
   implements IEntityCallbacks, IStageCallbacks, IWorldCallbacks {
+  static override readonly TAG = 'VsModeLogic'
   jalousie?: Jalousie;
   go_sounds!: Sounds;
   go_flashing!: OpacityAnimation;

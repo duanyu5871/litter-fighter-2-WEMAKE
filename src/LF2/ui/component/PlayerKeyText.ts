@@ -5,7 +5,7 @@ import { ui_load_txt } from "../ui_load_txt";
 import { UIComponent } from "./UIComponent";
 
 export class PlayerKeyText extends UIComponent {
-  static override TAG: string = 'PlayerKeyText';
+  static override readonly TAG: string = 'PlayerKeyText';
   get player_id() { return this.args[0] || this.node.find_parent(v => v.data.values?.player_id)?.data.values?.player_id || ''; }
   get key_name() { return this.args[1] || ""; }
   get player() { return this.lf2.players.get(this.player_id); }

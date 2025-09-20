@@ -3,6 +3,7 @@ import { UIComponent } from "./UIComponent";
 const img_idx_list_map = new Map<string, number[]>();
 
 export class RandomImgOnLayoutResume extends UIComponent {
+  static override readonly TAG = 'RandomImgOnLayoutResume'
   private _img_idx_list: number[] = [];
 
   get group() { return this.str(0) };

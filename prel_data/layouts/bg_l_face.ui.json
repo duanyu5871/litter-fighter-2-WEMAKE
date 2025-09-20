@@ -2,7 +2,7 @@
   "id": "bg_l_face",
   "name": "UI: 背景左边脸",
   "component": [
-    "random_img_on_layout_resume(entry_page)"
+    "RandomImgOnLayoutResume(entry_page)"
   ],
   "img": [
     {

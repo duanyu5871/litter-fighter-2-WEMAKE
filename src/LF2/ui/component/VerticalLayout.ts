@@ -2,6 +2,7 @@ import { max } from "../../utils/math/base";
 import { UIComponent } from "./UIComponent";
 
 export class VerticalLayout extends UIComponent {
+  static override readonly TAG = 'VerticalLayout'
   get gap() {
     return this.num(0) || 0
   }

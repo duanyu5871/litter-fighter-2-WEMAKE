@@ -35,7 +35,7 @@
         "style": "$val:style_hover"
       },
       "component": [
-        "opacity_hover(0,1,255,1)"
+        "OpacityHover(0,1,255,1)"
       ]
     }
   ]

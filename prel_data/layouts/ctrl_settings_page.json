@@ -265,7 +265,7 @@
       },
       "pos": "368, 359",
       "component": [
-        "opacity_hover(0,1)"
+        "OpacityHover(0,1)"
       ],
       "actions": {
         "click": [
@@ -285,7 +285,7 @@
       },
       "pos": "525, 359",
       "component": [
-        "opacity_hover(0,1)"
+        "OpacityHover(0,1)"
       ],
       "actions": {
         "click": [
@@ -322,7 +322,7 @@
       "center": "0, 1",
       "pos": "5, 445",
       "component": [
-        "opacity_hover(0,1)"
+        "OpacityHover(0,1)"
       ],
       "actions": {
         "click": [

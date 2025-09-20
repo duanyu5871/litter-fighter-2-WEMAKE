@@ -6,7 +6,7 @@
   "pos": "794, 0",
   "flip_x": true,
   "component": [
-    "random_img_on_layout_resume(entry_page)"
+    "RandomImgOnLayoutResume(entry_page)"
   ],
   "img": [
     {
