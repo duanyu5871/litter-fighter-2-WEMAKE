@@ -227,12 +227,12 @@ export class BotController extends BaseController implements Required<IBotDataSe
     ) return false
 
     return is_ray_hit(e, this.entity, {
-      x: e.velocity.x,
+      x: max(e.velocity.x, 1),
       z: e.velocity.z,
       min_x: -80,
-      max_x: max(abs(100 * e.velocity.x), 80),
+      max_x: max(abs(20 * e.velocity.x), 60),
       min_z: -Defines.DAFUALT_QUBE_LENGTH,
-      max_z: max(abs(100 * e.velocity.z), Defines.DAFUALT_QUBE_LENGTH)
+      max_z: max(abs(20 * e.velocity.z), Defines.DAFUALT_QUBE_LENGTH)
     })
   }
 
