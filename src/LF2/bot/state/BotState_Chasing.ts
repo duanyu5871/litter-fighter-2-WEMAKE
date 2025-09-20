@@ -57,9 +57,10 @@ export class BotState_Chasing extends BotState_Base {
     if (this.handle_bot_actions()) return;
 
     if (c.defends.targets.length > 0) {
-      if (a_facing < 0) {
+      const dx = c.defends.targets[0].entity.position.x - me.position.x
+      if (dx > 0 && a_facing < 0) {
         c.key_down(GK.R).key_up(GK.L)
-      } else {
+      } else if (dx < 0 && a_facing > 0) {
         c.key_down(GK.L).key_up(GK.R)
       }
       c.start(GK.d).end(GK.d)

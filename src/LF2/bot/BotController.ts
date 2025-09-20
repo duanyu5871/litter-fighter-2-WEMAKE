@@ -166,7 +166,7 @@ export class BotController extends BaseController implements Required<IBotDataSe
   }
 
   /**
-   * 判断一个对象是否应该追击某个对象
+   * 判断是否应该追击某个对象
    *
    * @param {(Entity | null)} [e]
    * @return {*}  {boolean}
@@ -184,6 +184,13 @@ export class BotController extends BaseController implements Required<IBotDataSe
     )
   }
 
+  /**
+   * 判断是否应该躲避某个对象
+   *
+   * @param {(Entity | null)} [e]
+   * @return {*}  {boolean}
+   * @memberof BotController
+   */
   should_avoid(e?: Entity | null): boolean {
     return !!(
       e &&
@@ -198,12 +205,25 @@ export class BotController extends BaseController implements Required<IBotDataSe
     )
   }
 
+  /**
+   * 判断是否应该防御某个对象
+   *
+   * @param {(Entity | null)} [e]
+   * @return {*}  {boolean}
+   * @memberof BotController
+   */
   should_defend(e?: Entity | null): boolean {
     if (
       this.entity.invisible ||
       this.entity.blinking ||
       this.entity.invulnerable ||
       e?.frame.id === Builtin_FrameId.Gone ||
+      e?.frame.state === StateEnum.Attacking ||
+      e?.frame.state === StateEnum.Ball_3005 ||
+      e?.frame.state === StateEnum.Ball_3006 ||
+      e?.frame.state === StateEnum.Ball_Flying ||
+      e?.frame.state === StateEnum.Ball_Hitting ||
+      e?.frame.state === StateEnum.Ball_Hit ||
       !e?.frame.itr?.some(({ kind }) => [
         ItrKind.Normal,
         ItrKind.JohnShield,
@@ -232,12 +252,16 @@ export class BotController extends BaseController implements Required<IBotDataSe
       } else {
         if (this.should_avoid(other)) {
           this.avoidings.look(this.entity, other)
+        } else if (this.should_defend(other)) {
+          this.defends.look(this.entity, other)
         } else if (this.should_chase(other)) {
           this.chasings.look(this.entity, other)
         }
       }
     } else if (is_ball(other) || is_weapon(other)) {
-      if (!this.entity.is_ally(other)) {
+      if (this.entity.is_ally(other)) {
+
+      } else {
         if (this.should_defend(other)) {
           this.defends.look(this.entity, other)
         }
