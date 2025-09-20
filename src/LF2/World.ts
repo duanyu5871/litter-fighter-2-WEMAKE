@@ -580,8 +580,8 @@ export class World extends WorldDataset {
     if (
       0 == (itr.hit_flag & victim.data.type) ||
       0 == (bdy.hit_flag & attacker.data.type) || 
-      0 != (itr.hit_flag & ally_flag) &&
-      0 != (bdy.hit_flag & ally_flag)
+      !(itr.hit_flag & ally_flag) &&
+      !(bdy.hit_flag & ally_flag)
     ) return;
 
 
