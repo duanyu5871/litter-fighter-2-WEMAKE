@@ -97,14 +97,14 @@ export enum StateEnum {
   Weapon_Throwing = 1002,
   Weapon_Rebounding = 1003,
   Weapon_OnGround = 1004,
-  
+
   HealSelf = 1700,
 
   HeavyWeapon_InTheSky = 2000,
   HeavyWeapon_OnHand = 2001,
   HeavyWeapon_Throwing = 2002,//= 重型武器在地上
   HeavyWeapon_OnGround = 2004,//= 与itr kind2作用
-  
+
   Ball_Flying = 3000,
   Ball_Hitting = 3001,
   Ball_Hit = 3002,
@@ -123,11 +123,11 @@ export enum StateEnum {
    * 但现在Wemake中，爆甲是通过opoint实现的。
    */
   OLD_LouisCastOff = 9996,
-  
+
   Message = 9997,
-  
+
   Gone = 9998,
-  
+
   Weapon_Brokens = 9999,
 
   /**
@@ -143,3 +143,12 @@ export enum StateEnum {
    */
   TransformToCatching_End = 501,
 }
+
+export const ATTCKING_STATES: readonly StateEnum[] = [
+  StateEnum.Attacking,
+  StateEnum.Ball_3005,
+  StateEnum.Ball_3006,
+  StateEnum.Ball_Flying,
+  StateEnum.Ball_Hitting,
+  StateEnum.Ball_Hit,
+]

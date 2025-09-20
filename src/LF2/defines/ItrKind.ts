@@ -1,5 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { IItrInfo } from "./IItrInfo";
 export enum ItrKind {
   /**
    * 拳击
@@ -185,3 +183,9 @@ const descs: any = ItrKindDescriptions;
 for (const key in descs) {
   descs[key] = descs[key] || itr_kind_full_name(key)
 }
+
+export const ATTCKING_ITR_KINDS: readonly ItrKind[] = [
+  ItrKind.Normal,
+  ItrKind.JohnShield,
+  ItrKind.WeaponSwing
+]

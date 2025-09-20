@@ -1,6 +1,8 @@
 import FSM from "../base/FSM";
 import { BaseController, KEY_NAME_LIST } from "../controller/BaseController";
 import {
+  ATTCKING_ITR_KINDS,
+  ATTCKING_STATES,
   BotStateEnum,
   Builtin_FrameId, Defines,
   Difficulty,
@@ -10,11 +12,11 @@ import {
 } from "../defines";
 import { Entity, is_ball, is_character, is_weapon } from "../entity";
 import { manhattan_xz } from "../helper/manhattan_xz";
-import { abs, clamp, floor } from "../utils";
+import { abs, clamp, floor, max, min } from "../utils";
 import { DummyEnum, dummy_updaters } from "./DummyEnum";
 import { NearestTargets } from "./NearestTargets";
 import { BotState_Avoiding, BotState_Chasing, BotState_Idle } from "./state";
-import { is_bot_ray_hit } from "./utils/is_bot_ray_hit";
+import { is_ray_hit } from "./utils/is_ray_hit";
 
 export class BotController extends BaseController implements Required<IBotDataSet> {
   readonly fsm = new FSM<BotStateEnum>()
@@ -205,6 +207,7 @@ export class BotController extends BaseController implements Required<IBotDataSe
     )
   }
 
+
   /**
    * 判断是否应该防御某个对象
    *
@@ -213,36 +216,24 @@ export class BotController extends BaseController implements Required<IBotDataSe
    * @memberof BotController
    */
   should_defend(e?: Entity | null): boolean {
+
     if (
+      !e ||
       this.entity.invisible ||
       this.entity.blinking ||
       this.entity.invulnerable ||
-      e?.frame.id === Builtin_FrameId.Gone ||
-      e?.frame.state === StateEnum.Attacking ||
-      e?.frame.state === StateEnum.Ball_3005 ||
-      e?.frame.state === StateEnum.Ball_3006 ||
-      e?.frame.state === StateEnum.Ball_Flying ||
-      e?.frame.state === StateEnum.Ball_Hitting ||
-      e?.frame.state === StateEnum.Ball_Hit ||
-      !e?.frame.itr?.some(({ kind }) => [
-        ItrKind.Normal,
-        ItrKind.JohnShield,
-        ItrKind.WeaponSwing
-      ].some(b => b === kind)
-      )
+      !ATTCKING_STATES.some(v => v === e?.frame.state) &&
+      !ATTCKING_ITR_KINDS.some(b => e.itr?.some(({ kind }) => b === kind))
     ) return false
 
-    const dx = this.entity.position.x - e.position.x
-    const dz = this.entity.position.z - e.position.z
-    if (e.velocity.z < 0 && dz > 40) return false;
-    if (e.velocity.z > 0 && dz < -40) return false;
-    if (e.velocity.x < 0 && dx > 80) return false;
-    if (e.velocity.x > 0 && dx < -80) return false;
-    const ret = (
-      abs(dx) <= abs(e.velocity.x * 20) + 80 &&
-      abs(dz) <= abs(e.velocity.z * 20) + 80
-    )
-    return ret
+    return is_ray_hit(e, this.entity, {
+      x: e.velocity.x,
+      z: e.velocity.z,
+      min_x: -80,
+      max_x: max(abs(100 * e.velocity.x), 80),
+      min_z: -Defines.DAFUALT_QUBE_LENGTH,
+      max_z: max(abs(100 * e.velocity.z), Defines.DAFUALT_QUBE_LENGTH)
+    })
   }
 
   look_other(other: Entity) {
@@ -424,7 +415,7 @@ export class BotController extends BaseController implements Required<IBotDataSe
       if (!chasing) return false;
       let ray_hit = false
       for (const r of e_ray) {
-        ray_hit = is_bot_ray_hit(this.entity, chasing, r);
+        ray_hit = is_ray_hit(this.entity, chasing, r);
         if (ray_hit) break;
       }
       if (!ray_hit) return false;

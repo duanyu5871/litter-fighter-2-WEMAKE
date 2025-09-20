@@ -71,7 +71,12 @@ export class Entity implements IDebugging {
   get type() {
     return this.data.type;
   }
-
+  get itr() {
+    return this.frame.itr;
+  }
+  get bdy() {
+    return this.frame.bdy;
+  }
   protected _toughness_resting_max = Defines.DEFAULT_TOUGHNESS_RESTING_MAX;
   get toughness_resting_max(): number {
     return this._toughness_resting_max;
