@@ -571,6 +571,12 @@ export class Entity implements IDebugging {
     this._invisible_duration = max(0, v);
   }
 
+  /**
+   * 无敌计数
+   *
+   * @readonly
+   * @type {number}
+   */
   get invulnerable() {
     return this._invulnerable_duration;
   }

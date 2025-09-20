@@ -4,7 +4,7 @@ import { IValGetter, IValGetterGetter } from "../defines/IExpression";
 import { Entity } from "../entity/Entity";
 import { is_ball, is_character, is_weapon } from "../entity/type_check";
 import { find } from "../utils/container_help";
-import { clamp, round } from "../utils/math";
+import { between, clamp, round } from "../utils/math";
 import { get_val_from_world } from "./get_val_from_world";
 
 export const get_val_getter_from_entity: IValGetterGetter<Entity> = (
@@ -34,17 +34,14 @@ export const get_val_getter_from_entity: IValGetterGetter<Entity> = (
     case EntityVal.RequireSuperPunch:
       return (e) => {
         for (const [, { itr, attacker }] of e.v_rests) {
+          if (itr.kind !== ItrKind.SuperPunchMe) continue;
+          // 小于0时，眩晕者在攻击者左侧，否则在右侧
+          const diff_x = e.position.x - attacker.position.x;
           if (
-            itr.kind === ItrKind.SuperPunchMe &&
-            ((attacker.position.x > e.position.x &&
-              e.facing === 1 &&
-              e.ctrl?.LR !== -1) ||
-              (attacker.position.x < e.position.x &&
-                e.facing === -1 &&
-                e.ctrl?.LR !== 1))
-          ) {
-            return 1;
-          }
+            (between(diff_x, -20, 20)) ||
+            (diff_x < -20 && e.facing === 1) ||
+            (diff_x > 20 && e.facing === -1)
+          ) return 1;
         }
         return 0;
       };

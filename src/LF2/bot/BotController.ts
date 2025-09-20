@@ -145,7 +145,7 @@ export class BotController extends BaseController implements Required<IBotDataSe
 
   chasings = new NearestTargets(5);
   avoidings = new NearestTargets(5);
-  balls = new NearestTargets(5);
+  defends = new NearestTargets(5);
 
   private _dummy?: DummyEnum;
   get dummy(): DummyEnum | undefined {
@@ -165,24 +165,30 @@ export class BotController extends BaseController implements Required<IBotDataSe
     return abs(x1 - x) + abs(z1 - z);
   }
 
+  /**
+   * 判断一个对象是否应该追击某个对象
+   *
+   * @param {(Entity | null)} [e]
+   * @return {*}  {boolean}
+   * @memberof BotController
+   */
   should_chase(e?: Entity | null): boolean {
     return !!(
-      e?.is_attach &&
+      e &&
       this.entity.hp > 0 &&
       e.hp > 0 &&
-      e.frame.id !== Builtin_FrameId.Gone &&
       e.frame.state !== StateEnum.Lying &&
       !e.invisible &&
-      !e.blinking
+      !e.blinking &&
+      !e.invulnerable
     )
   }
 
   should_avoid(e?: Entity | null): boolean {
     return !!(
-      e?.is_attach &&
+      e &&
       this.entity.hp > 0 &&
       e.hp > 0 &&
-      e.frame.id !== Builtin_FrameId.Gone &&
       manhattan_xz(this.entity, e) < 300 && (
         e.frame.state === StateEnum.Lying ||
         e.invisible ||
@@ -192,13 +198,13 @@ export class BotController extends BaseController implements Required<IBotDataSe
     )
   }
 
-  is_ball_threatening(e?: Entity | null): boolean {
+  should_defend(e?: Entity | null): boolean {
     if (
-      this.entity.invisible > 5 ||
-      this.entity.blinking > 5 ||
-      !e?.is_attach ||
-      e.frame.id === Builtin_FrameId.Gone ||
-      !e.frame.itr?.some(({ kind }) => [
+      this.entity.invisible ||
+      this.entity.blinking ||
+      this.entity.invulnerable ||
+      e?.frame.id === Builtin_FrameId.Gone ||
+      !e?.frame.itr?.some(({ kind }) => [
         ItrKind.Normal,
         ItrKind.JohnShield,
         ItrKind.WeaponSwing
@@ -208,11 +214,10 @@ export class BotController extends BaseController implements Required<IBotDataSe
 
     const dx = this.entity.position.x - e.position.x
     const dz = this.entity.position.z - e.position.z
-    if (e.velocity.z < 0 && dz > 80) return false;
-    if (e.velocity.z > 0 && dz < -80) return false;
+    if (e.velocity.z < 0 && dz > 40) return false;
+    if (e.velocity.z > 0 && dz < -40) return false;
     if (e.velocity.x < 0 && dx > 80) return false;
     if (e.velocity.x > 0 && dx < -80) return false;
-
     const ret = (
       abs(dx) <= abs(e.velocity.x * 20) + 80 &&
       abs(dz) <= abs(e.velocity.z * 20) + 80
@@ -222,7 +227,9 @@ export class BotController extends BaseController implements Required<IBotDataSe
 
   look_other(other: Entity) {
     if (is_character(other)) {
-      if (!this.entity.is_ally(other)) {
+      if (this.entity.is_ally(other)) {
+
+      } else {
         if (this.should_avoid(other)) {
           this.avoidings.look(this.entity, other)
         } else if (this.should_chase(other)) {
@@ -231,8 +238,8 @@ export class BotController extends BaseController implements Required<IBotDataSe
       }
     } else if (is_ball(other) || is_weapon(other)) {
       if (!this.entity.is_ally(other)) {
-        if (this.is_ball_threatening(other)) {
-          this.balls.look(this.entity, other)
+        if (this.should_defend(other)) {
+          this.defends.look(this.entity, other)
         }
       }
     }
@@ -355,8 +362,8 @@ export class BotController extends BaseController implements Required<IBotDataSe
     this.avoidings.del(({ entity }) => !this.should_avoid(entity))
     this.avoidings.sort(this.entity)
 
-    this.balls.del(({ entity }) => !this.is_ball_threatening(entity))
-    this.balls.sort(this.entity)
+    this.defends.del(({ entity }) => !this.should_defend(entity))
+    this.defends.sort(this.entity)
 
     return super.update();
   }

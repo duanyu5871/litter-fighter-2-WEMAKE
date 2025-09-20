@@ -18,7 +18,7 @@ export function make_fighter_data_julian(data: IEntityData) {
     antifreeze: 1,
     hit_sounds: ["data/002.wav.mp3"],
     type: ArmorEnum.Fall,
-    toughness: Defines.DEFAULT_FALL_VALUE_MAX - Defines.DEFAULT_FALL_VALUE_DIZZY,
+    toughness: Defines.DEFAULT_FALL_VALUE_CRITICAL,
   };
 
   BotBuilder.make(data).set_actions(

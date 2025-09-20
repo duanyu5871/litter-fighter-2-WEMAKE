@@ -14,9 +14,9 @@ export abstract class BotState_Base implements IState<BotStateEnum> {
     const { ctrl: c } = this;
     const me = c.entity;
     const { facing } = me
-    if (c.balls.targets.length <= 0)
+    if (c.defends.targets.length <= 0)
       return false
-    const dx = c.balls.targets[0].entity.position.x - me.position.x
+    const dx = c.defends.targets[0].entity.position.x - me.position.x
     if (dx > 0 && facing < 0) {
       c.key_down(GK.R).key_up(GK.L)
     } else if (dx < 0 && facing > 0) {
