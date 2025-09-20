@@ -576,7 +576,7 @@ export class World extends WorldDataset {
       a_cube.near >= b_cube.far
     )) return;
 
-    const ally_flag = attacker.is_ally(victim) ? HitFlag.AllAlly : HitFlag.AllEnemy;
+    const ally_flag = attacker.is_ally(victim) ? HitFlag.Ally : HitFlag.Enemy;
     if (
       0 == (itr.hit_flag & victim.data.type) ||
       0 == (bdy.hit_flag & attacker.data.type) || 
