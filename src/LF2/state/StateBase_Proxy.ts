@@ -8,17 +8,18 @@ import State_Base from "./State_Base";
 import WeaponState_Base from "./WeaponState_Base";
 
 export class StateBase_Proxy extends State_Base implements Required<State_Base> {
-  protected character_proxy = new CharacterState_Base();
-  protected weapon_proxy = new WeaponState_Base();
-  protected ball_proxy = new BallState_Base();
-  protected proxy = new State_Base();
+  character_proxy: CharacterState_Base;
+  weapon_proxy: WeaponState_Base;
+  ball_proxy: BallState_Base;
+  proxy: State_Base;
   constructor(
-    character_proxy = new CharacterState_Base(),
-    weapon_proxy = new WeaponState_Base(),
-    ball_proxy = new BallState_Base(),
-    proxy = new State_Base(),
+    state: string | number,
+    character_proxy = new CharacterState_Base(state),
+    weapon_proxy = new WeaponState_Base(state),
+    ball_proxy = new BallState_Base(state),
+    proxy = new State_Base(state),
   ) {
-    super();
+    super(state);
     this.character_proxy = character_proxy
     this.weapon_proxy = weapon_proxy
     this.ball_proxy = ball_proxy

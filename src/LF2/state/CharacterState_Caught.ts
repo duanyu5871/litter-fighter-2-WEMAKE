@@ -1,7 +1,11 @@
+import { StateEnum } from "../defines";
 import { Entity } from "../entity/Entity";
 import CharacterState_Base from "./CharacterState_Base";
 
 export class CharacterState_Caught extends CharacterState_Base {
+  constructor(state: StateEnum = StateEnum.Caught) {
+    super(state)
+  }
   override enter(e: Entity): void {
     e.fall_value = e.fall_value_max;
     e.velocities.length = 1;

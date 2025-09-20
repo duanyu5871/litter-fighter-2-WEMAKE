@@ -3,8 +3,11 @@ import { ICollision } from "../base/ICollision";
 import type { Entity } from "../entity/Entity";
 import { spawn_buring_smoke } from "./spawn_buring_smoke";
 export class State_Base {
+  readonly state: number | string;
+  constructor(state: number | string) {
+    this.state = state
+  }
   on_frame_changed?(e: Entity, frame: IFrameInfo, prev_frame: IFrameInfo): void;
-  state: number | string = "";
   pre_update?(e: Entity): void;
   update(e: Entity): void {
     switch (e.frame.state) {

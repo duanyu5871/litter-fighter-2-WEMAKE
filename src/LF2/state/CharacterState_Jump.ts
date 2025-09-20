@@ -1,10 +1,13 @@
+import { StateEnum } from "../defines";
 import type { Entity } from "../entity/Entity";
 import { abs, sqrt } from "../utils";
 import CharacterState_Base from "./CharacterState_Base";
 
 export default class CharacterState_Jump extends CharacterState_Base {
   private _jumpings = new Set<Entity>();
-
+  constructor(state: StateEnum = StateEnum.Jump) {
+    super(state)
+  }
   override update(character: Entity): void {
     character.handle_ground_velocity_decay();
 

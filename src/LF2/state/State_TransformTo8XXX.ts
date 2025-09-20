@@ -1,6 +1,5 @@
 import { new_team } from "../base";
 import { Builtin_FrameId, EntityEnum } from "../defines";
-import { is_character } from "../entity";
 import type { Entity } from "../entity/Entity";
 import { Factory } from "../entity/Factory";
 import { round } from "../utils/math/base";

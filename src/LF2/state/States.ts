@@ -13,7 +13,6 @@ export class States {
 
   set(key: number | string, value: State_Base) {
     if (this.map.has(key)) debugger;
-    if (typeof key === "number") value.state = key;
     this.map.set(key, value);
   }
   add(...values: State_Base[]): this {
@@ -57,7 +56,7 @@ export class States {
           State = State_Base;
           break;
       }
-      this.set(state_key, (state = new State()));
+      this.set(state_key, (state = new State(code)));
     }
     return state
   }

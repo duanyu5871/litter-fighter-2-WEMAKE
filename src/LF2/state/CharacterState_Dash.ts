@@ -1,8 +1,11 @@
 import { StateEnum, type IFrameInfo } from "../defines";
 import type { Entity } from "../entity/Entity";
+import { sqrt } from "../utils";
 import CharacterState_Base from "./CharacterState_Base";
-const { sqrt } = Math;
 export default class CharacterState_Dash extends CharacterState_Base {
+  constructor(state: StateEnum = StateEnum.Dash) {
+    super(state)
+  }
   override enter(e: Entity, prev_frame: IFrameInfo): void {
     if (e.position.y > 0 && e.velocity.y !== 0) return;
 

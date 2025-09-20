@@ -15,8 +15,15 @@ export class Times {
     return this.value === this.max;
   }
   add() {
-    if (this.max === this.min) this.value = this.min;
-    else this.value = this.value === this.max ? this.min : this.value + 1;
-    return this.value === this.max
+    if (this.max === this.min) {
+      this.value = this.min;
+      return true
+    }
+    if (this.value < this.max) {
+      this.value++;
+      return this.value === this.max
+    };
+    this.value = this.min
+    return false;
   }
 }

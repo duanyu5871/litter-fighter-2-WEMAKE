@@ -1,9 +1,13 @@
+import { StateEnum } from "../defines";
 import { Entity } from "../entity/Entity";
 import { is_character } from "../entity/type_check";
 import { abs, round } from "../utils";
 import CharacterState_Base from "./CharacterState_Base";
 
 export default class CharacterState_Teleport2FarthestAlly extends CharacterState_Base {
+  constructor(state: StateEnum = StateEnum.TeleportToFarthestAlly) {
+    super(state)
+  }
   override enter(m: Entity): void {
     let _dis: number = -1;
     let _tar: Entity | undefined;

@@ -4,7 +4,9 @@ import { GONE_FRAME_INFO } from "../defines/GONE_FRAME_INFO";
 import State_Base from "./State_Base";
 
 export class State_WeaponBroken extends State_Base {
-  override readonly state = StateEnum.Weapon_Brokens;
+  constructor(state: StateEnum = StateEnum.Weapon_Brokens) {
+    super(state)
+  }
   override enter(e: Entity): void {
     e.emitter?.velocity_0 && e.velocity_0.add(e.emitter.velocity_0);
   }

@@ -4,7 +4,9 @@ import type { Entity } from "../entity/Entity";
 import CharacterState_Base from "./CharacterState_Base";
 
 export default class CharacterState_Lying extends CharacterState_Base {
-
+  constructor(state: StateEnum = StateEnum.Lying) {
+    super(state)
+  }
   override enter(e: Entity, prev_frame: IFrameInfo): void {
     e.drop_holding();
     const player_teams = new Set<string>()

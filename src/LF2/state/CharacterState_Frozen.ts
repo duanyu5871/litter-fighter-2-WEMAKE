@@ -4,7 +4,9 @@ import CharacterState_Base from "./CharacterState_Base";
 import { spawn_ice_piece } from "./spawn_ice_piece";
 
 export default class CharacterState_Frozen extends CharacterState_Base {
-  override state: string | number = StateEnum.Frozen;
+  constructor(state: StateEnum = StateEnum.Frozen) {
+    super(state)
+  }
   override leave(e: Entity, next_frame: IFrameInfo): void {
     e.play_sound(["data/066.wav.mp3"]);
     if (e.data.indexes?.ice !== next_frame.id) {

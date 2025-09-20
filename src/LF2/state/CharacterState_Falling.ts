@@ -1,4 +1,4 @@
-import type { IFrameInfo } from "../defines";
+import { StateEnum, type IFrameInfo } from "../defines";
 import type { Entity } from "../entity/Entity";
 import find_direction from "../entity/find_frame_direction";
 import { abs } from "../utils";
@@ -7,6 +7,9 @@ import CharacterState_Base from "./CharacterState_Base";
 export default class CharacterState_Falling extends CharacterState_Base {
   _bouncing_frames_map = new Map<string, Set<string>>();
   _bouncings = new Set<Entity>()
+  constructor(state: StateEnum = StateEnum.Falling) {
+    super(state)
+  }
   override enter(e: Entity, prev_frame: IFrameInfo): void {
     if (!this._bouncing_frames_map.has(e.data.id) && e.data.indexes?.bouncing) {
       this._bouncing_frames_map.set(
