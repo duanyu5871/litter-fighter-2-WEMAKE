@@ -237,11 +237,16 @@ export class BotController extends BaseController implements Required<IBotDataSe
     })
     if (!hit) return 0;
 
-    if (itrs?.length) for (const itr of itrs) {
-      if (!ATTCKING_ITR_KINDS.some(v => itr.kind === v)) continue;
-      if (Defines.DEFAULT_FORCE_BREAK_DEFEND_VALUE === itr.bdefend) {
-        return 2;
+    if (itrs?.length) {
+      let just_a_rest = true
+      for (const itr of itrs) {
+        if (!ATTCKING_ITR_KINDS.some(v => itr.kind === v)) continue;
+        if (Defines.DEFAULT_FORCE_BREAK_DEFEND_VALUE === itr.bdefend) {
+          return 2;
+        }
+        if (itr.vrest) just_a_rest = false
       }
+      if (just_a_rest && e.a_rest) return 0;
     }
     return 1;
   }
@@ -414,7 +419,7 @@ export class BotController extends BaseController implements Required<IBotDataSe
   action_desire(): number {
     let ret = this.desire(); // 默认action设置的desire是crazy的好了。
     for (let i = Difficulty.MAX - this.lf2.difficulty; i > 0; --i) {
-      ret += this.desire();
+      ret += this.lf2.random_in(0, ret);
     }
     return ret;
   }

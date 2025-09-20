@@ -101,6 +101,7 @@ export interface IEntityInfo {
   hp_healing_ticks?: number;
   hp_healing_value?: number;
   mp_r_ticks?: number;
+  mp_r_ratio?: number;
 
   /**
    * 是否为隐藏角色

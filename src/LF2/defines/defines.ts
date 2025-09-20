@@ -241,7 +241,7 @@ export namespace Defines {
   export const LAND_FRICTION_FACTOR: number = 1;
   export const LAND_FRICTION_X: number = 1;
   export const LAND_FRICTION_Z: number = 0.5;
-  
+
   export const CHARACTER_BOUNCING_SPD: number = 2;
   export const CHARACTER_BOUNCING_TEST_SPD_X: number = 5;
   export const CHARACTER_BOUNCING_TEST_SPD_Y: number = -2.6;
@@ -255,6 +255,7 @@ export namespace Defines {
   export const STATE_HEAL_SELF_HP = 104;
 
   export const MP_R_TICKS = 6;
+  export const MP_R_RATIO = 1;
 
   export const DifficultyLabels: Record<Difficulty, string> = {
     [Difficulty.Easy]: "easy",

@@ -125,6 +125,7 @@ export class WorldDataset implements IWorldDataset {
   hp_healing_value: number = Defines.HP_HEALING_VALUE;
 
   mp_r_ticks: number = Defines.MP_R_TICKS;
+  mp_r_ratio: number = Defines.MP_R_RATIO;
   
   /**
    * 按键“双击”判定间隔，单位（帧数）

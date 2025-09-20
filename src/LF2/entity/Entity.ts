@@ -1169,6 +1169,7 @@ export class Entity implements IDebugging {
 
     if (this._hp > 0 && this._mp < this._mp_max && !this._blinking_duration && !this._invisible_duration) {
       this._mp_r_tick.max = this.data.base.mp_r_ticks || this.world.mp_r_ticks;
+      const r_ratio = this.data.base.mp_r_ratio || this.world.mp_r_ratio;
       if (this._mp_r_tick.add()) {
         const value = 1 + floor((500 - min(this._hp, 500)) / 100)
         this.mp = min(this._mp_max, this._mp + value);

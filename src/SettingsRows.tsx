@@ -337,6 +337,7 @@ const world_field_map: Record<keyof IWorldDataset, IFieldInfo> = {
   hp_r_ticks: { title: "自动回血周期", desc: "每几帧回血一次", type: 'int' },
   hp_r_value: { title: "自动回血量", desc: "每次回血多少", type: 'int' },
   mp_r_ticks: { title: "自动回蓝周期", desc: "每几帧回蓝一次", type: 'int' },
+  mp_r_ratio: { title: "mp_r_ratio", desc: "mp_r_ratio", type: 'int' },
   friction_factor: { title: "地速衰减系数", desc: "在地面的物体，速度将每帧乘以此值", type: 'float' },
   friction_x: { title: "地面摩擦X", desc: "在地面的物体，每帧X速度将±=此值,向0靠近", type: 'float' },
   friction_z: { title: "地面摩擦Z", desc: "在地面的物体，每帧Z速度将±=此值,向0靠近", type: 'float' },

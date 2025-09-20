@@ -151,4 +151,9 @@ export const ATTCKING_STATES: readonly StateEnum[] = [
   StateEnum.Ball_Flying,
   StateEnum.Ball_Hitting,
   StateEnum.Ball_Hit,
+  StateEnum.BurnRun,
+  StateEnum.Z_Moveable,
+  StateEnum.HeavyWeapon_Throwing,
+  StateEnum.Weapon_Throwing,
+  StateEnum.Burning,
 ]

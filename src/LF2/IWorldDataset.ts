@@ -150,7 +150,8 @@ export interface IWorldDataset {
   hp_healing_value: number;
 
   mp_r_ticks: number;
-  
+  mp_r_ratio: number;
+
   /**
    * 按键“双击”判定间隔，单位（帧数）
    *
