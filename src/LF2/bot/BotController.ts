@@ -214,8 +214,7 @@ export class BotController extends BaseController implements Required<IBotDataSe
     ) return true;
 
     const dx = abs(this.entity.position.x - e.position.x)
-    if (dx < this.w_atk_m_x) return true;
-
+    if (dx < (this.w_atk_f_x - this.w_atk_m_x) / 2) return true;
     return false;
   }
 
