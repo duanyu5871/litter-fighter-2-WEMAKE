@@ -51,6 +51,7 @@ import { StageTitleText } from "./StageTitleText";
 import StageTransitions from "./StageTransitions";
 import { SummaryLogic } from "./SummaryLogic";
 import { TeamSituationText } from "./TeamSituationText";
+import { TextInput } from "./TextInput";
 import { UIComponent } from "./UIComponent";
 import { VerticalLayout } from "./VerticalLayout";
 import { VsModeLogic } from "./VsModeLogic";
@@ -103,7 +104,8 @@ const COMPONENTS = [
   SummaryLogic,
   EndingPageLogic,
   PrefixAndDifficultyText,
-  TeamSituationText
+  TeamSituationText,
+  TextInput,
 ].map(v => [v.TAG, v] as const)
 
 class ComponentFactory {

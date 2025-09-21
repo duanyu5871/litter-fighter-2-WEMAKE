@@ -1,16 +1,16 @@
 import * as THREE from "three";
+import { CSS2DObject } from "three/examples/jsm/renderers/CSS2DRenderer";
 import type { ISprite, ISpriteInfo } from "../../LF2/3d/ISprite";
 import { Ditto } from "../../LF2/ditto";
 import type { IUINodeRenderer } from "../../LF2/ditto/render/IUINodeRenderer";
 import { IDebugging, make_debugging } from "../../LF2/entity/make_debugging";
-import { empty_texture, white_texture } from "../../LF2/loader/ImageMgr";
-import type { UINode } from "../../LF2/ui/UINode";
-import type { WorldRenderer } from "./WorldRenderer";
 import { IImageInfo } from "../../LF2/loader/IImageInfo";
+import { empty_texture, white_texture } from "../../LF2/loader/ImageMgr";
+import { ITextImageInfo } from "../../LF2/loader/ITextImageInfo";
+import type { UINode } from "../../LF2/ui/UINode";
 import { __Sprite } from "../3d";
-import { CSS2DRenderer, CSS2DObject, } from "three/examples/jsm/renderers/CSS2DRenderer";
-
-
+import styles from "./ui_node_style.module.scss";
+import type { WorldRenderer } from "./WorldRenderer";
 
 export class UINodeRenderer implements IUINodeRenderer, IDebugging {
   debug!: (_0: string, ..._1: any[]) => void;
@@ -18,6 +18,41 @@ export class UINodeRenderer implements IUINodeRenderer, IDebugging {
   log!: (_0: string, ..._1: any[]) => void;
   sprite: ISprite;
   node: UINode;
+
+  protected _css_obj: CSS2DObject | undefined;
+  protected _dom: HTMLDivElement | undefined;
+
+  protected get dom() {
+    if (this._dom) return this._dom;
+    this._dom = document.createElement('div');
+    this._dom.className = styles.ui_node_style
+
+    // const ele_input = document.createElement('input')
+    // this._dom.appendChild(ele_input)
+
+    this._css_obj = new CSS2DObject(this._dom);
+    this._css_obj.position.set(0, 0, 0);
+    this._css_obj.center.set(0, 1);
+    (this.sprite as __Sprite).inner.add(this._css_obj);
+    return this._dom;
+  }
+  protected release_dom() {
+    if (!this._css_obj) return;
+    (this.sprite as __Sprite).inner.remove(this._css_obj);
+    delete this._css_obj;
+    delete this._dom;
+  }
+  protected hide_dom() {
+    if (!this._css_obj) return;
+    if (!this._css_obj.parent) return;
+    (this.sprite as __Sprite).inner.remove(this._css_obj);
+  }
+  protected show_dom() {
+    if (!this._css_obj) return;
+    if (this._css_obj.parent) return;
+    (this.sprite as __Sprite).inner.add(this._css_obj);
+  }
+
   get world() { return this.node.lf2.world }
   get lf2() { return this.node.lf2 }
   get parent() { return this.node.renderer }
@@ -54,7 +89,8 @@ export class UINodeRenderer implements IUINodeRenderer, IDebugging {
     this.node.parent?.renderer.add(this);
   }
   on_stop() {
-    this.parent?.del(this)
+    this.parent?.del(this);
+    this.release_dom();
   }
 
   update_sprite() {
@@ -91,6 +127,12 @@ export class UINodeRenderer implements IUINodeRenderer, IDebugging {
     const flip_y = this.node.flip_y.value;
     const { texture } = await this.lf2.images.p_create_pic_by_img_info(img);
     texture.offset.set(flip_x ? 1 : 0, flip_y ? 1 : 0);
+
+    if ('text' in img && typeof img.text === 'string') {
+      const { style } = (img as ITextImageInfo)
+      if (style.font) this.dom.style.font = style.font;
+      if (style.fill_style) this.dom.style.color = style.fill_style;
+    }
     return texture;
   }
 
@@ -98,14 +140,24 @@ export class UINodeRenderer implements IUINodeRenderer, IDebugging {
   set x(v: number) { this.sprite.x = v; }
   get y(): number { return this.sprite.y }
   set y(v: number) { this.sprite.y = v; }
-  get visible() { return this.sprite.visible }
-  set visible(v: boolean) { this.sprite.visible = v }
+  get visible() {
+    return this.sprite.visible
+  }
+  set visible(v: boolean) {
+    this.sprite.visible = v
+    v ? this.show_dom() : this.hide_dom()
+  }
   render() {
     if (this.node.center.dirty || this.node.size.dirty) {
       this.node.center.dirty = this.node.size.dirty = false
       const [w, h] = this.node.size.value;
       const [x, y, z] = this.node.center.value
       this.sprite.set_center(x, y, z).set_size(w, h).apply();
+      if (this._dom) {
+        this._dom.style.width = `${w}px`
+        this._dom.style.height = `${h}px`
+      }
+      this._css_obj?.center.set(x, y)
     }
     this.update_sprite();
     this.node.scale.dirty && this.sprite.set_scale(...this.node.scale.value);
@@ -120,14 +172,16 @@ export class UINodeRenderer implements IUINodeRenderer, IDebugging {
     //     t.wrapT = THREE.RepeatWrapping
     //   }
     // }
-
-
     if (this.node.pos.dirty) {
       const [x, y, z] = this.node.pos.value
       this.sprite.set_position(x, -y, z);
     }
     this.sprite.visible = this.node.visible
-    this.sprite.opacity = this.node.global_opacity;
+    const opacity = this.node.global_opacity
+    this.sprite.opacity = opacity;
+    if (this._dom) this._dom.style.opacity = '' + opacity
+
+
     this.sprite.apply()
     for (const child of this.node.children)
       if (child.visible !== child.renderer.visible || child.renderer.visible)

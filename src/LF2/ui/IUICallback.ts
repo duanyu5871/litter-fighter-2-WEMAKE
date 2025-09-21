@@ -1,3 +1,4 @@
+import { UIComponent } from "./component/UIComponent";
 import type { UINode } from "./UINode";
 export interface IUICallback {
   on_click?(): void;
@@ -8,4 +9,6 @@ export interface IUICallback {
     foucs: UINode | undefined,
     blur: UINode | undefined
   ): void;
+  on_component_add?(component: UIComponent, node: UINode): void;
+  on_component_del?(component: UIComponent, node: UINode): void;
 }

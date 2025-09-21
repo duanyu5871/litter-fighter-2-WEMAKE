@@ -155,4 +155,8 @@ export class UIComponent<Callbacks extends IUICompnentCallbacks = IUICompnentCal
   on_key_down?(e: IUIKeyEvent): void;
 
   on_key_up?(e: IUIKeyEvent): void;
+
+  on_add?(): void;
+  
+  on_del?(): void;
 }

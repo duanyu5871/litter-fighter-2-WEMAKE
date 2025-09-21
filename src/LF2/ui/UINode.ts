@@ -21,7 +21,9 @@ import actor from "./action/Actor";
 import factory from "./component/Factory";
 import { UIComponent } from "./component/UIComponent";
 import { parse_ui_value } from "./read_info_value";
+
 export class UINode implements IDebugging {
+
   static readonly TAG: string = 'UINode';
   debug!: (_0: string, ..._1: any[]) => void;
   warn!: (_0: string, ..._1: any[]) => void;
@@ -226,7 +228,7 @@ export class UINode implements IDebugging {
   set_w(v: number): this { return this.set_size([v, this.h]); }
   set_h(v: number): this { return this.set_size([this.w, v]); }
 
-  get components() {
+  get components(): ReadonlySet<UIComponent> {
     return this._components;
   }
   get style(): IStyle {
@@ -383,7 +385,8 @@ export class UINode implements IDebugging {
         }
       }
     }
-
+    for (const component of ret._components)
+      component.on_add?.();
     return ret;
   }
 
@@ -406,7 +409,24 @@ export class UINode implements IDebugging {
     node.forEach(l => this.add_child(l))
     return this;
   }
-
+  add_components(...components: UIComponent[]) {
+    for (const component of components) {
+      if (this._components.has(component))
+        continue;
+      this._components.add(component)
+      component.on_add?.()
+      this._callbacks.emit('on_component_add')(component, this)
+    }
+  }
+  del_components(...components: UIComponent[]) {
+    for (const component of components) {
+      if (!this._components.has(component))
+        continue;
+      this._components.delete(component)
+      component.on_del?.()
+      this._callbacks.emit('on_component_del')(component, this)
+    }
+  }
   private _cook_data(get_val: IValGetter<UINode>) {
     const { visible, opacity, disabled } = this.data;
     if (is_bool(disabled)) {
