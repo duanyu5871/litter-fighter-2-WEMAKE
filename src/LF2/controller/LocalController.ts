@@ -14,10 +14,10 @@ export class LocalController
   extends BaseController
   implements IKeyboardCallback {
   readonly is_local_controller = true;
+  readonly player: PlayerInfo;
 
   private _key_code_map: TKeyCodeMap = {};
   private _code_key_map: TCodeKeyMap = {};
-  player_info?: PlayerInfo;
   private _ax_using: number = 0;
   private _ay_using: number = 0;
   on_key_up(e: IKeyEvent) {
@@ -36,10 +36,11 @@ export class LocalController
     this.start(key);
   }
 
-  constructor(player_id: string, character: Entity, kc?: TKeyCodeMap) {
-    super(player_id, character);
+  constructor(player_id: string, entity: Entity, kc?: TKeyCodeMap) {
+    super(player_id, entity);
+    this.player = this.lf2.ensure_player(player_id)
     if (kc) this.set_key_code_map(kc);
-    this.disposer = character.world.lf2.keyboard.callback.add(this);
+    this.disposer = entity.world.lf2.keyboard.callback.add(this);
   }
 
   set_key_code_map(key_code_map: TKeyCodeMap) {
@@ -54,10 +55,8 @@ export class LocalController
   }
 
   override update(): ControllerUpdateResult {
-    if (this.player_info?.id !== this.player_id)
-      this.player_info = this.lf2.players.get(this.player_id);
-    if (this.player_info && this.player_info.ctrl !== CtrlDevice.Keyboard) {
-      const [ax = 0, ay = 0] = this.lf2.keyboard.axes(this.player_info.ctrl - 1)
+    if (this.player && this.player.ctrl !== CtrlDevice.Keyboard) {
+      const [ax = 0, ay = 0] = this.lf2.keyboard.axes(this.player.ctrl - 1)
 
       if (ax > 0.22) {
         this._ax_using = 1

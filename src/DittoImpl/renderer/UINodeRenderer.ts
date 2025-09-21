@@ -6,8 +6,9 @@ import type { IUINodeRenderer } from "../../LF2/ditto/render/IUINodeRenderer";
 import { IDebugging, make_debugging } from "../../LF2/entity/make_debugging";
 import { IImageInfo } from "../../LF2/loader/IImageInfo";
 import { empty_texture, white_texture } from "../../LF2/loader/ImageMgr";
-import { ITextImageInfo } from "../../LF2/loader/ITextImageInfo";
+import { TextInput } from "../../LF2/ui/component/TextInput";
 import type { UINode } from "../../LF2/ui/UINode";
+import { is_num, is_str } from "../../LF2/utils";
 import { __Sprite } from "../3d";
 import styles from "./ui_node_style.module.scss";
 import type { WorldRenderer } from "./WorldRenderer";
@@ -26,13 +27,13 @@ export class UINodeRenderer implements IUINodeRenderer, IDebugging {
     if (this._dom) return this._dom;
     this._dom = document.createElement('div');
     this._dom.className = styles.ui_node_style
-
-    // const ele_input = document.createElement('input')
-    // this._dom.appendChild(ele_input)
-
     this._css_obj = new CSS2DObject(this._dom);
     this._css_obj.position.set(0, 0, 0);
     this._css_obj.center.set(0, 1);
+
+    const txt = this.node.txts.value[this.node.txt_idx.value]
+    if (txt?.style.font) this.dom.style.font = txt.style.font;
+    if (txt?.style.fill_style) this.dom.style.color = txt.style.fill_style;
     (this.sprite as __Sprite).inner.add(this._css_obj);
     return this._dom;
   }
@@ -74,8 +75,26 @@ export class UINodeRenderer implements IUINodeRenderer, IDebugging {
   on_resume(): void {
     const world_renderer = this.lf2.world.renderer as WorldRenderer;
     if (this.node.root === this.node) world_renderer.scene.add(this.sprite);
+    const text_input = this.node.find_component(TextInput)
+    if (text_input) {
+      const ele_input = document.createElement('input');
+      const { maxLength, defaultValue, text } = text_input
+      if (is_num(maxLength)) ele_input.maxLength = maxLength
+      else ele_input.removeAttribute('maxLength')
+      if (is_str(defaultValue)) ele_input.defaultValue = defaultValue
+      else ele_input.removeAttribute('defaultValue')
+      ele_input.value = text
+
+
+      ele_input.onchange = () => text_input.text = ele_input.value
+      this.dom.appendChild(ele_input)
+    }
   };
-  on_pause(): void { };
+
+  on_pause(): void {
+    const text_input = this.node.find_component(TextInput)
+    if (text_input) this.release_dom()
+  };
   on_show(): void { };
   on_hide(): void { };
   on_start() {
@@ -127,12 +146,6 @@ export class UINodeRenderer implements IUINodeRenderer, IDebugging {
     const flip_y = this.node.flip_y.value;
     const { texture } = await this.lf2.images.p_create_pic_by_img_info(img);
     texture.offset.set(flip_x ? 1 : 0, flip_y ? 1 : 0);
-
-    if ('text' in img && typeof img.text === 'string') {
-      const { style } = (img as ITextImageInfo)
-      if (style.font) this.dom.style.font = style.font;
-      if (style.fill_style) this.dom.style.color = style.fill_style;
-    }
     return texture;
   }
 

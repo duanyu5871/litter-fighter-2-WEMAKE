@@ -134,7 +134,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
    * @memberof LF2
    */
   readonly zips: IZip[] = [];
-  readonly players: ReadonlyMap<string, PlayerInfo> = new Map([
+  readonly players: Map<string, PlayerInfo> = new Map([
     ["1", new PlayerInfo("1")],
     ["2", new PlayerInfo("2")],
     ["3", new PlayerInfo("3")],
@@ -148,7 +148,11 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
   get player_characters() {
     return this.world.slot_fighters;
   }
-
+  ensure_player(player_id: string): PlayerInfo {
+    let ret = this.players.get(player_id)
+    if (!ret) this.players.set(player_id, ret = new PlayerInfo(player_id))
+    return ret
+  }
   readonly characters = new CharactersHelper(this);
   readonly weapons = new WeaponsHelper(this);
   readonly entities = new EntitiesHelper(this);

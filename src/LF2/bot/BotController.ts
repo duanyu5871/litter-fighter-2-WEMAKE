@@ -12,6 +12,7 @@ import {
 } from "../defines";
 import { Entity, is_ball, is_character, is_weapon } from "../entity";
 import { manhattan_xz } from "../helper/manhattan_xz";
+import { PlayerInfo } from "../PlayerInfo";
 import { abs, clamp, floor, max } from "../utils";
 import { DummyEnum, dummy_updaters } from "./DummyEnum";
 import { NearestTargets } from "./NearestTargets";
@@ -19,6 +20,7 @@ import { BotState_Avoiding, BotState_Chasing, BotState_Idle } from "./state";
 import { is_ray_hit } from "./utils/is_ray_hit";
 
 export class BotController extends BaseController implements Required<IBotDataSet> {
+  readonly player: PlayerInfo | undefined;
   readonly fsm = new FSM<BotStateEnum>()
     .add(
       new BotState_Idle(this),
@@ -159,6 +161,7 @@ export class BotController extends BaseController implements Required<IBotDataSe
   }
   constructor(player_id: string, entity: Entity) {
     super(player_id, entity);
+    this.player = this.lf2.players.get(player_id)
     Object.assign(this, entity.data.base.bot?.dataset)
   }
   manhattan_to(a: Entity) {
@@ -194,17 +197,26 @@ export class BotController extends BaseController implements Required<IBotDataSe
    * @memberof BotController
    */
   should_avoid(e?: Entity | null): boolean {
-    return !!(
-      e?.is_attach &&
-      this.entity.hp > 0 &&
-      e.hp > 0 &&
-      manhattan_xz(this.entity, e) < 300 && (
+    if (
+      !e?.is_attach ||
+      this.entity.hp <= 0 ||
+      e.hp <= 0
+    ) return false;
+
+    const dxz = manhattan_xz(this.entity, e)
+    if (
+      dxz < 300 && (
         e.frame.state === StateEnum.Lying ||
         e.invisible ||
         e.blinking ||
         e.invulnerable
       )
-    )
+    ) return true;
+
+    const dx = abs(this.entity.position.x - e.position.x)
+    if (dx < this.w_atk_m_x) return true;
+
+    return false;
   }
 
 
@@ -231,9 +243,9 @@ export class BotController extends BaseController implements Required<IBotDataSe
       x: max(e.velocity.x, 1),
       z: e.velocity.z,
       min_x: -80,
-      max_x: max(abs(20 * e.velocity.x), 60),
-      min_z: -Defines.DAFUALT_QUBE_LENGTH,
-      max_z: max(abs(20 * e.velocity.z), Defines.DAFUALT_QUBE_LENGTH)
+      max_x: max(abs(10 * e.velocity.x), 60),
+      min_z: -2 * Defines.DAFUALT_QUBE_LENGTH,
+      max_z: max(abs(10 * e.velocity.z), 2 * Defines.DAFUALT_QUBE_LENGTH)
     })
     if (!hit) return 0;
 
@@ -331,55 +343,6 @@ export class BotController extends BaseController implements Required<IBotDataSe
   desire() {
     return this.lf2.random_in(0, Defines.MAX_AI_DESIRE)
   }
-  avoid_enemy() {
-    const avoiding = this.get_avoiding()
-    if (!avoiding) return false;
-
-    const c = this.entity;
-    const { x, z } = c.position;
-    const { x: enemy_x, z: enemy_z } = avoiding.position;
-    const distance = this.manhattan_to(avoiding);
-    if (distance > 200) {
-      this.end(GK.L, GK.R, GK.U, GK.D);
-      return true;
-    }
-
-    const { left, right, near, far } = this.lf2.world.bg;
-
-    let x_d: 0 | -1 | 1 = 0;
-    if (enemy_x <= x) {
-      x_d = enemy_x < right - 200 ? 1 : -1;
-    } else {
-      x_d = enemy_x > left + 200 ? -1 : 1;
-    }
-    switch (x_d) {
-      case 1:
-        if (distance < 25) this.db_hit(GK.R).end(GK.L);
-        else this.is_end(GK.R) && this.start(GK.R).end(GK.L);
-        break;
-      case -1:
-        if (distance < 25) this.db_hit(GK.L).end(GK.R);
-        else this.is_end(GK.L) && this.start(GK.L).end(GK.R);
-        break;
-    }
-
-    let z_d: 0 | -1 | 1 = 0;
-    if (z <= enemy_z) {
-      z_d = enemy_z > far + 50 ? 1 : -1;
-    } else {
-      z_d = enemy_z < near - 50 ? -1 : 1;
-    }
-    switch (z_d) {
-      case 1:
-        this.is_end(GK.U) && this.start(GK.U).end(GK.D);
-        break;
-      case -1:
-        this.is_end(GK.D) && this.start(GK.D).end(GK.U);
-        break;
-    }
-
-    return true;
-  }
 
   override update() {
     if (this.dummy) {
@@ -393,7 +356,7 @@ export class BotController extends BaseController implements Required<IBotDataSe
     }
 
 
-    this.chasings.del(({ entity }) => !this.should_chase(entity))
+    this.chasings.del(({ entity }) => this.should_avoid(entity) || !this.should_chase(entity))
     this.chasings.sort(this.entity)
 
     this.avoidings.del(({ entity }) => !this.should_avoid(entity))

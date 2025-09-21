@@ -31,7 +31,7 @@ import type IEntityCallbacks from "./IEntityCallbacks";
 import { calc_v } from "./calc_v";
 import { turn_face } from "./face_helper";
 import { IDebugging, make_debugging } from "./make_debugging";
-import { is_character, is_weapon_data } from "./type_check";
+import { is_character, is_local_ctrl, is_weapon_data } from "./type_check";
 export type TData = IBaseData | IEntityData;
 export class Entity implements IDebugging {
   static readonly TAG: string = 'Entity';
@@ -54,6 +54,7 @@ export class Entity implements IDebugging {
   protected _landing_frame?: IFrameInfo;
   protected _hp_r_tick: Times;
   protected _mp_r_tick: Times;
+  get is_local_ctrl(): boolean { return is_local_ctrl(this.ctrl) };
 
   get group() { return this.data.base.group };
   get is_attach() { return this._is_attach }

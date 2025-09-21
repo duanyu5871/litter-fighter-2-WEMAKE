@@ -78,7 +78,9 @@ export class PlayerInfo implements IDebugging {
       if (!r) return
       const { data } = r
       try {
-        const { name, keys, ctrl = this.ctrl, version } = json5.parse(new TextDecoder().decode(data)) as Partial<IPurePlayerInfo>;
+        const raw_text = new TextDecoder().decode(data);
+        const raw_info = json5.parse<Partial<IPurePlayerInfo>>(raw_text);
+        const { name, keys, ctrl = this.ctrl, version } = raw_info;
         if (version !== this._info.version) {
           this.warn("load", "version changed");
           return false;

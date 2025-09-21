@@ -3,7 +3,7 @@ import { get_team_shadow_color } from "../../LF2/base/get_team_shadow_color";
 import { get_team_text_color } from "../../LF2/base/get_team_text_color";
 import { GameKey, IVector3, Labels } from "../../LF2/defines";
 import { Ditto } from "../../LF2/ditto";
-import { is_character, type Entity, type IEntityCallbacks } from "../../LF2/entity";
+import { is_bot_ctrl, is_character, is_local_ctrl, type Entity, type IEntityCallbacks } from "../../LF2/entity";
 import { floor, round } from "../../LF2/utils";
 import * as T from "../3d/_t";
 import { Bar } from "./Bar";
@@ -173,28 +173,15 @@ export class EntityInfoRender implements IEntityCallbacks {
   }
 
   on_mount() {
-
     const { entity } = this;
-
     const is_fighter = is_character(entity)
-    const { is_key_role, reserve } = entity
-
+    const { is_key_role } = entity
     entity.callbacks.add(this);
     this.world_renderer.scene.add(this.bars_node, this.name_node, this.key_node);
     this.bars_node.visible = is_fighter && entity.is_key_role
     this.name_node.visible = is_fighter && (entity.is_key_role || is_key_role || !!entity.reserve)
 
-
-    // 玩家角色就叫玩家名
-    if (is_key_role)
-      if (reserve > 1)
-        entity.name = entity.data.base.name + ' x' + reserve
-      else
-        entity.name = entity.data.base.name
-    else if (reserve > 1)
-      entity.name = 'x' + reserve
-    else
-      entity.name = 'com'
+    this.on_reserve_changed(entity)
   }
 
   on_unmount() {
@@ -206,23 +193,27 @@ export class EntityInfoRender implements IEntityCallbacks {
   }
 
   on_name_changed(entity: Entity): void {
-    this.update_name_sprite(entity, entity.name, entity.team)
+    this.on_reserve_changed(entity)
   }
-
+  on_team_changed(entity: Entity): void {
+    this.on_reserve_changed(entity)
+  }
   on_reserve_changed(entity: Entity): void {
-    const { reserve, is_key_role: is_key_fighter } = entity;
-    if (is_key_fighter)
+    const { reserve, is_key_role, ctrl } = entity;
+    if (is_local_ctrl(ctrl)) {
+      entity.name = ctrl.player.name || ' '
+    } else if (is_bot_ctrl(ctrl) && ctrl.player) {
+      entity.name = "com"
+    } else if (is_key_role) {
       if (reserve > 1)
         entity.name = entity.data.base.name + ' x' + reserve
       else
         entity.name = entity.data.base.name
-    else if (reserve > 1)
+    } else if (reserve > 1) {
       entity.name = 'x' + reserve
-    else
+    } else {
       entity.name = 'com'
-  }
-
-  on_team_changed(entity: Entity): void {
+    }
     this.update_name_sprite(entity, entity.name, entity.team)
   }
 
@@ -304,7 +295,6 @@ export class EntityInfoRender implements IEntityCallbacks {
         this._heading = heading
       }
     } else if (this._heading) {
-      debugger;
       this.hp_bar.color = "rgb(255,0,0)";
       this._heading = false;
     }

@@ -58,7 +58,7 @@ export const dummy_updaters: Record<DummyEnum, IDummyUpdater | undefined> = {
   },
   [DummyEnum.AvoidEnemyAllTheTime]: {
     update: (self) => {
-      self.avoid_enemy();
+      // self.avoid_enemy();
     }
   },
   [DummyEnum.LockAtMid_dUa]: {

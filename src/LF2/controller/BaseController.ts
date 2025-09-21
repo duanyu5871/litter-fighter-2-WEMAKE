@@ -32,13 +32,11 @@ export const CONFLICTS_KEY_MAP: Record<GK, GK | undefined> = {
 export class BaseController {
   static readonly TAG: string = 'BaseController';
   readonly is_base_controller = true;
+  readonly player_id: string;
 
   private _time = new Times(10, Number.MAX_SAFE_INTEGER);
   private _disposers = new Set<() => void>();
-  private _player_id: string;
-  get player_id(): string {
-    return this._player_id;
-  }
+
   get world() {
     return this.entity.world;
   }
@@ -180,7 +178,7 @@ export class BaseController {
     return this;
   }
   constructor(player_id: string, entity: Entity) {
-    this._player_id = player_id;
+    this.player_id = player_id;
     this.entity = entity;
     this.dbc = {
       d: new DoubleClick("d", entity.world.double_click_interval),

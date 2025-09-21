@@ -1,6 +1,6 @@
 import { Unsafe } from "../type_check";
 
-export function find<T>(set: Unsafe<Set<T>>, p: (v: T) => unknown): Unsafe<T>;
+export function find<T>(set: Unsafe<ReadonlySet<T>>, p: (v: T) => unknown): Unsafe<T>;
 export function find<T>(array: Unsafe<T[]>, p: (v: T) => unknown): Unsafe<T>;
 export function find<K, V>(map: Unsafe<Map<K, V>>, p: (v: [K, V]) => unknown): Unsafe<[K, V]>;
 export function find<K extends string | number | symbol, V>(iterable: Unsafe<Record<K, V>>, p: (v: [K, V]) => unknown): Unsafe<[K, V]>;

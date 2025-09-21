@@ -7,7 +7,7 @@ import { IUIKeyEvent } from "../IUIKeyEvent";
 import { IUIPointerEvent } from "../IUIPointerEvent";
 import type { UINode } from "../UINode";
 import { IUICompnentCallbacks } from "./IUICompnentCallbacks";
-import { UIProperties } from "./UIProperties";
+import { UIProps } from "./UIProps";
 
 /**
  * 组件
@@ -36,7 +36,7 @@ export class UIComponent<Callbacks extends IUICompnentCallbacks = IUICompnentCal
   private _args: readonly any[] = [];
   private _enabled: boolean = true;
 
-  readonly props: UIProperties
+  readonly props: UIProps
   get enabled() { return this._enabled; }
   set enabled(v: boolean) { this.set_enabled(v); }
   set_enabled(v: boolean): this {
@@ -65,7 +65,7 @@ export class UIComponent<Callbacks extends IUICompnentCallbacks = IUICompnentCal
     this.node = layout;
     this.f_name = f_name;
     this.info = info;
-    this.props = new UIProperties(info.properties)
+    this.props = new UIProps(info.properties)
     make_debugging(this)
   }
 

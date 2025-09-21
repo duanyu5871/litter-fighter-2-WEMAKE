@@ -1,8 +1,8 @@
 import { is_num, is_str } from "../../utils";
 import read_nums from "../utils/read_nums";
 
-
-export class UIProperties {
+export interface IUIPropsCallback { }
+export class UIProps {
   readonly raw: any;
   constructor(raw: any) { this.raw = raw; }
   num(name: string): number | null {
@@ -23,8 +23,6 @@ export class UIProperties {
     const v = this.raw[name];
     return !['false', '0'].some(b => b === '' + v);
   }
-
-
   nums(name: string, len: 4, fallbacks?: number[]): [number, number, number, number];
   nums(name: string, len: 3, fallbacks?: number[]): [number, number, number];
   nums(name: string, len: 2, fallbacks?: number[]): [number, number];

@@ -32,6 +32,7 @@ import PlayerFighterThumb from "./PlayerFighterThumb";
 import { PlayerKeyEdit } from "./PlayerKeyEdit";
 import { PlayerKeyText } from "./PlayerKeyText";
 import PlayerName from "./PlayerName";
+import { PlayerNameInput } from "./PlayerNameInput";
 import PlayerScore from "./PlayerScore";
 import PlayerScoreCell from "./PlayerScoreCell";
 import PlayerTeamName from "./PlayerTeamName";
@@ -106,6 +107,7 @@ const COMPONENTS = [
   PrefixAndDifficultyText,
   TeamSituationText,
   TextInput,
+  PlayerNameInput
 ].map(v => [v.TAG, v] as const)
 
 class ComponentFactory {
