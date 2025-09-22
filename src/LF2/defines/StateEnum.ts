@@ -102,7 +102,7 @@ export enum StateEnum {
 
   HeavyWeapon_InTheSky = 2000,
   HeavyWeapon_OnHand = 2001,
-  HeavyWeapon_Throwing = 2002,//= 重型武器在地上
+  HeavyWeapon_JustOnGround = 2002,//= 重型武器在地上
   HeavyWeapon_OnGround = 2004,//= 与itr kind2作用
 
   Ball_Flying = 3000,
@@ -153,7 +153,7 @@ export const ATTCKING_STATES: readonly StateEnum[] = [
   StateEnum.Ball_Hit,
   StateEnum.BurnRun,
   StateEnum.Z_Moveable,
-  StateEnum.HeavyWeapon_Throwing,
+  StateEnum.HeavyWeapon_JustOnGround,
   StateEnum.Weapon_Throwing,
   StateEnum.Burning,
 ]

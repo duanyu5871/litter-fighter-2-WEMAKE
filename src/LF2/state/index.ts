@@ -59,7 +59,7 @@ ENTITY_STATES.add(
   new WeaponState_InTheSky(StateEnum.HeavyWeapon_InTheSky),
   new WeaponState_OnGround(StateEnum.HeavyWeapon_OnGround),
   new WeaponState_OnHand(StateEnum.HeavyWeapon_OnHand),
-  new WeaponState_Throwing(StateEnum.HeavyWeapon_Throwing),
+  new WeaponState_Throwing(StateEnum.HeavyWeapon_JustOnGround),
   new State_Base(StateEnum._Entity_Base),
   new WeaponState_Base(StateEnum._Weapon_Base),
   new CharacterState_Base(StateEnum._Character_Base),

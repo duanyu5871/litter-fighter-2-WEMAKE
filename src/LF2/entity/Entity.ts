@@ -5,6 +5,7 @@ import { BaseController } from "../controller/BaseController";
 import { InvalidController } from "../controller/InvalidController";
 import {
   Builtin_FrameId,
+  BuiltIn_OID,
   Defines, EntityEnum, EntityGroup, FacingFlag, FrameBehavior, IBaseData, IBounding,
   ICpointInfo, IEntityData, IFrameInfo,
   IItrInfo,
@@ -787,13 +788,20 @@ export class Entity implements IDebugging {
       round(y),
       round(z + (opoint.z ?? 0))
     );
+    const result = this.get_next_frame(opoint.action);
+    facing = result?.which.facing
+      ? this.handle_facing_flag(result.which.facing)
+      : emitter.facing;
 
+    if (result) this.enter_frame(result.which);
+    else this.enter_frame(this.find_auto_frame())
     let {
       dvx: o_dvx = 0,
       dvy: o_dvy = 0,
       dvz: o_dvz = 0,
-      speedz: o_speedz = Defines.DEFAULT_OPOINT_SPEED_Z
+      speedz: o_speedz = this.get_opoint_speed_z(emitter, opoint)
     } = opoint;
+
     const { weight } = this.data.base
     o_dvx /= (weight || 1);
     o_dvy /= (weight || 1);
@@ -806,10 +814,7 @@ export class Entity implements IDebugging {
       o_dvx = o_dvx + abs(ovz / 2);
     }
 
-    const result = this.get_next_frame(opoint.action);
-    facing = result?.which.facing
-      ? this.handle_facing_flag(result.which.facing)
-      : emitter.facing;
+
 
     if (is_num(opoint.max_hp)) this.hp = this.hp_r = this.hp_max = opoint.max_hp;
     if (is_num(opoint.hp)) this.hp = this.hp_r = opoint.hp;
@@ -817,7 +822,6 @@ export class Entity implements IDebugging {
     if (is_num(opoint.max_mp)) this.mp = this.mp_max = opoint.max_mp;
     if (is_num(opoint.mp)) this.mp = opoint.mp;
 
-    if (result) this.enter_frame(result.which);
     this.velocities.length = 0
 
     const { dvy = 0, dvz = 0 } = this.frame
@@ -843,6 +847,31 @@ export class Entity implements IDebugging {
         break;
     }
     return this;
+  }
+  get_opoint_speed_z(emitter: Entity, opoint: IOpointInfo): number {
+    if (opoint.speedz !== void 0) return opoint.speedz;
+    if (!is_character(emitter)) return 0;
+    switch (this.data.id) {
+      case BuiltIn_OID.FirenFlame:
+        return Defines.DEFAULT_FIREN_FLAME_SPEED_Z;
+      case BuiltIn_OID.HenryWind:
+      case BuiltIn_OID.FirzenBall:
+      case BuiltIn_OID.Bat:
+      case BuiltIn_OID.BatChase:
+      case BuiltIn_OID.BatBall:
+      case BuiltIn_OID.JanChase:
+      case BuiltIn_OID.JanChaseh:
+        opoint.speedz = 0;
+        break;
+    }
+    switch (this.frame.state) {
+      case StateEnum.Ball_Flying:
+      case StateEnum.Ball_3006:
+      case StateEnum.Weapon_Throwing:
+      case StateEnum.HeavyWeapon_InTheSky:
+        return Defines.DEFAULT_OPOINT_SPEED_Z;
+    }
+    return 0;
   }
 
   set_state(state_code: number) {
@@ -1798,6 +1827,8 @@ export class Entity implements IDebugging {
         this.world.lf2.sounds.play(frame.sound, x, y, z);
       }
       this.set_frame(frame);
+    } else if (this.frame === EMPTY_FRAME_INFO) {
+      this.set_frame(this.find_auto_frame());
     }
 
     this.next_frame = void 0;

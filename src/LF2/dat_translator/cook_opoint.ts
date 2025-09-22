@@ -34,23 +34,4 @@ export default function cook_opoint(opoint: IOpointInfo) {
 
   const dvy = take(opoint, "dvy");
   if (not_zero_num(dvy)) opoint.dvy = dvy * -0.5;
-
-  switch (opoint.oid) {
-    case BuiltIn_OID.HenryWind:
-    case BuiltIn_OID.FirzenBall:
-    case BuiltIn_OID.Bat:
-    case BuiltIn_OID.BatChase:
-    case BuiltIn_OID.BatBall:
-    case BuiltIn_OID.JanChase:
-    case BuiltIn_OID.JanChaseh:
-      opoint.speedz = opoint.dvx = opoint.dvy = opoint.dvz = 0;
-      break;
-    case BuiltIn_OID.FirenFlame:
-      opoint.speedz = Defines.DEFAULT_FIREN_FLAME_SPEED_Z;
-      break;
-    default:
-      opoint.speedz = Defines.DEFAULT_OPOINT_SPEED_Z;
-      // throw new Error('opoint: '+JSON.stringify(opoint))
-      break;
-  }
 }

@@ -16,4 +16,6 @@ export function make_frames_special(ret: IEntityData) {
     take(frame, "hit_Ua")
     take(frame, "hit_ja")
   })
+
+
 }

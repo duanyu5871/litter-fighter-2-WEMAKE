@@ -36,4 +36,5 @@ export enum CollisionVal {
   AttackerIsFreezableBall = "attacker_freezable_ball",
   ArmorWork = "armor_work",
   V_FrameBehavior = "v_frame_behavior",
+  NoItrEffect = "no_itr_effect",
 }
