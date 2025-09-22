@@ -139,6 +139,12 @@ export function make_ball_special(data: IEntityData) {
               .done(),
             data: ''
           }, {
+            type: ActionType.V_TURN_TEAM,
+            test: new CondMaker<C_Val>()
+              .or(C_Val.ItrKind, "==", ItrKind.JohnShield)
+              .done(),
+            data: ''
+          }, {
             type: ActionType.V_NextFrame,
             test: new CondMaker<C_Val>()
               .one_of(C_Val.AttackerState, StateEnum.Ball_3005, StateEnum.Ball_3006)

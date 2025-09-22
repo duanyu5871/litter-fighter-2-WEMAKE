@@ -362,7 +362,9 @@ export class World extends WorldDataset {
         if (!is_character(e) || chaser.is_ally(e) || e.hp <= 0)
           continue;
         const prev = chaser.chasing;
-        if (!prev || this.manhattan(prev, chaser) > this.manhattan(e, chaser)) {
+        if (!prev || prev?.team === chaser.team) {
+          chaser.chasing = e;
+        } else if (!prev || this.manhattan(prev, chaser) > this.manhattan(e, chaser)) {
           chaser.chasing = e;
         }
       }
@@ -370,7 +372,9 @@ export class World extends WorldDataset {
         if (!is_character(e) || !chaser.is_ally(e) || e.hp <= 0)
           continue;
         const prev = chaser.chasing;
-        if (!prev || this.manhattan(prev, chaser) > this.manhattan(e, chaser)) {
+        if (!prev || prev?.team !== chaser.team) {
+          chaser.chasing = e;
+        } else if (this.manhattan(prev, chaser) > this.manhattan(e, chaser)) {
           chaser.chasing = e;
         }
       }
@@ -579,7 +583,7 @@ export class World extends WorldDataset {
     const ally_flag = attacker.is_ally(victim) ? HitFlag.Ally : HitFlag.Enemy;
     if (
       !(itr.hit_flag & victim.data.type) ||
-      !(bdy.hit_flag & attacker.data.type) || 
+      !(bdy.hit_flag & attacker.data.type) ||
       !(itr.hit_flag & ally_flag) &&
       !(bdy.hit_flag & ally_flag)
     ) return;

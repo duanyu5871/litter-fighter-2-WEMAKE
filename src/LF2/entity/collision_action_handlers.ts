@@ -3,6 +3,7 @@ import { IActionHandler } from "../base/IActionHandler";
 import { ActionType } from "../defines/ActionType";
 import { IAction_ReboundVX } from "../defines/IAction_ReboundVX";
 import { IAction_TurnFace } from "../defines/IAction_TurnFace";
+import { IAction_TurnTeam } from "../defines/IAction_TurnTeam";
 import { turn_face } from "./face_helper";
 
 export const collision_action_handlers: IActionHandler = {
@@ -31,5 +32,9 @@ export const collision_action_handlers: IActionHandler = {
   [ActionType.V_TURN_FACE]: function (action: IAction_TurnFace, collision: ICollision) {
     const { victim } = collision;
     victim.facing = turn_face(victim.facing);
+  },
+  [ActionType.V_TURN_TEAM]: function (action: IAction_TurnTeam, collision: ICollision) {
+    const { victim, attacker } = collision;
+    victim.team = attacker.team;
   }
 };

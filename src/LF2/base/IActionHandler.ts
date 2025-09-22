@@ -5,6 +5,7 @@ import { IAction_BrokenDefend } from "../defines/IAction_BrokenDefend";
 import { IAction_Defend } from "../defines/IAction_Defend";
 import { IAction_ReboundVX } from "../defines/IAction_ReboundVX";
 import { IAction_TurnFace } from "../defines/IAction_TurnFace";
+import { IAction_TurnTeam } from "../defines/IAction_TurnTeam";
 
 export interface IActionHandler {
   [ActionType.A_Sound]: (action: IAction_Sound, collision: ICollision) => any;
@@ -20,4 +21,5 @@ export interface IActionHandler {
   [ActionType.A_REBOUND_VX]: (action: IAction_ReboundVX, collision: ICollision) => any;
   [ActionType.V_REBOUND_VX]: (action: IAction_ReboundVX, collision: ICollision) => any;
   [ActionType.V_TURN_FACE]: (action: IAction_TurnFace, collision: ICollision) => any;
+  [ActionType.V_TURN_TEAM]: (action: IAction_TurnTeam, collision: ICollision) => any;
 }
