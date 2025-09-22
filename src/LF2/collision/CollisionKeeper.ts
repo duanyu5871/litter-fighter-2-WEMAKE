@@ -237,7 +237,7 @@ collisions_keeper.add(
   [EntityEnum.Ball],
   [ItrKind.Normal],
   ALL_ENTITY_ENUM,
-  [BdyKind.Normal],
+  [BdyKind.Normal, BdyKind.Defend],
   handle_ball_hit_other
 )
 

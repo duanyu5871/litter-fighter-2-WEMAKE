@@ -1,18 +1,28 @@
 import { ICollision } from "../base";
-import { FrameBehavior } from "../defines";
-import { handle_injury } from "./handle_injury";
+import { BdyKind, Defines, FrameBehavior } from "../defines";
+import { is_character } from "../entity";
 import { handle_rest } from "./handle_rest";
 import { handle_stiffness } from "./handle_stiffness";
 
 export function handle_ball_hit_other(collision: ICollision): void {
   handle_rest(collision);
-  // handle_injury(collision);
   handle_stiffness(collision);
-  const { attacker, aframe } = collision;
+  const { attacker, aframe, victim, bdy, itr } = collision;
   switch (aframe.behavior as FrameBehavior) {
-    case FrameBehavior.JohnChase:
-      attacker.hp = attacker.hp_r = 0;
+    case FrameBehavior.JohnChase: {
+      if (!is_character(victim)) break
+      const { bdefend } = itr;
+      if (bdy.kind === BdyKind.Normal) {
+        attacker.hp = attacker.hp_r = 0;
+      } else if (bdy.kind === BdyKind.Defend) {
+        if (bdefend && bdefend >= Defines.DEFAULT_FORCE_BREAK_DEFEND_VALUE) {
+          attacker.hp = attacker.hp_r = 0;
+        } else if (victim.facing === attacker.facing) {
+          attacker.hp = attacker.hp_r = 0;
+        }
+      }
       break;
+    }
     case FrameBehavior.DennisChase:
     case FrameBehavior._03:
     case FrameBehavior.AngelBlessing:
