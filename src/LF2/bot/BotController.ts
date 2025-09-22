@@ -15,6 +15,7 @@ import { manhattan_xz } from "../helper/manhattan_xz";
 import { PlayerInfo } from "../PlayerInfo";
 import { abs, clamp, floor, max } from "../utils";
 import { DummyEnum, dummy_updaters } from "./DummyEnum";
+import { IBotTarget } from "./IBotTarget";
 import { NearestTargets } from "./NearestTargets";
 import { BotState_Avoiding, BotState_Chasing, BotState_Idle } from "./state";
 import { is_ray_hit } from "./utils/is_ray_hit";
@@ -42,7 +43,7 @@ export class BotController extends BaseController implements Required<IBotDataSe
   w_atk_z = Defines.AI_W_ATK_Z;
   /** 走攻触发范围X */
   get w_atk_x() {
-    const chasing = this.get_chasing()
+    const chasing = this.get_chasing()?.entity;
     if (!chasing) return 0;
     return this.entity.facing === chasing.facing ?
       this.w_atk_f_x :
@@ -60,7 +61,7 @@ export class BotController extends BaseController implements Required<IBotDataSe
   r_atk_z = Defines.AI_R_ATK_Z;
   /** 跑攻触发范围X */
   get r_atk_x() {
-    const chasing = this.get_chasing()
+    const chasing = this.get_chasing()?.entity;
     if (!chasing) return 0;
     return this.entity.facing === chasing.facing ? this.r_atk_b_x : this.r_atk_f_x;
   }
@@ -73,7 +74,7 @@ export class BotController extends BaseController implements Required<IBotDataSe
   d_atk_z = Defines.AI_D_ATK_Z;
   /** 冲跳攻触发范围X */
   get d_atk_x() {
-    const chasing = this.get_chasing()
+    const chasing = this.get_chasing()?.entity;
     if (!chasing) return 0;
     return this.entity.facing === chasing.facing ? this.d_atk_b_x : this.d_atk_f_x;
   }
@@ -89,7 +90,7 @@ export class BotController extends BaseController implements Required<IBotDataSe
   j_atk_y_max = Defines.AI_J_ATK_Y_MAX;
   /** 跳攻触发范围X */
   get j_atk_x() {
-    const chasing = this.get_chasing()
+    const chasing = this.get_chasing()?.entity;
     if (!chasing) return 0;
     return this.entity.facing === chasing.facing ? this.j_atk_b_x : this.j_atk_f_x;
   }
@@ -116,7 +117,7 @@ export class BotController extends BaseController implements Required<IBotDataSe
   r_x_max = Defines.AI_R_X_MAX;
 
   get r_desire(): -1 | 1 | 0 {
-    const chasing = this.get_chasing()
+    const chasing = this.get_chasing()?.entity;
     if (!chasing) return 0;
     let dx = abs(this.entity.position.x - chasing.position.x) - this.r_x_min
     if (dx < 0) return 0;
@@ -139,12 +140,12 @@ export class BotController extends BaseController implements Required<IBotDataSe
   /** 防御 */
   d_desire = Defines.AI_DEF_DESIRE;
 
-  get_chasing(): Entity | undefined {
-    return this.chasings.get()?.entity
+  get_chasing(): IBotTarget | undefined {
+    return this.chasings.get()
   }
 
-  get_avoiding(): Entity | undefined {
-    return this.avoidings.get()?.entity
+  get_avoiding(): IBotTarget | undefined {
+    return this.avoidings.get()
   }
 
   chasings = new NearestTargets(5);
@@ -179,13 +180,14 @@ export class BotController extends BaseController implements Required<IBotDataSe
    */
   should_chase(e?: Entity | null): boolean {
     return !!(
-      e?.is_attach &&
       this.entity.hp > 0 &&
+      e?.is_attach &&
       e.hp > 0 &&
       e.frame.state !== StateEnum.Lying &&
       !e.invisible &&
       !e.blinking &&
-      !e.invulnerable
+      !e.invulnerable &&
+      e.frame.bdy?.length
     )
   }
 
@@ -198,24 +200,21 @@ export class BotController extends BaseController implements Required<IBotDataSe
    */
   should_avoid(e?: Entity | null): boolean {
     if (
-      !e?.is_attach ||
       this.entity.hp <= 0 ||
+      !e?.is_attach ||
       e.hp <= 0
     ) return false;
 
     const dxz = manhattan_xz(this.entity, e)
-    if (
+    return !!(
       dxz < 300 && (
         e.frame.state === StateEnum.Lying ||
         e.invisible ||
         e.blinking ||
-        e.invulnerable
+        e.invulnerable ||
+        !e.frame.bdy?.length
       )
-    ) return true;
-
-    const dx = abs(this.entity.position.x - e.position.x)
-    if (dx < (this.w_atk_f_x - this.w_atk_m_x) / 2) return true;
-    return false;
+    )
   }
 
 
@@ -358,7 +357,7 @@ export class BotController extends BaseController implements Required<IBotDataSe
     }
 
 
-    this.chasings.del(({ entity }) => this.should_avoid(entity) || !this.should_chase(entity))
+    this.chasings.del(({ entity }) => !this.should_chase(entity))
     this.chasings.sort(this.entity)
 
     this.avoidings.del(({ entity }) => !this.should_avoid(entity))
@@ -397,7 +396,7 @@ export class BotController extends BaseController implements Required<IBotDataSe
     if (status && !status.some(v => v === this.fsm.state?.key))
       return false;
     if (e_ray) {
-      const chasing = this.get_chasing()
+      const chasing = this.get_chasing()?.entity;
       if (!chasing) return false;
       let ray_hit = false
       for (const r of e_ray) {

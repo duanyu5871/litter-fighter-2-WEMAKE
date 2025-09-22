@@ -8,10 +8,14 @@ import { BotStateEnum } from "../../defines/BotStateEnum";
 export class BotState_Chasing extends BotState_Base {
   readonly key = BotStateEnum.Chasing;
   override update() {
+    if (this.handle_defends()) return;
+    if (this.handle_bot_actions()) return;
+    this.random_jumping()
+
     const { ctrl: c } = this;
     const me = c.entity;
-    const en = c.get_chasing()
-    const av = c.get_avoiding()
+    const en = c.get_chasing()?.entity
+    const av = c.get_avoiding()?.entity
     if (av && en && manhattan_xz(me, av) < manhattan_xz(me, en))
       return BotStateEnum.Avoiding
     else if (!en && av) return BotStateEnum.Avoiding;
@@ -50,27 +54,6 @@ export class BotState_Chasing extends BotState_Base {
 
     const x_reach = abs_dx <= c.w_atk_x;
     const z_reach = abs_dz <= c.w_atk_z;
-    const z_reach_2 = abs_dz <= 2 * c.w_atk_z;
-    const z_reach_3 = abs_dz <= 3 * c.w_atk_z;
-
-    this.random_jumping();
-    if (this.handle_bot_actions()) return;
-
-    if (c.defends.targets.length > 0) {
-      if (c.defends.targets[0].defendable === 1) {
-        const dx = c.defends.targets[0].entity.position.x - me.position.x
-        const t_facing = c.defends.targets[0].entity.facing
-        if (dx > 0 && t_facing < 0) {
-          c.key_down(GK.R).key_up(GK.L)
-        } else if (dx < 0 && t_facing > 0) {
-          c.key_down(GK.L).key_up(GK.R)
-        }
-        c.start(GK.d).end(GK.d)
-      } else {
-        // 不可防御的攻击
-      }
-      return
-    }
 
     switch (state) {
       case StateEnum.Normal:

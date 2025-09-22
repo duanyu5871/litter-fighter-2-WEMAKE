@@ -50,6 +50,24 @@ export abstract class BotState_Base implements IState<BotStateEnum> {
   update?(dt: number): BotStateEnum | undefined | void;
   enter?(): void;
   leave?(): void;
+  handle_defends(): boolean {
+    const { ctrl: c } = this;
+    if (c.defends.targets.length <= 0) return false;
+    const me = c.entity;
+    if (c.defends.targets[0].defendable === 1) {
+      const dx = c.defends.targets[0].entity.position.x - me.position.x
+      const t_facing = c.defends.targets[0].entity.facing
+      if (dx > 0 && t_facing < 0) {
+        c.key_down(GK.R).key_up(GK.L)
+      } else if (dx < 0 && t_facing > 0) {
+        c.key_down(GK.L).key_up(GK.R)
+      }
+      c.start(GK.d).end(GK.d)
+    } else {
+      // 不可防御的攻击
+    }
+    return true
+  }
   handle_bot_actions(): boolean {
     const { ctrl: c } = this;
     const me = c.entity;
