@@ -1,8 +1,8 @@
 import { BotStateEnum, BotVal, Defines, EntityVal, GK, IBotAction } from "../../defines";
 import { pow } from "../../utils";
 import { CondMaker } from "../CondMaker";
+import { DESIRE_RATIO } from "./constants";
 import { IEditBotActionFunc } from "./IEditBotAction";
-const DESIRE = 0.033333 as const;
 const MIN_X = -120 as const;
 const MAX_X = 120 as const;
 const Z_LEN = 100 as const;
@@ -20,7 +20,7 @@ const ID = 'd^j' as const
  */
 export function bot_explosion_duj(
   min_mp: number,
-  desire: number = DESIRE,
+  desire: number = DESIRE_RATIO,
   min_x: number = MIN_X,
   max_x: number = MAX_X,
   z_len: number = Z_LEN
@@ -40,7 +40,6 @@ export function bot_explosion_duj(
   }
 }
 bot_explosion_duj.ID = ID
-bot_explosion_duj.DESIRE = DESIRE
 bot_explosion_duj.MIN_X = MIN_X
 bot_explosion_duj.MAX_X = MAX_X
 bot_explosion_duj.Z_LEN = Z_LEN

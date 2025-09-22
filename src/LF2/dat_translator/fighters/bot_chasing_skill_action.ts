@@ -3,16 +3,16 @@ import {
   BotStateEnum, BotVal, Defines, EntityVal, GK, GameKey, IBotAction
 } from "../../defines";
 import { CondMaker } from "../CondMaker";
+import { DESIRE_RATIO } from "./constants";
 import { IEditBotActionFunc } from "./IEditBotAction";
 
 type Key1 = '^' | '>' | 'v' | 'j';
 type Key2 = 'a' | 'j';
-const DESIRE = 0.033333 as const;
 export function bot_chasing_skill_action(
   keys_str: `d${Key1}${Key2}`,
   action_id: string = keys_str,
   min_mp: number = -1,
-  desire: number = DESIRE
+  desire: number = DESIRE_RATIO
 ): IEditBotActionFunc {
   const keys: IBotAction['keys'] = [GK.d];
   switch (keys_str[1]) {

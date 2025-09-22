@@ -2,8 +2,8 @@ import {
   BotStateEnum, BotVal, Defines, EntityVal, GK, IBotAction
 } from "../../defines";
 import { CondMaker } from "../CondMaker";
+import { DESIRE_RATIO } from "./constants";
 import { IEditBotActionFunc } from "./IEditBotAction";
-const DESIRE = 0.033333 as const;
 const MIN_X = -10 as const;
 const MAX_X = 120 as const;
 export const ID = 'dva' as const
@@ -20,7 +20,7 @@ export const ID = 'dva' as const
  */
 export function bot_uppercut_dva(
   min_mp: number,
-  desire: number = DESIRE,
+  desire: number = DESIRE_RATIO,
   min_x: number = MIN_X,
   max_x: number = MAX_X
 ): IEditBotActionFunc {
@@ -40,6 +40,6 @@ export function bot_uppercut_dva(
   };
 }
 bot_uppercut_dva.ID = ID
-bot_uppercut_dva.DESIRE = DESIRE
+bot_uppercut_dva.DESIRE = DESIRE_RATIO
 bot_uppercut_dva.MIN_X = MIN_X
 bot_uppercut_dva.MAX_X = MAX_X

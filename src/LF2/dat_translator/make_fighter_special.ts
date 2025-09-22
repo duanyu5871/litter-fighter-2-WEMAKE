@@ -12,12 +12,14 @@ import { make_fighter_data_henry } from "./fighters/make_fighter_data_henry";
 import { make_fighter_data_henter } from "./fighters/make_fighter_data_henter";
 import { make_fighter_data_jack } from "./fighters/make_fighter_data_jack";
 import { make_fighter_data_jan } from "./fighters/make_fighter_data_jan";
+import { make_fighter_data_john } from "./fighters/make_fighter_data_john";
 import { make_fighter_data_julian } from "./fighters/make_fighter_data_julian";
 import { make_fighter_data_justin } from "./fighters/make_fighter_data_justin";
 import { make_fighter_data_knigt } from "./fighters/make_fighter_data_knigt";
 import { make_fighter_data_mark } from "./fighters/make_fighter_data_mark";
 import { make_fighter_data_monk } from "./fighters/make_fighter_data_monk";
 import { make_fighter_data_rudolf } from "./fighters/make_fighter_data_rudolf";
+import { make_fighter_data_sorcerer } from "./fighters/make_fighter_data_sorcerer";
 import { make_fighter_data_woody } from "./fighters/make_fighter_data_woody";
 import { make_figther_data_louis } from "./fighters/make_figther_data_louis";
 import { make_figther_data_louisex } from "./fighters/make_figther_data_louisex";
@@ -51,10 +53,10 @@ export function make_fighter_special(data: IEntityData): IEntityData {
     case BuiltIn_OID.Henry: return make_fighter_data_henry(data);
     case BuiltIn_OID.Hunter: return make_fighter_data_henter(data);
     case BuiltIn_OID.Justin: return make_fighter_data_justin(data);
-    case BuiltIn_OID.Jan:return make_fighter_data_jan(data);
-    case BuiltIn_OID.Sorcerer:
-    case BuiltIn_OID.John:
-      break;
+    case BuiltIn_OID.Jan: return make_fighter_data_jan(data);
+    case BuiltIn_OID.Sorcerer: return make_fighter_data_sorcerer(data);
+    case BuiltIn_OID.John: return make_fighter_data_john(data);
+
     case BuiltIn_OID.Template: break;
     case BuiltIn_OID.Bandit: data.base.group = ensure(data.base.group, EntityGroup._3000); break;
 

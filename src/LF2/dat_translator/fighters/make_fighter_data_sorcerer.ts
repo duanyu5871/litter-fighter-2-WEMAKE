@@ -1,4 +1,4 @@
-import { GK, IEntityData } from "../../defines";
+import { IEntityData, GK } from "../../defines";
 import { arithmetic_progression } from "../../utils";
 import { bot_ball_dfa } from "./bot_ball_dfa";
 import { bot_chasing_action } from "./bot_chasing_action";
@@ -6,7 +6,8 @@ import { bot_front_test } from "./bot_front_test";
 import { BotBuilder } from "./BotBuilder";
 import { frames } from "./frames";
 
-export function make_fighter_data_justin(data: IEntityData) {
+
+export function make_fighter_data_sorcerer(data: IEntityData) {
   BotBuilder.make(data).set_actions(
     // d>a
     bot_ball_dfa(75, void 0, 50, 200),
@@ -15,8 +16,8 @@ export function make_fighter_data_justin(data: IEntityData) {
     bot_front_test('dva', [GK.d, GK.D, GK.a], 75, void 0, -10, 100),
 
     // d>a+a
-    bot_chasing_action("d>a+a", [GK.a], 75, void 0),
-    
+    bot_chasing_action("d>a+a", [GK.a], 75, void 0)
+
   ).set_frames(
     [
       ...frames.standings,

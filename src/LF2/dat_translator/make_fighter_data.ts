@@ -157,10 +157,10 @@ export function make_character_data(
           id: ["45"],
           facing: FacingFlag.Ctrl,
           expression: new CondMaker<EntityVal>()
-            .add(EntityVal.WeaponType, "==", WeaponType.Baseball)
+            .add(EntityVal.Holding_W_Type, "==", WeaponType.Baseball)
             .or((v) =>
               v
-                .add(EntityVal.WeaponType, "==", WeaponType.Knife)
+                .add(EntityVal.Holding_W_Type, "==", WeaponType.Knife)
                 .and(EntityVal.PressFB, "!=", 0),
             )
             .done(),
@@ -168,12 +168,12 @@ export function make_character_data(
           id: ["20", "25"],
           facing: FacingFlag.Ctrl,
           expression: new CondMaker<EntityVal>()
-            .one_of(EntityVal.WeaponType, WeaponType.Knife, WeaponType.Stick)
+            .one_of(EntityVal.Holding_W_Type, WeaponType.Knife, WeaponType.Stick)
             .done(),
         }, { // drink
           id: "55",
           expression: new CondMaker<EntityVal>()
-            .one_of(EntityVal.WeaponType, WeaponType.Drink)
+            .one_of(EntityVal.Holding_W_Type, WeaponType.Drink)
             .done(),
           facing: FacingFlag.Ctrl,
         }, {
@@ -203,22 +203,22 @@ export function make_character_data(
           // 丢出武器
           id: ["45"],
           expression: new CondMaker<EntityVal>()
-            .add(EntityVal.WeaponType, "==", WeaponType.Baseball)
+            .add(EntityVal.Holding_W_Type, "==", WeaponType.Baseball)
             .or((v) =>
               v
                 .add(EntityVal.PressFB, "==", 1)
-                .and(EntityVal.WeaponType, "!=", WeaponType.None),
+                .and(EntityVal.Holding_W_Type, "!=", WeaponType.None),
             )
             .done(),
         }, { // drink
           id: "55",
           expression: new CondMaker<EntityVal>()
-            .one_of(EntityVal.WeaponType, WeaponType.Drink)
+            .one_of(EntityVal.Holding_W_Type, WeaponType.Drink)
             .done(),
         }, {
           id: "35",
           expression: new CondMaker<EntityVal>()
-            .one_of(EntityVal.WeaponType, WeaponType.Knife, WeaponType.Stick)
+            .one_of(EntityVal.Holding_W_Type, WeaponType.Knife, WeaponType.Stick)
             .done(),
           facing: FacingFlag.Ctrl,
         }, { // run_atk
@@ -318,7 +318,7 @@ export function make_character_data(
               facing: FacingFlag.Ctrl,
               expression: new CondMaker<EntityVal>()
                 .one_of(
-                  EntityVal.WeaponType,
+                  EntityVal.Holding_W_Type,
                   WeaponType.Baseball,
                   WeaponType.Drink,
                 )
@@ -329,7 +329,7 @@ export function make_character_data(
               facing: FacingFlag.Ctrl,
               expression: new CondMaker<EntityVal>()
                 .one_of(
-                  EntityVal.WeaponType,
+                  EntityVal.Holding_W_Type,
                   WeaponType.Knife,
                   WeaponType.Stick,
                 )
@@ -522,10 +522,10 @@ export function make_character_data(
             id: "45",
             facing: FacingFlag.Ctrl,
             expression: new CondMaker<EntityVal>()
-              .add(EntityVal.WeaponType, "==", WeaponType.Baseball)
+              .add(EntityVal.Holding_W_Type, "==", WeaponType.Baseball)
               .or((v) =>
                 v
-                  .add(EntityVal.WeaponType, "==", WeaponType.Knife)
+                  .add(EntityVal.Holding_W_Type, "==", WeaponType.Knife)
                   .and(EntityVal.PressFB, "!=", 0),
               )
               .done(),
@@ -534,13 +534,13 @@ export function make_character_data(
             id: ["20", "25"],
             facing: FacingFlag.Ctrl,
             expression: new CondMaker<EntityVal>()
-              .one_of(EntityVal.WeaponType, WeaponType.Knife, WeaponType.Stick)
+              .one_of(EntityVal.Holding_W_Type, WeaponType.Knife, WeaponType.Stick)
               .done(),
           },
           {
             id: "55",
             expression: new CondMaker<EntityVal>()
-              .one_of(EntityVal.WeaponType, WeaponType.Drink)
+              .one_of(EntityVal.Holding_W_Type, WeaponType.Drink)
               .done(),
             facing: FacingFlag.Ctrl,
           },
@@ -592,10 +592,10 @@ export function make_character_data(
               id: ["45"],
               facing: FacingFlag.Ctrl,
               expression: new CondMaker<EntityVal>()
-                .add(EntityVal.WeaponType, "==", WeaponType.Baseball)
+                .add(EntityVal.Holding_W_Type, "==", WeaponType.Baseball)
                 .or((v) =>
                   v
-                    .add(EntityVal.WeaponType, "==", WeaponType.Knife)
+                    .add(EntityVal.Holding_W_Type, "==", WeaponType.Knife)
                     .and(EntityVal.PressFB, "!=", 0),
                 )
                 .done(),
@@ -605,7 +605,7 @@ export function make_character_data(
               facing: FacingFlag.Ctrl,
               expression: new CondMaker<EntityVal>()
                 .one_of(
-                  EntityVal.WeaponType,
+                  EntityVal.Holding_W_Type,
                   WeaponType.Knife,
                   WeaponType.Stick,
                 )
@@ -614,7 +614,7 @@ export function make_character_data(
             {
               id: "55",
               expression: new CondMaker<EntityVal>()
-                .one_of(EntityVal.WeaponType, WeaponType.Drink)
+                .one_of(EntityVal.Holding_W_Type, WeaponType.Drink)
                 .done(),
               facing: FacingFlag.Ctrl,
             },
@@ -650,25 +650,25 @@ export function make_character_data(
               // 丢出武器
               id: ["45"],
               expression: new CondMaker<EntityVal>()
-                .add(EntityVal.WeaponType, "==", WeaponType.Baseball)
+                .add(EntityVal.Holding_W_Type, "==", WeaponType.Baseball)
                 .or((v) =>
                   v
                     .add(EntityVal.PressFB, "==", 1)
-                    .and(EntityVal.WeaponType, "!=", WeaponType.None),
+                    .and(EntityVal.Holding_W_Type, "!=", WeaponType.None),
                 )
                 .done(),
             }, // drink
             {
               id: "55",
               expression: new CondMaker<EntityVal>()
-                .one_of(EntityVal.WeaponType, WeaponType.Drink)
+                .one_of(EntityVal.Holding_W_Type, WeaponType.Drink)
                 .done(),
             },
             {
               id: "35",
               expression: new CondMaker<EntityVal>()
                 .one_of(
-                  EntityVal.WeaponType,
+                  EntityVal.Holding_W_Type,
                   WeaponType.Knife,
                   WeaponType.Stick,
                 )
@@ -787,13 +787,13 @@ function add_key_down_jump_atk(frame: IFrameInfo) {
     facing: FacingFlag.Ctrl,
     expression: new CondMaker<EntityVal>()
       .one_of(
-        EntityVal.WeaponType,
+        EntityVal.Holding_W_Type,
         WeaponType.Baseball,
         WeaponType.Drink
       )
       .or((v) => v
         .add(EntityVal.PressFB, "!=", 0)
-        .and(EntityVal.WeaponType, "!=", WeaponType.None)
+        .and(EntityVal.Holding_W_Type, "!=", WeaponType.None)
       )
       .done(),
   }, {
@@ -801,7 +801,7 @@ function add_key_down_jump_atk(frame: IFrameInfo) {
     facing: FacingFlag.Ctrl,
     expression: new CondMaker<EntityVal>()
       .one_of(
-        EntityVal.WeaponType,
+        EntityVal.Holding_W_Type,
         WeaponType.Knife,
         WeaponType.Stick
       )

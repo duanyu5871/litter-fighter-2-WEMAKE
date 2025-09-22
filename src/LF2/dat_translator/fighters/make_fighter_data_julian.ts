@@ -36,13 +36,13 @@ export function make_fighter_data_julian(data: IEntityData) {
     bot_chasing_action('d>a+a', ['a'], void 0, 0.15),
 
     // super-ball
-    bot_ball_dfj(125, 1 / 30),
+    bot_ball_dfj(125, void 0),
 
     // explosion
-    bot_explosion_duj(100, 1 / 30, -120, 120, 100),
+    bot_explosion_duj(100, void 0, -120, 120, 100),
 
     // uppercut
-    bot_uppercut_dua(0, 1 / 30), {
+    bot_uppercut_dua(0, void 0), {
     action_id: 'injured_dja',
     desire: Defines.desire(0.08),
     expression: new CondMaker<BotVal | EntityVal>()

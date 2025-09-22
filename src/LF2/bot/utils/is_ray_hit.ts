@@ -1,4 +1,4 @@
-import type { IBotRay } from "../../defines/IBotRay";
+import { Defines,type IBotRay } from "../../defines";
 import type { Entity } from "../../entity";
 import { abs, between, pow, project_to_line } from "../../utils";
 
@@ -11,7 +11,7 @@ export function is_ray_hit(a: Entity, b: Entity, ray: IBotRay) {
     x, z,
     min_x = 0, max_x = 10000,
     min_z = 0, max_z = 10000,
-    max_d = 400,
+    max_d = Defines.DAFUALT_QUBE_LENGTH_POW2,
     reverse = false,
   } = ray
 

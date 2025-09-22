@@ -10,7 +10,7 @@ import { frames } from "./frames";
 export function make_fighter_data_mark(data: IEntityData) {
   BotBuilder.make(data).set_actions(
     // d>a
-    bot_ball_dfa(0, 1 / 30, 0, 80, 0.1)(a => {
+    bot_ball_dfa(0, void 0, 0, 80, 0.1)(a => {
       foreach(a.e_ray, r => r.max_d = 1600)
       return a
     }),
@@ -18,13 +18,13 @@ export function make_fighter_data_mark(data: IEntityData) {
     bot_chasing_action('d>a+a', [GK.a], 0, 1 / 15),
 
     // d>j
-    bot_ball_dfj(50, 1 / 30, 20, 200, 0.1)(a => {
+    bot_ball_dfj(50, void 0, 20, 200, 0.1)(a => {
       foreach(a.e_ray, r => r.max_d = 1600)
       return a
     }),
 
     // cancel_d>j
-    bot_ball_dfj(0, 1 / 30, 0, 1000)((action, cond) => {
+    bot_ball_dfj(0, void 0, 0, 1000)((action, cond) => {
       action.action_id = 'cancel_d>j'
       const ray = action.e_ray![0]
       ray.reverse = true

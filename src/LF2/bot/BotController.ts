@@ -388,9 +388,9 @@ export class BotController extends BaseController implements Required<IBotDataSe
   handle_action(action: IBotAction | undefined): LGK[] | false {
     if (!action) return false
     const { facing } = this.entity;
-    const { status, e_ray, judger, desire = 10000, keys } = action;
+    const { status, e_ray, judger, desire, keys } = action;
     const action_desire = this.action_desire();
-    if (action_desire > desire) return false;
+    if (!desire || action_desire > desire) return false;
     if (status && !status.some(v => v === this.fsm.state?.key))
       return false;
     if (e_ray) {

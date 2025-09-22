@@ -11,7 +11,7 @@ import { frames } from "./frames";
 export function make_fighter_data_woody(data: IEntityData) {
   BotBuilder.make(data).set_actions(
     // d>a
-    bot_ball_dfa(125, 1 / 30, 50)(e => {
+    bot_ball_dfa(125, void 0, 50)(e => {
       const ray = e.e_ray![0]
       ray.z = 0.1;
       e.e_ray?.push({ ...ray, z: -ray.z })
@@ -19,7 +19,7 @@ export function make_fighter_data_woody(data: IEntityData) {
     }),
 
     // d>j
-    bot_ball_dfj(200, 1 / 30, 50, 200)(e => {
+    bot_ball_dfj(200, void 0, 50, 200)(e => {
       const ray = e.e_ray![0]
       e.e_ray?.push(
         { ...ray, z: 0.2 },

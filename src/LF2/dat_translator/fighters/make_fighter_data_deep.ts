@@ -13,7 +13,7 @@ import { frames } from "./frames";
 export function make_fighter_data_deep(data: IEntityData) {
   BotBuilder.make(data).set_actions(
     // d>a
-    bot_ball_dfa(75, 1 / 30, 50, 200),
+    bot_ball_dfa(75, void 0, 50, 200),
 
     // d>a+a
     bot_ball_continuation("d>a+a", 0.5, 75),

@@ -3,15 +3,14 @@ import {
   IBotAction
 } from "../../defines";
 import { CondMaker } from "../CondMaker";
+import { DESIRE_RATIO } from "./constants";
 import { IEditBotActionFunc } from "./IEditBotAction";
-
-
 
 export function bot_front_test(
   action_id: IBotAction['action_id'],
   keys: IBotAction['keys'],
   min_mp: number,
-  desire: number = 1 / 60,
+  desire: number = DESIRE_RATIO,
   min_x: number = 0,
   max_x?: number,
   zable?: number

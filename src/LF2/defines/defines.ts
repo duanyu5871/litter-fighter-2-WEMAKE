@@ -64,6 +64,8 @@ export namespace Defines {
   export const DEFAULT_FALL_VALUE_CRITICAL: number = DEFAULT_FALL_VALUE_MAX - DEFAULT_FALL_VALUE_DIZZY
 
   export const DAFUALT_QUBE_LENGTH: number = 24;
+  export const DAFUALT_QUBE_LENGTH_POW2: number = 576;
+
   export const DEFAULT_RESTING_MAX: number = 30;
   export const DEFAULT_TOUGHNESS_RESTING_MAX: number = 30;
 

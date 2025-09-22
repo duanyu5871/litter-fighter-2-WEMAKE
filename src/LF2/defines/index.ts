@@ -32,6 +32,7 @@ export * from "./IBgLayerInfo";
 export * from "./IBotAction";
 export * from "./IBotData";
 export * from "./IBotDataSet";
+export * from "./IBotRay";
 export * from "./IBounding";
 export * from "./IBpointInfo";
 export * from "./ICpointInfo";

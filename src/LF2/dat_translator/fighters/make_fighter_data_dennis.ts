@@ -15,7 +15,7 @@ import { frames } from "./frames";
 export function make_fighter_data_dennis(data: IEntityData) {
   BotBuilder.make(data).set_actions(
     // d>a
-    bot_ball_dfa(40, 1 / 30, 50),
+    bot_ball_dfa(40, void 0, 50),
 
     // d>a+a
     bot_ball_continuation("d>a+a", 0.8, 40),
@@ -49,7 +49,7 @@ export function make_fighter_data_dennis(data: IEntityData) {
     }),
 
     // cancel_d>j
-    bot_ball_dfj(0, 1 / 30, 0, 1000)((action, cond) => {
+    bot_ball_dfj(0, void 0, 0, 1000)((action, cond) => {
       action.action_id = 'cancel_d>j'
       const ray = action.e_ray![0]
       ray.reverse = true

@@ -9,10 +9,10 @@ export function make_fighter_data_jan(data: IEntityData) {
   data.base.files['1'].variants = ['3']
   BotBuilder.make(data).set_actions(
     // d^a
-    bot_explosion_dua(150, 1 / 30, 50, 400, 160000),
+    bot_explosion_dua(150, void 0, 50, 400, 160000),
 
     // d^j
-    bot_explosion_duj(200, 1 / 30, 0, 10000)((a, c) => {
+    bot_explosion_duj(200, void 0, 0, 10000)((a, c) => {
       return a
     }),
 

@@ -7,12 +7,24 @@ export enum EntityVal {
    */
   TrendX = "trend_x",
 
+  /**
+   * 按着前或后
+   * 
+   * 可用值:
+   *    - 1: 按着“前”
+   *    - 0: 同时（按|没按）着“前”和“后” 
+   *    - -1: 按着“后”
+   */
   PressFB = "press_F_B",
+
   PressUD = "press_U_D",
+
   PressLR = "press_L_R",
 
-  /** 角色手持的武器类型 */
-  WeaponType = "weapon_type",
+  /** 
+   * 角色手持的武器类型 
+   */
+  Holding_W_Type = "holding_w_type",
 
   /**
    * 剩余血量占比(0~100)
@@ -24,7 +36,22 @@ export enum EntityVal {
   GIM_INK_ON = "gim_ink_on",
   HAS_TRANSFORM_DATA = "has_transform_data",
 
+  /**
+   * 是否抓住某物
+   * 
+   * 可用值:
+   *    - 1: 是
+   *    - 0: 否
+   */
   Catching = "catching",
+
+  /**
+   * 是否正在被抓
+   * 
+   * 可用值:
+   *    - 1: 是
+   *    - 0: 否
+   */
   CAUGHT = "caught",
 
   /**
@@ -55,7 +82,9 @@ export enum EntityVal {
   VZ = "vz",
   FrameState = "frame_state",
   Shaking = "shaking",
-  Holding = "holding"
+  Holding = "holding",
+  HpRecoverable = "hp_recoverable"
 }
 
-
+export const E_Val = EntityVal
+export type E_Val = EntityVal

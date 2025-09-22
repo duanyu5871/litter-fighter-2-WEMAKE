@@ -1,9 +1,9 @@
 import { GameKey as GK } from "../../defines";
 import { IBotAction } from "../../defines/IBotAction";
 import { bot_front_test } from "./bot_front_test";
+import { DESIRE_RATIO } from "./constants";
 import { IEditBotActionFunc } from "./IEditBotAction";
 
-const DESIRE = 0.033333 as const;
 const MIN_X = 120 as const;
 const ID = 'd>a' as const
 /**
@@ -19,7 +19,7 @@ const ID = 'd>a' as const
  */
 export function bot_ball_dfa(
   min_mp: number,
-  desire: number = DESIRE,
+  desire: number = DESIRE_RATIO,
   min_x: number = MIN_X,
   max_x?: number,
   zable?: number
@@ -36,5 +36,4 @@ export function bot_ball_dfa(
 }
 
 bot_ball_dfa.ID = ID
-bot_ball_dfa.DESIRE = DESIRE
 bot_ball_dfa.MIN_X = MIN_X

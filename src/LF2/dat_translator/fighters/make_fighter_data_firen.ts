@@ -16,13 +16,13 @@ import { frames } from "./frames";
 export function make_fighter_data_firen(data: IEntityData) {
   BotBuilder.make(data).set_actions(
     // d>a
-    bot_ball_dfa(75, 1 / 30, 50),
+    bot_ball_dfa(75, void 0, 50),
 
     // d>a+a
     bot_ball_continuation("d>a+a", 0.8, 75),
 
     // d>j
-    bot_ball_dfj(75, 1 / 30, 50, 1000)(e => {
+    bot_ball_dfj(75, void 0, 50, 1000)(e => {
       e.e_ray?.push(
         { ...e.e_ray![0], z: 0.2 },
         { ...e.e_ray![0], z: -0.2 }
@@ -31,7 +31,7 @@ export function make_fighter_data_firen(data: IEntityData) {
     }),
 
     // cancel_d>j
-    bot_ball_dfj(0, 1 / 30, 0, 1000)((action, cond) => {
+    bot_ball_dfj(0, void 0, 0, 1000)((action, cond) => {
       action.action_id = 'cancel_d>j'
       const ray = action.e_ray![0]
       ray.reverse = true
@@ -45,7 +45,7 @@ export function make_fighter_data_firen(data: IEntityData) {
     }),
 
     // dvj
-    bot_ball_dfj(75, 1 / 30, 50, 200)(action => {
+    bot_ball_dfj(75, void 0, 50, 200)(action => {
       action.action_id = 'dvj'
       action.e_ray?.push(
         { ...action.e_ray![0], z: 0.05 },
@@ -56,7 +56,7 @@ export function make_fighter_data_firen(data: IEntityData) {
     }),
 
     // cancel_dvj
-    bot_ball_dfj(0, 1 / 30, 50, 200)((action) => {
+    bot_ball_dfj(0, void 0, 50, 200)((action) => {
       action.action_id = 'cancel_dvj'
       const ray = action.e_ray![0]
       ray.reverse = true

@@ -1,7 +1,7 @@
 import { GK, IBotAction } from "../../defines";
 import { bot_front_test } from "./bot_front_test";
+import { DESIRE_RATIO } from "./constants";
 import { IEditBotActionFunc } from "./IEditBotAction";
-const DESIRE = 0.033333 as const;
 const MIN_X = 120 as const;
 const ID = 'd>j' as const
 /**
@@ -17,7 +17,7 @@ const ID = 'd>j' as const
  */
 export function bot_ball_dfj(
   min_mp: number,
-  desire: number = DESIRE,
+  desire: number = DESIRE_RATIO,
   min_x: number = MIN_X,
   max_x?: number,
   zable?: number
@@ -33,7 +33,6 @@ export function bot_ball_dfj(
   )
 }
 bot_ball_dfj.ID = ID
-bot_ball_dfj.DESIRE = DESIRE
 bot_ball_dfj.MIN_X = MIN_X
 
 

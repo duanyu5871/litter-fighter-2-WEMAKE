@@ -1,5 +1,6 @@
-import { Defines, GK, LGK, IBotAction, BotStateEnum } from "../../defines";
+import { BotStateEnum, Defines, GK, IBotAction, LGK } from "../../defines";
 import { CondMaker } from "../CondMaker";
+import { DESIRE_RATIO } from "./constants";
 import { IEditBotActionFunc } from "./IEditBotAction";
 /**
  * 停止循环的动作（BALL类）
@@ -13,7 +14,7 @@ import { IEditBotActionFunc } from "./IEditBotAction";
  * @param {(...('F' | 'B' | LGK)[])} keys
  * @return {IEditBotActionFunc} 
  */
-export function bot_ball_cancelling(action_id: string, desire: number = 0.1, ...keys: ('F' | 'B' | LGK)[]): IEditBotActionFunc {
+export function bot_ball_cancelling(action_id: string, desire: number = DESIRE_RATIO, ...keys: ('F' | 'B' | LGK)[]): IEditBotActionFunc {
   return (fn) => {
     const cond = new CondMaker();
     const ret: IBotAction = {

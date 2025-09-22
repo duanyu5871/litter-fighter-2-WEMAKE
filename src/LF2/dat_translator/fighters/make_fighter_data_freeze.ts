@@ -15,7 +15,7 @@ import { frames } from "./frames";
 export function make_fighter_data_freeze(data: IEntityData): IEntityData {
   BotBuilder.make(data).set_actions(
     // d>a
-    bot_ball_dfa(100, 1 / 30, 50)(e => {
+    bot_ball_dfa(100, void 0, 50)(e => {
       e.e_ray?.push(
         { ...e.e_ray![0], z: 0.3 },
         { ...e.e_ray![0], z: -0.3 }
@@ -24,7 +24,7 @@ export function make_fighter_data_freeze(data: IEntityData): IEntityData {
     }),
 
     // d>j
-    bot_ball_dfj(150, 1 / 30, 50, 300)(e => {
+    bot_ball_dfj(150, void 0, 50, 300)(e => {
       e.e_ray?.push(
         { ...e.e_ray![0], z: 0.2 },
         { ...e.e_ray![0], z: -0.2 }
@@ -39,7 +39,7 @@ export function make_fighter_data_freeze(data: IEntityData): IEntityData {
     }),
 
     // d^j
-    bot_explosion_duj(300, 1 / 30, -110, 150, 1600),
+    bot_explosion_duj(300, void 0, -110, 150, 1600),
 
   ).set_frames(
     [

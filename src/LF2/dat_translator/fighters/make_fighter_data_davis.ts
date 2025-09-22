@@ -13,7 +13,7 @@ import { frames } from "./frames";
 export function make_fighter_data_davis(data: IEntityData) {
   BotBuilder.make(data).set_actions(
     // d>a
-    bot_ball_dfa(50, 1 / 30, 50),
+    bot_ball_dfa(50, void 0, 50),
 
     // d>a+a
     bot_ball_continuation("d>a+a", probability(3, 0.8), 50),

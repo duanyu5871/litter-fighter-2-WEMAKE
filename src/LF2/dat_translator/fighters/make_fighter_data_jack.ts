@@ -12,7 +12,7 @@ import { frames } from "./frames";
 export function make_fighter_data_jack(data: IEntityData) {
   BotBuilder.make(data).set_actions(
     // d>a
-    bot_ball_dfa(40, 1 / 30, 50),
+    bot_ball_dfa(40, void 0, 50),
 
     // d>a+d>a
     bot_ball_continuation("d>a+d>a", probability(3, 0.3), 40, GK.d, 'F', GK.a),

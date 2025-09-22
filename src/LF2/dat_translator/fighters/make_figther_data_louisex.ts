@@ -14,11 +14,11 @@ export function make_figther_data_louisex(data: IEntityData): IEntityData {
   data.base.group = ensure(data.base.group, EntityGroup.Boss);
   BotBuilder.make(data).set_actions(
     // d>a
-    bot_ball_dfa(100, 1 / 30, 150, 400),
+    bot_ball_dfa(100, void 0, 150, 400),
     // `d>a+a`
     bot_ball_continuation(`d>a+a`, 0.5, 100),
     // d^j
-    bot_uppercut_dva(0, 1 / 30, -10, 120),
+    bot_uppercut_dva(0, void 0, -10, 120),
   ).set_frames(
     [
       ...frames.standings,

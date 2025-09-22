@@ -1,0 +1,1 @@
+export const DESIRE_RATIO = 0.033333 as const;

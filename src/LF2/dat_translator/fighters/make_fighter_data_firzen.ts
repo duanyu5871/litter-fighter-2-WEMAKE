@@ -21,16 +21,16 @@ export function make_fighter_data_firzen(data: IEntityData) {
 
   BotBuilder.make(data).set_actions(
     // d^a
-    bot_ball_dfj(50, 1 / 30),
+    bot_ball_dfj(50, void 0),
 
     // d^j
-    bot_explosion_duj(250, 1 / 30, -500, 500, 500),
+    bot_explosion_duj(250, void 0, -500, 500, 500),
 
     // ball cancell
     bot_ball_cancelling('cancel_d>j'),
 
     // disaster
-    bot_explosion_dua(100, 1 / 30, -700, 700, 500),
+    bot_explosion_dua(100, void 0, -700, 700, 500),
 
     // disaster + ...a
     bot_chasing_action('d^a+a', ['a'], void 0, probability(2, 0.1))

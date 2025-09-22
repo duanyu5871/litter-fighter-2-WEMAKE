@@ -15,9 +15,9 @@ export function make_fighter_data_bat(data: IEntityData) {
 
   BotBuilder.make(data).set_actions(
     // laser_eyes
-    bot_ball_dfa(25, 1 / 30),
+    bot_ball_dfa(25, void 0),
     // fast_punch
-    bot_ball_dfj(50, 1 / 30, 50, 120),
+    bot_ball_dfj(50, void 0, 50, 120),
     // bats
     bot_chasing_skill_action('d^j', void 0, 200, 0.05),
     // catching + fast_punch

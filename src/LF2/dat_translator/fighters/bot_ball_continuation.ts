@@ -1,10 +1,11 @@
 import { BotStateEnum, Defines, EntityVal, GK, IBotAction, LGK } from "../../defines";
 import { CondMaker } from "../CondMaker";
+import { DESIRE_RATIO } from "./constants";
 import { IEditBotActionFunc } from "./IEditBotAction";
 
 export function bot_ball_continuation(
   action_id: string,
-  desire: number = 0.1,
+  desire: number = DESIRE_RATIO,
   mp: number = 0,
   ...keys: ("F" | "B" | LGK)[]
 ): IEditBotActionFunc {
