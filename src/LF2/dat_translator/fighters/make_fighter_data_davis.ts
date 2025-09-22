@@ -19,10 +19,10 @@ export function make_fighter_data_davis(data: IEntityData) {
     bot_ball_continuation("d>a+a", probability(3, 0.8), 50),
 
     // d^a
-    bot_uppercut_dua(225, bot_uppercut_dua.DESIRE, bot_uppercut_dua.MIN_X, bot_uppercut_dua.MAX_X),
+    bot_uppercut_dua(225, void 0, bot_uppercut_dua.MIN_X, bot_uppercut_dua.MAX_X),
 
     // dva
-    bot_uppercut_dva(75, bot_uppercut_dva.DESIRE, bot_uppercut_dva.MIN_X, bot_uppercut_dva.MAX_X),
+    bot_uppercut_dva(75, void 0, bot_uppercut_dva.MIN_X, bot_uppercut_dva.MAX_X),
 
     // dva+j
     bot_uppercut_dva(
@@ -38,7 +38,7 @@ export function make_fighter_data_davis(data: IEntityData) {
     }),
 
     // "d^j"
-    bot_uppercut_dva(25, bot_uppercut_dva.DESIRE, bot_uppercut_dva.MAX_X, bot_uppercut_dva.MIN_X + bot_uppercut_dva.MAX_X)((action) => {
+    bot_uppercut_dva(25, void 0, bot_uppercut_dva.MAX_X, bot_uppercut_dva.MIN_X + bot_uppercut_dva.MAX_X)((action) => {
       action.action_id = "d^j";
       action.keys = [GameKey.d, GameKey.U, GameKey.j];
       return action;

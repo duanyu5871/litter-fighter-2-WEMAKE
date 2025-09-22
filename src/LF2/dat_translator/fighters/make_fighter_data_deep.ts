@@ -19,13 +19,13 @@ export function make_fighter_data_deep(data: IEntityData) {
     bot_ball_continuation("d>a+a", 0.5, 75),
 
     // d>j
-    bot_ball_dfj(150, bot_ball_dfj.DESIRE, 50, 200),
+    bot_ball_dfj(150, void 0, 50, 200),
 
     // catching_d>j
     bot_chasing_skill_action('d>j', 'catching_d>j', 150),
 
     // dva
-    bot_uppercut_dva(75, bot_uppercut_dva.DESIRE, bot_uppercut_dva.MIN_X, bot_uppercut_dva.MAX_X),
+    bot_uppercut_dva(75, void 0, bot_uppercut_dva.MIN_X, bot_uppercut_dva.MAX_X),
 
     // dva+a
     bot_uppercut_dva(75, 1, bot_uppercut_dva.MIN_X, bot_uppercut_dva.MAX_X)((action, cond) => {
@@ -49,7 +49,7 @@ export function make_fighter_data_deep(data: IEntityData) {
     }),
 
     // "d^j"
-    bot_uppercut_dva(0, bot_uppercut_dva.DESIRE, bot_uppercut_dva.MAX_X, bot_uppercut_dva.MIN_X + bot_uppercut_dva.MAX_X)((action) => {
+    bot_uppercut_dva(0, void 0, bot_uppercut_dva.MAX_X, bot_uppercut_dva.MIN_X + bot_uppercut_dva.MAX_X)((action) => {
       action.action_id = "d^j";
       action.keys = [GameKey.d, GameKey.U, GameKey.j];
       return action;

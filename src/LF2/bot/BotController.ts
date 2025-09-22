@@ -249,14 +249,17 @@ export class BotController extends BaseController implements Required<IBotDataSe
     if (!hit) return 0;
 
     if (itrs?.length) {
+      let has_atk_itr_kind = false;
       let just_a_rest = true
       for (const itr of itrs) {
         if (!ATTCKING_ITR_KINDS.some(v => itr.kind === v)) continue;
+        has_atk_itr_kind = true;
         if (Defines.DEFAULT_FORCE_BREAK_DEFEND_VALUE === itr.bdefend) {
           return 2;
         }
         if (itr.vrest) just_a_rest = false
       }
+      if (!has_atk_itr_kind) return 0;
       if (just_a_rest && e.a_rest) return 0;
     }
     return 1;

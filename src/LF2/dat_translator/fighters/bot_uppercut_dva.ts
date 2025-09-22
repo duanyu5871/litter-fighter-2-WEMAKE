@@ -40,6 +40,5 @@ export function bot_uppercut_dva(
   };
 }
 bot_uppercut_dva.ID = ID
-bot_uppercut_dva.DESIRE = DESIRE_RATIO
 bot_uppercut_dva.MIN_X = MIN_X
 bot_uppercut_dva.MAX_X = MAX_X

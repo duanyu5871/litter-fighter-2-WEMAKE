@@ -8,4 +8,7 @@ export enum BotVal {
   EnemyDiffY = "enemy_diff_y",
   EnemyX = "enemy_x",
   EnemyDiffX = "enemy_diff_x",
+  EnemyState = "enemy_state",
+  /** 是否处于比较安全的位置 */
+  Safe = "safe",
 }

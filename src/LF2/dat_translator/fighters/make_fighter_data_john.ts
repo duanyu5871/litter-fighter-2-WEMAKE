@@ -1,4 +1,4 @@
-import { EntityVal as E_Val, GK, IEntityData } from "../../defines";
+import { BotStateEnum, BotVal, EntityVal as E_Val, GK, IEntityData, StateEnum } from "../../defines";
 import { bot_ball_dfa } from "./bot_ball_dfa";
 import { bot_ball_dfj } from "./bot_ball_dfj";
 import { bot_chasing_action } from "./bot_chasing_action";
@@ -17,18 +17,42 @@ export function make_fighter_data_john(data: IEntityData) {
     bot_chasing_action('d^a', [GK.Defend, GK.Up, GK.Attack], 250),
     // dvj
     bot_idle_action('dvj', [GK.Defend, GK.Down, GK.Jump], 350)((a, c) => {
-      a.expression = c.add(E_Val.HpRecoverable, '>', '10').done()
+      a.status = [BotStateEnum.Idle, BotStateEnum.Chasing, BotStateEnum.Avoiding]
+      a.expression = c.add(E_Val.HpRecoverable, '>=', 50).and(BotVal.Safe, '==', 1).done()
       return a;
     }),
     // d^j
-    bot_idle_action('d^j', [GK.Defend, GK.Up, GK.Jump], 350),
+    bot_idle_action('d^j', [GK.Defend, GK.Up, GK.Jump], 350)((a, c) => {
+      // todo, need ally test
+      a.status = [BotStateEnum.Idle, BotStateEnum.Chasing, BotStateEnum.Avoiding]
+      a.expression = c.add(E_Val.HpRecoverable, '>=', 50).and(BotVal.Safe, '==', 1).done()
+      return a;
+    }),
 
+    //s_punch+j
+    bot_chasing_action('s_punch+j', [GK.Jump])((a, c) => {
+      a.expression = c.add(BotVal.EnemyState, '==', StateEnum.Falling).done()
+      return a;
+    }),
+    //s_punch+d>a
+    bot_chasing_action('s_punch+d>a', [GK.Defend, 'F', GK.Attack])((a, c) => {
+      a.expression = c.add(BotVal.EnemyState, '==', StateEnum.Falling).done()
+      return a;
+    }),
+    //s_punch+d>j
+    bot_chasing_action('s_punch+d>j', [GK.Defend, 'F', GK.Jump])((a, c) => {
+      a.expression = c.add(BotVal.EnemyState, '==', StateEnum.BrokenDefend).done()
+      return a;
+    })
   ).set_frames(
     [
       ...frames.standings,
       ...frames.walkings
     ],
     ['d>a', 'd>j', 'd^a', 'd^j', 'dvj']
+  ).set_frames(
+    frames.super_punch,
+    ['s_punch+j', 's_punch+d>a', 's_punch+d>j']
   );
   return data;
 }

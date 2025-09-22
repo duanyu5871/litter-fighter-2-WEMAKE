@@ -1,8 +1,8 @@
-import { IEntityData, GK } from "../../defines";
-import { arithmetic_progression } from "../../utils";
+import { BotStateEnum, BotVal, EntityVal as E_Val, GK, IEntityData, StateEnum } from "../../defines";
 import { bot_ball_dfa } from "./bot_ball_dfa";
+import { bot_ball_dfj } from "./bot_ball_dfj";
 import { bot_chasing_action } from "./bot_chasing_action";
-import { bot_front_test } from "./bot_front_test";
+import { bot_idle_action } from "./bot_idle_action";
 import { BotBuilder } from "./BotBuilder";
 import { frames } from "./frames";
 
@@ -10,26 +10,28 @@ import { frames } from "./frames";
 export function make_fighter_data_sorcerer(data: IEntityData) {
   BotBuilder.make(data).set_actions(
     // d>a
-    bot_ball_dfa(75, void 0, 50, 200),
-
-    // dva
-    bot_front_test('dva', [GK.d, GK.D, GK.a], 75, void 0, -10, 100),
-
-    // d>a+a
-    bot_chasing_action("d>a+a", [GK.a], 75, void 0)
-
+    bot_ball_dfa(75, void 0, 100, 10000),
+    // d>j
+    bot_ball_dfj(125, void 0, 100, 10000),
+    // dvj
+    bot_idle_action('dvj', [GK.Defend, GK.Down, GK.Jump], 350)((a, c) => {
+      a.status = [BotStateEnum.Idle, BotStateEnum.Chasing, BotStateEnum.Avoiding]
+      a.expression = c.add(E_Val.HpRecoverable, '>=', 50).and(BotVal.Safe, '==', 1).done()
+      return a;
+    }),
+    // d^j
+    bot_idle_action('d^j', [GK.Defend, GK.Up, GK.Jump], 350)((a, c) => {
+      // todo, need ally test
+      a.status = [BotStateEnum.Idle, BotStateEnum.Chasing, BotStateEnum.Avoiding]
+      a.expression = c.add(E_Val.HpRecoverable, '>=', 50).and(BotVal.Safe, '==', 1).done()
+      return a;
+    }),
   ).set_frames(
     [
       ...frames.standings,
       ...frames.walkings
     ],
-    ['dva', 'd>a']
-  ).set_frames(
-    frames.punchs,
-    ['dva']
-  ).set_frames(
-    arithmetic_progression(240, 246),
-    ['d>a+a']
+    ['d>a', 'd>j', 'd^j', 'dvj']
   );
   return data;
 }

@@ -7,4 +7,5 @@ export const frames = {
   runnings: arithmetic_progression(0, 3, 1).map(v => 'running_' + v),
   punchs: arithmetic_progression(60, 69),
   rowings: arithmetic_progression(103, 107),
+  super_punch: arithmetic_progression(70, 79),
 };
