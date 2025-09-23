@@ -174,8 +174,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
   readonly bgms: string[] = []
 
   get_player_character(which: string) {
-    for (const [id, player] of this.player_characters)
-      if (id === which) return player;
+    return this.player_characters.get(which)
   }
   on_click_character?: (c: Entity) => void;
 

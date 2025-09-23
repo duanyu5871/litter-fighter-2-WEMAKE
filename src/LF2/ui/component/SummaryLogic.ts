@@ -68,11 +68,26 @@ export class SummaryLogic extends UIComponent {
     },
     on_hp_changed: (e, value, prev) => {
       const team_sum = this.team_sum(e.team);
-      if (prev <= 0 && value > 0) {
-        team_sum.deads--;
-        team_sum.lives++;
-      }
       team_sum.hp += max(value, 0) - prev;
+      if (prev <= 0 && value > 0) {
+        // 复活
+        team_sum.deads--;
+        this.fighter_sum(e).deads--;
+        this.player_sum(e).deads--;
+        team_sum.lives++;
+      } else if (prev > value) {
+        // 失血
+        team_sum.hp_lost += value - prev;
+        this.fighter_sum(e).hp_lost += value - prev;
+        this.player_sum(e).hp_lost += value - prev;
+      }
+    },
+    on_mp_changed: (e, value, prev) => {
+      if (prev > value) {
+        this.team_sum(e.team).mp_usage += value - prev;
+        this.fighter_sum(e).mp_usage += value - prev;
+        this.player_sum(e).mp_usage += value - prev;
+      }
     },
     on_reserve_changed: (e, value, prev) => {
       this.team_sum(e.team).reserve += value - prev;
