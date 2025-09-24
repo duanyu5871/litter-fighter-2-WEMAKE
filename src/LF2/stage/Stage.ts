@@ -126,20 +126,18 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
 
   private _stop_bgm?: () => void;
 
-  private async play_phase_bgm() {
+  private play_phase_bgm() {
     const { phase } = this
     if (!phase) return;
-    const { lf2 } = this;
     const { music } = phase;
     if (!music) return;
-    if (!lf2.sounds.has(music)) await lf2.sounds.load(music, music);
-    if (this._disposed) return;
-    this._stop_bgm = lf2.sounds.play_bgm(music);
+    this._stop_bgm = this.lf2.sounds.play_bgm(music);
   }
 
   stop_bgm(): void {
     this._stop_bgm?.();
   }
+  
   set_phase(phase: IStagePhaseInfo | undefined) {
     if (phase === this.phase) return;
     const prev = this.phase
