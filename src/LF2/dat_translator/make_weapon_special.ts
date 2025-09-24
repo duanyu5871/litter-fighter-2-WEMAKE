@@ -27,8 +27,9 @@ export function make_weapon_special(data: IEntityData) {
     return frame_ids.map((frame_id, idx) => {
       return {
         kind: OpointKind.Normal,
-        x: 24,
-        y: 24,
+        x: 0,
+        y: 0,
+        origin_type: 1,
         action: { id: frame_id },
         oid: "999",
         ...aa[idx % aa.length],

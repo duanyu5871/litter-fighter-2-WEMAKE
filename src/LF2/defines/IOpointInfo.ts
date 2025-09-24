@@ -26,6 +26,8 @@ export interface IOpointInfo {
    */
   y: number;
 
+  origin_type?: number;
+
   z?: number;
   /**
    * 实体数据ID

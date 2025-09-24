@@ -780,7 +780,7 @@ export class Entity implements IDebugging {
     this._emitter = emitter;
     this._emitter_opoint = opoint;
 
-    const shotter_frame = emitter.frame;
+    const emitter_frame = emitter.frame;
     if (
       emitter.frame.state === StateEnum.Ball_Rebounding ||
       emitter.frame.state === StateEnum.Ball_Flying
@@ -791,15 +791,22 @@ export class Entity implements IDebugging {
       this.team = emitter.team;
       this.facing = emitter.facing;
     }
-
+    const { origin_type } = opoint
     let { x, y, z } = emitter.position;
-    y = y + shotter_frame.centery - opoint.y;
-    x = x - emitter.facing * (shotter_frame.centerx - opoint.x);
+    if (origin_type === 1) {
+      y = y - opoint.y;
+      x = x + emitter.facing * opoint.x;
+    } else {
+      y = y + emitter_frame.centery - opoint.y;
+      x = x - emitter.facing * (emitter_frame.centerx - opoint.x);
+    }
+
     this.position.set(
       round(x),
       round(y),
       round(z + (opoint.z ?? 0))
     );
+
     const result = this.get_next_frame(opoint.action);
     facing = result?.which.facing
       ? this.handle_facing_flag(result.which.facing)
