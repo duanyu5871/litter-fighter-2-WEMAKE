@@ -21,7 +21,7 @@ export function handle_itr_kind_whirlwind(c: ICollision) {
         case StateEnum.HeavyWeapon_InTheSky:
           break;
         default:
-          victim.next_frame = { id: victim.data.indexes?.in_the_sky };
+          victim.next_frame = { id: victim.data.indexes?.in_the_skys?.[0] };
           break;
       }
       break;

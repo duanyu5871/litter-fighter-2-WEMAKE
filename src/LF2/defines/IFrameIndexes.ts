@@ -8,7 +8,7 @@ export interface IFrameIndexes {
   dizzy?: string;
   picking_heavy?: string;
   picking_light?: string;
-  in_the_sky?: string;
+  in_the_skys?: string[];
   falling?: TFrameIdListPair;
 
   /**

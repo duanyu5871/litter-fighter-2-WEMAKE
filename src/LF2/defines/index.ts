@@ -38,6 +38,7 @@ export * from "./IBpointInfo";
 export * from "./ICpointInfo";
 export * from "./IDataLists";
 export * from "./IDatIndex";
+export * from "./IDrinkInfo";
 export * from "./IEntityData";
 export * from "./IEntityInfo";
 export * from "./IFrameInfo";
@@ -67,4 +68,3 @@ export * from "./SpeedMode";
 export * from "./StateEnum";
 export * from "./TAction";
 export * from "./WeaponType";
-

@@ -20,7 +20,7 @@ export function handle_itr_kind_magic_flute(collision: ICollision): void {
         case StateEnum.HeavyWeapon_InTheSky:
           break;
         default:
-          victim.next_frame = { id: victim.data.indexes?.in_the_sky };
+          victim.next_frame = { id: victim.data.indexes?.in_the_skys?.[0] };
           break;
       }
   }

@@ -3,7 +3,7 @@ import type { IArmorInfo } from "./IArmorInfo";
 import type { IOpointInfo } from "./IOpointInfo";
 import type { ILegacyPictureInfo } from "./ILegacyPictureInfo";
 import type { IBotData } from "./IBotData";
-
+import type { IDrinkInfo } from "./IDrinkInfo";
 export interface IEntityInfo {
   type?: number;
 
@@ -140,17 +140,7 @@ export interface IEntityInfo {
   /**
    * 
    */
-  drink?: {
-    hp_h_total?: number
-    hp_h_value?: number
-    hp_h_ticks?: number
-    hp_r_total?: number
-    hp_r_value?: number
-    hp_r_ticks?: number
-    mp_h_total?: number
-    mp_h_value?: number
-    mp_h_ticks?: number
-  }
+  drink?: IDrinkInfo
 
   /**
    * 落地伤害

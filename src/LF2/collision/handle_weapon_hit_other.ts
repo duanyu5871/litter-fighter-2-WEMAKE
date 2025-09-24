@@ -13,5 +13,5 @@ export function handle_weapon_hit_other(collision: ICollision): void {
     attacker.velocity_0.y = 0.3 * attacker.velocity_0.y;
     attacker.velocity_0.z = 0.3 * attacker.velocity_0.z;
   }
-  attacker.next_frame = { id: attacker.data.indexes?.in_the_sky };
+  attacker.next_frame = { id: attacker.data.indexes?.in_the_skys?.[0] };
 }

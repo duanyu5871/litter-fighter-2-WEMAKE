@@ -62,7 +62,7 @@
         "220"
       ]
     },
-    "in_the_sky": "212",
+    "in_the_skys": ["212"],
     "critical_hit": {
       "1": [
         "186"

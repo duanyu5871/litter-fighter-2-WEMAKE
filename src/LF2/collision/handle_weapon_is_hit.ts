@@ -26,7 +26,8 @@ export function handle_weapon_is_hit(collision: ICollision): void {
       victim.velocity_0.x = vx;
       victim.velocity_0.y = vy;
       victim.team = attacker.team;
-      victim.next_frame = { id: victim.data.indexes?.in_the_sky };
+
+      victim.next_frame = { id: victim.lf2.random_get(victim.data.indexes?.in_the_skys) };
     }
   } else {
     const vx = itr.dvx ? itr.dvx * attacker.facing : 0;
@@ -34,6 +35,6 @@ export function handle_weapon_is_hit(collision: ICollision): void {
     victim.velocity_0.x = vx;
     victim.velocity_0.y = vy;
     victim.team = attacker.team;
-    victim.next_frame = { id: victim.data.indexes?.in_the_sky };
+    victim.next_frame = { id: victim.lf2.random_get(victim.data.indexes?.in_the_skys) };
   }
 }

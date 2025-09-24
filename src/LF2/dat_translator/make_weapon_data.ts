@@ -1,49 +1,44 @@
-import { Builtin_FrameId, IEntityInfo, WeaponType } from "../defines";
+import { Builtin_FrameId, IEntityInfo, StateEnum, WeaponType } from "../defines";
 import { EntityEnum } from "../defines/EntityEnum";
 import { IEntityData } from "../defines/IEntityData";
 import { IFrameIndexes } from "../defines/IFrameIndexes";
 import { IFrameInfo } from "../defines/IFrameInfo";
+import { traversal } from "../utils/container_help/traversal";
 import { make_itr_prefabs } from "./make_itr_prefabs";
 import { take } from "./take";
 
 const indexes_map: Record<WeaponType, IFrameIndexes> = {
   [WeaponType.None]: {
-    in_the_sky: "",
     on_ground: "",
     just_on_ground: "",
     throw_on_ground: "",
     throwing: "",
   },
   [WeaponType.Stick]: {
-    in_the_sky: "0",
     on_ground: "60",
     just_on_ground: "70",
     throw_on_ground: "71",
     throwing: "40",
   },
   [WeaponType.Heavy]: {
-    in_the_sky: "0",
     on_ground: "20",
     just_on_ground: "21",
     throw_on_ground: "71",
     throwing: "0",
   },
   [WeaponType.Knife]: {
-    in_the_sky: "0",
     on_ground: "60",
     just_on_ground: "70",
     throw_on_ground: "71",
     throwing: "40",
   },
   [WeaponType.Baseball]: {
-    in_the_sky: "0",
     on_ground: "60",
     just_on_ground: "70",
     throw_on_ground: "71",
     throwing: "40",
   },
   [WeaponType.Drink]: {
-    in_the_sky: "0",
     on_ground: "60",
     just_on_ground: "70",
     throw_on_ground: "71",
@@ -75,6 +70,14 @@ export function make_weapon_data(
   const weapon_hp = take(info, "weapon_hp");
   if (weapon_hp && Number(weapon_hp)) info.hp = Number(weapon_hp);
 
+  const in_the_skys: string[] = []
+  traversal(frames, (k, v) => {
+    if (
+      v.state === StateEnum.Weapon_InTheSky ||
+      v.state === StateEnum.HeavyWeapon_InTheSky
+    ) in_the_skys.push(k)
+  })
+  indexes.in_the_skys = in_the_skys
   return {
     id: "",
     on_dead: { id: Builtin_FrameId.Gone },

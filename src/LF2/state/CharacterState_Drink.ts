@@ -1,6 +1,6 @@
 import { Defines, StateEnum } from "../defines";
 import { Entity } from "../entity/Entity";
-import { is_weapon } from "../entity/type_check";
+import { min } from "../utils";
 import CharacterState_Base from "./CharacterState_Base";
 
 export class CharacterState_Drink extends CharacterState_Base {
@@ -9,52 +9,34 @@ export class CharacterState_Drink extends CharacterState_Base {
   }
   override update(e: Entity): void {
     super.update(e);
-    // FIXME: 更通用的补充机制。而不是写死。 -Gim
-    if (e.holding) {
-      e.holding.mp -= 1;
-      if (e.holding.data.id === "122") {
-        const next_hp = e.hp + 2;
-        if (next_hp < e.hp_max) {
-          e.hp = next_hp;
-        } else {
-          e.hp = e.hp_max;
-        }
+    const holding = e.holding;
+    const drink = e.holding?.drink
+    if (!holding || !drink) return;
 
-        const next_hp_r = e.hp_r + 1;
-        if (next_hp_r < e.hp_max) {
-          e.hp_r = next_hp_r;
-        } else {
-          e.hp_r = e.hp_max;
-        }
+    const { hp_h_empty, hp_r_empty, mp_h_empty } = drink
+    if (!hp_h_empty && drink.hp_h_ticks.add()) {
+      e.hp = min(e.hp_max, e.hp + drink.hp_h_value)
+      drink.hp_h += drink.hp_h_value
+    }
+    if (!hp_r_empty && drink.hp_r_ticks.add()) {
+      e.hp_r = min(e.hp_max, e.hp_r + drink.hp_r_value)
+      drink.hp_r += drink.hp_r_value
+    }
+    if (!mp_h_empty && drink.mp_h_ticks.add()) {
+      e.mp = min(e.mp_max, e.mp + drink.mp_h_value)
+      drink.mp_h += drink.mp_h_value
+    }
+    if (hp_h_empty && hp_r_empty && mp_h_empty) {
 
-        const next_mp = e.mp + 0.25;
-        if (next_mp < e.mp_max) {
-          e.mp = next_mp;
-        } else {
-          e.mp = e.mp_max;
-        }
+      holding.enter_frame({ id: holding.lf2.random_get(holding.data.indexes?.in_the_skys) });
+      holding.hp = holding.hp_r = 1;
+      holding.velocities.length = 1;
+      holding.velocity_0.set(3 * e.facing, 4, 0);
+      holding.holder = void 0;
+      holding.follow_holder();
 
-      } else if (e.holding.data.id === "123") {
-        const next_mp = e.mp + 5;
-        if (next_mp < e.mp_max) {
-          e.mp = next_mp;
-        } else {
-          e.mp = e.mp_max;
-        }
-      }
-      if (e.holding.mp <= 0) {
-        e.holding.hp = 1;
-
-        if (is_weapon(e.holding)) {
-          e.holding.enter_frame({ id: e.holding.data.indexes?.in_the_sky });
-          e.holding.velocities.length = 1;
-          e.holding.velocity_0.set(3 * e.facing, 4, 0);
-          e.holding.holder = void 0;
-          e.holding.follow_holder();
-          e.holding = void 0;
-        }
-        e.enter_frame(Defines.NEXT_FRAME_AUTO);
-      }
+      e.holding = void 0;
+      e.enter_frame(Defines.NEXT_FRAME_AUTO);
     }
   }
 }

@@ -751,7 +751,7 @@ export function make_character_data(
       [-1]: ["220"],
       1: ["222"],
     },
-    in_the_sky: "212",
+    in_the_skys: ["212"],
     critical_hit: {
       [-1]: ["180"],
       1: ["186"],

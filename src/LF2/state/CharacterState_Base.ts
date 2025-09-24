@@ -18,7 +18,7 @@ export default class CharacterState_Base extends State_Base {
     if (e.holding?.data.base.type === WeaponType.Heavy) {
       fid = e.data.indexes?.heavy_obj_walk?.[0];
     } else if (e.position.y > 0) {
-      fid = e.data.indexes?.in_the_sky?.[0];
+      fid = e.data.indexes?.in_the_skys?.[0];
     } else if (e.hp > 0) {
       fid = e.data.indexes?.standing;
     } else {

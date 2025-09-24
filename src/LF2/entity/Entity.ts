@@ -27,12 +27,13 @@ import { Times } from "../ui/utils/Times";
 import { abs, find, floor, intersection, max, min, round } from "../utils";
 import { cross_bounding } from "../utils/cross_bounding";
 import { is_num, is_positive, is_str } from "../utils/type_check";
+import { DrinkInfo } from "./DrinkInfo";
 import { Factory } from "./Factory";
 import type IEntityCallbacks from "./IEntityCallbacks";
 import { calc_v } from "./calc_v";
 import { turn_face } from "./face_helper";
 import { IDebugging, make_debugging } from "./make_debugging";
-import { is_bot_ctrl, is_character, is_local_ctrl, is_weapon_data } from "./type_check";
+import { is_character, is_local_ctrl, is_weapon_data } from "./type_check";
 export type TData = IBaseData | IEntityData;
 export class Entity implements IDebugging {
 
@@ -58,6 +59,7 @@ export class Entity implements IDebugging {
 
   readonly world: World;
   readonly position = new Ditto.Vector3(0, 0, 0);
+  drink: DrinkInfo | undefined;
   get data(): IEntityData { return this._data };
   get group() { return this._data.base.group };
   get is_attach() { return this._is_attach }
@@ -687,6 +689,7 @@ export class Entity implements IDebugging {
     this._mp = this._mp_max;
     this._catch_time = this._catch_time_max;
     make_debugging(this)
+    this.drink = data.base.drink ? new DrinkInfo(data.base.drink) : void 0
   }
   set_holder(v: Entity | undefined): this {
     if (this._holder === v) return this;
@@ -1363,7 +1366,7 @@ export class Entity implements IDebugging {
   drop_holding(): void {
     if (!this.holding) return;
     this.holding.follow_holder();
-    this.holding.enter_frame({ id: this._data.indexes?.in_the_sky });
+    this.holding.enter_frame({ id: this.lf2.random_get(this.holding.data.indexes?.in_the_skys) });
     this.holding.holder = void 0;
     this.holding = void 0;
   }
