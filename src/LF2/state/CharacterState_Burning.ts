@@ -1,24 +1,38 @@
 
-import { StateEnum } from "../defines";
+import { IFrameInfo, StateEnum } from "../defines";
 import type { Entity } from "../entity/Entity";
+import { abs } from "../utils/math";
 import CharacterState_Base from "./CharacterState_Base";
 
 export default class CharacterState_Burning extends CharacterState_Base {
+  private _bouncings = new Set<Entity>()
   constructor() {
     super(StateEnum.Burning)
   }
   override update(e: Entity): void {
     super.update(e);
-    if (e.fall_value <= 0) e.facing = e.velocity_0.x > 0 ? -1 : 1;
+    const vx = e.velocity.x
+    if (vx) e.facing = vx > 0 ? -1 : 1;
+  }
+  override leave(e: Entity, next_frame: IFrameInfo): void {
+    super.leave(e, next_frame);
+    this._bouncings.delete(e)
   }
   override on_landing(e: Entity): void {
-    const { y: vy } = e.velocity;
+    const { y: vy, x: vx } = e.velocity;
     const {
       data: { indexes },
     } = e;
-    if (vy <= -4) {
+    if (
+      !this._bouncings.has(e) && (
+        vy <= e.world.cha_bc_tst_spd_y ||
+        abs(vx) > e.world.cha_bc_tst_spd_x
+      )
+    ) {
       e.enter_frame({ id: indexes?.bouncing?.[-1][1] });
-      e.velocity_0.y = 2;
+      e.merge_velocities()
+      e.velocity_0.y = e.world.cha_bc_spd;
+      this._bouncings.add(e)
     } else {
       e.enter_frame({ id: indexes?.lying?.[-1] });
     }

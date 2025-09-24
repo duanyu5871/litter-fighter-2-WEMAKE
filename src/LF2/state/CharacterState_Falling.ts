@@ -5,8 +5,8 @@ import { abs } from "../utils";
 import CharacterState_Base from "./CharacterState_Base";
 
 export default class CharacterState_Falling extends CharacterState_Base {
-  _bouncing_frames_map = new Map<string, Set<string>>();
-  _bouncings = new Set<Entity>()
+  private _bouncing_frames_map = new Map<string, Set<string>>();
+  private _bouncings = new Set<Entity>()
   constructor(state: StateEnum = StateEnum.Falling) {
     super(state)
   }
@@ -71,11 +71,12 @@ export default class CharacterState_Falling extends CharacterState_Base {
       !this._bouncings.has(e) && (
         vy <= e.world.cha_bc_tst_spd_y ||
         abs(vx) > e.world.cha_bc_tst_spd_x
-      )) {
-      this._bouncings.add(e)
+      )
+    ) {
       e.enter_frame({ id: indexes?.bouncing?.[d][1] });
       e.merge_velocities()
       e.velocity_0.y = e.world.cha_bc_spd;
+      this._bouncings.add(e)
     } else {
       e.enter_frame({ id: indexes?.lying?.[d] });
     }
