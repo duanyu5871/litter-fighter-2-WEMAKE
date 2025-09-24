@@ -49,6 +49,9 @@ export class StateBase_Proxy extends State_Base implements Required<State_Base> 
   override on_landing(e: Entity): void {
     return this.get_proxy(e).on_landing?.(e);
   }
+  override on_dead(e: Entity): void {
+    return this.get_proxy(e).on_dead?.(e);
+  }
   override get_auto_frame(e: Entity): IFrameInfo | undefined {
     return this.get_proxy(e).get_auto_frame?.(e);
   }
