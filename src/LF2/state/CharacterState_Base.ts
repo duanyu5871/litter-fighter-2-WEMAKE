@@ -4,7 +4,16 @@ import State_Base from "./State_Base";
 
 export default class CharacterState_Base extends State_Base {
   override pre_update(e: Entity): void {
-    e.update_resting();
+    switch (this.state) {
+      case StateEnum.Falling:
+      case StateEnum.Caught:
+      case StateEnum.Injured:
+      case StateEnum.Frozen:
+      case StateEnum.Burning:
+        break;
+      default:
+        e.update_resting();
+    }
   }
   override update(e: Entity): void {
     super.update(e)

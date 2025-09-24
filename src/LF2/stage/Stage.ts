@@ -69,7 +69,18 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
     const world_stage = this.world.stage;
     if (world_stage && this.world.bg.data.id === data.id)
       return this._bg = this.world.bg
-    return this._bg = new Background(this.world, data);
+
+    this._bg = new Background(this.world, data)
+    this.left = this.cam_l = this.player_l = this.enemy_l = this._bg.left
+    this.right = this.cam_r = this.player_r = this.enemy_r = this._bg.right
+    this.near = this._bg.near;
+    this.far = this._bg.far;
+    this.width = this._bg.width;
+    this.depth = this._bg.depth;
+    this.middle = this._bg.middle;
+    this.drink_l = -1000;
+    this.drink_r = this.bg.width + 1000
+    return this._bg;
   }
   constructor(world: World, data: IStageInfo | IBgData) {
     this.world = world;
@@ -137,13 +148,13 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
   stop_bgm(): void {
     this._stop_bgm?.();
   }
-  
+
   set_phase(phase: IStagePhaseInfo | undefined) {
     if (phase === this.phase) return;
     const prev = this.phase
     this.callbacks.emit("on_phase_changed")(this, this.phase = phase, prev);
-    this.player_l = this.cam_l = this.enemy_l = 0
-    this.player_r = this.cam_r = this.enemy_r = this.bg.right
+    this.player_l = 0
+    this.player_r = this.bg.right
     if (!phase) return;
     const { objects, respawn, health_up, mp_up } = phase;
     const hp_recovery = health_up?.[this.lf2.difficulty] || 0;
@@ -325,16 +336,19 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
   }
   /** 节是否结束 */
   get is_stage_finish(): boolean {
-    const l = this.phases.length
-    return !!l && this.phase_idx >= l;
+    return this.phase_idx === -1;
   }
   /** 是否应该进入下一关 */
   get should_goto_next_stage(): boolean {
     if (!this.next_stage) return false;
-    if (this.next_stage.chapter === this.data.chapter) {
-      return !find(this.world.entities, e => is_character(e) && e.hp > 0 && e.position.x < this.cam_r)
+    if (this.next_stage.chapter !== this.data.chapter)
+      return false;
+    for (const e of this.world.entities) {
+      if (is_character(e) && e.hp > 0 && e.position.x < this.cam_r) {
+        return false;
+      }
     }
-    return false;
+    return true
   }
 
   update() {

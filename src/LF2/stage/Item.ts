@@ -46,7 +46,7 @@ export default class Item {
       } else {
         this.dispose();
       }
-      if (this.stage.all_enemies_dead()) {
+      if (this.stage.all_enemies_dead() && this.stage.phase_idx >= 0) {
         this.stage.enter_phase(this.stage.phase_idx + 1);
       }
     },

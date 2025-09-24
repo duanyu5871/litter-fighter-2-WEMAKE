@@ -7,6 +7,7 @@ import CharacterState_Dash from "./CharacterState_Dash";
 import { CharacterState_Drink } from "./CharacterState_Drink";
 import CharacterState_Falling from "./CharacterState_Falling";
 import CharacterState_Frozen from "./CharacterState_Frozen";
+import { CharacterState_Injured } from "./CharacterState_Injured";
 import CharacterState_Jump from "./CharacterState_Jump";
 import CharacterState_Lying from "./CharacterState_Lying";
 import { CharacterState_Rowing } from "./CharacterState_Rowing";
@@ -73,6 +74,7 @@ ENTITY_STATES.add(
   new CharacterState_Frozen(),
   new CharacterState_Lying(),
   new CharacterState_Caught(),
+  new CharacterState_Injured(),
   new CharacterState_Base(StateEnum.Z_Moveable),
   new CharacterState_Teleport2NearestEnemy(),
   new CharacterState_Teleport2FarthestAlly(),

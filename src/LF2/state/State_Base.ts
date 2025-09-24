@@ -27,6 +27,7 @@ export class State_Base {
         break;
     }
   }
+  on_dead?(e: Entity): void;
   on_landing?(e: Entity): void;
   get_gravity(e: Entity): number {
     return e.world.gravity;

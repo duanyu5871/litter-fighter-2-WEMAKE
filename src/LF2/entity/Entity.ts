@@ -485,8 +485,9 @@ export class Entity implements IDebugging {
     if (o === v) return;
     this._callbacks.emit("on_hp_changed")(this, (this._hp = v), o);
     if (o > 0 && v <= 0) {
-      this._callbacks.emit("on_dead")(this);
 
+      this._callbacks.emit("on_dead")(this);
+      this.state?.on_dead?.(this);
       if (this._data.base.brokens?.length) {
         this.apply_opoints(this._data.base.brokens);
         this.play_sound(this._data.base.dead_sounds);
@@ -1337,15 +1338,7 @@ export class Entity implements IDebugging {
   }
 
   update_resting() {
-    const s = this.state?.state;
-    const should_recover_toughness = !(
-      StateEnum.Falling === s ||
-      StateEnum.Caught === s ||
-      StateEnum.Injured === s ||
-      StateEnum.Frozen === s ||
-      StateEnum.Burning === s
-    ) && this.resting <= 0
-    if (should_recover_toughness) {
+    if (this.resting <= 0) {
       if (this.toughness_resting > 0) {
         this.toughness_resting--;
       } else if (this.toughness < this.toughness_max) {

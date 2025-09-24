@@ -9,23 +9,7 @@ export default class CharacterState_Lying extends CharacterState_Base {
   }
   override enter(e: Entity, prev_frame: IFrameInfo): void {
     e.drop_holding();
-    const player_teams = new Set<string>()
-    for (const [, f] of e.world.slot_fighters) {
-      player_teams.add(f.team)
-    }
-    if (e.frame.state === StateEnum.Lying && e.hp <= 0) {
-      if (e.reserve) --e.reserve;
-
-      if (e.reserve && player_teams.has(e.team)) {
-        // 玩家队伍的复活到玩家附近。
-        e.blink_and_respawn(e.world.gone_blink_time);
-      } else if (e.join_dead) {
-      } else if (e.is_gone_dead) {
-        // 非玩家槽的角色在被击败时，闪烁着离开了这个世界
-        e.blink_and_gone(e.world.gone_blink_time);
-      }
-
-    }
+    if (e.hp <= 0) this.on_dead(e)
   }
   override leave(e: Entity, next_frame: IFrameInfo): void {
     if (e.join_dead) {
@@ -39,6 +23,21 @@ export default class CharacterState_Lying extends CharacterState_Base {
     if (e.is_key_role) {
       // 玩家槽的角色起身时会闪烁的无敌时间
       e.blinking = e.world.lying_blink_time;
+    }
+  }
+  override on_dead(e: Entity): void {
+    const player_teams = new Set<string>()
+    for (const [, f] of e.world.slot_fighters) {
+      player_teams.add(f.team)
+    }
+    if (e.reserve) --e.reserve;
+    if (e.reserve && player_teams.has(e.team)) {
+      // 玩家队伍的复活到玩家附近。
+      e.blink_and_respawn(e.world.gone_blink_time);
+    } else if (e.join_dead) {
+    } else if (e.is_gone_dead) {
+      // 非玩家槽的角色在被击败时，闪烁着离开了这个世界
+      e.blink_and_gone(e.world.gone_blink_time);
     }
   }
   override find_frame_by_id(e: Entity, id: string | undefined): IFrameInfo | undefined {
