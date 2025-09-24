@@ -1,5 +1,5 @@
 import { KEY_NAME_LIST } from "../../controller/BaseController";
-import { GK, ItrKind, StateEnum } from "../../defines";
+import { Defines, GK, ItrKind, StateEnum } from "../../defines";
 import { manhattan_xz } from "../../helper/manhattan_xz";
 import { abs, between, find } from "../../utils";
 import { BotState_Base } from "./BotState";
@@ -86,7 +86,8 @@ export class BotState_Chasing extends BotState_Base {
         return
       }
       case StateEnum.Injured:
-        c.start(GK.d).end(GK.d)
+        if (c.action_desire() < c.d_desire)
+          c.start(GK.d).end(GK.d)
         break;
       case StateEnum.Catching:
         // shit, louisEx air-push frame's state is StateEnum.Catching...

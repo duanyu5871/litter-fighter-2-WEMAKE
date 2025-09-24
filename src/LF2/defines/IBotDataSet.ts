@@ -67,4 +67,7 @@ export interface IBotDataSet {
 
   /** 欲望值：停止跑步 */
   r_stop_desire?: number; // = Defines.AI_R_STOP_DESIRE;
+
+  /** 欲望值：受伤后防御 */
+  d_desire?: number;
 }

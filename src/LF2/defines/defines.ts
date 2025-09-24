@@ -409,6 +409,8 @@ export namespace Defines {
   export const JOHN_CHASE_MAX_VY = 0.2
   export const JOHN_CHASE_ACC_Y = 0.01
 
+  export const MAX_AI_DESIRE = 10000;
+
   export const AI_W_ATK_F_X = 50;
   export const AI_W_ATK_B_X = 40;
   export const AI_W_ATK_M_X = -1;
@@ -441,9 +443,8 @@ export namespace Defines {
   export const AI_R_X_MIN = 100;
   export const AI_R_X_MAX = 2000;
 
-  export const AI_DEF_DESIRE = 10000;
+  export const AI_DEF_DESIRE = 2000;
 
-  export const MAX_AI_DESIRE = 10000;
 
   export function desire(ratio: number): number {
     return floor(Defines.MAX_AI_DESIRE * ratio)
