@@ -32,9 +32,10 @@ import type IEntityCallbacks from "./IEntityCallbacks";
 import { calc_v } from "./calc_v";
 import { turn_face } from "./face_helper";
 import { IDebugging, make_debugging } from "./make_debugging";
-import { is_character, is_local_ctrl, is_weapon_data } from "./type_check";
+import { is_bot_ctrl, is_character, is_local_ctrl, is_weapon_data } from "./type_check";
 export type TData = IBaseData | IEntityData;
 export class Entity implements IDebugging {
+
   static readonly TAG: string = 'Entity';
   debug!: (_0: string, ..._1: any[]) => void;
   warn!: (_0: string, ..._1: any[]) => void;
@@ -44,20 +45,21 @@ export class Entity implements IDebugging {
   wait: number = 0;
   update_id = new Times(0, Number.MAX_SAFE_INTEGER);
   variant: number = 0;
-  data: IEntityData;
   transform_datas?: [IEntityData, IEntityData];
-  readonly world: World;
-  readonly position = new Ditto.Vector3(0, 0, 0);
 
+
+  protected _data: IEntityData;
   protected _reserve = 0;
   protected _is_attach: boolean = false;
   protected _is_incorporeity: boolean = false;
   protected _landing_frame?: IFrameInfo;
   protected _hp_r_tick: Times;
   protected _mp_r_tick: Times;
-  get is_local_ctrl(): boolean { return is_local_ctrl(this.ctrl) };
 
-  get group() { return this.data.base.group };
+  readonly world: World;
+  readonly position = new Ditto.Vector3(0, 0, 0);
+  get data(): IEntityData { return this._data };
+  get group() { return this._data.base.group };
   get is_attach() { return this._is_attach }
   get is_incorporeity() { return this._is_incorporeity }
   get reserve(): number {
@@ -71,7 +73,7 @@ export class Entity implements IDebugging {
   }
 
   get type() {
-    return this.data.type;
+    return this._data.type;
   }
   get itr() {
     return this.frame.itr;
@@ -113,6 +115,14 @@ export class Entity implements IDebugging {
 
   private _fall_value = Defines.DEFAULT_FALL_VALUE_MAX;
   get fall_value(): number {
+    class Recovering {
+      readonly resting = new Times().loop(0);
+      readonly value = new Times().loop(0);
+      add() {
+
+      }
+    }
+
     return this._fall_value;
   }
   set fall_value(v: number) {
@@ -449,7 +459,7 @@ export class Entity implements IDebugging {
     if (o === v) return;
     this._callbacks.emit("on_mp_changed")(this, (this._mp = v), o);
     if (o > 0 && v <= 0) {
-      const nf = this.frame.on_exhaustion ?? this.data.on_exhaustion;
+      const nf = this.frame.on_exhaustion ?? this._data.on_exhaustion;
       if (nf) this.enter_frame(nf);
     }
   }
@@ -475,11 +485,11 @@ export class Entity implements IDebugging {
     if (o > 0 && v <= 0) {
       this._callbacks.emit("on_dead")(this);
 
-      if (this.data.base.brokens?.length) {
-        this.apply_opoints(this.data.base.brokens);
-        this.play_sound(this.data.base.dead_sounds);
+      if (this._data.base.brokens?.length) {
+        this.apply_opoints(this._data.base.brokens);
+        this.play_sound(this._data.base.dead_sounds);
       }
-      const nf = this.frame.on_dead ?? this.data.on_dead;
+      const nf = this.frame.on_dead ?? this._data.on_dead;
       if (nf) this.enter_frame(nf);
     }
 
@@ -615,7 +625,7 @@ export class Entity implements IDebugging {
   get is_key_role(): boolean {
     if (this._is_key_role !== null) return this._is_key_role;
     const is_player = !!this.ctrl?.player_id;
-    const is_key = !!intersection(this.data.base.group, [EntityGroup.Regular, EntityGroup.Boss]).length
+    const is_key = !!intersection(this._data.base.group, [EntityGroup.Regular, EntityGroup.Boss]).length
     return this._is_key_role = is_player || is_key;
   }
   set is_key_role(v: boolean | null) {
@@ -641,7 +651,7 @@ export class Entity implements IDebugging {
   armor?: Readonly<IArmorInfo>
 
   constructor(world: World, data: IEntityData, states: States = ENTITY_STATES) {
-    this.data = data;
+    this._data = data;
     this.world = world;
     this.states = states;
     this._hp_r_tick = new Times(0, world.hp_r_ticks);
@@ -656,21 +666,20 @@ export class Entity implements IDebugging {
     } else {
       this._mp_max = data.base.mp ?? Defines.DEFAULT_MP;
     }
-
     this._defend_ratio = data.base.defend_ratio ?? Defines.DEFAULT_DEFEND_INJURY_RATIO;
 
-    const { armor } = this.data.base
+    const { armor } = this._data.base
     if (this.armor = armor) {
       this.toughness = this.toughness_max = armor.toughness
     }
 
     this._catch_time_max = data.base.catch_time ?? Defines.DEFAULT_CATCH_TIME;
     this.fall_value_max =
-      this.data.base.fall_value ?? Defines.DEFAULT_FALL_VALUE_MAX;
+      this._data.base.fall_value ?? Defines.DEFAULT_FALL_VALUE_MAX;
     this.defend_value_max =
-      this.data.base.defend_value ?? Defines.DEFAULT_DEFEND_VALUE_MAX;
+      this._data.base.defend_value ?? Defines.DEFAULT_DEFEND_VALUE_MAX;
     this.resting_max =
-      this.data.base.resting ?? Defines.DEFAULT_RESTING_MAX;
+      this._data.base.resting ?? Defines.DEFAULT_RESTING_MAX;
 
     this.fall_value = this.fall_value_max;
     this.defend_value = this.defend_value_max;
@@ -749,7 +758,7 @@ export class Entity implements IDebugging {
 
   find_auto_frame(): IFrameInfo {
     return (
-      this.state?.get_auto_frame?.(this) ?? this.data.frames["0"] ?? this.frame
+      this.state?.get_auto_frame?.(this) ?? this._data.frames["0"] ?? this.frame
     ); // FIXME: fix this 'as'.
   }
 
@@ -802,7 +811,7 @@ export class Entity implements IDebugging {
       speedz: o_speedz = this.get_opoint_speed_z(emitter, opoint)
     } = opoint;
 
-    const { weight } = this.data.base
+    const { weight } = this._data.base
     o_dvx /= (weight || 1);
     o_dvy /= (weight || 1);
 
@@ -851,7 +860,7 @@ export class Entity implements IDebugging {
   get_opoint_speed_z(emitter: Entity, opoint: IOpointInfo): number {
     if (opoint.speedz !== void 0) return opoint.speedz;
     if (!is_character(emitter)) return 0;
-    switch (this.data.id) {
+    switch (this._data.id) {
       case BuiltIn_OID.FirenFlame:
         return Defines.DEFAULT_FIREN_FLAME_SPEED_Z;
       case BuiltIn_OID.HenryWind:
@@ -875,7 +884,7 @@ export class Entity implements IDebugging {
   }
 
   set_state(state_code: number) {
-    const next_state = this.states.get(state_code) || this.states.fallback(this.data.type, state_code);
+    const next_state = this.states.get(state_code) || this.states.fallback(this._data.type, state_code);
     this.state = next_state;
   }
   _opoints: [IOpointInfo, number][] = [];
@@ -1020,7 +1029,7 @@ export class Entity implements IDebugging {
       return;
     }
     const entity = create(this.world, data);
-    entity.ctrl = Factory.inst.get_ctrl(entity.data.id, "", entity,) ?? entity.ctrl;
+    entity.ctrl = Factory.inst.get_ctrl(entity._data.id, "", entity,) ?? entity.ctrl;
     entity.on_spawn(this, opoint, offset_velocity, facing).attach(opoint.is_entity);
     entity.is_gone_dead = true;
     for (const [k, v] of this.v_rests) {
@@ -1187,12 +1196,12 @@ export class Entity implements IDebugging {
 
     if (this._hp > 0 && this._hp < this._hp_r) {
       this._hp_r_tick.max = this.healing > 0 ?
-        (this.data.base.hp_healing_ticks || this.world.hp_healing_ticks) :
-        (this.data.base.hp_r_ticks || this.world.hp_r_ticks);
+        (this._data.base.hp_healing_ticks || this.world.hp_healing_ticks) :
+        (this._data.base.hp_r_ticks || this.world.hp_r_ticks);
       if (this._hp_r_tick.add()) {
         const value = this.healing > 0 ?
-          (this.data.base.hp_healing_value || this.world.hp_healing_value) :
-          (this.data.base.hp_r_value || this.world.hp_r_value);
+          (this._data.base.hp_healing_value || this.world.hp_healing_value) :
+          (this._data.base.hp_r_value || this.world.hp_r_value);
         this.hp = min(this._hp_r, this._hp + value);
         if (this._hp === this._hp_r) this.healing = 0;
         else if (this._healing) this.healing = max(0, this._healing - value)
@@ -1200,8 +1209,8 @@ export class Entity implements IDebugging {
     }
 
     if (this._hp > 0 && this._mp < this._mp_max && !this._blinking_duration && !this._invisible_duration) {
-      this._mp_r_tick.max = this.data.base.mp_r_ticks || this.world.mp_r_ticks;
-      const r_ratio = this.data.base.mp_r_ratio || this.world.mp_r_ratio;
+      this._mp_r_tick.max = this._data.base.mp_r_ticks || this.world.mp_r_ticks;
+      const r_ratio = this._data.base.mp_r_ratio || this.world.mp_r_ratio;
       if (this._mp_r_tick.add()) {
         const value = 1 + floor((500 - min(r_ratio * this._hp, 500)) / 100)
         this.mp = min(this._mp_max, this._mp + value);
@@ -1281,11 +1290,11 @@ export class Entity implements IDebugging {
       this.follow_holder();
       const { wpoint } = this.holder.frame;
       if (wpoint) {
-        const { weight } = this.data.base
+        const { weight } = this._data.base
         let { dvx, dvy, dvz } = wpoint;
         if (dvx !== void 0 || dvy !== void 0 || dvz !== void 0) {
 
-          this.enter_frame({ id: this.data.indexes?.throwing });
+          this.enter_frame({ id: this._data.indexes?.throwing });
           const vz = this.holder.ctrl
             ? this.holder.ctrl.UD * (dvz || 0)
             : 0;
@@ -1329,7 +1338,7 @@ export class Entity implements IDebugging {
     if (should_recover_toughness) {
       if (this.toughness_resting > 0) {
         this.toughness_resting--;
-      } else if (this.armor && this.toughness < this.armor.toughness) {
+      } else if (this.toughness < this.toughness_max) {
         this.toughness += 1;
       }
     }
@@ -1354,7 +1363,7 @@ export class Entity implements IDebugging {
   drop_holding(): void {
     if (!this.holding) return;
     this.holding.follow_holder();
-    this.holding.enter_frame({ id: this.data.indexes?.in_the_sky });
+    this.holding.enter_frame({ id: this._data.indexes?.in_the_sky });
     this.holding.holder = void 0;
     this.holding = void 0;
   }
@@ -1417,7 +1426,7 @@ export class Entity implements IDebugging {
       if (
         key_list === "ja" &&
         this.transform_datas &&
-        this.transform_datas[1] === this.data &&
+        this.transform_datas[1] === this._data &&
         (this.frame?.state === StateEnum.Walking ||
           this.frame?.state === StateEnum.Standing ||
           this.frame?.state === StateEnum.Defend)
@@ -1445,7 +1454,7 @@ export class Entity implements IDebugging {
       !this.motionless
     ) {
       this.position.y = 0;
-      this.play_sound(this.data.base.drop_sounds);
+      this.play_sound(this._data.base.drop_sounds);
       this.velocity_0.y = 0;
       if (this.frame.on_landing) {
         const result = this.get_next_frame(this.frame.on_landing);
@@ -1576,8 +1585,8 @@ export class Entity implements IDebugging {
       } else if (throwinjury === -1) {
         // TODO：变成抓住的人
         if (is_character(this) && is_character(this._catching)) {
-          this.transform_datas = [this.data, this._catching.data as any];
-          (this as Entity).data = this._catching.data;
+          this.transform_datas = [this._data, this._catching._data as any];
+          this.transform(this._catching._data);
           return this.find_auto_frame();
         }
       } else {
@@ -1644,8 +1653,8 @@ export class Entity implements IDebugging {
   transfrom_to_another() {
     const { transform_datas } = this;
     if (!transform_datas) return;
-    const next_idx = (transform_datas.indexOf(this.data) + 1) % transform_datas.length;
-    this.data = transform_datas[next_idx]!;
+    const next_idx = (transform_datas.indexOf(this._data) + 1) % transform_datas.length;
+    this.transform(transform_datas[next_idx]!);
     this.next_frame = this.get_next_frame({ id: "245" })?.frame;
   }
 
@@ -1954,7 +1963,7 @@ export class Entity implements IDebugging {
       case Builtin_FrameId.Gone:
         return GONE_FRAME_INFO;
     }
-    if (!this.data.frames[id]) {
+    if (!this._data.frames[id]) {
       console.warn(
         Entity.TAG + "::find_frame_by_id",
         "frame not find! id:",
@@ -1962,7 +1971,7 @@ export class Entity implements IDebugging {
       );
       return this.find_auto_frame();
     }
-    return this.data.frames[id];
+    return this._data.frames[id];
   }
 
   get_prev_frame() {
@@ -1981,6 +1990,22 @@ export class Entity implements IDebugging {
     }
     this.velocities.length = 1;
     this.velocity_0.set(vx, vy, vz);
+  }
+
+  transform(data: IEntityData) {
+    if (!is_local_ctrl(this.ctrl))
+      this.ctrl = Factory.inst.get_ctrl(data.id, this.ctrl.player_id, this);
+    this._data = data;
+    const { armor } = this._data.base
+    if (this.armor = armor) {
+      this.toughness = this.toughness_max = armor.toughness
+    } else {
+      this.armor = void 0;
+      this.toughness =
+        this.toughness_max =
+        this.toughness_resting =
+        this.toughness_resting_max = 0;
+    }
   }
 }
 

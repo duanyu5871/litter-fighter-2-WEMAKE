@@ -92,6 +92,17 @@ export function make_weapon_special(data: IEntityData) {
     case BuiltIn_OID.Weapon_milk:
       data.base.brokens = ooo("70", "50", "80", "50", "50");
       data.base.group = ensure(data.base.group, EntityGroup.VsWeapon);
+      data.base.drink = {
+        hp_h_total: 160,
+        hp_h_value: 4,
+        hp_h_ticks: 5,
+        hp_r_total: 80,
+        hp_r_value: 2,
+        hp_r_ticks: 5,
+        mp_h_total: 166,
+        mp_h_value: 5,
+        mp_h_ticks: 6,
+      }
       break;
     case BuiltIn_OID.Weapon_Stone:
       data.base.brokens = ooo("0", "0", "4", "4", "4");
@@ -102,6 +113,11 @@ export function make_weapon_special(data: IEntityData) {
     case BuiltIn_OID.Weapon_Beer:
       data.base.brokens = ooo("160", "164", "164", "164", "164");
       data.base.group = ensure(data.base.group, EntityGroup.VsWeapon);
+      data.base.drink = {
+        mp_h_total: 750,
+        mp_h_value: 12,
+        mp_h_ticks: 1,
+      }
       break;
     case BuiltIn_OID.Weapon_Boomerang:
       data.base.brokens = ooo("170", "170", "170");

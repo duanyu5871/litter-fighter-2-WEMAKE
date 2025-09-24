@@ -8,12 +8,7 @@ export class CharacterState_TransformToLouisEX extends State_Base {
   override enter(e: Entity): void {
     const d = e.lf2.datas.find_character("50");
     if (d) {
-      e.data = d;
-      e.armor = void 0;
-      e.toughness =
-        e.toughness_max =
-        e.toughness_resting =
-        e.toughness_resting_max = 0;
+      e.transform(d);
       e.enter_frame(e.find_auto_frame());
     }
   }
