@@ -24,6 +24,8 @@ export class VsModeLogic extends UIComponent
   game_over_time: number = -1;
   override on_start(): void {
     super.on_start?.();
+    if (this.world.paused) this.world.paused = false;
+    this.world.playrate = 1;
     this.score_board = this.node.find_child("score_board")!
     this.jalousie = this.node.search_component(Jalousie)
     this.go_sounds = this.node.search_component(Sounds, "go_sounds")!
