@@ -119,7 +119,7 @@ export class GameOverlay {
     const background_w = this.world.stage.width;
     const screen_w = Defines.CLASSIC_SCREEN_WIDTH;
     const { width: bar_width, height } = this.ele_cam_bar;
-    const { player_left, player_right } = this.world.stage;
+    const { player_l: player_left, player_r: player_right } = this.world.stage;
     const x_l = Math.floor((bar_width * player_left) / background_w);
     const x_r = Math.floor((bar_width * player_right) / background_w);
     const hh = this.cam_bar_handle_padding;

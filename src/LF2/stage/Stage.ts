@@ -23,13 +23,12 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
   readonly callbacks = new Callbacks<IStageCallbacks>();
   private _disposed: boolean = false;
   private _disposers: (() => void)[] = [];
-  private _cur_phase_idx = -1;
   private _bg: Background;
   get bg(): Background { return this._bg; }
   get phases() { return this.data.phases }
   get id(): string { return this.data.name; }
   get name(): string { return this.data.name; }
-  get cur_phase(): number { return this._cur_phase_idx; }
+  get phase_idx(): number { return this.data.phases.indexOf(this.phase!); }
   get left(): number { return this._bg.left; }
   get right(): number { return this._bg.right; }
   get near(): number { return this._bg.near; }
@@ -39,36 +38,18 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
   get middle() { return this._bg.middle; }
   get lf2() { return this.world.lf2; }
   get time() { return this.fsm.time; }
+  phase: IStagePhaseInfo | undefined;
 
-  /**
-   * 玩家角色的地图左边界
-   *
-   * @readonly
-   * @type {number}
-   */
-  get player_left(): number {
-    return this._bg.left;
-  }
+  player_l: number = 0;
+  player_r: number = Defines.MODERN_SCREEN_WIDTH;
+  cam_l: number = 0;
+  cam_r: number = Defines.MODERN_SCREEN_WIDTH;
+  enemy_l: number = 0;
+  enemy_r: number = Defines.MODERN_SCREEN_WIDTH;
+  drink_l: number = 0;
+  drink_r: number = Defines.MODERN_SCREEN_WIDTH;
 
-  get camera_left(): number {
-    return this._bg.left;
-  }
 
-  /**
-   * 玩家角色的地图右边界
-   *
-   * @readonly
-   * @type {number}
-   */
-  get player_right(): number {
-    return this.data.phases[this._cur_phase_idx]?.bound ?? this._bg.right;
-  }
-  get camera_right(): number {
-    if (!this.data.phases.length) return this._bg.right
-    const { phases } = this.data
-    const phase = phases[this._cur_phase_idx] || phases[phases.length - 1]!
-    return phase.bound ?? this._bg.right;
-  }
   change_bg(data: IBgData): Background {
     // FIXME: so messed up here...
     if (this._bg) {
@@ -98,6 +79,8 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
       this.data = Defines.VOID_STAGE;
       this._bg = this.change_bg(Defines.VOID_BG);
     }
+    this.cam_l = this.player_l = this.enemy_l = this.bg.left
+    this.cam_r = this.player_r = this.enemy_r = this.bg.right
 
     if (this.data.next)
       this.next_stage = this.lf2.stages.find(v => v.id === this.data.next);
@@ -128,10 +111,10 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
   private _stop_bgm?: () => void;
 
   private async play_phase_bgm() {
-    const phase_info = this.data.phases[this._cur_phase_idx];
-    if (!phase_info) return;
+    const { phase } = this
+    if (!phase) return;
     const { lf2 } = this;
-    const { music } = phase_info;
+    const { music } = phase;
     if (!music) return;
     if (!lf2.sounds.has(music)) await lf2.sounds.load(music, music);
     if (this._disposed) return;
@@ -141,26 +124,24 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
   stop_bgm(): void {
     this._stop_bgm?.();
   }
-
-  enter_phase(idx: number) {
-    if (this._cur_phase_idx === idx) return;
-    const old: IStagePhaseInfo | undefined =
-      this.data.phases[this._cur_phase_idx];
-    const phase: IStagePhaseInfo | undefined =
-      this.data.phases[(this._cur_phase_idx = idx)];
-    this.callbacks.emit("on_phase_changed")(this, phase, old);
+  set_phase(phase: IStagePhaseInfo | undefined) {
+    if (phase === this.phase) return;
+    const prev = this.phase
+    this.callbacks.emit("on_phase_changed")(this, this.phase, prev);
+    this.player_l = this.cam_l = this.enemy_l = 0
+    this.player_r = this.cam_r = this.enemy_r = this.bg.right
     if (!phase) return;
-    const { objects, respawn, health_up } = phase;
+    const { objects, respawn, health_up, mp_up } = phase;
     const hp_recovery = health_up?.[this.lf2.difficulty] || 0;
     const hp_respawn = respawn?.[this.lf2.difficulty] || 0;
-    const loop_players_fighters = hp_recovery || hp_respawn || idx === 0
+    const mp_recovery = mp_up?.[this.lf2.difficulty] || 0;
+    const loop_players_fighters = hp_recovery || hp_respawn || mp_recovery
     if (loop_players_fighters) {
       const teams = new Set<string>()
       for (const [, f] of this.world.slot_fighters)
         teams.add(f.team)
       for (const f of this.world.entities) {
         if (!is_character(f) && !teams.has(f.team)) continue;
-        if (idx === 0) f.mp = f.mp_max
         if (f.hp <= 0 && hp_respawn) {
           const hp = hp_respawn < 1 ?
             min(f.hp_max * hp_respawn, f.hp_max) :
@@ -172,9 +153,9 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
             min(f.hp_r + hp_recovery, f.hp_max)
           f.hp = f.hp_r = hp
         }
+        if (mp_recovery) f.mp = min(f.mp + mp_recovery, f.mp_max)
       }
     }
-
 
     this.play_phase_bgm();
     for (const object of objects) {
@@ -196,9 +177,23 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
           entity.position.x = this.lf2.random_in(x, x + 50);
       }
     }
+    this.player_l = this.phase?.player_l ?? 0
+    this.cam_l = this.phase?.camera_l ?? 0
+    this.enemy_l = this.phase?.enemy_l ?? 0
+    this.drink_l = this.phase?.drink_l ?? -1000
+    this.player_r = this.phase?.player_r ?? this.phase?.bound ?? this.bg.right
+    this.cam_r = this.phase?.camera_r ?? this.phase?.bound ?? this.bg.right
+    this.enemy_r = this.phase?.enemy_r ?? this.phase?.bound ?? this.bg.right
+    this.drink_r = this.phase?.drink_l ?? (this.bg.right + 1000)
   }
+
+  enter_phase(idx: number) {
+    const phase: IStagePhaseInfo | undefined = this.data.phases[idx]
+    this.set_phase(phase)
+  }
+
   enter_next_phase(): void {
-    this.enter_phase(this._cur_phase_idx + 1);
+    this.enter_phase(this.phase_idx + 1);
   }
 
   readonly items = new Set<Item>();
@@ -308,7 +303,7 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
       item.dispose();
     }
     if (this.all_enemies_dead()) {
-      this.enter_phase(this._cur_phase_idx + 1);
+      this.enter_phase(this.phase_idx + 1);
     }
   }
 
@@ -321,13 +316,13 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
   /** 节是否结束 */
   get is_stage_finish(): boolean {
     const l = this.phases.length
-    return !!l && this._cur_phase_idx >= l;
+    return !!l && this.phase_idx >= l;
   }
   /** 是否应该进入下一关 */
   get should_goto_next_stage(): boolean {
     if (!this.next_stage) return false;
     if (this.next_stage.chapter === this.data.chapter) {
-      return !find(this.world.entities, e => is_character(e) && e.hp > 0 && e.position.x < this.camera_right)
+      return !find(this.world.entities, e => is_character(e) && e.hp > 0 && e.position.x < this.cam_r)
     }
     return false;
   }

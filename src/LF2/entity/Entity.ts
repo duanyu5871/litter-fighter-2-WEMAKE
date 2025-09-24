@@ -1282,8 +1282,8 @@ export class Entity implements IDebugging {
           }
           if (friend) {
             this.position.x = this.lf2.random_in(
-              max(floor(friend.position.x - 100), this.world.stage.player_left),
-              min(floor(friend.position.x + 100), this.world.stage.player_right)
+              max(floor(friend.position.x - 100), this.world.stage.player_l),
+              min(floor(friend.position.x + 100), this.world.stage.player_r)
             )
             this.position.z = this.lf2.random_in(
               min(floor(friend.position.z - 100), this.world.stage.far),

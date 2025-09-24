@@ -9,12 +9,21 @@ import { IStageObjectInfo } from "./IStageObjectInfo";
  */
 export interface IStagePhaseInfo {
   bound: number;
+  player_l?: number;
+  player_r?: number;
+  camera_l?: number;
+  camera_r?: number;
+  enemy_l?: number;
+  enemy_r?: number;
+  drink_l?: number;
+  drink_r?: number;
+
   desc?: string;
   objects: IStageObjectInfo[];
   music?: string;
 
   respawn?: { [x in Difficulty]?: number };
-  
+
   /**
    *
    *
@@ -22,6 +31,7 @@ export interface IStagePhaseInfo {
    * @memberof IStagePhaseInfo
    */
   health_up?: { [x in Difficulty]?: number },
+  mp_up?: { [x in Difficulty]?: number },
 
   /**
    * 相机跳至位置

@@ -50,7 +50,7 @@ export default function SettingsRows(props: ISettingsRowsProps) {
     _stage_data?.phases ?? [],
   );
   const [stage_phase_idx, set_stage_phase_idx] = useState<number>(
-    _stage?.cur_phase ?? -1,
+    _stage?.phase_idx ?? -1,
   );
   const [difficulty, set_difficulty] = useState<Difficulty>(
     lf2?.difficulty ?? Difficulty.Difficult,
@@ -64,7 +64,7 @@ export default function SettingsRows(props: ISettingsRowsProps) {
       set_stage_id(stage?.data.id ?? Defines.VOID_STAGE.id);
       set_bg_id(stage?.bg.data.id ?? Defines.VOID_BG.id);
       set_stage_phases(stage?.data.phases ?? []);
-      set_stage_phase_idx(stage?.cur_phase ?? -1);
+      set_stage_phase_idx(stage?.phase_idx ?? -1);
       stage?.callbacks.add({
         on_phase_changed(stage, curr) {
           set_stage_phase_idx(curr ? stage.data.phases.indexOf(curr) : -1);

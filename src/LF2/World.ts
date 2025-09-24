@@ -252,11 +252,11 @@ export class World extends WorldDataset {
    */
   restrict_fighter(e: Entity): void {
     if (!this.bg) return;
-    const { left, right, near, far, player_left, player_right, team } = this.stage;
+    const { near, far, player_l: player_left, player_r: player_right, enemy_l: enemy_left, enemy_r: enemy_right, team } = this.stage;
 
     const is_player = e.team !== team;
-    const l = is_player ? player_left : left;
-    const r = is_player ? player_right : right;
+    const l = is_player ? player_left : enemy_left;
+    const r = is_player ? player_right : enemy_right;
 
     const { x, z } = e.position;
     if (x < l) e.position.x = l;
@@ -296,8 +296,14 @@ export class World extends WorldDataset {
    */
   restrict_weapon(e: Entity): void {
     if (!this.bg) return;
-    const { left, right, near, far } = this.bg.data.base;
-    const { x, z } = e.position;
+    const { left, right, near, far, drink_l, drink_r } = this.stage;
+    let { x, z } = e.position;
+
+    const l = drink_l;
+    const r = drink_r;
+    if (x < l) x = e.position.x = l;
+    else if (x > r) x = e.position.x = r;
+
     if (x < left - 100) e.enter_frame(Defines.NEXT_FRAME_GONE);
     else if (x > right + 100) e.enter_frame(Defines.NEXT_FRAME_GONE);
     if (z < far) e.position.z = far;
@@ -421,7 +427,7 @@ export class World extends WorldDataset {
     }
 
 
-    const { camera_left, left, camera_right, right } = this.stage;
+    const { cam_l: camera_left, left, cam_r: camera_right, right } = this.stage;
     const max_cam_left = is_num(this.lock_cam_x) ? left : camera_left;
     const max_cam_right = is_num(this.lock_cam_x) ? right : camera_right;
     let new_x = this.renderer.cam_x;

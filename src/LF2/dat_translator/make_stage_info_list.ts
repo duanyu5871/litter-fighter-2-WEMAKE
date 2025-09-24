@@ -77,12 +77,22 @@ export function make_stage_info_list(full_str: string): IStageInfo[] | void {
       stage_info.starting_name = "" + (1 + nid / 10);
 
     }
+    for (const p of stage_info.phases) {
+      p.enemy_r = p.bound + 200;
+      p.enemy_l = -200;
+    }
     if (nid < 49 && stage_info.phases[0]) {
       stage_info.phases[0]!.health_up = stage_info.phases[0]!.respawn = {
         [Difficulty.Easy]: 200,
         [Difficulty.Normal]: 150,
         [Difficulty.Difficult]: 100,
         [Difficulty.Crazy]: 50,
+      };
+      stage_info.phases[0]!.mp_up = {
+        [Difficulty.Easy]: 500,
+        [Difficulty.Normal]: 500,
+        [Difficulty.Difficult]: 500,
+        [Difficulty.Crazy]: 500,
       };
     }
     if (nid === 50) {
@@ -101,6 +111,10 @@ export function make_stage_info_list(full_str: string): IStageInfo[] | void {
       stage_info.chapter = "survival"
       stage_info.bg = "8";
       stage_info.title = 'SURVIVAL STAGE'
+      for (const p of stage_info.phases) {
+        p.drink_l = 0;
+        p.drink_r = p.bound;
+      }
     }
     if (nid <= 9) {
       stage_info.bg = "2";
