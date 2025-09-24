@@ -29,26 +29,36 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
   get id(): string { return this.data.name; }
   get name(): string { return this.data.name; }
   get phase_idx(): number { return this.data.phases.indexOf(this.phase!); }
-  get left(): number { return this._bg.left; }
-  get right(): number { return this._bg.right; }
-  get near(): number { return this._bg.near; }
-  get far(): number { return this._bg.far; }
-  get width(): number { return this._bg.width; }
-  get depth(): number { return this._bg.depth; }
-  get middle() { return this._bg.middle; }
+
   get lf2() { return this.world.lf2; }
   get time() { return this.fsm.time; }
   phase: IStagePhaseInfo | undefined;
 
-  player_l: number = 0;
-  player_r: number = Defines.MODERN_SCREEN_WIDTH;
-  cam_l: number = 0;
-  cam_r: number = Defines.MODERN_SCREEN_WIDTH;
-  enemy_l: number = 0;
-  enemy_r: number = Defines.MODERN_SCREEN_WIDTH;
-  drink_l: number = 0;
-  drink_r: number = Defines.MODERN_SCREEN_WIDTH;
-
+  /** 左边界 */
+  left: number;
+  /** 右边界 */
+  right: number;
+  near: number;
+  far: number;
+  width: number;
+  depth: number;
+  middle: { x: number; z: number; };
+  /** 玩家左边界 */
+  player_l: number;
+  /** 玩家右边界 */
+  player_r: number;
+  /** 相机左边界 */
+  cam_l: number;
+  /** 相机右边界 */
+  cam_r: number;
+  /** 敌人左边界 */
+  enemy_l: number;
+  /** 敌人右边界 */
+  enemy_r: number;
+  /** 饮料左边界 */
+  drink_l: number;
+  /** 饮料右边界 */
+  drink_r: number;
 
   change_bg(data: IBgData): Background {
     // FIXME: so messed up here...
@@ -79,9 +89,15 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
       this.data = Defines.VOID_STAGE;
       this._bg = this.change_bg(Defines.VOID_BG);
     }
-    this.cam_l = this.player_l = this.enemy_l = this.bg.left
-    this.cam_r = this.player_r = this.enemy_r = this.bg.right
-
+    this.left = this.cam_l = this.player_l = this.enemy_l = this._bg.left
+    this.right = this.cam_r = this.player_r = this.enemy_r = this._bg.right
+    this.near = this._bg.near;
+    this.far = this._bg.far;
+    this.width = this._bg.width;
+    this.depth = this._bg.depth;
+    this.middle = this._bg.middle;
+    this.drink_l = -1000;
+    this.drink_r = this.bg.width + 1000
     if (this.data.next)
       this.next_stage = this.lf2.stages.find(v => v.id === this.data.next);
     this.team = new_team();
