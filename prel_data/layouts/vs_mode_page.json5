@@ -2,6 +2,7 @@
   "name": "页面：对战模式",
   "id": "vs_mode_page",
   "component": [
+    "SummaryLogic()",
     "VsModeLogic()"
   ],
   "key_press_actions": [

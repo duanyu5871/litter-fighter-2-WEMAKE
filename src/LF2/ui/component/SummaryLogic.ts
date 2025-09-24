@@ -77,16 +77,18 @@ export class SummaryLogic extends UIComponent {
         team_sum.lives++;
       } else if (prev > value) {
         // 失血
-        team_sum.hp_lost += value - prev;
-        this.fighter_sum(e).hp_lost += value - prev;
-        this.player_sum(e).hp_lost += value - prev;
+        const diif = prev - value
+        team_sum.hp_lost += diif;
+        this.fighter_sum(e).hp_lost += diif;
+        this.player_sum(e).hp_lost += diif;
       }
     },
     on_mp_changed: (e, value, prev) => {
       if (prev > value) {
-        this.team_sum(e.team).mp_usage += value - prev;
-        this.fighter_sum(e).mp_usage += value - prev;
-        this.player_sum(e).mp_usage += value - prev;
+        const diif = prev - value
+        this.team_sum(e.team).mp_usage += diif;
+        this.fighter_sum(e).mp_usage += diif;
+        this.player_sum(e).mp_usage += diif;
       }
     },
     on_reserve_changed: (e, value, prev) => {
