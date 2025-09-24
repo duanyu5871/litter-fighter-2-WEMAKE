@@ -111,6 +111,9 @@ export default function SettingsRows(props: ISettingsRowsProps) {
   const on_click_add_weapon = () => {
     weapon_id ? lf2.weapons.add(weapon_id, rwn) : lf2.weapons.add_random(rwn);
   };
+  const on_click_del_weapon = () => {
+    lf2.weapons.list().forEach(v => v.hp = v.hp_r = 0)
+  };
   const on_click_add_bot = () => {
     (c_id
       ? lf2.characters.add(c_id, rcn, team)
@@ -217,6 +220,9 @@ export default function SettingsRows(props: ISettingsRowsProps) {
             </Select>
             <Button onClick={on_click_add_weapon}>
               添加
+            </Button>
+            <Button onClick={on_click_del_weapon}>
+              移除
             </Button>
           </Combine>
         </Titled>

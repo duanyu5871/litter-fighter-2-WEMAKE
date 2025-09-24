@@ -31,7 +31,7 @@ export function make_weapon_special(data: IEntityData) {
         y: 24,
         action: { id: frame_id },
         oid: "999",
-        ...aa[idx],
+        ...aa[idx % aa.length],
       };
     });
   };
@@ -90,8 +90,8 @@ export function make_weapon_special(data: IEntityData) {
       data.base.brokens = ooo("60", "60", "60", "60", "60");
       break;
     case BuiltIn_OID.Weapon_milk:
-      data.base.brokens = ooo("70", "50", "80", "50", "50");
-      data.base.group = ensure(data.base.group, EntityGroup.VsWeapon);
+      data.base.brokens = ooo("70", "80", "80", "80", "80", "74", "74", "74", "74");
+      data.base.group = [EntityGroup.VsWeapon];
       data.base.drink = {
         hp_h_total: 160,
         hp_h_value: 4,
@@ -111,7 +111,7 @@ export function make_weapon_special(data: IEntityData) {
       data.base.brokens = ooo("40", "44", "50", "54", "54");
       break;
     case BuiltIn_OID.Weapon_Beer:
-      data.base.brokens = ooo("160", "164", "164", "164", "164");
+      data.base.brokens = ooo("160", "164", "164", "164", "164", "74", "74", "74", "74", "74");
       data.base.group = ensure(data.base.group, EntityGroup.VsWeapon);
       data.base.drink = {
         mp_h_total: 750,
