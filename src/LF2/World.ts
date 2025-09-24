@@ -5,7 +5,8 @@ import {
   Builtin_FrameId, Defines,
   HitFlag,
   IBdyInfo, IBounding, IEntityData,
-  IFrameInfo, IItrInfo, ItrKind, StateEnum
+  IFrameInfo, IItrInfo, ItrKind, StateEnum,
+  WeaponType
 } from "./defines";
 import { Ditto } from "./ditto";
 import { IWorldRenderer } from "./ditto/render/IWorldRenderer";
@@ -251,12 +252,11 @@ export class World extends WorldDataset {
    * @memberof World
    */
   restrict_fighter(e: Entity): void {
-    if (!this.bg) return;
-    const { near, far, player_l: player_left, player_r: player_right, enemy_l: enemy_left, enemy_r: enemy_right, team } = this.stage;
+    const { near, far, player_l, player_r, enemy_l, enemy_r, team } = this.stage;
 
     const is_player = e.team !== team;
-    const l = is_player ? player_left : enemy_left;
-    const r = is_player ? player_right : enemy_right;
+    const l = is_player ? player_l : enemy_l;
+    const r = is_player ? player_r : enemy_r;
 
     const { x, z } = e.position;
     if (x < l) e.position.x = l;
@@ -276,8 +276,7 @@ export class World extends WorldDataset {
    * @memberof World
    */
   restrict_ball(e: Entity): void {
-    if (!this.bg) return;
-    const { left, right, near, far } = this.bg.data.base;
+    const { left, right, near, far } = this.stage;
     const { x, z } = e.position;
     if (x < left - 800) e.enter_frame(Defines.NEXT_FRAME_GONE);
     else if (x > right + 800) e.enter_frame(Defines.NEXT_FRAME_GONE);
@@ -295,14 +294,15 @@ export class World extends WorldDataset {
    * @memberof World
    */
   restrict_weapon(e: Entity): void {
-    if (!this.bg) return;
     const { left, right, near, far, drink_l, drink_r } = this.stage;
     let { x, z } = e.position;
 
-    const l = drink_l;
-    const r = drink_r;
-    if (x < l) x = e.position.x = l;
-    else if (x > r) x = e.position.x = r;
+    if (e.data.base.type === WeaponType.Drink) {
+      const l = drink_l;
+      const r = drink_r;
+      if (x < l) x = e.position.x = l;
+      else if (x > r) x = e.position.x = r;
+    }
 
     if (x < left - 100) e.enter_frame(Defines.NEXT_FRAME_GONE);
     else if (x > right + 100) e.enter_frame(Defines.NEXT_FRAME_GONE);

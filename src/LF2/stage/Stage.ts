@@ -127,7 +127,7 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
   set_phase(phase: IStagePhaseInfo | undefined) {
     if (phase === this.phase) return;
     const prev = this.phase
-    this.callbacks.emit("on_phase_changed")(this, this.phase, prev);
+    this.callbacks.emit("on_phase_changed")(this, this.phase = phase, prev);
     this.player_l = this.cam_l = this.enemy_l = 0
     this.player_r = this.cam_r = this.enemy_r = this.bg.right
     if (!phase) return;
@@ -177,23 +177,19 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
           entity.position.x = this.lf2.random_in(x, x + 50);
       }
     }
-    this.player_l = this.phase?.player_l ?? 0
-    this.cam_l = this.phase?.camera_l ?? 0
-    this.enemy_l = this.phase?.enemy_l ?? 0
-    this.drink_l = this.phase?.drink_l ?? -1000
-    this.player_r = this.phase?.player_r ?? this.phase?.bound ?? this.bg.right
-    this.cam_r = this.phase?.camera_r ?? this.phase?.bound ?? this.bg.right
-    this.enemy_r = this.phase?.enemy_r ?? this.phase?.bound ?? this.bg.right
-    this.drink_r = this.phase?.drink_l ?? (this.bg.right + 1000)
+    this.player_l = phase.player_l ?? 0
+    this.cam_l = phase.camera_l ?? 0
+    this.enemy_l = phase.enemy_l ?? 0
+    this.drink_l = phase.drink_l ?? -1000
+    this.player_r = phase.player_r ?? phase.bound ?? this.bg.right
+    this.cam_r = phase.camera_r ?? phase.bound ?? this.bg.right
+    this.enemy_r = phase.enemy_r ?? phase.bound ?? this.bg.right
+    this.drink_r = phase.drink_r ?? (this.bg.right + 1000)
   }
 
   enter_phase(idx: number) {
     const phase: IStagePhaseInfo | undefined = this.data.phases[idx]
     this.set_phase(phase)
-  }
-
-  enter_next_phase(): void {
-    this.enter_phase(this.phase_idx + 1);
   }
 
   readonly items = new Set<Item>();

@@ -47,7 +47,7 @@ export default class Item {
         this.dispose();
       }
       if (this.stage.all_enemies_dead()) {
-        this.stage.enter_next_phase();
+        this.stage.enter_phase(this.stage.phase_idx + 1);
       }
     },
   };

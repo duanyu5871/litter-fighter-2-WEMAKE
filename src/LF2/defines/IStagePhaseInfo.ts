@@ -9,13 +9,21 @@ import { IStageObjectInfo } from "./IStageObjectInfo";
  */
 export interface IStagePhaseInfo {
   bound: number;
+  /** 玩家左边界 */
   player_l?: number;
+  /** 玩家右边界 */
   player_r?: number;
+  /** 相机左边界 */
   camera_l?: number;
+  /** 相机右边界 */
   camera_r?: number;
+  /** 敌人左边界 */
   enemy_l?: number;
+  /** 敌人右边界 */
   enemy_r?: number;
+  /** 饮料左边界 */
   drink_l?: number;
+  /** 饮料右边界 */
   drink_r?: number;
 
   desc?: string;
