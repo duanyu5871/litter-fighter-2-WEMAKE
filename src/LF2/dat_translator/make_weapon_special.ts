@@ -3,40 +3,38 @@ import { ActionType } from "../defines/ActionType";
 import { CollisionVal as C_Val } from "../defines/CollisionVal";
 import { IEntityData } from "../defines/IEntityData";
 import { OpointKind } from "../defines/OpointKind";
-import { ensure } from "../utils";
+import { ensure, make_arr } from "../utils";
 import { foreach } from "../utils/container_help/foreach";
+import { armour, baseball, beer1, beer2, boomerang, box0, box1, box2, box3, hoe, icesword1, icesword2, k_hoe, milk1, milk2, milk3, s_hoe, sstick, sstone, stick, stone } from "./broken_piece_frames";
 import { CondMaker } from "./CondMaker";
 
+const broken_pieces_opoints = (...frame_ids: (string | string[])[]): IOpointInfo[] => {
+  const aa = [
+    { dvy: 5, dvx: -1 },
+    { dvy: 5, dvx: 1 },
+    { dvy: 3 },
+    { dvy: 2, dvx: 2 },
+    { dvy: 2, dvx: -2 },
+    { dvy: 4, dvx: -1.5 },
+    { dvy: 4, dvx: 1.5 },
+    { dvy: 2 },
+    { dvy: 1, dvx: 1 },
+    { dvy: 1, dvx: -1 },
+  ];
+  return frame_ids.map<IOpointInfo>((frame_id, idx) => {
+    return {
+      kind: OpointKind.Normal,
+      x: 0,
+      y: 0,
+      origin_type: 1,
+      action: { id: frame_id },
+      oid: "999",
+      ...aa[idx % aa.length],
+    };
+  });
+};
 const handled = new Set<any>();
 export function make_weapon_special(data: IEntityData) {
-
-
-  const ooo = (...frame_ids: string[]): IOpointInfo[] => {
-    const aa = [
-      { dvy: 5, dvx: -1 },
-      { dvy: 5, dvx: 1 },
-      { dvy: 3 },
-      { dvy: 2, dvx: 2 },
-      { dvy: 2, dvx: -2 },
-      { dvy: 4, dvx: -1.5 },
-      { dvy: 4, dvx: 1.5 },
-      { dvy: 2 },
-      { dvy: 1, dvx: 1 },
-      { dvy: 1, dvx: -1 },
-    ];
-    return frame_ids.map((frame_id, idx) => {
-      return {
-        kind: OpointKind.Normal,
-        x: 0,
-        y: 0,
-        origin_type: 1,
-        action: { id: frame_id },
-        oid: "999",
-        ...aa[idx % aa.length],
-      };
-    });
-  };
-
   const num_data_id = Number(data.id);
   if (num_data_id >= 100 || num_data_id <= 199) {
     data.base.group = ensure(data.base.group,
@@ -79,19 +77,28 @@ export function make_weapon_special(data: IEntityData) {
       })
       break;
     case BuiltIn_OID.Weapon_Stick:
-      data.base.brokens = ooo("10", "10", "14", "14", "14");
+      data.base.brokens = broken_pieces_opoints(
+        stick, stick,
+        sstick, sstick, sstick
+      );
       break;
     case BuiltIn_OID.Weapon_Hoe:
-      data.base.brokens = ooo("30", "30", "20", "20", "24");
+      data.base.brokens = broken_pieces_opoints(k_hoe, k_hoe, hoe, hoe, s_hoe, s_hoe);
       break;
     case BuiltIn_OID.Weapon_Knife:
-      data.base.brokens = ooo("30", "30", "24", "24");
+      data.base.brokens = broken_pieces_opoints(k_hoe, k_hoe, s_hoe, s_hoe);
       break;
     case BuiltIn_OID.Weapon_baseball:
-      data.base.brokens = ooo("60", "60", "60", "60", "60");
+      data.base.brokens = broken_pieces_opoints(
+        ...make_arr(5, () => baseball)
+      );
       break;
     case BuiltIn_OID.Weapon_milk:
-      data.base.brokens = ooo("70", "80", "80", "80", "80", "74", "74", "74", "74");
+      data.base.brokens = broken_pieces_opoints(
+        milk1,
+        ...make_arr(4, () => milk3),
+        ...make_arr(5, () => milk2)
+      );
       data.base.group = [EntityGroup.VsWeapon];
       data.base.drink = {
         hp_h_total: 160,
@@ -106,13 +113,15 @@ export function make_weapon_special(data: IEntityData) {
       }
       break;
     case BuiltIn_OID.Weapon_Stone:
-      data.base.brokens = ooo("0", "0", "4", "4", "4");
+      data.base.brokens = broken_pieces_opoints(stone, stone, sstone, sstone, sstone);
       break;
     case BuiltIn_OID.Weapon_WoodenBox:
-      data.base.brokens = ooo("40", "44", "50", "54", "54");
+      data.base.brokens = broken_pieces_opoints(box0, box1, box2, box3, box3);
       break;
     case BuiltIn_OID.Weapon_Beer:
-      data.base.brokens = ooo("160", "164", "164", "164", "164", "74", "74", "74", "74", "74");
+      data.base.brokens = broken_pieces_opoints(
+        beer1, beer2, beer2, beer2, beer2, milk2, milk2, milk2, milk2, milk2
+      );
       data.base.group = ensure(data.base.group, EntityGroup.VsWeapon);
       data.base.drink = {
         mp_h_total: 750,
@@ -121,16 +130,16 @@ export function make_weapon_special(data: IEntityData) {
       }
       break;
     case BuiltIn_OID.Weapon_Boomerang:
-      data.base.brokens = ooo("170", "170", "170");
+      data.base.brokens = broken_pieces_opoints(boomerang, boomerang, boomerang);
       break;
     case BuiltIn_OID.Weapon_LouisArmourA:
-      data.base.brokens = ooo("174", "174", "174", "174", "174");
+      data.base.brokens = broken_pieces_opoints(armour, armour, armour, armour, armour);
       break;
     case BuiltIn_OID.Weapon_LouisArmourB:
-      data.base.brokens = ooo("174", "174", "174", "174", "174");
+      data.base.brokens = broken_pieces_opoints(armour, armour, armour, armour, armour);
       break;
     case BuiltIn_OID.Weapon_IceSword:
-      data.base.brokens = ooo("150", "150", "150", "154", "154", "154", "154");
+      data.base.brokens = broken_pieces_opoints(icesword1, icesword1, icesword1, icesword2, icesword2, icesword2, icesword2);
       break;
   }
 }
